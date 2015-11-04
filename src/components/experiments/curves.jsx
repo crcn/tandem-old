@@ -2,7 +2,7 @@ import React from 'react';
 
 var CurvesComponent = React.createClass({
   render: function() {
-    
+
     var data = [
       {
         name: 'test',
@@ -23,9 +23,10 @@ var CurvesComponent = React.createClass({
         width: 100,
         height: 100
       }
-    ]
-  };
+    ];
 
+    return <div>Hello World!</div>;
+  }
 });
 
 export default CurvesComponent;
