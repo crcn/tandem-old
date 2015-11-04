@@ -1,15 +1,17 @@
 module.exports = {
-    entry: "./src/entry.js",
+    entry: './src/entry.js',
     output: {
         path: __dirname,
-        filename: "build/bundle.js"
+        filename: 'public/bundle.js'
     },
     resolve: {
-      extensions: ["", ".jsx", ".js"]
+      modulesDirectories: ['node_modules', 'bower_components'],
+      extensions: ['', '.jsx', '.js']
     },
+    publicPath: 'public',
     module: {
         loaders: [
-            { test: /\.css$/, loader: "style!css" },
+            { test: /\.css$/, loader: 'style!css' },
             {
               test: /\.jsx?$/,
               exclude: /(node_modules|bower_components)/,
