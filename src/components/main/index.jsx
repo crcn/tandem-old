@@ -17,16 +17,26 @@ var MainComponent = React.createClass({
   },
   render: function() {
 
-    var points = [
-      { x: 10, y: 0    },
-      { x: 10, y: 100  },
-      { x: 110, y: 100 }
-    ];
+    var points = [];
 
     var currentTarget = this.props.currentTarget;
 
+    var allTargets = {};
+
+    currentTarget.children.forEach(function(child) {
+      allTargets[child._id] = child;
+    });
+
+    currentTarget.children.forEach(function(child) {
+      child.outputs.forEach(function(output) {
+        var target = allTargets[output.target._id];
+        points.push({ x: child.x, y: child.y + child.height / 2}, target);
+      });
+    });
 
     return <Stage>
+
+      <Line points={points} />
 
       {
         (currentTarget.children || []).map((child, i) => {

@@ -21,18 +21,34 @@ class Application extends DataObject {
     var project = new Model({
       children: [
         new Model({
+          _id: 'model1',
           x: 100,
           y: 100,
           width: 100,
           height: 100,
-          bus: this.bus
+          bus: this.bus,
+          outputs: [
+            { target: { _id: 'model2' } },
+            { target: { _id: 'model3' } }
+          ]
         }),
         new Model({
+          _id: 'model2',
           x: 100,
-          y: 100,
+          y: 300,
           width: 100,
           height: 100,
-          bus: this.bus
+          bus: this.bus,
+          outputs: []
+        }),
+        new Model({
+          _id: 'model3',
+          x: 400,
+          y: 300,
+          width: 100,
+          height: 100,
+          bus: this.bus,
+          outputs: []
         })
       ]
     });
