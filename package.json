@@ -1,10 +1,12 @@
 {
   "name": "interface-builder",
   "version": "1.0.0",
+  "private": true,
   "description": "",
   "main": "./src/entry.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./node_modules/.bin/webpack-dev-server"
   },
   "repository": {
     "type": "git",
@@ -20,7 +22,8 @@
     "babel-core": "^6.0.20",
     "mesh": "^5.0.19",
     "react": "^0.14.2",
-    "react-dom": "^0.14.2"
+    "react-dom": "^0.14.2",
+    "sift": "^3.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.0.20",

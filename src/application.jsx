@@ -4,6 +4,7 @@ import Logger from './logger';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MainComponent from './components/main';
+import Model from './core/data/model';
 
 class Application extends DataObject {
 
@@ -16,7 +17,27 @@ class Application extends DataObject {
 
   initialize(config) {
     this.config = config;
-    ReactDOM.render(<MainComponent app={this} />, config.element);
+
+    var project = new Model({
+      children: [
+        new Model({
+          x: 100,
+          y: 100,
+          width: 100,
+          height: 100,
+          bus: this.bus
+        }),
+        new Model({
+          x: 100,
+          y: 100,
+          width: 100,
+          height: 100,
+          bus: this.bus
+        })
+      ]
+    });
+
+    ReactDOM.render(<MainComponent app={this} bus={this.bus} currentTarget={project} />, config.element);
   }
 }
 

@@ -4,6 +4,9 @@ class DataObject {
   constructor(properties) {
     Object.assign(this, properties);
   }
+  setProperties(properties) {
+    Object.assign(this, properties);
+  }
 }
 
 DataObject.create = createClass;
