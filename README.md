@@ -1,13 +1,12 @@
 
 A visual editor for creating modular & interactive components.
 
-<!-- ### Motivation
+### Motivation
 
-Translating visual designs to code is a long & hard process.
- -->
 
 ### Goals & Possible Features
 
+- Non-opinionated. Components will be interoperable with your existing codebase.
 - Allow non-developers to make *pixel perfect* designs.
 - Reduce human work time from design to code.
 - Reduce visual errors across browsers.
@@ -17,7 +16,6 @@ Translating visual designs to code is a long & hard process.
 - ability to publish components to NPM from editor
 - Social network for sharing visual components with other people - [dribbble](http://dribbble.com/)-esque.
   - Ability to fork & PR designs
-
 
 
 ### Code Example
@@ -37,3 +35,26 @@ var React = require('React');
 var Button = require('./button.ibf');
 React.render(<Button />, document.body);
 ```
+
+### File structure example
+
+Here's an idea of how you could organize component files created with this visual editor.
+
+```
+components/
+  common/
+    styles.ibf 
+    base-button-test.js
+    base-button.js
+    base-button.ibf
+    alert-test.js
+    alert.js
+    alert.ibf
+  auth/
+    signup.js
+    signup.ibf
+    signup-test.ibf
+```
+
+The `*-test.js` are unit tests. The `*.js` are the controller files - they import their corresponding `*.ibf` files.
+
