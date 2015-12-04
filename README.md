@@ -34,6 +34,7 @@ A visual editor for creating modular & interactive components.
 - Easily update visual docs
 - Enable non-devs to create interactive UIs
 - optimizations happen at compile time
+- Less code = less cruft over time. 
 
 ### Cons
 
