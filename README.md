@@ -24,6 +24,7 @@ A visual editor for creating modular & interactive components.
 - ability to publish components to NPM from editor
 - Social network for sharing visual components with other people - [dribbble](http://dribbble.com/)-esque.
   - Ability to fork & PR designs
+- interoperability between rendering engines. E.g: svg + HTML depending on type of shaped being compiled.
 
 
 ### Pros
