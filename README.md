@@ -24,6 +24,23 @@ A visual editor for creating modular & interactive components.
 - Social network for sharing visual components with other people - [dribbble](http://dribbble.com/)-esque.
   - Ability to fork & PR designs
 
+### Pros
+
+- Can be eased into existing application
+- Reduces the amount of code you have to write
+- Same level of modularity as visual code. 
+- Can be organized with code
+- Reduces time from design -> development
+- Easily update visual docs
+- Enable non-devs to create interactive UIs
+- optimizations happen at compile time
+
+### Cons
+
+- Unable to programatically tweak visual code. Must be done in editor.
+  - no HTML access
+  - no CSS access
+
 
 ### Code Example
 
