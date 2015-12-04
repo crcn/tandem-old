@@ -22,9 +22,7 @@ class DragDropComponent extends React.Component {
 
   startDragging(event) {
 
-    this._start = {
-      x: 
-    }
+    this._start = Point.create(x, y);
 
     // TODO - calc mouse click offset and store on component here
     // TODO - clone element being dragged

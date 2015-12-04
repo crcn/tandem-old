@@ -1,6 +1,6 @@
 import { create, extend } from 'utils-class';
 
-class DataObject {
+class BaseObject {
   constructor(properties) {
     Object.assign(this, properties);
   }
@@ -9,7 +9,7 @@ class DataObject {
   }
 }
 
-DataObject.create = create;
-DataObject.extend = extend;
+BaseObject.create = create;
+BaseObject.extend = extend;
 
-export default DataObject;
+export default BaseObject;

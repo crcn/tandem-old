@@ -35,7 +35,7 @@ export function createFactory(contextClass) {
 }
 
 /**
- * expose class creation class
+ * expose class creation function
  */
 
 export var create = createFactory(Object);
