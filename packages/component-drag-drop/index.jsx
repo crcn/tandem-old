@@ -22,6 +22,10 @@ class DragDropComponent extends React.Component {
 
   startDragging(event) {
 
+    this._start = {
+      x: 
+    }
+
     // TODO - calc mouse click offset and store on component here
     // TODO - clone element being dragged
 
