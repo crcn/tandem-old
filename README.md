@@ -14,6 +14,7 @@ A visual editor for creating modular & interactive components.
 ### Goals & Possible Features
 
 - Non-opinionated. Components will be interoperable with your existing codebase.
+- Simple & limited interface that enables people to create visual elements that can be wired up with actual code.
 - Allow non-developers to make *pixel perfect* designs.
 - Reduce human work time from design to code.
 - Reduce visual errors across browsers.
@@ -23,6 +24,7 @@ A visual editor for creating modular & interactive components.
 - ability to publish components to NPM from editor
 - Social network for sharing visual components with other people - [dribbble](http://dribbble.com/)-esque.
   - Ability to fork & PR designs
+
 
 ### Pros
 
