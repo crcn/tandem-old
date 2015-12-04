@@ -1,8 +1,15 @@
 
 A visual editor for creating modular & interactive components.
 
-### Motivation
+<!--### Motivation-->
 
+<!--
+
+- designs that do not work
+- translating designs -> code is tough
+
+
+-->
 
 ### Goals & Possible Features
 
