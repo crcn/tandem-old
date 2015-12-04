@@ -12,4 +12,4 @@ Simple drag & drop component
 
 #### Features
 
-- highlight droppable components when items are dragged 
+- highlight droppable components when items are dragged
