@@ -1,1 +1,1 @@
-import DataObject from 'data-object';
+import DataObject from 'base-object';

@@ -1,7 +1,7 @@
-import DataObject from 'data-object';
+import BaseObject from 'base-object';
 
 
-class Application extends DataObject {
+class Application extends BaseObject {
   initialize(config) {
   }
 }

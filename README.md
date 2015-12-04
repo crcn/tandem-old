@@ -1,12 +1,28 @@
-A visual editor for creating interactive components.
 
-### Why?
+A visual editor for creating modular & interactive components.
 
-Typically, UI components are created within a visual design program such as Sketch, or Photoshop. After that the application may be prototyped, then finally developed. This whole process could be simplified if there was *one* editor - something that allows you to visual edit a UI component & compile it straight to JavaScript.
+<!-- ### Motivation
 
-### Intent
+Translating visual designs to code is a long & hard process.
+ -->
 
-For the initial version, this application is *intended* to be used with *simple* visual elements throughout the application codebase. Each component should live in their own file (though can be included into other visual files) so that they can be used as needed in your front-end application. Visual interface files will requirable in javascript files like so:
+### Goals & Possible Features
+
+- Allow non-developers to make *pixel perfect* designs.
+- Reduce human work time from design to code.
+- Reduce visual errors across browsers.
+- Compile visual docs to any framework including React, Ember, Angular, and more.
+- Compile visual docs to different rendering engines (SVG, canvas, HTML, WebGL)
+- More obvious barrier between the View (visual information) & Controller
+- ability to publish components to NPM from editor
+- Social network for sharing visual components with other people - [dribbble](http://dribbble.com/)-esque.
+  - Ability to fork & PR designs
+
+
+
+### Code Example
+
+For the initial version, this application is *intended* to be used with *simple* visual components throughout the application codebase. Each component should live in their own file for re-usability. Visual interface files will be requirable in javascript files like so:
 
 ```javascript
 var Button = require('./button.ibf'); //
@@ -14,7 +30,7 @@ var Button = require('./button.ibf'); //
 document.body.appendChild(Button.create().element);
 ```
 
-Note that you'll be able to register custom `ibf` compilers that translates your visual documents into JavaScript that is compatible with frameworks such as React, Ember, and Angular. Registering a React ibf compiler for instance would yield the following code:
+the `button.ibf` file in this case would be compiled straight to vanilla JavaScript. You'll also be able to register *custom* compilers for frameworks such as React, Ember, and Angular. Registering a React ibf compiler for instance might yield the following code:
 
 ```javascript
 var React = require('React');
