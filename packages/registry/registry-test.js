@@ -12,7 +12,7 @@ describe(__filename + '#', function() {
 
   it('can registry a new dependency', function() {
     var r = Registry.create();
-    var entry = r.register(Entry.create({ id: '1', factory: BaseObject }));
+    var entry = r.register(Entry.create({ id: '1', type: 'a', factory: BaseObject }));
     expect(r.length).to.be(1);
   });
 

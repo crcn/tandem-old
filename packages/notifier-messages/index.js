@@ -1,5 +1,9 @@
 import BaseObject from 'base-object';
 
+export const CHANGE     = 'change';
+export const INITIALIZE = 'initialize';
+export const LOAD       = 'load';
+
 export class Message extends BaseObject {
   constructor(properties) {
     super(properties);
@@ -7,12 +11,16 @@ export class Message extends BaseObject {
 }
 
 export class ChangeMessage extends Message {
-  type = 'change';
+  type = CHANGE;
   constructor(target) {
     super({ target: target });
   }
 }
 
 export class InitializeMessage extends Message {
-  type = 'initialize';
+  type = INITIALIZE;
+}
+
+export class LoadMessage extends Message {
+  type = LOAD;
 }

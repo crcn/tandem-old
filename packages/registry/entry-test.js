@@ -4,7 +4,7 @@ import expect from 'expect.js';
 
 describe(__filename + '#', function() {
   it('can be created', function() {
-    Entry.create({ id: '1', factory: BaseObject });
+    Entry.create({ id: '1', type: 'a', factory: BaseObject });
   });
 
   it('throws an error if the id does not exist', function() {
@@ -18,8 +18,9 @@ describe(__filename + '#', function() {
   it('throws an error if the factory is not actually a factory', function() {
     var err;
     try {
-      Entry.create({ id: '1', factory: {} });
+      Entry.create({ id: '1', type: 'b', factory: {} });
     } catch(e) { err = e; }
+    // console.log(err);
     expect(err.message).to.be('factory.invalid');
   });
 

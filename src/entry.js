@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import Application from './application';
 
 var app = global.app = new Application();

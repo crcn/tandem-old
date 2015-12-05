@@ -1,7 +1,7 @@
 import BaseObject from 'base-object';
 import { Registry } from 'registry';
 import { NotifierCollection } from 'notifiers';
-import { InitializeMessage } from 'notifier-messages';
+import { InitializeMessage, LoadMessage } from 'notifier-messages';
 import mixinChangeNotifier from 'mixin-change-notifier';
 
 class BaseApplication extends BaseObject {
@@ -14,7 +14,7 @@ class BaseApplication extends BaseObject {
     // application extensions
     this.plugins = [];
 
-    //
+    // class registry such as components classes, tools, models
     this.registry = Registry.create();
 
     // central communication object
@@ -40,9 +40,15 @@ class BaseApplication extends BaseObject {
    * initializes the application
    */
 
-  initialize(config) {
+  async initialize(config) {
+    
     this.config = config;
-    this.notifier.notify(InitializeMessage.create());
+
+    // first load the app
+    await this.notifier.notify(LoadMessage.create());
+
+    // then initialize
+    await this.notifier.notify(InitializeMessage.create());
   }
 }
 

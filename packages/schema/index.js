@@ -24,10 +24,32 @@ class Field extends BaseObject {
     }
   }
 
-  /**
-   */
+  coerce(value) {
 
-  coerce(value, data) {
+    if (value == void 0) return;
+
+    if (this.collection) {
+      if (!Array.isArray(value)) value = [value];
+      return value.map((value) => {
+        return this._coerce(value);
+      });
+    }
+
+    return this._coerce(value);
+  }
+
+  _coerce(value) {
+    if (value instanceof this.type) return value;
+
+    // primitive
+    if (!!~[
+      String, Number, Boolean, Function
+    ].indexOf(this.type))  return this.type(value);
+
+    return new this.type(value);
+  }
+
+  validate(value, data) {
 
     // TODO - check for invalid
     if (value == void 0) {
@@ -40,34 +62,10 @@ class Field extends BaseObject {
       }
     }
 
-    if (this.validate && !this.validate(value, data)) {
-      throw InvalidError.create('invalid');
-    }
+    // if (this.validate && !this.validate(value, data)) {
+    //   throw InvalidError.create('invalid');
+    // }
 
-    if (this.collection) {
-      if (!Array.isArray(value)) {
-        throw InvalidError.create('invalid');
-      }
-      return value.map((value) => {
-        return this._cast(value);
-      });
-    }
-
-    return this._cast(value);
-  }
-
-  /**
-   */
-
-  _cast(value) {
-    if (value instanceof this.type) return value;
-
-    // primitive
-    if (!!~[
-      String, Number, Boolean, Function
-    ].indexOf(this.type))  return this.type(value);
-
-    return new this.type(value);
   }
 }
 
@@ -106,14 +104,27 @@ class Schema extends BaseObject {
   /**
    */
 
-  serialize(target, includeInternal) {
-    var data = {};
+  validate(data) {
     for (var property in this.fields) {
-      var field = this.fields[property];
-      if (field.internal && includeInternal !== true) continue;
-      data[property] = target[property];
+
+      var field  = this.fields[property];
+      var value  = data[property];
+
+      try {
+        field.validate(value, data);
+      } catch(e) {
+
+        // re-throw with a more especific error message. This is coded as well so that it can be
+        // internationalized.
+        if (e.code === InvalidError.code) {
+          var err   = InvalidError.create(property + '.' + e.message);
+          err.field = this.fields[property];
+          throw err;
+        }
+
+        throw e;
+      }
     }
-    return JSON.parse(JSON.stringify(data));
   }
 
   /**
@@ -125,7 +136,6 @@ class Schema extends BaseObject {
     var coercedData = {};
 
     for (var property in this.fields) {
-
       var field  = this.fields[property];
       var value  = data[property];
 

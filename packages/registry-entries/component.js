@@ -1,6 +1,7 @@
 import { Entry } from 'registry';
 import Schema from 'schema';
 import React from 'react';
+import mixinSchema from 'mixin-schema';
 
 var schema = new Schema({
   fields: {
@@ -12,20 +13,24 @@ var schema = new Schema({
 });
 
 class ComponentEntry extends Entry {
-  type = 'component';
+  
+  constructor(properties) {
+    super({ type: 'component', ...properties });
+  }
+
   setProperties(properties) {
-
-    properties = schema.coerce(properties);
-
-    super.setProperties({
-      factory: {
+    if (properties.componentClass) {
+      properties.factory = {
         create(props) {
           return React.createElement(properties.componentClass, props);
         }
-      },
-      ...properties
-    });
+      }
+    }
+    super.setProperties(properties);
   }
 }
+
+
+ComponentEntry = mixinSchema(schema, ComponentEntry);
 
 export default ComponentEntry;
