@@ -7,7 +7,7 @@ export function createFactory(contextClass) {
   if (!contextClass) contextClass = Object;
 
   // creates a new object from a class
-  function create() {
+  function create(arg1, arg2, arg, arg4) {
 
     // dirty but fast
     switch(arguments.length) {

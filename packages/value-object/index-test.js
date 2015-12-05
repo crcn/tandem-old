@@ -1,4 +1,4 @@
-import ValueType from './value';
+import ValueType from './index';
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {
@@ -29,20 +29,9 @@ describe(__filename + '#', function() {
       }
     }
 
-    new AType('a');
-    var at = new AType('A');
-    expect(at.value).to.be('a');
-  });
-
-  it('cannot override the value of a value type', function() {
-    var v = ValueType.create('blah');
-    var err;
-    try {
-      v.value = 'blarg';
-    } catch(e) {
-      err = e;
-    }
-    expect(err.message).to.contain('Cannot set property value');
+    AType.create('a');
+    var at = AType.create('A');
+    expect(at.valueOf()).to.be('a');
   });
 
   it('can properly compare a value object against another value object', function() {

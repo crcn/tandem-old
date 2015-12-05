@@ -1,9 +1,9 @@
 var gulp  = require('gulp');
 var mocha = require('gulp-mocha');
+var karma = require('karma');
 
-require('babel-core/register')({
-  presets: ['react', 'es2015']
-});
+var args = require('yargs').argv;
+
 
 var mochaOptions = {
   timeout: 1000
@@ -14,14 +14,19 @@ var paths = {
   allFiles: ['packages/**/*.js']
 };
 
-gulp.task('test', function() {
-  return gulp.src(paths.testFiles)
-  .pipe(mocha(mochaOptions));
+gulp.task('test', function(complete) {
+  new karma.Server({
+    configFile: __dirname + '/karma.config.js',
+    singleRun: !args.watch,
+    reporters: [args.reporter || 'spec'],
+    client: {
+      mocha: {
+        grep: args.only || args.grep
+      }
+    }
+  }, complete).start();
 });
 
-
-gulp.task('watch', function() {
-  var tasks = Array.prototype.slice.call(process.argv, 2).concat();
-  tasks.pop();
-  gulp.watch(paths.allFiles, tasks);
-});
+gulp.doneCallback = function() {
+  if (!args.watch) process.exit();
+}

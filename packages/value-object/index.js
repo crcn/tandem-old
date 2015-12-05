@@ -1,4 +1,4 @@
-import errors from 'errors';
+import { InvalidError } from 'errors';
 import { create } from 'utils-class';
 /**
  */
@@ -15,7 +15,7 @@ class ValueType {
     // just like strongly typed stuff. The value in the constructor should not
     // be 'castable' to this type
     if (!this.validate(value)) {
-      throw errors.Invalid.create();
+      throw InvalidError.create('invalid');
     }
 
     this._value = value;

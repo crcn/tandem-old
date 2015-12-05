@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/crcn/interface-builder.svg?branch=master)](https://travis-ci.org/crcn/interface-builder) [![Coverage Status](https://coveralls.io/repos/crcn/interface-builder/badge.svg?branch=master)](https://coveralls.io/r/crcn/interface-builder?branch=master) [![Coverage Status](https://david-dm.org/crcn/interface-builder.svg)](https://david-dm.org/crcn/interface-builder) [![Join the chat at https://gitter.im/crcn/interface-builder](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/interface-builder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
 A visual editor for creating modular & interactive components.
 
@@ -30,13 +32,13 @@ A visual editor for creating modular & interactive components.
 
 - Can be eased into existing application
 - Reduces the amount of code you have to write
-- Same level of modularity as visual code. 
+- Same level of modularity as visual code.
 - Can be organized with code
 - Reduces time from design -> development
 - Easily update visual docs
 - Enable non-devs to create interactive UIs
 - optimizations happen at compile time
-- Less code = less cruft over time. 
+- Less code = less cruft over time.
 
 ### Cons
 
@@ -70,7 +72,7 @@ Here's an idea of how you could organize component files created with this visua
 ```
 components/
   common/
-    styles.ibf 
+    styles.ibf
     base-button-test.js
     base-button.js
     base-button.ibf
@@ -84,4 +86,3 @@ components/
 ```
 
 The `*-test.js` are unit tests. The `*.js` are the controller files - they import their corresponding `*.ibf` files.
-

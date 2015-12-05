@@ -1,4 +1,4 @@
-Dependency injection package
+Dependency injection package.
 
 ```javascript
 import { Registry, Entry } from 'registry';
