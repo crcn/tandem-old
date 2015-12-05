@@ -12,7 +12,7 @@ export function create({ application }) {
 
   application.registry.push(Entry.create({
     id: 'symbol-text-property-tools',
-    type: 'symbol'
+    type: 'symbol-tool'
   }));
 
 }

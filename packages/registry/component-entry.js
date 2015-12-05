@@ -12,6 +12,7 @@ var schema = new Schema({
 });
 
 class ComponentEntry extends Entry {
+  type = 'component';
   setProperties(properties) {
 
     properties = schema.coerce(properties);

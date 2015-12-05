@@ -2,7 +2,7 @@ import BaseObject from 'base-object';
 import { Registry } from 'registry';
 import { NotifierCollection } from 'notifiers';
 import { InitializeMessage } from 'messages';
-import mixinObservable from 'mixin-observable';
+import mixinChangeNotifier from 'mixin-change-notifier';
 
 class BaseApplication extends BaseObject {
 
@@ -46,6 +46,6 @@ class BaseApplication extends BaseObject {
   }
 }
 
-BaseApplication = mixinObservable(BaseApplication);
+BaseApplication = mixinChangeNotifier(BaseApplication);
 
 export default BaseApplication;
