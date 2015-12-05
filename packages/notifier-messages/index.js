@@ -1,4 +1,4 @@
-import BaseObject from 'object';
+import BaseObject from 'object-base';
 
 export const CHANGE     = 'change';
 export const INITIALIZE = 'initialize';

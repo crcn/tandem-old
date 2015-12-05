@@ -1,6 +1,6 @@
 import Registry from './registry';
 import Entry from './entry';
-import BaseObject from 'object';
+import BaseObject from 'object-base';
 import { InvalidError, ExistsError } from 'errors';
 import sift from 'sift';
 

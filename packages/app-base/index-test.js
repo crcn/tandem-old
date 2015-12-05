@@ -1,5 +1,5 @@
 import BaseApplication from './index';
-import BaseObject from 'object';
+import BaseObject from 'object-base';
 import { Entry } from 'registry';
 import sift from 'sift';
 import { CallbackNotifier, AcceptNotifier } from 'notifiers';

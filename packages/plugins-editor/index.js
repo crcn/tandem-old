@@ -1,4 +1,4 @@
-import DataObject from 'object';
+import DataObject from 'object-base';
 import { ComponentEntry, RootComponentEntry } from 'registry-entries';
 import MainComponent from './components/main';
 import React from 'react';

@@ -1,6 +1,6 @@
 import FactoryValueObject from './index';
 import { InvalidError } from 'errors';
-import BaseObject from 'object';
+import BaseObject from 'object-base';
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {

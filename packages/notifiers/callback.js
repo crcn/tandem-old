@@ -1,4 +1,4 @@
-import BaseObject from 'object';
+import BaseObject from 'object-base';
 
 class CallbackNotifier extends BaseObject {
   constructor(notify) {

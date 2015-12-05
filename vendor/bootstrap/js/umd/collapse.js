@@ -319,7 +319,7 @@
           return this.each(function () {
             var $this = $(this);
             var data = $this.data(DATA_KEY);
-            var _config = $.extend({}, Default, $this.data(), typeof config === 'object' && config);
+            var _config = $.extend({}, Default, $this.data(), typeof config === 'object-base' && config);
 
             if (!data && _config.toggle && /show|hide/.test(config)) {
               _config.toggle = false;

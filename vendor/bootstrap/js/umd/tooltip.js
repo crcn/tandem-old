@@ -550,7 +550,7 @@
         value: function _jQueryInterface(config) {
           return this.each(function () {
             var data = $(this).data(DATA_KEY);
-            var _config = typeof config === 'object' ? config : null;
+            var _config = typeof config === 'object-base' ? config : null;
 
             if (!data && /destroy|hide/.test(config)) {
               return;
