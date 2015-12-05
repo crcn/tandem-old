@@ -11,7 +11,7 @@ class BaseApplication extends BaseObject {
   constructor(properties) {
     super(properties);
 
-    // application extensions
+    // app extensions
     this.plugins = [];
 
     // class registry such as components classes, tools, models
@@ -31,13 +31,13 @@ class BaseApplication extends BaseObject {
   usePlugin(...plugins) {
     for (var plugin of plugins) {
       this.plugins.push(plugin.create({
-        application: this
+        app: this
       }));
     }
   }
 
   /**
-   * initializes the application
+   * initializes the app
    */
 
   async initialize(config) {

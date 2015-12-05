@@ -4,7 +4,7 @@ import React from 'react';
 
 /**
  * Enables people to drag componens & drop components
- * around the application
+ * around the app
  */
 
 class DragDropComponent extends React.Component {
@@ -35,7 +35,7 @@ class DragDropComponent extends React.Component {
     // TODO - clone element being dragged
 
     // stop dragging immediately in case it was never fired from mouseup. This *might*
-    // happen if the user moves their cursor outside of the application
+    // happen if the user moves their cursor outside of the app
     this.stopDragging();
 
     var b  = this.refs.draggable.getBoundingClientRect();

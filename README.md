@@ -31,7 +31,7 @@ A visual editor for creating modular & interactive components.
 
 ### Pros
 
-- Can be eased into existing application
+- Can be eased into existing app
 - Reduces the amount of code you have to write
 - Same level of modularity as visual code.
 - Can be organized with code
@@ -50,7 +50,7 @@ A visual editor for creating modular & interactive components.
 
 ### Code Example
 
-For the initial version, this application is *intended* to be used with *simple* visual components throughout the application codebase. Each component should live in their own file for re-usability. Visual interface files will be requirable in javascript files like so:
+For the initial version, this app is *intended* to be used with *simple* visual components throughout the app codebase. Each component should live in their own file for re-usability. Visual interface files will be requirable in javascript files like so:
 
 ```javascript
 var Button = require('./button.ibf'); //

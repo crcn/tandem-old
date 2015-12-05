@@ -16,7 +16,7 @@ describe(__filename + '#', function() {
     var a = BaseApplication.create();
     a.usePlugin(BaseObject);
     expect(a.plugins.length).to.be(1);
-    expect(a.plugins[0].application).to.be(a);
+    expect(a.plugins[0].app).to.be(a);
   });
 
   it('pulls plugins from static prop', function() {
@@ -25,7 +25,7 @@ describe(__filename + '#', function() {
     }
     var a = SubApplication.create();
     expect(a.plugins.length).to.be(2);
-    expect(a.plugins[0].application).to.be(a);
+    expect(a.plugins[0].app).to.be(a);
   });
 
   it('waits for load message to complete before calling initialize', async function() {
