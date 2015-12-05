@@ -1,4 +1,4 @@
-import Entry from './entry';
+import { Entry } from 'registry';
 
 class SymbolEntry extends Entry {
   type = 'symbol';

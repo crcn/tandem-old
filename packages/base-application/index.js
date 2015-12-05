@@ -1,7 +1,7 @@
 import BaseObject from 'base-object';
 import { Registry } from 'registry';
 import { NotifierCollection } from 'notifiers';
-import { InitializeMessage } from 'messages';
+import { InitializeMessage } from 'notifier-messages';
 import mixinChangeNotifier from 'mixin-change-notifier';
 
 class BaseApplication extends BaseObject {

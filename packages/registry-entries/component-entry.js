@@ -1,4 +1,4 @@
-import Entry from './entry';
+import { Entry } from 'registry';
 import Schema from 'schema';
 import React from 'react';
 

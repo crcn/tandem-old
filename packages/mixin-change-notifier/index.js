@@ -1,4 +1,4 @@
-import { ChangeMessage } from 'messages';
+import { ChangeMessage } from 'notifier-messages';
 
 export default function(clazz) {
 
