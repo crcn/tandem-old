@@ -1,5 +1,5 @@
 import mixinChangeNotifier from './index';
-import BaseObject from 'base-object';
+import BaseObject from 'object';
 export expect from 'expect.js';
 
 describe(__filename + '#', function() {

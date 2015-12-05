@@ -1,4 +1,4 @@
-import BaseObject from 'base-object';
+import BaseObject from 'object';
 import NoopNotifier from './noop';
 
 class AcceptNotifier extends BaseObject {

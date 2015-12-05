@@ -1,5 +1,5 @@
 import { BaseError, InvalidError } from 'errors';
-import BaseObject from 'base-object';
+import BaseObject from 'object';
 
 
 /**

@@ -1,4 +1,4 @@
-import BaseObject from 'base-object';
+import BaseObject from 'object';
 
 class Point extends BaseObject {
   constructor(x, y) {

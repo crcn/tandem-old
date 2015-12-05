@@ -1,4 +1,4 @@
-import BaseObject from 'base-object';
+import BaseObject from 'object';
 import { Registry } from 'registry';
 import { NotifierCollection } from 'notifiers';
 import { InitializeMessage, LoadMessage } from 'notifier-messages';

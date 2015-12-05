@@ -1,4 +1,4 @@
-import BaseCollection from 'base-collection';
+import BaseCollection from 'collection';
 
 class NotifierCollection extends BaseCollection {
   notify(message) {

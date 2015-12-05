@@ -1,4 +1,4 @@
-import BaseCollection from 'base-collection';
+import BaseCollection from 'collection';
 import Entry from './entry';
 import sift from 'sift';
 import { ExistsError } from 'errors';

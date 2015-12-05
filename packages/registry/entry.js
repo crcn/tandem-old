@@ -1,4 +1,4 @@
-import BaseObject from 'base-object';
+import BaseObject from 'object';
 import Schema from 'schema';
 import mixinSchema from 'mixin-schema';
 import Factory from 'value-object-factory';

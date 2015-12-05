@@ -1,5 +1,5 @@
 import Entry from './entry';
-import BaseObject from 'base-object';
+import BaseObject from 'object';
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {

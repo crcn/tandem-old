@@ -1,4 +1,4 @@
-import BaseObject from 'base-object';
+import BaseObject from 'object';
 
 class NoopNotifier extends BaseObject {
   notify() { }

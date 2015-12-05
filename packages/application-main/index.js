@@ -1,6 +1,6 @@
 import 'bootstrap/css/bootstrap.css';
 
-import BaseApplication from 'base-application';
+import BaseApplication from 'application';
 import EditorPlugin from 'plugins-editor';
 import RenderRootComponentPlugin from 'plugins-render-root-component';
 
