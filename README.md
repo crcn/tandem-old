@@ -15,6 +15,8 @@ A visual editor for creating modular & interactive components.
 
 ### Goals & Possible Features
 
+[![Join the chat at https://gitter.im/crcn/interface-builder](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/interface-builder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 - Non-opinionated. Components will be interoperable with your existing codebase.
 - Simple & limited interface that enables people to create visual elements that can be wired up with actual code.
 - Allow non-developers to make *pixel perfect* designs.
