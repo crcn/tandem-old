@@ -8,7 +8,6 @@ var entry = registry.register(Entry.create({ type: 'component', label: 'My compo
 
 registry.register(Entry.create({ type: 'pane', target: entry }, componentEditorFactory));
 
-
-var entry = registry.findOne({ type: 'component' });
+var entry = registry.find({ type: 'component' });
 var item = entry.factory.create();
 ```

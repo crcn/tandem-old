@@ -21,3 +21,7 @@ export class BaseError extends Error {
 export class InvalidError extends BaseError {
   static code = code = code << 1;
 }
+
+export class ExistsError extends BaseError {
+  static code = code = code << 1;
+}
