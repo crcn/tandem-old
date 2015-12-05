@@ -6,7 +6,9 @@ import React from 'react';
 
 class RightSideBarComponent extends React.Component {
     render() {
-        // TODO
+        return <div className='m-right-sidebar'>
+
+        </div>;
     }
 }
 

@@ -10,10 +10,6 @@ describe(__filename + '#', function() {
     Registry.create();
   });
 
-  it('is an array', function() {
-    expect(Registry.create()).to.be.an(Array);
-  });
-
   it('can registry a new dependency', function() {
     var r = Registry.create();
     var entry = r.register(Entry.create({ id: '1', factory: BaseObject }));
@@ -37,5 +33,5 @@ describe(__filename + '#', function() {
       err = e;
     }
     expect(err).to.be.an(ExistsError);
-  })
+  });
 });

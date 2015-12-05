@@ -6,7 +6,9 @@ import React from 'react';
 
 class LeftSideBarComponent extends React.Component {
     render() {
-        // TODO
+        return <div className='m-left-sidebar'>
+          
+        </div>;
     }
 }
 

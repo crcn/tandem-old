@@ -16,8 +16,11 @@ var schema = Schema.create({
 });
 
 class Entry extends BaseObject {
-  constructor(properties) {
-    super(schema.coerce(properties));
+  setProperties(properties) {
+    super.setProperties(schema.coerce(properties));
+  }
+  create() {
+    return this.factory.create(...arguments);
   }
 }
 

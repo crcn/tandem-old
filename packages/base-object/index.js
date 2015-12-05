@@ -2,7 +2,7 @@ import { create, extend } from 'utils-class';
 
 class BaseObject {
   constructor(properties) {
-    Object.assign(this, properties);
+    this.setProperties(properties);
   }
   setProperties(properties) {
     Object.assign(this, properties);

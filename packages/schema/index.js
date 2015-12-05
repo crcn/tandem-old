@@ -64,9 +64,9 @@ class Field extends BaseObject {
 
     // primitive
     if (!!~[
-      String, Number, Boolean
+      String, Number, Boolean, Function
     ].indexOf(this.type))  return this.type(value);
-    
+
     return new this.type(value);
   }
 }

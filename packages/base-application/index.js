@@ -1,13 +1,26 @@
 import BaseObject from 'base-object';
 import { Registry } from 'registry';
+import { NotifierCollection } from 'notifiers';
+import { InitializeMessage } from 'messages';
+import mixinObservable from 'mixin-observable';
 
 class BaseApplication extends BaseObject {
+
   static plugins = [];
 
   constructor(properties) {
     super(properties);
+
+    // application extensions
     this.plugins = [];
+
+    //
     this.registry = Registry.create();
+
+    // central communication object
+    this.notifier = NotifierCollection.create();
+
+    // load in initial plugins immediately
     this.usePlugin(...this.constructor.plugins);
   }
 
@@ -22,6 +35,17 @@ class BaseApplication extends BaseObject {
       }));
     }
   }
+
+  /**
+   * initializes the application
+   */
+
+  initialize(config) {
+    this.config = config;
+    this.notifier.notify(InitializeMessage.create());
+  }
 }
+
+BaseApplication = mixinObservable(BaseApplication);
 
 export default BaseApplication;

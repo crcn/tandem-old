@@ -4,7 +4,7 @@ import Pane from 'component-pane';
 class MainComponent extends React.Component {
     render() {
         return <div className='m-editor'>
-          <Pane className="pane" />
+          <Pane target={{id:'pane1'}} {...this.props} />
         </div>;
     }
 }

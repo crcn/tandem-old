@@ -6,7 +6,9 @@ import React from 'react';
 
 class StageComponent extends React.Component {
     render() {
-        // TODO
+        return <div className='m-stage'>
+
+        </div>;
     }
 }
 
