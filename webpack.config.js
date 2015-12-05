@@ -11,7 +11,7 @@ module.exports = {
         sourceMapFilename: '/js/[name].bundle.js.map'
     },
     resolve: {
-        modulesDirectories: [__dirname + '/src', 'node_modules', 'bower_components', 'packages'],
+        modulesDirectories: [__dirname + '/src', 'node_modules', 'bower_components', 'packages', 'vendor'],
         extensions: ['', '.json', '.jsx', '.js']
     },
     publicPath: 'static/',
@@ -23,6 +23,9 @@ module.exports = {
     node: {
         __filename: true
     },
+    plugins: [
+        new ExtractTextPlugin('/css/[name].bundle.css')
+    ],
     module: {
         loaders: [
             {

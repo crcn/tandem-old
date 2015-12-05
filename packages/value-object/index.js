@@ -32,6 +32,7 @@ class ValueType {
   }
 
   /**
+   * validates the value object
    */
 
   validate(value) {
@@ -39,6 +40,7 @@ class ValueType {
   }
 
   /**
+   * checks whether two values are equal to each other
    */
 
   equals(b) {
@@ -46,21 +48,16 @@ class ValueType {
   }
 
   /**
+   * returns the value of this object
    */
 
   valueOf() {
     return this._value;
   }
 
-  /**
-   */
-
   toString() {
     return Object.prototype.toString.call(this._value);
   }
-
-  /**
-   */
 
   toJSON() {
     return this._value;

@@ -11,3 +11,8 @@ registry.register(Entry.create({ type: 'pane', target: entry }, componentEditorF
 var entry = registry.find({ type: 'component' });
 var item = entry.factory.create();
 ```
+
+
+#### TODOS
+
+- [ ] ability to dispose an entry

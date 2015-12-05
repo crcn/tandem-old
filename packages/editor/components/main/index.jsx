@@ -2,7 +2,9 @@ import React from 'react';
 
 class MainComponent extends React.Component {
     render() {
-        // TODO
+        return <div className='m-editor'>
+          Editor
+        </div>;
     }
 }
 
