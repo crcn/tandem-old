@@ -21,6 +21,7 @@
   "dependencies": {
     "babel-core": "^6.0.20",
     "babel-preset-stage-0": "^6.3.13",
+    "classnames": "^2.2.1",
     "mesh": "^5.0.19",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",

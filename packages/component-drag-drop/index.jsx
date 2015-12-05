@@ -14,15 +14,22 @@ class DragDropComponent extends React.Component {
     droppable : React.PropTypes.bool,
 
     // the target item that is getting dragged
-    target    : React.PropTypes.item,
+    target    : React.PropTypes.object,
 
     // the function which tests
     accept    : React.PropTypes.func
   }
 
-  startDragging(event) {
+  constructor() {
+    super();
+    this.state = {};
 
-    this._start = Point.create(x, y);
+    this.startDragging = this.startDragging.bind(this);
+    this.stopDragging  = this.stopDragging.bind(this);
+    this.drag          = this.drag.bind(this);
+  }
+
+  startDragging(event) {
 
     // TODO - calc mouse click offset and store on component here
     // TODO - clone element being dragged
@@ -31,23 +38,54 @@ class DragDropComponent extends React.Component {
     // happen if the user moves their cursor outside of the application
     this.stopDragging();
 
+    var b  = this.refs.draggable.getBoundingClientRect();
+    var cx = b.left;
+    var cy = b.top;
+
+    this.setState({
+      drag : true,
+      mx   : event.clientX,
+      my   : event.clientY,
+      x    : b.left,
+      y    : b.top,
+      sx   : b.left,
+      sy   : b.top
+    });
+
     // always stop drag on mouse up.
-    document.body.addEventListener('mouseup', this.stopDragging);
-    document.body.addEventListener('mousemove', this.drag);
+    document.addEventListener('mouseup', this.stopDragging);
+    document.addEventListener('mousemove', this.drag);
   }
 
   drag(event) {
-
+    this.setState({
+      x: this.state.sx + event.clientX - this.state.mx,
+      y: this.state.sy + event.clientY - this.state.my
+    });
   }
 
   stopDragging() {
-    document.body.removeEventListener('mouseup', this.stopDragging);
-    document.body.removeEventListener('mousemove', this.drag);
+    this.setState({ drag: false });
+    document.removeEventListener('mouseup', this.stopDragging);
+    document.removeEventListener('mousemove', this.drag);
   }
 
   render() {
-    return <div className='m-drag-drop' onMouseDown={this.startDragging}>
-      { this.props.children }
+
+    var dragStyle = {};
+
+    if (this.state.drag) {
+      dragStyle = {
+        position : 'fixed',
+        top      : this.state.y,
+        left     : this.state.x
+      };
+    }
+
+    return <div ref='dragDrop' className='m-drag-drop'>
+      <div ref='draggable' style={dragStyle} onMouseDown={this.startDragging.bind(this)}>
+        { this.props.children }
+      </div>
     </div>;
   }
 };
