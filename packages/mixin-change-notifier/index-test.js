@@ -1,5 +1,6 @@
 import mixinChangeNotifier from './index';
 import BaseObject from 'object-base';
+import Collection from 'collection';
 export expect from 'expect.js';
 
 describe(__filename + '#', function() {
@@ -12,9 +13,9 @@ describe(__filename + '#', function() {
 
     var a = SubObject.create({
       notifier: {
-        notify(action) {
-          expect(action.target).to.be(a);
-          expect(action.type).to.be('change');
+        notify(message) {
+          expect(message.type).to.be('change');
+          expect(message.changes.length).to.be(1);
           i++;
         }
       }
@@ -24,4 +25,26 @@ describe(__filename + '#', function() {
     expect(a.a).to.be(1);
     expect(i).to.be(1);
   });
+
+  it('can be mixed into a collection', function() {
+    var SubCollection = mixinChangeNotifier(Collection);
+    var currentMessage;
+
+    var a = SubCollection.create({
+      notifier: {
+        notify(message) {
+          currentMessage = message;
+        }
+      }
+    });
+
+    a.push(1, 2, 3);
+    expect(currentMessage.changes[0].added[0]).to.be(1);
+    expect(currentMessage.changes[0].added[1]).to.be(2);
+    a.splice(1, 1, 6);
+    expect(currentMessage.changes[0].added[0]).to.be(6);
+    expect(currentMessage.changes[0].added[0]).to.be(6);
+    expect(currentMessage.changes[0].removed[0]).to.be(2);
+  });
+
 });

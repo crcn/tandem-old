@@ -2,7 +2,8 @@ import { createFactory } from 'utils-class';
 
 class BaseCollection {
 
-  constructor(properties) {
+  constructor(properties, values = []) {
+    this.push(...values);
     this.setProperties(properties);
   }
 
@@ -32,6 +33,10 @@ class BaseCollection {
       if (~i) this.splice(i, 1);
     }
   }
+
+  /**
+   * all mutation methods go through here
+   */
 
   splice() {
     // OVERRIDE ME!

@@ -12,8 +12,8 @@ export class Message extends BaseObject {
 
 export class ChangeMessage extends Message {
   type = CHANGE;
-  constructor(target) {
-    super({ target: target });
+  constructor(changes = []) {
+    super({ changes: changes });
   }
 }
 
