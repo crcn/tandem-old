@@ -7,6 +7,7 @@ export default {
         id: 'rectableSymbol',
         type: 'symbol',
         symbolType: 'component',
+        componentType: 'core',
         label: 'rectable',
         factory: {
           create() { }
@@ -16,6 +17,7 @@ export default {
         id: 'circleSymbol',
         type: 'symbol',
         symbolType: 'component',
+        componentType: 'core',
         label: 'circle',
         factory: {
           create() { }
