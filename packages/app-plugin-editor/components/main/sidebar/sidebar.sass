@@ -1,0 +1,21 @@
+@import "less/variables.sass";
+
+.m-sidebar {
+  background-color: $color-grey-10;
+  border-color: $color-grey-8;
+  border-style: solid;
+  border-width: 0px;
+  height: 100vh;
+  max-width: 300px;
+  display: inline-block;
+  position: relative;
+
+  &.left {
+    border-right-width: 2px;
+  }
+
+  &.right {
+    border-left-width: 2px;
+    float:right;
+  }
+}

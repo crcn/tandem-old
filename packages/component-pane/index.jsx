@@ -1,4 +1,4 @@
-import './index.less';
+import './index.sass';
 
 import React from 'react';
 import DragDrop from 'component-drag-drop';

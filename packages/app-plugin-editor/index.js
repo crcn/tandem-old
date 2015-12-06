@@ -20,7 +20,7 @@ function registerComponents(app) {
   // panes
   app.registry.push(AppPaneComponentEntry.create({
     id             : 'componentPane',
-    componentClass : ComponentPaneComponent,
-    label          : 'Components'
+    label          : 'Components',
+    componentClass : ComponentPaneComponent
   }));
 }

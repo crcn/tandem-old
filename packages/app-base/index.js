@@ -1,10 +1,9 @@
-import BaseObject from 'object-base';
+import ObservableObject from 'object-observable';
 import { Registry } from 'registry';
 import { NotifierCollection } from 'notifiers';
 import { InitializeMessage, LoadMessage } from 'notifier-messages';
-import mixinChangeNotifier from 'mixin-change-notifier';
 
-class BaseApplication extends BaseObject {
+class BaseApplication extends ObservableObject {
 
   static plugins = [];
 
@@ -51,7 +50,5 @@ class BaseApplication extends BaseObject {
     await this.notifier.notify(InitializeMessage.create());
   }
 }
-
-BaseApplication = mixinChangeNotifier(BaseApplication);
 
 export default BaseApplication;

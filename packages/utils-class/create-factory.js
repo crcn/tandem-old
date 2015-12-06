@@ -7,7 +7,7 @@ export default function(contextClass) {
   if (!contextClass) contextClass = Object;
 
   // creates a new object from a class
-  function create(arg1, arg2, arg, arg4) {
+  function create(arg1, arg2, arg3, arg4) {
 
     // dirty but fast
     switch(arguments.length) {

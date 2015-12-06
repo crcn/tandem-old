@@ -1,4 +1,4 @@
-import './index.less';
+import './index.sass';
 
 import React from 'react';
 
@@ -31,6 +31,8 @@ class DragDropComponent extends React.Component {
 
   startDragging(event) {
 
+    if (this.props.onDragStart) this.props.onDragStart();
+
     // TODO - calc mouse click offset and store on component here
     // TODO - clone element being dragged
 
@@ -39,17 +41,17 @@ class DragDropComponent extends React.Component {
     this.stopDragging();
 
     var b  = this.refs.draggable.getBoundingClientRect();
-    var cx = b.left;
+    var cx = b.left + b.right;
     var cy = b.top;
 
     this.setState({
       drag : true,
       mx   : event.clientX,
       my   : event.clientY,
-      x    : b.left,
-      y    : b.top,
-      sx   : b.left,
-      sy   : b.top
+      x    : cx,
+      y    : cy,
+      sx   : cx,
+      sy   : cy
     });
 
     // always stop drag on mouse up.
@@ -59,9 +61,13 @@ class DragDropComponent extends React.Component {
 
   drag(event) {
     this.setState({
-      x: this.state.sx + event.clientX - this.state.mx,
-      y: this.state.sy + event.clientY - this.state.my
+      x: event.clientX - this.state.mx,
+      y: event.clientY - this.state.my
     });
+
+    if (this.props.onDrag) {
+      this.props.onDrag(this.state);
+    }
   }
 
   stopDragging() {
@@ -74,7 +80,7 @@ class DragDropComponent extends React.Component {
 
     var dragStyle = {};
 
-    if (this.state.drag) {
+    if (this.state.drag && this.props.canMove !== false) {
       dragStyle = {
         position : 'fixed',
         top      : this.state.y,
