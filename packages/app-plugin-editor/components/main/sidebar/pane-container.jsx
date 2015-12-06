@@ -1,5 +1,5 @@
 import React from 'react';
-import './pane-container.sass';
+import './pane-container.scss';
 
 class PaneContainerComponent extends React.Component {
   render() {

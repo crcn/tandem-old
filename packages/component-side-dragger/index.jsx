@@ -1,4 +1,4 @@
-import './index.sass';
+import './index.scss';
 import React from 'react';
 import DragDropComponent from 'component-drag-drop';
 

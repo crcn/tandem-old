@@ -42,7 +42,7 @@ module.exports = {
         loader: 'url-loader?limit=1000&prefix=web/static'
       },
       {
-        test: /\.sass$/,
+        test: /\.scss$/,
         loader: ExtractTextPlugin.extract('style', 'raw!sass')
       },
       {

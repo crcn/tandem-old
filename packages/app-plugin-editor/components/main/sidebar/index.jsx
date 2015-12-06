@@ -1,4 +1,4 @@
-import './sidebar.sass';
+import './sidebar.scss';
 import React from 'react';
 import sift from 'sift';
 import PaneContainerComponent from './pane-container';

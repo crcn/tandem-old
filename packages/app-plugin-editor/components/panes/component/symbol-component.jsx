@@ -1,4 +1,4 @@
-import './symbol-component.sass';
+import './symbol-component.scss';
 import React from 'react';
 import DragDropComponent from 'component-drag-drop';
 
