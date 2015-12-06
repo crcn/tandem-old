@@ -41,7 +41,7 @@ class BaseApplication extends BaseObject {
    */
 
   async initialize(config) {
-    
+
     this.config = config;
 
     // first load the app

@@ -2,12 +2,14 @@ import 'bootstrap/css/bootstrap.css';
 
 import BaseApplication from 'app-base';
 import EditorPlugin from 'app-plugin-editor';
-import RenderRootComponentPlugin from 'app-plugin-render-root-component';
+import RenderRootComponentPlugin from 'app-plugin-render-component-root';
+import BasicSymbolsPlugin from 'app-plugin-basic-symbols';
 
 class Application extends BaseApplication {
   static plugins = [
     EditorPlugin,
-    RenderRootComponentPlugin
+    RenderRootComponentPlugin,
+    BasicSymbolsPlugin
   ]
 }
 

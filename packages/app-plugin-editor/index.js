@@ -1,23 +1,26 @@
 import DataObject from 'object-base';
-import { ComponentEntry, RootComponentEntry } from 'registry-entries';
+import { ComponentEntry, SymbolPaneComponentEntry, RootComponentEntry, AppPaneComponentEntry } from 'registry-entries';
+import ComponentPaneComponent from './components/panes/component';
 import MainComponent from './components/main';
 import React from 'react';
 
-class PaneTest extends React.Component {
-  render() {
-    return <div>Hello</div>;
+export default {
+  create({ app }) {
+    registerComponents(app);
   }
 }
 
-export default {
-  create({ app }) {
-    app.registry.push(RootComponentEntry.create({
-      componentClass : MainComponent
-    }));
+function registerComponents(app) {
 
-    app.registry.push(ComponentEntry.create({
-      id: 'pane1',
-      componentClass: PaneTest
-    }));
-  }
+  // actual editor
+  app.registry.push(RootComponentEntry.create({
+    componentClass : MainComponent
+  }));
+
+  // panes
+  app.registry.push(AppPaneComponentEntry.create({
+    id             : 'componentPane',
+    componentClass : ComponentPaneComponent,
+    label          : 'Components'
+  }));
 }
