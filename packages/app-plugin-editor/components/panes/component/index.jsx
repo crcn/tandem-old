@@ -1,3 +1,5 @@
+import './index.sass';
+
 import React from 'react';
 import RegisteredComponent from 'component-registered';
 import sift from 'sift';
@@ -6,8 +8,7 @@ import SymbolComponent from './symbol-component';
 
 class ComponentPaneComponent extends React.Component {
   render() {
-    // fdsfds
-    return <ul>
+    return <ul className='m-app-component-pane'>
       {
         this.props.app.registry.filter(sift({ symbolType: 'component' })).map(function(entry) {
           return <SymbolComponent entry={entry} key={entry.id} />;

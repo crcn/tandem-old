@@ -4,17 +4,10 @@ export default {
   create({ app }) {
     return [
       Entry.create({
-        id: 'symbol-text',
+        id: 'textSymbol',
         type: 'symbol',
         symbolType: 'component',
-        factory: {
-          create() { }
-        }
-      }),
-
-      Entry.create({
-        id: 'symbol-text',
-        type: 'symbol',
+        label: 'text',
         factory: {
           create() { }
         }
