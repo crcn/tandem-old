@@ -7,9 +7,10 @@ module.exports = {
     'app' : './src/editor/entry.js'
   },
   output: {
-    path: __dirname + '/public/bundle',
-    filename: '/[name].js',
-    sourceMapFilename: '/[name].js.map'
+    path: __dirname + '/public',
+    filename: '/bundle/[name].js',
+    publicPath: '/public/',
+    sourceMapFilename: '/bundle/[name].js.map'
   },
   resolve: {
     modulesDirectories: [__dirname + '/src', 'node_modules', 'bower_components', 'src', 'vendor'],
@@ -18,7 +19,6 @@ module.exports = {
   sassLoader: {
     includePaths: [path.resolve(__dirname, './src')]
   },
-  publicPath: 'static/',
   lazy: true,
   watchOptions: {
     aggregateTimeout: 300,
@@ -28,7 +28,7 @@ module.exports = {
     __filename: true
   },
   plugins: [
-    new ExtractTextPlugin('/[name].css')
+    new ExtractTextPlugin('/bundle/[name].css')
   ],
   module: {
     loaders: [

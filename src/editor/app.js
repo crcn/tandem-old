@@ -7,6 +7,7 @@ import { RootComponentEntry } from 'editor/entries';
 import TestProjectPlugin from './plugins/test-project';
 import SettingsPlugin from './plugins/settings';
 import RenderRootComponentPlugin from './plugins/render-root';
+import MainComponent from './components/main';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
