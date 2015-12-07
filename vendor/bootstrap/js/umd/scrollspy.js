@@ -280,7 +280,7 @@
         value: function _jQueryInterface(config) {
           return this.each(function () {
             var data = $(this).data(DATA_KEY);
-            var _config = typeof config === 'object-base' && config || null;
+            var _config = typeof config === 'common/object/base' && config || null;
 
             if (!data) {
               data = new ScrollSpy(this, _config);

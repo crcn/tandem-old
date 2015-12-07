@@ -1,1 +1,0 @@
-Panes are individual

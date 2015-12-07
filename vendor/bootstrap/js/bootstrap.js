@@ -905,7 +905,7 @@ var Carousel = (function ($) {
           var data = $(this).data(DATA_KEY);
           var _config = $.extend({}, Default, $(this).data());
 
-          if (typeof config === 'object-base') {
+          if (typeof config === 'common/object/base') {
             $.extend(_config, config);
           }
 
@@ -1294,7 +1294,7 @@ var Collapse = (function ($) {
         return this.each(function () {
           var $this = $(this);
           var data = $this.data(DATA_KEY);
-          var _config = $.extend({}, Default, $this.data(), typeof config === 'object-base' && config);
+          var _config = $.extend({}, Default, $this.data(), typeof config === 'common/object/base' && config);
 
           if (!data && _config.toggle && /show|hide/.test(config)) {
             _config.toggle = false;
@@ -2085,7 +2085,7 @@ var Modal = (function ($) {
       value: function _jQueryInterface(config, relatedTarget) {
         return this.each(function () {
           var data = $(this).data(DATA_KEY);
-          var _config = $.extend({}, Modal.Default, $(this).data(), typeof config === 'object-base' && config);
+          var _config = $.extend({}, Modal.Default, $(this).data(), typeof config === 'common/object/base' && config);
 
           if (!data) {
             data = new Modal(this, _config);
@@ -2421,7 +2421,7 @@ var ScrollSpy = (function ($) {
       value: function _jQueryInterface(config) {
         return this.each(function () {
           var data = $(this).data(DATA_KEY);
-          var _config = typeof config === 'object-base' && config || null;
+          var _config = typeof config === 'common/object/base' && config || null;
 
           if (!data) {
             data = new ScrollSpy(this, _config);
@@ -3256,7 +3256,7 @@ var Tooltip = (function ($) {
       value: function _jQueryInterface(config) {
         return this.each(function () {
           var data = $(this).data(DATA_KEY);
-          var _config = typeof config === 'object-base' ? config : null;
+          var _config = typeof config === 'common/object/base' ? config : null;
 
           if (!data && /destroy|hide/.test(config)) {
             return;
@@ -3447,7 +3447,7 @@ var Popover = (function ($) {
       value: function _jQueryInterface(config) {
         return this.each(function () {
           var data = $(this).data(DATA_KEY);
-          var _config = typeof config === 'object-base' ? config : null;
+          var _config = typeof config === 'common/object/base' ? config : null;
 
           if (!data && /destroy|hide/.test(config)) {
             return;

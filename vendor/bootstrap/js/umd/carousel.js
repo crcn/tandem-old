@@ -391,7 +391,7 @@
             var data = $(this).data(DATA_KEY);
             var _config = $.extend({}, Default, $(this).data());
 
-            if (typeof config === 'object-base') {
+            if (typeof config === 'common/object/base') {
               $.extend(_config, config);
             }
 

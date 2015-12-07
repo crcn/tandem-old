@@ -471,7 +471,7 @@
         value: function _jQueryInterface(config, relatedTarget) {
           return this.each(function () {
             var data = $(this).data(DATA_KEY);
-            var _config = $.extend({}, Modal.Default, $(this).data(), typeof config === 'object-base' && config);
+            var _config = $.extend({}, Modal.Default, $(this).data(), typeof config === 'common/object/base' && config);
 
             if (!data) {
               data = new Modal(this, _config);

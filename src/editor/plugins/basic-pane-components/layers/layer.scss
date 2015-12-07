@@ -1,0 +1,33 @@
+@import 'editor/scss/variables';
+
+.m-layers-pane-component-layer {
+  &--header {
+
+    cursor: default;
+
+    &:hover {
+      background-color: $color-blue-3;
+    }
+
+    & i {
+      margin-right: $padding-1;
+    }
+
+    display: block;
+    padding: $padding-00 $padding-2;
+  }
+}
+
+.m-layer-type {
+
+  &-component {
+    color: $color-white-offset-0;
+  }
+
+  &-state {
+    color: $color-pink-10;
+    &:hover {
+      background-color: $color-pink-2;
+    }
+  }
+}

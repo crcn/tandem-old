@@ -1,0 +1,11 @@
+@import 'editor/scss/variables';
+
+.m-pane-container {
+  margin-top: $padding-1;
+  &--header {
+    cursor: default;
+    background-color: $color-blue-3;
+    // color: $color-white-9;
+    padding: $padding-0 $padding-2;
+  }
+}
