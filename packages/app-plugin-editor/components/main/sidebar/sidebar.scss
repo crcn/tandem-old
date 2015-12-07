@@ -1,9 +1,10 @@
 @import "scss/variables";
 
 .m-sidebar {
+
+  padding-top: $padding-4;
+
   color: $color-white-offset-0;
-  background-color: $color-grey-10;
-  border-color: $color-grey-8;
   border-style: solid;
   border-width: 0px;
   height: 100vh;
@@ -11,12 +12,19 @@
   display: inline-block;
   position: relative;
 
+  flex-grow: 0;
+  flex-shrink: 0;
+
   &.left {
     background-color: $color-blue-1;
+    border-color: $color-blue-3;
+    border-right-width: 1px;
   }
 
   &.right {
     float:right;
     background-color: $color-grey-1;
+    border-color: $color-grey-2;
+    border-left-width: 1px;
   }
 }

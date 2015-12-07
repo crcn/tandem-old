@@ -11,8 +11,11 @@ class LayerComponent extends React.Component {
     };
 
     return <div className='m-layers-pane-component-layer'>
-      <div style={labelStyle} className='m-layers-pane-component-layer--header'>
-        <span>{ node.label }</span>
+      <div style={labelStyle} className={'m-layers-pane-component-layer--header m-layer-type-' + node.type}>
+        <span>
+          <i className={'s s-' + node.icon } />
+          { node.label }
+        </span>
       </div>
       { node.children.map(function(child, i) {
         return <LayerComponent node={child} key={i} depth={depth + 1} />

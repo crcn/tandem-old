@@ -23,11 +23,13 @@ class SidebarComponent extends React.Component {
     };
 
     return <div style={style} className={['m-sidebar', this.props.position].join(' ')}>
+
       {
         this.props.app.registry.filter(sift({ paneType: this.props.paneType })).map((entry) => {
           return <PaneContainerComponent entry={entry} key={entry.id} {...this.props} />
         })
       }
+
 
       <SideDragger {...this.props} reference={sidebarWidthReference} position={this.props.position == 'left' ? 'right' : 'left'} />
     </div>;

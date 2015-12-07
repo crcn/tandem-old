@@ -6,15 +6,13 @@ import LayerComponent from './layer.jsx';
 class LayersPaneComponent extends React.Component {
   render() {
 
-    var node = Node.create({ label: 'Button', type: 'component' }, [
-      Node.create({ label: 'label', type: 'component' }),
-      Node.create({ label: 'mouse over', type: 'state' }),
-      Node.create({ label: 'hover', type: 'state' })
+    var node = Node.create({ label: 'Button', type: 'component', icon: 'puzzle' }, [
+      Node.create({ label: 'label', type: 'component', icon: 'text' }),
+      Node.create({ label: 'mouse over', type: 'state', icon: 'delta' }),
+      Node.create({ label: 'hover', type: 'state', icon: 'delta' })
     ]);
 
-    return <div className='m-layers-pane-component'>
-      <LayerComponent node={node} />
-    </div>
+    return <LayerComponent node={node} />;
   }
 }
 

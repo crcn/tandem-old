@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="476px" height="421px" viewBox="0 0 476 421" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.4.3 (16618) - http://www.bohemiancoding.com/sketch -->
+    <title>button</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Welcome" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Desktop" sketch:type="MSArtboardGroup" transform="translate(-203.000000, -134.000000)" fill="#000000">
+            <g id="icons" sketch:type="MSLayerGroup" transform="translate(40.000000, 94.000000)">
+                <g id="button" transform="translate(150.447917, 0.770833)" sketch:type="MSShapeGroup">
+                    <g id="shape" transform="translate(13.000000, 40.000000)">
+                        <path d="M0,88.3710407 L133.755086,88.3710407 L133.755086,279.328178 L321.811961,390.481156 L321.811961,419.279434 L0,419.279443 L0,88.3710407 Z" id="Rectangle-3"></path>
+                        <polygon id="Polygon-1" points="322.142283 0 475.144294 87.3720896 475.144294 262.116269 322.142283 349.488359 169.140271 262.116269 169.140271 87.3720896 "></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
