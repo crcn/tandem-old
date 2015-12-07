@@ -8,7 +8,7 @@ class LayerComponent extends React.Component {
 
     var labelStyle = {
       paddingLeft: 15 + depth * 15
-    };
+    }; 
 
     return <div className='m-layers-pane-component-layer'>
       <div style={labelStyle} className={'m-layers-pane-component-layer--header m-layer-type-' + node.type}>
