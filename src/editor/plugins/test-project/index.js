@@ -11,8 +11,6 @@ export default {
       Node.create({ label: 'hover', type: 'state', icon: 'delta' })
     ]);
 
-    console.log(node);
-
     app.currentSymbol = node;
   }
 };

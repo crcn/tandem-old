@@ -6,27 +6,23 @@ import BasicPaneComponentsPlugin from './plugins/basic-pane-components';
 import { RootComponentEntry } from 'editor/entries';
 import TestProjectPlugin from './plugins/test-project';
 import SettingsPlugin from './plugins/settings';
-import RenderRootComponentPlugin from './plugins/render-root';
-import MainComponent from './components/main';
+import RootComponent from './components/root';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 class Application extends BaseApplication {
 
-  static entries = [
-    RootComponentEntry.create({
-      componentClass: MainComponent
-    })
-  ]
-
   static plugins = BaseApplication.plugins.concat([
-    RenderRootComponentPlugin,
     TestProjectPlugin,
     BasicSymbolsPlugin,
     BasicPaneComponentsPlugin,
     SettingsPlugin
   ])
+
+  didInitialize() {
+    ReactDOM.render(React.createElement(RootComponent, { app }), this.config.element);
+  }
 }
 
 export default Application;
