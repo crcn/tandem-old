@@ -30,7 +30,7 @@ gulp.task('test', function(complete) {
 });
 
 gulp.task('icons', function(complete) {
-  return gulp.src(['src/svg-icons/*.svg'])
+  return gulp.src(['src/editor/svg-icons/*.svg'])
     .pipe(iconfont({
       fontName: 'iconfont',
       appendUnicode: true,
@@ -38,17 +38,16 @@ gulp.task('icons', function(complete) {
       timestamp: runTimestamp
     }))
       .on('glyphs', function(glyphs, options) {
-        // console.log(glyphs[0].unicode[0].charCodeAt(0).toString(16));
-        gulp.src('src/svg-icons/iconfonts.scss')
+        gulp.src('src/editor/svg-icons/iconfonts.scss')
         .pipe(consolidate('lodash', {
           glyphs: glyphs,
           fontName: 'iconfont',
-          fontPath: '/public/fonts/',
+          fontPath: './',
           className: 's'
         }))
-        .pipe(gulp.dest('packages/scss'));
+        .pipe(gulp.dest('src/editor/scss'));
       })
-    .pipe(gulp.dest('public/fonts/'));
+    .pipe(gulp.dest('src/editor/scss/'));
 });
 
 gulp.doneCallback = function() {

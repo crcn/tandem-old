@@ -7,9 +7,9 @@ module.exports = {
     'app' : './src/editor/entry.js'
   },
   output: {
-    path: __dirname + '/public',
-    filename: '/js/[name].bundle.js',
-    sourceMapFilename: '/js/[name].bundle.js.map'
+    path: __dirname + '/public/bundle',
+    filename: '/[name].js',
+    sourceMapFilename: '/[name].js.map'
   },
   resolve: {
     modulesDirectories: [__dirname + '/src', 'node_modules', 'bower_components', 'src', 'vendor'],
@@ -28,7 +28,7 @@ module.exports = {
     __filename: true
   },
   plugins: [
-    new ExtractTextPlugin('/css/[name].bundle.css')
+    new ExtractTextPlugin('/[name].css')
   ],
   module: {
     loaders: [
@@ -38,16 +38,16 @@ module.exports = {
         loader: 'json'
       },
       {
-        test: /\.(png|jpg|gif)$/,
-        loader: 'url-loader?limit=1000&prefix=web/static'
+        test: /\.(png|jpg|gif|eot|ttf|woff)$/,
+        loader: 'url-loader?limit=1000'
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style', 'raw!sass')
+        loader: ExtractTextPlugin.extract('style', 'css!sass')
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style', 'raw')
+        loader: ExtractTextPlugin.extract('style', 'css')
       },
       {
         test: /\.json$/,
