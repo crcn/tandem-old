@@ -1,7 +1,7 @@
 import './index.scss'
 import React from 'react';
 
-class ToolbarComponent extends React.Component {
+class ToolsComponent extends React.Component {
   render() {
     return <div className='m-toolbar'>
       <ul className='m-toolbar-tools'>
@@ -11,4 +11,4 @@ class ToolbarComponent extends React.Component {
   }
 }
 
-export default ToolbarComponent;
+export default ToolsComponent;

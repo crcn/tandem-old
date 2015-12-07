@@ -1,0 +1,13 @@
+@import 'scss/variables';
+
+.m-layers-pane-component-layer {
+  &--header {
+
+    &:hover {
+      background-color: $color-blue-3;
+    }
+
+    display: block;
+    padding: $padding-1 $padding-2;
+  }
+}

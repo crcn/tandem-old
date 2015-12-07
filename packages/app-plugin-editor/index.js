@@ -1,6 +1,6 @@
 import DataObject from 'object-base';
 import { ComponentEntry, SymbolPaneComponentEntry, RootComponentEntry, AppPaneComponentEntry } from 'registry-entries';
-import ComponentPaneComponent from './components/panes/component';
+import LayersPaneComponent from './components/panes/layers';
 import MainComponent from './components/main';
 import React from 'react';
 
@@ -19,8 +19,8 @@ function registerComponents(app) {
 
   // panes
   app.registry.push(AppPaneComponentEntry.create({
-    id             : 'componentPane',
-    label          : 'Components',
-    componentClass : ComponentPaneComponent
+    id             : 'layersPane',
+    label          : 'Layers',
+    componentClass : LayersPaneComponent
   }));
 }

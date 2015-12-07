@@ -1,6 +1,7 @@
 @import "scss/variables";
 
 .m-sidebar {
+  color: $color-white-offset-0;
   background-color: $color-grey-10;
   border-color: $color-grey-8;
   border-style: solid;
@@ -11,11 +12,11 @@
   position: relative;
 
   &.left {
-    border-right-width: 2px;
+    background-color: $color-blue-1;
   }
 
   &.right {
-    border-left-width: 2px;
     float:right;
+    background-color: $color-grey-1;
   }
 }
