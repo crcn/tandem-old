@@ -3,6 +3,8 @@
 
 A visual editor for creating modular & interactive components.
 
+<img src="https://cloud.githubusercontent.com/assets/757408/11646965/e38fb2a2-9d17-11e5-9e94-ca73757d83cb.png" width="300px" />
+
 <!--### Motivation-->
 
 <!--
