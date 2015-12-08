@@ -4,7 +4,7 @@ var path = require('path');
 
 module.exports = {
   entry: {
-    'app' : './src/editor/entry.js'
+    'app' : './packages/editor/entry.js'
   },
   output: {
     path: __dirname + '/public',
@@ -13,11 +13,11 @@ module.exports = {
     sourceMapFilename: '/bundle/[name].js.map'
   },
   resolve: {
-    modulesDirectories: [__dirname + '/src', 'node_modules', 'bower_components', 'src', 'vendor'],
+    modulesDirectories: [__dirname + '/packages', 'node_modules', 'bower_components', 'packages', 'vendor'],
     extensions: ['', '.json', '.jsx', '.js']
   },
   sassLoader: {
-    includePaths: [path.resolve(__dirname, './src')]
+    includePaths: [path.resolve(__dirname, './packages')]
   },
   lazy: true,
   watchOptions: {

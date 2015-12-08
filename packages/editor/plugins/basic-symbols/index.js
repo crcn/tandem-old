@@ -9,3 +9,11 @@ export default {
     );
   }
 }
+
+function registerTextSymbolEntries({ app }) {
+
+}
+
+function registerShapeSymbolEntries({ }) {
+
+}
