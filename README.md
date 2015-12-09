@@ -24,7 +24,7 @@ A visual editor for creating modular & interactive components.
 - Reduce visual errors across browsers.
 - Compile visual docs to any framework including React, Ember, Angular, and more.
 - Compile visual docs primarily to HTML, but possibly other rendering engines such as SVG, WebGL, and more.
-- Provide a set of tools that *augment* how HTML works, not abstract it. 
+- Provide a set of tools that *augment* writing HTML components, not abstract it.
 - More obvious barrier between the View (visual information) & Controller
 - ability to publish components to NPM from editor
 - Social network for sharing visual components with other people - [dribbble](http://dribbble.com/)-esque.
