@@ -4,13 +4,6 @@ import React from 'react';
 
 export const ROOT_COMPONENT_ID = 'rootComponent';
 
-// export SymbolPaneEntry from './symbol-pane';
-// export AppPaneEntry from './app-pane';
-
-// class AppPaneEntry extends Entry {
-//   type = 'appPane';
-// }
-
 export class ComponentEntry extends Entry {
 
   constructor(properties) {

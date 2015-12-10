@@ -14,17 +14,4 @@ describe(__filename + '#', function() {
     } catch(e) { err = e; }
     expect(err.message).to.be('id.invalid');
   });
-
-  it('throws an error if the factory is not actually a factory', function() {
-    var err;
-    try {
-      Entry.create({ id: '1', type: 'b', factory: {} });
-    } catch(e) { err = e; }
-    // console.log(err);
-    expect(err.message).to.be('factory.invalid');
-  });
-
-  it('can be created with props', function() {
-    // expect(Entry.create({ name: 'a' }).name).to.be('a');
-  });
 });

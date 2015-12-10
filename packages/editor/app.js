@@ -16,10 +16,14 @@ import ReactDOM from 'react-dom';
 class Application extends BaseApplication {
 
   static plugins = BaseApplication.plugins.concat([
+
+    // temporary here until persistence starts working
     TestProjectPlugin,
     BasicPaneComponentsPlugin,
     SettingsPlugin,
     PreviewComponentPlugin,
+
+    // authority for all application keyboard shortcuts
     ShortcutPlugin
   ])
 
