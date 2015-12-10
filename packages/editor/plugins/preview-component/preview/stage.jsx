@@ -41,8 +41,10 @@ class StageComponent extends React.Component {
     // TODO - canvas needs to have different types of layers
 
     return <div className='m-preview-stage' style={previewStyle}>
-      <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle} onClick={this.onClick.bind(this)}>
-        <NodeComponent node={app.currentSymbol} app={app} />
+      <div className='m-preview-stage--inner'>
+        <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle} onClick={this.onClick.bind(this)}>
+          <NodeComponent node={app.currentSymbol} app={app} />
+        </div>
       </div>
     </div>;
   }

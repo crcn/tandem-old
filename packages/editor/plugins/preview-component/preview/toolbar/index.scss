@@ -6,6 +6,9 @@
   z-index: 1024;
   background-color: $color-blue-11;
   border-bottom: 1px solid $color-blue-10;
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 100%;
 
   & li {
     display: inline-block;

@@ -2,10 +2,19 @@
 
 .m-preview-stage {
   background-color: $color-blue-11;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0px;
+  // width: 100%;
+  flex: 1;
+
+
+  &--inner {
+  overflow-x:scroll;
+  overflow-y: scroll;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    flex-grow: 0;
+    flex: 1;
+  }
 
   &--canvas {
     background-color: white;
@@ -14,7 +23,7 @@
     height: 400px;
     position: relative;
     left: 50%;
-    top: 50%;
+    top: 50vh;
     transform: translate(-50%, -50%);
   }
 }
