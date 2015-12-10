@@ -1,6 +1,5 @@
 import BaseCollection from 'common/collection';
 import Entry from './entry';
-import sift from 'sift';
 import { ExistsError } from 'common/errors';
 
 class Registry extends BaseCollection {

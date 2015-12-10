@@ -74,6 +74,8 @@ export class PreviewComponentEntry extends ComponentEntry {
   }
 }
 
+export { Entry };
+
 export class SymbolEntry extends Entry {
   type = 'symbol';
 }

@@ -12,11 +12,11 @@ var schema = Schema.create({
     type: {
       required: true,
       type: String
-    },
-    factory: {
-      required: true,
-      type: Factory
     }
+    // factory: {
+    //   required: true,
+    //   type: Factory
+    // }
   }
 });
 

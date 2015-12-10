@@ -1,14 +1,22 @@
 import './index.scss'
 import React from 'react';
+import TextTool from '../../models/text-tool';
+import sift from 'sift';
+import ToolComponent from './tool';
 
 class ToolsComponent extends React.Component {
   render() {
+
+    // TODO - these can be added as entries as well
     return <div className='m-editor-toolbar'>
       <ul className='m-toolbar-tools'>
-        <li className='s s-cursor'></li>
-        <li className='s s-puzzle'></li>
-        <li className='s s-shapes'></li>
-        <li className='s s-text'></li>
+        {
+          this.props.app.registry.filter(sift({
+            type: 'previewTool'
+          })).map((entry) => {
+            return <ToolComponent entry={entry} key={entry.id} preview={this.props.app.preview} />;
+          })
+        }
       </ul>
     </div>
   }

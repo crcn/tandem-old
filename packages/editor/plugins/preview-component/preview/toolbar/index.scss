@@ -1,8 +1,12 @@
 @import 'editor/scss/variables';
 
 .m-editor-toolbar {
+
+  position: relative;
+  z-index: 1024;
   background-color: $color-blue-11;
   border-bottom: 1px solid $color-blue-10;
+
   & li {
     display: inline-block;
     padding-left: $padding-3;
@@ -12,5 +16,4 @@
       color: $color-blue-4;
     }
   }
-
 }
