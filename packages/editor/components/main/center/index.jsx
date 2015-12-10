@@ -1,18 +1,24 @@
 import './index.scss';
 
 import React from 'react';
-import Toolbar from './toolbar';
+import sift from 'sift';
 
 /**
 * This is where all the visual editing happens
 */
 
-class StageComponent extends React.Component {
+class CenterComponent extends React.Component {
   render() {
     return <div className='m-editor-center'>
-      <Toolbar {...this.props} />
+      {
+        this.props.app.registry.filter(sift({
+          componentType: 'preview'
+        })).map((factory) => {
+          return factory.create({ key: factory.id, ...this.props });
+        })
+      }
     </div>;
   }
 }
 
-export default StageComponent;
+export default CenterComponent;

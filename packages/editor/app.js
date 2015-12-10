@@ -1,12 +1,14 @@
 import 'bootstrap/css/bootstrap.css';
 
 import BaseApplication from 'base/app';
+import { RootComponentEntry } from 'editor/entries';
+import RootComponent from './components/root';
+
+import SettingsPlugin from './plugins/settings';
+import TestProjectPlugin from './plugins/test-project';
 import BasicSymbolsPlugin from './plugins/basic-symbols';
 import BasicPaneComponentsPlugin from './plugins/basic-pane-components';
-import { RootComponentEntry } from 'editor/entries';
-import TestProjectPlugin from './plugins/test-project';
-import SettingsPlugin from './plugins/settings';
-import RootComponent from './components/root';
+import PreviewComponentPlugin from './plugins/preview-component';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -17,7 +19,8 @@ class Application extends BaseApplication {
     TestProjectPlugin,
     BasicSymbolsPlugin,
     BasicPaneComponentsPlugin,
-    SettingsPlugin
+    SettingsPlugin,
+    PreviewComponentPlugin
   ])
 
   didInitialize() {

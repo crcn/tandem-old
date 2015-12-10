@@ -52,19 +52,25 @@ export class RootComponentEntry extends ComponentEntry {
 
 export class PaneComponentEntry extends ComponentEntry {
   constructor(properties) {
-    super({ type: 'component', componentType: 'pane', ...properties });
+    super({ componentType: 'pane', ...properties });
   }
 }
 
 export class AppPaneComponentEntry extends ComponentEntry {
   constructor(properties) {
-    super({ type: 'component', componentType: 'pane', paneType: 'app', ...properties });
+    super({ componentType: 'pane', paneType: 'app', ...properties });
   }
 }
 
 export class SymbolPaneComponentEntry extends ComponentEntry {
   constructor(properties) {
-    super({ type: 'component', componentType: 'pane', paneType: 'symbol', ...properties });
+    super({ componentType: 'pane', paneType: 'symbol', ...properties });
+  }
+}
+
+export class PreviewComponentEntry extends ComponentEntry {
+  constructor(properties) {
+    super({ componentType: 'preview', ...properties });
   }
 }
 
