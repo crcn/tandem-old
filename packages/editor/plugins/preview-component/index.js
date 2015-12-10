@@ -105,7 +105,7 @@ function registerComponents(app) {
     componentType: 'text',
     factory: {
       create(props, children) {
-        return React.createElement('span', props.node.attributes, props.node.value);
+        return React.createElement('span', { dataNodeId: props.node.id, ...props.node.attributes }, props.node.value);
       }
     }
   }));
