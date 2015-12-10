@@ -1,6 +1,8 @@
 import ObservableObject from 'common/object/observable';
 import Node from 'common/node';
 
+const CURSOR_HEIGHT = 12;
+
 class TextTool extends ObservableObject {
 
   constructor(properties) {
@@ -20,7 +22,7 @@ class TextTool extends ObservableObject {
           left: message.x,
 
           // offset cursor height
-          top: message.y - 12
+          top: message.y - CURSOR_HEIGHT
         }
       }
     });
