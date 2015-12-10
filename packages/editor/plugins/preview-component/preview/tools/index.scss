@@ -1,0 +1,14 @@
+.m-tools-layer {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 2;
+  overflow: show;
+  & .box {
+    left: 300px;
+    top: 300px;
+    width: 100px;
+    height: 100px;
+    background-color: #F60;
+  }
+}

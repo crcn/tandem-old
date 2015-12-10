@@ -1,0 +1,20 @@
+@import 'editor/scss/variables';
+
+.m-resizer-component {
+  & svg {
+    & path {
+      stroke: $color-blue-4;
+    }
+    & circle {
+      fill: $color-blue-10;
+      stroke: $color-blue-4;
+    }
+  }
+
+  & .point-circle-0, .point-circle-2  {
+    cursor: nwse-resize;
+  }
+  & .point-circle-1, .point-circle-3 {
+    cursor: nesw-resize;
+  }
+}

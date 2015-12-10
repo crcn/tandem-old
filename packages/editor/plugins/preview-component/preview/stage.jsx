@@ -2,6 +2,7 @@ import './stage.scss';
 
 import React from 'react';
 import NodeComponent from './node';
+import ToolsLayerComponent from './tools';
 
 class StageComponent extends React.Component {
 
@@ -18,6 +19,10 @@ class StageComponent extends React.Component {
       x: x,
       y: y
     });
+  }
+
+  onDoubleClick(event) {
+    // TODO
   }
 
   render() {
@@ -38,10 +43,13 @@ class StageComponent extends React.Component {
     };
 
     // TODO - canvas needs to have different types of layers
-
+    
     return <div className='m-preview-stage' style={previewStyle}>
       <div className='m-preview-stage--inner'>
-        <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle} onClick={this.onClick.bind(this)}>
+
+        <ToolsLayerComponent app={app} />
+
+        <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle} onClick={this.onClick.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
           <NodeComponent node={app.currentSymbol} app={app} />
         </div>
       </div>
