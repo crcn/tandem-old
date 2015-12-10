@@ -1,8 +1,8 @@
 import { PreviewComponentEntry, ComponentEntry, Entry } from 'editor/entries';
 import PreviewComponent from './preview';
 import Preview from './models/preview';
-import TextTool from './models/text-tool';
-import PointerTool from './models/pointer-tool';
+import TextTool from './tools/text-tool';
+import PointerTool from './tools/pointer-tool';
 import React from 'react';
 
 export default {
@@ -103,36 +103,23 @@ function registerComponents(app) {
     'ol',
     'link',
     'i',
-    'b'
+    'b',
+    'text'
   ].forEach(function(elementName) {
     app.registry.push(ComponentEntry.create({
       id: elementName + 'Element',
       componentType: elementName,
-      componentClass: elementName
+      factory: {
+        create(props, children) {
+          var node = props.node;
+          var type = node.type === 'text' ? 'span' : node.type;
+          return React.createElement('span', {
+            'data-node-id': node.id,
+            ...node.attributes
+          }, children.length ? children : props.node.value);
+        }
+      }
     }));
   });
-
-  app.registry.push(Entry.create({
-    id: 'textElement',
-    type: 'component',
-    componentType: 'text',
-    factory: {
-      create(props, children) {
-
-        // FOR TESTING ONLY :o. This should be part of the 'editing'
-        // layer
-        if (app.focus === props.node) {
-          return React.createElement('input', {
-            defaultValue: props.node.value,
-            ... props.node.attributes,
-            onChange: function(event) {
-              props.node.setProperties({ value: event.target.value });
-            }
-          })
-        }
-        return React.createElement('span', { dataNodeId: props.node.id, ...props.node.attributes }, props.node.value);
-      }
-    }
-  }));
 
 }

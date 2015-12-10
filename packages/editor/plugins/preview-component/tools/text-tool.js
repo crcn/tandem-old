@@ -11,6 +11,9 @@ class TextTool extends ObservableObject {
 
     var node = Node.create({
       label: 'label', type: 'component', componentType: 'text', icon: 'text', value: 'okay',
+
+      // FIXME: tempory - shouldn't be here.
+      id: String(Date.now()),
       attributes: {
         style: {
           position: 'absolute',

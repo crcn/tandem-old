@@ -9,13 +9,12 @@ class StageComponent extends React.Component {
 
     var rect = this.refs.canvas.getBoundingClientRect();
 
-
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
 
     this.props.app.preview.currentTool.notify({
       type: 'click',
-      // targetNode: // TODO - find target node based on element id
+      targetNode: this.props.app.currentSymbol.find(sift({ id: event.target.getAttribute('data-node-id') })),
       x: x,
       y: y
     });

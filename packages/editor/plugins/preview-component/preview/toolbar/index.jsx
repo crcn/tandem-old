@@ -1,6 +1,5 @@
 import './index.scss'
 import React from 'react';
-import TextTool from '../../models/text-tool';
 import sift from 'sift';
 import ToolComponent from './tool';
 
