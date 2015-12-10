@@ -1,8 +1,9 @@
-import { PreviewComponentEntry, Entry } from 'editor/entries';
+import { PreviewComponentEntry, ComponentEntry, Entry } from 'editor/entries';
 import PreviewComponent from './preview';
 import Preview from './models/preview';
 import TextTool from './models/text-tool';
 import PointerTool from './models/pointer-tool';
+import React from 'react';
 
 export default {
   create({ app }) {
@@ -18,12 +19,6 @@ export default {
       componentClass: PreviewComponent
     }));
 
-    /*
-      <li className='s s-cursor'></li>
-      <li className='s s-puzzle'></li>
-      <li className='s s-shapes'></li>
-    */
-
     var textTool    = TextTool.create({ app });
     var pointerTool = PointerTool.create({ app });
 
@@ -33,7 +28,6 @@ export default {
       type    : 'previewTool',
       tool    : pointerTool
     }));
-
 
     app.registry.push(Entry.create({
       icon    : 'text',
@@ -59,5 +53,61 @@ export default {
     }));
 
     preview.setTool(textTool);
+
+    // TODO - register layer styles too
+    registerComponents(app);
   }
+}
+
+function registerComponents(app) {
+
+  [
+    'ul',
+    'li',
+    'div',
+    'button',
+    'br',
+    'center',
+    'footer',
+    'code',
+    'col',
+    'iframe',
+    'html',
+    'body',
+    'head',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'a',
+    'input',
+    'title',
+    'strong',
+    'style',
+    'p',
+    'ol',
+    'link',
+    'i',
+    'b'
+  ].forEach(function(elementName) {
+    app.registry.push(ComponentEntry.create({
+      id: elementName + 'Element',
+      componentType: elementName,
+      componentClass: elementName
+    }));
+  });
+
+  app.registry.push(Entry.create({
+    id: 'textElement',
+    type: 'component',
+    componentType: 'text',
+    factory: {
+      create(props, children) {
+        return React.createElement('span', props.node.attributes, props.node.value);
+      }
+    }
+  }));
+
 }

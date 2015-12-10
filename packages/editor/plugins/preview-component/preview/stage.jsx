@@ -1,14 +1,22 @@
 import './stage.scss';
 
 import React from 'react';
+import NodeComponent from './node';
 
 class StageComponent extends React.Component {
 
   onClick(event) {
+
+    var rect = this.refs.canvas.getBoundingClientRect();
+
+
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+
     this.props.app.preview.currentTool.notify({
       type: 'click',
-      x: event.clientX,
-      y: event.clientY
+      x: x,
+      y: y
     });
   }
 
@@ -26,9 +34,11 @@ class StageComponent extends React.Component {
       cursor: preview.currentTool.cursor
     };
 
+    // TODO - canvas needs to have different types of layers
+
     return <div className='m-preview-stage' style={previewStyle}>
-      <div className='m-preview-stage--canvas' style={canvasStyle} onClick={this.onClick.bind(this)}>
-        canvas!
+      <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle} onClick={this.onClick.bind(this)}>
+        <NodeComponent node={app.currentSymbol} app={app} />
       </div>
     </div>;
   }
