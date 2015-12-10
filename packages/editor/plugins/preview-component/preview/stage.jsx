@@ -3,26 +3,35 @@ import './stage.scss';
 import React from 'react';
 
 class StageComponent extends React.Component {
-    render() {
 
-      var app = this.props.app;
-      var preview = this.props.app.preview;
+  onClick(event) {
+    this.props.app.preview.currentTool.notify({
+      type: 'click',
+      x: event.clientX,
+      y: event.clientY
+    });
+  }
 
-      var canvasStyle = {
-        width: preview.canvasWidth,
-        height: preview.canvasHeight
-      };
+  render() {
 
-      var previewStyle = {
-        cursor: preview.currentTool.cursor
-      };
+    var app = this.props.app;
+    var preview = this.props.app.preview;
 
-      return <div className='m-preview-stage' style={previewStyle}>
-        <div className='m-preview-stage--canvas' style={canvasStyle}>
-          canvas!
-        </div>
-      </div>;
-    }
+    var canvasStyle = {
+      width: preview.canvasWidth,
+      height: preview.canvasHeight
+    };
+
+    var previewStyle = {
+      cursor: preview.currentTool.cursor
+    };
+
+    return <div className='m-preview-stage' style={previewStyle}>
+      <div className='m-preview-stage--canvas' style={canvasStyle} onClick={this.onClick.bind(this)}>
+        canvas!
+      </div>
+    </div>;
+  }
 }
 
 export default StageComponent;

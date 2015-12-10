@@ -3,7 +3,7 @@ import Node from 'common/node';
 export default {
   create({ app }) {
 
-    var node = Node.create({ label: 'Button', type: 'component', icon: 'puzzle' }, [
+    var node = Node.create({ notifier: app.notifier, label: 'Button', type: 'component', icon: 'puzzle' }, [
       Node.create({ label: 'label', type: 'component', icon: 'text' }),
       Node.create({ label: 'hover', type: 'state', icon: 'delta' }),
       Node.create({ label: 'hover', type: 'state', icon: 'delta' })

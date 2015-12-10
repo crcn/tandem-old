@@ -13,10 +13,6 @@ export default {
       notifier     : app.notifier
     });
 
-    preview.setTool(TextTool.create({
-      notifier: app.notifier
-    }));
-
     app.registry.push(PreviewComponentEntry.create({
       id: 'basicPreview',
       componentClass: PreviewComponent
@@ -28,8 +24,8 @@ export default {
       <li className='s s-shapes'></li>
     */
 
-    var textTool    = TextTool.create();
-    var pointerTool = PointerTool.create();
+    var textTool    = TextTool.create({ app });
+    var pointerTool = PointerTool.create({ app });
 
     app.registry.push(Entry.create({
       icon    : 'cursor',
@@ -61,5 +57,7 @@ export default {
       keyCommand : 'p',
       handler    : preview.setTool.bind(preview, pointerTool)
     }));
+
+    preview.setTool(textTool);
   }
 }
