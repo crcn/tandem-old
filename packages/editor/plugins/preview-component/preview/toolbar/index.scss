@@ -15,5 +15,8 @@
     &:hover {
       color: $color-blue-4;
     }
+    &.selected {
+      color: $color-blue-4;
+    }
   }
 }

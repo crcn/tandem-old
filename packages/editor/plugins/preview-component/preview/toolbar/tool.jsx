@@ -1,4 +1,5 @@
 import React from 'react';
+import cx from 'classnames';
 
 class ToolComponent extends React.Component {
   setTool() {
@@ -6,7 +7,13 @@ class ToolComponent extends React.Component {
   }
   render() {
     var entry = this.props.entry;
-    return <li className={'m-preview-tool s s-' + entry.icon } onClick={this.setTool.bind(this)}>
+
+    var className = cx({
+      selected: this.props.preview.currentTool === this.props.entry.tool,
+      [ 'm-preview-tool s s-' + entry.icon ]: true
+    });
+
+    return <li className={className} onClick={this.setTool.bind(this)}>
 
     </li>
   }
