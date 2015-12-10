@@ -8,8 +8,8 @@ class TextTool extends ObservableObject {
   }
 
   notify(message) {
-    
-    this.app.currentSymbol.children.push(Node.create({
+
+    var node = Node.create({
       label: 'label', type: 'component', componentType: 'text', icon: 'text', value: 'okay',
       attributes: {
         style: {
@@ -20,7 +20,12 @@ class TextTool extends ObservableObject {
           top: message.y - 12
         }
       }
-    }));
+    });
+
+    this.app.currentSymbol.children.push(node);
+
+    // focus on the new item - this will trigger the text input
+    this.app.setFocus(node);
   }
 }
 

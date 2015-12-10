@@ -105,6 +105,18 @@ function registerComponents(app) {
     componentType: 'text',
     factory: {
       create(props, children) {
+
+        // FOR TESTING ONLY :o. This should be part of the 'editing'
+        // layer
+        if (app.focus === props.node) {
+          return React.createElement('input', {
+            defaultValue: props.node.value,
+            ... props.node.attributes,
+            onChange: function(event) {
+              props.node.setProperties({ value: event.target.value });
+            }
+          })
+        }
         return React.createElement('span', { dataNodeId: props.node.id, ...props.node.attributes }, props.node.value);
       }
     }
