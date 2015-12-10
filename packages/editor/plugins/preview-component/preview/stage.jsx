@@ -15,6 +15,7 @@ class StageComponent extends React.Component {
 
     this.props.app.preview.currentTool.notify({
       type: 'click',
+      // targetNode: // TODO - find target node based on element id
       x: x,
       y: y
     });
@@ -26,8 +27,11 @@ class StageComponent extends React.Component {
     var preview = this.props.app.preview;
 
     var canvasStyle = {
-      width: preview.canvasWidth,
-      height: preview.canvasHeight
+
+      // TODO - this needs to be based off of room symbol
+      width  : preview.canvasWidth,
+      height : preview.canvasHeight,
+      zoom   : preview.zoom
     };
 
     var previewStyle = {

@@ -11,6 +11,7 @@ export default {
     var preview = app.preview = Preview.create({
       canvasWidth  : 500,
       canvasHeight : 400,
+      zoom         : 0,
       notifier     : app.notifier
     });
 
@@ -37,7 +38,6 @@ export default {
     }));
 
     app.registry.push(Entry.create({
-      icon       : 'text',
       id         : 'textToolKeyCommand',
       type       : 'keyCommand',
       keyCommand : 't',
@@ -45,14 +45,27 @@ export default {
     }));
 
     app.registry.push(Entry.create({
-      icon       : 'text',
       id         : 'pointerToolKeyCommand',
       type       : 'keyCommand',
       keyCommand : 'p',
       handler    : preview.setTool.bind(preview, pointerTool)
     }));
 
-    preview.setTool(textTool);
+    app.registry.push(Entry.create({
+      id         : 'zoomInKeyCommand',
+      type       : 'keyCommand',
+      keyCommand : 'ctrl+]',
+      handler    : preview.zoomIn.bind(preview)
+    }));
+
+    app.registry.push(Entry.create({
+      id         : 'zoomOutKeyCommand',
+      type       : 'keyCommand',
+      keyCommand : 'ctrl+[',
+      handler    : preview.zoomOut.bind(preview)
+    }));
+
+    preview.setTool(pointerTool);
 
     // TODO - register layer styles too
     registerComponents(app);

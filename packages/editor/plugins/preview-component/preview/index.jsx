@@ -1,8 +1,9 @@
 import './index.scss';
 
 import React from 'react';
-import Toolbar from './toolbar';
-import Stage from './stage';
+import ToolbarComponent from './toolbar';
+import FooterComponent from './footer';
+import StageComponent from './stage';
 
 /**
 * This is where all the visual editing happens
@@ -11,8 +12,9 @@ import Stage from './stage';
 class PreviewComponent extends React.Component {
   render() {
     return <div className='m-preview'>
-      <Toolbar {...this.props} />
-      <Stage {...this.props} />
+      <ToolbarComponent {...this.props} />
+      <StageComponent {...this.props} />
+      <FooterComponent {...this.props} />
     </div>;
   }
 }
