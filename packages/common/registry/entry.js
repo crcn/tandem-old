@@ -21,9 +21,6 @@ var schema = Schema.create({
 });
 
 class Entry extends BaseObject {
-  create() {
-    return this.factory.create(...arguments);
-  }
 }
 
 Entry = mixinSchema(schema, Entry);

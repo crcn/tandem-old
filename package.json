@@ -21,6 +21,7 @@
   "dependencies": {
     "classnames": "^2.2.1",
     "lodash": "^3.10.1",
+    "mousetrap": "^1.5.3",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
     "sift": "^3.0.0",

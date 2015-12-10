@@ -13,8 +13,8 @@ class CenterComponent extends React.Component {
       {
         this.props.app.registry.filter(sift({
           componentType: 'preview'
-        })).map((factory) => {
-          return factory.create({ key: factory.id, ...this.props });
+        })).map((entry) => {
+          return entry.factory.create({ key: entry.id, ...this.props });
         })
       }
     </div>;

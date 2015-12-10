@@ -28,18 +28,38 @@ export default {
       <li className='s s-shapes'></li>
     */
 
+    var textTool    = TextTool.create();
+    var pointerTool = PointerTool.create();
+
     app.registry.push(Entry.create({
       icon    : 'cursor',
       id      : 'pointerTool',
       type    : 'previewTool',
-      tool    : PointerTool.create()
+      tool    : pointerTool
     }));
+
 
     app.registry.push(Entry.create({
       icon    : 'text',
       id      : 'textTool',
       type    : 'previewTool',
-      tool    : TextTool.create()
+      tool    : textTool
+    }));
+
+    app.registry.push(Entry.create({
+      icon       : 'text',
+      id         : 'textToolKeyCommand',
+      type       : 'keyCommand',
+      keyCommand : 't',
+      handler    : preview.setTool.bind(preview, textTool)
+    }));
+
+    app.registry.push(Entry.create({
+      icon       : 'text',
+      id         : 'pointerToolKeyCommand',
+      type       : 'keyCommand',
+      keyCommand : 'p',
+      handler    : preview.setTool.bind(preview, pointerTool)
     }));
   }
 }

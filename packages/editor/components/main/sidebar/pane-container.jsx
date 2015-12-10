@@ -7,9 +7,9 @@ class PaneContainerComponent extends React.Component {
       <div className='m-pane-container--header'>
         { this.props.entry.label }
       </div>
-      { this.props.entry.create(this.props) }
+      { this.props.entry.factory.create(this.props) }
     </div>
-  } 
+  }
 }
 
 export default PaneContainerComponent;
