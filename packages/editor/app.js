@@ -19,8 +19,14 @@ class Application extends BaseApplication {
 
     // temporary here until persistence starts working
     TestProjectPlugin,
+
+    // stuff like layers, properties, and more
     BasicPaneComponentsPlugin,
+
+    // application settings
     SettingsPlugin,
+
+    // main preview pane with tools and such
     PreviewComponentPlugin,
 
     // authority for all application keyboard shortcuts
@@ -29,6 +35,16 @@ class Application extends BaseApplication {
 
   didInitialize() {
     ReactDOM.render(React.createElement(RootComponent, { app }), this.config.element);
+  }
+
+  /**
+   * current focus of the app
+   */
+
+  setFocus(item) {
+    this.setProperties({
+      focus: item
+    });
   }
 }
 

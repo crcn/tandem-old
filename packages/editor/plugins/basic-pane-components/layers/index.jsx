@@ -5,7 +5,7 @@ import LayerComponent from './layer.jsx';
 
 class LayersPaneComponent extends React.Component {
   render() {
-    return <LayerComponent node={this.props.app.currentSymbol} />;
+    return <LayerComponent node={this.props.app.currentSymbol} app={this.props.app} />;
   }
 }
 
