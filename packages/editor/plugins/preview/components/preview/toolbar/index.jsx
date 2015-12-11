@@ -12,8 +12,8 @@ class ToolsComponent extends React.Component {
         {
           this.props.app.plugins.filter(sift({
             type: 'previewTool'
-          })).map((entry) => {
-            return <ToolComponent entry={entry} key={entry.id} preview={this.props.app.preview} />;
+          })).map((plugin) => {
+            return <ToolComponent plugin={plugin} key={plugin.id} preview={this.props.app.preview} />;
           })
         }
       </ul>

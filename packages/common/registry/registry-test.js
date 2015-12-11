@@ -1,5 +1,5 @@
 import Registry from './registry';
-import Plugin from './entry';
+import Plugin from './plugin';
 import BaseObject from 'common/object/base';
 import { InvalidError, ExistsError } from 'common/errors';
 import sift from 'sift';

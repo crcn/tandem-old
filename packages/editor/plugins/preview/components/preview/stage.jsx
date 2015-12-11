@@ -11,12 +11,14 @@ class StageComponent extends React.Component {
     var rect = this.refs.canvas.getBoundingClientRect();
     var nodeId = event.target.getAttribute('data-node-id');
 
-    var x = event.clientX - rect.left;
-    var y = event.clientY - rect.top;
+    // this math seems very odd. However, rect.left property gets zoomed,
+    // whereas the width stays the same. Need to offsets mouse x & y with this.
+    var x = (event.clientX - rect.left * this.props.app.preview.zoom) / this.props.app.preview.zoom;
+    var y = (event.clientY - rect.top * this.props.app.preview.zoom) / this.props.app.preview.zoom;
 
     this.props.app.preview.currentTool.notify({
       type: 'click',
-      targetNode: this.props.app.currentSymbol.find(sift({ id: nodeId })),
+      targetNode: this.props.app.rootEntity.find(sift({ id: nodeId })),
       x: x,
       y: y
     });
@@ -49,10 +51,10 @@ class StageComponent extends React.Component {
       <div className='m-preview-stage--inner'>
         <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle}>
 
-          <ToolsLayerComponent app={app} />
+          <ToolsLayerComponent app={app} zoom={preview.zoom} />
 
-          <div className='m-preview-stage--element-layer' onClick={this.onClick.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
-            <NodeComponent node={app.currentSymbol} app={app} />
+          <div ref='drawLayer' className='m-preview-stage--element-layer' onClick={this.onClick.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
+            <NodeComponent node={app.rootEntity} app={app} />
           </div>
         </div>
       </div>

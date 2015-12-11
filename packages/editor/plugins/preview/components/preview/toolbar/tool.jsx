@@ -3,14 +3,14 @@ import cx from 'classnames';
 
 class ToolComponent extends React.Component {
   setTool() {
-    this.props.preview.setTool(this.props.entry.tool);
+    this.props.preview.setTool(this.props.plugin.tool);
   }
   render() {
-    var entry = this.props.entry;
+    var plugin = this.props.plugin;
 
     var className = cx({
-      selected: this.props.preview.currentTool === this.props.entry.tool,
-      [ 'm-preview-tool s s-' + entry.icon ]: true
+      selected: this.props.preview.currentTool === this.props.plugin.tool,
+      [ 'm-preview-tool s s-' + plugin.icon ]: true
     });
 
     return <li className={className} onClick={this.setTool.bind(this)}>

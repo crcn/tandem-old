@@ -12,19 +12,26 @@ const PADDING            = 6;
 class ResizerComponent extends React.Component {
   startDragging(event) {
     var focus = this.props.focus;
+    var zoom = this.props.zoom;
 
-    var sx = this.props.focus.attributes.style.left;
-    var sy = this.props.focus.attributes.style.top;
+    // augment this shit so that we don't sprinkle zoom around all
+    // over the place
+    // TODO componentUtils.getActualComputedStyle(this.props)
+    var sx = this.props.focus.attributes.style.left * zoom;
+    var sy = this.props.focus.attributes.style.top * zoom;
+    var mx = event.clientX;
+    var my = event.clientY;
 
-    startDrag(event, (data) => {
+    startDrag(event, (event) => {
       focus.setStyle({
-        left: sx + data.leftDelta,
-        top: sy + data.topDelta
+        left: (sx + event.clientX - mx) / zoom,
+        top: (sy + event.clientY - my) / zoom
       });
     });
   }
   updatePoint(point) {
     var focus = this.props.focus;
+    var zoom  = this.props.zoom;
     var props = {};
 
     if (point.index === 0) {
@@ -53,10 +60,18 @@ class ResizerComponent extends React.Component {
       };
     }
 
-    focus.setStyle(focus.attributes.style);
+    console.log(props);
+
+    for (var key in props) {
+      // props[key] /= this.props.zoom;
+    }
+
+    focus.setStyle(props);
   }
   render() {
 
+    var pointRadius = (this.props.pointRadius || POINT_RADIUS) / this.props.zoom;
+    var strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH) / this.props.zoom;
 
     var focus = this.props.focus;
     var style = focus.getComputedStyle();
@@ -79,7 +94,7 @@ class ResizerComponent extends React.Component {
       return ret;
     });
 
-    var cw = (POINT_RADIUS + POINT_STROKE_WIDTH * 2) * 2;
+    var cw = (pointRadius + strokeWidth * 2) * 2;
 
     var style = {
       position: 'absolute',
@@ -88,7 +103,7 @@ class ResizerComponent extends React.Component {
     }
 
     return <div className='m-resizer-component' style={style} onMouseDown={this.startDragging.bind(this)}>
-      <PathComponent points={points} strokeWidth={POINT_STROKE_WIDTH} pointRadius={POINT_RADIUS} showPoints={true}  />
+      <PathComponent points={points} strokeWidth={strokeWidth} pointRadius={pointRadius} showPoints={true}  />
     </div>;
   }
 }

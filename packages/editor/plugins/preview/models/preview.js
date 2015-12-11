@@ -5,7 +5,6 @@ const MAX_ZOOM_LEVEL = 2;
 const ZOOM_INCREMENT = 0.2;
 
 class Preview extends ObservableObject {
-  zoom = 1
   setTool(tool) {
     this.setProperties({
       currentTool: tool

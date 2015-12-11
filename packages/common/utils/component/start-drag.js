@@ -1,13 +1,7 @@
 module.exports = function(event, update) {
 
-  var sx = event.clientX;
-  var sy = event.clientY;
-
   function drag(event) {
-    update({
-      leftDelta : event.clientX - sx,
-      topDelta  : event.clientY - sy
-    });
+    update(event);
   }
 
   function cleanup() {

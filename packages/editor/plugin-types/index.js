@@ -1,25 +1,25 @@
 
 import { Plugin } from 'common/registry';
 import React from 'react';
+import assert from 'assert';
 
 export const ROOT_COMPONENT_ID = 'rootComponent';
 
+export { Plugin };
 export class ComponentPlugin extends Plugin {
 
   constructor(properties) {
-    super({ type: 'component', ...properties });
-  }
 
-  setProperties(properties) {
-    if (properties.componentClass) {
-      properties.factory = {
-        create(props, children) {
-          return React.createElement(properties.componentClass, props, children);
-        }
+    assert(properties.componentClass, 'component class is missing');
+
+    super({ type: 'component', ...properties, factory: {
+      create(props, children) {
+        return React.createElement(properties.componentClass, props, children);
       }
     }
-    super.setProperties(properties);
-  }
+  });
+}
+
 }
 
 // export var ComponentPlugin ComponentPlugin;
@@ -42,9 +42,15 @@ export class AppPaneComponentPlugin extends ComponentPlugin {
   }
 }
 
-export class SymbolPaneComponentPlugin extends ComponentPlugin {
+export class EntityPaneComponentPlugin extends ComponentPlugin {
   constructor(properties) {
     super({ componentType: 'pane', paneType: 'entity', ...properties });
+  }
+}
+
+export class ApplicationPlugin extends Plugin {
+  constructor(properties) {
+    super({ type: 'application', ...properties });
   }
 }
 
@@ -54,8 +60,8 @@ export class PreviewComponentPlugin extends ComponentPlugin {
   }
 }
 
-export { Plugin };
-
 export class EntityPlugin extends Plugin {
-  type = 'entity';
+  constructor(properties) {
+    super({ type: 'entity', ...properties });
+  }
 }

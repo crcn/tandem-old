@@ -24,7 +24,7 @@ class BaseApplication extends ObservableObject {
 
   _usePlugins() {
     for (var plugin of this.plugins.filter(sift({ type: 'application' }))) {
-      plugin.create({ app: this });
+      plugin.factory.create({ app: this });
     }
   }
 

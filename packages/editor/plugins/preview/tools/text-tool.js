@@ -1,5 +1,5 @@
 import ObservableObject from 'common/object/observable';
-import Node from 'common/node';
+import { DisplayEntity } from 'editor/entity-types';
 
 const CURSOR_HEIGHT = 12;
 
@@ -11,12 +11,11 @@ class TextTool extends ObservableObject {
 
   notify(message) {
 
-    var node = Node.create({
-      label: 'label', type: 'component', componentType: 'text', icon: 'text', value: 'okay',
+    var plugin = this.app.registry.queryOne('textEntity');
+    var node   = plugin.factory.create({
+      label: 'label',
+      value: 'okay!',
       paneType: 'text',
-
-      // FIXME: tempory - shouldn't be here.
-      id: String(Date.now()),
       attributes: {
         style: {
           position: 'absolute',
@@ -28,7 +27,7 @@ class TextTool extends ObservableObject {
       }
     });
 
-    this.app.currentSymbol.children.push(node);
+    this.app.rootEntity.children.push(node);
 
     // focus on the new item - this will trigger the text input
     // timeout for a second so that the element appears

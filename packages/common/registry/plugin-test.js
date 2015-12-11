@@ -1,4 +1,4 @@
-import Plugin from './entry';
+import Plugin from './plugin';
 import BaseObject from 'common/object/base';
 import expect from 'expect.js';
 

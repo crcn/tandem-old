@@ -9,6 +9,8 @@ class PathComponent extends React.Component {
 
     var sx = point.left;
     var sy = point.top;
+    var mx = event.clientX;
+    var my = event.clientY;
 
     startDrag(event, (info) => {
       point.setProperties({
@@ -39,16 +41,18 @@ class PathComponent extends React.Component {
 
     d += 'Z';
 
+    var strokeWidth = this.props.strokeWidth;
+
     var cr = this.props.pointRadius;
-    var cw = (cr + (this.props.strokeWidth || 1) * 2) * 2;
+    var cw = (cr + (strokeWidth || 1) * 2) * 2;
     var w = x2 - x1 + cw;
     var h = y2 - y1 + cw;
 
     return <svg width={w} height={h} viewBox={[-cw / 2, -cw / 2, w, h]}>
-      <path d={d} stroke='black' fill='transparent' />
+      <path d={d} strokeWidth={strokeWidth} stroke='black' fill='transparent' />
       {
         this.props.showPoints !== false ? points.map((path, key) => {
-          return <circle onMouseDown={this.onPointDown.bind(this, path, key)} className={'point-circle-' + key} stroke='black' fill='transparent' r={cr} cx={path.left} cy={path.top} key={key} />;
+          return <circle onMouseDown={this.onPointDown.bind(this, path, key)} className={'point-circle-' + key} strokeWidth={strokeWidth} stroke='black' fill='transparent' r={cr} cx={path.left} cy={path.top} key={key} />;
         }) : void 0
       }
     </svg>;

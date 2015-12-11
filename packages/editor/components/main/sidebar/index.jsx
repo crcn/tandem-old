@@ -25,8 +25,8 @@ class SidebarComponent extends React.Component {
     return <div style={style} className={['m-sidebar', this.props.position].join(' ')}>
 
       {
-        this.props.app.plugins.filter(sift({ paneType: this.props.paneType })).map((entry) => {
-          return <PaneContainerComponent entry={entry} key={entry.id} {...this.props} />
+        this.props.app.plugins.filter(sift({ paneType: this.props.paneType })).map((plugin) => {
+          return <PaneContainerComponent plugin={plugin} key={plugin.id} {...this.props} />
         })
       }
 

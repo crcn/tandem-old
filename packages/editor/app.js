@@ -7,8 +7,9 @@ import RootComponent from './components/root';
 import SettingsPlugin from './plugins/settings';
 import TestProjectPlugin from './plugins/test-project';
 import BasicPaneComponentsPlugin from './plugins/basic-pane-components';
-import PreviewComponentPlugin from './plugins/preview-component';
+import PreviewPlugin from './plugins/preview';
 import ShortcutPlugin from './plugins/shortcuts';
+import BasicDOMEntitiesPlugin from './plugins/basic-dom-entities';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -16,6 +17,8 @@ import ReactDOM from 'react-dom';
 class Application extends BaseApplication {
 
   static plugins = BaseApplication.plugins.concat([
+
+    BasicDOMEntitiesPlugin,
 
     // temporary here until persistence starts working
     TestProjectPlugin,
@@ -27,7 +30,7 @@ class Application extends BaseApplication {
     SettingsPlugin,
 
     // main preview pane with tools and such
-    PreviewComponentPlugin,
+    PreviewPlugin,
 
     // authority for all application keyboard shortcuts
     ShortcutPlugin

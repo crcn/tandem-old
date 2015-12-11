@@ -2,7 +2,9 @@ import React from 'react';
 
 class TextPaneComponent extends React.Component {
   render() {
-    return <div>text!</div>;
+    return <div>
+      text!
+    </div>;
   }
 }
 

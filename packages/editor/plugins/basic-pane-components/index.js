@@ -1,21 +1,23 @@
-import { AppPaneComponentPlugin, SymbolPaneComponentPlugin } from 'editor/plugin-types';
+import { ApplicationPlugin, AppPaneComponentPlugin, EntityPaneComponentPlugin } from 'editor/plugin-types';
 import LayersPaneComponent from './layers';
 import PropertiesPaneComponent from './properties';
 
 
-export default {
-  type: 'application',
-  create({ app }) {
-    app.plugins.push(AppPaneComponentPlugin.create({
-      id             : 'layersPane',
-      label          : 'Layers',
-      componentClass : LayersPaneComponent
-    }));
+export default ApplicationPlugin.create({
+  id: 'basicPaneComponents',
+  factory: {
+    create({ app }) {
+      app.plugins.push(AppPaneComponentPlugin.create({
+        id             : 'layersPane',
+        label          : 'Layers',
+        componentClass : LayersPaneComponent
+      }));
 
-    app.plugins.push(SymbolPaneComponentPlugin.create({
-      id             : 'propertiesPane',
-      label          : 'Properties',
-      componentClass : PropertiesPaneComponent
-    }));
+      app.plugins.push(EntityPaneComponentPlugin.create({
+        id             : 'propertiesPane',
+        label          : 'Properties',
+        componentClass : PropertiesPaneComponent
+      }));
+    }
   }
-}
+});

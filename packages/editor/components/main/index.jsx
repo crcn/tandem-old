@@ -10,7 +10,7 @@ class MainComponent extends React.Component {
     return <div className='m-editor'>
       <SidebarComponent position='left' paneType='app' {...this.props} />
       <CenterComponent {...this.props} />
-      <SidebarComponent position='right' paneType='symbol' {...this.props} />
+      <SidebarComponent position='right' paneType='entity' {...this.props} />
     </div>;
   }
 }
