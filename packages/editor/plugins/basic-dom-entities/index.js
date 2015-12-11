@@ -7,7 +7,7 @@ export default ApplicationPlugin.create({
   id: 'basicDOMEntities',
   factory: {
     create({ app }) {
-      app.registry.push(
+      app.plugins.push(
 
         // text
         EntityPlugin.create({

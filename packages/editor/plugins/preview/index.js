@@ -26,50 +26,47 @@ export default ApplicationPlugin.create({
       var textTool    = TextTool.create({ app });
       var pointerTool = PointerTool.create({ app });
 
-      app.plugins.push(Plugin.create({
-        icon    : 'cursor',
-        id      : 'pointerTool',
-        type    : 'previewTool',
-        tool    : pointerTool
-      }));
-
-      app.plugins.push(Plugin.create({
-        icon    : 'text',
-        id      : 'textTool',
-        type    : 'previewTool',
-        tool    : textTool
-      }));
-
-      app.plugins.push(Plugin.create({
-        id         : 'textToolKeyCommand',
-        type       : 'keyCommand',
-        keyCommand : 't',
-        handler    : preview.setTool.bind(preview, textTool)
-      }));
-
-      app.plugins.push(Plugin.create({
-        id         : 'pointerToolKeyCommand',
-        type       : 'keyCommand',
-        keyCommand : 'p',
-        handler    : preview.setTool.bind(preview, pointerTool)
-      }));
-
-      app.plugins.push(Plugin.create({
-        id         : 'zoomInKeyCommand',
-        type       : 'keyCommand',
-        keyCommand : 'ctrl+]',
-        handler    : preview.zoomIn.bind(preview)
-      }));
-
-      app.plugins.push(Plugin.create({
-        id         : 'zoomOutKeyCommand',
-        type       : 'keyCommand',
-        keyCommand : 'ctrl+[',
-        handler    : preview.zoomOut.bind(preview)
-      }));
+      app.plugins.push(
+        Plugin.create({
+          icon    : 'cursor',
+          id      : 'pointerTool',
+          type    : 'previewTool',
+          tool    : pointerTool
+        }),
+        Plugin.create({
+          icon    : 'text',
+          id      : 'textTool',
+          type    : 'previewTool',
+          tool    : textTool
+        }),
+        Plugin.create({
+          id         : 'textToolKeyCommand',
+          type       : 'keyCommand',
+          keyCommand : 't',
+          handler    : preview.setTool.bind(preview, textTool)
+        }),
+        Plugin.create({
+          id         : 'pointerToolKeyCommand',
+          type       : 'keyCommand',
+          keyCommand : 'p',
+          handler    : preview.setTool.bind(preview, pointerTool)
+        }),
+        Plugin.create({
+          id         : 'zoomInKeyCommand',
+          type       : 'keyCommand',
+          keyCommand : 'ctrl+]',
+          handler    : preview.zoomIn.bind(preview)
+        }),
+        Plugin.create({
+          id         : 'zoomOutKeyCommand',
+          type       : 'keyCommand',
+          keyCommand : 'ctrl+[',
+          handler    : preview.zoomOut.bind(preview)
+        })
+      );
 
       preview.setTool(pointerTool);
-
+      
       // TODO - register layer styles too
       registerComponents(app);
     }

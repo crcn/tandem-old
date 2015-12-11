@@ -12,7 +12,7 @@ class BaseApplication extends ObservableObject {
     super(properties);
 
     // class registry such as components classes, tools, models
-    this.plugins = this.registry = Registry.create(void 0, this.constructor.plugins);
+    this.plugins = Registry.create(void 0, this.constructor.plugins);
 
     // central communication object
     this.notifier = NotifierCollection.create();
