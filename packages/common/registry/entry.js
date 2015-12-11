@@ -20,9 +20,9 @@ var schema = Schema.create({
   }
 });
 
-class Entry extends BaseObject {
+class Plugin extends BaseObject {
 }
 
-Entry = mixinSchema(schema, Entry);
+Plugin = mixinSchema(schema, Plugin);
 
-export default Entry;
+export default Plugin;

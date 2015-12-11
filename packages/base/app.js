@@ -2,37 +2,29 @@ import ObservableObject from 'common/object/observable';
 import { Registry } from 'common/registry';
 import { NotifierCollection } from 'common/notifiers';
 import { InitializeMessage, LoadMessage } from 'base/messages';
+import sift from 'sift';
 
 class BaseApplication extends ObservableObject {
 
   static plugins = [];
-  static entries = [];
 
   constructor(properties) {
     super(properties);
 
-    // app extensions
-    this.plugins = [];
-
     // class registry such as components classes, tools, models
-    this.registry = Registry.create(void 0, this.constructor.entries);
+    this.plugins = this.registry = Registry.create(void 0, this.constructor.plugins);
 
     // central communication object
     this.notifier = NotifierCollection.create();
-
-    // load in initial plugins immediately
-    this.usePlugin(...this.constructor.plugins);
+    this._usePlugins();
   }
 
   /**
-   * registers a new plugin
    */
 
-  usePlugin(...plugins) {
-    for (var plugin of plugins) {
-      this.plugins.push(plugin.create({
-        app: this
-      }));
+  _usePlugins() {
+    for (var plugin of this.plugins.filter(sift({ type: 'application' }))) {
+      plugin.create({ app: this });
     }
   }
 

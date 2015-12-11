@@ -13,6 +13,7 @@ class TextTool extends ObservableObject {
 
     var node = Node.create({
       label: 'label', type: 'component', componentType: 'text', icon: 'text', value: 'okay',
+      paneType: 'text',
 
       // FIXME: tempory - shouldn't be here.
       id: String(Date.now()),
@@ -30,7 +31,10 @@ class TextTool extends ObservableObject {
     this.app.currentSymbol.children.push(node);
 
     // focus on the new item - this will trigger the text input
-    this.app.setFocus(node);
+    // timeout for a second so that the element appears
+    setTimeout(() => {
+      this.app.setFocus(node);
+    }, 100);
   }
 }
 

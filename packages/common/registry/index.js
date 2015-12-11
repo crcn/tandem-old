@@ -1,2 +1,2 @@
 export Registry from './registry';
-export Entry from './entry';
+export Plugin from './entry';

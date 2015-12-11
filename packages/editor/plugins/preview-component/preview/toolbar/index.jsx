@@ -10,7 +10,7 @@ class ToolsComponent extends React.Component {
     return <div className='m-editor-toolbar'>
       <ul className='m-toolbar-tools'>
         {
-          this.props.app.registry.filter(sift({
+          this.props.app.plugins.filter(sift({
             type: 'previewTool'
           })).map((entry) => {
             return <ToolComponent entry={entry} key={entry.id} preview={this.props.app.preview} />;

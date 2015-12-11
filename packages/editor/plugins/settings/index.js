@@ -4,6 +4,7 @@ import store from 'store';
 import debounce from 'lodash/function/debounce';
 
 export default {
+  type: 'application',
   create({ app }) {
 
     var save = debounce(function() {

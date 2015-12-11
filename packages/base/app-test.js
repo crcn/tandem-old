@@ -1,6 +1,6 @@
 import BaseApplication from './app';
 import BaseObject from 'common/object/base';
-import { Entry } from 'common/registry';
+import { Plugin } from 'common/registry';
 import sift from 'sift';
 import { CallbackNotifier, AcceptNotifier } from 'common/notifiers';
 import { LOAD, INITIALIZE } from 'base/messages';

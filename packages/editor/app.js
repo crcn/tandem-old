@@ -1,7 +1,7 @@
 import 'bootstrap/css/bootstrap.css';
 
 import BaseApplication from 'base/app';
-import { RootComponentEntry } from 'editor/entries';
+import { RootComponentPlugin } from 'editor/plugin-types';
 import RootComponent from './components/root';
 
 import SettingsPlugin from './plugins/settings';

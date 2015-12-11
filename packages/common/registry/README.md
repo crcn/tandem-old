@@ -1,12 +1,12 @@
 Dependency injection package.
 
 ```javascript
-import { Registry, Entry } from 'common/registry';
+import { Registry, Plugin } from 'common/registry';
 
 var registry = Registry.create();
-var entry = registry.register(Entry.create({ type: 'component', label: 'My component label' }, componentFactory));
+var entry = registry.register(Plugin.create({ type: 'component', label: 'My component label' }, componentFactory));
 
-registry.register(Entry.create({ type: 'pane', target: entry }, componentEditorFactory));
+registry.register(Plugin.create({ type: 'pane', target: entry }, componentEditorFactory));
 
 var entry = registry.find({ type: 'component' });
 var item = entry.factory.create();

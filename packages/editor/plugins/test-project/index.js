@@ -1,10 +1,10 @@
 import Node from 'common/node';
 
 export default {
+  type: 'application',
   create({ app }) {
 
-    var node = Node.create({ notifier: app.notifier, componentType: 'p', label: 'Button', type: 'component', icon: 'puzzle' }, [
-      Node.create({ label: 'label', type: 'component', componentType: 'text', icon: 'text', value: 'text', attributes: { style: {}} })
+    var node = Node.create({ id: '1', notifier: app.notifier, componentType: 'p', label: 'Button', type: 'component', icon: 'puzzle' }, [
     ]);
 
     app.currentSymbol = node;

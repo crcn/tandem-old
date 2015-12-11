@@ -1,11 +1,14 @@
-import { PreviewComponentEntry, ComponentEntry, Entry } from 'editor/entries';
+import { PreviewComponentPlugin, ComponentPlugin, Plugin } from 'editor/plugin-types';
 import PreviewComponent from './preview';
 import Preview from './models/preview';
 import TextTool from './tools/text-tool';
 import PointerTool from './tools/pointer-tool';
+import TextPaneComponent from './text-pane';
 import React from 'react';
+import HTMLNode from './html-node';
 
 export default {
+  type: 'application',
   create({ app }) {
 
     var preview = app.preview = Preview.create({
@@ -15,7 +18,7 @@ export default {
       notifier     : app.notifier
     });
 
-    app.registry.push(PreviewComponentEntry.create({
+    app.plugins.push(PreviewComponentPlugin.create({
       id: 'basicPreview',
       componentClass: PreviewComponent
     }));
@@ -23,42 +26,48 @@ export default {
     var textTool    = TextTool.create({ app });
     var pointerTool = PointerTool.create({ app });
 
-    app.registry.push(Entry.create({
+    app.plugins.push(Plugin.create({
       icon    : 'cursor',
       id      : 'pointerTool',
       type    : 'previewTool',
       tool    : pointerTool
     }));
 
-    app.registry.push(Entry.create({
+    app.plugins.push(Plugin.create({
       icon    : 'text',
       id      : 'textTool',
       type    : 'previewTool',
       tool    : textTool
     }));
 
-    app.registry.push(Entry.create({
+    app.plugins.push(Plugin.create({
       id         : 'textToolKeyCommand',
       type       : 'keyCommand',
       keyCommand : 't',
       handler    : preview.setTool.bind(preview, textTool)
     }));
 
-    app.registry.push(Entry.create({
+    app.plugins.push(Plugin.create({
       id         : 'pointerToolKeyCommand',
       type       : 'keyCommand',
       keyCommand : 'p',
       handler    : preview.setTool.bind(preview, pointerTool)
     }));
 
-    app.registry.push(Entry.create({
+    app.plugins.push(ComponentPlugin.create({
+      id: 'textPaneComponent',
+      paneType: 'text',
+      componentClass: TextPaneComponent
+    }));
+
+    app.plugins.push(Plugin.create({
       id         : 'zoomInKeyCommand',
       type       : 'keyCommand',
       keyCommand : 'ctrl+]',
       handler    : preview.zoomIn.bind(preview)
     }));
 
-    app.registry.push(Entry.create({
+    app.plugins.push(Plugin.create({
       id         : 'zoomOutKeyCommand',
       type       : 'keyCommand',
       keyCommand : 'ctrl+[',
@@ -106,19 +115,10 @@ function registerComponents(app) {
     'b',
     'text'
   ].forEach(function(elementName) {
-    app.registry.push(ComponentEntry.create({
+    app.plugins.push(ComponentPlugin.create({
       id: elementName + 'Element',
       componentType: elementName,
-      factory: {
-        create(props, children) {
-          var node = props.node;
-          var type = node.type === 'text' ? 'span' : node.type;
-          return React.createElement('span', {
-            'data-node-id': node.id,
-            ...node.attributes
-          }, children.length ? children : props.node.value);
-        }
-      }
+      componentClass: HTMLNode
     }));
   });
 

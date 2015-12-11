@@ -1,60 +1,94 @@
 import './resizer.scss';
 import React from 'react';
+import PathComponent from './path';
+import ObservableObject from 'common/object/observable';
+import CallbackNotifier from 'common/notifiers/callback';
+import startDrag from 'common/utils/component/start-drag';
 
 const POINT_STROKE_WIDTH = 1;
-const POINT_RADIUS       = 4;
+const POINT_RADIUS       = 3;
+const PADDING            = 6;
 
 class ResizerComponent extends React.Component {
+  startDragging(event) {
+    var focus = this.props.focus;
+
+    var sx = this.props.focus.attributes.style.left;
+    var sy = this.props.focus.attributes.style.top;
+
+    startDrag(event, (data) => {
+      focus.setStyle({
+        left: sx + data.leftDelta,
+        top: sy + data.topDelta
+      });
+    });
+  }
+  updatePoint(point) {
+    var focus = this.props.focus;
+    var props = {};
+
+    if (point.index === 0) {
+      props = {
+        left   : point.currentStyle.left + point.left,
+        top    : point.currentStyle.top + point.top,
+        height : point.currentStyle.height - point.top,
+        width  : point.currentStyle.width - point.left
+      };
+    } else if (point.index === 1) {
+      props = {
+        top    :  point.currentStyle.top + point.top,
+        height : point.currentStyle.height - point.top,
+        width  : point.left
+      };
+    } else if (point.index === 2) {
+      props = {
+        height : point.top,
+        width  : point.left
+      };
+    } else if (point.index === 3) {
+      props = {
+        left   : point.currentStyle.left + point.left,
+        height : point.top,
+        width  : point.currentStyle.width - point.left
+      };
+    }
+
+    focus.setStyle(focus.attributes.style);
+  }
   render() {
 
+
     var focus = this.props.focus;
-    var style = focus.attributes.style;
+    var style = focus.getComputedStyle();
 
     var points = [
       [0, 0],
-      [style.left, 0],
-      [style.left, style.top],
-      [0, style.top]
-    ];
+      [style.width, 0],
+      [style.width, style.height],
+      [0, style.height]
+    ].map((point, i) => {
 
-    var x1 = 0;
-    var x2 = 0;
-    var y1 = 0;
-    var y2 = 0;
-    var d = '';
+      var ret = ObservableObject.create({
+        index: i,
+        currentStyle: style,
+        left: point[0],
+        top : point[1]
+      });
 
-    points.forEach(function(point, i) {
-      x1 = Math.min(point[0], x1);
-      x2 = Math.max(point[0], x2);
-      y1 = Math.min(point[1], y1);
-      y2 = Math.max(point[1], y2);
-      d += (i === 0 ? 'M' : 'L') + point.join(' ');
+      ret.notifier = CallbackNotifier.create(this.updatePoint.bind(this, ret));
+      return ret;
     });
 
-    d += 'Z';
-
-    var cr = POINT_RADIUS;
-    var cw = (cr + POINT_STROKE_WIDTH * 2) * 2;
-    var w = x2 - x1 + cw;
-    var h = y2 - y1 + cw;
+    var cw = (POINT_RADIUS + POINT_STROKE_WIDTH * 2) * 2;
 
     var style = {
       position: 'absolute',
-      left: 100,
-      top: 100
+      left: style.left - cw / 2,
+      top: style.top - cw / 2
     }
 
-    return <div className='m-resizer-component' style={style}>
-
-      <svg width={w} height={h} viewBox={[-cw / 2, -cw / 2, w, h]}>
-        <path d={d} stroke='black' fill='transparent' />
-        {
-          points.map(function(path, key) {
-            return <circle className={'point-circle-' + key} stroke='black' fill='transparent' r={cr} cx={path[0]} cy={path[1]} key={key} />;
-          })
-        }
-      </svg>
-
+    return <div className='m-resizer-component' style={style} onMouseDown={this.startDragging.bind(this)}>
+      <PathComponent points={points} strokeWidth={POINT_STROKE_WIDTH} pointRadius={POINT_RADIUS} showPoints={true}  />
     </div>;
   }
 }

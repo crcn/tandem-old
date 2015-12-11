@@ -11,7 +11,7 @@ class CenterComponent extends React.Component {
   render() {
     return <div className='m-editor-center'>
       {
-        this.props.app.registry.filter(sift({
+        this.props.app.plugins.filter(sift({
           componentType: 'preview'
         })).map((entry) => {
           return entry.factory.create({ key: entry.id, ...this.props });

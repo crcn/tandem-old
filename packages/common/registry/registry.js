@@ -1,5 +1,5 @@
 import BaseCollection from 'common/collection';
-import Entry from './entry';
+import Plugin from './entry';
 import { ExistsError } from 'common/errors';
 
 class Registry extends BaseCollection {
@@ -9,7 +9,7 @@ class Registry extends BaseCollection {
     return entry;
   }
 
-  // @param(Entry) TODO
+  // @param(Plugin) TODO
   // TODO - override splice here
   splice(index, count, ...entries) {
 

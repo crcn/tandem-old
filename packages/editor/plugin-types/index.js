@@ -1,10 +1,10 @@
 
-import { Entry } from 'common/registry';
+import { Plugin } from 'common/registry';
 import React from 'react';
 
 export const ROOT_COMPONENT_ID = 'rootComponent';
 
-export class ComponentEntry extends Entry {
+export class ComponentPlugin extends Plugin {
 
   constructor(properties) {
     super({ type: 'component', ...properties });
@@ -22,40 +22,40 @@ export class ComponentEntry extends Entry {
   }
 }
 
-// export var ComponentEntry ComponentEntry;
+// export var ComponentPlugin ComponentPlugin;
 
-export class RootComponentEntry extends ComponentEntry {
+export class RootComponentPlugin extends ComponentPlugin {
   constructor(properties) {
     super({ id: ROOT_COMPONENT_ID, ...properties });
   }
 }
 
-export class PaneComponentEntry extends ComponentEntry {
+export class PaneComponentPlugin extends ComponentPlugin {
   constructor(properties) {
     super({ componentType: 'pane', ...properties });
   }
 }
 
-export class AppPaneComponentEntry extends ComponentEntry {
+export class AppPaneComponentPlugin extends ComponentPlugin {
   constructor(properties) {
     super({ componentType: 'pane', paneType: 'app', ...properties });
   }
 }
 
-export class SymbolPaneComponentEntry extends ComponentEntry {
+export class SymbolPaneComponentPlugin extends ComponentPlugin {
   constructor(properties) {
-    super({ componentType: 'pane', paneType: 'symbol', ...properties });
+    super({ componentType: 'pane', paneType: 'entity', ...properties });
   }
 }
 
-export class PreviewComponentEntry extends ComponentEntry {
+export class PreviewComponentPlugin extends ComponentPlugin {
   constructor(properties) {
     super({ componentType: 'preview', ...properties });
   }
 }
 
-export { Entry };
+export { Plugin };
 
-export class SymbolEntry extends Entry {
-  type = 'symbol';
+export class EntityPlugin extends Plugin {
+  type = 'entity';
 }

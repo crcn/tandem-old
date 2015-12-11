@@ -4,13 +4,14 @@ import mousetrap from 'mousetrap';
 import sift from 'sift';
 
 export default {
+  type: 'application',
   create({ app }) {
 
     // TODO - rebind when registry changes
     app.notifier.push(TypeNotifier.create(INITIALIZE, CallbackNotifier.create(registerKeyBindings)));
 
     function registerKeyBindings() {
-      app.registry.filter(sift({
+      app.plugins.filter(sift({
         type: 'keyCommand'
       })).forEach(registerKeyBinding);
     }

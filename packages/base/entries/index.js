@@ -1,13 +1,13 @@
 
-import { Entry } from 'common/registry';
+import { Plugin } from 'common/registry';
 import Schema from 'common/schema';
 import React from 'react';
 import mixinSchema from 'common/class/mixins/schema';
 
 export const ROOT_COMPONENT_ID = 'rootComponent';
 
-// export SymbolPaneEntry from './symbol-pane';
-// export AppPaneEntry from './app-pane';
+// export SymbolPanePlugin from './symbol-pane';
+// export AppPanePlugin from './app-pane';
 
 var schema = new Schema({
   fields: {
@@ -18,11 +18,11 @@ var schema = new Schema({
   }
 });
 
-// class AppPaneEntry extends Entry {
+// class AppPanePlugin extends Plugin {
 //   type = 'appPane';
 // }
 
-class ComponentEntry extends Entry {
+class ComponentPlugin extends Plugin {
 
   constructor(properties) {
     super({ type: 'component', ...properties });
@@ -40,34 +40,34 @@ class ComponentEntry extends Entry {
   }
 }
 
-ComponentEntry = mixinSchema(schema, ComponentEntry);
+ComponentPlugin = mixinSchema(schema, ComponentPlugin);
 
-// export var ComponentEntry ComponentEntry;
+// export var ComponentPlugin ComponentPlugin;
 
-export class RootComponentEntry extends ComponentEntry {
+export class RootComponentPlugin extends ComponentPlugin {
   constructor(properties) {
     super({ id: ROOT_COMPONENT_ID, ...properties });
   }
 }
 
-export class PaneComponentEntry extends ComponentEntry {
+export class PaneComponentPlugin extends ComponentPlugin {
   constructor(properties) {
     super({ type: 'component', componentType: 'pane', ...properties });
   }
 }
 
-export class AppPaneComponentEntry extends ComponentEntry {
+export class AppPaneComponentPlugin extends ComponentPlugin {
   constructor(properties) {
     super({ type: 'component', componentType: 'pane', paneType: 'app', ...properties });
   }
 }
 
-export class SymbolPaneComponentEntry extends ComponentEntry {
+export class SymbolPaneComponentPlugin extends ComponentPlugin {
   constructor(properties) {
     super({ type: 'component', componentType: 'pane', paneType: 'symbol', ...properties });
   }
 }
 
-export class SymbolEntry extends Entry {
+export class SymbolPlugin extends Plugin {
   type = 'symbol';
 }
