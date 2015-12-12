@@ -1,6 +1,7 @@
 import { ApplicationPlugin, PreviewComponentPlugin, ComponentPlugin, Plugin } from 'editor/plugin-types';
 import PreviewComponent from './components/preview';
 import Preview from './models/preview';
+import { CallbackNotifier } from 'common/notifiers';
 import TextTool from './tools/text-tool';
 import PointerTool from './tools/pointer-tool';
 import React from 'react';
@@ -14,7 +15,7 @@ export default ApplicationPlugin.create({
       var preview = app.preview = Preview.create({
         canvasWidth  : 1024,
         canvasHeight : 768,
-        zoom         : 0.5,
+        zoom         : 0.75,
         notifier     : app.notifier
       });
 
@@ -66,9 +67,14 @@ export default ApplicationPlugin.create({
       );
 
       preview.setTool(pointerTool);
-      
+
       // TODO - register layer styles too
       registerComponents(app);
+
+      // for testing
+      app.notifier.push(CallbackNotifier.create(function() {
+
+      }));
     }
   }
 })

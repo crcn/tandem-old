@@ -1,0 +1,13 @@
+@import 'editor/scss/variables';
+
+.m-text-pane {
+  padding: $padding-2;
+  color: $color-white-offset-8;
+
+  & .m-font-input {
+    & .m-search-dropdown--label {
+      border: 1px solid $color-white-offset-8;
+
+    }
+  }
+}

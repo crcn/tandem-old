@@ -16,6 +16,7 @@ module.exports = {
     modulesDirectories: [__dirname + '/packages', 'node_modules', 'bower_components', 'packages', 'vendor'],
     extensions: ['', '.json', '.jsx', '.js']
   },
+  devtool: 'eval',
   sassLoader: {
     includePaths: [path.resolve(__dirname, './packages')]
   },
@@ -57,7 +58,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel', // 'babel-loader' is also a legal name to reference
+        loader: 'babel',
         query: {
           presets: ['react', 'es2015', 'stage-1', 'stage-0'],
           plugins: ['transform-decorators'],

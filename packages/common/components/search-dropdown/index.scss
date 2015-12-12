@@ -1,0 +1,43 @@
+@import 'editor/scss/variables';
+
+.m-search-dropdown {
+  position: relative;
+  display: block;
+
+  &--label {
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    padding: $padding-0 $padding-1;
+    border-radius: $border-radius-1;
+  }
+
+  &--menu {
+
+    color: $color-grey-2;
+
+    margin-top: $padding-0;
+    position: absolute;
+    width: 100%;
+    background-color: $color-grey-10;
+    // border: 1px solid $color-grey-8;
+    border-radius: $border-radius-2;
+
+    & input {
+      width: calc(100% - #{$padding-1 * 2});
+      margin: $padding-1;
+    }
+
+    & .m-list {
+      max-height: 200px;
+      overflow-x: scroll;
+      & li {
+        cursor: pointer;
+        &:hover, &:focus {
+          background-color: $color-sky-blue-4;
+          color: $color-white-offset-8;
+        }
+      }
+    }
+  }
+}

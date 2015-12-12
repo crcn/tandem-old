@@ -11,7 +11,7 @@
   & li {
     display: inline-block;
     padding-left: $padding-3;
-    font-size: 20px;
+    font-size: $font-size-5;
     cursor: pointer;
     &:hover {
       color: $color-blue-4;
