@@ -31,7 +31,6 @@ class TextPaneComponent extends React.Component {
       <TextInputComponent reference={Reference.create(entity, 'value')} />
       <ColorPickerInputComponent reference={createStyleReference(entity, 'color')} />
       <SearchDropdownComponent
-        showArrow={false}
         defaultLabel='Font Weight'
         reference={createStyleReference(entity, 'fontWeight')}
         items={fontWeights} />
