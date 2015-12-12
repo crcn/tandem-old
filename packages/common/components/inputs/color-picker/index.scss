@@ -1,17 +1,21 @@
 @import 'editor/scss/variables';
+$color-picker-button-width: 30px;
+$color-picker-button-border-width: 1px;
 
 .m-color-picker-input {
-  display:inline-block;
+  display: block;
   position: relative;
   &--button {
+
+    background-color: white !important;
+    // padding: $padding-0;
 
     cursor: pointer;
     display: inline-block;
     position: relative;
-    // padding: $padding-0;
 
     &-fill {
-      width: 30px;
+      width: $color-picker-button-width;
       height: 15px;
       background-color: rgba(0,0,0,0);
     }

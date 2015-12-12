@@ -1,0 +1,22 @@
+.m-menu {
+
+
+  &--items {
+    position: relative;
+    z-index: 1024;
+  }
+
+  & .m-popdown {
+    width: 100%;
+  }
+
+  &--bg-click {
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    position: fixed;
+    z-index: 1023;
+    background-color: transparent;
+  }
+}

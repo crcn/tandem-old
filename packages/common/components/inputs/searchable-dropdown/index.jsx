@@ -4,7 +4,9 @@ import cx from 'classnames';
 import React from 'react';
 import FocusComponent from 'common/components/focus';
 import PortalComponent from 'common/components/portal';
+import PopdownComponent from 'common/components/popdown';
 import { coerceFunction } from 'common/utils/function';
+import MenuComponent from 'common/components/menu';
 
 /**
  * Similar to a dropmenu, but aso has search capabilities
@@ -25,32 +27,14 @@ class SearchDropdownComponent extends React.Component {
     });
   }
 
-  componentDidMount() {
-    document.body.addEventListener('mousedown', this.onBodyDown);
-  }
-
-  onBodyDown = (event) => {
-    if (!this.refs.menu || this.refs.menu.contains(event.target)) {
-      return;
-    }
-    this.hideMenu();
-  }
-
   hideMenu() {
-    this.setState({
-      showMenu: false,
-      filter: void 0
-    });
+    this.refs.menu.hide();
   }
 
   onInputFocus(event) {
     this.setState({
       focusIndex: -1
     });
-  }
-
-  componentWillUnmount() {
-    document.body.removeEventListener('mousedown', this.onBodyDown);
   }
 
   onKeyDown(event) {
@@ -119,19 +103,19 @@ class SearchDropdownComponent extends React.Component {
     var createLabel         = coerceFunction(this.props.labelProperty || 'label');
     var createDefaultLabel  = coerceFunction(this.props.defaultLabel || 'Select an item');
 
-    var sections = { };
-
-    if (this.state.showMenu) {
+    var createMenu = () => {
 
       if (this.props.showSearch !== false) {
-        sections.search = <FocusComponent focus={this.state.focusIndex === -1}>
+        var searchInputSection = <FocusComponent focus={this.state.focusIndex === -1}>
           <input ref='input' type='text' className='form-control' onInput={this.setFilter.bind(this)} onFocus={this.onInputFocus.bind(this)}></input>
         </FocusComponent>;
       }
 
-      sections.menu = <div ref='menu' className='m-search-dropdown--menu'>
-        <div className='arrow-box'></div>
-        { sections.search }
+      return <div
+        className='m-search-dropdown--inner'
+        onKeyDown={this.onKeyDown.bind(this)}>
+
+        { searchInputSection }
         <ul ref='menuItems' className='m-list'>
           {
             this.getFilteredItems().map((item, i) => {
@@ -142,14 +126,15 @@ class SearchDropdownComponent extends React.Component {
       </div>;
     }
 
-    return <div className={['m-search-dropdown', this.props.className].join(' ')} onKeyDown={this.onKeyDown.bind(this)}>
+    return <MenuComponent
+      ref='menu'
+      className={['m-search-dropdown', this.props.className].join(' ')}
+      createMenu={createMenu}>
 
       <span ref='label' className='input m-search-dropdown--label' onClick={this.toggleMenu.bind(this)}>{
         selectedItem ? createLabel(selectedItem) : createDefaultLabel()
       }</span>
-
-      { sections.menu }
-    </div>;
+    </MenuComponent>;
   }
 }
 

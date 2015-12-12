@@ -1,5 +1,9 @@
 import './index.scss';
 import { parseColor, stringifyColor } from 'common/utils/color';
+import { diff } from 'common/utils/object';
+import PointerComponent from './pointer';
+import ColorPickerDropdownComponent from './picker';
+import MenuComponent from 'common/components/menu';
 
 import React from 'react';
 
@@ -10,13 +14,6 @@ class ColorPickerInput extends React.Component {
 
   constructor() {
     super();
-    this.state = { showColorPicker: false };
-  }
-
-  showColorPicker() {
-    this.setState({
-      showColorPicker: true
-    });
   }
 
   onColorChange(color) {
@@ -28,6 +25,14 @@ class ColorPickerInput extends React.Component {
     ]));
   }
 
+  /**
+   * color picker is slow. Make sure we don't do unecessary renders.
+   */
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.reference !== this.props.reference || !!Object.keys(diff(this.state, nextState)).length;
+  }
+
   render() {
     var ref = this.props.reference;
 
@@ -37,23 +42,28 @@ class ColorPickerInput extends React.Component {
       backgroundColor: colorValue
     };
 
-    var [r, g, b, a] = parseColor(colorValue);
+    function createMenu() {
+      var [r, g, b, a] = parseColor(colorValue);
+      return <ColorPickerDropdownComponent color={{
+        r: r,
+        g: g,
+        b: b,
+        a: a
+      }} />;
+    }
 
     return <div className='m-color-picker-input'>
 
-      <div className='input m-color-picker-input--button'>
-        <div style={buttonFillStyle}
-          className='m-color-picker-input--button-fill'
-          onClick={this.showColorPicker.bind(this)}>
-        </div>
-      </div>
+      <MenuComponent className='m-color-picker-popdown' createMenu={createMenu}>
 
-      <ColorPicker
-        display={ this.state.showColorPicker }
-        position={this.props.position || 'bottom'}
-        color={{ r: r, g: r, b: b, a: a }}
-        onChange={this.onColorChange.bind(this)}
-        type='chrome' />
+        <div className='input m-color-picker-input--button'>
+          <div style={buttonFillStyle}
+            className='m-color-picker-input--button-fill'>
+          </div>
+        </div>
+
+      </MenuComponent>
+
     </div>
   }
 }
