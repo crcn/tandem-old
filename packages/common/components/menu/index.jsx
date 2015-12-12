@@ -20,6 +20,12 @@ class MenuComponent extends React.Component {
 
   }
 
+  show() {
+    this.setState({
+      show: true
+    });
+  }
+
   hide() {
     this.setState({
       show: false
