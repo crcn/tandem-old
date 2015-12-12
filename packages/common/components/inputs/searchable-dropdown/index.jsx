@@ -57,7 +57,7 @@ class SearchDropdownComponent extends React.Component {
     // is moving the arrow keys. This will allow them to
     // preview the font
     if (!!~focusIndex) {
-      this.props.reference.setValue(filteredItems[focusIndex]);
+      this.props.reference.setValue(this.getItemValue(filteredItems[focusIndex]));
     }
 
     this.setState({
@@ -66,7 +66,6 @@ class SearchDropdownComponent extends React.Component {
   }
 
   getFilteredItems() {
-    var items = this.props.items
     return this.props.items.filter(this.state.filter || function() {
       return true;
     });
@@ -76,22 +75,11 @@ class SearchDropdownComponent extends React.Component {
 
     function defaultCreateFilter(search) {
       search = search.toLowerCase();
-
-      function compare(value) {
-        return !!~value.toLowerCase().indexOf(search);
-      }
-
       return function(item) {
-
-        if (typeof item === 'string') {
-          return compare(item);
-        }
-
         // scan all props
         for (var key in item) {
           var value = item[key];
-          if (typeof value !== 'string') continue;
-          if (compare(value)) return true;
+          if (!!~String(value).toLowerCase().indexOf(search)) return true;
         }
       }
     }
@@ -103,26 +91,30 @@ class SearchDropdownComponent extends React.Component {
   }
 
   onSelectItem(item) {
-    this.props.reference.setValue(item);
+    this.props.reference.setValue(this.getItemValue(item));
     this.hideMenu();
   }
 
-  getItems() {
-    return this.props.items;
+  getInitialFocusIndex() {
+    return this.props.showSearch ? -1 : this.getItemIndex();
   }
 
-  getInitialFocusIndex() {
-    return this.props.showSearch ? -1 : this.getItems().findIndex((item) => {
-      return item === this.props.reference.getValue();
-    }) || -1;
+  getItemIndex() {
+    return this.props.items.findIndex((item) => {
+      return this.getItemValue(item) === this.props.reference.getValue();
+    });
+  }
+
+  getItemValue(item) {
+    return this.props.valueProperty ? item[this.props.valueProperty] : item;
   }
 
   render() {
 
-    var selectedItem        = this.props.reference.getValue();
-    var createLabel         = typeof this.props.labelProperty === 'function' ? this.props.labelProperty : (item) => {
-      return typeof item !== 'object' ? item : item[this.props.labelProperty];
-    }
+    var selectedItemIndex = this.getItemIndex();
+    var createLabel       = typeof this.props.labelProperty === 'function' ? this.props.labelProperty : (item) => {
+      return item[this.props.labelProperty];
+  };
 
     var createDefaultLabel  = coerceFunction(this.props.defaultLabel || 'Select an item');
 
@@ -141,7 +133,15 @@ class SearchDropdownComponent extends React.Component {
         <ul ref='menuItems' className='m-list'>
           {
             this.getFilteredItems().map((item, i) => {
-              return <FocusComponent key={i} focus={ this.state.focusIndex === i }><li tabIndex="-1"  onClick={this.onSelectItem.bind(this, item)} className={((i % 2) ? 'alt' : '')}>{ createLabel(item, i) }</li></FocusComponent>;
+              return <FocusComponent key={i} focus={ this.state.focusIndex === i }>
+                <li
+                  tabIndex="-1"
+                  onClick={this.onSelectItem.bind(this, item)}
+                  className={((i % 2) ? 'alt' : '')}>{
+                    createLabel(item, i)
+                  }
+                </li>
+              </FocusComponent>;
             })
           }
         </ul>
@@ -155,10 +155,15 @@ class SearchDropdownComponent extends React.Component {
       createMenu={createMenu}>
 
       <span ref='label' className='input m-search-dropdown--label' onClick={this.toggleMenu.bind(this)}>{
-        selectedItem ? createLabel(selectedItem) : createDefaultLabel()
+        ~selectedItemIndex ? createLabel(this.props.items[selectedItemIndex]) : createDefaultLabel()
       }</span>
     </MenuComponent>;
   }
 }
+
+SearchDropdownComponent.defaultProps = {
+  labelProperty: 'label',
+  valueProperty: 'value'
+};
 
 export default SearchDropdownComponent;

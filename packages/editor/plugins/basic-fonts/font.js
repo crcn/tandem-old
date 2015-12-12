@@ -1,9 +1,14 @@
-import { Entity } from 'editor/entity-types';
+import { Plugin } from 'editor/plugin-types';
 
-class Font extends Entity {
+class FontPlugin extends Plugin {
   constructor(name) {
-    super({ type: 'font', name: name });
+    super({
+      id    : name,
+      type  : 'font',
+      name  : name,
+      value : name
+    });
   }
 }
 
-export default Font;
+export default FontPlugin;

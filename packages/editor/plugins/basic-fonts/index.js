@@ -5,16 +5,14 @@ export default ApplicationPlugin.create({
   id: 'basicFontsPlugin',
   factory: {
     create({ app }) {
-      app.fonts = [
-        Font.create('Lucida Grande'),
-        Font.create('Helvetica'),
-        Font.create('Arial'),
-        Font.create('Comic Sans MS'),
-        Font.create('Al Bayan'),
-        Font.create('Al Nye'),
-        Font.create('Avenir'),
-        Font.create('Avenir Next')
-      ];
+      app.plugins.push(...[
+        'Lucida Grande',
+        'Helvetica',
+        'Arial',
+        'Comic Sans MS'
+      ].map(function(fontName) {
+        return Font.create(fontName);
+      }));
     }
   }
 });
