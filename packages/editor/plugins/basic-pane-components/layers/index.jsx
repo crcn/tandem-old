@@ -1,6 +1,6 @@
 import './index.scss';
-import React from 'react';
 import Node from 'common/node';
+import React from 'react';
 import LayerComponent from './layer.jsx';
 
 class LayersPaneComponent extends React.Component {

@@ -1,8 +1,9 @@
 import './index.scss';
-import React from 'react';
-import PortalComponent from 'common/components/portal';
+
 import cx from 'classnames';
+import React from 'react';
 import FocusComponent from 'common/components/focus';
+import PortalComponent from 'common/components/portal';
 import { coerceFunction } from 'common/utils/function';
 
 /**
@@ -114,11 +115,9 @@ class SearchDropdownComponent extends React.Component {
 
   render() {
 
-    var createLabel   = coerceFunction(this.props.labelProperty || 'label');
-
+    var selectedItem        = this.props.reference.getValue();
+    var createLabel         = coerceFunction(this.props.labelProperty || 'label');
     var createDefaultLabel  = coerceFunction(this.props.defaultLabel || 'Select an item');
-
-    var selectedItem = this.props.reference.getValue();
 
     var sections = { };
 

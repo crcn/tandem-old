@@ -1,6 +1,7 @@
 import './layer.scss';
-import React from 'react';
+
 import cx from 'classnames';
+import React from 'react';
 
 class LayerComponent extends React.Component {
   onHeaderClick(event) {
