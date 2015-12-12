@@ -1,5 +1,5 @@
 import React from 'react';
-import SearchDropdownComponent from 'common/components/search-dropdown';
+import SearchDropdownComponent from 'common/components/inputs/searchable-dropdown';
 
 class FontInputComponent extends React.Component {
   render() {

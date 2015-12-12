@@ -1,8 +1,9 @@
 import './index.scss';
+
 import React from 'react';
-import FontInputComponent from './font-input';
 import Reference from 'common/reference';
-import ObservableObject from 'common/object/observable';
+import FontInputComponent from './font-input';
+import TextInputComponent from 'common/components/inputs/text-input';
 
 function createStyleReference(entity, styleName) {
   return {
@@ -33,6 +34,7 @@ class TextPaneComponent extends React.Component {
 // <NumberInputComponent reference={createStyleReference(entity, 'fontSize' )} />
     return <div className='m-text-pane'>
       <FontInputComponent entity={entity} fonts={fonts} />
+      <TextInputComponent reference={Reference.create(entity, 'value')} />
     </div>;
   }
 }

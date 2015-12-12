@@ -145,7 +145,7 @@ class SearchDropdownComponent extends React.Component {
 
     return <div className={['m-search-dropdown', this.props.className].join(' ')} onKeyDown={this.onKeyDown.bind(this)}>
 
-      <span ref='label' className='m-search-dropdown--label' onClick={this.toggleMenu.bind(this)}>{
+      <span ref='label' className='input m-search-dropdown--label' onClick={this.toggleMenu.bind(this)}>{
         selectedItem ? createLabel(selectedItem) : createDefaultLabel()
       }</span>
 
