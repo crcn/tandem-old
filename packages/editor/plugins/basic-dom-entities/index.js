@@ -1,7 +1,8 @@
-import { ApplicationPlugin, EntityPlugin, EntityPaneComponentPlugin } from 'editor/plugin-types';
+import { ApplicationPlugin, EntityPlugin, EntityPaneComponentPlugin, EntityLayerLabelComponentPlugin } from 'editor/plugin-types';
 
 import { TextEntity } from './entities';
 import TextEntityPaneComponent from './components/entity-panes/text';
+import TextLayerLabelComponent from './components/entity-layer-labels/text';
 
 export default ApplicationPlugin.create({
   id: 'basicDOMEntities',
@@ -18,6 +19,11 @@ export default ApplicationPlugin.create({
           id             : 'textPaneComponent',
           paneType       : 'text',
           componentClass : TextEntityPaneComponent
+        }),
+        EntityLayerLabelComponentPlugin.create({
+          id             : 'textPaneLayerComponent',
+          layerType      : 'text',
+          componentClass : TextLayerLabelComponent
         })
       );
     }

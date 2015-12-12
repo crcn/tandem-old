@@ -2,7 +2,7 @@ import ObservableObject from 'common/object/observable';
 
 const MIN_ZOOM_LEVEL = 0.4;
 const MAX_ZOOM_LEVEL = 2;
-const ZOOM_INCREMENT = 0.2;
+const ZOOM_INCREMENT = 0.1;
 
 class Preview extends ObservableObject {
   setTool(tool) {

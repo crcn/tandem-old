@@ -1,3 +1,5 @@
+// TODO - some of these components are plugin classes specific
+// to other plugin classes. These will need to be moved their own packages at some point (CC)
 
 import { Plugin } from 'common/registry';
 import React from 'react';
@@ -45,6 +47,12 @@ export class AppPaneComponentPlugin extends ComponentPlugin {
 export class EntityPaneComponentPlugin extends ComponentPlugin {
   constructor(properties) {
     super({ componentType: 'pane', paneType: 'entity', ...properties });
+  }
+}
+
+export class EntityLayerLabelComponentPlugin extends ComponentPlugin {
+  constructor(properties) {
+    super({ componentType: 'label', labelType: 'text', ...properties });
   }
 }
 

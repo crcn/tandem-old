@@ -7,8 +7,8 @@ class LayerComponent extends React.Component {
     this.props.app.setFocus(this.props.node);
   }
   render() {
-    var node  = this.props.node;
-    if (!node) return <span></span>;
+    var entity  = this.props.node;
+    if (!entity) return <span></span>;
 
     var depth = this.props.depth || 0;
 
@@ -16,20 +16,36 @@ class LayerComponent extends React.Component {
       paddingLeft: 15 + depth * 15
     };
 
+    var labelPlugin = this.props.app.plugins.queryOne({
+      componentType : 'label',
+      labelType     : entity.componentType
+    });
+
+    var labelSection;
+
+    if (labelPlugin) {
+      labelSection = labelPlugin.factory.create({
+        entity: entity,
+        ...this.props
+      });
+    } else {
+      labelSection = <span>
+        <i className={'s s-' + entity.icon } />
+        { entity.label }
+      </span>;
+    }
+
     var headerClassName = cx({
       'm-layers-pane-component-layer--header': true,
-      ['m-layer-type-' + node.type]: true,
-      'selected': this.props.app.focus === this.props.node
+      ['m-layer-type-' + entity.type]: true,
+      'selected': this.props.app.focus === entity
     })
 
     return <div className='m-layers-pane-component-layer'>
       <div style={labelStyle} className={headerClassName}  onClick={this.onHeaderClick.bind(this)}>
-        <span>
-          <i className={'s s-' + node.icon } />
-          { node.label }
-        </span>
+        { labelSection }
       </div>
-      { node.children.map((child, i) => {
+      { entity.children.map((child, i) => {
         return <LayerComponent node={child} key={i} depth={depth + 1} app={this.props.app} />
       })}
     </div>;

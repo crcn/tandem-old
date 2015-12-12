@@ -2,7 +2,6 @@
 
 .m-layers-pane-component-layer {
   &--header {
-
     cursor: default;
 
     &:hover {
@@ -11,6 +10,7 @@
 
     & i {
       margin-right: $padding-1;
+      float: left;
     }
 
     &.selected {
@@ -19,6 +19,16 @@
 
     display: block;
     padding: $padding-00 $padding-2;
+  }
+
+  & .m-label {
+    vertical-align: top;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: normal;
+    display: inline-block;
+    white-space: nowrap;
+    width: 90%; // room for icon
   }
 }
 

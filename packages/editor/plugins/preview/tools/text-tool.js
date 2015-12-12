@@ -12,9 +12,11 @@ class TextTool extends ObservableObject {
   notify(message) {
 
     var plugin = this.app.plugins.queryOne('textEntity');
+
+    // TODO - move this elsewhere
     var node   = plugin.factory.create({
       label: 'label',
-      value: 'okay!',
+      value: 'Type in text here',
       paneType: 'text',
       attributes: {
         style: {
