@@ -15,11 +15,13 @@
   &--menu {
 
     color: $color-grey-2;
+    z-index: 999;
 
     margin-top: $padding-0;
     position: absolute;
     width: 100%;
-    background-color: $color-grey-10;
+    background-color: white;
+    box-shadow: -2px 5px 10px rgba(0,0,0,0.2);
     // border: 1px solid $color-grey-8;
     border-radius: $border-radius-2;
 
@@ -37,6 +39,10 @@
           background-color: $color-sky-blue-4;
           color: $color-white-offset-8;
         }
+      }
+      &:last-child {
+        border-bottom-left-radius: $border-radius-2;
+        border-bottom-right-radius: $border-radius-2;
       }
     }
   }

@@ -4,6 +4,8 @@ import React from 'react';
 import Reference from 'common/reference';
 import FontInputComponent from './font-input';
 import TextInputComponent from 'common/components/inputs/text-input';
+import ColorPickerInputComponent from 'common/components/inputs/color-picker';
+
 
 function createStyleReference(entity, styleName) {
   return {
@@ -18,9 +20,8 @@ function createStyleReference(entity, styleName) {
   };
 }
 
-
 /*
-Typeface, Weight, Color, Size, Alignment, Width, Spacing, Opacity, Filters, display type, floating
+Typeface, Weight, Color, Size, Alignment, Width, Spacing, Opacity, Filters, display type, floating, weight, line height
 */
 
 class TextPaneComponent extends React.Component {
@@ -35,6 +36,7 @@ class TextPaneComponent extends React.Component {
     return <div className='m-text-pane'>
       <FontInputComponent entity={entity} fonts={fonts} />
       <TextInputComponent reference={Reference.create(entity, 'value')} />
+      <ColorPickerInputComponent reference={createStyleReference(entity, 'color')} />
     </div>;
   }
 }

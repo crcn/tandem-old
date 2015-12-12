@@ -1,0 +1,19 @@
+@import 'editor/scss/variables';
+
+.m-color-picker-input {
+  display:inline-block;
+  position: relative;
+  &--button {
+
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    // padding: $padding-0;
+
+    &-fill {
+      width: 30px;
+      height: 15px;
+      background-color: rgba(0,0,0,0);
+    }
+  }
+}
