@@ -7,7 +7,7 @@ class PopdownComponent extends React.Component {
   render() {
     return <div className={['m-popdown', this.props.className].join(' ')}>
       {
-        this.props.showArrowBox !== false             ?
+        this.props.showArrow !== false                ?
         <ArrowComponent styles={this.props.styles} /> :
         void 0
       }

@@ -1,7 +1,6 @@
 import './index.scss';
 import React from 'react';
 import PopdownComponent from 'common/components/popdown';
-import ArrowComponent from 'common/components/arrow';
 
 class MenuComponent extends React.Component {
 
@@ -24,6 +23,10 @@ class MenuComponent extends React.Component {
     this.setState({
       show: true
     });
+
+    if (this.props.onMenuShow) {
+      this.props.onMenuShow();
+    }
   }
 
   hide() {
@@ -33,9 +36,11 @@ class MenuComponent extends React.Component {
   }
 
   toggleMenu(event) {
-    this.setState({
-      show: !this.state.show
-    });
+    if (this.state.show) {
+      this.hide();
+    } else {
+      this.show();
+    }
   }
 
   render() {
@@ -45,7 +50,7 @@ class MenuComponent extends React.Component {
     var sections = {};
 
     if (show) {
-      sections.items = <PopdownComponent styles={{
+      sections.items = <PopdownComponent {...this.props} styles={{
           arrow: {
             left: this.state.buttonWidth ? (this.state.buttonWidth / 2) + 'px' : '50%'
           }

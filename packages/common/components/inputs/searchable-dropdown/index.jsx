@@ -23,7 +23,7 @@ class SearchDropdownComponent extends React.Component {
     this.setState({
       showMenu   : !this.state.showMenu,
       filter     : void 0,
-      focusIndex : -1
+      focusIndex : this.getInitialFocusIndex()
     });
   }
 
@@ -66,6 +66,7 @@ class SearchDropdownComponent extends React.Component {
   }
 
   getFilteredItems() {
+    var items = this.props.items
     return this.props.items.filter(this.state.filter || function() {
       return true;
     });
@@ -75,13 +76,22 @@ class SearchDropdownComponent extends React.Component {
 
     function defaultCreateFilter(search) {
       search = search.toLowerCase();
+
+      function compare(value) {
+        return !!~value.toLowerCase().indexOf(search);
+      }
+
       return function(item) {
+
+        if (typeof item === 'string') {
+          return compare(item);
+        }
 
         // scan all props
         for (var key in item) {
           var value = item[key];
           if (typeof value !== 'string') continue;
-          if (!!~value.toLowerCase().indexOf(search)) return true;
+          if (compare(value)) return true;
         }
       }
     }
@@ -97,10 +107,23 @@ class SearchDropdownComponent extends React.Component {
     this.hideMenu();
   }
 
+  getItems() {
+    return this.props.items;
+  }
+
+  getInitialFocusIndex() {
+    return this.props.showSearch ? -1 : this.getItems().findIndex((item) => {
+      return item === this.props.reference.getValue();
+    }) || -1;
+  }
+
   render() {
 
     var selectedItem        = this.props.reference.getValue();
-    var createLabel         = coerceFunction(this.props.labelProperty || 'label');
+    var createLabel         = typeof this.props.labelProperty === 'function' ? this.props.labelProperty : (item) => {
+      return typeof item !== 'object' ? item : item[this.props.labelProperty];
+    }
+
     var createDefaultLabel  = coerceFunction(this.props.defaultLabel || 'Select an item');
 
     var createMenu = () => {
@@ -114,7 +137,6 @@ class SearchDropdownComponent extends React.Component {
       return <div
         className='m-search-dropdown--inner'
         onKeyDown={this.onKeyDown.bind(this)}>
-
         { searchInputSection }
         <ul ref='menuItems' className='m-list'>
           {
@@ -128,6 +150,7 @@ class SearchDropdownComponent extends React.Component {
 
     return <MenuComponent
       ref='menu'
+      {...this.props}
       className={['m-search-dropdown', this.props.className].join(' ')}
       createMenu={createMenu}>
 
