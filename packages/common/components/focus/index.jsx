@@ -26,7 +26,7 @@ class FocusComponent extends React.Component {
   }
   getRef() {
     return ReactDOM.findDOMNode(this);
-    (node.nodeName === 'INPUT' ? node : node.querySelector('input'));
+    (nodeentityName === 'INPUT' ? node : node.querySelector('input'));
   }
   componentWillUnmount() {
     clearTimeout(this._timeout);

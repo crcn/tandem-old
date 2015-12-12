@@ -20,7 +20,7 @@ function createStyleReference(entity, styleName) {
 
 
 /*
-Typeface, Weight, Color, Size, Alignment, Width, Spacing, Opacity, Filters
+Typeface, Weight, Color, Size, Alignment, Width, Spacing, Opacity, Filters, display type, floating
 */
 
 class TextPaneComponent extends React.Component {

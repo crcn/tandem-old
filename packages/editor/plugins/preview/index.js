@@ -1,11 +1,12 @@
 import { ApplicationPlugin, PreviewComponentPlugin, ComponentPlugin, Plugin } from 'editor/plugin-types';
-import PreviewComponent from './components/preview';
-import Preview from './models/preview';
 import { CallbackNotifier } from 'common/notifiers';
+
+import React from 'react';
+import Preview from './models/preview';
 import TextTool from './tools/text-tool';
 import PointerTool from './tools/pointer-tool';
-import React from 'react';
-import HTMLNode from './components/html-node';
+import PreviewComponent from './components/preview';
+import HTMLEntityComponent from './components/html-entity';
 
 export default ApplicationPlugin.create({
   id: 'componentPreview',
@@ -117,7 +118,7 @@ function registerComponents(app) {
     app.plugins.push(ComponentPlugin.create({
       id: elementName + 'Element',
       componentType: elementName,
-      componentClass: HTMLNode
+      componentClass: HTMLEntityComponent
     }));
   });
 }

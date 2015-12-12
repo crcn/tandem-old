@@ -4,10 +4,10 @@ import cx from 'classnames';
 
 class LayerComponent extends React.Component {
   onHeaderClick(event) {
-    this.props.app.setFocus(this.props.node);
+    this.props.app.setFocus(this.props.entity);
   }
   render() {
-    var entity  = this.props.node;
+    var entity  = this.props.entity;
     if (!entity) return <span></span>;
 
     var depth = this.props.depth || 0;
@@ -46,7 +46,7 @@ class LayerComponent extends React.Component {
         { labelSection }
       </div>
       { entity.children.map((child, i) => {
-        return <LayerComponent node={child} key={i} depth={depth + 1} app={this.props.app} />
+        return <LayerComponent entity={child} key={i} depth={depth + 1} app={this.props.app} />
       })}
     </div>;
   }

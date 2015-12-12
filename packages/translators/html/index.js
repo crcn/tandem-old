@@ -1,9 +1,9 @@
 import Node from 'common/node';
 import HtmlElementNode from './ast/html-element';
 
-export function translate(node) {
+export function translate(entity) {
 
-    switch(node.type) {
+    switch(entity.type) {
       case 'displayObject': return translateDisplayObject(node);
     }
 

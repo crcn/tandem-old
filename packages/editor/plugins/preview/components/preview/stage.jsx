@@ -1,7 +1,7 @@
 import './stage.scss';
 
 import React from 'react';
-import NodeComponent from './node';
+import EntityComponent from './entity';
 import ToolsLayerComponent from './tools';
 
 class StageComponent extends React.Component {
@@ -54,7 +54,7 @@ class StageComponent extends React.Component {
           <ToolsLayerComponent app={app} zoom={preview.zoom} />
 
           <div ref='drawLayer' className='m-preview-stage--element-layer' onClick={this.onClick.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
-            <NodeComponent node={app.rootEntity} app={app} />
+            <EntityComponent entity={app.rootEntity} app={app} />
           </div>
         </div>
       </div>
