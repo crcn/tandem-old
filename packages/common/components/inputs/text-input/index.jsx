@@ -5,7 +5,7 @@ class TextInputComponent extends React.Component {
     this.props.reference.setValue(event.target.value);
   }
   render() {
-    return <input className='input form-control' onInput={this.onInput.bind(this)} defaultValue={this.props.reference.getValue()}></input>
+    return <input className='input form-control' onInput={this.onInput.bind(this)} value={this.props.reference.getValue()}></input>
   }
 }
 
