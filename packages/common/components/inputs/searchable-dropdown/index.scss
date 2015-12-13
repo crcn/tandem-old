@@ -23,6 +23,9 @@
     & .m-list {
       max-height: 200px;
       overflow-x: scroll;
+
+      // get rid of 1px padding issue with overflow
+      margin-right: -1px;
       & li {
         cursor: pointer;
         &:hover, &:focus {
