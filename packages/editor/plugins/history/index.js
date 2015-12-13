@@ -8,17 +8,19 @@
 
 import sift from 'sift';
 import debounce from 'lodash/function/debounce';
-import { CallbackNotifier } from 'common/notifiers';
-import ObservableCollection from 'common/collection/observable';
-import { Entity, deserialize } from 'editor/entity-types';
-import { TypeNotifier } from 'common/notifiers';
 import HistorySliderComponent from './components/slider';
+
+import ObservableCollection from 'common/collection/observable';
+import { CallbackNotifier, TypeNotifier } from 'common/notifiers';
+
+import { SET_ROOT_ENTITY } from 'editor/message-types';
+import { Entity, deserialize } from 'editor/entity-types';
 import {
   ApplicationPlugin,
   KeyCommandPlugin,
   ComponentPlugin
 } from 'editor/plugin/types';
-import { SET_ROOT_ENTITY } from 'editor/message-types';
+
 
 const DEBOUNCE_TIMEOUT = 300;
 

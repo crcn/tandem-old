@@ -1,6 +1,6 @@
 import Node from './index';
-import { CallbackNotifier } from 'common/notifiers';
 import sift from 'sift';
+import { CallbackNotifier } from 'common/notifiers';
 
 describe(__filename + '#', function() {
   it('can be created', function() {

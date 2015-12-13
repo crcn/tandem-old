@@ -1,9 +1,9 @@
 import './index.scss';
-import { parseColor, stringifyColor } from 'common/utils/color';
 import { diff } from 'common/utils/object';
-import PointerComponent from './pointer';
-import { chrome as ColorPickerComponent } from 'react-color';
 import MenuComponent from 'common/components/menu';
+import PointerComponent from './pointer';
+import { parseColor, stringifyColor } from 'common/utils/color';
+import { chrome as ColorPickerComponent } from 'react-color';
 
 import React from 'react';
 

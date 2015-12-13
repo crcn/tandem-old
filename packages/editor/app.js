@@ -41,13 +41,16 @@ class Application extends BaseApplication {
 
   setFocus(item) {
 
-    // turn off current focus immediately
+    // turn off current focus immediately. Fixes a
+    // NULL exception bug when rAF fires and the focused element
+    // does *not* actually exist as a child of a root entity
     this.setProperties({
       focus: void 0
     });
 
     // wait for rAF.
-    // TODO - add this in runloop
+    // TODO - add this in runloop. This feels like
+    // broken abstraction.
     requestAnimationFrame(() => {
       this.setProperties({
         focus: item

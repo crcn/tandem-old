@@ -9,7 +9,7 @@ import {
 import { CallbackNotifier } from 'common/notifiers';
 
 import React from 'react';
-import Preview from './models/preview';
+import Preview from './facades/preview';
 import TextTool from './tools/text-tool';
 import PointerTool from './tools/pointer-tool';
 import PreviewComponent from './components/preview';

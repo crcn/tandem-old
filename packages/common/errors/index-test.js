@@ -1,5 +1,5 @@
-import { BaseError, InvalidError } from './index';
 import expect from 'expect.js';
+import { BaseError, InvalidError } from './index';
 
 describe(__filename + '#', function() {
   it('invalid error is an error', function() {

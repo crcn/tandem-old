@@ -1,9 +1,9 @@
-import { TypeNotifier, CallbackNotifier } from 'common/notifiers';
+
+import mousetrap from 'mousetrap';
+import { INITIALIZE } from 'base/message-types';
 import { ApplicationPlugin } from 'editor/plugin/types';
 import { ALL_KEY_COMMANDS } from 'editor/plugin/queries';
-import { INITIALIZE } from 'base/message-types';
-import mousetrap from 'mousetrap';
-import sift from 'sift';
+import { TypeNotifier, CallbackNotifier } from 'common/notifiers';
 
 export default ApplicationPlugin.create({
   id: 'shortcuts',
@@ -24,9 +24,9 @@ export default ApplicationPlugin.create({
 
           // do NOT hijack key code events unless there is a modifier (ctrl mainly)
           if (/input|textarea/i.test(event.target.nodeName) && !(event.metaKey || event.ctrlKey)) {
-            return
+            return;
           }
-          
+
           event.preventDefault();
           plugin.handler();
         });

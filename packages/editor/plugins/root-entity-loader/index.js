@@ -1,6 +1,11 @@
 import { ApplicationPlugin } from 'editor/plugin/types';
 import { TypeNotifier, CallbackNotifier } from 'common/notifiers';
-import { SET_ROOT_ENTITY, LOAD_ROOT_ENTITY, RootEntityMessage } from 'editor/message-types';
+
+import {
+  SET_ROOT_ENTITY,
+  LOAD_ROOT_ENTITY,
+  RootEntityMessage
+} from 'editor/message-types';
 
 
 export default ApplicationPlugin.create({

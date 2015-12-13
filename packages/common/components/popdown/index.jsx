@@ -1,7 +1,7 @@
 import './index.scss';
-import ArrowComponent from 'common/components/arrow';
 
 import React from 'react';
+import ArrowComponent from 'common/components/arrow';
 
 class PopdownComponent extends React.Component {
   render() {

@@ -1,9 +1,9 @@
 // TODO - some of these components are plugin classes specific
 // to other plugin classes. These will need to be moved their own packages at some point (CC)
 
-import { Plugin } from 'common/registry';
 import React from 'react';
 import assert from 'assert';
+import { Plugin } from 'common/registry';
 
 export const ROOT_COMPONENT_ID = 'rootComponent';
 

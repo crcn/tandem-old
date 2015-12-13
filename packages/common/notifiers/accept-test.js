@@ -1,7 +1,7 @@
-import AcceptNotifer from './accept';
-import CallbackNotifier from './callback';
 import sift from 'sift';
 import expect from 'expect.js';
+import AcceptNotifer from './accept';
+import CallbackNotifier from './callback';
 
 describe(__filename + '#', function() {
 

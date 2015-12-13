@@ -1,7 +1,7 @@
 
-import { Plugin } from 'common/registry';
-import Schema from 'common/schema';
 import React from 'react';
+import Schema from 'common/schema';
+import { Plugin } from 'common/registry';
 import mixinSchema from 'common/class/mixins/schema';
 
 export const ROOT_COMPONENT_ID = 'rootComponent';

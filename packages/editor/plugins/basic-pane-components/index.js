@@ -1,7 +1,11 @@
-import { ApplicationPlugin, AppPaneComponentPlugin, EntityPaneComponentPlugin } from 'editor/plugin/types';
+import {
+  ApplicationPlugin,
+  AppPaneComponentPlugin,
+  EntityPaneComponentPlugin
+} from 'editor/plugin/types';
+
 import LayersPaneComponent from './layers';
 import PropertiesPaneComponent from './properties';
-
 
 export default ApplicationPlugin.create({
   id: 'basicPaneComponents',

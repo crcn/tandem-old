@@ -4,9 +4,11 @@ import cx from 'classnames';
 import React from 'react';
 
 class LayerComponent extends React.Component {
+  
   onHeaderClick(event) {
     this.props.app.setFocus(this.props.entity);
   }
+
   render() {
     var entity  = this.props.entity;
     if (!entity) return <span></span>;

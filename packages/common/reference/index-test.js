@@ -1,5 +1,5 @@
-import Reference from './index';
 import expect from 'expect.js';
+import Reference from './index';
 import BaseObject from 'common/object/base';
 
 describe(__filename + '#', function() {

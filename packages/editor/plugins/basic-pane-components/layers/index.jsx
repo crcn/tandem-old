@@ -1,4 +1,5 @@
 import './index.scss';
+
 import Node from 'common/node';
 import React from 'react';
 import LayerComponent from './layer.jsx';

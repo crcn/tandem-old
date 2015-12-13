@@ -1,7 +1,8 @@
-import mixinChangeNotifier from './index';
+
+export expect from 'expect.js';
 import BaseObject from 'common/object/base';
 import Collection from 'common/collection';
-export expect from 'expect.js';
+import mixinChangeNotifier from './index';
 
 describe(__filename + '#', function() {
   it('can be mixed into an object', function() {

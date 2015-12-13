@@ -1,7 +1,7 @@
-import BaseObject from 'common/object/base';
 import Schema from 'common/schema';
-import mixinSchema from 'common/class/mixins/schema';
 import Factory from 'common/value-object/factory';
+import BaseObject from 'common/object/base';
+import mixinSchema from 'common/class/mixins/schema';
 
 var schema = Schema.create({
   fields: {

@@ -1,9 +1,9 @@
 import './index.scss';
 
 import React from 'react';
-import ToolbarComponent from './toolbar';
-import FooterComponent from './footer';
 import StageComponent from './stage';
+import FooterComponent from './footer';
+import ToolbarComponent from './toolbar';
 
 /**
 * This is where all the visual editing happens

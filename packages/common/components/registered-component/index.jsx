@@ -1,5 +1,4 @@
 import React from 'react';
-import sift from 'sift';
 
 class RegisteredComponent extends React.Component {
   render() {

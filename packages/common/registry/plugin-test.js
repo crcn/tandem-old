@@ -1,6 +1,6 @@
+import expect from 'expect.js';
 import Plugin from './plugin';
 import BaseObject from 'common/object/base';
-import expect from 'expect.js';
 
 describe(__filename + '#', function() {
   it('can be created', function() {

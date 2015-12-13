@@ -1,2 +1,2 @@
-export Registry from './registry';
 export Plugin from './plugin';
+export Registry from './registry';

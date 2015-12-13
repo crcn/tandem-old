@@ -1,5 +1,5 @@
-import ObservableObject from 'common/object/observable';
 import { Registry } from 'common/registry';
+import ObservableObject from 'common/object/observable';
 import { NotifierCollection } from 'common/notifiers';
 import { ALL_APPLICATION_PLUGINS } from 'base/plugin/queries';
 import { InitializeMessage, LoadMessage } from 'base/message-types';

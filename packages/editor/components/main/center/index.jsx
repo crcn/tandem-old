@@ -1,7 +1,6 @@
 import './index.scss';
 
 import React from 'react';
-import sift from 'sift';
 
 /**
 * This is where all the visual editing happens
@@ -11,9 +10,9 @@ class CenterComponent extends React.Component {
   render() {
     return <div className='m-editor-center'>
       {
-        this.props.app.plugins.filter(sift({
+        this.props.app.plugins.query({
           componentType: 'preview'
-        })).map((plugin) => {
+        }).map((plugin) => {
           return plugin.factory.create({ key: plugin.id, ...this.props });
         })
       }

@@ -1,8 +1,8 @@
-import ObservableObject from 'common/object/observable';
-import { ApplicationPlugin } from 'editor/plugin/types';
-import { CallbackNotifier } from 'common/notifiers';
 import store from 'store';
 import debounce from 'lodash/function/debounce';
+import ObservableObject from 'common/object/observable';
+import { CallbackNotifier } from 'common/notifiers';
+import { ApplicationPlugin } from 'editor/plugin/types';
 
 export default ApplicationPlugin.create({
   id: 'applicationSettings',

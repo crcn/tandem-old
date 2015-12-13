@@ -1,7 +1,8 @@
-import BaseCollection from 'common/collection';
-import Plugin from './plugin';
-import { ExistsError } from 'common/errors';
+
 import sift from 'sift';
+import Plugin from './plugin';
+import BaseCollection from 'common/collection';
+import { ExistsError } from 'common/errors';
 
 class Registry extends BaseCollection {
 

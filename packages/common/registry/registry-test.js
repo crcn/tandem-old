@@ -1,8 +1,7 @@
-import Registry from './registry';
 import Plugin from './plugin';
+import Registry from './registry';
 import BaseObject from 'common/object/base';
 import { InvalidError, ExistsError } from 'common/errors';
-import sift from 'sift';
 
 describe(__filename + '#', function() {
 
@@ -20,7 +19,7 @@ describe(__filename + '#', function() {
     var r = Registry.create();
     var e1 = r.register(Plugin.create({ id: '1', type: 'component', factory: BaseObject }))
     var e2 = r.register(Plugin.create({ id: '2', type: 'model', factory: BaseObject }));
-    expect(r.find(sift({ type: 'model' }))).to.be(e2);
+    expect(r.queryOne({ type: 'model' })).to.be(e2);
   });
 
   it('throws an error if an entry already exists with the same ID', function() {

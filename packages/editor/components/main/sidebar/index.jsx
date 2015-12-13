@@ -1,10 +1,10 @@
 import './sidebar.scss';
+
 import React from 'react';
-import sift from 'sift';
-import PaneContainerComponent from './pane-container';
 import cx from 'classnames';
-import SideDragger from 'common/components/side-dragger';
 import Reference from 'common/reference';
+import SideDragger from 'common/components/side-dragger';
+import PaneContainerComponent from './pane-container';
 
 /**
 * Right sidebar tools
@@ -25,7 +25,7 @@ class SidebarComponent extends React.Component {
     return <div style={style} className={['m-sidebar', this.props.position].join(' ')}>
 
       {
-        this.props.app.plugins.filter(sift({ paneType: this.props.paneType })).map((plugin) => {
+        this.props.app.plugins.query({ paneType: this.props.paneType }).map((plugin) => {
           return <PaneContainerComponent plugin={plugin} key={plugin.id} {...this.props} />
         })
       }

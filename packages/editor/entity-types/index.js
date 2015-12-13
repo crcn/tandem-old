@@ -1,8 +1,8 @@
-import Node from 'common/node';
 import uuid from 'uuid';
-import { ChangeMessage } from 'base/message-types';
-import { clone } from 'common/utils/object';
+import Node from 'common/node';
 import assert from 'assert';
+import { clone } from 'common/utils/object';
+import { ChangeMessage } from 'base/message-types';
 
 export function deserialize(data, rootProps, plugins) {
   var entityPlugin = plugins.queryOne({
@@ -72,6 +72,9 @@ export class DisplayEntity extends Entity {
 
   /**
    * overrides the style computer. Should be set by renderer
+   * TODO - change this to "visual computer" or similar. Changing the method
+   * here directly is a nono (works for now though). Primarily because it doesn't follow any
+   * other pattern used in the arch.
    */
 
   setStyleComputer(fn) {
