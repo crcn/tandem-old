@@ -6,7 +6,11 @@ const DEFAULT_WEIGHTS = [
 ];
 
 const DEFAULT_STYLES = [
-  'italic', 'normal'
+  'italic', 'normal', 'oblique', 'initial', 'inherit'
+];
+
+const DEFAULT_DECORATIONS = [
+  'none', 'undline', 'overline', 'line-through', 'initial', 'inherit'
 ];
 
 export default ApplicationPlugin.create({
@@ -28,7 +32,8 @@ function registerFonts(app) {
     return FontPlugin.create(
       fontName,
       DEFAULT_WEIGHTS,
-      DEFAULT_STYLES
+      DEFAULT_STYLES,
+      DEFAULT_DECORATIONS
     );
   }));
 }

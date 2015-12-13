@@ -31,10 +31,11 @@ class TextPaneComponent extends React.Component {
     var entity = this.props.entity;
 
     // TODO - change this to query types
-    var fonts       = this.props.app.plugins.query(ALL_FONTS);
-    var font        = findFont(entity, fonts) || {};
-    var fontWeights = createMenuItems(font.weights);
-    var fontStyles  = createMenuItems(font.styles);
+    var fonts            = this.props.app.plugins.query(ALL_FONTS);
+    var font             = findFont(entity, fonts) || {};
+    var fontWeights      = createMenuItems(font.weights);
+    var fontStyles       = createMenuItems(font.styles);
+    var fontDecorations  = createMenuItems(font.decorations);
 
     // TODO - need to combine font styles into one drop menu
     return <div className='m-text-pane'>
@@ -53,6 +54,13 @@ class TextPaneComponent extends React.Component {
         reference={createStyleReference(entity, 'fontStyle')}
         items={fontStyles}
         disable={!fontStyles.length} />
+
+
+      <SearchDropdownComponent
+        defaultLabel='Font Decorations'
+        reference={createStyleReference(entity, 'textDecoration')}
+        items={fontDecorations}
+        disable={!fontDecorations.length} />
 
       <UnitInputComponent reference={createStyleReference(entity, 'fontSize')} />
     </div>;
