@@ -16,12 +16,6 @@ export default ApplicationPlugin.create({
         label          : 'Layers',
         componentClass : LayersPaneComponent
       }));
-
-      app.plugins.push(EntityPaneComponentPlugin.create({
-        id             : 'propertiesPane',
-        label          : 'Properties',
-        componentClass : PropertiesPaneComponent
-      }));
     }
   }
 });

@@ -8,7 +8,8 @@ import {
 } from 'editor/plugin/types';
 
 import { TextEntity, ElementEntity } from './entities';
-import TextEntityPaneComponent from './components/entity-panes/text';
+import TransformPaneComponent from './components/entity-panes/transform';
+import TypographyPaneComponent from './components/entity-panes/typography';
 import TextLayerLabelComponent from './components/entity-layer-labels/text';
 
 export default ApplicationPlugin.create({
@@ -31,9 +32,16 @@ function registerEntities(app) {
       factory : TextEntity
     }),
     EntityPaneComponentPlugin.create({
-      id             : 'textPaneComponent',
-      paneType       : 'text',
-      componentClass : TextEntityPaneComponent
+      id             : 'transformPaneComponent',
+      label          : 'Transform',
+      paneType       : 'entity',
+      componentClass : TransformPaneComponent
+    }),
+    EntityPaneComponentPlugin.create({
+      id             : 'typographyPaneComponent',
+      label          : 'Typogarphy',
+      paneType       : 'entity',
+      componentClass : TypographyPaneComponent
     }),
     EntityLayerLabelComponentPlugin.create({
       id             : 'textPaneLayerComponent',
