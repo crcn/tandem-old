@@ -13,6 +13,8 @@ class HTMLEntityComponent extends React.Component {
 
       return {
         resizable : window.getComputedStyle(this.refs.element).display !== 'inline',
+
+        // this is WRONG. need to get left position based on canvas
         left      : this.refs.element.offsetLeft,
         top       : this.refs.element.offsetTop,
         width     : w,

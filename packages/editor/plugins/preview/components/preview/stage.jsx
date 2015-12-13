@@ -13,12 +13,15 @@ class StageComponent extends React.Component {
 
     // this math seems very odd. However, rect.left property gets zoomed,
     // whereas the width stays the same. Need to offsets mouse x & y with this.
+
     var x = (event.clientX - rect.left * this.props.app.preview.zoom) / this.props.app.preview.zoom;
     var y = (event.clientY - rect.top * this.props.app.preview.zoom) / this.props.app.preview.zoom;
 
     this.props.app.preview.currentTool.notify({
       type: 'click',
-      targetNode: this.props.app.rootEntity.find(sift({ id: nodeId })),
+      targetNode: this.props.app.rootEntity.find(
+        sift({ id: nodeId })
+      ),
       x: x,
       y: y
     });
@@ -53,8 +56,10 @@ class StageComponent extends React.Component {
 
           <ToolsLayerComponent app={app} zoom={preview.zoom} />
 
-          <div ref='drawLayer' className='m-preview-stage--element-layer' onClick={this.onClick.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
-            <EntityComponent entity={app.rootEntity} app={app} />
+          <div className='m-preview-stage--element-layer' onClick={this.onClick.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
+            <span ref='drawLayer' className='reset-all'>
+              <EntityComponent entity={app.rootEntity} app={app} />
+            </span>
           </div>
         </div>
       </div>

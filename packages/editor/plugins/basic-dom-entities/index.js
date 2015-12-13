@@ -46,6 +46,21 @@ function registerEntities(app) {
 function registerCommands(app) {
   app.plugins.push(
 
+    // generic
+    // TODO - move this elsewhere
+    KeyCommandPlugin.create({
+      id         : 'boldCommand',
+
+      // TODO - remove control once moved to desktop app
+      keyCommand : 'backspace',
+      handler    : function() {
+        if (!app.focus || !app.focus.componentType || !app.focus.parent) return;
+        app.focus.parent.children.remove(app.focus);
+        app.setFocus(void 0);
+      }
+    }),
+
+
     // text
     KeyCommandPlugin.create({
       id         : 'boldCommand',

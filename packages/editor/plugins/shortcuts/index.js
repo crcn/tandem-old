@@ -20,7 +20,10 @@ export default ApplicationPlugin.create({
       }
 
       function registerKeyBinding(plugin) {
-        mousetrap.bind(plugin.keyCommand, plugin.handler);
+        mousetrap.bind(plugin.keyCommand, function(event) {
+          event.preventDefault();
+          plugin.handler();
+        });
       }
     }
   }
