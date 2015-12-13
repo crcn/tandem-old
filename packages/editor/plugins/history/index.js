@@ -15,12 +15,12 @@ import { CallbackNotifier, TypeNotifier } from 'common/notifiers';
 
 import { SET_ROOT_ENTITY } from 'editor/message-types';
 import { Entity, deserialize } from 'editor/entity-types';
+
 import {
   ApplicationPlugin,
   KeyCommandPlugin,
   ComponentPlugin
 } from 'editor/plugin/types';
-
 
 const DEBOUNCE_TIMEOUT = 300;
 
@@ -112,12 +112,12 @@ function create({ app }) {
     KeyCommandPlugin.create({
       id         : 'undoCommand',
       keyCommand : 'command+z',
-      handler    : shift.bind(this, -1)
+      notifier   : CallbackNotifier.create(shift.bind(this, -1))
     }),
     KeyCommandPlugin.create({
       id         : 'redoCommand',
       keyCommand : 'command+y',
-      handler    : shift.bind(this, 1)
+      notifier   : CallbackNotifier.create(shift.bind(this, 1))
     }),
     ComponentPlugin.create({
       history        : history,

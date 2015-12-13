@@ -51,22 +51,30 @@ export default ApplicationPlugin.create({
         KeyCommandPlugin.create({
           id         : 'textToolKeyCommand',
           keyCommand : 't',
-          handler    : preview.setTool.bind(preview, textTool)
+          notifier   : CallbackNotifier.create(
+            preview.setTool.bind(preview, textTool)
+          )
         }),
         KeyCommandPlugin.create({
           id         : 'pointerToolKeyCommand',
           keyCommand : 'p',
-          handler    : preview.setTool.bind(preview, pointerTool)
+          notifier   : CallbackNotifier.create(
+            preview.setTool.bind(preview, pointerTool)
+          )
         }),
         KeyCommandPlugin.create({
           id         : 'zoomInKeyCommand',
           keyCommand : 'ctrl+]',
-          handler    : preview.zoomIn.bind(preview)
+          notifier   : CallbackNotifier.create(
+            preview.zoomIn.bind(preview)
+          )
         }),
         KeyCommandPlugin.create({
           id         : 'zoomOutKeyCommand',
           keyCommand : 'ctrl+[',
-          handler    : preview.zoomOut.bind(preview)
+          notifier   : CallbackNotifier.create(
+            preview.zoomOut.bind(preview)
+          )
         })
       );
 

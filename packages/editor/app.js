@@ -8,6 +8,7 @@ import PreviewPlugin from './plugins/preview';
 import HistoryPlugin from './plugins/history';
 import SettingsPlugin from './plugins/settings';
 import ShortcutPlugin from './plugins/shortcuts';
+import ClipboardPlugin from './plugins/clipboard';
 import BasicFontPlugin from './plugins/basic-fonts';
 import TestProjectPlugin from './plugins/test-project';
 import LoadRootEntityPlugin from './plugins/root-entity-loader';
@@ -24,6 +25,7 @@ class Application extends BaseApplication {
     HistoryPlugin,
     ShortcutPlugin,
     SettingsPlugin,
+    ClipboardPlugin,
     BasicFontPlugin,
     TestProjectPlugin,
     LoadRootEntityPlugin,

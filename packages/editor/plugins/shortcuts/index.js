@@ -28,7 +28,7 @@ export default ApplicationPlugin.create({
           }
 
           event.preventDefault();
-          plugin.handler();
+          plugin.notifier.notify();
         });
       }
     }
