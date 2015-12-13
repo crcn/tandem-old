@@ -2,7 +2,7 @@ import ObservableObject from 'common/object/observable';
 import { Registry } from 'common/registry';
 import { NotifierCollection } from 'common/notifiers';
 import { ALL_APPLICATION_PLUGINS } from 'base/plugin/queries';
-import { InitializeMessage, LoadMessage } from 'base/messages';
+import { InitializeMessage, LoadMessage } from 'base/message-types';
 
 class BaseApplication extends ObservableObject {
 

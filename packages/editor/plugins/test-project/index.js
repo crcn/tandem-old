@@ -1,7 +1,8 @@
 import { ApplicationPlugin } from 'editor/plugin/types';
 import { Entity } from 'editor/entity-types';
 import { TypeNotifier, CallbackNotifier } from 'common/notifiers';
-import { LOAD } from 'base/messages';
+import { LOAD } from 'base/message-types';
+import { LOAD_ROOT_ENTITY, RootEntityMessage } from 'editor/message-types';
 
 export default ApplicationPlugin.create({
   id: 'testProject',
@@ -23,9 +24,7 @@ export default ApplicationPlugin.create({
           icon          : 'puzzle'
         });
 
-        app.setProperties({
-          rootEntity: entity
-        });
+        app.notifier.notify(RootEntityMessage.create(LOAD_ROOT_ENTITY, entity));
       }
 
     }

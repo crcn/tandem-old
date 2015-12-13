@@ -1,4 +1,4 @@
-import { ChangeMessage } from 'base/messages';
+import { ChangeMessage } from 'base/message-types';
 
 export default function(clazz) {
 

@@ -1,7 +1,13 @@
 import BaseObject from 'common/object/base';
+import CallbackNotifier from './callback';
 
 class TypeNotifier extends BaseObject {
   constructor(type, notifier) {
+    
+    if (typeof notifier === 'function') {
+      notifier = CallbackNotifier.create(notifier);
+    }
+
     super({ type: type, notifier: notifier });
   }
   notify(message) {

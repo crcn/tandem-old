@@ -3,7 +3,7 @@ import BaseObject from 'common/object/base';
 import { Plugin } from 'common/registry';
 import sift from 'sift';
 import { CallbackNotifier, AcceptNotifier } from 'common/notifiers';
-import { LOAD, INITIALIZE } from 'base/messages';
+import { LOAD, INITIALIZE } from 'base/message-types';
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {

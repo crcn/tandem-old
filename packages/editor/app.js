@@ -10,6 +10,7 @@ import SettingsPlugin from './plugins/settings';
 import ShortcutPlugin from './plugins/shortcuts';
 import BasicFontPlugin from './plugins/basic-fonts';
 import TestProjectPlugin from './plugins/test-project';
+import LoadRootEntityPlugin from './plugins/root-entity-loader';
 import BasicDOMEntitiesPlugin from './plugins/basic-dom-entities';
 import BasicPaneComponentsPlugin from './plugins/basic-pane-components';
 
@@ -25,6 +26,7 @@ class Application extends BaseApplication {
     SettingsPlugin,
     BasicFontPlugin,
     TestProjectPlugin,
+    LoadRootEntityPlugin,
     BasicDOMEntitiesPlugin,
     BasicPaneComponentsPlugin
   ])

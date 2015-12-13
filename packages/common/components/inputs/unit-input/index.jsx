@@ -41,7 +41,7 @@ class UnitInputComponent extends React.Component {
 
     return <div className='m-unit-input'>
       <input
-        className='input'
+        className='input mousetrap'
         ref='number'
         type='text'
         onInput={this.setReferenceValue.bind(this)}
@@ -50,7 +50,7 @@ class UnitInputComponent extends React.Component {
         value={num}></input>
 
       <input
-        className='input'
+        className='input mousetrap'
         ref='units'
         type='text'
         onInput={this.setReferenceValue.bind(this)}

@@ -6,12 +6,14 @@ import debounce from 'lodash/function/debounce';
 import { CallbackNotifier } from 'common/notifiers';
 import ObservableCollection from 'common/collection/observable';
 import { Entity, deserialize } from 'editor/entity-types';
+import { TypeNotifier } from 'common/notifiers';
 import HistorySliderComponent from './components/slider';
 import {
   ApplicationPlugin,
   KeyCommandPlugin,
   ComponentPlugin
 } from 'editor/plugin/types';
+import { SET_ROOT_ENTITY } from 'editor/message-types';
 
 const DEBOUNCE_TIMEOUT = 300;
 
@@ -30,8 +32,12 @@ function create({ app }) {
 
   history.move = move;
 
-  // TODO - diff this stuff to save on memory
-  var save = debounce(function() {
+  app.notifier.push(TypeNotifier.create(SET_ROOT_ENTITY, (message) => {
+    history.position = 0;
+    saveNow();
+  }));
+
+  var saveNow = function() {
 
     history.splice(
       history.position,
@@ -45,7 +51,10 @@ function create({ app }) {
     // MAYBE use a getter / setter instead.
     history.position = history.length;
 
-  }, DEBOUNCE_TIMEOUT);
+  }
+
+  // TODO - diff this stuff to save on memory
+  var save = debounce(saveNow, DEBOUNCE_TIMEOUT);
 
   function move(position) {
     history.position = position;
@@ -67,6 +76,13 @@ function create({ app }) {
   }
 
   function shift(step) {
+
+    // last item is the most current change. We need to step back
+    // one more time if the position is at the end.
+    if (history.position == history.length && step === -1) {
+      // step -= 1;
+    }
+
     move(Math.max(0, Math.min(history.length - 1, history.position + step)));
   }
 

@@ -1,6 +1,6 @@
 import Node from 'common/node';
 import uuid from 'uuid';
-import { ChangeMessage } from 'base/messages';
+import { ChangeMessage } from 'base/message-types';
 import { clone } from 'common/utils/object';
 import assert from 'assert';
 

@@ -27,6 +27,7 @@
     text-overflow: ellipsis;
     word-wrap: normal;
     display: inline-block;
+    -webkit-user-select: none;
     white-space: nowrap;
     width: 100%;
   }

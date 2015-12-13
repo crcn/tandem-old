@@ -6,7 +6,10 @@ class TextInputComponent extends React.Component {
   }
   render() {
     // silence onChange console.error
-    return <input className='input form-control' onInput={this.onInput.bind(this)} value={this.props.reference.getValue()} onChange={function(){}}></input>
+    return <input className='input form-control mousetrap'
+      onInput={this.onInput.bind(this)}
+      value={this.props.reference.getValue()}
+      onChange={function(){}}></input>
   }
 }
 
