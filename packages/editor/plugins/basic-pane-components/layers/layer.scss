@@ -9,9 +9,16 @@
     }
 
     & i {
-      margin-right: $padding-1;
+      margin-right: $padding-0;
       float: left;
     }
+
+    // next sibling after icon. This is necessary
+    // for things like input that need to add padding
+    & i + * {
+      margin-left: $padding-0;
+    }
+
 
     &.selected {
       background-color: $color-blue-3;

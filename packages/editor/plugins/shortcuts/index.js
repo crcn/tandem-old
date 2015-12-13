@@ -23,7 +23,7 @@ export default ApplicationPlugin.create({
         mousetrap.bind(plugin.keyCommand, function(event) {
 
           // do NOT hijack key code events unless there is a modifier (ctrl mainly)
-          if (/input|textarea/i.test(event.target.nodeName) && !(event.metaKey || event.ctrlKey)) {
+          if (/input|textarea/i.test(event.target.nodeName) && !(event.metaKey || event.ctrlKey || event.delKey)) {
             return;
           }
 

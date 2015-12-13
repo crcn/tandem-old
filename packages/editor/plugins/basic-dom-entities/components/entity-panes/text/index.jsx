@@ -40,7 +40,6 @@ class TextPaneComponent extends React.Component {
     // TODO - need to combine font styles into one drop menu
     return <div className='m-text-pane'>
       <FontInputComponent entity={entity} fonts={fonts} />
-      <TextInputComponent reference={Reference.create(entity, 'value')} />
       <ColorPickerInputComponent reference={createStyleReference(entity, 'color')} />
 
       <SearchDropdownComponent
@@ -61,6 +60,10 @@ class TextPaneComponent extends React.Component {
         reference={createStyleReference(entity, 'textDecoration')}
         items={fontDecorations}
         disable={!fontDecorations.length} />
+
+      <div>
+        <span>x</span> 100px <span>y</span> 100px
+      </div>
 
       <UnitInputComponent reference={createStyleReference(entity, 'fontSize')} />
       <UnitInputComponent reference={createStyleReference(entity, 'lineHeight')} />

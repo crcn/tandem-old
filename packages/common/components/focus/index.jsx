@@ -38,4 +38,8 @@ class FocusComponent extends React.Component {
   }
 }
 
+FocusComponent.defaultProps = {
+  focus: true
+};
+
 export default FocusComponent;

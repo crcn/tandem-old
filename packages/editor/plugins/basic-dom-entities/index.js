@@ -61,8 +61,12 @@ function registerCommands(app) {
       keyCommand : 'backspace',
       handler    : function() {
         if (!app.focus || !app.focus.componentType || !app.focus.parent) return;
-        app.focus.parent.children.remove(app.focus);
+
+        // FIXME: leaky here. should be able to remove entity
+        // without it being unfocused
+        var focus = app.focus;
         app.setFocus(void 0);
+        focus.parent.children.remove(focus);
       }
     }),
 
