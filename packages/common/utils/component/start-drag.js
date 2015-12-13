@@ -1,6 +1,9 @@
 module.exports = function(event, update) {
 
   function drag(event) {
+
+    // stops text from getting highlighted
+    event.preventDefault();
     update(event);
   }
 

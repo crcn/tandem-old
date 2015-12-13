@@ -83,7 +83,7 @@ class MenuComponent extends React.Component {
       'disable': this.props.disable
     });
 
-    return <div ref="menu" tabIndex="0" onKeyDown={this.onKeyDown.bind(this)} className={[classNames, this.props.className].join(' ')}>
+    return <div ref="menu" tabIndex={this.props.disable ? void 0 : 0} onKeyDown={this.onKeyDown.bind(this)} className={[classNames, this.props.className].join(' ')}>
 
       <span ref='button' onClick={this.toggleMenu.bind(this)}>
         {
