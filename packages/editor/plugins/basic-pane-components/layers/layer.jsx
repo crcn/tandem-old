@@ -5,7 +5,7 @@ import React from 'react';
 
 class LayerComponent extends React.Component {
 
-  onHeaderClick(event) {
+  focus() {
     this.props.app.setFocus(this.props.entity);
   }
 
@@ -47,7 +47,7 @@ class LayerComponent extends React.Component {
     })
 
     return <div className='m-layers-pane-component-layer'>
-      <div style={labelStyle} className={headerClassName}  onClick={this.onHeaderClick.bind(this)}>
+      <div style={labelStyle} tabIndex="0"  onFocus={this.focus.bind(this)} className={headerClassName}>
         { labelSection }
       </div>
       { entity.children.map((child, i) => {
