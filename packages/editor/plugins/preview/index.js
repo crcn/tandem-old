@@ -1,4 +1,11 @@
-import { ApplicationPlugin, PreviewComponentPlugin, ComponentPlugin, Plugin } from 'editor/plugin/types';
+import {
+  ApplicationPlugin,
+  PreviewComponentPlugin,
+  ComponentPlugin,
+  Plugin,
+  KeyCommandPlugin
+} from 'editor/plugin/types';
+
 import { CallbackNotifier } from 'common/notifiers';
 
 import React from 'react';
@@ -41,27 +48,23 @@ export default ApplicationPlugin.create({
           type    : 'previewTool',
           tool    : textTool
         }),
-        Plugin.create({
+        KeyCommandPlugin.create({
           id         : 'textToolKeyCommand',
-          type       : 'keyCommand',
           keyCommand : 't',
           handler    : preview.setTool.bind(preview, textTool)
         }),
-        Plugin.create({
+        KeyCommandPlugin.create({
           id         : 'pointerToolKeyCommand',
-          type       : 'keyCommand',
           keyCommand : 'p',
           handler    : preview.setTool.bind(preview, pointerTool)
         }),
-        Plugin.create({
+        KeyCommandPlugin.create({
           id         : 'zoomInKeyCommand',
-          type       : 'keyCommand',
           keyCommand : 'ctrl+]',
           handler    : preview.zoomIn.bind(preview)
         }),
-        Plugin.create({
+        KeyCommandPlugin.create({
           id         : 'zoomOutKeyCommand',
-          type       : 'keyCommand',
           keyCommand : 'ctrl+[',
           handler    : preview.zoomOut.bind(preview)
         })

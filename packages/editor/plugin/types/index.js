@@ -68,6 +68,13 @@ export class PreviewComponentPlugin extends ComponentPlugin {
   }
 }
 
+export class KeyCommandPlugin extends Plugin {
+  constructor(properties) {
+    assert(properties.keyCommand, 'key command must exist');
+    super({ type: 'keyCommand', ...properties });
+  }
+}
+
 export class EntityPlugin extends Plugin {
   constructor(properties) {
     super({ type: 'entity', ...properties });

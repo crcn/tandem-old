@@ -48,4 +48,11 @@ export class DisplayEntity extends Entity {
       { target: this }
     ]));
   }
+
+  /**
+   */
+
+  getStyle() {
+    return this.attributes.style;
+  }
 }
