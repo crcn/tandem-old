@@ -1,6 +1,11 @@
 // FIXME: this plugin is a hack. Fine for now, but needs to be
 // cleaned up
 
+// TODO: diff history - reduce all data to figure out snapshot.
+// Use key frames to reduce diffing amount.
+
+// Diff could also be dispatched across the network for realtime Shenanigans.
+
 import sift from 'sift';
 import debounce from 'lodash/function/debounce';
 import { CallbackNotifier } from 'common/notifiers';
