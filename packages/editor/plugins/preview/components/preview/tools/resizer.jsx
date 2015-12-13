@@ -25,8 +25,8 @@ class ResizerComponent extends React.Component {
 
     startDrag(event, (event) => {
       focus.setStyle({
-        left: (sx + event.clientX - mx) / zoom,
-        top: (sy + event.clientY - my) / zoom
+        left: Math.round((sx + event.clientX - mx) / zoom),
+        top: Math.round((sy + event.clientY - my) / zoom)
       });
     });
   }
@@ -52,6 +52,8 @@ class ResizerComponent extends React.Component {
       props.width = point.currentStyle.width - point.left;
       props.left  = point.currentStyle.left + point.left;
     }
+
+    for (var k in props) props[k] = Math.round(props[k]);
 
     focus.setStyle(props);
   }
