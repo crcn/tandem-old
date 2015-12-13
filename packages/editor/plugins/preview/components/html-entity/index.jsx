@@ -5,6 +5,10 @@ class HTMLEntityComponent extends React.Component {
   setHook(entity) {
     entity.getComputedStyle = () => {
 
+      if (!this.refs.element) {
+        throw new Error('Component is not mounted');
+      }
+
       // eeeesh - this is yucky, but we *need* to offset the position
       // of the preview canvas so that we can get the correct position
       // of this element. This is the *simplest* solution I can think of.

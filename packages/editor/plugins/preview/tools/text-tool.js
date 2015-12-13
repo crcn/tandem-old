@@ -22,7 +22,7 @@ class TextTool extends ObservableObject {
         style: {
           position: 'absolute',
           left: message.x,
-          fontSize: '12px',
+          fontSize: '14px',
           fontFamily: 'Helvetica',
           // offset cursor height
           top: message.y - CURSOR_HEIGHT

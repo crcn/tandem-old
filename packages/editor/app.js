@@ -41,6 +41,11 @@ class Application extends BaseApplication {
 
   setFocus(item) {
 
+    // turn off current focus immediately
+    this.setProperties({
+      focus: void 0
+    });
+
     // wait for rAF.
     // TODO - add this in runloop
     setTimeout(() => {
