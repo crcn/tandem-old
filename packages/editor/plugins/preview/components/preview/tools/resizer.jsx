@@ -15,7 +15,7 @@ class ResizerComponent extends React.Component {
     var zoom = this.props.zoom;
 
     // augment this shit so that we don't sprinkle zoom around all
-    // over the place
+    // over the p99lace
     // TODO componentUtils.getActualComputedStyle(this.props)
     var sx = this.props.focus.attributes.style.left * zoom;
     var sy = this.props.focus.attributes.style.top * zoom;
@@ -34,40 +34,27 @@ class ResizerComponent extends React.Component {
     var zoom  = this.props.zoom;
     var props = {};
 
-    if (point.index === 0) {
-      props = {
-        left   : point.currentStyle.left + point.left,
-        top    : point.currentStyle.top + point.top,
-        height : point.currentStyle.height - point.top,
-        width  : point.currentStyle.width - point.left
-      };
-    } else if (point.index === 1) {
-      props = {
-        top    :  point.currentStyle.top + point.top,
-        height : point.currentStyle.height - point.top,
-        width  : point.left
-      };
-    } else if (point.index === 2) {
-      props = {
-        height : point.top,
-        width  : point.left
-      };
-    } else if (point.index === 3) {
-      props = {
-        left   : point.currentStyle.left + point.left,
-        height : point.top,
-        width  : point.currentStyle.width - point.left
-      };
+    if (/^n/.test(point.id)) {
+      props.top = point.currentStyle.top + point.top;
+      props.height = point.currentStyle.height - point.top;
     }
 
-    console.log(props);
+    if (/e$/.test(point.id)) {
+      props.width = point.left;
+    }
 
-    for (var key in props) {
-      // props[key] /= this.props.zoom;
+    if (/^s/.test(point.id)) {
+      props.height = point.top;
+    }
+
+    if (/w$/.test(point.id)) {
+      props.width = point.currentStyle.width - point.left;
+      props.left  = point.currentStyle.left + point.left;
     }
 
     focus.setStyle(props);
   }
+  
   render() {
 
     var pointRadius = (this.props.pointRadius || POINT_RADIUS) / this.props.zoom;
@@ -77,17 +64,22 @@ class ResizerComponent extends React.Component {
     var style = focus.getComputedStyle();
 
     var points = [
-      [0, 0],
-      [style.width, 0],
-      [style.width, style.height],
-      [0, style.height]
+      ['nw', 0, 0],
+      ['n', style.width / 2, 0],
+      ['ne', style.width, 0],
+      ['e', style.width, style.height / 2],
+      ['se', style.width, style.height],
+      ['s', style.width / 2, style.height],
+      ['sw', 0, style.height],
+      ['w', 0, style.height / 2]
     ].map((point, i) => {
 
       var ret = ObservableObject.create({
+        id: point[0],
         index: i,
         currentStyle: style,
-        left: point[0],
-        top : point[1]
+        left: point[1],
+        top : point[2]
       });
 
       ret.notifier = CallbackNotifier.create(this.updatePoint.bind(this, ret));
@@ -103,7 +95,7 @@ class ResizerComponent extends React.Component {
     }
 
     return <div className='m-resizer-component' style={style} onMouseDown={this.startDragging.bind(this)}>
-      <PathComponent points={points} strokeWidth={strokeWidth} pointRadius={pointRadius} showPoints={true}  />
+      <PathComponent points={points} strokeWidth={strokeWidth} pointRadius={pointRadius} showPoints={true} zoom={this.props.zoom}  />
     </div>;
   }
 }

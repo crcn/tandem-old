@@ -1,4 +1,8 @@
+import throttle from 'lodash/function/throttle';
+
 module.exports = function(event, update) {
+
+  update = throttle(update, 20);
 
   function drag(event) {
 

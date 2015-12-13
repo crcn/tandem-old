@@ -7,15 +7,16 @@ class PathComponent extends React.Component {
 
     event.stopPropagation();
 
-    var sx = point.left;
-    var sy = point.top;
+    var sx = point.left * this.props.zoom;
+    var sy = point.top * this.props.zoom;
     var mx = event.clientX;
     var my = event.clientY;
+    var zoom = this.props.zoom;
 
-    startDrag(event, (info) => {
+    startDrag(event, (event) => {
       point.setProperties({
-        left : sx + info.leftDelta,
-        top  : sy + info.topDelta
+        left : (sx + event.clientX - mx) / this.props.zoom,
+        top  : (sy + event.clientY - my) / this.props.zoom
       });
     });
   }
@@ -52,7 +53,7 @@ class PathComponent extends React.Component {
       <path d={d} strokeWidth={strokeWidth} stroke='black' fill='transparent' />
       {
         this.props.showPoints !== false ? points.map((path, key) => {
-          return <circle onMouseDown={this.onPointDown.bind(this, path, key)} className={'point-circle-' + key} strokeWidth={strokeWidth} stroke='black' fill='transparent' r={cr} cx={path.left} cy={path.top} key={key} />;
+          return <circle onMouseDown={this.onPointDown.bind(this, path, key)} className={'point-circle-' + (path.id || key)} strokeWidth={strokeWidth} stroke='black' fill='transparent' r={cr} cx={path.left} cy={path.top} key={key} />;
         }) : void 0
       }
     </svg>;
