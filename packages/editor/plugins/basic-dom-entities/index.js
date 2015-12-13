@@ -7,7 +7,7 @@ import {
   KeyCommandPlugin
 } from 'editor/plugin/types';
 
-import { TextEntity } from './entities';
+import { TextEntity, ElementEntity } from './entities';
 import TextEntityPaneComponent from './components/entity-panes/text';
 import TextLayerLabelComponent from './components/entity-layer-labels/text';
 
@@ -39,6 +39,12 @@ function registerEntities(app) {
       id             : 'textPaneLayerComponent',
       layerType      : 'text',
       componentClass : TextLayerLabelComponent
+    }),
+
+    // element
+    EntityPlugin.create({
+      id      : 'elementEntity',
+      factory : ElementEntity
     })
   );
 }

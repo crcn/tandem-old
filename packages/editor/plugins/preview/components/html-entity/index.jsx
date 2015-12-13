@@ -2,9 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 class HTMLEntityComponent extends React.Component {
-  componentDidMount() {
-
-    this.props.entity.getComputedStyle = () => {
+  setHook(entity) {
+    entity.getComputedStyle = () => {
 
       var rect = this.refs.element.getBoundingClientRect();
 
@@ -21,6 +20,16 @@ class HTMLEntityComponent extends React.Component {
         height    : h
       };
     };
+  }
+
+  componentDidMount() {
+    this.setHook(this.props.entity);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.entity !== nextProps.entity) {
+      this.setHook(nextProps.entity);
+    }
   }
 
   render() {

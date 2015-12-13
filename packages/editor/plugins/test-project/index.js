@@ -1,14 +1,33 @@
-import Node from 'common/node';
 import { ApplicationPlugin } from 'editor/plugin/types';
+import { Entity } from 'editor/entity-types';
+import { TypeNotifier, CallbackNotifier } from 'common/notifiers';
+import { LOAD } from 'base/messages';
 
 export default ApplicationPlugin.create({
   id: 'testProject',
   factory: {
     create({ app }) {
-      var node = Node.create({ id: '1', notifier: app.notifier, componentType: 'p', label: 'Button', type: 'component', icon: 'puzzle' }, [
-      ]);
 
-      app.rootEntity = node;
+      app.notifier.push(TypeNotifier.create(LOAD, CallbackNotifier.create(load)));
+
+      function load() {
+
+        var div = app.plugins.queryOne({
+          id: 'elementEntity'
+        });
+
+        var entity = div.factory.create({
+          notifier      : app.notifier,
+          componentType : 'div',
+          label         : 'div', // don't want,
+          icon          : 'puzzle'
+        });
+
+        app.setProperties({
+          rootEntity: entity
+        });
+      }
+
     }
   }
 });

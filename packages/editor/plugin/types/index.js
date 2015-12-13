@@ -8,6 +8,23 @@ import assert from 'assert';
 export const ROOT_COMPONENT_ID = 'rootComponent';
 
 export { Plugin };
+
+export class FactoryPlugin extends Plugin {
+  constructor(properties) {
+    assert(properties.factory, 'factory is missing');
+    var factory = properties.factory;
+    super({
+      ...properties,
+      factory: {
+        create: (props, ...args) => {
+          props.pluginId = this.id;
+          return factory.create(props, ...args);
+        }
+      }
+    });
+  }
+}
+
 export class ComponentPlugin extends Plugin {
 
   constructor(properties) {
@@ -56,7 +73,7 @@ export class EntityLayerLabelComponentPlugin extends ComponentPlugin {
   }
 }
 
-export class ApplicationPlugin extends Plugin {
+export class ApplicationPlugin extends FactoryPlugin {
   constructor(properties) {
     super({ type: 'application', ...properties });
   }
@@ -75,7 +92,7 @@ export class KeyCommandPlugin extends Plugin {
   }
 }
 
-export class EntityPlugin extends Plugin {
+export class EntityPlugin extends FactoryPlugin {
   constructor(properties) {
     super({ type: 'entity', ...properties });
   }

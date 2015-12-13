@@ -4,12 +4,13 @@ import 'editor/scss/modules/all.scss';
 import RootComponent from './components/root';
 import BaseApplication from 'base/app';
 
-import PreviewPlugin             from './plugins/preview';
-import SettingsPlugin            from './plugins/settings';
-import ShortcutPlugin            from './plugins/shortcuts';
-import BasicFontPlugin           from './plugins/basic-fonts';
-import TestProjectPlugin         from './plugins/test-project';
-import BasicDOMEntitiesPlugin    from './plugins/basic-dom-entities';
+import PreviewPlugin from './plugins/preview';
+import HistoryPlugin from './plugins/history';
+import SettingsPlugin from './plugins/settings';
+import ShortcutPlugin from './plugins/shortcuts';
+import BasicFontPlugin from './plugins/basic-fonts';
+import TestProjectPlugin from './plugins/test-project';
+import BasicDOMEntitiesPlugin from './plugins/basic-dom-entities';
 import BasicPaneComponentsPlugin from './plugins/basic-pane-components';
 
 import React from 'react';
@@ -19,6 +20,7 @@ class Application extends BaseApplication {
 
   static plugins = BaseApplication.plugins.concat([
     PreviewPlugin,
+    HistoryPlugin,
     ShortcutPlugin,
     SettingsPlugin,
     BasicFontPlugin,
@@ -36,9 +38,14 @@ class Application extends BaseApplication {
    */
 
   setFocus(item) {
-    this.setProperties({
-      focus: item
-    });
+
+    // wait for rAF.
+    // TODO - add this in runloop
+    setTimeout(() => {
+      this.setProperties({
+        focus: item
+      });
+    }, 1);
   }
 }
 
