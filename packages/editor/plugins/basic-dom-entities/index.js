@@ -1,4 +1,4 @@
-import { ApplicationPlugin, EntityPlugin, EntityPaneComponentPlugin, EntityLayerLabelComponentPlugin } from 'editor/plugin-types';
+import { ApplicationPlugin, EntityPlugin, EntityPaneComponentPlugin, EntityLayerLabelComponentPlugin } from 'editor/plugin/types';
 
 import { TextEntity } from './entities';
 import TextEntityPaneComponent from './components/entity-panes/text';

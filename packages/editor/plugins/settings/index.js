@@ -1,5 +1,5 @@
 import ObservableObject from 'common/object/observable';
-import { ApplicationPlugin } from 'editor/plugin-types';
+import { ApplicationPlugin } from 'editor/plugin/types';
 import { CallbackNotifier } from 'common/notifiers';
 import store from 'store';
 import debounce from 'lodash/function/debounce';

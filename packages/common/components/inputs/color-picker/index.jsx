@@ -30,6 +30,11 @@ class ColorPickerInput extends React.Component {
     return nextProps.reference !== this.props.reference || !!Object.keys(diff(this.state, nextState)).length;
   }
 
+  onKeyDown(event) {
+    if (event.keyCode !== 13 || !this.refs.menu.state.show) return;
+    this.refs.menu.hide();
+  }
+
   render() {
     var ref = this.props.reference;
 
@@ -52,10 +57,7 @@ class ColorPickerInput extends React.Component {
     }
 
     return <div c
-      lassName='m-color-picker-input'
-      tabIndex="0"
-      onFocus={() => this.refs.menu.show() }
-      onKeyDown={(e) =>  e.keyCode === 13 ?  this.refs.menu.hide() : void 0 }>
+      lassName='m-color-picker-input' onBlur={() => this.refs.menu.hide() } onKeyDown={this.onKeyDown.bind(this)}>
 
       <MenuComponent ref='menu' className='m-color-picker-popdown' createMenu={createMenu}>
 

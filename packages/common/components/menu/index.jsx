@@ -1,4 +1,6 @@
 import './index.scss';
+
+import cx from 'classnames';
 import React from 'react';
 import PopdownComponent from 'common/components/popdown';
 
@@ -29,6 +31,10 @@ class MenuComponent extends React.Component {
     }
   }
 
+  focus() {
+    this.refs.menu.focus();
+  }
+
   hide() {
     this.setState({
       show: false
@@ -41,6 +47,11 @@ class MenuComponent extends React.Component {
     } else {
       this.show();
     }
+  }
+
+  onKeyDown(event) {
+    if (event.keyCode !== 13 || document.activeElement !== this.refs.menu) return;
+    this.show();
   }
 
   render() {
@@ -67,7 +78,12 @@ class MenuComponent extends React.Component {
       </div>;
     }
 
-    return <div className={['m-menu', this.props.className].join(' ')}>
+    var classNames = cx({
+      'm-menu': true,
+      'disable': this.props.disable
+    });
+
+    return <div ref="menu" tabIndex="0" onKeyDown={this.onKeyDown.bind(this)} className={[classNames, this.props.className].join(' ')}>
 
       <span ref='button' onClick={this.toggleMenu.bind(this)}>
         {

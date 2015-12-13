@@ -6,6 +6,7 @@ class FocusComponent extends React.Component {
     if (this.props.focus !== false) this.focus();
   }
   componentWillReceiveProps(nextProps) {
+    clearTimeout(this._timeout);
     if (nextProps.focus === true) {
       this.focus();
     } else if (nextProps.focus === false) {
@@ -25,8 +26,9 @@ class FocusComponent extends React.Component {
     }, 1);
   }
   getRef() {
-    return ReactDOM.findDOMNode(this);
-    (nodeentityName === 'INPUT' ? node : node.querySelector('input'));
+    var node = ReactDOM.findDOMNode(this);
+
+    return (node.nodeName === 'INPUT' ? node : node.querySelector('input')) || node;
   }
   componentWillUnmount() {
     clearTimeout(this._timeout);

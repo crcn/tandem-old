@@ -1,4 +1,4 @@
-import { ApplicationPlugin, PreviewComponentPlugin, ComponentPlugin, Plugin } from 'editor/plugin-types';
+import { ApplicationPlugin, PreviewComponentPlugin, ComponentPlugin, Plugin } from 'editor/plugin/types';
 import { CallbackNotifier } from 'common/notifiers';
 
 import React from 'react';

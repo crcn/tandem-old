@@ -9,9 +9,9 @@ class FontInputComponent extends React.Component {
 
     function createLabel(item, i) {
       var style = {
-        fontFamily: item.name
+        fontFamily: item.value
       };
-      return <span style={style}>{ item.name }</span>;
+      return <span style={style}>{ item.label }</span>;
     }
 
     var entity = this.props.entity;
@@ -19,7 +19,7 @@ class FontInputComponent extends React.Component {
     // TODO - this should be a plugin instead
     // Just get this to work for now
     var fonts = (this.props.fonts || []).sort(function(a, b) {
-      return a.name > b.name ? -1 : 1;
+      return a.label > b.label ? -1 : 1;
     });
 
     return <SearchDropdownComponent className='m-font-input' defaultLabel={'Select Font'} labelProperty={createLabel} items={fonts} reference={createStyleReference(entity, 'fontFamily')}>

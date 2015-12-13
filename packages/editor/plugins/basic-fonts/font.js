@@ -1,12 +1,14 @@
-import { Plugin } from 'editor/plugin-types';
+import { Plugin } from 'editor/plugin/types';
 
 class FontPlugin extends Plugin {
-  constructor(name) {
+  constructor(value, weights, styles) {
     super({
-      id    : name,
-      type  : 'font',
-      name  : name,
-      value : name
+      id      : value,
+      type    : 'font',
+      label   : value,
+      value   : value,
+      weights : weights || [],
+      styles  : styles  || []
     });
   }
 }

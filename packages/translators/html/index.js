@@ -4,11 +4,11 @@ import HtmlElementNode from './ast/html-element';
 export function translate(entity) {
 
     switch(entity.type) {
-      case 'displayObject': return translateDisplayObject(node);
+      case 'displayObject': return translateDisplayObject(entity);
     }
 
     // don't translate
-    return node;
+    return entity;
 };
 
 function translateDisplayObject(sourceNode) {

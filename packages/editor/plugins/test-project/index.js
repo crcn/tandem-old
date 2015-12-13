@@ -1,5 +1,5 @@
 import Node from 'common/node';
-import { ApplicationPlugin } from 'editor/plugin-types';
+import { ApplicationPlugin } from 'editor/plugin/types';
 
 export default ApplicationPlugin.create({
   id: 'testProject',

@@ -1,5 +1,5 @@
 import { TypeNotifier, CallbackNotifier } from 'common/notifiers';
-import { ApplicationPlugin } from 'editor/plugin-types';
+import { ApplicationPlugin } from 'editor/plugin/types';
 import { INITIALIZE } from 'base/messages';
 import mousetrap from 'mousetrap';
 import sift from 'sift';

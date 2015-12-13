@@ -1,8 +1,8 @@
 import ObservableObject from 'common/object/observable';
 import { Registry } from 'common/registry';
 import { NotifierCollection } from 'common/notifiers';
+import { ALL_APPLICATION_PLUGINS } from 'base/plugin/queries';
 import { InitializeMessage, LoadMessage } from 'base/messages';
-import sift from 'sift';
 
 class BaseApplication extends ObservableObject {
 
@@ -23,7 +23,7 @@ class BaseApplication extends ObservableObject {
    */
 
   _usePlugins() {
-    for (var plugin of this.plugins.filter(sift({ type: 'application' }))) {
+    for (var plugin of this.plugins.query(ALL_APPLICATION_PLUGINS)) {
       plugin.factory.create({ app: this });
     }
   }
