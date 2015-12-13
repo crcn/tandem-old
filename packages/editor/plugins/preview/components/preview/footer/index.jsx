@@ -7,6 +7,7 @@ class FooterComponent extends React.Component {
 
     // TODO - add more project information here such as file name
     // TODO - ability to edit canvas width & height in the footer
+    // TODO - each one of these should be slideable, or be their own button
     var app = this.props.app;
     return <div className='m-preview-footer'>
       { Math.round(app.preview.zoom * 100) }%
