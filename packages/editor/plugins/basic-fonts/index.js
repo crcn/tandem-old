@@ -10,7 +10,7 @@ const DEFAULT_STYLES = [
 ];
 
 const DEFAULT_DECORATIONS = [
-  'none', 'undline', 'overline', 'line-through', 'initial', 'inherit'
+  'none', 'underline', 'overline', 'line-through', 'initial', 'inherit'
 ];
 
 export default ApplicationPlugin.create({

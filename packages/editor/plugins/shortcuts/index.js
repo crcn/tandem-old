@@ -11,6 +11,8 @@ export default ApplicationPlugin.create({
     create({ app }) {
 
       // TODO - rebind when registry changes
+      // TODO - ability to notify multiple handlers bound to same
+      // key
       app.notifier.push(TypeNotifier.create(INITIALIZE, CallbackNotifier.create(registerKeyBindings)));
 
       function registerKeyBindings() {
