@@ -1,3 +1,5 @@
+// FIXME: this plugin is a hack. Fine for now, but needs to be
+// cleaned up
 
 import sift from 'sift';
 import debounce from 'lodash/function/debounce';
@@ -28,30 +30,32 @@ function create({ app }) {
 
   history.move = move;
 
-  var cursor  = 0;
-
   // TODO - diff this stuff to save on memory
   var save = debounce(function() {
 
     history.splice(
-      cursor,
-      history.length - cursor,
+      history.position,
+      history.length - history.position,
       app.rootEntity.serialize()
     );
 
-    cursor = history.length;
+    // FIXME: position gets set after splice fires an event. This
+    // is fine since most stuff executes on rAF, but this is still
+    // a bug - might cause race conditions in the future.
+    // MAYBE use a getter / setter instead.
+    history.position = history.length;
 
   }, DEBOUNCE_TIMEOUT);
 
   function move(position) {
-    cursor = position;
+    history.position = position;
 
     if (!history.length) return;
 
     // Note that focus might be an entity in the future
     var currentFocusId = app.focus ? app.focus.id : void 0;
 
-    var rootEntity = deserialize(history[cursor], {
+    var rootEntity = deserialize(history[history.position], {
       notifier: app.notifier
     }, app.plugins);
 
@@ -63,7 +67,7 @@ function create({ app }) {
   }
 
   function shift(step) {
-    move(Math.max(0, Math.min(history.length - 1, cursor + step)));
+    move(Math.max(0, Math.min(history.length - 1, history.position + step)));
   }
 
   function filterEntity(value) {

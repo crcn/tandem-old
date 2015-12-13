@@ -7,8 +7,7 @@ class HistorySliderComponent extends React.Component {
 
   onSliderChange(value) {
     var h = this.props.plugin.history;
-    console.log(h.length, value);
-    h.move(h.length - value - 1);
+    h.move(value);
   }
 
   render() {
@@ -22,7 +21,7 @@ class HistorySliderComponent extends React.Component {
 
     return <SliderComponent
       max={history.length - 1}
-      invert={true}
+      value={history.position}
       onChange={this.onSliderChange.bind(this)}
       className='m-history-slider' />;
   }
