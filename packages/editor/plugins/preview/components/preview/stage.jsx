@@ -56,7 +56,7 @@ class StageComponent extends React.Component {
 
           <ToolsLayerComponent app={app} zoom={preview.zoom} />
 
-          <div className='m-preview-stage--element-layer' onClick={this.onClick.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
+          <div id='preview-canvas' className='m-preview-stage--element-layer' onClick={this.onClick.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
             <span ref='drawLayer' className='reset-all'>
               <EntityComponent entity={app.rootEntity} app={app} />
             </span>
