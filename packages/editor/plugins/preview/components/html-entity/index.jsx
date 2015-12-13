@@ -6,7 +6,10 @@ class HTMLEntityComponent extends React.Component {
     entity.getComputedStyle = () => {
 
       if (!this.refs.element) {
-        throw new Error('Component is not mounted');
+        console.warn('trying to calculate display information on entity that is not mounted');
+        return {
+
+        };
       }
 
       // eeeesh - this is yucky, but we *need* to offset the position

@@ -76,6 +76,12 @@ function create({ app }) {
     }, app.plugins);
 
     app.setProperties({
+
+      // FIXME:
+      // need this here, otherwise the DOM might re-render
+      // immediately, and components trying to access a focused entity
+      // that does not exist will barf all over the place. This is a leak.
+      focus      : void 0,
       rootEntity : rootEntity
     });
 

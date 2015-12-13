@@ -12,6 +12,7 @@ import ClipboardPlugin from './plugins/clipboard';
 import BasicFontPlugin from './plugins/basic-fonts';
 import TestProjectPlugin from './plugins/test-project';
 import LoadRootEntityPlugin from './plugins/root-entity-loader';
+import ClipboardPasteEntity from './plugins/clipboard-paste-entity';
 import BasicDOMEntitiesPlugin from './plugins/basic-dom-entities';
 import BasicPaneComponentsPlugin from './plugins/basic-pane-components';
 
@@ -29,6 +30,7 @@ class Application extends BaseApplication {
     BasicFontPlugin,
     TestProjectPlugin,
     LoadRootEntityPlugin,
+    ClipboardPasteEntity,
     BasicDOMEntitiesPlugin,
     BasicPaneComponentsPlugin
   ])
