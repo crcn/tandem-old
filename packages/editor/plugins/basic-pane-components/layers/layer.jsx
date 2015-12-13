@@ -4,7 +4,7 @@ import cx from 'classnames';
 import React from 'react';
 
 class LayerComponent extends React.Component {
-  
+
   onHeaderClick(event) {
     this.props.app.setFocus(this.props.entity);
   }
@@ -16,7 +16,9 @@ class LayerComponent extends React.Component {
     var depth = this.props.depth || 0;
 
     var labelStyle = {
-      paddingLeft: 15 + depth * 15
+
+      // magic numbers are here defined in CSS
+      paddingLeft: 17 + depth * 18
     };
 
     var labelPlugin = this.props.app.plugins.queryOne({

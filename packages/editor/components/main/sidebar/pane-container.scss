@@ -2,9 +2,16 @@
 
 .m-pane-container {
   margin-top: $padding-1;
+  font-weight: 100;
+  font-size: $font-size-3;
+
   &--header {
     cursor: default;
-    background-color: $color-white-offset-1;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+
+    // font-size just slightly bigger then the content
+    font-size: $font-size-3 + 1;
     padding: $padding-0 $padding-2;
+    margin-bottom: $padding-2;
   }
 }
