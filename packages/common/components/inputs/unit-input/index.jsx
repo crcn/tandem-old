@@ -27,7 +27,7 @@ class UnitInputComponent extends React.Component {
   // }
 
   setReferenceValue() {
-    this.props.reference.setValue(this.refs.number.value + this.refs.units.value);
+    this.props.reference.setValue(String(this.refs.number.value).replace(/[^\d\.]/g,'') + this.refs.units.value);
   }
 
   render() {

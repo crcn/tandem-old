@@ -63,6 +63,11 @@ class TextPaneComponent extends React.Component {
         disable={!fontDecorations.length} />
 
       <UnitInputComponent reference={createStyleReference(entity, 'fontSize')} />
+      <UnitInputComponent reference={createStyleReference(entity, 'lineHeight')} />
+      <UnitInputComponent reference={createStyleReference(entity, 'width')} />
+      <UnitInputComponent reference={createStyleReference(entity, 'height')} />
+      <UnitInputComponent reference={createStyleReference(entity, 'left')} />
+      <UnitInputComponent reference={createStyleReference(entity, 'top')} />
     </div>;
   }
 }
