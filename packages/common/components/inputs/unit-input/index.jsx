@@ -32,7 +32,6 @@ class UnitInputComponent extends React.Component {
 
   render() {
 
-
     var value     = this.props.reference.getValue();
     var unitParts = String(value).match(/([\d\.]+)((\w+)|%)?/) || [];
 
