@@ -4,10 +4,11 @@ import React from 'react';
 import Reference from 'common/reference';
 import FontInputComponent from './font-input';
 import TextInputComponent from 'common/components/inputs/text-input';
+import UnitInputComponent from 'common/components/inputs/unit-input';
 import createStyleReference from './create-style-reference';
+import SearchDropdownComponent from 'common/components/inputs/searchable-dropdown';
 import ColorPickerInputComponent from 'common/components/inputs/color-picker';
 import { ALL_FONTS, ALL_FONT_WEIGHTS, ALL_FONT_STYLES } from 'editor/plugin/queries';
-import SearchDropdownComponent from 'common/components/inputs/searchable-dropdown';
 
 /*
 Typeface, Weight, Size, Alignment, Width, Spacing, Opacity, Filters, display type, floating, weight, line height
@@ -53,7 +54,7 @@ class TextPaneComponent extends React.Component {
         items={fontStyles}
         disable={!fontStyles.length} />
 
-      <TextInputComponent reference={createStyleReference(entity, 'fontSize')} />
+      <UnitInputComponent reference={createStyleReference(entity, 'fontSize')} />
     </div>;
   }
 }
