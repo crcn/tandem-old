@@ -54,7 +54,7 @@ class ResizerComponent extends React.Component {
 
     focus.setStyle(props);
   }
-  
+
   render() {
 
     var pointRadius = (this.props.pointRadius || POINT_RADIUS) / this.props.zoom;

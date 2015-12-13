@@ -31,12 +31,7 @@ class TextTool extends ObservableObject {
     });
 
     this.app.rootEntity.children.push(node);
-
-    // focus on the new item - this will trigger the text input
-    // timeout for a second so that the element appears
-    setTimeout(() => {
-      this.app.setFocus(node);
-    }, 100);
+    this.app.setFocus(node);
   }
 }
 
