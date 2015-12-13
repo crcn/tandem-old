@@ -21,6 +21,12 @@ export default ApplicationPlugin.create({
 
       function registerKeyBinding(plugin) {
         mousetrap.bind(plugin.keyCommand, function(event) {
+
+          // do NOT hijack key code events unless there is a modifier (ctrl mainly)
+          if (/input|textarea/i.test(event.target.nodeName) && !(event.metaKey || event.ctrlKey)) {
+            return
+          }
+          
           event.preventDefault();
           plugin.handler();
         });
