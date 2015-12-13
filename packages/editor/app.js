@@ -48,11 +48,11 @@ class Application extends BaseApplication {
 
     // wait for rAF.
     // TODO - add this in runloop
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       this.setProperties({
         focus: item
       });
-    }, 1);
+    });
   }
 }
 
