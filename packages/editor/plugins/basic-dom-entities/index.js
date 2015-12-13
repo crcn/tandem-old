@@ -62,7 +62,7 @@ function registerCommands(app) {
   app.plugins.push(
 
     // generic
-    // TODO - move this elsewhere
+    // TODO - move this to its own plugin
     KeyCommandPlugin.create({
       id         : 'boldCommand',
 
@@ -74,7 +74,12 @@ function registerCommands(app) {
         // FIXME: leaky here. should be able to remove entity
         // without it being unfocused
         var focus = app.focus;
-        app.setFocus(void 0);
+        var focusIndex = focus.parent.children.indexOf(focus);
+
+        // shift to the previous or next child
+        app.setFocus(focusIndex ? focus.parent.children[focusIndex - 1] : focus.parent.children[focusIndex + 1]);
+
+        // remove the child deleted
         focus.parent.children.remove(focus);
       })
     }),

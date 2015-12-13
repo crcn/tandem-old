@@ -22,6 +22,7 @@ function create({ app }) {
   }
 
   function paste() {
+    // TODO - use actual clipboard data
     if (copiedData != void 0) {
       app.notifier.notify(PasteMessage.create(copiedData));
     }
