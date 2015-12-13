@@ -56,8 +56,7 @@ class ColorPickerInput extends React.Component {
       </div>
     }
 
-    return <div c
-      lassName='m-color-picker-input' onBlur={() => this.refs.menu.hide() } onKeyDown={this.onKeyDown.bind(this)}>
+    return <div className='m-color-picker-input' onKeyDown={this.onKeyDown.bind(this)}>
 
       <MenuComponent ref='menu' className='m-color-picker-popdown' createMenu={createMenu}>
 
