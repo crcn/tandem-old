@@ -1,0 +1,23 @@
+@import 'editor/scss/variables';
+
+.m-history-slider {
+
+  opacity: 0.9;
+
+  background-color: $color-blue-9;
+  max-width: 400px;
+  width: 30%;
+  height: 6px;
+  float: right;
+  position: relative;
+  top: 5px;
+  border-radius: 10px;
+
+  & .handle {
+    transform: translateY(calc(-50% + 6px/2));
+    border-radius: 10px;
+    width: 15px;
+    height: 15px;
+    background-color: $color-blue-4;
+  }
+}

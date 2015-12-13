@@ -5,9 +5,9 @@ import sift from 'sift';
 
 class Registry extends BaseCollection {
 
-  register(entry) {
-    this.push(entry);
-    return entry;
+  register(plugin) {
+    this.push(plugin);
+    return plugin;
   }
 
   query(search) {
@@ -28,9 +28,9 @@ class Registry extends BaseCollection {
   // TODO - override splice here
   splice(index, count, ...entries) {
 
-    entries.forEach((entry) => {
-      if (this.find(sift({ id: entry.id }))) {
-        throw ExistsError.create('entry already exists');
+    entries.forEach((plugin) => {
+      if (this.find(sift({ id: plugin.id }))) {
+        throw ExistsError.create('plugin already exists');
       }
     });
 

@@ -1,8 +1,15 @@
-import { ApplicationPlugin, KeyCommandPlugin } from 'editor/plugin/types';
-import { CallbackNotifier } from 'common/notifiers';
-import { Entity, deserialize } from 'editor/entity-types';
-import debounce from 'lodash/function/debounce';
+
 import sift from 'sift';
+import debounce from 'lodash/function/debounce';
+import { CallbackNotifier } from 'common/notifiers';
+import ObservableCollection from 'common/collection/observable';
+import { Entity, deserialize } from 'editor/entity-types';
+import HistorySliderComponent from './components/slider';
+import {
+  ApplicationPlugin,
+  KeyCommandPlugin,
+  ComponentPlugin
+} from 'editor/plugin/types';
 
 const DEBOUNCE_TIMEOUT = 300;
 
@@ -15,7 +22,12 @@ export default ApplicationPlugin.create({
 
 function create({ app }) {
 
-  var history = [];
+  var history = ObservableCollection.create({
+    notifier: app.notifier
+  });
+
+  history.move = move;
+
   var cursor  = 0;
 
   // TODO - diff this stuff to save on memory
@@ -31,8 +43,9 @@ function create({ app }) {
 
   }, DEBOUNCE_TIMEOUT);
 
-  function move(step) {
-    cursor = Math.max(0, Math.min(history.length - 1, cursor + step));
+  function move(position) {
+    cursor = position;
+
     if (!history.length) return;
 
     // Note that focus might be an entity in the future
@@ -47,6 +60,10 @@ function create({ app }) {
     });
 
     app.setFocus(currentFocusId ? rootEntity.find(sift({ id: currentFocusId })) : void 0);
+  }
+
+  function shift(step) {
+    move(Math.max(0, Math.min(history.length - 1, cursor + step)));
   }
 
   function filterEntity(value) {
@@ -68,12 +85,18 @@ function create({ app }) {
     KeyCommandPlugin.create({
       id         : 'undoCommand',
       keyCommand : 'command+z',
-      handler    : move.bind(this, -1)
+      handler    : shift.bind(this, -1)
     }),
     KeyCommandPlugin.create({
       id         : 'redoCommand',
       keyCommand : 'command+y',
-      handler    : move.bind(this, 1)
+      handler    : shift.bind(this, 1)
+    }),
+    ComponentPlugin.create({
+      history        : history,
+      id             : 'historySliderComponent',
+      paneType       : 'footer',
+      componentClass : HistorySliderComponent
     })
   );
 }

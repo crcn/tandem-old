@@ -1,5 +1,6 @@
 import './index.scss';
 import React from 'react';
+import RegisteredComponent from 'common/components/registered-component';
 
 class FooterComponent extends React.Component {
   render() {
@@ -11,6 +12,8 @@ class FooterComponent extends React.Component {
       { Math.round(app.preview.zoom * 100) }%
       &nbsp;
       { app.preview.canvasWidth }W x { app.preview.canvasHeight }H
+
+      <RegisteredComponent {...this.props} query={{paneType: 'footer'}} />
     </div>;
   }
 }

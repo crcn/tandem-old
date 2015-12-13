@@ -4,7 +4,7 @@ Dependency injection package.
 import { Registry, Plugin } from 'common/registry';
 
 var registry = Registry.create();
-var entry = registry.register(Plugin.create({ type: 'component', label: 'My component label' }, componentFactory));
+var plugin = registry.register(Plugin.create({ type: 'component', label: 'My component label' }, componentFactory));
 
 registry.register(Plugin.create({ type: 'pane', target: entry }, componentEditorFactory));
 
