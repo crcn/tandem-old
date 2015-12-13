@@ -65,8 +65,6 @@ function registerCommands(app) {
     // TODO - move this to its own plugin
     KeyCommandPlugin.create({
       id         : 'boldCommand',
-
-      // TODO - remove control once moved to desktop app
       keyCommand : 'backspace',
       notifier   : CallbackNotifier.create(function() {
         if (!app.focus || !app.focus.componentType || !app.focus.parent) return;
@@ -77,6 +75,7 @@ function registerCommands(app) {
         var focusIndex = focus.parent.children.indexOf(focus);
 
         // shift to the previous or next child
+        // TODO - no children? move cursor up to the parent
         app.setFocus(focusIndex ? focus.parent.children[focusIndex - 1] : focus.parent.children[focusIndex + 1]);
 
         // remove the child deleted

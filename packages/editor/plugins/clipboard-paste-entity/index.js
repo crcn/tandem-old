@@ -32,14 +32,27 @@ function create({ app }) {
       }
     });
 
+    // clone it!
     var entity = deserializeEntity(message.data, { }, app.plugins);
+    
+    var insertIndex;
+    var parentEntity;
 
-    var focus = app.focus || app.rootEntity;
+    // if there is an entiy in focus, then add the new entity
+    // as a sibling of it
+    if (app.focus) {
+      parentEntity = app.focus.parent;
+      insertIndex  = parentEntity.children.indexOf(app.focus) + 1;
 
-    if (focus.componentType === 'text') {
-      focus = focus.parent;
+    // otherwise add to the root entity
+    } else {
+      parentEntity = app.rootEntity;
+      insertIndex  = parentEntity.children.length;
     }
 
-    focus.children.push(entity);
+    parentEntity.children.splice(insertIndex, 0, entity);
+
+    // focus on our newly pasted item
+    app.setFocus(entity);
   }
 }
