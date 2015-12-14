@@ -1,6 +1,7 @@
 import './index.scss';
 
 import React from 'react';
+import cx from 'classnames';
 
 class SelectComponent extends React.Component {
 
@@ -12,15 +13,23 @@ class SelectComponent extends React.Component {
     };
   }
 
-  shift(step) {
+  move(position) {
     var items = this.getFilteredItems();
-    var newPosition = Math.max(0, Math.min(items.length - 1, this.state.position + step));
+    var newPosition = Math.max(-1, Math.min(items.length - 1, position));
 
-    this.onItemHover(items[newPosition]);
+    if (!!~newPosition) {
+      this.onItemHover(items[newPosition]);
+      var item = this.refs.list.querySelectorAll('li')[newPosition];
+      item.scrollIntoView(false);
+    }
 
     this.setState({
       position: newPosition
     });
+  }
+
+  shift(step) {
+    this.move(this.state.position + step);
   }
 
   up() {
@@ -31,28 +40,10 @@ class SelectComponent extends React.Component {
     this.shift(1);
   }
 
-  onKeyDown(event) {
-    if (event.keyCode === 38) {
-      this.up();
-    } else if (event.keyCode === 40) {
-      this.down();
-    } else if (event.keyCode === 13) {
-
-    }
-  }
-
   getFilteredItems() {
     return this.props.items.filter(this.props.filter || function() {
       return true;
     });
-  }
-
-  select(index) {
-    this.setSelectedItem(this.getFilteredItems()[index]);
-  }
-
-  setSelectedItem(item) {
-    this.props.onSelect(this.getSelectedItemValue());
   }
 
   onItemHover(item) {
@@ -60,11 +51,13 @@ class SelectComponent extends React.Component {
   }
 
   getItemValue(item) {
-    return item[this.props.valueProperty];
+    return item ? item[this.props.valueProperty] : void 0;
   }
 
-  getSelectedItemValue() {
-    // return this.getFilteredItems()
+  getCurrentItemValue() {
+    return this.getItemValue(
+      this.getFilteredItems()[this.state.position]
+    );
   }
 
   render() {
@@ -73,12 +66,20 @@ class SelectComponent extends React.Component {
       return item[this.props.labelProperty];
     };
 
-    var items = this.props.items || [];
+    var items    = this.getFilteredItems();
+    var position = this.state.position;
 
-    return <ul className='m-select m-list' onKeyDown={this.onKeyDown.bind(this)}>
+    return <ul ref='list' className='m-select m-list'>
       {
         items.map((item, i) => {
-          return <li className={i % 2 ? 'alt' : ''} onClick={this.onItemClick.bind(this, item)} onMouseOver={this.onItemHover.bind(this, item)} key={i}>
+          var classNames = cx({
+            'alt'      : !!(i % 2),
+            'selected' : position === i
+          })
+          return <li
+            className={classNames}
+            onClick={this.move.bind(this, i)}
+            onMouseOver={this.onItemHover.bind(this, item)} key={i}>
             { createLabel(item, i) }
           </li>;
         })
@@ -90,7 +91,8 @@ class SelectComponent extends React.Component {
 SelectComponent.defaultProps = {
   labelProperty : 'label',
   valueProperty : 'value',
-  onItemHover   : function() { }
+  onItemHover   : function() { },
+  onSelect      : function() { }
 };
 
 export default SelectComponent;

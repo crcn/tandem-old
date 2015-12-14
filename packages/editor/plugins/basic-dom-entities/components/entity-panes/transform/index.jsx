@@ -1,32 +1,36 @@
 import './index.scss';
 import React from 'react';
-import UnitInputComponent from './unit-input';
+import UnitInputComponent from 'common/components/inputs/unit-input';
+import createStyleReference from './create-style-reference';
 
 class TransformPaneComponent extends React.Component {
   render() {
+    var entity = this.props.app.focus;
+    if (!entity) return null;
+
     return <div className='m-transform-pane'>
 
       <div className='container'>
         <div className='row'>
           <div className='col-sm-3'>
             <label>x</label>
-            <UnitInputComponent />
+            <UnitInputComponent reference={createStyleReference(entity, 'left')} />
           </div>
           <div className='col-sm-3'>
             <label>y</label>
-            <input type='text'></input>
+            <UnitInputComponent reference={createStyleReference(entity, 'top')} />
           </div>
           <div className='col-sm-3'>
             <label>w</label>
-            <input type='text'></input>
+            <UnitInputComponent reference={createStyleReference(entity, 'width')} />
           </div>
           <div className='col-sm-3'>
             <label>h</label>
-            <input type='text'></input>
+            <UnitInputComponent reference={createStyleReference(entity, 'height')} />
           </div>
         </div>
 
-        <div className='row'>
+        <div className='row hidden'>
           <div className='col-sm-3'>
             <label>rx</label>
             <input type='text'></input>

@@ -21,11 +21,11 @@ class TextTool extends ObservableObject {
       attributes: {
         style: {
           position: 'absolute',
-          left: message.x,
+          left: Math.round(message.x),
           fontSize: '14px',
           fontFamily: 'Helvetica',
           // offset cursor height
-          top: message.y - CURSOR_HEIGHT
+          top: Math.round(message.y - CURSOR_HEIGHT)
         }
       }
     });

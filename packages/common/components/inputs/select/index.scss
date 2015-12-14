@@ -2,21 +2,15 @@
 
 // TODO - might need to move this stuff to a scss module
 .m-select {
-  max-height: 200px;
   border-radius: $border-radius-2;
 
   & li {
 
     cursor: pointer;
 
-    &:hover, &:focus {
+    &:hover, &.selected {
       background-color: $color-sky-blue-4;
       color: $color-white-offset-8;
     }
-  }
-
-  &:last-child {
-    border-bottom-left-radius: $border-radius-2;
-    border-bottom-right-radius: $border-radius-2;
   }
 }
