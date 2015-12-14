@@ -1,5 +1,5 @@
 import { ApplicationPlugin } from 'editor/plugin/types';
-import { Entity } from 'editor/entity-types';
+import { Entity } from 'editor/entities';
 import { TypeNotifier, CallbackNotifier } from 'common/notifiers';
 import { LOAD } from 'base/message-types';
 import { LOAD_ROOT_ENTITY, RootEntityMessage } from 'editor/message-types';

@@ -14,7 +14,7 @@ import ObservableCollection from 'common/collection/observable';
 import { CallbackNotifier, TypeNotifier } from 'common/notifiers';
 
 import { SET_ROOT_ENTITY } from 'editor/message-types';
-import { Entity, deserialize } from 'editor/entity-types';
+import { Entity, deserialize } from 'editor/entities';
 
 import {
   ApplicationPlugin,

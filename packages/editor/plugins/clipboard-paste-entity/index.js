@@ -1,5 +1,5 @@
 import { PASTE } from 'editor/message-types';
-import { deserialize as deserializeEntity } from 'editor/entity-types';
+import { deserialize as deserializeEntity } from 'editor/entities';
 import { TypeNotifier } from 'common/notifiers';
 import { ApplicationPlugin } from 'editor/plugin/types';
 import { getValue } from 'common/utils/object';

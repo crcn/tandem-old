@@ -3,7 +3,7 @@ import './resizer.scss';
 import React from 'react';
 import startDrag from 'common/utils/component/start-drag';
 import PathComponent from './path';
-import { parseUnit  } from 'common/utils/html/css';
+import { parseUnit } from 'common/utils/html/css';
 import ObservableObject from 'common/object/observable';
 import CallbackNotifier from 'common/notifiers/callback';
 
@@ -11,40 +11,37 @@ const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 3;
 const PADDING            = 6;
 
-function convertPosition(x1, y1, x2) {
-  var [value, unit] = parseUnit(y1);
-  var y2 = ((value * x2) / x1).toFixed(3);
-  return [y2, unit];
-}
-
 class ResizerComponent extends React.Component {
   startDragging(event) {
     var focus = this.props.focus;
     var zoom = this.props.zoom;
 
-    var sx2 = focus.getComputedStyle().left * zoom;
-    var sy2 = focus.getComputedStyle().top * zoom;
-    var sx = focus.attributes.style.left;
-    var sy = focus.attributes.style.top;
+    var computer = focus.getComputer();
+
+    var sx2 = computer.getZoomedStyle().left;
+    var sy2 = computer.getZoomedStyle().top;
     var mx = event.clientX;
     var my = event.clientY;
 
     startDrag(event, (event) => {
-      var [xv, xu] = convertPosition(sx2, sx, sx2 + event.clientX - mx);
-      var [yv, yu] = convertPosition(sy2, sy, sy2 + event.clientY - my);
-
-      focus.setStyle({
-        left: xv + xu,
-        top: yv + yu
+      focus.setPositionFromFixedPoint({
+        left: sx2 + event.clientX - mx,
+        top: sy2 + event.clientY - my
       });
     });
   }
   updatePoint(point) {
     var focus = this.props.focus;
     var zoom  = this.props.zoom;
-    var props = {};
 
     var style = focus.getComputedStyle();
+
+    var props = {
+      left: style.left,
+      top: style.top,
+      width: style.width,
+      height: style.height
+    };
 
     if (/^n/.test(point.id)) {
       props.top = point.currentStyle.top + point.top;
@@ -64,16 +61,7 @@ class ResizerComponent extends React.Component {
       props.left  = point.currentStyle.left + point.left;
     }
 
-    for (var k in props) {
-      if (focus.attributes.style[k] == void 0) continue;
-      props[k] = convertPosition(
-        style[k],
-        focus.attributes.style[k],
-        props[k]
-      ).join('');
-    }
-
-    focus.setStyle(props);
+    focus.getComputer().setBounds(props);
   }
 
   render() {

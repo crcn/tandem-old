@@ -1,4 +1,4 @@
-import { DisplayEntity } from 'editor/entity-types';
+import { DisplayEntity } from 'editor/entities';
 
 class TextEntity extends DisplayEntity {
   constructor(properties, children) {

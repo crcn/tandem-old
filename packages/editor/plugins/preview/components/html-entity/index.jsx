@@ -1,39 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ReactEntityComputer from './entity-computer';
 
 class HTMLEntityComponent extends React.Component {
   setHook(entity) {
-    entity.getComputedStyle = () => {
-
-      if (!this.refs.element) {
-        console.warn('trying to calculate display information on entity that is not mounted');
-        return {
-
-        };
-      }
-
-      // eeeesh - this is yucky, but we *need* to offset the position
-      // of the preview canvas so that we can get the correct position
-      // of this element. This is the *simplest* solution I can think of.
-      var pcrect = document.getElementById('preview-canvas').getBoundingClientRect();
-
-
-      var rect = this.refs.element.getBoundingClientRect();
-
-      var w = rect.right - rect.left;
-      var h = rect.bottom - rect.top;
-
-      return {
-        resizable : window.getComputedStyle(this.refs.element).display !== 'inline',
-
-        // calculate the actual coords based on the entity, and what is visible
-        // to the user. Gotta use some yucky strategies to make this work.
-        left      : rect.left - pcrect.left,
-        top       : rect.top  - pcrect.top,
-        width     : w,
-        height    : h
-      };
-    };
+    entity.setComputer(ReactEntityComputer.create(entity, this));
   }
 
   componentDidMount() {

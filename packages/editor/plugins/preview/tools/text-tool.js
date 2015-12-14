@@ -1,5 +1,5 @@
 import ObservableObject from 'common/object/observable';
-import { DisplayEntity } from 'editor/entity-types';
+import { DisplayEntity } from 'editor/entities';
 
 const CURSOR_HEIGHT = 12;
 
