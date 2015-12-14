@@ -15,6 +15,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var absStyle = this.getZoomedStyle();
     var entStyle = this.entity.getStyle();
 
+    // TODO - actually parse style here. calc() might be in it
     var [xv, xu] = convertPosition(absStyle.left, entStyle.left, point.left);
     var [yv, yu] = convertPosition(absStyle.top, entStyle.top, point.top);
 
