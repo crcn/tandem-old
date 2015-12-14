@@ -3,12 +3,19 @@ import './resizer.scss';
 import React from 'react';
 import startDrag from 'common/utils/component/start-drag';
 import PathComponent from './path';
+import { parseUnit  } from 'common/utils/html/css';
 import ObservableObject from 'common/object/observable';
 import CallbackNotifier from 'common/notifiers/callback';
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 3;
 const PADDING            = 6;
+
+function convertPosition(x1, y1, x2) {
+  var [value, unit] = parseUnit(y1);
+  var y2 = ((value * x2) / x1).toFixed(3);
+  return [y2, unit];
+}
 
 class ResizerComponent extends React.Component {
   startDragging(event) {
@@ -18,15 +25,22 @@ class ResizerComponent extends React.Component {
     // augment this shit so that we don't sprinkle zoom around all
     // over the p99lace
     // TODO componentUtils.getActualComputedStyle(this.props)
-    var sx = this.props.focus.attributes.style.left * zoom;
-    var sy = this.props.focus.attributes.style.top * zoom;
+
+
+    var sx2 = focus.getComputedStyle().left * zoom;
+    var sy2 = focus.getComputedStyle().top * zoom;
+    var sx = this.props.focus.attributes.style.left;
+    var sy = this.props.focus.attributes.style.top;
     var mx = event.clientX;
     var my = event.clientY;
 
     startDrag(event, (event) => {
+      var [xv, xu] = convertPosition(sx2, sx, sx2 + event.clientX - mx);
+      var [yv, yu] = convertPosition(sy2, sy, sy2 + event.clientY - my);
+
       focus.setStyle({
-        left: Math.round((sx + event.clientX - mx) / zoom),
-        top: Math.round((sy + event.clientY - my) / zoom)
+        left: xv + xu,
+        top: yv + yu
       });
     });
   }
