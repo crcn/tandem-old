@@ -1,5 +1,11 @@
 body {
+  font-family: $font-family-0;
   font-size: $font-size-3;
+  letter-spacing: $letter-spacing-1;
+}
+
+input {
+  letter-spacing: $letter-spacing-1;
 }
 
 ul {
