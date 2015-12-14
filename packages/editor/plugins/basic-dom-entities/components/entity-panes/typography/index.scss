@@ -1,0 +1,28 @@
+@import 'editor/scss/variables';
+
+.m-typography-pane {
+  text-align: left;
+
+  & .col-sm-3, .col-sm-6 {
+    padding: 0 $padding-1;
+  }
+
+  & .row {
+    padding-left: $padding-1;
+    padding-right: $padding-1;
+    padding-bottom: $padding-2;
+  }
+
+  & input {
+    background: transparent;
+    border: none;
+    box-shadow: inset 0 0 0 2px $color-white-offset-8;
+    border-radius: $border-radius-1;
+    text-align: center;
+    font-size: $font-size-2;
+    width: 100%;
+    &:focus {
+      box-shadow: inset 0 0 0px 2px $color-sky-blue-4 !important;
+    }
+  }
+}
