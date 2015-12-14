@@ -12,19 +12,21 @@ class TransformPaneComponent extends React.Component {
 
       <div className='container'>
         <div className='row'>
-          <div className='col-sm-3'>
+          <div className='col-sm-6'>
             <label>x</label>
             <UnitInputComponent reference={createStyleReference(entity, 'left')} />
           </div>
-          <div className='col-sm-3'>
+          <div className='col-sm-6'>
             <label>y</label>
             <UnitInputComponent reference={createStyleReference(entity, 'top')} />
           </div>
-          <div className='col-sm-3'>
+        </div>
+        <div className='row'>
+          <div className='col-sm-6'>
             <label>w</label>
             <UnitInputComponent reference={createStyleReference(entity, 'width')} />
           </div>
-          <div className='col-sm-3'>
+          <div className='col-sm-6'>
             <label>h</label>
             <UnitInputComponent reference={createStyleReference(entity, 'height')} />
           </div>

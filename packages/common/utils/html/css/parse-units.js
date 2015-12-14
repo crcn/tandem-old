@@ -1,5 +1,5 @@
 export default function(value) {
-  var match = value.match(/([-\d\.]+)(\w+)?/);
+  var match = value.match(/([-\d\.]+)(\D+)?/);
   // console.log(match);
 
   return [Number(match[1]), match[2] || 'px'];

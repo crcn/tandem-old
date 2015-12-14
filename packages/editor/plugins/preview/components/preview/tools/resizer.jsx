@@ -22,15 +22,10 @@ class ResizerComponent extends React.Component {
     var focus = this.props.focus;
     var zoom = this.props.zoom;
 
-    // augment this shit so that we don't sprinkle zoom around all
-    // over the p99lace
-    // TODO componentUtils.getActualComputedStyle(this.props)
-
-
     var sx2 = focus.getComputedStyle().left * zoom;
     var sy2 = focus.getComputedStyle().top * zoom;
-    var sx = this.props.focus.attributes.style.left;
-    var sy = this.props.focus.attributes.style.top;
+    var sx = focus.attributes.style.left;
+    var sy = focus.attributes.style.top;
     var mx = event.clientX;
     var my = event.clientY;
 
@@ -48,6 +43,8 @@ class ResizerComponent extends React.Component {
     var focus = this.props.focus;
     var zoom  = this.props.zoom;
     var props = {};
+
+    var style = focus.getComputedStyle();
 
     if (/^n/.test(point.id)) {
       props.top = point.currentStyle.top + point.top;
@@ -67,7 +64,14 @@ class ResizerComponent extends React.Component {
       props.left  = point.currentStyle.left + point.left;
     }
 
-    for (var k in props) props[k] = Math.round(props[k]);
+    for (var k in props) {
+      if (focus.attributes.style[k] == void 0) continue;
+      props[k] = convertPosition(
+        style[k],
+        focus.attributes.style[k],
+        props[k]
+      ).join('');
+    }
 
     focus.setStyle(props);
   }
