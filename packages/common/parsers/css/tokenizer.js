@@ -1,9 +1,16 @@
 import {
-  DOT
+  DOT, HASH, LEFT_CURLY_BRACKET, RIGHT_CURLY_BRACKET
 } from './token-types';
 
 function createToken(code, value) {
   return [code, value];
+}
+
+var tokenCharMap = {
+  '.' : DOT,
+  '#' : HASH,
+  '{' : LEFT_CURLY_BRACKET,
+  '}' : RIGHT_CURLY_BRACKET
 }
 
 class Tokenizer {
@@ -15,9 +22,8 @@ class Tokenizer {
   getNextToken() {
     var cchar = this.scanner.scan(/./);
 
-    // it's a class
-    if (cchar === '.') {
-      return createToken(DOT, cchar);
+    if (tokenCharMap[cchar]) {
+      return createToken(tokenCharMap[cchar], cchar);
     }
   }
 

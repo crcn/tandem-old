@@ -1,5 +1,11 @@
+import {
+  DOT,
+  HASH,
+  VARIABLE_NAME,
+  LEFT_CURLY_BRACKET,
+  RIGHT_CURLY_BRACKET
+} from './token-types';
 import expect from 'expect.js'
-import { DOT, NAME } from './token-types';
 import Tokenizer from './tokenizer';
 import Scanner from '../scanner';
 import flatten from 'lodash/array/flattenDeep';
@@ -11,7 +17,11 @@ describe(__filename + '#', function() {
   });
 
   [
-    ['.', [DOT, '.']]
+    ['.', [DOT, '.']],
+    ['#', [HASH, '#']],
+    ['{', [LEFT_CURLY_BRACKET, '{']],
+    ['}', [RIGHT_CURLY_BRACKET, '}']],
+    ['name', [VARIABLE_NAME, 'name']]
   ].forEach(function([source, match]) {
     it('can tokenize ' + source, function() {
       var tokenizer = Tokenizer.create(Scanner.create(source));

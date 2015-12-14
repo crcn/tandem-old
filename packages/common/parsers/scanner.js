@@ -12,7 +12,6 @@ class Scanner {
    */
 
   scan(search) {
-
     var match = this.source.substr(this.position).match(search);
     if (!match) return void 0;
     var value = match[0];
