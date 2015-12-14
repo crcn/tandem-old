@@ -1,7 +1,11 @@
 @import 'editor/scss/variables';
 
-.m-typography-pane {
+.m-appearance-pane {
   text-align: left;
+
+  & label {
+    user-select: none;
+  }
 
   & .col-sm-3, .col-sm-6 {
     padding: 0 $padding-0;

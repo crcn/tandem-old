@@ -1,5 +1,6 @@
 import './index.scss';
 import React from 'react';
+import UnitInputComponent from './unit-input';
 
 class TransformPaneComponent extends React.Component {
   render() {
@@ -9,7 +10,7 @@ class TransformPaneComponent extends React.Component {
         <div className='row'>
           <div className='col-sm-3'>
             <label>x</label>
-            <input type='text'></input>
+            <UnitInputComponent />
           </div>
           <div className='col-sm-3'>
             <label>y</label>

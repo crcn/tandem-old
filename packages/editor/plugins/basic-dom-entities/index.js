@@ -11,6 +11,7 @@ import { CallbackNotifier } from 'common/notifiers';
 import { TextEntity, ElementEntity } from './entities';
 import TransformPaneComponent from './components/entity-panes/transform';
 import TypographyPaneComponent from './components/entity-panes/typography';
+import AppearancePaneComponent from './components/entity-panes/appearance';
 import TextLayerLabelComponent from './components/entity-layer-labels/text';
 
 export default ApplicationPlugin.create({
@@ -43,6 +44,12 @@ function registerEntities(app) {
       label          : 'Typography',
       paneType       : 'entity',
       componentClass : TypographyPaneComponent
+    }),
+    EntityPaneComponentPlugin.create({
+      id             : 'appearancePaneComponent',
+      label          : 'Appearance',
+      paneType       : 'entity',
+      componentClass : AppearancePaneComponent
     }),
     EntityLayerLabelComponentPlugin.create({
       id             : 'textPaneLayerComponent',

@@ -17,4 +17,8 @@ class PopdownComponent extends React.Component {
   }
 }
 
+PopdownComponent.defaultProps = {
+  showArrow: false
+};
+
 export default PopdownComponent;
