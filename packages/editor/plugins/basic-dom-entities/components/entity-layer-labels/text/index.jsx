@@ -3,6 +3,7 @@ import './index.scss';
 import cx from 'classnames';
 import React from 'react';
 import FocusComponent from 'common/components/focus';
+import AutosizeInput from 'react-input-autosize';
 
 class TextLayerLabelComponent extends React.Component {
 
@@ -56,11 +57,11 @@ class TextLayerLabelComponent extends React.Component {
   }
 
   renderInput() {
-    return <FocusComponent><input
+    return <FocusComponent><AutosizeInput
       type='text'
       onFocus={this.onInputFocus.bind(this)}
-      defaultValue={this.props.entity.value}
-      onInput={this.onInputChange.bind(this)}
+      value={this.props.entity.value}
+      onChange={this.onInputChange.bind(this)}
       onBlur={this.doneEditing.bind(this)}
       onKeyDown={this.onInputKeyDown.bind(this)}
       /></FocusComponent>;

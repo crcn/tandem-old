@@ -47,7 +47,7 @@ class LayerComponent extends React.Component {
     })
 
     return <div className='m-layers-pane-component-layer'>
-      <div style={labelStyle} tabIndex="0"  onFocus={this.focus.bind(this)} className={headerClassName}>
+      <div style={labelStyle} tabIndex="0" onFocus={this.focus.bind(this)} className={headerClassName}>
         { labelSection }
       </div>
       { entity.children.map((child, i) => {
