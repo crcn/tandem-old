@@ -40,7 +40,7 @@ function registerEntities(app) {
     }),
     EntityPaneComponentPlugin.create({
       id             : 'typographyPaneComponent',
-      label          : 'Typogarphy',
+      label          : 'Typography',
       paneType       : 'entity',
       componentClass : TypographyPaneComponent
     }),

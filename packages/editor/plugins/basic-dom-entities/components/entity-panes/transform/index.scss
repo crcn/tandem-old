@@ -3,6 +3,10 @@
 .m-transform-pane {
   text-align: left;
 
+  & label {
+    user-select: none;
+  }
+
   & .col-sm-3 {
     padding: 0 $padding-1;
   }
