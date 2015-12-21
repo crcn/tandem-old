@@ -10,10 +10,6 @@
     min-width: calc(100% + #{$padding-2});
   }
 
-  & .m-text-editor--highlight {
-    background-color: $color-white-offset-1;
-  }
-
   &--dim {
     cursor: pointer;
     background-color: $color-white-offset-1;

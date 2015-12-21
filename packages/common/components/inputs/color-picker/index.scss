@@ -15,8 +15,8 @@ $color-picker-button-border-width: 1px;
     position: relative;
 
     &-fill {
-      width: $color-picker-button-width;
-      height: 15px;
+      width: 100%;
+      height: 18px;
       background-color: rgba(0,0,0,0);
     }
   }

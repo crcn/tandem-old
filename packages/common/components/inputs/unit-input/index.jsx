@@ -7,6 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import MenuComponent from 'common/components/menu';
 import SelectComponent from 'common/components/inputs/select';
+import TextInputComponent from 'common/components/inputs/text-input'
 
 import {
   tokenize as tokenizeCSS,
@@ -83,13 +84,6 @@ var tokenFactory = {
 }
 
 class UnitInputComponent extends React.Component {
-  onInput(source) {
-    this.props.reference.setValue(source);
-  }
-
-  onFocus(event) {
-    this.refs.editor.setSelection(0, Infinity);
-  }
 
   onKeyDown(event) {
     var ref = this.props.reference;
@@ -113,24 +107,13 @@ class UnitInputComponent extends React.Component {
   }
 
   render() {
-
-    var value = this.props.reference.getValue();
-
-    var style = {
-      whiteSpace: 'nowrap',
-      overflow: 'hidden'
-    }
-
-    return <TextEditorComponent
+    return <TextInputComponent
       ref='editor'
-      className='m-unit-input input'
-      onFocus={this.onFocus.bind(this)}
+      selectAllOnFocus={true}
+      className='m-unit-input'
       onKeyDown={this.onKeyDown.bind(this)}
-      source={value}
-      style={style}
       reference={this.props.reference}
       entity={this.props.reference.target}
-      onChange={this.onInput.bind(this)}
       tokenizer={CSSTokenizer.create()}
       tokenComponentFactory={tokenFactory} />
   }

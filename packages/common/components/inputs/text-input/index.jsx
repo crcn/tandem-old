@@ -1,15 +1,34 @@
 import React from 'react';
+import TextEditorComponent from 'common/components/text-editor';
 
 class TextInputComponent extends React.Component {
-  onInput(event) {
-    this.props.reference.setValue(event.target.value);
+  onInput(source) {
+    this.props.reference.setValue(source);
+  }
+  setSelection(...args) {
+    this.refs.editor.setSelection(...args);
+  }
+  onFocus() {
+    if (this.props.selectAllOnFocus) {
+      this.setSelection(0, Infinity);
+    }
   }
   render() {
-    // silence onChange console.error
-    return <input className='input form-control mousetrap'
-      onInput={this.onInput.bind(this)}
-      value={this.props.reference.getValue()}
-      onChange={function(){}}></input>
+    var value = this.props.reference.getValue();
+
+    var style = {
+      overflow: 'hidden',
+      whiteSpace: 'nowrap'
+    };
+
+    return <TextEditorComponent
+      ref='editor'
+      {...this.props}
+      source={value}
+      onFocus={this.onFocus.bind(this)}
+      onChange={this.onInput.bind(this)}
+      style={Object.assign({}, this.props.style || {})}
+      className={['input', this.props.className].join(' ') } />
   }
 }
 

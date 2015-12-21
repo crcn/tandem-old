@@ -15,6 +15,12 @@ input, span[contentEditable] {
   }
 }
 
+.input {
+  & .m-text-editor--highlight {
+    background-color: $color-white-offset-1;
+  }
+}
+
 .no-outline {
   &:focus {
     box-shadow: none !important;
