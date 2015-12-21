@@ -41,4 +41,15 @@ describe(__filename + '#', function() {
       column: 0
     });
   });
+
+  it('does not move the position of the cursor if the entered character is a new line and whiteSpace is nowrap', function() {
+    var te = TextEditor.create({
+      notifier: NotifierCollection.create(),
+      source: 'abc',
+      style: { whiteSpace: 'nowrap' }
+    });
+
+    te.notifier.notify({ type: 'input', text: '\n' });
+    expect(te.caret.position).to.be(0);
+  });
 });

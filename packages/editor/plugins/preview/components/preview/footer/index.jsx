@@ -12,7 +12,7 @@ class FooterComponent extends React.Component {
     return <div className='m-preview-footer'>
       { Math.round(app.preview.zoom * 100) }%
       &nbsp;
-      { app.preview.canvasWidth }W x { app.preview.canvasHeight }H
+      { app.rootEntity.canvasWidth }W x { app.rootEntity.canvasHeight }H
 
       <RegisteredComponent {...this.props} query={{paneType: 'footer'}} />
     </div>;

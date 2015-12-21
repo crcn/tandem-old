@@ -1,7 +1,7 @@
 import { create } from 'common/utils/class';
 import Scanner from './scanner';
 import createToken from './create-token';
-import { SPACE, TAB, NEW_LINE, STRING } from './token-types';
+import { SPACE, TAB, NEW_LINE, TEXT } from './token-types';
 
 class StringTokenizer {
 
@@ -22,7 +22,7 @@ class StringTokenizer {
       if (addToken(/^[\n\r]/, NEW_LINE)) continue;
       if (addToken(/^\t+/, TAB)) continue;
       if (addToken(/^\u0020+/, SPACE)) continue;
-      if (addToken(/[^\s\t\n\r]+/, STRING)) continue;
+      if (addToken(/[^\s\t\n\r]+/, TEXT)) continue;
       throw new Error('unexpected token: '+ scanner.getCapture());
     }
 

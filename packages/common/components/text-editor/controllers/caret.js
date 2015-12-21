@@ -24,7 +24,6 @@ class Caret extends BaseObject {
   }
 
   moveRight() {
-    console.log('spos');
     this.setPosition(this.position + 1);
   }
 
@@ -52,7 +51,32 @@ class Caret extends BaseObject {
   }
 
   addCharacter(character) {
+
+    if (/[\n\r]/.test(character)) {
+      if (this.editor.style.whiteSpace === 'nowrap') return;
+    }
+
     this.editor.splice(this.position++, 0, character);
+  }
+
+  /**
+   * TODO - kinda works
+   */
+
+  moveToToken(delta) {
+
+    var neg = delta < 0;
+
+    // never should be rounded, but just in case...
+    var rest = Math.round(Math.abs(delta));
+    var pos  = this.position;
+
+    while(rest--)  {
+      pos = this.editor.scanPosition(pos, /[^\s]/, neg) + (neg ? 1 : -1); // skip ws
+      pos = this.editor.scanPosition(pos, /\s/, neg) + (neg ? 1 : -1);
+    }
+
+    this.setPosition(pos);
   }
 
   moveLine(delta) {
@@ -111,6 +135,16 @@ class Caret extends BaseObject {
       } else if (k === 75) {
         this.removeCharsUntilEndOfLine();
       }
+      return;
+    }
+
+    if (message.altKey) {
+      if (k === 37) {
+        this.moveToToken(-1);
+      } else if (k == 39) {
+        this.moveToToken(1);
+      }
+      return;
     }
 
     if (message.type === 'input') {
@@ -118,6 +152,7 @@ class Caret extends BaseObject {
     } else if (message.type === 'keyCommand') {
       if (message.keyCode === 8) {
         this.removePreviousCharacter();
+        message.preventDefault();
       } else if (message.keyCode === 39) {
         this.moveRight();
       } else if (message.keyCode === 37) {

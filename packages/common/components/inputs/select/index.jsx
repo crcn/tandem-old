@@ -19,6 +19,7 @@ class SelectComponent extends React.Component {
 
     if (!!~newPosition) {
       this.onItemHover(items[newPosition]);
+      this.onItemSelect(items[newPosition]);
       var item = this.refs.list.querySelectorAll('li')[newPosition];
       item.scrollIntoView(false);
     }
@@ -48,6 +49,10 @@ class SelectComponent extends React.Component {
 
   onItemHover(item) {
     this.props.onItemHover(this.getItemValue(item));
+  }
+
+  onItemSelect(item) {
+    this.props.onSelect(this.getItemValue(item));
   }
 
   getItemValue(item) {

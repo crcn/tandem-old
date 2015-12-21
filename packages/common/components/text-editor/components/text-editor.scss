@@ -1,10 +1,6 @@
 .m-text-editor {
 
   position: relative;
-  top: 100px;
-  left: 100px;
-  min-width: 100px;
-  min-height: 100px;
   background-color: rgba(0,0,0,0.05);
   display: inline-block;
 
@@ -12,9 +8,10 @@
   -webkit-user-select: none;
 
   &--caret {
-    width: 1px;
-    height: 4px;
-    background-color: #333;
+    // width: 2px;
+    border-left: 1px solid black;
+    // height: 4px;
+    // background-color: #333;
     position: absolute;
     top: 0px;
     left: 0px;
@@ -22,6 +19,22 @@
 
   &--token {
     display: inline-block;
+    &-space {
+      position: relative;
+    }
+    &-unit {
+      color: grey;
+      cursor: pointer;
+    }
+    &-reference {
+      color: grey;
+    }
+    &-leftParen {
+      color: grey;
+    }
+    &-rightParen {
+      color: grey;
+    }
   }
 }
 

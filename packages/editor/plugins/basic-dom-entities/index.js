@@ -8,7 +8,7 @@ import {
 } from 'editor/plugin/types';
 
 import { CallbackNotifier } from 'common/notifiers';
-import { TextEntity, ElementEntity } from './entities';
+import { TextEntity, ElementEntity, RootEntity } from './entities';
 import TransformPaneComponent from './components/entity-panes/transform';
 import TypographyPaneComponent from './components/entity-panes/typography';
 import AppearancePaneComponent from './components/entity-panes/appearance';
@@ -27,6 +27,11 @@ export default ApplicationPlugin.create({
 
 function registerEntities(app) {
   app.plugins.push(
+
+    EntityPlugin.create({
+      id      : 'rootEntity',
+      factory : RootEntity
+    }),
 
     // text
     EntityPlugin.create({

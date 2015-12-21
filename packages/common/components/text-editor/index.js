@@ -1,2 +1,3 @@
-import TextEditor from './components/text-editor';
-export default TextEditor;
+
+export { default } from './components/text-editor';
+export CSSTokenizer from './controllers/tokenizers/css';

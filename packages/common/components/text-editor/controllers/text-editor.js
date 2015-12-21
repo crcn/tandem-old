@@ -11,12 +11,13 @@ class TextEditor extends BaseObject {
   constructor({
     source,
     notifier,
-    style,
+    style = {},
     tokenizer = StringTokenizer.create(),
     maxColumns = Infinity
    }) {
 
     super({
+      style      : style,
       tokenizer  : tokenizer,
       maxColumns : maxColumns,
       source     : source,
@@ -39,6 +40,20 @@ class TextEditor extends BaseObject {
 
     notifier.push(this.caret);
     notifier.push(this.marker);
+  }
+
+  get source() {
+    return this._source || '';
+  }
+
+  set source(value) {
+    var source = String(value || '');
+
+    if (this.style.whiteSpace === 'nowrap') {
+      source = source.replace(/[\n\r]/g, '');
+    }
+
+    this._source = source;
   }
 
   /**
@@ -88,10 +103,32 @@ class TextEditor extends BaseObject {
   /**
    */
 
+  scanPosition(start, regexp, reverse = false) {
+    var rest;
+    if (reverse) {
+      rest = this.source.substr(0, start).split('').reverse().join('');
+    } else {
+      rest = this.source.substr(start);
+    }
+
+    var match = rest.match(regexp);
+
+    if (!match) return start;
+    return start + (rest.indexOf(match[0]) + match[0].length) * (reverse ? -1 : 1);
+  }
+
+  /**
+   */
+
   splice(start, count, repl = '') {
     var source = this.source.substr(0, start) + repl + this.source.substr(start + count);
     this.setProperties({
       source: source
+    });
+
+    this.notifier.notify({
+      type: 'sourceChange',
+      source: this.source
     });
   }
 
@@ -99,7 +136,7 @@ class TextEditor extends BaseObject {
    */
 
   _createLines() {
-    var tokens = this.tokenizer.tokenize(this.source || '');
+    var tokens = this.tokenizer.tokenize(this.source);
 
     var lines = [];
     var cline;

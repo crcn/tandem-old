@@ -15,6 +15,19 @@ class Token extends BaseObject {
     });
   }
 
+  getColumn() {
+    return this.line.tokens.indexOf(this);
+  }
+
+  setValue(value) {
+    this.encodedValue = encode(this.value = value);
+    this.editor.splice(this.getPosition(), this.length, value);
+  }
+
+  toString() {
+    return this.encodedValue;
+  }
+
   getPosition() {
     return this.line.getPosition() + calcPosition(this, this.line.tokens);
   }

@@ -14,9 +14,8 @@
 
   & .m-popdown {
     overflow-x: scroll;
-    max-height: 100px;
     background-color: $color-grey-8;
-    min-width: calc(100% + #{$padding-1});
+    min-width: calc(100% + #{$padding-2});
   }
 
   &--dim {

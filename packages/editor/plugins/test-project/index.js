@@ -13,16 +13,27 @@ export default ApplicationPlugin.create({
 
       function load() {
 
+        var root = app.plugins.queryOne({
+          id: 'rootEntity'
+        });
+
         var div = app.plugins.queryOne({
           id: 'elementEntity'
         });
 
-        var entity = div.factory.create({
+
+        var entity = root.factory.create({
+          notifier : app.notifier,
+          canvasWidth: 1024,
+          canvasHeight: 768
+        });
+
+        entity.children.push(div.factory.create({
           notifier      : app.notifier,
           componentType : 'div',
           label         : 'div', // don't want,
           icon          : 'puzzle'
-        });
+        }));
 
         app.notifier.notify(RootEntityMessage.create(LOAD_ROOT_ENTITY, entity));
       }

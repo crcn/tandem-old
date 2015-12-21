@@ -1,6 +1,6 @@
 import { DisplayEntity } from 'editor/entities';
 
-class ElementEntitiy extends DisplayEntity {
+class ElementEntity extends DisplayEntity {
   constructor(properties, children) {
     super({
       type: 'component',
@@ -10,4 +10,4 @@ class ElementEntitiy extends DisplayEntity {
   }
 }
 
-export default ElementEntitiy;
+export default ElementEntity;

@@ -1,6 +1,7 @@
 import BaseObject from 'common/object/base';
 
 /**
+ * TODO - marks a selection of text. Also used for the cursor
  */
 
 class Marker extends BaseObject {

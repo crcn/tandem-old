@@ -1,9 +1,8 @@
 import './sidebar.scss';
 
-import React from 'react';
 import cx from 'classnames';
+import React from 'react';
 import Reference from 'common/reference';
-import TextEditor from 'common/components/text-editor';
 import SideDragger from 'common/components/side-dragger';
 import PaneContainerComponent from './pane-container';
 
@@ -24,8 +23,6 @@ class SidebarComponent extends React.Component {
     };
 
     return <div style={style} className={['m-sidebar', this.props.position].join(' ')}>
-
-      <TextEditor />
 
       {
         this.props.app.plugins.query({

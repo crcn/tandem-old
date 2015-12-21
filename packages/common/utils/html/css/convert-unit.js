@@ -26,12 +26,17 @@ units.forEach(function(unit) {
 
 document.body.removeChild(div);
 
-
-export default function(a, b, relativeElement) {
+function convertUnits(a, b, relativeElement) {
   var [value, unit] = parseUnits(a);
+
+  // normalize into pizels
+  if (unit !== 'px') {
+    value *= conv[unit];
+  }
 
   if (conv[b]) {
     return (value/conv[b]).toFixed(MAX_DECIMALS) + b;
   }
-
 }
+
+export default convertUnits;

@@ -36,4 +36,14 @@ describe(__filename + '#', function() {
 
     expect(te.getCellFromPosition(0)).to.eql({ row: 0, column: 0 }); expect(te.getCellFromPosition(3)).to.eql({ row: 0, column: 3 }); expect(te.getCellFromPosition(4)).to.eql({ row: 1, column: 0 }); expect(te.getCellFromPosition(11)).to.eql({ row: 1, column: 7 }); expect(te.getCellFromPosition(12)).to.eql({ row: 2, column: 0 }); expect(te.getCellFromPosition(Infinity)).to.eql({ row: 3, column: 11 });
   });
+
+  it('removes new line characters if white space is nowrap', function() {
+    var tw = TextEditor.create({
+      source: 'abc\n123',
+      notifier: NotifierCollection.create(),
+      style: { whiteSpace: 'nowrap' }
+    });
+
+    expect(tw.lines.length).to.be(1);
+  });
 });

@@ -18,8 +18,10 @@ class HTMLEntityComponent extends React.Component {
   }
 
   render() {
+
     var props = this.props;
     var entity = props.entity;
+
     var Type = entity.componentType === 'text' ? 'span' : entity.componentType;
 
     return <Type ref='element' data-node-id={entity.id} {...entity.attributes}>

@@ -26,11 +26,11 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var props = { ...bounds };
     for (var k in bounds) {
       if (entStyle[k] == void 0) continue;
-      props[k] = convertPosition(
+      props[k] = translateCSSLength(
         absStyle[k],
         entStyle[k],
         bounds[k]
-      ).join('');
+      );
     }
 
     this.entity.setStyle(props);

@@ -1,15 +1,6 @@
 import React from 'react';
 import cx from 'classnames';
 
-function getTextWidth(text, font) {
-    // re-use canvas object for better performance
-    var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-    var context = canvas.getContext("2d");
-    context.font = font;
-    var metrics = context.measureText(text);
-    return metrics.width;
-};
-
 class CaretComponent extends React.Component {
   componentDidMount() {
 
@@ -17,6 +8,7 @@ class CaretComponent extends React.Component {
   render() {
 
     var caret = this.props.caret;
+    var editor = this.props.editor;
     var cell = caret.getCell();
 
     var tr     = this.props.editor.textRuler;
@@ -34,8 +26,10 @@ class CaretComponent extends React.Component {
     var style = {
 
       // offset cursor width
-      'transform': 'translate('+ Math.max(0, x - 1) + 'px, ' + y + 'px)',
-      'height'   : line.getHeight()
+      'transform': 'translate('+ Math.max(0, x - 2) + 'px, ' + y + 'px)',
+      'height'   : line.getHeight(),
+      'backgroundColor': editor.style.color || 'black',
+      'borderColor': editor.style.color || 'black'
     };
 
     return <div className={ classNames } style={style}>

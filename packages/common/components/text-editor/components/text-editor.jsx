@@ -21,7 +21,7 @@ class TextEditorComponent extends React.Component {
     this.notifier.push(this);
   }
 
-  notify() {
+  notify(message) {
 
     clearTimeout(this._timer);
     this._timer = setTimeout(() => {
@@ -32,10 +32,16 @@ class TextEditorComponent extends React.Component {
     this._idleTimer = setTimeout(() => {
       this.setState({ idle: true });
     }, 100);
+
+    if (message.type === 'sourceChange') {
+      if (this.props.onChange) {
+        this.props.onChange(message.source);
+      }
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    this.editor.setProperties(nextProps);
+    this.getEditor().setProperties(nextProps);
   }
 
   getEditor() {
@@ -54,16 +60,21 @@ class TextEditorComponent extends React.Component {
       type: 'input',
       text: String.fromCharCode(event.which)
     });
+    event.stopPropagation();
+    event.preventDefault();
   }
 
   onKeyCommand(event) {
+
     this.notifier.notify({
       type    : 'keyCommand',
       keyCode : event.keyCode,
       altKey  : event.altKey,
-      ctrlKey : event.ctrlKey
+      ctrlKey : event.ctrlKey,
+      preventDefault() {
+        event.preventDefault();
+      }
     });
-    // event.preventDefault();
   }
 
   onFocus(event) {
@@ -79,8 +90,10 @@ class TextEditorComponent extends React.Component {
 
     return <div
       ref='editor'
-      tabIndex="0"
-      className='m-text-editor'
+      style={this.props.style}
+      tabIndex='0'
+      data-mouse-trap={false}
+      className={['m-text-editor', this.props.className].join(' ')}
       onKeyPress={this.onKey.bind(this)}
       onKeyDown={this.onKeyCommand.bind(this)}
       onFocus={this.onFocus.bind(this)}
@@ -89,8 +102,8 @@ class TextEditorComponent extends React.Component {
       { this.state.focus ? <CaretComponent idle={this.state.idle} editor={editor} caret={editor.caret} /> : void 0 }
 
       {
-        editor.lines.map(function(line, key) {
-          return <LineComponent editor={editor} line={line} key={Math.random()} />
+        editor.lines.map((line, i) => {
+          return <LineComponent editor={editor} line={line} key={i} tokenComponentFactory={this.props.tokenComponentFactory} />
         })
       }
     </div>;

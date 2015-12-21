@@ -23,12 +23,30 @@ class Line extends BaseObject {
     return this.editor.lines.indexOf(this);
   }
 
+  getTokenFromColumn(column) {
+    var p = 0;
+
+    for (var i = 0, n = this.tokens.length; i < n; i++) {
+      var token = this.tokens[i];
+      p += token.length;
+      if (p > column) {
+        return token;
+      }
+    }
+
+    return void 0;
+  }
+
+  getTokenIndexFromColumn(column) {
+    return this.tokens.indexOf(this.getTokenFromColumn(column));
+  }
+
   getPosition() {
     return calcPosition(this, this.editor.lines);
   }
 
   getHeight() {
-    return this.editor.textRuler.calculateSize(this.toString())[1];
+    return this.editor.textRuler.calculateSize('aZ')[1];
   }
 
   toString() {

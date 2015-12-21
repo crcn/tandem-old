@@ -82,11 +82,6 @@ export default ApplicationPlugin.create({
 
       // TODO - register layer styles too
       registerComponents(app);
-
-      // for testing
-      app.notifier.push(CallbackNotifier.create(function() {
-
-      }));
     }
   }
 })
