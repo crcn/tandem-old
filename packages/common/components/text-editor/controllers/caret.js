@@ -39,8 +39,11 @@ class Caret extends BaseObject {
   moveToLinePosition(position) {
     var cline = this._getLine();
 
-    var newLinePos = cline.toString().indexOf('\n');
-    var eol        = ~newLinePos ? newLinePos : cline.length;
+    var newLineToken = cline.tokens.find(function(token) {
+      return token.type === 'newLine';
+    });
+
+    var eol        = newLineToken ? cline.length - 1 : cline.length;
 
     // TODO - scan position until new line
     this.setPosition(
