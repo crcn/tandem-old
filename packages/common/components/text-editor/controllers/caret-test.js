@@ -19,6 +19,7 @@ describe(__filename + '#', function() {
       source: 'abc\n123',
       notifier: NotifierCollection.create()
     });
+
     var c = te.caret;
 
     expect(c.getCell()).to.eql({
@@ -41,7 +42,7 @@ describe(__filename + '#', function() {
       style: { whiteSpace: 'nowrap' }
     });
 
-    te.notifier.notify({ type: 'input', text: '\n' });
+    te.notifier.notify({ type: 'input', text: '\n', preventDefault: function() { } });
     expect(te.marker.position).to.be(0);
   });
 });

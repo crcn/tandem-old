@@ -44,4 +44,6 @@ describe(__filename + '#', function() {
     te.notifier.notify({ type: 'keyCommand', keyCode: 'E'.charCodeAt(0), ctrlKey: true });
     expect(te.marker.position).to.be(7);
   });
+
+  // it('can add text anywhere ')
 });

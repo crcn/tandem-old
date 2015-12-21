@@ -1,5 +1,7 @@
 export default function(entity, styleName) {
   return {
+    property: styleName,
+    target: entity,
     getValue() {
       return entity.attributes.style[styleName];
     },

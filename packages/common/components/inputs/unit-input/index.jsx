@@ -40,20 +40,20 @@ function calculatePercentages(entity) {
 class UnitTokenComponent extends React.Component {
 
   onUnitChange(unit) {
+    var reference = this.props.editor.reference;
     var unitToken = this.props.token;
     var numberToken = this.props.line.tokens[unitToken.getColumn() - 1];
     var oldUnit = unitToken.value;
     unitToken.setValue(unit);
-    var entity = this.props.editor.entity;
+    var entity = reference.target;
     var cstyle = entity.getComputedStyle();
-
 
     if (unitToken.value !== '%') {
       numberToken.setValue(
-        convertUnit(String(cstyle.left), unitToken.value).replace(unitToken.value, '')
+        convertUnit(String(cstyle[reference.property]), unitToken.value).replace(unitToken.value, '')
       )
     } else {
-      numberToken.setValue((calculatePercentages(entity).left * 100).toFixed(3));
+      numberToken.setValue((calculatePercentages(entity)[reference.property] * 100).toFixed(3));
     }
 
   }
@@ -66,7 +66,7 @@ class UnitTokenComponent extends React.Component {
       return { label: unit, value: unit }
     });
 
-    return <MenuComponent>
+    return <MenuComponent tabbable={false}>
       { this.props.token.value }
       <SelectComponent onSelect={this.onUnitChange.bind(this)} items={items} />
     </MenuComponent>;
@@ -87,17 +87,25 @@ class UnitInputComponent extends React.Component {
     this.props.reference.setValue(source);
   }
 
+  onFocus(event) {
+    this.refs.editor.setSelection(0, Infinity);
+  }
+
   render() {
 
     var value = this.props.reference.getValue();
+
     var style = {
       color: 'white'
     }
 
     return <TextEditorComponent
+      ref='editor'
       className='m-unit-input'
+      onFocus={this.onFocus.bind(this)}
       source={value}
-      entity={this.props.entity}
+      reference={this.props.reference}
+      entity={this.props.reference.target}
       style={style}
       onChange={this.onInput.bind(this)}
       tokenizer={CSSTokenizer.create()}

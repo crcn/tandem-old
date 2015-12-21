@@ -60,7 +60,7 @@ class Marker extends BaseObject {
       if (this.editor.style.whiteSpace === 'nowrap') return;
     }
 
-    this.editor.splice(this.position, this.endPosition, text);
+    this.editor.splice(this.position, this.length, text);
     this.position += text.length;
     this.length = 0;
   }
@@ -77,6 +77,7 @@ class Marker extends BaseObject {
 
     if (message.type === 'input') {
       this.addText(message.text);
+      message.preventDefault();
     } else if (message.type === 'keyCommand') {
       if (message.keyCode === 8) {
         this.removeSelection();

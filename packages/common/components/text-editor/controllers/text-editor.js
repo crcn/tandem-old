@@ -8,39 +8,31 @@ import TextRuler from './text-ruler';
 
 class TextEditor extends BaseObject {
 
-  constructor({
-    source,
-    notifier,
-    style = {},
-    tokenizer = StringTokenizer.create(),
-    maxColumns = Infinity
-   }) {
+  constructor(props) {
 
-    super({
-      style      : style,
-      tokenizer  : tokenizer,
-      maxColumns : maxColumns,
-      source     : source,
-      notifier   : notifier
-    });
+    if (!props.style) props.style = {};
+    if (!props.tokenizer) props.tokenizer = StringTokenizer.create();
+    if (!props.maxColumns) props.maxColumns = Infinity;
+
+    super(props);
 
     this.textRuler = TextRuler.create({
-      style: style
+      style: this.style
     });
 
     this.marker = Marker.create({
-      notifier: notifier,
+      notifier: this.notifier,
       editor: this
     });
 
     this.caret = Caret.create({
-      notifier: notifier,
+      notifier: this.notifier,
       editor: this,
       marker: this.marker
     });
 
-    notifier.push(this.caret);
-    notifier.push(this.marker);
+    this.notifier.push(this.caret);
+    this.notifier.push(this.marker);
   }
 
   get source() {
@@ -48,13 +40,7 @@ class TextEditor extends BaseObject {
   }
 
   set source(value) {
-    var source = String(value || '');
-
-    if (this.style.whiteSpace === 'nowrap') {
-      source = source.replace(/[\n\r]/g, '');
-    }
-
-    this._source = source;
+    this._source = String(value || '');
   }
 
   /**
@@ -62,6 +48,14 @@ class TextEditor extends BaseObject {
 
   setProperties(properties) {
     super.setProperties(properties);
+
+    if (properties.source) {
+      if (this.style.whiteSpace === 'nowrap') {
+        properties.source = properties.source.replace(/[\n\r]/g, '');
+      }
+      this.source = properties.source;
+    }
+
     this._createLines();
   }
 

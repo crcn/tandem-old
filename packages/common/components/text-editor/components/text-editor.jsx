@@ -59,13 +59,15 @@ class TextEditorComponent extends React.Component {
   onKey(event) {
     this.notifier.notify({
       type: 'input',
-      text: String.fromCharCode(event.which)
+      text: String.fromCharCode(event.which),
+      preventDefault() {
+        event.preventDefault();
+      }
     });
-    event.stopPropagation();
-    event.preventDefault();
   }
 
   onKeyCommand(event) {
+
 
     this.notifier.notify({
       type    : 'keyCommand',
@@ -82,6 +84,13 @@ class TextEditorComponent extends React.Component {
 
   onFocus(event) {
     this.setState({ focus: true });
+    if (this.props.onFocus) {
+      this.props.onFocus(event);
+    }
+  }
+
+  setSelection(start, length) {
+    this.getEditor().marker.setSelection(start, length);
   }
 
   onBlur(event) {

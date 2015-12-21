@@ -65,6 +65,11 @@ class SelectComponent extends React.Component {
     );
   }
 
+  onItemClick(index, event) {
+    event.stopPropagation();
+    this.move(index);
+  }
+
   render() {
 
     var createLabel = typeof this.props.labelProperty === 'function' ? this.props.labelProperty : (item) => {
@@ -83,7 +88,7 @@ class SelectComponent extends React.Component {
           })
           return <li
             className={classNames}
-            onClick={this.move.bind(this, i)}
+            onClick={this.onItemClick.bind(this, i)}
             onMouseOver={this.onItemHover.bind(this, item)} key={i}>
             { createLabel(item, i) }
           </li>;
