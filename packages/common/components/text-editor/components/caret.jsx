@@ -26,7 +26,7 @@ class CaretComponent extends React.Component {
     var style = {
 
       // offset cursor width
-      'transform': 'translate('+ Math.max(0, x - 2) + 'px, ' + y + 'px)',
+      'transform': 'translate('+ Math.max(0, x - 1) + 'px, ' + y + 'px)',
       'height'   : line.getHeight(),
       'backgroundColor': editor.style.color || 'black',
       'borderColor': editor.style.color || 'black'

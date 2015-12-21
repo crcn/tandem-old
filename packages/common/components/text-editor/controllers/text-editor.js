@@ -35,7 +35,8 @@ class TextEditor extends BaseObject {
 
     this.caret = Caret.create({
       notifier: notifier,
-      editor: this
+      editor: this,
+      marker: this.marker
     });
 
     notifier.push(this.caret);

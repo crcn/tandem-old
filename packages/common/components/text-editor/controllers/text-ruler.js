@@ -103,7 +103,7 @@ class TextRuler extends BaseObject {
 
     // move off screen
     Object.assign(span.style, {
-      left     : '-1024px',
+      left     : '0px',
       top      : '-1024px',
       position : 'absolute'
     });

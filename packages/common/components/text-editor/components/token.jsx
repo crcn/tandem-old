@@ -2,22 +2,6 @@ import React from 'react';
 
 class TokenComponent extends React.Component {
 
-  onDoubleClick(event) {
-    console.log('set selection');
-    // this.props.line.selectToken(this.props.token);
-  }
-
-  onClick(event) {
-    var token = this.props.token;
-
-    var bounds = this.refs.token.getBoundingClientRect();
-
-    var rx = event.clientX - bounds.left;
-
-    this.props.editor.caret.setPosition(
-      token.getPosition() + this.props.editor.textRuler.convertPointToCharacterPosition(token.value, rx)
-    );
-  }
 
   render() {
     var token = this.props.token;
@@ -38,8 +22,6 @@ class TokenComponent extends React.Component {
     return <div
       ref='token'
       className={'m-text-editor--token ' + 'm-text-editor--token-' + token.type }
-      onDoubleClick={this.onDoubleClick.bind(this)}
-      onClick={this.onClick.bind(this)}
       {...props}>
     </div>
   }

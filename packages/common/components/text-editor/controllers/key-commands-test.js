@@ -18,13 +18,13 @@ describe(__filename + '#', function() {
 
   it('ctrl+E moves the caret to the end of the line', function() {
     te.notifier.notify({ type: 'keyCommand', keyCode: 'E'.charCodeAt(0), ctrlKey: true });
-    expect(te.caret.position).to.be(12);
+    expect(te.marker.position).to.be(12);
   });
 
   it('ctrl+A moves the caret to the beginning of the current line', function() {
     te.caret.setPosition(15);
     te.notifier.notify({ type: 'keyCommand', keyCode: 'A'.charCodeAt(0), ctrlKey: true });
-    expect(te.caret.position).to.be(13);
+    expect(te.marker.position).to.be(13);
   });
 
   it('ctrl+K removes the proceeding characters from the caret position', function() {
@@ -42,6 +42,6 @@ describe(__filename + '#', function() {
 
     te.caret.setPosition(4);
     te.notifier.notify({ type: 'keyCommand', keyCode: 'E'.charCodeAt(0), ctrlKey: true });
-    expect(te.caret.position).to.be(7);
+    expect(te.marker.position).to.be(7);
   });
 });

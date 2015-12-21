@@ -76,6 +76,9 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var resizable = cs.display !== 'inline';
     var zoom = this.getZoom();
 
+    // TODO - define right position as well relative
+    // to parent
+
     return {
       resizable : resizable,
       left      : x,

@@ -6,17 +6,16 @@ class Caret extends BaseObject {
     super({
       editor   : editor,
       marker   : marker,
-      notifier : notifier,
-      position : 0
+      notifier : notifier
     });
   }
 
-  setPosition(position) {
-    this.position = Math.max(0, Math.min(this.editor.source.length, position));
+  get position() {
+    return this.marker.position;
+  }
 
-    this.notifier.notify({
-      type: 'changeCaretPosition'
-    });
+  setPosition(position) {
+    this.marker.setSelection(position);
   }
 
   moveLeft() {
@@ -48,15 +47,6 @@ class Caret extends BaseObject {
     this.setPosition(
       cline.getPosition() + Math.max(0, Math.min(eol, position))
     );
-  }
-
-  addCharacter(character) {
-
-    if (/[\n\r]/.test(character)) {
-      if (this.editor.style.whiteSpace === 'nowrap') return;
-    }
-
-    this.editor.splice(this.position++, 0, character);
   }
 
   /**
@@ -109,10 +99,6 @@ class Caret extends BaseObject {
     return this.editor.lines[this.getCell().row];
   }
 
-  removePreviousCharacter() {
-    this.editor.splice(--this.position, 1);
-  }
-
   removeNextCharacter() {
     this.editor.splice(this.position, 1);
   }
@@ -148,12 +134,9 @@ class Caret extends BaseObject {
     }
 
     if (message.type === 'input') {
-      this.addCharacter(message.text);
+      // this.addCharacter(message.text);
     } else if (message.type === 'keyCommand') {
-      if (message.keyCode === 8) {
-        this.removePreviousCharacter();
-        message.preventDefault();
-      } else if (message.keyCode === 39) {
+      if (message.keyCode === 39) {
         this.moveRight();
       } else if (message.keyCode === 37) {
         this.moveLeft();

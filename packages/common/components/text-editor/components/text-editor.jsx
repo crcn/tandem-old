@@ -6,6 +6,7 @@ import TypeNotifier from 'common/notifiers/type';
 import LineComponent from './line';
 import CaretComponent from './caret';
 import CollectionNotifier from 'common/notifiers/collection';
+import HighlightComponent from './highlight';
 
 class TextEditorComponent extends React.Component {
 
@@ -71,6 +72,8 @@ class TextEditorComponent extends React.Component {
       keyCode : event.keyCode,
       altKey  : event.altKey,
       ctrlKey : event.ctrlKey,
+      cmdKey  : event.cmdKey,
+      metaKey : event.metaKey,
       preventDefault() {
         event.preventDefault();
       }
@@ -99,13 +102,13 @@ class TextEditorComponent extends React.Component {
       onFocus={this.onFocus.bind(this)}
       onBlur={this.onBlur.bind(this)}>
 
-      { this.state.focus ? <CaretComponent idle={this.state.idle} editor={editor} caret={editor.caret} /> : void 0 }
-
       {
         editor.lines.map((line, i) => {
           return <LineComponent editor={editor} line={line} key={i} tokenComponentFactory={this.props.tokenComponentFactory} />
         })
       }
+
+      { this.state.focus ? editor.marker.length > 0 ? <HighlightComponent marker={editor.marker} editor={editor} /> : <CaretComponent idle={this.state.idle} editor={editor} caret={editor.caret} /> : void 0 }
     </div>;
   }
 }
