@@ -4,13 +4,6 @@
   display: inline-block;
   width: 100%;
 
-  &--tokens {
-    float: left;
-    word-wrap: inherit;
-    width: 100%;
-    display: block;
-    overflow: hidden;
-  }
 
   & .m-popdown {
     overflow-x: scroll;

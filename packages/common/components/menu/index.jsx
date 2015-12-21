@@ -3,6 +3,7 @@ import './index.scss';
 import cx from 'classnames';
 import React from 'react';
 import PopdownComponent from 'common/components/popdown';
+import Portal from 'common/components/portal';
 
 class MenuComponent extends React.Component {
 
@@ -42,6 +43,7 @@ class MenuComponent extends React.Component {
   }
 
   toggleMenu(event) {
+    event.stopPropagation();
     if (this.state.show) {
       this.hide();
     } else {
@@ -61,7 +63,7 @@ class MenuComponent extends React.Component {
     var sections = {};
 
     if (show) {
-      sections.items = <PopdownComponent {...this.props} styles={{
+      sections.items = <Portal><PopdownComponent {...this.props} styles={{
           arrow: {
             left: this.state.buttonWidth ? (this.state.buttonWidth / 2) + 'px' : '50%'
           }
@@ -71,7 +73,7 @@ class MenuComponent extends React.Component {
           this.props.createMenu() :
           this.props.children[1]
         }
-      </PopdownComponent>;
+      </PopdownComponent></Portal>;
 
       sections.bgClick = <div className='m-menu--bg-click' onClick={this.hide.bind(this)}>
 

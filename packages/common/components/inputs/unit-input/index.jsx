@@ -39,6 +39,7 @@ function calculatePercentages(entity) {
 class UnitTokenComponent extends React.Component {
 
   onUnitChange(unit) {
+
     var reference = this.props.editor.reference;
     var unitToken = this.props.token;
     var numberToken = this.props.line.tokens[unitToken.getColumn() - 1];
@@ -62,7 +63,7 @@ class UnitTokenComponent extends React.Component {
     var items = [
       'px', 'pt', 'cm', 'mm', '%', 'em'
     ].map(function(unit) {
-      return { label: unit, value: unit }
+      return { label: unit, value: unit };
     });
 
     return <MenuComponent tabbable={false}>
@@ -87,7 +88,7 @@ class UnitInputComponent extends React.Component {
   }
 
   onFocus(event) {
-    this.refs.editor.setSelection(0, Infinity)
+    this.refs.editor.setSelection(0, Infinity);
   }
 
   onKeyDown(event) {
