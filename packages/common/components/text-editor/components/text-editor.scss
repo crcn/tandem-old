@@ -1,0 +1,41 @@
+.m-text-editor {
+
+  position: relative;
+  top: 100px;
+  left: 100px;
+  min-width: 100px;
+  min-height: 100px;
+  background-color: rgba(0,0,0,0.05);
+  display: inline-block;
+
+  cursor: text;
+  -webkit-user-select: none;
+
+  &--caret {
+    width: 1px;
+    height: 4px;
+    background-color: #333;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+
+  &--token {
+    display: inline-block;
+  }
+}
+
+.blink {
+  // animation: blink 2s steps(2, start) infinite;
+  -webkit-animation: blink 0.75s steps(2, start) infinite;
+}
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+@-webkit-keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}

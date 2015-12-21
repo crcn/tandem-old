@@ -43,6 +43,10 @@ module.exports = {
         loader: 'url-loader?limit=1000'
       },
       {
+        test: /\.pegjs$/,
+        loader: 'pegjs-loader?cache=true'
+      },
+      {
         test: /\.scss$/,
         loader: ExtractTextPlugin.extract('style', 'css!sass')
       },

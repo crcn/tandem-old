@@ -1,7 +1,8 @@
 import 'bootstrap/css/bootstrap.css';
 import 'editor/scss/modules/all.scss';
 
-import RootComponent from './components/root';
+// import RootComponent from './components/root';
+import RootComponent from 'common/components/text-editor';
 import BaseApplication from 'base/app';
 
 import convertUnit from 'common/utils/html/css/convert-unit';
@@ -40,7 +41,7 @@ class Application extends BaseApplication {
   ])
 
   didInitialize() {
-    ReactDOM.render(React.createElement(RootComponent, { app }), this.config.element);
+    ReactDOM.render(React.createElement(RootComponent, { app: app, source: 'abc   def\n123' }), this.config.element);
   }
 
   /**

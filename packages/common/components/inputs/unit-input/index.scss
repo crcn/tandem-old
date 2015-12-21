@@ -2,11 +2,30 @@
 
 .m-unit-input {
   display: inline-block;
+  width: 100%;
+
+  &--tokens {
+    float: left;
+    word-wrap: inherit;
+    width: 100%;
+    display: block;
+    overflow: hidden;
+  }
+
   & .m-popdown {
     overflow-x: scroll;
     max-height: 100px;
     background-color: $color-grey-8;
     min-width: calc(100% + #{$padding-1});
+  }
+
+  &--dim {
+    cursor: pointer;
+    background-color: $color-white-offset-1;
+    border-radius: $border-radius-1;
+    margin-left: 2px;
+    padding-left: $padding-0;
+    padding-right: $padding-0;
   }
   & ul {
     font-size: $font-size-2;

@@ -1,12 +1,8 @@
 import { DisplayEntityComputer } from 'editor/entities';
-import { parseUnit, calculateZoom } from 'common/utils/html/css';
-
-
-function convertPosition(x1, y1, x2) {
-  var [value, unit] = parseUnit(y1);
-  var y2 = ((value * x2) / x1).toFixed(3);
-  return [y2, unit];
-}
+import {
+  calculateZoom,
+  translateLength as translateCSSLength
+} from 'common/utils/html/css'
 
 class ReactEntityComputer extends DisplayEntityComputer {
 
@@ -15,13 +11,9 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var absStyle = this.getZoomedStyle();
     var entStyle = this.entity.getStyle();
 
-    // TODO - actually parse style here. calc() might be in it
-    var [xv, xu] = convertPosition(absStyle.left, entStyle.left, point.left);
-    var [yv, yu] = convertPosition(absStyle.top, entStyle.top, point.top);
-
     this.entity.setStyle({
-      left : xv + xu,
-      top  : yv + yu
+      left : translateCSSLength(absStyle.left, entStyle.left, point.left),
+      top  : translateCSSLength(absStyle.top, entStyle.top, point.top)
     });
   }
 
