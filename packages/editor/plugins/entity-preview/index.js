@@ -13,7 +13,6 @@ import Preview from './facades/preview';
 import TextTool from './tools/text-tool';
 import PointerTool from './tools/pointer-tool';
 import PreviewComponent from './components/preview';
-import HTMLEntityComponent from './components/html-entity';
 
 export default ApplicationPlugin.create({
   id: 'componentPreview',
@@ -80,51 +79,6 @@ export default ApplicationPlugin.create({
 
       preview.setTool(pointerTool);
 
-      // TODO - register layer styles too
-      registerComponents(app);
     }
   }
 })
-
-// TODO - move this to basic-dom-entities
-function registerComponents(app) {
-
-  [
-    'ul',
-    'li',
-    'div',
-    'button',
-    'br',
-    'center',
-    'footer',
-    'code',
-    'col',
-    'iframe',
-    'html',
-    'body',
-    'head',
-    'h1',
-    'h2',
-    'h3',
-    'h4',
-    'h5',
-    'h6',
-    'a',
-    'input',
-    'title',
-    'strong',
-    'style',
-    'p',
-    'ol',
-    'link',
-    'i',
-    'b',
-    'text'
-  ].forEach(function(elementName) {
-    app.plugins.push(ComponentPlugin.create({
-      id: elementName + 'Element',
-      componentType: elementName,
-      componentClass: HTMLEntityComponent
-    }));
-  });
-}

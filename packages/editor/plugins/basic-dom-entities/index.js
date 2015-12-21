@@ -3,10 +3,12 @@ import {
   EntityPlugin,
   EntityPaneComponentPlugin,
   EntityLayerLabelComponentPlugin,
+  ComponentPlugin,
   Plugin,
   KeyCommandPlugin
 } from 'editor/plugin/types';
 
+import HTMLEntityComponent from './components/preview';
 import { CallbackNotifier } from 'common/notifiers';
 import { TextEntity, ElementEntity, RootEntity } from './entities';
 import TransformPaneComponent from './components/entity-panes/transform';
@@ -113,6 +115,8 @@ function registerCommands(app) {
       notifier   : createStyleToggler(app, 'textDecoration', 'underline', 'none')
     })
   );
+
+  registerComponents(app);
 }
 
 function createStyleToggler(app, name, onValue, offValue) {
@@ -122,4 +126,48 @@ function createStyleToggler(app, name, onValue, offValue) {
       [name]: app.focus.getStyle()[name] === onValue ? offValue : onValue
     });
   })
+}
+
+
+// TODO - move this to basic-dom-entities
+function registerComponents(app) {
+
+  [
+    'ul',
+    'li',
+    'div',
+    'button',
+    'br',
+    'center',
+    'footer',
+    'code',
+    'col',
+    'iframe',
+    'html',
+    'body',
+    'head',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'a',
+    'input',
+    'title',
+    'strong',
+    'style',
+    'p',
+    'ol',
+    'link',
+    'i',
+    'b',
+    'text'
+  ].forEach(function(elementName) {
+    app.plugins.push(ComponentPlugin.create({
+      id: elementName + 'Element',
+      componentType: elementName,
+      componentClass: HTMLEntityComponent
+    }));
+  });
 }
