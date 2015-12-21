@@ -1,6 +1,9 @@
 import throttle from 'lodash/function/throttle';
 
-module.exports = function(event, update) {
+export default function(startEvent, update) {
+
+  var sx = startEvent.clientX;
+  var sy = startEvent.clientY;
 
   update = throttle(update, 20);
 
@@ -8,7 +11,12 @@ module.exports = function(event, update) {
 
     // stops text from getting highlighted
     event.preventDefault();
-    update(event);
+    update(event, {
+      delta: {
+        x: event.clientX - sx,
+        y: event.clientY - sy
+      }
+    });
   }
 
   function cleanup() {

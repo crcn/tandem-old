@@ -2,6 +2,7 @@ import './index.scss';
 import React from 'react';
 import UnitInputComponent from 'common/components/inputs/unit-input';
 import createStyleReference from './create-style-reference';
+import ScrollableLabelInput from 'common/components/inputs/scrollable-label-input'
 
 class TransformPaneComponent extends React.Component {
   render() {

@@ -1,7 +1,7 @@
 import './resizer.scss';
 
 import React from 'react';
-import startDrag from 'common/utils/component/start-drag';
+import { startDrag } from 'common/utils/component';
 import PathComponent from './path';
 import ObservableObject from 'common/object/observable';
 import CallbackNotifier from 'common/notifiers/callback';

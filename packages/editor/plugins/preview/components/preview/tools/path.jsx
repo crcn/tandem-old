@@ -1,5 +1,5 @@
 import React from 'react';
-import startDrag from 'common/utils/component/start-drag';
+import { startDrag } from 'common/utils/component';
 
 class PathComponent extends React.Component {
 
