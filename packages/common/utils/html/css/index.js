@@ -31,20 +31,41 @@ export function tokenize(source) {
 
 export function translateLength(x1, y1, x2) {
 
+  if (x1 === 0) {
+
+  }
+
+  var change = x2 - x1;
+
   var tokens = tokenize(y1);
 
   var left   = tokens.find(function(token) {
     return /number/.test(token.type);
   });
 
-
   if (left) {
-    left.value = Number(((left.value * x2) / x1).toFixed(2));
+    var v = Number(left.value);
+
+    if (v < 0) {
+      x1 += v;
+      v   = 0;
+    }
+
+    if (v === 0) {
+      v = 1;
+      x1++;
+    }
+    v = (v * x2) / x1;
+
+    left.value = Number(v.toFixed(2));
   }
 
   var ret = tokens.map(stringifyToken).join('');
 
+
   return ret;
 }
+
+// export function translateLengthToPixes()
 
 export { default as convertUnit } from './convert-unit';

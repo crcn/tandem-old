@@ -19,13 +19,11 @@ class ResizerComponent extends React.Component {
 
     var sx2 = computer.getZoomedStyle().left;
     var sy2 = computer.getZoomedStyle().top;
-    var mx = event.clientX;
-    var my = event.clientY;
 
-    startDrag(event, (event) => {
+    startDrag(event, (event, info) => {
       focus.setPositionFromFixedPoint({
-        left: sx2 + event.clientX - mx,
-        top: sy2 + event.clientY - my
+        left: sx2 + info.delta.x,
+        top: sy2 + info.delta.y
       });
     });
   }

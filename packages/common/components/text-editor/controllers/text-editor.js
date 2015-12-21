@@ -1,6 +1,6 @@
 import BaseObject from 'common/object/base';
-import StringTokenizer from './tokenizers/string';
-import { SPACE, NEW_LINE, TAB } from './tokenizers/token-types';
+import StringTokenizer from 'common/tokenizers/string';
+import { SPACE, NEW_LINE, TAB } from 'common/tokenizers/token-types';
 import Caret from './caret';
 import Line from './line';
 import Marker from './marker';
