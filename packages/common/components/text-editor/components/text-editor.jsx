@@ -80,6 +80,10 @@ class TextEditorComponent extends React.Component {
         event.preventDefault();
       }
     });
+
+    if (this.props.onKeyDown) {
+      this.props.onKeyDown(event);
+    }
   }
 
   onFocus(event) {

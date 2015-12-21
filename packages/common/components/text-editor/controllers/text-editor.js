@@ -51,9 +51,8 @@ class TextEditor extends BaseObject {
 
     if (properties.source) {
       if (this.style.whiteSpace === 'nowrap') {
-        properties.source = properties.source.replace(/[\n\r]/g, '');
+        this.source = properties.source.replace(/[\n\r]/g, '');
       }
-      this.source = properties.source;
     }
 
     this._createLines();

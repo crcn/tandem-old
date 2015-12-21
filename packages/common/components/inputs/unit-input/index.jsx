@@ -10,12 +10,11 @@ import SelectComponent from 'common/components/inputs/select';
 
 import {
   tokenize as tokenizeCSS,
+  parseUnit as parseCSSUnit,
+  convertUnit as convertCSSUnit,
   stringifyToken as stringifyCSSToken
 } from 'common/utils/html/css';
 
-import {
-  convertUnit
-} from 'common/utils/html/css';
 
 import { default as TextEditorComponent, CSSTokenizer } from 'common/components/text-editor';
 
@@ -50,7 +49,7 @@ class UnitTokenComponent extends React.Component {
 
     if (unitToken.value !== '%') {
       numberToken.setValue(
-        convertUnit(String(cstyle[reference.property]), unitToken.value).replace(unitToken.value, '')
+        convertCSSUnit(String(cstyle[reference.property]), unitToken.value).replace(unitToken.value, '')
       )
     } else {
       numberToken.setValue((calculatePercentages(entity)[reference.property] * 100).toFixed(3));
@@ -61,7 +60,7 @@ class UnitTokenComponent extends React.Component {
   render() {
 
     var items = [
-      'px', 'pt', 'cm', 'mm', '%'
+      'px', 'pt', 'cm', 'mm', '%', 'em'
     ].map(function(unit) {
       return { label: unit, value: unit }
     });
@@ -88,7 +87,28 @@ class UnitInputComponent extends React.Component {
   }
 
   onFocus(event) {
-    this.refs.editor.setSelection(0, Infinity);
+    this.refs.editor.setSelection(0, Infinity)
+  }
+
+  onKeyDown(event) {
+    var ref = this.props.reference;
+    if (event.keyCode !== 38 && event.keyCode !== 40) return;
+
+    var [length, unit] = parseCSSUnit(ref.getValue());
+
+    var inc = 1;
+    var m = event.keyCode === 38 ? 1 : -1;
+
+    if (unit !== '%') {
+      inc = parseCSSUnit(convertCSSUnit('1px', unit))[0] * inc;
+    }
+
+    function round(number, fixed) {
+      return Number(number.toFixed(fixed));
+    }
+
+    ref.setValue(round(length + inc * m, 3) + unit);
+    event.preventDefault();
   }
 
   render() {
@@ -96,13 +116,16 @@ class UnitInputComponent extends React.Component {
     var value = this.props.reference.getValue();
 
     var style = {
-      color: 'white'
+      color: 'white',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden'
     }
 
     return <TextEditorComponent
       ref='editor'
       className='m-unit-input'
       onFocus={this.onFocus.bind(this)}
+      onKeyDown={this.onKeyDown.bind(this)}
       source={value}
       reference={this.props.reference}
       entity={this.props.reference.target}

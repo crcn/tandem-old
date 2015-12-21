@@ -42,7 +42,6 @@ class MenuComponent extends React.Component {
   }
 
   toggleMenu(event) {
-    console.log('event');
     if (this.state.show) {
       this.hide();
     } else {

@@ -14,7 +14,8 @@ var units = [
   'in',
   'px',
   'pt',
-  'pc'
+  'pc',
+  'em'
 ];
 
 units.forEach(function(unit) {
@@ -34,9 +35,13 @@ function convertUnits(a, b, relativeElement) {
     value *= conv[unit];
   }
 
-  if (conv[b]) {
-    return (value/conv[b]).toFixed(MAX_DECIMALS) + b;
+  var conversion = conv[b] || conv.px;
+
+  if (!conv[b]) {
+    console.warn('unit %s cannot be converted to. Using px instead!', b);
   }
+
+  return (value/conversion).toFixed(MAX_DECIMALS) + b;
 }
 
 export default convertUnits;
