@@ -117,20 +117,19 @@ class UnitInputComponent extends React.Component {
     var value = this.props.reference.getValue();
 
     var style = {
-      color: 'white',
       whiteSpace: 'nowrap',
       overflow: 'hidden'
     }
 
     return <TextEditorComponent
       ref='editor'
-      className='m-unit-input'
+      className='m-unit-input input'
       onFocus={this.onFocus.bind(this)}
       onKeyDown={this.onKeyDown.bind(this)}
       source={value}
+      style={style}
       reference={this.props.reference}
       entity={this.props.reference.target}
-      style={style}
       onChange={this.onInput.bind(this)}
       tokenizer={CSSTokenizer.create()}
       tokenComponentFactory={tokenFactory} />

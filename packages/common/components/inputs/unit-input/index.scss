@@ -4,11 +4,14 @@
   display: inline-block;
   width: 100%;
 
-
   & .m-popdown {
     overflow-x: scroll;
     background-color: $color-grey-8;
     min-width: calc(100% + #{$padding-2});
+  }
+
+  & .m-text-editor--highlight {
+    background-color: $color-white-offset-1;
   }
 
   &--dim {

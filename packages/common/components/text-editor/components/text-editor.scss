@@ -7,6 +7,10 @@
   cursor: text;
   -webkit-user-select: none;
 
+  &--inner {
+    position: relative;
+  }
+
   &--caret {
     // width: 2px;
     border-left: 1px solid black;

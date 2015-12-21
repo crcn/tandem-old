@@ -15,7 +15,8 @@ class TextEditorComponent extends React.Component {
 
     this.state = {
       focus : false,
-      idle  : true
+      idle  : true,
+      style : {}
     };
 
     this.notifier = CollectionNotifier.create();
@@ -41,19 +42,36 @@ class TextEditorComponent extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.getEditor().setProperties(nextProps);
+  componentWillReceiveProps(nextProps, nextState) {
+    this.getEditor().setProperties({
+      ...nextState,
+      ...nextProps
+    });
   }
 
-  getEditor() {
-    if (this._editor) return this._editor;
+  componentDidMount() {
+    var style = window.getComputedStyle(this.refs.editor);
+    this.setState({
+      style: {
+        fontSize: style.fontSize,
+        color: style.color,
+        whiteSpace: style.whiteSpace
+      }
+    });
+  }
+
+  getEditor(props) {
+    if (this._editor) {
+      if (props) this._editor.setProperties(props);
+      return this._editor;
+    }
 
     this._editor = TextEditor.create({
       notifier: this.notifier,
-      ...this.props
+      ...props
     });
 
-    return this.getEditor();
+    return this._editor;
   }
 
   onKey(event) {
@@ -67,7 +85,6 @@ class TextEditorComponent extends React.Component {
   }
 
   onKeyCommand(event) {
-
 
     this.notifier.notify({
       type    : 'keyCommand',
@@ -102,11 +119,16 @@ class TextEditorComponent extends React.Component {
   }
 
   render() {
-    var editor = this.getEditor();
+
+    var editor = this.getEditor({
+      ...this.state,
+      ...this.props,
+      style: Object.assign({}, this.state.style, this.props.style || {})
+    });
 
     return <div
       ref='editor'
-      style={this.props.style}
+      style={editor.style}
       tabIndex='0'
       data-mouse-trap={false}
       className={['m-text-editor', this.props.className].join(' ')}
@@ -115,13 +137,16 @@ class TextEditorComponent extends React.Component {
       onFocus={this.onFocus.bind(this)}
       onBlur={this.onBlur.bind(this)}>
 
-      {
-        editor.lines.map((line, i) => {
-          return <LineComponent editor={editor} line={line} key={i} tokenComponentFactory={this.props.tokenComponentFactory} />
-        })
-      }
+      <div className='m-text-editor--inner'>
 
-      { this.state.focus ? editor.marker.length > 0 ? <HighlightComponent marker={editor.marker} editor={editor} /> : <CaretComponent idle={this.state.idle} editor={editor} caret={editor.caret} /> : void 0 }
+        {
+          editor.lines.map((line, i) => {
+            return <LineComponent editor={editor} line={line} key={i} tokenComponentFactory={this.props.tokenComponentFactory} />
+          })
+        }
+
+        { this.state.focus ? editor.marker.length > 0 ? <HighlightComponent marker={editor.marker} editor={editor} /> : <CaretComponent idle={this.state.idle} editor={editor} caret={editor.caret} /> : void 0 }
+      </div>
     </div>;
   }
 }
