@@ -86,7 +86,7 @@ class TypographyPaneComponent extends React.Component {
           </div>
           <div className='col-sm-6'>
             <label>Align</label>
-            <input type='text'></input>
+            <TextInputComponent reference={StyleReference.create(entity, 'textAlign')} />
           </div>
         </div>
       </div>
