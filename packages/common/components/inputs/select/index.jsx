@@ -75,11 +75,9 @@ class SelectComponent extends React.Component {
     if (event.keyCode === 38) {
       this.up();
       event.preventDefault();
-      event.stopPropagation();
     } else if (event.keyCode === 40) {
       this.down();
       event.preventDefault();
-      event.stopPropagation();
     } else if (event.keyCode === 13) {
       this.selectCurrentPosition();
     }

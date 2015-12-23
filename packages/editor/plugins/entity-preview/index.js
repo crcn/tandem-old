@@ -89,6 +89,10 @@ export default ApplicationPlugin.create({
 function registerNudgeCommands(app) {
 
   var moveEntityNotifier = { notify: function(message) {
+
+    // ensure that there is NO focus (inputs)
+    if (document.activeElement !== document.body) return;
+
     var entity = app.focus;
     var style = entity.getComputedStyle();
 
