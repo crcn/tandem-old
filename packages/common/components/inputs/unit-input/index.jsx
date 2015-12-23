@@ -10,32 +10,13 @@ import SelectComponent from 'common/components/inputs/select';
 import TextInputComponent from 'common/components/inputs/text-input'
 
 import {
-  tokenize as tokenizeCSS,
   parseUnit as parseCSSUnit,
-  convertUnit as convertCSSUnit,
+  translateStyle,
   stringifyToken as stringifyCSSToken
 } from 'common/utils/html/css';
 
 
 import { default as TextEditorComponent, CSSTokenizer } from 'common/components/text-editor';
-
-// TODO - move me over to a utils directory
-function calculatePercentages(entity) {
-  var rparent = entity.parent;
-  while(rparent.parent && /absolute|relative/.test(rparent.getStyle().position || '')) {
-    rparent = rparent.parent;
-  }
-
-  var pStyle = rparent.getComputedStyle();
-  var eStyle = entity.getComputedStyle();
-
-  return {
-    left   : eStyle.left   / pStyle.width,
-    top    : eStyle.top    / pStyle.height,
-    width  : eStyle.width  / pStyle.width,
-    height : eStyle.height / pStyle.height
-  }
-}
 
 class UnitTokenComponent extends React.Component {
 
@@ -49,18 +30,18 @@ class UnitTokenComponent extends React.Component {
     var entity = reference.target;
     var cstyle = entity.getComputedStyle();
 
-    if (unitToken.value !== '%') {
-      numberToken.setValue(
-        convertCSSUnit(String(cstyle[reference.property]), unitToken.value).replace(unitToken.value, '')
-      )
-    } else {
-      numberToken.setValue((calculatePercentages(entity)[reference.property] * 100).toFixed(3));
-    }
+    var translatedStyle = translateStyle(
+      { [reference.property]: String(cstyle[reference.property]) },
+      { [reference.property]: '0' + unitToken.value },
+      entity.getComputer().getDisplayElement()
+    )[reference.property];
 
+    numberToken.setValue(String(parseCSSUnit(translatedStyle)[0]));
   }
 
   render() {
 
+    // TODO - need to pull these props from plugins
     var items = [
       'px', 'pt', 'cm', 'mm', '%', 'em'
     ].map(function(unit) {
@@ -114,7 +95,7 @@ class UnitInputComponent extends React.Component {
       onKeyDown={this.onKeyDown.bind(this)}
       reference={this.props.reference}
       entity={this.props.reference.target}
-      tokenizer={CSSTokenizer.create()}
+      tokenizer={CSSTokenizer}
       tokenComponentFactory={tokenFactory} />
   }
 }

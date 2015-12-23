@@ -1,5 +1,6 @@
 export { default as parseUnit } from './parse-units';
 import { CSSTokenizer } from 'common/components/text-editor';
+export { default as translateStyle } from './translate-style';
 
 /**
 * calculates the correct zoom of an element
@@ -23,10 +24,8 @@ export function stringifyToken(token) {
   return token.value;
 }
 
-var tok = CSSTokenizer.create();
-
 export function tokenize(source) {
-  return tok.tokenize(String(source || ''));
+  return CSSTokenizer.tokenize(String(source || ''));
 }
 
 export function translateLength(x1, y1, x2) {
@@ -68,4 +67,4 @@ export function translateLength(x1, y1, x2) {
 
 // export function translateLengthToPixes()
 
-export { default as convertUnit } from './convert-unit';
+export { default as convertUnit } from './translate-style';

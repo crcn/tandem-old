@@ -2,9 +2,6 @@ import CSSTokenizer from './css';
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {
-  it('can be created', function() {
-    CSSTokenizer.create();
-  });
 
   [
     ['100px', [['100', 'number'], ['px', 'unit']]],
@@ -18,14 +15,44 @@ describe(__filename + '#', function() {
         ['%', 'unit'],
         [')', 'rightParen']
       ]
-    ]
+    ],
+    ['10px - 5px', [
+      ['10', 'number'],
+      ['px', 'unit'],
+      [' ', 'space'],
+      ['-', 'operator'],
+      [' ', 'space'],
+      ['5', 'number'],
+      ['px', 'unit']
+    ]],
+    ['calc(100%/6)', [
+      ['calc', 'reference'],
+      ['(', 'leftParen'],
+      ['100', 'number'],
+      ['%', 'unit'],
+      ['/', 'operator'],
+      ['6', 'number'],
+      [')', 'rightParen']
+    ]],
+    ['10em/-10', [
+      ['10', 'number'],
+      ['em', 'unit'],
+      ['/', 'operator'],
+      ['-', 'operator'],
+      ['10', 'number']
+    ]],
+    ['2-2', [
+      ['2', 'number'],
+      ['-', 'operator'],
+      ['2', 'number']
+    ]]
   ].forEach(function([source, matches]) {
+    it('can tokenize ' + source, function() {
+      var tokens = CSSTokenizer.tokenize(source).map(function(token) {
+        return [token.value, token.type];
+      });
 
-    var tok = CSSTokenizer.create();
-    var tokens = tok.tokenize(source).map(function(token) {
-      return [token.value, token.type];
+      expect(tokens).to.eql(matches);
     });
-
-    expect(tokens).to.eql(matches);
   })
 });

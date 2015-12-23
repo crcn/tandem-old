@@ -1,27 +1,25 @@
 import { DisplayEntityComputer } from 'editor/entities';
 import {
   calculateZoom,
-  translateLength as translateCSSLength
+  translateLength as translateCSSLength,
+  translateStyle
 } from 'common/utils/html/css';
 
 class ReactEntityComputer extends DisplayEntityComputer {
 
   setPositionFromFixedPoint(point) {
-
-    // var absStyle = this.getZoomedStyle();
     var entStyle = this.getStyle();
 
-    // var rx = (absStyle.left * point.left) / entStyle.left;
-    // var ry = (absStyle.top  * point.top) / entStyle.top;
+    var newStyle = translateStyle({
+      left: point.left / entStyle.zoom,
+      top: point.top / entStyle.zoom
+    }, this.entity.getStyle(), this.getDisplayElement());
 
-    var rx = point.left / entStyle.zoom;
-    var ry = point.top / entStyle.zoom;
+    this.entity.setStyle(newStyle);
+  }
 
-
-    this.entity.setStyle({
-      left : Number(rx.toFixed(3)).toString(),
-      top  : Number(ry.toFixed(3)).toString()
-    });
+  getDisplayElement() {
+    return this.displayObject.refs.element;
   }
 
   setBounds(bounds) {

@@ -4,8 +4,6 @@ import 'editor/scss/modules/all.scss';
 import RootComponent from './components/root';
 import BaseApplication from 'base/app';
 
-import convertUnit from 'common/utils/html/css/convert-unit';
-
 import HistoryPlugin from './plugins/history';
 import SettingsPlugin from './plugins/settings';
 import ShortcutPlugin from './plugins/shortcuts';

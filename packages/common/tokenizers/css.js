@@ -9,7 +9,8 @@ import {
   DOT,
   COLON,
   LEFT_PAREN,
-  RIGHT_PAREN
+  RIGHT_PAREN,
+  OPERATOR
 } from './token-types';
 
 var tokenMap = {
@@ -32,18 +33,26 @@ class CSSTokenizer extends BaseObject {
       return false;
     }
 
+    // function addOperator() {
+    //   return addToken(/^[\/\*\-\+]/, OPERATOR);
+    // }
+
     while(!scanner.hasTerminated()) {
 
       if (addToken(/^((\.\d+)|(\d)+(\.\d+)?)/, 'number')) {
 
         // http://www.w3schools.com/cssref/css_units.asp
         addToken(/^(em|ex|%|px|cm|mm|in|pt|pc|ch|rem|vh|vw|vmin|vmax)/, 'unit');
+
+        // in case we get something like 2-2 (without spaces)
+        // addOperator();
         continue;
       }
 
-      if (addToken(/^[\w\-]+/, 'reference')) continue;
+      if (addToken(/^\w+/, 'reference')) continue;
       if (addToken(/^\u0020+/, SPACE)) continue;
       if (addToken(/^\t+/, TAB)) continue;
+      if (addToken(/^[\/\*\-\+]/, OPERATOR)) continue;
 
       var char = scanner.nextChar();
 
@@ -54,4 +63,4 @@ class CSSTokenizer extends BaseObject {
   }
 }
 
-export default CSSTokenizer;
+export default CSSTokenizer.create();
