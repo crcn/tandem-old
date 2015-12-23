@@ -7,10 +7,24 @@ import CenterComponent from './center';
 
 class MainComponent extends React.Component {
   render() {
+
+    var focus = this.props.app.focus;
+
     return <div className='m-editor'>
-      <SidebarComponent position='left' paneType='app' {...this.props} />
+
+      <SidebarComponent
+        position='left'
+        query={{ paneType: 'app' }}
+        {...this.props} />
       <CenterComponent {...this.props} />
-      <SidebarComponent position='right' paneType='entity' {...this.props} />
+
+      <SidebarComponent
+        position='right'
+        query={{
+          paneType: 'entity',
+          entity: focus
+        }}
+        {...this.props} />
     </div>;
   }
 }

@@ -44,23 +44,27 @@ function registerEntities(app) {
       id             : 'transformPaneComponent',
       label          : 'Transform',
       paneType       : 'entity',
+      entityType     : 'component',
       componentClass : TransformPaneComponent
     }),
     EntityPaneComponentPlugin.create({
       id             : 'typographyPaneComponent',
       label          : 'Typography',
       paneType       : 'entity',
+      entityType     : 'component',
       componentClass : TypographyPaneComponent
     }),
     EntityPaneComponentPlugin.create({
       id             : 'appearancePaneComponent',
       label          : 'Appearance',
       paneType       : 'entity',
+      entityType     : 'component',
       componentClass : AppearancePaneComponent
     }),
     EntityLayerLabelComponentPlugin.create({
       id             : 'textPaneLayerComponent',
       layerType      : 'text',
+      entityType     : 'component',
       componentClass : TextLayerLabelComponent
     }),
 

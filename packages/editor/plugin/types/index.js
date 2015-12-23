@@ -64,6 +64,9 @@ export class EntityPaneComponentPlugin extends ComponentPlugin {
   constructor(properties) {
     super({ componentType: 'pane', paneType: 'entity', ...properties });
   }
+  matchesQuery(query) {
+    return query.paneType === this.paneType && query.entity && query.entity.type === this.entityType;
+  }
 }
 
 export class EntityLayerLabelComponentPlugin extends ComponentPlugin {

@@ -19,11 +19,11 @@ export default ApplicationPlugin.create({
         }),
 
         // basic panes
-        app.plugins.push(AppPaneComponentPlugin.create({
+        AppPaneComponentPlugin.create({
           id             : 'layersPane',
           label          : 'Layers',
           componentClass : LayersPaneComponent
-        }))
+        })
       )
     }
   }

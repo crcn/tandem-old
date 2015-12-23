@@ -15,9 +15,11 @@ class Registry extends BaseCollection {
 
     if (typeof search === 'string') {
       search = { id: search };
-    }
+    }find
 
-    return this.filter(sift(search));
+    return this.filter(function(plugin) {
+      return plugin.matchesQuery(search);
+    });
   }
 
   queryOne(search) {
@@ -30,6 +32,11 @@ class Registry extends BaseCollection {
   splice(index, count, ...entries) {
 
     entries.forEach((plugin) => {
+
+      if (!(plugin instanceof Plugin)) {
+        throw new Error('plugin must be an instanceof Plugin');
+      }
+
       if (this.find(sift({ id: plugin.id }))) {
         throw ExistsError.create('plugin already exists');
       }
