@@ -67,7 +67,6 @@ class SelectComponent extends React.Component {
   onOptionClick(index, event) {
     event.stopPropagation();
     this.move(index);
-    console.log(index, this.getCurrentOptionValue(), this.state.position);
     this.selectCurrentPosition();
   }
 
@@ -75,9 +74,11 @@ class SelectComponent extends React.Component {
     if (event.keyCode === 38) {
       this.up();
       event.preventDefault();
+      event.stopPropagation();
     } else if (event.keyCode === 40) {
       this.down();
       event.preventDefault();
+      event.stopPropagation();
     } else if (event.keyCode === 13) {
       this.selectCurrentPosition();
     }
@@ -107,6 +108,8 @@ class SelectComponent extends React.Component {
 
     var options    = this.getFilteredOptions();
     var position = this.state.position;
+
+    var filter = this.props.filter;
 
     return <ul ref='list' className='m-select m-list' onFocus={this.onFocus.bind(this)} onBlur={this.onBlur.bind(this)} tabIndex="0" onKeyDown={this.onKeyDown.bind(this)} data-mouse-trap="false">
       {

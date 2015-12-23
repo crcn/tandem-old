@@ -4,7 +4,6 @@ import cx from 'classnames';
 import React from 'react';
 import MenuComponent from 'common/components/menu';
 import SelectComponent from 'common/components/inputs/select';
-import FocusComponent from 'common/components/focus';
 import PortalComponent from 'common/components/portal';
 import PopdownComponent from 'common/components/popdown';
 import { coerceFunction } from 'common/utils/function';
@@ -15,13 +14,6 @@ import { coerceFunction } from 'common/utils/function';
 
 class SearchDropdownComponent extends React.Component {
 
-  constructor() {
-    super();
-    this.state = {
-      focusIndex: -1
-    };
-  }
-
   setFilter(event) {
     function defaultCreateFilter(search) {
       search = search.toLowerCase();
@@ -31,19 +23,12 @@ class SearchDropdownComponent extends React.Component {
           var value = option[key];
           if (!!~String(value).toLowerCase().indexOf(search)) return true;
         }
-      }
+      };
     }
 
     // TODO - get filter
     this.setState({
       filter: defaultCreateFilter(event.target.value)
-    });
-  }
-
-
-  onInputFocus(event) {
-    this.setState({
-      focusIndex: -1
     });
   }
 
@@ -53,6 +38,8 @@ class SearchDropdownComponent extends React.Component {
     // in another component isn't registered as a ref on THIS
     // component. Works though...
     if (event.keyCode === 40) {
+      event.preventDefault();
+      event.stopPropagation();
       this.refs.menu.refs.select.focus();
     }
   }
@@ -73,9 +60,12 @@ class SearchDropdownComponent extends React.Component {
 
     // preserved current value so that we can preview other fonts
     this._selectedValue = this.props.reference.getValue();
+
+    this._focusOnInput(-1);
     this.setState({
-      focusIndex: -1,
-      filter: void 0
+      filter: function() {
+        return true;
+      }
     });
   }
 
@@ -96,9 +86,15 @@ class SearchDropdownComponent extends React.Component {
   }
 
   onPositionChange(position) {
-    this.setState({
-      focusIndex: position
-    });
+    this._focusOnInput(position);
+  }
+
+  _focusOnInput(position) {
+    if (position === -1) {
+      setTimeout(() => {
+        this.refs.menu.refs.input.focus();
+      }, 50);
+    }
   }
 
   render() {
@@ -113,9 +109,9 @@ class SearchDropdownComponent extends React.Component {
     var createMenu = () => {
 
       if (this.props.showSearch) {
-        var searchInputSection = <div className='m-search-dropdown--header'><FocusComponent focus={this.state.focusIndex === -1}>
-          <input ref='input' type='text' className='form-control' onInput={this.setFilter.bind(this)} onFocus={this.onInputFocus.bind(this)}></input>
-        </FocusComponent></div>;
+        var searchInputSection = <div className='m-search-dropdown--header'>
+          <input ref='input' type='text' className='form-control' onInput={this.setFilter.bind(this)}></input>
+        </div>;
       }
 
       return <div className='m-search-dropdown--inner'>

@@ -15,11 +15,11 @@ class PortalComponent extends React.Component {
       visibility : 'hidden'
     });
 
-    this._render();
+    this._render(this.props);
   }
 
   componentWillReceiveProps(nextProps, nextState) {
-    this._render();
+    this._render(nextProps);
   }
 
   componentWillUnmount() {
@@ -30,8 +30,8 @@ class PortalComponent extends React.Component {
     return <span ref='portal'></span>;
   }
 
-  _render() {
-    ReactDOM.render(this.props.children, this._placeholder);
+  _render(props) {
+    ReactDOM.render(props.children, this._placeholder);
     this._resize();
   }
 

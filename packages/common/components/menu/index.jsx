@@ -74,7 +74,7 @@ class MenuComponent extends React.Component {
     var sections = {};
 
     if (show) {
-      sections.items = <PortalComponent><PopdownComponent {...this.props} styles={{
+      sections.items = <PortalComponent><div onKeyDown={this.onKeyDown.bind(this)}><PopdownComponent {...this.props} styles={{
           arrow: {
             left: this.state.buttonWidth ? (this.state.buttonWidth / 2) + 'px' : '50%'
           }
@@ -84,7 +84,7 @@ class MenuComponent extends React.Component {
           this.props.createMenu() :
           this.props.children[1]
         }
-      </PopdownComponent></PortalComponent>;
+      </PopdownComponent></div></PortalComponent>;
 
       sections.bgClick = <div className='m-menu--bg-click' onClick={this.hide.bind(this)}>
 
