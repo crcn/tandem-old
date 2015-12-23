@@ -51,7 +51,7 @@ class TextEditor extends BaseObject {
 
     if (properties.source) {
       if (this.style.whiteSpace === 'nowrap') {
-        this.source = properties.source.replace(/[\n\r]/g, '');
+        this.source = String(properties.source).replace(/[\n\r]/g, '');
       }
 
       // FIXME: text ruler dirty type check here is kinda gross
