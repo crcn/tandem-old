@@ -24,7 +24,7 @@ function createMenuItems(values) {
 
 class TypographyPaneComponent extends React.Component {
   render() {
-    var entity = this.props.app.focus;
+    var entity = this.props.entity;
 
     // TODO - change this to query types
     var fonts            = this.props.app.plugins.query(ALL_FONTS);

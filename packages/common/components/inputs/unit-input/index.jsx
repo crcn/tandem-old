@@ -42,7 +42,7 @@ class UnitTokenComponent extends React.Component {
   render() {
 
     // TODO - need to pull these props from plugins
-    var items = [
+    var options = [
       'px', 'pt', 'cm', 'mm', '%', 'em'
     ].map(function(unit) {
       return { label: unit, value: unit };
@@ -50,7 +50,7 @@ class UnitTokenComponent extends React.Component {
 
     return <MenuComponent tabbable={false}>
       { this.props.token.value }
-      <SelectComponent onSelect={this.onUnitChange.bind(this)} items={items} />
+      <SelectComponent onSelect={this.onUnitChange.bind(this)} options={options} />
     </MenuComponent>;
   }
 }

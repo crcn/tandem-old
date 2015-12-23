@@ -6,8 +6,7 @@ import ScrollableLabelInput from 'common/components/inputs/scrollable-label-inpu
 
 class TransformPaneComponent extends React.Component {
   render() {
-    var entity = this.props.app.focus;
-    if (!entity) return null;
+    var entity = this.props.entity;
 
     return <div className='m-transform-pane'>
 

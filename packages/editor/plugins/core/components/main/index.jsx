@@ -24,6 +24,7 @@ class MainComponent extends React.Component {
           paneType: 'entity',
           entity: focus
         }}
+        entity={focus}
         {...this.props} />
     </div>;
   }

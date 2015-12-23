@@ -14,13 +14,13 @@ class SelectComponent extends React.Component {
   }
 
   move(position) {
-    var items = this.getFilteredItems();
-    var newPosition = Math.max(-1, Math.min(items.length - 1, position));
+    var options = this.getFilteredOptions();
+    var newPosition = Math.max(-1, Math.min(options.length - 1, position));
 
     if (!!~newPosition) {
-      this.onItemHover(items[newPosition]);
-      var item = this.refs.list.querySelectorAll('li')[newPosition];
-      item.scrollIntoView(false);
+      this.onOptionHover(options[newPosition]);
+      var option = this.refs.list.querySelectorAll('li')[newPosition];
+      option.scrollIntoView(false);
     }
 
     this.setState({
@@ -44,30 +44,30 @@ class SelectComponent extends React.Component {
     this.shift(1);
   }
 
-  getFilteredItems() {
-    return this.props.items.filter(this.props.filter || function() {
+  getFilteredOptions() {
+    return this.props.options.filter(this.props.filter || function() {
       return true;
     });
   }
 
-  onItemHover(item) {
-    this.props.onItemHover(this.getItemValue(item));
+  onOptionHover(option) {
+    this.props.onOptionHover(this.getOptionValue(option));
   }
 
-  getItemValue(item) {
-    return item ? item[this.props.valueProperty] : void 0;
+  getOptionValue(option) {
+    return option ? option[this.props.valueProperty] : void 0;
   }
 
-  getCurrentItemValue() {
-    return this.getItemValue(
-      this.getFilteredItems()[this.state.position]
+  getCurrentOptionValue() {
+    return this.getOptionValue(
+      this.getFilteredOptions()[this.state.position]
     );
   }
 
-  onItemClick(index, event) {
+  onOptionClick(index, event) {
     event.stopPropagation();
     this.move(index);
-    console.log(index, this.getCurrentItemValue(), this.state.position);
+    console.log(index, this.getCurrentOptionValue(), this.state.position);
     this.selectCurrentPosition();
   }
 
@@ -75,16 +75,18 @@ class SelectComponent extends React.Component {
     if (event.keyCode === 38) {
       this.up();
       event.preventDefault();
+      event.stopPropagation();
     } else if (event.keyCode === 40) {
       this.down();
       event.preventDefault();
+      event.stopPropagation();
     } else if (event.keyCode === 13) {
       this.selectCurrentPosition();
     }
   }
 
   selectCurrentPosition() {
-    this.props.onSelect(this.getCurrentItemValue());
+    this.props.onSelect(this.getCurrentOptionValue());
   }
 
   onFocus(event) {
@@ -101,25 +103,25 @@ class SelectComponent extends React.Component {
 
   render() {
 
-    var createLabel = typeof this.props.labelProperty === 'function' ? this.props.labelProperty : (item) => {
-      return item[this.props.labelProperty];
+    var createLabel = typeof this.props.labelProperty === 'function' ? this.props.labelProperty : (option) => {
+      return option[this.props.labelProperty];
     };
 
-    var items    = this.getFilteredItems();
+    var options    = this.getFilteredOptions();
     var position = this.state.position;
 
     return <ul ref='list' className='m-select m-list' onFocus={this.onFocus.bind(this)} onBlur={this.onBlur.bind(this)} tabIndex="0" onKeyDown={this.onKeyDown.bind(this)}>
       {
-        items.map((item, i) => {
+        options.map((option, i) => {
           var classNames = cx({
             'alt'      : !!(i % 2),
             'selected' : position === i
           })
           return <li
             className={classNames}
-            onMouseDown={this.onItemClick.bind(this, i)}
-            onMouseOver={this.onItemHover.bind(this, item)} key={i}>
-            { createLabel(item, i) }
+            onMouseDown={this.onOptionClick.bind(this, i)}
+            onMouseOver={this.onOptionHover.bind(this, option)} key={i}>
+            { createLabel(option, i) }
           </li>;
         })
       }
@@ -130,7 +132,7 @@ class SelectComponent extends React.Component {
 SelectComponent.defaultProps = {
   labelProperty : 'label',
   valueProperty : 'value',
-  onItemHover   : function() { },
+  onOptionHover   : function() { },
   onSelect      : function() { }
 };
 

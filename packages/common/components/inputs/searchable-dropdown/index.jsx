@@ -25,10 +25,10 @@ class SearchDropdownComponent extends React.Component {
   setFilter(event) {
     function defaultCreateFilter(search) {
       search = search.toLowerCase();
-      return function(item) {
+      return function(option) {
         // scan all props
-        for (var key in item) {
-          var value = item[key];
+        for (var key in option) {
+          var value = option[key];
           if (!!~String(value).toLowerCase().indexOf(search)) return true;
         }
       }
@@ -57,7 +57,7 @@ class SearchDropdownComponent extends React.Component {
     }
   }
 
-  onItemSelect(value) {
+  onOptionSelect(value) {
 
     // reset the selected value
     this._selectedValue = value;
@@ -65,7 +65,7 @@ class SearchDropdownComponent extends React.Component {
     this.refs.menu.hide();
   }
 
-  onItemHover(value) {
+  onOptionHover(value) {
     this.props.reference.setValue(value);
   }
 
@@ -85,14 +85,14 @@ class SearchDropdownComponent extends React.Component {
     this.props.reference.setValue(this._selectedValue);
   }
 
-  getItemIndex() {
-    return this.props.items.findIndex((item) => {
-      return this.getItemValue(item) === this.props.reference.getValue();
+  getOptionIndex() {
+    return this.props.options.findIndex((option) => {
+      return this.getOptionValue(option) === this.props.reference.getValue();
     });
   }
 
-  getItemValue(item) {
-    return this.props.valueProperty ? item[this.props.valueProperty] : item;
+  getOptionValue(option) {
+    return this.props.valueProperty ? option[this.props.valueProperty] : option;
   }
 
   onPositionChange(position) {
@@ -103,12 +103,12 @@ class SearchDropdownComponent extends React.Component {
 
   render() {
 
-    var selectedItemIndex = this.getItemIndex();
-    var createLabel       = typeof this.props.labelProperty === 'function' ? this.props.labelProperty : (item) => {
-      return item[this.props.labelProperty];
+    var selectedOptionIndex = this.getOptionIndex();
+    var createLabel       = typeof this.props.labelProperty === 'function' ? this.props.labelProperty : (option) => {
+      return option[this.props.labelProperty];
   };
 
-    var createDefaultLabel  = coerceFunction(this.props.defaultLabel || 'Select an item');
+    var createDefaultLabel  = coerceFunction(this.props.defaultLabel || 'Select an option');
 
     var createMenu = () => {
 
@@ -123,10 +123,10 @@ class SearchDropdownComponent extends React.Component {
          <SelectComponent
            ref='select'
            {...this.props}
-           onSelect={this.onItemSelect.bind(this)}
-           onItemHover={this.onItemHover.bind(this)}
+           onSelect={this.onOptionSelect.bind(this)}
+           onOptionHover={this.onOptionHover.bind(this)}
            filter={this.state.filter}
-           items={this.props.items}
+           options={this.props.options}
            onPositionChange={this.onPositionChange.bind(this)} />
       </div>
     };
@@ -146,7 +146,7 @@ class SearchDropdownComponent extends React.Component {
       createMenu={createMenu}>
 
       <span ref='label' className='input m-search-dropdown--label'>{
-        ~selectedItemIndex ? createLabel(this.props.items[selectedItemIndex]) : createDefaultLabel()
+        ~selectedOptionIndex ? createLabel(this.props.options[selectedOptionIndex]) : createDefaultLabel()
       }</span>
 
     </MenuComponent>
