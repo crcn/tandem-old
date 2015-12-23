@@ -27,7 +27,7 @@ class TextInputComponent extends React.Component {
       source={value}
       onFocus={this.onFocus.bind(this)}
       onChange={this.onInput.bind(this)}
-      style={Object.assign({}, this.props.style || {})}
+      style={Object.assign(style, this.props.style || {})}
       className={['input', this.props.className].join(' ') } />
   }
 }
