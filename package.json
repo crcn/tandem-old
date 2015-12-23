@@ -21,6 +21,7 @@
   "dependencies": {
     "classnames": "^2.2.1",
     "cssprima": "^0.1.0",
+    "js-git": "^0.7.7",
     "lodash": "^3.10.1",
     "mousetrap": "^1.5.3",
     "react": "^0.14.2",

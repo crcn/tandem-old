@@ -76,7 +76,7 @@ class UnitInputComponent extends React.Component {
     var m = event.keyCode === 38 ? 1 : -1;
 
     if (unit !== '%') {
-      inc = parseCSSUnit(convertCSSUnit('1px', unit))[0] * inc;
+      inc = parseCSSUnit(translateStyle('1px', unit))[0] * inc;
     }
 
     function round(number, fixed) {
