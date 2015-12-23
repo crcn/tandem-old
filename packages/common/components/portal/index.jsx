@@ -6,13 +6,13 @@ class PortalComponent extends React.Component {
   componentDidMount() {
     this._placeholder = document.createElement('div');
     document.body.appendChild(this._placeholder);
-    var bounds = this.refs.portal.getBoundingClientRect();
 
     Object.assign(this._placeholder.style, {
-      position: 'absolute',
-      zIndex: 9999,
-      left: bounds.left + 'px',
-      top: bounds.top + 'px'
+      position   : 'absolute',
+      zIndex     : 9999,
+      top        : 0,
+      left       : 0,
+      visibility : 'hidden'
     });
 
     this._render();
@@ -32,6 +32,30 @@ class PortalComponent extends React.Component {
 
   _render() {
     ReactDOM.render(this.props.children, this._placeholder);
+    this._resize();
+  }
+
+  _resize() {
+    clearTimeout(this._timer);
+    this._timer = setTimeout(() => {
+      var bounds = this.refs.portal.getBoundingClientRect();
+      var placeholderBounds = this._placeholder.getBoundingClientRect();
+
+      var width  = placeholderBounds.right - placeholderBounds.left;
+      var height = placeholderBounds.bottom - placeholderBounds.top;
+      var left   = bounds.left;
+      var top    = bounds.top;
+
+      if (left + width > window.innerWidth) {
+        left = window.innerWidth - width - 10;
+      }
+
+      Object.assign(this._placeholder.style, {
+        visibility: 'visible',
+        left: left + 'px',
+        top: top + 'px'
+      });
+    }, 1);
   }
 }
 

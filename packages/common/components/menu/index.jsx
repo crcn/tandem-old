@@ -2,8 +2,8 @@ import './index.scss';
 
 import cx from 'classnames';
 import React from 'react';
+import PortalComponent from 'common/components/portal';
 import PopdownComponent from 'common/components/popdown';
-import Portal from 'common/components/portal';
 
 class MenuComponent extends React.Component {
 
@@ -74,7 +74,7 @@ class MenuComponent extends React.Component {
     var sections = {};
 
     if (show) {
-      sections.items = <PopdownComponent {...this.props} styles={{
+      sections.items = <PortalComponent><PopdownComponent {...this.props} styles={{
           arrow: {
             left: this.state.buttonWidth ? (this.state.buttonWidth / 2) + 'px' : '50%'
           }
@@ -84,7 +84,7 @@ class MenuComponent extends React.Component {
           this.props.createMenu() :
           this.props.children[1]
         }
-      </PopdownComponent>;
+      </PopdownComponent></PortalComponent>;
 
       sections.bgClick = <div className='m-menu--bg-click' onClick={this.hide.bind(this)}>
 
