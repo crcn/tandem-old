@@ -11,7 +11,7 @@ class StyleReference {
     return this.target.attributes.style[this.property];
   }
 
-  setValue() {
+  setValue(value) {
     this.target.setStyle({
       [this.property]: value
     });
