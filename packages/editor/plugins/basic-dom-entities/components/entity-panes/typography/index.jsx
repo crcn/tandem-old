@@ -1,4 +1,3 @@
-import './index.scss';
 
 import React from 'react';
 import TextInputComponent from 'common/components/inputs/text-input';

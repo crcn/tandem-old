@@ -14,4 +14,46 @@
     padding: $padding-0 $padding-2;
     margin: $padding-2 0;
   }
+
+  &--content {
+    
+    color: $color-white-offset-8;
+
+    & .col-sm-3, .col-sm-6, .col-sm-4 {
+      padding: 0 $padding-0;
+    }
+
+    & .row {
+      padding-left: $padding-2;
+      padding-right: $padding-2;
+      padding-bottom: $padding-2;
+    }
+
+    & .m-menu {
+      &:focus {
+        & .input {
+          border: 1px solid $color-sky-blue-4;
+        }
+      }
+    }
+
+    & input, & .input {
+      background: transparent;
+      border: none;
+      padding: $padding-0 $padding-0;
+      box-shadow: inset 0 0 0 2px $color-white-offset-8;
+      border-radius: $border-radius-1;
+      font-size: $font-size-2;
+      width: 100%;
+      &:focus {
+        box-shadow: inset 0 0 0px 2px $color-sky-blue-4 !important;
+      }
+    }
+
+    & .m-font-input {
+      & .m-search-dropdown--label {
+
+      }
+    }
+  }
 }
