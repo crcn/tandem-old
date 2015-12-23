@@ -77,8 +77,65 @@ export default ApplicationPlugin.create({
         })
       );
 
+
+      registerNudgeCommands(app);
+
       preview.setTool(pointerTool);
 
     }
   }
 })
+
+function registerNudgeCommands(app) {
+
+  var moveEntityNotifier = { notify: function(message) {
+    var entity = app.focus;
+    var style = entity.getComputedStyle();
+
+    var left = style.left;
+    var top  = style.top;
+
+    if (message.keyCode === 38) {
+      top--;
+    } else if (message.keyCode == 40) {
+      top++;
+    } else if (message.keyCode === 37) {
+      left--;
+    } else if (message.keyCode === 39) {
+      left++;
+    }
+
+    console.log(top);
+
+    entity.getComputer().setPositionFromAbsolutePoint({
+      left: left,
+      top: top
+    });
+  }};
+
+  app.plugins.push(
+    KeyCommandPlugin.create({
+      id: 'upCommand',
+      keyCommand: 'up',
+      notifier: moveEntityNotifier
+    }),
+
+    KeyCommandPlugin.create({
+      id: 'rightCommand',
+      keyCommand: 'right',
+      notifier: moveEntityNotifier
+    }),
+
+    KeyCommandPlugin.create({
+      id: 'downCommand',
+      keyCommand: 'down',
+      notifier: moveEntityNotifier
+    }),
+
+    KeyCommandPlugin.create({
+      id: 'leftCommand',
+      keyCommand: 'left',
+      notifier: moveEntityNotifier
+    })
+  );
+}

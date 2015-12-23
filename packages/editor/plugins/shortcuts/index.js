@@ -32,7 +32,7 @@ export default ApplicationPlugin.create({
           }
 
           event.preventDefault();
-          plugin.notifier.notify();
+          plugin.notifier.notify(event);
         });
       }
     }

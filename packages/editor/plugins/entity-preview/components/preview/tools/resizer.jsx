@@ -13,7 +13,6 @@ const PADDING            = 6;
 class ResizerComponent extends React.Component {
   startDragging(event) {
     var focus = this.props.focus;
-    var zoom = this.props.zoom;
 
     var computer = focus.getComputer();
 

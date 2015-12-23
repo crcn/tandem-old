@@ -7,15 +7,23 @@ import {
 
 class ReactEntityComputer extends DisplayEntityComputer {
 
-  setPositionFromFixedPoint(point) {
+  setPositionFromAbsolutePoint(point) {
     var entStyle = this.getStyle();
 
     var newStyle = translateStyle({
-      left: point.left / entStyle.zoom,
-      top: point.top / entStyle.zoom
+      left: point.left,
+      top: point.top
     }, this.entity.getStyle(), this.getDisplayElement());
 
     this.entity.setStyle(newStyle);
+  }
+
+  setPositionFromFixedPoint(point) {
+    var entStyle = this.getStyle();
+    this.setPositionFromAbsolutePoint({
+      left: point.left / entStyle.zoom,
+      top: point.top / entStyle.zoom
+    });
   }
 
   getDisplayElement() {

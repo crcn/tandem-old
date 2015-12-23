@@ -11,6 +11,7 @@ export default ApplicationPlugin.create({
   id: 'coreAppPlugin',
   factory: {
     create({ app }) {
+
       app.plugins.push(
 
         ComponentPlugin.create({
