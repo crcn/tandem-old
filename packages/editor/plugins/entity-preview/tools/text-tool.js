@@ -6,7 +6,7 @@ const CURSOR_HEIGHT = 12;
 class TextTool extends ObservableObject {
 
   constructor(properties) {
-    super({ cursor: 'text', ...properties });
+    super({ type: 'text', cursor: 'text', ...properties });
   }
 
   notify(message) {

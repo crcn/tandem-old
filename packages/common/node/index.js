@@ -7,7 +7,7 @@ class Node extends BaseObject {
 
   constructor(properties, children = []) {
     super(properties);
-    
+
     this._children = NodeCollection.create({
       notifier: CallbackNotifier.create(this._onChildrenChange.bind(this))
     }, children);
@@ -30,6 +30,15 @@ class Node extends BaseObject {
       var found = child.find(filter);
       if (found) return found;
     }
+  }
+
+  /**
+   */
+
+  flatten(nodes = []) {
+    nodes.push(this);
+    for (var child of this._children) child.flatten(nodes);
+    return nodes;
   }
 
   /**

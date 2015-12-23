@@ -1,6 +1,6 @@
 import './index.scss';
 import React from 'react';
-import RegisteredComponent from 'common/components/registered-component';
+import RegisteredComponent from 'common/components/registered';
 
 class FooterComponent extends React.Component {
   render() {

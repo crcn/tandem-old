@@ -1,4 +1,4 @@
-import './resizer.scss';
+import './index.scss';
 
 import React from 'react';
 import { startDrag } from 'common/utils/component';

@@ -136,6 +136,7 @@ class Caret extends BaseObject {
     if (message.type === 'input') {
       // this.addCharacter(message.text);
     } else if (message.type === 'keyCommand') {
+      message.preventDefault();
       if (message.keyCode === 39) {
         this.moveRight();
       } else if (message.keyCode === 37) {
