@@ -1,7 +1,6 @@
 
 import React from 'react';
 import StyleReference from 'common/reference/style';
-// import titlecase from 'lodash/string/titleCase';
 import TextInputComponent from 'common/components/inputs/text-input';
 import SearchDropdownComponent from 'common/components/inputs/searchable-dropdown';
 
