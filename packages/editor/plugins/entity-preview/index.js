@@ -105,8 +105,6 @@ function registerNudgeCommands(app) {
       left++;
     }
 
-    console.log(top);
-
     entity.getComputer().setPositionFromAbsolutePoint({
       left: left,
       top: top
