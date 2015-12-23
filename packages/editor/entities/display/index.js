@@ -66,10 +66,18 @@ class DisplayEntity extends Entity {
   }
 
   /**
+   * DEPRECATED - use get style() instead
    */
 
   getStyle() {
     return this.attributes.style;
+  }
+
+  /**
+   */
+
+  get style() {
+    return this.getStyle();
   }
 }
 

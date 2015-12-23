@@ -43,7 +43,7 @@ class AppearancePaneComponent extends React.Component {
           </div>
           <div className='col-sm-6'>
             <label>Blend mode</label>
-            <SearchDropdownComponent options={blendModes} reference={StyleReference.create(entity, 'mixBlendMode')}></SearchDropdownComponent>
+            <SearchDropdownComponent defaultLabel='- -' options={blendModes} reference={StyleReference.create(entity, 'mixBlendMode')}></SearchDropdownComponent>
           </div>
         </div>
       </div>

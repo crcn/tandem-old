@@ -1,9 +1,9 @@
 
 import React from 'react';
+import StyleReference from 'common/reference/style';
 import TextInputComponent from 'common/components/inputs/text-input';
 import UnitInputComponent from 'common/components/inputs/unit-input';
 import ColorInputComponent from 'common/components/inputs/color-picker';
-import StyleReference from 'common/reference/style';
 import SearchDropdownComponent from 'common/components/inputs/searchable-dropdown';
 import FontInputComponent from './font-input';
 
@@ -22,6 +22,18 @@ function createMenuItems(values) {
   });
 }
 
+const fontWeightMap = {
+  100: 'Thin',
+  200: 'Extra-Light',
+  300: 'Light',
+  400: 'Normal',
+  500: 'Medium',
+  600: 'Demo-Bold',
+  700: 'Bold',
+  800: 'Ultra Bold',
+  900: 'Heavy'
+};
+
 class TypographyPaneComponent extends React.Component {
   render() {
     var entity = this.props.entity;
@@ -29,9 +41,8 @@ class TypographyPaneComponent extends React.Component {
     // TODO - change this to query types
     var fonts            = this.props.app.plugins.query(ALL_FONTS);
     var font             = findFont(entity, fonts) || {};
-    var fontWeights      = createMenuItems(font.weights);
-    var fontStyles       = createMenuItems(font.styles);
-    var fontDecorations  = createMenuItems(font.decorations);
+    var fontStyles       = createMenuItems(font.getCombinedStyles());
+    // console.log(font.decorations);
 
     return <div className='m-typography-pane'>
 
@@ -43,7 +54,22 @@ class TypographyPaneComponent extends React.Component {
           </div>
           <div className='col-sm-6'>
             <label>Style</label>
-            <TextInputComponent reference={StyleReference.create(entity, 'weight')}/>
+            <SearchDropdownComponent defaultLabel='- -' options={fontStyles} labelProperty={function(item) {
+              var [weight, style] = item.value.split(' ');
+              if (style === 'normal') style = void 0;
+              return [weight, '-', fontWeightMap[weight], style].join(' ')
+            }} reference={{
+              getValue() {
+                return [entity.getStyle().fontWeight, entity.getStyle().fontStyle].join(' ');
+              },
+              setValue(value) {
+                var [weight, style] = value.split(' ');
+                entity.setStyle({
+                  fontWeight : weight,
+                  fontStyle  : style
+                });
+              }
+            }} />
           </div>
         </div>
 

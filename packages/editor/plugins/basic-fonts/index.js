@@ -1,12 +1,29 @@
 import FontPlugin from './font';
 import { ApplicationPlugin } from 'editor/plugin/types';
 
+
+// https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight
+
 const DEFAULT_WEIGHTS = [
-  'normal', 'bold', 'bolder', 'lighter', 'initial', 'inherit', 100, 200, 300, 400, 500, 600, 700, 800, 900
-];
+  100, // Thin
+  200, // Extra Light
+  300, // Light
+  400, // Normal
+  500, // Medium
+  600, // Demi bold
+  700, // Bold
+  800, // Ultra Bold
+  900, // Heavy
+]
 
 const DEFAULT_STYLES = [
-  'italic', 'normal', 'oblique', 'initial', 'inherit'
+  'normal',
+  'italic'
+
+  // unnecessary for now. Maybe later on.
+  // 'oblique',
+  // 'initial',
+  // 'inherit'
 ];
 
 const DEFAULT_DECORATIONS = [

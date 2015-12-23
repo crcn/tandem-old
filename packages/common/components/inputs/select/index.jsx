@@ -110,7 +110,7 @@ class SelectComponent extends React.Component {
     var options    = this.getFilteredOptions();
     var position = this.state.position;
 
-    return <ul ref='list' className='m-select m-list' onFocus={this.onFocus.bind(this)} onBlur={this.onBlur.bind(this)} tabIndex="0" onKeyDown={this.onKeyDown.bind(this)}>
+    return <ul ref='list' className='m-select m-list' onFocus={this.onFocus.bind(this)} onBlur={this.onBlur.bind(this)} tabIndex="0" onKeyDown={this.onKeyDown.bind(this)} data-mouse-trap="false">
       {
         options.map((option, i) => {
           var classNames = cx({
