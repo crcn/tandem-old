@@ -1,7 +1,7 @@
 import './index.scss';
 import React from 'react';
 import UnitInputComponent from 'common/components/inputs/unit-input';
-import createStyleReference from './create-style-reference';
+import StyleReference from 'common/reference/style';
 import ScrollableLabelInput from 'common/components/inputs/scrollable-label-input'
 
 class TransformPaneComponent extends React.Component {
@@ -15,21 +15,21 @@ class TransformPaneComponent extends React.Component {
         <div className='row'>
           <div className='col-sm-6'>
             <label>x</label>
-            <UnitInputComponent reference={createStyleReference(entity, 'left')} />
+            <UnitInputComponent reference={StyleReference.create(entity, 'left')} />
           </div>
           <div className='col-sm-6'>
             <label>y</label>
-            <UnitInputComponent reference={createStyleReference(entity, 'top')} />
+            <UnitInputComponent reference={StyleReference.create(entity, 'top')} />
           </div>
         </div>
         <div className='row'>
           <div className='col-sm-6'>
             <label>w</label>
-            <UnitInputComponent reference={createStyleReference(entity, 'width')} />
+            <UnitInputComponent reference={StyleReference.create(entity, 'width')} />
           </div>
           <div className='col-sm-6'>
             <label>h</label>
-            <UnitInputComponent reference={createStyleReference(entity, 'height')} />
+            <UnitInputComponent reference={StyleReference.create(entity, 'height')} />
           </div>
         </div>
 

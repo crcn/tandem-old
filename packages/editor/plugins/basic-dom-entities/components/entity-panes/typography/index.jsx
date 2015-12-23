@@ -3,7 +3,7 @@ import React from 'react';
 import TextInputComponent from 'common/components/inputs/text-input';
 import UnitInputComponent from 'common/components/inputs/unit-input';
 import ColorInputComponent from 'common/components/inputs/color-picker';
-import createStyleReference from '../transform/create-style-reference';
+import StyleReference from 'common/reference/style';
 import SearchDropdownComponent from 'common/components/inputs/searchable-dropdown';
 import FontInputComponent from './font-input';
 
@@ -43,18 +43,18 @@ class TypographyPaneComponent extends React.Component {
           </div>
           <div className='col-sm-6'>
             <label>Style</label>
-            <TextInputComponent reference={createStyleReference(entity, 'weight')}/>
+            <TextInputComponent reference={StyleReference.create(entity, 'weight')}/>
           </div>
         </div>
 
         <div className='row'>
           <div className='col-sm-3'>
             <label>Size</label>
-            <UnitInputComponent reference={createStyleReference(entity, 'fontSize')} />
+            <UnitInputComponent reference={StyleReference.create(entity, 'fontSize')} />
           </div>
           <div className='col-sm-3'>
             <label>Color</label>
-            <ColorInputComponent reference={createStyleReference(entity, 'color')} />
+            <ColorInputComponent reference={StyleReference.create(entity, 'color')} />
           </div>
           <div className='col-sm-6'>
             <label>Align</label>

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import createStyleReference from './create-style-reference';
+import StyleReference from 'common/reference/style';
 import SearchDropdownComponent from 'common/components/inputs/searchable-dropdown';
 
 class FontInputComponent extends React.Component {
@@ -21,7 +21,7 @@ class FontInputComponent extends React.Component {
       return a.label > b.label ? -1 : 1;
     });
 
-    return <SearchDropdownComponent className='m-font-input' defaultLabel={'Select Font'} labelProperty={createLabel} items={fonts} reference={createStyleReference(entity, 'fontFamily')}>
+    return <SearchDropdownComponent className='m-font-input' defaultLabel={'Select Font'} labelProperty={createLabel} items={fonts} reference={StyleReference.create(entity, 'fontFamily')}>
     </SearchDropdownComponent>;
   }
 }
