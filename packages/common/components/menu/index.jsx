@@ -40,6 +40,10 @@ class MenuComponent extends React.Component {
     this.setState({
       show: false
     });
+
+    if (this.props.onMenuHide) {
+      this.props.onMenuHide();
+    }
   }
 
   toggleMenu(event) {
@@ -52,8 +56,15 @@ class MenuComponent extends React.Component {
   }
 
   onKeyDown(event) {
-    if (event.keyCode !== 13 || document.activeElement !== this.refs.menu) return;
-    this.show();
+
+    if (this.props.onKeyDown) {
+      this.props.onKeyDown(event);
+    }
+
+    // enter or escape
+    if (!/13|27/.test(String(event.keyCode))) return;
+
+    this.toggleMenu(event);
   }
 
   render() {
@@ -63,7 +74,7 @@ class MenuComponent extends React.Component {
     var sections = {};
 
     if (show) {
-      sections.items = <Portal><PopdownComponent {...this.props} styles={{
+      sections.items = <PopdownComponent {...this.props} styles={{
           arrow: {
             left: this.state.buttonWidth ? (this.state.buttonWidth / 2) + 'px' : '50%'
           }
@@ -73,7 +84,7 @@ class MenuComponent extends React.Component {
           this.props.createMenu() :
           this.props.children[1]
         }
-      </PopdownComponent></Portal>;
+      </PopdownComponent>;
 
       sections.bgClick = <div className='m-menu--bg-click' onClick={this.hide.bind(this)}>
 

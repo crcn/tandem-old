@@ -1,5 +1,4 @@
 
-
 import React from 'react';
 import createStyleReference from './create-style-reference';
 import SearchDropdownComponent from 'common/components/inputs/searchable-dropdown';

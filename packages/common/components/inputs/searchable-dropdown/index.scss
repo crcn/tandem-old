@@ -8,35 +8,21 @@
     cursor: pointer;
     display: block;
     width: 100%;
-    padding: $padding-0 $padding-1;
-    border-radius: $border-radius-1;
+    // padding: $padding-0 $padding-1;
+    // border-radius: $border-radius-1;
+  }
+
+  &--header {
+    padding: $padding-0;
+    padding-left: $padding-0 - 1;
   }
 
   &--inner {
     width: 100%;
 
-    & input {
-      width: calc(100% - #{$padding-1 * 2});
-      margin: $padding-1;
+    & .m-select {
+      border-radius: 0px;
     }
 
-    & .m-list {
-      max-height: 200px;
-      overflow-x: scroll;
-
-      // get rid of 1px padding issue with overflow
-      margin-right: -1px;
-      & li {
-        cursor: pointer;
-        &:hover, &:focus {
-          background-color: $color-sky-blue-4;
-          color: $color-white-offset-8;
-        }
-      }
-      &:last-child {
-        border-bottom-left-radius: $border-radius-2;
-        border-bottom-right-radius: $border-radius-2;
-      }
-    }
   }
 }

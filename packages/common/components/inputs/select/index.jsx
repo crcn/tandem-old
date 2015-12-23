@@ -19,14 +19,17 @@ class SelectComponent extends React.Component {
 
     if (!!~newPosition) {
       this.onItemHover(items[newPosition]);
-      this.onItemSelect(items[newPosition]);
       var item = this.refs.list.querySelectorAll('li')[newPosition];
       item.scrollIntoView(false);
     }
 
     this.setState({
-      position: newPosition
+      position: this.state.position = newPosition
     });
+
+    if (this.props.onPositionChange) {
+      this.props.onPositionChange(newPosition);
+    }
   }
 
   shift(step) {
@@ -51,10 +54,6 @@ class SelectComponent extends React.Component {
     this.props.onItemHover(this.getItemValue(item));
   }
 
-  onItemSelect(item) {
-    this.props.onSelect(this.getItemValue(item));
-  }
-
   getItemValue(item) {
     return item ? item[this.props.valueProperty] : void 0;
   }
@@ -68,6 +67,36 @@ class SelectComponent extends React.Component {
   onItemClick(index, event) {
     event.stopPropagation();
     this.move(index);
+    console.log(index, this.getCurrentItemValue(), this.state.position);
+    this.selectCurrentPosition();
+  }
+
+  onKeyDown(event) {
+    if (event.keyCode === 38) {
+      this.up();
+      event.preventDefault();
+    } else if (event.keyCode === 40) {
+      this.down();
+      event.preventDefault();
+    } else if (event.keyCode === 13) {
+      this.selectCurrentPosition();
+    }
+  }
+
+  selectCurrentPosition() {
+    this.props.onSelect(this.getCurrentItemValue());
+  }
+
+  onFocus(event) {
+    this.move(0);
+  }
+
+  onBlur(event) {
+    this.move(-1);
+  }
+
+  focus() {
+    this.refs.list.focus();
   }
 
   render() {
@@ -79,7 +108,7 @@ class SelectComponent extends React.Component {
     var items    = this.getFilteredItems();
     var position = this.state.position;
 
-    return <ul ref='list' className='m-select m-list'>
+    return <ul ref='list' className='m-select m-list' onFocus={this.onFocus.bind(this)} onBlur={this.onBlur.bind(this)} tabIndex="0" onKeyDown={this.onKeyDown.bind(this)}>
       {
         items.map((item, i) => {
           var classNames = cx({
@@ -88,7 +117,7 @@ class SelectComponent extends React.Component {
           })
           return <li
             className={classNames}
-            onClick={this.onItemClick.bind(this, i)}
+            onMouseDown={this.onItemClick.bind(this, i)}
             onMouseOver={this.onItemHover.bind(this, item)} key={i}>
             { createLabel(item, i) }
           </li>;

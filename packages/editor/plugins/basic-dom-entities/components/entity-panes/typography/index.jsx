@@ -4,11 +4,34 @@ import TextInputComponent from 'common/components/inputs/text-input';
 import UnitInputComponent from 'common/components/inputs/unit-input';
 import ColorInputComponent from 'common/components/inputs/color-picker';
 import createStyleReference from '../transform/create-style-reference';
+import SearchDropdownComponent from 'common/components/inputs/searchable-dropdown';
+import FontInputComponent from './font-input';
+
+
+import { ALL_FONTS, ALL_FONT_WEIGHTS, ALL_FONT_STYLES } from 'editor/plugin/queries';
+
+function findFont(entity, fonts) {
+  return fonts.find(function(font) {
+    return entity.attributes.style.fontFamily === font.value;
+  });
+}
+
+function createMenuItems(values) {
+  return (values ? values : []).map(function(value) {
+    return { label: value, value: value };
+  });
+}
 
 class TypographyPaneComponent extends React.Component {
   render() {
     var entity = this.props.app.focus;
-    if (!entity) return null;
+
+    // TODO - change this to query types
+    var fonts            = this.props.app.plugins.query(ALL_FONTS);
+    var font             = findFont(entity, fonts) || {};
+    var fontWeights      = createMenuItems(font.weights);
+    var fontStyles       = createMenuItems(font.styles);
+    var fontDecorations  = createMenuItems(font.decorations);
 
     return <div className='m-typography-pane'>
 
@@ -16,7 +39,7 @@ class TypographyPaneComponent extends React.Component {
         <div className='row'>
           <div className='col-sm-6'>
             <label>Family</label>
-            <TextInputComponent reference={createStyleReference(entity, 'fontFamily')} selectAllOnFocus={true} />
+            <FontInputComponent entity={entity} fonts={fonts} />
           </div>
           <div className='col-sm-6'>
             <label>Style</label>

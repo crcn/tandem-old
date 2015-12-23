@@ -6,7 +6,6 @@ class PortalComponent extends React.Component {
   componentDidMount() {
     this._placeholder = document.createElement('div');
     document.body.appendChild(this._placeholder);
-    ReactDOM.render(this.props.children, this._placeholder);
     var bounds = this.refs.portal.getBoundingClientRect();
 
     Object.assign(this._placeholder.style, {
@@ -15,6 +14,12 @@ class PortalComponent extends React.Component {
       left: bounds.left + 'px',
       top: bounds.top + 'px'
     });
+
+    this._render();
+  }
+
+  componentWillReceiveProps(nextProps, nextState) {
+    this._render();
   }
 
   componentWillUnmount() {
@@ -23,6 +28,10 @@ class PortalComponent extends React.Component {
 
   render() {
     return <span ref='portal'></span>;
+  }
+
+  _render() {
+    ReactDOM.render(this.props.children, this._placeholder);
   }
 }
 
