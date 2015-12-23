@@ -1,3 +1,4 @@
+// import './index.scss';
 
 import React from 'react';
 import StyleReference from 'common/reference/style';
@@ -6,7 +7,6 @@ import UnitInputComponent from 'common/components/inputs/unit-input';
 import ColorInputComponent from 'common/components/inputs/color-picker';
 import SearchDropdownComponent from 'common/components/inputs/searchable-dropdown';
 import FontInputComponent from './font-input';
-
 
 import { ALL_FONTS, ALL_FONT_WEIGHTS, ALL_FONT_STYLES } from 'editor/plugin/queries';
 

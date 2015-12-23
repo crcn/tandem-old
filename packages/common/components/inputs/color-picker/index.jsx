@@ -67,8 +67,7 @@ class ColorPickerInput extends React.Component {
         </div>
 
       </MenuComponent>
-
-    </div>
+    </div>;
   }
 }
 
