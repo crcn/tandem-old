@@ -14,7 +14,6 @@ import EntityPreviewPlugin from './plugins/entity-preview';
 import LoadRootEntityPlugin from './plugins/root-entity-loader';
 import ClipboardPasteEntity from './plugins/clipboard-paste-entity';
 import BasicDOMEntitiesPlugin from './plugins/basic-dom-entities';
-import BasicPaneComponentsPlugin from './plugins/basic-pane-components';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -32,8 +31,7 @@ class Application extends BaseApplication {
     EntityPreviewPlugin,
     LoadRootEntityPlugin,
     ClipboardPasteEntity,
-    BasicDOMEntitiesPlugin,
-    BasicPaneComponentsPlugin
+    BasicDOMEntitiesPlugin
   ])
 
   didInitialize() {

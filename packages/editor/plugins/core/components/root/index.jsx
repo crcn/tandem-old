@@ -1,7 +1,6 @@
 import React from 'react';
 import MainComponent from '../main';
 
-
 class RootComponent extends React.Component {
 
   componentDidMount() {
@@ -13,7 +12,7 @@ class RootComponent extends React.Component {
     // TODO - possibly throttle here
     this.forceUpdate();
   }
-  
+
   render() {
     return <MainComponent {...this.props} />;
   }
