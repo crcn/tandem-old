@@ -41,8 +41,14 @@ class TypographyPaneComponent extends React.Component {
     // TODO - change this to query types
     var fonts            = this.props.app.plugins.query(ALL_FONTS);
     var font             = findFont(entity, fonts) || {};
-    var fontStyles       = createMenuItems(font.getCombinedStyles());
-    // console.log(font.decorations);
+    var fontStyles       = font.getCombinedStyles().map(function(value) {
+      var [weight, style] = value.split(' ');
+      if (style === 'normal') style = void 0;
+      return {
+        label: [weight, '-', fontWeightMap[weight], style].join(' '),
+        value: value
+      }
+    });
 
     return <div className='m-typography-pane'>
 
@@ -54,11 +60,7 @@ class TypographyPaneComponent extends React.Component {
           </div>
           <div className='col-sm-6'>
             <label>Style</label>
-            <SearchDropdownComponent defaultLabel='- -' options={fontStyles} labelProperty={function(item) {
-              var [weight, style] = item.value.split(' ');
-              if (style === 'normal') style = void 0;
-              return [weight, '-', fontWeightMap[weight], style].join(' ')
-            }} reference={{
+            <SearchDropdownComponent defaultLabel='- -' options={fontStyles} reference={{
               getValue() {
                 return [entity.getStyle().fontWeight, entity.getStyle().fontStyle].join(' ');
               },

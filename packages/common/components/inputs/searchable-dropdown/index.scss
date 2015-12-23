@@ -21,7 +21,8 @@
     width: 100%;
 
     & .m-select {
-      border-radius: 0px;
+      max-height: 200px;
+      overflow-x: scroll;
     }
 
   }

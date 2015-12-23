@@ -36,8 +36,7 @@ class PortalComponent extends React.Component {
   }
 
   _resize() {
-    clearTimeout(this._timer);
-    this._timer = setTimeout(() => {
+    requestAnimationFrame(() => {
       var bounds = this.refs.portal.getBoundingClientRect();
       var placeholderBounds = this._placeholder.getBoundingClientRect();
 
@@ -55,7 +54,7 @@ class PortalComponent extends React.Component {
         left: left + 'px',
         top: top + 'px'
       });
-    }, 1);
+    });
   }
 }
 
