@@ -29,16 +29,15 @@ export class ComponentPlugin extends Plugin {
 
   constructor(properties) {
 
-    assert(properties.componentClass, 'component class is missing');
+      assert(properties.componentClass, 'component class is missing');
 
-    super({ type: 'component', ...properties, factory: {
-      create(props, children) {
-        return React.createElement(properties.componentClass, props, children);
+      super({ type: 'component', ...properties, factory: {
+        create(props, children) {
+          return React.createElement(properties.componentClass, props, children);
+        }
       }
-    }
-  });
-}
-
+    });
+  }
 }
 
 // export var ComponentPlugin ComponentPlugin;
