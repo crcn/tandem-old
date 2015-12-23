@@ -1,9 +1,9 @@
 import 'bootstrap/css/bootstrap.css';
 import 'editor/scss/modules/all.scss';
 
-import RootComponent from './components/root';
 import BaseApplication from 'base/app';
 
+import CorePlugin from './plugins/core';
 import HistoryPlugin from './plugins/history';
 import SettingsPlugin from './plugins/settings';
 import ShortcutPlugin from './plugins/shortcuts';
@@ -22,13 +22,14 @@ import ReactDOM from 'react-dom';
 class Application extends BaseApplication {
 
   static plugins = BaseApplication.plugins.concat([
-    EntityPreviewPlugin,
+    CorePlugin,
     HistoryPlugin,
     ShortcutPlugin,
     SettingsPlugin,
     ClipboardPlugin,
     BasicFontPlugin,
     TestProjectPlugin,
+    EntityPreviewPlugin,
     LoadRootEntityPlugin,
     ClipboardPasteEntity,
     BasicDOMEntitiesPlugin,
@@ -36,7 +37,8 @@ class Application extends BaseApplication {
   ])
 
   didInitialize() {
-    ReactDOM.render(React.createElement(RootComponent, { app: app }), this.config.element);
+    var rootComponentPlugin = this.plugins.queryOne({ id: 'rootComponent' });
+    ReactDOM.render(rootComponentPlugin.factory.create({ app: app }), this.config.element);
   }
 
   /**
