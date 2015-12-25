@@ -38,7 +38,7 @@ class TextToolComponent extends React.Component {
     delete inputStyle['top'];
 
     return <div style={style} className='reset-all m-text-tool'>
-      <TextInputComponent onKeyDown={this.onKeyDown.bind(this)} ref='input' style={inputStyle} reference={Reference.create(entity, 'value')} />
+      <TextInputComponent multiline={false} onKeyDown={this.onKeyDown.bind(this)} ref='input' style={inputStyle} reference={Reference.create(entity, 'value')} />
     </div>
   }
 }

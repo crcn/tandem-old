@@ -24,7 +24,7 @@ class TextInputComponent extends React.Component {
 
     var style = {
       overflow: 'hidden',
-      whiteSpace: 'nowrap'
+      whiteSpace: this.props.multiline ? void 0 : 'nowrap'
     };
 
     return <TextEditorComponent
