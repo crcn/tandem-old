@@ -144,12 +144,12 @@ class Caret extends BaseObject {
         37: this.moveLeft
       };
 
-      var handler = handlers[message.type];
+      var handler = handlers[message.keyCode];
 
       if (handler) {
         // necessary to prevent scrolling
         message.preventDefault();
-        handlers[message.type].call(this);
+        handler.call(this);
       }
     }
 
