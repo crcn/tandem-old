@@ -1,10 +1,13 @@
 import { DisplayEntityComputer } from 'editor/entities';
 
 import {
-  calculateZoom,
   translateStyle,
   translateLength as translateCSSLength
 } from 'common/utils/html/css';
+
+import {
+  calculateZoom
+} from 'common/utils/html';
 
 class ReactEntityComputer extends DisplayEntityComputer {
 

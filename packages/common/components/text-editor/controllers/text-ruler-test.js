@@ -14,7 +14,7 @@ describe(__filename + '#', function() {
     ['\s\tabc']
   ].forEach(function([text, width]) {
     it('can calculate the size of ' + text, function() {
-      var style = { fontSize: '14px', letterSpacing: '20px' };
+      var style = { fontSize: '14px' };
 
       var tr = TextRuler.create({
         style: style

@@ -1,17 +1,18 @@
 import React from 'react';
 import TokenComponent from './token';
+import { translateAbsoluteToRelativePoint } from 'common/utils/html';
 
 class LineComponent extends React.Component {
 
   onClick(event) {
     var line = this.props.line;
 
-    var bounds = this.refs.line.getBoundingClientRect();
+    var { left } = translateAbsoluteToRelativePoint(event, this.refs.line);
 
-    var rx = event.clientX - bounds.left;
+    console.log(left);
 
     this.props.editor.caret.setPosition(
-      line.getPosition() + this.props.editor.textRuler.convertPointToCharacterPosition(line.toString(), rx)
+      line.getPosition() + this.props.editor.textRuler.convertPointToCharacterPosition(line.toString(), left)
     );
   }
 

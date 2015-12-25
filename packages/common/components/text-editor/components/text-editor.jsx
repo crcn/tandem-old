@@ -53,9 +53,10 @@ class TextEditorComponent extends React.Component {
     var style = window.getComputedStyle(this.refs.editor);
     this.setState({
       style: {
-        fontSize: style.fontSize,
-        color: style.color,
-        whiteSpace: style.whiteSpace
+        fontSize      : style.fontSize,
+        color         : style.color,
+        whiteSpace    : style.whiteSpace,
+        letterSpacing : style.letterSpacing
       }
     });
   }

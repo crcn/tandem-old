@@ -1,24 +1,8 @@
-export { default as parseUnit } from './parse-units';
+import parseUnit from './parse-units';
+import translateStyle from './translate-Style';
+
+export { parseUnit, translateStyle, translateStyle as convertUnit };
 import { CSSTokenizer } from 'common/components/text-editor';
-export { default as translateStyle } from './translate-style';
-
-/**
-* calculates the correct zoom of an element
-*/
-
-export function calculateZoom(element) {
-  var current = element;
-  var zoom    = 1;
-
-  while (current && current.style) {
-    if (current.style.zoom !== '') {
-      zoom *= Number(current.style.zoom);
-    }
-    current = current.parentNode;
-  }
-
-  return zoom;
-}
 
 export function stringifyToken(token) {
   return token.value;
@@ -65,6 +49,13 @@ export function translateLength(x1, y1, x2) {
   return ret;
 }
 
-// export function translateLengthToPixes()
+export function calculateLengthInPixels(length) {
+  if (!length) return 0;
 
-export { default as convertUnit } from './translate-style';
+  // could be somthing like 'normal'
+  if (!CSSTokenizer.tokenize(String(length)).find(function(token) {
+    return token.type === 'unit';
+  })) return length;
+
+  return length ? parseUnit(translateStyle(length, 'px'))[0] : 0;
+}

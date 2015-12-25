@@ -1,5 +1,8 @@
 import BaseObject from 'common/object/base';
 import encode from './encode';
+import {
+  calculateLengthInPixels
+} from 'common/utils/html/css';
 
 /**
  * Simple text width
@@ -86,10 +89,20 @@ class TextRuler extends BaseObject {
     // set the encoded
     span.innerHTML = encode(char);
 
-    var w = span.offsetWidth;
+    var w = span.offsetWidth + this._getLetterSpacing();
     var h = span.offsetHeight;
 
     return this._sizes[char] = [w, h];
+  }
+
+  /**
+   */
+
+  _getLetterSpacing() {
+    if (this._sizes.letterSpacing) return this._sizes.letterSpacing;
+    if (!this.style) return 0;
+    var ls = calculateLengthInPixels(this.style.letterSpacing);
+    return this._sizes.letterSpacing = typeof ls === 'number' ? ls : 0;
   }
 
   /**
