@@ -14,7 +14,7 @@ class OriginInputComponent extends React.Component {
     var ref    = this.props.reference;
     var [ox, oy] = ref.getValue();
 
-    var s  = 25;
+    var s  = 23;
     var os = 5;
     var hs = os / 2;
 
