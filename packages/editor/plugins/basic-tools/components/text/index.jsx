@@ -25,7 +25,6 @@ class TextToolComponent extends React.Component {
   }
 
   _complete() {
-    console.log('blur');
     this.props.app.notifier.notify({
       type: 'textEditComplete'
     });
