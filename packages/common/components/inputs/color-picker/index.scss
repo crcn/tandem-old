@@ -7,18 +7,22 @@ $color-picker-button-border-width: 1px;
   position: relative;
   &--button {
 
+    border-radius: $border-radius-1;
     box-shadow: none !important;
     background-color: white !important;
     // padding: $padding-0 !important;
     padding: 0 !important;
 
     cursor: pointer;
-    display: inline-block;
+    width: 100%;
+    height: 100%;
     position: relative;
 
     &-fill {
       width: 100%;
       height: 100%;
+      border: none;
+      -webkit-border-radius: $border-radius-1;
       border-radius: $border-radius-1;
       background-color: white;
     }

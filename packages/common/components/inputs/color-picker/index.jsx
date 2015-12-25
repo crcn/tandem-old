@@ -58,9 +58,12 @@ class ColorPickerInput extends React.Component {
 
     return <div className='m-color-picker-input' onKeyDown={this.onKeyDown.bind(this)}>
 
-      <MenuComponent ref='menu' className='m-color-picker-popdown' createMenu={createMenu}>
+      <MenuComponent
+        ref='menu'
+        className={['m-color-picker-popdown', this.props.className].join(' ')}
+         createMenu={createMenu}>
 
-        <div className='input m-color-picker-input--button'>
+        <div className='m-color-picker-input--button'>
           <div style={buttonFillStyle}
             className='m-color-picker-input--button-fill'>
           </div>

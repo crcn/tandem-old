@@ -83,7 +83,7 @@ class TypographyPaneComponent extends React.Component {
           </div>
           <div className='col-sm-3'>
             <label>Color</label>
-            <ColorInputComponent reference={StyleReference.create(entity, 'color')} />
+            <ColorInputComponent className='input' reference={StyleReference.create(entity, 'color')} />
           </div>
           <div className='col-sm-6'>
             <label>Align</label>
