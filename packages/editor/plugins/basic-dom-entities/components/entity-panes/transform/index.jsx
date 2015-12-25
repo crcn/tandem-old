@@ -56,7 +56,6 @@ class TransformPaneComponent extends React.Component {
                 var left = map[x];
                 var top  = map[y];
 
-                console.log(left, top)
                 entity.setStyle({
                   '--origin': [x, y],
                   'transform': 'translate(' + left * 100 + '%, ' + top * 100 + '%)'
