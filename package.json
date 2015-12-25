@@ -25,6 +25,7 @@
     "lodash": "^3.10.1",
     "mousetrap": "^1.5.3",
     "react": "^0.14.2",
+    "react-a11y": "^0.2.8",
     "react-codemirror": "^0.2.2",
     "react-color": "^1.3.0",
     "react-dom": "^0.14.2",

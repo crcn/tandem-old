@@ -13,7 +13,7 @@ class ToolComponent extends React.Component {
       [ 'm-preview-tool s s-' + plugin.icon ]: true
     });
 
-    return <li className={className} onClick={this.setTool.bind(this)}>
+    return <li className={className} aria-label={plugin.name} tabIndex="-1" role={plugin.name} onClick={this.setTool.bind(this)}>
 
     </li>
   }

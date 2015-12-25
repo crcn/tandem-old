@@ -92,8 +92,9 @@ class MenuComponent extends React.Component {
     }
 
     var classNames = cx({
-      'm-menu': true,
-      'disable': this.props.disable
+      'm-menu'  : true,
+      'focus'   : this.state.show,
+      'disable' : this.props.disable
     });
 
     return <div ref="menu" tabIndex={this.props.tabbable !== false ? this.props.disable ? void 0 : 0 : void 0} onKeyDown={this.onKeyDown.bind(this)} className={[classNames, this.props.className].join(' ')}>

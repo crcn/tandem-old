@@ -51,7 +51,10 @@ class StageComponent extends React.Component {
       <div className='m-preview-stage--inner'>
         <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle}>
 
-          <div id='preview-canvas' className='m-preview-stage--element-layer' onClick={this.onClick.bind(this)}>
+          <div id='preview-canvas'
+            className='m-preview-stage--element-layer'
+            role='preview stage'
+            onClick={this.onClick.bind(this)}>
             <span ref='drawLayer' className='reset-all m-preview-stage--draw-layer'>
               <EntityComponent entity={app.rootEntity} app={app} />
             </span>

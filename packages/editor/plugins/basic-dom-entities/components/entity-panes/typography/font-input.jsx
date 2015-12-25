@@ -21,7 +21,7 @@ class FontInputComponent extends React.Component {
       return a.label > b.label ? -1 : 1;
     });
 
-    return <SearchDropdownComponent className='m-font-input' defaultLabel={'Select Font'} labelProperty={createLabel} options={fonts} reference={StyleReference.create(entity, 'fontFamily')}>
+    return <SearchDropdownComponent className='input m-font-input' defaultLabel={'Select Font'} labelProperty={createLabel} options={fonts} reference={StyleReference.create(entity, 'fontFamily')}>
     </SearchDropdownComponent>;
   }
 }

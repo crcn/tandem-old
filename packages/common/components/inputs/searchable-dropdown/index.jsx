@@ -141,7 +141,7 @@ class SearchDropdownComponent extends React.Component {
       className={[classNames, this.props.className].join(' ')}
       createMenu={createMenu}>
 
-      <span ref='label' className='input m-search-dropdown--label'>{
+      <span ref='label' className='m-search-dropdown--label'>{
         ~selectedOptionIndex ? createLabel(this.props.options[selectedOptionIndex]) : createDefaultLabel()
       }</span>
 

@@ -1,6 +1,12 @@
 import 'bootstrap/css/bootstrap.css';
 import 'editor/scss/modules/all.scss';
 
+import a11y from 'react-a11y';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+// a11y(React);
+
 import BaseApplication from 'base/app';
 
 import CorePlugin from './plugins/core';
@@ -17,9 +23,6 @@ import ClipboardPasteEntity from './plugins/clipboard-paste-entity';
 import BasicDOMEntitiesPlugin from './plugins/basic-dom-entities';
 
 import { SET_FOCUS } from 'editor/message-types';
-
-import React from 'react';
-import ReactDOM from 'react-dom';
 
 class Application extends BaseApplication {
 

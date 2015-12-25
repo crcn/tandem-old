@@ -61,7 +61,7 @@ class TypographyPaneComponent extends React.Component {
           </div>
           <div className='col-sm-6'>
             <label>Style</label>
-            <SearchDropdownComponent defaultLabel='- -' options={fontStyles} reference={{
+            <SearchDropdownComponent className='input' defaultLabel='- -' options={fontStyles} reference={{
               getValue() {
                 return [entity.getStyle().fontWeight, entity.getStyle().fontStyle].join(' ');
               },

@@ -31,12 +31,14 @@ function create({ app }) {
   app.plugins.push(
     Plugin.create({
       icon    : 'cursor',
+      name    : 'pointer tool',
       id      : 'pointerTool',
       type    : 'previewTool',
       tool    : pointerTool
     }),
     Plugin.create({
       icon    : 'text',
+      name    : 'text tool',
       id      : 'textTool',
       type    : 'previewTool',
       tool    : textTool
