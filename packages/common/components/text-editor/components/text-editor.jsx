@@ -125,6 +125,9 @@ class TextEditorComponent extends React.Component {
 
   onBlur(event) {
     this.setState({ focus: false });
+    if (this.props.onBlur) {
+      this.props.onBlur(event);
+    }
   }
 
   render() {

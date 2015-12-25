@@ -12,12 +12,23 @@ class TextToolComponent extends React.Component {
   }
 
   onKeyDown(event) {
+
+    // TODO - want to support newline characters at some point
     if (event.keyCode === 13) {
       event.preventDefault();
-      this.props.app.notifier.notify({
-        type: 'textEditComplete'
-      })
+      this._complete();
     }
+  }
+
+  onBlur(event) {
+    this._complete();
+  }
+
+  _complete() {
+    console.log('blur');
+    this.props.app.notifier.notify({
+      type: 'textEditComplete'
+    });
   }
 
   render() {
@@ -38,7 +49,13 @@ class TextToolComponent extends React.Component {
     delete inputStyle['top'];
 
     return <div style={style} className='reset-all m-text-tool'>
-      <TextInputComponent multiline={false} onKeyDown={this.onKeyDown.bind(this)} ref='input' style={inputStyle} reference={Reference.create(entity, 'value')} />
+      <TextInputComponent
+        multiline={false}
+        onKeyDown={this.onKeyDown.bind(this)}
+        onBlur={this.onBlur.bind(this)}
+        ref='input'
+        style={inputStyle}
+        reference={Reference.create(entity, 'value')} />
     </div>
   }
 }
