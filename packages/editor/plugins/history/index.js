@@ -2,7 +2,7 @@
 // cleaned up
 
 // TODO: diff history - reduce all data to figure out snapshot.
-// Use key frames to reduce diffing amount.
+// Use key frames to reduce diffing amount. (OR use JS-GIT for this)
 
 // Diff could also be dispatched across the network for realtime Shenanigans.
 

@@ -1,0 +1,14 @@
+@import 'editor/scss/variables';
+
+.m-typography-pane {
+  .m-radio-group {
+    & li {
+      text-align: center;
+      display: inline-block;
+      padding: $padding-0;
+      padding-top: $padding-0 + 1;
+      padding-bottom: 0px;
+      width: calc(100%/4);
+    }
+  }
+}

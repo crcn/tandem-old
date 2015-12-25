@@ -1,3 +1,4 @@
+import './typography.scss';
 
 import React from 'react';
 import StyleReference from 'common/reference/style';
@@ -5,6 +6,7 @@ import FontInputComponent from './font-input';
 import TextInputComponent from 'common/components/inputs/text-input';
 import UnitInputComponent from 'common/components/inputs/unit-input';
 import ColorInputComponent from 'common/components/inputs/color-picker';
+import { RadioGroupInputComponent, RadioGroupItemComponent } from 'common/components/inputs/radio-group';
 import SearchDropdownComponent from 'common/components/inputs/searchable-dropdown';
 
 import { ALL_FONTS, ALL_FONT_WEIGHTS, ALL_FONT_STYLES } from 'editor/plugin/queries';
@@ -85,7 +87,20 @@ class TypographyPaneComponent extends React.Component {
           </div>
           <div className='col-sm-6'>
             <label>Align</label>
-            <TextInputComponent reference={StyleReference.create(entity, 'textAlign')} />
+            <RadioGroupInputComponent reference={StyleReference.create(entity, 'textAlign')}>
+              <RadioGroupItemComponent value='left'>
+                <i className='s s-align-left'></i>
+              </RadioGroupItemComponent>
+              <RadioGroupItemComponent value='justify'>
+                <i className='s s-align-justify'></i>
+              </RadioGroupItemComponent>
+              <RadioGroupItemComponent value='center'>
+                <i className='s s-align-center'></i>
+              </RadioGroupItemComponent>
+              <RadioGroupItemComponent value='right'>
+                <i className='s s-align-right'></i>
+              </RadioGroupItemComponent>
+            </RadioGroupInputComponent>
           </div>
         </div>
       </div>
@@ -93,4 +108,5 @@ class TypographyPaneComponent extends React.Component {
     </div>;
   }
 }
+
 export default TypographyPaneComponent;
