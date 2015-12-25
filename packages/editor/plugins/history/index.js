@@ -10,6 +10,9 @@ import sift from 'sift';
 import debounce from 'lodash/function/debounce';
 import HistorySliderComponent from './components/slider';
 
+// used for history. See this: https://github.com/creationix/js-git
+// import createMemDb from 'js-git/mixins/mem-db';
+
 import ObservableCollection from 'common/collection/observable';
 import { CallbackNotifier, TypeNotifier } from 'common/notifiers';
 
@@ -32,6 +35,7 @@ export default ApplicationPlugin.create({
 });
 
 function create({ app }) {
+
 
   var history = ObservableCollection.create({
     notifier: app.notifier

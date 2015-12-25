@@ -14,9 +14,11 @@ class ReactEntityComputer extends DisplayEntityComputer {
   setPositionFromAbsolutePoint(point) {
     var entStyle = this.getStyle();
 
+    // absolute positions are always in pixels - always round
+    // to the nearest one
     var newStyle = translateStyle({
-      left: point.left,
-      top: point.top
+      left: Math.round(point.left),
+      top: Math.round(point.top)
     }, this.entity.getStyle(), this.getDisplayElement());
 
     this.entity.setStyle(newStyle);

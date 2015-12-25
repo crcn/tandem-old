@@ -22,8 +22,8 @@ class ResizerComponent extends React.Component {
 
     startDrag(event, (event, info) => {
       focus.setPositionFromFixedPoint({
-        left: sx2 + info.delta.x,
-        top: sy2 + info.delta.y
+        left: Math.round(sx2 + info.delta.x),
+        top: Math.round(sy2 + info.delta.y)
       });
     });
   }

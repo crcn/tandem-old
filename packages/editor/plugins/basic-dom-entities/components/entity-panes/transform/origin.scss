@@ -1,0 +1,19 @@
+@import 'editor/scss/variables';
+
+.m-origin {
+  &--border {
+    stroke: $color-white-offset-8;
+    fill: transparent;
+  }
+
+  &--box {
+    fill: $color-white-offset-8;
+    stroke: $color-white-offset-8;
+    cursor: pointer;
+
+    &.selected {
+      fill: $color-sky-blue-4;
+      stroke: $color-sky-blue-4;
+    }
+  }
+}
