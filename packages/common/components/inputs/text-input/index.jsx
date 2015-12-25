@@ -24,6 +24,9 @@ class TextInputComponent extends React.Component {
 
     var style = {
       overflow: 'hidden',
+
+      // fix height change with overflow
+      verticalAlign: 'bottom',
       whiteSpace: this.props.multiline ? void 0 : 'nowrap'
     };
 

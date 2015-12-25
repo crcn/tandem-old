@@ -56,7 +56,7 @@ class TypographyPaneComponent extends React.Component {
       <div className='container'>
         <div className='row'>
           <div className='col-sm-6'>
-            <label>Family</label>
+            <label>Font</label>
             <FontInputComponent entity={entity} fonts={fonts} />
           </div>
           <div className='col-sm-6'>
