@@ -1,7 +1,7 @@
 import './index.scss';
 import React from 'react';
-import UnitInputComponent from 'common/components/inputs/unit-input';
 import StyleReference from 'common/reference/style';
+import UnitInputComponent from 'common/components/inputs/unit-input';
 import ScrollableLabelInput from 'common/components/inputs/scrollable-label-input'
 
 class TransformPaneComponent extends React.Component {

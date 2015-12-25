@@ -15,6 +15,12 @@
     margin-bottom: $padding-2;
   }
 
+  .input {
+    & .m-text-editor--highlight {
+      background-color: $color-white-offset-1;
+    }
+  }
+
   &--content {
 
     color: $color-white-offset-8;

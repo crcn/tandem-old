@@ -103,6 +103,10 @@ class TextEditorComponent extends React.Component {
     }
   }
 
+  focus() {
+    this.refs.editor.focus();
+  }
+
   onFocus(event) {
     this.setState({ focus: true });
     if (this.props.onFocus) {
@@ -112,6 +116,10 @@ class TextEditorComponent extends React.Component {
 
   setSelection(start, length) {
     this.getEditor().marker.setSelection(start, length);
+  }
+
+  select() {
+    this.setSelection(0, Infinity);
   }
 
   onBlur(event) {

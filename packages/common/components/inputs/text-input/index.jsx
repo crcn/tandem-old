@@ -8,6 +8,12 @@ class TextInputComponent extends React.Component {
   setSelection(...args) {
     this.refs.editor.setSelection(...args);
   }
+  select() {
+    this.setSelection(0, Infinity);
+  }
+  focus() {
+    this.refs.editor.focus();
+  }
   onFocus() {
     if (this.props.selectAllOnFocus) {
       this.setSelection(0, Infinity);
@@ -27,6 +33,7 @@ class TextInputComponent extends React.Component {
       source={value}
       onFocus={this.onFocus.bind(this)}
       onChange={this.onInput.bind(this)}
+      data-mouse-trap={false}
       style={Object.assign(style, this.props.style || {})}
       className={['input', this.props.className].join(' ') } />
   }

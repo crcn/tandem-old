@@ -1,20 +1,20 @@
 import {
-  ApplicationPlugin,
-  EntityPlugin,
-  EntityPaneComponentPlugin,
-  EntityLayerLabelComponentPlugin,
-  ComponentPlugin,
   Plugin,
-  KeyCommandPlugin
+  EntityPlugin,
+  ComponentPlugin,
+  KeyCommandPlugin,
+  ApplicationPlugin,
+  EntityPaneComponentPlugin,
+  EntityLayerLabelComponentPlugin
 } from 'editor/plugin/types';
 
 import HTMLEntityComponent from './components/preview';
 import { CallbackNotifier } from 'common/notifiers';
-import { TextEntity, ElementEntity, RootEntity } from './entities';
 import TransformPaneComponent from './components/entity-panes/transform';
 import TypographyPaneComponent from './components/entity-panes/typography';
 import AppearancePaneComponent from './components/entity-panes/appearance';
 import TextLayerLabelComponent from './components/entity-layer-labels/text';
+import { TextEntity, ElementEntity, RootEntity } from './entities';
 
 export default ApplicationPlugin.create({
   id: 'basicDOMEntities',
@@ -25,7 +25,6 @@ export default ApplicationPlugin.create({
     }
   }
 });
-
 
 function registerEntities(app) {
   app.plugins.push(

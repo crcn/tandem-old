@@ -1,5 +1,6 @@
 .m-text-editor {
 
+
   position: relative;
   // background-color: rgba(0,0,0,0.05);
   display: inline-block;
@@ -22,7 +23,10 @@
   }
 
   &--token {
+
     display: inline-block;
+    user-select: none;
+
     &-space {
       position: relative;
     }

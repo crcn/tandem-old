@@ -1,9 +1,7 @@
 import FontPlugin from './font';
 import { ApplicationPlugin } from 'editor/plugin/types';
 
-
 // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight
-
 const DEFAULT_WEIGHTS = [
   100, // Thin
   200, // Extra Light

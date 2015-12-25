@@ -1,8 +1,9 @@
 import { DisplayEntityComputer } from 'editor/entities';
+
 import {
   calculateZoom,
-  translateLength as translateCSSLength,
-  translateStyle
+  translateStyle,
+  translateLength as translateCSSLength
 } from 'common/utils/html/css';
 
 class ReactEntityComputer extends DisplayEntityComputer {
@@ -39,6 +40,8 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var props = { ...bounds };
     for (var k in bounds) {
       if (entStyle[k] == void 0) continue;
+
+      // TODO - want to use translateStyle here instead
       props[k] = translateCSSLength(
         absStyle[k],
         entStyle[k],

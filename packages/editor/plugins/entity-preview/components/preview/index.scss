@@ -6,4 +6,8 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+
+  // prevents user selection when double clicking on text element
+  // to edit it
+  -webkit-user-select: none;
 }

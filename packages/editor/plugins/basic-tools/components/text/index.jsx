@@ -1,10 +1,25 @@
 import './index.scss';
 
 import React from 'react';
-import TextInputComponent from 'common/components/inputs/text-input';
 import Reference from 'common/reference';
+import TextInputComponent from 'common/components/inputs/text-input';
 
 class TextToolComponent extends React.Component {
+
+  componentDidMount() {
+    this.refs.input.focus();
+    this.refs.input.select();
+  }
+
+  onKeyDown(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      this.props.app.notifier.notify({
+        type: 'textEditComplete'
+      })
+    }
+  }
+
   render() {
     var entity = this.props.entity;
     var zoom   = this.props.zoom;
@@ -23,7 +38,7 @@ class TextToolComponent extends React.Component {
     delete inputStyle['top'];
 
     return <div style={style} className='reset-all m-text-tool'>
-      <TextInputComponent style={inputStyle} reference={Reference.create(entity, 'value')} />
+      <TextInputComponent onKeyDown={this.onKeyDown.bind(this)} ref='input' style={inputStyle} reference={Reference.create(entity, 'value')} />
     </div>
   }
 }

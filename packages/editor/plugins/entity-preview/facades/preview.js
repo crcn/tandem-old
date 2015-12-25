@@ -1,4 +1,5 @@
 import ObservableObject from 'common/object/observable';
+import { SET_TOOL, ENTITY_PREVIEW_CLICK } from 'editor/message-types';
 
 const MIN_ZOOM_LEVEL = 0.4;
 const MAX_ZOOM_LEVEL = 2;
@@ -15,6 +16,15 @@ class Preview extends ObservableObject {
   }
   zoomOut() {
     this.setProperties({ zoom: Math.max(this.zoom - ZOOM_INCREMENT, MIN_ZOOM_LEVEL) });
+  }
+  notify(message) {
+    if (message.type === SET_TOOL) {
+      this.setTool(message.tool);
+    } else {  
+      if (this.currentTool) {
+        this.currentTool.notify(message);
+      }
+    }
   }
 }
 

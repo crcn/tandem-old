@@ -1,9 +1,9 @@
+import traverse from 'traverse';
 import { PASTE } from 'editor/message-types';
-import { deserialize as deserializeEntity } from 'editor/entities';
+import { getValue } from 'common/utils/object';
 import { TypeNotifier } from 'common/notifiers';
 import { ApplicationPlugin } from 'editor/plugin/types';
-import { getValue } from 'common/utils/object';
-import traverse from 'traverse';
+import { deserialize as deserializeEntity } from 'editor/entities';
 
 export default ApplicationPlugin.create({
   id: 'clipboardPasteEntity',
@@ -34,7 +34,7 @@ function create({ app }) {
 
     // clone it!
     var entity = deserializeEntity(message.data, { }, app.plugins);
-    
+
     var insertIndex;
     var parentEntity;
 

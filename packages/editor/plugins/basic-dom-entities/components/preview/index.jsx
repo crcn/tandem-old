@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import ReactEntityComputer from './entity-computer';
 
 class HTMLEntityComponent extends React.Component {
+
   setHook(entity) {
     entity.setComputer(ReactEntityComputer.create(entity, this));
   }

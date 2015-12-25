@@ -3,6 +3,7 @@ import './stage.scss';
 import React from 'react';
 import EntityComponent from './entity';
 import ToolsLayerComponent from './tools';
+import { ENTITY_PREVIEW_CLICK } from 'editor/message-types';
 
 class StageComponent extends React.Component {
 
@@ -17,18 +18,14 @@ class StageComponent extends React.Component {
     var x = (event.clientX - rect.left * this.props.app.preview.zoom) / this.props.app.preview.zoom;
     var y = (event.clientY - rect.top * this.props.app.preview.zoom) / this.props.app.preview.zoom;
 
-    this.props.app.preview.currentTool.notify({
-      type: 'click',
-      targetNode: this.props.app.rootEntity.find(
+    this.props.app.preview.notify({
+      type: ENTITY_PREVIEW_CLICK,
+      entity: this.props.app.rootEntity.find(
         sift({ id: nodeId })
       ),
       x: x,
       y: y
     });
-  }
-
-  onDoubleClick(event) {
-    // TODO
   }
 
   render() {
@@ -45,7 +42,7 @@ class StageComponent extends React.Component {
     };
 
     var previewStyle = {
-      cursor: preview.currentTool.cursor
+      cursor: preview.currentTool ? preview.currentTool.cursor : void 0
     };
 
     // TODO - canvas needs to have different types of layers
@@ -54,8 +51,8 @@ class StageComponent extends React.Component {
       <div className='m-preview-stage--inner'>
         <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle}>
 
-          <div id='preview-canvas' className='m-preview-stage--element-layer' onClick={this.onClick.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
-            <span ref='drawLayer' className='reset-all'>
+          <div id='preview-canvas' className='m-preview-stage--element-layer' onClick={this.onClick.bind(this)}>
+            <span ref='drawLayer' className='reset-all m-preview-stage--draw-layer'>
               <EntityComponent entity={app.rootEntity} app={app} />
             </span>
           </div>

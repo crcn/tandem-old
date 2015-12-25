@@ -1,5 +1,8 @@
 .m-text-tool {
   // margin: -1px;
+  * {
+    user-select: none;
+  }
   .m-text-editor {
     // padding: 1px;
   }

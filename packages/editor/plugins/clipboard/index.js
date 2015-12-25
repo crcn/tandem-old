@@ -3,8 +3,8 @@ import {
   KeyCommandPlugin
 } from 'editor/plugin/types';
 
-import { CallbackNotifier } from 'common/notifiers';
 import { PasteMessage } from 'editor/message-types';
+import { CallbackNotifier } from 'common/notifiers';
 
 export default ApplicationPlugin.create({
   id: 'clipboard',

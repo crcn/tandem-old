@@ -4,9 +4,10 @@ class RegisteredComponent extends React.Component {
   render() {
     var app = this.props.app;
     var entries = app.plugins.query(this.props.query);
-    var components = entries.map((plugin) => {
+    var components = entries.map((plugin, i) => {
       return plugin.factory.create({
         plugin: plugin,
+        key   : plugin.id,
         ...this.props
       });
     });

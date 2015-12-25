@@ -9,11 +9,14 @@ import SettingsPlugin from './plugins/settings';
 import ShortcutPlugin from './plugins/shortcuts';
 import ClipboardPlugin from './plugins/clipboard';
 import BasicFontPlugin from './plugins/basic-fonts';
+import BasicToolsPlugin from './plugins/basic-tools';
 import TestProjectPlugin from './plugins/test-project';
 import EntityPreviewPlugin from './plugins/entity-preview';
 import LoadRootEntityPlugin from './plugins/root-entity-loader';
 import ClipboardPasteEntity from './plugins/clipboard-paste-entity';
 import BasicDOMEntitiesPlugin from './plugins/basic-dom-entities';
+
+import { SET_FOCUS } from 'editor/message-types';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -27,6 +30,7 @@ class Application extends BaseApplication {
     SettingsPlugin,
     ClipboardPlugin,
     BasicFontPlugin,
+    BasicToolsPlugin,
     TestProjectPlugin,
     EntityPreviewPlugin,
     LoadRootEntityPlugin,
@@ -39,8 +43,15 @@ class Application extends BaseApplication {
     ReactDOM.render(rootComponentPlugin.factory.create({ app: app }), this.config.element);
   }
 
+  notify(message) {
+    if (message.type === SET_FOCUS) {
+      this.setFocus(message.target);
+    }
+  }
+
   /**
    * current focus of the app
+   * DEPRECATED - use focus message instead
    */
 
   setFocus(item) {

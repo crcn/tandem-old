@@ -2,8 +2,8 @@ import './index.scss';
 import 'editor/scss/fonts.scss';
 
 import React from 'react';
-import SidebarComponent from './sidebar';
 import CenterComponent from './center';
+import SidebarComponent from './sidebar';
 
 class MainComponent extends React.Component {
   render() {
@@ -21,11 +21,13 @@ class MainComponent extends React.Component {
       <SidebarComponent
         position='right'
         query={{
+          componentType: 'pane',
           paneType: 'entity',
           entity: focus
         }}
         entity={focus}
         {...this.props} />
+
     </div>;
   }
 }

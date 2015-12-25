@@ -16,7 +16,16 @@ class BaseApplication extends ObservableObject {
 
     // central communication object
     this.notifier = NotifierCollection.create();
+    this.notifier.push(this);
+
     this._usePlugins();
+  }
+
+  /**
+   */
+
+  notify(message) {
+    // OVERRIDE ME
   }
 
   /**

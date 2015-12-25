@@ -5,6 +5,7 @@ import { startDrag } from 'common/utils/component';
 import PathComponent from './path';
 import ObservableObject from 'common/object/observable';
 import CallbackNotifier from 'common/notifiers/callback';
+import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'editor/message-types';
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 3;
@@ -12,7 +13,7 @@ const PADDING            = 6;
 
 class ResizerComponent extends React.Component {
   startDragging(event) {
-    var focus = this.props.focus;
+    var focus = this.props.entity;
 
     var computer = focus.getComputer();
 
@@ -27,7 +28,7 @@ class ResizerComponent extends React.Component {
     });
   }
   updatePoint(point) {
-    var focus = this.props.focus;
+    var focus = this.props.entity;
     var zoom  = this.props.zoom;
 
     var style = focus.getComputedStyle();
@@ -60,12 +61,19 @@ class ResizerComponent extends React.Component {
     focus.getComputer().setBounds(props);
   }
 
+  onDoubleClick(event) {
+    this.props.app.notifier.notify({
+      type   : ENTITY_PREVIEW_DOUBLE_CLICK,
+      entity : this.props.entity
+    });
+  }
+
   render() {
 
     var pointRadius = (this.props.pointRadius || POINT_RADIUS) / this.props.zoom;
     var strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH) / this.props.zoom;
 
-    var focus = this.props.focus;
+    var focus = this.props.entity;
     var style = focus.getComputedStyle();
 
     var points = [
@@ -99,7 +107,7 @@ class ResizerComponent extends React.Component {
       top: style.top - cw / 2
     }
 
-    return <div className='m-resizer-component' style={style} onMouseDown={this.startDragging.bind(this)}>
+    return <div className='m-resizer-component' style={style} onMouseDown={this.startDragging.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
       <PathComponent points={points} strokeWidth={strokeWidth} pointRadius={pointRadius} showPoints={true} zoom={this.props.zoom}  />
     </div>;
   }

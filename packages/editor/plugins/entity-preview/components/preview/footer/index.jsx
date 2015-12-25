@@ -1,4 +1,5 @@
 import './index.scss';
+
 import React from 'react';
 import RegisteredComponent from 'common/components/registered';
 
