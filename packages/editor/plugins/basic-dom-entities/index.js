@@ -48,8 +48,25 @@ function registerEntities(app) {
     //   componentClass : TransformPaneComponent
     // }),
     EntityPaneComponentPlugin.create({
-      id             : 'stylePaneComponent',
-      label          : 'Style',
+      id             : 'transformPaneComponent',
+      label          : 'Transform',
+      styleType      : 'transform',
+      paneType       : 'entity',
+      entityType     : 'component',
+      componentClass : StylePaneComponent
+    }),
+    EntityPaneComponentPlugin.create({
+      id             : 'typographyPaneComponent',
+      label          : 'Typography',
+      styleType      : 'typography',
+      paneType       : 'entity',
+      entityType     : 'component',
+      componentClass : StylePaneComponent
+    }),
+    EntityPaneComponentPlugin.create({
+      id             : 'appearancePaneComponent',
+      label          : 'Appearance',
+      styleType      : 'appearance',
       paneType       : 'entity',
       entityType     : 'component',
       componentClass : StylePaneComponent
