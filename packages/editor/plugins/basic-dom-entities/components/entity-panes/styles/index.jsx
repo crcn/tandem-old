@@ -2,10 +2,11 @@ import './index.scss';
 
 import React from 'react';
 import StyleReference from 'common/reference/style';
+import FontInputComponent from './font-input';
 import TextInputComponent from 'common/components/inputs/text-input';
 import UnitInputComponent from 'common/components/inputs/unit-input';
 import ColorPickerComponent from 'common/components/inputs/color-picker';
-import FontInputComponent from './font-input';
+import { RadioGroupInputComponent, RadioGroupItemComponent } from 'common/components/inputs/radio-group';
 
 class StyleDeclarationComponent extends React.Component {
   render() {
@@ -29,22 +30,44 @@ class StyleDeclarationComponent extends React.Component {
 }
 
 var valueFactories = {
-  left: function(props) {
+  left(props) {
     return <UnitInputComponent {...props} />;
   },
-  top: function(props) {
+  top(props) {
     return <UnitInputComponent {...props} />;
   },
-  color: function(props) {
+  width(props) {
+    return <UnitInputComponent {...props} />;
+  },
+  height(props) {
+    return <UnitInputComponent {...props} />;
+  },
+  textAlign(props) {
+    return <RadioGroupInputComponent {...props}>
+      <RadioGroupItemComponent value='left'>
+        <i className='s s-align-left'></i>
+      </RadioGroupItemComponent>
+      <RadioGroupItemComponent value='justify'>
+        <i className='s s-align-justify'></i>
+      </RadioGroupItemComponent>
+      <RadioGroupItemComponent value='center'>
+        <i className='s s-align-center'></i>
+      </RadioGroupItemComponent>
+      <RadioGroupItemComponent value='right'>
+        <i className='s s-align-right'></i>
+      </RadioGroupItemComponent>
+    </RadioGroupInputComponent>;
+  },
+  color(props) {
     return <ColorPickerComponent className='input' {...props} />;
   },
-  fontFamily: function(props) {
+  fontFamily(props) {
     return <FontInputComponent {...props} />;
   },
-  fontSize: function(props) {
+  fontSize(props) {
     return <UnitInputComponent {...props} />;
   },
-  position: function(props) {
+  position(props) {
     return null;
   }
 }
@@ -55,7 +78,7 @@ var order = [
   'left', 'top', 'width', 'height', 'position',
 
   // typography
-  'fontFamily', 'fontSize', 'color'
+  'fontFamily', 'fontSize', 'textAlign', 'color'
 ];
 
 var labels = {

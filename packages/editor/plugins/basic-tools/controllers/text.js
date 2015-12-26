@@ -35,6 +35,7 @@ class TextTool extends BaseObject {
           color      : 'black',
           left       : Math.round(message.x) + 'px',
           fontSize   : '14px',
+          textAlign  : 'left',
           fontFamily : 'Helvetica',
 
           // offset cursor height

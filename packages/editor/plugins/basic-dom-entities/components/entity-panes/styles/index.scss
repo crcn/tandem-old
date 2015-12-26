@@ -3,14 +3,25 @@
 .m-styles-pane {
 
   & .input {
+
     padding: 0px;
     box-shadow: none;
     width: auto;
     height: auto;
+    background-color: rgba(0,0,0,0.2);
+    padding: $padding-00 $padding-1;
+    border-radius: $border-radius-1;
 
     &:focus {
-      box-shadow: none !important;
+      // box-shadow: none !important;
     }
+  }
+
+  & .m-color-picker-popdown {
+    background-color: transparent;
+    padding: 0px;
+    border-radius: $border-radius-1;
+    height: 16px;
   }
 
   & .focus {
@@ -18,12 +29,20 @@
   }
 
   &--declaration {
+    // padding: 0px $padding-2;
     padding: $padding-0 $padding-2;
+    // margin: $padding-1 0px;
+    position: relative;
+
+    // display: block;
+    // height: 30px;
     &-label {
       color: $color-white-offset-5;
     }
     &-value {
-      float: right;
+      position: absolute;
+      // height: 100%;
+      left: 50%;
     }
   }
 }

@@ -11,15 +11,18 @@
       border-bottom-left-radius: $border-radius-1;
     }
 
-    &:first-child {
+    &:last-child {
       border-top-right-radius: $border-radius-1;
       border-bottom-right-radius: $border-radius-1;
     }
 
+    font-size: $font-size-0;
+
     height: 100%;
     cursor: pointer;
+    line-height: 14px;
     display: inline-block;
-    padding: $padding-0;
+    padding: $padding-00 5px;
 
     &.selected {
       background-color: $color-sky-blue-3;
