@@ -10,6 +10,7 @@ import {
 
 import HTMLEntityComponent from './components/preview';
 import { CallbackNotifier } from 'common/notifiers';
+import StylePaneComponent from './components/entity-panes/styles';
 import TransformPaneComponent from './components/entity-panes/transform';
 import TypographyPaneComponent from './components/entity-panes/typography';
 import AppearancePaneComponent from './components/entity-panes/appearance';
@@ -39,27 +40,34 @@ function registerEntities(app) {
       id      : 'textEntity',
       factory : TextEntity
     }),
+    // EntityPaneComponentPlugin.create({
+    //   id             : 'transformPaneComponent',
+    //   label          : 'Transform',
+    //   paneType       : 'entity',
+    //   entityType     : 'component',
+    //   componentClass : TransformPaneComponent
+    // }),
     EntityPaneComponentPlugin.create({
-      id             : 'transformPaneComponent',
-      label          : 'Transform',
+      id             : 'stylePaneComponent',
+      label          : 'Style',
       paneType       : 'entity',
       entityType     : 'component',
-      componentClass : TransformPaneComponent
+      componentClass : StylePaneComponent
     }),
-    EntityPaneComponentPlugin.create({
-      id             : 'typographyPaneComponent',
-      label          : 'Typography',
-      paneType       : 'entity',
-      entityType     : 'component',
-      componentClass : TypographyPaneComponent
-    }),
-    EntityPaneComponentPlugin.create({
-      id             : 'appearancePaneComponent',
-      label          : 'Appearance',
-      paneType       : 'entity',
-      entityType     : 'component',
-      componentClass : AppearancePaneComponent
-    }),
+    // EntityPaneComponentPlugin.create({
+    //   id             : 'typographyPaneComponent',
+    //   label          : 'Typography',
+    //   paneType       : 'entity',
+    //   entityType     : 'component',
+    //   componentClass : TypographyPaneComponent
+    // }),
+    // EntityPaneComponentPlugin.create({
+    //   id             : 'appearancePaneComponent',
+    //   label          : 'Appearance',
+    //   paneType       : 'entity',
+    //   entityType     : 'component',
+    //   componentClass : AppearancePaneComponent
+    // }),
     EntityLayerLabelComponentPlugin.create({
       id             : 'textPaneLayerComponent',
       layerType      : 'text',

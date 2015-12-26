@@ -1,0 +1,25 @@
+@import 'editor/scss/variables';
+
+.m-styles-pane {
+
+  & .input {
+    padding: 0px;
+    box-shadow: none;
+    width: auto;
+    height: auto;
+    &:focus {
+      box-shadow: none !important;
+    }
+  }
+
+
+  &--declaration {
+    padding: $padding-0 $padding-2;
+    &-label {
+      color: $color-white-offset-5;
+    }
+    &-value {
+      float: right;
+    }
+  }
+}

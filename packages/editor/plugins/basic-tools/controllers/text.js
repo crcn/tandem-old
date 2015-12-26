@@ -32,6 +32,7 @@ class TextTool extends BaseObject {
       attributes: {
         style: {
           position   : 'absolute',
+          color      : 'black',
           left       : Math.round(message.x) + 'px',
           fontSize   : '14px',
           fontFamily : 'Helvetica',

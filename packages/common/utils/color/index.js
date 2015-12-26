@@ -17,7 +17,13 @@ export function hexColorToArray(value) {
   return [(integer >> 16) & 0xFF, (integer >> 8) & 0xFF, integer & 0xFF, 1];
 }
 
+// TODO - more color maps here to prevent errors
+var colorMap = {
+  'black': '#000000'
+};
+
 export function parseColor(value) {
+  if (colorMap[value]) return parseColor(colorMap[value]);
   if (value.substr(0, 3) === 'rgb') {
     return rgbaToArray(value);
   } else if(value.charAt(0) === '#') {
