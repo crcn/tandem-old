@@ -29,8 +29,8 @@ class TextLayerLabelComponent extends React.Component {
       onDoubleClick={this.editLabel.bind(this)}>
       <i className='s s-text' />
       {
-        this.state.edit               ?
-        this.renderInput() :
+        this.state.edit         ?
+        this.renderInput()      :
         this.props.entity.value
       }
     </span>;

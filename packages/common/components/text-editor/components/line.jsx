@@ -9,8 +9,6 @@ class LineComponent extends React.Component {
 
     var { left } = translateAbsoluteToRelativePoint(event, this.refs.line);
 
-    console.log(left);
-
     this.props.editor.caret.setPosition(
       line.getPosition() + this.props.editor.textRuler.convertPointToCharacterPosition(line.toString(), left)
     );

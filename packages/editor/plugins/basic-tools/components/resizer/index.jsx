@@ -8,7 +8,7 @@ import CallbackNotifier from 'common/notifiers/callback';
 import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'editor/message-types';
 
 const POINT_STROKE_WIDTH = 1;
-const POINT_RADIUS       = 3;
+const POINT_RADIUS       = 2;
 const PADDING            = 6;
 
 class ResizerComponent extends React.Component {
@@ -22,8 +22,8 @@ class ResizerComponent extends React.Component {
 
     startDrag(event, (event, info) => {
       focus.setPositionFromFixedPoint({
-        left: Math.round(sx2 + info.delta.x),
-        top: Math.round(sy2 + info.delta.y)
+        left: sx2 + info.delta.x,
+        top: sy2 + info.delta.y
       });
     });
   }

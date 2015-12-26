@@ -1,6 +1,7 @@
 @import 'editor/scss/variables';
 
-.m-origin {
+.m-origin-input {
+  height: 23px;
   &--border {
     stroke: $color-white-offset-8;
     fill: transparent;

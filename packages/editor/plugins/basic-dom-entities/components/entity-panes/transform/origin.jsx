@@ -32,12 +32,12 @@ class OriginInputComponent extends React.Component {
 
     return <div className='m-origin-input'>
       <svg width={s} height={s} viewBox={[0, 0, s + hs + os, s + os].join(' ')}>
-        <rect className='m-origin--border' x={hs} y={hs} width={s} height={s} />
+        <rect className='m-origin-input--border' x={hs} y={hs} width={s} height={s} />
         {
           boxes.map(({ x, y, selected }) => {
 
             var classNames = cx({
-              'm-origin--box' : true,
+              'm-origin-input--box' : true,
               'selected'      : selected
             });
 
