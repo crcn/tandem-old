@@ -1,5 +1,6 @@
 import 'bootstrap/css/bootstrap.css';
 import 'editor/scss/modules/all.scss';
+import 'ionicons/css/ionicons.css';
 
 import a11y from 'react-a11y';
 import React from 'react';

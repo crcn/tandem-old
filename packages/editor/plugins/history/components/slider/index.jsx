@@ -3,6 +3,7 @@ import './index.scss';
 import React from 'react';
 import SliderComponent from 'react-slider';
 
+// TODO - slider button should be clock that turns as it is scrubbed.
 class HistorySliderComponent extends React.Component {
 
   onSliderChange(value) {
