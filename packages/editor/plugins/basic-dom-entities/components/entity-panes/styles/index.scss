@@ -7,11 +7,15 @@
     box-shadow: none;
     width: auto;
     height: auto;
+
     &:focus {
       box-shadow: none !important;
     }
   }
 
+  & .focus {
+    box-shadow: none !important;
+  }
 
   &--declaration {
     padding: $padding-0 $padding-2;
