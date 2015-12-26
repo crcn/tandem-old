@@ -8,12 +8,16 @@
     box-shadow: none;
     width: auto;
     height: auto;
-    background-color: rgba(0,0,0,0.2);
-    padding: $padding-00 $padding-1;
-    border-radius: $border-radius-1;
+    // background-color: rgba(0,0,0,0.2);
+    padding: $padding-00 0;
+
+    & .m-text-editor--highlight {
+      // background-color: $color-sky-blue-4 !important;
+      background-color: rgba(255, 255, 255,0.2);
+    }
 
     &:focus {
-      // box-shadow: none !important;
+      box-shadow: none !important;
     }
   }
 
@@ -30,6 +34,7 @@
 
   &--declaration {
     // padding: 0px $padding-2;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     padding: $padding-0 $padding-2;
     // margin: $padding-1 0px;
     position: relative;

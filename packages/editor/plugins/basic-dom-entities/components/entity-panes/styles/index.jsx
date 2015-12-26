@@ -68,7 +68,7 @@ var valueFactories = {
     return <UnitInputComponent {...props} />;
   },
   position(props) {
-    return null;
+    return <TextInputComponent {...props} />;
   }
 }
 
