@@ -16,6 +16,10 @@ border, border-[side], border-[side]-color, border-[side]-width
 
 display, visibility
 
+combined props:
+
+text alignment
+
 */
 
 export default ApplicationPlugin.create({
@@ -27,4 +31,5 @@ export default ApplicationPlugin.create({
 
 function create({ app }) {
 
+  // DOM STYLES
 }

@@ -1,6 +1,6 @@
+import 'ionicons/css/ionicons.css';
 import 'bootstrap/css/bootstrap.css';
 import 'editor/scss/modules/all.scss';
-import 'ionicons/css/ionicons.css';
 
 import a11y from 'react-a11y';
 import React from 'react';
@@ -19,6 +19,7 @@ import BasicFontPlugin from './plugins/basic-fonts';
 import BasicToolsPlugin from './plugins/basic-tools';
 import TestProjectPlugin from './plugins/test-project';
 import EntityPreviewPlugin from './plugins/entity-preview';
+import BasicDOMStylesPlugin from './plugins/basic-dom-styles';
 import LoadRootEntityPlugin from './plugins/root-entity-loader';
 import ClipboardPasteEntity from './plugins/clipboard-paste-entity';
 import BasicDOMEntitiesPlugin from './plugins/basic-dom-entities';
