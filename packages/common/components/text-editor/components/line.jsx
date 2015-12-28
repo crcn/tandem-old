@@ -14,15 +14,10 @@ class LineComponent extends React.Component {
     );
   }
 
-  onDoubleClick(event) {
-
-  }
-
   render() {
     var line = this.props.line;
 
-    return <div ref='line' className='m-text-editor--line' onMouseDown={this.onClick.bind(this)}
-    onDoubleClick={this.onDoubleClick.bind(this)}>
+    return <div ref='line' className='m-text-editor--line' onMouseDown={this.onClick.bind(this)}>
       {
         line.tokens.length ? line.tokens.map((token, i) => {
           return <TokenComponent

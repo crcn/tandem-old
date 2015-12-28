@@ -9,14 +9,7 @@ class StyleDeclarationComponent extends React.Component {
     var entity   = this.props.entity;
     var property = this.props.property;
     var value    = this.props.value;
-
-    var plugin   = this.props.app.plugins.queryOne({
-      componentType : 'styleInput',
-      styleName     : property
-    }) || this.props.app.plugins.queryOne({
-      componentType : 'styleInput',
-      styleName     : void 0
-    });
+    var plugin   = this.props.plugin;
 
     return <div className='m-styles-pane--declaration'>
       <span className='m-styles-pane--declaration-label'>{property}</span> <span className='m-styles-pane--declaration-value'>{
@@ -30,46 +23,6 @@ class StyleDeclarationComponent extends React.Component {
   }
 }
 
-var order = [
-
-  // transform
-  'left', 'top', 'width', 'height', 'position',
-
-  // typography
-  'fontFamily', 'fontSize', 'textAlign', 'color'
-];
-
-var labels = {
-  'left'       : 'x',
-  'top'        : 'y',
-  'fontFamily' : 'Font',
-  'fontSize'   : 'Size',
-  'color'      : 'Color',
-  'textAlign'  : 'Alignment'
-};
-
-var categories = {
-  'left'       : 'transform',
-  'top'        : 'transform',
-  'width'      : 'transform',
-  'height'     : 'transform',
-  'fontFamily' : 'typography',
-  'fontSize'   : 'typography',
-  'color'      : 'typography',
-  'textAlign'  : 'typography'
-}
-
-var styleInfo = [
-  { property: 'left'   , label: 'x', category: 'Transform' },
-  { property: 'top'    , label: 'y', category: 'Transform' },
-  { property: 'width'  ,             category: 'Transform' },
-  { property: 'height' ,             category: 'Transform' },
-
-  { property: 'fontFamily' , label: 'Font'      , category: 'Typography'  },
-  { property: 'color'      , label: 'Color'     , category: 'Typography'  },
-  { property: 'textAlign'  , label: 'Alignment' , category: 'Typography'  }
-];
-
 class EntityStylesPaneComponent extends React.Component {
 
   render() {
@@ -82,9 +35,18 @@ class EntityStylesPaneComponent extends React.Component {
     var rows = [];
 
     for (var styleName in styles) {
-      var category = categories[styleName];
-      if (category !== plugin.styleType) continue;
+
+      var stylePlugin = this.props.app.plugins.queryOne({
+        componentType : 'styleInput',
+        styleName     : styleName
+      });
+
+      if (!stylePlugin || stylePlugin.styleType !== plugin.styleType) {
+        continue;
+      }
+
       rows.push(<StyleDeclarationComponent
+        plugin={stylePlugin}
         app={this.props.app}
         entity={entity}
         property={styleName}
@@ -93,7 +55,7 @@ class EntityStylesPaneComponent extends React.Component {
     }
 
     rows = rows.sort(function(a, b) {
-      return order.indexOf(a.props.property) > order.indexOf(b.props.property) ? 1 : -1;
+      return app.plugins.indexOf(a.props.plugin) > app.plugins.indexOf(b.props.plugin) ? 1 : -1;
     });
 
     return <div className='m-styles-pane'>

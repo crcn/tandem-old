@@ -48,13 +48,6 @@ function registerEntities(app) {
       id      : 'textEntity',
       factory : TextEntity
     }),
-    // EntityPaneComponentPlugin.create({
-    //   id             : 'transformPaneComponent',
-    //   label          : 'Transform',
-    //   paneType       : 'entity',
-    //   entityType     : 'component',
-    //   componentClass : TransformPaneComponent
-    // }),
     EntityPaneComponentPlugin.create({
       id             : 'transformPaneComponent',
       label          : 'Transform',
@@ -79,20 +72,6 @@ function registerEntities(app) {
       entityType     : 'component',
       componentClass : StylePaneComponent
     }),
-    // EntityPaneComponentPlugin.create({
-    //   id             : 'typographyPaneComponent',
-    //   label          : 'Typography',
-    //   paneType       : 'entity',
-    //   entityType     : 'component',
-    //   componentClass : TypographyPaneComponent
-    // }),
-    // EntityPaneComponentPlugin.create({
-    //   id             : 'appearancePaneComponent',
-    //   label          : 'Appearance',
-    //   paneType       : 'entity',
-    //   entityType     : 'component',
-    //   componentClass : AppearancePaneComponent
-    // }),
     EntityLayerLabelComponentPlugin.create({
       id             : 'textPaneLayerComponent',
       layerType      : 'text',
@@ -108,47 +87,43 @@ function registerEntities(app) {
   );
 }
 
+function createComponentStylePlugin(name, type, componentClass) {
+  return ComponentPlugin.create({
+    id             : name + 'StyleInputComponent',
+    componentType  : 'styleInput',
+    componentClass : componentClass,
+    styleName      : name,
+    styleType      : type
+  })
+}
+
 function registerStyleInputs(app) {
 
   var styleName;
 
-  for (styleName of ['left', 'top', 'width', 'height', 'fontSize']) {
-    app.plugins.push(
-      ComponentPlugin.create({
-        id             : styleName + 'StyleInputComponent',
-        componentType  : 'styleInput',
-        componentClass : UnitInputComponent,
-        styleName      : styleName
-      })
-    )
+  var inf = {
+    transform: [
+      [ 'left'   , UnitInputComponent ],
+      [ 'top'    , UnitInputComponent ],
+      [ 'width'  , UnitInputComponent ],
+      [ 'height' , UnitInputComponent ]
+    ],
+    typography: [
+      [ 'fontFamily' , FontInputComponent      ],
+      [ 'fontSize'   , UnitInputComponent      ],
+      [ 'textAlign'  , TextAlignInputComponent ],
+      [ 'color'      , ColorPickerComponent    ]
+    ],
+    appearance: [
+      [ 'background', UnitInputComponent ]
+    ]
   }
 
-  app.plugins.push(
-    ComponentPlugin.create({
-      id             : 'textAlignStyleInputComponent',
-      componentType  : 'styleInput',
-      componentClass : TextAlignInputComponent,
-      styleName      : 'textAlign'
-    })
-  )
-
-  app.plugins.push(
-    ComponentPlugin.create({
-      id             : 'fontFamilyStyleInputComponent',
-      componentType  : 'styleInput',
-      componentClass : FontInputComponent,
-      styleName      : 'fontFamily'
-    })
-  )
-
-  app.plugins.push(
-    ComponentPlugin.create({
-      id             : 'fontColorStyleInputComponent',
-      componentType  : 'styleInput',
-      componentClass : ColorPickerComponent,
-      styleName      : 'color'
-    })
-  )
+  for (var type in inf) {
+    for (var [styleName, componentClass] of inf[type]) {
+      app.plugins.push(createComponentStylePlugin(styleName, type, componentClass));
+    }
+  }
 
   // default style input
   app.plugins.push(

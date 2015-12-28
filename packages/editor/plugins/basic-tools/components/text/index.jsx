@@ -46,6 +46,7 @@ class TextToolComponent extends React.Component {
     delete inputStyle['position'];
     delete inputStyle['left'];
     delete inputStyle['top'];
+    delete inputStyle['background'];
 
     return <div style={style} className='reset-all m-text-tool'>
       <TextInputComponent
