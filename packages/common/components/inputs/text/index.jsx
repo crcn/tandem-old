@@ -19,6 +19,9 @@ class TextInputComponent extends React.Component {
       this.setSelection(0, Infinity);
     }
   }
+  shouldComponentUpdate(props) {
+    return props.reference.getValue() !== this.refs.editor.source;
+  }
   render() {
     var value = this.props.reference.getValue();
 
