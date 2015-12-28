@@ -79,6 +79,10 @@ function registerStyleInputs(app) {
   var styleName;
 
   var inf = {
+    layout: [
+      [ 'display'  , TextInputComponent ],
+      [ 'position' , TextInputComponent ]
+    ],
     transform: [
       [ 'left'   , UnitInputComponent ],
       [ 'top'    , UnitInputComponent ],
@@ -102,7 +106,6 @@ function registerStyleInputs(app) {
     for (var [styleName, componentClass] of inf[type]) {
       app.plugins.push(createComponentStylePlugin(styleName, type, componentClass));
     }
-
 
     app.plugins.push(
       EntityPaneComponentPlugin.create({
