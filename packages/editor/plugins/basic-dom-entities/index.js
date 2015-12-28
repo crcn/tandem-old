@@ -81,23 +81,54 @@ function registerStyleInputs(app) {
   var inf = {
     layout: [
       [ 'display'  , TextInputComponent ],
-      [ 'position' , TextInputComponent ]
+      [ 'position' , TextInputComponent ],
+
+      // drop menu of options ere
+      [ 'float'        , TextInputComponent ],
+
+      [ 'margin'       , TextInputComponent ],
+      [ 'marginLeft'   , TextInputComponent ],
+      [ 'marginTop'    , TextInputComponent ],
+      [ 'marginRight'  , TextInputComponent ],
+      [ 'marginBottom' , TextInputComponent ],
+
+      [ 'padding'       , TextInputComponent ],
+      [ 'paddingLeft'   , TextInputComponent ],
+      [ 'paddingTop'    , TextInputComponent ],
+      [ 'paddingRight'  , TextInputComponent ],
+      [ 'paddingBottom' , TextInputComponent ]
     ],
     transform: [
+
+      // need to display warning if position is static
       [ 'left'   , UnitInputComponent ],
       [ 'top'    , UnitInputComponent ],
       [ 'width'  , UnitInputComponent ],
-      [ 'height' , UnitInputComponent ]
+      [ 'height' , UnitInputComponent ],
+
+      // css3
+      [ 'transform', TextInputComponent ]
     ],
     typography: [
-      [ 'fontFamily' , FontInputComponent      ],
-      [ 'fontSize'   , UnitInputComponent      ],
-      [ 'textAlign'  , TextAlignInputComponent ],
+      [ 'fontFamily'     , FontInputComponent      ],
+      [ 'fontSize'       , UnitInputComponent      ],
+      [ 'fontWeight'     , TextInputComponent      ],
+      [ 'textDecoration' , TextInputComponent      ],
+      [ 'textAlign'      , TextAlignInputComponent ],
+
+      // drop menu here
+      [ 'textOverflow'  , TextInputComponent   ],
       [ 'color'      , ColorPickerComponent    ]
     ],
     appearance: [
       [ 'background'   , BackgroundInputComponent ],
-      [ 'borderRadius' , UnitInputComponent       ]
+      [ 'borderRadius' , UnitInputComponent       ],
+
+      // TODO - box shadow component here
+      [ 'boxShadow'    , TextInputComponent       ],
+
+      // TODO - slider component from 0 - 100
+      [ 'opacity'      , UnitInputComponent       ]
     ]
   }
 
