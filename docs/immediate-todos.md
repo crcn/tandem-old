@@ -2,3 +2,5 @@
 - [ ] rotation tool
 - [ ] background fill
 - [ ] filters
+- [ ] move to front / back / forward
+- [ ] distance tool
