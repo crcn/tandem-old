@@ -2,6 +2,18 @@
 
 .m-styles-pane {
 
+  &--label {
+    display: inline-block;
+    width: 100%;
+  }
+
+  &--add-style {
+    display: inline-block;
+    float: right;
+    opacity: 0.3;
+    cursor: pointer;
+  }
+
   & .input {
 
     padding: 0px;
@@ -38,6 +50,10 @@
     padding: $padding-0 $padding-2;
     // margin: $padding-1 0px;
     position: relative;
+
+    &:last-child {
+      border-bottom: none;
+    }
 
     // display: block;
     // height: 30px;

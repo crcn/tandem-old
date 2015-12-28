@@ -4,7 +4,7 @@ import cx from 'classnames';
 import React from 'react';
 import Reference from 'common/reference';
 import SideDragger from 'common/components/side-dragger';
-import PaneContainerComponent from './pane-container';
+import RegisteredComponent from 'common/components/registered';
 
 /**
 * Right sidebar tools
@@ -24,11 +24,7 @@ class SidebarComponent extends React.Component {
 
     return <div style={style} className={['m-sidebar', this.props.position].join(' ')}>
 
-      {
-        this.props.app.plugins.query(this.props.query).map((plugin) => {
-          return <PaneContainerComponent plugin={plugin} key={plugin.id} {...this.props} />
-        })
-      }
+      <RegisteredComponent {...this.props} />
 
       <SideDragger {...this.props} reference={sidebarWidthReference} position={this.props.position == 'left' ? 'right' : 'left'} />
     </div>;

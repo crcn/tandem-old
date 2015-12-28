@@ -2,6 +2,7 @@ import './index.scss';
 
 import React from 'react';
 import StyleReference from 'common/reference/style';
+import PaneComponent from 'common/components/pane';
 
 class StyleDeclarationComponent extends React.Component {
   removeDeclaration() {
@@ -33,6 +34,12 @@ class StyleDeclarationComponent extends React.Component {
 }
 
 class EntityStylesPaneComponent extends React.Component {
+
+  addStyle() {
+    this.props.entity.setStyle({
+      [prompt('style name')]: prompt('value')
+    })
+  }
 
   render() {
 
@@ -66,9 +73,18 @@ class EntityStylesPaneComponent extends React.Component {
       return app.plugins.indexOf(a.props.plugin) > app.plugins.indexOf(b.props.plugin) ? 1 : -1;
     });
 
-    return <div className='m-styles-pane'>
-      { rows }
-    </div>;
+    var label = <span className='m-styles-pane--label'>
+      { this.props.plugin.label }
+      <span className='m-styles-pane--add-style' onClick={this.addStyle.bind(this)}>
+        +
+      </span>
+    </span>;
+
+    return <PaneComponent label={label}>
+      <div className='m-styles-pane'>
+        { rows }
+      </div>
+    </PaneComponent>;
   }
 }
 
