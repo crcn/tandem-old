@@ -86,17 +86,17 @@ function registerStyleInputs(app) {
       // drop menu of options ere
       [ 'float'        , TextInputComponent ],
 
-      [ 'margin'       , TextInputComponent ],
-      [ 'marginLeft'   , TextInputComponent ],
-      [ 'marginTop'    , TextInputComponent ],
-      [ 'marginRight'  , TextInputComponent ],
-      [ 'marginBottom' , TextInputComponent ],
+      [ 'margin'       , UnitInputComponent ],
+      [ 'marginLeft'   , UnitInputComponent ],
+      [ 'marginTop'    , UnitInputComponent ],
+      [ 'marginRight'  , UnitInputComponent ],
+      [ 'marginBottom' , UnitInputComponent ],
 
-      [ 'padding'       , TextInputComponent ],
-      [ 'paddingLeft'   , TextInputComponent ],
-      [ 'paddingTop'    , TextInputComponent ],
-      [ 'paddingRight'  , TextInputComponent ],
-      [ 'paddingBottom' , TextInputComponent ]
+      [ 'padding'       , UnitInputComponent ],
+      [ 'paddingLeft'   , UnitInputComponent ],
+      [ 'paddingTop'    , UnitInputComponent ],
+      [ 'paddingRight'  , UnitInputComponent ],
+      [ 'paddingBottom' , UnitInputComponent ]
     ],
     transform: [
 
@@ -112,7 +112,12 @@ function registerStyleInputs(app) {
     typography: [
       [ 'fontFamily'     , FontInputComponent      ],
       [ 'fontSize'       , UnitInputComponent      ],
+
+      // http://www.w3schools.com/cssref/pr_font_font-style.asp
+      [ 'fontStyle'      , TextInputComponent      ],
       [ 'fontWeight'     , TextInputComponent      ],
+
+      // http://www.w3schools.com/cssref/pr_text_text-decoration.asp
       [ 'textDecoration' , TextInputComponent      ],
       [ 'textAlign'      , TextAlignInputComponent ],
       [ 'wordWrap'       , TextInputComponent      ],

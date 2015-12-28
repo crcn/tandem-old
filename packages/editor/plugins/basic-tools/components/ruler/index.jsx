@@ -6,6 +6,10 @@ import React from 'react';
 
 // TODO - ability to see ALL measurements between elements
 
+function calculateIntersectingDistances(entity, allEntities) {
+  
+}
+
 function calculateDistances(rootEntity) {
   var visualElements = rootEntity.flatten().filter(function(entity) {
     return entity.type === 'component';

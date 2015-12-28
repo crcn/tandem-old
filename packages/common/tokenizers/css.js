@@ -57,7 +57,6 @@ class CSSTokenizer extends BaseObject {
         continue;
       }
 
-
       if (addToken(/^\#\w{1,6}/, 'color')) continue;
       if (addToken(/^\w+(\-\w+)?/, 'reference')) continue;
       if (addToken(/^\u0020+/, SPACE)) continue;
