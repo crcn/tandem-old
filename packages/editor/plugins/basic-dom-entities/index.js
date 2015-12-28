@@ -115,6 +115,7 @@ function registerStyleInputs(app) {
       [ 'fontWeight'     , TextInputComponent      ],
       [ 'textDecoration' , TextInputComponent      ],
       [ 'textAlign'      , TextAlignInputComponent ],
+      [ 'wordWrap'       , TextInputComponent      ],
 
       // drop menu here
       [ 'textOverflow'  , TextInputComponent   ],
@@ -128,7 +129,13 @@ function registerStyleInputs(app) {
       [ 'boxShadow'    , TextInputComponent       ],
 
       // TODO - slider component from 0 - 100
-      [ 'opacity'      , UnitInputComponent       ]
+      [ 'opacity'      , UnitInputComponent       ],
+
+      [ 'border'       , TextInputComponent       ],
+      [ 'borderLeft'   , TextInputComponent       ],
+      [ 'borderTop'    , TextInputComponent       ],
+      [ 'borderRight'  , TextInputComponent       ],
+      [ 'borderBottom' , TextInputComponent       ]
     ]
   }
 

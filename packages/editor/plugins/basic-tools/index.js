@@ -83,7 +83,8 @@ function create({ app }) {
       id             : 'rulerToolComponent',
       componentClass : RulerToolComponent,
       matchesQuery   : function({ entity, tool }) {
-        return entity && tool;
+        return true;
+        // return entity && tool instanceof PointerTool;
       }
     }),
     ComponentPlugin.create({

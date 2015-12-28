@@ -34,6 +34,7 @@ class RulerToolComponent extends React.Component {
     calculateDistances(root);
 
     return <div className='m-ruler-tool'>
+      RULER
     </div>
   }
 }
