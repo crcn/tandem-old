@@ -3,7 +3,7 @@ import { create } from 'common/utils/class';
 class Scanner {
 
   constructor(source) {
-    this.source   = source;
+    this.source   = source == void 0 ? '' : String(source);
     this.position = 0;
   }
 

@@ -75,7 +75,7 @@ function getInnerElementBounds(element) {
 
 function translateLengthToInteger(length) {
   if (length === '') return 0;
-  return CSSParser.parse(CSSTokenizer.tokenize(String(length)), astFactory).solveX({});
+  return CSSParser.parse(CSSTokenizer.tokenize(length), astFactory).solveX({});
 }
 
 var astFactory = {

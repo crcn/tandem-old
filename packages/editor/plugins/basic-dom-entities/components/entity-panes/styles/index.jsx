@@ -4,21 +4,25 @@ import React from 'react';
 import StyleReference from 'common/reference/style';
 
 class StyleDeclarationComponent extends React.Component {
+  removeDeclaration() {
+    this.props.reference.setValue(void 0);
+  }
   render() {
 
     var entity   = this.props.entity;
-    var property = this.props.property;
-    var value    = this.props.value;
     var plugin   = this.props.plugin;
 
     return <div className='m-styles-pane--declaration'>
-      <span className='m-styles-pane--declaration-label'>{property}</span> <span className='m-styles-pane--declaration-value'>{
+      <span className='m-styles-pane--declaration-label'>{this.props.reference.property}</span> <span className='m-styles-pane--declaration-value'>{
         plugin.factory.create({
           app       : this.props.app,
           entity    : entity,
-          reference : StyleReference.create(entity, property)
+          reference : this.props.reference
         })
       }</span>
+    <span className='declaration-remove' onClick={this.removeDeclaration.bind(this)}>
+        <i className='ion-close-circled'></i>
+      </span>
     </div>;
   }
 }
@@ -49,8 +53,7 @@ class EntityStylesPaneComponent extends React.Component {
         plugin={stylePlugin}
         app={this.props.app}
         entity={entity}
-        property={styleName}
-        value={styles[styleName]}
+        reference={StyleReference.create(entity, styleName)}
         key={styleName} />);
     }
 

@@ -56,6 +56,14 @@ class DisplayEntity extends Entity {
       properties
     );
 
+    // just remove it
+    for (var key in properties) {
+      var value = properties[key];
+      if (value == void 0) {
+        delete this.attributes.style[key];
+      }
+    }
+
     // FIXME - kind of nasty code here - breaks abstraction of change emittion
     // via setProperties. This chunk should be re-evaluated later on - okay for now.
     if (this.notifier) {
