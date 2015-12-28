@@ -31,7 +31,6 @@ A visual editor for creating modular & interactive components.
   - Ability to fork & PR designs
 - interoperability between rendering engines. E.g: svg + HTML depending on type of shaped being compiled.
 
-
 ### Pros
 
 - Can be eased into existing app
