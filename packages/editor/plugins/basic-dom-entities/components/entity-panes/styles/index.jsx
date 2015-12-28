@@ -12,8 +12,13 @@ class StyleDeclarationComponent extends React.Component {
     var entity   = this.props.entity;
     var plugin   = this.props.plugin;
 
+    // camelCase to Camel Case
+    var label = this.props.reference.property.split(/(?=[A-Z])/).map(function(word) {
+      return word.substr(0, 1).toUpperCase() + word.substr(1).toLowerCase();
+    }).join(' ');
+
     return <div className='m-styles-pane--declaration'>
-      <span className='m-styles-pane--declaration-label'>{this.props.reference.property}</span> <span className='m-styles-pane--declaration-value'>{
+      <span className='m-styles-pane--declaration-label'>{label}</span> <span className='m-styles-pane--declaration-value'>{
         plugin.factory.create({
           app       : this.props.app,
           entity    : entity,
@@ -21,7 +26,7 @@ class StyleDeclarationComponent extends React.Component {
         })
       }</span>
     <span className='declaration-remove' onClick={this.removeDeclaration.bind(this)}>
-        <i className='ion-close-circled'></i>
+        &times;
       </span>
     </div>;
   }
