@@ -45,6 +45,26 @@ describe(__filename + '#', function() {
       ['2', 'number'],
       ['-', 'operator'],
       ['2', 'number']
+    ]],
+    ['10deg', [
+      ['10', 'degree']
+    ]],
+    ['linear-gradient(to top, blue 50%, red)', [
+      ['linear-gradient', 'reference'],
+      ['(', 'leftParen'],
+      ['to', 'reference'],
+      [' ', 'space'],
+      ['top', 'reference'],
+      [',', 'comma'],
+      [' ', 'space'],
+      ['blue', 'reference'],
+      [' ', 'space'],
+      ['50', 'number'],
+      ['%', 'unit'],
+      [',', 'comma'],
+      [' ', 'space'],
+      ['red', 'reference'],
+      [')', 'rightParen']
     ]]
   ].forEach(function([source, matches]) {
     it('can tokenize ' + source, function() {

@@ -1,5 +1,6 @@
 import sift from 'sift';
 import CSSTokenizer from 'common/tokenizers/css';
+import CSSParser from 'common/parsers/css';
 
 var div = document.createElement('div')
 document.body.appendChild(div);
@@ -45,151 +46,6 @@ function findRelativeElement(element) {
   return relativeParent || document.body;
 }
 
-// TODO - possibly move this to another directory
-function parseLength(tokens, expressionFactory) {
-
-  if (!expressionFactory) {
-    expressionFactory = {
-      create: function(type, props) {
-        return { type: type, ...props };
-      }
-    };
-  }
-
-  // get tokens - remove all whitespace
-  tokens = tokens.filter(function(token) {
-    return !/^[\s\r\n\t]$/.test(token.value);
-  });
-
-  function nextToken() {
-    return tokens.shift();
-  }
-
-  function peekToken() {
-    return tokens[0];
-  }
-
-  function root() {
-    return operable();
-  }
-
-  function operable() {
-    return additive();
-  }
-
-  function operation(createLeft, createRight, operatorSearch) {
-    var left     = createLeft();
-    var operator = queryNextTokenValue(operatorSearch);
-    if (!operator) return left;
-    var right    = createRight();
-
-    var op = expressionFactory.create('operation', {
-      left: left,
-      operator: operator.value,
-      right: right
-    });
-
-    // TODO - this is kind of nast - swapping around the AST
-    // like this - primarily since custom expressions are created *before* this happens. One possibly fix for this might be to create the AST first, then instantiate the custom expressions after that.
-
-    if (!right.left) return op;
-
-    var rleft  = right.left;
-    right.left = op;
-    op.right   = rleft;
-    return right;
-  }
-
-  function additive() {
-    return operation(multiplicative, additive, /\+|\-/);
-  }
-
-  function type(type) {
-    var token = peekToken();
-    if (token.type === type) {
-      return nextToken();
-    }
-  }
-
-  function queryNextTokenValue(query) {
-    var token = peekToken();
-    if (sift({ value: query })(token)) return nextToken();
-  }
-
-  function multiplicative() {
-    return operation(expression, multiplicative, /\/|\*/);
-  }
-
-  function expression() {
-    var token = peekToken();
-    switch(token.type) {
-      case 'number': return length();
-      case 'reference': return reference();
-    }
-  }
-
-  function eat() {
-    nextToken();
-    return expression();
-  }
-
-  function reference() {
-    var reference = nextToken();
-    var token = peekToken();
-    if (token.value === '(') {
-      return expressionFactory.create('call', {
-        name   : reference.value,
-        params : params()
-      })
-    }
-  }
-
-  function params() {
-    nextToken(); // eat (
-    var current;
-    var params = [];
-
-    while(!eof()) {
-      if (peekToken().value === ')') {
-        nextToken();
-        break;
-      }
-      params.push(operable());
-      nextToken(); // eat param or space
-    }
-
-    return params;
-  }
-
-  function eof() {
-    return tokens.length === 0;
-  }
-
-  function length() {
-    var number = nextToken();
-    var unit;
-
-    if (hasNextToken('unit')) {
-      unit = nextToken().value;
-
-    // value is given but not recoginized as a unit. SHow a warning
-    } else if (hasNextToken('reference')) {
-      console.warn('unit %s is not recognized as a unit. Cannot be used!', nextToken().value);
-    }
-
-    return expressionFactory.create('length', {
-      value : number.value,
-      unit  : unit || 'px'
-    })
-  }
-
-  function hasNextToken(type) {
-    var nt = peekToken();
-    return nt && nt.type === type;
-  }
-
-  return root();
-}
 
 function translateToScaleProperty(property) {
   if (/left|right|width/.test(property)) return 'width';
@@ -219,7 +75,7 @@ function getInnerElementBounds(element) {
 
 function translateLengthToInteger(length) {
   if (length === '') return 0;
-  return parseLength(CSSTokenizer.tokenize(String(length)), astFactory).solveX({});
+  return CSSParser.parse(CSSTokenizer.tokenize(String(length)), astFactory).solveX({});
 }
 
 var astFactory = {
@@ -374,7 +230,7 @@ function translate(fromStyle, toStyle, element) {
     }
 
     // parse into the AST
-    var ast = parseLength(tokens, astFactory);
+    var ast = CSSParser.parse(tokens, astFactory);
 
     // take the fromValue and solveX - thus converting fromValue -> value
     firstNumber.value = Number(ast.solveX({

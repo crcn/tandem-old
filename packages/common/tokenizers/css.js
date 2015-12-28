@@ -2,6 +2,9 @@ import BaseObject from 'common/object/base';
 import Scanner from './scanner';
 import createToken from './create-token';
 
+// linear-gradient(45deg, blue, red)
+// linear-gradient(to left top, blue, red);
+// linear-gradient(0deg, blue, green 40%, red);
 import {
   TEXT,
   SPACE,
@@ -10,14 +13,16 @@ import {
   COLON,
   LEFT_PAREN,
   RIGHT_PAREN,
-  OPERATOR
+  OPERATOR,
+  COMMA
 } from './token-types';
 
 var tokenMap = {
   '.': DOT,
   ':': COLON,
   '(': LEFT_PAREN,
-  ')': RIGHT_PAREN
+  ')': RIGHT_PAREN,
+  ',': COMMA
 };
 
 class CSSTokenizer extends BaseObject {
@@ -39,20 +44,26 @@ class CSSTokenizer extends BaseObject {
 
     while(!scanner.hasTerminated()) {
 
-      if (addToken(/^((\.\d+)|(\d)+(\.\d+)?)/, 'number')) {
+      var number = scanner.scan(/^((\.\d+)|(\d)+(\.\d+)?)/);
 
-        // http://www.w3schools.com/cssref/css_units.asp
-        addToken(/^(em|ex|%|px|cm|mm|in|pt|pc|ch|rem|vh|vw|vmin|vmax)/, 'unit');
-
-        // in case we get something like 2-2 (without spaces)
-        // addOperator();
+      if (number) {
+        if (scanner.scan(/^deg/)) {
+          tokens.push(createToken(number, 'degree'));
+        } else {
+          tokens.push(createToken(number, 'number'));
+          // http://www.w3schools.com/cssref/css_units.asp
+          addToken(/^(em|ex|%|px|cm|mm|in|pt|pc|ch|rem|vh|vw|vmin|vmax)/, 'unit');
+        }
         continue;
       }
 
-      if (addToken(/^\w+/, 'reference')) continue;
+
+      if (addToken(/^\#\w{1,6}/, 'color')) continue;
+      if (addToken(/^\w+(\-\w+)?/, 'reference')) continue;
       if (addToken(/^\u0020+/, SPACE)) continue;
       if (addToken(/^\t+/, TAB)) continue;
       if (addToken(/^[\/\*\-\+]/, OPERATOR)) continue;
+      if (addToken(/^,/, COMMA)) continue;
 
       var char = scanner.nextChar();
 

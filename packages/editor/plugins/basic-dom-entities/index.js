@@ -10,9 +10,10 @@ import {
 
 import FontInputComponent from './components/style-inputs/font';
 import TextInputComponent from 'common/components/inputs/text';
-import TextAlignInputComponent from './components/style-inputs/text-align';
 import UnitInputComponent from 'common/components/inputs/unit';
 import ColorPickerComponent from 'common/components/inputs/color-picker';
+import TextAlignInputComponent from './components/style-inputs/text-align';
+import BackgroundInputComponent from './components/style-inputs/background';
 
 import StylePaneComponent from './components/entity-panes/styles';
 import { CallbackNotifier } from 'common/notifiers';
@@ -115,7 +116,7 @@ function registerStyleInputs(app) {
       [ 'color'      , ColorPickerComponent    ]
     ],
     appearance: [
-      [ 'background', UnitInputComponent ]
+      [ 'background', BackgroundInputComponent ]
     ]
   }
 
