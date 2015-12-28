@@ -2,7 +2,7 @@ import './index.scss';
 
 import React from 'react';
 import Reference from 'common/reference';
-import TextInputComponent from 'common/components/inputs/text-input';
+import TextInputComponent from 'common/components/inputs/text';
 
 class TextToolComponent extends React.Component {
 

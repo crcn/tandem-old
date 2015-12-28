@@ -1,7 +1,7 @@
 
 import React from 'react';
 import StyleReference from 'common/reference/style';
-import TextInputComponent from 'common/components/inputs/text-input';
+import TextInputComponent from 'common/components/inputs/text';
 import SearchDropdownComponent from 'common/components/inputs/searchable-dropdown';
 
 class AppearancePaneComponent extends React.Component {

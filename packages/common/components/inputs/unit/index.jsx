@@ -7,7 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import MenuComponent from 'common/components/menu';
 import SelectComponent from 'common/components/inputs/select';
-import TextInputComponent from 'common/components/inputs/text-input'
+import TextInputComponent from 'common/components/inputs/text'
 
 import {
   parseUnit as parseCSSUnit,
@@ -22,8 +22,8 @@ class UnitTokenComponent extends React.Component {
 
   onUnitChange(unit) {
 
-    var reference = this.props.editor.reference;
-    var unitToken = this.props.token;
+    var reference   = this.props.editor.reference;
+    var unitToken   = this.props.token;
     var numberToken = this.props.line.tokens[unitToken.getColumn() - 1];
     var oldUnit = unitToken.value;
     unitToken.setValue(unit);

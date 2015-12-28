@@ -2,9 +2,9 @@ import './index.scss';
 
 import React from 'react';
 import StyleReference from 'common/reference/style';
-import UnitInputComponent from 'common/components/inputs/unit-input';
+import UnitInputComponent from 'common/components/inputs/unit';
 import OriginInputComponent from './origin';
-import ScrollableLabelInput from 'common/components/inputs/scrollable-label-input'
+import ScrollableLabelInput from 'common/components/inputs/scrollable-label'
 
 class TransformPaneComponent extends React.Component {
   render() {

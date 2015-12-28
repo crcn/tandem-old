@@ -131,7 +131,6 @@ class TextEditorComponent extends React.Component {
   }
 
   render() {
-
     var editor = this.getEditor({
       ...this.state,
       ...this.props,

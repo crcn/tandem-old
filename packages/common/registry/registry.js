@@ -11,6 +11,8 @@ class Registry extends BaseCollection {
     return plugin;
   }
 
+  // TODO - for optimization, register plugin by each of its keys
+  // and return plugins here based on that
   query(search) {
 
     if (typeof search === 'string') {

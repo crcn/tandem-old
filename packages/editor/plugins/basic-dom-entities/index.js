@@ -8,10 +8,17 @@ import {
   EntityLayerLabelComponentPlugin
 } from 'editor/plugin/types';
 
-import HTMLEntityComponent from './components/preview';
-import { CallbackNotifier } from 'common/notifiers';
+import FontInputComponent from './components/style-inputs/font';
+import TextInputComponent from 'common/components/inputs/text';
+import TextAlignInputComponent from './components/style-inputs/text-align';
+import UnitInputComponent from 'common/components/inputs/unit';
+import ColorPickerComponent from 'common/components/inputs/color-picker';
+
 import StylePaneComponent from './components/entity-panes/styles';
+import { CallbackNotifier } from 'common/notifiers';
+import HTMLEntityComponent from './components/preview';
 import TransformPaneComponent from './components/entity-panes/transform';
+
 import TypographyPaneComponent from './components/entity-panes/typography';
 import AppearancePaneComponent from './components/entity-panes/appearance';
 import TextLayerLabelComponent from './components/entity-layer-labels/text';
@@ -23,6 +30,7 @@ export default ApplicationPlugin.create({
     create({ app }) {
       registerEntities(app);
       registerCommands(app);
+      registerStyleInputs(app);
     }
   }
 });
@@ -96,6 +104,58 @@ function registerEntities(app) {
     EntityPlugin.create({
       id      : 'elementEntity',
       factory : ElementEntity
+    })
+  );
+}
+
+function registerStyleInputs(app) {
+
+  var styleName;
+
+  for (styleName of ['left', 'top', 'width', 'height', 'fontSize']) {
+    app.plugins.push(
+      ComponentPlugin.create({
+        id             : styleName + 'StyleInputComponent',
+        componentType  : 'styleInput',
+        componentClass : UnitInputComponent,
+        styleName      : styleName
+      })
+    )
+  }
+
+  app.plugins.push(
+    ComponentPlugin.create({
+      id             : 'textAlignStyleInputComponent',
+      componentType  : 'styleInput',
+      componentClass : TextAlignInputComponent,
+      styleName      : 'textAlign'
+    })
+  )
+
+  app.plugins.push(
+    ComponentPlugin.create({
+      id             : 'fontFamilyStyleInputComponent',
+      componentType  : 'styleInput',
+      componentClass : FontInputComponent,
+      styleName      : 'fontFamily'
+    })
+  )
+
+  app.plugins.push(
+    ComponentPlugin.create({
+      id             : 'fontColorStyleInputComponent',
+      componentType  : 'styleInput',
+      componentClass : ColorPickerComponent,
+      styleName      : 'color'
+    })
+  )
+
+  // default style input
+  app.plugins.push(
+    ComponentPlugin.create({
+      id             : 'styleInputCoponent',
+      componentType  : 'styleInput',
+      componentClass : TextInputComponent
     })
   );
 }
