@@ -49,30 +49,6 @@ function registerEntities(app) {
       id      : 'textEntity',
       factory : TextEntity
     }),
-    EntityPaneComponentPlugin.create({
-      id             : 'transformPaneComponent',
-      label          : 'Transform',
-      styleType      : 'transform',
-      paneType       : 'entity',
-      entityType     : 'component',
-      componentClass : StylePaneComponent
-    }),
-    EntityPaneComponentPlugin.create({
-      id             : 'typographyPaneComponent',
-      label          : 'Typography',
-      styleType      : 'typography',
-      paneType       : 'entity',
-      entityType     : 'component',
-      componentClass : StylePaneComponent
-    }),
-    EntityPaneComponentPlugin.create({
-      id             : 'appearancePaneComponent',
-      label          : 'Appearance',
-      styleType      : 'appearance',
-      paneType       : 'entity',
-      entityType     : 'component',
-      componentClass : StylePaneComponent
-    }),
     EntityLayerLabelComponentPlugin.create({
       id             : 'textPaneLayerComponent',
       layerType      : 'text',
@@ -122,9 +98,24 @@ function registerStyleInputs(app) {
   }
 
   for (var type in inf) {
+
     for (var [styleName, componentClass] of inf[type]) {
       app.plugins.push(createComponentStylePlugin(styleName, type, componentClass));
     }
+
+
+    app.plugins.push(
+      EntityPaneComponentPlugin.create({
+        id             : type + 'PaneComponent',
+
+        // TODO - use uppercase lib
+        label          : type.substr(0, 1).toUpperCase() + type.substr(1).toLowerCase(),
+        styleType      : type,
+        paneType       : 'entity',
+        entityType     : 'component',
+        componentClass : StylePaneComponent
+      }),
+    )
   }
 
   // default style input
