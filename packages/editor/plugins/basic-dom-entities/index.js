@@ -116,7 +116,8 @@ function registerStyleInputs(app) {
       [ 'color'      , ColorPickerComponent    ]
     ],
     appearance: [
-      [ 'background', BackgroundInputComponent ]
+      [ 'background'   , BackgroundInputComponent ],
+      [ 'borderRadius' , UnitInputComponent       ]
     ]
   }
 
