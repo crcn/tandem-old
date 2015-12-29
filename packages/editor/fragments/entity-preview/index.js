@@ -34,14 +34,14 @@ export default ApplicationFragment.create({
       app.fragments.push(
         KeyCommandFragment.create({
           id         : 'zoomInKeyCommand',
-          keyCommand : 'ctrl+]',
+          keyCommand : 'meta+=',
           notifier   : CallbackNotifier.create(
             preview.zoomIn.bind(preview)
           )
         }),
         KeyCommandFragment.create({
           id         : 'zoomOutKeyCommand',
-          keyCommand : 'ctrl+[',
+          keyCommand : 'meta+-',
           notifier   : CallbackNotifier.create(
             preview.zoomOut.bind(preview)
           )
