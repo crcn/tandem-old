@@ -99,3 +99,9 @@ export class EntityFragment extends FactoryFragment {
     super({ type: 'entity', ...properties });
   }
 }
+
+export class UnitFragment extends Fragment {
+  constructor(unit) {
+    super({ id: unit + 'UnitFragment', type: 'unit', unit: unit, label: unit, value: unit });
+  }
+}

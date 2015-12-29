@@ -22,7 +22,6 @@ export default function(clazz) {
 
       super.setProperties(properties);
 
-      // TODO - add new & old props
       if (changes.length && notifier) notifier.notify(ChangeMessage.create(changes));
     }
   }

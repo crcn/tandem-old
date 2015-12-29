@@ -1,6 +1,5 @@
 import { create, extend } from 'common/utils/class';
 
-// TODO - maybe change this to symbol
 class BaseObject {
   constructor(properties) {
     this.setProperties(properties);

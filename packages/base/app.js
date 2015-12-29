@@ -46,6 +46,7 @@ class BaseApplication extends ObservableObject {
     this.config = config;
 
     // first load the app
+
     await this.notifier.notify(LoadMessage.create()).then(this.didLoad.bind(this));
 
     // then initialize

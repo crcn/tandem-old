@@ -8,7 +8,6 @@ class RootComponent extends React.Component {
   }
 
   notify() {
-
     // TODO - possibly throttle here
     this.forceUpdate();
   }

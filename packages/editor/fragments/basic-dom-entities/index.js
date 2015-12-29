@@ -1,5 +1,6 @@
 import {
   Fragment,
+  UnitFragment,
   EntityFragment,
   ComponentFragment,
   KeyCommandFragment,
@@ -32,6 +33,7 @@ export default ApplicationFragment.create({
       registerEntities(app);
       registerCommands(app);
       registerStyleInputs(app);
+      registerUnits(app);
     }
   }
 });
@@ -71,6 +73,14 @@ function createComponentStyleFragment(name, type, componentClass) {
     componentClass : componentClass,
     styleName      : name,
     styleType      : type
+  })
+}
+
+function registerUnits(app) {
+  ['px', 'pt', 'cm', 'mm', '%', 'em'].forEach(function(unit) {
+    app.fragments.push(
+      UnitFragment.create(unit)
+    );
   })
 }
 

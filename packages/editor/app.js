@@ -23,7 +23,7 @@ import LoadRootEntityPlugin from './fragments/root-entity-loader';
 import ClipboardPasteEntity from './fragments/clipboard-paste-entity';
 import BasicDOMEntitiesPlugin from './fragments/basic-dom-entities';
 
-import { SET_FOCUS } from 'editor/message-types';
+import { SET_FOCUS, SET_ROOT_ENTITY } from 'editor/message-types';
 
 class Application extends BaseApplication {
 
@@ -50,6 +50,10 @@ class Application extends BaseApplication {
   notify(message) {
     if (message.type === SET_FOCUS) {
       this.setFocus(message.target);
+    } else if (message.type === SET_ROOT_ENTITY) {
+      this.setProperties({
+        rootEntity: message.entity
+      });
     }
   }
 

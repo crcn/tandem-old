@@ -15,12 +15,6 @@ export default ApplicationFragment.create({
       app.notifier.push(TypeNotifier.create(LOAD_ROOT_ENTITY, load));
 
       function load(message) {
-
-        // TODO - change this to app.setRootEntry()
-        app.setProperties({
-          rootEntity: message.entity
-        });
-
         app.notifier.notify(RootEntityMessage.create(SET_ROOT_ENTITY, message.entity));
       }
     }

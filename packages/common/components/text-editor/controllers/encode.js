@@ -1,4 +1,3 @@
-// TODO - add params to this
 
 export default function(text) {
   return text

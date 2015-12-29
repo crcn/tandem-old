@@ -7,7 +7,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import MenuComponent from 'common/components/menu';
 import SelectComponent from 'common/components/inputs/select';
-import TextInputComponent from 'common/components/inputs/text'
+import TextInputComponent from 'common/components/inputs/text';
+import { UNIT } from 'common/fragment/queries';
 
 import {
   parseUnit as parseCSSUnit,
@@ -40,17 +41,11 @@ class UnitTokenComponent extends React.Component {
   }
 
   render() {
-
-    // TODO - need to pull these props from fragments
-    var options = [
-      'px', 'pt', 'cm', 'mm', '%', 'em'
-    ].map(function(unit) {
-      return { label: unit, value: unit };
-    });
-
     return <MenuComponent tabbable={false}>
       { this.props.token.value }
-      <SelectComponent onSelect={this.onUnitChange.bind(this)} options={options} />
+      <SelectComponent
+        onSelect={this.onUnitChange.bind(this)}
+        options={this.props.editor.app.fragments.query(UNIT)} />
     </MenuComponent>;
   }
 }
@@ -94,6 +89,7 @@ class UnitInputComponent extends React.Component {
       className='m-unit-input'
       onKeyDown={this.onKeyDown.bind(this)}
       reference={this.props.reference}
+      app={this.props.app}
       entity={this.props.reference.target}
       tokenizer={CSSTokenizer}
       tokenComponentFactory={tokenFactory} />

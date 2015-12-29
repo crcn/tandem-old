@@ -51,7 +51,6 @@ class Field extends BaseObject {
 
   validate(value, data) {
 
-    // TODO - check for invalid
     if (value == void 0) {
       if (this.default != void 0) {
         value = typeof this.default === 'function' ? this.default() : this.default;
@@ -61,11 +60,6 @@ class Field extends BaseObject {
         return;
       }
     }
-
-    // if (this.validate && !this.validate(value, data)) {
-    //   throw InvalidError.create('invalid');
-    // }
-
   }
 }
 

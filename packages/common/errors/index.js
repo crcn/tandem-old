@@ -1,4 +1,4 @@
-// TODO - this shit.
+
 import { create, createFactory } from 'common/utils/class';
 
 var code = 1;

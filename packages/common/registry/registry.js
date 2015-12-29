@@ -18,15 +18,11 @@ class Registry extends BaseCollection {
     return fragment;
   }
 
-  // TODO - for optimization, register fragment by each of its keys
-  // and return fragments here based on that
   query(search) {
     return this.filter(this._createFilter(search));
   }
 
   queryOne(search) {
-
-    // less optimal. Use find. Okay for now.
     return this.find(this._createFilter(search));
   }
 
@@ -41,8 +37,6 @@ class Registry extends BaseCollection {
     };
   }
 
-  // @param(Fragment) TODO
-  // TODO - override splice here
   splice(index, count, ...entries) {
 
     entries.forEach((fragment) => {

@@ -33,8 +33,6 @@ class DragDropComponent extends React.Component {
 
     if (this.props.onDragStart) this.props.onDragStart();
 
-    // TODO - calc mouse click offset and store on component here
-    // TODO - clone element being dragged
 
     // stop dragging immediately in case it was never fired from mouseup. This *might*
     // happen if the user moves their cursor outside of the app

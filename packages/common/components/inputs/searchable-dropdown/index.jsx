@@ -25,8 +25,7 @@ class SearchDropdownComponent extends React.Component {
         }
       };
     }
-
-    // TODO - get filter
+    
     this.setState({
       filter: defaultCreateFilter(event.target.value)
     });
