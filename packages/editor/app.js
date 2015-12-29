@@ -10,24 +10,24 @@ import ReactDOM from 'react-dom';
 
 import BaseApplication from 'base/app';
 
-import CorePlugin from './plugins/core';
-import HistoryPlugin from './plugins/history';
-import SettingsPlugin from './plugins/settings';
-import ShortcutPlugin from './plugins/shortcuts';
-import ClipboardPlugin from './plugins/clipboard';
-import BasicFontPlugin from './plugins/basic-fonts';
-import BasicToolsPlugin from './plugins/basic-tools';
-import TestProjectPlugin from './plugins/test-project';
-import EntityPreviewPlugin from './plugins/entity-preview';
-import LoadRootEntityPlugin from './plugins/root-entity-loader';
-import ClipboardPasteEntity from './plugins/clipboard-paste-entity';
-import BasicDOMEntitiesPlugin from './plugins/basic-dom-entities';
+import CorePlugin from './fragments/core';
+import HistoryPlugin from './fragments/history';
+import SettingsPlugin from './fragments/settings';
+import ShortcutPlugin from './fragments/shortcuts';
+import ClipboardPlugin from './fragments/clipboard';
+import BasicFontPlugin from './fragments/basic-fonts';
+import BasicToolsPlugin from './fragments/basic-tools';
+import TestProjectPlugin from './fragments/test-project';
+import EntityPreviewPlugin from './fragments/entity-preview';
+import LoadRootEntityPlugin from './fragments/root-entity-loader';
+import ClipboardPasteEntity from './fragments/clipboard-paste-entity';
+import BasicDOMEntitiesPlugin from './fragments/basic-dom-entities';
 
 import { SET_FOCUS } from 'editor/message-types';
 
 class Application extends BaseApplication {
 
-  static plugins = BaseApplication.plugins.concat([
+  static fragments = BaseApplication.fragments.concat([
     CorePlugin,
     HistoryPlugin,
     ShortcutPlugin,
@@ -43,8 +43,8 @@ class Application extends BaseApplication {
   ])
 
   didInitialize() {
-    var rootComponentPlugin = this.plugins.queryOne({ id: 'rootComponent' });
-    ReactDOM.render(rootComponentPlugin.factory.create({ app: app }), this.config.element);
+    var rootComponentPlugin = this.fragments.queryOne({ id: 'rootComponent' });
+    ReactDOM.render(rootComponentPlugin.factory.create({ app: app, fragments: this.fragments }), this.config.element);
   }
 
   notify(message) {

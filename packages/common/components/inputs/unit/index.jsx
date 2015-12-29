@@ -41,7 +41,7 @@ class UnitTokenComponent extends React.Component {
 
   render() {
 
-    // TODO - need to pull these props from plugins
+    // TODO - need to pull these props from fragments
     var options = [
       'px', 'pt', 'cm', 'mm', '%', 'em'
     ].map(function(unit) {

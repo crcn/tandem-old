@@ -1,24 +1,24 @@
 import { Registry } from 'common/registry';
 import ObservableObject from 'common/object/observable';
 import { NotifierCollection } from 'common/notifiers';
-import { ALL_APPLICATION_PLUGINS } from 'base/plugin/queries';
+import { ALL_APPLICATION_PLUGINS } from 'base/fragment/queries';
 import { InitializeMessage, LoadMessage } from 'base/message-types';
 
 class BaseApplication extends ObservableObject {
 
-  static plugins = [];
+  static fragments = [];
 
   constructor(properties) {
     super(properties);
 
     // class registry such as components classes, tools, models
-    this.plugins = Registry.create(void 0, this.constructor.plugins);
+    this.fragments = Registry.create(void 0, this.constructor.fragments);
 
     // central communication object
     this.notifier = NotifierCollection.create();
     this.notifier.push(this);
 
-    this._usePlugins();
+    this._useFragments();
   }
 
   /**
@@ -31,9 +31,9 @@ class BaseApplication extends ObservableObject {
   /**
    */
 
-  _usePlugins() {
-    for (var plugin of this.plugins.query(ALL_APPLICATION_PLUGINS)) {
-      plugin.factory.create({ app: this });
+  _useFragments() {
+    for (var fragment of this.fragments.query(ALL_APPLICATION_PLUGINS)) {
+      fragment.factory.create({ app: this });
     }
   }
 

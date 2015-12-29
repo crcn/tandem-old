@@ -1,6 +1,6 @@
 import BaseApplication from './app';
 import BaseObject from 'common/object/base';
-import { Plugin } from 'common/registry';
+import { Fragment } from 'common/registry';
 import sift from 'sift';
 import { CallbackNotifier, AcceptNotifier } from 'common/notifiers';
 import { LOAD, INITIALIZE } from 'base/message-types';
@@ -12,7 +12,7 @@ describe(__filename + '#', function() {
     BaseApplication.create();
   });
 
-  it('pulls plugins from static prop', function() {
+  it('pulls fragments from static prop', function() {
 
     var fakeFactory = {
       create({ app }) {
@@ -21,13 +21,13 @@ describe(__filename + '#', function() {
     };
 
     class SubApplication extends BaseApplication {
-      static plugins = [
-        Plugin.create({ id: 'plugin', type: 'application', factory: fakeFactory }),
-        Plugin.create({ id: 'plugin2', type: 'application', factory: fakeFactory })
+      static fragments = [
+        Fragment.create({ id: 'fragment', type: 'application', factory: fakeFactory }),
+        Fragment.create({ id: 'fragment2', type: 'application', factory: fakeFactory })
       ];
     }
     var a = SubApplication.create();
-    expect(a.plugins.length).to.be(2);
+    expect(a.fragments.length).to.be(2);
   });
 
   it('waits for load message to complete before calling initialize', async function() {

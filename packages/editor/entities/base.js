@@ -4,13 +4,13 @@ import assert from 'assert';
 import { clone } from 'common/utils/object';
 import BaseObject from 'common/object/base';
 
-export function deserialize(data, rootProps, plugins) {
-  var entityPlugin = plugins.queryOne({
-    id: data.props.pluginId
+export function deserialize(data, rootProps, fragments) {
+  var entityFragment = fragments.queryOne({
+    id: data.props.fragmentId
   });
 
-  var entity = entityPlugin.factory.create({ ...data.props, ...rootProps }, data.children.map(function(childData) {
-    return deserialize(childData, {}, plugins);
+  var entity = entityFragment.factory.create({ ...data.props, ...rootProps }, data.children.map(function(childData) {
+    return deserialize(childData, {}, fragments);
   }));
 
   return entity;
@@ -20,12 +20,12 @@ class Entity extends Node {
 
   constructor(properties, children) {
 
-    assert(properties.pluginId, 'Plugin id must exist');
+    assert(properties.fragmentId, 'Fragment id must exist');
 
     // entities are represented by other things, and so an ID is necessary
     // for quickly finding related objects
     super({
-      pluginId: properties.pluginId,
+      fragmentId: properties.fragmentId,
       id: properties.id || uuid.v1(),
       ...properties
     }, children);

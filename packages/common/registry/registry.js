@@ -1,6 +1,6 @@
 
 import sift from 'sift';
-import Plugin from './plugin';
+import Fragment from './fragment';
 import BaseCollection from 'common/collection';
 import { ExistsError } from 'common/errors';
 
@@ -13,13 +13,13 @@ class Registry extends BaseCollection {
     this.queryOne = _memoize(this.queryOne);
   }
 
-  register(plugin) {
-    this.push(plugin);
-    return plugin;
+  register(fragment) {
+    this.push(fragment);
+    return fragment;
   }
 
-  // TODO - for optimization, register plugin by each of its keys
-  // and return plugins here based on that
+  // TODO - for optimization, register fragment by each of its keys
+  // and return fragments here based on that
   query(search) {
     return this.filter(this._createFilter(search));
   }
@@ -36,23 +36,23 @@ class Registry extends BaseCollection {
       search = { id: search };
     }
 
-    return function(plugin) {
-      return plugin.matchesQuery(search);
+    return function(fragment) {
+      return fragment.matchesQuery(search);
     };
   }
 
-  // @param(Plugin) TODO
+  // @param(Fragment) TODO
   // TODO - override splice here
   splice(index, count, ...entries) {
 
-    entries.forEach((plugin) => {
+    entries.forEach((fragment) => {
 
-      if (!(plugin instanceof Plugin)) {
-        throw new Error('plugin must be an instanceof Plugin');
+      if (!(fragment instanceof Fragment)) {
+        throw new Error('fragment must be an instanceof Fragment');
       }
 
-      if (this.find(sift({ id: plugin.id }))) {
-        throw ExistsError.create('plugin already exists');
+      if (this.find(sift({ id: fragment.id }))) {
+        throw ExistsError.create('fragment already exists');
       }
     });
 
