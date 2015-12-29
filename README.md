@@ -3,7 +3,7 @@
 
 A visual editor for creating modular & interactive components.
 
-<img src="https://cloud.githubusercontent.com/assets/757408/11646965/e38fb2a2-9d17-11e5-9e94-ca73757d83cb.png" width="300px" />
+<img src="https://cloud.githubusercontent.com/assets/757408/12023393/e9b9cf50-ad4d-11e5-85db-58ce5232757e.png" width="500px" />
 
 <!--### Motivation-->
 
@@ -30,7 +30,6 @@ A visual editor for creating modular & interactive components.
 - Social network for sharing visual components with other people - [dribbble](http://dribbble.com/)-esque.
   - Ability to fork & PR designs
 - interoperability between rendering engines. E.g: svg + HTML depending on type of shaped being compiled.
-
 
 ### Pros
 
