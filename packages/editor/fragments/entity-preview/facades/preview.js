@@ -20,7 +20,7 @@ class Preview extends ObservableObject {
   notify(message) {
     if (message.type === SET_TOOL) {
       this.setTool(message.tool);
-    } else {  
+    } else {
       if (this.currentTool) {
         this.currentTool.notify(message);
       }

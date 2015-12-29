@@ -28,6 +28,25 @@ class StageComponent extends React.Component {
     });
   }
 
+  componentDidMount() {
+
+    // TODO: runloop here
+    requestAnimationFrame(() => {
+      var preview = this.props.app.preview;
+      var zoom    = preview.zoom;
+      var stage   = this.refs.stage;
+
+      while(preview.canvasWidth * preview.zoom > stage.offsetWidth) {
+        preview.zoomOut();
+      }
+    })
+
+  }
+
+  onScroll() {
+    console.log('resize');
+  }
+
   render() {
 
     var app = this.props.app;
@@ -45,10 +64,12 @@ class StageComponent extends React.Component {
       cursor: preview.currentTool ? preview.currentTool.cursor : void 0
     };
 
+    console.log(preview.zoom);
+
     // TODO - canvas needs to have different types of layers
 
-    return <div className='m-preview-stage' style={previewStyle}>
-      <div className='m-preview-stage--inner'>
+    return <div ref='stage' className='m-preview-stage' style={previewStyle}>
+      <div className='m-preview-stage--inner' onScroll={this.onScroll.bind(this)}>
         <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle}>
 
           <div id='preview-canvas'

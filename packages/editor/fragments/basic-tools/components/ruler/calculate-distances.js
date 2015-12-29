@@ -18,7 +18,7 @@ function calculateDistances(rootEntity, b1) {
 
     if (intersectsY(b1, b2) || intersectsY(b2, b1)) {
       console.log('IY');
-      // var p1 = 
+      // var p1 =
     }
   });
 

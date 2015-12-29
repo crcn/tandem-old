@@ -19,6 +19,7 @@
   }
 
   &--canvas {
+    transition: 0.5s;
     background-color: white;
     border: 1px solid $color-blue-10;
     position: relative;
