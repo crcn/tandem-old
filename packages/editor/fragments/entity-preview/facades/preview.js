@@ -12,10 +12,22 @@ class Preview extends ObservableObject {
     });
   }
   zoomIn() {
-    this.setProperties({ zoom: Math.min(this.zoom + ZOOM_INCREMENT, MAX_ZOOM_LEVEL) });
+    this.setZoom(this.zoom + ZOOM_INCREMENT);
   }
   zoomOut() {
-    this.setProperties({ zoom: Math.max(this.zoom - ZOOM_INCREMENT, MIN_ZOOM_LEVEL) });
+    this.setZoom(this.zoom - ZOOM_INCREMENT);
+  }
+  setZoom(zoom) {
+    zoom = Math.max(MIN_ZOOM_LEVEL, Math.min(zoom, MAX_ZOOM_LEVEL));
+
+    this.setProperties({
+      zoom: zoom
+    });
+
+    this.notifier.notify({
+      type: 'previewZoom',
+      zoom: zoom
+    });
   }
   notify(message) {
     if (message.type === SET_TOOL) {
