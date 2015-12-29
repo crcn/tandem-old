@@ -82,7 +82,8 @@ function create({ app }) {
     ComponentFragment.create({
       id             : 'rulerToolComponent',
       componentClass : RulerToolComponent,
-      matchesQuery   : function({ entity, tool }) {
+      matchesQuery   : function({ entity, tool, componentType }) {
+        return componentType === 'tool';
         return entity && tool instanceof PointerTool;
       }
     }),

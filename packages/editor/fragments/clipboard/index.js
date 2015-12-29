@@ -15,16 +15,20 @@ export default ApplicationFragment.create({
 
 function create({ app }) {
 
+  function _clone(data) {
+    return JSON.parse(JSON.stringify(data));
+  }
+
   var copiedData;
 
   function copy() {
-    copiedData = app.focus.serialize();
+    copiedData = _clone(app.focus.serialize());
   }
 
   function paste() {
     // TODO - use actual clipboard data
     if (copiedData != void 0) {
-      app.notifier.notify(PasteMessage.create(copiedData));
+      app.notifier.notify(PasteMessage.create(_clone(copiedData)));
     }
   }
 

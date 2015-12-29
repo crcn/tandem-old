@@ -20,10 +20,21 @@ class ResizerComponent extends React.Component {
     var sx2 = computer.getZoomedStyle().left;
     var sy2 = computer.getZoomedStyle().top;
 
+
     startDrag(event, (event, info) => {
+
+      var nx = sx2 + info.delta.x;
+      var ny = sy2 + info.delta.y;
+
+      // TODO - implement tug here. Something like this. Can
+      // be a fragment
+      // if (nx > 400 && nx < 450) {
+      //   nx = 425;
+      // }
+
       focus.setPositionFromFixedPoint({
-        left: sx2 + info.delta.x,
-        top: sy2 + info.delta.y
+        left : nx,
+        top  : ny
       });
     });
   }
