@@ -14,6 +14,7 @@
   &--inner {
     overflow-x: scroll;
     overflow-y: scroll;
+    position: relative;
     // overflow-y: visible;
     // overflow-x: hidden;
     // overflow-y: hidden;
@@ -21,14 +22,20 @@
     height: 100%;
   }
 
+  &--scroll {
+    position: relative;
+  }
+
+  &--center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
 
   &--canvas {
     background-color: white;
     border: 1px solid $color-blue-10;
-    position: relative;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
   }
 
   &--element-layer {

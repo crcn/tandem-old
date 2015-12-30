@@ -42,13 +42,6 @@ function convertToLines({ north, east, south, west }) {
   ];
 }
 
-function roundPosition(position) {
-  return {
-    left: Math.round(position.left),
-    top : Math.round(position.top)
-  };
-}
-
 function mapIntersectingBounds(items) {
   var bounds = [];
   var prev = items[0];

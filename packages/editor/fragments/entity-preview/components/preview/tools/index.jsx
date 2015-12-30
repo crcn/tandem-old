@@ -9,7 +9,7 @@ class ToolsLayerComponent extends React.Component {
     var entity = this.props.app.focus;
     var tool   = this.props.app.preview.currentTool;
 
-    return <div className='m-tools-layer'>
+    return <div style={this.props.style} className='m-tools-layer'>
 
       <RegisteredComponent
         {...this.props}

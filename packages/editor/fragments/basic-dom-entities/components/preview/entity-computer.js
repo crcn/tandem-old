@@ -12,7 +12,6 @@ import {
 class ReactEntityComputer extends DisplayEntityComputer {
 
   setPositionFromAbsolutePoint(point) {
-    var entStyle = this.getStyle();
 
     // absolute positions are always in pixels - always round
     // to the nearest one
@@ -65,11 +64,12 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var style = this.getStyle();
     var zoom  = this.getZoom();
 
+    // TODO - use scale util
     return {
-      left   : style.left * zoom,
-      top    : style.top * zoom,
-      width  : style.width * zoom,
-      height : style.height * zoom
+      left   : Math.round(style.left * zoom),
+      top    : Math.round(style.top * zoom),
+      width  : Math.round(style.width * zoom),
+      height : Math.round(style.height * zoom)
     };
   }
 
@@ -90,10 +90,12 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var rect = refs.element.getBoundingClientRect();
     var cs   = window.getComputedStyle(refs.element);
 
-    var w = rect.right - rect.left;
-    var h = rect.bottom - rect.top;
-    var x = rect.left - pcrect.left;
-    var y = rect.top  - pcrect.top;
+    var w = Math.ceil(rect.right - rect.left);
+    var h = Math.ceil(rect.bottom - rect.top);
+    // var x = rect.left - pcrect.left;
+    // var y = rect.top - pcrect.top;
+    var x = refs.element.offsetLeft;
+    var y = refs.element.offsetTop;
     var resizable = cs.display !== 'inline';
     var zoom = this.getZoom();
 

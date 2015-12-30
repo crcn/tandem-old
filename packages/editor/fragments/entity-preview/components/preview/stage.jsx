@@ -62,42 +62,46 @@ class StageComponent extends React.Component {
 
     var app = this.props.app;
     var preview = this.props.app.preview;
+    var { zoom, canvasWidth, canvasHeight, currentTool } = preview;
 
     var canvasStyle = {
 
       // TODO - this needs to be based off of room symbol
-      width  : preview.canvasWidth,
-      height : preview.canvasHeight,
-      zoom   : preview.zoom
+      width  : canvasWidth,
+      height : canvasHeight,
+      zoom   : zoom
     };
 
     var scrollStyle = {
-      width  : preview.canvasWidth * 2,
-      height : preview.canvasHeight * 2
+      width  : canvasWidth * 2,
+      height : canvasHeight * 2
     };
 
     var previewStyle = {
-      cursor: preview.currentTool ? preview.currentTool.cursor : void 0
+      cursor: currentTool ? currentTool.cursor : void 0
     };
-
-    // TODO - canvas needs to have different types of layers
 
     return <div ref='stage' className='m-preview-stage' style={previewStyle}>
       <div ref='inner' className='m-preview-stage--inner'>
         <div ref='scroller' className='m-preview-stage--scroll' style={scrollStyle}>
-          <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle}>
 
-            <div id='preview-canvas'
-              className='m-preview-stage--element-layer'
-              role='preview stage'
-              onClick={this.onClick.bind(this)}>
-              <span ref='drawLayer' className='reset-all m-preview-stage--draw-layer'>
-                <EntityComponent entity={app.rootEntity} app={app} />
-              </span>
+          <div className='m-preview-stage--center'>
+            <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle}>
+
+              <div id='preview-canvas'
+                className='m-preview-stage--element-layer'
+                role='preview stage'
+                onClick={this.onClick.bind(this)}>
+                <span ref='drawLayer' className='reset-all m-preview-stage--draw-layer'>
+                  <EntityComponent entity={app.rootEntity} app={app} />
+                </span>
+              </div>
+
             </div>
 
             <ToolsLayerComponent app={app} zoom={preview.zoom} />
           </div>
+
         </div>
       </div>
     </div>;

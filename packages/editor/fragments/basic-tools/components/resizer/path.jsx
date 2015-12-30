@@ -7,16 +7,15 @@ class PathComponent extends React.Component {
 
     event.stopPropagation();
 
-    var sx = point.left * this.props.zoom;
-    var sy = point.top * this.props.zoom;
+    var sx = point.left;
+    var sy = point.top;
     var mx = event.clientX;
     var my = event.clientY;
-    var zoom = this.props.zoom;
 
     startDrag(event, (event) => {
       point.setProperties({
-        left : (sx + event.clientX - mx) / this.props.zoom,
-        top  : (sy + event.clientY - my) / this.props.zoom
+        left : sx + event.clientX - mx,
+        top  : sy + event.clientY - my
       });
     });
   }

@@ -39,6 +39,7 @@ class TextToolComponent extends React.Component {
       position : 'absolute',
       left     : cstyle.left,
       top      : cstyle.top,
+      zoom     : this.props.zoom,
       zIndex   : 999
     };
 

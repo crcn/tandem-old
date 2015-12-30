@@ -45,7 +45,6 @@ class ResizerComponent extends React.Component {
   }
   updatePoint(point) {
     var focus = this.props.entity;
-    var zoom  = this.props.zoom;
 
     var style = focus.getComputedStyle();
 
@@ -98,7 +97,7 @@ class ResizerComponent extends React.Component {
 
     if (event.keyCode === 38) {
       top--;
-    } else if (event.keyCode == 40) {
+    } else if (event.keyCode === 40) {
       top++;
     } else if (event.keyCode === 37) {
       left--;
@@ -106,16 +105,13 @@ class ResizerComponent extends React.Component {
       left++;
     }
 
-
     entity.getComputer().setPositionFromAbsolutePoint({
-      left: left,
-      top: top
+      top: top,
+      left: left
     });
 
     this._isMoving();
-
     event.preventDefault();
-
   }
 
   moveTarget(left, top) {
@@ -136,11 +132,11 @@ class ResizerComponent extends React.Component {
 
   render() {
 
-    var pointRadius = (this.props.pointRadius || POINT_RADIUS) / this.props.zoom;
-    var strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH) / this.props.zoom;
+    var pointRadius = (this.props.pointRadius || POINT_RADIUS);
+    var strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
 
     var focus = this.props.entity;
-    var style = focus.getComputedStyle();
+    var style = focus.getComputer().getZoomedStyle();
 
     var points = [
       ['nw', 0, 0],
@@ -174,11 +170,11 @@ class ResizerComponent extends React.Component {
 
     return <div className='m-resizer-component'>
 
-      { this.state.moving ? <RulerComponent {...this.props} bounds={style} /> : void 0 }
-
       <div ref='selection' tabIndex='0' onKeyDown={this.onKeyDown.bind(this)} className='m-resizer-component--selection' style={style} onMouseDown={this.startDragging.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
-        <PathComponent points={points} strokeWidth={strokeWidth} pointRadius={pointRadius} showPoints={true} zoom={this.props.zoom}  />
+        <PathComponent points={points} strokeWidth={strokeWidth} pointRadius={pointRadius} showPoints={true}  />
       </div>
+
+      { this.state.moving ? <RulerComponent {...this.props} bounds={style} /> : void 0 }
     </div>
   }
 }
