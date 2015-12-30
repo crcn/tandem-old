@@ -10,35 +10,35 @@ function calculateDistances(rootEntity, b1) {
   });
 
   var intersections = {
-    north : [],
-    south : [],
-    east : [],
-    west : []
+    north : [b1],
+    south : [b1],
+    east : [b1],
+    west : [b1]
   };
 
   allBounds.forEach(addIntersections.bind(this, intersections, b1));
   intersections = sortIntersections(intersections);
 
-  var lines = convertToLines(intersections, b1);
+  var lines = convertToLines(intersections);
 
   return lines;
 }
 
 function sortIntersections({ north, east, south, west }) {
   return {
-    north : north.sort(function(a, b) { a.top  > b.top  ? -1 : 1 }),
-    south : south.sort(function(a, b) { a.top  < b.top  ? -1 : 1 }),
-    east : east.sort(function(a, b) { a.left < b.left ? -1 : 1 }),
-    west : west.sort(function(a, b) { a.left > b.left ? -1 : 1 })
+    north : north.sort(function(a, b) { return a.top  < b.top  ? -1 : 1 }),
+    south : south.sort(function(a, b) { return a.top  > b.top  ? -1 : 1 }),
+    east : east.sort(function(a, b) { return a.left > b.left ? -1 : 1 }),
+    west : west.sort(function(a, b) { return a.left < b.left ? -1 : 1 })
   }
 }
 
-function convertToLines({ north, east, south, west }, b1) {
+function convertToLines({ north, east, south, west }) {
   return [
-    ...mapIntersectingBounds(north, b1),
-    ...mapIntersectingBounds(south, b1),
-    ...mapIntersectingBounds(east, b1),
-    ...mapIntersectingBounds(west, b1),
+    ...mapIntersectingBounds(north),
+    ...mapIntersectingBounds(south),
+    ...mapIntersectingBounds(east),
+    ...mapIntersectingBounds(west),
   ];
 }
 
@@ -49,9 +49,10 @@ function roundPosition(position) {
   };
 }
 
-function mapIntersectingBounds(items, prev) {
+function mapIntersectingBounds(items) {
   var bounds = [];
-  for (var i = 0, n = items.length; i < n; i++) {
+  var prev = items[0];
+  for (var i = 1, n = items.length; i < n; i++) {
     var current = items[i];
     bounds.push(calculateIntersectingBounds(current, prev));
     prev = current;

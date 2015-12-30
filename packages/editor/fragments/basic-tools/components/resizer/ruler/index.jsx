@@ -70,8 +70,8 @@ class RulerToolComponent extends React.Component {
       {
         calculateDistances(
           root, this.props.app.focus.getComputedStyle()
-        ).map((bounds) => {
-          return <LineComponent {...this.props} bounds={bounds} key={JSON.stringify(bounds)} />;
+        ).map((bounds, i) => {
+          return <LineComponent {...this.props} bounds={bounds} key={JSON.stringify(bounds) + i} />;
         })
       }
     </div>
