@@ -47,64 +47,6 @@ export default ApplicationFragment.create({
           )
         })
       );
-
-      registerNudgeCommands(app);
     }
   }
 })
-
-function registerNudgeCommands(app) {
-
-  var moveEntityNotifier = { notify: function(message) {
-
-    // ensure that there is NO focus (inputs)
-    if (document.activeElement !== document.body) return;
-
-    var entity = app.focus;
-    var style = entity.getComputedStyle();
-
-    var left = style.left;
-    var top  = style.top;
-
-    if (message.keyCode === 38) {
-      top--;
-    } else if (message.keyCode == 40) {
-      top++;
-    } else if (message.keyCode === 37) {
-      left--;
-    } else if (message.keyCode === 39) {
-      left++;
-    }
-
-    entity.getComputer().setPositionFromAbsolutePoint({
-      left: left,
-      top: top
-    });
-  }};
-
-  app.fragments.push(
-    KeyCommandFragment.create({
-      id: 'upCommand',
-      keyCommand: 'up',
-      notifier: moveEntityNotifier
-    }),
-
-    KeyCommandFragment.create({
-      id: 'rightCommand',
-      keyCommand: 'right',
-      notifier: moveEntityNotifier
-    }),
-
-    KeyCommandFragment.create({
-      id: 'downCommand',
-      keyCommand: 'down',
-      notifier: moveEntityNotifier
-    }),
-
-    KeyCommandFragment.create({
-      id: 'leftCommand',
-      keyCommand: 'left',
-      notifier: moveEntityNotifier
-    })
-  );
-}

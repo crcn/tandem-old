@@ -14,6 +14,13 @@ const POINT_RADIUS       = 2;
 const PADDING            = 6;
 
 class ResizerComponent extends React.Component {
+
+  constructor() {
+    super();
+    this.state = {
+      moving: false
+    };
+  }
   startDragging(event) {
     var focus = this.props.entity;
 
@@ -21,7 +28,6 @@ class ResizerComponent extends React.Component {
 
     var sx2 = computer.getZoomedStyle().left;
     var sy2 = computer.getZoomedStyle().top;
-
 
     startDrag(event, (event, info) => {
 
@@ -34,10 +40,7 @@ class ResizerComponent extends React.Component {
       //   nx = 425;
       // }
 
-      focus.setPositionFromFixedPoint({
-        left : nx,
-        top  : ny
-      });
+      this.moveTarget(nx, ny);
     });
   }
   updatePoint(point) {
@@ -81,6 +84,56 @@ class ResizerComponent extends React.Component {
     });
   }
 
+  componentDidMount() {
+    this.refs.selection.focus();
+  }
+
+  onKeyDown(event) {
+
+    var entity = this.props.app.focus;
+    var style = entity.getComputedStyle();
+
+    var left = style.left;
+    var top  = style.top;
+
+    if (event.keyCode === 38) {
+      top--;
+    } else if (event.keyCode == 40) {
+      top++;
+    } else if (event.keyCode === 37) {
+      left--;
+    } else if (event.keyCode === 39) {
+      left++;
+    }
+
+
+    entity.getComputer().setPositionFromAbsolutePoint({
+      left: left,
+      top: top
+    });
+
+    this._isMoving();
+
+    event.preventDefault();
+
+  }
+
+  moveTarget(left, top) {
+    this._isMoving();
+    this.props.app.focus.setPositionFromFixedPoint({
+      left : left,
+      top  : top
+    });
+  }
+
+  _isMoving() {
+    clearTimeout(this._movingTimer);
+    this.setState({ moving: true });
+    this._movingTimer = setTimeout(() => {
+      this.setState({ moving: false });
+    }, 1000);
+  }
+
   render() {
 
     var pointRadius = (this.props.pointRadius || POINT_RADIUS) / this.props.zoom;
@@ -121,9 +174,9 @@ class ResizerComponent extends React.Component {
 
     return <div className='m-resizer-component'>
 
-      <RulerComponent {...this.props} bounds={style} />
+      { this.state.moving ? <RulerComponent {...this.props} bounds={style} /> : void 0 }
 
-      <div  className='m-resizer-component--selection' style={style} onMouseDown={this.startDragging.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
+      <div ref='selection' tabIndex='0' onKeyDown={this.onKeyDown.bind(this)} className='m-resizer-component--selection' style={style} onMouseDown={this.startDragging.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
         <PathComponent points={points} strokeWidth={strokeWidth} pointRadius={pointRadius} showPoints={true} zoom={this.props.zoom}  />
       </div>
     </div>

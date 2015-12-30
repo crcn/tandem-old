@@ -1,6 +1,6 @@
 import throttle from 'lodash/function/throttle';
 
-export default function(startEvent, update) {
+export default function(startEvent, update, stop) {
 
   var sx = startEvent.clientX;
   var sy = startEvent.clientY;
@@ -22,6 +22,7 @@ export default function(startEvent, update) {
   function cleanup() {
     document.removeEventListener('mousemove', drag);
     document.removeEventListener('mouseup', cleanup);
+    if (stop) stop();
   }
 
   document.addEventListener('mousemove', drag);
