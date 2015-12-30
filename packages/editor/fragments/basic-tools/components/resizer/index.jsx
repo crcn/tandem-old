@@ -3,8 +3,10 @@ import './index.scss';
 import React from 'react';
 import { startDrag } from 'common/utils/component';
 import PathComponent from './path';
+import RulerComponent from './ruler';
 import ObservableObject from 'common/object/observable';
 import CallbackNotifier from 'common/notifiers/callback';
+
 import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'editor/message-types';
 
 const POINT_STROKE_WIDTH = 1;
@@ -113,14 +115,18 @@ class ResizerComponent extends React.Component {
     var cw = (pointRadius + strokeWidth * 2) * 2;
 
     var style = {
-      position: 'absolute',
-      left: style.left - cw / 2,
-      top: style.top - cw / 2
+      left     : style.left - cw / 2,
+      top      : style.top - cw / 2
     }
 
-    return <div className='m-resizer-component' style={style} onMouseDown={this.startDragging.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
-      <PathComponent points={points} strokeWidth={strokeWidth} pointRadius={pointRadius} showPoints={true} zoom={this.props.zoom}  />
-    </div>;
+    return <div className='m-resizer-component'>
+
+      <RulerComponent {...this.props} bounds={style} />
+
+      <div  className='m-resizer-component--selection' style={style} onMouseDown={this.startDragging.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
+        <PathComponent points={points} strokeWidth={strokeWidth} pointRadius={pointRadius} showPoints={true} zoom={this.props.zoom}  />
+      </div>
+    </div>
   }
 }
 

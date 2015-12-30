@@ -8,3 +8,4 @@
 
 - collaborative editing
 - notes (another tool layer)
+- ios components -> compilation

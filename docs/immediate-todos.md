@@ -3,7 +3,8 @@
 - [ ] background fill
 - [ ] filters
 - [ ] move to front / back / forward
-- [ ] distance tool
+- [ ] ruler tool
+- [ ] sink tool (snap to grid)
 
 
 #### Keep this in mind when writing code

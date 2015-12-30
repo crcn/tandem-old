@@ -2,6 +2,10 @@
 
 .m-resizer-component {
 
+  &--selection {
+    position: absolute;
+  }
+
   & svg {
     & path {
       stroke: $color-blue-4;

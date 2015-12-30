@@ -12,7 +12,6 @@ import PointerTool from './controllers/pointer';
 import { SET_TOOL } from 'editor/message-types';
 
 import TextToolComponent from './components/text';
-import RulerToolComponent from './components/ruler';
 import ResizerToolComponent from './components/resizer';
 
 export default ApplicationFragment.create({
@@ -77,14 +76,6 @@ function create({ app }) {
       componentClass : TextToolComponent,
       matchesQuery   : function({ entity, tool }) {
         return entity && tool instanceof TextEditTool;
-      }
-    }),
-    ComponentFragment.create({
-      id             : 'rulerToolComponent',
-      componentClass : RulerToolComponent,
-      matchesQuery   : function({ entity, tool, componentType }) {
-        return componentType === 'tool';
-        return entity && tool instanceof PointerTool;
       }
     }),
     ComponentFragment.create({

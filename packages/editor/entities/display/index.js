@@ -22,6 +22,13 @@ class DisplayEntity extends Entity {
   /**
    */
 
+  hasComputer() {
+    return !!this._computer;
+  }
+
+  /**
+   */
+
   getComputer() {
     if (this._computer) return this._computer;
     throw new Error('display entity must be bound to view before a style can be computed');

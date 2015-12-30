@@ -44,6 +44,7 @@ class StageComponent extends React.Component {
     this.centerCanvas();
   }
 
+
   centerCanvas() {
     var inner    = this.refs.inner;
     var stage    = this.refs.stage;
