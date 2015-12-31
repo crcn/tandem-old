@@ -12,7 +12,7 @@
     // border-bottom: 1px solid $color-black-offset-2;
 
     cursor: default;
-    background-color: $color-black-offset-1;
+    background: linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.15));
 
     // font-size just slightly bigger then the content
     font-size: $font-size-1 + 1;
