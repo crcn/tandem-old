@@ -83,10 +83,6 @@ class ResizerComponent extends React.Component {
     });
   }
 
-  componentDidMount() {
-    this.refs.selection.focus();
-  }
-
   onKeyDown(event) {
 
     var entity = this.props.app.focus;
@@ -103,6 +99,8 @@ class ResizerComponent extends React.Component {
       left--;
     } else if (event.keyCode === 39) {
       left++;
+    } else {
+      return;
     }
 
     entity.getComputer().setPositionFromAbsolutePoint({

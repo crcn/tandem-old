@@ -13,6 +13,8 @@
 - http://neonto.com/
 - http://framerjs.com/
 - http://bootstrapstudio.io/
+- https://www.google.com/webdesigner
+- http://arstechnica.com/information-technology/2012/07/ninja-power-open-source-html5-toolset-hopes-to-unleash-the-web/
 
 
 #### other layout systems

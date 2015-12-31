@@ -66,6 +66,10 @@ class StageComponent extends React.Component {
 
     var canvasStyle = {
 
+      // necessary to ensure that percentages work for
+      // child elements - especially when converting units.
+      position: 'relative',
+
       // TODO - this needs to be based off of room symbol
       width  : canvasWidth,
       height : canvasHeight,
