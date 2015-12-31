@@ -5,6 +5,7 @@ import { startDrag } from 'common/utils/component';
 import EntityGuide from './guides/entity';
 import PathComponent from './path';
 import RulerComponent from './ruler';
+import GuideComponent from './guide';
 import ObservableObject from 'common/object/observable';
 import CallbackNotifier from 'common/notifiers/callback';
 
@@ -50,12 +51,9 @@ class ResizerComponent extends React.Component {
         height : style.height
       });
 
-
-      // TODO - implement tug here. Something like this. Can
-      // be a fragment
-      // if (nx > 400 && nx < 450) {
-      //   nx = 425;
-      // }
+      this.setState({
+        dragBounds: bounds
+      });
 
       this.moveTarget(bounds.left, bounds.top);
     });
@@ -114,7 +112,7 @@ class ResizerComponent extends React.Component {
     this.props.app.notifier.remove(this);
   }
 
-  onKeyDown(event) {
+  onKeyDown(message) {
 
     var entity = this.props.app.focus;
     var style = entity.getComputedStyle();
@@ -122,13 +120,13 @@ class ResizerComponent extends React.Component {
     var left = style.left;
     var top  = style.top;
 
-    if (event.keyCode === 38) {
+    if (message.keyCode === 38) {
       top--;
-    } else if (event.keyCode === 40) {
+    } else if (message.keyCode === 40) {
       top++;
-    } else if (event.keyCode === 37) {
+    } else if (message.keyCode === 37) {
       left--;
-    } else if (event.keyCode === 39) {
+    } else if (message.keyCode === 39) {
       left++;
     } else {
       return;
@@ -197,13 +195,22 @@ class ResizerComponent extends React.Component {
       top      : style.top - cw / 2
     }
 
+    var sections = {};
+
+    if (this.state.moving) {
+      sections.guides = <div>
+        <RulerComponent {...this.props} bounds={style} /> 
+        { this.state.dragBounds ? <GuideComponent {...this.props} bounds={this.state.dragBounds} /> : void 0 }
+      </div>;
+    }
+
     return <div className='m-resizer-component'>
 
       <div ref='selection' className='m-resizer-component--selection' style={style} onMouseDown={this.startDragging.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
         <PathComponent points={points} strokeWidth={strokeWidth} pointRadius={pointRadius} showPoints={true}  />
       </div>
 
-      { this.state.moving ? <RulerComponent {...this.props} bounds={style} /> : void 0 }
+      { sections.guides }
     </div>
   }
 }

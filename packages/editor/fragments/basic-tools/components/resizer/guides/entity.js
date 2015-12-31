@@ -14,92 +14,86 @@ class EntityGuide extends BaseGuide {
     var margin = this.margin;
 
     function snapToLines(lines) {
-      for (var [from, to = from, add = 0] of lines) {
+      for (var [from, to = -1, offset = 0] of lines) {
+
+        // no guide. Return from.
+        if (to === -1) {
+          return [-1, from];
+        }
+
         if ((from < to + margin) && (from > to - margin)) {
-          return to + add;
+          return [to, to + offset];
         }
       }
     }
+
+    function snapBounds(fromLeft, toLeft, fromWidth, toWidth) {
+
+      var fromMidWidth = fromWidth / 2;
+      var fromMidLeft  = fromLeft + fromMidWidth;
+      var toMidLeft    = toLeft + toWidth / 2;
+      var toRight      = toLeft + toWidth;
+      var fromRight    = fromLeft + fromWidth;
+
+      return snapToLines([
+
+        // left matches left
+        [fromLeft, toLeft],
+
+        // right matches left
+        [fromRight, toLeft, -fromWidth],
+
+        // right matches right
+        [fromRight, toRight, -fromWidth],
+
+        // left matches right
+        [fromLeft, toRight],
+
+        // left matches mid
+        [fromLeft, toMidLeft],
+
+        // left matches mid
+        [fromRight, toMidLeft, -fromWidth],
+
+        // mid matches mide
+        [fromMidLeft, toMidLeft, -fromMidWidth],
+
+        // mid matches right
+        [fromMidLeft, toRight, -fromMidWidth],
+
+        // mid matches left
+        [fromMidLeft, toLeft, -fromMidWidth],
+
+        // default
+        [fromLeft]
+      ]);
+    }
+
+    var orgLeft = left;
+    var orgTop  = top;
+
+    var guideLeft;
+    var guideTop;
 
     for (var entity of allEntities) {
       if (entity === this.entity) continue;
       var style = entity.getComputedStyle();
 
-      left = snapToLines([
+      if (orgLeft === left) {
+        [guideLeft, left] = snapBounds(left, style.left, width, style.width);
+      }
 
-        // left matches left
-        [left, style.left],
+      if (orgTop === top) {
+        [guideTop, top]  = snapBounds(top, style.top, height, style.height);
+      }
 
-        // right matches right
-        [left + width, style.left, -width],
-
-        // left matches right
-        [left, style.left + style.width],
-
-        // default
-        [left]
-      ]);
-
-      top = snapToLines([
-
-        // top matches top
-        [top, style.top],
-
-        // bottom matches top
-        [top + height, style.top, -height],
-
-        // left matches bottom
-        [top, style.top + style.height],
-
-        // default
-        [top]
-      ]);
-
-      var toMidWidth = style.width / 2;
-      var toMidLeft   = style.left + toMidWidth;
-      var fromMidWidth = width / 2;
-      var fromMidLeft = left + fromMidWidth;
-
-      left = snapToLines([
-
-        // left matches middle
-        [left, toMidLeft],
-
-        // right matches mid
-        [left + width, toMidLeft, -width],
-
-        // mid matches mid
-        [fromMidLeft, toMidLeft, -fromMidWidth],
-
-        // default
-        [left]
-      ]);
-
-      var toMidHeight   = style.height / 2;
-      var toMidTop      = style.top + toMidHeight;
-      var fromMidHeight = height / 2;
-      var fromMidTop    = top + fromMidHeight;
-
-
-      top = snapToLines([
-
-        // top matches top
-        [top, toMidTop],
-
-        // bottom matches mid
-        [top + height, toMidTop, -height],
-
-        // left matches bottom
-        [fromMidTop, toMidTop, -fromMidHeight],
-
-        // default
-        [top]
-      ]);
-
-
+      // when bounds intersect two items
+      if (orgLeft !== left && orgTop !== top) {
+        break;
+      }
     }
 
-    return { left, top, width, height };
+    return { left, top, width, height, guideLeft, guideTop, orgLeft, orgTop };
   }
 }
 
