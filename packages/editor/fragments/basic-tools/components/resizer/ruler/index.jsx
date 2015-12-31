@@ -32,7 +32,8 @@ class LineComponent extends React.Component {
 
       var y = Math.round(bounds.height / 2);
 
-      sections.text = <text x={Math.round(bounds.width / 2)} y={y + 20}>
+      // center & offset width of text
+      sections.text = <text x={Math.round(bounds.width / 2) - (String(this.props.bounds.width).length * 5)/2 } y={y + 20}>
         { this.props.bounds.width  }
       </text>;
 
@@ -47,7 +48,7 @@ class LineComponent extends React.Component {
     } else {
       var x = Math.round(bounds.width / 2);
 
-      sections.text = <text x={x + 10} y={Math.round(bounds.height / 2 + 8)}>
+      sections.text = <text x={x + 10} y={Math.round(bounds.height / 2 + 4)}>
         { this.props.bounds.height }
       </text>;
 
