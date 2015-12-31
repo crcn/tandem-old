@@ -48,7 +48,7 @@ class Application extends BaseApplication {
 
   notify(message) {
     switch(message.type) {
-      case SET_FOCUS       : return this.setFocus(message.target);
+      case SET_FOCUS       : return this._setFocus(message.target);
       case SET_ROOT_ENTITY : return this.setProperties({
         rootEntity: message.entity
       });
@@ -57,10 +57,12 @@ class Application extends BaseApplication {
 
   /**
    *
-   * @param item
+   * @param item the item to focus on
+   * @deprecated handled by selection fragment instead
+   * @private
    */
 
-  setFocus(item) {
+  _setFocus(item) {
 
     // turn off current focus immediately. Fixes a
     // NULL exception bug when rAF fires and the focused element

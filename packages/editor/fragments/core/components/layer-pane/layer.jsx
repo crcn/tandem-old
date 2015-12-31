@@ -2,11 +2,12 @@ import './layer.scss';
 
 import cx from 'classnames';
 import React from 'react';
+import { SetFocusMessage } from 'editor/message-types';
 
 class LayerComponent extends React.Component {
 
   focus() {
-    this.props.app.setFocus(this.props.entity);
+    this.props.app.notifier.notify(SetFocusMessage.create(this.props.entity));
   }
 
   render() {

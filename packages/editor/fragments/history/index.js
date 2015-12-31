@@ -16,7 +16,7 @@ import HistorySliderComponent from './components/slider';
 import ObservableCollection from 'common/collection/observable';
 import { CallbackNotifier, TypeNotifier } from 'common/notifiers';
 
-import { SET_ROOT_ENTITY } from 'editor/message-types';
+import { SET_ROOT_ENTITY, SetFocusMessage } from 'editor/message-types';
 import { Entity, deserialize } from 'editor/entities';
 
 import {
@@ -89,7 +89,7 @@ function create({ app }) {
       rootEntity : rootEntity
     });
 
-    app.setFocus(currentFocusId ? rootEntity.find(sift({ id: currentFocusId })) : void 0);
+    app.notifier.notify(SetFocusMessage.create(currentFocusId ? rootEntity.find(sift({ id: currentFocusId })) : void 0));
   }
 
   function shift(step) {

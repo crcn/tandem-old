@@ -1,5 +1,5 @@
 import traverse from 'traverse';
-import { PASTE } from 'editor/message-types';
+import { PASTE, SetFocusMessage } from 'editor/message-types';
 import { getValue } from 'common/utils/object';
 import { TypeNotifier } from 'common/notifiers';
 import { ApplicationFragment } from 'editor/fragment/types';
@@ -53,6 +53,6 @@ function create({ app }) {
     parentEntity.children.splice(insertIndex, 0, entity);
 
     // focus on our newly pasted item
-    app.setFocus(entity);
+    app.notifier.notify(SetFocusMessage.create(entity));
   }
 }

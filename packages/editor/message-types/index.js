@@ -1,3 +1,6 @@
+// TODO - some of these are fragment-specific. Need to eventually
+// move them into their own repositories e.g: selection-message-types, core-message-types
+
 import BaseMessage from 'common/message-types/base';
 
 export const PASTE                       = 'paste';
@@ -7,7 +10,6 @@ export const SET_ROOT_ENTITY             = 'setRootEntity';
 export const LOAD_ROOT_ENTITY            = 'loadRootEntity';
 export const ENTITY_PREVIEW_CLICK        = 'entityPreviewClick';
 export const ENTITY_PREVIEW_DOUBLE_CLICK = 'entityPreviewDoubleClick';
-
 
 export class RootEntityMessage extends BaseMessage {
   constructor(type, entity) {

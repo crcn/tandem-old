@@ -2,6 +2,7 @@ import ObservableObject from 'common/object/observable';
 import {
   ENTITY_PREVIEW_CLICK,
   ENTITY_PREVIEW_DOUBLE_CLICK,
+  SetFocusMessage,
   SetToolMessage
 } from 'editor/message-types';
 
@@ -18,7 +19,8 @@ class PointerTool extends ObservableObject {
   }
 
   notifyEntityClick(message) {
-    this.app.setFocus(message.entity);
+    // TODO - check multi selection
+    this.notifier.notify(SetFocusMessage.create(message.entity));
   }
 
   notifyEntityDoubleClick(message) {
@@ -32,8 +34,6 @@ class PointerTool extends ObservableObject {
     if (!fragment.tool) {
       console.warn('entity %s is not editable on double click', message.entity.componentType);
     }
-
-    console.log(fragment.tool);
 
     this.notifier.notify(SetToolMessage.create(fragment.tool));
   }

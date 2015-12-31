@@ -27,6 +27,7 @@ import TypographyPaneComponent from './components/entity-panes/typography';
 import AppearancePaneComponent from './components/entity-panes/appearance';
 import TextLayerLabelComponent from './components/entity-layer-labels/text';
 import { TextEntity, ElementEntity, RootEntity } from './entities';
+import { SetFocusMessage } from 'editor/message-types';
 
 export default ApplicationFragment.create({
   id: 'basicDOMEntities',
@@ -207,9 +208,7 @@ function registerCommands(app) {
         var focus = app.focus;
         var focusIndex = focus.parent.children.indexOf(focus);
 
-        // shift to the previous or next child
-        // TODO - no children? move cursor up to the parent
-        app.setFocus(focusIndex ? focus.parent.children[focusIndex - 1] : focus.parent.children[focusIndex + 1]);
+        app.notifier.notify(SetFocusMessage.create(focusIndex ? focus.parent.children[focusIndex - 1] : focus.parent.children[focusIndex + 1]));
 
         // remove the child deleted
         focus.parent.children.remove(focus);
