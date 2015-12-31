@@ -12,6 +12,6 @@ describe(__filename + '#', function() {
     try {
       Fragment.create({});
     } catch(e) { err = e; }
-    expect(err.message).to.be('id.invalid');
+    expect(err.message).to.be('id must be defined for fragments');
   });
 });

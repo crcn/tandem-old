@@ -12,7 +12,12 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'node_modules/babel-polyfill/browser.js',
-      'packages/**/*-test.js'
+      {
+        pattern  : 'packages/**/*-test.js',
+        watched  : false,
+        included : true,
+        served   : true
+      }
     ],
 
     plugins: [
