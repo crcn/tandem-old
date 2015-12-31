@@ -9,6 +9,8 @@ import {
   EntityLayerLabelComponentFragment
 } from 'editor/fragment/types';
 
+import inflection from 'inflection';
+
 import FontInputComponent from './components/style-inputs/font';
 import TextInputComponent from 'common/components/inputs/text';
 import UnitInputComponent from 'common/components/inputs/unit';
@@ -17,8 +19,8 @@ import TextAlignInputComponent from './components/style-inputs/text-align';
 import BackgroundInputComponent from './components/style-inputs/background';
 
 import StylePaneComponent from './components/entity-panes/styles';
-import { CallbackNotifier } from 'common/notifiers';
 import HTMLEntityComponent from './components/preview';
+import { CallbackNotifier } from 'common/notifiers';
 import TransformPaneComponent from './components/entity-panes/transform';
 
 import TypographyPaneComponent from './components/entity-panes/typography';
@@ -170,7 +172,7 @@ function registerStyleInputs(app) {
         id             : type + 'PaneComponent',
 
         // TODO - use uppercase lib
-        label          : type.substr(0, 1).toUpperCase() + type.substr(1).toLowerCase(),
+        label          : inflection.titleize(type),
         styleType      : type,
         paneType       : 'entity',
         entityType     : 'component',

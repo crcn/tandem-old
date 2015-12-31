@@ -1,8 +1,9 @@
 import './index.scss';
 
 import React from 'react';
-import StyleReference from 'common/reference/style';
+import inflection from 'inflection';
 import PaneComponent from 'common/components/pane';
+import StyleReference from 'common/reference/style';
 
 class StyleDeclarationComponent extends React.Component {
   removeDeclaration() {
@@ -15,7 +16,7 @@ class StyleDeclarationComponent extends React.Component {
 
     // camelCase to Camel Case
     var label = this.props.reference.property.split(/(?=[A-Z])/).map(function(word) {
-      return word.substr(0, 1).toUpperCase() + word.substr(1).toLowerCase();
+      return inflection.titleize(word);
     }).join(' ');
 
     return <div className='m-styles-pane--declaration'>
