@@ -80,7 +80,9 @@ class ReactEntityComputer extends DisplayEntityComputer {
     // eeeesh - this is yucky, but we *need* to offset the position
     // of the preview canvas so that we can get the correct position
     // of this element. This is the *simplest* solution I can think of.
+    // TODO - this *will not work* when we start adding multiple canvases
     var pcrect = document.getElementById('preview-canvas').getBoundingClientRect();
+
 
     var rect = refs.element.getBoundingClientRect();
     var cs   = window.getComputedStyle(refs.element);
@@ -100,7 +102,6 @@ class ReactEntityComputer extends DisplayEntityComputer {
       left: style.left || (rect.left - pcrect.left),
       top : style.top  || (rect.top  - pcrect.top)
     }, refs.element);
-
 
     return {
       resizable : resizable,

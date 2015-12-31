@@ -13,7 +13,7 @@ class Fragment extends BaseObject {
   matchesQuery(query) {
     return sift(query)(this);
   }
-}
+} 
 
 
 export default Fragment;
