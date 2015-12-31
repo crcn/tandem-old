@@ -8,22 +8,22 @@ import ReactDOM from 'react-dom';
 
 // a11y(React);
 
-import BaseApplication from 'base/app';
+  import BaseApplication from 'base/app';
 
-import CorePlugin from './fragments/core';
-import HistoryPlugin from './fragments/history';
-import SettingsPlugin from './fragments/settings';
-import ShortcutPlugin from './fragments/shortcuts';
-import ClipboardPlugin from './fragments/clipboard';
-import BasicFontPlugin from './fragments/basic-fonts';
-import BasicToolsPlugin from './fragments/basic-tools';
-import TestProjectPlugin from './fragments/test-project';
-import EntityPreviewPlugin from './fragments/entity-preview';
-import LoadRootEntityPlugin from './fragments/root-entity-loader';
-import ClipboardPasteEntity from './fragments/clipboard-paste-entity';
-import BasicDOMEntitiesPlugin from './fragments/basic-dom-entities';
+  import CorePlugin from './fragments/core';
+  import HistoryPlugin from './fragments/history';
+  import SettingsPlugin from './fragments/settings';
+  import ShortcutPlugin from './fragments/shortcuts';
+  import ClipboardPlugin from './fragments/clipboard';
+  import BasicFontPlugin from './fragments/basic-fonts';
+  import BasicToolsPlugin from './fragments/basic-tools';
+  import TestProjectPlugin from './fragments/test-project';
+  import EntityPreviewPlugin from './fragments/entity-preview';
+  import LoadRootEntityPlugin from './fragments/root-entity-loader';
+  import ClipboardPasteEntity from './fragments/clipboard-paste-entity';
+  import BasicDOMEntitiesPlugin from './fragments/basic-dom-entities';
 
-import { SET_FOCUS, SET_ROOT_ENTITY } from 'editor/message-types';
+  import { SET_FOCUS, SET_ROOT_ENTITY } from 'editor/message-types';
 
 class Application extends BaseApplication {
 
@@ -40,7 +40,7 @@ class Application extends BaseApplication {
     LoadRootEntityPlugin,
     ClipboardPasteEntity,
     BasicDOMEntitiesPlugin
-  ])
+  ]);
 
   didInitialize() {
     var rootComponentPlugin = this.fragments.queryOne({ id: 'rootComponent' });
@@ -58,9 +58,9 @@ class Application extends BaseApplication {
   }
 
   /**
-   * current focus of the app
-   * DEPRECATED - use focus message instead
-   */
+   *
+   * @param item
+     */
 
   setFocus(item) {
 

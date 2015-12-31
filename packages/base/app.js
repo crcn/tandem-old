@@ -45,15 +45,16 @@ class BaseApplication extends ObservableObject {
 
     this.config = config;
 
-    // first load the app
-
+    // first load the app - fragments, plugins, and other things
+    // may depend on asynchronous stuff here
     await this.notifier.notify(LoadMessage.create()).then(this.didLoad.bind(this));
 
-    // then initialize
+    // next, initialize the application
     await this.notifier.notify(InitializeMessage.create()).then(this.didInitialize.bind(this));
   }
 
   /**
+   * called after everything has loaded in the application
    */
 
   didLoad() {
@@ -61,6 +62,7 @@ class BaseApplication extends ObservableObject {
   }
 
   /**
+   * called after the application has loaded
    */
 
   didInitialize() {

@@ -7,9 +7,8 @@ class BaseObject {
   setProperties(properties) {
     Object.assign(this, properties);
   }
-}
 
-BaseObject.create = create;
-BaseObject.extend = extend;
+  static create = create;
+}
 
 export default BaseObject;

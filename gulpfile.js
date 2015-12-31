@@ -7,15 +7,6 @@ var consolidate = require('gulp-consolidate');
 var args = require('yargs').argv;
 var runTimestamp = Math.round(Date.now()/1000);
 
-var mochaOptions = {
-  timeout: 1000
-};
-
-var paths = {
-  testFiles: ['packages/**/*-test.js'],
-  allFiles: ['packages/**/*.js']
-};
-
 gulp.task('test', function(complete) {
   new karma.Server({
     configFile: __dirname + '/karma.config.js',
@@ -29,7 +20,7 @@ gulp.task('test', function(complete) {
   }, complete).start();
 });
 
-gulp.task('icons', function(complete) {
+gulp.task('icons', function() {
   return gulp.src(['packages/editor/svg-icons/*.svg'])
     .pipe(iconfont({
       fontName: 'iconfont',
@@ -37,7 +28,7 @@ gulp.task('icons', function(complete) {
       formats: ['ttf', 'eot', 'woff'],
       timestamp: runTimestamp
     }))
-      .on('glyphs', function(glyphs, options) {
+      .on('glyphs', function(glyphs) {
         gulp.src('packages/editor/svg-icons/iconfonts.scss')
         .pipe(consolidate('lodash', {
           glyphs: glyphs,
@@ -52,4 +43,4 @@ gulp.task('icons', function(complete) {
 
 gulp.doneCallback = function() {
   if (!args.watch) process.exit();
-}
+};
