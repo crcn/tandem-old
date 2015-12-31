@@ -1,4 +1,5 @@
 import { DisplayEntityComputer } from 'editor/entities';
+import { translateStyleToIntegers } from 'common/utils/html/css/translate-style';;
 
 import {
   translateStyle,
@@ -16,8 +17,8 @@ class ReactEntityComputer extends DisplayEntityComputer {
     // absolute positions are always in pixels - always round
     // to the nearest one
     var newStyle = translateStyle({
-      left: Math.round(point.left),
-      top: Math.round(point.top)
+      left: point.left,
+      top: point.top
     }, this.entity.getStyle(), this.getDisplayElement());
 
     this.entity.setStyle(newStyle);
@@ -25,9 +26,10 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
   setPositionFromFixedPoint(point) {
     var entStyle = this.getStyle();
+
     this.setPositionFromAbsolutePoint({
       left: point.left / entStyle.zoom,
-      top: point.top / entStyle.zoom
+      top: point.top   / entStyle.zoom
     });
   }
 
@@ -66,10 +68,10 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
     // TODO - use scale util
     return {
-      left   : Math.round(style.left * zoom),
-      top    : Math.round(style.top * zoom),
-      width  : Math.round(style.width * zoom),
-      height : Math.round(style.height * zoom)
+      left   : style.left   * zoom,
+      top    : style.top    * zoom,
+      width  : style.width  * zoom,
+      height : style.height * zoom
     };
   }
 
@@ -82,6 +84,8 @@ class ReactEntityComputer extends DisplayEntityComputer {
       return { };
     }
 
+    var entity = this.entity;
+
     // eeeesh - this is yucky, but we *need* to offset the position
     // of the preview canvas so that we can get the correct position
     // of this element. This is the *simplest* solution I can think of.
@@ -90,14 +94,21 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var rect = refs.element.getBoundingClientRect();
     var cs   = window.getComputedStyle(refs.element);
 
-    var w = Math.ceil(rect.right - rect.left);
-    var h = Math.ceil(rect.bottom - rect.top);
-    // var x = rect.left - pcrect.left;
-    // var y = rect.top - pcrect.top;
-    var x = refs.element.offsetLeft;
-    var y = refs.element.offsetTop;
+    var w = rect.right  - rect.left;
+    var h = rect.bottom - rect.top;
+
+
     var resizable = cs.display !== 'inline';
     var zoom = this.getZoom();
+
+    var style = entity.getStyle();
+
+    // left & top positions are not computed properly in Chrome
+    // if an element is zoomed out
+    var { left, top } = translateStyleToIntegers({
+      left: style.left || (rect.left - pcrect.left),
+      top : style.top  || (rect.top  - pcrect.top)
+    }, refs.element);
 
     // TODO - define right position as well relative
     // to parent
@@ -105,8 +116,8 @@ class ReactEntityComputer extends DisplayEntityComputer {
     return {
       resizable : resizable,
       zoom      : zoom,
-      left      : x,
-      top       : y,
+      left      : left,
+      top       : top,
       width     : w,
       height    : h
     };

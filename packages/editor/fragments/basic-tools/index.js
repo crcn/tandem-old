@@ -86,6 +86,8 @@ function create({ app }) {
       }
     })
   );
+
+  registerNudgeCommands(app);
 }
 
 function createRedirectNotifier(notifier, message) {
@@ -94,4 +96,33 @@ function createRedirectNotifier(notifier, message) {
       return notifier.notify(message);
     }
   }
+}
+
+
+function registerNudgeCommands(app) {
+  app.fragments.push(
+    KeyCommandFragment.create({
+      id         : 'upKeyCommand',
+      keyCommand : 'up',
+      notifier   : app.notifier
+    }),
+
+    KeyCommandFragment.create({
+      id         : 'downKeyCommand',
+      keyCommand : 'down',
+      notifier   : app.notifier
+    }),
+
+    KeyCommandFragment.create({
+      id         : 'rightKeyCommand',
+      keyCommand : 'right',
+      notifier   : app.notifier
+    }),
+
+    KeyCommandFragment.create({
+      id         : 'leftKeyCommand',
+      keyCommand : 'left',
+      notifier   : app.notifier
+    })
+  );
 }

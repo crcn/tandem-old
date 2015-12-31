@@ -24,7 +24,7 @@ units.forEach(function(unit) {
 
   // some big number so that we get accurate, rounded conversions
   div.style.left = 1000 + unit;
-  conv[unit] = (Math.round(div.getBoundingClientRect().left) / 1000).toFixed(MAX_DECIMALS);
+  conv[unit] = Number((div.getBoundingClientRect().left / 1000).toFixed(MAX_DECIMALS));
 });
 
 function findRelativeElement(element) {
@@ -62,7 +62,6 @@ function getInnerElementBounds(element) {
 
   var bounds = element.getBoundingClientRect();
 
-  // console.log(bounds.right - bounds.left, element.style.width);
   return {
     left   : left,
     right  : right,
@@ -73,9 +72,12 @@ function getInnerElementBounds(element) {
   };
 }
 
-function translateLengthToInteger(length) {
+export function translateLengthToInteger(length, property, relativeElement) {
   if (length === '') return 0;
-  return CSSParser.parse(CSSTokenizer.tokenize(length), astFactory).solveX({});
+  return CSSParser.parse(CSSTokenizer.tokenize(length), astFactory).solveX({
+    relativeElement: relativeElement,
+    property       : property
+  });
 }
 
 var astFactory = {
@@ -109,10 +111,9 @@ var astFactory = {
         var relativeParent = findRelativeElement(relativeElement);
         var bounds         = getInnerElementBounds(relativeParent);
         var scaleProperty  = translateToScaleProperty(property);
-
         return props.value === 'x' ? function(y) {
           return (y / bounds[scaleProperty]) * 100;
-        } : 1;
+        } : (Number(props.value) / 100) * bounds[scaleProperty];
       }
     }
   },
@@ -211,9 +212,10 @@ function translate(fromStyle, toStyle, element) {
   function translateDeclaration(property, fromValue, toValue, element) {
     if (!toValue) return fromValue;
 
+
     // fromValue could be a length. Need to normalize it so that
     // it can be converted into the toValue
-    fromValue = translateLengthToInteger(fromValue);
+    fromValue = translateLengthToInteger(fromValue, property, element);
 
     // first tokenize the toValue up
     var tokens = CSSTokenizer.tokenize(toValue);
@@ -245,6 +247,14 @@ function translate(fromStyle, toStyle, element) {
   }
 
   return translatedStyle;
+}
+
+export function translateStyleToIntegers(style, relativeElement) {
+  var toStyle = {};
+  for (var key in style)  toStyle[key] = '0px';
+  toStyle = translate(style, toStyle, relativeElement);
+  for (var key in toStyle) toStyle[key] = Number(toStyle[key].replace('px', ''));
+  return toStyle;
 }
 
 export default translate;

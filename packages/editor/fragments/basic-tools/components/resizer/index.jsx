@@ -43,6 +43,7 @@ class ResizerComponent extends React.Component {
       this.moveTarget(nx, ny);
     });
   }
+
   updatePoint(point) {
     var focus = this.props.entity;
 
@@ -83,6 +84,19 @@ class ResizerComponent extends React.Component {
     });
   }
 
+  componentDidMount() {
+    this.props.app.notifier.push(this);
+  }
+
+  notify(message) {
+    if (message.type !== 'keydown') return;
+    this.onKeyDown(message);
+  }
+
+  componentWillUnmount() {
+    this.props.app.notifier.remove(this);
+  }
+
   onKeyDown(event) {
 
     var entity = this.props.app.focus;
@@ -104,8 +118,8 @@ class ResizerComponent extends React.Component {
     }
 
     entity.getComputer().setPositionFromAbsolutePoint({
-      top: top,
-      left: left
+      top  : top,
+      left : left
     });
 
     this._isMoving();
@@ -168,7 +182,7 @@ class ResizerComponent extends React.Component {
 
     return <div className='m-resizer-component'>
 
-      <div ref='selection' tabIndex='0' onKeyDown={this.onKeyDown.bind(this)} className='m-resizer-component--selection' style={style} onMouseDown={this.startDragging.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
+      <div ref='selection' className='m-resizer-component--selection' style={style} onMouseDown={this.startDragging.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
         <PathComponent points={points} strokeWidth={strokeWidth} pointRadius={pointRadius} showPoints={true}  />
       </div>
 

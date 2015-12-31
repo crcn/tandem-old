@@ -27,10 +27,12 @@ class UnitTokenComponent extends React.Component {
     var unitToken   = this.props.token;
     var numberToken = this.props.line.tokens[unitToken.getColumn() - 1];
     var oldUnit = unitToken.value;
-    unitToken.setValue(unit);
     var entity = reference.target;
     var cstyle = entity.getComputedStyle();
 
+
+    unitToken.setValue(unit);
+    
     var translatedStyle = translateStyle(
       { [reference.property]: String(cstyle[reference.property]) },
       { [reference.property]: '0' + unitToken.value },
