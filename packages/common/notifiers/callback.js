@@ -1,3 +1,4 @@
+import assert from 'assert';
 import BaseObject from 'common/object/base';
 import BaseNotifier from './base';
 
@@ -10,6 +11,7 @@ class CallbackNotifier extends BaseNotifier {
 
   constructor(callback) {
     super();
+    assert(callback, 'callback must exist');
     this._callback = callback;
   }
 

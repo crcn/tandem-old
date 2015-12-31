@@ -2,56 +2,54 @@ import 'ionicons/css/ionicons.css';
 import 'bootstrap/css/bootstrap.css';
 import 'editor/scss/modules/all.scss';
 
-import a11y from 'react-a11y';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-// a11y(React);
+import BaseApplication from 'base/app';
 
-  import BaseApplication from 'base/app';
+import CoreFragment from './fragments/core';
+import HistoryFragment from './fragments/history';
+import SettingsFragment from './fragments/settings';
+import ShortcutFragment from './fragments/shortcuts';
+import SelectionFragment from './fragments/selection';
+import ClipboardFragment from './fragments/clipboard';
+import BasicFontFragment from './fragments/basic-fonts';
+import BasicToolsFragment from './fragments/basic-tools';
+import TestProjectFragment from './fragments/test-project';
+import EntityPreviewFragment from './fragments/entity-preview';
+import LoadRootEntityFragment from './fragments/root-entity-loader';
+import BasicDOMEntitiesFragment from './fragments/basic-dom-entities';
+import ClipboardPasteEntityFragment from './fragments/clipboard-paste-entity';
 
-  import CorePlugin from './fragments/core';
-  import HistoryPlugin from './fragments/history';
-  import SettingsPlugin from './fragments/settings';
-  import ShortcutPlugin from './fragments/shortcuts';
-  import ClipboardPlugin from './fragments/clipboard';
-  import BasicFontPlugin from './fragments/basic-fonts';
-  import BasicToolsPlugin from './fragments/basic-tools';
-  import TestProjectPlugin from './fragments/test-project';
-  import EntityPreviewPlugin from './fragments/entity-preview';
-  import LoadRootEntityPlugin from './fragments/root-entity-loader';
-  import ClipboardPasteEntity from './fragments/clipboard-paste-entity';
-  import BasicDOMEntitiesPlugin from './fragments/basic-dom-entities';
-
-  import { SET_FOCUS, SET_ROOT_ENTITY } from 'editor/message-types';
+import { SET_FOCUS, SET_ROOT_ENTITY } from 'editor/message-types';
 
 class Application extends BaseApplication {
 
   static fragments = BaseApplication.fragments.concat([
-    CorePlugin,
-    HistoryPlugin,
-    ShortcutPlugin,
-    SettingsPlugin,
-    ClipboardPlugin,
-    BasicFontPlugin,
-    BasicToolsPlugin,
-    TestProjectPlugin,
-    EntityPreviewPlugin,
-    LoadRootEntityPlugin,
-    ClipboardPasteEntity,
-    BasicDOMEntitiesPlugin
+    CoreFragment,
+    HistoryFragment,
+    ShortcutFragment,
+    SettingsFragment,
+    ClipboardFragment,
+    BasicFontFragment,
+    SelectionFragment,
+    BasicToolsFragment,
+    TestProjectFragment,
+    EntityPreviewFragment,
+    LoadRootEntityFragment,
+    ClipboardPasteEntityFragment,
+    BasicDOMEntitiesFragment
   ]);
 
   didInitialize() {
-    var rootComponentPlugin = this.fragments.queryOne({ id: 'rootComponent' });
-    ReactDOM.render(rootComponentPlugin.factory.create({ app: app, fragments: this.fragments }), this.config.element);
+    var rootComponentFragment = this.fragments.queryOne({ id: 'rootComponent' });
+    ReactDOM.render(rootComponentFragment.factory.create({ app: app, fragments: this.fragments }), this.config.element);
   }
 
   notify(message) {
-    if (message.type === SET_FOCUS) {
-      this.setFocus(message.target);
-    } else if (message.type === SET_ROOT_ENTITY) {
-      this.setProperties({
+    switch(message.type) {
+      case SET_FOCUS       : return this.setFocus(message.target);
+      case SET_ROOT_ENTITY : return this.setProperties({
         rootEntity: message.entity
       });
     }
@@ -60,7 +58,7 @@ class Application extends BaseApplication {
   /**
    *
    * @param item
-     */
+   */
 
   setFocus(item) {
 

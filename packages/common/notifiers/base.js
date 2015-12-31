@@ -1,4 +1,5 @@
 import { create } from 'common/utils/class';
+import BaseObject from 'common/object/base';
 import BaseMessage from 'common/message-types/base';
 
 /**
@@ -6,7 +7,7 @@ import BaseMessage from 'common/message-types/base';
  * @interface
  */
 
-class BaseNotifier {
+class BaseNotifier extends BaseObject {
 
     /**
      * @abstract

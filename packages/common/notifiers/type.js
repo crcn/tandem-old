@@ -1,3 +1,4 @@
+import assert from 'assert';
 import BaseNotifier from './base';
 import CallbackNotifier from './callback';
 
@@ -18,6 +19,9 @@ class TypeNotifier extends BaseNotifier {
     if (typeof notifier === 'function') {
       notifier = CallbackNotifier.create(notifier);
     }
+
+    assert(type, 'type must exist');
+    assert(notifier, 'notifier must exist');
 
     super({ type: type, notifier: notifier });
   }

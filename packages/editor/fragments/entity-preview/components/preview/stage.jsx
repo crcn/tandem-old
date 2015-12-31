@@ -33,13 +33,12 @@ class StageComponent extends React.Component {
     // TODO: runloop here
     requestAnimationFrame(() => {
       var preview = this.props.app.preview;
-      var zoom    = preview.zoom;
       var stage   = this.refs.stage;
 
       while(preview.canvasWidth * preview.zoom > stage.offsetWidth) {
         preview.zoomOut();
       }
-    })
+    });
 
     this.centerCanvas();
   }
@@ -47,9 +46,7 @@ class StageComponent extends React.Component {
 
   centerCanvas() {
     var inner    = this.refs.inner;
-    var stage    = this.refs.stage;
     var scroller = this.refs.scroller;
-    var preview  = this.props.app.preview;
     inner.scrollTop  = scroller.offsetHeight / 2 - inner.offsetHeight / 2;
     inner.scrollLeft = scroller.offsetWidth / 2 - inner.offsetWidth / 2;
   }
@@ -91,15 +88,6 @@ class StageComponent extends React.Component {
 
           <div className='m-preview-stage--center'>
             <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle}>
-
-              <div id='preview-canvas'
-                className='m-preview-stage--element-layer'
-                role='preview stage'
-                onClick={this.onClick.bind(this)}>
-                <span ref='drawLayer' className='reset-all m-preview-stage--draw-layer'>
-                  <EntityComponent entity={app.rootEntity} app={app} />
-                </span>
-              </div>
 
               <div id='preview-canvas'
                 className='m-preview-stage--element-layer'
