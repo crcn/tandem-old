@@ -4,7 +4,13 @@ import BaseObject from 'common/object/base';
  * Computes the visual elements of a display entity
  */
 
-class DisplayEntitiyComputer extends BaseObject {
+class DisplayEntityComputer extends BaseObject {
+
+  /**
+   * constructor
+   * @param {Entity} entity
+   * @param {React.Component} displayObject
+   */
 
   constructor(entity, displayObject) {
     super();
@@ -12,13 +18,14 @@ class DisplayEntitiyComputer extends BaseObject {
     this.displayObject = displayObject;
   }
 
+  /**
+   * returns the computed style
+   * @abstract
+   */
+
   getStyle() {
     throw new Error('getStyle must be overridden');
   }
-
-  setBounds(bounds) {
-    throw new Error('setBounds must be overridden');
-  }
 }
 
-export default DisplayEntitiyComputer;
+export default DisplayEntityComputer;

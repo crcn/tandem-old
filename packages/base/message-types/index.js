@@ -1,26 +1,23 @@
-import BaseObject from 'common/object/base';
+import BaseMessage from 'common/message-types/base';
 
 export const CHANGE     = 'change';
 export const INITIALIZE = 'initialize';
 export const LOAD       = 'load';
 
-export class Message extends BaseObject {
-  constructor(properties) {
-    super(properties);
-  }
-}
-
-export class ChangeMessage extends Message {
-  type = CHANGE;
+export class ChangeMessage extends BaseMessage {
   constructor(changes = []) {
-    super({ changes: changes });
+    super(CHANGE, { changes: changes });
   }
 }
 
-export class InitializeMessage extends Message {
-  type = INITIALIZE;
+export class InitializeMessage extends BaseMessage {
+  constructor() {
+    super(INITIALIZE);
+  }
 }
 
-export class LoadMessage extends Message {
-  type = LOAD;
+export class LoadMessage extends BaseMessage {
+  constructor() {
+    super(LOAD);
+  }
 }

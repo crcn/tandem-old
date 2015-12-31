@@ -1,7 +1,18 @@
-import BaseObject from 'common/object/base';
+import BaseNotifier from './base';
 import CallbackNotifier from './callback';
 
-class TypeNotifier extends BaseObject {
+/**
+ * redirects messages to notifier based on the message type
+ */
+
+class TypeNotifier extends BaseNotifier {
+
+  /**
+   *
+   * @param {String} type the type of message to accept
+   * @param {BaseNotifier} notifier the notifier to pass messages to when the message type matches
+   */
+
   constructor(type, notifier) {
     
     if (typeof notifier === 'function') {
@@ -10,6 +21,7 @@ class TypeNotifier extends BaseObject {
 
     super({ type: type, notifier: notifier });
   }
+
   notify(message) {
     if (message.type !== this.type) return;
     return this.notifier.notify(message);

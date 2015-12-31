@@ -1,12 +1,26 @@
-import BaseCollection from 'common/collection';
 import BaseObject from 'common/object/base';
+import BaseMessage from 'common/message-types/base';
+import BaseCollection from 'common/collection';
+
+/**
+ * A collection of notifiers. Passes Message to each notifier when notify() is called
+ * @extends BaseCollection
+ * @extends BaseNotifier
+ */
 
 class NotifierCollection extends BaseCollection {
+
+  /**
+   *
+   * @param message
+   * @returns {Promise}
+   */
+
   notify(message) {
     var promises = [];
 
-    if (!(message instanceof BaseObject)) {
-      console.warn('"%s" notifier message is a POJO. It\'s safer to instantiate a pre-defined Message class instead', message.type);
+    if (!(message instanceof BaseMessage)) {
+      console.warn('"%s" must be a BaseMessage.', message.type);
     }
 
     for (var observer of this) {

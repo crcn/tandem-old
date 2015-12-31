@@ -1,5 +1,12 @@
 import { ChangeMessage } from 'base/message-types';
 
+/**
+ * Mixin which makes classes that extend BaseObject and BaseCollection
+ * watchable
+ * @param {Class} clazz the BaseObject or BaseCollection sub class
+ * @returns {Class} ctor
+ */
+
 export default function(clazz) {
 
   class ctor extends clazz {

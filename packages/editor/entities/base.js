@@ -4,19 +4,36 @@ import assert from 'assert';
 import { clone } from 'common/utils/object';
 import BaseObject from 'common/object/base';
 
+/**
+ * deserializes a JSON object into an Entity
+ * @param {Object} data the serialized Entity data
+ * @param {Object} rootProps the root entity props such as the global notifier
+ * @param {Array} fragments the Array of fragments which contains the Entity factories
+ * @returns {*}
+ */
+
 export function deserialize(data, rootProps, fragments) {
+
   var entityFragment = fragments.queryOne({
     id: data.props.fragmentId
   });
 
-  var entity = entityFragment.factory.create({ ...data.props, ...rootProps }, data.children.map(function(childData) {
+  return entityFragment.factory.create({ ...data.props, ...rootProps }, data.children.map(function(childData) {
     return deserialize(childData, {}, fragments);
   }));
+}
 
-  return entity;
-};
+/**
+ * Representation of some thing - built to be mutated by the editor. Compilable to JavaScript
+ */
 
 class Entity extends Node {
+
+  /**
+   *
+   * @param {Object} properties the initial properties to assign to the entity
+   * @param {Array} children the entity children
+   */
 
   constructor(properties, children) {
 
@@ -30,6 +47,11 @@ class Entity extends Node {
       ...properties
     }, children);
   }
+
+  /**
+   * serializes the entity into a POJO
+   * @returns {{children: *, props: {}}}
+   */
 
   serialize() {
 
@@ -50,6 +72,6 @@ class Entity extends Node {
 
     return data;
   }
-};
+}
 
 export default Entity;

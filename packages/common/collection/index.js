@@ -1,11 +1,27 @@
 import { createFactory } from 'common/utils/class';
 
+/**
+ * Base collection which is treated like a *native* array
+ * @extends Array
+ */
+
 class BaseCollection {
+
+  /**
+   *
+   * @param {Object} properties the initial properties to define on base collection
+   * @param {Array} values the initial array values to set into the collection
+   */
 
   constructor(properties, values = []) {
     this.push(...values);
     this.setProperties(properties);
   }
+
+  /**
+   * sets properties into the base collection
+   * @param properties
+   */
 
   setProperties(properties) {
     Object.assign(this, properties);
@@ -27,6 +43,11 @@ class BaseCollection {
     return this.splice(this.length - 1, 1);
   }
 
+  /**
+   * removes an value from the collection if it exists
+   * @param values
+   */
+
   remove(...values) {
     for (var value of values) {
       var i = this.indexOf(value);
@@ -42,6 +63,10 @@ class BaseCollection {
     // OVERRIDE ME!
     return Array.prototype.splice.apply(this, arguments);
   }
+
+  /**
+   * creates a new collection
+   */
 
   static create = createFactory(Array);
 }

@@ -1,4 +1,3 @@
-
 import mousetrap from 'mousetrap';
 import { INITIALIZE } from 'base/message-types';
 import { ApplicationFragment } from 'editor/fragment/types';

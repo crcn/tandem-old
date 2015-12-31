@@ -1,10 +1,10 @@
-import BaseApplication from './app';
+import sift from 'sift';
+import expect from 'expect.js';
 import BaseObject from 'common/object/base';
 import { Fragment } from 'common/registry';
-import sift from 'sift';
+import BaseApplication from './app';
 import { CallbackNotifier, AcceptNotifier } from 'common/notifiers';
 import { LOAD, INITIALIZE } from 'base/message-types';
-import expect from 'expect.js';
 
 describe(__filename + '#', function() {
 

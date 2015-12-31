@@ -1,6 +1,15 @@
-import BaseObject from 'common/object/base';
+import BaseNotifier from './base';
 
-class NoopNotifier extends BaseObject {
+/**
+ * Notification handler which doesn't do anything with messages
+ */
+
+class NoopNotifier extends BaseNotifier {
+
+  /**
+   * no-operation
+   */
+
   notify() { }
 }
 

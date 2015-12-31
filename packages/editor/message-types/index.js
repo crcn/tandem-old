@@ -1,32 +1,34 @@
-import BaseObject from 'common/object/base';
+import BaseMessage from 'common/message-types/base';
 
 export const PASTE                       = 'paste';
 export const SET_TOOL                    = 'setTool';
 export const SET_FOCUS                   = 'setFocus';
+export const SET_ROOT_ENTITY             = 'setRootEntity';
 export const LOAD_ROOT_ENTITY            = 'loadRootEntity';
 export const ENTITY_PREVIEW_CLICK        = 'entityPreviewClick';
 export const ENTITY_PREVIEW_DOUBLE_CLICK = 'entityPreviewDoubleClick';
 
-export class RootEntityMessage extends BaseObject {
+
+export class RootEntityMessage extends BaseMessage {
   constructor(type, entity) {
-    super({ type: type, entity: entity });
+    super(type, { entity: entity });
   }
-};
+}
 
-export class PasteMessage extends BaseObject {
+export class PasteMessage extends BaseMessage {
   constructor(data) {
-    super({ type: PASTE, data: data });
+    super(PASTE, { data: data });
   }
 }
 
-export class SetFocusMessage extends BaseObject {
+export class SetFocusMessage extends BaseMessage {
   constructor(target) {
-    super({ type: SET_FOCUS, target: target });
+    super(SET_FOCUS, { target: target });
   }
 }
 
-export class SetToolMessage extends BaseObject {
+export class SetToolMessage extends BaseMessage {
   constructor(tool) {
-    super({ type: SET_TOOL, tool: tool });
+    super(SET_TOOL, { tool: tool });
   }
 }

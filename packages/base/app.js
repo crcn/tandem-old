@@ -21,15 +21,9 @@ class BaseApplication extends ObservableObject {
     this._useFragments();
   }
 
-  /**
-   */
-
   notify(message) {
     // OVERRIDE ME
   }
-
-  /**
-   */
 
   _useFragments() {
     for (var fragment of this.fragments.query(ALL_APPLICATION_PLUGINS)) {

@@ -1,4 +1,4 @@
-// TODO - some of these components are fragment classes specific
+// TODO - some of these components are fragment classes specific.
 // to other fragment classes. These will need to be moved their own packages at some point (CC)
 
 import React from 'react';
