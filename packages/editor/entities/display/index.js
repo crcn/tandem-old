@@ -43,15 +43,6 @@ class DisplayEntity extends Entity {
   }
 
   /**
-   * re-computes the position of this element based on its properties (is it pt, cm, mm, %), and its relationship to other elements on the page
-   * TODO - this base class *must* be usable with other rendering engines - not specific to the DOM. Move it to a HTMLDisplayComputer object, or simila
-   */
-
-  setPositionFromFixedPoint(x, y) {
-    return this.getComputer().setPositionFromFixedPoint(x, y);
-  }
-
-  /**
    * visual style of display entity such as position & dimensions
    */
 

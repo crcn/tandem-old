@@ -24,15 +24,6 @@ class ReactEntityComputer extends DisplayEntityComputer {
     this.entity.setStyle(newStyle);
   }
 
-  setPositionFromFixedPoint(point) {
-    var entStyle = this.getStyle();
-
-    this.setPositionFromAbsolutePoint({
-      left: point.left / entStyle.zoom,
-      top: point.top   / entStyle.zoom
-    });
-  }
-
   getDisplayElement() {
     return this.displayObject.refs.element;
   }
@@ -97,21 +88,19 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var w = rect.right  - rect.left;
     var h = rect.bottom - rect.top;
 
-
     var resizable = cs.display !== 'inline';
     var zoom = this.getZoom();
 
     var style = entity.getStyle();
 
     // left & top positions are not computed properly in Chrome
-    // if an element is zoomed out
+    // if an element is zoomed out. Need to translate the style stored
+    // on the entity, compute that with the given element, then return the style
     var { left, top } = translateStyleToIntegers({
       left: style.left || (rect.left - pcrect.left),
       top : style.top  || (rect.top  - pcrect.top)
     }, refs.element);
 
-    // TODO - define right position as well relative
-    // to parent
 
     return {
       resizable : resizable,

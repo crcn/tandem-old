@@ -2,6 +2,7 @@ import './index.scss';
 
 import React from 'react';
 import { startDrag } from 'common/utils/component';
+import EntityGuide from './guides/entity';
 import PathComponent from './path';
 import RulerComponent from './ruler';
 import ObservableObject from 'common/object/observable';
@@ -12,6 +13,7 @@ import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'editor/message-types';
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 2;
 const PADDING            = 6;
+const SNAP_MARGIN        = 4;
 
 class ResizerComponent extends React.Component {
 
@@ -21,18 +23,33 @@ class ResizerComponent extends React.Component {
       moving: false
     };
   }
+
+  _zoom(number) {
+    return number / this.props.zoom;
+  }
+
   startDragging(event) {
     var focus = this.props.entity;
 
-    var computer = focus.getComputer();
+    var guide = EntityGuide.create(focus, this._zoom(SNAP_MARGIN));
 
-    var sx2 = computer.getZoomedStyle().left;
-    var sy2 = computer.getZoomedStyle().top;
+    var style = focus.getComputedStyle();
+
+    var sx2 = style.left;
+    var sy2 = style.top;
 
     startDrag(event, (event, info) => {
 
-      var nx = sx2 + info.delta.x;
-      var ny = sy2 + info.delta.y;
+      var nx = sx2 + this._zoom(info.delta.x);
+      var ny = sy2 + this._zoom(info.delta.y);
+
+      var bounds = guide.snap({
+        left   : nx,
+        top    : ny,
+        width  : style.width,
+        height : style.height
+      });
+
 
       // TODO - implement tug here. Something like this. Can
       // be a fragment
@@ -40,7 +57,7 @@ class ResizerComponent extends React.Component {
       //   nx = 425;
       // }
 
-      this.moveTarget(nx, ny);
+      this.moveTarget(bounds.left, bounds.top);
     });
   }
 
@@ -128,7 +145,7 @@ class ResizerComponent extends React.Component {
 
   moveTarget(left, top) {
     this._isMoving();
-    this.props.app.focus.setPositionFromFixedPoint({
+    this.props.app.focus.getComputer().setPositionFromAbsolutePoint({
       left : left,
       top  : top
     });

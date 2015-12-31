@@ -20,6 +20,12 @@ class Node extends BaseObject {
     return this._children;
   }
 
+  get root() {
+    var p = this;
+    while (p.parent) p = p.parent;
+    return p;
+  }
+
   /**
    * finds one nested node
    */

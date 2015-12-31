@@ -16,10 +16,6 @@ class DisplayEntitiyComputer extends BaseObject {
     throw new Error('getStyle must be overridden');
   }
 
-  setPositionFromFixedPoint(point) {
-    throw new Error('setPositionFromFixedPoint must be overridden');
-  }
-
   setBounds(bounds) {
     throw new Error('setBounds must be overridden');
   }
