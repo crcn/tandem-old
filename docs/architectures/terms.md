@@ -11,7 +11,7 @@ Events have a beginning and an end. This means that all events fire off a stream
 
 #### Streams
 
-- i/o streams. Everything is a stream. Streams are asynchronous, and are initialized by an event. 
+- i/o streams. Everything is a stream. Streams are asynchronous, and are initialized by an event.
 
 #### Inputs
 
@@ -20,3 +20,17 @@ Events have a beginning and an end. This means that all events fire off a stream
 #### Outputs
 
 - Connections on events.
+
+#### Entity
+
+- A representation of some thing that acts as an instruction for code
+to be transpiled into some other language. 
+
+#### Fragment
+
+- A unit or component fragment. Abstraction of Abstract factory pattern, and
+ other design patterns. 
+ 
+#### Notifier
+
+- object which notifies of a particular event

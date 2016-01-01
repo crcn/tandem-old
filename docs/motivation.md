@@ -15,6 +15,9 @@
 - UI augments web dev, not abstract it. You know exactly what's going on.
 - manually edit HTML & CSS code.
 - live cross-browser visual testing without leaving editor.
+- smaller app sizes
+- faster loads
+- fewer dependencies
 
 #### Philosophy
 

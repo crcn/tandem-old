@@ -48,8 +48,6 @@ function create({ app }) {
     // no item? ignore
     if (!message.target) return;
 
-    console.log(message.target.type);
-
     var fragment = app.fragments.queryOne(
       createSelectionQuery(message.target.type)
     );
@@ -60,7 +58,7 @@ function create({ app }) {
 
     requestAnimationFrame(() => {
       app.setProperties({
-        focus: selection
+        focus: message.target
       })
     });
   }
