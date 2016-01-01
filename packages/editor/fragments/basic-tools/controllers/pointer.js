@@ -20,7 +20,7 @@ class PointerTool extends ObservableObject {
 
   notifyEntityClick(message) {
     // TODO - check multi selection
-    this.notifier.notify(SetFocusMessage.create(message.entity));
+    this.notifier.notify(SetFocusMessage.create(message.entity, message.shiftKey));
   }
 
   notifyEntityDoubleClick(message) {

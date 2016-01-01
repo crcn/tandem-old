@@ -19,6 +19,7 @@ class StageComponent extends React.Component {
     var y = (event.clientY - rect.top * this.props.app.preview.zoom) / this.props.app.preview.zoom;
 
     this.props.app.preview.notify({
+      ...event,
       type: ENTITY_PREVIEW_CLICK,
       entity: this.props.app.rootEntity.find(
         sift({ id: nodeId })

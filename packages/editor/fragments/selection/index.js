@@ -12,6 +12,10 @@ import {
   TypeNotifier
 } from 'common/notifiers';
 
+import {
+  createSelectionQuery
+} from 'editor/fragment/queries';
+
 /**
  * selection handler whenever a user focuses on a given entity
  */
@@ -29,7 +33,35 @@ function create({ app }) {
 
   app.notifier.push(TypeNotifier.create(SET_FOCUS, setFocus));
 
+  // TODO - add shift key command handler here
+
   function setFocus(message) {
-    console.log('set focus!');
+    console.log(message.multiSelect);
+
+    var selection = app.focus;
+
+
+    app.setProperties({
+      focus: void 0
+    });
+
+    // no item? ignore
+    if (!message.target) return;
+
+    console.log(message.target.type);
+
+    var fragment = app.fragments.queryOne(
+      createSelectionQuery(message.target.type)
+    );
+
+    var selection = fragment.factory.create();
+
+    selection.push(message.target);
+
+    requestAnimationFrame(() => {
+      app.setProperties({
+        focus: selection
+      })
+    });
   }
 }

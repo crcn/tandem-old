@@ -48,37 +48,10 @@ class Application extends BaseApplication {
 
   notify(message) {
     switch(message.type) {
-      case SET_FOCUS       : return this._setFocus(message.target);
       case SET_ROOT_ENTITY : return this.setProperties({
         rootEntity: message.entity
       });
     }
-  }
-
-  /**
-   *
-   * @param item the item to focus on
-   * @deprecated handled by selection fragment instead
-   * @private
-   */
-
-  _setFocus(item) {
-
-    // turn off current focus immediately. Fixes a
-    // NULL exception bug when rAF fires and the focused element
-    // does *not* actually exist as a child of a root entity
-    this.setProperties({
-      focus: void 0
-    });
-
-    // wait for rAF.
-    // TODO - add this in runloop. This feels like
-    // broken abstraction.
-    requestAnimationFrame(() => {
-      this.setProperties({
-        focus: item
-      });
-    });
   }
 }
 

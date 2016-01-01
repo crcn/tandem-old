@@ -25,7 +25,7 @@ export class FactoryFragment extends Fragment {
     super({
       ...properties,
       factory: {
-        create: (props, ...args) => {
+        create: (props = {}, ...args) => {
           props.fragmentId = this.id;
           return factory.create(props, ...args);
         }
@@ -176,5 +176,19 @@ export class EntityFragment extends FactoryFragment {
 export class UnitFragment extends Fragment {
   constructor(unit) {
     super({ id: unit + 'UnitFragment', type: 'unit', unit: unit, label: unit, value: unit });
+  }
+}
+
+
+/**
+ * A selection is an object that the user is focused on
+ */
+
+export class SelectionFragment extends FactoryFragment {
+  constructor(properties) {
+    super({
+      type: 'selection',
+      ...properties
+    });
   }
 }

@@ -17,19 +17,48 @@ export class RootEntityMessage extends BaseMessage {
   }
 }
 
+/**
+ * Clipboard paste message
+ */
+
 export class PasteMessage extends BaseMessage {
+
+  /**
+   * @param {*} data the raw clipboard data
+   */
+
   constructor(data) {
     super(PASTE, { data: data });
   }
 }
 
+/**
+ * Sets the current application focus
+ */
+
 export class SetFocusMessage extends BaseMessage {
-  constructor(target) {
-    super(SET_FOCUS, { target: target });
+
+  /**
+   *
+   * @param {Entity} target the target entity to set focus to
+   * @param {Boolean} multiSelect TRUE if selecting multiple items
+   */
+
+  constructor(target, multiSelect = false) {
+    super(SET_FOCUS, { target: target, multiSelect });
   }
 }
 
+/**
+ * Sets the current stage tool (pointer, text, and others)
+ */
+
 export class SetToolMessage extends BaseMessage {
+
+  /**
+   * @param {Tool} tool the tool to select
+   */
+
   constructor(tool) {
     super(SET_TOOL, { tool: tool });
   }

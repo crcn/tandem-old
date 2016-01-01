@@ -2,6 +2,7 @@ import {
   Fragment,
   UnitFragment,
   EntityFragment,
+  SelectionFragment,
   ComponentFragment,
   KeyCommandFragment,
   ApplicationFragment,
@@ -11,9 +12,11 @@ import {
 
 import inflection from 'inflection';
 
+import ComponentSelection from './selection/component';
 import FontInputComponent from './components/style-inputs/font';
 import TextInputComponent from 'common/components/inputs/text';
 import UnitInputComponent from 'common/components/inputs/unit';
+
 import ColorPickerComponent from 'common/components/inputs/color-picker';
 import TextAlignInputComponent from './components/style-inputs/text-align';
 import BackgroundInputComponent from './components/style-inputs/background';
@@ -37,6 +40,7 @@ export default ApplicationFragment.create({
       registerCommands(app);
       registerStyleInputs(app);
       registerUnits(app);
+      registerSelectors(app);
     }
   }
 });
@@ -244,6 +248,16 @@ function createStyleToggler(app, name, onValue, offValue) {
       [name]: app.focus.getStyle()[name] === onValue ? offValue : onValue
     });
   })
+}
+
+function registerSelectors(app) {
+  app.fragments.push(
+    SelectionFragment.create({
+      id     : 'componentSelection',
+      entityType: 'component',
+      factory: ComponentSelection
+    })
+  )
 }
 
 

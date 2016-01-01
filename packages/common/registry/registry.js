@@ -19,10 +19,14 @@ class Registry extends BaseCollection {
   }
 
   query(search) {
+
+    // TODO - warn if search if a POJO
     return this.filter(this._createFilter(search));
   }
 
   queryOne(search) {
+
+    // TODO - warn if search if a POJO
     return this.find(this._createFilter(search));
   }
 
