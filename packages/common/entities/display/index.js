@@ -1,4 +1,4 @@
-import Entity from 'editor/entities/base';
+import Entity from 'common/entities/base';
 import { ChangeMessage } from 'base/message-types';
 
 /**

@@ -2,85 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1645e756-34d6-4ca1-a882-ecc687184605" name="Default" comment="various linting, more jsdocs&#10;">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/layers-pane/index.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/index.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/index.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/index.js" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/index.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/packages/editor/fragments/panes/index.js" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/components/preview/entity.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/components/preview/entity.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/components/preview/footer/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/components/preview/footer/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/components/preview/footer/index.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/components/preview/footer/index.scss" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/components/preview/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/components/preview/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/components/preview/index.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/components/preview/index.scss" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/components/preview/preview.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/components/preview/preview.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/components/preview/stage.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/components/preview/stage.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/components/preview/stage.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/components/preview/stage.scss" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/components/preview/toolbar/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/components/preview/toolbar/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/components/preview/toolbar/index.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/components/preview/toolbar/index.scss" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/components/preview/toolbar/tool.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/components/preview/toolbar/tool.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/components/preview/tools/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/components/preview/tools/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/components/preview/tools/index.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/components/preview/tools/index.scss" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/facades/preview.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/facades/preview.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/guide/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/guide/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/guide/index.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/guide/index.scss" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/guides/base.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/guides/base.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/guides/collection.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/guides/collection.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/guides/entity-test.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/guides/entity-test.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/guides/entity.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/guides/entity.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/index.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/index.scss" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/line/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/line/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/line/index.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/line/index.scss" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/path.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/path.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/ruler/calculate-distances-test.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/ruler/calculate-distances-test.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/ruler/calculate-distances.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/ruler/calculate-distances.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/ruler/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/ruler/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/resizer/ruler/index.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/ruler/index.scss" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/text/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/text/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/components/text/index.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/text/index.scss" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/controllers/pointer.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/controllers/pointer.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/controllers/text-edit.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/controllers/text-edit.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/controllers/text.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/controllers/text.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/basic-tools/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/index.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/key-commands/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/key-commands/index.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/css-units/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/css-units/index.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/key-commands/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/key-commands/index.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/layer-labels/components/text/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/layer-labels/components/text/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/layer-labels/components/text/index.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/layer-labels/components/text/index.scss" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/layer-labels/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/layer-labels/index.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/preview-reps/components/entity/entity-computer.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/preview-reps/components/entity/entity-computer.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/preview-reps/components/entity/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/preview-reps/components/entity/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/preview-reps/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/preview-reps/index.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/property-pane/categories.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/property-pane/categories.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/property-pane/components/style-pane/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/property-pane/components/style-pane/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/property-pane/fragments/style-inputs/components/background/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/property-pane/fragments/style-inputs/components/background/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/property-pane/fragments/style-inputs/components/background/index.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/property-pane/fragments/style-inputs/components/background/index.scss" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/property-pane/fragments/style-inputs/components/font/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/property-pane/fragments/style-inputs/components/font/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/property-pane/fragments/style-inputs/components/origin/origin.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/property-pane/fragments/style-inputs/components/origin/origin.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/property-pane/fragments/style-inputs/components/origin/origin.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/property-pane/fragments/style-inputs/components/origin/origin.scss" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/property-pane/fragments/style-inputs/components/text-align/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/property-pane/fragments/style-inputs/components/text-align/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/property-pane/fragments/style-inputs/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/property-pane/fragments/style-inputs/index.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/fragments/property-pane/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/property-pane/index.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/index.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/entities/element.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/element.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/entities/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/index.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/entities/root.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/root.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/entities/text.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/text.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/fonts/font.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/fonts/font.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/fonts/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/fonts/index.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/index.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/html-entities/selection/component.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/selection/component.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/panes/components/layer-pane/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/layers-pane/components/layers/index.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/panes/components/layer-pane/index.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/layers-pane/components/layers/index.scss" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/panes/components/layer-pane/layer.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/layers-pane/components/layers/layer.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/fragments/panes/components/layer-pane/layer.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/layers-pane/components/layers/layer.scss" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/packages/translators/README.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/packages/translators/html/ast/html-element.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/packages/translators/html/ast/html-node.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/packages/translators/html/ast/html-text.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/packages/translators/html/index.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/packages/translators/html/test/basic-test.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/packages/translators/html/test/utils/stringify-node.js" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/entities/base.js" afterPath="$PROJECT_DIR$/packages/common/entities/base.js" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/entities/display/computer.js" afterPath="$PROJECT_DIR$/packages/common/entities/display/computer.js" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/entities/display/index.js" afterPath="$PROJECT_DIR$/packages/common/entities/display/index.js" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/packages/editor/entities/index.js" afterPath="$PROJECT_DIR$/packages/common/entities/index.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/app.js" afterPath="$PROJECT_DIR$/packages/editor/app.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/clipboard/fragments/handle-paste/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/clipboard/fragments/handle-paste/index.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/ruler/calculate-distances-test.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/ruler/calculate-distances-test.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/controllers/text.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/controllers/text.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/preview-reps/components/entity/entity-computer.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/preview-reps/components/entity/entity-computer.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/element.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/element.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/root.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/root.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/text.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/text.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/history/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/history/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/key-commander/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/key-commander/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/selection/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/selection/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/settings/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/settings/index.js" />
     </list>
     <ignored path="interface-builder.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -101,71 +43,81 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/packages/editor/app.js">
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/clipboard/fragments/handle-paste/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.26666668">
-              <caret line="12" column="33" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="4" column="56" selection-start-line="4" selection-start-column="56" selection-end-line="4" selection-end-column="56" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="calculate-distances-test.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/ruler/calculate-distances-test.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="1" column="37" selection-start-line="1" selection-start-column="37" selection-end-line="1" selection-end-column="37" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="text.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/controllers/text.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="1" column="37" selection-start-line="1" selection-start-column="37" selection-end-line="1" selection-end-column="37" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="entity-computer.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/preview-reps/components/entity/entity-computer.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="45" selection-start-line="0" selection-start-column="45" selection-end-line="0" selection-end-column="45" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="root.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/root.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="30" selection-start-line="0" selection-start-column="30" selection-end-line="0" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="element.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/element.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="37" selection-start-line="0" selection-start-column="37" selection-end-line="0" selection-end-column="37" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="text.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/text.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="37" selection-start-line="0" selection-start-column="37" selection-end-line="0" selection-end-column="37" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/index.js">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/history/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="16" column="17" selection-start-line="16" selection-start-column="17" selection-end-line="16" selection-end-column="17" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="4" column="72" selection-start-line="4" selection-start-column="72" selection-end-line="4" selection-end-column="72" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/layers-pane/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/clipboard/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="19" column="12" selection-start-line="19" selection-start-column="12" selection-end-line="19" selection-end-column="12" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="12" column="22" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="23" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/message-types/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="17" column="1" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
+              <caret line="20" column="54" selection-start-line="20" selection-start-column="54" selection-end-line="20" selection-end-column="54" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -174,31 +126,23 @@
         </entry>
       </file>
       <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/index.js">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragment/queries/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="4" column="61" selection-start-line="4" selection-start-column="61" selection-end-line="4" selection-end-column="61" />
+              <caret line="14" column="10" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/develop/index.js">
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragment/types/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="13" column="26" selection-start-line="13" selection-start-column="26" selection-end-line="13" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/develop/fragments/test-project/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-              <folding />
+            <state vertical-scroll-proportion="-2.8247864">
+              <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -218,13 +162,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/docs/architectures/terms.md" />
-        <option value="$PROJECT_DIR$/docs/architecture.md" />
-        <option value="$PROJECT_DIR$/docs/architectures/mental-models.md" />
-        <option value="$PROJECT_DIR$/docs/names.md" />
-        <option value="$PROJECT_DIR$/karma.config.js" />
-        <option value="$PROJECT_DIR$/packages/editor/fragments/basic-dom-entities/fragments/index.js" />
-        <option value="$PROJECT_DIR$/packages/editor/fragments/basic-dom-entities/fragments/key-commands/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/basic-dom-entities/fragments/entities/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/basic-dom-entities/fragments/editor-panes/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/basic-dom-entities/fragments/preview-reps/components/entity/index.jsx" />
@@ -242,7 +179,6 @@
         <option value="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor-property-pane/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/editor/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/clipboard/index.js" />
-        <option value="$PROJECT_DIR$/packages/editor/fragments/clipboard/fragments/handle-paste/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/clipboard/fragments/key-commands/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/develop/fragments/test-project/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/html-entities/fragments/fonts/index.js" />
@@ -256,7 +192,6 @@
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity-preview/fragments/key-commands/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity-preview/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/html-entities/index.js" />
-        <option value="$PROJECT_DIR$/packages/editor/fragments/history/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/selection/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/key-commander/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/panes/index.js" />
@@ -269,6 +204,15 @@
         <option value="$PROJECT_DIR$/packages/editor/fragments/develop/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/index.js" />
+        <option value="$PROJECT_DIR$/packages/common/entities/display/index.js" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/clipboard/fragments/handle-paste/index.js" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/ruler/calculate-distances-test.js" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/controllers/text.js" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/preview-reps/components/entity/entity-computer.js" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/root.js" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/element.js" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/text.js" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/history/index.js" />
       </list>
     </option>
   </component>
@@ -352,682 +296,8 @@
               <option name="myItemId" value="packages" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="message-types" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="settings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="key-commander" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="history" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="entity" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="entity" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="html" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="entity" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="html" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="selection" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="entity" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="html" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fonts" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="entity" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="html" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="entities" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="entity" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="html" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="entity" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="html" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="entity" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="html" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="css-units" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="entity" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="entity" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="preview" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="entity" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="develop" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="develop" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="clipboard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interface-builder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="packages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="clipboard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1050,6 +320,10 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="fragment" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="types" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1092,14 +366,6 @@
               <option name="myItemId" value="packages" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="entities" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
@@ -1136,15 +402,15 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/packages/common" />
       <recent name="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments" />
       <recent name="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments" />
       <recent name="$PROJECT_DIR$/packages/editor/fragments/develop/fragments" />
       <recent name="$PROJECT_DIR$/packages/editor/fragments/develop" />
-      <recent name="$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/layers-pane" />
     </key>
   </component>
   <component name="RunManager" selected="Node.js.computer.js">
-    <configuration default="false" name="computer.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" path-to-node="/usr/local/bin/node" path-to-js-file="computer.js" working-dir="$PROJECT_DIR$/packages/editor/entities/display">
+    <configuration default="false" name="computer.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" path-to-node="/usr/local/bin/node" path-to-js-file="$PROJECT_DIR$/packages/common/entities/display/computer.js" working-dir="$PROJECT_DIR$/packages/common/entities/display">
       <method />
     </configuration>
     <configuration default="true" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
@@ -1244,6 +510,7 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35010707" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36712328" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32830188" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32739726" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -1257,7 +524,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5958904" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -1291,50 +557,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/docs/notes.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/docs/motivation.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.827586">
-          <caret line="19" column="20" selection-start-line="19" selection-start-column="20" selection-end-line="19" selection-end-column="20" />
-        </state>
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/docs/names.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.275862">
-          <caret line="16" column="11" selection-start-line="16" selection-start-column="11" selection-end-line="16" selection-end-column="11" />
-        </state>
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/webpack.config.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="31" column="26" selection-start-line="31" selection-start-column="26" selection-end-line="31" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gulpfile.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.5555553">
-          <caret line="10" column="20" selection-start-line="10" selection-start-column="20" selection-end-line="10" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/karma.config.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1353,6 +575,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1360,14 +583,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="11" column="36" selection-start-line="11" selection-start-column="36" selection-end-line="11" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/preview-reps/components/entity/entity-computer.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="117" column="0" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1399,13 +614,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/element.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1436,6 +645,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-10.555555">
           <caret line="92" column="22" selection-start-line="92" selection-start-column="19" selection-end-line="92" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1454,26 +664,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/clipboard/fragments/handle-paste/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="48" selection-start-line="3" selection-start-column="48" selection-end-line="3" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/fragments/clipboard/fragments/key-commands/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/controllers/text.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="18" column="11" selection-start-line="18" selection-start-column="11" selection-end-line="18" selection-end-column="11" />
           <folding />
         </state>
       </provider>
@@ -1534,14 +728,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragment/queries/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="10" column="3" selection-start-line="10" selection-start-column="3" selection-end-line="10" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-20.62963">
@@ -1558,25 +744,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/history/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="36.666668">
-          <caret line="23" column="8" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="8" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/entry.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/entities/base.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -1692,9 +860,109 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.26666668">
+        <state vertical-scroll-proportion="-6.6666665">
           <caret line="12" column="33" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/common/entities/base.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="20" column="19" selection-start-line="20" selection-start-column="19" selection-end-line="20" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/common/entities/display/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="26" selection-start-line="0" selection-start-column="26" selection-end-line="0" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/clipboard/fragments/handle-paste/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="4" column="56" selection-start-line="4" selection-start-column="56" selection-end-line="4" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/components/resizer/ruler/calculate-distances-test.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1" column="37" selection-start-line="1" selection-start-column="37" selection-end-line="1" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/editor/fragments/preview/fragments/basic-tools/controllers/text.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1" column="37" selection-start-line="1" selection-start-column="37" selection-end-line="1" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/editor/fragments/preview-reps/components/entity/entity-computer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="45" selection-start-line="0" selection-start-column="45" selection-end-line="0" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/root.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="30" selection-start-line="0" selection-start-column="30" selection-end-line="0" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/element.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="37" selection-start-line="0" selection-start-column="37" selection-end-line="0" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/fragments/html/fragments/entities/text.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="37" selection-start-line="0" selection-start-column="37" selection-end-line="0" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/history/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="20" column="54" selection-start-line="20" selection-start-column="54" selection-end-line="20" selection-end-column="54" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragment/queries/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="10" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragment/types/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.8247864">
+          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

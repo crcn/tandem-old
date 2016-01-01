@@ -1,5 +1,5 @@
 import BaseObject from 'common/object/base';
-import { DisplayEntity } from 'editor/entities';
+import { DisplayEntity } from 'common/entities';
 import {
   SetToolMessage,
   SetFocusMessage,

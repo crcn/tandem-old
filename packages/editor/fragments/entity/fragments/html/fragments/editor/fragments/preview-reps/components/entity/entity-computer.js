@@ -1,4 +1,4 @@
-import { DisplayEntityComputer } from 'editor/entities';
+import { DisplayEntityComputer } from 'common/entities';
 import { translateStyleToIntegers } from 'common/utils/html/css/translate-style';;
 
 import {

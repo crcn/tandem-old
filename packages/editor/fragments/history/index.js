@@ -18,7 +18,7 @@ import { create as createKeyCommandFragments } from './fragments/key-commands';
 import ObservableCollection from 'common/collection/observable';
 import { CallbackNotifier, TypeNotifier } from 'common/notifiers';
 
-import { Entity, deserialize } from 'editor/entities';
+import { Entity, deserialize } from 'common/entities';
 import { SET_ROOT_ENTITY, SetFocusMessage } from 'editor/message-types';
 
 import {

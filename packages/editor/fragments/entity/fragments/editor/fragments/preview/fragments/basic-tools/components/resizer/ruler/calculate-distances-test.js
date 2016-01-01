@@ -1,5 +1,5 @@
 import expect from 'expect.js';
-import BaseDisplayEntity from 'editor/entities/display';
+import BaseDisplayEntity from 'common/entities/display';
 import calculateDistances from './calculate-distances';
 
 /*

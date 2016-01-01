@@ -1,4 +1,4 @@
-import { Entity } from 'editor/entities';
+import { Entity } from 'common/entities';
 
 class RootEntity extends Entity {
   constructor(properties, children) {
