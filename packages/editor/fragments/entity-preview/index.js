@@ -11,6 +11,8 @@ import { CallbackNotifier } from 'common/notifiers';
 import React from 'react';
 import Preview from './facades/preview';
 import PreviewComponent from './components/preview';
+import { create as createBasicToolsFragment } from './fragments/basic-tools';
+import { create as createKeyCommandsFragment } from './fragments/key-commands';
 
 export default ApplicationFragment.create({
   id: 'componentPreview',
@@ -26,27 +28,14 @@ export default ApplicationFragment.create({
 
       app.notifier.push(preview);
 
-      app.fragments.push(PreviewComponentFragment.create({
-        id             : 'basicPreview',
-        componentClass : PreviewComponent
-      }));
-
       app.fragments.push(
-        KeyCommandFragment.create({
-          id         : 'zoomInKeyCommand',
-          keyCommand : 'meta+=',
-          notifier   : CallbackNotifier.create(
-            preview.zoomIn.bind(preview)
-          )
-        }),
-        KeyCommandFragment.create({
-          id         : 'zoomOutKeyCommand',
-          keyCommand : 'meta+-',
-          notifier   : CallbackNotifier.create(
-            preview.zoomOut.bind(preview)
-          )
+        ...createBasicToolsFragment({ app }),
+        ...createKeyCommandsFragment({ app, preview }),
+        PreviewComponentFragment.create({
+          id             : 'basicPreview',
+          componentClass : PreviewComponent
         })
       );
     }
   }
-})
+});

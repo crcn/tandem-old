@@ -48,13 +48,13 @@ function create({ app }) {
     // no item? ignore
     if (!message.target) return;
 
-    var fragment = app.fragments.queryOne(
-      createSelectionQuery(message.target.type)
-    );
+    //var fragment = app.fragments.queryOne(
+    //  createSelectionQuery(message.target.type)
+    //);
+    //
+    //var selection = fragment.factory.create();
 
-    var selection = fragment.factory.create();
-
-    selection.push(message.target);
+    //selection.push(message.target);
 
     requestAnimationFrame(() => {
       app.setProperties({

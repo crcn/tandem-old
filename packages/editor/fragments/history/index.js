@@ -8,7 +8,9 @@
 
 import sift from 'sift';
 import debounce from 'lodash/function/debounce';
-import HistorySliderComponent from './components/slider';
+
+import { create as createKeyCommandFragments } from './fragments/key-commands';
+import { create as createSliderFragments } from './fragments/slider';
 
 // used for history. See this: https://github.com/creationix/js-git
 // import createMemDb from 'js-git/mixins/mem-db';
@@ -42,6 +44,7 @@ function create({ app }) {
   });
 
   history.move = move;
+  history.shift = shift;
 
   app.notifier.push(TypeNotifier.create(SET_ROOT_ENTITY, (message) => {
     history.position = 0;
@@ -119,21 +122,7 @@ function create({ app }) {
   }));
 
   app.fragments.push(
-    KeyCommandFragment.create({
-      id         : 'undoCommand',
-      keyCommand : 'command+z',
-      notifier   : CallbackNotifier.create(shift.bind(this, -1))
-    }),
-    KeyCommandFragment.create({
-      id         : 'redoCommand',
-      keyCommand : 'command+y',
-      notifier   : CallbackNotifier.create(shift.bind(this, 1))
-    }),
-    ComponentFragment.create({
-      history        : history,
-      id             : 'historySliderComponent',
-      paneType       : 'footer',
-      componentClass : HistorySliderComponent
-    })
+    ...createKeyCommandFragments({ app, history }),
+    ...createSliderFragments({ app, history })
   );
 }
