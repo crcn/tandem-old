@@ -27,7 +27,6 @@ export default ApplicationFragment.create({
   }
 });
 
-
 function create({ app }) {
   console.log('create selection');
 

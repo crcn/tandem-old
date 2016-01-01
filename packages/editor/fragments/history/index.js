@@ -9,8 +9,8 @@
 import sift from 'sift';
 import debounce from 'lodash/function/debounce';
 
-import { create as createKeyCommandFragments } from './fragments/key-commands';
 import { create as createSliderFragments } from './fragments/slider';
+import { create as createKeyCommandFragments } from './fragments/key-commands';
 
 // used for history. See this: https://github.com/creationix/js-git
 // import createMemDb from 'js-git/mixins/mem-db';
@@ -18,8 +18,8 @@ import { create as createSliderFragments } from './fragments/slider';
 import ObservableCollection from 'common/collection/observable';
 import { CallbackNotifier, TypeNotifier } from 'common/notifiers';
 
-import { SET_ROOT_ENTITY, SetFocusMessage } from 'editor/message-types';
 import { Entity, deserialize } from 'editor/entities';
+import { SET_ROOT_ENTITY, SetFocusMessage } from 'editor/message-types';
 
 import {
   ApplicationFragment,

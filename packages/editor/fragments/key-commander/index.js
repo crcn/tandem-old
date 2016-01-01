@@ -1,8 +1,12 @@
 import mousetrap from 'mousetrap';
 import { INITIALIZE } from 'base/message-types';
-import { ApplicationFragment } from 'editor/fragment/types';
 import { ALL_KEY_COMMANDS } from 'editor/fragment/queries';
+import { ApplicationFragment } from 'editor/fragment/types';
 import { TypeNotifier, CallbackNotifier } from 'common/notifiers';
+
+/**
+ * central manager for key commands
+ */
 
 export default ApplicationFragment.create({
   id: 'shortcuts',

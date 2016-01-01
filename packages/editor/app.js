@@ -7,15 +7,13 @@ import ReactDOM from 'react-dom';
 
 import BaseApplication from 'base/app';
 
-import PanesFragment from './fragments/panes';
+import EntityFragment from './fragments/entity';
 import DevelopFragment from './fragments/develop';
 import HistoryFragment from './fragments/history';
 import SettingsFragment from './fragments/settings';
 import SelectionFragment from './fragments/selection';
 import ClipboardFragment from './fragments/clipboard';
-import HTMLEntitesFragment from './fragments/html-entities';
 import KeyCommanderFragment from './fragments/key-commander';
-import EntityPreviewFragment from './fragments/entity-preview';
 
 import MainComponent from './components/main';
 
@@ -24,15 +22,13 @@ import { SET_FOCUS, SET_ROOT_ENTITY } from 'editor/message-types';
 class Application extends BaseApplication {
 
   static fragments = BaseApplication.fragments.concat([
-    PanesFragment,
+    EntityFragment,
     DevelopFragment,
     HistoryFragment,
     SettingsFragment,
     ClipboardFragment,
     SelectionFragment,
-    HTMLEntitesFragment,
-    KeyCommanderFragment,
-    EntityPreviewFragment
+    KeyCommanderFragment
   ]);
 
   didInitialize() {

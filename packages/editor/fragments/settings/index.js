@@ -4,6 +4,13 @@ import ObservableObject from 'common/object/observable';
 import { CallbackNotifier } from 'common/notifiers';
 import { ApplicationFragment } from 'editor/fragment/types';
 
+/**
+ * basic editor config settings such as sidebar widths, panes open
+ * and other states.
+ *
+ * TODO: flesh this bugger out -- this is hardly done.
+ */
+
 export default ApplicationFragment.create({
   id: 'applicationSettings',
   factory: {
