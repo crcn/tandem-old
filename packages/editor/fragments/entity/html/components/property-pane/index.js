@@ -22,7 +22,6 @@ export function create({ app }) {
   ];
 }
 
-
 function createStyleInputFragments({ app }) {
   var fragments = [];
 
