@@ -15,30 +15,6 @@ import {
 export function create({ app }) {
 
   return [
-
-    // generic
-    // TODO - move this to its own fragment
-    KeyCommandFragment.create({
-      id         : 'boldCommand',
-      keyCommand : 'backspace+tab',
-      notifier   : CallbackNotifier.create(function() {
-
-        if (!app.focus || !app.focus.componentType || !app.focus.parent) return;
-
-        // FIXME: leaky here. should be able to remove entity
-        // without it being unfocused
-        var focus = app.focus;
-        var focusIndex = focus.parent.children.indexOf(focus);
-
-        var nextSibling = focusIndex ? focus.parent.children[focusIndex - 1] : focus.parent.children[focusIndex + 1];
-
-        app.notifier.notify(SetFocusMessage.create(nextSibling));
-
-        // remove the child deleted
-        focus.parent.children.remove(focus);
-      })
-    }),
-
     // text
     KeyCommandFragment.create({
       id         : 'boldCommand',
