@@ -1,7 +1,7 @@
 import traverse from 'traverse';
-import { PASTE, SetFocusMessage } from 'editor/message-types';
 import { getValue } from 'common/utils/object';
 import { TypeNotifier } from 'common/notifiers';
+import { PASTE, SetFocusMessage } from 'editor/message-types';
 import { deserialize as deserializeEntity } from 'common/entities';
 
 export function create({ app }) {

@@ -4,7 +4,8 @@
 // TODO: diff history - reduce all data to figure out snapshot.
 // Use key frames to reduce diffing amount. (OR use JS-GIT for this)
 
-// TODO - generalize this stuff
+// TODO - generalize this stuff so that it's not specific to *just*
+// entities
 
 // Diff could also be dispatched across the network for realtime Shenanigans.
 

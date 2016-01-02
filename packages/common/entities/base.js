@@ -3,6 +3,7 @@ import Node from 'common/node';
 import assert from 'assert';
 import { clone } from 'common/utils/object';
 import BaseObject from 'common/object/base';
+import FragmentRegistry from 'common/registry';
 
 /**
  * deserializes a JSON object into an Entity
@@ -46,6 +47,16 @@ class Entity extends Node {
       id: properties.id || uuid.v1(),
       ...properties
     }, children);
+  }
+
+  /**
+   * entities contain fragments, or pieces that might be representatives
+   * of something else. This could be something like a preview display object, flow-diagram display
+   * object, or similar. They're in the spirit of decorators, but defined as fragments for consistency.
+   */
+
+  get fragments() {
+    return this._fragments || (this._fragments = FragmentRegistry.create());
   }
 
   /**
