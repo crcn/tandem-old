@@ -1,9 +1,9 @@
 import {
-  ApplicationFragment,
-  PreviewComponentFragment,
-  ComponentFragment,
   Fragment,
-  KeyCommandFragment
+  ComponentFragment,
+  KeyCommandFragment,
+  ApplicationFragment,
+  PreviewComponentFragment
 } from 'editor/fragment/types';
 
 import { CallbackNotifier } from 'common/notifiers';
@@ -26,11 +26,11 @@ export function create({ app }) {
   app.notifier.push(preview);
 
   return [
-    ...createBasicToolsFragment({ app }),
+    ...createBasicToolsFragment({ app, preview }),
     ...createKeyCommandsFragment({ app, preview }),
     PreviewComponentFragment.create({
       id             : 'basicPreview',
       componentClass : PreviewComponent
     })
   ];
-};
+}
