@@ -23,6 +23,32 @@ class Preview {
     return this.getBounds();
   }
 
+  setBounds(bounds) {
+
+    // if there is only one item, then pass this stuff along
+    if (this.selection.length === 1) return this.selection[0].preview.setBounds(bounds);
+
+    // otherwise reposition the items
+    this.selection.forEach(function(entity) {
+
+      var style = entity.preview.getStyle();
+
+      var left   = Math.max(style.left, style.left);
+      var top    = Math.max(style.top, style.top);
+
+      // scrunch if there is no more room
+      var width  = Math.max(style.width, style.width);
+      var height = Math.min(style.height, style.height);
+
+      entity.preview.setBounds({
+        left: left,
+        top: top,
+        width: width,
+        height: height
+      });
+    });
+  }
+
   getBounds() {
     var allStyles = this.selection.map(function(entity) {
       return entity.preview.getStyle();
@@ -73,6 +99,15 @@ class HTMLEntitySelection extends BaseCollection {
 
   get attributes() {
     return this[0].attributes;
+  }
+
+  serialize() {
+    return {
+      type: 'html-selection',
+      items: this.map(function(entity) {
+        return entity.serialize();
+      })
+    };
   }
 
   getStyle() {

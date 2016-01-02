@@ -4,18 +4,11 @@ import {
   FactoryFragment
 } from 'editor/fragment/types';
 
-import {
-  SET_FOCUS,
-  TOGGLE_FOCUS
-} from 'editor/message-types';
-
-import {
-  TypeNotifier
-} from 'common/notifiers';
-
-import {
-  createSelectionQuery
-} from 'editor/fragment/queries';
+import { toArray } from 'common/utils/object';
+import { TypeNotifier } from 'common/notifiers';
+import { SET_FOCUS, TOGGLE_FOCUS } from 'editor/message-types';
+import { createSelectionQuery } from 'editor/fragment/queries';
+import includes from 'lodash/collection/includes';
 
 /**
  * selection handler whenever a user focuses on a given entity
@@ -50,7 +43,7 @@ function create({ app }) {
     if (!message.target) return;
 
     var fragment = app.fragments.queryOne(
-      createSelectionQuery(message.target.type)
+      createSelectionQuery(message.target)
     );
 
     if (!fragment) {
@@ -66,16 +59,17 @@ function create({ app }) {
     // remove the item from the selection if it currently exists.
     // This is basically a toggle feature
 
-    if (currentSelection.includes(message.target)) {
+    toArray(message.target).forEach(function(target) {
+      if (currentSelection.includes(target)) {
 
-      // ensure that the message is "toggle", not "set"
-      if (message.type === TOGGLE_FOCUS) {
-        currentSelection.remove(message.target);
+        // ensure that the message is "toggle", not "set"
+        if (message.type === TOGGLE_FOCUS) {
+          currentSelection.remove(target);
+        }
+      } else {
+        currentSelection.push(target);
       }
-    } else {
-      currentSelection.push(message.target);
-    }
-
+    });
 
     requestAnimationFrame(() => {
       app.setProperties({

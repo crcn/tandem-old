@@ -4,7 +4,7 @@ design, coding, decoder, design + coding, visual, loop, fidelity, feather, protr
 
 pro, ninja, colorful, visual, fuse, fuze, knot 
 
-perspective, viewport, 
+perspective, viewport, aspect
 
 ### knots
 

@@ -73,6 +73,7 @@ class ResizerComponent extends React.Component {
   }
 
   updatePoint(point) {
+
     var focus = this.props.entity;
 
     var style = focus.preview.getStyle();
@@ -220,7 +221,7 @@ class ResizerComponent extends React.Component {
     return <div className='m-resizer-component'>
 
       <div ref='selection' className='m-resizer-component--selection' style={style} onMouseDown={this.startDragging.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
-        <PathComponent points={points} strokeWidth={strokeWidth} pointRadius={pointRadius} showPoints={true}  />
+        <PathComponent zoom={this.props.zoom} points={points} strokeWidth={strokeWidth} pointRadius={pointRadius} showPoints={true}  />
       </div>
 
       { sections.guides }

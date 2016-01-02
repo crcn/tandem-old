@@ -1,4 +1,5 @@
 import { BaseQuery } from 'common/fragment/queries';
+import { toArray } from 'common/utils/object';
 
 export const ALL_FONTS        = { type: 'font' };
 export const ALL_KEY_COMMANDS = { type: 'keyCommand' };
@@ -11,9 +12,9 @@ export const ALL_KEY_COMMANDS = { type: 'keyCommand' };
  */
 
 
-export function createSelectionQuery(entityType) {
+export function createSelectionQuery(items) {
   return {
-    type      : 'selection',
-    entityType: entityType
+    type       : 'selection',
+    entityType : { $all: toArray(items).map(item => item.type) }
   };
 }

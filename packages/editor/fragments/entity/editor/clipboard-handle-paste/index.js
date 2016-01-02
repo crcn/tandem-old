@@ -8,10 +8,7 @@ export function create({ app }) {
   app.notifier.push(TypeNotifier.create(PASTE, paste));
   function paste(message) {
 
-    // FIXME: this is a dirty check. Need to check a type
-    // on pasted item. Possibly look up fragmentId, then check entity
-    // type there. That solution though also has its issues...
-    if (!message.data.props || !message.data.children) return;
+    if (message.data.type !== 'html-selection') return;
 
     traverse.forEach(message.data, function(value) {
 
@@ -24,15 +21,17 @@ export function create({ app }) {
       }
     });
 
-    // clone it!
-    var entity = deserializeEntity(message.data, { }, app.fragments);
+    var entities = message.data.items.map(function(rawData) {
+      return deserializeEntity(rawData, { }, app.fragments);
+    });
 
     var insertIndex;
     var parentEntity;
 
     // if there is an entiy in focus, then add the new entity
     // as a sibling of it
-    if (app.focus) {
+    // TODO - get app.focusContainer or similar
+    if (false && app.focus) {
       parentEntity = app.focus.parent;
       insertIndex  = parentEntity.children.indexOf(app.focus) + 1;
 
@@ -42,10 +41,10 @@ export function create({ app }) {
       insertIndex  = parentEntity.children.length;
     }
 
-    parentEntity.children.splice(insertIndex, 0, entity);
+    parentEntity.children.splice(insertIndex, 0, ...entities);
 
     // focus on our newly pasted item
-    app.notifier.notify(SetFocusMessage.create(entity));
+    app.notifier.notify(SetFocusMessage.create(entities));
   }
 
   return [];
