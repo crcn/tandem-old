@@ -206,9 +206,10 @@ class ResizerComponent extends React.Component {
 
     var cw = (pointRadius + strokeWidth * 2) * 2;
 
+    // offset stroke
     var style = {
-      left     : style.left - cw / 2,
-      top      : style.top - cw / 2
+      left     : style.left - cw / 2 + strokeWidth,
+      top      : style.top - cw / 2 + strokeWidth
     }
 
     var sections = {};

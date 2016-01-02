@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1645e756-34d6-4ca1-a882-ecc687184605" name="Default" comment="various linting, more jsdocs&#10;">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/develop/test-project/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/develop/test-project/index.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/editor/preview/fragments/basic-tools/components/resizer/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/editor/preview/fragments/basic-tools/components/resizer/index.jsx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/editor/preview/fragments/basic-tools/components/resizer/path.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/editor/preview/fragments/basic-tools/components/resizer/path.jsx" />
     </list>
     <ignored path="interface-builder.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -85,6 +84,16 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/selection/index.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="39" column="4" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="4" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="pointer.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/editor/preview/fragments/basic-tools/controllers/pointer.js">
           <provider selected="true" editor-type-id="text-editor">
@@ -98,8 +107,18 @@
       <file leaf-file-name="index.jsx" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/editor/preview/fragments/basic-tools/components/resizer/index.jsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.35963303">
-              <caret line="45" column="61" selection-start-line="45" selection-start-column="61" selection-end-line="45" selection-end-column="61" />
+            <state vertical-scroll-proportion="0.39449543">
+              <caret line="211" column="49" selection-start-line="211" selection-start-column="49" selection-end-line="211" selection-end-column="49" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="path.jsx" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/editor/preview/fragments/basic-tools/components/resizer/path.jsx">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="51" column="54" selection-start-line="51" selection-start-column="54" selection-end-line="51" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -157,7 +176,6 @@
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/editor/preview-component/entity-preview.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/editor/layers-pane-component/layers/layer.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/message-types/index.js" />
-        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/editor/preview/fragments/basic-tools/components/resizer/path.jsx" />
         <option value="$PROJECT_DIR$/docs/names.md" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/clipboard/key-commands/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/clipboard/index.js" />
@@ -170,6 +188,7 @@
         <option value="$PROJECT_DIR$/packages/editor/fragments/selection/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/editor/key-commands/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/develop/test-project/index.js" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/editor/preview/fragments/basic-tools/components/resizer/path.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/editor/preview/fragments/basic-tools/components/resizer/index.jsx" />
       </list>
     </option>
@@ -1281,22 +1300,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/editor/preview/fragments/basic-tools/components/resizer/path.jsx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.41958043">
-          <caret line="17" column="42" selection-start-line="17" selection-start-column="42" selection-end-line="17" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/selection/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.559633">
-          <caret line="39" column="4" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/editor/selection/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.36713287">
@@ -1361,10 +1364,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/selection/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="39" column="4" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/editor/preview/fragments/basic-tools/components/resizer/path.jsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="51" column="54" selection-start-line="51" selection-start-column="54" selection-end-line="51" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/editor/preview/fragments/basic-tools/components/resizer/index.jsx">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.35963303">
-          <caret line="45" column="61" selection-start-line="45" selection-start-column="61" selection-end-line="45" selection-end-column="61" />
+        <state vertical-scroll-proportion="0.39449543">
+          <caret line="211" column="49" selection-start-line="211" selection-start-column="49" selection-end-line="211" selection-end-column="49" />
           <folding />
         </state>
       </provider>
