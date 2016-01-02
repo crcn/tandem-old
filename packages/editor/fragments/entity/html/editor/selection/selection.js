@@ -26,26 +26,22 @@ class Preview {
 
   setBounds(bounds) {
 
-    // if there is only one item, then pass this stuff along
-    if (this.selection.length === 1) return this.selection[0].preview.setBounds(bounds);
+    var cbounds = this.getBounds();
 
     // otherwise reposition the items
     this.selection.forEach(function(entity) {
-
       var style = entity.preview.getStyle();
 
-      var left   = Math.max(style.left, style.left);
-      var top    = Math.max(style.top, style.top);
-
-      // scrunch if there is no more room
-      var width  = Math.max(style.width, style.width);
-      var height = Math.min(style.height, style.height);
+      var percLeft   = (style.left - bounds.left) / cbounds.width;
+      var percTop    = (style.top  - bounds.top)  / cbounds.height;
+      var percWidth  = style.width / cbounds.width;
+      var percHeight = style.height / cbounds.height;
 
       entity.preview.setBounds({
-        left: left,
-        top: top,
-        width: width,
-        height: height
+        left: bounds.left + bounds.width * percLeft,
+        top: bounds.top + bounds.height * percTop,
+        width: bounds.width * percWidth,
+        height: bounds.height * percHeight
       });
     });
   }
