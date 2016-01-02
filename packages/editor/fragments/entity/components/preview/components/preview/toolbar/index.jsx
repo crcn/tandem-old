@@ -10,7 +10,8 @@ class ToolsComponent extends React.Component {
       <ul className='m-toolbar-tools'>
         {
           this.props.app.fragments.query({
-            type: 'previewTool'
+            type : 'previewTool',
+            icon : {$ne: void 0 }
           }).map((fragment) => {
             return <ToolComponent fragment={fragment} key={fragment.id} preview={this.props.app.preview} />;
           })

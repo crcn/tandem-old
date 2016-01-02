@@ -33,12 +33,13 @@ class PointerTool extends ObservableObject {
 
     var fragment = this.app.fragments.queryOne({
       type       : 'previewTool',
-      toolType   : 'edit'
-      //entityType : message.preview.entity ? message.preview.enti
+      toolType   : 'edit',
+      entityComponentType: message.entity.componentType
     });
 
-    if (!fragment.tool) {
+    if (!fragment) {
       console.warn('entity %s is not editable on double click', message.entity.componentType);
+      return;
     }
 
     this.notifier.notify(SetToolMessage.create(fragment.tool));

@@ -36,7 +36,6 @@ function create({ app }) {
 
     var data = copy(event);
     if (data != void 0) {
-      console.log('set clip');
       event.clipboardData.setData('text/x-entity', data);
     }
 

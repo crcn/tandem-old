@@ -40,13 +40,11 @@ export function create({ app, preview }) {
       tool    : textTool
     }),
     Fragment.create({
-      icon    : 'text',
       id      : 'editTextTool',
       type    : 'previewTool',
       tool    : editTextTool,
-      matchesQuery({ entity, type }) {
-        return type === 'previewTool' && entity && (entity.componentType == 'text');
-      }
+      toolType: 'edit',
+      entityComponentType: 'text'
     }),
     KeyCommandFragment.create({
       id         : 'textToolKeyCommand',
@@ -68,8 +66,9 @@ export function create({ app, preview }) {
       id             : 'textToolComponent',
       componentType  : 'tool',
       componentClass : TextToolComponent,
-      toolType       : textTool.type,
-      entityType     : 'component'
+      toolType       : editTextTool.type,
+      entityType     : 'component',
+      entityComponentType: 'text'
     }),
     ComponentFragment.create({
       id             : 'resizerToolComponent',

@@ -3,6 +3,8 @@ import { SetToolMessage } from 'editor/message-types';
 
 class TextEditTool extends BaseObject {
 
+  type = 'edit';
+
   notify(message) {
     switch(message.type) {
       case 'textEditComplete': this.notifyTextEditComplete(message);

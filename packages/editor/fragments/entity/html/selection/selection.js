@@ -86,6 +86,10 @@ class HTMLEntitySelection extends BaseCollection {
     })
   }
 
+  get value() {
+    return this[0].value;
+  }
+
   get type () {
     return this[0].type;
   }
@@ -96,6 +100,12 @@ class HTMLEntitySelection extends BaseCollection {
 
   get attributes() {
     return this[0].attributes;
+  }
+
+  setProperties(properties) {
+    for (var item of this) {
+      item.setProperties(properties);
+    }
   }
 
   serialize() {
