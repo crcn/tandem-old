@@ -64,8 +64,8 @@ export class ToggleFocusMessage extends BaseMessage {
    * @param {Boolean} multiSelect TRUE if selecting multiple items
    */
 
-  constructor(target) {
-    super(TOGGLE_FOCUS, { target: target });
+  constructor(target, multiSelect = false) {
+    super(TOGGLE_FOCUS, { target: target, multiSelect });
   }
 }
 

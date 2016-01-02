@@ -42,7 +42,6 @@ function create({ app }) {
 
     var multiSelect = message.multiSelect;
 
-    console.log(multiSelect);
     app.setProperties({
       focus: void 0
     });
@@ -62,7 +61,7 @@ function create({ app }) {
     var selection = fragment.factory.create();
 
     // make sure that the group types match
-    currentSelection = currentSelection && selection.constructor === currentSelection.constructor ? currentSelection : selection;
+    currentSelection = multiSelect && currentSelection && selection.constructor === currentSelection.constructor ? currentSelection : selection;
 
     // remove the item from the selection if it currently exists.
     // This is basically a toggle feature

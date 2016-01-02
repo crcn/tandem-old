@@ -36,7 +36,7 @@ class ResizerComponent extends React.Component {
   }
 
   _zoom(number) {
-    return number * this.props.zoom;
+    return number / this.props.zoom;
   }
 
   startDragging(event) {

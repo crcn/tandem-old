@@ -48,10 +48,6 @@ class Preview {
 
     return bounds;
   }
-
-  getZoomedStyle() {
-    return this.selection[0].preview.getZoomedStyle();
-  }
 }
 
 class HTMLEntitySelection extends BaseCollection {
