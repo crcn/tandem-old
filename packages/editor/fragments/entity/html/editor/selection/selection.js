@@ -1,5 +1,6 @@
 import BaseCollection from 'common/collection';
 import { clone } from 'common/utils/object';
+import { SetFocusMessage } from 'editor/message-types';
 
 class Preview {
   constructor(selection) {
@@ -78,8 +79,8 @@ class Preview {
 
 class HTMLEntitySelection extends BaseCollection {
 
-  constructor() {
-    super();
+  constructor(properties) {
+    super(properties);
     this.preview = new Preview(this);
   }
 
@@ -125,6 +126,18 @@ class HTMLEntitySelection extends BaseCollection {
     });
 
     return selectionStyle;
+  }
+
+  deleteAll() {
+
+    for (var entity of this) {
+      var entityIndex  = entity.parent.children.indexOf(focus);
+      //var nextSibling = entityIndex ? entity.parent.children[entityIndex - 1] : entity.parent.children[entityIndex + 1];
+
+      // remove the child deleted
+      entity.parent.children.remove(entity);
+    }
+
   }
 }
 

@@ -20,8 +20,9 @@ export function create({ app }) {
     // TODO - move this to its own fragment
     KeyCommandFragment.create({
       id         : 'boldCommand',
-      keyCommand : 'backspace',
+      keyCommand : 'backspace+tab',
       notifier   : CallbackNotifier.create(function() {
+
         if (!app.focus || !app.focus.componentType || !app.focus.parent) return;
 
         // FIXME: leaky here. should be able to remove entity

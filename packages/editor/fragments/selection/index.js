@@ -5,7 +5,7 @@ import {
 } from 'editor/fragment/types';
 
 import { toArray } from 'common/utils/object';
-import { TypeNotifier } from 'common/notifiers';
+import { TypeNotifier, CallbackNotifier } from 'common/notifiers';
 import { SET_FOCUS, TOGGLE_FOCUS } from 'editor/message-types';
 import { createSelectionQuery } from 'editor/fragment/queries';
 import includes from 'lodash/collection/includes';
@@ -22,12 +22,28 @@ export default ApplicationFragment.create({
 });
 
 function create({ app }) {
-  console.log('create selection');
 
   app.notifier.push(TypeNotifier.create(SET_FOCUS, setFocus));
   app.notifier.push(TypeNotifier.create(TOGGLE_FOCUS, setFocus));
 
-  // TODO - add shift key command handler here
+  app.fragments.push(
+    KeyCommandFragment.create({
+      id: 'removeSelection',
+      keyCommand: 'backspace',
+      notifier: CallbackNotifier.create(removeSelection)
+    })
+  );
+
+  function removeSelection() {
+    var focus = app.focus;
+
+    app.setProperties({
+      focus: void 0
+    });
+
+    if (focus) focus.deleteAll();
+
+  }
 
   function setFocus(message) {
 
@@ -51,7 +67,9 @@ function create({ app }) {
       return;
     }
 
-    var selection = fragment.factory.create();
+    var selection = fragment.factory.create({
+      notifier: app.notifier
+    });
 
     // make sure that the group types match
     currentSelection = multiSelect && currentSelection && selection.constructor === currentSelection.constructor ? currentSelection : selection;
