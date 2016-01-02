@@ -1,6 +1,7 @@
 import ObservableObject from 'common/object/observable';
 import {
   ENTITY_PREVIEW_CLICK,
+  PREVIEW_STAGE_CLICK,
   ENTITY_PREVIEW_DOUBLE_CLICK,
   SetFocusMessage,
   SetToolMessage
@@ -14,6 +15,7 @@ class PointerTool extends ObservableObject {
   notify(message) {
     switch(message.type) {
       case ENTITY_PREVIEW_CLICK: return this.notifyEntityClick(message);
+      case PREVIEW_STAGE_CLICK: return this.notifyEntityClick(message);
       case ENTITY_PREVIEW_DOUBLE_CLICK: return this.notifyEntityDoubleClick(message);
     }
   }

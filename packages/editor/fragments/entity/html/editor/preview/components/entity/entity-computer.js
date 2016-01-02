@@ -67,8 +67,9 @@ class ReactEntityComputer extends DisplayEntityComputer {
   }
 
   toJSON() {
-    return {}
+    return null;
   }
+
 
   getStyle() {
 

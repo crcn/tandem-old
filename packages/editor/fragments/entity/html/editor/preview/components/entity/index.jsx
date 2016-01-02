@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactEntityComputer from './entity-computer';
+import { ENTITY_PREVIEW_CLICK } from 'editor/message-types';
 
 class HTMLEntityComponent extends React.Component {
 
@@ -18,15 +19,29 @@ class HTMLEntityComponent extends React.Component {
     }
   }
 
+  onClick(event) {
+    this.props.app.notifier.notify({
+      type: ENTITY_PREVIEW_CLICK,
+      entity: this.props.entity
+    });
+
+    // don't want stage to get handler
+    event.stopPropagation();
+  }
+
   render() {
 
     var props = this.props;
     var entity = props.entity;
 
+    var children = entity.children.map((child) => {
+      return <HTMLEntityComponent {...this.props} key={child.id} entity={child} />
+    });
+
     var Type = entity.componentType === 'text' ? 'span' : entity.componentType;
 
-    return <Type ref='element' data-node-id={entity.id} {...entity.attributes}>
-      { props.children.length ? props.children : entity.value }
+    return <Type ref='element' onClick={this.onClick.bind(this)} {...entity.attributes}>
+      { children.length ? children : entity.value }
     </Type>;
   }
 }

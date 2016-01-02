@@ -1,16 +1,15 @@
 import './stage.scss';
 
 import React from 'react';
-import EntityComponent from './entity';
 import ToolsLayerComponent from './tools';
-import { ENTITY_PREVIEW_CLICK } from 'editor/message-types';
+import RegisteredComponent from 'common/components/registered';
+import { PREVIEW_STAGE_CLICK } from 'editor/message-types';
 
 class StageComponent extends React.Component {
 
   onClick(event) {
 
     var rect = this.refs.canvas.getBoundingClientRect();
-    var nodeId = event.target.getAttribute('data-node-id');
 
     // this math seems very odd. However, rect.left property gets zoomed,
     // whereas the width stays the same. Need to offsets mouse x & y with this.
@@ -20,10 +19,7 @@ class StageComponent extends React.Component {
 
     this.props.app.preview.notify({
       ...event,
-      type: ENTITY_PREVIEW_CLICK,
-      entity: this.props.app.rootEntity.find(
-        sift({ id: nodeId })
-      ),
+      type: PREVIEW_STAGE_CLICK,
       x: x,
       y: y
     });
@@ -43,7 +39,6 @@ class StageComponent extends React.Component {
 
     this.centerCanvas();
   }
-
 
   centerCanvas() {
     var inner    = this.refs.inner;
@@ -83,6 +78,8 @@ class StageComponent extends React.Component {
       cursor: currentTool ? currentTool.cursor : void 0
     };
 
+    var entity = this.props.app.rootEntity;
+
     return <div ref='stage' className='m-preview-stage' style={previewStyle}>
       <div ref='inner' className='m-preview-stage--inner'>
         <div ref='scroller' className='m-preview-stage--scroll' style={scrollStyle}>
@@ -95,7 +92,9 @@ class StageComponent extends React.Component {
                 role='preview stage'
                 onClick={this.onClick.bind(this)}>
                 <span ref='drawLayer' className='reset-all m-preview-stage--draw-layer'>
-                  <EntityComponent entity={app.rootEntity} app={app} />
+                  <RegisteredComponent {...this.props} entity={entity} queryOne={{
+                    componentType: entity.componentType
+                  }} />
                 </span>
               </div>
 

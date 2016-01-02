@@ -21,11 +21,11 @@ class TestDisplayEntity extends BaseDisplayEntity {
       ...properties
     }, children);
 
-    this.setComputer({
+    this.preview = {
       getStyle: () => {
         return this;
       }
-    });
+    };
   }
 }
 

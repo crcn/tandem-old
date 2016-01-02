@@ -3,7 +3,7 @@ import { DisplayEntity } from 'common/entities';
 import {
   SetToolMessage,
   SetFocusMessage,
-  ENTITY_PREVIEW_CLICK
+  PREVIEW_STAGE_CLICK
 } from 'editor/message-types';
 
 const CURSOR_HEIGHT = 12;
@@ -17,7 +17,7 @@ class TextTool extends BaseObject {
   notify(message) {
 
     switch(message.type) {
-      case ENTITY_PREVIEW_CLICK: return this.addTextEntity(message);
+      case PREVIEW_STAGE_CLICK: return this.addTextEntity(message);
     }
   }
 
