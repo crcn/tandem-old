@@ -66,17 +66,17 @@ export function create({ app, preview }) {
     }),
     ComponentFragment.create({
       id             : 'textToolComponent',
+      componentType  : 'tool',
       componentClass : TextToolComponent,
-      matchesQuery   : function({ entity, tool }) {
-        return entity && tool instanceof TextEditTool;
-      }
+      toolType       : textTool.type,
+      entityType     : 'component'
     }),
     ComponentFragment.create({
       id             : 'resizerToolComponent',
+      componentType  : 'tool',
       componentClass : ResizerToolComponent,
-      matchesQuery   : function({ tool, entity }) {
-        return entity && tool && tool instanceof PointerTool;
-      }
+      toolType       : pointerTool.type,
+      entityType     : 'component'
     }),
 
     ...createNudgeFragments(app)

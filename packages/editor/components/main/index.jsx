@@ -34,7 +34,7 @@ class MainComponent extends React.Component {
         query={{
           componentType: 'pane',
           paneType: 'entity',
-          entity: focus
+          entityType: focus ? focus.type : void 0
         }}
         entity={focus} />
 

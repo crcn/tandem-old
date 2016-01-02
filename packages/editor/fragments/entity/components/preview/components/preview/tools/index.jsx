@@ -16,8 +16,8 @@ class ToolsLayerComponent extends React.Component {
         entity={entity}
         query={{
           componentType : 'tool',
-          tool          : tool,
-          entity        : entity
+          toolType      : tool.type,
+          entityType    : entity ? entity.type : entity
         }} />
 
     </div>;

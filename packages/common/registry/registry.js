@@ -68,15 +68,12 @@ class Registry extends BaseCollection {
 function _memoize(fn) {
   var memos = {};
   var ret = function(query) {
-    var cache = _get(query);
-    if (cache) return cache;
+    var key = _key(query);
+    if (memos.hasOwnProperty(key)) {
+      return memos[key];
+    }
     return _set(query, fn.call(this, query));
   };
-
-  function _get(query) {
-    return memos[_key(query)];
-  }
-
   function _set(query, value) {
     var k = _key(query);
     if (k) memos[k] = value;
@@ -89,7 +86,14 @@ function _memoize(fn) {
       var v = query[k];
 
       // do NOT cache queries with objects
-      if (typeof v === 'object') return void 0;
+      if (typeof v === 'object') {
+        if (v.constructor !== Object && v.constructor !== Array) {
+          console.warn('q not a simple hash of strings', query);
+          throw new Error('registry queries must be a flat hash of strings');
+        } else {
+          v = _key(v);
+        }
+      }
 
       key += k + ':' + v + ',';
     }

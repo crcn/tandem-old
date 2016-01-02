@@ -32,9 +32,9 @@ class PointerTool extends ObservableObject {
   notifyEntityPreviewDoubleClick(message) {
 
     var fragment = this.app.fragments.queryOne({
-      type     : 'previewTool',
-      toolType : 'edit',
-      entity   : message.preview.entity
+      type       : 'previewTool',
+      toolType   : 'edit'
+      //entityType : message.preview.entity ? message.preview.enti
     });
 
     if (!fragment.tool) {
