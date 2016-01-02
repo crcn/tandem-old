@@ -10,12 +10,10 @@ export default ApplicationFragment.create({
   }
 });
 
-import { create as createHandlePasteFragments } from './fragments/handle-paste';
 import { create as createKeyCommandFragments } from './fragments/key-commands';
 
 function create({ app }) {
   app.fragments.push(
-    ...createHandlePasteFragments({ app }),
     ...createKeyCommandFragments({ app })
   );
 }
