@@ -10,7 +10,7 @@ export default ApplicationFragment.create({
   }
 });
 
-import { create as createKeyCommandFragments } from './fragments/key-commands';
+import { create as createKeyCommandFragments } from './key-commands';
 
 function create({ app }) {
   app.fragments.push(

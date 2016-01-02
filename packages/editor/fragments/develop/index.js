@@ -2,7 +2,7 @@ import {
   ApplicationFragment
 } from 'editor/fragment/types';
 
-import { create as createTestProjectFragment } from './fragments/test-project';
+import { create as createTestProjectFragment } from './test-project';
 
 export default ApplicationFragment.create({
   id: 'develop',
