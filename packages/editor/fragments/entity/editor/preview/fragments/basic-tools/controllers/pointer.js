@@ -14,18 +14,22 @@ class PointerTool extends ObservableObject {
 
   notify(message) {
     switch(message.type) {
-      case ENTITY_PREVIEW_CLICK: return this.notifyEntityClick(message);
-      case PREVIEW_STAGE_CLICK: return this.notifyEntityClick(message);
-      case ENTITY_PREVIEW_DOUBLE_CLICK: return this.notifyEntityDoubleClick(message);
+      case ENTITY_PREVIEW_CLICK: return this.notifyEntityPreviewClick(message);
+      case PREVIEW_STAGE_CLICK: return this.notifyPreviewStageClick(message);
+      case ENTITY_PREVIEW_DOUBLE_CLICK: return this.notifyEntityPreviewDoubleClick(message);
     }
   }
 
-  notifyEntityClick(message) {
+  notifyEntityPreviewClick(message) {
     // TODO - check multi selection
     this.notifier.notify(SetFocusMessage.create(message.entity, message.shiftKey));
   }
 
-  notifyEntityDoubleClick(message) {
+  notifyPreviewStageClick(message) {
+    this.notifier.notify(SetFocusMessage.create());
+  }
+
+  notifyEntityPreviewDoubleClick(message) {
 
     var fragment = this.app.fragments.queryOne({
       type     : 'previewTool',

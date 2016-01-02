@@ -7,7 +7,7 @@ import { SetFocusMessage } from 'editor/message-types';
 class LayerComponent extends React.Component {
 
   focus() {
-    this.props.app.notifier.notify(SetFocusMessage.create(this.props.entity));
+    this.props.app.notifier.notify(SetFocusMessage.create(this.props.entity.preview));
   }
 
   render() {

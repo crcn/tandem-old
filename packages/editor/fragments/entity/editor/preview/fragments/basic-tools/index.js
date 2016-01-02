@@ -58,7 +58,6 @@ export function create({ app }) {
         { type: SET_TOOL, tool: pointerTool }
       )
     }),
-
     ComponentFragment.create({
       id             : 'textToolComponent',
       componentClass : TextToolComponent,

@@ -1,12 +1,11 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import ReactEntityComputer from './entity-computer';
+import EntityPreview from './entity-preview';
 import { ENTITY_PREVIEW_CLICK } from 'editor/message-types';
 
 class HTMLEntityComponent extends React.Component {
 
   setHook(entity) {
-    entity.preview = ReactEntityComputer.create(entity, this);
+    this._preview = entity.preview = EntityPreview.create(entity, this);
   }
 
   componentDidMount() {
@@ -21,8 +20,9 @@ class HTMLEntityComponent extends React.Component {
 
   onClick(event) {
     this.props.app.notifier.notify({
-      type: ENTITY_PREVIEW_CLICK,
-      entity: this.props.entity
+      type    : ENTITY_PREVIEW_CLICK,
+      preview : this._preview,
+      entity  : this.props.entity
     });
 
     // don't want stage to get handler
@@ -31,8 +31,7 @@ class HTMLEntityComponent extends React.Component {
 
   render() {
 
-    var props = this.props;
-    var entity = props.entity;
+    var entity = this.props.entity;
 
     var children = entity.children.map((child) => {
       return <HTMLEntityComponent {...this.props} key={child.id} entity={child} />
