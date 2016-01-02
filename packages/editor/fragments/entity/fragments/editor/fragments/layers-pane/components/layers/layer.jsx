@@ -31,8 +31,8 @@ class LayerComponent extends React.Component {
 
     if (labelFragment) {
       labelSection = labelFragment.factory.create({
-        entity: entity,
-        ...this.props
+        ...this.props,
+        entity: entity
       });
     } else {
       labelSection = <span>
@@ -52,7 +52,7 @@ class LayerComponent extends React.Component {
         { labelSection }
       </div>
       { entity.children.map((child, i) => {
-        return <LayerComponent entity={child} key={i} depth={depth + 1} app={this.props.app} />
+        return <LayerComponent {...this.props} entity={child} key={i} depth={depth + 1}  />
       })}
     </div>;
   }

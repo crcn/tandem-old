@@ -23,20 +23,20 @@ class MainComponent extends React.Component {
     return <div className='m-editor'>
 
       <SidebarComponent
+        {...this.props}
         position='left'
-        query={{ paneType: 'app' }}
-        {...this.props} />
+        query={{ paneType: 'app' }} />
       <CenterComponent {...this.props} />
 
       <SidebarComponent
+        {...this.props}
         position='right'
         query={{
           componentType: 'pane',
           paneType: 'entity',
           entity: focus
         }}
-        entity={focus}
-        {...this.props} />
+        entity={focus} />
 
     </div>;
   }

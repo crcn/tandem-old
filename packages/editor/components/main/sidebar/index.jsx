@@ -23,9 +23,7 @@ class SidebarComponent extends React.Component {
     };
 
     return <div style={style} className={['m-sidebar', this.props.position].join(' ')}>
-
       <RegisteredComponent {...this.props} />
-
       <SideDragger {...this.props} reference={sidebarWidthReference} position={this.props.position == 'left' ? 'right' : 'left'} />
     </div>;
   }

@@ -2,13 +2,25 @@ import React from 'react';
 
 class RegisteredComponent extends React.Component {
   render() {
-    var app = this.props.app;
-    var entries = app.fragments.query(this.props.query);
+    var fragments = this.props.app.fragments;
+
+    // one or more
+    var entries = toArray(
+      this.props.queryOne ?
+        fragments.queryOne(this.props.queryOne) :
+        fragments.query(this.props.query)
+    );
+
     var components = entries.map((fragment, i) => {
       return fragment.factory.create({
-        fragment: fragment,
-        key   : fragment.id,
-        ...this.props
+        ...this.props,
+
+        // prevent sub registered components from getting
+        // stuck in an infinite loop
+        query    : void 0,
+        queryOne : void 0,
+        fragment : fragment,
+        key      : fragment.id
       });
     });
 
@@ -16,6 +28,11 @@ class RegisteredComponent extends React.Component {
       components
     }</span>;
   }
+}
+
+
+function toArray(value) {
+  return Array.isArray(value) ? value : value == void 0 ? [] : [value];
 }
 
 export default RegisteredComponent;

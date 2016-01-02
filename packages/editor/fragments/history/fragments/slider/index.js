@@ -6,8 +6,6 @@ import {
 import HistorySliderComponent from './components/slider';
 
 export function create({ history }) {
-
-
   return [
     ComponentFragment.create({
       history        : history,

@@ -11,9 +11,6 @@ class StyleDeclarationComponent extends React.Component {
   }
   render() {
 
-    var entity   = this.props.entity;
-    var fragment   = this.props.fragment;
-
     // camelCase to Camel Case
     var label = this.props.reference.property.split(/(?=[A-Z])/).map(function(word) {
       return inflection.titleize(word);
@@ -21,10 +18,8 @@ class StyleDeclarationComponent extends React.Component {
 
     return <div className='m-styles-pane--declaration'>
       <span className='m-styles-pane--declaration-label'>{label}</span> <span className='m-styles-pane--declaration-value'>{
-      fragment.factory.create({
-        app       : this.props.app,
-        entity    : entity,
-        reference : this.props.reference
+      this.props.fragment.factory.create({
+        ...this.props
       })
     }</span>
     <span className='declaration-remove' onClick={this.removeDeclaration.bind(this)}>
@@ -44,8 +39,9 @@ class EntityStylesPaneComponent extends React.Component {
 
   render() {
 
-    var entity = this.props.entity;
-    var fragment = this.props.fragment;
+    var entity    = this.props.entity;
+    var fragment  = this.props.fragment;
+    var fragments = this.props.app.fragments;
 
     var styles = entity.getStyle();
 
@@ -53,7 +49,7 @@ class EntityStylesPaneComponent extends React.Component {
 
     for (var styleName in styles) {
 
-      var styleFragment = this.props.app.fragments.queryOne({
+      var styleFragment = fragments.queryOne({
         componentType : 'styleInput',
         styleName     : styleName
       });
@@ -65,17 +61,18 @@ class EntityStylesPaneComponent extends React.Component {
       rows.push(<StyleDeclarationComponent
         fragment={styleFragment}
         app={this.props.app}
+        fragments={fragments}
         entity={entity}
         reference={StyleReference.create(entity, styleName)}
         key={styleName} />);
     }
 
     rows = rows.sort(function(a, b) {
-      return app.fragments.indexOf(a.props.fragment) > app.fragments.indexOf(b.props.fragment) ? 1 : -1;
+      return fragments.indexOf(a.props.fragment) > fragments.indexOf(b.props.fragment) ? 1 : -1;
     });
 
     var label = <span className='m-styles-pane--label'>
-      { this.props.fragment.label }
+      { fragment.label }
       <span className='m-styles-pane--add-style' onClick={this.addStyle.bind(this)}>
         +
       </span>

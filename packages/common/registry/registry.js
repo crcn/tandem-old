@@ -4,6 +4,8 @@ import Fragment from './fragment';
 import BaseCollection from 'common/collection';
 import { ExistsError } from 'common/errors';
 
+// TODO - implement parent registery lookup
+
 class Registry extends BaseCollection {
 
   constructor(...args) {

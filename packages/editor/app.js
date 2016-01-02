@@ -32,7 +32,7 @@ class Application extends BaseApplication {
   ]);
 
   didInitialize() {
-    ReactDOM.render(<MainComponent app={this} fragments={this.fragments} />, this.config.element);
+    ReactDOM.render(<MainComponent app={this} />, this.config.element);
   }
 
   notify(message) {

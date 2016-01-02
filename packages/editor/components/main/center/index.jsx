@@ -1,6 +1,7 @@
 import './index.scss';
 
 import React from 'react';
+import RegisterComponent from 'common/components/registered';
 
 /**
 * This is where all the visual editing happens
@@ -9,13 +10,7 @@ import React from 'react';
 class CenterComponent extends React.Component {
   render() {
     return <div className='m-editor-center'>
-      {
-        this.props.app.fragments.query({
-          componentType: 'preview'
-        }).map((fragment) => {
-          return fragment.factory.create({ key: fragment.id, ...this.props });
-        })
-      }
+      <RegisterComponent {...this.props} queryOne={{componentType:'preview'}} />
     </div>;
   }
 }

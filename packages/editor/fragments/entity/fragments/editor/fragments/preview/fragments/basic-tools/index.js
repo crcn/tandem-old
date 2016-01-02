@@ -1,5 +1,4 @@
 import {
-  PreviewComponentFragment,
   ComponentFragment,
   Fragment,
   KeyCommandFragment
