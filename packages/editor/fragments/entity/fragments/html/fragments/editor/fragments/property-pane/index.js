@@ -12,7 +12,7 @@ export function create({ app }) {
 
   return [
     ...createStyleInputFragments({ app }),
-    ...[LAYOUT, TRANSFORM, APPEARANCE, TYPOGRAPHY].map(function(category) {
+    ...[LAYOUT, TRANSFORM, TYPOGRAPHY, APPEARANCE].map(function(category) {
       return EntityPaneComponentFragment.create({
         id             : category + 'PaneComponent',
 

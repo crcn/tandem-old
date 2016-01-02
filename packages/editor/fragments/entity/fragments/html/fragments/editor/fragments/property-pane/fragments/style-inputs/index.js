@@ -90,10 +90,10 @@ export function create({ app }) {
     ]
   }
 
-  for (var type in inf) {
+  for (var category in inf) {
 
-    for (var [styleName, componentClass] of inf[type]) {
-      fragments.push(createComponentStyleFragment(styleName, type, componentClass));
+    for (var [styleName, componentClass] of inf[category]) {
+      fragments.push(createComponentStyleFragment(styleName, category, componentClass));
     }
   }
 
@@ -101,12 +101,12 @@ export function create({ app }) {
 }
 
 
-function createComponentStyleFragment(name, type, componentClass) {
+function createComponentStyleFragment(name, category, componentClass) {
   return ComponentFragment.create({
     id             : name + 'StyleInputComponent',
     componentType  : 'styleInput',
     componentClass : componentClass,
     styleName      : name,
-    styleType      : type
+    styleCategory  : category
   })
 }

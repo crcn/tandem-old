@@ -4,6 +4,8 @@
 // TODO: diff history - reduce all data to figure out snapshot.
 // Use key frames to reduce diffing amount. (OR use JS-GIT for this)
 
+// TODO - generalize this stuff
+
 // Diff could also be dispatched across the network for realtime Shenanigans.
 
 import sift from 'sift';

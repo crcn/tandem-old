@@ -35,7 +35,6 @@ function create({ app }) {
   // TODO - add shift key command handler here
 
   function setFocus(message) {
-    console.log(message.multiSelect);
 
     var selection = app.focus;
 
