@@ -9,9 +9,9 @@ class LayerComponent extends React.Component {
   onClick(event) {
 
     var entity = this.props.entity;
-    var focus  = [entity];
+    var select  = [entity];
 
-    this.props.app.notifier.notify(ToggleFocusMessage.create(focus, event.shiftKey));
+    this.props.app.notifier.notify(ToggleFocusMessage.create(select, event.shiftKey));
   }
 
   render() {
@@ -47,7 +47,7 @@ class LayerComponent extends React.Component {
     var headerClassName = cx({
       'm-layers-pane-component-layer--header': true,
       ['m-layer-type-' + entity.type]: true,
-      'selected': this.props.app.focus && this.props.app.focus.includes(entity)
+      'selected': this.props.app.selection && this.props.app.selection.includes(entity)
     })
 
     return <div className='m-layers-pane-component-layer'>

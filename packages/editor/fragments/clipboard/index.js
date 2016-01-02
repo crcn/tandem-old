@@ -18,14 +18,14 @@ function create({ app }) {
   function copy() {
 
     // nothing in focus
-    if (!app.focus) return;
+    if (!app.selection) return;
 
-    if (!app.focus.serialize) {
+    if (!app.selection.serialize) {
       console.warn('focused item does not implement the serialize() method, and so it\'s not copyable');
       return;
     }
 
-    return JSON.stringify(app.focus.serialize());
+    return JSON.stringify(app.selection.serialize());
   }
 
   function paste(data) {

@@ -18,7 +18,7 @@ class MainComponent extends React.Component {
 
   render() {
 
-    var focus = this.props.app.focus;
+    var selection = this.props.app.selection;
 
     return <div className='m-editor'>
 
@@ -34,9 +34,9 @@ class MainComponent extends React.Component {
         query={{
           componentType: 'pane',
           paneType: 'entity',
-          entityType: focus ? focus.type : void 0
+          entityType: selection ? selection.type : void 0
         }}
-        entity={focus} />
+        selection={selection} />
 
     </div>;
   }

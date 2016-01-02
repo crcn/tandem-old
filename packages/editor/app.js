@@ -10,8 +10,8 @@ import BaseApplication from 'base/app';
 import EntityFragment from './fragments/entity';
 import DevelopFragment from './fragments/develop';
 import HistoryFragment from './fragments/history';
+import SelectorFragment from './fragments/selector';
 import SettingsFragment from './fragments/settings';
-import SelectionFragment from './fragments/selection';
 import ClipboardFragment from './fragments/clipboard';
 import KeyCommanderFragment from './fragments/key-commander';
 
@@ -25,9 +25,9 @@ class Application extends BaseApplication {
     EntityFragment,
     DevelopFragment,
     HistoryFragment,
+    SelectorFragment,
     SettingsFragment,
     ClipboardFragment,
-    SelectionFragment,
     KeyCommanderFragment
   ]);
 

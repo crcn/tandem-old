@@ -39,9 +39,9 @@ export function create({ app }) {
 
 function createStyleToggler(app, name, onValue, offValue) {
   return CallbackNotifier.create(function(message) {
-    if (!app.focus || app.focus.componentType !== 'text') return;
-    app.focus.setStyle({
-      [name]: app.focus.getStyle()[name] === onValue ? offValue : onValue
+    if (!app.selection || app.selection.componentType !== 'text') return;
+    app.selection.setStyle({
+      [name]: app.selection.getStyle()[name] === onValue ? offValue : onValue
     });
   })
 }

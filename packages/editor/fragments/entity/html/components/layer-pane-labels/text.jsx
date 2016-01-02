@@ -22,7 +22,7 @@ class TextLayerLabelComponent extends React.Component {
 
   render() {
 
-    var edit = this.state.edit && this.props.app.focus === this.props.entity;
+    var edit = this.state.edit && !!~this.props.app.selection.indexOf(this.props.entity);
 
     return <span
       className='m-label m-text-layer-label'

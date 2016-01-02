@@ -6,18 +6,18 @@ import RegisteredComponent from 'common/components/registered';
 // TODO - tools should be selected depending on the entity type
 class ToolsLayerComponent extends React.Component {
   render() {
-    var entity = this.props.app.focus;
-    var tool   = this.props.app.preview.currentTool;
+    var selection = this.props.app.selection;
+    var tool      = this.props.app.preview.currentTool;
 
     return <div style={this.props.style} className='m-tools-layer'>
 
       <RegisteredComponent
         {...this.props}
-        entity={entity}
+        selection={selection}
         query={{
           componentType : 'tool',
           toolType      : tool.type,
-          entityType    : entity ? entity.type : entity
+          entityType    : selection ? selection.type : selection
         }} />
 
     </div>;

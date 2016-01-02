@@ -39,11 +39,11 @@ class EntityStylesPaneComponent extends React.Component {
 
   render() {
 
-    var entity    = this.props.entity;
-    var fragment  = this.props.fragment;
-    var fragments = this.props.app.fragments;
+    var selection    = this.props.selection;
+    var fragment     = this.props.fragment;
+    var fragments    = this.props.app.fragments;
 
-    var styles = entity.getStyle();
+    var styles = selection.getStyle();
 
     var rows = [];
 
@@ -62,8 +62,8 @@ class EntityStylesPaneComponent extends React.Component {
         fragment={styleFragment}
         app={this.props.app}
         fragments={fragments}
-        entity={entity}
-        reference={StyleReference.create(entity, styleName)}
+        selection={selection}
+        reference={StyleReference.create(selection, styleName)}
         key={styleName} />);
     }
 

@@ -35,24 +35,24 @@ function create({ app }) {
   );
 
   function removeSelection() {
-    var focus = app.focus;
+    var selection = app.selection;
 
     app.setProperties({
-      focus: void 0
+      selection: void 0
     });
 
-    if (focus) focus.deleteAll();
+    if (selection) selection.deleteAll();
 
   }
 
   function setFocus(message) {
 
-    var currentSelection = app.focus;
+    var currentSelection = app.selection;
 
     var multiSelect = message.multiSelect;
 
     app.setProperties({
-      focus: void 0
+      selection: void 0
     });
 
     // no item? ignore
@@ -91,7 +91,7 @@ function create({ app }) {
 
     requestAnimationFrame(() => {
       app.setProperties({
-        focus: currentSelection
+        selection: currentSelection
       })
     });
   }

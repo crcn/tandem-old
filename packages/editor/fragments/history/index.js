@@ -79,7 +79,7 @@ function create({ app }) {
     if (!history.length) return;
 
     // Note that focus might be an entity in the future
-    var currentFocusId = app.focus ? app.focus.id : void 0;
+    var currentFocusId = app.selection ? app.selection.id : void 0;
 
     var rootEntity = deserialize(history[history.position], {
       notifier: app.notifier

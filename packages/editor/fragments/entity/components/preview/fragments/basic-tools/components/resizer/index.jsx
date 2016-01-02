@@ -40,16 +40,16 @@ class ResizerComponent extends React.Component {
   }
 
   startDragging(event) {
-    var focus = this.props.entity;
+    var selection = this.props.selection;
 
     var guide = EntityGuide.create(
       this.props.app.rootEntity.flatten().filter((entity) => {
-        return !~this.props.app.focus.indexOf(entity);
+        return !~this.props.app.selection.indexOf(entity);
       }),
       this._zoom(SNAP_MARGIN)
     );
 
-    var style = focus.preview.getStyle();
+    var style = selection.preview.getStyle();
 
     var sx2 = style.left;
     var sy2 = style.top;
@@ -76,9 +76,9 @@ class ResizerComponent extends React.Component {
 
   updatePoint(point) {
 
-    var focus = this.props.entity;
+    var selection = this.props.selection;
 
-    var style = focus.preview.getStyle();
+    var style = selection.preview.getStyle();
 
     var props = {
       left: style.left,
@@ -109,7 +109,7 @@ class ResizerComponent extends React.Component {
       // todo
     }
 
-    focus.preview.setBounds(props);
+    selection.preview.setBounds(props);
   }
 
   onDoubleClick(event) {
@@ -134,8 +134,8 @@ class ResizerComponent extends React.Component {
 
   onKeyDown(message) {
 
-    var entity = this.props.app.focus;
-    var style = entity.preview.getStyle();
+    var selection = this.props.app.selection;
+    var style = selection.preview.getStyle();
 
     var left = style.left;
     var top  = style.top;
@@ -152,7 +152,7 @@ class ResizerComponent extends React.Component {
       return;
     }
 
-    entity.preview.setPositionFromAbsolutePoint({
+    selection.preview.setPositionFromAbsolutePoint({
       top  : top,
       left : left
     });
@@ -163,7 +163,7 @@ class ResizerComponent extends React.Component {
 
   moveTarget(left, top) {
     this._isMoving();
-    this.props.app.focus.preview.setPositionFromAbsolutePoint({
+    this.props.app.selection.preview.setPositionFromAbsolutePoint({
       left : left,
       top  : top
     });
@@ -182,8 +182,8 @@ class ResizerComponent extends React.Component {
     var pointRadius = (this.props.pointRadius || POINT_RADIUS);
     var strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
 
-    var focus = this.props.entity;
-    var style = _zoom(focus.preview.getStyle(), this.props.zoom);
+    var selection = this.props.selection;
+    var style = _zoom(selection.preview.getStyle(), this.props.zoom);
 
     var points = [
       ['nw', 0, 0],

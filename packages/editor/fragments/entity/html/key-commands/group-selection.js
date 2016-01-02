@@ -24,7 +24,7 @@ export function create({ app }) {
 }
 
 function groupSelection(app, message) {
-  var selection = app.focus;
+  var selection = app.selection;
 
   // TODO - generalize this into group container
   var groupFactory = app.fragments.queryOne({
