@@ -7,7 +7,7 @@ import {
 import TextTool from './controllers/text';
 import PointerTool from './controllers/pointer';
 import TextEditTool from './controllers/text-edit';
-import { SET_TOOL } from 'editor/message-types';
+import { SET_TOOL, GROUP_SELECTION } from 'editor/message-types';
 import { INITIALIZE } from 'base/message-types';
 import { TypeNotifier } from 'common/notifiers';
 
@@ -77,7 +77,6 @@ export function create({ app, preview }) {
       toolType       : pointerTool.type,
       entityType     : 'component'
     }),
-
     ...createNudgeFragments(app)
   ]
 

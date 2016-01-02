@@ -12,6 +12,8 @@ import {
   SetFocusMessage
 } from 'editor/message-types';
 
+import { create as createGroupSelectionFragment } from './group-selection';
+
 export function create({ app }) {
 
   return [
@@ -30,7 +32,8 @@ export function create({ app }) {
       id         : 'underlineCommand',
       keyCommand : 'command+u',
       notifier   : createStyleToggler(app, 'textDecoration', 'underline', 'none')
-    })
+    }),
+    ...createGroupSelectionFragment({ app })
   ];
 }
 

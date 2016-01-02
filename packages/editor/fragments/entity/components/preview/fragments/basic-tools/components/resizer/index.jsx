@@ -88,8 +88,8 @@ class ResizerComponent extends React.Component {
     };
 
     if (/^n/.test(point.id)) {
-      props.top = point.currentStyle.top + point.top;
-      props.height = point.currentStyle.height - point.top;
+      props.top = point.currentStyle.top / this.props.zoom + point.top;
+      props.height = point.currentStyle.height / this.props.zoom - point.top;
     }
 
     if (/e$/.test(point.id)) {
@@ -101,8 +101,12 @@ class ResizerComponent extends React.Component {
     }
 
     if (/w$/.test(point.id)) {
-      props.width = point.currentStyle.width - point.left;
-      props.left  = point.currentStyle.left + point.left;
+      props.width = point.currentStyle.width / this.props.zoom - point.left;
+      props.left  = point.currentStyle.left / this.props.zoom + point.left;
+    }
+
+    if (point.keepAspectRatio) {
+      // todo
     }
 
     focus.preview.setBounds(props);

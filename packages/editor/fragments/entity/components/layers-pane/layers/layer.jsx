@@ -7,7 +7,11 @@ import { SetFocusMessage, ToggleFocusMessage } from 'editor/message-types';
 class LayerComponent extends React.Component {
 
   onClick(event) {
-    this.props.app.notifier.notify(ToggleFocusMessage.create(this.props.entity, event.shiftKey));
+
+    var entity = this.props.entity;
+    var focus  = [entity];
+
+    this.props.app.notifier.notify(ToggleFocusMessage.create(focus, event.shiftKey));
   }
 
   render() {

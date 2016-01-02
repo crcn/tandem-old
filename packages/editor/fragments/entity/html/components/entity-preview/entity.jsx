@@ -23,11 +23,11 @@ class HTMLEntityComponent extends React.Component {
       ...event,
       type    : ENTITY_PREVIEW_CLICK,
       preview : this._preview,
-      entity  : this.props.entity
+      entity  : this.props.entity,
+      stopPropagation: function() {
+        event.stopPropagation();
+      }
     });
-
-    // don't want stage to get handler
-    event.stopPropagation();
   }
 
   render() {

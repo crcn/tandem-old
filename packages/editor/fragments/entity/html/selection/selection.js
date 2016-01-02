@@ -32,8 +32,8 @@ class Preview {
     this.selection.forEach(function(entity) {
       var style = entity.preview.getStyle();
 
-      var percLeft   = (style.left - bounds.left) / cbounds.width;
-      var percTop    = (style.top  - bounds.top)  / cbounds.height;
+      var percLeft   = (style.left - cbounds.left) / cbounds.width;
+      var percTop    = (style.top  - cbounds.top)  / cbounds.height;
       var percWidth  = style.width / cbounds.width;
       var percHeight = style.height / cbounds.height;
 

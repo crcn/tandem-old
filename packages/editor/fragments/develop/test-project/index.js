@@ -44,6 +44,21 @@ export function create({ app }) {
             background: 'linear-gradient(90deg, blue, black)'
           }
         }
+      }),
+
+      div.factory.create({
+        componentType: 'div',
+        label        : 'div2',
+        attributes : {
+          style: {
+            position: 'absolute',
+            left: '500px',
+            top: '300px',
+            width: '100px',
+            height: '100px',
+            background: 'linear-gradient(90deg, blue, black)'
+          }
+        }
       })
     ]);
 

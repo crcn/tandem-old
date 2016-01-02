@@ -15,7 +15,8 @@ class PathComponent extends React.Component {
     startDrag(event, (event) => {
       point.setProperties({
         left : (sx + event.clientX - mx) / this.props.zoom,
-        top  : (sy + event.clientY - my) / this.props.zoom
+        top  : (sy + event.clientY - my) / this.props.zoom,
+        keepAspectRatio: event.shiftKey
       });
     });
   }

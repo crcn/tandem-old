@@ -7,6 +7,7 @@ export const PASTE                       = 'paste';
 export const SET_TOOL                    = 'setTool';
 export const SET_FOCUS                   = 'setFocus';
 export const TOGGLE_FOCUS                = 'toggleFocus';
+export const GROUP_SELECTION             = 'groupSelection';
 export const SET_ROOT_ENTITY             = 'setRootEntity';
 export const LOAD_ROOT_ENTITY            = 'loadRootEntity';
 export const PREVIEW_STAGE_CLICK         = 'previewStageClick';

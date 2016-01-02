@@ -1,8 +1,10 @@
 import ObservableObject from 'common/object/observable';
+
 import {
   ENTITY_PREVIEW_CLICK,
   PREVIEW_STAGE_CLICK,
   ENTITY_PREVIEW_DOUBLE_CLICK,
+  GROUP_SELECTION,
   SetFocusMessage,
   SetToolMessage
 } from 'editor/message-types';
@@ -14,8 +16,8 @@ class PointerTool extends ObservableObject {
 
   notify(message) {
     switch(message.type) {
-      case ENTITY_PREVIEW_CLICK: return this.notifyEntityPreviewClick(message);
       case PREVIEW_STAGE_CLICK: return this.notifyPreviewStageClick(message);
+      case ENTITY_PREVIEW_CLICK: return this.notifyEntityPreviewClick(message);
       case ENTITY_PREVIEW_DOUBLE_CLICK: return this.notifyEntityPreviewDoubleClick(message);
     }
   }
@@ -23,6 +25,7 @@ class PointerTool extends ObservableObject {
   notifyEntityPreviewClick(message) {
     // TODO - check multi selection
     this.notifier.notify(SetFocusMessage.create(message.entity, message.shiftKey));
+    message.stopPropagation();
   }
 
   notifyPreviewStageClick(message) {
