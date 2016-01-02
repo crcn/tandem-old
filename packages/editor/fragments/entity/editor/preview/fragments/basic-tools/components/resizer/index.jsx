@@ -43,7 +43,9 @@ class ResizerComponent extends React.Component {
     var focus = this.props.entity;
 
     var guide = EntityGuide.create(
-      this.props.app.rootEntity.flatten(),
+      this.props.app.rootEntity.flatten().filter((entity) => {
+        return !~this.props.app.focus.indexOf(entity);
+      }),
       this._zoom(SNAP_MARGIN)
     );
 

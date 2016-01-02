@@ -16,7 +16,36 @@ export function create({ app }) {
       componentType : 'div',
       label         : 'div', // don't want,
       icon          : 'puzzle'
-    });
+    }, [
+      div.factory.create({
+        componentType: 'div',
+        label        : 'div2',
+        attributes : {
+          style: {
+            position: 'absolute',
+            left: '100px',
+            top: '100px',
+            width: '100px',
+            height: '100px',
+            background: '#F60'
+          }
+        }
+      }),
+      div.factory.create({
+        componentType: 'div',
+        label        : 'div2',
+        attributes : {
+          style: {
+            position: 'absolute',
+            left: '500px',
+            top: '150px',
+            width: '100px',
+            height: '100px',
+            background: 'linear-gradient(90deg, blue, black)'
+          }
+        }
+      })
+    ]);
 
     app.notifier.notify(RootEntityMessage.create(SET_ROOT_ENTITY, entity));
   }
