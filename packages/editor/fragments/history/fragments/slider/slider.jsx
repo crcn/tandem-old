@@ -1,4 +1,4 @@
-import './index.scss';
+import './slider.scss';
 
 import React from 'react';
 import SliderComponent from 'react-slider';

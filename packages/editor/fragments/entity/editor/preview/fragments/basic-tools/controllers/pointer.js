@@ -34,7 +34,7 @@ class PointerTool extends ObservableObject {
     var fragment = this.app.fragments.queryOne({
       type     : 'previewTool',
       toolType : 'edit',
-      entity   : message.entity
+      entity   : message.preview.entity
     });
 
     if (!fragment.tool) {

@@ -2,7 +2,7 @@ import {
   EntityLayerLabelComponentFragment
 } from 'editor/fragment/types';
 
-import TextLayerLabelComponent from './components/text';
+import TextLayerLabelComponent from './text';
 
 export function create({ app }) {
   return [

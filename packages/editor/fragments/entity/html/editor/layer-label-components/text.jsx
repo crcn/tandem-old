@@ -1,9 +1,9 @@
-import './index.scss';
+import './text.scss';
 
 import cx from 'classnames';
 import React from 'react';
-import FocusComponent from 'common/components/focus';
 import AutosizeInput from 'react-input-autosize';
+import FocusComponent from 'common/components/focus';
 
 class TextLayerLabelComponent extends React.Component {
 

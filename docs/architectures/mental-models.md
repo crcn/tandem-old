@@ -1,0 +1,2 @@
+-  If something is not needed, then don't use it
+    - sub-directories - does it increase or decrease obviousness?

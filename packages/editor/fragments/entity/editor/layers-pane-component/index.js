@@ -1,6 +1,6 @@
 
 // TODO - move this over to the preview fragment
-import LayersPaneComponent from './components/layers';
+import LayersPaneComponent from './layers';
 
 import {
   AppPaneComponentFragment

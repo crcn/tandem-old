@@ -4,13 +4,13 @@ import {
 } from 'editor/fragment/types';
 
 import inflection from 'inflection';
-import StylePaneComponent from './components/style-pane';
+import StylePaneComponent from './style-pane';
 import TextInputComponent from 'common/components/inputs/text';
 import UnitInputComponent from 'common/components/inputs/unit';
-import FontInputComponent from './components/style-inputs/font';
+import FontInputComponent from './style-inputs/font';
 import ColorPickerComponent from 'common/components/inputs/color-picker';
-import TextAlignInputComponent from './components/style-inputs/text-align';
-import BackgroundInputComponent from './components/style-inputs/background';
+import TextAlignInputComponent from './style-inputs/text-align';
+import BackgroundInputComponent from './style-inputs/background';
 
 import { LAYOUT, TRANSFORM, APPEARANCE, TYPOGRAPHY } from './categories';
 

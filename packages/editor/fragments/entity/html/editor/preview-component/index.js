@@ -2,7 +2,7 @@ import {
   ComponentFragment
 } from 'editor/fragment/types';
 
-import HTMLEntityComponent from './components/entity';
+import HTMLEntityComponent from './entity';
 
 export function create({ app }) {
   return [

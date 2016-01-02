@@ -49,23 +49,6 @@ class ReactEntityComputer extends DisplayEntityComputer {
     this.entity.setStyle(props);
   }
 
-  getZoom() {
-    return calculateZoom(this.displayObject.refs.element);
-  }
-
-  getZoomedStyle() {
-    var style = this.getStyle();
-    var zoom  = this.getZoom();
-
-    // TODO - use scale util
-    return {
-      left   : style.left   * zoom,
-      top    : style.top    * zoom,
-      width  : style.width  * zoom,
-      height : style.height * zoom
-    };
-  }
-
   toJSON() {
     return null;
   }
@@ -96,8 +79,6 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var h = rect.bottom - rect.top;
 
     var resizable = cs.display !== 'inline';
-    var zoom = this.getZoom();
-
     var style = entity.getStyle();
 
     // left & top positions are not computed properly in Chrome
@@ -110,7 +91,6 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
     return {
       resizable : resizable,
-      zoom      : zoom,
       left      : left,
       top       : top,
       width     : w,

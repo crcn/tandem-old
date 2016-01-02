@@ -2,14 +2,14 @@ import BaseGuide from './base';
 
 class EntityGuide extends BaseGuide {
 
-  constructor(entity, margin) {
+  constructor(allEntities, margin) {
     super();
-    this.entity = entity;
+    this.allEntities = allEntities;
     this.margin = margin;
   }
 
   snap({ left, top, width, height }) {
-    var allEntities = this.entity.root.flatten();
+    var allEntities = this.allEntities;
 
     var margin = this.margin;
 
@@ -76,7 +76,6 @@ class EntityGuide extends BaseGuide {
     var guideTop;
 
     for (var entity of allEntities) {
-      if (entity === this.entity) continue;
       var style = entity.preview.getStyle();
 
       if (orgLeft === left) {

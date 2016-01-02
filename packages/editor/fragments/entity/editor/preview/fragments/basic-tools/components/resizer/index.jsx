@@ -16,6 +16,16 @@ const POINT_RADIUS       = 2;
 const PADDING            = 6;
 const SNAP_MARGIN        = 4;
 
+function _zoom(style, zoom) {
+  return {
+    ...style,
+    left: style.left * zoom,
+    top: style.top * zoom,
+    width: style.width * zoom,
+    height: style.height * zoom
+  }
+}
+
 class ResizerComponent extends React.Component {
 
   constructor() {
@@ -26,13 +36,16 @@ class ResizerComponent extends React.Component {
   }
 
   _zoom(number) {
-    return number / this.props.zoom;
+    return number * this.props.zoom;
   }
 
   startDragging(event) {
     var focus = this.props.entity;
 
-    var guide = EntityGuide.create(focus, this._zoom(SNAP_MARGIN));
+    var guide = EntityGuide.create(
+      this.props.app.rootEntity.flatten(),
+      this._zoom(SNAP_MARGIN)
+    );
 
     var style = focus.preview.getStyle();
 
@@ -163,7 +176,7 @@ class ResizerComponent extends React.Component {
     var strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
 
     var focus = this.props.entity;
-    var style = focus.preview.getZoomedStyle();
+    var style = _zoom(focus.preview.getStyle(), this.props.zoom);
 
     var points = [
       ['nw', 0, 0],

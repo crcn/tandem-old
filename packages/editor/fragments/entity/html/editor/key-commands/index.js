@@ -29,7 +29,9 @@ export function create({ app }) {
         var focus = app.focus;
         var focusIndex = focus.parent.children.indexOf(focus);
 
-        app.notifier.notify(SetFocusMessage.create(focusIndex ? focus.parent.children[focusIndex - 1] : focus.parent.children[focusIndex + 1]));
+        var nextSibling = focusIndex ? focus.parent.children[focusIndex - 1] : focus.parent.children[focusIndex + 1];
+
+        app.notifier.notify(SetFocusMessage.create(nextSibling));
 
         // remove the child deleted
         focus.parent.children.remove(focus);

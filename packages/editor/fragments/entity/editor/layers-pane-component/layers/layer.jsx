@@ -2,17 +2,16 @@ import './layer.scss';
 
 import cx from 'classnames';
 import React from 'react';
-import { SetFocusMessage } from 'editor/message-types';
+import { SetFocusMessage, ToggleFocusMessage } from 'editor/message-types';
 
 class LayerComponent extends React.Component {
 
-  focus() {
-    this.props.app.notifier.notify(SetFocusMessage.create(this.props.entity.preview));
+  onClick(event) {
+    this.props.app.notifier.notify(ToggleFocusMessage.create(this.props.entity, false));
   }
 
   render() {
     var entity  = this.props.entity;
-    if (!entity) return <span></span>;
 
     var depth = this.props.depth || 0;
 
@@ -44,11 +43,11 @@ class LayerComponent extends React.Component {
     var headerClassName = cx({
       'm-layers-pane-component-layer--header': true,
       ['m-layer-type-' + entity.type]: true,
-      'selected': this.props.app.focus === entity
+      'selected': this.props.app.focus && this.props.app.focus.includes(entity)
     })
 
     return <div className='m-layers-pane-component-layer'>
-      <div style={labelStyle} tabIndex="0" onFocus={this.focus.bind(this)} className={headerClassName}>
+      <div style={labelStyle} tabIndex="0" onClick={this.onClick.bind(this)} className={headerClassName}>
         { labelSection }
       </div>
       { entity.children.map((child, i) => {

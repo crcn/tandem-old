@@ -20,6 +20,7 @@ class HTMLEntityComponent extends React.Component {
 
   onClick(event) {
     this.props.app.notifier.notify({
+      ...event,
       type    : ENTITY_PREVIEW_CLICK,
       preview : this._preview,
       entity  : this.props.entity

@@ -6,6 +6,7 @@ import BaseMessage from 'common/message-types/base';
 export const PASTE                       = 'paste';
 export const SET_TOOL                    = 'setTool';
 export const SET_FOCUS                   = 'setFocus';
+export const TOGGLE_FOCUS                = 'toggleFocus';
 export const SET_ROOT_ENTITY             = 'setRootEntity';
 export const LOAD_ROOT_ENTITY            = 'loadRootEntity';
 export const PREVIEW_STAGE_CLICK         = 'previewStageClick';
@@ -47,6 +48,24 @@ export class SetFocusMessage extends BaseMessage {
 
   constructor(target, multiSelect = false) {
     super(SET_FOCUS, { target: target, multiSelect });
+  }
+}
+
+
+/**
+ * Sets the current application focus
+ */
+
+export class ToggleFocusMessage extends BaseMessage {
+
+  /**
+   *
+   * @param {Entity} target the target entity to set focus to
+   * @param {Boolean} multiSelect TRUE if selecting multiple items
+   */
+
+  constructor(target) {
+    super(TOGGLE_FOCUS, { target: target });
   }
 }
 

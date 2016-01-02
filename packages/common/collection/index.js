@@ -56,6 +56,14 @@ class BaseCollection {
   }
 
   /**
+   * es6 includes() method
+   */
+
+  includes(value) {
+    return this.indexOf(value) > -1;
+  }
+
+  /**
    * all mutation methods go through here
    */
 

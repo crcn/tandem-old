@@ -3,7 +3,7 @@ import {
   ComponentFragment
 } from 'editor/fragment/types';
 
-import HistorySliderComponent from './components/slider';
+import HistorySliderComponent from './slider';
 
 export function create({ history }) {
   return [
