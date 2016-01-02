@@ -33,7 +33,7 @@ class TextToolComponent extends React.Component {
   render() {
     var entity = this.props.entity;
     var zoom   = this.props.zoom;
-    var cstyle = entity.getComputedStyle();
+    var cstyle = entity.preview.getStyle();
 
     var style = {
       position : 'absolute',

@@ -77,7 +77,7 @@ class EntityGuide extends BaseGuide {
 
     for (var entity of allEntities) {
       if (entity === this.entity) continue;
-      var style = entity.getComputedStyle();
+      var style = entity.preview.getStyle();
 
       if (orgLeft === left) {
         [guideLeft, left] = snapBounds(left, style.left, width, style.width);

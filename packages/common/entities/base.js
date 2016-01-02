@@ -50,16 +50,6 @@ class Entity extends Node {
   }
 
   /**
-   * entities contain fragments, or pieces that might be representatives
-   * of something else. This could be something like a preview display object, flow-diagram display
-   * object, or similar. They're in the spirit of decorators, but defined as fragments for consistency.
-   */
-
-  get fragments() {
-    return this._fragments || (this._fragments = FragmentRegistry.create());
-  }
-
-  /**
    * serializes the entity into a POJO
    * @returns {{children: *, props: {}}}
    */

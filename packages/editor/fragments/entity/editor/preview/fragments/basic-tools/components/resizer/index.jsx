@@ -34,7 +34,7 @@ class ResizerComponent extends React.Component {
 
     var guide = EntityGuide.create(focus, this._zoom(SNAP_MARGIN));
 
-    var style = focus.getComputedStyle();
+    var style = focus.preview.getStyle();
 
     var sx2 = style.left;
     var sy2 = style.top;
@@ -62,7 +62,7 @@ class ResizerComponent extends React.Component {
   updatePoint(point) {
     var focus = this.props.entity;
 
-    var style = focus.getComputedStyle();
+    var style = focus.preview.getStyle();
 
     var props = {
       left: style.left,
@@ -89,7 +89,7 @@ class ResizerComponent extends React.Component {
       props.left  = point.currentStyle.left + point.left;
     }
 
-    focus.getComputer().setBounds(props);
+    focus.preview.setBounds(props);
   }
 
   onDoubleClick(event) {
@@ -115,7 +115,7 @@ class ResizerComponent extends React.Component {
   onKeyDown(message) {
 
     var entity = this.props.app.focus;
-    var style = entity.getComputedStyle();
+    var style = entity.preview.getStyle();
 
     var left = style.left;
     var top  = style.top;
@@ -132,7 +132,7 @@ class ResizerComponent extends React.Component {
       return;
     }
 
-    entity.getComputer().setPositionFromAbsolutePoint({
+    entity.preview.setPositionFromAbsolutePoint({
       top  : top,
       left : left
     });
@@ -143,7 +143,7 @@ class ResizerComponent extends React.Component {
 
   moveTarget(left, top) {
     this._isMoving();
-    this.props.app.focus.getComputer().setPositionFromAbsolutePoint({
+    this.props.app.focus.preview.setPositionFromAbsolutePoint({
       left : left,
       top  : top
     });
@@ -163,7 +163,7 @@ class ResizerComponent extends React.Component {
     var strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
 
     var focus = this.props.entity;
-    var style = focus.getComputer().getZoomedStyle();
+    var style = focus.preview.getZoomedStyle();
 
     var points = [
       ['nw', 0, 0],

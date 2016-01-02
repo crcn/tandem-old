@@ -12,37 +12,6 @@ class DisplayEntity extends Entity {
   }
 
   /**
-   * returns the computed style of the display entity - dimensions and such. This is particularly decoupled from any rendering engine. This method should also be overridden
-   */
-
-  getComputedStyle() {
-    return this.getComputer().getStyle();
-  }
-
-  /**
-   */
-
-  hasComputer() {
-    return !!this._computer;
-  }
-
-  /**
-   */
-
-  getComputer() {
-    if (this._computer) return this._computer;
-    throw new Error('display entity must be bound to view before a style can be computed');
-  }
-
-  /**
-   * overrides the style computer. Should be set by whatever is rendering this display entity.
-   */
-
-  setComputer(computer) {
-    this._computer = computer;
-  }
-
-  /**
    * visual style of display entity such as position & dimensions
    */
 

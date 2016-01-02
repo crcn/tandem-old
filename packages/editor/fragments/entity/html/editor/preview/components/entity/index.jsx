@@ -5,7 +5,7 @@ import ReactEntityComputer from './entity-computer';
 class HTMLEntityComponent extends React.Component {
 
   setHook(entity) {
-    entity.setComputer(ReactEntityComputer.create(entity, this));
+    entity.preview = ReactEntityComputer.create(entity, this);
   }
 
   componentDidMount() {

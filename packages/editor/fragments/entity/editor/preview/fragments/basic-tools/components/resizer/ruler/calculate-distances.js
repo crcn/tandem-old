@@ -4,9 +4,9 @@ function calculateDistances(rootEntity, b1) {
 
   // first flatten & filter for all component entities
   var allBounds = rootEntity.filter(function(entity) {
-    return /component/.test(entity.type) && !!entity.hasComputer();
+    return /component/.test(entity.type) && !!entity.preview;
   }).map(function(entity) {
-    return entity.getComputedStyle();
+    return entity.preview.getStyle();
   });
 
   var intersections = {

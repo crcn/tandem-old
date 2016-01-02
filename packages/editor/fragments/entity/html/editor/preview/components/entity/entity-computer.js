@@ -66,6 +66,10 @@ class ReactEntityComputer extends DisplayEntityComputer {
     };
   }
 
+  toJSON() {
+    return {}
+  }
+
   getStyle() {
 
     var refs = this.displayObject.refs;
