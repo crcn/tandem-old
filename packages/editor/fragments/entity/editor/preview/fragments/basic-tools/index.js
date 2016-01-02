@@ -5,8 +5,8 @@ import {
 } from 'editor/fragment/types';
 
 import TextTool from './controllers/text';
-import TextEditTool from './controllers/text-edit';
 import PointerTool from './controllers/pointer';
+import TextEditTool from './controllers/text-edit';
 import { SET_TOOL } from 'editor/message-types';
 
 import TextToolComponent from './components/text';
