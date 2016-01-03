@@ -7,7 +7,7 @@ import {
 class EntityPaddingComponent extends React.Component {
   render() {
 
-    var entBounds = this.props.entity.preview.getBoundingRect();
+    var entBounds = this.props.entity.preview.getBoundingRect(true);
     var element   = this.props.entity.preview.getDisplayElement();
     var calcStyle = this.props.entity.preview.getStyle(true);
 

@@ -6,7 +6,7 @@ function calculateDistances(rootEntity, b1) {
   var allBounds = rootEntity.filter(function(entity) {
     return /component/.test(entity.type) && !!entity.preview;
   }).map(function(entity) {
-    return entity.preview.getBoundingRect();
+    return entity.preview.getBoundingRect(true);
   });
 
   var intersections = {

@@ -186,7 +186,7 @@ class ResizerComponent extends React.Component {
     var strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
 
     var selection = this.props.selection;
-    var rect = selection.preview.getBoundingRect();
+    var rect = selection.preview.getBoundingRect(true);
     var actStyle = selection.preview.getStyle();
     var capabilities = selection.preview.getCapabilities();
 

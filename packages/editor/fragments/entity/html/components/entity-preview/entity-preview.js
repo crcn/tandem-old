@@ -90,7 +90,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
     return null;
   }
 
-  getBoundingRect() {
+  getBoundingRect(zoomProperties = false) {
 
     var refs = this.displayObject.refs;
 
@@ -118,13 +118,14 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var width = right - left;
     var height = bottom - top;
 
-    left *= zoom;
-    top  *= zoom;
-    width *= zoom;
-    height *= zoom;
+
+    if (zoomProperties) {
+      var {left, top, width, height } = _zoom({ left, top, width, height }, this.getZoom());
+    }
 
     right = left + width;
     bottom = top + height;
+
 
     return BoundingRect.create({
       left   : left,
@@ -134,21 +135,18 @@ class ReactEntityComputer extends DisplayEntityComputer {
     });
   }
 
-  getStyle(zoomProperties) {
+  getStyle(zoomProperties = false) {
 
     var refs = this.displayObject.refs;
 
-    var rect = this.getBoundingRect();
 
     var entity = this.entity;
 
-    var w = rect.right  - rect.left;
-    var h = rect.bottom - rect.top;
 
     var style = entity.getStyle();
 
     var left = style.left || 0;
-    var top  = style.top || 0;
+    var top  = style.top  || 0;
 
     // this might happen then the user is changing the css styles
     try {
@@ -171,6 +169,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
     var cs   = window.getComputedStyle(refs.element);
 
+    // normalize computed styles to pixels
     var cStyle = translateStyleToIntegers({
       marginLeft: cs.marginLeft,
       marginTop : cs.marginTop,
@@ -182,6 +181,10 @@ class ReactEntityComputer extends DisplayEntityComputer {
       paddingBottom: cs.paddingBottom
     }, refs.element);
 
+    var rect = this.getBoundingRect(true);
+    var w = rect.right  - rect.left;
+    var h = rect.bottom - rect.top;
+
     var style = {
       ...cStyle,
       left      : left,
@@ -190,7 +193,9 @@ class ReactEntityComputer extends DisplayEntityComputer {
       height    : h
     };
 
-
+    // this normalizes the properties so that the calculated values
+    // are also based on the zoom level. Important for overlay data such as
+    // tools and information describing the target entity
     if (zoomProperties) {
       style = _zoom(style, this.getZoom());
     }

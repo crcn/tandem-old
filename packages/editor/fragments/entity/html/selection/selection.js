@@ -21,7 +21,7 @@ class Preview {
 
   setPositionFromAbsolutePoint(point) {
 
-    var bounds = this.getBounds();
+    var bounds = this.getStyle();
 
     this.selection.map(function(entity) {
       var pstyle = entity.preview.getStyle();
@@ -51,22 +51,18 @@ class Preview {
     return capabilities;
   }
 
-  getStyle() {
-    return this.getBounds();
-  }
-
   setBounds(bounds) {
 
-    var cbounds = this.getBounds();
+    var cstyle = this.getStyle();
 
     // otherwise reposition the items
     this.selection.forEach(function(entity) {
       var style = entity.preview.getStyle();
 
-      var percLeft   = (style.left - cbounds.left) / cbounds.width;
-      var percTop    = (style.top  - cbounds.top)  / cbounds.height;
-      var percWidth  = style.width / cbounds.width;
-      var percHeight = style.height / cbounds.height;
+      var percLeft   = (style.left - cstyle.left) / cstyle.width;
+      var percTop    = (style.top  - cstyle.top)  / cstyle.height;
+      var percWidth  = style.width / cstyle.width;
+      var percHeight = style.height / cstyle.height;
 
       entity.preview.setBounds({
         left: bounds.left + bounds.width * percLeft,
@@ -77,9 +73,9 @@ class Preview {
     });
   }
 
-  getBoundingRect() {
+  getBoundingRect(zoomProperties) {
     var allRects = this.selection.map(function(entity) {
-      return entity.preview.getBoundingRect();
+      return entity.preview.getBoundingRect(zoomProperties);
     });
 
     var groupRect = {
@@ -99,7 +95,7 @@ class Preview {
     return BoundingRect.create(groupRect);
   }
 
-  getBounds() {
+  getStyle() {
     var allStyles = this.selection.map(function(entity) {
       return entity.preview.getStyle();
     });

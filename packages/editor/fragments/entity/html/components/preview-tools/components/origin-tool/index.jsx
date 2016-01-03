@@ -9,7 +9,7 @@ class OriginEntityComponent extends React.Component {
 
     if (!capabilities.movable) return null;
 
-    var rect  = this.props.entity.preview.getBoundingRect();
+    var rect  = this.props.entity.preview.getBoundingRect(true);
     var style = this.props.entity.preview.getStyle(true);
 
     var originLeft = rect.left - style.left;
