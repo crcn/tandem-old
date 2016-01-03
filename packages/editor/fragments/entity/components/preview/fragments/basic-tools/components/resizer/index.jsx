@@ -115,7 +115,7 @@ class ResizerComponent extends React.Component {
   onDoubleClick(event) {
     this.props.app.notifier.notify({
       type   : ENTITY_PREVIEW_DOUBLE_CLICK,
-      entity : this.props.entity
+      selection : this.props.selection
     });
   }
 

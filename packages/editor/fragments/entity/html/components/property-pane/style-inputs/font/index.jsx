@@ -33,11 +33,11 @@ const fontWeightMap = {
 
 class FontInputComponent extends React.Component {
   render() {
-    var entity = this.props.entity;
+    var selection = this.props.selection;
 
     // TODO - change this to query types
     var fonts            = this.props.app.fragments.query(ALL_FONTS);
-    var font             = findFont(entity, fonts) || {};
+    var font             = findFont(selection, fonts) || {};
     var fontStyles       = font.getCombinedStyles().map(function(value) {
       var [weight, style] = value.split(' ');
       if (style === 'normal') style = void 0;
@@ -61,7 +61,7 @@ class FontInputComponent extends React.Component {
       return a.label > b.label ? -1 : 1;
     });
 
-    return <SearchDropdownComponent className='input m-font-input' defaultLabel={'Select Font'} labelProperty={createLabel} options={fonts} reference={StyleReference.create(entity, 'fontFamily')}>
+    return <SearchDropdownComponent className='input m-font-input' defaultLabel={'Select Font'} labelProperty={createLabel} options={fonts} reference={StyleReference.create(selection, 'fontFamily')}>
     </SearchDropdownComponent>;
   }
 }

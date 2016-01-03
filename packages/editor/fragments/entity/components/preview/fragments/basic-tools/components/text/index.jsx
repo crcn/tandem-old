@@ -31,9 +31,9 @@ class TextToolComponent extends React.Component {
   }
 
   render() {
-    var entity = this.props.entity;
-    var zoom   = this.props.zoom;
-    var cstyle = entity.preview.getStyle();
+    var selection = this.props.selection;
+    var zoom      = this.props.zoom;
+    var cstyle    = selection.preview.getStyle();
 
     var style = {
       position : 'absolute',
@@ -43,7 +43,7 @@ class TextToolComponent extends React.Component {
       zIndex   : 999
     };
 
-    var inputStyle = Object.assign({}, entity.style);
+    var inputStyle = Object.assign({}, selection.style);
     delete inputStyle['position'];
     delete inputStyle['left'];
     delete inputStyle['top'];
@@ -56,7 +56,7 @@ class TextToolComponent extends React.Component {
         onBlur={this.onBlur.bind(this)}
         ref='input'
         style={inputStyle}
-        reference={Reference.create(entity, 'value')} />
+        reference={Reference.create(selection, 'value')} />
     </div>
   }
 }
