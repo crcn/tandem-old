@@ -53,7 +53,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var style = window.getComputedStyle(this.getDisplayElement());
 
     var movable   = style.position !== 'static';
-    var resizable = /fixed|absolute/.test(style.position) || !/inline/.test(style.display);
+    var resizable = /fixed|absolute/.test(style.position) || !/^inline$/.test(style.display);
 
     return {
       movable,

@@ -45,6 +45,9 @@
 
 - [ ] grid guide
   - [ ] ability to change num columns & column spacing
+  
+- [ ] bugs
+  - east/south resizer points both mutating width & height props when they shouldn't
 
 #### Keep this in mind when writing code
 
