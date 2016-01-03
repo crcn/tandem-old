@@ -1,5 +1,8 @@
+import './layer-input.scss';
 import './element.scss';
 import React from 'react';
+import AutosizeInput from 'react-input-autosize';
+import FocusComponent from 'common/components/focus';
 
 const CLASS_NAME_PRIORITY = [
   'id',
@@ -7,12 +10,26 @@ const CLASS_NAME_PRIORITY = [
 ];
 
 class ElementLayerLabelComponent extends React.Component {
+
+  constructor() {
+    super();
+    this.state = {};
+  }
+
+  editTagName(event) {
+    this.setState({
+      editTagName: true
+    });
+  }
+
   render() {
     var entity = this.props.entity;
 
     var label = [
       <span className='m-element-layer-label--tag'>&lt;</span>,
-      <span className='m-element-layer-label--tag-name'>{entity.tagName}</span>
+      this.state.editTagName ?
+        this.renderTagNameInput() :
+        <span onDoubleClick={this.editTagName.bind(this)} className='m-element-layer-label--tag-name'>{entity.tagName}</span>
     ];
 
     var attrs = [];
@@ -52,6 +69,35 @@ class ElementLayerLabelComponent extends React.Component {
     return <div className='m-element-layer-label'>
       { label }
     </div>;
+  }
+
+  onInputChange(event) {
+    this.props.entity.setProperties({
+      tagName: event.target.value
+    });
+  }
+
+  onInputKeyDown(event) {
+    if (event.keyCode === 13) {
+      this.doneEditing();
+    }
+  }
+
+  doneEditing(event) {
+    this.setState({
+      editTagName: false
+    });
+  }
+
+  renderTagNameInput() {
+    return <FocusComponent><AutosizeInput
+      type='text'
+      className='m-layer-label-input'
+      value={this.props.entity.tagName}
+      onChange={this.onInputChange.bind(this)}
+      onBlur={this.doneEditing.bind(this)}
+      onKeyDown={this.onInputKeyDown.bind(this)}
+    /></FocusComponent>;
   }
 }
 

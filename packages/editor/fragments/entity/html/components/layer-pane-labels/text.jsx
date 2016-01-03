@@ -1,3 +1,4 @@
+
 import './text.scss';
 
 import cx from 'classnames';
@@ -58,6 +59,7 @@ class TextLayerLabelComponent extends React.Component {
   renderInput() {
     return <FocusComponent><AutosizeInput
       type='text'
+      className='m-layer-label-input'
       onFocus={this.onInputFocus.bind(this)}
       value={this.props.entity.value}
       onChange={this.onInputChange.bind(this)}

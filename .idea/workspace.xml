@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1645e756-34d6-4ca1-a882-ecc687184605" name="Default" comment="various linting, more jsdocs&#10;">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/layer-input.scss" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.jsx" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.scss" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.jsx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.scss" />
     </list>
     <ignored path="interface-builder.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,28 +31,38 @@
       <file leaf-file-name="element.jsx" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.jsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="14" column="79" selection-start-line="14" selection-start-column="79" selection-end-line="14" selection-end-column="79" />
+            <state vertical-scroll-proportion="-16.74074">
+              <caret line="94" column="37" selection-start-line="94" selection-start-column="37" selection-end-line="94" selection-end-column="37" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="element.scss" pinned="false" current-in-tab="true">
+      <file leaf-file-name="element.scss" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.scss">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.1764706">
-              <caret line="8" column="10" selection-start-line="8" selection-start-column="10" selection-end-line="8" selection-end-column="10" />
+            <state vertical-scroll-proportion="-15.625">
+              <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="26" selection-end-column="31" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="text.jsx" pinned="false" current-in-tab="false">
+      <file leaf-file-name="layer-input.scss" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/layer-input.scss">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-1.25">
+              <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="text.jsx" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.jsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="28" column="48" selection-start-line="28" selection-start-column="48" selection-end-line="28" selection-end-column="48" />
+            <state vertical-scroll-proportion="0.5539143">
+              <caret line="25" column="51" selection-start-line="25" selection-start-column="48" selection-end-line="25" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -66,8 +81,8 @@
       <file leaf-file-name="text.scss" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.scss">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.0">
-              <caret line="17" column="34" selection-start-line="17" selection-start-column="32" selection-end-line="17" selection-end-column="34" />
+            <state vertical-scroll-proportion="-3.235294">
+              <caret line="11" column="31" selection-start-line="11" selection-start-column="31" selection-end-line="11" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -115,16 +130,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="attributes-test.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/common/entities/display/attributes-test.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -140,8 +145,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/components/preview/stage.jsx" />
-        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/fragments/basic-tools/controllers/pointer.js" />
         <option value="$PROJECT_DIR$/packages/common/geom/bounding-rect.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/fragments/basic-tools/components/resizer/ruler/index.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/index.js" />
@@ -187,10 +190,12 @@
         <option value="$PROJECT_DIR$/packages/common/entities/display/attributes-test.js" />
         <option value="$PROJECT_DIR$/packages/common/entities/display/attributes.js" />
         <option value="$PROJECT_DIR$/packages/editor/scss/variables.scss" />
-        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/develop/test-project/index.js" />
-        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.jsx" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.scss" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.scss" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.jsx" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/layer-input.scss" />
       </list>
     </option>
   </component>
@@ -806,14 +811,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/packages/common/parsers/css-test.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6011817">
-          <caret line="66" column="5" selection-start-line="66" selection-start-column="5" selection-end-line="66" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/components/basic-tools/components/resizer/guides/entity.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-12.777778">
@@ -1141,30 +1138,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.jsx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="79" selection-start-line="14" selection-start-column="79" selection-end-line="14" selection-end-column="79" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="18" column="27" selection-start-line="18" selection-start-column="27" selection-end-line="18" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.scss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.0">
-          <caret line="17" column="34" selection-start-line="17" selection-start-column="32" selection-end-line="17" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/fragments/develop/test-project/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3409091">
@@ -1207,18 +1180,50 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.jsx">
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="48" selection-start-line="28" selection-start-column="48" selection-end-line="28" selection-end-column="48" />
+          <caret line="18" column="27" selection-start-line="18" selection-start-column="27" selection-end-line="18" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.jsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-16.74074">
+          <caret line="94" column="37" selection-start-line="94" selection-start-column="37" selection-end-line="94" selection-end-column="37" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.scss">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.1764706">
-          <caret line="8" column="10" selection-start-line="8" selection-start-column="10" selection-end-line="8" selection-end-column="10" />
+        <state vertical-scroll-proportion="-15.625">
+          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="26" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.235294">
+          <caret line="11" column="31" selection-start-line="11" selection-start-column="31" selection-end-line="11" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/layer-input.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.25">
+          <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.jsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5539143">
+          <caret line="25" column="51" selection-start-line="25" selection-start-column="48" selection-end-line="25" selection-end-column="51" />
           <folding />
         </state>
       </provider>

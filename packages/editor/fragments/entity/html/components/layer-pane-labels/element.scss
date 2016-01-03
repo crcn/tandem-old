@@ -23,4 +23,7 @@
   &--string {
     color: $color-orange-1;
   }
+
+  @import './layer-input.scss';
+
 }
