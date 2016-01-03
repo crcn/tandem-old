@@ -1,4 +1,7 @@
 .m-origin-preview-tool {
+  & svg {
+    position: absolute;
+  }
   &--entity {
     position: absolute;
     pointer-events: none;

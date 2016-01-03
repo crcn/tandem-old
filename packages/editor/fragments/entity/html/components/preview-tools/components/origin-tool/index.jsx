@@ -20,9 +20,29 @@ class OriginEntityComponent extends React.Component {
       opacity: 0.5
     };
 
-    return <div style={ostyle} className='m-origin-preview-tool--entity'>
+    var eleft = (rect.left + rect.width / 2);
+    var etop  = (rect.top + rect.height / 2);
+    var sleft = (ostyle.left + ostyle.width / 2);
+    var stop  = (ostyle.top + ostyle.height / 2);
+    var swidth = eleft - sleft + 1;
+    var sheight = etop - stop + 1;
 
-    </div>;
+    var d = [
+      'M' + 0 + ' ' + 0,
+      'L' + swidth + ' ' + sheight
+    ];
+
+    return <div>
+      <div style={ostyle} className='m-origin-preview-tool--entity'>
+
+      </div>
+      <svg style={{
+        left: sleft,
+        top : stop
+      }} viewBox={[0, 0, swidth, sheight]} width={Math.abs(swidth)} height={Math.abs(sheight)}>
+        <path d={d.join('')} stroke='#FF00FF' fill='transparent' />
+      </svg>
+    </div>
   }
 }
 
