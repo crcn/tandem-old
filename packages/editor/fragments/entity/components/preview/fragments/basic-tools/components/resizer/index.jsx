@@ -226,7 +226,7 @@ class ResizerComponent extends React.Component {
       ['sw', movable === true, 0, rect.height],
       ['w' , movable === true, 0, rect.height / 2]
     ].map(([id, show, left, top], i) => {
-      
+
       var ret = ObservableObject.create({
         id: id,
         index: i,

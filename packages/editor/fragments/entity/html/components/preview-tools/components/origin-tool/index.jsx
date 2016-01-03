@@ -5,6 +5,10 @@ import React from 'react';
 class OriginEntityComponent extends React.Component {
   render() {
 
+    var capabilities = this.props.entity.preview.getCapabilities();
+
+    if (!capabilities.movable) return null;
+
     var rect  = this.props.entity.preview.getBoundingRect();
     var style = this.props.entity.preview.getStyle(true);
 
