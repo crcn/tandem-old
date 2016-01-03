@@ -41,7 +41,11 @@ class ResizerComponent extends React.Component {
     var sx2 = style.left;
     var sy2 = style.top;
 
-    startDrag(event, (event, info) => {
+    this.setState({ dragging: true });
+
+    this._dragger = startDrag(event, (event, info) => {
+
+      if (!this.targetPreview.getCapabilities().movable) return;
 
       var nx = sx2 + info.delta.x / this.props.zoom;
       var ny = sy2 + info.delta.y / this.props.zoom;
@@ -58,9 +62,13 @@ class ResizerComponent extends React.Component {
       });
 
       this.moveTarget(bounds.left, bounds.top);
+    }, () => {
+      this.setState({ dragging: false });
+      this._dragger = void 0;
     });
   }
 
+  componentWillUn
 
   updatePoint(point) {
 
@@ -120,6 +128,7 @@ class ResizerComponent extends React.Component {
   }
 
   componentWillUnmount() {
+    if (this._dragger) this._dragger.dispose();
     this.props.app.notifier.remove(this);
   }
 
@@ -168,7 +177,7 @@ class ResizerComponent extends React.Component {
     clearTimeout(this._movingTimer);
     this.targetPreview.setProperties({ moving: true });
     this._movingTimer = setTimeout(() => {
-      this.targetPreview.setProperties({ moving: false });
+      this.targetPreview.setProperties({ moving: false, dragBounds: void 0 });
     }, 1000);
   }
 
@@ -186,9 +195,10 @@ class ResizerComponent extends React.Component {
     var strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
 
     var selection = this.props.selection;
-    var rect = selection.preview.getBoundingRect(true);
-    var actStyle = selection.preview.getStyle();
-    var capabilities = selection.preview.getCapabilities();
+    var preview = selection.preview;
+    var rect = preview.getBoundingRect(true);
+    var actStyle = preview.getStyle();
+    var capabilities = preview.getCapabilities();
 
     var cw = (pointRadius + strokeWidth * 2) * 2;
 
@@ -216,33 +226,39 @@ class ResizerComponent extends React.Component {
 
     var movable = capabilities.movable;
 
-    var points = [
-      ['nw', movable == true, 0, 0],
-      ['n' , movable === true, rect.width / 2, 0],
-      ['ne', movable === true, rect.width, 0],
-      ['e' , true, rect.width, rect.height / 2],
-      ['se', true, rect.width, rect.height],
-      ['s' , true, rect.width / 2, rect.height],
-      ['sw', movable === true, 0, rect.height],
-      ['w' , movable === true, 0, rect.height / 2]
-    ].map(([id, show, left, top], i) => {
+    if (!this.state.dragging) {
 
-      var ret = ObservableObject.create({
-        id: id,
-        index: i,
-        show: show,
-        currentStyle: actStyle,
-        left: left,
-        top: top
+      var points = [
+        ['nw', movable == true, 0, 0],
+        ['n', movable === true, rect.width / 2, 0],
+        ['ne', movable === true, rect.width, 0],
+        ['e', true, rect.width, rect.height / 2],
+        ['se', true, rect.width, rect.height],
+        ['s', true, rect.width / 2, rect.height],
+        ['sw', movable === true, 0, rect.height],
+        ['w', movable === true, 0, rect.height / 2]
+      ].map(([id, show, left, top], i) => {
+
+        var ret = ObservableObject.create({
+          id: id,
+          index: i,
+          show: show,
+          currentStyle: actStyle,
+          left: left,
+          top: top
+        });
+
+        ret.notifier = CallbackNotifier.create(this.updatePoint.bind(this, ret));
+        return ret;
       });
 
-      ret.notifier = CallbackNotifier.create(this.updatePoint.bind(this, ret));
-      return ret;
-    });
-
-    sections.resizer = <div ref='selection' className='m-resizer-component--selection' style={resizerStyle}   onMouseDown={movable ? this.startDragging.bind(this) : void 0} onDoubleClick={this.onDoubleClick.bind(this)}>
-      <PathComponent showPoints={capabilities.resizable} zoom={this.props.zoom} points={points} strokeWidth={strokeWidth} pointRadius={pointRadius}  />
-    </div>;
+      sections.resizer = <div ref='selection' className='m-resizer-component--selection' style={resizerStyle}
+                              onMouseDown={this.startDragging.bind(this)}
+                              onDoubleClick={this.onDoubleClick.bind(this)}>
+        <PathComponent showPoints={capabilities.resizable} zoom={this.props.zoom} points={points}
+                       strokeWidth={strokeWidth} pointRadius={pointRadius}/>
+      </div>;
+    }
 
     return <div className='m-resizer-component'>
       { sections.resizer }

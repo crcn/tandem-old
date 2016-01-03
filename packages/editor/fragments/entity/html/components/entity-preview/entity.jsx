@@ -18,7 +18,7 @@ class HTMLEntityComponent extends React.Component {
     }
   }
 
-  onClick(event) {
+  focus(event) {
     this.props.app.notifier.notify({
       ...event,
       type    : ENTITY_PREVIEW_CLICK,
@@ -40,7 +40,7 @@ class HTMLEntityComponent extends React.Component {
 
     var Type = entity.componentType === 'text' ? 'span' : entity.componentType;
 
-    return <Type ref='element' onClick={this.onClick.bind(this)} {...entity.attributes}>
+    return <Type ref='element' onMouseUp={this.focus.bind(this)} {...entity.attributes}>
       { children.length ? children : entity.value }
     </Type>;
   }
