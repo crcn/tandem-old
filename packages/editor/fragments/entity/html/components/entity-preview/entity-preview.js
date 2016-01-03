@@ -121,13 +121,24 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var left = style.left || 0;
     var top  = style.top || 0;
 
-    if (left) left = translateStyleToIntegers({
-      left: left
-    }, refs.element).left;
+    // this might happen then the user is changing the css styles
+    try {
+      if (left) left = translateStyleToIntegers({
+        left: left
+      }, refs.element).left;
+    } catch(e) {
+      console.warn('style left is not valid, setting to 0');
+      left = 0;
+    }
 
-    if (top) top = translateStyleToIntegers({
-      top: top
-    }, refs.element).top;
+    try {
+      if (top) top = translateStyleToIntegers({
+        top: top
+      }, refs.element).top;
+    } catch(e) {
+      console.warn('style top is not valid, setting to 0');
+      top = 0;
+    }
 
     return {
       resizable : resizable,

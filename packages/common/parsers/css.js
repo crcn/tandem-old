@@ -24,8 +24,13 @@ export default {
       return tokens.shift();
     }
 
-    function peekToken() {
-      return tokens[0];
+    function peekToken(offset = 0) {
+      return tokens[offset];
+    }
+
+    function peekTokenType(offset = 0) {
+      var token = peekToken(offset);
+      return token ? token.type : void 0;
     }
 
     function root() {
@@ -115,10 +120,10 @@ export default {
     function operator() {
       var token = peekToken();
 
-      if (token.value === '-') {
+      if (token.value === '-' && peekTokenType(1) != void 0) {
         nextToken();
         return expressionFactory.create('neg', {
-          value: expression()
+          value: !eof() ? expression() : void 0
         });
       }
 

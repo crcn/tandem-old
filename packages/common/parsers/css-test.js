@@ -65,4 +65,14 @@ describe(__filename + '#', function() {
     var ast = CSSParser.parse('-10px');
     expect(ast.type).to.be('neg');
   });
+
+  it('can parse - without busting', function() {
+    var ast = CSSParser.parse('-');
+  });
+
+  it('parses double negs', function() {
+    var ast = CSSParser.parse('--1');
+    expect(ast.type).to.be('neg');
+    expect(ast.value.type).to.be('neg');
+  });
 });
