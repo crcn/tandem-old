@@ -29,12 +29,12 @@ class ResizerComponent extends React.Component {
   startDragging(event) {
     var selection = this.props.selection;
 
-    var guide = EntityGuide.create(
-      this.props.app.rootEntity.flatten().filter((entity) => {
-        return !~this.props.app.selection.indexOf(entity);
-      }),
-      SNAP_MARGIN
-    );
+    //var guide = EntityGuide.create(
+    //  this.props.app.rootEntity.flatten().filter((entity) => {
+    //    return !~this.props.app.selection.indexOf(entity);
+    //  }),
+    //  SNAP_MARGIN
+    //);
 
     var style = selection.preview.getStyle();
 
@@ -46,12 +46,12 @@ class ResizerComponent extends React.Component {
       var nx = sx2 + info.delta.x / this.props.zoom;
       var ny = sy2 + info.delta.y / this.props.zoom;
 
-      var bounds = guide.snap({
+      var bounds = {
         left   : nx,
         top    : ny,
         width  : style.width,
         height : style.height
-      });
+      };
 
       this.setState({
         dragBounds: bounds
@@ -206,7 +206,7 @@ class ResizerComponent extends React.Component {
 
     var sections = {};
 
-    if (this.state.moving) {
+    if (this.state.moving && false) {
       sections.guides = <div>
         <RulerComponent {...this.props} bounds={style} /> 
         { this.state.dragBounds ? <GuideComponent {...this.props} bounds={this.state.dragBounds} /> : void 0 }

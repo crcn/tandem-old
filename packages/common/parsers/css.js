@@ -106,9 +106,23 @@ export default {
       var token = peekToken();
       switch(token.type) {
         case 'number'    : return number();
+        case 'operator'  : return operator();
         case 'reference' : return reference();
         default          : return tokenExpression();
       }
+    }
+
+    function operator() {
+      var token = peekToken();
+
+      if (token.value === '-') {
+        nextToken();
+        return expressionFactory.create('neg', {
+          value: expression()
+        });
+      }
+
+      return tokenExpression();
     }
 
     function tokenExpression() {

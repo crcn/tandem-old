@@ -5,7 +5,7 @@ import {
 import MarginToolComponent from './components/margin-tool';
 
 export function create({ app }) {
-  
+
   return [
     ComponentFragment.create({
       id             : 'marginToolComponent',

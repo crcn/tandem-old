@@ -18,7 +18,9 @@ describe(__filename + '#', function() {
     ['10em', '10pt', '120.03pt'],
     [100, '10%', '20%', createRelativeElement.bind(this, 500, 10)],
     [100, '10%', '33.333%', createRelativeElement.bind(this, 300, 10, 10)],
-    [100, '10%', '33.333%', createRelativeElement.bind(this, 300, 10, '2px')]
+    [100, '10%', '33.333%', createRelativeElement.bind(this, 300, 10, '2px')],
+    [-100, '0px', '-100px'],
+    [-10, '10%', '-3.333%', createRelativeElement.bind(this, 300, 10, 10)]
   ].forEach(function([fromLeft, toLeft, xEquals, createRelativeElement]) {
     it('can do a basic, fixed calculation from ' + fromLeft + ' to ' + toLeft, function() {
 

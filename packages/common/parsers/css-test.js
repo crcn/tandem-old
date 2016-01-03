@@ -60,4 +60,9 @@ describe(__filename + '#', function() {
     expect(ast.type).to.be('color');
     expect(ast.value).to.be('#FF6600');
   });
+
+  it('can parse negative lengths', function() {
+    var ast = CSSParser.parse('-10px');
+    expect(ast.type).to.be('neg');
+  });
 });

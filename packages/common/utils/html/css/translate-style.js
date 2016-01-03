@@ -131,6 +131,21 @@ var astFactory = {
       }
     }
   },
+  neg(props) {
+    return {
+      value: props.value,
+      solveX(info) {
+        var reduce = this.prepare(info);
+        return typeof reduce === 'function' ? reduce(info.y) : reduce;
+      },
+      prepare(info) {
+        var valueReduce = this.value.prepare(info);
+        return typeof valueReduce === 'function' ? function(y) {
+          return -valueReduce(y);
+        } : -valueReduce;
+      }
+    }
+  },
   operation(props) {
     var op = props.operator;
     return {

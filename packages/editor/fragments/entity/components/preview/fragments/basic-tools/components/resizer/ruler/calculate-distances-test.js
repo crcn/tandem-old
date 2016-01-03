@@ -22,7 +22,7 @@ class TestDisplayEntity extends BaseDisplayEntity {
     }, children);
 
     this.preview = {
-      getStyle: () => {
+      getBoundingRect: () => {
         return this;
       }
     };
