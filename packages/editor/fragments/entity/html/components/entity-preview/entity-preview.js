@@ -15,6 +15,21 @@ import {
   calculateZoom
 } from 'common/utils/html';
 
+
+// TODO - move this to utils
+function _zoom(style, zoom) {
+
+  var zoomed = {};
+
+  for (var key in style) {
+    var value = style[key];
+    if (typeof value === 'number') {
+      zoomed[key] = value * zoom;
+    }
+  }
+
+  return zoomed;
+}
 class ReactEntityComputer extends DisplayEntityComputer {
 
   setPositionFromAbsolutePoint(point) {
@@ -127,12 +142,9 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
     var entity = this.entity;
 
-    var cs   = window.getComputedStyle(refs.element);
-
     var w = rect.right  - rect.left;
     var h = rect.bottom - rect.top;
 
-    var resizable = cs.display !== 'inline';
     var style = entity.getStyle();
 
     var left = style.left || 0;
@@ -157,20 +169,30 @@ class ReactEntityComputer extends DisplayEntityComputer {
       top = 0;
     }
 
+    var cs   = window.getComputedStyle(refs.element);
+
+    var cStyle = translateStyleToIntegers({
+      marginLeft: cs.marginLeft,
+      marginTop : cs.marginTop,
+      marginRight: cs.marginRight,
+      marginBottom: cs.marginBottom,
+      paddingLeft: cs.paddingLeft,
+      paddingTop: cs.paddingTop,
+      paddingRight: cs.paddingRight,
+      paddingBottom: cs.paddingBottom
+    }, refs.element);
+
     var style = {
-      resizable : resizable,
+      ...cStyle,
       left      : left,
       top       : top,
       width     : w,
       height    : h
     };
 
+
     if (zoomProperties) {
-      var zoom = this.getZoom();
-      style.left *= zoom;
-      style.top *= zoom;
-      style.width *= zoom;
-      style.height *= zoom;
+      style = _zoom(style, this.getZoom());
     }
 
     return style;

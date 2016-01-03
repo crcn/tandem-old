@@ -38,6 +38,7 @@ export function create({ app }) {
         attributes : {
           style: {
             position: 'relative',
+            padding: '10px',
             left: '500px',
             top: '150px',
             width: '100px',
