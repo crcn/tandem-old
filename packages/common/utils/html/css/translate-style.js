@@ -91,6 +91,10 @@ var astFactory = {
           var ret =  props.params[i].solveX(info);
           if (ret != void 0) return ret;
         }
+      },
+      toString() {
+        //console.log(props);
+        //return
       }
     }
   },
@@ -111,7 +115,7 @@ var astFactory = {
         var relativeParent = findRelativeElement(relativeElement);
         var bounds         = getInnerElementBounds(relativeParent);
         var scaleProperty  = translateToScaleProperty(property);
-        return props.value === 'x' ? function(y) {
+        return props.value === 'xx' ? function(y) {
           return (y / bounds[scaleProperty]) * 100;
         } : (Number(props.value) / 100) * bounds[scaleProperty];
       }
@@ -125,7 +129,7 @@ var astFactory = {
       },
       prepare() {
         // console.log(Number(props.value), conv[props.unit]);
-        return props.value === 'x' ? function(y) {
+        return props.value === 'xx' ? function(y) {
           return y / conv[props.unit];
         } : Number(props.value) * Number(conv[props.unit]);
       }
@@ -141,7 +145,7 @@ var astFactory = {
       prepare(info) {
         var valueReduce = this.value.prepare(info);
         return typeof valueReduce === 'function' ? function(y) {
-          return -valueReduce(y);
+          return -valueReduce(-y);
         } : -valueReduce;
       }
     }
@@ -204,6 +208,26 @@ var astFactory = {
   }
 };
 
+function tokenize(value) {
+  var tokens = CSSTokenizer.tokenize(value);
+  return tokens;
+  //var combinedTokens = [];
+  //
+  //while(1) {
+  //  var token = tokens.shift();
+  //  if (token.type === 'operator' && token.value === '-') {
+  //    console.log(token);
+  //    if (combinedTokens.length && combinedTokens[combinedTokens.length - 1].)
+  //  }
+  //}
+  //
+  //for (var i = 0, n = tokens.length; i < n; i++) {
+  //  var token = tokens[i];
+  //}
+  //
+  //return tokens;
+}
+
 function translate(fromStyle, toStyle, element) {
 
   if (typeof fromStyle === 'string') {
@@ -233,7 +257,7 @@ function translate(fromStyle, toStyle, element) {
     fromValue = translateLengthToInteger(fromValue, property, element);
 
     // first tokenize the toValue up
-    var tokens = CSSTokenizer.tokenize(toValue);
+    var tokens = tokenize(toValue);
 
     // then replace the left-most length with X which be used
     // as the conversion value. Later on this might be customizable
@@ -243,14 +267,14 @@ function translate(fromStyle, toStyle, element) {
 
     // change with X
     if (firstNumber) {
-      firstNumber.value = 'x';
+      firstNumber.value = 'xx';
     }
 
     // parse into the AST
     var ast = CSSParser.parse(tokens, astFactory);
 
     // take the fromValue and solveX - thus converting fromValue -> value
-    firstNumber.value = Number(ast.solveX({
+    var x = Number(ast.solveX({
       y: fromValue,
       relativeElement: element,
       property: property
@@ -258,7 +282,7 @@ function translate(fromStyle, toStyle, element) {
 
     return tokens.map(function(token) {
       return token.value;
-    }).join('');
+    }).join('').replace(/-?xx/g, x);
   }
 
   return translatedStyle;

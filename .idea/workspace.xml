@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="1645e756-34d6-4ca1-a882-ecc687184605" name="Default" comment="various linting, more jsdocs&#10;">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/common/parsers/css-test.js" afterPath="$PROJECT_DIR$/packages/common/parsers/css-test.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/common/parsers/css.js" afterPath="$PROJECT_DIR$/packages/common/parsers/css.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/entity-preview.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/entity-preview.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/common/utils/html/css/translate-style-test.js" afterPath="$PROJECT_DIR$/packages/common/utils/html/css/translate-style-test.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/common/utils/html/css/translate-style.js" afterPath="$PROJECT_DIR$/packages/common/utils/html/css/translate-style.js" />
     </list>
     <ignored path="interface-builder.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -46,11 +45,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="translate-style.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="translate-style.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/packages/common/utils/html/css/translate-style.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.7777777">
-              <caret line="157" column="21" selection-start-line="157" selection-start-column="21" selection-end-line="157" selection-end-column="21" />
+            <state vertical-scroll-proportion="0.29098967">
+              <caret line="273" column="31" selection-start-line="273" selection-start-column="31" selection-end-line="280" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -60,7 +59,17 @@
         <entry file="file://$PROJECT_DIR$/packages/common/utils/html/css/translate-style-test.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="17" column="31" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
+              <caret line="23" column="18" selection-start-line="23" selection-start-column="18" selection-end-line="23" selection-end-column="18" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="css-test.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/common/tokenizers/css-test.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-8.888889">
+              <caret line="36" column="10" selection-start-line="36" selection-start-column="10" selection-end-line="36" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -70,27 +79,7 @@
         <entry file="file://$PROJECT_DIR$/packages/common/tokenizers/css.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="49" column="28" selection-start-line="49" selection-start-column="28" selection-end-line="49" selection-end-column="28" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="css-test.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/common/tokenizers/css-test.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="css.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/packages/common/parsers/css.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.37666175">
-              <caret line="122" column="51" selection-start-line="122" selection-start-column="51" selection-end-line="122" selection-end-column="51" />
+              <caret line="46" column="36" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -109,8 +98,8 @@
       <file leaf-file-name="css-test.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/packages/common/parsers/css-test.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="75" column="40" selection-start-line="75" selection-start-column="40" selection-end-line="75" selection-end-column="40" />
+            <state vertical-scroll-proportion="-15.074074">
+              <caret line="66" column="5" selection-start-line="66" selection-start-column="5" selection-end-line="66" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -141,8 +130,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/property-pane/index.js" />
-        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/constants/style-categories.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/fragments/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/fragments/css-units.js" />
@@ -187,11 +174,13 @@
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/preview-tools/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/fragments/basic-tools/components/resizer/index.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/fragments/basic-tools/components/resizer/ruler/calculate-distances-test.js" />
-        <option value="$PROJECT_DIR$/packages/common/utils/html/css/translate-style-test.js" />
-        <option value="$PROJECT_DIR$/packages/common/utils/html/css/translate-style.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/entity-preview.js" />
-        <option value="$PROJECT_DIR$/packages/common/parsers/css-test.js" />
         <option value="$PROJECT_DIR$/packages/common/parsers/css.js" />
+        <option value="$PROJECT_DIR$/packages/common/utils/html/css/translate-style-test.js" />
+        <option value="$PROJECT_DIR$/packages/common/tokenizers/css-test.js" />
+        <option value="$PROJECT_DIR$/packages/common/parsers/css-test.js" />
+        <option value="$PROJECT_DIR$/packages/common/tokenizers/css.js" />
+        <option value="$PROJECT_DIR$/packages/common/utils/html/css/translate-style.js" />
       </list>
     </option>
   </component>
@@ -1871,42 +1860,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/common/tokenizers/css-test.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/packages/common/tokenizers/css.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="49" column="28" selection-start-line="49" selection-start-column="28" selection-end-line="49" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/packages/common/utils/html/css/parse-units.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/packages/common/utils/html/css/translate-style-test.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="17" column="31" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/packages/common/utils/html/css/translate-style.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.7777777">
-          <caret line="157" column="21" selection-start-line="157" selection-start-column="21" selection-end-line="157" selection-end-column="21" />
           <folding />
         </state>
       </provider>
@@ -1927,18 +1884,50 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/common/parsers/css-test.js">
+    <entry file="file://$PROJECT_DIR$/packages/common/parsers/css.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="75" column="40" selection-start-line="75" selection-start-column="40" selection-end-line="75" selection-end-column="40" />
+        <state vertical-scroll-proportion="0.40177253">
+          <caret line="142" column="0" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/common/parsers/css.js">
+    <entry file="file://$PROJECT_DIR$/packages/common/tokenizers/css-test.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.37666175">
-          <caret line="122" column="51" selection-start-line="122" selection-start-column="51" selection-end-line="122" selection-end-column="51" />
+        <state vertical-scroll-proportion="-8.888889">
+          <caret line="36" column="10" selection-start-line="36" selection-start-column="10" selection-end-line="36" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/common/parsers/css-test.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-15.074074">
+          <caret line="66" column="5" selection-start-line="66" selection-start-column="5" selection-end-line="66" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/common/tokenizers/css.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="46" column="36" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/common/utils/html/css/translate-style-test.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="23" column="18" selection-start-line="23" selection-start-column="18" selection-end-line="23" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/common/utils/html/css/translate-style.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.29098967">
+          <caret line="273" column="31" selection-start-line="273" selection-start-column="31" selection-end-line="280" selection-end-column="30" />
           <folding />
         </state>
       </provider>
