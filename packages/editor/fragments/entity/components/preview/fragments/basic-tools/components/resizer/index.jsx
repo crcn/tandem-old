@@ -220,6 +220,7 @@ class ResizerComponent extends React.Component {
       </div>
 
       { sections.guides }
+
     </div>
   }
 }

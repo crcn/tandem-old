@@ -1,6 +1,7 @@
 .m-origin-preview-tool {
   &--entity {
     position: absolute;
+    pointer-events: none;
     border: 1px solid #FF00FF;
   }
 }
