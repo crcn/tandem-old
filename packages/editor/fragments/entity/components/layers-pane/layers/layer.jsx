@@ -27,8 +27,9 @@ class LayerComponent extends React.Component {
 
     var labelFragment = this.props.app.fragments.queryOne({
       componentType : 'label',
-      labelType     : entity.componentType
+      entityComponentType : entity.componentType
     });
+
 
     var labelSection;
 

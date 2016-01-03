@@ -1,0 +1,20 @@
+@import 'editor/scss/variables';
+
+.m-element-layer-label {
+
+  &--tag, &--operator {
+    color: $color-white-offset-3;
+  }
+
+  &--tag-name {
+    color: $color-blue-7;
+  }
+
+  &--key {
+    color: $color-blue-7;
+  }
+
+  &--string {
+    color: $color-orange-1;
+  }
+}

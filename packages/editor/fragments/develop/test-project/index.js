@@ -13,14 +13,15 @@ export function create({ app }) {
 
     var entity = div.factory.create({
       notifier      : app.notifier,
-      componentType : 'div',
-      label         : 'div', // don't want,
+      componentType : 'element',
+      tagName       : 'div',
       icon          : 'puzzle'
     }, [
       div.factory.create({
-        componentType: 'div',
-        label        : 'div2',
+        componentType: 'element',
+        tagName      : 'div',
         attributes : {
+          id: 'box1',
           style: {
             position: 'relative',
             margin: '10px',
@@ -33,9 +34,10 @@ export function create({ app }) {
         }
       }),
       div.factory.create({
-        componentType: 'div',
-        label        : 'div2',
+        componentType: 'element',
+        tagName      : 'div',
         attributes : {
+          id: 'box2',
           style: {
             position: 'relative',
             padding: '10px',

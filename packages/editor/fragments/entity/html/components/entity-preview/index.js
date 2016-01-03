@@ -39,7 +39,8 @@ export function create({ app }) {
   ].map(function(elementName) {
     return ComponentFragment.create({
       id: elementName + 'Element',
-      componentType: elementName,
+      componentType: 'element',
+      tagName: elementName,
       componentClass: HTMLEntityComponent
     });
   });
