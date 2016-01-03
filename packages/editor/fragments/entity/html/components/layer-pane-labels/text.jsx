@@ -27,7 +27,6 @@ class TextLayerLabelComponent extends React.Component {
     return <span
       className='m-label m-text-layer-label'
       onDoubleClick={this.editLabel.bind(this)}>
-      <i className='s s-text' />
       {
         this.state.edit         ?
         this.renderInput()      :

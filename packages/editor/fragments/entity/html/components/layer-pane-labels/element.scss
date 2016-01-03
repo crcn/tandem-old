@@ -2,6 +2,11 @@
 
 .m-element-layer-label {
 
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100%;
+  overflow: hidden;
+
   &--tag, &--operator {
     color: $color-white-offset-3;
   }

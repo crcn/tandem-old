@@ -22,6 +22,7 @@ export function create({ app }) {
         tagName      : 'div',
         attributes : {
           id: 'box1',
+          class: 'abcd efg',
           style: {
             position: 'relative',
             margin: '10px',
