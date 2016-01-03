@@ -2,10 +2,21 @@ import BaseCollection from 'common/collection';
 import { clone } from 'common/utils/object';
 import { SetFocusMessage } from 'editor/message-types';
 import BoundingRect from 'common/geom/bounding-rect';
+import { ChangeMessage } from 'base/message-types';
 
 class Preview {
-  constructor(selection) {
+  constructor(selection, notifier) {
     this.selection = selection;
+    this.notifier  = notifier;
+  }
+
+  setProperties(properties) {
+    Object.assign(this, properties);
+    for (var entity of this.selection) {
+      entity.preview.setProperties(properties);
+    }
+
+    this.notifier.notify(ChangeMessage.create());
   }
 
   setPositionFromAbsolutePoint(point) {
@@ -100,7 +111,7 @@ class HTMLEntitySelection extends BaseCollection {
 
   constructor(properties) {
     super(properties);
-    this.preview = new Preview(this);
+    this.preview = new Preview(this, this.notifier);
   }
 
   setStyle(style) {
@@ -126,6 +137,7 @@ class HTMLEntitySelection extends BaseCollection {
   }
 
   setProperties(properties) {
+    super.setProperties(properties);
     for (var item of this) {
       item.setProperties(properties);
     }

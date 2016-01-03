@@ -151,6 +151,10 @@ class ResizerComponent extends React.Component {
     event.preventDefault();
   }
 
+  get targetPreview() {
+    return this.props.selection.preview;
+  }
+
   moveTarget(left, top) {
     this._isMoving();
     this.props.app.selection.preview.setPositionFromAbsolutePoint({
@@ -161,9 +165,9 @@ class ResizerComponent extends React.Component {
 
   _isMoving() {
     clearTimeout(this._movingTimer);
-    this.setState({ moving: true });
+    this.targetPreview.setProperties({ moving: true });
     this._movingTimer = setTimeout(() => {
-      this.setState({ moving: false });
+      this.targetPreview.setProperties({ moving: false });
     }, 1000);
   }
 
@@ -209,7 +213,7 @@ class ResizerComponent extends React.Component {
 
     var sections = {};
 
-    if (this.state.moving) {
+    if (this.targetPreview.moving) {
       sections.guides = <div>
         <RulerComponent {...this.props} bounds={style} /> 
         { this.state.dragBounds ? <GuideComponent {...this.props} bounds={this.state.dragBounds} /> : void 0 }
