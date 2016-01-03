@@ -19,8 +19,8 @@ class EntityPaddingComponent extends React.Component {
     };
 
     var style = {
-      left: entBounds.left,
-      top: entBounds.top,
+      left: entBounds.left + 1,
+      top: entBounds.top + 1,
       width: entBounds.width,
       height: entBounds.height,
       borderLeftWidth: paddings.left,

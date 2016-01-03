@@ -24,6 +24,9 @@
   - [ ] show zoom above canvas
   - [ ] highlight canvas in focus
   - [ ] browsertap renderer
+  
+- [ ] properties
+  - [ ] warnings for each style (left/right set when position is static)
 
 - [ ] shadow DOM for encapsulating review
 
