@@ -110,9 +110,9 @@ function createStyleInputFragments({ app }) {
 function createComponentStyleFragment(name, category, componentClass) {
   return ComponentFragment.create({
     id             : name + 'StyleInputComponent',
-    componentType  : 'styleInput',
+    componentType  : 'propertyInput',
     componentClass : componentClass,
-    styleName      : name,
+    propertyName   : name,
     styleCategory  : category
   })
 }

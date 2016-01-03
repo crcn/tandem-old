@@ -4,8 +4,12 @@ import {
   EntityPaneComponentFragment
 } from 'editor/fragment/types';
 
-import PaneComponent from 'common/components/pane';
+import AttributeReference from 'common/reference/attribute';
+
 import PaneLabel from '../pane-label/index.jsx';
+import PaneComponent from 'common/components/pane';
+import PropertyListComponent from '../property-list';
+
 
 class AttributesPaneComponent extends React.Component {
 
@@ -22,7 +26,11 @@ class AttributesPaneComponent extends React.Component {
     var label = <PaneLabel onAdd={this.addProperty.bind(this)}>Properties</PaneLabel>;
 
     return <PaneComponent label={label}>
-
+      <PropertyListComponent
+        {...this.props}
+        properties={this.props.selection.attributes}
+        createReference={AttributeReference.create.bind(AttributeReference, this.props.selection)}
+      />
     </PaneComponent>;
   }
 }

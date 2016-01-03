@@ -5,6 +5,7 @@ import inflection from 'inflection';
 import PaneComponent from 'common/components/pane';
 import StyleReference from 'common/reference/style';
 import PaneLabel from '../../pane-label/index.jsx';
+import PropertyListComponent from '../../property-list';
 
 class StyleDeclarationComponent extends React.Component {
   removeDeclaration() {
@@ -41,44 +42,22 @@ class EntityStylesPaneComponent extends React.Component {
   render() {
 
     var selection    = this.props.selection;
-    var fragment     = this.props.fragment;
-    var fragments    = this.props.app.fragments;
+
 
     var styles = selection.getStyle();
 
-    var rows = [];
-
-    for (var styleName in styles) {
-
-      var styleFragment = fragments.queryOne({
-        componentType : 'styleInput',
-        styleName     : styleName
-      });
-
-      if (!styleFragment || styleFragment.styleCategory !== fragment.styleCategory) {
-        continue;
-      }
-
-      rows.push(<StyleDeclarationComponent
-        fragment={styleFragment}
-        app={this.props.app}
-        fragments={fragments}
-        selection={selection}
-        reference={StyleReference.create(selection, styleName)}
-        key={styleName} />);
-    }
-
-    rows = rows.sort(function(a, b) {
-      return fragments.indexOf(a.props.fragment) > fragments.indexOf(b.props.fragment) ? 1 : -1;
-    });
-
     var label = <PaneLabel onAdd={this.addStyle.bind(this)}>
-      { fragment.label }
+      { this.props.fragment.label }
     </PaneLabel>;
 
     return <PaneComponent label={label}>
       <div className='m-styles-pane'>
-        { rows }
+        <PropertyListComponent
+          {...this.props}
+          fragmentQuery={{styleCategory:this.props.fragment.styleCategory}}
+          properties={styles}
+          createReference={StyleReference.create.bind(StyleReference, selection)}
+        />
       </div>
     </PaneComponent>;
   }

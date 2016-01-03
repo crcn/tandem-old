@@ -130,6 +130,10 @@ class TextEditorComponent extends React.Component {
     }
   }
 
+  onPaste(event) {
+    console.log('paste');
+  }
+
   render() {
     var editor = this.getEditor({
       ...this.state,
@@ -144,6 +148,7 @@ class TextEditorComponent extends React.Component {
       data-mouse-trap={false}
       className={['m-text-editor', this.props.className].join(' ')}
       onKeyPress={this.onKey.bind(this)}
+      onPaste={this.onPaste.bind(this)}
       onKeyDown={this.onKeyCommand.bind(this)}
       onFocus={this.onFocus.bind(this)}
       onBlur={this.onBlur.bind(this)}>

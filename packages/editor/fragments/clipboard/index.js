@@ -29,7 +29,11 @@ function create({ app }) {
   }
 
   function paste(data) {
-    app.notifier.notify(PasteMessage.create(JSON.parse(data)));
+    try {
+      app.notifier.notify(PasteMessage.create(JSON.parse(data)));
+    } catch(e) {
+      console.warn('cannot paste x-entity data: ', data);
+    }
   }
 
   document.addEventListener('copy', function(event) {

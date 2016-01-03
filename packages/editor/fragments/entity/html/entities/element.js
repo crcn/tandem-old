@@ -12,6 +12,11 @@ class ElementEntity extends DisplayEntity {
 
   setAttribute(key, value) {
     this.attributes[key] = value;
+    
+    if (value === '') {
+      delete this.attributes[key];
+    }
+
     this.notifyChange();
   }
 }
