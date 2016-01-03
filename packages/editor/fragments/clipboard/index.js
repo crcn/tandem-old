@@ -46,6 +46,7 @@ function create({ app }) {
     event.preventDefault();
   });
 
+  if (false)
   document.addEventListener('paste', function(event) {
     var data = event.clipboardData.getData('text/x-entity');
     if (data != void 0) {

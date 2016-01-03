@@ -104,11 +104,12 @@ class TextEditorComponent extends React.Component {
     }
   }
 
-  focus() {
-    this.refs.editor.focus();
-  }
+  //focus() {
+  //  this.refs.editor.focus();
+  //}
 
   onFocus(event) {
+    console.log('focus');
     this.setState({ focus: true });
     if (this.props.onFocus) {
       this.props.onFocus(event);
@@ -125,16 +126,22 @@ class TextEditorComponent extends React.Component {
 
   onBlur(event) {
     this.setState({ focus: false });
+    console.log('blur');
     if (this.props.onBlur) {
       this.props.onBlur(event);
     }
   }
 
   onPaste(event) {
-    console.log('paste');
+    this.getEditor().marker.addText(event.clipboardData.getData('text/plain'));
+  }
+
+  focus() {
+    this.refs.hiddenInput.focus();
   }
 
   render() {
+
     var editor = this.getEditor({
       ...this.state,
       ...this.props,
@@ -144,14 +151,8 @@ class TextEditorComponent extends React.Component {
     return <div
       ref='editor'
       style={editor.style}
-      tabIndex='0'
       data-mouse-trap={false}
-      className={['m-text-editor', this.props.className].join(' ')}
-      onKeyPress={this.onKey.bind(this)}
-      onPaste={this.onPaste.bind(this)}
-      onKeyDown={this.onKeyCommand.bind(this)}
-      onFocus={this.onFocus.bind(this)}
-      onBlur={this.onBlur.bind(this)}>
+      className={['m-text-editor', this.props.className].join(' ')} onClick={this.focus.bind(this)}>
 
       <div className='m-text-editor--inner'>
 
@@ -163,6 +164,13 @@ class TextEditorComponent extends React.Component {
 
         { this.state.focus ? editor.marker.length > 0 ? <HighlightComponent marker={editor.marker} editor={editor} /> : <CaretComponent idle={this.state.idle} editor={editor} caret={editor.caret} /> : void 0 }
       </div>
+
+      <input ref='hiddenInput' type='text'
+             onKeyPress={this.onKey.bind(this)}
+             onPaste={this.onPaste.bind(this)}
+             onKeyDown={this.onKeyCommand.bind(this)}
+             onFocus={this.onFocus.bind(this)}
+             onBlur={this.onBlur.bind(this)} />
     </div>;
   }
 }

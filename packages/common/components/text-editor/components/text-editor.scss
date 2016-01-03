@@ -1,5 +1,12 @@
 .m-text-editor {
 
+  & input {
+    position: absolute;
+    opacity: 0;
+    top: -100px;
+    left: -100px;
+  }
+
 
   position: relative;
   // background-color: rgba(0,0,0,0.05);
