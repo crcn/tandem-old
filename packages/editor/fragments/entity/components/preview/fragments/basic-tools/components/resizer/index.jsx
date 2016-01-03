@@ -88,8 +88,8 @@ class ResizerComponent extends React.Component {
     };
 
     if (/^n/.test(point.id)) {
-      props.top = point.currentStyle.top / this.props.zoom + point.top;
-      props.height = point.currentStyle.height / this.props.zoom - point.top;
+      props.top = point.currentStyle.top + point.top;
+      props.height = point.currentStyle.height - point.top;
     }
 
     if (/e$/.test(point.id)) {
@@ -101,8 +101,8 @@ class ResizerComponent extends React.Component {
     }
 
     if (/w$/.test(point.id)) {
-      props.width = point.currentStyle.width / this.props.zoom - point.left;
-      props.left  = point.currentStyle.left / this.props.zoom + point.left;
+      props.width = point.currentStyle.width - point.left;
+      props.left  = point.currentStyle.left + point.left;
     }
 
     if (point.keepAspectRatio) {
@@ -183,16 +183,8 @@ class ResizerComponent extends React.Component {
     var strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
 
     var selection = this.props.selection;
-    var rect = selection.preview.getBoundingRect();
-
-    var box = {
-      left: rect.left,
-      top: rect.top,
-      width: rect.right - rect.left,
-      height: rect.bottom - rect.top
-    };
-
-    var style = _zoom(box, this.props.zoom);
+    var style = _zoom(selection.preview.getBoundingRect(), this.props.zoom);
+    var actStyle = selection.preview.getStyle();
 
     var points = [
       ['nw', 0, 0],
@@ -208,7 +200,7 @@ class ResizerComponent extends React.Component {
       var ret = ObservableObject.create({
         id: point[0],
         index: i,
-        currentStyle: style,
+        currentStyle: actStyle,
         left: point[1],
         top : point[2]
       });
