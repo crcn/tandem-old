@@ -282,7 +282,7 @@ function translate(fromStyle, toStyle, element) {
 
     return tokens.map(function(token) {
       return token.value;
-    }).join('').replace(/-?xx/g, x);
+    }).join('').replace(/-*xx/g, x);
   }
 
   return translatedStyle;

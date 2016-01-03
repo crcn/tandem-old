@@ -61,6 +61,7 @@ class ResizerComponent extends React.Component {
     });
   }
 
+
   updatePoint(point) {
 
     var selection = this.props.selection;
@@ -95,6 +96,8 @@ class ResizerComponent extends React.Component {
     if (point.keepAspectRatio) {
       // todo
     }
+
+    this._isMoving()
 
     selection.preview.setBounds(props);
   }
@@ -220,6 +223,15 @@ class ResizerComponent extends React.Component {
       </div>
 
       { sections.guides }
+
+      {
+        this.state.moving ?
+          <span  className='m-resizer-component--size' style={{
+            left: style.left + 10,
+            top : style.top + 10
+          }}>{Math.round(actStyle.width)} &times; {Math.round(actStyle.height)}</span>
+          : void 0
+      }
 
     </div>
   }
