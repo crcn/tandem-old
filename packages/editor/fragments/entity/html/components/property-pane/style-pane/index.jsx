@@ -32,7 +32,7 @@ class StyleDeclarationComponent extends React.Component {
 class EntityStylesPaneComponent extends React.Component {
 
   addStyle() {
-    this.props.entity.setStyle({
+    this.props.selection.setStyle({
       [prompt('style name')]: prompt('value')
     })
   }

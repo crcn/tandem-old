@@ -32,8 +32,16 @@ function groupSelection(app, message) {
   });
 
   var group = groupFactory.factory.create({
-    label: 'abba'
+    componentType : 'div',
+    label         : 'div', // don't want,e
+    attributes: {
+      style: {
+        position: 'absolute',
+        display: 'inline-block'
+      }
+    }
   });
+
 
   app.rootEntity.children.push(group);
   group.children.push(...selection);

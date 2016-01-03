@@ -1,5 +1,6 @@
 import { DisplayEntityComputer } from 'common/entities';
-import { translateStyleToIntegers } from 'common/utils/html/css/translate-style';;
+import { translateStyleToIntegers } from 'common/utils/html/css/translate-style';
+import BoundingRect from 'common/geom/bounding-rect';
 
 import {
   translateStyle,
@@ -53,6 +54,31 @@ class ReactEntityComputer extends DisplayEntityComputer {
     return null;
   }
 
+  getBoundingRect() {
+
+    var refs = this.displayObject.refs;
+
+    if (!refs.element) {
+      throw new Error('trying to calculate display information on entity that is not mounted');
+      return { };
+    }
+
+    var entity = this.entity;
+
+    // eeeesh - this is yucky, but we *need* to offset the position
+    // of the preview canvas so that we can get the correct position
+    // of this element. This is the *simplest* solution I can think of.
+    // TODO - this *will not work* when we start adding multiple canvases
+    var pcrect = document.getElementById('preview-canvas').getBoundingClientRect();
+    var rect = refs.element.getBoundingClientRect();
+
+    return BoundingRect.create({
+      left: rect.left - pcrect.left,
+      top : rect.top  - pcrect.top,
+      right: rect.right - pcrect.left,
+      bottom: rect.bottom - pcrect.top
+    });
+  }
 
   getStyle() {
 
@@ -65,14 +91,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
     var entity = this.entity;
 
-    // eeeesh - this is yucky, but we *need* to offset the position
-    // of the preview canvas so that we can get the correct position
-    // of this element. This is the *simplest* solution I can think of.
-    // TODO - this *will not work* when we start adding multiple canvases
-    var pcrect = document.getElementById('preview-canvas').getBoundingClientRect();
-
-
-    var rect = refs.element.getBoundingClientRect();
+    var rect = this.getBoundingRect();
     var cs   = window.getComputedStyle(refs.element);
 
     var w = rect.right  - rect.left;
@@ -85,8 +104,8 @@ class ReactEntityComputer extends DisplayEntityComputer {
     // if an element is zoomed out. Need to translate the style stored
     // on the entity, compute that with the given element, then return the style
     var { left, top } = translateStyleToIntegers({
-      left: style.left || (rect.left - pcrect.left),
-      top : style.top  || (rect.top  - pcrect.top)
+      left: style.left || rect.left,
+      top : style.top  || rect.top
     }, refs.element);
 
     return {

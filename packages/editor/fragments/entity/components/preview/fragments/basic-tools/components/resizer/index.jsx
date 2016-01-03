@@ -183,7 +183,16 @@ class ResizerComponent extends React.Component {
     var strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
 
     var selection = this.props.selection;
-    var style = _zoom(selection.preview.getStyle(), this.props.zoom);
+    var rect = selection.preview.getBoundingRect();
+
+    var box = {
+      left: rect.left,
+      top: rect.top,
+      width: rect.right - rect.left,
+      height: rect.bottom - rect.top
+    };
+
+    var style = _zoom(box, this.props.zoom);
 
     var points = [
       ['nw', 0, 0],

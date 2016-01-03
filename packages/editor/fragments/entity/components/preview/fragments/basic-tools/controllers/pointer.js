@@ -41,7 +41,7 @@ class PointerTool extends ObservableObject {
     });
 
     if (!fragment) {
-      console.warn('entity %s is not editable on double click', message.entity.componentType);
+      console.warn('entity %s is not editable on double click', message.selection.componentType);
       return;
     }
 

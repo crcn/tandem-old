@@ -91,7 +91,7 @@ class StageComponent extends React.Component {
                 className='m-preview-stage--element-layer'
                 role='preview stage'
                 onClick={this.onClick.bind(this)}>
-                <span ref='drawLayer' className='reset-all m-preview-stage--draw-layer'>
+                <span ref='drawLayer' className='m-preview-stage--draw-layer'>
                   <RegisteredComponent {...this.props} entity={entity} queryOne={{
                     componentType: entity.componentType
                   }} />

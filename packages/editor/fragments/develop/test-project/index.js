@@ -22,7 +22,7 @@ export function create({ app }) {
         label        : 'div2',
         attributes : {
           style: {
-            position: 'absolute',
+            position: 'relative',
             left: '100px',
             top: '100px',
             width: '100px',
@@ -36,24 +36,9 @@ export function create({ app }) {
         label        : 'div2',
         attributes : {
           style: {
-            position: 'absolute',
+            position: 'relative',
             left: '500px',
             top: '150px',
-            width: '100px',
-            height: '100px',
-            background: 'linear-gradient(90deg, blue, black)'
-          }
-        }
-      }),
-
-      div.factory.create({
-        componentType: 'div',
-        label        : 'div2',
-        attributes : {
-          style: {
-            position: 'absolute',
-            left: '500px',
-            top: '300px',
             width: '100px',
             height: '100px',
             background: 'linear-gradient(90deg, blue, black)'
