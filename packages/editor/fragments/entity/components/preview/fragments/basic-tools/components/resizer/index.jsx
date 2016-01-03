@@ -97,7 +97,8 @@ class ResizerComponent extends React.Component {
       // todo
     }
 
-    this._isMoving()
+    this._isMoving();
+    this._isResizing();
 
     selection.preview.setBounds(props);
   }
@@ -171,6 +172,14 @@ class ResizerComponent extends React.Component {
     }, 1000);
   }
 
+  _isResizing() {
+    clearTimeout(this._movingTimer);
+    this.targetPreview.setProperties({ resizing: true });
+    this._movingTimer = setTimeout(() => {
+      this.targetPreview.setProperties({ resizing: false });
+    }, 1000);
+  }
+
   render() {
 
     var pointRadius = (this.props.pointRadius || POINT_RADIUS);
@@ -229,7 +238,7 @@ class ResizerComponent extends React.Component {
       { sections.guides }
 
       {
-        this.state.moving ?
+        this.targetPreview.resizing ?
           <span  className='m-resizer-component--size' style={{
             left: style.left + 10,
             top : style.top + 10
