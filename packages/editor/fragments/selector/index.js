@@ -38,7 +38,7 @@ function create({ app }) {
     var selection = app.selection;
 
     app.setProperties({
-      selection: void 0
+      selection: []
     });
 
     if (selection) selection.deleteAll();
@@ -52,7 +52,7 @@ function create({ app }) {
     var multiSelect = message.multiSelect;
 
     app.setProperties({
-      selection: void 0
+      selection: []
     });
 
     // no item? ignore
