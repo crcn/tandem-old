@@ -4,6 +4,7 @@ import React from 'react';
 import inflection from 'inflection';
 import PaneComponent from 'common/components/pane';
 import StyleReference from 'common/reference/style';
+import PaneLabel from '../../pane-label/index.jsx';
 
 class StyleDeclarationComponent extends React.Component {
   removeDeclaration() {
@@ -71,12 +72,9 @@ class EntityStylesPaneComponent extends React.Component {
       return fragments.indexOf(a.props.fragment) > fragments.indexOf(b.props.fragment) ? 1 : -1;
     });
 
-    var label = <span className='m-styles-pane--label'>
+    var label = <PaneLabel onAdd={this.addStyle.bind(this)}>
       { fragment.label }
-      <span className='m-styles-pane--add-style' onClick={this.addStyle.bind(this)}>
-        +
-      </span>
-    </span>;
+    </PaneLabel>;
 
     return <PaneComponent label={label}>
       <div className='m-styles-pane'>

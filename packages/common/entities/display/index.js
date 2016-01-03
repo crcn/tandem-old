@@ -31,6 +31,13 @@ class DisplayEntity extends Entity {
       }
     }
 
+    this.notifyChange();
+  }
+
+  /**
+   */
+
+  notifyChange() {
     // FIXME - kind of nasty code here - breaks abstraction of change emittion
     // via setProperties. This chunk should be re-evaluated later on - okay for now.
     if (this.notifier) {

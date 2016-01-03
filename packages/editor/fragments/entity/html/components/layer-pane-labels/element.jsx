@@ -6,7 +6,8 @@ import FocusComponent from 'common/components/focus';
 
 const CLASS_NAME_PRIORITY = [
   'id',
-  'class'
+  'class',
+  'src'
 ];
 
 class ElementLayerLabelComponent extends React.Component {
@@ -89,10 +90,15 @@ class ElementLayerLabelComponent extends React.Component {
     });
   }
 
+  onInputFocus(event) {
+    event.target.select();
+  }
+
   renderTagNameInput() {
     return <FocusComponent><AutosizeInput
       type='text'
       className='m-layer-label-input'
+      onFocus={this.onInputFocus.bind(this)}
       value={this.props.entity.tagName}
       onChange={this.onInputChange.bind(this)}
       onBlur={this.doneEditing.bind(this)}

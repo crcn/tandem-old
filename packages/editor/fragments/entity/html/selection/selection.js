@@ -136,6 +136,12 @@ class HTMLEntitySelection extends BaseCollection {
     })
   }
 
+  setAttribute(key, value) {
+    for (var entity of this) {
+      entity.setAttribute(key, value);
+    }
+  }
+
   get value() {
     return this[0].value;
   }
@@ -196,7 +202,6 @@ class HTMLEntitySelection extends BaseCollection {
       // remove the child deleted
       entity.parent.children.remove(entity);
     }
-
   }
 }
 
