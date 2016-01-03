@@ -6,17 +6,18 @@
 - [ ] 3D transform tool
 - [ ] animatin tool
 - [ ] move entity to front / back / forward (zIndex)
-- [ ] entity-specific props pane
+- [ ] entity-specific props pane (images and stuff)
+- [ ] components tool
 - [x] ruler tool
 - [x] sink tool (snap to grid)
 
 - [ ] multi-select tool
   - [ ] shift click layers
-  - [ ] shift click preview items
-  - [ ] support for different entity types
+  - [x] shift click preview items
+  - [ ] drag select items
 
 - [ ] layers
-  - [ ] hide / show layers with arrow keys
+  - [ ] hide / show layers with arrow keys (left right)
 
 - [ ] mirror mode
   - [ ] show display resolution above canvas + label
@@ -28,6 +29,8 @@
 
 - [x] history
   - [ ] use git
+
+- [ ] alignment tools next to resizer
 
 - [x] clipboard
   - [ ] use actual native clipboard for c&p
