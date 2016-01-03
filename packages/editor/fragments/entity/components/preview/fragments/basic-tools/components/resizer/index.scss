@@ -4,12 +4,12 @@
 
   &--size {
     border-radius: 5px;
-    background-color: $color-black-offset-2;
-    color: $color-white-offset-8;
+    color: #FF00FF;
     position: absolute;
     white-space: nowrap;
     pointer-events: none;
-    padding: $padding-0;
+    transform: translate(-50%, 50%);
+    font-size: $font-size-0;
   }
 
   &--selection {

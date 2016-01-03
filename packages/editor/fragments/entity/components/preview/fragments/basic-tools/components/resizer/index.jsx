@@ -186,18 +186,18 @@ class ResizerComponent extends React.Component {
     var strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
 
     var selection = this.props.selection;
-    var style = selection.preview.getBoundingRect();
+    var rect = selection.preview.getBoundingRect();
     var actStyle = selection.preview.getStyle();
 
     var points = [
       ['nw', 0, 0],
-      ['n', style.width / 2, 0],
-      ['ne', style.width, 0],
-      ['e', style.width, style.height / 2],
-      ['se', style.width, style.height],
-      ['s', style.width / 2, style.height],
-      ['sw', 0, style.height],
-      ['w', 0, style.height / 2]
+      ['n', rect.width / 2, 0],
+      ['ne', rect.width, 0],
+      ['e', rect.width, rect.height / 2],
+      ['se', rect.width, rect.height],
+      ['s', rect.width / 2, rect.height],
+      ['sw', 0, rect.height],
+      ['w', 0, rect.height / 2]
     ].map((point, i) => {
 
       var ret = ObservableObject.create({
@@ -216,15 +216,15 @@ class ResizerComponent extends React.Component {
 
     // offset stroke
     var style = {
-      left     : style.left - cw / 2 + strokeWidth,
-      top      : style.top - cw / 2 + strokeWidth
+      left     : rect.left - cw / 2 + strokeWidth,
+      top      : rect.top - cw / 2 + strokeWidth
     }
 
     var sections = {};
 
     if (this.targetPreview.moving) {
       sections.guides = <div>
-        <RulerComponent {...this.props} bounds={style} /> 
+        <RulerComponent {...this.props} bounds={style} />
         { this.state.dragBounds ? <GuideComponent {...this.props} bounds={this.state.dragBounds} /> : void 0 }
       </div>;
     }
@@ -240,8 +240,8 @@ class ResizerComponent extends React.Component {
       {
         this.targetPreview.resizing ?
           <span  className='m-resizer-component--size' style={{
-            left: style.left + 10,
-            top : style.top + 10
+            left: rect.left + rect.width / 2,
+            top : rect.top + rect.height
           }}>{Math.round(actStyle.width)} &times; {Math.round(actStyle.height)}</span>
           : void 0
       }
