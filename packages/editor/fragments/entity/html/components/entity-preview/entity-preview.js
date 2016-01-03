@@ -25,6 +25,10 @@ class ReactEntityComputer extends DisplayEntityComputer {
     this.entity.setStyle(newStyle);
   }
 
+  getZoom() {
+    return calculateZoom(this.getDisplayElement());
+  }
+
   getDisplayElement() {
     return this.displayObject.refs.element;
   }
@@ -72,11 +76,29 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var pcrect = document.getElementById('preview-canvas').getBoundingClientRect();
     var rect = refs.element.getBoundingClientRect();
 
+    var zoom = calculateZoom(refs.element);
+
+    var left   = rect.left   - pcrect.left;
+    var top    = rect.top    - pcrect.top;
+    var right  = rect.right  - pcrect.left;
+    var bottom = rect.bottom - pcrect.top;
+
+    var width = right - left;
+    var height = bottom - top;
+
+    left *= zoom;
+    top  *= zoom;
+    width *= zoom;
+    height *= zoom;
+
+    right = left + width;
+    bottom = top + height;
+
     return BoundingRect.create({
-      left: rect.left - pcrect.left,
-      top : rect.top  - pcrect.top,
-      right: rect.right - pcrect.left,
-      bottom: rect.bottom - pcrect.top
+      left   : left,
+      top    : top,
+      right  : right,
+      bottom : bottom
     });
   }
 
@@ -84,14 +106,10 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
     var refs = this.displayObject.refs;
 
-    if (!refs.element) {
-      console.warn('trying to calculate display information on entity that is not mounted');
-      return { };
-    }
+    var rect = this.getBoundingRect();
 
     var entity = this.entity;
 
-    var rect = this.getBoundingRect();
     var cs   = window.getComputedStyle(refs.element);
 
     var w = rect.right  - rect.left;
@@ -100,13 +118,16 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var resizable = cs.display !== 'inline';
     var style = entity.getStyle();
 
-    // left & top positions are not computed properly in Chrome
-    // if an element is zoomed out. Need to translate the style stored
-    // on the entity, compute that with the given element, then return the style
-    var { left, top } = translateStyleToIntegers({
-      left: style.left || rect.left,
-      top : style.top  || rect.top
-    }, refs.element);
+    var left = style.left || 0;
+    var top  = style.top || 0;
+
+    if (left) left = translateStyleToIntegers({
+      left: left
+    }, refs.element).left;
+
+    if (top) top = translateStyleToIntegers({
+      top: top
+    }, refs.element).top;
 
     return {
       resizable : resizable,

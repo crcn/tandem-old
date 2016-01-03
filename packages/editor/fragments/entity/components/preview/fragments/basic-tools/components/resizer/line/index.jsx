@@ -3,22 +3,12 @@ import React from 'react';
 
 const STEM_WIDTH = 4;
 
-function scaleBounds(bounds, zoom) {
-  return {
-    left      : Math.round(bounds.left   * zoom),
-    top       : Math.round(bounds.top    * zoom),
-    width     : Math.round(bounds.width  * zoom),
-    height    : Math.round(bounds.height * zoom),
-    direction : bounds.direction
-  }
-}
-
 class LineComponent extends React.Component {
   render() {
 
     var stemWidth = this.props.showStems !== false ? STEM_WIDTH : 0;
 
-    var bounds = scaleBounds(this.props.bounds, this.props.zoom);
+    var bounds = this.props.bounds;
 
     var sections = {};
 

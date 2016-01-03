@@ -16,15 +16,6 @@ const POINT_RADIUS       = 2;
 const PADDING            = 6;
 const SNAP_MARGIN        = 4;
 
-function _zoom(style, zoom) {
-  return {
-    ...style,
-    left: style.left * zoom,
-    top: style.top * zoom,
-    width: style.width * zoom,
-    height: style.height * zoom
-  }
-}
 
 class ResizerComponent extends React.Component {
 
@@ -35,10 +26,6 @@ class ResizerComponent extends React.Component {
     };
   }
 
-  _zoom(number) {
-    return number / this.props.zoom;
-  }
-
   startDragging(event) {
     var selection = this.props.selection;
 
@@ -46,7 +33,7 @@ class ResizerComponent extends React.Component {
       this.props.app.rootEntity.flatten().filter((entity) => {
         return !~this.props.app.selection.indexOf(entity);
       }),
-      this._zoom(SNAP_MARGIN)
+      SNAP_MARGIN
     );
 
     var style = selection.preview.getStyle();
@@ -56,8 +43,8 @@ class ResizerComponent extends React.Component {
 
     startDrag(event, (event, info) => {
 
-      var nx = sx2 + this._zoom(info.delta.x);
-      var ny = sy2 + this._zoom(info.delta.y);
+      var nx = sx2 + info.delta.x / this.props.zoom;
+      var ny = sy2 + info.delta.y / this.props.zoom;
 
       var bounds = guide.snap({
         left   : nx,
@@ -70,7 +57,7 @@ class ResizerComponent extends React.Component {
         dragBounds: bounds
       });
 
-      this.moveTarget(bounds.left, bounds.top);
+      this.moveTarget(bounds.left , bounds.top);
     });
   }
 
@@ -183,7 +170,7 @@ class ResizerComponent extends React.Component {
     var strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
 
     var selection = this.props.selection;
-    var style = _zoom(selection.preview.getBoundingRect(), this.props.zoom);
+    var style = selection.preview.getBoundingRect();
     var actStyle = selection.preview.getStyle();
 
     var points = [

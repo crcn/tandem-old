@@ -6,8 +6,6 @@ class GuideComponent extends React.Component {
   render() {
     var bounds  = this.props.bounds;
     var preview = this.props.app.preview;
-    var zoom    = this.props.zoom;
-
 
     return <div className='m-guide'>
       { 

@@ -1,0 +1,9 @@
+.m-margin-preview-tool {
+  &--entity {
+    position: absolute;
+    user-select: none;
+    border-color: rgba(255, 212, 36, 0.4);
+    border-style: solid;
+    pointer-events: none;
+  }
+}

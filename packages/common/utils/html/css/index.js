@@ -1,6 +1,8 @@
 import parseUnit from './parse-units';
-import translateStyle from './translate-Style';
+import translateStyle from './translate-style';
 
+
+export { translateStyleToIntegers } from './translate-style';
 export { parseUnit, translateStyle, translateStyle as convertUnit };
 import { CSSTokenizer } from 'common/components/text-editor';
 
