@@ -214,30 +214,33 @@ class ResizerComponent extends React.Component {
           }}>{Math.round(actStyle.width)} &times; {Math.round(actStyle.height)}</span>;
     }
 
-    var points = [
-      ['nw', 0, 0],
-      ['n', rect.width / 2, 0],
-      ['ne', rect.width, 0],
-      ['e', rect.width, rect.height / 2],
-      ['se', rect.width, rect.height],
-      ['s', rect.width / 2, rect.height],
-      ['sw', 0, rect.height],
-      ['w', 0, rect.height / 2]
-    ].map((point, i) => {
+    var movable = capabilities.movable;
 
+    var points = [
+      ['nw', movable == true, 0, 0],
+      ['n' , movable === true, rect.width / 2, 0],
+      ['ne', movable === true, rect.width, 0],
+      ['e' , true, rect.width, rect.height / 2],
+      ['se', true, rect.width, rect.height],
+      ['s' , true, rect.width / 2, rect.height],
+      ['sw', movable === true, 0, rect.height],
+      ['w' , movable === true, 0, rect.height / 2]
+    ].map(([id, show, left, top], i) => {
+      
       var ret = ObservableObject.create({
-        id: point[0],
+        id: id,
         index: i,
+        show: show,
         currentStyle: actStyle,
-        left: point[1],
-        top: point[2]
+        left: left,
+        top: top
       });
 
       ret.notifier = CallbackNotifier.create(this.updatePoint.bind(this, ret));
       return ret;
     });
 
-    sections.resizer = <div ref='selection' className='m-resizer-component--selection' style={resizerStyle}   onMouseDown={capabilities.movable ? this.startDragging.bind(this) : void 0} onDoubleClick={this.onDoubleClick.bind(this)}>
+    sections.resizer = <div ref='selection' className='m-resizer-component--selection' style={resizerStyle}   onMouseDown={movable ? this.startDragging.bind(this) : void 0} onDoubleClick={this.onDoubleClick.bind(this)}>
       <PathComponent showPoints={capabilities.resizable} zoom={this.props.zoom} points={points} strokeWidth={strokeWidth} pointRadius={pointRadius}  />
     </div>;
 

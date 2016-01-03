@@ -1,6 +1,6 @@
 
 
-- [ ] rotation tool
+- [ ] rotation tool - part of resizer
 - [ ] background fill
 - [ ] drop shadow tool
 - [ ] 3D transform tool
@@ -36,7 +36,7 @@
   - [ ] use actual native clipboard for c&p
 
 - [ ] pen tool
-  - [ ] should
+  - [ ] points should snap to other horizontal grid points
 
 - [ ] convert HTML to SVG
 

@@ -52,7 +52,7 @@ class PathComponent extends React.Component {
       <path d={d} strokeWidth={strokeWidth} stroke='transparent' fill='transparent' />
       {
         this.props.showPoints !== false ? points.map((path, key) => {
-          return <rect onMouseDown={this.onPointDown.bind(this, path, key)} className={'point-circle-' + (path.id || key)} strokeWidth={strokeWidth} stroke='black' fill='transparent' width={cr*2} height={cr*2} x={path.left-cr} y={path.top-cr} rx={0} ry={0} key={key} />;
+          return path.show !== false ? <rect onMouseDown={this.onPointDown.bind(this, path, key)} className={'point-circle-' + (path.id || key)} strokeWidth={strokeWidth} stroke='black' fill='transparent' width={cr*2} height={cr*2} x={path.left-cr} y={path.top-cr} rx={0} ry={0} key={key} /> : void 0;
         }) : void 0
       }
     </svg>;
