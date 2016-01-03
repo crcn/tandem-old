@@ -31,7 +31,7 @@ class OriginEntityComponent extends React.Component {
     var rotation =  Math.round(180 - Math.atan2(x3, y3) * 180 / Math.PI);
 
     // length should extend to outside of element
-    var length   = Math.round(Math.sqrt(Math.pow(x3, 2) + Math.pow(y3, 2))) - rect.width / 2 - 10;
+    var length   = Math.max(0, Math.round(Math.sqrt(Math.pow(x3, 2) + Math.pow(y3, 2))) - rect.width / 2 - 10);
 
     var d = [
 
