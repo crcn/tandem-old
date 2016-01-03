@@ -32,6 +32,25 @@ class Preview {
     });
   }
 
+  /**
+   * returns the capabilities of the element - is it movable? Basically
+   * things that turn tools on or off
+   * @returns {{movable:Boolean}}
+   */
+
+  getCapabilities() {
+
+    var capabilities = {};
+    for (var item of this.selection) {
+      var ic = item.preview.getCapabilities();
+      for (var name in ic) {
+        capabilities[name] = capabilities[name] === false ? false : ic[name];
+      }
+    }
+
+    return capabilities;
+  }
+
   getStyle() {
     return this.getBounds();
   }

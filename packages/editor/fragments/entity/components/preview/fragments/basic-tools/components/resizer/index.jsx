@@ -188,6 +188,31 @@ class ResizerComponent extends React.Component {
     var selection = this.props.selection;
     var rect = selection.preview.getBoundingRect();
     var actStyle = selection.preview.getStyle();
+    var capabilities = selection.preview.getCapabilities();
+
+    var cw = (pointRadius + strokeWidth * 2) * 2;
+
+    // offset stroke
+    var resizerStyle = {
+      left     : rect.left - cw / 2 + strokeWidth,
+      top      : rect.top - cw / 2 + strokeWidth
+    }
+
+    var sections = {};
+
+    if (this.targetPreview.moving) {
+      sections.guides = <div>
+        <RulerComponent {...this.props} bounds={resizerStyle} />
+        { this.state.dragBounds ? <GuideComponent {...this.props} bounds={this.state.dragBounds} /> : void 0 }
+      </div>;
+    }
+
+    if (this.targetPreview.resizing) {
+      sections.size = <span  className='m-resizer-component--size' style={{
+            left: rect.left + rect.width / 2,
+            top : rect.top + rect.height
+          }}>{Math.round(actStyle.width)} &times; {Math.round(actStyle.height)}</span>;
+    }
 
     var points = [
       ['nw', 0, 0],
@@ -205,48 +230,22 @@ class ResizerComponent extends React.Component {
         index: i,
         currentStyle: actStyle,
         left: point[1],
-        top : point[2]
+        top: point[2]
       });
 
       ret.notifier = CallbackNotifier.create(this.updatePoint.bind(this, ret));
       return ret;
     });
 
-    var cw = (pointRadius + strokeWidth * 2) * 2;
-
-    // offset stroke
-    var style = {
-      left     : rect.left - cw / 2 + strokeWidth,
-      top      : rect.top - cw / 2 + strokeWidth
-    }
-
-    var sections = {};
-
-    if (this.targetPreview.moving) {
-      sections.guides = <div>
-        <RulerComponent {...this.props} bounds={style} />
-        { this.state.dragBounds ? <GuideComponent {...this.props} bounds={this.state.dragBounds} /> : void 0 }
-      </div>;
-    }
+    sections.resizer = <div ref='selection' className='m-resizer-component--selection' style={resizerStyle}   onMouseDown={capabilities.movable ? this.startDragging.bind(this) : void 0} onDoubleClick={this.onDoubleClick.bind(this)}>
+      <PathComponent showPoints={capabilities.resizable} zoom={this.props.zoom} points={points} strokeWidth={strokeWidth} pointRadius={pointRadius}  />
+    </div>;
 
     return <div className='m-resizer-component'>
-
-      <div ref='selection' className='m-resizer-component--selection' style={style} onMouseDown={this.startDragging.bind(this)} onDoubleClick={this.onDoubleClick.bind(this)}>
-        <PathComponent zoom={this.props.zoom} points={points} strokeWidth={strokeWidth} pointRadius={pointRadius} showPoints={true}  />
-      </div>
-
-      { sections.guides }
-
-      {
-        this.targetPreview.resizing ?
-          <span  className='m-resizer-component--size' style={{
-            left: rect.left + rect.width / 2,
-            top : rect.top + rect.height
-          }}>{Math.round(actStyle.width)} &times; {Math.round(actStyle.height)}</span>
-          : void 0
-      }
-
-    </div>
+      { sections.resizer }
+      { sections.guides  }
+      { sections.size    }
+    </div>;
   }
 }
 

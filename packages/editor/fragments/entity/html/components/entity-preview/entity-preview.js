@@ -29,6 +29,19 @@ class ReactEntityComputer extends DisplayEntityComputer {
     return calculateZoom(this.getDisplayElement());
   }
 
+  getCapabilities() {
+
+    var style = window.getComputedStyle(this.getDisplayElement());
+
+    var movable   = style.position !== 'static';
+    var resizable = /fixed|absolute/.test(style.position) || !/inline/.test(style.display);
+
+    return {
+      movable,
+      resizable
+    };
+  }
+
   getDisplayElement() {
     return this.displayObject.refs.element;
   }
