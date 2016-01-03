@@ -6,6 +6,7 @@
   text-overflow: ellipsis;
   width: 100%;
   overflow: hidden;
+  -webkit-user-select: none;
 
   &--tag, &--operator {
     color: $color-white-offset-3;
