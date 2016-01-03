@@ -1,4 +1,5 @@
-
+- [ ] component library - img, p, 
+- [ ] fix click through bug with resizer
 
 - [ ] rotation tool - part of resizer
 - [ ] background fill
@@ -19,7 +20,7 @@
 - [ ] layers
   - [ ] hide / show layers with arrow keys (left right)
 
-- [ ] mirror mode
+- [ ] mirror mode8
   - [ ] show display resolution above canvas + label
   - [ ] show zoom above canvas
   - [ ] highlight canvas in focus
@@ -27,6 +28,10 @@
   
 - [ ] properties
   - [ ] warnings for each style (left/right set when position is static)
+  - [ ] ability to change style name 
+  
+- [ ] more border information
+  - [ ] display line heights
 
 - [ ] shadow DOM for encapsulating review
 

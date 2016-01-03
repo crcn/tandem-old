@@ -11,8 +11,8 @@ import { CallbackNotifier } from 'common/notifiers';
 import React from 'react';
 import Preview from './facades/preview';
 import PreviewComponent from './components/preview';
-import { create as createBasicToolsFragment } from './fragments/basic-tools';
-import { create as createKeyCommandsFragment } from './fragments/key-commands';
+import { create as createBasicToolsFragment } from './components/basic-tools';
+import { create as createKeyCommandsFragment } from './key-commands';
 
 export function create({ app }) {
 
