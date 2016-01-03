@@ -1,3 +1,7 @@
+// TODO - cache ALL computed information here until entity, or
+// parent entity changes.
+
+
 import { DisplayEntityComputer } from 'common/entities';
 import { translateStyleToIntegers } from 'common/utils/html/css/translate-style';
 import BoundingRect from 'common/geom/bounding-rect';
