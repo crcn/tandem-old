@@ -102,7 +102,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
     });
   }
 
-  getStyle() {
+  getStyle(zoomProperties) {
 
     var refs = this.displayObject.refs;
 
@@ -140,13 +140,23 @@ class ReactEntityComputer extends DisplayEntityComputer {
       top = 0;
     }
 
-    return {
+    var style = {
       resizable : resizable,
       left      : left,
       top       : top,
       width     : w,
       height    : h
     };
+
+    if (zoomProperties) {
+      var zoom = this.getZoom();
+      style.left *= zoom;
+      style.top *= zoom;
+      style.width *= zoom;
+      style.height *= zoom;
+    }
+
+    return style;
   }
 }
 

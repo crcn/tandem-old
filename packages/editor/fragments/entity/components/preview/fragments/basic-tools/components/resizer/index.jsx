@@ -14,7 +14,7 @@ import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'editor/message-types';
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 2;
 const PADDING            = 6;
-const SNAP_MARGIN        = 4;
+const SNAP_MARGIN        = 5;
 
 
 class ResizerComponent extends React.Component {
@@ -29,12 +29,12 @@ class ResizerComponent extends React.Component {
   startDragging(event) {
     var selection = this.props.selection;
 
-    //var guide = EntityGuide.create(
-    //  this.props.app.rootEntity.flatten().filter((entity) => {
-    //    return !~this.props.app.selection.indexOf(entity);
-    //  }),
-    //  SNAP_MARGIN
-    //);
+    var guide = EntityGuide.create(
+      this.props.app.rootEntity.flatten().filter((entity) => {
+        return !~this.props.app.selection.indexOf(entity);
+      }),
+      SNAP_MARGIN / this.props.zoom
+    );
 
     var style = selection.preview.getStyle();
 
@@ -46,18 +46,18 @@ class ResizerComponent extends React.Component {
       var nx = sx2 + info.delta.x / this.props.zoom;
       var ny = sy2 + info.delta.y / this.props.zoom;
 
-      var bounds = {
+      var bounds = guide.snap({
         left   : nx,
         top    : ny,
         width  : style.width,
         height : style.height
-      };
+      });
 
       this.setState({
         dragBounds: bounds
       });
 
-      this.moveTarget(bounds.left , bounds.top);
+      this.moveTarget(bounds.left, bounds.top);
     });
   }
 
@@ -206,7 +206,7 @@ class ResizerComponent extends React.Component {
 
     var sections = {};
 
-    if (this.state.moving && false) {
+    if (this.state.moving) {
       sections.guides = <div>
         <RulerComponent {...this.props} bounds={style} /> 
         { this.state.dragBounds ? <GuideComponent {...this.props} bounds={this.state.dragBounds} /> : void 0 }
