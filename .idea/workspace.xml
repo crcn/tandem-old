@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1645e756-34d6-4ca1-a882-ecc687184605" name="Default" comment="various linting, more jsdocs&#10;">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/preview-tools/components/group-align/index.jsx" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/preview-tools/components/group-align/index.scss" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/common/utils/component/start-drag.js" afterPath="$PROJECT_DIR$/packages/common/utils/component/start-drag.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/components/basic-tools/components/resizer/index.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/components/basic-tools/components/resizer/index.jsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/entity.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/entity.jsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/preview-tools/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/preview-tools/index.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/html/selection/selection.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/selection/selection.js" />
     </list>
     <ignored path="interface-builder.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,16 +24,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/key-commands/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="17" column="31" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="index.jsx" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/preview-tools/components/group-align/index.jsx">
           <provider selected="true" editor-type-id="text-editor">
@@ -49,21 +34,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.jsx" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/preview-tools/components/margin-tool/index.jsx">
+      <file leaf-file-name="selection.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/selection/selection.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="6" column="61" selection-start-line="6" selection-start-column="46" selection-end-line="6" selection-end-column="61" />
+            <state vertical-scroll-proportion="0.68980795">
+              <caret line="194" column="40" selection-start-line="194" selection-start-column="40" selection-end-line="194" selection-end-column="40" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.scss" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/preview-tools/components/group-align/index.scss">
+      <file leaf-file-name="index.jsx" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/preview-tools/components/margin-tool/index.jsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.25">
-              <caret line="2" column="32" selection-start-line="2" selection-start-column="32" selection-end-line="2" selection-end-column="32" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="6" column="61" selection-start-line="6" selection-start-column="46" selection-end-line="6" selection-end-column="61" />
               <folding />
             </state>
           </provider>
@@ -90,11 +75,23 @@
         </entry>
       </file>
       <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/components/basic-tools/index.js">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/selector/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-21.74074">
-              <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="65" column="46" selection-start-line="65" selection-start-column="46" selection-end-line="65" selection-end-column="46" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="entity-preview.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/entity-preview.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-16.185184">
+              <caret line="197" column="31" selection-start-line="197" selection-start-column="29" selection-end-line="197" selection-end-column="31" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -109,11 +106,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="start-drag.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="start-drag.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/packages/common/utils/component/start-drag.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6605114">
-              <caret line="31" column="20" selection-start-line="31" selection-start-column="20" selection-end-line="31" selection-end-column="20" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="15" column="15" selection-start-line="15" selection-start-column="15" selection-end-line="15" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -182,7 +179,6 @@
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/preview-tools/components/origin-tool/index.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/preview-tools/components/margin-tool/index.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/fragments/basic-tools/components/resizer/index.jsx" />
-        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/selection/selection.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/entity-preview.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/preview-tools/components/padding-tool/index.jsx" />
         <option value="$PROJECT_DIR$/docs/immediate-todos.md" />
@@ -195,6 +191,7 @@
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/entity.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/components/basic-tools/components/resizer/index.jsx" />
         <option value="$PROJECT_DIR$/packages/common/utils/component/start-drag.js" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/selection/selection.js" />
       </list>
     </option>
   </component>
@@ -1740,14 +1737,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/selector/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.2556819">
-          <caret line="71" column="7" selection-start-line="71" selection-start-column="7" selection-end-line="71" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1788,14 +1777,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/selection/selection.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33261803">
-          <caret line="75" column="5" selection-start-line="75" selection-start-column="2" selection-end-line="75" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/fragments/develop/test-project/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.8498986">
@@ -1825,16 +1806,6 @@
         <state vertical-scroll-proportion="0.30425963">
           <caret line="10" column="25" selection-start-line="10" selection-start-column="25" selection-end-line="10" selection-end-column="25" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/entity-preview.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.740741">
-          <caret line="55" column="64" selection-start-line="55" selection-start-column="64" selection-end-line="55" selection-end-column="64" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1939,8 +1910,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/packages/common/utils/component/start-drag.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6605114">
-          <caret line="31" column="20" selection-start-line="31" selection-start-column="20" selection-end-line="31" selection-end-column="20" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="15" column="15" selection-start-line="15" selection-start-column="15" selection-end-line="15" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/selector/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="65" column="46" selection-start-line="65" selection-start-column="46" selection-end-line="65" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/entity-preview.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-16.185184">
+          <caret line="197" column="31" selection-start-line="197" selection-start-column="29" selection-end-line="197" selection-end-column="31" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/selection/selection.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.68980795">
+          <caret line="194" column="40" selection-start-line="194" selection-start-column="40" selection-end-line="194" selection-end-column="40" />
           <folding />
         </state>
       </provider>

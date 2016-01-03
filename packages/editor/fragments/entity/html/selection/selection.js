@@ -3,6 +3,7 @@ import { clone } from 'common/utils/object';
 import { SetFocusMessage } from 'editor/message-types';
 import BoundingRect from 'common/geom/bounding-rect';
 import { ChangeMessage } from 'base/message-types';
+import assert from 'assert';
 
 class Preview {
   constructor(selection, notifier) {
@@ -187,9 +188,11 @@ class HTMLEntitySelection extends BaseCollection {
   deleteAll() {
 
     for (var entity of this) {
+
+      assert(entity.parent, 'Attempting to delete selected entity which does not belong to any parent entity. Therefore it\'s a root entity, or it should not exist.');
+
       var entityIndex  = entity.parent.children.indexOf(focus);
       //var nextSibling = entityIndex ? entity.parent.children[entityIndex - 1] : entity.parent.children[entityIndex + 1];
-
       // remove the child deleted
       entity.parent.children.remove(entity);
     }
