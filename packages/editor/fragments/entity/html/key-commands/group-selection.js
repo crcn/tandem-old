@@ -27,11 +27,10 @@ var _i = 0;
 
 function groupSelection(app, message) {
 
-  var highestParent = app.selection.reduce(function(a, b) {
+  // find the highest selection
+  var targetSelection = app.selection.reduce(function(a, b) {
     return a.parent.includes(b) ? a : b;
-  }).parent;
-
-  var selection = app.selection.deleteAll();
+  });
 
   // TODO - generalize this into group container
   var groupFactory = app.fragments.queryOne({
@@ -49,9 +48,21 @@ function groupSelection(app, message) {
       }
     }
   });
+  
+  // with the highest selection, insert the new group immediately
+  // after the target selection
+  targetSelection.parent.children.splice(
+    targetSelection.parent.children.indexOf(targetSelection),
+    0,
+    group
+  );
 
-  highestParent.children.push(group);
+  // then remove the entire selection
+  var selection = app.selection.deleteAll();
+
+  // take that removed selection & add to the group
   group.children.push(...selection);
 
+  // then re-select the group
   app.notifier.notify(SetFocusMessage.create([group]));
 }

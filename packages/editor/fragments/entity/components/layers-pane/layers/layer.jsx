@@ -3,6 +3,7 @@ import './layer.scss';
 import cx from 'classnames';
 import React from 'react';
 import { SetFocusMessage, ToggleFocusMessage } from 'editor/message-types';
+import { DragSource } from 'react-dnd';
 
 class LayerComponent extends React.Component {
 
@@ -79,4 +80,21 @@ class LayerComponent extends React.Component {
   }
 }
 
+var layerSource = {
+  beginDrag(props) {
+    console.log('trag');
+    return {
+      text: 'ptext'
+    };
+  }
+}
+
+function collect(connect, monitor) {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  };
+}
+
 export default LayerComponent;
+//export default DragSource('layer', layerSource, collect)(LayerComponent);
