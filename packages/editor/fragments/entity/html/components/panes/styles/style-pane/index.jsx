@@ -54,7 +54,7 @@ class EntityStylesPaneComponent extends React.Component {
       <div className='m-styles-pane'>
         <PropertyListComponent
           {...this.props}
-          fragmentQuery={{styleCategory:this.props.fragment.styleCategory}}
+          fragmentQuery={{propertyType:'style'}}
           properties={styles}
           createReference={StyleReference.create.bind(StyleReference, selection)}
         />

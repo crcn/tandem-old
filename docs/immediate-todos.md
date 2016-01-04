@@ -1,11 +1,13 @@
 - [ ] component library - img, p, 
 - [ ] fix click through bug with resizer
 
+- [ ] just one style pane - organize declarations by color or similar 
+
 - [ ] rotation tool - part of resizer
 - [ ] background fill
 - [ ] drop shadow tool
 - [ ] 3D transform tool
-- [ ] animatin tool
+- [ ] animation tool
 - [ ] move entity to front / back / forward (zIndex)
 - [ ] entity-specific props pane (images and stuff)
 - [ ] components tool
@@ -47,7 +49,7 @@
 - [x] history
   - [ ] use git
 
-- [ ] alignment tools next to resizer
+- [ ] alignment tools in props pane
 
 - [x] clipboard
   - [ ] use actual native clipboard for c&p

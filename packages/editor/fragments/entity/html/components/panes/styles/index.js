@@ -111,6 +111,7 @@ function createComponentStyleFragment(name, category, componentClass) {
   return ComponentFragment.create({
     id             : name + 'StyleInputComponent',
     componentType  : 'propertyInput',
+    propertyType   : 'style',
     componentClass : componentClass,
     propertyName   : name,
     styleCategory  : category
@@ -118,16 +119,30 @@ function createComponentStyleFragment(name, category, componentClass) {
 }
 
 function createEditorPaneFragments({ app }) {
-  return [LAYOUT, TRANSFORM, TYPOGRAPHY, APPEARANCE].map(function(category) {
-    return EntityPaneComponentFragment.create({
-      id             : category + 'PaneComponent',
+  return [EntityPaneComponentFragment.create({
+      id             : 'stylePaneComponent',
 
       // TODO - use uppercase lib
-      label          : inflection.titleize(category),
-      styleCategory  : category,
+      label          : inflection.titleize('style'),
+      styleCategory  : 'style',
       paneType       : 'entity',
       entityType     : 'component',
       componentClass : StylePaneComponent
-    })
-  });
+    })];
 }
+//
+//function createEditorPaneFragments({ app }) {
+//  return [LAYOUT, TRANSFORM, TYPOGRAPHY, APPEARANCE].map(function(category) {
+//    return EntityPaneComponentFragment.create({
+//      id             : category + 'PaneComponent',
+//
+//      // TODO - use uppercase lib
+//      label          : inflection.titleize(category),
+//      styleCategory  : category,
+//      propertyType   : 'style',
+//      paneType       : 'entity',
+//      entityType     : 'component',
+//      componentClass : StylePaneComponent
+//    })
+//  });
+//}
