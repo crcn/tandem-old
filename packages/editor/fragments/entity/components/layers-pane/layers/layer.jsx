@@ -9,9 +9,26 @@ class LayerComponent extends React.Component {
   onClick(event) {
 
     var entity = this.props.entity;
-    var select  = [entity];
+    var selection = this.props.app.selection;
+    var select  = [];
+    var multiSelect = false;
 
-    this.props.app.notifier.notify(ToggleFocusMessage.create(select, event.shiftKey));
+    // shift select range
+    if (event.shiftKey && selection.length) {
+      var allEntities = this.props.app.rootEntity.flatten();
+      var currentlySelectedEntity = selection[selection.length - 1];
+      var index1 = allEntities.indexOf(entity);
+      var index2 = allEntities.indexOf(currentlySelectedEntity);
+      select = allEntities.slice(Math.min(index1, index2), Math.max(index1, index2) + 1);
+    } else {
+      select = [entity];
+
+      // selecting individual components
+      multiSelect = event.metaKey;
+    }
+
+
+    this.props.app.notifier.notify(ToggleFocusMessage.create(select, multiSelect));
   }
 
   render() {
