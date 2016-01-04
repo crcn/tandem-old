@@ -19,7 +19,11 @@
   - [ ] drag select items
 
 - [ ] layers
-  - [ ] hide / show layers with arrow keys (left right)
+  - [x] hide / show layers with arrow keys (left right)
+  - [ ] ability to edit attributes directly
+  - [ ] min width should be bigger
+  - [ ] ability to add children
+  
 
 - [ ] mirror mode8
   - [ ] show display resolution above canvas + label
@@ -57,6 +61,8 @@
   
 - [ ] bugs
   - east/south resizer points both mutating width & height props when they shouldn't
+  
+  
 
 #### Keep this in mind when writing code
 

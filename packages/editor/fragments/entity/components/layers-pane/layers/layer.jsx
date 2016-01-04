@@ -32,12 +32,30 @@ class LayerComponent extends React.Component {
     this.props.app.notifier.notify(ToggleFocusMessage.create(select, multiSelect));
   }
 
-  toggleExpand() {
+  toggleExpand(expand) {
 
     // store on the entity so that it can be serialized
     this.props.entity.setProperties({
-      layerExpanded: !this.props.entity.layerExpanded
+      layerExpanded: expand !== void 0 ? expand : !this.props.entity.layerExpanded
     });
+  }
+
+  onKeyDown(event) {
+
+    // TODO - probably want to tie key commands here -- should
+    // still be able to nudge elements 
+    return;
+
+    // right - expand folder
+    if (event.keyCode === 39) {
+      this.toggleExpand(true);
+      event.preventDefault();
+
+      // left collapse
+    } else if (event.keyCode === 37) {
+      this.toggleExpand(false);
+      event.preventDefault();
+    }
   }
 
   render() {
@@ -90,7 +108,7 @@ class LayerComponent extends React.Component {
     };
 
     return <div className='m-layers-pane-component-layer'>
-      <div style={labelStyle} tabIndex="0" onClick={this.onClick.bind(this)} className={headerClassName}>
+      <div style={labelStyle} tabIndex="0" onClick={this.onClick.bind(this)} className={headerClassName} onKeyDown={this.onKeyDown.bind(this)}>
         <i onClick={this.toggleExpand.bind(this)} className={expandButtonClassName} style={expandButtonStyle} />
         { labelSection }
       </div>
