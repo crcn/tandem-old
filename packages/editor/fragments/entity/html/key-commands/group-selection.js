@@ -48,7 +48,7 @@ function groupSelection(app, message) {
       }
     }
   });
-  
+
   // with the highest selection, insert the new group immediately
   // after the target selection
   targetSelection.parent.children.splice(

@@ -67,7 +67,7 @@ class ElementLayerLabelComponent extends React.Component {
       </span>
     );
 
-    return <div className='m-element-layer-label'>
+    return <div className='m-label m-element-layer-label'>
       { label }
     </div>;
   }

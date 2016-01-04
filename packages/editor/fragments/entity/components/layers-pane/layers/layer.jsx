@@ -32,15 +32,24 @@ class LayerComponent extends React.Component {
     this.props.app.notifier.notify(ToggleFocusMessage.create(select, multiSelect));
   }
 
+  toggleExpand() {
+
+    // store on the entity so that it can be serialized
+    this.props.entity.setProperties({
+      layerExpanded: !this.props.entity.layerExpanded
+    });
+  }
+
   render() {
     var entity  = this.props.entity;
+    var expanded = entity.layerExpanded;
 
     var depth = this.props.depth || 0;
 
     var labelStyle = {
 
       // magic numbers are here defined in CSS
-      paddingLeft: 17 + depth * 10
+      paddingLeft: 17 + depth * 12
     };
 
     var labelFragment = this.props.app.fragments.queryOne({
@@ -67,15 +76,27 @@ class LayerComponent extends React.Component {
       'm-layers-pane-component-layer--header': true,
       ['m-layer-type-' + entity.type]: true,
       'selected': this.props.app.selection && this.props.app.selection.includes(entity)
-    })
+    });
+
+    var expandButtonClassName = cx({
+      'm-layers-pane-component-layer--expand-button': true,
+      'expanded': !!expanded,
+      'ion-arrow-right-b': !expanded,
+      'ion-arrow-down-b': expanded
+    });
+
+    var expandButtonStyle = {
+      'visibility': entity.children.length ? 'visible': 'hidden'
+    };
 
     return <div className='m-layers-pane-component-layer'>
       <div style={labelStyle} tabIndex="0" onClick={this.onClick.bind(this)} className={headerClassName}>
+        <i onClick={this.toggleExpand.bind(this)} className={expandButtonClassName} style={expandButtonStyle} />
         { labelSection }
       </div>
-      { entity.children.map((child, i) => {
+      { expanded ? entity.children.map((child, i) => {
         return <LayerComponent {...this.props} entity={child} key={i} depth={depth + 1}  />
-      })}
+      }) : void 0 }
     </div>;
   }
 }
