@@ -109,7 +109,6 @@ class TextEditorComponent extends React.Component {
   //}
 
   onFocus(event) {
-    console.log('focus');
     this.setState({ focus: true });
     if (this.props.onFocus) {
       this.props.onFocus(event);
@@ -126,7 +125,6 @@ class TextEditorComponent extends React.Component {
 
   onBlur(event) {
     this.setState({ focus: false });
-    console.log('blur');
     if (this.props.onBlur) {
       this.props.onBlur(event);
     }

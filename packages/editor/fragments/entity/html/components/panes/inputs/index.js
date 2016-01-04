@@ -5,9 +5,14 @@ import {
 import TextInputComponent from 'common/components/inputs/text';
 
 export function createFragments({ app }) {
-  return [
-    createComponentPropertyFragment('src', 'properties', TextInputComponent)
-  ]
+
+  var propFragments = [
+    'id',  'class', 'src'
+  ].map(function(propName) {
+    return createComponentPropertyFragment(propName, 'properties', TextInputComponent)
+  });
+
+  return propFragments;
 }
 
 function createComponentPropertyFragment(name, category, componentClass) {
