@@ -17,7 +17,7 @@ import KeyCommanderFragment from './fragments/key-commander';
 
 import MainComponent from './components/main';
 
-import { SET_FOCUS, SET_ROOT_ENTITY } from 'editor/message-types';
+import { SET_FOCUS, SET_ROOT_ENTITY, DISPOSE } from 'editor/message-types';
 
 class Application extends BaseApplication {
 
@@ -36,11 +36,18 @@ class Application extends BaseApplication {
   }
 
   notify(message) {
+    super.notify(message);
+
     switch(message.type) {
       case SET_ROOT_ENTITY : return this.setProperties({
         rootEntity: message.entity
       });
+      case DISPOSE: return this.dispose();
     }
+  }
+
+  dispose() {
+    ReactDOM.unmountComponentAtNode(this.config.element);
   }
 }
 

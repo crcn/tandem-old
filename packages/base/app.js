@@ -2,7 +2,7 @@ import { Registry } from 'common/registry';
 import ObservableObject from 'common/object/observable';
 import { NotifierCollection } from 'common/notifiers';
 import { ALL_APPLICATION_PLUGINS } from 'base/fragment/queries';
-import { InitializeMessage, LoadMessage } from 'base/message-types';
+import { InitializeMessage, LoadMessage, DisposeMessage } from 'base/message-types';
 
 class BaseApplication extends ObservableObject {
 
@@ -22,7 +22,7 @@ class BaseApplication extends ObservableObject {
   }
 
   notify(message) {
-    // OVERRIDE ME
+
   }
 
   _useFragments() {
@@ -69,6 +69,13 @@ class BaseApplication extends ObservableObject {
 
   didInitialize() {
 
+  }
+
+  /**
+   */
+
+  dispose() {
+    this.notifier.notify(DisposeMessage.create(this));
   }
 }
 

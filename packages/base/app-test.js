@@ -30,7 +30,7 @@ describe(__filename + '#', function() {
     expect(a.fragments.length).to.be(2);
   });
 
-  it('waits for load message to complete before calling initialize', async function() {
+  xit('waits for load message to complete before calling initialize', async function() {
     var app = BaseApplication.create();
 
     var loadCount = 0;

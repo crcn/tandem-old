@@ -36,6 +36,9 @@
   
 - [ ] properties
   - [ ] ability to change style name 
+  - [ ] breadcrumbs for properties panel
+  - [ ] easier way of adding css styles (some filter for typography - drop down)
+  - [ ] raw mode for CSS
   
 - [ ] warnings
   - [ ] when adding children to void elements
@@ -67,7 +70,6 @@
   
 - [ ] bugs
   - east/south resizer points both mutating width & height props when they shouldn't
-  
   
 
 #### Keep this in mind when writing code

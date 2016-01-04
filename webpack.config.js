@@ -13,7 +13,7 @@ module.exports = {
     sourceMapFilename: '/bundle/[name].js.map'
   },
   resolve: {
-    modulesDirectories: [__dirname + '/packages', 'node_modules', 'bower_components', 'packages', 'vendor'],
+    modulesDirectories: [__dirname + '/packages', 'node_modules', 'bower_components', 'packages', 'vendor', __dirname],
     extensions: ['', '.json', '.jsx', '.js']
   },
   devtool: 'eval',
