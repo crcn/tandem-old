@@ -14,8 +14,8 @@ class SidebarComponent extends React.Component {
   render() {
 
     var settingName           = this.props.position + 'SidebarPosition';
-    var sidebarWidthReference = Reference.create(this.props.app.settings, settingName, function(value) {
-      return Math.max(150, Math.min(value || 200, 250));
+    var sidebarWidthReference = Reference.create(this.props.app.settings, settingName, (value) => {
+      return Math.max(150, Math.min(value || 200, this.props.maxWidth));
     });
 
     var style = {
@@ -28,5 +28,9 @@ class SidebarComponent extends React.Component {
     </div>;
   }
 }
+
+SidebarComponent.defaultProps = {
+  maxWidth: 250
+};
 
 export default SidebarComponent;

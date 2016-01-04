@@ -59,8 +59,8 @@ class LayerComponent extends React.Component {
   }
 
   render() {
-    var entity  = this.props.entity;
-    var expanded = entity.layerExpanded;
+    var entity     = this.props.entity;
+    var expanded   = entity.layerExpanded;
 
     var depth = this.props.depth || 0;
 
@@ -74,7 +74,6 @@ class LayerComponent extends React.Component {
       componentType : 'label',
       entityComponentType : entity.componentType
     });
-
 
     var labelSection;
 

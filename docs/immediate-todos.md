@@ -22,8 +22,9 @@
   - [x] hide / show layers with arrow keys (left right)
   - [ ] ability to edit attributes directly
   - [ ] min width should be bigger
-  - [ ] ability to add children
-  - [ ] double click to edit - edit whole element 
+  - [ ] ability to add children (plus button)
+  - [x] double click to edit - edit whole element
+  - [ ] double click layer - edit layer and all children (IDE mode) 
   
 
 - [ ] mirror mode8

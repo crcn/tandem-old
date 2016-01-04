@@ -25,6 +25,7 @@ class MainComponent extends React.Component {
       <SidebarComponent
         {...this.props}
         position='left'
+        maxWidth={500}
         query={{ paneType: 'app' }} />
       <CenterComponent {...this.props} />
 

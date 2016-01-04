@@ -15,7 +15,7 @@ export function create({ app }) {
       notifier      : app.notifier,
       componentType : 'element',
       tagName       : 'div',
-      icon          : 'puzzle'
+      layerExpanded : true
     }, [
       div.factory.create({
         componentType: 'element',

@@ -3,8 +3,9 @@ import './element.scss';
 import React from 'react';
 import AutosizeInput from 'react-input-autosize';
 import FocusComponent from 'common/components/focus';
+import ElementEntity from '../../entities/element';
+import VOID_ELEMENTS from '../../constants/void-elements';
 import trim from 'lodash/string/trim';
-//import TextInputComponent from 'common/components/text';
 
 import {
   SetFocusMessage
@@ -23,15 +24,44 @@ class ElementLayerLabelComponent extends React.Component {
     this.state = {};
   }
 
-  editHTML(event) {
+  editHTML() {
     this.setState({
       editTagName: true,
       source: this.getHTMLValue()
     });
   }
 
+  addChild(event) {
+    this.props.entity.layerExpanded = true;
+
+    var child = this.props.app.fragments.queryOne({
+      id: this.props.entity.fragmentId
+    }).factory.create({
+      tagName: 'div',
+      editLayerSource: true
+    });
+
+    this.props.entity.children.push(
+      child
+    );
+
+    this.props.app.notifier.notify(
+      SetFocusMessage.create([child])
+    );
+
+    //event.preventDefault();
+    event.stopPropagation();
+  }
+
+  componentWillMount() {
+    if (this.props.entity.editLayerSource) {
+      this.editHTML();
+    }
+  }
+
   render() {
-    var entity = this.props.entity;
+    var entity     = this.props.entity;
+    var editSource = entity.editLayerSource;
 
     var buffer = [
       <span className='m-element-layer-label--tag'>&lt;</span>
@@ -80,7 +110,7 @@ class ElementLayerLabelComponent extends React.Component {
     );
 
     return <div className='m-label m-element-layer-label' onDoubleClick={this.editHTML.bind(this)}>
-      { buffer }
+      { buffer } { !~VOID_ELEMENTS.indexOf(entity.tagName.toLowerCase()) ? <span className='m-element-layer-label--add-child-button' onClick={this.addChild.bind(this)}>+</span> : void 0 }
     </div>;
   }
 
