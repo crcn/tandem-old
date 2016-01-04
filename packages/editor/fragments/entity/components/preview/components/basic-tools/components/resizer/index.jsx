@@ -69,7 +69,6 @@ class ResizerComponent extends React.Component {
     });
   }
 
-  componentWillUn
 
   updatePoint(point) {
 
@@ -211,7 +210,7 @@ class ResizerComponent extends React.Component {
 
     var sections = {};
 
-    if (this.targetPreview.moving && false) {
+    if (this.targetPreview.moving) {
       sections.guides = <div>
         <RulerComponent {...this.props} bounds={resizerStyle} />
         { this.state.dragBounds ? <GuideComponent {...this.props} bounds={this.state.dragBounds} /> : void 0 }

@@ -31,10 +31,7 @@ class StageComponent extends React.Component {
     requestAnimationFrame(() => {
       var preview = this.props.app.preview;
       var stage   = this.refs.stage;
-
-      while(preview.canvasWidth * preview.zoom > stage.offsetWidth) {
-        preview.zoomOut();
-      }
+      while(preview.canvasWidth * preview.zoom > stage.offsetWidth && preview.zoomOut());
     });
 
     this.centerCanvas();

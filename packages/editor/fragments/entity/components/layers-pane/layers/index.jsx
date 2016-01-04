@@ -16,5 +16,4 @@ class LayersPaneComponent extends React.Component {
   }
 }
 
-export default LayersPaneComponent;
-//export default DragDropContext(HTML5Backend)(LayersPaneComponent);
+export default DragDropContext(HTML5Backend)(LayersPaneComponent);
