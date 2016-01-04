@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1645e756-34d6-4ca1-a882-ecc687184605" name="Default" comment="various linting, more jsdocs&#10;">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/immediate-todos.md" afterPath="$PROJECT_DIR$/docs/immediate-todos.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/clipboard/index.js" afterPath="$PROJECT_DIR$/packages/editor/fragments/clipboard/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.jsx" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.scss" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.jsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.scss" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/layer-input.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/layer-input.scss" />
     </list>
     <ignored path="interface-builder.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -73,10 +66,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/packages/editor/fragments/clipboard/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.87215906">
+            <state vertical-scroll-proportion="0.0">
               <caret line="55" column="37" selection-start-line="55" selection-start-column="37" selection-end-line="55" selection-end-column="37" />
               <folding />
             </state>
@@ -103,11 +96,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="layer.scss" pinned="false" current-in-tab="false">
+      <file leaf-file-name="layer.scss" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.scss">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.705882">
-              <caret line="33" column="16" selection-start-line="33" selection-start-column="16" selection-end-line="33" selection-end-column="16" />
+            <state vertical-scroll-proportion="0.6202144">
+              <caret line="27" column="19" selection-start-line="27" selection-start-column="19" selection-end-line="27" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -195,10 +188,10 @@
         <option value="$PROJECT_DIR$/docs/immediate-todos.md" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.scss" />
-        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.scss" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/layer-input.scss" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/clipboard/index.js" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.scss" />
       </list>
     </option>
   </component>
@@ -1432,14 +1425,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.scss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.705882">
-          <caret line="33" column="16" selection-start-line="33" selection-start-column="16" selection-end-line="33" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.jsx">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1490,8 +1475,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/fragments/clipboard/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.87215906">
+        <state vertical-scroll-proportion="0.0">
           <caret line="55" column="37" selection-start-line="55" selection-start-column="37" selection-end-line="55" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6202144">
+          <caret line="27" column="19" selection-start-line="27" selection-start-column="19" selection-end-line="27" selection-end-column="19" />
           <folding />
         </state>
       </provider>
