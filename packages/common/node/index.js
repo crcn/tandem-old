@@ -27,6 +27,18 @@ class Node extends BaseObject {
   }
 
   /**
+   */
+
+  includes(child) {
+
+    // cannot include itself
+    if (this === child) return false;
+    return !!this.find(function(node) {
+      return node === child;
+    });
+  }
+
+  /**
    * finds one nested node
    */
 

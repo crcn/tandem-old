@@ -11,9 +11,10 @@
 - [ ] components tool
 - [x] ruler tool
 - [x] sink tool (snap to grid)
+- [ ] on enter key for property, add new property 
 
 - [ ] multi-select tool
-  - [ ] shift click layers
+  - [x] shift click layers
   - [x] shift click preview items
   - [ ] drag select items
 

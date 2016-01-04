@@ -23,8 +23,15 @@ export function create({ app }) {
   ];
 }
 
+var _i = 0;
+
 function groupSelection(app, message) {
-  var selection = app.selection;
+
+  var highestParent = app.selection.reduce(function(a, b) {
+    return a.parent.includes(b) ? a : b;
+  }).parent;
+
+  var selection = app.selection.deleteAll();
 
   // TODO - generalize this into group container
   var groupFactory = app.fragments.queryOne({
@@ -32,17 +39,19 @@ function groupSelection(app, message) {
   });
 
   var group = groupFactory.factory.create({
-    componentType : 'div',
-    label         : 'div', // don't want,e
+    componentType : 'element',
+    tagName: 'div',
     attributes: {
+      class: 'group' + (++_i),
       style: {
         position: 'absolute',
-        display: 'inline-block'
+        display: 'block'
       }
     }
   });
 
-
-  app.rootEntity.children.push(group);
+  highestParent.children.push(group);
   group.children.push(...selection);
+
+  app.notifier.notify(SetFocusMessage.create([group]));
 }

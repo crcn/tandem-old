@@ -143,19 +143,19 @@ class HTMLEntitySelection extends BaseCollection {
   }
 
   get value() {
-    return this[0].value;
+    return this.length ? this[0].value : void 0;
   }
 
   get type () {
-    return this[0].type;
+    return this.length ? this[0].type : void 0;
   }
 
   get componentType() {
-    return this[0].componentType;
+    return this.length ? this[0].componentType : void 0;
   }
 
   get attributes() {
-    return this[0].attributes;
+    return this.length ? this[0].attributes : void 0;
   }
 
   setProperties(properties) {
@@ -193,7 +193,9 @@ class HTMLEntitySelection extends BaseCollection {
 
   deleteAll() {
 
-    for (var entity of this) {
+    var deleted = this.splice(0, this.length);
+
+    for (var entity of deleted) {
 
       assert(entity.parent, 'Attempting to delete selected entity which does not belong to any parent entity. Therefore it\'s a root entity, or it should not exist.');
 
@@ -202,6 +204,8 @@ class HTMLEntitySelection extends BaseCollection {
       // remove the child deleted
       entity.parent.children.remove(entity);
     }
+
+    return deleted;
   }
 }
 
