@@ -43,7 +43,7 @@ class LayerComponent extends React.Component {
   onKeyDown(event) {
 
     // TODO - probably want to tie key commands here -- should
-    // still be able to nudge elements 
+    // still be able to nudge elements
     return;
 
     // right - expand folder
@@ -109,7 +109,7 @@ class LayerComponent extends React.Component {
 
     return <div className='m-layers-pane-component-layer'>
       <div style={labelStyle} tabIndex="0" onClick={this.onClick.bind(this)} className={headerClassName} onKeyDown={this.onKeyDown.bind(this)}>
-        <i onClick={this.toggleExpand.bind(this)} className={expandButtonClassName} style={expandButtonStyle} />
+        <i onClick={this.toggleExpand.bind(this, !expanded)} className={expandButtonClassName} style={expandButtonStyle} />
         { labelSection }
       </div>
       { expanded ? entity.children.map((child, i) => {

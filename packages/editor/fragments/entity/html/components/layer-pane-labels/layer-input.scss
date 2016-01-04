@@ -1,6 +1,7 @@
 @import 'editor/scss/variables';
 
 input {
+  max-width: 150px;
   background: rgba(0,0,0,0.1);
   padding: 0px;
   height: auto;

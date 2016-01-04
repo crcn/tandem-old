@@ -23,6 +23,7 @@
   - [ ] ability to edit attributes directly
   - [ ] min width should be bigger
   - [ ] ability to add children
+  - [ ] double click to edit - edit whole element 
   
 
 - [ ] mirror mode8

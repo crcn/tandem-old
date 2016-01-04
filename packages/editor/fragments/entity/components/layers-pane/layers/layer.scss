@@ -24,13 +24,13 @@
   }
 
   & .m-label {
-    vertical-align: top;
+    //vertical-align: top;
     overflow: hidden;
     text-overflow: ellipsis;
-    word-wrap: normal;
+    //word-wrap: normal;
     display: inline-block;
-    -webkit-user-select: none;
-    white-space: nowrap;
+    //-webkit-user-select: none;
+    //white-space: nowrap;
     width: 100%;
   }
 

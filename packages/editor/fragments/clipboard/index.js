@@ -36,7 +36,13 @@ function create({ app }) {
     }
   }
 
+  function targetIsInput(event) {
+    return /input|textarea/i.test(event.target.nodeName);
+  }
+
   document.addEventListener('copy', function(event) {
+
+    if (targetIsInput(event)) return;
 
     var data = copy(event);
     if (data != void 0) {
@@ -47,6 +53,7 @@ function create({ app }) {
   });
   
   document.addEventListener('paste', function(event) {
+    if (targetIsInput(event)) return;
     var data = event.clipboardData.getData('text/x-entity');
     if (data != void 0) {
       paste(data);
