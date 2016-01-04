@@ -141,6 +141,9 @@ class ElementLayerLabelComponent extends React.Component {
       entity.tagName = tagName[0];
     }
 
+    // turn it off so it doesn't get copied & pasted
+    entity.editLayerSource = false;
+
     // delete ALL attributes
     for (var key in entity.attributes) {
       if (key === 'style') continue;

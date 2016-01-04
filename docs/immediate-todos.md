@@ -21,12 +21,11 @@
 - [ ] layers
   - [x] hide / show layers with arrow keys (left right)
   - [ ] ability to edit attributes directly
-  - [ ] min width should be bigger
+  - [x] min width should be bigger
   - [ ] ability to add children (plus button)
   - [x] double click to edit - edit whole element
   - [ ] double click layer - edit layer and all children (IDE mode) 
   
-
 - [ ] mirror mode8
   - [ ] show display resolution above canvas + label
   - [ ] show zoom above canvas
@@ -34,8 +33,11 @@
   - [ ] browsertap renderer
   
 - [ ] properties
-  - [ ] warnings for each style (left/right set when position is static)
   - [ ] ability to change style name 
+  
+- [ ] warnings
+  - [ ] when adding children to void elements
+  - [ ] when defining left/top props an element that cannot be moved
   
 - [ ] more border information
   - [ ] display line heights
