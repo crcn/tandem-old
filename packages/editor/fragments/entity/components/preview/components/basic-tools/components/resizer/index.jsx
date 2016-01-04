@@ -50,12 +50,13 @@ class ResizerComponent extends React.Component {
       var nx = sx2 + info.delta.x / this.props.zoom;
       var ny = sy2 + info.delta.y / this.props.zoom;
 
-      var bounds = guide.snap({
+      // guide.snap - todo
+      var bounds = {
         left   : nx,
         top    : ny,
         width  : style.width,
         height : style.height
-      });
+      };
 
       this.setState({
         dragBounds: bounds
@@ -210,7 +211,7 @@ class ResizerComponent extends React.Component {
 
     var sections = {};
 
-    if (this.targetPreview.moving) {
+    if (this.targetPreview.moving && false) {
       sections.guides = <div>
         <RulerComponent {...this.props} bounds={resizerStyle} />
         { this.state.dragBounds ? <GuideComponent {...this.props} bounds={this.state.dragBounds} /> : void 0 }
@@ -225,8 +226,6 @@ class ResizerComponent extends React.Component {
     }
 
     var movable = capabilities.movable;
-
-    if (!this.state.dragging) {
 
       var points = [
         ['nw', movable == true, 0, 0],
@@ -255,10 +254,10 @@ class ResizerComponent extends React.Component {
       sections.resizer = <div ref='selection' className='m-resizer-component--selection' style={resizerStyle}
                               onMouseDown={this.startDragging.bind(this)}
                               onDoubleClick={this.onDoubleClick.bind(this)}>
-        <PathComponent showPoints={capabilities.resizable} zoom={this.props.zoom} points={points}
+        <PathComponent showPoints={capabilities.resizable && !this.state.dragging} zoom={this.props.zoom} points={points}
                        strokeWidth={strokeWidth} pointRadius={pointRadius}/>
       </div>;
-    }
+
 
     return <div className='m-resizer-component'>
       { sections.resizer }
