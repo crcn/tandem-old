@@ -42,7 +42,7 @@ function groupSelection(app, message) {
     componentType : 'element',
     tagName: 'div',
     attributes: {
-      class: 'group' + (++_i),
+      id: 'group' + (++_i),
       style: {
         position: 'absolute',
         display: 'block'

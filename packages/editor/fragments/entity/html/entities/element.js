@@ -13,7 +13,7 @@ class ElementEntity extends DisplayEntity {
   setAttribute(key, value) {
     this.attributes[key] = value;
 
-    if (value === '') {
+    if (value === '' || value == void 0) {
       delete this.attributes[key];
     }
 

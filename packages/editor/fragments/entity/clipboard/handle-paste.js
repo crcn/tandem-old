@@ -30,10 +30,9 @@ export function create({ app }) {
 
     // if there is an entiy in focus, then add the new entity
     // as a sibling of it
-    // TODO - get app.focusContainer or similar
-    if (false && app.selection) {
-      parentEntity = app.selection.parent;
-      insertIndex  = parentEntity.children.indexOf(app.selection) + 1;
+    if (app.selection.length) {
+      parentEntity = app.selection[0].parent;
+      insertIndex  = parentEntity.children.indexOf(app.selection[0]) + 1;
 
       // otherwise add to the root entity
     } else {

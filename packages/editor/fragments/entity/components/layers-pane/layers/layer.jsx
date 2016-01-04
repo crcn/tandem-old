@@ -39,7 +39,7 @@ class LayerComponent extends React.Component {
     var labelStyle = {
 
       // magic numbers are here defined in CSS
-      paddingLeft: 17 + depth * 18
+      paddingLeft: 17 + depth * 10
     };
 
     var labelFragment = this.props.app.fragments.queryOne({
