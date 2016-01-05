@@ -44,7 +44,7 @@ class HTMLEntityComponent extends React.Component {
 
     var Type = entity.componentType === 'text' ? 'span' : entity.tagName;
 
-    return <Type ref='element' onDoubleClick={this.onDoubleClick.bind(this)} onMouseUp={this.focus.bind(this)} {...entity.attributes}>
+    return <Type ref='element' id={entity.id} onDoubleClick={this.onDoubleClick.bind(this)} onMouseUp={this.focus.bind(this)} {...entity.attributes}>
       { children.length ? children : entity.value }
     </Type>;
   }

@@ -31,9 +31,17 @@ describe(__filename + '#', function() {
 
       // get the bounds of the entity -- ensure it's to scale (true)
     var bounds = preview.getBoundingRect(true);
-    //console.log(targetEntity.attributes.style);
-    //console.log(bounds.left);
+    var resizer = app.config.element.querySelector('.m-resizer-component--selection');
+    var targetElement = document.getElementById(targetEntity.id);
+    await waitForAllPromises();
 
-    // next check to see whether the resizer is in the correct place in the canvas
+    var targetElementBounds = targetElement.getBoundingClientRect();
+    var resizerBounds = resizer.getBoundingClientRect();
+
+    // account for resizer boxes
+    expect(resizerBounds.left + 4).to.be(targetElementBounds.left);
+    expect(resizerBounds.right - 4).to.be(targetElementBounds.right);
+    expect(resizerBounds.top + 4).to.be(targetElementBounds.top);
+    expect(resizerBounds.bottom - 10).to.be(targetElementBounds.bottom);
   });
 });

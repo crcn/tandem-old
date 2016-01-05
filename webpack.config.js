@@ -48,11 +48,11 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style', 'css!sass')
+        loader: 'style!css!sass'
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style', 'css')
+        loader: 'style!css'
       },
       {
         test: /\.json$/,
