@@ -1,6 +1,6 @@
 
 module.exports = function(config) {
-  config.set({
+  var conf = {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
@@ -43,7 +43,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['dots', 'coverage'],
+    reporters: ['dots' /*, 'coverage'*/],
 
 
     // web server port
@@ -94,5 +94,16 @@ module.exports = function(config) {
     // Concurrency level
     // how many browser should be started simultanous
     concurrency: Infinity
-  })
+  };
+
+  if (false)
+  conf.webpack.postLoaders = [
+    {
+      test: /\.jsx?$/,
+      exclude: /(node_modules|resources\/js\/vendor)/,
+      loader: 'istanbul-instrumenter'
+    }
+  ]
+
+  config.set(conf);
 }

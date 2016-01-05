@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1645e756-34d6-4ca1-a882-ecc687184605" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/common/utils/html/css/translate-style-test.js" afterPath="$PROJECT_DIR$/packages/common/utils/html/css/translate-style-test.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/entity.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/entity.jsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/index.html" afterPath="$PROJECT_DIR$/public/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/resizer/basic-test.js" afterPath="$PROJECT_DIR$/test/resizer/basic-test.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/karma.config.js" afterPath="$PROJECT_DIR$/karma.config.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webpack.config.js" afterPath="$PROJECT_DIR$/webpack.config.js" />
     </list>
     <ignored path="interface-builder.iws" />
@@ -31,10 +27,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="basic-test.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="basic-test.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/resizer/basic-test.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.75">
+            <state vertical-scroll-proportion="0.0">
               <caret line="44" column="36" selection-start-line="44" selection-start-column="36" selection-end-line="44" selection-end-column="36" />
               <folding />
             </state>
@@ -81,11 +77,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="karma.config.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="karma.config.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/karma.config.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="39" column="38" selection-start-line="39" selection-start-column="38" selection-end-line="39" selection-end-column="38" />
+            <state vertical-scroll-proportion="-1.1875">
+              <caret line="45" column="39" selection-start-line="45" selection-start-column="39" selection-end-line="45" selection-end-column="39" />
               <folding />
             </state>
           </provider>
@@ -95,7 +91,7 @@
         <entry file="file://$PROJECT_DIR$/webpack.config.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="50" column="32" selection-start-line="50" selection-start-column="32" selection-end-line="50" selection-end-column="32" />
+              <caret line="71" column="5" selection-start-line="71" selection-start-column="5" selection-end-line="71" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -186,17 +182,17 @@
         <option value="$PROJECT_DIR$/test/helpers/utils/index.js" />
         <option value="$PROJECT_DIR$/test/preview/basic-test.js" />
         <option value="$PROJECT_DIR$/docs/immediate-todos.md" />
-        <option value="$PROJECT_DIR$/karma.config.js" />
         <option value="$PROJECT_DIR$/test/html/entity-preview-test.js" />
         <option value="$PROJECT_DIR$/test/helpers/fixtures/html-entity1.js" />
         <option value="$PROJECT_DIR$/test/html/entity-selection-test.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/components/basic-tools/components/resizer/index.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/entity.jsx" />
-        <option value="$PROJECT_DIR$/webpack.config.js" />
         <option value="$PROJECT_DIR$/public/index.html" />
         <option value="$PROJECT_DIR$/packages/common/utils/html/css/translate-style-test.js" />
         <option value="$PROJECT_DIR$/test/utils/index.js" />
         <option value="$PROJECT_DIR$/test/resizer/basic-test.js" />
+        <option value="$PROJECT_DIR$/webpack.config.js" />
+        <option value="$PROJECT_DIR$/karma.config.js" />
       </list>
     </option>
   </component>
@@ -758,9 +754,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="test - 2016.01.04 at 17h 07m 19s.xml">
-      <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
-    </history-entry>
     <history-entry file="test - 2016.01.04 at 17h 08m 14s.xml">
       <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
     </history-entry>
@@ -786,6 +779,9 @@
       <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
     </history-entry>
     <history-entry file="test - 2016.01.04 at 17h 13m 56s.xml">
+      <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
+    </history-entry>
+    <history-entry file="test - 2016.01.04 at 17h 14m 42s.xml">
       <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
     </history-entry>
   </component>
@@ -1210,26 +1206,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/karma.config.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="39" column="38" selection-start-line="39" selection-start-column="38" selection-end-line="39" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/babylon/lib/plugins/flow.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="637" column="6" selection-start-line="637" selection-start-column="6" selection-end-line="637" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/webpack.config.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="50" column="32" selection-start-line="50" selection-start-column="32" selection-end-line="50" selection-end-column="32" />
           <folding />
         </state>
       </provider>
@@ -1268,8 +1248,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test/resizer/basic-test.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.75">
+        <state vertical-scroll-proportion="0.0">
           <caret line="44" column="36" selection-start-line="44" selection-start-column="36" selection-end-line="44" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webpack.config.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="71" column="5" selection-start-line="71" selection-start-column="5" selection-end-line="71" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karma.config.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.1875">
+          <caret line="45" column="39" selection-start-line="45" selection-start-column="39" selection-end-line="45" selection-end-column="39" />
           <folding />
         </state>
       </provider>
