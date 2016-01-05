@@ -12,6 +12,10 @@ class MainComponent extends React.Component {
   }
 
   notify() {
+
+    // raf now if testing
+    if (this.props.app.testMode) return this.forceUpdate();
+
     // TODO - possibly throttle here
     if (this._running) return;
     this._running = true;

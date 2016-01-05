@@ -70,6 +70,7 @@ describe(__filename + '#', function() {
     await waitForAllPromises();
     var crect = targetEntity.preview.getStyle(true);
 
-    expect(Math.round(crect.left + 100)).to.be(Math.round(prect.left));
+    // offset button size
+    expect(Math.round(crect.left + 53)).to.be(Math.round(prect.left));
   });
 });

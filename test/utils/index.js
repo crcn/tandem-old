@@ -7,7 +7,7 @@ export async function createApp(config = {}) {
   var div = config.element = document.createElement('div');
   document.body.appendChild(div);
 
-  var app = Editor.create();
+  var app = Editor.create({ testMode: true });
   app.initialize(config);
   // TODO - cleanup here
 
