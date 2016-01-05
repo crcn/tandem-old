@@ -30,7 +30,7 @@ export function create({ app }) {
             position: 'absolute',
             left: '400px',
             top: '200px',
-            width: '100px',
+            width: '500px',
             height: '150px'
           }
         }

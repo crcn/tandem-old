@@ -32,5 +32,31 @@ describe(__filename + '#', function() {
     expect(bounds.top).to.be(200);
     expect(bounds.width).to.be(100);
     expect(bounds.height).to.be(150);
+
+    app.preview.setZoom(0.7);
+    var bounds = preview.getBoundingRect(true);
+    expect(Math.round(bounds.left)).to.be(210);
+    expect(Math.round(bounds.top)).to.be(140);
   });
+
+  it('maintains the same props if "zoom" is not provided in getBoundingRect()', async function() {
+    var targetEntity = app.rootEntity.children[0];
+    var preview = targetEntity.preview;
+    await waitForAllPromises();
+    app.preview.setZoom(1);
+
+    // get the bounds of the entity -- ensure it's to scale (true)
+    var bounds = preview.getBoundingRect(false);
+
+    expect(bounds.left).to.be(300);
+    expect(bounds.top).to.be(200);
+    expect(bounds.width).to.be(100);
+    expect(bounds.height).to.be(150);
+
+    app.preview.setZoom(0.7);
+    var bounds = preview.getBoundingRect(false);
+    expect(Math.round(bounds.left)).to.be(300);
+    expect(Math.round(bounds.top)).to.be(200);
+  });
+
 });
