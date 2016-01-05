@@ -8,6 +8,7 @@ import RulerComponent from './ruler';
 import GuideComponent from './guide';
 import ObservableObject from 'common/object/observable';
 import CallbackNotifier from 'common/notifiers/callback';
+import { divideStyle } from 'common/utils/html';
 
 import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'editor/message-types';
 
@@ -71,10 +72,9 @@ class ResizerComponent extends React.Component {
 
 
   updatePoint(point) {
-
     var selection = this.props.selection;
 
-    var style = selection.preview.getStyle();
+    var style = selection.preview.getStyle(true);
 
     var props = {
       left: style.left,
@@ -84,21 +84,21 @@ class ResizerComponent extends React.Component {
     };
 
     if (/^n/.test(point.id)) {
-      props.top = point.currentStyle.top + point.top;
-      props.height = point.currentStyle.height - point.top;
+      props.top = point.currentStyle.top + point.top / this.props.zoom;
+      props.height = point.currentStyle.height - point.top / this.props.zoom;
     }
 
     if (/e$/.test(point.id)) {
-      props.width = point.left;
+      props.width = point.left / this.props.zoom;
     }
 
     if (/^s/.test(point.id)) {
-      props.height = point.top;
+      props.height = point.top / this.props.zoom;
     }
 
     if (/w$/.test(point.id)) {
-      props.width = point.currentStyle.width - point.left;
-      props.left  = point.currentStyle.left + point.left;
+      props.width = point.currentStyle.width - point.left / this.props.zoom;
+      props.left  = point.currentStyle.left + point.left / this.props.zoom;
     }
 
     if (point.keepAspectRatio) {
@@ -197,7 +197,7 @@ class ResizerComponent extends React.Component {
     var selection = this.props.selection;
     var preview = selection.preview;
     var rect = preview.getBoundingRect(true);
-    var actStyle = preview.getStyle();
+    var actStyle = preview.getStyle(true);
     var capabilities = preview.getCapabilities();
 
     var cw = (pointRadius + strokeWidth * 2) * 2;

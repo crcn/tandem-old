@@ -12,24 +12,11 @@ import {
 } from 'common/utils/html/css';
 
 import {
-  calculateZoom
+  calculateZoom,
+  multiplyStyle
 } from 'common/utils/html';
 
 
-// TODO - move this to utils
-function _zoom(style, zoom) {
-
-  var zoomed = {};
-
-  for (var key in style) {
-    var value = style[key];
-    if (typeof value === 'number') {
-      zoomed[key] = value * zoom;
-    }
-  }
-
-  return zoomed;
-}
 class ReactEntityComputer extends DisplayEntityComputer {
 
   setPositionFromAbsolutePoint(point) {
@@ -120,12 +107,11 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
 
     if (zoomProperties) {
-      var {left, top, width, height } = _zoom({ left, top, width, height }, this.getZoom());
+      var {left, top, width, height } = multiplyStyle({ left, top, width, height }, this.getZoom());
     }
 
     right = left + width;
     bottom = top + height;
-
 
     return BoundingRect.create({
       left   : left,
@@ -181,7 +167,8 @@ class ReactEntityComputer extends DisplayEntityComputer {
       paddingBottom: cs.paddingBottom
     }, refs.element);
 
-    var rect = this.getBoundingRect(true);
+    // zooming happens a bit further down
+    var rect = this.getBoundingRect(false);
     var w = rect.right  - rect.left;
     var h = rect.bottom - rect.top;
 
@@ -197,7 +184,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
     // are also based on the zoom level. Important for overlay data such as
     // tools and information describing the target entity
     if (zoomProperties) {
-      style = _zoom(style, this.getZoom());
+      style = multiplyStyle(style, this.getZoom());
     }
 
     return style;

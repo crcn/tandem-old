@@ -44,4 +44,30 @@ describe(__filename + '#', function() {
     expect(resizerBounds.top + 4).to.be(targetElementBounds.top);
     expect(resizerBounds.bottom - 10).to.be(targetElementBounds.bottom);
   });
+
+  it('can scale 1 item using the WEST point', async function() {
+    var targetEntity = app.rootEntity.children[0];
+    var preview = targetEntity.preview;
+    actions.setSelection(app, [targetEntity]);
+    await waitForAllPromises();
+    app.preview.setZoom(0.7);
+
+    var element = app.config.element.querySelector('.point-circle-w');
+
+
+    var delta = {
+      left: 50,
+      top: 50
+    };
+
+    var prect = targetEntity.preview.getStyle(true);
+
+    //todo - make this into a util - mouseUtils.drag(element, { left: 100, top: 100 })
+    element.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 100, clientY: 100 }));
+    document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: delta.x, clientY: delta.y }));
+    document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+    var crect = targetEntity.preview.getStyle(true);
+
+    expect(Math.round(crect.left + 100)).to.be(Math.round(prect.left));
+  });
 });

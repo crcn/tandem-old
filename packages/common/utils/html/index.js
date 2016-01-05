@@ -33,3 +33,35 @@ export function translateAbsoluteToRelativePoint(event, relativeElement) {
 
   return { left: rx, top: ry };
 }
+
+
+
+// TODO - move this to utils
+export function multiplyStyle(style, zoom) {
+
+  var zoomed = {};
+
+  for (var key in style) {
+    var value = style[key];
+    if (typeof value === 'number') {
+      zoomed[key] = value * zoom;
+    }
+  }
+
+  return zoomed;
+}
+
+// TODO - move this to utils
+export function divideStyle(style, zoom) {
+
+  var zoomed = {};
+
+  for (var key in style) {
+    var value = style[key];
+    if (typeof value === 'number') {
+      zoomed[key] = value / zoom;
+    }
+  }
+
+  return zoomed;
+}

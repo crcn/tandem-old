@@ -109,7 +109,6 @@ class Preview {
     };
 
     for (var style of allStyles) {
-
       bounds.left   = Math.min(bounds.left, style.left);
       bounds.right  = Math.max(bounds.right, style.left + style.width);
       bounds.top    = Math.min(bounds.top, style.top);
