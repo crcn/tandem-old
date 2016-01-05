@@ -29,7 +29,21 @@ export default function(clazz) {
 
       super.setProperties(properties);
 
-      if (changes.length && notifier) notifier.notify(ChangeMessage.create(changes));
+      if (changes.length && notifier) this.notifyChange(changes);
+    }
+
+    /**
+     */
+
+    notifyChange(changes) {
+
+      this._updateCount = (this._updateCount || 0) + 1;
+
+      // FIXME - kind of nasty code here - breaks abstraction of change emittion
+      // via setProperties. This chunk should be re-evaluated later on - okay for now.
+      if (this.notifier) {
+        this.notifier.notify(ChangeMessage.create(changes || [{ target: this }]));
+      }
     }
   }
 

@@ -17,10 +17,12 @@ const CLASS_NAME_PRIORITY = [
   'src'
 ];
 
+
 class ElementLayerLabelComponent extends React.Component {
 
   constructor() {
     super();
+    this._updateCount = 0;
     this.state = {};
   }
 
@@ -29,6 +31,20 @@ class ElementLayerLabelComponent extends React.Component {
       editTagName: true,
       source: this.getHTMLValue()
     });
+  }
+
+  shouldComponentUpdate(props, state) {
+    return this._prevEntityUpdateCount !== props.entity._updateCount || this._prevStateUpdateCount !== this._updateCount;
+  }
+
+  componentWillReceiveProps(props, state) {
+    this._prevEntityUpdateCount = this.props.entity ? this.props.entity._updateCount : void 0;
+    this._prevStateUpdateCount  = this._updateCount;
+  }
+
+  setState(state) {
+    this._updateCount++;
+    super.setState(state);
   }
 
   addChild(event) {
@@ -62,6 +78,8 @@ class ElementLayerLabelComponent extends React.Component {
   render() {
     var entity     = this.props.entity;
     var editSource = entity.editLayerSource;
+    //console.log(this.props.entity.attributes.class);
+    //console.log(this.lastUpdatedAt !== props.entity.lastUpdatedAt, this.state.lastUpdatedAt !== state.lastUpdatedAt)
 
     var buffer = [
       <span className='m-element-layer-label--tag'>&lt;</span>

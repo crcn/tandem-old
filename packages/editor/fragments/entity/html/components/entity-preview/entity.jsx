@@ -4,6 +4,11 @@ import { ENTITY_PREVIEW_CLICK } from 'editor/message-types';
 
 class HTMLEntityComponent extends React.Component {
 
+  constructor() {
+    super();
+    this._invalidateCache = true;
+  }
+
   setHook(entity) {
     this._preview = entity.preview = EntityPreview.create(entity, this);
   }
@@ -12,7 +17,15 @@ class HTMLEntityComponent extends React.Component {
     this.setHook(this.props.entity);
   }
 
+  shouldComponentUpdate(props, state) {
+    return this._invalidateCache;
+  }
+
+
   componentWillReceiveProps(nextProps) {
+    this._invalidateCache = this._invalidateCache || this._entityUpdateCount !== nextProps.entity._updateCount;
+    this._entityUpdateCount = nextProps.entity._updateCount;
+
     if (this.props.entity !== nextProps.entity) {
       this.setHook(nextProps.entity);
     }
@@ -35,6 +48,8 @@ class HTMLEntityComponent extends React.Component {
   }
 
   render() {
+
+    this._invalidateCache = false;
 
     var entity = this.props.entity;
 

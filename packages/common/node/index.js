@@ -1,9 +1,9 @@
-import BaseObject from 'common/object/base';
+import ObservableObject from 'common/object/observable';
 import NodeCollection from './collection';
 import { CallbackNotifier } from 'common/notifiers';
 import mixinChangeNotifier from 'common/class/mixins/change-notifier';
 
-class Node extends BaseObject {
+class Node extends ObservableObject {
 
   constructor(properties, children = []) {
     super(properties);
@@ -50,6 +50,11 @@ class Node extends BaseObject {
     }
   }
 
+  notifyChange(changes) {
+    super.notifyChange(changes);
+    if (this.parent) this.parent.notifyChange(changes);
+  }
+
   /**
    */
 
@@ -78,7 +83,9 @@ class Node extends BaseObject {
       this._sync(change.added, change.removed);
     }
 
-    if (this.notifier) this.notifier.notify(message);
+    if (this.notifier) {
+      this.notifyChange(message.changes);
+    }
   }
 
   _sync(added = [], removed = []) {
@@ -98,6 +105,6 @@ class Node extends BaseObject {
   }
 }
 
-Node = mixinChangeNotifier(Node);
+//Node = mixinChangeNotifier(Node);
 
 export default Node;

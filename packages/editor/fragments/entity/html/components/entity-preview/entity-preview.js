@@ -2,9 +2,10 @@
 // parent entity changes.
 
 import memoize from 'memoizee';
+import BoundingRect from 'common/geom/bounding-rect';
 import { DisplayEntityComputer } from 'common/entities';
 import { translateStyleToIntegers } from 'common/utils/html/css/translate-style';
-import BoundingRect from 'common/geom/bounding-rect';
+import InvalidatePropChanges from 'common/components/mixins/invalidate-prop-changes';
 
 import {
   translateStyle,
