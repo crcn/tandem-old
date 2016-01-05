@@ -5,7 +5,7 @@ export default function(startEvent, update, stop) {
   var sx = startEvent.clientX;
   var sy = startEvent.clientY;
 
-  update = throttle(update, 20);
+  //update = throttle(update, 10);
 
   function drag(event) {
 

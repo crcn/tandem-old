@@ -1,7 +1,7 @@
 // TODO - cache ALL computed information here until entity, or
 // parent entity changes.
 
-
+import memoize from 'memoizee';
 import { DisplayEntityComputer } from 'common/entities';
 import { translateStyleToIntegers } from 'common/utils/html/css/translate-style';
 import BoundingRect from 'common/geom/bounding-rect';
@@ -16,8 +16,19 @@ import {
   multiplyStyle
 } from 'common/utils/html';
 
-
 class ReactEntityComputer extends DisplayEntityComputer {
+
+  constructor(entity, component) {
+    super(entity, component);
+    this.entity.notifier.push(this);
+    this.getBoundingRect = memoize(this.getBoundingRect.bind(this));
+    this.getStyle = memoize(this.getStyle.bind(this));
+  }
+
+  notify(message) {
+    this.getBoundingRect.clear();
+    this.getStyle.clear();
+  }
 
   setPositionFromAbsolutePoint(point) {
 
@@ -71,6 +82,10 @@ class ReactEntityComputer extends DisplayEntityComputer {
     }
 
     this.entity.setStyle(props);
+  }
+
+  _clearCache() {
+    this._memos = {};
   }
 
   toJSON() {

@@ -13,6 +13,7 @@ describe(__filename + '#', function() {
     app = await createApp();
     createHtmlEntity1Fixture({ app });
     element = app.config.element;
+    await waitForAllPromises();
   });
 
   afterEach(function () {

@@ -23,8 +23,8 @@ describe(__filename + '#', function() {
     var targetEntity = app.rootEntity.children[0];
     var preview = targetEntity.preview;
     actions.setSelection(app, [targetEntity]);
-    await waitForAllPromises();
     app.preview.setZoom(1);
+    await waitForAllPromises();
 
     // ensure that only one item is currently selected
     expect(app.selection.length).to.be(1);
@@ -49,8 +49,8 @@ describe(__filename + '#', function() {
     var targetEntity = app.rootEntity.children[0];
     var preview = targetEntity.preview;
     actions.setSelection(app, [targetEntity]);
-    await waitForAllPromises();
     app.preview.setZoom(0.7);
+    await waitForAllPromises();
 
     var element = app.config.element.querySelector('.point-circle-w');
 
@@ -66,6 +66,8 @@ describe(__filename + '#', function() {
     element.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 100, clientY: 100 }));
     document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: delta.x, clientY: delta.y }));
     document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+
+    await waitForAllPromises();
     var crect = targetEntity.preview.getStyle(true);
 
     expect(Math.round(crect.left + 100)).to.be(Math.round(prect.left));

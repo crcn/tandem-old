@@ -174,6 +174,7 @@ class ResizerComponent extends React.Component {
   }
 
   _isMoving() {
+    return;
     clearTimeout(this._movingTimer);
     this.targetPreview.setProperties({ moving: true });
     this._movingTimer = setTimeout(() => {
@@ -182,6 +183,7 @@ class ResizerComponent extends React.Component {
   }
 
   _isResizing() {
+    return;
     clearTimeout(this._movingTimer);
     this.targetPreview.setProperties({ resizing: true });
     this._movingTimer = setTimeout(() => {

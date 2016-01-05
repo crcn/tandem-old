@@ -13,6 +13,7 @@ describe(__filename + '#', function() {
     app = await createApp();
     createHtmlEntity1Fixture({ app });
     element = app.config.element;
+    await waitForAllPromises();
   });
 
   afterEach(function() {
@@ -24,6 +25,7 @@ describe(__filename + '#', function() {
     var preview = targetEntity.preview;
     await waitForAllPromises();
     app.preview.setZoom(1);
+    await waitForAllPromises();
 
     // get the bounds of the entity -- ensure it's to scale (true)
     var bounds = preview.getBoundingRect(true);
@@ -34,6 +36,7 @@ describe(__filename + '#', function() {
     expect(bounds.height).to.be(150);
 
     app.preview.setZoom(0.7);
+    await waitForAllPromises();
     var bounds = preview.getBoundingRect(true);
     expect(Math.round(bounds.left)).to.be(210);
     expect(Math.round(bounds.top)).to.be(140);
@@ -44,6 +47,7 @@ describe(__filename + '#', function() {
     var preview = targetEntity.preview;
     await waitForAllPromises();
     app.preview.setZoom(1);
+    await waitForAllPromises();
 
     // get the bounds of the entity -- ensure it's to scale (true)
     var bounds = preview.getBoundingRect(false);
@@ -54,6 +58,7 @@ describe(__filename + '#', function() {
     expect(bounds.height).to.be(150);
 
     app.preview.setZoom(0.7);
+    await waitForAllPromises();
     var bounds = preview.getBoundingRect(false);
     expect(Math.round(bounds.left)).to.be(300);
     expect(Math.round(bounds.top)).to.be(200);

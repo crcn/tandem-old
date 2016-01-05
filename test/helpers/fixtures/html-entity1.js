@@ -8,6 +8,7 @@ export function create({ app }) {
 
   app.setProperties({
     rootEntity: factory.create({
+      notifier: app.notifier,
       tagName: 'div'
     }, [
       factory.create({

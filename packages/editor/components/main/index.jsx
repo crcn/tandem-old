@@ -13,7 +13,12 @@ class MainComponent extends React.Component {
 
   notify() {
     // TODO - possibly throttle here
-    this.forceUpdate();
+    if (this._running) return;
+    this._running = true;
+    requestAnimationFrame(() => {
+      this._running = false;
+      this.setState({});
+    })
   }
 
   render() {
