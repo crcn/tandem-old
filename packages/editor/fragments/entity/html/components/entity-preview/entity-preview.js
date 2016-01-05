@@ -20,9 +20,13 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
   constructor(entity, component) {
     super(entity, component);
+
+    // todo - don't do this - instead setup memoization to check
+    // global cache key - if changed then return new result. This
+    // will cut down on listeners drastically
     this.entity.notifier.push(this);
-    this.getBoundingRect = memoize(this.getBoundingRect.bind(this));
-    this.getStyle = memoize(this.getStyle.bind(this));
+    this.getBoundingRect = memoize(this.getBoundingRect.bind(this), { primitive: true });
+    this.getStyle = memoize(this.getStyle.bind(this), { primitive: true });
   }
 
   notify(message) {
