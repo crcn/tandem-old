@@ -71,6 +71,8 @@
 - [ ] bugs
   - east/south resizer points both mutating width & height props when they shouldn't
   
+- [ ] testability
+  - [ ] add drag manager that emits mouse events
 
 #### Keep this in mind when writing code
 

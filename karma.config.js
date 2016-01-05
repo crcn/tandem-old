@@ -25,7 +25,8 @@ module.exports = function(config) {
       require('karma-webpack'),
       require('karma-chrome-launcher'),
       require('karma-phantomjs-launcher'),
-      require('karma-spec-reporter')
+      require('karma-spec-reporter'),
+      require('karma-coverage')
     ],
 
     // list of files to exclude
@@ -42,7 +43,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['dots'],
+    reporters: ['dots', 'coverage'],
 
 
     // web server port

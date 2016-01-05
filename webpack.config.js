@@ -69,6 +69,13 @@ module.exports = {
           ignore: ['buffer']
         }
       }
+    ],
+    postLoaders: [
+      {
+        test: /\.jsx?$/,
+        exclude: /(node_modules|resources\/js\/vendor)/,
+        loader: 'istanbul-instrumenter'
+      }
     ]
   }
 };
