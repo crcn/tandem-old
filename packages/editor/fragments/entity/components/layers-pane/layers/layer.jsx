@@ -110,18 +110,6 @@ class LayerLabelComponent extends React.Component {
     });
   }
 
-  onMouseDown(event) {
-    this.setState({
-      mouseIsDown: true
-    });
-  }
-
-  onMouseUp(event) {
-    this.setState({
-      mouseIsDown: false
-    });
-  }
-
   render() {
     const { connectDragSource, isDragging } = this.props;
 
@@ -135,10 +123,11 @@ class LayerLabelComponent extends React.Component {
 
     var labelSection;
 
-    if (labelFragment) {
+    if (labelFragment)  {
       labelSection = labelFragment.factory.create({
         ...this.props,
-        entity: entity
+        entity: entity,
+        connectDragSource
       });
     } else {
       labelSection = <span>
@@ -150,7 +139,7 @@ class LayerLabelComponent extends React.Component {
     var headerClassName = cx({
       'm-layers-pane-component-layer--header': true,
       ['m-layer-type-' + entity.type]: true,
-      'selected': !this.state.mouseIsDown && this.props.app.selection && this.props.app.selection.includes(entity)
+      'selected': this.props.app.selection && this.props.app.selection.includes(entity)
     });
 
     var expandButtonClassName = cx({
@@ -164,12 +153,12 @@ class LayerLabelComponent extends React.Component {
       'visibility': entity.children.length ? 'visible': 'hidden'
     };
 
-    return connectDragSource(<div style={{paddingLeft: this.props.paddingLeft}} tabIndex="0" onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)} onClick={this.onClick.bind(this)} className={headerClassName}>
+    return <div style={{paddingLeft: this.props.paddingLeft}} tabIndex="0" onClick={this.onClick.bind(this)} className={headerClassName}>
       <DropLayerTargetComponent {...this.props} offset={0} />
       <i onClick={this.toggleExpand.bind(this, !expanded)} className={expandButtonClassName} style={expandButtonStyle} />
       { labelSection }
       <DropLayerTargetComponent {...this.props} bottom={true} offset={1} />
-    </div>);
+    </div>;
   }
 }
 

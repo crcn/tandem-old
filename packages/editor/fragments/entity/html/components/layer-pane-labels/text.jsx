@@ -24,8 +24,9 @@ class TextLayerLabelComponent extends React.Component {
   render() {
 
     var edit = this.state.edit && !!~this.props.app.selection.indexOf(this.props.entity);
+    var connectDragSource = this.props.connectDragSource;
 
-    return <span
+    return connectDragSource(<span
       className='m-label m-text-layer-label'
       onDoubleClick={this.editLabel.bind(this)}>
       {
@@ -33,7 +34,7 @@ class TextLayerLabelComponent extends React.Component {
         this.renderInput()      :
         this.props.entity.value
       }
-    </span>;
+    </span>);
   }
 
   onInputChange(event) {

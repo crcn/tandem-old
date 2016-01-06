@@ -68,6 +68,7 @@ class ElementLayerLabelComponent extends React.Component {
   render() {
     var entity     = this.props.entity;
     var editSource = entity.editLayerSource;
+    var connectDragSource = this.props.connectDragSource;
     //console.log(this.props.entity.attributes.class);
     //console.log(this.lastUpdatedAt !== props.entity.lastUpdatedAt, this.state.lastUpdatedAt !== state.lastUpdatedAt)
 
@@ -118,7 +119,7 @@ class ElementLayerLabelComponent extends React.Component {
     );
 
     return <div className='m-label m-element-layer-label' onDoubleClick={this.editHTML.bind(this)}>
-      { buffer } { !~VOID_ELEMENTS.indexOf(entity.tagName.toLowerCase()) ? <span className='m-element-layer-label--add-child-button' onClick={this.addChild.bind(this)}>+</span> : void 0 }
+      { connectDragSource(<span>{buffer}</span>) } { !~VOID_ELEMENTS.indexOf(entity.tagName.toLowerCase()) ? <span className='m-element-layer-label--add-child-button' onClick={this.addChild.bind(this)}>+</span> : void 0 }
     </div>;
   }
 
