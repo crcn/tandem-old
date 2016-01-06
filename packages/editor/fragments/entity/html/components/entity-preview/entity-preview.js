@@ -17,24 +17,18 @@ import {
   multiplyStyle
 } from 'common/utils/html';
 
-function memoize(fn) {
+const CANVAS_ELEMENT_ID = 'preview-canvas';
 
-  function key(value) {
-    return JSON.stringify(value || null);
+function getParentOffset(element) {
+  var p = element.parentNode;
+  var left = 0;
+  var top  = 0;
+  while(p && p.id !== CANVAS_ELEMENT_ID) {
+    left += p.offsetLeft;
+    top  += p.offsetTop;
+    p = p.parentNode;
   }
-
-  var cache = {};
-  var ret = function(arg) {
-    var k = key(arg);
-    if (cache[k]) return cache[k];
-    return cache[k] = fn(arg);
-  }
-
-  ret.clear = function() {
-    cache = {};
-  };
-
-  return ret;
+  return { left, top };
 }
 
 class ReactEntityComputer extends DisplayEntityComputer {
@@ -60,10 +54,13 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
     // absolute positions are always in pixels - always round
     // to the nearest one
+    var element = this.getDisplayElement();
+    var offset  = getParentOffset(element);
+
     var newStyle = translateStyle({
-      left: point.left,
-      top: point.top
-    }, this.entity.getStyle(), this.getDisplayElement());
+      left: point.left - offset.left,
+      top: point.top - offset.top
+    }, this.entity.getStyle(), element);
 
     this.entity.setStyle(newStyle);
   }
@@ -89,7 +86,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
     return this.displayObject.refs.element;
   }
 
-  setBounds(bounds) {
+  setBoundingRect(bounds) {
 
     // NO zoom here - point is NOT fixed, but relative
     var absStyle = this.getStyle();
@@ -114,6 +111,21 @@ class ReactEntityComputer extends DisplayEntityComputer {
     return null;
   }
 
+  getComputedStyle() {
+    var cs   = window.getComputedStyle(this.displayObject.refs.element);
+    // normalize computed styles to pixels
+    return translateStyleToIntegers({
+      marginLeft: cs.marginLeft,
+      marginTop : cs.marginTop,
+      marginRight: cs.marginRight,
+      marginBottom: cs.marginBottom,
+      paddingLeft: cs.paddingLeft,
+      paddingTop: cs.paddingTop,
+      paddingRight: cs.paddingRight,
+      paddingBottom: cs.paddingBottom
+    }, this.displayObject.refs.element);
+  }
+
   getBoundingRect(zoomProperties) {
 
     var refs = this.displayObject.refs;
@@ -129,15 +141,16 @@ class ReactEntityComputer extends DisplayEntityComputer {
     // of the preview canvas so that we can get the correct position
     // of this element. This is the *simplest* solution I can think of.
     // TODO - this *will not work* when we start adding multiple canvases
-    var pcrect = document.getElementById('preview-canvas').getBoundingClientRect();
-    var rect = refs.element.getBoundingClientRect();
+    var pcrect = document.getElementById(CANVAS_ELEMENT_ID).getBoundingClientRect();
+    var rect   = refs.element.getBoundingClientRect();
+    var cs     = this.getComputedStyle();
 
-    var zoom = calculateZoom(refs.element);
-
-    var left   = rect.left   - pcrect.left;
-    var top    = rect.top    - pcrect.top;
-    var right  = rect.right  - pcrect.left;
-    var bottom = rect.bottom - pcrect.top;
+    // margins are also considered bounds - add them here. Fixes a few issues
+    // when selecting multiple items with different items & dragging them around.
+    var left   = rect.left   - pcrect.left - cs.marginLeft;
+    var top    = rect.top    - pcrect.top  - cs.marginTop;
+    var right  = rect.right  - pcrect.left + cs.marginRight;
+    var bottom = rect.bottom - pcrect.top  + cs.marginBottom;
 
     var width = right - left;
     var height = bottom - top;
@@ -162,47 +175,20 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
     var refs = this.displayObject.refs;
 
-
     var entity = this.entity;
-
 
     var style = entity.getStyle();
 
-    var left = style.left || 0;
-    var top  = style.top  || 0;
-
-    // this might happen then the user is changing the css styles
-    try {
-      if (left) left = translateStyleToIntegers({
-        left: left
-      }, refs.element).left;
-    } catch(e) {
-      console.warn('style left is not valid, setting to 0');
-      left = 0;
-    }
-
-    try {
-      if (top) top = translateStyleToIntegers({
-        top: top
-      }, refs.element).top;
-    } catch(e) {
-      console.warn('style top is not valid, setting to 0');
-      top = 0;
-    }
+    var { left, top } = translateStyleToIntegers({
+      left: style.left || 0,
+      top : style.top || 0
+    }, refs.element);
 
     var cs   = window.getComputedStyle(refs.element);
 
     // normalize computed styles to pixels
-    var cStyle = translateStyleToIntegers({
-      marginLeft: cs.marginLeft,
-      marginTop : cs.marginTop,
-      marginRight: cs.marginRight,
-      marginBottom: cs.marginBottom,
-      paddingLeft: cs.paddingLeft,
-      paddingTop: cs.paddingTop,
-      paddingRight: cs.paddingRight,
-      paddingBottom: cs.paddingBottom
-    }, refs.element);
+    var cStyle = this.getComputedStyle();
+
 
     // zooming happens a bit further down
     var rect = this.getBoundingRect(false);
@@ -211,14 +197,12 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
     var style = {
       ...cStyle,
-      left      : left,
-      top       : top,
       width     : w,
       height    : h,
 
       // for rect consistency
-      right     : left + w,
-      bottom    : top  + h
+      right     : cStyle.left + w,
+      bottom    : cStyle.top  + h
     };
 
     // this normalizes the properties so that the calculated values

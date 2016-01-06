@@ -16,10 +16,10 @@ class EntityMarginComponent extends React.Component {
     };
 
     var style = {
-      left: entBounds.left - margins.left + 1,
-      top: entBounds.top - margins.top + 1,
-      width: entBounds.width + margins.left + margins.right,
-      height: entBounds.height + margins.top + margins.bottom,
+      left: entBounds.left + 1,
+      top: entBounds.top + 1,
+      width: entBounds.width,
+      height: entBounds.height,
       borderLeftWidth: margins.left,
       borderTopWidth: margins.top,
       borderBottomWidth: margins.bottom,

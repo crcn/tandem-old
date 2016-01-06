@@ -30,10 +30,10 @@ class Preview {
 
   setPositionFromAbsolutePoint(point) {
 
-    var bounds = this.getStyle();
+    var bounds = this.getBoundingRect();
 
     this.selection.map(function(entity) {
-      var pstyle = entity.preview.getStyle();
+      var pstyle = entity.preview.getBoundingRect();
       entity.preview.setPositionFromAbsolutePoint({
         left: point.left + (pstyle.left - bounds.left),
         top : point.top  + (pstyle.top  - bounds.top)
@@ -60,23 +60,30 @@ class Preview {
     return capabilities;
   }
 
-  setBounds(bounds) {
+  /**
+   *
+   * @param bounds
+   */
 
-    var cstyle = this.getStyle();
+  setBoundingRect(bounds) {
+
+    console.log(bounds);
+
+    var cstyle = this.getBoundingRect(false);
 
     // otherwise reposition the items
     this.selection.forEach(function(entity) {
-      var style = entity.preview.getStyle();
+      var style = entity.preview.getBoundingRect(false);
 
       var percLeft   = (style.left - cstyle.left) / cstyle.width;
       var percTop    = (style.top  - cstyle.top)  / cstyle.height;
       var percWidth  = style.width / cstyle.width;
       var percHeight = style.height / cstyle.height;
 
-      entity.preview.setBounds({
-        left: bounds.left + bounds.width * percLeft,
-        top: bounds.top + bounds.height * percTop,
-        width: bounds.width * percWidth,
+      entity.preview.setBoundingRect({
+        left  : bounds.left + bounds.width * percLeft,
+        top   : bounds.top + bounds.height * percTop,
+        width : bounds.width * percWidth,
         height: bounds.height * percHeight
       });
     });

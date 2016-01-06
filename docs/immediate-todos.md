@@ -27,7 +27,10 @@
   - [x] ability to add children (plus button)
   - [x] double click to edit - edit whole element
   - [ ] double click layer - edit layer and all children (IDE mode) 
-  
+
+- [ ] left bar
+  - css declarations (see what they're affecting)
+
 - [ ] mirror mode8
   - [ ] show display resolution above canvas + label
   - [ ] show zoom above canvas
@@ -39,6 +42,10 @@
   - [ ] breadcrumbs for properties panel
   - [ ] easier way of adding css styles (some filter for typography - drop down)
   - [ ] raw mode for CSS
+  - [ ] add style selectors
+  - [ ] generic tab -- more sketch like
+  - [ ] inputs should word wrap
+  - [ ] all inputs text based
   
 - [ ] warnings
   - [ ] when adding children to void elements
@@ -69,7 +76,10 @@
   - [ ] ability to change num columns & column spacing
   
 - [ ] bugs
-  - east/south resizer points both mutating width & height props when they shouldn't
+  - [ ] east/south resizer points both mutating width & height props when they shouldn't
+  - [ ] must double click into layer to select children
+  - [ ] cannot select child & parent together (messes up dragging)
+  - [ ] multi-selected items with differing items drift apart
   
 - [ ] testability
   - [ ] add drag manager that emits mouse events

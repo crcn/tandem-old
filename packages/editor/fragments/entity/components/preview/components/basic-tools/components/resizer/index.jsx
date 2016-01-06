@@ -109,7 +109,7 @@ class ResizerComponent extends React.Component {
     //this._isMoving();
     //this._isResizing();
 
-    selection.preview.setBounds(props);
+    selection.preview.setBoundingRect(props);
   }
 
   onDoubleClick(event) {
