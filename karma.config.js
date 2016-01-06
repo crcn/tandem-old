@@ -13,10 +13,16 @@ module.exports = function(config) {
     files: [
       'node_modules/babel-polyfill/browser.js',
       {
-        pattern  : 'packages/**/*-test.js'
+        pattern  : 'packages/**/*-test.js',
+        watched  : false,
+        included : true,
+        served   : true
       },
       {
-        pattern  : 'test/**/*-test.js'
+        pattern  : 'test/**/*-test.js',
+        watched  : false,
+        included : true,
+        served   : true
       }
     ],
 
@@ -89,7 +95,7 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    //singleRun: true,
+    singleRun: true,
 
     // Concurrency level
     // how many browser should be started simultanous

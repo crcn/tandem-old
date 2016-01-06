@@ -37,7 +37,7 @@ class ResizerComponent extends React.Component {
       SNAP_MARGIN / this.props.zoom
     );
 
-    var style = selection.preview.getStyle();
+    var style = selection.preview.getBoundingRect();
 
     var sx2 = style.left;
     var sy2 = style.top;

@@ -56,6 +56,9 @@ DropLayerTargetComponent = DropTarget('element', {
       0,
       item
     );
+
+
+    app.notifier.notify(SetFocusMessage.create([item], false));
   },
   hover(props, monitor, component) {
     //console.log('hover');
@@ -86,7 +89,19 @@ class LayerLabelComponent extends React.Component {
 
     // shift select range
     if (event.shiftKey && selection.length) {
-      var allEntities = this.props.app.rootEntity.flatten();
+
+      var allEntities = [];
+
+      // capture only open entities
+      function each(entity) {
+        allEntities.push(entity);
+        if (entity.layerExpanded) {
+          entity.children.forEach(each);
+        }
+      }
+
+      each(this.props.app.rootEntity);
+
       var currentlySelectedEntity = selection[selection.length - 1];
       var index1 = allEntities.indexOf(entity);
       var index2 = allEntities.indexOf(currentlySelectedEntity);
@@ -102,12 +117,15 @@ class LayerLabelComponent extends React.Component {
     this.props.app.notifier.notify(ToggleFocusMessage.create(select, multiSelect));
   }
 
-  toggleExpand(expand) {
+  toggleExpand(expand, event) {
 
     // store on the entity so that it can be serialized
     this.props.entity.setProperties({
       layerExpanded: expand !== void 0 ? expand : !this.props.entity.layerExpanded
     });
+
+    //console.log(event);
+    if (event) event.stopPropagation();
   }
 
   render() {
@@ -190,11 +208,14 @@ LayerLabelComponent = DropTarget('element', {
     return entity.id !== monitor.getItem().props.id;
   },
   drop({ entity, app, offset }, monitor, component) {
+    app.notifier.notify(SetFocusMessage.create([], false));
     var data = monitor.getItem();
     var item = app.rootEntity.find(function(entity) {
       return entity.id === data.props.id;
     });
+    entity.layerExpanded = true;
     entity.children.push(item);
+    app.notifier.notify(SetFocusMessage.create([item], false));
   },
   hover(props, monitor, component) {
     //console.log('hover');

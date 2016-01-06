@@ -1,4 +1,4 @@
-import { createApp, waitForAllPromises } from 'test/utils';
+import { createApp, waitForAllPromises, mouse as mouseUtils } from 'test/helpers/utils';
 import { create as createHtmlEntity1Fixture } from 'test/helpers/fixtures/html-entity1';
 import * as actions from 'test/helpers/actions';
 
@@ -62,10 +62,10 @@ describe(__filename + '#', function() {
 
     var prect = targetEntity.preview.getStyle(true);
 
-    //todo - make this into a util - mouseUtils.drag(element, { left: 100, top: 100 })
-    element.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 100, clientY: 100 }));
-    document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: delta.left, clientY: delta.left }));
-    document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, clientX: delta.left, clientY: delta.left }));
+    mouseUtils.dragElement(element, [
+      { left: 100, top: 100 },
+      { left: delta.left, top: delta.top }
+    ]);
 
     await waitForAllPromises();
     var crect = targetEntity.preview.getStyle(true);

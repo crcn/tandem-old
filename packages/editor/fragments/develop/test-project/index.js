@@ -21,16 +21,15 @@ export function create({ app }) {
         componentType: 'element',
         tagName      : 'div',
         attributes : {
-          id: 'box1',
-          class: 'abcd efg',
+          id: 'box2',
           style: {
             position: 'relative',
-            margin: '10px',
-            //left: '100px',
-            //top: '100px',
+            padding: '10px',
+            //left: '500px',
+            //top: '150px',
             width: '100px',
             height: '100px',
-            background: '#F60'
+            background: 'linear-gradient(90deg, blue, black)'
           }
         }
       }),
@@ -38,15 +37,16 @@ export function create({ app }) {
         componentType: 'element',
         tagName      : 'div',
         attributes : {
-          id: 'box2',
+          id: 'box1',
+          class: 'abcd efg',
           style: {
-            position: 'relative',
-            padding: '10px',
-            left: '500px',
-            top: '150px',
+            position: 'absolute',
+            margin: '10px',
+            //left: '100px',
+            //top: '100px',
             width: '100px',
             height: '100px',
-            background: 'linear-gradient(90deg, blue, black)'
+            background: '#F60'
           }
         }
       })

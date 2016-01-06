@@ -1,4 +1,4 @@
-import { createApp, waitForAllPromises } from 'test/utils';
+import { createApp, waitForAllPromises } from 'test/helpers/utils';
 import expect from 'expect.js';
 
 /**
