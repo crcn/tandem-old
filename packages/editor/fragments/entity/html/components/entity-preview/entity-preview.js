@@ -214,7 +214,11 @@ class ReactEntityComputer extends DisplayEntityComputer {
       left      : left,
       top       : top,
       width     : w,
-      height    : h
+      height    : h,
+
+      // for rect consistency
+      right     : left + w,
+      bottom    : top  + h
     };
 
     // this normalizes the properties so that the calculated values

@@ -82,52 +82,45 @@ class Preview {
     });
   }
 
+  /**
+   * what is actually visible to the user - this is used by tools
+   * @param zoomProperties
+   */
+
   getBoundingRect(zoomProperties) {
-    var allRects = this.selection.map(function(entity) {
+    return calculateBoundingRect(this.selection.map(function(entity) {
       return entity.preview.getBoundingRect(zoomProperties);
-    });
-
-    var groupRect = {
-      top    : Infinity,
-      bottom : -Infinity,
-      left   : Infinity,
-      right  : -Infinity
-    };
-
-    for (var rect of allRects) {
-      groupRect.left   = Math.min(groupRect.left, rect.left);
-      groupRect.right  = Math.max(groupRect.right, rect.right);
-      groupRect.top    = Math.min(groupRect.top, rect.top);
-      groupRect.bottom = Math.max(groupRect.bottom, rect.bottom);
-    }
-
-    return BoundingRect.create(groupRect);
+    }));
   }
+
+  /**
+   * what is actually calculated in CSS
+   */
 
   getStyle() {
-    var allStyles = this.selection.map(function(entity) {
+    return calculateBoundingRect(this.selection.map(function(entity) {
       return entity.preview.getStyle();
-    });
-
-    var bounds = {
-      top    : Infinity,
-      bottom : -Infinity,
-      left   : Infinity,
-      right  : -Infinity
-    };
-
-    for (var style of allStyles) {
-      bounds.left   = Math.min(bounds.left, style.left);
-      bounds.right  = Math.max(bounds.right, style.left + style.width);
-      bounds.top    = Math.min(bounds.top, style.top);
-      bounds.bottom = Math.max(bounds.bottom, style.top + style.height);
-    }
-
-    bounds.width  = bounds.right - bounds.left;
-    bounds.height = bounds.bottom - bounds.top;
-
-    return bounds;
+    }));
   }
+}
+
+
+function calculateBoundingRect(allRects) {
+  var groupRect = {
+    top    : Infinity,
+    bottom : -Infinity,
+    left   : Infinity,
+    right  : -Infinity
+  };
+
+  for (var rect of allRects) {
+    groupRect.left   = Math.min(groupRect.left, rect.left);
+    groupRect.right  = Math.max(groupRect.right, rect.right);
+    groupRect.top    = Math.min(groupRect.top, rect.top);
+    groupRect.bottom = Math.max(groupRect.bottom, rect.bottom);
+  }
+
+  return BoundingRect.create(groupRect);
 }
 
 class HTMLEntitySelection extends BaseCollection {

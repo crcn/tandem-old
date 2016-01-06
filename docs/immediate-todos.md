@@ -22,9 +22,9 @@
 
 - [ ] layers
   - [x] hide / show layers with arrow keys (left right)
-  - [ ] ability to edit attributes directly
+  - [x] ability to edit attributes directly
   - [x] min width should be bigger
-  - [ ] ability to add children (plus button)
+  - [x] ability to add children (plus button)
   - [x] double click to edit - edit whole element
   - [ ] double click layer - edit layer and all children (IDE mode) 
   
