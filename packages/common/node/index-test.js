@@ -97,7 +97,7 @@ describe(__filename + '#', function() {
     ]);
 
     c.setProperties({ style: { backgroundColor: 0x000 }});
-    expect(messages.length).to.be(1);
+    expect(messages.length).to.be(2);
     var change = messages[0].changes[0];
     expect(change.target).to.be(c);
     expect(change.property).to.be('style');

@@ -4,11 +4,19 @@ import { SetFocusMessage } from 'editor/message-types';
 import BoundingRect from 'common/geom/bounding-rect';
 import { ChangeMessage } from 'base/message-types';
 import assert from 'assert';
+import memoize from 'memoizee';
 
 class Preview {
   constructor(selection, notifier) {
     this.selection = selection;
     this.notifier  = notifier;
+    this.getStyle = memoize(this.getStyle.bind(this), { primitive: true });
+    this.getBoundingRect = memoize(this.getBoundingRect.bind(this), { primitive: true });
+  }
+
+  notify(message) {
+    this.getStyle.clear();
+    this.getBoundingRect.clear();
   }
 
   setProperties(properties) {
@@ -171,6 +179,14 @@ class HTMLEntitySelection extends BaseCollection {
         return entity.serialize();
       })
     };
+  }
+
+  dispose() {
+    this.preview.dispose();
+  }
+
+  notify(message) {
+    this.preview.notify(message);
   }
 
   getStyle() {

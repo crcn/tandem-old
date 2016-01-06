@@ -13,14 +13,19 @@ import FragmentRegistry from 'common/registry';
  * @returns {*}
  */
 
-export function deserialize(data, rootProps, fragments) {
+export function deserialize(data, fragments, options = {}) {
 
   var entityFragment = fragments.queryOne({
     id: data.props.fragmentId
   });
 
-  return entityFragment.factory.create({ ...data.props, ...rootProps }, data.children.map(function(childData) {
-    return deserialize(childData, {}, fragments);
+  var props = { ...data.props };
+  if (options.keepIds === false) {
+    delete props.id;
+  }
+
+  return entityFragment.factory.create({ ...props, ...options.rootProps }, data.children.map(function(childData) {
+    return deserialize(childData, fragments, options);
   }));
 }
 

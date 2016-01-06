@@ -33,17 +33,7 @@ class ElementLayerLabelComponent extends React.Component {
     });
   }
 
-  shouldComponentUpdate(props, state) {
-    return this._prevEntityUpdateCount !== props.entity._updateCount || this._prevStateUpdateCount !== this._updateCount;
-  }
-
-  componentWillReceiveProps(props, state) {
-    this._prevEntityUpdateCount = this.props.entity ? this.props.entity._updateCount : void 0;
-    this._prevStateUpdateCount  = this._updateCount;
-  }
-
   setState(state) {
-    this._updateCount++;
     super.setState(state);
   }
 

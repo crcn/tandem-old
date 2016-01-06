@@ -6,7 +6,6 @@ class HTMLEntityComponent extends React.Component {
 
   constructor() {
     super();
-    this._invalidateCache = true;
   }
 
   setHook(entity) {
@@ -17,15 +16,8 @@ class HTMLEntityComponent extends React.Component {
     this.setHook(this.props.entity);
   }
 
-  shouldComponentUpdate(props, state) {
-    return this._invalidateCache;
-  }
-
 
   componentWillReceiveProps(nextProps) {
-    this._invalidateCache = this._invalidateCache || this._entityUpdateCount !== nextProps.entity._updateCount;
-    this._entityUpdateCount = nextProps.entity._updateCount;
-
     if (this.props.entity !== nextProps.entity) {
       this.setHook(nextProps.entity);
     }

@@ -22,10 +22,10 @@ describe(__filename + '#', function() {
 
   it('returns the proper dimensions of one entity at various preview zoom levels', async function() {
     var targetEntity = app.rootEntity.children[0];
-    var preview = targetEntity.preview;
     await waitForAllPromises();
     app.preview.setZoom(1);
     await waitForAllPromises();
+    var preview = targetEntity.preview;
 
     // get the bounds of the entity -- ensure it's to scale (true)
     var bounds = preview.getBoundingRect(true);
@@ -44,10 +44,10 @@ describe(__filename + '#', function() {
 
   it('maintains the same props if "zoom" is not provided in getBoundingRect()', async function() {
     var targetEntity = app.rootEntity.children[0];
-    var preview = targetEntity.preview;
     await waitForAllPromises();
     app.preview.setZoom(1);
     await waitForAllPromises();
+    var preview = targetEntity.preview;
 
     // get the bounds of the entity -- ensure it's to scale (true)
     var bounds = preview.getBoundingRect(false);

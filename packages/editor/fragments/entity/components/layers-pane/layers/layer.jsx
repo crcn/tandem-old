@@ -37,17 +37,25 @@ DropLayerTargetComponent = DropTarget('element', {
   },
   drop({ entity, app, offset }, monitor, component) {
 
-    var item = monitor.getItem();
+    app.notifier.notify(SetFocusMessage.create([], false));
 
-    // wait for other to remove child
-    // TODO - just clone the damn thing and create a new ID
-    setTimeout(() => {
-      entity.parent.children.splice(
-        entity.parent.children.indexOf(entity) + offset,
-        0,
-        deserializeEntity(item, {}, app.fragments)
-      );
-    }, 100);
+    var data = monitor.getItem();
+
+    // model data is a pojo, so we need to find it somewhere from the root entity
+    var item = app.rootEntity.find(function(entity) {
+      return entity.id === data.props.id;
+    });
+
+    // remove it
+    if (item) item.parent.children.remove(item);
+
+    // then add it
+    entity.parent.children.splice(
+      entity.parent.children.indexOf(entity) + offset,
+      0,
+      item
+    );
+
   },
   hover(props, monitor, component) {
     //console.log('hover');
@@ -63,6 +71,11 @@ DropLayerTargetComponent = DropTarget('element', {
 })(DropLayerTargetComponent);
 
 class LayerLabelComponent extends React.Component {
+
+  constructor() {
+    super();
+    this.state = {};
+  }
 
   onClick(event) {
 
@@ -97,6 +110,18 @@ class LayerLabelComponent extends React.Component {
     });
   }
 
+  onMouseDown(event) {
+    this.setState({
+      mouseIsDown: true
+    });
+  }
+
+  onMouseUp(event) {
+    this.setState({
+      mouseIsDown: false
+    });
+  }
+
   render() {
     const { connectDragSource, isDragging } = this.props;
 
@@ -125,7 +150,7 @@ class LayerLabelComponent extends React.Component {
     var headerClassName = cx({
       'm-layers-pane-component-layer--header': true,
       ['m-layer-type-' + entity.type]: true,
-      'selected': this.props.app.selection && this.props.app.selection.includes(entity)
+      'selected': !this.state.mouseIsDown && this.props.app.selection && this.props.app.selection.includes(entity)
     });
 
     var expandButtonClassName = cx({
@@ -139,7 +164,7 @@ class LayerLabelComponent extends React.Component {
       'visibility': entity.children.length ? 'visible': 'hidden'
     };
 
-    return connectDragSource(<div style={{paddingLeft: this.props.paddingLeft}} tabIndex="0" onClick={this.onClick.bind(this)} className={headerClassName}>
+    return connectDragSource(<div style={{paddingLeft: this.props.paddingLeft}} tabIndex="0" onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)} onClick={this.onClick.bind(this)} className={headerClassName}>
       <DropLayerTargetComponent {...this.props} offset={0} />
       <i onClick={this.toggleExpand.bind(this, !expanded)} className={expandButtonClassName} style={expandButtonStyle} />
       { labelSection }
@@ -152,12 +177,6 @@ class LayerLabelComponent extends React.Component {
 var layerSource = {
   beginDrag(props) {
     return props.entity.serialize();
-  },
-  endDrag(props, monitor) {
-    if (monitor.didDrop()) {
-      console.log('drop');
-      props.entity.parent.children.remove(props.entity);
-    }
   },
   canDrag() {
     return true;

@@ -94,5 +94,15 @@ function create({ app }) {
         selection: currentSelection
       })
     });
+
+    // one notifier here - primarily setup to purge memos
+    app.notifier.push({
+      notify: function(message) {
+
+        if (app.selection.notify) {
+          app.selection.notify(message);
+        }
+      }
+    })
   }
 }

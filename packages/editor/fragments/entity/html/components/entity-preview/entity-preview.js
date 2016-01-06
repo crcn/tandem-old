@@ -1,7 +1,7 @@
 // TODO - cache ALL computed information here until entity, or
 // parent entity changes.
 
-import memoize from 'memoizee';
+//import memoize from 'memoizee';
 import BoundingRect from 'common/geom/bounding-rect';
 import { DisplayEntityComputer } from 'common/entities';
 import { translateStyleToIntegers } from 'common/utils/html/css/translate-style';
@@ -17,6 +17,26 @@ import {
   multiplyStyle
 } from 'common/utils/html';
 
+function memoize(fn) {
+
+  function key(value) {
+    return JSON.stringify(value || null);
+  }
+
+  var cache = {};
+  var ret = function(arg) {
+    var k = key(arg);
+    if (cache[k]) return cache[k];
+    return cache[k] = fn(arg);
+  }
+
+  ret.clear = function() {
+    cache = {};
+  };
+
+  return ret;
+}
+
 class ReactEntityComputer extends DisplayEntityComputer {
 
   constructor(entity, component) {
@@ -25,15 +45,16 @@ class ReactEntityComputer extends DisplayEntityComputer {
     // todo - don't do this - instead setup memoization to check
     // global cache key - if changed then return new result. This
     // will cut down on listeners drastically
-    this.entity.notifier.push(this);
-    this.getBoundingRect = memoize(this.getBoundingRect.bind(this), { primitive: true });
-    this.getStyle = memoize(this.getStyle.bind(this), { primitive: true });
+    //this.entity.notifier.unshift(this);
+    //this.getBoundingRect = memoize(this.getBoundingRect.bind(this), { primitive: true });
+    //this.getStyle = memoize(this.getStyle.bind(this), { primitive: true });
   }
 
   notify(message) {
-    this.getBoundingRect.clear();
-    this.getStyle.clear();
+    //this.getBoundingRect.clear();
+    //this.getStyle.clear();
   }
+
 
   setPositionFromAbsolutePoint(point) {
 
@@ -89,15 +110,11 @@ class ReactEntityComputer extends DisplayEntityComputer {
     this.entity.setStyle(props);
   }
 
-  _clearCache() {
-    this._memos = {};
-  }
-
   toJSON() {
     return null;
   }
 
-  getBoundingRect(zoomProperties = false) {
+  getBoundingRect(zoomProperties) {
 
     var refs = this.displayObject.refs;
 
@@ -141,7 +158,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
     });
   }
 
-  getStyle(zoomProperties = false) {
+  getStyle(zoomProperties) {
 
     var refs = this.displayObject.refs;
 

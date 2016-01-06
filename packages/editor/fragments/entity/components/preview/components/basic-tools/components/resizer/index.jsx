@@ -74,6 +74,7 @@ class ResizerComponent extends React.Component {
   updatePoint(point) {
     var selection = this.props.selection;
 
+    selection.preview.getStyle.clear();
     var style = selection.preview.getStyle(true);
 
     var props = {
@@ -105,8 +106,8 @@ class ResizerComponent extends React.Component {
       // todo
     }
 
-    this._isMoving();
-    this._isResizing();
+    //this._isMoving();
+    //this._isResizing();
 
     selection.preview.setBounds(props);
   }

@@ -22,7 +22,7 @@ export function create({ app }) {
     });
 
     var entities = message.data.items.map(function(rawData) {
-      return deserializeEntity(rawData, { }, app.fragments);
+      return deserializeEntity(rawData, app.fragments);
     });
 
     var insertIndex;

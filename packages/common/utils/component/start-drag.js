@@ -26,7 +26,7 @@ export default function(startEvent, update, stop) {
   }
 
   document.addEventListener('mousemove', drag);
-  document.addEventListener('mouseup', cleanup)
+  document.addEventListener('mouseup', cleanup);
 
   return {
     dispose: cleanup

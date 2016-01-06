@@ -64,13 +64,13 @@ describe(__filename + '#', function() {
 
     //todo - make this into a util - mouseUtils.drag(element, { left: 100, top: 100 })
     element.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 100, clientY: 100 }));
-    document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: delta.x, clientY: delta.y }));
-    document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+    document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: delta.left, clientY: delta.left }));
+    document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, clientX: delta.left, clientY: delta.left }));
 
     await waitForAllPromises();
     var crect = targetEntity.preview.getStyle(true);
 
     // offset button size
-    expect(Math.round(crect.left + 53)).to.be(Math.round(prect.left));
+    expect(Math.round(crect.left + delta.left)).to.be(Math.round(prect.left));
   });
 });
