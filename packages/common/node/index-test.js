@@ -1,5 +1,6 @@
 import Node from './index';
 import sift from 'sift';
+import expect from 'expect.js';
 import { CallbackNotifier } from 'common/notifiers';
 
 describe(__filename + '#', function() {
@@ -102,5 +103,18 @@ describe(__filename + '#', function() {
     expect(change.target).to.be(c);
     expect(change.property).to.be('style');
     expect(change.newValue.backgroundColor).to.be(0x000);
+  });
+
+  it('cannot add the same child twice', function() {
+    var err;
+    try {
+      var p = Node.create({name: 'div '});
+      var c = Node.create();
+      p.children.push(c);
+      p.children.push(c);
+    } catch(e) {
+      err = e;
+    }
+    expect(err.message).to.be('attempting to add a child node twice');
   });
 });

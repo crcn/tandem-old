@@ -89,6 +89,7 @@ class Node extends ObservableObject {
   }
 
   _sync(added = [], removed = []) {
+
     for (var child of added) {
 
       if (child.parent && child.parent !== this) {

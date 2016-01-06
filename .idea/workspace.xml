@@ -3,9 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="1645e756-34d6-4ca1-a882-ecc687184605" name="Default" comment="various linting, more jsdocs&#10;">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/common/node/collection.js" afterPath="$PROJECT_DIR$/packages/common/node/collection.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/common/node/index-test.js" afterPath="$PROJECT_DIR$/packages/common/node/index-test.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/common/node/index.js" afterPath="$PROJECT_DIR$/packages/common/node/index.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.jsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.jsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.jsx" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.jsx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.scss" afterPath="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.scss" />
     </list>
     <ignored path="interface-builder.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,61 +31,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="index.jsx" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/components/basic-tools/components/resizer/index.jsx">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.9259257">
-              <caret line="121" column="4" selection-start-line="121" selection-start-column="2" selection-end-line="121" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="path.jsx" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/components/basic-tools/components/resizer/path.jsx">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.jsx" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/index.jsx">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="layer.jsx" pinned="false" current-in-tab="false">
+      <file leaf-file-name="layer.jsx" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.jsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.444445">
-              <caret line="153" column="6" selection-start-line="153" selection-start-column="6" selection-end-line="153" selection-end-column="6" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="element.jsx" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.jsx">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="121" column="40" selection-start-line="121" selection-start-column="40" selection-end-line="121" selection-end-column="40" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="text.jsx" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.jsx">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5982906">
-              <caret line="36" column="13" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
+            <state vertical-scroll-proportion="0.60150373">
+              <caret line="53" column="17" selection-start-line="53" selection-start-column="17" selection-end-line="53" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -93,14 +45,24 @@
         <entry file="file://$PROJECT_DIR$/packages/common/node/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="95" column="7" selection-start-line="95" selection-start-column="7" selection-end-line="95" selection-end-column="7" />
+              <caret line="74" column="5" selection-start-line="74" selection-start-column="5" selection-end-line="74" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index-test.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/common/node/index-test.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/common/entities/index.js">
+        <entry file="file://$PROJECT_DIR$/packages/common/collection/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -109,8 +71,48 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="element.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/entities/element.js">
+      <file leaf-file-name="index-test.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/common/collection/index-test.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="observable.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/common/collection/observable.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/common/class/mixins/change-notifier/index.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="56" column="52" selection-start-line="56" selection-start-column="52" selection-end-line="56" selection-end-column="52" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="collection.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/common/node/collection.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="12" column="45" selection-start-line="12" selection-start-column="45" selection-end-line="12" selection-end-column="45" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -122,8 +124,8 @@
       <file leaf-file-name="layer.scss" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.scss">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.117647">
-              <caret line="58" column="16" selection-start-line="58" selection-start-column="16" selection-end-line="58" selection-end-column="16" />
+            <state vertical-scroll-proportion="-2.6470587">
+              <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -144,8 +146,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/facades/preview.js" />
-        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/panes/styles/style-pane/index.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/panes/styles/index.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/components/basic-tools/components/resizer/resizer-test.js" />
         <option value="$PROJECT_DIR$/gulpfile.js" />
@@ -176,10 +176,7 @@
         <option value="$PROJECT_DIR$/test/html/entity-selection-test.js" />
         <option value="$PROJECT_DIR$/packages/common/entities/display/index.js" />
         <option value="$PROJECT_DIR$/packages/common/components/mixins/invalidate-prop-changes.js" />
-        <option value="$PROJECT_DIR$/packages/common/class/mixins/change-notifier/index.js" />
         <option value="$PROJECT_DIR$/public/index.html" />
-        <option value="$PROJECT_DIR$/packages/common/node/index.js" />
-        <option value="$PROJECT_DIR$/packages/common/node/index-test.js" />
         <option value="$PROJECT_DIR$/test/html/entity-preview-test.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/entity-preview/entity.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/components/basic-tools/components/resizer/index.jsx" />
@@ -189,12 +186,17 @@
         <option value="$PROJECT_DIR$/packages/common/utils/component/start-drag.js" />
         <option value="$PROJECT_DIR$/test/resizer/basic-test.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/components/basic-tools/components/resizer/path.jsx" />
-        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.scss" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/clipboard/handle-paste.js" />
         <option value="$PROJECT_DIR$/packages/common/entities/base.js" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.jsx" />
-        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.jsx" />
         <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.jsx" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.scss" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.scss" />
+        <option value="$PROJECT_DIR$/packages/common/class/mixins/change-notifier/index.js" />
+        <option value="$PROJECT_DIR$/packages/common/node/index.js" />
+        <option value="$PROJECT_DIR$/packages/common/node/collection.js" />
+        <option value="$PROJECT_DIR$/packages/common/node/index-test.js" />
+        <option value="$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.jsx" />
       </list>
     </option>
   </component>
@@ -918,6 +920,28 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="collection" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="interface-builder" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="interface-builder" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="packages" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="common" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="class" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -1130,34 +1154,34 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="test - 2016.01.05 at 17h 31m 43s.xml">
+    <history-entry file="test - 2016.01.05 at 20h 58m 02s.xml">
       <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
     </history-entry>
-    <history-entry file="test - 2016.01.05 at 17h 43m 32s.xml">
+    <history-entry file="test - 2016.01.05 at 20h 58m 18s.xml">
       <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
     </history-entry>
-    <history-entry file="test - 2016.01.05 at 17h 43m 52s.xml">
+    <history-entry file="test - 2016.01.05 at 20h 58m 25s.xml">
       <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
     </history-entry>
-    <history-entry file="test - 2016.01.05 at 17h 44m 10s.xml">
+    <history-entry file="test - 2016.01.05 at 20h 58m 54s.xml">
       <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
     </history-entry>
-    <history-entry file="test - 2016.01.05 at 17h 44m 42s.xml">
+    <history-entry file="test - 2016.01.05 at 20h 59m 01s.xml">
       <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
     </history-entry>
-    <history-entry file="test - 2016.01.05 at 17h 45m 15s.xml">
+    <history-entry file="test - 2016.01.05 at 20h 59m 11s.xml">
       <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
     </history-entry>
-    <history-entry file="test - 2016.01.05 at 17h 46m 25s.xml">
+    <history-entry file="test - 2016.01.05 at 21h 00m 07s.xml">
       <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
     </history-entry>
-    <history-entry file="test - 2016.01.05 at 17h 46m 58s.xml">
+    <history-entry file="test - 2016.01.05 at 21h 00m 16s.xml">
       <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
     </history-entry>
-    <history-entry file="test - 2016.01.05 at 17h 47m 47s.xml">
+    <history-entry file="test - 2016.01.05 at 21h 00m 22s.xml">
       <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
     </history-entry>
-    <history-entry file="test - 2016.01.05 at 18h 15m 35s.xml">
+    <history-entry file="test - 2016.01.05 at 21h 00m 37s.xml">
       <configuration name="test" configurationId="JavaScriptTestRunnerKarma" />
     </history-entry>
   </component>
@@ -1177,13 +1201,13 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24150944" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
-      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2374798" sideWeight="0.14520548" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2374798" sideWeight="0.15198238" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32739726" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3780822" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" x="10" y="193" width="1259" height="413" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3780822" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" x="10" y="193" width="1259" height="413" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32956383" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18356164" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Gulp" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23351866" sideWeight="0.24033149" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2374798" sideWeight="0.8547945" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2374798" sideWeight="0.84801763" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2494043" sideWeight="0.4928717" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23351866" sideWeight="0.51527494" order="2" side_tool="true" content_ui="tabs" />
@@ -1229,73 +1253,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/test/app/dispose-test.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="18" selection-start-line="21" selection-start-column="18" selection-end-line="22" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/helpers/utils/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1" column="11" selection-start-line="1" selection-start-column="11" selection-end-line="1" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/docs/immediate-todos.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-18.034483">
-          <caret line="84" column="0" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/coverage/Chrome 47.0.2526 (Mac OS X 10.11.2)/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/html/components/element-layer-label-test.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/components/basic-tools/components/text/index.jsx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/preview/basic-test.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/html/components/text-layer-label-test.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/babylon/lib/plugins/flow.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1408,14 +1365,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/common/class/mixins/change-notifier/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/packages/common/entities/display/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1463,14 +1412,6 @@
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/packages/common/node/index-test.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-17.777779">
-          <caret line="99" column="35" selection-start-line="99" selection-start-column="35" selection-end-line="99" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1570,22 +1511,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/common/node/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="95" column="7" selection-start-line="95" selection-start-column="7" selection-end-line="95" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/index.jsx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/preview/components/basic-tools/components/resizer/path.jsx">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1602,15 +1527,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.scss">
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/entities/element.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.117647">
-          <caret line="58" column="16" selection-start-line="58" selection-start-column="16" selection-end-line="58" selection-end-column="16" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/entities/element.js">
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/index.jsx">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -1626,18 +1551,114 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.jsx">
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/element.scss">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.444445">
-          <caret line="153" column="6" selection-start-line="153" selection-start-column="6" selection-end-line="153" selection-end-column="6" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/layer-input.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.625">
+          <caret line="9" column="3" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="3" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/html/components/layer-pane-labels/text.jsx">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5982906">
-          <caret line="36" column="13" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="3" selection-start-line="21" selection-start-column="3" selection-end-line="21" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.6470587">
+          <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/common/collection/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/common/collection/index-test.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/common/collection/observable.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/common/class/mixins/change-notifier/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="56" column="52" selection-start-line="56" selection-start-column="52" selection-end-line="56" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/common/node/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="74" column="5" selection-start-line="74" selection-start-column="5" selection-end-line="74" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/common/node/collection.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="12" column="45" selection-start-line="12" selection-start-column="45" selection-end-line="12" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/common/node/index-test.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/editor/fragments/entity/components/layers-pane/layers/layer.jsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.60150373">
+          <caret line="53" column="17" selection-start-line="53" selection-start-column="17" selection-end-line="53" selection-end-column="17" />
           <folding />
         </state>
       </provider>

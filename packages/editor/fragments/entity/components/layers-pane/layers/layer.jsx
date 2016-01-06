@@ -31,12 +31,12 @@ class DropLayerTargetComponent extends React.Component {
   }
 }
 
+
 DropLayerTargetComponent = DropTarget('element', {
   canDrop() {
     return true;
   },
   drop({ entity, app, offset }, monitor, component) {
-
     app.notifier.notify(SetFocusMessage.create([], false));
 
     var data = monitor.getItem();
@@ -46,8 +46,9 @@ DropLayerTargetComponent = DropTarget('element', {
       return entity.id === data.props.id;
     });
 
-    // remove it
-    if (item) item.parent.children.remove(item);
+    if (entity === item) return;
+
+    item.parent.children.remove(item);
 
     // then add it
     entity.parent.children.splice(
@@ -55,7 +56,6 @@ DropLayerTargetComponent = DropTarget('element', {
       0,
       item
     );
-
   },
   hover(props, monitor, component) {
     //console.log('hover');
@@ -111,7 +111,7 @@ class LayerLabelComponent extends React.Component {
   }
 
   render() {
-    const { connectDragSource, isDragging } = this.props;
+    const { connectDragSource, isDragging, connectDropTarget, isOver, canDrop } = this.props;
 
     var entity     = this.props.entity;
     var expanded   = entity.layerExpanded;
@@ -138,6 +138,7 @@ class LayerLabelComponent extends React.Component {
 
     var headerClassName = cx({
       'm-layers-pane-component-layer--header': true,
+      'drag-over': isOver && canDrop,
       ['m-layer-type-' + entity.type]: true,
       'selected': this.props.app.selection && this.props.app.selection.includes(entity)
     });
@@ -155,8 +156,8 @@ class LayerLabelComponent extends React.Component {
 
     return <div style={{paddingLeft: this.props.paddingLeft}} tabIndex="0" onClick={this.onClick.bind(this)} className={headerClassName}>
       <DropLayerTargetComponent {...this.props} offset={0} />
-      <i onClick={this.toggleExpand.bind(this, !expanded)} className={expandButtonClassName} style={expandButtonStyle} />
-      { labelSection }
+      {connectDropTarget(<span><i onClick={this.toggleExpand.bind(this, !expanded)} className={expandButtonClassName} style={expandButtonStyle} />
+      { labelSection }</span>)}
       <DropLayerTargetComponent {...this.props} bottom={true} offset={1} />
     </div>;
   }
@@ -182,6 +183,32 @@ function collect(connect, monitor) {
 
 LayerLabelComponent = DragSource('element', layerSource, collect)(LayerLabelComponent);
 
+
+
+LayerLabelComponent = DropTarget('element', {
+  canDrop({ entity }, monitor) {
+    return entity.id !== monitor.getItem().props.id;
+  },
+  drop({ entity, app, offset }, monitor, component) {
+    var data = monitor.getItem();
+    var item = app.rootEntity.find(function(entity) {
+      return entity.id === data.props.id;
+    });
+    entity.children.push(item);
+  },
+  hover(props, monitor, component) {
+    //console.log('hover');
+  }
+}, function(connect, monitor) {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver(),
+    isOverCurrent: monitor.isOver({ shallow: true }),
+    canDrop: monitor.canDrop(),
+    itemType: monitor.getItemType()
+  };
+})(LayerLabelComponent);
+
 class LayerComponent extends React.Component {
 
   render() {
@@ -194,12 +221,11 @@ class LayerComponent extends React.Component {
 
     return <div className='m-layers-pane-component-layer'>
 
-      <LayerLabelComponent  paddingLeft={paddingLeft} {...this.props} />
+      <LayerLabelComponent paddingLeft={paddingLeft} {...this.props} />
 
       { expanded ? entity.children.map((child, i) => {
         return <LayerComponent {...this.props} entity={child} key={i} depth={depth + 1}  />
       }) : void 0 }
-
 
     </div>;
   }
