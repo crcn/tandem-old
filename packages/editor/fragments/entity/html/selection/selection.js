@@ -67,8 +67,6 @@ class Preview {
 
   setBoundingRect(bounds) {
 
-    console.log(bounds);
-
     var cstyle = this.getBoundingRect(false);
 
     // otherwise reposition the items

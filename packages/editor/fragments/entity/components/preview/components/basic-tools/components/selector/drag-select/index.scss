@@ -1,0 +1,13 @@
+@import 'editor/scss/variables';
+
+.m-drag-select {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  &--box {
+    position: absolute;
+    border: 1px solid $color-blue-4;
+    background: rgba($color-blue-4, 0.5);
+  }
+}

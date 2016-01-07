@@ -7,12 +7,12 @@ import {
 import TextTool from './controllers/text';
 import PointerTool from './controllers/pointer';
 import TextEditTool from './controllers/text-edit';
-import { SET_TOOL, GROUP_SELECTION } from 'editor/message-types';
 import { INITIALIZE } from 'base/message-types';
 import { TypeNotifier } from 'common/notifiers';
+import { SET_TOOL, GROUP_SELECTION } from 'editor/message-types';
 
 import TextToolComponent from './components/text';
-import ResizerToolComponent from './components/resizer';
+import SelectorToolComponent from './components/selector';
 
 export function create({ app, preview }) {
 
@@ -71,12 +71,12 @@ export function create({ app, preview }) {
       entityComponentType: 'text'
     }),
     ComponentFragment.create({
-      id             : 'resizerToolComponent',
+      id             : 'selectorToolComponent',
       componentType  : 'tool',
-      componentClass : ResizerToolComponent,
+      componentClass : SelectorToolComponent,
       toolType       : pointerTool.type,
       entityType     : 'component'
-    }),
+    })
   ]
 
 }
