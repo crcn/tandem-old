@@ -106,6 +106,7 @@ class ResizerComponent extends React.Component {
       // todo
     }
 
+
     //this._isMoving();
     //this._isResizing();
 

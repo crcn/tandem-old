@@ -1,7 +1,7 @@
 // TODO - cache ALL computed information here until entity, or
 // parent entity changes.
 
-//import memoize from 'memoizee';
+import memoize from 'memoizee';
 import BoundingRect from 'common/geom/bounding-rect';
 import { DisplayEntityComputer } from 'common/entities';
 import { translateStyleToIntegers } from 'common/utils/html/css/translate-style';
@@ -42,6 +42,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
     //this.entity.notifier.unshift(this);
     //this.getBoundingRect = memoize(this.getBoundingRect.bind(this), { primitive: true });
     //this.getStyle = memoize(this.getStyle.bind(this), { primitive: true });
+    //this.getComputedStyle = memoize(this.getComputedStyle.bind(this));
   }
 
   notify(message) {
@@ -110,6 +111,12 @@ class ReactEntityComputer extends DisplayEntityComputer {
   toJSON() {
     return null;
   }
+
+  /**
+   * returns the computed property of the element along with all inherited styles.
+   * TODO: This should be memoized -- very expensive operation
+   * @returns {*}
+   */
 
   getComputedStyle() {
     var cs   = window.getComputedStyle(this.displayObject.refs.element);
@@ -190,6 +197,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var cStyle = this.getComputedStyle();
 
 
+
     // zooming happens a bit further down
     var rect = this.getBoundingRect(false);
     var w = rect.right  - rect.left;
@@ -197,12 +205,14 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
     var style = {
       ...cStyle,
+      left      : left,
+      top       : top,
       width     : w,
       height    : h,
 
       // for rect consistency
-      right     : cStyle.left + w,
-      bottom    : cStyle.top  + h
+      right     : left + w,
+      bottom    : top  + h
     };
 
     // this normalizes the properties so that the calculated values

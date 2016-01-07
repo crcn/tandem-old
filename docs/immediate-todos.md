@@ -1,3 +1,8 @@
+- obvious implementations
+  - [ ] API backend fragment & persisting projects
+  - [ ] in-app DB replication 
+
+- [ ] saving projects (node-based for now with API) **
 - [ ] component library - img, p, 
 - [ ] fix click through bug with resizer
 
@@ -31,7 +36,7 @@
 - [ ] left bar
   - css declarations (see what they're affecting)
 
-- [ ] mirror mode8
+- [ ] mirror mode
   - [ ] show display resolution above canvas + label
   - [ ] show zoom above canvas
   - [ ] highlight canvas in focus

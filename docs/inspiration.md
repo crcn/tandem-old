@@ -17,6 +17,8 @@
 - http://arstechnica.com/information-technology/2012/07/ninja-power-open-source-html5-toolset-hopes-to-unleash-the-web/
 - http://froont.com/
 - http://tridiv.com/
+- http://tympanus.net/codrops/
+- https://www.youtube.com/watch?v=U9xfYbKxosI
 
 
 #### other layout systems

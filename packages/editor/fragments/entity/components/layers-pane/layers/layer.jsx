@@ -25,6 +25,7 @@ class DropLayerTargetComponent extends React.Component {
       display: isOver ? 'block' : 'none'
     };
 
+
     return connectDropTarget(<div  style={dropStyle} className={className}>
       <div style={lineStyle} className='m-layers-pane-component-layer--drop-target-line'></div>
     </div>);

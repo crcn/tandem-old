@@ -18,30 +18,4 @@ describe(__filename + '#', function() {
   afterEach(function() {
     app.dispose();
   });
-
-  it('when an element position is absolute and top/left props are undefined, maintains correct position', async function() {
-
-    app.setProperties({
-      rootEntity: createElementEntity(app, {
-        tagName: 'div'
-      }, [
-        {
-          tagName: 'div',
-          position: 'relative',
-          width:  '100px',
-          height: '100px'
-        },
-        {
-          tagName: 'div',
-          position: 'absolute',
-          width:  '100px',
-          height: '100px'
-        },
-      ])
-    });
-
-    await waitForAllPromises();
-
-
-  });
 });
