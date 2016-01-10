@@ -19,16 +19,7 @@ class Preview extends ObservableObject {
   }
   setZoom(zoom) {
     zoom = Math.max(MIN_ZOOM_LEVEL, Math.min(zoom, MAX_ZOOM_LEVEL));
-
-    this.setProperties({
-      zoom: zoom
-    });
-
-    this.notifier.notify({
-      type: 'previewZoom',
-      zoom: zoom
-    });
-
+    this.setProperties({ zoom: zoom });
     return zoom > MAX_ZOOM_LEVEL && zoom < MIN_ZOOM_LEVEL;
   }
   notify(message) {

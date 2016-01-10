@@ -31,7 +31,7 @@ describe(__filename + '#', function() {
 
       // get the bounds of the entity -- ensure it's to scale (true)
     var bounds = preview.getBoundingRect(true);
-    var resizer = app.config.element.querySelector('.m-resizer-component--selection');
+    var resizer = app.config.element.querySelector('.m-selector-component--selection');
     var targetElement = document.getElementById(targetEntity.id);
     await waitForAllPromises();
 
@@ -42,7 +42,7 @@ describe(__filename + '#', function() {
     expect(resizerBounds.left + 4).to.be(targetElementBounds.left);
     expect(resizerBounds.right - 4).to.be(targetElementBounds.right);
     expect(resizerBounds.top + 4).to.be(targetElementBounds.top);
-    expect(resizerBounds.bottom - 10).to.be(targetElementBounds.bottom);
+    expect(resizerBounds.bottom - 9).to.be(targetElementBounds.bottom);
   });
 
   it('can scale 1 item using the WEST point', async function() {
@@ -53,7 +53,6 @@ describe(__filename + '#', function() {
     await waitForAllPromises();
 
     var element = app.config.element.querySelector('.point-circle-w');
-
 
     var delta = {
       left: 50,

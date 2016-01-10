@@ -11,7 +11,7 @@ gulp.task('test', function(complete) {
   new karma.Server({
     configFile: __dirname + '/karma.config.js',
     singleRun: !args.watch,
-    reporters: [args.reporter || 'dots'],
+    reporters: [args.reporter || 'spec'],
     client: {
       mocha: {
         grep: args.only || args.grep
