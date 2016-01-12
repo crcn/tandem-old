@@ -22,6 +22,7 @@ import ObservableCollection from 'common/collection/observable';
 import { CallbackNotifier, TypeNotifier } from 'common/notifiers';
 
 import { Entity, deserialize } from 'common/entities';
+import { INITIALIZE } from 'base/message-types';
 import { SET_ROOT_ENTITY, SetFocusMessage } from 'editor/message-types';
 
 import {
@@ -41,7 +42,6 @@ export default ApplicationFragment.create({
 
 function create({ app }) {
 
-
   var history = ObservableCollection.create({
     notifier: app.notifier
   });
@@ -49,7 +49,8 @@ function create({ app }) {
   history.move = move;
   history.shift = shift;
 
-  app.notifier.push(TypeNotifier.create(SET_ROOT_ENTITY, (message) => {
+  // TODO - need to compare history here
+  app.notifier.push(TypeNotifier.create(INITIALIZE, (message) => {
     history.position = 0;
     saveNow();
   }));
@@ -67,7 +68,6 @@ function create({ app }) {
     // a bug - might cause race conditions in the future.
     // MAYBE use a getter / setter instead.
     history.position = history.length;
-
   }
 
   // TODO - diff this stuff to save on memory
@@ -82,19 +82,14 @@ function create({ app }) {
     var currentFocusId = app.selection ? app.selection.id : void 0;
 
     var rootEntity = deserialize(history[history.position], app.fragments, {
-      rootProperties: {
+      rootProps: {
         notifier: app.notifier
       }
     });
 
-    app.setProperties({
-
-      // FIXME:
-      // need this here, otherwise the DOM might re-render
-      // immediately, and components trying to access a focused entity
-      // that does not exist will barf all over the place. This is a leak.
-      focus      : void 0,
-      rootEntity : rootEntity
+    app.notifier.notify({
+      type         : SET_ROOT_ENTITY,
+      entity       : rootEntity
     });
 
     app.notifier.notify(SetFocusMessage.create(currentFocusId ? rootEntity.find(sift({ id: currentFocusId })) : void 0));
