@@ -43,7 +43,9 @@ class SelectableComponent extends React.Component {
 
 class SelectablesComponent extends React.Component {
   render() {
-    var currentLayerFocus = this.props.app.rootEntity;
+    var preview = this.props.app.preview;
+    var currentLayerFocus = preview.layerFocusEntity;
+    if (!currentLayerFocus) return null;
 
     return <div>
       {

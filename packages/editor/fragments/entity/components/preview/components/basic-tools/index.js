@@ -9,21 +9,25 @@ import PointerTool from './controllers/pointer';
 import TextEditTool from './controllers/text-edit';
 import { INITIALIZE } from 'base/message-types';
 import { TypeNotifier } from 'common/notifiers';
-import { SET_TOOL, GROUP_SELECTION } from 'editor/message-types';
+import { SET_TOOL, GROUP_SELECTION, SET_ROOT_ENTITY } from 'editor/message-types';
 
 import TextToolComponent from './components/text';
+import DragSelectComponent from './components/drag-select';
 import SelectablesComponent from './components/selectables';
 import SelectorToolComponent from './components/selector';
-import DragSelectComponent from './components/drag-select';
 
 export function create({ app, preview }) {
 
-  var pointerTool  = PointerTool.create({ app, notifier: app.notifier });
-  var editTextTool = TextEditTool.create({ app, notifier: app.notifier, pointerTool });
+  var pointerTool  = PointerTool.create({ app, preview, notifier: app.notifier });
+  var editTextTool = TextEditTool.create({ app, preview, notifier: app.notifier, pointerTool });
   var textTool     = TextTool.create({ app, notifier: app.notifier, editTextTool });
 
   app.notifier.push(TypeNotifier.create(INITIALIZE, function() {
-    preview.currentTool = pointerTool;
+    preview.setTool(pointerTool);
+  }));
+
+  app.notifier.push(TypeNotifier.create(SET_ROOT_ENTITY, function(message) {
+    preview.setLayerFocus(message.entity);
   }));
 
   return [

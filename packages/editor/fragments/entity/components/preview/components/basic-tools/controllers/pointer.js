@@ -32,6 +32,9 @@ class PointerTool extends ObservableObject {
 
   notifyEntityPreviewDoubleClick(message) {
 
+    // needs to work without side effects
+    // this.preview.setLayerFocus(message.selection[0]);
+
     var fragment = this.app.fragments.queryOne({
       type       : 'previewTool',
       toolType   : 'edit',
