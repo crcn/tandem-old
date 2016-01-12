@@ -138,8 +138,13 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var refs = this.displayObject.refs;
 
     if (!refs.element) {
-      throw new Error('trying to calculate display information on entity that is not mounted');
-      return { };
+      console.error('trying to calculate display information on entity that is not mounted');
+      return {
+        left   : 0,
+        top    : 0,
+        width  : 0,
+        height : 0
+      };
     }
 
     var entity = this.entity;
