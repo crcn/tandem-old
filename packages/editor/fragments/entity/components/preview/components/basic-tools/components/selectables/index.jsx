@@ -45,6 +45,7 @@ class SelectablesComponent extends React.Component {
   render() {
     var preview = this.props.app.preview;
     var currentLayerFocus = preview.layerFocusEntity;
+    var selection = this.props.selection || [];
     if (!currentLayerFocus) return null;
 
     var selectables    = [];
@@ -57,6 +58,7 @@ class SelectablesComponent extends React.Component {
       parent.children.forEach((entity) => {
 
         if (ignoreEntityIds[entity.id]) return;
+        if (!!~selection.indexOf(entity)) return;
 
         selectables.push(
           <SelectableComponent {...this.props} entity={entity} key={entity.id} />

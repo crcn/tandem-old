@@ -27,7 +27,6 @@ export function create({ app, preview }) {
   }));
 
   app.notifier.push(TypeNotifier.create(SET_ROOT_ENTITY, function(message) {
-    console.log('layer focus');
     preview.setLayerFocus(message.entity);
   }));
 
