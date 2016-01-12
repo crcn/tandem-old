@@ -36,7 +36,7 @@ export async function waitForAllPromises(app) {
 
   // very dirty, but at least abstracted from tests so things don't get racey.
   // ideally
-  return await timeout(100);
+  return await timeout(50);
 }
 
 

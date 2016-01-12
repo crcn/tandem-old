@@ -69,11 +69,9 @@ class ElementLayerLabelComponent extends React.Component {
     var entity     = this.props.entity;
     var editSource = entity.editLayerSource;
     var connectDragSource = this.props.connectDragSource;
-    //console.log(this.props.entity.attributes.class);
-    //console.log(this.lastUpdatedAt !== props.entity.lastUpdatedAt, this.state.lastUpdatedAt !== state.lastUpdatedAt)
 
     var buffer = [
-      <span className='m-element-layer-label--tag'>&lt;</span>
+      <span className='m-element-layer-label--tag' key='lt'>&lt;</span>
     ];
 
     if (this.state.editTagName) {
@@ -81,7 +79,7 @@ class ElementLayerLabelComponent extends React.Component {
     } else {
       buffer.push(this.state.editTagName ?
         this.renderTagNameInput() :
-        <span className='m-element-layer-label--tag-name'>{entity.tagName}</span>
+        <span className='m-element-layer-label--tag-name' key='tagName' key='tname'>{entity.tagName}</span>
       );
 
       var attrs = [];
@@ -103,16 +101,17 @@ class ElementLayerLabelComponent extends React.Component {
       });
 
       attrs.forEach(function (attr) {
+        var k = attr.key;
         buffer.push(
-          <span className='m-element-layer-label--key'>&nbsp;{attr.key}</span>,
-          <span className='m-element-layer-label--operator'>=</span>,
-          <span className='m-element-layer-label--string'>"{attr.value}"</span>
+          <span className='m-element-layer-label--key' key={k + 1}>&nbsp;{k}</span>,
+          <span className='m-element-layer-label--operator' key={k + 2}>=</span>,
+          <span className='m-element-layer-label--string' key={ k + 3}>"{attr.value}"</span>
         )
       });
     }
 
     buffer.push(
-      <span className='m-element-layer-label--tag'>
+      <span className='m-element-layer-label--tag' key='et'>
         { entity.children.length === 0 ? ' /' : void 0 }
         &gt;
       </span>

@@ -89,10 +89,8 @@ function create({ app }) {
       }
     });
 
-    requestAnimationFrame(() => {
-      app.setProperties({
-        selection: currentSelection
-      })
+    app.setProperties({
+      selection: currentSelection
     });
 
     // one notifier here - primarily setup to purge memos
