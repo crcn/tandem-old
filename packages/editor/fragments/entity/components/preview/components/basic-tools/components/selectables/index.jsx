@@ -47,13 +47,27 @@ class SelectablesComponent extends React.Component {
     var currentLayerFocus = preview.layerFocusEntity;
     if (!currentLayerFocus) return null;
 
-    return <div>
-      {
-        currentLayerFocus.children.map((entity) => {
-          return <SelectableComponent {...this.props} entity={entity} key={entity.id} />
-        })
-      }
-    </div>;
+    var selectables    = [];
+    var ignoreEntityIds = {};
+
+    var parent = currentLayerFocus;
+
+    while(parent) {
+
+      parent.children.forEach((entity) => {
+
+        if (ignoreEntityIds[entity.id]) return;
+
+        selectables.push(
+          <SelectableComponent {...this.props} entity={entity} key={entity.id} />
+        );
+      });
+
+      ignoreEntityIds[parent.id] = 1;
+      parent = parent.parent;
+    }
+
+    return <div> { selectables } </div>;
   }
 }
 
