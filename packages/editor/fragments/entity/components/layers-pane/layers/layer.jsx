@@ -2,6 +2,8 @@ import './layer.scss';
 
 import cx from 'classnames';
 import React from 'react';
+import flatten from 'lodash/array/flatten';
+import intersection from 'lodash/array/intersection';
 import { SetFocusMessage, ToggleFocusMessage } from 'editor/message-types';
 import { DragSource, DropTarget } from 'react-dnd';
 import { deserialize as deserializeEntity } from 'common/entities';
@@ -84,7 +86,7 @@ class LayerLabelComponent extends React.Component {
   onClick(event) {
 
     var entity = this.props.entity;
-    var selection = this.props.app.selection;
+    var selection = this.props.app.selection || [];
     var select  = [];
     var multiSelect = false;
 
@@ -107,12 +109,43 @@ class LayerLabelComponent extends React.Component {
       var index1 = allEntities.indexOf(entity);
       var index2 = allEntities.indexOf(currentlySelectedEntity);
       select = allEntities.slice(Math.min(index1, index2), Math.max(index1, index2) + 1);
+
+      // parents and children CANNOT be selected. Remove parents from the selection list
+      select.concat().forEach(function(entity) {
+        var i;
+        if (entity.parent && ~( i = select.indexOf(entity.parent))) {
+          select.splice(i, 1);
+        }
+      });
     } else {
+
       select = [entity];
 
       // selecting individual components
       multiSelect = event.metaKey;
+
+      if (multiSelect) {
+
+        var allSelectedChildren = flatten(selection.map(function(entity) {
+          return entity.flatten();
+        }));
+
+        var entityChildren = flatten(entity.children.map(function(entity) {
+          return entity.flatten();
+        }))
+
+        // selecting a child
+        if (~allSelectedChildren.indexOf(entity) && !~selection.indexOf(entity)) {
+          multiSelect = false;
+        } else if (intersection(entityChildren, selection).length) {
+
+          // do not allow selection
+          return;
+        }
+      }
     }
+
+
 
 
     this.props.app.notifier.notify(ToggleFocusMessage.create(select, multiSelect));
