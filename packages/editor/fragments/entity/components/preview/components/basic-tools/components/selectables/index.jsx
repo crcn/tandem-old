@@ -1,18 +1,17 @@
-import React from 'react';
-import { ENTITY_PREVIEW_CLICK, SetFocusMessage } from 'editor/message-types';
+import './index.scss';
 
-// import {
-//   ENTITY_PREVIEW_CLICK,
-//   PREVIEW_STAGE_CLICK,
-//   ENTITY_PREVIEW_DOUBLE_CLICK,
-//   GROUP_SELECTION,
-//   SetFocusMessage,
-//   SetToolMessage
-// } from 'editor/message-types';
+import cx from 'classnames';
+import React from 'react';
+import { SetFocusMessage } from 'editor/message-types';
 
 class SelectableComponent extends React.Component {
 
-  focus(event) {
+  constructor() {
+    super();
+    this.state = {};
+  }
+
+  onMouseDown(event) {
     this.props.app.notifier.notify(SetFocusMessage.create([this.props.entity], event.shiftKey));
     event.stopPropagation();
   }
@@ -23,16 +22,22 @@ class SelectableComponent extends React.Component {
     if (!entity.preview) return null;
     var bounds = entity.preview.getBoundingRect(true);
 
+    var classNames = cx({
+      'm-selectable' : true
+    });
+
     var style = {
       background : 'transparent',
       position   : 'absolute',
       width      : bounds.width,
       height     : bounds.height,
-      left       : bounds.left,
-      top        : bounds.top
+      left       : bounds.left + 1,
+      top        : bounds.top + 1
     };
 
-    return <div style={style} onMouseDown={this.focus.bind(this)} />;
+    return <div style={style}
+      className={classNames}
+      onMouseDown={this.onMouseDown.bind(this)} />;
   }
 }
 
