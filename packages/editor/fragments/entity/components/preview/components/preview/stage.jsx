@@ -3,11 +3,11 @@ import './stage.scss';
 import React from 'react';
 import ToolsLayerComponent from './tools';
 import RegisteredComponent from 'common/components/registered';
-import { PREVIEW_STAGE_CLICK } from 'editor/message-types';
+import { PREVIEW_STAGE_CLICK, PREVIEW_STAGE_MOUSE_DOWN } from 'editor/message-types';
 
 class StageComponent extends React.Component {
 
-  onClick(event) {
+  onMouseEvent(event) {
 
     var rect = this.refs.canvas.getBoundingClientRect();
 
@@ -17,9 +17,12 @@ class StageComponent extends React.Component {
     var x = (event.clientX - rect.left * this.props.app.preview.zoom) / this.props.app.preview.zoom;
     var y = (event.clientY - rect.top * this.props.app.preview.zoom) / this.props.app.preview.zoom;
 
-    this.props.app.preview.notify({
+    this.props.app.notifier.notify({
       ...event,
-      type: PREVIEW_STAGE_CLICK,
+      type: {
+        click: PREVIEW_STAGE_CLICK,
+        mousedown: PREVIEW_STAGE_MOUSE_DOWN
+      }[event.type],
       x: x,
       y: y
     });
@@ -79,15 +82,14 @@ class StageComponent extends React.Component {
 
     return <div ref='stage' className='m-preview-stage' style={previewStyle}>
       <div ref='inner' className='m-preview-stage--inner'>
-        <div ref='scroller' className='m-preview-stage--scroll' style={scrollStyle}>
+        <div ref='scroller' className='m-preview-stage--scroll' style={scrollStyle} onClick={this.onMouseEvent.bind(this)} onMouseDown={this.onMouseEvent.bind(this)}>
 
           <div className='m-preview-stage--center'>
             <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle}>
 
               <div id='preview-canvas'
                 className='m-preview-stage--element-layer'
-                role='preview stage'
-                onClick={this.onClick.bind(this)}>
+                role='preview stage'>
                 <span ref='drawLayer' className='m-preview-stage--draw-layer'>
                   <RegisteredComponent {...this.props} entity={entity} queryOne={{
                     componentType: entity.componentType

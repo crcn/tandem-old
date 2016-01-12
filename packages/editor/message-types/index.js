@@ -11,7 +11,7 @@ export const GROUP_SELECTION             = 'groupSelection';
 export const SET_ROOT_ENTITY             = 'setRootEntity';
 export const LOAD_ROOT_ENTITY            = 'loadRootEntity';
 export const PREVIEW_STAGE_CLICK         = 'previewStageClick';
-export const ENTITY_PREVIEW_CLICK        = 'entityPreviewClick';
+export const PREVIEW_STAGE_MOUSE_DOWN    = 'previewStageMouseDown';
 export const ENTITY_PREVIEW_DOUBLE_CLICK = 'entityPreviewDoubleClick';
 
 export class RootEntityMessage extends BaseMessage {

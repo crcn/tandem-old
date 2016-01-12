@@ -1,12 +1,27 @@
 import './index.scss';
 import React from 'react';
 import { startDrag } from 'common/utils/component';
+import { PREVIEW_STAGE_MOUSE_DOWN } from 'editor/message-types';
 
 class DragSelectComponent extends React.Component {
 
   constructor() {
     super();
     this.state = {};
+  }
+
+  componentDidMount() {
+    this.props.app.notifier.push(this);
+  }
+
+  notify(message) {
+    if (message.type === PREVIEW_STAGE_MOUSE_DOWN) {
+      this.startDrag(message);
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.app.notifier.remove(this);
   }
 
   startDrag(event) {
@@ -38,6 +53,10 @@ class DragSelectComponent extends React.Component {
 
   render() {
 
+    // if (this.props.app.selection.length) {
+    //   return null;
+    // }
+
     var style = {
       left   : this.state.left,
       top    : this.state.top,
@@ -48,7 +67,7 @@ class DragSelectComponent extends React.Component {
     var box = <div style={style} className='m-drag-select--box'>
     </div>;
 
-    return <div ref='container' className='m-drag-select' onMouseDown={this.startDrag.bind(this)}>
+    return <div ref='container' className='m-drag-select'>
       { this.state.dragging ? box : void 0 }
     </div>;
   }

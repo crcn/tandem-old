@@ -1,6 +1,5 @@
 import React from 'react';
 import EntityPreview from './entity-preview';
-import { ENTITY_PREVIEW_CLICK } from 'editor/message-types';
 
 class HTMLEntityComponent extends React.Component {
 
@@ -23,22 +22,6 @@ class HTMLEntityComponent extends React.Component {
     }
   }
 
-  focus(event) {
-    this.props.app.notifier.notify({
-      ...event,
-      type    : ENTITY_PREVIEW_CLICK,
-      preview : this._preview,
-      entity  : this.props.entity,
-      stopPropagation: function() {
-        event.stopPropagation();
-      }
-    });
-  }
-
-  onDoubleClick(event) {
-    console.log('double click');
-  }
-
   render() {
 
     this._invalidateCache = false;
@@ -51,7 +34,7 @@ class HTMLEntityComponent extends React.Component {
 
     var Type = entity.componentType === 'text' ? 'span' : entity.tagName;
 
-    return <Type ref='element' id={entity.id} onDoubleClick={this.onDoubleClick.bind(this)} onMouseUp={this.focus.bind(this)} {...entity.attributes}>
+    return <Type ref='element' id={entity.id} {...entity.attributes}>
       { children.length ? children : entity.value }
     </Type>;
   }

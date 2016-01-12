@@ -75,8 +75,7 @@ function create({ app }) {
     currentSelection = multiSelect && currentSelection && selection.constructor === currentSelection.constructor ? currentSelection : selection;
 
     // remove the item from the selection if it currently exists.
-    // This is basically a toggle feature
-
+    // This is a toggle feature.
     toArray(message.target).forEach(function(target) {
       if (currentSelection.includes(target)) {
 
@@ -89,14 +88,17 @@ function create({ app }) {
       }
     });
 
-    app.setProperties({
-      selection: currentSelection
+    // need to give time for the current selection
+    // to be displayed on screen (could be new)
+    requestAnimationFrame(() => {
+      app.setProperties({
+        selection: currentSelection
+      });
     });
 
     // one notifier here - primarily setup to purge memos
     app.notifier.push({
       notify: function(message) {
-
         if (app.selection.notify) {
           app.selection.notify(message);
         }

@@ -12,7 +12,9 @@ import { TypeNotifier } from 'common/notifiers';
 import { SET_TOOL, GROUP_SELECTION } from 'editor/message-types';
 
 import TextToolComponent from './components/text';
+import SelectablesComponent from './components/selectables';
 import SelectorToolComponent from './components/selector';
+import DragSelectComponent from './components/drag-select';
 
 export function create({ app, preview }) {
 
@@ -71,6 +73,22 @@ export function create({ app, preview }) {
       entityComponentType: 'text'
     }),
     ComponentFragment.create({
+      id             : 'dragSelectComponent',
+      componentType  : 'tool',
+      componentClass : DragSelectComponent,
+      matchesQuery(query) {
+        return query.toolType === pointerTool.type;
+      }
+    }),
+    ComponentFragment.create({
+      id             : 'selectablesComponent',
+      componentType  : 'tool',
+      componentClass : SelectablesComponent,
+      matchesQuery(query) {
+        return query.toolType === pointerTool.type;
+      }
+    }),
+    ComponentFragment.create({
       id             : 'selectorToolComponent',
       componentType  : 'tool',
       componentClass : SelectorToolComponent,
@@ -78,7 +96,6 @@ export function create({ app, preview }) {
       entityType     : 'component'
     })
   ]
-
 }
 
 function createRedirectNotifier(notifier, message) {

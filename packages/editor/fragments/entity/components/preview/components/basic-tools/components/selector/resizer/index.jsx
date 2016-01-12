@@ -1,9 +1,9 @@
 import React from 'react';
-import PathComponent from '../path';
-import { CallbackNotifier } from 'common/notifiers';
-import ObservableObject from 'common/object/observable';
 import { startDrag } from 'common/utils/component';
-
+import PathComponent from '../path';
+import ObservableObject from 'common/object/observable';
+import { CallbackNotifier } from 'common/notifiers';
+import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'editor/message-types';
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 2;
@@ -21,7 +21,6 @@ class ResizerComponent extends React.Component {
       selection : this.props.selection
     });
   }
-
 
   componentDidMount() {
     this.props.app.notifier.push(this);
@@ -108,14 +107,8 @@ class ResizerComponent extends React.Component {
   }
 
   startDragging(event) {
+    event.stopPropagation();
     var selection = this.props.selection;
-
-    //var guide = EntityGuide.create(
-    //  this.props.app.rootEntity.flatten().filter((entity) => {
-    //    return !~this.props.app.selection.indexOf(entity);
-    //  }),
-    //  SNAP_MARGIN / this.props.zoom
-    //);
 
     var style = selection.preview.getBoundingRect();
 
@@ -202,11 +195,20 @@ class ResizerComponent extends React.Component {
       return ret;
     });
 
-    return <div ref='selection' className='m-selector-component--selection' style={resizerStyle}
-                            onMouseDown={this.startDragging.bind(this)}
-                            onDoubleClick={this.onDoubleClick.bind(this)}>
-      <PathComponent showPoints={capabilities.resizable && !this.state.dragging} zoom={this.props.zoom} points={points}
-                     strokeWidth={strokeWidth} pointRadius={pointRadius}/>
+    return <div
+      ref='selection'
+      className='m-selector-component--selection'
+      style={resizerStyle}
+      onMouseDown={this.startDragging.bind(this)}
+      onDoubleClick={this.onDoubleClick.bind(this)}>
+
+      <PathComponent
+        showPoints={capabilities.resizable && !this.state.dragging}
+        zoom={this.props.zoom}
+        points={points}
+        strokeWidth={strokeWidth}
+        pointRadius={pointRadius} />
+
     </div>;
 
   }

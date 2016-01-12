@@ -8,8 +8,6 @@ import { divideStyle } from 'common/utils/html';
 import ResizerComponent from './resizer';
 import ObservableObject from 'common/object/observable';
 import CallbackNotifier from 'common/notifiers/callback';
-import DragSelectComponent from './drag-select';
-import SelectablesComponent from './selectables';
 
 import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'editor/message-types';
 
@@ -53,8 +51,6 @@ class SelectorComponent extends React.Component {
 
     return <div className='m-selector-component'>
       <ResizerComponent {...this.props} />
-      <DragSelectComponent {...this.props} />
-      <SelectablesComponent {...this.props} />
       { sections.guides  }
       { sections.size    }
     </div>;
