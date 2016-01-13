@@ -1,6 +1,6 @@
 import React from 'react';
 import { startDrag } from 'common/utils/component';
-import PathComponent from '../path';
+import PathComponent from './path';
 import ObservableObject from 'common/object/observable';
 import { CallbackNotifier } from 'common/notifiers';
 import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'editor/message-types';

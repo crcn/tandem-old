@@ -8,17 +8,25 @@ import calculateDistances from './calculate-distances';
  * shows distances between the entity and other objects
  */
 
-// TODO - ability to see ALL measurements between elements
-
 class RulerToolComponent extends React.Component {
   render() {
 
-    var root = this.props.app.rootEntity;
+    return null;
+
+    var rootEntity = this.props.app.rootEntity;
+    var rect       = this.props.app.selection.preview.getBoundingRect(true);
+
+    // first flatten & filter for all component entities
+    var allBounds = rootEntity.filter(function(entity) {
+      return /component/.test(entity.type) && !!entity.preview && entity !== rootEntity;
+    }).map(function(entity) {
+      return entity.preview.getBoundingRect(true);
+    });
 
     return <div className='m-ruler-tool'>
       {
         calculateDistances(
-          root, this.props.app.selection.preview.getBoundingRect()
+          allBounds, rect
         ).map((bounds, i) => {
           return <LineComponent {...this.props} bounds={bounds} key={i} />;
         })

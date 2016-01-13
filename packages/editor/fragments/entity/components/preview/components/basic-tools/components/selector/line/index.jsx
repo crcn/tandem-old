@@ -21,12 +21,12 @@ class LineComponent extends React.Component {
         { this.props.bounds.width  }
       </text>;
 
-      var d = [        'M' + 0 + ' ' + (y - stemWidth),
-        'L' + 0 + ' ' + (y + stemWidth),
-        'M' + 0 + ' ' + y,
-        'L' + bounds.width + ' ' + y,
-        'M' + bounds.width + ' ' + (y - stemWidth),
-        'L' + bounds.width + ' ' + (y + stemWidth),
+      var d = [        'M' + 3 + ' ' + (y - stemWidth),
+        'L' + 3 + ' ' + (y + stemWidth),
+        'M' + 3 + ' ' + y,
+        'L' + (bounds.width - 1) + ' ' + y,
+        'M' + (bounds.width - 1) + ' ' + (y - stemWidth),
+        'L' + (bounds.width - 1) + ' ' + (y + stemWidth),
       ];
     } else {
       var x = Math.round(bounds.width / 2);
@@ -36,20 +36,19 @@ class LineComponent extends React.Component {
       </text>;
 
       var d = [
-        'M' + (x - stemWidth) + ' ' + 0,
-        'L' + (x + stemWidth) + ' ' + 0,
-        'M' + x + ' ' + 0,
-        'L' + x + ' ' + bounds.height,
-        'M' + (x - stemWidth) + ' ' + bounds.height,
-        'L' + (x + stemWidth) + ' ' + bounds.height,
+        'M' + (x - stemWidth) + ' ' + 3,
+        'L' + (x + stemWidth) + ' ' + 3,
+        'M' + x + ' ' + 3,
+        'L' + x + ' ' + (bounds.height - 1),
+        'M' + (x - stemWidth) + ' ' + (bounds.height - 1),
+        'L' + (x + stemWidth) + ' ' + (bounds.height - 1),
       ];
     }
 
+    var w = Math.max(bounds.width, 60) + stemWidth * 2;
+    var h = Math.max(bounds.height, 60) + stemWidth * 2;
 
-    var w = Math.max(bounds.width, 60);
-    var h = Math.max(bounds.height, 60);
-
-    return <svg className='m-guide-line' style={{position:'absolute', left: bounds.left, top: bounds.top }} width={w} height={h} viewBox={[-stemWidth, -stemWidth, w+stemWidth, h+stemWidth]}>
+    return <svg className='m-guide-line' style={{position:'absolute', left: bounds.left, top: bounds.top }} width={w} height={h} viewBox={[0, 0, w, h]}>
       <path d={d.join('')} strokeWidth={1} fill='transparent' />
       { this.props.showDistance !== false ? sections.text : void 0 }
     </svg>

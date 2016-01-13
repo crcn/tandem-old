@@ -47,7 +47,6 @@ class PathComponent extends React.Component {
     var w = x2 - x1 + cw;
     var h = y2 - y1 + cw;
 
-
     return <svg width={w} height={h} viewBox={[-cw / 2, -cw / 2, w, h]}>
       <path d={d} strokeWidth={strokeWidth} stroke='transparent' fill='transparent' />
       {

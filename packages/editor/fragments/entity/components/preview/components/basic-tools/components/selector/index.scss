@@ -17,9 +17,13 @@
     z-index: 4;
   }
 
+  &--bounds {
+    border: 1px solid $color-blue-4;
+  }
+
   & svg {
     & path {
-      stroke: $color-blue-4;
+      // stroke: $color-blue-4;
     }
     & rect {
       fill: $color-blue-10;

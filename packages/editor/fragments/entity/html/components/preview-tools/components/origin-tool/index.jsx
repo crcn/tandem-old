@@ -71,7 +71,7 @@ class OriginEntityComponent extends React.Component {
 
 class OriginToolComponent extends React.Component {
   render() {
-    if (!this.props.selection.preview.moving) return null;
+    if (!this.props.selection.preview.moving || true) return null;
     return <div className='m-origin-preview-tool'>
       {
         this.props.selection.map(function(entity) {
