@@ -17,7 +17,7 @@ class ResizerComponent extends React.Component {
 
   onDoubleClick(event) {
     this.props.app.notifier.notify({
-      type   : ENTITY_PREVIEW_DOUBLE_CLICK,
+      type      : ENTITY_PREVIEW_DOUBLE_CLICK,
       selection : this.props.selection
     });
   }
@@ -73,7 +73,7 @@ class ResizerComponent extends React.Component {
   updatePoint(point) {
     var selection = this.props.selection;
 
-    var style = selection.preview.getBoundingRect(true);
+    var style = selection.preview.getBoundingRect(false);
 
     var props = {
       left: style.left,
@@ -113,10 +113,15 @@ class ResizerComponent extends React.Component {
 
   _isMoving() {
     clearTimeout(this._movingTimer);
+    clearTimeout(this._dragTimer);
     this.props.selection.preview.setProperties({ moving: true });
+    this.setState({ dragging: true });
     this._movingTimer = setTimeout(() => {
       this.props.selection.preview.setProperties({ moving: false });
     }, 1000);
+    this._dragTimer = setTimeout(() => {
+      this.setState({ dragging: false });
+    }, 100);
   }
 
   startDragging(event) {
@@ -219,7 +224,7 @@ class ResizerComponent extends React.Component {
       onDoubleClick={this.onDoubleClick.bind(this)}>
 
       <PathComponent
-        showPoints={capabilities.resizable && !selection.preview.moving}
+        showPoints={capabilities.resizable && !this.state.dragging}
         zoom={this.props.zoom}
         points={points}
         strokeWidth={strokeWidth}
