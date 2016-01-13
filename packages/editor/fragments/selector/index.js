@@ -74,6 +74,7 @@ function create({ app }) {
     // make sure that the group types match
     currentSelection = multiSelect && currentSelection && selection.constructor === currentSelection.constructor ? currentSelection : selection;
 
+
     // remove the item from the selection if it currently exists.
     // This is a toggle feature.
     toArray(message.target).forEach(function(target) {

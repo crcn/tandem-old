@@ -5,7 +5,7 @@ import 'editor/scss/modules/all.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import BaseApplication from 'base/app';
+import BaseApplication from 'base/app'; 
 
 import EntityFragment from './fragments/entity';
 import DevelopFragment from './fragments/develop';

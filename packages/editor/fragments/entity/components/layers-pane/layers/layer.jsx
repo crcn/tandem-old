@@ -162,6 +162,26 @@ class LayerLabelComponent extends React.Component {
     if (event) event.stopPropagation();
   }
 
+  onMouseOver(event) {
+    this.setState({
+      hover: true
+    });
+
+    this.props.app.setProperties({
+      hoverItem: this.props.entity
+    });
+  }
+
+  onMouseOut(event) {
+    this.setState({
+      hover: false
+    });
+
+    this.props.app.setProperties({
+      hoverItem: void 0
+    });
+  }
+
   render() {
     const { connectDragSource, isDragging, connectDropTarget, isOver, canDrop } = this.props;
 
@@ -191,6 +211,7 @@ class LayerLabelComponent extends React.Component {
     var headerClassName = cx({
       'm-layers-pane-component-layer--header': true,
       'drag-over': isOver && canDrop,
+      'hover': this.props.app.hoverItem === this.props.entity && !this.state.hover,
       ['m-layer-type-' + entity.type]: true,
       'selected': this.props.app.selection && this.props.app.selection.includes(entity)
     });
@@ -206,7 +227,13 @@ class LayerLabelComponent extends React.Component {
       'visibility': entity.children.length ? 'visible': 'hidden'
     };
 
-    return <div style={{paddingLeft: this.props.paddingLeft}} tabIndex="0" onClick={this.onClick.bind(this)} className={headerClassName}>
+    return <div
+      style={{paddingLeft: this.props.paddingLeft}}
+      tabIndex="0"
+      onClick={this.onClick.bind(this)}
+      onMouseOver={this.onMouseOver.bind(this)}
+      onMouseOut={this.onMouseOut.bind(this)}
+      className={headerClassName}>
       <DropLayerTargetComponent {...this.props} offset={0} />
       {connectDropTarget(<span><i onClick={this.toggleExpand.bind(this, !expanded)} className={expandButtonClassName} style={expandButtonStyle} />
       { labelSection }</span>)}
