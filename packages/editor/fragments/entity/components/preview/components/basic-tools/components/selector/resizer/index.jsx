@@ -56,6 +56,8 @@ class ResizerComponent extends React.Component {
       return;
     }
 
+    this._isMoving();
+
     selection.preview.setPositionFromAbsolutePoint({
       top  : top,
       left : left
