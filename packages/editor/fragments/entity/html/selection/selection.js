@@ -29,8 +29,6 @@ class Preview {
     this.notifier.notify(ChangeMessage.create());
   }
 
-
-
   setPositionFromAbsolutePoint(point) {
 
     var bounds = this.getBoundingRect();

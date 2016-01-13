@@ -111,8 +111,8 @@ class ReactEntityComputer extends DisplayEntityComputer {
   setBoundingRect(bounds) {
 
     // NO zoom here - point is NOT fixed, but relative
-    var absStyle = this.getStyle();
-    var entStyle = this.entity.getStyle();
+    var absStyle = this.getStyle(false);
+    var entStyle = this.entity.getStyle(false);
 
     var props = { ...bounds };
     for (var k in bounds) {
@@ -125,6 +125,18 @@ class ReactEntityComputer extends DisplayEntityComputer {
         bounds[k]
       );
     }
+
+    var b = this.getBoundingRect(false);
+
+    // FIXME: wrong place here - this is just a quick
+    // check to see if this *actually* works
+    this.setPositionFromAbsolutePoint({
+      left: bounds.left,
+      top : bounds.top
+    });
+
+    delete props.left;
+    delete props.top;
 
     this.entity.setStyle(props);
   }
@@ -190,7 +202,6 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
     var width = right - left;
     var height = bottom - top;
-
 
     if (zoomProperties) {
       var {left, top, width, height } = multiplyStyle({ left, top, width, height }, this.getZoom());

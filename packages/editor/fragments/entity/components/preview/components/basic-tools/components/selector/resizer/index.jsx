@@ -73,8 +73,7 @@ class ResizerComponent extends React.Component {
   updatePoint(point) {
     var selection = this.props.selection;
 
-    selection.preview.getStyle.clear();
-    var style = selection.preview.getStyle(true);
+    var style = selection.preview.getBoundingRect(true);
 
     var props = {
       left: style.left,
@@ -172,7 +171,8 @@ class ResizerComponent extends React.Component {
     var preview = this.props.selection.preview;
 
     var rect = preview.getBoundingRect(true);
-    var actStyle = preview.getStyle(true);
+    var zrect = preview.getBoundingRect(false);
+    var actStyle = preview.getStyle(false);
 
     var cw = (pointRadius + strokeWidth * 2) * 2;
 
@@ -200,7 +200,7 @@ class ResizerComponent extends React.Component {
         id: id,
         index: i,
         show: show,
-        currentStyle: actStyle,
+        currentStyle: zrect,
         left: left,
         top: top
       });
