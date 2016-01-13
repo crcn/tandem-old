@@ -69,8 +69,11 @@ class SelectableComponent extends React.Component {
 
 class SelectablesComponent extends React.Component {
   render() {
+
     var preview   = this.props.app.preview;
-    var selectables = this.props.app.rootEntity.flatten().map((entity) => {
+    var selectables = this.props.app.rootEntity.flatten().filter((entity) => {
+      return entity !== this.props.app.rootEntity && /component/.test(entity.type);
+    }).map((entity) => {
       return <SelectableComponent
         {...this.props}
         entity={entity}
