@@ -6,7 +6,6 @@ class OriginEntityComponent extends React.Component {
   render() {
 
     var capabilities = this.props.entity.preview.getCapabilities();
-
     if (!capabilities.movable) return null;
 
     var rect  = this.props.entity.preview.getBoundingRect(true);

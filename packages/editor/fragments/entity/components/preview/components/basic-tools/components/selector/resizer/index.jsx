@@ -39,7 +39,7 @@ class ResizerComponent extends React.Component {
   onKeyDown(message) {
 
     var selection = this.props.app.selection;
-    var style = selection.preview.getStyle();
+    var style = selection.preview.getBoundingRect();
 
     var left = style.left;
     var top  = style.top;
@@ -104,18 +104,30 @@ class ResizerComponent extends React.Component {
     }
 
     selection.preview.setBoundingRect(props);
+    this._isMoving();
+  }
+
+  /**
+   */
+
+  _isMoving() {
+    clearTimeout(this._movingTimer);
+    this.props.selection.preview.setProperties({ moving: true });
+    this._movingTimer = setTimeout(() => {
+      this.props.selection.preview.setProperties({ moving: false });
+    }, 1000);
   }
 
   startDragging(event) {
     event.stopPropagation();
     var selection = this.props.selection;
 
+    // when dragging, need to fetch style of the selection
+    // so that the dragger is relative to the entity's position
     var style = selection.preview.getBoundingRect();
 
     var sx2 = style.left;
     var sy2 = style.top;
-
-    this.setState({ dragging: true });
 
     this._dragger = startDrag(event, (event, info) => {
 
@@ -138,13 +150,13 @@ class ResizerComponent extends React.Component {
 
       this.moveTarget(bounds.left, bounds.top);
     }, () => {
-      this.setState({ dragging: false });
       this._dragger = void 0;
     });
   }
 
 
   moveTarget(left, top) {
+    this._isMoving();
     this.props.app.selection.preview.setPositionFromAbsolutePoint({
       left : left,
       top  : top
@@ -195,6 +207,8 @@ class ResizerComponent extends React.Component {
       return ret;
     });
 
+    var selection = this.props.selection;
+
     return <div
       ref='selection'
       className='m-selector-component--selection'
@@ -203,7 +217,7 @@ class ResizerComponent extends React.Component {
       onDoubleClick={this.onDoubleClick.bind(this)}>
 
       <PathComponent
-        showPoints={capabilities.resizable && !this.state.dragging}
+        showPoints={capabilities.resizable && !selection.preview.moving}
         zoom={this.props.zoom}
         points={points}
         strokeWidth={strokeWidth}

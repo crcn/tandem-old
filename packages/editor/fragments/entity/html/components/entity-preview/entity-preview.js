@@ -19,15 +19,18 @@ import {
 
 const CANVAS_ELEMENT_ID = 'preview-canvas';
 
-function getParentOffset(element) {
+function getElementOffset(element) {
   var p = element.parentNode;
+
   var left = 0;
   var top  = 0;
+
   while(p && p.id !== CANVAS_ELEMENT_ID) {
     left += p.offsetLeft;
     top  += p.offsetTop;
     p = p.parentNode;
   }
+
   return { left, top };
 }
 
@@ -56,11 +59,29 @@ class ReactEntityComputer extends DisplayEntityComputer {
     // absolute positions are always in pixels - always round
     // to the nearest one
     var element = this.getDisplayElement();
-    var offset  = getParentOffset(element);
+    var offset  = getElementOffset(element);
+
+    var bounds = this.getBoundingRect(false);
+    var style  = this.getStyle(false);
+
+    var originLeft = bounds.left - style.left;
+    var originTop  = bounds.top  - style.top ;
+
+    var left = point.left;
+    var top  = point.top;
+
+    left -= offset.left;
+    top  -= offset.top;
+
+    // offset relative position (based on children)
+    if (/relative|static/.test(style.position)) {
+      left -= originLeft - offset.left;
+      top -= originTop - offset.top;
+    }
 
     var newStyle = translateStyle({
-      left: point.left - offset.left,
-      top: point.top - offset.top
+      left: left,
+      top: top
     }, this.entity.getStyle(), element);
 
     this.entity.setStyle(newStyle);
@@ -121,16 +142,19 @@ class ReactEntityComputer extends DisplayEntityComputer {
   getComputedStyle() {
     var cs   = window.getComputedStyle(this.displayObject.refs.element);
     // normalize computed styles to pixels
-    return translateStyleToIntegers({
-      marginLeft: cs.marginLeft,
-      marginTop : cs.marginTop,
-      marginRight: cs.marginRight,
-      marginBottom: cs.marginBottom,
-      paddingLeft: cs.paddingLeft,
-      paddingTop: cs.paddingTop,
-      paddingRight: cs.paddingRight,
-      paddingBottom: cs.paddingBottom
-    }, this.displayObject.refs.element);
+    return {
+      position: cs.position,
+      ...translateStyleToIntegers({
+        marginLeft: cs.marginLeft,
+        marginTop : cs.marginTop,
+        marginRight: cs.marginRight,
+        marginBottom: cs.marginBottom,
+        paddingLeft: cs.paddingLeft,
+        paddingTop: cs.paddingTop,
+        paddingRight: cs.paddingRight,
+        paddingBottom: cs.paddingBottom
+      }, this.displayObject.refs.element)
+    }
   }
 
   getBoundingRect(zoomProperties) {
@@ -200,8 +224,6 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
     // normalize computed styles to pixels
     var cStyle = this.getComputedStyle();
-
-
 
     // zooming happens a bit further down
     var rect = this.getBoundingRect(false);

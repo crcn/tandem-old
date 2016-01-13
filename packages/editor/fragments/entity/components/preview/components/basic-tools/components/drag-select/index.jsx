@@ -53,6 +53,8 @@ class DragSelectComponent extends React.Component {
 
   render() {
 
+    return null;
+
     // if (this.props.app.selection.length) {
     //   return null;
     // }
