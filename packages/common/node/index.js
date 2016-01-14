@@ -2,13 +2,14 @@ import memoize from 'memoizee';
 import NodeCollection from './collection';
 import ObservableObject from 'common/object/observable';
 import mixinChangeNotifier from 'common/class/mixins/change-notifier';
-import { CallbackNotifier } from 'common/notifiers';
+import { CallbackNotifier, NotifierCollection } from 'common/notifiers';
 
 class Node extends ObservableObject {
 
   constructor(properties, children = []) {
     super(properties);
 
+    this.notifier = NotifierCollection.create();
     this.flatten = memoize(this.flatten.bind(this), { primitive: true });
 
     this._children = NodeCollection.create({
@@ -53,11 +54,6 @@ class Node extends ObservableObject {
     }
   }
 
-  notifyChange(changes) {
-    super.notifyChange(changes);
-    if (this.parent) this.parent.notifyChange(changes);
-  }
-
   /**
    */
 
@@ -84,6 +80,10 @@ class Node extends ObservableObject {
   notifyChange(changes) {
     super.notifyChange(changes);
     this._didChange(changes);
+
+    if (this.parent) {
+      this.parent.notifyChange(changes);
+    }
   }
 
   _didChange(changes) {
@@ -99,9 +99,6 @@ class Node extends ObservableObject {
     }
 
     this.didChange();
-    if (this.parent) {
-      this.parent._didChange(changes);
-    }
   }
 
   didChange() {
@@ -127,7 +124,6 @@ class Node extends ObservableObject {
       }
 
       child.parent   = this;
-      child.notifier = this.notifier;
     }
 
     for (var child of removed) {

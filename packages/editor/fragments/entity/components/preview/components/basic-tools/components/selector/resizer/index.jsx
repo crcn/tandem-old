@@ -116,7 +116,6 @@ class ResizerComponent extends React.Component {
     if (keepCenter) {
       props.left = point.currentStyle.left + (point.currentStyle.width/2 - props.width / 2);
       props.top  = point.currentStyle.top + (point.currentStyle.height/2 - props.height / 2);
-
     }
 
     selection.preview.setBoundingRect(props);
