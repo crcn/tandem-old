@@ -45,12 +45,15 @@ function create({ app }) {
 
   }
 
+  app.setProperties({
+    selection: []
+  });
+
   function setFocus(message) {
 
     var currentSelection = app.selection;
 
     var multiSelect = message.multiSelect;
-
 
     // no item? ignore
     if (!message.target) return app.setProperties({

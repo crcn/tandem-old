@@ -59,8 +59,10 @@ describe(__filename + '#', function() {
       }, entities.map(function([id, left, top, width, height]) {
         return TestDisplayEntity.create({
           left, top, width, height, fragmentId: 'frag', id: id, type: 'component'
-        })
-      }));
+        });
+      })).flatten().map(function(entity) {
+        return entity.preview.getBoundingRect();
+      });
 
       var [left, top, width, height] = bounds;
 

@@ -91,6 +91,11 @@
   - [x] multi-selected items with differing items drift apart
   - [ ] drag needs to respect CSS3 transforms
 
+- drag-and-drop
+  - [ ] images & assets onto CSS styles (add background)
+  - [ ] images onto divs
+  - [ ] multiple items (list)
+
 - [ ] testability
   - [ ] add drag manager that emits mouse events
 
