@@ -76,7 +76,7 @@ function createStyleInputFragments({ app }) {
     [APPEARANCE]: [
 
       // https://developer.mozilla.org/en-US/docs/Web/CSS/background
-      [ 'background'   , BackgroundInputComponent ],
+      [ 'background'   , TextInputComponent ],
       [ 'borderRadius' , UnitInputComponent       ],
 
       // TODO - box shadow component here

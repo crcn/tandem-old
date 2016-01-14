@@ -43,7 +43,7 @@ class TextToolComponent extends React.Component {
       zIndex   : 999
     };
 
-    var inputStyle = Object.assign({}, selection.style);
+    var inputStyle = Object.assign({}, selection.getStyle());
     delete inputStyle['position'];
     delete inputStyle['left'];
     delete inputStyle['top'];
