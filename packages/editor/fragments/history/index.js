@@ -12,8 +12,8 @@
 import sift from 'sift';
 import debounce from 'lodash/function/debounce';
 
-import { create as createSliderFragments } from './fragments/slider';
-import { create as createKeyCommandFragments } from './fragments/key-commands';
+import { create as createSliderFragments } from './slider';
+import { create as createKeyCommandFragments } from './key-commands';
 
 // used for history. See this: https://github.com/creationix/js-git
 // import createMemDb from 'js-git/mixins/mem-db';
