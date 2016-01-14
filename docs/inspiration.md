@@ -19,6 +19,10 @@
 - http://tridiv.com/
 - http://tympanus.net/codrops/
 - https://www.youtube.com/watch?v=U9xfYbKxosI
+- http://landing.adobe.com/en/na/products/creative-cloud/comet/229818-notifyme.html?sdid=NYTLR42C&mv=search&s_kwcid=AL!3085!3!93823739227!e!!g!!adobe%20comet&ef_id=VWDaFgAABRB1hgVZ:20160111181832:s
+- http://www.kony.com/products/visualizer
+- http://www.justinmind.com/
+- http://www.axure.com/
 
 
 #### other layout systems

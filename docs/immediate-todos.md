@@ -1,12 +1,12 @@
 - obvious implementations
   - [ ] API backend fragment & persisting projects
-  - [ ] in-app DB replication 
+  - [ ] in-app DB replication
 
 - [ ] saving projects (node-based for now with API) **
-- [ ] component library - img, p, 
+- [ ] component library - img, p,
 - [ ] fix click through bug with resizer
 
-- [ ] just one style pane - organize declarations by color or similar 
+- [ ] just one style pane - organize declarations by color or similar
 
 - [ ] rotation tool - part of resizer
 - [ ] background fill
@@ -18,12 +18,17 @@
 - [ ] components tool
 - [x] ruler tool
 - [x] sink tool (snap to grid)
-- [ ] on enter key for property, add new property 
+- [ ] on enter key for property, add new property
 
 - [ ] multi-select tool
   - [x] shift click layers
   - [x] shift click preview items
   - [ ] drag select items
+  - [ ] shift drag to maintain aspect ratio
+  - [ ] option to maintain center point
+  - [ ] ctrl to rotate
+
+- [ ] 3D tool
 
 - [ ] layers
   - [x] hide / show layers with arrow keys (left right)
@@ -31,7 +36,7 @@
   - [x] min width should be bigger
   - [x] ability to add children (plus button)
   - [x] double click to edit - edit whole element
-  - [ ] double click layer - edit layer and all children (IDE mode) 
+  - [ ] double click layer - edit layer and all children (IDE mode)
 
 - [ ] left bar
   - css declarations (see what they're affecting)
@@ -41,9 +46,9 @@
   - [ ] show zoom above canvas
   - [ ] highlight canvas in focus
   - [ ] browsertap renderer
-  
+
 - [ ] properties
-  - [ ] ability to change style name 
+  - [ ] ability to change style name
   - [ ] breadcrumbs for properties panel
   - [ ] easier way of adding css styles (some filter for typography - drop down)
   - [ ] raw mode for CSS
@@ -51,11 +56,11 @@
   - [ ] generic tab -- more sketch like
   - [ ] inputs should word wrap
   - [ ] all inputs text based
-  
+
 - [ ] warnings
   - [ ] when adding children to void elements
   - [ ] when defining left/top props an element that cannot be moved
-  
+
 - [ ] more border information
   - [ ] display line heights
 
@@ -79,13 +84,14 @@
 
 - [ ] grid guide
   - [ ] ability to change num columns & column spacing
-  
+
 - [ ] bugs
   - [ ] east/south resizer points both mutating width & height props when they shouldn't
-  - [ ] must double click into layer to select children
-  - [ ] cannot select child & parent together (messes up dragging)
-  - [ ] multi-selected items with differing items drift apart
-  
+  - [x] must double click into layer to select children
+  - [x] cannot select child & parent together (messes up dragging)
+  - [x] multi-selected items with differing items drift apart
+  - [ ] drag needs to respect CSS3 transforms
+
 - [ ] testability
   - [ ] add drag manager that emits mouse events
 
