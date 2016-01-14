@@ -36,6 +36,10 @@ class HTMLEntityComponent extends React.Component {
     if (this.props.entity !== nextProps.entity) {
       this.setHook(nextProps.entity);
     }
+
+    // at this point the computed display props have changed - invalidate
+    // the preview cache so that returned attributes are not memoized
+    this._preview.invalidateCache();
   }
 
   render() {

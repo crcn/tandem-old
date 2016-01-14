@@ -1,10 +1,12 @@
+// TODO - to make this faster, only display selectable
+// areas when mouse hits the bounds of an item
 import './index.scss';
 
 import cx from 'classnames';
 import React from 'react';
+import intersection from 'lodash/array/intersection';
 import { SetFocusMessage } from 'editor/message-types';
 import { calculateBoundingRect } from 'common/utils/geom';
-import intersection from 'lodash/array/intersection';
 
 class SelectableComponent extends React.Component {
 

@@ -5,7 +5,6 @@ import memoize from 'memoizee';
 import BoundingRect from 'common/geom/bounding-rect';
 import { DisplayEntityComputer } from 'common/entities';
 import { translateStyleToIntegers } from 'common/utils/html/css/translate-style';
-import InvalidatePropChanges from 'common/components/mixins/invalidate-prop-changes';
 
 import {
   translateStyle,
@@ -39,20 +38,19 @@ class ReactEntityComputer extends DisplayEntityComputer {
   constructor(entity, component) {
     super(entity, component);
 
-    // todo - don't do this - instead setup memoization to check
-    // global cache key - if changed then return new result. This
-    // will cut down on listeners drastically
-    //this.entity.notifier.unshift(this);
-    //this.getBoundingRect = memoize(this.getBoundingRect.bind(this), { primitive: true });
+    this.getBoundingRect = memoize(this.getBoundingRect.bind(this));
     //this.getStyle = memoize(this.getStyle.bind(this), { primitive: true });
     //this.getComputedStyle = memoize(this.getComputedStyle.bind(this));
   }
 
-  notify(message) {
-    //this.getBoundingRect.clear();
-    //this.getStyle.clear();
-  }
+  /**
+   * busts cache when the entity is updated. This gets called via
+   * entity.jsx
+   */
 
+  invalidateCache() {
+    this.getBoundingRect.clear();
+  }
 
   setPositionFromAbsolutePoint(point) {
 

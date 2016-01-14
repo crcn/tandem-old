@@ -145,9 +145,6 @@ class LayerLabelComponent extends React.Component {
       }
     }
 
-
-
-
     this.props.app.notifier.notify(ToggleFocusMessage.create(select, multiSelect));
   }
 
@@ -293,8 +290,25 @@ LayerLabelComponent = DropTarget('element', {
 
 class LayerComponent extends React.Component {
 
+  componentDidMount() {
+    // this.props.entity.notifier.push(this);
+  }
+
+  notify() {
+    // this._invalidateCache = true;
+  }
+
+  componentWillUnmount() {
+    // this.props.entity.notifier.remove(this);
+  }
+
+  // shouldComponentUpdate() {
+  //   return this._invalidateCache;
+  // }
+
   render() {
 
+    // this._invalidateCache = false;
 
     var entity     = this.props.entity;
     var expanded   = entity.layerExpanded;

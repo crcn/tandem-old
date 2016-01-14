@@ -99,6 +99,9 @@
 - [ ] testability
   - [ ] add drag manager that emits mouse events
 
+- [ ] optimizations
+  - [ ] only show hover states where mouse is
+
 #### Keep this in mind when writing code
 
 - [ ] do not abstract CSS. Build tools that augment it.

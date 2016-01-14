@@ -7,8 +7,6 @@ class GroupAlignComponent extends React.Component {
     // one or more items
     //if (this.props.selection.length <= 1) return null;
 
-    console.log('group this');
-
     var rect = this.props.selection.preview.getBoundingRect(true);
 
     var style = {

@@ -4,6 +4,7 @@ import React from 'react';
 
 class OriginEntityComponent extends React.Component {
   render() {
+    return null;
 
     var capabilities = this.props.entity.preview.getCapabilities();
     if (!capabilities.movable) return null;
