@@ -24,8 +24,8 @@
   - [x] shift click layers
   - [x] shift click preview items
   - [ ] drag select items
-  - [ ] shift drag to maintain aspect ratio
-  - [ ] option to maintain center point
+  - [x] shift drag to maintain aspect ratio
+  - [x] option to maintain center point
   - [ ] ctrl to rotate
 
 - [ ] 3D tool
