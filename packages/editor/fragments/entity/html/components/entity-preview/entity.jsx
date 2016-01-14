@@ -12,6 +12,9 @@ class HTMLEntityComponent extends React.Component {
     if (!entity) return;
     this._preview = entity.preview = EntityPreview.create(entity, this);
     entity.notifier.push(this);
+
+    // global messages should purge preview cache. E.g: user zooms
+    // in - bounds need to be updated
     this.props.app.notifier.push(this._preview);
     this._invalidateCache = true;
   }
