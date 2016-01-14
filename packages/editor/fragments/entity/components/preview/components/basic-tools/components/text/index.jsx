@@ -33,7 +33,7 @@ class TextToolComponent extends React.Component {
   render() {
     var selection = this.props.selection;
     var zoom      = this.props.zoom;
-    var cstyle    = selection.preview.getStyle();
+    var cstyle    = selection.preview.getBoundingRect(false);
 
     var style = {
       position : 'absolute',
@@ -43,7 +43,10 @@ class TextToolComponent extends React.Component {
       zIndex   : 999
     };
 
-    var inputStyle = Object.assign({}, selection.getStyle());
+    var inputStyle = Object.assign({
+      width    : cstyle.width,
+      height   : cstyle.height
+    }, selection.getStyle());
     delete inputStyle['position'];
     delete inputStyle['left'];
     delete inputStyle['top'];
