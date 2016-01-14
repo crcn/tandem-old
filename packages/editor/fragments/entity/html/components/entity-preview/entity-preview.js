@@ -38,9 +38,17 @@ class ReactEntityComputer extends DisplayEntityComputer {
   constructor(entity, component) {
     super(entity, component);
 
+
     this.getBoundingRect = memoize(this.getBoundingRect.bind(this));
     //this.getStyle = memoize(this.getStyle.bind(this), { primitive: true });
     //this.getComputedStyle = memoize(this.getComputedStyle.bind(this));
+  }
+
+  /**
+   */
+
+  notify() {
+    this.invalidateCache();
   }
 
   /**

@@ -8,13 +8,23 @@ class HTMLEntityComponent extends React.Component {
   }
 
   setHook(entity) {
-    if (this._preview) {
-      this._preview.entity.notifier.remove(this);
-      if (!entity) return;
-    }
+    this._cleanup();
+    if (!entity) return;
     this._preview = entity.preview = EntityPreview.create(entity, this);
     entity.notifier.push(this);
+    this.props.app.notifier.push(this._preview);
     this._invalidateCache = true;
+  }
+
+  componentWillUnmount() {
+    this.props.entity.notifier
+  }
+
+  _cleanup() {
+    if (this._preview) {
+      this._preview.entity.notifier.remove(this);
+      this.props.app.notifier.remove(this._preview);
+    }
   }
 
   componentDidMount() {
