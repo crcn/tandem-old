@@ -51,12 +51,11 @@ function create({ app }) {
 
     var multiSelect = message.multiSelect;
 
-    app.setProperties({
-      selection: []
-    });
 
     // no item? ignore
-    if (!message.target) return;
+    if (!message.target) return app.setProperties({
+      selection: []
+    });
 
     var fragment = app.fragments.queryOne(
       createSelectionQuery(message.target)
