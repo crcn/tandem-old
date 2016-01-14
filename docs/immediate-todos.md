@@ -86,7 +86,6 @@
   - [ ] ability to change num columns & column spacing
 
 - [ ] bugs
-  - [ ] east/south resizer points both mutating width & height props when they shouldn't
   - [x] must double click into layer to select children
   - [x] cannot select child & parent together (messes up dragging)
   - [x] multi-selected items with differing items drift apart
