@@ -70,20 +70,24 @@ class ResizerComponent extends React.Component {
     return this.props.selection.preview;
   }
 
-  updatePoint(point) {
+  updatePoint(point, event) {
+
+    var keepAspectRatio = event.shiftKey;
+    var keepCenter      = event.altKey;
+
     var selection = this.props.selection;
 
     var style = selection.preview.getBoundingRect(false);
 
     var props = {
-      left: style.left,
-      top: style.top,
-      width: style.width,
-      height: style.height
+      left   : style.left,
+      top    : style.top,
+      width  : style.width,
+      height : style.height
     };
 
     if (/^n/.test(point.id)) {
-      props.top = point.currentStyle.top + point.top / this.props.zoom;
+      props.top    = point.currentStyle.top + point.top / this.props.zoom;
       props.height = point.currentStyle.height - point.top / this.props.zoom;
     }
 
@@ -100,8 +104,13 @@ class ResizerComponent extends React.Component {
       props.left  = point.currentStyle.left + point.left / this.props.zoom;
     }
 
-    if (point.keepAspectRatio) {
-      // todo
+    // ensure that the ratio between the width & the height
+    // is always the same (no skewing) if the shift key is down.
+    if (keepAspectRatio) {
+      var diffPerc = Math.min(props.width / point.currentStyle.width, props.height / point.currentStyle.height);
+
+      props.width = point.currentStyle.width * diffPerc;
+      props.height = point.currentStyle.height * diffPerc;
     }
 
     selection.preview.setBoundingRect(props);
@@ -200,18 +209,14 @@ class ResizerComponent extends React.Component {
       ['sw', movable === true, 0, rect.height],
       ['w', movable === true, 0, rect.height / 2]
     ].map(([id, show, left, top], i) => {
-
-      var ret = ObservableObject.create({
+      return {
         id: id,
         index: i,
         show: show,
         currentStyle: zrect,
         left: left,
         top: top
-      });
-
-      ret.notifier = CallbackNotifier.create(this.updatePoint.bind(this, ret));
-      return ret;
+      };
     });
 
     var selection = this.props.selection;
@@ -225,6 +230,7 @@ class ResizerComponent extends React.Component {
 
       <PathComponent
         showPoints={capabilities.resizable && !this.state.dragging}
+        onPointChange={this.updatePoint.bind(this)}
         zoom={this.props.zoom}
         points={points}
         strokeWidth={strokeWidth}

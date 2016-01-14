@@ -11,11 +11,13 @@ class PathComponent extends React.Component {
     var sy = point.top;
 
     startDrag(event, (event, info) => {
-      point.setProperties({
+
+      Object.assign(point, {
         left : (sx + info.delta.x),
-        top  : (sy + info.delta.y),
-        keepAspectRatio: event.shiftKey
+        top  : (sy + info.delta.y)
       });
+
+      this.props.onPointChange(point, event);
     });
   }
 
