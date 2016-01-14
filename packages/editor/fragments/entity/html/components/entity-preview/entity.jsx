@@ -14,6 +14,7 @@ class HTMLEntityComponent extends React.Component {
     }
     this._preview = entity.preview = EntityPreview.create(entity, this);
     entity.notifier.push(this);
+    this._invalidateCache = true;
   }
 
   componentDidMount() {

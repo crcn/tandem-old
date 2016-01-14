@@ -81,11 +81,9 @@ function create({ app }) {
     // Note that focus might be an entity in the future
     var currentFocusId = app.selection ? app.selection.id : void 0;
 
-    var rootEntity = deserialize(history[history.position], app.fragments, {
-      rootProps: {
-        notifier: app.notifier
-      }
-    });
+    var rootEntity = deserialize(history[history.position], app.fragments);
+
+    rootEntity.notifier.push(app.notifier);
 
     app.notifier.notify({
       type         : SET_ROOT_ENTITY,
