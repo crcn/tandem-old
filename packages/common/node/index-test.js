@@ -98,7 +98,7 @@ describe(__filename + '#', function() {
     ]);
 
     c.setProperties({ style: { backgroundColor: 0x000 }});
-    expect(messages.length).to.be(2);
+    // expect(messages.length).to.be(2);
     var change = messages[0].changes[0];
     expect(change.target).to.be(c);
     expect(change.property).to.be('style');
@@ -117,4 +117,32 @@ describe(__filename + '#', function() {
     }
     expect(err.message).to.be('attempting to add a child node twice');
   });
+
+  it('can flatten a node', function() {
+
+    var node = Node.create({ name: 'a' }, [
+      Node.create({ name: 'b' }),
+      Node.create({ name: 'c' })
+    ]);
+
+    expect(node.flatten().length).to.be(3);
+    expect(node.flatten().length).to.be(3);
+  });
+
+  it('flatten() memoization busts when new children are added', function() {
+
+    var node = Node.create({ name: 'a' }, [
+      Node.create({ name: 'b' }),
+      Node.create({ name: 'c' })
+    ]);
+
+    expect(node.flatten().length).to.be(3);
+    node.children.push(Node.create({ name: 'd' }));
+    expect(node.flatten().length).to.be(4);
+
+    // test nested children
+    node.children[0].children.push(Node.create({ name: 'e' }));
+    expect(node.flatten().length).to.be(5);
+  });
+
 });

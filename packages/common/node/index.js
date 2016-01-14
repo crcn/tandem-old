@@ -1,12 +1,15 @@
-import ObservableObject from 'common/object/observable';
+import memoize from 'memoizee';
 import NodeCollection from './collection';
-import { CallbackNotifier } from 'common/notifiers';
+import ObservableObject from 'common/object/observable';
 import mixinChangeNotifier from 'common/class/mixins/change-notifier';
+import { CallbackNotifier } from 'common/notifiers';
 
 class Node extends ObservableObject {
 
   constructor(properties, children = []) {
     super(properties);
+
+    this.flatten = memoize(this.flatten.bind(this), { primitive: true });
 
     this._children = NodeCollection.create({
       notifier: CallbackNotifier.create(this._onChildrenChange.bind(this))
@@ -58,9 +61,11 @@ class Node extends ObservableObject {
   /**
    */
 
-  flatten(nodes = []) {
-    nodes.push(this);
-    for (var child of this._children) child.flatten(nodes);
+  flatten() {
+    var nodes = [this];
+    for (var child of this._children) {
+      nodes.push(...child.flatten());
+    }
     return nodes;
   }
 
@@ -76,6 +81,33 @@ class Node extends ObservableObject {
     return found;
   }
 
+  notifyChange(changes) {
+    super.notifyChange(changes);
+    this._didChange(changes);
+  }
+
+  _didChange(changes) {
+
+    if (changes) {
+      for (var change of changes) {
+
+        // only clear flatten if target is an array
+        if (Array.isArray(change.target)) {
+          this.flatten.clear();
+        }
+      }
+    }
+
+    this.didChange();
+    if (this.parent) {
+      this.parent._didChange(changes);
+    }
+  }
+
+  didChange() {
+    // OVERRIDE ME
+  }
+
   _onChildrenChange(message) {
 
     for (var change of message.changes) {
@@ -83,9 +115,7 @@ class Node extends ObservableObject {
       this._sync(change.added, change.removed);
     }
 
-    if (this.notifier) {
-      this.notifyChange(message.changes);
-    }
+    this.notifyChange(message.changes);
   }
 
   _sync(added = [], removed = []) {
