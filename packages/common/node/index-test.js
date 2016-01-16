@@ -48,9 +48,8 @@ describe(__filename + '#', function() {
   it('bubbles up a change', function() {
     var messages = [];
     var notifier = CallbackNotifier.create(messages.push.bind(messages));
-    var n1 = Node.create({
-      notifier: notifier
-    });
+    var n1 = Node.create();
+    n1.notifier.push(notifier);
     n1.children.push(Node.create());
     expect(messages.length).to.be(1);
     n1.children.remove(n1.children[0]);
@@ -87,22 +86,6 @@ describe(__filename + '#', function() {
 
     var spans = n1.filter(sift({ name: 'span' }))
     expect(spans.length).to.be(5);
-  });
-
-  it('automatically sets the child notifier to the parent notifier', function() {
-    var messages = [];
-    var notifier = CallbackNotifier.create(messages.push.bind(messages));
-    var c;
-    var n1 = Node.create({ name: 'div', notifier: notifier }, [
-      c = Node.create({ name: 'span' })
-    ]);
-
-    c.setProperties({ style: { backgroundColor: 0x000 }});
-    // expect(messages.length).to.be(2);
-    var change = messages[0].changes[0];
-    expect(change.target).to.be(c);
-    expect(change.property).to.be('style');
-    expect(change.newValue.backgroundColor).to.be(0x000);
   });
 
   it('cannot add the same child twice', function() {
