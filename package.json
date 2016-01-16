@@ -21,9 +21,9 @@
   "homepage": "https://github.com/crcn/interface-builder#readme",
   "dependencies": {
     "base": "file:packages/base",
+    "browser": "file:packages/browser",
     "classnames": "^2.2.1",
     "common": "file:packages/common",
-    "browser": "file:packages/browser",
     "desktop": "file:packages/desktop",
     "diff": "^2.2.1",
     "editor": "file:packages/editor",
@@ -44,6 +44,8 @@
     "react-intl": "^1.2.2",
     "react-slider": "^0.6.0",
     "sift": "^3.0.0",
+    "socket.io": "^1.4.4",
+    "socket.io-client": "^1.4.4",
     "store": "^1.3.17",
     "traverse": "^0.6.6",
     "uuid": "^2.0.1"
