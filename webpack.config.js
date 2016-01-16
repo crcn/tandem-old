@@ -4,7 +4,7 @@ var path = require('path');
 
 module.exports = {
   entry: {
-    'app' : './packages/editor/entry.js'
+    'browser' : './packages/browser/entry.js'
   },
   output: {
     path: __dirname + '/public',
