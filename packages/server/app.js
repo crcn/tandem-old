@@ -7,7 +7,6 @@ class ServerApplication extends BaseApplication {
     HTTPServerFragment,
     SocketIOFragment
   ]);
-
 }
 
 export default ServerApplication;
