@@ -35,7 +35,7 @@ class BaseApplication extends ObservableObject {
    * initializes the app
    */
 
-  async initialize(config) {
+  async initialize(config = {}) {
 
     this.config = config;
 

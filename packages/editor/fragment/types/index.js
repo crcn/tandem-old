@@ -4,35 +4,11 @@
 import React from 'react';
 import assert from 'assert';
 import { Fragment } from 'common/registry';
+import { FactoryFragment, ApplicationFragment } from 'common/fragment/types';
 
 export const ROOT_COMPONENT_ID = 'rootComponent';
 
-export { Fragment };
-
-/**
- * fragment for a factory -- used to instantiate new objects
- */
-
-export class FactoryFragment extends Fragment {
-
-  /**
-   * @param {{create:Function}} properties.factory the object factory
-   */
-
-  constructor(properties) {
-    assert(properties.factory, 'factory is missing');
-    var factory = properties.factory;
-    super({
-      ...properties,
-      factory: {
-        create: (props = {}, ...args) => {
-          props.fragmentId = this.id;
-          return factory.create(props, ...args);
-        }
-      }
-    });
-  }
-}
+export { Fragment, ApplicationFragment };
 
 /**
  * React Component fragment used to compose other react components
@@ -105,16 +81,6 @@ export class EntityPaneComponentFragment extends ComponentFragment {
 export class EntityLayerLabelComponentFragment extends ComponentFragment {
   constructor(properties) {
     super({ componentType: 'label', labelType: 'text', ...properties });
-  }
-}
-
-/**
- * Application plugin fragment
- */
-
-export class ApplicationFragment extends FactoryFragment {
-  constructor(properties) {
-    super({ type: 'application', ...properties });
   }
 }
 
