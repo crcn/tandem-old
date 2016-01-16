@@ -23,6 +23,8 @@
     "base": "file:packages/base",
     "classnames": "^2.2.1",
     "common": "file:packages/common",
+    "browser": "file:packages/browser",
+    "desktop": "file:packages/desktop",
     "diff": "^2.2.1",
     "editor": "file:packages/editor",
     "express": "^4.13.3",
