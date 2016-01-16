@@ -19,6 +19,7 @@
 - [x] ruler tool
 - [x] sink tool (snap to grid)
 - [ ] on enter key for property, add new property
+- [ ] style props need to have interpreter
 
 - [ ] multi-select tool
   - [x] shift click layers
@@ -101,6 +102,7 @@
 
 - [ ] optimizations
   - [ ] only show hover states where mouse is
+  - [ ] don't use react
 
 #### Keep this in mind when writing code
 

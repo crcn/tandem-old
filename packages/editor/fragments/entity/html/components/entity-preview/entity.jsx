@@ -1,76 +1,134 @@
 import React from 'react';
 import EntityPreview from './entity-preview';
 
+
+class BaseNode {
+
+  constructor(entity, element) {
+
+    this.element  = element;
+    element.setAttribute('id', this.id = entity.id);
+
+    this.entity   = entity;
+    this._preview = entity.preview = EntityPreview.create(entity, this);
+
+    this.entity.notifier.push(this);
+  }
+
+  notify() {
+    this._preview.invalidateCache();
+  }
+
+  dispose() {
+    this.entity.notifier.remove(this);
+  }
+}
+
+class ElementNode extends BaseNode {
+
+  constructor(entity, element) {
+    super(entity, element || document.createElement(entity.tagName));
+    this._addChildren();
+    this._updateAttributes();
+  }
+
+  notify(message) {
+    super.notify(message);
+
+    this._updateAttributes();
+
+    for (var change of message.changes) {
+      if (change.target === this.entity.children) {
+        this._updateChildren(change);
+      }
+    }
+  }
+
+  _updateChildren(change) {
+    change.added.forEach((entity) => {
+      var i = this.entity.children.indexOf(entity);
+      var child = createNode(entity);
+      this._children.splice(i, 0, child);
+      if (i === this.entity.children.length - 1) {
+        this.element.appendChild(child.element);
+      } else {
+        this.element.insertBefore(child.element, this.element.childNodes[i + 1]);
+      }
+    });
+
+    change.removed.forEach((entity) => {
+      for (var i = this._children.length; i--;) {
+        var child = this._children[i];
+        if (child.id === entity.id) {
+          this.element.removeChild(child.element);
+          this._children.splice(i, 1);
+          break;
+        }
+      }
+    });
+  }
+
+  _addChildren() {
+    this._children = this.entity.children.map(createNode);
+    this._children.forEach((child) => {
+      this.element.appendChild(child.element);
+    })
+  }
+
+  _updateAttributes() {
+    var attributes = this.entity.attributes;
+
+    for (var key in attributes) {
+      var value = attributes[key];
+      if (key === 'style') {
+        // this.element.setAttribute('style', '');
+        for (var styleName in value) {
+          var v = value[styleName];
+          if (!isNaN(v)) v = v + 'px';
+          this.element.style[styleName] = v;
+        }
+      } else {
+        this.element.setAttribute(key, value);
+      }
+    }
+  }
+}
+
+class TextNode extends ElementNode {
+  constructor(entity) {
+    super(entity, document.createElement('span'));
+  }
+
+  notify() {
+    this.element.textContent = this.entity.value;
+  }
+}
+
+function createNode(entity) {
+  if (entity.componentType === 'text') {
+    return new TextNode(entity)
+  } else {
+    return new ElementNode(entity);
+  }
+}
+
 class HTMLEntityComponent extends React.Component {
 
   constructor() {
     super();
   }
 
-  setHook(entity) {
-    this._cleanup();
-    if (!entity) return;
-    this._preview = entity.preview = EntityPreview.create(entity, this);
-    entity.notifier.push(this);
-
-    // global messages should purge preview cache. E.g: user zooms
-    // in - bounds need to be updated
-    this.props.app.notifier.push(this._preview);
-    this._invalidateCache = true;
-  }
-
-  componentWillUnmount() {
-    this.props.entity.notifier
-  }
-
   _cleanup() {
-    if (this._preview) {
-      this._preview.entity.notifier.remove(this);
-      this.props.app.notifier.remove(this._preview);
-    }
+    this._root.dispose();
   }
 
   componentDidMount() {
-    this.setHook(this.props.entity);
-  }
-
-  notify(changes) {
-    this._invalidateCache = true;
-  }
-
-  componentWillUnmount() {
-    this.setHook(void 0);
-  }
-
-  shouldComponentUpdate() {
-    return this._invalidateCache;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.entity !== nextProps.entity) {
-      this.setHook(nextProps.entity);
-    }
-
-    // at this point the computed display props have changed - invalidate
-    // the preview cache so that returned attributes are not memoized
-    this._preview.invalidateCache();
+    this._root = new ElementNode(this.props.entity);
+    this.refs.placeholder.appendChild(this._root.element);
   }
 
   render() {
-
-    this._invalidateCache = false;
-
-    var entity = this.props.entity;
-
-    var children = entity.children.map((child) => {
-      return <HTMLEntityComponent {...this.props} key={child.id} entity={child} />
-    });
-
-    var Type = entity.componentType === 'text' ? 'span' : entity.tagName;
-
-    return <Type ref='element' id={entity.id} {...entity.attributes}>
-      { children.length ? children : entity.value }
-    </Type>;
+    return <div ref='placeholder'></div>;
   }
 }
 
