@@ -8,12 +8,12 @@ import ReactDOM from 'react-dom';
 import BaseApplication from 'base/app';
 
 import EntityFragment from './fragments/entity';
-import ProjectFragment from './fragments/project';
 import DevelopFragment from './fragments/develop';
 import HistoryFragment from './fragments/history';
 import SelectorFragment from './fragments/selector';
 import SettingsFragment from './fragments/settings';
 import ClipboardFragment from './fragments/clipboard';
+import SaffronFileHandler from './fragments/saffron-file-handler';
 import KeyCommanderFragment from './fragments/key-commander';
 
 import MainComponent from './components/main';
@@ -24,12 +24,12 @@ class Application extends BaseApplication {
 
   static fragments = BaseApplication.fragments.concat([
     EntityFragment,
-    ProjectFragment,
     DevelopFragment,
     HistoryFragment,
     SelectorFragment,
     SettingsFragment,
     ClipboardFragment,
+    SaffronFileHandler,
     KeyCommanderFragment
   ]);
 

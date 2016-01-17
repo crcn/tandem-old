@@ -85,9 +85,7 @@ export function create({ app }) {
         }
       })
     ]);
-
-    entity.notifier.push(app.notifier);
-
+    
     app.notifier.notify(RootEntityMessage.create(SET_ROOT_ENTITY, entity));
   }
   return [];

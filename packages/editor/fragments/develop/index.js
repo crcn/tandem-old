@@ -13,6 +13,6 @@ export default ApplicationFragment.create({
 
 function create({ app }) {
   app.fragments.push(
-    ...createTestProjectFragment({ app })
+    // ...createTestProjectFragment({ app })
   );
 }

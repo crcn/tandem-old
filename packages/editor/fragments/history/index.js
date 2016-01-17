@@ -23,7 +23,7 @@ import { CallbackNotifier, TypeNotifier } from 'common/notifiers';
 
 import { Entity, deserialize } from 'common/entities';
 import { INITIALIZE } from 'base/message-types';
-import { SET_ROOT_ENTITY, SetFocusMessage } from 'editor/message-types';
+import { SET_ROOT_ENTITY, CLEAR_HISTORY, SetFocusMessage } from 'editor/message-types';
 
 import {
   ApplicationFragment,
@@ -50,7 +50,7 @@ function create({ app }) {
   history.shift = shift;
 
   // TODO - need to compare history here
-  app.notifier.push(TypeNotifier.create(INITIALIZE, (message) => {
+  app.notifier.push(TypeNotifier.create(CLEAR_HISTORY, (message) => {
     history.position = 0;
     saveNow();
   }));
@@ -82,8 +82,6 @@ function create({ app }) {
     var currentFocusId = app.selection ? app.selection.id : void 0;
 
     var rootEntity = deserialize(history[history.position], app.fragments);
-
-    rootEntity.notifier.push(app.notifier);
 
     app.notifier.notify({
       type         : SET_ROOT_ENTITY,

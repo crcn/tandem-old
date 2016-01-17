@@ -10,6 +10,7 @@ import { DragDropContext } from 'react-dnd';
 
 class LayersPaneComponent extends React.Component {
   render() {
+    if (!this.props.app.rootEntity) return null;
     return <PaneComponent label={this.props.fragment.label}>
       <LayerComponent entity={this.props.app.rootEntity} app={this.props.app} />
     </PaneComponent>;

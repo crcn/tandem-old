@@ -1,6 +1,6 @@
 import { ApplicationFragment } from 'common/fragment/types';
 import { KeyCommandFragment } from 'editor/fragment/types';
-import { SET_ROOT_ENTITY, RootEntityMessage } from 'editor/message-types';
+import { SET_ROOT_ENTITY, CLEAR_HISTORY, RootEntityMessage } from 'editor/message-types';
 import { TypeNotifier } from 'common/notifiers';
 import { deserialize as deserializeEntity } from 'common/entities/base';
 
@@ -30,6 +30,7 @@ function create({ app }) {
     var rootEntity = deserializeEntity(json, app.fragments);
 
     app.notifier.notify(RootEntityMessage.create(SET_ROOT_ENTITY, rootEntity));
+    app.notifier.notify({ type: CLEAR_HISTORY });
   }
 
   app.fragments.push(KeyCommandFragment.create({

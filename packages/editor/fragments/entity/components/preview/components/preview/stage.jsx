@@ -91,15 +91,15 @@ class StageComponent extends React.Component {
                 className='m-preview-stage--element-layer'
                 role='preview stage'>
                 <span ref='drawLayer' className='m-preview-stage--draw-layer'>
-                  <RegisteredComponent {...this.props} entity={entity} queryOne={{
+                  { entity ? <RegisteredComponent {...this.props} entity={entity} queryOne={{
                     componentType: entity.componentType
-                  }} />
+                  }} /> : void 0 }
                 </span>
               </div>
 
             </div>
 
-            <ToolsLayerComponent app={app} zoom={preview.zoom} />
+            { entity ? <ToolsLayerComponent app={app} zoom={preview.zoom} /> : void 0 }
           </div>
 
         </div>
