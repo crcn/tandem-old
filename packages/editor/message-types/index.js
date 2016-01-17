@@ -6,6 +6,7 @@ import BaseMessage from 'common/message-types/base';
 export const PASTE                       = 'paste';
 export const SET_TOOL                    = 'setTool';
 export const SET_FOCUS                   = 'setFocus';
+export const ADDED_FILE                  = 'addedFile';
 export const UPLOAD_FILE                 = 'uploadFile';
 export const TOGGLE_FOCUS                = 'toggleFocus';
 export const CLEAR_HISTORY               = 'clearHistory';

@@ -16,6 +16,7 @@ import { create as createSelectionFragment } from './selection';
 import { create as createKeyCommandFragments } from './key-commands';
 import { create as createEditorLayerLabelFragments } from './components/layer-pane-labels';
 import { create as createEditorPropertyPaneFragments } from './components/panes/styles';
+import { create as createAddedFileHandleFragments } from './handle-added-file';
 
 export function create({ app }) {
   return [
@@ -30,6 +31,7 @@ export function create({ app }) {
     ...createSelectionFragment({ app }),
     ...createKeyCommandFragments({ app }),
     ...createEditorLayerLabelFragments({ app }),
-    ...createEditorPropertyPaneFragments({ app })
+    ...createEditorPropertyPaneFragments({ app }),
+    ...createAddedFileHandleFragments({ app })
   ];
 }

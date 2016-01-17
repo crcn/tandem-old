@@ -9,81 +9,122 @@
                 {
                   "children": [],
                   "props": {
-                    "fragmentId": "textEntity",
-                    "id": "33cc8040-bcb9-11e5-afb0-254e2fb3bf56",
+                    "fragmentId": "elementEntity",
+                    "id": "a0b880d0-bcca-11e5-941c-095faa8877d2",
                     "attributes": {
                       "style": {
-                        "textAlign": "left",
-                        "fontFamily": "Helvetica",
-                        "marginRight": "2em"
-                      }
+                        "height": "25px",
+                        "position": "relative",
+                        "top": "50%"
+                      },
+                      "src": "http://localhost:8090/logo4.png"
                     },
                     "type": "component",
-                    "componentType": "text",
-                    "label": "label",
-                    "value": "about",
-                    "paneType": "text",
-                    "preview": null
+                    "componentType": "element",
+                    "tagName": "img",
+                    "preview": null,
+                    "editLayerSource": false
                   }
                 },
                 {
-                  "children": [],
-                  "props": {
-                    "fragmentId": "textEntity",
-                    "id": "5624eba0-bcb9-11e5-afb0-254e2fb3bf56",
-                    "attributes": {
-                      "style": {
-                        "textAlign": "left",
-                        "fontFamily": "Helvetica",
-                        "marginRight": "2em"
+                  "children": [
+                    {
+                      "children": [],
+                      "props": {
+                        "fragmentId": "textEntity",
+                        "id": "33cc8040-bcb9-11e5-afb0-254e2fb3bf56",
+                        "attributes": {
+                          "style": {
+                            "textAlign": "left",
+                            "fontFamily": "Helvetica",
+                            "marginRight": "2em"
+                          }
+                        },
+                        "type": "component",
+                        "componentType": "text",
+                        "label": "label",
+                        "value": "about",
+                        "paneType": "text",
+                        "preview": null
                       }
                     },
-                    "type": "component",
-                    "componentType": "text",
-                    "label": "label",
-                    "value": "work",
-                    "paneType": "text",
-                    "preview": null
-                  }
-                },
-                {
-                  "children": [],
-                  "props": {
-                    "fragmentId": "textEntity",
-                    "id": "573b1690-bcb9-11e5-afb0-254e2fb3bf56",
-                    "attributes": {
-                      "style": {
-                        "textAlign": "left",
-                        "fontFamily": "Helvetica",
-                        "marginRight": "2em"
+                    {
+                      "children": [],
+                      "props": {
+                        "fragmentId": "textEntity",
+                        "id": "5624eba0-bcb9-11e5-afb0-254e2fb3bf56",
+                        "attributes": {
+                          "style": {
+                            "textAlign": "left",
+                            "fontFamily": "Helvetica",
+                            "marginRight": "2em"
+                          }
+                        },
+                        "type": "component",
+                        "componentType": "text",
+                        "label": "label",
+                        "value": "work",
+                        "paneType": "text",
+                        "preview": null
                       }
                     },
-                    "type": "component",
-                    "componentType": "text",
-                    "label": "label",
-                    "value": "posts",
-                    "paneType": "text",
-                    "preview": null
-                  }
-                },
-                {
-                  "children": [],
-                  "props": {
-                    "fragmentId": "textEntity",
-                    "id": "41a301a0-bcc1-11e5-8bb1-b1746b58bbd5",
-                    "attributes": {
-                      "style": {
-                        "textAlign": "left",
-                        "fontFamily": "Helvetica",
-                        "marginRight": "2em"
+                    {
+                      "children": [],
+                      "props": {
+                        "fragmentId": "textEntity",
+                        "id": "573b1690-bcb9-11e5-afb0-254e2fb3bf56",
+                        "attributes": {
+                          "style": {
+                            "textAlign": "left",
+                            "fontFamily": "Helvetica",
+                            "marginRight": "2em"
+                          }
+                        },
+                        "type": "component",
+                        "componentType": "text",
+                        "label": "label",
+                        "value": "posts",
+                        "paneType": "text",
+                        "preview": null
                       }
                     },
+                    {
+                      "children": [],
+                      "props": {
+                        "fragmentId": "textEntity",
+                        "id": "41a301a0-bcc1-11e5-8bb1-b1746b58bbd5",
+                        "attributes": {
+                          "style": {
+                            "textAlign": "left",
+                            "fontFamily": "Helvetica",
+                            "marginRight": "2em"
+                          }
+                        },
+                        "type": "component",
+                        "componentType": "text",
+                        "label": "label",
+                        "value": "contact",
+                        "paneType": "text",
+                        "preview": null
+                      }
+                    }
+                  ],
+                  "props": {
+                    "fragmentId": "elementEntity",
+                    "id": "d75efb50-bcca-11e5-b2ea-8d6c274fca3e",
+                    "attributes": {
+                      "style": {
+                        "display": "block",
+                        "float": "right",
+                        "right": "0"
+                      },
+                      "id": "links"
+                    },
                     "type": "component",
-                    "componentType": "text",
-                    "label": "label",
-                    "value": "contact",
-                    "paneType": "text",
-                    "preview": null
+                    "componentType": "element",
+                    "tagName": "div",
+                    "preview": null,
+                    "editLayerSource": false
                   }
                 }
               ],
@@ -98,7 +139,7 @@
                     "right": "10px",
                     "fontWeight": "100",
                     "clear": "both",
-                    "textAlign": "right",
+                    "textAlign": "left",
                     "color": "#333333"
                   },
                   "id": "navigation"

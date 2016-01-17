@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { ADDED_FILE } from 'editor/message-types';
 import { ApplicationFragment } from 'common/fragment/types';
 import { TypeNotifier, NotifierCollection } from 'common/notifiers';
 
@@ -16,9 +17,24 @@ function create({ app }) {
 
   function handleRemoteClient({ client }) {
     client.notifier.push(TypeNotifier.create('saveFile', saveFile));
+    client.notifier.push(TypeNotifier.create('addFile', addFile));
 
     function saveFile(message) {
       fs.writeFileSync(message.filePath, decodeBase64(message.content));
+
+      var basename = path.basename(message.filePath);
+    }
+
+    function addFile(message) {
+      fs.writeFileSync(message.fileName, decodeBase64(message.content));
+
+      var basename = path.basename(message.filePath);
+
+      client.notify({
+        type: ADDED_FILE,
+        fileName: message.fileName,
+        url: 'http://' + app.config.http.domain + ':' + app.config.http.port + '/' + message.fileName
+      });
     }
   }
 }

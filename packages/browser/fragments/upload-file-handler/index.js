@@ -18,8 +18,8 @@ function create({ app }) {
 
     reader.onload = function(event) {
       app.notifier.notify({
-        type: 'saveFile',
-        filePath: file.name,
+        type: 'addFile',
+        fileName: file.name,
         content: event.target.result
       })
     }

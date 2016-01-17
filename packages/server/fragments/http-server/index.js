@@ -16,6 +16,7 @@ function create({ app }) {
   app.notifier.push(TypeNotifier.create(LOAD, load));
 
   function load() {
+    server.use(express.static(app.config.cwd));
     var port = app.config.http.port;
     console.log('starting http server on port %d', port);
     server.listen(port);

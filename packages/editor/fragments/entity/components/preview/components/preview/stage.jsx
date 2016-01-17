@@ -61,6 +61,18 @@ class StageComponent extends React.Component {
     });
   }
 
+  onMouseMove(event) {
+    var rect = this.refs.canvas.getBoundingClientRect();
+    var zoom = this.props.app.preview.zoom;
+
+    // needed for positioning items that have
+    // been dropped
+    app.setProperties({
+      mouseX: event.clientX - rect.left / zoom,
+      mouseY: event.clientY - rect.top / zoom
+    });
+  }
+
   render() {
 
     var app = this.props.app;
@@ -92,7 +104,7 @@ class StageComponent extends React.Component {
 
     return <div ref='stage' className='m-preview-stage' style={previewStyle}>
       <div ref='inner' className='m-preview-stage--inner'>
-        <div ref='scroller' className='m-preview-stage--scroll' style={scrollStyle} onClick={this.onMouseEvent.bind(this)} onMouseDown={this.onMouseEvent.bind(this)}>
+        <div ref='scroller' className='m-preview-stage--scroll' style={scrollStyle} onClick={this.onMouseEvent.bind(this)} onMouseDown={this.onMouseEvent.bind(this)} onMouseMove={this.onMouseMove.bind(this)}>
 
           <DropZone
             disableClick={true}
@@ -101,8 +113,6 @@ class StageComponent extends React.Component {
             activeClassName='m-preview-stage--drop-zone-active'
             >
           <div className='m-preview-stage--center'>
-
-
               <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle}>
 
                 <div id='preview-canvas'
