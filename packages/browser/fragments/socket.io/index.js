@@ -40,7 +40,7 @@ function load(app) {
     io.emit('message', c);
   }
 
-  var io = socketio('http://127.0.0.1:8091');
+  var io = app.socketio = socketio('http://127.0.0.1:8091');
 
   app.notifier.push({
     notify: send

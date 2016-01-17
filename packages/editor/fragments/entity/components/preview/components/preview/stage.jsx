@@ -4,7 +4,7 @@ import React from 'react';
 import DropZone from 'react-dropzone';
 import ToolsLayerComponent from './tools';
 import RegisteredComponent from 'common/components/registered';
-import { PREVIEW_STAGE_CLICK, PREVIEW_STAGE_MOUSE_DOWN } from 'editor/message-types';
+import { PREVIEW_STAGE_CLICK, PREVIEW_STAGE_MOUSE_DOWN, UPLOAD_FILE } from 'editor/message-types';
 
 class StageComponent extends React.Component {
 
@@ -53,9 +53,12 @@ class StageComponent extends React.Component {
   }
 
   onDropFile(files) {
-    console.log('drop');
-    console.log(files);
-
+    files.forEach((file) => {
+      this.props.app.notifier.notify({
+        type: UPLOAD_FILE,
+        file: file
+      });
+    });
   }
 
   render() {

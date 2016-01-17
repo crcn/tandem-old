@@ -28,11 +28,5 @@ function create({ app }) {
   function handleRemoteClient({ client }) {
     clientsNotifier.push(client);
     openFile(client, currentFileMessage);
-
-    client.notifier.push(TypeNotifier.create('saveFile', saveFile));
-
-    function saveFile(message) {
-      fs.writeFile(message.filePath, message.content);
-    }
   }
 }

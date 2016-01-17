@@ -102,6 +102,8 @@
 - [ ] optimizations
   - [ ] only show hover states where mouse is
 
+- [ ] when dragging fixed element long enough, change position to relative
+
 #### Keep this in mind when writing code
 
 - [ ] do not abstract CSS. Build tools that augment it.
