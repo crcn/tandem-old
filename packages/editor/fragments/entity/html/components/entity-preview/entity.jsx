@@ -62,6 +62,13 @@ class ElementNode extends BaseNode {
     }
   }
 
+  dispose() {
+    super.dispose();
+    this._children.forEach(function(child) {
+      child.dispose();
+    })
+  }
+
   _updateChildren(change) {
     // TODO
     // console.log('update', change);
@@ -140,8 +147,6 @@ class HTMLEntityRootComponent extends React.Component {
     var doc = placeholder.contentWindow.document;
     doc.body.style.padding = doc.body.style.margin = '0px';
     var div = this.div = document.createElement('div');
-    this.root = createElement(this.props.entity);
-    div.appendChild(this.root.element);
     doc.body.appendChild(div);
     this._render(this.props);
   }
@@ -151,7 +156,20 @@ class HTMLEntityRootComponent extends React.Component {
   }
 
   _render(props) {
-    this.div.style.zoom = this.props.app.preview.zoom;
+    var div = this.div;
+
+    if (!this.root || this.props.entity !== props.entity) {
+
+      if (this.root) {
+        div.removeChild(this.root.element);
+        this.root.dispose();
+      }
+
+      this.root = createElement(props.entity);
+      div.appendChild(this.root.element);
+    }
+
+    div.style.zoom = this.props.app.preview.zoom;
     this.root.invalidateCache();
   }
 

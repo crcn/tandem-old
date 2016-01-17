@@ -84,6 +84,7 @@ function create({ app }) {
 
     var rootEntity = deserialize(history[history.position], app.fragments);
 
+
     app.notifier.notify({
       type         : SET_ROOT_ENTITY,
       entity       : rootEntity

@@ -101,6 +101,7 @@
   - [ ] only show hover states where mouse is
 
 - [ ] when dragging fixed element long enough, change position to relative
+- [ ] eye dropper
 
 #### Keep this in mind when writing code
 
