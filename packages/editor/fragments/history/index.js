@@ -46,10 +46,9 @@ function create({ app }) {
     notifier: app.notifier
   });
 
-  history.move = move;
+  history.move  = move;
   history.shift = shift;
 
-  // TODO - need to compare history here
   app.notifier.push(TypeNotifier.create(CLEAR_HISTORY, (message) => {
     history.position = 0;
     saveNow();
@@ -79,7 +78,9 @@ function create({ app }) {
     if (!history.length) return;
 
     // Note that focus might be an entity in the future
-    var currentFocusId = app.selection ? app.selection.id : void 0;
+    var currentFocusIds = app.selection.map(function(entity) {
+      return entity.id;
+    });
 
     var rootEntity = deserialize(history[history.position], app.fragments);
 
@@ -88,7 +89,14 @@ function create({ app }) {
       entity       : rootEntity
     });
 
-    app.notifier.notify(SetFocusMessage.create(currentFocusId ? rootEntity.find(sift({ id: currentFocusId })) : void 0));
+    // maintain previous selection
+    app.notifier.notify(
+      SetFocusMessage.create(
+        currentFocusIds ?
+        rootEntity.filter(sift({ id: {$in: currentFocusIds } })) :
+        void 0
+      )
+    );
   }
 
   function shift(step) {

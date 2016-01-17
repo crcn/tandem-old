@@ -22,7 +22,7 @@ class HTMLEntityComponent extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.entity.notifier
+    this.props.entity.notifier.remove(this);
   }
 
   _cleanup() {
@@ -99,16 +99,16 @@ class HTMLEntityRootComponent extends React.Component {
     var div = this.div = document.createElement('div');
 
     doc.body.appendChild(div);
-    this._render();
+    this._render(this.props);
   }
 
   componentWillReceiveProps(props) {
-    this._render();
+    this._render(props);
   }
 
-  _render() {
+  _render(props) {
     this.div.style.zoom = this.props.app.preview.zoom;
-    ReactDOM.render(<HTMLEntityComponent {...this.props} />, this.div);
+    ReactDOM.render(<HTMLEntityComponent {...props} />, this.div);
   }
 
   render() {
