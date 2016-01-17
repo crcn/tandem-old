@@ -31,7 +31,7 @@ class MainComponent extends React.Component {
 
     return <div className='m-editor'>
 
-      { !this.props.app.hideLeftSidebar ? <SidebarComponent
+      { !this.props.app.settings.hideLeftSidebar ? <SidebarComponent
         {...this.props}
         position='left'
         maxWidth={400}
@@ -39,7 +39,7 @@ class MainComponent extends React.Component {
 
       <CenterComponent {...this.props} />
 
-      { !this.props.app.hideRightSidebar ? <SidebarComponent
+      { !this.props.app.settings.hideRightSidebar ? <SidebarComponent
         {...this.props}
         position='right'
         query={{

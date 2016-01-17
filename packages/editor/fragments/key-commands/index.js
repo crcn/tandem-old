@@ -16,7 +16,7 @@ function create({ app }) {
       keyCommand: 'alt+\\',
       notifier: {
         notify: function() {
-          app.setProperties({
+          app.settings.setProperties({
             hideLeftSidebar: !app.hideLeftSidebar
           });
         }
@@ -28,7 +28,7 @@ function create({ app }) {
       keyCommand: 'alt+/',
       notifier: {
         notify: function() {
-          app.setProperties({
+          app.settings.setProperties({
             hideRightSidebar: !app.hideRightSidebar
           });
         }
