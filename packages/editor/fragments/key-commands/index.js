@@ -17,7 +17,7 @@ function create({ app }) {
       notifier: {
         notify: function() {
           app.settings.setProperties({
-            hideLeftSidebar: !app.hideLeftSidebar
+            hideLeftSidebar: !app.settings.hideLeftSidebar
           });
         }
       }
@@ -29,7 +29,7 @@ function create({ app }) {
       notifier: {
         notify: function() {
           app.settings.setProperties({
-            hideRightSidebar: !app.hideRightSidebar
+            hideRightSidebar: !app.settings.hideRightSidebar
           });
         }
       }
