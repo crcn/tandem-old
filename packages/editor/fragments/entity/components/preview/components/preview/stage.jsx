@@ -33,25 +33,6 @@ class StageComponent extends React.Component {
     return { x, y };
   }
 
-  componentDidMount() {
-
-    // TODO: runloop here
-    requestAnimationFrame(() => {
-      var preview = this.props.app.preview;
-      var stage   = this.refs.stage;
-      while(preview.canvasWidth * preview.zoom > stage.offsetWidth && preview.zoomOut());
-    });
-
-    this.centerCanvas();
-  }
-
-  centerCanvas() {
-    var inner    = this.refs.inner;
-    var scroller = this.refs.scroller;
-    inner.scrollTop  = scroller.offsetHeight / 2 - inner.offsetHeight / 2;
-    inner.scrollLeft = scroller.offsetWidth / 2 - inner.offsetWidth / 2;
-  }
-
   componentWillUnmount() {
     this.props.app.notifier.remove(this);
   }
@@ -73,6 +54,10 @@ class StageComponent extends React.Component {
         file: file
       });
     });
+  }
+
+  onScroll(event) {
+    console.log(event);
   }
 
   render() {
@@ -104,37 +89,43 @@ class StageComponent extends React.Component {
 
     var entity = this.props.app.rootEntity;
 
-    return <div ref='stage' className='m-preview-stage' style={previewStyle}>
-      <div ref='inner' className='m-preview-stage--inner'>
-        <div ref='scroller' className='m-preview-stage--scroll' style={scrollStyle} onClick={this.onMouseEvent.bind(this)} onMouseDown={this.onMouseEvent.bind(this)}>
+    return <div
+      ref='stage'
+      className='m-preview-stage'
+      style={previewStyle}
+      onClick={this.onMouseEvent.bind(this)}
+      onMouseDown={this.onMouseEvent.bind(this)}
+      onScroll={this.onScroll.bind(this)}>
 
-          <DropZone
-            disableClick={true}
-            onDrop={this.onDropFile.bind(this)}
-            className='m-preview-stage--drop-zone'
-            activeClassName='m-preview-stage--drop-zone-active'
-            >
-          <div className='m-preview-stage--center'>
-              <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle}>
+        <DropZone
+          disableClick={true}
+          onDrop={this.onDropFile.bind(this)}
+          className='m-preview-stage--drop-zone'
+          activeClassName='m-preview-stage--drop-zone-active'
+          >
+        <div
+          className='m-preview-stage--center'>
+            <div
+              ref='canvas'
+              className='m-preview-stage--canvas'
+              style={canvasStyle}>
 
-                <div id='preview-canvas'
-                  className='m-preview-stage--element-layer'
-                  role='preview stage'>
-                  <span ref='drawLayer' className='m-preview-stage--draw-layer'>
-                    { entity ? <RegisteredComponent {...this.props} entity={entity} queryOne={{
-                      componentType: entity.componentType
-                    }} /> : void 0 }
-                  </span>
-                </div>
-
+              <div id='preview-canvas'
+                className='m-preview-stage--element-layer'
+                role='preview stage'>
+                <span ref='drawLayer' className='m-preview-stage--draw-layer'>
+                  { entity ? <RegisteredComponent {...this.props} entity={entity} queryOne={{
+                    componentType: entity.componentType
+                  }} /> : void 0 }
+                </span>
               </div>
 
-            { entity ? <ToolsLayerComponent app={app} zoom={preview.zoom} /> : void 0 }
-          </div>
-        </DropZone>
+            </div>
 
+          { entity ? <ToolsLayerComponent app={app} zoom={preview.zoom} /> : void 0 }
         </div>
-      </div>
+      </DropZone>
+
     </div>;
   }
 }

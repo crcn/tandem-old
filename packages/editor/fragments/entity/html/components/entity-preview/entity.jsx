@@ -103,13 +103,7 @@ class HTMLEntityRootComponent extends React.Component {
   }
 
   render() {
-    var style = {
-      // overflow: 'scroll',
-      // width: '100%',
-      // height: '100%'
-    };
-
-    return <div ref='placeholder' style={style}>
+    return <div ref='placeholder'>
 
     </div>;
   }
