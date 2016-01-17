@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import EntityPreview from './entity-preview';
 import { clone } from 'common/utils/object';
 
@@ -83,4 +84,35 @@ class HTMLEntityComponent extends React.Component {
   }
 }
 
-export default HTMLEntityComponent;
+
+class HTMLEntityRootComponent extends React.Component {
+
+  constructor() {
+    super();
+  }
+
+  componentDidMount() {
+    var placeholder = this.refs.placeholder;
+    var shadow = placeholder.createShadowRoot();
+
+    ReactDOM.render(<HTMLEntityComponent {...this.props} />, shadow);
+  }
+
+  componentWillReceiveProps(props) {
+    ReactDOM.render(<HTMLEntityComponent {...props} />, this.refs.placeholder.shadowRoot);
+  }
+
+  render() {
+    var style = {
+      // overflow: 'scroll',
+      // width: '100%',
+      // height: '100%'
+    };
+
+    return <div ref='placeholder' style={style}>
+
+    </div>;
+  }
+}
+
+export default HTMLEntityRootComponent;

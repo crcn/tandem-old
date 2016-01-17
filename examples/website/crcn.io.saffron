@@ -184,7 +184,10 @@
                       "style": {
                         "textAlign": "left",
                         "fontFamily": "Helvetica",
-                        "fontSize": "0.932em"
+                        "fontSize": "0.932em",
+                        "position": "relative",
+                        "left": null,
+                        "top": null
                       }
                     },
                     "type": "component",

@@ -7,13 +7,14 @@ export function calculateZoom(element) {
   var current = element;
   var zoom    = 1;
 
-  while (current && current.style) {
+  while (current) {
 
-    if (current.style.zoom !== '') {
+    if (current.style && current.style.zoom !== '') {
       zoom *= Number(current.style.zoom);
     }
 
-    current = current.parentNode;
+    current = current.parentNode || current.host;
+
   }
 
   return zoom;

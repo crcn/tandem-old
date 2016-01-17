@@ -25,8 +25,8 @@ function getElementOffset(element) {
   var top  = 0;
 
   while(p && p.id !== CANVAS_ELEMENT_ID) {
-    left += p.offsetLeft;
-    top  += p.offsetTop;
+    left += p.offsetLeft || 0;
+    top  += p.offsetTop || 0;
     p = p.parentNode;
   }
 
@@ -89,6 +89,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
       left: left,
       top: top
     }, this.entity.getStyle(), element);
+
 
     this.entity.setStyle(newStyle);
   }
