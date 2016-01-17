@@ -83,23 +83,22 @@ class StageComponent extends React.Component {
       } else if(deltaY > 0) {
         this.props.app.preview.zoomIn();
       }
-      event.preventDefault();
-      return;
+    } else {
+
+      // otherwise we want to apply a slight hack - turn off pointer
+      // events for the tools layer so that scrolling natively works
+      // for the iframe
+      this.setState({
+        scrolling: true
+      });
+
+      this.props.app.notifier.notify({ type: 'scroll' });
+
+      clearTimeout(this._scrollTimer);
+      this._scrollTimer = setTimeout(() => {
+        this.setState({ scrolling: false });
+      }, 50);
     }
-
-    // otherwise we want to apply a slight hack - turn off pointer
-    // events for the tools layer so that scrolling natively works
-    // for the iframe
-    this.setState({
-      scrolling: true
-    });
-
-    this.props.app.notifier.notify({ type: 'scroll' });
-
-    clearTimeout(this._scrollTimer);
-    this._scrollTimer = setTimeout(() => {
-      this.setState({ scrolling: false });
-    }, 50);
     event.preventDefault();
   }
 
