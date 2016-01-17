@@ -28,6 +28,10 @@ class StageComponent extends React.Component {
 
   _getMousePosition(event) {
     var rect = this.refs.canvas.getBoundingClientRect();
+
+    // FIXME: this code is fine for now, though we are accessing an iframe
+    // here which is defined in some other part of the codebase. I.E: we're busting encapsulation here. This will *not* work when we start implementing
+    // other rendering engines. The later fix here will be to implement a "Canvas" class, or react component which encapsulates all the preview details such as scrollLeft & scrollTop. That way we still have access *here* without explicitly fetching it from the DOM.
     var iframe = this.refs.canvas.querySelector('iframe');
     var idoc = iframe.contentWindow.document;
 
@@ -71,6 +75,21 @@ class StageComponent extends React.Component {
 
   onScroll(event) {
 
+    // meta key is down, initiate zoom scroll here
+    if (event.metaKey) {
+      var deltaY = event.deltaY;
+      if (deltaY < 0) {
+        this.props.app.preview.zoomIn();
+      } else if(deltaY > 0) {
+        this.props.app.preview.zoomOut();
+      }
+      event.preventDefault();
+      return;
+    }
+
+    // otherwise we want to apply a slight hack - turn off pointer
+    // events for the tools layer so that scrolling natively works
+    // for the iframe
     this.setState({
       scrolling: true
     });
@@ -81,7 +100,7 @@ class StageComponent extends React.Component {
     this._scrollTimer = setTimeout(() => {
       this.setState({ scrolling: false });
     }, 50);
-    // event.preventDefault();
+    event.preventDefault();
   }
 
   componentWillReceiveProps() {
