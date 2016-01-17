@@ -79,9 +79,9 @@ class StageComponent extends React.Component {
     if (event.metaKey) {
       var deltaY = event.deltaY;
       if (deltaY < 0) {
-        this.props.app.preview.zoomIn();
-      } else if(deltaY > 0) {
         this.props.app.preview.zoomOut();
+      } else if(deltaY > 0) {
+        this.props.app.preview.zoomIn();
       }
       event.preventDefault();
       return;

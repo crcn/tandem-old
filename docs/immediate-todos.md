@@ -67,7 +67,7 @@
 - [x] history
   - [ ] use git
 
-- [ ] alignment tools in props pane
+- [x] alignment tools in props pane
 
 - [x] clipboard
   - [ ] use actual native clipboard for c&p
