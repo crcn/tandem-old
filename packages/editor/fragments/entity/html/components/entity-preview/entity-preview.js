@@ -207,25 +207,18 @@ class ReactEntityComputer extends DisplayEntityComputer {
     }
 
     var entity = this.entity;
-
-    // eeeesh - this is yucky, but we *need* to offset the position
-    // of the preview canvas so that we can get the correct position
-    // of this element. This is the *simplest* solution I can think of.
-    // TODO - this *will not work* when we start adding multiple canvases
-    var pcrect = document.getElementById(CANVAS_ELEMENT_ID).getBoundingClientRect();
     var rect   = refs.element.getBoundingClientRect();
     var cs     = this.getComputedStyle();
 
 
     var offset = getElementScrollOffset(refs.element);
-    // console.log(offset);
 
     // margins are also considered bounds - add them here. Fixes a few issues
     // when selecting multiple items with different items & dragging them around.
-    var left   = rect.left   - pcrect.left - cs.marginLeft - offset.left;
-    var top    = rect.top    - pcrect.top  - cs.marginTop - offset.top;
-    var right  = rect.right  - pcrect.left + cs.marginRight - offset.left;
-    var bottom = rect.bottom - pcrect.top  + cs.marginBottom - offset.top;
+    var left   = rect.left   - cs.marginLeft - offset.left;
+    var top    = rect.top    - cs.marginTop - offset.top;
+    var right  = rect.right  - cs.marginRight - offset.left;
+    var bottom = rect.bottom - cs.marginBottom - offset.top;
 
     var width = right - left;
     var height = bottom - top;

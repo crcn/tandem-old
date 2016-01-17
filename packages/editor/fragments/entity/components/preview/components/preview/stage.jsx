@@ -92,7 +92,7 @@ class StageComponent extends React.Component {
     var zoomedWidth  = canvasWidth * zoom;
 
     var left = stage.offsetWidth / 2 - zoomedWidth / 2;
-    var top  = stage.offsetHeight / 2.5 - zoomedHeight / 2;
+    var top  = stage.offsetHeight / 2.2 - zoomedHeight / 2;
 
     canvas.style.zoom = zoom;
 

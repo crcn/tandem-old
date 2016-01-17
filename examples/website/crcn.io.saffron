@@ -186,7 +186,8 @@
                         "fontFamily": "Helvetica",
                         "fontSize": "0.932em",
                         "position": "relative",
-                        "display": "block"
+                        "display": "block",
+                        "lineHeight": "1.4em"
                       }
                     },
                     "type": "component",

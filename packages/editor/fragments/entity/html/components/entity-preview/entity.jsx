@@ -93,19 +93,34 @@ class HTMLEntityRootComponent extends React.Component {
 
   componentDidMount() {
     var placeholder = this.refs.placeholder;
-    var shadow = placeholder.createShadowRoot();
 
-    ReactDOM.render(<HTMLEntityComponent {...this.props} />, shadow);
+    var doc = placeholder.contentWindow.document;
+    doc.body.style.padding = doc.body.style.margin = '0px';
+    var div = this.div = document.createElement('div');
+
+    doc.body.appendChild(div);
+    this._render();
   }
 
   componentWillReceiveProps(props) {
-    ReactDOM.render(<HTMLEntityComponent {...props} />, this.refs.placeholder.shadowRoot);
+    this._render();
+  }
+
+  _render() {
+    this.div.style.zoom = this.props.app.preview.zoom;
+    ReactDOM.render(<HTMLEntityComponent {...this.props} />, this.div);
   }
 
   render() {
-    return <div ref='placeholder'>
+    var style = {
+      border: 'none',
+      width: '100%',
+      height: '100%'
+    };
 
-    </div>;
+    return <iframe ref='placeholder' style={style}>
+
+    </iframe>;
   }
 }
 
