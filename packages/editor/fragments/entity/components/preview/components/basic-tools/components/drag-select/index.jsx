@@ -31,7 +31,7 @@ class DragSelectComponent extends React.Component {
     var container = this.refs.container;
     var b = container.getBoundingClientRect();
 
-    var entities = this.props.app.rootEntity.flatten();
+    var entities = this.props.app.rootEntity.children;
 
     this.setState({
       left: event.clientX - b.left,
