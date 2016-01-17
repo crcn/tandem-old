@@ -43,14 +43,18 @@ class TextToolComponent extends React.Component {
       zIndex   : 999
     };
 
-    var inputStyle = Object.assign({
-      width    : cstyle.width,
-      height   : cstyle.height
-    }, selection.getStyle());
-    delete inputStyle['position'];
-    delete inputStyle['left'];
-    delete inputStyle['top'];
-    delete inputStyle['background'];
+    var element = this.props.selection[0].preview.displayObject.element;
+
+    var cstyle2 = window.getComputedStyle(element);
+
+    var inputStyle = {
+      width         : cstyle.width,
+      height        : cstyle.height,
+      fontSize      : cstyle2.fontSize,
+      fontFamily    : cstyle2.fontFamily,
+      letterSpacing : cstyle2.letterSpacing,
+      lineHeight    : cstyle2.lineHeight
+    };
 
     return <div style={style} className='reset-all m-text-tool'>
       <TextInputComponent
