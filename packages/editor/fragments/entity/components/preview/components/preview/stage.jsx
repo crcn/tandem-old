@@ -33,9 +33,14 @@ class StageComponent extends React.Component {
     return { x, y };
   }
 
+  componentWillMount() {
+    // this.props.app.notifier.push(this);
+  }
+
   componentWillUnmount() {
     this.props.app.notifier.remove(this);
   }
+
 
   onDropFile(files, event) {
 
@@ -67,23 +72,54 @@ class StageComponent extends React.Component {
     event.preventDefault();
   }
 
+  componentWillReceiveProps() {
+
+    // tmp fix - fixes gitteryness. Works for now
+    this._center();
+    requestAnimationFrame(() => {
+      this._center();
+    });
+  }
+
+  _center() {
+    var stage  = this.refs.stage;
+    var canvas = this.refs.canvas;
+    var canvasOuter = this.refs.canvasOuter;
+
+    var { canvasWidth, canvasHeight, zoom }   = this.props.app.preview;
+
+    var zoomedHeight = canvasHeight * zoom;
+    var zoomedWidth  = canvasWidth * zoom;
+
+    var left = stage.offsetWidth / 2 - zoomedWidth / 2;
+    var top  = stage.offsetHeight / 2.5 - zoomedHeight / 2;
+
+    canvas.style.zoom = zoom;
+
+    if (zoomedWidth > stage.offsetWidth) {
+      canvasOuter.style.width = canvas.style.width = '100%';
+      canvasOuter.style.left  = '0px';
+    } else {
+      canvasOuter.style.width = 'auto';
+      canvas.style.width = canvasWidth + 'px';
+      canvasOuter.style.left = Math.max(0, left) + 'px';
+    }
+
+    if (zoomedHeight > stage.offsetHeight) {
+      canvasOuter.style.height = canvas.style.height = '100%';
+      canvasOuter.style.top  = '0px';
+    } else {
+      canvasOuter.style.height = 'auto';
+      canvas.style.height = canvasHeight + 'px';
+      canvasOuter.style.top = Math.max(0, top) + 'px';
+    }
+  }
+
   render() {
 
     var app = this.props.app;
     var preview = this.props.app.preview;
     var { zoom, canvasWidth, canvasHeight, currentTool } = preview;
-
-    var canvasStyle = {
-
-      // necessary to ensure that percentages work for
-      // child elements - especially when converting units.
-      position: 'relative',
-
-      // TODO - this needs to be based off of room symbol
-      width  : canvasWidth,
-      height : canvasHeight,
-      zoom   : zoom
-    };
 
     var previewStyle = {
       cursor: currentTool ? currentTool.cursor : void 0
@@ -105,23 +141,26 @@ class StageComponent extends React.Component {
           className='m-preview-stage--drop-zone'
           activeClassName='m-preview-stage--drop-zone-active'
           >
-        <div
-          id='preview-canvas-outer'
-          className='m-preview-stage--center'>
-            <div
-              ref='canvas'
-              className='m-preview-stage--canvas'
-              style={canvasStyle}>
 
-              <div id='preview-canvas' ref='drawLayer' className='m-preview-stage--draw-layer'>
-                { entity ? <RegisteredComponent {...this.props} entity={entity} queryOne={{
-                  componentType: entity.componentType
-                }} /> : void 0 }
+        <div className='m-preview-stage--inner'>
+          <div
+            id='preview-canvas-outer'
+            ref='canvasOuter'
+            className='m-preview-stage--center'>
+              <div
+                ref='canvas'
+                className='m-preview-stage--canvas'>
+
+                <div id='preview-canvas' ref='drawLayer' className='m-preview-stage--draw-layer'>
+                  { entity ? <RegisteredComponent {...this.props} entity={entity} queryOne={{
+                    componentType: entity.componentType
+                  }} /> : void 0 }
+                </div>
+
               </div>
 
-            </div>
-
-          { entity ? <ToolsLayerComponent app={app} zoom={preview.zoom} /> : void 0 }
+            { entity ? <ToolsLayerComponent app={app} zoom={preview.zoom} /> : void 0 }
+          </div>
         </div>
       </DropZone>
 

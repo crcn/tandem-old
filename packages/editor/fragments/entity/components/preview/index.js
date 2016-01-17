@@ -19,7 +19,7 @@ export function create({ app }) {
   var preview = app.preview = Preview.create({
     canvasWidth  : 1024,
     canvasHeight : 768,
-    zoom         : 0.90,
+    zoom         : 0.70,
     notifier     : app.notifier
   });
 
