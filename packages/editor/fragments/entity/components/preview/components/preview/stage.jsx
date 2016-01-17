@@ -115,6 +115,7 @@ class StageComponent extends React.Component {
     var stage  = this.refs.stage;
     var canvas = this.refs.canvas;
     var canvasOuter = this.refs.canvasOuter;
+    var previewInner = this.refs.previewInner;
 
     var { canvasWidth, canvasHeight, zoom }   = this.props.app.preview;
 
@@ -126,7 +127,7 @@ class StageComponent extends React.Component {
 
     canvas.style.zoom = zoom;
 
-    if (zoomedWidth > stage.offsetWidth) {
+    if (zoomedWidth >= previewInner.offsetWidth) {
       canvasOuter.style.width = canvas.style.width = '100%';
       canvasOuter.style.left  = '0px';
     } else {
@@ -135,7 +136,7 @@ class StageComponent extends React.Component {
       canvasOuter.style.left = Math.max(0, left) + 'px';
     }
 
-    if (zoomedHeight > stage.offsetHeight) {
+    if (zoomedHeight >= previewInner.offsetHeight) {
       canvasOuter.style.height = canvas.style.height = '100%';
       canvasOuter.style.top  = '0px';
     } else {
@@ -176,7 +177,7 @@ class StageComponent extends React.Component {
           activeClassName='m-preview-stage--drop-zone-active'
           >
 
-        <div className='m-preview-stage--inner'>
+        <div ref='previewInner' className='m-preview-stage--inner'>
           <div
             id='preview-canvas-outer'
             ref='canvasOuter'
