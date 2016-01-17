@@ -33,29 +33,48 @@ class DragSelectComponent extends React.Component {
 
     var entities = this.props.app.rootEntity.children;
 
+    var left = event.clientX - b.left;
+    var top  = event.clientY - b.top;
+
     this.setState({
-      left: event.clientX - b.left,
-      top : event.clientY - b.top,
+      left: left,
+      top : top,
       dragging: true
     });
 
     startDrag(event, (event, info) => {
+
+      var x = left;
+      var y = top;
+      var w = Math.abs(info.delta.x);
+      var h = Math.abs(info.delta.y);
+
+      if (info.delta.x < 0) {
+        x = left - w;
+      }
+
+      if (info.delta.y < 0) {
+        y = top - h;
+      }
+
       this.setState({
-        width: info.delta.x,
-        height: info.delta.y
+        left: x,
+        top: y,
+        width: w,
+        height: h
       });
 
       var bounds = BoundingRect.create({
-        left   : this.state.left,
-        top    : this.state.top,
-        right  : this.state.left + info.delta.x,
-        bottom : this.state.top + info.delta.y
+        left   : x,
+        top    : y,
+        right  : x + w,
+        bottom : y + h
       });
 
       var selection = [];
 
       entities.forEach(function(entity) {
-        if (boundsIntersect(entity.preview.getBoundingRect(), bounds)) {
+        if (boundsIntersect(entity.preview.getBoundingRect(true), bounds)) {
           selection.push(entity);
         }
       });

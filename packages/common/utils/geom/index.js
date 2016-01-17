@@ -19,8 +19,6 @@ export function calculateBoundingRect(allRects) {
 }
 
 export function boundsIntersect(r1, r2) {
-  return !(r2.left > r1.right ||
-    r2.right < r1.left ||
-    r2.top > r1.bottom ||
-    r2.bottom < r1.top);
+  return Math.max(r1.left, r2.left) <= Math.min(r1.right, r2.right) &&
+  Math.max(r1.top, r2.top) <= Math.min(r1.bottom, r2.bottom);
 }
