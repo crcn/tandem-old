@@ -9,7 +9,19 @@ import { PREVIEW_STAGE_CLICK, PREVIEW_STAGE_MOUSE_DOWN, UPLOAD_FILE } from 'edit
 class StageComponent extends React.Component {
 
   onMouseEvent(event) {
+    var p = this._getMousePosition(event);
+    this.props.app.notifier.notify({
+      ...event,
+      type: {
+        click: PREVIEW_STAGE_CLICK,
+        mousedown: PREVIEW_STAGE_MOUSE_DOWN
+      }[event.type],
+      x: p.x,
+      y: p.y
+    });
+  }
 
+  _getMousePosition(event) {
     var rect = this.refs.canvas.getBoundingClientRect();
 
     // this math seems very odd. However, rect.left property gets zoomed,
@@ -18,15 +30,7 @@ class StageComponent extends React.Component {
     var x = (event.clientX - rect.left * this.props.app.preview.zoom) / this.props.app.preview.zoom;
     var y = (event.clientY - rect.top * this.props.app.preview.zoom) / this.props.app.preview.zoom;
 
-    this.props.app.notifier.notify({
-      ...event,
-      type: {
-        click: PREVIEW_STAGE_CLICK,
-        mousedown: PREVIEW_STAGE_MOUSE_DOWN
-      }[event.type],
-      x: x,
-      y: y
-    });
+    return { x, y };
   }
 
   componentDidMount() {
@@ -52,24 +56,22 @@ class StageComponent extends React.Component {
     this.props.app.notifier.remove(this);
   }
 
-  onDropFile(files) {
+  onDropFile(files, event) {
+
+    var { x, y } = this._getMousePosition(event);
+
+    // needed for positioning items that have
+    // been dropped. Nast. Logic should be done here.
+    app.setProperties({
+      mouseX: x,
+      mouseY: y
+    });
+
     files.forEach((file) => {
       this.props.app.notifier.notify({
         type: UPLOAD_FILE,
         file: file
       });
-    });
-  }
-
-  onMouseMove(event) {
-    var rect = this.refs.canvas.getBoundingClientRect();
-    var zoom = this.props.app.preview.zoom;
-
-    // needed for positioning items that have
-    // been dropped
-    app.setProperties({
-      mouseX: event.clientX - rect.left / zoom,
-      mouseY: event.clientY - rect.top / zoom
     });
   }
 
@@ -104,7 +106,7 @@ class StageComponent extends React.Component {
 
     return <div ref='stage' className='m-preview-stage' style={previewStyle}>
       <div ref='inner' className='m-preview-stage--inner'>
-        <div ref='scroller' className='m-preview-stage--scroll' style={scrollStyle} onClick={this.onMouseEvent.bind(this)} onMouseDown={this.onMouseEvent.bind(this)} onMouseMove={this.onMouseMove.bind(this)}>
+        <div ref='scroller' className='m-preview-stage--scroll' style={scrollStyle} onClick={this.onMouseEvent.bind(this)} onMouseDown={this.onMouseEvent.bind(this)}>
 
           <DropZone
             disableClick={true}
