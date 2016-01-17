@@ -18,16 +18,23 @@ function create({ app }) {
   function openFile(message) {
     currentFileMessage = message;
     var content = message.content;
-    var json = {};
+    var rootEntity;
+
+    var div = app.fragments.queryOne({
+      id: 'elementEntity'
+    });
 
     try {
-      json = JSON.parse(content);
+      rootEntity = deserializeEntity(JSON.parse(message.content), app.fragments);
     } catch(e) {
       console.error('unable to open file %s', message.filePath);
-      return;
+      rootEntity = div.factory.create({
+        componentType : 'element',
+        tagName       : 'div',
+        layerExpanded : true
+      });
     }
 
-    var rootEntity = deserializeEntity(json, app.fragments);
 
     app.notifier.notify(RootEntityMessage.create(SET_ROOT_ENTITY, rootEntity));
     app.notifier.notify({ type: CLEAR_HISTORY });

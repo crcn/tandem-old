@@ -1,0 +1,35 @@
+{
+  "children": [
+    {
+      "children": [],
+      "props": {
+        "fragmentId": "elementEntity",
+        "id": "acc2e2a0-bcaf-11e5-b3c8-8bbd015bc776",
+        "attributes": {
+          "style": {
+            "width": "100%",
+            "height": "200px",
+            "background": "rgba(0,0,0,0.5)"
+          }
+        },
+        "type": "component",
+        "componentType": "element",
+        "tagName": "div",
+        "editLayerSource": false,
+        "preview": null
+      }
+    }
+  ],
+  "props": {
+    "fragmentId": "elementEntity",
+    "id": "a9cf1e10-bcaf-11e5-b3c8-8bbd015bc776",
+    "attributes": {
+      "style": {}
+    },
+    "type": "component",
+    "componentType": "element",
+    "tagName": "div",
+    "layerExpanded": true,
+    "preview": null
+  }
+}
