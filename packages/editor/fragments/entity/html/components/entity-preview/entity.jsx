@@ -160,17 +160,25 @@ class HTMLEntityRootComponent extends React.Component {
 
     if (!this.root || this.props.entity !== props.entity) {
 
-      if (this.root) {
-        div.removeChild(this.root.element);
-        this.root.dispose();
-      }
-
+      this._cleanup();
       this.root = createElement(props.entity);
       div.appendChild(this.root.element);
     }
 
     div.style.zoom = this.props.app.preview.zoom;
     this.root.invalidateCache();
+  }
+
+  componentWillUnmount() {
+    this._cleanup();
+  }
+
+  _cleanup() {
+    if (this.root) {
+      this.div.removeChild(this.root.element);
+      this.root.dispose();
+      this.root = void 0;
+    }
   }
 
   render() {
