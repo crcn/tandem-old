@@ -1,5 +1,6 @@
 import React from 'react';
 import EntityPreview from './entity-preview';
+import { clone } from 'common/utils/object';
 
 class HTMLEntityComponent extends React.Component {
 
@@ -67,8 +68,16 @@ class HTMLEntityComponent extends React.Component {
     });
 
     var Type = entity.componentType === 'text' ? 'span' : entity.tagName;
+    var attribs = clone(entity.attributes);
 
-    return <Type ref='element' id={entity.id} {...entity.attributes}>
+    // react likes className instead of class here. This silences
+    // The warning for us
+    if (attribs.class) {
+      attribs.className = attribs.class;
+      attribs.class = void 0;
+    }
+
+    return <Type ref='element' id={entity.id} {...attribs}>
       { children.length ? children : entity.value }
     </Type>;
   }
