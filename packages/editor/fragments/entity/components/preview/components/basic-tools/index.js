@@ -4,12 +4,13 @@ import {
   KeyCommandFragment
 } from 'editor/fragment/types';
 
+import sift from 'sift';
 import TextTool from './controllers/text';
 import PointerTool from './controllers/pointer';
 import TextEditTool from './controllers/text-edit';
 import { INITIALIZE } from 'base/message-types';
 import { TypeNotifier } from 'common/notifiers';
-import { SET_TOOL, GROUP_SELECTION, SET_ROOT_ENTITY } from 'editor/message-types';
+import { SET_TOOL, GROUP_SELECTION, SET_ROOT_ENTITY, SetFocusMessage } from 'editor/message-types';
 
 import TextToolComponent from './components/text';
 import DragSelectComponent from './components/drag-select';

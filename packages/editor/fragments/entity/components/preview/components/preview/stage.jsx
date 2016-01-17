@@ -4,7 +4,20 @@ import React from 'react';
 import DropZone from 'react-dropzone';
 import ToolsLayerComponent from './tools';
 import RegisteredComponent from 'common/components/registered';
+import TextInputComponent from 'common/components/inputs/text';
+import TextEditorComponent from 'common/components/text-editor';
+
 import { PREVIEW_STAGE_CLICK, PREVIEW_STAGE_MOUSE_DOWN, UPLOAD_FILE } from 'editor/message-types';
+
+var ref = {
+  value: `something other other then that is an interesting thinggg`,
+  getValue() {
+    return this.value;
+  },
+  setValue(value) {
+    this.value = value;
+  }
+}
 
 class StageComponent extends React.Component {
 
@@ -163,6 +176,20 @@ class StageComponent extends React.Component {
       pointerEvents: this.state.scrolling ? 'none' : 'all'
     };
 
+    return <TextEditorComponent
+      style={{
+        border: '1px solid black',
+        display: 'inline-block',
+        width: '200px',
+        fontFamily: 'Helvetica'
+      }}
+      source={ref.getValue()}
+      onChange={(source) => {
+        ref.setValue(source);
+        this.setState({});
+      }} />
+
+
     return <div
       ref='stage'
       className='m-preview-stage'
@@ -170,6 +197,8 @@ class StageComponent extends React.Component {
       onClick={this.onMouseEvent.bind(this)}
       onMouseDown={this.onMouseEvent.bind(this)}
       onWheel={this.onScroll.bind(this)}>
+
+
 
         <DropZone
           disableClick={true}

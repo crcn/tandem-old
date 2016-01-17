@@ -19,7 +19,7 @@ describe(__filename + '#', function() {
     app.dispose();
   });
 
-  it('shows when an element is in focus', async function() {
+  xit('shows when an element is in focus', async function() {
     var targetEntity = app.rootEntity.children[0];
     var preview = targetEntity.preview;
     actions.setSelection(app, [targetEntity]);

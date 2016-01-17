@@ -84,7 +84,14 @@ class TextRuler extends BaseObject {
 
     // copy over the styles defined for the text ruler so that
     // we can make an accurate measurement
-    Object.assign(span.style, this.style || {});
+    var ts = this.style;
+
+    Object.assign(span.style, {
+      letterSpacing: ts.letterSpacing,
+      lineHeight   : ts.lineHeight,
+      fontSize     : ts.fontSize,
+      fontFamily   : ts.fontFamily
+    });
 
     // set the encoded
     span.innerHTML = encode(char);
