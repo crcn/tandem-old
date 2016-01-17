@@ -1,6 +1,7 @@
 import './stage.scss';
 
 import React from 'react';
+import DropZone from 'react-dropzone';
 import ToolsLayerComponent from './tools';
 import RegisteredComponent from 'common/components/registered';
 import { PREVIEW_STAGE_CLICK, PREVIEW_STAGE_MOUSE_DOWN } from 'editor/message-types';
@@ -51,6 +52,10 @@ class StageComponent extends React.Component {
     this.props.app.notifier.remove(this);
   }
 
+  onDropFile() {
+    console.log('drop');
+  }
+
   render() {
 
     var app = this.props.app;
@@ -84,23 +89,32 @@ class StageComponent extends React.Component {
       <div ref='inner' className='m-preview-stage--inner'>
         <div ref='scroller' className='m-preview-stage--scroll' style={scrollStyle} onClick={this.onMouseEvent.bind(this)} onMouseDown={this.onMouseEvent.bind(this)}>
 
+          <DropZone
+            disableClick={true}
+            onDrop={this.onDropFile.bind(this)}
+            className='m-preview-stage--drop-zone'
+            activeClassName='m-preview-stage--drop-zone-active'
+            >
           <div className='m-preview-stage--center'>
-            <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle}>
 
-              <div id='preview-canvas'
-                className='m-preview-stage--element-layer'
-                role='preview stage'>
-                <span ref='drawLayer' className='m-preview-stage--draw-layer'>
-                  { entity ? <RegisteredComponent {...this.props} entity={entity} queryOne={{
-                    componentType: entity.componentType
-                  }} /> : void 0 }
-                </span>
+
+              <div ref='canvas' className='m-preview-stage--canvas' style={canvasStyle}>
+
+                <div id='preview-canvas'
+                  className='m-preview-stage--element-layer'
+                  role='preview stage'>
+                  <span ref='drawLayer' className='m-preview-stage--draw-layer'>
+                    { entity ? <RegisteredComponent {...this.props} entity={entity} queryOne={{
+                      componentType: entity.componentType
+                    }} /> : void 0 }
+                  </span>
+                </div>
+
               </div>
-
-            </div>
 
             { entity ? <ToolsLayerComponent app={app} zoom={preview.zoom} /> : void 0 }
           </div>
+        </DropZone>
 
         </div>
       </div>

@@ -31,14 +31,15 @@ class MainComponent extends React.Component {
 
     return <div className='m-editor'>
 
-      <SidebarComponent
+      { !this.props.app.hideLeftSidebar ? <SidebarComponent
         {...this.props}
         position='left'
         maxWidth={400}
-        query={{ paneType: 'app' }} />
+        query={{ paneType: 'app' }} /> : void 0 }
+
       <CenterComponent {...this.props} />
 
-      <SidebarComponent
+      { !this.props.app.hideRightSidebar ? <SidebarComponent
         {...this.props}
         position='right'
         query={{
@@ -46,7 +47,7 @@ class MainComponent extends React.Component {
           paneType: 'entity',
           entityType: selection ? selection.type : void 0
         }}
-        selection={selection} />
+        selection={selection} /> : void 0 }
 
     </div>;
   }

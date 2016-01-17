@@ -1,15 +1,107 @@
 {
   "children": [
     {
-      "children": [],
+      "children": [
+        {
+          "children": [
+            {
+              "children": [],
+              "props": {
+                "fragmentId": "textEntity",
+                "id": "33cc8040-bcb9-11e5-afb0-254e2fb3bf56",
+                "attributes": {
+                  "style": {
+                    "color": "#FFFFFF",
+                    "textAlign": "left",
+                    "fontFamily": "Helvetica",
+                    "marginRight": "2em"
+                  }
+                },
+                "type": "component",
+                "componentType": "text",
+                "label": "label",
+                "value": "Home",
+                "paneType": "text",
+                "preview": null
+              }
+            },
+            {
+              "children": [],
+              "props": {
+                "fragmentId": "textEntity",
+                "id": "5624eba0-bcb9-11e5-afb0-254e2fb3bf56",
+                "attributes": {
+                  "style": {
+                    "color": "#FFFFFF",
+                    "textAlign": "left",
+                    "fontFamily": "Helvetica",
+                    "marginRight": "2em"
+                  }
+                },
+                "type": "component",
+                "componentType": "text",
+                "label": "label",
+                "value": "Layout",
+                "paneType": "text",
+                "preview": null
+              }
+            },
+            {
+              "children": [],
+              "props": {
+                "fragmentId": "textEntity",
+                "id": "573b1690-bcb9-11e5-afb0-254e2fb3bf56",
+                "attributes": {
+                  "style": {
+                    "color": "#FFFFFF",
+                    "textAlign": "left",
+                    "fontFamily": "Helvetica",
+                    "marginRight": "2em"
+                  }
+                },
+                "type": "component",
+                "componentType": "text",
+                "label": "label",
+                "value": "Home",
+                "paneType": "text",
+                "preview": null
+              }
+            }
+          ],
+          "props": {
+            "fragmentId": "elementEntity",
+            "id": "59331600-bcb9-11e5-afb0-254e2fb3bf56",
+            "attributes": {
+              "style": {
+                "position": "absolute",
+                "display": "block",
+                "fontSize": "1.432em",
+                "top": "12.835",
+                "right": "10px",
+                "fontWeight": "100"
+              },
+              "id": "navigation"
+            },
+            "type": "component",
+            "componentType": "element",
+            "tagName": "div",
+            "preview": null,
+            "editLayerSource": false,
+            "layerExpanded": true
+          }
+        }
+      ],
       "props": {
         "fragmentId": "elementEntity",
-        "id": "acc2e2a0-bcaf-11e5-b3c8-8bbd015bc776",
+        "id": "0c7712d0-bcb9-11e5-92d2-e17034f06940",
         "attributes": {
           "style": {
             "width": "100%",
-            "height": "200px",
-            "background": "rgba(0,0,0,0.5)"
+            "height": "37.18%",
+            "position": "absolute",
+            "background": "rgba(0,0,0,0.5)",
+            "left": 0,
+            "top": 0
           },
           "class": "header"
         },
@@ -17,7 +109,8 @@
         "componentType": "element",
         "tagName": "div",
         "editLayerSource": false,
-        "preview": null
+        "preview": null,
+        "layerExpanded": true
       }
     }
   ],

@@ -14,6 +14,7 @@ import SelectorFragment from './fragments/selector';
 import SettingsFragment from './fragments/settings';
 import ClipboardFragment from './fragments/clipboard';
 import SaffronFileHandler from './fragments/saffron-file-handler';
+import KeyCommandsFragment from './fragments/key-commands';
 import KeyCommanderFragment from './fragments/key-commander';
 
 import MainComponent from './components/main';
@@ -30,6 +31,7 @@ class Application extends BaseApplication {
     SettingsFragment,
     ClipboardFragment,
     SaffronFileHandler,
+    KeyCommandsFragment,
     KeyCommanderFragment
   ]);
 

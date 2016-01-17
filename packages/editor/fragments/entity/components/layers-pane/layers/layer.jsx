@@ -320,7 +320,7 @@ class LayerComponent extends React.Component {
       <LayerLabelComponent paddingLeft={paddingLeft} {...this.props} />
 
       { expanded ? entity.children.map((child, i) => {
-        return <LayerComponent {...this.props} entity={child} key={i} depth={depth + 1}  />
+        return <LayerComponent {...this.props} entity={child} key={child.id} depth={depth + 1}  />
       }) : void 0 }
 
     </div>;

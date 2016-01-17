@@ -179,7 +179,7 @@ class ElementLayerLabelComponent extends React.Component {
   }
 
   renderHTMLInput() {
-    return <FocusComponent><AutosizeInput
+    return <FocusComponent key='input'><AutosizeInput
       type='text'
       className='m-layer-label-input'
       onFocus={this.onInputFocus.bind(this)}
