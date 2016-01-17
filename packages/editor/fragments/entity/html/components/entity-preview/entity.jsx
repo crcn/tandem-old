@@ -23,7 +23,7 @@ class BaseNode {
     entity.notifier.push(this);
   }
 
-  notify() {
+  notify(message) {
     this.invalidateCache();
   }
 
@@ -51,7 +51,7 @@ class ElementNode extends BaseNode {
   }
 
   notify(message) {
-    super.notify();
+    super.notify(message);
     this._updateAttributes();
 
     if (message.changes)
@@ -115,8 +115,8 @@ class TextNode extends ElementNode {
     this._updateText();
   }
 
-  notify() {
-    super.notify();
+  notify(message) {
+    super.notify(message);
     this._updateText();
   }
 
