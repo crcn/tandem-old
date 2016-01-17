@@ -52,9 +52,10 @@ class StageComponent extends React.Component {
     this.props.app.notifier.remove(this);
   }
 
-  onDropFile(event) {
+  onDropFile(files) {
     console.log('drop');
-    console.log(event);
+    console.log(files);
+
   }
 
   render() {
