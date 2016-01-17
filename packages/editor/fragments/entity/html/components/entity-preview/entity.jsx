@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import EntityPreview from './entity-preview';
 import { clone } from 'common/utils/object';
-
+import EntityPreview from './entity-preview';
 
 function convertStyle(style) {
   var converted = {};
