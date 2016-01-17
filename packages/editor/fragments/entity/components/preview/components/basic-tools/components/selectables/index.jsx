@@ -72,7 +72,9 @@ class SelectableComponent extends React.Component {
 class SelectablesComponent extends React.Component {
   render() {
 
-    var preview   = this.props.app.preview;
+    // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.
+    if (this.props.app.selection.preview && this.props.app.selection.preview.moving) return null;
+
     var selectables = this.props.app.rootEntity.flatten().filter((entity) => {
       return entity !== this.props.app.rootEntity && /component/.test(entity.type);
     }).map((entity) => {
