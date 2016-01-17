@@ -16,33 +16,19 @@ import {
   multiplyStyle
 } from 'common/utils/html';
 
-const CANVAS_ELEMENT_ID = 'preview-canvas';
-const CANVAS_OUTER_ELEMENT_ID = 'preview-canvas-outer';
-
 function getElementOffset(element) {
   var p = element.parentNode;
 
   var left = 0;
   var top  = 0;
 
-  while(p && p.id !== CANVAS_ELEMENT_ID) {
+  var zoom = calculateZoom(element);
+
+  while(p) {
     left += p.offsetLeft || 0;
-    top  += p.offsetTop || 0;
-    p = p.parentNode || p.host;
-  }
-
-  return { left, top };
-}
-
-function getElementScrollOffset(element) {
-  var p = element.parentNode;
-
-  var left = 0;
-  var top  = 0;
-
-  while(p && p.id !== CANVAS_OUTER_ELEMENT_ID) {
-    left += p.scrollLeft || 0;
-    top  += p.scrollTop || 0;
+    top  += p.offsetTop  || 0;
+    left -= (p.scrollLeft || 0) / zoom;
+    top  -= (p.scrollTop  || 0) / zoom;
     p = p.parentNode || p.host;
   }
 
@@ -53,11 +39,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
   constructor(entity, component) {
     super(entity, component);
-
-
     this.getBoundingRect = memoize(this.getBoundingRect.bind(this));
-    //this.getStyle = memoize(this.getStyle.bind(this), { primitive: true });
-    //this.getComputedStyle = memoize(this.getComputedStyle.bind(this));
   }
 
   /**
@@ -210,15 +192,12 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var rect   = refs.element.getBoundingClientRect();
     var cs     = this.getComputedStyle();
 
-
-    var offset = getElementScrollOffset(refs.element);
-
     // margins are also considered bounds - add them here. Fixes a few issues
     // when selecting multiple items with different items & dragging them around.
-    var left   = rect.left   - cs.marginLeft - offset.left;
-    var top    = rect.top    - cs.marginTop - offset.top;
-    var right  = rect.right  - cs.marginRight - offset.left;
-    var bottom = rect.bottom - cs.marginBottom - offset.top;
+    var left   = rect.left   - cs.marginLeft;
+    var top    = rect.top    - cs.marginTop;
+    var right  = rect.right  + cs.marginRight;
+    var bottom = rect.bottom + cs.marginBottom;
 
     var width = right - left;
     var height = bottom - top;

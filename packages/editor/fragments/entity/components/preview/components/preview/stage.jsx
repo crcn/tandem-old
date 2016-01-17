@@ -8,6 +8,11 @@ import { PREVIEW_STAGE_CLICK, PREVIEW_STAGE_MOUSE_DOWN, UPLOAD_FILE } from 'edit
 
 class StageComponent extends React.Component {
 
+  constructor() {
+    super();
+    this.state = {};
+  }
+
   onMouseEvent(event) {
     var p = this._getMousePosition(event);
     this.props.app.notifier.notify({
@@ -23,12 +28,15 @@ class StageComponent extends React.Component {
 
   _getMousePosition(event) {
     var rect = this.refs.canvas.getBoundingClientRect();
+    var iframe = this.refs.canvas.querySelector('iframe');
+    var idoc = iframe.contentWindow.document;
+
 
     // this math seems very odd. However, rect.left property gets zoomed,
     // whereas the width stays the same. Need to offsets mouse x & y with this.
 
-    var x = (event.clientX - rect.left * this.props.app.preview.zoom) / this.props.app.preview.zoom;
-    var y = (event.clientY - rect.top * this.props.app.preview.zoom) / this.props.app.preview.zoom;
+    var x =  (idoc.body.scrollLeft + event.clientX - rect.left * this.props.app.preview.zoom) / this.props.app.preview.zoom;
+    var y =  (idoc.body.scrollTop + event.clientY - rect.top * this.props.app.preview.zoom) / this.props.app.preview.zoom;
 
     return { x, y };
   }
@@ -62,14 +70,18 @@ class StageComponent extends React.Component {
   }
 
   onScroll(event) {
-    var canvas = this.refs.canvas;
-    canvas.scrollLeft += event.deltaX;
-    canvas.scrollTop += event.deltaY;
 
-    // vanilla notification to re-render the DOM
-    this.props.app.notifier.notify({ type: 'canvasScrolled' });
+    this.setState({
+      scrolling: true
+    });
 
-    event.preventDefault();
+    this.props.app.notifier.notify({ type: 'scroll' });
+
+    clearTimeout(this._scrollTimer);
+    this._scrollTimer = setTimeout(() => {
+      this.setState({ scrolling: false });
+    }, 50);
+    // event.preventDefault();
   }
 
   componentWillReceiveProps() {
@@ -127,6 +139,10 @@ class StageComponent extends React.Component {
 
     var entity = this.props.app.rootEntity;
 
+    var toolsStyle = {
+      pointerEvents: this.state.scrolling ? 'none' : 'all'
+    };
+
     return <div
       ref='stage'
       className='m-preview-stage'
@@ -159,7 +175,7 @@ class StageComponent extends React.Component {
 
               </div>
 
-            { entity ? <ToolsLayerComponent app={app} zoom={preview.zoom} /> : void 0 }
+            { entity ? <ToolsLayerComponent style={toolsStyle} app={app} zoom={preview.zoom} /> : void 0 }
           </div>
         </div>
       </DropZone>
