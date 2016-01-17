@@ -13,8 +13,6 @@
 - [ ] drop shadow tool
 - [ ] 3D transform tool
 - [ ] animation tool
-- [ ] move entity to front / back / forward (zIndex)
-- [ ] entity-specific props pane (images and stuff)
 - [ ] components tool
 - [x] ruler tool
 - [x] sink tool (snap to grid)
