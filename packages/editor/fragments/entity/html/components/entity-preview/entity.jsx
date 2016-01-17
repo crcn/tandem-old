@@ -107,8 +107,16 @@ class HTMLEntityRootComponent extends React.Component {
   }
 
   _render(props) {
-    this.div.style.zoom = this.props.app.preview.zoom;
-    ReactDOM.render(<HTMLEntityComponent {...props} />, this.div);
+
+    // ReactDOM.render() does not happen on rAF, so do it here to
+    // prevent layout thrashing
+    if (this._rendering) return;
+    this._rendering = true;
+    requestAnimationFrame(() => {
+      this._rendering = false;
+      this.div.style.zoom = this.props.app.preview.zoom;
+      ReactDOM.render(<HTMLEntityComponent {...props} />, this.div);
+    });
   }
 
   render() {
