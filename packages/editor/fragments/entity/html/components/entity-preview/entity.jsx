@@ -121,7 +121,7 @@ class TextNode extends ElementNode {
   }
 
   _updateText() {
-  this.element.textContent = this.entity.value;
+    this.element.textContent = this.entity.value;
   }
 }
 
@@ -133,10 +133,6 @@ function createElement(entity) {
   }
 }
 class HTMLEntityRootComponent extends React.Component {
-
-  constructor() {
-    super();
-  }
 
   componentDidMount() {
     var placeholder = this.refs.placeholder;
