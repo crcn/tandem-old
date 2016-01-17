@@ -99,6 +99,7 @@ class StageComponent extends React.Component {
         this.setState({ scrolling: false });
       }, 50);
     }
+
     event.preventDefault();
   }
 

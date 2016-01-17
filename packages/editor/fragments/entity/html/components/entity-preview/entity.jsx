@@ -3,88 +3,136 @@ import ReactDOM from 'react-dom';
 import EntityPreview from './entity-preview';
 import { clone } from 'common/utils/object';
 
-class HTMLEntityComponent extends React.Component {
 
-  constructor() {
-    super();
+function convertStyle(style) {
+  var converted = {};
+  for (var key in style) {
+    var v = style[key];
+    if (/left|top|margin|width|height/.test(key) && !isNaN(v)) {
+      v = v + 'px';
+    }
+    converted[key] = v;
   }
+  return converted;
+}
 
-  setHook(entity) {
-    this._cleanup();
-    if (!entity) return;
-    this._preview = entity.preview = EntityPreview.create(entity, this);
+class BaseNode {
+  constructor(entity, element) {
+    this.entity  = entity;
+    this.element = element;
+    this.preview = entity.preview = new EntityPreview(entity, this);
     entity.notifier.push(this);
-
-    // global messages should purge preview cache. E.g: user zooms
-    // in - bounds need to be updated
-    this.props.app.notifier.push(this._preview);
-    this._invalidateCache = true;
   }
 
-  componentWillUnmount() {
-    this.props.entity.notifier.remove(this);
+  notify() {
+    this.invalidateCache();
   }
 
-  _cleanup() {
-    if (this._preview) {
-      this._preview.entity.notifier.remove(this);
-      this.props.app.notifier.remove(this._preview);
-    }
+  invalidateCache() {
+    this.preview.invalidateCache();
   }
 
-  componentDidMount() {
-    this.setHook(this.props.entity);
-  }
-
-  notify(changes) {
-    this._invalidateCache = true;
-  }
-
-  componentWillUnmount() {
-    this.setHook(void 0);
-  }
-
-  shouldComponentUpdate() {
-    return this._invalidateCache;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.entity !== nextProps.entity) {
-      this.setHook(nextProps.entity);
-    }
-
-    // at this point the computed display props have changed - invalidate
-    // the preview cache so that returned attributes are not memoized
-    this._preview.invalidateCache();
-  }
-
-  render() {
-
-    this._invalidateCache = false;
-
-    var entity = this.props.entity;
-
-    var children = entity.children.map((child) => {
-      return <HTMLEntityComponent {...this.props} key={child.id} entity={child} />
-    });
-
-    var Type = entity.componentType === 'text' ? 'span' : entity.tagName;
-    var attribs = clone(entity.attributes);
-
-    // react likes className instead of class here. This silences
-    // The warning for us
-    if (attribs.class) {
-      attribs.className = attribs.class;
-      attribs.class = void 0;
-    }
-
-    return <Type ref='element' id={entity.id} {...attribs}>
-      { children.length ? children : entity.value }
-    </Type>;
+  dispose() {
+    this.entity.notifier.remove(this);
   }
 }
 
+class ElementNode extends BaseNode {
+  constructor(entity, element) {
+    super(entity, element || document.createElement(entity.tagName));
+    this._addChildren();
+    this._updateAttributes();
+  }
 
+  invalidateCache() {
+    super.invalidateCache();
+    this._children.forEach((child) => {
+      child.invalidateCache();
+    });
+  }
+
+  notify(message) {
+    super.notify();
+    this._updateAttributes();
+
+    if (message.changes)
+    for (var change of message.changes) {
+      if (change.target === this.entity.children) {
+        this._updateChildren(change);
+      }
+    }
+  }
+
+  _updateChildren(change) {
+    // TODO
+    // console.log('update', change);
+    change.removed.forEach((entity) => {
+      for (var i = this._children.length; i--;) {
+        var child = this._children[i];
+        if (child.entity === entity) {
+          this._children.splice(i, 1);
+          child.dispose();
+          this.element.removeChild(child.element);
+        }
+      }
+    });
+
+    change.added.forEach((entity) => {
+      var i = this.entity.children.indexOf(entity);
+      var child = createElement(entity);
+      this._children.splice(i, 0, child);
+      if (i === this.entity.children.length - 1) {
+        this.element.appendChild(child.element);
+      } else {
+        this.element.insertBefore(child.element, this.element.childNodes[i + 1]);
+      }
+    });
+  }
+
+  _addChildren() {
+    (this._children = this.entity.children.map(createElement)).forEach((child) => {
+      this.element.appendChild(child.element);
+    });
+  }
+
+  _updateAttributes() {
+    var attribs = this.entity.attributes;
+
+    for (var key in attribs) {
+      var value = attribs[key];
+      if (key === 'style') {
+        this.element.setAttribute('style', '');
+        Object.assign(this.element.style, convertStyle(value));
+      } else {
+        this.element.setAttribute(key, value);
+      }
+    }
+  }
+}
+
+class TextNode extends ElementNode {
+  constructor(entity) {
+    super(entity, document.createElement('span'));
+    this._updateText();
+  }
+
+  notify() {
+    super.notify();
+    this._updateText();
+  }
+
+  _updateText() {
+  this.element.textContent = this.entity.value;
+  }
+}
+
+function createElement(entity) {
+  if (entity.componentType === 'element') {
+    return new ElementNode(entity);
+  } else {
+    return new TextNode(entity);
+  }
+}
 class HTMLEntityRootComponent extends React.Component {
 
   constructor() {
@@ -97,7 +145,8 @@ class HTMLEntityRootComponent extends React.Component {
     var doc = placeholder.contentWindow.document;
     doc.body.style.padding = doc.body.style.margin = '0px';
     var div = this.div = document.createElement('div');
-
+    this.root = createElement(this.props.entity);
+    div.appendChild(this.root.element);
     doc.body.appendChild(div);
     this._render(this.props);
   }
@@ -107,16 +156,8 @@ class HTMLEntityRootComponent extends React.Component {
   }
 
   _render(props) {
-
-    // ReactDOM.render() does not happen on rAF, so do it here to
-    // prevent layout thrashing
-    if (this._rendering) return;
-    this._rendering = true;
-    requestAnimationFrame(() => {
-      this._rendering = false;
-      this.div.style.zoom = this.props.app.preview.zoom;
-      ReactDOM.render(<HTMLEntityComponent {...props} />, this.div);
-    });
+    this.div.style.zoom = this.props.app.preview.zoom;
+    this.root.invalidateCache();
   }
 
   render() {

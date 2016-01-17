@@ -110,7 +110,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
   }
 
   getDisplayElement() {
-    return this.displayObject.refs.element;
+    return this.displayObject.element;
   }
 
   setBoundingRect(bounds) {
@@ -157,7 +157,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
    */
 
   getComputedStyle() {
-    var cs   = window.getComputedStyle(this.displayObject.refs.element);
+    var cs   = window.getComputedStyle(this.displayObject.element);
     // normalize computed styles to pixels
     return {
       position: cs.position,
@@ -170,13 +170,13 @@ class ReactEntityComputer extends DisplayEntityComputer {
         paddingTop: cs.paddingTop,
         paddingRight: cs.paddingRight,
         paddingBottom: cs.paddingBottom
-      }, this.displayObject.refs.element)
+      }, this.displayObject.element)
     }
   }
 
   getBoundingRect(zoomProperties) {
 
-    var refs = this.displayObject.refs;
+    var refs = this.displayObject;
 
     if (!refs.element) {
       console.error('trying to calculate display information on entity that is not mounted');
@@ -219,7 +219,7 @@ class ReactEntityComputer extends DisplayEntityComputer {
 
   getStyle(zoomProperties) {
 
-    var refs = this.displayObject.refs;
+    var refs = this.displayObject;
 
     var entity = this.entity;
 
