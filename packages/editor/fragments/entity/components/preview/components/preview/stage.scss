@@ -48,23 +48,7 @@
   &--canvas {
     background-color: white;
     overflow: scroll;
-    z-index: 1;
-
+    position: relative;
     border: 1px solid $color-blue-10;
-  }
-
-  &--element-layer {
-    top: 0px;
-    left: 0px;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-
-    & .reset-all {
-      cursor: inherit;
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
   }
 }

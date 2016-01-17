@@ -17,6 +17,7 @@ import {
 } from 'common/utils/html';
 
 const CANVAS_ELEMENT_ID = 'preview-canvas';
+const CANVAS_OUTER_ELEMENT_ID = 'preview-canvas-outer';
 
 function getElementOffset(element) {
   var p = element.parentNode;
@@ -27,7 +28,22 @@ function getElementOffset(element) {
   while(p && p.id !== CANVAS_ELEMENT_ID) {
     left += p.offsetLeft || 0;
     top  += p.offsetTop || 0;
-    p = p.parentNode;
+    p = p.parentNode || p.host;
+  }
+
+  return { left, top };
+}
+
+function getElementScrollOffset(element) {
+  var p = element.parentNode;
+
+  var left = 0;
+  var top  = 0;
+
+  while(p && p.id !== CANVAS_OUTER_ELEMENT_ID) {
+    left += p.scrollLeft || 0;
+    top  += p.scrollTop || 0;
+    p = p.parentNode || p.host;
   }
 
   return { left, top };
@@ -200,12 +216,16 @@ class ReactEntityComputer extends DisplayEntityComputer {
     var rect   = refs.element.getBoundingClientRect();
     var cs     = this.getComputedStyle();
 
+
+    var offset = getElementScrollOffset(refs.element);
+    // console.log(offset);
+
     // margins are also considered bounds - add them here. Fixes a few issues
     // when selecting multiple items with different items & dragging them around.
-    var left   = rect.left   - pcrect.left - cs.marginLeft;
-    var top    = rect.top    - pcrect.top  - cs.marginTop;
-    var right  = rect.right  - pcrect.left + cs.marginRight;
-    var bottom = rect.bottom - pcrect.top  + cs.marginBottom;
+    var left   = rect.left   - pcrect.left - cs.marginLeft - offset.left;
+    var top    = rect.top    - pcrect.top  - cs.marginTop - offset.top;
+    var right  = rect.right  - pcrect.left + cs.marginRight - offset.left;
+    var bottom = rect.bottom - pcrect.top  + cs.marginBottom - offset.top;
 
     var width = right - left;
     var height = bottom - top;

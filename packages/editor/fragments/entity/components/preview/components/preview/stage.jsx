@@ -57,7 +57,14 @@ class StageComponent extends React.Component {
   }
 
   onScroll(event) {
-    console.log(event);
+    var canvas = this.refs.canvas;
+    canvas.scrollLeft += event.deltaX;
+    canvas.scrollTop += event.deltaY;
+
+    // vanilla notification to re-render the DOM
+    this.props.app.notifier.notify({ type: 'canvasScrolled' });
+
+    event.preventDefault();
   }
 
   render() {
@@ -78,11 +85,6 @@ class StageComponent extends React.Component {
       zoom   : zoom
     };
 
-    var scrollStyle = {
-      width  : canvasWidth * 2,
-      height : canvasHeight * 2
-    };
-
     var previewStyle = {
       cursor: currentTool ? currentTool.cursor : void 0
     };
@@ -95,7 +97,7 @@ class StageComponent extends React.Component {
       style={previewStyle}
       onClick={this.onMouseEvent.bind(this)}
       onMouseDown={this.onMouseEvent.bind(this)}
-      onScroll={this.onScroll.bind(this)}>
+      onWheel={this.onScroll.bind(this)}>
 
         <DropZone
           disableClick={true}
@@ -104,20 +106,17 @@ class StageComponent extends React.Component {
           activeClassName='m-preview-stage--drop-zone-active'
           >
         <div
+          id='preview-canvas-outer'
           className='m-preview-stage--center'>
             <div
               ref='canvas'
               className='m-preview-stage--canvas'
               style={canvasStyle}>
 
-              <div id='preview-canvas'
-                className='m-preview-stage--element-layer'
-                role='preview stage'>
-                <span ref='drawLayer' className='m-preview-stage--draw-layer'>
-                  { entity ? <RegisteredComponent {...this.props} entity={entity} queryOne={{
-                    componentType: entity.componentType
-                  }} /> : void 0 }
-                </span>
+              <div id='preview-canvas' ref='drawLayer' className='m-preview-stage--draw-layer'>
+                { entity ? <RegisteredComponent {...this.props} entity={entity} queryOne={{
+                  componentType: entity.componentType
+                }} /> : void 0 }
               </div>
 
             </div>
