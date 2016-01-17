@@ -1,9 +1,11 @@
 {
-  "name": "interface-builder",
+  "name": "saffronapp",
   "version": "1.0.0",
-  "private": true,
   "description": "",
   "main": "./src/entry.js",
+  "bin": {
+    "saffron": "./bin/saffron"
+  },
   "scripts": {
     "test": "gulp test",
     "start": "webpack-dev-server",
@@ -48,7 +50,8 @@
     "socket.io-client": "^1.4.4",
     "store": "^1.3.17",
     "traverse": "^0.6.6",
-    "uuid": "^2.0.1"
+    "uuid": "^2.0.1",
+    "yargs": "^3.32.0"
   },
   "devDependencies": {
     "babel-core": "^6.3.13",

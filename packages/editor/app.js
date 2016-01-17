@@ -5,9 +5,10 @@ import 'editor/scss/modules/all.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import BaseApplication from 'base/app'; 
+import BaseApplication from 'base/app';
 
 import EntityFragment from './fragments/entity';
+import ProjectFragment from './fragments/project';
 import DevelopFragment from './fragments/develop';
 import HistoryFragment from './fragments/history';
 import SelectorFragment from './fragments/selector';
@@ -23,6 +24,7 @@ class Application extends BaseApplication {
 
   static fragments = BaseApplication.fragments.concat([
     EntityFragment,
+    ProjectFragment,
     DevelopFragment,
     HistoryFragment,
     SelectorFragment,
@@ -39,11 +41,16 @@ class Application extends BaseApplication {
     super.notify(message);
 
     switch(message.type) {
-      case SET_ROOT_ENTITY : return this.setProperties({
-        rootEntity: message.entity
-      });
+      case SET_ROOT_ENTITY : return this._setRootEntity(message);
       case DISPOSE: return this.dispose();
     }
+  }
+
+  _setRootEntity(message) {
+    message.entity.notifier.push(this.notifier);
+    this.setProperties({
+     rootEntity: message.entity
+   });
   }
 
   dispose() {

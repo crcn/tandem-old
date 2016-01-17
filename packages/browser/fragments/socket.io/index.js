@@ -1,5 +1,7 @@
 import socketio from 'socket.io-client';
 import { ApplicationFragment } from 'common/fragment/types';
+import { TypeNotifier } from 'common/notifiers';
+import { LOAD } from 'base/message-types';
 import { clone } from 'common/utils/object';
 import uuid from 'uuid';
 
@@ -13,17 +15,32 @@ export default ApplicationFragment.create({
 });
 
 function create({ app }) {
-  var io = socketio('http://127.0.0.1:8091');
+  app.notifier.push(TypeNotifier.create(LOAD, load.bind(this, app)));
+}
+
+function load(app) {
 
   function send(message) {
     if (message.originId) return;
+    var c = {};
 
-    // test for now - just get this working
-    io.emit('message', {
-      type: message.type,
-      originId: id
-    });
+    // only serialize pojo objects
+    for (var key in message) {
+      var value = message[key];
+      if (value && typeof value === 'object') {
+        if (value.constructor !== Object) {
+          continue;
+        }
+        value = clone(value);
+      }
+
+      c[key] = value;
+    }
+
+    io.emit('message', c);
   }
+
+  var io = socketio('http://127.0.0.1:8091');
 
   app.notifier.push({
     notify: send

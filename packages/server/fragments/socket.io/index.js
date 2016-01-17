@@ -25,7 +25,9 @@ function create({ app }) {
     io.on('connection', function(con) {
       var client = new Client(con);
       clients.push(client);
-      
+
+      // notify the rest of the application that there
+      // is a remote client
       app.notifier.notify({
         type: 'remoteClient',
         client: client

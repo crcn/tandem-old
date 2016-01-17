@@ -1,5 +1,6 @@
 import ServerApplication from './app';
 var app = ServerApplication.create();
+
 app.initialize({
   http: {
     port: 8090
@@ -8,3 +9,5 @@ app.initialize({
     port: 8091
   }
 });
+
+module.exports = app;
