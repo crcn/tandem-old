@@ -21,7 +21,7 @@ class TextToolComponent extends React.Component {
   }
 
   onBlur(event) {
-    // this._complete();
+    this._complete();
   }
 
   _complete() {

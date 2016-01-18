@@ -196,6 +196,7 @@ class TextEditorComponent extends React.Component {
   }
 
   onBlur(event) {
+    console.log('blur');
     this.setState({ focus: false });
     if (this.props.onBlur) {
       this.props.onBlur(event);
@@ -211,6 +212,11 @@ class TextEditorComponent extends React.Component {
   }
 
   onMouseDown(event) {
+    this.focus();
+
+    // prevent default here to ensure that the text input doesn't blur
+    // out when we interact with the text editor
+    event.preventDefault();
 
     var startPosition = this._getSourcePositionFromMouseEvent(event);
 
@@ -274,7 +280,6 @@ class TextEditorComponent extends React.Component {
       data-mouse-trap={false}
       className={['m-text-editor', this.props.className].join(' ')}
       onDoubleClick={this.onDoubleClick.bind(this)}
-      onClick={this.focus.bind(this)}
       onMouseDown={this.onMouseDown.bind(this)}
       >
 
@@ -286,7 +291,7 @@ class TextEditorComponent extends React.Component {
           })
         }
 
-        { this.state.focus || true ? editor.marker.length > 0 ? <HighlightComponent marker={editor.marker} editor={editor} /> : <CaretComponent idle={this.state.idle} editor={editor} caret={editor.caret} /> : void 0 }
+        { this.state.focus ? editor.marker.length > 0 ? <HighlightComponent marker={editor.marker} editor={editor} /> : <CaretComponent idle={this.state.idle} editor={editor} caret={editor.caret} /> : void 0 }
       </div>
 
       <input ref='hiddenInput' type='text'

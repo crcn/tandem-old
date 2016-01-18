@@ -43,7 +43,7 @@
                         "type": "component",
                         "componentType": "text",
                         "label": "label",
-                        "value": "about",
+                        "value": "About",
                         "paneType": "text",
                         "preview": null
                       }
@@ -64,7 +64,7 @@
                         "type": "component",
                         "componentType": "text",
                         "label": "label",
-                        "value": "work",
+                        "value": "Work",
                         "paneType": "text",
                         "preview": null
                       }
@@ -84,7 +84,7 @@
                         "type": "component",
                         "componentType": "text",
                         "label": "label",
-                        "value": "posts",
+                        "value": "Posts",
                         "paneType": "text",
                         "preview": null
                       }
@@ -104,7 +104,7 @@
                         "type": "component",
                         "componentType": "text",
                         "label": "label",
-                        "value": "contact",
+                        "value": "Contact",
                         "paneType": "text",
                         "preview": null
                       }
@@ -194,7 +194,7 @@
                     "type": "component",
                     "componentType": "text",
                     "label": "label",
-                    "value": "Blargidy blarg",
+                    "value": "Something like that",
                     "paneType": "text",
                     "preview": null
                   }

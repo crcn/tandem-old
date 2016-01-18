@@ -11,7 +11,6 @@ class HighlightComponent extends React.Component {
 
     var h = editor.textRuler.calculateLineHeight();
     var w = editor.calculateWidth();
-    console.log(w);
 
     var highlights = [];
 
