@@ -211,17 +211,28 @@ class TextEditorComponent extends React.Component {
   }
 
   onMouseDown(event) {
-    this.startPosition = this._getSourcePositionFromMouseEvent(event);
-    this._editor.caret.setPosition(this.startPosition);
+
+    var startPosition = this._getSourcePositionFromMouseEvent(event);
+
+    // shift highlight
+    if (event.shiftKey) {
+      this._markSelection(startPosition, this._editor.marker.position);
+    } else {
+      this._editor.caret.setPosition(startPosition);
+    }
 
     startDrag(event, (event, info) => {
       var endPosition = this._getSourcePositionFromMouseEvent(event);
-      if (endPosition !== this.startPosition) {
-        var min = Math.min(endPosition, this.startPosition);
-        var max = Math.max(endPosition, this.startPosition);
-        this._editor.marker.setSelection(min, max - min);
-      }
+      this._markSelection(startPosition, endPosition);
     });
+  }
+
+  _markSelection(startPosition, endPosition) {
+    if (endPosition !== startPosition) {
+      var min = Math.min(endPosition, startPosition);
+      var max = Math.max(endPosition, startPosition);
+      this._editor.marker.setSelection(min, max - min);
+    }
   }
 
   onDoubleClick(event) {
