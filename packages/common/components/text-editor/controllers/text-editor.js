@@ -1,10 +1,12 @@
-import BaseObject from 'common/object/base';
-import StringTokenizer from 'common/tokenizers/string';
-import { SPACE, NEW_LINE, TAB } from 'common/tokenizers/token-types';
-import Caret from './caret';
 import Line from './line';
+import Caret from './caret';
 import Marker from './marker';
 import TextRuler from './text-ruler';
+import BaseObject from 'common/object/base';
+import StringTokenizer from 'common/tokenizers/string';
+import { translateLengthToInteger } from 'common/utils/html/css/translate-style';
+import { SPACE, NEW_LINE, TAB } from 'common/tokenizers/token-types';
+import { clone } from 'common/utils/object';
 
 class TextEditor extends BaseObject {
 
@@ -103,6 +105,7 @@ class TextEditor extends BaseObject {
    */
 
   scanPosition(start, regexp, reverse = false) {
+
     var rest;
     if (reverse) {
       rest = this.source.substr(0, start).split('').reverse().join('');
@@ -150,10 +153,52 @@ class TextEditor extends BaseObject {
     addLine();
 
     // TODO - take max columns into consideration here
+    var maxWidth = Infinity;
+
+    if (this.style.width) {
+      maxWidth = translateLengthToInteger(this.style.width);
+    }
+
+    var addToken = (token) => {
+
+      if (this.textRuler) {
+
+        // split it apart
+        if (this.textRuler.calculateSize(token.value)[0] > maxWidth) {
+
+          var buffer = token.value;
+
+          while(this.textRuler.calculateSize(buffer)[0] > maxWidth) {
+            buffer = buffer.substr(0, buffer.length - 1);
+          }
+
+          var c1 = clone(token);
+          c1.length = buffer.length;
+          c1.value = buffer;
+
+          var c2 = clone(token);
+          c2.value = c2.value.substr(buffer.length);
+          c2.length = c2.value.length;
+
+          if (cline.length) {
+            addLine();
+          }
+          addToken(c1);
+          addToken(c2);
+          return;
+        } else if (this.textRuler.calculateSize(cline.toString() + token.value)[0] > maxWidth) {
+          addLine();
+          return addToken(token);
+        }
+      }
+
+      cline.addRawToken(token);
+    }
+
     for (var i = 0, n = tokens.length; i < n; i++) {
       var token = tokens[i];
 
-      cline.addRawToken(token);
+      addToken(token);
 
       if (token.type === NEW_LINE) {
         addLine();

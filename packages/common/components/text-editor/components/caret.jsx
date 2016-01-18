@@ -2,9 +2,6 @@ import React from 'react';
 import cx from 'classnames';
 
 class CaretComponent extends React.Component {
-  componentDidMount() {
-
-  }
   render() {
 
     var caret = this.props.caret;

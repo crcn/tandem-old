@@ -57,7 +57,9 @@ export function calculateLengthInPixels(length) {
   // could be somthing like 'normal'
   if (!CSSTokenizer.tokenize(String(length)).find(function(token) {
     return token.type === 'unit';
-  })) return length;
+  })) {
+    return length;
+  }
 
   return length ? parseUnit(translateStyle(length, 'px'))[0] : 0;
 }
