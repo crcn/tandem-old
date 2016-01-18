@@ -90,7 +90,6 @@ class TextEditorComponent extends React.Component {
       if (event.shiftKey) {
         var min = Math.min(position, editor.marker.position);
         var max = Math.max(position, editor.marker.endPosition);
-        console.log(min, max);
         editor.marker.setSelection(min, max - min);
       } else {
         editor.marker.setSelection(position);
@@ -125,7 +124,7 @@ class TextEditorComponent extends React.Component {
     var moveLeft = (event) => {
       editor.marker.setSelection(
         editor.marker.position - 1,
-        event.shiftKey ? editor.marker.length + 1 : 1
+        event.shiftKey ? editor.marker.length + 1 : 0
       );
     };
 
