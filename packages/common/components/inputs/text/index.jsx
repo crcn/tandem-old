@@ -26,7 +26,7 @@ class TextInputComponent extends React.Component {
     var value = this.props.reference.getValue();
 
     var style = {
-      overflow: 'hidden',
+      // overflow: 'hidden',
 
       // fix height change with overflow
       verticalAlign: 'bottom',

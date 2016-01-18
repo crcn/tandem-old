@@ -56,6 +56,7 @@ class TextEditorComponent extends React.Component {
     this.setState({
       style: {
         fontSize      : style.fontSize,
+        fontFamily    : style.fontFamily,
         color         : style.color,
         whiteSpace    : style.whiteSpace,
         letterSpacing : style.letterSpacing
@@ -283,6 +284,7 @@ class TextEditorComponent extends React.Component {
     var style = {
       ...editor.style,
       height: editor.textRuler.calculateLineHeight() * editor.lines.length
+      // width: editor.calculateWidth()
     }
 
     return <div
