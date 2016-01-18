@@ -2,15 +2,16 @@ import './stage.scss';
 
 import React from 'react';
 import DropZone from 'react-dropzone';
+import TextInputComponent from 'common/components/inputs/text';
 import ToolsLayerComponent from './tools';
 import RegisteredComponent from 'common/components/registered';
-import TextInputComponent from 'common/components/inputs/text';
 import TextEditorComponent from 'common/components/text-editor';
 
 import { PREVIEW_STAGE_CLICK, PREVIEW_STAGE_MOUSE_DOWN, UPLOAD_FILE } from 'editor/message-types';
 
 var ref = {
-  value: `I am certain that this is going to work`,
+  value: `I am certain that this is going to work. However I do have
+  a few doubts as to whether multiline highlights will work`,
   getValue() {
     return this.value;
   },

@@ -8,7 +8,7 @@ import CaretComponent from './caret';
 import CollectionNotifier from 'common/notifiers/collection';
 import HighlightComponent from './highlight';
 import { translateAbsoluteToRelativePoint } from 'common/utils/html';
-
+import { startDrag } from 'common/utils/component';
 
 class TextEditorComponent extends React.Component {
 
@@ -138,6 +138,20 @@ class TextEditorComponent extends React.Component {
   }
 
   onMouseDown(event) {
+    this.startPosition = this._getSourcePositionFromMouseEvent(event);
+    this._editor.caret.setPosition(this.startPosition);
+
+    startDrag(event, (event, info) => {
+      var endPosition = this._getSourcePositionFromMouseEvent(event);
+      if (endPosition !== this.startPosition) {
+        var min = Math.min(endPosition, this.startPosition);
+        var max = Math.max(endPosition, this.startPosition);
+        this._editor.marker.setSelection(min, max - min);
+      }
+    });
+  }
+
+  _getSourcePositionFromMouseEvent(event) {
     var { left, top } = translateAbsoluteToRelativePoint(event, this.refs.editor);
 
     var tr = this._editor.textRuler;
@@ -148,11 +162,7 @@ class TextEditorComponent extends React.Component {
     var line = this._editor.lines[i];
     var column = tr.convertPointToCharacterPosition(line.toString(), left)
 
-    this._editor.caret.setPosition(line.getPosition() + column);
-  }
-
-  onMouseUp(event) {
-    console.log('mouseup');
+    return line.getPosition() + column;
   }
 
   render() {
@@ -174,7 +184,6 @@ class TextEditorComponent extends React.Component {
       data-mouse-trap={false}
       className={['m-text-editor', this.props.className].join(' ')} onClick={this.focus.bind(this)}
       onMouseDown={this.onMouseDown.bind(this)}
-      onMouseUp={this.onMouseUp.bind(this)}
       >
 
       <div className='m-text-editor--inner'>
@@ -185,7 +194,7 @@ class TextEditorComponent extends React.Component {
           })
         }
 
-        { this.state.focus ? editor.marker.length > 0 ? <HighlightComponent marker={editor.marker} editor={editor} /> : <CaretComponent idle={this.state.idle} editor={editor} caret={editor.caret} /> : void 0 }
+        { this.state.focus || true ? editor.marker.length > 0 ? <HighlightComponent marker={editor.marker} editor={editor} /> : <CaretComponent idle={this.state.idle} editor={editor} caret={editor.caret} /> : void 0 }
       </div>
 
       <input ref='hiddenInput' type='text'

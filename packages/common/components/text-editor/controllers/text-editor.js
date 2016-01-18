@@ -134,6 +134,16 @@ class TextEditor extends BaseObject {
     });
   }
 
+  getMaxWidth() {
+    var maxWidth = Infinity;
+
+    if (this.style.width) {
+      maxWidth = translateLengthToInteger(this.style.width);
+    }
+
+    return maxWidth;
+  }
+
   /**
    */
 
@@ -153,11 +163,7 @@ class TextEditor extends BaseObject {
     addLine();
 
     // TODO - take max columns into consideration here
-    var maxWidth = Infinity;
-
-    if (this.style.width) {
-      maxWidth = translateLengthToInteger(this.style.width);
-    }
+    var maxWidth = this.getMaxWidth();
 
     var addToken = (token) => {
 

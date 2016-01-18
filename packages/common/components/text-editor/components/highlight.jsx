@@ -5,38 +5,57 @@ class HighlightComponent extends React.Component {
 
     var editor = this.props.editor;
     var marker = this.props.marker;
-    var cell1  = editor.getCellFromPosition(marker.position);
-    var cell2  = editor.getCellFromPosition(marker.position + marker.length);
+    var p1     = this._calcPosition(editor.getCellFromPosition(marker.position));
 
-    var n = cell2.row - cell1.row;
+    var p2 = this._calcPosition(editor.getCellFromPosition(marker.position + marker.length));
 
-    var sline = editor.lines[0];
+    var h = editor.textRuler.calculateLineHeight();
+    var w = editor.getMaxWidth();
 
-    var highlights = [
-      this.renderHighlight(sline, cell1.column, sline.length - cell1.column)
-    ];
+    var highlights = [];
 
+    // start
+    highlights.push(
+      this.renderHighlight(p1.left, p1.top, p2.top === p1.top ? p2.left - p1.left : w - p1.left, h)
+    );
+
+    // mid
+    if (p2.top - h !== p1.top) {
+      highlights.push(
+        this.renderHighlight(0, p1.top + h, w, p2.top - p1.top - h)
+      );
+    }
+
+    // end
+    if (p1.top !== p2.top) {
+      highlights.push(
+        this.renderHighlight(0, p2.top, p2.left, h)
+      );
+    }
 
     return <div className='m-text-editor--highlights'>
       { highlights }
     </div>;
   }
 
-  renderHighlight(line, start, end) {
+  _calcPosition(cell) {
     var editor = this.props.editor;
-    var tr     = editor.textRuler;
-    var lh     = editor.lines[0].getHeight();
-    var x      = tr.calculateSize(line.toString().substr(0, start))[0];
-    var w      = tr.calculateSize(line.toString().substr(start))[0];
-    var y      = lh * editor.lines.indexOf(line);
+    var line = editor.lines[cell.row];
+    return {
+      top: editor.textRuler.calculateLineHeight() * line.getIndex(),
+      left: editor.textRuler.calculateSize(line.toString().substr(0, cell.column))[0]
+    }
+  }
+
+  renderHighlight(left, top, width, height) {
+
     var style = {
-      transform: 'translate(' + x + ',' + y + ')',
-      height   : lh,
-      width    : w
+      transform: 'translate(' + left + 'px,' + top + 'px)',
+      width    : width,
+      height   : height
     };
 
-    // console.log(line.toString().substr(start, line.toString().length), line.toString(), start)
-    return <div style={style} className='m-text-editor--highlight' key={y}>
+    return <div style={style} className='m-text-editor--highlight' key={top}>
 
     </div>
   }
