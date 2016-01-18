@@ -10,7 +10,7 @@ import TextEditorComponent from 'common/components/text-editor';
 import { PREVIEW_STAGE_CLICK, PREVIEW_STAGE_MOUSE_DOWN, UPLOAD_FILE } from 'editor/message-types';
 
 var ref = {
-  value: `something other other then that is an interesting thinggg`,
+  value: `I am certain that this is going to work`,
   getValue() {
     return this.value;
   },

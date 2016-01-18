@@ -4,20 +4,19 @@ import { translateAbsoluteToRelativePoint } from 'common/utils/html';
 
 class LineComponent extends React.Component {
 
-  onClick(event) {
-    var line = this.props.line;
-
-    var { left } = translateAbsoluteToRelativePoint(event, this.refs.line);
-
-    this.props.editor.caret.setPosition(
-      line.getPosition() + this.props.editor.textRuler.convertPointToCharacterPosition(line.toString(), left)
-    );
-  }
-
   render() {
-    var line = this.props.line;
 
-    return <div ref='line' className='m-text-editor--line' onMouseDown={this.onClick.bind(this)}>
+    var line   = this.props.line;
+    var editor = this.props.editor;
+    var tr     = editor.textRuler;
+
+    var style = {
+      position: 'absolute',
+      top     : tr.calculateLineHeight() * line.getIndex(),
+      left    : 0
+    };
+
+    return <div ref='line' style={style} className='m-text-editor--line'>
       {
         line.tokens.length ? line.tokens.map((token, i) => {
           return <TokenComponent

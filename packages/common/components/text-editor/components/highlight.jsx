@@ -24,9 +24,10 @@ class HighlightComponent extends React.Component {
 
   renderHighlight(line, start, end) {
     var editor = this.props.editor;
+    var tr     = editor.textRuler;
     var lh     = editor.lines[0].getHeight();
-    var x      = editor.textRuler.calculateSize(line.toString().substr(0, start))[0]
-    var w      = editor.textRuler.calculateSize(line.toString().substr(start))[0]
+    var x      = tr.calculateSize(line.toString().substr(0, start))[0];
+    var w      = tr.calculateSize(line.toString().substr(start))[0];
     var y      = lh * editor.lines.indexOf(line);
     var style = {
       transform: 'translate(' + x + ',' + y + ')',

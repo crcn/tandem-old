@@ -7,6 +7,8 @@ import LineComponent from './line';
 import CaretComponent from './caret';
 import CollectionNotifier from 'common/notifiers/collection';
 import HighlightComponent from './highlight';
+import { translateAbsoluteToRelativePoint } from 'common/utils/html';
+
 
 class TextEditorComponent extends React.Component {
 
@@ -104,9 +106,6 @@ class TextEditorComponent extends React.Component {
     }
   }
 
-  //focus() {
-  //  this.refs.editor.focus();
-  //}
 
   onFocus(event) {
     this.setState({ focus: true });
@@ -138,6 +137,24 @@ class TextEditorComponent extends React.Component {
     this.refs.hiddenInput.focus();
   }
 
+  onMouseDown(event) {
+    var { left, top } = translateAbsoluteToRelativePoint(event, this.refs.editor);
+
+    var tr = this._editor.textRuler;
+    var lh = tr.calculateLineHeight();
+    var i = 0;
+    while((i + 1) * lh < top) i++;
+
+    var line = this._editor.lines[i];
+    var column = tr.convertPointToCharacterPosition(line.toString(), left)
+
+    this._editor.caret.setPosition(line.getPosition() + column);
+  }
+
+  onMouseUp(event) {
+    console.log('mouseup');
+  }
+
   render() {
 
     var editor = this.getEditor({
@@ -146,11 +163,19 @@ class TextEditorComponent extends React.Component {
       style: Object.assign({}, this.state.style, this.props.style || {})
     });
 
+    var style = {
+      ...editor.style,
+      height: editor.textRuler.calculateLineHeight() * editor.lines.length
+    }
+
     return <div
       ref='editor'
-      style={editor.style}
+      style={style}
       data-mouse-trap={false}
-      className={['m-text-editor', this.props.className].join(' ')} onClick={this.focus.bind(this)}>
+      className={['m-text-editor', this.props.className].join(' ')} onClick={this.focus.bind(this)}
+      onMouseDown={this.onMouseDown.bind(this)}
+      onMouseUp={this.onMouseUp.bind(this)}
+      >
 
       <div className='m-text-editor--inner'>
 

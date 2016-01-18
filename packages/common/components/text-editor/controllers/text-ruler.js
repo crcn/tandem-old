@@ -38,18 +38,24 @@ class TextRuler extends BaseObject {
       var charWidth = this.calculateCharacterSize(text.charAt(i))[0];
       var halfWidth = charWidth / 2;
 
+      if (i > 0) {
+        w = this.calculateSize(text.substr(0, i))[0];
+      }
+
       // basic rounding calculation bast on character
       // width
       if (w + halfWidth > point) {
         break;
       }
 
-      w += charWidth;
-
       position++;
     }
 
     return position;
+  }
+
+  calculateLineHeight() {
+    return this.calculateSize('Aa')[1];
   }
 
   /**
@@ -58,19 +64,11 @@ class TextRuler extends BaseObject {
 
   calculateSize(text) {
 
-    var width  = 0;
-    var height = 0;
+    // Note that we must calculate the text against a span
+    // in its entirety - calculating individual characters yields
+    // incorrect values.
+    return this.calculateCharacterSize(text);
 
-    for (var i = 0, n = text.length; i < n; i++) {
-      var [w, h] = this.calculateCharacterSize(text.charAt(i));
-      width  += w;
-
-      // TODO - line heigth is likely fixed - this chunk
-      // of code is probably unnecessary.
-      height = Math.max(height, h);
-    }
-
-    return [width, height];
   }
 
   /**
@@ -96,7 +94,7 @@ class TextRuler extends BaseObject {
     // set the encoded
     span.innerHTML = encode(char);
 
-    var w = span.offsetWidth + this._getLetterSpacing();
+    var w = span.offsetWidth; // + this._getLetterSpacing();
     var h = span.offsetHeight;
 
     return this._sizes[char] = [w, h];
@@ -124,6 +122,9 @@ class TextRuler extends BaseObject {
     // move off screen
     Object.assign(span.style, {
       left     : '0px',
+      // left: '0px',
+      // top: '0px',
+      // zIndex: 1024,
       top      : '-1024px',
       position : 'absolute'
     });

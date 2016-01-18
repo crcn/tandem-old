@@ -183,6 +183,7 @@ class TextEditor extends BaseObject {
           if (cline.length) {
             addLine();
           }
+
           addToken(c1);
           addToken(c2);
           return;
