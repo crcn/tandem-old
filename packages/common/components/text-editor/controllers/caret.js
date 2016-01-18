@@ -102,52 +102,6 @@ class Caret extends BaseObject {
   }
 
   notify(message) {
-
-    var k = message.keyCode;
-
-    if (message.ctrlKey) {
-      if (k === 65) {
-        this.moveToLinePosition(0);
-      } else if (k === 69) {
-        this.moveToLinePosition(Infinity);
-      } else if (k === 68) {
-        this.removeNextCharacter();
-      } else if (k === 75) {
-        this.removeCharsUntilEndOfLine();
-      }
-      return;
-    }
-
-    if (message.altKey) {
-      if (k === 37) {
-        this.moveToToken(-1);
-      } else if (k == 39) {
-        this.moveToToken(1);
-      }
-      return;
-    }
-
-    if (message.type === 'input') {
-      // this.addCharacter(message.text);
-    } else if (message.type === 'keyCommand') {
-
-      var handlers = {
-        40: this.moveDown,
-        39: this.moveRight,
-        38: this.moveUp,
-        37: this.moveLeft
-      };
-
-      var handler = handlers[message.keyCode];
-
-      if (handler) {
-        // necessary to prevent scrolling
-        message.preventDefault();
-        handler.call(this);
-      }
-    }
-
-
   }
 }
 

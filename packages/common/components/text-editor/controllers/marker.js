@@ -66,31 +66,6 @@ class Marker extends BaseObject {
 
   notify(message) {
 
-    if (message.metaKey) {
-      // cmd+a
-      if (message.keyCode === 65) {
-        this.setSelection(0, Infinity);
-        message.preventDefault();
-      }
-    }
-
-    if (message.type === 'input') {
-      this.addText(message.text);
-      message.preventDefault();
-    } else if (message.type === 'keyCommand') {
-      if (message.keyCode === 8) {
-        this.removeSelection();
-        message.preventDefault();
-      } else if (message.keyCode === 39) {
-        // this.moveRight();
-      } else if (message.keyCode === 37) {
-        // this.moveLeft();
-      } else if (message.keyCode === 40) {
-        // this.moveDown();
-      } else if (message.keyCode === 38) {
-        // this.moveUp();
-      }
-    }
   }
 }
 

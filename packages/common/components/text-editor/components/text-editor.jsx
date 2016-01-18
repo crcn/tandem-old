@@ -78,30 +78,102 @@ class TextEditorComponent extends React.Component {
   }
 
   onKey(event) {
-    this.notifier.notify({
-      type: 'input',
-      text: String.fromCharCode(event.which),
-      preventDefault() {
-        event.preventDefault();
-      }
-    });
+    this._editor.marker.addText(String.fromCharCode(event.which));
+    event.preventDefault();
   }
 
   onKeyCommand(event) {
 
-    console.log('kk');
+    var editor = this._editor;
 
-    this.notifier.notify({
-      type    : 'keyCommand',
-      keyCode : event.keyCode,
-      altKey  : event.altKey,
-      ctrlKey : event.ctrlKey,
-      cmdKey  : event.cmdKey,
-      metaKey : event.metaKey,
-      preventDefault() {
+    var setPosition = (position) => {
+      if (event.shiftKey) {
+        var min = Math.min(position, editor.marker.position);
+        var max = Math.max(position, editor.marker.endPosition);
+        console.log(min, max);
+        editor.marker.setSelection(min, max - min);
+      } else {
+        editor.marker.setSelection(position);
+      }
+    };
+
+    var removeSelection = (event) => {
+      editor.marker.removeSelection();
+    };
+
+    var moveDown = (event) => {
+      editor.caret.moveLine(1);
+    };
+
+    var moveRight = (event) => {
+      if (event.shiftKey) {
+        editor.marker.setSelection(
+          editor.marker.position,
+          event.shiftKey ? editor.marker.length + 1 : 1
+        );
+      } else {
+        editor.marker.setSelection(
+          editor.marker.position + 1
+        );
+      }
+    };
+
+    var moveUp = (event) => {
+      editor.caret.moveLine(-1);
+    };
+
+    var moveLeft = (event) => {
+      editor.marker.setSelection(
+        editor.marker.position - 1,
+        event.shiftKey ? editor.marker.length + 1 : 1
+      );
+    };
+
+    var aKey = (event) => {
+      if (event.metaKey) return editor.marker.setSelection(0, Infinity);
+      if (event.ctrlKey) return editor.caret.moveToLinePosition(0);
+      return false;
+    }
+
+    var eKey = (event) => {
+      if (event.ctrlKey) {
+        editor.marker.setSelection(editor.marker.position + editor.marker.length);
+        return editor.caret.moveToLinePosition(Infinity);
+      }
+      return false;
+    }
+
+    var kKey = (event) => {
+      if (event.ctrlKey) return editor.caret.removeCharsUntilEndOfLine();
+      return false;
+    }
+
+    var dKey = (event) => {
+      if (event.ctrlKey) return editor.caret.removeNextCharacter();
+      return false;
+    }
+
+    var handlers = {
+      40 : moveDown,
+      39 : moveRight,
+      38 : moveUp,
+      37 : moveLeft,
+      65 : aKey,
+      69 : eKey,
+      75 : kKey,
+      68 : dKey,
+      8  : removeSelection,
+
+    };
+
+    var handler = handlers[event.keyCode];
+
+    if (handler) {
+      // necessary to prevent scrolling
+      if (handler(event) !== false) {
         event.preventDefault();
       }
-    });
+    }
 
     if (this.props.onKeyDown) {
       this.props.onKeyDown(event);
