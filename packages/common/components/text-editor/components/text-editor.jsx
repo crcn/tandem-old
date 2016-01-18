@@ -89,6 +89,8 @@ class TextEditorComponent extends React.Component {
 
   onKeyCommand(event) {
 
+    console.log('kk');
+
     this.notifier.notify({
       type    : 'keyCommand',
       keyCode : event.keyCode,

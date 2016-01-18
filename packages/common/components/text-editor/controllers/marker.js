@@ -46,7 +46,7 @@ class Marker extends BaseObject {
 
   removeSelection() {
     if (this.length) {
-      this.editor.splice(this.position, this.endPosition);
+      this.editor.splice(this.position, this.length);
       this.length = 0;
     } else if (this.position) {
       this.editor.splice(--this.position, 1);

@@ -170,11 +170,11 @@ class TextEditor extends BaseObject {
       if (this.textRuler) {
 
         // split it apart
-        if (this.textRuler.calculateSize(token.value)[0] > maxWidth) {
+        if (this.textRuler.calculateSize(token.value)[0] >= maxWidth) {
 
           var buffer = token.value;
 
-          while(this.textRuler.calculateSize(buffer)[0] > maxWidth) {
+          while(this.textRuler.calculateSize(buffer)[0] >= maxWidth) {
             buffer = buffer.substr(0, buffer.length - 1);
           }
 

@@ -73,12 +73,6 @@ class Caret extends BaseObject {
     var nline = this._getLine(delta);
     var cline = this._getLine();
 
-    if (nline === cline) {
-      // this.setPosition(Infinity * delta);
-    } else {
-      console.log(this.editor.textRuler)
-    }
-
     // TODO - need to calculate character width here
     this.setPosition(nline === cline ? Infinity * delta : nline.getPosition() + (this.position - cline.getPosition()));
   }
