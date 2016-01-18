@@ -48,7 +48,6 @@ class Marker extends BaseObject {
     if (this.length) {
       this.editor.splice(this.position, this.endPosition);
       this.length = 0;
-      this.position = 0;
     } else if (this.position) {
       this.editor.splice(--this.position, 1);
     }
