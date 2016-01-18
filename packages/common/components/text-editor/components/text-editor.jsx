@@ -83,7 +83,6 @@ class TextEditorComponent extends React.Component {
   }
 
   select() {
-    console.log('editor');
     this._editor.marker.setSelection(0, Infinity);
   }
 
@@ -170,8 +169,7 @@ class TextEditorComponent extends React.Component {
       69 : eKey,
       75 : kKey,
       68 : dKey,
-      8  : removeSelection,
-
+      8  : removeSelection
     };
 
     var handler = handlers[event.keyCode];
@@ -205,7 +203,6 @@ class TextEditorComponent extends React.Component {
   }
 
   onBlur(event) {
-    console.log('blur');
     this.setState({ focus: false });
     if (this.props.onBlur) {
       this.props.onBlur(event);
@@ -214,6 +211,11 @@ class TextEditorComponent extends React.Component {
 
   onPaste(event) {
     this.getEditor().marker.addText(event.clipboardData.getData('text/plain'));
+  }
+
+  onCopy(event) {
+    event.clipboardData.setData('text/plain', this.controller.marker.getSelectedText());
+    event.preventDefault();
   }
 
   focus() {
@@ -306,6 +308,7 @@ class TextEditorComponent extends React.Component {
       <input ref='hiddenInput' type='text'
              onKeyPress={this.onKey.bind(this)}
              onPaste={this.onPaste.bind(this)}
+             onCopy={this.onCopy.bind(this)}
              onKeyDown={this.onKeyCommand.bind(this)}
              onFocus={this.onFocus.bind(this)}
              onBlur={this.onBlur.bind(this)} />

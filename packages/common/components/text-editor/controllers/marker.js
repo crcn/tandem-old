@@ -44,6 +44,10 @@ class Marker extends BaseObject {
     });
   }
 
+  getSelectedText() {
+    return this.editor.source.substr(this.position, this.length);
+  }
+
   removeSelection() {
     if (this.length) {
       this.editor.splice(this.position, this.length);

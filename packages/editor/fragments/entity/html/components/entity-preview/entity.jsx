@@ -128,7 +128,7 @@ class TextNode extends ElementNode {
   }
 
   _updateText() {
-    this.element.textContent = this.entity.value;
+    this.element.innerHTML = this.entity.value;
   }
 }
 
