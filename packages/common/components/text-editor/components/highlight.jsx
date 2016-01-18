@@ -10,7 +10,8 @@ class HighlightComponent extends React.Component {
     var p2 = this._calcPosition(editor.getCellFromPosition(marker.position + marker.length));
 
     var h = editor.textRuler.calculateLineHeight();
-    var w = editor.getMaxWidth();
+    var w = editor.calculateWidth();
+    console.log(w);
 
     var highlights = [];
 

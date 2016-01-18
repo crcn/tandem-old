@@ -134,6 +134,12 @@ class TextEditor extends BaseObject {
     });
   }
 
+  calculateWidth() {
+    return Math.max(...this.lines.map(function(line) {
+      return line.calculateWidth();
+    }));
+  }
+
   getMaxWidth() {
     var maxWidth = Infinity;
 
@@ -171,6 +177,8 @@ class TextEditor extends BaseObject {
     var cline;
 
     var addLine = () => {
+      // do not add another line if there is no token stuff
+      if (cline && !cline.length) return cline;
       cline = Line.create({ editor: this });
       lines.push(cline);
       return cline;
@@ -182,6 +190,8 @@ class TextEditor extends BaseObject {
     // TODO - take max columns into consideration here
     var maxWidth = this.getMaxWidth();
 
+    var breakWord = this.style.wordWrap === 'break-word';
+
     var addToken = (token) => {
 
       if (this.textRuler) {
@@ -189,26 +199,29 @@ class TextEditor extends BaseObject {
         // split it apart
         if (this.textRuler.calculateSize(token.value)[0] >= maxWidth) {
 
-          var buffer = token.value;
+          if (breakWord) {
 
-          while(this.textRuler.calculateSize(buffer)[0] >= maxWidth) {
-            buffer = buffer.substr(0, buffer.length - 1);
-          }
+            var buffer = token.value;
 
-          var c1 = clone(token);
-          c1.length = buffer.length;
-          c1.value = buffer;
+            while(this.textRuler.calculateSize(buffer)[0] >= maxWidth) {
+              buffer = buffer.substr(0, buffer.length - 1);
+            }
 
-          var c2 = clone(token);
-          c2.value = c2.value.substr(buffer.length);
-          c2.length = c2.value.length;
+            var c1 = clone(token);
+            c1.length = buffer.length;
+            c1.value = buffer;
 
-          if (cline.length) {
+            var c2 = clone(token);
+            c2.value = c2.value.substr(buffer.length);
+            c2.length = c2.value.length;
+
             addLine();
+            addToken(c1);
+            addToken(c2);
+          } else {
+            addLine();
+            cline.addRawToken(token);
           }
-
-          addToken(c1);
-          addToken(c2);
           return;
         } else if (this.textRuler.calculateSize(cline.toString() + token.value)[0] > maxWidth) {
           addLine();

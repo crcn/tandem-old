@@ -177,18 +177,18 @@ class StageComponent extends React.Component {
       pointerEvents: this.state.scrolling ? 'none' : 'all'
     };
 
-    return <TextEditorComponent
-      style={{
-        border: '1px solid black',
-        display: 'inline-block',
-        width: '200px',
-        fontFamily: 'Helvetica'
-      }}
-      source={ref.getValue()}
-      onChange={(source) => {
-        ref.setValue(source);
-        this.setState({});
-      }} />
+    // return <TextEditorComponent
+    //   style={{
+    //     border: '1px solid black',
+    //     display: 'inline-block',
+    //     width: '200px',
+    //     fontFamily: 'Helvetica'
+    //   }}
+    //   source={ref.getValue()}
+    //   onChange={(source) => {
+    //     ref.setValue(source);
+    //     this.setState({});
+    //   }} />
 
 
     return <div

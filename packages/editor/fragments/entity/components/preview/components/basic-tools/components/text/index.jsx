@@ -21,7 +21,7 @@ class TextToolComponent extends React.Component {
   }
 
   onBlur(event) {
-    this._complete();
+    // this._complete();
   }
 
   _complete() {
@@ -53,7 +53,8 @@ class TextToolComponent extends React.Component {
       fontSize      : cstyle2.fontSize,
       fontFamily    : cstyle2.fontFamily,
       letterSpacing : cstyle2.letterSpacing,
-      lineHeight    : cstyle2.lineHeight
+      lineHeight    : cstyle2.lineHeight,
+      overflow      : 'show'
     };
 
     return <div style={style} className='reset-all m-text-tool'>

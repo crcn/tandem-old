@@ -19,6 +19,10 @@ class Line extends BaseObject {
     }));
   }
 
+  calculateWidth() {
+    return this.editor.textRuler.calculateSize(this.toString())[0];
+  }
+
   getIndex() {
     return this.editor.lines.indexOf(this);
   }
