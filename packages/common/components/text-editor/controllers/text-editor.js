@@ -144,6 +144,23 @@ class TextEditor extends BaseObject {
     return maxWidth;
   }
 
+  getTokenFromPosition(position) {
+    var cell = this.getCellFromPosition(position);
+    var line = this.lines[cell.row];
+    var diff = position - line.getPosition();
+    var col  = cell.column;
+
+
+    var p = 0;
+    for (var i = 0, n = line.tokens.length; i < n; i++) {
+      var token = line.tokens[i];
+      p += token.length;
+      if (p > diff) return token;
+    }
+
+    return void 0;
+  }
+
   /**
    */
 

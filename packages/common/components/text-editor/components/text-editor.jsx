@@ -2,13 +2,13 @@ import './text-editor.scss';
 
 import React from 'react';
 import TextEditor from '../controllers/text-editor';
+import { startDrag } from 'common/utils/component';
 import TypeNotifier from 'common/notifiers/type';
 import LineComponent from './line';
 import CaretComponent from './caret';
 import CollectionNotifier from 'common/notifiers/collection';
 import HighlightComponent from './highlight';
 import { translateAbsoluteToRelativePoint } from 'common/utils/html';
-import { startDrag } from 'common/utils/component';
 
 class TextEditorComponent extends React.Component {
 
@@ -224,6 +224,12 @@ class TextEditorComponent extends React.Component {
     });
   }
 
+  onDoubleClick(event) {
+    var position = this._getSourcePositionFromMouseEvent(event);
+    var token = this._editor.getTokenFromPosition(position);
+    this._editor.marker.setSelection(token.getPosition(), token.length);
+  }
+
   _getSourcePositionFromMouseEvent(event) {
     var { left, top } = translateAbsoluteToRelativePoint(event, this.refs.editor);
 
@@ -255,7 +261,9 @@ class TextEditorComponent extends React.Component {
       ref='editor'
       style={style}
       data-mouse-trap={false}
-      className={['m-text-editor', this.props.className].join(' ')} onClick={this.focus.bind(this)}
+      className={['m-text-editor', this.props.className].join(' ')}
+      onDoubleClick={this.onDoubleClick.bind(this)}
+      onClick={this.focus.bind(this)}
       onMouseDown={this.onMouseDown.bind(this)}
       >
 
