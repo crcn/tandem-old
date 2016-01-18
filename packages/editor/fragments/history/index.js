@@ -105,7 +105,7 @@ function create({ app }) {
     // last item is the most current change. We need to step back
     // one more time if the position is at the end.
     if (history.position == history.length && step === -1) {
-      // step -= 1;
+      step -= 1;
     }
 
     move(Math.max(0, Math.min(history.length - 1, history.position + step)));
