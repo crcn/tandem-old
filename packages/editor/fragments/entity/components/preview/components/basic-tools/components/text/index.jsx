@@ -2,7 +2,7 @@ import './index.scss';
 
 import React from 'react';
 import Reference from 'common/reference';
-import TextInputComponent from 'common/components/inputs/text';
+import WYSIWYGEditor from 'common/components/wysiwyg';
 
 class TextToolComponent extends React.Component {
 
@@ -58,7 +58,7 @@ class TextToolComponent extends React.Component {
     };
 
     return <div style={style} className='reset-all m-text-tool'>
-      <TextInputComponent
+      <WYSIWYGEditor
         multiline={false}
         onKeyDown={this.onKeyDown.bind(this)}
         onBlur={this.onBlur.bind(this)}

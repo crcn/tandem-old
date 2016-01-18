@@ -82,6 +82,15 @@ class TextEditorComponent extends React.Component {
     event.preventDefault();
   }
 
+  select() {
+    console.log('editor');
+    this._editor.marker.setSelection(0, Infinity);
+  }
+
+  get controller() {
+    return this.getEditor();
+  }
+
   onKeyCommand(event) {
 
     var editor = this._editor;
