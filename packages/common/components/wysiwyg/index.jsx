@@ -18,7 +18,7 @@ class WYSIWYGEditor extends React.Component {
   onKeyDown(event) {
     var bKey = (event) => {
       if (event.metaKey) {
-        console.log('BOLD');
+        return;
       }
       return false;
     }
@@ -44,9 +44,13 @@ class WYSIWYGEditor extends React.Component {
     console.log(event.keyCode);
 
     var handler = handlers[event.keyCode];
-    if (handler && handler(event) === false) {
+    if (handler && handler(event) !== false) {
       event.preventDefault();
     }
+  }
+
+  onChange(source) {
+    this.props.reference.setValue(source);
   }
 
   shouldComponentUpdate(props) {
@@ -59,6 +63,7 @@ class WYSIWYGEditor extends React.Component {
       ref='editor'
       {...this.props}
       source={value}
+      onChange={this.onChange.bind(this)}
       onKeyDown={this.onKeyDown.bind(this)} />
   }
 }
