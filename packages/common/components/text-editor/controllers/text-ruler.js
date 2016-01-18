@@ -88,7 +88,8 @@ class TextRuler extends BaseObject {
       letterSpacing: ts.letterSpacing,
       lineHeight   : ts.lineHeight,
       fontSize     : ts.fontSize,
-      fontFamily   : ts.fontFamily
+      fontFamily   : ts.fontFamily,
+      fontWeight   : ts.fontWeight
     });
 
     // set the encoded

@@ -13,7 +13,8 @@ class LineComponent extends React.Component {
     var style = {
       position: 'absolute',
       top     : tr.calculateLineHeight() * line.getIndex(),
-      left    : 0
+      left    : 0,
+      width   : '100%'
     };
 
     return <div ref='line' style={style} className='m-text-editor--line'>

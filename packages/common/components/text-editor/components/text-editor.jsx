@@ -59,6 +59,7 @@ class TextEditorComponent extends React.Component {
         fontFamily    : style.fontFamily,
         color         : style.color,
         whiteSpace    : style.whiteSpace,
+        fontWeight    : style.fontWeight,
         letterSpacing : style.letterSpacing
       }
     });

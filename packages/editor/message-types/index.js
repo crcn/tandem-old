@@ -33,8 +33,8 @@ export class PasteMessage extends BaseMessage {
    * @param {*} data the raw clipboard data
    */
 
-  constructor(data) {
-    super(PASTE, { data: data });
+  constructor(item) {
+    super(PASTE, { item: item });
   }
 }
 

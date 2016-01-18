@@ -28,11 +28,12 @@ function create({ app }) {
     return JSON.stringify(app.selection.serialize());
   }
 
-  function paste(data) {
+  function paste(item) {
     try {
-      app.notifier.notify(PasteMessage.create(JSON.parse(data)));
+      console.info('paste %s', item.type);
+      app.notifier.notify(PasteMessage.create(item));
     } catch(e) {
-      console.warn('cannot paste x-entity data: ', data);
+      console.warn('cannot paste x-entity data: ', item.type);
     }
   }
 
@@ -51,12 +52,9 @@ function create({ app }) {
 
     event.preventDefault();
   });
-  
+
   document.addEventListener('paste', function(event) {
     if (targetIsInput(event)) return;
-    var data = event.clipboardData.getData('text/x-entity');
-    if (data != void 0) {
-      paste(data);
-    }
+    Array.prototype.forEach.call(event.clipboardData.items, paste);
   });
 }

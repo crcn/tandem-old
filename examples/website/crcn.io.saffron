@@ -194,7 +194,7 @@
                     "type": "component",
                     "componentType": "text",
                     "label": "label",
-                    "value": "Something like that",
+                    "value": "Hi, my name is Craig. I'm a programmer based in San Francisco, CA. Currently I'm helping build an eSignature platform over at HelloSign. Prior to that I helped re-architect ClassDojo's entire front-end. I also started my own company SpiceApps where I built BrowserTap, Clove, and other applications.\n\nIn my free time I contribute to open source software, teach at Thinkful, cycle, climb, slack line, and cook.",
                     "paneType": "text",
                     "preview": null
                   }
@@ -240,6 +240,26 @@
             "editLayerSource": false,
             "preview": null,
             "layerExpanded": true
+          }
+        },
+        {
+          "children": [],
+          "props": {
+            "fragmentId": "elementEntity",
+            "id": "59130b00-bda2-11e5-963a-99be821679f4",
+            "attributes": {
+              "src": "http://localhost:8090/1453094068001.png",
+              "style": {
+                "position": "absolute",
+                "width": "100%",
+                "left": "-5.759",
+                "top": "357.121"
+              }
+            },
+            "type": "component",
+            "componentType": "element",
+            "tagName": "img",
+            "preview": null
           }
         }
       ],

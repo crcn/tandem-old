@@ -52,6 +52,7 @@ class TextToolComponent extends React.Component {
       height        : cstyle.height,
       fontSize      : cstyle2.fontSize,
       fontFamily    : cstyle2.fontFamily,
+      fontWeight    : cstyle2.fontWeight,
       letterSpacing : cstyle2.letterSpacing,
       lineHeight    : cstyle2.lineHeight,
       overflow      : 'show'

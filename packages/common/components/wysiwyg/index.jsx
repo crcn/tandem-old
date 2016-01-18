@@ -67,11 +67,13 @@ class WYSIWYGEditor extends React.Component {
       85: uKey,
       13: enterKey
     };
-    
+
     var handler = handlers[event.keyCode];
     if (handler && handler(event) !== false) {
       event.preventDefault();
     }
+
+    // event.preventDefault();
   }
 
   onChange(source) {

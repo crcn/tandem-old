@@ -1,16 +1,82 @@
+
 import traverse from 'traverse';
 import { getValue } from 'common/utils/object';
 import { TypeNotifier } from 'common/notifiers';
-import { PASTE, SetFocusMessage } from 'editor/message-types';
+import { PASTE, UPLOAD_FILE, SetFocusMessage } from 'editor/message-types';
 import { deserialize as deserializeEntity } from 'common/entities';
 
 export function create({ app }) {
   app.notifier.push(TypeNotifier.create(PASTE, paste));
   function paste(message) {
+    if (message.item.type === 'text/x-entity') {
+      pasteEntity(message);
+    } else if (message.item.kind === 'file') {
+      pasteFile(message);
+    } else if (message.item.type === 'text/html') {
+      pasteHTML(message);
+    } else if (message.item.type === 'text/plain') {
+      pastePlain(message);
+    }
+  }
 
-    if (message.data.type !== 'html-selection') return;
+  async function pastePlain(message) {
+    var source = await {
+      then(callback) {
+        message.item.getAsString(callback);
+      }
+    };
 
-    traverse.forEach(message.data, function(value) {
+    if (/^https?:\/\/.*?(png|jpg|gif)$/.test(source)) {
+      var fragment = app.fragments.queryOne({
+        id: 'elementEntity'
+      });
+
+      var img = fragment.factory.create({
+        tagName: 'img',
+        attributes: {
+          src: source,
+          style: {
+            position: 'absolute',
+            left: 0,
+            top: 0
+          }
+        }
+      });
+
+      var selection = app.selection[0] || app.rootEntity;
+      (selection.parent || selection).children.push(img);
+    }
+  }
+
+  async function pasteHTML(message) {
+    var source = await {
+      then(callback) {
+        message.item.getAsString(callback);
+      }
+    };
+    console.error('no support for HTML pasting yet');
+  }
+
+  async function pasteFile(message) {
+    var type = message.item.type;
+    var blob = message.item.getAsFile();
+    var ext    = type.split('/').pop();
+    blob.name = Date.now() + ext;
+
+    app.notifier.notify({
+      type: UPLOAD_FILE,
+      file: blob
+    })
+  }
+
+  async function pasteEntity(message) {
+    var json = JSON.parse(await {
+      then(callback) {
+        message.item.getAsString(callback);
+      }
+    });
+
+    traverse.forEach(json, function(value) {
 
       // remove ID prop so that there's no collisions
       // with other entities
@@ -21,7 +87,7 @@ export function create({ app }) {
       }
     });
 
-    var entities = message.data.items.map(function(rawData) {
+    var entities = json.items.map(function(rawData) {
       return deserializeEntity(rawData, app.fragments);
     });
 
