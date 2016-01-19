@@ -212,7 +212,8 @@
                     "fontWeight": "100",
                     "clear": "both",
                     "textAlign": "left",
-                    "color": "#333333"
+                    "color": "#333333",
+                    "margin": "20px 0px"
                   }
                 },
                 "type": "component",
@@ -246,14 +247,12 @@
           "children": [],
           "props": {
             "fragmentId": "elementEntity",
-            "id": "59130b00-bda2-11e5-963a-99be821679f4",
+            "id": "6a0da200-bda5-11e5-8054-e3381ab05d05",
             "attributes": {
               "src": "http://localhost:8090/1453094068001.png",
               "style": {
-                "position": "absolute",
-                "width": "100%",
-                "left": "-5.759",
-                "top": "357.121"
+                "position": "relative",
+                "width": "100%"
               }
             },
             "type": "component",

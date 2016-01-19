@@ -107,6 +107,16 @@ class TextEditorComponent extends React.Component {
     };
 
     var removeSelection = (event) => {
+
+      if (event.altKey && editor.marker.length === 0) {
+        var token = editor.getTokenFromPosition(editor.marker.position);
+
+        editor.marker.setSelection(
+          token.getPosition(),
+          editor.marker.position - token.getPosition()
+        );
+      }
+
       editor.marker.removeSelection();
     };
 
@@ -115,6 +125,7 @@ class TextEditorComponent extends React.Component {
     };
 
     var moveRight = (event) => {
+
       if (event.shiftKey) {
         editor.marker.setSelection(
           editor.marker.position,
@@ -132,6 +143,10 @@ class TextEditorComponent extends React.Component {
     };
 
     var moveLeft = (event) => {
+      if (event.altKey) {
+        // var token = editor.getTokenFromPosition(editor.marker.position);
+
+      }
       editor.marker.setSelection(
         editor.marker.position - 1,
         event.shiftKey ? editor.marker.length + 1 : 0

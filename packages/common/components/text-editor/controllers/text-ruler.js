@@ -1,4 +1,5 @@
 import BaseObject from 'common/object/base';
+import ObservableObject from 'common/object/observable';
 import encode from './encode';
 import {
   calculateLengthInPixels
@@ -14,16 +15,24 @@ class TextRuler extends BaseObject {
     super({
       style
     });
+
+    this._sizes = {};
+
+    this._style = ObservableObject.create(Object.assign({
+      notifier: {
+        notify: () => {
+          this._sizes = {};
+        }
+      }
+    }, style));
   }
 
   setProperties(properties) {
     super.setProperties(properties);
 
-    // reset the sizes - assuming that style has changed. Visual
-    // will need to be recalculated
-    // TODO - actually test to see whether style props have changed -
-    // unecessary at the moment.
-    this._sizes = {};
+    if (properties.style && this._style) {
+      this._style.setProperties(properties.style);
+    }
   }
 
   /**
@@ -82,7 +91,7 @@ class TextRuler extends BaseObject {
 
     // copy over the styles defined for the text ruler so that
     // we can make an accurate measurement
-    var ts = this.style;
+    var ts = this._style;
 
     Object.assign(span.style, {
       letterSpacing: ts.letterSpacing,

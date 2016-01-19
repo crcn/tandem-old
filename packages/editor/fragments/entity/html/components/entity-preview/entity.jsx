@@ -21,6 +21,7 @@ class BaseNode {
     this.element = element;
     this.preview = entity.preview = new EntityPreview(entity, this);
     entity.notifier.push(this);
+    this.attributes = {};
   }
 
   notify(message) {
@@ -107,10 +108,14 @@ class ElementNode extends BaseNode {
     for (var key in attribs) {
       var value = attribs[key];
       if (key === 'style') {
+
+        // todo - this is less optimal, but ensures that the element style is always in sync with the entity style
         this.element.setAttribute('style', '');
         Object.assign(this.element.style, convertStyle(value));
-      } else {
-        this.element.setAttribute(key, value);
+
+      // dirty caching here of attributes
+      } else if (this.attributes[key] !== value) {
+        this.element.setAttribute(key, this.attributes[key] = value);
       }
     }
   }

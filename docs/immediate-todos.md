@@ -88,11 +88,7 @@
   - [x] cannot select child & parent together (messes up dragging)
   - [x] multi-selected items with differing items drift apart
   - [ ] drag needs to respect CSS3 transforms
-
-- drag-and-drop
-  - [ ] images & assets onto CSS styles (add background)
-  - [ ] images onto divs
-  - [ ] multiple items (list)
+  - [ ] children do not get re-ordered properly
 
 - [ ] testability
   - [ ] add drag manager that emits mouse events
@@ -102,6 +98,8 @@
 
 - [ ] when dragging fixed element long enough, change position to relative
 - [ ] eye dropper
+- [ ] should be able to scroll individual unit values
+- [ ] display multiple values as a drop menu for each element. On Hover, highlight given element
 
 #### Keep this in mind when writing code
 
