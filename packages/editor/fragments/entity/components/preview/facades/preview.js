@@ -37,6 +37,7 @@ class Preview extends ObservableObject {
   notify(message) {
     if (message.type === SET_TOOL) {
       this.setTool(message.tool);
+      message.tool.notify({ type: 'selectTool' });
     } else {
       if (this.currentTool) {
         this.currentTool.notify(message);

@@ -1,11 +1,13 @@
 .m-text-tool {
 
+  background: white;
+
   * {
     user-select: none;
   }
 
   .m-text-editor--token {
-    color: transparent;
+    // color: transparent;
 
     // for debugging
     // color: red !important;

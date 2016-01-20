@@ -69,14 +69,14 @@ export function create({ app, preview }) {
         { type: SET_TOOL, tool: pointerTool }
       )
     }),
-    ComponentFragment.create({
-      id             : 'textToolComponent',
-      componentType  : 'tool',
-      componentClass : TextToolComponent,
-      toolType       : editTextTool.type,
-      entityType     : 'component',
-      entityComponentType: 'text'
-    }),
+    // ComponentFragment.create({
+    //   id             : 'textToolComponent',
+    //   componentType  : 'tool',
+    //   componentClass : TextToolComponent,
+    //   toolType       : editTextTool.type,
+    //   entityType     : 'component',
+    //   entityComponentType: 'text'
+    // }),
     ComponentFragment.create({
       id             : 'dragSelectComponent',
       componentType  : 'tool',

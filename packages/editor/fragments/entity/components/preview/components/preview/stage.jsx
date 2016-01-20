@@ -225,7 +225,7 @@ class StageComponent extends React.Component {
 
               </div>
 
-            { entity ? <ToolsLayerComponent style={toolsStyle} app={app} zoom={preview.zoom} /> : void 0 }
+            { entity && !this.props.app.hideToolsLayer ? <ToolsLayerComponent style={toolsStyle} app={app} zoom={preview.zoom} /> : void 0 }
           </div>
         </div>
       </DropZone>

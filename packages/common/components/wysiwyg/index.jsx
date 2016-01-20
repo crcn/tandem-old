@@ -1,5 +1,44 @@
 import React from 'react';
 import TextEditor from 'common/components/text-editor';
+import Scanner from 'common/tokenizers/scanner';
+import createToken from 'common/tokenizers/create-token';
+import { SPACE, TAB, NEW_LINE, TEXT } from 'common/tokenizers/token-types';
+
+
+var htmlTokenizer = {
+  tokenize(source) {
+    var scanner = Scanner.create(source);
+
+    var tokens = [];
+
+    function addToken(search, type) {
+      if (scanner.scan(search)) {
+        tokens.push(createToken(scanner.getCapture(), type));
+        return true;
+      }
+    }
+
+    while(!scanner.hasTerminated()) {
+      if (addToken(/^[\n\r]/, NEW_LINE)) continue;
+      if (addToken(/^\t+/, TAB)) continue;
+      if (addToken(/^\u0020+/, SPACE)) continue;
+      if (addToken(/^[^\<\s\t\n\r]+/, TEXT)) continue;
+      if (addToken(/^<\w+.*?\/?>/, 'startTag')) continue;
+      if (addToken(/^<\/\w+.*?>/, 'endTag')) continue;
+      scanner.nextChar();
+    }
+
+
+    return tokens;
+  }
+}
+
+var tokenComponentFactory = {
+  create({ token }) {
+    console.log(token);
+    return null;
+  }
+}
 
 class WYSIWYGEditor extends React.Component {
 
@@ -58,7 +97,7 @@ class WYSIWYGEditor extends React.Component {
     }
 
     var enterKey = (event) => {
-      ref.setValue(ref.getValue() + '\n');
+      controller.marker.addText('<br>');
     }
 
     var handlers = {
@@ -90,6 +129,8 @@ class WYSIWYGEditor extends React.Component {
       ref='editor'
       {...this.props}
       source={value}
+      tokenComponentFactory={tokenComponentFactory}
+      tokenizer={htmlTokenizer}
       onChange={this.onChange.bind(this)}
       onKeyDown={this.onKeyDown.bind(this)} />
   }
