@@ -9,7 +9,7 @@ import includes from 'lodash/collection/includes';
 import { TypeNotifier, CallbackNotifier } from 'common/notifiers';
 import { SET_FOCUS, TOGGLE_FOCUS } from 'editor/message-types';
 import { createSelectionQuery } from 'editor/fragment/queries';
-
+//
 /**
  * selection handler whenever a user focuses on a given entity
  */
@@ -55,17 +55,19 @@ function create({ app }) {
 
     var multiSelect = message.multiSelect;
 
+    var targets = toArray(message.target);
+
     // no item? ignore
-    if (!message.target) return app.setProperties({
+    if (!targets.length) return app.setProperties({
       selection: []
     });
 
     var fragment = app.fragments.queryOne(
-      createSelectionQuery(toArray(message.target))
+      createSelectionQuery(targets)
     );
 
     if (!fragment) {
-      console.warn('entity type %s does not have an associated selection fragment, so it is not selectable', message.target.type);
+      console.warn('entity type %s does not have an associated selection fragment, so it is not selectable', targets[0].type);
       return;
     }
 
@@ -79,7 +81,7 @@ function create({ app }) {
 
     // remove the item from the selection if it currently exists.
     // This is a toggle feature.
-    toArray(message.target).forEach(function(target) {
+    targets.forEach(function(target) {
       if (currentSelection.includes(target)) {
 
         // ensure that the message is "toggle", not "set"
@@ -88,8 +90,19 @@ function create({ app }) {
         }
       } else {
         currentSelection.push(target);
+
+        _toggleExpansion(target);
       }
     });
+
+    // expands the layer (left pane) when selected
+    function _toggleExpansion(target) {
+      var p = target.parent;
+      while(p) {
+        p.setProperties({ layerExpanded: true });
+        p = p.parent;
+      }
+    }
 
     // need to give time for the current selection
     // to be displayed on screen (could be new)
