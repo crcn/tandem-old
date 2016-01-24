@@ -121,8 +121,10 @@ class ElementNode extends BaseNode {
   }
 }
 
-class TextNode extends ElementNode {
+class TextNode extends BaseNode {
   constructor(entity) {
+
+    // note that span is required here instead of createTextNode
     super(entity, document.createElement('span'));
     this._updateText();
   }
@@ -133,7 +135,7 @@ class TextNode extends ElementNode {
   }
 
   _updateText() {
-    this.element.innerHTML = this.entity.value;
+    this.element.textContent = this.entity.value;
   }
 }
 

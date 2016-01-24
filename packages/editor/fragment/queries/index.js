@@ -11,7 +11,6 @@ export const ALL_KEY_COMMANDS = 'keyCommands';
  * from the editor to the target entity / entities.
  */
 
-
 export function createSelectionQuery(items) {
   return 'selection/' + (items.length ? items[0].type : void 0);
 }

@@ -3,6 +3,20 @@ import { SetToolMessage } from 'editor/message-types';
 
 function convertElementToEntity(fragments, element) {
   if (element.nodeType === 1) {
+
+    // only a span wrapping around text? return just the
+    // text entity so that we do not have any extranous spans
+    // floating around and polluting things
+    if (element.nodeName === 'SPAN' && element.childNodes.length === 1 && element.childNodes[0].nodeType === 3) {
+
+      var hasAttrValues = false;
+
+      // TODO - check attr values
+      if (!hasAttrValues) {
+        return convertElementToEntity(fragments, element.childNodes[0]);
+      }
+    }
+
     return fragments.queryOne('entities/element').factory.create({
       tagName: element.nodeName.toLowerCase(),
       attributes: {

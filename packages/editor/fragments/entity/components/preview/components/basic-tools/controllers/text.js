@@ -22,13 +22,12 @@ class TextTool extends BaseObject {
   }
 
   addTextEntity(message) {
-    var fragment = this.app.fragments.queryOne('entities/text');
 
-    // create a basic text entity
-    var entity   = fragment.factory.create({
-      label: 'label',
-      value: 'Type in text here',
-      paneType: 'text',
+    var f = this.app.fragments;
+
+    var entity = f.queryOne('entities/element').factory.create({
+      tagName: 'span',
+      layerExpanded: true,
       attributes: {
         style: {
           position   : 'absolute',
@@ -42,7 +41,11 @@ class TextTool extends BaseObject {
           top        : Math.round(message.y - CURSOR_HEIGHT) + 'px'
         }
       }
-    });
+    }, [
+      this.app.fragments.queryOne('entities/text').factory.create({
+        value: 'Type in text here'
+      })
+    ])
 
     this.app.rootEntity.children.push(entity);
 
