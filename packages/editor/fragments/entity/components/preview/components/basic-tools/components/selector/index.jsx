@@ -32,6 +32,8 @@ class SelectorComponent extends React.Component {
 
   render() {
 
+    if (this.props.app.preview.currentTool.type !== 'pointer') return null;
+
     var selection = this.props.selection;
     var preview   = selection.preview;
     if (!preview) return null;

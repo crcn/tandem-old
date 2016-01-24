@@ -72,14 +72,17 @@ class ElementNode extends BaseNode {
 
   _updateChildren(change) {
     // TODO
-    // console.log('update', change);
     change.removed.forEach((entity) => {
       for (var i = this._children.length; i--;) {
         var child = this._children[i];
         if (child.entity === entity) {
           this._children.splice(i, 1);
           child.dispose();
-          this.element.removeChild(child.element);
+
+          // contains(element) might be false when using content editable against element
+          if (this.element.contains(child.element)) {
+            this.element.removeChild(child.element);
+          }
         }
       }
     });

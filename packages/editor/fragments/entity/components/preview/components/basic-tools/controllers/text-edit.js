@@ -17,6 +17,11 @@ function convertElementToEntity(fragments, element) {
       }
     }
 
+    // if non-void tag does not have children, then return null. Should not be converted to entity
+    if (!/img/.test(element.nodeName) && element.childNodes.length === 0) {
+      return null;
+    }
+
     return fragments.queryOne('entities/element').factory.create({
       tagName: element.nodeName.toLowerCase(),
       attributes: {
@@ -63,6 +68,9 @@ class TextEditTool extends BaseObject {
       element.setAttribute('contenteditable', '');
 
       var entity = convertElementToEntity(this.app.fragments, element);
+
+      // reset contenteditable stuff so that the proceeding enities get properly properly rendered in the preview
+      element.innerHTML = '';
 
       // this.app.rootEntity.children.push(entity);
       selection.children.splice(0, selection.children.length, ...entity.children);
