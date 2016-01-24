@@ -3,21 +3,17 @@ import { SetToolMessage } from 'editor/message-types';
 
 function convertElementToEntity(fragments, element) {
   if (element.nodeType === 1) {
-    return fragments.queryOne({
-      id: 'elementEntity'
-    }).factory.create({
+    return fragments.queryOne('entities/element').factory.create({
       tagName: element.nodeName.toLowerCase(),
       attributes: {
         ...element.attributes,
-        style: {}
+        style: element.style
       }
     }, Array.prototype.map.call(element.childNodes, convertElementToEntity.bind(this, fragments)).filter(function(child) {
       return !!child;
     }))
   } else if (element.nodeType === 3) {
-    return fragments.queryOne({
-      id: 'textEntity'
-    }).factory.create({
+    return fragments.queryOne('entities/text').factory.create({
       value: element.nodeValue
     });
   }
@@ -49,14 +45,13 @@ class TextEditTool extends BaseObject {
     this.app.setProperties({ hideToolsLayer: true });
 
     element.onblur = () => {
+      element.setAttribute('contenteditable', '');
 
       var entity = convertElementToEntity(this.app.fragments, element);
 
       // this.app.rootEntity.children.push(entity);
+      selection.children.splice(0, selection.children.length, ...entity.children);
 
-      selection.setProperties({
-        value: element.innerHTML
-      });
       // TODO - convert DOM nodes to entities here
       this.notifyTextEditComplete(void 0);
     }

@@ -37,6 +37,6 @@ export class FactoryFragment extends Fragment {
 
 export class ApplicationFragment extends FactoryFragment {
   constructor(properties) {
-    super({ type: 'application', ...properties });
+    super({ namespace: 'application', ...properties });
   }
 }

@@ -9,13 +9,13 @@ export function create({ app }) {
   return [
     EntityLayerLabelComponentFragment.create({
       id                   : 'textPaneLayerComponent',
-      entityComponentType  : 'text',
+      namespace            : 'layer/labels/text',
       componentClass       : TextLayerLabelComponent
     }),
 
     EntityLayerLabelComponentFragment.create({
       id                   : 'elementLayerLabelComponent',
-      entityComponentType  : 'element',
+      namespace            : 'layer/labels/element',
       componentClass       : ElementLayerLabelComponent
     })
   ];

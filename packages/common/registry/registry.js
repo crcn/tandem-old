@@ -4,32 +4,47 @@ import Fragment from './fragment';
 import BaseCollection from 'common/collection';
 import { ExistsError } from 'common/errors';
 
-// TODO - implement parent registery lookup
-
+// TODO - registry should not be a collection here - reg
+// object instead
 class Registry extends BaseCollection {
 
-  constructor(...args) {
-    super(...args);
+  constructor(options, initialFragments = []) {
+    super(options);
 
     this.query    = _memoize(this.query);
     this.queryOne = _memoize(this.queryOne);
+
+    this._fragments = {};
+    this.register(...initialFragments);
   }
 
-  register(fragment) {
-    this.push(fragment);
+  register(...fragment) {
+    super.push(...fragment);
     return fragment;
   }
 
   query(search) {
 
+    if (typeof search === 'string') {
+      return this._fragments[search];
+    }
+
+    console.error('search query must be a string, not a query object');
+    console.log(search);
+
     // TODO - warn if search if a POJO
     return this.filter(this._createFilter(search));
   }
 
-  queryOne(search) {
+  push(...args) {
+    console.error('push() called on fragments. Use register() instead');
+    return super.push(...args);
+  }
 
-    // TODO - warn if search if a POJO
-    return this.find(this._createFilter(search));
+  queryOne(search) {
+    var found = this.query(search);
+
+    return found ? found[0] : void 0;
   }
 
   _createFilter(search) {
@@ -46,6 +61,21 @@ class Registry extends BaseCollection {
   splice(index, count, ...entries) {
 
     entries.forEach((fragment) => {
+
+      if (fragment.namespace) {
+
+        if (typeof fragment.namespace !== 'string') {
+          throw new Error(`fragment namespace for "${fragment.id}" must be a string`);
+        }
+
+        if (!this._fragments[fragment.namespace]) {
+          this._fragments[fragment.namespace] = [];
+        }
+
+        this._fragments[fragment.namespace].push(fragment);
+      } else {
+        console.warn('registring fragment "%s" without a namespace', fragment.id);
+      }
 
       if (!(fragment instanceof Fragment)) {
         throw new Error('fragment must be an instanceof Fragment');

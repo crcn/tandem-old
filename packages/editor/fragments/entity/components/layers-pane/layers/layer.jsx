@@ -185,10 +185,7 @@ class LayerLabelComponent extends React.Component {
     var entity     = this.props.entity;
     var expanded   = entity.layerExpanded;
 
-    var labelFragment = this.props.app.fragments.queryOne({
-      componentType : 'label',
-      entityComponentType : entity.componentType
-    });
+    var labelFragment = this.props.app.fragments.queryOne('layer/labels/' + entity.componentType);
 
     var labelSection;
 
@@ -290,25 +287,7 @@ LayerLabelComponent = DropTarget('element', {
 
 class LayerComponent extends React.Component {
 
-  componentDidMount() {
-    // this.props.entity.notifier.push(this);
-  }
-
-  notify() {
-    // this._invalidateCache = true;
-  }
-
-  componentWillUnmount() {
-    // this.props.entity.notifier.remove(this);
-  }
-
-  // shouldComponentUpdate() {
-  //   return this._invalidateCache;
-  // }
-
   render() {
-
-    // this._invalidateCache = false;
 
     var entity     = this.props.entity;
     var expanded   = entity.layerExpanded;

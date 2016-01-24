@@ -40,7 +40,7 @@ function create({ app }) {
     app.notifier.notify({ type: CLEAR_HISTORY });
   }
 
-  app.fragments.push(KeyCommandFragment.create({
+  app.fragments.register(KeyCommandFragment.create({
     id: 'saveFile',
     keyCommand: 'meta+s',
     notifier: {

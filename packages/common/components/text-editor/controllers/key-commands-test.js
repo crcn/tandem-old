@@ -16,24 +16,24 @@ describe(__filename + '#', function() {
     });
   });
 
-  it('ctrl+E moves the caret to the end of the line', function() {
+  xit('ctrl+E moves the caret to the end of the line', function() {
     te.notifier.notify({ type: 'keyCommand', keyCode: 'E'.charCodeAt(0), ctrlKey: true });
     expect(te.marker.position).to.be(12);
   });
 
-  it('ctrl+A moves the caret to the beginning of the current line', function() {
+  xit('ctrl+A moves the caret to the beginning of the current line', function() {
     te.caret.setPosition(15);
     te.notifier.notify({ type: 'keyCommand', keyCode: 'A'.charCodeAt(0), ctrlKey: true });
     expect(te.marker.position).to.be(13);
   });
 
-  it('ctrl+K removes the proceeding characters from the caret position', function() {
+  xit('ctrl+K removes the proceeding characters from the caret position', function() {
     te.caret.setPosition(3);
     te.notifier.notify({ type: 'keyCommand', keyCode: 'K'.charCodeAt(0), ctrlKey: true });
     expect(te.caret._getLine().toString()).to.be('123abc def\n');
   });
 
-  it('can move to the end of the last line', function() {
+  xit('can move to the end of the last line', function() {
     var te = te = TextEditor.create({
       notifier: NotifierCollection.create(),
       source: '123\n' +

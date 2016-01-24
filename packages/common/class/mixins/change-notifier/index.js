@@ -56,8 +56,7 @@ export default function(clazz) {
 
       clazz.prototype.splice.apply(this, arguments);
       if (this.notifier && (added.length || removed.length)) {
-        this.notifier.notify(ChangeMessage.create([
-          {
+        this.notifier.notify(ChangeMessage.create([{
             target  : this,
             start   : start,
             count   : count,

@@ -37,21 +37,20 @@ export function create({ app, preview }) {
       name    : 'pointer tool',
       id      : 'pointerTool',
       type    : 'previewTool',
+      namespace: 'preview/tools',
       tool    : pointerTool
     }),
     Fragment.create({
       icon    : 'text',
       name    : 'text tool',
       id      : 'textTool',
-      type    : 'previewTool',
+      namespace: 'preview/tools',
       tool    : textTool
     }),
     Fragment.create({
       id      : 'editTextTool',
-      type    : 'previewTool',
-      tool    : editTextTool,
-      toolType: 'edit',
-      entityComponentType: 'text'
+      namespace: 'preview/editTool/element',
+      tool    : editTextTool
     }),
     KeyCommandFragment.create({
       id         : 'textToolKeyCommand',
@@ -69,17 +68,9 @@ export function create({ app, preview }) {
         { type: SET_TOOL, tool: pointerTool }
       )
     }),
-    // ComponentFragment.create({
-    //   id             : 'textToolComponent',
-    //   componentType  : 'tool',
-    //   componentClass : TextToolComponent,
-    //   toolType       : editTextTool.type,
-    //   entityType     : 'component',
-    //   entityComponentType: 'text'
-    // }),
     ComponentFragment.create({
       id             : 'dragSelectComponent',
-      componentType  : 'tool',
+      namespace      : 'preview/toolComponents',
       componentClass : DragSelectComponent,
       matchesQuery(query) {
         return query.toolType === pointerTool.type;
@@ -87,7 +78,7 @@ export function create({ app, preview }) {
     }),
     ComponentFragment.create({
       id             : 'selectablesComponent',
-      componentType  : 'tool',
+      namespace      : 'preview/toolComponents',
       componentClass : SelectablesComponent,
       matchesQuery(query) {
         return query.toolType === pointerTool.type;
@@ -95,7 +86,7 @@ export function create({ app, preview }) {
     }),
     ComponentFragment.create({
       id             : 'selectorToolComponent',
-      componentType  : 'tool',
+      namespace      : 'preview/toolComponents',
       componentClass : SelectorToolComponent,
       toolType       : pointerTool.type,
       entityType     : 'component'

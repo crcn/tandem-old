@@ -10,7 +10,7 @@ import RegisterComponent from 'common/components/registered';
 class CenterComponent extends React.Component {
   render() {
     return <div className='m-editor-center'>
-      <RegisterComponent {...this.props} queryOne={{componentType:'preview'}} />
+      <RegisterComponent {...this.props} queryOne={'preview'} />
     </div>;
   }
 }

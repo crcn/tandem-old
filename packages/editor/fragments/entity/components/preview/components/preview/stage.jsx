@@ -217,10 +217,17 @@ class StageComponent extends React.Component {
                 ref='canvas'
                 className='m-preview-stage--canvas'>
 
-                <div id='preview-canvas' ref='drawLayer' className='m-preview-stage--draw-layer'>
-                  { entity ? <RegisteredComponent {...this.props} entity={entity} queryOne={{
-                    componentType: entity.componentType
-                  }} /> : void 0 }
+                <div
+                  id='preview-canvas'
+                  ref='drawLayer'
+                  className='m-preview-stage--draw-layer'>
+                  {
+                    entity ? <RegisteredComponent
+                    {...this.props}
+                    entity={entity}
+                    queryOne={'preview/' + entity.componentType } /> :
+                    void 0
+                  }
                 </div>
 
               </div>

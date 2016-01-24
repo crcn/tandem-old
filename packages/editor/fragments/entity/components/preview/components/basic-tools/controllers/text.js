@@ -22,7 +22,7 @@ class TextTool extends BaseObject {
   }
 
   addTextEntity(message) {
-    var fragment = this.app.fragments.queryOne('textEntity');
+    var fragment = this.app.fragments.queryOne('entities/text');
 
     // create a basic text entity
     var entity   = fragment.factory.create({

@@ -33,4 +33,12 @@ describe(__filename + '#', function() {
     }
     expect(err).to.be.an(ExistsError);
   });
+
+  it('can register & query a fragment with a namespace', function() {
+    var r = Registry.create();
+    var fragment = Fragment.create({ id: '1', namespace: 'a/b' });
+    r.push(fragment);
+
+    expect(r.queryOne('a/b')).to.be(fragment);
+  });
 });

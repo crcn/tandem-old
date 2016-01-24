@@ -11,6 +11,7 @@ export function create({ app }) {
   return [
     AppPaneComponentFragment.create({
       id             : 'layersPane',
+      namespace      : 'panes/app',
       label          : 'Layers',
       componentClass : LayersPaneComponent
     })

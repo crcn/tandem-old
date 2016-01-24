@@ -10,15 +10,16 @@ export function create({ app }) {
 
     // text
     EntityFragment.create({
-      id      : 'textEntity',
-      factory : Text
+      id        : 'textEntity',
+      namespace : 'entities/text',
+      factory   : Text
     }),
 
     // element
     EntityFragment.create({
-      id      : 'elementEntity',
-      factory : Element
+      id        : 'elementEntity',
+      namespace : 'entities/element',
+      factory   : Element
     })
   ]
 }
-

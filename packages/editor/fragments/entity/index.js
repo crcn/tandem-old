@@ -12,7 +12,7 @@ export default ApplicationFragment.create({
   id: 'basicDOMEntities',
   factory: {
     create({ app }) {
-      app.fragments.push(
+      app.fragments.register(
         ...createPreviewFragment({ app }),
         ...createPasteFragment({ app }),
         ...createLayerComponentFragment({ app }),
@@ -21,4 +21,3 @@ export default ApplicationFragment.create({
     }
   }
 });
-

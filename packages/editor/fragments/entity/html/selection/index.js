@@ -8,7 +8,7 @@ export function create({ app }) {
   return [
     SelectionFragment.create({
       id  : 'htmlEntitySelection',
-      entityType: 'component',
+      namespace: 'selection/component',
       factory: HTMLEntitySelection
     })
   ];

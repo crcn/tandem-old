@@ -34,6 +34,7 @@ class SelectorComponent extends React.Component {
 
     var selection = this.props.selection;
     var preview   = selection.preview;
+    if (!preview) return null;
 
     var sections = {};
 

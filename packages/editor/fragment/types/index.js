@@ -91,7 +91,7 @@ export class EntityLayerLabelComponentFragment extends ComponentFragment {
 
 export class PreviewComponentFragment extends ComponentFragment {
   constructor(properties) {
-    super({ componentType: 'preview', ...properties });
+    super({ namespace: 'preview', ...properties });
   }
 }
 
@@ -112,7 +112,7 @@ export class KeyCommandFragment extends Fragment {
     assert(properties.keyCommand, 'key command must exist');
     assert(properties.notifier  , 'notifier must exist');
 
-    super({ type: 'keyCommand', ...properties });
+    super({ namespace: 'keyCommands', ...properties });
   }
 }
 

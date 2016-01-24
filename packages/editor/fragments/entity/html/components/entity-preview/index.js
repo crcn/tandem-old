@@ -38,10 +38,10 @@ export function create({ app }) {
     'text'
   ].map(function(elementName) {
     return ComponentFragment.create({
-      id: elementName + 'Element',
-      componentType: 'element',
-      tagName: elementName,
-      componentClass: HTMLEntityComponent
+      id             : elementName + 'Element',
+      tagName        : elementName,
+      namespace      : 'preview/element',
+      componentClass : HTMLEntityComponent
     });
   });
 }

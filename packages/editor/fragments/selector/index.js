@@ -26,7 +26,7 @@ function create({ app }) {
   app.notifier.push(TypeNotifier.create(SET_FOCUS, setFocus));
   app.notifier.push(TypeNotifier.create(TOGGLE_FOCUS, setFocus));
 
-  app.fragments.push(
+  app.fragments.register(
     KeyCommandFragment.create({
       id: 'removeSelection',
       keyCommand: 'backspace',

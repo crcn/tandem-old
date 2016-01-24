@@ -1,8 +1,8 @@
 import { BaseQuery } from 'common/fragment/queries';
 import { toArray } from 'common/utils/object';
 
-export const ALL_FONTS        = { type: 'font' };
-export const ALL_KEY_COMMANDS = { type: 'keyCommand' };
+export const ALL_FONTS        = 'fonts';
+export const ALL_KEY_COMMANDS = 'keyCommands';
 
 /**
  * Query for selection object when an item comes into
@@ -13,8 +13,5 @@ export const ALL_KEY_COMMANDS = { type: 'keyCommand' };
 
 
 export function createSelectionQuery(items) {
-  return {
-    type       : 'selection',
-    entityType : { $all: toArray(items).map(item => item.type) }
-  };
+  return 'selection/' + (items.length ? items[0].type : void 0);
 }

@@ -10,28 +10,26 @@ import PaddingToolComponent from './components/padding-tool';
 export function create({ app }) {
 
   return [
+
+    // toolComponents/component
     ComponentFragment.create({
       id             : 'marginToolComponent',
-      componentClass : MarginToolComponent,
-      matchesQuery: function({ entityType, componentType }) {
-        return entityType === 'component' && componentType === 'tool';
-      }
+      namespace      : 'preview/tools',
+      componentClass : MarginToolComponent
     }),
 
+    // toolComponents/component
     ComponentFragment.create({
       id             : 'originToolComponent',
-      componentClass : OriginToolComponent,
-      matchesQuery: function({ entityType, componentType }) {
-        return entityType === 'component' && componentType === 'tool';
-      }
+      namespace      : 'preview/tools',
+      componentClass : OriginToolComponent
     }),
 
+    // /toolComponents/component
     ComponentFragment.create({
       id             : 'paddingToolComponent',
-      componentClass : PaddingToolComponent,
-      matchesQuery: function({ entityType, componentType }) {
-        return entityType === 'component' && componentType === 'tool';
-      }
+      namespace      : 'preview/tools',
+      componentClass : PaddingToolComponent
     }),
 
     // todo - deinitely want this, but need to add in the properties

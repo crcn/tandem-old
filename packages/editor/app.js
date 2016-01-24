@@ -5,6 +5,7 @@ import 'editor/scss/modules/all.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import MainComponent from './components/main';
 import BaseApplication from 'base/app';
 
 import EntityFragment from './fragments/entity';
@@ -16,8 +17,6 @@ import ClipboardFragment from './fragments/clipboard';
 import SaffronFileHandler from './fragments/saffron-file-handler';
 import KeyCommandsFragment from './fragments/key-commands';
 import KeyCommanderFragment from './fragments/key-commander';
-
-import MainComponent from './components/main';
 
 import { SET_FOCUS, SET_ROOT_ENTITY, DISPOSE } from 'editor/message-types';
 

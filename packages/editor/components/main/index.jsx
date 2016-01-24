@@ -35,18 +35,14 @@ class MainComponent extends React.Component {
         {...this.props}
         position='left'
         maxWidth={400}
-        query={{ paneType: 'app' }} /> : void 0 }
+        query={'panes/app'} /> : void 0 }
 
       <CenterComponent {...this.props} />
 
       { !this.props.app.settings.hideRightSidebar ? <SidebarComponent
         {...this.props}
         position='right'
-        query={{
-          componentType: 'pane',
-          paneType: 'entity',
-          entityType: selection ? selection.type : void 0
-        }}
+        query={'panes/entity/' + selection.type}
         selection={selection} /> : void 0 }
 
     </div>;

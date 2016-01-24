@@ -100,6 +100,9 @@
 - [ ] eye dropper
 - [ ] should be able to scroll individual unit values
 - [ ] display multiple values as a drop menu for each element. On Hover, highlight given element
+- [ ] display none must be considered
+
+- [ ] - refactor how fragments work
 
 #### Keep this in mind when writing code
 

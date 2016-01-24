@@ -7,9 +7,7 @@ export function create({ app }) {
 
   function load() {
 
-    var div = app.fragments.queryOne({
-      id: 'elementEntity'
-    });
+    var div = app.fragments.queryOne('entities/element');
 
     var entity = div.factory.create({
       componentType : 'element',
@@ -85,7 +83,7 @@ export function create({ app }) {
         }
       })
     ]);
-    
+
     app.notifier.notify(RootEntityMessage.create(SET_ROOT_ENTITY, entity));
   }
   return [];

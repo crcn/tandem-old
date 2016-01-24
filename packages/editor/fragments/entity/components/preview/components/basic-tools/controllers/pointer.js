@@ -35,11 +35,7 @@ class PointerTool extends ObservableObject {
     // needs to work without side effects
     // this.preview.setLayerFocus(message.selection[0]);
 
-    var fragment = this.app.fragments.queryOne({
-      type       : 'previewTool',
-      toolType   : 'edit',
-      entityComponentType: message.selection.componentType
-    });
+    var fragment = this.app.fragments.queryOne('preview/editTool/' + message.selection.componentType);
 
     if (!fragment) {
       console.warn('entity %s is not editable on double click', message.selection.componentType);

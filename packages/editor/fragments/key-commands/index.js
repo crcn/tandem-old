@@ -8,7 +8,7 @@ export default ApplicationFragment.create({
 });
 
 function create({ app }) {
-  app.fragments.push(
+  app.fragments.register(
 
     // TODO - need to use meta instead of alt here
     KeyCommandFragment.create({

@@ -1,1 +1,1 @@
-export const ALL_APPLICATION_PLUGINS = { type: 'application' };
+export const ALL_APPLICATION_PLUGINS = 'application';

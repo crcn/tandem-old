@@ -108,6 +108,8 @@ function createStyleInputFragments({ app }) {
 
 
 function createComponentStyleFragment(name, category, componentClass) {
+
+  // /entityStyleComponents/[name]
   return ComponentFragment.create({
     id             : name + 'StyleInputComponent',
     componentType  : 'propertyInput',
@@ -119,6 +121,8 @@ function createComponentStyleFragment(name, category, componentClass) {
 }
 
 function createEditorPaneFragments({ app }) {
+
+  // /entityPaneComponents/component
   return [EntityPaneComponentFragment.create({
       id             : 'stylePaneComponent',
 

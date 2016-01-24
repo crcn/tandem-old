@@ -126,7 +126,7 @@ function create({ app }) {
     save();
   }));
 
-  app.fragments.push(
+  app.fragments.register(
     ...createKeyCommandFragments({ app, history }),
     ...createSliderFragments({ app, history })
   );

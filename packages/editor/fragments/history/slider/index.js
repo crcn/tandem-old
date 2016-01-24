@@ -10,7 +10,7 @@ export function create({ history }) {
     ComponentFragment.create({
       history        : history,
       id             : 'historySliderComponent',
-      paneType       : 'footer',
+      namespace      : 'preview/footerComponents',
       componentClass : HistorySliderComponent
     })
   ];

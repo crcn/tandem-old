@@ -12,7 +12,7 @@ export default ApplicationFragment.create({
 });
 
 function create({ app }) {
-  app.fragments.push(
+  app.fragments.register(
     // ...createTestProjectFragment({ app })
   );
 }

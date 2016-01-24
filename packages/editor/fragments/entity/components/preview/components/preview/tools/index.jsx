@@ -14,11 +14,7 @@ class ToolsLayerComponent extends React.Component {
       <RegisteredComponent
         {...this.props}
         selection={selection}
-        query={{
-          componentType : 'tool',
-          toolType      : tool.type,
-          entityType    : selection ? selection.type : selection
-        }} />
+        query={'preview/toolComponents'} />
 
     </div>;
   }

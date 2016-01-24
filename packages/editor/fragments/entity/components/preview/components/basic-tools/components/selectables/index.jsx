@@ -76,7 +76,7 @@ class SelectablesComponent extends React.Component {
     if (this.props.app.selection.preview && this.props.app.selection.preview.moving) return null;
 
     var selectables = this.props.app.rootEntity.flatten().filter((entity) => {
-      return entity !== this.props.app.rootEntity && /component/.test(entity.type);
+      return entity !== this.props.app.rootEntity && /component/.test(entity.type) && !/text/.test(entity.componentType);
     }).map((entity) => {
       return <SelectableComponent
         {...this.props}

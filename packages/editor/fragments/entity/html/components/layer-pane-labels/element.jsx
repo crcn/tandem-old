@@ -40,9 +40,9 @@ class ElementLayerLabelComponent extends React.Component {
   addChild(event) {
     this.props.entity.layerExpanded = true;
 
-    var child = this.props.app.fragments.queryOne({
-      id: this.props.entity.fragmentId
-    }).factory.create({
+    // TODO - this needs to be generalized. Specific to
+    // HTML right now
+    var child = this.props.app.fragments.queryOne('entities/element').factory.create({
       tagName: 'div',
       editLayerSource: true
     });

@@ -15,7 +15,7 @@ class FooterComponent extends React.Component {
       &nbsp;
       { app.preview.canvasWidth }W x { app.preview.canvasHeight }H
 
-      <RegisteredComponent {...this.props} query={{paneType: 'footer'}} />
+      <RegisteredComponent {...this.props} query={'preview/footerComponents'} />
     </div>;
   }
 }
