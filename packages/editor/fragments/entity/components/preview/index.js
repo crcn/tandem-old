@@ -17,10 +17,10 @@ import { create as createKeyCommandsFragment } from './key-commands';
 export function create({ app }) {
 
   var preview = app.preview = Preview.create({
-    canvasWidth  : 1024,
-    canvasHeight : 768,
     zoom         : 0.70,
-    notifier     : app.notifier
+    notifier     : app.notifier,
+    canvasWidth  : 1024,
+    canvasHeight : 768
   });
 
   app.notifier.push(preview);

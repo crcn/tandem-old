@@ -34,6 +34,7 @@ class TextEditTool extends BaseObject {
 
     // only one
     var selection = this.app.selection[0];
+
     var preview = selection.preview;
     var element = preview.displayObject.element;
 

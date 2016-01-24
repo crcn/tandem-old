@@ -3,7 +3,7 @@ import { DisplayEntity } from 'common/entities';
 import {
   SetToolMessage,
   SetFocusMessage,
-  PREVIEW_STAGE_CLICK
+  PREVIEW_STAGE_MOUSE_DOWN
 } from 'editor/message-types';
 
 const CURSOR_HEIGHT = 12;
@@ -17,7 +17,7 @@ class TextTool extends BaseObject {
   notify(message) {
 
     switch(message.type) {
-      case PREVIEW_STAGE_CLICK: return this.addTextEntity(message);
+      case PREVIEW_STAGE_MOUSE_DOWN: return this.addTextEntity(message);
     }
   }
 
@@ -49,8 +49,10 @@ class TextTool extends BaseObject {
     // bring the new item into focus
     this.notifier.notify(SetFocusMessage.create(entity));
 
-    // next, change the tool to the text editor tool
-    this.notifier.notify(SetToolMessage.create(this.editTextTool));
+    setTimeout(() => {
+      // next, change the tool to the text editor tool
+      this.notifier.notify(SetToolMessage.create(this.editTextTool));
+    }, 50);
   }
 }
 

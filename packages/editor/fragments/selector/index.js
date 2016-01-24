@@ -5,10 +5,10 @@ import {
 } from 'editor/fragment/types';
 
 import { toArray } from 'common/utils/object';
+import includes from 'lodash/collection/includes';
 import { TypeNotifier, CallbackNotifier } from 'common/notifiers';
 import { SET_FOCUS, TOGGLE_FOCUS } from 'editor/message-types';
 import { createSelectionQuery } from 'editor/fragment/queries';
-import includes from 'lodash/collection/includes';
 
 /**
  * selection handler whenever a user focuses on a given entity
@@ -61,7 +61,7 @@ function create({ app }) {
     });
 
     var fragment = app.fragments.queryOne(
-      createSelectionQuery(message.target)
+      createSelectionQuery(toArray(message.target))
     );
 
     if (!fragment) {
