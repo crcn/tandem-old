@@ -69,7 +69,6 @@ class SelectorComponent extends React.Component {
       height: entireBounds.height
     };
 
-
     return <div className='m-selector-component'>
       <ResizerComponent {...this.props} />
       <div className='m-selector-component--bounds' style={boundsStyle} />
