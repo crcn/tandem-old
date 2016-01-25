@@ -1,10 +1,10 @@
 import './index.scss';
 
 import React from 'react';
+import PaneLabel from '../../pane-label/index.jsx';
 import inflection from 'inflection';
 import PaneComponent from 'common/components/pane';
 import StyleReference from 'common/reference/style';
-import PaneLabel from '../../pane-label/index.jsx';
 import PropertyListComponent from '../../property-list';
 
 class StyleDeclarationComponent extends React.Component {

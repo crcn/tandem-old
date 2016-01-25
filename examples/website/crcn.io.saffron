@@ -55,7 +55,8 @@
                         "id": "af2f7ff0-bf9b-11e5-96ac-b1186074c4aa",
                         "attributes": {
                           "style": {
-                            "display": "inline-block"
+                            "display": "inline-block",
+                            "marginRight": "27px"
                           }
                         },
                         "type": "component",
@@ -94,7 +95,8 @@
                         "id": "ba65d4a0-bf9b-11e5-96ac-b1186074c4aa",
                         "attributes": {
                           "style": {
-                            "display": "inline-block"
+                            "display": "inline-block",
+                            "marginRight": "27px"
                           }
                         },
                         "type": "component",
@@ -133,7 +135,8 @@
                         "id": "b9be22f1-bf9b-11e5-96ac-b1186074c4aa",
                         "attributes": {
                           "style": {
-                            "display": "inline-block"
+                            "display": "inline-block",
+                            "marginRight": "27px"
                           }
                         },
                         "type": "component",
@@ -172,7 +175,8 @@
                         "id": "c627a070-bf9b-11e5-96ac-b1186074c4aa",
                         "attributes": {
                           "style": {
-                            "display": "inline-block"
+                            "display": "inline-block",
+                            "marginRight": "27px"
                           }
                         },
                         "type": "component",
@@ -263,7 +267,7 @@
                               "children": [],
                               "props": {
                                 "fragmentId": "textEntity",
-                                "id": "02a533e0-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f8446580-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {}
                                 },
@@ -276,7 +280,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a58200-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f8448c90-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "alignContent": "",
@@ -380,7 +384,6 @@
                                 "floodColor": "",
                                 "floodOpacity": "",
                                 "font": "",
-                                "fontFamily": "",
                                 "fontKerning": "",
                                 "fontSize": "",
                                 "fontStretch": "",
@@ -639,7 +642,8 @@
                             "type": "component",
                             "componentType": "element",
                             "tagName": "span",
-                            "preview": null
+                            "preview": null,
+                            "layerExpanded": true
                           }
                         },
                         {
@@ -650,7 +654,7 @@
                                   "children": [],
                                   "props": {
                                     "fragmentId": "textEntity",
-                                    "id": "02a58201-bf9d-11e5-8936-55e72c1aaea5",
+                                    "id": "f8448c91-c2fb-11e5-bc6c-7f899ec65e9a",
                                     "attributes": {
                                       "style": {}
                                     },
@@ -663,7 +667,7 @@
                               ],
                               "props": {
                                 "fragmentId": "elementEntity",
-                                "id": "02a5a910-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f8448c92-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {
                                     "alignContent": "",
@@ -1032,7 +1036,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a5a911-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f8448c93-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "0": "box-sizing",
@@ -1408,7 +1412,7 @@
                               "children": [],
                               "props": {
                                 "fragmentId": "textEntity",
-                                "id": "02a5a912-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f8448c94-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {}
                                 },
@@ -1421,7 +1425,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a5a913-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f8448c95-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "alignContent": "",
@@ -1793,7 +1797,7 @@
                               "children": [],
                               "props": {
                                 "fragmentId": "textEntity",
-                                "id": "02a5a914-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f844b3a0-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {}
                                 },
@@ -1806,7 +1810,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a5a915-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f844b3a1-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "alignContent": "",
@@ -2180,7 +2184,7 @@
                                   "children": [],
                                   "props": {
                                     "fragmentId": "textEntity",
-                                    "id": "02a5d020-bf9d-11e5-8936-55e72c1aaea5",
+                                    "id": "f844b3a2-c2fb-11e5-bc6c-7f899ec65e9a",
                                     "attributes": {
                                       "style": {}
                                     },
@@ -2193,7 +2197,7 @@
                               ],
                               "props": {
                                 "fragmentId": "elementEntity",
-                                "id": "02a5d021-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f844b3a3-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {
                                     "alignContent": "",
@@ -2562,7 +2566,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a5d022-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f844b3a4-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "0": "box-sizing",
@@ -2938,7 +2942,7 @@
                               "children": [],
                               "props": {
                                 "fragmentId": "textEntity",
-                                "id": "02a5d023-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f844b3a5-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {}
                                 },
@@ -2951,7 +2955,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a5d024-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f844b3a6-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "alignContent": "",
@@ -3323,7 +3327,7 @@
                               "children": [],
                               "props": {
                                 "fragmentId": "textEntity",
-                                "id": "02a61e40-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f844dab0-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {}
                                 },
@@ -3336,7 +3340,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a64550-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f844dab1-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "alignContent": "",
@@ -3710,7 +3714,7 @@
                                   "children": [],
                                   "props": {
                                     "fragmentId": "textEntity",
-                                    "id": "02a64551-bf9d-11e5-8936-55e72c1aaea5",
+                                    "id": "f844dab2-c2fb-11e5-bc6c-7f899ec65e9a",
                                     "attributes": {
                                       "style": {}
                                     },
@@ -3723,7 +3727,7 @@
                               ],
                               "props": {
                                 "fragmentId": "elementEntity",
-                                "id": "02a66c60-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f844dab3-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {
                                     "alignContent": "",
@@ -4092,7 +4096,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a66c61-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f844dab4-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "0": "box-sizing",
@@ -4468,7 +4472,7 @@
                               "children": [],
                               "props": {
                                 "fragmentId": "textEntity",
-                                "id": "02a66c62-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f84501c0-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {}
                                 },
@@ -4481,7 +4485,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a69370-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f8454fe0-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "alignContent": "",
@@ -4853,7 +4857,7 @@
                               "children": [],
                               "props": {
                                 "fragmentId": "textEntity",
-                                "id": "02a69371-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f84576f0-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {}
                                 },
@@ -4866,7 +4870,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a69372-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f84576f1-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "alignContent": "",
@@ -5240,7 +5244,7 @@
                                   "children": [],
                                   "props": {
                                     "fragmentId": "textEntity",
-                                    "id": "02a69373-bf9d-11e5-8936-55e72c1aaea5",
+                                    "id": "f84576f2-c2fb-11e5-bc6c-7f899ec65e9a",
                                     "attributes": {
                                       "style": {}
                                     },
@@ -5253,7 +5257,7 @@
                               ],
                               "props": {
                                 "fragmentId": "elementEntity",
-                                "id": "02a6ba80-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f84576f3-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {
                                     "alignContent": "",
@@ -5622,7 +5626,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a6ba81-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f8459e00-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "0": "box-sizing",
@@ -5998,7 +6002,7 @@
                               "children": [],
                               "props": {
                                 "fragmentId": "textEntity",
-                                "id": "02a6ba82-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f8459e01-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {}
                                 },
@@ -6011,7 +6015,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a6ba83-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f8459e02-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "alignContent": "",
@@ -6380,20 +6384,9 @@
                       ],
                       "props": {
                         "fragmentId": "elementEntity",
-                        "id": "02a6ba84-bf9d-11e5-8936-55e72c1aaea5",
+                        "id": "f8459e03-c2fb-11e5-bc6c-7f899ec65e9a",
                         "attributes": {
                           "style": {
-                            "0": "box-sizing",
-                            "1": "margin-top",
-                            "2": "margin-bottom",
-                            "3": "color",
-                            "4": "font-family",
-                            "5": "font-size",
-                            "6": "line-height",
-                            "7": "background-color",
-                            "8": "outline-style",
-                            "9": "outline-color",
-                            "10": "outline-width",
                             "alignContent": "",
                             "alignItems": "",
                             "alignSelf": "",
@@ -6409,7 +6402,6 @@
                             "animationPlayState": "",
                             "animationTimingFunction": "",
                             "backfaceVisibility": "",
-                            "background": "",
                             "backgroundAttachment": "",
                             "backgroundBlendMode": "",
                             "backgroundClip": "",
@@ -6424,8 +6416,6 @@
                             "backgroundRepeatY": "",
                             "backgroundSize": "",
                             "baselineShift": "",
-                            "border": "",
-                            "borderBottom": "",
                             "borderBottomColor": "",
                             "borderBottomLeftRadius": "",
                             "borderBottomRightRadius": "",
@@ -6439,18 +6429,14 @@
                             "borderImageSlice": "",
                             "borderImageSource": "",
                             "borderImageWidth": "",
-                            "borderLeft": "",
                             "borderLeftColor": "",
                             "borderLeftStyle": "",
                             "borderLeftWidth": "",
-                            "borderRadius": "",
-                            "borderRight": "",
                             "borderRightColor": "",
                             "borderRightStyle": "",
                             "borderRightWidth": "",
                             "borderSpacing": "",
                             "borderStyle": "",
-                            "borderTop": "",
                             "borderTopColor": "",
                             "borderTopLeftRadius": "",
                             "borderTopRightRadius": "",
@@ -6458,7 +6444,6 @@
                             "borderTopWidth": "",
                             "borderWidth": "",
                             "bottom": "",
-                            "boxShadow": "",
                             "boxSizing": "inherit",
                             "bufferedRendering": "",
                             "captionSide": "",
@@ -6466,7 +6451,6 @@
                             "clip": "",
                             "clipPath": "",
                             "clipRule": "",
-                            "color": "rgb(102, 102, 102)",
                             "colorInterpolation": "",
                             "colorInterpolationFilters": "",
                             "colorRendering": "",
@@ -6477,7 +6461,6 @@
                             "cx": "",
                             "cy": "",
                             "direction": "",
-                            "display": "",
                             "dominantBaseline": "",
                             "emptyCells": "",
                             "fill": "",
@@ -6491,25 +6474,18 @@
                             "flexGrow": "",
                             "flexShrink": "",
                             "flexWrap": "",
-                            "float": "",
                             "floodColor": "",
                             "floodOpacity": "",
                             "font": "18px/27px 'Helvetica Neue', Helvetica, Arial, sans-serif",
-                            "fontFamily": "'Helvetica Neue', Helvetica, Arial, sans-serif",
                             "fontKerning": "",
-                            "fontSize": "18px",
                             "fontStretch": "",
-                            "fontStyle": "",
                             "fontVariant": "",
                             "fontVariantLigatures": "",
-                            "fontWeight": "",
                             "glyphOrientationHorizontal": "",
                             "glyphOrientationVertical": "",
-                            "height": "",
                             "imageRendering": "",
                             "isolation": "",
                             "justifyContent": "",
-                            "left": "",
                             "letterSpacing": "",
                             "lightingColor": "",
                             "lineHeight": "27px",
@@ -6517,11 +6493,6 @@
                             "listStyleImage": "",
                             "listStylePosition": "",
                             "listStyleType": "",
-                            "margin": "",
-                            "marginBottom": "1rem",
-                            "marginLeft": "",
-                            "marginRight": "",
-                            "marginTop": "0px",
                             "marker": "",
                             "markerEnd": "",
                             "markerMid": "",
@@ -6534,14 +6505,12 @@
                             "minHeight": "",
                             "minWidth": "",
                             "minZoom": "",
-                            "mixBlendMode": "",
                             "motion": "",
                             "motionOffset": "",
                             "motionPath": "",
                             "motionRotation": "",
                             "objectFit": "",
                             "objectPosition": "",
-                            "opacity": "",
                             "order": "",
                             "orientation": "",
                             "orphans": "",
@@ -6554,11 +6523,6 @@
                             "overflowWrap": "",
                             "overflowX": "",
                             "overflowY": "",
-                            "padding": "",
-                            "paddingBottom": "",
-                            "paddingLeft": "",
-                            "paddingRight": "",
-                            "paddingTop": "",
                             "page": "",
                             "pageBreakAfter": "",
                             "pageBreakBefore": "",
@@ -6567,7 +6531,6 @@
                             "perspective": "",
                             "perspectiveOrigin": "",
                             "pointerEvents": "",
-                            "position": "",
                             "quotes": "",
                             "r": "",
                             "resize": "",
@@ -6593,18 +6556,13 @@
                             "strokeWidth": "",
                             "tabSize": "",
                             "tableLayout": "",
-                            "textAlign": "",
                             "textAlignLast": "",
                             "textAnchor": "",
-                            "textDecoration": "",
                             "textIndent": "",
-                            "textOverflow": "",
                             "textRendering": "",
                             "textShadow": "",
                             "textTransform": "",
-                            "top": "",
                             "touchAction": "",
-                            "transform": "",
                             "transformOrigin": "",
                             "transformStyle": "",
                             "transition": "",
@@ -6738,23 +6696,21 @@
                             "webkitWritingMode": "",
                             "whiteSpace": "",
                             "widows": "",
-                            "width": "",
                             "willChange": "",
                             "wordBreak": "",
                             "wordSpacing": "",
-                            "wordWrap": "",
                             "writingMode": "",
                             "x": "",
                             "y": "",
                             "zIndex": "",
-                            "zoom": "",
-                            "cssFloat": ""
+                            "zoom": ""
                           }
                         },
                         "type": "component",
                         "componentType": "element",
                         "tagName": "p",
-                        "preview": null
+                        "preview": null,
+                        "layerExpanded": true
                       }
                     },
                     {
@@ -6765,7 +6721,7 @@
                               "children": [],
                               "props": {
                                 "fragmentId": "textEntity",
-                                "id": "02a6e190-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f8459e04-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {}
                                 },
@@ -6778,7 +6734,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a6e191-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f845c510-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "alignContent": "",
@@ -7150,7 +7106,7 @@
                               "children": [],
                               "props": {
                                 "fragmentId": "textEntity",
-                                "id": "02a708a0-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f845c511-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {}
                                 },
@@ -7163,7 +7119,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a708a1-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f845c512-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "alignContent": "",
@@ -7537,7 +7493,7 @@
                                   "children": [],
                                   "props": {
                                     "fragmentId": "textEntity",
-                                    "id": "02a708a2-bf9d-11e5-8936-55e72c1aaea5",
+                                    "id": "f845c513-c2fb-11e5-bc6c-7f899ec65e9a",
                                     "attributes": {
                                       "style": {}
                                     },
@@ -7550,7 +7506,7 @@
                               ],
                               "props": {
                                 "fragmentId": "elementEntity",
-                                "id": "02a72fb0-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f845c514-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {
                                     "alignContent": "",
@@ -7919,7 +7875,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a72fb1-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f845c515-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "0": "box-sizing",
@@ -8295,7 +8251,7 @@
                               "children": [],
                               "props": {
                                 "fragmentId": "textEntity",
-                                "id": "02a72fb2-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f845ec20-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {}
                                 },
@@ -8308,7 +8264,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a72fb3-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f845ec21-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "alignContent": "",
@@ -8680,7 +8636,7 @@
                               "children": [],
                               "props": {
                                 "fragmentId": "textEntity",
-                                "id": "02a72fb4-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f845ec22-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {}
                                 },
@@ -8693,7 +8649,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a77dd0-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f845ec23-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "alignContent": "",
@@ -9067,7 +9023,7 @@
                                   "children": [],
                                   "props": {
                                     "fragmentId": "textEntity",
-                                    "id": "02a77dd1-bf9d-11e5-8936-55e72c1aaea5",
+                                    "id": "f845ec24-c2fb-11e5-bc6c-7f899ec65e9a",
                                     "attributes": {
                                       "style": {}
                                     },
@@ -9080,7 +9036,7 @@
                               ],
                               "props": {
                                 "fragmentId": "elementEntity",
-                                "id": "02a77dd2-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f845ec25-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {
                                     "alignContent": "",
@@ -9449,7 +9405,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a77dd3-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f845ec26-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "0": "box-sizing",
@@ -9825,7 +9781,7 @@
                               "children": [],
                               "props": {
                                 "fragmentId": "textEntity",
-                                "id": "02a7a4e0-bf9d-11e5-8936-55e72c1aaea5",
+                                "id": "f8461330-c2fb-11e5-bc6c-7f899ec65e9a",
                                 "attributes": {
                                   "style": {}
                                 },
@@ -9838,7 +9794,7 @@
                           ],
                           "props": {
                             "fragmentId": "elementEntity",
-                            "id": "02a7a4e1-bf9d-11e5-8936-55e72c1aaea5",
+                            "id": "f8461331-c2fb-11e5-bc6c-7f899ec65e9a",
                             "attributes": {
                               "style": {
                                 "alignContent": "",
@@ -10207,17 +10163,16 @@
                       ],
                       "props": {
                         "fragmentId": "elementEntity",
-                        "id": "02a7a4e2-bf9d-11e5-8936-55e72c1aaea5",
+                        "id": "f8461332-c2fb-11e5-bc6c-7f899ec65e9a",
                         "attributes": {
                           "style": {
                             "0": "box-sizing",
-                            "1": "margin-top",
-                            "2": "margin-bottom",
-                            "3": "color",
-                            "4": "font-family",
-                            "5": "font-size",
-                            "6": "line-height",
-                            "7": "background-color",
+                            "1": "font-style",
+                            "2": "font-weight",
+                            "3": "font-size",
+                            "4": "line-height",
+                            "5": "font-family",
+                            "6": "background-color",
                             "alignContent": "",
                             "alignItems": "",
                             "alignSelf": "",
@@ -10290,7 +10245,7 @@
                             "clip": "",
                             "clipPath": "",
                             "clipRule": "",
-                            "color": "rgb(102, 102, 102)",
+                            "color": "",
                             "colorInterpolation": "",
                             "colorInterpolationFilters": "",
                             "colorRendering": "",
@@ -10323,10 +10278,10 @@
                             "fontKerning": "",
                             "fontSize": "18px",
                             "fontStretch": "",
-                            "fontStyle": "",
+                            "fontStyle": "normal",
                             "fontVariant": "",
                             "fontVariantLigatures": "",
-                            "fontWeight": "",
+                            "fontWeight": "normal",
                             "glyphOrientationHorizontal": "",
                             "glyphOrientationVertical": "",
                             "height": "",
@@ -10342,10 +10297,10 @@
                             "listStylePosition": "",
                             "listStyleType": "",
                             "margin": "",
-                            "marginBottom": "1rem",
+                            "marginBottom": "",
                             "marginLeft": "",
                             "marginRight": "",
-                            "marginTop": "0px",
+                            "marginTop": "",
                             "marker": "",
                             "markerEnd": "",
                             "markerMid": "",
@@ -10584,15 +10539,15 @@
                   ],
                   "props": {
                     "fragmentId": "elementEntity",
-                    "id": "02a7a4e3-bf9d-11e5-8936-55e72c1aaea5",
+                    "id": "f8461333-c2fb-11e5-bc6c-7f899ec65e9a",
                     "attributes": {
                       "style": {
-                        "0": "text-align",
-                        "1": "font-family",
-                        "2": "font-size",
-                        "3": "position",
-                        "4": "display",
-                        "5": "line-height",
+                        "0": "display",
+                        "1": "font-size",
+                        "2": "line-height",
+                        "3": "font-family",
+                        "4": "position",
+                        "5": "text-align",
                         "alignContent": "",
                         "alignItems": "",
                         "alignSelf": "",
@@ -10608,7 +10563,6 @@
                         "animationPlayState": "",
                         "animationTimingFunction": "",
                         "backfaceVisibility": "",
-                        "background": "",
                         "backgroundAttachment": "",
                         "backgroundBlendMode": "",
                         "backgroundClip": "",
@@ -10623,8 +10577,6 @@
                         "backgroundRepeatY": "",
                         "backgroundSize": "",
                         "baselineShift": "",
-                        "border": "",
-                        "borderBottom": "",
                         "borderBottomColor": "",
                         "borderBottomLeftRadius": "",
                         "borderBottomRightRadius": "",
@@ -10638,18 +10590,14 @@
                         "borderImageSlice": "",
                         "borderImageSource": "",
                         "borderImageWidth": "",
-                        "borderLeft": "",
                         "borderLeftColor": "",
                         "borderLeftStyle": "",
                         "borderLeftWidth": "",
-                        "borderRadius": "",
-                        "borderRight": "",
                         "borderRightColor": "",
                         "borderRightStyle": "",
                         "borderRightWidth": "",
                         "borderSpacing": "",
                         "borderStyle": "",
-                        "borderTop": "",
                         "borderTopColor": "",
                         "borderTopLeftRadius": "",
                         "borderTopRightRadius": "",
@@ -10657,7 +10605,6 @@
                         "borderTopWidth": "",
                         "borderWidth": "",
                         "bottom": "",
-                        "boxShadow": "",
                         "boxSizing": "",
                         "bufferedRendering": "",
                         "captionSide": "",
@@ -10665,7 +10612,6 @@
                         "clip": "",
                         "clipPath": "",
                         "clipRule": "",
-                        "color": "",
                         "colorInterpolation": "",
                         "colorInterpolationFilters": "",
                         "colorRendering": "",
@@ -10690,25 +10636,18 @@
                         "flexGrow": "",
                         "flexShrink": "",
                         "flexWrap": "",
-                        "float": "",
                         "floodColor": "",
                         "floodOpacity": "",
                         "font": "0.932em/1.4em Helvetica",
-                        "fontFamily": "Helvetica",
                         "fontKerning": "",
-                        "fontSize": "0.932em",
                         "fontStretch": "",
-                        "fontStyle": "",
                         "fontVariant": "",
                         "fontVariantLigatures": "",
-                        "fontWeight": "",
                         "glyphOrientationHorizontal": "",
                         "glyphOrientationVertical": "",
-                        "height": "",
                         "imageRendering": "",
                         "isolation": "",
                         "justifyContent": "",
-                        "left": "",
                         "letterSpacing": "",
                         "lightingColor": "",
                         "lineHeight": "1.4em",
@@ -10716,11 +10655,6 @@
                         "listStyleImage": "",
                         "listStylePosition": "",
                         "listStyleType": "",
-                        "margin": "",
-                        "marginBottom": "",
-                        "marginLeft": "",
-                        "marginRight": "",
-                        "marginTop": "",
                         "marker": "",
                         "markerEnd": "",
                         "markerMid": "",
@@ -10733,14 +10667,12 @@
                         "minHeight": "",
                         "minWidth": "",
                         "minZoom": "",
-                        "mixBlendMode": "",
                         "motion": "",
                         "motionOffset": "",
                         "motionPath": "",
                         "motionRotation": "",
                         "objectFit": "",
                         "objectPosition": "",
-                        "opacity": "",
                         "order": "",
                         "orientation": "",
                         "orphans": "",
@@ -10753,11 +10685,6 @@
                         "overflowWrap": "",
                         "overflowX": "",
                         "overflowY": "",
-                        "padding": "",
-                        "paddingBottom": "",
-                        "paddingLeft": "",
-                        "paddingRight": "",
-                        "paddingTop": "",
                         "page": "",
                         "pageBreakAfter": "",
                         "pageBreakBefore": "",
@@ -10792,18 +10719,13 @@
                         "strokeWidth": "",
                         "tabSize": "",
                         "tableLayout": "",
-                        "textAlign": "left",
                         "textAlignLast": "",
                         "textAnchor": "",
-                        "textDecoration": "",
                         "textIndent": "",
-                        "textOverflow": "",
                         "textRendering": "",
                         "textShadow": "",
                         "textTransform": "",
-                        "top": "",
                         "touchAction": "",
-                        "transform": "",
                         "transformOrigin": "",
                         "transformStyle": "",
                         "transition": "",
@@ -10937,11 +10859,9 @@
                         "webkitWritingMode": "",
                         "whiteSpace": "",
                         "widows": "",
-                        "width": "",
                         "willChange": "",
                         "wordBreak": "",
                         "wordSpacing": "",
-                        "wordWrap": "",
                         "writingMode": "",
                         "x": "",
                         "y": "",
@@ -10979,7 +10899,7 @@
                 "tagName": "p",
                 "preview": null,
                 "editLayerSource": false,
-                "layerExpanded": false
+                "layerExpanded": true
               }
             }
           ],
@@ -11047,7 +10967,9 @@
     "id": "a9cf1e10-bcaf-11e5-b3c8-8bbd015bc776",
     "attributes": {
       "style": {
-        "height": "100%"
+        "height": "100%",
+        "fontFamily": "Helvetica",
+        "fontSize": "12px"
       }
     },
     "type": "component",

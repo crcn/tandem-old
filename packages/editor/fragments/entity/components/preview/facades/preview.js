@@ -1,4 +1,5 @@
 import ObservableObject from 'common/object/observable';
+import { NotifierCollection } from 'common/notifiers';
 import { SET_TOOL, ENTITY_PREVIEW_CLICK } from 'editor/message-types';
 
 const MIN_ZOOM_LEVEL = 0.4;
@@ -6,6 +7,10 @@ const MAX_ZOOM_LEVEL = 2;
 const ZOOM_INCREMENT = 0.1;
 
 class Preview extends ObservableObject {
+
+  constructor(props) {
+    super({ notifier: NotifierCollection.create(), ...props })
+  }
 
   setTool(tool) {
     this.setProperties({

@@ -70,6 +70,7 @@ class SelectableComponent extends React.Component {
 }
 
 class SelectablesComponent extends React.Component {
+
   render() {
 
     // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.

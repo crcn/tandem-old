@@ -112,6 +112,7 @@ function createComponentStyleFragment(name, category, componentClass) {
   // /entityStyleComponents/[name]
   return ComponentFragment.create({
     id             : name + 'StyleInputComponent',
+    namespace      : 'inputComponents/' + name,
     componentType  : 'propertyInput',
     propertyType   : 'style',
     componentClass : componentClass,
@@ -128,6 +129,7 @@ function createEditorPaneFragments({ app }) {
 
       // TODO - use uppercase lib
       label          : inflection.titleize('style'),
+      namespace      : 'panes/entity/component',
       styleCategory  : 'style',
       paneType       : 'entity',
       entityType     : 'component',

@@ -18,12 +18,13 @@ export function create({ app }) {
 
   var preview = app.preview = Preview.create({
     zoom         : 0.70,
-    notifier     : app.notifier,
+    // notifier     : app.notifier,
     canvasWidth  : 1024,
     canvasHeight : 768
   });
 
   app.notifier.push(preview);
+  preview.notifier.push(app.notifier);
 
   return [
     ...createBasicToolsFragment({ app, preview }),

@@ -8,6 +8,7 @@ class FontFragment extends Fragment {
       type        : 'font',
       label       : value,
       value       : value,
+      namespace   : 'fonts',
       weights     : weights     || [],
       styles      : styles      || [],
       decorations : decorations || []

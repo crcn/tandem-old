@@ -38,14 +38,6 @@ class FontInputComponent extends React.Component {
     // TODO - change this to query types
     var fonts            = this.props.app.fragments.query(ALL_FONTS);
     var font             = findFont(selection, fonts) || {};
-    var fontStyles       = font.getCombinedStyles().map(function(value) {
-      var [weight, style] = value.split(' ');
-      if (style === 'normal') style = void 0;
-      return {
-        label: [weight, '-', fontWeightMap[weight], style].join(' '),
-        value: value
-      }
-    });
 
     function createLabel(item, i) {
       var style = {

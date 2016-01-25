@@ -36,11 +36,7 @@ class PropertyListComponent extends React.Component {
 
     for (var propertyName in this.props.properties) {
 
-      var declarationFragment = fragments.queryOne({
-        ...(this.props.fragmentQuery || {}),
-        componentType: 'propertyInput',
-        propertyName: propertyName
-      });
+      var declarationFragment = fragments.queryOne('inputComponents/' + propertyName);
 
       if (!declarationFragment) continue;
 
