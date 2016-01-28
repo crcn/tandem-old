@@ -61,6 +61,7 @@ class TextEditTool extends BaseObject {
     element.style.outline = 'none';
     element.setAttribute('contenteditable', true);
     element.focus();
+    element.ownerDocument.execCommand('selectAll', false, null);
 
     this.app.setProperties({ hideToolsLayer: true });
 
