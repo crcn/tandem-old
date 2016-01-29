@@ -8,6 +8,10 @@ class FrameComponent extends React.Component {
     var entity = this.props.entity;
     var style  = entity.getStyle() || {};
 
+    var previewableEntity = entity.find(function(child) {
+      return /element/.test(child.componentType);
+    });
+
     var style = {
       top    : style.top,
       left   : style.left,
@@ -18,8 +22,8 @@ class FrameComponent extends React.Component {
     return <div className='m-frame' style={style}>
       <RegisteredComponent
       {...this.props}
-      entity={entity}
-      queryOne={'preview/' + entity.componentType } />
+      entity={previewableEntity}
+      queryOne={'preview/' + previewableEntity.componentType } />
     </div>;
   }
 }
