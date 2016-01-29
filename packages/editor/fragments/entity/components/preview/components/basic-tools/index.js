@@ -48,6 +48,13 @@ export function create({ app, preview }) {
       tool    : textTool
     }),
     Fragment.create({
+      icon    : 'frame',
+      name    : 'frame tool',
+      id      : 'frameTool',
+      namespace: 'preview/tools',
+      tool    : void 0
+    }),
+    Fragment.create({
       id      : 'editTextTool',
       namespace: 'preview/editTool/element',
       tool    : editTextTool

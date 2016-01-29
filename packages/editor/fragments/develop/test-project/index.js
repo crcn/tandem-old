@@ -84,7 +84,19 @@ export function create({ app }) {
       })
     ]);
 
-    app.notifier.notify(RootEntityMessage.create(SET_ROOT_ENTITY, entity));
+    var frame = app.fragments.queryOne('entities/frame');
+
+    var root = frame.factory.create({
+      attributes: {
+        label: 'frame',
+        style: {
+          width: 400,
+          height: 300
+        }
+      }
+    }, [entity]);
+
+    app.notifier.notify(RootEntityMessage.create(SET_ROOT_ENTITY, root));
   }
   return [];
 }

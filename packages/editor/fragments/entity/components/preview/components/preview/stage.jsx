@@ -41,14 +41,9 @@ class StageComponent extends React.Component {
   }
 
   _getMousePosition(event) {
-    var rect = this.refs.canvas.getBoundingClientRect();
+    var rect = event.target.getBoundingClientRect();
 
-    // FIXME: this code is fine for now, though we are accessing an iframe
-    // here which is defined in some other part of the codebase. I.E: we're busting encapsulation here. This will *not* work when we start implementing
-    // other rendering engines. The later fix here will be to implement a "Canvas" class, or react component which encapsulates all the preview details such as scrollLeft & scrollTop. That way we still have access *here* without explicitly fetching it from the DOM.
-    var iframe = this.refs.canvas.querySelector('iframe');
-    var idoc = iframe.contentWindow.document;
-
+    var idoc = event.target.ownerDocument;
 
     // this math seems very odd. However, rect.left property gets zoomed,
     // whereas the width stays the same. Need to offsets mouse x & y with this.
@@ -127,6 +122,7 @@ class StageComponent extends React.Component {
   }
 
   _center() {
+    return;
     var stage  = this.refs.stage;
     var canvas = this.refs.canvas;
     var canvasOuter = this.refs.canvasOuter;
@@ -189,7 +185,24 @@ class StageComponent extends React.Component {
     //     ref.setValue(source);
     //     this.setState({});
     //   }} />
+    <div
+      ref='canvas'
+      className='m-preview-stage--canvas'>
 
+      <div
+        id='preview-canvas'
+        ref='drawLayer'
+        className='m-preview-stage--draw-layer'>
+        {
+          entity ? <RegisteredComponent
+          {...this.props}
+          entity={entity}
+          queryOne={'preview/' + entity.componentType } /> :
+          void 0
+        }
+      </div>
+
+    </div>
 
     return <div
       ref='stage'
@@ -213,24 +226,7 @@ class StageComponent extends React.Component {
             id='preview-canvas-outer'
             ref='canvasOuter'
             className='m-preview-stage--center'>
-              <div
-                ref='canvas'
-                className='m-preview-stage--canvas'>
 
-                <div
-                  id='preview-canvas'
-                  ref='drawLayer'
-                  className='m-preview-stage--draw-layer'>
-                  {
-                    entity ? <RegisteredComponent
-                    {...this.props}
-                    entity={entity}
-                    queryOne={'preview/' + entity.componentType } /> :
-                    void 0
-                  }
-                </div>
-
-              </div>
 
             { entity && !this.props.app.hideToolsLayer ? <ToolsLayerComponent style={toolsStyle} app={app} zoom={preview.zoom} /> : void 0 }
           </div>
