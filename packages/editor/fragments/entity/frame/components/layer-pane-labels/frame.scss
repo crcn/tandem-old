@@ -1,3 +1,12 @@
+@import 'editor/scss/variables';
+
 .m-frame-label {
-  
+  padding-left: 8px;
+  color: $color-blue-7;
+  &:before {
+    // color: $color-blue-10;
+    content: '\EA0A';
+    padding-right: 4px;
+    font-family: 'iconfont';
+  }
 }
