@@ -1,8 +1,17 @@
 import './index.scss';
 import React from 'react';
+import FramePreview from './preview';
 import RegisteredComponent from 'common/components/registered';
 
 class FrameComponent extends React.Component {
+
+  componentDidMount() {
+    this.props.entity.preview = FramePreview.create(
+      this.props.entity,
+      this
+    );
+  }
+
   render() {
 
     var entity = this.props.entity;
@@ -19,7 +28,7 @@ class FrameComponent extends React.Component {
       height : style.height
     };
 
-    return <div className='m-frame' style={style}>
+    return <div ref='frame' className='m-frame' style={style}>
       <RegisteredComponent
       {...this.props}
       entity={previewableEntity}
