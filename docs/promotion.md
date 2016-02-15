@@ -16,7 +16,6 @@ some level of security to mitigate any anxiety around the possible risks of adop
 2. Show what you can do in app that you cannot easily do in code.
 3. Help early adopters, get tons of feedback from thought leaders. 
   - Design agencies, people, companies that are willing to try new tools.
-  - 
 
 #### Examples
 
