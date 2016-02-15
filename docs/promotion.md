@@ -3,12 +3,13 @@ some level of security to mitigate any anxiety around the possible risks of adop
 
 #### Fears
 
-1. One-man team
+1. One-man team - will this thing be around long term?
 2. Long term support and backwards compatibility
 3. Browsert compatibility?
 4. Feels like it's too limiting - what if I run into an edge case that saffron doesn't support?
-5. 
-
+5. long-term support and backward compatibility
+6. Merge conflicts & collaboration issues with other team members
+7. Stack traces & debugging
 
 #### Risk mitigation
 
@@ -18,4 +19,6 @@ some level of security to mitigate any anxiety around the possible risks of adop
   - Design agencies, people, companies that are willing to try new tools.
 4. Cannot be coupled to app implementation - must cover *every* UI case.
   - Must be interoperable with custom UI code
+5. Backwards compatibility with older versions of saffron
+6. file format should be human readable & editable.
   
