@@ -21,4 +21,4 @@ some level of security to mitigate any anxiety around the possible risks of adop
   - Must be interoperable with custom UI code
 5. Backwards compatibility with older versions of saffron
 6. file format should be human readable & editable.
-7. Stack traces can be added to markup language 
+7. source maps can be added to markup language 
