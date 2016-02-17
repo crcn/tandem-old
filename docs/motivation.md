@@ -19,6 +19,5 @@
 - faster loads
 - fewer dependencies
 
-#### Philosophy
 
 
