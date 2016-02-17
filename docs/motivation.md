@@ -4,6 +4,7 @@
 - faster turn-around time from design -> code -> production
 - fewer bugs. No humans writing code.
 - easier to maintain.
+- Focus on more sophisticated features.
 
 #### For designers
 
