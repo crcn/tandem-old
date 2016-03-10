@@ -3,7 +3,7 @@
 
 Saffron is a visual editor for designing & coding web applications.
 
-<img src="https://cloud.githubusercontent.com/assets/757408/12023393/e9b9cf50-ad4d-11e5-85db-58ce5232757e.png" width="300px" />
+<img src="https://cloud.githubusercontent.com/assets/757408/12023393/e9b9cf50-ad4d-11e5-85db-58ce5232757e.png" width="600px" />
 
 <!--### Motivation-->
 
