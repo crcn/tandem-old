@@ -31,6 +31,7 @@
 - http://www.justinmind.com/
 - http://www.axure.com/
 - https://mockingbot.com/
+- https://github.com/JakeLin/IBAnimatable
 
 #### other layout systems
 
