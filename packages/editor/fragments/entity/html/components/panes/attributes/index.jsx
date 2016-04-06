@@ -10,7 +10,6 @@ import PaneLabel from '../pane-label/index.jsx';
 import PaneComponent from 'common/components/pane';
 import PropertyListComponent from '../property-list';
 
-
 class AttributesPaneComponent extends React.Component {
 
   addProperty() {

@@ -11,6 +11,12 @@ class MainComponent extends React.Component {
     this.props.app.notifier.push(this);
   }
 
+  getChildContext() {
+    return {
+      app: this.props.app
+    }
+  }
+
   notify() {
 
     // raf now if testing
@@ -47,6 +53,10 @@ class MainComponent extends React.Component {
 
     </div>;
   }
+}
+
+MainComponent.childContextTypes = {
+  app: React.PropTypes.object
 }
 
 export default MainComponent;

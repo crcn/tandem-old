@@ -72,6 +72,9 @@ class Entity extends Node {
     // for most cases.
     for (var key in this) {
       var value = this[key];
+
+      // TODO - this is some fuuuuuuuuuuunk. Refactor This class so that we're not looking for specific
+      // keys like this - what if we need to add or remove a property from this list? Definitely smelly. 
       if (key === 'parent' || key === 'notifier' || typeof value === 'function' || key.charAt(0) === '_') continue;
       data.props[key] = clone(value);
     }

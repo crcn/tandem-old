@@ -7,7 +7,7 @@
     "saffron": "./bin/saffron"
   },
   "scripts": {
-    "test": "gulp test",
+    "test": "karma start",
     "start": "webpack-dev-server",
     "server": "babel-node packages/server/entry.js"
   },
@@ -71,7 +71,6 @@
     "gulp": "^3.9.0",
     "gulp-consolidate": "^0.1.2",
     "gulp-iconfont": "^5.0.1",
-    "gulp-mocha": "^2.2.0",
     "istanbul-instrumenter-loader": "^0.1.3",
     "karma": "^0.13.15",
     "karma-chrome-launcher": "^0.2.2",
@@ -82,7 +81,7 @@
     "karma-webpack": "^1.7.0",
     "less": "^2.5.3",
     "linklocal": "^2.5.2",
-    "mocha": "^2.3.4",
+    "mocha": "^2.4.5",
     "node-sass": "^3.4.2",
     "phantomjs": "^1.9.19",
     "raw-loader": "^0.5.1",
@@ -91,7 +90,6 @@
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.9",
-    "webpack-dev-server": "^1.14.0",
-    "yargs": "^3.31.0"
+    "webpack-dev-server": "^1.14.0"
   }
 }

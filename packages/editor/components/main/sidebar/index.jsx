@@ -10,12 +10,16 @@ import RegisteredComponent from 'common/components/registered';
 * Right sidebar tools
 */
 
+
+const MIN_SIDEBAR_WIDTH = 150;
+const DEFAULT_SIDEBAR_WIDTH  = 250;
+
 class SidebarComponent extends React.Component {
   render() {
 
     var settingName           = this.props.position + 'SidebarPosition';
     var sidebarWidthReference = Reference.create(this.props.app.settings, settingName, (value) => {
-      return Math.max(150, Math.min(value || 200, this.props.maxWidth));
+      return Math.max(MIN_SIDEBAR_WIDTH, Math.min(value || DEFAULT_SIDEBAR_WIDTH, this.props.maxWidth));
     });
 
     var style = {
@@ -30,7 +34,7 @@ class SidebarComponent extends React.Component {
 }
 
 SidebarComponent.defaultProps = {
-  maxWidth: 250
+  maxWidth: DEFAULT_SIDEBAR_WIDTH
 };
 
 export default SidebarComponent;

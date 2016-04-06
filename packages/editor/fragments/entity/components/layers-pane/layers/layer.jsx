@@ -4,8 +4,8 @@ import cx from 'classnames';
 import React from 'react';
 import flatten from 'lodash/array/flatten';
 import intersection from 'lodash/array/intersection';
-import { SetFocusMessage, ToggleFocusMessage } from 'editor/message-types';
 import { DragSource, DropTarget } from 'react-dnd';
+import { SetFocusMessage, ToggleFocusMessage } from 'editor/message-types';
 import { deserialize as deserializeEntity } from 'common/entities';
 
 class DropLayerTargetComponent extends React.Component {
@@ -184,8 +184,9 @@ class LayerLabelComponent extends React.Component {
 
     var entity     = this.props.entity;
     var expanded   = entity.layerExpanded;
+    var app        = this.props.app;
 
-    var labelFragment = this.props.app.fragments.queryOne('layer/labels/' + entity.componentType);
+    var labelFragment = app.fragments.queryOne('layer/labels/' + entity.componentType);
 
     var labelSection;
 
@@ -221,7 +222,7 @@ class LayerLabelComponent extends React.Component {
       'visibility': entity.children.length ? 'visible': 'hidden'
     };
 
-    return <div
+    var labelSection =  <div
       style={{paddingLeft: this.props.paddingLeft}}
       tabIndex="0"
       onClick={this.onClick.bind(this)}
@@ -233,6 +234,16 @@ class LayerLabelComponent extends React.Component {
       { labelSection }</span>)}
       <DropLayerTargetComponent {...this.props} bottom={true} offset={1} />
     </div>;
+
+    var labelContainerFragment = app.fragments.queryOne('layer/labelContainer/' + entity.componentType);
+
+    if (labelContainerFragment) {
+      return labelContainerFragment.factory.create({
+        ...this.props
+      }, labelSection)
+    }
+
+    return labelSection;
   }
 }
 
@@ -255,7 +266,6 @@ function collect(connect, monitor) {
 }
 
 LayerLabelComponent = DragSource('element', layerSource, collect)(LayerLabelComponent);
-
 
 
 LayerLabelComponent = DropTarget('element', {

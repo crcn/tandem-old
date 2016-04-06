@@ -1,6 +1,6 @@
+import * as actions from 'test/helpers/actions';
 import { createApp, waitForAllPromises } from 'test/helpers/utils';
 import { create as createHtmlEntity1Fixture } from 'test/helpers/fixtures/html-entity1';
-import * as actions from 'test/helpers/actions';
 
 import expect from 'expect.js';
 

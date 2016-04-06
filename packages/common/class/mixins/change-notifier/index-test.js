@@ -25,7 +25,7 @@ describe(__filename + '#', function() {
     a.setProperties({ a: 1 });
     expect(a.a).to.be(1);
     expect(i).to.be(1);
-  });
+  }); 
 
   it('can be mixed into a collection', function() {
     var SubCollection = mixinChangeNotifier(Collection);

@@ -44,7 +44,6 @@ class FramePreviewComponent extends React.Component {
       return /frame/.test(entity.componentType);
     });
 
-
     return <div className='m-frame-preview'>
       {
         frameEntities.map((frameEntity) => {

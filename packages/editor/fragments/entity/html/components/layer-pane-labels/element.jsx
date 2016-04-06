@@ -1,11 +1,12 @@
 import './layer-input.scss';
 import './element.scss';
+
+import trim from 'lodash/string/trim';
 import React from 'react';
-import AutosizeInput from 'react-input-autosize';
-import FocusComponent from 'common/components/focus';
 import ElementEntity from '../../entities/element';
 import VOID_ELEMENTS from '../../constants/void-elements';
-import trim from 'lodash/string/trim';
+import AutosizeInput from 'react-input-autosize';
+import FocusComponent from 'common/components/focus';
 
 import {
   SetFocusMessage
@@ -16,7 +17,6 @@ const CLASS_NAME_PRIORITY = [
   'class',
   'src'
 ];
-
 
 class ElementLayerLabelComponent extends React.Component {
 

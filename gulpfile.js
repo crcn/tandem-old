@@ -7,19 +7,6 @@ var consolidate = require('gulp-consolidate');
 var args = require('yargs').argv;
 var runTimestamp = Math.round(Date.now()/1000);
 
-gulp.task('test', function(complete) {
-  new karma.Server({
-    configFile: __dirname + '/karma.config.js',
-    singleRun: !args.watch,
-    reporters: [args.reporter || 'spec'],
-    client: {
-      mocha: {
-        grep: args.only || args.grep
-      }
-    }
-  }, complete).start();
-});
-
 gulp.task('icons', function() {
   return gulp.src(['packages/editor/svg-icons/*.svg'])
     .pipe(iconfont({
@@ -40,7 +27,3 @@ gulp.task('icons', function() {
       })
     .pipe(gulp.dest('packages/editor/scss/'));
 });
-
-gulp.doneCallback = function() {
-  if (!args.watch) process.exit();
-};

@@ -41,18 +41,8 @@ class BaseApplication extends ObservableObject {
 
     // first load the app - fragments, plugins, and other things
     // may depend on asynchronous stuff here
-    try {
-      await this.notifier.notify(LoadMessage.create()).then(this.didLoad.bind(this));
-    } catch(e) {
-      console.error(e.stack);
-    }
-
-    try {
-      // next, initialize the application
-      await this.notifier.notify(InitializeMessage.create()).then(this.didInitialize.bind(this));
-    } catch(e) {
-      console.error(e.stack);
-    }
+    await this.notifier.notify(LoadMessage.create()).then(this.didLoad.bind(this));
+    await this.notifier.notify(InitializeMessage.create()).then(this.didInitialize.bind(this));
   }
 
   /**

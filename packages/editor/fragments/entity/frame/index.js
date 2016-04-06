@@ -10,7 +10,7 @@ import {
 import Frame from './entities/frame';
 import FrameLabelComponent from './components/layer-pane-labels/frame';
 import FramePreviewComponent from './components/entity-preview';
-
+import FrameLabelContainerComponent from './components/layer-pane-label-containers/frame';
 
 export function create({ app }) {
   return [
@@ -26,9 +26,15 @@ export function create({ app }) {
     }),
 
     EntityLayerLabelComponentFragment.create({
-      id: 'frameLayerLabel',
-      namespace : 'layer/labels/frame',
-      componentClass       : FrameLabelComponent
+      id             : 'frameLayerLabel',
+      namespace      : 'layer/labels/frame',
+      componentClass : FrameLabelComponent
+    }),
+
+    ComponentFragment.create({
+      id             : 'frameLayerLabel',
+      namespace      : 'layer/labelContainer/frame',
+      componentClass : FrameLabelContainerComponent
     })
   ];
 };

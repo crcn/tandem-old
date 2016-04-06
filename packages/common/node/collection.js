@@ -6,7 +6,7 @@ class NodeCollection extends Collection {
 
     for (var item of newItems) {
       if (this.includes(item)) {
-        throw new Error('attempting to add a child node twice')
+        throw new Error('attempting to add a child node twice');
       }
     }
 

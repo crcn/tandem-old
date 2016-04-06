@@ -31,7 +31,6 @@ class PropertyListComponent extends React.Component {
     var properties = this.props.properties;
     var fragments  = this.props.app.fragments;
 
-
     var rows = [];
 
     for (var propertyName in this.props.properties) {

@@ -18,15 +18,15 @@ class Registry extends BaseCollection {
     this.register(...initialFragments);
   }
 
-  register(...fragment) {
-    super.push(...fragment);
-    return fragment;
+  register(...fragments) {
+    super.push(...fragments);
+    return fragments;
   }
 
   query(search) {
 
     if (typeof search === 'string') {
-      return this._fragments[search];
+      return this._fragments[search] || [];
     }
 
     console.error('search query must be a string, not a query object');

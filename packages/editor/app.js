@@ -9,8 +9,8 @@ import MainComponent from './components/main';
 import BaseApplication from 'base/app';
 
 import EntityFragment from './fragments/entity';
-import DevelopFragment from './fragments/develop';
 import HistoryFragment from './fragments/history';
+import TestingFragment from './fragments/testing';
 import SelectorFragment from './fragments/selector';
 import SettingsFragment from './fragments/settings';
 import ClipboardFragment from './fragments/clipboard';
@@ -24,7 +24,7 @@ class Application extends BaseApplication {
 
   static fragments = BaseApplication.fragments.concat([
     EntityFragment,
-    DevelopFragment,
+    TestingFragment,
     HistoryFragment,
     SelectorFragment,
     SettingsFragment,

@@ -3,8 +3,8 @@ import expect from 'expect.js';
 import BaseObject from 'common/object/base';
 import { Fragment } from 'common/registry';
 import BaseApplication from './app';
-import { CallbackNotifier, AcceptNotifier } from 'common/notifiers';
 import { LOAD, INITIALIZE } from 'base/message-types';
+import { CallbackNotifier, AcceptNotifier } from 'common/notifiers';
 
 describe(__filename + '#', function() {
 

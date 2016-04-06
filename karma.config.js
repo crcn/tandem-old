@@ -1,5 +1,8 @@
 
 module.exports = function(config) {
+
+  var watchMode = process.env.WATCH === '1';
+
   var conf = {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -50,7 +53,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['dots' /*, 'coverage'*/],
+    reporters: [process.env.REPORTER || 'spec'],
 
 
     // web server port
@@ -66,6 +69,12 @@ module.exports = function(config) {
       },
       sourceFileName: function (file) {
         return file.originalPath;
+      }
+    },
+
+    client: {
+      mocha: {
+        grep: process.env.GREP
       }
     },
 
@@ -91,26 +100,17 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['Firefox'],
 
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true,
+    singleRun: watchMode,
 
     // Concurrency level
     // how many browser should be started simultanous
     concurrency: Infinity
   };
-
-  if (false)
-  conf.webpack.postLoaders = [
-    {
-      test: /\.jsx?$/,
-      exclude: /(node_modules|resources\/js\/vendor)/,
-      loader: 'istanbul-instrumenter'
-    }
-  ]
 
   config.set(conf);
 }

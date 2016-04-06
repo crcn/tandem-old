@@ -17,9 +17,9 @@ describe(__filename + '#', function() {
 
   it('can find one dependency', function() {
     var r = Registry.create();
-    var e1 = r.register(Fragment.create({ id: '1', type: 'component', factory: BaseObject }))
-    var e2 = r.register(Fragment.create({ id: '2', type: 'model', factory: BaseObject }));
-    expect(r.queryOne({ type: 'model' })).to.be(e2);
+    var e1 = r.register(Fragment.create({ id: '1', namespace: 'component1', type: 'component', factory: BaseObject }))[0]
+    var e2 = r.register(Fragment.create({ id: '2', namespace: 'model1', type: 'model', factory: BaseObject }))[0];
+    expect(r.queryOne('model1')).to.be(e2);
   });
 
   it('throws an error if an entry already exists with the same ID', function() {

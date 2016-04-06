@@ -16,7 +16,7 @@ class GroupAlignComponent extends React.Component {
 
     return <div style={style} className='m-group-align-tool'>
       group align this stuff
-    </div>
+    </div>;
   }
 }
 

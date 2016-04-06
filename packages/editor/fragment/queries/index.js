@@ -1,5 +1,5 @@
-import { BaseQuery } from 'common/fragment/queries';
 import { toArray } from 'common/utils/object';
+import { BaseQuery } from 'common/fragment/queries';
 
 export const ALL_FONTS        = 'fonts';
 export const ALL_KEY_COMMANDS = 'keyCommands';
