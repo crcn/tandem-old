@@ -208,7 +208,8 @@ class LayerLabelComponent extends React.Component {
       'drag-over': isOver && canDrop,
       'hover': this.props.app.hoverItem === this.props.entity && !this.state.hover,
       ['m-layer-type-' + entity.type]: true,
-      'selected': this.props.app.selection && this.props.app.selection.includes(entity)
+      ['m-layer-component-type-' + entity.componentType]: true,
+      'selected': app.selection && app.selection.includes(entity)
     });
 
     var expandButtonClassName = cx({
@@ -234,14 +235,6 @@ class LayerLabelComponent extends React.Component {
       { labelSection }</span>)}
       <DropLayerTargetComponent {...this.props} bottom={true} offset={1} />
     </div>;
-
-    var labelContainerFragment = app.fragments.queryOne('layer/labelContainer/' + entity.componentType);
-
-    if (labelContainerFragment) {
-      return labelContainerFragment.factory.create({
-        ...this.props
-      }, labelSection)
-    }
 
     return labelSection;
   }

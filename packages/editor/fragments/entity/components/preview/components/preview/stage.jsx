@@ -51,8 +51,6 @@ class StageComponent extends React.Component {
     var x =  (idoc.body.scrollLeft + event.clientX - rect.left * this.props.app.preview.zoom) / this.props.app.preview.zoom;
     var y =  (idoc.body.scrollTop + event.clientY - rect.top * this.props.app.preview.zoom) / this.props.app.preview.zoom;
 
-    console.log(x, y);
-
     return { x, y };
   }
 
