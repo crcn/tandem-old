@@ -37,6 +37,7 @@
     "glob": "^7.0.3",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^1.0.1",
+    "karma-mocha": "^1.0.1",
     "karma-webpack": "^1.7.0",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
