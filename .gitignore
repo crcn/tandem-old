@@ -3,4 +3,5 @@ node_modules
 coverage/
 npm-*
 git-*
-/public/bundle
+/public/build
+all-tests.js
