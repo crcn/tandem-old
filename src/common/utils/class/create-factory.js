@@ -3,7 +3,7 @@
  * creates a new factory for creating items
  */
 
-export default function (contextClass = Object) {
+export default (contextClass = Object) => {
 
   // creates an object from *any* native class
   function createFromContext() {
@@ -28,4 +28,4 @@ export default function (contextClass = Object) {
 
   // context class Object? Use the faster method instead.
   return contextClass === Object ? create : createFromContext;
-}
+};

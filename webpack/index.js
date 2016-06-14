@@ -11,6 +11,7 @@ module.exports = {
         filename: "[name].js"
     },
     resolve: {
+      extensions: ['', '.js', '.jsx', '.peg'],
       modulesDirectories: ['node_modules', 'src']
     },
     module: {
@@ -29,6 +30,10 @@ module.exports = {
             query: {
               
             }
+          },
+          {
+            test: /\.peg$/,
+            loader: 'pegjs-loader'
           }
         ]
     }
