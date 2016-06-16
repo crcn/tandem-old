@@ -2,13 +2,14 @@
   "name": "saffronapp",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/browser/entry.ts",
   "directories": {
     "doc": "docs",
     "example": "examples"
   },
   "scripts": {
-    "test": "scripts/write-all-tests.sh; karma start"
+    "test": "scripts/write-all-tests.sh; karma start",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -21,11 +22,6 @@
   },
   "homepage": "https://github.com/crcn/saffron#readme",
   "devDependencies": {
-    "babel-core": "^6.9.1",
-    "babel-eslint": "^6.0.4",
-    "babel-loader": "^6.2.4",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-stage-0": "^6.5.0",
     "colors": "^1.1.2",
     "eslint": "^2.12.0",
     "eslint-config-airbnb": "^9.0.1",
@@ -33,6 +29,7 @@
     "eslint-plugin-import": "^1.8.1",
     "eslint-plugin-jsx-a11y": "^1.4.2",
     "eslint-plugin-react": "^5.1.1",
+    "espree": "^3.1.6",
     "expect.js": "^0.3.1",
     "glob": "^7.0.3",
     "karma": "^0.13.22",
@@ -44,9 +41,10 @@
     "mocha": "^2.5.3",
     "pegjs": "^0.9.0",
     "pegjs-loader": "^0.4.0",
+    "traceur-loader": "^0.6.3",
+    "ts-loader": "^0.8.2",
+    "typescript": "^1.8.10",
     "webpack": "^1.13.1"
   },
-  "dependencies": {
-    "babel-polyfill": "^6.9.1"
-  }
+  "dependencies": {}
 }

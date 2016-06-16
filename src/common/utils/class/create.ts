@@ -1,4 +1,4 @@
-import createFactory from './create-factory';
+import createFactory from './createFactory';
 
 /**
  * expose class creation function

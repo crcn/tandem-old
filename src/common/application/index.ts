@@ -1,4 +1,4 @@
-import BaseObject from 'common/object';
+import BaseObject from 'common/object/Base';
 
 /**
  * Main entry point for all applications 

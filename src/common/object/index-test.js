@@ -1,4 +1,4 @@
-import BaseObject from './index.js';
+import BaseObject from './Base';
 import expect from 'expect.js';
 
 describe(__filename + '#', () => {

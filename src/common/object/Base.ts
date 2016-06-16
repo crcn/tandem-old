@@ -1,4 +1,4 @@
-import { create } from 'common/utils/class';
+import { create } from 'common/utils/class/index';
 
 /**
  */
@@ -7,7 +7,7 @@ class BaseObject {
 
   constructor(properties) {
     if (properties != void 0) {
-      Object.assign(this, properties);
+      // Object.assign(this, properties);
     }
   }
 

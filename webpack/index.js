@@ -4,24 +4,25 @@ var srcDirectory  = path.join(baseDirectory, 'src');
 
 module.exports = {
     entry: {
-      browser: path.join(srcDirectory, 'browser', 'entry.js')
+      browser: path.join(srcDirectory, 'browser', 'entry.ts')
     },
     output: {
-        path: baseDirectory,
+        path: path.join(baseDirectory, 'public', 'build'),
         filename: "[name].js"
     },
     resolve: {
-      extensions: ['', '.js', '.jsx', '.peg'],
+      extensions: ['', '.js', '.jsx', '.peg', '.ts'],
       modulesDirectories: ['node_modules', 'src']
     },
     module: {
         loaders: [
           {
-            test: /\.jsx?$/,
+            test: /\.(jsx?|ts)$/,
             exclude: /(node_modules|bower_components)/,
-            loader: 'babel',
+            loader: 'traceur',
             query: {
-              presets: ['es2015', 'stage-0']
+              experimental: true,
+              runtime: true
             }
           },
           {
@@ -34,6 +35,10 @@ module.exports = {
           {
             test: /\.peg$/,
             loader: 'pegjs-loader'
+          },
+          {
+            test: /\.ts$/,
+            loader: 'ts-loader'
           }
         ]
     }
