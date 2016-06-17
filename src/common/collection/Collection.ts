@@ -69,7 +69,7 @@ class Collection extends Array {
     return Array.prototype.splice.apply(this, args);
   }
 
-  static create = createFactory(Array);
+  static create =  createFactory(Array);
 }
 
 // CANNOT extend array. Copy props instead

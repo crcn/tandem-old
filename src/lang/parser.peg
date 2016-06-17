@@ -99,14 +99,12 @@ VoidElement
     return ["element", nodeName, attributes, []];
   }
 
-
 EndVoidTag
   = _ "</" name:("area"/"base"/"br"/"col"/"command"/"embed"/"hr"/"img"/"input"/"keygen"/"link"/"meta"/"param"/"source"/"track"/"wbr") ">" {
       return {
         name: name
       };
     }
-
 
 ElementNode
   = startTag:StartTag children:ChildNodes endTag:EndTag {

@@ -21,13 +21,13 @@ interface IEvent {
   /**
    */
 
-  canPropagate():Boolean;
+  canPropagate():boolean;
 
   /**
    * stops event from bubbling, and executing against sibling
    */
 
-  stopImmmediatePropagation():void;
+  stopImmediatePropagation():void;
 
 };
 

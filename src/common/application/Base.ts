@@ -5,8 +5,8 @@ import BaseObject from 'common/object/Base';
  */
 
 class BaseApplication extends BaseObject {
-  async initialize() {
-    // TODO
+  initialize() {
+    // const frags = this.fragments.query(APPLICATION);
   }
 }
 
