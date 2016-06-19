@@ -8,6 +8,7 @@ module.exports = {
   },
   output: {
     path: path.join(baseDirectory, 'public', 'build'),
+    publicPath: './public/',
     filename: "[name].js"
   },
   resolve: {

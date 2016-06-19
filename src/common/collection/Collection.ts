@@ -8,11 +8,21 @@ import assign from 'common/utils/object/assign';
 
 class Collection extends Array {
 
+  /**
+   */
+
   constructor(properties = undefined) {
     super();
-    if (properties != void 0) {
+    if (properties != void 0 && typeof properties === 'object') {
       this.setProperties(properties);
     }
+  }
+
+  /**
+   */
+
+  concat(...args) {
+    return (Object)(this.constructor).create([].concat(this).concat(...args));
   }
 
   /**
@@ -65,20 +75,10 @@ class Collection extends Array {
    */
 
   splice(...args) {
-    // OVERRIDE ME!
     return Array.prototype.splice.apply(this, args);
   }
 
   static create =  createFactory(Array);
 }
-
-// CANNOT extend array. Copy props instead
-// for (const prop of Object.getOwnPropertyNames(Array.prototype)) {
-//   if (Collection.prototype[prop]) continue;
-//   const value = Array.prototype[prop];
-//   if (typeof value === 'function') Collection.prototype[prop] = value;
-// }
-
-// Collection.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator];
 
 export default Collection;

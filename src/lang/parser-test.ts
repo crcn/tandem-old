@@ -1,9 +1,12 @@
-declare var __filename;
-
 import parser from './parser';
 import { expect } from 'chai';
 
 describe(__filename + '#', function() {
+
+  it('can parse a simple DOM node', function() {
+    var node = parser.parse('<div />');
+  });
+
   var sources = [
     '<div></div>',
     '<img>',
@@ -21,7 +24,7 @@ describe(__filename + '#', function() {
 
   sources.forEach(function(source) {
     it(`can parse ${source}`, function() {
-      var ast = parser.parse(source);
+      var node = parser.parse(source);
     });
   });
 }); 

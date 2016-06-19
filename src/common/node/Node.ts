@@ -5,7 +5,9 @@ class Node {
 
   }
 
-  static create = create;
+  static create() {
+    return new Node();
+  }
 }
 
 export default Node;

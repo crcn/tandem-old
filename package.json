@@ -10,6 +10,7 @@
   "scripts": {
     "test": "scripts/write-all-tests.sh; karma start",
     "postinstall": "tsd reinstall --overwrite --save",
+    "start": "webpack-dev-server",
     "build": "webpack"
   },
   "repository": {
@@ -23,7 +24,6 @@
   },
   "homepage": "https://github.com/crcn/saffron#readme",
   "devDependencies": {
-    "chai": "^3.5.0",
     "colors": "^1.1.2",
     "eslint": "^2.12.0",
     "eslint-config-airbnb": "^9.0.1",
@@ -34,6 +34,7 @@
     "espree": "^3.1.6",
     "glob": "^7.0.3",
     "karma": "^0.13.22",
+    "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^1.0.1",
     "karma-mocha": "^1.0.1",
     "karma-webpack": "^1.7.0",

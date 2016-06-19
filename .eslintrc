@@ -12,6 +12,9 @@
         "browser": true,
         "mocha": true
     },
+    "globals": {
+        "expect": true
+    },
     "extends": [
         "airbnb"
     ],

@@ -8,4 +8,4 @@ export default class NodeContainer {
   constructor() {
     // this._children = NodeCollection.create();
   }
-}  
+}

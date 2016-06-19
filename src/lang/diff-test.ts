@@ -8,6 +8,5 @@ describe(__filename + '#', () => {
 
     var changes = diff(ast1, ast2);
     
-    console.log(changes);
   });
 });

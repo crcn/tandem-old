@@ -13,7 +13,6 @@ class Change {
 
 function addChanges(oldAst, newAst, changes) {
   for (var [type, name, attributes, children] of oldAst) {
-    console.log(type, name);
   }
 }
 

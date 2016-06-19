@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "sourceMap": true
+    "sourceMap": true,
+    "experimentalDecorators": true
   },
   "exclude": [
     "node_modules"
   ],
   "rootDirs": [
     "node_modules",
-    "./src"
+    "src"
   ]
 }
