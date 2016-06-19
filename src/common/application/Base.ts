@@ -21,11 +21,18 @@ abstract class BaseApplication extends BaseObject {
   /**
    */
 
-  constructor(properties = {}) {
+  constructor(properties = {}, fragments:Array<IFragment>) {
     super(properties);
 
-    this._fragments   = FragmentDictionary.create(this._createFragments()); 
+    this._fragments   = FragmentDictionary.create(fragments); 
     this._dispatchers = DispatcherCollection.create();    
+  }
+
+  /**
+   */
+
+  public get fragments():FragmentDictionary {
+    return this._fragments;
   }
 
   /**
@@ -41,7 +48,9 @@ abstract class BaseApplication extends BaseObject {
    * initializes the application
    */
 
-  public initialize() {
+  public initialize():void {
+
+    this._initializeFragments();
 
     // first signal that the application is loading
     // TODO: add async/await stuff here
@@ -54,7 +63,11 @@ abstract class BaseApplication extends BaseObject {
   /**
    */
 
-  protected abstract _createFragments():Array<IFragment>;
+  private _initializeFragments():void {
+    for (var fragment of this._fragments.query('application')) {
+      fragment.create({ application: this });
+    }
+  }
 }
 
 export default BaseApplication;

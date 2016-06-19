@@ -14,7 +14,11 @@ class Collection extends Array {
   constructor(properties = undefined) {
     super();
     if (properties != void 0 && typeof properties === 'object') {
-      this.setProperties(properties);
+      if (properties instanceof Array) {
+        this.push(...properties);
+      } else {
+        this.setProperties(properties);
+      }
     }
   }
 

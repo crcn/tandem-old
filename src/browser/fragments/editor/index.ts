@@ -5,7 +5,8 @@ export default FactoryFragment.create(
   { create: create }
 );
 
-function create() {
-  console.log('making this');
+function create({ application }: any) {
+  console.log('making this', application.element);
+  application.element.innerHTML = 'hello';
 }
 
