@@ -3,7 +3,8 @@ import { INITIALIZE } from 'common/events/types';
 import TypeDispatcher from 'common/dispatchers/Type';
 import FactoryFragment from 'common/fragments/factory';
 import CallbackDispatcher from 'common/dispatchers/Callback';
-import FragmentDictionary from 'common/fragments/Dictionary';
+import FragmentDictionary from 'common/fragments/Dictionary'; 
+import { throttle } from 'lodash';
 import * as React from 'react';
 import { render } from 'react-dom';
 
@@ -13,14 +14,14 @@ export default FactoryFragment.create(
 )
 
 function create({ application }:any) {
+
+  // re-render the root component whenever a message gets passed to the
+  // central dispatcher
   application.dispatcher.push(
-    TypeDispatcher.create(
-      INITIALIZE,
-      CallbackDispatcher.create(initialize)
-    )
+    CallbackDispatcher.create(throttle(update, 100))
   );
 
-  function initialize(event:IEvent) {
+  function update() {
     render(<RootComponent application={application} fragments={application.fragments} />, application.element);
   }
 }
