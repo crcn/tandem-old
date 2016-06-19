@@ -1,5 +1,5 @@
 interface IFactory {
-  create(...any);
+  create:Function;
 }
 
 export default IFactory;
