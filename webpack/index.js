@@ -12,7 +12,7 @@ module.exports = {
     filename: "[name].js"
   },
   resolve: {
-    extensions: ['', '.js', '.jsx', '.peg', '.ts'],
+    extensions: ['', '.js', '.jsx', '.peg', '.ts', '.tsx'],
     modulesDirectories: ['node_modules', 'src']
   },
   node: {
@@ -21,7 +21,7 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.(jsx?|ts)$/,
+        test: /\.(jsx?|tsx?)$/,
         exclude: /(node_modules|bower_components)/,
         loader: 'traceur',
         query: {
@@ -41,7 +41,7 @@ module.exports = {
         loader: 'pegjs-loader'
       },
       {
-        test: /\.ts$/,
+        test: /\.tsx?$/,
         loader: 'ts-loader'
       }
     ]
