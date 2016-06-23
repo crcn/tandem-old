@@ -6,4 +6,5 @@ export default function(target, ...rest) {
       target[key] = value;
     });
   }
+  return target;
 }

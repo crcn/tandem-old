@@ -1,6 +1,6 @@
-var path = require('path');
+var path          = require('path');
 var baseDirectory = path.join(__dirname, '..');
-var srcDirectory = path.join(baseDirectory, 'src');
+var srcDirectory  = path.join(baseDirectory, 'src');
 
 module.exports = {
   entry: {
@@ -20,6 +20,10 @@ module.exports = {
   },
   module: {
     loaders: [
+      {
+        test: /\.scss$/,
+        loader: 'style!css!sass'
+      },
       {
         test: /\.(jsx?|tsx?)$/,
         exclude: /(node_modules|bower_components)/,

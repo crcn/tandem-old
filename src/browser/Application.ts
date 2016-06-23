@@ -3,7 +3,7 @@
 import IFragment from 'common/fragments/IFragment';
 import BaseApplication from 'common/application/Base';
 
-import editorFragment from './fragments/editor/index';
+import editorFragment from './fragments/editor';
 import rootComponentFragment from './fragments/root-component';
  
 class BrowserApplication extends BaseApplication {
