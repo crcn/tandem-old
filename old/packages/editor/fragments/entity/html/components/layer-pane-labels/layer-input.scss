@@ -1,0 +1,21 @@
+@import 'editor/scss/variables';
+
+input {
+  max-width: 150px;
+  background: rgba(0,0,0,0.1);
+  padding: 0px;
+  height: auto;
+
+  padding-left: $padding-0;
+  padding-right: $padding-0;
+
+  // TODO - use no-borders() helper
+  border-radius: $border-radius-1;
+  border: none;
+  box-shadow: none;
+  -webkit-user-select: text;
+
+  &:focus {
+    box-shadow: inset 0 0 0 1px $color-sky-blue-4 !important;
+  }
+}

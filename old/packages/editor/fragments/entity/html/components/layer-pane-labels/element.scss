@@ -1,0 +1,43 @@
+@import 'editor/scss/variables';
+
+.m-element-layer-label {
+
+  -webkit-user-select: none;
+
+  &--tag, &--operator {
+    color: $color-white-offset-3;
+  }
+
+  &--tag-name {
+    color: $color-blue-7;
+  }
+
+  &--key {
+    color: $color-blue-7;
+  }
+
+  &--string {
+    color: $color-orange-7;
+  }
+
+  &:hover {
+    & .m-element-layer-label--add-child-button {
+      display: inline-block;
+    }
+  }
+
+  padding-right: 20px;
+
+  &--add-child-button {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    display: none;
+    float: right;
+    color: $color-white-offset-3;
+  }
+
+
+  @import './layer-input.scss';
+
+}

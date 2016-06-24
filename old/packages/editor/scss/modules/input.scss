@@ -1,0 +1,22 @@
+input.form-control {
+  padding: $padding-0;
+  font-size: $font-size-3;
+  border: none;
+  box-shadow: inset 0 0 0 1px $color-grey-8;
+  &:focus {
+    box-shadow: inset 0 0 0 1px $color-sky-blue-3;
+  }
+}
+
+input, span[contentEditable] {
+  outline: none;
+  &:focus {
+    box-shadow: inset 0 0 0 1px $color-sky-blue-3 !important;
+  }
+}
+
+.no-outline {
+  &:focus {
+    box-shadow: none !important;
+  }
+}

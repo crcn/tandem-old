@@ -12,7 +12,7 @@ class Editor extends React.Component<{}, {}> {
     </div>;
   }
 }
-
+ 
 export default ComponentFragment.create(
   'rootComponent',
   Editor

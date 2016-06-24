@@ -1,0 +1,29 @@
+@import 'editor/scss/variables';
+
+.m-search-dropdown {
+  position: relative;
+  display: block;
+
+  &--label {
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &--header {
+    padding: $padding-0;
+    padding-left: $padding-0 - 1;
+  }
+
+  &--inner {
+    width: 100%;
+
+    & .m-select {
+      max-height: 200px;
+      overflow-x: scroll;
+    }
+  }
+}

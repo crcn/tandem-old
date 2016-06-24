@@ -1,0 +1,13 @@
+@import 'editor/scss/variables';
+
+.m-text-layer-label {
+
+  // part of react-input-autosize
+
+  //color: $color-blue-7;
+  & div {
+    margin-left: 0px !important;
+  }
+
+  @import './layer-input.scss';
+}

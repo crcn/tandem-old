@@ -1,0 +1,30 @@
+@import 'editor/scss/variables';
+
+.m-unit-input {
+  display: inline-block;
+  width: 100%;
+
+  & .m-popdown {
+    overflow-x: scroll;
+    background-color: $color-grey-8;
+    // min-width: calc(100% + #{$padding-2});
+  }
+
+  &--dim {
+    cursor: pointer;
+    background-color: $color-white-offset-1;
+    border-radius: $border-radius-1;
+    margin-left: 2px;
+    padding-left: $padding-0;
+    padding-right: $padding-0;
+  }
+
+  & ul {
+    font-size: $font-size-1;
+  }
+  
+  & li {
+    padding: $padding-0 $padding-0;
+    white-space: nowrap;
+  }
+}
