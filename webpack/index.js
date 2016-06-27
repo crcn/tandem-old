@@ -4,7 +4,7 @@ var srcDirectory  = path.join(baseDirectory, 'src');
 
 module.exports = {
   entry: {
-    browser: path.join(srcDirectory, 'browser', 'entry.ts')
+    browser: path.join(srcDirectory, 'browser-app', 'entry.ts')
   },
   output: {
     path: path.join(baseDirectory, 'public', 'build'),

@@ -1,4 +1,4 @@
-import each from './each.ts';
+import each from './each';
 
 export default function(target, ...rest) {
   for (var value of rest) {
