@@ -1,26 +1,18 @@
 {
-  "version":"1.6.2",
   "compileOnSave": true,
   "compilerOptions": {
     "target": "es6",
     "sourceMap": true,
+    "module": "commonjs",
     "moduleResolution": "classic",
-    "rootDir":"src",
     "experimentalDecorators": true,
-    "jsx": "react",
-    "sourceRoot":"src",
-    "mapRoot":"src"
+    "jsx": "react"
   },
-  "paths": {
-   "*": ["node_modules/*", "src/*"]
-  },
-  "filesGlob": [
-	"src/**/*.tsx"
-  ],
   "exclude": [
     "node_modules"
  ],
   "rootDirs": [
-    "node_modules"
+    "node_modules",
+    "src"
   ]
 }

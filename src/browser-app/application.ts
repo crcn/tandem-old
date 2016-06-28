@@ -1,10 +1,8 @@
 
 
-import IFragment from 'common/fragments/ifragment';
+import { default as rootComponentFragment } from './fragments/render-root-component/index';
 import BaseApplication from 'common/application/base';
-
-import editorFragment from './fragments/editor/index';
-import rootComponentFragment from './fragments/root-component/index';
+import editorFragment from 'editor-fragments/index';
  
 class BrowserApplication extends BaseApplication {
   constructor(properties = {}) {

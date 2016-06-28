@@ -1,3 +1,4 @@
+import { APPLICATION as APPLICATION_NS } from 'common/fragments/namespaces';
 import BaseObject from 'common/object/Base';
 import IFragment from 'common/fragments/IFragment';
 import FragmentDictionary from 'common/fragments/dictionary';
@@ -50,6 +51,8 @@ abstract class BaseApplication extends BaseObject {
 
   public initialize():void {
 
+    this.willInitialize();
+
     this._initializeFragments();
 
     // first signal that the application is loading
@@ -58,15 +61,31 @@ abstract class BaseApplication extends BaseObject {
 
     // after loading, signal that everything should initialize
     this._dispatchers.dispatch(InitializeEvent.create(this));
+
+    this.didInitialize();
   }
 
   /**
    */
 
   private _initializeFragments():void {
-    for (var fragment of this._fragments.query('application')) {
-      fragment.create({ application: this });
+    for (var fragment of this._fragments.query(APPLICATION_NS)) {
+      fragment.create(this);
     }
+  }
+
+  /**
+   */
+
+  protected willInitialize():void {
+    // override me
+  }
+
+  /**
+   */
+
+  protected didInitialize():void {
+
   }
 }
 

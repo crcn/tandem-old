@@ -1,11 +1,10 @@
+import BaseApplication from 'common/application/base';
 import FactoryFragment from './factory';
-import IFactory from 'common/utils/class/ifactory';
-
-export const APPLICATION_NS = 'application';
+import { APPLICATION as APPLICATION_NS } from './namespaces';
 
 class ApplicationFragment extends FactoryFragment {
-  constructor(factory:IFactory) {
-    super(APPLICATION_NS, factory);
+  constructor(create:(app:BaseApplication) => void) {
+    super(APPLICATION_NS, { create: create });
   }
 }
 
