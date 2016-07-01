@@ -24,8 +24,8 @@
   },
   "homepage": "https://github.com/crcn/saffron#readme",
   "devDependencies": {
+    "chai": "^3.5.0",
     "colors": "^1.1.2",
-    "common": "file:./src/common",
     "css-loader": "^0.23.1",
     "eslint": "^2.12.0",
     "eslint-config-airbnb": "^9.0.1",
@@ -52,8 +52,8 @@
     "style-loader": "^0.13.1",
     "traceur-loader": "^0.6.3",
     "ts-loader": "^0.8.2",
+    "tsd": "^0.6.5",
     "typescript": "^1.8.10",
-    "typings": "^1.3.1",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
   },

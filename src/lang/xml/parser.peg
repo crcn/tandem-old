@@ -1,12 +1,15 @@
 {
 /*jshint laxcomma:false */
 
+var es6Exprs = require('lang/ast/es6');
+var xmlExprs = require('lang/ast/xml');
+
 function trimWhitespace(ws) {
   return trimNewLineChars(ws).replace(/(^[\r\n]+)|([\r\n]+$)/, " ");
 }
 
 function trimEnds(ws) {
-  return ws.replace(/(^\s+)|(\s+$)/, "").replace(/[\r\n]/g, "\\n");
+  return ws.replace(/(^\s+)|(\s+$)/g, '').replace(/[\r\n]/g, '\\n');
 }
 
 function trimNewLineChars(ws) {
@@ -23,7 +26,7 @@ function attrValues(values) {
     return !/^[\n\t\r]+$/.test(v.value);
   });
 
-  if (values.length === 1 && values[0].type === "string") {
+  if (values.length === 1) {
     return values[0];
   } else {
     return values;
@@ -66,7 +69,7 @@ Template
 
 DocType
   = "<!DOCTYPE" _ info:[^>]+ _ ">" {
-      return ["doctype", info.join("")];
+      return new xmlExprs.DocTypeExpression(info.join(''));
     }
 
 ChildNodes
@@ -75,13 +78,14 @@ ChildNodes
 
 CommentNode
   = _ "<!--" value:(!"-->" v:SourceCharacter { return v; })+ "-->" _ {
-    return ["comment", escapeString(trimEnds(value.join("")))];
+    return new xmlExprs.CommentExpression(escapeString(trimEnds(value.join(""))));
   }
   / DocType
 
 ScriptStart
   = _ "<script" attributes:TagAttributes ">" content:ScriptEnd+ "</script>" _  {
-      return ["element", "script", attributes, [["text", escapeString(content.join(""))]]];
+      return new xmlExprs.ScriptExpression();
+      // return ["element", "script", attributes, [["text", escapeString(content.join(""))]]];
     }
 
 ScriptEnd
@@ -90,17 +94,17 @@ ScriptEnd
     }
 
 VoidElement
-  = "<" nodeName:("area"/"base"/"br"/"col"/"command"/"embed"/"hr"/"img"/"input"/"keygen"/"link"/"meta"/"param"/"source"/"track"/"wbr") attributes:TagAttributes (">"/"/>")? endTag:EndVoidTag? {
+  = '<' nodeName:('area'/'base'/'br'/'col'/'command'/'embed'/'hr'/'img'/'input'/'keygen'/'link'/'meta'/'param'/'source'/'track'/'wbr') attributes:TagAttributes ('>'/'/>')? endTag:EndVoidTag? {
 
     if (endTag && nodeName != endTag.name) {
-      expected("</" + nodeName + ">");
+      expected('</' + nodeName + '>');
     }
 
-    return ["element", nodeName, attributes, []];
+    return new xmlExprs.ElementExpression(nodeName, attributes);
   }
 
 EndVoidTag
-  = _ "</" name:("area"/"base"/"br"/"col"/"command"/"embed"/"hr"/"img"/"input"/"keygen"/"link"/"meta"/"param"/"source"/"track"/"wbr") ">" {
+  = _ '</' name:('area'/'base'/'br'/'col'/'command'/'embed'/'hr'/'img'/'input'/'keygen'/'link'/'meta'/'param'/'source'/'track'/'wbr') '>' {
       return {
         name: name
       };
@@ -110,16 +114,16 @@ ElementNode
   = startTag:StartTag children:ChildNodes endTag:EndTag {
 
     if (startTag.name != endTag.name) {
-      expected("</" + startTag.name + ">");
+      expected('</' + startTag.name + '>');
     }
 
-    return ["element", startTag.name, startTag.attributes, children];
+    return new xmlExprs.ElementExpression(startTag.name, startTag.attributes, children);
   }
   / StartEndTag
 
 TextNode
   = value:TextCharacter+ {
-      return ["text", escapeString(trimNewLineChars(value.join("")))];
+      return new xmlExprs.TextExpression(escapeString(trimNewLineChars(value.join(""))));
     }
 
 TextCharacter
@@ -131,7 +135,9 @@ StartTag
   = _ "<" info:TagInfo ">" _ { return info; }
 
 StartEndTag
-  = _ "<" info:TagInfo "/>" _ { return ["element", info.name, info.attributes, []]; }
+  = _ "<" info:TagInfo "/>" _ {
+      return new xmlExprs.ElementExpression(info.name, info.attributes);
+  }
 
 TagInfo
   = name:TagName attrs:TagAttributes {
@@ -159,28 +165,28 @@ TagName
 
 Attribute
   = name:TagName _ "=" _ values:AttributeValues {
-      return ["attribute", name, values];
+      return new xmlExprs.AttributeExpression(name, values);
     }
   / name:TagName _ "=" _ property:TextBinding {
-      return ["property", name, property];
+      return new xmlExprs.AttributeExpression(name, property);
     }
   / name:TagName {
-      return ['attribute', name, []];
+      return new xmlExprs.AttributeExpression(name);
     }
 
 AttributeValues
-  = '"' values:(TextBinding/(!"{{" [^"])+ { return ["string", text()]; })* '"' { return attrValues(values); }
-  / "'" values:(TextBinding/(!"{{" [^'])+ { return ["string", text()]; })* "'" { return attrValues(values); }
+  = '"' values:(TextBinding/(!"{{" [^"])+ { return new es6Exprs.StringExpression(text()); })* '"' { return attrValues(values); }
+  / "'" values:(TextBinding/(!"{{" [^'])+ { return new es6Exprs.StringExpression(text()); })* "'" { return attrValues(values); }
 
 
 TextBinding
   = "{{" _ value:Expression _ "}}" {
-      return ["script", value];
+      return new xmlExprs.ScriptExpression(value);
     }
 
 BlockBinding
   = script:TextBinding {
-    return ["block", script[1]];
+    return new xmlExprs.BlockExpression(script);
   }
 
 Expression
@@ -188,7 +194,7 @@ Expression
 
 TernaryConditional
   = condition:Assignment "?" left:TernaryConditional ":" right:TernaryConditional {
-      return ["condition", condition, left, right];
+      return new es6Exprs.ConditionExpression(left, right);
     }
   / Assignment
 
@@ -207,7 +213,7 @@ InnerParameters
 
 Assignment
   = left:ObjectReference "=" right:Assignment {
-      return ["assign", left, right];
+      return new es6Exprs.AssignExpression(left, right);
     }
   / Operation
 
@@ -244,7 +250,7 @@ ObjectReference
 
 Not
   = not:"!" value:Not {
-      return ["not", value];
+      return new es6Exprs.NotExpression(value);
     }
   / not:("!"/"-") value:Not {
       return ["negative", value];
@@ -256,7 +262,7 @@ Object
 
 Number
   = value:("-"? ([0-9]+DecimalNumber? / DecimalNumber)) {
-      return ["literal", parseFloat(text())];
+      return new es6Exprs.NumberExpression(Number(text()));
     }
 
 DecimalNumber
@@ -272,39 +278,47 @@ Reserved
 
 Boolean
   = value:("true"/"false") {
-      return ["literal", value === "true"];
+      return new es6Exprs.BooleanExpression(value === 'true');
     }
 
 Undefined
-  = "undefined" { return ["literal", void 0]; }
+  = "undefined" { return new es6Exprs.UndefinedExpression(); }
 
 NaN
-  = "NaN" { return ["literal", NaN]; }
+  = "NaN" { return new es6Exprs.NaNExpression(); }
 
 Infinity
-  = "Infinity" { return ["literal", Infinity]; }
+  = "Infinity" { return new es6Exprs.InfinityExpression(); }
 
 Null
-  = ("null"/"NULL") { return ["literal", null]; }
+  = ("null"/"NULL") { return new es6Exprs.NullExpression() }
 
 FunctionCall
   = reference:ObjectReference parameters:Parameters {
-      return ["call", reference, parameters];
+      return new es6Exprs.CallExpression(reference, parameters);
     }
 
 Reference
-  = bindingType:("^"/"~>"/"<~>"/"~"/"<~")? _ reference:ReferenceName path:ReferencePart* _ {
+  = PathReference/SingleReference
 
-      return ["reference", [reference].concat(path), bindingType];
-    }
+PathReference
+  = first:SingleReference rest:(ReferencePart)+ {
+    var path = new es6Exprs.PathExpression();
+    path.value = [first].concat(rest);
+    return path;
+  }
 
+SingleReference
+  = name:ReferenceName {
+    return new es6Exprs.ReferenceExpression(name);
+  }
 
 ReferencePart
   = ReferenceKeyPath/ReferenceBrackPath
 
 ReferenceKeyPath
   = "." name:ReferenceName {
-    return name;
+    return new es6Exprs.StringExpression(name);
   }
 
 ReferenceBrackPath
@@ -352,10 +366,10 @@ HashKey
 
 StringLiteral "string"
   = '"' chars:DoubleStringCharacter* '"' {
-      return ["string", chars.join("")];
+      return new es6Exprs.StringExpression(chars.join(''));
     }
   / "'" chars:SingleStringCharacter* "'" {
-      return ["string", chars.join("")];
+      return new es6Exprs.StringExpression(chars.join(''));
     }
 
 DoubleStringCharacter

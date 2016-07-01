@@ -4,9 +4,9 @@ import IFragment from 'common/fragments/IFragment';
 import FragmentDictionary from 'common/fragments/dictionary';
 import DispatcherCollection from 'common/dispatchers/Collection';
 import { LoadEvent, InitializeEvent } from 'common/events/types';
-
+ 
 /**
- * Main entry point for all applications 
+ * Main entry point for all applications
  */
 
 abstract class BaseApplication extends BaseObject {
@@ -25,8 +25,8 @@ abstract class BaseApplication extends BaseObject {
   constructor(properties = {}, fragments:Array<IFragment>) {
     super(properties);
 
-    this._fragments   = FragmentDictionary.create(fragments); 
-    this._dispatchers = DispatcherCollection.create();    
+    this._fragments   = FragmentDictionary.create(fragments);
+    this._dispatchers = DispatcherCollection.create();
   }
 
   /**
