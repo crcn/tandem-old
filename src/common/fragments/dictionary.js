@@ -9,6 +9,10 @@ export default class FragmentDictionary {
   }
 
   query(ns) {
+    return this.queryAll(ns)[0];
+  }
+
+  queryAll(ns) {
     return this._fragmentsByNamespace[ns] || [];
   }
 

@@ -67,7 +67,7 @@ export default class BaseApplication extends CoreObject {
    */
 
   _initializeFragments() {
-    for (const fragment of this.fragmentDictionary.query(`${APPLICATION_NS}/**`)) {
+    for (const fragment of this.fragmentDictionary.queryAll(`${APPLICATION_NS}/**`)) {
       fragment.initialize(this);
     }
   }

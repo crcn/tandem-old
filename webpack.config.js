@@ -16,7 +16,6 @@ module.exports = {
     modulesDirectories: [__dirname + '/src', 'node_modules', 'bower_components', 'src', 'vendor', __dirname],
     extensions: ['', '.json', '.jsx', '.js']
   },
-  devtool: 'eval',
   sassLoader: {
     includePaths: [path.resolve(__dirname, './src')]
   },
@@ -43,7 +42,7 @@ module.exports = {
         loader: 'url-loader?limit=1000'
       },
       {
-        test: /\.pegjs$/,
+        test: /\.peg$/,
         loader: 'pegjs-loader?cache=true'
       },
       {

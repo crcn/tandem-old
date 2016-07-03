@@ -7,13 +7,7 @@ export default ApplicationFragment.create(
 );
 
 function initialize(app) {
-  app.logger = Logger.create(app);
-}
 
-class Logger {
-  constructor(bus) {
-
-  }
-
-  static create = create;
+  // tempory - just pipe to console output
+  app.logger = console;
 }
