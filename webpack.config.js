@@ -4,7 +4,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   entry: {
-    'browser' : './packages/browser/entry.js'
+    'browser' : './src/browser/entry.js'
   },
   output: {
     path: __dirname + '/public',
@@ -13,12 +13,12 @@ module.exports = {
     sourceMapFilename: '/bundle/[name].js.map'
   },
   resolve: {
-    modulesDirectories: [__dirname + '/packages', 'node_modules', 'bower_components', 'packages', 'vendor', __dirname],
+    modulesDirectories: [__dirname + '/src', 'node_modules', 'bower_components', 'src', 'vendor', __dirname],
     extensions: ['', '.json', '.jsx', '.js']
   },
   devtool: 'eval',
   sassLoader: {
-    includePaths: [path.resolve(__dirname, './packages')]
+    includePaths: [path.resolve(__dirname, './src')]
   },
   lazy: true,
   watchOptions: {

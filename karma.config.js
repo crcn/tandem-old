@@ -17,7 +17,7 @@ module.exports = function(config) {
       'node_modules/babel-polyfill/browser.js',
       'test/helpers/utils/stub-logs.js',
       {
-        pattern  : 'packages/**/*-test.js',
+        pattern  : 'src/**/*-test.js',
         watched  : false,
         included : true,
         served   : true
