@@ -6,17 +6,16 @@ describe(__filename + '#', function() {
   describe('objects', function() {
     it('can be made observable', function() {
 
+      @observable
       class ObservableObject extends CoreObject { }
-
-      ObservableObject = observable(ObservableObject);
 
       var ref = ObservableObject.create();
     });
 
     it('includes all the changes on the object', function() {
-        class ObservableObject extends CoreObject { }
 
-        ObservableObject = observable(ObservableObject);
+        @observable
+        class ObservableObject extends CoreObject { }
 
         var ref = ObservableObject.create();
         var changes = [];
@@ -53,9 +52,8 @@ describe(__filename + '#', function() {
   describe('collection', function() {
     it('can be made observable', function() {
 
+      @observable
       class ObservableCollection extends Collection { }
-
-      ObservableCollection = observable(ObservableCollection);
 
       var ref = ObservableCollection.create();
       var i = 0;
@@ -68,9 +66,9 @@ describe(__filename + '#', function() {
     });
 
     it('includes all changes', function() {
-      class ObservableCollection extends Collection { }
 
-      ObservableCollection = observable(ObservableCollection);
+      @observable
+      class ObservableCollection extends Collection { }
 
       var ref = ObservableCollection.create();
       var changes = [];
@@ -87,9 +85,9 @@ describe(__filename + '#', function() {
   });
 
   it('throws an error if a class is made observable twice', function() {
-    class ObservableObject extends CoreObject { }
 
-    ObservableObject = observable(ObservableObject);
+    @observable
+    class ObservableObject extends CoreObject { }
 
     class ObservableObject2 extends ObservableObject { }
 

@@ -24,33 +24,6 @@ export default function observable(clazz) {
   return clazz;
 }
 
-function decorateCollectionClass(clazz) {
-
-  decorateObserveMethod(clazz);
-
-  var oldSplice = clazz.prototype.splice;
-  clazz.prototype.splice = function(start, length, ...repl) {
-
-    if (this._dispatcher) {
-      var changes = [];
-      changes.push({
-        type   : 'splice',
-        start  : start,
-        length : length,
-        values : repl
-      });
-
-      this._dispatcher.dispatch(ChangeEvent.create(changes));
-    }
-
-    var ret = oldSplice.apply(this, arguments);
-
-    return ret;
-  }
-
-  return clazz;
-}
-
 function decorateObjectClass(clazz) {
   decorateObserveMethod(clazz);
 
@@ -98,6 +71,33 @@ function decorateObjectClass(clazz) {
     if (changes && changes.length) {
       this._dispatcher.dispatch(ChangeEvent.create(changes));
     }
+  }
+
+  return clazz;
+}
+
+function decorateCollectionClass(clazz) {
+
+  decorateObjectClass(clazz);
+
+  var oldSplice = clazz.prototype.splice;
+  clazz.prototype.splice = function(start, length, ...repl) {
+
+    if (this._dispatcher) {
+      var changes = [];
+      changes.push({
+        type   : 'splice',
+        start  : start,
+        length : length,
+        values : repl
+      });
+
+      this._dispatcher.dispatch(ChangeEvent.create(changes));
+    }
+
+    var ret = oldSplice.apply(this, arguments);
+
+    return ret;
   }
 
   return clazz;

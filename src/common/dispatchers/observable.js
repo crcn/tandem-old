@@ -29,9 +29,13 @@ export default class ObservableDispatcher {
 
     event.currentTarget = this._target;
 
-    for (var listener of this._listeners) {
-      listener.dispatch(event);
+    if (this._listeners) {
+      for (var listener of this._listeners) {
+        listener.dispatch(event);
+      }
     }
+
+    return event;
   }
 
   static create = create;
