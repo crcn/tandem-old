@@ -1,4 +1,4 @@
-import Collection from './index';
+import Collection from './collection';
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {
@@ -21,14 +21,14 @@ describe(__filename + '#', function() {
     expect(ref.b).to.be(2);
   });
 
-  it('can push items onto the array', function() {
+  it('can push() items onto the array', function() {
     var ref = Collection.create();
     ref.push(1, 2);
     expect(ref[0]).to.be(1);
     expect(ref.length).to.be(2);
   });
 
-  it('can unshift items onto the array', function() {
+  it('can unshift() items onto the array', function() {
     var ref = Collection.create([1, 2]);
     ref.unshift(3, 4);
     expect(ref[0]).to.be(3);

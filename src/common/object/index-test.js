@@ -1,15 +1,15 @@
-import ObservableObject from './object';
+import CoreObject from './index';
 import expect from 'expect.js';
 
 describe(__filename + '#', () => {
   it('can be created', () => {
-    var ref = ObservableObject.create();
-    expect(ref).to.be.an(ObservableObject);
+    var ref = CoreObject.create();
+    expect(ref).to.be.an(CoreObject);
   });
 
   it('can be created with initial properties', () => {
-    var ref = ObservableObject.create({ a: 'b', c: 'd' });
+    var ref = CoreObject.create({ a: 'b', c: 'd' });
     expect(ref.a).to.be('b');
     expect(ref.c).to.be('d');
-  }); 
+  });
 });
