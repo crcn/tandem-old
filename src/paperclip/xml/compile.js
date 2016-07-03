@@ -46,14 +46,30 @@ function translateNode(node) {
 
 function translateAttributes(attrs) {
   return `{
-
+    ${attrs.map(translateAttribute).join(',')}
   }`;
+}
+
+function translateAttribute(attr) {
+  return `"${attr[1]}": ${translateAttributeValue(attr[2])}`
+}
+
+function translateAttributeValue(attrValue) {
+  if (attrValue.length === 1 && attrValue[0][0] === 'string') {
+    return `${translateString(attrValue[0])}`;
+  } else {
+    throw new Error(`block attributes are not yet supported`);
+  }
 }
 
 function translateBlock(ast) {
   return `function(context) {
     return ${translateJS(ast)}
   }`;
+}
+
+function translateString(ast) {
+  return `"${ast[1]}"`;
 }
 
 function translateJS(ast) {

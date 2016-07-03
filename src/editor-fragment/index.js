@@ -1,5 +1,5 @@
 import { ApplicationFragment } from 'common/application/fragments';
-import { fragment as rootEditorComponentFragment } from './components/root';
+import { fragment as rootEditorViewFragment } from './views/root';
 import { FactoryFragment } from 'common/fragments';
 
 export default ApplicationFragment.create(
@@ -9,6 +9,6 @@ export default ApplicationFragment.create(
 
 function create(app) {
   app.fragmentDictionary.register(
-    rootEditorComponentFragment
+    rootEditorViewFragment
   );
 }

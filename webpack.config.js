@@ -63,8 +63,10 @@ module.exports = {
         exclude: /(node_modules|bower_components)/,
         loader: 'babel',
         query: {
-          presets: ['react', 'es2015', 'stage-1', 'stage-0'],
-          plugins: ['transform-decorators-legacy'],
+          presets: ['es2015', 'stage-1', 'stage-0'],
+          plugins: ['transform-decorators-legacy', ['transform-react-jsx', {
+            'pragma': 'dom' // default pragma is React.createElement
+          }]],
           ignore: ['buffer']
         }
       }

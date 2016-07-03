@@ -9,16 +9,18 @@ export default class ElementVNode {
   }
 
   freeze(options) {
-    var element = document.createElement(this.nodeName);
+    var node = document.createElement(this.nodeName);
 
+    // todo - check for script attributes
     for (var key in this.attributes) {
-      div.setAttribute(key, this.attributes[key]);
-    }
-    for (var childNode of this.childNodes) {
-      div.appendChild(childNode.freeze(options));
+      node.setAttribute(key, this.attributes[key]);
     }
 
-    return element;
+    for (var childNode of this.childNodes) {
+      node.appendChild(childNode.freeze(options));
+    }
+
+    return node;
   }
 
   static create = create;

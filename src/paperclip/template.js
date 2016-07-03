@@ -4,38 +4,10 @@ import Element from './vdom/element';
 import Block from './vdom/block';
 import Text from './vdom/text';
 import Fragment from './vdom/fragment';
+import View from './view';
 
-class View {
 
-  constructor(context, node, hydrators) {
-    this.node     = node;
-    this._context = context;
-
-    this._bindings = [];
-
-    for (const hydrator of hydrators) {
-      hydrator.hydrate({
-        node     : node,
-        context  : context,
-        bindings : this._bindings
-      });
-    }
-
-    this.update();
-  }
-
-  get context() {
-    return this._context;
-  }
-
-  update() {
-      for (var binding of this._bindings) {
-        binding.update();
-      }
-  }
-}
-
-class Template {
+export default class Template {
   constructor(templateNode, hydrators) {
     this._templateNode = templateNode;
     this._hydrators    = hydrators;
@@ -59,13 +31,13 @@ export function create(createTemplateNode, options = {}) {
     fragment : Fragment
   }
 
-  var vnode = createTemplateNode(
+  var vnode = typeof createTemplateNode === 'function' ? createTemplateNode(
     function(type, ...rest) {
       var factory = factories[type];
       if (!factory) throw new Error(`factory "${type}" does not exist`);
       return factory.create(...rest);
     }
-  );
+  ) : createTemplateNode;
 
   var hydrators = [];
 
