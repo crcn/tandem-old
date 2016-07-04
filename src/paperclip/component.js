@@ -5,7 +5,7 @@ import { default as Template } from './template';
 import { default as createTemplate } from './create-template';
 
 @observable
-export default class ViewController extends CoreObject {
+export default class ViewComponent extends CoreObject {
 
   /**
    */

@@ -23,13 +23,13 @@ class ComponentHydrator {
 
   hydrate({ view, section, bindings }) {
 
-    var controller = new this.componentVNode.controllerClass({
+    var component = new this.componentVNode.componentClass({
       parentView         : view,
       nodeFactory        : this._nodeFactory,
       childNodesTemplate : this.childNodesTemplate
     });
 
-    var childView = controller.view = new View(controller, this._marker.createSection(section.targetNode), this._hydrators);
+    var childView = component.view = new View(component, this._marker.createSection(section.targetNode), this._hydrators);
 
     // fuggly, but works for now.
     bindings.push({
@@ -41,19 +41,19 @@ class ComponentHydrator {
             value = value(view.context);
           }
 
-          controller.setAttribute(key, value);
+          component.setAttribute(key, value);
         }
       }
     })
 
-    bindings.push(controller);
+    bindings.push(component);
   }
 }
 
 export default class ComponentVNode {
 
-  constructor(controllerClass, attributes, childNodes) {
-    this.controllerClass   = controllerClass;
+  constructor(componentClass, attributes, childNodes) {
+    this.componentClass    = componentClass;
     this.attributes        = attributes;
     this.childNodes        = childNodes;
   }
@@ -62,8 +62,8 @@ export default class ComponentVNode {
     var section;
     var hydrators = [];
 
-    if (this.controllerClass.freeze) {
-      var template = freeze(this.controllerClass, options.nodeFactory);
+    if (this.componentClass.freeze) {
+      var template = freeze(this.componentClass, options.nodeFactory);
       hydrators = template.hydrators;
       section   = template.section;
     } else {

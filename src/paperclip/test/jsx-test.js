@@ -1,9 +1,9 @@
-import { dom, ViewController, freeze, FragmentSection } from '../index';
+import { dom, Component, freeze, FragmentSection } from '../index';
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {
   it('can render various elements', function() {
-    class SubController extends ViewController {
+    class SubController extends Component {
       static template = <div class='some-class'>
         hello {c => c.name}
       </div>
@@ -40,7 +40,7 @@ describe(__filename + '#', function() {
       }
     }
 
-    class SubController extends ViewController {
+    class SubController extends Component {
       static template = <Repeat each={c=>c.items} as='item'>
         item: {c=>c.item}
       </Repeat>

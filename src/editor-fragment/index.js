@@ -1,3 +1,5 @@
+import './scss/modules/all.scss';
+
 import { ApplicationFragment } from 'common/application/fragments';
 import { fragment as rootEditorViewFragment } from './views/root';
 import { FactoryFragment } from 'common/fragments';
