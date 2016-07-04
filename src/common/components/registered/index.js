@@ -1,11 +1,10 @@
-export default class RegisteredComponent {
 
-  constructor({ view }) {
-    this.view = view;
-  }
+import { BaseComponent } from 'paperclip';
 
-  setAttribute(key, value) {
-    this[key] = value;
+export default class RegisteredComponent extends BaseComponent {
+
+  constructor(properties) {
+    super(properties);
   }
 
   update() {

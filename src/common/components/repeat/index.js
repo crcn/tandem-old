@@ -1,20 +1,10 @@
 import _each from 'common/utils/object/each';
+import { BaseComponent } from 'paperclip';
 
-export default class RepeatComponent {
-  constructor({ view, childNodesTemplate }) {
-    this.view               = view;
-    this.childNodesTemplate = childNodesTemplate;
-    this.attributes         = {};
-
+export default class RepeatComponent extends BaseComponent {
+  constructor(properties) {
+    super(properties);
     this._children = [];
-  }
-
-  setAttribute(key, value) {
-    this.attributes[key] = value;
-  }
-
-  getAttribute(key) {
-    return this.attributes[key];
   }
 
   update() {

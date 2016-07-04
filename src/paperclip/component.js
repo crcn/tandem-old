@@ -5,21 +5,10 @@ import { default as Template } from './template';
 import { default as createTemplate } from './create-template';
 
 @observable
-export default class ViewComponent extends CoreObject {
-
-  /**
-   */
-
+export class BaseComponent extends CoreObject {
   constructor(properties) {
     super(properties);
     this.attributes = {};
-    this.observe(CallbackDispatcher.create(this._didChange.bind(this)));
-  }
-
-  // TODO get(key) { }
-
-  set view(value) {
-    this._view = value;
   }
 
   setAttribute(key, value) {
@@ -28,6 +17,27 @@ export default class ViewComponent extends CoreObject {
 
   getAttribute(key) {
     return this.attributes[key];
+  }
+
+  update() {
+    // OVERRIDE ME
+  }
+}
+
+export class TemplateComponent extends BaseComponent {
+
+  /**
+   */
+
+  constructor(properties) {
+    super(properties);
+    this.observe(CallbackDispatcher.create(this._didChange.bind(this)));
+  }
+
+  // TODO get(key) { }
+
+  set view(value) {
+    this._view = value;
   }
 
   get view() {

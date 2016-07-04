@@ -1,10 +1,10 @@
 import './index.scss';
 
 import { FactoryFragment } from 'common/fragments';
-import { Component, dom } from 'paperclip';
+import { TemplateComponent, dom } from 'paperclip';
 import StageComponent from './stage';
 
-export default class RootEditorComponent extends Component {
+export default class RootEditorComponent extends TemplateComponent {
   name = 'jeff';
 
   static template = <div class='m-editor'>

@@ -1,10 +1,10 @@
 
-import { createTemplate, Component, dom } from '../';
+import { createTemplate, TemplateComponent, dom } from '../';
 
 describe(__filename + '#', function() {
   it('can be created with a template', function() {
 
-    class SubController extends Component {
+    class SubController extends TemplateComponent {
       static template = createTemplate('hello');
     }
 
@@ -15,7 +15,7 @@ describe(__filename + '#', function() {
 
   it('updates the node whenever the controller changes', function() {
 
-    class SubController extends Component {
+    class SubController extends TemplateComponent {
       name = 'john';
       static template = createTemplate('<span>hello {{name}}</span>');
     }
@@ -29,7 +29,7 @@ describe(__filename + '#', function() {
 
   it('can use a string as a template source', function() {
 
-    class SubController extends Component {
+    class SubController extends TemplateComponent {
       name = 'john';
       static template = `{{name}}`
     }
@@ -40,7 +40,7 @@ describe(__filename + '#', function() {
   });
 
   it('can use JSX', function() {
-    class SubController extends Component {
+    class SubController extends TemplateComponent {
       name = 'jake';
       static template = <div>
         hello { c => c.name }
