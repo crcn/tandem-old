@@ -18,18 +18,18 @@ function create(app) {
   );
 
   function initialize(event) {
-    var rootViewClassFragment = app.fragmentDictionary.query('rootViewClass');
+    var rootComponentClassFragment = app.fragmentDictionary.query('rootComponentClass');
 
-    if (!rootViewClassFragment) {
-      app.logger.warn('rootViewClass fragment does not exist');
+    if (!rootComponentClassFragment) {
+      app.logger.warn('rootComponentClass fragment does not exist');
       return;
     }
 
-    var rootView = rootViewClassFragment.create({
+    var rootComponent = rootComponentClassFragment.create({
       application: app
     });
 
-    app.element.appendChild(rootView.section.toFragment());
+    app.element.appendChild(rootComponent.section.toFragment());
   }
 }
 

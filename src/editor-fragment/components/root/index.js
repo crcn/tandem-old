@@ -12,4 +12,4 @@ export default class RootEditorComponent extends Component {
   </div>;
 }
 
-export const fragment = FactoryFragment.create('rootViewClass', RootEditorComponent);
+export const fragment = FactoryFragment.create('rootComponentClass', RootEditorComponent);

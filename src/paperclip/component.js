@@ -16,6 +16,8 @@ export default class ViewComponent extends CoreObject {
     this.observe(CallbackDispatcher.create(this._didChange.bind(this)));
   }
 
+  // TODO get(key) { }
+
   set view(value) {
     this._view = value;
   }
