@@ -1,4 +1,4 @@
-import { create as createTemplate } from './template';
+import { createTemplate } from '../index';
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {

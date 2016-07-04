@@ -17,8 +17,6 @@ export default class RootEditorComponent extends ViewController {
         color: red;
       }
     `}</style>
-
-    Hello { c => c.name }
   </div>;
 }
 

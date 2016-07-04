@@ -2,14 +2,14 @@ import create from 'common/class/utils/create';
 
 export default class ElementVNode {
 
-  constructor(name, attributes, children) {
+  constructor(name, attributes, childNodes) {
     this.nodeName   = name;
     this.attributes = attributes;
-    this.childNodes = children;
+    this.childNodes = childNodes || [];
   }
 
   freeze(options) {
-    var node = document.createElement(this.nodeName);
+    var node = options.nodeFactory.createElement(this.nodeName);
 
     // todo - check for script attributes
     for (var key in this.attributes) {

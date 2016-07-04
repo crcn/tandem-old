@@ -1,7 +1,8 @@
 import CoreObject from 'common/object';
 import observable from 'common/object/mixins/observable';
 import CallbackDispatcher from 'common/dispatchers/callback';
-import { create as createTemplate, default as Template } from './template';
+import { default as Template } from './template';
+import { default as createTemplate } from './create-template';
 
 @observable
 export default class ViewController extends CoreObject {
