@@ -1,11 +1,9 @@
 import create from 'common/class/utils/create';
-import getPath from 'common/utils/node/get-path';
-import getNode from 'common/utils/node/get-node';
+import NodeSection from '../section/node';
 
 class BlockBinding {
-  constructor(context, rootNode, node, execute) {
+  constructor(context, node, execute) {
     this.context  = context;
-    this.rootNode = rootNode;
     this.node     = node;
     this.execute  = execute;
   }
@@ -16,17 +14,17 @@ class BlockBinding {
 }
 
 class BlockHydrator {
-  constructor(referenceNode, execute) {
-    this.referenceNode = referenceNode;
-    this.execute       = execute;
+  constructor(section, execute) {
+    this.section = section;
+    this.execute = execute;
   }
 
   prepare() {
-    this.path = getPath(this.referenceNode);
+    this._marker = this.section.createMarker();
   }
 
   hydrate({ bindings, context, node }) {
-    bindings.push(new BlockBinding(context, node, getNode(node, this.path), this.execute));
+    bindings.push(new BlockBinding(context, this._marker.getNode(node), this.execute));
   }
 }
 
@@ -38,7 +36,7 @@ export default class BlockVNode {
 
   freeze({ hydrators }) {
     var node = document.createTextNode('');
-    hydrators.push(new BlockHydrator(node, this.execute));
+    hydrators.push(new BlockHydrator(new NodeSection(node), this.execute));
     return node;
   }
 

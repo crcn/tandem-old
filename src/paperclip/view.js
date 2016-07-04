@@ -1,7 +1,8 @@
+import { create as createSection } from './section';
+
 export default class View {
 
   constructor(context, node, hydrators) {
-    this.node     = node;
     this._context = context;
 
     this._bindings = [];
@@ -14,12 +15,36 @@ export default class View {
       });
     }
 
+    this._section = createSection(node);
+
     this.update();
   }
+
+  /**
+   */
+
+  toFragment() {
+    return this._section.toFragment();
+  }
+
+  /**
+   */
+
+  get section() {
+    return this._section;
+  }
+
+  /**
+   * the context of the view
+   */
 
   get context() {
     return this._context;
   }
+
+  /**
+   * updates the
+   */
 
   update() {
       for (var binding of this._bindings) {
@@ -27,7 +52,19 @@ export default class View {
       }
   }
 
+  /**
+   * removes the view nodes from the parent.
+   */
+
   remove() {
-    this.node.parentNode.removeChild(this.node);
+    this._section.remove();
+  }
+
+  /**
+   */
+
+  dispose() {
+    this.remove();
+    // recycle back to template
   }
 }

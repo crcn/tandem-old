@@ -3,7 +3,7 @@ import create from 'common/class/utils/create';
 export default class TextVNode {
 
   constructor(value) {
-    this.nodeValue = value;
+    this.nodeValue = String(value);
   }
 
   freeze(options) {

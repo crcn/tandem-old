@@ -10,7 +10,7 @@ describe(__filename + '#', function() {
 
     var c = SubController.create();
 
-    expect(c.node.nodeValue).to.be('hello');
+    expect(c.section.toString()).to.be('hello');
   });
 
   it('updates the node whenever the controller changes', function() {
@@ -22,9 +22,9 @@ describe(__filename + '#', function() {
 
     var c = SubController.create();
 
-    expect(c.node.innerHTML).to.be('hello john');
+    expect(c.section.toString()).to.be('<span>hello john</span>');
     c.setProperties({ name: 'jeff' });
-    expect(c.node.innerHTML).to.be('hello jeff');
+    expect(c.section.toString()).to.be('<span>hello jeff</span>');
   });
 
   it('can use a string as a template source', function() {
@@ -36,7 +36,7 @@ describe(__filename + '#', function() {
 
     var c = SubController.create();
 
-    expect(c.node.nodeValue).to.be('john');
+    expect(c.section.toString()).to.be('john');
   });
 
   it('can use JSX', function() {
@@ -47,6 +47,6 @@ describe(__filename + '#', function() {
       </div>;
     }
 
-    expect(SubController.create().node.outerHTML).to.be('<div>hello jake</div>');
+    expect(SubController.create().section.toString()).to.be('<div>hello jake</div>');
   });
 })

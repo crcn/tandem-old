@@ -1,4 +1,4 @@
-import { dom, ViewController, freeze } from '../index';
+import { dom, ViewController, freeze, FragmentSection } from '../index';
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {
@@ -10,7 +10,7 @@ describe(__filename + '#', function() {
     }
 
     var c = SubController.create({ name: 'joe' });
-    expect(c.node.outerHTML).to.be(`<div class=\"some-class\">hello joe</div>`);
+    expect(c.section.toString()).to.be(`<div class=\"some-class\">hello joe</div>`);
   });
 
   it('can render with a component', function() {
@@ -23,33 +23,32 @@ describe(__filename + '#', function() {
           this.childNodesTemplate = childNodesTemplate;
       }
 
-      static freeze(options) {
-        return document.createElement('div');
-      }
-
       update() {
-        var { node, context }   = this.view;
+        var { section, context }   = this.view;
         var { each, as }        = this.attributes;
         var childNodesTemplate  = this.childNodesTemplate;
 
         each(context).forEach(function(item, index) {
-          node.appendChild(childNodesTemplate.createView({
+          section.appendChild(childNodesTemplate.createView({
             [as]: item
-          }).node);
+          }).toFragment());
         });
       }
     }
 
     class SubController extends ViewController {
-      static template = <div>
-        <Repeat each={c=>c.items} as='item'>
-          item: {c=>c.item}
-        </Repeat>
-      </div>
+      static template = <Repeat each={c=>c.items} as='item'>
+        item: {c=>c.item}
+      </Repeat>
     }
+
+    var vnode = <Repeat each={c=>c.items} as='item'>
+      item: {c=>c.item}
+    </Repeat>;
 
     var c = SubController.create({ items: [1, 2, 3, 4 ]});
 
-    expect(c.node.outerHTML).to.be('<div><div>item: 1item: 2item: 3item: 4</div></div>');
+
+    expect(c.section.toString()).to.be('item: 1item: 2item: 3item: 4');
   });
 });

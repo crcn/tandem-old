@@ -9,13 +9,9 @@ export default class RepeatComponent {
     this._children = [];
   }
 
-  static freeze({ nodeFactory }) {
-    return nodeFactory.createElement('div');
-  }
-
   update() {
     var { each, as }       = this.attributes;
-    var { context, node }  = this.view;
+    var { context, section }  = this.view;
     var childNodesTemplate = this.childNodesTemplate;
 
     var i = 0;
@@ -35,12 +31,13 @@ export default class RepeatComponent {
       } else {
         child = childNodesTemplate.createView(context);
         this._children.push(child);
-        node.appendChild(child.node);
+        section.appendChild(child.toFragment());
       }
 
       i++;
     });
 
+    // remove any components at the end
     while(this._children.length > i) {
       this._children.pop().remove();
     }

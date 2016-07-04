@@ -12,8 +12,8 @@ export default class ViewController extends CoreObject {
    * been accessed.
    */
 
-  get node() {
-    return this.view.node;
+  get section() {
+    return this.view.section;
   }
 
   get view() {

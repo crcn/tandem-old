@@ -1,16 +1,18 @@
 import create from 'common/class/utils/create';
 import View from '../view';
-import getPath from 'common/utils/node/get-path';
-import getNode from 'common/utils/node/get-node';
+import Template from '../template';
 import freeze  from '../freeze';
 import Fragment from './fragment';
+import FragmentSection from '../section/fragment';
+import NodeSection from '../section/node';
 
 class ComponentHydrator {
-  constructor(componentVNode, hydrators, templateNode, nodeFactory) {
+  constructor(componentVNode, hydrators, section, childNodes, nodeFactory) {
     this.componentVNode = componentVNode;
-    this._templateNode  = templateNode;
+    this._section       = section;
     this._hydrators     = hydrators;
     this._nodeFactory   = nodeFactory;
+    this.childNodes     = childNodes;
   }
 
   prepare() {
@@ -18,17 +20,19 @@ class ComponentHydrator {
       hydrator.prepare();
     }
 
-    this.path = getPath(this._templateNode);
+    this.childNodesTemplate = freeze(Fragment.create(this.childNodes));
+    this._marker = this._section.createMarker();
   }
 
   hydrate({ node, context, bindings }) {
 
-    var componentNode = getNode(node, this.path);
-    var view = new View(context, componentNode, this._hydrators);
+    var section = this._marker.createSection(node);
+    var view = new View(context, section, this._hydrators);
 
     var controller = this.componentVNode.createComponent({
       view        : view,
-      nodeFactory : this._nodeFactory
+      nodeFactory : this._nodeFactory,
+      childNodesTemplate : this.childNodesTemplate
     });
 
     bindings.push(controller);
@@ -41,27 +45,31 @@ export default class ComponentVNode {
     this.controllerClass   = controllerClass;
     this.attributes        = attributes;
     this.childNodes        = childNodes;
-    this.childNodesTemplate = freeze(Fragment.create(this.childNodes));
   }
 
   createComponent(options = {}) {
     return new this.controllerClass({
       attributes          : this.attributes,
-      childNodesTemplate  : this.childNodesTemplate,
       ...options
     });
   }
 
   freeze(options) {
     var hydrators = [];
+    var section;
 
-    var templateNode = this.controllerClass.freeze({
-      hydrators   : hydrators,
-      nodeFactory : options.nodeFactory
-    });
+    if (this.controllerClass.freeze) {
+      section = NodeSection.create(this.controllerClass.freeze({
+        hydrators   : hydrators,
+        nodeFactory : options.nodeFactory
+      }));
+    } else {
+      section = FragmentSection.create();
+    }
 
-    options.hydrators.push(new ComponentHydrator(this, hydrators, templateNode, options.nodeFactory));
-    return templateNode;
+    options.hydrators.push(new ComponentHydrator(this, hydrators, section, this.childNodes, options.nodeFactory));
+
+    return section.toFragment();
   }
 
   static create = create;

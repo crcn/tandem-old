@@ -15,6 +15,6 @@ export default function(name, attributes, ...childNodes) {
   }
 
   return factory.create(name, attributes, flatten(childNodes).map(function(node) {
-    return typeof node === 'string' ? Text.create(node) : typeof node === 'function' ? Block.create(node) : node;
+    return /string|number|boolean/.test(typeof node) ? Text.create(node) : typeof node === 'function' ? Block.create(node) : node;
   }));
 }

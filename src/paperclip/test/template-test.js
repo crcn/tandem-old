@@ -11,7 +11,7 @@ describe(__filename + '#', function() {
   ].forEach(function([source, context, expectation]) {
     it(`can parse ${source}`, function() {
       var div = document.createElement('div');
-      div.appendChild(createTemplate(source).createView(context).node);
+      div.appendChild(createTemplate(source).createView(context).toFragment());
       expect(div.innerHTML).to.be(expectation);
     });
   });
