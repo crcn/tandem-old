@@ -56,7 +56,8 @@ export default class ComponentVNode {
     var hydrators = [];
 
     var templateNode = this.controllerClass.freeze({
-      hydrators: hydrators
+      hydrators   : hydrators,
+      nodeFactory : options.nodeFactory
     });
 
     options.hydrators.push(new ComponentHydrator(this, hydrators, templateNode, options.nodeFactory));

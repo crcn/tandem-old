@@ -26,4 +26,8 @@ export default class View {
         binding.update();
       }
   }
+
+  remove() {
+    this.node.parentNode.removeChild(this.node);
+  }
 }
