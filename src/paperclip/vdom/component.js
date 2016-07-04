@@ -9,6 +9,7 @@ import NodeSection from '../section/node';
 class ComponentHydrator {
   constructor(componentVNode, hydrators, section, childNodes, nodeFactory) {
     this.componentVNode = componentVNode;
+    this.attributes     = componentVNode.attributes;
     this._section       = section;
     this._hydrators     = hydrators;
     this._nodeFactory   = nodeFactory;
@@ -16,24 +17,34 @@ class ComponentHydrator {
   }
 
   prepare() {
-    for (var hydrator of this._hydrators) {
-      hydrator.prepare();
-    }
-
     this.childNodesTemplate = freeze(Fragment.create(this.childNodes));
     this._marker = this._section.createMarker();
   }
 
-  hydrate({ node, context, bindings }) {
+  hydrate({ view, section, bindings }) {
 
-    var section = this._marker.createSection(node);
-    var view = new View(context, section, this._hydrators);
-
-    var controller = this.componentVNode.createComponent({
-      view        : view,
-      nodeFactory : this._nodeFactory,
+    var controller = new this.componentVNode.controllerClass({
+      parentView         : view,
+      nodeFactory        : this._nodeFactory,
       childNodesTemplate : this.childNodesTemplate
     });
+
+    var childView = controller.view = new View(controller, this._marker.createSection(section.targetNode), this._hydrators);
+
+    // fuggly, but works for now.
+    bindings.push({
+      update:() => {
+        for (var key in this.attributes) {
+          var value = this.attributes[key];
+
+          if (typeof value === 'function') {
+            value = value(view.context);
+          }
+
+          controller.setAttribute(key, value);
+        }
+      }
+    })
 
     bindings.push(controller);
   }
@@ -47,22 +58,14 @@ export default class ComponentVNode {
     this.childNodes        = childNodes;
   }
 
-  createComponent(options = {}) {
-    return new this.controllerClass({
-      attributes          : this.attributes,
-      ...options
-    });
-  }
-
   freeze(options) {
-    var hydrators = [];
     var section;
+    var hydrators = [];
 
     if (this.controllerClass.freeze) {
-      section = NodeSection.create(this.controllerClass.freeze({
-        hydrators   : hydrators,
-        nodeFactory : options.nodeFactory
-      }));
+      var template = freeze(this.controllerClass, options.nodeFactory);
+      hydrators = template.hydrators;
+      section   = template.section;
     } else {
       section = FragmentSection.create();
     }

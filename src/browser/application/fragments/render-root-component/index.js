@@ -29,7 +29,7 @@ function create(app) {
       application: app
     });
 
-    app.element.appendChild(rootView.node);
+    app.element.appendChild(rootView.section.toFragment());
   }
 }
 

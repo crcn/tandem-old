@@ -98,5 +98,12 @@ export default class NodeSection {
     return new Marker(getPath(this._target));
   }
 
+  /**
+   */
+
+  clone() {
+    return new NodeSection(this.targetNode.cloneNode(true), this._nodeFactory);
+  }
+
   static create = create;
 }

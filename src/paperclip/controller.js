@@ -8,17 +8,28 @@ import { default as createTemplate } from './create-template';
 export default class ViewController extends CoreObject {
 
   /**
-   * only initialize the controller once node has
-   * been accessed.
    */
 
-  get section() {
-    return this.view.section;
+  constructor(properties) {
+    super(properties);
+    this.attributes = {};
+    this.observe(CallbackDispatcher.create(this._didChange.bind(this)));
+  }
+
+  set view(value) {
+    this._view = value;
+  }
+
+  setAttribute(key, value) {
+    this.attributes[key] = value;
+  }
+
+  getAttribute(key) {
+    return this.attributes[key];
   }
 
   get view() {
     if (this._view) return this._view;
-
     var template = this.constructor.template;
 
     // template source can be a string. Parse it if this is this case
@@ -27,8 +38,11 @@ export default class ViewController extends CoreObject {
     }
 
     this._view = template.createView(this);
-    this.observe(CallbackDispatcher.create(this._didChange.bind(this)));
-    return this.view;
+    return this._view;
+  }
+
+  get section() {
+    return this.view.section;
   }
 
   update() {

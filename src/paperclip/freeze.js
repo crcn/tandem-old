@@ -1,7 +1,8 @@
 import View from './view';
 import Template from './template';
 import Fragment from './vdom/fragment';
- 
+import { create as createSection } from './section';
+
 export default function freeze(vnode, options = {}) {
   var hydrators = [];
 
@@ -18,9 +19,11 @@ export default function freeze(vnode, options = {}) {
     nodeFactory : options.nodeFactory || document
   });
 
+  var section = createSection(templateNode);
+
   for (var hydrator of hydrators) {
     hydrator.prepare();
   }
 
-  return new Template(templateNode, hydrators);
+  return new Template(section, hydrators);
 }

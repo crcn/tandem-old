@@ -23,4 +23,14 @@ describe(__filename + '#', function() {
       })
     }).to.throwError();
   });
+
+  it('recycles views that have been disposed of', function() {
+    var tpl = createTemplate('hello {{name}}');
+    var view = tpl.createView({ name: 'jeff' });
+    view.dispose();
+    expect(tpl.createView({ name: 'joe' })).to.be(view);
+
+    // sanity. Ensure that pool properly drains
+    expect(tpl.createView({ name: 'jake' })).not.to.be(view);
+  });
 });

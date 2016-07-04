@@ -17,10 +17,14 @@ describe(__filename + '#', function() {
 
     class Repeat {
 
-      constructor({ view, attributes, childNodesTemplate }) {
+      constructor({ view, childNodesTemplate }) {
           this.view               = view;
-          this.attributes         = attributes;
+          this.attributes         = {};
           this.childNodesTemplate = childNodesTemplate;
+      }
+
+      setAttribute(key, value) {
+        this.attributes[key] = value;
       }
 
       update() {
@@ -28,7 +32,7 @@ describe(__filename + '#', function() {
         var { each, as }        = this.attributes;
         var childNodesTemplate  = this.childNodesTemplate;
 
-        each(context).forEach(function(item, index) {
+        each.forEach(function(item, index) {
           section.appendChild(childNodesTemplate.createView({
             [as]: item
           }).toFragment());
@@ -41,10 +45,6 @@ describe(__filename + '#', function() {
         item: {c=>c.item}
       </Repeat>
     }
-
-    var vnode = <Repeat each={c=>c.items} as='item'>
-      item: {c=>c.item}
-    </Repeat>;
 
     var c = SubController.create({ items: [1, 2, 3, 4 ]});
 

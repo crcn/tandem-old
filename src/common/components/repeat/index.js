@@ -1,12 +1,20 @@
 import _each from 'common/utils/object/each';
 
 export default class RepeatComponent {
-  constructor({ view, attributes, childNodesTemplate }) {
+  constructor({ view, childNodesTemplate }) {
     this.view               = view;
-    this.attributes         = attributes;
     this.childNodesTemplate = childNodesTemplate;
+    this.attributes         = {};
 
     this._children = [];
+  }
+
+  setAttribute(key, value) {
+    this.attributes[key] = value;
+  }
+
+  getAttribute(key) {
+    return this.attributes[key];
   }
 
   update() {
@@ -17,7 +25,7 @@ export default class RepeatComponent {
     var i = 0;
     var n = this._children.length;
 
-    _each(each(context), (item, key) => {
+    _each(each, (item, key) => {
       var child;
 
       var context = {

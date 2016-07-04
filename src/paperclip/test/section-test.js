@@ -13,7 +13,7 @@ describe(__filename + '#', function() {
 
     section.appendChild(freeze([1, 2, 3].map(function(int) {
       return <div>{int}</div>;
-    })).node);
+    })).section.toFragment());
 
     div.appendChild(section.toFragment());
     div.appendChild(document.createTextNode('hello'));

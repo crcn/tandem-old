@@ -5,7 +5,7 @@ export default function each(object, iterate) {
     }
   } else {
     for (var key in object) {
-      oterate(object[key], key, object);
+      iterate(object[key], key, object);
     }
   }
 }

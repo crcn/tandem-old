@@ -2,20 +2,21 @@ import { create as createSection } from './section';
 
 export default class View {
 
-  constructor(context, node, hydrators) {
+  constructor(context, section, hydrators, recycling = []) {
     this._context = context;
 
-    this._bindings = [];
+    this._bindings   = [];
+    this._recycling  = recycling;
 
     for (const hydrator of hydrators) {
       hydrator.hydrate({
-        node     : node,
-        context  : context,
+        section  : section,
+        view     : this,
         bindings : this._bindings
       });
     }
 
-    this._section = createSection(node);
+    this._section = section;
 
     this.update();
   }
@@ -43,6 +44,13 @@ export default class View {
   }
 
   /**
+   */
+
+  set context(context) {
+    this._context = context;
+  }
+
+  /**
    * updates the
    */
 
@@ -65,6 +73,6 @@ export default class View {
 
   dispose() {
     this.remove();
-    // recycle back to template
+    this._recycling.push(this);
   }
 }

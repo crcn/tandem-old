@@ -2,9 +2,8 @@ import { FactoryFragment } from 'common/fragments';
 import { ViewController, dom } from 'paperclip';
 
 class Hello extends ViewController {
-
   static template = <div>
-    { c => c.childNodes }
+    Hello {c=>c.attributes.name}
   </div>
 }
 
@@ -17,6 +16,8 @@ export default class RootEditorComponent extends ViewController {
         color: red;
       }
     `}</style>
+
+    <Hello name="jeff" />
   </div>;
 }
 

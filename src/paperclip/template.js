@@ -2,16 +2,28 @@ import View from './view';
 
 
 export default class Template {
-  constructor(node, hydrators) {
-    this._node      = node;
+  constructor(section, hydrators) {
+    this._section   = section;
     this._hydrators = hydrators;
+    this._recycling = [];
   }
-  
-  get node() {
-    return this._node;
+
+  get hydrators() {
+    return this._hydrators;
+  }
+
+  get section() {
+    return this._section;
   }
 
   createView(context = {}) {
-    return new View(context, this._node.cloneNode(true), this._hydrators);
+    var view = this._recycling.pop();
+    if (view) {
+      view.context = context;
+    } else {
+      view = new View(context, this._section.clone(), this._hydrators, this._recycling);
+    }
+
+    return view;
   }
 }

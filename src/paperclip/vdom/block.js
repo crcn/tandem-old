@@ -2,14 +2,14 @@ import create from 'common/class/utils/create';
 import NodeSection from '../section/node';
 
 class BlockBinding {
-  constructor(context, node, execute) {
-    this.context  = context;
+  constructor(view, node, execute) {
+    this.view     = view;
     this.node     = node;
     this.execute  = execute;
   }
 
   update() {
-    this.node.nodeValue = this.execute(this.context);
+    this.node.nodeValue = this.execute(this.view.context);
   }
 }
 
@@ -19,12 +19,12 @@ class BlockHydrator {
     this.execute = execute;
   }
 
-  prepare() {
+  prepare(section) {
     this._marker = this.section.createMarker();
   }
 
-  hydrate({ bindings, context, node }) {
-    bindings.push(new BlockBinding(context, this._marker.getNode(node), this.execute));
+  hydrate({ bindings, section, view }) {
+    bindings.push(new BlockBinding(view, this._marker.getNode(section.targetNode), this.execute));
   }
 }
 

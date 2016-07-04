@@ -95,7 +95,7 @@ export default class FragmentSection {
    */
 
   remove() {
-    var parent = this._nodeFactory.createElement('div');
+    var parent = this._nodeFactory.createDocumentFragment();
     for (var child of this.allChildNodes) {
       parent.appendChild(child);
     }
@@ -135,6 +135,18 @@ export default class FragmentSection {
       getPath(this._end),
       this._nodeFactory
     );
+  }
+
+  /**
+   */
+
+  clone() {
+    if (this.targetNode.nodeType !== 11) {
+      throw new Error('cannot currently clone fragment section that is attached to an element.');
+    }
+
+    var clone = this.targetNode.cloneNode(true);
+    return new FragmentSection(clone.firstChild, clone.lastChild, this._nodeFactory);
   }
 
   /**
