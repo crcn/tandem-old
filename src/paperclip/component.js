@@ -51,13 +51,6 @@ export class BaseComponent extends CoreObject {
 
 export class TemplateComponent extends BaseComponent {
 
-  /**
-   */
-
-  constructor(properties = {}) {
-    super(properties);
-  }
-
   static freezeNode(options) {
 
     var vnode = this.template;

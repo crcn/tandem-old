@@ -78,7 +78,9 @@ class NodeBinding {
   _onChange(value) {
     if (this.section._start) {
       this.section.removeChildNodes();
-      this.section.appendChild(value);
+      if (value) {
+        this.section.appendChild(value);
+      }
     } else {
       this.section.targetNode.nodeValue = value;
     }

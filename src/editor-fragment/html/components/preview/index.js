@@ -46,8 +46,8 @@ function createNodePreview(entity) {
 }
 
 export default class PreviewComponent extends TemplateComponent {
-  static template = <div>{createHTMLBinding('application.rootEntity', function(rootEntity) {
-    return createNodePreview(rootEntity).node;
+  static template = <div>{createHTMLBinding('attributes.entity', function(rootEntity) {
+    return rootEntity ? createNodePreview(rootEntity).node : void 0;
   })}</div>
 }
 
