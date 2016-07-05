@@ -24,12 +24,12 @@ class ComponentHydrator {
   hydrate({ view, section, bindings }) {
 
     var component = new this.componentVNode.componentClass({
-      parentView         : view,
+      application        : view.context.application,
       nodeFactory        : this._nodeFactory,
       childNodesTemplate : this.childNodesTemplate
     });
 
-    var childView = component.view = new View(component, this._marker.createSection(section.targetNode), this._hydrators);
+    var childView = component.view = new View(component, this._marker.createSection(section.targetNode), this._hydrators, [], view);
 
     // fuggly, but works for now.
     bindings.push({
@@ -44,9 +44,10 @@ class ComponentHydrator {
           component.setAttribute(key, value);
         }
       }
-    })
+    });
 
     bindings.push(component);
+    bindings.push(childView);
   }
 }
 

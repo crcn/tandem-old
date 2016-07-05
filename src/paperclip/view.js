@@ -2,11 +2,12 @@ import { create as createSection } from './section';
 
 export default class View {
 
-  constructor(context, section, hydrators, recycling = []) {
+  constructor(context, section, hydrators, recycling = [], parent) {
     this._context = context;
 
     this._bindings   = [];
     this._recycling  = recycling;
+    this.parent      = parent;
 
     for (const hydrator of hydrators) {
       hydrator.hydrate({
@@ -17,8 +18,6 @@ export default class View {
     }
 
     this._section = section;
-
-    this.update();
   }
 
   /**
@@ -48,6 +47,14 @@ export default class View {
 
   set context(context) {
     this._context = context;
+  }
+
+  /**
+   */
+
+  render() {
+    this.update();
+    return this.section.toFragment();
   }
 
   /**

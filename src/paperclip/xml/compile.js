@@ -13,7 +13,7 @@ function translate(ast) {
 function translateNodes(nodes) {
   return `[${nodes.map(translateNode).filter(function(node) {
     return node != void 0
-  })}]`;
+  }).join(',')}]`;
 }
 
 function translateNode(node) {
@@ -21,26 +21,17 @@ function translateNode(node) {
 
   if (typeof type !== 'string') {
     if (node.length === 1) return translateNode(node[0]);
-    return `create('fragment', ${
-      translateNodes(node)
-    })`;
+    return `create(${translateNodes(node)})`;
   } else if (type === 'element') {
     return `create(
-      'element',
       '${node[1]}',
       ${translateAttributes(node[2])},
       ${translateNodes(node[3])}
     )`;
   } else if (type === 'text') {
-    return `create(
-      'text',
-      "${node[1]}"
-    )`
+    return `'${node[1]}'`;
   } else if (type === 'block') {
-    return `create(
-      'block',
-      ${translateBlock(node[1])}
-    )`
+    return `${translateBlock(node[1])}`;
   }
 }
 

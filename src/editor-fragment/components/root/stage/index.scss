@@ -1,3 +1,10 @@
+@import 'editor-fragment/scss/variables';
+
 .m-editor-stage {
-  color: red;
+  color: $color-blue-1;
+  width: 50%;
+  height: 100%;
+  padding: 8px;
+  margin: 0px auto;
+  background-color: $color-blue-9;
 }

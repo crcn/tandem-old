@@ -2,6 +2,9 @@ import CoreObject from 'common/object';
 import observable from 'common/object/mixins/observable';
 import CallbackDispatcher from 'common/dispatchers/callback';
 import { default as Template } from './template';
+import { default as createVDOM } from './vdom/create';
+import { default as compileXMLtoJS } from './xml/compile';
+import { default as freeze } from './freeze';
 import { default as createTemplate } from './create-template';
 
 @observable
@@ -9,6 +12,19 @@ export class BaseComponent extends CoreObject {
   constructor(properties) {
     super(properties);
     this.attributes = {};
+  }
+
+  get section() {
+    console.log(this);
+    return this.view.section;
+  }
+
+  get(path) {
+    console.log(this.parent);
+  }
+
+  set(path, value) {
+
   }
 
   setAttribute(key, value) {
@@ -20,7 +36,14 @@ export class BaseComponent extends CoreObject {
   }
 
   update() {
-    // OVERRIDE ME
+    if (!this._initialized) {
+      this._initialized = true;
+      this.initialize();
+    }
+  }
+
+  initialize() {
+
   }
 }
 
@@ -29,43 +52,19 @@ export class TemplateComponent extends BaseComponent {
   /**
    */
 
-  constructor(properties) {
+  constructor(properties = {}) {
     super(properties);
-    this.observe(CallbackDispatcher.create(this._didChange.bind(this)));
-  }
-
-  // TODO get(key) { }
-
-  set view(value) {
-    this._view = value;
-  }
-
-  get view() {
-    if (this._view) return this._view;
-    var template = this.constructor.template;
-
-    // template source can be a string. Parse it if this is this case
-    if (!(template instanceof Template)) {
-      template = createTemplate(template);
-    }
-
-    this._view = template.createView(this);
-    return this._view;
-  }
-
-  get section() {
-    return this.view.section;
-  }
-
-  update() {
-    this.view.update();
   }
 
   static freeze(options) {
-    return this.template.freeze(options);
-  }
 
-  _didChange() {
-    this.view.update();
+    var vnode = this.template;
+
+    // template source can be a string. Parse it if this is this case
+    if (typeof vnode === 'string') {
+      vnode = compileXMLtoJS(vnode)(createVDOM);
+    }
+
+    return vnode.freeze(options);
   }
 }

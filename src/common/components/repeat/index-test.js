@@ -21,6 +21,7 @@ describe(__filename + '#', function() {
     </Repeat>);
 
     var view = tpl.createView([[1, 2], ['a', 'b'], ['111', '222']]);
+    view.update();
 
     expect(view.section.toString()).to.be('12ab111222');
   })

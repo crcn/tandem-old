@@ -1,7 +1,7 @@
 import './index.scss';
 
-import { FactoryFragment } from 'common/fragments';
-import { TemplateComponent, dom } from 'paperclip';
+import { ComponentFactoryFragment } from 'paperclip/fragments';
+import { TemplateComponent, dom, freeze } from 'paperclip';
 import StageComponent from './stage';
 
 export default class RootEditorComponent extends TemplateComponent {
@@ -12,4 +12,4 @@ export default class RootEditorComponent extends TemplateComponent {
   </div>;
 }
 
-export const fragment = FactoryFragment.create('rootComponentClass', RootEditorComponent);
+export const fragment = ComponentFactoryFragment.create('rootComponentClass', RootEditorComponent);

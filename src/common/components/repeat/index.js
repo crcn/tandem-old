@@ -29,7 +29,7 @@ export default class RepeatComponent extends BaseComponent {
       } else {
         child = childNodesTemplate.createView(context);
         this._children.push(child);
-        section.appendChild(child.toFragment());
+        section.appendChild(child.render());
       }
 
       i++;

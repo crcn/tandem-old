@@ -1,15 +1,23 @@
-
 import { BaseComponent } from 'paperclip';
+import PreviewComponent from 'editor-fragment'
 
 export default class RegisteredComponent extends BaseComponent {
+  initialize() {
+    var { ns } = this.attributes;
+    this._children = [];
 
-  constructor(properties) {
-    super(properties);
+    for (var fragmentFactory of this.application.fragmentDictionary.queryAll(ns)) {
+      var child = fragmentFactory.create({ application: this.application });
+      this._children.push(child);
+      this.section.appendChild(child.toFragment());
+    }
   }
 
   update() {
-    // update something
-    console.log('update it!', this.ns);
-    this.view.section.appendChild(document.createTextNode('some registered component'));
+    super.update();
+
+    for (var child of this._children) {
+      child.update();
+    }
   }
 }
