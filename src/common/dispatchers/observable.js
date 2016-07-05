@@ -30,8 +30,8 @@ export default class ObservableDispatcher {
     event.currentTarget = this._target;
 
     if (this._listeners) {
-      for (var listener of this._listeners) {
-        listener.dispatch(event);
+      for (var i = this._listeners.length; i--;) {
+        this._listeners[i].dispatch(event);
       }
     }
 

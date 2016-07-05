@@ -6,7 +6,7 @@ export default class TextVNode {
     this.nodeValue = String(value);
   }
 
-  freeze(options) {
+  freezeNode(options) {
     var textNode = options.nodeFactory.createTextNode(this.nodeValue);
     return textNode;
   }

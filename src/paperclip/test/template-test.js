@@ -5,7 +5,7 @@ describe(__filename + '#', function() {
 
   [
     ['<div />', {}, '<div></div>'],
-    // ['hello world', {}, 'hello world'],
+    ['hello world', {}, 'hello world'],
     ['hello {{name}}', { name: 'john' }, 'hello john'],
     ['hello {{firstName}} {{lastName}}', { firstName: 'billy', lastName: 'bob' }, 'hello billy bob']
   ].forEach(function([source, context, expectation]) {

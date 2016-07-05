@@ -20,9 +20,9 @@ describe(__filename + '#', function() {
 
     class Repeat {
 
-      constructor({ view, childNodesTemplate }) {
+      constructor({ view, attributes, childNodesTemplate }) {
           this.view               = view;
-          this.attributes         = {};
+          this.attributes         = Object.assign({}, attributes);
           this.childNodesTemplate = childNodesTemplate;
       }
 
@@ -49,7 +49,7 @@ describe(__filename + '#', function() {
       </Repeat>
     }
 
-    var c = freeze(<SubController items={[1, 2, 3, 4 ]} />);
+    var c = freeze(<SubController items={[1, 2, 3, 4]} />);
     var v = c.createView();
     v.render();
     expect(v.section.toString()).to.be('item: 1item: 2item: 3item: 4');

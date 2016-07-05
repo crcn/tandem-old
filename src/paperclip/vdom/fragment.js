@@ -6,11 +6,11 @@ export default class FragmentVNode {
     this.childNodes = childNodes || [];
   }
 
-  freeze(options) {
+  freezeNode(options) {
     var fragment = options.nodeFactory.createDocumentFragment();
 
     for (var child of this.childNodes) {
-      fragment.appendChild(child.freeze(options));
+      fragment.appendChild(child.freezeNode(options));
     }
 
     return fragment;

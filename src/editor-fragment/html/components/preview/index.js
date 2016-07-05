@@ -1,4 +1,4 @@
-import { BaseComponent } from 'paperclip';
+import { TemplateComponent, createHTMLBinding, dom } from 'paperclip';
 import { ComponentFactoryFragment } from 'paperclip/fragments';
 import sift from 'sift';
 
@@ -31,27 +31,24 @@ class HTMLElementPreview extends HTMLNodePreview {
     return element;
   }
 }
-
+class HTMLTextPreview extends HTMLNodePreview {
+  createNode() {
+    var node = document.createTextNode(this.entity.nodeValue);
+    return node;
+  }
+}
 
 function createNodePreview(entity) {
   switch(entity.type) {
     case 'htmlElement': return new HTMLElementPreview(entity);
-    case 'htmlText': return new HTMLTextPreview(entity);
+    case 'htmlText'   : return new HTMLTextPreview(entity);
   }
 }
 
-
-
-export default class PreviewComponent extends BaseComponent {
-  initialize() {
-    super.initialize();
-    var rootEntity = this.application.rootEntity;
-    this.section.appendChild(createNodePreview(rootEntity).node);
-  }
-
-  update() {
-    super.update();
-  }
+export default class PreviewComponent extends TemplateComponent {
+  static template = <div>{createHTMLBinding('application.rootEntity', function(rootEntity) {
+    return createNodePreview(rootEntity).node;
+  })}</div>
 }
 
 export const fragment = ComponentFactoryFragment.create('components/preview', PreviewComponent);

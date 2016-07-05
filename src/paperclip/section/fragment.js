@@ -54,7 +54,7 @@ export default class FragmentSection {
 
     var cnode = this._start.nextSibling;
     var childNodes = [];
-    while(cnode && cnode != this._end) {
+    while(cnode && cnode !== this._end) {
       childNodes.push(cnode);
       cnode = cnode.nextSibling;
     }
@@ -68,6 +68,12 @@ export default class FragmentSection {
 
   toString() {
     return this.innerHTML;
+  }
+
+  removeChildNodes() {
+    for (var child of this.childNodes) {
+      child.parentNode.removeChild(child);
+    }
   }
 
   get innerHTML() {

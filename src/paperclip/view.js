@@ -20,6 +20,10 @@ export default class View {
 
   }
 
+  toString() {
+    return this.section.toString();
+  }
+
   /**
    */
 

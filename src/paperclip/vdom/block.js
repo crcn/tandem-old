@@ -34,7 +34,7 @@ export default class BlockVNode {
     this.execute = execute;
   }
 
-  freeze({ hydrators }) {
+  freezeNode({ hydrators }) {
     var node = document.createTextNode('');
     hydrators.push(new BlockHydrator(new NodeSection(node), this.execute));
     return node;

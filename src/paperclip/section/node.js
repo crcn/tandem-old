@@ -43,6 +43,11 @@ export default class NodeSection {
     return this._target;
   }
 
+  set targetNode(value) {
+    this.remove();
+    this._target = value;
+  }
+
   get visible() {
     return !this._placeholderNode;
   }

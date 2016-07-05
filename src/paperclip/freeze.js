@@ -10,7 +10,7 @@ export default function freeze(vnode, options = {}) {
     vnode = Fragment.create(vnode);
   }
 
-  var templateNode = vnode.freeze({
+  var templateNode = vnode.freezeNode({
     hydrators   : hydrators,
 
     // creates new nodes -- decoupled from the DOM so that

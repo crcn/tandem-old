@@ -32,10 +32,3 @@ function create(app) {
     app.element.appendChild(rootComponent.render());
   }
 }
-
-/*
-
-class Controller extends ViewContoller {
-  compute()
-}
-*/

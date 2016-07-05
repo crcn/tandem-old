@@ -11,7 +11,17 @@ import { default as createTemplate } from './create-template';
 export class BaseComponent extends CoreObject {
   constructor(properties) {
     super(properties);
-    this.attributes = {};
+  }
+
+  set attributes(value) {
+    this._attributes = Object.assign({}, value);
+  }
+
+  get attributes() {
+    if (!this._attributes) {
+      this._attributes = {};
+    }
+    return this._attributes;
   }
 
   get section() {
@@ -20,6 +30,7 @@ export class BaseComponent extends CoreObject {
 
   setAttribute(key, value) {
     this.attributes[key] = value;
+    this.update();
   }
 
   getAttribute(key) {
@@ -47,7 +58,7 @@ export class TemplateComponent extends BaseComponent {
     super(properties);
   }
 
-  static freeze(options) {
+  static freezeNode(options) {
 
     var vnode = this.template;
 
@@ -56,6 +67,6 @@ export class TemplateComponent extends BaseComponent {
       vnode = compileXMLtoJS(vnode)(createVNode);
     }
 
-    return vnode.freeze(options);
+    return vnode.freezeNode(options);
   }
 }
