@@ -21,9 +21,14 @@ function observe(target, onChange) {
 function observeProperty(target, path, listener) {
   var oldValue;
   var listeners = [];
+  var observer = {};
 
   function onChange() {
+    reset();
+    listener();
+  }
 
+  function reset() {
     listeners.forEach(function(listener) {
       listener.dispose();
     });
@@ -39,24 +44,32 @@ function observeProperty(target, path, listener) {
         }
     }
 
-
-    listener(ctarget);
+    observer.value = ctarget;
   }
 
-  onChange();
+  reset();
+
+  return observer;
 }
 
 class NodeBinding {
-  constructor(view, section, property) {
-    this.view     = view;
-    this.section  = section;
-    this.property = property;
+  constructor(view, section, properties, map) {
+    this.view       = view;
+    this.section    = section;
+    this.properties = properties;
+    this.map        = map;
 
-    observeProperty(view, ['context', ...property.split('.')], this._onChange.bind(this));
+    this._observers = properties.map((property) => {
+      return observeProperty(view, ['context', ...property.split('.')], this._onChange.bind(this));
+    });
+
+    this._onChange();
   }
 
-  _onChange(newValue) {
-    this.section.targetNode.nodeValue = newValue || '';
+  _onChange() {
+    this.section.targetNode.nodeValue = this.map.apply(this, this._observers.map(function(observer) {
+      return observer.value;
+    }))
   }
 
   update() {
@@ -65,9 +78,10 @@ class NodeBinding {
 }
 
 class NodeHydrator {
-  constructor(property, section) {
-    this.property = property;
-    this.section  = section;
+  constructor(properties, map, section) {
+    this.properties = properties;
+    this.map        = map;
+    this.section    = section;
   }
 
   prepare() {
@@ -75,17 +89,25 @@ class NodeHydrator {
   }
 
   hydrate({ view, bindings }) {
-    bindings.push(new NodeBinding(view, this._marker.createSection(view.section.targetNode), this.property));
+    bindings.push(new NodeBinding(view, this._marker.createSection(view.section.targetNode), this.properties, this.map));
   }
 }
 
-export default function createBinding(property) {
+export default function createBinding(...args) {
+
+  if (typeof args[args.length - 1] === 'function') {
+    var map = args.pop();
+  } else {
+    var map = function(value) {
+      return value;
+    }
+  }
 
 
   return {
     freeze({ hydrators }) {
       var node = document.createTextNode('');
-      hydrators.push(new NodeHydrator(property, NodeSection.create(node)));
+      hydrators.push(new NodeHydrator(args, map, NodeSection.create(node)));
       return node;
     }
   };

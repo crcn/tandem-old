@@ -16,7 +16,6 @@ export default function jsx(name, attributes, ...childNodes) {
   }
 
   function mapNode(node) {
-    console.log(node);
     return /string|number|boolean/.test(typeof node) ? Text.create(node) : typeof node === 'function' ? Block.create(node) : node;
   }
 
