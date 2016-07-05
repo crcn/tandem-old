@@ -1,6 +1,11 @@
 
 export default class Attributes {
-  static create(properties) {
 
+  constructor(properties) {
+    Object.assign(this, properties);
+  }
+
+  static create(properties) {
+    return new Attributes(properties);
   }
 }

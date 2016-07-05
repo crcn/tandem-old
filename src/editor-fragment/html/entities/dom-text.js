@@ -1,10 +1,10 @@
 import DisplayEntity from 'common/entities/display';
 
-export default class DOMElementEntity extends DisplayEntity {
+export default class DOMTextEntity extends DisplayEntity {
   constructor(properties) {
     super({
-      type: 'htmlElement',
-      nodeType: 1,
+      type: 'htmlText',
+      nodeType: 3,
       ...properties
     });
   }

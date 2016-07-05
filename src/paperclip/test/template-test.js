@@ -1,4 +1,4 @@
-import { freeze, compileXMLtoJS, dom } from '../index';
+import { freeze, compileXMLtoJS, createVNode } from '../index';
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {
@@ -11,13 +11,13 @@ describe(__filename + '#', function() {
   ].forEach(function([source, context, expectation]) {
     it(`can parse ${source}`, function() {
       var div = document.createElement('div');
-      div.appendChild(freeze(compileXMLtoJS(source)(dom)).createView(context).render());
+      div.appendChild(freeze(compileXMLtoJS(source)(createVNode)).createView(context).render());
       expect(div.innerHTML).to.be(expectation);
     });
   });
 
   it('recycles views that have been disposed of', function() {
-    var tpl = freeze(compileXMLtoJS('hello {{jeff}}')(dom));
+    var tpl = freeze(compileXMLtoJS('hello {{jeff}}')(createVNode));
     var view = tpl.createView({ name: 'jeff' });
     view.dispose();
     expect(tpl.createView({ name: 'joe' })).to.be(view);

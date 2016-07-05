@@ -8,6 +8,7 @@ export default class View {
     this._bindings   = [];
     this._recycling  = recycling;
     this.parent      = parent;
+    this._section = section;
 
     for (const hydrator of hydrators) {
       hydrator.hydrate({
@@ -17,7 +18,6 @@ export default class View {
       });
     }
 
-    this._section = section;
   }
 
   /**

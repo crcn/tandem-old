@@ -5,7 +5,7 @@ import Text from './text';
 import Block from './block';
 import flatten from 'lodash/array/flattenDeep';
 
-export default function dom(name, attributes, ...childNodes) {
+export default function jsx(name, attributes, ...childNodes) {
 
   var factory;
 
@@ -16,6 +16,7 @@ export default function dom(name, attributes, ...childNodes) {
   }
 
   function mapNode(node) {
+    console.log(node);
     return /string|number|boolean/.test(typeof node) ? Text.create(node) : typeof node === 'function' ? Block.create(node) : node;
   }
 
@@ -24,4 +25,15 @@ export default function dom(name, attributes, ...childNodes) {
   }
 
   return factory.create(name, attributes, flatten(childNodes).map(mapNode));
+}
+
+export function createVNode(type, ...rest) {
+  var factory = {
+    'element': Element,
+    'text': Text,
+    'fragment': Fragment,
+    'block': Block
+  }[type];
+
+  return factory.create(...rest);
 }

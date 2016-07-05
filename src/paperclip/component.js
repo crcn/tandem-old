@@ -2,7 +2,7 @@ import CoreObject from 'common/object';
 import observable from 'common/object/mixins/observable';
 import CallbackDispatcher from 'common/dispatchers/callback';
 import { default as Template } from './template';
-import { default as createVDOM } from './vdom/create';
+import { createVNode } from './vdom/create';
 import { default as compileXMLtoJS } from './xml/compile';
 import { default as freeze } from './freeze';
 import { default as createTemplate } from './create-template';
@@ -15,16 +15,7 @@ export class BaseComponent extends CoreObject {
   }
 
   get section() {
-    console.log(this);
     return this.view.section;
-  }
-
-  get(path) {
-    console.log(this.parent);
-  }
-
-  set(path, value) {
-
   }
 
   setAttribute(key, value) {
@@ -62,7 +53,7 @@ export class TemplateComponent extends BaseComponent {
 
     // template source can be a string. Parse it if this is this case
     if (typeof vnode === 'string') {
-      vnode = compileXMLtoJS(vnode)(createVDOM);
+      vnode = compileXMLtoJS(vnode)(createVNode);
     }
 
     return vnode.freeze(options);

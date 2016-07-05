@@ -21,17 +21,18 @@ function translateNode(node) {
 
   if (typeof type !== 'string') {
     if (node.length === 1) return translateNode(node[0]);
-    return `create(${translateNodes(node)})`;
+    return `create('fragment', ${translateNodes(node)})`;
   } else if (type === 'element') {
     return `create(
+      'element',
       '${node[1]}',
       ${translateAttributes(node[2])},
       ${translateNodes(node[3])}
     )`;
   } else if (type === 'text') {
-    return `'${node[1]}'`;
+    return `create('text', '${node[1]}')`;
   } else if (type === 'block') {
-    return `${translateBlock(node[1])}`;
+    return `create('block', ${translateBlock(node[1])})`;
   }
 }
 

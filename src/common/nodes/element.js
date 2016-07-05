@@ -1,15 +1,11 @@
 import Node from './base';
 import Attributes from './attributes';
 
-export default class Element extends Node {
-  constructor(name, attributes, childNodes = []) {
-    super();
 
-    Object.assign(this, {
-      nodeName: name,
-      attributes,
-      childNodes
-    });
+export default class Element extends Node {
+  constructor(properties) {
+    super();
+    Object.assign(this, properties);
   }
 
   set attributes(value) {
@@ -18,6 +14,29 @@ export default class Element extends Node {
 
   get attributes() {
     return this._attributes;
+  }
+
+  set childNodes(value) {
+    console.log(value);
+    this._childNodes = value;
+    for (var child of value) this._linkChild(value);
+  }
+
+  get childNodes() {
+
+    if (!this._childNodes) {
+      this._childNodes = [];
+    }
+
+    return this._childNodes;
+  }
+
+  filter(filter, ret = []) {
+    if (filter(this)) ret.push(this);
+    for (var child of this.childNodes) {
+      nodes.pchild.filter(child, ret);
+    }
+    return ret;
   }
 
   getAttribute(key) {
