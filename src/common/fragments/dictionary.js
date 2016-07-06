@@ -1,5 +1,6 @@
 import Collection from 'common/object/collection';
 import create from 'common/class/utils/create';
+import flatten from 'lodash/array/flattenDeep';
 
 export default class FragmentDictionary {
 
@@ -17,6 +18,7 @@ export default class FragmentDictionary {
   }
 
   register(...fragments) {
+    fragments = flatten(fragments);
     this._fragments.push(...fragments);
 
     for (var fragment of fragments) {

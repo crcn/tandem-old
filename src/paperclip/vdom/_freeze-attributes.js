@@ -75,6 +75,7 @@ export default function freeze(attributes, options, createAttributesHydrator) {
     staticAttributes[key] = value;
   }
 
+  // TODO - check for attribute hydrators
   if (Object.keys(dynamicAttributes).length) {
     attributeHydrators.push(new ScriptAttributeHydrator(dynamicAttributes));
   }

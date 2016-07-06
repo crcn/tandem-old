@@ -45,7 +45,8 @@ export default class BaseApplication extends CoreObject {
 
   _registerFragments() {
     this.fragmentDictionary.register(
-      loggerFragment
+      loggerFragment,
+      ...(this.fragments || [])
     );
   }
 

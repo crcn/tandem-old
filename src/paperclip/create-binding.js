@@ -39,10 +39,14 @@ function observeProperty(target, path, listener) {
     var ctarget = target;
 
     for (var segment of path) {
-        if (ctarget) {
-          listeners.push(observe(ctarget, onChange));
-          ctarget = ctarget[segment];
-        }
+      if (ctarget) {
+        listeners.push(observe(ctarget, onChange));
+        ctarget = ctarget[segment];
+      }
+    }
+
+    if (ctarget) {
+      listeners.push(observe(ctarget, onChange));
     }
 
     observer.value = ctarget;
@@ -117,14 +121,20 @@ class AttributeBinding {
     this.view = view;
     this.ref  = ref;
     this.key  = key;
-    this._onChange(observeProperties(view, properties, map, this._onChange.bind(this)));
+    this.properties = properties;
+    this.map = map;
   }
 
   _onChange(value) {
     this.ref.setAttribute(this.key, value);
   }
 
-  update() { }
+  update() {
+    if (!this._initialized) {
+      this._initialized = true;
+      this._onChange(observeProperties(this.view, this.properties, this.map, this._onChange.bind(this)));
+    }
+  }
 }
 
 class AttributeHydrator {
@@ -134,9 +144,7 @@ class AttributeHydrator {
     this.map        = map;
   }
 
-  prepare() {
-
-  }
+  prepare() { }
 
   hydrate({ view, ref, bindings }) {
     bindings.push(new AttributeBinding(view, ref, this.key, this.properties, this.map));
@@ -144,6 +152,7 @@ class AttributeHydrator {
 }
 
 function createBinding(type, ...args) {
+
   if (typeof args[args.length - 1] === 'function') {
     var map = args.pop();
   } else {
@@ -166,7 +175,6 @@ function createBinding(type, ...args) {
       }
 
       hydrators.push(new NodeHydrator(args, map, section));
-
       return section.toFragment();
     }
   };

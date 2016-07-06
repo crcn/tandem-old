@@ -1,4 +1,3 @@
-
 import CoreObject from 'common/object';
 
 export default class Node extends CoreObject {

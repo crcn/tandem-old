@@ -5,7 +5,12 @@
   position: relative;
   width: 50%;
   height: 100%;
-  padding: 8px;
   margin: 0px auto;
   background-color: $color-blue-9;
+
+  & .m-stage-tool {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 }

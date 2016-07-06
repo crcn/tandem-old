@@ -1,7 +1,6 @@
 import { ApplicationFragment } from 'common/application/fragments';
 
-import { fragment as previewComponentFragment } from './components/preview';
-import { fragment as originToolFragment } from './stage-tools/origin';
+import * as fragments from './fragments';
 
 import DOMElementEntity from './entities/dom-element';
 import DOMTextEntity from './entities/dom-text';
@@ -9,18 +8,15 @@ import TypeDispatcher from 'common/dispatchers/type';
 import compileXMLtoJS from 'paperclip/xml/compile';
 import { diff, patch } from 'common/utils/node/diff';
 
-export default ApplicationFragment.create(
-  'html',
-  create
-);
+export default [
+  ApplicationFragment.create(
+    'html',
+    create
+  ),
+  Object.values(fragments)
+];
 
 function create(app) {
-  app.fragmentDictionary.register(
-    previewComponentFragment,
-
-    // tools
-    originToolFragment
-  );
 
   app.rootEntity = DOMElementEntity.create({
     name: 'div',

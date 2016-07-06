@@ -24,6 +24,7 @@ describe(__filename + '#', function() {
     var div = freeze(<div style={createTextBinding('color', function(color) {
       return `color:${color}`;
     })}></div>).create(context);
+    div.render();
     expect(div.toString()).to.be('<div style="color:red"></div>');
     context.setProperties({ color: 'blue' });
     expect(div.toString()).to.be('<div style="color:blue"></div>');

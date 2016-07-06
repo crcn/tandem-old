@@ -11,6 +11,7 @@ const d = [];
 
 export default class OriginToolComponent extends TemplateComponent {
   static template = <div class='m-origin-tool'>
+    {createTextBinding('application.selection.length')}
     <svg style={ c => {return {
       left: x2,
       top : y2,
