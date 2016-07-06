@@ -1,5 +1,5 @@
-export { default as Template } from './template';
-export { default as createTemplate } from './create-template';
+export { default as ViewFactory } from './view-factory';
+export { default as createViewFactory } from './create-view-factory';
 export { TemplateComponent, BaseComponent } from './component';
 export { default as freeze } from './freeze';
 export { default as dom, createVNode } from './vdom/create';

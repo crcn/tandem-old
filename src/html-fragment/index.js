@@ -1,5 +1,8 @@
 import { ApplicationFragment } from 'common/application/fragments';
+
 import { fragment as previewComponentFragment } from './components/preview';
+import { fragment as originToolFragment } from './stage-tools/origin';
+
 import DOMElementEntity from './entities/dom-element';
 import DOMTextEntity from './entities/dom-text';
 import TypeDispatcher from 'common/dispatchers/type';
@@ -13,7 +16,10 @@ export default ApplicationFragment.create(
 
 function create(app) {
   app.fragmentDictionary.register(
-    previewComponentFragment
+    previewComponentFragment,
+
+    // tools
+    originToolFragment
   );
 
   app.rootEntity = DOMElementEntity.create({

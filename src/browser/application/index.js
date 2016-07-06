@@ -1,6 +1,7 @@
 import BaseApplication from 'common/application/base';
 import renderRootComponentFragment from './fragments/render-root-component'
 import editorFragment from 'editor-fragment';
+import htmlFragment from 'html-fragment';
 import Runloop from 'common/runloop';
 
 export default class BrowserApplication extends BaseApplication {
@@ -16,7 +17,8 @@ export default class BrowserApplication extends BaseApplication {
 
     this.fragmentDictionary.register(
       renderRootComponentFragment,
-      editorFragment
+      editorFragment,
+      htmlFragment
     );
   }
 }

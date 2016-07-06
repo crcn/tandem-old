@@ -27,7 +27,7 @@ export default class RepeatComponent extends BaseComponent {
         Object.assign(child.context, context);
         child.update();
       } else {
-        child = childNodesTemplate.createView(context);
+        child = childNodesTemplate.create(context);
         this._children.push(child);
         section.appendChild(child.render());
       }

@@ -11,19 +11,19 @@ describe(__filename + '#', function() {
   ].forEach(function([source, context, expectation]) {
     it(`can parse ${source}`, function() {
       var div = document.createElement('div');
-      div.appendChild(freeze(compileXMLtoJS(source)(createVNode)).createView(context).render());
+      div.appendChild(freeze(compileXMLtoJS(source)(createVNode)).create(context).render());
       expect(div.innerHTML).to.be(expectation);
     });
   });
 
   it('recycles views that have been disposed of', function() {
     var tpl = freeze(compileXMLtoJS('hello {{jeff}}')(createVNode));
-    var view = tpl.createView({ name: 'jeff' });
+    var view = tpl.create({ name: 'jeff' });
     view.dispose();
-    expect(tpl.createView({ name: 'joe' })).to.be(view);
+    expect(tpl.create({ name: 'joe' })).to.be(view);
 
     // sanity. Ensure that pool properly drains
-    expect(tpl.createView({ name: 'jake' })).not.to.be(view);
+    expect(tpl.create({ name: 'jake' })).not.to.be(view);
   });
 
   it('can pass a registered component when freezing', function() {
@@ -40,7 +40,7 @@ describe(__filename + '#', function() {
       }
     });
 
-    var view = tpl.createView();
+    var view = tpl.create();
     view.render();
     expect(view.toString()).to.be('hello custom component!');
   })

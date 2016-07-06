@@ -11,7 +11,7 @@ describe(__filename + '#', function() {
 
   it('can bind to a simple property', function() {
     var context = ObservableObject.create({ name: 'jake' });
-    var div = freeze(<div>hello {createTextBinding('name')}</div>).createView(context);
+    var div = freeze(<div>hello {createTextBinding('name')}</div>).create(context);
     div.render();
     expect(div.toString()).to.be('<div>hello jake</div>');
     context.setProperties({ name: 'joe' });
@@ -23,7 +23,7 @@ describe(__filename + '#', function() {
     var context = ObservableObject.create({ color: 'red' });
     var div = freeze(<div style={createTextBinding('color', function(color) {
       return `color:${color}`;
-    })}></div>).createView(context);
+    })}></div>).create(context);
     expect(div.toString()).to.be('<div style="color:red"></div>');
     context.setProperties({ color: 'blue' });
     expect(div.toString()).to.be('<div style="color:blue"></div>');
@@ -42,7 +42,7 @@ describe(__filename + '#', function() {
     }
 
     var context = ObservableObject.create({ text: 'world' });
-    var view = freeze(<HelloComponent text={createTextBinding('text')} />).createView(context);
+    var view = freeze(<HelloComponent text={createTextBinding('text')} />).create(context);
     expect(view.toString()).to.be('');
     view.render();
     expect(view.toString()).to.be('hello world');
@@ -58,7 +58,7 @@ describe(__filename + '#', function() {
 
     var view = freeze(createHTMLBinding('node', function(node) {
       return node;
-    })).createView(context);
+    })).create(context);
 
     view.render();
 

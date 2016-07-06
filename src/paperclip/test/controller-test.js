@@ -13,7 +13,7 @@ describe(__filename + '#', function() {
       name: 'john'
     };
 
-    var c = freeze(<SubController name={c=>c.name}/>).createView(context);
+    var c = freeze(<SubController name={c=>c.name}/>).create(context);
     c.update();
     expect(c.section.toString()).to.be('<span>hello john</span>');
     context.name = 'jeff';

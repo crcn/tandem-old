@@ -5,7 +5,7 @@ export class ComponentFactoryFragment extends FactoryFragment {
   constructor(ns, Component) {
     super(ns, {
       create(...args) {
-        return freeze(<Component />).createView(...args);
+        return freeze(<Component />).create(...args);
       }
     })
   }

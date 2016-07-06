@@ -1,6 +1,6 @@
 import View from './view';
 
-export default class Template {
+export default class ViewFactory {
   constructor({ section, hydrators }) {
 
     this._section   = section;
@@ -16,7 +16,7 @@ export default class Template {
     return this._section;
   }
 
-  createView(context = {}, options = {}) {
+  create(context = {}, options = {}) {
     var view = this._recycling.pop();
     if (view) {
       view.context = context;

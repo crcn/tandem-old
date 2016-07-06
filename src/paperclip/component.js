@@ -1,11 +1,10 @@
 import CoreObject from 'common/object';
 import observable from 'common/object/mixins/observable';
 import CallbackDispatcher from 'common/dispatchers/callback';
-import { default as Template } from './template';
+import { default as Template } from './view-factory';
 import { createVNode } from './vdom/create';
 import { default as compileXMLtoJS } from './xml/compile';
 import { default as freeze } from './freeze';
-import { default as createTemplate } from './create-template';
 
 @observable
 export class BaseComponent extends CoreObject {

@@ -11,7 +11,7 @@ describe(__filename + '#', function() {
 
     var c = freeze(<SubController name='joe' />);
 
-    var v = c.createView();
+    var v = c.create();
     v.render();
     expect(v.section.toString()).to.be(`<div class=\"some-class\">hello joe</div>`);
   });
@@ -36,7 +36,7 @@ describe(__filename + '#', function() {
         var childNodesTemplate  = this.childNodesTemplate;
 
         each.forEach(function(item, index) {
-          section.appendChild(childNodesTemplate.createView({
+          section.appendChild(childNodesTemplate.create({
             [as]: item
           }).render());
         });
@@ -50,7 +50,7 @@ describe(__filename + '#', function() {
     }
 
     var c = freeze(<SubController items={[1, 2, 3, 4]} />);
-    var v = c.createView();
+    var v = c.create();
     v.render();
     expect(v.section.toString()).to.be('item: 1item: 2item: 3item: 4');
   });
