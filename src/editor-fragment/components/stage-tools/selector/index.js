@@ -4,7 +4,6 @@ import { ComponentFactoryFragment } from 'paperclip/fragments';
 
 export default class SelectorToolComponent extends TemplateComponent {
   static template = <div class='m-selector-tool'>
-    Selector!
   </div>
 }
 

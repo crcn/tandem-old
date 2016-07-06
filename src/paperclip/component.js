@@ -12,6 +12,10 @@ export class BaseComponent extends CoreObject {
     super(properties);
   }
 
+  addEventListener(event, listener) {
+    throw new Error('event listeners currently not supported in components');
+  }
+
   set attributes(value) {
     this._attributes = Object.assign({}, value);
   }

@@ -37,6 +37,8 @@ function create(app) {
 
   app.bus.observe(TypeDispatcher.create('setSource', {
     dispatch(event) {
+
+      // TODO: this is temporary code
       var newEntity = compileXMLtoJS(event.source)(function(type) {
         switch(type) {
           case 'element': return new DOMElementEntity({

@@ -7,7 +7,12 @@ export default class RepeatComponent extends BaseComponent {
     this._children = [];
   }
 
+  setAttribute(key, value) {
+    super.setAttribute(key, value);
+  }
+
   update() {
+    super.update();
     var { each, as }       = this.attributes;
     var { context, section }  = this.view;
     var childNodesTemplate = this.childNodesTemplate;
@@ -16,6 +21,7 @@ export default class RepeatComponent extends BaseComponent {
     var n = this._children.length;
 
     _each(each, (item, key) => {
+
       var child;
 
       var context = {
@@ -27,7 +33,7 @@ export default class RepeatComponent extends BaseComponent {
         Object.assign(child.context, context);
         child.update();
       } else {
-        child = childNodesTemplate.create(context);
+        child = childNodesTemplate.create(context, { parent: this.view });
         this._children.push(child);
         section.appendChild(child.render());
       }

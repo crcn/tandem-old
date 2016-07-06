@@ -7,7 +7,8 @@ class ScriptAttributesBinding {
 
   update() {
     for (var key in this.scriptAttributes) {
-      this.ref.setAttribute(key, this.scriptAttributes[key](this.view.context));
+      var value = this.scriptAttributes[key];
+      this.ref.setAttribute(key, value(this.view.context));
     }
   }
 }
@@ -26,10 +27,30 @@ class ScriptAttributeHydrator {
   }
 }
 
+class EventListenerHydrator {
+  constructor(attributes) {
+    this.attributes = attributes;
+  }
+
+  prepare() {
+
+  }
+
+  hydrate({ view, ref }) {
+    for (let key in this.attributes) {
+      let listener = this.attributes[key];
+      ref.addEventListener(key.substr(2), (event) => {
+        listener(event, view);
+      });
+    }
+  }
+}
+
 export default function freeze(attributes, options, createAttributesHydrator) {
   var attributeHydrators = [];
   var staticAttributes   = {};
   var dynamicAttributes  = {};
+  var eventListenerAttributes = {};
 
   // todo - check for script attributes
   for (var key in attributes) {
@@ -43,7 +64,11 @@ export default function freeze(attributes, options, createAttributesHydrator) {
     }
 
     if (typeof value === 'function') {
-      dynamicAttributes[key] = value;
+      if (/^on/.test(key)) {
+        eventListenerAttributes[key] = value;
+      } else {
+        dynamicAttributes[key] = value;
+      }
       continue;
     }
 
@@ -52,6 +77,10 @@ export default function freeze(attributes, options, createAttributesHydrator) {
 
   if (Object.keys(dynamicAttributes).length) {
     attributeHydrators.push(new ScriptAttributeHydrator(dynamicAttributes));
+  }
+
+  if (Object.keys(eventListenerAttributes).length) {
+    attributeHydrators.push(new EventListenerHydrator(eventListenerAttributes));
   }
 
   return {

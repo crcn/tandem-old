@@ -10,14 +10,7 @@ const length = 100;
 const d = [];
 
 export default class OriginToolComponent extends TemplateComponent {
-
-  initialize() {
-    super.initialize();
-    console.log('update this', this.application);
-  }
-
   static template = <div class='m-origin-tool'>
-  Origin!
     <svg style={ c => {return {
       left: x2,
       top : y2,

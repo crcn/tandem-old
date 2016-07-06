@@ -8,6 +8,14 @@ export default class Element extends Node {
     Object.assign(this, properties);
   }
 
+  flatten(nodes = []) {
+    nodes.push(this);
+    this.childNodes.forEach(function(childNode) {
+      childNode.flatten(nodes);
+    });
+    return nodes;
+  }
+
   set attributes(value) {
     this._attributes = Attributes.create(value);
   }
