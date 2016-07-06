@@ -1,4 +1,4 @@
-import create from 'common/class/utils/create';
+import create from 'common/utils/class/create';
 import assertPropertyExists from 'common/utils/assert/property-exists';
 
 export class Fragment {

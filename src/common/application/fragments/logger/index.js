@@ -1,4 +1,4 @@
-import create from 'common/class/utils/create';
+import create from 'common/utils/class/create';
 import { ApplicationFragment } from '../index';
 
 export default ApplicationFragment.create(

@@ -1,4 +1,4 @@
-import create from 'common/class/utils/create';
+import create from 'common/utils/class/create';
 import Scanner from './scanner';
 import createToken from './create-token';
 import { SPACE, TAB, NEW_LINE, TEXT } from './token-types';

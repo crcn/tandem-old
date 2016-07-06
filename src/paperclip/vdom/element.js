@@ -1,4 +1,4 @@
-import create from 'common/class/utils/create';
+import create from 'common/utils/class/create';
 import NodeSection from '../section/node';
 import _freezeAttributes from './_freeze-attributes';
 import ComponentVNode from './component';

@@ -1,5 +1,5 @@
 import Collection from 'common/object/collection';
-import create from 'common/class/utils/create';
+import create from 'common/utils/class/create';
 import flatten from 'lodash/array/flattenDeep';
 
 export default class FragmentDictionary {

@@ -1,4 +1,4 @@
-import create from 'common/class/utils/create';
+import create from 'common/utils/class/create';
 
 class PropertyObserver {
   constructor(target, property, listener) {
@@ -28,7 +28,7 @@ export default class Observer {
 
     return {
       dispose() {
-        
+
       }
     }
   }

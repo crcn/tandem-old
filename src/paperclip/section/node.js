@@ -1,4 +1,4 @@
-import create from 'common/class/utils/create';
+import create from 'common/utils/class/create';
 import getPath from 'common/utils/node/get-path';
 import getNode from 'common/utils/node/get-node';
 

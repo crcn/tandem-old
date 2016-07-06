@@ -1,5 +1,5 @@
 import rAF from 'common/utils/next-tick';
-import create from 'common/class/utils/create';
+import create from 'common/utils/class/create';
 
 /* istanbul ignore next */
 if (process.browser) {

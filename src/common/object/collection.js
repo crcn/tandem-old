@@ -1,4 +1,4 @@
-import createFactory from 'common/class/utils/create-factory';
+import createFactory from 'common/utils/class/create-factory';
 
 function Collection(properties = {}) {
   Object.assign(this, properties);
