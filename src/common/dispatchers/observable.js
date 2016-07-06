@@ -4,6 +4,8 @@ export default class ObservableDispatcher {
 
   constructor(target) {
     this._target = target || this;
+
+    this._listeners = [];
   }
 
   get target() {
@@ -11,16 +13,32 @@ export default class ObservableDispatcher {
   }
 
   observe(listener) {
-    if (!this._listeners) {
-      this._listeners = [];
+
+    var listeners;
+
+    if (listener.type) {
+      if (!this._typeListeners) {
+        this._typeListeners = {};
+      }
+
+      if (!this._typeListeners[listener.type]) {
+        this._typeListeners[listener.type] = [];
+      }
+
+      listeners = this._typeListeners[listener.type];
+    } else {
+      if (!this._listeners) {
+        this._listeners = [];
+      }
+      listeners = this._listeners;
     }
 
-    this._listeners.push(listener);
+    listeners.push(listener);
 
     return {
-      dispose: () => {
-        var i = this._listeners.indexOf(listener);
-        if (!!~i) this._listeners.splice(i, 1);
+      dispose() {
+        var i = listeners.indexOf(listener);
+        if (!!~i) listeners.splice(i, 1);
       }
     }
   }
@@ -32,6 +50,13 @@ export default class ObservableDispatcher {
     if (this._listeners) {
       for (var i = this._listeners.length; i--;) {
         this._listeners[i].dispatch(event);
+      }
+    }
+
+    if (this._typeListeners && this._typeListeners[event.type]) {
+      var listeners = this._typeListeners[event.type]
+      for (var i = listeners.length; i--;) {
+        listeners[i].dispatch(event);
       }
     }
 

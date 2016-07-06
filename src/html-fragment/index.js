@@ -18,6 +18,7 @@ export default [
 
 function create(app) {
 
+
   app.rootEntity = DOMElementEntity.create({
     name: 'div',
     style: {
