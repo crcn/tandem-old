@@ -1,4 +1,4 @@
-import { freeze, compileXMLtoJS, createVNode } from '../index';
+import { freeze, compileXMLtoJS, createVNode, dom, BaseComponent } from '../index';
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {
@@ -25,4 +25,23 @@ describe(__filename + '#', function() {
     // sanity. Ensure that pool properly drains
     expect(tpl.createView({ name: 'jake' })).not.to.be(view);
   });
+
+  it('can pass a registered component when freezing', function() {
+
+    class CustomComponent extends BaseComponent {
+      initialize() {
+        this.section.appendChild(document.createTextNode(this.attributes.message));
+      }
+    }
+
+    var tpl = freeze(<custom-component message="hello custom component!" />, {
+      componentFactories: {
+        'custom-component': CustomComponent
+      }
+    });
+
+    var view = tpl.createView();
+    view.render();
+    expect(view.toString()).to.be('hello custom component!');
+  })
 });

@@ -1,6 +1,7 @@
 import create from 'common/class/utils/create';
 import NodeSection from '../section/node';
 import _freezeAttributes from './_freeze-attributes';
+import ComponentVNode from './component';
 
 class AttributesHydrator {
   constructor(section, hydrators) {
@@ -20,6 +21,12 @@ class AttributesHydrator {
   }
 }
 
+var NAMESPACES = {};
+
+['svg', 'rect'].forEach(function(el) {
+  NAMESPACES[el] = 'http://www.w3.org/2000/svg';
+});
+
 export default class ElementVNode {
 
   constructor(name, attributes, childNodes) {
@@ -29,7 +36,22 @@ export default class ElementVNode {
   }
 
   freezeNode(options) {
-    var node = options.nodeFactory.createElement(this.nodeName);
+
+    const { componentFactories, nodeFactory } = options;
+
+    if (componentFactories && componentFactories[this.nodeName]) {
+      var componentFactory = componentFactories[this.nodeName];
+      var componentVNode   = ComponentVNode.create(componentFactory, this.attributes, this.childNodes);
+      return componentVNode.freezeNode(options);
+    }
+
+    var ns = NAMESPACES[this.nodeName];
+
+    if (ns) {
+      var node = options.nodeFactory.createElementNS(ns, this.nodeName);
+    } else {
+      var node = options.nodeFactory.createElement(this.nodeName);
+    }
 
     var { staticAttributes, attributeHydrators } = _freezeAttributes(this.attributes, options);
 

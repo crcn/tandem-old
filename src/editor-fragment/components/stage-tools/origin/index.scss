@@ -1,3 +1,13 @@
 .m-origin-tool {
-  
+  position: absolute;
+  left: 0;
+  top: 0;
+  & svg {
+    position: absolute;
+  }
+  &--entity {
+    position: absolute;
+    pointer-events: none;
+    border: 1px solid #FF00FF;
+  }
 }

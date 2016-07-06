@@ -7,7 +7,7 @@ export default class RegisteredComponent extends BaseComponent {
     this._children = [];
 
     for (var fragmentFactory of this.application.fragmentDictionary.queryAll(ns)) {
-      var child = fragmentFactory.create({ application: this.application });
+      var child = fragmentFactory.create(Object.assign({}, this.attributes), { application: this.application });
       this._children.push(child);
       this.section.appendChild(child.toFragment());
     }
