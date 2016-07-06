@@ -9,6 +9,8 @@ import sift from 'sift';
 
 function getPreviewRect(node) {
   var p = node;
+
+  // todo - should be something such as data-root
   while(p && !/m-preview/.test(p.getAttribute('class'))) {
     p = p.parentNode;
   }

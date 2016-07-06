@@ -22,7 +22,10 @@ function create(app) {
     name: 'div',
     style: {
       backgroundColor: 'red',
-      width: '100px',
+      'position': 'absolute',
+      left: '100px',
+      top: '20px',
+      width: '300px',
       height: '100px'
     },
     attributes: {
