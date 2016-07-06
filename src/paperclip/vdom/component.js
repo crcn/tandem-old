@@ -20,6 +20,7 @@ class ComponentHydrator {
 
   prepare() {
     this.childNodesTemplate = freeze(Fragment.create(this.childNodes));
+
     this._marker = this._section.createMarker();
 
     for (var hydrator of this._attributeHydrators) {
@@ -30,13 +31,18 @@ class ComponentHydrator {
   hydrate({ view, section, bindings }) {
 
     var component = new this.componentClass({
-      application        : view.context.application,
+      application        : view.application,
       attributes         : this.attributes,
       nodeFactory        : this._nodeFactory,
       childNodesTemplate : this.childNodesTemplate
     });
 
-    var childView = component.view = new View(component, this._marker.createSection(section.targetNode), this._hydrators, [], view);
+    var childView = component.view = new View({
+      context: component,
+      section: this._marker.createSection(section.targetNode),
+      hydrators: this._hydrators,
+      parent: view
+    });
 
     for (var hydrator of this._attributeHydrators) {
       hydrator.hydrate({ view, bindings, ref: component });
@@ -68,9 +74,7 @@ export default class ComponentVNode {
     }
 
     var { staticAttributes, attributeHydrators } = _freezeAttributes(this.attributes, options);
-
     options.hydrators.push(new ComponentHydrator(this.componentClass, staticAttributes, hydrators, attributeHydrators, section, this.childNodes, options.nodeFactory));
-
     return section.toFragment();
   }
 

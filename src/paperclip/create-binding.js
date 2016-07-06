@@ -41,8 +41,8 @@ function observeProperty(target, path, listener) {
     for (var segment of path) {
         if (ctarget) {
           listeners.push(observe(ctarget, onChange));
+          ctarget = ctarget[segment];
         }
-        ctarget = ctarget[segment];
     }
 
     observer.value = ctarget;
@@ -59,35 +59,40 @@ function observeProperties(view, properties, map, listener) {
     return observeProperty(view, ['context', ...property.split('.')], onChange);
   });
 
-  function onChange() {
-    listener(map.apply(this, observers.map(function(observer) {
+  function getValue() {
+    return map.apply(this, observers.map(function(observer) {
       return observer.value;
-    })));
+    }));
   }
 
-  onChange();
+  function onChange() {
+    listener(getValue());
+  }
+
+  return getValue();
 }
 
 class NodeBinding {
   constructor(view, section, properties, map) {
     this.view       = view;
     this.section    = section;
-    observeProperties(view, properties, map, this._onChange.bind(this))
+    this.value = observeProperties(view, properties, map, this._onChange.bind(this));
   }
 
   _onChange(value) {
-    if (this.section._start) {
-      this.section.removeChildNodes();
-      if (value) {
-        this.section.appendChild(value);
-      }
-    } else {
-      this.section.targetNode.nodeValue = value;
-    }
+    this.value = value;
+    this.view.runloop.deferOnce(this);
   }
 
   update() {
-
+    if (this.section._start) {
+      this.section.removeChildNodes();
+      if (this.value) {
+        this.section.appendChild(this.value);
+      }
+    } else {
+      this.section.targetNode.nodeValue = this.value;
+    }
   }
 }
 
@@ -112,7 +117,7 @@ class AttributeBinding {
     this.view = view;
     this.ref  = ref;
     this.key  = key;
-    observeProperties(view, properties, map, this._onChange.bind(this));
+    this._onChange(observeProperties(view, properties, map, this._onChange.bind(this)));
   }
 
   _onChange(value) {

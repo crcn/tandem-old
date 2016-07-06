@@ -1,6 +1,7 @@
 import View from './view';
 import Template from './template';
 import Fragment from './vdom/fragment';
+import Runloop from 'common/runloop';
 import { create as createSection } from './section';
 
 export default function freeze(vnode, options = {}) {
@@ -25,5 +26,5 @@ export default function freeze(vnode, options = {}) {
     hydrator.prepare();
   }
 
-  return new Template(section, hydrators);
+  return new Template({ section, hydrators });
 }

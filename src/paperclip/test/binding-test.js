@@ -12,8 +12,10 @@ describe(__filename + '#', function() {
   it('can bind to a simple property', function() {
     var context = ObservableObject.create({ name: 'jake' });
     var div = freeze(<div>hello {createTextBinding('name')}</div>).createView(context);
+    div.render();
     expect(div.toString()).to.be('<div>hello jake</div>');
     context.setProperties({ name: 'joe' });
+    div.runloop.runNow();
     expect(div.toString()).to.be('<div>hello joe</div>');
   });
 
@@ -34,14 +36,19 @@ describe(__filename + '#', function() {
         return document.createTextNode('');
       }
       update() {
+        super.update();
         this.section.targetNode.nodeValue =  `hello ${this.attributes.text}`;
       }
     }
 
     var context = ObservableObject.create({ text: 'world' });
     var view = freeze(<HelloComponent text={createTextBinding('text')} />).createView(context);
+    expect(view.toString()).to.be('');
+    view.render();
     expect(view.toString()).to.be('hello world');
     context.setProperties({ text: 'b' });
+    expect(view.toString()).to.be('hello world');
+    view.runloop.runNow();
     expect(view.toString()).to.be('hello b');
   });
 
@@ -53,10 +60,14 @@ describe(__filename + '#', function() {
       return node;
     })).createView(context);
 
+    view.render();
+
     expect(view.toString()).to.be('a');
 
     context.setProperties({ node: document.createTextNode('b') });
 
+    expect(view.toString()).to.be('a');
+    view.runloop.runNow();
     expect(view.toString()).to.be('b');
   });
 });

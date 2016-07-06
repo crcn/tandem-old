@@ -25,7 +25,7 @@ function create(app) {
       return;
     }
 
-    var rootComponent = rootComponentClassFragment.create({
+    var rootComponent = rootComponentClassFragment.create({}, {
       application: app
     });
 

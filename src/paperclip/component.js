@@ -30,7 +30,9 @@ export class BaseComponent extends CoreObject {
 
   setAttribute(key, value) {
     this.attributes[key] = value;
-    this.update();
+    if (this._initialized) {
+      this.view.runloop.deferOnce(this);
+    }
   }
 
   getAttribute(key) {

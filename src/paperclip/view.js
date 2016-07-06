@@ -1,14 +1,19 @@
 import { create as createSection } from './section';
+import Runloop from 'common/runloop';
+
+const defaultRunloop = Runloop.create();
 
 export default class View {
 
-  constructor(context, section, hydrators, recycling = [], parent) {
+  constructor({ context, section, hydrators, recycling, parent, application }) {
     this._context = context;
 
     this._bindings   = [];
     this._recycling  = recycling;
+    this.application = application;
+    this.runloop     = (application && application.runloop) || defaultRunloop;
     this.parent      = parent;
-    this._section = section;
+    this._section    = section;
 
     for (const hydrator of hydrators) {
       hydrator.hydrate({
@@ -17,7 +22,22 @@ export default class View {
         bindings : this._bindings
       });
     }
+  }
 
+  get rendered() {
+    return this._rendered;
+  }
+
+  set parent(value) {
+    this._parent = value;
+    if (value) {
+      this.application = value.application;
+      this.runloop     = value.runloop;
+    }
+  }
+
+  get parent() {
+    return this._parent;
   }
 
   toString() {
@@ -57,6 +77,7 @@ export default class View {
    */
 
   render() {
+    this._rendered = true;
     this.update();
     return this.section.toFragment();
   }
