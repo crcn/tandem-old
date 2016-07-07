@@ -1,7 +1,6 @@
 import View from './view';
 import Template from './view-factory';
 import Fragment from './vdom/fragment';
-import Runloop from 'common/runloop';
 import { create as createSection } from './section';
 
 export default function freeze(vnode, options = {}) {

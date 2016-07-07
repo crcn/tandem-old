@@ -2,6 +2,8 @@
 module.exports = function(config) {
 
   var watchMode = process.env.WATCH === '1';
+  var bail      = process.env.BAIL  === '1';
+  var grep      = process.env.GREP;
 
   var conf = {
 
@@ -53,7 +55,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: [process.env.REPORTER || 'spec'],
+    reporters: [process.env.REPORTER || 'dots'],
 
 
     // web server port
@@ -74,7 +76,8 @@ module.exports = function(config) {
 
     client: {
       mocha: {
-        grep: process.env.GREP
+        bail: bail,
+        grep: grep
       }
     },
 

@@ -16,32 +16,32 @@ describe(__filename + '#', function() {
 
   it('defines "selection" property on application on selection event', function() {
     var item = { name: 'blarg' };
-    app.bus.dispatch(SelectEvent.create(item));
+    app.bus.execute(SelectEvent.create(item));
     expect(app.selection.length).to.be(1);
   });
 
   it('only selects one item if multi is false', function() {
     var item = { name: 'blarg' };
-    app.bus.dispatch(SelectEvent.create(item));
+    app.bus.execute(SelectEvent.create(item));
     expect(app.selection.length).to.be(1);
-    app.bus.dispatch(SelectEvent.create(item));
+    app.bus.execute(SelectEvent.create(item));
     expect(app.selection.length).to.be(1);
   });
 
   it('selects multiple items if multi is true', function() {
-    app.bus.dispatch(SelectEvent.create({ name: 'blarg' }));
+    app.bus.execute(SelectEvent.create({ name: 'blarg' }));
     expect(app.selection.length).to.be(1);
-    app.bus.dispatch(SelectEvent.create({ name: 'blarg' }, true));
+    app.bus.execute(SelectEvent.create({ name: 'blarg' }, true));
     expect(app.selection.length).to.be(2);
-    app.bus.dispatch(SelectEvent.create({ name: 'blarg' }));
+    app.bus.execute(SelectEvent.create({ name: 'blarg' }));
     expect(app.selection.length).to.be(1);
   });
 
   it('removes an item from the selection if it already exists', function() {
     var item = { name: 'blarg' };
-    app.bus.dispatch(SelectEvent.create(item));
+    app.bus.execute(SelectEvent.create(item));
     expect(app.selection.length).to.be(1);
-    app.bus.dispatch(SelectEvent.create(item, true));
+    app.bus.execute(SelectEvent.create(item, true));
     expect(app.selection.length).to.be(0);
   });
 
@@ -58,23 +58,23 @@ describe(__filename + '#', function() {
     app.fragmentDictionary.register(FactoryFragment.create('selectorCollection/display', DisplayCollection));
     app.fragmentDictionary.register(FactoryFragment.create('selectorCollection/other', OtherCollection));
 
-    app.bus.dispatch(SelectEvent.create({ type: 'display' }));
+    app.bus.execute(SelectEvent.create({ type: 'display' }));
     expect(app.selection).to.be.an(DisplayCollection);
-    app.bus.dispatch(SelectEvent.create({ type: 'display' }, true));
+    app.bus.execute(SelectEvent.create({ type: 'display' }, true));
     expect(app.selection).to.be.an(DisplayCollection);
     expect(app.selection.length).to.be(2);
 
-    app.bus.dispatch(SelectEvent.create({ type: 'other' }, true));
+    app.bus.execute(SelectEvent.create({ type: 'other' }, true));
     expect(app.selection).to.be.an(OtherCollection);
     expect(app.selection.length).to.be(1);
 
   });
 
   it('can deselect all be omitting item', function() {
-    app.bus.dispatch(SelectEvent.create({ type: 'display' }));
-    app.bus.dispatch(SelectEvent.create({ type: 'display' }, true));
+    app.bus.execute(SelectEvent.create({ type: 'display' }));
+    app.bus.execute(SelectEvent.create({ type: 'display' }, true));
     expect(app.selection.length).to.be(2);
-    app.bus.dispatch(SelectEvent.create());
+    app.bus.execute(SelectEvent.create());
     expect(app.selection.length).to.be(0);
   });
 });

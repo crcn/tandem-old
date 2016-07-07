@@ -1,6 +1,6 @@
 import { ApplicationFragment } from 'common/application/fragments';
 import { SelectEvent, SELECT } from 'common/selection/events';
-import { TypeDispatcher, CallbackDispatcher } from 'common/dispatchers';
+import { TypeCallbackBus } from 'common/busses';
 import Selection from 'common/selection/collection';
 
 export const fragment = ApplicationFragment.create(
@@ -9,7 +9,7 @@ export const fragment = ApplicationFragment.create(
 );
 
 function initialize(app) {
-  app.bus.observe(TypeDispatcher.create(SELECT, CallbackDispatcher.create(select)))
+  app.bus.push(TypeCallbackBus.create(SELECT, select));
 
   function select(event) {
     var { item, multi } = event;

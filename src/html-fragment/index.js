@@ -4,7 +4,7 @@ import * as fragments from './fragments';
 
 import DOMElementEntity from './entities/dom-element';
 import DOMTextEntity from './entities/dom-text';
-import TypeDispatcher from 'common/dispatchers/type';
+import { TypeCallbackBus } from 'common/busses';
 import compileXMLtoJS from 'paperclip/xml/compile';
 import { diff, patch } from 'common/utils/node/diff';
 
@@ -35,28 +35,25 @@ function create(app) {
   });
 
 
-  app.bus.observe(TypeDispatcher.create('setSource', {
-    dispatch(event) {
+  app.bus.push(TypeCallbackBus.create('setSource', function(event) {
+    // TODO: this is temporary code
+    var newEntity = compileXMLtoJS(event.source)(function(type) {
+      switch(type) {
+        case 'element': return new DOMElementEntity({
+          name: arguments[1],
+          attributes: arguments[2],
+          childNodes: arguments[3]
+        });
 
-      // TODO: this is temporary code
-      var newEntity = compileXMLtoJS(event.source)(function(type) {
-        switch(type) {
-          case 'element': return new DOMElementEntity({
-            name: arguments[1],
-            attributes: arguments[2],
-            childNodes: arguments[3]
-          });
+        case 'text': return new DOMTextEntity({
+          nodeValue: arguments[1]
+        });
+      }
+    });
 
-          case 'text': return new DOMTextEntity({
-            nodeValue: arguments[1]
-          });
-        }
-      });
-
-      // TODO - need to patch this
-      app.setProperties({
-        rootEntity: newEntity
-      });
-    }
-  }))
+    // TODO - need to patch this
+    app.setProperties({
+      rootEntity: newEntity
+    });
+  }));
 }

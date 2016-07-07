@@ -1,6 +1,6 @@
 import './index.scss';
 import React from 'react';
-
+import { dom, TemplateComponent } from 'paperclip';
 
 class OriginEntityComponent extends React.Component {
   render() {

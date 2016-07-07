@@ -1,9 +1,10 @@
-import { BaseComponent, TemplateComponent, createHTMLBinding, createAttributeBinding, dom } from 'paperclip';
+import { BaseComponent, TemplateComponent, dom } from 'paperclip';
 import CoreObject from 'common/object';
 import observable from 'common/object/mixins/observable';
 import RepeatComponent from 'common/components/repeat';
 import { ComponentFactoryFragment } from 'paperclip/fragments';
 import { translateStyleToIntegers } from 'common/utils/css/translate-style';
+import HTMLComponent from 'common/components/html';
 import BoundingRect from 'common/geom/bounding-rect';
 import sift from 'sift';
 
@@ -135,9 +136,12 @@ function createNodePreview(entity) {
 }
 
 export default class PreviewComponent extends TemplateComponent {
-  static template = <div class='m-preview'> {createHTMLBinding('application.rootEntity', function(rootEntity) {
-    return rootEntity ? createNodePreview(rootEntity).node : void 0;
-  })}</div>
+  static template = <div class='m-preview'>
+    <HTMLComponent value={function({ application }) {
+      var { rootEntity } = application;
+      return rootEntity ? createNodePreview(rootEntity).node : void 0;
+    }} />
+  </div>
 }
 
 export const fragment = ComponentFactoryFragment.create('components/preview', PreviewComponent);

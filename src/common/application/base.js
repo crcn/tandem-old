@@ -1,5 +1,5 @@
 import CoreObject from 'common/object';
-import ObservableDispatcher from 'common/dispatchers/observable';
+import { BusCollection } from 'common/busses';
 import observable from 'common/object/mixins/observable';
 import { InitializeEvent, LoadEvent } from './events';
 import FragmentDictionary from 'common/fragments/dictionary';
@@ -15,7 +15,7 @@ export default class BaseApplication extends CoreObject {
 
     // the bus is the central communication hub for the rest
     // of the application
-    this.bus = ObservableDispatcher.create(this);
+    this.bus                = BusCollection.create(this);
     this.fragmentDictionary = FragmentDictionary.create();
 
     this._registerFragments();
@@ -35,8 +35,8 @@ export default class BaseApplication extends CoreObject {
     this._initialized = true;
 
     this.willInitialize();
-    await this.bus.dispatch(LoadEvent.create());
-    await this.bus.dispatch(InitializeEvent.create());
+    await this.bus.execute(LoadEvent.create());
+    await this.bus.execute(InitializeEvent.create());
     this.didInitialize();
   }
 

@@ -1,4 +1,4 @@
-import { TemplateComponent, dom, createAttributeBinding } from 'paperclip';
+import { TemplateComponent, dom } from 'paperclip';
 import RegisteredComponent from 'common/components/registered';
 
 export default class ToolsComponent extends TemplateComponent {

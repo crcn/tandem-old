@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { TemplateComponent, dom, createAttributeBinding, createTextBinding } from 'paperclip';
+import { TemplateComponent, dom } from 'paperclip';
 import { ComponentFactoryFragment } from 'paperclip/fragments';
 
 const x2 = 0;
@@ -11,7 +11,6 @@ const d = [];
 
 export default class OriginToolComponent extends TemplateComponent {
   static template = <div class='m-origin-tool'>
-    {createTextBinding('application.selection.length')}
     <svg style={ c => {return {
       left: x2,
       top : y2,

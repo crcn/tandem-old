@@ -1,7 +1,4 @@
 import { create as createSection } from './section';
-import Runloop from 'common/runloop';
-
-const defaultRunloop = Runloop.create();
 
 export default class View {
 
@@ -11,7 +8,6 @@ export default class View {
     this._bindings   = [];
     this._recycling  = recycling;
     this.application = application;
-    this.runloop     = (application && application.runloop) || defaultRunloop;
     this.parent      = parent;
     this._section    = section;
 
@@ -32,7 +28,6 @@ export default class View {
     this._parent = value;
     if (value) {
       this.application = value.application;
-      this.runloop     = value.runloop;
     }
   }
 
@@ -80,6 +75,13 @@ export default class View {
     this._rendered = true;
     this.update();
     return this.section.toFragment();
+  }
+
+  /**
+   */
+
+  execute(event) {
+    this.update();
   }
 
   /**

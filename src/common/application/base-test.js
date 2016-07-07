@@ -1,5 +1,5 @@
 import BaseApplication from './base';
-import CallbackDispatcher from 'common/dispatchers/callback';
+import { CallbackBus } from 'common/busses';
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {
@@ -12,18 +12,12 @@ describe(__filename + '#', function() {
     expect(app.a).to.be('b');
   });
 
-  it('is observable', function() {
-    var app = BaseApplication.create({ a: 'b'});
-    expect(app.observe).not.to.be(void 0);
-  });
-
   it('properly initializes the application', async function() {
     var app = BaseApplication.create();
     var events = [];
-    app.bus.observe(CallbackDispatcher.create((event) => events.push(event)))
+    app.bus.push(CallbackBus.create((event) => events.push(event)))
     await app.initialize();
     expect(events.length).to.be(2);
-    expect(events[0].target).to.be(app);
     expect(events[0].type).to.be('load');
     expect(events[1].type).to.be('initialize');
   });

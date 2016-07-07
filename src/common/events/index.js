@@ -5,24 +5,7 @@ export class Event {
 
   constructor(type) {
     this._type   = type;
-
     assertPropertyExists(this, 'type');
-  }
-
-  set currentTarget(value) {
-    if (this._target == void 0) {
-      this._target = value;
-    }
-
-    this._currentTarget = value;
-  }
-
-  get currentTarget() {
-    return this._currentTarget;
-  }
-
-  get target() {
-    return this._target;
   }
 
   get type() {
@@ -37,6 +20,8 @@ export class ChangeEvent extends Event {
   constructor(changes = []) {
     super(CHANGE);
     this._changes = changes;
+
+    assertPropertyExists(this, 'changes');
   }
 
   get changes() {

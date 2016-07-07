@@ -1,7 +1,6 @@
 import CoreObject from '../index';
 import CoreCollection from '../collection';
 import { ChangeEvent } from 'common/events';
-import ObservableDispatcher from 'common/dispatchers/observable';
 
 export default function observable(clazz) {
 
@@ -25,51 +24,52 @@ export default function observable(clazz) {
 }
 
 function decorateObjectClass(clazz) {
-  decorateObserveMethod(clazz);
 
   var oldSetProperties = clazz.prototype.setProperties;
 
   clazz.prototype.setProperties = function(properties) {
 
-    if (this._dispatcher) {
-        var changes = [];
-        for (var key in properties) {
-          var newValue = properties[key];
-          var oldValue = this[key];
+    if (this.bus) {
+      var changes = [];
+      for (var key in properties) {
+        var newValue = properties[key];
+        var oldValue = this[key];
 
-          // no change? skip.
-          if (newValue == oldValue) continue;
+        // no change? skip.
+        if (newValue == oldValue) continue;
 
-          if (newValue == void 0) {
+        if (newValue == void 0) {
+          changes.push({
+            target: this,
+            type: 'delete',
+            property: key,
+            oldValue: oldValue
+          });
+        } else if (newValue != void 0) {
+          if (oldValue == void 0) {
             changes.push({
-              type: 'delete',
+              target: this,
+              type: 'create',
               property: key,
-              oldValue: oldValue
+              value: newValue
             });
-          } else if (newValue != void 0) {
-            if (oldValue == void 0) {
-              changes.push({
-                type: 'create',
-                property: key,
-                value: newValue
-              });
-            } else {
-              changes.push({
-                type: 'update',
-                property: key,
-                value: newValue,
-                oldValue: oldValue
-              })
-            }
+          } else {
+            changes.push({
+              target: this,
+              type: 'update',
+              property: key,
+              value: newValue,
+              oldValue: oldValue
+            })
           }
         }
-
+      }
     }
 
     oldSetProperties.call(this, properties);
 
     if (changes && changes.length) {
-      this._dispatcher.dispatch(ChangeEvent.create(changes));
+      this.bus.execute(ChangeEvent.create(changes));
     }
   }
 
@@ -83,16 +83,17 @@ function decorateCollectionClass(clazz) {
   var oldSplice = clazz.prototype.splice;
   clazz.prototype.splice = function(start, length, ...repl) {
 
-    if (this._dispatcher) {
+    if (this.bus) {
       var changes = [];
       changes.push({
+        target: this,
         type   : 'splice',
         start  : start,
         length : length,
         values : repl
       });
 
-      this._dispatcher.dispatch(ChangeEvent.create(changes));
+      this.bus.execute(ChangeEvent.create(changes));
     }
 
     var ret = oldSplice.apply(this, arguments);
@@ -101,15 +102,4 @@ function decorateCollectionClass(clazz) {
   }
 
   return clazz;
-}
-
-function decorateObserveMethod(clazz) {
-
-  clazz.prototype.observe = function(listener) {
-    if (!this._dispatcher) {
-      this._dispatcher = ObservableDispatcher.create(this);
-    }
-
-    return this._dispatcher.observe(listener);
-  }
 }

@@ -1,6 +1,6 @@
 import CoreObject from 'common/object';
 import observable from 'common/object/mixins/observable';
-import CallbackDispatcher from 'common/dispatchers/callback';
+import { CallbackBus } from 'common/busses';
 import { default as Template } from './view-factory';
 import { createVNode } from './vdom/create';
 import { default as compileXMLtoJS } from './xml/compile';
@@ -33,9 +33,6 @@ export class BaseComponent extends CoreObject {
 
   setAttribute(key, value) {
     this.attributes[key] = value;
-    if (this._initialized) {
-      this.view.runloop.deferOnce(this);
-    }
   }
 
   getAttribute(key) {

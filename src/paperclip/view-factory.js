@@ -27,8 +27,7 @@ export default class ViewFactory {
         hydrators: this._hydrators,
         recycling: this._recycling,
         application: options.application,
-        parent   : options.parent,
-        runloop  : options.runloop
+        parent   : options.parent
       });
     }
 

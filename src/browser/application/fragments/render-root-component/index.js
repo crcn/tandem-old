@@ -1,7 +1,6 @@
 import { ApplicationFragment } from 'common/application/fragments';
-import CallbackDispatcher from 'common/dispatchers/callback';
+import { TypeCallbackBus } from 'common/busses';
 import { INITIALIZE } from 'common/application/events';
-import TypeDispatcher from 'common/dispatchers/type';
 
 export default ApplicationFragment.create(
   'render-root-component',
@@ -10,12 +9,7 @@ export default ApplicationFragment.create(
 
 function create(app) {
 
-  app.bus.observe(
-    TypeDispatcher.create(
-      INITIALIZE,
-      CallbackDispatcher.create(initialize)
-    )
-  );
+  app.bus.push(TypeCallbackBus.create(INITIALIZE, initialize));
 
   function initialize(event) {
     var rootComponentClassFragment = app.fragmentDictionary.query('rootComponentClass');
@@ -30,5 +24,8 @@ function create(app) {
     });
 
     app.element.appendChild(rootComponent.render());
+
+    // TODO -- need rAF here.
+    app.bus.push(rootComponent);
   }
 }

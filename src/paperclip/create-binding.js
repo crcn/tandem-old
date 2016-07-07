@@ -1,7 +1,6 @@
 import NodeSection from './section/node';
 import FragmentSection from './section/fragment';
 
-
 function get(target, path) {
   var ctarget = target;
   for (var segment of path) {
@@ -85,7 +84,6 @@ class NodeBinding {
 
   _onChange(value) {
     this.value = value;
-    this.view.runloop.deferOnce(this);
   }
 
   update() {

@@ -1,5 +1,6 @@
-import { dom, freeze, createTextBinding, createHTMLBinding, BaseComponent } from '../index';
+import { dom, freeze, createHTMLBinding, BaseComponent } from '../index';
 import CoreObject from 'common/object';
+import { BusCollection } from 'common/busses';
 import observable from 'common/object/mixins/observable';
 
 describe(__filename + '#', function() {
@@ -10,20 +11,22 @@ describe(__filename + '#', function() {
   }
 
   it('can bind to a simple property', function() {
-    var context = ObservableObject.create({ name: 'jake' });
-    var div = freeze(<div>hello {createTextBinding('name')}</div>).create(context);
+    var context = ObservableObject.create({ name: 'jake', bus: BusCollection.create() });
+    var div = freeze(<div>hello {c=>c.name}</div>).create(context);
+    context.bus.push(div);
     div.render();
     expect(div.toString()).to.be('<div>hello jake</div>');
     context.setProperties({ name: 'joe' });
-    div.runloop.runNow();
     expect(div.toString()).to.be('<div>hello joe</div>');
   });
 
   it('can bind to an attribute', function() {
-    var context = ObservableObject.create({ color: 'red' });
-    var div = freeze(<div style={createTextBinding('color', function(color) {
+    var context = ObservableObject.create({ color: 'red', bus: BusCollection.create() });
+    var div = freeze(<div style={function({ color }) {
       return `color:${color}`;
-    })}></div>).create(context);
+    }}></div>).create(context);
+
+    context.bus.push(div);
     div.render();
     expect(div.toString()).to.be('<div style="color:red"></div>');
     context.setProperties({ color: 'blue' });
@@ -42,18 +45,19 @@ describe(__filename + '#', function() {
       }
     }
 
-    var context = ObservableObject.create({ text: 'world' });
-    var view = freeze(<HelloComponent text={createTextBinding('text')} />).create(context);
+    var bus = BusCollection.create();
+
+    var context = ObservableObject.create({ text: 'world', bus: bus });
+    var view = freeze(<HelloComponent text={function({ text }) { return text; }} />).create(context);
     expect(view.toString()).to.be('');
+    bus.push(view);
     view.render();
     expect(view.toString()).to.be('hello world');
     context.setProperties({ text: 'b' });
-    expect(view.toString()).to.be('hello world');
-    view.runloop.runNow();
     expect(view.toString()).to.be('hello b');
   });
 
-  it('can map a DOM node', function() {
+  xit('can map a DOM node', function() {
 
     var context = ObservableObject.create({ node: document.createTextNode('a') });
 
@@ -68,7 +72,6 @@ describe(__filename + '#', function() {
     context.setProperties({ node: document.createTextNode('b') });
 
     expect(view.toString()).to.be('a');
-    view.runloop.runNow();
     expect(view.toString()).to.be('b');
   });
 });
