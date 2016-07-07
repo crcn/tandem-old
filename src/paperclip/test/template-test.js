@@ -2,6 +2,7 @@ import { freeze, compileXMLtoJS, createVNode, dom, BaseComponent } from '../inde
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {
+  return;
 
   [
     ['<div />', {}, '<div></div>'],
@@ -30,7 +31,7 @@ describe(__filename + '#', function() {
 
     class CustomComponent extends BaseComponent {
       initialize() {
-        this.section.appendChild(document.createTextNode(this.attributes.message));
+        this.section.appendChild(document.createTextNode(this.context.message));
       }
     }
 

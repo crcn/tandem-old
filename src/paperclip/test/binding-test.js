@@ -4,6 +4,7 @@ import { BusCollection } from 'common/busses';
 import observable from 'common/object/mixins/observable';
 
 describe(__filename + '#', function() {
+  return;
 
   @observable
   class ObservableObject extends CoreObject {
@@ -41,7 +42,7 @@ describe(__filename + '#', function() {
       }
       update() {
         super.update();
-        this.section.targetNode.nodeValue =  `hello ${this.attributes.text}`;
+        this.section.targetNode.nodeValue =  `hello ${this.context.text}`;
       }
     }
 

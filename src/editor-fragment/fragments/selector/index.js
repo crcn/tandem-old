@@ -11,6 +11,8 @@ export const fragment = ApplicationFragment.create(
 function initialize(app) {
   app.bus.push(TypeCallbackBus.create(SELECT, select));
 
+  app.selection = [];
+
   function select(event) {
     var { item, multi } = event;
     var currentSelection = app.selection || [];

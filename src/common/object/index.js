@@ -1,8 +1,11 @@
 import create from 'common/utils/class/create';
 
+var _id = 1;
+
 export default class CoreObject {
 
   constructor(properties) {
+    this.id = _id++;
     if (properties != void 0) {
       Object.assign(this, properties);
     }

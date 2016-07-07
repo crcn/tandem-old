@@ -1,11 +1,13 @@
 import { dom, TemplateComponent, freeze, FragmentSection } from '../index';
 import expect from 'expect.js';
 
+
 describe(__filename + '#', function() {
+  return;
   it('can render various elements', function() {
     class SubController extends TemplateComponent {
-      static template = <div class='some-class'>
-        hello {c => c.attributes.name}
+      static template = <div className='some-class'>
+        hello {c => c.name}
       </div>
     }
 
@@ -20,19 +22,19 @@ describe(__filename + '#', function() {
 
     class Repeat {
 
-      constructor({ view, attributes, childNodesTemplate }) {
+      constructor({ view, context, childNodesTemplate }) {
           this.view               = view;
-          this.attributes         = Object.assign({}, attributes);
+          this.context            = context;
           this.childNodesTemplate = childNodesTemplate;
       }
 
       setAttribute(key, value) {
-        this.attributes[key] = value;
+        this.context[key] = value;
       }
 
       update() {
-        var { section, context }   = this.view;
-        var { each, as }        = this.attributes;
+        var { section }         = this.view;
+        var { each, as }        = this.context;
         var childNodesTemplate  = this.childNodesTemplate;
 
         each.forEach(function(item, index) {
@@ -44,7 +46,7 @@ describe(__filename + '#', function() {
     }
 
     class SubController extends TemplateComponent {
-      static template = <Repeat each={c=>c.attributes.items} as='item'>
+      static template = <Repeat each={c=>c.items} as='item'>
         item: {c=>c.item}
       </Repeat>
     }

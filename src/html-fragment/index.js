@@ -18,22 +18,33 @@ export default [
 
 function create(app) {
 
-
   app.rootEntity = DOMElementEntity.create({
+    bus: app.bus,
     name: 'div',
     style: {
       backgroundColor: 'red',
       'position': 'absolute',
+      'padding': '100px',
       left: '100px',
-      top: '20px',
-      width: '300px',
-      height: '100px'
+      top: '20px'
     },
     attributes: {
       'class': 'blarg'
-    }
+    },
+    childNodes: [
+      DOMElementEntity.create({
+        bus: app.bus,
+        name: 'div',
+        style: {
+          backgroundColor: 'blue',
+          left: '100px',
+          top: '20px',
+          width: '300px',
+          height: '100px'
+        }
+      })
+    ]
   });
-
 
   app.bus.push(TypeCallbackBus.create('setSource', function(event) {
     // TODO: this is temporary code

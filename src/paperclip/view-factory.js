@@ -26,7 +26,6 @@ export default class ViewFactory {
         section: this._section.clone(),
         hydrators: this._hydrators,
         recycling: this._recycling,
-        application: options.application,
         parent   : options.parent
       });
     }

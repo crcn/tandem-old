@@ -1,12 +1,16 @@
 
 import { TemplateComponent, dom, freeze } from '../';
 
+var React = {
+  createElement: dom
+}
+
 describe(__filename + '#', function() {
 
   it('updates the node whenever the controller changes', function() {
 
     class SubController extends TemplateComponent {
-      static template = '<span>hello {{attributes.name}}</span>';
+      static template = '<span>hello {{name}}</span>';
     }
 
     var context = {

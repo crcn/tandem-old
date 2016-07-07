@@ -1,6 +1,7 @@
 import CoreObject from 'common/object';
 import observable from 'common/object/mixins/observable';
 import { CallbackBus } from 'common/busses';
+import Controller from './controller';
 import { default as Template } from './view-factory';
 import { createVNode } from './vdom/create';
 import { default as compileXMLtoJS } from './xml/compile';
@@ -8,23 +9,9 @@ import { default as freeze } from './freeze';
 
 @observable
 export class BaseComponent extends CoreObject {
-  constructor(properties) {
-    super(properties);
-  }
 
   addEventListener(event, listener) {
     throw new Error('event listeners currently not supported in components');
-  }
-
-  set attributes(value) {
-    this._attributes = Object.assign({}, value);
-  }
-
-  get attributes() {
-    if (!this._attributes) {
-      this._attributes = {};
-    }
-    return this._attributes;
   }
 
   get section() {
@@ -32,11 +19,11 @@ export class BaseComponent extends CoreObject {
   }
 
   setAttribute(key, value) {
-    this.attributes[key] = value;
+    this.context[key] = value;
   }
 
   getAttribute(key) {
-    return this.attributes[key];
+    return this.context[key];
   }
 
   update() {
@@ -49,6 +36,8 @@ export class BaseComponent extends CoreObject {
   initialize() {
 
   }
+
+  static controllerFactory = Controller;
 }
 
 export class TemplateComponent extends BaseComponent {

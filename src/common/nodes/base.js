@@ -1,5 +1,7 @@
 import CoreObject from 'common/object';
+import observable from 'common/object/mixins/observable';
 
+@observable
 export default class Node extends CoreObject {
 
   get nextSibling() {

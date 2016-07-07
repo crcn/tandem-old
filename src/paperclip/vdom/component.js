@@ -30,18 +30,24 @@ class ComponentHydrator {
 
   hydrate({ view, section, bindings }) {
 
-    var component = new this.componentClass({
-      application        : view.application,
-      attributes         : this.attributes,
-      nodeFactory        : this._nodeFactory,
-      childNodesTemplate : this.childNodesTemplate
-    });
+    var context = Object.assign({
+      '[[parent]]': view.context
+    }, this.attributes);
 
-    var childView = component.view = new View({
-      context: component,
-      section: this._marker.createSection(section.targetNode),
-      hydrators: this._hydrators,
-      parent: view
+    if (this.componentClass.controllerFactory) {
+      context = this.componentClass.controllerFactory.create(context);
+    }
+
+    var component = new this.componentClass({
+      context            : context,
+      nodeFactory        : this._nodeFactory,
+      childNodesTemplate : this.childNodesTemplate,
+      view               : new View({
+        context: context,
+        section: this._marker.createSection(section.targetNode),
+        hydrators: this._hydrators,
+        parent: view
+      })
     });
 
     for (var hydrator of this._attributeHydrators) {
@@ -49,7 +55,7 @@ class ComponentHydrator {
     }
 
     bindings.push(component);
-    bindings.push(childView);
+    bindings.push(component.view);
   }
 }
 

@@ -1,6 +1,8 @@
 import { ApplicationFragment } from 'common/application/fragments';
 import { TypeCallbackBus } from 'common/busses';
 import { INITIALIZE } from 'common/application/events';
+import * as ReactDOM from 'react-dom';
+import throttle from 'lodash/function/throttle';
 
 export default ApplicationFragment.create(
   'render-root-component',
@@ -19,13 +21,15 @@ function create(app) {
       return;
     }
 
-    var rootComponent = rootComponentClassFragment.create({}, {
-      application: app
+    function render() {
+      ReactDOM.render(rootComponentClassFragment.create({
+        app: app,
+        bus: app.bus
+      }), app.element);
+    }
+
+    app.bus.push({
+      execute: throttle(render, 50)
     });
-
-    app.element.appendChild(rootComponent.render());
-
-    // TODO -- need rAF here.
-    app.bus.push(rootComponent);
   }
 }
