@@ -69,22 +69,6 @@ class ReactEntityPreview extends CoreObject {
     this.getBoundingRect = this.getBoundingRect.bind(this);
   }
 
-  /**
-   */
-
-  notify() {
-    this.invalidateCache();
-  }
-
-  /**
-   * busts cache when the entity is updated. This gets called via
-   * entity.jsx
-   */
-
-  invalidateCache() {
-    this.getBoundingRect.clear();
-  }
-
   setPositionFromAbsolutePoint(point) {
 
     // absolute positions are always in pixels - always round
@@ -140,21 +124,20 @@ class ReactEntityPreview extends CoreObject {
 
     // NO zoom here - point is NOT fixed, but relative
     var absStyle = this.getStyle(false);
-    var entStyle = this.entity.style;
 
     var props = { ...bounds };
-    for (var k in bounds) {
-      if (entStyle[k] == void 0) continue;
 
-      // TODO - want to use translateStyle here instead
-      props[k] = translateCSSLength(
-        absStyle[k],
-        entStyle[k],
-        bounds[k]
-      );
-    }
+    var paddingWidth = absStyle.paddingLeft + absStyle.paddingRight;
+    var paddingHeight = absStyle.paddingTop  + absStyle.paddingBottom;
 
-    var b = this.getBoundingRect(false);
+    props.width = Math.max(props.width - paddingWidth, 0);
+    props.height = Math.max(props.height - paddingHeight, 0);
+
+    // convert px to whatever unit is set on the style
+    Object.assign(props, translateStyle({
+      width: props.width,
+      height: props.height
+    }, this.entity.style, this.node));
 
     // FIXME: wrong place here - this is just a quick
     // check to see if this *actually* works

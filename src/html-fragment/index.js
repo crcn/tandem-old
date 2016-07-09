@@ -23,8 +23,9 @@ function create(app) {
     bus: app.bus,
     style: {
       left: '100px',
-      width: '200px',
-      height: '200px'
+      top : '100px',
+      width: '700px',
+      height: '500px'
     },
     childNodes: [DOMElementEntity.create({
       bus: app.bus,
@@ -32,7 +33,8 @@ function create(app) {
       style: {
         backgroundColor: 'red',
         'position': 'absolute',
-        'padding': '100px',
+        'padding': '10px',
+        'width': '400px',
         left: '100px',
         top: '20px'
       },

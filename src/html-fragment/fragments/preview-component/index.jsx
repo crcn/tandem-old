@@ -42,7 +42,6 @@ class HTMLNodePreview extends CoreObject {
 
     // fugly - works for now.
     entity.bus.push(this);
-    // entity.bus.execute(WatchPropertyEvent.create())
   }
 
   dispose() {
@@ -51,11 +50,13 @@ class HTMLNodePreview extends CoreObject {
 
   execute(event) {
     if (event.type !== 'change') return;
-    this._didChange = !!event.changes.find((change) => {
+    this._didChange = this._didChange || !!event.changes.find((change) => {
       return change.target === this.entity;
     });
 
-    this.update();
+    if (this._didChange) {
+      this.update();
+    }
   }
 
   update() {
@@ -118,7 +119,7 @@ class HTMLTextPreview extends HTMLNodePreview {
   }
 }
 
-class HTMLFramePreview extends HTMLNodePreview {
+class HTMLFramePreview extends HTMLElementPreview {
   createNode() {
     var node = document.createElement('iframe');
 

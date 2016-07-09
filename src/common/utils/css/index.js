@@ -47,7 +47,6 @@ export function translateLength(x1, y1, x2) {
 
   var ret = tokens.map(stringifyToken).join('');
 
-
   return ret;
 }
 

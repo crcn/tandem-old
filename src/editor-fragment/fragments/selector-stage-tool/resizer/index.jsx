@@ -175,6 +175,7 @@ class ResizerComponent extends React.Component {
 
   moveTarget(left, top) {
     this._isMoving();
+
     this.props.app.selection.preview.setPositionFromAbsolutePoint({
       left : left,
       top  : top

@@ -67,7 +67,6 @@ describe(__filename + '#', function() {
     app.bus.execute(ToggleSelectEvent.create({ type: 'other' }, true));
     expect(app.selection).to.be.an(OtherCollection);
     expect(app.selection.length).to.be(1);
-
   });
 
   it('can deselect all be omitting item', function() {

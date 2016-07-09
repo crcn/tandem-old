@@ -29,7 +29,7 @@ function create(app) {
     }
 
     app.bus.push({
-      execute: throttle(render, 50)
+      execute: throttle(render, 10)
     });
   }
 }
