@@ -114,9 +114,9 @@ class HTMLEntitySelection extends Selection {
     this.preview = new Preview(this, this.bus);
   }
 
-  setStyle(style) {
+  set style(value) {
     this.forEach(function(entity) {
-      entity.setStyle(style);
+      entity.style = style;
     })
   }
 

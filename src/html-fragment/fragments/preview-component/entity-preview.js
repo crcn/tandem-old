@@ -92,7 +92,7 @@ class ReactEntityPreview extends CoreObject {
     }, this.entity.style, element);
 
 
-    this.entity.setStyle(newStyle);
+    this.entity.setProperties({ style: newStyle });
   }
 
   getZoom() {
@@ -142,7 +142,7 @@ class ReactEntityPreview extends CoreObject {
     delete props.left;
     delete props.top;
 
-    this.entity.setStyle(props);
+    this.entity.setProperties({ style: props });
   }
 
   toJSON() {

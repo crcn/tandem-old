@@ -8,7 +8,7 @@ import StageComponent from './stage';
 class RootEditorComponent extends React.Component {
   render() {
     return <div className='m-editor'>
-      <StageComponent {...this.props} entity={this.props.app.rootEntity} />
+      <StageComponent {...this.props} entity={this.props.app.rootEntity} zoom={1} />
     </div>;
   }
 }

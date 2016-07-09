@@ -19,6 +19,18 @@ function getPreviewRect(node) {
   return  {};
 }
 
+function convertStyle(style) {
+  var converted = {};
+  for (var key in style) {
+    var v = style[key];
+    if (/left|top|margin|width|height/.test(key) && !isNaN(v)) {
+      v = v + 'px';
+    }
+    converted[key] = v;
+  }
+  return converted;
+}
+
 @observable
 class HTMLNodePreview extends CoreObject {
   constructor(entity) {
@@ -26,11 +38,59 @@ class HTMLNodePreview extends CoreObject {
 
     this.entity = entity;
     this.node = this.createNode();
-    this.entity.setProperties({ preview: new EntityPreview(this.entity, this.node) });
+    this.entity.setProperties({ preview: EntityPreview.create(this.entity, this.node) });
+
+    // fugly - works for now.
+    entity.bus.push(this);
+    // entity.bus.execute(WatchPropertyEvent.create())
+  }
+
+  dispose() {
+    this.entity.bus.remove(this);
+  }
+
+  execute(event) {
+    if (event.type !== 'change') return;
+    this._didChange = !!event.changes.find((change) => {
+      return change.target === this.entity;
+    });
+
+    this.update();
+  }
+
+  update() {
+    if (this._didChange) {
+      this._didChange = false;
+      this.didChange();
+    }
   }
 }
 
 class HTMLElementPreview extends HTMLNodePreview {
+
+  didChange() {
+    if (this.entity.style) {
+      Object.assign(this.node.style, convertStyle(this.entity.style));
+    }
+
+    for (var key in this.entity.attributes) {
+      this.node.setAttribute(key, this.entity.attributes[key]);
+    }
+  }
+
+  update() {
+    super.update();
+    for (var child of this.childNodes) {
+      child.update();
+    }
+  }
+
+  dispose() {
+    super.dispose();
+    for (var child of this.childNodes) {
+      child.dispose();
+    }
+  }
 
   createNode() {
     var element = document.createElement(this.entity.name);
@@ -43,7 +103,7 @@ class HTMLElementPreview extends HTMLNodePreview {
       element.setAttribute(key, this.entity.attributes[key]);
     }
 
-    this.entity.childNodes.map(createNodePreview).forEach(function(preview) {
+    (this.childNodes = this.entity.childNodes.map(createNodePreview)).forEach(function(preview) {
       element.appendChild(preview.node);
     });
 
@@ -72,8 +132,17 @@ function createNodePreview(entity) {
 
 export default class PreviewComponent extends React.Component {
 
+  componentWillUpdate() {
+    // this._preview.update();
+  }
+
   componentDidMount() {
-    this.refs.preview.appendChild(createNodePreview(this.props.entity).node);
+    this._preview = createNodePreview(this.props.entity);
+    this.refs.preview.appendChild(this._preview.node);
+  }
+
+  componentWillUnmount() {
+    this._preview.dispose();
   }
 
   render() {

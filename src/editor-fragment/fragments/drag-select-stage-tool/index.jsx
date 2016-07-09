@@ -19,7 +19,6 @@ class DragSelectComponent extends React.Component {
   }
 
   execute(event) {
-    console.log(event);
     if (event.type === STAGE_PREVIEW_MOUSE_DOWN) {
       this.startDrag(event);
     }

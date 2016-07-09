@@ -31,7 +31,7 @@ class ResizerComponent extends React.Component {
 
   componentWillUnmount() {
     if (this._dragger) this._dragger.dispose();
-    this.props.app.notifier.remove(this);
+    this.props.bus.remove(this);
   }
 
   onKeyDown(message) {

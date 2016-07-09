@@ -74,6 +74,11 @@ function getInnerElementBounds(element) {
 
 export function translateLengthToInteger(length, property, relativeElement) {
   if (length === '') return 0;
+
+  if (isNaN(length) && typeof length === 'number') {
+    throw new Error('length cannot be NaN');
+  }
+
   return CSSParser.parse(CSSTokenizer.tokenize(length), astFactory).solveX({
     relativeElement: relativeElement,
     property       : property
