@@ -2,10 +2,10 @@ import './index.scss';
 import React from 'react';
 import BoundingRect from 'common/geom/bounding-rect';
 import { startDrag } from 'common/utils/component';
-// import { PREVIEW_STAGE_MOUSE_DOWN, SetFocusMessage } from 'editor/message-types';
+import { SelectEvent } from 'editor-fragment/selection/events';
+import { STAGE_PREVIEW_MOUSE_DOWN } from 'editor-fragment/events';
 import { boundsIntersect } from 'common/utils/geom';
 import { ReactComponentFactoryFragment } from 'common/react/fragments';
-
 
 class DragSelectComponent extends React.Component {
 
@@ -19,7 +19,8 @@ class DragSelectComponent extends React.Component {
   }
 
   execute(event) {
-    if (event.type === PREVIEW_STAGE_MOUSE_DOWN) {
+    console.log(event);
+    if (event.type === STAGE_PREVIEW_MOUSE_DOWN) {
       this.startDrag(event);
     }
   }
@@ -33,7 +34,7 @@ class DragSelectComponent extends React.Component {
     var container = this.refs.container;
     var b = container.getBoundingClientRect();
 
-    var entities = this.props.app.rootEntity.children;
+    var entities = this.props.app.rootEntity.childNodes;
 
     var left = event.clientX - b.left;
     var top  = event.clientY - b.top;
@@ -44,18 +45,19 @@ class DragSelectComponent extends React.Component {
       dragging: true
     });
 
-    startDrag(event, (event, info) => {
+
+    startDrag(event, (event, { delta }) => {
 
       var x = left;
       var y = top;
-      var w = Math.abs(info.delta.x);
-      var h = Math.abs(info.delta.y);
+      var w = Math.abs(delta.x);
+      var h = Math.abs(delta.y);
 
-      if (info.delta.x < 0) {
+      if (delta.x < 0) {
         x = left - w;
       }
 
-      if (info.delta.y < 0) {
+      if (delta.y < 0) {
         y = top - h;
       }
 
@@ -81,7 +83,7 @@ class DragSelectComponent extends React.Component {
         }
       });
 
-      app.notifier.notify(SetFocusMessage.create(selection));
+      app.bus.execute(SelectEvent.create(selection));
 
     }, () => {
       this.setState({

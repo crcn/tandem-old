@@ -51,6 +51,14 @@ Object.assign(Collection.prototype, {
   /**
    */
 
+  remove(item) {
+    var i = this.indexOf(item);
+    if (~i) this.splice(i, 1);
+  },
+
+  /**
+   */
+
   splice(index, length, ...repl) {
 
     // OVERRIDE ME. All mutations happen here

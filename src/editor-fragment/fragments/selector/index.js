@@ -1,7 +1,7 @@
 import { ApplicationFragment } from 'common/application/fragments';
-import { SelectEvent, SELECT } from 'common/selection/events';
+import { SelectEvent, SELECT } from 'editor-fragment/selection/events';
 import { TypeCallbackBus } from 'common/busses';
-import Selection from 'common/selection/collection';
+import Selection from 'editor-fragment/selection/collection';
 
 export const fragment = ApplicationFragment.create(
   'application/selector',
@@ -9,20 +9,26 @@ export const fragment = ApplicationFragment.create(
 );
 
 function initialize(app) {
-  app.bus.push(TypeCallbackBus.create(SELECT, select));
+  app.bus.push(TypeCallbackBus.create(SELECT, onSelectEvent));
 
   app.selection = [];
 
-  function select(event) {
-    var { item, multi } = event;
+  function onSelectEvent(event) {
+    var { items, keepPreviousSelection, toggle } = event;
     var currentSelection = app.selection || [];
     var newSelection;
 
-    if (!item) {
+    if (!items.length) {
       return app.setProperties({ selection: [] });
     }
 
-    var selectionCollectionFragment = app.fragmentDictionary.query(`selectorCollection/${item.type}`);
+    var type = items[0].type;
+
+    items.forEach(function(item) {
+      if (item.type !== type) throw new Error(`Cannot select multiple items with different types`);
+    });
+
+    var selectionCollectionFragment = app.fragmentDictionary.query(`selectorCollection/${type}`);
 
     if (selectionCollectionFragment) {
       newSelection = selectionCollectionFragment.create();
@@ -30,17 +36,26 @@ function initialize(app) {
       newSelection = Selection.create();
     }
 
-    if (multi && currentSelection.constructor == newSelection.constructor) {
+
+    if (keepPreviousSelection && currentSelection.constructor == newSelection.constructor) {
       newSelection.push(...currentSelection);
     }
 
-    var i = newSelection.indexOf(item);
+    for (var item of items) {
+      var i = newSelection.indexOf(item);
 
-    // toggle off
-    if (~i) {
-      newSelection.splice(i, 1);
-    } else {
-      newSelection.push(item);
+      if (toggle && keepPreviousSelection) {
+
+      }
+
+      // toggle off
+      if (~i) {
+        if (toggle)  {
+          newSelection.splice(i, 1);
+        }
+      } else {
+        newSelection.push(item);
+      }
     }
 
     app.setProperties({ selection: newSelection });

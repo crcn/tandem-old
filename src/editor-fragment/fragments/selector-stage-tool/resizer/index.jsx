@@ -3,8 +3,8 @@ import { startDrag } from 'common/utils/component';
 import PathComponent from './path';
 // import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'editor/message-types';
 
-const POINT_STROKE_WIDTH = 1;
-const POINT_RADIUS       = 2;
+const POINT_STROKE_WIDTH = 0;
+const POINT_RADIUS       = 3;
 
 class ResizerComponent extends React.Component {
 
@@ -24,14 +24,14 @@ class ResizerComponent extends React.Component {
     this.props.bus.push(this);
   }
 
-  notify(message) {
-    if (message.type !== 'keydown') return;
-    this.onKeyDown(message);
+  execute(event) {
+    if (event.type !== 'keydown') return;
+    this.onKeyDown(event);
   }
 
   componentWillUnmount() {
     if (this._dragger) this._dragger.dispose();
-    this.props.bus.remove(this);
+    this.props.app.notifier.remove(this);
   }
 
   onKeyDown(message) {
@@ -191,16 +191,17 @@ class ResizerComponent extends React.Component {
     var zrect = preview.getBoundingRect(false);
     var actStyle = preview.getStyle(false);
 
-    var cw = (pointRadius + strokeWidth * 2) * 2;
+    var cw = (pointRadius + strokeWidth) * 2;
 
     // offset stroke
     var resizerStyle = {
-      left     : rect.left - cw / 2 + strokeWidth,
-      top      : rect.top - cw / 2 + strokeWidth
+      left     : rect.left - 1 - cw/2,
+      top      : rect.top - 1 - cw/2
     };
 
     var capabilities = preview.getCapabilities();
     var movable = capabilities.movable;
+
 
     var points = [
       ['nw', movable == true, 0, 0],

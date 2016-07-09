@@ -1,8 +1,8 @@
 import { fragment } from './index';
 import expect from 'expect.js';
-import { SelectEvent } from 'common/selection/events';
+import { SelectEvent, ToggleSelectEvent } from 'editor-fragment/selection/events';
 import BaseApplication from 'common/application/base';
-import Selection from 'common/selection/collection';
+import Selection from 'editor-fragment/selection/collection';
 import { FactoryFragment } from 'common/fragments';
 
 describe(__filename + '#', function() {
@@ -16,7 +16,7 @@ describe(__filename + '#', function() {
 
   it('defines "selection" property on application on selection event', function() {
     var item = { name: 'blarg' };
-    app.bus.execute(SelectEvent.create(item));
+    app.bus.execute(ToggleSelectEvent.create(item));
     expect(app.selection.length).to.be(1);
   });
 
@@ -29,19 +29,19 @@ describe(__filename + '#', function() {
   });
 
   it('selects multiple items if multi is true', function() {
-    app.bus.execute(SelectEvent.create({ name: 'blarg' }));
+    app.bus.execute(ToggleSelectEvent.create({ name: 'blarg' }));
     expect(app.selection.length).to.be(1);
-    app.bus.execute(SelectEvent.create({ name: 'blarg' }, true));
+    app.bus.execute(ToggleSelectEvent.create({ name: 'blarg' }, true));
     expect(app.selection.length).to.be(2);
-    app.bus.execute(SelectEvent.create({ name: 'blarg' }));
+    app.bus.execute(ToggleSelectEvent.create({ name: 'blarg' }));
     expect(app.selection.length).to.be(1);
   });
 
   it('removes an item from the selection if it already exists', function() {
     var item = { name: 'blarg' };
-    app.bus.execute(SelectEvent.create(item));
+    app.bus.execute(ToggleSelectEvent.create(item));
     expect(app.selection.length).to.be(1);
-    app.bus.execute(SelectEvent.create(item, true));
+    app.bus.execute(ToggleSelectEvent.create(item, true));
     expect(app.selection.length).to.be(0);
   });
 
@@ -58,23 +58,36 @@ describe(__filename + '#', function() {
     app.fragmentDictionary.register(FactoryFragment.create('selectorCollection/display', DisplayCollection));
     app.fragmentDictionary.register(FactoryFragment.create('selectorCollection/other', OtherCollection));
 
-    app.bus.execute(SelectEvent.create({ type: 'display' }));
+    app.bus.execute(ToggleSelectEvent.create({ type: 'display' }));
     expect(app.selection).to.be.an(DisplayCollection);
-    app.bus.execute(SelectEvent.create({ type: 'display' }, true));
+    app.bus.execute(ToggleSelectEvent.create({ type: 'display' }, true));
     expect(app.selection).to.be.an(DisplayCollection);
     expect(app.selection.length).to.be(2);
 
-    app.bus.execute(SelectEvent.create({ type: 'other' }, true));
+    app.bus.execute(ToggleSelectEvent.create({ type: 'other' }, true));
     expect(app.selection).to.be.an(OtherCollection);
     expect(app.selection.length).to.be(1);
 
   });
 
   it('can deselect all be omitting item', function() {
-    app.bus.execute(SelectEvent.create({ type: 'display' }));
-    app.bus.execute(SelectEvent.create({ type: 'display' }, true));
+    app.bus.execute(ToggleSelectEvent.create({ type: 'display' }));
+    app.bus.execute(ToggleSelectEvent.create({ type: 'display' }, true));
     expect(app.selection.length).to.be(2);
-    app.bus.execute(SelectEvent.create());
+    app.bus.execute(ToggleSelectEvent.create());
     expect(app.selection.length).to.be(0);
   });
+
+  it('can select multiple in an event', function() {
+    app.bus.execute(ToggleSelectEvent.create([{ type: 'display' }, { type: 'display' }]));
+    expect(app.selection.length).to.be(2);
+  });
+
+  it('can turn toggling off', function() {
+    var item = {};
+    app.bus.execute(ToggleSelectEvent.create(item));
+    app.bus.execute(ToggleSelectEvent.create(item));
+    expect(app.selection.length).to.be(0);
+
+  })
 });

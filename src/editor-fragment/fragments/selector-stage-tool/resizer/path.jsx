@@ -45,7 +45,7 @@ class PathComponent extends React.Component {
     var strokeWidth = this.props.strokeWidth;
 
     var cr = this.props.pointRadius;
-    var cw = (cr + (strokeWidth || 1) * 2) * 2;
+    var cw = (cr + (strokeWidth || 1)) * 2;
     var w = x2 - x1 + cw;
     var h = y2 - y1 + cw;
 

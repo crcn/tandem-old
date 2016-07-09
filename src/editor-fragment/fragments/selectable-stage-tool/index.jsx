@@ -6,7 +6,7 @@ import cx from 'classnames';
 import React from 'react';
 import intersection from 'lodash/array/intersection';
 import { ReactComponentFactoryFragment } from 'common/react/fragments';
-import { SelectEvent } from 'common/selection/events';
+import { SelectEvent } from 'editor-fragment/selection/events';
 import { calculateBoundingRect } from 'common/utils/geom';
 
 class SelectableComponent extends React.Component {
@@ -59,8 +59,8 @@ class SelectableComponent extends React.Component {
       position   : 'absolute',
       width      : bounds.width,
       height     : bounds.height,
-      left       : bounds.left + 1,
-      top        : bounds.top + 1
+      left       : bounds.left,
+      top        : bounds.top
     };
 
     return <div style={style}

@@ -3,6 +3,7 @@
 
 import BoundingRect from 'common/geom/bounding-rect';
 // import { DisplayEntityComputer } from 'common/entities';
+import CoreObject from 'common/object';
 import { translateStyleToIntegers } from 'common/utils/css/translate-style';
 
 import {
@@ -34,11 +35,13 @@ function getElementOffset(element) {
   return { left, top };
 }
 
-class ReactEntityPreview {
+class ReactEntityPreview extends CoreObject {
 
   constructor(entity, node) {
-    this.entity = entity;
-    this.node   = node;
+    super({
+      entity: entity,
+      node  : node
+    });
     this.getBoundingRect = this.getBoundingRect.bind(this);
   }
 

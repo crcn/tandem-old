@@ -1,13 +1,13 @@
 
 // import { clone } from 'common/utils/object';
-import { SelectEvent } from 'common/selection/events';
+import { SelectEvent } from 'editor-fragment/selection/events';
 import CoreObject from 'common/object';
 import observable from 'common/object/mixins/observable';
 import BoundingRect from 'common/geom/bounding-rect';
 import { calculateBoundingRect } from 'common/utils/geom';
 import assert from 'assert';
 import { FactoryFragment } from 'common/fragments';
-import Selection from 'common/selection/collection';
+import Selection from 'editor-fragment/selection/collection';
 
 @observable
 class Preview extends CoreObject {

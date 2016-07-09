@@ -12,7 +12,6 @@ import { ReactComponentFactoryFragment } from 'common/react/fragments';
 const PADDING            = 6;
 const SNAP_MARGIN        = 5;
 
-
 class SelectorComponent extends React.Component {
 
   constructor() {
@@ -60,8 +59,8 @@ class SelectorComponent extends React.Component {
 
     var boundsStyle = {
       position: 'absolute',
-      left: entireBounds.left + 1,
-      top: entireBounds.top + 1,
+      left: entireBounds.left - 1,
+      top: entireBounds.top - 1,
       width: entireBounds.width,
       height: entireBounds.height
     };

@@ -19,15 +19,12 @@
 
   &--bounds {
     border: 1px solid $color-blue-4;
-    opacity: 0.3;
+    opacity: 1;
   }
 
   & svg {
-    & path {
-      // stroke: $color-blue-4;
-    }
     & rect {
-      fill: $color-blue-10;
+      fill: $color-blue-7;
       stroke: $color-blue-4;
     }
   }
