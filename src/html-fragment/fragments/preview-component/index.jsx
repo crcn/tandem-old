@@ -129,8 +129,9 @@ class HTMLFramePreview extends HTMLNodePreview {
     }, this.entity.style);
 
     node.addEventListener('load', () => {
-      node.contentWindow.document.body.style.margin =
-      node.contentWindow.document.body.style.padding =
+      var body = node.contentWindow.document.body;
+      body.style.margin =
+      body.style.padding =
       '0px';
 
       (this.childNodes = this.entity.childNodes.map(createNodePreview)).forEach(function(preview) {

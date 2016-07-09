@@ -26,7 +26,7 @@ export default class Element extends Node {
 
   set childNodes(value) {
     this._childNodes = value;
-    for (var child of value) this._linkChild(value);
+    for (var child of value) this._linkChild(child);
   }
 
   get childNodes() {

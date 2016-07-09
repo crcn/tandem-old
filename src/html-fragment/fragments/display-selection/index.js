@@ -109,7 +109,6 @@ class Preview extends CoreObject {
 class HTMLEntitySelection extends Selection {
 
   constructor(properties) {
-    console.log('ent zent')
     super(properties);
     this.preview = new Preview(this, this.bus);
   }

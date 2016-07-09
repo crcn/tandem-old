@@ -16,7 +16,8 @@ import {
   multiplyStyle
 } from 'common/utils/html';
 
-function getElementOffset(element) {
+function getElementOffset(entity) {
+  var element = entity.preview.node;
   var p = element.parentNode;
 
   var left = 0;
@@ -30,6 +31,29 @@ function getElementOffset(element) {
     left -= (p.scrollLeft || 0) / zoom;
     top  -= (p.scrollTop  || 0) / zoom;
     p = p.parentNode || p.host;
+  }
+
+  var frameOffset = getFrameOffset(entity);
+  left += frameOffset.left;
+  top  += frameOffset.top;
+
+  return { left, top };
+}
+
+function getFrameOffset(entity) {
+  var left = 0;
+  var top  = 0;
+
+  entity = entity.parentNode;
+
+  while(entity) {
+    if (entity.displayType === 'htmlFrame') {
+      var bounds = entity.preview.getBoundingRect();
+      left += bounds.left;
+      top  += bounds.top;
+    }
+
+    entity = entity.parentNode;
   }
 
   return { left, top };
@@ -66,7 +90,7 @@ class ReactEntityPreview extends CoreObject {
     // absolute positions are always in pixels - always round
     // to the nearest one
     var element = this.node;
-    var offset  = getElementOffset(element);
+    var offset  = getElementOffset(this.entity);
 
     var bounds = this.getBoundingRect(false);
     var style  = this.getStyle(false);
@@ -180,13 +204,14 @@ class ReactEntityPreview extends CoreObject {
     var entity = this.entity;
     var rect   = node.getBoundingClientRect();
     var cs     = this.getComputedStyle();
+    var offset = getFrameOffset(this.entity);
 
     // margins are also considered bounds - add them here. Fixes a few issues
     // when selecting multiple items with different items & dragging them around.
-    var left   = rect.left   - cs.marginLeft;
-    var top    = rect.top    - cs.marginTop;
-    var right  = rect.right  + cs.marginRight;
-    var bottom = rect.bottom + cs.marginBottom;
+    var left   = rect.left   - cs.marginLeft + offset.left;
+    var top    = rect.top    - cs.marginTop + offset.top;
+    var right  = rect.right  + cs.marginRight + offset.left;
+    var bottom = rect.bottom + cs.marginBottom + offset.top;
 
     var width = right - left;
     var height = bottom - top;

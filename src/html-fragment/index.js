@@ -22,6 +22,7 @@ function create(app) {
   app.rootEntity = DOMFrameEntitiy.create({
     bus: app.bus,
     style: {
+      left: '100px',
       width: '200px',
       height: '200px'
     },
