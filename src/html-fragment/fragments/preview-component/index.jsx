@@ -119,7 +119,30 @@ class HTMLTextPreview extends HTMLNodePreview {
 }
 
 class HTMLFramePreview extends HTMLNodePreview {
+  createNode() {
+    var node = document.createElement('iframe');
 
+    Object.assign(node.style, {
+      position: 'absolute',
+      border: '0px',
+      backgroundColor: '#FFF'
+    }, this.entity.style);
+
+    node.addEventListener('load', () => {
+      node.contentWindow.document.body.style.margin =
+      node.contentWindow.document.body.style.padding =
+      '0px';
+
+      (this.childNodes = this.entity.childNodes.map(createNodePreview)).forEach(function(preview) {
+        node.contentWindow.document.body.appendChild(preview.node);
+      })
+    });
+    return node;
+  }
+
+  didChange() {
+    Object.assign(this.node.style, convertStyle(this.entity.style));
+  }
 }
 
 function createNodePreview(entity) {

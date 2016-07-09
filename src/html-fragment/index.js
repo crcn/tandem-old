@@ -3,6 +3,7 @@ import { ApplicationFragment } from 'common/application/fragments';
 import * as fragments from './fragments';
 
 import DOMElementEntity from './entities/dom-element';
+import DOMFrameEntitiy from './entities/dom-frame';
 import DOMTextEntity from './entities/dom-text';
 import { TypeCallbackBus } from 'common/busses';
 import compileXMLtoJS from 'paperclip/xml/compile';
@@ -18,33 +19,41 @@ export default [
 
 function create(app) {
 
-  app.rootEntity = DOMElementEntity.create({
+  app.rootEntity = DOMFrameEntitiy.create({
     bus: app.bus,
-    name: 'div',
     style: {
-      backgroundColor: 'red',
-      'position': 'absolute',
-      'padding': '100px',
-      left: '100px',
-      top: '20px'
+      width: '200px',
+      height: '200px'
     },
-    attributes: {
-      'class': 'blarg'
-    },
-    childNodes: [
-      DOMElementEntity.create({
-        bus: app.bus,
-        name: 'div',
-        style: {
-          backgroundColor: 'blue',
-          left: '100px',
-          top: '20px',
-          width: '300px',
-          height: '100px'
-        }
-      })
-    ]
+    childNodes: [DOMElementEntity.create({
+      bus: app.bus,
+      name: 'div',
+      style: {
+        backgroundColor: 'red',
+        'position': 'absolute',
+        'padding': '100px',
+        left: '100px',
+        top: '20px'
+      },
+      attributes: {
+        'class': 'blarg'
+      },
+      childNodes: [
+        DOMElementEntity.create({
+          bus: app.bus,
+          name: 'div',
+          style: {
+            backgroundColor: 'blue',
+            left: '100px',
+            top: '20px',
+            width: '300px',
+            height: '100px'
+          }
+        })
+      ]
+    })]
   });
+
 
   app.bus.push(TypeCallbackBus.create('setSource', function(event) {
     // TODO: this is temporary code
