@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 require('babel-polyfill');
-require('babel-register');
-var app = require('../packages/server/entry');
+
+var app = require('../public/bundle/server.js');
+
 var argv = require('yargs').argv;
 var path = require('path');
 
@@ -11,7 +12,7 @@ if (!/^\//.test(filepath)) {
   filepath = path.join(process.cwd(), filepath);
 }
 
-app.notifier.notify({
+app.bus.execute({
   type     : 'openFile',
-  filePath : filepath
+  filepath : filepath
 });
