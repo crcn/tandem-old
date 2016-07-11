@@ -1,5 +1,5 @@
 import BaseApplication from 'common/application/base';
-import renderRootComponentFragment from './fragments/render-root-component'
+import * as fragments from './fragments';
 import editorFragment from 'editor-fragment';
 import entityFragment from 'entity-fragment';
 import htmlFragment from 'html-fragment';
@@ -17,7 +17,7 @@ export default class BrowserApplication extends BaseApplication {
     super._registerFragments();
 
     this.fragmentDictionary.register(
-      renderRootComponentFragment,
+      ...Object.values(fragments),
       editorFragment,
       entityFragment,
       htmlFragment

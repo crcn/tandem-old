@@ -12,6 +12,23 @@ class Logger {
     if (!this.level) {
       this.level = LogLevel.ALL;
     }
+
+    if (!this.prefix) {
+      this.prefix = '';
+    }
+
+    if (this.parent) {
+      this.prefix = this.parent.prefix + this.prefix;
+    }
+  }
+
+  createChild(properties) {
+    return Logger.create({
+      ...properties,
+      bus: this.bus,
+      level: this.level,
+      parent: this
+    });
   }
 
   verbose() {
@@ -31,7 +48,7 @@ class Logger {
   }
 
   _log(level, text, ...params) {
-    var message = sprintf(text, ...params.map(function(param) {
+    var message = sprintf(`${this.prefix}${text}`, ...params.map(function(param) {
       if (typeof param === 'object') {
         param = JSON.stringify(param, null, 2);
       }

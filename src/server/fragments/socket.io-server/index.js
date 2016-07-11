@@ -9,17 +9,26 @@ export const fragment = ApplicationFragment.create('application/socket.io-server
 function create(app) {
   app.bus.push(TypeCallbackBus.create(LOAD, load));
   app.bus.push(TypeCallbackBus.create(INITIALIZE, initialize));
-  app.bus.push(FilterBus.create(sift({ public: true }), CallbackBus.create(executeRemoteEvent)));
+  app.bus.push(
+    FilterBus.create(
+      sift({ public: true, remote: { $ne: true } }),
+      CallbackBus.create(executeRemoteEvent)
+    )
+  );
 
-  const port = app.config.socketio.port;
+  const port   = app.config.socketio.port;
+  const logger = app.logger.createChild({ prefix: 'socket.io ' });
 
   function load(event) {
-    app.logger.verbose('checking for existing socket.io instances');
+    logger.verbose('checking for existing socket.io instances');
   }
 
   function initialize() {
-    app.logger.info('starting socket.io server on port %d', port);
+    logger.info('server on port %d', port);
     var server = createServer();
+    server.on('connection', function(connection) {
+      connection.on('message', app.bus.execute.bind(app.bus));
+    })
     server.listen(port);
   }
 

@@ -4,7 +4,7 @@ import { INITIALIZE } from 'common/application/events';
 import * as ReactDOM from 'react-dom';
 import throttle from 'lodash/function/throttle';
 
-export default ApplicationFragment.create(
+export const fragment = ApplicationFragment.create(
   'render-root-component',
   create
 );

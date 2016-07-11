@@ -9,7 +9,7 @@
   "scripts": {
     "test": "karma start",
     "start": "parallel-webpack . --watch",
-    "server": "babel-node src/server/entry.js"
+    "browser": "static public"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
     "diff": "^2.2.1",
     "diff-dom": "^2.0.3",
     "express": "^4.13.3",
+    "gaze": "^1.1.0",
     "grim": "^2.0.0",
     "inflection": "^1.8.0",
     "js-git": "^0.7.7",
@@ -80,9 +81,9 @@
     "karma-spec-reporter": "0.0.23",
     "karma-webpack": "^1.7.0",
     "less": "^2.5.3",
-    "linklocal": "^2.5.2",
     "mocha": "^2.4.5",
     "node-sass": "^3.4.2",
+    "node-static": "^0.7.7",
     "parallel-webpack": "^1.5.0",
     "pegjs": "^0.9.0",
     "phantomjs": "^1.9.19",

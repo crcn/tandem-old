@@ -7,6 +7,7 @@ export const fragment = ApplicationFragment.create('openFile', createOpenFileHan
 
 function createOpenFileHandler(app) {
   app.bus.push(TypeCallbackBus.create('openFile', onOpenFile));
+  const logger = app.logger.createChild({ prefix: 'file handler ' });
 
   function onOpenFile({ filepath, watch }) {
 
@@ -24,13 +25,14 @@ function createOpenFileHandler(app) {
   }
 
   function openFile(filepath) {
-    app.logger.info('opening file %s', filepath);
+    logger.info('opening %s', filepath);
 
     // pass the file onto specific file handlers
     app.bus.execute({
       type     : 'fileContent',
       public   : true,
       filepath : filepath,
+      fileType : filepath.split('.').pop(),
       content  : fs.readFileSync(filepath, 'utf8')
     });
   }
