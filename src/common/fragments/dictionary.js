@@ -1,6 +1,7 @@
 import Collection from 'common/object/collection';
 import create from 'common/utils/class/create';
 import flatten from 'lodash/array/flattenDeep';
+import assert from 'assert';
 
 export default class FragmentDictionary {
 
@@ -22,6 +23,10 @@ export default class FragmentDictionary {
     this._fragments.push(...fragments);
 
     for (var fragment of fragments) {
+
+      // this happens enough -- make a useful message
+      assert(fragment, 'fragment cannot be undefined');
+  
       var ns = fragment.ns;
       var nsParts = ns.split('/');
 

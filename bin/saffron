@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 require('babel-polyfill');
-
 var app = require('../public/bundle/server.js');
 
 var argv = require('yargs').argv;
@@ -14,5 +13,6 @@ if (!/^\//.test(filepath)) {
 
 app.bus.execute({
   type     : 'openFile',
-  filepath : filepath
+  filepath : filepath,
+  watch    : true
 });

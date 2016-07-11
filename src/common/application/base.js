@@ -2,16 +2,20 @@ import CoreObject from 'common/object';
 import { BusCollection } from 'common/busses';
 import observable from 'common/object/mixins/observable';
 import { InitializeEvent, LoadEvent } from './events';
+import { applicationFragment as loggerFragment } from 'common/logger';
+import { consoleLogFragment } from 'common/logger/fragments';
 import FragmentDictionary from 'common/fragments/dictionary';
 import { APPLICATION_NS } from './fragments';
-
-import loggerFragment from './fragments/logger';
 
 @observable
 export default class BaseApplication extends CoreObject {
 
   constructor(properties) {
     super(properties);
+
+    if (!this.config) {
+      this.config = {};
+    }
 
     // the bus is the central communication hub for the rest
     // of the application
@@ -46,6 +50,7 @@ export default class BaseApplication extends CoreObject {
   _registerFragments() {
     this.fragmentDictionary.register(
       loggerFragment,
+      consoleLogFragment,
       ...(this.fragments || [])
     );
   }

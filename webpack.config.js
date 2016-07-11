@@ -72,6 +72,16 @@ function createConfig(options) {
     }
   })
 }
+var fs = require('fs');
+
+var nodeModules = {};
+fs.readdirSync('node_modules')
+.filter(function(x) {
+  return ['.bin'].indexOf(x) === -1;
+})
+.forEach(function(mod) {
+  nodeModules[mod] = 'commonjs ' + mod;
+});
 
 module.exports = [
   createConfig({
@@ -86,6 +96,7 @@ module.exports = [
     target: 'node',
     output: {
       libraryTarget: 'commonjs2'
-    }
+    },
+    externals: nodeModules
   })
 ]
