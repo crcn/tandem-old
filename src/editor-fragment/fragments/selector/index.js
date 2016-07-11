@@ -1,6 +1,6 @@
 import { ApplicationFragment } from 'common/application/fragments';
 import { SelectEvent, SELECT } from 'editor-fragment/selection/events';
-import { TypeCallbackBus } from 'common/busses';
+import { TypeCallbackBus } from 'common/mesh';
 import Selection from 'editor-fragment/selection/collection';
 
 export const fragment = ApplicationFragment.create(
@@ -9,7 +9,7 @@ export const fragment = ApplicationFragment.create(
 );
 
 function initialize(app) {
-  app.bus.push(TypeCallbackBus.create(SELECT, onSelectEvent));
+  app.busses.push(TypeCallbackBus.create(SELECT, onSelectEvent));
 
   app.selection = [];
 

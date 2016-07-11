@@ -5,7 +5,7 @@ import * as fragments from './fragments';
 import DOMElementEntity from './entities/dom-element';
 import DOMFrameEntitiy from './entities/dom-frame';
 import DOMTextEntity from './entities/dom-text';
-import { TypeCallbackBus } from 'common/busses';
+import { TypeCallbackBus } from 'common/mesh';
 import compileXMLtoJS from 'paperclip/xml/compile';
 import { diff, patch } from 'common/utils/node/diff';
 
@@ -58,7 +58,7 @@ function create(app) {
   });
 
 
-  app.bus.push(TypeCallbackBus.create('setSource', function(event) {
+  app.busses.push(TypeCallbackBus.create('setSource', function(event) {
     // TODO: this is temporary code
     var newEntity = compileXMLtoJS(event.source)(function(type) {
       switch(type) {

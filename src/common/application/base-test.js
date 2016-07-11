@@ -1,5 +1,5 @@
 import BaseApplication from './base';
-import { CallbackBus } from 'common/busses';
+import { WrapBus } from 'mesh';
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {
@@ -15,7 +15,7 @@ describe(__filename + '#', function() {
   it('properly initializes the application', async function() {
     var app = BaseApplication.create();
     var events = [];
-    app.bus.push(CallbackBus.create((event) => events.push(event)))
+    app.busses.push(WrapBus.create((event) => events.push(event)))
     await app.initialize();
     expect(events.length).to.be(2);
     expect(events[0].type).to.be('load');

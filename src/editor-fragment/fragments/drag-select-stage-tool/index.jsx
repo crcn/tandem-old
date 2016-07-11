@@ -15,7 +15,7 @@ class DragSelectComponent extends React.Component {
   }
 
   componentDidMount() {
-    this.props.bus.push(this);
+    this.props.app.busses.push(this);
   }
 
   execute(event) {
@@ -25,7 +25,7 @@ class DragSelectComponent extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.bus.remove(this);
+    this.props.app.busses.remove(this);
   }
 
   startDrag(event) {

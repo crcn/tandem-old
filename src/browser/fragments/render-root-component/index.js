@@ -1,5 +1,6 @@
 import { ApplicationFragment } from 'common/application/fragments';
-import { TypeCallbackBus } from 'common/busses';
+import { TypeCallbackBus } from 'common/mesh';
+import { WrapBus } from 'mesh';
 import { INITIALIZE } from 'common/application/events';
 import * as ReactDOM from 'react-dom';
 import throttle from 'lodash/function/throttle';
@@ -11,7 +12,7 @@ export const fragment = ApplicationFragment.create(
 
 function create(app) {
 
-  app.bus.push(TypeCallbackBus.create(INITIALIZE, initialize));
+  app.busses.push(TypeCallbackBus.create(INITIALIZE, initialize));
 
   function initialize(event) {
     var rootComponentClassFragment = app.fragmentDictionary.query('rootComponentClass');
@@ -28,8 +29,6 @@ function create(app) {
       }), app.element);
     }
 
-    app.bus.push({
-      execute: throttle(render, 10)
-    });
+    app.busses.push(WrapBus.create(throttle(render, 10)));
   }
 }

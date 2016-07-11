@@ -1,2 +1,2 @@
 export { fragment as socketIoServerFragment } from './socket.io-server';
-export { fragment as openFileHandler } from './open-file-handler';
+export { fragment as filesHandlerFragment } from './files-handler';

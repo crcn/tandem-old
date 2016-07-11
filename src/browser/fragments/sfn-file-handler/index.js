@@ -1,21 +1,27 @@
 import { ApplicationFragment } from 'common/application/fragments';
-import { FilterBus, CallbackBus } from 'common/busses';
+import { AcceptBus, WrapBus } from 'mesh';
+import CoreObject from 'common/object';
 import sift from 'sift';
 
 export const fragment = ApplicationFragment.create('sfnFileHandler', create);
 
+class SfnFile extends CoreObject {
+
+}
+
 function create(app) {
 
-  const logger = app.logger.createChild({ prefix: 'sfn file handler '});
+  const logger = app.logger.createChild({ prefix: 'sfn file handler: '});
 
-  app.bus.push(
-    FilterBus.create(
-      sift({ type: 'fileContent', fileType: 'sfn' }),
-      CallbackBus.create(onSfnFile)
+  app.busses.push(
+    AcceptBus.create(
+      sift({ type: 'createFileModel', fileType: 'sfn' }),
+      WrapBus.create(onSfnFile)
     )
   );
 
-  function onSfnFile(event) {
-    logger.info('content');
+  function onSfnFile({ filepath }) {
+    logger.info('handling %s', filepath);
+    return SfnFile.create({ filepath });
   }
 }

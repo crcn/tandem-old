@@ -1,6 +1,5 @@
 import CoreObject from 'common/object';
 import observable from 'common/object/mixins/observable';
-import { CallbackBus } from 'common/busses';
 import Controller from './controller';
 import { default as Template } from './view-factory';
 import { createVNode } from './vdom/create';

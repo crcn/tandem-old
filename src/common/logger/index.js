@@ -68,6 +68,6 @@ function createAppLogger(app) {
   app.logger = Logger.create({ bus: app.bus, ...(app.config.logger || {}) });
 
   for (var loggerFragment of app.fragmentDictionary.queryAll('logger/**')) {
-    loggerFragment.create(app.logger);
+    loggerFragment.create(app);
   }
 }

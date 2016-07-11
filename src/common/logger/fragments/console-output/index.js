@@ -1,5 +1,5 @@
 import { FactoryFragment } from 'common/fragments';
-import { TypeCallbackBus } from 'common/busses';
+import { TypeCallbackBus } from 'common/mesh';
 import { LOG } from 'common/logger/events';
 import {
   VERBOSE as VERBOSE_LEVEL,
@@ -11,12 +11,19 @@ import chalk from 'chalk';
 
 export const fragment = FactoryFragment.create('logger/console', { create });
 
-function create(logger) {
+function create(app) {
 
-  logger.bus.push(TypeCallbackBus.create(LOG, log));
+  app.busses.push(TypeCallbackBus.create(LOG, log));
 
   function log(event) {
-    console.log('%s %s', chalk[{
+    var logFn = {
+      [VERBOSE_LEVEL]: console.log.bind(console),
+      [INFO_LEVEL]: console.info.bind(console),
+      [WARN_LEVEL]: console.warn.bind(console),
+      [ERROR_LEVEL]: console.error.bind(console),
+    }[event.level];
+
+    logFn('%s %s', chalk[{
       [VERBOSE_LEVEL]: 'grey',
       [INFO_LEVEL]: 'cyan',
       [WARN_LEVEL]: 'yellow',

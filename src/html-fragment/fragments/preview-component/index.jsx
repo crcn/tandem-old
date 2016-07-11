@@ -3,6 +3,7 @@ import CoreObject from 'common/object';
 import observable from 'common/object/mixins/observable';
 import { ReactComponentFactoryFragment } from 'common/react/fragments';
 import { translateStyleToIntegers } from 'common/utils/css/translate-style';
+import { EmptyResponse } from 'mesh';
 import BoundingRect from 'common/geom/bounding-rect';
 import sift from 'sift';
 import EntityPreview from './entity-preview';
@@ -39,9 +40,6 @@ class HTMLNodePreview extends CoreObject {
     this.entity = entity;
     this.node = this.createNode();
     this.entity.setProperties({ preview: EntityPreview.create(this.entity, this.node) });
-
-    // fugly - works for now.
-    entity.bus.push(this);
   }
 
   dispose() {
@@ -54,13 +52,11 @@ class HTMLNodePreview extends CoreObject {
       return change.target === this.entity;
     });
 
-    if (this._didChange) {
-      this.update();
-    }
+    this.update();
   }
 
   update() {
-    if (this._didChange) {
+    if (this._didChange || true) {
       this._didChange = false;
       this.didChange();
     }
@@ -164,6 +160,7 @@ export default class PreviewComponent extends React.Component {
   componentDidMount() {
     this._preview = createNodePreview(this.props.entity);
     this.refs.preview.appendChild(this._preview.node);
+    this.props.app.busses.push(this._preview);
   }
 
   componentWillUnmount() {

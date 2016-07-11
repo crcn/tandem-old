@@ -1,5 +1,5 @@
 import CoreObject from 'common/object';
-import { BusCollection } from 'common/busses';
+import { ParallelBus } from 'mesh';
 import observable from 'common/object/mixins/observable';
 import { InitializeEvent, LoadEvent } from './events';
 import { applicationFragment as loggerFragment } from 'common/logger';
@@ -19,7 +19,8 @@ export default class BaseApplication extends CoreObject {
 
     // the bus is the central communication hub for the rest
     // of the application
-    this.bus                = BusCollection.create(this);
+    this.busses             = [];
+    this.bus                = ParallelBus.create(this.busses);
     this.fragmentDictionary = FragmentDictionary.create();
 
     this._registerFragments();

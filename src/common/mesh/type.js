@@ -1,5 +1,6 @@
 import assertPropertyExists from 'common/utils/assert/property-exists';
 import create from 'common/utils/class/create';
+import { EmptyResponse } from 'mesh';
 
 export default class TypeBus {
 
@@ -12,8 +13,10 @@ export default class TypeBus {
 
   execute(event) {
     if (event.type === this.type) {
-      this.bus.execute(event);
+      return this.bus.execute(event);
     }
+
+    return EmptyResponse.create();
   }
 
   static create = create;
