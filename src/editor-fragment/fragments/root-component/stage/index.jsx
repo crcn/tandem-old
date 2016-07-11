@@ -8,6 +8,7 @@ import { MouseEvent, STAGE_PREVIEW_MOUSE_DOWN } from 'editor-fragment/events';
 
 export default class StageComponent extends React.Component {
   render() {
+    if (!this.props.app.rootEntity) return null;
     return <div className='m-editor-stage'>
       <PreviewComponent {...this.props} />
       <StageToolsComponent {...this.props} />

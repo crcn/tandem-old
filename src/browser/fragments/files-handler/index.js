@@ -1,7 +1,7 @@
 import { ApplicationFragment } from 'common/application/fragments';
 import { INITIALIZE } from 'common/application/events';
 import { TypeCallbackBus } from 'common/mesh';
-
+import OpenFilesCollection from './open-files-collection';
 
 export const fragment = ApplicationFragment.create('fileHandler', create);
 
@@ -12,7 +12,7 @@ function create(app) {
   );
 
   const logger = app.logger.createChild({ prefix: 'file handler: ' });
-  var openFiles = [];
+  var openFiles = OpenFilesCollection.create({ bus: app.bus });
 
   async function initialize(event) {
     await getOpenFiles();
@@ -25,28 +25,27 @@ function create(app) {
     }).readAll();
 
     for (const file of files) {
-      await openFile(file);
+      await openFile({ file });
     }
   }
 
-  async function openFile(file) {
+  async function openFile({ file }) {
 
-    var model = openFiles.find(sift({ filepath: file.filepath }));
+    var model = openFiles.find(sift({ path: file.path }));
 
     if (model) {
-      logger.info('updating file %s', file.filepath);
-      logger.info(file.content); 
+      logger.info('updating file %s', file.path);
       model.setProperties(file);
       return;
     }
 
     model = (await app.bus.execute({
       type: 'createFileModel',
-      ...file
+      file: file
     }).readAll())[0];
 
     if (!model) {
-      logger.error('cannot open file %s', file.filepath);
+      logger.error('cannot open file %s', file.path);
       return;
     }
 

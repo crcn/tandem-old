@@ -1,3 +1,11 @@
-<div>
-  hello world!!!!
-</div>
+<frame>
+  <div style="background-color: red">
+    test
+  </div>
+</frame>
+
+<frame style="position: absolute; left: 100px; top: 300px;">
+  <div style="background-color: red">
+    test2
+  </div>
+</frame>

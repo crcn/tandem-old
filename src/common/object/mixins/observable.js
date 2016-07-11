@@ -70,6 +70,7 @@ function decorateObjectClass(clazz) {
 
     if (changes && changes.length) {
       this.bus.execute(ChangeEvent.create(changes));
+      if (this.didChange) this.didChange(changes);
     }
   }
 
@@ -94,6 +95,7 @@ function decorateCollectionClass(clazz) {
       });
 
       this.bus.execute(ChangeEvent.create(changes));
+      if (this.didChange) this.didChange(changes);
     }
 
     var ret = oldSplice.apply(this, arguments);

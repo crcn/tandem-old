@@ -32,7 +32,6 @@ function convertStyle(style) {
   return converted;
 }
 
-@observable
 class HTMLNodePreview extends CoreObject {
   constructor(entity) {
     super();
@@ -61,6 +60,10 @@ class HTMLNodePreview extends CoreObject {
       this.didChange();
     }
   }
+
+  didChange() {
+
+  }
 }
 
 class HTMLElementPreview extends HTMLNodePreview {
@@ -71,6 +74,7 @@ class HTMLElementPreview extends HTMLNodePreview {
     }
 
     for (var key in this.entity.attributes) {
+      if (/style/.test(key)) continue;
       this.node.setAttribute(key, this.entity.attributes[key]);
     }
   }
@@ -90,7 +94,7 @@ class HTMLElementPreview extends HTMLNodePreview {
   }
 
   createNode() {
-    var element = document.createElement(this.entity.name);
+    var element = document.createElement(this.entity.nodeName);
 
     if (this.entity.style) {
       Object.assign(element.style, this.entity.style);
@@ -154,13 +158,26 @@ function createNodePreview(entity) {
 export default class PreviewComponent extends React.Component {
 
   componentWillUpdate() {
-    // this._preview.update();
+    if (this._preview.entity !== this.props.entity) {
+      this._resetPreview();
+    }
   }
 
-  componentDidMount() {
+  _resetPreview() {
+
+    if (this._preview) {
+      this.props.app.busses.splice(this.props.app.busses.indexOf(this._preview), 1);
+      this.refs.preview.removeChild(this._preview.node);
+    }
+
     this._preview = createNodePreview(this.props.entity);
     this.refs.preview.appendChild(this._preview.node);
     this.props.app.busses.push(this._preview);
+    this._preview.update();
+  }
+
+  componentDidMount() {
+    this._resetPreview();
   }
 
   componentWillUnmount() {

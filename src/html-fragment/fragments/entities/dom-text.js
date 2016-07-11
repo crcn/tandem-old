@@ -1,4 +1,5 @@
 import DisplayEntity from 'common/entities/display';
+import { FactoryFragment } from 'common/fragments';
 
 export default class DOMTextEntity extends DisplayEntity {
   constructor(properties) {
@@ -9,3 +10,5 @@ export default class DOMTextEntity extends DisplayEntity {
     });
   }
 }
+
+export const fragment = FactoryFragment.create('entities/text', DOMTextEntity);

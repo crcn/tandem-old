@@ -21,7 +21,7 @@ export default class Element extends Node {
   }
 
   get attributes() {
-    return this._attributes;
+    return this._attributes || {};
   }
 
   set childNodes(value) {

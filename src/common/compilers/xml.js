@@ -1,4 +1,4 @@
-import { parse } from './parser.peg';
+import { parse } from 'common/parsers/xml.peg';
 
 export default function compile(source) {
   return (new Function(`return ${translate(parse(source))}`))();

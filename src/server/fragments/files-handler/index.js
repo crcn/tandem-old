@@ -33,18 +33,18 @@ function createOpenFileHandler(app) {
     logger.info('opening %s', filepath);
 
     var fileInfo = {
-      filepath : filepath,
-      fileType : filepath.split('.').pop(),
+      path     : filepath,
+      type     : filepath.split('.').pop(),
       content  : fs.readFileSync(filepath, 'utf8')
     };
 
     openFiles[fileInfo] = fileInfo;
-    
+
     // pass the file onto specific file handlers
     app.bus.execute({
       type     : 'handleFileContent',
       public   : true,
-      ...fileInfo
+      file     : fileInfo
     });
   }
 
