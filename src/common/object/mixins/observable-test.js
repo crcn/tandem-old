@@ -1,3 +1,4 @@
+import expect from 'expect.js';
 import observable from './observable';
 import CoreObject from '../index';
 import Collection from '../collection';
@@ -9,13 +10,13 @@ describe(__filename + '#', function () {
       @observable
       class ObservableObject extends CoreObject { }
 
-      var ref = ObservableObject.create();
+      ObservableObject.create();
     });
 
     it('includes all the changes on the object', function () {
 
-      var changes = [];
-      var bus = {
+      let changes = [];
+      const bus = {
         execute(event) {
           changes = event.changes;
         },
@@ -24,7 +25,7 @@ describe(__filename + '#', function () {
       @observable
       class ObservableObject extends CoreObject { }
 
-      var ref = ObservableObject.create({ bus: bus });
+      const ref = ObservableObject.create({ bus: bus });
 
       ref.setProperties({ a: 1 });
 
@@ -55,10 +56,8 @@ describe(__filename + '#', function () {
     it('can be made observable', function () {
 
       var i = 0;
-
-      var changes = [];
       var bus = {
-        execute(event) {
+        execute() {
           i++;
         },
       };
@@ -66,7 +65,7 @@ describe(__filename + '#', function () {
       @observable
       class ObservableCollection extends Collection { }
 
-      var ref = ObservableCollection.create({ bus: bus });
+      const ref = ObservableCollection.create({ bus: bus });
 
       ref.push(1, 2, 3);
       expect(i).to.be(1);
@@ -84,8 +83,8 @@ describe(__filename + '#', function () {
       @observable
       class ObservableCollection extends Collection { }
 
-      var ref = ObservableCollection.create({ bus: bus });
-      var changes = [];
+      const ref = ObservableCollection.create({ bus: bus });
+      changes = [];
 
       ref.push(1, 2);
       expect(changes.length).to.be(1);

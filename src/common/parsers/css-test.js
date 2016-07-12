@@ -67,7 +67,7 @@ describe(__filename + '#', function () {
   });
 
   it('can parse - without busting', function () {
-    var ast = CSSParser.parse('-');
+    CSSParser.parse('-');
   });
 
   it('parses double negs', function () {

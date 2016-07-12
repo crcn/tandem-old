@@ -23,15 +23,15 @@ describe(__filename + '#', function () {
     [-10, '10%', '-3.333%', createRelativeElement.bind(this, 300, 10, 10)],
     [5, '-10pt', '3.751pt'],
     [-4, '-2px', '-4px'],
-  ].forEach(function ([fromLeft, toLeft, xEquals, createRelativeElement]) {
+  ].forEach(function ([fromLeft, toLeft, xEquals, createRelativeElement2]) {
     xit('can do a basic, fixed calculation from ' + fromLeft + ' to ' + toLeft, function () {
 
-      var [root, relative] = (createRelativeElement || noopElement)();
+      var [root, relative] = (createRelativeElement2 || noopElement)();
 
       // add to the DOM so that stuff can be calculated
       document.body.appendChild(root);
 
-      var translated = translateStyle({ left: fromLeft }, { left: toLeft }, relative).left;
+      const translated = translateStyle({ left: fromLeft }, { left: toLeft }, relative).left;
 
       document.body.removeChild(root);
 
@@ -42,11 +42,11 @@ describe(__filename + '#', function () {
   });
 
   function createRelativeElement(parentWidth = 500, childWidth = 10, parentPadding = 0) {
-    var parent = document.createElement('div');
+    const parent = document.createElement('div');
     parent.style.width = parentWidth + 'px';
     parent.style.padding = parentPadding;
 
-    var div = document.createElement('div');
+    const div = document.createElement('div');
     div.style.width = childWidth + 'px';
     parent.appendChild(div);
 

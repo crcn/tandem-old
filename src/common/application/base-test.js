@@ -23,9 +23,9 @@ describe(__filename + '#', function () {
   });
 
   it('cannot initialize the application twice', async function () {
-    var app = BaseApplication.create();
+    const app = BaseApplication.create();
     await app.initialize();
-    var err;
+    let err;
     try {
       await app.initialize();
     } catch (e) { err = e; }

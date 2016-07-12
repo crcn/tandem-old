@@ -82,7 +82,7 @@ module.exports = function(config) {
     },
 
     //
-    webpack: require('./webpack.config.js'),
+    webpack: require('./webpack.config.js')[0],
 
     //
     webpackMiddleware: {

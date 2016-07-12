@@ -9,17 +9,4 @@ describe(__filename + '#', function () {
     app = BrowserApplication.create();
     await app.initialize();
   });
-
-  xit('can select a simple div', function () {
-    var entity = HTMLElementEntity.create({
-      name: 'div',
-      style: {
-        backgroundColor: 'red',
-        width: '100px',
-        height: '100px',
-      },
-    });
-
-
-  });
 });

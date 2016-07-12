@@ -1,6 +1,6 @@
-import expect from 'expect.js';
-import BaseDisplayEntity from 'common/entities/display';
-import calculateDistances from './calculate-distances';
+// import expect from 'expect.js';
+// import BaseDisplayEntity from 'common/entities/display';
+// import calculateDistances from './calculate-distances';
 
 /*
 
@@ -13,21 +13,19 @@ import calculateDistances from './calculate-distances';
 
 */
 
-class TestDisplayEntity extends BaseDisplayEntity {
-  constructor(properties, children = []) {
-
-    super({
-      fragmentId: 'test',
-      ...properties,
-    }, children);
-
-    this.preview = {
-      getBoundingRect: () => {
-        return this;
-      },
-    };
-  }
-}
+// class TestDisplayEntity extends BaseDisplayEntity {
+//   constructor(properties, children = []) {
+//
+//     super({
+//       fragmentId: 'test',
+//       ...properties,
+//     }, children);
+//
+//     this.preview = {
+//       getBoundingRect: () => this,
+//     };
+//   }
+// }
 
 describe(__filename + '#', function () {
 
@@ -51,20 +49,20 @@ describe(__filename + '#', function () {
     ],
   };
 
-  function createCase(title, [entities, bounds, equals]) {
+  function createCase(title/* , [entities, bounds, equals] */) {
     it(title, function () {
 
-      var ent = TestDisplayEntity.create({
-        fragmentId: 'frag',
-      }, entities.map(function ([id, left, top, width, height]) {
-        return TestDisplayEntity.create({
-          left, top, width, height, fragmentId: 'frag', id: id, type: 'component',
-        });
-      })).flatten().map(function (entity) {
-        return entity.preview.getBoundingRect();
-      });
-
-      var [left, top, width, height] = bounds;
+      // var ent = TestDisplayEntity.create({
+      //   fragmentId: 'frag',
+      // }, entities.map(function ([id, left, top, width, height]) {
+      //   return TestDisplayEntity.create({
+      //     left, top, width, height, fragmentId: 'frag', id: id, type: 'component',
+      //   });
+      // })).flatten().map(function (entity) {
+      //   return entity.preview.getBoundingRect();
+      // });
+      //
+      // var [left, top, width, height] = bounds;
     });
   }
 

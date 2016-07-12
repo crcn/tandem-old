@@ -1,3 +1,4 @@
+import expect from 'expect.js';
 import Runloop from './index';
 
 describe(__filename + '#', function () {

@@ -2,8 +2,8 @@ var __getters = {};
 
 export default function get(target, path) {
   if (__getters[path]) return __getters[path](target);
-  var segments = path.split('.');
-  var n        = segments.length;
+  const segments = path.split('.');
+  const n        = segments.length;
 
   __getters[path] = function (target2) {
 
@@ -11,7 +11,7 @@ export default function get(target, path) {
     var parent;
 
     for (let i = 0; i < n; i++) {
-      var segment = segments[i];
+      const segment = segments[i];
 
       if (!ctarget) break;
 

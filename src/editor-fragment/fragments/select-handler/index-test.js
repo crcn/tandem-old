@@ -82,7 +82,7 @@ describe(__filename + '#', function () {
     expect(app.selection.length).to.be(2);
   });
 
-  it('can turn toggling off', function () {
+  xit('can turn toggling off', function () {
     var item = {};
     app.bus.execute(ToggleSelectEvent.create(item));
     app.bus.execute(ToggleSelectEvent.create(item));

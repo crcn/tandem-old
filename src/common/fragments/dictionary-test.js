@@ -1,3 +1,4 @@
+import expect from 'expect.js';
 import FragmentDictionary from './dictionary';
 
 describe(__filename + '#', function () {
