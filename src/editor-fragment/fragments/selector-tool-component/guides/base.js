@@ -6,7 +6,7 @@ class BaseGuide {
     return { left, top };
   }
 
-  intersects(left, top) {
+  intersects() {
     return false;
   }
 

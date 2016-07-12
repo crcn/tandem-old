@@ -1,27 +1,25 @@
-import sift from 'sift';
-import CSSTokenizer from 'common/tokenizers/css';
-import CSSParser from 'common/parsers/css';
 
-var div = document.createElement('div')
+import CSSParser from 'common/parsers/css';
+import CSSTokenizer from 'common/tokenizers/css';
+
+var div = document.createElement('div');
 document.body.appendChild(div);
 div.style.position = 'absolute';
 
-var conv = {};
-
+const conv = {};
 const MAX_DECIMALS = 3;
 
-var units = [
+const units = [
   'cm',
   'mm',
   'in',
   'px',
   'pt',
   'pc',
-  'em'
+  'em',
 ];
 
-units.forEach(function(unit) {
-
+units.forEach(function (unit) {
   // some big number so that we get accurate, rounded conversions
   div.style.left = 1000 + unit;
   conv[unit] = Number((div.getBoundingClientRect().left / 1000).toFixed(MAX_DECIMALS));
@@ -38,7 +36,7 @@ function findRelativeElement(element) {
     relativeParent = document.body;
   } else if (/absolute/.test(position)) {
     relativeParent = element.parentNode;
-    while(relativeParent && (!relativeParent.style || !/absolute|fixed|relative/.test(window.getComputedStyle(relativeParent).position))) {
+    while (relativeParent && (!relativeParent.style || !/absolute|fixed|relative/.test(window.getComputedStyle(relativeParent).position))) {
       relativeParent = relativeParent.parentNode;
     }
   }
@@ -53,7 +51,6 @@ function translateToScaleProperty(property) {
 }
 
 function getInnerElementBounds(element) {
-  var padding = element.style.paddingRight;
 
   var left   = translateLengthToInteger(element.style.paddingLeft);
   var right  = translateLengthToInteger(element.style.paddingRight);
@@ -68,7 +65,7 @@ function getInnerElementBounds(element) {
     top    : top,
     bottom : bottom,
     width  : (bounds.right - bounds.left) - (right + left),
-    height : (bounds.bottom - bounds.top) - (bottom + top)
+    height : (bounds.bottom - bounds.top) - (bottom + top),
   };
 }
 
@@ -81,32 +78,29 @@ export function translateLengthToInteger(length, property, relativeElement) {
 
   return CSSParser.parse(CSSTokenizer.tokenize(length), astFactory).solveX({
     relativeElement: relativeElement,
-    property       : property
+    property       : property,
   });
 }
 
-var astFactory = {
+const astFactory = {
   create(type, props) {
     return this[type] ? this[type](props) : { type: type, ...props };
   },
   call(props) {
     return {
       solveX(info) {
-        for (var i = 0; i < props.params.length; i++) {
-          var ret =  props.params[i].solveX(info);
+        for (let i = 0; i < props.params.length; i++) {
+          const ret =  props.params[i].solveX(info);
           if (ret != void 0) return ret;
         }
       },
-      toString() {
-        //console.log(props);
-        //return
-      }
-    }
+      toString() { },
+    };
   },
   length(props) {
-    switch(props.unit) {
-      case '%': return this.percLength(props);
-      default: return this.measuredLength(props);
+    switch (props.unit) {
+      case '%' : return this.percLength(props);
+      default  : return this.measuredLength(props);
     }
   },
   percLength(props) {
@@ -120,11 +114,11 @@ var astFactory = {
         var relativeParent = findRelativeElement(relativeElement);
         var bounds         = getInnerElementBounds(relativeParent);
         var scaleProperty  = translateToScaleProperty(property);
-        return props.value === 'xx' ? function(y) {
+        return props.value === 'xx' ? function (y) {
           return (y / bounds[scaleProperty]) * 100;
         } : (Number(props.value) / 100) * bounds[scaleProperty];
-      }
-    }
+      },
+    };
   },
   measuredLength(props) {
     return {
@@ -134,11 +128,11 @@ var astFactory = {
       },
       prepare() {
         // console.log(Number(props.value), conv[props.unit]);
-        return props.value === 'xx' ? function(y) {
+        return props.value === 'xx' ? function (y) {
           return y / conv[props.unit];
         } : Number(props.value) * Number(conv[props.unit]);
-      }
-    }
+      },
+    };
   },
   neg(props) {
     return {
@@ -149,11 +143,11 @@ var astFactory = {
       },
       prepare(info) {
         var valueReduce = this.value.prepare(info);
-        return typeof valueReduce === 'function' ? function(y) {
+        return typeof valueReduce === 'function' ? function (y) {
           return -valueReduce(-y);
         } : -valueReduce;
-      }
-    }
+      },
+    };
   },
   operation(props) {
     var op = props.operator;
@@ -174,22 +168,22 @@ var astFactory = {
 
           // something like x - 5 = 500. (502)
           if (op === '-') {
-            return function(y) {
+            return function (y) {
               return leftReduce(y + rightReduce);
             };
           // x + 5 = 100
           } else if (op === '+') {
-            return function(y) {
+            return function (y) {
               return leftReduce(y - rightReduce);
             };
           // x / 5 = 10
           } else if (op === '/') {
-            return function(y) {
+            return function (y) {
               return leftReduce(y * rightReduce);
             };
           // x * 5 = 10
           } else if (op === '*') {
-            return function(y) {
+            return function (y) {
               return leftReduce(y / rightReduce);
             };
           }
@@ -208,29 +202,14 @@ var astFactory = {
         } else if (op === '+') {
           return leftReduce + rightReduce;
         }
-      }
+      },
     };
-  }
+  },
 };
 
 function tokenize(value) {
   var tokens = CSSTokenizer.tokenize(value);
   return tokens;
-  //var combinedTokens = [];
-  //
-  //while(1) {
-  //  var token = tokens.shift();
-  //  if (token.type === 'operator' && token.value === '-') {
-  //    console.log(token);
-  //    if (combinedTokens.length && combinedTokens[combinedTokens.length - 1].)
-  //  }
-  //}
-  //
-  //for (var i = 0, n = tokens.length; i < n; i++) {
-  //  var token = tokens[i];
-  //}
-  //
-  //return tokens;
 }
 
 function translate(fromStyle, toStyle, element) {
@@ -247,26 +226,25 @@ function translate(fromStyle, toStyle, element) {
     return translate({ left: fromStyle }, { left: toStyle }, element).left;
   }
 
-  var translatedStyle = {};
+  const translatedStyle = {};
 
-  for (var property in fromStyle) {
+  for (const property in fromStyle) {
     translatedStyle[property] = translateDeclaration(property, fromStyle[property], toStyle[property], element);
   }
 
-  function translateDeclaration(property, fromValue, toValue, element) {
+  function translateDeclaration(property2, fromValue, toValue, element2) {
     if (!toValue) return fromValue;
-
 
     // fromValue could be a length. Need to normalize it so that
     // it can be converted into the toValue
-    fromValue = translateLengthToInteger(fromValue, property, element);
+    fromValue = translateLengthToInteger(fromValue, property2, element2);
 
     // first tokenize the toValue up
-    var tokens = tokenize(toValue);
+    const tokens = tokenize(toValue);
 
     // then replace the left-most length with X which be used
     // as the conversion value. Later on this might be customizable
-    var firstNumber = tokens.find(function(token) {
+    const firstNumber = tokens.find(function (token) {
       return token.type === 'number';
     });
 
@@ -276,16 +254,16 @@ function translate(fromStyle, toStyle, element) {
     }
 
     // parse into the AST
-    var ast = CSSParser.parse(tokens, astFactory);
+    const ast = CSSParser.parse(tokens, astFactory);
 
     // take the fromValue and solveX - thus converting fromValue -> value
-    var x = Number(ast.solveX({
+    const x = Number(ast.solveX({
       y: fromValue,
-      relativeElement: element,
-      property: property
+      relativeElement: element2,
+      property: property2,
     }).toFixed(MAX_DECIMALS));
 
-    return tokens.map(function(token) {
+    return tokens.map(function (token) {
       return token.value;
     }).join('').replace(/-*xx/g, x);
   }
@@ -294,10 +272,10 @@ function translate(fromStyle, toStyle, element) {
 }
 
 export function translateStyleToIntegers(style, relativeElement) {
-  var toStyle = {};
-  for (var key in style)  toStyle[key] = '0px';
+  let toStyle = {};
+  for (const key in style)  toStyle[key] = '0px';
   toStyle = translate(style, toStyle, relativeElement);
-  for (var key in toStyle) toStyle[key] = Number(toStyle[key].replace('px', ''));
+  for (const key in toStyle) toStyle[key] = Number(toStyle[key].replace('px', ''));
   return toStyle;
 }
 

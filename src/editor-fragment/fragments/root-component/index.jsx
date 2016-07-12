@@ -6,9 +6,9 @@ import CenterComponent from './center';
 
 class RootEditorComponent extends React.Component {
   render() {
-    return <div className='m-editor'>
+    return (<div className='m-editor'>
       <CenterComponent {...this.props} entity={this.props.app.rootEntity} zoom={1} />
-    </div>;
+    </div>);
   }
 }
 

@@ -1,11 +1,11 @@
 import Selection from 'editor-fragment/selection/collection';
 import { TypeCallbackBus } from 'common/mesh';
 import { ApplicationFragment } from 'common/application/fragments';
-import { SelectEvent, SELECT } from 'editor-fragment/selection/events';
+import { SELECT } from 'editor-fragment/selection/events';
 
 export const fragment = ApplicationFragment.create({
   ns: 'application/selector',
-  initialize: initialize
+  initialize: initialize,
 });
 
 function initialize(app) {
@@ -22,13 +22,13 @@ function initialize(app) {
       return app.setProperties({ selection: [] });
     }
 
-    var type = items[0].type;
+    const type = items[0].type;
 
-    items.forEach(function(item) {
-      if (item.type !== type) throw new Error(`Cannot select multiple items with different types`);
+    items.forEach(function (item) {
+      if (item.type !== type) throw new Error('Cannot select multiple items with different types');
     });
 
-    var selectionCollectionFragment = app.fragmentDictionary.query(`selectorCollection/${type}`);
+    const selectionCollectionFragment = app.fragmentDictionary.query(`selectorCollection/${type}`);
 
     if (selectionCollectionFragment) {
       newSelection = selectionCollectionFragment.create();
@@ -41,12 +41,8 @@ function initialize(app) {
       newSelection.push(...currentSelection);
     }
 
-    for (var item of items) {
-      var i = newSelection.indexOf(item);
-
-      if (toggle && keepPreviousSelection) {
-
-      }
+    for (const item of items) {
+      const i = newSelection.indexOf(item);
 
       // toggle off
       if (~i) {

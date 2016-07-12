@@ -1,4 +1,3 @@
-import fs from 'fs';
 import * as fragments from './fragments';
 import BaseApplication from 'common/application/base';
 

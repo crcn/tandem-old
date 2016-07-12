@@ -25,15 +25,16 @@ export default function observable(clazz) {
 
 function decorateObjectClass(clazz) {
 
-  var oldSetProperties = clazz.prototype.setProperties;
+  const oldSetProperties = clazz.prototype.setProperties;
 
-  clazz.prototype.setProperties = function(properties) {
+  clazz.prototype.setProperties = function (properties) {
+
+    const changes = [];
 
     if (this.bus) {
-      var changes = [];
-      for (var key in properties) {
-        var newValue = properties[key];
-        var oldValue = this[key];
+      for (const key in properties) {
+        const newValue = properties[key];
+        const oldValue = this[key];
 
         // no change? skip.
         if (newValue == oldValue) continue;
@@ -43,7 +44,7 @@ function decorateObjectClass(clazz) {
             target: this,
             type: 'delete',
             property: key,
-            oldValue: oldValue
+            oldValue: oldValue,
           });
         } else if (newValue != void 0) {
           if (oldValue == void 0) {
@@ -51,7 +52,7 @@ function decorateObjectClass(clazz) {
               target: this,
               type: 'create',
               property: key,
-              value: newValue
+              value: newValue,
             });
           } else {
             changes.push({
@@ -59,8 +60,8 @@ function decorateObjectClass(clazz) {
               type: 'update',
               property: key,
               value: newValue,
-              oldValue: oldValue
-            })
+              oldValue: oldValue,
+            });
           }
         }
       }
@@ -72,7 +73,7 @@ function decorateObjectClass(clazz) {
       this.bus.execute(ChangeEvent.create(changes));
       if (this.didChange) this.didChange(changes);
     }
-  }
+  };
 
   return clazz;
 }
@@ -81,27 +82,25 @@ function decorateCollectionClass(clazz) {
 
   decorateObjectClass(clazz);
 
-  var oldSplice = clazz.prototype.splice;
-  clazz.prototype.splice = function(start, length, ...repl) {
+  const oldSplice = clazz.prototype.splice;
+  clazz.prototype.splice = function (start, length, ...repl) {
 
     if (this.bus) {
-      var changes = [];
+      const changes = [];
       changes.push({
         target: this,
         type   : 'splice',
         start  : start,
         length : length,
-        values : repl
+        values : repl,
       });
 
       this.bus.execute(ChangeEvent.create(changes));
       if (this.didChange) this.didChange(changes);
     }
 
-    var ret = oldSplice.apply(this, arguments);
-
-    return ret;
-  }
+    return oldSplice.apply(this, arguments);
+  };
 
   return clazz;
 }

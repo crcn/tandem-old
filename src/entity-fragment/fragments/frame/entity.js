@@ -5,8 +5,8 @@ export default class FrameEntity extends DisplayEntity {
   constructor(properties) {
     super({
       ...properties,
-      displayType: 'frame'
-    })
+      displayType: 'frame',
+    });
   }
 }
 

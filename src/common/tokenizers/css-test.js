@@ -1,7 +1,7 @@
 import CSSTokenizer from './css';
 import expect from 'expect.js';
 
-describe(__filename + '#', function() {
+describe(__filename + '#', function () {
 
   [
     ['100px', [['100', 'number'], ['px', 'unit']]],
@@ -13,8 +13,8 @@ describe(__filename + '#', function() {
         ['  ', 'space'],
         ['100', 'number'],
         ['%', 'unit'],
-        [')', 'rightParen']
-      ]
+        [')', 'rightParen'],
+    ],
     ],
     ['10px - 5px', [
       ['10', 'number'],
@@ -23,7 +23,7 @@ describe(__filename + '#', function() {
       ['-', 'operator'],
       [' ', 'space'],
       ['5', 'number'],
-      ['px', 'unit']
+      ['px', 'unit'],
     ]],
     ['calc(100%/6)', [
       ['calc', 'reference'],
@@ -32,22 +32,22 @@ describe(__filename + '#', function() {
       ['%', 'unit'],
       ['/', 'operator'],
       ['6', 'number'],
-      [')', 'rightParen']
+      [')', 'rightParen'],
     ]],
     ['10em/-10', [
       ['10', 'number'],
       ['em', 'unit'],
       ['/', 'operator'],
       ['-', 'operator'],
-      ['10', 'number']
+      ['10', 'number'],
     ]],
     ['2-2', [
       ['2', 'number'],
       ['-', 'operator'],
-      ['2', 'number']
+      ['2', 'number'],
     ]],
     ['10deg', [
-      ['10', 'degree']
+      ['10', 'degree'],
     ]],
     ['linear-gradient(to top, blue 50%, red)', [
       ['linear-gradient', 'reference'],
@@ -64,15 +64,15 @@ describe(__filename + '#', function() {
       [',', 'comma'],
       [' ', 'space'],
       ['red', 'reference'],
-      [')', 'rightParen']
-    ]]
-  ].forEach(function([source, matches]) {
-    it('can tokenize ' + source, function() {
-      var tokens = CSSTokenizer.tokenize(source).map(function(token) {
+      [')', 'rightParen'],
+    ]],
+  ].forEach(function ([source, matches]) {
+    it('can tokenize ' + source, function () {
+      var tokens = CSSTokenizer.tokenize(source).map(function (token) {
         return [token.value, token.type];
       });
 
       expect(tokens).to.eql(matches);
     });
-  })
+  });
 });

@@ -6,24 +6,22 @@ function calculateDistances(allBounds, b1) {
     north : [b1],
     south : [b1],
     east : [b1],
-    west : [b1]
+    west : [b1],
   };
 
   allBounds.forEach(addIntersections.bind(this, intersections, b1));
   intersections = sortIntersections(intersections);
 
-  var lines = convertToLines(intersections);
-
-  return lines;
+  return convertToLines(intersections);
 }
 
 function sortIntersections({ north, east, south, west }) {
   return {
-    north : north.sort(function(a, b) { return a.top  < b.top  ? -1 : 1 }),
-    south : south.sort(function(a, b) { return a.top  > b.top  ? -1 : 1 }),
-    east : east.sort(function(a, b) { return a.left > b.left ? -1 : 1 }),
-    west : west.sort(function(a, b) { return a.left < b.left ? -1 : 1 })
-  }
+    north : north.sort((a, b) => a.top  < b.top  ? -1 : 1),
+    south : south.sort((a, b) => a.top  > b.top  ? -1 : 1),
+    east : east.sort((a, b) => a.left > b.left ? -1 : 1),
+    west : west.sort((a, b) => a.left < b.left ? -1 : 1),
+  };
 }
 
 function convertToLines({ north, east, south, west }) {
@@ -36,10 +34,10 @@ function convertToLines({ north, east, south, west }) {
 }
 
 function mapIntersectingBounds(items) {
-  var bounds = [];
-  var prev = items[0];
-  for (var i = 1, n = items.length; i < n; i++) {
-    var current = items[i];
+  const bounds = [];
+  let prev = items[0];
+  for (let i = 1, n = items.length; i < n; i++) {
+    const current = items[i];
     bounds.push(calculateIntersectingBounds(current, prev));
     prev = current;
   }
@@ -77,8 +75,8 @@ function calculateIntersectingBounds(b1, b2) {
       b3Right = b1Left;
     }
 
-    b3Top    = Math.max(b1Top    , b2Top);
-    b3Bottom = Math.min(b1Bottom , b2Bottom);
+    b3Top    = Math.max(b1Top, b2Top);
+    b3Bottom = Math.min(b1Bottom, b2Bottom);
     direction = 'ew';
 
   } else {
@@ -100,8 +98,8 @@ function calculateIntersectingBounds(b1, b2) {
     top       : Math.round(b3Top),
     width     : Math.round(b3Right - b3Left),
     height    : Math.round(b3Bottom - b3Top),
-    direction : direction
-  }
+    direction,
+  };
 }
 
 function addIntersections({ north, east, south, west }, b1, b2) {

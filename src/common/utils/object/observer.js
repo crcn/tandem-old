@@ -29,8 +29,8 @@ export default class Observer {
     return {
       dispose() {
 
-      }
-    }
+      },
+    };
   }
 
   update() {

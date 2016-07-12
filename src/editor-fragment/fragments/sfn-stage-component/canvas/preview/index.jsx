@@ -2,12 +2,11 @@ import './index.scss';
 
 import React from 'react';
 import RegisteredComponent from 'common/react/components/registered';
-import { MouseEvent, STAGE_PREVIEW_MOUSE_DOWN } from 'editor-fragment/events';
 
 export default class PreviewComponent extends React.Component {
   render() {
-    return <div className='m-editor-stage-preview'>
+    return (<div className='m-editor-stage-preview'>
       <RegisteredComponent {...this.props} ns='components/preview' />
-    </div>;
-  };
+    </div>);
+  }
 }

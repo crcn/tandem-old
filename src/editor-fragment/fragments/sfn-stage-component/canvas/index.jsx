@@ -12,21 +12,21 @@ export default class EditorStageLayersComponent extends React.Component {
     this.props.app.bus.execute({
       ...event,
       type: {
-        mousedown: STAGE_CANVAS_MOUSE_DOWN
-      }[event.type]
-    })
+        mousedown: STAGE_CANVAS_MOUSE_DOWN,
+      }[event.type],
+    });
   }
 
   render() {
     var style = {
-      cursor: this.props.app.currentTool.cursor
+      cursor: this.props.app.currentTool.cursor,
     };
 
-    return <IsolateComponent inheritCSS={true} className='m-editor-stage-isolate'>
+    return (<IsolateComponent inheritCSS className='m-editor-stage-isolate'>
       <div className='m-editor-stage-canvas' style={style} onMouseDown={this.onMouseDown.bind(this)}>
         <PreviewLayerComponent {...this.props} />
         <ToolsLayerComponent {...this.props} />
       </div>
-    </IsolateComponent>;
+    </IsolateComponent>);
   }
 }

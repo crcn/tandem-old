@@ -1,4 +1,3 @@
-import Collection from 'common/object/collection';
 import create from 'common/utils/class/create';
 import flatten from 'lodash/array/flattenDeep';
 import assert from 'assert';
@@ -22,19 +21,19 @@ export default class FragmentDictionary {
     fragments = flatten(fragments);
     this._fragments.push(...fragments);
 
-    for (var fragment of fragments) {
+    for (const fragment of fragments) {
 
       // this happens enough -- make a useful message
       assert(fragment, 'fragment cannot be undefined');
-  
-      var ns = fragment.ns;
-      var nsParts = ns.split('/');
 
-      for (var i = 0, n = nsParts.length; i < n; i++) {
+      const ns = fragment.ns;
+      const nsParts = ns.split('/');
+
+      for (let i = 0, n = nsParts.length; i < n; i++) {
         this._registerNS(
           nsParts.slice(0, i + 1).join('/') + '/**',
           fragment
-        )
+        );
       }
 
       this._registerNS(fragment.ns, fragment);

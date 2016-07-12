@@ -7,7 +7,7 @@ import createServer from 'socket.io';
 
 export const fragment = ApplicationFragment.create({
   ns:'application/socketIoServer',
-  initialize: create
+  initialize: create,
 });
 
 function create(app) {
@@ -19,34 +19,30 @@ function create(app) {
   const port   = app.config.socketio.port;
   const logger = app.logger.createChild({ prefix: 'socket.io ' });
 
-  function load(event) {
+  function load() {
     logger.verbose('checking for existing socket.io instances');
   }
 
   function initialize() {
     logger.info('server on port %d', port);
-    var server = createServer();
+    const server = createServer();
 
-    server.on('connection', function(connection) {
+    server.on('connection', function (connection) {
       logger.info('client connected');
-      var remoteBus = RemoteBus.create({
+      let remoteBus = RemoteBus.create({
         addListener: connection.on.bind(connection, 'message'),
-        send: connection.emit.bind(connection, 'message')
+        send: connection.emit.bind(connection, 'message'),
       }, AttachDefaultsBus.create({ remote: true }, app.bus));
 
-      remoteBus = AcceptBus.create(sift({ public: true, remote: {$ne: true } }), remoteBus);
+      remoteBus = AcceptBus.create(sift({ public: true, remote: { $ne: true } }), remoteBus);
 
       app.busses.push(remoteBus);
 
-      connection.once('close', function() {
+      connection.once('close', function () {
         app.busses.splice(app.busses.indexOf(remoteBus), 1);
       });
-    })
+    });
 
     server.listen(port);
-  }
-
-  function executeRemoteEvent(event) {
-    app.logger.verbose('exec public event %s', event);
   }
 }

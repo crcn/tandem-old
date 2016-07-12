@@ -9,7 +9,7 @@ export class MouseEvent extends Event {
     Object.assign(this, {
       clientX: originalEvent.clientX,
       clientY: originalEvent.clientY,
-      metaKey : originalEvent.metaKey
+      metaKey : originalEvent.metaKey,
     });
   }
 }

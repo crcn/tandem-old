@@ -5,25 +5,23 @@ import BaseGuide from './base';
  * align items more easily.
  */
 
-class GuideCollection extends BaseGuide {
-
-  snap(bounds) {
-
-    for (var guid of this) {
-      if (path.intersects(bounds)) {
-        return path.snap(bounds);
-      }
-    }
-
-    return bounds;
-  }
-
-  intersects(bounds) {
-    for (var guid of this) {
-      if (path.intersects(bounds)) return true;
-    }
-    return false;
-  }
+export default class GuideCollection extends BaseGuide {
+  //
+  // snap(bounds) {
+  //
+  //   for (var guid of this) {
+  //     if (path.intersects(bounds)) {
+  //       return path.snap(bounds);
+  //     }
+  //   }
+  //
+  //   return bounds;
+  // }
+  //
+  // intersects(bounds) {
+  //   for (var guid of this) {
+  //     if (path.intersects(bounds)) return true;
+  //   }
+  //   return false;
+  // }
 }
-
-export default Snapper;

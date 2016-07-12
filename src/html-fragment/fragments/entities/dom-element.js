@@ -6,7 +6,7 @@ export default class DOMElementEntity extends DisplayEntity {
     super({
       displayType: 'htmlElement',
       nodeType: 1,
-      ...properties
+      ...properties,
     });
   }
 }

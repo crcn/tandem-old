@@ -8,4 +8,4 @@ export function getStyle(props, styleName, defaults) {
 // react logs an error without this
 export function shutUpChange() {
 
-};
+}

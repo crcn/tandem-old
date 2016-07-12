@@ -1,13 +1,15 @@
 import rAF from 'common/utils/next-tick';
 import create from 'common/utils/class/create';
 
+let defaultTick;
+
 /* istanbul ignore next */
 if (process.browser) {
-  var defaultTick = function(next) {
+  defaultTick = function (next) {
     rAF(next);
   };
 } else {
-  var defaultTick = function(next) {
+  defaultTick = function (next) {
     next();
   };
 }
@@ -65,12 +67,11 @@ export default class Runloop {
     // if animating, don't continue
     if (this._requestingFrame) return;
     this._requestingFrame = true;
-    var self = this;
 
     // run the animation frame, and callback all the animatable objects
-    this.tick(function() {
-      self.runNow();
-      self._requestingFrame = false;
+    this.tick(() => {
+      this.runNow();
+      this._requestingFrame = false;
     });
   }
 
@@ -78,14 +79,14 @@ export default class Runloop {
   */
 
   runNow() {
-    var queue = this._queue;
+    const queue = this._queue;
     this._queue   = [];
     this._running = true;
 
     // queue.length is important here, because animate() can be
     // called again immediately after an update
-    for (var i = 0; i < queue.length; i++) {
-      var item = queue[i];
+    for (let i = 0; i < queue.length; i++) {
+      const item = queue[i];
       item.update();
       item.__running &= ~this._id;
 

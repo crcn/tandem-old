@@ -5,7 +5,7 @@ import { TypeCallbackBus } from 'common/mesh';
 
 export const fragment = ApplicationFragment.create({
   ns: 'application/fileHandler',
-  initialize: create
+  initialize: create,
 });
 
 function create(app) {
@@ -15,7 +15,7 @@ function create(app) {
   async function initialize(event) {
     const openFiles = await app.bus.execute({
       type: 'getOpenFiles',
-      remote: true
+      remote: true,
     }).readAll();
 
     console.log(openFiles);

@@ -6,7 +6,7 @@ export default class DOMFrameEntitiy extends DisplayEntity {
     super({
       displayType: 'htmlFrame',
       nodeType: 1,
-      ...properties
+      ...properties,
     });
   }
 }

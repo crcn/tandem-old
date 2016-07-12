@@ -20,16 +20,16 @@ Object.assign(Collection.prototype, {
    * pushes items to the end of the array
    */
 
-  push() {
-    return this.splice(this.length, 0, ...arguments);
+  push(...rest) {
+    return this.splice(this.length, 0, ...rest);
   },
 
   /**
    * pushes items to the beginning of the array
    */
 
-  unshift() {
-    return this.splice(0, 0, ...arguments);
+  unshift(...rest) {
+    return this.splice(0, 0, ...rest);
   },
 
   /**
@@ -59,11 +59,11 @@ Object.assign(Collection.prototype, {
   /**
    */
 
-  splice(index, length, ...repl) {
+  splice() {
 
     // OVERRIDE ME. All mutations happen here
     return Array.prototype.splice.apply(this, arguments);
-  }
+  },
 });
 
 Collection.create = createFactory(Array);

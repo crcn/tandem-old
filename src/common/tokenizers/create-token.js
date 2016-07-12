@@ -1,3 +1,5 @@
-export default function(value, type) {
-  return { value: value, type: type, length: value.length };
-};
+export default (value, type) => ({
+  value,
+  type,
+  length: value.length,
+});

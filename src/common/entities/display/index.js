@@ -3,11 +3,11 @@ import Entity from '../index';
 // temporary
 function parseStyle(source) {
   var style = {};
-  source.split(/\s*;\s*/g).forEach(function(declaration) {
+  source.split(/\s*;\s*/g).forEach((declaration) => {
     var [name, value] = declaration.split(/\s*:\s*/g);
-    name = name.split('-').map(function(name, index) {
-      if (index == 0) return name;
-      return name.substr(0, 1).toUpperCase() + name.substr(1);
+    name = name.split('-').map((name2, index) => {
+      if (index == 0) return name2;
+      return name2.substr(0, 1).toUpperCase() + name2.substr(1);
     }).join('');
 
     if (/\w+/.test(name)) {
@@ -21,8 +21,8 @@ export default class DisplayEntity extends Entity {
   constructor(properties) {
     super({
       type: 'display',
-      ...properties
-    })
+      ...properties,
+    });
   }
 
   set attributes(value) {

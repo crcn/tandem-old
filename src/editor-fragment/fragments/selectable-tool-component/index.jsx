@@ -22,15 +22,15 @@ class SelectableComponent extends React.Component {
     event.stopPropagation();
   }
 
-  onMouseOver(event) {
+  onMouseOver() {
     this.props.app.setProperties({
-      hoverItem: this.props.entity
+      hoverItem: this.props.entity,
     });
   }
 
-  onMouseOut(event) {
+  onMouseOut() {
     this.props.app.setProperties({
-      hoverItem: void 0
+      hoverItem: void 0,
     });
   }
 
@@ -39,35 +39,39 @@ class SelectableComponent extends React.Component {
     var { entity, selection, app } = this.props;
 
     if (!entity.preview) return null;
-    var entities = entity.flatten();
+    const entities = entity.flatten();
 
     if (intersection(entities, selection || []).length) return null;
 
-    var bounds = calculateBoundingRect(entities.map(function(entity) {
-        return entity.preview ? entity.preview.getBoundingRect(true) : void 0;
-    }).filter(function(bounds) {
-        return !!bounds;
+    const bounds = calculateBoundingRect(entities.map(function (entity2) {
+      return entity2.preview ? entity2.preview.getBoundingRect(true) : void 0;
+    }).filter(function (value) {
+      return !!value;
     }));
 
-    var classNames = cx({
+    const classNames = cx({
       'm-selectable' : true,
-      'hover'        : app.hoverItem === entity
+      hover          : app.hoverItem === entity,
     });
 
-    var style = {
+    const style = {
       background : 'transparent',
       position   : 'absolute',
       width      : bounds.width,
       height     : bounds.height,
       left       : bounds.left,
-      top        : bounds.top
+      top        : bounds.top,
     };
 
-    return <div style={style}
-      className={classNames}
-      onMouseOver={this.onMouseOver.bind(this)}
-      onMouseOut={this.onMouseOut.bind(this)}
-      onMouseDown={this.onMouseDown.bind(this)} />;
+    return (
+      <div
+        style={style}
+        className={classNames}
+        onMouseOver={this.onMouseOver.bind(this)}
+        onMouseOut={this.onMouseOut.bind(this)}
+        onMouseDown={this.onMouseDown.bind(this)}
+      />
+    );
   }
 }
 
@@ -75,26 +79,26 @@ class SelectablesComponent extends React.Component {
 
   render() {
 
-    var selection = this.props.selection || [];
-    var rootEntity  = this.props.entity;
-    var allEntities = this.props.allEntities;
+    const selection = this.props.selection || [];
+    const allEntities = this.props.allEntities;
 
     // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.
     if (selection.preview && selection.preview.moving) return null;
 
     // if (selection.preview.currentTool.type !== 'pointer') return null;
 
-    var selectables = allEntities.filter((entity) => {
-      return /display/.test(entity.type) && !/text/.test(entity.displayType);
-    }).map((entity) => {
-      return <SelectableComponent
+    const selectables = allEntities.filter((entity) => (
+      /display/.test(entity.type) && !/text/.test(entity.displayType)
+    )).map((entity) => (
+      <SelectableComponent
         {...this.props}
         selection={selection}
         entity={entity}
-        key={entity.id} />;
-    });
+        key={entity.id}
+      />
+    ));
 
-    return <div> { selectables } </div>;
+    return (<div> {selectables} </div>);
   }
 }
 

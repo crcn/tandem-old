@@ -5,22 +5,22 @@ import BaseApplication from 'common/application/base';
 import Selection from 'editor-fragment/selection/collection';
 import { FactoryFragment } from 'common/fragments';
 
-describe(__filename + '#', function() {
+describe(__filename + '#', function () {
 
   var app;
 
-  beforeEach(async function() {
+  beforeEach(async function () {
     app = BaseApplication.create({ fragments: [fragment] });
     await app.initialize();
-  })
+  });
 
-  it('defines "selection" property on application on selection event', function() {
+  it('defines "selection" property on application on selection event', function () {
     var item = { name: 'blarg' };
     app.bus.execute(ToggleSelectEvent.create(item));
     expect(app.selection.length).to.be(1);
   });
 
-  it('only selects one item if multi is false', function() {
+  it('only selects one item if multi is false', function () {
     var item = { name: 'blarg' };
     app.bus.execute(SelectEvent.create(item));
     expect(app.selection.length).to.be(1);
@@ -28,7 +28,7 @@ describe(__filename + '#', function() {
     expect(app.selection.length).to.be(1);
   });
 
-  it('selects multiple items if multi is true', function() {
+  it('selects multiple items if multi is true', function () {
     app.bus.execute(ToggleSelectEvent.create({ name: 'blarg' }));
     expect(app.selection.length).to.be(1);
     app.bus.execute(ToggleSelectEvent.create({ name: 'blarg' }, true));
@@ -37,7 +37,7 @@ describe(__filename + '#', function() {
     expect(app.selection.length).to.be(1);
   });
 
-  it('removes an item from the selection if it already exists', function() {
+  it('removes an item from the selection if it already exists', function () {
     var item = { name: 'blarg' };
     app.bus.execute(ToggleSelectEvent.create(item));
     expect(app.selection.length).to.be(1);
@@ -45,7 +45,7 @@ describe(__filename + '#', function() {
     expect(app.selection.length).to.be(0);
   });
 
-  it('picks the correct collection type depending on the item type', function() {
+  it('picks the correct collection type depending on the item type', function () {
 
     class DisplayCollection extends Selection {
 
@@ -69,7 +69,7 @@ describe(__filename + '#', function() {
     expect(app.selection.length).to.be(1);
   });
 
-  it('can deselect all be omitting item', function() {
+  it('can deselect all be omitting item', function () {
     app.bus.execute(ToggleSelectEvent.create({ type: 'display' }));
     app.bus.execute(ToggleSelectEvent.create({ type: 'display' }, true));
     expect(app.selection.length).to.be(2);
@@ -77,16 +77,16 @@ describe(__filename + '#', function() {
     expect(app.selection.length).to.be(0);
   });
 
-  it('can select multiple in an event', function() {
+  it('can select multiple in an event', function () {
     app.bus.execute(ToggleSelectEvent.create([{ type: 'display' }, { type: 'display' }]));
     expect(app.selection.length).to.be(2);
   });
 
-  it('can turn toggling off', function() {
+  it('can turn toggling off', function () {
     var item = {};
     app.bus.execute(ToggleSelectEvent.create(item));
     app.bus.execute(ToggleSelectEvent.create(item));
     expect(app.selection.length).to.be(0);
 
-  })
+  });
 });

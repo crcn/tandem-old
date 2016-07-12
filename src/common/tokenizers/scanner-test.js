@@ -1,12 +1,12 @@
 import expect from 'expect.js';
 import Scanner from './scanner';
 
-describe(__filename + '#', function() {
-  it('can be created', function() {
+describe(__filename + '#', function () {
+  it('can be created', function () {
     Scanner.create();
   });
 
-  it('can scan for tokens', function() {
+  it('can scan for tokens', function () {
     var s = Scanner.create('a bcde 123 4');
     expect(s.scan(/\w+/)).to.be('a');
     expect(s.scan(/\w+/)).to.be('bcde');

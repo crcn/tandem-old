@@ -2,9 +2,9 @@ import observable from './observable';
 import CoreObject from '../index';
 import Collection from '../collection';
 
-describe(__filename + '#', function() {
-  describe('objects', function() {
-    it('can be made observable', function() {
+describe(__filename + '#', function () {
+  describe('objects', function () {
+    it('can be made observable', function () {
 
       @observable
       class ObservableObject extends CoreObject { }
@@ -12,14 +12,14 @@ describe(__filename + '#', function() {
       var ref = ObservableObject.create();
     });
 
-    it('includes all the changes on the object', function() {
+    it('includes all the changes on the object', function () {
 
       var changes = [];
       var bus = {
         execute(event) {
           changes = event.changes;
-        }
-      }
+        },
+      };
 
       @observable
       class ObservableObject extends CoreObject { }
@@ -40,7 +40,7 @@ describe(__filename + '#', function() {
       expect(changes[0].oldValue).to.be(1);
       expect(changes[0].property).to.be('a');
 
-      ref.setProperties({ a: 1});
+      ref.setProperties({ a: 1 });
       ref.setProperties({ a: 2, b: 2 });
 
       expect(changes.length).to.be(2);
@@ -51,17 +51,17 @@ describe(__filename + '#', function() {
     });
   });
 
-  describe('collection', function() {
-    it('can be made observable', function() {
+  describe('collection', function () {
+    it('can be made observable', function () {
 
       var i = 0;
 
       var changes = [];
       var bus = {
         execute(event) {
-          i++
-        }
-      }
+          i++;
+        },
+      };
 
       @observable
       class ObservableCollection extends Collection { }
@@ -72,14 +72,14 @@ describe(__filename + '#', function() {
       expect(i).to.be(1);
     });
 
-    it('includes all changes', function() {
+    it('includes all changes', function () {
 
       var changes = [];
       var bus = {
         execute(event) {
           changes = event.changes;
-        }
-      }
+        },
+      };
 
       @observable
       class ObservableCollection extends Collection { }
@@ -94,15 +94,15 @@ describe(__filename + '#', function() {
     });
   });
 
-  it('throws an error if a class is made observable twice', function() {
+  it('throws an error if a class is made observable twice', function () {
 
     @observable
     class ObservableObject extends CoreObject { }
 
     class ObservableObject2 extends ObservableObject { }
 
-    expect(function() {
+    expect(function () {
       observable(ObservableObject2);
-    }).to.throwError()
+    }).to.throwError();
   });
 });

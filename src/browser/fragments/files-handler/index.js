@@ -2,10 +2,11 @@ import { ApplicationFragment } from 'common/application/fragments';
 import { INITIALIZE } from 'common/application/events';
 import { TypeCallbackBus } from 'common/mesh';
 import OpenFilesCollection from './open-files-collection';
+import sift from 'sift';
 
 export const fragment = ApplicationFragment.create({
   ns: 'application/fileHandler',
-  initialize: create
+  initialize: create,
 });
 
 function create(app) {
@@ -15,16 +16,16 @@ function create(app) {
   );
 
   const logger = app.logger.createChild({ prefix: 'file handler: ' });
-  var openFiles = OpenFilesCollection.create({ bus: app.bus });
+  const openFiles = OpenFilesCollection.create({ bus: app.bus });
 
-  async function initialize(event) {
+  async function initialize() {
     await getOpenFiles();
   }
 
   async function getOpenFiles() {
     var files = await app.bus.execute({
       type: 'getOpenFiles',
-      public: true
+      public: true,
     }).readAll();
 
     for (const file of files) {
@@ -44,7 +45,7 @@ function create(app) {
 
     model = (await app.bus.execute({
       type: 'createFileModel',
-      file: file
+      file: file,
     }).readAll())[0];
 
     if (!model) {

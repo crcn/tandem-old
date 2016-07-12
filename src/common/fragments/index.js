@@ -17,8 +17,8 @@ export class FactoryFragment extends Fragment {
     assertPropertyExists(this, 'factory');
   }
 
-  create()  {
-    return this._factory.create(...arguments);
+  create(...rest)  {
+    return this._factory.create(...rest);
   }
 
   get factory() {

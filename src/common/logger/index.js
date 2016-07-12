@@ -27,7 +27,7 @@ class Logger {
       ...properties,
       bus: this.bus,
       level: this.level,
-      parent: this
+      parent: this,
     });
   }
 
@@ -48,7 +48,7 @@ class Logger {
   }
 
   _log(level, text, ...params) {
-    var message = sprintf(`${this.prefix}${text}`, ...params.map(function(param) {
+    var message = sprintf(`${this.prefix}${text}`, ...params.map(function (param) {
       if (typeof param === 'object') {
         param = JSON.stringify(param, null, 2);
       }
@@ -64,13 +64,13 @@ class Logger {
 
 export const applicationFragment = ApplicationFragment.create({
   ns: 'application/logger',
-  initialize: createAppLogger
+  initialize: createAppLogger,
 });
 
 function createAppLogger(app) {
   app.logger = Logger.create({ bus: app.bus, ...(app.config.logger || {}) });
 
-  for (var loggerFragment of app.fragmentDictionary.queryAll('logger/**')) {
+  for (const loggerFragment of app.fragmentDictionary.queryAll('logger/**')) {
     loggerFragment.create(app);
   }
 }

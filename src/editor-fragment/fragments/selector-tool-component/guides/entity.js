@@ -1,6 +1,6 @@
 import BaseGuide from './base';
 
-class EntityGuide extends BaseGuide {
+export default class EntityGuide extends BaseGuide {
 
   constructor(allEntities, margin) {
     super();
@@ -14,7 +14,7 @@ class EntityGuide extends BaseGuide {
     var margin = this.margin;
 
     function snapToLines(lines) {
-      for (var [from, to = -1, offset = 0] of lines) {
+      for (const [from, to = -1, offset = 0] of lines) {
 
         // no guide. Return from.
         if (to === -1) {
@@ -65,18 +65,18 @@ class EntityGuide extends BaseGuide {
         [fromMidLeft, toLeft, -fromMidWidth],
 
         // default
-        [fromLeft]
+        [fromLeft],
       ]);
     }
 
-    var orgLeft = left;
-    var orgTop  = top;
+    const orgLeft = left;
+    const orgTop  = top;
 
-    var guideLeft;
-    var guideTop;
+    let guideLeft;
+    let guideTop;
 
-    for (var entity of allEntities) {
-      var style = entity.preview.getStyle();
+    for (const entity of allEntities) {
+      const style = entity.preview.getStyle();
 
       if (orgLeft === left) {
         [guideLeft, left] = snapBounds(left, style.left, width, style.width);
@@ -95,5 +95,3 @@ class EntityGuide extends BaseGuide {
     return { left, top, width, height, guideLeft, guideTop, orgLeft, orgTop };
   }
 }
-
-export default EntityGuide;

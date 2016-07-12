@@ -1,14 +1,9 @@
 import {
   STAGE_CANVAS_MOUSE_DOWN,
-  ENTITY_PREVIEW_DOUBLE_CLICK,
-  GROUP_SELECTION,
-  SetFocusMessage,
-  SetToolMessage
 } from 'editor-fragment/events';
 
 import { SelectEvent } from 'editor-fragment/selection/events';
 import { Fragment } from 'common/fragments';
-import { ReactComponentFactoryFragment } from 'common/react/fragments';
 import { ApplicationFragment } from 'common/application/fragments';
 import { TypeCallbackBus, RouterBus } from 'common/mesh';
 import { INITIALIZE } from 'common/application/events';
@@ -22,7 +17,7 @@ class PointerTool extends CoreObject {
     super(properties);
 
     this._routerBus = RouterBus.create({
-      [STAGE_CANVAS_MOUSE_DOWN]: this._execStageDown.bind(this)
+      [STAGE_CANVAS_MOUSE_DOWN]: this._execStageDown.bind(this),
     });
   }
 
@@ -30,7 +25,7 @@ class PointerTool extends CoreObject {
     this._routerBus.execute(event);
   }
 
-  _execStageDown(event) {
+  _execStageDown() {
     this.bus.execute(SelectEvent.create());
   }
 }
@@ -38,9 +33,9 @@ class PointerTool extends CoreObject {
 export const fragment = [
   ApplicationFragment.create({
     ns: 'application/nitPointerTool',
-    initialize: initPointer
-  })
-]
+    initialize: initPointer,
+  }),
+];
 
 function initPointer(app) {
 
@@ -50,7 +45,7 @@ function initPointer(app) {
     Fragment.create({
       ns: 'preview/tools/pointer',
       icon: 'cursor',
-      tool: tool
+      tool: tool,
     })
   );
 
@@ -59,6 +54,6 @@ function initPointer(app) {
   );
 
   function onInitialize() {
-    app.bus.execute({ type: 'setCurrentTool', tool: tool })
+    app.bus.execute({ type: 'setCurrentTool', tool: tool });
   }
 }

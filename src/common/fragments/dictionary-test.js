@@ -1,11 +1,11 @@
 import FragmentDictionary from './dictionary';
 
-describe(__filename + '#', function() {
-  it('can be created', function() {
+describe(__filename + '#', function () {
+  it('can be created', function () {
     FragmentDictionary.create();
   });
 
-  it('can register and query fragments', function() {
+  it('can register and query fragments', function () {
     var d = FragmentDictionary.create();
     d.register({ ns: 'a' });
     expect(d.queryAll('a')[0].ns).to.be('a');

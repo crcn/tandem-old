@@ -2,7 +2,7 @@ import { ApplicationFragment } from 'common/application/fragments';
 
 export const fragment = ApplicationFragment.create({
   ns: 'application/socket.io-client',
-  initialize: createSocketioClient
+  initialize: createSocketioClient,
 });
 
 function createSocketioClient(app) {

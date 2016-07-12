@@ -5,14 +5,14 @@ import fs from 'fs';
 
 export const fragment = ApplicationFragment.create({
   ns: 'openFile',
-  initialize: createOpenFileHandler
+  initialize: createOpenFileHandler,
 });
 
 function createOpenFileHandler(app) {
 
   app.busses.push(
     TypeCallbackBus.create('openFile', onOpenFile),
-    TypeCallbackBus.create('closeFile', onCloseFile)
+    TypeCallbackBus.create('closeFile', onCloseFile),
     TypeCallbackBus.create('getOpenFiles', onGetOpenFiles)
   );
 
@@ -29,9 +29,9 @@ function createOpenFileHandler(app) {
   }
 
   function watchFile(filepath) {
-    gaze(filepath, function(err, watcher) {
+    gaze(filepath, function (err, watcher) {
       watcher.on('all', openFile.bind(this, filepath));
-    })
+    });
   }
 
   function openFile(filepath) {
@@ -40,7 +40,7 @@ function createOpenFileHandler(app) {
     var fileInfo = {
       filepath : filepath,
       fileType : filepath.split('.').pop(),
-      content  : fs.readFileSync(filepath, 'utf8')
+      content  : fs.readFileSync(filepath, 'utf8'),
     };
 
     openFiles[fileInfo] = fileInfo;
@@ -49,7 +49,7 @@ function createOpenFileHandler(app) {
     app.bus.execute({
       type     : 'fileContent',
       public   : true,
-      ...fileInfo
+      ...fileInfo,
     });
   }
 

@@ -1,12 +1,9 @@
-import throttle from 'lodash/function/throttle';
 
-export default function(startEvent, update, stop) {
+export default (startEvent, update, stop) => {
 
-  var sx = startEvent.clientX;
-  var sy = startEvent.clientY;
-  var doc = startEvent.target.ownerDocument;
-
-  //update = throttle(update, 10);
+  const sx = startEvent.clientX;
+  const sy = startEvent.clientY;
+  const doc = startEvent.target.ownerDocument;
 
   function drag(event) {
 
@@ -15,8 +12,8 @@ export default function(startEvent, update, stop) {
     update(event, {
       delta: {
         x: event.clientX - sx,
-        y: event.clientY - sy
-      }
+        y: event.clientY - sy,
+      },
     });
   }
 
@@ -30,6 +27,6 @@ export default function(startEvent, update, stop) {
   doc.addEventListener('mouseup', cleanup);
 
   return {
-    dispose: cleanup
-  }
-}
+    dispose: cleanup,
+  };
+};

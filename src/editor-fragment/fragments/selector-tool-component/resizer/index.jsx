@@ -13,13 +13,6 @@ class ResizerComponent extends React.Component {
     this.state = {};
   }
 
-  onDoubleClick(event) {
-    this.props.bus.execute({
-      type      : ENTITY_PREVIEW_DOUBLE_CLICK,
-      selection : this.props.selection
-    });
-  }
-
   componentDidMount() {
     this.props.app.busses.push(this);
   }
@@ -32,6 +25,13 @@ class ResizerComponent extends React.Component {
   componentWillUnmount() {
     if (this._dragger) this._dragger.dispose();
     this.props.app.busses.remove(this);
+  }
+
+  onDoubleClick() {
+    // this.props.bus.execute({
+    //   type      : ENTITY_PREVIEW_DOUBLE_CLICK,
+    //   selection : this.props.selection,
+    // });
   }
 
   onKeyDown(message) {
@@ -58,7 +58,7 @@ class ResizerComponent extends React.Component {
 
     selection.preview.setPositionFromAbsolutePoint({
       top  : top,
-      left : left
+      left : left,
     });
 
     event.preventDefault();
@@ -81,7 +81,7 @@ class ResizerComponent extends React.Component {
       left   : style.left,
       top    : style.top,
       width  : style.width,
-      height : style.height
+      height : style.height,
     };
 
     if (/^n/.test(point.id)) {
@@ -105,15 +105,15 @@ class ResizerComponent extends React.Component {
     // ensure that the ratio between the width & the height
     // is always the same (no skewing) if the shift key is down.
     if (keepAspectRatio) {
-      var diffPerc = Math.min(props.width / point.currentStyle.width, props.height / point.currentStyle.height);
+      const diffPerc = Math.min(props.width / point.currentStyle.width, props.height / point.currentStyle.height);
 
       props.width = point.currentStyle.width * diffPerc;
       props.height = point.currentStyle.height * diffPerc;
     }
 
     if (keepCenter) {
-      props.left = point.currentStyle.left + (point.currentStyle.width/2 - props.width / 2);
-      props.top  = point.currentStyle.top + (point.currentStyle.height/2 - props.height / 2);
+      props.left = point.currentStyle.left + (point.currentStyle.width / 2 - props.width / 2);
+      props.top  = point.currentStyle.top + (point.currentStyle.height / 2 - props.height / 2);
     }
 
     selection.preview.setBoundingRect(props);
@@ -138,32 +138,32 @@ class ResizerComponent extends React.Component {
 
   startDragging(event) {
     event.stopPropagation();
-    var selection = this.props.selection;
+    const selection = this.props.selection;
 
     // when dragging, need to fetch style of the selection
     // so that the dragger is relative to the entity's position
-    var style = selection.preview.getBoundingRect();
+    const style = selection.preview.getBoundingRect();
 
-    var sx2 = style.left;
-    var sy2 = style.top;
+    const sx2 = style.left;
+    const sy2 = style.top;
 
-    this._dragger = startDrag(event, (event, info) => {
+    this._dragger = startDrag(event, (event2, { delta }) => {
 
       if (!this.targetPreview.getCapabilities().movable) return;
 
-      var nx = sx2 + info.delta.x / this.props.zoom;
-      var ny = sy2 + info.delta.y / this.props.zoom;
+      const nx = sx2 + delta.x / this.props.zoom;
+      const ny = sy2 + delta.y / this.props.zoom;
 
       // guide.snap - todo
-      var bounds = {
+      const bounds = {
         left   : nx,
         top    : ny,
         width  : style.width,
-        height : style.height
+        height : style.height,
       };
 
       this.setState({
-        dragBounds: bounds
+        dragBounds: bounds,
       });
 
       this.moveTarget(bounds.left, bounds.top);
@@ -178,7 +178,7 @@ class ResizerComponent extends React.Component {
 
     this.props.app.selection.preview.setPositionFromAbsolutePoint({
       left : left,
-      top  : top
+      top  : top,
     });
   }
 
@@ -190,21 +190,19 @@ class ResizerComponent extends React.Component {
 
     var rect = preview.getBoundingRect(true);
     var zrect = preview.getBoundingRect(false);
-    var actStyle = preview.getStyle(false);
 
     var cw = (pointRadius + strokeWidth) * 2;
 
     // offset stroke
     var resizerStyle = {
-      left     : rect.left - 1 - cw/2,
-      top      : rect.top - 1 - cw/2
+      left     : rect.left - 1 - cw / 2,
+      top      : rect.top - 1 - cw / 2,
     };
 
     var capabilities = preview.getCapabilities();
     var movable = capabilities.movable;
 
-
-    var points = [
+    const points = [
       ['nw', movable == true, 0, 0],
       ['n', movable === true, rect.width / 2, 0],
       ['ne', movable === true, rect.width, 0],
@@ -212,37 +210,34 @@ class ResizerComponent extends React.Component {
       ['se', true, rect.width, rect.height],
       ['s', true, rect.width / 2, rect.height],
       ['sw', movable === true, 0, rect.height],
-      ['w', movable === true, 0, rect.height / 2]
-    ].map(([id, show, left, top], i) => {
-      return {
-        id: id,
-        index: i,
-        show: show,
-        currentStyle: zrect,
-        left: left,
-        top: top
-      };
-    });
+      ['w', movable === true, 0, rect.height / 2],
+    ].map(([id, show, left, top], i) => ({
+      id: id,
+      index: i,
+      show: show,
+      currentStyle: zrect,
+      left: left,
+      top: top,
+    }));
 
-    var selection = this.props.selection;
-
-    return <div
-      ref='selection'
-      className='m-selector-component--selection'
-      style={resizerStyle}
-      onMouseDown={this.startDragging.bind(this)}
-      onDoubleClick={this.onDoubleClick.bind(this)}>
-
-      <PathComponent
-        showPoints={capabilities.resizable && !this.state.dragging}
-        onPointChange={this.updatePoint.bind(this)}
-        zoom={this.props.zoom}
-        points={points}
-        strokeWidth={strokeWidth}
-        pointRadius={pointRadius} />
-
-    </div>;
-
+    return (
+      <div
+        ref='selection'
+        className='m-selector-component--selection'
+        style={resizerStyle}
+        onMouseDown={this.startDragging.bind(this)}
+        onDoubleClick={this.onDoubleClick.bind(this)}
+      >
+        <PathComponent
+          showPoints={capabilities.resizable && !this.state.dragging}
+          onPointChange={this.updatePoint.bind(this)}
+          zoom={this.props.zoom}
+          points={points}
+          strokeWidth={strokeWidth}
+          pointRadius={pointRadius}
+        />
+      </div>
+    );
   }
 }
 

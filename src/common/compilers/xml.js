@@ -5,14 +5,14 @@ export default function compile(source) {
 }
 
 function translate(ast) {
-  return `function(create) {
+  return `function (create) {
     return ${translateNode(ast)}
   }`;
 }
 
 function translateNodes(nodes) {
-  return `[${nodes.map(translateNode).filter(function(node) {
-    return node != void 0
+  return `[${nodes.map(translateNode).filter(function (node) {
+    return node != void 0;
   }).join(',')}]`;
 }
 
@@ -43,19 +43,19 @@ function translateAttributes(attrs) {
 }
 
 function translateAttribute(attr) {
-  return `"${attr[1]}": ${translateAttributeValue(attr[2])}`
+  return `"${attr[1]}": ${translateAttributeValue(attr[2])}`;
 }
 
 function translateAttributeValue(attrValue) {
   if (attrValue.length === 1 && attrValue[0][0] === 'string') {
     return `${translateString(attrValue[0])}`;
-  } else {
-    throw new Error(`block attributes are not yet supported`);
   }
+
+  throw new Error('block attributes are not yet supported');
 }
 
 function translateBlock(ast) {
-  return `function(context) {
+  return `function (context) {
     return ${translateJS(ast)}
   }`;
 }
@@ -65,7 +65,7 @@ function translateString(ast) {
 }
 
 function translateJS(ast) {
-  switch(ast[0]) {
+  switch (ast[0]) {
     case 'reference': return translateReference(ast);
     default: throw new Error(`Unknown JS expression "${ast[0]}".`);
   }

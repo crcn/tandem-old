@@ -6,7 +6,7 @@ export default class DOMTextEntity extends DisplayEntity {
     super({
       displayType: 'htmlText',
       nodeType: 3,
-      ...properties
+      ...properties,
     });
   }
 }

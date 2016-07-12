@@ -1,5 +1,3 @@
-import create from 'common/utils/class/create';
-
 class BoundingRect {
 
   constructor({ left, right, top, bottom }) {
@@ -25,7 +23,7 @@ class BoundingRect {
     this.bottom = this.top + value;
   }
 
-  static create = function(properties) {
+  static create = function (properties) {
     return new BoundingRect(properties);
   }
 }

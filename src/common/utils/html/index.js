@@ -14,7 +14,6 @@ export function calculateZoom(element) {
     }
 
     current = current.parentNode || current.host;
-
   }
 
   return zoom;
@@ -35,17 +34,17 @@ export function translateAbsoluteToRelativePoint(event, relativeElement) {
   return { left: rx, top: ry };
 }
 
-
-
 // TODO - move this to utils
 export function multiplyStyle(style, zoom) {
 
   var zoomed = {};
 
-  for (var key in style) {
-    var value = style[key];
-    if (typeof value === 'number') {
-      zoomed[key] = value * zoom;
+  for (const key in style) {
+    if (style.hasOwnProperty(key)) {
+      const value = style[key];
+      if (typeof value === 'number') {
+        zoomed[key] = value * zoom;
+      }
     }
   }
 
@@ -57,10 +56,12 @@ export function divideStyle(style, zoom) {
 
   var zoomed = {};
 
-  for (var key in style) {
-    var value = style[key];
-    if (typeof value === 'number') {
-      zoomed[key] = value / zoom;
+  for (const key in style) {
+    if (style.hasOwnProperty(key)) {
+      const value = style[key];
+      if (typeof value === 'number') {
+        zoomed[key] = value / zoom;
+      }
     }
   }
 

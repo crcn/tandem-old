@@ -7,14 +7,14 @@ import throttle from 'lodash/function/throttle';
 
 export const fragment = ApplicationFragment.create({
   ns: 'application/renderRootComponent',
-  initialize: create
+  initialize: create,
 });
 
 function create(app) {
 
   app.busses.push(TypeCallbackBus.create(INITIALIZE, initialize));
 
-  function initialize(event) {
+  function initialize() {
     var rootComponentClassFragment = app.fragmentDictionary.query('rootComponentClass');
 
     if (!rootComponentClassFragment) {
@@ -25,7 +25,7 @@ function create(app) {
     function render() {
       ReactDOM.render(rootComponentClassFragment.create({
         app: app,
-        bus: app.bus
+        bus: app.bus,
       }), app.element);
     }
 

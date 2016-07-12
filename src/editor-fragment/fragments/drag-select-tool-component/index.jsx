@@ -76,7 +76,7 @@ class DragSelectComponent extends React.Component {
 
       var selection = [];
 
-      entities.forEach(function(entity) {
+      entities.forEach(function (entity) {
         if (boundsIntersect(entity.preview.getBoundingRect(true), bounds)) {
           selection.push(entity);
         }

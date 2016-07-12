@@ -1,29 +1,12 @@
 import React from 'react';
 import CoreObject from 'common/object';
-import observable from 'common/object/mixins/observable';
 import { ReactComponentFactoryFragment } from 'common/react/fragments';
-import { translateStyleToIntegers } from 'common/utils/css/translate-style';
-import { EmptyResponse } from 'mesh';
-import BoundingRect from 'common/geom/bounding-rect';
-import sift from 'sift';
 import EntityPreview from './entity-preview';
 
-function getPreviewRect(node) {
-  var p = node;
-
-  // todo - should be something such as data-root
-  while(p && !/m-preview/.test(p.getAttribute('class'))) {
-    p = p.parentNode;
-  }
-
-  if (p) return p.getBoundingClientRect();
-  return  {};
-}
-
 function convertStyle(style) {
-  var converted = {};
-  for (var key in style) {
-    var v = style[key];
+  const converted = {};
+  for (const key in style) {
+    let v = style[key];
     if (/left|top|margin|width|height/.test(key) && !isNaN(v)) {
       v = v + 'px';
     }
@@ -47,18 +30,16 @@ class HTMLNodePreview extends CoreObject {
 
   execute(event) {
     if (event.type !== 'change') return;
-    this._didChange = this._didChange || !!event.changes.find((change) => {
-      return change.target === this.entity;
-    });
+    this._didChange = this._didChange || !!event.changes.find((change) => (
+      change.target === this.entity
+    ));
 
     this.update();
   }
 
   update() {
-    if (this._didChange || true) {
-      this._didChange = false;
-      this.didChange();
-    }
+    this._didChange = false;
+    this.didChange();
   }
 
   didChange() {
@@ -73,7 +54,7 @@ class HTMLElementPreview extends HTMLNodePreview {
       Object.assign(this.node.style, convertStyle(this.entity.style));
     }
 
-    for (var key in this.entity.attributes) {
+    for (const key in this.entity.attributes) {
       if (/style/.test(key)) continue;
       this.node.setAttribute(key, this.entity.attributes[key]);
     }
@@ -81,14 +62,14 @@ class HTMLElementPreview extends HTMLNodePreview {
 
   update() {
     super.update();
-    for (var child of this.childNodes) {
+    for (const child of this.childNodes) {
       child.update();
     }
   }
 
   dispose() {
     super.dispose();
-    for (var child of this.childNodes) {
+    for (const child of this.childNodes) {
       child.dispose();
     }
   }
@@ -100,11 +81,11 @@ class HTMLElementPreview extends HTMLNodePreview {
       Object.assign(element.style, this.entity.style);
     }
 
-    for (var key in this.entity.attributes) {
+    for (const key in this.entity.attributes) {
       element.setAttribute(key, this.entity.attributes[key]);
     }
 
-    (this.childNodes = this.entity.childNodes.map(createNodePreview)).forEach(function(preview) {
+    (this.childNodes = this.entity.childNodes.map(createNodePreview)).forEach(function (preview) {
       element.appendChild(preview.node);
     });
 
@@ -127,7 +108,7 @@ class HTMLFramePreview extends HTMLElementPreview {
       position: 'absolute',
       border: '0px',
       overflow: 'scroll',
-      backgroundColor: '#FFF'
+      backgroundColor: '#FFF',
     }, this.entity.style);
 
     node.addEventListener('load', () => {
@@ -136,9 +117,9 @@ class HTMLFramePreview extends HTMLElementPreview {
       body.style.padding =
       '0px';
 
-      (this.childNodes = this.entity.childNodes.map(createNodePreview)).forEach(function(preview) {
+      (this.childNodes = this.entity.childNodes.map(createNodePreview)).forEach(function (preview) {
         node.contentWindow.document.body.appendChild(preview.node);
-      })
+      });
     });
     return node;
   }
@@ -149,10 +130,11 @@ class HTMLFramePreview extends HTMLElementPreview {
 }
 
 function createNodePreview(entity) {
-  switch(entity.displayType) {
+  switch (entity.displayType) {
     case 'htmlElement': return new HTMLElementPreview(entity);
     case 'htmlText'   : return new HTMLTextPreview(entity);
     case 'htmlFrame'  : return new HTMLFramePreview(entity);
+    default           : throw new Error(`cannot find entity ${entity.displayType}`);
   }
 }
 
@@ -187,9 +169,9 @@ export default class PreviewComponent extends React.Component {
   }
 
   render() {
-    return <div className='m-preview' ref='preview'>
+    return (<div className='m-preview' ref='preview'>
 
-    </div>;
+    </div>);
   }
 }
 

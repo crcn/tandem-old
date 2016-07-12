@@ -2,18 +2,16 @@
 // parent entity changes.
 
 import BoundingRect from 'common/geom/bounding-rect';
-// import { DisplayEntityComputer } from 'common/entities';
 import CoreObject from 'common/object';
 import { translateStyleToIntegers } from 'common/utils/css/translate-style';
 
 import {
   translateStyle,
-  translateLength as translateCSSLength
 } from 'common/utils/css';
 
 import {
   calculateZoom,
-  multiplyStyle
+  multiplyStyle,
 } from 'common/utils/html';
 
 function getElementOffset(entity) {
@@ -25,7 +23,7 @@ function getElementOffset(entity) {
 
   var zoom = calculateZoom(element);
 
-  while(p) {
+  while (p) {
     left += p.offsetLeft || 0;
     top  += p.offsetTop  || 0;
     left -= (p.scrollLeft || 0) / zoom;
@@ -33,7 +31,7 @@ function getElementOffset(entity) {
     p = p.parentNode || p.host;
   }
 
-  var frameOffset = getFrameOffset(entity);
+  const frameOffset = getFrameOffset(entity);
   left += frameOffset.left;
   top  += frameOffset.top;
 
@@ -46,9 +44,9 @@ function getFrameOffset(entity) {
 
   entity = entity.parentNode;
 
-  while(entity) {
+  while (entity) {
     if (entity.displayType === 'htmlFrame') {
-      var bounds = entity.preview.getBoundingRect();
+      const bounds = entity.preview.getBoundingRect();
       left += bounds.left;
       top  += bounds.top;
     }
@@ -64,7 +62,7 @@ class ReactEntityPreview extends CoreObject {
   constructor(entity, node) {
     super({
       entity: entity,
-      node  : node
+      node  : node,
     });
     this.getBoundingRect = this.getBoundingRect.bind(this);
   }
@@ -80,7 +78,7 @@ class ReactEntityPreview extends CoreObject {
     var style  = this.getStyle(false);
 
     var originLeft = bounds.left - style.left;
-    var originTop  = bounds.top  - style.top ;
+    var originTop  = bounds.top  - style.top;
 
     var left = point.left;
     var top  = point.top;
@@ -94,9 +92,9 @@ class ReactEntityPreview extends CoreObject {
       top -= originTop - offset.top;
     }
 
-    var newStyle = translateStyle({
+    const newStyle = translateStyle({
       left: left,
-      top: top
+      top: top,
     }, this.entity.style, element);
 
 
@@ -116,7 +114,7 @@ class ReactEntityPreview extends CoreObject {
 
     return {
       movable,
-      resizable
+      resizable,
     };
   }
 
@@ -136,14 +134,14 @@ class ReactEntityPreview extends CoreObject {
     // convert px to whatever unit is set on the style
     Object.assign(props, translateStyle({
       width: props.width,
-      height: props.height
+      height: props.height,
     }, this.entity.style, this.node));
 
     // FIXME: wrong place here - this is just a quick
     // check to see if this *actually* works
     this.setPositionFromAbsolutePoint({
       left: bounds.left,
-      top : bounds.top
+      top : bounds.top,
     });
 
     delete props.left;
@@ -175,16 +173,14 @@ class ReactEntityPreview extends CoreObject {
         paddingLeft: cs.paddingLeft,
         paddingTop: cs.paddingTop,
         paddingRight: cs.paddingRight,
-        paddingBottom: cs.paddingBottom
-      }, this.node)
-    }
+        paddingBottom: cs.paddingBottom,
+      }, this.node),
+    };
   }
 
   getBoundingRect(zoomProperties) {
 
     var node = this.node;
-
-    var entity = this.entity;
     var rect   = node.getBoundingClientRect();
     var cs     = this.getComputedStyle();
     var offset = getFrameOffset(this.entity);
@@ -200,7 +196,7 @@ class ReactEntityPreview extends CoreObject {
     var height = bottom - top;
 
     if (zoomProperties) {
-      var {left, top, width, height } = multiplyStyle({ left, top, width, height }, this.getZoom());
+      ({ left, top, width, height } = multiplyStyle({ left, top, width, height }, this.getZoom()));
     }
 
     right = left + width;
@@ -210,7 +206,7 @@ class ReactEntityPreview extends CoreObject {
       left   : left,
       top    : top,
       right  : right,
-      bottom : bottom
+      bottom : bottom,
     });
   }
 
@@ -224,10 +220,8 @@ class ReactEntityPreview extends CoreObject {
 
     var { left, top } = translateStyleToIntegers({
       left: style.left || 0,
-      top : style.top || 0
+      top : style.top || 0,
     }, node);
-
-    var cs   = window.getComputedStyle(node);
 
     // normalize computed styles to pixels
     var cStyle = this.getComputedStyle();
@@ -237,7 +231,7 @@ class ReactEntityPreview extends CoreObject {
     var w = rect.right  - rect.left;
     var h = rect.bottom - rect.top;
 
-    var style = {
+    style = {
       ...cStyle,
       left      : left,
       top       : top,
@@ -246,7 +240,7 @@ class ReactEntityPreview extends CoreObject {
 
       // for rect consistency
       right     : left + w,
-      bottom    : top  + h
+      bottom    : top  + h,
     };
 
     // this normalizes the properties so that the calculated values

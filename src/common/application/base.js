@@ -1,5 +1,5 @@
 import CoreObject from 'common/object';
-import Collection from 'common/object/collection'; 
+import Collection from 'common/object/collection';
 import { ParallelBus } from 'mesh';
 import observable from 'common/object/mixins/observable';
 import { InitializeEvent, LoadEvent } from './events';

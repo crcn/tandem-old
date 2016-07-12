@@ -5,7 +5,7 @@ import {
   VERBOSE as VERBOSE_LEVEL,
   INFO as INFO_LEVEL,
   WARN as WARN_LEVEL,
-  ERROR as ERROR_LEVEL
+  ERROR as ERROR_LEVEL,
 } from 'common/logger/levels';
 import chalk from 'chalk';
 

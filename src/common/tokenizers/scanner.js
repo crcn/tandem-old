@@ -8,8 +8,8 @@ class Scanner {
   }
 
   scan(regexp) {
-    var rest = this.source.substr(this.position);
-    var match = rest.match(regexp);
+    const rest = this.source.substr(this.position);
+    const match = rest.match(regexp);
     if (!match) return void 0;
     this._capture = match[0];
     this.position += rest.indexOf(this._capture) + this._capture.length;

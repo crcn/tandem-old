@@ -19,7 +19,7 @@ function trimmedText() {
 
 function attrValues(values) {
 
-  values = values.filter(function(v) {
+  values = values.filter(function (v) {
     return !/^[\n\t\r]+$/.test(v.value);
   });
 
@@ -202,7 +202,7 @@ Parameters
 
 InnerParameters
   = param1:Expression rest:("," Expression)* {
-      return [param1].concat(rest.map(function(v) {
+      return [param1].concat(rest.map(function (v) {
         return v[1];
       }));
     }

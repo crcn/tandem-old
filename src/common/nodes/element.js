@@ -10,7 +10,7 @@ export default class Element extends Node {
 
   flatten(nodes = []) {
     nodes.push(this);
-    this.childNodes.forEach(function(childNode) {
+    this.childNodes.forEach((childNode) => {
       childNode.flatten(nodes);
     });
     return nodes;
@@ -26,7 +26,7 @@ export default class Element extends Node {
 
   set childNodes(value) {
     this._childNodes = value;
-    for (var child of value) this._linkChild(child);
+    for (const child of value) this._linkChild(child);
   }
 
   get childNodes() {
@@ -40,8 +40,8 @@ export default class Element extends Node {
 
   filter(filter, ret = []) {
     if (filter(this)) ret.push(this);
-    for (var child of this.childNodes) {
-      nodes.pchild.filter(child, ret);
+    for (const child of this.childNodes) {
+      child.filter(filter, ret);
     }
     return ret;
   }
@@ -66,8 +66,8 @@ export default class Element extends Node {
     this.childNodes.splice(this._getChildIndex(existingChild), 0, this._linkChild(newChild));
   }
 
-  _getChildIndex(child) {
-    var i = this.childNodes.indexOf(existingChild);
+  _getChildIndex(existingChild) {
+    const i = this.childNodes.indexOf(existingChild);
     if (!~i) throw new Error('child node does not exist');
     return i;
   }

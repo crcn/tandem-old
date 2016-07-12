@@ -6,7 +6,6 @@ import createToken from './create-token';
 // linear-gradient(to left top, blue, red);
 // linear-gradient(0deg, blue, green 40%, red);
 import {
-  TEXT,
   SPACE,
   TAB,
   DOT,
@@ -14,7 +13,7 @@ import {
   LEFT_PAREN,
   RIGHT_PAREN,
   OPERATOR,
-  COMMA
+  COMMA,
 } from './token-types';
 
 var tokenMap = {
@@ -22,7 +21,7 @@ var tokenMap = {
   ':': COLON,
   '(': LEFT_PAREN,
   ')': RIGHT_PAREN,
-  ',': COMMA
+  ',': COMMA,
 };
 
 class CSSTokenizer extends BaseObject {
@@ -42,9 +41,9 @@ class CSSTokenizer extends BaseObject {
     //   return addToken(/^[\/\*\-\+]/, OPERATOR);
     // }
 
-    while(!scanner.hasTerminated()) {
+    while (!scanner.hasTerminated()) {
 
-      var number = scanner.scan(/^((\.\d+)|(\d)+(\.\d+)?)/);
+      const number = scanner.scan(/^((\.\d+)|(\d)+(\.\d+)?)/);
 
       if (number) {
         if (scanner.scan(/^deg/)) {
@@ -57,14 +56,14 @@ class CSSTokenizer extends BaseObject {
         continue;
       }
 
-      if (addToken(/^\#\w{1,6}/, 'color')) continue;
+      if (addToken(/^#\w{1,6}/, 'color')) continue;
       if (addToken(/^\w+(\-\w+)?/, 'reference')) continue;
       if (addToken(/^\u0020+/, SPACE)) continue;
       if (addToken(/^\t+/, TAB)) continue;
       if (addToken(/^[\/\*\-\+]/, OPERATOR)) continue;
       if (addToken(/^,/, COMMA)) continue;
 
-      var char = scanner.nextChar();
+      const char = scanner.nextChar();
 
       tokens.push(createToken(char, tokenMap[char] || 'text'));
     }

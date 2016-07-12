@@ -18,12 +18,12 @@ class StringTokenizer {
       return false;
     }
 
-    while(!scanner.hasTerminated()) {
+    while (!scanner.hasTerminated()) {
       if (addToken(/^[\n\r]/, NEW_LINE)) continue;
       if (addToken(/^\t+/, TAB)) continue;
       if (addToken(/^\u0020+/, SPACE)) continue;
       if (addToken(/[^\s\t\n\r]+/, TEXT)) continue;
-      throw new Error('unexpected token: '+ scanner.getCapture());
+      throw new Error('unexpected token: ' + scanner.getCapture());
     }
 
     return tokens;

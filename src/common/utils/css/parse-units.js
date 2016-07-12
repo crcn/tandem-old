@@ -1,7 +1,4 @@
-export default function(value) {
-  var match = value.match(/([-\d\.]+)(\D+)?/);
-  // console.log(match);
-
+export default (value) => {
+  const match = value.match(/([-\d\.]+)(\D+)?/);
   return [Number(match[1]), match[2] || 'px'];
-  // return match ? [match[0], match[1] || 'px'] : [0, 'px'];
-}
+};

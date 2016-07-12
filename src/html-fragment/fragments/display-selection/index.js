@@ -1,9 +1,5 @@
-
-// import { clone } from 'common/utils/object';
-import { SelectEvent } from 'editor-fragment/selection/events';
 import CoreObject from 'common/object';
 import observable from 'common/object/mixins/observable';
-import BoundingRect from 'common/geom/bounding-rect';
 import { calculateBoundingRect } from 'common/utils/geom';
 import assert from 'assert';
 import { FactoryFragment } from 'common/fragments';
@@ -14,12 +10,12 @@ class Preview extends CoreObject {
   constructor(selection, bus) {
     super({
       selection: selection,
-      bus: bus
+      bus: bus,
     });
   }
 
   setProperties(properties) {
-    for (var entity of this.selection) {
+    for (const entity of this.selection) {
       entity.preview.setProperties(properties);
     }
     super.setProperties(properties);
@@ -27,13 +23,13 @@ class Preview extends CoreObject {
 
   setPositionFromAbsolutePoint(point) {
 
-    var bounds = this.getBoundingRect();
+    const bounds = this.getBoundingRect();
 
-    this.selection.map(function(entity) {
-      var pstyle = entity.preview.getBoundingRect();
+    this.selection.forEach(function (entity) {
+      const pstyle = entity.preview.getBoundingRect();
       entity.preview.setPositionFromAbsolutePoint({
         left: point.left + (pstyle.left - bounds.left),
-        top : point.top  + (pstyle.top  - bounds.top)
+        top : point.top  + (pstyle.top  - bounds.top),
       });
     });
   }
@@ -47,9 +43,9 @@ class Preview extends CoreObject {
   getCapabilities() {
 
     var capabilities = {};
-    for (var item of this.selection) {
-      var ic = item.preview.getCapabilities();
-      for (var name in ic) {
+    for (const item of this.selection) {
+      const ic = item.preview.getCapabilities();
+      for (const name in ic) {
         capabilities[name] = capabilities[name] === false ? false : ic[name];
       }
     }
@@ -67,7 +63,7 @@ class Preview extends CoreObject {
     var cstyle = this.getBoundingRect(false);
 
     // otherwise reposition the items
-    this.selection.forEach(function(entity) {
+    this.selection.forEach(function (entity) {
       var style = entity.preview.getBoundingRect(false);
 
       var percLeft   = (style.left - cstyle.left) / cstyle.width;
@@ -79,7 +75,7 @@ class Preview extends CoreObject {
         left  : bounds.left + bounds.width * percLeft,
         top   : bounds.top + bounds.height * percTop,
         width : bounds.width * percWidth,
-        height: bounds.height * percHeight
+        height: bounds.height * percHeight,
       });
     });
   }
@@ -90,7 +86,7 @@ class Preview extends CoreObject {
    */
 
   getBoundingRect(zoomProperties) {
-    return calculateBoundingRect(this.selection.map(function(entity) {
+    return calculateBoundingRect(this.selection.map(function (entity) {
       return entity.preview.getBoundingRect(zoomProperties);
     }));
   }
@@ -100,7 +96,7 @@ class Preview extends CoreObject {
    */
 
   getStyle() {
-    return calculateBoundingRect(this.selection.map(function(entity) {
+    return calculateBoundingRect(this.selection.map(function (entity) {
       return entity.preview.getStyle();
     }));
   }
@@ -114,13 +110,13 @@ class HTMLEntitySelection extends Selection {
   }
 
   set style(value) {
-    this.forEach(function(entity) {
-      entity.style = style;
-    })
+    this.forEach(function (entity) {
+      entity.style = value;
+    });
   }
 
   setAttribute(key, value) {
-    for (var entity of this) {
+    for (const entity of this) {
       entity.setAttribute(key, value);
     }
   }
@@ -129,7 +125,7 @@ class HTMLEntitySelection extends Selection {
     return this.length ? this[0].value : void 0;
   }
 
-  get type () {
+  get type() {
     return this.length ? this[0].type : void 0;
   }
 
@@ -143,7 +139,7 @@ class HTMLEntitySelection extends Selection {
 
   setProperties(properties) {
     super.setProperties(properties);
-    for (var item of this) {
+    for (const item of this) {
       item.setProperties(properties);
     }
   }
@@ -151,9 +147,9 @@ class HTMLEntitySelection extends Selection {
   serialize() {
     return {
       type: 'html-selection',
-      items: this.map(function(entity) {
+      items: this.map(function (entity) {
         return entity.serialize();
-      })
+      }),
     };
   }
 
@@ -166,13 +162,13 @@ class HTMLEntitySelection extends Selection {
   }
 
   getStyle() {
-    var selectionStyle = clone(this[0].getStyle());
+    var selectionStyle = Object.assign({}, this[0].getStyle());
 
     // take away styles from here
 
-    this.slice(1).forEach(function(entity) {
-      var style = entity.style;
-      for (var key in selectionStyle) {
+    this.slice(1).forEach(function (entity) {
+      const style = entity.style;
+      for (const key in selectionStyle) {
         if (selectionStyle[key] !== style[key]) {
           delete selectionStyle[key];
         }
@@ -184,15 +180,12 @@ class HTMLEntitySelection extends Selection {
 
   deleteAll() {
 
-    var deleted = this.splice(0, this.length);
+    const deleted = this.splice(0, this.length);
 
-    for (var entity of deleted) {
+    for (const entity of deleted) {
 
       assert(entity.parent, 'Attempting to delete selected entity which does not belong to any parent entity. Therefore it\'s a root entity, or it should not exist.');
 
-      var entityIndex  = entity.parent.children.indexOf(focus);
-      //var nextSibling = entityIndex ? entity.parent.children[entityIndex - 1] : entity.parent.children[entityIndex + 1];
-      // remove the child deleted
       entity.parent.children.remove(entity);
     }
 

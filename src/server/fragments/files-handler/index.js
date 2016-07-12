@@ -6,7 +6,7 @@ import fs from 'fs';
 
 export const fragment = ApplicationFragment.create({
   ns: 'application/openFile',
-  initialize: createOpenFileHandler
+  initialize: createOpenFileHandler,
 });
 
 function createOpenFileHandler(app) {
@@ -29,18 +29,18 @@ function createOpenFileHandler(app) {
   }
 
   function watchFile(filepath) {
-    gaze(filepath, function(err, watcher) {
+    gaze(filepath, function (err, watcher) {
       watcher.on('all', openFile.bind(this, filepath));
-    })
+    });
   }
 
   function openFile(filepath) {
     logger.info('opening %s', filepath);
 
-    var fileInfo = {
+    const fileInfo = {
       path     : filepath,
       ext      : filepath.split('.').pop(),
-      content  : fs.readFileSync(filepath, 'utf8')
+      content  : fs.readFileSync(filepath, 'utf8'),
     };
 
     openFiles[fileInfo] = fileInfo;
@@ -49,15 +49,15 @@ function createOpenFileHandler(app) {
     app.bus.execute({
       type     : 'handleFileContent',
       public   : true,
-      file     : fileInfo
+      file     : fileInfo,
     });
   }
 
-  function onCloseFile(event) {
+  function onCloseFile() {
     throw new Error('cannot close files yet');
   }
 
-  function onGetOpenFiles(event) {
+  function onGetOpenFiles() {
     return BufferedResponse.create(void 0, Object.values(openFiles));
   }
 }

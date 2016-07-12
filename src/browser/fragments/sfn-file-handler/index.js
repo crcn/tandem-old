@@ -7,7 +7,7 @@ import deserializeEntity from 'common/utils/entity/deserialize';
 
 export const fragment = ApplicationFragment.create({
   ns: 'application/sfnFileHandler',
-  initialize: create
+  initialize: create,
 });
 
 @observable
@@ -31,8 +31,6 @@ class SfnFile extends CoreObject {
 }
 
 function create(app) {
-
-  const logger = app.logger.createChild({ prefix: 'sfn file handler: '});
 
   app.busses.push(
     AcceptBus.create(
