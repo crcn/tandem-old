@@ -44,6 +44,6 @@ export default class DisplayEntity extends Entity {
   }
 
   get style() {
-    return this.attributes.style;
+    return this.attributes.style || {};
   }
 }

@@ -1,15 +1,10 @@
-.m-editor-stage-layers {
+.m-editor-stage-isolate {
   position: relative;
   overflow: hidden;
   flex-grow: 1;
-
-  &--isolate-container {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-  }
 }
 
 .m-editor-stage-canvas {
   -webkit-user-select: none;
+  
 }

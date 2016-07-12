@@ -16,6 +16,8 @@ import CoreObject from 'common/object';
 
 class PointerTool extends CoreObject {
 
+  name = 'pointer';
+
   constructor(properties) {
     super(properties);
 

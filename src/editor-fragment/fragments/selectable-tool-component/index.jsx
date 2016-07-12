@@ -98,4 +98,4 @@ class SelectablesComponent extends React.Component {
   }
 }
 
-export const fragment = ReactComponentFactoryFragment.create('components/tools/selectable', SelectablesComponent);
+export const fragment = ReactComponentFactoryFragment.create('components/tools/pointer/selectable', SelectablesComponent);

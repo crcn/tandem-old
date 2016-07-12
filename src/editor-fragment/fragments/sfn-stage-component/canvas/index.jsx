@@ -18,13 +18,15 @@ export default class EditorStageLayersComponent extends React.Component {
   }
 
   render() {
-    return <div className='m-editor-stage-layers'>
-      <IsolateComponent inheritCSS={true} className='m-editor-stage-layers--isolate-container'>
-        <div className='m-editor-stage-canvas' onMouseDown={this.onMouseDown.bind(this)}>
-          <PreviewLayerComponent {...this.props} />
-          <ToolsLayerComponent {...this.props} />
-        </div>
-      </IsolateComponent>
-    </div>
+    var style = {
+      cursor: this.props.app.currentTool.cursor
+    };
+
+    return <IsolateComponent inheritCSS={true} className='m-editor-stage-isolate'>
+      <div className='m-editor-stage-canvas' style={style} onMouseDown={this.onMouseDown.bind(this)}>
+        <PreviewLayerComponent {...this.props} />
+        <ToolsLayerComponent {...this.props} />
+      </div>
+    </IsolateComponent>;
   }
 }

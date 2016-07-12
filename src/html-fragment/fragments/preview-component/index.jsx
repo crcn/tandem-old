@@ -42,7 +42,7 @@ class HTMLNodePreview extends CoreObject {
   }
 
   dispose() {
-    this.entity.bus.remove(this);
+    // OVERRIDE ME
   }
 
   execute(event) {
@@ -167,13 +167,17 @@ export default class PreviewComponent extends React.Component {
   _resetPreview() {
 
     if (this._preview) {
-      this.props.app.busses.splice(this.props.app.busses.indexOf(this._preview), 1);
+      this.props.app.busses.remove(this._preview);
       this.refs.preview.removeChild(this._preview.node);
     }
 
     this._preview = createNodePreview(this.props.entity);
     this.refs.preview.appendChild(this._preview.node);
-    this.props.app.busses.push(this._preview);
+    // this.props.app.busses.push(this._preview);
+    this._preview.update();
+  }
+
+  componentWillUpdate() {
     this._preview.update();
   }
 

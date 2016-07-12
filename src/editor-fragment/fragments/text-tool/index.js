@@ -16,6 +16,8 @@ import CoreObject from 'common/object';
 
 class TextTool extends CoreObject {
 
+  cursor = 'text';
+
   constructor(properties) {
     super(properties);
 
@@ -25,7 +27,7 @@ class TextTool extends CoreObject {
   }
 
   execute() {
-    
+
   }
 }
 
@@ -37,11 +39,11 @@ function initTextTool(app) {
 
   var tool = new TextTool({ bus: app.bus });
 
-  app.fragmentDictionary.register(
-    Fragment.create({
-      ns: 'preview/tools/text',
-      icon: 'text',
-      tool: tool
-    })
-  );
+  // app.fragmentDictionary.register(
+  //   Fragment.create({
+  //     ns: 'preview/tools/text',
+  //     icon: 'text',
+  //     tool: tool
+  //   })
+  // );
 }

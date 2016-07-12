@@ -15,6 +15,7 @@ function create(app) {
 
   var tools = [];
   var currentTool;
+  app.currentTool = {};
 
   function onLoad(event) {
     for (var fragment of app.fragmentDictionary.queryAll('tools/**')) {
