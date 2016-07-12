@@ -18,7 +18,8 @@ class SfnFile extends CoreObject {
     var contentChange = changes.find(sift({ property: 'content' }));
 
     if (contentChange) {
-      this.entity = this._deserialize(this.content);
+      console.log('change'); 
+      this.setProperties({ entity: this._deserialize(this.content) });
     }
   }
 

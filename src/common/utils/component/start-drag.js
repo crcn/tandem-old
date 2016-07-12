@@ -4,6 +4,7 @@ export default function(startEvent, update, stop) {
 
   var sx = startEvent.clientX;
   var sy = startEvent.clientY;
+  var doc = startEvent.target.ownerDocument;
 
   //update = throttle(update, 10);
 
@@ -20,13 +21,13 @@ export default function(startEvent, update, stop) {
   }
 
   function cleanup() {
-    document.removeEventListener('mousemove', drag);
-    document.removeEventListener('mouseup', cleanup);
+    doc.removeEventListener('mousemove', drag);
+    doc.removeEventListener('mouseup', cleanup);
     if (stop) stop();
   }
 
-  document.addEventListener('mousemove', drag);
-  document.addEventListener('mouseup', cleanup);
+  doc.addEventListener('mousemove', drag);
+  doc.addEventListener('mouseup', cleanup);
 
   return {
     dispose: cleanup

@@ -1,6 +1,6 @@
 import { Event } from 'common/events';
 
-export const STAGE_PREVIEW_MOUSE_DOWN = 'stagePreviewMouseDown';
+export const STAGE_CANVAS_MOUSE_DOWN = 'stageCanvasMouseDown';
 
 export class MouseEvent extends Event {
   constructor(type, originalEvent) {

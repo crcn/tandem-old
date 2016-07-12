@@ -5,7 +5,7 @@ export const APPLICATION_NS = 'application';
 
 export class ApplicationFragment extends Fragment {
   constructor(ns, initialize) {
-    super(`${APPLICATION_NS}/${ns}`);
+    super({ ns: `${APPLICATION_NS}/${ns}` });
     this.initialize = initialize;
     assertPropertyExists(this, 'initialize', Function);
   }

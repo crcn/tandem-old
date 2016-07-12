@@ -1,13 +1,13 @@
 <frame>
-  <div style="background-color: red; padding: 10px; width: 400px;">
-    test!!
+  <div style="background-color: red; padding: 10px; width: 400px; position: absolute;">
+    test!!!!
   </div>
 </frame>
 
-<frame style="position: absolute; top: 300px;">
+<frame style="position: absolute; top: 200px;">
   <div style="background-color: red; padding: 20px">
     <div style="background-color: white">
-      test234
+      test2345
     </div>
   </div>
 </frame>

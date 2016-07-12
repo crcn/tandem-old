@@ -7,9 +7,9 @@ function createConfig(options) {
 
   return deepExtend(options, {
     output: {
-      path: __dirname + '/public',
-      filename: '/bundle/[name].js',
-      publicPath: '/public/',
+      path: __dirname + '/public/bundle',
+      filename: '/[name].js',
+      publicPath: '/bundle/',
       sourceMapFilename: '/bundle/[name].js.map'
     },
     resolve: {
