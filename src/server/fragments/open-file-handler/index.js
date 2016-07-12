@@ -1,18 +1,18 @@
 import { ApplicationFragment } from 'common/application/fragments';
 import { TypeCallbackBus } from 'common/mesh';
-import { BufferedResponse } from 'mesh';
 import gaze from 'gaze';
 import fs from 'fs';
 
 export const fragment = ApplicationFragment.create({
-  ns: 'application/openFile',
+  ns: 'openFile',
   initialize: createOpenFileHandler
 });
 
 function createOpenFileHandler(app) {
+
   app.busses.push(
     TypeCallbackBus.create('openFile', onOpenFile),
-    TypeCallbackBus.create('closeFile', onCloseFile),
+    TypeCallbackBus.create('closeFile', onCloseFile)
     TypeCallbackBus.create('getOpenFiles', onGetOpenFiles)
   );
 
@@ -38,8 +38,8 @@ function createOpenFileHandler(app) {
     logger.info('opening %s', filepath);
 
     var fileInfo = {
-      path     : filepath,
-      ext      : filepath.split('.').pop(),
+      filepath : filepath,
+      fileType : filepath.split('.').pop(),
       content  : fs.readFileSync(filepath, 'utf8')
     };
 
@@ -47,9 +47,9 @@ function createOpenFileHandler(app) {
 
     // pass the file onto specific file handlers
     app.bus.execute({
-      type     : 'handleFileContent',
+      type     : 'fileContent',
       public   : true,
-      file     : fileInfo
+      ...fileInfo
     });
   }
 
@@ -57,7 +57,8 @@ function createOpenFileHandler(app) {
     throw new Error('cannot close files yet');
   }
 
-  function onGetOpenFiles(event) {
-    return BufferedResponse.create(void 0, Object.values(openFiles));
+  async function onGetOpenFiles(event) {
+    console.log('get open files');
+    return 'barg';
   }
 }

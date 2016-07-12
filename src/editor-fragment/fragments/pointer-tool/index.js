@@ -36,7 +36,10 @@ class PointerTool extends CoreObject {
 }
 
 export const fragment = [
-  ApplicationFragment.create('initPointerTool', initPointer)
+  ApplicationFragment.create({
+    ns: 'application/nitPointerTool',
+    initialize: initPointer
+  })
 ]
 
 function initPointer(app) {

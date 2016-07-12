@@ -3,7 +3,10 @@ import { INITIALIZE } from 'common/application/events';
 import { TypeCallbackBus } from 'common/mesh';
 import OpenFilesCollection from './open-files-collection';
 
-export const fragment = ApplicationFragment.create('fileHandler', create);
+export const fragment = ApplicationFragment.create({
+  ns: 'application/fileHandler',
+  initialize: create
+});
 
 function create(app) {
   app.busses.push(

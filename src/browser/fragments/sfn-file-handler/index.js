@@ -5,7 +5,10 @@ import observable from 'common/object/mixins/observable';
 import sift from 'sift';
 import deserializeEntity from 'common/utils/entity/deserialize';
 
-export const fragment = ApplicationFragment.create('sfnFileHandler', create);
+export const fragment = ApplicationFragment.create({
+  ns: 'application/sfnFileHandler',
+  initialize: create
+});
 
 @observable
 class SfnFile extends CoreObject {
@@ -18,7 +21,6 @@ class SfnFile extends CoreObject {
     var contentChange = changes.find(sift({ property: 'content' }));
 
     if (contentChange) {
-      console.log('change'); 
       this.setProperties({ entity: this._deserialize(this.content) });
     }
   }

@@ -3,7 +3,10 @@ import { LOAD } from 'common/application/events';
 import { TypeCallbackBus } from 'common/mesh';
 import { WrapBus } from 'mesh';
 
-export const fragment = ApplicationFragment.create('tool-handler', create);
+export const fragment = ApplicationFragment.create({
+  ns         : 'application/toolHandler',
+  initialize : create
+});
 
 function create(app) {
 

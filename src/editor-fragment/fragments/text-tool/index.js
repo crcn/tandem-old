@@ -32,7 +32,10 @@ class TextTool extends CoreObject {
 }
 
 export const fragment = [
-  ApplicationFragment.create('initTextTool', initTextTool)
+  ApplicationFragment.create({
+    ns: 'application/initTextTool',
+    initialize: initTextTool
+  })
 ]
 
 function initTextTool(app) {

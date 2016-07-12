@@ -67,7 +67,7 @@ function createConfig(options) {
             plugins: ['transform-decorators-legacy'],
             ignore: ['buffer']
           }
-        }
+        },
       ]
     }
   })

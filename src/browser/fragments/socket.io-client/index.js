@@ -6,7 +6,10 @@ import { TypeCallbackBus } from 'common/mesh';
 import createSocketioClient from 'socket.io-client';
 import sift from 'sift';
 
-export const fragment = ApplicationFragment.create('socket.io-client', create);
+export const fragment = ApplicationFragment.create({
+  ns: 'application/socketIoClient',
+  initialize: create
+});
 
 function create(app) {
   var port = app.config.socketio.port;

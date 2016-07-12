@@ -4,7 +4,7 @@ import { ApplicationFragment } from 'common/application/fragments';
 import { SelectEvent, SELECT } from 'editor-fragment/selection/events';
 
 export const fragment = ApplicationFragment.create({
-  ns: 'application/selector',
+  ns:'application/selector',
   initialize: initialize
 });
 

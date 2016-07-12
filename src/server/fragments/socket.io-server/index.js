@@ -5,11 +5,16 @@ import RemoteBus from 'mesh-remote-bus';
 import sift from 'sift';
 import createServer from 'socket.io';
 
-export const fragment = ApplicationFragment.create('application/socket.io-server', create);
+export const fragment = ApplicationFragment.create({
+  ns:'application/socketIoServer',
+  initialize: create
+});
 
 function create(app) {
-  app.busses.push(AcceptBus.create(sift({ type: LOAD }), WrapBus.create(load)));
-  app.busses.push(AcceptBus.create(sift({ type: INITIALIZE }), WrapBus.create(initialize)));
+  app.busses.push(
+    AcceptBus.create(sift({ type: LOAD }), WrapBus.create(load)),
+    AcceptBus.create(sift({ type: INITIALIZE }), WrapBus.create(initialize))
+  );
 
   const port   = app.config.socketio.port;
   const logger = app.logger.createChild({ prefix: 'socket.io ' });

@@ -1,6 +1,11 @@
-<frame>
-  <div style="background-color: red; padding: 10px; width: 400px; position: absolute;">
-    test!!!!
+<frame id='button'>
+  <style>
+    .button {
+      color: blue;
+    }
+  </style>
+  <div class='button' style='background-color:red'>
+    button!!!
   </div>
 </frame>
 

@@ -1,12 +1,12 @@
 import { ApplicationFragment } from 'common/application/fragments';
-import { TypeCallbackBus } from 'common/mesh';
-import { WrapBus } from 'mesh';
+import { TypeCallbackBus } from 'common/mesh/bus';
+import { WrapBus } from
 import { INITIALIZE } from 'common/application/events';
 import * as ReactDOM from 'react-dom';
 import throttle from 'lodash/function/throttle';
 
 export const fragment = ApplicationFragment.create({
-  ns: 'application/renderRootComponent',
+  ns:'application/render-root-component',
   initialize: create
 });
 
@@ -23,12 +23,15 @@ function create(app) {
     }
 
     function render() {
+      console.log('render')
       ReactDOM.render(rootComponentClassFragment.create({
         app: app,
         bus: app.bus
       }), app.element);
     }
 
-    app.busses.push(WrapBus.create(throttle(render, 10)));
+    app.busses.push({
+      execute: throttle(render, 10)
+    });
   }
 }

@@ -62,7 +62,10 @@ class Logger {
   static create = create;
 }
 
-export const applicationFragment = ApplicationFragment.create('application/logger', createAppLogger);
+export const applicationFragment = ApplicationFragment.create({
+  ns: 'application/logger',
+  initialize: createAppLogger
+});
 
 function createAppLogger(app) {
   app.logger = Logger.create({ bus: app.bus, ...(app.config.logger || {}) });
