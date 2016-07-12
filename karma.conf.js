@@ -35,8 +35,7 @@ module.exports = function(config) {
     plugins: [
       require('karma-mocha'),
       require('karma-webpack'),
-      require('karma-chrome-launcher'),
-      require('karma-phantomjs-launcher'),
+      require('karma-firefox-launcher'),
       require('karma-spec-reporter'),
       require('karma-coverage')
     ],
@@ -90,14 +89,6 @@ module.exports = function(config) {
       // i. e.
       noInfo: true
     },
-
-    customLaunchers: {
-        Chrome_travis_ci: {
-            base: 'Chrome',
-            flags: ['--no-sandbox']
-        }
-    },
-
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
