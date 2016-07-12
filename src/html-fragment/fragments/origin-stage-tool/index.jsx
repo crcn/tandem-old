@@ -1,7 +1,6 @@
 import './index.scss';
 
 import React from 'react';
-import { TemplateComponent, dom } from 'paperclip';
 import { ReactComponentFactoryFragment } from 'common/react/fragments';
 
 const x2 = 0;

@@ -33,7 +33,7 @@ class DragSelectComponent extends React.Component {
     var container = this.refs.container;
     var b = container.getBoundingClientRect();
 
-    var entities = this.props.app.rootEntity.childNodes;
+    var entities = this.props.app.entity.childNodes;
 
     var left = event.clientX - b.left;
     var top  = event.clientY - b.top;

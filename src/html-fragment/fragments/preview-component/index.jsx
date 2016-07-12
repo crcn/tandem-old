@@ -126,6 +126,7 @@ class HTMLFramePreview extends HTMLElementPreview {
     Object.assign(node.style, {
       position: 'absolute',
       border: '0px',
+      overflow: 'scroll',
       backgroundColor: '#FFF'
     }, this.entity.style);
 

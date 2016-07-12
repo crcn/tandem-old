@@ -12,9 +12,6 @@ class SfnFile extends CoreObject {
   constructor(properties) {
     super(properties);
     this.entity = this._deserialize(this.content);
-
-    // temporary
-    this.app.setProperties({ rootEntity: this.entity });
   }
 
   didChange(changes) {
@@ -22,7 +19,6 @@ class SfnFile extends CoreObject {
 
     if (contentChange) {
       this.entity = this._deserialize(this.content);
-      this.app.setProperties({ rootEntity: this.entity });
     }
   }
 
@@ -37,7 +33,7 @@ function create(app) {
 
   app.busses.push(
     AcceptBus.create(
-      sift({ type: 'createFileModel', 'file.type': 'sfn' }),
+      sift({ type: 'createFileModel', 'file.ext': 'sfn' }),
       WrapBus.create(createSfnFileModel)
     )
   );

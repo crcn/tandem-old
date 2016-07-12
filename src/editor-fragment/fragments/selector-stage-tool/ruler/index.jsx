@@ -13,7 +13,7 @@ class RulerToolComponent extends React.Component {
 
     return null;
 
-    var rootEntity = this.props.app.rootEntity;
+    var rootEntity = this.props.entity;
     var rect       = this.props.app.selection.preview.getBoundingRect(true);
 
     // first flatten & filter for all component entities

@@ -34,7 +34,7 @@ function createOpenFileHandler(app) {
 
     var fileInfo = {
       path     : filepath,
-      type     : filepath.split('.').pop(),
+      ext      : filepath.split('.').pop(),
       content  : fs.readFileSync(filepath, 'utf8')
     };
 

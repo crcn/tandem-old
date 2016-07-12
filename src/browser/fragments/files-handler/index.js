@@ -50,5 +50,8 @@ function create(app) {
     }
 
     openFiles.push(model);
+
+    // temporary
+    app.setProperties({ currentFile: model });
   }
 }
