@@ -18,4 +18,4 @@ export default class StageComponent extends React.Component {
   }
 }
 
-export const fragment = ReactComponentFactoryFragment.create('components/stage/sfn', StageComponent);
+export const fragment = ReactComponentFactoryFragment.create({ ns: 'components/stage/sfn', componentClass: StageComponent });

@@ -11,4 +11,4 @@ export default class DOMFrameEntitiy extends DisplayEntity {
   }
 }
 
-export const fragment = FactoryFragment.create('entities/element/frame', DOMFrameEntitiy);
+export const fragment = FactoryFragment.create({ ns: 'entities/element/frame', factory: DOMFrameEntitiy });

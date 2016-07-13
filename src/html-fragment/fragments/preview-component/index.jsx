@@ -176,4 +176,4 @@ export default class PreviewComponent extends React.Component {
   }
 }
 
-export const fragment = ReactComponentFactoryFragment.create('components/preview', PreviewComponent);
+export const fragment = ReactComponentFactoryFragment.create({ ns: 'components/preview', componentClass: PreviewComponent });

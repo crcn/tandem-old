@@ -11,17 +11,12 @@ export class Fragment {
 }
 
 export class FactoryFragment extends Fragment {
-  constructor(ns, factory) {
-    super({ ns: ns });
-    this._factory = factory;
+  constructor(properties) {
+    super(properties);
     assertPropertyExists(this, 'factory');
   }
 
   create(...rest)  {
-    return this._factory.create(...rest);
-  }
-
-  get factory() {
-    return this._factory;
+    return this.factory.create(...rest);
   }
 }

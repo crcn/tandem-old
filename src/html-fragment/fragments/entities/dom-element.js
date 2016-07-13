@@ -11,4 +11,4 @@ export default class DOMElementEntity extends DisplayEntity {
   }
 }
 
-export const fragment = FactoryFragment.create('entities/element', DOMElementEntity);
+export const fragment = FactoryFragment.create({ ns: 'entities/element', factory: DOMElementEntity });

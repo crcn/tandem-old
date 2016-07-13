@@ -12,4 +12,4 @@ class RootEditorComponent extends React.Component {
   }
 }
 
-export const fragment = ReactComponentFactoryFragment.create('rootComponentClass', RootEditorComponent);
+export const fragment = ReactComponentFactoryFragment.create({ ns: 'rootComponentClass', componentClass: RootEditorComponent });

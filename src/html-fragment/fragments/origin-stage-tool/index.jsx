@@ -41,4 +41,4 @@ export default class OriginToolComponent extends React.Component {
   }
 }
 
-export const fragment = ReactComponentFactoryFragment.create('components/tools/origin', OriginToolComponent);
+export const fragment = ReactComponentFactoryFragment.create({ ns: 'components/tools/origin', componentClass: OriginToolComponent });

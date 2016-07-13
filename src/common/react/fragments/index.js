@@ -1,14 +1,17 @@
 import React from 'react';
 import { FactoryFragment } from 'common/fragments';
+import assertPropertyExists from 'common/utils/assert/property-exists';
 
 export class ReactComponentFactoryFragment extends FactoryFragment {
-  constructor(ns, ComponentClass, props = {}) {
-    super(ns, {
-      create(props2, children) {
-        return <ComponentClass {...props2}>{children}</ComponentClass>;
-      },
+  constructor(properties) {
+    super({
+      ...properties,
+      factory: {
+        create(props, children) {
+          return React.createElement(properties.componentClass, props, children);
+        }
+      }
     });
-
-    Object.assign(this, props);
+    assertPropertyExists(this, 'componentClass');
   }
 }

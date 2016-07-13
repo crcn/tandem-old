@@ -9,7 +9,7 @@ import {
 } from 'common/logger/levels';
 import chalk from 'chalk';
 
-export const fragment = FactoryFragment.create('logger/console', { create });
+export const fragment = FactoryFragment.create({ ns: 'logger/console', factory: { create } });
 
 function create(app) {
 

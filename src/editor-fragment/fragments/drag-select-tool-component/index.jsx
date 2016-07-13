@@ -115,4 +115,4 @@ class DragSelectComponent extends React.Component {
   }
 }
 
-export const fragment = ReactComponentFactoryFragment.create('components/tools/selectable', DragSelectComponent);
+export const fragment = ReactComponentFactoryFragment.create({ ns: 'components/tools/selectable', componentClass: DragSelectComponent });

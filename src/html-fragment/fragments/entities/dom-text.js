@@ -11,4 +11,4 @@ export default class DOMTextEntity extends DisplayEntity {
   }
 }
 
-export const fragment = FactoryFragment.create('entities/text', DOMTextEntity);
+export const fragment = FactoryFragment.create({ ns: 'entities/text', factory: DOMTextEntity });
