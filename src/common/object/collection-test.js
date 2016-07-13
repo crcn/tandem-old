@@ -1,5 +1,5 @@
-import Collection from './collection';
 import expect from 'expect.js';
+import Collection from './collection';
 
 describe(__filename + '#', function () {
   it('can be created', function () {

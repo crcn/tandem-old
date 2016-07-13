@@ -1,9 +1,9 @@
+import assert from 'assert';
+import Selection from 'editor-fragment/selection/collection';
 import CoreObject from 'common/object';
 import observable from 'common/object/mixins/observable';
-import { calculateBoundingRect } from 'common/utils/geom';
-import assert from 'assert';
 import { FactoryFragment } from 'common/fragments';
-import Selection from 'editor-fragment/selection/collection';
+import { calculateBoundingRect } from 'common/utils/geom';
 
 @observable
 class Preview extends CoreObject {

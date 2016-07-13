@@ -1,6 +1,6 @@
+import assert from 'assert';
 import create from 'common/utils/class/create';
 import flatten from 'lodash/array/flattenDeep';
-import assert from 'assert';
 
 export default class FragmentDictionary {
 

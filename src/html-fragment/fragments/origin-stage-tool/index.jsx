@@ -1,13 +1,14 @@
 import './index.scss';
 
 import React from 'react';
+
 import { ReactComponentFactoryFragment } from 'common/react/fragments';
 
+const d = [];
 const x2 = 0;
 const y2 = 200;
-const rotation = 0;
 const length = 100;
-const d = [];
+const rotation = 0;
 
 export default class OriginToolComponent extends React.Component {
   render() {

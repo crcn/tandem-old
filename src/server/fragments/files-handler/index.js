@@ -1,8 +1,9 @@
-import { ApplicationFragment } from 'common/application/fragments';
+import fs from 'fs';
+import gaze from 'gaze';
+
 import { TypeCallbackBus } from 'common/mesh';
 import { BufferedResponse } from 'mesh';
-import gaze from 'gaze';
-import fs from 'fs';
+import { ApplicationFragment } from 'common/application/fragments';
 
 export const fragment = ApplicationFragment.create({
   ns: 'application/openFile',

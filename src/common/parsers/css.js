@@ -1,5 +1,5 @@
-import CSSTokenizer from 'common/tokenizers/css';
 import sift from 'sift';
+import CSSTokenizer from 'common/tokenizers/css';
 
 export default {
   parse(tokens, expressionFactory) {

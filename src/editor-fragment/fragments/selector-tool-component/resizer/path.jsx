@@ -56,7 +56,7 @@ class PathComponent extends React.Component {
           path.show !== false ?
             <rect
               onMouseDown={this.onPointDown.bind(this, path, key)}
-              className={`point-circle- ${path.id || key}`}
+              className={`point-circle-${path.id || key}`}
               strokeWidth={strokeWidth}
               stroke='black'
               fill='transparent'

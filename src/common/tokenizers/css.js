@@ -1,5 +1,5 @@
-import BaseObject from 'common/object';
 import Scanner from './scanner';
+import BaseObject from 'common/object';
 import createToken from './create-token';
 
 // linear-gradient(45deg, blue, red)

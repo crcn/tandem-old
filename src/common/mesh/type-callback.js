@@ -1,6 +1,7 @@
 import create from 'common/utils/class/create';
-import { WrapBus, EmptyResponse } from 'mesh';
 import assertPropertyExists from 'common/utils/assert/property-exists';
+
+import { WrapBus, EmptyResponse } from 'mesh';
 
 export default class TypeCallbackBus {
 

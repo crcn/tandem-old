@@ -1,5 +1,6 @@
-import assertPropertyExists from 'common/utils/assert/property-exists';
 import create from 'common/utils/class/create';
+import assertPropertyExists from 'common/utils/assert/property-exists';
+
 import { EmptyResponse } from 'mesh';
 
 export default class TypeBus {

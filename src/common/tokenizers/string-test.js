@@ -1,5 +1,5 @@
-import StringTokenizer from './string';
 import expect from 'expect.js';
+import StringTokenizer from './string';
 
 describe(__filename + '#', function () {
 

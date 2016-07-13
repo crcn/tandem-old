@@ -1,5 +1,5 @@
-import { FactoryFragment } from 'common/fragments';
 import React from 'react';
+import { FactoryFragment } from 'common/fragments';
 
 export class ReactComponentFactoryFragment extends FactoryFragment {
   constructor(ns, ComponentClass, props = {}) {

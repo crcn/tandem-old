@@ -1,7 +1,6 @@
 import Node from './base';
 import Attributes from './attributes';
 
-
 export default class Element extends Node {
   constructor(properties) {
     super();

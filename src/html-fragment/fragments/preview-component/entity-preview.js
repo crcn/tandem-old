@@ -1,8 +1,9 @@
 // TODO - cache ALL computed information here until entity, or
 // parent entity changes.
 
-import BoundingRect from 'common/geom/bounding-rect';
 import CoreObject from 'common/object';
+import BoundingRect from 'common/geom/bounding-rect';
+
 import { translateStyleToIntegers } from 'common/utils/css/translate-style';
 
 import {

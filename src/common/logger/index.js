@@ -1,8 +1,9 @@
-import { LogEvent } from './events';
-import { ApplicationFragment } from 'common/application/fragments';
 import * as LogLevel from './levels';
+
 import { create } from 'common/utils/class';
 import { sprintf } from 'sprintf';
+import { LogEvent } from './events';
+import { ApplicationFragment } from 'common/application/fragments';
 
 class Logger {
 

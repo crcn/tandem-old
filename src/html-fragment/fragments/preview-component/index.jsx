@@ -1,7 +1,8 @@
 import React from 'react';
 import CoreObject from 'common/object';
-import { ReactComponentFactoryFragment } from 'common/react/fragments';
 import EntityPreview from './entity-preview';
+
+import { ReactComponentFactoryFragment } from 'common/react/fragments';
 
 function convertStyle(style) {
   const converted = {};
@@ -152,7 +153,7 @@ export default class PreviewComponent extends React.Component {
     this._preview.update();
   }
 
-  componentDidUpdate() {
+  componentWillUpdate() {
     if (this._preview.entity !== this.props.entity) {
       this._resetPreview();
     } else {
