@@ -5,17 +5,8 @@
 
 Saffron is a visual editor for designing & coding web applications.
 
-<img src="https://cloud.githubusercontent.com/assets/757408/12023393/e9b9cf50-ad4d-11e5-85db-58ce5232757e.png" width="800px" />
+<!-- <img src="https://cloud.githubusercontent.com/assets/757408/12023393/e9b9cf50-ad4d-11e5-85db-58ce5232757e.png" width="800px" />
 
-<!--### Motivation-->
-
-<!--
-
-- designs that do not work
-- translating designs -> code is tough
-
-
--->
 
 ### Goals & Possible Features
 
@@ -91,5 +82,4 @@ components/
     signup-test.ibf
 ```
 
-The `*-test.js` are unit tests. The `*.js` are the controller files - they import their corresponding `*.ibf` files.
->>>>>>> cc3a047755abb2ce53bf331a8169b513117c285f
+The `*-test.js` are unit tests. The `*.js` are the controller files - they import their corresponding `*.ibf` files. -->
