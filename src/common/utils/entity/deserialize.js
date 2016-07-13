@@ -20,9 +20,12 @@ export default function deserialize(source, { bus, fragmentDictionary }) {
     } else if (type === 'fragment') {
       fragment = fragmentDictionary.query('entities/element');
       return fragment.create({ bus: bus, nodeName: 'span', childNodes: rest[0] });
+    } else if (type === 'block') {
+      fragment = fragmentDictionary.query('entities/block');
+      return fragment.create({ bus: bus, run: rest[0] });
     }
 
-    return fragment.create(rest);
+    throw new Error(`fragment factory for "${type}" does not exist.`);
   });
 
   return entity;

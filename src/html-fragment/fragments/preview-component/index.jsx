@@ -93,10 +93,19 @@ class HTMLElementPreview extends HTMLNodePreview {
     return element;
   }
 }
+
 class HTMLTextPreview extends HTMLNodePreview {
   createNode() {
     var node = document.createElement('span');
     node.appendChild(document.createTextNode(this.entity.nodeValue));
+    return node;
+  }
+}
+
+class HTMLBlockPreview extends HTMLNodePreview {
+  createNode() {
+    var node = document.createElement('span');
+    node.appendChild(document.createTextNode('{{block}}'));
     return node;
   }
 }
@@ -134,6 +143,7 @@ function createNodePreview(entity) {
   switch (entity.displayType) {
     case 'htmlElement': return new HTMLElementPreview(entity);
     case 'htmlText'   : return new HTMLTextPreview(entity);
+    case 'htmlBlock'  : return new HTMLBlockPreview(entity);
     case 'htmlFrame'  : return new HTMLFramePreview(entity);
     default           : throw new Error(`cannot find entity ${entity.displayType}`);
   }
@@ -155,7 +165,7 @@ export default class PreviewComponent extends React.Component {
 
   componentWillUpdate({ entity }) {
     if (this._preview.entity !== entity) {
-    this._resetPreview(entity); 
+    this._resetPreview(entity);
     } else {
       this._preview.update();
     }

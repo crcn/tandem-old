@@ -1,18 +1,9 @@
-<frame id='button'>
-  <style>
-    .button {
-      color: blue;
-    }
-  </style>
-  <div class='button' style='background-color:red'>
-    button
+<frame id='custom-button'>
+  <div class='m-custom-button'>
+    {{text}}
   </div>
 </frame>
 
-<frame style="position: absolute; top: 1024px;">
-  <div style="background-color: red; padding: 20px">
-    <div style="background-color: white">
-      test2345
-    </div>
-  </div>
+<frame style="top: 300px">
+  <custom-button text='hello world' />
 </frame>
