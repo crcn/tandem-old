@@ -141,28 +141,28 @@ function createNodePreview(entity) {
 
 export default class PreviewComponent extends React.Component {
 
-  _resetPreview() {
+  _resetPreview(entity) {
 
     if (this._preview) {
       this.props.app.busses.remove(this._preview);
       this.refs.preview.removeChild(this._preview.node);
     }
 
-    this._preview = createNodePreview(this.props.entity);
+    this._preview = createNodePreview(entity);
     this.refs.preview.appendChild(this._preview.node);
     this._preview.update();
   }
 
-  componentWillUpdate() {
-    if (this._preview.entity !== this.props.entity) {
-      this._resetPreview();
+  componentWillUpdate({ entity }) {
+    if (this._preview.entity !== entity) {
+    this._resetPreview(entity); 
     } else {
       this._preview.update();
     }
   }
 
   componentDidMount() {
-    this._resetPreview();
+    this._resetPreview(this.props.entity);
   }
 
   componentWillUnmount() {
