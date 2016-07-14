@@ -2,3 +2,5 @@
 anything else
 - make sure elements are not selectable
 - in-memory db
+- need to be able to serve files from browser
+- hijack native elements such as img
