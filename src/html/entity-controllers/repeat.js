@@ -33,6 +33,6 @@ export default class RepeatEntityController {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'entities/controllers/repeat',
+  ns: 'entities-controllers/repeat',
   factory: RepeatEntityController
 });

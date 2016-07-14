@@ -30,6 +30,6 @@ class ImportEntityController extends CoreObject {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'entities/controllers/import',
+  ns: 'entity-controllers/import',
   factory: ImportEntityController
 })

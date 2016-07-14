@@ -77,6 +77,6 @@ export default class FrameEntityController {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'entities/controllers/template',
+  ns: 'entities-controllers/template',
   factory: FrameEntityController
 });
