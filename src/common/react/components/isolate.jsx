@@ -16,8 +16,7 @@ export default class IsolateComponent extends React.Component {
     this._render();
   }
 
-
-  componentWillUpdate() {
+  componentDidUpdate() {
     this._render();
   }
 
@@ -34,6 +33,7 @@ export default class IsolateComponent extends React.Component {
   }
 
   render() {
-    return <iframe ref='container' style={{ border: 0 }} className={this.props.className} />;
+    var style = this.props.style || {};
+    return <iframe ref='container' style={{ border: 0, ...style }} className={this.props.className} />;
   }
 }

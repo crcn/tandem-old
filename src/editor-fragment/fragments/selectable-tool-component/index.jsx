@@ -88,7 +88,7 @@ class SelectablesComponent extends React.Component {
     // if (selection.preview.currentTool.type !== 'pointer') return null;
 
     const selectables = allEntities.filter((entity) => (
-      /display/.test(entity.type) && !/text/.test(entity.displayType)
+      !!entity.preview
     )).map((entity) => (
       <SelectableComponent
         {...this.props}

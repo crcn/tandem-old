@@ -195,5 +195,5 @@ class HTMLEntitySelection extends Selection {
 
 export const fragment = FactoryFragment.create({
   ns: 'selectorCollection/display',
-  factory: HTMLEntitySelection
+  factory: HTMLEntitySelection,
 });

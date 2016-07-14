@@ -1,9 +1,7 @@
-<frame id='custom-button'>
-  <div class='m-custom-button'>
-    {{text}}
+<frame id='test-frame3'>
+  <div style='color: red;'>
+    hello test frame
   </div>
 </frame>
 
-<frame style="top: 300px">
-  <custom-button text='hello world' />
-</frame>
+<test-frame3 />

@@ -1,6 +1,15 @@
 {
 /*jshint laxcomma:false */
 
+var TextExpression        = require('./expressions/text');
+var GroupExpression       = require('./expressions/group');
+var RootExpression        = require('./expressions/root');
+var BlockExpression       = require('./expressions/block');
+var ElementExpression     = require('./expressions/element');
+var CommentExpression     = require('./expressions/comment');
+var AttributeExpression   = require('./expressions/attribute');
+// var PropertyExpression = require('./expressions/property');
+
 function trimWhitespace(ws) {
   return trimNewLineChars(ws).replace(/(^[\r\n]+)|([\r\n]+$)/, " ");
 }
@@ -59,10 +68,7 @@ function escapeString(string) {
 }
 
 Start
-  = Template
-
-Template
-  = children:ChildNodes { return children; }
+  = children:ChildNodes { return new RootExpression(children); }
 
 DocType
   = "<!DOCTYPE" _ info:[^>]+ _ ">" {
@@ -75,13 +81,18 @@ ChildNodes
 
 CommentNode
   = _ "<!--" value:(!"-->" v:SourceCharacter { return v; })+ "-->" _ {
-    return ["comment", escapeString(trimEnds(value.join("")))];
+    return CommentExpression.create(escapeString(trimEnds(value.join(""))));
   }
   / DocType
 
 ScriptStart
   = _ "<script" attributes:TagAttributes ">" content:ScriptEnd+ "</script>" _  {
-      return ["element", "script", attributes, [["text", escapeString(content.join(""))]]];
+      return new ElementExpression(
+        'script',
+        attributes,
+        new TextExpression(content.join('')),
+        location()
+      );
     }
 
 ScriptEnd
@@ -96,7 +107,7 @@ VoidElement
       expected("</" + nodeName + ">");
     }
 
-    return ["element", nodeName, attributes, []];
+    return new ElementExpression(nodeName, attributes, [], location());
   }
 
 
@@ -115,13 +126,13 @@ ElementNode
       expected("</" + startTag.name + ">");
     }
 
-    return ["element", startTag.name, startTag.attributes, children];
+    return new ElementExpression(startTag.name, startTag.attributes, children, location());
   }
   / StartEndTag
 
 TextNode
   = value:TextCharacter+ {
-      return ["text", escapeString(trimNewLineChars(value.join("")))];
+      return new TextExpression(escapeString(trimNewLineChars(value.join(""))), location());
     }
 
 TextCharacter
@@ -133,7 +144,7 @@ StartTag
   = _ "<" info:TagInfo ">" _ { return info; }
 
 StartEndTag
-  = _ "<" info:TagInfo "/>" _ { return ["element", info.name, info.attributes, []]; }
+  = _ "<" info:TagInfo "/>" _ { return new ElementExpression(info.name, info.attributes, [], location()); }
 
 TagInfo
   = name:TagName attrs:TagAttributes {
@@ -148,7 +159,6 @@ TagAttributes
       return attributes;
   }
 
-
 EndTag
   = "</" name:TagName ">" {
       return {
@@ -161,18 +171,18 @@ TagName
 
 Attribute
   = name:TagName _ "=" _ values:AttributeValues {
-      return ["attribute", name, values];
+      return new AttributeExpression(name, values);
     }
-  / name:TagName _ "=" _ property:TextBinding {
-      return ["property", name, property];
+  / name:TagName _ "=" _ value:TextBinding {
+      return new PropertyExpression(name, value);
     }
   / name:TagName {
-      return ['attribute', name, []];
+      return new AttributeExpression(name);
     }
 
 AttributeValues
-  = '"' values:(TextBinding/(!"{{" [^"])+ { return ["string", text()]; })* '"' { return attrValues(values); }
-  / "'" values:(TextBinding/(!"{{" [^'])+ { return ["string", text()]; })* "'" { return attrValues(values); }
+  = '"' values:(TextBinding/(!"{{" [^"])+ { return text(); })* '"' { return attrValues(values); }
+  / "'" values:(TextBinding/(!"{{" [^'])+ { return text(); })* "'" { return attrValues(values); }
 
 
 TextBinding
@@ -182,7 +192,7 @@ TextBinding
 
 BlockBinding
   = script:TextBinding {
-    return ["block", script[1]];
+    return new BlockExpression(script[1]);
   }
 
 Expression

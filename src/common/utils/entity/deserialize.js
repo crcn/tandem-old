@@ -1,32 +1,86 @@
 import compileXML from 'common/compilers/xml';
 
-export default function deserialize(source, { bus, fragmentDictionary }) {
-  var createEntity = compileXML(source);
-  var entity       = createEntity(function (type, ...rest) {
-    var fragment;
-
-    if (type === 'element') {
-      fragment = fragmentDictionary.query(`entities/element/${rest[0]}`) ||
-      fragmentDictionary.query('entities/element');
-      return fragment.create({
-        bus: bus,
-        nodeName  : rest[0],
-        attributes: rest[1],
-        childNodes: rest[2],
+function createTextNode(value) {
+  return {
+    async load(options) {
+      var entity = await options.fragmentDictionary.query('entities/text').create({
+        ...options,
+        nodeValue: value,
       });
-    } else if (type === 'text') {
-      fragment = fragmentDictionary.query('entities/text');
-      return fragment.create({ bus: bus, nodeValue: rest[0] });
-    } else if (type === 'fragment') {
-      fragment = fragmentDictionary.query('entities/element');
-      return fragment.create({ bus: bus, nodeName: 'span', childNodes: rest[0] });
-    } else if (type === 'block') {
-      fragment = fragmentDictionary.query('entities/block');
-      return fragment.create({ bus: bus, run: rest[0] });
+
+      await entity.load();
+
+      return entity;
+    },
+  };
+}
+
+function createFragment(childNodes) {
+  if (childNodes.length === 1) {
+    return childNodes[0];
+  }
+
+  return createElement('group', {}, childNodes);
+}
+
+function createBlock(run) {
+  return {
+    async load(options) {
+      var entity = await options.fragmentDictionary.query('entities/block').create({
+        ...options,
+        run: run,
+      });
+
+      await entity.load();
+      return entity;
+    },
+  };
+}
+
+function createElement(nodeName, attributes, childNodes) {
+  return {
+    async load(options) {
+      var fragment = options.fragmentDictionary.query(`entities/${nodeName}`) || options.fragmentDictionary.query('entities/element');
+
+      var entity = fragment.create({
+        ...options,
+        nodeName,
+        attributes,
+      });
+
+      await entity.load();
+
+      for (const child of childNodes) {
+        entity.appendChild(await child.load(options));
+      }
+
+      return entity;
+    },
+  };
+}
+
+export default function deserialize(source, options) {
+  var createEntity  = compileXML(source);
+  return createEntity(function (type, ...rest) {
+    switch(type) {
+      case 'text': return options.fragmentDictionary.query('entities/text').create({
+        ...options,
+        nodeValue: rest[0]
+      });
+      case 'block': return options.fragmentDictionary.query('entities/text').create({
+        ...options,
+        run: rest[0]
+      });
+      case 'element': return options.fragmentDictionary.query('entities/element').create({
+        ...options,
+        nodeName: rest[0],
+        attributes: rest[1],
+        childNodes: rest[2]
+      });
+      case 'fragment': return options.fragmentDictionary.query('entities/group').create({
+        ...options,
+        childNodes: rest[0]
+      });
     }
-
-    throw new Error(`fragment factory for "${type}" does not exist.`);
   });
-
-  return entity;
 }

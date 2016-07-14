@@ -9,9 +9,10 @@ export class ReactComponentFactoryFragment extends FactoryFragment {
       factory: {
         create(props, children) {
           return React.createElement(properties.componentClass, props, children);
-        }
-      }
+        },
+      },
     });
+
     assertPropertyExists(this, 'componentClass');
   }
 }

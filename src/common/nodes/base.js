@@ -11,4 +11,15 @@ export default class Node extends CoreObject {
   get previousSibling() {
     return this.parentNode ? this.parentNode.childNodes[this.parentNode.indexOf(this) - 1] : void 0;
   }
+
+  willUnmount() {
+    // OVERRIDE ME
+  }
+
+  didMount() {
+    // OVERRIDE ME
+  }
+
+  cloneNode() {
+  }
 }

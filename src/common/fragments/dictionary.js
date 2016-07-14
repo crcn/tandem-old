@@ -4,9 +4,10 @@ import flatten from 'lodash/array/flattenDeep';
 
 export default class FragmentDictionary {
 
-  constructor() {
+  constructor(properties = {}) {
     this._fragments            = [];
     this._fragmentsByNamespace = {};
+    Object.assign(this, properties);
   }
 
   query(ns) {
@@ -15,6 +16,12 @@ export default class FragmentDictionary {
 
   queryAll(ns) {
     return this._fragmentsByNamespace[ns] || [];
+  }
+
+  createChild() {
+    var child = FragmentDictionary.create();
+    child.register(this.queryAll('/**'));
+    return child;
   }
 
   register(...fragments) {
@@ -29,9 +36,9 @@ export default class FragmentDictionary {
       const ns = fragment.ns;
       const nsParts = ns.split('/');
 
-      for (let i = 0, n = nsParts.length; i < n; i++) {
+      for (let i = 0, n = nsParts.length; i <= n; i++) {
         this._registerNS(
-          nsParts.slice(0, i + 1).join('/') + '/**',
+          nsParts.slice(0, i).join('/') + '/**',
           fragment
         );
       }

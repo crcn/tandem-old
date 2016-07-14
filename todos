@@ -1,3 +1,4 @@
 - name sure that NS doesn't collide with
 anything else
 - make sure elements are not selectable
+- in-memory db

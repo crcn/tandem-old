@@ -10,4 +10,10 @@ export default class TextNode extends Node {
     nodes.push(this);
     return nodes;
   }
+
+  cloneNode() {
+    return new this.constructor({
+      nodeValue: this.nodeValue
+    });
+  }
 }

@@ -1,4 +1,4 @@
-import Entity from '../index';
+import Entity from '../entity';
 
 // temporary
 function parseStyle(source) {

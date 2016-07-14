@@ -2,10 +2,6 @@ import Node from './base';
 import Attributes from './attributes';
 
 export default class Element extends Node {
-  constructor(properties) {
-    super();
-    Object.assign(this, properties);
-  }
 
   flatten(nodes = []) {
     nodes.push(this);
@@ -58,7 +54,7 @@ export default class Element extends Node {
   }
 
   removeChild(child) {
-    this.childNodes.splice(this._unlinkChild(this._getChildIndex(child)), 1);
+    this.childNodes.splice(this._getChildIndex(this._unlinkChild(child)), 1);
   }
 
   insertBefore(newChild, existingChild) {
@@ -72,10 +68,24 @@ export default class Element extends Node {
   }
 
   _linkChild(child) {
+    if (child.parentNode) {
+      child.parentNode.removeChild(child);
+    }
     child.parentNode = this;
+    child.didMount();
+    return child;
   }
 
   _unlinkChild(child) {
+    child.willUnmount();
     child.parentNode = void 0;
+    return child;
+  }
+
+  cloneNode() {
+    return new this.constructor({
+      attributes: this.attributes,
+      childNodes: this.childNodes
+    });
   }
 }

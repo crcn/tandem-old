@@ -1,4 +1,5 @@
-export { fragment as textFragment } from './dom-text';
-export { fragment as blockFragment } from './dom-block';
-export { fragment as frameFragment } from './dom-frame';
-export { fragment as elementFragment } from './dom-element';
+export { fragment as elementEntityFragment } from './element';
+export { fragment as textEntityFragment } from './text';
+export { fragment as blockEntityFragment } from './block';
+export { fragment as groupEntityFragment } from './group';
+export { fragment as rootEntityFragment } from './root';
