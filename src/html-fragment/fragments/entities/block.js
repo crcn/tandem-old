@@ -3,8 +3,9 @@ import { FactoryFragment } from 'common/fragments';
 
 export default class BlockEntity extends Entity {
   async execute(options) {
-
-    options.section.appendChild(document.createTextNode('block'));
+    var value = (await this.expression.script.execute(options)).value;
+    var node = document.createTextNode(value);
+    options.section.appendChild(node);
   }
 }
 

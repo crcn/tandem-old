@@ -8,6 +8,8 @@ var BlockExpression       = require('./expressions/block');
 var ElementExpression     = require('./expressions/element');
 var CommentExpression     = require('./expressions/comment');
 var AttributeExpression   = require('./expressions/attribute');
+var StringExpression      = require('./expressions/string');
+var ReferenceExpression   = require('./expressions/reference');
 // var PropertyExpression = require('./expressions/property');
 
 function trimWhitespace(ws) {
@@ -181,8 +183,8 @@ Attribute
     }
 
 AttributeValues
-  = '"' values:(TextBinding/(!"{{" [^"])+ { return text(); })* '"' { return attrValues(values); }
-  / "'" values:(TextBinding/(!"{{" [^'])+ { return text(); })* "'" { return attrValues(values); }
+  = '"' values:(TextBinding/(!"{{" [^"])+ { return new StringExpression(text(), location()); })* '"' { return values[0]; }
+  / "'" values:(TextBinding/(!"{{" [^'])+ { return new StringExpression(text(), location()); })* "'" { return values[0]; }
 
 
 TextBinding
@@ -306,8 +308,7 @@ FunctionCall
 
 Reference
   = bindingType:("^"/"~>"/"<~>"/"~"/"<~")? _ reference:ReferenceName path:ReferencePart* _ {
-
-      return ["reference", [reference].concat(path), bindingType];
+      return new ReferenceExpression([reference].concat(path), location());
     }
 
 
@@ -364,10 +365,10 @@ HashKey
 
 StringLiteral "string"
   = '"' chars:DoubleStringCharacter* '"' {
-      return ["string", chars.join("")];
+      return new StringExpression(chars.join(""));
     }
   / "'" chars:SingleStringCharacter* "'" {
-      return ["string", chars.join("")];
+      return new StringExpression(chars.join(""));
     }
 
 DoubleStringCharacter

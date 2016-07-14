@@ -1,11 +1,6 @@
-<template id='test-frame3' style="left:100px;">
-  <div style='color: white; max-width: 100px; margin: 10px; background-color: grey; padding: 10px'>
-    hello test frame!!!!!
-  </div>
+<template id="something">
+  {{name}}
 </template>
 
-<template id='test-frame4'>
-  <div style='color: white; max-width: 100px; margin: 10px; background-color: grey; padding: 10px'>
-    hello test frame!!!!!
-  </div>
-</template>
+<something name='test' />
+<something name='blarg' />

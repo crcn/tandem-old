@@ -1,4 +1,6 @@
-<frame id='something'>
-  or that!
-</frame>
-sd
+
+<template id='some-element'>
+  <div style='color:red;'>
+    hello!!!!
+  </div>
+</template>

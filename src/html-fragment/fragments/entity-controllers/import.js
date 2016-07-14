@@ -12,8 +12,6 @@ class ImportEntityController extends CoreObject {
       public: true
     }).readAll();
 
-    console.log(files);
-
     files = files.map((data) => (
       SfnFile.create({
         ...data,
@@ -24,12 +22,9 @@ class ImportEntityController extends CoreObject {
 
     for (var file of files) {
       await file.load();
+      // the entity is root, so it has a section
+      this.section.appendChild(file.entity.section.toFragment());
     }
-
-    console.log(path.join(path.dirname(this.file.path), this.attributes.src[0]));
-
-    // the entity is root, so it has a section
-    this.section.appendChild(file.entity.section.toFragment());
   }
 }
 

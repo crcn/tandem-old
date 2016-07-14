@@ -9,3 +9,5 @@ export { fragment as selectorFragment } from './select-handler';
 export { fragment as toolHandlerFragment } from './tool-handler';
 export { fragment as pointerToolFragment } from './pointer-tool';
 export { fragment as textToolFragment } from './text-tool';
+
+export * from './entities';

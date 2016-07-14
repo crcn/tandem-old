@@ -17,6 +17,6 @@ function create(app) {
   );
 
   function createSfnFileModel({ file }) {
-    return SfnFile.create({ ...file, bus: app.bus, fragmentDictionary: app.fragmentDictionary.createChild() });
+    return SfnFile.create({ ...file, bus: app.bus, fragmentDictionary: app.fragmentDictionary, isolate: true });
   }
 }

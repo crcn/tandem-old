@@ -12,18 +12,22 @@ class ElementEntity extends Entity {
     });
 
     this.preview = new GroupPreview(this);
+    this.context = {};
   }
   async execute(options) {
     var controllerFragment = options.fragmentDictionary.query(`entity/controllers/${this.expression.nodeName}`);
     var ref;
     var section;
     var executeRef;
+    var context = this.context;
 
     var attributes = {};
 
     for (var { key, value } of this.expression.attributes) {
-      attributes[key] = value;
+      attributes[key] = (await value.execute(options)).value;
     }
+
+    Object.assign(context, attributes);
 
     if (controllerFragment) {
       section = FragmentSection.create();
@@ -32,10 +36,14 @@ class ElementEntity extends Entity {
         section: section,
         attributes: attributes,
         expression: this.expression,
+        context: this.context,
         entity: this
       });
 
-      await ref.execute(options);
+      await ref.execute({
+        ...options,
+        context
+      });
     } else {
       ref = document.createElement(this.expression.nodeName);
       for (var key in attributes) {
@@ -45,6 +53,7 @@ class ElementEntity extends Entity {
       for (var childExpression of this.expression.childNodes) {
         this.appendChild(await childExpression.execute({
           ...options,
+          context,
           section
         }));
       }
