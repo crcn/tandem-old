@@ -1,10 +1,10 @@
 import './index.scss';
 import React from 'react';
 
-import { ReactComponentFactoryFragment } from 'common/react/fragments';
 import CenterComponent from './center';
+import { ReactComponentFactoryFragment } from 'common/react/fragments';
 
-class RootEditorComponent extends React.Component {
+export default class RootEditorComponent extends React.Component {
   render() {
     return (<div className='m-editor'>
       <CenterComponent {...this.props} entity={this.props.app.rootEntity} zoom={1} />
@@ -12,4 +12,7 @@ class RootEditorComponent extends React.Component {
   }
 }
 
-export const fragment = ReactComponentFactoryFragment.create({ ns: 'rootComponentClass', componentClass: RootEditorComponent });
+export const fragment = ReactComponentFactoryFragment.create({
+  ns             : 'rootComponentClass',
+  componentClass : RootEditorComponent,
+});

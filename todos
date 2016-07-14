@@ -4,3 +4,4 @@ anything else
 - in-memory db
 - need to be able to serve files from browser
 - hijack native elements such as img
+- do not explicitly define NS for fragments

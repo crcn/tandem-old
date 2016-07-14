@@ -1,6 +1,7 @@
-import { FactoryFragment } from 'common/fragments';
-import { create } from 'common/utils/class';
 import NodeSection from 'common/section/node';
+
+import { create } from 'common/utils/class';
+import { FactoryFragment } from 'common/fragments';
 
 class RegisteredEntityController {
   constructor(properties) {
@@ -76,6 +77,6 @@ export default class FrameEntityController {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'entity-controllers/template',
-  factory: FrameEntityController,
+  ns      : 'entity-controllers/template',
+  factory : FrameEntityController,
 });

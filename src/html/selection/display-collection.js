@@ -183,9 +183,7 @@ export default class HTMLEntitySelection extends Selection {
     const deleted = this.splice(0, this.length);
 
     for (const entity of deleted) {
-
       assert(entity.parent, 'Attempting to delete selected entity which does not belong to any parent entity. Therefore it\'s a root entity, or it should not exist.');
-
       entity.parent.children.remove(entity);
     }
 
@@ -194,6 +192,6 @@ export default class HTMLEntitySelection extends Selection {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'selection-collections/display',
-  factory: HTMLEntitySelection,
+  ns      : 'selection-collections/display',
+  factory : HTMLEntitySelection,
 });

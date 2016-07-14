@@ -1,7 +1,7 @@
-import { FactoryFragment } from 'common/fragments';
-import { create } from 'common/utils/class';
 import FragmentSection from 'common/section/fragment';
 
+import { create } from 'common/utils/class';
+import { FactoryFragment } from 'common/fragments';
 
 export default class RepeatEntityController {
   constructor(properties) {
@@ -34,6 +34,6 @@ export default class RepeatEntityController {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'entity-controllers/repeat',
-  factory: RepeatEntityController,
+  ns      : 'entity-controllers/repeat',
+  factory : RepeatEntityController,
 });

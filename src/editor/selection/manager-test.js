@@ -87,6 +87,5 @@ describe(__filename + '#', function () {
     app.bus.execute(ToggleSelectEvent.create(item));
     app.bus.execute(ToggleSelectEvent.create(item));
     expect(app.selection.length).to.be(0);
-
   });
 });

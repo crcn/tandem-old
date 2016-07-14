@@ -75,7 +75,7 @@ class SelectableComponent extends React.Component {
   }
 }
 
-class SelectablesComponent extends React.Component {
+export default class SelectablesComponent extends React.Component {
 
   render() {
 
@@ -102,4 +102,7 @@ class SelectablesComponent extends React.Component {
   }
 }
 
-export const fragment = ReactComponentFactoryFragment.create({ ns: 'components/tools/pointer/selectable', componentClass: SelectablesComponent });
+export const fragment = ReactComponentFactoryFragment.create({
+  ns             : 'components/tools/pointer/selectable',
+  componentClass : SelectablesComponent,
+});

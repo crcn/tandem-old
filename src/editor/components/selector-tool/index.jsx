@@ -62,4 +62,7 @@ class SelectorComponent extends React.Component {
 
 export default SelectorComponent;
 
-export const fragment = ReactComponentFactoryFragment.create({ ns: 'components/tools/pointer/selector', componentClass: SelectorComponent });
+export const fragment = ReactComponentFactoryFragment.create({ 
+  ns             : 'components/tools/pointer/selector',
+  componentClass : SelectorComponent,
+});

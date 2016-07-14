@@ -3,8 +3,8 @@ import React from 'react';
 import BoundingRect from 'common/geom/bounding-rect';
 import { startDrag } from 'common/utils/component';
 import { SelectEvent } from 'editor/selection/events';
-import { STAGE_PREVIEW_MOUSE_DOWN } from 'editor/events';
 import { boundsIntersect } from 'common/utils/geom';
+import { STAGE_PREVIEW_MOUSE_DOWN } from 'editor/events';
 import { ReactComponentFactoryFragment } from 'common/react/fragments';
 
 class DragSelectComponent extends React.Component {
@@ -113,4 +113,7 @@ class DragSelectComponent extends React.Component {
   }
 }
 
-export const fragment = ReactComponentFactoryFragment.create({ ns: 'components/tools/selectable', componentClass: DragSelectComponent });
+export const fragment = ReactComponentFactoryFragment.create({
+  ns             : 'components/tools/selectable', 
+  componentClass : DragSelectComponent 
+});
