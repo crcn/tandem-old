@@ -33,8 +33,10 @@ export default class FrameEntityController {
     Object.assign(iframe.style, {
       border: 0,
       margin: 0,
-      backgroundColor: 'white'
+      backgroundColor: 'white',
+      position: 'relative'
     });
+    console.log(this.attributes.style);
 
     options.fragmentDictionary.register(
       FactoryFragment.create({
@@ -72,6 +74,6 @@ export default class FrameEntityController {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'entity/controllers/frame',
+  ns: 'entity/controllers/template',
   factory: FrameEntityController
 });
