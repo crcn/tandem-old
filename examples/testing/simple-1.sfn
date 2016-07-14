@@ -1,7 +1,5 @@
 <frame id='test-frame3'>
-  <div style='color: red;'>
-    hello test frame
+  <div style='color: white; max-width: 100px; margin: 10px; background-color: grey; padding: 10px'>
+    hello test frame!!!
   </div>
 </frame>
-
-<test-frame3 />

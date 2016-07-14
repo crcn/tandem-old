@@ -1,4 +1,6 @@
 import BoundingRect from 'common/geom/bounding-rect';
+import { calculateBoundingRect }from 'common/utils/geom';
+import _calculateBoundingRect from './_calculate-bounding-rect';
 
 export default class GroupPreview {
   constructor(entity) {
@@ -6,11 +8,10 @@ export default class GroupPreview {
   }
 
   getBoundingRect(zoom) {
-    return BoundingRect.create({
-      left: 100,
-      top: 100,
-      right: 200,
-      bottom: 200
-    });
+    var rect = calculateBoundingRect(this.entity.section.childNodes.map(function(node) {
+      return _calculateBoundingRect(node);
+    }));
+
+    return rect;
   }
 }

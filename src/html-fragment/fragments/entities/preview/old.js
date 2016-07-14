@@ -39,25 +39,6 @@ function getElementOffset(entity) {
   return { left, top };
 }
 
-function getFrameOffset(entity) {
-  var left = 0;
-  var top  = 0;
-
-  entity = entity.parentNode;
-
-  while (entity) {
-    if (entity.displayType === 'htmlFrame') {
-      const bounds = entity.preview.getBoundingRect();
-      left += bounds.left;
-      top  += bounds.top;
-    }
-
-    entity = entity.parentNode;
-  }
-
-  return { left, top };
-}
-
 class ReactEntityPreview extends CoreObject {
 
   constructor(entity, node) {
@@ -179,37 +160,6 @@ class ReactEntityPreview extends CoreObject {
     };
   }
 
-  getBoundingRect(zoomProperties) {
-
-    var node = this.node;
-    var rect   = node.getBoundingClientRect();
-    var cs     = this.getComputedStyle();
-    var offset = getFrameOffset(this.entity);
-
-    // margins are also considered bounds - add them here. Fixes a few issues
-    // when selecting multiple items with different items & dragging them around.
-    var left   = rect.left   - cs.marginLeft + offset.left;
-    var top    = rect.top    - cs.marginTop + offset.top;
-    var right  = rect.right  + cs.marginRight + offset.left;
-    var bottom = rect.bottom + cs.marginBottom + offset.top;
-
-    var width = right - left;
-    var height = bottom - top;
-
-    if (zoomProperties) {
-      ({ left, top, width, height } = multiplyStyle({ left, top, width, height }, this.getZoom()));
-    }
-
-    right = left + width;
-    bottom = top + height;
-
-    return BoundingRect.create({
-      left   : left,
-      top    : top,
-      right  : right,
-      bottom : bottom,
-    });
-  }
 
   getStyle(zoomProperties) {
 

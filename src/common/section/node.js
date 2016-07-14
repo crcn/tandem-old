@@ -39,6 +39,10 @@ export default class NodeSection {
     return this._target.outerHTML || this._target.nodeValue;
   }
 
+  get childNodes() {
+    return Array.prototype.slice.call(this.targetNode.childNodes);
+  }
+
   get targetNode() {
     return this._target;
   }
@@ -50,10 +54,6 @@ export default class NodeSection {
 
   get visible() {
     return !this._placeholderNode;
-  }
-
-  get childNodes() {
-    return this._target.childNodes;
   }
 
   get innerHTML() {

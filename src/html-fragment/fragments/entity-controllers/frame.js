@@ -32,6 +32,7 @@ export default class FrameEntityController {
     var iframe = document.createElement('iframe');
     Object.assign(iframe.style, {
       border: 0,
+      margin: 0,
       backgroundColor: 'white'
     });
 
@@ -46,6 +47,10 @@ export default class FrameEntityController {
 
     iframe.addEventListener('load', async () => {
       var bodySection = NodeSection.create(iframe.contentWindow.document.body);
+      Object.assign(bodySection.targetNode.style, {
+        margin: 0,
+        padding: 0
+      });
       for (var childExpression of this.expression.childNodes) {
         await this.entity.appendChild(await childExpression.execute({
           ...options,

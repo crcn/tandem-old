@@ -6,7 +6,11 @@ import GroupPreview from './preview/group';
 
 class ElementEntity extends Entity {
   constructor(properties) {
-    super(properties);
+    super({
+      ...properties,
+      type: 'display'
+    });
+
     this.preview = new GroupPreview(this);
   }
   async execute(options) {

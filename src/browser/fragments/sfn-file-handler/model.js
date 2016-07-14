@@ -16,7 +16,7 @@ export default class SfnFile extends CoreObject {
     var entity = await expression.execute({
       bus: this.bus,
       file: this,
-      fragmentDictionary: this.fragmentDictionary
+      fragmentDictionary: this.fragmentDictionary.createChild()
     });
 
     this.setProperties({
