@@ -1,6 +1,6 @@
 import BaseApplication from 'common/application/base';
 import * as fragments from './fragments';
-import editorFragment from 'editor-fragment';
+import { fragment as editorFragment } from 'editor';
 import { fragment as htmlFragment } from 'html';
 import Runloop from 'common/runloop';
 

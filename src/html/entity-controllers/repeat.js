@@ -16,15 +16,16 @@ export default class RepeatEntityController {
 
     var each = Number(this.attributes.each);
 
-    for (var i = each; i--;)
-    for (var childExpression of this.expression.childNodes) {
-      var childSection = FragmentSection.create();
-      this.entity.appendChild(await childExpression.execute({
-        ...options,
-        section: childSection,
-      }))
+    for (var i = each; i--;) {
+      for (var childExpression of this.expression.childNodes) {
+        var childSection = FragmentSection.create();
+        this.entity.appendChild(await childExpression.execute({
+          ...options,
+          section: childSection,
+        }));
 
-      options.section.appendChild(childSection.toFragment());
+        options.section.appendChild(childSection.toFragment());
+      }
     }
 
   }
@@ -33,6 +34,6 @@ export default class RepeatEntityController {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'entities-controllers/repeat',
-  factory: RepeatEntityController
+  ns: 'entity-controllers/repeat',
+  factory: RepeatEntityController,
 });

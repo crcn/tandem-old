@@ -7,4 +7,4 @@ module.exports = class CommentExpression extends BaseExpression {
     this.ns     = 'comment';
     this.location = location;
   }
-}
+};

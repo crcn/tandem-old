@@ -1,5 +1,4 @@
 import React from 'react';
-import DOMComponent from 'common/react/components/dom';
 
 import { ReactComponentFactoryFragment } from 'common/react/fragments';
 
@@ -28,5 +27,5 @@ export default class PreviewComponent extends React.Component {
 
 export const fragment = ReactComponentFactoryFragment.create({
   ns: 'components/preview',
-  componentClass: PreviewComponent
+  componentClass: PreviewComponent,
 });

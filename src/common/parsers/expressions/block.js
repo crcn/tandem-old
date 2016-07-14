@@ -7,4 +7,4 @@ module.exports = class BlockExpression extends BaseExpression {
     this.ns     = 'block';
     this.location = location;
   }
-}
+};

@@ -1,7 +1,6 @@
 import { FactoryFragment } from 'common/fragments';
 import { create } from 'common/utils/class';
 import NodeSection from 'common/section/node';
-import FragmentSection from 'common/section/fragment';
 
 class RegisteredEntityController {
   constructor(properties) {
@@ -37,16 +36,16 @@ export default class FrameEntityController {
       border: 0,
       margin: 0,
       backgroundColor: 'white',
-      position: 'relative'
+      position: 'relative',
     });
     console.log(this.attributes.style);
 
     options.fragmentDictionary.register(
       FactoryFragment.create({
-        ns: `entity/controllers/${this.attributes.id}`,
+        ns: `entity-controllers/${this.attributes.id}`,
         factory: {
-          create: this.createElementController.bind(this)
-        }
+          create: this.createElementController.bind(this),
+        },
       })
     );
 
@@ -54,22 +53,23 @@ export default class FrameEntityController {
       var bodySection = NodeSection.create(iframe.contentWindow.document.body);
       Object.assign(bodySection.targetNode.style, {
         margin: 0,
-        padding: 0
+        padding: 0,
       });
       for (var childExpression of this.expression.childNodes) {
         await this.entity.appendChild(await childExpression.execute({
           ...options,
-          section: bodySection
-        }))
+          section: bodySection,
+        }));
       }
     });
+
     this.section.appendChild(iframe);
   }
 
   createElementController(properties) {
     return RegisteredEntityController.create({
       ...properties,
-      frame: this
+      frame: this,
     });
   }
 
@@ -77,6 +77,6 @@ export default class FrameEntityController {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'entities-controllers/template',
-  factory: FrameEntityController
+  ns: 'entity-controllers/template',
+  factory: FrameEntityController,
 });

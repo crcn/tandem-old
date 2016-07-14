@@ -9,4 +9,4 @@ module.exports = class ElementExpression extends BaseExpression {
     this.childNodes = childNodes;
     this.location   = location;
   }
-}
+};

@@ -8,4 +8,4 @@ module.exports = class TernaryExpression extends BaseExpression {
     this.left = left;
     this.right = right;
   }
-}
+};

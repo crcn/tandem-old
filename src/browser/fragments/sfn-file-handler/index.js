@@ -1,11 +1,12 @@
 import { ApplicationFragment } from 'common/application/fragments';
 import { AcceptBus, WrapBus } from 'mesh';
 import SfnFile from './model';
+import sift from 'sift';
 
 export const fragment = ApplicationFragment.create({
   ns: 'application/sfnFileHandler',
   initialize: create,
-}); 
+});
 
 function create(app) {
 

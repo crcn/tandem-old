@@ -7,4 +7,4 @@ module.exports = class GroupExpression extends BaseExpression {
     this.ns = 'group';
     this.location = location;
   }
-}
+};

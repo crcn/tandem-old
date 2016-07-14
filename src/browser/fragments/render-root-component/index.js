@@ -10,7 +10,7 @@ export const fragment = ApplicationFragment.create({
   initialize: create,
 });
 
-function create(app) { 
+function create(app) {
 
   app.busses.push(TypeCallbackBus.create(INITIALIZE, initialize));
 

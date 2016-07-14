@@ -10,12 +10,12 @@ export default class RootEntity extends GroupEntity {
   async execute(options) {
     await super.execute({
       options,
-      section: this.section
-    })
+      section: this.section,
+    });
   }
 }
 
 export const fragment = FactoryFragment.create({
   ns: 'entities/root',
-  factory: GroupEntity
+  factory: GroupEntity,
 });

@@ -1,6 +1,5 @@
 import CoreObject from 'common/object';
 import path from 'path';
-import { NoopBus } from 'mesh';
 import { FactoryFragment } from 'common/fragments';
 import SfnFile from 'browser/fragments/sfn-file-handler/model';
 
@@ -9,14 +8,14 @@ class ImportEntityController extends CoreObject {
     var files = await this.bus.execute({
       type: 'getFiles',
       src: path.join(path.dirname(this.file.path), this.attributes.src),
-      public: true
+      public: true,
     }).readAll();
 
     files = files.map((data) => (
       SfnFile.create({
         ...data,
         bus: this.bus,
-        fragmentDictionary: this.fragmentDictionary
+        fragmentDictionary: this.fragmentDictionary,
       })
     ));
 
@@ -31,5 +30,5 @@ class ImportEntityController extends CoreObject {
 
 export const fragment = FactoryFragment.create({
   ns: 'entity-controllers/import',
-  factory: ImportEntityController
-})
+  factory: ImportEntityController,
+});

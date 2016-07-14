@@ -85,7 +85,7 @@ export default class Element extends Node {
   cloneNode() {
     return new this.constructor({
       attributes: this.attributes,
-      childNodes: this.childNodes
+      childNodes: this.childNodes,
     });
   }
 }

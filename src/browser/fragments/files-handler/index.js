@@ -1,6 +1,5 @@
 import { ApplicationFragment } from 'common/application/fragments';
 import { INITIALIZE } from 'common/application/events';
-import { TypeCallbackBus } from 'common/mesh';
 import RouterBus from 'common/mesh/router-bus';
 import OpenFilesCollection from './open-files-collection';
 import sift from 'sift';
@@ -14,7 +13,7 @@ function create(app) {
   app.busses.push(
     RouterBus.create({
       [INITIALIZE]: initialize,
-      updateFileData: openFile
+      updateFileData: openFile,
     })
   );
 

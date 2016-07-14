@@ -11,5 +11,5 @@ export default class BlockEntity extends Entity {
 
 export const fragment = FactoryFragment.create({
   ns: 'entities/block',
-  factory: BlockEntity
+  factory: BlockEntity,
 });

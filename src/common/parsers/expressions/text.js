@@ -7,4 +7,4 @@ module.exports = class TextExpression extends BaseExpression {
     this.ns = 'text';
     this.location = location;
   }
-}
+};

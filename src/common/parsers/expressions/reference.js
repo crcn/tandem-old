@@ -7,4 +7,4 @@ module.exports = class ReferenceExpression extends BaseExpression {
     this.path = path;
     this.location = location;
   }
-}
+};

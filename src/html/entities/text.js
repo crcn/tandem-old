@@ -10,5 +10,5 @@ class TextEntity extends Entity {
 
 export const fragment = FactoryFragment.create({
   ns: 'entities/text',
-  factory: TextEntity
-})
+  factory: TextEntity,
+});

@@ -1,8 +1,8 @@
 import {
   STAGE_CANVAS_MOUSE_DOWN,
-} from 'editor-fragment/events';
+} from 'editor/events';
 
-import { SelectEvent } from 'editor-fragment/selection/events';
+import { SelectEvent } from 'editor/selection/events';
 import { Fragment } from 'common/fragments';
 import { ApplicationFragment } from 'common/application/fragments';
 import { TypeCallbackBus, RouterBus } from 'common/mesh';

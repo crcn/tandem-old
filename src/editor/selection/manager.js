@@ -1,7 +1,7 @@
-import Selection from 'editor-fragment/selection/collection';
+import Selection from 'editor/selection/collection';
 import { TypeCallbackBus } from 'common/mesh';
 import { ApplicationFragment } from 'common/application/fragments';
-import { SELECT } from 'editor-fragment/selection/events';
+import { SELECT } from 'editor/selection/events';
 
 export const fragment = ApplicationFragment.create({
   ns: 'application/selector',
@@ -28,7 +28,7 @@ function initialize(app) {
       if (item.type !== type) throw new Error('Cannot select multiple items with different types');
     });
 
-    const selectionCollectionFragment = app.fragmentDictionary.query(`selectorCollection/${type}`);
+    const selectionCollectionFragment = app.fragmentDictionary.query(`selection-collections/${type}`);
 
     if (selectionCollectionFragment) {
       newSelection = selectionCollectionFragment.create();

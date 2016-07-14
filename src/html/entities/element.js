@@ -21,7 +21,7 @@ class ElementEntity extends Entity {
   constructor(properties) {
     super({
       ...properties,
-      type: 'display'
+      type: 'display',
     });
 
     this.context = {};
@@ -37,15 +37,14 @@ class ElementEntity extends Entity {
   }
 
   async execute(options) {
-    var controllerFragment = options.fragmentDictionary.query(`entity/controllers/${this.expression.nodeName}`);
+    var controllerFragment = options.fragmentDictionary.query(`entity-controllers/${this.expression.nodeName}`);
     var ref;
     var section;
-    var executeRef;
     var context = this.context;
 
     var attributes = {};
 
-    for (var { key, value } of this.expression.attributes) {
+    for (const { key, value } of this.expression.attributes) {
       attributes[key] = (await value.execute(options)).value;
     }
 
@@ -60,16 +59,16 @@ class ElementEntity extends Entity {
         attributes: attributes,
         expression: this.expression,
         context: this.context,
-        entity: this
+        entity: this,
       });
 
       await ref.execute({
         ...options,
-        context
+        context,
       });
     } else {
       ref = document.createElement(this.expression.nodeName);
-      for (var key in attributes) {
+      for (const key in attributes) {
         ref.setAttribute(key, attributes[key]);
       }
       section = NodeSection.create(ref);
@@ -78,7 +77,7 @@ class ElementEntity extends Entity {
         this.appendChild(await childExpression.execute({
           ...options,
           context,
-          section
+          section,
         }));
       }
     }
@@ -90,6 +89,6 @@ class ElementEntity extends Entity {
 }
 
 export const fragment = FactoryFragment.create({
- ns: `entities/element`,
- factory: ElementEntity
+  ns: 'entities/element',
+  factory: ElementEntity,
 });

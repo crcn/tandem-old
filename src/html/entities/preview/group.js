@@ -1,6 +1,5 @@
-import BoundingRect from 'common/geom/bounding-rect';
 import { mergeBoundingRects } from 'common/utils/geom';
-import { calculateBoundingRect, getCapabilities, setBoundingRect } from './utils';
+import { calculateBoundingRect } from './utils';
 import CoreObject from 'common/object';
 
 export default class GroupPreview extends CoreObject {
@@ -9,10 +8,10 @@ export default class GroupPreview extends CoreObject {
     this.entity = entity;
   }
 
-  getBoundingRect(zoom) {
-    var rect = mergeBoundingRects(this.entity.section.childNodes.map(function(node) {
-      return node.nodeType === 1 ? calculateBoundingRect(node) : void 0;
-    }));
+  getBoundingRect() {
+    var rect = mergeBoundingRects(this.entity.section.childNodes.map((node) => (
+      node.nodeType === 1 ? calculateBoundingRect(node) : void 0
+    )));
 
     return rect;
   }
@@ -20,7 +19,7 @@ export default class GroupPreview extends CoreObject {
   getCapabilities() {
     return {
       movable: false,
-      resizable: false
-    }
+      resizable: false,
+    };
   }
 }

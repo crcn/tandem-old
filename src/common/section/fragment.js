@@ -54,7 +54,7 @@ export default class FragmentSection {
 
     var cnode = this._start.nextSibling;
     var childNodes = [];
-    while(cnode && cnode !== this._end) {
+    while (cnode && cnode !== this._end) {
       childNodes.push(cnode);
       cnode = cnode.nextSibling;
     }
@@ -77,9 +77,9 @@ export default class FragmentSection {
   }
 
   get innerHTML() {
-    return this.childNodes.map(function(childNode) {
-      return childNode.outerHTML || childNode.nodeValue;
-    }).join('');
+    return this.childNodes.map((childNode) => (
+      childNode.outerHTML || childNode.nodeValue
+    )).join('');
   }
 
   get allChildNodes() {

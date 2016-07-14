@@ -1,8 +1,8 @@
 import { fragment } from './index';
 import expect from 'expect.js';
-import { SelectEvent, ToggleSelectEvent } from 'editor-fragment/selection/events';
+import { SelectEvent, ToggleSelectEvent } from 'editor/selection/events';
 import BaseApplication from 'common/application/base';
-import Selection from 'editor-fragment/selection/collection';
+import Selection from 'editor/selection/collection';
 import { FactoryFragment } from 'common/fragments';
 
 describe(__filename + '#', function () {

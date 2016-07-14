@@ -8,4 +8,4 @@ module.exports = class AttributeExpression extends BaseExpression {
     this.ns    = 'attribute';
     this.location = location;
   }
-}
+};

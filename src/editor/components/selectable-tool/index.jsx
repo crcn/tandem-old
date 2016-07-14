@@ -5,7 +5,7 @@ import './index.scss';
 import cx from 'classnames';
 import React from 'react';
 import intersection from 'lodash/array/intersection';
-import { SelectEvent } from 'editor-fragment/selection/events';
+import { SelectEvent } from 'editor/selection/events';
 import { mergeBoundingRects } from 'common/utils/geom';
 import { ReactComponentFactoryFragment } from 'common/react/fragments';
 

@@ -6,4 +6,4 @@ module.exports = class NumberExpression extends BaseExpression {
     this.value = value;
     this.ns = 'number';
   }
-}
+};

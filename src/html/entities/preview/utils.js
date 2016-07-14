@@ -116,34 +116,34 @@ export function calculateBoundingRect(node, zoomProperties) {
 
 export function setBoundingRect(bounds, entity, node) {
 
-      // NO zoom here - point is NOT fixed, but relative
-      var absStyle = getStyle(entity, node, false);
+  // NO zoom here - point is NOT fixed, but relative
+  var absStyle = getStyle(entity, node, false);
 
-      var props = { ...bounds };
+  var props = { ...bounds };
 
-      var paddingWidth = absStyle.paddingLeft + absStyle.paddingRight;
-      var paddingHeight = absStyle.paddingTop  + absStyle.paddingBottom;
+  var paddingWidth = absStyle.paddingLeft + absStyle.paddingRight;
+  var paddingHeight = absStyle.paddingTop  + absStyle.paddingBottom;
 
-      props.width = Math.max(props.width - paddingWidth, 0);
-      props.height = Math.max(props.height - paddingHeight, 0);
+  props.width = Math.max(props.width - paddingWidth, 0);
+  props.height = Math.max(props.height - paddingHeight, 0);
 
-      // convert px to whatever unit is set on the style
-      Object.assign(props, translateStyle({
-        width: props.width,
-        height: props.height,
-      }, entity.style, node));
+  // convert px to whatever unit is set on the style
+  Object.assign(props, translateStyle({
+    width: props.width,
+    height: props.height,
+  }, entity.style, node));
 
-      // FIXME: wrong place here - this is just a quick
-      // check to see if this *actually* works
-      setPositionFromAbsolutePoint({
-        left: bounds.left,
-        top : bounds.top,
-      }, entity, node);
+  // FIXME: wrong place here - this is just a quick
+  // check to see if this *actually* works
+  setPositionFromAbsolutePoint({
+    left: bounds.left,
+    top : bounds.top,
+  }, entity, node);
 
-      delete props.left;
-      delete props.top;
+  delete props.left;
+  delete props.top;
 
-      entity.setProperties({ style: props });
+  entity.setProperties({ style: props });
 }
 
 export function getStyle(entity, node, zoomProperties) {

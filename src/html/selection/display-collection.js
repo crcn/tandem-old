@@ -1,5 +1,5 @@
 import assert from 'assert';
-import Selection from 'editor-fragment/selection/collection';
+import Selection from 'editor/selection/collection';
 import CoreObject from 'common/object';
 import observable from 'common/object/mixins/observable';
 import { FactoryFragment } from 'common/fragments';
@@ -194,6 +194,6 @@ export default class HTMLEntitySelection extends Selection {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'selection/collection/display',
+  ns: 'selection-collections/display',
   factory: HTMLEntitySelection,
 });

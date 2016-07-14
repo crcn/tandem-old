@@ -7,4 +7,4 @@ module.exports = class RootExpression extends BaseExpression {
     this.ns = 'root';
     this.location = location;
   }
-}
+};
