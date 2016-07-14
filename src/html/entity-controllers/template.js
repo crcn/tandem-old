@@ -38,7 +38,6 @@ export default class FrameEntityController {
       backgroundColor: 'white',
       position: 'relative',
     });
-    console.log(this.attributes.style);
 
     options.fragmentDictionary.register(
       FactoryFragment.create({
