@@ -5,7 +5,7 @@ import SfnFile from './model';
 export const fragment = ApplicationFragment.create({
   ns: 'application/sfnFileHandler',
   initialize: create,
-});
+}); 
 
 function create(app) {
 

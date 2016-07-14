@@ -11,7 +11,7 @@ export default class GroupPreview extends CoreObject {
 
   getBoundingRect(zoom) {
     var rect = mergeBoundingRects(this.entity.section.childNodes.map(function(node) {
-      return calculateBoundingRect(node);
+      return node.nodeType === 1 ? calculateBoundingRect(node) : void 0;
     }));
 
     return rect;

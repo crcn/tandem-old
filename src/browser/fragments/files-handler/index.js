@@ -1,6 +1,7 @@
 import { ApplicationFragment } from 'common/application/fragments';
 import { INITIALIZE } from 'common/application/events';
 import { TypeCallbackBus } from 'common/mesh';
+import RouterBus from 'common/mesh/router-bus';
 import OpenFilesCollection from './open-files-collection';
 import sift from 'sift';
 
@@ -11,8 +12,10 @@ export const fragment = ApplicationFragment.create({
 
 function create(app) {
   app.busses.push(
-    TypeCallbackBus.create(INITIALIZE, initialize),
-    TypeCallbackBus.create('handleFileContent', openFile)
+    RouterBus.create({
+      [INITIALIZE]: initialize,
+      updateFileData: openFile
+    })
   );
 
   const logger = app.logger.createChild({ prefix: 'file handler: ' });

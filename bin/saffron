@@ -13,6 +13,6 @@ if (!/^\//.test(filepath)) {
 
 app.bus.execute({
   type     : 'openFile',
-  filepath : filepath,
+  src      : filepath,
   watch    : true
 });

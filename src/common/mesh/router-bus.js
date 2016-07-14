@@ -1,4 +1,4 @@
-import { Bus, WrapBus } from 'mesh';
+import { Bus, WrapBus, EmptyResponse } from 'mesh';
 
 export default class RouterBus extends Bus {
   constructor(routes) {
@@ -14,5 +14,6 @@ export default class RouterBus extends Bus {
     if (bus) {
       return bus.execute(event);
     }
+    return EmptyResponse.create();
   }
 }

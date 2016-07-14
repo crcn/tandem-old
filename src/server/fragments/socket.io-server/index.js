@@ -1,6 +1,6 @@
 import { ApplicationFragment } from 'common/application/fragments';
 import { INITIALIZE, LOAD } from 'common/application/events';
-import { AcceptBus, WrapBus, AttachDefaultsBus } from 'mesh';
+import { AcceptBus, WrapBus, AttachDefaultsBus, ParallelBus } from 'mesh';
 import RemoteBus from 'mesh-remote-bus';
 import sift from 'sift';
 import createServer from 'socket.io';
@@ -27,6 +27,12 @@ function create(app) {
     logger.info('server on port %d', port);
     const server = createServer();
 
+    var remoteBusses = [];
+    var remoteBus = ParallelBus.create(remoteBusses);
+
+    remoteBus = AcceptBus.create(sift({ public: true, remote: { $ne: true } }), remoteBus);
+    app.busses.push(remoteBus);
+
     server.on('connection', function (connection) {
       logger.info('client connected');
       let remoteBus = RemoteBus.create({
@@ -34,12 +40,10 @@ function create(app) {
         send: connection.emit.bind(connection, 'message'),
       }, AttachDefaultsBus.create({ remote: true }, app.bus));
 
-      remoteBus = AcceptBus.create(sift({ public: true, remote: { $ne: true } }), remoteBus);
-
-      app.busses.push(remoteBus);
+      remoteBusses.push(remoteBus);
 
       connection.once('close', function () {
-        app.busses.splice(app.busses.indexOf(remoteBus), 1);
+        remoteBusses.splice(remoteBusses.indexOf(remoteBus), 1);
       });
     });
 

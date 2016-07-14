@@ -8,7 +8,7 @@ class ImportEntityController extends CoreObject {
   async execute() {
     var files = await this.bus.execute({
       type: 'getFiles',
-      src: path.join(path.dirname(this.file.path), this.attributes.src[0]),
+      src: path.join(path.dirname(this.file.path), this.attributes.src),
       public: true
     }).readAll();
 
@@ -22,6 +22,7 @@ class ImportEntityController extends CoreObject {
 
     for (var file of files) {
       await file.load();
+
       // the entity is root, so it has a section
       this.section.appendChild(file.entity.section.toFragment());
     }

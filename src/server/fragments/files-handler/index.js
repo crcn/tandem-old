@@ -22,33 +22,33 @@ function createOpenFileHandler(app) {
   const logger = app.logger.createChild({ prefix: 'file handler ' });
   const openFiles = {};
 
-  function onOpenFile({ filepath, watch }) {
+  function onOpenFile({ src, watch }) {
 
     if (watch) {
-      watchFile(filepath);
+      watchFile(src);
     }
 
-    openFile(filepath);
+    openFile(src);
   }
 
-  function watchFile(filepath) {
-    gaze(filepath, function (err, watcher) {
-      watcher.on('all', openFile.bind(this, filepath));
+  function watchFile(src) {
+    gaze(src, function (err, watcher) {
+      watcher.on('all', openFile.bind(this, src));
     });
   }
 
   function openFile(filepath) {
     logger.info('opening %s', filepath);
 
-    const fileInfo = getFile(filepath);
+    const data = getFileData(filepath);
 
-    openFiles[filepath] = fileInfo;
+    openFiles[filepath] = data;
 
     // pass the file onto specific file handlers
     app.bus.execute({
-      type     : 'handleFileContent',
+      type     : 'updateFileData',
       public   : true,
-      file     : fileInfo,
+      file     : data,
     });
   }
 
@@ -60,7 +60,7 @@ function createOpenFileHandler(app) {
     return glob.sync(options.src).map(getFile);
   }
 
-  function getFile(filepath) {
+  function getFileData(filepath) {
     return {
       path     : filepath,
       ext      : filepath.split('.').pop(),
