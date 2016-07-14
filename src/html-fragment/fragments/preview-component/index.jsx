@@ -4,17 +4,7 @@ import compileXMLtoJS from 'common/compilers/xml';
 
 import { ReactComponentFactoryFragment } from 'common/react/fragments';
 
-// function convertStyle(style) {
-//   const converted = {};
-//   for (const key in style) {
-//     let v = style[key];
-//     if (/left|top|margin|width|height/.test(key) && !isNaN(v)) {
-//       v = v + 'px';
-//     }
-//     converted[key] = v;
-//   }
-//   return converted;
-// }
+
 
 function renderPreview(entity, props) {
   var childNodes = (entity.childNodes || []).map(function(childNode) {

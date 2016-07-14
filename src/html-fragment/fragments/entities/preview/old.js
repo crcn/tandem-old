@@ -15,30 +15,6 @@ import {
   multiplyStyle,
 } from 'common/utils/html';
 
-function getElementOffset(entity) {
-  var element = entity.preview.node;
-  var p = element.parentNode;
-
-  var left = 0;
-  var top  = 0;
-
-  var zoom = calculateZoom(element);
-
-  while (p) {
-    left += p.offsetLeft || 0;
-    top  += p.offsetTop  || 0;
-    left -= (p.scrollLeft || 0) / zoom;
-    top  -= (p.scrollTop  || 0) / zoom;
-    p = p.parentNode || p.host;
-  }
-
-  const frameOffset = getFrameOffset(entity);
-  left += frameOffset.left;
-  top  += frameOffset.top;
-
-  return { left, top };
-}
-
 class ReactEntityPreview extends CoreObject {
 
   constructor(entity, node) {

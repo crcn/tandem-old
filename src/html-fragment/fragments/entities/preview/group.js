@@ -1,6 +1,6 @@
 import BoundingRect from 'common/geom/bounding-rect';
 import { mergeBoundingRects } from 'common/utils/geom';
-import { calculateBoundingRect, getCapabilities } from './utils';
+import { calculateBoundingRect, getCapabilities, setBoundingRect } from './utils';
 import CoreObject from 'common/object';
 
 export default class GroupPreview extends CoreObject {
@@ -17,13 +17,10 @@ export default class GroupPreview extends CoreObject {
     return rect;
   }
 
-  setBoundingRect() {
-
-  }
-
   getCapabilities() {
     return {
-      movable: false
+      movable: false,
+      resizable: false
     }
   }
 }

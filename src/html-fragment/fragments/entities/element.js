@@ -5,6 +5,18 @@ import { FactoryFragment } from 'common/fragments';
 import GroupPreview from './preview/group';
 import NodePreview from './preview/node';
 
+function convertStyle(style) {
+  const converted = {};
+  for (const key in style) {
+    let v = style[key];
+    if (/left|top|margin|width|height/.test(key) && !isNaN(v)) {
+      v = v + 'px';
+    }
+    converted[key] = v;
+  }
+  return converted;
+}
+
 class ElementEntity extends Entity {
   constructor(properties) {
     super({
@@ -14,6 +26,16 @@ class ElementEntity extends Entity {
 
     this.context = {};
   }
+
+  set style(value) {
+    this._style = convertStyle(value);
+    Object.assign(this.section.targetNode.style, convertStyle(value));
+  }
+
+  get style() {
+    return this._style || {};
+  }
+
   async execute(options) {
     var controllerFragment = options.fragmentDictionary.query(`entity/controllers/${this.expression.nodeName}`);
     var ref;

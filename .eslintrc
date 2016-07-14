@@ -5,6 +5,7 @@
     "babel"
   ],
   "rules": {
+    "vars-on-top": 0,
     "object-shorthand": 0,
     "import/no-unresolved": 0,
     "no-underscore-dangle": 0,

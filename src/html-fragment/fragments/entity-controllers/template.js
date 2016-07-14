@@ -10,7 +10,10 @@ class RegisteredEntityController {
 
   async execute(options) {
     for (var childExpression of this.frame.expression.childNodes) {
-      this.entity.appendChild(await childExpression.execute(options));
+      this.entity.appendChild(await childExpression.execute({
+        ...options,
+        selectable: false,
+      }));
     }
   }
 

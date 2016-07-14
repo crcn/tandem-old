@@ -1,6 +1,6 @@
 import BoundingRect from 'common/geom/bounding-rect';
 import { mergeBoundingRects }from 'common/utils/geom';
-import { calculateBoundingRect, getCapabilities } from './utils';
+import { calculateBoundingRect, getCapabilities, setBoundingRect, setPositionFromAbsolutePoint } from './utils';
 import CoreObject from 'common/object';
 
 export default class NodePreview extends CoreObject {
@@ -13,8 +13,12 @@ export default class NodePreview extends CoreObject {
     return calculateBoundingRect(this.entity.section.targetNode);
   }
 
-  setBoundingRect() {
+  setPositionFromAbsolutePoint(point) {
+    setPositionFromAbsolutePoint(point, this.entity, this.entity.section.targetNode); 
+  }
 
+  setBoundingRect(rect) {
+    setBoundingRect(rect, this.entity, this.entity.section.targetNode);
   }
 
   getCapabilities() {

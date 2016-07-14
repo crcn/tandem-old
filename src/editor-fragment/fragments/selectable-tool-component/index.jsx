@@ -38,7 +38,7 @@ class SelectableComponent extends React.Component {
 
     var { entity, selection, app } = this.props;
 
-    if (!entity.preview) return null;
+    if (!entity.preview || entity.selectable === false) return null;
     const entities = entity.flatten();
 
     if (intersection(entities, selection || []).length) return null;
