@@ -4,6 +4,6 @@
 
 Saffron is a code-first visual editor for building web applications, and more.
 
-This project is still in its early stages. Alpha should be ready sometime early fall 2017. Documentation will not be provided until then.
+This project is still in its early stages. Alpha should be ready sometime early fall 2017. 
 
 <img src="https://cloud.githubusercontent.com/assets/757408/12023393/e9b9cf50-ad4d-11e5-85db-58ce5232757e.png" width="800px" />
