@@ -97,8 +97,6 @@ class DragSelectComponent extends React.Component {
 
   render() {
 
-
-
     var style = {
       left   : this.state.left,
       top    : this.state.top,

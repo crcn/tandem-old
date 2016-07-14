@@ -87,19 +87,6 @@ class ReactEntityPreview extends CoreObject {
     return calculateZoom(this.node);
   }
 
-  getCapabilities() {
-
-    var style = window.getComputedStyle(this.node);
-
-    var movable   = style.position !== 'static';
-    var resizable = /fixed|absolute/.test(style.position) || !/^inline$/.test(style.display);
-
-    return {
-      movable,
-      resizable,
-    };
-  }
-
   setBoundingRect(bounds) {
 
     // NO zoom here - point is NOT fixed, but relative
@@ -130,34 +117,6 @@ class ReactEntityPreview extends CoreObject {
     delete props.top;
 
     this.entity.setProperties({ style: props });
-  }
-
-  toJSON() {
-    return null;
-  }
-
-  /**
-   * returns the computed property of the element along with all inherited styles.
-   * TODO: This should be memoized -- very expensive operation
-   * @returns {*}
-   */
-
-  getComputedStyle() {
-    var cs   = window.getComputedStyle(this.node);
-    // normalize computed styles to pixels
-    return {
-      position: cs.position,
-      ...translateStyleToIntegers({
-        marginLeft: cs.marginLeft,
-        marginTop : cs.marginTop,
-        marginRight: cs.marginRight,
-        marginBottom: cs.marginBottom,
-        paddingLeft: cs.paddingLeft,
-        paddingTop: cs.paddingTop,
-        paddingRight: cs.paddingRight,
-        paddingBottom: cs.paddingBottom,
-      }, this.node),
-    };
   }
 
 

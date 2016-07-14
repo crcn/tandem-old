@@ -6,7 +6,7 @@ import cx from 'classnames';
 import React from 'react';
 import intersection from 'lodash/array/intersection';
 import { SelectEvent } from 'editor-fragment/selection/events';
-import { calculateBoundingRect } from 'common/utils/geom';
+import { mergeBoundingRects } from 'common/utils/geom';
 import { ReactComponentFactoryFragment } from 'common/react/fragments';
 
 class SelectableComponent extends React.Component {
@@ -43,7 +43,7 @@ class SelectableComponent extends React.Component {
 
     if (intersection(entities, selection || []).length) return null;
 
-    const bounds = calculateBoundingRect(entities.map(function (entity2) {
+    const bounds = mergeBoundingRects(entities.map(function (entity2) {
       return entity2.preview ? entity2.preview.getBoundingRect(true) : void 0;
     }).filter(function (value) {
       return !!value;

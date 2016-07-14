@@ -39,18 +39,20 @@ function getComputedStyle(node) {
   };
 }
 
-export default function(node, zoomProperties) {
-  var node = node;
+export function getCapabilities(node) {
+  var style = window.getComputedStyle(node);
 
-  // might be a text node
-  if (!node.getBoundingClientRect) {
-    return BoundingRect.create({
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0
-    });
-  }
+  var movable   = style.position !== 'static';
+  var resizable = /fixed|absolute/.test(style.position) || !/^inline$/.test(style.display);
+
+  return {
+    movable,
+    resizable,
+  };
+}
+
+export function calculateBoundingRect(node, zoomProperties) {
+  var node = node;
 
   var rect   = node.getBoundingClientRect();
   var cs     = getComputedStyle(node);

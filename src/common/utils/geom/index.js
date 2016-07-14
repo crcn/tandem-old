@@ -1,6 +1,6 @@
 import BoundingRect from 'common/geom/bounding-rect';
 
-export function calculateBoundingRect(allRects) {
+export function mergeBoundingRects(allRects) {
   const groupRect = {
     top    : Infinity,
     bottom : -Infinity,
@@ -9,6 +9,7 @@ export function calculateBoundingRect(allRects) {
   };
 
   for (const rect of allRects) {
+    if (!rect) continue;
     groupRect.left   = Math.min(groupRect.left, rect.left);
     groupRect.right  = Math.max(groupRect.right, rect.right);
     groupRect.top    = Math.min(groupRect.top, rect.top);

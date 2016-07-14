@@ -3,6 +3,7 @@ import NodeSection from 'common/section/node';
 import FragmentSection from 'common/section/fragment';
 import { FactoryFragment } from 'common/fragments';
 import GroupPreview from './preview/group';
+import NodePreview from './preview/node';
 
 class ElementEntity extends Entity {
   constructor(properties) {
@@ -11,7 +12,6 @@ class ElementEntity extends Entity {
       type: 'display'
     });
 
-    this.preview = new GroupPreview(this);
     this.context = {};
   }
   async execute(options) {
@@ -27,9 +27,10 @@ class ElementEntity extends Entity {
       attributes[key] = (await value.execute(options)).value;
     }
 
-    Object.assign(context, attributes);
+    Object.assign(context, options.context || {}, context, attributes);
 
     if (controllerFragment) {
+      this.preview = new GroupPreview(this);
       section = FragmentSection.create();
       ref = controllerFragment.create({
         ...options,
@@ -50,6 +51,7 @@ class ElementEntity extends Entity {
         ref.setAttribute(key, attributes[key]);
       }
       section = NodeSection.create(ref);
+      this.preview = new NodePreview(this);
       for (var childExpression of this.expression.childNodes) {
         this.appendChild(await childExpression.execute({
           ...options,
@@ -58,6 +60,8 @@ class ElementEntity extends Entity {
         }));
       }
     }
+
+    this.section = section;
 
     options.section.appendChild(section.toFragment());
   }

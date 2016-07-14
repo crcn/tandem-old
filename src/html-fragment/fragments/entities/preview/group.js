@@ -1,17 +1,29 @@
 import BoundingRect from 'common/geom/bounding-rect';
-import { calculateBoundingRect }from 'common/utils/geom';
-import _calculateBoundingRect from './_calculate-bounding-rect';
+import { mergeBoundingRects } from 'common/utils/geom';
+import { calculateBoundingRect, getCapabilities } from './utils';
+import CoreObject from 'common/object';
 
-export default class GroupPreview {
+export default class GroupPreview extends CoreObject {
   constructor(entity) {
+    super();
     this.entity = entity;
   }
 
   getBoundingRect(zoom) {
-    var rect = calculateBoundingRect(this.entity.section.childNodes.map(function(node) {
-      return _calculateBoundingRect(node);
+    var rect = mergeBoundingRects(this.entity.section.childNodes.map(function(node) {
+      return calculateBoundingRect(node);
     }));
 
     return rect;
+  }
+
+  setBoundingRect() {
+
+  }
+
+  getCapabilities() {
+    return {
+      movable: false
+    }
   }
 }

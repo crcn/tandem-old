@@ -5,7 +5,7 @@ import flatten from 'lodash/array/flatten';
 import RulerComponent from './ruler';
 import GuideComponent from './guide';
 import ResizerComponent from './resizer';
-import { calculateBoundingRect } from 'common/utils/geom';
+import { mergeBoundingRects } from 'common/utils/geom';
 import { ReactComponentFactoryFragment } from 'common/react/fragments';
 
 class SelectorComponent extends React.Component {
@@ -37,18 +37,18 @@ class SelectorComponent extends React.Component {
       </div>);
     }
 
-    const entireBounds = calculateBoundingRect(flatten(selection.map(function (entity) {
+    const entireBounds = mergeBoundingRects(flatten(selection.map(function (entity) {
       return entity.flatten().map(function (entity2) {
-        return entity2.preview.getBoundingRect(true);
+        return entity2.preview ? entity2.preview.getBoundingRect(true) : void 0;
       });
     })));
 
     const boundsStyle = {
       position: 'absolute',
-      left: entireBounds.left - 1,
-      top: entireBounds.top - 1,
-      width: entireBounds.width,
-      height: entireBounds.height,
+      left: entireBounds.left,
+      top: entireBounds.top,
+      width: entireBounds.width - 1,
+      height: entireBounds.height - 1,
     };
 
     return (<div className='m-selector-component'>

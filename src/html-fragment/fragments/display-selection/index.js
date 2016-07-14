@@ -3,7 +3,7 @@ import Selection from 'editor-fragment/selection/collection';
 import CoreObject from 'common/object';
 import observable from 'common/object/mixins/observable';
 import { FactoryFragment } from 'common/fragments';
-import { calculateBoundingRect } from 'common/utils/geom';
+import { mergeBoundingRects } from 'common/utils/geom';
 
 @observable
 class Preview extends CoreObject {
@@ -86,7 +86,7 @@ class Preview extends CoreObject {
    */
 
   getBoundingRect(zoomProperties) {
-    return calculateBoundingRect(this.selection.map(function (entity) {
+    return mergeBoundingRects(this.selection.map(function (entity) {
       return entity.preview.getBoundingRect(zoomProperties);
     }));
   }
@@ -96,7 +96,7 @@ class Preview extends CoreObject {
    */
 
   getStyle() {
-    return calculateBoundingRect(this.selection.map(function (entity) {
+    return mergeBoundingRects(this.selection.map(function (entity) {
       return entity.preview.getStyle();
     }));
   }
