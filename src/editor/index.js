@@ -20,20 +20,30 @@ import { fragment as toolManagerFragment } from './tools/manager';
 // models
 import { fragment as sfnFileModelFragment } from './models/sfn-file';
 
+// services
+import { fragment as projectServiceFragment } from './services/project';
+
 export const fragment = [
 
+  // components
   rootComponentFragment,
   sfnStageComponentFragment,
   selectorToolComponentFragment,
   dragSelectToolComponentFragment,
   selectableToolComponentFragment,
 
+  // entities
   stringEntityFragment,
   referenceEntityFragment,
 
+  // tools
   textToolFragment,
   pointerToolFragment,
   toolManagerFragment,
 
-  sfnFileModelFragment
+  // models
+  sfnFileModelFragment,
+
+  // services
+  projectServiceFragment
 ];

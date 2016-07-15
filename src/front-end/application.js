@@ -4,9 +4,8 @@ import * as fragments from './fragments';
 import { fragment as htmlFragment } from 'html';
 import { fragment as editorFragment } from 'editor';
 
-import { fragment as rootComponentRendererFragment } from './actors/root-component-renderer';
-import { fragment as backEndActorFragment } from './actors/back-end';
-
+import { fragment as backEndServiceFragment } from './services/back-end';
+import { fragment as rootComponentRendererFragment } from './services/root-component-renderer';
 
 
 export default class BrowserApplication extends BaseApplication {
@@ -18,7 +17,7 @@ export default class BrowserApplication extends BaseApplication {
       ...Object.values(fragments),
       htmlFragment,
       editorFragment,
-      backEndActorFragment,
+      backEndServiceFragment,
       rootComponentRendererFragment
     );
   }

@@ -6,3 +6,4 @@ anything else
 - hijack native elements such as img
 - do not explicitly define NS for fragments
 - change "fragment" to "dependency"
+- priority for dependencies

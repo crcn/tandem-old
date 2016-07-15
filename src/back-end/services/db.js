@@ -5,6 +5,8 @@ import MemoryDsBus from 'mesh-memory-ds-bus';
 
 import { titleize } from 'inflection';
 import { FactoryFragment } from 'common/fragments';
+import document from 'common/actors/decorators/document';
+
 
 @loggable
 export default class DBService extends Service {
@@ -19,6 +21,7 @@ export default class DBService extends Service {
    */
 
   @isPublic
+  @document('finds an item in the database')
   find(action) {
     return this._db.execute(action);
   }
@@ -28,6 +31,7 @@ export default class DBService extends Service {
    */
 
   @isPublic
+  @document('removes an item in the database')
   remove(action) {
     return this._executeWithPostAction(action);
   }
@@ -37,6 +41,7 @@ export default class DBService extends Service {
    */
 
   @isPublic
+  @document('inserts an item in the database')
   insert(action) {
     return this._executeWithPostAction(action);
   }
@@ -45,6 +50,7 @@ export default class DBService extends Service {
    */
 
   @isPublic
+  @document('updates an item in the database')
   update(action) {
     return this._executeWithPostAction(action);
   }

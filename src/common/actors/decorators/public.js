@@ -1,8 +1,8 @@
 export default (proto, name) => {
 
-  if (!proto.publicProperties) {
-    proto.publicProperties = [];
+  if (!proto.__publicProperties) {
+    proto.__publicProperties = [];
   }
 
-  proto.publicProperties.push(name);
+  proto.__publicProperties.push(name);
 };

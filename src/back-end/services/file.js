@@ -5,6 +5,7 @@ import Service from 'common/services/base';
 import loggable from 'common/logger/mixins/loggable';
 import isPublic from 'common/actors/decorators/public';
 import filterAction from 'common/actors/decorators/filter-action';
+import document from 'common/actors/decorators/document';
 
 import { FactoryFragment } from 'common/fragments';
 
@@ -20,6 +21,7 @@ export default class FileService extends Service {
    */
 
   @isPublic
+  @document('opens a file')
   openFile(action) {
     this.logger.info(`opening ${action.src}`);
 
