@@ -28,7 +28,7 @@ function initialize(app) {
       if (item.type !== type) throw new Error('Cannot select multiple items with different types');
     });
 
-    const selectionCollectionFragment = app.fragmentDictionary.query(`selection-collections/${type}`);
+    const selectionCollectionFragment = app.fragments.query(`selection-collections/${type}`);
 
     if (selectionCollectionFragment) {
       newSelection = selectionCollectionFragment.create();

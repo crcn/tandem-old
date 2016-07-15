@@ -9,7 +9,7 @@ export default class SfnFile extends CoreObject {
     var rootExpression = XMLParser.parse(this.content);
     var entity = await rootExpression.execute({
       bus: this.bus,
-      fragmentDictionary: this.isolate !== false ? this.fragmentDictionary.createChild() : this.fragmentDictionary
+      fragments: this.isolate !== false ? this.fragments.createChild() : this.fragments
     });
 
     this.setProperties({

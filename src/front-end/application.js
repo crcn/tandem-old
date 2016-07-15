@@ -12,7 +12,7 @@ export default class BrowserApplication extends BaseApplication {
   _registerFragments() {
     super._registerFragments();
 
-    this.fragmentDictionary.register(
+    this.fragments.register(
       htmlFragment,
       editorFragment,
       backEndServiceFragment,

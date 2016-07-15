@@ -25,7 +25,7 @@ export default class RootComponentRenderer extends BaseActor {
     this._rendering = false;
     var app = this.app;
 
-    var rootComponentClassFragment = this.app.fragmentDictionary.query('rootComponentClass');
+    var rootComponentClassFragment = this.app.fragments.query('rootComponentClass');
 
     ReactDOM.render(rootComponentClassFragment.create({
       app: app,

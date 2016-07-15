@@ -1,13 +1,13 @@
 import expect from 'expect.js';
-import FragmentDictionary from './dictionary';
+import FragmentCollection from './collection';
 
 describe(__filename + '#', function () {
   it('can be created', function () {
-    FragmentDictionary.create();
+    FragmentCollection.create();
   });
 
   it('can register and query fragments', function () {
-    var d = FragmentDictionary.create();
+    var d = FragmentCollection.create();
     d.register({ ns: 'a' });
     expect(d.queryAll('a')[0].ns).to.be('a');
     expect(d.queryAll('a/**')[0].ns).to.be('a');

@@ -3,7 +3,7 @@ import compileXML from 'common/compilers/xml';
 function createTextNode(value) {
   return {
     async load(options) {
-      var entity = await options.fragmentDictionary.query('entities/text').create({
+      var entity = await options.fragments.query('entities/text').create({
         ...options,
         nodeValue: value,
       });
@@ -26,7 +26,7 @@ function createFragment(childNodes) {
 function createBlock(run) {
   return {
     async load(options) {
-      var entity = await options.fragmentDictionary.query('entities/block').create({
+      var entity = await options.fragments.query('entities/block').create({
         ...options,
         run: run,
       });
@@ -40,7 +40,7 @@ function createBlock(run) {
 function createElement(nodeName, attributes, childNodes) {
   return {
     async load(options) {
-      var fragment = options.fragmentDictionary.query(`entities/${nodeName}`) || options.fragmentDictionary.query('entities/element');
+      var fragment = options.fragments.query(`entities/${nodeName}`) || options.fragments.query('entities/element');
 
       var entity = fragment.create({
         ...options,
@@ -63,21 +63,21 @@ export default function deserialize(source, options) {
   var createEntity  = compileXML(source);
   return createEntity(function (type, ...rest) {
     switch(type) {
-      case 'text': return options.fragmentDictionary.query('entities/text').create({
+      case 'text': return options.fragments.query('entities/text').create({
         ...options,
         nodeValue: rest[0]
       });
-      case 'block': return options.fragmentDictionary.query('entities/text').create({
+      case 'block': return options.fragments.query('entities/text').create({
         ...options,
         run: rest[0]
       });
-      case 'element': return options.fragmentDictionary.query('entities/element').create({
+      case 'element': return options.fragments.query('entities/element').create({
         ...options,
         nodeName: rest[0],
         attributes: rest[1],
         childNodes: rest[2]
       });
-      case 'fragment': return options.fragmentDictionary.query('entities/group').create({
+      case 'fragment': return options.fragments.query('entities/group').create({
         ...options,
         childNodes: rest[0]
       });

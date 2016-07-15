@@ -2,7 +2,7 @@ import { create } from 'common/utils/class';
 
 export default class BaseExpression {
   createEntity(properties) {
-    var fragment = properties.fragmentDictionary.query(`entities/${this.ns}`);
+    var fragment = properties.fragments.query(`entities/${this.ns}`);
     if (!fragment) {
       throw new Error(`entity fragment "${this.ns}" does not exist`);
     }

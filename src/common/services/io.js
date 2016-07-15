@@ -99,8 +99,4 @@ export default class IOService extends Service {
       );
     });
   }
-
-  _logNumConnections() {
-    this.logger.verbose('connection count: %d', this._remoteActors.length);
-  }
 }

@@ -37,7 +37,7 @@ class ElementEntity extends Entity {
   }
 
   async execute(options) {
-    var controllerFragment = options.fragmentDictionary.query(`entity-controllers/${this.expression.nodeName}`);
+    var controllerFragment = options.fragments.query(`entity-controllers/${this.expression.nodeName}`);
     var ref;
     var section;
     var context = this.context;

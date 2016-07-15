@@ -21,11 +21,11 @@ export default class ProjectService extends Service {
 
     var createModel = (data) => (
       this.app
-        .fragmentDictionary
+        .fragments
         .query(`models/${data.ext}-file`)
         .create({
           ...data,
-          fragmentDictionary: this.app.fragmentDictionary,
+          fragments: this.app.fragments,
           bus: this.bus
         })
     );

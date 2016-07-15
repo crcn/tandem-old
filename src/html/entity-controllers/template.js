@@ -40,7 +40,7 @@ export default class FrameEntityController {
       position: 'relative',
     });
 
-    options.fragmentDictionary.register(
+    options.fragments.register(
       FactoryFragment.create({
         ns: `entity-controllers/${this.attributes.id}`,
         factory: {

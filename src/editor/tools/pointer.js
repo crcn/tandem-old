@@ -41,7 +41,7 @@ function initPointer(app) {
 
   var tool = new PointerTool({ bus: app.bus });
 
-  app.fragmentDictionary.register(
+  app.fragments.register(
     Fragment.create({
       ns: 'preview/tools/pointer',
       icon: 'cursor',

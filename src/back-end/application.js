@@ -9,7 +9,7 @@ import { fragment as stdinServiceFragment } from './services/stdin';
 export default class ServerApplication extends BaseApplication {
   _registerFragments() {
     super._registerFragments();
-    this.fragmentDictionary.register(
+    this.fragments.register(
       dbServiceFragment,
       fileServicerFragment,
       stdinServiceFragment,

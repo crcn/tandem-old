@@ -12,7 +12,7 @@ class ToolsComponent extends React.Component {
           this
             .props
             .app
-            .fragmentDictionary
+            .fragments
             .queryAll('preview/tools/**')
             .filter((fragment) => !!fragment.icon).map((fragment) => <ToolComponent {...this.props} fragment={fragment} key={fragment.ns} />)
         }

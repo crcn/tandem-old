@@ -4,7 +4,7 @@ import observable from 'common/object/mixins/observable';
 import { InitializeEvent, LoadEvent } from './events';
 import { ParallelBus } from 'mesh';
 import { fragment as consoleLogFragment } from 'common/logger/services/console-output';
-import FragmentDictionary from 'common/fragments/dictionary';
+import FragmentCollection from 'common/fragments/collection';
 import loggable from 'common/logger/mixins/loggable';
 
 @observable
@@ -21,7 +21,7 @@ export default class BaseApplication extends CoreObject {
     }
 
     // contains most dependencies for the application.
-    this.fragmentDictionary = FragmentDictionary.create();
+    this.fragments = FragmentCollection.create();
 
     // acts on events dispatched by the central bus
     this.actors = Collection.create();
@@ -59,7 +59,7 @@ export default class BaseApplication extends CoreObject {
    */
 
   _registerFragments() {
-    this.fragmentDictionary.register(
+    this.fragments.register(
       consoleLogFragment,
       ...(this.fragments || [])
     );
@@ -69,7 +69,7 @@ export default class BaseApplication extends CoreObject {
    */
 
   _initializeActors() {
-    this.actors.push(...this.fragmentDictionary.queryAll('application/actors/**').map((fragment) => (
+    this.actors.push(...this.fragments.queryAll('application/actors/**').map((fragment) => (
       fragment.create({
         app    : this,
         bus    : this.bus,

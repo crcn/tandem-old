@@ -55,8 +55,8 @@ describe(__filename + '#', function () {
 
     }
 
-    app.fragmentDictionary.register(FactoryFragment.create({ ns: 'selectorCollection/display', factory: DisplayCollection }));
-    app.fragmentDictionary.register(FactoryFragment.create({ ns: 'selectorCollection/other', factory: OtherCollection }));
+    app.fragments.register(FactoryFragment.create({ ns: 'selectorCollection/display', factory: DisplayCollection }));
+    app.fragments.register(FactoryFragment.create({ ns: 'selectorCollection/other', factory: OtherCollection }));
 
     app.bus.execute(ToggleSelectEvent.create({ type: 'display' }));
     expect(app.selection).to.be.an(DisplayCollection);

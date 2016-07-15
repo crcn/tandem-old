@@ -19,7 +19,7 @@ class ImportEntityController extends CoreObject {
       SfnFile.create({
         ...data,
         bus: this.bus,
-        fragmentDictionary: this.fragmentDictionary,
+        fragments: this.fragments,
       })
     ));
 

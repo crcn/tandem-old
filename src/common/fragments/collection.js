@@ -1,13 +1,13 @@
 import assert from 'assert';
 import create from 'common/utils/class/create';
 import flatten from 'lodash/array/flattenDeep';
+import Collection from 'common/object/collection';
 
-export default class FragmentDictionary {
+export default class FragmentCollection extends Collection {
 
   constructor(properties = {}) {
-    this._fragments            = [];
+    super(properties);
     this._fragmentsByNamespace = {};
-    Object.assign(this, properties);
   }
 
   query(ns) {
@@ -19,14 +19,14 @@ export default class FragmentDictionary {
   }
 
   createChild() {
-    var child = FragmentDictionary.create();
+    var child = FragmentCollection.create();
     child.register(this.queryAll('/**'));
     return child;
   }
 
   register(...fragments) {
     fragments = flatten(fragments);
-    this._fragments.push(...fragments);
+    this.push(...fragments);
 
     for (const fragment of fragments) {
 
