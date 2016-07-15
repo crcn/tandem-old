@@ -91,12 +91,12 @@ fs.readdirSync('node_modules')
 module.exports = [
   createConfig({
     entry: {
-      'browser' : './src/browser/entry.js'
+      'front-end' : './src/front-end/entry.js'
     }
   }),
   createConfig({
     entry: {
-      'server' : './src/server/entry.js'
+      'back-end' : './src/back-end/entry.js'
     },
     target: 'node',
     output: {

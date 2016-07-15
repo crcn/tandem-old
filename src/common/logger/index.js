@@ -3,16 +3,11 @@ import * as LogLevel from './levels';
 import { create } from 'common/utils/class';
 import { sprintf } from 'sprintf';
 import { LogEvent } from './events';
-import { ApplicationFragment } from 'common/application/fragments';
 
-class Logger {
+export default class Logger {
 
   constructor(properties) {
     Object.assign(this, properties);
-
-    if (!this.level) {
-      this.level = LogLevel.ALL;
-    }
 
     if (!this.prefix) {
       this.prefix = '';
@@ -49,29 +44,16 @@ class Logger {
   }
 
   _log(level, text, ...params) {
+
     var message = sprintf(`${this.prefix}${text}`, ...params.map(function (param) {
       if (typeof param === 'object') {
         param = JSON.stringify(param, null, 2);
       }
       return param;
     }));
-    if (this.level & level) {
-      this.bus.execute(LogEvent.create(level, message));
-    }
+
+    this.bus.execute(LogEvent.create(level, message));
   }
 
   static create = create;
-}
-
-export const applicationFragment = ApplicationFragment.create({
-  ns: 'application/logger',
-  initialize: createAppLogger,
-});
-
-function createAppLogger(app) {
-  app.logger = Logger.create({ bus: app.bus, ...(app.config.logger || {}) });
-
-  for (const loggerFragment of app.fragmentDictionary.queryAll('logger/**')) {
-    loggerFragment.create(app);
-  }
 }

@@ -12,6 +12,4 @@ window.onload = async function () {
   });
 
   await app.initialize();
-
-  app.logger.info('initialized');
 };

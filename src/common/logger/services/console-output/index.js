@@ -1,6 +1,6 @@
+import { BaseService } from 'common/services';
 import { FactoryFragment } from 'common/fragments';
-import { TypeCallbackBus } from 'common/mesh';
-import { LOG } from 'common/logger/events';
+
 import {
   VERBOSE as VERBOSE_LEVEL,
   INFO as INFO_LEVEL,
@@ -9,13 +9,8 @@ import {
 } from 'common/logger/levels';
 import chalk from 'chalk';
 
-export const fragment = FactoryFragment.create({ ns: 'logger/console', factory: { create } });
-
-function create(app) {
-
-  app.busses.push(TypeCallbackBus.create(LOG, log));
-
-  function log(event) {
+class ConsoleService extends BaseService {
+  log(event) {
     var logFn = {
       [VERBOSE_LEVEL]: console.log.bind(console),
       [INFO_LEVEL]: console.info.bind(console),
@@ -31,3 +26,8 @@ function create(app) {
     }[event.level]].bold(':'), event.message);
   }
 }
+
+export const fragment = FactoryFragment.create({
+  ns: 'application/actors/console',
+  factory: ConsoleService
+});

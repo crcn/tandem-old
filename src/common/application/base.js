@@ -4,28 +4,37 @@ import observable from 'common/object/mixins/observable';
 import { InitializeEvent, LoadEvent } from './events';
 import { applicationFragment as loggerFragment } from 'common/logger';
 import { ParallelBus } from 'mesh';
-import { consoleLogFragment } from 'common/logger/fragments';
+import { consoleLogFragment } from 'common/logger/services';
 import FragmentDictionary from 'common/fragments/dictionary';
-import { APPLICATION_NS } from './fragments';
+import Logger from 'common/logger';
+import loggable from 'common/logger/mixins/loggable';
 
 @observable
+@loggable
 export default class BaseApplication extends CoreObject {
 
   constructor(properties) {
     super(properties);
 
+    // the configuration of the application
+    // which can by used by other fragments
     if (!this.config) {
       this.config = {};
     }
 
-    // the bus is the central communication hub for the rest
-    // of the application
-    this.busses             = Collection.create();
-    this.bus                = ParallelBus.create(this.busses);
+    // contains most dependencies for the application.
     this.fragmentDictionary = FragmentDictionary.create();
 
+    // acts on events dispatched by the central bus
+    this.actors = Collection.create();
+
+    // the central bus which dispatches all actions & events
+    // to all actors of the applicaton
+    this.bus = ParallelBus.create(this.actors);
+
+    // register all parts of the application here
     this._registerFragments();
-    this._initializeFragments();
+    this._initializeActors();
   }
 
   /**
@@ -51,10 +60,22 @@ export default class BaseApplication extends CoreObject {
 
   _registerFragments() {
     this.fragmentDictionary.register(
-      loggerFragment,
       consoleLogFragment,
       ...(this.fragments || [])
     );
+  }
+
+  /**
+   */
+
+  _initializeActors() {
+    this.actors.push(...this.fragmentDictionary.queryAll('application/actors/**').map((fragment) => (
+      fragment.create({
+        app    : this,
+        bus    : this.bus,
+        config : this.config
+      })
+    )));
   }
 
   /**
@@ -68,15 +89,6 @@ export default class BaseApplication extends CoreObject {
    */
 
   didInitialize() {
-    // OVERRIDE ME
-  }
-
-  /**
-   */
-
-  _initializeFragments() {
-    for (const fragment of this.fragmentDictionary.queryAll(`${APPLICATION_NS}/**`)) {
-      fragment.initialize(this);
-    }
+    this.logger.info('initialized');
   }
 }

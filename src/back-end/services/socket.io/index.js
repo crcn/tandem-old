@@ -11,17 +11,6 @@ export const fragment = ApplicationFragment.create({
 });
 
 function create(app) {
-  app.busses.push(
-    AcceptBus.create(sift({ type: LOAD }), WrapBus.create(load)),
-    AcceptBus.create(sift({ type: INITIALIZE }), WrapBus.create(initialize))
-  );
-
-  const port   = app.config.socketio.port;
-  const logger = app.logger.createChild({ prefix: 'socket.io ' });
-
-  function load() {
-    logger.verbose('checking for existing socket.io instances');
-  }
 
   function initialize() {
     logger.info('server on port %d', port);
