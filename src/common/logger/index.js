@@ -2,7 +2,6 @@ import * as LogLevel from './levels';
 
 import { create } from 'common/utils/class';
 import { sprintf } from 'sprintf';
-import { LogEvent } from './events';
 
 export default class Logger {
 

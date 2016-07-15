@@ -1,5 +1,5 @@
 import { BaseActor } from 'common/actors';
-import { WrapBus, EmptyResponse } from 'mesh';
+import { WrapBus, EmptyResponse, ParallelBus } from 'mesh';
 
 export default class Service extends BaseActor {
 
@@ -31,7 +31,19 @@ export default class Service extends BaseActor {
     return EmptyResponse.create();
   }
 
-  setActor(actionType, actor) {
-    this.target[actionType] = actor;
+  addActor(actionType, actor) {
+
+    var existingActor;
+
+    if (existingActor = this.target[actionType]) {
+      if (existingActor._busses) {
+        existingActor._busses.push(actor);
+      } else {
+        this.target[actionType] = ParallelBus.create([existingActor, actor]);
+      }
+    } else {
+      this.target[actionType] = actor;
+    }
+
   }
 }

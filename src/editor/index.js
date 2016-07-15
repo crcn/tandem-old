@@ -22,6 +22,7 @@ import { fragment as sfnFileModelFragment } from './models/sfn-file';
 
 // services
 import { fragment as projectServiceFragment } from './services/project';
+import { fragment as toolServiceFragment } from './services/tool';
 
 export const fragment = [
 
@@ -45,5 +46,6 @@ export const fragment = [
   sfnFileModelFragment,
 
   // services
-  projectServiceFragment
+  projectServiceFragment,
+  toolServiceFragment
 ];

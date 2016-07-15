@@ -23,15 +23,16 @@ export default class FileService extends Service {
   @isPublic
   @document('opens a file')
   openFile(action) {
-    this.logger.info(`opening ${action.src}`);
+    this.logger.info(`opening ${action.path}`);
 
     if (action.watch) {
       this._watch(action);
     }
 
     var data = {
-      path    : action.src,
-      content : fs.readFileSync(action.src, 'utf8')
+      path    : action.path,
+      ext     : action.path.split('.').pop(),
+      content : fs.readFileSync(action.path, 'utf8')
     };
 
     return this.bus.execute({
@@ -40,6 +41,13 @@ export default class FileService extends Service {
       query: { path: data.path },
       data: data
     });
+  }
+
+  /**
+   */
+
+  async openFiles(action) {
+    // TODO
   }
 
   /**
@@ -61,8 +69,8 @@ export default class FileService extends Service {
    */
 
   _watch(action) {
-    if (this._watchers[action.src]) return;
-    this._watchers[action.src] = gaze(action.src, (err, watcher) => {
+    if (this._watchers[action.path]) return;
+    this._watchers[action.path] = gaze(action.path, (err, watcher) => {
       watcher.on('all', this.openFile.bind(this, action));
     });
   }

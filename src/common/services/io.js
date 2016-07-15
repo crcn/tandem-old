@@ -1,10 +1,11 @@
 
 import loggable from 'common/logger/mixins/loggable';
 import isPublic from 'common/actors/decorators/public';
+import document from 'common/actors/decorators/document';
 import SocketIOBus from 'mesh-socket-io-bus';
+
 import { Service } from 'common/services';
 import { ParallelBus } from 'mesh';
-import document from 'common/actors/decorators/document';
 
 @loggable
 export default class IOService extends Service {
@@ -22,7 +23,7 @@ export default class IOService extends Service {
     for (const actor of this.app.actors) {
       for (const actionType of (actor.__publicProperties || [])) {
         this.logger.info(`exposing ${actor.constructor.name}.${actionType}`);
-        this.publicService.setActor(actionType, actor);
+        this.publicService.addActor(actionType, actor);
       }
     }
 
@@ -86,7 +87,7 @@ export default class IOService extends Service {
     // so that we limit the number of outbound actions
     for (const remoteActionType of await remoteBus.execute({ type: 'getPublicActionTypes' }).readAll()) {
       this.logger.verbose('adding remote action "%s"', remoteActionType);
-      remoteService.setActor(remoteActionType, remoteBus);
+      remoteService.addActor(remoteActionType, remoteBus);
     }
 
     connection.once('disconnect', () => {

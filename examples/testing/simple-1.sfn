@@ -1,1 +1,8 @@
-hello!!
+<template id='tello'>
+  <div style='background-color:blue; color:white; padding: 10px; display: inline-block;'>
+    message: {{text}}
+  </div>
+</template>
+
+<tello text='hello' />
+<tello text='hello' />
