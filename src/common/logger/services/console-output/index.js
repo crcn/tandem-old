@@ -11,19 +11,26 @@ import chalk from 'chalk';
 
 class ConsoleService extends BaseService {
   log(event) {
-    var logFn = {
+
+    var log = {
       [VERBOSE_LEVEL]: console.log.bind(console),
       [INFO_LEVEL]: console.info.bind(console),
       [WARN_LEVEL]: console.warn.bind(console),
       [ERROR_LEVEL]: console.error.bind(console),
     }[event.level];
 
-    logFn('%s %s', chalk[{
+    var color = {
       [VERBOSE_LEVEL]: 'grey',
-      [INFO_LEVEL]: 'cyan',
-      [WARN_LEVEL]: 'yellow',
+      [INFO_LEVEL]: 'blue',
+      [WARN_LEVEL]: 'orange',
       [ERROR_LEVEL]: 'red',
-    }[event.level]].bold(':'), event.message);
+    }[event.level];
+
+    if (typeof window !== 'undefined') {
+      log('%c: %c%s', `color: ${color}`, 'color: black', event.message);
+    } else {
+      log('%s %s', chalk[color].bold(':'), event.message);
+    }
   }
 }
 

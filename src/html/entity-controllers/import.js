@@ -1,7 +1,7 @@
 import CoreObject from 'common/object';
 import path from 'path';
 import { FactoryFragment } from 'common/fragments';
-import SfnFile from 'browser/fragments/sfn-file-handler/model';
+// import SfnFile from 'browser/fragments/sfn-file-handler/model';
 
 class ImportEntityController extends CoreObject {
   async execute() {

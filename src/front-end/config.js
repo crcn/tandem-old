@@ -1,5 +1,5 @@
-import serverConfig from 'server/config';
+import backendConfig from 'back-end/config';
 
 export default {
-  socketio: serverConfig.socketio,
+  socketio: backendConfig.socketio,
 };
