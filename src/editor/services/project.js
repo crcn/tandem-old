@@ -8,11 +8,13 @@ import { FactoryFragment } from 'common/fragments';
 export default class ProjectService extends Service {
 
   async initialize() {
-    var files = await this.bus.execute({
+    const files = await this.bus.execute({
       type: 'find',
       collectionName: 'files',
       multi: true
     }).readAll();
+
+    this.logger.info('loaded %d files', files.length);
 
     this.app.setProperties({
       openFiles: files

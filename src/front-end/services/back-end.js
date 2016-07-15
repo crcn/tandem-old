@@ -13,12 +13,9 @@ export default class BackEndService extends IOService {
 
   async load() {
     await super.load();
-    await new Promise((resolve) => {
-      this.logger.info('starting socket.io client on port %d', this.config.socketio.port);
-      this._client = createSocketIOClient(`//${window.location.hostname}:${this.config.socketio.port}`);
-      this.addConnection(this._client);
-      this._client.on('connect', resolve);
-    });
+    this.logger.info('starting socket.io client on port %d', this.config.socketio.port);
+    this._client = createSocketIOClient(`//${window.location.hostname}:${this.config.socketio.port}`);
+    await this.addConnection(this._client);
   }
 }
 

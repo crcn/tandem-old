@@ -1,5 +1,4 @@
 import BaseApplication from 'common/application/base';
-import * as fragments from './fragments';
 
 import { fragment as htmlFragment } from 'html';
 import { fragment as editorFragment } from 'editor';
@@ -14,7 +13,6 @@ export default class BrowserApplication extends BaseApplication {
     super._registerFragments();
 
     this.fragmentDictionary.register(
-      ...Object.values(fragments),
       htmlFragment,
       editorFragment,
       backEndServiceFragment,

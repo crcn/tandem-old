@@ -48,8 +48,10 @@ export default class BaseApplication extends CoreObject {
     this._initialized = true;
 
     this.willInitialize();
+    this.setProperties({ loading: true });
     await this.bus.execute(LoadEvent.create());
     await this.bus.execute(InitializeEvent.create());
+    this.setProperties({ loading: false });
     this.didInitialize();
   }
 
