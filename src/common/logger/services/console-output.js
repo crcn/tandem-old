@@ -1,4 +1,4 @@
-import { BaseService } from 'common/services';
+import { Service } from 'common/services';
 import { FactoryFragment } from 'common/fragments';
 
 import {
@@ -9,7 +9,7 @@ import {
 } from 'common/logger/levels';
 import chalk from 'chalk';
 
-class ConsoleService extends BaseService {
+class ConsoleService extends Service {
   log(event) {
 
     var log = {
@@ -36,5 +36,5 @@ class ConsoleService extends BaseService {
 
 export const fragment = FactoryFragment.create({
   ns: 'application/actors/console',
-  factory: ConsoleService
+  factory: ConsoleService,
 });

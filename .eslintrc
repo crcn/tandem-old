@@ -10,6 +10,7 @@
     "import/no-unresolved": 0,
     "no-underscore-dangle": 0,
     "new-cap": 0,
+    "comma-dangle": 0,
     "max-len": [1, 200],
     "padded-blocks": 0,
     "no-new-func": 0,

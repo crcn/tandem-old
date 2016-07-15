@@ -1,6 +1,6 @@
 import { ApplicationFragment } from 'common/application/fragments';
 import { INITIALIZE } from 'common/application/events';
-import RouterBus from 'common/mesh/router-bus';
+import { RouterBus } from 'common/busses';
 import OpenFilesCollection from './open-files-collection';
 import sift from 'sift';
 

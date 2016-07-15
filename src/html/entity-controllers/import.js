@@ -3,6 +3,10 @@ import path from 'path';
 import { FactoryFragment } from 'common/fragments';
 // import SfnFile from 'browser/fragments/sfn-file-handler/model';
 
+class SfnFile {
+
+}
+
 class ImportEntityController extends CoreObject {
   async execute() {
     var files = await this.bus.execute({

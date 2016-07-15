@@ -37,5 +37,5 @@ export const fragment = [
   templateEntityControllerFragment,
 
   // selection
-  displaySelectionCollectionFragment,
+  displaySelectionCollectionFragment
 ];

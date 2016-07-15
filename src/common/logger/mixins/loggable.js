@@ -1,18 +1,18 @@
 import Logger from 'common/logger';
 import { NoopBus } from 'mesh';
 
-var noopBus = NoopBus.create();
+const noopBus = NoopBus.create();
 
-export default function(clazz) {
+export default (clazz) => {
 
   Object.defineProperty(clazz.prototype, 'logger', {
     get() {
       return this._logger || (this._logger = Logger.create({
         bus: this.bus || noopBus,
-        prefix: `${clazz.name}: `
+        prefix: `${this.constructor.name}: `,
       }));
-    }
-  })
+    },
+  });
 
   return clazz;
-}
+};

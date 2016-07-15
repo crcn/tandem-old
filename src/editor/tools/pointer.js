@@ -5,7 +5,7 @@ import {
 import { SelectEvent } from 'editor/selection/events';
 import { Fragment } from 'common/fragments';
 import { ApplicationFragment } from 'common/application/fragments';
-import { TypeCallbackBus, RouterBus } from 'common/mesh';
+import { TypeCallbackBus, RouterBus } from 'common/busses';
 import { INITIALIZE } from 'common/application/events';
 import CoreObject from 'common/object';
 

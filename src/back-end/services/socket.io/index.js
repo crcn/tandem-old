@@ -1,7 +1,6 @@
 import { ApplicationFragment } from 'common/application/fragments';
 import { INITIALIZE, LOAD } from 'common/application/events';
 import { AcceptBus, WrapBus, AttachDefaultsBus, ParallelBus } from 'mesh';
-import RemoteBus from 'mesh-remote-bus';
 import sift from 'sift';
 import createServer from 'socket.io';
 

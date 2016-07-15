@@ -1,5 +1,5 @@
 import { ApplicationFragment } from 'common/application/fragments';
-import { TypeCallbackBus } from 'common/mesh';
+import { TypeCallbackBus } from 'common/busses';
 import { WrapBus } from 'mesh';
 
 export const fragment = ApplicationFragment.create({

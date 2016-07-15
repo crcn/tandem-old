@@ -1,15 +1,1 @@
-
-<template id='message'>
-  <div style='margin-top:10px; background-color: blue; position: relative; padding: 10px; color: white; display: block;'>
-    <div style='background-color:red; padding:10px;'>
-      {{text}}!!!
-    </div>
-  </div>
-</template>
-
-<repeat each="100">
-</repeat>
-
-
-<message text='some message' />
-<message text='something else' />
+hello!!

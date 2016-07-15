@@ -1,19 +1,27 @@
-import { FactoryFragment } from 'common/fragments';
-import { BaseActor } from 'common/actors';
+import sift from 'sift';
 import ReactDOM from 'react-dom';
-import React from 'react';
 import loggable from 'common/logger/mixins/loggable';
+import filterAction from 'common/actors/decorators/filter-action';
+
+import { BaseActor } from 'common/actors';
+import { FactoryFragment } from 'common/fragments';
 
 @loggable
 export default class RootComponentRenderer extends BaseActor {
 
-  execute(action) {
+  @filterAction(sift({
+    type: {
+      $ne: /log/,
+    },
+  }))
+  execute() {
     if (this._rendering) return;
     this._rendering = true;
     setTimeout(this.render, 10);
   }
 
   render = () => {
+    this.logger.verbose('render');
     this._rendering = false;
     var app = this.app;
 
@@ -27,6 +35,6 @@ export default class RootComponentRenderer extends BaseActor {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'application/actors/root-component-renderer',
-  factory: RootComponentRenderer
-})
+  ns      : 'application/actors/root-component-renderer',
+  factory : RootComponentRenderer,
+});

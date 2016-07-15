@@ -45,12 +45,17 @@ export default class Logger {
 
   _log(level, text, ...params) {
 
-    var message = sprintf(`${this.prefix}${text}`, ...params.map(function (param) {
-      if (typeof param === 'object') {
-        param = JSON.stringify(param, null, 2);
+    function stringify(value) {
+      if (typeof value === 'object') {
+        value = JSON.stringify(value, null, 2);
       }
-      return param;
-    }));
+      return value;
+    }
+
+    var message = sprintf(
+      `${this.prefix}${stringify(text)}`,
+      ...params.map(stringify)
+    );
 
     this.bus.execute(LogEvent.create(level, message));
   }

@@ -5,7 +5,7 @@ export default class SfnFile extends BaseModel {
 
 }
 
-export default FactoryFragment.create({
+export const fragment = FactoryFragment.create({
   ns: 'models/sfn-file',
-  factory: SfnFile
+  factory: SfnFile,
 });

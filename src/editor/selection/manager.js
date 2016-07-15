@@ -1,5 +1,5 @@
 import Selection from 'editor/selection/collection';
-import { TypeCallbackBus } from 'common/mesh';
+import { TypeCallbackBus } from 'common/busses';
 import { ApplicationFragment } from 'common/application/fragments';
 import { SELECT } from 'editor/selection/events';
 

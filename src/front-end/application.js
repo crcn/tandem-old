@@ -7,6 +7,8 @@ import { fragment as editorFragment } from 'editor';
 import { fragment as rootComponentRendererFragment } from './actors/root-component-renderer';
 import { fragment as backEndActorFragment } from './actors/back-end';
 
+
+
 export default class BrowserApplication extends BaseApplication {
 
   _registerFragments() {
@@ -14,9 +16,10 @@ export default class BrowserApplication extends BaseApplication {
 
     this.fragmentDictionary.register(
       ...Object.values(fragments),
+      htmlFragment,
       editorFragment,
-      rootComponentRendererFragment,
-      backEndActorFragment
+      backEndActorFragment,
+      rootComponentRendererFragment
     );
   }
 }

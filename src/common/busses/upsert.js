@@ -8,21 +8,21 @@ export default {
         return Response.create(async function(writable) {
 
           var chunk = await bus.execute({
-            type           : 'load',
+            type           : 'find',
             query          : action.query,
-            collectionName : action.collectionName
+            collectionName : action.collectionName,
           }).read();
 
           writable.write((await bus.execute({
             type           : !chunk.done ? 'update' : 'insert',
             data           : action.data,
             query          : action.query,
-            collectionName : action.collectionName
+            collectionName : action.collectionName,
           }).read()).value);
 
           writable.close();
         });
-      }
+      },
     }, bus);
-  }
-}
+  },
+};

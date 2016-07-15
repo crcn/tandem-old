@@ -1,20 +1,26 @@
-import { FactoryFragment } from 'common/fragments';
-import { BaseService } from 'common/services';
-import { ParallelBus } from 'mesh';
+
 import loggable from 'common/logger/mixins/loggable';
+import isPublic from 'common/actors/decorators/public';
+import SocketIOBus from 'mesh-socket-io-bus';
 import createSocketIOServer from 'socket.io';
-import RemoteBus from 'mesh-remote-bus';
-import sift from 'sift';
+import { Service } from 'common/services';
+import { FactoryFragment } from 'common/fragments';
+import { ParallelBus } from 'mesh';
 
 @loggable
-export default class FrontEndService extends BaseService {
+export default class FrontEndService extends Service {
 
-  load(action) {
+  load() {
+    this.publicService = Service.create({
+      target: {},
+    });
 
-    // these are the actors which are accessible remotely
-    this.publicActors = sift({ public: true }, this.app.actors);
-
-    this.publicBus = ParallelBus.create(this.publicActors);
+    for (const actor of this.app.actors) {
+      for (const actionType of (actor.publicProperties || [])) {
+        this.logger.info(`exposing ${actor.constructor.name}.${actionType}`);
+        this.publicService.setActor(actionType, actor);
+      }
+    }
 
     // these are the remote actors which invoke actions against
     // the server
@@ -30,6 +36,22 @@ export default class FrontEndService extends BaseService {
   }
 
   /**
+   */
+
+  @isPublic
+  ping() {
+    return 'pong';
+  }
+
+  /**
+   */
+
+  @isPublic
+  getPublicActionTypes() {
+    return Object.keys(this.publicService.target);
+  }
+
+  /**
    * called when a remote socket.io client connects
    * with the backend
    */
@@ -37,10 +59,9 @@ export default class FrontEndService extends BaseService {
   onConnection = (connection) => {
     this.logger.info('client connected');
 
-    var remoteBus = RemoteBus.create({
-      addListener: connection.on.bind(connection, 'message'),
-      send: connection.emit.bind(connection, 'message')
-    }, this.publicBus);
+    var remoteBus = SocketIOBus.create({
+      client: connection,
+    }, this.publicService);
 
     connection.once('close', () => {
       this.logger.info('client disconnected');
@@ -54,5 +75,5 @@ export default class FrontEndService extends BaseService {
 
 export const fragment = FactoryFragment.create({
   ns: 'application/actors/front-end',
-  factory: FrontEndService
+  factory: FrontEndService,
 });

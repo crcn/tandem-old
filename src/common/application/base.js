@@ -2,11 +2,9 @@ import CoreObject from 'common/object';
 import Collection from 'common/object/collection';
 import observable from 'common/object/mixins/observable';
 import { InitializeEvent, LoadEvent } from './events';
-import { applicationFragment as loggerFragment } from 'common/logger';
 import { ParallelBus } from 'mesh';
-import { consoleLogFragment } from 'common/logger/services';
+import { fragment as consoleLogFragment } from 'common/logger/services/console-output';
 import FragmentDictionary from 'common/fragments/dictionary';
-import Logger from 'common/logger';
 import loggable from 'common/logger/mixins/loggable';
 
 @observable
@@ -73,7 +71,7 @@ export default class BaseApplication extends CoreObject {
       fragment.create({
         app    : this,
         bus    : this.bus,
-        config : this.config
+        config : this.config,
       })
     )));
   }

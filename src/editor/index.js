@@ -17,6 +17,9 @@ import { fragment as textToolFragment } from './tools/text';
 import { fragment as pointerToolFragment } from './tools/pointer';
 import { fragment as toolManagerFragment } from './tools/manager';
 
+// models
+import { fragment as sfnFileModelFragment } from './models/sfn-file';
+
 export const fragment = [
 
   rootComponentFragment,
@@ -31,4 +34,6 @@ export const fragment = [
   textToolFragment,
   pointerToolFragment,
   toolManagerFragment,
+
+  sfnFileModelFragment
 ];
