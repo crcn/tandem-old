@@ -1,5 +1,5 @@
 import loggable from 'common/logger/mixins/loggable';
-import IOService from 'common/services/io-service';
+import IOService from 'common/services/io';
 import createSocketIOClient from 'socket.io-client';
 
 import { FactoryFragment } from 'common/fragments';
@@ -19,7 +19,6 @@ export default class BackEndService extends IOService {
       this.addConnection(this._client);
       this._client.on('connect', resolve);
     });
-
   }
 }
 

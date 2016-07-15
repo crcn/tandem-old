@@ -7,7 +7,6 @@ import { titleize } from 'inflection';
 import { FactoryFragment } from 'common/fragments';
 import document from 'common/actors/decorators/document';
 
-
 @loggable
 export default class DBService extends Service {
 

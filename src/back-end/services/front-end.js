@@ -1,5 +1,5 @@
 
-import IOService from 'common/services/io-service';
+import IOService from 'common/services/io';
 import createSocketIOServer from 'socket.io';
 import { FactoryFragment } from 'common/fragments';
 

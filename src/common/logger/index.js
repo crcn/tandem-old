@@ -57,7 +57,12 @@ export default class Logger {
       ...params.map(stringify)
     );
 
-    this.bus.execute(LogEvent.create(level, message));
+    this.bus.execute({
+      type: 'log',
+      level: level,
+      message: message,
+      filterable: this.filterable
+    });
   }
 
   static create = create;

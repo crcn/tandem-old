@@ -29,12 +29,9 @@ export default class IOService extends Service {
     // remote actors which take actions from the server
     this._remoteActors = [];
 
-    // the remote bus which redirecs actions to the remote actors
-    this.remoteBus = ParallelBus.create(this._remoteActors);
-
     // add the remote actors to the application so that they
     // receive actions from other parts of the application
-    this.app.actors.push(this.remoteBus);
+    this.app.actors.push(ParallelBus.create(this._remoteActors));
   }
 
   /**
@@ -91,7 +88,6 @@ export default class IOService extends Service {
       this.logger.verbose('adding remote action "%s"', remoteActionType);
       remoteService.setActor(remoteActionType, remoteBus);
     }
-
 
     connection.once('disconnect', () => {
       this.logger.info('client disconnected');

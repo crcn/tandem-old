@@ -17,6 +17,7 @@ export default class StdinService extends Service {
       output: process.stdout
     });
     this._readInput();
+    this.logger.filterable = false;
     this.logger.prefix = '';
   }
 
