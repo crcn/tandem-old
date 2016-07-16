@@ -77,6 +77,6 @@ export default class ProjectService extends Service {
 }
 
 export const fragment = FactoryFragment.create({
-  ns      : 'application/actors/project',
+  ns      : 'application/services/project',
   factory : ProjectService
 });

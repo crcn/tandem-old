@@ -20,6 +20,6 @@ export default class UpsertService extends Service {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'application/actors/upsert',
+  ns: 'application/services/upsert',
   factory: UpsertService
 });

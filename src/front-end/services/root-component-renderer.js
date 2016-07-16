@@ -34,6 +34,6 @@ export default class RootComponentRenderer extends BaseActor {
 }
 
 export const fragment = FactoryFragment.create({
-  ns      : 'application/actors/root-component-renderer',
+  ns      : 'application/services/root-component-renderer',
   factory : RootComponentRenderer
 });

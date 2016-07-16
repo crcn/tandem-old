@@ -39,6 +39,6 @@ export default class ToolService extends Service {
 }
 
 export const fragment = FactoryFragment.create({
-  ns      : 'application/actors/tool',
+  ns      : 'application/services/tool',
   factory : ToolService
 });

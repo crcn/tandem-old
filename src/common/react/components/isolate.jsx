@@ -14,6 +14,8 @@ export default class IsolateComponent extends React.Component {
 
     this.containerBody.appendChild(this._mountElement = document.createElement('div'));
     this._render();
+
+    this._addListeners();
   }
 
   componentDidUpdate() {
@@ -30,6 +32,39 @@ export default class IsolateComponent extends React.Component {
 
   _render() {
     ReactDOM.render(<span>{this.props.children}</span>, this._mountElement);
+  }
+
+  _addListeners() {
+    var el = this.containerBody;
+    var container = this.refs.container; 
+
+    // TODO - this should be in its own util function
+    function bubbleEvent(event) {
+      var clonedEvent = new Event(event.type, {
+        bubbles: true,
+        cancelable: true
+      });
+
+      for (var key in event) {
+        var value = event[key];
+        if (typeof value !== 'function') {
+
+          // bypass read-only issues here
+          try {
+            clonedEvent[key] = value;
+          } catch (e) { }
+        }
+      } 
+
+      container.dispatchEvent(clonedEvent);
+      
+      if (clonedEvent.defaultPrevented) {
+        event.preventDefault();
+      }
+    }
+    el.addEventListener('keypress', bubbleEvent);
+    el.addEventListener('keydown', bubbleEvent);
+    el.addEventListener('keyup', bubbleEvent);
   }
 
   render() {

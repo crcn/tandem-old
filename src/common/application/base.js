@@ -71,7 +71,7 @@ export default class BaseApplication extends CoreObject {
    */
 
   _initializeActors() {
-    this.actors.push(...this.fragments.queryAll('application/actors/**').map((fragment) => (
+    this.actors.push(...this.fragments.queryAll('application/services/**').map((fragment) => (
       fragment.create({
         app    : this,
         bus    : this.bus,

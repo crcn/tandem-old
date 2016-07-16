@@ -74,6 +74,6 @@ export default class DBService extends Service {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'application/actors/db',
+  ns: 'application/services/db',
   factory: DBService
 });

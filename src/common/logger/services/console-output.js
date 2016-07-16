@@ -46,6 +46,6 @@ class ConsoleService extends Service {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'application/actors/console',
+  ns: 'application/services/console',
   factory: ConsoleService,
 });

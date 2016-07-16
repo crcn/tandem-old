@@ -23,6 +23,10 @@ import { fragment as sfnFileModelFragment } from './models/sfn-file';
 import { fragment as toolServiceFragment } from './services/tool';
 import { fragment as projectServiceFragment } from './services/project';
 import { fragment as selectorServiceFragment } from './services/selector';
+import { fragment as keyBindingServiceFragment } from './services/key-binding';
+
+// key bindings
+import { fragment as keyBindingsFragment } from './key-bindings';
 
 export const fragment = [
 
@@ -44,8 +48,12 @@ export const fragment = [
   // models
   sfnFileModelFragment,
 
+  // key bindings
+  keyBindingsFragment,
+
   // services
   toolServiceFragment,
   projectServiceFragment,
-  selectorServiceFragment
+  selectorServiceFragment,
+  keyBindingServiceFragment
 ];

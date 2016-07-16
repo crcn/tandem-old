@@ -70,6 +70,6 @@ export default class FileService extends Service {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'application/actors/file',
+  ns: 'application/services/file',
   factory: FileService
 });

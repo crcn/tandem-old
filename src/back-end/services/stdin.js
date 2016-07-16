@@ -67,6 +67,6 @@ export default class StdinService extends Service {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'application/actors/stdin',
+  ns: 'application/services/stdin',
   factory: StdinService
 });

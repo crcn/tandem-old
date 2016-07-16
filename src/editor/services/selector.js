@@ -52,6 +52,6 @@ export default class SelectorService extends Service {
 }
 
 export const fragment = FactoryFragment.create({
-  ns      : 'application/actors/selector',
+  ns      : 'application/services/selector',
   factory : SelectorService
 });

@@ -17,6 +17,6 @@ export default class FrontEndService extends IOService {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'application/actors/front-end',
+  ns: 'application/services/front-end',
   factory: FrontEndService,
 });
