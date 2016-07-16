@@ -15,14 +15,14 @@ export default class PreviewService extends Service {
     this.app.zoom = 1;
   }
 
-  zoomIn() {    
+  zoomIn() {
     this.zoom({ delta: ZOOM_INCREMENT });
   }
 
   zoom({ delta }) {
     this.app.setProperties({
       zoom: Math.max(
-        MIN_ZOOM_LEVEL, 
+        MIN_ZOOM_LEVEL,
         Math.min(
           MAX_ZOOM_LEVEL,
           (this.app.zoom || 1) + delta

@@ -5,7 +5,6 @@ import { STAGE_CANVAS_MOUSE_DOWN } from 'editor/events';
 import PreviewLayerComponent from './preview';
 import ToolsLayerComponent from './tools';
 import IsolateComponent  from 'common/react/components/isolate';
-import debounce from 'lodash/function/debounce';
 
 export default class EditorStageLayersComponent extends React.Component {
 
@@ -42,14 +41,14 @@ export default class EditorStageLayersComponent extends React.Component {
     this.onMouseMove(event);
     if (event.metaKey) {
       event.preventDefault();
-      this.props.bus.execute({ 
-        type: 'zoom', 
+      this.props.bus.execute({
+        type: 'zoom',
         delta: event.deltaY / 250
-      });  
+      });
     }
   }
 
-  onScroll = (event) => {
+  onScroll = () => {
     if (!this._hideTools()) {
       this.forceUpdate();
     }
@@ -59,7 +58,7 @@ export default class EditorStageLayersComponent extends React.Component {
     var paused = !!this._toolsHidden;
     if (this._toolsHidden) clearTimeout(this._toolsHidden);
     this._toolsHidden = setTimeout(this._showTools, 100);
-    return paused;    
+    return paused;
   }
 
   _showTools = () => {
@@ -72,7 +71,7 @@ export default class EditorStageLayersComponent extends React.Component {
     function calcPrev(value) {
       return Math.round((value / newZoom) * oldZoom);
     }
-    
+
     const isolateBody = this.refs.isolate.body;
 
     var newHeight  = isolateBody.scrollHeight;
@@ -102,7 +101,7 @@ export default class EditorStageLayersComponent extends React.Component {
     return (<IsolateComponent ref='isolate' onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className='m-editor-stage-isolate'>
       <div className='m-editor-stage-canvas' onMouseMove={this.onMouseMove} style={style} onMouseDown={this.onMouseDown.bind(this)}>
         <PreviewLayerComponent {...this.props} />
-        { this._toolsHidden ? void 0 : <ToolsLayerComponent {...this.props} /> }
+        {this._toolsHidden ? void 0 : <ToolsLayerComponent {...this.props} />}
       </div>
     </IsolateComponent>);
   }

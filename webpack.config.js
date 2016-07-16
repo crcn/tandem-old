@@ -48,6 +48,9 @@ function createConfig(options) {
         'process.env.TESTING': process.env.TESTING != void 0
       })
     ],
+    eslint: {
+      fix: true
+    },
     module: {
       loaders: [
         {
