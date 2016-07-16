@@ -9,9 +9,8 @@ export const fragment = [
   FactoryFragment.create({
     ns: 'key-bindings/zoom-in',
     factory: class ZoomInKeyBindingActor extends BaseActor {
-      key = ['meta+='];
+      key = 'meta+=';
       execute() {
-        console.log(this.app.zoom);
         this.app.setProperties({
           zoom: Math.min(MAX_ZOOM_LEVEL, (this.app.zoom || 0) + ZOOM_INCREMENT)
         });
@@ -21,29 +20,11 @@ export const fragment = [
   FactoryFragment.create({
     ns: 'key-bindings/zoom-out',
     factory: class ZoomOutKeyBindingActor extends BaseActor {
-      key = ['meta+-'];
+      key = 'meta+-';
       execute() {
         this.app.setProperties({
           zoom: Math.max(MIN_ZOOM_LEVEL, (this.app.zoom || 0) - ZOOM_INCREMENT)
         });
-      }
-    }
-  }),
-  FactoryFragment.create({
-    ns: 'key-bindings/paste',
-    factory: class PasteKeyBindingActor extends BaseActor {
-      key = ['meta+v'];
-      execute() {
-        console.log('paste');
-      }
-    }
-  }),
-  FactoryFragment.create({
-    ns: 'key-bindings/copy',
-    factory: class CopyKeyBindingActor extends BaseActor {
-      key = ['meta+c'];
-      execute() {
-        console.log('copy');
       }
     }
   })

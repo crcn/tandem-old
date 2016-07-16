@@ -17,12 +17,12 @@ export default class KeyBindingService extends Service {
   }
 
   _addKeyBinding(keyBinding) {
-    this.logger.verbose('binding key %s', keyBinding.key);
+    this.logger.verbose('add key %s', keyBinding.key);
     Mousetrap.bind(keyBinding.key, (event) => {
-      console.log('handle key binding');
+      this.logger.verbose('handle key %s', keyBinding.key);
       keyBinding.execute({
         key: keyBinding.key
-      })
+      });
       event.preventDefault();
     });
   }

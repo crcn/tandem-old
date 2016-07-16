@@ -47,13 +47,13 @@ export default class IsolateComponent extends React.Component {
 
       for (var key in event) {
         var value = event[key];
-        if (typeof value !== 'function') {
-
-          // bypass read-only issues here
-          try {
-            clonedEvent[key] = value;
-          } catch (e) { }
+        if (typeof value === 'function') {
+          value = value.bind(event);
         }
+        // bypass read-only issues here
+        try {
+          clonedEvent[key] = value;
+        } catch (e) { }
       } 
 
       container.dispatchEvent(clonedEvent);
@@ -63,6 +63,8 @@ export default class IsolateComponent extends React.Component {
       }
     }
     el.addEventListener('keypress', bubbleEvent);
+    el.addEventListener('copy', bubbleEvent);
+    el.addEventListener('paste', bubbleEvent);
     el.addEventListener('keydown', bubbleEvent);
     el.addEventListener('keyup', bubbleEvent);
   }
