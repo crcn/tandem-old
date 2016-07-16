@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "scripts/write-all-tests.sh; TESTING=1 karma start",
+    "test-watch": "WATCH=1 npm test",
     "start": "parallel-webpack . --watch",
     "front-end": "static public"
   },

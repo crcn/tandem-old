@@ -21,7 +21,6 @@ export default class RootComponentRenderer extends BaseActor {
   }
 
   render = () => {
-    this.logger.verbose('render');
     this._rendering = false;
     var app = this.app;
 

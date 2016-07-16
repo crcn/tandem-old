@@ -17,7 +17,7 @@
     },
     {
       "taskName": "test",
-      "args": ["run", "test"]
+      "args": ["run", "test-watch"]
     }
   ]
 }
