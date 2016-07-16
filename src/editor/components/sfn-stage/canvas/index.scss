@@ -1,9 +1,14 @@
+@import 'editor/scss/variables.scss';
+
 .m-editor-stage-isolate {
   position: relative;
   overflow: hidden;
   flex-grow: 1;
+  border: none;
+  border-top: 2px solid $color-blue-10;
+  border-bottom: 2px solid $color-blue-10;
 }
-
+ 
 .m-editor-stage-canvas {
   -webkit-user-select: none;
 }

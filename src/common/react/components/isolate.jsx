@@ -91,6 +91,6 @@ export default class IsolateComponent extends React.Component {
 
   render() {
     var style = this.props.style || {};
-    return <iframe ref='container' onScroll={this.props.onScroll} style={{ border: 0, ...style }} className={this.props.className} />;
+    return <iframe ref='container' onScroll={this.props.onScroll} className={this.props.className} />;
   }
 }

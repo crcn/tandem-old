@@ -3,6 +3,7 @@
 .s-text {
   &:before {
     content: 'T';
+    line-height: 0;
     font-family: 'YuMuncho';
   }
 }
@@ -16,6 +17,7 @@
 
 .s-cursor {
   &:before {
-    // padding-top: 10px;
+    position: relative;
+    top: 1px;
   }
 }
