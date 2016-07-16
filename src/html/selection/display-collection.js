@@ -185,7 +185,7 @@ export default class HTMLEntitySelection extends Selection {
     for (const entity of deleted) {
       assert(entity.parent, 'Attempting to delete selected entity which does not belong to any parent entity. Therefore it\'s a root entity, or it should not exist.');
       entity.parent.children.remove(entity);
-    } 
+    }
 
     return deleted;
   }
