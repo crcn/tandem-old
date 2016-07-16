@@ -44,7 +44,7 @@ export default class EditorStageLayersComponent extends React.Component {
       event.preventDefault();
       this.props.bus.execute({ 
         type: 'zoom', 
-        delta: event.deltaY / 1000
+        delta: event.deltaY / 250
       });  
     }
   }
