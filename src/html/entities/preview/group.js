@@ -8,9 +8,9 @@ export default class GroupPreview extends CoreObject {
     this.entity = entity;
   }
 
-  getBoundingRect() {
+  getBoundingRect(zoomProperties) {
     var rect = mergeBoundingRects(this.entity.section.childNodes.map((node) => (
-      node.nodeType === 1 ? calculateBoundingRect(node) : void 0
+      node.nodeType === 1 ? calculateBoundingRect(node, zoomProperties) : void 0
     )));
 
     return rect;

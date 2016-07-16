@@ -6,13 +6,13 @@ export default class IsolateComponent extends React.Component {
   componentDidMount() {
 
     if (this.props.inheritCSS) {
-      const head    = this.containerHead;
+      const head    = this.head;
       Array.prototype.forEach.call(parent.document.getElementsByTagName('style'), function (style) {
         head.appendChild(style.cloneNode(true));
       });
     }
 
-    this.containerBody.appendChild(this._mountElement = document.createElement('div'));
+    this.body.appendChild(this._mountElement = document.createElement('div'));
     this._render();
 
     this._addListeners();
@@ -22,12 +22,16 @@ export default class IsolateComponent extends React.Component {
     this._render();
   }
 
-  get containerHead() {
-    return this.refs.container.contentWindow.document.head;
+  get window() {
+    return this.refs.container.contentWindow;
   }
 
-  get containerBody() {
-    return this.refs.container.contentWindow.document.body;
+  get head() {
+    return this.window.document.head;
+  }
+
+  get body() {
+    return this.window.document.body;
   }
 
   _render() {
@@ -35,8 +39,8 @@ export default class IsolateComponent extends React.Component {
   }
 
   _addListeners() {
-    var el = this.containerBody;
-    var container = this.refs.container; 
+    var el = this.body;
+    var container = this.refs.container;
 
     // TODO - this should be in its own util function
     function bubbleEvent(event) {
@@ -54,23 +58,39 @@ export default class IsolateComponent extends React.Component {
         try {
           clonedEvent[key] = value;
         } catch (e) { }
-      } 
+      }
 
       container.dispatchEvent(clonedEvent);
-      
+
       if (clonedEvent.defaultPrevented) {
         event.preventDefault();
       }
     }
-    el.addEventListener('keypress', bubbleEvent);
-    el.addEventListener('copy', bubbleEvent);
-    el.addEventListener('paste', bubbleEvent);
-    el.addEventListener('keydown', bubbleEvent);
-    el.addEventListener('keyup', bubbleEvent);
+
+    const eventTypes = [
+      'keypress',
+      'copy',
+      'paste',
+      'mousemove',
+      'keyup',
+      'keydown'
+    ];
+
+    for (const eventType of eventTypes) {
+      el.addEventListener(eventType, bubbleEvent);
+    }
+
+    if (this.props.onWheel) {
+      this.window.addEventListener('wheel', this.props.onWheel);
+    }
+
+    if (this.props.onScroll) {
+      this.window.addEventListener('scroll', this.props.onScroll);
+    }
   }
 
   render() {
     var style = this.props.style || {};
-    return <iframe ref='container' style={{ border: 0, ...style }} className={this.props.className} />;
+    return <iframe ref='container' onScroll={this.props.onScroll} style={{ border: 0, ...style }} className={this.props.className} />;
   }
 }

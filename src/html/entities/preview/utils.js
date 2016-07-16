@@ -100,7 +100,7 @@ export function calculateBoundingRect(node, zoomProperties) {
   var height = bottom - top;
 
   if (zoomProperties) {
-    // ({ left, top, width, height } = multiplyStyle({ left, top, width, height }, this.getZoom()));
+    ({ left, top, width, height } = multiplyStyle({ left, top, width, height }, calculateZoom(node)));
   }
 
   right = left + width;
@@ -179,7 +179,7 @@ export function getStyle(entity, node, zoomProperties) {
   // are also based on the zoom level. Important for overlay data such as
   // tools and information describing the target entity
   if (zoomProperties) {
-    style = multiplyStyle(style, this.getZoom());
+    style = multiplyStyle(style, calculateZoom(node));
   }
 
   return style;

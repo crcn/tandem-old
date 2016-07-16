@@ -7,8 +7,8 @@ export default class NodePreview extends CoreObject {
     this.entity = entity;
   }
 
-  getBoundingRect() {
-    return calculateBoundingRect(this.entity.section.targetNode);
+  getBoundingRect(zoomProperties) {
+    return calculateBoundingRect(this.entity.section.targetNode, zoomProperties);
   }
 
   setPositionFromAbsolutePoint(point) {

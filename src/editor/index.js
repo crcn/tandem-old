@@ -21,6 +21,7 @@ import { fragment as sfnFileModelFragment } from './models/sfn-file';
 
 // services
 import { fragment as toolServiceFragment } from './services/tool';
+import { fragment as previewServiceFragment } from './services/preview';
 import { fragment as projectServiceFragment } from './services/project';
 import { fragment as selectorServiceFragment } from './services/selector';
 import { fragment as clipboardServiceFragment } from './services/clipboard';
@@ -55,6 +56,7 @@ export const fragment = [
   // services
   toolServiceFragment,
   projectServiceFragment,
+  previewServiceFragment,
   selectorServiceFragment,
   clipboardServiceFragment,
   keyBindingServiceFragment

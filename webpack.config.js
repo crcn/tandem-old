@@ -12,6 +12,21 @@ function createConfig(options) {
       publicPath: '/bundle/',
       sourceMapFilename: '/bundle/[name].js.map'
     },
+    stats: {
+      hash: true,
+      version: true,
+      timings: false,
+      assets: false,
+      chunks: false,
+      modules: false,
+      reasons: true,
+      children: false,
+      source: false,
+      errors: true,
+      errorDetails: true,
+      warnings: false,
+      publicPath: false
+    },
     resolve: {
       modulesDirectories: [__dirname + '/src', 'node_modules', 'bower_components', 'src', 'vendor', __dirname],
       extensions: ['', '.json', '.jsx', '.js']

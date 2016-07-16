@@ -1,14 +1,9 @@
 @import 'editor/scss/variables';
 
 .m-preview-footer {
-  width: 100%;
   font-size: $font-size-1;
-  position: absolute;
-  bottom: 0px;
-  padding-top: 3px;
+  position: relative;
   color: $color-blue-4;
   padding: $padding-1 $padding-2;
-  background-color: $color-blue-11;
-  flex-grow: 0;
-  flex-shrink: 0;
+  background-color:$color-blue-11;
 }

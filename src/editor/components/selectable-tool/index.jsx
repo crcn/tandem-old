@@ -51,7 +51,7 @@ class SelectableComponent extends React.Component {
 
     const classNames = cx({
       'm-selectable' : true,
-      hover          : app.hoverItem === entity,
+      hover          : app.hoverItem === entity
     });
 
     const style = {
@@ -60,7 +60,7 @@ class SelectableComponent extends React.Component {
       width      : bounds.width,
       height     : bounds.height,
       left       : bounds.left,
-      top        : bounds.top,
+      top        : bounds.top
     };
 
     return (

@@ -15,7 +15,7 @@ export default class StageComponent extends React.Component {
     if (!entity) return null;
     return (<div className='m-editor-stage noselect'>
       <HeaderComponent {...this.props} />
-      <CanvasComponent {...this.props} entity={entity} />
+      <CanvasComponent {...this.props} entity={entity} zoom={this.props.app.zoom} />
       <FooterComponent {...this.props} />
     </div>);
   }
