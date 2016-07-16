@@ -69,9 +69,6 @@ export default class EditorStageLayersComponent extends React.Component {
 
   _center = (newZoom, oldZoom) => {
 
-    const delta = newZoom - oldZoom;
-    const mult  = delta + 1;
-
     function calcPrev(value) {
       return Math.round((value / newZoom) * oldZoom);
     }
