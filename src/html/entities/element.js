@@ -36,7 +36,7 @@ class ElementEntity extends Entity {
     return this._style || {};
   }
 
-  async execute(options) {
+  async load(options) {
     var controllerFragment = options.fragments.query(`entity-controllers/${this.expression.nodeName}`);
     var ref;
     var section;
@@ -44,8 +44,8 @@ class ElementEntity extends Entity {
 
     var attributes = {};
 
-    for (const { key, value } of this.expression.attributes) {
-      attributes[key] = (await value.execute(options)).value;
+    for (const attribute of this.expression.attributes) {
+      attributes[attribute.key] = (await attribute.load(options)).value;
     }
 
     Object.assign(context, options.context || {}, context, attributes);
@@ -53,16 +53,16 @@ class ElementEntity extends Entity {
     if (controllerFragment) {
       this.preview = new GroupPreview(this);
       section = FragmentSection.create();
-      ref = controllerFragment.create({
+      ref = this.ref = controllerFragment.create({
         ...options,
         section: section,
         attributes: attributes,
         expression: this.expression,
         context: this.context,
-        entity: this,
+        entity: this
       });
 
-      await ref.execute({
+      await ref.load({
         ...options,
         context,
       });
@@ -74,7 +74,7 @@ class ElementEntity extends Entity {
       section = NodeSection.create(ref);
       this.preview = new NodePreview(this);
       for (var childExpression of this.expression.childNodes) {
-        this.appendChild(await childExpression.execute({
+        this.appendChild(await childExpression.load({
           ...options,
           context,
           section,
@@ -86,9 +86,19 @@ class ElementEntity extends Entity {
 
     options.section.appendChild(section.toFragment());
   }
+
+  update(options) {
+    for (var child of this.childNodes) {
+      child.update(options);
+    }
+  }
+
+  willUnmount() {
+    this.section.remove();
+  }
 }
 
 export const fragment = FactoryFragment.create({
   ns: 'entities/element',
-  factory: ElementEntity,
+  factory: ElementEntity
 });

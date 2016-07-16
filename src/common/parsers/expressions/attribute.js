@@ -1,11 +1,10 @@
 import BaseExpression from './base';
 
 module.exports = class AttributeExpression extends BaseExpression {
-  constructor(key, value, location) {
+  constructor(key, value) {
     super();
     this.key   = key;
     this.value = value;
     this.ns    = 'attribute';
-    this.location = location;
   }
 };

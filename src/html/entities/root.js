@@ -7,10 +7,10 @@ export default class RootEntity extends GroupEntity {
     super(properties);
     this.section = FragmentSection.create();
   }
-  async execute(options) {
-    await super.execute({
+  async load(options) {
+    await super.load({
       options,
-      section: this.section,
+      section: this.section
     });
   }
 }

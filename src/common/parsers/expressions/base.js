@@ -1,4 +1,6 @@
 import { create } from 'common/utils/class';
+import CoreObject from 'common/object';
+import observable from 'common/object/mixins/observable';
 
 export default class BaseExpression {
   createEntity(properties) {
@@ -8,13 +10,13 @@ export default class BaseExpression {
     }
     return fragment.create({
       ...properties,
-      expression: this,
+      expression: this
     });
   }
 
-  async execute(properties) {
+  async load(properties) {
     var entity = this.createEntity(properties);
-    await entity.execute(properties);
+    await entity.load(properties);
     return entity;
   }
 

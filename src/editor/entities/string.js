@@ -2,7 +2,7 @@ import Entity from 'common/entities/entity';
 import { FactoryFragment } from 'common/fragments';
 
 export default class StringEntity extends Entity {
-  async execute() {
+  async load() {
     this.value = this.expression.value;
   }
 }

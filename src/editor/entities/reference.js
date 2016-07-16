@@ -3,7 +3,7 @@ import { FactoryFragment } from 'common/fragments';
 import get from 'common/utils/object/get';
 
 export default class ReferenceEntity extends Entity {
-  async execute(options) {
+  async load(options) {
     this.value = get(options.context || {}, this.expression.path.join('.'));
   }
 }

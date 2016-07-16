@@ -3,12 +3,21 @@ import { FactoryFragment } from 'common/fragments';
 import Entity from 'common/entities/entity';
 
 class TextEntity extends Entity {
-  async execute({ section }) {
+  async load({ section }) {
     section.appendChild(this.node = document.createTextNode(this.expression.nodeValue));
+  }
+
+  update(options) {
+    console.log(this.expression.nodeValue);
+    this.node.nodeValue = this.expression.nodeValue;
+  }
+
+  willUnmount() {
+    this.node.parentNode.removeChild(this.node);
   }
 }
 
 export const fragment = FactoryFragment.create({
   ns: 'entities/text',
-  factory: TextEntity,
+  factory: TextEntity
 });

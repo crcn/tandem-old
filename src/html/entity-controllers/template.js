@@ -8,11 +8,11 @@ class RegisteredEntityController {
     Object.assign(this, properties);
   }
 
-  async execute(options) {
+  async load(options) {
     for (var childExpression of this.frame.expression.childNodes) {
-      this.entity.appendChild(await childExpression.execute({
+      this.entity.appendChild(await childExpression.load({
         ...options,
-        selectable: false,
+        selectable: false
       }));
     }
   }
@@ -30,7 +30,7 @@ export default class FrameEntityController {
     this.attributes[key] = value;
   }
 
-  execute(options) {
+  load(options) {
 
     var iframe = document.createElement('iframe');
     Object.assign(iframe.style, {
@@ -44,8 +44,8 @@ export default class FrameEntityController {
       FactoryFragment.create({
         ns: `entity-controllers/${this.attributes.id}`,
         factory: {
-          create: this.createElementController.bind(this),
-        },
+          create: this.createElementController.bind(this)
+        }
       })
     );
 
@@ -56,7 +56,7 @@ export default class FrameEntityController {
         padding: 0,
       });
       for (var childExpression of this.expression.childNodes) {
-        await this.entity.appendChild(await childExpression.execute({
+        await this.entity.appendChild(await childExpression.load({
           ...options,
           section: bodySection,
         }));

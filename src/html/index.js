@@ -9,6 +9,7 @@ import { fragment as textEntityFragment } from './entities/text';
 import { fragment as groupEntityFragment } from './entities/group';
 import { fragment as blockEntityFragment } from './entities/block';
 import { fragment as elementEntityFragment } from './entities/element';
+import { fragment as attributeEntityFragment } from './entities/attribute';
 
 // entity controllers
 import { fragment as importEntityControllerFragment } from './entity-controllers/import';
@@ -30,6 +31,7 @@ export const fragment = [
   groupEntityFragment,
   blockEntityFragment,
   elementEntityFragment,
+  attributeEntityFragment,
 
   // entity controllers
   importEntityControllerFragment,

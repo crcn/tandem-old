@@ -8,8 +8,8 @@ class SfnFile {
 }
 
 class ImportEntityController extends CoreObject {
-  async execute() {
-    var files = await this.bus.execute({
+  async load() {
+    var files = await this.bus.load({
       type: 'getFiles',
       src: path.join(path.dirname(this.file.path), this.attributes.src),
       public: true,

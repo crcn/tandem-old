@@ -58,6 +58,7 @@ export default class Element extends Node {
   }
 
   insertBefore(newChild, existingChild) {
+    if (newChild === existingChild) return;
     this.childNodes.splice(this._getChildIndex(existingChild), 0, this._linkChild(newChild));
   }
 

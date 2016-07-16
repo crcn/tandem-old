@@ -6,4 +6,12 @@ export default class Entity extends Element {
     super(properties);
     assertPropertyExists(this, 'expression');
   }
+
+  update() {
+
+  }
+
+  load() {
+
+  }
 }

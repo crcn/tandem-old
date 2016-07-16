@@ -12,16 +12,16 @@ export default class RepeatEntityController {
     this.attributes[key] = value;
   }
 
-  async execute(options) {
+  async load(options) {
 
     var each = Number(this.attributes.each);
 
     for (var i = each; i--;) {
       for (var childExpression of this.expression.childNodes) {
         var childSection = FragmentSection.create();
-        this.entity.appendChild(await childExpression.execute({
+        this.entity.appendChild(await childExpression.load({
           ...options,
-          section: childSection,
+          section: childSection
         }));
 
         options.section.appendChild(childSection.toFragment());
