@@ -4,7 +4,6 @@ import BoundingRect from 'common/geom/bounding-rect';
 import { startDrag } from 'common/utils/component';
 import { SelectEvent } from 'editor/selection/events';
 import { boundsIntersect } from 'common/utils/geom';
-import { STAGE_PREVIEW_MOUSE_DOWN } from 'editor/events';
 import { ReactComponentFactoryFragment } from 'common/react/fragments';
 
 class DragSelectComponent extends React.Component {
@@ -19,7 +18,7 @@ class DragSelectComponent extends React.Component {
   }
 
   execute(event) {
-    if (event.type === STAGE_PREVIEW_MOUSE_DOWN) {
+    if (event.type === 'stageCanvasMouseDown') {
       this.startDrag(event);
     }
   }
@@ -33,7 +32,7 @@ class DragSelectComponent extends React.Component {
     var container = this.refs.container;
     var b = container.getBoundingClientRect();
 
-    var entities = this.props.app.entity.childNodes;
+    var entities = this.props.entity.childNodes;
 
     var left = event.clientX - b.left;
     var top  = event.clientY - b.top;
@@ -43,7 +42,6 @@ class DragSelectComponent extends React.Component {
       top : top,
       dragging: true,
     });
-
 
     startDrag(event, (event2, { delta }) => {
 
@@ -77,7 +75,7 @@ class DragSelectComponent extends React.Component {
       var selection = [];
 
       entities.forEach(function (entity) {
-        if (boundsIntersect(entity.preview.getBoundingRect(true), bounds)) {
+        if (entity.preview && boundsIntersect(entity.preview.getBoundingRect(true), bounds)) {
           selection.push(entity);
         }
       });
@@ -114,6 +112,6 @@ class DragSelectComponent extends React.Component {
 }
 
 export const fragment = ReactComponentFactoryFragment.create({
-  ns             : 'components/tools/selectable',
+  ns             : 'components/tools/pointer/drag-select',
   componentClass : DragSelectComponent,
 });

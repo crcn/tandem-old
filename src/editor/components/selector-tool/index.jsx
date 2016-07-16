@@ -8,7 +8,7 @@ import ResizerComponent from './resizer';
 import { mergeBoundingRects } from 'common/utils/geom';
 import { ReactComponentFactoryFragment } from 'common/react/fragments';
 
-class SelectorComponent extends React.Component {
+export default class SelectorComponent extends React.Component {
 
   constructor() {
     super();
@@ -59,8 +59,6 @@ class SelectorComponent extends React.Component {
     </div>);
   }
 }
-
-export default SelectorComponent;
 
 export const fragment = ReactComponentFactoryFragment.create({
   ns             : 'components/tools/pointer/selector',
