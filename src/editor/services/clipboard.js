@@ -2,11 +2,21 @@ import loggable from 'common/logger/mixins/loggable';
 import { Service } from 'common/services';
 import { FactoryFragment } from 'common/fragments';
 
+
+
+function targetIsInput(event) {
+  return /input|textarea/i.test(event.target.nodeName);
+}
+
 @loggable
 export default class ClipboardService extends Service {
   initialize() {
     document.addEventListener('copy', (event) => {
+      if (targetIsInput(event)) return;
       this.logger.info('handle copy');
+
+      // TODO - serialize selection here
+      // var expr = JSON.stringify(this.app.selection.map((ent) => ent.expression));
       event.clipboardData.setData('text/x-entity', Date.now().toString());
       event.preventDefault();
     });
