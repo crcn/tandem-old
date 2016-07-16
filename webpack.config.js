@@ -28,7 +28,10 @@ function createConfig(options) {
       __filename: true
     },
     plugins: [
-      new ExtractTextPlugin('/bundle/[name].css')
+      new ExtractTextPlugin('/bundle/[name].css'),
+      new webpack.DefinePlugin({
+        'process.env.TESTING': process.env.TESTING != void 0
+      })
     ],
     module: {
       loaders: [

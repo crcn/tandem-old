@@ -1,20 +1,17 @@
-import { ApplicationFragment } from 'common/application/fragments';
+import { FactoryFragment } from 'common/fragments';
 import CoreObject from 'common/object';
 
 export class TextTool extends CoreObject {
 
+  name = 'text';
   cursor = 'text';
+  icon = 'text';
 
   execute() {
   }
 }
 
-export const fragment = [
-  ApplicationFragment.create({
-    ns: 'application/initTextTool',
-    initialize: initTextTool,
-  }),
-];
-
-function initTextTool() {
-}
+export const fragment = FactoryFragment.create({
+  ns: 'stage-tools/text',
+  factory: TextTool
+});

@@ -22,5 +22,5 @@ export default class BackEndService extends IOService {
 // TODO - ApplicationActorDependency.create({ id: })
 export const fragment = FactoryFragment.create({
   ns      : 'application/actors/back-end',
-  factory : BackEndService,
+  factory : BackEndService
 });

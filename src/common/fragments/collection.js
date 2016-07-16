@@ -54,6 +54,10 @@ export default class FragmentCollection extends Collection {
     }
 
     collection.push(fragment);
+
+    collection = collection.sort((a, b) => (
+      a.priority > b.priority ? -1 : 1
+    ));
   }
 
   static create = create;

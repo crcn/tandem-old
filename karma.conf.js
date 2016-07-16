@@ -19,13 +19,7 @@ module.exports = function(config) {
       'node_modules/babel-polyfill/browser.js',
       'test/helpers/utils/stub-logs.js',
       {
-        pattern  : 'src/**/*-test.js',
-        watched  : false,
-        included : true,
-        served   : true
-      },
-      {
-        pattern  : 'test/**/*-test.js',
+        pattern  : 'all-tests.js', 
         watched  : false,
         included : true,
         served   : true
@@ -36,6 +30,7 @@ module.exports = function(config) {
       require('karma-mocha'),
       require('karma-webpack'),
       require('karma-firefox-launcher'),
+      require('karma-chrome-launcher'),
       require('karma-spec-reporter'),
       require('karma-coverage')
     ],
@@ -47,8 +42,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/**/*-test.js': ['webpack'],
-      'test/**/*-test.js': ['webpack']
+      'all-tests.js': ['webpack']
     },
 
     // test results reporter to use
@@ -101,7 +95,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Firefox'],
+    browsers: ['Chrome'],
 
 
     // Continuous Integration mode

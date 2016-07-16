@@ -7,8 +7,7 @@ class TextEntity extends Entity {
     section.appendChild(this.node = document.createTextNode(this.expression.nodeValue));
   }
 
-  update(options) {
-    console.log(this.expression.nodeValue);
+  update() {
     this.node.nodeValue = this.expression.nodeValue;
   }
 

@@ -1,3 +1,11 @@
 <div style='background-color: #FF6600; color: white; padding:10px; display: inline-block;'>
-  hello!
+  <div style='background-color:rgba(0,0,0,0.3); padding: 10px;'>
+    Hello!
+  </div>
+</div>
+
+<div style='background-color: #FF6600; color: white; padding:10px; max-width: 200px;'>
+  <div style='background-color:rgba(0,0,0,0.3); padding: 10px;'>
+    Hello!
+  </div>
 </div>

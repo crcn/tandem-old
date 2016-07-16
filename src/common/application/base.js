@@ -20,8 +20,11 @@ export default class BaseApplication extends CoreObject {
       this.config = {};
     }
 
+    const initialFragments = this.fragments || [];
+
     // contains most dependencies for the application.
     this.fragments = FragmentCollection.create();
+    this.fragments.register(...initialFragments);
 
     // acts on events dispatched by the central bus
     this.actors = Collection.create();
@@ -59,10 +62,9 @@ export default class BaseApplication extends CoreObject {
    */
 
   _registerFragments() {
-    this.fragments.register(
-      consoleLogFragment,
-      ...(this.fragments || [])
-    );
+    if (!process.env.TESTING) {
+      this.fragments.register(consoleLogFragment);
+    }
   }
 
   /**

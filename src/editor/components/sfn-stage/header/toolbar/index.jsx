@@ -12,9 +12,10 @@ class ToolsComponent extends React.Component {
           this
             .props
             .app
-            .fragments
-            .queryAll('preview/tools/**')
-            .filter((fragment) => !!fragment.icon).map((fragment) => <ToolComponent {...this.props} fragment={fragment} key={fragment.ns} />)
+            .stageTools
+            .filter((stageTool) => !!stageTool.icon).map((stageTool) => (
+              <ToolComponent {...this.props} tool={stageTool} key={stageTool.name} />)
+            )
         }
       </ul>
     </div>);

@@ -29,12 +29,12 @@ export default class RootComponentRenderer extends BaseActor {
 
     ReactDOM.render(rootComponentClassFragment.create({
       app: app,
-      bus: app.bus,
+      bus: app.bus
     }), app.element);
   }
 }
 
 export const fragment = FactoryFragment.create({
   ns      : 'application/actors/root-component-renderer',
-  factory : RootComponentRenderer,
+  factory : RootComponentRenderer
 });

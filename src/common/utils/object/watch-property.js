@@ -32,12 +32,10 @@ class PropertyWatcherBus {
     return this._watchSimpleProperty(target, property, listener);
   }
 
-  _watchNestedProperty(target, path, listener) {
+  _watchNestedProperty(target, path) {
     var segments = path.split('.');
-    var currentWatcher;
 
     var onChange = () => {
-      console.log('change');
       reset();
     };
 

@@ -44,13 +44,6 @@ export default class FileService extends Service {
   }
 
   /**
-   */
-
-  async openFiles(action) {
-    // TODO
-  }
-
-  /**
    * when an item has been removed from the db, close
    * the file watcher if it exists
    */

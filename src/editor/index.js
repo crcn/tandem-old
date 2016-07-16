@@ -15,14 +15,14 @@ import { fragment as referenceEntityFragment } from './entities/reference';
 // tools
 import { fragment as textToolFragment } from './tools/text';
 import { fragment as pointerToolFragment } from './tools/pointer';
-import { fragment as toolManagerFragment } from './tools/manager';
 
 // models
 import { fragment as sfnFileModelFragment } from './models/sfn-file';
 
 // services
-import { fragment as projectServiceFragment } from './services/project';
 import { fragment as toolServiceFragment } from './services/tool';
+import { fragment as projectServiceFragment } from './services/project';
+import { fragment as selectorServiceFragment } from './services/selector';
 
 export const fragment = [
 
@@ -40,12 +40,12 @@ export const fragment = [
   // tools
   textToolFragment,
   pointerToolFragment,
-  toolManagerFragment,
 
   // models
   sfnFileModelFragment,
 
   // services
+  toolServiceFragment,
   projectServiceFragment,
-  toolServiceFragment
+  selectorServiceFragment
 ];

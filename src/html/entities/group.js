@@ -4,7 +4,7 @@ import FragmentSection from 'common/section/fragment';
 
 export default class GroupEntity extends Entity {
   async load(options) {
-    var section = this.section = FragmentSection.create();
+    this.section = FragmentSection.create();
     for (var childExpression of this.expression.childNodes) {
       await this.appendChild(await childExpression.load({
         ...options,
@@ -21,9 +21,9 @@ export default class GroupEntity extends Entity {
       var cexpr = this.expression.childNodes[i];
       if (i < this.childNodes.length) {
 
-        var child = childNodes.find(function(child) {
-          return child.expression === cexpr;
-        });
+        var child = childNodes.find(({ expression }) => (
+          expression === cexpr
+        ));
 
         if (child) {
           await child.update(options);

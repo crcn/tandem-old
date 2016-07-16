@@ -1,15 +1,8 @@
-
-import { create, createFactory } from 'common/utils/class';
-
 var code = 1;
 
 export class BaseError extends Error {
 
-  constructor() {
-    super();
-  }
-
-  static create = function(message) {
+  static create = function (message) {
     var error = new Error(message);
     error.__proto__ = this.prototype;
     error.code = this.code;

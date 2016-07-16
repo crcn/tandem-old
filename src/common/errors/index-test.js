@@ -1,8 +1,8 @@
 import expect from 'expect.js';
 import { BaseError, InvalidError } from './index';
 
-describe(__filename + '#', function() {
-  it('invalid error is an error', function() {
+describe(__filename + '#', () => {
+  it('invalid error is an error', () => {
     var error = InvalidError.create('test');
     expect(error).to.be.an(InvalidError);
     expect(error).to.be.an(BaseError);

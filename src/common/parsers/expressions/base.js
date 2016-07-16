@@ -1,6 +1,4 @@
 import { create } from 'common/utils/class';
-import CoreObject from 'common/object';
-import observable from 'common/object/mixins/observable';
 
 export default class BaseExpression {
   createEntity(properties) {

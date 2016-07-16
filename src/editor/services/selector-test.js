@@ -1,16 +1,19 @@
-import { fragment } from './index';
+// import expect from 'expect.js';
+import { fragment as selectorFragment } from './selector';
+import { FactoryFragment } from 'common/fragments';
+import BaseApplication from 'common/application/base';
 import expect from 'expect.js';
 import { SelectEvent, ToggleSelectEvent } from 'editor/selection/events';
-import BaseApplication from 'common/application/base';
-import Selection from 'editor/selection/collection';
-import { FactoryFragment } from 'common/fragments';
+import SelectionCollection from 'editor/selection/collection';
 
-describe(__filename + '#', function () {
+describe(__filename + '#', () => {
 
-  var app;
+  let app;
 
-  beforeEach(async function () {
-    app = BaseApplication.create({ fragments: [fragment] });
+  beforeEach(async () => {
+    app = BaseApplication.create({
+      fragments: [selectorFragment]
+    });
     await app.initialize();
   });
 
@@ -47,16 +50,11 @@ describe(__filename + '#', function () {
 
   it('picks the correct collection type depending on the item type', function () {
 
-    class DisplayCollection extends Selection {
+    class DisplayCollection extends SelectionCollection { }
+    class OtherCollection extends SelectionCollection { }
 
-    }
-
-    class OtherCollection extends Selection {
-
-    }
-
-    app.fragments.register(FactoryFragment.create({ ns: 'selectorCollection/display', factory: DisplayCollection }));
-    app.fragments.register(FactoryFragment.create({ ns: 'selectorCollection/other', factory: OtherCollection }));
+    app.fragments.register(FactoryFragment.create({ ns: 'selection-collections/display', factory: DisplayCollection }));
+    app.fragments.register(FactoryFragment.create({ ns: 'selection-collections/other', factory: OtherCollection }));
 
     app.bus.execute(ToggleSelectEvent.create({ type: 'display' }));
     expect(app.selection).to.be.an(DisplayCollection);
@@ -82,7 +80,7 @@ describe(__filename + '#', function () {
     expect(app.selection.length).to.be(2);
   });
 
-  xit('can turn toggling off', function () {
+  it('can turn toggling off', function () {
     var item = {};
     app.bus.execute(ToggleSelectEvent.create(item));
     app.bus.execute(ToggleSelectEvent.create(item));

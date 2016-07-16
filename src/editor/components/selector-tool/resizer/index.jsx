@@ -14,7 +14,7 @@ class ResizerComponent extends React.Component {
   }
 
   componentDidMount() {
-    this.props.app.busses.push(this);
+    this.props.app.actors.push(this);
   }
 
   execute(event) {
@@ -24,7 +24,7 @@ class ResizerComponent extends React.Component {
 
   componentWillUnmount() {
     if (this._dragger) this._dragger.dispose();
-    this.props.app.busses.remove(this);
+    this.props.app.actors.remove(this);
   }
 
   onDoubleClick() {
