@@ -37,16 +37,23 @@ class ElementEntity extends Entity {
   }
 
   async load(options) {
-    var controllerFragment = options.fragments.query(`entity-controllers/${this.expression.nodeName}`);
-    var ref;
-    var section;
-    var context = this.context;
 
     var attributes = {};
 
     for (const attribute of this.expression.attributes) {
       attributes[attribute.key] = (await attribute.load(options)).value;
     }
+
+    this.attributes = attributes;
+
+    var controllerFragment = options
+    .fragments
+    .queryAll(`entity-controllers/${this.expression.nodeName}`)
+    .find((fragment) => !fragment.test || (fragment.test(this) ? fragment : void 0));
+
+    var ref;
+    var section;
+    var context = this.context;
 
     Object.assign(context, options.context || {}, context, attributes);
 

@@ -1,4 +1,6 @@
-<style type='text/css'>
+
+<style type='text/scss'>
+  @import '../../src/editor/scss/variables.scss';
   .page {
     width: 1024px;
     height: 768px;
