@@ -1,9 +1,23 @@
 <style type='text/css'>
-  Styling this
+  .page {
+    width: 1024px;
+    height: 768px;
+    background-color: #FFF;
+  }
+
+  .button {
+    position: absolute;
+    color: white;
+    font-size: 32;
+    padding: 20px;
+    background-color: rgba(0,0,0,0.5);
+    display: inline-block;
+    border-radius: 10px;
+  }
 </style>
 
-<div style='background-color: white; width: 1024px; height: 768px;'>
-  <div style='background-color: rgba(0,0,0,0.5); color: white; position: absolute; padding: 30px; font-size: 20px; border-radius: 10px;'>
+<div class='page'>
+  <div class='button'>
     Hello World!!!!!!!!
   </div>
 </div>

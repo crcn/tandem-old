@@ -2,6 +2,8 @@ import './index.scss';
 
 import React from 'react';
 import RegisteredComponent from 'common/react/components/registered';
+import IsolateComponent  from 'common/react/components/isolate';
+
 
 export default class PreviewComponent extends React.Component {
   render() {
