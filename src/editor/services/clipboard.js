@@ -5,26 +5,23 @@ import { FactoryFragment } from 'common/fragments';
 @loggable
 export default class ClipboardService extends Service {
   initialize() {
-    document.addEventListener('copy', function(event) {
+    document.addEventListener('copy', (event) => {
+      this.logger.info('handle copy');
       event.clipboardData.setData('text/x-entity', Date.now().toString());
       event.preventDefault();
     });
 
-    document.addEventListener('paste', function(event) {
-      // if (targetIsInput(event)) return;
-      Array.prototype.forEach.call(event.clipboardData.items, paste);
+    document.addEventListener('paste', (event) => {
+      this.logger.info('handle paste');
+      Array.prototype.forEach.call(event.clipboardData.items, this._paste);
     });
+  }
 
-    function paste(item) {
-      try {
-        console.info('paste %s', item.type);
-        // TODO - DO THIS
-        item.getAsString(function(s) {
-          console.log(s);
-        });
-      } catch(e) {
-        console.warn('cannot paste x-entity data: ', item.type);
-      }
+  _paste = async (item) => {
+    try {
+      await this.bus.execute({ type: 'paste', item: item });
+    } catch(e) {
+      this.logger.warn('cannot paste x-entity data: ', item.type);
     }
   }
 }
