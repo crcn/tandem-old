@@ -1,7 +1,7 @@
 import './index.scss';
 import React from 'react';
 
-import { STAGE_CANVAS_MOUSE_DOWN } from 'editor/events';
+import { STAGE_CANVAS_MOUSE_DOWN } from 'saffron-editor-bundle/events';
 import PreviewLayerComponent from './preview';
 import ToolsLayerComponent from './tools';
 import IsolateComponent  from 'saffron-common/react/components/isolate';

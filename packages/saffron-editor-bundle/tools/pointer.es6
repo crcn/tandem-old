@@ -1,6 +1,6 @@
 import { Service } from 'saffron-common/services';
 import { FactoryFragment } from 'saffron-common/fragments';
-import { SelectEvent } from 'editor/selection/events';
+import { SelectEvent } from 'saffron-editor-bundle/selection/events';
 
 export default class PointerTool extends Service {
 

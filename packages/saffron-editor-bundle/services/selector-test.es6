@@ -3,8 +3,8 @@ import { fragment as selectorFragment } from './selector';
 import { FactoryFragment } from 'saffron-common/fragments';
 import BaseApplication from 'saffron-common/application/base';
 import expect from 'expect.js';
-import { SelectEvent, ToggleSelectEvent } from 'editor/selection/events';
-import SelectionCollection from 'editor/selection/collection';
+import { SelectEvent, ToggleSelectEvent } from 'saffron-editor-bundle/selection/events';
+import SelectionCollection from 'saffron-editor-bundle/selection/collection';
 
 describe(__filename + '#', () => {
 

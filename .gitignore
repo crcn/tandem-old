@@ -3,6 +3,7 @@ node_modules
 all-tests.js
 *.js
 coverage/
+bundle/
 npm-*
 git-*
 /public/bundle

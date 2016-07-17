@@ -1,7 +1,7 @@
 import loggable from 'saffron-common/logger/mixins/loggable';
 import { Service } from 'saffron-common/services';
 import { FactoryFragment } from 'saffron-common/fragments';
-import SelectionCollection from 'editor/selection/collection';
+import SelectionCollection from 'saffron-editor-bundle/selection/collection';
 
 @loggable
 export default class SelectorService extends Service {

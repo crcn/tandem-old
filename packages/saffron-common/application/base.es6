@@ -35,7 +35,6 @@ export default class BaseApplication extends CoreObject {
 
     // register all parts of the application here
     this._registerFragments();
-    this._initializeActors();
   }
 
   /**
@@ -49,6 +48,7 @@ export default class BaseApplication extends CoreObject {
     }
 
     this._initialized = true;
+    this._initializeActors();
 
     this.willInitialize();
     this.setProperties({ loading: true });

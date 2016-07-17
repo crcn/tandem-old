@@ -2,7 +2,7 @@ import './index.scss';
 import React from 'react';
 import BoundingRect from 'saffron-common/geom/bounding-rect';
 import { startDrag } from 'saffron-common/utils/component';
-import { SelectEvent } from 'editor/selection/events';
+import { SelectEvent } from 'saffron-editor-bundle/selection/events';
 import { boundsIntersect } from 'saffron-common/utils/geom';
 import { ReactComponentFactoryFragment } from 'saffron-common/react/fragments';
 

@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "babel ./**/*.es6 --out-dir .; tsc",
+    "postinstall": "babel `find ./ -name '*.es6'` --out-dir .; tsc",
     "build-watch": "babel ./**/*.es6 --out-dir . --watch"
   },
   "author": "",

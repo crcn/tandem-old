@@ -1,7 +1,7 @@
 import './index.scss';
 
 import React from 'react';
-import flatten from 'lodash/array/flatten';
+import flatten from 'lodash/flatten';
 import RulerComponent from './ruler';
 import GuideComponent from './guide';
 import ResizerComponent from './resizer';

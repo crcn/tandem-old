@@ -1,7 +1,7 @@
-import Selection from 'editor/selection/collection';
+import Selection from 'saffron-editor-bundle/selection/collection';
 import { TypeCallbackBus } from 'saffron-common/busses';
 import { ApplicationFragment } from 'saffron-common/application/fragments';
-import { SELECT } from 'editor/selection/events';
+import { SELECT } from 'saffron-editor-bundle/selection/events';
 
 export const fragment = ApplicationFragment.create({
   ns: 'application/selector',

@@ -1,1 +1,1 @@
-/// <reference path="../node_modules/vscode/typings/node.d.ts" />e
+/// <reference path="../node_modules/vscode/typings/node.d.ts" />

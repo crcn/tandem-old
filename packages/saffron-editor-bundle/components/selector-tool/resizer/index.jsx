@@ -1,7 +1,7 @@
 import React from 'react';
 import { startDrag } from 'saffron-common/utils/component';
 import PathComponent from './path';
-// import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'editor/message-types';
+// import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'saffron-editor-bundle/message-types';
 
 const POINT_STROKE_WIDTH = 0;
 const POINT_RADIUS       = 3;

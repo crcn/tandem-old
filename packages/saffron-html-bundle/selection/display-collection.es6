@@ -1,5 +1,5 @@
 import assert from 'assert';
-import Selection from 'editor/selection/collection';
+import Selection from 'saffron-editor-bundle/selection/collection';
 import CoreObject from 'saffron-common/object';
 import observable from 'saffron-common/object/mixins/observable';
 import { FactoryFragment } from 'saffron-common/fragments';

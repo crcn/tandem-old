@@ -1,0 +1,3 @@
+{
+  "bundles": ["saffron-html-bundle", "saffron-editor-bundle", "saffron-sass-bundle"]
+}

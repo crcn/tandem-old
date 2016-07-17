@@ -4,8 +4,8 @@ import './index.scss';
 
 import cx from 'classnames';
 import React from 'react';
-import intersection from 'lodash/array/intersection';
-import { SelectEvent } from 'editor/selection/events';
+import intersection from 'lodash/intersection';
+import { SelectEvent } from 'saffron-editor-bundle/selection/events';
 import { mergeBoundingRects } from 'saffron-common/utils/geom';
 import { ReactComponentFactoryFragment } from 'saffron-common/react/fragments';
 

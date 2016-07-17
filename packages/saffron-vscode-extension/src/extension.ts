@@ -7,30 +7,21 @@ import * as vscode from 'vscode';
 import * as createServer from 'express'; 
 import { WrapBus, NoopBus } from 'mesh';
 import * as SocketIOBus from 'mesh-socket-io-bus';
-import * as io from 'socket.io';
+import ServerApplication from 'saffron-back-end';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-    var server = io();
-    const b:NoopBus = NoopBus.create();
-    b.test;
-
-    (server as any).set('origins', '*domain.com*:*');
-    const port = 8090;
-    server.listen(port);
-
-    server.on('connection', function(connection) {
-       console.log('con'); 
+    var server = ServerApplication.create({
+        config: {
+            socketio: {
+                port: 8090
+            }
+        }
     });
-
-
-    var bus = SocketIOBus.create({
-        connection: server
-    }, WrapBus.create((action) => {
-        console.log('remote', action);
-    }));
+    
+    server.initialize();
 
     class SaffronDocumentContentProvider {
 
@@ -43,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
 
             var config = {
                 socketio: {
-                    port: port
+                    port: 8090
                 }
             };
 

@@ -4,3 +4,4 @@
 /// <reference path="globals/mime/index.d.ts" />
 /// <reference path="globals/serve-static/index.d.ts" />
 /// <reference path="globals/socket.io/index.d.ts" />
+/// <reference path="../node_modules/saffron-back-end/typings/index.d.ts" />

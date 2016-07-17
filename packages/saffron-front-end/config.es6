@@ -1,4 +1,4 @@
-import backendConfig from 'back-end/config';
+import backendConfig from '../saffron-back-end/config';
 
 export default {
   socketio: backendConfig.socketio,
