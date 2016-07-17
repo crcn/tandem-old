@@ -1,6 +1,6 @@
 import assert from 'assert';
 import create from '../utils/class/create';
-import flatten from 'lodash/array/flattenDeep';
+import flatten from 'lodash/flattenDeep';
 import Collection from '../object/collection';
 
 export default class FragmentCollection extends Collection {

@@ -29,7 +29,7 @@ function createConfig(options) {
     },
     resolve: {
       modulesDirectories: [__dirname + '/src', 'node_modules', 'bower_components', 'src', 'vendor', __dirname],
-      extensions: ['', '.json', '.jsx', '.js']
+      extensions: ['', '.json', '.jsx', '.js', '.es6']
     },
     sassLoader: {
       includePaths: [path.resolve(__dirname, './src')]

@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import BaseApplication from 'saffron-common/application/base';
 
 import { fragment as dbServiceFragment } from './services/db';
