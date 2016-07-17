@@ -4,10 +4,10 @@ import {
   EntityPaneComponentFragment
 } from 'editor/fragment/types';
 
-import AttributeReference from 'common/reference/attribute';
+import AttributeReference from 'saffron-common/reference/attribute';
 
 import PaneLabel from '../pane-label/index.jsx';
-import PaneComponent from 'common/components/pane';
+import PaneComponent from 'saffron-common/components/pane';
 import PropertyListComponent from '../property-list';
 
 class AttributesPaneComponent extends React.Component {

@@ -1,0 +1,14 @@
+{
+  "name": "saffron-common",
+  "version": "1.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "expect.js": "^0.3.1"
+  }
+}

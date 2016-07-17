@@ -5,19 +5,19 @@ import './index.scss';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MenuComponent from 'common/components/menu';
-import SelectComponent from 'common/components/inputs/select';
-import TextInputComponent from 'common/components/inputs/text';
-import { UNIT } from 'common/fragment/queries';
+import MenuComponent from 'saffron-common/components/menu';
+import SelectComponent from 'saffron-common/components/inputs/select';
+import TextInputComponent from 'saffron-common/components/inputs/text';
+import { UNIT } from 'saffron-common/fragment/queries';
 
 import {
   parseUnit as parseCSSUnit,
   translateStyle,
   stringifyToken as stringifyCSSToken
-} from 'common/utils/html/css';
+} from 'saffron-common/utils/html/css';
 
 
-import { default as TextEditorComponent, CSSTokenizer } from 'common/components/text-editor';
+import { default as TextEditorComponent, CSSTokenizer } from 'saffron-common/components/text-editor';
 
 class UnitTokenComponent extends React.Component {
 

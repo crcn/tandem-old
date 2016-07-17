@@ -1,8 +1,8 @@
 import React from 'react';
-import TextEditor from 'common/components/text-editor';
-import Scanner from 'common/tokenizers/scanner';
-import createToken from 'common/tokenizers/create-token';
-import { SPACE, TAB, NEW_LINE, TEXT } from 'common/tokenizers/token-types';
+import TextEditor from 'saffron-common/components/text-editor';
+import Scanner from 'saffron-common/tokenizers/scanner';
+import createToken from 'saffron-common/tokenizers/create-token';
+import { SPACE, TAB, NEW_LINE, TEXT } from 'saffron-common/tokenizers/token-types';
 
 
 var htmlTokenizer = {

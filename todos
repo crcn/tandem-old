@@ -7,4 +7,4 @@ anything else
 - do not explicitly define NS for fragments
 - change 'bus' to 'mediator'
 - prompt user to pick style to apply to
-- scss plugin
+- 3D tools

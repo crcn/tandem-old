@@ -4,9 +4,9 @@ import {
   FactoryFragment
 } from 'editor/fragment/types';
 
-import { toArray } from 'common/utils/object';
+import { toArray } from 'saffron-common/utils/object';
 import includes from 'lodash/collection/includes';
-import { TypeNotifier, CallbackNotifier } from 'common/notifiers';
+import { TypeNotifier, CallbackNotifier } from 'saffron-common/notifiers';
 import { SET_FOCUS, TOGGLE_FOCUS } from 'editor/message-types';
 import { createSelectionQuery } from 'editor/fragment/queries';
 //

@@ -1,4 +1,4 @@
-import BaseObject from 'common/object/base';
+import BaseObject from 'saffron-common/object/base';
 import { SetToolMessage } from 'editor/message-types';
 
 function convertElementToEntity(fragments, element) {

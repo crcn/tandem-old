@@ -2,9 +2,9 @@ import './sidebar.scss';
 
 import cx from 'classnames';
 import React from 'react';
-import Reference from 'common/reference';
-import SideDragger from 'common/components/side-dragger';
-import RegisteredComponent from 'common/components/registered';
+import Reference from 'saffron-common/reference';
+import SideDragger from 'saffron-common/components/side-dragger';
+import RegisteredComponent from 'saffron-common/components/registered';
 
 /**
 * Right sidebar tools

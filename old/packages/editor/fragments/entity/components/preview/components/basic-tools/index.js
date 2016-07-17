@@ -9,7 +9,7 @@ import TextTool from './controllers/text';
 import PointerTool from './controllers/pointer';
 import TextEditTool from './controllers/text-edit';
 import { INITIALIZE } from 'base/message-types';
-import { TypeNotifier } from 'common/notifiers';
+import { TypeNotifier } from 'saffron-common/notifiers';
 import { SET_TOOL, GROUP_SELECTION, SET_ROOT_ENTITY, SetFocusMessage } from 'editor/message-types';
 
 import TextToolComponent from './components/text';

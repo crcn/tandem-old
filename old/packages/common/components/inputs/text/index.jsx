@@ -1,5 +1,5 @@
 import React from 'react';
-import TextEditorComponent from 'common/components/text-editor';
+import TextEditorComponent from 'saffron-common/components/text-editor';
 
 class TextInputComponent extends React.Component {
   onInput(source) {

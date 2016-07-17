@@ -2,19 +2,19 @@
 // parent entity changes.
 
 import memoize from 'memoizee';
-import BoundingRect from 'common/geom/bounding-rect';
-import { DisplayEntityComputer } from 'common/entities';
-import { translateStyleToIntegers } from 'common/utils/html/css/translate-style';
+import BoundingRect from 'saffron-common/geom/bounding-rect';
+import { DisplayEntityComputer } from 'saffron-common/entities';
+import { translateStyleToIntegers } from 'saffron-common/utils/html/css/translate-style';
 
 import {
   translateStyle,
   translateLength as translateCSSLength
-} from 'common/utils/html/css';
+} from 'saffron-common/utils/html/css';
 
 import {
   calculateZoom,
   multiplyStyle
-} from 'common/utils/html';
+} from 'saffron-common/utils/html';
 
 function getElementOffset(element) {
   var p = element.parentNode;

@@ -1,8 +1,8 @@
 import './index.scss';
 
 import React from 'react';
-import Reference from 'common/reference';
-import WYSIWYGEditor from 'common/components/wysiwyg';
+import Reference from 'saffron-common/reference';
+import WYSIWYGEditor from 'saffron-common/components/wysiwyg';
 
 class TextToolComponent extends React.Component {
 

@@ -1,9 +1,9 @@
-import BaseObject from 'common/object/base';
-import ObservableObject from 'common/object/observable';
+import BaseObject from 'saffron-common/object/base';
+import ObservableObject from 'saffron-common/object/observable';
 import encode from './encode';
 import {
   calculateLengthInPixels
-} from 'common/utils/html/css';
+} from 'saffron-common/utils/html/css';
 
 /**
  * Simple text width

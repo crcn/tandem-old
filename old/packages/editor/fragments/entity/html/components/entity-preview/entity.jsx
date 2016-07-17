@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { clone } from 'common/utils/object';
+import { clone } from 'saffron-common/utils/object';
 import EntityPreview from './entity-preview';
 
 function convertStyle(style) {

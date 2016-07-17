@@ -1,6 +1,6 @@
 import {
   CallbackNotifier
-} from 'common/notifiers';
+} from 'saffron-common/notifiers';
 
 import {
   KeyCommandFragment

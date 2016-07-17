@@ -6,7 +6,7 @@ import flatten from 'lodash/array/flatten';
 import intersection from 'lodash/array/intersection';
 import { DragSource, DropTarget } from 'react-dnd';
 import { SetFocusMessage, ToggleFocusMessage } from 'editor/message-types';
-import { deserialize as deserializeEntity } from 'common/entities';
+import { deserialize as deserializeEntity } from 'saffron-common/entities';
 
 class DropLayerTargetComponent extends React.Component {
   render() {

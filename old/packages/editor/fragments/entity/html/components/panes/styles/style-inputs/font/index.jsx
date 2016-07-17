@@ -1,7 +1,7 @@
 
 import React from 'react';
-import StyleReference from 'common/reference/style';
-import SearchDropdownComponent from 'common/components/inputs/searchable-dropdown';
+import StyleReference from 'saffron-common/reference/style';
+import SearchDropdownComponent from 'saffron-common/components/inputs/searchable-dropdown';
 
 
 import { ALL_FONTS, ALL_FONT_WEIGHTS, ALL_FONT_STYLES } from 'editor/fragment/queries';

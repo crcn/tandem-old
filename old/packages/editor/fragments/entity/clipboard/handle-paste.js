@@ -1,9 +1,9 @@
 
 import traverse from 'traverse';
-import { getValue } from 'common/utils/object';
-import { TypeNotifier } from 'common/notifiers';
+import { getValue } from 'saffron-common/utils/object';
+import { TypeNotifier } from 'saffron-common/notifiers';
 import { PASTE, UPLOAD_FILE, SetFocusMessage } from 'editor/message-types';
-import { deserialize as deserializeEntity } from 'common/entities';
+import { deserialize as deserializeEntity } from 'saffron-common/entities';
 
 export function create({ app }) {
   app.notifier.push(TypeNotifier.create(PASTE, paste));

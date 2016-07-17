@@ -1,8 +1,8 @@
-import { ApplicationFragment } from 'common/fragment/types';
+import { ApplicationFragment } from 'saffron-common/fragment/types';
 import { KeyCommandFragment } from 'editor/fragment/types';
 import { SET_ROOT_ENTITY, CLEAR_HISTORY, RootEntityMessage } from 'editor/message-types';
-import { TypeNotifier } from 'common/notifiers';
-import { deserialize as deserializeEntity } from 'common/entities/base';
+import { TypeNotifier } from 'saffron-common/notifiers';
+import { deserialize as deserializeEntity } from 'saffron-common/entities/base';
 
 export default ApplicationFragment.create({
   id: 'projectHandler',

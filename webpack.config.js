@@ -124,5 +124,14 @@ module.exports = [
       libraryTarget: 'commonjs2'
     },
     externals: nodeModules
+  }),createConfig({
+    entry: {
+      'back-end-lib' : './src/back-end/application.js'
+    },
+    target: 'node',
+    output: {
+      libraryTarget: 'commonjs2'
+    },
+    externals: nodeModules
   })
 ]

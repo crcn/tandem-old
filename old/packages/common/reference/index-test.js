@@ -1,6 +1,6 @@
 import expect from 'expect.js';
 import Reference from './index';
-import BaseObject from 'common/object/base';
+import BaseObject from 'saffron-common/object/base';
 
 describe(__filename + '#', function() {
   it('can get a referenced value', function() {

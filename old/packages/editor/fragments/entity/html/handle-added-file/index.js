@@ -1,6 +1,6 @@
 import { ADDED_FILE } from 'editor/message-types';
-import { TypeNotifier } from 'common/notifiers';
-import { ApplicationFragment } from 'common/fragment/types';
+import { TypeNotifier } from 'saffron-common/notifiers';
+import { ApplicationFragment } from 'saffron-common/fragment/types';
 
 export function create({ app }) {
   app.notifier.push(TypeNotifier.create(ADDED_FILE, handleImage));

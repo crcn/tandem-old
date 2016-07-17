@@ -2,15 +2,36 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 var vscode = require('vscode');
+var mesh_1 = require('mesh');
+var SocketIOBus = require('mesh-socket-io-bus');
+var io = require('socket.io');
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 function activate(context) {
+    var server = io();
+    server.set('origins', '*domain.com*:*');
+    var port = 8090;
+    server.listen(port);
+    server.on('connection', function (connection) {
+        console.log('con');
+    });
+    var bus = SocketIOBus.create({
+        connection: server
+    }, mesh_1.WrapBus.create(function (action) {
+        console.log('remote', action);
+    }));
     var SaffronDocumentContentProvider = (function () {
         function SaffronDocumentContentProvider() {
             this._onDidChange = new vscode.EventEmitter();
         }
         SaffronDocumentContentProvider.prototype.provideTextDocumentContent = function (uri, token) {
-            return "\n                    <style type=\"text/css\">\n                        body {\n                            position: absolute;\n                            height: 100%;\n                            width: 100%;\n                        }\n                        body iframe {\n                            border: none;\n                            height: 100%;\n                            width: 100%;\n\n                        }\n                    </style>\n                    <body class='saffron-preview'>\n\n                        <iframe src='http://localhost:8080' />\n                    </body>\n            ";
+            var config = {
+                socketio: {
+                    port: port
+                }
+            };
+            // console.log(encodeURIComponent(JSON.stringify(config)));
+            return "\n                <style type=\"text/css\">\n                    body {\n                        position: absolute;\n                        height: 99%;\n                        width: 100%;\n                    }\n                    body > iframe {\n                        border: none;\n                        height: 100%;\n                        width: 100%;\n\n                    }\n                </style>\n                <body class='saffron-preview'>\n                    <div id='app'></div>\n                    <script src='http://localhost:8080/bundle/front-end.js' />\n                </body>\n            ";
         };
         Object.defineProperty(SaffronDocumentContentProvider.prototype, "onDidChange", {
             get: function () {

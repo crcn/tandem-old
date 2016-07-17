@@ -1,6 +1,6 @@
 import expect from 'expect.js';
 import TextEditor from './text-editor';
-import NotifierCollection from 'common/notifiers/collection';
+import NotifierCollection from 'saffron-common/notifiers/collection';
 
 describe(__filename + '#', function() {
   it('can be created', function() {

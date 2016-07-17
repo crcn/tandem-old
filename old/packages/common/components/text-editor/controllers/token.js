@@ -1,4 +1,4 @@
-import BaseObject from 'common/object/base';
+import BaseObject from 'saffron-common/object/base';
 import calcPosition from './calc-position';
 import encode from './encode';
 

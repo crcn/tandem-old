@@ -2,7 +2,7 @@ import './index.scss';
 import React from 'react';
 import {
   translateStyleToIntegers
-} from 'common/utils/html/css';
+} from 'saffron-common/utils/html/css';
 
 class EntityPaddingComponent extends React.Component {
   render() {

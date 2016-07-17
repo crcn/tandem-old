@@ -2,13 +2,13 @@ import './text-editor.scss';
 
 import React from 'react';
 import TextEditor from '../controllers/text-editor';
-import { startDrag } from 'common/utils/component';
-import TypeNotifier from 'common/notifiers/type';
+import { startDrag } from 'saffron-common/utils/component';
+import TypeNotifier from 'saffron-common/notifiers/type';
 import LineComponent from './line';
 import CaretComponent from './caret';
-import CollectionNotifier from 'common/notifiers/collection';
+import CollectionNotifier from 'saffron-common/notifiers/collection';
 import HighlightComponent from './highlight';
-import { translateAbsoluteToRelativePoint } from 'common/utils/html';
+import { translateAbsoluteToRelativePoint } from 'saffron-common/utils/html';
 
 class TextEditorComponent extends React.Component {
 

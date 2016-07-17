@@ -4,7 +4,7 @@ import './text.scss';
 import cx from 'classnames';
 import React from 'react';
 import AutosizeInput from 'react-input-autosize';
-import FocusComponent from 'common/components/focus';
+import FocusComponent from 'saffron-common/components/focus';
 
 class TextLayerLabelComponent extends React.Component {
 

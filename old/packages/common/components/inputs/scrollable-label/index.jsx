@@ -1,6 +1,6 @@
 import './index.scss';
 import React from 'react';
-import { startDrag } from 'common/utils/component';
+import { startDrag } from 'saffron-common/utils/component';
 
 class ScrollableLabelInput extends React.Component {
   startDrag(event) {

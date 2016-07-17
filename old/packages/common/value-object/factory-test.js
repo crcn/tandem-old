@@ -1,6 +1,6 @@
 import expect from 'expect.js';
-import BaseObject from 'common/object/base';
-import { InvalidError } from 'common/errors';
+import BaseObject from 'saffron-common/object/base';
+import { InvalidError } from 'saffron-common/errors';
 import FactoryValueObject from './factory';
 
 describe(__filename + '#', function() {

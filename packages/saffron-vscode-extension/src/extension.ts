@@ -1,11 +1,36 @@
 'use strict';
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+/// <reference path="./test.d.ts" />
+
 import * as vscode from 'vscode';
+import * as createServer from 'express'; 
+import { WrapBus, NoopBus } from 'mesh';
+import * as SocketIOBus from 'mesh-socket-io-bus';
+import * as io from 'socket.io';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+
+    var server = io();
+    const b:NoopBus = NoopBus.create();
+    b.test;
+
+    (server as any).set('origins', '*domain.com*:*');
+    const port = 8090;
+    server.listen(port);
+
+    server.on('connection', function(connection) {
+       console.log('con'); 
+    });
+
+
+    var bus = SocketIOBus.create({
+        connection: server
+    }, WrapBus.create((action) => {
+        console.log('remote', action);
+    }));
 
     class SaffronDocumentContentProvider {
 
@@ -15,25 +40,34 @@ export function activate(context: vscode.ExtensionContext) {
             this._onDidChange =  new vscode.EventEmitter<any>();
         }
         provideTextDocumentContent(uri, token) {
+
+            var config = {
+                socketio: {
+                    port: port
+                }
+            };
+
+            // console.log(encodeURIComponent(JSON.stringify(config)));
+
             return `
-                    <style type="text/css">
-                        body {
-                            position: absolute;
-                            height: 100%;
-                            width: 100%;
-                        }
-                        body iframe {
-                            border: none;
-                            height: 100%;
-                            width: 100%;
+                <style type="text/css">
+                    body {
+                        position: absolute;
+                        height: 99%;
+                        width: 100%;
+                    }
+                    body > iframe {
+                        border: none;
+                        height: 100%;
+                        width: 100%;
 
-                        }
-                    </style>
-                    <body class='saffron-preview'>
-
-                        <iframe src='http://localhost:8080' />
-                    </body>
-            `;
+                    }
+                </style>
+                <body class='saffron-preview'>
+                    <div id='app'></div>
+                    <script src='http://localhost:8080/bundle/front-end.js' />
+                </body>
+            `; 
         }
 
         get onDidChange() {

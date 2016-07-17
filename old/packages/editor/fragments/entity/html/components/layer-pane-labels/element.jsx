@@ -6,7 +6,7 @@ import React from 'react';
 import ElementEntity from '../../entities/element';
 import VOID_ELEMENTS from '../../constants/void-elements';
 import AutosizeInput from 'react-input-autosize';
-import FocusComponent from 'common/components/focus';
+import FocusComponent from 'saffron-common/components/focus';
 
 import {
   SetFocusMessage

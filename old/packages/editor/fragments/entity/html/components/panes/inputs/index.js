@@ -2,7 +2,7 @@ import {
   ComponentFragment
 } from 'editor/fragment/types';
 
-import TextInputComponent from 'common/components/inputs/text';
+import TextInputComponent from 'saffron-common/components/inputs/text';
 
 export function createFragments({ app }) {
 

@@ -5,10 +5,10 @@ import {
 
 import inflection from 'inflection';
 import StylePaneComponent from './style-pane';
-import TextInputComponent from 'common/components/inputs/text';
-import UnitInputComponent from 'common/components/inputs/unit';
+import TextInputComponent from 'saffron-common/components/inputs/text';
+import UnitInputComponent from 'saffron-common/components/inputs/unit';
 import FontInputComponent from './style-inputs/font';
-import ColorPickerComponent from 'common/components/inputs/color-picker';
+import ColorPickerComponent from 'saffron-common/components/inputs/color-picker';
 import TextAlignInputComponent from './style-inputs/text-align';
 import BackgroundInputComponent from './style-inputs/background';
 

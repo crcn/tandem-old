@@ -1,7 +1,7 @@
 import './index.scss';
 
 import React from 'react';
-import ArrowComponent from 'common/components/arrow';
+import ArrowComponent from 'saffron-common/components/arrow';
 
 class PopdownComponent extends React.Component {
   render() {

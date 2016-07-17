@@ -1,5 +1,5 @@
-import BaseObject from 'common/object/base';
-import { DisplayEntity } from 'common/entities';
+import BaseObject from 'saffron-common/object/base';
+import { DisplayEntity } from 'saffron-common/entities';
 import {
   SetToolMessage,
   SetFocusMessage,

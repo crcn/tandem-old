@@ -1,4 +1,4 @@
-import { DisplayEntity } from 'common/entities';
+import { DisplayEntity } from 'saffron-common/entities';
 
 class ElementEntity extends DisplayEntity {
 

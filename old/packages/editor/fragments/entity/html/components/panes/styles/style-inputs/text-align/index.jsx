@@ -1,5 +1,5 @@
 import React from 'react';
-import { RadioGroupInputComponent, RadioGroupItemComponent } from 'common/components/inputs/radio-group';
+import { RadioGroupInputComponent, RadioGroupItemComponent } from 'saffron-common/components/inputs/radio-group';
 
 class TextAlignStyleInputComponent extends React.Component {
   render() {

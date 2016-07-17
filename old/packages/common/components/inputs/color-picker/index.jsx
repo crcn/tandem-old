@@ -1,8 +1,8 @@
 import './index.scss';
-import { diff } from 'common/utils/object';
-import MenuComponent from 'common/components/menu';
+import { diff } from 'saffron-common/utils/object';
+import MenuComponent from 'saffron-common/components/menu';
 import PointerComponent from './pointer';
-import { parseColor, stringifyColor } from 'common/utils/color';
+import { parseColor, stringifyColor } from 'saffron-common/utils/color';
 import { chrome as ColorPickerComponent } from 'react-color';
 
 import React from 'react';

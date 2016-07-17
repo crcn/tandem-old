@@ -2,10 +2,10 @@ import './stage.scss';
 
 import React from 'react';
 import DropZone from 'react-dropzone';
-import TextInputComponent from 'common/components/inputs/text';
+import TextInputComponent from 'saffron-common/components/inputs/text';
 import ToolsLayerComponent from './tools';
-import RegisteredComponent from 'common/components/registered';
-import TextEditorComponent from 'common/components/text-editor';
+import RegisteredComponent from 'saffron-common/components/registered';
+import TextEditorComponent from 'saffron-common/components/text-editor';
 
 import { PREVIEW_STAGE_CLICK, PREVIEW_STAGE_MOUSE_DOWN, UPLOAD_FILE } from 'editor/message-types';
 

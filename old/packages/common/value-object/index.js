@@ -1,5 +1,5 @@
-import { InvalidError } from 'common/errors';
-import { create } from 'common/utils/class';
+import { InvalidError } from 'saffron-common/errors';
+import { create } from 'saffron-common/utils/class';
 /**
  */
 

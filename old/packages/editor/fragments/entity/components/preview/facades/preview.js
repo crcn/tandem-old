@@ -1,5 +1,5 @@
-import ObservableObject from 'common/object/observable';
-import { NotifierCollection } from 'common/notifiers';
+import ObservableObject from 'saffron-common/object/observable';
+import { NotifierCollection } from 'saffron-common/notifiers';
 import { SET_TOOL, ENTITY_PREVIEW_CLICK } from 'editor/message-types';
 
 const MIN_ZOOM_LEVEL = 0.4;

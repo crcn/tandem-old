@@ -1,8 +1,8 @@
 import './index.scss';
 
 import React from 'react';
-import CSSParser from 'common/parsers/css';
-import MenuComponent from 'common/components/menu';
+import CSSParser from 'saffron-common/parsers/css';
+import MenuComponent from 'saffron-common/components/menu';
 
 class BackgroundInputComponent extends React.Component {
   render() {

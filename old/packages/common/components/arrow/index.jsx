@@ -1,7 +1,7 @@
 import './index.scss';
 
 import React from 'react';
-import { getStyle } from 'common/utils/component';
+import { getStyle } from 'saffron-common/utils/component';
 
 class ArrowComponent extends React.Component {
   render() {

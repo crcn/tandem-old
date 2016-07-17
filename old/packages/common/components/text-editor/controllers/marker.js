@@ -1,4 +1,4 @@
-import BaseObject from 'common/object/base';
+import BaseObject from 'saffron-common/object/base';
 
 /**
  * TODO - marks a selection of text. Also used for the cursor

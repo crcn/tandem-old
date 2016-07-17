@@ -1,4 +1,4 @@
-import { create } from 'common/utils/class';
+import { create } from 'saffron-common/utils/class';
 
 class Reference {
 

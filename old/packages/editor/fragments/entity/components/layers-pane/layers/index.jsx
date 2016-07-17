@@ -1,8 +1,8 @@
 import './index.scss';
 
-import Node from 'common/node';
+import Node from 'saffron-common/node';
 import React from 'react';
-import PaneComponent from 'common/components/pane';
+import PaneComponent from 'saffron-common/components/pane';
 import LayerComponent from './layer.jsx';
 
 import HTML5Backend from 'react-dnd-html5-backend';

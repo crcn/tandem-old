@@ -6,7 +6,7 @@ import {
   PreviewComponentFragment
 } from 'editor/fragment/types';
 
-import { CallbackNotifier } from 'common/notifiers';
+import { CallbackNotifier } from 'saffron-common/notifiers';
 
 import React from 'react';
 import Preview from './facades/preview';

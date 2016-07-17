@@ -1,4 +1,4 @@
-import ObservableObject from 'common/object/observable';
+import ObservableObject from 'saffron-common/object/observable';
 
 import {
   PREVIEW_STAGE_MOUSE_DOWN,

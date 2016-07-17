@@ -1,6 +1,6 @@
 import './index.scss';
 import React from 'react';
-import DragDropComponent from 'common/components/drag-drop';
+import DragDropComponent from 'saffron-common/components/drag-drop';
 
 class SideDragger extends React.Component {
   onDragStart() {

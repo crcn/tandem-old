@@ -2,11 +2,11 @@ import Line from './line';
 import Caret from './caret';
 import Marker from './marker';
 import TextRuler from './text-ruler';
-import BaseObject from 'common/object/base';
-import StringTokenizer from 'common/tokenizers/string';
-import { translateLengthToInteger } from 'common/utils/html/css/translate-style';
-import { SPACE, NEW_LINE, TAB } from 'common/tokenizers/token-types';
-import { clone } from 'common/utils/object';
+import BaseObject from 'saffron-common/object/base';
+import StringTokenizer from 'saffron-common/tokenizers/string';
+import { translateLengthToInteger } from 'saffron-common/utils/html/css/translate-style';
+import { SPACE, NEW_LINE, TAB } from 'saffron-common/tokenizers/token-types';
+import { clone } from 'saffron-common/utils/object';
 
 class TextEditor extends BaseObject {
 

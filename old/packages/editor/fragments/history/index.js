@@ -18,10 +18,10 @@ import { create as createKeyCommandFragments } from './key-commands';
 // used for history. See this: https://github.com/creationix/js-git
 // import createMemDb from 'js-git/mixins/mem-db';
 
-import ObservableCollection from 'common/collection/observable';
-import { CallbackNotifier, TypeNotifier } from 'common/notifiers';
+import ObservableCollection from 'saffron-common/collection/observable';
+import { CallbackNotifier, TypeNotifier } from 'saffron-common/notifiers';
 
-import { Entity, deserialize } from 'common/entities';
+import { Entity, deserialize } from 'saffron-common/entities';
 import { INITIALIZE } from 'base/message-types';
 import { SET_ROOT_ENTITY, CLEAR_HISTORY, SetFocusMessage } from 'editor/message-types';
 

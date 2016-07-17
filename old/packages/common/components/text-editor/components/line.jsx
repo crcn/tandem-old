@@ -1,6 +1,6 @@
 import React from 'react';
 import TokenComponent from './token';
-import { translateAbsoluteToRelativePoint } from 'common/utils/html';
+import { translateAbsoluteToRelativePoint } from 'saffron-common/utils/html';
 
 class LineComponent extends React.Component {
 

@@ -1,9 +1,9 @@
-import BaseCollection from 'common/collection';
-import { clone } from 'common/utils/object';
+import BaseCollection from 'saffron-common/collection';
+import { clone } from 'saffron-common/utils/object';
 import { SetFocusMessage } from 'editor/message-types';
-import BoundingRect from 'common/geom/bounding-rect';
+import BoundingRect from 'saffron-common/geom/bounding-rect';
 import { ChangeMessage } from 'base/message-types';
-import { calculateBoundingRect } from 'common/utils/geom';
+import { calculateBoundingRect } from 'saffron-common/utils/geom';
 import assert from 'assert';
 import memoize from 'memoizee';
 

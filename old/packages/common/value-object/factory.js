@@ -1,4 +1,4 @@
-import ValueObject from 'common/value-object';
+import ValueObject from 'saffron-common/value-object';
 
 class FactoryValueObject extends ValueObject {
   validate(value) {

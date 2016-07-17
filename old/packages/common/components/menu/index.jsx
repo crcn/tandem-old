@@ -2,8 +2,8 @@ import './index.scss';
 
 import cx from 'classnames';
 import React from 'react';
-import PortalComponent from 'common/components/portal';
-import PopdownComponent from 'common/components/popdown';
+import PortalComponent from 'saffron-common/components/portal';
+import PopdownComponent from 'saffron-common/components/popdown';
 
 class MenuComponent extends React.Component {
 

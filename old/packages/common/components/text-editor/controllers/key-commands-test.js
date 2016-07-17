@@ -1,5 +1,5 @@
 import TextEditor from './text-editor';
-import NotifierCollection from 'common/notifiers/collection';
+import NotifierCollection from 'saffron-common/notifiers/collection';
 import expect from 'expect.js';
 
 describe(__filename + '#', function() {

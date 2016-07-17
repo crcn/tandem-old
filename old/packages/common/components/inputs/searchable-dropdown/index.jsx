@@ -2,11 +2,11 @@ import './index.scss';
 
 import cx from 'classnames';
 import React from 'react';
-import MenuComponent from 'common/components/menu';
-import SelectComponent from 'common/components/inputs/select';
-import PortalComponent from 'common/components/portal';
-import PopdownComponent from 'common/components/popdown';
-import { coerceFunction } from 'common/utils/function';
+import MenuComponent from 'saffron-common/components/menu';
+import SelectComponent from 'saffron-common/components/inputs/select';
+import PortalComponent from 'saffron-common/components/portal';
+import PopdownComponent from 'saffron-common/components/popdown';
+import { coerceFunction } from 'saffron-common/utils/function';
 
 /**
  * Similar to a dropmenu, but aso has search capabilities

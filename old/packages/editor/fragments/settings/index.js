@@ -1,7 +1,7 @@
 import store from 'store';
 import debounce from 'lodash/function/debounce';
-import ObservableObject from 'common/object/observable';
-import { CallbackNotifier } from 'common/notifiers';
+import ObservableObject from 'saffron-common/object/observable';
+import { CallbackNotifier } from 'saffron-common/notifiers';
 import { ApplicationFragment } from 'editor/fragment/types';
 
 /**
