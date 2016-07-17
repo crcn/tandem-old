@@ -20,6 +20,7 @@ export default class SfnFile extends CoreObject {
       fragments: this.isolate !== false ? this.fragments.createChild() : this.fragments
     };
 
+
     // don't do this for now.
     if (this.expression && false) {
       patch(this.expression, expression);
@@ -27,7 +28,7 @@ export default class SfnFile extends CoreObject {
     } else {
       this.expression = expression;
       var entity = await expression.load(options);
-
+      
       this.setProperties({
         expression,
         entity

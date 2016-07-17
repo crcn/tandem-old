@@ -19,8 +19,8 @@ export default class ProjectService extends Service {
 
   async initialize() {
 
-    var createModel = (data) => (
-      this.app
+    var createModel = (data) => {
+      return this.app
         .fragments
         .query(`models/${data.ext}-file`)
         .create({
@@ -28,8 +28,8 @@ export default class ProjectService extends Service {
           fragments: this.app.fragments,
           app: this.app,
           bus: this.bus
-        })
-    );
+        });
+    };
 
     this.app.setProperties({
       projects: this.projects = Projects.create(

@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
             }
         }
     });
-    
+
     server.initialize();
 
     class SaffronDocumentContentProvider {
@@ -30,35 +30,41 @@ export function activate(context: vscode.ExtensionContext) {
         constructor() {
             this._onDidChange =  new vscode.EventEmitter<any>();
         }
-        provideTextDocumentContent(uri, token) {
 
-            var config = {
-                socketio: {
-                    port: 8090
+        async provideTextDocumentContent(uri, token) {
+
+            await server.bus.execute({
+                type: 'insert',
+                collectionName: 'files',
+                data: {
+                    path: '/root/file.sfn',
+                    ext: 'sfn',
+                    content: '<div style="background-color:#F60;width:1024px;height:768px;position:absolute;"></div>'
                 }
-            };
-
-            // console.log(encodeURIComponent(JSON.stringify(config)));
+            }).read();
 
             return `
-                <style type="text/css">
+                <style>
                     body {
-                        position: absolute;
+                        width: 100%;
                         height: 99%;
-                        width: 100%;
+                        position: absolute;
                     }
-                    body > iframe {
-                        border: none;
-                        height: 100%;
-                        width: 100%;
 
+                    .container {
+                        width: 100%;
+                        height: 100%;
+                        border: none;
                     }
                 </style>
-                <body class='saffron-preview'>
-                    <div id='app'></div>
-                    <script src='http://localhost:8080/bundle/front-end.js' />
+                <body>
+                    <iframe class="container" src="http://localhost:8090/" />
                 </body>
-            `; 
+            `;
+
+            // return (await server.bus.execute({
+            //     type: 'getIndexHtmlContent'
+            // }).read()).value;
         }
 
         get onDidChange() {

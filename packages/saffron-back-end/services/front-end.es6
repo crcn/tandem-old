@@ -6,6 +6,7 @@ import createSocketIOServer from 'socket.io';
 import { FactoryFragment } from 'saffron-common/fragments';
 import createServer from 'express';
 import path from 'path';
+import cors from 'cors';
 import createStaticMiddleware from 'express-static';
 import { sync as getPackagePath } from 'package-path';
 
@@ -15,6 +16,7 @@ export default class FrontEndService extends Service {
   constructor(properties) {
     super(properties);
     this.app.actors.push(this._ioService = IOService.create(properties));
+    this._port = this.config.socketio.port;
   }
 
   async load() {
@@ -24,10 +26,9 @@ export default class FrontEndService extends Service {
   }
 
   async _loadHttpServer() {
-    var port = this.config.socketio.port;
-    this.logger.info(`listening on port ${port}`);
+    this.logger.info(`listening on port ${this._port}`);
     this._server = createServer();
-    this._socket = this._server.listen(port);
+    this._socket = this._server.listen(this._port);
   }
 
   async _loadBundles() {
@@ -53,30 +54,48 @@ export default class FrontEndService extends Service {
   }
 
   async _loadStaticRoutes() {
-    var bundles = await this._loadBundles();
+    var bundles = this._bundles = await this._loadBundles();
+
+    this._server.use(cors());
+
+    // this should be part of the config
+    this._server.use(createStaticMiddleware(__dirname + '/../public'));
+
     for (var bundle of bundles) {
       this._server.use(createStaticMiddleware(path.dirname(bundle.main)));
     }
 
-    this._server.use(serveIndex);
+    this._server.use((req, res) => {
+      res.send(this.getIndexHtmlContent());
+    });
+  }
 
-    function serveIndex(req, res) {
-      res.send(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-          </head>
-          <body>
-            <div id="app"></div>
-            ${
-              bundles.map(function(bundle) {
-                return `<script src="/${path.basename(bundle.main)}"></script>`;
-              }).join('\n')
+  getIndexHtmlContent() {
+    const host = `http://localhost:${this._port}`;
+
+    return `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            html, body {
+              width: 100%;
+              height: 100%;
             }
-          </body>
-        </html>
-      `);
-    }
+          </style>
+        </head>
+        <body>
+          <div id="app"></div>
+          <script src='${host}/vendor/react.min.js'></script>
+          <script src='${host}/vendor/react-dom.min.js'></script>
+          ${
+            this._bundles.map(function(bundle) {
+              return `<script src="${host}/${path.basename(bundle.main)}"></script>`;
+            }).join('\n')
+          }
+        </body>
+      </html>
+    `;
   }
 
   async _loadSocketServer() {
