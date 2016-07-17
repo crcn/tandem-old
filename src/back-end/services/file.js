@@ -7,6 +7,7 @@ import isPublic from 'common/actors/decorators/public';
 import filterAction from 'common/actors/decorators/filter-action';
 import document from 'common/actors/decorators/document';
 
+import { Response } from 'mesh';
 import { FactoryFragment } from 'common/fragments';
 
 @loggable
@@ -61,10 +62,33 @@ export default class FileService extends Service {
   didRemove(action) {
     for (var item of action.data) {
       if (this._watchers[item.path]) {
-        this.logger.info('closing file watcher for %s', item.path);
-        this._watchers[item.path].close();
+        this._closeFileWatcher(this._watchers[item.path], item);
       }
     }
+  }
+
+  _closeFileWatcher(watcher, item) {
+    this.logger.info('closing file watcher for %s', item.path);
+    watcher.close();
+  }
+
+  /**
+   */
+
+  @isPublic
+  @document('watches a file for any changes')
+  watchFile(action) {
+    return Response.create((writable) => {
+      var watcher = gaze(action.path, (err, w) => {
+        w.on('all', async () => {
+          try {
+            await writable.write({ type: 'fileChange' });
+          } catch (e) {
+            this._closeFileWatcher(watcher, action);
+          }
+        });
+      });
+    });
   }
 
   /**

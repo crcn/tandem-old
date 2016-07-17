@@ -45,8 +45,8 @@ export default class SelectorComponent extends React.Component {
 
     const boundsStyle = {
       position: 'absolute',
-      left: entireBounds.left,
-      top: entireBounds.top,
+      left: entireBounds.left + 1,
+      top: entireBounds.top + 1,
       width: entireBounds.width - 1,
       height: entireBounds.height - 1,
     };

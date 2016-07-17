@@ -28,4 +28,6 @@
 
 </template>
 
-<history-slider name='john' />
+<template>
+  <history-slider name='john' />
+</template>

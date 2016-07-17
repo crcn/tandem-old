@@ -1,5 +1,8 @@
+import './template.scss';
+
 import NodeSection from 'common/section/node';
 import FragmentSection from 'common/section/fragment';
+import bubbleIframeEvents from 'common/utils/html/bubble-iframe-events';
 
 import { create } from 'common/utils/class';
 import { FactoryFragment } from 'common/fragments';
@@ -52,7 +55,7 @@ export default class FrameEntityController {
    * iframes do not inherit the property.
    */
 
-  setZoom(value) {
+  setZoom() {
     this.iframe.contentWindow.document.body.style.zoom = this.app.zoom;
   }
 
@@ -63,12 +66,7 @@ export default class FrameEntityController {
   load(options) {
 
     var iframe = this.iframe = options.section.targetNode;
-    Object.assign(iframe.style, {
-      border: 0,
-      margin: 0,
-      backgroundColor: 'white',
-      position: 'relative',
-    });
+    iframe.setAttribute('class', 'm-entity-controller-template');
 
     options.fragments.register(
       FactoryFragment.create({
@@ -80,6 +78,7 @@ export default class FrameEntityController {
     );
 
     iframe.addEventListener('load', async () => {
+      bubbleIframeEvents(iframe);
       var body = iframe.contentWindow.document.body;
       var bodySection = NodeSection.create(body);
       Object.assign(bodySection.targetNode.style, {

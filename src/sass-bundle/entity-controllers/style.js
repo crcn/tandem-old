@@ -19,7 +19,20 @@ export default class StyleEntityController extends CoreObject {
   async load({ section }) {
     var source = this.entity.expression.childNodes[0].nodeValue;
 
+    // TODO
+    // const _watchFile = async (path) => {
+    //   var stream = this.bus.execute({
+    //     type: 'watchFile',
+    //     path: path
+    //   });
+    //   let value;
+    //   while ({ value } = await stream.read()) {
+    //     console.log(value);
+    //   }
+    // };
+
     sass.importer(async (request, resolve) => {
+      // _watchFile(request.resolved);
       resolve((await this.bus.execute({
         type: 'readFile',
         path: request.resolved

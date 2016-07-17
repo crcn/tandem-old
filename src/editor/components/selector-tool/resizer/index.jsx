@@ -195,8 +195,8 @@ class ResizerComponent extends React.Component {
 
     // offset stroke
     var resizerStyle = {
-      left     : rect.left - 1 - cw / 2,
-      top      : rect.top - 1 - cw / 2,
+      left     : rect.left - cw / 2,
+      top      : rect.top - cw / 2,
     };
 
     var capabilities = preview.getCapabilities();

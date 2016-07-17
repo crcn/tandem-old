@@ -18,14 +18,14 @@
   }
 
   &--bounds {
-    border: 1px solid $color-blue-4;
-    opacity: 1;
+    border: 1px solid $color-blue-7;
+    opacity: 0.5;
   }
 
   & svg {
     & rect {
       fill: $color-blue-7;
-      stroke: $color-blue-4;
+      stroke: $color-blue-7;
     }
   }
 
