@@ -2,6 +2,7 @@ import { FactoryFragment } from 'common/fragments';
 import CoreObject from 'common/object';
 import sass from 'sass.js';
 
+
 export default class StyleEntityController extends CoreObject {
   setAttribute(key, value) {
 
@@ -10,11 +11,19 @@ export default class StyleEntityController extends CoreObject {
   async load({ section }) {
     var source = this.entity.expression.childNodes[0].nodeValue;
 
-    var { text } = await new Promise((resolve) => {
-      sass.compile(source, resolve);
+    sass.importer(async (request, resolve) => {
+      resolve((await this.bus.execute({
+        type: 'readFile',
+        path: request.resolved
+      }).read()).value);
     });
 
-    console.log(text);
+    var { text } = await new Promise((resolve, reject) => {
+      sass.compile(source, { inputPath: this.file.path }, function (result) {
+        if (result.text) return resolve(result);
+        reject(result);
+      });
+    });
 
     var node = this.node = document.createElement('style');
     node.setAttribute('type', 'text/css');

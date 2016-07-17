@@ -15,6 +15,7 @@ export default class SfnFile extends CoreObject {
 
     var options = {
       bus: this.bus,
+      file: this,
       fragments: this.isolate !== false ? this.fragments.createChild() : this.fragments
     };
 

@@ -29,11 +29,7 @@ export default class FileService extends Service {
       this._watch(action);
     }
 
-    var data = {
-      path    : action.path,
-      ext     : action.path.split('.').pop(),
-      content : fs.readFileSync(action.path, 'utf8')
-    };
+    var data = this.readFile(action);
 
     return this.bus.execute({
       type: 'upsert',
@@ -41,6 +37,19 @@ export default class FileService extends Service {
       query: { path: data.path },
       data: data
     });
+  }
+
+  /**
+   */
+
+  @isPublic
+  @document('reads a file content')
+  readFile(action) {
+    return {
+      path    : action.path,
+      ext     : action.path.split('.').pop(),
+      content : fs.readFileSync(action.path, 'utf8')
+    };
   }
 
   /**

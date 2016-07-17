@@ -23,7 +23,7 @@ function createConfig(options) {
       children: false,
       source: false,
       errors: true,
-      errorDetails: true,
+      errorDetails: false,
       warnings: false,
       publicPath: false
     },
