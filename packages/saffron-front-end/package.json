@@ -9,6 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "saffron-common": "^1.0.1"
+    "saffron-common": "^1.0.1",
+    "saffron-editor-bundle": "^1.0.0",
+    "saffron-html-bundle": "^1.0.0",
+    "saffron-sass-bundle": "^1.0.0"
   }
 }
