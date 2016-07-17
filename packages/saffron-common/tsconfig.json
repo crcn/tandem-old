@@ -12,9 +12,13 @@
   "exclude": [
     "node_modules"
   ],
+  "filesGlob": [
+      "**/*.ts",
+      "**/*.tsx",
+      "!node_modules/**"
+  ],
   "rootDirs": [
-    "node_modules",
-    "."
+    "node_modules"
   ],
   "atom": {
     "rewriteTsconfig": true

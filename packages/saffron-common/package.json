@@ -1,10 +1,10 @@
 {
   "name": "saffron-common",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "babel ./**/*.es6 --out-dir .",
+    "postinstall": "babel ./**/*.es6 --out-dir .; tsc",
     "build-watch": "babel ./**/*.es6 --out-dir . --watch"
   },
   "author": "",
@@ -28,6 +28,7 @@
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
     "sift": "^3.2.1",
-    "sprintf": "^0.1.5"
+    "sprintf": "^0.1.5",
+    "typescript": "^1.8.10"
   }
 }

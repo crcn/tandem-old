@@ -1,5 +1,5 @@
 {
-  "name": "saffron-common",
+  "name": "saffron-back-end",
   "version": "1.0.1",
   "main": "application.js",
   "scripts": {
@@ -27,6 +27,7 @@
     "inflection": "^1.10.0",
     "mesh": "^6.0.17",
     "mesh-memory-ds-bus": "^4.0.0",
+    "saffron-common": "^1.0.2",
     "sift": "^3.2.1",
     "socket.io": "^1.4.8"
   }
