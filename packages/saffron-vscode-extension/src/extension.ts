@@ -23,25 +23,40 @@ export function activate(context: vscode.ExtensionContext) {
 
     server.initialize();
 
+    var _inserted = false;
+
+    function _update(content) {
+        const path = '/root/file.sfn';
+
+        return server.bus.execute({
+            type: 'upsert',
+            collectionName: 'files',
+            query: {
+                path: path
+            },
+            data: {
+                path: path,
+                ext: 'sfn',
+                content: content
+            }
+        }).read();
+    }
+
     class SaffronDocumentContentProvider {
 
         private _onDidChange:vscode.EventEmitter<any>;
+        private _inserted:boolean;
 
         constructor() {
             this._onDidChange =  new vscode.EventEmitter<any>();
+            this._inserted = false;
         }
 
         async provideTextDocumentContent(uri, token) {
 
-            await server.bus.execute({
-                type: 'insert',
-                collectionName: 'files',
-                data: {
-                    path: '/root/file.sfn',
-                    ext: 'sfn',
-                    content: '<div style="background-color:#F60;width:1024px;height:768px;position:absolute;"></div>'
-                }
-            }).read();
+            if (!this._inserted) {
+                await _update(vscode.window.activeTextEditor.document.getText());
+            }
 
             return `
                 <style>
@@ -61,10 +76,6 @@ export function activate(context: vscode.ExtensionContext) {
                     <iframe class="container" src="http://localhost:8090/" />
                 </body>
             `;
-
-            // return (await server.bus.execute({
-            //     type: 'getIndexHtmlContent'
-            // }).read()).value;
         }
 
         get onDidChange() {
@@ -92,21 +103,18 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(disposable, registration);
 
-    function run(editor:vscode.TextEditor) {
-        var text = editor.document.getText();
-        console.log('text change', text);
+    function onChange(e:vscode.TextDocumentChangeEvent) {
+        _update(e.document.getText());
     }
 
-    function onChange(e:vscode.TextDocumentChangeEvent) {
-        console.log(e.document.getText());
+    function run(e:vscode.TextEditor) {
+        _update(e.document.getText());
     }
 
     vscode.workspace.onDidChangeTextDocument(onChange);
 
     vscode.window.onDidChangeActiveTextEditor(run);
-	if (vscode.window.activeTextEditor) {
-        run(vscode.window.activeTextEditor);
-	}
+
 }
 
 // this method is called when your extension is deactivated

@@ -8,6 +8,10 @@ export default class BrowserApplication extends BaseApplication {
   _registerFragments() {
     super._registerFragments();
 
+    window.onerror = (err) => {
+      this.bus.execute({ type: 'logServerError' });
+    };
+
     this.fragments.register(
       backEndServiceFragment,
       rootComponentRendererFragment

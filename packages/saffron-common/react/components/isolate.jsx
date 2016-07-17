@@ -4,11 +4,16 @@ import bubbleIframeEvents from '../../utils/html/bubble-iframe-events';
 
 export default class IsolateComponent extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   componentDidMount() {
 
     if (this.props.inheritCSS) {
       const head    = this.head;
-      Array.prototype.forEach.call(parent.document.getElementsByTagName('style'), function (style) {
+      Array.prototype.forEach.call(document.getElementsByTagName('style'), function (style) {
         head.appendChild(style.cloneNode(true));
       });
     }
