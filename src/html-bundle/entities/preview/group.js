@@ -9,17 +9,20 @@ export default class GroupPreview extends CoreObject {
   }
 
   getBoundingRect(zoomProperties) {
-    var rect = mergeBoundingRects(this.entity.section.childNodes.map((node) => (
-      node.nodeType === 1 ? calculateBoundingRect(node, zoomProperties) : void 0
-    )));
+    var rect = mergeBoundingRects(this.entity.section.childNodes.map((node) => {
 
+      // need to account for DOM elements that are not visible, but can still be calculated for bounding rect.
+      // This includes things like style, link, and others.
+      // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
+      return node.nodeType === 1 && node.offsetParent !== null ? calculateBoundingRect(this.entity, node, zoomProperties) : void 0;
+    }));
     return rect;
   }
 
   getCapabilities() {
     return {
       movable: false,
-      resizable: false,
+      resizable: false
     };
   }
 }

@@ -26,6 +26,7 @@ export default class ProjectService extends Service {
         .create({
           ...data,
           fragments: this.app.fragments,
+          app: this.app,
           bus: this.bus
         })
     );

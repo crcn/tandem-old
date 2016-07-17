@@ -1,4 +1,5 @@
 import NodeSection from 'common/section/node';
+import FragmentSection from 'common/section/fragment';
 
 import { create } from 'common/utils/class';
 import { FactoryFragment } from 'common/fragments';
@@ -6,6 +7,7 @@ import { FactoryFragment } from 'common/fragments';
 class RegisteredEntityController {
   constructor(properties) {
     Object.assign(this, properties);
+    this.section = FragmentSection.create();
   }
 
   async load(options) {
@@ -24,6 +26,34 @@ class RegisteredEntityController {
 export default class FrameEntityController {
   constructor(properties) {
     Object.assign(this, properties);
+
+    // flag the entity as isolated (iframes are) so that visual
+    // calculations work properly for child node.
+    this.entity.isolated = true;
+
+    // hacky, but we need the zoom.
+    this.app.actors.push({
+      execute: (event) => {
+        if (event.type === 'change') {
+          for (var change of event.changes) {
+            if (change.target === this.app && change.property === 'zoom') {
+              setTimeout(this.setZoom.bind(this, this.app.zoom), 100);
+            }
+          }
+        }
+      }
+    });
+
+    this.section = NodeSection.create(document.createElement('iframe'));
+  }
+
+  /**
+   * janky, but we need to copy zoom from the app since
+   * iframes do not inherit the property.
+   */
+
+  setZoom(value) {
+    this.iframe.contentWindow.document.body.style.zoom = this.app.zoom;
   }
 
   setAttribute(key, value) {
@@ -32,7 +62,7 @@ export default class FrameEntityController {
 
   load(options) {
 
-    var iframe = document.createElement('iframe');
+    var iframe = this.iframe = options.section.targetNode;
     Object.assign(iframe.style, {
       border: 0,
       margin: 0,
@@ -50,11 +80,14 @@ export default class FrameEntityController {
     );
 
     iframe.addEventListener('load', async () => {
-      var bodySection = NodeSection.create(iframe.contentWindow.document.body);
+      var body = iframe.contentWindow.document.body;
+      var bodySection = NodeSection.create(body);
       Object.assign(bodySection.targetNode.style, {
         margin: 0,
         padding: 0,
       });
+      this.setZoom();
+
       for (var childExpression of this.expression.childNodes) {
         await this.entity.appendChild(await childExpression.load({
           ...options,
@@ -62,8 +95,6 @@ export default class FrameEntityController {
         }));
       }
     });
-
-    this.section.appendChild(iframe);
   }
 
   createElementController(properties) {

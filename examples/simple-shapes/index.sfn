@@ -1,27 +1,31 @@
-
-<style type='text/scss'>
+<template id='history-slider'>
+  <style type='text/scss'>
   @import "../../src/editor/scss/variables.scss";
 
-  .page {
-    width: 1024px;
-    height: 768px;
-    background-color: #FFF;
-    color: $color-blue-4;
-    padding: 10px;
-  }
+    .page {
+      width: 1024px;
+      height: 768px;
+      background-color: #FFF;
+      color: $color-blue-4;
+      padding: 10px;
+      font-family: Helvetica;
+    }
 
-  .button {
-    position: absolute;
-    font-size: 32;
-    padding: 20px;
-    background-color: $color-blue-11;
-    display: inline-block;
-    border-radius: 10px;
-  }
-</style>
+    .button {
+      position: absolute;
+      font-size: 32;
+      padding: 20px;
+      color: $color-blue-4;
+      background-color: $color-blue-11;
+      display: inline-block;
+      border-radius: 10px;
+    }
+  </style>
 
-<div class='page'>
   <div class='button'>
-    Hello World!!!!!!!!
+    Hello {{name}}
   </div>
-</div>
+
+</template>
+
+<history-slider name='john' />

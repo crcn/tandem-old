@@ -35,22 +35,21 @@ function getElementOffset(entity, element) {
 }
 
 function getFrameOffset(entity) {
-  var left = 0;
-  var top  = 0;
 
   entity = entity.parentNode;
 
   while (entity) {
-    if (entity.displayType === 'htmlFrame') {
-      const bounds = entity.preview.getBoundingRect();
-      left += bounds.left;
-      top  += bounds.top;
+
+    if (entity.isolated && entity.preview) {
+      var rect = entity.preview.getBoundingRect();
+      return rect;
+      break;
     }
 
     entity = entity.parentNode;
   }
 
-  return { left, top };
+  return { left: 0, top: 0 };
 }
 
 function getComputedStyle(node) {
@@ -83,11 +82,12 @@ export function getCapabilities(node) {
   };
 }
 
-export function calculateBoundingRect(node, zoomProperties) {
+export function calculateBoundingRect(entity, node, zoomProperties) {
 
   var rect   = node.getBoundingClientRect();
   var cs     = getComputedStyle(node);
-  var offset = { left: 0, top: 0 };
+  var offset = getFrameOffset(entity);
+
 
   // margins are also considered bounds - add them here. Fixes a few issues
   // when selecting multiple items with different items & dragging them around.
@@ -159,7 +159,7 @@ export function getStyle(entity, node, zoomProperties) {
   var cStyle = getComputedStyle(node);
 
   // zooming happens a bit further down
-  var rect = calculateBoundingRect(node, false);
+  var rect = calculateBoundingRect(entity, node, false);
   var w = rect.right  - rect.left;
   var h = rect.bottom - rect.top;
 
@@ -190,7 +190,7 @@ export function setPositionFromAbsolutePoint(point, entity, node) {
   var element = node;
   var offset  = getElementOffset(entity, node);
 
-  var bounds = calculateBoundingRect(node, false);
+  var bounds = calculateBoundingRect(entity, node, false);
   var style  = getStyle(entity, node, false);
 
   var originLeft = bounds.left - style.left;

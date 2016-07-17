@@ -58,20 +58,23 @@ class ElementEntity extends Entity {
     Object.assign(context, options.context || {}, context, attributes);
 
     if (controllerFragment) {
-      this.preview = new GroupPreview(this);
-      section = FragmentSection.create();
       ref = this.ref = controllerFragment.create({
         ...options,
-        section: section,
         attributes: attributes,
         expression: this.expression,
         context: this.context,
         entity: this
       });
 
+      section = ref.section;
+      if (ref.section === options.section) {
+        throw new Error('ref section must not be parent section');
+      }
+
       await ref.load({
         ...options,
         context,
+        section
       });
     } else {
       ref = document.createElement(this.expression.nodeName);
@@ -79,13 +82,20 @@ class ElementEntity extends Entity {
         ref.setAttribute(key, attributes[key]);
       }
       section = NodeSection.create(ref);
-      this.preview = new NodePreview(this);
       for (var childExpression of this.expression.childNodes) {
         this.appendChild(await childExpression.load({
           ...options,
           context,
           section,
         }));
+      }
+    }
+
+    if (this.visible !== false) {
+      if (section instanceof FragmentSection) {
+        this.preview = new GroupPreview(this);
+      } else {
+        this.preview = new NodePreview(this);
       }
     }
 

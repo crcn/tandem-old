@@ -1,9 +1,17 @@
 import { FactoryFragment } from 'common/fragments';
 import CoreObject from 'common/object';
 import sass from 'sass.js';
+import FragmentSection from 'common/section/fragment';
 
 
 export default class StyleEntityController extends CoreObject {
+
+  constructor(properties) {
+    super(properties);
+    this.section = FragmentSection.create();
+    this.entity.visible = false;
+  }
+
   setAttribute(key, value) {
 
   }
