@@ -1,16 +1,23 @@
 {
-/*jshint laxcomma:false */
 
-var TextExpression        = require('./expressions/text');
-var GroupExpression       = require('./expressions/group');
-var RootExpression        = require('./expressions/root');
-var BlockExpression       = require('./expressions/block');
-var ElementExpression     = require('./expressions/element');
-var CommentExpression     = require('./expressions/comment');
-var AttributeExpression   = require('./expressions/attribute');
-var StringExpression      = require('./expressions/string');
-var ReferenceExpression   = require('./expressions/reference');
-// var PropertyExpression = require('./expressions/property');
+const {
+  RootExpression,
+  StringExpression,
+  TernaryExpression,
+  ElementExpression,
+  AttributeExpression,
+  TextExpression,
+  CommentExpression,
+  ReferenceExpression,
+  FunctionCallExpression,
+  OperationExpression,
+  ScriptExpression,
+  BlockExpression,
+  LiteralExpression,
+  NegativeExpression,
+  NotExpression,
+  HashExpression
+} = require('./expressions.ts')
 
 function trimWhitespace(ws) {
   return trimNewLineChars(ws).replace(/(^[\r\n]+)|([\r\n]+$)/, " ");
@@ -74,7 +81,7 @@ Start
 
 DocType
   = "<!DOCTYPE" _ info:[^>]+ _ ">" {
-      return ["doctype", info.join("")];
+      return new DoctypeExpression(info.join(""));
     }
 
 ChildNodes
@@ -83,7 +90,7 @@ ChildNodes
 
 CommentNode
   = _ "<!--" value:(!"-->" v:SourceCharacter { return v; })+ "-->" _ {
-    return CommentExpression.create(escapeString(trimEnds(value.join(""))));
+    return new CommentExpression(escapeString(trimEnds(value.join(""))));
   }
   / DocType
 
@@ -189,7 +196,7 @@ AttributeValues
 
 TextBinding
   = "{{" _ value:Expression _ "}}" {
-      return ["script", value];
+      return new ScriptExpression(value);
     }
 
 BlockBinding
@@ -202,7 +209,7 @@ Expression
 
 TernaryConditional
   = condition:Assignment "?" left:TernaryConditional ":" right:TernaryConditional {
-      return ["condition", condition, left, right];
+      return new TernaryExpression(condition, left, right);
     }
   / Assignment
 
@@ -221,13 +228,13 @@ InnerParameters
 
 Assignment
   = left:ObjectReference "=" right:Assignment {
-      return ["assign", left, right];
+      return new AssignCondition(left, right);
     }
   / Operation
 
 Operation
   = left:Operatable operator: ("&&" / "||" / "===" / "==" / "!==" / "!=" / ">==" / ">=" / ">" / "<==" / "<=" / "<" / "+" / "-" / "%" / "*" / "/") right:Operation {
-      return ["operator", operator, left, right];
+      return new OperationExpression(operator, left, right);
     }
   / Operatable
 
@@ -238,7 +245,7 @@ Modifiers
   = expression:Not modifiers:Modifier* {
 
       for (var i = 0, n = modifiers.length; i < n; i++) {
-        expression = ["modifier", modifiers[i].name, [expression].concat(modifiers[i].parameters)];
+        expression = new ModifierExpresssion(modifiers[i].name, [expression].concat(modifiers[i].parameters));
       }
 
       return expression;
@@ -258,10 +265,10 @@ ObjectReference
 
 Not
   = not:"!" value:Not {
-      return ["not", value];
+      return new NotExpression(value);
     }
   / not:("!"/"-") value:Not {
-      return ["negative", value];
+      return new NegativeExpression(value);
     }
   / Reserved/FunctionCall/ObjectReference
 
@@ -270,14 +277,14 @@ Object
 
 Number
   = value:("-"? ([0-9]+DecimalNumber? / DecimalNumber)) {
-      return ["literal", parseFloat(text())];
+      return new LiteralExpression(parseFloat(text()));
     }
 
 DecimalNumber
   = "." [0-9]+
 
 Group
-  = "(" group:Expression ")" { return ["group", group]; }
+  = "(" group:Expression ")" { return group; }
 
 Reserved
   = expression:(Boolean / Undefined / Null / NaN / Infinity) {
@@ -286,24 +293,24 @@ Reserved
 
 Boolean
   = value:("true"/"false") {
-      return ["literal", value === "true"];
+      return new LiteralExpression(value === "true");
     }
 
 Undefined
-  = "undefined" { return ["literal", void 0]; }
+  = "undefined" { return new LiteralExpression(void 0); }
 
 NaN
-  = "NaN" { return ["literal", NaN]; }
+  = "NaN" { return new LiteralExpression(NaN); }
 
 Infinity
-  = "Infinity" { return ["literal", Infinity]; }
+  = "Infinity" { return new LiteralExpression(Infinity); }
 
 Null
-  = ("null"/"NULL") { return ["literal", null]; }
+  = ("null"/"NULL") { return new LiteralExpression(null); }
 
 FunctionCall
   = reference:ObjectReference parameters:Parameters {
-      return ["call", reference, parameters];
+      return new FunctionCallExpression(reference, parameters);
     }
 
 Reference
@@ -330,7 +337,7 @@ ReferenceName
 
 Hash
   = "{" _ values:HashValues? _ "}" {
-      return ["hash", values];
+      return new HashExpression(values);
     }
 
 HashValues

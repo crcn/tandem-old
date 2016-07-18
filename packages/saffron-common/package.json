@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "karma start",
+    "test-watch": "WATCH=1 karma start",
     "postinstall": "babel `find ./ -name '*.es6'` --out-dir .; tsc",
     "build-watch": "babel ./**/*.es6 --out-dir . --watch"
   },
@@ -27,6 +28,7 @@
     "karma": "^1.1.1",
     "karma-babel-preprocessor": "^6.0.1",
     "karma-browserify-preprocessor": "^0.2.0",
+    "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^1.0.1",
     "karma-mocha": "^1.1.1",
     "karma-spec-reporter": "0.0.26",
@@ -44,8 +46,12 @@
     "sift": "^3.2.1",
     "sprintf": "^0.1.5",
     "style-loader": "^0.13.1",
+    "ts-loader": "^0.8.2",
     "typescript": "^1.8.10",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0"
   }
 }

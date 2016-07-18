@@ -46,10 +46,6 @@ exports.create = function(options) {
           loader: getModulePath('url-loader') + '?limit=1000'
         },
         {
-          test: /\.peg$/,
-          loader: getModulePath('pegjs-loader') + '?cache=true'
-        },
-        {
           test: /\.scss$/,
           loader: [
             getModulePath('style-loader'),
@@ -65,7 +61,7 @@ exports.create = function(options) {
           ].join('!') 
         },
         {
-          test: /\.(jsx|es6)?$/,
+          test: /\.(jsx?|es6|peg|ts?)$/,
           exclude: /(node_modules|bower_components)/,
           loader: getModulePath('babel-loader'),
           query: {
@@ -81,6 +77,16 @@ exports.create = function(options) {
             ],
             ignore: ['buffer']
           }
+        },
+        {
+          test: /\.peg$/,
+          loader: getModulePath('pegjs-loader') + '?cache=true'
+        },
+        {
+          test: /\.tsx?$/,
+          loader: [
+            getModulePath('ts-loader')
+          ].join('!') 
         }
       ]
     }
