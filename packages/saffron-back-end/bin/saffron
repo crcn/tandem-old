@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 require('babel-polyfill');
-var app = require('../public/bundle/back-end.js');
+var app = require('../entry');
 
 var argv = require('yargs').argv;
 var path = require('path');

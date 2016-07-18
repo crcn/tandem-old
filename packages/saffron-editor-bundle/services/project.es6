@@ -73,7 +73,6 @@ export default class ProjectService extends Service {
 
   @isPublic
   update(action) {
-    console.log('update it!', action);
     return this._projectsBus.execute(action);
   }
 }

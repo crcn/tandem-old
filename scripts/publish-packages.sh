@@ -1,0 +1,1 @@
+./exec-packages.sh npm publish

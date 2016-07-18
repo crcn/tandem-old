@@ -19,7 +19,7 @@ export default class BaseApplication extends CoreObject {
     if (!this.config) {
       this.config = {};
     }
-
+  
     const initialFragments = this.fragments || [];
 
     // contains most dependencies for the application.

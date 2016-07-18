@@ -24,6 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
     server.initialize();
 
     var _inserted = false;
+    var _updateTimestamp;
 
     function _update(content) {
         const path = '/root/file.sfn';
@@ -35,12 +36,18 @@ export function activate(context: vscode.ExtensionContext) {
                 path: path
             },
             data: {
+                timestamp: _updateTimestamp = Date.now(),
                 path: path,
                 ext: 'sfn',
                 content: content
             }
         }).read();
     }
+    
+    server.actors.push(WrapBus.create(function(action) {
+        if (action.type !== 'update' || action.timestamp < _updateTimestamp) return;
+        console.log('text did change')
+    }));
 
     class SaffronDocumentContentProvider {
 

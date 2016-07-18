@@ -25,7 +25,8 @@
   "scripts": {
     "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
     "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install"
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "build-watch": "echo 'cannot build watch'"
   },
   "devDependencies": {
     "typescript": "^1.8.5",

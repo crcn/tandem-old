@@ -1,29 +1,25 @@
 #!/usr/bin/env node
 
 var fs = require('fs');
-var _exec = require('./utils/exec');
-var _eachAsync = require('./utils/each-async');
+var exec = require('./utils/exec');
+var eachAsync = require('./utils/each-async');
+var log = require('./utils/log');
 var path  = require('path');
 
-var packagesDir = __dirname + '/../packages';
-
-var saffronPackageFiles = fs.readdirSync(__dirname + '/../packages').map(function(fileName) {
-  return !/^\./.test(fileName) ? path.join(packagesDir, fileName, 'package.json') : void 0;
-}).filter(function(filePath) {
-  return !!filePath;
-});
+var saffronPackageFiles = require('./utils/package-paths');
 
 var packageNames = saffronPackageFiles.map(function(packagePath) {
   return require(packagePath).name;
 });
 
-(!~process.argv.indexOf('--skip-link') ? _eachAsync(saffronPackageFiles, npmLink) : Promise.resolve()) 
-.then(_eachAsync.bind(this, saffronPackageFiles, linkEachLocalDependency.bind(this, packageNames)));
+(!~process.argv.indexOf('--skip-link') ? eachAsync(saffronPackageFiles, npmLink) : Promise.resolve()) 
+.then(eachAsync.bind(this, saffronPackageFiles, linkEachLocalDependency.bind(this, packageNames))).
+then(log.done);
 
 function npmLink(packagePath, deps) {
   deps = Array.isArray(deps) ? deps : deps == void 0 ? [] : [deps];
-  console.log('\x1b[1mnpm link %s\x1b[22m', [packagePath].concat(deps).join(' '));
-  return _exec('npm', ['link'].concat(deps), {
+  log.packageCommand('npm link %s %s', packagePath, deps.join(' '))
+  return exec('npm', ['link'].concat(deps), {
     cwd: path.dirname(packagePath)
   });
 }
@@ -35,5 +31,5 @@ function linkEachLocalDependency(packageNames, modulePath) {
     return !!package.dependencies[packageName];
   });
 
-  return _eachAsync(packagesNamesToLink, npmLink.bind(this, modulePath));
+  return eachAsync(packagesNamesToLink, npmLink.bind(this, modulePath));
 }

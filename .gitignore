@@ -6,4 +6,5 @@ coverage/
 bundle/
 npm-*
 git-*
+*.js.map
 /public/bundle

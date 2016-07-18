@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "babel `find ./ -name '*.es6'` --out-dir .; tsc"
+    "postinstall": "webpack .",
+    "build-watch": "webpack --watch"
   },
   "author": "",
   "license": "ISC",
