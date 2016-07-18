@@ -14,4 +14,8 @@ export default class Entity extends Element {
   load() {
 
   }
+
+  save() {
+    
+  }
 }

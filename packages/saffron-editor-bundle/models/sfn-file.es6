@@ -20,7 +20,6 @@ export default class SfnFile extends CoreObject {
       fragments: this.isolate !== false ? this.fragments.createChild() : this.fragments
     };
 
-
     // don't do this for now.
     if (this.expression && false) {
       patch(this.expression, expression);
@@ -34,6 +33,13 @@ export default class SfnFile extends CoreObject {
         entity
       });
     }
+  }
+
+  /**
+   */
+
+  async save() {
+    console.log('save saffron file');
   }
 }
 

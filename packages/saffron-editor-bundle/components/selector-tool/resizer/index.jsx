@@ -168,6 +168,7 @@ class ResizerComponent extends React.Component {
 
       this.moveTarget(bounds.left, bounds.top);
     }, () => {
+      selection.save();
       this._dragger = void 0;
     });
   }
