@@ -59,7 +59,7 @@ describe(__filename + `#`, function() {
 
   describe('css tests#', function() {
     it('parses the style attribute as a css delcaration', function() {
-      var root = parse(`<div style="color:red;" />`);
+      var root = parse(`<div style="color:red;" />`) as any;
 
       var styleExpression = root.childNodes[0].attributes[0];
       expect(styleExpression.key).to.equal('style');

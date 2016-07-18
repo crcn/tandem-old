@@ -11,6 +11,9 @@ export class Fragment {
 }
 
 export class FactoryFragment extends Fragment {
+
+  public factory:{ create:Function };
+
   constructor(properties:any) {
     super(properties);
     assertPropertyExists(this, 'factory');

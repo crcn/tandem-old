@@ -3,7 +3,7 @@
  * Generic
  */
 
-class BaseExpression {
+export class BaseExpression {
   constructor(public ns:string) { }
 
   createEntity(properties) {

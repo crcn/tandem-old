@@ -1,36 +1,37 @@
 import createFactory from '../utils/class/create-factory';
 
-function Collection(properties = {}) {
-  Object.assign(this, properties);
-}
 
-Collection.prototype = [];
-
-Object.assign(Collection.prototype, {
+class Collection<T> extends Array<T> {
+  constructor(properties:any = undefined) {
+    super();
+    if (properties) {
+      Object.assign(this, properties);
+    }
+  }
 
   /**
    * assigns new properties to this collection
    */
 
-  setProperties(properties) {
+  setProperties(properties):void {
     Object.assign(this, properties);
-  },
+  }
 
   /**
    * pushes items to the end of the array
    */
 
-  push(...rest) {
-    return this.splice(this.length, 0, ...rest);
-  },
+  push(...items:T[]):number { 
+    return this.splice(this.length, 0, ...items).length;
+  }
 
   /**
    * pushes items to the beginning of the array
    */
 
-  unshift(...rest) {
-    return this.splice(0, 0, ...rest);
-  },
+  unshift(...items:T[]):number {
+    return this.splice(0, 0, ...items).length;
+  }
 
   /**
    * removes an item at the end of the array
@@ -38,7 +39,7 @@ Object.assign(Collection.prototype, {
 
   pop() {
     return this.splice(this.length - 1, 1)[0];
-  },
+  }
 
   /**
    * removes an item at the beginning of the array
@@ -46,7 +47,7 @@ Object.assign(Collection.prototype, {
 
   shift() {
     return this.splice(0, 1)[0];
-  },
+  }
 
   /**
    */
@@ -54,18 +55,20 @@ Object.assign(Collection.prototype, {
   remove(item) {
     var i = this.indexOf(item);
     if (~i) this.splice(i, 1);
-  },
+  }
+
 
   /**
    */
 
-  splice() {
+  splice(start:number, deleteCount:number = 0, ...items:T[]):T[] {
+    // OVERRIDE ME 
+    return super.splice(start, deleteCount, ...items);
+  }
 
-    // OVERRIDE ME. All mutations happen here
-    return Array.prototype.splice.apply(this, arguments);
-  },
-});
+  static create = createFactory(Array);
+}
 
-Collection.create = createFactory(Array);
+(Collection as any).prototype = new Array<any>();
 
 export default Collection;

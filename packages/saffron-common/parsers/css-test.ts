@@ -18,13 +18,13 @@ describe(__filename + '#', () => {
     });
   });
 
-  describe('declarations', function() {
-    it('can parse color values', function() {
-      var style = parse(`color:#F60;`);
+  describe('declarations', () => {
+    it('can parse color values', () => {
+      var style = parse(`color:#F60;`) as any;
       expect(style.declarations[0].value.ns).to.equal('cssLiteral');
     });
 
-    it('can parse measurements', function() {
+    it('can parse measurements', () => {
 
     });
 
@@ -32,11 +32,10 @@ describe(__filename + '#', () => {
       'color:rgba();',
       'color:rgba(0);',
       'color:rgba(0, 0, 0.1);'
-    ].forEach(source => {
-        it(`parses ${source} as a function call`, () => {
-          expect(parse(source).declarations[0].value.ns).to.equal('cssFunctionCall')
-        }); 
-      });
+    ].forEach((source) => {
+      it(`parses ${source} as a function call`, () => {
+        expect((parse(source) as any).declarations[0].value.ns).to.equal('cssFunctionCall')
+      }); 
     });
 
     [
@@ -45,7 +44,7 @@ describe(__filename + '#', () => {
       // 'background:red, green, blue;'
     ].forEach(source => {
       it(`parse ${source} as a list value`, () => {
-        var style = parse(source);
+        var style = parse(source) as any;
         expect(style.declarations[0].value.ns).to.equal('cssListValue');
       });
     });

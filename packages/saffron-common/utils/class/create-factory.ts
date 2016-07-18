@@ -2,12 +2,12 @@
 /**
  * creates a new factory for creating items
  */
-
-export default function (contextClass) {
+ 
+export default function (contextClass):Function {
   if (!contextClass) contextClass = Object;
 
   // creates a new object from a class
-  function create(arg1, arg2, arg3, arg4) {
+  function create(arg1, arg2, arg3, arg4):any {
 
     // dirty but fast
     switch (arguments.length) {
@@ -23,7 +23,7 @@ export default function (contextClass) {
   }
 
   // creates an object from *any* native class
-  function createFromContext() {
+  function createFromContext():any {
     const context = new contextClass();
     context.__proto__ = this.prototype;
     this.apply(context, arguments);

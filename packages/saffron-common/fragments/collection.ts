@@ -1,9 +1,12 @@
-import assert from 'assert';
+import * as assert from 'assert';
 import create from '../utils/class/create';
-import flatten from 'lodash/flattenDeep';
+// import flatten from 'lodash/flattenDeep';
 import Collection from '../object/collection';
+import { Fragment } from './index';
 
-export default class FragmentCollection extends Collection {
+export default class FragmentCollection extends Collection<Fragment> {
+
+  private _fragmentsByNamespace:Object;
 
   constructor(properties = {}) {
     super(properties);
@@ -25,7 +28,7 @@ export default class FragmentCollection extends Collection {
   }
 
   register(...fragments) {
-    fragments = flatten(fragments);
+    // fragments = flatten(fragments);
     this.push(...fragments);
 
     for (const fragment of fragments) {
