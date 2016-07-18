@@ -2,17 +2,25 @@
 
 const {
   RootExpression,
+
+  // HTML
+  HTMLElementExpression,
+  HTMLAttributeExpression,
+  HTMLCommentExpression,
+  HTMLTextExpression,
+  HTMLScriptExpression,
+  HTMLBlockExpression,
+
+  // CSS
+  CSSStyleExpression,
+  CSSStyleDeclaration,
+
+  // JavaScript
   StringExpression,
   TernaryExpression,
-  ElementExpression,
-  AttributeExpression,
-  TextExpression,
-  CommentExpression,
   ReferenceExpression,
   FunctionCallExpression,
   OperationExpression,
-  ScriptExpression,
-  BlockExpression,
   LiteralExpression,
   NegativeExpression,
   NotExpression,
@@ -90,16 +98,16 @@ ChildNodes
 
 CommentNode
   = _ "<!--" value:(!"-->" v:SourceCharacter { return v; })+ "-->" _ {
-    return new CommentExpression(escapeString(trimEnds(value.join(""))));
+    return new HTMLCommentExpression(escapeString(trimEnds(value.join(""))));
   }
   / DocType
 
 ScriptStart
   = _ "<script" attributes:TagAttributes ">" content:ScriptEnd+ "</script>" _  {
-      return new ElementExpression(
+      return new HTMLElementExpression(
         'script',
         attributes,
-        new TextExpression(content.join('')),
+        new HTMLTextExpression(content.join('')),
         location()
       );
     }
@@ -116,7 +124,7 @@ VoidElement
       expected("</" + nodeName + ">");
     }
 
-    return new ElementExpression(nodeName, attributes, [], location());
+    return new HTMLElementExpression(nodeName, attributes, [], location());
   }
 
 
@@ -135,13 +143,13 @@ ElementNode
       expected("</" + startTag.name + ">");
     }
 
-    return new ElementExpression(startTag.name, startTag.attributes, children, location());
+    return new HTMLElementExpression(startTag.name, startTag.attributes, children, location());
   }
   / StartEndTag
 
 TextNode
   = value:TextCharacter+ {
-      return new TextExpression(escapeString(trimNewLineChars(value.join(""))), location());
+      return new HTMLTextExpression(escapeString(trimNewLineChars(value.join(""))), location());
     }
 
 TextCharacter
@@ -153,7 +161,7 @@ StartTag
   = _ "<" info:TagInfo ">" _ { return info; }
 
 StartEndTag
-  = _ "<" info:TagInfo "/>" _ { return new ElementExpression(info.name, info.attributes, [], location()); }
+  = _ "<" info:TagInfo "/>" _ { return new HTMLElementExpression(info.name, info.attributes, [], location()); }
 
 TagInfo
   = name:TagName attrs:TagAttributes {
@@ -179,15 +187,42 @@ TagName
   = _ word:[a-zA-Z0-9:_\.\-]+ { return word.join(""); }
 
 Attribute
-  = name:TagName _ "=" _ values:AttributeValues {
-      return new AttributeExpression(name, values);
+  = name:'style' _ "=" _ value:StyleAttributeValue {
+    return new HTMLAttributeExpression(name, value);
+  }
+  / name:TagName _ "=" _ values:AttributeValues {
+      return new HTMLAttributeExpression(name, values);
     }
   / name:TagName _ "=" _ value:TextBinding {
       return new PropertyExpression(name, value);
     }
   / name:TagName {
-      return new AttributeExpression(name);
+      return new HTMLAttributeExpression(name);
     }
+
+StyleAttributeValue 
+  = '"' style:CSSStyle '"' { return style; }
+  / "'" style:CSSStyle '"' { return style; }
+
+CSSStyle
+  = declarations:CSSStyleDeclaration* {
+    return new CSSStyleExpression(declarations);
+  }
+
+CSSStyleDeclaration
+  = key:CSSStyleDeclarationKey _ ':' _ value:CSSStyleDeclarationValue _ ';' {
+    return new CSSStyleDeclaration(key, value);
+  }
+
+CSSStyleDeclarationKey
+  = value:([^:]+) {
+    return text();
+  }
+
+CSSStyleDeclarationValue
+  = value:([^;]+) {
+    return text();
+  }
 
 AttributeValues
   = '"' values:(TextBinding/(!"{{" [^"])+ { return new StringExpression(text(), location()); })* '"' { return values[0]; }
@@ -196,12 +231,12 @@ AttributeValues
 
 TextBinding
   = "{{" _ value:Expression _ "}}" {
-      return new ScriptExpression(value);
+      return new HTMLScriptExpression(value);
     }
 
 BlockBinding
   = script:TextBinding {
-    return new BlockExpression(script[1]);
+    return new HTMLBlockExpression(script[1]);
   }
 
 Expression

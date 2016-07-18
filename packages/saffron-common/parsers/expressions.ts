@@ -1,11 +1,14 @@
 
+/**
+ * Generic
+ */
 
 class BaseExpression {
   constructor(public ns:string) { }
 
-  createEntity(properties:any) {
-    var fragment:any = properties.fragments.query(`entities/${this.ns}`);
-    
+  createEntity(properties) {
+    const fragment = properties.fragments.query(`entities/${this.ns}`);
+
     if (!fragment) {
       throw new Error(`entity fragment "${this.ns}" does not exist`);
     }
@@ -28,36 +31,73 @@ export class RootExpression extends BaseExpression {
   }
 }
 
-export class ElementExpression extends BaseExpression {
+/**
+ * HTML
+ */
+
+export class HTMLElementExpression extends BaseExpression {
   constructor(
     public nodeName:string,
     public attributes:Array<BaseExpression>,
     public childNodes:Array<BaseExpression>) {
-    super('element');
+    super('htmlElement');
   }
 }
+
+export class HTMLAttributeExpression extends BaseExpression {
+  constructor(public key:string, public value:BaseExpression) {
+    super('htmlAttribute');
+  }
+}
+
+export class HTMLTextExpression extends BaseExpression {
+  constructor(public nodeValue:string) {
+    super('htmlText');
+  }
+}
+
+export class HTMLCommentExpression extends BaseExpression {
+  constructor(public nodeValue:string) {
+    super('htmlComment');
+  }
+}
+
+export class HTMLScriptExpression extends BaseExpression {
+  constructor(public value:BaseExpression) {
+    super('htmlScript');
+  }
+}
+
+
+export class HTMLBlockExpression extends BaseExpression {
+  constructor(public script:BaseExpression) {
+    super('htmlBlock');
+  }
+}
+
+/**
+ * CSS
+ */
+
+export class CSSStyleExpression extends BaseExpression {
+  constructor(public declarations:Array<BaseExpression>) {
+    super('cssStyle');
+  }
+}
+
+export class CSSStyleDeclaration extends BaseExpression {
+  constructor(public key:string, public value:BaseExpression) {
+    super('cssStyleDeclaration');
+  }
+}
+
+/**
+ *  JavaScript
+ */
 
 export class StringExpression extends BaseExpression {
   constructor(public value:string) {
-    super('root');
-  }
-}
-
-export class AttributeExpression extends BaseExpression {
-  constructor(public key:string, public value:BaseExpression) {
-    super('attribute');
-  }
-}
-
-export class TextExpression extends BaseExpression {
-  constructor(public nodeValue:string) {
-    super('text');
-  }
-}
-
-export class CommentExpression extends BaseExpression {
-  constructor(public nodeValue:string) {
-    super('comment');
+    super('string');
   }
 }
 
@@ -67,21 +107,9 @@ export class ReferenceExpression extends BaseExpression {
   }
 }
 
-export class ScriptExpression extends BaseExpression {
-  constructor(public value:BaseExpression) {
-    super('script');
-  }
-}
-
-export class BlockExpression extends BaseExpression {
-  constructor(public script:BaseExpression) {
-    super('block');
-  }
-}
-
 export class FunctionCallExpression extends BaseExpression {
   constructor(public reference:ReferenceExpression, public parameters:Array<BaseExpression>) {
-    super('function-call');
+    super('functionCall');
   }
 }
 
