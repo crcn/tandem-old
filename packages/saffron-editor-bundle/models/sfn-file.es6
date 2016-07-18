@@ -8,7 +8,7 @@ import { applyDiff as patch } from 'deep-diff';
 export default class SfnFile extends CoreObject {
 
   /**
-   */
+   */ 
 
   async load() {
     var expression = XMLParser.parse(this.content);

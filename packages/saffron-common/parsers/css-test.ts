@@ -1,15 +1,16 @@
 import { parse } from './css.peg';
 import { expect } from 'chai';
 
-describe(__filename + '#', function() {
-  describe('smoke tests#', function() {
+describe(__filename + '#', () => {
+  describe('smoke tests#', () => {
     [
       'color:red;',
       'color:#F60;',
       'color:#FF6600;',
       '--webkit-pointer-events:none;',
       'background-color:black;',
-      'color:red;background-color:blue;'
+      'color:red;background-color:blue;',
+      'background-color: #CCC; width: 1024px; height: 768px; display:block;'
     ].forEach(source => {
       it(`can parse ${source}`, () => {
         parse(source);
@@ -27,7 +28,6 @@ describe(__filename + '#', function() {
 
     });
 
-    
     [
       'color:rgba();',
       'color:rgba(0);',

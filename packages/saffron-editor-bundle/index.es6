@@ -29,7 +29,7 @@ import { fragment as keyBindingServiceFragment } from './services/key-binding';
 
 // key bindings
 import { fragment as keyBindingsFragment } from './key-bindings';
-
+ 
 export const fragment = [
 
   // components

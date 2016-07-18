@@ -2,7 +2,7 @@ import create from '../utils/class/create';
 import assertPropertyExists from '../utils/assert/property-exists';
 
 export class Fragment {
-  constructor(properties) {
+  constructor(properties:any) {
     Object.assign(this, properties);
     assertPropertyExists(this, 'ns');
   }
@@ -11,7 +11,7 @@ export class Fragment {
 }
 
 export class FactoryFragment extends Fragment {
-  constructor(properties) {
+  constructor(properties:any) {
     super(properties);
     assertPropertyExists(this, 'factory');
   }

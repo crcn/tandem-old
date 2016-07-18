@@ -8,6 +8,6 @@ export default class AttributeEntity extends Entity {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'entities/attribute',
+  ns: 'entities/htmlAttribute',
   factory: AttributeEntity
 });

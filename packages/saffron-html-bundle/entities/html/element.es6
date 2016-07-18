@@ -2,8 +2,8 @@ import Entity from 'saffron-common/entities/entity';
 import NodeSection from 'saffron-common/section/node';
 import FragmentSection from 'saffron-common/section/fragment';
 import { FactoryFragment } from 'saffron-common/fragments';
-import GroupPreview from './preview/group';
-import NodePreview from './preview/node';
+import GroupPreview from '../preview/group';
+import NodePreview from '../preview/node';
 
 function convertStyle(style) {
   const converted = {};
@@ -116,6 +116,6 @@ class ElementEntity extends Entity {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'entities/element',
+  ns: 'entities/htmlElement',
   factory: ElementEntity
 });

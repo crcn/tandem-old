@@ -6,7 +6,7 @@
     CSSFunctionCallExpression,
     CSSListValueExpression,
     LiteralExpression
-  } = require('./expressions.ts');
+  } = require('./expressions');
 }
 
 Start
@@ -18,7 +18,7 @@ CSSStyle
   }
 
 CSSStyleDeclaration
-  = key:CSSStyleDeclarationKey _ ':' _ value:CSSStyleDeclarationValue _ ';' {
+  = _ key:CSSStyleDeclarationKey _ ':' _ value:CSSStyleDeclarationValue _ ';' {
     return new CSSStyleDeclaration(key, value);
   }
 
@@ -31,7 +31,7 @@ CSSStyleDeclarationValue
   = CSSListValue/CSSSingleValue
 
 CSSSingleValue
-  = CSSFunctionCall/Number/CSSLiteralValue
+  = CSSFunctionCall/CSSLiteralValue
 
 CSSLiteralValue 
   = value:CSSValue {

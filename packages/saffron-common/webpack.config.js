@@ -9,7 +9,7 @@ exports.create = function(options) {
   return {
     entry: options.entry,
     output: {
-      path: __dirname + '/bundle',
+      path:  './bundle',
       filename: '/[name].js',
       libraryTarget: 'var',
       library: options.output ? options.output.library : void 0,
@@ -17,7 +17,7 @@ exports.create = function(options) {
     },
     resolve: {
       modulesDirectories: [__dirname + '/../', 'node_modules'],
-      extensions: ['', '.json', '.jsx', '.js', '.es6']
+      extensions: ['', '.json', '.jsx', '.js', '.es6', '.ts', '.peg']
     },
     sassLoader: {
       includePaths: [path.resolve(__dirname, './../')]

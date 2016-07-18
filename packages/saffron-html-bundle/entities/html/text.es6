@@ -17,6 +17,6 @@ class TextEntity extends Entity {
 }
 
 export const fragment = FactoryFragment.create({
-  ns: 'entities/text',
+  ns: 'entities/htmlText',
   factory: TextEntity
 });

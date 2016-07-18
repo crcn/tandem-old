@@ -3,13 +3,16 @@
 import { fragment as previewComponentFragment } from './components/preview';
 import { fragment as originStageToolComponent } from './components/origin-stage-tool';
 
-// entities
-import { fragment as rootEntityFragment } from './entities/root';
-import { fragment as textEntityFragment } from './entities/text';
-import { fragment as groupEntityFragment } from './entities/group';
-import { fragment as blockEntityFragment } from './entities/block';
-import { fragment as elementEntityFragment } from './entities/element';
-import { fragment as attributeEntityFragment } from './entities/attribute';
+// html entities
+import { fragment as rootEntityFragment } from './entities/html/root';
+import { fragment as textEntityFragment } from './entities/html/text';
+import { fragment as groupEntityFragment } from './entities/html/group';
+import { fragment as blockEntityFragment } from './entities/html/block';
+import { fragment as elementEntityFragment } from './entities/html/element';
+import { fragment as attributeEntityFragment } from './entities/html/attribute';
+
+// css entities
+import { fragment as styleEntityFragment } from './entities/css/style';
 
 // entity controllers
 import { fragment as importEntityControllerFragment } from './entity-controllers/import';
@@ -32,6 +35,7 @@ export const fragment = [
   blockEntityFragment,
   elementEntityFragment,
   attributeEntityFragment,
+  styleEntityFragment,
 
   // entity controllers
   importEntityControllerFragment,
