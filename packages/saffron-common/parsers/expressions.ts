@@ -68,7 +68,6 @@ export class HTMLScriptExpression extends BaseExpression {
   }
 }
 
-
 export class HTMLBlockExpression extends BaseExpression {
   constructor(public script:BaseExpression) {
     super('htmlBlock');
@@ -88,6 +87,24 @@ export class CSSStyleExpression extends BaseExpression {
 export class CSSStyleDeclaration extends BaseExpression {
   constructor(public key:string, public value:BaseExpression) {
     super('cssStyleDeclaration');
+  }
+}
+
+export class CSSLiteralExpression extends BaseExpression {
+  constructor(public value:string) {
+    super('cssLiteral');
+  }
+}
+
+export class CSSFunctionCallExpression extends BaseExpression {
+  constructor(public name:string, public parameters:Array<BaseExpression>) {
+    super('cssFunctionCall');
+  }
+}
+
+export class CSSListValueExpression extends BaseExpression {
+  constructor(public values:Array<BaseExpression>) {
+    super('cssListValue');
   }
 }
 

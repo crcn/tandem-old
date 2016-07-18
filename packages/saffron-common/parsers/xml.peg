@@ -11,10 +11,6 @@ const {
   HTMLScriptExpression,
   HTMLBlockExpression,
 
-  // CSS
-  CSSStyleExpression,
-  CSSStyleDeclaration,
-
   // JavaScript
   StringExpression,
   TernaryExpression,
@@ -25,7 +21,9 @@ const {
   NegativeExpression,
   NotExpression,
   HashExpression
-} = require('./expressions.ts')
+} = require('./expressions.ts');
+
+const cssParser = require('./css.peg');
 
 function trimWhitespace(ws) {
   return trimNewLineChars(ws).replace(/(^[\r\n]+)|([\r\n]+$)/, " ");
@@ -201,33 +199,12 @@ Attribute
     }
 
 StyleAttributeValue 
-  = '"' style:CSSStyle '"' { return style; }
-  / "'" style:CSSStyle '"' { return style; }
-
-CSSStyle
-  = declarations:CSSStyleDeclaration* {
-    return new CSSStyleExpression(declarations);
-  }
-
-CSSStyleDeclaration
-  = key:CSSStyleDeclarationKey _ ':' _ value:CSSStyleDeclarationValue _ ';' {
-    return new CSSStyleDeclaration(key, value);
-  }
-
-CSSStyleDeclarationKey
-  = value:([^:]+) {
-    return text();
-  }
-
-CSSStyleDeclarationValue
-  = value:([^;]+) {
-    return text();
-  }
+  = '"' value:(([^"])* { return cssParser.parse(text()); }) '"' { return value; } 
+  / "'" value:(([^'])* { return cssParser.parse(text()); }) "'" { return value; }
 
 AttributeValues
   = '"' values:(TextBinding/(!"{{" [^"])+ { return new StringExpression(text(), location()); })* '"' { return values[0]; }
   / "'" values:(TextBinding/(!"{{" [^'])+ { return new StringExpression(text(), location()); })* "'" { return values[0]; }
-
 
 TextBinding
   = "{{" _ value:Expression _ "}}" {
