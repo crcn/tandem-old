@@ -64,9 +64,14 @@ export default class FragmentCollection extends BaseCollection<Fragment> {
 
   }
 
-  public static create(properties:an y= undefined):FragmentCollection {
+  public static create(properties:any = undefined):FragmentCollection {
     return this._create(properties) as FragmentCollection;
   }
 
   static _create = createFactory(Array);
+}
+
+
+function create<T>(...rest) {
+  return new T(...rest);
 }
