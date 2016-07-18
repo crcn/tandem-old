@@ -1,6 +1,6 @@
 {
   "name": "saffron-sass-bundle",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "./bundle/saffron-sass-bundle.js",
   "publicDirectory": "./bundle",

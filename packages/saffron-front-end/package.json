@@ -1,6 +1,6 @@
 {
   "name": "saffron-front-end",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "./bundle/saffron-front-end.js",
   "scripts": {
