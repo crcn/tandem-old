@@ -1,19 +1,28 @@
-import expect from 'expect.js';
-import Scanner from './scanner';
+'use strict';
+
+var _expect = require('expect.js');
+
+var _expect2 = _interopRequireDefault(_expect);
+
+var _scanner = require('./scanner');
+
+var _scanner2 = _interopRequireDefault(_scanner);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 describe(__filename + '#', function () {
   it('can be created', function () {
-    Scanner.create();
+    _scanner2.default.create();
   });
 
   it('can scan for tokens', function () {
-    var s = Scanner.create('a bcde 123 4');
-    expect(s.scan(/\w+/)).to.be('a');
-    expect(s.scan(/\w+/)).to.be('bcde');
-    expect(s.scan(/\s+/)).to.be(' ');
-    expect(s.scan(/\d{1}/)).to.be('1');
-    expect(s.scan(/\s/)).to.be(' ');
-    expect(s.scan(/\d/)).to.be('4');
-    expect(s.hasTerminated()).to.be(true);
+    var s = _scanner2.default.create('a bcde 123 4');
+    (0, _expect2.default)(s.scan(/\w+/)).to.be('a');
+    (0, _expect2.default)(s.scan(/\w+/)).to.be('bcde');
+    (0, _expect2.default)(s.scan(/\s+/)).to.be(' ');
+    (0, _expect2.default)(s.scan(/\d{1}/)).to.be('1');
+    (0, _expect2.default)(s.scan(/\s/)).to.be(' ');
+    (0, _expect2.default)(s.scan(/\d/)).to.be('4');
+    (0, _expect2.default)(s.hasTerminated()).to.be(true);
   });
 });

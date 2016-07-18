@@ -1,4 +1,3 @@
+'use strict';
 
-describe(__filename + '#', function () {
-
-});
+describe(__filename + '#', function () {});

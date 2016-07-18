@@ -1,7 +1,9 @@
-import { Event } from './index';
+'use strict';
+
+var _index = require('./index');
 
 describe(__filename + '#', function () {
   it('can be created', function () {
-    Event.create('a');
+    _index.Event.create('a');
   });
 });
