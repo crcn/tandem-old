@@ -1,10 +1,10 @@
 import * as assert from 'assert';
-import create from '../utils/class/create';
-// import flatten from 'lodash/flattenDeep';
-import Collection from '../object/collection';
+import createFactory from '../utils/class/create-factory';
+import flatten from 'lodash/flattenDeep';
+import { BaseCollection } from '../object/collection';
 import { Fragment } from './index';
 
-export default class FragmentCollection extends Collection<Fragment> {
+export default class FragmentCollection extends BaseCollection<Fragment> {
 
   private _fragmentsByNamespace:Object;
 
@@ -28,7 +28,7 @@ export default class FragmentCollection extends Collection<Fragment> {
   }
 
   register(...fragments) {
-    // fragments = flatten(fragments);
+    fragments = flatten(fragments);
     this.push(...fragments);
 
     for (const fragment of fragments) {
@@ -61,7 +61,12 @@ export default class FragmentCollection extends Collection<Fragment> {
     collection = collection.sort((a, b) => (
       a.priority > b.priority ? -1 : 1
     ));
+
   }
 
-  static create = create;
+  public static create(properties:an y= undefined):FragmentCollection {
+    return this._create(properties) as FragmentCollection;
+  }
+
+  static _create = createFactory(Array);
 }

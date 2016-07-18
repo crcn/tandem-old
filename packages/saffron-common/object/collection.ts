@@ -1,7 +1,7 @@
 import createFactory from '../utils/class/create-factory';
 
 
-class Collection<T> extends Array<T> {
+export class BaseCollection<T> extends Array<T> {
   constructor(properties:any = undefined) {
     super();
     if (properties) {
@@ -66,9 +66,17 @@ class Collection<T> extends Array<T> {
     return super.splice(start, deleteCount, ...items);
   }
 
-  static create = createFactory(Array);
+}
+(BaseCollection as any).prototype = new Array<any>();
+
+export default class Collection<T> extends BaseCollection<T> {
+  
+  public static create<T>(properties:Object|T[]):Collection<T> {
+    return this._create(properties) as Collection<T>;
+  }
+
+  private static _create = createFactory(Array);
 }
 
-(Collection as any).prototype = new Array<any>();
 
-export default Collection;
+
