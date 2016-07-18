@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "babel-cli": "^6.10.1",
     "expect.js": "^0.3.1"
   },
   "dependencies": {

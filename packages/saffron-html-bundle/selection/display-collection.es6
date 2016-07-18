@@ -121,12 +121,6 @@ export default class HTMLEntitySelection extends Selection {
     }
   }
 
-  async save() {  
-    for (const entity of this) {
-      await entity.save();
-    }
-  }
-
   get value() {
     return this.length ? this[0].value : void 0;
   }

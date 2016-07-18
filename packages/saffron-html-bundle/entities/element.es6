@@ -36,10 +36,6 @@ class ElementEntity extends Entity {
     return this._style || {};
   }
 
-  async save() {
-    console.log('saving'); 
-  }
-
   async load(options) {
 
     var attributes = {};

@@ -14,18 +14,21 @@
     "saffron-common": "^1.0.1",
     "saffron-editor-bundle": "^1.0.0",
     "saffron-html-bundle": "^1.0.0",
-    "saffron-sass-bundle": "^1.0.0"
+    "saffron-sass-bundle": "^1.0.0",
+    "sift": "^3.2.1",
+    "socket.io-client": "^1.4.8"
   },
   "devDependencies": {
+    "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
     "babel-loader": "^6.2.4",
-    "css-loader": "^0.23.1",
     "babel-plugin-transform-class-properties": "^6.10.2",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
     "babel-preset-stage-1": "^6.5.0",
+    "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "json-loader": "^0.5.4",
     "node-sass": "^3.8.0",
