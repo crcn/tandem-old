@@ -1,7 +1,7 @@
-import loggable from 'saffron-common/logger/mixins/loggable';
+import loggable from 'saffron-common/lib/logger/mixins/loggable';
 
-import { Service } from 'saffron-common/services';
-import { FactoryFragment } from 'saffron-common/fragments';
+import { Service } from 'saffron-common/lib/services/index';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
 
 const ZOOM_INCREMENT = 0.1;
 const MIN_ZOOM_LEVEL = 0.2;
@@ -35,7 +35,7 @@ export default class PreviewService extends Service {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns      : 'application/services/preview',
   factory : PreviewService
 });

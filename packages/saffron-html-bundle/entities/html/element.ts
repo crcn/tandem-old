@@ -1,7 +1,7 @@
-import Entity from 'saffron-common/entities/entity';
-import NodeSection from 'saffron-common/section/node';
-import FragmentSection from 'saffron-common/section/fragment';
-import { FactoryFragment } from 'saffron-common/fragments';
+import Entity from 'saffron-common/lib/entities/entity';
+import NodeSection from 'saffron-common/lib/section/node';
+import FragmentSection from 'saffron-common/lib/section/fragment';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
 import GroupPreview from '../preview/group';
 import NodePreview from '../preview/node';
 
@@ -115,7 +115,7 @@ class ElementEntity extends Entity {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns: 'entities/htmlElement',
   factory: ElementEntity
 });

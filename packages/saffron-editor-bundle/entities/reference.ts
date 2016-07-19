@@ -1,14 +1,16 @@
-import Entity from 'saffron-common/entities/entity';
-import { FactoryFragment } from 'saffron-common/fragments';
-import get from 'saffron-common/utils/object/get';
+import Entity from 'saffron-common/lib/entities/entity';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import get from 'saffron-common/lib/utils/object/get';
 
 export default class ReferenceEntity extends Entity {
+  public  value:any;
+  public expression:any;
   async load(options) {
     this.value = get(options.context || {}, this.expression.path.join('.'));
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns      : 'entities/reference',
   factory : ReferenceEntity,
 });

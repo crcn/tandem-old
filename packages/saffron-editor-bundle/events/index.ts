@@ -1,4 +1,4 @@
-import { Event } from 'saffron-common/events';
+import { Event } from 'saffron-common/lib/events/index';
 
 export const STAGE_CANVAS_MOUSE_DOWN = 'stageCanvasMouseDown';
 

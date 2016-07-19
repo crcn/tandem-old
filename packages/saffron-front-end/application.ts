@@ -1,4 +1,4 @@
-import BaseApplication from 'saffron-common/application/base';
+import BaseApplication from 'saffron-common/lib/application/base';
 
 import { fragment as backEndServiceFragment } from './services/back-end';
 import { fragment as rootComponentRendererFragment } from './services/root-component-renderer';

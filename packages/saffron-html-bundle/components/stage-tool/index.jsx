@@ -1,8 +1,8 @@
 import './index.scss';
 
-import React from 'react';
+import * as React from 'react';
 
-import { ReactComponentFactoryFragment } from 'saffron-common/react/fragments';
+import { ReactComponentFactoryFragment } from 'saffron-common/lib/react/fragments';
 
 const d = [];
 const x2 = 0;
@@ -10,7 +10,7 @@ const y2 = 200;
 const length = 100;
 const rotation = 0;
 
-export default class OriginToolComponent extends React.Component {
+export default class OriginToolComponent extends React.Component<any, any> {
   render() {
     return (<div className='m-origin-tool'>
       <svg
@@ -41,4 +41,4 @@ export default class OriginToolComponent extends React.Component {
   }
 }
 
-export const fragment = ReactComponentFactoryFragment.create({ ns: 'components/tools/origin', componentClass: OriginToolComponent });
+export const fragment = new ReactComponentFactoryFragment({ ns: 'components/tools/origin', componentClass: OriginToolComponent });

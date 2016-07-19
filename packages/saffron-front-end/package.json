@@ -2,7 +2,10 @@
   "name": "saffron-front-end",
   "version": "1.0.1",
   "description": "",
-  "main": "./bundle/saffron-front-end.js",
+  "main": "./entry.ts",
+  "saffron": {
+    "directory": "./bundle"
+  },
   "scripts": {
     "test": "karma start",
     "bundle": "./node_modules/saffron-bundler/bin/bundle",
@@ -13,7 +16,7 @@
   "dependencies": {
     "lodash": "^4.13.1",
     "saffron-common": "^1.0.1",
-    "sift": "^3.2.1",
+    "sift": "^3.2.2",
     "socket.io-client": "^1.4.8"
   },
   "devDependencies": {

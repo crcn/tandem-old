@@ -1,10 +1,14 @@
-import { FactoryFragment } from 'saffron-common/fragments';
-import CoreObject from 'saffron-common/object';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import CoreObject from 'saffron-common/lib/object/index';
 import sass from 'sass.js';
-import FragmentSection from 'saffron-common/section/fragment';
+import FragmentSection from 'saffron-common/lib/section/fragment';
 
 
 export default class StyleEntityController extends CoreObject {
+
+  public section:any;
+  public entity:any;
+  public file:any;
 
   constructor(properties) {
     super(properties);
@@ -58,7 +62,7 @@ export default class StyleEntityController extends CoreObject {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns: 'entity-controllers/style',
   test(entity) {
     return entity.attributes.type === 'text/scss';

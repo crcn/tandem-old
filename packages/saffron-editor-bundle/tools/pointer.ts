@@ -1,5 +1,5 @@
-import { Service } from 'saffron-common/services';
-import { FactoryFragment } from 'saffron-common/fragments';
+import { Service } from 'saffron-common/lib/services/index';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
 import { SelectEvent } from 'saffron-editor-bundle/selection/events';
 
 export default class PointerTool extends Service {
@@ -13,7 +13,7 @@ export default class PointerTool extends Service {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns: 'stage-tools/pointer',
   priority: 99,
   factory: PointerTool

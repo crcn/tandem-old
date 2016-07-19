@@ -1,15 +1,15 @@
 
-import BoundingRect from 'saffron-common/geom/bounding-rect';
-import { translateStyleToIntegers } from 'saffron-common/utils/css/translate-style';
+import BoundingRect from 'saffron-common/lib/geom/bounding-rect';
+import { translateStyleToIntegers } from 'saffron-common/lib/utils/css/translate-style';
 
 import {
   translateStyle,
-} from 'saffron-common/utils/css';
+} from 'saffron-common/lib/utils/css';
 
 import {
   calculateZoom,
   multiplyStyle,
-} from 'saffron-common/utils/html';
+} from 'saffron-common/lib/utils/html';
 
 function getElementOffset(entity, element) {
   var p = element.parentNode;

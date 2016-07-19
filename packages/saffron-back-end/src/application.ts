@@ -17,7 +17,7 @@ export default class ServerApplication extends BaseApplication {
     Object.assign(this.config, this._getConfig());
   }
   _getConfig() {
-    const configPath = path.normalize(__dirname + '/../../sfconfig');
+    const configPath = path.normalize(__dirname + '/../../../sfconfig');
     try {
       return require(configPath);
     } catch(e) {

@@ -1,6 +1,6 @@
-import loggable from 'saffron-common/logger/mixins/loggable';
-import { Service } from 'saffron-common/services';
-import { FactoryFragment } from 'saffron-common/fragments';
+import loggable from 'saffron-common/lib/logger/mixins/loggable';
+import { Service } from 'saffron-common/lib/services/index';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
 import SelectionCollection from 'saffron-editor-bundle/selection/collection';
 
 @loggable
@@ -51,7 +51,7 @@ export default class SelectorService extends Service {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns      : 'application/services/selector',
   factory : SelectorService
 });

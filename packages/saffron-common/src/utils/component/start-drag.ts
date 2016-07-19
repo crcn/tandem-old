@@ -1,5 +1,5 @@
 
-export default (startEvent, update, stop) => {
+export default (startEvent:any, update:any, stop:Function = undefined) => {
 
   const sx = startEvent.clientX;
   const sy = startEvent.clientY;

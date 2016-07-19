@@ -1,5 +1,5 @@
-import { FactoryFragment } from 'saffron-common/fragments';
-import CoreObject from 'saffron-common/object';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import CoreObject from 'saffron-common/lib/object/index';
 
 export class TextTool extends CoreObject {
 
@@ -11,7 +11,7 @@ export class TextTool extends CoreObject {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns: 'stage-tools/text',
   factory: TextTool
 });

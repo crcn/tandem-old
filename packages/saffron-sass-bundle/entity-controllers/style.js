@@ -7,9 +7,9 @@ exports.fragment = exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _fragments = require('saffron-common/fragments');
+var _fragments = require('saffron-common/lib/fragments/index');
 
-var _object = require('saffron-common/object');
+var _object = require('saffron-common/lib/object');
 
 var _object2 = _interopRequireDefault(_object);
 
@@ -17,7 +17,7 @@ var _sass = require('sass.js');
 
 var _sass2 = _interopRequireDefault(_sass);
 
-var _fragment = require('saffron-common/section/fragment');
+var _fragment = require('saffron-common/lib/section/fragment');
 
 var _fragment2 = _interopRequireDefault(_fragment);
 
@@ -145,7 +145,7 @@ var StyleEntityController = function (_CoreObject) {
 }(_object2.default);
 
 exports.default = StyleEntityController;
-var fragment = exports.fragment = _fragments.FactoryFragment.create({
+var fragment = exports.fragment = _fragments.new FactoryFragment({
   ns: 'entity-controllers/style',
   test: function test(entity) {
     return entity.attributes.type === 'text/scss';

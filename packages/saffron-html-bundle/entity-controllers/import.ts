@@ -1,13 +1,19 @@
-import CoreObject from 'saffron-common/object';
-import path from 'path';
-import { FactoryFragment } from 'saffron-common/fragments';
+import CoreObject from 'saffron-common/lib/object';
+import * as path from 'path';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
 // import SfnFile from 'browser/fragments/sfn-file-handler/model';
 
 class SfnFile {
-
+  constructor(any) { }
 }
 
 class ImportEntityController extends CoreObject {
+  public bus:any;
+  public file:any;
+  public fragments:any;
+  public attributes:any;
+  public section:any;
+
   async load() {
     var files = await this.bus.load({
       type: 'getFiles',
@@ -16,11 +22,10 @@ class ImportEntityController extends CoreObject {
     }).readAll();
 
     files = files.map((data) => (
-      SfnFile.create({
-        ...data,
+      new SfnFile(Object.assign({}, data, {
         bus: this.bus,
         fragments: this.fragments,
-      })
+      }))
     ));
 
     for (var file of files) {
@@ -32,7 +37,7 @@ class ImportEntityController extends CoreObject {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns      : 'entity-controllers/import',
   factory : ImportEntityController,
 });

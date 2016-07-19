@@ -1,0 +1,11 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "/Users/crcn/Developer/public/saffron/packages/saffron-editor-bundle/node_modules/saffron-common/typings.json",
+    "raw": "file:./node_modules/saffron-common/typings.json",
+    "main": "./typings/index.d.ts",
+    "global": false,
+    "name": "saffron-common",
+    "type": "typings"
+  }
+}

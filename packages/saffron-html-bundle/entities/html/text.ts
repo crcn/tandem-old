@@ -1,6 +1,6 @@
-import { FactoryFragment } from 'saffron-common/fragments';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
 
-import Entity from 'saffron-common/entities/entity';
+import Entity from 'saffron-common/lib/entities/entity';
 
 class TextEntity extends Entity {
   async load({ section }) {
@@ -16,7 +16,7 @@ class TextEntity extends Entity {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns: 'entities/htmlText',
   factory: TextEntity
 });

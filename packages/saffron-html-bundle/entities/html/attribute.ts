@@ -1,5 +1,5 @@
-import Entity from 'saffron-common/entities/entity';
-import { FactoryFragment } from 'saffron-common/fragments';
+import Entity from 'saffron-common/lib/entities/entity';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
 
 export default class AttributeEntity extends Entity {
   async load(options) {
@@ -7,7 +7,7 @@ export default class AttributeEntity extends Entity {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns: 'entities/htmlAttribute',
   factory: AttributeEntity
 });

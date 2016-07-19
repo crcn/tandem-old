@@ -1,13 +1,16 @@
-import sift from 'sift';
-import ReactDOM from 'react-dom';
-import loggable from 'saffron-common/logger/mixins/loggable';
-import filterAction from 'saffron-common/actors/decorators/filter-action';
+import * as sift from 'sift';
+import * as ReactDOM from 'react-dom';
+import loggable from 'saffron-common/lib/logger/mixins/loggable';
+import filterAction from 'saffron-common/lib/actors/decorators/filter-action';
 
-import { BaseActor } from 'saffron-common/actors';
-import { FactoryFragment } from 'saffron-common/fragments';
-
+import { BaseActor } from 'saffron-common/lib/actors/index';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+ 
 @loggable
 export default class RootComponentRenderer extends BaseActor {
+
+  public app:any;
+  private _rendering:boolean;
 
   @filterAction(sift({
     type: {
@@ -33,7 +36,7 @@ export default class RootComponentRenderer extends BaseActor {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns      : 'application/services/root-component-renderer',
   factory : RootComponentRenderer
 });

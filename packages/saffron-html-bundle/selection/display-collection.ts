@@ -1,17 +1,15 @@
-import assert from 'assert';
+import * as assert from 'assert';
 import Selection from 'saffron-editor-bundle/selection/collection';
-import CoreObject from 'saffron-common/object';
-import observable from 'saffron-common/object/mixins/observable';
-import { FactoryFragment } from 'saffron-common/fragments';
-import { mergeBoundingRects } from 'saffron-common/utils/geom';
+import CoreObject from 'saffron-common/lib/object/index';
+import observable from 'saffron-common/lib/object/mixins/observable';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { mergeBoundingRects } from 'saffron-common/lib/utils/geom/index';
 
 @observable
 class Preview extends CoreObject {
-  constructor(selection, bus) {
-    super({
-      selection: selection,
-      bus: bus,
-    });
+
+  constructor(public selection:any, public bus:any) {
+    super({});
   }
 
   setProperties(properties) {
@@ -191,7 +189,7 @@ export default class HTMLEntitySelection extends Selection {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns      : 'selection-collections/display',
   factory : HTMLEntitySelection,
 });

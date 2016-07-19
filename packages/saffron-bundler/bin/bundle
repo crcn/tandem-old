@@ -2,7 +2,7 @@
 var webpack = require('webpack');
 var createWebpackConfig = require('../create-webpack-config.js');
 
-var config = createWebpackConfig(require(process.cwd() + '/saffron-bundle'));
+var config = createWebpackConfig(require(process.cwd() + '/package'));
 
 var bundler = webpack(config);
 

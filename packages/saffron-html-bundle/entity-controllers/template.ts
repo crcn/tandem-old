@@ -1,24 +1,27 @@
 import './template.scss';
 
-import NodeSection from 'saffron-common/section/node';
-import FragmentSection from 'saffron-common/section/fragment';
-import bubbleIframeEvents from 'saffron-common/utils/html/bubble-iframe-events';
+import NodeSection from 'saffron-common/lib/section/node';
+import FragmentSection from 'saffron-common/lib/section/fragment';
+import bubbleIframeEvents from 'saffron-common/lib/utils/html/bubble-iframe-events';
 
-import { create } from 'saffron-common/utils/class';
-import { FactoryFragment } from 'saffron-common/fragments';
+import { create } from 'saffron-common/lib/utils/class/index';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
 
 class RegisteredEntityController {
+  public section:any;
+  public frame:any;
+  public entity:any;
+
   constructor(properties) {
     Object.assign(this, properties);
     this.section = FragmentSection.create();
   }
 
   async load(options) {
-    for (var childExpression of this.frame.expression.childNodes) {
-      this.entity.appendChild(await childExpression.load({
-        ...options,
+    for (var childExpression of this.frame.expression.childNodes) { 
+      this.entity.appendChild(await childExpression.load(Object.assign({}, options, {
         selectable: false
-      }));
+      })));
     }
   }
 
@@ -27,6 +30,14 @@ class RegisteredEntityController {
 
 
 export default class FrameEntityController {
+
+  public entity:any;
+  public app:any;
+  public section:any;
+  public iframe:any;
+  public expression:any;
+  public attributes:any;
+
   constructor(properties) {
     Object.assign(this, properties);
 
@@ -69,7 +80,7 @@ export default class FrameEntityController {
     iframe.setAttribute('class', 'm-entity-controller-template');
 
     options.fragments.register(
-      FactoryFragment.create({
+      new FactoryFragment({
         ns: `entity-controllers/${this.attributes.id}`,
         factory: {
           create: this.createElementController.bind(this)
@@ -88,25 +99,23 @@ export default class FrameEntityController {
       this.setZoom();
 
       for (var childExpression of this.expression.childNodes) {
-        await this.entity.appendChild(await childExpression.load({
-          ...options,
-          section: bodySection,
-        }));
+        await this.entity.appendChild(await childExpression.load(Object.assign({}, options, {
+          section: bodySection
+        })));
       }
     });
   }
 
   createElementController(properties) {
-    return RegisteredEntityController.create({
-      ...properties,
-      frame: this,
-    });
+    return RegisteredEntityController.create(Object.assign({}, properties, {
+      frame: this
+    }));
   }
 
   static create = create;
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns      : 'entity-controllers/template',
   factory : FrameEntityController,
 });

@@ -1,5 +1,5 @@
 import { calculateBoundingRect, getCapabilities, setBoundingRect, setPositionFromAbsolutePoint } from './utils';
-import CoreObject from 'saffron-common/object';
+import CoreObject from 'saffron-common/lib/object';
 
 export default class NodePreview extends CoreObject {
   constructor(entity) {

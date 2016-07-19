@@ -1,17 +1,28 @@
-import CoreObject from 'saffron-common/object';
-import XMLParser from 'saffron-common/parsers/xml.peg';
-import observable from 'saffron-common/object/mixins/observable';
-import { FactoryFragment } from 'saffron-common/fragments';
+import CoreObject from 'saffron-common/lib/object/index';
+import { parse as parseXML } from 'saffron-common/src/parsers/xml.peg';
+import observable from 'saffron-common/lib/object/mixins/observable';
+import FragmentDict from 'saffron-common/lib/fragments/collection';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { Bus } from 'mesh';
 import { applyDiff as patch } from 'deep-diff';
+import Entity from 'saffron-common/lib/entities/entity';
 
 @observable
 export default class SfnFile extends CoreObject {
+
+  public content:string;
+  public expression:Object;
+  public bus:Bus;
+  public entity:Entity;
+  public app:any;
+  public isolate:boolean;
+  public fragments:FragmentDict;
 
   /**
    */ 
 
   async load() {
-    var expression = XMLParser.parse(this.content);
+    var expression = parseXML(this.content);
 
     var options = {
       bus: this.bus,
@@ -22,7 +33,7 @@ export default class SfnFile extends CoreObject {
 
     // don't do this for now.
     if (this.expression && false) {
-      patch(this.expression, expression);
+      patch(this.expression, expression, undefined);
       this.entity.update(options);
     } else {
       this.expression = expression;
@@ -43,7 +54,7 @@ export default class SfnFile extends CoreObject {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns: 'models/sfn-file',
   factory: SfnFile
 });

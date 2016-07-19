@@ -1,5 +1,5 @@
 // import expect from 'expect.js';
-// import BaseDisplayEntity from 'saffron-common/entities/display';
+// import BaseDisplayEntity from 'saffron-common/lib/entities/display';
 // import calculateDistances from './calculate-distances';
 
 /*
@@ -66,5 +66,5 @@ describe(__filename + '#', function () {
     });
   }
 
-  for (const c in cases) createCase(c, cases[c]);
+  // for (const c in cases) createCase(c, cases[c]);
 });

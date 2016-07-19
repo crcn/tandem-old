@@ -1,5 +1,5 @@
-import Collection from 'saffron-common/object/collection';
+import Collection from 'saffron-common/lib/object/collection';
 
-export default class Selection extends Collection {
+export default class Selection extends Collection<any> {
 
 }

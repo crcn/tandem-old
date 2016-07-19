@@ -5,7 +5,7 @@
   "scripts": {
     "test": "karma start",
     "test-watch": "WATCH=1 karma start",
-    "postinstall": "tsc --declaration",
+    "postinstall": "rm -rf lib; tsc --declaration",
     "build-watch": ""
   },
   "author": "",

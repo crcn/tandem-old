@@ -1,6 +1,6 @@
-import loggable from 'saffron-common/logger/mixins/loggable';
-import { Service } from 'saffron-common/services';
-import { FactoryFragment } from 'saffron-common/fragments';
+import loggable from 'saffron-common/lib/logger/mixins/loggable';
+import { Service } from 'saffron-common/lib/services/index';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
 
 function targetIsInput(event) {
   return /input|textarea/i.test(event.target.nodeName);
@@ -8,8 +8,11 @@ function targetIsInput(event) {
 
 @loggable
 export default class ClipboardService extends Service {
+
+  public logger:any;
+
   initialize() {
-    document.addEventListener('copy', (event) => {
+    document.addEventListener('copy', (event:any) => {
       if (targetIsInput(event)) return;
       this.logger.info('handle copy');
 
@@ -21,7 +24,7 @@ export default class ClipboardService extends Service {
       event.preventDefault();
     });
 
-    document.addEventListener('paste', (event) => {
+    document.addEventListener('paste', (event:any) => {
       this.logger.info('handle paste');
       Array.prototype.forEach.call(event.clipboardData.items, this._paste);
     });
@@ -43,7 +46,7 @@ export default class ClipboardService extends Service {
   // }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns      : 'application/services/clipboard',
   factory : ClipboardService
 });

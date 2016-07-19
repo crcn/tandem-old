@@ -1,8 +1,8 @@
-import React from 'react';
+import * as React from 'react';
 
-import { ReactComponentFactoryFragment } from 'saffron-common/react/fragments';
+import { ReactComponentFactoryFragment } from 'saffron-common/lib/react/fragments';
 
-export default class PreviewComponent extends React.Component {
+export default class PreviewComponent extends React.Component<any, any> {
   componentDidMount() {
     this._update();
   }
@@ -25,7 +25,7 @@ export default class PreviewComponent extends React.Component {
   }
 }
 
-export const fragment = ReactComponentFactoryFragment.create({
+export const fragment = new ReactComponentFactoryFragment({
   ns: 'components/preview',
   componentClass: PreviewComponent,
 });

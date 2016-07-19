@@ -67,7 +67,7 @@ export default class FrontEndService extends Service {
     this._server.use(cors());
 
     // this should be part of the config
-    this._server.use(express.static(__dirname + '/../public'));
+    this._server.use(express.static(__dirname + '/../../public'));
 
     for (var bundle of bundles) {
       this._server.use(express.static(path.dirname(bundle.main)));
@@ -114,7 +114,7 @@ export default class FrontEndService extends Service {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns: 'application/services/front-end',
   factory: FrontEndService,
 });

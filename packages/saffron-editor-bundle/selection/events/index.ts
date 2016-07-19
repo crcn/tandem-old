@@ -1,8 +1,12 @@
-import { Event } from 'saffron-common/events';
-import toarray from 'toarray';
+import { Event } from 'saffron-common/lib/events/index';
+import * as toarray from 'toarray';
 
 export const SELECT = 'select';
 export class SelectEvent extends Event {
+  public items:any;
+  public keepPreviousSelection:boolean;
+  public toggle:boolean;
+
   constructor(items, keepPreviousSelection = false, toggle = false) {
     super(SELECT);
     this.items = toarray(items);

@@ -8,18 +8,25 @@ module.exports = function(options) {
       [options.name]: path.join(cwd, options.main)
     },
     output: {
-      path: path.join(cwd, options.directory),
+      path: path.join(cwd, options.saffron.directory),
       libraryTarget: 'var',
       library: ['Saffron', options.name],
       filename: "[name].js"
     },
+    sassLoader: {
+      includePaths: [path.resolve(cwd, './../')]
+    },
     resolve: {
       extensions: ['', '.js', '.jsx', '.peg', '.ts', '.tsx'],
-      modulesDirectories: ['node_modules', 'src']
+      modulesDirectories: ['node_modules', 'src', cwd + '/../']
     },
-    watch: true,
+    watch: process.env.WATCH === '1',
     node: {
       __filename: true
+    },
+    externals: {
+      'react': 'React',
+      'react-dom': 'ReactDOM'
     },
     module: {
       loaders: [
@@ -30,6 +37,10 @@ module.exports = function(options) {
             getModulePath('css-loader'),
             getModulePath('sass-loader')
           ].join('!')
+        },
+        {
+          test: /\.(png|jpg|gif|eot|ttf|woff)$/,
+          loader: getModulePath('url-loader') + '?limit=1000'
         },
         {
           test: /\.css$/,
@@ -52,5 +63,5 @@ module.exports = function(options) {
 }
 
 function getModulePath(moduleName) {
-  return path.join(__dirname + '/' + moduleName);
+  return path.join(__dirname + '/node_modules/' + moduleName);
 }

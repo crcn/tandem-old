@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "bundle-saffron-fragment": "./bin/bundle" 
+    "bundle-saffron-fragment": "./bin/bundle"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -27,6 +27,7 @@
     "sass-loader": "^4.0.0",
     "style-loader": "^0.13.1",
     "ts-loader": "^0.8.2",
+    "typescript": "^1.8.10",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1"
   }

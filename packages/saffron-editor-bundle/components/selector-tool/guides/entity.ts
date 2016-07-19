@@ -2,6 +2,9 @@ import BaseGuide from './base';
 
 export default class EntityGuide extends BaseGuide {
 
+  public allEntities:any;
+  public margin:any;
+
   constructor(allEntities, margin) {
     super();
     this.allEntities = allEntities;

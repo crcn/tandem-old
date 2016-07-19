@@ -108,7 +108,7 @@ export default class FileService extends Service {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns: 'application/services/file',
   factory: FileService
 });

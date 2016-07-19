@@ -1,19 +1,23 @@
-import loggable from 'saffron-common/logger/mixins/loggable';
+import loggable from 'saffron-common/lib/logger/mixins/loggable';
 
-import { ProxyBus } from 'saffron-common/busses';
-import { Service } from 'saffron-common/services';
-import { FactoryFragment } from 'saffron-common/fragments';
-import sift from 'sift';
+import { ProxyBus } from 'saffron-common/lib/busses/index';
+import { Service } from 'saffron-common/lib/services/index';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import * as sift from 'sift';
 
 @loggable
 export default class ToolService extends Service {
 
+  public toolProxyBus:any;
+
   constructor(properties) {
     super(properties);
     this.app.actors.push(
-      this.toolProxyBus = ProxyBus.create()
+      this.toolProxyBus = new ProxyBus(undefined)
     );
-    this.setCurrentTool({});
+    this.setCurrentTool({
+      tool: undefined
+    });
   }
 
   load() {
@@ -38,7 +42,7 @@ export default class ToolService extends Service {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns      : 'application/services/tool',
   factory : ToolService
 });

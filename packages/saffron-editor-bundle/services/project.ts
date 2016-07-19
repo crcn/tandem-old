@@ -1,21 +1,27 @@
-import loggable from 'saffron-common/logger/mixins/loggable';
-import isPublic from 'saffron-common/actors/decorators/public';
-import sift from 'sift';
-import observable from 'saffron-common/object/mixins/observable';
-import Collection from 'saffron-common/object/collection';
-import ArrayDsBus from 'mesh-array-ds-bus';
+import loggable from 'saffron-common/lib/logger/mixins/loggable';
+import isPublic from 'saffron-common/lib/actors/decorators/public';
+import * as sift from 'sift';
+import observable from 'saffron-common/lib/object/mixins/observable';
+import Collection from 'saffron-common/lib/object/collection';
+import * as ArrayDsBus from 'mesh-array-ds-bus';
 
-import { Service } from 'saffron-common/services';
+import { Service } from 'saffron-common/lib/services/index';
 import { AcceptBus } from 'mesh';
-import { FactoryFragment } from 'saffron-common/fragments';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
 
 @observable
-class Projects extends Collection { }
+class Projects extends Collection<any> { }
 
 const COLLECTION_NAME = 'files';
 
 @loggable
 export default class ProjectService extends Service {
+
+  public bus:any;
+  public app:any;
+  public projects:any;
+  public logger:any;
+  public _projectsBus:any;
 
   async initialize() {
 
@@ -23,16 +29,15 @@ export default class ProjectService extends Service {
       return this.app
         .fragments
         .query(`models/${data.ext}-file`)
-        .create({
-          ...data,
+        .create(Object.assign({}, data, {
           fragments: this.app.fragments,
           app: this.app,
           bus: this.bus
-        });
+        }));
     };
 
     this.app.setProperties({
-      projects: this.projects = Projects.create(
+      projects: this.projects = new Projects(
         (await this.bus.execute({
           type: 'find',
           collectionName: COLLECTION_NAME,
@@ -54,7 +59,7 @@ export default class ProjectService extends Service {
         },
         insert: createModel
       })
-    );
+    , undefined); 
 
     this.logger.info('loaded %d files', this.projects.length);
 
@@ -77,7 +82,7 @@ export default class ProjectService extends Service {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns      : 'application/services/project',
   factory : ProjectService
 });

@@ -1,5 +1,5 @@
 {
   "name": "saffron-front-end",
-  "main": "./test.js",
+  "main": "./entry.ts",
   "directory": "./bundle"
 }

@@ -1,6 +1,6 @@
 import GroupEntity from './group';
-import { FactoryFragment } from 'saffron-common/fragments';
-import FragmentSection from 'saffron-common/section/fragment';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import FragmentSection from 'saffron-common/lib/section/fragment';
 
 export default class RootEntity extends GroupEntity {
   constructor(properties) {
@@ -15,7 +15,7 @@ export default class RootEntity extends GroupEntity {
   }
 }
 
-export const fragment = FactoryFragment.create({
+export const fragment = new FactoryFragment({
   ns: 'entities/root',
   factory: GroupEntity,
 });

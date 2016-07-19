@@ -1,0 +1,12 @@
+{
+  "globalDependencies": {
+    "lodash": "registry:dt/lodash#3.10.0+20160619033623",
+    "mesh": "file:./node_modules/saffron-common/node_modules/mesh/typings.json",
+    "mesh-socket-io-bus": "file:./node_modules/saffron-common/node_modules/mesh-socket-io-bus/typings.json",
+    "react": "registry:dt/react#0.14.0+20160630100702",
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
+    "saffron-common": "file:./node_modules/saffron-common/typings.json",
+    "sift": "npm:sift",
+    "socket.io-client": "registry:dt/socket.io-client#1.4.4+20160317120654"
+  }
+}
