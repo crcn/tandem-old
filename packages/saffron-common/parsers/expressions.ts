@@ -2,7 +2,7 @@
 /**
  * Generic
  */
-
+ 
 export class BaseExpression {
   constructor(public ns:string) { }
 

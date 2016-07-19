@@ -67,7 +67,7 @@ export class BaseCollection<T> extends Array<T> {
   }
 
 }
-(BaseCollection as any).prototype = new Array<any>();
+// (BaseCollection as any).prototype = new Array<any>();
 
 export default class Collection<T> extends BaseCollection<T> {
   

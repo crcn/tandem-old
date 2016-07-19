@@ -1,5 +1,5 @@
 import { Event } from '../../events/index';
-import assertPropertyExists from '../utils/assert/property-exists';
+import assertPropertyExists from '../../utils/assert/property-exists';
 
 export const LOG = 'log';
 export class LogEvent extends Event {

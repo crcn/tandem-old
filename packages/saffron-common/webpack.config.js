@@ -60,33 +60,6 @@ exports.create = function(options) {
             getModulePath('css-loader')
           ].join('!') 
         },
-        // {
-        //   test: /\.(jsx?|es6?)$/,
-        //   exclude: /(node_modules|bower_components)/,
-        //   loader: getModulePath('babel-loader'),
-        //   query: {
-        //     presets: [
-        //       getModulePath('babel-preset-react'),
-        //       getModulePath('babel-preset-es2015'),
-        //       getModulePath('babel-preset-stage-1'),
-        //       getModulePath('babel-preset-stage-0')
-        //     ],
-        //     plugins: [
-        //       getModulePath('babel-plugin-transform-decorators-legacy'),
-        //       getModulePath('babel-plugin-transform-class-properties')
-        //     ],
-        //     ignore: ['buffer']
-        //   }
-        // },
-        {
-          test: /\.(jsx?|es6|peg|tsx?)$/,
-          exclude: /(node_modules|bower_components)/,
-          loader: getModulePath('traceur-loader'),
-          query: {
-            experimental: true,
-            runtime: true
-          }
-        },
         {
           test: /\.peg$/,
           loader: getModulePath('pegjs-loader') + '?cache=true'
