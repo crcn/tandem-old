@@ -1,0 +1,5 @@
+{
+  "name": "saffron-front-end",
+  "main": "./test.js",
+  "directory": "./bundle"
+}

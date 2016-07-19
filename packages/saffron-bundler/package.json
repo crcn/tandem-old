@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "bundle-saffron-fragment": "./bin/bundle" 
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,6 +19,7 @@
     "karma-mocha": "^1.1.1",
     "karma-spec-reporter": "0.0.26",
     "karma-webpack": "^1.7.0",
+    "lodash": "^4.13.1",
     "mocha": "^2.5.3",
     "node-sass": "^3.8.0",
     "pegjs": "^0.9.0",
