@@ -2,15 +2,15 @@ import * as fs from 'fs';
 import gaze from 'gaze';
 import * as sift from 'sift';
 
-import Logger from 'saffron-common/logger/index';
-import Service from 'saffron-common/services/base';
-import loggable from 'saffron-common/logger/mixins/loggable';
-import isPublic from 'saffron-common/actors/decorators/public';
-import filterAction from 'saffron-common/actors/decorators/filter-action';
-import document from 'saffron-common/actors/decorators/document';
+import Logger from 'saffron-common/lib/logger/index';
+import Service from 'saffron-common/lib/services/base';
+import loggable from 'saffron-common/lib/logger/mixins/loggable';
+import isPublic from 'saffron-common/lib/actors/decorators/public';
+import filterAction from 'saffron-common/lib/actors/decorators/filter-action';
+import document from 'saffron-common/lib/actors/decorators/document';
 
 import { Response } from 'mesh';
-import { FactoryFragment } from 'saffron-common/fragments/index';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
 
 @loggable
 export default class FileService extends Service {

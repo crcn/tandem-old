@@ -2,7 +2,7 @@ import 'babel-polyfill';
 
 import * as path from 'path';
 import { merge } from 'lodash';
-import BaseApplication from 'saffron-common/application/base';
+import BaseApplication from 'saffron-common/lib/application/base';
  
 import { fragment as dbServiceFragment } from './services/db';
 import { fragment as fileServicerFragment } from './services/file';

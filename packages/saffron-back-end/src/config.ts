@@ -1,4 +1,4 @@
-import { ALL } from 'saffron-common/logger/levels';
+import { ALL } from 'saffron-common/lib/logger/levels';
 
 export default {
   socketio: {

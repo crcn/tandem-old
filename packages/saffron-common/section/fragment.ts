@@ -2,11 +2,10 @@ import create from '../utils/class/create';
 import getPath from '../utils/node/get-path';
 import getNode from '../utils/node/get-node';
 
-
 /**
  */
 
-class Marker {
+export class Marker {
 
   constructor(
     private _startPath:Array<string>, 

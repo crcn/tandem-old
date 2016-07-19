@@ -1,8 +1,8 @@
-import Service from 'saffron-common/services/base';
-import isPublic from 'saffron-common/actors/decorators/public';
-import { UpsertBus } from 'saffron-common/busses/index';
+import Service from 'saffron-common/lib/services/base';
+import isPublic from 'saffron-common/lib/actors/decorators/public';
+import { UpsertBus } from 'saffron-common/lib/busses/index';
 import { Bus } from 'mesh';
-import { FactoryFragment } from 'saffron-common/fragments/index';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
 
 export default class UpsertService extends Service {
 

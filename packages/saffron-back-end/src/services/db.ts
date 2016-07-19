@@ -1,12 +1,12 @@
-import Service from 'saffron-common/services/base';
-import loggable from 'saffron-common/logger/mixins/loggable';
-import isPublic from 'saffron-common/actors/decorators/public';
+import Service from 'saffron-common/lib/services/base';
+import loggable from 'saffron-common/lib/logger/mixins/loggable';
+import isPublic from 'saffron-common/lib/actors/decorators/public';
 import * as MemoryDsBus from 'mesh-memory-ds-bus';
 import { Bus } from 'mesh';
 
 import { titleize } from 'inflection';
-import { FactoryFragment } from 'saffron-common/fragments/index';
-import document from 'saffron-common/actors/decorators/document';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import document from 'saffron-common/lib/actors/decorators/document';
 
 @loggable
 export default class DBService extends Service {

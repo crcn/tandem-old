@@ -1,10 +1,10 @@
 import * as chalk from 'chalk';
-import Service from 'saffron-common/services/base';
-import document from 'saffron-common/actors/decorators/document';
-import loggable from 'saffron-common/logger/mixins/loggable';
+import Service from 'saffron-common/lib/services/base';
+import document from 'saffron-common/lib/actors/decorators/document';
+import loggable from 'saffron-common/lib/logger/mixins/loggable';
 import * as readline from 'readline';
-import { FactoryFragment } from 'saffron-common/fragments/index';
-import Logger from 'saffron-common/logger/index'; 
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import Logger from 'saffron-common/lib/logger/index'; 
 
 /**
  * console input command handler

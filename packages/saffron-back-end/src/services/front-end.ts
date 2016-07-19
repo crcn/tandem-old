@@ -1,13 +1,13 @@
 
-import { Service } from 'saffron-common/services/index';
-import IOService from 'saffron-common/services/io';
-import loggable from 'saffron-common/logger/mixins/loggable';
+import { Service } from 'saffron-common/lib/services/index';
+import IOService from 'saffron-common/lib/services/io';
+import loggable from 'saffron-common/lib/logger/mixins/loggable';
 import * as createSocketIOServer from 'socket.io';
-import { FactoryFragment } from 'saffron-common/fragments/index';
+import { FactoryFragment } from 'saffron-common/lib/fragments/index';
 import * as express from 'express';
 import * as path from 'path';
 import * as cors from 'cors';
-import Logger from 'saffron-common/logger/index'; 
+import Logger from 'saffron-common/lib/logger/index'; 
 import { sync as getPackagePath } from 'package-path';
 
 @loggable

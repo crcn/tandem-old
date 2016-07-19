@@ -5,7 +5,7 @@ import getNode from '../utils/node/get-node';
 /**
  */
 
-class Marker {
+export class Marker {
 
   private _path:Array<string>;
   private _nodeFactory:any;
