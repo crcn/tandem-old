@@ -1,17 +1,25 @@
 
-import { Service } from 'saffron-common/services';
+import { Service } from 'saffron-common/services/index';
 import IOService from 'saffron-common/services/io';
 import loggable from 'saffron-common/logger/mixins/loggable';
-import createSocketIOServer from 'socket.io';
-import { FactoryFragment } from 'saffron-common/fragments';
-import createServer from 'express';
-import path from 'path';
-import cors from 'cors';
-import createStaticMiddleware from 'express-static';
+import * as createSocketIOServer from 'socket.io';
+import { FactoryFragment } from 'saffron-common/fragments/index';
+import * as express from 'express';
+import * as path from 'path';
+import * as cors from 'cors';
+import Logger from 'saffron-common/logger/index'; 
 import { sync as getPackagePath } from 'package-path';
 
 @loggable
 export default class FrontEndService extends Service {
+
+  private _server:any;
+  private _ioService:any;
+  private _port:number;
+  private _socket:any;
+  public config:any;
+  public logger:Logger;
+  private _bundles:Array<any>;
 
   constructor(properties) {
     super(properties);
@@ -27,7 +35,7 @@ export default class FrontEndService extends Service {
 
   async _loadHttpServer() {
     this.logger.info(`listening on port ${this._port}`);
-    this._server = createServer();
+    this._server = express();
     this._socket = this._server.listen(this._port);
   }
 
@@ -59,10 +67,10 @@ export default class FrontEndService extends Service {
     this._server.use(cors());
 
     // this should be part of the config
-    this._server.use(createStaticMiddleware(__dirname + '/../public'));
+    this._server.use(express.static(__dirname + '/../public'));
 
     for (var bundle of bundles) {
-      this._server.use(createStaticMiddleware(path.dirname(bundle.main)));
+      this._server.use(express.static(path.dirname(bundle.main)));
     }
 
     this._server.use((req, res) => {

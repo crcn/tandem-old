@@ -1,9 +1,10 @@
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import Service from 'saffron-common/services/base';
 import document from 'saffron-common/actors/decorators/document';
 import loggable from 'saffron-common/logger/mixins/loggable';
-import readline from 'readline';
-import { FactoryFragment } from 'saffron-common/fragments';
+import * as readline from 'readline';
+import { FactoryFragment } from 'saffron-common/fragments/index';
+import Logger from 'saffron-common/logger/index'; 
 
 /**
  * console input command handler
@@ -11,7 +12,12 @@ import { FactoryFragment } from 'saffron-common/fragments';
 
 @loggable
 export default class StdinService extends Service {
+
+  public logger:Logger;
+  private _rl:readline.ReadLine;
+
   initialize() {
+
     this._rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout

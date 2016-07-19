@@ -1,5 +1,5 @@
 import { AcceptBus, Response } from 'mesh';
-import sift from 'sift';
+import * as sift from 'sift';
 
 export default {
   create(bus) {

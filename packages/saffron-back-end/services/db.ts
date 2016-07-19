@@ -1,14 +1,17 @@
 import Service from 'saffron-common/services/base';
 import loggable from 'saffron-common/logger/mixins/loggable';
 import isPublic from 'saffron-common/actors/decorators/public';
-import MemoryDsBus from 'mesh-memory-ds-bus';
+import * as MemoryDsBus from 'mesh-memory-ds-bus';
+import { Bus } from 'mesh';
 
 import { titleize } from 'inflection';
-import { FactoryFragment } from 'saffron-common/fragments';
+import { FactoryFragment } from 'saffron-common/fragments/index';
 import document from 'saffron-common/actors/decorators/document';
 
 @loggable
 export default class DBService extends Service {
+  
+  private _db:Bus;
 
   constructor(properties) {
     super(properties);

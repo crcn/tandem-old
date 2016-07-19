@@ -31,11 +31,11 @@ export default class BaseApplication extends CoreObject {
     const initialFragments = this.fragments || [];
 
     // contains most dependencies for the application.
-    this.fragments = FragmentCollection.create();
-    this.fragments.register(...initialFragments);
+    this.fragments = new FragmentCollection();
+    this.fragments.register(...initialFragments); 
 
     // acts on events dispatched by the central bus
-    this.actors = Collection.create<any>();
+    this.actors = new Collection<any>();
 
     // the central bus which dispatches all actions & events
     // to all actors of the applicaton
@@ -60,8 +60,8 @@ export default class BaseApplication extends CoreObject {
 
     this.willInitialize();
     this.setProperties({ loading: true });
-    await this.bus.execute(LoadEvent.create());
-    await this.bus.execute(InitializeEvent.create());
+    await this.bus.execute(new LoadEvent());
+    await this.bus.execute(new InitializeEvent());
     this.setProperties({ loading: false });
     this.didInitialize();
   }
@@ -83,7 +83,7 @@ export default class BaseApplication extends CoreObject {
       fragment.create({
         app    : this,
         bus    : this.bus,
-        config : this.config,
+        config : this.config
       })
     )));
   }

@@ -3,6 +3,7 @@ import * as LogLevel from './levels';
 import { Bus } from 'mesh';
 import { create } from '../utils/class/index';
 import { sprintf } from 'sprintf';
+import { LogEvent } from './events';
 
 export default class Logger {
 
@@ -60,11 +61,7 @@ export default class Logger {
       ...params.map(stringify)
     );
 
-    this.bus.execute({
-      type: 'log',
-      message: message,
-      filterable: this.filterable
-    });
+    this.bus.execute(new LogEvent(level, message));
   }
 
   static create = create;

@@ -8,7 +8,9 @@
     "example": "examples"
   },
   "dependencies": {
-    "glob": "^7.0.5"
+    "glob": "^7.0.5",
+    "mesh": "^6.0.20",
+    "mesh-socket-io-bus": "^1.0.5"
   },
   "devDependencies": {},
   "scripts": {

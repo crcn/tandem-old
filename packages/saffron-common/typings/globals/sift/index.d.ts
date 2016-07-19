@@ -1,4 +1,7 @@
 declare module "sift" {
-
-  export default function sift(query:Object):Function;
+  function sift(query:Object):Function;
+  namespace sift {
+    // export function indexOf();
+  }
+  export = sift;
 }

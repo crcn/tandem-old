@@ -1,9 +1,12 @@
 import Service from 'saffron-common/services/base';
 import isPublic from 'saffron-common/actors/decorators/public';
-import { UpsertBus } from 'saffron-common/busses';
-import { FactoryFragment } from 'saffron-common/fragments';
+import { UpsertBus } from 'saffron-common/busses/index';
+import { Bus } from 'mesh';
+import { FactoryFragment } from 'saffron-common/fragments/index';
 
 export default class UpsertService extends Service {
+
+  private _bus:Bus;
 
   constructor(properties) {
     super(properties);
@@ -13,8 +16,8 @@ export default class UpsertService extends Service {
   /**
    */
 
-  @isPublic
-  upsert(action) {
+  @isPublic 
+  public upsert(action) {
     return this._bus.execute(action);
   }
 }

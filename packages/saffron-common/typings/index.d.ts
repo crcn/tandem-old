@@ -9,4 +9,4 @@
 /// <reference path="globals/react/index.d.ts" />
 /// <reference path="globals/sift/index.d.ts" />
 /// <reference path="globals/sprintf/index.d.ts" />
-/// <reference path="globals/sprintf/index.d.ts" />
+/// <reference path="./modules.d.ts" />

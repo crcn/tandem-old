@@ -1,0 +1,25 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "es6",
+    "sourceMap": true,
+    "module": "commonjs",
+    "moduleResolution": "classic",
+    "experimentalDecorators": true,
+    "jsx": "react"
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "filesGlob": [
+      "**/*.ts",
+      "**/*.tsx",
+      "!node_modules/**"
+  ],
+  "rootDirs": [
+    "node_modules"
+  ],
+  "atom": {
+    "rewriteTsconfig": true
+  }
+}

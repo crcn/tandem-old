@@ -1,5 +1,5 @@
 import { BaseActor } from '../actors/index' 
-import { WrapBus, EmptyResponse, ParallelBus } from 'mesh';
+import { WrapBus, EmptyResponse, ParallelBus, Bus } from 'mesh';
 
 export default class Service extends BaseActor {
 
@@ -8,6 +8,7 @@ export default class Service extends BaseActor {
 
   public target:any;
   public app:any; 
+  public bus:Bus;
 
   /**
    * Takes target as argument which contains all the handlers

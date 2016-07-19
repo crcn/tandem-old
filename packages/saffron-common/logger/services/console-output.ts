@@ -1,7 +1,7 @@
 import { Service } from '../../services/index';
 import { FactoryFragment } from '../../fragments/index';
 import document from '../../actors/decorators/document';
-import sift from 'sift';
+import * as sift from 'sift';
 
 import {
   VERBOSE as VERBOSE_LEVEL,
@@ -35,7 +35,7 @@ class ConsoleService extends Service {
     var color = {
       [VERBOSE_LEVEL]: 'grey',
       [INFO_LEVEL]: 'blue',
-      [WARN_LEVEL]: 'orange',
+      [WARN_LEVEL]: 'yellow',
       [ERROR_LEVEL]: 'red',
     }[level];
 

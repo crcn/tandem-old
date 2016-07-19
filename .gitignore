@@ -6,6 +6,3 @@ bundle/
 npm-*
 git-*
 *.js.map
-packages/**/*.js
-!packages/saffron-back-end/public/**
-!webpack.config.js
