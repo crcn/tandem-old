@@ -3,7 +3,7 @@ import loggable from '../logger/mixins/loggable';
 import Logger from '../logger/index'; 
 import isPublic from '../actors/decorators/public';
 import document from '../actors/decorators/document';
-import SocketIOBus from 'mesh-socket-io-bus';
+import * as SocketIOBus from 'mesh-socket-io-bus';
 
 import { Service } from '../services/index';
 import { ParallelBus } from 'mesh';

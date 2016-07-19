@@ -3,7 +3,7 @@ import * as LogLevel from './levels';
 import { Bus } from 'mesh';
 import { create } from '../utils/class/index';
 import { sprintf } from 'sprintf';
-import { LogEvent } from './events';
+import { LogEvent } from './events/index';
 
 export default class Logger {
 

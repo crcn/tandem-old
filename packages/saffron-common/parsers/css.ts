@@ -1,4 +1,4 @@
-import sift from 'sift';
+import * as sift from 'sift';
 import CSSTokenizer from '../tokenizers/css';
 
 export default {
