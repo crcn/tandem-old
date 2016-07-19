@@ -5,7 +5,7 @@
     "sourceMap": true,
     "module": "commonjs",
     "moduleResolution": "classic",
-    "outDir": "build",
+    "outDir": "lib",
     "experimentalDecorators": true,
     "jsx": "react"
   },

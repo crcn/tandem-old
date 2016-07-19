@@ -4,7 +4,7 @@
   "main": "application.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "babel `find ./ -name '*.es6'` --out-dir .",
+    "postinstall": "typings && tsc",
     "build-watch": "babel `find ./ -name '*.es6'` --out-dir . --watch"
   },
   "author": "",
@@ -21,6 +21,7 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
+    "mesh-socket-io-bus": "*",
     "babel-preset-stage-1": "^6.5.0",
     "chalk": "^1.1.3",
     "cors": "^2.7.1",

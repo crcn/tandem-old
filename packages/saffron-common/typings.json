@@ -1,0 +1,8 @@
+{
+  "name": "saffron-common",
+  "main": "./typings/index.d.ts",
+  "globalDependencies": {
+    "mesh": "npm:mesh",
+    "mesh-socket-io-bus": "file:./node_modules/mesh-socket-io-bus/typings.json"
+  }
+}
