@@ -1,4 +1,4 @@
-/// <reference path="../node_modules/mesh-socket-io-bus/typings/index.d.ts" />
+/// <reference path="../node_modules/mesh-socket-io-bus/index.d.ts" />
 /// <reference path="../node_modules/mesh/typings/index.d.ts" />
 /// <reference path="globals/chai/index.d.ts" />
 /// <reference path="globals/chalk/index.d.ts" />

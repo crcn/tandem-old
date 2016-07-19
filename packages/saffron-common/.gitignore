@@ -1,0 +1,4 @@
+!webpack.config.js
+!karma.conf.js
+**/*.js
+**/*.js.map
