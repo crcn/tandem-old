@@ -1,7 +1,7 @@
 {
   "resolution": "main",
   "tree": {
-    "src": "/Users/crcn/Developer/public/saffron/packages/saffron-front-end/node_modules/saffron-common/node_modules/mesh/typings.json",
+    "src": "/Users/crcn/Developer/public/saffron/packages/node_modules/saffron-common/node_modules/mesh/typings.json",
     "raw": "file:./node_modules/saffron-common/node_modules/mesh/typings.json",
     "main": "./typings/index.d.ts",
     "global": false,

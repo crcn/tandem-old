@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./lib/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "typings && tsc",
+    "postinstall": "rm -rf lib; tsc --declaration",
     "build-watch": "babel `find ./ -name '*.es6'` --out-dir . --watch"
   },
   "author": "",
@@ -34,6 +34,7 @@
     "mesh-memory-ds-bus": "^4.0.0",
     "package-path": "^1.0.0",
     "saffron-common": "1.1.x",
+    "saffron-front-end": "1.x.x",
     "sift": "^3.2.1",
     "socket.io": "^1.4.8",
     "yargs": "^4.8.1"

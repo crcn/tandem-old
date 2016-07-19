@@ -39,46 +39,23 @@ export default class FrontEndService extends Service {
     this._socket = this._server.listen(this._port);
   }
 
-  async _loadBundles() {
-    const bundles = [];
-    for (var moduleName of (this.app.config.bundles || [])) {
-      try {
-        bundles.push(await this._loadBundle(moduleName));
-      } catch(e) {
-        this.logger.error('unable to load %s', moduleName);
-      }
-    }
-    return bundles;
-  }
-
-  async _loadBundle(moduleName) {
-    this.logger.info('loading bundle %s', moduleName);
-    const pkgPath = getPackagePath(require.resolve(moduleName));
-    console.log(pkgPath);
-    const pkg = require(pkgPath + '/package.json');
-    return {
-      main: path.join(pkgPath, pkg.main)
-    };
-  }
 
   async _loadStaticRoutes() {
-    var bundles = this._bundles = await this._loadBundles();
 
     this._server.use(cors());
 
-    // this should be part of the config
-    this._server.use(express.static(__dirname + '/../../public'));
+    var entryPath = this.config.frontEndEntry;
+    var scriptName = path.basename(entryPath);
 
-    for (var bundle of bundles) {
-      this._server.use(express.static(path.dirname(bundle.main)));
-    }
+    // this should be part of the config
+    this._server.use(express.static(path.dirname(entryPath)));
 
     this._server.use((req, res) => {
-      res.send(this.getIndexHtmlContent());
+      res.send(this.getIndexHtmlContent(scriptName));
     });
   }
 
-  getIndexHtmlContent() {
+  getIndexHtmlContent(scriptName) {
     const host = `http://localhost:${this._port}`;
 
     return `
@@ -91,16 +68,17 @@ export default class FrontEndService extends Service {
               height: 100%;
             }
           </style>
+          <script type="text/javascript">
+            var config = {
+              socketio: {
+                port: ${this._port}
+              }
+            };
+          </script>
         </head>
         <body>
           <div id="app"></div>
-          <script src='${host}/vendor/react.min.js'></script>
-          <script src='${host}/vendor/react-dom.min.js'></script>
-          ${
-            this._bundles.map(function(bundle) {
-              return `<script src="${host}/${path.basename(bundle.main)}"></script>`;
-            }).join('\n')
-          }
+          <script src='${host}/${scriptName}'></script>
         </body>
       </html>
     `;

@@ -5,16 +5,11 @@
   "main": "./bundle/saffron-sass-bundle.js",
   "publicDirectory": "./bundle",
   "scripts": {
-    "test": "karma start",
-    "postinstall": "webpack",
-    "build-watch": "webpack --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "sass.js": "^0.9.11",
-    "saffron-common": "^1.0.2",
-    "webpack": "^1.13.1"
+    "sass.js": "^0.9.11"
   },
   "devDependencies": {
     "saffron-bundler": "^1.0.0"

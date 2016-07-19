@@ -1,0 +1,15 @@
+@import 'scss/variables';
+
+.m-guide-line {
+
+  // make it so click go through tools layer
+  pointer-events: none;
+
+  & path {
+    stroke: #FF00FF !important;
+  }
+  & text {
+    fill: #FF00FF;
+    font-size: $font-size-0;
+  }
+}

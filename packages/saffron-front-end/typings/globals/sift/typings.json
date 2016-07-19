@@ -1,7 +1,7 @@
 {
   "resolution": "main",
   "tree": {
-    "src": "/Users/crcn/Developer/public/saffron/packages/saffron-front-end/node_modules/sift/package.json",
+    "src": "/Users/crcn/Developer/public/saffron/packages/node_modules/sift/package.json",
     "raw": "npm:sift",
     "main": "./sift.js",
     "typings": "./index.d.ts",

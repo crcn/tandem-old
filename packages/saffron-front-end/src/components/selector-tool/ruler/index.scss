@@ -1,0 +1,20 @@
+@import 'scss/variables';
+
+.m-ruler-tool {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+
+  // make it so click go through tools layer
+  pointer-events: none;
+
+  &--line {
+    & path {
+      stroke: #FF00FF !important;
+    }
+    & text {
+      fill: #FF00FF;
+      font-size: $font-size-0;
+    }
+  }
+}

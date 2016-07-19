@@ -1,8 +1,10 @@
 {
   "globalDependencies": {
+    "deep-diff": "registry:dt/deep-diff#0.0.0+20160317120654",
     "lodash": "registry:dt/lodash#3.10.0+20160619033623",
     "mesh": "file:./node_modules/saffron-common/node_modules/mesh/typings.json",
     "mesh-socket-io-bus": "file:./node_modules/saffron-common/node_modules/mesh-socket-io-bus/typings.json",
+    "mousetrap": "registry:dt/mousetrap#1.5.0+20160501152135",
     "react": "registry:dt/react#0.14.0+20160630100702",
     "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
     "saffron-common": "file:./node_modules/saffron-common/typings.json",

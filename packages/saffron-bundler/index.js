@@ -1,1 +1,0 @@
-export.createWebpackConfig = require('./create-webpack-config');

@@ -2,10 +2,7 @@
   "name": "saffron-front-end",
   "version": "1.0.1",
   "description": "",
-  "main": "./entry.ts",
-  "saffron": {
-    "directory": "./bundle"
-  },
+  "main": "./bundle/front-end.js",
   "scripts": {
     "test": "karma start",
     "bundle": "./node_modules/saffron-bundler/bin/bundle",
@@ -14,12 +11,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "classnames": "^2.2.5",
+    "deep-diff": "^0.3.4",
     "lodash": "^4.13.1",
+    "mesh": "^6.0.23",
+    "mesh-array-ds-bus": "^1.0.12",
+    "mousetrap": "^1.6.0",
+    "react": "^15.2.1",
+    "react-dom": "^15.2.1",
     "saffron-common": "^1.0.1",
     "sift": "^3.2.2",
-    "socket.io-client": "^1.4.8"
+    "socket.io-client": "^1.4.8",
+    "toarray": "0.0.1"
   },
   "devDependencies": {
-    "saffron-bundler": "^1.0.0"
+    "url-loader": "^0.5.7"
   }
 }
