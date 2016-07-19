@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import createFactory from '../utils/class/create-factory';
-import flatten from 'lodash/flattenDeep';
+import { flattenDeep as flatten } from 'lodash';
 import { BaseCollection } from '../object/collection';
 import { Fragment } from './index';
 
@@ -69,9 +69,4 @@ export default class FragmentCollection extends BaseCollection<Fragment> {
   }
 
   static _create = createFactory(Array);
-}
-
-
-function create<T>(...rest) {
-  return new T(...rest);
 }

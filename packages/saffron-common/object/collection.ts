@@ -71,7 +71,7 @@ export class BaseCollection<T> extends Array<T> {
 
 export default class Collection<T> extends BaseCollection<T> {
   
-  public static create<T>(properties:Object|T[]):Collection<T> {
+  public static create<T>(properties:Object|T[] = undefined):Collection<T> {
     return this._create(properties) as Collection<T>;
   }
 
