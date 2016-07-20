@@ -1,10 +1,10 @@
 import './template.scss';
 
-import NodeSection from 'saffron-common/lib/section/node';
-import FragmentSection from 'saffron-common/lib/section/fragment';
-import bubbleIframeEvents from 'saffron-common/lib/utils/html/bubble-iframe-events';
+import NodeSection from 'saffron-common/src/section/node';
+import FragmentSection from 'saffron-common/src/section/fragment';
+import bubbleIframeEvents from 'saffron-common/src/utils/html/bubble-iframe-events';
 
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment, FactoryFragment } from 'saffron-common/src/fragments/index';
 
 class RegisteredEntityController {
   public section:any;
@@ -55,7 +55,7 @@ export default class FrameEntityController {
       }
     });
 
-    this.section = NodeSection.create(document.createElement('iframe'));
+    this.section = new NodeSection(document.createElement('iframe'));
   }
 
   /**
@@ -85,7 +85,7 @@ export default class FrameEntityController {
     iframe.addEventListener('load', async () => {
       bubbleIframeEvents(iframe);
       var body = iframe.contentWindow.document.body;
-      var bodySection = NodeSection.create(body);
+      var bodySection = new NodeSection(body);
       Object.assign(bodySection.targetNode.style, {
         margin: 0,
         padding: 0,
@@ -101,7 +101,7 @@ export default class FrameEntityController {
   }
 
   createElementController(properties) {
-    return RegisteredEntityController.create(Object.assign({}, properties, {
+    return new RegisteredEntityController(Object.assign({}, properties, {
       frame: this
     }));
   }

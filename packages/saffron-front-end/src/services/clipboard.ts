@@ -1,6 +1,7 @@
-import loggable from 'saffron-common/lib/decorators/loggable';
-import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+import Logger from 'saffron-common/src/logger/index'; 
+import loggable from 'saffron-common/src/decorators/loggable';
+import BaseApplicationService from 'saffron-common/src/services/base-application-service';
+import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
 
 function targetIsInput(event) {
   return /input|textarea/i.test(event.target.nodeName);
@@ -9,16 +10,18 @@ function targetIsInput(event) {
 @loggable
 export default class ClipboardService extends BaseApplicationService {
 
-  public logger:any;
+  public logger:Logger;
 
   initialize() {
     document.addEventListener('copy', (event:any) => {
       if (targetIsInput(event)) return;
       this.logger.info('handle copy');
 
-      var selection = this.app.selection.map((entity) => (
-        entity.expression
-      ));
+      // var selection = this.app.selection.map((entity) => (
+      //   entity.expression
+      // ));
+
+      var selection = [];
 
       event.clipboardData.setData('text/x-entity', JSON.stringify(selection));
       event.preventDefault();
@@ -32,7 +35,7 @@ export default class ClipboardService extends BaseApplicationService {
 
   _paste = async (item) => {
     try {
-      await this.bus.execute({ type: 'paste', item: item });
+      // await this.bus.execute({ type: 'paste', item: item });
     } catch (e) {
       this.logger.warn('cannot paste x-entity data: ', item.type);
     }
@@ -46,4 +49,4 @@ export default class ClipboardService extends BaseApplicationService {
   // }
 }
 
-export const fragment = new ClassFactoryFragment('application/services/clipboard', ClipboardService);
+export const fragment = new ApplicationServiceFragment('application/services/clipboard', ClipboardService);

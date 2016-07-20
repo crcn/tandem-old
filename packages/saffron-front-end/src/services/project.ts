@@ -1,13 +1,16 @@
-import loggable from 'saffron-common/lib/decorators/loggable';
-import isPublic from 'saffron-common/lib/actors/decorators/public';
+import Logger from 'saffron-common/src/logger/index'; 
+import loggable from 'saffron-common/src/decorators/loggable';
+import isPublic from 'saffron-common/src/actors/decorators/public';
 import * as sift from 'sift';
-import observable from 'saffron-common/lib/decorators/observable';
-import Collection from 'saffron-common/lib/object/collection';
+import observable from 'saffron-common/src/decorators/observable';
+import Collection from 'saffron-common/src/object/collection';
 import * as ArrayDsBus from 'mesh-array-ds-bus';
 
-import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
+import BaseApplicationService from 'saffron-common/src/services/base-application-service';
 import { AcceptBus } from 'mesh';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+import { IActor } from 'saffron-common/src/actors/index';
+import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
+import { FindAllAction } from 'saffron-common/src/actions/index';
 
 @observable
 class Projects extends Collection<any> { }
@@ -17,16 +20,16 @@ const COLLECTION_NAME = 'files';
 @loggable
 export default class ProjectService extends BaseApplicationService {
 
-  public projects:any;
-  public logger:any;
-  public _projectsBus:any;
+  public logger:Logger;
+  private _projects:Projects;
+  public _projectsBus:IActor;
 
   async initialize() {
 
     var createModel = (data) => {
       return this.app
         .fragments
-        .query(`models/${data.ext}-file`)
+        .query<any>(`models/${data.ext}-file`)
         .create(Object.assign({}, data, {
           fragments: this.app.fragments,
           app: this.app,
@@ -35,18 +38,14 @@ export default class ProjectService extends BaseApplicationService {
     };
 
     this.app.setProperties({
-      projects: this.projects = new Projects(
-        (await this.bus.execute({
-          type: 'find',
-          collectionName: COLLECTION_NAME,
-          multi: true
-        }).readAll()).map(createModel)
+      projects: this._projects = new Projects(
+        (await this.bus.execute(new FindAllAction(COLLECTION_NAME)).readAll()).map(createModel)
       )
     });
 
     this._projectsBus = AcceptBus.create(
       sift({ collectionName: COLLECTION_NAME }),
-      ArrayDsBus.create(this.projects, {
+      ArrayDsBus.create(this._projects, {
         remove() { },
         update: (model, data) => {
           model.setProperties(data);
@@ -59,12 +58,12 @@ export default class ProjectService extends BaseApplicationService {
       })
     , undefined); 
 
-    this.logger.info('loaded %d files', this.projects.length);
+    this.logger.info('loaded %d files', this._projects.length);
 
-    if (this.projects.length) {
-      this.projects[0].load();
+    if (this._projects.length) {
+      this._projects[0].load();
       this.app.setProperties({
-        currentFile: this.projects[0]
+        currentFile: this._projects[0]
       });
     }
   }
@@ -80,4 +79,4 @@ export default class ProjectService extends BaseApplicationService {
   }
 }
 
-export const fragment = new ClassFactoryFragment('application/services/project', ProjectService);
+export const fragment = new ApplicationServiceFragment('application/services/project', ProjectService);

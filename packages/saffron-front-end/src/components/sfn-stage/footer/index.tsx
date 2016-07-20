@@ -1,7 +1,7 @@
 import './index.scss';
 
 import * as React from 'react';
-import RegisteredComponent from 'saffron-common/lib/react/components/registered';
+import RegisteredComponent from 'saffron-common/src/react/components/registered';
 
 class FooterComponent extends React.Component<any, any> {
   render() {

@@ -1,7 +1,7 @@
-import Entity from 'saffron-common/lib/entities/entity';
-import NodeSection from 'saffron-common/lib/section/node';
-import FragmentSection from 'saffron-common/lib/section/fragment';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+import Entity from 'saffron-common/src/entities/entity';
+import NodeSection from 'saffron-common/src/section/node';
+import FragmentSection from 'saffron-common/src/section/fragment';
+import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
 import GroupPreview from '../preview/group';
 import NodePreview from '../preview/node';
 
@@ -55,7 +55,7 @@ class ElementEntity extends Entity {
 
     var controllerFragment = options
     .fragments
-    .queryAll(`entity-controllers/${this.expression.nodeName}`)
+    .queryAll<any>(`entity-controllers/${this.expression.nodeName}`)
     .find((fragment) => !fragment.test || (fragment.test(this) ? fragment : void 0));
 
     var ref;

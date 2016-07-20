@@ -1,18 +1,19 @@
-import loggable from 'saffron-common/lib/decorators/loggable';
+import Logger from 'saffron-common/src/logger/index'; 
+import loggable from 'saffron-common/src/decorators/loggable';
 
-import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+import BaseApplicationService from 'saffron-common/src/services/base-application-service';
+import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
 import * as Mousetrap from 'mousetrap';
 
 @loggable
 export default class KeyBindingService extends BaseApplicationService {
  
-  public logger:any;
+  public logger:Logger;
   
   initialize() {
     this.app
       .fragments
-      .queryAll('key-bindings/**').forEach((fragment) => {
+      .queryAll<any>('key-bindings/**').forEach((fragment) => {
         this._addKeyBinding(
           fragment.create({ app: this.app, bus: this.bus })
         );
@@ -31,4 +32,4 @@ export default class KeyBindingService extends BaseApplicationService {
   }
 }
 
-export const fragment = new ClassFactoryFragment('application/services/key-binding', KeyBindingService);
+export const fragment = new ApplicationServiceFragment('application/services/key-binding', KeyBindingService);

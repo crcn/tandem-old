@@ -1,11 +1,11 @@
-import CoreObject from 'saffron-common/lib/object/index';
+import CoreObject from 'saffron-common/src/object/index';
 import { parse as parseXML } from 'saffron-common/src/parsers/xml.peg';
-import observable from 'saffron-common/lib/decorators/observable';
-import FragmentDict from 'saffron-common/lib/fragments/collection';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+import observable from 'saffron-common/src/decorators/observable';
+import FragmentDict from 'saffron-common/src/fragments/collection';
+import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
 import { Bus } from 'mesh';
 import { applyDiff as patch } from 'deep-diff';
-import Entity from 'saffron-common/lib/entities/entity';
+import Entity from 'saffron-common/src/entities/entity';
 
 @observable
 export default class SfnFile extends CoreObject {
@@ -31,19 +31,17 @@ export default class SfnFile extends CoreObject {
       fragments: this.isolate !== false ? this.fragments.createChild() : this.fragments
     };
 
-    // don't do this for now.
-    if (this.expression && false) {
-      patch(this.expression, expression, undefined);
-      this.entity.update(options);
-    } else {
-      this.expression = expression;
-      var entity = await expression.load(options);
-      
-      this.setProperties({
-        expression,
-        entity
-      });
-    }
+      // patch(this.expression, expression, undefined);
+      // this.entity.update(options);
+    
+
+    this.expression = expression;
+    var entity = await expression.load(options);
+    
+    this.setProperties({
+      expression,
+      entity
+    });
   }
 
   /**

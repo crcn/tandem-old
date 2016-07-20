@@ -5,8 +5,8 @@ import { flatten } from 'lodash';
 import RulerComponent from './ruler/index';
 import GuideComponent from './guide/index';
 import ResizerComponent from './resizer/index';
-import { mergeBoundingRects } from 'saffron-common/lib/utils/geom/index';
-import { ReactComponentFactoryFragment } from 'saffron-common/lib/react/fragments/index';
+import { mergeBoundingRects } from 'saffron-common/src/utils/geom/index';
+import { ReactComponentFactoryFragment } from 'saffron-common/src/react/fragments/index';
 
 export default class SelectorComponent extends React.Component<any, any> {
 

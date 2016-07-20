@@ -2,7 +2,7 @@ import './index.scss';
 
 import * as React from 'react';
 
-import { ReactComponentFactoryFragment } from 'saffron-common/lib/react/fragments/index';
+import { ReactComponentFactoryFragment } from 'saffron-common/src/react/fragments/index';
 
 const d = [];
 const x2 = 0;

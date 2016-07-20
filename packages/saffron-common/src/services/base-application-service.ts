@@ -1,5 +1,5 @@
 import BaseService from './base';
-import IApplication from 'saffron-common/lib/application/interface';
+import IApplication from '../application/interface';
 import { IActor } from '../actors/index';
 
 export default class BaseApplicationService extends BaseService {

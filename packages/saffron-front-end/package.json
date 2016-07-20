@@ -27,6 +27,7 @@
     "toarray": "0.0.1"
   },
   "devDependencies": {
+    "typescript": "^2.0.0",
     "url-loader": "^0.5.7"
   }
 }

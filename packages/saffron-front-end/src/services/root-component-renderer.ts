@@ -1,10 +1,12 @@
 import * as sift from 'sift';
 import * as ReactDOM from 'react-dom';
-import loggable from 'saffron-common/lib/decorators/loggable';
-import filterAction from 'saffron-common/lib/actors/decorators/filter-action';
+import loggable from 'saffron-common/src/decorators/loggable';
+import filterAction from 'saffron-common/src/actors/decorators/filter-action';
 
-import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+import BaseApplicationService from 'saffron-common/src/services/base-application-service';
+import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
+import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
+import { IApplication } from 'saffron-common/src/application/base';
  
 @loggable
 export default class RootComponentRenderer extends BaseApplicationService {
@@ -26,7 +28,7 @@ export default class RootComponentRenderer extends BaseApplicationService {
     this._rendering = false;
     var app = this.app;
 
-    var rootComponentClassFragment = this.app.fragments.query('rootComponentClass');
+    var rootComponentClassFragment = this.app.fragments.query<any>('rootComponentClass');
 
     ReactDOM.render(rootComponentClassFragment.create({
       app: app,
@@ -35,4 +37,4 @@ export default class RootComponentRenderer extends BaseApplicationService {
   }
 }
 
-export const fragment = new ClassFactoryFragment('application/services/root-component-renderer', RootComponentRenderer);
+export const fragment = new ApplicationServiceFragment('application/services/root-component-renderer', RootComponentRenderer);

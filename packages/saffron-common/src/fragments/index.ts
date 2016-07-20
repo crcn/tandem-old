@@ -50,11 +50,11 @@ export class ClassFactoryFragment extends FactoryFragment {
 /**
  */
 
-export class ApplicationServiceFragment extends Fragment implements IFactory<any> {
+export class ApplicationServiceFragment extends Fragment implements IFactory {
   private _factory:ClassFactoryFragment;
-  constructor(ns:string, clazz:{ new():Service }) {
+  constructor(ns:string, clazz:{ new(app:IApplication):Service }, priority:number = 0) {
     super(ns);
-    this._factory = new ClassFactoryFragment(undefined, clazz);
+    this._factory = new ClassFactoryFragment(undefined, clazz, priority);
   }
   create(app:IApplication):Service {
     return this._factory.create();

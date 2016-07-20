@@ -1,14 +1,14 @@
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
-import CoreObject from 'saffron-common/lib/object/index';
-import sass from 'sass.js';
-import FragmentSection from 'saffron-common/lib/section/fragment';
-
+import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
+import CoreObject from 'saffron-common/src/object/index';
+import * as sass from 'sass.js';
+import FragmentSection from 'saffron-common/src/section/fragment';
 
 export default class StyleEntityController extends CoreObject {
 
   public section:any;
   public entity:any;
   public file:any;
+  public node:any;
 
   constructor(properties) {
     super(properties);
@@ -16,9 +16,7 @@ export default class StyleEntityController extends CoreObject {
     this.entity.visible = false;
   }
 
-  setAttribute(key, value) {
-
-  }
+  setAttribute(key, value) { }
 
   async load({ section }) {
     var source = this.entity.expression.childNodes[0].nodeValue;
@@ -37,18 +35,18 @@ export default class StyleEntityController extends CoreObject {
 
     sass.importer(async (request, resolve) => {
       // _watchFile(request.resolved);
-      resolve((await this.bus.execute({
+      resolve((await (this as any).bus.execute({
         type: 'readFile',
         path: request.resolved
       }).read()).value);
     });
 
-    var { text } = await new Promise((resolve, reject) => {
+    var { text } = (await new Promise((resolve, reject) => {
       sass.compile(source, { inputPath: this.file.path }, function (result) {
         if (result.text) return resolve(result);
         reject(result);
       });
-    });
+    })) as any;
 
     var node = this.node = document.createElement('style');
     node.setAttribute('type', 'text/css');
@@ -63,7 +61,7 @@ export default class StyleEntityController extends CoreObject {
 }
 
 class EntityControllerFactoryFragment extends ClassFactoryFragment {
-  constructor(ns:string, clazz:Function, public test:Function) {
+  constructor(ns:string, clazz:{new(properties):StyleEntityController}, public test:Function) {
     super(ns, clazz);
   }
 }

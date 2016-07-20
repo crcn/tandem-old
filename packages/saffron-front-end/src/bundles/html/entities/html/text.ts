@@ -1,6 +1,6 @@
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
 
-import Entity from 'saffron-common/lib/entities/entity';
+import Entity from 'saffron-common/src/entities/entity';
 
 class TextEntity extends Entity {
 

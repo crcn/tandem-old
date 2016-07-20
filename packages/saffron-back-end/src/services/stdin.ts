@@ -1,10 +1,10 @@
 import * as chalk from 'chalk';
-import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
+import Logger from 'saffron-common/lib/logger/index'; 
 import document from 'saffron-common/lib/actors/decorators/document';
 import loggable from 'saffron-common/lib/decorators/loggable';
 import * as readline from 'readline';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
-import Logger from 'saffron-common/lib/logger/index'; 
+import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
 
 /**
  * console input command handler

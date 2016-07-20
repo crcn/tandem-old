@@ -1,6 +1,6 @@
-import Entity from 'saffron-common/lib/entities/entity';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
-import get from 'saffron-common/lib/utils/object/get';
+import Entity from 'saffron-common/src/entities/entity';
+import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
+import get from 'saffron-common/src/utils/object/get';
 
 export default class ReferenceEntity extends Entity {
   public  value:any;

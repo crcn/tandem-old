@@ -1,5 +1,5 @@
-import FragmentSection from 'saffron-common/lib/section/fragment';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+import FragmentSection from 'saffron-common/src/section/fragment';
+import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
 
 export default class RepeatEntityController {
 

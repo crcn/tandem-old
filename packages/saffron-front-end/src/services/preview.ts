@@ -1,7 +1,7 @@
-import loggable from 'saffron-common/lib/decorators/loggable';
-import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
-import IApplication from 'saffron-common/lib/application/interface';
+import loggable from 'saffron-common/src/decorators/loggable';
+import BaseApplicationService from 'saffron-common/src/services/base-application-service';
+import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
+import IApplication from 'saffron-common/src/application/interface';
 
 const ZOOM_INCREMENT = 0.1;
 const MIN_ZOOM_LEVEL = 0.2;
@@ -35,4 +35,4 @@ export default class PreviewService extends BaseApplicationService {
   }
 }
 
-export const fragment = new ClassFactoryFragment('application/services/preview', PreviewService);
+export const fragment = new ApplicationServiceFragment('application/services/preview', PreviewService);

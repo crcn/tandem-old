@@ -9,7 +9,6 @@ import { fragment as stdinServiceFragment } from './services/stdin';
 import { fragment as upsertServiceFragment } from './services/upsert';
 import { fragment as frontEndServiceFragment } from './services/front-end';
 
-
 export default class ServerApplication extends BaseApplication {
   _registerFragments() {
     super._registerFragments();

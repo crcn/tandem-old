@@ -6,8 +6,8 @@
 export class BaseExpression {
   constructor(public ns:string) { }
 
-  createEntity(properties) {
-    const fragment = properties.fragments.query(`entities/${this.ns}`);
+  createEntity(properties:any) {
+    const fragment = properties.fragments.query<any>(`entities/${this.ns}`);
 
     if (!fragment) {
       throw new Error(`entity fragment "${this.ns}" does not exist`);

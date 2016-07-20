@@ -6,8 +6,8 @@ import * as cx from 'classnames';
 import * as React from 'react';
 import { intersection } from 'lodash';
 import { SelectAction } from 'saffron-front-end/src/actions/index';
-import { mergeBoundingRects } from 'saffron-common/lib/utils/geom/index';
-import { ReactComponentFactoryFragment } from 'saffron-common/lib/react/fragments/index';
+import { mergeBoundingRects } from 'saffron-common/src/utils/geom/index';
+import { ReactComponentFactoryFragment } from 'saffron-common/src/react/fragments/index';
 
 class SelectableComponent extends React.Component<{app:any, entity:any, bus:any, selection:any}, {}> {
 

@@ -1,7 +1,7 @@
-import Entity from 'saffron-common/lib/entities/entity';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
-import FragmentSection from 'saffron-common/lib/section/fragment';
-// import NodeSection from 'saffron-common/lib/selection/node';
+import Entity from 'saffron-common/src/entities/entity';
+import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
+import FragmentSection from 'saffron-common/src/section/fragment';
+// import NodeSection from 'saffron-common/src/selection/node';
 
 export default class GroupEntity extends Entity {
 

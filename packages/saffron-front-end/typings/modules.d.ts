@@ -18,3 +18,12 @@ declare module "mesh-array-ds-bus" {
 
   export = ArrayDsBus;
 }
+
+declare module "sass.js" {
+  namespace sass {
+    function importer(callback:Function);
+    function compile(source:string, options:any, complete:Function);
+  }
+
+  export  = sass;
+}

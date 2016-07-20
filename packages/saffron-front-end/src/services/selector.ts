@@ -1,6 +1,6 @@
-import loggable from 'saffron-common/lib/decorators/loggable';
-import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+import loggable from 'saffron-common/src/decorators/loggable';
+import BaseApplicationService from 'saffron-common/src/services/base-application-service';
+import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
 import SelectionCollection from 'selection/collection';
 
 @loggable
@@ -25,7 +25,7 @@ export default class SelectorService extends BaseApplicationService {
 
     const type = items[0].type;
 
-    const newSelectionFragment = this.app.fragments.query(`selection-collections/${type}`);
+    const newSelectionFragment = this.app.fragments.query<any>(`selection-collections/${type}`);
     const newSelection = newSelectionFragment ? newSelectionFragment.create() : new SelectionCollection();
 
     if (keepPreviousSelection && newSelection.constructor === prevSelection.constructor) {
@@ -51,4 +51,4 @@ export default class SelectorService extends BaseApplicationService {
   }
 }
 
-export const fragment = new ClassFactoryFragment('application/services/selector', SelectorService);
+export const fragment = new ApplicationServiceFragment('application/services/selector', SelectorService);

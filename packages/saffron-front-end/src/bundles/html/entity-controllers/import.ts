@@ -1,6 +1,6 @@
-import CoreObject from 'saffron-common/lib/object/index';
+import CoreObject from 'saffron-common/src/object/index';
 import * as path from 'path';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
 // import SfnFile from 'browser/fragments/sfn-file-handler/model';
 
 class SfnFile {

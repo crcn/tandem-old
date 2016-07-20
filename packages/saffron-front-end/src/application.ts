@@ -1,4 +1,4 @@
-import BaseApplication from 'saffron-common/lib/application/base';
+import BaseApplication from 'saffron-common/src/application/base';
 
 import fragments from './fragments';
 

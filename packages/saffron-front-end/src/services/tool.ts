@@ -1,10 +1,10 @@
-import loggable from 'saffron-common/lib/decorators/loggable';
+import loggable from 'saffron-common/src/decorators/loggable';
 
-import { ProxyBus } from 'saffron-common/lib/busses/index';
-import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ProxyBus } from 'saffron-common/src/busses/index';
+import BaseApplicationService from 'saffron-common/src/services/base-application-service';
+import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
 import * as sift from 'sift';
-import IApplication from 'saffron-common/lib/application/interface';
+import IApplication from 'saffron-common/src/application/interface';
 
 @loggable
 export default class ToolService extends BaseApplicationService {
@@ -22,9 +22,9 @@ export default class ToolService extends BaseApplicationService {
   }
 
   load() {
-    const toolFragments = this.app.fragments.queryAll('stage-tools/**');
-    const tools = toolFragments.map((toolFragment) => (
-      toolFragment.create({ app: this.app, bus: this.bus })
+    const toolFragments = this.app.fragments.queryAll<ApplicationServiceFragment>('stage-tools/**');
+    const tools = toolFragments.map((toolFragment:ApplicationServiceFragment) => (
+      toolFragment.create(this.app)
     ));
 
     this.app.setProperties({
@@ -43,4 +43,4 @@ export default class ToolService extends BaseApplicationService {
   }
 }
 
-export const fragment = new ClassFactoryFragment('application/services/tool', ToolService);
+export const fragment = new ApplicationServiceFragment('application/services/tool', ToolService);

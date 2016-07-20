@@ -1,5 +1,5 @@
 import * as  React from 'react';
-import { startDrag } from 'saffron-common/lib/utils/component/index';
+import { startDrag } from 'saffron-common/src/utils/component/index';
 
 class PathComponent extends React.Component<any, any> {
 

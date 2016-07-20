@@ -22,7 +22,7 @@ export default class FragmentCollection extends Collection<Fragment> {
 
   createChild() {
     var child = new FragmentCollection();
-    child.register(this.queryAll('/**'));
+    child.register(this.queryAll<any>('/**'));
     return child;
   }
 

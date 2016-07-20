@@ -1,19 +1,19 @@
 // // TODO - cache ALL computed information here until entity, or
 // // parent entity changes.
 
-// import CoreObject from 'saffron-common/lib/object/index';
-// import BoundingRect from 'saffron-common/lib/geom/bounding-rect';
+// import CoreObject from 'saffron-common/src/object/index';
+// import BoundingRect from 'saffron-common/src/geom/bounding-rect';
 
-// import { translateStyleToIntegers } from 'saffron-common/lib/utils/css/translate-style';
+// import { translateStyleToIntegers } from 'saffron-common/src/utils/css/translate-style';
 
 // import {
 //   translateStyle,
-// } from 'saffron-common/lib/utils/css/index';
+// } from 'saffron-common/src/utils/css/index';
 
 // import {
 //   calculateZoom,
 //   multiplyStyle,
-// } from 'saffron-common/lib/utils/html/index';
+// } from 'saffron-common/src/utils/html/index';
 
 // class ReactEntityPreview extends CoreObject {
 

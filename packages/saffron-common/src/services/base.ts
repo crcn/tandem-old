@@ -11,7 +11,7 @@ export default class Service implements IActor {
 
   constructor() { }
 
-  execute(action:Action) {
+  execute(action:Action):any {
     var actor = this[action.type];
     if (actor) {
 
