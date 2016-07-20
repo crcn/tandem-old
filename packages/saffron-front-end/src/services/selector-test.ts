@@ -8,11 +8,11 @@ import SelectionCollection from 'selection/collection';
 
 describe(__filename + '#', () => {
 
-  let app;
+  let app:BaseApplication;
 
   beforeEach(async () => {
     app = new BaseApplication();
-    app.register(selectorFragment);
+    app.fragments.register(selectorFragment);
     await app.initialize();
   });
 

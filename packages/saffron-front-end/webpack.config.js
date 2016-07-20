@@ -1,3 +1,4 @@
+var webpack = require('webpack');
 var path = require('path');
 
 module.exports =  {
@@ -16,6 +17,11 @@ module.exports =  {
     modulesDirectories: ['node_modules', 'src', __dirname + '/../']
   },
   watch: process.env.WATCH === '1',
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.TESTING': process.env.TESTING === '1'
+    })
+  ],
   node: {
     __filename: true
   },

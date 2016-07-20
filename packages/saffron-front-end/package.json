@@ -4,7 +4,7 @@
   "description": "",
   "main": "./bundle/front-end.js",
   "scripts": {
-    "test": "karma start",
+    "test": "TESTING=1 karma start",
     "clean": "rm -rf bundle",
     "start": "npm run build-watch",
     "build": "webpack",
@@ -32,6 +32,12 @@
     "toarray": "0.0.1"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "karma": "^1.1.1",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-typescript-preprocessor": "^0.2.1",
+    "systemjs": "^0.19.31",
     "ts-loader": "^0.8.2",
     "url-loader": "^0.5.7"
   }
