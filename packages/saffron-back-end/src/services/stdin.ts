@@ -1,7 +1,7 @@
 import * as chalk from 'chalk';
-import Service from 'saffron-common/lib/services/base';
+import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
 import document from 'saffron-common/lib/actors/decorators/document';
-import loggable from 'saffron-common/lib/logger/mixins/loggable';
+import loggable from 'saffron-common/lib/decorators/loggable';
 import * as readline from 'readline';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import Logger from 'saffron-common/lib/logger/index'; 
@@ -11,19 +11,17 @@ import Logger from 'saffron-common/lib/logger/index';
  */
 
 @loggable
-export default class StdinService extends Service {
+export default class StdinService extends BaseApplicationService {
 
   public logger:Logger;
   private _rl:readline.ReadLine;
 
   initialize() {
-
     this._rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout
     });
     this._readInput();
-    this.logger.filterable = false;
     this.logger.prefix = '';
   }
 
@@ -35,7 +33,7 @@ export default class StdinService extends Service {
   help() {
 
     this.app.actors.forEach((actor) => {
-      var docs = actor.__documentation || {};
+      var docs = (actor as any).__documentation || {};
 
       for (const actionType in docs) {
         this.logger.info('{ type: %s }: %s', chalk.bold(actionType), docs[actionType]);

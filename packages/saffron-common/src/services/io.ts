@@ -1,6 +1,6 @@
 
-import loggable from '../logger/mixins/loggable';
 import Logger from '../logger/index'; 
+import loggable from '../decorators/loggable';
 import isPublic from '../actors/decorators/public';
 import document from '../actors/decorators/document';
 import * as SocketIOBus from 'mesh-socket-io-bus';
@@ -8,8 +8,10 @@ import * as SocketIOBus from 'mesh-socket-io-bus';
 import { Service } from '../services/index';
 import { ParallelBus } from 'mesh';
 
+import BaseApplicationService from './base-application-service';
+
 @loggable
-export default class IOService extends Service {
+export default class IOService extends BaseApplicationService { 
 
   public logger:Logger; 
   public _publicService:Service;
@@ -19,14 +21,12 @@ export default class IOService extends Service {
 
     // this is the public service which handles all
     // incomming actions
-    this._publicService = new Service({
-      target: {}
-    });
+    this._publicService = new Service();
 
     // scan the application for all public actions and add
     // then to the public service
     for (const actor of this.app.actors) {
-      for (const actionType of (actor.__publicProperties || [])) {
+      for (const actionType of ((actor as any).__publicProperties || [])) {
         this.logger.info(`exposing ${actor.constructor.name}.${actionType}`);
         this._publicService.addActor(actionType, actor);
       }
@@ -47,7 +47,7 @@ export default class IOService extends Service {
   @isPublic
   @document('returns the public action types')
   getPublicActionTypes() {
-    return Object.keys(this._publicService.target);
+    return Object.keys(this._publicService);
   }
 
   /**
@@ -73,15 +73,12 @@ export default class IOService extends Service {
   addConnection = async (connection) => {
     this.logger.info('client connected');
 
-    var remoteService = new Service({
-      target: {}
-    });
+    var remoteService = new Service();
 
     // from here on, all global actions will touch on this remote service object.
     // If the action is registered to the service, that action will be executed
     // against the remote client.
     this._remoteActors.push(remoteService);
-
 
     // setup the bus which will facilitate in all
     // transactions between the remote service

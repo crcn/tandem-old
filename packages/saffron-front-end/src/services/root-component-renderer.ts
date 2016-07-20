@@ -1,15 +1,14 @@
 import * as sift from 'sift';
 import * as ReactDOM from 'react-dom';
-import loggable from 'saffron-common/lib/logger/mixins/loggable';
+import loggable from 'saffron-common/lib/decorators/loggable';
 import filterAction from 'saffron-common/lib/actors/decorators/filter-action';
 
-import { BaseActor } from 'saffron-common/lib/actors/index';
+import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
  
 @loggable
-export default class RootComponentRenderer extends BaseActor {
+export default class RootComponentRenderer extends BaseApplicationService {
 
-  public app:any;
   private _rendering:boolean;
 
   @filterAction(sift({

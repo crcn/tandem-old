@@ -1,38 +1,32 @@
-import CoreObject from '../object/index';
-import Collection from '../object/collection';
-import observable from '../object/mixins/observable';
-import { InitializeEvent, LoadEvent } from './events/index';
-import { ParallelBus, Bus, Response } from 'mesh';
-import { fragment as consoleLogFragment } from '../logger/services/console-output';
-import FragmentCollection from '../fragments/collection';
 import Logger from '../logger/index';
-import loggable from '../logger/mixins/loggable';
- 
+import loggable from '../decorators/loggable';
+import observable from '../decorators/observable';
+import Collection from '../object/collection';
+import CoreObject from '../object/index';
+import FragmentCollection from '../fragments/collection';
+
+import IApplication from './interface';
+import { IActor } from '../actors/index';
+import { ParallelBus, Bus, Response } from 'mesh';
+import { ApplicationServiceFragment } from '../fragments/index';
+import { LoadAction, InitializeAction } from '../actions/index';
+import { fragment as consoleLogFragment } from '../services/console-output';
+
 @observable
 @loggable
-export default class BaseApplication extends CoreObject {
+export default class BaseApplication extends CoreObject implements IApplication {
 
-  public config:any;
-  public fragments:FragmentCollection;
-  public actors:Array<any>;
-  public bus:Bus;
+  readonly bus:IActor;
+  readonly logger:Logger;
+  readonly actors:Array<IActor>;
+  readonly fragments:FragmentCollection;
   private _initialized:boolean;
-  public logger:Logger;
 
-  constructor(properties) {
-    super(properties);
-
-    // the configuration of the application
-    // which can by used by other fragments
-    if (!this.config) {
-      this.config = {};
-    }
-  
-    const initialFragments:any = this.fragments || [];
+  constructor(readonly config:any = {}) {
+    super({});
 
     // contains most dependencies for the application.
     this.fragments = new FragmentCollection();
-    this.fragments.register(...initialFragments); 
 
     // acts on events dispatched by the central bus
     this.actors = new Collection<any>();
@@ -45,10 +39,6 @@ export default class BaseApplication extends CoreObject {
     this._registerFragments();
   }
 
-  /**
-   * initializes the application
-   */
-
   async initialize() {
 
     if (this._initialized) {
@@ -60,10 +50,10 @@ export default class BaseApplication extends CoreObject {
 
     this.willInitialize();
     this.setProperties({ loading: true });
-    await this.bus.execute(new LoadEvent());
-    await this.bus.execute(new InitializeEvent());
+    await this.bus.execute(new LoadAction());
+    await this.bus.execute(new InitializeAction());
     this.setProperties({ loading: false });
-    this.didInitialize();
+    this.didInitialize(); 
   }
 
   /**
@@ -79,12 +69,8 @@ export default class BaseApplication extends CoreObject {
    */
 
   _initializeActors() {
-    this.actors.push(...this.fragments.queryAll('application/services/**').map((fragment) => (
-      fragment.create({
-        app    : this,
-        bus    : this.bus,
-        config : this.config
-      })
+    this.actors.push(...this.fragments.queryAll<ApplicationServiceFragment>('application/services/**').map((fragment:ApplicationServiceFragment) => (
+      fragment.create(this)
     )));
   }
 

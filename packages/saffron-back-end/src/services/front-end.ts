@@ -1,7 +1,7 @@
 
-import { Service } from 'saffron-common/lib/services/index';
+import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
 import IOService from 'saffron-common/lib/services/io';
-import loggable from 'saffron-common/lib/logger/mixins/loggable';
+import loggable from 'saffron-common/lib/decorators/loggable';
 import * as createSocketIOServer from 'socket.io';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import * as express from 'express';
@@ -9,9 +9,10 @@ import * as path from 'path';
 import * as cors from 'cors';
 import Logger from 'saffron-common/lib/logger/index'; 
 import { sync as getPackagePath } from 'package-path';
+import IApplication from 'saffron-common/lib/application/interface';
 
 @loggable
-export default class FrontEndService extends Service {
+export default class FrontEndService extends BaseApplicationService {
 
   private _server:any;
   private _ioService:any;
@@ -21,10 +22,10 @@ export default class FrontEndService extends Service {
   public logger:Logger;
   private _bundles:Array<any>;
 
-  constructor(properties) {
-    super(properties);
-    this.app.actors.push(this._ioService = new IOService(properties));
-    this._port = this.config.socketio.port;
+  constructor(app:IApplication) {
+    super(app);
+    app.actors.push(this._ioService = new IOService(app));
+    this._port = this.app.config.socketio.port;
   }
 
   async load() {
@@ -44,7 +45,7 @@ export default class FrontEndService extends Service {
 
     this._server.use(cors());
 
-    var entryPath = this.config.frontEndEntry;
+    var entryPath = this.app.config.frontEndEntry;
     var scriptName = path.basename(entryPath);
 
     // this should be part of the config

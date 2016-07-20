@@ -5,7 +5,7 @@ import FragmentSection from 'saffron-common/lib/section/fragment';
 export default class RootEntity extends GroupEntity {
   constructor(properties) {
     super(properties);
-    this.section = FragmentSection.create();
+    this.section = new FragmentSection();
   }
   async load(options) {
     await super.load({

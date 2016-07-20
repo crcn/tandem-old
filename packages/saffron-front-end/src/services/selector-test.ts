@@ -3,7 +3,7 @@ import { fragment as selectorFragment } from './selector';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import BaseApplication from 'saffron-common/lib/application/base';
 import { expect } from 'chai';
-import { SelectEvent, ToggleSelectEvent } from 'selection/events/index';
+import { SelectEvent, ToggleSelectEvent } from 'saffron-front-end/src/actions/index';
 import SelectionCollection from 'selection/collection';
 
 describe(__filename + '#', () => {

@@ -17,7 +17,8 @@
     "link": "./scripts/link-packages.sh",
     "start": "./scripts/exec-packages.sh npm start",
     "build": "./scripts/exec-packages.sh npm run build",
-    "build-watch": "./scripts/exec-packages.sh npm run build-watch"
+    "clean": "./scripts/exec-packages.sh npm run clean",
+    "build-watch": "npm run clean && npm run build && ./scripts/exec-packages.sh npm run build-watch"
   },
   "repository": {
     "type": "git",

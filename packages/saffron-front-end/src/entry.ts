@@ -5,10 +5,9 @@ import { merge } from 'lodash';
 
 const queryConfig = window.location.search && false ? JSON.parse(decodeURIComponent(window.location.search.substr(1))) : {};
 
-var app = window['app'] = new BrowserApplication({
-  config: merge({}, window['config'] || {}, queryConfig),
-  zoom: 1
-});
+var app = window['app'] = new BrowserApplication(merge({}, window['config'] || {}, queryConfig));
+
+window.addEventListener('unhandledrejection', event => console.error(event));
 
 window.onload = async function () {
 
@@ -23,5 +22,5 @@ window.onload = async function () {
     element: document.getElementById('app')
   });
 
-  await app.initialize();
+  await app.initialize().then();
 };

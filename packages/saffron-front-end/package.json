@@ -5,6 +5,7 @@
   "main": "./bundle/front-end.js",
   "scripts": {
     "test": "karma start",
+    "clean": "rm -rf bundle",
     "start": "npm run build-watch",
     "build": "webpack",
     "build-watch": "webpack --watch"

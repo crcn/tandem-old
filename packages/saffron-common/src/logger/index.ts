@@ -2,32 +2,12 @@ import * as LogLevel from './levels';
 
 import { Bus } from 'mesh';
 import { sprintf } from 'sprintf';
-import { LogEvent } from './events/index';
+import { LogAction } from '../actions/index';
 
 export default class Logger {
 
-  public prefix:string;
-  public bus:Bus;
-  public parent:Logger; 
-  public filterable:boolean;
+  constructor(public bus:Bus, public prefix:string = '') {
 
-  constructor(properties) {
-    Object.assign(this, properties);
-
-    if (!this.prefix) {
-      this.prefix = '';
-    }
-
-    if (this.parent) {
-      this.prefix = this.parent.prefix + this.prefix;
-    }
-  }
-
-  createChild(properties) { 
-    return new Logger(Object.assign({}, properties, {
-      bus: this.bus,
-      parent: this
-    }));
   }
 
   verbose(text:string, ...rest) {
@@ -60,6 +40,6 @@ export default class Logger {
       ...params.map(stringify)
     );
 
-    this.bus.execute(new LogEvent(level, message));
+    this.bus.execute(new LogAction(level, message));
   }
 }

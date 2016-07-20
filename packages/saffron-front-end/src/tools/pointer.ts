@@ -1,6 +1,6 @@
 import { Service } from 'saffron-common/lib/services/index';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
-import { SelectEvent } from 'selection/events/index';
+import { SelectAction } from 'saffron-front-end/src/actions/index';
 
 export default class PointerTool extends Service {
 
@@ -9,7 +9,7 @@ export default class PointerTool extends Service {
   icon = 'cursor';
 
   stageCanvasMouseDown() {
-    this.bus.execute(new SelectEvent());
+    this.bus.execute(new SelectAction());
   }
 }
 

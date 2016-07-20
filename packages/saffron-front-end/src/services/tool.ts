@@ -1,17 +1,18 @@
-import loggable from 'saffron-common/lib/logger/mixins/loggable';
+import loggable from 'saffron-common/lib/decorators/loggable';
 
 import { ProxyBus } from 'saffron-common/lib/busses/index';
-import { Service } from 'saffron-common/lib/services/index';
+import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import * as sift from 'sift';
+import IApplication from 'saffron-common/lib/application/interface';
 
 @loggable
-export default class ToolService extends Service {
+export default class ToolService extends BaseApplicationService {
 
   public toolProxyBus:any;
 
-  constructor(properties) {
-    super(properties);
+  constructor(app:IApplication) {
+    super(app);
     this.app.actors.push(
       this.toolProxyBus = new ProxyBus(undefined)
     );

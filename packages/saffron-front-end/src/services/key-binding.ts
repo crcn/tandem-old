@@ -1,11 +1,11 @@
-import loggable from 'saffron-common/lib/logger/mixins/loggable';
+import loggable from 'saffron-common/lib/decorators/loggable';
 
-import { Service } from 'saffron-common/lib/services/index';
+import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import * as Mousetrap from 'mousetrap';
 
 @loggable
-export default class KeyBindingService extends Service {
+export default class KeyBindingService extends BaseApplicationService {
  
   public logger:any;
   

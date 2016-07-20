@@ -8,6 +8,7 @@
   "scripts": {
     "start": "npm run build; node ./lib/server.js",
     "build": "tsc --declaration",
+    "clean": "rm -rf lib",
     "build-watch": "tsc --declaration --watch",
     "postinstall": "rm -rf lib; tsc --declaration"
   },

@@ -8,3 +8,4 @@ export default class BrowserApplication extends BaseApplication {
     this.fragments.register(...fragments);
   }
 }
+ 

@@ -1,11 +1,11 @@
-import loggable from 'saffron-common/lib/logger/mixins/loggable';
+import loggable from 'saffron-common/lib/decorators/loggable';
 import isPublic from 'saffron-common/lib/actors/decorators/public';
 import * as sift from 'sift';
-import observable from 'saffron-common/lib/object/mixins/observable';
+import observable from 'saffron-common/lib/decorators/observable';
 import Collection from 'saffron-common/lib/object/collection';
 import * as ArrayDsBus from 'mesh-array-ds-bus';
 
-import { Service } from 'saffron-common/lib/services/index';
+import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
 import { AcceptBus } from 'mesh';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 
@@ -15,10 +15,8 @@ class Projects extends Collection<any> { }
 const COLLECTION_NAME = 'files';
 
 @loggable
-export default class ProjectService extends Service {
+export default class ProjectService extends BaseApplicationService {
 
-  public bus:any;
-  public app:any;
   public projects:any;
   public logger:any;
   public _projectsBus:any;

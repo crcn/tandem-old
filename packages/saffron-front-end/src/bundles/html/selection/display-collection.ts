@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import Selection from 'saffron-front-end/src/selection/collection';
 import CoreObject from 'saffron-common/lib/object/index';
-import observable from 'saffron-common/lib/object/mixins/observable';
+import observable from 'saffron-common/lib/decorators/observable';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import { mergeBoundingRects } from 'saffron-common/lib/utils/geom/index';
 

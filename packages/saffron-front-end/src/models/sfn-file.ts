@@ -1,6 +1,6 @@
 import CoreObject from 'saffron-common/lib/object/index';
 import { parse as parseXML } from 'saffron-common/src/parsers/xml.peg';
-import observable from 'saffron-common/lib/object/mixins/observable';
+import observable from 'saffron-common/lib/decorators/observable';
 import FragmentDict from 'saffron-common/lib/fragments/collection';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import { Bus } from 'mesh';

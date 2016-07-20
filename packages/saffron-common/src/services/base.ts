@@ -1,28 +1,18 @@
-import { BaseActor } from '../actors/index' 
+import { IActor } from '../actors/index' 
+import BaseApplication from '../application/base';
 import { WrapBus, EmptyResponse, ParallelBus, Bus } from 'mesh';
+import { Action } from '../actions/index';
 
-export default class Service extends BaseActor {
-
-  /**
-   */
-
-  public target:any;
-  public app:any; 
-  public bus:Bus;
+export default class Service implements IActor {
 
   /**
    * Takes target as argument which contains all the handlers
    */
 
-  constructor(properties) {
-    super(properties);
-    if (!this.target) {
-      this.target = this;
-    }
-  }
+  constructor() { }
 
-  execute(action) {
-    var actor = this.target[action.type];
+  execute(action:Action) {
+    var actor = this[action.type];
     if (actor) {
 
       // child classes must use loggable mixin
@@ -31,7 +21,7 @@ export default class Service extends BaseActor {
       }
 
       return WrapBus.create(
-        typeof actor === 'function' ? actor.bind(this.target) : actor
+        typeof actor === 'function' ? actor.bind(this) : actor
       ).execute(action);
     }
 
@@ -42,17 +32,16 @@ export default class Service extends BaseActor {
 
     actor = WrapBus.create(actor);
 
-    var existingActor:BaseActor|ParallelBus;
+    var existingActor:IActor|ParallelBus;
 
-    if (existingActor = this.target[actionType]) {
+    if (existingActor = this[actionType]) {
       if ((existingActor as any)._busses) {
         (existingActor as any)._busses.push(actor);
       } else {
-        this.target[actionType] = new ParallelBus([existingActor, actor]);
+        this[actionType] = new ParallelBus([existingActor, actor]);
       }
     } else {
-      this.target[actionType] = actor;
+      this[actionType] = actor;
     }
-
   }
 }

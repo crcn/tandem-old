@@ -5,6 +5,7 @@
   "scripts": {
     "test": "karma start",
     "test-watch": "WATCH=1 karma start",
+    "clean": "rm -rf lib",
     "start": "npm run build-watch",
     "build": "tsc --declaration",
     "build-watch": "tsc --declaration --watch"

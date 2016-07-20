@@ -3,26 +3,22 @@ import * as gaze from 'gaze';
 import * as sift from 'sift';
 
 import Logger from 'saffron-common/lib/logger/index';
-import Service from 'saffron-common/lib/services/base';
-import loggable from 'saffron-common/lib/logger/mixins/loggable';
+import loggable from 'saffron-common/lib/decorators/loggable';
 import isPublic from 'saffron-common/lib/actors/decorators/public';
 import filterAction from 'saffron-common/lib/actors/decorators/filter-action';
 import document from 'saffron-common/lib/actors/decorators/document';
+import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
 
 import { Response } from 'mesh';
+import IApplication from 'saffron-common/lib/application/interface';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+import { UpsertAction } from 'saffron-common/lib/actions/index';
 
 @loggable
-export default class FileService extends Service {
+export default class FileService extends BaseApplicationService {
 
   public logger:Logger;
-
-  private _watchers:Object;
-
-  constructor(properties) {
-    super(properties);
-    this._watchers = {};
-  }
+  private _watchers:Object = {};
 
   /**
    */
@@ -38,12 +34,7 @@ export default class FileService extends Service {
 
     var data = this.readFile(action);
 
-    return this.bus.execute({
-      type: 'upsert',
-      collectionName: 'files',
-      query: { path: data.path },
-      data: data
-    });
+    return this.bus.execute(new UpsertAction('files', data, { path: data.path }));
   }
 
   /**

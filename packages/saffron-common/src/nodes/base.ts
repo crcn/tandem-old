@@ -1,5 +1,5 @@
 import CoreObject from '../object/index';
-import observable from '../object/mixins/observable';
+import observable from '../decorators/observable';
 
 @observable
 abstract class Node extends CoreObject {

@@ -1,15 +1,16 @@
-import Service from 'saffron-common/lib/services/base';
+import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
 import isPublic from 'saffron-common/lib/actors/decorators/public';
 import { UpsertBus } from 'saffron-common/lib/busses/index';
 import { Bus } from 'mesh';
+import IApplication from 'saffron-common/lib/application/interface';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 
-export default class UpsertService extends Service {
+export default class UpsertService extends BaseApplicationService {
 
   private _bus:Bus;
 
-  constructor(properties) {
-    super(properties);
+  constructor(app:IApplication) {
+    super(app);
     this._bus = UpsertBus.create(this.bus);
   }
 

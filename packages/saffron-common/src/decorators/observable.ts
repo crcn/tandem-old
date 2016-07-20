@@ -1,6 +1,6 @@
-import CoreObject from '../index';
-import CoreCollection from '../collection';
-import { ChangeEvent } from '../../events/index';
+import CoreObject from '../object/index';
+import CoreCollection from '../object/collection';
+import { ChangeAction } from '../actions/index';
 
 export default function observable(clazz) {
 
@@ -70,7 +70,7 @@ function decorateObjectClass(clazz) {
     oldSetProperties.call(this, properties);
 
     if (changes && changes.length) {
-      this.bus.execute(new ChangeEvent(changes));
+      this.bus.execute(new ChangeAction(changes));
       if (this.didChange) this.didChange(changes);
     }
   };
@@ -85,21 +85,22 @@ function decorateCollectionClass(clazz) {
   const oldSplice = clazz.prototype.splice;
   clazz.prototype.splice = function (start, length, ...repl) {
 
+
+    var oldValue = oldSplice.apply(this, arguments);
+
     if (this.bus) {
       const changes = [];
       changes.push({
         target: this,
         type   : 'splice',
-        start  : start,
-        length : length,
-        values : repl,
+        value  : repl,
+        oldValue: oldValue
       });
-
-      this.bus.execute(new ChangeEvent(changes));
+      this.bus.execute(new ChangeAction(changes));
       if (this.didChange) this.didChange(changes);
     }
 
-    return oldSplice.apply(this, arguments);
+    return repl;
   };
 
   return clazz;

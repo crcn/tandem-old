@@ -2,7 +2,7 @@ import './index.scss';
 import * as React from 'react';
 import BoundingRect from 'saffron-common/lib/geom/bounding-rect';
 import { startDrag } from 'saffron-common/lib/utils/component/index';
-import { SelectEvent } from 'selection/events/index';
+import { SelectAction } from 'saffron-front-end/src/actions/index';
 import { boundsIntersect } from 'saffron-common/lib/utils/geom/index';
 import { ReactComponentFactoryFragment } from 'saffron-common/lib/react/fragments/index';
 
@@ -65,7 +65,7 @@ class DragSelectComponent extends React.Component<any, any> {
         height: h,
       });
 
-      var bounds = BoundingRect.create({
+      var bounds = new BoundingRect({
         left   : x,
         top    : y,
         right  : x + w,
@@ -80,7 +80,7 @@ class DragSelectComponent extends React.Component<any, any> {
         }
       });
 
-      this.props.app.bus.execute(SelectEvent.create(selection));
+      this.props.app.bus.execute(new SelectAction(selection));
 
     }, () => {
       this.setState({

@@ -1,6 +1,7 @@
-import { Service } from '../../services/index';
-import { ClassFactoryFragment } from '../../fragments/index';
-import document from '../../actors/decorators/document';
+import { Service } from '../services/index';
+import { ClassFactoryFragment } from '../fragments/index';
+import { LogAction } from '../actions/index';
+import document from '../actors/decorators/document';
 import * as sift from 'sift';
 
 import {
@@ -8,7 +9,7 @@ import {
   INFO as INFO_LEVEL,
   WARN as WARN_LEVEL,
   ERROR as ERROR_LEVEL,
-} from '../../logger/levels';
+} from '../logger/levels';
 import * as chalk from 'chalk';
 
 class ConsoleService extends Service {
@@ -21,9 +22,9 @@ class ConsoleService extends Service {
   }
 
   @document('logs to stdout')
-  log({ message, level, filterable }) {
+  log({ level, text }:LogAction) {
 
-    if (filterable !== false && this._filter && !this._filter(message)) return;
+    if (this._filter && !this._filter(text)) return;
 
     var log = {
       [VERBOSE_LEVEL]: console.log.bind(console),
@@ -40,9 +41,9 @@ class ConsoleService extends Service {
     }[level];
 
     if (typeof window !== 'undefined') {
-      log('%c: %c%s', `color: ${color}`, 'color: black', message);
+      log('%c: %c%s', `color: ${color}`, 'color: black', text);
     } else {
-      log('%s %s', chalk[color].bold(':'), message);
+      log('%s %s', chalk[color].bold(':'), text);
     }
   }
 }

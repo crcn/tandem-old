@@ -1,6 +1,4 @@
 import FragmentSection from 'saffron-common/lib/section/fragment';
-
-import { create } from 'saffron-common/lib/utils/class/index';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 
 export default class RepeatEntityController {
@@ -23,7 +21,7 @@ export default class RepeatEntityController {
 
     for (var i = each; i--;) {
       for (var childExpression of this.expression.childNodes) {
-        var childSection = FragmentSection.create();
+        var childSection = new FragmentSection();
         this.entity.appendChild(await childExpression.load(Object.assign({}, options, {
           section: childSection
         })));
@@ -33,8 +31,6 @@ export default class RepeatEntityController {
     }
 
   }
-
-  static create = create;
 }
 
 export const fragment = new ClassFactoryFragment('entity-controllers/repeat', RepeatEntityController);

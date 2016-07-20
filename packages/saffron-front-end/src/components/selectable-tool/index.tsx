@@ -5,7 +5,7 @@ import './index.scss';
 import * as cx from 'classnames';
 import * as React from 'react';
 import { intersection } from 'lodash';
-import { SelectEvent } from 'selection/events/index';
+import { SelectAction } from 'saffron-front-end/src/actions/index';
 import { mergeBoundingRects } from 'saffron-common/lib/utils/geom/index';
 import { ReactComponentFactoryFragment } from 'saffron-common/lib/react/fragments/index';
 
@@ -18,7 +18,7 @@ class SelectableComponent extends React.Component<{app:any, entity:any, bus:any,
 
   onMouseDown(event:any):void {
     this.onMouseOut(event);
-    this.props.bus.execute(SelectEvent.create(this.props.entity, event.shiftKey));
+    this.props.bus.execute(new SelectAction(this.props.entity, event.shiftKey));
     event.stopPropagation();
   }
 

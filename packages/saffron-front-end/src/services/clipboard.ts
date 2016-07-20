@@ -1,5 +1,5 @@
-import loggable from 'saffron-common/lib/logger/mixins/loggable';
-import { Service } from 'saffron-common/lib/services/index';
+import loggable from 'saffron-common/lib/decorators/loggable';
+import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 
 function targetIsInput(event) {
@@ -7,7 +7,7 @@ function targetIsInput(event) {
 }
 
 @loggable
-export default class ClipboardService extends Service {
+export default class ClipboardService extends BaseApplicationService {
 
   public logger:any;
 

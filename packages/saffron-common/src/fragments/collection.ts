@@ -12,12 +12,12 @@ export default class FragmentCollection extends Collection<Fragment> {
     this._fragmentsByNamespace = {};
   }
 
-  query(ns) {
-    return this.queryAll(ns)[0];
+  query<T>(ns) {
+    return <T>this.queryAll<T>(ns)[0];
   }
 
-  queryAll(ns) {
-    return this._fragmentsByNamespace[ns] || [];
+  queryAll<T>(ns):T[] {
+    return <T[]>(this._fragmentsByNamespace[ns] || []);
   }
 
   createChild() {
