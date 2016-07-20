@@ -1,0 +1,29 @@
+{
+  "name": "saffron",
+  "version": "1.0.0",
+  "description": "[![Build Status](https://travis-ci.org/crcn/saffron.svg?branch=master)](https://travis-ci.org/crcn/saffron) [![Join the chat at https://gitter.im/crcn/saffron](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/saffron?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "mocha": "^2.5.3"
+  },
+  "scripts": {
+    "test": "./scripts/exec-packages.sh npm test",
+    "start": "./scripts/exec-packages.sh npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crcn/saffron.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/crcn/saffron/issues"
+  },
+  "homepage": "https://github.com/crcn/saffron#readme"
+}

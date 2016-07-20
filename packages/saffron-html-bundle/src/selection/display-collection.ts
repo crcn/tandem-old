@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import Selection from 'selection/collection';
+import Selection from 'saffron-front-end/src/selection/collection';
 import CoreObject from 'saffron-common/lib/object/index';
 import observable from 'saffron-common/lib/object/mixins/observable';
 import { FactoryFragment } from 'saffron-common/lib/fragments/index';
@@ -83,7 +83,7 @@ class Preview extends CoreObject {
    * @param zoomProperties
    */
 
-  getBoundingRect(zoomProperties) {
+  getBoundingRect(zoomProperties:boolean = false) {
     return mergeBoundingRects(this.selection.map(function (entity) {
       return entity.preview.getBoundingRect(zoomProperties);
     }));

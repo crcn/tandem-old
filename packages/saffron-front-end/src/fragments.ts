@@ -31,6 +31,9 @@ import { fragment as rootComponentRendererFragment } from './services/root-compo
 
 // key bindings
 import { fragment as keyBindingsFragment } from './key-bindings/index';
+
+// bundles 
+import { fragment as htmlBundleFragment } from 'saffron-html-bundle';
  
 export default [
 
@@ -61,5 +64,8 @@ export default [
   previewServiceFragment,
   selectorServiceFragment,
   clipboardServiceFragment,
-  keyBindingServiceFragment
+  keyBindingServiceFragment,
+
+  // bundles
+  htmlBundleFragment
 ];

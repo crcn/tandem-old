@@ -2,7 +2,7 @@
   "name": "saffron-html-bundle",
   "version": "1.0.1",
   "description": "",
-  "main": "./bundle/saffron-html-bundle.js",
+  "main": "./src/index.ts",
   "publicDirectory": "./bundle",
   "directories": {
     "test": "test"
@@ -13,7 +13,6 @@
   "license": "ISC",
   "dependencies": {
     "react": "^15.2.1",
-    "saffron-common": "^1.0.2",
-    "webpack": "^1.13.1"
+    "saffron-common": "1.1.x"
   }
 }

@@ -1,7 +1,7 @@
 
 // components
-import { fragment as previewComponentFragment } from './components/preview';
-import { fragment as originStageToolComponent } from './components/origin-stage-tool';
+import { fragment as previewComponentFragment } from './components/preview/index';
+import { fragment as originStageToolComponent } from './components/origin-stage-tool/index';
 
 // html entities
 import { fragment as rootEntityFragment } from './entities/html/root';

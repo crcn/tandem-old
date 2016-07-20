@@ -6,7 +6,7 @@
     "test": "karma start",
     "test-watch": "WATCH=1 karma start",
     "postinstall": "rm -rf lib; tsc --declaration",
-    "build-watch": ""
+    "start": "rm -rf lib; tsc --declaration --watch"
   },
   "author": "",
   "license": "ISC",
@@ -36,7 +36,7 @@
     "sprintf": "^0.1.5",
     "style-loader": "^0.13.1",
     "ts-loader": "^0.8.2",
-    "typescript": "^1.8.10",
+    "typescript": "^2.0.0",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1"
   },
