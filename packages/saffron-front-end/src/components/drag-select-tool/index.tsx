@@ -65,12 +65,7 @@ class DragSelectComponent extends React.Component<any, any> {
         height: h,
       });
 
-      var bounds = new BoundingRect({
-        left   : x,
-        top    : y,
-        right  : x + w,
-        bottom : y + h,
-      });
+      var bounds = new BoundingRect(x, y, x + w, y + h);
 
       var selection = [];
 

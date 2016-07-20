@@ -1,22 +1,21 @@
 import BoundingRect from '../../geom/bounding-rect';
 
 export function mergeBoundingRects(allRects:Array<BoundingRect>) {
-  const groupRect = {
-    top    : Infinity,
-    bottom : -Infinity,
-    left   : Infinity,
-    right  : -Infinity
-  };
+
+  let left   = Infinity;
+  let bottom = -Infinity;
+  let top    = Infinity;
+  let right  = Infinity;
 
   for (const rect of allRects) {
     if (!rect) continue;
-    groupRect.left   = Math.min(groupRect.left, rect.left);
-    groupRect.right  = Math.max(groupRect.right, rect.right);
-    groupRect.top    = Math.min(groupRect.top, rect.top);
-    groupRect.bottom = Math.max(groupRect.bottom, rect.bottom);
+    left   = Math.min(left, rect.left);
+    right  = Math.max(right, rect.right);
+    top    = Math.min(top, rect.top);
+    bottom = Math.max(bottom, rect.bottom);
   }
 
-  return new BoundingRect(groupRect);
+  return new BoundingRect(left, top, right, bottom);
 }
 
 export function boundsIntersect(r1, r2) {

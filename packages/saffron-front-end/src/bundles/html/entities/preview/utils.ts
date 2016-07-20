@@ -104,12 +104,7 @@ export function calculateBoundingRect(entity, node, zoomProperties) {
   right = left + width;
   bottom = top + height;
 
-  return new BoundingRect({
-    left   : left,
-    top    : top,
-    right  : right,
-    bottom : bottom
-  });
+  return new BoundingRect(left, top, right, bottom);
 }
 
 export function setBoundingRect(bounds, entity, node) {

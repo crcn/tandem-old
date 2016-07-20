@@ -1,15 +1,6 @@
 export default class BoundingRect {
 
-  public left:number;
-  public top:number;
-  public right:number;
-  public bottom:number;
-
-  constructor({ left, right, top, bottom }) {
-    this.left   = left;
-    this.top    = top;
-    this.right  = right;
-    this.bottom = bottom;
+  constructor(public left:number, public top:number, public right:number, public bottom:number) {
   }
 
   get width() {
