@@ -4,7 +4,7 @@ import * as React from 'react';
 import HeaderComponent from './header/index';
 import FooterComponent from './footer/index';
 import CanvasComponent from './canvas/index';
-import { ReactComponentFactoryFragment } from 'saffron-common/src/react/fragments/index';
+import { ReactComponentFactoryFragment } from 'saffron-front-end/src/fragments/index';
 
 export default class StageComponent extends React.Component<any, any> {
   render() {
@@ -20,5 +20,6 @@ export default class StageComponent extends React.Component<any, any> {
     </div>);
   }
 }
+
 
 export const fragment = new ReactComponentFactoryFragment('components/stage/sfn', StageComponent);

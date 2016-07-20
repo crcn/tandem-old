@@ -12,7 +12,7 @@ export class MouseEvent extends Action {
     });
   }
 }
-
+ 
 export const SELECT = 'select';
 export class SelectAction extends Action {
 

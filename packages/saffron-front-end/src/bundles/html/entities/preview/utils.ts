@@ -9,7 +9,7 @@ import {
 import {
   calculateZoom,
   multiplyStyle,
-} from 'saffron-common/src/utils/html/index';
+} from 'saffron-front-end/src/utils/html/index';
 
 function getElementOffset(entity, element) {
   var p = element.parentNode;

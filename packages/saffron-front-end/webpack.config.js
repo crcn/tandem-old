@@ -12,7 +12,7 @@ module.exports =  {
     includePaths: [path.resolve(__dirname, __dirname + '/src')]
   },
   resolve: {
-    extensions: ['', '.js', '.jsx', '.peg', '.ts', '.tsx'],
+    extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.peg'],
     modulesDirectories: ['node_modules', 'src', __dirname + '/../']
   },
   watch: process.env.WATCH === '1',

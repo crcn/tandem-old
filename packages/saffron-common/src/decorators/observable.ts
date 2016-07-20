@@ -6,10 +6,10 @@ export default function observable(clazz) {
 
   var proto = clazz.prototype;
 
-  if (proto instanceof CoreObject) {
-    decorateObjectClass(clazz);
-  } else if (proto instanceof CoreCollection) {
+  if (proto.splice) {
     decorateCollectionClass(clazz);
+  } else if (proto.setProperties) {
+    decorateObjectClass(clazz);
   } else {
     throw new Error(`class "${clazz.name}" cannot be made an observable. It must extend either a common Object or Collection.`);
   }

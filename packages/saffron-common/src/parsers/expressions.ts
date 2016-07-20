@@ -1,3 +1,4 @@
+import FragmentDictionary from '../fragments/collection';
 
 /**
  * Generic
@@ -6,7 +7,7 @@
 export class BaseExpression {
   constructor(public ns:string) { }
 
-  createEntity(properties:any) {
+  createEntity(properties:{ fragments:FragmentDictionary }) {
     const fragment = properties.fragments.query<any>(`entities/${this.ns}`);
 
     if (!fragment) {

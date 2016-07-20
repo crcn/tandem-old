@@ -57,6 +57,6 @@ export class ApplicationServiceFragment extends Fragment implements IFactory {
     this._factory = new ClassFactoryFragment(undefined, clazz, priority);
   }
   create(app:IApplication):Service {
-    return this._factory.create();
+    return this._factory.create(app);
   }
 }

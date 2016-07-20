@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import bubbleIframeEvents from '../../utils/html/bubble-iframe-events';
+import bubbleIframeEvents from 'saffron-front-end/src/utils/html/bubble-iframe-events';
 
 export default class IsolateComponent extends React.Component<any, any> {
 

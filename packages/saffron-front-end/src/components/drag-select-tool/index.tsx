@@ -4,7 +4,7 @@ import BoundingRect from 'saffron-common/src/geom/bounding-rect';
 import { startDrag } from 'saffron-common/src/utils/component/index';
 import { SelectAction } from 'saffron-front-end/src/actions/index';
 import { boundsIntersect } from 'saffron-common/src/utils/geom/index';
-import { ReactComponentFactoryFragment } from 'saffron-common/src/react/fragments/index';
+import { ReactComponentFactoryFragment } from 'saffron-front-end/src/fragments/index';
 
 class DragSelectComponent extends React.Component<any, any> {
 

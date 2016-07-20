@@ -1,5 +1,3 @@
-import 'babel-polyfill';
-
 import BrowserApplication from './application/index';
 import { merge } from 'lodash'; 
 

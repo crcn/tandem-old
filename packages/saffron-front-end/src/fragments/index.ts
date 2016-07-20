@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FactoryFragment } from '../../fragments/index';
+import { FactoryFragment } from 'saffron-common/src/fragments/index';
 
 export class ReactComponentFactoryFragment extends FactoryFragment {
   constructor(ns:string, componentClass:React.ComponentClass<any>) {

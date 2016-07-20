@@ -7,11 +7,6 @@
     "doc": "docs",
     "example": "examples"
   },
-  "dependencies": {
-  },
-  "devDependencies": {
-    "mocha": "^2.5.3"
-  },
   "scripts": {
     "test": "./scripts/exec-packages.sh npm test",
     "clean-dependencies": "./scripts/exec-packages.sh rm -rf node_modules",

@@ -1,6 +1,6 @@
 import './index.scss';
 import * as React from 'react';
-import RegisteredComponent from 'saffron-common/src/react/components/registered';
+import RegisteredComponent from 'saffron-front-end/src/components/registered';
 
 export default class ToolsComponent extends React.Component<any, any> {
   render() {

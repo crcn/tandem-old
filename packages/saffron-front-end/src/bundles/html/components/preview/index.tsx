@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ReactComponentFactoryFragment } from 'saffron-common/src/react/fragments/index';
+import { ReactComponentFactoryFragment } from 'saffron-front-end/src/fragments/index';
 
 export default class PreviewComponent extends React.Component<any, any> {
   componentDidMount() {

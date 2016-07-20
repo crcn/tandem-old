@@ -2,7 +2,7 @@ import './template.scss';
 
 import NodeSection from 'saffron-common/src/section/node';
 import FragmentSection from 'saffron-common/src/section/fragment';
-import bubbleIframeEvents from 'saffron-common/src/utils/html/bubble-iframe-events';
+import bubbleIframeEvents from 'saffron-front-end/src/utils/html/bubble-iframe-events';
 
 import { ClassFactoryFragment, FactoryFragment } from 'saffron-common/src/fragments/index';
 
