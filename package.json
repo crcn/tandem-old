@@ -14,6 +14,8 @@
   },
   "scripts": {
     "test": "./scripts/exec-packages.sh npm test",
+    "clean-dependencies": "./scripts/exec-packages.sh rm -rf node_modules",
+    "install": "./scripts/exec-packages.sh npm install && npm run link",
     "link": "./scripts/link-packages.sh",
     "start": "./scripts/exec-packages.sh npm start",
     "build": "./scripts/exec-packages.sh npm run build",

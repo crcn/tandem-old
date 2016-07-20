@@ -12,7 +12,7 @@ import { sync as getPackagePath } from 'package-path';
 import IApplication from 'saffron-common/lib/application/interface';
 
 @loggable
-export default class FrontEndService extends BaseApplicationService {
+export default class FrontEndService extends BaseApplicationService<IApplication> {
 
   private _server:any;
   private _ioService:any;

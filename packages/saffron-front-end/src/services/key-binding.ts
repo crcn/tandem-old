@@ -1,12 +1,14 @@
 import Logger from 'saffron-common/src/logger/index'; 
 import loggable from 'saffron-common/src/decorators/loggable';
 
+import IApplication from 'saffron-common/src/application/interface';
+import * as Mousetrap from 'mousetrap';
 import BaseApplicationService from 'saffron-common/src/services/base-application-service';
 import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
-import * as Mousetrap from 'mousetrap';
+
 
 @loggable
-export default class KeyBindingService extends BaseApplicationService {
+export default class KeyBindingService extends BaseApplicationService<IApplication> {
  
   public logger:Logger;
   

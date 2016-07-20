@@ -1,11 +1,11 @@
 import loggable from 'saffron-common/src/decorators/loggable';
 import IOService from 'saffron-common/src/services/io';
 import * as SocketIOClient from 'socket.io-client';
-
+import IApplication from 'saffron-common/src/application/interface';
 import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
 
 @loggable
-export default class BackEndService extends IOService {
+export default class BackEndService extends IOService<IApplication> {
 
   private _client:SocketIOClient.Socket;
 

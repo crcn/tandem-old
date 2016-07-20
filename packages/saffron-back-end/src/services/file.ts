@@ -15,7 +15,7 @@ import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import { UpsertAction } from 'saffron-common/lib/actions/index';
 
 @loggable
-export default class FileService extends BaseApplicationService {
+export default class FileService extends BaseApplicationService<IApplication> {
 
   public logger:Logger;
   private _watchers:Object = {};

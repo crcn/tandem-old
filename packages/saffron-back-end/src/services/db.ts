@@ -12,7 +12,7 @@ import { PostDBAction, FindAction, DBAction, InsertAction, RemoveAction, UpdateA
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 
 @loggable
-export default class DBService extends ApplicationService {
+export default class DBService extends ApplicationService<IApplication> {
   
   private _db:Bus;
 

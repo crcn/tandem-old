@@ -9,7 +9,7 @@ import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
 import { IApplication } from 'saffron-common/src/application/base';
  
 @loggable
-export default class RootComponentRenderer extends BaseApplicationService {
+export default class RootComponentRenderer extends BaseApplicationService<IApplication> {
 
   private _rendering:boolean;
 

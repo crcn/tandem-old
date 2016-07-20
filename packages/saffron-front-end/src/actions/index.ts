@@ -1,5 +1,3 @@
-
-
 import { Action } from 'saffron-common/src/actions/index';
 import * as toarray from 'toarray';
 

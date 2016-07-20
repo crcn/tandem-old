@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 
-import BrowserApplication from './application';
+import BrowserApplication from './application/index';
 import { merge } from 'lodash'; 
 
 const queryConfig = window.location.search && false ? JSON.parse(decodeURIComponent(window.location.search.substr(1))) : {};

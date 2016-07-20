@@ -7,7 +7,7 @@ import * as sift from 'sift';
 import IApplication from 'saffron-common/src/application/interface';
 
 @loggable
-export default class ToolService extends BaseApplicationService {
+export default class ToolService extends BaseApplicationService<IApplication> {
 
   public toolProxyBus:any;
 

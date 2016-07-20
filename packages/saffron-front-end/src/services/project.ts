@@ -11,6 +11,7 @@ import { AcceptBus } from 'mesh';
 import { IActor } from 'saffron-common/src/actors/index';
 import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
 import { FindAllAction } from 'saffron-common/src/actions/index';
+import IApplication from 'saffron-common/src/application/interface';
 
 @observable
 class Projects extends Collection<any> { }
@@ -18,7 +19,7 @@ class Projects extends Collection<any> { }
 const COLLECTION_NAME = 'files';
 
 @loggable
-export default class ProjectService extends BaseApplicationService {
+export default class ProjectService extends BaseApplicationService<IApplication> {
 
   public logger:Logger;
   private _projects:Projects;

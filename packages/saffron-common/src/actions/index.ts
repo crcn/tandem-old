@@ -94,14 +94,14 @@ export class UpdateAction extends DBAction {
 
 export const FIND   = 'find';
 export class FindAction extends DBAction {
-  constructor(collectionName:string, readonly query:any, multi = false) {
+  constructor(collectionName:string, readonly query:any, readonly multi:boolean = false) {
     super(FIND, collectionName); 
   }
 }
 
 export class FindAllAction extends FindAction {
   constructor(collectionName:string) {
-    super(FIND, collectionName, {}, true); 
+    super(collectionName, {}, true); 
   }
 }
 

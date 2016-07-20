@@ -5,7 +5,7 @@ import { Bus } from 'mesh';
 import IApplication from 'saffron-common/lib/application/interface';
 import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 
-export default class UpsertService extends BaseApplicationService {
+export default class UpsertService extends BaseApplicationService<IApplication> {
 
   private _bus:Bus;
 

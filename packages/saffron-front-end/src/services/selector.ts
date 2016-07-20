@@ -4,7 +4,7 @@ import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
 import SelectionCollection from 'selection/collection';
 
 @loggable
-export default class SelectorService extends BaseApplicationService {
+export default class SelectorService extends BaseApplicationService<IApplication> {
   load() {
     this.app.selection = [];
   }

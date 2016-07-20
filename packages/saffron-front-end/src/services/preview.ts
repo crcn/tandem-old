@@ -7,11 +7,21 @@ const ZOOM_INCREMENT = 0.1;
 const MIN_ZOOM_LEVEL = 0.2;
 const MAX_ZOOM_LEVEL = 2;
 
-export default class PreviewService extends BaseApplicationService {
+interface IZoomable {
+  zoom:number;
+} 
 
-  constructor(app:IApplication) {
+interface IObservable {
+  setProperties(properties:any);
+}
+
+type ApplicationType = IApplication & IZoomable & IObservable;
+
+
+export default class PreviewService extends BaseApplicationService<ApplicationType> {
+
+  constructor(app:ApplicationType) {
     super(app);
-    this.app.zoom = 1;
   }
 
   zoomIn() {

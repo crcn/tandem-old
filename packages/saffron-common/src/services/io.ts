@@ -8,10 +8,12 @@ import * as SocketIOBus from 'mesh-socket-io-bus';
 import { Service } from '../services/index';
 import { ParallelBus } from 'mesh';
 
+import IApplication from 'saffron-common/src/application/interface';
+
 import BaseApplicationService from './base-application-service';
 
 @loggable
-export default class IOService extends BaseApplicationService { 
+export default class IOService<T extends IApplication> extends BaseApplicationService<T> { 
 
   public logger:Logger; 
   public _publicService:Service;

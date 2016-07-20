@@ -11,7 +11,7 @@ import BaseApplicationService from 'saffron-common/lib/services/base-application
  */
 
 @loggable
-export default class StdinService extends BaseApplicationService {
+export default class StdinService extends BaseApplicationService<IApplication> {
 
   public logger:Logger;
   private _rl:readline.ReadLine;
