@@ -5,8 +5,9 @@
   "scripts": {
     "test": "karma start",
     "test-watch": "WATCH=1 karma start",
-    "postinstall": "rm -rf lib; tsc --declaration",
-    "start": "rm -rf lib; tsc --declaration --watch"
+    "start": "npm run build-watch",
+    "build": "tsc --declaration",
+    "build-watch": "tsc --declaration --watch"
   },
   "author": "",
   "license": "ISC",

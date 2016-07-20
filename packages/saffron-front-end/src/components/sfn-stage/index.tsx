@@ -21,7 +21,4 @@ export default class StageComponent extends React.Component<any, any> {
   }
 }
 
-export const fragment = new ReactComponentFactoryFragment({
-  ns             : 'components/stage/sfn',
-  componentClass : StageComponent
-});
+export const fragment = new ReactComponentFactoryFragment('components/stage/sfn', StageComponent);

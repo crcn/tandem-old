@@ -1,6 +1,6 @@
 import loggable from 'saffron-common/lib/logger/mixins/loggable';
 import { Service } from 'saffron-common/lib/services/index';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import SelectionCollection from 'selection/collection';
 
 @loggable
@@ -26,7 +26,7 @@ export default class SelectorService extends Service {
     const type = items[0].type;
 
     const newSelectionFragment = this.app.fragments.query(`selection-collections/${type}`);
-    const newSelection = newSelectionFragment ? newSelectionFragment.create() : SelectionCollection.create();
+    const newSelection = newSelectionFragment ? newSelectionFragment.create() : new SelectionCollection();
 
     if (keepPreviousSelection && newSelection.constructor === prevSelection.constructor) {
       newSelection.push(...prevSelection);
@@ -51,7 +51,4 @@ export default class SelectorService extends Service {
   }
 }
 
-export const fragment = new FactoryFragment({
-  ns      : 'application/services/selector',
-  factory : SelectorService
-});
+export const fragment = new ClassFactoryFragment('application/services/selector', SelectorService);

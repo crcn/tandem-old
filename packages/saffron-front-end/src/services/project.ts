@@ -7,7 +7,7 @@ import * as ArrayDsBus from 'mesh-array-ds-bus';
 
 import { Service } from 'saffron-common/lib/services/index';
 import { AcceptBus } from 'mesh';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 
 @observable
 class Projects extends Collection<any> { }
@@ -82,7 +82,4 @@ export default class ProjectService extends Service {
   }
 }
 
-export const fragment = new FactoryFragment({
-  ns      : 'application/services/project',
-  factory : ProjectService
-});
+export const fragment = new ClassFactoryFragment('application/services/project', ProjectService);

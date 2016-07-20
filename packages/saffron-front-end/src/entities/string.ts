@@ -1,5 +1,5 @@
 import Entity from 'saffron-common/lib/entities/entity';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 
 export default class StringEntity extends Entity {
   public value:any;
@@ -10,7 +10,4 @@ export default class StringEntity extends Entity {
   }
 }
 
-export const fragment = new FactoryFragment({
-  ns      : 'entities/string',
-  factory : StringEntity,
-});
+export const fragment = new ClassFactoryFragment('entities/string', StringEntity);

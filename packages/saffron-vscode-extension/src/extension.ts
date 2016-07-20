@@ -13,7 +13,7 @@ import ServerApplication from 'saffron-back-end';
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-    var server = ServerApplication.create({
+    var server = new ServerApplication({
         config: {
             socketio: {
                 port: 8090

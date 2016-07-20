@@ -2,7 +2,7 @@ import loggable from 'saffron-common/lib/logger/mixins/loggable';
 import IOService from 'saffron-common/lib/services/io';
 import * as SocketIOClient from 'socket.io-client';
 
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 
 @loggable
 export default class BackEndService extends IOService {
@@ -23,8 +23,4 @@ export default class BackEndService extends IOService {
   }
 }
 
-// TODO - ApplicationActorDependency.create({ id: })
-export const fragment = new FactoryFragment({
-  ns      : 'application/services/back-end',
-  factory : BackEndService
-});
+export const fragment = new ClassFactoryFragment('application/services/back-end', BackEndService);

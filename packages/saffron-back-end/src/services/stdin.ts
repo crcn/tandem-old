@@ -3,7 +3,7 @@ import Service from 'saffron-common/lib/services/base';
 import document from 'saffron-common/lib/actors/decorators/document';
 import loggable from 'saffron-common/lib/logger/mixins/loggable';
 import * as readline from 'readline';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import Logger from 'saffron-common/lib/logger/index'; 
 
 /**
@@ -72,7 +72,4 @@ export default class StdinService extends Service {
   }
 }
 
-export const fragment = new FactoryFragment({
-  ns: 'application/services/stdin',
-  factory: StdinService
-});
+export const fragment = new ClassFactoryFragment('application/services/stdin', StdinService);

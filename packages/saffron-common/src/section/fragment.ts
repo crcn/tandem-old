@@ -1,4 +1,3 @@
-import create from '../utils/class/create';
 import getPath from '../utils/node/get-path';
 import getNode from '../utils/node/get-node';
 
@@ -6,13 +5,11 @@ import getNode from '../utils/node/get-node';
  */
 
 export class Marker {
-
   constructor(
     private _startPath:Array<string>, 
     private _endPath:Array<string>, 
     private _nodeFactory:any
-  ) {
-  }
+  ) { }
 
   createSection(rootNode) {
     return new FragmentSection(
@@ -27,7 +24,7 @@ export class Marker {
 /**
  * a section is a group of nodes contained within a
  */
-
+ 
 export default class FragmentSection {
 
   private _start:any;
@@ -35,7 +32,7 @@ export default class FragmentSection {
   private _nodeFactory:any;
   private _hiddenChildren:Array<any>;
 
-  constructor(start, end, nodeFactory = document) {
+  constructor(start = undefined, end = undefined, nodeFactory = document) {
 
     this._start       = start || nodeFactory.createTextNode('');
     this._end         = end   || nodeFactory.createTextNode('');
@@ -160,9 +157,4 @@ export default class FragmentSection {
     var clone = this.targetNode.cloneNode(true);
     return new FragmentSection(clone.firstChild, clone.lastChild, this._nodeFactory);
   }
-
-  /**
-   */
-
-  static create = create;
 }

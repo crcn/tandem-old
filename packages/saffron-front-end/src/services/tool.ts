@@ -2,7 +2,7 @@ import loggable from 'saffron-common/lib/logger/mixins/loggable';
 
 import { ProxyBus } from 'saffron-common/lib/busses/index';
 import { Service } from 'saffron-common/lib/services/index';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import * as sift from 'sift';
 
 @loggable
@@ -42,7 +42,4 @@ export default class ToolService extends Service {
   }
 }
 
-export const fragment = new FactoryFragment({
-  ns      : 'application/services/tool',
-  factory : ToolService
-});
+export const fragment = new ClassFactoryFragment('application/services/tool', ToolService);

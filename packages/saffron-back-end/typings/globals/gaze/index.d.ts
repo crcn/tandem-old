@@ -1,3 +1,9 @@
 declare module "gaze" {
-  export default function(glob:any, callback:Function);
+  function gaze(glob:any, callback:Function);
+
+  namespace gaze {
+
+  }
+
+  export = gaze;
 }

@@ -1,5 +1,5 @@
 import { Service } from '../../services/index';
-import { FactoryFragment } from '../../fragments/index';
+import { ClassFactoryFragment } from '../../fragments/index';
 import document from '../../actors/decorators/document';
 import * as sift from 'sift';
 
@@ -47,7 +47,4 @@ class ConsoleService extends Service {
   }
 }
 
-export const fragment = new FactoryFragment({
-  ns: 'application/services/console',
-  factory: ConsoleService,
-});
+export const fragment = new ClassFactoryFragment('application/services/console', ConsoleService);

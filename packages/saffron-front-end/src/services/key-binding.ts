@@ -1,7 +1,7 @@
 import loggable from 'saffron-common/lib/logger/mixins/loggable';
 
 import { Service } from 'saffron-common/lib/services/index';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import * as Mousetrap from 'mousetrap';
 
 @loggable
@@ -31,7 +31,4 @@ export default class KeyBindingService extends Service {
   }
 }
 
-export const fragment = new FactoryFragment({
-  ns      : 'application/services/key-binding',
-  factory : KeyBindingService
-});
+export const fragment = new ClassFactoryFragment('application/services/key-binding', KeyBindingService);

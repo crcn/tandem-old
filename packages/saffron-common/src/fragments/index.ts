@@ -1,25 +1,23 @@
-import create from '../utils/class/create';
 import assertPropertyExists from '../utils/assert/property-exists';
 
 export class Fragment {
-  constructor(properties:any) {
-    Object.assign(this, properties);
-    assertPropertyExists(this, 'ns');
+  constructor(public ns:string) {
+    this.ns = ns;
   }
-
-  static create = create;
 }
 
 export class FactoryFragment extends Fragment {
-
-  public factory:{ create:Function }; 
-
-  constructor(properties:any) {
-    super(properties);
-    assertPropertyExists(this, 'factory');
+  constructor(public ns:string, public factory:{ create:Function }) {
+    super(ns);
   }
 
   create(...rest)  {
     return this.factory.create(...rest);
+  }
+}
+
+export class ClassFactoryFragment extends FactoryFragment {
+  constructor(ns, clazz:any) {
+    super(ns, { create: (...rest) => new clazz(...rest) });
   }
 }

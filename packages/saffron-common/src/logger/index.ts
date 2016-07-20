@@ -1,7 +1,6 @@
 import * as LogLevel from './levels';
 
 import { Bus } from 'mesh';
-import { create } from '../utils/class/index';
 import { sprintf } from 'sprintf';
 import { LogEvent } from './events/index';
 
@@ -25,7 +24,7 @@ export default class Logger {
   }
 
   createChild(properties) { 
-    return Logger.create(Object.assign({}, properties, {
+    return new Logger(Object.assign({}, properties, {
       bus: this.bus,
       parent: this
     }));
@@ -63,6 +62,4 @@ export default class Logger {
 
     this.bus.execute(new LogEvent(level, message));
   }
-
-  static create = create;
 }

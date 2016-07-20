@@ -5,7 +5,7 @@ export function mergeBoundingRects(allRects:Array<BoundingRect>) {
     top    : Infinity,
     bottom : -Infinity,
     left   : Infinity,
-    right  : -Infinity,
+    right  : -Infinity
   };
 
   for (const rect of allRects) {
@@ -16,7 +16,7 @@ export function mergeBoundingRects(allRects:Array<BoundingRect>) {
     groupRect.bottom = Math.max(groupRect.bottom, rect.bottom);
   }
 
-  return BoundingRect.create(groupRect);
+  return new BoundingRect(groupRect);
 }
 
 export function boundsIntersect(r1, r2) {

@@ -19,6 +19,10 @@ module.exports =  {
   node: {
     __filename: true
   },
+  externals: {
+    'react': 'React',
+    'react-dom': 'ReactDOM'
+  },
   module: {
     loaders: [
       {

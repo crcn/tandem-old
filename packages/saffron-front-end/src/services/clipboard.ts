@@ -1,6 +1,6 @@
 import loggable from 'saffron-common/lib/logger/mixins/loggable';
 import { Service } from 'saffron-common/lib/services/index';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 
 function targetIsInput(event) {
   return /input|textarea/i.test(event.target.nodeName);
@@ -46,7 +46,4 @@ export default class ClipboardService extends Service {
   // }
 }
 
-export const fragment = new FactoryFragment({
-  ns      : 'application/services/clipboard',
-  factory : ClipboardService
-});
+export const fragment = new ClassFactoryFragment('application/services/clipboard', ClipboardService);

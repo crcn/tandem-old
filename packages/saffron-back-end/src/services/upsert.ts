@@ -2,7 +2,7 @@ import Service from 'saffron-common/lib/services/base';
 import isPublic from 'saffron-common/lib/actors/decorators/public';
 import { UpsertBus } from 'saffron-common/lib/busses/index';
 import { Bus } from 'mesh';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 
 export default class UpsertService extends Service {
 
@@ -22,7 +22,4 @@ export default class UpsertService extends Service {
   }
 }
 
-export const fragment = new FactoryFragment({
-  ns: 'application/services/upsert',
-  factory: UpsertService
-});
+export const fragment = new ClassFactoryFragment('application/services/upsert', UpsertService);

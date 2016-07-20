@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import gaze from 'gaze';
+import * as gaze from 'gaze';
 import * as sift from 'sift';
 
 import Logger from 'saffron-common/lib/logger/index';
@@ -10,7 +10,7 @@ import filterAction from 'saffron-common/lib/actors/decorators/filter-action';
 import document from 'saffron-common/lib/actors/decorators/document';
 
 import { Response } from 'mesh';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 
 @loggable
 export default class FileService extends Service {
@@ -108,7 +108,4 @@ export default class FileService extends Service {
   }
 }
 
-export const fragment = new FactoryFragment({
-  ns: 'application/services/file',
-  factory: FileService
-});
+export const fragment = new ClassFactoryFragment('application/services/file', FileService);

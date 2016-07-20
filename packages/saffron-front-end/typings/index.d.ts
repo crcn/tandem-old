@@ -8,4 +8,4 @@
 /// <reference path="globals/saffron-common/index.d.ts" />
 /// <reference path="globals/sift/index.d.ts" />
 /// <reference path="globals/socket.io-client/index.d.ts" />
-/// <reference path="./modules.d.ts" />
+/// <reference path="modules.d.ts" />

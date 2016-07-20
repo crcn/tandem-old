@@ -24,9 +24,9 @@ var tokenMap = {
   ',': COMMA,
 };
 
-class CSSTokenizer extends BaseObject {
+export class CSSTokenizer extends BaseObject {
   tokenize(source) {
-    var scanner = Scanner.create(source);
+    var scanner = new Scanner(source);
     var tokens = [];
 
     function addToken(search, type) {
@@ -72,4 +72,4 @@ class CSSTokenizer extends BaseObject {
   }
 }
 
-export default CSSTokenizer.create();
+export default new CSSTokenizer({});

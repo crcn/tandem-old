@@ -1,5 +1,3 @@
-import create from '../../utils/class/create';
-
 class PropertyObserver {
   public target:any;
   public property:string;
@@ -42,6 +40,4 @@ export default class Observer {
   update() {
 
   }
-
-  static create = create;
 }

@@ -5,7 +5,7 @@ import { merge } from 'lodash';
 
 const queryConfig = window.location.search && false ? JSON.parse(decodeURIComponent(window.location.search.substr(1))) : {};
 
-var app = window['app'] = BrowserApplication.create({
+var app = window['app'] = new BrowserApplication({
   config: merge({}, window['config'] || {}, queryConfig),
   zoom: 1
 });

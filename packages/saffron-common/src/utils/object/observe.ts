@@ -1,6 +1,6 @@
 import { NoopBus, Bus } from 'mesh';
 
-const noopBus = NoopBus.create();
+const noopBus = new NoopBus();
 
 class Observable {
   public target:any;

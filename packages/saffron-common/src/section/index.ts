@@ -1,13 +1,13 @@
 import FragmentSection from './fragment';
 import NodeSection from './node';
 
-export function create(node) {
+export function create(node):any {
 
   if (node.nodeType === 11) {
-    var frag = FragmentSection.create();
+    var frag = new FragmentSection();
     frag.appendChild(node);
     return frag;
   }
 
-  return NodeSection.create(node);
+  return new NodeSection(node);
 }

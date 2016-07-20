@@ -1,4 +1,3 @@
-import create from '../utils/class/create';
 import assertPropertyExists from '../utils/assert/property-exists';
 
 import { WrapBus, EmptyResponse } from 'mesh';
@@ -20,6 +19,4 @@ export default class TypeCallbackBus {
     }
     return EmptyResponse.create();
   }
-
-  static create = create;
 }

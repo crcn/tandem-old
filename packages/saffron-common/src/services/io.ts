@@ -19,7 +19,7 @@ export default class IOService extends Service {
 
     // this is the public service which handles all
     // incomming actions
-    this._publicService = Service.create({
+    this._publicService = new Service({
       target: {}
     });
 
@@ -73,7 +73,7 @@ export default class IOService extends Service {
   addConnection = async (connection) => {
     this.logger.info('client connected');
 
-    var remoteService = Service.create({
+    var remoteService = new Service({
       target: {}
     });
 
@@ -93,7 +93,7 @@ export default class IOService extends Service {
     // so that we limit the number of outbound actions
     for (const remoteActionType of await remoteBus.execute({ type: 'getPublicActionTypes' }).readAll()) {
       this.logger.verbose('adding remote action "%s"', remoteActionType);
-      remoteService.addActor(remoteActionType, ParallelBus.create([
+      remoteService.addActor(remoteActionType, new ParallelBus([
         remoteBus
       ]));
     }

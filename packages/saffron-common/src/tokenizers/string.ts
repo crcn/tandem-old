@@ -1,4 +1,3 @@
-import create from '../utils/class/create';
 import Scanner from './scanner';
 import createToken from './create-token';
 import { SPACE, TAB, NEW_LINE, TEXT } from './token-types';
@@ -7,7 +6,7 @@ class StringTokenizer {
 
   tokenize(source) {
 
-    var scanner = Scanner.create(source);
+    var scanner = new Scanner(source);
     var tokens  = [];
 
     function addToken(scanRegexp, type) {
@@ -28,8 +27,6 @@ class StringTokenizer {
 
     return tokens;
   }
-
-  static create = create;
 }
 
 export default StringTokenizer;

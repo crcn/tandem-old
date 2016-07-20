@@ -1,4 +1,3 @@
-import create from '../utils/class/create';
 import assertPropertyExists from '../utils/assert/property-exists';
 
 import { EmptyResponse, Bus } from 'mesh';
@@ -17,6 +16,4 @@ export default class TypeBus {
 
     return EmptyResponse.create();
   }
-
-  static create = create;
 }

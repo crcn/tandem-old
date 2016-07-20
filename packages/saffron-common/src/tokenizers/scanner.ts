@@ -1,4 +1,3 @@
-import create from '../utils/class/create';
 
 class Scanner {
 
@@ -31,8 +30,6 @@ class Scanner {
   getCapture() {
     return this._capture;
   }
-
-  static create = create;
 }
 
 export default Scanner;

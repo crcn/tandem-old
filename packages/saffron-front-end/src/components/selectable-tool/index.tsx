@@ -102,7 +102,4 @@ export default class SelectablesComponent extends React.Component<{selection:any
   }
 }
 
-export const fragment = new ReactComponentFactoryFragment({
-  ns             : 'components/tools/pointer/selectable',
-  componentClass : SelectablesComponent,
-});
+export const fragment = new ReactComponentFactoryFragment('components/tools/pointer/selectable', SelectablesComponent);

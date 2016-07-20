@@ -3,7 +3,7 @@ import { Service } from 'saffron-common/lib/services/index';
 import IOService from 'saffron-common/lib/services/io';
 import loggable from 'saffron-common/lib/logger/mixins/loggable';
 import * as createSocketIOServer from 'socket.io';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import * as express from 'express';
 import * as path from 'path';
 import * as cors from 'cors';
@@ -23,7 +23,7 @@ export default class FrontEndService extends Service {
 
   constructor(properties) {
     super(properties);
-    this.app.actors.push(this._ioService = IOService.create(properties));
+    this.app.actors.push(this._ioService = new IOService(properties));
     this._port = this.config.socketio.port;
   }
 
@@ -49,6 +49,7 @@ export default class FrontEndService extends Service {
 
     // this should be part of the config
     this._server.use(express.static(path.dirname(entryPath)));
+    this._server.use(express.static(__dirname + '/../../public'));
 
     this._server.use((req, res) => {
       res.send(this.getIndexHtmlContent(scriptName));
@@ -78,7 +79,9 @@ export default class FrontEndService extends Service {
         </head>
         <body>
           <div id="app"></div>
-          <script src='${host}/${scriptName}'></script>
+          <script src="/vendor/react.min.js"></script>
+          <script src="/vendor/react-dom.min.js"></script>
+          <script src="${host}/${scriptName}"></script>
         </body>
       </html>
     `;
@@ -92,7 +95,4 @@ export default class FrontEndService extends Service {
   }
 }
 
-export const fragment = new FactoryFragment({
-  ns: 'application/services/front-end',
-  factory: FrontEndService,
-});
+export const fragment = new ClassFactoryFragment('application/services/front-end', FrontEndService);

@@ -1,10 +1,8 @@
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import { BaseActor } from 'saffron-common/lib/actors/index';
 
 export const fragment = [
-  new FactoryFragment({
-    ns: 'key-bindings/zoom-in',
-    factory: class ZoomInKeyBindingActor extends BaseActor {
+  new ClassFactoryFragment('key-bindings/zoom-in', class ZoomInKeyBindingActor extends BaseActor {
       public bus:any;
       key = 'meta+=';
       execute() {
@@ -12,9 +10,7 @@ export const fragment = [
       }
     }
   }),
-  new FactoryFragment({
-    ns: 'key-bindings/zoom-out',
-    factory: class ZoomOutKeyBindingActor extends BaseActor {
+  new ClassFactoryFragment('key-bindings/zoom-out', class ZoomOutKeyBindingActor extends BaseActor {
       public bus:any;
       key = 'meta+-';
       execute() {

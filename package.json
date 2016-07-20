@@ -14,7 +14,10 @@
   },
   "scripts": {
     "test": "./scripts/exec-packages.sh npm test",
-    "start": "./scripts/exec-packages.sh npm start"
+    "link": "./scripts/link-packages.sh",
+    "start": "./scripts/exec-packages.sh npm start",
+    "build": "./scripts/exec-packages.sh npm run build",
+    "build-watch": "./scripts/exec-packages.sh npm run build-watch"
   },
   "repository": {
     "type": "git",

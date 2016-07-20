@@ -4,7 +4,7 @@ import loggable from 'saffron-common/lib/logger/mixins/loggable';
 import filterAction from 'saffron-common/lib/actors/decorators/filter-action';
 
 import { BaseActor } from 'saffron-common/lib/actors/index';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
  
 @loggable
 export default class RootComponentRenderer extends BaseActor {
@@ -36,7 +36,4 @@ export default class RootComponentRenderer extends BaseActor {
   }
 }
 
-export const fragment = new FactoryFragment({
-  ns      : 'application/services/root-component-renderer',
-  factory : RootComponentRenderer
-});
+export const fragment = new ClassFactoryFragment('application/services/root-component-renderer', RootComponentRenderer);

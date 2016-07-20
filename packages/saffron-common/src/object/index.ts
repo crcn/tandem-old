@@ -1,4 +1,3 @@
-import create from '../utils/class/create';
 
 var _id = 1;
 
@@ -16,6 +15,4 @@ export default class CoreObject {
   setProperties(properties) {
     Object.assign(this, properties);
   }
-
-  static create = create;
 }

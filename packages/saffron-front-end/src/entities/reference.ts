@@ -1,5 +1,5 @@
 import Entity from 'saffron-common/lib/entities/entity';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import get from 'saffron-common/lib/utils/object/get';
 
 export default class ReferenceEntity extends Entity {
@@ -10,7 +10,4 @@ export default class ReferenceEntity extends Entity {
   }
 }
 
-export const fragment = new FactoryFragment({
-  ns      : 'entities/reference',
-  factory : ReferenceEntity,
-});
+export const fragment = new ClassFactoryFragment('entities/reference', ReferenceEntity);

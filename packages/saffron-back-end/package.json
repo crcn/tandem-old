@@ -2,11 +2,14 @@
   "name": "saffron-back-end",
   "version": "1.0.2",
   "main": "application.js",
+  "bin": {
+    "sfn": "./bin/saffron"
+  },
   "scripts": {
-    "start": "node ./lib/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "rm -rf lib; tsc --declaration",
-    "build-watch": "babel `find ./ -name '*.es6'` --out-dir . --watch"
+    "start": "npm run build; node ./lib/server.js",
+    "build": "tsc --declaration",
+    "build-watch": "tsc --declaration --watch",
+    "postinstall": "rm -rf lib; tsc --declaration"
   },
   "author": "",
   "license": "ISC",
@@ -15,19 +18,10 @@
     "expect.js": "^0.3.1"
   },
   "dependencies": {
-    "babel-cli": "6.10.1",
-    "babel-plugin-transform-class-properties": "^6.10.2",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-polyfill": "^6.9.1",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-react": "^6.11.1",
-    "babel-preset-stage-0": "^6.5.0",
     "mesh-socket-io-bus": "*",
-    "babel-preset-stage-1": "^6.5.0",
     "chalk": "^1.1.3",
     "cors": "^2.7.1",
     "express": "^4.14.0",
-    "express-static": "^1.0.3",
     "gaze": "^1.1.0",
     "inflection": "^1.10.0",
     "mesh": "6.0.x",

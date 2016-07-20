@@ -35,18 +35,20 @@ export default class Service extends BaseActor {
       ).execute(action);
     }
 
-    return EmptyResponse.create();
+    return new EmptyResponse();
   }
 
-  addActor(actionType, actor) {
+  addActor(actionType, actor:any) {
 
-    var existingActor;
+    actor = WrapBus.create(actor);
+
+    var existingActor:BaseActor|ParallelBus;
 
     if (existingActor = this.target[actionType]) {
-      if (existingActor._busses) {
-        existingActor._busses.push(actor);
+      if ((existingActor as any)._busses) {
+        (existingActor as any)._busses.push(actor);
       } else {
-        this.target[actionType] = ParallelBus.create([existingActor, actor]);
+        this.target[actionType] = new ParallelBus([existingActor, actor]);
       }
     } else {
       this.target[actionType] = actor;

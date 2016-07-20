@@ -111,7 +111,4 @@ class DragSelectComponent extends React.Component<any, any> {
   }
 }
 
-export const fragment = new ReactComponentFactoryFragment({
-  ns             : 'components/tools/pointer/drag-select',
-  componentClass : DragSelectComponent,
-});
+export const fragment = new ReactComponentFactoryFragment('components/tools/pointer/drag-select', DragSelectComponent);

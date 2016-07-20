@@ -2,11 +2,11 @@ import './scss/modules/all.scss';
 import './scss/fonts.scss';
 
 // components
-import { fragment as rootComponentFragment } from './components/root';
-import { fragment as sfnStageComponentFragment } from './components/sfn-stage';
-import { fragment as selectorToolComponentFragment } from './components/selector-tool';
-import { fragment as dragSelectToolComponentFragment } from './components/drag-select-tool';
-import { fragment as selectableToolComponentFragment } from './components/selectable-tool';
+import { fragment as rootComponentFragment } from './components/root/index';
+import { fragment as sfnStageComponentFragment } from './components/sfn-stage/index';
+import { fragment as selectorToolComponentFragment } from './components/selector-tool/index';
+import { fragment as dragSelectToolComponentFragment } from './components/drag-select-tool/index';
+import { fragment as selectableToolComponentFragment } from './components/selectable-tool/index';
 
 // entities
 import { fragment as stringEntityFragment } from './entities/string';
@@ -33,7 +33,7 @@ import { fragment as rootComponentRendererFragment } from './services/root-compo
 import { fragment as keyBindingsFragment } from './key-bindings/index';
 
 // bundles 
-import { fragment as htmlBundleFragment } from 'saffron-html-bundle';
+import { fragment as htmlBundleFragment } from './bundles/html/index';
  
 export default [
 
@@ -60,11 +60,13 @@ export default [
 
   // services
   toolServiceFragment,
+  backEndServiceFragment,
   projectServiceFragment,
   previewServiceFragment,
   selectorServiceFragment,
   clipboardServiceFragment,
   keyBindingServiceFragment,
+  rootComponentRendererFragment,
 
   // bundles
   htmlBundleFragment

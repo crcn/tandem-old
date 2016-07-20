@@ -70,7 +70,7 @@ function decorateObjectClass(clazz) {
     oldSetProperties.call(this, properties);
 
     if (changes && changes.length) {
-      this.bus.execute(ChangeEvent.create(changes));
+      this.bus.execute(new ChangeEvent(changes));
       if (this.didChange) this.didChange(changes);
     }
   };
@@ -95,7 +95,7 @@ function decorateCollectionClass(clazz) {
         values : repl,
       });
 
-      this.bus.execute(ChangeEvent.create(changes));
+      this.bus.execute(new ChangeEvent(changes));
       if (this.didChange) this.didChange(changes);
     }
 

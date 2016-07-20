@@ -5,7 +5,7 @@ import * as MemoryDsBus from 'mesh-memory-ds-bus';
 import { Bus } from 'mesh';
 
 import { titleize } from 'inflection';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import document from 'saffron-common/lib/actors/decorators/document';
 
 @loggable
@@ -76,7 +76,4 @@ export default class DBService extends Service {
   }
 }
 
-export const fragment = new FactoryFragment({
-  ns: 'application/services/db',
-  factory: DBService
-});
+export const fragment = new ClassFactoryFragment('application/services/db', DBService);

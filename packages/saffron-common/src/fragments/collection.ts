@@ -1,10 +1,9 @@
 import * as assert from 'assert';
-import createFactory from '../utils/class/create-factory';
 import { flattenDeep as flatten } from 'lodash';
-import { BaseCollection } from '../object/collection';
+import Collection from '../object/collection';
 import { Fragment } from './index';
 
-export default class FragmentCollection extends BaseCollection<Fragment> {
+export default class FragmentCollection extends Collection<Fragment> {
 
   private _fragmentsByNamespace:Object;
 
@@ -22,7 +21,7 @@ export default class FragmentCollection extends BaseCollection<Fragment> {
   }
 
   createChild() {
-    var child = FragmentCollection.create();
+    var child = new FragmentCollection();
     child.register(this.queryAll('/**'));
     return child;
   }
@@ -63,10 +62,4 @@ export default class FragmentCollection extends BaseCollection<Fragment> {
     ));
 
   }
-
-  public static create(properties:any = undefined):FragmentCollection {
-    return this._create(properties) as FragmentCollection;
-  }
-
-  static _create = createFactory(Array);
 }

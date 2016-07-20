@@ -5,8 +5,8 @@
   "main": "./bundle/front-end.js",
   "scripts": {
     "test": "karma start",
-    "start": "webpack --watch",
-    "bundle": "./node_modules/saffron-bundler/bin/bundle",
+    "start": "npm run build-watch",
+    "build": "webpack",
     "build-watch": "webpack --watch"
   },
   "author": "",

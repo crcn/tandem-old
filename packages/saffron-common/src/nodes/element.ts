@@ -15,7 +15,7 @@ export default class Element extends Node {
   }
 
   set attributes(value) {
-    this._attributes = Attributes.create(value);
+    this._attributes = new Attributes(value);
   }
 
   get attributes() {

@@ -1,4 +1,3 @@
-import create from '../utils/class/create';
 import assertPropertyExists from '../utils/assert/property-exists';
 
 export class Event { 
@@ -37,8 +36,6 @@ export class Event {
   stopPropagation() {
     this._canPropagate = false;
   }
-
-  static create = create;
 }
 
 export const CHANGE = 'change';

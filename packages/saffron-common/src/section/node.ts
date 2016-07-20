@@ -1,4 +1,3 @@
-import create from '../utils/class/create';
 import getPath from '../utils/node/get-path';
 import getNode from '../utils/node/get-node';
 
@@ -113,6 +112,4 @@ export default class NodeSection {
   clone() {
     return new NodeSection(this.targetNode.cloneNode(true), this._nodeFactory);
   }
-
-  static create = create;
 }

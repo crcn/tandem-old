@@ -2,7 +2,7 @@ import CoreObject from 'saffron-common/lib/object/index';
 import { parse as parseXML } from 'saffron-common/src/parsers/xml.peg';
 import observable from 'saffron-common/lib/object/mixins/observable';
 import FragmentDict from 'saffron-common/lib/fragments/collection';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import { Bus } from 'mesh';
 import { applyDiff as patch } from 'deep-diff';
 import Entity from 'saffron-common/lib/entities/entity';
@@ -54,7 +54,4 @@ export default class SfnFile extends CoreObject {
   }
 }
 
-export const fragment = new FactoryFragment({
-  ns: 'models/sfn-file',
-  factory: SfnFile
-});
+export const fragment = new ClassFactoryFragment('models/sfn-file', SfnFile);

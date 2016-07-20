@@ -27,8 +27,4 @@ export default class BoundingRect {
   set height(value) {
     this.bottom = this.top + value;
   }
-
-  static create = function (properties) {
-    return new BoundingRect(properties);
-  }
 }

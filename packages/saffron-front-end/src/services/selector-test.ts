@@ -1,6 +1,6 @@
 // import expect from 'expect.js';
 import { fragment as selectorFragment } from './selector';
-import { FactoryFragment } from 'saffron-common/lib/fragments/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import BaseApplication from 'saffron-common/lib/application/base';
 import { expect } from 'chai';
 import { SelectEvent, ToggleSelectEvent } from 'selection/events/index';
@@ -53,8 +53,8 @@ describe(__filename + '#', () => {
     class DisplayCollection extends SelectionCollection { }
     class OtherCollection extends SelectionCollection { }
 
-    app.fragments.register(new FactoryFragment({ ns: 'selection-collections/display', factory: DisplayCollection }));
-    app.fragments.register(new FactoryFragment({ ns: 'selection-collections/other', factory: OtherCollection }));
+    app.fragments.register(new ClassFactoryFragment('selection-collections/display', DisplayCollection));
+    app.fragments.register(new ClassFactoryFragment('selection-collections/other', OtherCollection));
 
     app.bus.execute(ToggleSelectEvent.create({ type: 'display' }));
     expect(app.selection).to.be.an.instanceof(DisplayCollection);
