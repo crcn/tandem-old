@@ -80,7 +80,7 @@ export default class SelectablesComponent extends React.Component<{selection:any
 
     const selection = this.props.selection || [];
     const allEntities = this.props.allEntities;
-
+ 
     // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.
     if (selection.preview && selection.preview.moving) return null;
 

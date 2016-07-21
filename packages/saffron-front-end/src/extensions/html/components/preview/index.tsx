@@ -10,13 +10,13 @@ export default class PreviewComponent extends React.Component<any, any> {
     return this.props.entity !== props.entity;
   }
   componentWillUpdate() {
-    this.props.entity.section.remove();
+    this.props.entity.symbolTable.getValue('currentSection').remove();
   }
   componentDidUpdate() {
     this._update();
   }
   _update() {
-    (this.refs as any).container.appendChild(this.props.entity.section.toFragment());
+    (this.refs as any).container.appendChild(this.props.entity.symbolTable.getValue('currentSection').toFragment());
   }
   render() {
     return (<div ref='container'>

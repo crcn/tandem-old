@@ -3,26 +3,23 @@ import CoreObject from 'saffron-common/src/object/index';
 
 export default class NodePreview extends CoreObject {
 
-  public entity:any;
-
-  constructor(entity) {
+  constructor(public entity:any, public node:any) {
     super({});
-    this.entity = entity;
   }
 
   getBoundingRect(zoomProperties) {
-    return calculateBoundingRect(this.entity, this.entity.section.targetNode, zoomProperties);
+    return calculateBoundingRect(this.entity, this.node, zoomProperties);
   }
 
   setPositionFromAbsolutePoint(point) {
-    setPositionFromAbsolutePoint(point, this.entity, this.entity.section.targetNode);
+    setPositionFromAbsolutePoint(point, this.entity, this.node);
   }
 
   setBoundingRect(rect) {
-    setBoundingRect(rect, this.entity, this.entity.section.targetNode);
+    setBoundingRect(rect, this.entity, this.node);
   }
 
   getCapabilities() {
-    return getCapabilities(this.entity.section.targetNode);
+    return getCapabilities(this.node);
   }
 }

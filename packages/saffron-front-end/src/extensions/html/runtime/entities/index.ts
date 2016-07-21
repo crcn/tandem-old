@@ -24,6 +24,8 @@ import {
   OperationExpression,
 } from '../expressions/index';
 
+import NodePreview from './preview/node';
+
 
 import {
   NodeSection,
@@ -112,7 +114,7 @@ abstract class BaseEntity<T> implements IEntity {
   }
 
   public flatten():Array<IEntity> {
-    return [];
+    return [this];
   }
 }
 
@@ -138,22 +140,23 @@ export interface IValueEntity extends IEntity {
 const CURRENT_SECTION_SYMBOL_KEY = 'currentSection';
 export abstract class HTMLNodeEntity<T> extends BaseEntity<T> implements IHTMLNodeEntity {
   public parentNode:IHTMLNodeEntity;
+  public type:string = 'display';
   private _childNodes:Array<IHTMLNodeEntity>;
-  get nextSibling():IHTMLNodeEntity {
-    return this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) - 1];
+  public get nextSibling():IHTMLNodeEntity {
+    return this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) + 1];
   }
-  get prevSibling():IHTMLNodeEntity {
+  public get prevSibling():IHTMLNodeEntity {
     return this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) - 1];
   }
 
-  get childNodes():Array<IHTMLNodeEntity> {
+  public get childNodes():Array<IHTMLNodeEntity> {
     return this._childNodes || (this._childNodes = []);
   }
-  get currentSection():FragmentSection|NodeSection {
+  public get currentSection():FragmentSection|NodeSection {
     return this.symbolTable.getValue<FragmentSection|NodeSection>(CURRENT_SECTION_SYMBOL_KEY);
   }
 
-  removeChild(child:IHTMLNodeEntity) {
+  public removeChild(child:IHTMLNodeEntity) {
     var i = this.childNodes.indexOf(child);
     if (~i) {
       this.childNodes.splice(i, 1);
@@ -161,26 +164,39 @@ export abstract class HTMLNodeEntity<T> extends BaseEntity<T> implements IHTMLNo
     }
   }
 
-  appendChild(child:IHTMLNodeEntity) {
+  public appendChild(child:IHTMLNodeEntity) {
     this.childNodes.push(child);
     this._linkChild(child);
   }
 
-  _linkChild(child:IHTMLNodeEntity) {
+  private _linkChild(child:IHTMLNodeEntity) {
     if (child.parentNode) {
       child.parentNode.removeChild(this);
     }
     child.parentNode = this;
   }
 
-  _unlinkChild(child:IHTMLNodeEntity) {
+  private _unlinkChild(child:IHTMLNodeEntity) {
     child.parentNode = undefined;
   }
 
-  dispose() {
+  public dispose() {
     super.dispose();
     if (this.parentNode) {
       this.parentNode.removeChild(this);
+    }
+  }
+
+  public flatten():Array<IEntity> {
+    const items = [];
+    this._flattenDeep(items);
+    return items;
+  }
+
+  protected _flattenDeep(items = []) {
+    items.push(this);
+    for (var child of this.childNodes) {
+      (child as HTMLNodeEntity<any>)._flattenDeep(items);
     }
   }
 }
@@ -246,6 +262,7 @@ class HTMLElementEntityController extends BaseHTMLElementEntityController {
   constructor(entity:HTMLElementEntity) {
     super(entity);
     this._section = new NodeSection(document.createElement(this.entity.expression.nodeName));
+    entity.preview = new NodePreview(entity, this._section.targetNode);
     entity.currentSection.appendChild(this._section.toFragment());
   }
 
@@ -276,6 +293,7 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> {
   readonly attributes:any = {};
   public ref:IHTMLElementEntityController;
   public nodeName:string;
+  public preview:NodePreview;
 
   getAttribute(key) {
     return this.ref.getAttribute(key);

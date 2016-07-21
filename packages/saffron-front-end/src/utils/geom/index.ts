@@ -5,7 +5,7 @@ export function mergeBoundingRects(allRects:Array<BoundingRect>) {
   let left   = Infinity;
   let bottom = -Infinity;
   let top    = Infinity;
-  let right  = Infinity;
+  let right  = -Infinity;
 
   for (const rect of allRects) {
     if (!rect) continue;

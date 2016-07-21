@@ -1,5 +1,5 @@
 import CoreObject from 'saffron-common/src/object/index';
-import { parse as parseXML } from '../runtime/parsers/xml.peg';
+import Runtime from '../runtime/index'
 import observable from 'saffron-common/src/decorators/observable';
 import FragmentDict from 'saffron-common/src/fragments/collection';
 import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
@@ -17,31 +17,27 @@ export default class SfnFile extends CoreObject {
   public app:any;
   public isolate:boolean;
   public fragments:FragmentDict;
+  private _runtime:Runtime = new Runtime();
 
   /**
    */ 
 
   async load() {
-    var expression = parseXML(this.content);
+    await this._runtime.load(this.content);
 
-    var options = {
-      bus: this.bus,
-      file: this,
-      app: this.app,
-      fragments: this.isolate !== false ? this.fragments.createChild() : this.fragments
-    };
+    // var options = {
+    //   bus: this.bus,
+    //   file: this,
+    //   app: this.app,
+    //   fragments: this.isolate !== false ? this.fragments.createChild() : this.fragments
+    // };
 
       // patch(this.expression, expression, undefined);
       // this.entity.update(options);
     
-
-    this.expression = expression;
-    var entity = expression.createEntity();
-    entity.load();
     
     this.setProperties({
-      expression,
-      entity
+      entity: this._runtime.entity
     });
   }
 
