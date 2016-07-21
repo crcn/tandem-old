@@ -16,9 +16,6 @@ import { fragment as referenceEntityFragment } from '../entities/reference';
 import { fragment as textToolFragment } from '../tools/text';
 import { fragment as pointerToolFragment } from '../tools/pointer';
 
-// models
-import { fragment as sfnFileModelFragment } from '../models/sfn-file';
-
 // services
 import { fragment as toolServiceFragment } from '../services/tool';
 import { fragment as backEndServiceFragment } from '../services/back-end';
@@ -33,7 +30,7 @@ import { fragment as rootComponentRendererFragment } from '../services/root-comp
 import { fragment as keyBindingsFragment } from '../key-bindings/index';
 
 // bundles 
-import { fragment as htmlBundleFragment } from '../bundles/html/index';
+import { fragment as htmlExtensionFragment } from '../extensions/html/index';
  
 export default [
 
@@ -52,9 +49,6 @@ export default [
   textToolFragment,
   pointerToolFragment,
 
-  // models
-  sfnFileModelFragment,
-
   // key bindings
   keyBindingsFragment,
 
@@ -68,6 +62,6 @@ export default [
   keyBindingServiceFragment,
   rootComponentRendererFragment,
 
-  // bundles
-  htmlBundleFragment
+  // extensions
+  htmlExtensionFragment
 ];

@@ -2,10 +2,6 @@ import assertPropertyExists from '../utils/assert/property-exists';
 import { Service } from '../services/index';
 import IApplication from '../application/interface';
 
-declare class BaseApplication {
-
-};
-
 /**
  */
 

@@ -16,7 +16,8 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "expect.js": "^0.3.1"
+    "expect.js": "^0.3.1",
+    "typescript": "^2.0.0"
   },
   "dependencies": {
     "mesh-socket-io-bus": "*",

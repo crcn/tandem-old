@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { startDrag } from 'saffron-common/src/utils/component/index';
+import { startDrag } from 'saffron-front-end/src/utils/component/index';
 import PathComponent from './path';
 // import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'message-types';
 

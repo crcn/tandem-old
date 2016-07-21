@@ -1,4 +1,4 @@
-import Entity from 'saffron-common/src/entities/entity';
+import Entity from 'saffron-front-end/src/entities/entity';
 import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
 import get from 'saffron-common/src/utils/object/get';
 

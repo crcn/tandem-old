@@ -6,9 +6,7 @@ import { LogAction } from '../actions/index';
 
 export default class Logger {
 
-  constructor(public bus:Bus, public prefix:string = '') {
-
-  }
+  constructor(public bus:Bus, public prefix:string = '') { }
 
   verbose(text:string, ...rest) {
     this._log(LogLevel.VERBOSE, text, ...rest);
