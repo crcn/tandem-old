@@ -1,16 +1,17 @@
 import FragmentDictionary from 'saffron-common/src/fragments/collection';
 import {
   IEntity,
-  RootEntity,
+  SymbolTable,
+  HTMLRootEntity,
+  StringEntity,
+  HTMLTextEntity,
   HTMLNodeEntity,
-  ElementEntity,
-  TextEntity,
   ReferenceEntity,
   IHTMLNodeEntity,
-  StringEntity,
-  BlockEntity,
-  AttributeEntity,
-  CommentEntity,
+  HTMLBlockEntity,
+  HTMLElementEntity,
+  HTMLAttributeEntity,
+  HTMLCommentEntity,
   HashEntity,
   TernaryEntity,
   NotEntity,
@@ -20,7 +21,7 @@ import {
   CSSListValueEntity,
   CSSLiteralEntity,
   CSSStyleEntity,
-  ScriptEntity,
+  HTMLScriptEntity,
   FunctionCallEntity,
   CSSStyleDeclarationEntity,
   CSSFunctionCallEntity,
@@ -32,64 +33,62 @@ import {
  */
 
 export class BaseExpression<T extends IEntity> {
-  constructor(private _entityClass:{new(expression:BaseExpression<T>):T}) {
+  constructor(private _entityClass:{new(expression:BaseExpression<T>, symbolTable:SymbolTable):T}) {
 
   }
-  createEntity():T {
-    return new this._entityClass(this); 
+  createEntity(symbolTable:SymbolTable):T {
+    return new this._entityClass(this, symbolTable); 
   }
 }
 
-export class RootExpression extends BaseExpression<RootEntity> {
+export class HTMLRootExpression extends BaseExpression<HTMLRootEntity> {
   constructor(public childNodes:Array<HTMLExpression<IHTMLNodeEntity>>) {
-    super(RootEntity);
+    super(HTMLRootEntity);
   }
 }
 
-export class HTMLExpression<T extends IHTMLNodeEntity> extends BaseExpression<T> {
- 
-}
+export class HTMLExpression<T extends IHTMLNodeEntity> extends BaseExpression<T> { }
 
 /**
  * HTML
  */
 
-export class HTMLElementExpression extends HTMLExpression<ElementEntity> {
+export class HTMLElementExpression extends HTMLExpression<HTMLElementEntity> {
   constructor(
     public nodeName:string,
     public attributes:Array<HTMLAttributeExpression>,
     public childNodes:Array<HTMLExpression<IHTMLNodeEntity>>) {
-    super(ElementEntity);
+    super(HTMLElementEntity);
   }
 }
 
-export class HTMLAttributeExpression extends BaseExpression<AttributeEntity> {
+export class HTMLAttributeExpression extends BaseExpression<HTMLAttributeEntity> {
   constructor(public key:string, public value:BaseExpression<IValueEntity>) {
-    super(AttributeEntity);
+    super(HTMLAttributeEntity);
   }
 }
 
-export class HTMLTextExpression extends HTMLExpression<TextEntity> {
+export class HTMLTextExpression extends HTMLExpression<HTMLTextEntity> {
   constructor(public nodeValue:string) {
-    super(TextEntity);
+    super(HTMLTextEntity);
   }
 }
 
-export class HTMLCommentExpression extends HTMLExpression<CommentEntity> {
+export class HTMLCommentExpression extends HTMLExpression<HTMLCommentEntity> {
   constructor(public nodeValue:string) {
-    super(CommentEntity);
+    super(HTMLCommentEntity);
   }
 }
 
-export class HTMLScriptExpression extends HTMLExpression<ScriptEntity> {
+export class HTMLScriptExpression extends HTMLExpression<HTMLScriptEntity> {
   constructor(public value:BaseExpression<IValueEntity>) {
-    super(ScriptEntity);
+    super(HTMLScriptEntity);
   }
 }
 
-export class HTMLBlockExpression extends HTMLExpression<BlockEntity> {
+export class HTMLBlockExpression extends HTMLExpression<HTMLBlockEntity> {
   constructor(public script:BaseExpression<IValueEntity>) {
-    super(BlockEntity);
+    super(HTMLBlockEntity);
   }
 }
 

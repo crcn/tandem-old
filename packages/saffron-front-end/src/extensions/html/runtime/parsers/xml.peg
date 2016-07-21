@@ -1,7 +1,7 @@
 {
 
 const {
-  RootExpression,
+  HTMLRootExpression,
 
   // HTML
   HTMLElementExpression,
@@ -83,7 +83,7 @@ function escapeString(string) {
 }
 
 Start
-  = children:ChildNodes { return new RootExpression(children); }
+  = children:ChildNodes { return new HTMLRootExpression(children); }
 
 DocType
   = "<!DOCTYPE" _ info:[^>]+ _ ">" {
@@ -95,8 +95,8 @@ ChildNodes
 
 
 CommentNode
-  = _ "<!--" value:(!"-->" v:SourceCharacter { return v; })+ "-->" _ {
-    return new HTMLCommentExpression(escapeString(trimEnds(value.join(""))));
+  = _ '<!--' value:(!'-->' v:SourceCharacter { return v; })+ '-->' _ {
+    return new HTMLCommentExpression(escapeString(value.join('')));
   }
   / DocType
 
@@ -185,22 +185,15 @@ TagName
   = _ word:[a-zA-Z0-9:_\.\-]+ { return word.join(""); }
 
 Attribute
-  = name:'style' _ "=" _ value:StyleAttributeValue {
-    return new HTMLAttributeExpression(name, value);
-  }
-  / name:TagName _ "=" _ values:AttributeValues {
+  = name:TagName _ "=" _ values:AttributeValues {
       return new HTMLAttributeExpression(name, values);
     }
   / name:TagName _ "=" _ value:TextBinding {
       return new PropertyExpression(name, value);
     }
   / name:TagName {
-      return new HTMLAttributeExpression(name);
+      return new HTMLAttributeExpression(name, new StringExpression(''));
     }
-
-StyleAttributeValue 
-  = '"' value:(([^"])* { return cssParser.parse(text()); }) '"' { return value; } 
-  / "'" value:(([^'])* { return cssParser.parse(text()); }) "'" { return value; }
 
 AttributeValues
   = '"' values:(TextBinding/(!"{{" [^"])+ { return new StringExpression(text(), location()); })* '"' { return values[0]; }
