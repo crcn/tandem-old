@@ -8,7 +8,7 @@ import * as SocketIOBus from 'mesh-socket-io-bus';
 import { Service } from '../services/index';
 import { ParallelBus } from 'mesh';
 
-import IApplication from 'saffron-common/src/application/interface';
+import IApplication from '../application/interface';
 
 import BaseApplicationService from './base-application-service';
 

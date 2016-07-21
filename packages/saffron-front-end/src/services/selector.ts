@@ -1,12 +1,13 @@
 import loggable from 'saffron-common/src/decorators/loggable';
+import IApplication from 'saffron-common/src/application/interface';
+import SelectionCollection from 'selection/collection';
 import BaseApplicationService from 'saffron-common/src/services/base-application-service';
 import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
-import SelectionCollection from 'selection/collection';
 
 @loggable
 export default class SelectorService extends BaseApplicationService<IApplication> {
   load() {
-    this.app.selection = [];
+    (this.app as any).selection = [];
   }
 
   /**
@@ -16,12 +17,12 @@ export default class SelectorService extends BaseApplicationService<IApplication
     const app = this.app;
 
     if (!items.length) {
-      return app.setProperties({
+      return (app as any).setProperties({
         selection: []
       });
     }
 
-    const prevSelection = app.selection;
+    const prevSelection = (app as any).selection;
 
     const type = items[0].type;
 
@@ -45,7 +46,7 @@ export default class SelectorService extends BaseApplicationService<IApplication
       }
     }
 
-    app.setProperties({
+    (app as any).setProperties({
       selection: newSelection
     });
   }

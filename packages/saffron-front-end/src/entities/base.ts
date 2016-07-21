@@ -1,14 +1,14 @@
 import Element from 'saffron-front-end/src/nodes/element';
 import assertPropertyExists from 'saffron-common/src/utils/assert/property-exists';
+import IEntity from './interface';
 
-export default class Entity extends Element {
+export default class Entity<ExpressionType> extends Element {
 
-  public expression:any;
+  public expression:ExpressionType;
   public bus:any;
   
   constructor(properties) {
     super(properties);
-    assertPropertyExists(this, 'expression');
   }
 
   update(options:any) {

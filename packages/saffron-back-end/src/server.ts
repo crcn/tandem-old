@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import ServerApplication from './application';
 import config from './config';
 var app = new ServerApplication(config);

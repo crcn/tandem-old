@@ -5,14 +5,14 @@ import * as sift from 'sift';
 import Logger from 'saffron-common/lib/logger/index';
 import loggable from 'saffron-common/lib/decorators/loggable';
 import isPublic from 'saffron-common/lib/actors/decorators/public';
-import filterAction from 'saffron-common/lib/actors/decorators/filter-action';
 import document from 'saffron-common/lib/actors/decorators/document';
+import filterAction from 'saffron-common/lib/actors/decorators/filter-action';
+import IApplication from 'saffron-common/lib/application/interface';
 import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
 
 import { Response } from 'mesh';
-import IApplication from 'saffron-common/lib/application/interface';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 import { UpsertAction } from 'saffron-common/lib/actions/index';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 
 @loggable
 export default class FileService extends BaseApplicationService<IApplication> {

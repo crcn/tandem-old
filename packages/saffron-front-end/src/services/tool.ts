@@ -27,7 +27,7 @@ export default class ToolService extends BaseApplicationService<IApplication> {
       toolFragment.create(this.app)
     ));
 
-    this.app.setProperties({
+    (this.app as any).setProperties({
       stageTools: tools
     });
 
@@ -37,7 +37,7 @@ export default class ToolService extends BaseApplicationService<IApplication> {
   }
 
   setCurrentTool({ tool }) {
-    this.app.setProperties({
+    (this.app as any).setProperties({
       currentTool: this.toolProxyBus.target = tool
     });
   }

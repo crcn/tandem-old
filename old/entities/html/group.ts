@@ -1,9 +1,15 @@
-import Entity from 'saffron-front-end/src/entities/entity';
+import Entity from 'saffron-front-end/src/entities/base';
 import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
 import FragmentSection from 'saffron-front-end/src/section/fragment';
 // import NodeSection from 'saffron-common/src/selection/node';
+import IEntity from 'saffron-front-end/src/entities/interface';
 
-export default class GroupEntity extends Entity {
+interface IContainerExpression extends IEntity {
+  childNodes:Array<IContainerExpression>;
+}
+
+
+export default class GroupEntity<T extends IContainerExpression> extends Entity<T> {
 
   public section:FragmentSection;
 
@@ -55,5 +61,3 @@ export default class GroupEntity extends Entity {
     (this.section as any).remove();
   }
 }
-
-export const fragment = new ClassFactoryFragment('entities/group', GroupEntity);

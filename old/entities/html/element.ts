@@ -1,9 +1,11 @@
-import Entity from 'saffron-front-end/src/entities/entity';
+import Entity from 'saffron-front-end/src/entities/base';
 import NodeSection from 'saffron-front-end/src/section/node';
 import FragmentSection from 'saffron-front-end/src/section/fragment';
 import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
 import GroupPreview from '../preview/group';
 import NodePreview from '../preview/node';
+import { HTMLElementExpression } from '../../parsers/expressions';
+
 
 function convertStyle(style) {
   const converted = {};
@@ -17,7 +19,7 @@ function convertStyle(style) {
   return converted;
 }
 
-class ElementEntity extends Entity {
+class ElementEntity extends Entity<HTMLElementExpression> {
 
   public context:any;
   public _style:any;
@@ -51,10 +53,10 @@ class ElementEntity extends Entity {
       attributes[attribute.key] = (await attribute.load(options)).value;
     }
 
+
     this.attributes = attributes;
 
-    var controllerFragment = options
-    .fragments
+    var controllerFragment = options.fragments
     .queryAll<any>(`entity-controllers/${this.expression.nodeName}`)
     .find((fragment) => !fragment.test || (fragment.test(this) ? fragment : void 0));
 

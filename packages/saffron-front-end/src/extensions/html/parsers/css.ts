@@ -103,7 +103,7 @@ export default {
 
     function queryNextTokenValue(query) {
       var token = peekToken();
-      if (sift({ value: query })(token)) return nextToken();
+      if ((sift({ value: query }) as any)(token)) return nextToken();
     }
 
     function multiplicative() {

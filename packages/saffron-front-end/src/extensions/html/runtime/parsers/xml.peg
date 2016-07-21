@@ -21,7 +21,7 @@ const {
   NegativeExpression,
   NotExpression,
   HashExpression
-} = require('./expressions');
+} = require('../expressions/index');
 
 const cssParser = require('./css.peg');
 

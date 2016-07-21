@@ -8,7 +8,7 @@ import SelectionCollection from 'selection/collection';
 
 describe(__filename + '#', () => {
 
-  let app:BaseApplication;
+  let app:any;
 
   beforeEach(async () => {
     app = new BaseApplication();

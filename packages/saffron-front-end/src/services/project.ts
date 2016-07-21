@@ -38,7 +38,7 @@ export default class ProjectService extends BaseApplicationService<IApplication>
         }));
     };
 
-    this.app.setProperties({
+    (this.app as any).setProperties({
       projects: this._projects = new Projects(
         (await this.bus.execute(new FindAllAction(COLLECTION_NAME)).readAll()).map(createModel)
       )
@@ -50,7 +50,7 @@ export default class ProjectService extends BaseApplicationService<IApplication>
         remove() { },
         update: (model, data) => {
           model.setProperties(data);
-          if (model === this.app.currentFile) {
+          if (model === (this.app as any).currentFile) {
             model.load();
           }
           return model;
@@ -63,7 +63,7 @@ export default class ProjectService extends BaseApplicationService<IApplication>
 
     if (this._projects.length) {
       this._projects[0].load();
-      this.app.setProperties({
+      (this.app as any).setProperties({
         currentFile: this._projects[0]
       });
     }

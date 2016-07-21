@@ -1,11 +1,11 @@
 import CoreObject from 'saffron-common/src/object/index';
-import { parse as parseXML } from '../parsers/xml.peg';
+import { parse as parseXML } from '../runtime/parsers/xml.peg';
 import observable from 'saffron-common/src/decorators/observable';
 import FragmentDict from 'saffron-common/src/fragments/collection';
 import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
 import { Bus } from 'mesh';
 import { applyDiff as patch } from 'deep-diff';
-import Entity from 'saffron-front-end/src/entities/entity';
+import Entity from 'saffron-front-end/src/entities/base';
 
 @observable
 export default class SfnFile extends CoreObject {
@@ -13,7 +13,7 @@ export default class SfnFile extends CoreObject {
   public content:string;
   public expression:Object;
   public bus:Bus;
-  public entity:Entity;
+  public entity:any;
   public app:any;
   public isolate:boolean;
   public fragments:FragmentDict;
@@ -36,7 +36,8 @@ export default class SfnFile extends CoreObject {
     
 
     this.expression = expression;
-    var entity = await expression.load(options);
+    var entity = expression.createEntity();
+    entity.load();
     
     this.setProperties({
       expression,

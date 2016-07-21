@@ -24,18 +24,17 @@ class SelectableComponent extends React.Component<{app:any, entity:any, bus:any,
 
   onMouseOver() {
     this.props.app.setProperties({
-      hoverItem: this.props.entity,
+      hoverItem: this.props.entity
     });
   }
 
   onMouseOut(event) {
     this.props.app.setProperties({
-      hoverItem: void 0,
+      hoverItem: void 0
     });
   }
 
   render() {
-
     var { entity, selection, app } = this.props;
 
     if (!entity.preview || entity.selectable === false) return null;
@@ -62,7 +61,7 @@ class SelectableComponent extends React.Component<{app:any, entity:any, bus:any,
       left       : bounds.left,
       top        : bounds.top
     };
-
+  
     return (
       <div
         style={style}

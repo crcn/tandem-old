@@ -1,16 +1,14 @@
 import '../scss/modules/all.scss';
 import '../scss/fonts.scss';
 
+import { values as getValues } from 'lodash';
+
 // components
 import { fragment as rootComponentFragment } from '../components/root/index';
 import { fragment as sfnStageComponentFragment } from '../components/sfn-stage/index';
 import { fragment as selectorToolComponentFragment } from '../components/selector-tool/index';
 import { fragment as dragSelectToolComponentFragment } from '../components/drag-select-tool/index';
 import { fragment as selectableToolComponentFragment } from '../components/selectable-tool/index';
-
-// entities
-import { fragment as stringEntityFragment } from '../entities/string';
-import { fragment as referenceEntityFragment } from '../entities/reference';
 
 // tools
 import { fragment as textToolFragment } from '../tools/text';
@@ -30,7 +28,7 @@ import { fragment as rootComponentRendererFragment } from '../services/root-comp
 import { fragment as keyBindingsFragment } from '../key-bindings/index';
 
 // bundles 
-import { fragment as htmlExtensionFragment } from '../extensions/html/index';
+import * as htmlExtension from '../extensions/html/index';
  
 export default [
 
@@ -40,10 +38,6 @@ export default [
   selectorToolComponentFragment,
   dragSelectToolComponentFragment,
   selectableToolComponentFragment,
-
-  // entities
-  stringEntityFragment,
-  referenceEntityFragment,
 
   // tools
   textToolFragment,
@@ -63,5 +57,5 @@ export default [
   rootComponentRendererFragment,
 
   // extensions
-  htmlExtensionFragment
+  getValues(htmlExtension)
 ];

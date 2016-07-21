@@ -1,10 +1,10 @@
 
 import BoundingRect from 'saffron-front-end/src/geom/bounding-rect';
-import { translateStyleToIntegers } from '../../utils/css/translate-style';
+import { translateStyleToIntegers } from 'saffron-front-end/src/extensions/html/utils/css/translate-style';
 
 import {
   translateStyle,
-} from '../../utils/css/index';
+} from 'saffron-front-end/src/extensions/html/utils/css/index';
 
 import {
   calculateZoom,

@@ -1,7 +1,8 @@
-import Entity from 'saffron-front-end/src/entities/entity';
+import Entity from 'saffron-front-end/src/entities/base';
 import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
+import { HTMLBlockExpression } from '../../parsers/expressions';
 
-export default class BlockEntity extends Entity {
+export default class BlockEntity extends Entity<HTMLBlockExpression> {
 
   private _node:any;
 

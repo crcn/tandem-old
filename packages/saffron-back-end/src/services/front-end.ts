@@ -1,15 +1,16 @@
 
-import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
-import IOService from 'saffron-common/lib/services/io';
-import loggable from 'saffron-common/lib/decorators/loggable';
-import * as createSocketIOServer from 'socket.io';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
-import * as express from 'express';
 import * as path from 'path';
 import * as cors from 'cors';
 import Logger from 'saffron-common/lib/logger/index'; 
-import { sync as getPackagePath } from 'package-path';
+import loggable from 'saffron-common/lib/decorators/loggable';
+import IOService from 'saffron-common/lib/services/io';
 import IApplication from 'saffron-common/lib/application/interface';
+import * as express from 'express';
+import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
+import * as createSocketIOServer from 'socket.io';
+
+import { sync as getPackagePath } from 'package-path';
+import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
 
 @loggable
 export default class FrontEndService extends BaseApplicationService<IApplication> {
@@ -24,7 +25,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
 
   constructor(app:IApplication) {
     super(app);
-    app.actors.push(this._ioService = new IOService(app));
+    app.actors.push(this._ioService = new IOService<IApplication>(app));
     this._port = this.app.config.socketio.port;
   }
 

@@ -1,12 +1,12 @@
 {
   const {
     CSSStyleExpression,
-    CSSStyleDeclaration,
+    CSSStyleDeclarationExpression,
     CSSLiteralExpression,
     CSSFunctionCallExpression,
     CSSListValueExpression,
     LiteralExpression
-  } = require('./expressions');
+  } = require('../expressions/index');
 }
 
 Start
@@ -19,7 +19,7 @@ CSSStyle
 
 CSSStyleDeclaration
   = _ key:CSSStyleDeclarationKey _ ':' _ value:CSSStyleDeclarationValue _ ';' {
-    return new CSSStyleDeclaration(key, value);
+    return new CSSStyleDeclarationExpression(key, value);
   }
 
 CSSStyleDeclarationKey
