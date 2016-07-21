@@ -29,7 +29,7 @@ export default class HTMLRuntime {
       this._rootEntity = newRootExpression.createEntity(this.symbolTable.createChild());
     }
     
-    await this._rootEntity.load();
+    await this._rootEntity.update();
 
     return this;
   }

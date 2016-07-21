@@ -1,9 +1,9 @@
 <div style="background-color: #CCC; width: 1024px; height: 768px; display:block;">
-  <div style="background-color: rgba(0,0,0,0.5); color: white; padding: 10px; border-radius: 10px; position: relative;">
-   Hello World!!!!
+  <div style="background-color: rgba(0,0,0,0.5); color: white; padding: 11px; border-radius: 10px; position: relative;">
+   Hello World!!!!!
   </div>
   <div style="background-color: rgba(0,0,0,0.5); color: white; padding: 10px; border-radius: 10px; position: relative;">
-   Hello World!!!!
+   Hello World!!!!!
   </div>
 </div>
 
