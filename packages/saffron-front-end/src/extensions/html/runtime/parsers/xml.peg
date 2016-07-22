@@ -41,6 +41,13 @@ function trimmedText() {
   return trimWhitespace(text());
 }
 
+function position() {
+  return {
+    start:peg$savedPos, 
+    end:peg$currPos
+  };
+}
+
 function attrValues(values) {
 
   values = values.filter(function (v) {
@@ -53,6 +60,7 @@ function attrValues(values) {
     return values;
   }
 }
+
 
 function trimTextExpressions(expressions) {
 
@@ -83,11 +91,11 @@ function escapeString(string) {
 }
 
 Start
-  = children:ChildNodes { return new HTMLRootExpression(children); }
+  = children:ChildNodes { return new HTMLRootExpression(children, position()); }
 
 DocType
   = "<!DOCTYPE" _ info:[^>]+ _ ">" {
-      return new DoctypeExpression(info.join(""));
+      return new DoctypeExpression(info.join(""), position());
     }
 
 ChildNodes
@@ -96,7 +104,7 @@ ChildNodes
 
 CommentNode
   = _ '<!--' value:(!'-->' v:SourceCharacter { return v; })+ '-->' _ {
-    return new HTMLCommentExpression(escapeString(value.join('')));
+    return new HTMLCommentExpression(escapeString(value.join('')), position());
   }
   / DocType
 
@@ -105,8 +113,8 @@ ScriptStart
       return new HTMLElementExpression(
         'script',
         attributes,
-        new HTMLTextExpression(content.join('')),
-        location()
+        new HTMLTextExpression(content.join(''), position()),
+        position()
       );
     }
 
@@ -122,7 +130,7 @@ VoidElement
       expected("</" + nodeName + ">");
     }
 
-    return new HTMLElementExpression(nodeName, attributes, [], location());
+    return new HTMLElementExpression(nodeName, attributes, [], position());
   }
 
 
@@ -141,13 +149,13 @@ ElementNode
       expected("</" + startTag.name + ">");
     }
 
-    return new HTMLElementExpression(startTag.name, startTag.attributes, children, location());
+    return new HTMLElementExpression(startTag.name, startTag.attributes, children, position());
   }
   / StartEndTag
 
 TextNode
   = value:TextCharacter+ {
-      return new HTMLTextExpression(escapeString(trimNewLineChars(value.join(""))), location());
+      return new HTMLTextExpression(escapeString(trimNewLineChars(value.join(""))), position());
     }
 
 TextCharacter
@@ -159,7 +167,7 @@ StartTag
   = _ "<" info:TagInfo ">" _ { return info; }
 
 StartEndTag
-  = _ "<" info:TagInfo "/>" _ { return new HTMLElementExpression(info.name, info.attributes, [], location()); }
+  = _ "<" info:TagInfo "/>" _ { return new HTMLElementExpression(info.name, info.attributes, [], position()); }
 
 TagInfo
   = name:TagName attrs:TagAttributes {
@@ -186,27 +194,27 @@ TagName
 
 Attribute
   = name:TagName _ "=" _ values:AttributeValues {
-      return new HTMLAttributeExpression(name, values);
+      return new HTMLAttributeExpression(name, values, position());
     }
   / name:TagName _ "=" _ value:TextBinding {
-      return new PropertyExpression(name, value);
+      return new PropertyExpression(name, value, position());
     }
   / name:TagName {
-      return new HTMLAttributeExpression(name, new StringExpression(''));
+      return new HTMLAttributeExpression(name, new StringExpression(''), position());
     }
 
 AttributeValues
-  = '"' values:(TextBinding/(!"{{" [^"])+ { return new StringExpression(text(), location()); })* '"' { return values[0]; }
-  / "'" values:(TextBinding/(!"{{" [^'])+ { return new StringExpression(text(), location()); })* "'" { return values[0]; }
+  = '"' values:(TextBinding/(!"{{" [^"])+ { return new StringExpression(text(), position()); })* '"' { return values[0]; }
+  / "'" values:(TextBinding/(!"{{" [^'])+ { return new StringExpression(text(), position()); })* "'" { return values[0]; }
 
 TextBinding
   = "{{" _ value:Expression _ "}}" {
-      return new HTMLScriptExpression(value);
+      return new HTMLScriptExpression(value, position());
     }
 
 BlockBinding
   = script:TextBinding {
-    return new HTMLBlockExpression(script[1]);
+    return new HTMLBlockExpression(script[1], position());
   }
 
 Expression
@@ -214,7 +222,7 @@ Expression
 
 TernaryConditional
   = condition:Assignment "?" left:TernaryConditional ":" right:TernaryConditional {
-      return new TernaryExpression(condition, left, right);
+      return new TernaryExpression(condition, left, right, position());
     }
   / Assignment
 
@@ -233,13 +241,13 @@ InnerParameters
 
 Assignment
   = left:ObjectReference "=" right:Assignment {
-      return new AssignCondition(left, right);
+      return new AssignCondition(left, right, position());
     }
   / Operation
 
 Operation
   = left:Operatable operator: ("&&" / "||" / "===" / "==" / "!==" / "!=" / ">==" / ">=" / ">" / "<==" / "<=" / "<" / "+" / "-" / "%" / "*" / "/") right:Operation {
-      return new OperationExpression(operator, left, right);
+      return new OperationExpression(operator, left, right, position());
     }
   / Operatable
 
@@ -250,7 +258,7 @@ Modifiers
   = expression:Not modifiers:Modifier* {
 
       for (var i = 0, n = modifiers.length; i < n; i++) {
-        expression = new ModifierExpresssion(modifiers[i].name, [expression].concat(modifiers[i].parameters));
+        expression = new ModifierExpresssion(modifiers[i].name, [expression].concat(modifiers[i].parameters), position());
       }
 
       return expression;
@@ -282,7 +290,7 @@ Object
 
 Number
   = value:("-"? ([0-9]+DecimalNumber? / DecimalNumber)) {
-      return new LiteralExpression(parseFloat(text()));
+      return new LiteralExpression(parseFloat(text()), position());
     }
 
 DecimalNumber
@@ -298,29 +306,29 @@ Reserved
 
 Boolean
   = value:("true"/"false") {
-      return new LiteralExpression(value === "true");
+      return new LiteralExpression(value === "true", position());
     }
 
 Undefined
-  = "undefined" { return new LiteralExpression(void 0); }
+  = "undefined" { return new LiteralExpression(void 0, position()); }
 
 NaN
-  = "NaN" { return new LiteralExpression(NaN); }
+  = "NaN" { return new LiteralExpression(NaN, position()); }
 
 Infinity
-  = "Infinity" { return new LiteralExpression(Infinity); }
+  = "Infinity" { return new LiteralExpression(Infinity, position()); }
 
 Null
-  = ("null"/"NULL") { return new LiteralExpression(null); }
+  = ("null"/"NULL") { return new LiteralExpression(null, position()); }
 
 FunctionCall
   = reference:ObjectReference parameters:Parameters {
-      return new FunctionCallExpression(reference, parameters);
+      return new FunctionCallExpression(reference, parameters, position());
     }
 
 Reference
   = bindingType:("^"/"~>"/"<~>"/"~"/"<~")? _ reference:ReferenceName path:ReferencePart* _ {
-      return new ReferenceExpression([reference].concat(path), location());
+      return new ReferenceExpression([reference].concat(path), position());
     }
 
 
@@ -342,7 +350,7 @@ ReferenceName
 
 Hash
   = "{" _ values:HashValues? _ "}" {
-      return new HashExpression(values);
+      return new HashExpression(values, position());
     }
 
 HashValues

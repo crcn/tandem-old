@@ -2,6 +2,7 @@
   "name": "saffron-common",
   "main": "./typings/index.d.ts",
   "globalDependencies": {
+    "diff": "registry:dt/diff#0.0.0+20160318080727",
     "mesh": "npm:mesh",
     "mesh-socket-io-bus": "file:./node_modules/mesh-socket-io-bus/typings.json"
   }

@@ -2,6 +2,7 @@
 /// <reference path="globals/chalk/index.d.ts" />
 /// <reference path="globals/classnames/index.d.ts" />
 /// <reference path="globals/deep-diff/index.d.ts" />
+/// <reference path="globals/diff/index.d.ts" />
 /// <reference path="globals/lodash/index.d.ts" />
 /// <reference path="globals/mesh-socket-io-bus/index.d.ts" />
 /// <reference path="globals/mesh/index.d.ts" />

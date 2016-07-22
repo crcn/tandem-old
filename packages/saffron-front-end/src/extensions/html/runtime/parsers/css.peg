@@ -7,6 +7,13 @@
     CSSListValueExpression,
     LiteralExpression
   } = require('../expressions/index');
+
+function position() {
+  return {
+    start:peg$savedPos, 
+    end:peg$currPos
+  };
+}
 }
 
 Start
@@ -14,12 +21,12 @@ Start
 
 CSSStyle
   = declarations:CSSStyleDeclaration* {
-    return new CSSStyleExpression(declarations);
+    return new CSSStyleExpression(declarations, position());
   }
 
 CSSStyleDeclaration
   = _ key:CSSStyleDeclarationKey _ ':' _ value:CSSStyleDeclarationValue _ ';' {
-    return new CSSStyleDeclarationExpression(key, value);
+    return new CSSStyleDeclarationExpression(key, value, position());
   }
 
 CSSStyleDeclarationKey
@@ -35,12 +42,12 @@ CSSSingleValue
 
 CSSLiteralValue 
   = value:CSSValue {
-    return new CSSLiteralExpression(text());
+    return new CSSLiteralExpression(text(), position());
   }
 
 CSSFunctionCall
   = name:CSSValue parameters:Parameters {
-    return new CSSFunctionCallExpression(name, parameters);
+    return new CSSFunctionCallExpression(name, parameters, position());
   }
 
 Parameters
@@ -53,7 +60,7 @@ Parameters
 
 CSSListValue 
   = values:(CSSSpaceList/CSSCommaList) {
-    return values.length === 1 ? values[0] : new CSSListValueExpression(values);
+    return values.length === 1 ? values[0] : new CSSListValueExpression(values, position());
   }
 
 CSSCommaList
@@ -79,7 +86,7 @@ CSSValue
 
 Number 
   = (Digit '.' Digit+) / ('.' Digit+) / Digit {
-    return new LiteralExpression(Number(text()));
+    return new LiteralExpression(Number(text()), position());
   }
 
 Digit

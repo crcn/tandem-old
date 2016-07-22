@@ -83,12 +83,12 @@ export class InsertAction extends DBAction {
   constructor(collectionName:string, readonly data:any) {
     super(INSERT, collectionName); 
   }
-}
+} 
 
 export const UPDATE = 'update';
 export class UpdateAction extends DBAction {
   constructor(collectionName:string, readonly data:any, readonly query:any) {
-    super(INSERT, collectionName); 
+    super(UPDATE, collectionName); 
   }
 }
 

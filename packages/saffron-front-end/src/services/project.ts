@@ -32,6 +32,7 @@ export default class ProjectService extends BaseApplicationService<IApplication>
         .fragments
         .query<any>(`models/${data.ext}-file`)
         .create(Object.assign({}, data, {
+          collectionName: COLLECTION_NAME,
           fragments: this.app.fragments,
           app: this.app,
           bus: this.bus

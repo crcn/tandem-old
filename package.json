@@ -8,7 +8,8 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "./scripts/exec-packages.sh npm test",
+    "test": "cd packages/saffron-fron-end; npm test",
+    "test-watch": "cd packages/saffron-front-end; WATCH=1 npm test",
     "clean-dependencies": "./scripts/exec-packages.sh rm -rf node_modules",
     "install": "./scripts/exec-packages.sh npm install && npm run link",
     "link": "./scripts/link-packages.sh",

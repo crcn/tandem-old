@@ -7,9 +7,15 @@ import * as XMLParser from './parsers/xml.peg';
 export default class HTMLRuntime {
 
   private _rootEntity:HTMLRootEntity;
+  private _source:string;
+
   private _symbolTable:SymbolTable = new SymbolTable({
     currentSection: new FragmentSection()
   });
+
+  public get source():string {
+    return this._source;
+  }
 
   public get entity():HTMLRootEntity {
     return this._rootEntity;
@@ -20,6 +26,7 @@ export default class HTMLRuntime {
   }
 
   public async load(source:string):Promise<HTMLRuntime> {
+    this._source = source;
     const newRootExpression:HTMLRootExpression = XMLParser.parse(source);
 
     if (this._rootEntity) {

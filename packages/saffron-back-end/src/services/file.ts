@@ -2,17 +2,19 @@ import * as fs from 'fs';
 import * as gaze from 'gaze';
 import * as sift from 'sift';
 
-import Logger from 'saffron-common/lib/logger/index';
-import loggable from 'saffron-common/lib/decorators/loggable';
 import isPublic from 'saffron-common/lib/actors/decorators/public';
 import document from 'saffron-common/lib/actors/decorators/document';
 import filterAction from 'saffron-common/lib/actors/decorators/filter-action';
-import IApplication from 'saffron-common/lib/application/interface';
-import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
 
-import { Response } from 'mesh';
-import { UpsertAction } from 'saffron-common/lib/actions/index';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+import {
+  Logger,
+  loggable,
+  Response,
+  IApplication,
+  UpsertAction,
+  ClassFactoryFragment,
+  BaseApplicationService
+} from 'saffron-common/lib/index';
 
 @loggable
 export default class FileService extends BaseApplicationService<IApplication> {

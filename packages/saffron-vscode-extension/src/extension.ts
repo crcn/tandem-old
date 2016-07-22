@@ -7,26 +7,66 @@ import * as vscode from 'vscode';
 import * as createServer from 'express'; 
 import { WrapBus, NoopBus } from 'mesh';
 import * as SocketIOBus from 'mesh-socket-io-bus';
-import ServerApplication from 'saffron-back-end';
+import ServerApplication from 'saffron-back-end/lib/application';
+import { UpsertAction } from 'saffron-common/lib/actions/index';
+import mergeHTML from 'saffron-common/lib/utils/html/merge';
+import { exec } from 'child_process';
+import * as getPort from 'get-port';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
+
+    const port = await getPort();
 
     var server = new ServerApplication({
-        config: {
-            socketio: {
-                port: 8090
-            }
+        socketio: {
+            port: port
         }
     });
+
+    server.actors.push({
+        execute(action:any) {
+            if (
+                action.type === 'didUpdate' && 
+                action.collectionName === 'files' &&
+                action.data[0].content !== _content
+                ) {
+                    _setEditorContent(action.data[0].content);
+            }
+        }
+    })
 
     server.initialize();
 
     var _inserted = false;
-    var _updateTimestamp;
+    var _content;
+    var _documentUri:vscode.Uri;
 
-    function _update(content) {
+    async function _setEditorContent(content) {
+
+
+        let editor = vscode.window.visibleTextEditors.find(function(editor) {
+            return editor.document.uri == _documentUri;
+        });
+        
+        let oldText = editor.document.getText();
+        var newContent = _content = mergeHTML(oldText, content);
+        
+        await editor.edit(function(edit) {
+            edit.replace(
+                new vscode.Range(
+                    editor.document.positionAt(0), 
+                    editor.document.positionAt(oldText.length)
+                ), 
+                newContent
+            );
+        });
+
+    }
+
+    function _update(document) {
+        _documentUri = document.uri;
         const path = '/root/file.sfn';
 
         return server.bus.execute({
@@ -36,19 +76,13 @@ export function activate(context: vscode.ExtensionContext) {
                 path: path
             },
             data: {
-                timestamp: _updateTimestamp = Date.now(),
                 path: path,
                 ext: 'sfn',
-                content: content
+                content: _content = document.getText()
             }
-        }).read();
+        } as any).read();
     }
     
-    server.actors.push(WrapBus.create(function(action) {
-        if (action.type !== 'update' || action.timestamp < _updateTimestamp) return;
-        console.log('text did change')
-    }));
-
     class SaffronDocumentContentProvider {
 
         private _onDidChange:vscode.EventEmitter<any>;
@@ -62,7 +96,7 @@ export function activate(context: vscode.ExtensionContext) {
         async provideTextDocumentContent(uri, token) {
 
             if (!this._inserted) {
-                await _update(vscode.window.activeTextEditor.document.getText());
+                await _update(vscode.window.activeTextEditor.document);
             }
 
             return `
@@ -80,7 +114,7 @@ export function activate(context: vscode.ExtensionContext) {
                     }
                 </style>
                 <body>
-                    <iframe class="container" src="http://localhost:8090/" />
+                    <iframe class="container" src="http://localhost:${port}/" />
                 </body>
             `;
         }
@@ -99,29 +133,40 @@ export function activate(context: vscode.ExtensionContext) {
     let provider = new SaffronDocumentContentProvider();
     let registration = vscode.workspace.registerTextDocumentContentProvider('saffron-preview', provider);
 
-    let disposable = vscode.commands.registerCommand('extension.previewSaffronDocument', () => {
-
+    let previewSaffronDocumentCommand = vscode.commands.registerCommand('extension.previewSaffronDocument', () => {
         vscode.commands.executeCommand('vscode.previewHtml', previewUri, vscode.ViewColumn.Two).then((success) => {
 
-        }, (error) => {
-            console.error('cannot display');
         })    
     });
 
-    context.subscriptions.push(disposable, registration);
+    let startServerCommand = vscode.commands.registerCommand('extension.startSaffronBackEnd', () => {
+        exec(`open http://localhost:${port}`);
+    });
+
+    context.subscriptions.push(previewSaffronDocumentCommand, startServerCommand, registration);
 
     function onChange(e:vscode.TextDocumentChangeEvent) {
-        _update(e.document.getText());
+        _update(e.document);
     }
 
     function run(e:vscode.TextEditor) {
-        _update(e.document.getText());
+        _update(e.document);
     }
 
+    vscode.window.onDidChangeTextEditorSelection(function(e:vscode.TextEditorSelectionChangeEvent) {
+        server.bus.execute({
+            type: 'selectAtSourceOffset',
+            data: e.selections.map(function(selection) {
+                return {
+                    start: e.textEditor.document.offsetAt(selection.start),
+                    end: e.textEditor.document.offsetAt(selection.end)
+                };
+            })
+        } as any);
+    });
+
     vscode.workspace.onDidChangeTextDocument(onChange);
-
     vscode.window.onDidChangeActiveTextEditor(run);
-
 }
 
 // this method is called when your extension is deactivated

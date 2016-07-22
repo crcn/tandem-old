@@ -1,6 +1,10 @@
 
 import BoundingRect from 'saffron-front-end/src/geom/bounding-rect';
 import { translateStyleToIntegers } from 'saffron-front-end/src/extensions/html/utils/css/translate-style';
+import * as CSSParser from '../../parsers/css.peg';
+import { HTMLElementExpression, HTMLAttributeExpression, CSSStyleExpression, StringExpression } from '../../expressions/index';
+import { HTMLElementEntity, CSSStyleEntity, StringEntity } from '../../entities/index';
+import * as sift from 'sift';
 
 import {
   translateStyle,
@@ -10,6 +14,16 @@ import {
   calculateZoom,
   multiplyStyle,
 } from 'saffron-front-end/src/utils/html/index';
+
+function translateIntegersToPx(style) {
+  var newStyle = {};
+  for (var key in style) {
+    var value = style[key];
+    if (typeof value === 'number') value = value + 'px';
+    newStyle[key] = value;
+  }
+  return newStyle;
+}
 
 function getElementOffset(entity, element) {
   var p = element.parentNode;
@@ -124,7 +138,8 @@ export function setBoundingRect(bounds, entity, node) {
   Object.assign(props, translateStyle({
     width: props.width,
     height: props.height,
-  }, entity.style, node));
+  }, getEntityStyle(entity), node));
+
 
   // FIXME: wrong place here - this is just a quick
   // check to see if this *actually* works
@@ -136,12 +151,12 @@ export function setBoundingRect(bounds, entity, node) {
   delete props.left;
   delete props.top;
 
-  entity.setProperties({ style: props });
+  setEntityStyle(entity, props)
 }
 
 export function getStyle(entity, node, zoomProperties) {
 
-  var style = entity.style;
+  var style = getEntityStyle(entity);
 
   var { left, top } = (translateStyleToIntegers({
     left: style.left || 0,
@@ -176,6 +191,43 @@ export function getStyle(entity, node, zoomProperties) {
 
   return style;
 }
+
+function getEntityStyle(entity:HTMLElementEntity):any {
+
+  if (!entity.attributes.style) return {};
+
+  var style = entity.attributes.style.value;
+  const styleExpression = CSSParser.parse(style) as CSSStyleExpression;
+  const styleEntity = styleExpression.createEntity(entity.symbolTable); 
+  styleEntity.update();   
+  return styleEntity.value;
+}
+
+function setEntityStyle(entity:HTMLElementEntity, newStyle:Object) {
+
+  var style = entity.attributes.style.value;
+  const styleExpression = CSSParser.parse(style) as CSSStyleExpression;
+  const styleEntity = styleExpression.createEntity(entity.symbolTable);
+
+  // var combinedStyle = Object.assign()
+  styleEntity.update();   
+
+  var combinedStyle = Object.assign({}, styleEntity.value, translateIntegersToPx(newStyle));
+  
+  var buffer = [];
+
+  for (var key in combinedStyle) {
+    var value = combinedStyle[key];
+    if (value == undefined) continue;
+    buffer.push(key + ':' + value + ';');
+  }
+
+  (entity.expression.attributes.find(sift({ key: 'style' })) as HTMLAttributeExpression).value = new StringExpression(buffer.join(' '), undefined);
+
+  entity.update(); 
+}
+
+
 export function setPositionFromAbsolutePoint(point, entity, node) {
   // absolute positions are always in pixels - always round
   // to the nearest one
@@ -203,8 +255,7 @@ export function setPositionFromAbsolutePoint(point, entity, node) {
   const newStyle = translateStyle({
     left: left,
     top: top,
-  }, entity.style, element);
+  }, getEntityStyle(entity) || {}, element);
 
-
-  entity.setProperties({ style: newStyle });
+  setEntityStyle(entity, newStyle);
 }

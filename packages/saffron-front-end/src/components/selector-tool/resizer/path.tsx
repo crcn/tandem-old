@@ -10,7 +10,7 @@ class PathComponent extends React.Component<any, any> {
 
     event.stopPropagation();
 
-    startDrag(event, function(event2, info) {
+    startDrag(event, (event2, info) => {
 
       Object.assign(point, {
         left : (sx + info.delta.x),
@@ -18,7 +18,7 @@ class PathComponent extends React.Component<any, any> {
       });
 
       this.props.onPointChange(point, event2);
-    }, undefined);
+    }, this.props.onPointMouseUp);
   }
 
   render() {

@@ -8,6 +8,11 @@ import { fragment as upsertServiceFragment } from './services/upsert';
 import { fragment as frontEndServiceFragment } from './services/front-end';
 
 export default class ServerApplication extends BaseApplication {
+  constructor(config) {
+    super(Object.assign({
+      frontEndEntry: require.resolve('saffron-front-end')
+    }, config));
+  }
   _registerFragments() {
     super._registerFragments();
     this.fragments.register(

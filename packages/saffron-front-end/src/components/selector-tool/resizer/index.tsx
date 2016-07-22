@@ -85,7 +85,7 @@ class ResizerComponent extends React.Component<any, any> {
       left   : style.left,
       top    : style.top,
       width  : style.width,
-      height : style.height,
+      height : style.height
     };
 
     if (/^n/.test(point.id)) {
@@ -113,7 +113,8 @@ class ResizerComponent extends React.Component<any, any> {
 
       props.width = point.currentStyle.width * diffPerc;
       props.height = point.currentStyle.height * diffPerc;
-    }
+    } 
+
 
     if (keepCenter) {
       props.left = point.currentStyle.left + (point.currentStyle.width / 2 - props.width / 2);
@@ -132,7 +133,7 @@ class ResizerComponent extends React.Component<any, any> {
     clearTimeout(this._dragTimer);
     this.props.selection.preview.setProperties({ moving: true });
     this.setState({ dragging: true });
-    this._movingTimer = setTimeout(() => {
+    this._movingTimer = setTimeout(() => { 
       this.props.selection.preview.setProperties({ moving: false });
     }, 1000);
     this._dragTimer = setTimeout(() => {
@@ -175,6 +176,10 @@ class ResizerComponent extends React.Component<any, any> {
       this.props.file.save();
       this._dragger = void 0;
     });
+  }
+
+  onPointMouseUp() {
+    this.props.file.save(); 
   }
 
 
@@ -236,6 +241,7 @@ class ResizerComponent extends React.Component<any, any> {
         <PathComponent
           showPoints={capabilities.resizable && !this.state.dragging}
           onPointChange={this.updatePoint.bind(this)}
+          onPointMouseUp={this.onPointMouseUp.bind(this)}
           zoom={this.props.zoom}
           points={points}
           strokeWidth={strokeWidth}

@@ -22,6 +22,7 @@ export default class PreviewService extends BaseApplicationService<ApplicationTy
 
   constructor(app:ApplicationType) {
     super(app);
+    (app as any).zoom = 1; 
   }
 
   zoomIn() {

@@ -1,11 +1,14 @@
 import * as chalk from 'chalk';
-import Logger from 'saffron-common/lib/logger/index'; 
 import document from 'saffron-common/lib/actors/decorators/document';
-import loggable from 'saffron-common/lib/decorators/loggable';
-import IApplication from 'saffron-common/lib/application/interface';
 import * as readline from 'readline';
-import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+
+import {
+  Logger,
+  loggable,
+  IApplication,
+  ClassFactoryFragment,
+  BaseApplicationService
+} from 'saffron-common/lib/index';
 
 /**
  * console input command handler

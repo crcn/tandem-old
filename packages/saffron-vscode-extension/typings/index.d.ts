@@ -5,3 +5,14 @@
 /// <reference path="globals/serve-static/index.d.ts" />
 /// <reference path="globals/socket.io/index.d.ts" />
 /// <reference path="../node_modules/saffron-back-end/typings/index.d.ts" />
+
+
+declare module "get-port" {
+  function getPort():Promise<number>;
+
+  namespace getPort {
+
+  }
+
+  export = getPort;
+}

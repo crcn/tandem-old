@@ -1,4 +1,4 @@
-import CoreObject from 'saffron-common/src/object/index';
+import { CoreObject } from 'saffron-common/src/index';
 import * as path from 'path';
 import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
 // import SfnFile from 'browser/fragments/sfn-file-handler/model';

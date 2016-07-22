@@ -1,3 +1,4 @@
+import isPublic from 'saffron-common/src/actors/decorators/public'; 
 import loggable from 'saffron-common/src/decorators/loggable';
 import IApplication from 'saffron-common/src/application/interface';
 import SelectionCollection from 'selection/collection';
@@ -8,6 +9,38 @@ import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
 export default class SelectorService extends BaseApplicationService<IApplication> {
   load() {
     (this.app as any).selection = [];
+  }
+
+  @isPublic
+  selectAtSourceOffset({ data }) {
+
+    // TODO - require file in payload
+    var entity = (this.app as any).currentFile.entity;
+    var allEntities = entity.flatten();
+
+  
+    const selection = [];
+    for (var entity of allEntities) {
+      if (entity.preview) {
+        var position = entity.expression.position;   
+        for (var cursor of data) {
+ 
+          if (
+            (cursor.start >= position.start && cursor.start <= position.end) ||
+            (cursor.end   >= position.start && cursor.end <= position.end) ||
+            (cursor.start <= position.start && cursor.end >= position.end)
+          ) {
+            selection.push(entity);
+          }
+
+        }
+      }
+    }
+    this.select({
+      items: selection,
+      toggle: false,
+      keepPreviousSelection: false
+    });
   }
 
   /**

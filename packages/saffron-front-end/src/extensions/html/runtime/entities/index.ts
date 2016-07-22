@@ -228,6 +228,8 @@ async function loadChildNodes(
 
       // same expression constructor? 
       if (childEntity.expression.constructor == childExpression.constructor) {
+
+        // replace the child expression so that it can continue diffing & patching
         childEntity.expression = childExpression;
         await childEntity.update();
       } else {
@@ -410,16 +412,15 @@ export class CSSLiteralEntity extends ValueEntity<CSSLiteralExpression, any> {
 export class CSSStyleEntity extends ValueEntity<CSSStyleExpression, Object> {
   update() {
 
-    // CSSStyleDeclaration  a read-only constructor, so 
-    var container = document.createElement('div');
+    var style = {};
     
     for (const declarationExpression of this.expression.declarations) { 
       const entity = declarationExpression.createEntity(this.symbolTable);
       entity.update();
-      container.style[entity.key] = entity.value;
+      style[entity.key] = entity.value;
     }
 
-    this.value = container.style;
+    this.value = style;
   }
 }
 

@@ -1,41 +1,34 @@
-import CoreObject from 'saffron-common/src/object/index';
+import {
+  IActor,
+  IApplication,
+  CoreObject,
+  observable,
+  ClassFactoryFragment,
+  UpdateAction
+} from 'saffron-common/src/index';
+
 import Runtime from '../runtime/index'
-import observable from 'saffron-common/src/decorators/observable';
-import FragmentDict from 'saffron-common/src/fragments/collection';
-import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
-import { Bus } from 'mesh';
-import { applyDiff as patch } from 'deep-diff';
 import Entity from 'saffron-front-end/src/entities/base';
+import { HTMLAttributeExpression, StringExpression } from '../runtime/expressions/index';
 
 @observable
 export default class SfnFile extends CoreObject {
 
-  public content:string;
-  public expression:Object;
-  public bus:Bus;
   public entity:any;
-  public app:any;
-  public isolate:boolean;
-  public fragments:FragmentDict;
+  public ext:string;
+  public content:string;
+  public app:IApplication;
+  public bus:IActor;
+  public path:string;
+  public collectionName:string;
   private _runtime:Runtime = new Runtime();
 
   /**
    */ 
 
   async load() {
+    if (this.content === this._runtime.source) return;
     await this._runtime.load(this.content);
-
-    // var options = {
-    //   bus: this.bus,
-    //   file: this,
-    //   app: this.app,
-    //   fragments: this.isolate !== false ? this.fragments.createChild() : this.fragments
-    // };
-
-      // patch(this.expression, expression, undefined);
-      // this.entity.update(options);
-    
-    
     this.setProperties({
       entity: this._runtime.entity
     });
@@ -45,7 +38,13 @@ export default class SfnFile extends CoreObject {
    */
 
   async save() {
-    console.log('save saffron file');
+    await this.bus.execute(new UpdateAction(this.collectionName, {
+      content: this.content = this._runtime.entity.expression.toString(),
+      ext: this.ext,
+      path: this.path
+    }, {
+      path: this.path
+    }))
   }
 }
 

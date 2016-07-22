@@ -1,22 +1,25 @@
-
 import * as path from 'path';
 import * as cors from 'cors';
-import Logger from 'saffron-common/lib/logger/index'; 
-import loggable from 'saffron-common/lib/decorators/loggable';
-import IOService from 'saffron-common/lib/services/io';
-import IApplication from 'saffron-common/lib/application/interface';
 import * as express from 'express';
-import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
+
 import * as createSocketIOServer from 'socket.io';
 
 import { sync as getPackagePath } from 'package-path';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+
+import {
+  Logger,
+  loggable,
+  IOService,
+  IApplication,
+  ClassFactoryFragment,
+  BaseApplicationService
+} from 'saffron-common/lib/index';
 
 @loggable
 export default class FrontEndService extends BaseApplicationService<IApplication> {
 
   private _server:any;
-  private _ioService:any;
+  private _ioService:IOService<IApplication>;
   private _port:number;
   private _socket:any;
   public config:any;

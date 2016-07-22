@@ -1,10 +1,14 @@
 import isPublic from 'saffron-common/lib/actors/decorators/public';
-import IApplication from 'saffron-common/lib/application/interface';
-import BaseApplicationService from 'saffron-common/lib/services/base-application-service';
 
 import { Bus } from 'mesh';
-import { UpsertBus } from 'saffron-common/lib/busses/index';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+
+import {
+  IActor,
+  UpsertBus,
+  IApplication,
+  ClassFactoryFragment,
+  BaseApplicationService
+} from 'saffron-common/lib/index';
 
 export default class UpsertService extends BaseApplicationService<IApplication> {
 

@@ -1,20 +1,30 @@
 
-import loggable from 'saffron-common/lib/decorators/loggable';
+
 import isPublic from 'saffron-common/lib/actors/decorators/public';
 import document from 'saffron-common/lib/actors/decorators/document';
-import IApplication from 'saffron-common/lib/application/interface';
 import * as MemoryDsBus from 'mesh-memory-ds-bus';
-import ApplicationService from 'saffron-common/lib/services/base-application-service';
 
 import { Bus } from 'mesh';
 import { titleize } from 'inflection';
-import { PostDBAction, FindAction, DBAction, InsertAction, RemoveAction, UpdateAction } from 'saffron-common/lib/actions/index';
-import { ClassFactoryFragment } from 'saffron-common/lib/fragments/index';
+
+import {
+  IActor,
+  loggable,
+  DBAction,
+  FindAction,
+  InsertAction,
+  RemoveAction,
+  UpdateAction,
+  PostDBAction,
+  IApplication,
+  ClassFactoryFragment,
+  BaseApplicationService
+} from 'saffron-common/src/index';
 
 @loggable
-export default class DBService extends ApplicationService<IApplication> {
+export default class DBService extends BaseApplicationService<IApplication> {
   
-  private _db:Bus;
+  private _db:IActor;
 
   constructor(app:IApplication) {
     super(app);

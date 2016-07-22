@@ -4,6 +4,7 @@
     "chalk": "registry:dt/chalk#0.4.0+20160317120654",
     "classnames": "registry:dt/classnames#0.0.0+20160316155526",
     "deep-diff": "registry:dt/deep-diff#0.0.0+20160317120654",
+    "diff": "registry:dt/diff#0.0.0+20160318080727",
     "lodash": "registry:dt/lodash#3.10.0+20160619033623",
     "mesh": "file:./node_modules/saffron-common/node_modules/mesh/typings.json",
     "mesh-socket-io-bus": "file:./node_modules/saffron-common/node_modules/mesh-socket-io-bus/typings.json",

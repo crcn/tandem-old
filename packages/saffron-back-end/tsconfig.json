@@ -18,7 +18,8 @@
       "!node_modules/**"
   ],
   "rootDirs": [
-    "node_modules"
+    "node_modules",
+    "src"
   ],
   "atom": {
     "rewriteTsconfig": true

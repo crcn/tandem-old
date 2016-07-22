@@ -1,4 +1,4 @@
-import Scanner from './scanner';
+import Scanner from 'saffron-common/src/utils/string/scanner';
 import BaseObject from 'saffron-common/src/object/index';
 import createToken from './create-token';
 
