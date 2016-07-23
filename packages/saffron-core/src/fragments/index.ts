@@ -1,38 +1,13 @@
 import { Service } from 'saffron-base/src/services';
 import { IApplication } from 'saffron-base/src/application';
-import { FragmentDictionary, BaseFragment } from 'saffron-base/src/fragments';
+import {
+  BaseFragment,
+  SingletonFragment,
+  FragmentDictionary,
+  ClassFactoryFragment
+ } from 'saffron-base/src/fragments';
 
-/**
- */
-
-interface IFactory {
-  create(...rest):any;
-}
-
-export {IFactory};
-
-
-/**
- */
-
-export class FactoryFragment extends BaseFragment implements IFactory {
-  constructor(ns:string, public factory:IFactory) {
-    super(ns);
-  }
-
-  create(...rest:Array<any>):any {
-    return this.factory.create(...rest);
-  }
-}
-
-/**
- */
-
-export class ClassFactoryFragment extends FactoryFragment {
-  constructor(ns:string, clazz:{ new(...rest):any }) {
-    super(ns, { create: (...rest) => new clazz(...rest) });
-  }
-}
+// TODO - add more static find methods to each fragment here
 
 /**
  */
@@ -45,15 +20,6 @@ export class ApplicationServiceFragment extends BaseFragment implements IFactory
   }
   create(app:IApplication):Service {
     return this._factory.create(app);
-  }
-}
-
-/**
- */
-
-export class SingletonFragment<T> extends BaseFragment {
-  constructor(ns:string, readonly instance:T) {
-    super(ns);
   }
 }
 

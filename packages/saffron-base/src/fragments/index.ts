@@ -8,6 +8,52 @@ export class BaseFragment {
 }
 
 /**
+ */
+
+interface IFactory {
+  create(...rest):any;
+}
+
+export {IFactory};
+
+
+/**
+ * Factory fragment for creating new instances of things
+ */
+
+export class FactoryFragment extends BaseFragment implements IFactory {
+  constructor(ns:string, public factory:IFactory) {
+    super(ns);
+  }
+
+  create(...rest:Array<any>):any {
+    return this.factory.create(...rest);
+  }
+}
+
+/**
+ * factory fragment for classes
+ */
+
+export class ClassFactoryFragment extends FactoryFragment {
+  constructor(ns:string, clazz:{ new(...rest):any }) {
+    super(ns, { create: (...rest) => new clazz(...rest) });
+  }
+}
+
+
+/**
+ * Singleton instance that is accessible throught the application
+ * context without polluting the global namespace
+ */
+
+export class SingletonFragment<T> extends BaseFragment {
+  constructor(ns:string, readonly instance:T) {
+    super(ns);
+  }
+}
+
+/**
  * Contains a collection of fragments
  */
 
