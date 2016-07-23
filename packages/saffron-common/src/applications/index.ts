@@ -51,6 +51,8 @@ export class Application implements IApplication {
       // this.fragments.register(consoleLogFragment);
     }
 
+    // make the application available globally through the fragments
+    // property so that this reference isn't passed around everywhere.
     this.fragments.register(new ApplicationSingletonFragment(this));
   }
 
