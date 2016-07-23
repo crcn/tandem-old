@@ -1,5 +1,5 @@
 var webpack = require('webpack');
-var path = require('path');
+var path    = require('path');
 
 module.exports =  {
   entry: {
@@ -33,24 +33,35 @@ module.exports =  {
     loaders: [
       {
         test: /\.scss$/,
-        loader: 'style!css!sass'
+        loader: [
+          getModuleDirectory('style-loader'),
+          getModuleDirectory('css-loader'),
+          getModuleDirectory('sass-loader')
+        ].join('!')
       },
       {
         test: /\.(png|jpg|gif|eot|ttf|woff)$/,
-        loader: 'url?limit=1000'
+        loader: getModuleDirectory('url-loader') + '?limit=1000'
       },
       {
         test: /\.css$/,
-        loader: 'style!css'
+        loader: [
+          getModuleDirectory('style-loader'),
+          getModuleDirectory('css-loader')
+        ].join('!')
       },
       {
         test: /\.peg$/,
-        loader: 'pegjs-loader'
+        loader: getModuleDirectory('pegjs-loader')
       },
       {
         test: /\.tsx?$/,
-        loader: 'ts-loader'
+        loader: getModuleDirectory('ts-loader')
       }
     ]
   }
 };
+
+function getModuleDirectory(moduleName) {
+  return path.join(__dirname, 'node_modules', moduleName);
+}

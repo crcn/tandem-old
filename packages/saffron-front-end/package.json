@@ -32,13 +32,6 @@
     "typescript": "^2.0.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "karma": "^1.1.1",
-    "karma-chai": "^0.1.0",
-    "karma-chrome-launcher": "^1.0.1",
-    "karma-typescript-preprocessor": "^0.2.1",
-    "karma-webpack": "^1.7.0",
-    "systemjs": "^0.19.31",
     "ts-loader": "^0.8.2",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1"

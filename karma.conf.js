@@ -4,6 +4,7 @@
 var watchFiles = !process.env.WATCH;
 var reporter   = process.env.REPORTER || 'dots';
 var grep       = process.env.GREP;
+var bail       = !!process.env.BAIL;
 
 module.exports = function(config) {
   config.set({
@@ -28,7 +29,7 @@ module.exports = function(config) {
       'node_modules/react/dist/react.min.js',
       'node_modules/react-dom/dist/react-dom.min.js',
       {
-        pattern: 'src/**/*-test.ts',
+        pattern: 'all-tests.js',
         included: true
       }
     ],
@@ -39,8 +40,6 @@ module.exports = function(config) {
         require('karma-webpack'),
         require('karma-chai')
     ],
-
-    webpack: require('./webpack.config'),
 
     webpackMiddleware: {
         // webpack-dev-middleware configuration
@@ -55,6 +54,7 @@ module.exports = function(config) {
     client: {
       mocha: {
         grep: grep,
+        bail: bail,
         ui: 'bdd'
       }
     },
@@ -62,9 +62,8 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      '**/*-test.ts': ['webpack']
+      'all-tests.js': ['webpack']
     },
-
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
@@ -73,6 +72,7 @@ module.exports = function(config) {
       reporter
     ],
 
+    webpack: require('./packages/saffron-front-end/webpack.config'),
 
     // web server port
     port: 9876,

@@ -8,8 +8,7 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "cd packages/saffron-fron-end; npm test",
-    "test-watch": "cd packages/saffron-front-end; WATCH=1 npm test",
+    "test": "./scripts/write-all-tests.sh; karma start",
     "clean-dependencies": "./scripts/exec-packages.sh rm -rf node_modules",
     "install": "./scripts/exec-packages.sh npm install && npm run link",
     "link": "./scripts/link-packages.sh",
@@ -27,5 +26,16 @@
   "bugs": {
     "url": "https://github.com/crcn/saffron/issues"
   },
-  "homepage": "https://github.com/crcn/saffron#readme"
+  "homepage": "https://github.com/crcn/saffron#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "css-loader": "^0.23.1",
+    "karma": "^1.1.1",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-webpack": "^1.7.0",
+    "pegjs-loader": "^0.4.0",
+    "react": "^15.2.1",
+    "react-dom": "^15.2.1"
+  }
 }

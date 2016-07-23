@@ -1,0 +1,94 @@
+{
+
+const {
+  HTMLFragmentExpression,
+  HTMLTextExpression,
+  HTMLScriptExpression,
+  HTMLCommentExpression,
+  HTMLElementExpression,
+  HTMLAttributeExpression
+} = require('./expressions');
+
+function position() {
+  return {
+    start:peg$savedPos, 
+    end:peg$currPos
+  };
+}
+
+}
+
+Start
+  = Fragment
+
+Fragment
+  = nodes:Node* {
+    return nodes.length === 1 ? nodes[0] : new HTMLFragmentExpression(nodes, position())
+  }
+  
+Node
+  = _ node:(Comment/Element/TextNode) _ { return node; }
+
+Comment
+  = '<!--' characters:CommentCharacter* '-->' { return new HTMLCommentExpression(characters.join(''), position()); }
+
+CommentCharacter
+  = !'-->' character:. { return character; }
+
+Element
+  = ElementWithoutChildNodes
+  / ElementWithChildNodes
+
+ElementWithoutChildNodes
+  = startTag:ElementStart attributes:ElementAttributes '/>' {
+    return new HTMLElementExpression(startTag, attributes, [], position());
+  }
+
+ElementWithChildNodes
+  = startTag:ElementStart attributes:ElementAttributes '>' _ childNodes:Node* _ '</' endTag:Name '>' {
+    if (startTag != endTag) {
+      expected('</' + startTag + '>');
+    }
+    return new HTMLElementExpression(startTag, attributes, childNodes, position());
+  }
+
+ElementStart
+  = '<' name:Name { return name; }
+
+ElementAttributes
+  = _ attributes:ElementAttribute* _ {
+    return attributes;
+  }
+
+ElementAttribute
+  = _ key:Name '=' value:AttributeValue _ {
+    return new HTMLAttributeExpression(key, value, position());
+  } 
+  / _ key:Name _ {
+    return new HTMLAttributeExpression(key, "");
+  }
+  
+AttributeValue
+  = String
+
+String
+  = '"' characters:DoubleStringCharacter* '"' { return characters.join(''); }
+  / "'" characters:SingleStringCharacter* "'" { return characters.join(''); }
+
+DoubleStringCharacter
+  = !('"' / "\\") . { return text(); }
+  / '\\"'
+
+SingleStringCharacter
+  = !("'" / "\\") . { return text(); }
+  / "\\'"
+
+TextNode
+  = [^<]+ {
+    return new HTMLTextExpression(text().trim(), position());
+  }
+
+Name
+  = [a-z0-9$-.]+ { return text(); }
+_ 
+  = [ \n\r\t]*
