@@ -80,5 +80,10 @@ describe(__filename + '#', function() {
       expect(adiv).to.equal(bdiv);
       expect(adiv.getAttribute('a')).to.equal('c');
     });
+
+    it('removes deleted expressions', async function() {
+      await load('<div a="b"></div>');
+      await load('');
+    });
   });
 });

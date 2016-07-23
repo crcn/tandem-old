@@ -6,6 +6,11 @@ import fragments from './fragments';
 export default class BrowserApplication extends BaseApplication implements IFrontEndApplication {
 
   public selection:any;
+
+  /*
+  public selection:Array<Entity>;
+  public windows
+  */
   
   _registerFragments() {
     super._registerFragments();

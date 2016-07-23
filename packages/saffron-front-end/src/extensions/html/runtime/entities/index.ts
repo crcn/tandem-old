@@ -209,20 +209,24 @@ export class HTMLRootEntity extends HTMLNodeEntity<HTMLRootExpression> {
   }
 
   async update() {
-    await loadChildNodes(this, this.expression.childNodes, this.symbolTable.createChild({
+    await updateChildNodes(this, this.expression.childNodes, this.symbolTable.createChild({
       [CURRENT_SECTION_SYMBOL_KEY]: this._section
     }));
   }
 }
 
-async function loadChildNodes(
+async function updateChildNodes(
   container:IHTMLNodeEntity,
   expressionChildNodes:Array<BaseExpression<IHTMLNodeEntity>>,
   symbolTable:SymbolTable
 ) {
+
+  // first add new or existing child entities
   for (var i = 0, n = expressionChildNodes.length; i < n; i++) {
     const childExpression = expressionChildNodes[i];
     let childEntity;
+
+    // update existing nodes first
     if (i < container.childNodes.length) {
       childEntity = container.childNodes[i];
 
@@ -235,7 +239,6 @@ async function loadChildNodes(
       } else {
         var childNode = container.childNodes[i];
         childNode.dispose();
-        container.removeChild(childNode);
         i--;
         continue;
       }
@@ -245,6 +248,11 @@ async function loadChildNodes(
       await childEntity.update();
     }
   }
+
+  // remove child nodes now
+  container.childNodes.slice(i).forEach(function(child) {
+    child.dispose();
+  });
 }
 
 function unloadChildren(entity:IHTMLNodeEntity) {
@@ -273,7 +281,7 @@ class HTMLElementEntityController extends BaseHTMLElementEntityController {
   }
 
   async update() {
-    await loadChildNodes(this.entity, this.entity.expression.childNodes, this.entity.symbolTable.createChild({
+    await updateChildNodes(this.entity, this.entity.expression.childNodes, this.entity.symbolTable.createChild({
       [CURRENT_SECTION_SYMBOL_KEY]: this._section
     })); 
   }
