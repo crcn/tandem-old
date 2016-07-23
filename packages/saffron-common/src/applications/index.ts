@@ -8,7 +8,7 @@ import { IApplication } from "saffron-base/src/application";
 import { FragmentDictionary } from "saffron-base/src/fragments";
 
 import { ParallelBus, Bus, Response } from "mesh";
-// import { ApplicationServiceFragment } from "../fragments/index";
+import { ApplicationServiceFragment } from "saffron-core/src/fragments";
 // import { fragment as consoleLogFragment } from "../services/console-output";
 
 // @observable
@@ -19,10 +19,10 @@ export class Application implements IApplication {
   readonly actors:Array<IActor> = [];
   readonly bus: IActor = new ParallelBus(this.actors);
   readonly fragments: FragmentDictionary = new FragmentDictionary();
-  private _initialized: boolean;
+  private _initializeCalled: boolean = false;
 
   @bindable()
-  public loading: boolean;
+  public initialized: boolean = false;
 
   constructor(readonly config: any = {}) {
     this._registerFragments();
@@ -30,17 +30,22 @@ export class Application implements IApplication {
 
   public async initialize() {
 
-    if (this._initialized) {
-      throw new Error("Cannot initialize application twice.");
+    if (this._initializeCalled) {
+      throw new Error("Cannot initialize application more than once.");
     }
 
-    this._initialized = true;
-    this._initializeActors();
+    this._initializeCalled = true;
+
+    // initialize the services so that they can handle load &
+    // initialize actions when they're executed
+    this._initializeServices();
 
     this.willInitialize();
     await this.bus.execute(new LoadAction());
     await this.bus.execute(new InitializeAction());
     this.didInitialize();
+
+    this.initialized = true;
   }
 
   /**
@@ -51,7 +56,7 @@ export class Application implements IApplication {
       // this.fragments.register(consoleLogFragment);
     }
 
-    // make the application available globally through the fragments
+    // Make the application available globally through the fragments
     // property so that this reference isn't passed around everywhere.
     this.fragments.register(new ApplicationSingletonFragment(this));
   }
@@ -59,13 +64,10 @@ export class Application implements IApplication {
   /**
    */
 
-  private _initializeActors() {
-    /*
-    queryAllApplicationServiceFragments(this.fragments)
-    */
-    // this.actors.push(...this.fragments.queryAll<ApplicationServiceFragment>("application/services/**").map((fragment: ApplicationServiceFragment) => (
-    //   fragment.create(this)
-    // )));
+  private _initializeServices() {
+
+    // Initialize the services (action handlers) of this application.
+    this.actors.push(...ApplicationServiceFragment.findAll(this.fragments).map(fragment => fragment.create(this)));
   }
 
   /**

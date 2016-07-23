@@ -1,7 +1,8 @@
 import { Application } from "./index.ts";
 import { LOAD, INITIALIZE } from "saffron-core/src/actions";
 import { expect } from "chai";
-import { ApplicationSingletonFragment } from 'saffron-core/src/fragments';
+import { ApplicationSingletonFragment, ApplicationServiceFragment } from 'saffron-core/src/fragments';
+import { BaseApplicationService } from 'saffron-core/src/services';
 
 describe(__filename + "#", () => {
   it("can be created", () => {
@@ -29,5 +30,22 @@ describe(__filename + "#", () => {
   it('is registered as a singleton in fragments', () => {
     const app = new Application({});
     expect(ApplicationSingletonFragment.find(app.fragments).instance).to.equal(app);
+  });
+
+  it('registers application service fragments upon initialization', async () => {
+    const app = new Application({});
+    let i = 0;
+    let j = 0;
+
+    class TestService extends BaseApplicationService<Application> {
+      load() { i++ }
+      initialize() { j++ }
+    }
+
+    app.fragments.register(new ApplicationServiceFragment('testService', TestService));;
+
+    await app.initialize();
+    expect(i).to.equal(1);
+    expect(j).to.equal(1);
   });
 });
