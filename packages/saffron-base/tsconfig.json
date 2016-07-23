@@ -3,20 +3,22 @@
   "compilerOptions": {
     "target": "es6",
     "sourceMap": true,
+    "noImplicitAny": false,
     "module": "commonjs",
     "outDir": "lib",
-    "experimentalDecorators": true
+    "paths": {
+      "*": ["../"]
+    },
+    "experimentalDecorators": true,
+    "jsx": "react"
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "*-test"
   ],
   "filesGlob": [
-      "**/*.ts",
-      "**/*.tsx",
+      "src/**/*.ts",
+      "src/**/*.tsx",
       "!node_modules/**"
-  ],
-  "rootDirs": [
-    "node_modules",
-    "src"
   ]
 }

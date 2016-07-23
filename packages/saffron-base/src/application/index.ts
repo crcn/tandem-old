@@ -1,4 +1,4 @@
-import { IActor, IInvoker, Mediator } from '../actors';
+import { IActor, IInvoker } from '../actors';
 import { FragmentDictionary } from '../fragments';
 
 interface IApplication extends IInvoker {
@@ -12,7 +12,7 @@ interface IApplication extends IInvoker {
   // Note that the term "bus" here is generic so that decorators
   // such as loggable (and possibly others) can still be attached to an application
   // instance
-  readonly bus: IActor;
+  readonly actors: Array<IActor>;
 
   // parts of the application
   readonly fragments:FragmentDictionary;

@@ -14,6 +14,7 @@ export class Service implements IActor {
 
   public execute(action: Action): any {
     const actor = this[action.type];
+
     if (actor) {
 
       // child classes must use loggable mixin

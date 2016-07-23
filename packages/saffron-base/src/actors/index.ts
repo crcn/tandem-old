@@ -29,9 +29,6 @@ export class Mediator implements IActor {
   // all actors the message at the same time
   private _bus: ParallelBus = new ParallelBus(this._actors);
 
-  constructor() {
-  }
-
   /**
    * executs an action on the mediator and all of its actors
    */

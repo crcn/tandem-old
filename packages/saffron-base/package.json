@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mesh": "^6.0.23"
+    "mesh": "6.0.x"
   },
   "devDependencies": {
     "typescript": "^2.0.0"

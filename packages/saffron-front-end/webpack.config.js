@@ -57,10 +57,6 @@ module.exports =  {
       {
         test: /\.tsx?$/,
         loader: getModuleDirectory('ts-loader')
-      },
-      {
-        test: /\.tsx?$/,
-        loader: getModuleDirectory('tslint-loader')
       }
     ]
   }

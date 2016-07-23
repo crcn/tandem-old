@@ -27,12 +27,12 @@ describe(__filename + "#", () => {
 
     it("can remove an actor", async () => {
       let m = new Mediator();
-      let b;
-      let c;
+      let b: BufferedBus;
+      let c: BufferedBus;
       m.register(
-        BufferedBus.create(void 0, "a"),
-        b = BufferedBus.create(void 0, "b"),
-        c = BufferedBus.create(void 0, "c")
+        new BufferedBus(void 0, "a"),
+        b = new BufferedBus(void 0, "b"),
+        c = new BufferedBus(void 0, "c")
       );
       expect(await m.execute(new Action(undefined)).readAll()).to.have.members(["a", "b", "c"]);
       m.remove(b);

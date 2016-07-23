@@ -4,7 +4,7 @@
     "target": "es6",
     "sourceMap": true,
     "module": "commonjs",
-    "outDir": "lib",
+    "outDir": "libs",
     "experimentalDecorators": true,
     "jsx": "react"
   },
@@ -13,13 +13,12 @@
     "*-test"
   ],
   "filesGlob": [
-      "src/**/*.ts",
-      "src/**/*.tsx",
-      "!node_modules/**"
+      "packages/safron-core/src/**/*.{ts,tsx}",
+      "packages/safron-base/src/**/*.{ts,tsx}",
+      "packages/safron-common/src/**/*.{ts,tsx}"
   ],
   "rootDirs": [
-    "node_modules",
-    "src",
-    "../"
+    // "node_modules",
+    "packages"
   ]
 }

@@ -1,12 +1,12 @@
-import { Logger } from '../logger';
-import { NoopBus } from 'mesh';
-import { IInvoker } from 'saffron-base/src/actors';
+import { Logger } from "../logger";
+import { NoopBus } from "mesh";
+import { IInvoker } from "saffron-base/src/actors";
 
 const noopBus = new NoopBus();
 
 export default function () {
-  return (clazz:{ new(...args):IInvoker }) => {
-    Object.defineProperty(clazz.prototype, 'logger', {
+  return (clazz: { new(...args): IInvoker }) => {
+    Object.defineProperty(clazz.prototype, "logger", {
       get() {
         return this._logger || (this._logger = new Logger(
           this.bus || noopBus,
@@ -14,7 +14,5 @@ export default function () {
         ));
       }
     });
-
-    return clazz;
-  }
+  };
 }

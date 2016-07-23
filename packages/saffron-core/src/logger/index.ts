@@ -1,39 +1,39 @@
-import * as LogLevel from './levels';
+import * as LogLevel from "./levels";
 
-import { IActor } from 'saffron-base/src/actors';
-import { sprintf } from 'sprintf';
-import { LogAction } from '../actions';
+import { IActor } from "saffron-base/src/actors";
+import { sprintf } from "sprintf";
+import { LogAction } from "../actions";
 
 export class Logger {
 
-  constructor(public bus:IActor, public prefix:string = '') { }
+  constructor(public bus: IActor, public prefix: string = "") { }
 
-  verbose(text:string, ...rest) {
+  verbose(text: string, ...rest) {
     this._log(LogLevel.VERBOSE, text, ...rest);
   }
 
-  info(text:string, ...rest) {
+  info(text: string, ...rest) {
     this._log(LogLevel.INFO, text, ...rest);
   }
 
-  warn(text:string, ...rest) {
+  warn(text: string, ...rest) {
     this._log(LogLevel.WARN, text, ...rest);
   }
 
-  error(text:string, ...rest) {
+  error(text: string, ...rest) {
     this._log(LogLevel.ERROR, text, text, ...rest);
   }
 
-  _log(level:number, text:string, ...params:Array<any>) {
+  _log(level: number, text: string, ...params: Array<any>) {
 
     function stringify(value) {
-      if (typeof value === 'object') {
+      if (typeof value === "object") {
         value = JSON.stringify(value, null, 2);
       }
       return value;
     }
 
-    var message = sprintf(
+    const message = sprintf(
       `${this.prefix}${stringify(text)}`,
       ...params.map(stringify)
     );
