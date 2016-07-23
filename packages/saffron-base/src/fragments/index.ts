@@ -31,23 +31,23 @@ export class FragmentDictionary {
    * @param {string} ns namespace to query.
    */
 
-  query(ns: string) {
-    return this.queryAll(ns)[0];
+  query<T>(ns: string) {
+    return this.queryAll<T>(ns)[0];
   }
 
   /**
    * queries for all fragments with the given namespace
    */
 
-  queryAll(ns: string) {
-    return this._fragmentsByNs[ns] || [];
+  queryAll<T>(ns: string) {
+    return <T[]>(this._fragmentsByNs[ns] || []);
   }
 
   /**
    */
 
   createChild() {
-    return new FragmentDictionary(...this.queryAll("/**"));
+    return new FragmentDictionary(...this.queryAll<any>("/**"));
   }
 
   /**

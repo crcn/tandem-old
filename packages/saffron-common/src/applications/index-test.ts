@@ -1,6 +1,7 @@
 import { Application } from "./index.ts";
 import { LOAD, INITIALIZE } from "saffron-core/src/actions";
 import { expect } from "chai";
+import { ApplicationSingletonFragment } from 'saffron-core/src/fragments';
 
 describe(__filename + "#", () => {
   it("can be created", () => {
@@ -23,5 +24,10 @@ describe(__filename + "#", () => {
 
   it("can bind to the loading property", async () => {
     const app = new Application({});
+  });
+
+  it('is registered as a singleton in fragments', () => {
+    const app = new Application({});
+    expect(ApplicationSingletonFragment.find(app.fragments).instance).to.equal(app);
   });
 });

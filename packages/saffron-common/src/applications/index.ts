@@ -1,5 +1,6 @@
 import { Logger } from "saffron-core/src/logger";
 import { loggable, bindable } from "saffron-core/src/decorators";
+import { ApplicationSingletonFragment } from 'saffron-core/src/fragments';
 import { LoadAction, InitializeAction } from "saffron-core/src/actions";
 
 import { IInvoker, IActor } from "saffron-base/src/actors";
@@ -49,6 +50,8 @@ export class Application implements IApplication {
     if (!process.env.TESTING) {
       // this.fragments.register(consoleLogFragment);
     }
+
+    this.fragments.register(new ApplicationSingletonFragment(this));
   }
 
   /**
