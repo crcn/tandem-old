@@ -1,13 +1,13 @@
 export class ICursorPosition {
-  start:number;
-  end:number;
+  start: number;
+  end: number;
 }
 
 /**
  * utility function for flattening expressions 
  */
 
-export function flattenEach(fromItems:Array<BaseExpression>, toItems:Array<BaseExpression>) {
+export function flattenEach(fromItems: Array<BaseExpression>, toItems: Array<BaseExpression>) {
   for (const item of fromItems) {
     item._flattenDeep(toItems);
   }
@@ -18,21 +18,21 @@ export function flattenEach(fromItems:Array<BaseExpression>, toItems:Array<BaseE
  */
 
 export class BaseExpression {
-  constructor(public type:string, public position:ICursorPosition) {
+  constructor(public type: string, public position: ICursorPosition) {
 
   }
 
-  public flatten():Array<BaseExpression> {
+  public flatten(): Array<BaseExpression> {
     const items = [];
     this._flattenDeep(items);
     return items;
   }
 
-  public _flattenDeep(items:Array<BaseExpression>) {
+  public _flattenDeep(items: Array<BaseExpression>) {
     items.push(this);
   }
 
   public toString() {
-    return '';
+    return "";
   }
 }

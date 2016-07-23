@@ -2,8 +2,11 @@
   "name": "saffron-common",
   "main": "./typings/index.d.ts",
   "globalDependencies": {
-    "diff": "registry:dt/diff#0.0.0+20160318080727",
+    "chai": "registry:dt/chai#3.4.0+20160601211834",
+    "chalk": "registry:dt/chalk#0.4.0+20160317120654",
     "mesh": "npm:mesh",
-    "mesh-socket-io-bus": "file:./node_modules/mesh-socket-io-bus/typings.json"
+    "mesh-socket-io-bus": "file:./node_modules/mesh-socket-io-bus/typings.json",
+    "mocha": "registry:dt/mocha#2.2.5+20160720003353",
+    "node": "registry:dt/node#6.0.0+20160720070758"
   }
 }

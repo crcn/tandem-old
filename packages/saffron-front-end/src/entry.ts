@@ -1,12 +1,12 @@
-import FrontEndApplication from './application';
+// import FrontEndApplication from './application';
 
-// need to fetch the window configuration
-const appConfig = Object.assign({}, window['config'], {
+// // need to fetch the window configuration
+// const appConfig = Object.assign({}, window['config'], {
   
-});
+// });
 
-const app = window['app'] = new FrontEndApplication(appConfig);
+// const app = window['app'] = new FrontEndApplication(appConfig);
 
-window.onload = () => {
-  app.initialize();
-} 
+// window.onload = () => {
+//   app.initialize();
+// } 

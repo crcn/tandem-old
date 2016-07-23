@@ -43,5 +43,10 @@
     "mesh": "^6.0.17",
     "saffron-back-end": "^1.0.x",
     "saffron-common": "^1.1.x"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC"
 }

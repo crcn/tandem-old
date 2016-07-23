@@ -1,0 +1,1 @@
+Actions which can be executed on the application mediator

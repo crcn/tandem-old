@@ -6,6 +6,10 @@ var reporter   = process.env.REPORTER || 'dots';
 var grep       = process.env.GREP;
 var bail       = !!process.env.BAIL;
 
+const webpackConfig = require(__dirname + '/packages/saffron-front-end/webpack.config');
+
+delete webpackConfig['entry'];
+
 module.exports = function(config) {
   config.set({
 
@@ -72,7 +76,7 @@ module.exports = function(config) {
       reporter
     ],
 
-    webpack: require('./packages/saffron-front-end/webpack.config'),
+    webpack: webpackConfig,
 
     // web server port
     port: 9876,
@@ -93,7 +97,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome_travis_ci'],
+    browsers: ['Chrome'],
 
 
     // Continuous Integration mode

@@ -4,7 +4,7 @@
     "src": "/Users/crcn/Developer/public/saffron/packages/saffron-common/node_modules/mesh/typings.json",
     "raw": "npm:mesh",
     "main": "./typings/index.d.ts",
-    "version": "6.0.23",
+    "version": "6.0.25",
     "global": false,
     "name": "mesh"
   }

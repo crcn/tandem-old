@@ -1,7 +1,6 @@
 {
   "name": "saffron-front-end",
   "version": "1.0.1",
-  "description": "",
   "main": "./bundle/front-end.js",
   "scripts": {
     "test": "TESTING=1 karma start",
@@ -33,7 +32,9 @@
   },
   "devDependencies": {
     "ts-loader": "^0.8.2",
+    "tslint-loader": "^2.1.5",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1"
-  }
+  },
+  "description": ""
 }

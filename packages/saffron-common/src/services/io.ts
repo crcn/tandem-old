@@ -1,21 +1,20 @@
 
-import Logger from '../logger/index'; 
-import loggable from '../decorators/loggable';
+import { Logger } from 'saffron-core/src/logger';
+import { loggable } from 'saffron-core/src/decorators';
 import isPublic from '../actors/decorators/public';
 import document from '../actors/decorators/document';
 import * as SocketIOBus from 'mesh-socket-io-bus';
 
-import { Service } from '../services/index';
+import { Service } from 'saffron-base/src/services';
 import { ParallelBus } from 'mesh';
 
-import IApplication from '../application/interface';
-
-import BaseApplicationService from './base-application-service';
+import { IApplication } from 'saffron-base/src/application';
+import { BaseApplicationService } from 'saffron-core/src/services';
 
 @loggable
-export default class IOService<T extends IApplication> extends BaseApplicationService<T> { 
+export default class IOService<T extends IApplication> extends BaseApplicationService<T> {
 
-  public logger:Logger; 
+  public logger:Logger;
   public _publicService:Service;
   public _remoteActors:Array<any>;
 
@@ -85,7 +84,7 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
     // setup the bus which will facilitate in all
     // transactions between the remote service
     var remoteBus = SocketIOBus.create({
-      connection: connection 
+      connection: connection
     }, this._publicService);
 
     // fetch the remote action types, and set them to the remote service

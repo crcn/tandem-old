@@ -9,6 +9,7 @@
   },
   "scripts": {
     "test": "./scripts/write-all-tests.sh; karma start",
+    "lint": "tslint packages/*/src/**/*.{ts,tsx}",
     "clean-dependencies": "./scripts/exec-packages.sh rm -rf node_modules",
     "install": "./scripts/exec-packages.sh npm install && npm run link",
     "link": "./scripts/link-packages.sh",
@@ -36,6 +37,7 @@
     "karma-webpack": "^1.7.0",
     "pegjs-loader": "^0.4.0",
     "react": "^15.2.1",
-    "react-dom": "^15.2.1"
+    "react-dom": "^15.2.1",
+    "tslint": "^3.13.0"
   }
 }

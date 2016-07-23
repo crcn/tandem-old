@@ -1,0 +1,2 @@
+common dependencies between the back-end and front-end applications. Different from `saffron-core`
+since `saffron-core` contains libraries to help extensions communicate with the front-end and back-end applications.

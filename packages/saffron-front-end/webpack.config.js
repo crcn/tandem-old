@@ -3,7 +3,7 @@ var path    = require('path');
 
 module.exports =  {
   entry: {
-    'front-end': './src/entry.ts'
+    'front-end': __dirname + '/src/entry.ts'
   },
   output: {
     path: 'bundle',
@@ -57,6 +57,10 @@ module.exports =  {
       {
         test: /\.tsx?$/,
         loader: getModuleDirectory('ts-loader')
+      },
+      {
+        test: /\.tsx?$/,
+        loader: getModuleDirectory('tslint-loader')
       }
     ]
   }

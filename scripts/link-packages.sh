@@ -12,7 +12,7 @@ var packageNames = saffronPackageFiles.map(function(packagePath) {
   return require(packagePath).name;
 });
 
-(!~process.argv.indexOf('--skip-link') ? eachAsync(saffronPackageFiles, npmLink) : Promise.resolve()) 
+(!~process.argv.indexOf('--skip-install') ? eachAsync(saffronPackageFiles, npmLink) : Promise.resolve()) 
 .then(eachAsync.bind(this, saffronPackageFiles, linkEachLocalDependency.bind(this, packageNames))).
 then(log.done);
 

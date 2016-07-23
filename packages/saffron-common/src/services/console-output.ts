@@ -1,7 +1,7 @@
-import { Service } from '../services/index';
-import { ClassFactoryFragment } from '../fragments/index';
-import { LogAction } from '../actions/index';
-import document from '../actors/decorators/document';
+import { Service } from 'saffron-base/src/services';
+import { ClassFactoryFragment } from 'saffron-core/src/fragments';
+import { LogAction } from 'saffron-core/src/actions';
+import document from 'saffron-core/src/decorators/document';
 import * as sift from 'sift';
 
 import {
@@ -9,7 +9,7 @@ import {
   INFO as INFO_LEVEL,
   WARN as WARN_LEVEL,
   ERROR as ERROR_LEVEL,
-} from '../logger/levels';
+} from 'saffron-core/src/logger/levels';
 import * as chalk from 'chalk';
 
 class ConsoleService extends Service {
