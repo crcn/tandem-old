@@ -3,26 +3,24 @@
   "compilerOptions": {
     "target": "es6",
     "sourceMap": true,
-    "module": "commonjs",
-    "outDir": "lib",
-    "moduleResolution": "classic",
+    "module": "system",
+    "outFile": "bundle/saffron-front-end.js",
     "experimentalDecorators": true,
     "jsx": "react"
   },
   "exclude": [
     "node_modules",
+    "src2",
     "*-test"
   ],
   "filesGlob": [
-      "**/*.ts",
+      "src/**/*.ts",
       "src/**/*.tsx",
       "!node_modules/**"
   ],
   "rootDirs": [
     "node_modules",
-    "src"
-  ],
-  "atom": {
-    "rewriteTsconfig": true
-  }
+    "src",
+    "../"
+  ]
 }

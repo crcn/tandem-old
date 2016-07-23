@@ -59,7 +59,7 @@ export default class BaseApplication extends CoreObject implements IApplication 
   /**
    */
 
-  _registerFragments() {
+  protected _registerFragments() {
     if (!process.env.TESTING) {
       this.fragments.register(consoleLogFragment);
     }

@@ -45,7 +45,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
     async function _setEditorContent(content) {
 
-
         let editor = vscode.window.visibleTextEditors.find(function(editor) {
             return editor.document.uri == _documentUri;
         });
@@ -65,7 +64,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
     }
 
-    function _update(document) {
+    function _update(document:vscode.TextDocument) {
+
         _documentUri = document.uri;
         const path = '/root/file.sfn';
 

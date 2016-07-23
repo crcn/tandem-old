@@ -7,6 +7,7 @@ export * from './actions/index';
 
 // Application
 export { default as IApplication } from './application/interface';
+export { default as BaseApplication } from './application/base';
 
 // Fragments
 export { default as FragmentDictionary } from './fragments/collection';

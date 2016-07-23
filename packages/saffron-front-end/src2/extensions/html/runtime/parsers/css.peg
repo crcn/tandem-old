@@ -1,0 +1,96 @@
+{
+const {
+  CSSStyleExpression,
+  CSSStyleDeclarationExpression,
+  CSSLiteralExpression,
+  CSSFunctionCallExpression,
+  CSSListValueExpression,
+  LiteralExpression
+} = require('../expressions/index');
+
+function position() {
+  return {
+    start:peg$savedPos, 
+    end:peg$currPos
+  };
+}
+}
+
+Start
+  = CSSStyle
+
+CSSStyle
+  = declarations:CSSStyleDeclaration* {
+    return new CSSStyleExpression(declarations, position());
+  }
+
+CSSStyleDeclaration
+  = _ key:CSSStyleDeclarationKey _ ':' _ value:CSSStyleDeclarationValue _ ';' _ {
+    return new CSSStyleDeclarationExpression(key, value, position());
+  }
+
+CSSStyleDeclarationKey
+  = value:([^:]+) {
+    return text();
+  }
+
+CSSStyleDeclarationValue
+  = CSSListValue/CSSSingleValue
+
+CSSSingleValue
+  = CSSFunctionCall/CSSLiteralValue
+
+CSSLiteralValue 
+  = value:CSSValue {
+    return new CSSLiteralExpression(text(), position());
+  }
+
+CSSFunctionCall
+  = name:CSSValue parameters:Parameters {
+    return new CSSFunctionCallExpression(name, parameters, position());
+  }
+
+Parameters
+  = '(' parameters:CSSCommaList ')' {
+    return parameters;
+  }
+  /  '(' ')' {
+    return [];
+  }
+
+CSSListValue 
+  = values:(CSSSpaceList/CSSCommaList) {
+    return values.length === 1 ? values[0] : new CSSListValueExpression(values, position());
+  }
+
+CSSCommaList
+  = first:CSSSingleValue rest:(',' _ CSSSingleValue)*  {
+    return [first].concat(rest.map(function (v) {
+      return v[1];
+    }));
+  }
+
+CSSSpaceList
+  = first:CSSSingleValue rest:(' ' CSSSingleValue)* {
+    return [first].concat(rest.map(function (v) {
+      return v[1];
+    }));
+  }
+  
+CSSValue
+  = [^ ;,\(\)]+
+
+/** 
+ * Generic
+ */
+
+Number 
+  = (Digit '.' Digit+) / ('.' Digit+) / Digit {
+    return new LiteralExpression(Number(text()), position());
+  }
+
+Digit
+  = [0-9] 
+
+_
+  = [ \n\r\t]*

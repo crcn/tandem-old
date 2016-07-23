@@ -1,24 +1,12 @@
-import BrowserApplication from './application/index';
-import { merge } from 'lodash'; 
+import FrontEndApplication from './application';
 
-const queryConfig = window.location.search && false ? JSON.parse(decodeURIComponent(window.location.search.substr(1))) : {};
+// need to fetch the window configuration
+const appConfig = Object.assign({}, window['config'], {
+  
+});
 
-var app = window['app'] = new BrowserApplication(merge({}, window['config'] || {}, queryConfig));
+const app = window['app'] = new FrontEndApplication(appConfig);
 
-window.addEventListener('unhandledrejection', event => console.error(event));
-
-window.onload = async function () {
-
-  for (var bundleName in window['Saffron']) {
-    var bundle = window['Saffron'][bundleName];
-    if (!bundle.fragment) continue;
-    app.logger.info('registering bundle %s', bundleName);
-    app.fragments.register(bundle.fragment);
-  }
-
-  app.setProperties({
-    element: document.getElementById('app')
-  });
-
-  await app.initialize().then();
-};
+window.onload = () => {
+  app.initialize();
+} 
