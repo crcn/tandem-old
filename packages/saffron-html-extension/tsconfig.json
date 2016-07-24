@@ -5,6 +5,7 @@
     "sourceMap": true,
     "noImplicitAny": false,
     "module": "commonjs",
+    "noEmitHelpers": true,
     "experimentalDecorators": true,
     "jsx": "react"
   },
@@ -16,10 +17,5 @@
       "src/**/*.ts",
       "src/**/*.tsx",
       "!node_modules/**"
-  ],
-  "rootDirs": [
-    "node_modules",
-    "src",
-    "../"
   ]
 }

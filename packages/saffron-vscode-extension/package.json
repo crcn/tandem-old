@@ -2,7 +2,7 @@
   "name": "saffron-vscode-extension",
   "displayName": "saffron",
   "description": "Richer experience for Saffron app",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "me",
   "engines": {
     "vscode": "^1.0.0"

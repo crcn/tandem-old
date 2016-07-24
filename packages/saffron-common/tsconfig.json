@@ -6,9 +6,7 @@
     "noImplicitAny": false,
     "module": "commonjs",
     "outDir": "lib",
-    "paths": {
-      "*": ["../"]
-    },
+    "noEmitHelpers": true,
     "experimentalDecorators": true,
     "jsx": "react"
   },
@@ -20,5 +18,6 @@
       "src/**/*.ts",
       "src/**/*.tsx",
       "!node_modules/**"
-  ]
+  ],
+  "rootDir": "../"
 }

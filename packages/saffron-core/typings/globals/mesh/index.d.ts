@@ -50,6 +50,11 @@ declare module "mesh" {
     static create(busses:Array<Bus>):ParallelBus;
   }
 
+  export class BufferedBus extends Bus {
+    constructor(reject:Error, resolve:any);
+    static create(reject:Error, resolve:any):ParallelBus;
+  }
+
   export class SequenceBus extends Bus {
     constructor(busses:Array<Bus>);
     static create(busses:Array<Bus>):SequenceBus;

@@ -1,6 +1,6 @@
 {
   "name": "saffron-back-end",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "application.js",
   "bin": {
     "sfn": "./bin/saffron"
@@ -21,7 +21,6 @@
   "dependencies": {
     "chalk": "^1.1.3",
     "cors": "^2.7.1",
-    "diff": "^2.2.3",
     "express": "^4.14.0",
     "gaze": "^1.1.0",
     "inflection": "^1.10.0",
@@ -29,7 +28,9 @@
     "mesh-memory-ds-bus": "^4.0.0",
     "mesh-socket-io-bus": "*",
     "package-path": "^1.0.0",
+    "saffron-base": "^1.0.1",
     "saffron-common": "1.1.x",
+    "saffron-core": "^1.0.1",
     "saffron-front-end": "1.x.x",
     "sift": "^3.2.1",
     "socket.io": "^1.4.8",

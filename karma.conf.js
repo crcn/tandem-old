@@ -30,6 +30,7 @@ module.exports = function(config) {
 
      // list of files / patterns to load in the browser
     files: [
+      'node_modules/ts-helpers/index.js',
       'node_modules/react/dist/react.min.js',
       'node_modules/react-dom/dist/react-dom.min.js',
       {

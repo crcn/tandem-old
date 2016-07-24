@@ -4,11 +4,9 @@
     "target": "es6",
     "sourceMap": true,
     "noImplicitAny": false,
+    "noEmitHelpers": true,
     "module": "commonjs",
     "outDir": "lib",
-    "paths": {
-      "*": ["../"]
-    },
     "experimentalDecorators": true,
     "jsx": "react"
   },

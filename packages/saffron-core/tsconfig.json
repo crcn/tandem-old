@@ -6,9 +6,7 @@
     "noImplicitAny": false,
     "module": "commonjs",
     "outDir": "lib",
-    "paths": {
-      "*": ["../"]
-    },
+    "noEmitHelpers": true,
     "experimentalDecorators": true,
     "jsx": "react"
   },

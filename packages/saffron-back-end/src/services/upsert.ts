@@ -1,18 +1,15 @@
-import isPublic from 'saffron-common/lib/actors/decorators/public';
+import { IActor } from 'saffron-base/src/actors';
+import { IApplication } from 'saffron-base/src/application';
 
-import { Bus } from 'mesh';
+import { isPublic } from 'saffron-core/src/decorators';
+import { BaseApplicationService } from 'saffron-core/src/services';
+import { ApplicationServiceFragment } from 'saffron-core/src/fragments';
 
-import {
-  IActor,
-  UpsertBus,
-  IApplication,
-  ClassFactoryFragment,
-  BaseApplicationService
-} from 'saffron-common/lib/index';
+import { UpsertBus } from 'saffron-common/src/busses';
 
 export default class UpsertService extends BaseApplicationService<IApplication> {
 
-  private _bus:Bus;
+  private _bus:UpsertBus;
 
   constructor(app:IApplication) {
     super(app);
@@ -22,10 +19,10 @@ export default class UpsertService extends BaseApplicationService<IApplication> 
   /**
    */
 
-  @isPublic 
+  @isPublic
   public upsert(action) {
     return this._bus.execute(action);
   }
 }
 
-export const fragment = new ClassFactoryFragment('application/services/upsert', UpsertService);
+export const fragment = new ApplicationServiceFragment('upsert', UpsertService);

@@ -1,6 +1,6 @@
 {
   "name": "saffron-dom-extension",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The DOM extension provides a set of tools for manipulating HTML DOM objects",
   "main": "index.js",
   "scripts": {

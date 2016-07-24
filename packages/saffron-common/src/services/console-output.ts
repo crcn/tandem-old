@@ -1,5 +1,5 @@
 import { Service } from 'saffron-base/src/services';
-import { ClassFactoryFragment } from 'saffron-core/src/fragments';
+import { ClassFactoryFragment } from 'saffron-base/src/fragments';
 import { LogAction } from 'saffron-core/src/actions';
 import document from 'saffron-core/src/decorators/document';
 import * as sift from 'sift';

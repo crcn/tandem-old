@@ -5,7 +5,6 @@
     "sourceMap": true,
     "module": "commonjs",
     "outDir": "lib",
-    "moduleResolution": "classic",
     "experimentalDecorators": true,
     "jsx": "react"
   },
@@ -16,10 +15,6 @@
       "**/*.ts",
       "**/*.tsx",
       "!node_modules/**"
-  ],
-  "rootDirs": [
-    "node_modules",
-    "src"
   ],
   "atom": {
     "rewriteTsconfig": true

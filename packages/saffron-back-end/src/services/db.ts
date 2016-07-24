@@ -1,29 +1,18 @@
+import { IActor } from 'saffron-base/src/actors';
+import { IApplication } from 'saffron-base/src/application';
+import { ApplicationServiceFragment } from 'saffron-core/src/fragments';
+import { BaseApplicationService } from 'saffron-core/src/services';
+import { loggable, isPublic, document } from 'saffron-core/src/decorators';
+import { DBAction, FindAction, InsertAction, RemoveAction, UpdateAction, PostDBAction } from 'saffron-core/src/actions';
 
-
-import isPublic from 'saffron-common/lib/actors/decorators/public';
-import document from 'saffron-common/lib/actors/decorators/document';
 import * as MemoryDsBus from 'mesh-memory-ds-bus';
 
-import { Bus } from 'mesh';
 import { titleize } from 'inflection';
 
-import {
-  IActor,
-  loggable,
-  DBAction,
-  FindAction,
-  InsertAction,
-  RemoveAction,
-  UpdateAction,
-  PostDBAction,
-  IApplication,
-  ClassFactoryFragment,
-  BaseApplicationService
-} from 'saffron-common/src/index';
 
-@loggable
+@loggable()
 export default class DBService extends BaseApplicationService<IApplication> {
-  
+
   private _db:IActor;
 
   constructor(app:IApplication) {
@@ -73,11 +62,11 @@ export default class DBService extends BaseApplicationService<IApplication> {
   /**
    */
 
-  async _executeWithPostAction(action:UpdateAction|RemoveAction|InsertAction)  { 
+  async _executeWithPostAction(action:UpdateAction|RemoveAction|InsertAction)  {
 
     var data = await this._db.execute(action).readAll();
 
-    if (data.length) { 
+    if (data.length) {
       this.bus.execute(PostDBAction.createFromDBAction(action, data));
     }
 
@@ -85,4 +74,4 @@ export default class DBService extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ClassFactoryFragment('application/services/db', DBService);
+export const fragment = new new ApplicationServiceFragment('db', DBService);

@@ -1,8 +1,6 @@
 
 import { Logger } from 'saffron-core/src/logger';
-import { loggable } from 'saffron-core/src/decorators';
-import isPublic from '../actors/decorators/public';
-import document from '../actors/decorators/document';
+import { loggable, isPublic, document } from 'saffron-core/src/decorators';
 import * as SocketIOBus from 'mesh-socket-io-bus';
 
 import { Service } from 'saffron-base/src/services';

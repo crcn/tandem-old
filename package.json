@@ -8,7 +8,7 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "./scripts/write-all-tests.sh; karma start",
+    "test": "./scripts/write-all-tests.sh; TESTING=1 karma start",
     "lint": "tslint packages/*/src/**/*.{ts,tsx}",
     "clean-dependencies": "./scripts/exec-packages.sh rm -rf node_modules",
     "install": "./scripts/exec-packages.sh npm install && npm run link",
@@ -39,5 +39,8 @@
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
     "tslint": "^3.13.0"
+  },
+  "dependencies": {
+    "ts-helpers": "^1.1.1"
   }
 }

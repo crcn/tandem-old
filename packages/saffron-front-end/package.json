@@ -1,6 +1,6 @@
 {
   "name": "saffron-front-end",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "./bundle/front-end.js",
   "scripts": {
     "test": "TESTING=1 karma start",
@@ -28,6 +28,7 @@
     "sift": "^3.2.2",
     "socket.io-client": "^1.4.8",
     "toarray": "0.0.1",
+    "ts-helpers": "^1.1.1",
     "typescript": "^2.0.0"
   },
   "devDependencies": {

@@ -3,7 +3,7 @@ import { loggable, bindable } from "saffron-core/src/decorators";
 import { ApplicationServiceFragment } from "saffron-core/src/fragments";
 import { ApplicationSingletonFragment } from 'saffron-core/src/fragments';
 import { LoadAction, InitializeAction } from "saffron-core/src/actions";
-// import { fragment as consoleLogServiceFragment } from "saffron-core/services/console-output";
+import { fragment as consoleLogServiceFragment } from "../services/console-output";
 
 import { IActor } from "saffron-base/src/actors";
 import { IApplication } from "saffron-base/src/application";
@@ -53,7 +53,7 @@ export class Application implements IApplication {
 
   protected _registerFragments() {
     if (!process.env.TESTING) {
-      // this.fragments.register(consoleLogFragment);
+      this.fragments.register(consoleLogServiceFragment);
     }
 
     // Make the application available globally through the fragments

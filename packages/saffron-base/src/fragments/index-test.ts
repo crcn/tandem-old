@@ -51,9 +51,19 @@ describe(__filename + "#", () => {
       const child = fragments.createChild();
       expect(child.length).to.equal(fragments.length);
     });
-  });
 
-  describe("ApplicationFragment#", function() {
+    it("can register multiple fragments via register()", () => {
+      const fragments = new FragmentDictionary();
+      fragments.register(new BaseFragment("a/b"), new BaseFragment("b/c"));
+      expect(fragments.length).to.equal(2);
+    });
 
+    it("can register nested fragments", () => {
+      const fragments = new FragmentDictionary();
+      let de;
+      fragments.register(new BaseFragment("a/b"), new BaseFragment("b/c"), [new BaseFragment("b/d"), [de = new BaseFragment("d/e")]]);
+      expect(fragments.length).to.equal(4);
+      expect(fragments.query('d/e')).to.equal(de);
+    });
   });
 });

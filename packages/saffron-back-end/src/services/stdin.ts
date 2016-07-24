@@ -1,20 +1,19 @@
 import * as chalk from 'chalk';
-import document from 'saffron-common/lib/actors/decorators/document';
+
 import * as readline from 'readline';
 
-import {
-  Logger,
-  loggable,
-  IApplication,
-  ClassFactoryFragment,
-  BaseApplicationService
-} from 'saffron-common/lib/index';
+import { IApplication } from 'saffron-base/src/application';
+
+import { Logger } from 'saffron-core/src/logger';
+import { loggable, document } from 'saffron-core/src/decorators';
+import { BaseApplicationService } from 'saffron-core/src/services';
+import { ApplicationServiceFragment } from 'saffron-core/src/fragments';
 
 /**
  * console input command handler
  */
 
-@loggable
+@loggable()
 export default class StdinService extends BaseApplicationService<IApplication> {
 
   public logger:Logger;
@@ -74,4 +73,4 @@ export default class StdinService extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ClassFactoryFragment('application/services/stdin', StdinService);
+export const fragment = new ApplicationServiceFragment('stdin', StdinService);

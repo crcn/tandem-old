@@ -6,16 +6,21 @@ import * as createSocketIOServer from 'socket.io';
 
 import { sync as getPackagePath } from 'package-path';
 
-import {
-  Logger,
-  loggable,
-  IOService,
-  IApplication,
-  ClassFactoryFragment,
-  BaseApplicationService
-} from 'saffron-common/lib/index';
+import * as fs from 'fs';
+import * as gaze from 'gaze';
+import * as sift from 'sift';
 
-@loggable
+import { Logger } from 'saffron-core/src/logger';
+import { IApplication } from 'saffron-base/src/application';
+import { UpsertAction } from 'saffron-core/src/actions';
+import { loggable } from 'saffron-core/src/decorators';
+import { BaseApplicationService } from 'saffron-core/src/services';
+import { ApplicationServiceFragment } from 'saffron-core/src/fragments';
+import { IOService } from 'saffron-common/src/services';
+
+import { Response } from 'mesh';
+
+@loggable()
 export default class FrontEndService extends BaseApplicationService<IApplication> {
 
   private _server:any;
@@ -100,4 +105,4 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   }
 }
 
-export const fragment = new ClassFactoryFragment('application/services/front-end', FrontEndService);
+export const fragment = new ApplicationServiceFragment('front-end', FrontEndService);

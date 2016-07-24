@@ -1,10 +1,7 @@
-// TODO - ability to remove fragments
-// possibly make querying more sophisticated
+import { flattenDeep } from 'lodash';
 
 export class BaseFragment {
-  constructor(public ns: string) {
-
-  }
+  constructor(public ns: string) { }
 }
 
 /**
@@ -62,7 +59,7 @@ export class FragmentDictionary {
   private _fragmentsByNs: any = {};
 
   constructor(...items: Array<BaseFragment>) {
-    items.forEach(this.register);
+    this.register(...items);
   }
 
   /**
@@ -99,28 +96,33 @@ export class FragmentDictionary {
   /**
    */
 
-  register = (fragment: BaseFragment) => {
+  register(...fragments: Array<BaseFragment|Array<any>>) {
 
-    // check if the fragment already exists to ensure that there are no collisions
-    if (this._fragmentsByNs[fragment.ns]) {
-      throw new Error(`Fragment with namespace "${fragment.ns}" already exists.`);
-    }
+    const flattenedFragments:Array<BaseFragment> = flattenDeep(fragments);
 
-    // the last part of the namespace is the unique id. Example namespaces:
-    // entities/text, entitiesControllers/div, components/item
-    this._fragmentsByNs[fragment.ns] = [fragment];
+    for (const fragment of flattenedFragments) {
 
-    // store the fragment in a spot where it can be queried with globs (**).
-    // This is much faster than parsing this stuff on the fly when calling query()
-    const nsParts = fragment.ns.split("/");
-    for (let i = 0, n = nsParts.length; i < n; i++) {
-      const ns = nsParts.slice(0, i).join("/") + "/**";
+        // check if the fragment already exists to ensure that there are no collisions
+        if (this._fragmentsByNs[fragment.ns]) {
+          throw new Error(`Fragment with namespace "${fragment.ns}" already exists.`);
+        }
 
-      if (!this._fragmentsByNs[ns]) {
-        this._fragmentsByNs[ns] = [];
-      }
+        // the last part of the namespace is the unique id. Example namespaces:
+        // entities/text, entitiesControllers/div, components/item
+        this._fragmentsByNs[fragment.ns] = [fragment];
 
-      this._fragmentsByNs[ns].push(fragment);
+        // store the fragment in a spot where it can be queried with globs (**).
+        // This is much faster than parsing this stuff on the fly when calling query()
+        const nsParts = fragment.ns.split("/");
+        for (let i = 0, n = nsParts.length; i < n; i++) {
+          const ns = nsParts.slice(0, i).join("/") + "/**";
+
+          if (!this._fragmentsByNs[ns]) {
+            this._fragmentsByNs[ns] = [];
+          }
+
+          this._fragmentsByNs[ns].push(fragment);
+        }
     }
   }
 }

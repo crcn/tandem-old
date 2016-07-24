@@ -2,21 +2,16 @@ import * as fs from 'fs';
 import * as gaze from 'gaze';
 import * as sift from 'sift';
 
-import isPublic from 'saffron-common/lib/actors/decorators/public';
-import document from 'saffron-common/lib/actors/decorators/document';
-import filterAction from 'saffron-common/lib/actors/decorators/filter-action';
+import { Logger } from 'saffron-core/src/logger';
+import { IApplication } from 'saffron-base/src/application';
+import { UpsertAction } from 'saffron-core/src/actions';
+import { BaseApplicationService } from 'saffron-core/src/services';
+import { ApplicationServiceFragment } from 'saffron-core/src/fragments';
+import { loggable, isPublic, document, filterAction } from 'saffron-core/src/decorators';
 
-import {
-  Logger,
-  loggable,
-  Response,
-  IApplication,
-  UpsertAction,
-  ClassFactoryFragment,
-  BaseApplicationService
-} from 'saffron-common/lib/index';
+import { Response } from 'mesh';
 
-@loggable
+@loggable()
 export default class FileService extends BaseApplicationService<IApplication> {
 
   public logger:Logger;
@@ -80,7 +75,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
     return Response.create((writable) => {
       var watcher = gaze(action.path, (err, w) => {
         w.on('all', async () => {
-          try { 
+          try {
             await writable.write({ type: 'fileChange' });
           } catch (e) {
             this._closeFileWatcher(watcher, action);
@@ -101,4 +96,4 @@ export default class FileService extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ClassFactoryFragment('application/services/file', FileService);
+export const fragment = new ApplicationServiceFragment('file', FileService);
