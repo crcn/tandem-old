@@ -1,6 +1,6 @@
 import * as LogLevel from "./levels";
 
-import { IActor } from "saffron-base/src/actors";
+import { IActor } from "sf-base/actors";
 import { sprintf } from "sprintf";
 import { LogAction } from "../actions";
 

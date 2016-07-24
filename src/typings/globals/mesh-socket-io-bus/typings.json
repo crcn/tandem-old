@@ -1,0 +1,11 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "/Users/crcn/Developer/public/saffron/packages/sf-common/node_modules/mesh-socket-io-bus/typings.json",
+    "raw": "file:./node_modules/mesh-socket-io-bus/typings.json",
+    "main": "./index.d.ts",
+    "global": false,
+    "name": "mesh-socket-io-bus",
+    "type": "typings"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "saffron-markdown-extension",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "The markdown extension will provide a set of tools for visually manipulating README documents.",
   "main": "index.js",
   "scripts": {

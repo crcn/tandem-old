@@ -1,6 +1,6 @@
 import { HTMLRootEntity, SymbolTable, HTMLNodeEntity } from './entities/index';
 import { HTMLExpression } from './expressions/index';
-import { FragmentSection } from 'saffron-front-end/src/section/index';
+import { FragmentSection } from 'sf-front-end/section/index';
 
 import * as XMLParser from './parsers/xml.peg';
 
@@ -28,15 +28,15 @@ export default class HTMLRuntime {
   public async load(source:string):Promise<HTMLRuntime> {
     this._source = source;
     const newExpression:HTMLExpression<HTMLNodeEntity<any>> = XMLParser.parse(source);
-    
+
     if (this._rootEntity && this._rootEntity.expression.constructor === newExpression.constructor) {
       this._rootEntity.expression = newExpression;
     } else {
       this._rootEntity = newExpression.createEntity(this.symbolTable.createChild());
     }
-    
+
     await this._rootEntity.update();
 
     return this;
   }
-} 
+}

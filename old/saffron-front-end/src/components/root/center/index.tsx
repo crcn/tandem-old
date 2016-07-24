@@ -1,6 +1,6 @@
 import './index.scss';
 import * as React from 'react';
-import RegisteredComponent from 'saffron-front-end/src/components/registered';
+import RegisteredComponent from 'sf-front-end/components/registered';
 
 export default class CenterComponent extends React.Component<any, any> {
   render() {

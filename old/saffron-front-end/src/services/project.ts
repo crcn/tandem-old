@@ -1,4 +1,4 @@
-import isPublic from 'saffron-common/src/actors/decorators/public';
+import isPublic from 'sf-common/actors/decorators/public';
 import * as sift from 'sift';
 import * as ArrayDsBus from 'mesh-array-ds-bus';
 
@@ -13,7 +13,7 @@ import {
   BaseApplicationService,
   loggable,
   IActor,
-} from 'saffron-common/src/index';
+} from 'sf-common/index';
 
 @observable
 class Projects extends Collection<any> { }
@@ -60,7 +60,7 @@ export default class ProjectService extends BaseApplicationService<IApplication>
         },
         insert: createModel
       })
-    , undefined); 
+    , undefined);
 
     this.logger.info('loaded %d files', this._projects.length);
 

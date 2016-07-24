@@ -1,8 +1,8 @@
-import loggable from 'saffron-common/src/decorators/loggable';
-import IOService from 'saffron-common/src/services/io';
+import loggable from 'sf-common/decorators/loggable';
+import IOService from 'sf-common/services/io';
 import * as SocketIOClient from 'socket.io-client';
-import IApplication from 'saffron-common/src/application/interface';
-import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
+import IApplication from 'sf-common/application/interface';
+import { ApplicationServiceFragment } from 'sf-common/fragments/index';
 
 @loggable
 export default class BackEndService extends IOService<IApplication> {

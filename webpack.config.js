@@ -3,10 +3,10 @@ var path    = require('path');
 
 module.exports =  {
   entry: {
-    'front-end': __dirname + '/src/entry.ts'
+    'sf-front-end': __dirname + '/src/sf-front-end/entry.ts'
   },
   output: {
-    path: 'bundle',
+    path: 'lib/sf-front-end/bundle',
     filename: "[name].js"
   },
   sassLoader: {
@@ -14,7 +14,7 @@ module.exports =  {
   },
   resolve: {
     extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.peg'],
-    modulesDirectories: ['node_modules', 'src', __dirname + '/../']
+    modulesDirectories: ['node_modules', 'src']
   },
   watch: process.env.WATCH === '1',
   plugins: [

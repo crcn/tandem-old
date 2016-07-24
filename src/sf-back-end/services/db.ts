@@ -1,9 +1,9 @@
-import { IActor } from 'saffron-base/src/actors';
-import { IApplication } from 'saffron-base/src/application';
-import { ApplicationServiceFragment } from 'saffron-core/src/fragments';
-import { BaseApplicationService } from 'saffron-core/src/services';
-import { loggable, isPublic, document } from 'saffron-core/src/decorators';
-import { DBAction, FindAction, InsertAction, RemoveAction, UpdateAction, PostDBAction } from 'saffron-core/src/actions';
+import { IActor } from 'sf-base/actors';
+import { IApplication } from 'sf-base/application';
+import { ApplicationServiceFragment } from 'sf-core/fragments';
+import { BaseApplicationService } from 'sf-core/services';
+import { loggable, isPublic, document } from 'sf-core/decorators';
+import { DBAction, FindAction, InsertAction, RemoveAction, UpdateAction, PostDBAction } from 'sf-core/actions';
 
 import * as MemoryDsBus from 'mesh-memory-ds-bus';
 
@@ -74,4 +74,4 @@ export default class DBService extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new new ApplicationServiceFragment('db', DBService);
+export const fragment = new ApplicationServiceFragment('db', DBService);

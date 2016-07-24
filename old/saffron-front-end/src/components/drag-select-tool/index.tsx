@@ -1,9 +1,9 @@
 import './index.scss';
 import * as React from 'react';
-import BoundingRect from 'saffron-front-end/src/geom/bounding-rect';
-import { startDrag } from 'saffron-front-end/src/utils/component/index';
-import { SelectAction } from 'saffron-front-end/src/actions/index';
-import { ReactComponentFactoryFragment } from 'saffron-front-end/src/fragments/index';
+import BoundingRect from 'sf-front-end/geom/bounding-rect';
+import { startDrag } from 'sf-front-end/utils/component/index';
+import { SelectAction } from 'sf-front-end/actions/index';
+import { ReactComponentFactoryFragment } from 'sf-front-end/fragments/index';
 
 class DragSelectComponent extends React.Component<any, any> {
 

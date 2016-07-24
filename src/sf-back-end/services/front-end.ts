@@ -10,13 +10,13 @@ import * as fs from 'fs';
 import * as gaze from 'gaze';
 import * as sift from 'sift';
 
-import { Logger } from 'saffron-core/src/logger';
-import { IApplication } from 'saffron-base/src/application';
-import { UpsertAction } from 'saffron-core/src/actions';
-import { loggable } from 'saffron-core/src/decorators';
-import { BaseApplicationService } from 'saffron-core/src/services';
-import { ApplicationServiceFragment } from 'saffron-core/src/fragments';
-import { IOService } from 'saffron-common/src/services';
+import { Logger } from 'sf-core/logger';
+import { IApplication } from 'sf-base/application';
+import { UpsertAction } from 'sf-core/actions';
+import { loggable } from 'sf-core/decorators';
+import { BaseApplicationService } from 'sf-core/services';
+import { ApplicationServiceFragment } from 'sf-core/fragments';
+import { IOService } from 'sf-common/services';
 
 import { Response } from 'mesh';
 
@@ -34,7 +34,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   constructor(app:IApplication) {
     super(app);
     app.actors.push(this._ioService = new IOService<IApplication>(app));
-    this._port = this.app.config.socketio.port;
+    this._port = this.app.config.port;
   }
 
   async load() {
@@ -59,7 +59,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
 
     // this should be part of the config
     this._server.use(express.static(path.dirname(entryPath)));
-    this._server.use(express.static(__dirname + '/../../public'));
+    this._server.use(express.static(this.app.config.publicDirectory));
 
     this._server.use((req, res) => {
       res.send(this.getIndexHtmlContent(scriptName));

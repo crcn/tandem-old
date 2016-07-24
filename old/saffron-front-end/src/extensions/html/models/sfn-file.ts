@@ -5,10 +5,10 @@ import {
   observable,
   ClassFactoryFragment,
   UpdateAction
-} from 'saffron-common/src/index';
+} from 'sf-common/index';
 
 import Runtime from '../runtime/index'
-import Entity from 'saffron-front-end/src/entities/base';
+import Entity from 'sf-front-end/entities/base';
 import { HTMLAttributeExpression, StringExpression } from '../runtime/expressions/index';
 
 @observable
@@ -24,7 +24,7 @@ export default class SfnFile extends CoreObject {
   private _runtime:Runtime = new Runtime();
 
   /**
-   */ 
+   */
 
   async load() {
     if (this.content === this._runtime.source) return;

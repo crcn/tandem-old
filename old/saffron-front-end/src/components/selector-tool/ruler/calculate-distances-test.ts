@@ -1,5 +1,5 @@
 // import expect from 'expect.js';
-// import BaseDisplayEntity from 'saffron-common/src/entities/display';
+// import BaseDisplayEntity from 'sf-common/entities/display';
 // import calculateDistances from './calculate-distances';
 
 /*

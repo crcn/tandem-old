@@ -1,6 +1,6 @@
-import { mergeBoundingRects } from 'saffron-front-end/src/utils/geom/index';
+import { mergeBoundingRects } from 'sf-front-end/utils/geom/index';
 import { calculateBoundingRect } from './utils';
-import CoreObject from 'saffron-common/src/object/index';
+import CoreObject from 'sf-common/object/index';
 
 export default class GroupPreview extends CoreObject {
 

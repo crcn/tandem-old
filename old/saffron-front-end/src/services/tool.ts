@@ -1,10 +1,10 @@
-import loggable from 'saffron-common/src/decorators/loggable';
+import loggable from 'sf-common/decorators/loggable';
 
-import { ProxyBus } from 'saffron-common/src/busses/index';
-import BaseApplicationService from 'saffron-common/src/services/base-application-service';
-import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
+import { ProxyBus } from 'sf-common/busses/index';
+import BaseApplicationService from 'sf-common/services/base-application-service';
+import { ApplicationServiceFragment } from 'sf-common/fragments/index';
 import * as sift from 'sift';
-import IApplication from 'saffron-common/src/application/interface';
+import IApplication from 'sf-common/application/interface';
 
 @loggable
 export default class ToolService extends BaseApplicationService<IApplication> {

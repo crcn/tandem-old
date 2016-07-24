@@ -1,5 +1,5 @@
 import * as React from 'react';
-import IApplication from 'saffron-common/src/application/interface';
+import IApplication from 'sf-common/application/interface';
 
 export default class RegisteredComponent extends React.Component<any, any> {
   render() {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { startDrag } from 'saffron-front-end/src/utils/component/index';
+import { startDrag } from 'sf-front-end/utils/component/index';
 import PathComponent from './path';
 // import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'message-types';
 
@@ -114,7 +114,7 @@ class ResizerComponent extends React.Component<any, any> {
 
       props.width = point.currentStyle.width * diffPerc;
       props.height = point.currentStyle.height * diffPerc;
-    } 
+    }
 
 
     if (keepCenter) {
@@ -134,7 +134,7 @@ class ResizerComponent extends React.Component<any, any> {
     clearTimeout(this._dragTimer);
     this.props.selection.preview.setProperties({ moving: true });
     this.setState({ dragging: true });
-    this._movingTimer = setTimeout(() => { 
+    this._movingTimer = setTimeout(() => {
       this.props.selection.preview.setProperties({ moving: false });
     }, 1000);
     this._dragTimer = setTimeout(() => {
@@ -180,7 +180,7 @@ class ResizerComponent extends React.Component<any, any> {
   }
 
   onPointMouseUp() {
-    this.props.file.save(); 
+    this.props.file.save();
   }
 
 

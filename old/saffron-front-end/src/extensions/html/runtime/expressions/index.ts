@@ -1,4 +1,4 @@
-import FragmentDictionary from 'saffron-common/src/fragments/collection';
+import FragmentDictionary from 'sf-common/fragments/collection';
 
 import {
   IEntity,
@@ -45,7 +45,7 @@ export class BaseExpression<T extends IEntity> {
   }
 
   createEntity(symbolTable:SymbolTable):T {
-    return new this._entityClass(this, symbolTable); 
+    return new this._entityClass(this, symbolTable);
   }
 
   public flatten():Array<BaseExpression<any>> {
@@ -79,7 +79,7 @@ export class HTMLRootExpression extends BaseExpression<HTMLRootEntity> {
   constructor(public childNodes:Array<HTMLExpression<IHTMLNodeEntity>>, position:ICursorPosition) {
     super(HTMLRootEntity, position);
   }
-  
+
   public _flattenDeep(items) {
     super._flattenDeep(items);
     _flattenEach(this.childNodes, items);
@@ -109,7 +109,7 @@ export class HTMLElementExpression extends HTMLExpression<HTMLElementEntity> {
   /*
   TODO:
 
-  public createEntity(options:LoadOptions) 
+  public createEntity(options:LoadOptions)
   */
   public _flattenDeep(items) {
     super._flattenDeep(items);
@@ -220,8 +220,8 @@ export class CSSStyleDeclarationExpression extends BaseExpression<CSSStyleDeclar
     super._flattenDeep(items);
     this.value._flattenDeep(items);
   }
-  toString() { 
-    
+  toString() {
+
     return [this.key, ':', this.value.toString(), ';'].join(' ');
   }
 }

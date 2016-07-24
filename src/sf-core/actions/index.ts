@@ -1,4 +1,4 @@
-import { Action } from "saffron-base/src/actions";
+import { Action } from "sf-base/actions";
 
 export interface Change {
   target: any;

@@ -1,7 +1,7 @@
-import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
-import CoreObject from 'saffron-common/src/object/index';
+import { ClassFactoryFragment } from 'sf-common/fragments/index';
+import CoreObject from 'sf-common/object/index';
 import * as sass from 'sass.js';
-import FragmentSection from 'saffron-front-end/src/section/fragment';
+import FragmentSection from 'sf-front-end/section/fragment';
 
 export default class StyleEntityController extends CoreObject {
 

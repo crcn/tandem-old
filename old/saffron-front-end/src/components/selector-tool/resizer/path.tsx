@@ -1,5 +1,5 @@
 import * as  React from 'react';
-import { startDrag } from 'saffron-front-end/src/utils/component/index';
+import { startDrag } from 'sf-front-end/utils/component/index';
 
 class PathComponent extends React.Component<any, any> {
 

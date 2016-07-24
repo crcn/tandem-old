@@ -1,6 +1,6 @@
 
-import BoundingRect from 'saffron-front-end/src/geom/bounding-rect';
-import { translateStyleToIntegers } from 'saffron-front-end/src/extensions/html/utils/css/translate-style';
+import BoundingRect from 'sf-front-end/geom/bounding-rect';
+import { translateStyleToIntegers } from 'sf-front-end/extensions/html/utils/css/translate-style';
 import * as CSSParser from '../../parsers/css.peg';
 import { HTMLElementExpression, HTMLAttributeExpression, CSSStyleExpression, StringExpression } from '../../expressions/index';
 import { HTMLElementEntity, CSSStyleEntity, StringEntity } from '../../entities/index';
@@ -8,12 +8,12 @@ import * as sift from 'sift';
 
 import {
   translateStyle,
-} from 'saffron-front-end/src/extensions/html/utils/css/index';
+} from 'sf-front-end/extensions/html/utils/css/index';
 
 import {
   calculateZoom,
   multiplyStyle,
-} from 'saffron-front-end/src/utils/html/index';
+} from 'sf-front-end/utils/html/index';
 
 function translateIntegersToPx(style) {
   var newStyle = {};
@@ -198,8 +198,8 @@ function getEntityStyle(entity:HTMLElementEntity):any {
 
   var style = entity.attributes.style.value;
   const styleExpression = CSSParser.parse(style) as CSSStyleExpression;
-  const styleEntity = styleExpression.createEntity(entity.symbolTable); 
-  styleEntity.update();  
+  const styleEntity = styleExpression.createEntity(entity.symbolTable);
+  styleEntity.update();
   return styleEntity.value;
 }
 
@@ -210,10 +210,10 @@ function setEntityStyle(entity:HTMLElementEntity, newStyle:Object) {
   const styleEntity = styleExpression.createEntity(entity.symbolTable);
 
   // var combinedStyle = Object.assign()
-  styleEntity.update();   
+  styleEntity.update();
 
   var combinedStyle = Object.assign({}, styleEntity.value, translateIntegersToPx(newStyle));
-  
+
   var buffer = [];
 
   for (var key in combinedStyle) {
@@ -224,7 +224,7 @@ function setEntityStyle(entity:HTMLElementEntity, newStyle:Object) {
 
   (entity.expression.attributes.find(sift({ key: 'style' })) as HTMLAttributeExpression).value = new StringExpression(buffer.join(' '), undefined);
 
-  entity.update(); 
+  entity.update();
 }
 
 

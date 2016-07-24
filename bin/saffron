@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-var app = require('../lib/server');
+var app = require('../lib/sf-back-end/server');
 
 var argv = require('yargs').argv;
 var path = require('path');
+var exec = require('child_process').exec;
 
 var filepath = argv._[0];
 
@@ -14,4 +15,6 @@ app.bus.execute({
   type  : 'openFile',
   path  : filepath,
   watch : true
+}).then(function() {
+  exec(`open http://localhost:${app.config.port}`);
 });

@@ -1,6 +1,6 @@
-import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
-import BaseApplicationService from 'saffron-common/src/services/base-application-service';
-import IApplication from 'saffron-common/src/application/interface';
+import { ApplicationServiceFragment } from 'sf-common/fragments/index';
+import BaseApplicationService from 'sf-common/services/base-application-service';
+import IApplication from 'sf-common/application/interface';
 
 export class TextTool extends BaseApplicationService<IApplication> {
 

@@ -1,1 +1,1 @@
- import { IApplication } from 'saffron-base/src/application';
+ import { IApplication } from 'sf-base/application';

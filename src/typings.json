@@ -1,0 +1,21 @@
+{
+  "name": "sf-common",
+  "main": "./typings/index.d.ts",
+  "globalDependencies": {
+    "chai": "registry:dt/chai#3.4.0+20160601211834",
+    "chalk": "registry:dt/chalk#0.4.0+20160317120654",
+    "cors": "registry:dt/cors#0.0.0+20160708202709",
+    "express": "registry:dt/express#4.0.0+20160708185218",
+    "express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20160715232503",
+    "inflection": "registry:dt/inflection#1.5.0+20160316155526",
+    "lodash": "registry:dt/lodash#3.10.0+20160720001309",
+    "mesh": "npm:mesh",
+    "mesh-socket-io-bus": "file:./node_modules/mesh-socket-io-bus/typings.json",
+    "mime": "registry:dt/mime#0.0.0+20160316155526",
+    "mocha": "registry:dt/mocha#2.2.5+20160720003353",
+    "node": "registry:dt/node#6.0.0+20160720070758",
+    "serve-static": "registry:dt/serve-static#0.0.0+20160606155157",
+    "socket.io": "registry:dt/socket.io#1.4.4+20160317120654",
+    "sprintf": "registry:dt/sprintf#0.0.0+20160316155526"
+  }
+}

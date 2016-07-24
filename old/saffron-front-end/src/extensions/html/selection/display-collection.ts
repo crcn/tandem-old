@@ -1,9 +1,9 @@
 import * as assert from 'assert';
-import Selection from 'saffron-front-end/src/selection/collection';
-import CoreObject from 'saffron-common/src/object/index';
-import observable from 'saffron-common/src/decorators/observable';
-import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
-import BoundingRect from 'saffron-front-end/src/geom/bounding-rect';
+import Selection from 'sf-front-end/selection/collection';
+import CoreObject from 'sf-common/object/index';
+import observable from 'sf-common/decorators/observable';
+import { ClassFactoryFragment } from 'sf-common/fragments/index';
+import BoundingRect from 'sf-front-end/geom/bounding-rect';
 
 // TODO - use existing group-preview class
 @observable

@@ -1,4 +1,4 @@
-import { IInvoker } from 'saffron-base/src/actors';
+import { IInvoker } from 'sf-base/actors';
 
 // TODO
 export default function bindable() {

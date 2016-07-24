@@ -1,7 +1,7 @@
 {
-  "name": "saffron-base",
-  "version": "1.0.1",
-  "description": "This package contains base classes that are specific to each saffron app (back-end & front-end as of this document). It's different from `saffron-core` which contains files that are usable across apps and extensions.",
+  "name": "sf-base",
+  "version": "1.0.0",
+  "description": "This package contains base classes that are specific to each saffron app (back-end & front-end as of this document). It's different from `sf-core` which contains files that are usable across apps and extensions.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,10 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "lodash": "^4.13.1",
-    "mesh": "6.0.x"
   },
   "devDependencies": {
-    "typescript": "^2.0.0"
   }
 }

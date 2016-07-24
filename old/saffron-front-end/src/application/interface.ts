@@ -1,4 +1,4 @@
-import IApplication from 'saffron-common/src/application/interface';
+import IApplication from 'sf-common/application/interface';
 
 interface IFrontEndApplication extends IApplication {
 

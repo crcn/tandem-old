@@ -1,5 +1,5 @@
-import Scanner from 'saffron-common/src/utils/string/scanner';
-import BaseObject from 'saffron-common/src/object/index';
+import Scanner from 'sf-common/utils/string/scanner';
+import BaseObject from 'sf-common/object/index';
 import createToken from './create-token';
 
 // linear-gradient(45deg, blue, red)

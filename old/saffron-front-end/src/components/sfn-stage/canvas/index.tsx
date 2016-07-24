@@ -1,10 +1,10 @@
 import './index.scss';
 import * as React from 'react';
 
-import { STAGE_CANVAS_MOUSE_DOWN } from 'saffron-front-end/src/actions/index';
+import { STAGE_CANVAS_MOUSE_DOWN } from 'sf-front-end/actions/index';
 import PreviewLayerComponent from './preview/index';
 import ToolsLayerComponent from './tools/index';
-import IsolateComponent  from 'saffron-front-end/src/components/isolate';
+import IsolateComponent  from 'sf-front-end/components/isolate';
 
 export default class EditorStageLayersComponent extends React.Component<any, any> {
 

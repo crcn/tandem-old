@@ -1,12 +1,12 @@
-import { Service } from 'saffron-base/src/services';
-import { IApplication } from 'saffron-base/src/application';
+import { Service } from 'sf-base/services';
+import { IApplication } from 'sf-base/application';
 import {
   IFactory,
   BaseFragment,
   SingletonFragment,
   FragmentDictionary,
   ClassFactoryFragment
- } from 'saffron-base/src/fragments';
+ } from 'sf-base/fragments';
 
 // TODO - add more static find methods to each fragment here
 

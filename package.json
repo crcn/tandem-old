@@ -3,20 +3,19 @@
   "version": "1.0.0",
   "description": "[![Build Status](https://travis-ci.org/crcn/saffron.svg?branch=master)](https://travis-ci.org/crcn/saffron) [![Join the chat at https://gitter.im/crcn/saffron](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/saffron?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)",
   "main": "index.js",
+  "bin": {
+    "sfn": "./bin/saffron"
+  },
   "directories": {
     "doc": "docs",
     "example": "examples"
   },
   "scripts": {
     "test": "./scripts/write-all-tests.sh; TESTING=1 karma start",
-    "lint": "tslint packages/*/src/**/*.{ts,tsx}",
-    "clean-dependencies": "./scripts/exec-packages.sh rm -rf node_modules",
-    "install": "./scripts/exec-packages.sh npm install && npm run link",
-    "link": "./scripts/link-packages.sh",
+    "clean": "rm -rf lib",
+    "postinstall": "scripts/copy-src-assets.sh; tsc --declaration; linklocal",
     "start": "./scripts/exec-packages.sh npm start",
-    "build": "./scripts/exec-packages.sh npm run build",
-    "clean": "./scripts/exec-packages.sh npm run clean",
-    "build-watch": "npm run clean && npm run build && ./scripts/exec-packages.sh npm run build-watch"
+    "build": "./scripts/exec-packages.sh npm run build"
   },
   "repository": {
     "type": "git",
@@ -31,16 +30,31 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "css-loader": "^0.23.1",
+    "fs-extra": "^0.30.0",
     "karma": "^1.1.1",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^1.0.1",
     "karma-webpack": "^1.7.0",
+    "linklocal": "^2.6.0",
     "pegjs-loader": "^0.4.0",
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
-    "tslint": "^3.13.0"
+    "sf-back-end": "file:./lib/sf-back-end",
+    "sf-base": "file:./lib/sf-base",
+    "sf-common": "file:./lib/sf-common",
+    "sf-core": "file:./lib/sf-core",
+    "sf-front-end": "file:./lib/sf-front-end",
+    "tslint": "^3.13.0",
+    "typescript": "^2.0.0"
   },
   "dependencies": {
-    "ts-helpers": "^1.1.1"
+    "cors": "^2.7.1",
+    "get-port": "^2.1.0",
+    "mesh-array-ds-bus": "^1.0.13",
+    "mesh-memory-ds-bus": "^4.0.6",
+    "sift": "^3.2.4",
+    "sprintf": "^0.1.5",
+    "ts-helpers": "^1.1.1",
+    "yargs": "^4.8.1"
   }
 }

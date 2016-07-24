@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { HTMLTextEntity } from './entities/index';
 import Runtime from './index';
-import getNode from 'saffron-front-end/src/utils/node/get-node';
+import getNode from 'sf-front-end/utils/node/get-node';
 
 describe(__filename + '#', function() {
 
@@ -57,7 +57,7 @@ describe(__filename + '#', function() {
       await load('<div>c</div>hello');
       var cTextNode = getNode(runtime.entity, [0, 0]);
       expect(bTextNode).to.equal(cTextNode);
-  
+
       var aHelloNode = getNode(runtime.entity, [1]);
       expect(aHelloNode.value).to.equal('hello');
 
@@ -72,7 +72,7 @@ describe(__filename + '#', function() {
       var bTextNode = getNode(await load('<div>hello</div>'), [0, 0]);
       expect(aTextNode).not.to.equal(bTextNode);
     });
-    
+
     it('properly patches attributes', async function() {
       var adiv = getNode(await load('<div a="b"></div>'), [0]);
       var bdiv = getNode(await load('<div a="c"></div>'), [0]);

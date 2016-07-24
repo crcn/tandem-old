@@ -2,12 +2,12 @@ import * as fs from 'fs';
 import * as gaze from 'gaze';
 import * as sift from 'sift';
 
-import { Logger } from 'saffron-core/src/logger';
-import { IApplication } from 'saffron-base/src/application';
-import { UpsertAction } from 'saffron-core/src/actions';
-import { BaseApplicationService } from 'saffron-core/src/services';
-import { ApplicationServiceFragment } from 'saffron-core/src/fragments';
-import { loggable, isPublic, document, filterAction } from 'saffron-core/src/decorators';
+import { Logger } from 'sf-core/logger';
+import { IApplication } from 'sf-base/application';
+import { UpsertAction } from 'sf-core/actions';
+import { BaseApplicationService } from 'sf-core/services';
+import { ApplicationServiceFragment } from 'sf-core/fragments';
+import { loggable, isPublic, document, filterAction } from 'sf-core/decorators';
 
 import { Response } from 'mesh';
 

@@ -1,0 +1,50 @@
+{
+  "name": "saffron-vscode-extension",
+  "displayName": "saffron",
+  "description": "Richer experience for Saffron app",
+  "version": "0.0.3",
+  "publisher": "me",
+  "engines": {
+    "vscode": "^1.0.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.previewSaffronDocument",
+    "onCommand:extension.startSaffronBackEnd"
+  ],
+  "main": "./lib/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.previewSaffronDocument",
+        "title": "Display Saffron Preview"
+      },
+      {
+        "command": "extension.startSaffronBackEnd",
+        "title": "Start Saffron"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "build-watch": "echo 'cannot build watch'"
+  },
+  "devDependencies": {
+    "typescript": "^2.0.0",
+    "vscode": "^0.11.0"
+  },
+  "dependencies": {
+    "express": "^4.14.0",
+    "get-port": "^2.1.0",
+    "mesh": "^6.0.26"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC"
+}

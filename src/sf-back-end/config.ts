@@ -1,9 +1,8 @@
-import { ALL } from 'saffron-core/src/logger/levels';
+import { ALL } from 'sf-core/logger/levels';
 
 export default {
-  socketio: {
-    port: 8090
-  },
+  port: 8090,
+  publicDirectory: __dirname + '/public',
   logger: {
     level: ALL
   },

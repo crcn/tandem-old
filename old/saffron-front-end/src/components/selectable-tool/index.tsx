@@ -5,10 +5,10 @@ import './index.scss';
 import * as cx from 'classnames';
 import * as React from 'react';
 import { intersection } from 'lodash';
-import { SelectAction } from 'saffron-front-end/src/actions/index';
-import BoundingRect from 'saffron-front-end/src/geom/bounding-rect';
+import { SelectAction } from 'sf-front-end/actions/index';
+import BoundingRect from 'sf-front-end/geom/bounding-rect';
 
-import { ReactComponentFactoryFragment } from 'saffron-front-end/src/fragments/index';
+import { ReactComponentFactoryFragment } from 'sf-front-end/fragments/index';
 
 class SelectableComponent extends React.Component<{app:any, entity:any, bus:any, selection:any}, {}> {
 
@@ -67,7 +67,7 @@ class SelectableComponent extends React.Component<{app:any, entity:any, bus:any,
       left       : bounds.left,
       top        : bounds.top
     };
-  
+
     return (
       <div
         style={style}
@@ -86,7 +86,7 @@ export default class SelectablesComponent extends React.Component<{selection:any
 
     const selection = this.props.selection || [];
     const allEntities = this.props.allEntities;
- 
+
     // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.
     if (selection.preview && selection.preview.moving) return null;
 

@@ -1,10 +1,10 @@
 import './template.scss';
 
-import NodeSection from 'saffron-front-end/src/section/node';
-import FragmentSection from 'saffron-front-end/src/section/fragment';
-import bubbleIframeEvents from 'saffron-front-end/src/utils/html/bubble-iframe-events';
+import NodeSection from 'sf-front-end/section/node';
+import FragmentSection from 'sf-front-end/section/fragment';
+import bubbleIframeEvents from 'sf-front-end/utils/html/bubble-iframe-events';
 
-import { ClassFactoryFragment, FactoryFragment } from 'saffron-common/src/fragments/index';
+import { ClassFactoryFragment, FactoryFragment } from 'sf-common/fragments/index';
 
 class RegisteredEntityController {
   public section:any;
@@ -17,7 +17,7 @@ class RegisteredEntityController {
   }
 
   async load(options) {
-    for (var childExpression of this.frame.expression.childNodes) { 
+    for (var childExpression of this.frame.expression.childNodes) {
       this.entity.appendChild(await childExpression.load(Object.assign({}, options, {
         selectable: false
       })));

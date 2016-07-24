@@ -5,15 +5,15 @@ import {
   IApplication,
   BaseApplicationService,
   ApplicationServiceFragment
-} from 'saffron-common/src/index';
+} from 'sf-common/index';
 
 import * as Mousetrap from 'mousetrap';
 
 @loggable
 export default class KeyBindingService extends BaseApplicationService<IApplication> {
- 
+
   public logger:Logger;
-  
+
   initialize() {
     this.app
       .fragments

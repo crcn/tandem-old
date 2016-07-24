@@ -1,4 +1,4 @@
-import { Action } from 'saffron-common/src/actions/index';
+import { Action } from 'sf-common/actions/index';
 import * as toarray from 'toarray';
 
 export const STAGE_CANVAS_MOUSE_DOWN = 'stageCanvasMouseDown';
@@ -12,7 +12,7 @@ export class MouseEvent extends Action {
     });
   }
 }
- 
+
 export const SELECT = 'select';
 export class SelectAction extends Action {
 

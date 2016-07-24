@@ -2,7 +2,7 @@
 var glob = require('glob');
 var fs   = require('fs');
 
-var allTestFiles = glob.sync(__dirname + '/../packages/*/src/**/*-test.?(ts|tsx)');
+var allTestFiles = glob.sync(__dirname + '/../src/**/*-test.?(ts|tsx)');
 
 var buffer = [`
 /*

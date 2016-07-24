@@ -1,5 +1,5 @@
-import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
-import { BaseActor } from 'saffron-common/src/actors/index';
+import { ClassFactoryFragment } from 'sf-common/fragments/index';
+import { BaseActor } from 'sf-common/actors/index';
 
 export const fragment = [
   new ClassFactoryFragment('key-bindings/zoom-in', class ZoomInKeyBindingActor extends BaseActor {

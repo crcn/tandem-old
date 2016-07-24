@@ -1,41 +1,11 @@
 {
-  "name": "saffron-front-end",
-  "version": "1.0.2",
-  "main": "./bundle/front-end.js",
+  "name": "sf-front-end",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./bundle/sf-front-end.js",
   "scripts": {
-    "test": "TESTING=1 karma start",
-    "clean": "rm -rf bundle",
-    "start": "npm run build-watch",
-    "build": "webpack",
-    "build-watch": "webpack --watch"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "classnames": "^2.2.5",
-    "jsdiff": "^1.1.1",
-    "lodash": "^4.13.1",
-    "mesh": "^6.0.23",
-    "mesh-array-ds-bus": "^1.0.12",
-    "mousetrap": "^1.6.0",
-    "node-sass": "^3.8.0",
-    "pegjs": "^0.9.0",
-    "pegjs-loader": "^0.4.0",
-    "react": "^15.2.1",
-    "react-dom": "^15.2.1",
-    "saffron-common": "^1.0.1",
-    "sass-loader": "^4.0.0",
-    "sift": "^3.2.2",
-    "socket.io-client": "^1.4.8",
-    "toarray": "0.0.1",
-    "ts-helpers": "^1.1.1",
-    "typescript": "^2.0.0"
-  },
-  "devDependencies": {
-    "ts-loader": "^0.8.2",
-    "tslint-loader": "^2.1.5",
-    "url-loader": "^0.5.7",
-    "webpack": "^1.13.1"
-  },
-  "description": ""
+  "license": "ISC"
 }

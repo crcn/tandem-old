@@ -1,15 +1,15 @@
-import { IActor } from 'saffron-base/src/actors';
-import { IApplication } from 'saffron-base/src/application';
+import { IActor } from 'sf-base/actors';
+import { IApplication } from 'sf-base/application';
 
-import { isPublic } from 'saffron-core/src/decorators';
-import { BaseApplicationService } from 'saffron-core/src/services';
-import { ApplicationServiceFragment } from 'saffron-core/src/fragments';
+import { isPublic } from 'sf-core/decorators';
+import { BaseApplicationService } from 'sf-core/services';
+import { ApplicationServiceFragment } from 'sf-core/fragments';
 
-import { UpsertBus } from 'saffron-common/src/busses';
+import { UpsertBus } from 'sf-common/busses';
 
 export default class UpsertService extends BaseApplicationService<IApplication> {
 
-  private _bus:UpsertBus;
+  private _bus:IActor;
 
   constructor(app:IApplication) {
     super(app);

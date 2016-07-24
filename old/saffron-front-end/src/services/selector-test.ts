@@ -1,9 +1,9 @@
 // import expect from 'expect.js';
 import { fragment as selectorFragment } from './selector';
-import { ClassFactoryFragment } from 'saffron-common/src/fragments/index';
-import BaseApplication from 'saffron-common/src/application/base';
+import { ClassFactoryFragment } from 'sf-common/fragments/index';
+import BaseApplication from 'sf-common/application/base';
 import { expect } from 'chai';
-import { SelectAction, ToggleSelectAction } from 'saffron-front-end/src/actions/index';
+import { SelectAction, ToggleSelectAction } from 'sf-front-end/actions/index';
 import SelectionCollection from 'selection/collection';
 
 describe(__filename + '#', () => {

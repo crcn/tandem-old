@@ -4,7 +4,7 @@ import {
   IApplication,
   BaseApplicationService,
   ApplicationServiceFragment
-} from 'saffron-common/src/index';
+} from 'sf-common/index';
 
 const ZOOM_INCREMENT = 0.1;
 const MIN_ZOOM_LEVEL = 0.2;
@@ -12,7 +12,7 @@ const MAX_ZOOM_LEVEL = 2;
 
 interface IZoomable {
   zoom:number;
-} 
+}
 
 interface IObservable {
   setProperties(properties:any);
@@ -25,7 +25,7 @@ export default class PreviewService extends BaseApplicationService<ApplicationTy
 
   constructor(app:ApplicationType) {
     super(app);
-    (app as any).zoom = 1; 
+    (app as any).zoom = 1;
   }
 
   zoomIn() {

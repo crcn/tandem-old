@@ -2,12 +2,12 @@ import * as chalk from 'chalk';
 
 import * as readline from 'readline';
 
-import { IApplication } from 'saffron-base/src/application';
+import { IApplication } from 'sf-base/application';
 
-import { Logger } from 'saffron-core/src/logger';
-import { loggable, document } from 'saffron-core/src/decorators';
-import { BaseApplicationService } from 'saffron-core/src/services';
-import { ApplicationServiceFragment } from 'saffron-core/src/fragments';
+import { Logger } from 'sf-core/logger';
+import { loggable, document } from 'sf-core/decorators';
+import { BaseApplicationService } from 'sf-core/services';
+import { ApplicationServiceFragment } from 'sf-core/fragments';
 
 /**
  * console input command handler

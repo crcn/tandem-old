@@ -1,4 +1,4 @@
-import { HTMLParser } from 'saffron-html-extension';
+import { HTMLParser } from 'sf-html-extension';
 
 var rootExpression = HTMLParser.parse(`<div>
   <import src="./templates.sfn" />
@@ -12,7 +12,7 @@ class EntityOptions {
 }
 
 interface IElement {
-  
+
 }
 
 class DOMElementAttributesController {
@@ -27,7 +27,7 @@ class DOMElementAttributesController {
 
 class DOMElementEntityController {
   constructor(entity:ElementEntity) {
-    
+
   }
 
   async update() {

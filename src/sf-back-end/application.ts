@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { Application } from 'saffron-common/src/applications';
+import { Application } from 'sf-common/applications';
 
 import { fragment as dbServiceFragment } from './services/db';
 import { fragment as fileServicerFragment } from './services/file';
@@ -9,8 +9,9 @@ import { fragment as frontEndServiceFragment } from './services/front-end';
 
 export default class ServerApplication extends Application {
   constructor(config) {
+    console.log(require.resolve('sf-front-end'));
     super(Object.assign({
-      frontEndEntry: require.resolve('saffron-front-end')
+      frontEndEntry: require.resolve('sf-front-end')
     }, config));
   }
   _registerFragments() {

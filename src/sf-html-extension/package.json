@@ -1,6 +1,6 @@
 {
-  "name": "saffron-html-extension",
-  "version": "1.0.1",
+  "name": "sf-html-extension",
+  "version": "1.0.0",
   "description": "THe HyperText Markup Language extension provides a set of tools and APIs for manipulating entities that are *based* off the language. This extension is not limited to the DOM, but is also adaptable to other platforms and rendering engines such as Canvas, WebGL, and others.",
   "main": "index.js",
   "directories": {
@@ -12,7 +12,5 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "saffron-base": "^1.0.0",
-    "saffron-core": "^1.0.0"
   }
 }

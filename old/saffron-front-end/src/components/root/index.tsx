@@ -2,7 +2,7 @@ import './index.scss';
 import * as React from 'react';
 
 import CenterComponent from './center/index';
-import { ReactComponentFactoryFragment } from 'saffron-front-end/src/fragments/index';
+import { ReactComponentFactoryFragment } from 'sf-front-end/fragments/index';
 
 export default class RootEditorComponent extends React.Component<any, any> {
   render() {

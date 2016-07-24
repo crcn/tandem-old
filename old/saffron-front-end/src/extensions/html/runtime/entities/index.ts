@@ -30,7 +30,7 @@ import HTMLElementPreview from './preview';
 import {
   NodeSection,
   FragmentSection
-} from 'saffron-front-end/src/section/index';
+} from 'sf-front-end/section/index';
 
 export class SymbolTable {
   constructor(public _data:any = {}, private _parent:SymbolTable = undefined) { }
@@ -50,7 +50,7 @@ export class SymbolTable {
 }
 
 interface IHTMLElementAttributeController {
-  
+
 }
 
 interface IHTMLElementEntityController {
@@ -70,7 +70,7 @@ abstract class BaseHTMLElementEntityController implements IHTMLElementEntityCont
   public getAttribute(key:string):any {
     return this._attributes[key];
   }
-  
+
   public setAttribute(key:string, value:any):void {
     this._attributes[key] = value;
   }
@@ -97,7 +97,7 @@ abstract class BaseEntity<T> implements IEntity {
   }
 
   public update() {
-    
+
   }
 
   public dispose() {
@@ -130,7 +130,7 @@ export interface IHTMLNodeEntity extends IEntity {
 export interface IValueEntity extends IEntity {
   value:any;
 }
- 
+
 const CURRENT_SECTION_SYMBOL_KEY = 'currentSection';
 export abstract class HTMLNodeEntity<T> extends BaseEntity<T> implements IHTMLNodeEntity {
   public parentNode:IHTMLNodeEntity;
@@ -229,7 +229,7 @@ async function updateChildNodes(
     if (i < container.childNodes.length) {
       childEntity = container.childNodes[i];
 
-      // same expression constructor? 
+      // same expression constructor?
       if (childEntity.expression.constructor == childExpression.constructor) {
 
         // replace the child expression so that it can continue diffing & patching
@@ -241,7 +241,7 @@ async function updateChildNodes(
         i--;
         continue;
       }
-    } else { 
+    } else {
       childEntity = childExpression.createEntity(symbolTable);
       container.appendChild(childEntity);
       await childEntity.update();
@@ -282,7 +282,7 @@ class HTMLElementEntityController extends BaseHTMLElementEntityController {
   async update() {
     await updateChildNodes(this.entity, this.entity.expression.childNodes, this.entity.symbolTable.createChild({
       [CURRENT_SECTION_SYMBOL_KEY]: this._section
-    })); 
+    }));
   }
 
   dispose() {
@@ -315,8 +315,8 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> {
     if (this.ref && this.nodeName !== this.expression.nodeName) {
       this.ref.dispose();
       this.ref = undefined;
-    } 
-    
+    }
+
     this.nodeName = this.expression.nodeName;
 
     if (!this.ref) {
@@ -327,7 +327,7 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> {
       const attributeEntity = attributeExpression.createEntity(this.symbolTable);
       await attributeEntity.update();
 
-      // TODO - check for attribute entity controllers 
+      // TODO - check for attribute entity controllers
       this.attributes[attributeExpression.key] = attributeEntity;
       var value = attributeEntity.value;
       this.ref.setAttribute(attributeExpression.key, attributeEntity.value);
@@ -389,7 +389,7 @@ export class HTMLBlockEntity extends HTMLNodeEntity<HTMLBlockExpression> {
     this.currentSection.appendChild(document.createTextNode(''));
   }
 }
- 
+
 export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
 
   private _value:IValueEntity;
@@ -404,7 +404,7 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
 
   async update() {
     this._value = this.expression.value.createEntity(this.symbolTable);
-    await this._value.update(); 
+    await this._value.update();
   }
 }
 
@@ -423,8 +423,8 @@ export class CSSStyleEntity extends ValueEntity<CSSStyleExpression, Object> {
   update() {
 
     var style = {};
-    
-    for (const declarationExpression of this.expression.declarations) { 
+
+    for (const declarationExpression of this.expression.declarations) {
       const entity = declarationExpression.createEntity(this.symbolTable);
       entity.update();
       style[entity.key] = entity.value;
@@ -434,12 +434,12 @@ export class CSSStyleEntity extends ValueEntity<CSSStyleExpression, Object> {
   }
 }
 
-export class CSSListValueEntity extends ValueEntity<CSSListValueExpression, any[]> { } 
+export class CSSListValueEntity extends ValueEntity<CSSListValueExpression, any[]> { }
 export class CSSStyleDeclarationEntity extends ValueEntity<CSSStyleDeclarationExpression, string> {
   get key():string {
     return this.expression.key;
   }
-  
+
   update() {
     this.value = this.expression.value.createEntity(this.symbolTable).value;
   }

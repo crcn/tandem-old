@@ -1,9 +1,9 @@
-import isPublic from 'saffron-common/src/actors/decorators/public'; 
-import loggable from 'saffron-common/src/decorators/loggable';
-import IApplication from 'saffron-common/src/application/interface';
+import isPublic from 'sf-common/actors/decorators/public';
+import loggable from 'sf-common/decorators/loggable';
+import IApplication from 'sf-common/application/interface';
 import SelectionCollection from 'selection/collection';
-import BaseApplicationService from 'saffron-common/src/services/base-application-service';
-import { ApplicationServiceFragment } from 'saffron-common/src/fragments/index';
+import BaseApplicationService from 'sf-common/services/base-application-service';
+import { ApplicationServiceFragment } from 'sf-common/fragments/index';
 
 @loggable
 export default class SelectorService extends BaseApplicationService<IApplication> {
@@ -18,13 +18,13 @@ export default class SelectorService extends BaseApplicationService<IApplication
     var entity = (this.app as any).currentFile.entity;
     var allEntities = entity.flatten();
 
-  
+
     const selection = [];
     for (var entity of allEntities) {
       if (entity.preview) {
-        var position = entity.expression.position;   
+        var position = entity.expression.position;
         for (var cursor of data) {
- 
+
           if (
             (cursor.start >= position.start && cursor.start <= position.end) ||
             (cursor.end   >= position.start && cursor.end <= position.end) ||
