@@ -1,30 +1,25 @@
-import isPublic from 'sf-common/actors/decorators/public';
+import { isPublic, loggable } from 'sf-core/decorators';
 import * as sift from 'sift';
 import * as ArrayDsBus from 'mesh-array-ds-bus';
 
-import {
-  Logger,
-  AcceptBus,
-  Collection,
-  observable,
-  IApplication,
-  FindAllAction,
-  ApplicationServiceFragment,
-  BaseApplicationService,
-  loggable,
-  IActor,
-} from 'sf-common/index';
+import { IActor } from 'sf-base/actors';
+import { AcceptBus } from 'mesh';
+import { Logger } from 'sf-core/logger';
+import { FindAllAction } from 'sf-core/actions';
+import { ApplicationServiceFragment } from 'sf-core/fragments';
+import { BaseApplicationService } from 'sf-core/services';
+import { IApplication } from 'sf-base/application';
 
-@observable
-class Projects extends Collection<any> { }
+// @observable
+// class Projects extends Collection<any> { }
 
 const COLLECTION_NAME = 'files';
 
-@loggable
+@loggable()
 export default class ProjectService extends BaseApplicationService<IApplication> {
 
   public logger:Logger;
-  private _projects:Projects;
+  private _projects:Array<any>;
   public _projectsBus:IActor;
 
   async initialize() {
@@ -41,11 +36,7 @@ export default class ProjectService extends BaseApplicationService<IApplication>
         }));
     };
 
-    (this.app as any).setProperties({
-      projects: this._projects = new Projects(
-        (await this.bus.execute(new FindAllAction(COLLECTION_NAME)).readAll()).map(createModel)
-      )
-    });
+    this._projects = (await this.bus.execute(new FindAllAction(COLLECTION_NAME)).readAll()).map(createModel)
 
     this._projectsBus = AcceptBus.create(
       sift({ collectionName: COLLECTION_NAME }),

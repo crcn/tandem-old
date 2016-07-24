@@ -1,15 +1,15 @@
-import Logger from 'sf-common/logger/index';
-import loggable from 'sf-common/decorators/loggable';
-import BaseApplicationService from 'sf-common/services/base-application-service';
-import { ApplicationServiceFragment } from 'sf-common/fragments/index';
-import IApplication from 'sf-common/application/interface';
+import { IApplication } from 'sf-base/application';
 
+import { Logger } from 'sf-core/logger';
+import { loggable } from 'sf-core/decorators';
+import { BaseApplicationService } from 'sf-core/services';
+import { ApplicationServiceFragment } from 'sf-core/fragments';
 
 function targetIsInput(event) {
   return /input|textarea/i.test(event.target.nodeName);
 }
 
-@loggable
+@loggable()
 export default class ClipboardService extends BaseApplicationService<IApplication> {
 
   public logger:Logger;
@@ -48,4 +48,4 @@ export default class ClipboardService extends BaseApplicationService<IApplicatio
 
 }
 
-export const fragment = new ApplicationServiceFragment('application/services/clipboard', ClipboardService);
+export const fragment = new ApplicationServiceFragment('clipboard', ClipboardService);

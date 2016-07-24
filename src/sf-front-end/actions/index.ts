@@ -1,5 +1,4 @@
-import { Action } from 'sf-common/actions/index';
-import * as toarray from 'toarray';
+import { Action } from 'sf-base/actions';
 
 export const STAGE_CANVAS_MOUSE_DOWN = 'stageCanvasMouseDown';
 export class MouseEvent extends Action {
@@ -22,7 +21,7 @@ export class SelectAction extends Action {
 
   constructor(items:any = undefined, keepPreviousSelection = false, toggle = false) {
     super(SELECT);
-    this.items = toarray(items);
+    this.items = Array.isArray(items) ? items : items == undefined ? [] : [items];
     this.keepPreviousSelection = !!keepPreviousSelection;
     this.toggle = toggle;
   }
@@ -31,5 +30,19 @@ export class SelectAction extends Action {
 export class ToggleSelectAction extends SelectAction {
   constructor(items = undefined, keepPreviousSelection:boolean = false) {
     super(items, keepPreviousSelection, true);
+  }
+}
+
+export const ZOOM_IN = 'zoomIn';
+export class ZoomInAction extends Action {
+  constructor() {
+    super(ZOOM_IN);
+  }
+}
+
+export const ZOOM_OUT = 'zoomOut';
+export class ZoomOutAction extends Action {
+  constructor() {
+    super(ZOOM_OUT);
   }
 }

@@ -14,7 +14,7 @@ module.exports =  {
   },
   resolve: {
     extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.peg'],
-    modulesDirectories: ['node_modules', 'src']
+    modulesDirectories: ['src', 'node_modules']
   },
   watch: process.env.WATCH === '1',
   plugins: [

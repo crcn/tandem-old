@@ -6,7 +6,7 @@ var reporter   = process.env.REPORTER || 'dots';
 var grep       = process.env.GREP;
 var bail       = !!process.env.BAIL;
 
-const webpackConfig = require(__dirname + '/packages/saffron-front-end/webpack.config');
+const webpackConfig = require('./webpack.config');
 
 delete webpackConfig['entry'];
 

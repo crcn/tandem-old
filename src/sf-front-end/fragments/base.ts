@@ -1,5 +1,8 @@
 import * as React from 'react';
-import { FactoryFragment } from 'sf-common/fragments/index';
+import { FactoryFragment } from 'sf-base/fragments';
+
+/**
+ */
 
 export class ReactComponentFactoryFragment extends FactoryFragment {
   constructor(ns:string, componentClass:React.ComponentClass<any>) {

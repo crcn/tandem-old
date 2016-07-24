@@ -1,17 +1,16 @@
 // import expect from 'expect.js';
 import { fragment as selectorFragment } from './selector';
-import { ClassFactoryFragment } from 'sf-common/fragments/index';
-import BaseApplication from 'sf-common/application/base';
+import { ClassFactoryFragment } from 'sf-base/fragments';
+import { Application } from 'sf-common/applications';
 import { expect } from 'chai';
 import { SelectAction, ToggleSelectAction } from 'sf-front-end/actions/index';
-import SelectionCollection from 'selection/collection';
 
 describe(__filename + '#', () => {
 
   let app:any;
 
   beforeEach(async () => {
-    app = new BaseApplication();
+    app = new Application();
     app.fragments.register(selectorFragment);
     await app.initialize();
   });
@@ -49,8 +48,8 @@ describe(__filename + '#', () => {
 
   it('picks the correct collection type depending on the item type', function () {
 
-    class DisplayCollection extends SelectionCollection { }
-    class OtherCollection extends SelectionCollection { }
+    class DisplayCollection extends Array<any> { }
+    class OtherCollection extends Array<any> { }
 
     app.fragments.register(new ClassFactoryFragment('selection-collections/display', DisplayCollection));
     app.fragments.register(new ClassFactoryFragment('selection-collections/other', OtherCollection));

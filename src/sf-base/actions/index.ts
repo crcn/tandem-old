@@ -4,7 +4,7 @@ export class Action {
   private _currentTarget: any;
   private _canPropagate: boolean = true;
 
-  constructor(private _type: string) { }
+  constructor(readonly type: string) { }
 
   set currentTarget(value) {
 
@@ -15,10 +15,6 @@ export class Action {
     }
 
     this._currentTarget = value;
-  }
-
-  get type(): string {
-    return this._type;
   }
 
   get target() {

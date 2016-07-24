@@ -1,11 +1,9 @@
-import isPublic from 'sf-common/actors/decorators/public';
-import loggable from 'sf-common/decorators/loggable';
-import IApplication from 'sf-common/application/interface';
-import SelectionCollection from 'selection/collection';
-import BaseApplicationService from 'sf-common/services/base-application-service';
-import { ApplicationServiceFragment } from 'sf-common/fragments/index';
+import { loggable, isPublic } from 'sf-core/decorators';
+import { IApplication }  from 'sf-base/application';
+import { BaseApplicationService } from 'sf-core/services';
+import { ApplicationServiceFragment } from 'sf-core/fragments';
 
-@loggable
+@loggable()
 export default class SelectorService extends BaseApplicationService<IApplication> {
   load() {
     (this.app as any).selection = [];
@@ -60,7 +58,7 @@ export default class SelectorService extends BaseApplicationService<IApplication
     const type = items[0].type;
 
     const newSelectionFragment = this.app.fragments.query<any>(`selection-collections/${type}`);
-    const newSelection = newSelectionFragment ? newSelectionFragment.create() : new SelectionCollection();
+    const newSelection = newSelectionFragment ? newSelectionFragment.create() : [];
 
     if (keepPreviousSelection && newSelection.constructor === prevSelection.constructor) {
       newSelection.push(...prevSelection);

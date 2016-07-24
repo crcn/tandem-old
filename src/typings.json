@@ -13,9 +13,13 @@
     "mesh-socket-io-bus": "file:./node_modules/mesh-socket-io-bus/typings.json",
     "mime": "registry:dt/mime#0.0.0+20160316155526",
     "mocha": "registry:dt/mocha#2.2.5+20160720003353",
+    "mousetrap": "registry:dt/mousetrap#1.5.0+20160501152135",
     "node": "registry:dt/node#6.0.0+20160720070758",
+    "react": "registry:dt/react#0.14.0+20160720060442",
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
     "serve-static": "registry:dt/serve-static#0.0.0+20160606155157",
     "socket.io": "registry:dt/socket.io#1.4.4+20160317120654",
+    "socket.io-client": "registry:dt/socket.io-client#1.4.4+20160317120654",
     "sprintf": "registry:dt/sprintf#0.0.0+20160316155526"
   }
 }
