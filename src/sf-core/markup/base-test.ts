@@ -3,7 +3,11 @@ import { expect } from "chai";
 
 describe(__filename + "#", () => {
 
-  class TestNode extends ContainerNode { }
+  class TestNode extends ContainerNode {
+    cloneNode() {
+      return new TestNode();
+    }
+  }
 
   describe("ContainerNode#", function() {
 
@@ -60,7 +64,7 @@ describe(__filename + "#", () => {
 
   describe("Element#", function() {
     it("can be created", function() {
-      expect(new Element("name").nodeName).to.equal("name");
+      expect(new Element("name").nodeName).to.equal("NAME");
     });
     it("can set an attribute value", function() {
       const element = new Element("div");

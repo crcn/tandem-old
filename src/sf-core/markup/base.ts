@@ -11,7 +11,7 @@ export interface INode {
   parentNode:IContainerNode;
   readonly nodeType:number;
   readonly nodeName:string;
-  cloneNode():INode;
+  cloneNode(deep?:boolean):INode;
   // nextSibling:INode;
   // prevSibling:INode;
 }
@@ -71,7 +71,7 @@ export abstract class Node implements INode {
 
   }
 
-  abstract cloneNode():INode;
+  abstract cloneNode(deep?:boolean):Node;
 }
 
 export abstract class ContainerNode extends Node implements IContainerNode {
@@ -130,9 +130,13 @@ class Attributes extends Array<Attribute> { }
 export class Element extends ContainerNode implements IElement {
   readonly nodeType:number = NodeTypes.ELEMENT;
   readonly attributes:Attributes = [];
+  readonly nodeName:string;
 
-  constructor(readonly nodeName:string) {
+  constructor(nodeName:string) {
     super();
+
+    // reflect dom uppercase node names
+    this.nodeName = nodeName.toUpperCase();
   }
 
   hasAttribute(key:string) {
@@ -168,13 +172,15 @@ export class Element extends ContainerNode implements IElement {
     this.attributes.push(new Attribute(key, value));
   }
 
-  cloneNode() {
+  cloneNode(deep:boolean = false):Element {
     var clone = this.cloneInstance();
     for (const attribute of this.attributes) {
       clone.setAttribute(attribute.name, attribute.value);
     }
-    for (const child of this.childNodes) {
-      clone.appendChild(child.cloneNode());
+    if (deep) {
+      for (const child of this.childNodes) {
+        clone.appendChild(<Node>child.cloneNode());
+      }
     }
     return clone;
   }
@@ -184,7 +190,7 @@ export class Element extends ContainerNode implements IElement {
   }
 }
 
-export class ValueNode extends Node implements IValueNode {
+export abstract class ValueNode extends Node implements IValueNode {
   constructor(public nodeValue:string) {
     super();
   }

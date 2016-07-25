@@ -30,7 +30,7 @@ import {
 export function patch(node:INode, changes:Array<NodeChange<any>>) {
   for (const change of changes) {
 
-    const parentPath = change.nodePath.slice(change.nodePath.length - 1);
+    const parentPath = change.nodePath.slice(0, change.nodePath.length - 1);
     const childIndex = change.nodePath[change.nodePath.length - 1];
 
     switch(change.type) {
@@ -50,10 +50,15 @@ export function patch(node:INode, changes:Array<NodeChange<any>>) {
         const ac = <AddChildChange>change;
         const parentNode = findNode<IElement>(parentPath, <IContainerNode>node);
         if (parentNode.childNodes.length > childIndex) {
-          parentNode.insertBefore(ac.node, parentNode.childNodes[childIndex]);
+          parentNode.insertBefore(ac.node.cloneNode(true), parentNode.childNodes[childIndex]);
         } else {
           parentNode.appendChild(ac.node.cloneNode(true));
         }
+        break;
+      case MOVE_CHILD:
+        const mc = <MoveChildChange>change;
+        const child = findNode<INode>(mc.nodePath, <IContainerNode>node);
+        child.parentNode.insertBefore(child, findNode<INode>(mc.toPath, <IContainerNode>node));
         break;
       case SET_NODE_VALUE:
         findNode<IValueNode>(change.nodePath, <IContainerNode>node).nodeValue = (<SetNodeValueChange>change).nodeValue;

@@ -72,10 +72,33 @@ export class MoveChildChange extends NodeChange<INode> {
   }
 }
 
+class VNode extends ContainerNode {
+  constructor(readonly target:INode) {
+    super();
+    if (target.nodeType === NodeTypes.ELEMENT) {
+      Array.prototype.forEach.apply((<IElement>target).childNodes, (child) => {
+        this.appendChild(new VNode(target));
+      });
+    }
+  }
+  cloneNode(deep?:boolean) {
+    const clone = new VNode(this.target);
+    if (deep) {
+      for (const child of this.childNodes) {
+        clone.appendChild(child.cloneNode(deep));
+      }
+    }
+    return clone;
+  }
+}
+
 
 // TODO - use web workers to compute this
 export function diff(oldNode:INode, newNode:INode):Array<INodeChange> {
   const changes = [];
+  // const anode = new VNode(oldNode);
+  // const bnode = new VNode(newNode);
+
   addChanges([oldNode], [newNode], changes);
   return changes;
 };
@@ -83,6 +106,7 @@ export function diff(oldNode:INode, newNode:INode):Array<INodeChange> {
 function addChanges(unmatchedOldNodes:Array<INode>, unmatchedNewNodes:Array<INode>, changes:Array<INodeChange>) {
 
   const mutationChanges:Array<INodeChange> = [];
+  // const newChildNodes = unmatchedOldNodes.concat();
 
   // first match up the old and new nodes
   for (let i = 0; i < unmatchedNewNodes.length; i++) {
@@ -135,7 +159,7 @@ function addChanges(unmatchedOldNodes:Array<INode>, unmatchedNewNodes:Array<INod
         // may be working with the DOM here -- indexOf doesn't exist in childNodes prop  - use Array
         // prototype work-around
         if (Array.prototype.indexOf.call(bestCandidate.parentNode.childNodes, bestCandidate) !== Array.prototype.indexOf.call(newNode.parentNode.childNodes, newNode)) {
-          newNodeChanges.unshift(new MoveChildChange(bestCandidate, newNode));
+          newNodeChanges.push(new MoveChildChange(bestCandidate, newNode));
         }
       }
 
