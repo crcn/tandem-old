@@ -3,9 +3,7 @@ import { expect } from "chai";
 
 describe(__filename + "#", () => {
 
-  class TestNode extends BaseNode<TestNode> {
-
-  }
+  class TestNode extends BaseNode<TestNode> { }
 
   it("can be created", function() {
     new TestNode();
