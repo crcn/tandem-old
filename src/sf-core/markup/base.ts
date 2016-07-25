@@ -10,6 +10,7 @@ export interface IAttribute {
 export interface INode {
   parentNode:IContainerNode;
   readonly nodeType:number;
+  readonly nodeName:string;
   // nextSibling:INode;
   // prevSibling:INode;
 }
@@ -27,7 +28,6 @@ export interface IValueNode extends INode {
 
 export interface IElement extends IContainerNode {
   readonly attributes:Array<IAttribute>;
-  readonly nodeName:string;
   getAttribute(key:string):any;
   setAttribute(key:string, value:any);
 }
@@ -53,6 +53,7 @@ export class Attribute implements IAttribute {
 
 export abstract class Node implements INode {
   readonly nodeType = 0; // nil
+  readonly nodeName = null;
   protected _parentNode:IContainerNode;
   get parentNode():IContainerNode {
     return this._parentNode;
@@ -147,11 +148,16 @@ export class Element extends ContainerNode implements IElement {
 }
 
 export class ValueNode extends Node implements IValueNode {
-  readonly nodeType:number = NodeTypes.TEXT;
   constructor(public nodeValue:string) {
     super();
   }
 }
 
-export class TextNode extends ValueNode {}
-export class CommentNode extends ValueNode {}
+export class TextNode extends ValueNode {
+  readonly nodeType:number = NodeTypes.TEXT;
+  readonly nodeName: string = "#text";
+}
+export class CommentNode extends ValueNode {
+  readonly nodeType:number = NodeTypes.COMMENT;
+  readonly nodeName: string = "#comment";
+}

@@ -72,6 +72,7 @@ describe(__filename + "#", () => {
   describe("TextNode", function() {
     it("can be created", function() {
       new TextNode("value");
+      expect(new TextNode('a').nodeName).to.equal('#text');
     });
   });
 });

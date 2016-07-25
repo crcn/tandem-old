@@ -1,1 +1,1 @@
-export default Object.assign({}, window['config'] || {});
+export default Object.assign({}, global['config'] || {});

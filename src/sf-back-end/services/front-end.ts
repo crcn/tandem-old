@@ -58,15 +58,18 @@ export default class FrontEndService extends BaseApplicationService<IApplication
     var scriptName = path.basename(entryPath);
 
     // this should be part of the config
-    this._server.use(express.static(path.dirname(entryPath)));
+    const entryDirectory = path.dirname(entryPath);
+    this._server.use(express.static(entryDirectory));
     this._server.use(express.static(this.app.config.publicDirectory));
 
+    const staticFileNames = fs.readdirSync(entryDirectory);
+
     this._server.use((req, res) => {
-      res.send(this.getIndexHtmlContent(scriptName));
+      res.send(this.getIndexHtmlContent(staticFileNames));
     });
   }
 
-  getIndexHtmlContent(scriptName) {
+  getIndexHtmlContent(staticFileNames) {
     const host = `http://localhost:${this._port}`;
 
     return `
@@ -89,9 +92,16 @@ export default class FrontEndService extends BaseApplicationService<IApplication
         </head>
         <body>
           <div id="app"></div>
-          <script src="/vendor/react.min.js"></script>
-          <script src="/vendor/react-dom.min.js"></script>
-          <script src="${host}/${scriptName}"></script>
+          ${
+            staticFileNames.sort((a, b) => /css$/.test(a) ? -1 : 1).map((basename) => {
+              console.log(basename);
+              if (/css$/.test(basename)) {
+                return `<link rel="stylesheet" type="text/css" href="${basename}">`;
+              } else if (/js$/.test(basename)) {
+                return `<script src="${basename}"></script>`;
+              }
+            }).filter((str) => !!str).join('\n')
+          }
         </body>
       </html>
     `;

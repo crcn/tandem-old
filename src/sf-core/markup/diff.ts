@@ -1,5 +1,15 @@
 import { findNode, getNodePath } from './utils';
-import { INode, IValueNode, ITextNode, IElement, ICommentNode, NodeTypes } from './base';
+import { thread } from '../workers';
+
+import {
+  INode,
+  IValueNode,
+  ITextNode,
+  IElement,
+  ICommentNode,
+  NodeTypes,
+  ContainerNode
+} from './base';
 
 /*
 TODOS:
@@ -23,21 +33,19 @@ export class ValueNodeChange extends NodeChange<ITextNode> {
   }
 }
 
-export default function diff(oldNode:INode, newNode:INode):Array<INodeChange> {
-  const changes = [];
-  addNodeChanges(oldNode, newNode, changes);
-  return changes;
-}
 
-function addNodeChanges(oldNode:INode, newNode:INode, changes:Array<INodeChange>) {
-  switch(oldNode.nodeType) {
-    case NodeTypes.TEXT: return addValueNodeChange(<IValueNode>oldNode, <IValueNode>newNode, changes);
-    case NodeTypes.COMMENT: return addValueNodeChange(<IValueNode>oldNode, <IValueNode>newNode, changes);
+class VNode extends ContainerNode {
+  constructor(readonly target:INode) {
+    super();
+    if (target instanceof ContainerNode) {
+      // (<ContainerNode>(target.appendChild)
+    }
   }
 }
 
-function addValueNodeChange(oldNode:IValueNode, newNode:IValueNode, changes:Array<INodeChange>) {
-  if (oldNode.nodeValue !== newNode.nodeValue) {
-    changes.push(new ValueNodeChange(oldNode, newNode.nodeValue));
-  }
-}
+
+// TODO - use web workers to compute this
+export default thread(function(oldNode:INode, newNode:INode):Array<INodeChange> {
+  return [];
+});
+

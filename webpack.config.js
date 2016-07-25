@@ -1,5 +1,7 @@
-var webpack = require('webpack');
-var path    = require('path');
+var webpack           = require('webpack');
+var path              = require('path');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 
 module.exports =  {
   entry: {
@@ -20,24 +22,20 @@ module.exports =  {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.TESTING': process.env.TESTING === '1'
-    })
+    }),
+    new ExtractTextPlugin('styles.css')
   ],
   node: {
     __filename: true
-  },
-  externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM'
   },
   module: {
     loaders: [
       {
         test: /\.scss$/,
-        loader: [
-          getModuleDirectory('style-loader'),
+        loader: ExtractTextPlugin.extract([
           getModuleDirectory('css-loader'),
           getModuleDirectory('sass-loader')
-        ].join('!')
+        ])
       },
       {
         test: /\.(png|jpg|gif|eot|ttf|woff)$/,
@@ -45,10 +43,9 @@ module.exports =  {
       },
       {
         test: /\.css$/,
-        loader: [
-          getModuleDirectory('style-loader'),
+        loader: ExtractTextPlugin.extract([
           getModuleDirectory('css-loader')
-        ].join('!')
+        ])
       },
       {
         test: /\.peg$/,
