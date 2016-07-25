@@ -24,6 +24,6 @@ describe(__filename + "#", function() {
     currentChild.appendChild(currentChild = new Element("span"));
     currentChild.appendChild(currentChild = new Element("div"));
     currentChild.appendChild(currentChild = new Element("div"));
-    expect(findNode(getNodePath(currentChild), root)).to.eql(currentChild);
+    expect(findNode<any>(getNodePath(currentChild), root)).to.eql(currentChild);
   });
 });

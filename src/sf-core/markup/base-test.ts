@@ -67,6 +67,18 @@ describe(__filename + "#", () => {
       element.setAttribute("a", "b");
       expect(element.getAttribute("a")).to.equal("b");
     });
+
+    it("returns TRUE if an attribute exists", function() {
+      const element = new Element("div");
+      element.setAttribute("a", "b");
+      expect(element.hasAttribute("a")).to.equal(true);
+    });
+
+    it("returns FALSE if an attribute does not exists", function() {
+      const element = new Element("div");
+      element.setAttribute("a", "b");
+      expect(element.hasAttribute("b")).to.equal(false);
+    });
   });
 
   describe("TextNode", function() {

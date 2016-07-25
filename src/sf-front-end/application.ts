@@ -1,5 +1,6 @@
 
 import { Application } from 'sf-common/applications';
+import { thread, isMaster } from 'sf-core/workers';
 
 // services
 import { fragment as projectsFragment } from './services/project';

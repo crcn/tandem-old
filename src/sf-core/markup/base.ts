@@ -3,7 +3,7 @@
  */
 
 export interface IAttribute {
-  key:string;
+  name:string;
   value:any;
 }
 
@@ -11,6 +11,7 @@ export interface INode {
   parentNode:IContainerNode;
   readonly nodeType:number;
   readonly nodeName:string;
+  cloneNode():INode;
   // nextSibling:INode;
   // prevSibling:INode;
 }
@@ -28,6 +29,8 @@ export interface IValueNode extends INode {
 
 export interface IElement extends IContainerNode {
   readonly attributes:Array<IAttribute>;
+  hasAttribute(key:string):boolean;
+  removeAttribute(key:string):void;
   getAttribute(key:string):any;
   setAttribute(key:string, value:any);
 }
@@ -48,7 +51,7 @@ export class NodeTypes {
  */
 
 export class Attribute implements IAttribute {
-  constructor(public key:string, public value:any) { }
+  constructor(public name:string, public value:any) { }
 }
 
 export abstract class Node implements INode {
@@ -67,6 +70,8 @@ export abstract class Node implements INode {
   protected willUnmount() {
 
   }
+
+  abstract cloneNode():INode;
 }
 
 export abstract class ContainerNode extends Node implements IContainerNode {
@@ -130,20 +135,52 @@ export class Element extends ContainerNode implements IElement {
     super();
   }
 
+  hasAttribute(key:string) {
+    for (const attribute of this.attributes) {
+      if (attribute.name === key) return true;
+    }
+    return false;
+  }
+
+  removeAttribute(key:string) {
+    for (let i = this.attributes.length; i--;) {
+      const attribute = this.attributes[i];
+      if (attribute.name === key) {
+        this.attributes.splice(i, 1);
+        return;
+      }
+    }
+  }
+
   getAttribute(key:string):any {
     for (const attribute of this.attributes) {
-      if (attribute.key === key) return attribute.value;
+      if (attribute.name === key) return attribute.value;
     }
   }
   setAttribute(key:string, value:any) {
     for (const attribute of this.attributes) {
-      if (attribute.key === key) {
+      if (attribute.name === key) {
         attribute.value = value;
         return;
       };
     }
 
     this.attributes.push(new Attribute(key, value));
+  }
+
+  cloneNode() {
+    var clone = this.cloneInstance();
+    for (const attribute of this.attributes) {
+      clone.setAttribute(attribute.name, attribute.value);
+    }
+    for (const child of this.childNodes) {
+      clone.appendChild(child.cloneNode());
+    }
+    return clone;
+  }
+
+  protected cloneInstance() {
+    return new Element(this.nodeName);
   }
 }
 
@@ -156,8 +193,14 @@ export class ValueNode extends Node implements IValueNode {
 export class TextNode extends ValueNode {
   readonly nodeType:number = NodeTypes.TEXT;
   readonly nodeName: string = "#text";
+  cloneNode() {
+    return new TextNode(this.nodeValue);
+  }
 }
 export class CommentNode extends ValueNode {
   readonly nodeType:number = NodeTypes.COMMENT;
   readonly nodeName: string = "#comment";
+  cloneNode() {
+    return new TextNode(this.nodeValue);
+  }
 }
