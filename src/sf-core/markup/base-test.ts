@@ -60,18 +60,18 @@ describe(__filename + "#", () => {
 
   describe("Element#", function() {
     it("can be created", function() {
-      expect(new Element('name').nodeName).to.equal('name');
+      expect(new Element("name").nodeName).to.equal("name");
     });
     it("can set an attribute value", function() {
-      const element = new Element('div');
-      element.setAttribute('a', 'b');
-      expect(element.getAttribute('a')).to.equal('b');
+      const element = new Element("div");
+      element.setAttribute("a", "b");
+      expect(element.getAttribute("a")).to.equal("b");
     });
   });
 
   describe("TextNode", function() {
     it("can be created", function() {
-      new TextNode('value');
+      new TextNode("value");
     });
   });
 });

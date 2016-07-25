@@ -1,8 +1,8 @@
-import { findNode, getNodePath } from './utils';
-import { expect } from 'chai';
-import { Element } from './base';
+import { findNode, getNodePath } from "./utils";
+import { expect } from "chai";
+import { Element } from "./base";
 
-describe(__filename + '#', function() {
+describe(__filename + "#", function() {
   it("can find the node path of a root element", function() {
     const element = new Element("div");
     expect(getNodePath(element).length).to.equal(0);

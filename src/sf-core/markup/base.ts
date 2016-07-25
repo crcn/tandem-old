@@ -21,7 +21,7 @@ export interface IContainerNode  extends INode {
   insertBefore(child:INode, existingChild:INode);
 }
 
-export interface IValueNode {
+export interface IValueNode extends INode {
   nodeValue:any;
 }
 
@@ -146,12 +146,12 @@ export class Element extends ContainerNode implements IElement {
   }
 }
 
-export class TextNode implements IValueNode {
+export class ValueNode extends Node implements IValueNode {
   readonly nodeType:number = NodeTypes.TEXT;
-  constructor(public nodeValue:string) { }
+  constructor(public nodeValue:string) {
+    super();
+  }
 }
 
-export class CommentNode implements IValueNode {
-  readonly nodeType:number = NodeTypes.COMMENT;
-  constructor(public nodeValue:string) { }
-}
+export class TextNode extends ValueNode {}
+export class CommentNode extends ValueNode {}
