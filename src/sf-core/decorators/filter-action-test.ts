@@ -1,8 +1,8 @@
-import { Action } from "sf-base/actions";
+import { Action } from "sf-core/actions";
 import { InsertAction } from "../actions";
 import filterAction from "./filter-action";
 import { expect } from "chai";
-import { Service } from "sf-base/services";
+import { Service } from "sf-core/services";
 
 describe(__filename + "#", function() {
   it("can filter for actions invoked on a service method", async () => {

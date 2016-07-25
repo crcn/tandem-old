@@ -11,7 +11,7 @@ import * as gaze from 'gaze';
 import * as sift from 'sift';
 
 import { Logger } from 'sf-core/logger';
-import { IApplication } from 'sf-base/application';
+import { IApplication } from 'sf-core/application';
 import { UpsertAction } from 'sf-core/actions';
 import { loggable } from 'sf-core/decorators';
 import { BaseApplicationService } from 'sf-core/services';

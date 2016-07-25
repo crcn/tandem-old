@@ -1,6 +1,6 @@
 import { ApplicationServiceFragment } from 'sf-core/fragments';
 import { BaseApplicationService } from 'sf-core/services';
-import { IApplication } from 'sf-base/application';
+import { IApplication } from 'sf-core/application';
 
 export class TextTool extends BaseApplicationService<IApplication> {
 

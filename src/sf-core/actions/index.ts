@@ -1,4 +1,6 @@
-import { Action } from "sf-base/actions";
+import { Action } from "./base";
+
+export { Action };
 
 export interface Change {
   target: any;

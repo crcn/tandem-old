@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { IActor } from 'sf-base/actors';
-import { IApplication } from 'sf-base/application';
-import { IFactory, BaseFragment, FragmentDictionary } from 'sf-base/fragments';
+import { IActor } from 'sf-core/actors';
+import { IApplication } from 'sf-core/application';
+import { IFactory, BaseFragment, FragmentDictionary } from 'sf-core/fragments';
 
 import { KeyBinding } from 'sf-front-end/key-bindings/base';
 

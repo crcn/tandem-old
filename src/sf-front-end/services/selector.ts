@@ -1,5 +1,5 @@
-import { loggable, isPublic } from 'sf-core/decorators';
-import { IApplication }  from 'sf-base/application';
+import { loggable, bindable, isPublic } from 'sf-core/decorators';
+import { IApplication }  from 'sf-core/application';
 import { BaseApplicationService } from 'sf-core/services';
 import { ApplicationServiceFragment } from 'sf-core/fragments';
 
@@ -8,6 +8,7 @@ export default class SelectorService extends BaseApplicationService<IApplication
   load() {
     (this.app as any).selection = [];
   }
+
 
   @isPublic
   selectAtSourceOffset({ data }) {
@@ -77,9 +78,7 @@ export default class SelectorService extends BaseApplicationService<IApplication
       }
     }
 
-    (app as any).setProperties({
-      selection: newSelection
-    });
+    // this.selection = newSelection;
   }
 }
 

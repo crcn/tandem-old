@@ -7,6 +7,8 @@ var rootExpression = HTMLParser.parse(`<div>
 `);
 
 
+function update()
+
 class EntityOptions {
   fragments:FragmentDictionary;
 }

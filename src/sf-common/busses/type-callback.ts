@@ -1,5 +1,5 @@
-import { IActor } from 'sf-base/actors';
-import { Action } from 'sf-base/actions';
+import { IActor } from 'sf-core/actors';
+import { Action } from 'sf-core/actions';
 import { WrapBus, EmptyResponse } from 'mesh';
 
 export default class TypeCallbackBus implements IActor {

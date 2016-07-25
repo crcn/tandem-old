@@ -1,5 +1,5 @@
-import { Service } from 'sf-base/services';
-import { ClassFactoryFragment } from 'sf-base/fragments';
+import { Service } from 'sf-core/services';
+import { ClassFactoryFragment } from 'sf-core/fragments';
 import { LogAction } from 'sf-core/actions';
 import document from 'sf-core/decorators/document';
 import * as sift from 'sift';

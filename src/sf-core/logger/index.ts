@@ -1,6 +1,6 @@
 import * as LogLevel from "./levels";
 
-import { IActor } from "sf-base/actors";
+import { IActor } from "sf-core/actors";
 import { sprintf } from "sprintf";
 import { LogAction } from "../actions";
 

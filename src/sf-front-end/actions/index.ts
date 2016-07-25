@@ -1,4 +1,4 @@
-import { Action } from 'sf-base/actions';
+import { Action } from 'sf-core/actions';
 
 export const STAGE_CANVAS_MOUSE_DOWN = 'stageCanvasMouseDown';
 export class MouseEvent extends Action {

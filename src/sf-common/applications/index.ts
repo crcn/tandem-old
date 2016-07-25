@@ -5,9 +5,9 @@ import { ApplicationSingletonFragment } from 'sf-core/fragments';
 import { LoadAction, InitializeAction } from "sf-core/actions";
 import { fragment as consoleLogServiceFragment } from "../services/console-output";
 
-import { IActor } from "sf-base/actors";
-import { IApplication } from "sf-base/application";
-import { FragmentDictionary } from "sf-base/fragments";
+import { IActor } from "sf-core/actors";
+import { IApplication } from "sf-core/application";
+import { FragmentDictionary } from "sf-core/fragments";
 
 import { ParallelBus } from "mesh";
 

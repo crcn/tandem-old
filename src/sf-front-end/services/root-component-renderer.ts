@@ -3,9 +3,9 @@ import * as ReactDOM from "react-dom";
 import { filterAction, loggable } from "sf-core/decorators";
 
 import { Logger } from 'sf-core/logger';
-import { IApplication } from "sf-base/application";
+import { IApplication } from "sf-core/application";
 import { BaseApplicationService } from "sf-core/services";
-import { ClassFactoryFragment } from "sf-base/fragments";
+import { ClassFactoryFragment } from "sf-core/fragments";
 import { ApplicationServiceFragment } from "sf-core/fragments";
 import { RootReactComponentFragment } from "sf-front-end/fragments";
 

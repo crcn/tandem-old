@@ -1,5 +1,5 @@
 import { Action } from "../actions";
-import { Service } from "./index";
+import { Service } from "./base";
 import { expect } from "chai";
 import { BufferedBus } from "mesh";
 

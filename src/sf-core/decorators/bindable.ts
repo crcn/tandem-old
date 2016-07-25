@@ -1,4 +1,4 @@
-import { IInvoker } from 'sf-base/actors';
+import { IInvoker } from 'sf-core/actors';
 
 // TODO
 export default function bindable() {

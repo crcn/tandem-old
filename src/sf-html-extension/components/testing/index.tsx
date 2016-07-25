@@ -1,4 +1,4 @@
- import { IApplication } from 'sf-base/application';
+ import { IApplication } from 'sf-core/application';
  import {RootReactComponentFragment} from 'sf-front-end/fragments';
 
  import * as React  from 'react';

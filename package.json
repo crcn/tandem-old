@@ -40,7 +40,6 @@
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
     "sf-back-end": "file:./lib/sf-back-end",
-    "sf-base": "file:./lib/sf-base",
     "sf-common": "file:./lib/sf-common",
     "sf-core": "file:./lib/sf-core",
     "sf-front-end": "file:./lib/sf-front-end",

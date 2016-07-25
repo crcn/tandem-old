@@ -1,7 +1,7 @@
 import {
   FragmentDictionary,
   BaseFragment
-} from "./index";
+} from "./base";
 
 import { expect } from "chai";
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FactoryFragment } from 'sf-base/fragments';
+import { FactoryFragment } from 'sf-core/fragments';
 
 /**
  */

@@ -3,10 +3,10 @@ import { Logger } from 'sf-core/logger';
 import { loggable, isPublic, document } from 'sf-core/decorators';
 import * as SocketIOBus from 'mesh-socket-io-bus';
 
-import { Service } from 'sf-base/services';
+import { Service } from 'sf-core/services';
 import { ParallelBus } from 'mesh';
 
-import { IApplication } from 'sf-base/application';
+import { IApplication } from 'sf-core/application';
 import { BaseApplicationService } from 'sf-core/services';
 
 @loggable()

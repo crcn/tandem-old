@@ -1,6 +1,6 @@
 import { Logger } from "../logger";
 import { NoopBus } from "mesh";
-import { IInvoker } from "sf-base/actors";
+import { IInvoker } from "sf-core/actors";
 
 const noopBus = new NoopBus();
 

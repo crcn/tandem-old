@@ -1,5 +1,5 @@
-import { Service } from 'sf-base/services';
-import { IApplication } from 'sf-base/application';
+import { Service } from 'sf-core/services';
+import { IApplication } from 'sf-core/application';
 
 import {
   IFactory,
@@ -7,9 +7,11 @@ import {
   SingletonFragment,
   FragmentDictionary,
   ClassFactoryFragment
- } from 'sf-base/fragments';
+ } from 'sf-core/fragments';
 
 // TODO - add more static find methods to each fragment here
+
+export * from './base';
 
 /**
  */
@@ -45,3 +47,26 @@ export class ApplicationSingletonFragment extends SingletonFragment<IApplication
     return fragments.query<ApplicationSingletonFragment>(APPLICATION_SINGLETON_NS);
   }
 }
+
+/**
+ */
+
+// export const ENTITIES_NS = 'entities';
+// export class EntityFactoryFragment extends BaseFragment {
+
+//   constructor(id:string, private _clazz:{ new(expression:IExpression):IEntity }) {
+//     super([ENTITIES_NS, id].join('/'));
+//   }
+
+//   create(expression:IExpression) {
+//     return new this._clazz(expression);
+//   }
+
+//   static find(id:string, fragments:FragmentDictionary) {
+//     return fragments.query<EntityFactoryFragment>([ENTITIES_NS, id].join('/'))
+//   }
+
+//   static createEntity(expression:IExpression, fragments:FragmentDictionary) {
+//     return this.find(expression.type, fragments).create(expression);
+//   }
+// }

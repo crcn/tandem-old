@@ -2,7 +2,7 @@ import * as chalk from 'chalk';
 
 import * as readline from 'readline';
 
-import { IApplication } from 'sf-base/application';
+import { IApplication } from 'sf-core/application';
 
 import { Logger } from 'sf-core/logger';
 import { loggable, document } from 'sf-core/decorators';

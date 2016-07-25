@@ -1,5 +1,5 @@
-import { IActor } from 'sf-base/actors';
-import { IApplication } from 'sf-base/application';
+import { IActor } from 'sf-core/actors';
+import { IApplication } from 'sf-core/application';
 import { ApplicationServiceFragment } from 'sf-core/fragments';
 import { BaseApplicationService } from 'sf-core/services';
 import { loggable, isPublic, document } from 'sf-core/decorators';

@@ -2,13 +2,13 @@ import { isPublic, loggable } from 'sf-core/decorators';
 import * as sift from 'sift';
 import * as ArrayDsBus from 'mesh-array-ds-bus';
 
-import { IActor } from 'sf-base/actors';
+import { IActor } from 'sf-core/actors';
 import { AcceptBus } from 'mesh';
 import { Logger } from 'sf-core/logger';
 import { FindAllAction } from 'sf-core/actions';
 import { ApplicationServiceFragment } from 'sf-core/fragments';
 import { BaseApplicationService } from 'sf-core/services';
-import { IApplication } from 'sf-base/application';
+import { IApplication } from 'sf-core/application';
 
 // @observable
 // class Projects extends Collection<any> { }

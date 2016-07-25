@@ -2,7 +2,7 @@ Busses (from [mesh](//mesh.js.org)) are `IActors` that control the flow of Actio
 synonmyous to the `Mediator` pattern, but are a) more robust, and b) less opinionated. Here's an example:
 
 ```javascript
-import { Action } from 'sf-base/actions';
+import { Action } from 'sf-core/actions';
 import { ParallelBus, BufferedBus } from 'mesh';
 import ProxyBus from './proxy';
 

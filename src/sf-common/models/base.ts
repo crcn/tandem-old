@@ -1,5 +1,5 @@
-// import { Action } from 'sf-base/actions';
-// import { IActor, IInvoker } from "sf-base/actors";
+// import { Action } from 'sf-core/actions';
+// import { IActor, IInvoker } from "sf-core/actors";
 
 // // TODO - implement
 

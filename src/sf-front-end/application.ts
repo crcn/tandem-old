@@ -12,6 +12,7 @@ import { fragment as rootComponentRendererFragment } from './services/root-compo
 import { fragment as keyBindingsFragment } from './key-bindings';
 
 // extensions
+import { fragment as domExtensionFragment } from 'sf-dom-extension';
 import { fragment as htmlExtensionFragment } from 'sf-html-extension';
 
 export default class FrontEndApplication extends Application {
@@ -31,7 +32,8 @@ export default class FrontEndApplication extends Application {
       keyBindingsFragment,
 
       // extensions
-      htmlExtensionFragment
+      htmlExtensionFragment,
+      domExtensionFragment
     );
   }
 }
