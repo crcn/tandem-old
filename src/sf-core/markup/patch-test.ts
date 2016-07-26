@@ -21,7 +21,7 @@ describe(__filename + '#', function() {
     ['<div id="a" />', '<div id="b" />'],
 
     // remove attribute
-    ['<div />', '<div id="b" />'],
+    ['<div  id="b" />', '<div />'],
 
     // add child
     ['<div />', '<div>hello</div>'],
@@ -39,25 +39,24 @@ describe(__filename + '#', function() {
 
     ['<div>hello</div>', '<div>hello<!--world--></div>'],
 
+    // <li>1</li><li>2</li><li>3</li><li>0</li>
+    // <li>3</li><li>1</li><li>2</li><li>0</li>
+
     [
-      `<div class="another-box" id="something">
-          <ul>
-            <li>5</li>
-            <li>4</li>
-            <li>3</li>
-            <li>2</li>
-          </ul>
+      `<div><ul><li>1</li><li>2</li><li>3</li></ul></div>`,
+      `<div><ul><li>3</li><li>2</li><li>1</li><li>0</li></ul></div>`
+    ],
+
+    [
+      `<div>
+          <h1>1</h1>
+          <h2>2</h2>
+          <h3>3</h3>
         </div>`,
-      `<div class="box" style="color:red;">
-          <ul>
-            <li>1</li>
-            <li>2</li>
-            <li>3</li>
-            <li>4</li>
-            <li>5</li>
-            <li>6</li>
-            <li>7</li>
-          </ul>
+      `<div>
+          <h3>3</h3>
+          <h2>2</h2>
+          <h1>1</h1>
         </div>`
     ],
 
@@ -65,9 +64,9 @@ describe(__filename + '#', function() {
   ].forEach(function([source, destSource]) {
     it(`can diff and patch ${source} to ${destSource}`, function() {
       var a = document.createElement('div');
-      a.innerHTML = source.replace(/[\n\r\s\t]+/g, " ");
+      a.innerHTML = source.replace(/>[\s\n\t\r]+</g, "><");
       var b = document.createElement('div');
-      b.innerHTML = destSource.replace(/[\n\r\s\t]+/g, " ");
+      b.innerHTML = destSource.replace(/>[\s\n\t\r]+</g, "><");
       const changes = diff(a as any, b as any);
       patch(a as any, changes);
       expect(a.innerHTML).to.equal(b.innerHTML);

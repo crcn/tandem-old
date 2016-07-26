@@ -1,5 +1,3 @@
-import { findNode, getNodePath } from './utils';
-
 import {
   INode,
   IValueNode,
@@ -17,96 +15,89 @@ TODOS:
 
 interface INodeChange {
   readonly type:string;
-  readonly nodePath:Array<number>;
-  readonly node:INode;
 }
 
 export abstract class NodeChange<T extends INode> implements INodeChange {
-  readonly nodePath:Array<number>;
-  constructor(readonly type:string, readonly node:T) {
-    this.nodePath = getNodePath(node);
+  constructor(readonly type:string) {
+
+  }
+}
+
+export const MOVE_CURSOR = 'moveCursor';
+export class MoveCursorChange extends NodeChange<INode> {
+  constructor(readonly childIndex:number) {
+    super(MOVE_CURSOR);
   }
 }
 
 export const REMOVE_CHILD = 'removeChild';
 export class RemoveChildChange extends NodeChange<INode> {
-  constructor(readonly node:INode) {
-    super(REMOVE_CHILD, node);
+  constructor(readonly index:number) {
+    super(REMOVE_CHILD);
   }
 }
 
 export const ADD_CHILD = 'addChild';
 export class AddChildChange extends NodeChange<INode> {
   constructor(readonly node:INode) {
-    super(ADD_CHILD, node);
+    super(ADD_CHILD);
   }
 }
 
 export const SET_NODE_VALUE = 'setNodeValue';
 export class SetNodeValueChange extends NodeChange<IValueNode> {
-  constructor(node:IValueNode, readonly nodeValue:any) {
-    super(SET_NODE_VALUE, node);
+  constructor(readonly index:number, readonly nodeValue:any) {
+    super(SET_NODE_VALUE);
   }
 }
 
 export const SET_ATTRIBUTE = 'setAttribute';
 export class SetAttributeChange extends NodeChange<IElement> {
-  constructor(node:IElement, readonly key:string, readonly value:any) {
-    super(SET_ATTRIBUTE, node);
+  constructor(readonly name:string, readonly value:any) {
+    super(SET_ATTRIBUTE);
   }
 }
 
 export const REMOVE_ATTRIBUTE = 'removeAttribute';
 export class RemoveAttributeChange extends NodeChange<IElement> {
-  constructor(node:IElement, readonly key:string) {
-    super(REMOVE_ATTRIBUTE, node);
+  constructor(readonly name:string) {
+    super(REMOVE_ATTRIBUTE);
   }
 }
 
 export const MOVE_CHILD = 'moveChild';
 export class MoveChildChange extends NodeChange<INode> {
-  readonly toPath:Array<number>;
-  constructor(node:INode, newNode:INode) {
-    super(MOVE_CHILD, node);
-    this.toPath = getNodePath(newNode);
+  constructor(readonly fromIndex:number, readonly toIndex:number) {
+    super(MOVE_CHILD);
   }
 }
 
-class VNode extends ContainerNode {
-  constructor(readonly target:INode) {
-    super();
-    if (target.nodeType === NodeTypes.ELEMENT) {
-      Array.prototype.forEach.apply((<IElement>target).childNodes, (child) => {
-        this.appendChild(new VNode(target));
-      });
-    }
-  }
-  cloneNode(deep?:boolean) {
-    const clone = new VNode(this.target);
-    if (deep) {
-      for (const child of this.childNodes) {
-        clone.appendChild(child.cloneNode(deep));
-      }
-    }
-    return clone;
+export const INDEX_DOWN = 'indexDown';
+export class IndexDownChange extends NodeChange<INode> {
+  constructor(readonly index:number) {
+    super(INDEX_DOWN);
   }
 }
 
+export const INDEX_UP = 'indexUp';
+export class IndexUpChange extends NodeChange<INode> {
+  constructor() {
+    super(INDEX_UP);
+  }
+}
 
 // TODO - use web workers to compute this
 export function diff(oldNode:INode, newNode:INode):Array<INodeChange> {
   const changes = [];
-  // const anode = new VNode(oldNode);
-  // const bnode = new VNode(newNode);
-
   addChanges([oldNode], [newNode], changes);
   return changes;
 };
 
 function addChanges(unmatchedOldNodes:Array<INode>, unmatchedNewNodes:Array<INode>, changes:Array<INodeChange>) {
 
-  const mutationChanges:Array<INodeChange> = [];
-  // const newChildNodes = unmatchedOldNodes.concat();
+  const matchedNodes:Array<Array<INode>> = [];
+  const oldOrderedChildNodes = unmatchedOldNodes.concat();
+  const newOrderedChildNodes = unmatchedNewNodes.concat();
 
   // first match up the old and new nodes
   for (let i = 0; i < unmatchedNewNodes.length; i++) {
@@ -125,11 +116,10 @@ function addChanges(unmatchedOldNodes:Array<INode>, unmatchedNewNodes:Array<INod
     // and attributes
 
     let bestCandidate:INode;
-    let newNodeChanges = [];
 
     if (isValueNodeType(newNode)) {
       bestCandidate = candidates[0];
-      diffValueNode(<IValueNode>bestCandidate, <IValueNode>newNode, newNodeChanges);
+      diffValueNode(<IValueNode>bestCandidate, <IValueNode>newNode, changes);
     } else {
       let bestCandidateChanges = [];
       for (const candidate of candidates) {
@@ -148,23 +138,16 @@ function addChanges(unmatchedOldNodes:Array<INode>, unmatchedNewNodes:Array<INod
         }
       }
 
-      newNodeChanges = bestCandidateChanges;
+      if (bestCandidateChanges.length) {
+        if (bestCandidate.parentNode) {
+          bestCandidateChanges = [new IndexDownChange(getIndex(bestCandidate)), ...bestCandidateChanges, new IndexUpChange()];
+        }
+        changes.push(...bestCandidateChanges);
+      }
     }
 
     if (bestCandidate) {
-
-      // move the node
-      if (bestCandidate.parentNode) {
-
-        // may be working with the DOM here -- indexOf doesn't exist in childNodes prop  - use Array
-        // prototype work-around
-        if (Array.prototype.indexOf.call(bestCandidate.parentNode.childNodes, bestCandidate) !== Array.prototype.indexOf.call(newNode.parentNode.childNodes, newNode)) {
-          newNodeChanges.push(new MoveChildChange(bestCandidate, newNode));
-        }
-      }
-
-      mutationChanges.push(...newNodeChanges);
-
+      matchedNodes.push([bestCandidate, newNode]);
       unmatchedNewNodes.splice(unmatchedNewNodes.indexOf(newNode), 1);
       unmatchedOldNodes.splice(unmatchedOldNodes.indexOf(bestCandidate), 1);
       i--;
@@ -174,15 +157,32 @@ function addChanges(unmatchedOldNodes:Array<INode>, unmatchedNewNodes:Array<INod
   // next, remove the unmatched nodes
   // TODO - may need to reverse this
   for (const unmatchedNode of unmatchedOldNodes) {
-    changes.push(new RemoveChildChange(unmatchedNode));
+    const index = oldOrderedChildNodes.indexOf(unmatchedNode)
+    changes.push(new RemoveChildChange(index));
+    oldOrderedChildNodes.splice(oldOrderedChildNodes.indexOf(unmatchedNode), 1);
   }
 
-  // next, add the new nodes
+  // add the new nodes
   for (const unmatchedNode of unmatchedNewNodes) {
     changes.push(new AddChildChange(unmatchedNode));
+    matchedNodes.push([unmatchedNode, unmatchedNode]);
+    oldOrderedChildNodes.push(unmatchedNode);
   }
 
-  changes.push(...mutationChanges);
+  // shift everything around
+  for (const [oldNode, newNode] of matchedNodes) {
+    const oldNodeIndex = oldOrderedChildNodes.indexOf(oldNode);
+    const newNodeIndex = newOrderedChildNodes.indexOf(newNode);
+    if (oldNodeIndex !== newNodeIndex) {
+      oldOrderedChildNodes.splice(oldNodeIndex, 1);
+      oldOrderedChildNodes.splice(newNodeIndex, 0, oldNode);
+      changes.push(new MoveChildChange(oldNodeIndex, newNodeIndex))
+    }
+  }
+}
+
+function getIndex(node:INode) {
+  return node.parentNode ? Array.prototype.indexOf.call(node.parentNode.childNodes, node) : undefined;
 }
 
 function diffElement(oldElement:IElement, newElement:IElement, changes:Array<INodeChange>) {
@@ -192,13 +192,13 @@ function diffElement(oldElement:IElement, newElement:IElement, changes:Array<INo
   for (const attribute of newElement.attributes) {
     keepAttributes[attribute.name] = true;
     if (oldElement.getAttribute(attribute.name) !== attribute.value) {
-      changes.push(new SetAttributeChange(newElement, attribute.name, attribute.value));
+      changes.push(new SetAttributeChange(attribute.name, attribute.value));
     }
   }
 
   for (const attribute of oldElement.attributes) {
     if (!keepAttributes[attribute.name]) {
-        changes.push(new RemoveAttributeChange(newElement, attribute.name));
+      changes.push(new RemoveAttributeChange(attribute.name));
     }
   }
 
@@ -212,7 +212,7 @@ function diffElement(oldElement:IElement, newElement:IElement, changes:Array<INo
 
 function diffValueNode(oldValueNode:IValueNode, newValueNode:IValueNode, changes:Array<INodeChange>) {
   if (oldValueNode.nodeValue !== newValueNode.nodeValue) {
-    changes.push(new SetNodeValueChange(newValueNode, newValueNode.nodeValue));
+    changes.push(new SetNodeValueChange(getIndex(oldValueNode), newValueNode.nodeValue));
   }
 }
 
