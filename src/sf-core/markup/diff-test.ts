@@ -36,6 +36,8 @@ function comment(nodeValue) {
 
 describe(__filename + "#", function() {
 
+  class CustomElement1 extends Element { }
+  class CustomElement2 extends Element { }
 
   [
     [
@@ -76,6 +78,14 @@ describe(__filename + "#", function() {
       ),
       [
         new MoveChildChange(1, 0)
+      ]
+    ],
+    [
+      new CustomElement1('a'),
+      new CustomElement2('a'),
+      [
+        new RemoveChildChange(0),
+        new AddChildChange(undefined)
       ]
     ]
   ].forEach(function([oldNode, newNode, changeTypes]) {

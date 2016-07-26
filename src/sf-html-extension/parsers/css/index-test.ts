@@ -1,4 +1,4 @@
-import { parse } from "./index.peg";
+import { parse } from "./index";
 import { expect } from "chai";
 import {
   CSS_FUNCTION_CALL,

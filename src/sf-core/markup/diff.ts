@@ -122,7 +122,7 @@ function addChanges(unmatchedOldNodes:Array<IDiffableNode>, unmatchedNewNodes:Ar
 
     for (const oldNode of unmatchedOldNodes) {
       // node names must be identical for them to be candidates
-      if (oldNode.nodeName !== newNode.nodeName) continue;
+      if (oldNode.constructor !== newNode.constructor || oldNode.nodeName !== newNode.nodeName) continue;
       candidates.push(oldNode);
     }
 

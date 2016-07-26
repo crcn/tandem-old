@@ -2,6 +2,10 @@
  * Interfaces here reflect the DOM API, but not limited to it
  */
 
+/*
+TODOS - check for document fragments
+*/
+
 export interface IAttribute {
   name:string;
   value:any;
