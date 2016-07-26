@@ -1,12 +1,5 @@
 import {
-  INode,
-  IValueNode,
-  ITextNode,
-  IElement,
-  IAttribute,
-  ICommentNode,
-  NodeTypes,
-  ContainerNode
+  NodeTypes
 } from './base';
 
 /*
@@ -17,96 +10,115 @@ TODOS:
 
 */
 
-interface INodeChange {
+export interface INodeChange {
   readonly type:string;
 }
 
-export abstract class NodeChange<T extends INode> implements INodeChange {
+export interface IDiffableNode {
+  nodeName:string;
+  nodeType:number;
+}
+
+export interface IDiffableValueNode extends IDiffableNode {
+  nodeValue: string;
+}
+
+export interface IDiffableAttribute {
+  name: string;
+  value: any;
+}
+
+export interface IDiffableElement extends IDiffableNode {
+  attributes:Array<IDiffableAttribute>;
+  childNodes:Array<IDiffableNode>;
+}
+
+export abstract class NodeChange implements INodeChange {
   constructor(readonly type:string) {
 
   }
 }
 
 export const MOVE_CURSOR = 'moveCursor';
-export class MoveCursorChange extends NodeChange<INode> {
+export class MoveCursorChange extends NodeChange {
   constructor(readonly childIndex:number) {
     super(MOVE_CURSOR);
   }
 }
 
 export const REMOVE_CHILD = 'removeChild';
-export class RemoveChildChange extends NodeChange<INode> {
+export class RemoveChildChange extends NodeChange {
   constructor(readonly index:number) {
     super(REMOVE_CHILD);
   }
 }
 
 export const ADD_CHILD = 'addChild';
-export class AddChildChange extends NodeChange<INode> {
-  constructor(readonly node:INode) {
+export class AddChildChange extends NodeChange {
+  constructor(readonly node:IDiffableNode) {
     super(ADD_CHILD);
   }
 }
 
 export const SET_NODE_VALUE = 'setNodeValue';
-export class SetNodeValueChange extends NodeChange<IValueNode> {
+export class SetNodeValueChange extends NodeChange {
   constructor(readonly index:number, readonly nodeValue:any) {
     super(SET_NODE_VALUE);
   }
 }
 
 export const SET_ATTRIBUTE = 'setAttribute';
-export class SetAttributeChange extends NodeChange<IElement> {
+export class SetAttributeChange extends NodeChange {
   constructor(readonly name:string, readonly value:any) {
     super(SET_ATTRIBUTE);
   }
 }
 
 export const REMOVE_ATTRIBUTE = 'removeAttribute';
-export class RemoveAttributeChange extends NodeChange<IElement> {
+export class RemoveAttributeChange extends NodeChange {
   constructor(readonly name:string) {
     super(REMOVE_ATTRIBUTE);
   }
 }
 
 export const MOVE_CHILD = 'moveChild';
-export class MoveChildChange extends NodeChange<INode> {
+export class MoveChildChange extends NodeChange {
   constructor(readonly fromIndex:number, readonly toIndex:number) {
     super(MOVE_CHILD);
   }
 }
 
 export const INDEX_DOWN = 'indexDown';
-export class IndexDownChange extends NodeChange<INode> {
+export class IndexDownChange extends NodeChange {
   constructor(readonly index:number) {
     super(INDEX_DOWN);
   }
 }
 
 export const INDEX_UP = 'indexUp';
-export class IndexUpChange extends NodeChange<INode> {
+export class IndexUpChange extends NodeChange {
   constructor() {
     super(INDEX_UP);
   }
 }
 
 // TODO - use web workers to compute this
-export function diff(oldNode:INode, newNode:INode):Array<INodeChange> {
+export function diff(oldNode:IDiffableNode, newNode:IDiffableNode):Array<INodeChange> {
   const changes = [];
-  addChanges([oldNode], [newNode], changes);
+  addChanges([oldNode], [newNode], true, changes);
   return changes;
 };
 
-function addChanges(unmatchedOldNodes:Array<INode>, unmatchedNewNodes:Array<INode>, changes:Array<INodeChange>) {
+function addChanges(unmatchedOldNodes:Array<IDiffableNode>, unmatchedNewNodes:Array<IDiffableNode>, isRoot:boolean, changes:Array<INodeChange>) {
 
-  const matchedNodes:Array<Array<INode>> = [];
+  const matchedNodes:Array<Array<IDiffableNode>> = [];
   const oldOrderedChildNodes = unmatchedOldNodes.concat();
   const newOrderedChildNodes = unmatchedNewNodes.concat();
 
   // first match up the old and new nodes
   for (let i = 0; i < unmatchedNewNodes.length; i++) {
     const newNode = unmatchedNewNodes[i];
-    const candidates:Array<INode> = [];
+    const candidates:Array<IDiffableNode> = [];
 
     for (const oldNode of unmatchedOldNodes) {
       // node names must be identical for them to be candidates
@@ -119,11 +131,11 @@ function addChanges(unmatchedOldNodes:Array<INode>, unmatchedNewNodes:Array<INod
     // next, score the candidates according to the position, children,
     // and attributes
 
-    let bestCandidate:INode;
+    let bestCandidate:IDiffableNode;
 
     if (isValueNodeType(newNode)) {
       bestCandidate = candidates[0];
-      diffValueNode(<IValueNode>bestCandidate, <IValueNode>newNode, changes);
+      diffValueNode(oldOrderedChildNodes, <IDiffableValueNode>bestCandidate, <IDiffableValueNode>newNode, changes);
     } else {
       let bestCandidateChanges = [];
       for (const candidate of candidates) {
@@ -131,7 +143,7 @@ function addChanges(unmatchedOldNodes:Array<INode>, unmatchedNewNodes:Array<INod
 
         // TODO - add depth here so that this isn't so expensive. This is
         // kind of ratchet...
-        diffElement(<IElement>candidate, <IElement>newNode, candidateChanges);
+        diffElement(<IDiffableElement>candidate, <IDiffableElement>newNode, candidateChanges);
 
         // grab the candidate with the fewest changes
         // TODO - possibly weight each change as well -- adding attributes for instance is weighted
@@ -143,8 +155,8 @@ function addChanges(unmatchedOldNodes:Array<INode>, unmatchedNewNodes:Array<INod
       }
 
       if (bestCandidateChanges.length) {
-        if (bestCandidate.parentNode) {
-          bestCandidateChanges = [new IndexDownChange(getIndex(bestCandidate)), ...bestCandidateChanges, new IndexUpChange()];
+        if (!isRoot) {
+          bestCandidateChanges = [new IndexDownChange(oldOrderedChildNodes.indexOf(bestCandidate)), ...bestCandidateChanges, new IndexUpChange()];
         }
         changes.push(...bestCandidateChanges);
       }
@@ -185,17 +197,13 @@ function addChanges(unmatchedOldNodes:Array<INode>, unmatchedNewNodes:Array<INod
   }
 }
 
-function getIndex(node:INode) {
-  return node.parentNode ? Array.prototype.indexOf.call(node.parentNode.childNodes, node) : undefined;
-}
-
-function diffElement(oldElement:IElement, newElement:IElement, changes:Array<INodeChange>) {
+function diffElement(oldElement:IDiffableElement, newElement:IDiffableElement, changes:Array<INodeChange>) {
   const keepAttributes:any = {};
 
   // diff the attributes
   for (const attribute of newElement.attributes) {
     keepAttributes[attribute.name] = true;
-    if (oldElement.getAttribute(attribute.name) !== attribute.value) {
+    if (oldElement.attributes[attribute.name] == undefined || oldElement.attributes[attribute.name].value !== attribute.value) {
       changes.push(new SetAttributeChange(attribute.name, attribute.value));
     }
   }
@@ -210,16 +218,17 @@ function diffElement(oldElement:IElement, newElement:IElement, changes:Array<INo
   addChanges(
     Array.prototype.slice.call(oldElement.childNodes),
     Array.prototype.slice.call(newElement.childNodes),
+    false,
     changes
   );
 }
 
-function diffValueNode(oldValueNode:IValueNode, newValueNode:IValueNode, changes:Array<INodeChange>) {
+function diffValueNode(oldChildNodes:Array<IDiffableNode>, oldValueNode:IDiffableValueNode, newValueNode:IDiffableValueNode, changes:Array<INodeChange>) {
   if (oldValueNode.nodeValue !== newValueNode.nodeValue) {
-    changes.push(new SetNodeValueChange(getIndex(oldValueNode), newValueNode.nodeValue));
+    changes.push(new SetNodeValueChange(oldChildNodes.indexOf(oldValueNode), newValueNode.nodeValue));
   }
 }
 
-function isValueNodeType(node:INode) {
+function isValueNodeType(node:IDiffableNode) {
   return [NodeTypes.COMMENT, NodeTypes.TEXT].indexOf(node.nodeType) !== -1;
 }

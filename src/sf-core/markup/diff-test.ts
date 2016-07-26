@@ -50,7 +50,7 @@ describe(__filename + "#", function() {
       text('a'),
       text('b'),
       [
-        new SetNodeValueChange(undefined, 'b')
+        new SetNodeValueChange(0, 'b')
       ]
     ],
     [

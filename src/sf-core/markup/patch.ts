@@ -32,7 +32,7 @@ import {
   RemoveAttributeChange
 } from './diff';
 
-export function patch(node:INode, changes:Array<NodeChange<any>>) {
+export function patch(node:INode, changes:Array<NodeChange>) {
   let parentNode = <IElement>node;
   let child;
   for (const change of changes) {
@@ -59,7 +59,9 @@ export function patch(node:INode, changes:Array<NodeChange<any>>) {
         break;
       case ADD_CHILD:
         const ac = <AddChildChange>change;
-        parentNode.appendChild(ac.node.cloneNode(true));
+
+        // TODO - need to use factory here
+        parentNode.appendChild((<INode>ac.node).cloneNode(true));
         break;
       case MOVE_CHILD:
         const mc = <MoveChildChange>change;

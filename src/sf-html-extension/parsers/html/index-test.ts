@@ -53,16 +53,16 @@ describe(__filename + `#`, () => {
 
     it("can parse attribute values", () => {
       const element = parse(`<div a="b" c="d" />`) as HTMLElementExpression;
-      expect(element.attributes[0].key).to.equal("a");
+      expect(element.attributes[0].name).to.equal("a");
       expect(element.attributes[0].value).to.equal("b");
-      expect(element.attributes[1].key).to.equal("c");
+      expect(element.attributes[1].name).to.equal("c");
       expect(element.attributes[1].value).to.equal("d");
     });
 
     it("can define attributes without any values", () => {
       const element = parse("<div a b />") as HTMLElementExpression;
       expect(element.attributes[0].value).to.equal("");
-      expect(element.attributes[0].key).to.equal("a");
+      expect(element.attributes[0].name).to.equal("a");
       expect(element.attributes[1].value).to.equal("");
     });
 
