@@ -60,6 +60,62 @@ describe(__filename + "#", () => {
         p1.insertBefore(new TestNode(), new TestNode());
       }).to.throw("Cannot insert a child before a node that doesn't exist in the parent.");
     });
+
+    it("can return the first child", function() {
+      const p1 = new TestNode();
+      let first;
+      p1.appendChild(first = new TextNode("a"));
+      expect(p1.firstChild).to.equal(first);
+    });
+
+    it("can return the last child", function() {
+      const p1 = new TestNode();
+      let last;
+      p1.appendChild(last = new TextNode("a"));
+      expect(p1.lastChild).to.equal(last);
+    });
+  });
+
+  describe("Node#", function() {
+    it("can return the next sibling", function() {
+      const el = new Element("div");
+      let a, b;
+      el.appendChild(a = new TextNode("a"));
+      el.appendChild(b = new TextNode("b"));
+      expect(a.nextSibling).to.equal(b);
+    });
+
+    it("next sibling is undefined if no parent", function() {
+      const a = new Element("div");
+      expect(a.nextSibling).to.equal(undefined);
+    });
+
+    it("next sibling is undefined if at end", function() {
+      const el = new Element("div");
+      let a, b;
+      el.appendChild(a = new TextNode("a"));
+      expect(a.nextSibling).to.equal(undefined);
+    });
+
+    it("can return the prev sibling", function() {
+      const el = new Element("div");
+      let a, b;
+      el.appendChild(a = new TextNode("a"));
+      el.appendChild(b = new TextNode("b"));
+      expect(b.prevSibling).to.equal(a);
+    });
+
+    it("prev sibling is undefined if at beginning", function() {
+      const el = new Element("div");
+      let a, b;
+      el.appendChild(a = new TextNode("a"));
+      expect(a.prevSibling).to.equal(undefined);
+    });
+
+    it("prev sibling is undefined if no parent", function() {
+      const a = new Element("div");
+      expect(a.prevSibling).to.equal(undefined);
+    });
   });
 
   describe("Element#", function() {

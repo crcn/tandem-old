@@ -12,8 +12,8 @@ export interface INode {
   readonly nodeType:number;
   readonly nodeName:string;
   cloneNode(deep?:boolean):INode;
-  // nextSibling:INode;
-  // prevSibling:INode;
+  nextSibling:INode;
+  prevSibling:INode;
 }
 
 export interface IContainerNode  extends INode {
@@ -21,6 +21,8 @@ export interface IContainerNode  extends INode {
   removeChild(child:INode);
   appendChild(child:INode);
   insertBefore(child:INode, existingChild:INode);
+  firstChild:INode;
+  lastChild:INode;
 }
 
 export interface IValueNode extends INode {
@@ -62,6 +64,13 @@ export abstract class Node implements INode {
     return this._parentNode;
   }
 
+  get nextSibling() {
+    return this.parentNode ? this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) + 1] : undefined;
+  }
+
+  get prevSibling() {
+    return this.parentNode ? this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) - 1] : undefined;
+  }
 
   protected didMount() {
 
@@ -80,6 +89,14 @@ export abstract class ContainerNode extends Node implements IContainerNode {
 
   get childNodes():Array<Node> {
     return this._childNodes;
+  }
+
+  get firstChild():INode {
+    return this._childNodes[0];
+  }
+
+  get lastChild():INode {
+    return this._childNodes[this._childNodes.length - 1];
   }
 
   appendChild(child:Node) {

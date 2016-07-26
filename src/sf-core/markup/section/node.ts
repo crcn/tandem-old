@@ -1,12 +1,13 @@
-import getPath from '../utils/node/get-path';
-import getNode from '../utils/node/get-node';
+import { getNodePath, findNode } from '../utils';
+import { IMarkupSectionMarker, IMarkupSection } from './base';
+import { IContainerNode, INode } from '../base';
 
 /**
  */
 
-export class Marker {
+export class NodeMarker {
 
-  private _path:Array<string>;
+  private _path:Array<number>;
   private _nodeFactory:any;
 
   constructor(path, nodeFactory) {
@@ -15,11 +16,11 @@ export class Marker {
   }
 
   getNode(rootNode) {
-    return getNode(rootNode, this._path);
+    return findNode(this._path, rootNode);
   }
 
   createSection(rootNode) {
-    return new NodeSection(this.getNode(rootNode), this._nodeFactory);
+    return new NodeSection(<IContainerNode>this.getNode(rootNode), this._nodeFactory);
   }
 }
 
@@ -27,19 +28,15 @@ export class Marker {
  * a section is a group of nodes contained within a
  */
 
-export default class NodeSection {
+export default class NodeSection implements IMarkupSection {
   private _placeholderNode:any;
-  
-  constructor(private _target:any, private _nodeFactory:any = document) {
+
+  constructor(private _target:IContainerNode, private _nodeFactory:any = document) {
 
   }
 
   appendChild(child) {
     this._target.appendChild(child);
-  }
-
-  toString() {
-    return this._target.outerHTML || this._target.nodeValue;
   }
 
   get childNodes() {
@@ -57,10 +54,6 @@ export default class NodeSection {
 
   get visible() {
     return !this._placeholderNode;
-  }
-
-  get innerHTML() {
-    return this._target.innerHTML;
   }
 
   toFragment() {
@@ -102,14 +95,14 @@ export default class NodeSection {
   /**
    */
 
-  createMarker() { 
-    return new Marker(getPath(this._target), this._nodeFactory);
+  createMarker() {
+    return new NodeMarker(getNodePath(this._target), this._nodeFactory);
   }
 
   /**
    */
 
   clone() {
-    return new NodeSection(this.targetNode.cloneNode(true), this._nodeFactory);
+    return new NodeSection(<IContainerNode>this.targetNode.cloneNode(true), this._nodeFactory);
   }
 }

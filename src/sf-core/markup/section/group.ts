@@ -1,20 +1,21 @@
-import getPath from '../utils/node/get-path';
-import getNode from '../utils/node/get-node';
+import { getNodePath, findNode } from '../utils';
+import { IMarkupSectionMarker, IMarkupSection } from './base';
+import { IContainerNode, INode } from '../base';
 
 /**
  */
 
-export class Marker {
+export class GroupMarker implements IMarkupSectionMarker {
   constructor(
-    private _startPath:Array<string>, 
-    private _endPath:Array<string>, 
+    private _startPath:Array<number>,
+    private _endPath:Array<number>,
     private _nodeFactory:any
   ) { }
 
-  createSection(rootNode) {
-    return new FragmentSection(
-      getNode(rootNode, this._startPath),
-      getNode(rootNode, this._endPath),
+  createSection(rootNode:IContainerNode) {
+    return new GroupMarkupSection(
+      findNode(this._startPath, rootNode),
+      findNode(this._endPath, rootNode),
       this._nodeFactory
     );
   }
@@ -24,11 +25,11 @@ export class Marker {
 /**
  * a section is a group of nodes contained within a
  */
- 
-export default class FragmentSection {
 
-  private _start:any;
-  private _end:any;
+export default class GroupMarkupSection implements IMarkupSection  {
+
+  private _start:INode;
+  private _end:INode;
   private _nodeFactory:any;
   private _hiddenChildren:Array<any>;
 
@@ -130,18 +131,18 @@ export default class FragmentSection {
     if (!this._hiddenChildren) return;
     var hiddenChildren = this._hiddenChildren;
     this._hiddenChildren = void 0;
-    for (var child of hiddenChildren) {
-      this._start.appendChild(child);
-    }
+    // for (var child of hiddenChildren) {
+    //   this._start.appendChild(child);
+    // }
   }
 
   /**
    */
 
   createMarker() {
-    return new Marker(
-      getPath(this._start),
-      getPath(this._end),
+    return new GroupMarkupSection(
+      getNodePath(this._start),
+      getNodePath(this._end),
       this._nodeFactory
     );
   }
@@ -154,7 +155,7 @@ export default class FragmentSection {
       throw new Error('cannot currently clone fragment section that is attached to an element.');
     }
 
-    var clone = this.targetNode.cloneNode(true);
-    return new FragmentSection(clone.firstChild, clone.lastChild, this._nodeFactory);
+    var clone = <IContainerNode>this.targetNode.cloneNode(true);
+    return new GroupMarkupSection(clone.firstChild, clone.lastChild, this._nodeFactory);
   }
 }
