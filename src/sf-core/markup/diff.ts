@@ -11,6 +11,10 @@ import {
 
 /*
 TODOS:
+
+- mutating arrays too much
+- need to add depth for finding best candidate
+
 */
 
 interface INodeChange {
