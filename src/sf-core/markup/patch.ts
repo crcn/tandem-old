@@ -46,15 +46,16 @@ export function patch(node:INode, changes:Array<NodeChange<any>>) {
         parentNode = <IElement>parentNode.childNodes[dc.index];
         break;
       case REMOVE_CHILD:
-        parentNode.removeChild(parentNode);
+        const rc = <RemoveChildChange>change;
+        parentNode.removeChild(parentNode.childNodes[rc.index]);
         break;
       case SET_ATTRIBUTE:
         const sc = <SetAttributeChange>change;
         parentNode.setAttribute(sc.name, sc.value);
         break;
       case REMOVE_ATTRIBUTE:
-        const rc = <SetAttributeChange>change;
-        parentNode.removeAttribute(rc.name);
+        const sa = <SetAttributeChange>change;
+        parentNode.removeAttribute(sa.name);
         break;
       case ADD_CHILD:
         const ac = <AddChildChange>change;

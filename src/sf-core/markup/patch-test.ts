@@ -60,6 +60,44 @@ describe(__filename + '#', function() {
         </div>`
     ],
 
+    [
+      `<div>
+          <h1>1</h1>
+          <h2>2</h2>
+          <h3>3</h3>
+        </div>`,
+      `<div><h1>hello</h1></div>`
+    ],
+
+    [
+      `<div>
+
+        <p>Click on the sun or on one of the planets to watch it closer:</p>
+
+        <img src="planets.gif" alt="Planets" usemap="#planetmap" style="width:145px;height:126px;">
+
+        <map name="planetmap">
+          <area shape="rect" coords="0,0,82,126" alt="Sun" href="sun.htm">
+          <area shape="circle" coords="90,58,3" alt="Mercury" href="mercur.htm">
+          <area shape="circle" coords="124,58,8" alt="Venus" href="venus.htm">
+        </map>
+
+        </div>`,
+
+        `<div>
+
+        <img src="exoplanets.gif" alt="Planets" style="width:145px;height:126px;">
+        <p>Click on the sun or on one of the planets to watch it closer:</p>
+
+        <map name="exoplanetmap">
+          <area shape="circle" coords="90,58,3" alt="Mercury" href="mercur.htm">
+          <area shape="rect" coords="0,0,82,126" alt="Sun" href="sun.htm">
+          <area shape="circle" coords="124,58,8" alt="Venus" href="venus.htm">
+        </map>
+
+        </div>`
+    ],
+
 
   ].forEach(function([source, destSource]) {
     it(`can diff and patch ${source} to ${destSource}`, function() {
