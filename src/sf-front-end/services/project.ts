@@ -57,9 +57,12 @@ export default class ProjectService extends BaseApplicationService<IApplication>
 
     if (this._projects.length) {
       this._projects[0].load();
-      (this.app as any).setProperties({
-        currentFile: this._projects[0]
-      });
+      (this.app as any).currentFile = this._projects[0];
+      // (this.app as any).setProperties({
+      //   currentFile: this._projects[0]
+      // });
+
+      this.bus.execute({ type: 'change'} as any);
     }
   }
 

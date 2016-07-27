@@ -5,7 +5,3 @@ export function getStyle(props, styleName, defaults) {
   return props.styles[styleName];
 }
 
-// react logs an error without this
-export function shutUpChange() {
-
-}

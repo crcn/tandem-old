@@ -1,8 +1,6 @@
 
 <div style="background-color:black; display:block; width:180.422px; height:77px; ">
-  
 </div>
-
-<div style="background-color: #FFF; color: orange; border-radius: 10px; padding:10px; position: relative; display:block; white-space: nowrap; left:73.219px; top:180.469px; width:181.922px; height:49.594px;">
+<div style="background-color: #F60; color: black; border-radius: 10px; padding:10px; position: relative; display:block; white-space: nowrap; left:73.219px; top:180.469px; width:181.922px; height:49.594px;">
   Hello World
 </div>

@@ -1,12 +1,8 @@
-THe HyperText Markup Language extension provides a set of tools and APIs
-for manipulating entities that are *based* off the language. This extension
-is not limited to the DOM, but is also adaptable to other platforms and rendering
-engines such as Canvas, WebGL, and others. 
+Saffron extension for manipulating
 
+TODOS:
 
- ### APIs
-
- Various APIs for other packages to use
-
-
- ####
+- [ ] Link entity - should watch linked files
+- [ ] sandboxed <script /> tags
+- [ ] template component
+- [ ] pass nodeFactory to entities instead of accessing document object

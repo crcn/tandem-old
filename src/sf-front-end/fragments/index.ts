@@ -29,3 +29,13 @@ export class RootReactComponentFragment extends ReactComponentFactoryFragment {
     return fragments.query<RootReactComponentFragment>(ROOT_COMPONENT_NS);
   }
 }
+
+export const ENTITY_PREVIEW_COMPONENT_NS = 'components/preview';
+export class EntityPreviewFragment extends ReactComponentFactoryFragment {
+  constructor(componentClass:React.ComponentClass<any>) {
+    super(ENTITY_PREVIEW_COMPONENT_NS, componentClass);
+  }
+  static find(fragments:FragmentDictionary) {
+    return fragments.query<RootReactComponentFragment>(ENTITY_PREVIEW_COMPONENT_NS);
+  }
+}

@@ -10,7 +10,7 @@ export default function () {
       get() {
         return this._logger || (this._logger = new Logger(
           this.bus || noopBus,
-          `${this.constructor.name}:`
+          `${this.constructor.name}: `
         ));
       }
     });

@@ -25,7 +25,7 @@ export class Application implements IApplication {
   public initialized: boolean = false;
 
   constructor(readonly config: any = {}) {
-    this._registerFragments();
+    this.registerFragments();
   }
 
   public async initialize() {
@@ -51,7 +51,7 @@ export class Application implements IApplication {
   /**
    */
 
-  protected _registerFragments() {
+  protected registerFragments() {
     if (!process.env.TESTING) {
       this.fragments.register(consoleLogServiceFragment);
     }

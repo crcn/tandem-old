@@ -2,6 +2,10 @@
 import { Application } from 'sf-common/applications';
 import { thread, isMaster } from 'sf-core/workers';
 
+// components
+import { fragment as rootComponentFragment } from './components/root';
+import { fragment as sfnStageComponentFragment } from './components/sfn-stage';
+
 // services
 import { fragment as projectsFragment } from './services/project';
 import { fragment as clipboardService } from './services/clipboard';
@@ -17,13 +21,21 @@ import { fragment as keyBindingsFragment } from './key-bindings';
 import { fragment as htmlExtensionFragment } from 'sf-html-extension';
 
 export default class FrontEndApplication extends Application {
-  _registerFragments() {
-    super._registerFragments();
+
+  stageTools = [];
+  currentTool = {};
+
+  protected registerFragments() {
+    super.registerFragments();
     this.fragments.register(
+
+      // components
+      rootComponentFragment,
+      sfnStageComponentFragment,
 
       // services
       clipboardService,
-      // projectsFragment,
+      projectsFragment,
       backEndServiceFragment,
       selectorServiceFragment,
       keyBindingsServiceFragment,

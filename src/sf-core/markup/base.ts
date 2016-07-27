@@ -24,6 +24,7 @@ export interface IContainerNode extends INode {
   removeChild(child:INode);
   appendChild(child:INode);
   insertBefore(child:INode, existingChild:INode);
+  flatten():Array<INode>;
   firstChild:INode;
   lastChild:INode;
 }
@@ -63,6 +64,14 @@ export abstract class Node implements INode {
     return this.parentNode ? this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) - 1] : undefined;
   }
 
+  flatten():Array<INode> {
+    return this._flattenDeep([]);
+  }
+
+  public _flattenDeep(nodes:Array<INode>) {
+    nodes.push(this);
+    return nodes;
+  }
   protected didMount() { }
   protected willUnmount() { }
 
@@ -83,6 +92,14 @@ export abstract class ContainerNode extends Node implements IContainerNode {
 
   get lastChild():INode {
     return this._childNodes[this._childNodes.length - 1];
+  }
+
+  _flattenDeep(nodes) {
+    nodes.push(this);
+    for (const child of this.childNodes) {
+      (<Node>child)._flattenDeep(nodes);
+    }
+    return nodes;
   }
 
   appendChild(child:INode) {
