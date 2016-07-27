@@ -4,7 +4,12 @@ export class HTMLNodePreview {
   constructor(readonly entity:any) {
 
   }
+  get node():Element {
+    return this.entity.section.targetNode;
+  }
+
   get bounds():BoundingRect {
-    return new BoundingRect(0, 0, 100, 100);
+    let { left, top, right, bottom } = this.node.getBoundingClientRect();
+    return new BoundingRect(left, top, right, bottom);
   }
 }
