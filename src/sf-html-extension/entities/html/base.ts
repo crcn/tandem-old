@@ -1,6 +1,7 @@
 import { IEntity, ElementEntity, ValueNodeEntity } from 'sf-core/entities';
 import { EntityFactoryFragment } from 'sf-core/fragments';
 import { HTMLElementExpression, HTMLTextExpression, HTMLCommentExpression, HTMLAttributeExpression } from '../../parsers/html/expressions';
+import { HTMLNodePreview } from './previews';
 import { IElement, INode, IContainerNode, Element, ValueNode, IDiffableValueNode, GroupNodeSection, NodeSection } from 'sf-core/markup';
 import TAG_NAMES from './tag-names';
 
@@ -84,6 +85,12 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
   }
 }
 
+export class VisibleHTMLElementEntity extends HTMLElementEntity {
+
+  // TODO - change to something such as DisplayComputer
+  readonly preview = new HTMLNodePreview(this)
+}
+
 export class HTMLDocumentFragmentEntity extends HTMLElementEntity {
   createSection() {
     return new GroupNodeSection();
@@ -134,7 +141,7 @@ export class HTMLCommentEntity extends HTMLValueNodeEntity {
   }
 }
 
-export const htmlElementFragments = TAG_NAMES.map((nodeName) => new EntityFactoryFragment(nodeName, HTMLElementEntity));
+export const htmlElementFragments = TAG_NAMES.map((nodeName) => new EntityFactoryFragment(nodeName, VisibleHTMLElementEntity));
 export const htmlTextFragment     = new EntityFactoryFragment('#text', HTMLTextEntity);
 export const htmlCommentFragment  = new EntityFactoryFragment('#comment', HTMLCommentEntity);
 export const htmlDocumentFragment = new EntityFactoryFragment('#document-fragment', HTMLDocumentFragmentEntity);

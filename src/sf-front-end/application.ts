@@ -5,6 +5,7 @@ import { thread, isMaster } from 'sf-core/workers';
 // components
 import { fragment as rootComponentFragment } from './components/root';
 import { fragment as sfnStageComponentFragment } from './components/sfn-stage';
+import { fragment as selectableToolComponentFragment } from './components/selectable-tool';
 
 // services
 import { fragment as projectsFragment } from './services/project';
@@ -22,8 +23,11 @@ import { fragment as htmlExtensionFragment } from 'sf-html-extension';
 
 export default class FrontEndApplication extends Application {
 
+  zoom = 1;
   stageTools = [];
-  currentTool = {};
+  currentTool = {
+    name: 'pointer'
+  };
 
   protected registerFragments() {
     super.registerFragments();
@@ -32,6 +36,7 @@ export default class FrontEndApplication extends Application {
       // components
       rootComponentFragment,
       sfnStageComponentFragment,
+      selectableToolComponentFragment,
 
       // services
       clipboardService,
