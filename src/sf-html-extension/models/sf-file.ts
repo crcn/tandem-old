@@ -26,7 +26,6 @@ export class SfFile {
   async load() {
     this._entity = await this._engine.load(parseHTML(this.content));
   }
-
 }
 
 export const fragment = new ClassFactoryFragment('models/sfn-file', SfFile);
