@@ -1,7 +1,7 @@
 import './index.scss';
 import * as React from 'react';
-import BoundingRect from 'sf-front-end/geom/bounding-rect';
-import { startDrag } from 'sf-front-end/utils/component/index';
+import BoundingRect from 'sf-core/geom/bounding-rect';
+import { startDrag } from 'sf-front-end/utils/component';
 import { SelectAction } from 'sf-front-end/actions/index';
 import { ReactComponentFactoryFragment } from 'sf-front-end/fragments/index';
 

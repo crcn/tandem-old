@@ -5,7 +5,7 @@ import { flatten } from 'lodash';
 import RulerComponent from './ruler/index';
 import GuideComponent from './guide/index';
 import ResizerComponent from './resizer/index';
-import BoundingRect from 'sf-front-end/geom/bounding-rect';
+import BoundingRect from 'sf-core/geom/bounding-rect';
 import { ReactComponentFactoryFragment } from 'sf-front-end/fragments/index';
 
 export default class SelectorComponent extends React.Component<any, any> {

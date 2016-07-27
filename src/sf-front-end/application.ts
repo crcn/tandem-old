@@ -1,5 +1,5 @@
 
-import { Application } from 'sf-common/applications';
+import { Application } from 'sf-common/application';
 import { thread, isMaster } from 'sf-core/workers';
 
 // components

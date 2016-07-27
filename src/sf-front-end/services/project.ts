@@ -25,15 +25,17 @@ export default class ProjectService extends BaseApplicationService<IApplication>
   async initialize() {
 
     var createModel = (data) => {
-      return this.app
+      var model = this.app
         .fragments
         .query<any>(`models/${data.ext}-file`)
         .create(Object.assign({}, data, {
           collectionName: COLLECTION_NAME,
           fragments: this.app.fragments,
-          app: this.app,
-          bus: this.bus
+          app: this.app
         }));
+
+      model.observe(this.bus);
+      return model;
     };
 
     this._projects = (await this.bus.execute(new FindAllAction(COLLECTION_NAME)).readAll()).map(createModel)
@@ -45,7 +47,7 @@ export default class ProjectService extends BaseApplicationService<IApplication>
         update: (model, data) => {
           model.setProperties(data);
           if (model === (this.app as any).currentFile) {
-            model.load().then(() =>  this.bus.execute({ type: 'change'} as any));
+            model.load();
 
           }
           return model;
@@ -59,11 +61,6 @@ export default class ProjectService extends BaseApplicationService<IApplication>
     if (this._projects.length) {
       this._projects[0].load();
       (this.app as any).currentFile = this._projects[0];
-      // (this.app as any).setProperties({
-      //   currentFile: this._projects[0]
-      // });
-
-      this.bus.execute({ type: 'change'} as any);
     }
   }
 

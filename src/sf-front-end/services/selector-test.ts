@@ -1,7 +1,7 @@
 // import expect from 'expect.js';
 import { fragment as selectorFragment } from './selector';
 import { ClassFactoryFragment } from 'sf-core/fragments';
-import { Application } from 'sf-common/applications';
+import { Application } from 'sf-common/application';
 import { expect } from 'chai';
 import { SelectAction, ToggleSelectAction } from 'sf-front-end/actions/index';
 

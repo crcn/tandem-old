@@ -1,7 +1,11 @@
 import { IActor } from 'sf-core/actors';
 import { Action } from 'sf-core/actions';
 
-export class Observable {
+export interface IObservable {
+  observe(actor:IActor);
+}
+
+export class Observable implements IObservable {
   private _observers: any;
   constructor() { }
 
@@ -15,7 +19,8 @@ export class Observable {
     }
   }
 
-  public notifyObservers(action:Action) {
+  public notify(action:Action) {
+    action.currentTarget = this;
     if (!this._observers) return;
     if (!Array.isArray(this._observers)) return this._observers.execute(action);
     for (const observer of this._observers) {

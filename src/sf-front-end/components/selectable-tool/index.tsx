@@ -6,11 +6,11 @@ import * as cx from 'classnames';
 import * as React from 'react';
 import { intersection } from 'lodash';
 import { SelectAction } from 'sf-front-end/actions/index';
-import BoundingRect from 'sf-front-end/geom/bounding-rect';
+import BoundingRect from 'sf-core/geom/bounding-rect';
 
 import { ReactComponentFactoryFragment } from 'sf-front-end/fragments/index';
 
-class SelectableComponent extends React.Component<{app:any, entity:any, bus:any, selection:any}, {}> {
+class SelectableComponent extends React.Component<any, any> {
 
   constructor() {
     super();

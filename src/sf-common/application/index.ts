@@ -21,9 +21,6 @@ export class Application implements IApplication {
   readonly fragments: FragmentDictionary = new FragmentDictionary();
   private _initializeCalled: boolean = false;
 
-  @bindable()
-  public initialized: boolean = false;
-
   constructor(readonly config: any = {}) {
     this.registerFragments();
   }
@@ -44,8 +41,6 @@ export class Application implements IApplication {
     await this.bus.execute(new LoadAction());
     await this.bus.execute(new InitializeAction());
     this.didInitialize();
-
-    this.initialized = true;
   }
 
   /**

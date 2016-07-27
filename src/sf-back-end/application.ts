@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { Application } from 'sf-common/applications';
+import { Application } from 'sf-common/application';
 
 import { fragment as dbServiceFragment } from './services/db';
 import { fragment as fileServicerFragment } from './services/file';
