@@ -1,6 +1,6 @@
 
-<div style="background-color:black; display:block; width:180.422px; height:77px; ">
-</div>
-<div style="background-color: #F60; color: black; border-radius: 10px; padding:10px; position: relative; display:block; white-space: nowrap; left:73.219px; top:180.469px; width:181.922px; height:49.594px;">
-  Hello World
+<div style="background-color:black; color:white; display:block; max-width: 120px; padding:20px; ">
+  <div style=" display: inline-block; background-color: #F60; color: black; border-radius: 10px; padding:10px; display:block; white-space: nowrap;">
+    Hello World!!!
+  </div>
 </div>

@@ -45,7 +45,8 @@ export default class ProjectService extends BaseApplicationService<IApplication>
         update: (model, data) => {
           model.setProperties(data);
           if (model === (this.app as any).currentFile) {
-            model.load();
+            model.load().then(() =>  this.bus.execute({ type: 'change'} as any));
+
           }
           return model;
         },

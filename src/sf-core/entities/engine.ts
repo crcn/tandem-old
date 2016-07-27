@@ -20,10 +20,11 @@ export class EntityEngine {
 
   async load(source:IDiffableNode):Promise<IEntity> {
     const newEntity = await this._loadAll(source);
+    console.log(newEntity);
 
     // TODO - async diffing using workers here
     // TODO - check entity constructor against new entity
-    if (this._entity) {
+    if (this._entity && this._entity.nodeName === newEntity.nodeName) {
       const changes = diff(this._entity, newEntity);
       patch(this._entity, changes, node => node);
     } else {

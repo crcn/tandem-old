@@ -25,7 +25,6 @@ export class SfFile {
 
   async load() {
     this._entity = await this._engine.load(parseHTML(this.content));
-    console.log(this._entity);
   }
 
 }
