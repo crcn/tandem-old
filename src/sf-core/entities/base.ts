@@ -1,4 +1,5 @@
 import { IDiffableNode, IDiffableElement, IDiffableValueNode, INode, IContainerNode, Element, ContainerNode, ValueNode } from '../markup';
+import { IEntityDisplay } from './display';
 
 export interface IEntity extends INode {
 
@@ -6,6 +7,10 @@ export interface IEntity extends INode {
    */
 
   render();
+}
+
+export interface IVisibleEntity extends IEntity {
+  readonly display:IEntityDisplay;
 }
 
 export interface IContainerEntity extends IEntity, IContainerNode {

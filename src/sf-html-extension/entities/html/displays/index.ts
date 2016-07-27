@@ -1,6 +1,7 @@
 import BoundingRect from 'sf-core/geom/bounding-rect';
+import { IEntityDisplay } from 'sf-core/entities';
 
-export class HTMLNodePreview {
+export class HTMLNodeDisplay implements IEntityDisplay {
   constructor(readonly entity:any) {
 
   }

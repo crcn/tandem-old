@@ -1,7 +1,7 @@
-import { IEntity, ElementEntity, ValueNodeEntity } from 'sf-core/entities';
+import { IEntity, IVisibleEntity, ElementEntity, ValueNodeEntity } from 'sf-core/entities';
 import { EntityFactoryFragment } from 'sf-core/fragments';
 import { HTMLElementExpression, HTMLTextExpression, HTMLCommentExpression, HTMLAttributeExpression } from '../../parsers/html/expressions';
-import { HTMLNodePreview } from './previews';
+import { HTMLNodeDisplay } from './displays';
 import { IElement, INode, IContainerNode, Element, ValueNode, IDiffableValueNode, GroupNodeSection, NodeSection } from 'sf-core/markup';
 import TAG_NAMES from './tag-names';
 
@@ -85,10 +85,10 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
   }
 }
 
-export class VisibleHTMLElementEntity extends HTMLElementEntity {
+export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisibleEntity {
 
   // TODO - change to something such as DisplayComputer
-  readonly preview = new HTMLNodePreview(this)
+  readonly display = new HTMLNodeDisplay(this)
 }
 
 export class HTMLDocumentFragmentEntity extends HTMLElementEntity {

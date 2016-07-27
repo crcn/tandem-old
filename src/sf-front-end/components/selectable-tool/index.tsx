@@ -38,15 +38,15 @@ class SelectableComponent extends React.Component<any, any> {
   render() {
     var { entity, selection, app } = this.props;
 
-    if (!entity.preview || entity.selectable === false) return null;
+    if (!entity.display || entity.selectable === false) return null;
     const entities = entity.flatten();
 
     if (intersection(entities, selection || []).length) return null;
 
     const bounds:BoundingRect = new BoundingRect(0, 0, 0, 0).merge(...entities.filter(function(entity) {
-      return !!entity.preview;
+      return !!entity.display;
     }).map(function(entity) {
-      return entity.preview.bounds;
+      return entity.display.bounds;
     }));
 
     bounds.left   *= this.props.zoom;
@@ -88,12 +88,12 @@ export default class SelectablesComponent extends React.Component<{selection:any
     const allEntities = this.props.allEntities;
 
     // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.
-    if (selection.preview && selection.preview.moving) return null;
+    if (selection.display && selection.display.moving) return null;
 
     // if (selection.preview.currentTool.type !== 'pointer') return null;
 
     const selectables = allEntities.filter((entity) => (
-      !!entity.preview
+      !!entity.display
     )).map((entity) => (
       <SelectableComponent
         {...this.props}
