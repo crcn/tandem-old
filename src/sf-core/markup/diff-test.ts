@@ -1,4 +1,4 @@
-import { Element, TextNode, CommentNode, INode } from "./base";
+import { Element, ValueNode, INode } from "./base";
 import {
   diff,
   SetNodeValueChange,
@@ -27,11 +27,11 @@ function element(name, attributes = {}, ...children) {
 }
 
 function text(nodeValue) {
-  return new TextNode(nodeValue);
+  return new ValueNode('#text', nodeValue);
 }
 
 function comment(nodeValue) {
-  return new CommentNode(nodeValue);
+  return new ValueNode('#comment', nodeValue);
 }
 
 describe(__filename + "#", function() {
@@ -61,6 +61,23 @@ describe(__filename + "#", function() {
       [
         new SetNodeValueChange(0, 'b'),
         new SetNodeValueChange(1, 'c')
+      ]
+    ],
+
+    // test case where nodeValue is undefined for ValueNode instance.
+    [
+      text(undefined),
+      text('a'),
+      [
+        new SetNodeValueChange(0, 'a')
+      ]
+    ],
+     // test case where nodeValue is undefined for ValueNode instance.
+    [
+      text('a'),
+      text(undefined),
+      [
+        new SetNodeValueChange(0, undefined)
       ]
     ],
     [

@@ -1,32 +1,51 @@
-import { INode, IElement } from '../markup';
+import { IDiffableNode, IDiffableElement, IDiffableValueNode, INode, IContainerNode, Element, ContainerNode, ValueNode } from '../markup';
 
-export interface IEntityController {
+export interface IEntity extends INode {
 
   /**
-   * renders new children for the entity based
-   * on the source
    */
 
-  render():Array<INode>|INode;
+  render();
 }
 
-export interface IEntity extends IElement {
+export interface IContainerEntity extends IEntity, IContainerNode {
 
-  /**
-   * source of the entity
-   */
+}
 
-  source:any;
+export class ElementEntity extends Element implements IEntity {
+  constructor(readonly source:IDiffableElement) {
+    super(source.nodeName);
 
-  /**
-   * controls how the entity is rendered based on the source
-   */
+    // TODO - attributes might need to be transformed here
+    if (source.attributes) {
+      for (const attribute of source.attributes) {
+        this.setAttribute(attribute.name, attribute.value);
+      }
+    }
+  }
 
-  controller:IEntityController;
+  render():any {
+    return this.source.childNodes;
+  }
 
-  /**
-   * updates the entity from the source
-   */
+  cloneNode(deep?:boolean) {
+    const clone = new ElementEntity(this.source);
+    if (deep) {
+      this.addChildNodesToClonedNode(clone);
+    }
+    return clone;
+  }
+}
 
-  update():void;
+export class ValueNodeEntity extends ValueNode implements IEntity {
+  constructor(readonly source:IDiffableValueNode) {
+    super(source.nodeName, source.nodeValue);
+  }
+  render() {
+    return null;
+  }
+  cloneNode(deep?:boolean) {
+    const clone = new ValueNodeEntity(this.source);
+    return clone;
+  }
 }

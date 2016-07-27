@@ -4,7 +4,7 @@ export class ICursorPosition {
 }
 
 /**
- * utility function for flattening expressions 
+ * utility function for flattening expressions
  */
 
 export function flattenEach(fromItems: Array<BaseExpression>, toItems: Array<BaseExpression>) {
@@ -18,7 +18,7 @@ export function flattenEach(fromItems: Array<BaseExpression>, toItems: Array<Bas
  */
 
 export class BaseExpression {
-  constructor(public type: string, public position: ICursorPosition) {
+  constructor(readonly type: string, readonly position: ICursorPosition) {
 
   }
 

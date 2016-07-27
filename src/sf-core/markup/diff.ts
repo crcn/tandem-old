@@ -1,5 +1,6 @@
 import {
-  NodeTypes
+  ValueNode,
+  IValueNode
 } from './base';
 
 /*
@@ -16,7 +17,6 @@ export interface INodeChange {
 
 export interface IDiffableNode {
   nodeName:string;
-  nodeType:number;
 }
 
 export interface IDiffableValueNode extends IDiffableNode {
@@ -230,5 +230,7 @@ function diffValueNode(oldChildNodes:Array<IDiffableNode>, oldValueNode:IDiffabl
 }
 
 function isValueNodeType(node:IDiffableNode) {
-  return [NodeTypes.COMMENT, NodeTypes.TEXT].indexOf(node.nodeType) !== -1;
+  // very dirty check here - nodeValue is never undefined for the DOM, but it *could* be defined
+  // if the checked node is a base class of ValueNode. Check if it *is* a ValueNode if that's the case
+  return (<IValueNode>node).nodeValue != undefined || node instanceof ValueNode;
 }

@@ -94,7 +94,6 @@ export default class FrontEndService extends BaseApplicationService<IApplication
           <div id="app"></div>
           ${
             staticFileNames.sort((a, b) => /css$/.test(a) ? -1 : 1).map((basename) => {
-              console.log(basename);
               if (/css$/.test(basename)) {
                 return `<link rel="stylesheet" type="text/css" href="${basename}">`;
               } else if (/js$/.test(basename)) {

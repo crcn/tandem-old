@@ -28,12 +28,10 @@ export class NodeMarker {
  * a section is a group of nodes contained within a
  */
 
-export default class NodeSection implements IMarkupSection {
+export class NodeSection implements IMarkupSection {
   private _placeholderNode:any;
 
-  constructor(private _target:IContainerNode, private _nodeFactory:any = document) {
-
-  }
+  constructor(private _target:IContainerNode, private _nodeFactory:any = document) { }
 
   appendChild(child) {
     this._target.appendChild(child);

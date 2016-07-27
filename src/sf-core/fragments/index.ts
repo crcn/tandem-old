@@ -1,5 +1,7 @@
 import { Service } from 'sf-core/services';
 import { IApplication } from 'sf-core/application';
+import { IEntity } from '../entities'
+import { IDiffableNode } from '../markup';
 
 import {
   IFactory,
@@ -51,22 +53,24 @@ export class ApplicationSingletonFragment extends SingletonFragment<IApplication
 /**
  */
 
-// export const ENTITIES_NS = 'entities';
-// export class EntityFactoryFragment extends BaseFragment {
+export const ENTITIES_NS = 'entities';
 
-//   constructor(id:string, private _clazz:{ new(expression:IExpression):IEntity }) {
-//     super([ENTITIES_NS, id].join('/'));
-//   }
+// TODO - possibly require renderer here as well
+export class EntityFactoryFragment extends BaseFragment {
 
-//   create(expression:IExpression) {
-//     return new this._clazz(expression);
-//   }
+  constructor(id:string, private _clazz:{ new(source:IDiffableNode):IEntity }) {
+    super([ENTITIES_NS, id].join('/'));
+  }
 
-//   static find(id:string, fragments:FragmentDictionary) {
-//     return fragments.query<EntityFactoryFragment>([ENTITIES_NS, id].join('/'))
-//   }
+  create(source:IDiffableNode) {
+    return new this._clazz(source);
+  }
 
-//   static createEntity(expression:IExpression, fragments:FragmentDictionary) {
-//     return this.find(expression.type, fragments).create(expression);
-//   }
-// }
+  static find(id:string, fragments:FragmentDictionary) {
+    return fragments.query<EntityFactoryFragment>([ENTITIES_NS, id].join('/'))
+  }
+
+  static createEntity(source:IDiffableNode, fragments:FragmentDictionary) {
+    return this.find(source.nodeName, fragments).create(source);
+  }
+}

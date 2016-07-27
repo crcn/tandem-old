@@ -2,8 +2,6 @@ import {
   INode,
   IElement,
   IValueNode,
-  ITextNode,
-  ICommentNode,
   IContainerNode
 } from './base';
 
@@ -32,7 +30,15 @@ import {
   RemoveAttributeChange
 } from './diff';
 
-export function patch(node:INode, changes:Array<NodeChange>) {
+function _cloneNode(node:INode) {
+  return node.cloneNode(true);
+}
+
+export function patch(node:INode, changes:Array<NodeChange>, cloneNode:Function = undefined) {
+  if (cloneNode == undefined) {
+    cloneNode = _cloneNode;
+  }
+
   let parentNode = <IElement>node;
   let child;
   for (const change of changes) {
@@ -61,7 +67,7 @@ export function patch(node:INode, changes:Array<NodeChange>) {
         const ac = <AddChildChange>change;
 
         // TODO - need to use factory here
-        parentNode.appendChild((<INode>ac.node).cloneNode(true));
+        parentNode.appendChild(cloneNode(<INode>ac.node));
         break;
       case MOVE_CHILD:
         const mc = <MoveChildChange>change;

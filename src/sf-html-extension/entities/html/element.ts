@@ -1,7 +1,0 @@
-class BaseEntity {
-
-}
-
-class ElementEntity {
-
-}

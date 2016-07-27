@@ -13,7 +13,7 @@ export class GroupMarker implements IMarkupSectionMarker {
   ) { }
 
   createSection(rootNode:IContainerNode) {
-    return new GroupMarkupSection(
+    return new GroupNodeSection(
       findNode(this._startPath, rootNode),
       findNode(this._endPath, rootNode),
       this._nodeFactory
@@ -26,7 +26,7 @@ export class GroupMarker implements IMarkupSectionMarker {
  * a section is a group of nodes contained within a
  */
 
-export default class GroupMarkupSection implements IMarkupSection  {
+export class GroupNodeSection implements IMarkupSection  {
 
   private _start:INode;
   private _end:INode;
@@ -47,6 +47,14 @@ export default class GroupMarkupSection implements IMarkupSection  {
   appendChild(child) {
     if (this._hiddenChildren) return this._hiddenChildren.push(child);
     this._end.parentNode.insertBefore(child, this._end);
+  }
+
+  get startNode() {
+    return this._start;
+  }
+
+  get endNode() {
+    return this._end;
   }
 
   get visible() {
@@ -140,7 +148,7 @@ export default class GroupMarkupSection implements IMarkupSection  {
    */
 
   createMarker() {
-    return new GroupMarkupSection(
+    return new GroupNodeSection(
       getNodePath(this._start),
       getNodePath(this._end),
       this._nodeFactory
@@ -151,11 +159,11 @@ export default class GroupMarkupSection implements IMarkupSection  {
    */
 
   clone() {
-    if (this.targetNode.nodeType !== 11) {
+    if (this.targetNode.nodeName !== '#document-fragment') {
       throw new Error('cannot currently clone fragment section that is attached to an element.');
     }
 
     var clone = <IContainerNode>this.targetNode.cloneNode(true);
-    return new GroupMarkupSection(clone.firstChild, clone.lastChild, this._nodeFactory);
+    return new GroupNodeSection(clone.firstChild, clone.lastChild, this._nodeFactory);
   }
 }

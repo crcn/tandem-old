@@ -1,10 +1,10 @@
-/**
- * Interfaces here reflect the DOM API, but not limited to it
- */
 
-/*
-TODOS - check for document fragments
-*/
+/**
+ * Interfaces here reflect the DOM API a bit to ensure compatibility
+ * with tools associated with the implementation below. HOWEVER, The code
+ * in this doc isn't limited to HTML, and should only reflect Markup. Anything
+ * specific to HTML should live somewhere else (such as saffron-html-extension).
+ */
 
 export interface IAttribute {
   name:string;
@@ -13,14 +13,13 @@ export interface IAttribute {
 
 export interface INode {
   parentNode:IContainerNode;
-  readonly nodeType:number;
   readonly nodeName:string;
   cloneNode(deep?:boolean):INode;
   nextSibling:INode;
   prevSibling:INode;
 }
 
-export interface IContainerNode  extends INode {
+export interface IContainerNode extends INode {
   childNodes:Array<INode>;
   removeChild(child:INode);
   appendChild(child:INode);
@@ -41,17 +40,6 @@ export interface IElement extends IContainerNode {
   setAttribute(key:string, value:any);
 }
 
-export interface ITextNode extends IValueNode { }
-export interface ICommentNode extends IValueNode { }
-
-
-export class NodeTypes {
-  static readonly ELEMENT:number   = 1;
-  static readonly TEXT:number      = 3;
-  static readonly COMMENT:number   = 8;
-  static readonly FRAGMENT:number = 11;
-}
-
 /**
  * Minimal markup implementation
  */
@@ -61,7 +49,6 @@ export class Attribute implements IAttribute {
 }
 
 export abstract class Node implements INode {
-  readonly nodeType = 0; // nil
   readonly nodeName = null;
   protected _parentNode:IContainerNode;
   get parentNode():IContainerNode {
@@ -76,22 +63,17 @@ export abstract class Node implements INode {
     return this.parentNode ? this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) - 1] : undefined;
   }
 
-  protected didMount() {
-
-  }
-
-  protected willUnmount() {
-
-  }
+  protected didMount() { }
+  protected willUnmount() { }
 
   abstract cloneNode(deep?:boolean):Node;
 }
 
 export abstract class ContainerNode extends Node implements IContainerNode {
 
-  protected _childNodes:Array<Node> = [];
+  protected _childNodes:Array<INode> = [];
 
-  get childNodes():Array<Node> {
+  get childNodes():Array<INode> {
     return this._childNodes;
   }
 
@@ -103,12 +85,15 @@ export abstract class ContainerNode extends Node implements IContainerNode {
     return this._childNodes[this._childNodes.length - 1];
   }
 
-  appendChild(child:Node) {
+  appendChild(child:INode) {
+    if (child.parentNode) {
+      child.parentNode.removeChild(child);
+    }
     this._childNodes.push(child);
     this._link(child);
   }
 
-  removeChild(child:Node) {
+  removeChild(child:INode) {
     const i = this._childNodes.indexOf(child);
     if (i !== -1) {
       this._childNodes.splice(i, 1);
@@ -118,6 +103,10 @@ export abstract class ContainerNode extends Node implements IContainerNode {
 
   insertBefore(child:Node, existingChild:Node) {
     const i = this._childNodes.indexOf(existingChild);
+
+    if (child.parentNode) {
+      child.parentNode.removeChild(child);
+    }
 
     // throw error if existing child doesn't exist
     if (i === -1) {
@@ -131,25 +120,31 @@ export abstract class ContainerNode extends Node implements IContainerNode {
     this._link(child);
   }
 
-  protected _unlink(child:Node) {
+  protected _unlink(child:INode) {
     (child as any).willUnmount();
     (child as any)._parentNode = undefined;
   }
 
-  protected _link(child:Node) {
-    if (child.parentNode) {
-      child.parentNode.removeChild(child);
-    }
+  protected _link(child:INode) {
     (child as any)._parentNode = this;
     (child as any).didMount();
   }
+
+  protected addChildNodesToClonedNode(node:ContainerNode) {
+    for (const child of this.childNodes) {
+      node.appendChild(child.cloneNode(true));
+    }
+  }
 }
 
-// TODO - use iterator here
 class Attributes extends Array<Attribute> { }
 
+/**
+ * Element examples:
+ * <div id="test" />
+ */
+
 export class Element extends ContainerNode implements IElement {
-  readonly nodeType:number = NodeTypes.ELEMENT;
   readonly attributes:Attributes = [];
   readonly nodeName:string;
 
@@ -199,9 +194,7 @@ export class Element extends ContainerNode implements IElement {
       clone.setAttribute(attribute.name, attribute.value);
     }
     if (deep) {
-      for (const child of this.childNodes) {
-        clone.appendChild(<Node>child.cloneNode());
-      }
+      this.addChildNodesToClonedNode(clone);
     }
     return clone;
   }
@@ -211,23 +204,17 @@ export class Element extends ContainerNode implements IElement {
   }
 }
 
-export abstract class ValueNode extends Node implements IValueNode {
-  constructor(public nodeValue:string) {
+/**
+ * A node with a value -- this would represent things souch as DOM text nodes and comments
+ * Other example:
+ * <div>ValueNode</div>
+ */
+
+export class ValueNode extends Node implements IValueNode {
+  constructor(readonly nodeName:string, public nodeValue:any) {
     super();
   }
-}
-
-export class TextNode extends ValueNode {
-  readonly nodeType:number = NodeTypes.TEXT;
-  readonly nodeName: string = "#text";
   cloneNode() {
-    return new TextNode(this.nodeValue);
-  }
-}
-export class CommentNode extends ValueNode {
-  readonly nodeType:number = NodeTypes.COMMENT;
-  readonly nodeName: string = "#comment";
-  cloneNode() {
-    return new TextNode(this.nodeValue);
+    return new ValueNode(this.nodeName, this.nodeValue);
   }
 }

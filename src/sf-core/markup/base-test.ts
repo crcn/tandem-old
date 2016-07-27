@@ -1,4 +1,4 @@
-import { ContainerNode, Element, TextNode } from "./base";
+import { ContainerNode, Element, ValueNode } from "./base";
 import { expect } from "chai";
 
 describe(__filename + "#", () => {
@@ -64,14 +64,14 @@ describe(__filename + "#", () => {
     it("can return the first child", function() {
       const p1 = new TestNode();
       let first;
-      p1.appendChild(first = new TextNode("a"));
+      p1.appendChild(first = new ValueNode('#text',"a"));
       expect(p1.firstChild).to.equal(first);
     });
 
     it("can return the last child", function() {
       const p1 = new TestNode();
       let last;
-      p1.appendChild(last = new TextNode("a"));
+      p1.appendChild(last = new ValueNode('#text',"a"));
       expect(p1.lastChild).to.equal(last);
     });
   });
@@ -80,8 +80,8 @@ describe(__filename + "#", () => {
     it("can return the next sibling", function() {
       const el = new Element("div");
       let a, b;
-      el.appendChild(a = new TextNode("a"));
-      el.appendChild(b = new TextNode("b"));
+      el.appendChild(a = new ValueNode('#text', "a"));
+      el.appendChild(b = new ValueNode('#text', "b"));
       expect(a.nextSibling).to.equal(b);
     });
 
@@ -93,22 +93,22 @@ describe(__filename + "#", () => {
     it("next sibling is undefined if at end", function() {
       const el = new Element("div");
       let a, b;
-      el.appendChild(a = new TextNode("a"));
+      el.appendChild(a = new ValueNode('#text',"a"));
       expect(a.nextSibling).to.equal(undefined);
     });
 
     it("can return the prev sibling", function() {
       const el = new Element("div");
       let a, b;
-      el.appendChild(a = new TextNode("a"));
-      el.appendChild(b = new TextNode("b"));
+      el.appendChild(a = new ValueNode('#text', "a"));
+      el.appendChild(b = new ValueNode('#text', "b"));
       expect(b.prevSibling).to.equal(a);
     });
 
     it("prev sibling is undefined if at beginning", function() {
       const el = new Element("div");
       let a, b;
-      el.appendChild(a = new TextNode("a"));
+      el.appendChild(a = new ValueNode('#text', "a"));
       expect(a.prevSibling).to.equal(undefined);
     });
 
@@ -141,10 +141,10 @@ describe(__filename + "#", () => {
     });
   });
 
-  describe("TextNode", function() {
+  describe("ValueNode", function() {
     it("can be created", function() {
-      new TextNode("value");
-      expect(new TextNode('a').nodeName).to.equal('#text');
+      new ValueNode('#text', "value");
+      expect(new ValueNode('#text', 'a').nodeName).to.equal('#text');
     });
   });
 });
