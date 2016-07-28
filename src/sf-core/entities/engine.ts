@@ -20,23 +20,6 @@ import {
 
 const defaultEntityFactory = new EntityFactoryFragment(undefined, ElementEntity);
 
-export class RootEntity extends ContainerNode implements IEntity {
-  constructor(readonly engine:EntityEngine) {
-    super();
-  }
-
-  render() {
-    return undefined;
-  }
-
-  cloneNode(deep?: boolean) {
-    const clone = new RootEntity(this.engine);
-    if (deep) {
-      this.addChildNodesToClonedNode(clone);
-    }
-    return clone;
-  }
-}
 
 /**
  *  Creates entities based on the source expression provided
@@ -54,12 +37,11 @@ export class EntityEngine {
 
   async load(source: IDiffableNode): Promise<IEntity> {
 
-    const newEntity = new RootEntity(this);
-    newEntity.appendChild(await this._loadAll(source));
+    const newEntity = await this._loadAll(source);
 
     // TODO - async diffing using workers here
     // TODO - check entity constructor against new entity
-    if (this._entity) {
+    if (this._entity && this._entity.constructor === newEntity.constructor) {
       const changes = diff(this._entity, newEntity);
       patch(this._entity, changes, node => node);
     } else {

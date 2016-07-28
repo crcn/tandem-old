@@ -5,33 +5,8 @@ import { HTMLNodeDisplay } from "./displays";
 import { IElement, INode, IContainerNode, Element, ValueNode, IDiffableValueNode, GroupNodeSection, NodeSection } from "sf-core/markup";
 import TAG_NAMES from "./tag-names";
 
-export interface IHTMLEntity extends IEntity { }
-
-function didMount(entity: IHTMLEntity, node: INode) {
-  let p = entity.parentNode;
-  let pp = <INode>entity;
-  while (p && !(p instanceof HTMLElementEntity)) {
-    pp = <INode>p;
-    p = p.parentNode;
-  }
-  if (!p) return;
-
-  const tg = (<HTMLElementEntity>p);
-
-  if (pp.nextSibling) {
-
-    // TODO - this assumes that the next sibling has a section property - it
-    // might not. Need to traverse the next sibling for a node that actually has a section
-    const ppSection = (<HTMLElementEntity>pp.nextSibling).section;
-
-    if (ppSection instanceof NodeSection) {
-      tg.insertDOMChildBefore(node, (<NodeSection>ppSection).targetNode);
-    } else {
-      tg.insertDOMChildBefore(node, (<GroupNodeSection>ppSection).startNode);
-    }
-  } else {
-    (<HTMLElementEntity>p).appendDOMChild(node);
-  }
+export interface IHTMLEntity extends IEntity {
+  section:NodeSection|GroupNodeSection;
 }
 
 export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
@@ -85,9 +60,31 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
     // this is janky as hell - attributes should be immutable here
     this.source.attributes.push(new HTMLAttributeExpression(name, value, undefined));
   }
-  didMount() {
-    didMount(this, this.section.toFragment());
+
+  _link(child) {
+    super._link(child);
+    if (child.section) {
+      let nextHTMLEntitySibling:IHTMLEntity;
+      do {
+        nextHTMLEntitySibling = <IHTMLEntity>child.nextSibling;
+      } while(nextHTMLEntitySibling && !nextHTMLEntitySibling.section);
+
+      if (nextHTMLEntitySibling) {
+        // TODO - this assumes that the next sibling has a section property - it
+        // might not. Need to traverse the next sibling for a node that actually has a section
+        const ppSection = (<HTMLElementEntity>child.nextSibling).section;
+
+        if (nextHTMLEntitySibling.section instanceof NodeSection) {
+          this.insertDOMChildBefore(child.section.toFragment(), (<NodeSection>ppSection).targetNode);
+        } else {
+          this.insertDOMChildBefore(child.section.toFragment(), (<GroupNodeSection>ppSection).startNode);
+        }
+      } else {
+        this.appendDOMChild(child.section.toFragment());
+      }
+    }
   }
+
   willUnmount() {
     this.section.remove();
   }
@@ -126,10 +123,6 @@ export abstract class HTMLValueNodeEntity extends ValueNodeEntity implements IHT
   set nodeValue(value: any) {
     if (this.source) this.source.nodeValue = value;
     if (this._node) this._node.nodeValue = value;
-  }
-
-  didMount() {
-    didMount(this, this._node as any);
   }
 
   willUnmount() {
