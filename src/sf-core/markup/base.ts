@@ -15,6 +15,7 @@ export interface INode {
   parentNode:IContainerNode;
   readonly nodeName:string;
   cloneNode(deep?:boolean):INode;
+  flatten():Array<INode>;
   nextSibling:INode;
   prevSibling:INode;
 }

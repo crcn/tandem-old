@@ -14,6 +14,14 @@ describe(__filename + "#", function() {
     );
   });
 
+  async function loadDiv(source) {
+    const engine = new EntityEngine(fragments);
+    const div = document.createElement("div");
+    const entity = await engine.load(parseHTML(source));
+    div.appendChild((<HTMLElementEntity>entity).section.toFragment());
+    return div;
+  }
+
   it("can render a DIV element", async function() {
     const engine = new EntityEngine(fragments);
     const entity = await engine.load(parseHTML("<div />"));
@@ -49,5 +57,15 @@ describe(__filename + "#", function() {
       await engine.load(parseHTML(change as any));
       expect(div.innerHTML).to.equal(change);
     })
-  })
+  });
+
+  describe("template#", function() {
+    xit("registers a new component based on the template ID attribute", async function() {
+      const div = await loadDiv(`<template id="test">
+        hello world
+      </template><test id="target" />`);
+
+      console.log(div);
+    });
+  });
 });

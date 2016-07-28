@@ -16,7 +16,7 @@ function didMount(entity:IHTMLEntity, node:INode) {
   }
   if (!p) return;
 
-  const tg = (<HTMLElementEntity>p).section.targetNode;
+  const tg = (<HTMLElementEntity>p);
 
   if (pp.nextSibling) {
 
@@ -25,12 +25,12 @@ function didMount(entity:IHTMLEntity, node:INode) {
     const ppSection = (<HTMLElementEntity>pp.nextSibling).section;
 
     if (ppSection instanceof NodeSection) {
-      tg.insertBefore(node, (<NodeSection>ppSection).targetNode);
+      tg.insertDOMChildBefore(node, (<NodeSection>ppSection).targetNode);
     } else {
-      tg.insertBefore(node, (<GroupNodeSection>ppSection).startNode);
+      tg.insertDOMChildBefore(node, (<GroupNodeSection>ppSection).startNode);
     }
   } else {
-    (<HTMLElementEntity>p).section.appendChild(node);
+    (<HTMLElementEntity>p).appendDOMChild(node);
   }
 }
 
@@ -39,6 +39,12 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
   constructor(source:HTMLElementExpression) {
     super(source);
     this.section = this.createSection();
+
+    if (this.section instanceof NodeSection) {
+      for (const attribute of this.attributes) {
+        (<IElement>this.section.targetNode).setAttribute(attribute.name, attribute.value);
+      }
+    }
   }
 
   removeAttribute(name:string) {
@@ -54,6 +60,15 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
       }
     }
   }
+
+  insertDOMChildBefore(newChild:INode, beforeChild:INode) {
+    this.section.targetNode.insertBefore(newChild, beforeChild);
+  }
+
+  appendDOMChild(newChild:INode) {
+    this.section.targetNode.appendChild(newChild);
+  }
+
   setAttribute(name:string, value:string) {
     super.setAttribute(name, value);
     if (!this.source) return;
@@ -78,9 +93,6 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
   }
   protected createSection():GroupNodeSection|NodeSection {
     var element = document.createElement(this.nodeName) as any;
-    for (const attribute of this.attributes) {
-      element.setAttribute(attribute.name, attribute.value);
-    }
     return new NodeSection(element);
   }
 }
@@ -88,7 +100,7 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
 export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisibleEntity {
 
   // TODO - change to something such as DisplayComputer
-  readonly display = new HTMLNodeDisplay(this)
+  readonly display = new HTMLNodeDisplay(this);
 }
 
 export class HTMLDocumentFragmentEntity extends HTMLElementEntity {

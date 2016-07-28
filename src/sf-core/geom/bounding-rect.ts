@@ -30,6 +30,13 @@ export default class BoundingRect {
     return BoundingRect.merge(this, ...rects);
   }
 
+  move(left: number, top: number):void {
+    this.left   += left;
+    this.right  += left;
+    this.top    += top;
+    this.bottom += top;
+  }
+
   static merge(...rects:Array<BoundingRect>):BoundingRect {
     let left   = Infinity;
     let bottom = -Infinity;

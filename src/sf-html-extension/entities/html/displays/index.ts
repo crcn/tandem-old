@@ -1,16 +1,65 @@
-import BoundingRect from 'sf-core/geom/bounding-rect';
-import { IEntityDisplay } from 'sf-core/entities';
+import { BoundingRect } from 'sf-core/geom';
+import { VisibleHTMLElementEntity } from '../base';
+import { IEntityDisplay, IVisibleEntity } from 'sf-core/entities';
+
 
 export class HTMLNodeDisplay implements IEntityDisplay {
-  constructor(readonly entity:any) {
+  constructor(readonly entity:VisibleHTMLElementEntity) { }
 
-  }
+  /**
+   * returns the DOM node of the entity
+   */
+
   get node():Element {
-    return this.entity.section.targetNode;
+    return this.entity.section.targetNode as any;
   }
+
+  /**
+   * returns TRUE if the child node display information is isolated - meaning
+   * that they need to consider *THIS* display object when calculating bounding
+   * rect information
+   */
+
+  get isolatedChildNodes():boolean {
+    return /iframe/i.test(this.node.nodeName);
+  }
+
+  /**
+   * the bounds of the visible element
+   */
 
   get bounds():BoundingRect {
-    let { left, top, right, bottom } = this.node.getBoundingClientRect();
-    return new BoundingRect(left, top, right, bottom);
+    const clientRect:ClientRect = this.node.getBoundingClientRect();
+
+    // convert into something that is not DOM specific
+    const rect:BoundingRect = new BoundingRect(clientRect.left, clientRect.top, clientRect.right, clientRect.bottom);
+    this._addIsolationOffset(rect);
+
+    return rect;
+  }
+
+  private _addIsolationOffset(rect:BoundingRect) {
+    for (const display of this._getParentDisplays()) {
+      if (display.isolatedChildNodes) {
+        const parentBounds = display.bounds;
+        rect.move(parentBounds.left, parentBounds.top);
+
+        // break - parent display will also calculate
+        // isolation if it's embedded in an iframe
+        break;
+      }
+    }
+  }
+
+  private _getParentDisplays():Array<HTMLNodeDisplay> {
+    let p = this.entity.parentNode;
+    const parentDisplays = [];
+    while(p) {
+      if ((<IVisibleEntity><any>p).display instanceof HTMLNodeDisplay) {
+        parentDisplays.push(<HTMLNodeDisplay>(<IVisibleEntity><any>p).display);
+      }
+      p = p.parentNode;
+    }
+    return parentDisplays;
   }
 }

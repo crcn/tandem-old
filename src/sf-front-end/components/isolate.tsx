@@ -15,7 +15,13 @@ export default class IsolateComponent extends React.Component<any, any> {
 
     if (this.props.inheritCSS) {
       const head    = this.head;
-      Array.prototype.forEach.call(document.getElementsByTagName('style'), function (style) {
+
+      const tags = [
+        ...Array.prototype.slice.call(document.getElementsByTagName('style'), 0),
+        ...Array.prototype.slice.call(document.getElementsByTagName('link'), 0)
+      ];
+
+      Array.prototype.forEach.call(tags, function (style) {
         head.appendChild(style.cloneNode(true));
       });
     }

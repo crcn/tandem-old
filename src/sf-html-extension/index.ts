@@ -9,10 +9,11 @@
 
  // entities
  import {
-   htmlElementFragments,
    htmlTextFragment,
+   htmlCommentFragment,
    htmlDocumentFragment,
-   htmlCommentFragment
+   htmlElementFragments,
+   htmlTemplateEntityFragment
 } from './entities/html';
 
 export const fragment = [
@@ -27,5 +28,7 @@ export const fragment = [
   htmlTextFragment,
   htmlCommentFragment,
   htmlDocumentFragment,
-  ...htmlElementFragments
+  ...htmlElementFragments,
+  htmlTemplateEntityFragment,
+
 ];

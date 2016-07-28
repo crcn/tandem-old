@@ -5,7 +5,9 @@ import config from './config';
 import FrontEndApplication from './application';
 import { isMaster, fork } from 'sf-core/workers';
 
-const NUM_WORKERS = 2;
+// none for now - need to figure out NULL exceptions with
+// workers.
+const NUM_WORKERS = 0;
 
 if (isMaster) {
 

@@ -6,11 +6,12 @@ import * as cx from 'classnames';
 import * as React from 'react';
 import { intersection } from 'lodash';
 import { SelectAction } from 'sf-front-end/actions/index';
+import { IVisibleEntity } from 'sf-core/entities';
 import BoundingRect from 'sf-core/geom/bounding-rect';
 
 import { ReactComponentFactoryFragment } from 'sf-front-end/fragments/index';
 
-class SelectableComponent extends React.Component<any, any> {
+class SelectableComponent extends React.Component<{ entity: IVisibleEntity, selection: any, app: any, zoom: number }, any> {
 
   constructor() {
     super();
@@ -18,36 +19,25 @@ class SelectableComponent extends React.Component<any, any> {
   }
 
   onMouseDown(event:any):void {
-    this.onMouseOut(event);
-    this.props.bus.execute(new SelectAction(this.props.entity, event.shiftKey));
+    // this.props.bus.execute(new SelectAction(this.props.entity, event.shiftKey));
     event.stopPropagation();
-  }
-
-  onMouseOver() {
-    this.props.app.setProperties({
-      hoverItem: this.props.entity
-    });
-  }
-
-  onMouseOut(event) {
-    this.props.app.setProperties({
-      hoverItem: void 0
-    });
   }
 
   render() {
     var { entity, selection, app } = this.props;
 
-    if (!entity.display || entity.selectable === false) return null;
+    if (!entity.display) return null;
     const entities = entity.flatten();
 
     if (intersection(entities, selection || []).length) return null;
 
-    const bounds:BoundingRect = new BoundingRect(0, 0, 0, 0).merge(...entities.filter(function(entity) {
-      return !!entity.display;
-    }).map(function(entity) {
-      return entity.display.bounds;
-    }));
+    // const bounds:BoundingRect = BoundingRect.merge(...entities.filter(function(entity) {
+    //   return !!entity.display;
+    // }).map(function(entity) {
+    //   return entity.display.bounds;
+    // }));
+
+    const bounds = entity.display.bounds;
 
     bounds.left   *= this.props.zoom;
     bounds.right  *= this.props.zoom;
@@ -60,7 +50,7 @@ class SelectableComponent extends React.Component<any, any> {
     });
 
     const style = {
-      background : 'rgba(0,0,0,0.5)',
+      background : 'transparent',
       position   : 'absolute',
       width      : bounds.width,
       height     : bounds.height,
@@ -72,8 +62,6 @@ class SelectableComponent extends React.Component<any, any> {
       <div
         style={style}
         className={classNames}
-        onMouseOver={this.onMouseOver.bind(this)}
-        onMouseOut={this.onMouseOut.bind(this)}
         onMouseDown={this.onMouseDown.bind(this)}
       />
     );
@@ -94,12 +82,13 @@ export default class SelectablesComponent extends React.Component<{selection:any
 
     const selectables = allEntities.filter((entity) => (
       !!entity.display
-    )).map((entity) => (
+    )).map((entity, i) => (
       <SelectableComponent
         {...this.props}
+        zoom={1}
         selection={selection}
         entity={entity}
-        key={entity.id}
+        key={i}
       />
     ));
 
