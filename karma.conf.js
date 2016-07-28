@@ -2,48 +2,49 @@
 // Generated on Tue Jun 14 2016 10:30:52 GMT-0400 (EDT)
 
 var watchFiles = !process.env.WATCH;
-var reporter   = process.env.REPORTER || 'dots';
+var reporter   = process.env.REPORTER || "dots";
 var grep       = process.env.GREP;
 var bail       = !!process.env.BAIL;
 
-const webpackConfig = require('./webpack.config');
+const webpackConfig = require("./webpack.config");
 
-delete webpackConfig['entry'];
+delete webpackConfig["entry"];
 
 module.exports = function(config) {
   config.set({
 
     customLaunchers: {
         Chrome_travis_ci: {
-            base: 'Chrome',
-            flags: ['--no-sandbox']
+            base: "Chrome",
+            flags: ["--no-sandbox"]
         }
     },
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: "",
 
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai'],
+    frameworks: ["mocha", "chai"],
 
      // list of files / patterns to load in the browser
     files: [
-      'node_modules/ts-helpers/index.js',
-      'node_modules/react/dist/react.min.js',
-      'node_modules/react-dom/dist/react-dom.min.js',
+      "node_modules/ts-helpers/index.js",
+      "node_modules/react/dist/react.min.js",
+      "node_modules/react-dom/dist/react-dom.min.js",
       {
-        pattern: 'all-tests.js',
+        pattern: "all-tests.js",
         included: true
       }
     ],
 
     plugins: [
-        require('karma-chrome-launcher'),
-        require('karma-mocha'),
-        require('karma-webpack'),
-        require('karma-chai')
+        require("karma-chrome-launcher"),
+        require("karma-spec-reporter"),
+        require("karma-mocha"),
+        require("karma-webpack"),
+        require("karma-chai")
     ],
 
     webpackMiddleware: {
@@ -60,18 +61,18 @@ module.exports = function(config) {
       mocha: {
         grep: grep,
         bail: bail,
-        ui: 'bdd'
+        ui: "bdd"
       }
     },
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'all-tests.js': ['webpack']
+      "all-tests.js": ["webpack"]
     },
 
     // test results reporter to use
-    // possible values: 'dots', 'progress'
+    // possible values: "dots", "progress"
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: [
       reporter
@@ -98,7 +99,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ["Chrome"],
 
 
     // Continuous Integration mode

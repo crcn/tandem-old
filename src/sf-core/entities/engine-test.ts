@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { EntityEngine } from "./engine";
+import { EntityEngine, RootEntity } from "./engine";
 import { ElementEntity, ValueNodeEntity } from "./base";
 import { FragmentDictionary, EntityFactoryFragment } from "../fragments";
 
@@ -26,8 +26,8 @@ describe(__filename + "#", function() {
 
   it("maps an element to an entity", async function() {
     const engine = new EntityEngine(new FragmentDictionary());
-    const entity = await engine.load(element("div"));
-    expect(entity).to.be.an.instanceof(ElementEntity);
+    const entity = await engine.load(element("div")) as RootEntity;
+    expect(entity.childNodes[0]).to.be.an.instanceof(ElementEntity);
   });
 
   it("can register a custom entity", async function() {
@@ -35,7 +35,9 @@ describe(__filename + "#", function() {
     const fragments = new FragmentDictionary();
     fragments.register(new EntityFactoryFragment("custom", CustomEntity));
     const engine = new EntityEngine(fragments);
-    expect(await engine.load(element("custom"))).to.be.an.instanceOf(CustomEntity);
+    const rootEntity = await engine.load(element("custom")) as RootEntity;
+
+    expect(rootEntity.childNodes[0]).to.be.an.instanceOf(CustomEntity);
   });
 
   it("renders child nodes based on the returned value from load()", async function() {

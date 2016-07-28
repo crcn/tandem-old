@@ -1,8 +1,42 @@
-import { IEntity, ElementEntity, ValueNodeEntity, IContainerEntity } from "./base";
-import { diff, patch, IContainerNode, IDiffableNode } from "../markup";
-import { FragmentDictionary, EntityFactoryFragment } from "../fragments";
+import {
+  IEntity,
+  ElementEntity,
+  ValueNodeEntity,
+  IContainerEntity
+} from "./base";
+
+import {
+  diff,
+  patch,
+  IContainerNode,
+  IDiffableNode,
+  ContainerNode
+} from "../markup";
+
+import {
+  FragmentDictionary,
+  EntityFactoryFragment
+} from "../fragments";
 
 const defaultEntityFactory = new EntityFactoryFragment(undefined, ElementEntity);
+
+export class RootEntity extends ContainerNode implements IEntity {
+  constructor(readonly engine:EntityEngine) {
+    super();
+  }
+
+  render() {
+    return undefined;
+  }
+
+  cloneNode(deep?: boolean) {
+    const clone = new RootEntity(this.engine);
+    if (deep) {
+      this.addChildNodesToClonedNode(clone);
+    }
+    return clone;
+  }
+}
 
 /**
  *  Creates entities based on the source expression provided
@@ -19,10 +53,13 @@ export class EntityEngine {
   constructor(readonly fragments: FragmentDictionary) { }
 
   async load(source: IDiffableNode): Promise<IEntity> {
-    const newEntity = await this._loadAll(source);
+
+    const newEntity = new RootEntity(this);
+    newEntity.appendChild(await this._loadAll(source));
+
     // TODO - async diffing using workers here
     // TODO - check entity constructor against new entity
-    if (this._entity && this._entity.nodeName === newEntity.nodeName) {
+    if (this._entity) {
       const changes = diff(this._entity, newEntity);
       patch(this._entity, changes, node => node);
     } else {
