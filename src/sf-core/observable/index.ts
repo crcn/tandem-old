@@ -20,10 +20,12 @@ export class Observable implements IObservable {
   }
 
   public notify(action:Action) {
+    if (action.canPropagate === false) return;
     action.currentTarget = this;
     if (!this._observers) return;
     if (!Array.isArray(this._observers)) return this._observers.execute(action);
     for (const observer of this._observers) {
+      if (action.canPropagateImmediately === false) break;
       observer.execute(action);
     }
   }

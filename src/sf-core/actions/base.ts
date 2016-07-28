@@ -3,6 +3,7 @@ export class Action {
   private _target: any;
   private _currentTarget: any;
   private _canPropagate: boolean = true;
+  private _canPropagateImmediately: boolean = true;
 
   constructor(readonly type: string) { }
 
@@ -29,7 +30,15 @@ export class Action {
     return this._canPropagate;
   }
 
+  get canPropagateImmediately() {
+    return this._canPropagateImmediately;
+  }
+
   stopPropagation() {
     this._canPropagate = false;
+  }
+
+  stopImmediatePropagation() {
+    this._canPropagateImmediately = false;
   }
 }

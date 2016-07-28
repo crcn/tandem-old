@@ -4,7 +4,7 @@ import { PropertyChangeAction } from 'sf-core/actions';
 // TODO
 export default function bindable() {
   return (proto: IObservable, property: string = undefined, descriptor:PropertyDecorator = undefined) => {
-     var _value;
+    var _value;
     Object.defineProperty(proto, property, {
       get() {
         return _value;
