@@ -6,7 +6,7 @@ import { IElement, INode, IContainerNode, Element, ValueNode, IDiffableValueNode
 import TAG_NAMES from "./tag-names";
 
 export interface IHTMLEntity extends IEntity {
-  section:NodeSection|GroupNodeSection;
+  section: NodeSection|GroupNodeSection;
 }
 
 export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
@@ -64,7 +64,7 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
   _link(child) {
     super._link(child);
     if (child.section) {
-      let nextHTMLEntitySibling:IHTMLEntity;
+      let nextHTMLEntitySibling: IHTMLEntity;
       do {
         nextHTMLEntitySibling = <IHTMLEntity>child.nextSibling;
       } while (nextHTMLEntitySibling && !nextHTMLEntitySibling.section);

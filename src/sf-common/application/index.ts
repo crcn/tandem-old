@@ -1,7 +1,6 @@
 import { Logger } from "sf-core/logger";
 import { loggable, bindable } from "sf-core/decorators";
-import { ApplicationServiceFragment } from "sf-core/fragments";
-import { ApplicationSingletonFragment } from "sf-core/fragments";
+import { ApplicationServiceFragment, BusFragment } from "sf-core/fragments";
 import { LoadAction, InitializeAction } from "sf-core/actions";
 import { fragment as consoleLogServiceFragment } from "../services/console-output";
 
@@ -53,7 +52,9 @@ export class Application implements IApplication {
 
     // Make the application available globally through the fragments
     // property so that this reference isn't passed around everywhere.
-    this.fragments.register(new ApplicationSingletonFragment(this));
+    this.fragments.register(
+      new BusFragment(this.bus)
+    );
   }
 
   /**

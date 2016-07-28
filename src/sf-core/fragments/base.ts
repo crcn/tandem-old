@@ -1,17 +1,19 @@
 import { flattenDeep } from "lodash";
 
-export class BaseFragment {
-  constructor(public ns: string) { }
+export interface IFragment {
+  ns: string;
+}
+
+export class BaseFragment implements IFragment {
+  constructor(readonly ns: string) { }
 }
 
 /**
  */
 
-interface IFactory {
+export interface IFactory {
   create(...rest): any;
 }
-
-export {IFactory};
 
 
 /**
@@ -35,18 +37,6 @@ export class FactoryFragment extends BaseFragment implements IFactory {
 export class ClassFactoryFragment extends FactoryFragment {
   constructor(ns: string, clazz: { new(...rest): any }) {
     super(ns, { create: (...rest) => new clazz(...rest) });
-  }
-}
-
-
-/**
- * Singleton instance that is accessible throught the application
- * context without polluting the global namespace
- */
-
-export class SingletonFragment<T> extends BaseFragment {
-  constructor(ns: string, readonly instance: T) {
-    super(ns);
   }
 }
 

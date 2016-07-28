@@ -27,11 +27,6 @@ describe(__filename + "#", () => {
     const app = new Application({});
   });
 
-  it("is registered as a singleton in fragments", () => {
-    const app = new Application({});
-    expect(ApplicationSingletonFragment.find(app.fragments).instance).to.equal(app);
-  });
-
   it("registers application service fragments upon initialization", async () => {
     const app = new Application({});
     let i = 0;

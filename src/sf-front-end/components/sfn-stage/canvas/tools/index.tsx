@@ -4,7 +4,6 @@ import RegisteredComponent from 'sf-front-end/components/registered';
 
 export default class ToolsComponent extends React.Component<any, any> {
   render() {
-
     var entity           = this.props.entity;
     var allEntities      = entity.flatten();
     var currentTool      = this.props.app.currentTool || {};

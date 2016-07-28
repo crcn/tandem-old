@@ -38,8 +38,13 @@ export default class RootComponentRenderer extends BaseApplicationService<IAppli
     }
 
     ReactDOM.render(rootComponentClassFragment.create({
+
+      // deprecated
       app: app,
-      bus: app.bus
+
+      // deprecated
+      bus: app.bus,
+      fragments: app.fragments
     }), app.config.element);
   }
 }
