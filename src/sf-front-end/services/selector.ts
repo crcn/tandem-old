@@ -9,7 +9,6 @@ export default class SelectorService extends BaseApplicationService<IApplication
     (this.app as any).selection = [];
   }
 
-
   @isPublic
   selectAtSourceOffset({ data }) {
 
