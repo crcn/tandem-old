@@ -67,7 +67,7 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
       let nextHTMLEntitySibling:IHTMLEntity;
       do {
         nextHTMLEntitySibling = <IHTMLEntity>child.nextSibling;
-      } while(nextHTMLEntitySibling && !nextHTMLEntitySibling.section);
+      } while (nextHTMLEntitySibling && !nextHTMLEntitySibling.section);
 
       if (nextHTMLEntitySibling) {
         // TODO - this assumes that the next sibling has a section property - it
