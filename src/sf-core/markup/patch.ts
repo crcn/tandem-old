@@ -65,8 +65,6 @@ export function patch(node: INode, changes: Array<NodeChange>, cloneNode: Functi
         break;
       case ADD_CHILD:
         const ac = <AddChildChange>change;
-
-        // TODO - need to use factory here
         parentNode.appendChild(cloneNode(<INode>ac.node));
         break;
       case MOVE_CHILD:
