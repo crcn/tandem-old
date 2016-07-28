@@ -1,7 +1,7 @@
 import { BaseExpression, ICursorPosition, flattenEach } from "../core/expression";
 
 export abstract class HTMLExpression extends BaseExpression {
-  constructor(type:string, readonly nodeName:string, position:ICursorPosition) {
+  constructor(type: string, readonly nodeName: string, position: ICursorPosition) {
     super(type, position);
   }
 }
@@ -10,7 +10,7 @@ export abstract class HTMLExpression extends BaseExpression {
 export const HTML_FRAGMENT = "htmlFragment";
 export class HTMLFragmentExpression extends HTMLExpression {
   constructor(public childNodes: Array<HTMLExpression>, position: ICursorPosition) {
-    super(HTML_FRAGMENT, '#document-fragment', position);
+    super(HTML_FRAGMENT, "#document-fragment", position);
   }
 
   public _flattenDeep(items) {
@@ -78,7 +78,7 @@ export class HTMLAttributeExpression extends BaseExpression {
 export const HTML_TEXT = "htmlText";
 export class HTMLTextExpression extends HTMLExpression {
   constructor(public nodeValue: string, public position: ICursorPosition) {
-    super(HTML_TEXT, '#text', position);
+    super(HTML_TEXT, "#text", position);
   }
   toString() {
 
@@ -91,7 +91,7 @@ export class HTMLTextExpression extends HTMLExpression {
 export const HTML_COMMENT = "htmlComment";
 export class HTMLCommentExpression extends HTMLExpression {
   constructor(public nodeValue: string, public position: ICursorPosition) {
-    super(HTML_COMMENT, '#comment', position);
+    super(HTML_COMMENT, "#comment", position);
   }
 
   toString() {

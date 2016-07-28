@@ -1,18 +1,18 @@
-import { getNodePath, findNode } from '../utils';
-import { IMarkupSectionMarker, IMarkupSection } from './base';
-import { IContainerNode, INode } from '../base';
+import { getNodePath, findNode } from "../utils";
+import { IMarkupSectionMarker, IMarkupSection } from "./base";
+import { IContainerNode, INode } from "../base";
 
 /**
  */
 
 export class GroupMarker implements IMarkupSectionMarker {
   constructor(
-    private _startPath:Array<number>,
-    private _endPath:Array<number>,
-    private _nodeFactory:any
+    private _startPath: Array<number>,
+    private _endPath: Array<number>,
+    private _nodeFactory: any
   ) { }
 
-  createSection(rootNode:IContainerNode) {
+  createSection(rootNode: IContainerNode) {
     return new GroupNodeSection(
       findNode(this._startPath, rootNode),
       findNode(this._endPath, rootNode),
@@ -28,15 +28,15 @@ export class GroupMarker implements IMarkupSectionMarker {
 
 export class GroupNodeSection implements IMarkupSection  {
 
-  private _start:INode;
-  private _end:INode;
-  private _nodeFactory:any;
-  private _hiddenChildren:Array<any>;
+  private _start: INode;
+  private _end: INode;
+  private _nodeFactory: any;
+  private _hiddenChildren: Array<any>;
 
   constructor(start = undefined, end = undefined, nodeFactory = document) {
 
-    this._start       = start || nodeFactory.createTextNode('');
-    this._end         = end   || nodeFactory.createTextNode('');
+    this._start       = start || nodeFactory.createTextNode("");
+    this._end         = end   || nodeFactory.createTextNode("");
     this._nodeFactory = nodeFactory;
 
     if (!this._start.parentNode) {
@@ -64,8 +64,8 @@ export class GroupNodeSection implements IMarkupSection  {
   get childNodes() {
     if (this._hiddenChildren) return this._hiddenChildren;
 
-    var cnode = this._start.nextSibling;
-    var childNodes = [];
+    let cnode = this._start.nextSibling;
+    const childNodes = [];
     while (cnode && cnode !== this._end) {
       childNodes.push(cnode);
       cnode = cnode.nextSibling;
@@ -83,7 +83,7 @@ export class GroupNodeSection implements IMarkupSection  {
   }
 
   removeChildNodes() {
-    for (var child of this.childNodes) {
+    for (const child of this.childNodes) {
       child.parentNode.removeChild(child);
     }
   }
@@ -91,7 +91,7 @@ export class GroupNodeSection implements IMarkupSection  {
   get innerHTML() {
     return this.childNodes.map((childNode) => (
       childNode.outerHTML || childNode.nodeValue
-    )).join('');
+    )).join("");
   }
 
   get allChildNodes() {
@@ -99,9 +99,9 @@ export class GroupNodeSection implements IMarkupSection  {
   }
 
   toFragment() {
-    var fragment = this._nodeFactory.createDocumentFragment();
+    const fragment = this._nodeFactory.createDocumentFragment();
 
-    for (var child of this.allChildNodes) {
+    for (const child of this.allChildNodes) {
       fragment.appendChild(child);
     }
 
@@ -113,8 +113,8 @@ export class GroupNodeSection implements IMarkupSection  {
    */
 
   remove() {
-    var parent = this._nodeFactory.createDocumentFragment();
-    for (var child of this.allChildNodes) {
+    const parent = this._nodeFactory.createDocumentFragment();
+    for (const child of this.allChildNodes) {
       parent.appendChild(child);
     }
   }
@@ -126,20 +126,20 @@ export class GroupNodeSection implements IMarkupSection  {
   hide() {
     if (this._hiddenChildren) return;
     this._hiddenChildren = this.childNodes;
-    for (var child of this._hiddenChildren) {
+    for (const child of this._hiddenChildren) {
       child.parentNode.removeChild(child);
     }
   }
 
   /**
-   * shows the section if it's hidden
+   * shows the section if it"s hidden
    */
 
   show() {
     if (!this._hiddenChildren) return;
-    var hiddenChildren = this._hiddenChildren;
+    const hiddenChildren = this._hiddenChildren;
     this._hiddenChildren = void 0;
-    // for (var child of hiddenChildren) {
+    // for (const child of hiddenChildren) {
     //   this._start.appendChild(child);
     // }
   }
@@ -159,11 +159,12 @@ export class GroupNodeSection implements IMarkupSection  {
    */
 
   clone() {
-    if (this.targetNode.nodeName !== '#document-fragment') {
-      throw new Error('cannot currently clone fragment section that is attached to an element.');
+
+    if (this.targetNode.nodeName !== "#document-fragment") {
+      throw new Error("Cannot currently clone fragment section that is attached to an element.");
     }
 
-    var clone = <IContainerNode>this.targetNode.cloneNode(true);
+    const clone = <IContainerNode>this.targetNode.cloneNode(true);
     return new GroupNodeSection(clone.firstChild, clone.lastChild, this._nodeFactory);
   }
 }

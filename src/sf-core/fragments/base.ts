@@ -1,4 +1,4 @@
-import { flattenDeep } from 'lodash';
+import { flattenDeep } from "lodash";
 
 export class BaseFragment {
   constructor(public ns: string) { }
@@ -8,7 +8,7 @@ export class BaseFragment {
  */
 
 interface IFactory {
-  create(...rest):any;
+  create(...rest): any;
 }
 
 export {IFactory};
@@ -19,11 +19,11 @@ export {IFactory};
  */
 
 export class FactoryFragment extends BaseFragment implements IFactory {
-  constructor(ns:string, public factory:IFactory) {
+  constructor(ns: string, public factory: IFactory) {
     super(ns);
   }
 
-  create(...rest:Array<any>):any {
+  create(...rest: Array<any>): any {
     return this.factory.create(...rest);
   }
 }
@@ -33,7 +33,7 @@ export class FactoryFragment extends BaseFragment implements IFactory {
  */
 
 export class ClassFactoryFragment extends FactoryFragment {
-  constructor(ns:string, clazz:{ new(...rest):any }) {
+  constructor(ns: string, clazz: { new(...rest): any }) {
     super(ns, { create: (...rest) => new clazz(...rest) });
   }
 }
@@ -45,7 +45,7 @@ export class ClassFactoryFragment extends FactoryFragment {
  */
 
 export class SingletonFragment<T> extends BaseFragment {
-  constructor(ns:string, readonly instance:T) {
+  constructor(ns: string, readonly instance: T) {
     super(ns);
   }
 }
@@ -98,7 +98,7 @@ export class FragmentDictionary {
 
   register(...fragments: Array<BaseFragment|Array<any>>) {
 
-    const flattenedFragments:Array<BaseFragment> = flattenDeep(fragments);
+    const flattenedFragments: Array<BaseFragment> = flattenDeep(fragments);
 
     for (const fragment of flattenedFragments) {
 

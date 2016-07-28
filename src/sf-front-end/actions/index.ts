@@ -1,6 +1,6 @@
-import { Action } from 'sf-core/actions';
+import { Action } from "sf-core/actions";
 
-export const STAGE_CANVAS_MOUSE_DOWN = 'stageCanvasMouseDown';
+export const STAGE_CANVAS_MOUSE_DOWN = "stageCanvasMouseDown";
 export class MouseEvent extends Action {
   constructor(type, originalEvent) {
     super(type);
@@ -12,35 +12,35 @@ export class MouseEvent extends Action {
   }
 }
 
-export const SELECT = 'select';
+export const SELECT = "select";
 export class SelectAction extends Action {
 
-  public items:Array<any>;
-  public keepPreviousSelection:boolean;
-  public toggle:boolean;
+  public items: Array<any>;
+  public keepPreviousSelection: boolean;
+  public toggle: boolean;
 
-  constructor(items:any = undefined, keepPreviousSelection = false, toggle = false) {
+  constructor(items: any = undefined, keepPreviousSelection = false, toggle = false) {
     super(SELECT);
-    this.items = Array.isArray(items) ? items : items == undefined ? [] : [items];
+    this.items = Array.isArray(items) ? items : items == null ? [] : [items];
     this.keepPreviousSelection = !!keepPreviousSelection;
     this.toggle = toggle;
   }
 }
 
 export class ToggleSelectAction extends SelectAction {
-  constructor(items = undefined, keepPreviousSelection:boolean = false) {
+  constructor(items = undefined, keepPreviousSelection: boolean = false) {
     super(items, keepPreviousSelection, true);
   }
 }
 
-export const ZOOM_IN = 'zoomIn';
+export const ZOOM_IN = "zoomIn";
 export class ZoomInAction extends Action {
   constructor() {
     super(ZOOM_IN);
   }
 }
 
-export const ZOOM_OUT = 'zoomOut';
+export const ZOOM_OUT = "zoomOut";
 export class ZoomOutAction extends Action {
   constructor() {
     super(ZOOM_OUT);

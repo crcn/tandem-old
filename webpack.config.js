@@ -27,6 +27,10 @@ module.exports =  {
   node: {
     __filename: true
   },
+
+  // more options in the optional tslint object
+  tslint: {
+  },
   module: {
     loaders: [
       {
@@ -55,6 +59,10 @@ module.exports =  {
       {
         test: /\.tsx?$/,
         loader: getModuleDirectory("ts-loader")
+      },
+      {
+        test: /\.tsx?$/,
+        loader: getModuleDirectory("tslint-loader")
       }
     ]
   }

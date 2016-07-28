@@ -27,11 +27,11 @@ function element(name, attributes = {}, ...children) {
 }
 
 function text(nodeValue) {
-  return new ValueNode('#text', nodeValue);
+  return new ValueNode("#text", nodeValue);
 }
 
 function comment(nodeValue) {
-  return new ValueNode('#comment', nodeValue);
+  return new ValueNode("#comment", nodeValue);
 }
 
 describe(__filename + "#", function() {
@@ -41,40 +41,40 @@ describe(__filename + "#", function() {
 
   [
     [
-      element('a'),
-      element('div'),
+      element("a"),
+      element("div"),
       [
         new RemoveChildChange(0),
         new AddChildChange(undefined)
       ]
     ],
     [
-      text('a'),
-      text('b'),
+      text("a"),
+      text("b"),
       [
-        new SetNodeValueChange(0, 'b')
+        new SetNodeValueChange(0, "b")
       ]
     ],
     [
-      element('a', {}, text('a'), text('b')),
-      element('a', {}, text('b'), text('c')),
+      element("a", {}, text("a"), text("b")),
+      element("a", {}, text("b"), text("c")),
       [
-        new SetNodeValueChange(0, 'b'),
-        new SetNodeValueChange(1, 'c')
+        new SetNodeValueChange(0, "b"),
+        new SetNodeValueChange(1, "c")
       ]
     ],
 
     // test case where nodeValue is undefined for ValueNode instance.
     [
       text(undefined),
-      text('a'),
+      text("a"),
       [
-        new SetNodeValueChange(0, 'a')
+        new SetNodeValueChange(0, "a")
       ]
     ],
      // test case where nodeValue is undefined for ValueNode instance.
     [
-      text('a'),
+      text("a"),
       text(undefined),
       [
         new SetNodeValueChange(0, undefined)
@@ -82,24 +82,24 @@ describe(__filename + "#", function() {
     ],
     [
       element(
-        'a',
+        "a",
         {},
-        element('a', {}, text('b')),
-        element('a')
+        element("a", {}, text("b")),
+        element("a")
       ),
       element(
-        'a',
+        "a",
         {},
-        element('a'),
-        element('a', {}, text('b'))
+        element("a"),
+        element("a", {}, text("b"))
       ),
       [
         new MoveChildChange(1, 0)
       ]
     ],
     [
-      new CustomElement1('a'),
-      new CustomElement2('a'),
+      new CustomElement1("a"),
+      new CustomElement2("a"),
       [
         new RemoveChildChange(0),
         new AddChildChange(undefined)
@@ -110,7 +110,7 @@ describe(__filename + "#", function() {
       expect(
         JSON.stringify(
           diff(<INode>oldNode, <INode>newNode).map((change) => {
-            var c = JSON.parse(JSON.stringify(change));
+            const c = JSON.parse(JSON.stringify(change));
 
             // clean up with stuff that's hard to compare
             if (c.node) delete c.node;

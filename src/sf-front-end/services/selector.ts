@@ -1,7 +1,7 @@
-import { loggable, bindable, isPublic } from 'sf-core/decorators';
-import { IApplication }  from 'sf-core/application';
-import { BaseApplicationService } from 'sf-core/services';
-import { ApplicationServiceFragment } from 'sf-core/fragments';
+import { loggable, bindable, isPublic } from "sf-core/decorators";
+import { IApplication }  from "sf-core/application";
+import { BaseApplicationService } from "sf-core/services";
+import { ApplicationServiceFragment } from "sf-core/fragments";
 
 @loggable()
 export default class SelectorService extends BaseApplicationService<IApplication> {
@@ -14,15 +14,14 @@ export default class SelectorService extends BaseApplicationService<IApplication
   selectAtSourceOffset({ data }) {
 
     // TODO - require file in payload
-    var entity = (this.app as any).currentFile.entity;
-    var allEntities = entity.flatten();
-
+    let entity = (this.app as any).currentFile.entity;
+    const allEntities = entity.flatten();
 
     const selection = [];
-    for (var entity of allEntities) {
+    for (entity of allEntities) {
       if (entity.preview) {
-        var position = entity.expression.position;
-        for (var cursor of data) {
+        const position = entity.expression.position;
+        for (const cursor of data) {
 
           if (
             (cursor.start >= position.start && cursor.start <= position.end) ||
@@ -68,7 +67,7 @@ export default class SelectorService extends BaseApplicationService<IApplication
     }
 
     for (const item of items) {
-      var i = newSelection.indexOf(item);
+      const i = newSelection.indexOf(item);
       if (~i) {
         if (toggle) {
           newSelection.splice(i, 1);
@@ -82,4 +81,4 @@ export default class SelectorService extends BaseApplicationService<IApplication
   }
 }
 
-export const fragment = new ApplicationServiceFragment('application/services/selector', SelectorService);
+export const fragment = new ApplicationServiceFragment("application/services/selector", SelectorService);

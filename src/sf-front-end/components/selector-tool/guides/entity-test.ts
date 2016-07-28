@@ -1,9 +1,9 @@
-// import expect from 'expect.js';
-// import LineGuide from './line';
+// import expect from "expect.js";
+// import LineGuide from "./line";
 
-describe(__filename + '#', function () {
+describe(__filename + "#", function () {
 
-  it('can be created', function () {
+  it("can be created", function () {
     // LineGuide.create();
   });
 

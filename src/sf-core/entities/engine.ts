@@ -1,6 +1,6 @@
-import { IEntity, ElementEntity, ValueNodeEntity, IContainerEntity } from './base';
-import { diff, patch, IContainerNode, IDiffableNode } from '../markup';
-import { FragmentDictionary, EntityFactoryFragment } from '../fragments';
+import { IEntity, ElementEntity, ValueNodeEntity, IContainerEntity } from "./base";
+import { diff, patch, IContainerNode, IDiffableNode } from "../markup";
+import { FragmentDictionary, EntityFactoryFragment } from "../fragments";
 
 const defaultEntityFactory = new EntityFactoryFragment(undefined, ElementEntity);
 
@@ -10,15 +10,15 @@ const defaultEntityFactory = new EntityFactoryFragment(undefined, ElementEntity)
  */
 
 export class EntityEngine {
-  private _entity:IEntity;
+  private _entity: IEntity;
 
   /**
    * @param {FragmentDictionary} fragments fragments that contain all entity classes
    */
 
-  constructor(readonly fragments:FragmentDictionary) { }
+  constructor(readonly fragments: FragmentDictionary) { }
 
-  async load(source:IDiffableNode):Promise<IEntity> {
+  async load(source: IDiffableNode): Promise<IEntity> {
     const newEntity = await this._loadAll(source);
     // TODO - async diffing using workers here
     // TODO - check entity constructor against new entity
@@ -32,7 +32,7 @@ export class EntityEngine {
     return this._entity;
   }
 
-  private async _loadAll(source:IDiffableNode) {
+  private async _loadAll(source: IDiffableNode) {
     const entityFactory = EntityFactoryFragment.find(source.nodeName, this.fragments) || defaultEntityFactory;
     const entity = entityFactory.create(source);
     for (const childExpression of toArray(await entity.render())) {
@@ -43,5 +43,5 @@ export class EntityEngine {
 }
 
 function toArray(value) {
-  return Array.isArray(value) ? <Array<any>>value : value == undefined ? [] : [value];
+  return Array.isArray(value) ? <Array<any>>value : value == null ? [] : [value];
 }

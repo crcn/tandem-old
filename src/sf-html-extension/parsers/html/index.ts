@@ -1,1 +1,1 @@
-export * from './index.peg';
+export * from "./index.peg";

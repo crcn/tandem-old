@@ -63,7 +63,7 @@ describe(__filename + "#", () => {
       let de;
       fragments.register(new BaseFragment("a/b"), new BaseFragment("b/c"), [new BaseFragment("b/d"), [de = new BaseFragment("d/e")]]);
       expect(fragments.length).to.equal(4);
-      expect(fragments.query('d/e')).to.equal(de);
+      expect(fragments.query("d/e")).to.equal(de);
     });
   });
 });

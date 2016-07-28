@@ -5,9 +5,9 @@
  * update(action:UpdateAction) { }
  */
 
-export default (filter:Function) => (
+export default (filter: Function) => (
   (proto, name, inf) => {
-    var oldValue = inf.value;
+    const oldValue = inf.value;
     inf.value = function (action) {
       if (filter(action)) {
         return oldValue.call(this, action);

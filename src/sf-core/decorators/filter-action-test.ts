@@ -7,7 +7,7 @@ import { Service } from "sf-core/services";
 describe(__filename + "#", function() {
   it("can filter for actions invoked on a service method", async () => {
     class CustomService extends Service {
-      @filterAction((action:InsertAction) => action.collectionName === "test")
+      @filterAction((action: InsertAction) => action.collectionName === "test")
       insert() {
         return "pong";
       }

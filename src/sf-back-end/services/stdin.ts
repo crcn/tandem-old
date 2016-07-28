@@ -1,13 +1,13 @@
-import * as chalk from 'chalk';
+import * as chalk from "chalk";
 
-import * as readline from 'readline';
+import * as readline from "readline";
 
-import { IApplication } from 'sf-core/application';
+import { IApplication } from "sf-core/application";
 
-import { Logger } from 'sf-core/logger';
-import { loggable, document } from 'sf-core/decorators';
-import { BaseApplicationService } from 'sf-core/services';
-import { ApplicationServiceFragment } from 'sf-core/fragments';
+import { Logger } from "sf-core/logger";
+import { loggable, document } from "sf-core/decorators";
+import { BaseApplicationService } from "sf-core/services";
+import { ApplicationServiceFragment } from "sf-core/fragments";
 
 /**
  * console input command handler
@@ -25,27 +25,27 @@ export default class StdinService extends BaseApplicationService<IApplication> {
       output: process.stdout
     });
     this._readInput();
-    this.logger.prefix = '';
+    this.logger.prefix = "";
   }
 
   /**
    * returns the available command-line actions
    */
 
-  @document('shows help menu')
+  @document("shows help menu")
   help() {
 
     this.app.actors.forEach((actor) => {
       var docs = (actor as any).__documentation || {};
 
       for (const actionType in docs) {
-        this.logger.info('{ type: %s }: %s', chalk.bold(actionType), docs[actionType]);
+        this.logger.info("{ type: %s }: %s", chalk.bold(actionType), docs[actionType]);
       }
     });
   }
 
   _readInput = () => {
-    this._rl.question('> ', this._onInput);
+    this._rl.question("> ", this._onInput);
   }
 
   _onInput = async (text) => {
@@ -73,4 +73,4 @@ export default class StdinService extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ApplicationServiceFragment('stdin', StdinService);
+export const fragment = new ApplicationServiceFragment("stdin", StdinService);

@@ -1,14 +1,14 @@
-import { getNodePath, findNode } from '../utils';
-import { IMarkupSectionMarker, IMarkupSection } from './base';
-import { IContainerNode, INode } from '../base';
+import { getNodePath, findNode } from "../utils";
+import { IMarkupSectionMarker, IMarkupSection } from "./base";
+import { IContainerNode, INode } from "../base";
 
 /**
  */
 
 export class NodeMarker {
 
-  private _path:Array<number>;
-  private _nodeFactory:any;
+  private _path: Array<number>;
+  private _nodeFactory: any;
 
   constructor(path, nodeFactory) {
     this._path = path;
@@ -29,9 +29,9 @@ export class NodeMarker {
  */
 
 export class NodeSection implements IMarkupSection {
-  private _placeholderNode:any;
+  private _placeholderNode: any;
 
-  constructor(private _target:IContainerNode, private _nodeFactory:any = document) { }
+  constructor(private _target: IContainerNode, private _nodeFactory: any = document) { }
 
   appendChild(child) {
     this._target.appendChild(child);
@@ -63,7 +63,7 @@ export class NodeSection implements IMarkupSection {
    */
 
   remove() {
-    var parent = this._nodeFactory.createElement('div');
+    const parent = this._nodeFactory.createElement("div");
     parent.appendChild(this._target);
   }
 
@@ -73,18 +73,18 @@ export class NodeSection implements IMarkupSection {
 
   hide() {
     if (this._placeholderNode) return;
-    this._placeholderNode = this._nodeFactory.createTextNode('');
+    this._placeholderNode = this._nodeFactory.createTextNode("");
     this._target.parentNode.insertBefore(this._target, this._placeholderNode);
     this.remove();
   }
 
   /**
-   * shows the section if it's hidden
+   * shows the section if it"s hidden
    */
 
   show() {
     if (!this._placeholderNode) return;
-    var placeholderNode = this._placeholderNode;
+    const placeholderNode = this._placeholderNode;
     this._placeholderNode = void 0;
     placeholderNode.parentNode.insertBefore(this._target, placeholderNode);
     placeholderNode.parentNode.removeChild(placeholderNode);

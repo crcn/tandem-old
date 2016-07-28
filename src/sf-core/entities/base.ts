@@ -1,5 +1,5 @@
-import { IDiffableNode, IDiffableElement, IDiffableValueNode, INode, IContainerNode, Element, ContainerNode, ValueNode } from '../markup';
-import { IEntityDisplay } from './display';
+import { IDiffableNode, IDiffableElement, IDiffableValueNode, INode, IContainerNode, Element, ContainerNode, ValueNode } from "../markup";
+import { IEntityDisplay } from "./display";
 
 export interface IEntity extends INode {
 
@@ -10,7 +10,7 @@ export interface IEntity extends INode {
 }
 
 export interface IVisibleEntity extends IEntity {
-  readonly display:IEntityDisplay;
+  readonly display: IEntityDisplay;
 }
 
 export interface IContainerEntity extends IEntity, IContainerNode {
@@ -18,7 +18,7 @@ export interface IContainerEntity extends IEntity, IContainerNode {
 }
 
 export class ElementEntity extends Element implements IEntity {
-  constructor(readonly source:IDiffableElement) {
+  constructor(readonly source: IDiffableElement) {
     super(source.nodeName);
 
     // TODO - attributes might need to be transformed here
@@ -29,11 +29,11 @@ export class ElementEntity extends Element implements IEntity {
     }
   }
 
-  render():any {
+  render(): any {
     return this.source.childNodes;
   }
 
-  cloneNode(deep?:boolean) {
+  cloneNode(deep?: boolean) {
     const clone = new ElementEntity(this.source);
     if (deep) {
       this.addChildNodesToClonedNode(clone);
@@ -43,13 +43,13 @@ export class ElementEntity extends Element implements IEntity {
 }
 
 export class ValueNodeEntity extends ValueNode implements IEntity {
-  constructor(readonly source:IDiffableValueNode) {
+  constructor(readonly source: IDiffableValueNode) {
     super(source.nodeName, source.nodeValue);
   }
   render() {
     return null;
   }
-  cloneNode(deep?:boolean) {
+  cloneNode(deep?: boolean) {
     const clone = new ValueNodeEntity(this.source);
     return clone;
   }

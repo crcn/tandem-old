@@ -45,6 +45,7 @@
     "sf-core": "file:./lib/sf-core",
     "sf-front-end": "file:./lib/sf-front-end",
     "tslint": "^3.13.0",
+    "tslint-loader": "^2.1.5",
     "typescript": "^2.0.0"
   },
   "dependencies": {

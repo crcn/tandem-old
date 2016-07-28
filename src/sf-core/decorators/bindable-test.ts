@@ -1,5 +1,5 @@
 import bindable from "./bindable";
-import { Action } from '../actions';
+import { Action } from "../actions";
 import { Observable } from "../observable";
 import { expect } from "chai";
 
@@ -11,7 +11,7 @@ describe(__filename + "#", function() {
     }
 
     const item = new Item();
-    let lastAction:Action;
+    let lastAction: Action;
     item.observe({
       execute: action => lastAction = action
     });

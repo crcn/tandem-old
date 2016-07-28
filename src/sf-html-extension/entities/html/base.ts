@@ -1,16 +1,16 @@
-import { IEntity, IVisibleEntity, ElementEntity, ValueNodeEntity } from 'sf-core/entities';
-import { EntityFactoryFragment } from 'sf-core/fragments';
-import { HTMLElementExpression, HTMLTextExpression, HTMLCommentExpression, HTMLAttributeExpression } from '../../parsers/html/expressions';
-import { HTMLNodeDisplay } from './displays';
-import { IElement, INode, IContainerNode, Element, ValueNode, IDiffableValueNode, GroupNodeSection, NodeSection } from 'sf-core/markup';
-import TAG_NAMES from './tag-names';
+import { IEntity, IVisibleEntity, ElementEntity, ValueNodeEntity } from "sf-core/entities";
+import { EntityFactoryFragment } from "sf-core/fragments";
+import { HTMLElementExpression, HTMLTextExpression, HTMLCommentExpression, HTMLAttributeExpression } from "../../parsers/html/expressions";
+import { HTMLNodeDisplay } from "./displays";
+import { IElement, INode, IContainerNode, Element, ValueNode, IDiffableValueNode, GroupNodeSection, NodeSection } from "sf-core/markup";
+import TAG_NAMES from "./tag-names";
 
 export interface IHTMLEntity extends IEntity { }
 
-function didMount(entity:IHTMLEntity, node:INode) {
+function didMount(entity: IHTMLEntity, node: INode) {
   let p = entity.parentNode;
   let pp = <INode>entity;
-  while(p && !(p instanceof HTMLElementEntity)) {
+  while (p && !(p instanceof HTMLElementEntity)) {
     pp = <INode>p;
     p = p.parentNode;
   }
@@ -36,7 +36,7 @@ function didMount(entity:IHTMLEntity, node:INode) {
 
 export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
   public section: GroupNodeSection|NodeSection;
-  constructor(source:HTMLElementExpression) {
+  constructor(source: HTMLElementExpression) {
     super(source);
     this.section = this.createSection();
 
@@ -47,12 +47,12 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
     }
   }
 
-  removeAttribute(name:string) {
+  removeAttribute(name: string) {
     super.removeAttribute(name);
     if (this.section instanceof NodeSection) {
       (<IElement>this.section.targetNode).removeAttribute(name);
     }
-    for (let i = this.source.attributes.length; i--;) {
+    for (let i = this.source.attributes.length; i--; ) {
       const attribute = this.source.attributes[i];
       if (attribute.name === name) {
         this.source.attributes.splice(i, 1);
@@ -61,15 +61,15 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
     }
   }
 
-  insertDOMChildBefore(newChild:INode, beforeChild:INode) {
+  insertDOMChildBefore(newChild: INode, beforeChild: INode) {
     this.section.targetNode.insertBefore(newChild, beforeChild);
   }
 
-  appendDOMChild(newChild:INode) {
+  appendDOMChild(newChild: INode) {
     this.section.targetNode.appendChild(newChild);
   }
 
-  setAttribute(name:string, value:string) {
+  setAttribute(name: string, value: string) {
     super.setAttribute(name, value);
     if (!this.source) return;
     if (this.section instanceof NodeSection) {
@@ -91,8 +91,8 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
   willUnmount() {
     this.section.remove();
   }
-  protected createSection():GroupNodeSection|NodeSection {
-    var element = document.createElement(this.nodeName) as any;
+  protected createSection(): GroupNodeSection|NodeSection {
+    const element = document.createElement(this.nodeName) as any;
     return new NodeSection(element);
   }
 }
@@ -111,19 +111,19 @@ export class HTMLDocumentFragmentEntity extends HTMLElementEntity {
 
 export abstract class HTMLValueNodeEntity extends ValueNodeEntity implements IHTMLEntity {
 
-  public section:NodeSection;
-  private _node:Node;
+  public section: NodeSection;
+  private _node: Node;
 
-  constructor(readonly source:IDiffableValueNode) {
+  constructor(readonly source: IDiffableValueNode) {
     super(source);
     this.section = new NodeSection(this._node = this.createDOMNode(source.nodeValue) as any);
   }
 
-  get nodeValue():any {
+  get nodeValue(): any {
     return this.source.nodeValue;
   }
 
-  set nodeValue(value:any) {
+  set nodeValue(value: any) {
     if (this.source) this.source.nodeValue = value;
     if (this._node) this._node.nodeValue = value;
   }
@@ -138,23 +138,22 @@ export abstract class HTMLValueNodeEntity extends ValueNodeEntity implements IHT
     }
   }
 
-  abstract createDOMNode(nodeValue:any):Node;
+  abstract createDOMNode(nodeValue: any): Node;
 }
 
 export class HTMLTextEntity extends HTMLValueNodeEntity {
-  createDOMNode(nodeValue:any) {
+  createDOMNode(nodeValue: any) {
     return document.createTextNode(nodeValue);
   }
 }
 
 export class HTMLCommentEntity extends HTMLValueNodeEntity {
-  createDOMNode(nodeValue:any) {
+  createDOMNode(nodeValue: any) {
     return document.createComment(nodeValue);
   }
 }
 
 export const htmlElementFragments = TAG_NAMES.map((nodeName) => new EntityFactoryFragment(nodeName, VisibleHTMLElementEntity));
-export const htmlTextFragment     = new EntityFactoryFragment('#text', HTMLTextEntity);
-export const htmlCommentFragment  = new EntityFactoryFragment('#comment', HTMLCommentEntity);
-export const htmlDocumentFragment = new EntityFactoryFragment('#document-fragment', HTMLDocumentFragmentEntity);
-
+export const htmlTextFragment     = new EntityFactoryFragment("#text", HTMLTextEntity);
+export const htmlCommentFragment  = new EntityFactoryFragment("#comment", HTMLCommentEntity);
+export const htmlDocumentFragment = new EntityFactoryFragment("#document-fragment", HTMLDocumentFragmentEntity);

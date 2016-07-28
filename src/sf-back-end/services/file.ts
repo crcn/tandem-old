@@ -1,15 +1,15 @@
-import * as fs from 'fs';
-import * as gaze from 'gaze';
-import * as sift from 'sift';
+import * as fs from "fs";
+import * as gaze from "gaze";
+import * as sift from "sift";
 
-import { Logger } from 'sf-core/logger';
-import { IApplication } from 'sf-core/application';
-import { UpsertAction } from 'sf-core/actions';
-import { BaseApplicationService } from 'sf-core/services';
-import { ApplicationServiceFragment } from 'sf-core/fragments';
-import { loggable, isPublic, document, filterAction } from 'sf-core/decorators';
+import { Logger } from "sf-core/logger";
+import { IApplication } from "sf-core/application";
+import { UpsertAction } from "sf-core/actions";
+import { BaseApplicationService } from "sf-core/services";
+import { ApplicationServiceFragment } from "sf-core/fragments";
+import { loggable, isPublic, document, filterAction } from "sf-core/decorators";
 
-import { Response } from 'mesh';
+import { Response } from "mesh";
 
 @loggable()
 export default class FileService extends BaseApplicationService<IApplication> {
@@ -21,7 +21,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @isPublic
-  @document('opens a file')
+  @document("opens a file")
   openFile(action) {
     this.logger.info(`opening ${action.path}`);
 
@@ -31,19 +31,19 @@ export default class FileService extends BaseApplicationService<IApplication> {
 
     var data = this.readFile(action);
 
-    return this.bus.execute(new UpsertAction('files', data, { path: data.path }));
+    return this.bus.execute(new UpsertAction("files", data, { path: data.path }));
   }
 
   /**
    */
 
   @isPublic
-  @document('reads a file content')
+  @document("reads a file content")
   readFile(action) {
     return {
       path    : action.path,
-      ext     : action.path.split('.').pop(),
-      content : fs.readFileSync(action.path, 'utf8')
+      ext     : action.path.split(".").pop(),
+      content : fs.readFileSync(action.path, "utf8")
     };
   }
 
@@ -52,7 +52,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
    * the file watcher if it exists
    */
 
-  @filterAction(sift({ collectionName: 'files' }))
+  @filterAction(sift({ collectionName: "files" }))
   didRemove(action) {
     for (var item of action.data) {
       if (this._watchers[item.path]) {
@@ -62,7 +62,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
   }
 
   _closeFileWatcher(watcher, item) {
-    this.logger.info('closing file watcher for %s', item.path);
+    this.logger.info("closing file watcher for %s", item.path);
     watcher.close();
   }
 
@@ -70,13 +70,13 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @isPublic
-  @document('watches a file for any changes')
+  @document("watches a file for any changes")
   watchFile(action) {
     return Response.create((writable) => {
       var watcher = gaze(action.path, (err, w) => {
-        w.on('all', async () => {
+        w.on("all", async () => {
           try {
-            await writable.write({ type: 'fileChange' });
+            await writable.write({ type: "fileChange" });
           } catch (e) {
             this._closeFileWatcher(watcher, action);
           }
@@ -91,9 +91,9 @@ export default class FileService extends BaseApplicationService<IApplication> {
   _watch(action) {
     if (this._watchers[action.path]) return;
     this._watchers[action.path] = gaze(action.path, (err, watcher) => {
-      watcher.on('all', this.openFile.bind(this, action));
+      watcher.on("all", this.openFile.bind(this, action));
     });
   }
 }
 
-export const fragment = new ApplicationServiceFragment('file', FileService);
+export const fragment = new ApplicationServiceFragment("file", FileService);

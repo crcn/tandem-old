@@ -1,8 +1,8 @@
 import { Application } from "./index.ts";
 import { LOAD, INITIALIZE } from "sf-core/actions";
 import { expect } from "chai";
-import { ApplicationSingletonFragment, ApplicationServiceFragment } from 'sf-core/fragments';
-import { BaseApplicationService } from 'sf-core/services';
+import { ApplicationSingletonFragment, ApplicationServiceFragment } from "sf-core/fragments";
+import { BaseApplicationService } from "sf-core/services";
 
 describe(__filename + "#", () => {
   it("can be created", () => {
@@ -27,22 +27,22 @@ describe(__filename + "#", () => {
     const app = new Application({});
   });
 
-  it('is registered as a singleton in fragments', () => {
+  it("is registered as a singleton in fragments", () => {
     const app = new Application({});
     expect(ApplicationSingletonFragment.find(app.fragments).instance).to.equal(app);
   });
 
-  it('registers application service fragments upon initialization', async () => {
+  it("registers application service fragments upon initialization", async () => {
     const app = new Application({});
     let i = 0;
     let j = 0;
 
     class TestService extends BaseApplicationService<Application> {
-      load() { i++ }
-      initialize() { j++ }
+      load() { i++; }
+      initialize() { j++; }
     }
 
-    app.fragments.register(new ApplicationServiceFragment('testService', TestService));;
+    app.fragments.register(new ApplicationServiceFragment("testService", TestService));
 
     await app.initialize();
     expect(i).to.equal(1);

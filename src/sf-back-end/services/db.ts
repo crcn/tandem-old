@@ -1,13 +1,13 @@
-import { IActor } from 'sf-core/actors';
-import { IApplication } from 'sf-core/application';
-import { ApplicationServiceFragment } from 'sf-core/fragments';
-import { BaseApplicationService } from 'sf-core/services';
-import { loggable, isPublic, document } from 'sf-core/decorators';
-import { DBAction, FindAction, InsertAction, RemoveAction, UpdateAction, PostDBAction } from 'sf-core/actions';
+import { IActor } from "sf-core/actors";
+import { IApplication } from "sf-core/application";
+import { ApplicationServiceFragment } from "sf-core/fragments";
+import { BaseApplicationService } from "sf-core/services";
+import { loggable, isPublic, document } from "sf-core/decorators";
+import { DBAction, FindAction, InsertAction, RemoveAction, UpdateAction, PostDBAction } from "sf-core/actions";
 
-import * as MemoryDsBus from 'mesh-memory-ds-bus';
+import * as MemoryDsBus from "mesh-memory-ds-bus";
 
-import { titleize } from 'inflection';
+import { titleize } from "inflection";
 
 
 @loggable()
@@ -25,7 +25,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @isPublic
-  @document('finds an item in the database')
+  @document("finds an item in the database")
   find(action:FindAction) {
     return this._db.execute(action);
   }
@@ -35,7 +35,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @isPublic
-  @document('removes an item in the database')
+  @document("removes an item in the database")
   remove(action:RemoveAction) {
     return this._executeWithPostAction(action);
   }
@@ -45,7 +45,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @isPublic
-  @document('inserts an item in the database')
+  @document("inserts an item in the database")
   insert(action:InsertAction) {
     return this._executeWithPostAction(action);
   }
@@ -54,7 +54,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @isPublic
-  @document('updates an item in the database')
+  @document("updates an item in the database")
   update(action:UpdateAction) {
     return this._executeWithPostAction(action);
   }
@@ -74,4 +74,4 @@ export default class DBService extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ApplicationServiceFragment('db', DBService);
+export const fragment = new ApplicationServiceFragment("db", DBService);

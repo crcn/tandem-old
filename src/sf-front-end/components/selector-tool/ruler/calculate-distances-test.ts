@@ -1,6 +1,6 @@
-// import expect from 'expect.js';
-// import BaseDisplayEntity from 'sf-common/entities/display';
-// import calculateDistances from './calculate-distances';
+// import expect from "expect.js";
+// import BaseDisplayEntity from "sf-common/entities/display";
+// import calculateDistances from "./calculate-distances";
 
 /*
 
@@ -17,7 +17,7 @@
 //   constructor(properties, children = []) {
 //
 //     super({
-//       fragmentId: 'test',
+//       fragmentId: "test",
 //       ...properties,
 //     }, children);
 //
@@ -27,25 +27,25 @@
 //   }
 // }
 
-describe(__filename + '#', function () {
+describe(__filename + "#", function () {
 
-  var cases = {
+  const cases = {
 
-    'finds entities left of bounds': [
+    "finds entities left of bounds": [
       [
 
         // top check
-        ['ent1', 100, 100, 100, 100],
-        ['ent2', 0, 50, 100, 100],
-        ['ent3', 0, 201, 100, 100],
-        ['ent4', 0, 200, 100, 100],
+        ["ent1", 100, 100, 100, 100],
+        ["ent2", 0, 50, 100, 100],
+        ["ent3", 0, 201, 100, 100],
+        ["ent4", 0, 200, 100, 100],
 
         // left check
-        ['ent5', 300, 100, 100, 100],
-        ['ent6', 301, 201, 100, 100],
+        ["ent5", 300, 100, 100, 100],
+        ["ent6", 301, 201, 100, 100],
       ],
       [200, 100, 100, 100],
-      ['ent1', 'ent2', 'ent4', 'ent5'],
+      ["ent1", "ent2", "ent4", "ent5"],
     ],
   };
 
@@ -53,10 +53,10 @@ describe(__filename + '#', function () {
     it(title, function () {
 
       // var ent = TestDisplayEntity.create({
-      //   fragmentId: 'frag',
+      //   fragmentId: "frag",
       // }, entities.map(function ([id, left, top, width, height]) {
       //   return TestDisplayEntity.create({
-      //     left, top, width, height, fragmentId: 'frag', id: id, type: 'component',
+      //     left, top, width, height, fragmentId: "frag", id: id, type: "component",
       //   });
       // })).flatten().map(function (entity) {
       //   return entity.preview.getBoundingRect();

@@ -1,16 +1,16 @@
-import { BoundingRect } from 'sf-core/geom';
-import { VisibleHTMLElementEntity } from '../base';
-import { IEntityDisplay, IVisibleEntity } from 'sf-core/entities';
+import { BoundingRect } from "sf-core/geom";
+import { VisibleHTMLElementEntity } from "../base";
+import { IEntityDisplay, IVisibleEntity } from "sf-core/entities";
 
 
 export class HTMLNodeDisplay implements IEntityDisplay {
-  constructor(readonly entity:VisibleHTMLElementEntity) { }
+  constructor(readonly entity: VisibleHTMLElementEntity) { }
 
   /**
    * returns the DOM node of the entity
    */
 
-  get node():Element {
+  get node(): Element {
     return this.entity.section.targetNode as any;
   }
 
@@ -20,7 +20,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
    * rect information
    */
 
-  get isolatedChildNodes():boolean {
+  get isolatedChildNodes(): boolean {
     return /iframe/i.test(this.node.nodeName);
   }
 
@@ -28,17 +28,17 @@ export class HTMLNodeDisplay implements IEntityDisplay {
    * the bounds of the visible element
    */
 
-  get bounds():BoundingRect {
-    const clientRect:ClientRect = this.node.getBoundingClientRect();
+  get bounds(): BoundingRect {
+    const clientRect: ClientRect = this.node.getBoundingClientRect();
 
     // convert into something that is not DOM specific
-    const rect:BoundingRect = new BoundingRect(clientRect.left, clientRect.top, clientRect.right, clientRect.bottom);
+    const rect: BoundingRect = new BoundingRect(clientRect.left, clientRect.top, clientRect.right, clientRect.bottom);
     this._addIsolationOffset(rect);
 
     return rect;
   }
 
-  private _addIsolationOffset(rect:BoundingRect) {
+  private _addIsolationOffset(rect: BoundingRect) {
     for (const display of this._getParentDisplays()) {
       if (display.isolatedChildNodes) {
         const parentBounds = display.bounds;
@@ -51,10 +51,10 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     }
   }
 
-  private _getParentDisplays():Array<HTMLNodeDisplay> {
+  private _getParentDisplays(): Array<HTMLNodeDisplay> {
     let p = this.entity.parentNode;
     const parentDisplays = [];
-    while(p) {
+    while (p) {
       if ((<IVisibleEntity><any>p).display instanceof HTMLNodeDisplay) {
         parentDisplays.push(<HTMLNodeDisplay>(<IVisibleEntity><any>p).display);
       }

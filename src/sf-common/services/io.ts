@@ -1,13 +1,13 @@
 
-import { Logger } from 'sf-core/logger';
-import { loggable, isPublic, document } from 'sf-core/decorators';
-import * as SocketIOBus from 'mesh-socket-io-bus';
+import { Logger } from "sf-core/logger";
+import { loggable, isPublic, document } from "sf-core/decorators";
+import * as SocketIOBus from "mesh-socket-io-bus";
 
-import { Service } from 'sf-core/services';
-import { ParallelBus } from 'mesh';
+import { Service } from "sf-core/services";
+import { ParallelBus } from "mesh";
 
-import { IApplication } from 'sf-core/application';
-import { BaseApplicationService } from 'sf-core/services';
+import { IApplication } from "sf-core/application";
+import { BaseApplicationService } from "sf-core/services";
 
 @loggable()
 export default class IOService<T extends IApplication> extends BaseApplicationService<T> {
@@ -44,7 +44,7 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
    */
 
   @isPublic
-  @document('returns the public action types')
+  @document("returns the public action types")
   getPublicActionTypes() {
     return Object.keys(this._publicService);
   }
@@ -53,15 +53,15 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
    */
 
   @isPublic
-  @document('pings remote connections')
+  @document("pings remote connections")
   ping() {
-    return 'pong';
+    return "pong";
   }
 
   /**
    */
 
-  @document('returns the number of remote connections')
+  @document("returns the number of remote connections")
   getRemoteConnectionCount() {
     return this._remoteActors.length;
   }
@@ -70,7 +70,7 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
    */
 
   addConnection = async (connection) => {
-    this.logger.info('client connected');
+    this.logger.info("client connected");
 
     var remoteService = new Service();
 
@@ -87,15 +87,15 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
 
     // fetch the remote action types, and set them to the remote service
     // so that we limit the number of outbound actions
-    for (const remoteActionType of await remoteBus.execute({ type: 'getPublicActionTypes' }).readAll()) {
-      this.logger.verbose('adding remote action "%s"', remoteActionType);
+    for (const remoteActionType of await remoteBus.execute({ type: "getPublicActionTypes" }).readAll()) {
+      this.logger.verbose("adding remote action \"%s\"", remoteActionType);
       remoteService.addActor(remoteActionType, new ParallelBus([
         remoteBus
       ]));
     }
 
-    connection.once('disconnect', () => {
-      this.logger.info('client disconnected');
+    connection.once("disconnect", () => {
+      this.logger.info("client disconnected");
 
       this._remoteActors.splice(
         this._remoteActors.indexOf(remoteService),

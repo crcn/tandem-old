@@ -1,7 +1,11 @@
 export default class BoundingRect {
 
-  constructor(public left:number, public top:number, public right:number, public bottom:number) {
-  }
+  constructor(
+    public left: number,
+    public top: number,
+    public right: number,
+    public bottom: number
+  ) { }
 
   get width() {
     return this.right - this.left;
@@ -19,25 +23,25 @@ export default class BoundingRect {
     this.bottom = this.top + value;
   }
 
-  intersects(...rects:Array<BoundingRect>):boolean {
+  intersects(...rects: Array<BoundingRect>): boolean {
     return !!rects.find((rect) => (
       Math.max(this.left, rect.left) <= Math.min(this.right, rect.right) &&
       Math.max(this.top , rect.top) <= Math.min(this.bottom, rect.bottom)
     ));
   }
 
-  merge(...rects:Array<BoundingRect>):BoundingRect {
+  merge(...rects: Array<BoundingRect>): BoundingRect {
     return BoundingRect.merge(this, ...rects);
   }
 
-  move(left: number, top: number):void {
+  move(left: number, top: number): void {
     this.left   += left;
     this.right  += left;
     this.top    += top;
     this.bottom += top;
   }
 
-  static merge(...rects:Array<BoundingRect>):BoundingRect {
+  static merge(...rects: Array<BoundingRect>): BoundingRect {
     let left   = Infinity;
     let bottom = -Infinity;
     let top    = Infinity;

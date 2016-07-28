@@ -1,11 +1,11 @@
-import { IActor } from 'sf-core/actors';
-import { IApplication } from 'sf-core/application';
+import { IActor } from "sf-core/actors";
+import { IApplication } from "sf-core/application";
 
-import { isPublic } from 'sf-core/decorators';
-import { BaseApplicationService } from 'sf-core/services';
-import { ApplicationServiceFragment } from 'sf-core/fragments';
+import { isPublic } from "sf-core/decorators";
+import { BaseApplicationService } from "sf-core/services";
+import { ApplicationServiceFragment } from "sf-core/fragments";
 
-import { UpsertBus } from 'sf-common/busses';
+import { UpsertBus } from "sf-common/busses";
 
 export default class UpsertService extends BaseApplicationService<IApplication> {
 
@@ -25,4 +25,4 @@ export default class UpsertService extends BaseApplicationService<IApplication> 
   }
 }
 
-export const fragment = new ApplicationServiceFragment('upsert', UpsertService);
+export const fragment = new ApplicationServiceFragment("upsert", UpsertService);

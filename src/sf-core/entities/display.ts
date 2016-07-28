@@ -1,4 +1,4 @@
-import { BoundingRect } from '../geom';
+import { BoundingRect } from "../geom";
 
 /**
  */

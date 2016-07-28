@@ -1,6 +1,6 @@
 // TODO
-export default function bindable() {  
-  return function(target:any, property:string = undefined, descriptor:PropertyDecorator = undefined) {
+export default function bindable() {
+  return function(target: any, property: string = undefined, descriptor: PropertyDecorator = undefined) {
    if (property == undefined) {
      bindClass(target);
    } else {
@@ -8,14 +8,14 @@ export default function bindable() {
    }
   }
 
-  function bindClass(clazz:{ new():any }) {
+  function bindClass(clazz:{ new(): any }) {
     const proto = clazz.prototype;
     for (var key in proto) {
       console.log(proto[key]);
     }
   }
 
-  function bindProperty(proto:any, property:string, descriptor:PropertyDecorator = undefined) {
+  function bindProperty(proto: any, property: string, descriptor: PropertyDecorator = undefined) {
     var _value;
     Object.defineProperty(proto, property, {
       get() {

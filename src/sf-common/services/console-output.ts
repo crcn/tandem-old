@@ -1,51 +1,51 @@
-import { Service } from 'sf-core/services';
-import { ClassFactoryFragment } from 'sf-core/fragments';
-import { LogAction } from 'sf-core/actions';
-import document from 'sf-core/decorators/document';
-import * as sift from 'sift';
+import { Service } from "sf-core/services";
+import { ClassFactoryFragment } from "sf-core/fragments";
+import { LogAction } from "sf-core/actions";
+import document from "sf-core/decorators/document";
+import * as sift from "sift";
 
 import {
   VERBOSE as VERBOSE_LEVEL,
   INFO as INFO_LEVEL,
   WARN as WARN_LEVEL,
   ERROR as ERROR_LEVEL,
-} from 'sf-core/logger/levels';
-import * as chalk from 'chalk';
+} from "sf-core/logger/levels";
+import * as chalk from "chalk";
 
 class ConsoleService extends Service {
 
-  private _filter:Function;
+  private _filter: Function;
 
-  @document('sets a log filter for stdout.')
+  @document("sets a log filter for stdout.")
   setLogFilter(action) {
     this._filter = sift(action.text);
   }
 
-  @document('logs to stdout')
-  log({ level, text }:LogAction) {
+  @document("logs to stdout")
+  log({ level, text }: LogAction) {
 
     if (this._filter && !this._filter(text)) return;
 
-    var log = {
+    const log = {
       [VERBOSE_LEVEL]: console.log.bind(console),
       [INFO_LEVEL]: console.info.bind(console),
       [WARN_LEVEL]: console.warn.bind(console),
       [ERROR_LEVEL]: console.error.bind(console)
     }[level];
 
-    var color = {
-      [VERBOSE_LEVEL]: 'grey',
-      [INFO_LEVEL]: 'blue',
-      [WARN_LEVEL]: 'yellow',
-      [ERROR_LEVEL]: 'red',
+    const color = {
+      [VERBOSE_LEVEL]: "grey",
+      [INFO_LEVEL]: "blue",
+      [WARN_LEVEL]: "yellow",
+      [ERROR_LEVEL]: "red",
     }[level];
 
-    if (typeof window !== 'undefined') {
-      log('%c: %c%s', `color: ${color}`, 'color: black', text);
+    if (typeof window !== "undefined") {
+      log("%c: %c%s", `color: ${color}`, "color: black", text);
     } else {
-      log('%s %s', chalk[color].bold(':'), text);
+      log("%s %s", chalk[color].bold(":"), text);
     }
   }
 }
 
-export const fragment = new ClassFactoryFragment('application/services/console', ConsoleService);
+export const fragment = new ClassFactoryFragment("application/services/console", ConsoleService);

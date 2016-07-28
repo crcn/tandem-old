@@ -1,7 +1,7 @@
 import { Logger } from "sf-core/logger";
 import { loggable, bindable } from "sf-core/decorators";
 import { ApplicationServiceFragment } from "sf-core/fragments";
-import { ApplicationSingletonFragment } from 'sf-core/fragments';
+import { ApplicationSingletonFragment } from "sf-core/fragments";
 import { LoadAction, InitializeAction } from "sf-core/actions";
 import { fragment as consoleLogServiceFragment } from "../services/console-output";
 
@@ -16,7 +16,7 @@ import { ParallelBus } from "mesh";
 export class Application implements IApplication {
 
   readonly logger: Logger;
-  readonly actors:Array<IActor> = [];
+  readonly actors: Array<IActor> = [];
   readonly bus: IActor = new ParallelBus(this.actors);
   readonly fragments: FragmentDictionary = new FragmentDictionary();
   private _initializeCalled: boolean = false;

@@ -18,7 +18,7 @@ export class ChangeAction extends Action {
 
 export const PROPERTY_CHANGE = "propertyChange";
 export class PropertyChangeAction extends Action {
-  constructor(readonly property:string, readonly newValue:any, readonly oldValue:any) {
+  constructor(readonly property: string, readonly newValue: any, readonly oldValue: any) {
     super(PROPERTY_CHANGE);
   }
 }

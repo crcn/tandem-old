@@ -3,11 +3,11 @@ import {
   IElement,
   IValueNode,
   IContainerNode
-} from './base';
+} from "./base";
 
 import {
   findNode
-} from './utils';
+} from "./utils";
 
 import {
   NodeChange,
@@ -28,21 +28,21 @@ import {
   REMOVE_ATTRIBUTE,
   MoveChildChange,
   RemoveAttributeChange
-} from './diff';
+} from "./diff";
 
-function _cloneNode(node:INode) {
+function _cloneNode(node: INode) {
   return node.cloneNode(true);
 }
 
-export function patch(node:INode, changes:Array<NodeChange>, cloneNode:Function = undefined) {
-  if (cloneNode == undefined) {
+export function patch(node: INode, changes: Array<NodeChange>, cloneNode: Function = undefined) {
+  if (cloneNode == null) {
     cloneNode = _cloneNode;
   }
 
   let parentNode = <IElement>node;
   let child;
   for (const change of changes) {
-    switch(change.type) {
+    switch (change.type) {
       case INDEX_UP:
         const bc = <IndexUpChange>change;
         parentNode = <IElement>parentNode.parentNode;

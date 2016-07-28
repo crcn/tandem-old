@@ -1,6 +1,6 @@
-import { Action } from '../actions';
+import { Action } from "../actions";
 import { Observable } from "./index";
-import { expect } from 'chai';
+import { expect } from "chai";
 
 describe(__filename + "#", function() {
   it("can be created", function() {
@@ -14,7 +14,7 @@ describe(__filename + "#", function() {
       execute: action => i++
     });
 
-    obs.notify(new Action('change'));
+    obs.notify(new Action("change"));
     expect(i).to.equal(1);
   });
 
@@ -27,7 +27,7 @@ describe(__filename + "#", function() {
     obs.observe({
       execute: action => i++
     });
-    obs.notify(new Action('change'));
+    obs.notify(new Action("change"));
     expect(i).to.equal(2);
   });
 
@@ -40,7 +40,7 @@ describe(__filename + "#", function() {
     obs.observe({
       execute: action => i++
     });
-    obs.notify(new Action('change'));
+    obs.notify(new Action("change"));
     expect(i).to.equal(1);
   });
 
@@ -59,10 +59,10 @@ describe(__filename + "#", function() {
       execute: action => i++
     });
 
-    obs.observe({ execute: obs2.notify.bind(obs2) })
-    obs.notify(new Action('change'));
+    obs.observe({ execute: obs2.notify.bind(obs2) });
+    obs.notify(new Action("change"));
     expect(i).to.equal(1);
-    obs.notify(new Action('change'));
+    obs.notify(new Action("change"));
     expect(i).to.equal(1);
 
   });

@@ -56,7 +56,7 @@ describe(__filename + "#", function() {
       expect(div.innerHTML).to.equal(source);
       await engine.load(parseHTML(change as any));
       expect(div.innerHTML).to.equal(change);
-    })
+    });
   });
 
   describe("template#", function() {

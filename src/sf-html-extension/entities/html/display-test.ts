@@ -6,7 +6,7 @@ import {
   HTMLElementEntity
 } from "./index";
 
-import { BoundingRect } from 'sf-core/geom';
+import { BoundingRect } from "sf-core/geom";
 import * as sift from "sift";
 import { EntityEngine, IVisibleEntity } from "sf-core/entities";
 import { parse as parseHTML } from "../../parsers/html";

@@ -1,24 +1,24 @@
-import * as path from 'path';
-import * as cors from 'cors';
-import * as express from 'express';
+import * as path from "path";
+import * as cors from "cors";
+import * as express from "express";
 
-import * as createSocketIOServer from 'socket.io';
+import * as createSocketIOServer from "socket.io";
 
-import { sync as getPackagePath } from 'package-path';
+import { sync as getPackagePath } from "package-path";
 
-import * as fs from 'fs';
-import * as gaze from 'gaze';
-import * as sift from 'sift';
+import * as fs from "fs";
+import * as gaze from "gaze";
+import * as sift from "sift";
 
-import { Logger } from 'sf-core/logger';
-import { IApplication } from 'sf-core/application';
-import { UpsertAction } from 'sf-core/actions';
-import { loggable } from 'sf-core/decorators';
-import { BaseApplicationService } from 'sf-core/services';
-import { ApplicationServiceFragment } from 'sf-core/fragments';
-import { IOService } from 'sf-common/services';
+import { Logger } from "sf-core/logger";
+import { IApplication } from "sf-core/application";
+import { UpsertAction } from "sf-core/actions";
+import { loggable } from "sf-core/decorators";
+import { BaseApplicationService } from "sf-core/services";
+import { ApplicationServiceFragment } from "sf-core/fragments";
+import { IOService } from "sf-common/services";
 
-import { Response } from 'mesh';
+import { Response } from "mesh";
 
 @loggable()
 export default class FrontEndService extends BaseApplicationService<IApplication> {
@@ -99,7 +99,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
               } else if (/js$/.test(basename)) {
                 return `<script src="${basename}"></script>`;
               }
-            }).filter((str) => !!str).join('\n')
+            }).filter((str) => !!str).join("\n")
           }
         </body>
       </html>
@@ -108,10 +108,10 @@ export default class FrontEndService extends BaseApplicationService<IApplication
 
   async _loadSocketServer() {
     this._server = createSocketIOServer();
-    this._server.set('origins', '*domain.com*:*');
-    this._server.on('connection', this._ioService.addConnection);
+    this._server.set("origins", "*domain.com*:*");
+    this._server.on("connection", this._ioService.addConnection);
     this._server.listen(this._socket);
   }
 }
 
-export const fragment = new ApplicationServiceFragment('front-end', FrontEndService);
+export const fragment = new ApplicationServiceFragment("front-end", FrontEndService);

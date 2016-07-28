@@ -7,39 +7,39 @@
  */
 
 export interface IAttribute {
-  name:string;
-  value:any;
+  name: string;
+  value: any;
 }
 
 export interface INode {
-  parentNode:IContainerNode;
-  readonly nodeName:string;
-  cloneNode(deep?:boolean):INode;
-  flatten():Array<INode>;
-  nextSibling:INode;
-  prevSibling:INode;
+  parentNode: IContainerNode;
+  readonly nodeName: string;
+  cloneNode(deep?: boolean): INode;
+  flatten(): Array<INode>;
+  nextSibling: INode;
+  prevSibling: INode;
 }
 
 export interface IContainerNode extends INode {
-  childNodes:Array<INode>;
-  removeChild(child:INode);
-  appendChild(child:INode);
-  insertBefore(child:INode, existingChild:INode);
-  flatten():Array<INode>;
-  firstChild:INode;
-  lastChild:INode;
+  childNodes: Array<INode>;
+  removeChild(child: INode);
+  appendChild(child: INode);
+  insertBefore(child: INode, existingChild: INode);
+  flatten(): Array<INode>;
+  firstChild: INode;
+  lastChild: INode;
 }
 
 export interface IValueNode extends INode {
-  nodeValue:any;
+  nodeValue: any;
 }
 
 export interface IElement extends IContainerNode {
-  readonly attributes:Array<IAttribute>;
-  hasAttribute(key:string):boolean;
-  removeAttribute(key:string):void;
-  getAttribute(key:string):any;
-  setAttribute(key:string, value:any);
+  readonly attributes: Array<IAttribute>;
+  hasAttribute(key: string): boolean;
+  removeAttribute(key: string): void;
+  getAttribute(key: string): any;
+  setAttribute(key: string, value: any);
 }
 
 /**
@@ -47,13 +47,13 @@ export interface IElement extends IContainerNode {
  */
 
 export class Attribute implements IAttribute {
-  constructor(public name:string, public value:any) { }
+  constructor(public name: string, public value: any) { }
 }
 
 export abstract class Node implements INode {
   readonly nodeName = null;
-  protected _parentNode:IContainerNode;
-  get parentNode():IContainerNode {
+  protected _parentNode: IContainerNode;
+  get parentNode(): IContainerNode {
     return this._parentNode;
   }
 
@@ -65,33 +65,33 @@ export abstract class Node implements INode {
     return this.parentNode ? this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) - 1] : undefined;
   }
 
-  flatten():Array<INode> {
+  flatten(): Array<INode> {
     return this._flattenDeep([]);
   }
 
-  public _flattenDeep(nodes:Array<INode>) {
+  public _flattenDeep(nodes: Array<INode>) {
     nodes.push(this);
     return nodes;
   }
   protected didMount() { }
   protected willUnmount() { }
 
-  abstract cloneNode(deep?:boolean):Node;
+  abstract cloneNode(deep?: boolean): Node;
 }
 
 export abstract class ContainerNode extends Node implements IContainerNode {
 
-  protected _childNodes:Array<INode> = [];
+  protected _childNodes: Array<INode> = [];
 
-  get childNodes():Array<INode> {
+  get childNodes(): Array<INode> {
     return this._childNodes;
   }
 
-  get firstChild():INode {
+  get firstChild(): INode {
     return this._childNodes[0];
   }
 
-  get lastChild():INode {
+  get lastChild(): INode {
     return this._childNodes[this._childNodes.length - 1];
   }
 
@@ -103,7 +103,7 @@ export abstract class ContainerNode extends Node implements IContainerNode {
     return nodes;
   }
 
-  appendChild(child:INode) {
+  appendChild(child: INode) {
     if (child.parentNode) {
       child.parentNode.removeChild(child);
     }
@@ -111,7 +111,7 @@ export abstract class ContainerNode extends Node implements IContainerNode {
     this._link(child);
   }
 
-  removeChild(child:INode) {
+  removeChild(child: INode) {
     const i = this._childNodes.indexOf(child);
     if (i !== -1) {
       this._childNodes.splice(i, 1);
@@ -119,14 +119,14 @@ export abstract class ContainerNode extends Node implements IContainerNode {
     }
   }
 
-  insertBefore(child:Node, existingChild:Node) {
+  insertBefore(child: Node, existingChild: Node) {
     const i = this._childNodes.indexOf(existingChild);
 
     if (child.parentNode) {
       child.parentNode.removeChild(child);
     }
 
-    // throw error if existing child doesn't exist
+    // throw error if existing child doesn"t exist
     if (i === -1) {
       throw new Error("Cannot insert a child before a node that doesn't exist in the parent.");
     } else if (i === 0) {
@@ -138,17 +138,17 @@ export abstract class ContainerNode extends Node implements IContainerNode {
     this._link(child);
   }
 
-  protected _unlink(child:INode) {
+  protected _unlink(child: INode) {
     (child as any).willUnmount();
     (child as any)._parentNode = undefined;
   }
 
-  protected _link(child:INode) {
+  protected _link(child: INode) {
     (child as any)._parentNode = this;
     (child as any).didMount();
   }
 
-  protected addChildNodesToClonedNode(node:ContainerNode) {
+  protected addChildNodesToClonedNode(node: ContainerNode) {
     for (const child of this.childNodes) {
       node.appendChild(child.cloneNode(true));
     }
@@ -163,25 +163,25 @@ class Attributes extends Array<Attribute> { }
  */
 
 export class Element extends ContainerNode implements IElement {
-  readonly attributes:Attributes = [];
-  readonly nodeName:string;
+  readonly attributes: Attributes = [];
+  readonly nodeName: string;
 
-  constructor(nodeName:string) {
+  constructor(nodeName: string) {
     super();
 
     // reflect dom uppercase node names
     this.nodeName = nodeName.toUpperCase();
   }
 
-  hasAttribute(key:string) {
+  hasAttribute(key: string) {
     for (const attribute of this.attributes) {
       if (attribute.name === key) return true;
     }
     return false;
   }
 
-  removeAttribute(key:string) {
-    for (let i = this.attributes.length; i--;) {
+  removeAttribute(key: string) {
+    for (let i = this.attributes.length; i--; ) {
       const attribute = this.attributes[i];
       if (attribute.name === key) {
         this.attributes.splice(i, 1);
@@ -190,12 +190,12 @@ export class Element extends ContainerNode implements IElement {
     }
   }
 
-  getAttribute(key:string):any {
+  getAttribute(key: string): any {
     for (const attribute of this.attributes) {
       if (attribute.name === key) return attribute.value;
     }
   }
-  setAttribute(key:string, value:any) {
+  setAttribute(key: string, value: any) {
     for (const attribute of this.attributes) {
       if (attribute.name === key) {
         attribute.value = value;
@@ -206,8 +206,8 @@ export class Element extends ContainerNode implements IElement {
     this.attributes.push(new Attribute(key, value));
   }
 
-  cloneNode(deep:boolean = false):Element {
-    var clone = this.cloneInstance();
+  cloneNode(deep: boolean = false): Element {
+    const clone = this.cloneInstance();
     for (const attribute of this.attributes) {
       clone.setAttribute(attribute.name, attribute.value);
     }
@@ -229,7 +229,7 @@ export class Element extends ContainerNode implements IElement {
  */
 
 export class ValueNode extends Node implements IValueNode {
-  constructor(readonly nodeName:string, public nodeValue:any) {
+  constructor(readonly nodeName: string, public nodeValue: any) {
     super();
   }
   cloneNode() {
