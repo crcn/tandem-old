@@ -6,7 +6,7 @@ import RulerComponent from './ruler/index';
 import GuideComponent from './guide/index';
 import ResizerComponent from './resizer/index';
 import BoundingRect from 'sf-core/geom/bounding-rect';
-import { ReactComponentFactoryFragment } from 'sf-front-end/fragments/index';
+import { ReactComponentFactoryDependency } from 'sf-front-end/dependencies/index';
 
 export default class SelectorComponent extends React.Component<any, any> {
 
@@ -65,4 +65,4 @@ export default class SelectorComponent extends React.Component<any, any> {
   }
 }
 
-export const fragment = new ReactComponentFactoryFragment('componentssss/tools/pointer/selector',SelectorComponent);
+export const fragment = new ReactComponentFactoryDependency('componentssss/tools/pointer/selector',SelectorComponent);

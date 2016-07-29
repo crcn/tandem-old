@@ -13,9 +13,10 @@ import * as sift from "sift";
 import { Logger } from "sf-core/logger";
 import { IApplication } from "sf-core/application";
 import { UpsertAction } from "sf-core/actions";
-import { loggable } from "sf-core/decorators";
+import { loggable, inject } from "sf-core/decorators";
 import { BaseApplicationService } from "sf-core/services";
-import { ApplicationServiceFragment } from "sf-core/fragments";
+import { DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
+import { ApplicationServiceDependency } from "sf-core/dependencies";
 import { IOService } from "sf-common/services";
 
 import { Response } from "mesh";
@@ -31,11 +32,14 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   public logger:Logger;
   private _bundles:Array<any>;
 
-  constructor(app:IApplication) {
-    super(app);
-    app.actors.push(this._ioService = new IOService<IApplication>(app));
+  @inject(DEPENDENCIES_NS)
+  readonly dependencies: Dependencies;
+
+  didInject() {
+    this.app.actors.push(this._ioService = IOService.create<IApplication>(this.dependencies));
     this._port = this.app.config.port;
   }
+
 
   async load() {
     await this._loadHttpServer();
@@ -114,4 +118,4 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   }
 }
 
-export const fragment = new ApplicationServiceFragment("front-end", FrontEndService);
+export const fragment = new ApplicationServiceDependency("front-end", FrontEndService);

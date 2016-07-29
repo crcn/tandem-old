@@ -1,6 +1,6 @@
 // import expect from "expect.js";
-import { fragment as selectorFragment } from "./selector";
-import { ClassFactoryFragment } from "sf-core/fragments";
+import { fragment as selectorDependency } from "./selector";
+import { ClassFactoryDependency } from "sf-core/dependencies";
 import { Application } from "sf-common/application";
 import { expect } from "chai";
 import { SelectAction, ToggleSelectAction } from "sf-front-end/actions/index";
@@ -11,7 +11,7 @@ describe(__filename + "#", () => {
 
   beforeEach(async () => {
     app = new Application();
-    app.fragments.register(selectorFragment);
+    app.dependencies.register(selectorDependency);
     await app.initialize();
   });
 
@@ -51,8 +51,8 @@ describe(__filename + "#", () => {
     class DisplayCollection extends Array<any> { }
     class OtherCollection extends Array<any> { }
 
-    app.fragments.register(new ClassFactoryFragment("selection-collections/display", DisplayCollection));
-    app.fragments.register(new ClassFactoryFragment("selection-collections/other", OtherCollection));
+    app.dependencies.register(new ClassFactoryDependency("selection-collections/display", DisplayCollection));
+    app.dependencies.register(new ClassFactoryDependency("selection-collections/other", OtherCollection));
 
     app.bus.execute(new ToggleSelectAction({ type: "display" }));
     expect(app.selection).to.be.an.instanceof(DisplayCollection);

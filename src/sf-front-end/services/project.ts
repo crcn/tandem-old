@@ -8,7 +8,7 @@ import { AcceptBus } from "mesh";
 import { FindAction } from "sf-core/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { BaseApplicationService } from "sf-core/services";
-import { ApplicationServiceFragment } from "sf-core/fragments";
+import { ApplicationServiceDependency } from "sf-core/dependencies";
 
 const COLLECTION_NAME = "files";
 
@@ -17,6 +17,9 @@ export default class ProjectService extends BaseApplicationService<FrontEndAppli
 
   // @inject(APPLICATION_SINGLETON_NS)
   // public preview:
+
+  // @inject(FRAGMENTS_NS)
+  // public dependencies:
 
   public logger: Logger;
 
@@ -40,4 +43,4 @@ export default class ProjectService extends BaseApplicationService<FrontEndAppli
   }
 }
 
-export const fragment = new ApplicationServiceFragment("project", ProjectService);
+export const fragment = new ApplicationServiceDependency("project", ProjectService);

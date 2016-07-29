@@ -98,8 +98,8 @@ export class GroupNodeSection implements IMarkupSection  {
     return [this._start, ...this.childNodes, this._end];
   }
 
-  toFragment() {
-    const fragment = this._nodeFactory.createDocumentFragment();
+  toDependency() {
+    const fragment = this._nodeFactory.createDocumentDependency();
 
     for (const child of this.allChildNodes) {
       fragment.appendChild(child);
@@ -113,7 +113,7 @@ export class GroupNodeSection implements IMarkupSection  {
    */
 
   remove() {
-    const parent = this._nodeFactory.createDocumentFragment();
+    const parent = this._nodeFactory.createDocumentDependency();
     for (const child of this.allChildNodes) {
       parent.appendChild(child);
     }

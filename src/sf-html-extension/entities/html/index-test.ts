@@ -1,39 +1,39 @@
-import { htmlElementFragments, htmlTextFragment, htmlCommentFragment, HTMLElementEntity } from "./index";
+import { htmlElementDependencies, htmlTextDependency, htmlCommentDependency, HTMLElementEntity } from "./index";
 import { EntityEngine } from "sf-core/entities";
 import { parse as parseHTML } from "../../parsers/html";
-import { FragmentDictionary } from "sf-core/fragments";
+import { Dependencies } from "sf-core/dependencies";
 import { expect } from "chai";
 
 describe(__filename + "#", function() {
-  let fragments;
+  let dependencies;
   beforeEach(function() {
-    fragments = new FragmentDictionary(
-      ...htmlElementFragments,
-      htmlTextFragment,
-      htmlCommentFragment
+    dependencies = new Dependencies(
+      ...htmlElementDependencies,
+      htmlTextDependency,
+      htmlCommentDependency
     );
   });
 
   async function loadDiv(source) {
-    const engine = new EntityEngine(fragments);
+    const engine = new EntityEngine(dependencies);
     const div = document.createElement("div");
     const entity = await engine.load(parseHTML(source));
-    div.appendChild((<HTMLElementEntity>entity).section.toFragment());
+    div.appendChild((<HTMLElementEntity>entity).section.toDependency());
     return div;
   }
 
   it("can render a DIV element", async function() {
-    const engine = new EntityEngine(fragments);
+    const engine = new EntityEngine(dependencies);
     const entity = await engine.load(parseHTML("<div />"));
     expect(entity.nodeName).to.equal("DIV");
   });
 
   it("emits a DOM element", async function() {
-    const engine = new EntityEngine(fragments);
+    const engine = new EntityEngine(dependencies);
     let source = "<div>hello world!</div>";
     const entity = await engine.load(parseHTML(source)) as HTMLElementEntity;
     const div = document.createElement("div");
-    div.appendChild(entity.section.toFragment());
+    div.appendChild(entity.section.toDependency());
     expect(div.innerHTML).to.equal(source);
   });
 
@@ -49,10 +49,10 @@ describe(__filename + "#", function() {
     [`<div>1<h2>2</h2>3<h3>4</h3></div>`, `<div><h2>1</h2>2<h3>3</h3></div>`]
   ].forEach(function([source, change]) {
     it(`can update the source from ${source} to ${change}`, async function() {
-      const engine = new EntityEngine(fragments);
+      const engine = new EntityEngine(dependencies);
       const entity = await engine.load(parseHTML(source as any)) as HTMLElementEntity;
       const div = document.createElement("div");
-      div.appendChild(entity.section.toFragment());
+      div.appendChild(entity.section.toDependency());
       expect(div.innerHTML).to.equal(source);
       await engine.load(parseHTML(change as any));
       expect(div.innerHTML).to.equal(change);

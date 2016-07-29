@@ -5,9 +5,9 @@ import { filterAction, loggable } from "sf-core/decorators";
 import { Logger } from "sf-core/logger";
 import { IApplication } from "sf-core/application";
 import { BaseApplicationService } from "sf-core/services";
-import { ClassFactoryFragment } from "sf-core/fragments";
-import { ApplicationServiceFragment } from "sf-core/fragments";
-import { RootReactComponentFragment } from "sf-front-end/fragments";
+import { ClassFactoryDependency } from "sf-core/dependencies";
+import { ApplicationServiceDependency } from "sf-core/dependencies";
+import { RootReactComponentDependency } from "sf-front-end/dependencies";
 
 @loggable()
 export default class RootComponentRenderer extends BaseApplicationService<IApplication> {
@@ -30,23 +30,23 @@ export default class RootComponentRenderer extends BaseApplicationService<IAppli
     this._rendering = false;
     const app = this.app;
 
-    const rootComponentClassFragment = RootReactComponentFragment.find(this.app.fragments);
+    const rootComponentClassDependency = RootReactComponentDependency.find(this.app.dependencies);
 
-    if (!rootComponentClassFragment) {
+    if (!rootComponentClassDependency) {
       this.logger.warn("Root React component was not found.");
       return;
     }
 
-    ReactDOM.render(rootComponentClassFragment.create({
+    ReactDOM.render(rootComponentClassDependency.create({
 
       // deprecated
       app: app,
 
       // deprecated
       bus: app.bus,
-      fragments: app.fragments
+      dependencies: app.dependencies
     }), app.config.element);
   }
 }
 
-export const fragment = new ApplicationServiceFragment("root-component-renderer", RootComponentRenderer);
+export const fragment = new ApplicationServiceDependency("root-component-renderer", RootComponentRenderer);

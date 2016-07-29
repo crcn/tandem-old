@@ -1,4 +1,4 @@
-import { ApplicationServiceFragment } from 'sf-core/fragments';
+import { ApplicationServiceDependency } from 'sf-core/dependencies';
 import { BaseApplicationService } from 'sf-core/services';
 import { IApplication } from 'sf-core/application';
 
@@ -11,4 +11,4 @@ export class TextTool extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ApplicationServiceFragment('stage-tools/text', TextTool);
+export const fragment = new ApplicationServiceDependency('stage-tools/text', TextTool);

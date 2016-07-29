@@ -1,5 +1,5 @@
 import { IEntity, IVisibleEntity } from "sf-core/entities";
-import { EntityFactoryFragment } from "sf-core/fragments";
+import { EntityFactoryDependency } from "sf-core/dependencies";
 import { HTMLElementExpression, HTMLTextExpression, IHTMLValueNodeExpression, HTMLCommentExpression, HTMLAttributeExpression } from "../../parsers/html/expressions";
 import { HTMLNodeDisplay } from "./displays";
 import { IElement, INode, IContainerNode, Element, ValueNode, IDiffableValueNode, GroupNodeSection, NodeSection } from "sf-core/markup";
@@ -81,12 +81,12 @@ export class HTMLElementEntity extends Element implements IHTMLEntity {
         const ppSection = (<HTMLElementEntity>child.nextSibling).section;
 
         if (nextHTMLEntitySibling.section instanceof NodeSection) {
-          this.insertDOMChildBefore(child.section.toFragment(), (<NodeSection>ppSection).targetNode);
+          this.insertDOMChildBefore(child.section.toDependency(), (<NodeSection>ppSection).targetNode);
         } else {
-          this.insertDOMChildBefore(child.section.toFragment(), (<GroupNodeSection>ppSection).startNode);
+          this.insertDOMChildBefore(child.section.toDependency(), (<GroupNodeSection>ppSection).startNode);
         }
       } else {
-        this.appendDOMChild(child.section.toFragment());
+        this.appendDOMChild(child.section.toDependency());
       }
     }
   }
@@ -106,7 +106,7 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
   readonly display = new HTMLNodeDisplay(this);
 }
 
-export class HTMLDocumentFragmentEntity extends HTMLElementEntity {
+export class HTMLDocumentDependencyEntity extends HTMLElementEntity {
   createSection() {
     return new GroupNodeSection();
   }
@@ -156,7 +156,7 @@ export class HTMLCommentEntity extends HTMLValueNodeEntity<HTMLCommentExpression
   }
 }
 
-export const htmlElementFragments = TAG_NAMES.map((nodeName) => new EntityFactoryFragment(nodeName, VisibleHTMLElementEntity));
-export const htmlTextFragment     = new EntityFactoryFragment("#text", HTMLTextEntity);
-export const htmlCommentFragment  = new EntityFactoryFragment("#comment", HTMLCommentEntity);
-export const htmlDocumentFragment = new EntityFactoryFragment("#document-fragment", HTMLDocumentFragmentEntity);
+export const htmlElementDependencies = TAG_NAMES.map((nodeName) => new EntityFactoryDependency(nodeName, VisibleHTMLElementEntity));
+export const htmlTextDependency     = new EntityFactoryDependency("#text", HTMLTextEntity);
+export const htmlCommentDependency  = new EntityFactoryDependency("#comment", HTMLCommentEntity);
+export const htmlDocumentDependency = new EntityFactoryDependency("#document-fragment", HTMLDocumentDependencyEntity);

@@ -1,7 +1,7 @@
 import { IActor } from 'sf-core/actors';
 import { IApplication } from 'sf-core/application';
 import { SelectAction } from 'sf-front-end/actions';
-import { ApplicationServiceFragment } from 'sf-core/fragments';
+import { ApplicationServiceDependency } from 'sf-core/dependencies';
 import { BaseApplicationService } from 'sf-core/services';
 
 export default class PointerTool extends BaseApplicationService<IApplication> {
@@ -14,4 +14,4 @@ export default class PointerTool extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ApplicationServiceFragment('stage-tools/pointer', PointerTool);
+export const fragment = new ApplicationServiceDependency('stage-tools/pointer', PointerTool);

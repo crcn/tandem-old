@@ -4,14 +4,14 @@ anything else
 - in-memory db
 - need to be able to serve files from browser
 - hijack native elements such as img
-- do not explicitly define NS for fragments
+- do not explicitly define NS for dependencies
 - change 'bus' to 'mediator'
 - prompt user to pick style to apply to
 - 3D tools
 - ability to refere
 - demo gif
 - select entities based on cusor location
-- change "fragments" to something else
+- change "dependencies" to something else
   - dependencies
   - blocks
   - shard

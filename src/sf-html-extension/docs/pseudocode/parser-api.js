@@ -11,7 +11,7 @@ var rootExpression = HTMLParser.parse(`<div>
 function update()
 
 class EntityOptions {
-  fragments:FragmentDictionary;
+  dependencies:Dependencies;
 }
 
 interface IElement {
@@ -43,21 +43,21 @@ class ElementEntity {
 
   public controller:EntityController;
 
-  constructor(public expression:HTMLElementExpression, public fragments:Fragments) {
-    fragments.query('application').instance
+  constructor(public expression:HTMLElementExpression, public dependencies:Dependencies) {
+    dependencies.query('application').instance
   }
 
   update(expression:HTMLElementExpression) {
-    var controllerFragment = this.options.fragments.query(`entityControllers/${expression.nodeName}`);
-    if (this._controllerFragment !== _controllerFragment) {
-      this._controller = controllerFragment.create(this);
+    var controllerDependency = this.options.dependencies.query(`entityControllers/${expression.nodeName}`);
+    if (this._controllerDependency !== _controllerDependency) {
+      this._controller = controllerDependency.create(this);
     }
   }
 }
 
 
 class Root {
-  private _currentFragment:Fragment;
+  private _currentDependency:Dependency;
   private _entity:Entity;
 
   constructor(private _options:EntityOptions) {
@@ -65,10 +65,10 @@ class Root {
   }
 
   async update(expression:BaseExpression) {
-    var entityFragment = this._options.fragments.query(`entities/${expression.ns}`);
+    var entityDependency = this._options.dependencies.query(`entities/${expression.ns}`);
 
-    if (this._currentFragment !== entityFragment) {
-      this._entity = entityFragment.create(this._options);
+    if (this._currentDependency !== entityDependency) {
+      this._entity = entityDependency.create(this._options);
     }
 
     await this._entity.update(expression);

@@ -1,15 +1,17 @@
 import { Service } from "./base";
 import { IApplication } from "sf-core/application";
+import { APPLICATION_SINGLETON_NS, BUS_NS } from "sf-core/dependencies";
 import { IActor, IInvoker } from "sf-core/actors/index";
+import { inject, IInjectable } from "sf-core/decorators";
 
 export { Service };
 
-export class BaseApplicationService<T extends IApplication> extends Service implements IInvoker {
-  constructor(readonly app: T) {
-    super();
-  }
+export class BaseApplicationService<T extends IApplication> extends Service implements IInvoker, IInjectable {
+  @inject(APPLICATION_SINGLETON_NS)
+  readonly app: T;
 
-  get bus(): IActor {
-    return this.app.bus;
-  }
+  @inject(BUS_NS)
+  readonly bus: IActor;
+
+  didInject() { }
 };

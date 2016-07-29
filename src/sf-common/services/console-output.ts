@@ -1,5 +1,5 @@
 import { Service } from "sf-core/services";
-import { ClassFactoryFragment } from "sf-core/fragments";
+import { ClassFactoryDependency } from "sf-core/dependencies";
 import { LogAction } from "sf-core/actions";
 import document from "sf-core/decorators/document";
 import * as sift from "sift";
@@ -48,4 +48,4 @@ class ConsoleService extends Service {
   }
 }
 
-export const fragment = new ClassFactoryFragment("application/services/console", ConsoleService);
+export const fragment = new ClassFactoryDependency("application/services/console", ConsoleService);

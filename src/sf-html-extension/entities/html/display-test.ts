@@ -1,8 +1,8 @@
 import {
-  htmlElementFragments,
-  htmlTextFragment,
-  htmlCommentFragment,
-  htmlTemplateEntityFragment,
+  htmlElementDependencies,
+  htmlTextDependency,
+  htmlCommentDependency,
+  htmlTemplateEntityDependency,
   HTMLElementEntity
 } from "./index";
 
@@ -10,27 +10,27 @@ import { BoundingRect } from "sf-core/geom";
 import * as sift from "sift";
 import { EntityEngine, IVisibleEntity } from "sf-core/entities";
 import { parse as parseHTML } from "../../parsers/html";
-import { FragmentDictionary } from "sf-core/fragments";
+import { Dependencies } from "sf-core/dependencies";
 import { expect } from "chai";
 
 describe(__filename + "#", function() {
-  let fragments;
+  let dependencies;
   beforeEach(function() {
-    fragments = new FragmentDictionary(
-      ...htmlElementFragments,
-      htmlTextFragment,
-      htmlCommentFragment,
-      htmlTemplateEntityFragment
+    dependencies = new Dependencies(
+      ...htmlElementDependencies,
+      htmlTextDependency,
+      htmlCommentDependency,
+      htmlTemplateEntityDependency
     );
   });
 
   async function calculateBounds(source) {
-    const engine = new EntityEngine(fragments);
+    const engine = new EntityEngine(dependencies);
     const entity = await engine.load(parseHTML(source as string))as HTMLElementEntity;
     const div = document.createElement("div");
     document.body.appendChild(div);
     Object.assign(div.style, { position: "fixed", top: "0px", left: "0px" });
-    div.appendChild(entity.section.toFragment());
+    div.appendChild(entity.section.toDependency());
     const target = <IVisibleEntity>(entity.flatten().find(sift({ "attributes.name": "id", "attributes.value": "target" })) as any);
     const bounds = target.display.bounds;
     return [bounds.left, bounds.top, bounds.width, bounds.height];

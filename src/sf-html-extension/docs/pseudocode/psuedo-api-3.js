@@ -6,8 +6,8 @@ abstract class DOMEntity extends Element {
 
   readonly section:IMarkupSection;
 
-  constructor(nodeName, fragments) {
-    super(nodeName, fragments);
+  constructor(nodeName, dependencies) {
+    super(nodeName, dependencies);
   }
 
   didMount() {
@@ -15,7 +15,7 @@ abstract class DOMEntity extends Element {
     while (!(p instanceof DOMEntity)) {
       p = p.parentNode;
     }
-    p.section.appendChild(this.section || (this.section = this.createSection()).toFragment());
+    p.section.appendChild(this.section || (this.section = this.createSection()).toDependency());
   }
 
   abstract protected createSection();
@@ -24,7 +24,7 @@ abstract class DOMEntity extends Element {
 class Repeat extends DOMEntity {
   private _children = [];
   createSection() {
-    return new FragmentSection();
+    return new DependencySection();
   }
 
   // render can be anything really - just so happens that
@@ -52,7 +52,7 @@ class DOMElementEntity {
     this.section.target.setAttribute(name, value);
   }
   createSection() {
-    return new NodeSection(this.fragments.query('nodeFactory').createElement('div'));
+    return new NodeSection(this.dependencies.query('nodeFactory').createElement('div'));
   }
   save() {
     patch(this.expression, diff(this.expression, this));
@@ -71,7 +71,7 @@ class Import extends DOMEntity {
 
 class Template extends Entity {
   render() {
-    this.fragments.register(new ClassFactoryFragment(`entities/${this.getAttribute('id')}`, class extends DOMEntity {
+    this.dependencies.register(new ClassFactoryDependency(`entities/${this.getAttribute('id')}`, class extends DOMEntity {
       render = () => {
         return this.expression.childNodes;
       }

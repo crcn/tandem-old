@@ -1,5 +1,5 @@
 import { IApplication } from "sf-core/application";
-import { EntityPreviewFragment } from "sf-front-end/fragments";
+import { EntityPreviewDependency } from "sf-front-end/dependencies";
 import * as React  from "react";
 
 export default class PreviewComponent extends React.Component<any, any> {
@@ -16,7 +16,7 @@ export default class PreviewComponent extends React.Component<any, any> {
     this._update();
   }
   _update() {
-    (this.refs as any).container.appendChild(this.props.entity.section.toFragment());
+    (this.refs as any).container.appendChild(this.props.entity.section.toDependency());
   }
   render() {
     return (<div ref="container">
@@ -25,4 +25,4 @@ export default class PreviewComponent extends React.Component<any, any> {
   }
 }
 
-export const fragment = new EntityPreviewFragment(PreviewComponent);
+export const fragment = new EntityPreviewDependency(PreviewComponent);

@@ -1,22 +1,27 @@
 import { IActor } from "sf-core/actors";
 import { IApplication } from "sf-core/application";
-import { ApplicationServiceFragment } from "sf-core/fragments";
+import { ApplicationServiceDependency } from "sf-core/dependencies";
 import { BaseApplicationService } from "sf-core/services";
 import { loggable, isPublic, document } from "sf-core/decorators";
-import { DBAction, FindAction, InsertAction, RemoveAction, UpdateAction, PostDBAction } from "sf-core/actions";
+import {
+  DBAction,
+  FindAction,
+  InsertAction,
+  RemoveAction,
+  UpdateAction,
+  PostDBAction
+} from "sf-core/actions";
 
 import * as MemoryDsBus from "mesh-memory-ds-bus";
 
 import { titleize } from "inflection";
-
 
 @loggable()
 export default class DBService extends BaseApplicationService<IApplication> {
 
   private _db:IActor;
 
-  constructor(app:IApplication) {
-    super(app);
+  didInject() {
     this._db = MemoryDsBus.create();
   }
 
@@ -74,4 +79,4 @@ export default class DBService extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ApplicationServiceFragment("db", DBService);
+export const fragment = new ApplicationServiceDependency("db", DBService);

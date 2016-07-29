@@ -3,7 +3,7 @@ import { IApplication } from "sf-core/application";
 import { Logger } from "sf-core/logger";
 import { loggable } from "sf-core/decorators";
 import { BaseApplicationService } from "sf-core/services";
-import { ApplicationServiceFragment } from "sf-core/fragments";
+import { ApplicationServiceDependency } from "sf-core/dependencies";
 
 function targetIsInput(event) {
   return /input|textarea/i.test(event.target.nodeName);
@@ -48,4 +48,4 @@ export default class ClipboardService extends BaseApplicationService<IApplicatio
 
 }
 
-export const fragment = new ApplicationServiceFragment("clipboard", ClipboardService);
+export const fragment = new ApplicationServiceDependency("clipboard", ClipboardService);

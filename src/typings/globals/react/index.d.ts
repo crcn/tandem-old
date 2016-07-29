@@ -86,8 +86,8 @@ declare namespace __React {
     type ReactChild = ReactElement<any> | ReactText;
 
     // Should be Array<ReactNode> but type aliases cannot be recursive
-    type ReactFragment = {} | Array<ReactChild | any[] | boolean>;
-    type ReactNode = ReactChild | ReactFragment | boolean;
+    type ReactDependency = {} | Array<ReactChild | any[] | boolean>;
+    type ReactNode = ReactChild | ReactDependency | boolean;
 
     //
     // Top Level API
@@ -801,7 +801,7 @@ declare namespace __React {
         boxAlign?: any;
 
         /**
-         * Breaks a box into fragments creating new borders, padding and repeating backgrounds or lets it stay as a continuous box on a page break, column break, or, for inline elements, at a line break.
+         * Breaks a box into dependencies creating new borders, padding and repeating backgrounds or lets it stay as a continuous box on a page break, column break, or, for inline elements, at a line break.
          */
         boxDecorationBreak?: any;
 
@@ -1406,17 +1406,17 @@ declare namespace __React {
         paddingTop?: any;
 
         /**
-         * The page-break-after property is supported in all major browsers. With CSS3, page-break-* properties are only aliases of the break-* properties. The CSS3 Fragmentation spec defines breaks for all CSS box fragmentation.
+         * The page-break-after property is supported in all major browsers. With CSS3, page-break-* properties are only aliases of the break-* properties. The CSS3 Dependencyation spec defines breaks for all CSS box fragmentation.
          */
         pageBreakAfter?: any;
 
         /**
-         * The page-break-before property sets the page-breaking behavior before an element. With CSS3, page-break-* properties are only aliases of the break-* properties. The CSS3 Fragmentation spec defines breaks for all CSS box fragmentation.
+         * The page-break-before property sets the page-breaking behavior before an element. With CSS3, page-break-* properties are only aliases of the break-* properties. The CSS3 Dependencyation spec defines breaks for all CSS box fragmentation.
          */
         pageBreakBefore?: any;
 
         /**
-         * Sets the page-breaking behavior inside an element. With CSS3, page-break-* properties are only aliases of the break-* properties. The CSS3 Fragmentation spec defines breaks for all CSS box fragmentation.
+         * Sets the page-breaking behavior inside an element. With CSS3, page-break-* properties are only aliases of the break-* properties. The CSS3 Dependencyation spec defines breaks for all CSS box fragmentation.
          */
         pageBreakInside?: any;
 
@@ -1473,7 +1473,7 @@ declare namespace __React {
         /**
          * Controls whether the last region in a chain displays additional 'overset' content according its default overflow property, or if it displays a fragment of content as if it were flowing into a subsequent region.
          */
-        regionFragment?: any;
+        regionDependency?: any;
 
         /**
          * The rest-after property determines how long a speech media agent should pause after presenting an element's main content, before presenting that element's exit cue sound. It may be replaced by the shorthand property rest, which sets rest time before and after.

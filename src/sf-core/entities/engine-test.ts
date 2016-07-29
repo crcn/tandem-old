@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { IEntity } from "./base";
 import { Node, IContainerNode, ContainerNode } from "../markup";
 import { EntityEngine } from "./engine";
-import { FragmentDictionary, EntityFactoryFragment } from "../fragments";
+import { Dependencies, EntityFactoryDependency } from "../dependencies";
 
 function element(name, attributes = [], ...childNodes) {
   return {
@@ -22,7 +22,7 @@ function text(nodeValue) {
 
 describe(__filename + "#", function() {
   it("can be created", function() {
-    new EntityEngine(new FragmentDictionary());
+    new EntityEngine(new Dependencies());
   });
 
   it("can register a custom entity", async function() {
@@ -35,9 +35,9 @@ describe(__filename + "#", function() {
       }
       cloneNode() { return null; }
     }
-    const fragments = new FragmentDictionary();
-    fragments.register(new EntityFactoryFragment("custom", CustomEntity));
-    const engine = new EntityEngine(fragments);
+    const dependencies = new Dependencies();
+    dependencies.register(new EntityFactoryDependency("custom", CustomEntity));
+    const engine = new EntityEngine(dependencies);
     const rootEntity = await engine.load(element("custom"));
 
     expect(rootEntity).to.be.an.instanceOf(CustomEntity);
@@ -65,11 +65,11 @@ describe(__filename + "#", function() {
       cloneNode() { return null; }
     }
 
-    const fragments = new FragmentDictionary(
-      new EntityFactoryFragment("custom1", CustomEntity),
-      new EntityFactoryFragment("#text", TextEntity)
+    const dependencies = new Dependencies(
+      new EntityFactoryDependency("custom1", CustomEntity),
+      new EntityFactoryDependency("#text", TextEntity)
     );
-    const engine = new EntityEngine(fragments);
+    const engine = new EntityEngine(dependencies);
     let currentEntity = await engine.load(element("custom1"));
     expect((<IContainerNode><any>currentEntity).childNodes.length).to.equal(1);
   });

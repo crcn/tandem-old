@@ -32,12 +32,12 @@ class Entity {
 
   }
   async render() {
-    var controller = this.fragments
+    var controller = this.dependencies
   }
 }
 
-async function createEntity(expression, fragments) {
-  var element = new Entity(expression, fragments);
+async function createEntity(expression, dependencies) {
+  var element = new Entity(expression, dependencies);
   for (const childNode of expression.childNodes) {
     element.appendChild(render(childNode));
   }
@@ -46,7 +46,7 @@ async function createEntity(expression, fragments) {
 
 var expr1 = parseHTML('<div><template id="template">hello</template><hello /></div>');
 
-var entity = createEntity(expr1, app.fragments);
+var entity = createEntity(expr1, app.dependencies);
 
 function renderEntity(entity) {
   var mapped = entity.render();

@@ -6,9 +6,9 @@ import PreviewLayerComponent from "./preview/index";
 import ToolsLayerComponent from "./tools/index";
 import IsolateComponent  from "sf-front-end/components/isolate";
 import { Editor } from "sf-front-end/models";
-import { FragmentDictionary, BusFragment } from "sf-core/fragments";
+import { Dependencies, BusDependency } from "sf-core/dependencies";
 
-export default class EditorStageLayersComponent extends React.Component<{ editor: Editor, fragments: FragmentDictionary }, any> {
+export default class EditorStageLayersComponent extends React.Component<{ editor: Editor, dependencies: Dependencies }, any> {
 
   private _mousePosition: any;
   private _toolsHidden: any;
@@ -23,7 +23,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   get bus() {
-    return BusFragment.getInstance(this.props.fragments);
+    return BusDependency.getInstance(this.props.dependencies);
   }
 
   componentWillUpdate(props: any) {

@@ -2,7 +2,7 @@ import "./template.scss";
 
 import { VisibleHTMLElementEntity } from "./base";
 import { HTMLElementExpression } from "../../parsers/html/expressions";
-import { EntityFactoryFragment } from "sf-core/fragments";
+import { EntityFactoryDependency } from "sf-core/dependencies";
 import { NodeSection, INode } from "sf-core/markup";
 
 export class HTMLTemplateEntity extends VisibleHTMLElementEntity {
@@ -43,4 +43,4 @@ export class HTMLTemplateEntity extends VisibleHTMLElementEntity {
   }
 }
 
-export const htmlTemplateEntityFragment = new EntityFactoryFragment("template", HTMLTemplateEntity);
+export const htmlTemplateEntityDependency = new EntityFactoryDependency("template", HTMLTemplateEntity);

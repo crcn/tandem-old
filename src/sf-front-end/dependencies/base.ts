@@ -1,10 +1,10 @@
 import * as React from "react";
-import { FactoryFragment } from "sf-core/fragments";
+import { FactoryDependency } from "sf-core/dependencies";
 
 /**
  */
 
-export class ReactComponentFactoryFragment extends FactoryFragment {
+export class ReactComponentFactoryDependency extends FactoryDependency {
   constructor(ns: string, componentClass: React.ComponentClass<any>) {
     super(ns, {
       create(props, children) {

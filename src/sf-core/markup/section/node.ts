@@ -54,7 +54,7 @@ export class NodeSection implements IMarkupSection {
     return !this._placeholderNode;
   }
 
-  toFragment() {
+  toDependency() {
     return this._target;
   }
 

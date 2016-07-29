@@ -1,7 +1,7 @@
 {
 
 const {
-  HTMLFragmentExpression,
+  HTMLDependencyExpression,
   HTMLTextExpression,
   HTMLScriptExpression,
   HTMLCommentExpression,
@@ -11,7 +11,7 @@ const {
 
 function position() {
   return {
-    start:peg$savedPos, 
+    start:peg$savedPos,
     end:peg$currPos
   };
 }
@@ -19,13 +19,13 @@ function position() {
 }
 
 Start
-  = Fragment
+  = Dependency
 
-Fragment
+Dependency
   = nodes:Node* {
-    return nodes.length === 1 ? nodes[0] : new HTMLFragmentExpression(nodes, position())
+    return nodes.length === 1 ? nodes[0] : new HTMLDependencyExpression(nodes, position())
   }
-  
+
 Node
   = _ node:(Comment/Element/TextNode) _ { return node; }
 
@@ -63,11 +63,11 @@ ElementAttributes
 ElementAttribute
   = _ key:Name '=' value:AttributeValue _ {
     return new HTMLAttributeExpression(key, value, position());
-  } 
+  }
   / _ key:Name _ {
     return new HTMLAttributeExpression(key, "");
   }
-  
+
 AttributeValue
   = String
 
@@ -90,5 +90,5 @@ TextNode
 
 Name
   = [a-z0-9$-.]+ { return text(); }
-_ 
+_
   = [ \n\r\t]*

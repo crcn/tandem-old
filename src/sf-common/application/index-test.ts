@@ -1,7 +1,7 @@
 import { Application } from "./index.ts";
 import { LOAD, INITIALIZE } from "sf-core/actions";
 import { expect } from "chai";
-import { ApplicationSingletonFragment, ApplicationServiceFragment } from "sf-core/fragments";
+import { ApplicationSingletonDependency, ApplicationServiceDependency } from "sf-core/dependencies";
 import { BaseApplicationService } from "sf-core/services";
 
 describe(__filename + "#", () => {
@@ -27,7 +27,7 @@ describe(__filename + "#", () => {
     const app = new Application({});
   });
 
-  it("registers application service fragments upon initialization", async () => {
+  it("registers application service dependencies upon initialization", async () => {
     const app = new Application({});
     let i = 0;
     let j = 0;
@@ -37,7 +37,7 @@ describe(__filename + "#", () => {
       initialize() { j++; }
     }
 
-    app.fragments.register(new ApplicationServiceFragment("testService", TestService));
+    app.dependencies.register(new ApplicationServiceDependency("testService", TestService));
 
     await app.initialize();
     expect(i).to.equal(1);

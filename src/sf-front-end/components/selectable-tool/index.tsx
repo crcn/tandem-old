@@ -9,7 +9,7 @@ import { SelectAction } from "sf-front-end/actions/index";
 import { IVisibleEntity } from "sf-core/entities";
 import BoundingRect from "sf-core/geom/bounding-rect";
 
-import { ReactComponentFactoryFragment } from "sf-front-end/fragments/index";
+import { ReactComponentFactoryDependency } from "sf-front-end/dependencies/index";
 
 class SelectableComponent extends React.Component<{ entity: IVisibleEntity, selection: any, app: any, zoom: number }, any> {
 
@@ -96,4 +96,4 @@ export default class SelectablesComponent extends React.Component<{selection: an
   }
 }
 
-export const fragment = new ReactComponentFactoryFragment("components/tools/pointer/selectable", SelectablesComponent);
+export const fragment = new ReactComponentFactoryDependency("components/tools/pointer/selectable", SelectablesComponent);

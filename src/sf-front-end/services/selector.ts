@@ -1,7 +1,7 @@
 import { IEntity } from "sf-core/entities";
 import { FrontEndApplication } from "sf-front-end/application";
 import { BaseApplicationService } from "sf-core/services";
-import { ApplicationServiceFragment } from "sf-core/fragments";
+import { ApplicationServiceDependency } from "sf-core/dependencies";
 import { loggable, bindable, isPublic } from "sf-core/decorators";
 
 @loggable()
@@ -52,8 +52,8 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
     const type = items[0].type;
 
-    const newSelectionFragment = this.app.fragments.query<any>(`selection-collections/${type}`);
-    const newSelection = newSelectionFragment ? newSelectionFragment.create() : [];
+    const newSelectionDependency = this.app.dependencies.query<any>(`selection-collections/${type}`);
+    const newSelection = newSelectionDependency ? newSelectionDependency.create() : [];
 
     if (keepPreviousSelection && newSelection.constructor === prevSelection.constructor) {
       newSelection.push(...prevSelection);
@@ -76,4 +76,4 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
   }
 }
 
-export const fragment = new ApplicationServiceFragment("application/services/selector", SelectorService);
+export const fragment = new ApplicationServiceDependency("application/services/selector", SelectorService);

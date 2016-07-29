@@ -3,7 +3,7 @@ import * as React from 'react';
 import BoundingRect from 'sf-core/geom/bounding-rect';
 import { startDrag } from 'sf-front-end/utils/component';
 import { SelectAction } from 'sf-front-end/actions/index';
-import { ReactComponentFactoryFragment } from 'sf-front-end/fragments/index';
+import { ReactComponentFactoryDependency } from 'sf-front-end/dependencies/index';
 
 class DragSelectComponent extends React.Component<any, any> {
 
@@ -105,4 +105,4 @@ class DragSelectComponent extends React.Component<any, any> {
   }
 }
 
-export const fragment = new ReactComponentFactoryFragment('components/tools/pointer/drag-select', DragSelectComponent);
+export const fragment = new ReactComponentFactoryDependency('components/tools/pointer/drag-select', DragSelectComponent);

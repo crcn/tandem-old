@@ -7,7 +7,7 @@ import { IApplication } from "sf-core/application";
 import { Logger } from "sf-core/logger";
 import { loggable, document } from "sf-core/decorators";
 import { BaseApplicationService } from "sf-core/services";
-import { ApplicationServiceFragment } from "sf-core/fragments";
+import { ApplicationServiceDependency } from "sf-core/dependencies";
 
 /**
  * console input command handler
@@ -73,4 +73,4 @@ export default class StdinService extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ApplicationServiceFragment("stdin", StdinService);
+export const fragment = new ApplicationServiceDependency("stdin", StdinService);

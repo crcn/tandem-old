@@ -1,5 +1,5 @@
 import { IActor, IInvoker } from '../actors';
-import { FragmentDictionary } from '../fragments';
+import { Dependencies } from '../dependencies';
 
 interface IApplication extends IInvoker {
 
@@ -10,7 +10,7 @@ interface IApplication extends IInvoker {
   readonly actors: Array<IActor>;
 
   // parts of the application
-  readonly fragments:FragmentDictionary;
+  readonly dependencies:Dependencies;
 }
 
 export { IApplication };

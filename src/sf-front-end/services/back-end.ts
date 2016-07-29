@@ -2,7 +2,7 @@ import { loggable } from "sf-core/decorators";
 import IOService from "sf-common/services/io";
 import * as SocketIOClient from "socket.io-client";
 import { IApplication } from "sf-core/application";
-import { ApplicationServiceFragment } from "sf-core/fragments";
+import { ApplicationServiceDependency } from "sf-core/dependencies";
 
 @loggable()
 export default class BackEndService extends IOService<IApplication> {
@@ -21,4 +21,4 @@ export default class BackEndService extends IOService<IApplication> {
   }
 }
 
-export const fragment = new ApplicationServiceFragment("back-end", BackEndService);
+export const fragment = new ApplicationServiceDependency("back-end", BackEndService);

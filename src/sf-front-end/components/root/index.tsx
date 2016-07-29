@@ -2,7 +2,7 @@ import "./index.scss";
 import * as React from "react";
 
 import CenterComponent from "./center/index";
-import { RootReactComponentFragment } from "sf-front-end/fragments";
+import { RootReactComponentDependency } from "sf-front-end/dependencies";
 
 export default class RootEditorComponent extends React.Component<any, any> {
   render() {
@@ -12,4 +12,4 @@ export default class RootEditorComponent extends React.Component<any, any> {
   }
 }
 
-export const fragment = new RootReactComponentFragment(RootEditorComponent);
+export const fragment = new RootReactComponentDependency(RootEditorComponent);

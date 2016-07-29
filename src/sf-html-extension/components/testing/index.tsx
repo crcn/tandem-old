@@ -1,5 +1,5 @@
  import { IApplication } from 'sf-core/application';
- import {RootReactComponentFragment} from 'sf-front-end/fragments';
+ import {RootReactComponentDependency} from 'sf-front-end/dependencies';
 
  import * as React  from 'react';
 
@@ -11,4 +11,4 @@
    }
  }
 
-export const fragment = new RootReactComponentFragment(HTMLDebuggingComponent);
+export const fragment = new RootReactComponentDependency(HTMLDebuggingComponent);

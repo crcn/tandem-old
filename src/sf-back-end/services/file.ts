@@ -6,7 +6,7 @@ import { Logger } from "sf-core/logger";
 import { IApplication } from "sf-core/application";
 import { UpsertAction } from "sf-core/actions";
 import { BaseApplicationService } from "sf-core/services";
-import { ApplicationServiceFragment } from "sf-core/fragments";
+import { ApplicationServiceDependency } from "sf-core/dependencies";
 import { loggable, isPublic, document, filterAction } from "sf-core/decorators";
 
 import { Response } from "mesh";
@@ -96,4 +96,4 @@ export default class FileService extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ApplicationServiceFragment("file", FileService);
+export const fragment = new ApplicationServiceDependency("file", FileService);

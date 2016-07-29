@@ -3,10 +3,10 @@ import { IApplication } from "sf-core/application";
 import { Logger } from "sf-core/logger";
 import { loggable } from "sf-core/decorators";
 import { BaseApplicationService } from "sf-core/services";
-import { ApplicationServiceFragment } from "sf-core/fragments";
+import { ApplicationServiceDependency } from "sf-core/dependencies";
 
 import { KeyBinding } from "sf-front-end/key-bindings/base";
-import { KeyBindingFragment } from "sf-front-end/fragments";
+import { KeyBindingDependency } from "sf-front-end/dependencies";
 
 import * as Mousetrap from "mousetrap";
 
@@ -16,8 +16,8 @@ export default class KeyBindingService extends BaseApplicationService<IApplicati
   public logger: Logger;
 
   initialize() {
-    for (const keyBindingFragment of KeyBindingFragment.findAll(this.app.fragments)) {
-      this._addKeyBinding(keyBindingFragment.keyBinding);
+    for (const keyBindingDependency of KeyBindingDependency.findAll(this.app.dependencies)) {
+      this._addKeyBinding(keyBindingDependency.value);
     }
   }
 
@@ -31,4 +31,4 @@ export default class KeyBindingService extends BaseApplicationService<IApplicati
   }
 }
 
-export const fragment = new ApplicationServiceFragment("key-binding", KeyBindingService);
+export const fragment = new ApplicationServiceDependency("key-binding", KeyBindingService);

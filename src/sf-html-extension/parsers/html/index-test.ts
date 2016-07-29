@@ -9,7 +9,7 @@ import {
   HTMLTextExpression,
   HTMLCommentExpression,
   HTMLElementExpression,
-  HTMLFragmentExpression,
+  HTMLDependencyExpression,
   HTMLAttributeExpression
 } from "./expressions";
 
@@ -93,7 +93,7 @@ describe(__filename + `#`, () => {
     });
   });
 
-  describe("fragments#", () => {
+  describe("dependencies#", () => {
     it("are created when there are two root nodes", () => {
       const element = parse("<!-- hello -->text");
       expect(element.type).to.equal(HTML_FRAGMENT);
@@ -102,7 +102,7 @@ describe(__filename + `#`, () => {
     it("are created when the source is blank", () => {
       const element = parse("");
       expect(element.type).to.equal(HTML_FRAGMENT);
-      expect((element as HTMLFragmentExpression).childNodes.length).to.equal(0);
+      expect((element as HTMLDependencyExpression).childNodes.length).to.equal(0);
     });
   });
 

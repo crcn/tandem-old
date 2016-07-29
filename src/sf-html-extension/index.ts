@@ -2,33 +2,33 @@
  import { IApplication } from "sf-core/application";
 
  // components
- import { fragment as entityPreviewComponentFragment } from "./components/entity-preview";
+ import { fragment as entityPreviewComponentDependency } from "./components/entity-preview";
 
  // models
- import { fragment as sfFileModelFragment } from "./models/sf-file";
+ import { fragment as sfFileModelDependency } from "./models/sf-file";
 
  // entities
  import {
-   htmlTextFragment,
-   htmlCommentFragment,
-   htmlDocumentFragment,
-   htmlElementFragments,
-   htmlTemplateEntityFragment
+   htmlTextDependency,
+   htmlCommentDependency,
+   htmlDocumentDependency,
+   htmlElementDependencies,
+   htmlTemplateEntityDependency
 } from "./entities/html";
 
 export const fragment = [
 
   // components
-  entityPreviewComponentFragment,
+  entityPreviewComponentDependency,
 
   // models
-  sfFileModelFragment,
+  sfFileModelDependency,
 
   // entities
-  htmlTextFragment,
-  htmlCommentFragment,
-  htmlDocumentFragment,
-  ...htmlElementFragments,
-  htmlTemplateEntityFragment,
+  htmlTextDependency,
+  htmlCommentDependency,
+  htmlDocumentDependency,
+  ...htmlElementDependencies,
+  htmlTemplateEntityDependency,
 
 ];

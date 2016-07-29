@@ -1,12 +1,17 @@
 import { Logger } from "sf-core/logger";
 import { loggable, bindable } from "sf-core/decorators";
-import { ApplicationServiceFragment, BusFragment } from "sf-core/fragments";
+import {
+  ApplicationServiceDependency,
+  BusDependency,
+  ApplicationSingletonDependency,
+  DependenciesDependency
+} from "sf-core/dependencies";
 import { LoadAction, InitializeAction } from "sf-core/actions";
-import { fragment as consoleLogServiceFragment } from "../services/console-output";
+import { fragment as consoleLogServiceDependency } from "../services/console-output";
 
 import { IActor } from "sf-core/actors";
 import { IApplication } from "sf-core/application";
-import { FragmentDictionary } from "sf-core/fragments";
+import { Dependencies } from "sf-core/dependencies";
 
 import { ParallelBus } from "mesh";
 
@@ -17,11 +22,11 @@ export class Application implements IApplication {
   readonly logger: Logger;
   readonly actors: Array<IActor> = [];
   readonly bus: IActor = new ParallelBus(this.actors);
-  readonly fragments: FragmentDictionary = new FragmentDictionary();
+  readonly dependencies: Dependencies = new Dependencies();
   private _initializeCalled: boolean = false;
 
   constructor(readonly config: any = {}) {
-    this.registerFragments();
+    this.registerDependencies();
   }
 
   public async initialize() {
@@ -45,15 +50,17 @@ export class Application implements IApplication {
   /**
    */
 
-  protected registerFragments() {
+  protected registerDependencies() {
     if (!process.env.TESTING) {
-      this.fragments.register(consoleLogServiceFragment);
+      this.dependencies.register(consoleLogServiceDependency);
     }
 
-    // Make the application available globally through the fragments
+    // Make the application available globally through the dependencies
     // property so that this reference isn't passed around everywhere.
-    this.fragments.register(
-      new BusFragment(this.bus)
+    this.dependencies.register(
+      new BusDependency(this.bus),
+      new DependenciesDependency(this.dependencies),
+      new ApplicationSingletonDependency(this)
     );
   }
 
@@ -63,7 +70,7 @@ export class Application implements IApplication {
   private _initializeServices() {
 
     // Initialize the services (action handlers) of this application.
-    this.actors.push(...ApplicationServiceFragment.findAll(this.fragments).map(fragment => fragment.create(this)));
+    this.actors.push(...ApplicationServiceDependency.findAll(this.dependencies).map(fragment => fragment.create()));
   }
 
   /**

@@ -4,12 +4,12 @@ import * as React from "react";
 import HeaderComponent from "./header";
 import FooterComponent from "./footer";
 import CanvasComponent from "./canvas";
-import { ReactComponentFactoryFragment } from "sf-front-end/fragments";
-import { FragmentDictionary } from "sf-core/fragments";
+import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
+import { Dependencies } from "sf-core/dependencies";
 import { FrontEndApplication } from "sf-front-end/application";
 import { Editor } from "sf-front-end/models";
 
-export default class StageComponent extends React.Component<{ app: FrontEndApplication, fragments: FragmentDictionary }, any> {
+export default class StageComponent extends React.Component<{ app: FrontEndApplication, dependencies: Dependencies }, any> {
   render() {
 
     const editor = this.props.app.editor;
@@ -25,4 +25,4 @@ export default class StageComponent extends React.Component<{ app: FrontEndAppli
 }
 
 
-export const fragment = new ReactComponentFactoryFragment("components/stage/sfn", StageComponent);
+export const fragment = new ReactComponentFactoryDependency("components/stage/sfn", StageComponent);

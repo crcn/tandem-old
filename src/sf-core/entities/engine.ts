@@ -12,9 +12,9 @@ import {
 } from "../markup";
 
 import {
-  FragmentDictionary,
-  EntityFactoryFragment
-} from "../fragments";
+  Dependencies,
+  EntityFactoryDependency
+} from "../dependencies";
 
 /**
  *  Creates entities based on the source expression provided
@@ -25,10 +25,10 @@ export class EntityEngine {
   private _entity: IEntity;
 
   /**
-   * @param {FragmentDictionary} fragments fragments that contain all entity classes
+   * @param {Dependencies} dependencies dependencies that contain all entity classes
    */
 
-  constructor(readonly fragments: FragmentDictionary) { }
+  constructor(readonly dependencies: Dependencies) { }
 
   async load(source: IDiffableNode): Promise<IEntity> {
 
@@ -47,7 +47,7 @@ export class EntityEngine {
   }
 
   private async _loadAll(source: IDiffableNode) {
-    const entityFactory = EntityFactoryFragment.find(source.nodeName, this.fragments);
+    const entityFactory = EntityFactoryDependency.find(source.nodeName, this.dependencies);
     const entity = entityFactory.create(source);
 
     // TODO - engine making too much of an assumption about what the entity is -- it
