@@ -41,3 +41,14 @@ const service:SomeService = classFactoryDependency.create();
 // didInject triggered - server started
 console.log(service.started); // true
 ```
+
+TODOS:
+
+- [ ] make inject() param more flexible - ability to map values injected
+
+```javascript
+class Person {
+  @inject("service", dependency => dependency.create())
+  public service:Service;
+}
+```

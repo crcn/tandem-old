@@ -19,12 +19,12 @@ export class Injector {
 
     if (__inject) {
       for (const property in __inject) {
-        const ns = __inject[property];
+        const [ns, map] = __inject[property];
         const dependency = dependencies.query<Dependency<any>>(ns);
         if (dependency) {
 
           // TODO - check for dependency.getInjectableValue()
-          target[property] = dependency.value;
+          target[property] = map(dependency);
         } else if (!process.env.TESTING) {
           console.warn(`Cannot inject ${ns} into ${target.constructor.name}.${property} property.`);
         }
