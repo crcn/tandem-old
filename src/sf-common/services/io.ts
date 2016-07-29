@@ -2,14 +2,13 @@
 import { Logger } from "sf-core/logger";
 import { loggable, isPublic, document } from "sf-core/decorators";
 import * as SocketIOBus from "mesh-socket-io-bus";
-import { Injector } from "sf-core/decorators";
 
 import { Service } from "sf-core/services";
 import { ParallelBus } from "mesh";
 
 import { IApplication } from "sf-core/application";
 import { BaseApplicationService } from "sf-core/services";
-import { Dependencies } from "sf-core/dependencies";
+import { Dependencies, Injector } from "sf-core/dependencies";
 
 @loggable()
 export default class IOService<T extends IApplication> extends BaseApplicationService<T> {
@@ -107,8 +106,6 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
   }
 
   static create<T extends IApplication>(dependencies: Dependencies): IOService<T> {
-    const instance = new IOService<T>();
-    Injector.inject(instance, dependencies);
-    return instance;
+    return Injector.inject(new IOService<T>(), dependencies);
   }
 }

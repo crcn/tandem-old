@@ -1,5 +1,5 @@
-import { default as inject, IInjectable } from "./inject";
-import { Dependencies, ClassFactoryDependency, Dependency } from "../dependencies";
+import { default as inject } from "./inject";
+import { Dependencies, ClassFactoryDependency, Dependency, IInjectable } from "../dependencies";
 import { expect } from "chai";
 
 describe(__filename + "#", () => {

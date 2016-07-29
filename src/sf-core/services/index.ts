@@ -1,8 +1,8 @@
 import { Service } from "./base";
 import { IApplication } from "sf-core/application";
-import { APPLICATION_SINGLETON_NS, BUS_NS } from "sf-core/dependencies";
+import { APPLICATION_SINGLETON_NS, BUS_NS, IInjectable } from "sf-core/dependencies";
 import { IActor, IInvoker } from "sf-core/actors/index";
-import { inject, IInjectable } from "sf-core/decorators";
+import { inject } from "sf-core/decorators";
 
 export { Service };
 
