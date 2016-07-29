@@ -1,78 +1,43 @@
-import { isPublic, loggable } from 'sf-core/decorators';
-import * as sift from 'sift';
-import * as ArrayDsBus from 'mesh-array-ds-bus';
+import { isPublic, loggable } from "sf-core/decorators";
+import * as sift from "sift";
+import * as ArrayDsBus from "mesh-array-ds-bus";
 
-import { IActor } from 'sf-core/actors';
-import { AcceptBus } from 'mesh';
-import { Logger } from 'sf-core/logger';
-import { FindAllAction } from 'sf-core/actions';
-import { ApplicationServiceFragment } from 'sf-core/fragments';
-import { BaseApplicationService } from 'sf-core/services';
-import { IApplication } from 'sf-core/application';
+import { IActor } from "sf-core/actors";
+import { Logger } from "sf-core/logger";
+import { AcceptBus } from "mesh";
+import { FindAction } from "sf-core/actions";
+import { FrontEndApplication } from "sf-front-end/application";
+import { BaseApplicationService } from "sf-core/services";
+import { ApplicationServiceFragment } from "sf-core/fragments";
 
-// @observable
-// class Projects extends Collection<any> { }
-
-const COLLECTION_NAME = 'files';
+const COLLECTION_NAME = "files";
 
 @loggable()
-export default class ProjectService extends BaseApplicationService<IApplication> {
+export default class ProjectService extends BaseApplicationService<FrontEndApplication> {
 
-  public logger:Logger;
-  private _projects:Array<any>;
-  public _projectsBus:IActor;
+  // @inject(APPLICATION_SINGLETON_NS)
+  // public preview:
+
+  public logger: Logger;
 
   async initialize() {
 
-    var createModel = (data) => {
-      var model = this.app
-        .fragments
-        .query<any>(`models/${data.ext}-file`)
-        .create(Object.assign({}, data, {
-          collectionName: COLLECTION_NAME,
-          fragments: this.app.fragments,
-          app: this.app
-        }));
+    const currentFileData = await (this.bus.execute(new FindAction(COLLECTION_NAME, undefined, false))).read();
 
-      model.observe(this.bus);
-      return model;
-    };
-
-    this._projects = (await this.bus.execute(new FindAllAction(COLLECTION_NAME)).readAll()).map(createModel)
-
-    this._projectsBus = AcceptBus.create(
-      sift({ collectionName: COLLECTION_NAME }),
-      ArrayDsBus.create(this._projects, {
-        remove() { },
-        update: (model, data) => {
-          model.setProperties(data);
-          if (model === (this.app as any).currentFile) {
-            model.load();
-
-          }
-          return model;
-        },
-        insert: createModel
-      })
-    , undefined);
-
-    this.logger.info('loaded %d files', this._projects.length);
-
-    if (this._projects.length) {
-      this._projects[0].load();
-      (this.app as any).currentFile = this._projects[0];
+    if (currentFileData) {
+      this.logger.info("loaded %s", currentFileData);
     }
   }
 
   @isPublic
-  remove(action) {
-    return this._projectsBus.execute(action);
+  update(action) {
+    console.log("update file");
   }
 
   @isPublic
-  update(action) {
-    return this._projectsBus.execute(action);
+  insert(action) {
+    console.log("insert file");
   }
 }
 
-export const fragment = new ApplicationServiceFragment('application/services/project', ProjectService);
+export const fragment = new ApplicationServiceFragment("project", ProjectService);

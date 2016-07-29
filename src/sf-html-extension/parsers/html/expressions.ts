@@ -1,4 +1,10 @@
 import { BaseExpression, ICursorPosition, flattenEach } from "../core/expression";
+import { IExpression } from "sf-core/entities";
+
+export interface IHTMLValueNodeExpression extends IExpression {
+  nodeValue: any;
+  nodeName: string;
+}
 
 export abstract class HTMLExpression extends BaseExpression {
   constructor(type: string, readonly nodeName: string, position: ICursorPosition) {
@@ -76,7 +82,7 @@ export class HTMLAttributeExpression extends BaseExpression {
 }
 
 export const HTML_TEXT = "htmlText";
-export class HTMLTextExpression extends HTMLExpression {
+export class HTMLTextExpression extends HTMLExpression implements IHTMLValueNodeExpression {
   constructor(public nodeValue: string, public position: ICursorPosition) {
     super(HTML_TEXT, "#text", position);
   }
@@ -89,7 +95,7 @@ export class HTMLTextExpression extends HTMLExpression {
 }
 
 export const HTML_COMMENT = "htmlComment";
-export class HTMLCommentExpression extends HTMLExpression {
+export class HTMLCommentExpression extends HTMLExpression implements IHTMLValueNodeExpression {
   constructor(public nodeValue: string, public position: ICursorPosition) {
     super(HTML_COMMENT, "#comment", position);
   }

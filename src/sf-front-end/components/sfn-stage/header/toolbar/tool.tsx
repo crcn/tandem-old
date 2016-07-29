@@ -1,11 +1,11 @@
-import * as cx from 'classnames';
-import * as React from 'react';
+import * as cx from "classnames";
+import * as React from "react";
 
 class ToolComponent extends React.Component<any, any> {
 
   setTool() {
     this.props.app.bus.execute({
-      type: 'setCurrentTool',
+      type: "setCurrentTool",
       tool: this.props.tool
     });
   }
@@ -22,7 +22,7 @@ class ToolComponent extends React.Component<any, any> {
       <li
         className={className}
         aria-label={tool.name}
-        tabIndex='-1'
+        tabIndex="-1"
         role={tool.name}
         onClick={this.setTool.bind(this)}
       >

@@ -1,7 +1,7 @@
-import './index.scss';
+import "./index.scss";
 
-import * as React from 'react';
-import RegisteredComponent from 'sf-front-end/components/registered';
+import * as React from "react";
+import RegisteredComponent from "sf-front-end/components/registered";
 
 export default class PreviewComponent extends React.Component<any, any> {
   render() {
@@ -10,9 +10,9 @@ export default class PreviewComponent extends React.Component<any, any> {
       zoom: this.props.zoom
     };
 
-    return (<div className='m-editor-stage-preview' style={style}>
-      <div className='m-editor-stage-preview-inner'>
-        <RegisteredComponent {...this.props} ns='components/preview' />
+    return (<div className="m-editor-stage-preview" style={style}>
+      <div className="m-editor-stage-preview-inner">
+        <RegisteredComponent {...this.props} ns="components/preview" />
       </div>
     </div>);
   }

@@ -1,24 +1,20 @@
-import { loggable, bindable, isPublic } from "sf-core/decorators";
-import { IApplication }  from "sf-core/application";
+import { IEntity } from "sf-core/entities";
+import { FrontEndApplication } from "sf-front-end/application";
 import { BaseApplicationService } from "sf-core/services";
 import { ApplicationServiceFragment } from "sf-core/fragments";
+import { loggable, bindable, isPublic } from "sf-core/decorators";
 
 @loggable()
-export default class SelectorService extends BaseApplicationService<IApplication> {
-  load() {
-    (this.app as any).selection = [];
-  }
+export default class SelectorService extends BaseApplicationService<FrontEndApplication> {
 
   @isPublic
   selectAtSourceOffset({ data }) {
 
-    // TODO - require file in payload
-    let entity = (this.app as any).currentFile.entity;
-    const allEntities = entity.flatten();
+    const allEntities = <Array<IEntity>>this.app.editor.file.entity.flatten();
 
     const selection = [];
-    for (entity of allEntities) {
-      if (entity.preview) {
+    for (const entity of allEntities) {
+      if (Object(entity).hasOwnProperty("preview")) {
         const position = entity.expression.position;
         for (const cursor of data) {
 

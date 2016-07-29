@@ -1,6 +1,6 @@
-import { IEntity, IVisibleEntity, ElementEntity, ValueNodeEntity } from "sf-core/entities";
+import { IEntity, IVisibleEntity } from "sf-core/entities";
 import { EntityFactoryFragment } from "sf-core/fragments";
-import { HTMLElementExpression, HTMLTextExpression, HTMLCommentExpression, HTMLAttributeExpression } from "../../parsers/html/expressions";
+import { HTMLElementExpression, HTMLTextExpression, IHTMLValueNodeExpression, HTMLCommentExpression, HTMLAttributeExpression } from "../../parsers/html/expressions";
 import { HTMLNodeDisplay } from "./displays";
 import { IElement, INode, IContainerNode, Element, ValueNode, IDiffableValueNode, GroupNodeSection, NodeSection } from "sf-core/markup";
 import TAG_NAMES from "./tag-names";
@@ -9,17 +9,23 @@ export interface IHTMLEntity extends IEntity {
   section: NodeSection|GroupNodeSection;
 }
 
-export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
+export class HTMLElementEntity extends Element implements IHTMLEntity {
   public section: GroupNodeSection|NodeSection;
-  constructor(source: HTMLElementExpression) {
-    super(source);
+  constructor(readonly expression: HTMLElementExpression) {
+    super(expression.nodeName);
+
     this.section = this.createSection();
 
-    if (this.section instanceof NodeSection) {
-      for (const attribute of this.attributes) {
-        (<IElement>this.section.targetNode).setAttribute(attribute.name, attribute.value);
+    // TODO - attributes might need to be transformed here
+    if (expression.attributes) {
+      for (const attribute of expression.attributes) {
+        this.setAttribute(attribute.name, attribute.value);
       }
     }
+  }
+
+  render() {
+    return this.expression.childNodes;
   }
 
   removeAttribute(name: string) {
@@ -27,10 +33,10 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
     if (this.section instanceof NodeSection) {
       (<IElement>this.section.targetNode).removeAttribute(name);
     }
-    for (let i = this.source.attributes.length; i--; ) {
-      const attribute = this.source.attributes[i];
+    for (let i = this.expression.attributes.length; i--; ) {
+      const attribute = this.expression.attributes[i];
       if (attribute.name === name) {
-        this.source.attributes.splice(i, 1);
+        this.expression.attributes.splice(i, 1);
         return;
       }
     }
@@ -46,11 +52,11 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
 
   setAttribute(name: string, value: string) {
     super.setAttribute(name, value);
-    if (!this.source) return;
+    if (!this.expression) return;
     if (this.section instanceof NodeSection) {
       (<IElement>this.section.targetNode).setAttribute(name, value);
     }
-    for (const attribute of this.source.attributes) {
+    for (const attribute of this.expression.attributes) {
       if (attribute.name === name) {
         attribute.value = value;
         return;
@@ -58,7 +64,7 @@ export class HTMLElementEntity extends ElementEntity implements IHTMLEntity {
     }
 
     // this is janky as hell - attributes should be immutable here
-    this.source.attributes.push(new HTMLAttributeExpression(name, value, undefined));
+    this.expression.attributes.push(new HTMLAttributeExpression(name, value, undefined));
   }
 
   _link(child) {
@@ -106,22 +112,26 @@ export class HTMLDocumentFragmentEntity extends HTMLElementEntity {
   }
 }
 
-export abstract class HTMLValueNodeEntity extends ValueNodeEntity implements IHTMLEntity {
+export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> extends ValueNode implements IHTMLEntity {
 
   public section: NodeSection;
   private _node: Node;
 
-  constructor(readonly source: IDiffableValueNode) {
-    super(source);
-    this.section = new NodeSection(this._node = this.createDOMNode(source.nodeValue) as any);
+  constructor(readonly expression: T) {
+    super(expression.nodeName, expression.nodeValue);
+    this.section = new NodeSection(this._node = this.createDOMNode(expression.nodeValue) as any);
+  }
+
+  render() {
+    return null;
   }
 
   get nodeValue(): any {
-    return this.source.nodeValue;
+    return this.expression.nodeValue;
   }
 
   set nodeValue(value: any) {
-    if (this.source) this.source.nodeValue = value;
+    if (this.expression) this.expression.nodeValue = value;
     if (this._node) this._node.nodeValue = value;
   }
 
@@ -134,13 +144,13 @@ export abstract class HTMLValueNodeEntity extends ValueNodeEntity implements IHT
   abstract createDOMNode(nodeValue: any): Node;
 }
 
-export class HTMLTextEntity extends HTMLValueNodeEntity {
+export class HTMLTextEntity extends HTMLValueNodeEntity<HTMLTextExpression> {
   createDOMNode(nodeValue: any) {
     return document.createTextNode(nodeValue);
   }
 }
 
-export class HTMLCommentEntity extends HTMLValueNodeEntity {
+export class HTMLCommentEntity extends HTMLValueNodeEntity<HTMLCommentExpression> {
   createDOMNode(nodeValue: any) {
     return document.createComment(nodeValue);
   }

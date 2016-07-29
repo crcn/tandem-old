@@ -8,7 +8,22 @@ TODOS:
 
 - mutating arrays too much
 - need to add depth for finding best candidate
+- possibly decouple diff from DOM by providing a third parameter that helps
+map differences:
 
+diff(a, b, {
+  equals(a, b) {
+    return a.nodeName === b.nodeName;
+  },
+  addChanges(a, b, changes) {
+    if (/#(text|comment)/.test(a)) {
+      if (a.nodeValue !== b.nodeValue) {
+        changes.push({ })
+      }
+    }
+  },
+  childProperties: ["childNodes"]
+})
 */
 
 export interface INodeChange {
@@ -121,8 +136,12 @@ function addChanges(unmatchedOldNodes: Array<IDiffableNode>, unmatchedNewNodes: 
     const candidates: Array<IDiffableNode> = [];
 
     for (const oldNode of unmatchedOldNodes) {
+
       // node names must be identical for them to be candidates
-      if (oldNode.constructor !== newNode.constructor || oldNode.nodeName !== newNode.nodeName) continue;
+      if (oldNode.constructor !== newNode.constructor || oldNode.nodeName !== newNode.nodeName) {
+        continue;
+      }
+
       candidates.push(oldNode);
     }
 

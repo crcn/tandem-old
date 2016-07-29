@@ -1,9 +1,9 @@
-import { IApplication } from 'sf-core/application';
+import { IApplication } from "sf-core/application";
 
-import { Logger } from 'sf-core/logger';
-import { loggable } from 'sf-core/decorators';
-import { BaseApplicationService } from 'sf-core/services';
-import { ApplicationServiceFragment } from 'sf-core/fragments';
+import { Logger } from "sf-core/logger";
+import { loggable } from "sf-core/decorators";
+import { BaseApplicationService } from "sf-core/services";
+import { ApplicationServiceFragment } from "sf-core/fragments";
 
 function targetIsInput(event) {
   return /input|textarea/i.test(event.target.nodeName);
@@ -12,34 +12,34 @@ function targetIsInput(event) {
 @loggable()
 export default class ClipboardService extends BaseApplicationService<IApplication> {
 
-  public logger:Logger;
+  public logger: Logger;
 
   initialize() {
-    document.addEventListener('copy', (event:any) => {
+    document.addEventListener("copy", (event: any) => {
       if (targetIsInput(event)) return;
-      this.logger.info('handle copy');
+      this.logger.info("handle copy");
 
       // var selection = this.app.selection.map((entity) => (
       //   entity.expression
       // ));
 
-      var selection = [];
+      const selection = [];
 
-      event.clipboardData.setData('text/x-entity', JSON.stringify(selection));
+      event.clipboardData.setData("text/x-entity", JSON.stringify(selection));
       event.preventDefault();
     });
 
-    document.addEventListener('paste', (event:any) => {
-      this.logger.info('handle paste');
+    document.addEventListener("paste", (event: any) => {
+      this.logger.info("handle paste");
       Array.prototype.forEach.call(event.clipboardData.items, this._paste);
     });
   }
 
   _paste = async (item) => {
     try {
-      // await this.bus.execute({ type: 'paste', item: item });
+      // await this.bus.execute({ type: "paste", item: item });
     } catch (e) {
-      this.logger.warn('cannot paste x-entity data: ', item.type);
+      this.logger.warn("cannot paste x-entity data: ", item.type);
     }
   }
 
@@ -48,4 +48,4 @@ export default class ClipboardService extends BaseApplicationService<IApplicatio
 
 }
 
-export const fragment = new ApplicationServiceFragment('clipboard', ClipboardService);
+export const fragment = new ApplicationServiceFragment("clipboard", ClipboardService);

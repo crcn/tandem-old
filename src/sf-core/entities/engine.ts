@@ -1,7 +1,5 @@
 import {
   IEntity,
-  ElementEntity,
-  ValueNodeEntity,
   IContainerEntity
 } from "./base";
 
@@ -17,9 +15,6 @@ import {
   FragmentDictionary,
   EntityFactoryFragment
 } from "../fragments";
-
-const defaultEntityFactory = new EntityFactoryFragment(undefined, ElementEntity);
-
 
 /**
  *  Creates entities based on the source expression provided
@@ -52,8 +47,12 @@ export class EntityEngine {
   }
 
   private async _loadAll(source: IDiffableNode) {
-    const entityFactory = EntityFactoryFragment.find(source.nodeName, this.fragments) || defaultEntityFactory;
+    const entityFactory = EntityFactoryFragment.find(source.nodeName, this.fragments);
     const entity = entityFactory.create(source);
+
+    // TODO - engine making too much of an assumption about what the entity is -- it
+    // can be anything so long as it represents an expression, or some other source object, and
+    // is NOT limited to the markup API. The following code needs to be more generic.
     for (const childExpression of toArray(await entity.render())) {
       (<IContainerEntity>entity).appendChild(await this._loadAll(childExpression));
     }

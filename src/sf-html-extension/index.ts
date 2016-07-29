@@ -1,11 +1,11 @@
 
- import { IApplication } from 'sf-core/application';
+ import { IApplication } from "sf-core/application";
 
  // components
- import { fragment as entityPreviewComponentFragment } from './components/entity-preview';
+ import { fragment as entityPreviewComponentFragment } from "./components/entity-preview";
 
  // models
- import { fragment as sfFileModelFragment } from './models/sf-file';
+ import { fragment as sfFileModelFragment } from "./models/sf-file";
 
  // entities
  import {
@@ -14,7 +14,7 @@
    htmlDocumentFragment,
    htmlElementFragments,
    htmlTemplateEntityFragment
-} from './entities/html';
+} from "./entities/html";
 
 export const fragment = [
 

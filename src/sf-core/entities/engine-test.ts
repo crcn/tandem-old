@@ -1,6 +1,7 @@
 import { expect } from "chai";
+import { IEntity } from "./base";
+import { Node, IContainerNode, ContainerNode } from "../markup";
 import { EntityEngine } from "./engine";
-import { ElementEntity, ValueNodeEntity } from "./base";
 import { FragmentDictionary, EntityFactoryFragment } from "../fragments";
 
 function element(name, attributes = [], ...childNodes) {
@@ -24,14 +25,16 @@ describe(__filename + "#", function() {
     new EntityEngine(new FragmentDictionary());
   });
 
-  it("maps an element to an entity", async function() {
-    const engine = new EntityEngine(new FragmentDictionary());
-    const entity = await engine.load(element("div"));
-    expect(entity).to.be.an.instanceof(ElementEntity);
-  });
-
   it("can register a custom entity", async function() {
-    class CustomEntity extends ElementEntity { }
+    class CustomEntity extends Node implements IEntity {
+      constructor(readonly expression: any) {
+        super();
+      }
+      render() {
+        return null;
+      }
+      cloneNode() { return null; }
+    }
     const fragments = new FragmentDictionary();
     fragments.register(new EntityFactoryFragment("custom", CustomEntity));
     const engine = new EntityEngine(fragments);
@@ -41,16 +44,33 @@ describe(__filename + "#", function() {
   });
 
   it("renders child nodes based on the returned value from load()", async function() {
-    class CustomEntity extends ElementEntity {
+    class CustomEntity extends ContainerNode implements IEntity {
+      constructor(readonly expression: any) {
+        super();
+      }
       render() {
-        expect((this.source as any).nodeName).to.equal("custom1");
+        expect((this.expression as any).nodeName).to.equal("custom1");
         return { nodeName: "#text", nodeValue: "something" };
       }
+      cloneNode() { return null; }
     }
-    const fragments = new FragmentDictionary();
-    fragments.register(new EntityFactoryFragment("custom1", CustomEntity));
+
+    class TextEntity extends Node implements IEntity {
+      constructor(readonly expression: any) {
+        super();
+      }
+      render() {
+        return null;
+      }
+      cloneNode() { return null; }
+    }
+
+    const fragments = new FragmentDictionary(
+      new EntityFactoryFragment("custom1", CustomEntity),
+      new EntityFactoryFragment("#text", TextEntity)
+    );
     const engine = new EntityEngine(fragments);
     let currentEntity = await engine.load(element("custom1"));
-    expect((<ElementEntity>currentEntity).childNodes.length).to.equal(1);
+    expect((<IContainerNode><any>currentEntity).childNodes.length).to.equal(1);
   });
 });

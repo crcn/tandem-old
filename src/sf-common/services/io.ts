@@ -12,9 +12,9 @@ import { BaseApplicationService } from "sf-core/services";
 @loggable()
 export default class IOService<T extends IApplication> extends BaseApplicationService<T> {
 
-  public logger:Logger;
-  public _publicService:Service;
-  public _remoteActors:Array<any>;
+  public logger: Logger;
+  public _publicService: Service;
+  public _remoteActors: Array<any>;
 
   load() {
 
@@ -72,7 +72,7 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
   addConnection = async (connection) => {
     this.logger.info("client connected");
 
-    var remoteService = new Service();
+    const remoteService = new Service();
 
     // from here on, all global actions will touch on this remote service object.
     // If the action is registered to the service, that action will be executed
@@ -81,7 +81,7 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
 
     // setup the bus which will facilitate in all
     // transactions between the remote service
-    var remoteBus = SocketIOBus.create({
+    const remoteBus = SocketIOBus.create({
       connection: connection
     }, this._publicService);
 

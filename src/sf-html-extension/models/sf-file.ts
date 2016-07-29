@@ -1,18 +1,18 @@
-import { ClassFactoryFragment, FragmentDictionary } from 'sf-core/fragments';
-import { IEntity, EntityEngine } from 'sf-core/entities';
-import { parse as parseHTML } from '../parsers/html';
-import { PropertyChangeAction } from 'sf-core/actions';
-import { Observable } from 'sf-core/observable';
+import { ClassFactoryFragment, FragmentDictionary } from "sf-core/fragments";
+import { IEntity, EntityEngine } from "sf-core/entities";
+import { parse as parseHTML } from "../parsers/html";
+import { PropertyChangeAction } from "sf-core/actions";
+import { Observable } from "sf-core/observable";
 
 export class SfFile extends Observable {
   readonly path: string;
   readonly content: string;
   readonly fragments: FragmentDictionary;
 
-  private _engine:EntityEngine;
-  private _entity:IEntity;
+  private _engine: EntityEngine;
+  private _entity: IEntity;
 
-  constructor(properties:{ path: string, content: string, framents: FragmentDictionary }) {
+  constructor(properties: { path: string, content: string, framents: FragmentDictionary }) {
     super();
     Object.assign(this, properties);
     this._engine = new EntityEngine(this.fragments);
@@ -32,5 +32,5 @@ export class SfFile extends Observable {
   }
 }
 
-export const fragment = new ClassFactoryFragment('models/sfn-file', SfFile);
+export const fragment = new ClassFactoryFragment("models/sfn-file", SfFile);
 

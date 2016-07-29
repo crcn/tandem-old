@@ -107,7 +107,7 @@ export class BusFragment extends BaseFragment {
   constructor(readonly instance: Bus) {
     super(BUS_NS);
   }
-  static getInstance(fragments:FragmentDictionary):Bus {
+  static getInstance(fragments: FragmentDictionary): Bus {
     return fragments.query<BusFragment>(BUS_NS).instance;
   }
 }

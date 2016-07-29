@@ -1,10 +1,10 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import bubbleIframeEvents from 'sf-front-end/utils/html/bubble-iframe-events';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
 
 export default class IsolateComponent extends React.Component<any, any> {
 
-  private _mountElement:any;
+  private _mountElement: any;
 
   constructor(props) {
     super(props);
@@ -17,8 +17,8 @@ export default class IsolateComponent extends React.Component<any, any> {
       const head    = this.head;
 
       const tags = [
-        ...Array.prototype.slice.call(document.getElementsByTagName('style'), 0),
-        ...Array.prototype.slice.call(document.getElementsByTagName('link'), 0)
+        ...Array.prototype.slice.call(document.getElementsByTagName("style"), 0),
+        ...Array.prototype.slice.call(document.getElementsByTagName("link"), 0)
       ];
 
       Array.prototype.forEach.call(tags, function (style) {
@@ -26,7 +26,7 @@ export default class IsolateComponent extends React.Component<any, any> {
       });
     }
 
-    this.body.appendChild(this._mountElement = document.createElement('div'));
+    this.body.appendChild(this._mountElement = document.createElement("div"));
     this._render();
 
     this._addListeners();
@@ -57,6 +57,6 @@ export default class IsolateComponent extends React.Component<any, any> {
   }
 
   render() {
-    return <iframe ref='container' onWheel={this.props.onWheel} onScroll={this.props.onScroll} className={this.props.className} />;
+    return <iframe ref="container" onWheel={this.props.onWheel} onScroll={this.props.onScroll} className={this.props.className} />;
   }
 }
