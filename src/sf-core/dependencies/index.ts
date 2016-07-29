@@ -3,6 +3,7 @@ import { IApplication } from "sf-core/application";
 import { IEntity } from "../entities";
 import { IDiffableNode } from "../markup";
 import { Bus } from "mesh";
+import { IActiveRecord } from "../active-records";
 
 import {
   IFactory,
@@ -95,5 +96,25 @@ export const DEPENDENCIES_NS = "dependencies";
 export class DependenciesDependency extends Dependency<Dependencies> {
   constructor(value: Dependencies) {
     super(DEPENDENCIES_NS, value);
+  }
+}
+
+/**
+ */
+
+export const ACTIVE_RECORD_FACTORY_NS = "activeRecordFactories";
+export class ActiveRecordFactoryDependency extends ClassFactoryDependency {
+  constructor(id: string, value: { new(): IActiveRecord }) {
+    super([ACTIVE_RECORD_FACTORY_NS, id].join("/"), value);
+  }
+  create(sourceData?: any): any {
+    const activeRecord: IActiveRecord = super.create(sourceData);
+    if (sourceData != null) {
+      activeRecord.deserialize(sourceData);
+    }
+    return activeRecord;
+  }
+  static find(id: string, dependencies: Dependencies): ActiveRecordFactoryDependency {
+    return dependencies.query<ActiveRecordFactoryDependency>([ACTIVE_RECORD_FACTORY_NS, id].join("/"));
   }
 }

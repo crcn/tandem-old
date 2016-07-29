@@ -1,7 +1,7 @@
 import { flattenDeep } from "lodash";
 
 export interface IInjectable {
-  didInject():void;
+  didInject(): void;
 }
 
 /**
@@ -15,7 +15,7 @@ export class Injector {
    */
 
   static inject(target: any, dependencies: Dependencies) {
-    const __inject = target['__inject'];
+    const __inject = target["__inject"];
 
     if (__inject) {
       for (const property in __inject) {
@@ -119,7 +119,7 @@ export class ClassFactoryDependency extends FactoryDependency {
 
 export class Dependencies {
 
-  private _DependenciesByNs: any = {};
+  private _dependenciesByNs: any = {};
 
   constructor(...items: Array<IDependency>) {
     this.register(...items);
@@ -146,7 +146,7 @@ export class Dependencies {
    */
 
   queryAll<T extends IDependency>(ns: string) {
-    return <T[]>(this._DependenciesByNs[ns] || []);
+    return <T[]>(this._dependenciesByNs[ns] || []);
   }
 
   /**
@@ -171,7 +171,7 @@ export class Dependencies {
       dependency = dependency.clone();
 
       // check if the Dependency already exists to ensure that there are no collisions
-      if (this._DependenciesByNs[dependency.ns]) {
+      if (this._dependenciesByNs[dependency.ns]) {
         throw new Error(`Dependency with namespace "${dependency.ns}" already exists.`);
       }
 
@@ -181,7 +181,7 @@ export class Dependencies {
 
       // the last part of the namespace is the unique id. Example namespaces:
       // entities/text, entitiesControllers/div, components/item
-      this._DependenciesByNs[dependency.ns] = [dependency];
+      this._dependenciesByNs[dependency.ns] = [dependency];
 
       // store the Dependency in a spot where it can be queried with globs (**).
       // This is much faster than parsing this stuff on the fly when calling query()
@@ -189,11 +189,11 @@ export class Dependencies {
       for (let i = 0, n = nsParts.length; i < n; i++) {
         const ns = nsParts.slice(0, i).join("/") + "/**";
 
-        if (!this._DependenciesByNs[ns]) {
-          this._DependenciesByNs[ns] = [];
+        if (!this._dependenciesByNs[ns]) {
+          this._dependenciesByNs[ns] = [];
         }
 
-        this._DependenciesByNs[ns].push(dependency);
+        this._dependenciesByNs[ns].push(dependency);
       }
     }
   }

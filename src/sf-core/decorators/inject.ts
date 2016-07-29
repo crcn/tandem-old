@@ -5,7 +5,7 @@ import { Dependency, IDependency, Dependencies, IInjectable } from "../dependenc
  * inject decorator for properties of classes that live in a Dependencies object
  */
 
-export default function inject(ns: string, map:(dependency:IDependency) => any = undefined) {
+export default function inject(ns: string, map: (dependency: IDependency) => any = undefined) {
   return function(target: IInjectable, property: string, descriptor: PropertyDecorator = undefined) {
     let inject = {};
 

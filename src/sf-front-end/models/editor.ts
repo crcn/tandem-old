@@ -18,8 +18,14 @@ export class Editor {
    */
 
   public currentTool: any = {
+    name: "pointer",
     cursor: "pointer"
   };
+
+  /**
+   */
+
+  public tools: Array<any> = [];
 
   /**
    */

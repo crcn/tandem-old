@@ -6,10 +6,13 @@ import * as cx from "classnames";
 import * as React from "react";
 import { intersection } from "lodash";
 import { SelectAction } from "sf-front-end/actions/index";
-import { IVisibleEntity } from "sf-core/entities";
+import { IVisibleEntity, IEntity } from "sf-core/entities";
+import { inject } from "sf-core/decorators";
+import { IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
+import { FrontEndApplication } from "sf-front-end/application";
 import BoundingRect from "sf-core/geom/bounding-rect";
 
-import { ReactComponentFactoryDependency } from "sf-front-end/dependencies/index";
+import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 
 class SelectableComponent extends React.Component<{ entity: IVisibleEntity, selection: any, app: any, zoom: number }, any> {
 
@@ -68,7 +71,16 @@ class SelectableComponent extends React.Component<{ entity: IVisibleEntity, sele
   }
 }
 
-export default class SelectablesComponent extends React.Component<{selection: any, allEntities: any, bus: any, app: any}, {}> {
+// @injectable
+export default class SelectablesComponent extends React.Component<{selection: any, allEntities: Array<IEntity>, bus: any, app: any, zoom: number }, {}>  {
+
+  // TODO - make this work
+  // @inject(APPLICATION_SINGLETON_NS)
+  // readonly app:FrontEndApplication;
+
+  // didInject() {
+  //   console.log("INJECT!");
+  // }
 
   render() {
 
@@ -81,13 +93,13 @@ export default class SelectablesComponent extends React.Component<{selection: an
     // if (selection.preview.currentTool.type !== "pointer") return null;
 
     const selectables = allEntities.filter((entity) => (
-      !!entity.display
+      !!entity["display"]
     )).map((entity, i) => (
       <SelectableComponent
         {...this.props}
-        zoom={1}
+        zoom={this.props.zoom}
         selection={selection}
-        entity={entity}
+        entity={entity as IVisibleEntity}
         key={i}
       />
     ));

@@ -1,35 +1,41 @@
-import { isPublic, loggable } from "sf-core/decorators";
 import * as sift from "sift";
 import * as ArrayDsBus from "mesh-array-ds-bus";
+import { AcceptBus } from "mesh";
 
 import { IActor } from "sf-core/actors";
 import { Logger } from "sf-core/logger";
-import { AcceptBus } from "mesh";
 import { FindAction } from "sf-core/actions";
-import { FrontEndApplication } from "sf-front-end/application";
 import { BaseApplicationService } from "sf-core/services";
-import { ApplicationServiceDependency } from "sf-core/dependencies";
+import { isPublic, loggable, inject } from "sf-core/decorators";
+import { ApplicationServiceDependency, DEPENDENCIES_NS, Dependencies, ActiveRecordFactoryDependency } from "sf-core/dependencies";
+import { FrontEndApplication } from "sf-front-end/application";
 
 const COLLECTION_NAME = "files";
 
 @loggable()
 export default class ProjectService extends BaseApplicationService<FrontEndApplication> {
 
-  // @inject(APPLICATION_SINGLETON_NS)
-  // public preview:
+  @inject(DEPENDENCIES_NS)
+  readonly dependencies: Dependencies;
 
-  // @inject(FRAGMENTS_NS)
-  // public dependencies:
-
-  public logger: Logger;
+  readonly logger: Logger;
 
   async initialize() {
 
-    const currentFileData = await (this.bus.execute(new FindAction(COLLECTION_NAME, undefined, false))).read();
+    const { value } = await (this.bus.execute(new FindAction(COLLECTION_NAME, undefined, false))).read();
 
-    if (currentFileData) {
-      this.logger.info("loaded %s", currentFileData);
+    if (value) {
+      this.logger.info("loaded %s", value);
     }
+
+    const activeRecordDependency = ActiveRecordFactoryDependency.find(`${value.ext}-file`, this.dependencies);
+    const activeRecord = activeRecordDependency.create(value);
+
+    this.app.editor.file = activeRecord;
+
+    // Pipe all changes on the active record back to the application bus
+    activeRecord.observe(this.app.bus);
+
   }
 
   @isPublic

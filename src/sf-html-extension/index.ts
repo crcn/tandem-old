@@ -5,7 +5,7 @@
  import { fragment as entityPreviewComponentDependency } from "./components/entity-preview";
 
  // models
- import { fragment as sfFileModelDependency } from "./models/sf-file";
+ import { fragment as sfFileActiveRecordDependency } from "./active-records/sf-file";
 
  // entities
  import {
@@ -22,7 +22,7 @@ export const fragment = [
   entityPreviewComponentDependency,
 
   // models
-  sfFileModelDependency,
+  sfFileActiveRecordDependency,
 
   // entities
   htmlTextDependency,

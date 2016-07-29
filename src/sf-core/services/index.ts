@@ -7,6 +7,7 @@ import { inject } from "sf-core/decorators";
 export { Service };
 
 export class BaseApplicationService<T extends IApplication> extends Service implements IInvoker, IInjectable {
+
   @inject(APPLICATION_SINGLETON_NS)
   readonly app: T;
 
