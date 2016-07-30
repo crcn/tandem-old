@@ -20,6 +20,9 @@ import { fragment as keyBindingsDependency } from "./key-bindings";
 // extensions
 import { fragment as htmlExtensionDependency } from "sf-html-extension";
 
+// selections
+import { dependency as visibleEntitiySelectionDependency } from "./selection/visible-entity-collection";
+
 import { Editor } from "./models";
 
 export class FrontEndApplication extends Application {
@@ -41,6 +44,9 @@ export class FrontEndApplication extends Application {
       selectorServiceDependency,
       keyBindingsServiceDependency,
       rootComponentRendererDependency,
+
+      // selection
+      visibleEntitiySelectionDependency,
 
       // dependencies
       keyBindingsDependency,

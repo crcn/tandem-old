@@ -1,8 +1,9 @@
 import * as React from "react";
 
 import { IActor } from "sf-core/actors";
+import { IEntity } from "sf-core/entities";
 import { IApplication } from "sf-core/application";
-import { IFactory, Dependency, Dependencies } from "sf-core/dependencies";
+import { IFactory, Dependency, Dependencies, ClassFactoryDependency } from "sf-core/dependencies";
 
 import { KeyBinding } from "sf-front-end/key-bindings/base";
 
@@ -37,5 +38,19 @@ export class EntityPreviewDependency extends ReactComponentFactoryDependency {
   }
   static find(dependencies: Dependencies) {
     return dependencies.query<RootReactComponentDependency>(ENTITY_PREVIEW_COMPONENT_NS);
+  }
+}
+
+export const SELECTION_FACTORY_NS = "selection";
+type entitySelectionType = { new(...items: Array<IEntity>): Array<IEntity> };
+export class SelectionFactoryDependency extends ClassFactoryDependency {
+  constructor(entityType: string, collectionClass: entitySelectionType) {
+    super([SELECTION_FACTORY_NS, entityType].join("/"), collectionClass);
+  }
+  create(...selection:Array<IEntity>):entitySelectionType {
+    return super.create(...selection);
+  }
+  static find(entityType: string, dependencies: Dependencies): SelectionFactoryDependency {
+    return dependencies.query<SelectionFactoryDependency>([SELECTION_FACTORY_NS, entityType].join("/"));
   }
 }
