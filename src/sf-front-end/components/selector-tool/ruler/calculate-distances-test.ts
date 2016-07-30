@@ -27,7 +27,7 @@
 //   }
 // }
 
-describe(__filename + "#", function () {
+describe(__filename + "#", () => {
 
   const cases = {
 
@@ -50,7 +50,7 @@ describe(__filename + "#", function () {
   };
 
   function createCase(title/* , [entities, bounds, equals] */) {
-    it(title, function () {
+    it(title, () => {
 
       // var ent = TestDisplayEntity.create({
       //   fragmentId: "frag",

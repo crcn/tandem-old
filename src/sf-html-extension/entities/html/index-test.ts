@@ -4,9 +4,9 @@ import { parse as parseHTML } from "../../parsers/html";
 import { Dependencies } from "sf-core/dependencies";
 import { expect } from "chai";
 
-describe(__filename + "#", function() {
+describe(__filename + "#", () => {
   let dependencies;
-  beforeEach(function() {
+  beforeEach(() => {
     dependencies = new Dependencies(
       ...htmlElementDependencies,
       htmlTextDependency,
@@ -22,13 +22,13 @@ describe(__filename + "#", function() {
     return div;
   }
 
-  it("can render a DIV element", async function() {
+  it("can render a DIV element", async () => {
     const engine = new EntityEngine(dependencies);
     const entity = await engine.load(parseHTML("<div />"));
     expect(entity.nodeName).to.equal("DIV");
   });
 
-  it("emits a DOM element", async function() {
+  it("emits a DOM element", async () => {
     const engine = new EntityEngine(dependencies);
     let source = "<div>hello world!</div>";
     const entity = await engine.load(parseHTML(source)) as HTMLElementEntity;
@@ -48,7 +48,7 @@ describe(__filename + "#", function() {
     [`<div><h1>1</h1><h2>2</h2><h3>2</h3></div>`, `<div><h3>1</h3><h2>2</h2><h1>3</h1></div>`],
     [`<div>1<h2>2</h2>3<h3>4</h3></div>`, `<div><h2>1</h2>2<h3>3</h3></div>`]
   ].forEach(function([source, change]) {
-    it(`can update the source from ${source} to ${change}`, async function() {
+    it(`can update the source from ${source} to ${change}`, async () => {
       const engine = new EntityEngine(dependencies);
       const entity = await engine.load(parseHTML(source as any)) as HTMLElementEntity;
       const div = document.createElement("div");
@@ -59,8 +59,8 @@ describe(__filename + "#", function() {
     });
   });
 
-  describe("template#", function() {
-    xit("registers a new component based on the template ID attribute", async function() {
+  describe("template#", () => {
+    xit("registers a new component based on the template ID attribute", async () => {
       const div = await loadDiv(`<template id="test">
         hello world
       </template><test id="target" />`);

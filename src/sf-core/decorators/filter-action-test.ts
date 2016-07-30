@@ -4,7 +4,7 @@ import filterAction from "./filter-action";
 import { expect } from "chai";
 import { Service } from "sf-core/services";
 
-describe(__filename + "#", function() {
+describe(__filename + "#", () => {
   it("can filter for actions invoked on a service method", async () => {
     class CustomService extends Service {
       @filterAction((action: InsertAction) => action.collectionName === "test")

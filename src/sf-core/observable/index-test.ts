@@ -3,12 +3,12 @@ import { Observable } from "./index";
 import { expect } from "chai";
 import { CallbackBus } from "sf-core/busses";
 
-describe(__filename + "#", function() {
-  it("can be created", function() {
+describe(__filename + "#", () => {
+  it("can be created", () => {
     new Observable();
   });
 
-  it("can observe the observable for any action", function() {
+  it("can observe the observable for any action", () => {
     const obs = new Observable();
     let i = 0;
     obs.observe({
@@ -19,7 +19,7 @@ describe(__filename + "#", function() {
     expect(i).to.equal(1);
   });
 
-  it("can add multiple observers the observable for any action", function() {
+  it("can add multiple observers the observable for any action", () => {
     const obs = new Observable();
     let i = 0;
     obs.observe({
@@ -32,7 +32,7 @@ describe(__filename + "#", function() {
     expect(i).to.equal(2);
   });
 
-  it("can immediately stop an action from propagating", function() {
+  it("can immediately stop an action from propagating", () => {
     const obs = new Observable();
     let i = 0;
     obs.observe({
@@ -45,7 +45,7 @@ describe(__filename + "#", function() {
     expect(i).to.equal(1);
   });
 
-  it("can stop an action from bubbling", function() {
+  it("can stop an action from bubbling", () => {
     const obs = new Observable();
     let i = 0;
     obs.observe({

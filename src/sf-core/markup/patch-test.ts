@@ -9,7 +9,7 @@ import {
 import { patch } from "./patch";
 import { expect } from "chai";
 
-describe(__filename + "#", function() {
+describe(__filename + "#", () => {
   [
     // node value change
     ["hello", "world"],
@@ -100,7 +100,7 @@ describe(__filename + "#", function() {
 
 
   ].forEach(function([source, destSource]) {
-    it(`can diff and patch ${source} to ${destSource}`, function() {
+    it(`can diff and patch ${source} to ${destSource}`, () => {
       const a = document.createElement("div");
       a.innerHTML = source.replace(/>[\s\n\t\r]+</g, "><");
       const b = document.createElement("div");

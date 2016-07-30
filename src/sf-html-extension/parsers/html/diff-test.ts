@@ -14,7 +14,7 @@ import {
 import { parse as parseHTML } from "./index.peg";
 import { expect } from "chai";
 
-describe(__filename + "#", function() {
+describe(__filename + "#", () => {
 
   [
     [
@@ -68,7 +68,7 @@ describe(__filename + "#", function() {
       []
     ],
   ].forEach(function([source, dest, changeTyps]) {
-    it(`can diff the changes from ${source} to ${dest}`, function() {
+    it(`can diff the changes from ${source} to ${dest}`, () => {
       const changes = diff(parseHTML(source as string), parseHTML(dest as string));
       expect(JSON.stringify(changes.map((change) => change.type))).to.eql(JSON.stringify(changeTyps));
     });

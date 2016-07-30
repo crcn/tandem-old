@@ -15,7 +15,7 @@ import {
 
 describe(__filename + `#`, () => {
 
-  describe("smoke tests#", function() {
+  describe("smoke tests#", () => {
     [
       `a`,
       `<!-- a -->`,
@@ -25,7 +25,7 @@ describe(__filename + `#`, () => {
       `<a b="c" d />`,
       `<a b="c" d>e</a>`
     ].forEach(function(source) {
-      it(`can parse ${source}`, function() {
+      it(`can parse ${source}`, () => {
         const expression = parse(source);
         expect(expression.position.start).to.equal(0);
       });

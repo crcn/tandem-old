@@ -34,7 +34,7 @@ function comment(nodeValue) {
   return new ValueNode("#comment", nodeValue);
 }
 
-describe(__filename + "#", function() {
+describe(__filename + "#", () => {
 
   class CustomElement1 extends Element { }
   class CustomElement2 extends Element { }
@@ -106,7 +106,7 @@ describe(__filename + "#", function() {
       ]
     ]
   ].forEach(function([oldNode, newNode, changeTypes]) {
-    it(`diff ${JSON.stringify(changeTypes)} passes`, function() {
+    it(`diff ${JSON.stringify(changeTypes)} passes`, () => {
       expect(
         JSON.stringify(
           diff(<INode>oldNode, <INode>newNode).map((change) => {

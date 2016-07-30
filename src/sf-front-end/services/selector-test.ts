@@ -15,13 +15,13 @@ describe(__filename + "#", () => {
     await app.initialize();
   });
 
-  xit("defines \"selection\" property on application on selection event", function () {
+  xit("defines \"selection\" property on application on selection event", () => {
     const item = { name: "blarg" };
     app.bus.execute(new ToggleSelectAction(item));
     expect(app.selection.length).to.equal(1);
   });
 
-  xit("only selects one item if multi is false", function () {
+  xit("only selects one item if multi is false", () => {
     const item = { name: "blarg" };
     app.bus.execute(new SelectAction(item));
     expect(app.selection.length).to.equal(1);
@@ -29,7 +29,7 @@ describe(__filename + "#", () => {
     expect(app.selection.length).to.equal(1);
   });
 
-  xit("selects multiple items if multi is true", function () {
+  xit("selects multiple items if multi is true", () => {
     app.bus.execute(new ToggleSelectAction({ name: "blarg" }));
     expect(app.selection.length).to.equal(1);
     app.bus.execute(new ToggleSelectAction({ name: "blarg" }, true));
@@ -38,7 +38,7 @@ describe(__filename + "#", () => {
     expect(app.selection.length).to.equal(1);
   });
 
-  xit("removes an item from the selection if it already exists", function () {
+  xit("removes an item from the selection if it already exists", () => {
     const item = { name: "blarg" };
     app.bus.execute(new ToggleSelectAction(item));
     expect(app.selection.length).to.equal(1);
@@ -46,7 +46,7 @@ describe(__filename + "#", () => {
     expect(app.selection.length).to.equal(0);
   });
 
-  xit("picks the correct collection type depending on the item type", function () {
+  xit("picks the correct collection type depending on the item type", () => {
 
     class DisplayCollection extends Array<any> { }
     class OtherCollection extends Array<any> { }
@@ -65,7 +65,7 @@ describe(__filename + "#", () => {
     expect(app.selection.length).to.equal(1);
   });
 
-  xit("can deselect all be omitting item", function () {
+  xit("can deselect all be omitting item", () => {
     app.bus.execute(new ToggleSelectAction({ type: "display" }));
     app.bus.execute(new ToggleSelectAction({ type: "display" }, true));
     expect(app.selection.length).to.equal(2);
@@ -73,12 +73,12 @@ describe(__filename + "#", () => {
     expect(app.selection.length).to.equal(0);
   });
 
-  xit("can select multiple in an event", function () {
+  xit("can select multiple in an event", () => {
     app.bus.execute(new ToggleSelectAction([{ type: "display" }, { type: "display" }]));
     expect(app.selection.length).to.equal(2);
   });
 
-  xit("can turn toggling off", function () {
+  xit("can turn toggling off", () => {
     const item = {};
     app.bus.execute(new ToggleSelectAction(item));
     app.bus.execute(new ToggleSelectAction(item));

@@ -20,12 +20,12 @@ function text(nodeValue) {
   };
 }
 
-describe(__filename + "#", function() {
-  it("can be created", function() {
+describe(__filename + "#", () => {
+  it("can be created", () => {
     new EntityEngine(new Dependencies());
   });
 
-  it("can register a custom entity", async function() {
+  it("can register a custom entity", async () => {
     class CustomEntity extends Node implements IEntity {
       constructor(readonly expression: any) {
         super();
@@ -43,7 +43,7 @@ describe(__filename + "#", function() {
     expect(rootEntity).to.be.an.instanceOf(CustomEntity);
   });
 
-  it("renders child nodes based on the returned value from load()", async function() {
+  it("renders child nodes based on the returned value from load()", async () => {
     class CustomEntity extends ContainerNode implements IEntity {
       constructor(readonly expression: any) {
         super();

@@ -23,7 +23,7 @@ describe(__filename + "#", () => {
       expect(node.childNodes[0].parentNode).to.equal(node);
     });
 
-    it("removes a node from a previous parent", function() {
+    it("removes a node from a previous parent", () => {
       const p1 = new TestNode();
       const p2 = new TestNode();
 
@@ -33,7 +33,7 @@ describe(__filename + "#", () => {
       expect(p2.childNodes[0].parentNode).to.equal(p2);
     });
 
-    it("can insert a child before the first child", function() {
+    it("can insert a child before the first child", () => {
       const p1 = new TestNode();
       const c1 = new TestNode();
       const c2 = new TestNode();
@@ -42,7 +42,7 @@ describe(__filename + "#", () => {
       expect(p1.childNodes[0]).to.equal(c2);
     });
 
-    it("can insert a child somewhere in the middle", function() {
+    it("can insert a child somewhere in the middle", () => {
       const p1 = new TestNode();
       const c1 = new TestNode();
       const c2 = new TestNode();
@@ -55,28 +55,28 @@ describe(__filename + "#", () => {
       expect(p1.childNodes[2]).to.equal(c2);
     });
 
-    it("throws an error if inserting before a child that doesnot exist", function() {
+    it("throws an error if inserting before a child that doesnot exist", () => {
       const p1 = new TestNode();
       expect(() => {
         p1.insertBefore(new TestNode(), new TestNode());
       }).to.throw("Cannot insert a child before a node that doesn't exist in the parent.");
     });
 
-    it("can return the first child", function() {
+    it("can return the first child", () => {
       const p1 = new TestNode();
       let first;
       p1.appendChild(first = new ValueNode("#text", "a"));
       expect(p1.firstChild).to.equal(first);
     });
 
-    it("can return the last child", function() {
+    it("can return the last child", () => {
       const p1 = new TestNode();
       let last;
       p1.appendChild(last = new ValueNode("#text", "a"));
       expect(p1.lastChild).to.equal(last);
     });
 
-    it("listens for events emitted by child nodes", function() {
+    it("listens for events emitted by child nodes", () => {
       const p1 = new TestNode();
       let lastAction: Action;
       p1.observe({
@@ -88,7 +88,7 @@ describe(__filename + "#", () => {
       expect(lastAction.type).to.equal("a");
     });
 
-    it("bubbles events up to the root", function() {
+    it("bubbles events up to the root", () => {
       const p1 = new TestNode();
       let c1;
       p1.appendChild(c1 = new TestNode());
@@ -121,8 +121,8 @@ describe(__filename + "#", () => {
     });
   });
 
-  describe("Node#", function() {
-    it("can return the next sibling", function() {
+  describe("Node#", () => {
+    it("can return the next sibling", () => {
       const el = new Element("div");
       let a, b;
       el.appendChild(a = new ValueNode("#text", "a"));
@@ -130,19 +130,19 @@ describe(__filename + "#", () => {
       expect(a.nextSibling).to.equal(b);
     });
 
-    it("next sibling is undefined if no parent", function() {
+    it("next sibling is undefined if no parent", () => {
       const a = new Element("div");
       expect(a.nextSibling).to.equal(undefined);
     });
 
-    it("next sibling is undefined if at end", function() {
+    it("next sibling is undefined if at end", () => {
       const el = new Element("div");
       let a, b;
       el.appendChild(a = new ValueNode("#text", "a"));
       expect(a.nextSibling).to.equal(undefined);
     });
 
-    it("can return the prev sibling", function() {
+    it("can return the prev sibling", () => {
       const el = new Element("div");
       let a, b;
       el.appendChild(a = new ValueNode("#text", "a"));
@@ -150,44 +150,44 @@ describe(__filename + "#", () => {
       expect(b.prevSibling).to.equal(a);
     });
 
-    it("prev sibling is undefined if at beginning", function() {
+    it("prev sibling is undefined if at beginning", () => {
       const el = new Element("div");
       let a, b;
       el.appendChild(a = new ValueNode("#text", "a"));
       expect(a.prevSibling).to.equal(undefined);
     });
 
-    it("prev sibling is undefined if no parent", function() {
+    it("prev sibling is undefined if no parent", () => {
       const a = new Element("div");
       expect(a.prevSibling).to.equal(undefined);
     });
   });
 
-  describe("Element#", function() {
-    it("can be created", function() {
+  describe("Element#", () => {
+    it("can be created", () => {
       expect(new Element("name").nodeName).to.equal("NAME");
     });
-    it("can set an attribute value", function() {
+    it("can set an attribute value", () => {
       const element = new Element("div");
       element.setAttribute("a", "b");
       expect(element.getAttribute("a")).to.equal("b");
     });
 
-    it("returns TRUE if an attribute exists", function() {
+    it("returns TRUE if an attribute exists", () => {
       const element = new Element("div");
       element.setAttribute("a", "b");
       expect(element.hasAttribute("a")).to.equal(true);
     });
 
-    it("returns FALSE if an attribute does not exists", function() {
+    it("returns FALSE if an attribute does not exists", () => {
       const element = new Element("div");
       element.setAttribute("a", "b");
       expect(element.hasAttribute("b")).to.equal(false);
     });
   });
 
-  describe("ValueNode", function() {
-    it("can be created", function() {
+  describe("ValueNode", () => {
+    it("can be created", () => {
       new ValueNode("#text", "value");
       expect(new ValueNode("#text", "a").nodeName).to.equal("#text");
     });

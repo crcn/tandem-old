@@ -13,9 +13,9 @@ import { parse as parseHTML } from "../../parsers/html";
 import { Dependencies } from "sf-core/dependencies";
 import { expect } from "chai";
 
-describe(__filename + "#", function() {
+describe(__filename + "#", () => {
   let dependencies;
-  beforeEach(function() {
+  beforeEach(() => {
     dependencies = new Dependencies(
       ...htmlElementDependencies,
       htmlTextDependency,
@@ -36,20 +36,20 @@ describe(__filename + "#", function() {
     return [bounds.left, bounds.top, bounds.width, bounds.height];
   }
 
-  describe("bounds ", function() {
-    it("are correct for a simple div", async function() {
+  describe("bounds ", () => {
+    it("are correct for a simple div", async () => {
       expect(await calculateBounds(`<div id="target" style="width:100px;height:100px;">
         </div>`)).to.eql([0, 0, 100, 100]);
     });
 
-    it("returns the correct bounds of a DIV if it's isolated within an iframe", async function() {
+    it("returns the correct bounds of a DIV if it's isolated within an iframe", async () => {
       expect(await calculateBounds(`<template style="position:absolute;top:100px;left:100px">
         <div id="target" style="width:100px;height:100px;">
         </div>
       </template>`)).to.eql([100, 100, 100, 100]);
     });
 
-    it("returns the correct bounds of a DIV in a doubly nested iframe", async function() {
+    it("returns the correct bounds of a DIV in a doubly nested iframe", async () => {
       expect(await calculateBounds(`<template style="position:absolute;top:100px;left:100px">
         <template style="position:absolute;top:100px;left:100px">
           <div id="target" style="width:100px;height:100px;">
@@ -58,7 +58,7 @@ describe(__filename + "#", function() {
       </template>`)).to.eql([200, 200, 100, 100]);
     });
 
-    it("returns the correct bounds of a DIV in a DIV", async function() {
+    it("returns the correct bounds of a DIV in a DIV", async () => {
       expect(await calculateBounds(`<div style="top:100px;left:50px;width:100px;height:100px;position:absolute;">
         <div id="target" style="width:100px;height:100px;position:absolute;top:10px;left:10px;" />
       </div>`)).to.eql([60, 110, 100, 100]);

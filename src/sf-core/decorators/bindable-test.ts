@@ -3,8 +3,8 @@ import { Action } from "../actions";
 import { Observable } from "../observable";
 import { expect } from "chai";
 
-describe(__filename + "#", function() {
-  it("can make a property bindable for changes", function() {
+describe(__filename + "#", () => {
+  it("can make a property bindable for changes", () => {
     class Item extends Observable {
       @bindable()
       public name: string;

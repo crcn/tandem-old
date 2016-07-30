@@ -2,13 +2,13 @@ import { findNode, getNodePath } from "./utils";
 import { expect } from "chai";
 import { Element } from "./base";
 
-describe(__filename + "#", function() {
-  it("can find the node path of a root element", function() {
+describe(__filename + "#", () => {
+  it("can find the node path of a root element", () => {
     const element = new Element("div");
     expect(getNodePath(element).length).to.equal(0);
   });
 
-  it("can find the path to a nested element", function() {
+  it("can find the path to a nested element", () => {
     let currentChild = new Element("div");
     currentChild.appendChild(new Element("div"));
     currentChild.appendChild(currentChild = new Element("span"));
@@ -17,7 +17,7 @@ describe(__filename + "#", function() {
     expect(getNodePath(currentChild)).to.eql([1, 0, 0]);
   });
 
-  it("can find a node based on the nested path", function() {
+  it("can find a node based on the nested path", () => {
     let root = new Element("div");
     let currentChild = root;
     currentChild.appendChild(new Element("div"));

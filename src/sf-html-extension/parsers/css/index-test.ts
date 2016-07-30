@@ -26,8 +26,8 @@ describe(__filename + "#", () => {
     });
   });
 
-  describe("declarations", function() {
-    it("can parse color values", function() {
+  describe("declarations", () => {
+    it("can parse color values", () => {
       const style = parse(`color:#F60;`) as any;
       expect(style.declarations[0].value.type).to.equal(CSS_LITERAL_VALUE);
     });
