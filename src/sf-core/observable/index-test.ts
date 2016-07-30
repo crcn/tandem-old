@@ -1,6 +1,7 @@
 import { Action } from "../actions";
 import { Observable } from "./index";
 import { expect } from "chai";
+import { CallbackBus } from "sf-core/busses";
 
 describe(__filename + "#", function() {
   it("can be created", function() {
@@ -64,6 +65,17 @@ describe(__filename + "#", function() {
     expect(i).to.equal(1);
     obs.notify(new Action("change"));
     expect(i).to.equal(1);
+  });
 
+  it("can unobserve an observable", () => {
+    const obs = new Observable();
+    let i = 0;
+    const observer = new CallbackBus(() => i++);
+    obs.observe(observer);
+    obs.notify(new Action("a"));
+    expect(i).to.equal(1);
+    obs.unobserve(observer);
+    obs.notify(new Action("a"));
+    expect(i).to.equal(1);
   });
 });

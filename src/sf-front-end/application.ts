@@ -4,7 +4,6 @@ import { thread, isMaster } from "sf-core/workers";
 
 // components
 import { fragment as rootComponentDependency } from "./components/root";
-import { fragment as sfnStageComponentDependency } from "./components/sfn-stage";
 import { fragment as selectableToolComponentDependency } from "./components/selectable-tool";
 
 // services
@@ -33,7 +32,6 @@ export class FrontEndApplication extends Application {
 
       // components
       rootComponentDependency,
-      sfnStageComponentDependency,
       selectableToolComponentDependency,
 
       // services

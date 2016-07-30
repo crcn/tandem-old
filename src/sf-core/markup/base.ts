@@ -1,3 +1,7 @@
+import { Action } from "sf-core/actions";
+import { IActor } from "sf-core/actors";
+import { CallbackBus } from "sf-core/busses";
+import { IObservable, Observable } from "sf-core/observable";
 
 /**
  * Interfaces here reflect the DOM API a bit to ensure compatibility
@@ -11,7 +15,7 @@ export interface IAttribute {
   value: any;
 }
 
-export interface INode {
+export interface INode extends IObservable {
   parentNode: IContainerNode;
   readonly nodeName: string;
   cloneNode(deep?: boolean): INode;
@@ -50,7 +54,7 @@ export class Attribute implements IAttribute {
   constructor(public name: string, public value: any) { }
 }
 
-export abstract class Node implements INode {
+export abstract class Node extends Observable implements INode {
   readonly nodeName = null;
   protected _parentNode: IContainerNode;
   get parentNode(): IContainerNode {
@@ -82,6 +86,7 @@ export abstract class Node implements INode {
 export abstract class ContainerNode extends Node implements IContainerNode {
 
   protected _childNodes: Array<INode> = [];
+  private _childObserver: IActor;
 
   get childNodes(): Array<INode> {
     return this._childNodes;
@@ -139,11 +144,20 @@ export abstract class ContainerNode extends Node implements IContainerNode {
   }
 
   protected _unlink(child: INode) {
+    child.unobserve(this._childObserver);
     (child as any).willUnmount();
     (child as any)._parentNode = undefined;
   }
 
   protected _link(child: INode) {
+
+    // only instantiate the child observer when necessary --
+    // when there are actual children.
+    if (this._childObserver == null) {
+      this._childObserver = new CallbackBus(this._onChildAction);
+    }
+
+    child.observe(this._childObserver);
     (child as any)._parentNode = this;
     (child as any).didMount();
   }
@@ -152,6 +166,12 @@ export abstract class ContainerNode extends Node implements IContainerNode {
     for (const child of this.childNodes) {
       node.appendChild(child.cloneNode(true));
     }
+  }
+
+  private _onChildAction = (action:Action) => {
+
+    // bubble it up
+    this.notify(action);
   }
 }
 

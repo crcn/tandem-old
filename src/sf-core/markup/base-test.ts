@@ -1,5 +1,6 @@
 import { ContainerNode, Element, ValueNode } from "./base";
 import { expect } from "chai";
+import { Action } from "sf-core/actions";
 
 describe(__filename + "#", () => {
 
@@ -9,13 +10,13 @@ describe(__filename + "#", () => {
     }
   }
 
-  describe("ContainerNode#", function() {
+  describe("ContainerNode#", () => {
 
-    it("can be created", function() {
+    it("can be created", () => {
       new TestNode();
     });
 
-    it("can append a child", function() {
+    it("can append a child", () => {
       const node = new TestNode();
       node.appendChild(new TestNode());
       expect(node.childNodes.length).to.equal(1);
@@ -73,6 +74,50 @@ describe(__filename + "#", () => {
       let last;
       p1.appendChild(last = new ValueNode("#text", "a"));
       expect(p1.lastChild).to.equal(last);
+    });
+
+    it("listens for events emitted by child nodes", function() {
+      const p1 = new TestNode();
+      let lastAction: Action;
+      p1.observe({
+        execute: (action) => lastAction = action
+      });
+      const c1 = new TestNode();
+      p1.appendChild(c1);
+      c1.notify(new Action("a"));
+      expect(lastAction.type).to.equal("a");
+    });
+
+    it("bubbles events up to the root", function() {
+      const p1 = new TestNode();
+      let c1;
+      p1.appendChild(c1 = new TestNode());
+      for (let i = 10; i--; ) {
+        c1.appendChild(c1 = new TestNode());
+      };
+
+      let lastAction: Action;
+      p1.observe({
+        execute: (action) => lastAction = action
+      });
+
+      c1.notify(new Action("b"));
+      expect(lastAction.type).to.equal("b");
+    });
+
+    it("stops observing children that have been removed", () => {
+      const p1 = new TestNode();
+      let lastAction: Action;
+      p1.observe({
+        execute: (action) => lastAction = action
+      });
+      const c1 = new TestNode();
+      p1.appendChild(c1);
+      c1.notify(new Action("a"));
+      expect(lastAction.type).to.equal("a");
+      p1.removeChild(c1);
+      c1.notify(new Action("b"));
+      expect(lastAction.type).to.equal("a");
     });
   });
 

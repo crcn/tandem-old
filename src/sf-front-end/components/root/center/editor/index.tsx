@@ -9,7 +9,7 @@ import { Dependencies } from "sf-core/dependencies";
 import { FrontEndApplication } from "sf-front-end/application";
 import { Editor } from "sf-front-end/models";
 
-export default class StageComponent extends React.Component<{ app: FrontEndApplication, dependencies: Dependencies }, any> {
+export default class StageComponent extends React.Component<{ app: FrontEndApplication }, any> {
   render() {
 
     const editor = this.props.app.editor;
@@ -18,11 +18,11 @@ export default class StageComponent extends React.Component<{ app: FrontEndAppli
     if (!editor.file) return null;
     return (<div className="m-editor-stage noselect">
       <HeaderComponent {...this.props} editor={editor} />
-      <CanvasComponent {...this.props} editor={editor} />
+      <CanvasComponent {...this.props} editor={editor} dependencies={this.props.app.dependencies} />
       <FooterComponent {...this.props} editor={editor} />
     </div>);
   }
 }
 
 
-export const fragment = new ReactComponentFactoryDependency("components/stage/sfn", StageComponent);
+export const fragment = new ReactComponentFactoryDependency("components/editors/sfn", StageComponent);

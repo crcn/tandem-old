@@ -3,6 +3,7 @@ import { Action } from "sf-core/actions";
 
 export interface IObservable {
   observe(actor: IActor);
+  unobserve(actor: IActor);
 }
 
 export class Observable implements IObservable {
@@ -16,6 +17,23 @@ export class Observable implements IObservable {
       this._observers = [this._observers, actor];
     } else {
       this._observers.push(actor);
+    }
+  }
+
+  unobserve(actor: IActor) {
+    if (this._observers === actor) {
+      this._observers = null;
+    } else if (Array.isArray(this._observers)) {
+      const i = this._observers.indexOf(actor);
+      if (i !== -1) {
+        this._observers.splice(i, 1);
+      }
+
+      // only one left? Move to a more optimal method for notifying
+      // observers.
+      if (this._observers.length === 1) {
+        this._observers = this._observers[0];
+      }
     }
   }
 

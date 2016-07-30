@@ -1,3 +1,9 @@
+/*
+TODOS:
+- cancelable actions
+- bubbleable actions
+*/
+
 export class Action {
 
   private _target: any;

@@ -40,7 +40,7 @@ export default class ProjectService extends BaseApplicationService<FrontEndAppli
 
   @isPublic
   update(action) {
-    console.log("update file");
+    (<any>this.app.editor.file).deserialize(action.data);
   }
 
   @isPublic
