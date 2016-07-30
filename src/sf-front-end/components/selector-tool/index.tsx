@@ -65,4 +65,4 @@ export default class SelectorComponent extends React.Component<any, any> {
   }
 }
 
-export const fragment = new ReactComponentFactoryDependency('componentssss/tools/pointer/selector',SelectorComponent);
+export const dependency = new ReactComponentFactoryDependency('componentssss/tools/pointer/selector',SelectorComponent);

@@ -21,4 +21,4 @@ export default class BackEndService extends IOService<IApplication> {
   }
 }
 
-export const fragment = new ApplicationServiceDependency("back-end", BackEndService);
+export const dependency = new ApplicationServiceDependency("back-end", BackEndService);

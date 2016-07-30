@@ -1,5 +1,5 @@
 // import expect from "expect.js";
-import { fragment as selectorDependency } from "./selector";
+import { dependency as selectorDependency } from "./selector";
 import { ClassFactoryDependency } from "sf-core/dependencies";
 import { Application } from "sf-common/application";
 import { expect } from "chai";

@@ -2,10 +2,10 @@
  import { IApplication } from "sf-core/application";
 
  // components
- import { fragment as entityPreviewComponentDependency } from "./components/entity-preview";
+ import { dependency as entityPreviewComponentDependency } from "./components/entity-preview";
 
  // models
- import { fragment as sfFileActiveRecordDependency } from "./active-records/sf-file";
+ import { dependency as sfFileActiveRecordDependency } from "./active-records/sf-file";
 
  // entities
  import {
@@ -16,7 +16,7 @@
    htmlTemplateEntityDependency
 } from "./entities/html";
 
-export const fragment = [
+export const dependency = [
 
   // components
   entityPreviewComponentDependency,

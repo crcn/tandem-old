@@ -48,4 +48,4 @@ export default class ClipboardService extends BaseApplicationService<IApplicatio
 
 }
 
-export const fragment = new ApplicationServiceDependency("clipboard", ClipboardService);
+export const dependency = new ApplicationServiceDependency("clipboard", ClipboardService);

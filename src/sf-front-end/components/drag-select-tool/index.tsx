@@ -105,4 +105,4 @@ class DragSelectComponent extends React.Component<any, any> {
   }
 }
 
-export const fragment = new ReactComponentFactoryDependency('components/tools/pointer/drag-select', DragSelectComponent);
+export const dependency = new ReactComponentFactoryDependency('components/tools/pointer/drag-select', DragSelectComponent);

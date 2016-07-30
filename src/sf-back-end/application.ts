@@ -1,11 +1,11 @@
 import * as path from "path";
 import { Application } from "sf-common/application";
 
-import { fragment as dbServiceDependency } from "./services/db";
-import { fragment as fileServicerDependency } from "./services/file";
-import { fragment as stdinServiceDependency } from "./services/stdin";
-import { fragment as upsertServiceDependency } from "./services/upsert";
-import { fragment as frontEndServiceDependency } from "./services/front-end";
+import { dependency as dbServiceDependency } from "./services/db";
+import { dependency as fileServicerDependency } from "./services/file";
+import { dependency as stdinServiceDependency } from "./services/stdin";
+import { dependency as upsertServiceDependency } from "./services/upsert";
+import { dependency as frontEndServiceDependency } from "./services/front-end";
 
 export default class ServerApplication extends Application {
   constructor(config) {

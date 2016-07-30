@@ -31,4 +31,4 @@ export default class KeyBindingService extends BaseApplicationService<IApplicati
   }
 }
 
-export const fragment = new ApplicationServiceDependency("key-binding", KeyBindingService);
+export const dependency = new ApplicationServiceDependency("key-binding", KeyBindingService);

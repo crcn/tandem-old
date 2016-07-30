@@ -73,4 +73,4 @@ export default class StdinService extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ApplicationServiceDependency("stdin", StdinService);
+export const dependency = new ApplicationServiceDependency("stdin", StdinService);

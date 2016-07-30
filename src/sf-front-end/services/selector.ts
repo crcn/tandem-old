@@ -76,4 +76,4 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
   }
 }
 
-export const fragment = new ApplicationServiceDependency("application/services/selector", SelectorService);
+export const dependency = new ApplicationServiceDependency("application/services/selector", SelectorService);

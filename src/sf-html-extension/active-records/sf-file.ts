@@ -73,5 +73,5 @@ export class SfFile extends Observable implements IInjectable, IActiveRecord {
   }
 }
 
-export const fragment = new ActiveRecordFactoryDependency("sfn-file", SfFile);
+export const dependency = new ActiveRecordFactoryDependency("sfn-file", SfFile);
 

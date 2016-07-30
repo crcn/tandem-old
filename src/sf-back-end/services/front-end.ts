@@ -118,4 +118,4 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   }
 }
 
-export const fragment = new ApplicationServiceDependency("front-end", FrontEndService);
+export const dependency = new ApplicationServiceDependency("front-end", FrontEndService);

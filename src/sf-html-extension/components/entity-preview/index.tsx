@@ -25,4 +25,4 @@ export default class PreviewComponent extends React.Component<any, any> {
   }
 }
 
-export const fragment = new EntityPreviewDependency(PreviewComponent);
+export const dependency = new EntityPreviewDependency(PreviewComponent);

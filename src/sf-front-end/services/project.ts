@@ -49,4 +49,4 @@ export default class ProjectService extends BaseApplicationService<FrontEndAppli
   }
 }
 
-export const fragment = new ApplicationServiceDependency("project", ProjectService);
+export const dependency = new ApplicationServiceDependency("project", ProjectService);

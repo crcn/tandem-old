@@ -3,22 +3,22 @@ import { Application } from "sf-common/application";
 import { thread, isMaster } from "sf-core/workers";
 
 // components
-import { fragment as rootComponentDependency } from "./components/root";
-import { fragment as selectableToolComponentDependency } from "./components/selectable-tool";
+import { dependency as rootComponentDependency } from "./components/root";
+import { dependency as selectableToolComponentDependency } from "./components/selectable-tool";
 
 // services
-import { fragment as projectsDependency } from "./services/project";
-import { fragment as clipboardService } from "./services/clipboard";
-import { fragment as backEndServiceDependency } from "./services/back-end";
-import { fragment as selectorServiceDependency } from "./services/selector";
-import { fragment as keyBindingsServiceDependency } from "./services/key-binding";
-import { fragment as rootComponentRendererDependency } from "./services/root-component-renderer";
+import { dependency as projectsDependency } from "./services/project";
+import { dependency as clipboardService } from "./services/clipboard";
+import { dependency as backEndServiceDependency } from "./services/back-end";
+import { dependency as selectorServiceDependency } from "./services/selector";
+import { dependency as keyBindingsServiceDependency } from "./services/key-binding";
+import { dependency as rootComponentRendererDependency } from "./services/root-component-renderer";
 
 // key bindings
-import { fragment as keyBindingsDependency } from "./key-bindings";
+import { dependency as keyBindingsDependency } from "./key-bindings";
 
 // extensions
-import { fragment as htmlExtensionDependency } from "sf-html-extension";
+import { dependency as htmlExtensionDependency } from "sf-html-extension";
 
 // selections
 import { dependency as visibleEntitiySelectionDependency } from "./selection/visible-entity-collection";

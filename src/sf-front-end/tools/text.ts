@@ -11,4 +11,4 @@ export class TextTool extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ApplicationServiceDependency('stage-tools/text', TextTool);
+export const dependency = new ApplicationServiceDependency('stage-tools/text', TextTool);

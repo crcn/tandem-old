@@ -11,4 +11,4 @@
    }
  }
 
-export const fragment = new RootReactComponentDependency(HTMLDebuggingComponent);
+export const dependency = new RootReactComponentDependency(HTMLDebuggingComponent);

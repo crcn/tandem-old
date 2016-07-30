@@ -108,4 +108,4 @@ export default class SelectablesComponent extends React.Component<{selection: an
   }
 }
 
-export const fragment = new ReactComponentFactoryDependency("components/tools/pointer/selectable", SelectablesComponent);
+export const dependency = new ReactComponentFactoryDependency("components/tools/pointer/selectable", SelectablesComponent);

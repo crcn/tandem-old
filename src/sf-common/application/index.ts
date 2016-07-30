@@ -7,7 +7,7 @@ import {
   DependenciesDependency
 } from "sf-core/dependencies";
 import { LoadAction, InitializeAction } from "sf-core/actions";
-import { fragment as consoleLogServiceDependency } from "../services/console-output";
+import { dependency as consoleLogServiceDependency } from "../services/console-output";
 
 import { IActor } from "sf-core/actors";
 import { IApplication } from "sf-core/application";

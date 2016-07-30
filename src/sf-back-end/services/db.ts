@@ -79,4 +79,4 @@ export default class DBService extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ApplicationServiceDependency("db", DBService);
+export const dependency = new ApplicationServiceDependency("db", DBService);

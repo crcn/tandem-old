@@ -96,4 +96,4 @@ export default class FileService extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ApplicationServiceDependency("file", FileService);
+export const dependency = new ApplicationServiceDependency("file", FileService);

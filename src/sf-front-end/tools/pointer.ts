@@ -14,4 +14,4 @@ export default class PointerTool extends BaseApplicationService<IApplication> {
   }
 }
 
-export const fragment = new ApplicationServiceDependency('stage-tools/pointer', PointerTool);
+export const dependency = new ApplicationServiceDependency('stage-tools/pointer', PointerTool);

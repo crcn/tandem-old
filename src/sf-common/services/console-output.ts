@@ -48,4 +48,4 @@ class ConsoleService extends Service {
   }
 }
 
-export const fragment = new ClassFactoryDependency("application/services/console", ConsoleService);
+export const dependency = new ClassFactoryDependency("application/services/console", ConsoleService);

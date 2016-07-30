@@ -12,4 +12,4 @@ export default class RootEditorComponent extends React.Component<any, any> {
   }
 }
 
-export const fragment = new RootReactComponentDependency(RootEditorComponent);
+export const dependency = new RootReactComponentDependency(RootEditorComponent);
