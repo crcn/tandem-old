@@ -168,7 +168,7 @@ export abstract class ContainerNode extends Node implements IContainerNode {
     }
   }
 
-  private _onChildAction = (action:Action) => {
+  protected _onChildAction = (action:Action) => {
 
     // bubble it up
     this.notify(action);

@@ -1,5 +1,6 @@
 import "./template.scss";
 
+import { Action } from "sf-core/actions";
 import { VisibleHTMLElementEntity } from "./base";
 import { HTMLElementExpression } from "../../parsers/html/expressions";
 import { EntityFactoryDependency } from "sf-core/dependencies";
@@ -28,7 +29,11 @@ export class HTMLTemplateEntity extends VisibleHTMLElementEntity {
       const body = iframe.contentWindow.document.body;
       body.style.margin = body.style.padding = "0px";
       body.appendChild(this._placeholder);
-      // TODO - this.notify(new Action("iframeLoad")); or similar
+
+      // this is particularly important to ensure that the preview stage & tools
+      // properly re-draw according
+      // TODO - this needs to be something such as new IFrameLoadedAction()
+      this.notify(new Action("iframeLoaded"));
     };
 
     return new NodeSection(iframe as any);
