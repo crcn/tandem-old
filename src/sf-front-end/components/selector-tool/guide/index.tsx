@@ -1,13 +1,13 @@
-import './index.scss';
-import * as React from 'react';
-import LineComponent from '../line/index';
+import "./index.scss";
+import * as React from "react";
+import LineComponent from "../line/index";
 
-export default class GuideComponent extends React.Component<any,any> {
+export default class GuideComponent extends React.Component<any, any> {
   render() {
     const bounds  = this.props.bounds;
     const preview = this.props.app.preview;
 
-    return (<div className='m-guide'>
+    return (<div className="m-guide">
       {
         ~bounds.guideLeft ?
           <LineComponent
@@ -17,7 +17,7 @@ export default class GuideComponent extends React.Component<any,any> {
               top    : 0,
               width  : 1,
               height : preview.canvasHeight,
-              direction : 'ns',
+              direction : "ns",
             }}
             showStems={false}
             showDistance={false}
@@ -34,7 +34,7 @@ export default class GuideComponent extends React.Component<any,any> {
               top       : bounds.guideTop,
               width     : preview.canvasWidth,
               height    : 1,
-              direction : 'ew',
+              direction : "ew",
             }}
             showStems={false}
             showDistance={false}

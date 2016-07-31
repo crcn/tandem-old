@@ -1,8 +1,8 @@
-import './index.scss';
+import "./index.scss";
 
-import * as React from 'react';
-// import LineComponent from '../line';
-// import calculateDistances from './calculate-distances';
+import * as React from "react";
+// import LineComponent from "../line";
+// import calculateDistances from "./calculate-distances";
 
 /**
  * shows distances between the entity and other objects
@@ -23,7 +23,7 @@ class RulerToolComponent extends React.Component<any, any> {
   //     return entity.preview.getBoundingRect(true);
   //   });
   //
-  //   return (<div className='m-ruler-tool'>
+  //   return (<div className="m-ruler-tool">
   //     {
   //       calculateDistances(
   //         allBounds, rect

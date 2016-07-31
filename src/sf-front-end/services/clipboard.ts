@@ -44,8 +44,6 @@ export default class ClipboardService extends BaseApplicationService<IApplicatio
   }
 
   // something like this...
-
-
 }
 
 export const dependency = new ApplicationServiceDependency("clipboard", ClipboardService);

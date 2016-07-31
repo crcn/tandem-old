@@ -1,16 +1,16 @@
-import * as React from 'react';
-import { startDrag } from 'sf-front-end/utils/component/index';
-import PathComponent from './path';
-// import { ENTITY_PREVIEW_DOUBLE_CLICK } from 'message-types';
+import * as React from "react";
+import { startDrag } from "sf-front-end/utils/component/index";
+import PathComponent from "./path";
+// import { ENTITY_PREVIEW_DOUBLE_CLICK } from "message-types";
 
 const POINT_STROKE_WIDTH = 0;
 const POINT_RADIUS       = 3;
 
 class ResizerComponent extends React.Component<any, any> {
 
-  private _dragger:any;
-  private _movingTimer:any;
-  private _dragTimer:any;
+  private _dragger: any;
+  private _movingTimer: any;
+  private _dragTimer: any;
 
   constructor() {
     super();
@@ -22,7 +22,7 @@ class ResizerComponent extends React.Component<any, any> {
   }
 
   execute(event) {
-    if (event.type !== 'keydown') return;
+    if (event.type !== "keydown") return;
     this.onKeyDown(event);
   }
 
@@ -40,11 +40,11 @@ class ResizerComponent extends React.Component<any, any> {
 
   onKeyDown(message) {
 
-    var selection = this.props.app.selection;
-    var style = selection.preview.bounds;
+    const selection = this.props.app.selection;
+    const style = selection.preview.bounds;
 
-    var left = style.left;
-    var top  = style.top;
+    let left = style.left;
+    let top  = style.top;
 
     if (message.keyCode === 38) {
       top--;
@@ -74,15 +74,15 @@ class ResizerComponent extends React.Component<any, any> {
 
   updatePoint(point, event) {
 
-    var keepAspectRatio = event.shiftKey;
-    var keepCenter      = event.altKey;
+    const keepAspectRatio = event.shiftKey;
+    const keepCenter      = event.altKey;
 
-    var selection = this.props.selection;
+    const selection = this.props.selection;
 
     // no ZOOM
-    var style = selection.preview.bounds;
+    const style = selection.preview.bounds;
 
-    var props = {
+    const props = {
       left   : style.left,
       top    : style.top,
       width  : style.width,
@@ -116,7 +116,6 @@ class ResizerComponent extends React.Component<any, any> {
       props.height = point.currentStyle.height * diffPerc;
     }
 
-
     if (keepCenter) {
       props.left = point.currentStyle.left + (point.currentStyle.width / 2 - props.width / 2);
       props.top  = point.currentStyle.top + (point.currentStyle.height / 2 - props.height / 2);
@@ -147,7 +146,7 @@ class ResizerComponent extends React.Component<any, any> {
     const selection = this.props.selection;
 
     // when dragging, need to fetch style of the selection
-    // so that the dragger is relative to the entity's position
+    // so that the dragger is relative to the entity"s position
     const style = selection.preview.bounds;
 
     const sx2 = style.left;
@@ -195,32 +194,32 @@ class ResizerComponent extends React.Component<any, any> {
 
   render() {
 
-    var pointRadius = (this.props.pointRadius || POINT_RADIUS);
-    var strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
-    var preview = this.props.selection.preview;
+    const pointRadius = (this.props.pointRadius || POINT_RADIUS);
+    const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
+    const preview = this.props.selection.preview;
 
-    var rect = preview.bounds;
+    const rect = preview.bounds;
 
-    var cw = (pointRadius + strokeWidth) * 2;
+    const cw = (pointRadius + strokeWidth) * 2;
 
     // offset stroke
-    var resizerStyle = {
+    const resizerStyle = {
       left     : rect.left - cw / 2,
       top      : rect.top - cw / 2,
     };
 
-    var capabilities = preview.capabilities;
-    var movable = capabilities.movable;
+    const capabilities = preview.capabilities;
+    const movable = capabilities.movable;
 
     const points = [
-      ['nw', movable == true, 0, 0],
-      ['n', movable === true, rect.width / 2, 0],
-      ['ne', movable === true, rect.width, 0],
-      ['e', true, rect.width, rect.height / 2],
-      ['se', true, rect.width, rect.height],
-      ['s', true, rect.width / 2, rect.height],
-      ['sw', movable === true, 0, rect.height],
-      ['w', movable === true, 0, rect.height / 2],
+      ["nw", movable === true, 0, 0],
+      ["n", movable === true, rect.width / 2, 0],
+      ["ne", movable === true, rect.width, 0],
+      ["e", true, rect.width, rect.height / 2],
+      ["se", true, rect.width, rect.height],
+      ["s", true, rect.width / 2, rect.height],
+      ["sw", movable === true, 0, rect.height],
+      ["w", movable === true, 0, rect.height / 2],
     ].map(([id, show, left, top], i) => ({
       id: id,
       index: i,
@@ -234,8 +233,8 @@ class ResizerComponent extends React.Component<any, any> {
 
     return (
       <div
-        ref='selection'
-        className='m-selector-component--selection'
+        ref="selection"
+        className="m-selector-component--selection"
         style={resizerStyle}
         onMouseDown={this.startDragging.bind(this)}
         onDoubleClick={this.onDoubleClick.bind(this)}

@@ -1,5 +1,5 @@
 
-export default (startEvent:any, update:any, stop:Function = undefined) => {
+export default (startEvent: any, update: any, stop: Function = undefined) => {
 
   const sx = startEvent.clientX;
   const sy = startEvent.clientY;
@@ -18,13 +18,13 @@ export default (startEvent:any, update:any, stop:Function = undefined) => {
   }
 
   function cleanup() {
-    doc.removeEventListener('mousemove', drag);
-    doc.removeEventListener('mouseup', cleanup);
+    doc.removeEventListener("mousemove", drag);
+    doc.removeEventListener("mouseup", cleanup);
     if (stop) stop();
   }
 
-  doc.addEventListener('mousemove', drag);
-  doc.addEventListener('mouseup', cleanup);
+  doc.addEventListener("mousemove", drag);
+  doc.addEventListener("mouseup", cleanup);
 
   return {
     dispose: cleanup,

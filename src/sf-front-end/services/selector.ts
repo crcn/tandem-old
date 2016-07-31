@@ -14,7 +14,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
     const selection = [];
     for (const entity of allEntities) {
-      if (Object(entity).hasOwnProperty("preview")) {
+      if (entity["display"]) {
         const position = entity.expression.position;
         for (const cursor of data) {
 
@@ -29,6 +29,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
         }
       }
     }
+
     this.select({
       items: selection,
       toggle: false,
@@ -43,12 +44,10 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     const app = this.app;
 
     if (!items.length) {
-      return (app as any).setProperties({
-        selection: []
-      });
+      return app.editor.selection = [];
     }
 
-    const prevSelection = (app as any).selection;
+    const prevSelection = app.editor.selection;
 
     const type = items[0].type;
 
@@ -72,7 +71,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
       }
     }
 
-    // this.selection = newSelection;
+    app.editor.selection = newSelection;
   }
 }
 

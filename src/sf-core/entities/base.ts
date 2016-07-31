@@ -12,7 +12,6 @@ export interface IExpression {
 // TODO - IEntity should not extend INode since it is not limited to the markup lang
 export interface IEntity extends INode {
 
-
   // TODO - expression needs to be source, and source should be "any"
   readonly expression:IExpression;
 

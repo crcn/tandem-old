@@ -4,7 +4,10 @@ import { thread, isMaster } from "sf-core/workers";
 
 // components
 import { dependency as rootComponentDependency } from "./components/root";
+
+// commponent tools
 import { dependency as selectableToolComponentDependency } from "./components/selectable-tool";
+import { dependency as selectorToolComponentDependency } from "./components/selector-tool";
 
 // services
 import { dependency as projectsDependency } from "./services/project";
@@ -31,11 +34,18 @@ export class FrontEndApplication extends Application {
 
   protected registerDependencies() {
     super.registerDependencies();
+
+    // this is primarily for testing
+    if (this.config.registerFrontEndDependencies === false) return;
+
     this.dependencies.register(
 
       // components
       rootComponentDependency,
+
+      // component tools
       selectableToolComponentDependency,
+      selectorToolComponentDependency,
 
       // services
       clipboardService,

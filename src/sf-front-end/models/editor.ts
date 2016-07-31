@@ -11,7 +11,7 @@ export class Editor {
    * The currently selected items in the preview
    */
 
-  public selection: Array<any>;
+  public selection: Array<any> = [];
 
   /**
    * The current tool

@@ -1,17 +1,17 @@
-import './index.scss';
-import * as React from 'react';
+import "./index.scss";
+import * as React from "react";
 
 const STEM_WIDTH = 4;
 
 export default class LineComponent extends React.Component<any, any> {
   render() {
 
-    var stemWidth = this.props.showStems !== false ? STEM_WIDTH : 0;
-    var bounds = this.props.bounds;
-    var sections:any = {};
-    var d;
+    const stemWidth = this.props.showStems !== false ? STEM_WIDTH : 0;
+    const bounds = this.props.bounds;
+    const sections: any = {};
+    let d;
 
-    if (bounds.direction === 'ew') {
+    if (bounds.direction === "ew") {
 
       const y = Math.round(bounds.height / 2);
 
@@ -26,12 +26,12 @@ export default class LineComponent extends React.Component<any, any> {
       );
 
       d = [
-        'M' + 3 + ' ' + (y - stemWidth),
-        'L' + 3 + ' ' + (y + stemWidth),
-        'M' + 3 + ' ' + y,
-        'L' + (bounds.width - 1) + ' ' + y,
-        'M' + (bounds.width - 1) + ' ' + (y - stemWidth),
-        'L' + (bounds.width - 1) + ' ' + (y + stemWidth),
+        "M" + 3 + " " + (y - stemWidth),
+        "L" + 3 + " " + (y + stemWidth),
+        "M" + 3 + " " + y,
+        "L" + (bounds.width - 1) + " " + y,
+        "M" + (bounds.width - 1) + " " + (y - stemWidth),
+        "L" + (bounds.width - 1) + " " + (y + stemWidth),
       ];
     } else {
       const x = Math.round(bounds.width / 2);
@@ -41,12 +41,12 @@ export default class LineComponent extends React.Component<any, any> {
       </text>);
 
       d = [
-        'M' + (x - stemWidth) + ' ' + 3,
-        'L' + (x + stemWidth) + ' ' + 3,
-        'M' + x + ' ' + 3,
-        'L' + x + ' ' + (bounds.height - 1),
-        'M' + (x - stemWidth) + ' ' + (bounds.height - 1),
-        'L' + (x + stemWidth) + ' ' + (bounds.height - 1),
+        "M" + (x - stemWidth) + " " + 3,
+        "L" + (x + stemWidth) + " " + 3,
+        "M" + x + " " + 3,
+        "L" + x + " " + (bounds.height - 1),
+        "M" + (x - stemWidth) + " " + (bounds.height - 1),
+        "L" + (x + stemWidth) + " " + (bounds.height - 1),
       ];
     }
 
@@ -55,13 +55,13 @@ export default class LineComponent extends React.Component<any, any> {
 
     return (
       <svg
-        className='m-guide-line'
-        style={{ position: 'absolute', left: bounds.left, top: bounds.top }}
+        className="m-guide-line"
+        style={{ position: "absolute", left: bounds.left, top: bounds.top }}
         width={w}
         height={h}
         viewBox={[0, 0, w, h]}
       >
-        <path d={d.join('')} strokeWidth={1} fill='transparent' />
+        <path d={d.join("")} strokeWidth={1} fill="transparent" />
         {this.props.showDistance !== false ? sections.text : void 0}
       </svg>
     );

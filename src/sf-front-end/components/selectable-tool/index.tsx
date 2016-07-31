@@ -2,7 +2,6 @@
 // areas when mouse hits the bounds of an item
 import "./index.scss";
 
-import * as cx from "classnames";
 import * as React from "react";
 import { intersection } from "lodash";
 import { SelectAction } from "sf-front-end/actions/index";
@@ -14,7 +13,7 @@ import BoundingRect from "sf-core/geom/bounding-rect";
 
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 
-class SelectableComponent extends React.Component<{ entity: IVisibleEntity, selection: any, app: any, zoom: number }, any> {
+class SelectableComponent extends React.Component<{ entity: IVisibleEntity, selection: any, app: FrontEndApplication, zoom: number }, any> {
 
   constructor() {
     super();
@@ -22,7 +21,7 @@ class SelectableComponent extends React.Component<{ entity: IVisibleEntity, sele
   }
 
   onMouseDown(event: any): void {
-    // this.props.bus.execute(new SelectAction(this.props.entity, event.shiftKey));
+    this.props.app.bus.execute(new SelectAction(this.props.entity, event.shiftKey));
     event.stopPropagation();
   }
 
@@ -34,23 +33,12 @@ class SelectableComponent extends React.Component<{ entity: IVisibleEntity, sele
 
     if (intersection(entities, selection || []).length) return null;
 
-    // const bounds: BoundingRect = BoundingRect.merge(...entities.filter(function(entity) {
-    //   return !!entity.display;
-    // }).map(function(entity) {
-    //   return entity.display.bounds;
-    // }));
-
     const bounds = entity.display.bounds;
 
     bounds.left   *= this.props.zoom;
     bounds.right  *= this.props.zoom;
     bounds.top    *= this.props.zoom;
     bounds.bottom *= this.props.zoom;
-
-    const classNames = cx({
-      "m-selectable" : true,
-      hover          : app.hoverItem === entity
-    });
 
     const style = {
       background : "transparent",
@@ -64,7 +52,7 @@ class SelectableComponent extends React.Component<{ entity: IVisibleEntity, sele
     return (
       <div
         style={style}
-        className={classNames}
+        className="m-selectable"
         onMouseDown={this.onMouseDown.bind(this)}
       />
     );
