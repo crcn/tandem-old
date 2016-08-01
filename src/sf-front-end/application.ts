@@ -24,7 +24,7 @@ import { dependency as keyBindingsDependency } from "./key-bindings";
 import { dependency as htmlExtensionDependency } from "sf-html-extension";
 
 // selections
-import { dependency as visibleEntitiySelectionDependency } from "./selection/visible-entity-collection";
+import { dependency as displayEntitySelectionDependenciy } from "./selection/display-entity-collection";
 
 import { Editor } from "./models";
 
@@ -56,7 +56,7 @@ export class FrontEndApplication extends Application {
       rootComponentRendererDependency,
 
       // selection
-      visibleEntitiySelectionDependency,
+      displayEntitySelectionDependenciy,
 
       // dependencies
       keyBindingsDependency,

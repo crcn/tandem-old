@@ -1,52 +1,25 @@
 import "./index.scss";
-
 import * as React from "react";
-import { flatten } from "lodash";
-import { Editor } from "sf-front-end/models";
-import RulerComponent from "./ruler/index";
-import GuideComponent from "./guide/index";
 import ResizerComponent from "./resizer/index";
-import BoundingRect from "sf-core/geom/bounding-rect";
-import { ReactComponentFactoryDependency } from "sf-front-end/dependencies/index";
+import { Editor } from "sf-front-end/models";
+import { IEntityDisplay } from "sf-core/entities";
+import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 
 export default class SelectorComponent extends React.Component<{ editor: any }, any> {
-
-  constructor() {
-    super();
-    this.state = {
-      moving: false,
-    };
-  }
-
-  get targetPreview() {
-    return this.props.editor.selection.display;
-  }
 
   render() {
 
     const { selection } = this.props.editor;
 
     const display   = selection.display;
+
+    // simple check to see if the selection array
+    // is an IEntityDisplay
     if (!display) return null;
 
     const sections: any = {};
 
-    if (this.targetPreview.moving) {
-      sections.guides = (<div>
-        <RulerComponent {...this.props} />
-        {this.state.dragBounds ? <GuideComponent {...this.props} bounds={this.state.dragBounds} /> : void 0}
-      </div>);
-    }
-
-    const allBounds = [];
-
-    selection.forEach(function(entity) {
-      entity.flatten().forEach(function(childEntity) {
-        if (childEntity.preview) allBounds.push(childEntity.preview);
-      });
-    });
-
-    const entireBounds = BoundingRect.merge(...allBounds);
+    const entireBounds = selection.display.bounds;
 
     const boundsStyle = {
       position: "absolute",

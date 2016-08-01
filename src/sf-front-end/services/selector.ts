@@ -1,8 +1,10 @@
 import { IEntity } from "sf-core/entities";
-import { FrontEndApplication } from "sf-front-end/application";
 import { BaseApplicationService } from "sf-core/services";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 import { loggable, bindable, isPublic } from "sf-core/decorators";
+
+import { FrontEndApplication } from "sf-front-end/application";
+import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 
 @loggable()
 export default class SelectorService extends BaseApplicationService<FrontEndApplication> {
@@ -51,7 +53,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
     const type = items[0].type;
 
-    const newSelectionDependency = this.app.dependencies.query<any>(`selection-collections/${type}`);
+    const newSelectionDependency = SelectionFactoryDependency.find(type, this.app.dependencies);
     const newSelection = newSelectionDependency ? newSelectionDependency.create() : [];
 
     if (keepPreviousSelection && newSelection.constructor === prevSelection.constructor) {
@@ -75,4 +77,4 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
   }
 }
 
-export const dependency = new ApplicationServiceDependency("application/services/selector", SelectorService);
+export const dependency = new ApplicationServiceDependency("selector", SelectorService);

@@ -10,10 +10,19 @@ export interface IExpression {
 }
 
 // TODO - IEntity should not extend INode since it is not limited to the markup lang
+// TODO - should extend ITyped interface
 export interface IEntity extends INode {
 
   // TODO - expression needs to be source, and source should be "any"
   readonly expression:IExpression;
+
+  /**
+   * the type property helps other parts of the application figure out how
+   * how this *type* of entity should be handled -- much better than using
+   * other methods such as instanceof, or constructor.name
+   */
+
+  readonly type: string;
 
   /**
    */

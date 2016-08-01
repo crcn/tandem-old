@@ -27,6 +27,7 @@ describe(__filename + "#", () => {
 
   it("can register a custom entity", async () => {
     class CustomEntity extends Node implements IEntity {
+      readonly type: string = null;
       constructor(readonly expression: any) {
         super();
       }
@@ -45,6 +46,7 @@ describe(__filename + "#", () => {
 
   it("renders child nodes based on the returned value from load()", async () => {
     class CustomEntity extends ContainerNode implements IEntity {
+      readonly type: string = null;
       constructor(readonly expression: any) {
         super();
       }
@@ -56,6 +58,7 @@ describe(__filename + "#", () => {
     }
 
     class TextEntity extends Node implements IEntity {
+      readonly type: string = null;
       constructor(readonly expression: any) {
         super();
       }

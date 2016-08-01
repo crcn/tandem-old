@@ -5,6 +5,7 @@ import { FrontEndApplication } from "sf-front-end/application";
 import { Editor } from "sf-front-end/models";
 import { expect } from "chai";
 import { SelectAction, ToggleSelectAction } from "sf-front-end/actions/index";
+import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 
 describe(__filename + "#", () => {
 
@@ -51,13 +52,15 @@ describe(__filename + "#", () => {
     expect(editor.selection.length).to.equal(0);
   });
 
-  xit("picks the correct collection type depending on the item type", () => {
+  it("picks the correct collection type depending on the item type", () => {
 
     class DisplayCollection extends Array<any> { }
     class OtherCollection extends Array<any> { }
 
-    app.dependencies.register(new ClassFactoryDependency("selection-collections/display", DisplayCollection));
-    app.dependencies.register(new ClassFactoryDependency("selection-collections/other", OtherCollection));
+    app.dependencies.register(
+      new SelectionFactoryDependency("display", DisplayCollection),
+      new SelectionFactoryDependency("other", OtherCollection)
+    );
 
     app.bus.execute(new ToggleSelectAction({ type: "display" }));
     expect(editor.selection).to.be.an.instanceof(DisplayCollection);

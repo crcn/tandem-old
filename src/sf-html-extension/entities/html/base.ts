@@ -1,8 +1,26 @@
+import { HTMLNodeDisplay } from "./displays";
 import { IEntity, IVisibleEntity } from "sf-core/entities";
 import { EntityFactoryDependency } from "sf-core/dependencies";
-import { HTMLElementExpression, HTMLTextExpression, IHTMLValueNodeExpression, HTMLCommentExpression, HTMLAttributeExpression } from "../../parsers/html/expressions";
-import { HTMLNodeDisplay } from "./displays";
-import { IElement, INode, IContainerNode, Element, ValueNode, IDiffableValueNode, GroupNodeSection, NodeSection } from "sf-core/markup";
+
+import {
+  HTMLElementExpression,
+  HTMLTextExpression,
+  IHTMLValueNodeExpression,
+  HTMLCommentExpression,
+  HTMLAttributeExpression
+} from "../../parsers/html/expressions";
+
+import {
+  IElement,
+  INode,
+  IContainerNode,
+  Element,
+  ValueNode,
+  IDiffableValueNode,
+  GroupNodeSection,
+  NodeSection
+} from "sf-core/markup";
+
 import TAG_NAMES from "./tag-names";
 
 export interface IHTMLEntity extends IEntity {
@@ -10,6 +28,11 @@ export interface IHTMLEntity extends IEntity {
 }
 
 export class HTMLElementEntity extends Element implements IHTMLEntity {
+
+  // no type specified since certain elements such as <style />, and <link />
+  // do not fit into a particular category. This may change later on.
+  readonly type: string = null;
+
   public section: GroupNodeSection|NodeSection;
   constructor(readonly expression: HTMLElementExpression) {
     super(expression.nodeName);
@@ -102,6 +125,8 @@ export class HTMLElementEntity extends Element implements IHTMLEntity {
 
 export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisibleEntity {
 
+  readonly type: string = "display";
+
   // TODO - change to something such as DisplayComputer
   readonly display = new HTMLNodeDisplay(this);
 }
@@ -114,7 +139,9 @@ export class HTMLDocumentDependencyEntity extends HTMLElementEntity {
 
 export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> extends ValueNode implements IHTMLEntity {
 
-  public section: NodeSection;
+  readonly type: string = null;
+
+  readonly section: NodeSection;
   private _node: Node;
 
   constructor(readonly expression: T) {

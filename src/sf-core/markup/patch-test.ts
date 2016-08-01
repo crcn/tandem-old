@@ -74,7 +74,8 @@ describe(__filename + "#", () => {
 
         <p>Click on the sun or on one of the planets to watch it closer:</p>
 
-        <img src="planets.gif" alt="Planets" usemap="#planetmap" style="width:145px;height:126px;">
+        <span src="planets.gif" alt="Planets" usemap="#planetmap" style="width:145px;height:126px;">
+        </span>
 
         <map name="planetmap">
           <area shape="rect" coords="0,0,82,126" alt="Sun" href="sun.htm">
@@ -86,7 +87,7 @@ describe(__filename + "#", () => {
 
         `<div>
 
-        <img src="exoplanets.gif" alt="Planets" style="width:145px;height:126px;">
+        <span src="exoplanets.gif" alt="Planets" style="width:145px;height:126px;"></span>
         <p>Click on the sun or on one of the planets to watch it closer:</p>
 
         <map name="exoplanetmap">

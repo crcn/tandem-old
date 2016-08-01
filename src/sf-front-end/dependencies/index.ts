@@ -47,7 +47,7 @@ export class SelectionFactoryDependency extends ClassFactoryDependency {
   constructor(entityType: string, collectionClass: entitySelectionType) {
     super([SELECTION_FACTORY_NS, entityType].join("/"), collectionClass);
   }
-  create(...selection: Array<IEntity>): entitySelectionType {
+  create(...selection: Array<IEntity>): Array<IEntity> {
     return super.create(...selection);
   }
   static find(entityType: string, dependencies: Dependencies): SelectionFactoryDependency {
