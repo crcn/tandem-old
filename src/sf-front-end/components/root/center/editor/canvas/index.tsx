@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
 
-import { STAGE_CANVAS_MOUSE_DOWN } from "sf-front-end/actions";
+import { STAGE_CANVAS_MOUSE_DOWN, ZoomAction } from "sf-front-end/actions";
 import PreviewLayerComponent from "./preview";
 import ToolsLayerComponent from "./tools";
 import IsolateComponent  from "sf-front-end/components/isolate";
@@ -50,10 +50,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     this.onMouseMove(event);
     if (event.metaKey) {
       event.preventDefault();
-      this.bus.execute({
-        type: "zoom",
-        delta: event.deltaY / 250
-      });
+      this.bus.execute(new ZoomAction(event.deltaY / 250));
     }
   }
 

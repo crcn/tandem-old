@@ -201,12 +201,17 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
 
     const rect = preview.bounds;
 
+    rect.left *= this.props.zoom;
+    rect.top  *= this.props.zoom;
+    rect.right *= this.props.zoom;
+    rect.bottom *= this.props.zoom;
+
     const cw = (pointRadius + strokeWidth) * 2;
 
     // offset stroke
     const resizerStyle = {
-      left     : rect.left - cw / 2,
-      top      : rect.top - cw / 2,
+      left     : rect.left - cw / 2 - 1,
+      top      : rect.top  - cw / 2 - 1
     };
 
     const capabilities = preview.capabilities;
@@ -229,7 +234,7 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
       // no zoom
       currentStyle: rect,
       left: left,
-      top: top,
+      top: top
     }));
 
     return (

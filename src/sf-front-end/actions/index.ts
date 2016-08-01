@@ -33,16 +33,9 @@ export class ToggleSelectAction extends SelectAction {
   }
 }
 
-export const ZOOM_IN = "zoomIn";
-export class ZoomInAction extends Action {
-  constructor() {
-    super(ZOOM_IN);
-  }
-}
-
-export const ZOOM_OUT = "zoomOut";
-export class ZoomOutAction extends Action {
-  constructor() {
-    super(ZOOM_OUT);
+export const ZOOM = "zoom";
+export class ZoomAction extends Action {
+  constructor(readonly delta: number) {
+    super(ZOOM);
   }
 }

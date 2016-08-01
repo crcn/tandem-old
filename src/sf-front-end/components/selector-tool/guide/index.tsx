@@ -17,7 +17,7 @@ export default class GuideComponent extends React.Component<any, any> {
               top    : 0,
               width  : 1,
               height : preview.canvasHeight,
-              direction : "ns",
+              direction : "ns"
             }}
             showStems={false}
             showDistance={false}
@@ -34,7 +34,7 @@ export default class GuideComponent extends React.Component<any, any> {
               top       : bounds.guideTop,
               width     : preview.canvasWidth,
               height    : 1,
-              direction : "ew",
+              direction : "ew"
             }}
             showStems={false}
             showDistance={false}
