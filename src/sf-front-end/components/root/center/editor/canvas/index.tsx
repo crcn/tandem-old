@@ -1,9 +1,9 @@
 import "./index.scss";
 import * as React from "react";
 
-import { STAGE_CANVAS_MOUSE_DOWN } from "sf-front-end/actions/index";
-import PreviewLayerComponent from "./preview/index";
-import ToolsLayerComponent from "./tools/index";
+import { STAGE_CANVAS_MOUSE_DOWN } from "sf-front-end/actions";
+import PreviewLayerComponent from "./preview";
+import ToolsLayerComponent from "./tools";
 import IsolateComponent  from "sf-front-end/components/isolate";
 import { Editor } from "sf-front-end/models";
 import { Dependencies, BusDependency } from "sf-core/dependencies";

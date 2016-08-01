@@ -1,6 +1,6 @@
 import "./index.scss";
 import * as React from "react";
-import ToolbarComponent from "./toolbar/index";
+import ToolbarComponent from "./toolbar";
 
 export default class StageEditorHeaderComponent extends React.Component<any, any> {
   render() {

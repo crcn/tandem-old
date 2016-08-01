@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
 
-import CenterComponent from "./center/index";
+import CenterComponent from "./center";
 import { RootReactComponentDependency } from "sf-front-end/dependencies";
 
 export default class RootEditorComponent extends React.Component<any, any> {

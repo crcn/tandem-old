@@ -4,7 +4,7 @@ import {
   htmlCommentDependency,
   htmlTemplateEntityDependency,
   HTMLElementEntity
-} from "./index";
+} from ".";
 
 import { BoundingRect } from "sf-core/geom";
 import * as sift from "sift";

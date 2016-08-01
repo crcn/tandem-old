@@ -1,5 +1,5 @@
 import * as React from "react";
-import { startDrag } from "sf-front-end/utils/component/index";
+import { startDrag } from "sf-front-end/utils/component";
 import PathComponent from "./path";
 // import { ENTITY_PREVIEW_DOUBLE_CLICK } from "message-types";
 

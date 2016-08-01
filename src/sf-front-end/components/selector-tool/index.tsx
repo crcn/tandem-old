@@ -1,6 +1,6 @@
 import "./index.scss";
 import * as React from "react";
-import ResizerComponent from "./resizer/index";
+import ResizerComponent from "./resizer";
 import { Editor } from "sf-front-end/models";
 import { IEntityDisplay } from "sf-core/entities";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";

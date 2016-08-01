@@ -4,7 +4,7 @@ import { ClassFactoryDependency } from "sf-core/dependencies";
 import { FrontEndApplication } from "sf-front-end/application";
 import { Editor } from "sf-front-end/models";
 import { expect } from "chai";
-import { SelectAction, ToggleSelectAction } from "sf-front-end/actions/index";
+import { SelectAction, ToggleSelectAction } from "sf-front-end/actions";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 
 describe(__filename + "#", () => {

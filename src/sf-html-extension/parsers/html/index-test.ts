@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { parse } from "./index";
+import { parse } from ".";
 import {
   HTML_TEXT,
   HTML_COMMENT,

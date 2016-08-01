@@ -1,6 +1,6 @@
 import "./index.scss";
 import * as React from "react";
-import LineComponent from "../line/index";
+import LineComponent from "../line";
 
 export default class GuideComponent extends React.Component<any, any> {
   render() {

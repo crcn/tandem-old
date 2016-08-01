@@ -4,7 +4,7 @@ import "./index.scss";
 
 import * as React from "react";
 import { intersection } from "lodash";
-import { SelectAction } from "sf-front-end/actions/index";
+import { SelectAction } from "sf-front-end/actions";
 import { IVisibleEntity, IEntity } from "sf-core/entities";
 import { inject } from "sf-core/decorators";
 import { IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
