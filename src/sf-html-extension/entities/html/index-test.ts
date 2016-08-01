@@ -1,4 +1,4 @@
-import { htmlElementDependencies, htmlTextDependency, htmlCommentDependency, HTMLElementEntity } from ".";
+import { htmlElementDependencies, htmlTextDependency, htmlCommentDependency, HTMLElementEntity } from "./index";
 import { EntityEngine } from "sf-core/entities";
 import { parse as parseHTML } from "../../parsers/html";
 import { Dependencies } from "sf-core/dependencies";

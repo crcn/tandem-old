@@ -2,14 +2,17 @@ import "./index.scss";
 import * as React from "react";
 import ResizerComponent from "./resizer";
 import { Editor } from "sf-front-end/models";
+import { DisplayEntityCollection } from "sf-front-end/selection";
 import { IEntityDisplay } from "sf-core/entities";
+import { FrontEndApplication } from "sf-front-end/application";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 
-export default class SelectorComponent extends React.Component<{ editor: any }, any> {
+export default class SelectorComponent extends React.Component<{ editor: Editor, app: FrontEndApplication, zoom: number }, any> {
 
   render() {
 
-    const { selection } = this.props.editor;
+    const editor = this.props.editor;
+    const selection = editor.selection as DisplayEntityCollection;
 
     const display   = selection.display;
 
@@ -30,7 +33,7 @@ export default class SelectorComponent extends React.Component<{ editor: any }, 
     };
 
     return (<div className="m-selector-component">
-      <ResizerComponent {...this.props} />
+      <ResizerComponent {...this.props} selection={selection} />
       <div className="m-selector-component--bounds" style={boundsStyle} />
       {sections.guides}
       {sections.size}

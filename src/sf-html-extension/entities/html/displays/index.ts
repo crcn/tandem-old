@@ -1,17 +1,31 @@
 import { BoundingRect } from "sf-core/geom";
 import { VisibleHTMLElementEntity } from "../base";
-import { IEntityDisplay, IVisibleEntity } from "sf-core/entities";
+import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/entities";
 
 
 export class HTMLNodeDisplay implements IEntityDisplay {
   constructor(readonly entity: VisibleHTMLElementEntity) { }
 
   /**
+   */
+
+  get capabilities() {
+
+    const style = window.getComputedStyle(this.node);
+
+    // TODO - need to wire this up
+    return new DisplayCapabilities(
+      style.position !== "static",
+      /fixed|absolute/.test(style.position) || !/^inline$/.test(style.display)
+    );
+  }
+
+  /**
    * returns the DOM node of the entity
    */
 
   get node(): Element {
-    return this.entity.section.targetNode as any;
+    return <any>this.entity.section.targetNode;
   }
 
   /**

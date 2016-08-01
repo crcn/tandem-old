@@ -1,5 +1,5 @@
 import { Action } from "../actions";
-import { Observable } from ".";
+import { Observable } from "./index";
 import { expect } from "chai";
 import { CallbackBus } from "sf-core/busses";
 

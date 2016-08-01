@@ -12,7 +12,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
 
   private _mousePosition: any;
   private _toolsHidden: any;
-  private _previousZoom: number;
+  private _previousZoom: number = 1;
 
   onMouseDown(event) {
    this.bus.execute(Object.assign({}, event, {
@@ -28,8 +28,8 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
 
   componentWillUpdate(props: any) {
     if (this.props.editor.zoom !== this._previousZoom) {
+      requestAnimationFrame(this._center.bind(this, this.props.editor.zoom, this._previousZoom));
       this._previousZoom = this.props.editor.zoom;
-      requestAnimationFrame(this._center.bind(this, props.zoom, this.props.editor));
     }
   }
 

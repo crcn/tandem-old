@@ -1,12 +1,13 @@
 import * as React from "react";
 import { startDrag } from "sf-front-end/utils/component";
 import PathComponent from "./path";
-// import { ENTITY_PREVIEW_DOUBLE_CLICK } from "message-types";
+import { FrontEndApplication } from "sf-front-end/application";
+import { DisplayEntityCollection } from "sf-front-end/selection";
 
 const POINT_STROKE_WIDTH = 0;
 const POINT_RADIUS       = 3;
 
-class ResizerComponent extends React.Component<any, any> {
+class ResizerComponent extends React.Component<{ app: FrontEndApplication, selection: DisplayEntityCollection, zoom: number, pointRadius?: number, strokeWidth?: number }, any> {
 
   private _dragger: any;
   private _movingTimer: any;
@@ -28,7 +29,7 @@ class ResizerComponent extends React.Component<any, any> {
 
   componentWillUnmount() {
     if (this._dragger) this._dragger.dispose();
-    this.props.app.actors.remove(this);
+    this.props.app.actors.splice(this.props.app.actors.indexOf(this), 1);
   }
 
   onDoubleClick() {
@@ -40,8 +41,8 @@ class ResizerComponent extends React.Component<any, any> {
 
   onKeyDown(message) {
 
-    const selection = this.props.app.selection;
-    const style = selection.preview.bounds;
+    const selection = this.props.selection;
+    const style = selection.display.bounds;
 
     let left = style.left;
     let top  = style.top;
@@ -60,16 +61,16 @@ class ResizerComponent extends React.Component<any, any> {
 
     this._isMoving();
 
-    selection.preview.setPositionFromAbsolutePoint({
-      top  : top,
-      left : left,
-    });
+    // selection.display.setPositionFromAbsolutePoint({
+    //   top  : top,
+    //   left : left,
+    // });
 
     event.preventDefault();
   }
 
-  get targetPreview() {
-    return this.props.selection.preview;
+  get targetDisplay() {
+    return this.props.selection.display;
   }
 
   updatePoint(point, event) {
@@ -80,7 +81,7 @@ class ResizerComponent extends React.Component<any, any> {
     const selection = this.props.selection;
 
     // no ZOOM
-    const style = selection.preview.bounds;
+    const style = this.targetDisplay.bounds;
 
     const props = {
       left   : style.left,
@@ -121,7 +122,7 @@ class ResizerComponent extends React.Component<any, any> {
       props.top  = point.currentStyle.top + (point.currentStyle.height / 2 - props.height / 2);
     }
 
-    selection.preview.setBoundingRect(props);
+    // this.targetDisplay.setBoundingRect(props);
     this._isMoving();
   }
 
@@ -131,10 +132,10 @@ class ResizerComponent extends React.Component<any, any> {
   _isMoving() {
     clearTimeout(this._movingTimer);
     clearTimeout(this._dragTimer);
-    this.props.selection.preview.setProperties({ moving: true });
+    // this.props.selection.preview.setProperties({ moving: true });
     this.setState({ dragging: true });
     this._movingTimer = setTimeout(() => {
-      this.props.selection.preview.setProperties({ moving: false });
+      // this.props.selection.preview.setProperties({ moving: false });
     }, 1000);
     this._dragTimer = setTimeout(() => {
       this.setState({ dragging: false });
@@ -147,14 +148,14 @@ class ResizerComponent extends React.Component<any, any> {
 
     // when dragging, need to fetch style of the selection
     // so that the dragger is relative to the entity"s position
-    const style = selection.preview.bounds;
+    const style = this.targetDisplay.bounds;
 
     const sx2 = style.left;
     const sy2 = style.top;
 
     this._dragger = startDrag(event, (event2, { delta }) => {
 
-      if (!this.targetPreview.capabilities.movable) return;
+      // if (!this.targetDisplay.capabilities.movable) return;
 
       const nx = sx2 + delta.x / this.props.zoom;
       const ny = sy2 + delta.y / this.props.zoom;
@@ -173,30 +174,30 @@ class ResizerComponent extends React.Component<any, any> {
 
       this.moveTarget(bounds.left, bounds.top);
     }, () => {
-      this.props.file.save();
+      // this.props.file.save();
       this._dragger = void 0;
     });
   }
 
   onPointMouseUp() {
-    this.props.file.save();
+    // this.props.file.save();
   }
 
 
   moveTarget(left, top) {
     this._isMoving();
 
-    this.props.app.selection.preview.setPositionFromAbsolutePoint({
-      left : left,
-      top  : top,
-    });
+    // this.targetDisplay.setPositionFromAbsolutePoint({
+    //   left : left,
+    //   top  : top
+    // });
   }
 
   render() {
 
     const pointRadius = (this.props.pointRadius || POINT_RADIUS);
     const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
-    const preview = this.props.selection.preview;
+    const preview = this.props.selection.display;
 
     const rect = preview.bounds;
 

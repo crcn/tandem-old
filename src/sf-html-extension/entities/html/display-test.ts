@@ -4,7 +4,7 @@ import {
   htmlCommentDependency,
   htmlTemplateEntityDependency,
   HTMLElementEntity
-} from ".";
+} from "./index";
 
 import { BoundingRect } from "sf-core/geom";
 import * as sift from "sift";
@@ -24,19 +24,24 @@ describe(__filename + "#", () => {
     );
   });
 
-  async function calculateBounds(source) {
+  async function loadTarget(source) {
     const engine = new EntityEngine(dependencies);
     const entity = await engine.load(parseHTML(source as string))as HTMLElementEntity;
     const div = document.createElement("div");
     document.body.appendChild(div);
     Object.assign(div.style, { position: "fixed", top: "0px", left: "0px" });
     div.appendChild(entity.section.toDependency());
-    const target = <IVisibleEntity>(entity.flatten().find(sift({ "attributes.name": "id", "attributes.value": "target" })) as any);
-    const bounds = target.display.bounds;
-    return [bounds.left, bounds.top, bounds.width, bounds.height];
+    return <IVisibleEntity>(entity.flatten().find(sift({ "attributes.name": "id", "attributes.value": "target" })) as any);
   }
 
   describe("bounds ", () => {
+
+    async function calculateBounds(source) {
+      const target = await loadTarget(source);
+      const bounds = target.display.bounds;
+      return [bounds.left, bounds.top, bounds.width, bounds.height];
+    }
+
     it("are correct for a simple div", async () => {
       expect(await calculateBounds(`<div id="target" style="width:100px;height:100px;">
         </div>`)).to.eql([0, 0, 100, 100]);
@@ -62,6 +67,60 @@ describe(__filename + "#", () => {
       expect(await calculateBounds(`<div style="top:100px;left:50px;width:100px;height:100px;position:absolute;">
         <div id="target" style="width:100px;height:100px;position:absolute;top:10px;left:10px;" />
       </div>`)).to.eql([60, 110, 100, 100]);
+    });
+
+    describe("capabilities ", function() {
+
+      async function calculateCapabilities(source) {
+        const target = await loadTarget(source);
+        return target.display.capabilities;
+      }
+
+      it("movable=true if style.position!=static", async () => {
+        expect((await calculateCapabilities(`
+          <div id="target" style="position:static;" />
+        `)).movable).to.equal(false);
+
+        expect((await calculateCapabilities(`
+          <div id="target" style="position:relative;" />
+        `)).movable).to.equal(true);
+
+        expect((await calculateCapabilities(`
+          <div id="target" style="position:absolute;" />
+        `)).movable).to.equal(true);
+
+        expect((await calculateCapabilities(`
+          <div id="target" style="position:fixed;" />
+        `)).movable).to.equal(true);
+      });
+
+      it("resizale=true if style.position=absolute|fixed || style.displat !== inline", async () => {
+
+        expect((await calculateCapabilities(`
+          <div id="target" style="position:absolute;" />
+        `)).resizable).to.equal(true);
+
+        expect((await calculateCapabilities(`
+          <div id="target" style="position:fixed;" />
+        `)).resizable).to.equal(true);
+
+        expect((await calculateCapabilities(`
+          <div id="target" style="display: inline-block;" />
+        `)).resizable).to.equal(true);
+
+        expect((await calculateCapabilities(`
+          <div id="target" style="display: inline;" />
+        `)).resizable).to.equal(false);
+
+        expect((await calculateCapabilities(`
+          <div id="target" style="display: inline; position: absolute;" />
+        `)).resizable).to.equal(true);
+
+        expect((await calculateCapabilities(`
+          <div id="target" style="display: block;" />
+        `)).resizable).to.equal(true);
+
+      });
     });
   });
 });
