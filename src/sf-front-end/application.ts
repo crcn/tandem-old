@@ -12,6 +12,7 @@ import { dependency as selectorToolComponentDependency } from "./components/sele
 // services
 import { dependency as projectsDependency } from "./services/project";
 import { dependency as clipboardService } from "./services/clipboard";
+import { dependency as editorServiceDependency } from "./services/editor";
 import { dependency as backEndServiceDependency } from "./services/back-end";
 import { dependency as selectorServiceDependency } from "./services/selector";
 import { dependency as keyBindingsServiceDependency } from "./services/key-binding";
@@ -50,6 +51,7 @@ export class FrontEndApplication extends Application {
       // services
       clipboardService,
       projectsDependency,
+      editorServiceDependency,
       backEndServiceDependency,
       selectorServiceDependency,
       keyBindingsServiceDependency,

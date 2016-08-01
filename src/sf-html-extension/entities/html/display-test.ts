@@ -10,17 +10,23 @@ import { BoundingRect } from "sf-core/geom";
 import * as sift from "sift";
 import { EntityEngine, IVisibleEntity } from "sf-core/entities";
 import { parse as parseHTML } from "../../parsers/html";
-import { Dependencies } from "sf-core/dependencies";
+import { Dependencies, ApplicationSingletonDependency } from "sf-core/dependencies";
+import { FrontEndApplication } from "sf-front-end/application";
 import { expect } from "chai";
 
 describe(__filename + "#", () => {
-  let dependencies;
+  let dependencies: Dependencies;
+  let app: FrontEndApplication;
+
   beforeEach(() => {
+    app = new FrontEndApplication({});
+
     dependencies = new Dependencies(
       ...htmlElementDependencies,
       htmlTextDependency,
       htmlCommentDependency,
-      htmlTemplateEntityDependency
+      htmlTemplateEntityDependency,
+      new ApplicationSingletonDependency(app)
     );
   });
 

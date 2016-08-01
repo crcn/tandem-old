@@ -13,12 +13,13 @@ export default class StageComponent extends React.Component<{ app: FrontEndAppli
   render() {
 
     const editor = this.props.app.editor;
+    const zoom   = this.props.app.editor.zoom;
 
     // entity might not have been loaded yet
     if (!editor.file) return null;
     return (<div className="m-editor-stage noselect">
       <HeaderComponent {...this.props} editor={editor} />
-      <CanvasComponent {...this.props} editor={editor} dependencies={this.props.app.dependencies} />
+      <CanvasComponent {...this.props} editor={editor} zoom={zoom} dependencies={this.props.app.dependencies} />
       <FooterComponent {...this.props} editor={editor} />
     </div>);
   }

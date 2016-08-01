@@ -8,11 +8,11 @@ import IsolateComponent  from "sf-front-end/components/isolate";
 import { Editor } from "sf-front-end/models";
 import { Dependencies, BusDependency } from "sf-core/dependencies";
 
-export default class EditorStageLayersComponent extends React.Component<{ editor: Editor, dependencies: Dependencies }, any> {
+export default class EditorStageLayersComponent extends React.Component<{ editor: Editor, dependencies: Dependencies, zoom: number }, any> {
 
   private _mousePosition: any;
   private _toolsHidden: any;
-  private _previousZoom: number = 1;
+  private _previousZoom: number;
 
   onMouseDown(event) {
    this.bus.execute(Object.assign({}, event, {
@@ -27,9 +27,8 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   componentWillUpdate(props: any) {
-    if (this.props.editor.zoom !== this._previousZoom) {
-      requestAnimationFrame(this._center.bind(this, this.props.editor.zoom, this._previousZoom));
-      this._previousZoom = this.props.editor.zoom;
+    if (props.zoom !== this.props.zoom) {
+      requestAnimationFrame(this._center.bind(this, props.zoom, this.props.zoom));
     }
   }
 
@@ -77,6 +76,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   _center = (newZoom, oldZoom) => {
+
 
     function calcPrev(value) {
       return Math.round((value / newZoom) * oldZoom);
