@@ -4,6 +4,7 @@ import { Action } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
 import { VisibleHTMLElementEntity } from "./base";
 import { HTMLElementExpression } from "../../parsers/html/expressions";
+import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
 import { inject } from "sf-core/decorators";
 import { EntityFactoryDependency, IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
 import { NodeSection, INode } from "sf-core/markup";
@@ -51,10 +52,15 @@ export class HTMLTemplateEntity extends VisibleHTMLElementEntity implements IInj
 
     const iframe = this._iframe = document.createElement("iframe");
     iframe.setAttribute("class", "m-template-entity");
+
     this._iframe.onload = () => {
       const body = this._body = iframe.contentWindow.document.body;
       body.style.margin = body.style.padding = "0px";
       body.appendChild(this._placeholder);
+
+      // bubble all iframe events such as mouse clicks and scrolls
+      // so that the editor can handle them
+      bubbleIframeEvents(iframe);
 
       // this is particularly important to ensure that the preview stage & tools
       // properly re-draw according

@@ -1,8 +1,8 @@
 
 <div style="">
-  <template id="test">
+  <template id="test" style="width:1024px;height:768px;">
     <div style=" display: inline-block; background-color: #F60; color: black; border-radius: 10px; padding:10px; display:block; white-space: nowrap;">
-      Hello World!!
+      Hello Dario!!!!!!!
     </div>
   </template>
 </div>
