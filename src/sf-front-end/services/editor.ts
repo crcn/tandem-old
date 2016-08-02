@@ -14,7 +14,7 @@ export class EditorService extends BaseApplicationService<FrontEndApplication> {
   readonly dependencies: Dependencies;
 
   @inject([EDITOR_TOOL_NS, "**"].join("/"), (dep) => (<EditorToolFactoryDependency>dep).create())
-  readonly tools:Array<IActor> = [];
+  readonly tools: Array<IActor> = [];
 
   private _toolProxyBus: ProxyBus;
 

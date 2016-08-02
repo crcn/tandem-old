@@ -57,7 +57,7 @@ export class SelectionFactoryDependency extends ClassFactoryDependency {
 
 export const EDITOR_TOOL_NS = "editorTool";
 export class EditorToolFactoryDependency extends ClassFactoryDependency {
-  constructor(id: string, clazz:{ new(): IActor }) {
+  constructor(id: string, clazz: { new(): IActor }) {
     super([EDITOR_TOOL_NS, id].join("/"), clazz);
   }
   create(): IActor {

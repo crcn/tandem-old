@@ -1,4 +1,4 @@
-import { Bus, Response, EmptyResponse } from 'mesh';
+import { Bus, Response, EmptyResponse } from "mesh";
 
 /**
  * proxies a target bus, and queues actions
@@ -7,10 +7,10 @@ import { Bus, Response, EmptyResponse } from 'mesh';
 
 export default class ProxyBus extends Bus {
 
-  private _queue:Array<any> = [];
-  private _paused:boolean;
-  
-  constructor(private _target:Bus) {
+  private _queue: Array<any> = [];
+  private _paused: boolean;
+
+  constructor(private _target: Bus) {
     super();
   }
 
@@ -56,7 +56,7 @@ export default class ProxyBus extends Bus {
   _drain() {
     if (this.paused) return;
     while (this._queue.length) {
-      var { writable, action } = this._queue.shift();
+      const { writable, action } = this._queue.shift();
       (this.target.execute(action) || EmptyResponse.create()).pipeTo(writable);
     }
   }
