@@ -25,12 +25,20 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
             (cursor.end   >= position.start && cursor.end <= position.end) ||
             (cursor.start <= position.start && cursor.end >= position.end)
           ) {
+
+            const parentIndex = selection.indexOf(entity.parentNode);
+
+            if (parentIndex > -1) {
+              selection.splice(parentIndex, 1);
+            }
+
             selection.push(entity);
           }
 
         }
       }
     }
+
 
     this.select({
       items: selection,
@@ -74,6 +82,8 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     }
 
     app.editor.selection = newSelection;
+
+    app.bus.execute({ type: 'change' });
   }
 }
 

@@ -59,12 +59,16 @@ export default class FrontEndService extends BaseApplicationService<IApplication
     this._server.use(cors());
 
     var entryPath = this.app.config.frontEndEntry;
+
     var scriptName = path.basename(entryPath);
 
     // this should be part of the config
     const entryDirectory = path.dirname(entryPath);
     this._server.use(express.static(entryDirectory));
-    this._server.use(express.static(this.app.config.publicDirectory));
+
+    if (this.app.config.publicDirectory) {
+      this._server.use(express.static(this.app.config.publicDirectory));
+    }
 
     const staticFileNames = fs.readdirSync(entryDirectory);
 

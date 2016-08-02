@@ -14,7 +14,7 @@
     "onCommand:extension.previewSaffronDocument",
     "onCommand:extension.startSaffronBackEnd"
   ],
-  "main": "./lib/extension.js",
+  "main": "./lib/src/extension.js",
   "contributes": {
     "commands": [
       {

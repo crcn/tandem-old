@@ -20,9 +20,7 @@ export async function activate(context: vscode.ExtensionContext) {
     const port = await getPort();
 
     var server = new ServerApplication({
-        socketio: {
-            port: port
-        }
+        port: port
     });
 
     server.actors.push({

@@ -1,7 +1,13 @@
 <div>
-  <template id="test">
-    <div style=" display: inline-block; background-color: #F60; color: black; border-radius: 10px; padding:10px; display:block; white-space: nowrap;">
-      Hello World!
-    </div>
-  </template>
+  <div style=" display: inline-block; background-color: #F60; color: black; border-radius: 10px; padding:10px; display:block; white-space: nowrap;">
+    Hello World!!!!
+  </div>
+
+  <div style=" display: inline-block; background-color: #F60; margin: 10px;color: black; border-radius: 10px; padding:10px; display:block; white-space: nowrap;">
+    Hello World!!!!
+  </div>
+
+  <div style=" display: inline-block; background-color: #F60; color: black; border-radius: 10px; padding:10px; display:block; white-space: nowrap;">
+    Hello World!!!!
+  </div>
 </div>

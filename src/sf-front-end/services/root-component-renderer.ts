@@ -17,7 +17,7 @@ export default class RootComponentRenderer extends BaseApplicationService<IAppli
 
   @filterAction(sift({
     type: {
-      $ne: /log/,
+      $ne: /log/
     },
   }))
   execute() {

@@ -12,6 +12,7 @@
   },
   "scripts": {
     "test": "./scripts/write-all-tests.sh; TESTING=1 karma start",
+    "test-watch": "WATCH=1 npm test",
     "clean": "rm -rf lib",
     "postinstall": "scripts/copy-src-assets.sh; tsc --declaration; linklocal",
     "start": "./scripts/exec-packages.sh npm start",
