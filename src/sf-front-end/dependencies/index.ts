@@ -54,3 +54,16 @@ export class SelectionFactoryDependency extends ClassFactoryDependency {
     return dependencies.query<SelectionFactoryDependency>([SELECTION_FACTORY_NS, entityType].join("/"));
   }
 }
+
+export const EDITOR_TOOL_NS = "editorTool";
+export class EditorToolFactoryDependency extends ClassFactoryDependency {
+  constructor(id: string, clazz:{ new(): IActor }) {
+    super([EDITOR_TOOL_NS, id].join("/"), clazz);
+  }
+  create(): IActor {
+    return super.create();
+  }
+  static findAll(dependencies: Dependencies) {
+    return dependencies.queryAll<EditorToolFactoryDependency>([EDITOR_TOOL_NS, "**"].join("/"));
+  }
+}

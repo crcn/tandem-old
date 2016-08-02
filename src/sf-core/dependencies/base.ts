@@ -16,16 +16,22 @@ export class Injector {
 
   static inject(target: any, dependencies: Dependencies) {
     const __inject = target["__inject"];
-
     if (__inject) {
       for (const property in __inject) {
         const [ns, map] = __inject[property];
-        const dependency = dependencies.query<Dependency<any>>(ns);
-        if (dependency) {
+        let value;
+
+        if (/\*\*$/.test(ns)) {
+          value = dependencies.queryAll<Dependency<any>>(ns);
+          target[property] = value.map(map);
+        } else {
+          value = dependencies.query<Dependency<any>>(ns);
 
           // TODO - check for dependency.getInjectableValue()
-          target[property] = map(dependency);
-        } else if (!process.env.TESTING) {
+          target[property] = map(value);
+        }
+
+        if (!process.env.TESTING && (value == null || value.length === 0)) {
           console.warn(`Cannot inject ${ns} into ${target.constructor.name}.${property} property.`);
         }
       }

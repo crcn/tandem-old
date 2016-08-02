@@ -18,6 +18,10 @@ import { dependency as selectorServiceDependency } from "./services/selector";
 import { dependency as keyBindingsServiceDependency } from "./services/key-binding";
 import { dependency as rootComponentRendererDependency } from "./services/root-component-renderer";
 
+// tools
+import { dependency as pointerToolDependency } from "./tools/pointer";
+import { dependency as textToolDependency } from "./tools/text";
+
 // key bindings
 import { dependency as keyBindingsDependency } from "./key-bindings";
 
@@ -56,6 +60,10 @@ export class FrontEndApplication extends Application {
       selectorServiceDependency,
       keyBindingsServiceDependency,
       rootComponentRendererDependency,
+
+      // tools
+      pointerToolDependency,
+      textToolDependency,
 
       // selection
       displayEntitySelectionDependenciy,
