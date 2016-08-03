@@ -23,6 +23,15 @@ export default class BoundingRect {
     this.bottom = this.top + value;
   }
 
+  zoom(delta: number) {
+    return new BoundingRect(
+      this.left * delta,
+      this.top * delta,
+      this.right * delta,
+      this.bottom * delta
+    );
+  }
+
   intersects(...rects: Array<BoundingRect>): boolean {
     return !!rects.find((rect) => (
       Math.max(this.left, rect.left) <= Math.min(this.right, rect.right) &&

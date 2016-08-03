@@ -199,12 +199,7 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
     const preview = this.props.selection.display;
 
-    const rect = preview.bounds;
-
-    rect.left *= this.props.zoom;
-    rect.top  *= this.props.zoom;
-    rect.right *= this.props.zoom;
-    rect.bottom *= this.props.zoom;
+    const rect = preview.bounds.zoom(this.props.zoom);
 
     const cw = (pointRadius + strokeWidth) * 2;
 
