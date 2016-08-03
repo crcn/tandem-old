@@ -2,6 +2,7 @@ import { IEntity } from "sf-core/entities";
 import { BaseApplicationService } from "sf-core/services";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 import { loggable, bindable, isPublic } from "sf-core/decorators";
+import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
 
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
@@ -10,7 +11,7 @@ import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 export default class SelectorService extends BaseApplicationService<FrontEndApplication> {
 
   @isPublic
-  selectAtSourceOffset({ data }) {
+  selectAtSourceOffset(action: SelectSourceAtOffsetAction) {
 
     const allEntities = <Array<IEntity>>this.app.editor.file.entity.flatten();
 
@@ -18,8 +19,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     for (const entity of allEntities) {
       if (entity["display"]) {
         const position = entity.expression.position;
-        for (const cursor of data) {
-
+        for (const cursor of action.data) {
           if (
             (cursor.start >= position.start && cursor.start <= position.end) ||
             (cursor.end   >= position.start && cursor.end <= position.end) ||
@@ -34,11 +34,9 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
             selection.push(entity);
           }
-
         }
       }
     }
-
 
     this.select({
       items: selection,
@@ -82,8 +80,6 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     }
 
     app.editor.selection = newSelection;
-
-    app.bus.execute({ type: 'change' });
   }
 }
 

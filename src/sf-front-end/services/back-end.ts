@@ -15,8 +15,13 @@ export default class BackEndService extends IOService<IApplication> {
 
   async load() {
     await super.load();
-    this.logger.info("starting socket.io client on port %d", this.app.config.socketio.port);
-    this._client = SocketIOClient(`//${window.location.hostname}:${this.app.config.socketio.port}`);
+
+    if (!this.app.config.backend || !this.app.config.backend.port) {
+      return;
+    }
+
+    this.logger.info("starting socket.io client on port %d", this.app.config.backend.port);
+    this._client = SocketIOClient(`//${window.location.hostname}:${this.app.config.backend.port}`);
     await this.addConnection(this._client);
   }
 }

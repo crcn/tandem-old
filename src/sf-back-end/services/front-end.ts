@@ -92,7 +92,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
           </style>
           <script type="text/javascript">
             var config = {
-              socketio: {
+              backend: {
                 port: ${this._port}
               }
             };

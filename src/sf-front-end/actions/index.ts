@@ -1,4 +1,5 @@
 import { Action } from "sf-core/actions";
+import { IRange } from "sf-core/geom";
 
 export const STAGE_CANVAS_MOUSE_DOWN = "stageCanvasMouseDown";
 export class MouseEvent extends Action {
@@ -27,6 +28,15 @@ export class SelectAction extends Action {
   }
 }
 
+export const SELECT_SOURCE_AT_OFFSET = "selectAtSourceOffset";
+export class SelectSourceAtOffsetAction extends Action {
+  readonly data: Array<IRange>;
+  constructor(...data: Array<IRange>) {
+    super(SELECT_SOURCE_AT_OFFSET);
+    this.data = data;
+  }
+}
+
 export class ToggleSelectAction extends SelectAction {
   constructor(items = undefined, keepPreviousSelection: boolean = false) {
     super(items, keepPreviousSelection, true);
@@ -37,5 +47,12 @@ export const ZOOM = "zoom";
 export class ZoomAction extends Action {
   constructor(readonly delta: number) {
     super(ZOOM);
+  }
+}
+
+export const OPEN_FILE = "openFile";
+export class OpenFileAction extends Action {
+  constructor(readonly path: string, readonly ext: string, readonly content: string) {
+    super(OPEN_FILE);
   }
 }

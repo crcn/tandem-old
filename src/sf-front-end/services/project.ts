@@ -1,6 +1,7 @@
 import * as sift from "sift";
 import * as ArrayDsBus from "mesh-array-ds-bus";
 import { AcceptBus } from "mesh";
+import { OpenFileAction } from "sf-front-end/actions";
 
 import { IActor } from "sf-core/actors";
 import { Logger } from "sf-core/logger";
@@ -21,21 +22,9 @@ export default class ProjectService extends BaseApplicationService<FrontEndAppli
   readonly logger: Logger;
 
   async initialize() {
-
     const { value } = await (this.bus.execute(new FindAction(COLLECTION_NAME, undefined, false))).read();
-
-    if (value) {
-      this.logger.info("loaded %s", value);
-    }
-
-    const activeRecordDependency = ActiveRecordFactoryDependency.find(`${value.ext}-file`, this.dependencies);
-    const activeRecord = activeRecordDependency.create(value);
-
-    this.app.editor.file = activeRecord;
-
-    // Pipe all changes on the active record back to the application bus
-    activeRecord.observe(this.app.bus);
-
+    if (value == null) return;
+    this.openFile(value);
   }
 
   @isPublic
@@ -45,7 +34,22 @@ export default class ProjectService extends BaseApplicationService<FrontEndAppli
 
   @isPublic
   insert(action) {
-    console.log("insert file");
+    this.openFile(action.data);
+  }
+
+  @isPublic
+  openFile(action: OpenFileAction) {
+
+    this.logger.info("loaded %s", action);
+
+    const activeRecordDependency = ActiveRecordFactoryDependency.find(`${action.ext}-file`, this.dependencies);
+    const activeRecord = activeRecordDependency.create(action);
+
+    this.app.editor.file = activeRecord;
+
+    // Pipe all changes on the active record back to the application bus
+    activeRecord.observe(this.app.bus);
+
   }
 }
 
