@@ -48,6 +48,11 @@ export class EntityEngine {
 
   private async _loadAll(source: IDiffableNode) {
     const entityFactory = EntityFactoryDependency.find(source.nodeName, this.dependencies);
+
+    if (entityFactory == null) {
+      throw new Error(`Unable to find entity factory for "${source.nodeName}".`);
+    }
+
     const entity = entityFactory.create(source);
 
     // TODO - engine making too much of an assumption about what the entity is -- it

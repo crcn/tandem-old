@@ -15,7 +15,7 @@ abstract class DOMEntity extends Element {
     while (!(p instanceof DOMEntity)) {
       p = p.parentNode;
     }
-    p.section.appendChild(this.section || (this.section = this.createSection()).toDependency());
+    p.section.appendChild(this.section || (this.section = this.createSection()).toFragment());
   }
 
   abstract protected createSection();

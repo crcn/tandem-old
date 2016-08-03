@@ -1,5 +1,4 @@
-<div>
-  <div style="color:white; padding:10px;background-color:rgba(0,0,0,0.5); border-radius:10px;">
-    hello world
-  </div>
+<div style="color:white; padding:10px;background-color:rgba(0,0,0,0.5); border-radius:10px;">
+  Hello world
 </div>
+

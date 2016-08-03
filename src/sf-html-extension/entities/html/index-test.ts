@@ -1,4 +1,4 @@
-import { htmlElementDependencies, htmlTextDependency, htmlCommentDependency, HTMLElementEntity } from "./index";
+import { htmlElementDependencies, htmlTextDependency, htmlCommentDependency, htmlDocumentDependency, HTMLElementEntity } from "./index";
 import { EntityEngine } from "sf-core/entities";
 import { parse as parseHTML } from "../../parsers/html";
 import { Dependencies } from "sf-core/dependencies";
@@ -10,6 +10,7 @@ describe(__filename + "#", () => {
     dependencies = new Dependencies(
       ...htmlElementDependencies,
       htmlTextDependency,
+      htmlDocumentDependency,
       htmlCommentDependency
     );
   });
@@ -18,7 +19,7 @@ describe(__filename + "#", () => {
     const engine = new EntityEngine(dependencies);
     const div = document.createElement("div");
     const entity = await engine.load(parseHTML(source));
-    div.appendChild((<HTMLElementEntity>entity).section.toDependency());
+    div.appendChild((<HTMLElementEntity>entity).section.toFragment());
     return div;
   }
 
@@ -33,7 +34,7 @@ describe(__filename + "#", () => {
     let source = "<div>hello world!</div>";
     const entity = await engine.load(parseHTML(source)) as HTMLElementEntity;
     const div = document.createElement("div");
-    div.appendChild(entity.section.toDependency());
+    div.appendChild(entity.section.toFragment());
     expect(div.innerHTML).to.equal(source);
   });
 
@@ -46,13 +47,14 @@ describe(__filename + "#", () => {
 
     // shuffle
     [`<div><h1>1</h1><h2>2</h2><h3>2</h3></div>`, `<div><h3>1</h3><h2>2</h2><h1>3</h1></div>`],
-    [`<div>1<h2>2</h2>3<h3>4</h3></div>`, `<div><h2>1</h2>2<h3>3</h3></div>`]
+    [`<div>1<h2>2</h2>3<h3>4</h3></div>`, `<div><h2>1</h2>2<h3>3</h3></div>`],
+    [`1<h2>2</h2>3<h3>4</h3>`, `<h2>1</h2>2<h3>3</h3>`]
   ].forEach(function([source, change]) {
     it(`can update the source from ${source} to ${change}`, async () => {
       const engine = new EntityEngine(dependencies);
       const entity = await engine.load(parseHTML(source as any)) as HTMLElementEntity;
       const div = document.createElement("div");
-      div.appendChild(entity.section.toDependency());
+      div.appendChild(entity.section.toFragment());
       expect(div.innerHTML).to.equal(source);
       await engine.load(parseHTML(change as any));
       expect(div.innerHTML).to.equal(change);

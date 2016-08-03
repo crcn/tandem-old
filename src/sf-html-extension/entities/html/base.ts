@@ -70,7 +70,7 @@ export class HTMLElementEntity extends Element implements IHTMLEntity {
   }
 
   appendDOMChild(newChild: INode) {
-    this.section.targetNode.appendChild(newChild);
+    this.section.appendChild(newChild);
   }
 
   setAttribute(name: string, value: string) {
@@ -104,12 +104,12 @@ export class HTMLElementEntity extends Element implements IHTMLEntity {
         const ppSection = (<HTMLElementEntity>child.nextSibling).section;
 
         if (nextHTMLEntitySibling.section instanceof NodeSection) {
-          this.insertDOMChildBefore(child.section.toDependency(), (<NodeSection>ppSection).targetNode);
+          this.insertDOMChildBefore(child.section.toFragment(), (<NodeSection>ppSection).targetNode);
         } else {
-          this.insertDOMChildBefore(child.section.toDependency(), (<GroupNodeSection>ppSection).startNode);
+          this.insertDOMChildBefore(child.section.toFragment(), (<GroupNodeSection>ppSection).startNode);
         }
       } else {
-        this.appendDOMChild(child.section.toDependency());
+        this.appendDOMChild(child.section.toFragment());
       }
     }
   }
@@ -131,7 +131,7 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
   readonly display = new HTMLNodeDisplay(this);
 }
 
-export class HTMLDocumentDependencyEntity extends HTMLElementEntity {
+export class HTMLDocumentFragmentEntity extends HTMLElementEntity {
   createSection() {
     return new GroupNodeSection();
   }
@@ -186,4 +186,4 @@ export class HTMLCommentEntity extends HTMLValueNodeEntity<HTMLCommentExpression
 export const htmlElementDependencies = TAG_NAMES.map((nodeName) => new EntityFactoryDependency(nodeName, VisibleHTMLElementEntity));
 export const htmlTextDependency     = new EntityFactoryDependency("#text", HTMLTextEntity);
 export const htmlCommentDependency  = new EntityFactoryDependency("#comment", HTMLCommentEntity);
-export const htmlDocumentDependency = new EntityFactoryDependency("#document-fragment", HTMLDocumentDependencyEntity);
+export const htmlDocumentDependency = new EntityFactoryDependency("#document-fragment", HTMLDocumentFragmentEntity);

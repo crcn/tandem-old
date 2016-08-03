@@ -16,7 +16,7 @@ export default class PreviewComponent extends React.Component<any, any> {
     this._update();
   }
   _update() {
-    (this.refs as any).container.appendChild(this.props.entity.section.toDependency());
+    (this.refs as any).container.appendChild(this.props.entity.section.toFragment());
   }
   render() {
     return (<div ref="container">

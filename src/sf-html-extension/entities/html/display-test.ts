@@ -36,7 +36,7 @@ describe(__filename + "#", () => {
     const div = document.createElement("div");
     document.body.appendChild(div);
     Object.assign(div.style, { position: "fixed", top: "0px", left: "0px" });
-    div.appendChild(entity.section.toDependency());
+    div.appendChild(entity.section.toFragment());
     return <IVisibleEntity>(entity.flatten().find(sift({ "attributes.name": "id", "attributes.value": "target" })) as any);
   }
 
