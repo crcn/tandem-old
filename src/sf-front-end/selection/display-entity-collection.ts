@@ -8,7 +8,12 @@ class EntitySelectionDisplay implements IEntityDisplay {
 
   movePosition(position: IPosition) {
     for (const item of this.selection) {
-      item.display.movePosition(position);
+      const itemDisplay = item.display;
+      const itemBounds  = itemDisplay.bounds;
+      itemDisplay.movePosition({
+        left: position.left + (itemBounds.left - position.left),
+        top : position.top  + (itemBounds.top  - position.top)
+      });
     }
   }
 

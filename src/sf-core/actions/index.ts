@@ -109,3 +109,9 @@ export class PostDBAction extends DBAction {
   }
 }
 
+export const ATTRIBUTE_CHANGE = "attributeChange";
+export class AttributeChangeAction extends Action {
+  constructor(readonly key: string, readonly value: string) {
+    super(ATTRIBUTE_CHANGE);
+  }
+}

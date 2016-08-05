@@ -61,6 +61,7 @@ export class EntityEngine {
     for (const childExpression of toArray(await entity.render())) {
       (<IContainerEntity>entity).appendChild(await this._loadAll(childExpression));
     }
+
     return entity;
   }
 }

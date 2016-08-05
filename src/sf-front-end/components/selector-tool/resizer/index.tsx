@@ -73,6 +73,10 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     return this.props.selection.display;
   }
 
+  get file() {
+    return this.props.app.editor.file;
+  }
+
   updatePoint = (point, event) => {
 
     const keepAspectRatio = event.shiftKey;
@@ -149,7 +153,6 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     // when dragging, need to fetch style of the selection
     // so that the dragger is relative to the entity"s position
     const style = this.targetDisplay.bounds;
-    console.log(selection, style);
 
     const sx2 = style.left;
     const sy2 = style.top;
@@ -176,13 +179,13 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
 
       this.moveTarget(bounds.left, bounds.top);
     }, () => {
-      // this.props.file.save();
+      this.file.save();
       this._dragger = void 0;
     });
   }
 
   onPointMouseUp = () => {
-    // this.props.file.save();
+    this.file.save();
   }
 
 

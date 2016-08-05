@@ -1,8 +1,9 @@
 import { IEntity } from "sf-core/entities";
 
 
-export interface IFile {
+export interface IEditorFile {
   ext: string;
   path: string;
   entity: IEntity;
+  save();
 }

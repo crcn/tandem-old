@@ -26,7 +26,7 @@ export class CSSStyleDeclarationExpression extends CSSExpression {
     this.value._flattenDeep(items);
   }
   toString() {
-    return [this.key, ":", this.value.toString(), ";"].join(" ");
+    return [this.key, ":", this.value.toString(), ";"].join("");
   }
 }
 

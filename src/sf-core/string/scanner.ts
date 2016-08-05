@@ -1,12 +1,12 @@
 
 class Scanner {
 
-  private _source:string;
-  private _position:number;
-  private _capture:any; 
+  private _source: string;
+  private _position: number;
+  private _capture: any;
 
   constructor(source) {
-    this._source   = source == void 0 ? '' : String(source);
+    this._source   = source == null ? "" : String(source);
     this._position = 0;
   }
 

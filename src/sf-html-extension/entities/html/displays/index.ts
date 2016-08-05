@@ -1,10 +1,18 @@
 import { BoundingRect, IPosition } from "sf-core/geom";
 import { VisibleHTMLElementEntity } from "../base";
 import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/entities";
-
+import { parse as parseCSS } from "sf-html-extension/parsers/css";
+import { WrapBus } from "mesh";
+import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/parsers/css/expressions";
 
 export class HTMLNodeDisplay implements IEntityDisplay {
-  constructor(readonly entity: VisibleHTMLElementEntity) { }
+
+  private _style: CSSStyleExpression;
+
+  constructor(readonly entity: VisibleHTMLElementEntity) {
+    entity.observe(WrapBus.create(this._updateStyles));
+    this._updateStyles();
+  }
 
   /**
    */
@@ -24,13 +32,13 @@ export class HTMLNodeDisplay implements IEntityDisplay {
    */
 
   movePosition({ left, top }: IPosition) {
-    console.log(this.entity.expression.attributes, left, top);
-    Object.assign(this.node.style, {
-      left: left + 'px',
-      top : top  + 'px'
-    });
 
-    console.log(this.node.style);
+    const style = {
+      left: left + "px",
+      top : top  + "px"
+    };
+
+    this._setExpressionStyle(style);
   }
 
   /**
@@ -72,7 +80,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
         rect.move(parentBounds.left, parentBounds.top);
 
         // break - parent display will also calculate
-        // isolation if it's embedded in an iframe
+        // isolation if it"s embedded in an iframe
         break;
       }
     }
@@ -88,5 +96,30 @@ export class HTMLNodeDisplay implements IEntityDisplay {
       p = p.parentNode;
     }
     return parentDisplays;
+  }
+
+  private _updateStyles = () => {
+    const style = this.entity.getAttribute("style") || "";
+    this._style = <CSSStyleExpression>parseCSS(style);
+  }
+
+
+  private _setExpressionStyle(styles: Object) {
+    for (const key in styles) {
+      const value = styles[key];
+      let found = false;
+      for (const declaration of this._style.declarations) {
+        if (declaration.key === key) {
+          declaration.value = value;
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        this._style.declarations.push(new CSSStyleDeclarationExpression(key, value, null));
+      }
+    }
+
+    this.entity.setAttribute("style", this._style.toString());
   }
 }

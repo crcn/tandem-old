@@ -74,20 +74,25 @@ export class HTMLElementEntity extends Element implements IHTMLEntity {
   }
 
   setAttribute(name: string, value: string) {
-    super.setAttribute(name, value);
-    if (!this.expression) return;
+
     if (this.section instanceof NodeSection) {
       (<IElement>this.section.targetNode).setAttribute(name, value);
     }
+
+    let found = false;
     for (const attribute of this.expression.attributes) {
       if (attribute.name === name) {
         attribute.value = value;
-        return;
+        found = true;
       }
     }
 
-    // this is janky as hell - attributes should be immutable here
-    this.expression.attributes.push(new HTMLAttributeExpression(name, value, undefined));
+    // if the attribute does not exist on the expression, then create a new one.
+    if (!found) {
+      this.expression.attributes.push(new HTMLAttributeExpression(name, value, undefined));
+    }
+
+    super.setAttribute(name, value);
   }
 
   _link(child) {

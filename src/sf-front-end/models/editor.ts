@@ -1,4 +1,4 @@
-import { IFile } from "./base";
+import { IEditorFile } from "./base";
 
 const MIN_ZOOM = 0.2;
 const MAX_ZOOM = 2;
@@ -38,5 +38,5 @@ export class Editor {
   /**
    */
 
-  public file: IFile;
+  public file: IEditorFile;
 }

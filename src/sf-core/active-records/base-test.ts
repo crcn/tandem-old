@@ -1,0 +1,1 @@
+import { ActiveRecord } from "./base";

@@ -54,15 +54,15 @@ describe(__filename + "#", () => {
     });
 
     it("returns the correct bounds of a DIV if it's isolated within an iframe", async () => {
-      expect(await calculateBounds(`<template style="position:absolute;top:100px;left:100px">
+      expect(await calculateBounds(`<template style="position:absolute;top:100px;left:100px;">
         <div id="target" style="width:100px;height:100px;">
         </div>
       </template>`)).to.eql([100, 100, 100, 100]);
     });
 
     it("returns the correct bounds of a DIV in a doubly nested iframe", async () => {
-      expect(await calculateBounds(`<template style="position:absolute;top:100px;left:100px">
-        <template style="position:absolute;top:100px;left:100px">
+      expect(await calculateBounds(`<template style="position:absolute;top:100px;left:100px;">
+        <template style="position:absolute;top:100px;left:100px;">
           <div id="target" style="width:100px;height:100px;">
           </div>
         </template>

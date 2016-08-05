@@ -3,19 +3,22 @@ import {
   ActiveRecordFactoryDependency,
   IInjectable,
   Dependencies,
-  DEPENDENCIES_NS
+  DEPENDENCIES_NS,
+  BUS_NS
 } from "sf-core/dependencies";
 
 import { IActor } from "sf-core/actors";
 import { inject } from "sf-core/decorators";
-import { IEntity, EntityEngine } from "sf-core/entities";
-import { parse as parseHTML } from "../parsers/html";
-import { PropertyChangeAction } from "sf-core/actions";
-import { Observable } from "sf-core/observable";
-import { IActiveRecord } from "sf-core/active-records";
 import { BubbleBus } from "sf-core/busses";
+import mergeHTML from "./merge-html";
+import { Observable } from "sf-core/observable";
+import { IEditorFile } from "sf-front-end/models/base";
+import { IActiveRecord } from "sf-core/active-records";
+import { IEntity, EntityEngine } from "sf-core/entities";
+import { parse as parseHTML } from "sf-html-extension/parsers/html";
+import { PropertyChangeAction, UpdateAction } from "sf-core/actions";
 
-export class SfFile extends Observable implements IInjectable, IActiveRecord {
+export class SfFile extends Observable implements IInjectable, IActiveRecord, IEditorFile {
 
   public path: string;
   public content: string;
@@ -23,6 +26,9 @@ export class SfFile extends Observable implements IInjectable, IActiveRecord {
 
   @inject(DEPENDENCIES_NS)
   readonly dependencies: Dependencies;
+
+  @inject(BUS_NS)
+  readonly bus: IActor;
 
   private _entityObserver: IActor;
   private _engine: EntityEngine;
@@ -70,6 +76,16 @@ export class SfFile extends Observable implements IInjectable, IActiveRecord {
 
     // notify observers that the file has changed
     this.notify(new PropertyChangeAction("entity", this._entity, undefined));
+  }
+
+  /**
+   */
+
+  public save() {
+    this.content = mergeHTML(this.content, this._entity.expression.toString());
+    this.bus.execute(new UpdateAction("files", this.serialize(), {
+      path: this.path
+    }));
   }
 }
 

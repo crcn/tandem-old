@@ -48,7 +48,7 @@ export async function activate(context: vscode.ExtensionContext) {
         });
 
         let oldText = editor.document.getText();
-        var newContent = _content = "";// mergeHTML(oldText, content);
+        var newContent = _content = content;
 
         await editor.edit(function(edit) {
             edit.replace(

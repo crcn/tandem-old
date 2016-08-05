@@ -1,4 +1,4 @@
-import { Action } from "sf-core/actions";
+import { Action, AttributeChangeAction } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
 import { CallbackBus } from "sf-core/busses";
 import { IObservable, Observable } from "sf-core/observable";
@@ -216,14 +216,18 @@ export class Element extends ContainerNode implements IElement {
     }
   }
   setAttribute(key: string, value: any) {
+    let found = false;
     for (const attribute of this.attributes) {
       if (attribute.name === key) {
         attribute.value = value;
-        return;
+        found = true;
       };
     }
+    if (!found) {
+      this.attributes.push(new Attribute(key, value));
+    }
 
-    this.attributes.push(new Attribute(key, value));
+    this.notify(new AttributeChangeAction(key, value));
   }
 
   cloneNode(deep: boolean = false): Element {

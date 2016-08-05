@@ -75,7 +75,7 @@ export class HTMLAttributeExpression extends BaseExpression {
     const buffer = [this.name];
     const value = this.value;
     if (value !== "\"\"") {
-      buffer.push("=", value);
+      buffer.push("=", "\"", value, "\"");
     }
     return buffer.join("");
   }
