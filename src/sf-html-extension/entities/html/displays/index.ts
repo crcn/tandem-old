@@ -1,4 +1,4 @@
-import { BoundingRect } from "sf-core/geom";
+import { BoundingRect, IPosition } from "sf-core/geom";
 import { VisibleHTMLElementEntity } from "../base";
 import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/entities";
 
@@ -21,10 +21,23 @@ export class HTMLNodeDisplay implements IEntityDisplay {
   }
 
   /**
+   */
+
+  movePosition({ left, top }: IPosition) {
+    console.log(this.entity.expression.attributes, left, top);
+    Object.assign(this.node.style, {
+      left: left + 'px',
+      top : top  + 'px'
+    });
+
+    console.log(this.node.style);
+  }
+
+  /**
    * returns the DOM node of the entity
    */
 
-  get node(): Element {
+  get node(): HTMLElement {
     return <any>this.entity.section.targetNode;
   }
 

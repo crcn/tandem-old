@@ -32,7 +32,7 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     this.props.app.actors.splice(this.props.app.actors.indexOf(this), 1);
   }
 
-  onDoubleClick() {
+  onDoubleClick = () => {
     // this.props.bus.execute({
     //   type      : ENTITY_PREVIEW_DOUBLE_CLICK,
     //   selection : this.props.selection,
@@ -73,7 +73,7 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     return this.props.selection.display;
   }
 
-  updatePoint(point, event) {
+  updatePoint = (point, event) => {
 
     const keepAspectRatio = event.shiftKey;
     const keepCenter      = event.altKey;
@@ -142,16 +142,18 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     }, 100);
   }
 
-  startDragging(event) {
+  startDragging = (event) => {
     event.stopPropagation();
     const selection = this.props.selection;
 
     // when dragging, need to fetch style of the selection
     // so that the dragger is relative to the entity"s position
     const style = this.targetDisplay.bounds;
+    console.log(selection, style);
 
     const sx2 = style.left;
     const sy2 = style.top;
+
 
     this._dragger = startDrag(event, (event2, { delta }) => {
 
@@ -169,7 +171,7 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
       };
 
       this.setState({
-        dragBounds: bounds,
+        dragBounds: bounds
       });
 
       this.moveTarget(bounds.left, bounds.top);
@@ -179,18 +181,14 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     });
   }
 
-  onPointMouseUp() {
+  onPointMouseUp = () => {
     // this.props.file.save();
   }
 
 
   moveTarget(left, top) {
     this._isMoving();
-
-    // this.targetDisplay.setPositionFromAbsolutePoint({
-    //   left : left,
-    //   top  : top
-    // });
+    this.targetDisplay.movePosition({ left, top });
   }
 
   render() {
@@ -237,13 +235,13 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
         ref="selection"
         className="m-selector-component--selection"
         style={resizerStyle}
-        onMouseDown={this.startDragging.bind(this)}
-        onDoubleClick={this.onDoubleClick.bind(this)}
+        onMouseDown={this.startDragging}
+        onDoubleClick={this.onDoubleClick}
       >
         <PathComponent
           showPoints={capabilities.resizable && !this.state.dragging}
-          onPointChange={this.updatePoint.bind(this)}
-          onPointMouseUp={this.onPointMouseUp.bind(this)}
+          onPointChange={this.updatePoint}
+          onPointMouseUp={this.onPointMouseUp}
           zoom={this.props.zoom}
           points={points}
           strokeWidth={strokeWidth}

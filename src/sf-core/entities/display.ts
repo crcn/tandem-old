@@ -1,4 +1,5 @@
 import { BoundingRect } from "../geom";
+import { IPosition } from "../geom";
 
 // TODO - possibly move this over to sf-core/display or similar
 export class DisplayCapabilities {
@@ -29,4 +30,5 @@ export class DisplayCapabilities {
 export interface IEntityDisplay {
   bounds: BoundingRect;
   capabilities: DisplayCapabilities;
+  movePosition(position: IPosition);
 }

@@ -1,5 +1,5 @@
 import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/entities";
-import { BoundingRect } from "sf-core/geom";
+import { BoundingRect, IPosition } from "sf-core/geom";
 import { Element } from "sf-core/markup";
 import { DisplayEntityCollection } from "./display-entity-collection";
 import { expect } from "chai";
@@ -12,6 +12,8 @@ describe(__filename + "#", () => {
       readonly capabilities: DisplayCapabilities = new DisplayCapabilities(true, true)
     ) {
     }
+
+    movePosition(value: IPosition) { }
   }
 
   class VisibleEntity extends Element implements IVisibleEntity {
