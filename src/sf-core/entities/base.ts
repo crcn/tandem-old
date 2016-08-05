@@ -14,7 +14,7 @@ export interface IExpression {
 export interface IEntity extends INode {
 
   // TODO - expression needs to be source, and source should be "any"
-  readonly expression:IExpression;
+  expression:IExpression;
 
   /**
    * the type property helps other parts of the application figure out how

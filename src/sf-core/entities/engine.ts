@@ -30,6 +30,10 @@ export class EntityEngine {
 
   constructor(readonly dependencies: Dependencies) { }
 
+  public get entity() {
+    return this._entity;
+  }
+
   async load(source: IDiffableNode): Promise<IEntity> {
 
     const newEntity = await this._loadAll(source);
@@ -39,6 +43,10 @@ export class EntityEngine {
     if (this._entity && this._entity.constructor === newEntity.constructor) {
       const changes = diff(this._entity, newEntity);
       patch(this._entity, changes, node => node);
+
+      // necessary to update the source expressions so that on save(),
+      // the source expressions are properly stringified back into the source string.
+      updateExpressions(this._entity, newEntity);
     } else {
       this._entity = newEntity;
     }
@@ -68,4 +76,13 @@ export class EntityEngine {
 
 function toArray(value) {
   return Array.isArray(value) ? <Array<any>>value : value == null ? [] : [value];
+}
+
+function updateExpressions(toEntity: IEntity, fromEntity: IEntity) {
+  toEntity.expression = fromEntity.expression;
+  if (toEntity["childNodes"]) {
+    for (let i = (<IContainerEntity>fromEntity).childNodes.length; i--; ) {
+      updateExpressions(<IEntity>(<IContainerEntity>toEntity).childNodes[i], <IEntity>(<IContainerEntity>fromEntity).childNodes[i]);
+    }
+  }
 }

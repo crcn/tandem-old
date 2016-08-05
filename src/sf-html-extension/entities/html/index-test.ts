@@ -15,11 +15,15 @@ describe(__filename + "#", () => {
     );
   });
 
-  async function loadDiv(source) {
+  async function loadEngine(source) {
     const engine = new EntityEngine(dependencies);
+    await engine.load(parseHTML(source));
+    return engine;
+  }
+
+  async function loadDiv(source) {
     const div = document.createElement("div");
-    const entity = await engine.load(parseHTML(source));
-    div.appendChild((<HTMLElementEntity>entity).section.toFragment());
+    div.appendChild((<HTMLElementEntity>(await loadEngine(source)).entity).section.toFragment());
     return div;
   }
 
@@ -68,6 +72,25 @@ describe(__filename + "#", () => {
       </template><test id="target" />`);
 
       console.log(div);
+    });
+  });
+
+  describe("when updating existing entities", () => {
+
+    let engine: EntityEngine;
+
+    beforeEach(function() {
+      engine = new EntityEngine(dependencies);
+    });
+
+    it("properly adds new children to the existing entity expressions", async () => {
+      const div = document.createElement("div");
+      await engine.load(parseHTML(`<div />`));
+      div.appendChild((<HTMLElementEntity>engine.entity).section.toFragment());
+      expect(div.innerHTML).to.equal("<div></div>");
+      await engine.load(parseHTML(`<div>a b</div>`));
+      expect(div.innerHTML).to.equal("<div>a b</div>");
+      expect(engine.entity.expression.toString()).to.equal(`<div>a b</div>`);
     });
   });
 });

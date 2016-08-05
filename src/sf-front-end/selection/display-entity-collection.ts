@@ -7,12 +7,13 @@ class EntitySelectionDisplay implements IEntityDisplay {
   constructor(readonly selection: DisplayEntityCollection) { }
 
   movePosition(position: IPosition) {
+    const bounds = this.bounds;
     for (const item of this.selection) {
       const itemDisplay = item.display;
       const itemBounds  = itemDisplay.bounds;
       itemDisplay.movePosition({
-        left: position.left + (itemBounds.left - position.left),
-        top : position.top  + (itemBounds.top  - position.top)
+        left: position.left + (itemBounds.left - bounds.left),
+        top : position.top  + (itemBounds.top  - bounds.top)
       });
     }
   }
