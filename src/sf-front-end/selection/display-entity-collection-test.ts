@@ -8,12 +8,19 @@ describe(__filename + "#", () => {
 
   class MockDisplay implements IEntityDisplay {
     constructor(
-      readonly bounds: BoundingRect,
+      public bounds: BoundingRect,
       readonly capabilities: DisplayCapabilities = new DisplayCapabilities(true, true)
     ) {
     }
 
-    movePosition(value: IPosition) { }
+    get position() {
+      const bounds = this.bounds;
+      return { left: bounds.left, top: bounds.top };
+    }
+
+    set position({ left, top }: IPosition) {
+      this.bounds = new BoundingRect(left, top, left + this.bounds.width, top + this.bounds.height);
+    }
   }
 
   class VisibleEntity extends Element implements IVisibleEntity {
@@ -23,6 +30,7 @@ describe(__filename + "#", () => {
       super("entity");
     }
     render() { return null; }
+    dispose() { }
   }
 
   it("can be created", () => {
@@ -70,5 +78,15 @@ describe(__filename + "#", () => {
     expect(selection.display.capabilities.resizable).to.equal(false);
   });
 
-  // it("")
+  it("can change the bounds for multiple entities", () => {
+    const selection = new DisplayEntityCollection(
+      new VisibleEntity(new MockDisplay(new BoundingRect(0, 0, 100, 100))),
+      new VisibleEntity(new MockDisplay(new BoundingRect(100, 100, 200, 200)))
+    );
+
+    selection.display.bounds = new BoundingRect(200, 200, 300, 300);
+
+    expect(_simplifyBounds(selection[0].display.bounds)).to.eql([200, 200, 250, 250]);
+    expect(_simplifyBounds(selection[1].display.bounds)).to.eql([250, 250, 300, 300]);
+  });
 });

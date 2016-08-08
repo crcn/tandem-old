@@ -2,7 +2,6 @@ import { Bus } from "mesh";
 import { Action } from "../actions";
 import { IActor } from "../actors";
 import { IEntity } from "../entities";
-import { Service } from "sf-core/services";
 import { IApplication } from "sf-core/application";
 import { IDiffableNode } from "../markup";
 import { IActiveRecord } from "../active-records";
@@ -25,11 +24,11 @@ export * from "./base";
 export const APPLICATION_SERVICES_NS = "application/services";
 export class ApplicationServiceDependency extends ClassFactoryDependency implements IFactory {
 
-  constructor(id: string, clazz: { new(): Service }) {
+  constructor(id: string, clazz: { new(): IActor }) {
     super(`${APPLICATION_SERVICES_NS}/${id}`, clazz);
   }
 
-  create(): Service {
+  create(): IActor {
     return super.create();
   }
 

@@ -126,6 +126,12 @@ export class HTMLElementEntity extends Element implements IHTMLEntity {
     const element = document.createElement(this.nodeName) as any;
     return new NodeSection(element);
   }
+
+  dispose() {
+    if (this.parentNode) {
+      this.parentNode.removeChild(this);
+    }
+  }
 }
 
 export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisibleEntity {
@@ -174,6 +180,12 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   }
 
   abstract createDOMNode(nodeValue: any): Node;
+
+  dispose() {
+    if (this.parentNode) {
+      this.parentNode.removeChild(this);
+    }
+  }
 }
 
 export class HTMLTextEntity extends HTMLValueNodeEntity<HTMLTextExpression> {

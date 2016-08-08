@@ -1,11 +1,11 @@
 import { IActor } from "sf-core/actors";
-import { IApplication } from "sf-core/application";
+import { FrontEndApplication } from "sf-front-end/application";
 import { SelectAction } from "sf-front-end/actions";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 import { BaseApplicationService } from "sf-core/services";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 
-export default class PointerTool extends BaseApplicationService<IApplication> {
+export default class PointerTool extends BaseApplicationService<FrontEndApplication> {
 
   name = "pointer";
   main = true;
@@ -13,6 +13,10 @@ export default class PointerTool extends BaseApplicationService<IApplication> {
 
   stageCanvasMouseDown() {
     this.bus.execute(new SelectAction());
+  }
+
+  deleteSelection() {
+    this.app.editor.selection.dispose();
   }
 }
 

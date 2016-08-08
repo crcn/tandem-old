@@ -14,7 +14,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   private _toolsHidden: any;
   private _previousZoom: number;
 
-  onMouseDown(event) {
+  onMouseDown = (event) => {
    this.bus.execute(Object.assign({}, event, {
       type: {
         mousedown: STAGE_CANVAS_MOUSE_DOWN
@@ -108,7 +108,11 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     if (!entity) return null;
 
     return (<IsolateComponent ref="isolate" onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
-      <div className="m-editor-stage-canvas" onMouseMove={this.onMouseMove} style={style} onMouseDown={this.onMouseDown.bind(this)}>
+      <div
+        className="m-editor-stage-canvas"
+        onMouseMove={this.onMouseMove}
+        style={style}
+        onMouseDown={this.onMouseDown}>
         <PreviewLayerComponent {...this.props} entity={entity} />
         {this._toolsHidden ? void 0 : <ToolsLayerComponent entity={entity} {...this.props} />}
       </div>

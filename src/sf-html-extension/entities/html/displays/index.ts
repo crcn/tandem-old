@@ -5,9 +5,21 @@ import { parse as parseCSS } from "sf-html-extension/parsers/css";
 import { WrapBus } from "mesh";
 import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/parsers/css/expressions";
 
+function calculateCSSMeasurments(style) {
+  const calculated = {};
+  for (const key in style) {
+    if (/left|top|right|bottom|width|height|paddingLeft|paddingTop|paddingRight|paddingBottom/.test(key)) {
+      calculated[key] = Number(style[key].replace("px", ""));
+    }
+  }
+  return calculated;
+}
+
 export class HTMLNodeDisplay implements IEntityDisplay {
 
-  private _style: CSSStyleExpression;
+  private _styleExpression: CSSStyleExpression;
+  private _style: Object;
+  private _declarationByKey: Object;
 
   constructor(readonly entity: VisibleHTMLElementEntity) {
     entity.observe(WrapBus.create(this._updateStyles));
@@ -28,17 +40,17 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     );
   }
 
+  get position(): IPosition {
+    const bounds = this.bounds;
+    return { left: bounds.left, top: bounds.top };
+  }
+
   /**
    */
 
-  movePosition({ left, top }: IPosition) {
-
-    const style = {
-      left: left + "px",
-      top : top  + "px"
-    };
-
-    this._setExpressionStyle(style);
+  set position({ left, top }: IPosition) {
+    const bounds = this.bounds;
+    this.bounds = new BoundingRect(left, top, left + bounds.width, top + bounds.height);
   }
 
   /**
@@ -74,15 +86,33 @@ export class HTMLNodeDisplay implements IEntityDisplay {
   }
 
   set bounds(value: BoundingRect) {
-    // const clientRect = this.node.getBoundingClientRect();
-    const style = {
-      left: value.left + "px",
-      top : value.top + "px",
-      width: value.width + "px",
-      height: value.height + "px"
-    };
 
-    this._setExpressionStyle(style);
+    const bounds = this.bounds;
+
+    const existingStyle: any = calculateCSSMeasurments(this._style);
+    const computedStyle: any = calculateCSSMeasurments(window.getComputedStyle(this.node));
+
+    const newStyle: any = {};
+
+    if (value.left !== bounds.left) {
+      const originLeft = bounds.left - existingStyle.left || 0;
+      newStyle.left = (value.left - originLeft) + "px";
+    }
+
+    if (value.top !== bounds.top) {
+      const originTop  = bounds.top  - existingStyle.top || 0;
+      newStyle.top = (value.top - originTop) + "px";
+    }
+
+    if (value.width !== bounds.width) {
+      newStyle.width = (value.width - computedStyle.paddingLeft - computedStyle.paddingRight) + "px";
+    }
+
+    if (value.height !== bounds.height) {
+      newStyle.height = (value.height - computedStyle.paddingTop - computedStyle.paddingBottom) + "px";
+    }
+
+    this._setExpressionStyle(newStyle);
   }
 
   private _addIsolationOffset(rect: BoundingRect) {
@@ -112,26 +142,29 @@ export class HTMLNodeDisplay implements IEntityDisplay {
 
   private _updateStyles = () => {
     const style = this.entity.getAttribute("style") || "";
-    this._style = <CSSStyleExpression>parseCSS(style);
+    this._styleExpression = <CSSStyleExpression>parseCSS(style);
+    this._style = {};
+    this._declarationByKey = {};
+    for (const declaration of this._styleExpression.declarations) {
+      this._style[declaration.key] = declaration.value.toString();
+      this._declarationByKey[declaration.key] = declaration;
+    }
   }
 
 
   private _setExpressionStyle(styles: Object) {
+
     for (const key in styles) {
       const value = styles[key];
-      let found = false;
-      for (const declaration of this._style.declarations) {
-        if (declaration.key === key) {
-          declaration.value = value;
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        this._style.declarations.push(new CSSStyleDeclarationExpression(key, value, null));
+
+      let declaration: CSSStyleDeclarationExpression;
+      if ((declaration = this._declarationByKey[key])) {
+        declaration.value = value;
+      } else {
+        this._styleExpression.declarations.push(new CSSStyleDeclarationExpression(key, value, null));
       }
     }
 
-    this.entity.setAttribute("style", this._style.toString());
+    this.entity.setAttribute("style", this._styleExpression.toString());
   }
 }

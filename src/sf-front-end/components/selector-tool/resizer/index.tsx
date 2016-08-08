@@ -198,7 +198,7 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
 
   moveTarget(left, top) {
     this._isMoving();
-    this.targetDisplay.movePosition({ left, top });
+    this.targetDisplay.position = { left, top };
   }
 
   render() {

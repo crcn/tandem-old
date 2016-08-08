@@ -16,6 +16,13 @@ export class ChangeAction extends Action {
   }
 }
 
+export const DISPOSE = "dispose";
+export class DisposeAction extends Action {
+  constructor() {
+    super(DISPOSE);
+  }
+}
+
 export const PROPERTY_CHANGE = "propertyChange";
 export class PropertyChangeAction extends Action {
   constructor(readonly property: string, readonly newValue: any, readonly oldValue: any) {

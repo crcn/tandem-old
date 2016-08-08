@@ -1,5 +1,6 @@
 import { BaseExpression, ICursorPosition, flattenEach } from "../core/expression";
 import { IExpression } from "sf-core/entities";
+import { register as registerSerializer  } from "sf-core/serialize";
 
 export interface IHTMLValueNodeExpression extends IExpression {
   nodeValue: any;
@@ -65,6 +66,8 @@ export class HTMLElementExpression extends HTMLExpression {
     return buffer.join("");
   }
 }
+
+registerSerializer(HTMLElementExpression);
 
 export const HTML_ATTRIBUTE = "htmlAttribute";
 export class HTMLAttributeExpression extends BaseExpression {

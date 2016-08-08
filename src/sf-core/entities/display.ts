@@ -30,5 +30,5 @@ export class DisplayCapabilities {
 export interface IEntityDisplay {
   bounds: BoundingRect;
   capabilities: DisplayCapabilities;
-  movePosition(position: IPosition);
+  position: IPosition;
 }

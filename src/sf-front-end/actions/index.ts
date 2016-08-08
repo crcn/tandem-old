@@ -56,3 +56,17 @@ export class OpenFileAction extends Action {
     super(OPEN_FILE);
   }
 }
+
+export const PASTE = "paste";
+export class PasteAction extends Action {
+  constructor(readonly item: DataTransferItem) {
+    super(PASTE);
+  }
+}
+
+export const DELETE_SELECTION = "deleteSelection";
+export class DeleteSelectionAction extends Action {
+  constructor() {
+    super(DELETE_SELECTION);
+  }
+}

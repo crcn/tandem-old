@@ -2,7 +2,9 @@ import { IEntity } from "sf-core/entities";
 import { BaseApplicationService } from "sf-core/services";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 import { loggable, bindable, isPublic } from "sf-core/decorators";
+import { DISPOSE } from "sf-core/actions";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
+import { Selection } from "sf-front-end/selection";
 
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
@@ -52,7 +54,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     const app = this.app;
 
     if (!items.length) {
-      return app.editor.selection = [];
+      return app.editor.selection = new Selection<any>();
     }
 
     const prevSelection = app.editor.selection;
@@ -79,7 +81,19 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
       }
     }
 
-    app.editor.selection = newSelection;
+    app.editor.selection = <Selection<any>>newSelection;
+    app.editor.selection.observe({
+      execute: (action) => {
+        if (action.type === DISPOSE) {
+          console.log("DESEL!!");
+          this.select({
+            items: [],
+            keepPreviousSelection: false,
+            toggle: false
+          });
+        }
+      }
+    });
   }
 }
 

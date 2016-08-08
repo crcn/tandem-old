@@ -40,13 +40,17 @@ describe(__filename + "#", () => {
     return <IVisibleEntity>(entity.flatten().find(sift({ "attributes.name": "id", "attributes.value": "target" })) as any);
   }
 
+  function simplifyBounds(bounds) {
+    return [bounds.left, bounds.top, bounds.width, bounds.height];
+  }
+
+  async function calculateBounds(source) {
+    const target = await loadTarget(source);
+    return simplifyBounds(target.display.bounds);
+  }
+
   describe("bounds ", () => {
 
-    async function calculateBounds(source) {
-      const target = await loadTarget(source);
-      const bounds = target.display.bounds;
-      return [bounds.left, bounds.top, bounds.width, bounds.height];
-    }
 
     it("are correct for a simple div", async () => {
       expect(await calculateBounds(`<div id="target" style="width:100px;height:100px;">
@@ -75,58 +79,73 @@ describe(__filename + "#", () => {
       </div>`)).to.eql([60, 110, 100, 100]);
     });
 
-    describe("capabilities ", function() {
 
-      async function calculateCapabilities(source) {
-        const target = await loadTarget(source);
-        return target.display.capabilities;
-      }
+  });
 
-      it("movable=true if style.position!=static", async () => {
-        expect((await calculateCapabilities(`
-          <div id="target" style="position:static;" />
-        `)).movable).to.equal(false);
+  describe("capabilities ", function() {
 
-        expect((await calculateCapabilities(`
-          <div id="target" style="position:relative;" />
-        `)).movable).to.equal(true);
+    async function calculateCapabilities(source) {
+      const target = await loadTarget(source);
+      return target.display.capabilities;
+    }
 
-        expect((await calculateCapabilities(`
-          <div id="target" style="position:absolute;" />
-        `)).movable).to.equal(true);
+    it("movable=true if style.position!=static", async () => {
+      expect((await calculateCapabilities(`
+        <div id="target" style="position:static;" />
+      `)).movable).to.equal(false);
 
-        expect((await calculateCapabilities(`
-          <div id="target" style="position:fixed;" />
-        `)).movable).to.equal(true);
-      });
+      expect((await calculateCapabilities(`
+        <div id="target" style="position:relative;" />
+      `)).movable).to.equal(true);
 
-      it("resizale=true if style.position=absolute|fixed || style.displat !== inline", async () => {
+      expect((await calculateCapabilities(`
+        <div id="target" style="position:absolute;" />
+      `)).movable).to.equal(true);
 
-        expect((await calculateCapabilities(`
-          <div id="target" style="position:absolute;" />
-        `)).resizable).to.equal(true);
+      expect((await calculateCapabilities(`
+        <div id="target" style="position:fixed;" />
+      `)).movable).to.equal(true);
+    });
 
-        expect((await calculateCapabilities(`
-          <div id="target" style="position:fixed;" />
-        `)).resizable).to.equal(true);
+    it("resizale=true if style.position=absolute|fixed || style.displat !== inline", async () => {
 
-        expect((await calculateCapabilities(`
-          <div id="target" style="display: inline-block;" />
-        `)).resizable).to.equal(true);
+      expect((await calculateCapabilities(`
+        <div id="target" style="position:absolute;" />
+      `)).resizable).to.equal(true);
 
-        expect((await calculateCapabilities(`
-          <div id="target" style="display: inline;" />
-        `)).resizable).to.equal(false);
+      expect((await calculateCapabilities(`
+        <div id="target" style="position:fixed;" />
+      `)).resizable).to.equal(true);
 
-        expect((await calculateCapabilities(`
-          <div id="target" style="display: inline; position: absolute;" />
-        `)).resizable).to.equal(true);
+      expect((await calculateCapabilities(`
+        <div id="target" style="display: inline-block;" />
+      `)).resizable).to.equal(true);
 
-        expect((await calculateCapabilities(`
-          <div id="target" style="display: block;" />
-        `)).resizable).to.equal(true);
+      expect((await calculateCapabilities(`
+        <div id="target" style="display: inline;" />
+      `)).resizable).to.equal(false);
 
-      });
+      expect((await calculateCapabilities(`
+        <div id="target" style="display: inline; position: absolute;" />
+      `)).resizable).to.equal(true);
+
+      expect((await calculateCapabilities(`
+        <div id="target" style="display: block;" />
+      `)).resizable).to.equal(true);
+    });
+  });
+
+  describe("setting bounds", () => {
+    it("subtracts padding", async () => {
+
+      const target = await loadTarget(`
+        <div id="target" style="position:absolute;width:100px;height:100px;padding:10px;">
+
+        </div>
+      `);
+
+      target.display.bounds = new BoundingRect(0, 0, 200, 200);
+      expect(simplifyBounds(target.display.bounds)).to.eql([0, 0, 200, 200]);
     });
   });
 });

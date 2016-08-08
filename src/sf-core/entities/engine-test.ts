@@ -35,6 +35,7 @@ describe(__filename + "#", () => {
         return null;
       }
       cloneNode() { return null; }
+      dispose() { }
     }
     const dependencies = new Dependencies();
     dependencies.register(new EntityFactoryDependency("custom", CustomEntity));
@@ -55,6 +56,7 @@ describe(__filename + "#", () => {
         return { nodeName: "#text", nodeValue: "something" };
       }
       cloneNode() { return null; }
+      dispose(){ }
     }
 
     class TextEntity extends Node implements IEntity {
@@ -66,12 +68,14 @@ describe(__filename + "#", () => {
         return null;
       }
       cloneNode() { return null; }
+      dispose(){ }
     }
 
     const dependencies = new Dependencies(
       new EntityFactoryDependency("custom1", CustomEntity),
       new EntityFactoryDependency("#text", TextEntity)
     );
+
     const engine = new EntityEngine(dependencies);
     let currentEntity = await engine.load(element("custom1"));
     expect((<IContainerNode><any>currentEntity).childNodes.length).to.equal(1);

@@ -1,4 +1,6 @@
 import { IEditorFile } from "./base";
+import { Selection } from "../selection";
+import { IDisposable } from "sf-core/object";
 
 const MIN_ZOOM = 0.2;
 const MAX_ZOOM = 2;
@@ -19,7 +21,7 @@ export class Editor {
    * The currently selected items in the preview
    */
 
-  public selection: Array<any> = [];
+  public selection: Selection<any> = new Selection<any>();
 
   /**
    * The current tool

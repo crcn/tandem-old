@@ -1,43 +1,45 @@
-import { IApplication } from "sf-core/application";
+import { FrontEndApplication } from "sf-front-end/application";
 
 import { Logger } from "sf-core/logger";
 import { loggable } from "sf-core/decorators";
 import { BaseApplicationService } from "sf-core/services";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
+import { PasteAction } from "sf-front-end/actions";
+import { serialize } from "sf-core/serialize";
 
 function targetIsInput(event) {
   return /input|textarea/i.test(event.target.nodeName);
 }
 
 @loggable()
-export default class ClipboardService extends BaseApplicationService<IApplication> {
+export default class ClipboardService extends BaseApplicationService<FrontEndApplication> {
 
   public logger: Logger;
 
   initialize() {
     document.addEventListener("copy", (event: any) => {
       if (targetIsInput(event)) return;
-      this.logger.info("handle copy");
 
-      // var selection = this.app.selection.map((entity) => (
-      //   entity.expression
-      // ));
+      const content = serialize(this.app.editor.selection.map((entity) => (
+        entity.expression
+      )));
 
-      const selection = [];
+      console.log(content);
 
-      event.clipboardData.setData("text/x-entity", JSON.stringify(selection));
+      event.clipboardData.setData("text/x-entity", content);
+      console.log(content);
       event.preventDefault();
     });
 
     document.addEventListener("paste", (event: any) => {
-      this.logger.info("handle paste");
       Array.prototype.forEach.call(event.clipboardData.items, this._paste);
     });
   }
 
-  _paste = async (item) => {
+  _paste = async (item: DataTransferItem) => {
+
     try {
-      // await this.bus.execute({ type: "paste", item: item });
+      await this.bus.execute(new PasteAction(item));
     } catch (e) {
       this.logger.warn("cannot paste x-entity data: ", item.type);
     }

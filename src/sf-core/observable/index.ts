@@ -9,7 +9,11 @@ export interface IObservable {
 
 export class Observable implements IObservable {
   private _observers: any;
-  constructor() { }
+  constructor(private _target?: IObservable) {
+    if (!this._target) {
+      this._target = this;
+    }
+  }
 
   observe(actor: IActor) {
     if (!this._observers) {
@@ -40,7 +44,7 @@ export class Observable implements IObservable {
 
   public notify(action: Action) {
     if (action.canPropagate === false) return;
-    action.currentTarget = this;
+    action.currentTarget = this._target;
     if (!this._observers) return;
     if (!Array.isArray(this._observers)) return this._observers.execute(action);
     for (const observer of this._observers) {

@@ -1,6 +1,6 @@
 import { IDiffableNode, IDiffableElement, IDiffableValueNode, INode, IContainerNode, Element, ContainerNode, ValueNode } from "../markup";
 import { IEntityDisplay } from "./display";
-
+import { IDisposable } from "../object";
 
 export interface IExpression {
 
@@ -11,7 +11,7 @@ export interface IExpression {
 
 // TODO - IEntity should not extend INode since it is not limited to the markup lang
 // TODO - should extend ITyped interface
-export interface IEntity extends INode {
+export interface IEntity extends INode, IDisposable {
 
   // TODO - expression needs to be source, and source should be "any"
   expression:IExpression;
@@ -28,13 +28,6 @@ export interface IEntity extends INode {
    */
 
   render();
-
-  /*
-  TODO props:
-
-  parent: IEntity;
-  children: IEntity;
-  */
 }
 
 export interface IVisibleEntity extends IEntity {
