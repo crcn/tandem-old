@@ -22,6 +22,12 @@ class EntitySelectionDisplay implements IEntityDisplay {
     return BoundingRect.merge(...this.selection.map((entity) => entity.display.bounds));
   }
 
+  set bounds(value: BoundingRect) {
+    for (const item of this.selection) {
+      item.display.bounds = value;
+    }
+  }
+
   get capabilities() {
     return DisplayCapabilities.merge(...this.selection.map((entity) => entity.display.capabilities));
   }

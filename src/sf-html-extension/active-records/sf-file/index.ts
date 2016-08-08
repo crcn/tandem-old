@@ -82,7 +82,12 @@ export class SfFile extends Observable implements IInjectable, IActiveRecord, IE
    */
 
   public save() {
+
+    // copy whitespace over to new content
     this.content = mergeHTML(this.content, this._entity.expression.toString());
+
+    // TODO - beautify new content here
+
     this.bus.execute(new UpdateAction("files", this.serialize(), {
       path: this.path
     }));

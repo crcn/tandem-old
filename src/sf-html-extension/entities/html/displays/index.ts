@@ -73,6 +73,18 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     return rect;
   }
 
+  set bounds(value: BoundingRect) {
+    // const clientRect = this.node.getBoundingClientRect();
+    const style = {
+      left: value.left + "px",
+      top : value.top + "px",
+      width: value.width + "px",
+      height: value.height + "px"
+    };
+
+    this._setExpressionStyle(style);
+  }
+
   private _addIsolationOffset(rect: BoundingRect) {
     for (const display of this._getParentDisplays()) {
       if (display.isolatedChildNodes) {

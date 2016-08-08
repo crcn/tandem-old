@@ -1,6 +1,7 @@
 import * as React from "react";
 import { startDrag } from "sf-front-end/utils/component";
 import PathComponent from "./path";
+import { BoundingRect } from "sf-core/geom";
 import { FrontEndApplication } from "sf-front-end/application";
 import { DisplayEntityCollection } from "sf-front-end/selection";
 
@@ -126,6 +127,12 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
       props.top  = point.currentStyle.top + (point.currentStyle.height / 2 - props.height / 2);
     }
 
+    this.targetDisplay.bounds = new BoundingRect(
+      props.left,
+      props.top,
+      props.left + props.width,
+      props.top + props.height
+    );
     // this.targetDisplay.setBoundingRect(props);
     this._isMoving();
   }
@@ -200,14 +207,15 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
     const preview = this.props.selection.display;
 
-    const rect = preview.bounds.zoom(this.props.zoom);
+    const rect       = preview.bounds;
+    const zoomedRect = rect.zoom(this.props.zoom);
 
     const cw = (pointRadius + strokeWidth) * 2;
 
     // offset stroke
     const resizerStyle = {
-      left     : rect.left - cw / 2 - 1,
-      top      : rect.top  - cw / 2 - 1
+      left     : zoomedRect.left - cw / 2 - 1,
+      top      : zoomedRect.top  - cw / 2 - 1
     };
 
     const capabilities = preview.capabilities;
@@ -215,13 +223,13 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
 
     const points = [
       ["nw", movable === true, 0, 0],
-      ["n", movable === true, rect.width / 2, 0],
-      ["ne", movable === true, rect.width, 0],
-      ["e", true, rect.width, rect.height / 2],
-      ["se", true, rect.width, rect.height],
-      ["s", true, rect.width / 2, rect.height],
-      ["sw", movable === true, 0, rect.height],
-      ["w", movable === true, 0, rect.height / 2],
+      ["n", movable === true, zoomedRect.width / 2, 0],
+      ["ne", movable === true, zoomedRect.width, 0],
+      ["e", true, zoomedRect.width, zoomedRect.height / 2],
+      ["se", true, zoomedRect.width, zoomedRect.height],
+      ["s", true, zoomedRect.width / 2, zoomedRect.height],
+      ["sw", movable === true, 0, zoomedRect.height],
+      ["w", movable === true, 0, zoomedRect.height / 2],
     ].map(([id, show, left, top], i) => ({
       id: id,
       index: i,

@@ -1,8 +1,10 @@
+import { Bus } from "mesh";
+import { Action } from "../actions";
+import { IActor } from "../actors";
+import { IEntity } from "../entities";
 import { Service } from "sf-core/services";
 import { IApplication } from "sf-core/application";
-import { IEntity } from "../entities";
 import { IDiffableNode } from "../markup";
-import { Bus } from "mesh";
 import { IActiveRecord } from "../active-records";
 
 import {
@@ -11,7 +13,7 @@ import {
   Dependency,
   Dependencies,
   ClassFactoryDependency
- } from "sf-core/dependencies";
+ } from "./base";
 
 // TODO - add more static find methods to each Dependency here
 
@@ -116,5 +118,28 @@ export class ActiveRecordFactoryDependency extends ClassFactoryDependency {
   }
   static find(id: string, dependencies: Dependencies): ActiveRecordFactoryDependency {
     return dependencies.query<ActiveRecordFactoryDependency>([ACTIVE_RECORD_FACTORY_NS, id].join("/"));
+  }
+}
+
+/**
+ */
+
+export const COMMAND_FACTORY_NS = "commands";
+export class CommandFactoryDependency extends ClassFactoryDependency {
+  readonly actionFilter: Function;
+  constructor(actionFilter: string|Function, readonly clazz: { new(): IActor }) {
+    super([COMMAND_FACTORY_NS, clazz.name].join("/"), clazz);
+    if (typeof actionFilter === "string") {
+      this.actionFilter = (action: Action) => action.type === actionFilter;
+    } else {
+      this.actionFilter = actionFilter;
+    }
+  }
+  static findAll(dependencies: Dependencies) {
+    return dependencies.query<CommandFactoryDependency>([COMMAND_FACTORY_NS, "**"].join("/"));
+  }
+
+  clone() {
+    return new CommandFactoryDependency(this.actionFilter, this.clazz);
   }
 }

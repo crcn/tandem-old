@@ -26,8 +26,6 @@ export class Injector {
           target[property] = value.map(map);
         } else {
           value = dependencies.query<Dependency<any>>(ns);
-
-          // TODO - check for dependency.getInjectableValue()
           target[property] = map(value);
         }
 

@@ -69,4 +69,6 @@ describe(__filename + "#", () => {
 
     expect(selection.display.capabilities.resizable).to.equal(false);
   });
+
+  // it("")
 });
