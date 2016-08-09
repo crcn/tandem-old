@@ -29,7 +29,7 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
       left: entireBounds.left,
       top: entireBounds.top,
       width: entireBounds.width - 1,
-      height: entireBounds.height - 1,
+      height: entireBounds.height - 1
     };
 
     return (<div className="m-selector-component">

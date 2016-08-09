@@ -110,11 +110,11 @@ describe(__filename + "#", () => {
       expect(
         JSON.stringify(
           diff(<INode>oldNode, <INode>newNode).map((change) => {
-            const c = JSON.parse(JSON.stringify(change));
 
             // clean up with stuff that's hard to compare
-            if (c.node) delete c.node;
-            return c;
+            if (change["node"]) delete change["node"];
+
+            return JSON.parse(JSON.stringify(change));
           })
         )
       ).to.eql(JSON.stringify(changeTypes));

@@ -1,5 +1,5 @@
 export interface ISerializable {
-  serialize():Object;
+  serialize(): Object;
   deserialize(value: Object): void;
 }
 

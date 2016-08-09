@@ -56,7 +56,7 @@ describe(__filename + "#", () => {
         return { nodeName: "#text", nodeValue: "something" };
       }
       cloneNode() { return null; }
-      dispose(){ }
+      dispose() { }
     }
 
     class TextEntity extends Node implements IEntity {
@@ -68,7 +68,7 @@ describe(__filename + "#", () => {
         return null;
       }
       cloneNode() { return null; }
-      dispose(){ }
+      dispose() { }
     }
 
     const dependencies = new Dependencies(

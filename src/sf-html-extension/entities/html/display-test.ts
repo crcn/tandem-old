@@ -3,6 +3,7 @@ import {
   htmlTextDependency,
   htmlCommentDependency,
   htmlTemplateEntityDependency,
+  htmlDocumentDependency,
   HTMLElementEntity
 } from "./index";
 
@@ -25,6 +26,7 @@ describe(__filename + "#", () => {
       ...htmlElementDependencies,
       htmlTextDependency,
       htmlCommentDependency,
+      htmlDocumentDependency,
       htmlTemplateEntityDependency,
       new ApplicationSingletonDependency(app)
     );

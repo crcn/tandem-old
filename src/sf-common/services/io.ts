@@ -84,7 +84,7 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
     // transactions between the remote service
     const remoteBus = SocketIOBus.create({
       connection: connection
-    }, this._publicService);
+    }, new ParallelBus([this._publicService]));
 
     // fetch the remote action types, and set them to the remote service
     // so that we limit the number of outbound actions

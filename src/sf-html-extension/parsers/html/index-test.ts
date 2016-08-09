@@ -9,7 +9,7 @@ import {
   HTMLTextExpression,
   HTMLCommentExpression,
   HTMLElementExpression,
-  HTMLDependencyExpression,
+  HTMLFragmentExpression,
   HTMLAttributeExpression
 } from "./expressions";
 
@@ -34,25 +34,25 @@ describe(__filename + `#`, () => {
 
   describe("text nodes#", () => {
     it("can be parsed on their own", () => {
-      const text = parse("hello");
+      const text = <HTMLTextExpression>(<HTMLFragmentExpression>parse("hello")).childNodes[0];
       expect(text.type).to.equal(HTML_TEXT);
       expect((<HTMLTextExpression>text).nodeValue).to.equal("hello");
     });
 
     it("trims the ends", () => {
-      expect((<HTMLTextExpression>parse("  hello  ")).nodeValue).to.equal("hello");
+      expect((<HTMLTextExpression>(<HTMLFragmentExpression>parse("  hello  ")).childNodes[0]).nodeValue).to.equal("hello");
     });
   });
 
   describe("elements#", () => {
     it("can be parsed without attributes or children", () => {
-      const element = parse("<div />") as HTMLElementExpression;
+      const element = (<HTMLFragmentExpression>parse("<div />")).childNodes[0] as HTMLFragmentExpression;
       expect(element.type).to.equal(HTML_ELEMENT);
       expect(element.position.start).to.equal(0);
     });
 
     it("can parse attribute values", () => {
-      const element = parse(`<div a="b" c="d" />`) as HTMLElementExpression;
+      const element = (parse(`<div a="b" c="d" />`) as HTMLFragmentExpression).childNodes[0] as HTMLElementExpression;
       expect(element.attributes[0].name).to.equal("a");
       expect(element.attributes[0].value).to.equal("b");
       expect(element.attributes[1].name).to.equal("c");
@@ -60,14 +60,14 @@ describe(__filename + `#`, () => {
     });
 
     it("can define attributes without any values", () => {
-      const element = parse("<div a b />") as HTMLElementExpression;
+      const element = (parse("<div a b />") as HTMLFragmentExpression).childNodes[0] as HTMLElementExpression;
       expect(element.attributes[0].value).to.equal("");
       expect(element.attributes[0].name).to.equal("a");
       expect(element.attributes[1].value).to.equal("");
     });
 
     it("can be parsed with one text child node", () => {
-      const element = parse("<div>ab</div>") as HTMLElementExpression;
+      const element = (<HTMLFragmentExpression>parse("<div>ab</div>")).childNodes[0] as HTMLElementExpression;
       expect(element.type).to.equal(HTML_ELEMENT);
       expect(element.childNodes.length).to.equal(1);
       expect(element.childNodes[0].type).to.equal(HTML_TEXT);
@@ -78,7 +78,7 @@ describe(__filename + `#`, () => {
     });
 
     it("can parse a div with attributes and child nodes", () => {
-      const element = parse("<div a=\"b\" c><span />cd</div>") as HTMLElementExpression;
+      const element = (<any>parse("<div a=\"b\" c><span />cd</div>")).childNodes[0] as HTMLElementExpression;
       expect(element.attributes[0].value).to.equal("b");
       expect(element.attributes[1].value).to.equal("");
       expect(element.childNodes.length).to.equal(2);
@@ -87,7 +87,7 @@ describe(__filename + `#`, () => {
 
   describe("comments#", () => {
     it("can be parsed", () => {
-      const element = parse("<!-- hello -->") as HTMLCommentExpression;
+      const element = (<HTMLFragmentExpression>parse("<!-- hello -->")).childNodes[0] as HTMLCommentExpression;
       expect(element.nodeValue).to.equal(" hello ");
       expect(element.position.start).to.equal(0);
     });
@@ -102,7 +102,7 @@ describe(__filename + `#`, () => {
     it("are created when the source is blank", () => {
       const element = parse("");
       expect(element.type).to.equal(HTML_FRAGMENT);
-      expect((element as HTMLDependencyExpression).childNodes.length).to.equal(0);
+      expect((element as HTMLFragmentExpression).childNodes.length).to.equal(0);
     });
   });
 
@@ -125,7 +125,7 @@ describe(__filename + `#`, () => {
     });
 
     it("eats whitespace between elements", () => {
-      const element = parse(`
+      const element = (<HTMLFragmentExpression>parse(`
         <div>
           <button class="button">
             text
@@ -133,7 +133,7 @@ describe(__filename + `#`, () => {
           <div>
           </div>
         </div>
-      `) as HTMLElementExpression;
+      `)).childNodes[0] as HTMLElementExpression;
 
       expect(element.type).to.equal(HTML_ELEMENT);
       expect(element.childNodes.length).to.equal(2);

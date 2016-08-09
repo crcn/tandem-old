@@ -44,8 +44,6 @@ export default class ClipboardService extends BaseApplicationService<FrontEndApp
       this.logger.warn("cannot paste x-entity data: ", item.type);
     }
   }
-
-  // something like this...
 }
 
 export const dependency = new ApplicationServiceDependency("clipboard", ClipboardService);

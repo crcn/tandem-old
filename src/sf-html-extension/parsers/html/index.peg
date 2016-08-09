@@ -1,7 +1,7 @@
 {
 
 const {
-  HTMLDependencyExpression,
+  HTMLFragmentExpression,
   HTMLTextExpression,
   HTMLScriptExpression,
   HTMLCommentExpression,
@@ -19,11 +19,11 @@ function position() {
 }
 
 Start
-  = Dependency
+  = Fragment
 
-Dependency
+Fragment
   = nodes:Node* {
-    return nodes.length === 1 ? nodes[0] : new HTMLDependencyExpression(nodes, position())
+    return new HTMLFragmentExpression(nodes, position());
   }
 
 Node

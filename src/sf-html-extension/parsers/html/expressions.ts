@@ -14,8 +14,8 @@ export abstract class HTMLExpression extends BaseExpression {
 }
 
 
-export const HTML_FRAGMENT = "htmlDependency";
-export class HTMLDependencyExpression extends HTMLExpression {
+export const HTML_FRAGMENT = "htmlFragment";
+export class HTMLFragmentExpression extends HTMLExpression {
   constructor(public childNodes: Array<HTMLExpression>, position: ICursorPosition) {
     super(HTML_FRAGMENT, "#document-fragment", position);
   }

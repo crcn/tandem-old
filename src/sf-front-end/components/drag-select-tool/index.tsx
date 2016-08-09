@@ -17,7 +17,7 @@ class DragSelectComponent extends React.Component<any, any> {
   }
 
   execute(event) {
-    if (event.type === 'stageCanvasMouseDown') {
+    if (event.type === 'canvasMouseDown') {
       this.startDrag(event);
     }
   }

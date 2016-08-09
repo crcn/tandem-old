@@ -6,6 +6,7 @@ import { Editor } from "sf-front-end/models";
 import { expect } from "chai";
 import { SelectAction, ToggleSelectAction } from "sf-front-end/actions";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
+import { Selection } from "sf-front-end/selection";
 
 describe(__filename + "#", () => {
 
@@ -54,8 +55,8 @@ describe(__filename + "#", () => {
 
   it("picks the correct collection type depending on the item type", () => {
 
-    class DisplayCollection extends Array<any> { }
-    class OtherCollection extends Array<any> { }
+    class DisplayCollection extends Selection<any> { }
+    class OtherCollection extends Selection<any> { }
 
     app.dependencies.register(
       new SelectionFactoryDependency("display", DisplayCollection),

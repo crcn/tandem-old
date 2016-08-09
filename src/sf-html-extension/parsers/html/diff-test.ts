@@ -25,42 +25,42 @@ describe(__filename + "#", () => {
     [
       `<div />`,
       `<div id="a" />`,
-      [SET_ATTRIBUTE]
+      [INDEX_DOWN, SET_ATTRIBUTE, INDEX_UP]
     ],
     [
       `<div id="a" />`,
       `<div id="b" />`,
-      [SET_ATTRIBUTE]
+      [INDEX_DOWN, SET_ATTRIBUTE, INDEX_UP]
     ],
     [
       `<div id="a" />`,
       `<div id="b" />`,
-      [SET_ATTRIBUTE]
+      [INDEX_DOWN, SET_ATTRIBUTE, INDEX_UP]
     ],
     [
       `<div id="b" />`,
       `<div />`,
-      [REMOVE_ATTRIBUTE]
+      [INDEX_DOWN, REMOVE_ATTRIBUTE, INDEX_UP]
     ],
     [
       `<div></div>`,
       `<div>a</div>`,
-      [ADD_CHILD]
+      [INDEX_DOWN, ADD_CHILD, INDEX_UP]
     ],
     [
       `<div>a</div>`,
       `<div></div>`,
-      [REMOVE_CHILD]
+      [INDEX_DOWN, REMOVE_CHILD, INDEX_UP]
     ],
     [
       `<div><h1>1</h1><h2>2</h2><h3>3</h3></div>`,
       `<div><h3>3</h3><h2>2</h2><h1>1</h1></div>`,
-      [MOVE_CHILD, MOVE_CHILD]
+      [INDEX_DOWN, MOVE_CHILD, MOVE_CHILD, INDEX_UP]
     ],
     [
       `<div>blarg<h1>3</h1></div>`,
       `<div><h3>3</h3><h2>2</h2><h1>1</h1></div>`,
-      [INDEX_DOWN, SET_NODE_VALUE, INDEX_UP, REMOVE_CHILD, ADD_CHILD, ADD_CHILD, MOVE_CHILD]
+      [INDEX_DOWN, INDEX_DOWN, SET_NODE_VALUE, INDEX_UP, REMOVE_CHILD, ADD_CHILD, ADD_CHILD, MOVE_CHILD, INDEX_UP]
     ],
     [
       `<div><h1>1</h1><h2>2</h2><ul><li>1</li><li>2</li><li>3</li></ul></div>`,

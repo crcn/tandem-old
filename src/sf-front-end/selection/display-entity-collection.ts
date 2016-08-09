@@ -69,6 +69,6 @@ registerSerializer(DisplayEntityCollection, {
   deserialize: function(value) {
     return new DisplayEntityCollection(...value.map((item) => deserialize(item)));
   }
-})
+});
 
 export const dependency = new SelectionFactoryDependency("display", DisplayEntityCollection);

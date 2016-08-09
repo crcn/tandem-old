@@ -12,7 +12,6 @@ export default class ToolsComponent extends React.Component<{ editor: Editor, en
     const selectedEntities = this.props.editor.selection || [];
     const zoom             = this.props.editor.zoom;
 
-
     return (<div className="m-stage-tools">
       <RegisteredComponent {...this.props} ns={`components/tools/${currentTool.name}/**`} allEntities={allEntities} selection={selectedEntities} zoom={zoom} />
     </div>);

@@ -1,7 +1,13 @@
 import "./index.scss";
 import * as React from "react";
 
-import { STAGE_CANVAS_MOUSE_DOWN, ZoomAction } from "sf-front-end/actions";
+import {
+  MouseAction,
+  CANVAS_KEY_DOWN,
+  CANVAS_MOUSE_DOWN,
+  KeyboardAction,
+  ZoomAction
+} from "sf-front-end/actions";
 import PreviewLayerComponent from "./preview";
 import ToolsLayerComponent from "./tools";
 import IsolateComponent  from "sf-front-end/components/isolate";
@@ -15,11 +21,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   private _previousZoom: number;
 
   onMouseDown = (event) => {
-   this.bus.execute(Object.assign({}, event, {
-      type: {
-        mousedown: STAGE_CANVAS_MOUSE_DOWN
-      }[event.type]
-    }));
+    this.bus.execute(new MouseAction(CANVAS_MOUSE_DOWN, event));
   }
 
   get bus() {
@@ -98,6 +100,10 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     this.forceUpdate();
   }
 
+  onKey = (event) => {
+    this.bus.execute(new KeyboardAction(CANVAS_KEY_DOWN, event));
+  }
+
   render() {
 
     const style = {
@@ -109,6 +115,8 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
 
     return (<IsolateComponent ref="isolate" onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
       <div
+        onKeyDown={this.onKey}
+        tabIndex={-1}
         className="m-editor-stage-canvas"
         onMouseMove={this.onMouseMove}
         style={style}

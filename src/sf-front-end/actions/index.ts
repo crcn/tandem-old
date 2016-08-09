@@ -1,15 +1,35 @@
 import { Action } from "sf-core/actions";
 import { IRange } from "sf-core/geom";
 
-export const STAGE_CANVAS_MOUSE_DOWN = "stageCanvasMouseDown";
-export class MouseEvent extends Action {
-  constructor(type, originalEvent) {
+export const CANVAS_MOUSE_DOWN = "canvasMouseDown";
+export class MouseAction extends Action {
+  constructor(type, readonly originalEvent: MouseEvent) {
     super(type);
     Object.assign(this, {
       clientX : originalEvent.clientX,
       clientY : originalEvent.clientY,
       metaKey : originalEvent.metaKey
     });
+  }
+  preventDefault() {
+    this.originalEvent.preventDefault();
+  }
+}
+
+export const CANVAS_KEY_DOWN = "canvasKeyDown";
+export class KeyboardAction extends Action {
+  readonly keyCode: number;
+  readonly which: number;
+  constructor(type, readonly originalEvent: KeyboardEvent) {
+    super(type);
+    Object.assign(this, {
+      which : originalEvent.which,
+      keyCode: originalEvent.keyCode
+    });
+  }
+
+  preventDefault() {
+    this.originalEvent.preventDefault();
   }
 }
 

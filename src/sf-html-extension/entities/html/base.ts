@@ -23,6 +23,14 @@ import {
 
 import TAG_NAMES from "./tag-names";
 
+function disposeEntity(entity: IHTMLEntity) {
+  if (entity.parentNode) {
+    const childNodes = (<HTMLElementEntity><any>entity.parentNode).expression.childNodes;
+    childNodes.splice(childNodes.indexOf(<any>entity.expression), 1);
+    entity.parentNode.removeChild(entity);
+  }
+}
+
 export interface IHTMLEntity extends IEntity {
   section: NodeSection|GroupNodeSection;
 }
@@ -128,9 +136,7 @@ export class HTMLElementEntity extends Element implements IHTMLEntity {
   }
 
   dispose() {
-    if (this.parentNode) {
-      this.parentNode.removeChild(this);
-    }
+    disposeEntity(this);
   }
 }
 
@@ -182,9 +188,7 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   abstract createDOMNode(nodeValue: any): Node;
 
   dispose() {
-    if (this.parentNode) {
-      this.parentNode.removeChild(this);
-    }
+    disposeEntity(this);
   }
 }
 

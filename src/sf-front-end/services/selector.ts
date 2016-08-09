@@ -62,7 +62,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     const type = items[0].type;
 
     const newSelectionDependency = SelectionFactoryDependency.find(type, this.app.dependencies);
-    const newSelection = newSelectionDependency ? newSelectionDependency.create() : [];
+    const newSelection = newSelectionDependency ? newSelectionDependency.create() : new Selection<any>();
 
     if (keepPreviousSelection && newSelection.constructor === prevSelection.constructor) {
       newSelection.push(...prevSelection);
@@ -82,10 +82,10 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     }
 
     app.editor.selection = <Selection<any>>newSelection;
+
     app.editor.selection.observe({
       execute: (action) => {
         if (action.type === DISPOSE) {
-          console.log("DESEL!!");
           this.select({
             items: [],
             keepPreviousSelection: false,

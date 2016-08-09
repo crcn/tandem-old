@@ -30,7 +30,7 @@ describe(__filename + "#", () => {
   it("can render a DIV element", async () => {
     const engine = new EntityEngine(dependencies);
     const entity = await engine.load(parseHTML("<div />"));
-    expect(entity.nodeName).to.equal("DIV");
+    expect((<any>entity).childNodes[0].nodeName).to.equal("DIV");
   });
 
   it("emits a DOM element", async () => {

@@ -220,16 +220,18 @@ function diffElement(oldElement: IDiffableElement, newElement: IDiffableElement,
   const keepAttributes: any = {};
 
   // diff the attributes
-  for (const attribute of newElement.attributes) {
-    keepAttributes[attribute.name] = true;
-    if (oldElement.attributes[attribute.name] == null || oldElement.attributes[attribute.name].value !== attribute.value) {
-      changes.push(new SetAttributeChange(attribute.name, attribute.value));
+  if (newElement.attributes) {
+    for (const attribute of newElement.attributes) {
+      keepAttributes[attribute.name] = true;
+      if (oldElement.attributes[attribute.name] == null || oldElement.attributes[attribute.name].value !== attribute.value) {
+        changes.push(new SetAttributeChange(attribute.name, attribute.value));
+      }
     }
-  }
 
-  for (const attribute of oldElement.attributes) {
-    if (!keepAttributes[attribute.name]) {
-      changes.push(new RemoveAttributeChange(attribute.name));
+    for (const attribute of oldElement.attributes) {
+      if (!keepAttributes[attribute.name]) {
+        changes.push(new RemoveAttributeChange(attribute.name));
+      }
     }
   }
 
