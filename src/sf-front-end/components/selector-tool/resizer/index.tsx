@@ -8,7 +8,7 @@ import { DisplayEntityCollection } from "sf-front-end/selection";
 const POINT_STROKE_WIDTH = 0;
 const POINT_RADIUS       = 3;
 
-class ResizerComponent extends React.Component<{ app: FrontEndApplication, selection: DisplayEntityCollection, zoom: number, pointRadius?: number, strokeWidth?: number }, any> {
+class ResizerComponent extends React.Component<{ app: FrontEndApplication, selection: DisplayEntityCollection, onResizing: Function, zoom: number, pointRadius?: number, strokeWidth?: number }, any> {
 
   private _dragger: any;
   private _movingTimer: any;
@@ -97,13 +97,9 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
    */
 
   _isMoving() {
-    clearTimeout(this._movingTimer);
+    this.props.onResizing();
     clearTimeout(this._dragTimer);
-    // this.props.selection.preview.setProperties({ moving: true });
     this.setState({ dragging: true });
-    this._movingTimer = setTimeout(() => {
-      // this.props.selection.preview.setProperties({ moving: false });
-    }, 1000);
     this._dragTimer = setTimeout(() => {
       this.setState({ dragging: false });
     }, 100);
@@ -120,27 +116,12 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     const sx2 = style.left;
     const sy2 = style.top;
 
-
     this._dragger = startDrag(event, (event2, { delta }) => {
 
-      // if (!this.targetDisplay.capabilities.movable) return;
+      const nx = sx2 + delta.x;
+      const ny = sy2 + delta.y;
 
-      const nx = sx2 + delta.x / this.props.zoom;
-      const ny = sy2 + delta.y / this.props.zoom;
-
-      // guide.snap - todo
-      const bounds = {
-        left   : nx,
-        top    : ny,
-        width  : style.width,
-        height : style.height,
-      };
-
-      this.setState({
-        dragBounds: bounds
-      });
-
-      this.moveTarget(bounds.left, bounds.top);
+      this.moveTarget(nx, ny);
     }, () => {
       this.file.save();
       this._dragger = void 0;
@@ -151,16 +132,15 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     this.file.save();
   }
 
-
   moveTarget(left, top) {
-    this._isMoving();
     this.targetDisplay.position = { left, top };
+    this._isMoving();
   }
 
   render() {
 
-    const pointRadius = (this.props.pointRadius || POINT_RADIUS) / this.props.zoom;
-    const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH) / this.props.zoom;
+    const pointRadius = (this.props.pointRadius || POINT_RADIUS);
+    const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
     const preview = this.props.selection.display;
 
     const rect       = preview.bounds;
@@ -206,7 +186,7 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
         onDoubleClick={this.onDoubleClick}
       >
         <PathComponent
-          showPoints={capabilities.resizable && !this.state.dragging}
+          showPoints={capabilities.resizable}
           onPointChange={this.updatePoint}
           onPointMouseUp={this.onPointMouseUp}
           zoom={this.props.zoom}

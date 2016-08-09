@@ -13,8 +13,8 @@ class PathComponent extends React.Component<any, any> {
     startDrag(event, (event2, info) => {
 
       Object.assign(point, {
-        left : (sx + info.delta.x / this.props.zoom),
-        top  : (sy + info.delta.y / this.props.zoom),
+        left : (sx + info.delta.x),
+        top  : (sy + info.delta.y)
       });
 
       this.props.onPointChange(point, event2);
@@ -49,7 +49,7 @@ class PathComponent extends React.Component<any, any> {
     const w = x2 - x1 + cw;
     const h = y2 - y1 + cw;
 
-    return (<svg width={w} height={h} viewBox={[-cw/2, -cw/2, w, h]}>
+    return (<svg width={w} height={h} viewBox={[-cw / 2, -cw / 2, w, h]}>
       <path d={d} strokeWidth={strokeWidth} stroke="transparent" fill="transparent" />
       {
         this.props.showPoints !== false ? points.map((path, key) =>

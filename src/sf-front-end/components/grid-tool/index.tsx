@@ -8,10 +8,10 @@ export class GridToolComponent extends React.Component<{ zoom: number }, any> {
 
     const { zoom } = this.props;
 
-    if (zoom < 6) return null;
+    if (zoom <= 5) return null;
 
     const size = CANVAS_SIZE;
-    const gridSize = 1;
+    const gridSize = 1 * zoom;
     const paths = [
 
       // horizontal
@@ -29,7 +29,7 @@ export class GridToolComponent extends React.Component<{ zoom: number }, any> {
             <g stroke="#F7F7F7">
               {
                 paths.map(([[sx, sy], [ex, ey]], i) => {
-                  return <path strokeWidth={1/this.props.zoom} key={i} d={`M${sx},${sy} L${ex},${ey}`}></path>;
+                  return <path strokeWidth={1} key={i} d={`M${sx},${sy} L${ex},${ey}`}></path>;
                 })
               }
             </g>

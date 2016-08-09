@@ -16,7 +16,7 @@ function calculateCSSMeasurments(style) {
 }
 
 function hasMeasurement(key) {
-  return /left|top|right|bottom|width|height|paddingLeft|paddingTop|paddingRight|paddingBottom/.test(key);
+  return /left|top|right|bottom|width|height|padding|margin/.test(key);
 }
 
 function roundMeasurements(style) {
@@ -26,7 +26,9 @@ function roundMeasurements(style) {
     if (hasMeasurement(key)) {
       const value = measurement.match(/^(-?[\d\.]+)/)[1];
       const unit  = measurement.match(/([a-z]+)$/)[1];
-      roundedStyle[key] = Number(value).toFixed(0) + unit;
+
+      // ceiling is necessary here for zoomed in elements
+      roundedStyle[key] = Math.ceil(Number(value)) + unit;
     }
   }
 
@@ -97,8 +99,8 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     const clientRect: ClientRect = this.node.getBoundingClientRect();
 
     // convert into something that is not DOM specific
-    const rect: BoundingRect = new BoundingRect(clientRect.left, clientRect.top, clientRect.right, clientRect.bottom);
-    this._addIsolationOffset(rect);
+    let rect: BoundingRect = new BoundingRect(clientRect.left, clientRect.top, clientRect.right, clientRect.bottom);
+    rect = this._addIsolationOffset(rect);
 
     return rect;
   }
@@ -112,22 +114,26 @@ export class HTMLNodeDisplay implements IEntityDisplay {
 
     let newStyle: any = {};
 
+    const transforms = this._calculateTransforms();
+    const scaled = value.move(-transforms.left, -transforms.top).zoom(1 / transforms.scale);
+
     if (value.left !== bounds.left) {
-      const originLeft = bounds.left - existingStyle.left || 0;
-      newStyle.left = (value.left - originLeft) + "px";
+      // const scale = bounds.left / (existingStyle.left || 0);
+      // const originLeft = bounds.left - existingStyle.left || 0;
+      newStyle.left = scaled.left + "px";
     }
 
     if (value.top !== bounds.top) {
       const originTop  = bounds.top  - existingStyle.top || 0;
-      newStyle.top = (value.top - originTop) + "px";
+      newStyle.top = scaled.top + "px";
     }
 
-    if (value.width !== bounds.width) {
-      newStyle.width = (value.width - computedStyle.paddingLeft - computedStyle.paddingRight) + "px";
+    if (Math.round(value.width) !== Math.round(bounds.width)) {
+      newStyle.width = (scaled.width - computedStyle.paddingLeft - computedStyle.paddingRight) + "px";
     }
 
-    if (value.height !== bounds.height) {
-      newStyle.height = (value.height - computedStyle.paddingTop - computedStyle.paddingBottom) + "px";
+    if (Math.round(value.height) !== Math.round(bounds.height)) {
+      newStyle.height = (scaled.height - computedStyle.paddingTop - computedStyle.paddingBottom) + "px";
     }
 
     newStyle = roundMeasurements(newStyle);
@@ -135,17 +141,14 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     this._setExpressionStyle(newStyle);
   }
 
-  private _addIsolationOffset(rect: BoundingRect) {
+  private _addIsolationOffset(rect: BoundingRect): BoundingRect {
     for (const display of this._getParentDisplays()) {
       if (display.isolatedChildNodes) {
         const parentBounds = display.bounds;
-        rect.move(parentBounds.left, parentBounds.top);
-
-        // break - parent display will also calculate
-        // isolation if it"s embedded in an iframe
-        break;
+        return rect.move(parentBounds.left, parentBounds.top);
       }
     }
+    return rect;
   }
 
   private _getParentDisplays(): Array<HTMLNodeDisplay> {
@@ -171,7 +174,6 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     }
   }
 
-
   private _setExpressionStyle(styles: Object) {
 
     for (const key in styles) {
@@ -186,5 +188,36 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     }
 
     this.entity.setAttribute("style", this._styleExpression.toString());
+  }
+
+  /**
+   */
+
+  private _calculateTransforms() {
+
+    const computedStyle: any = calculateCSSMeasurments(window.getComputedStyle(this.node));
+
+    const oldLeft      = this.node.style.left;
+    const oldTop       = this.node.style.top;
+    const oldWidth     = this.node.style.width;
+    const oldBoxSizing = this.node.style.boxSizing;
+
+    this.node.style.left = "0px";
+    this.node.style.top = "0px";
+    this.node.style.width = "100px";
+    this.node.style.boxSizing = "border-box";
+
+    const bounds = this.bounds;
+
+    const scale = bounds.width / 100;
+    const left  = bounds.left;
+    const top   = bounds.top;
+
+    this.node.style.left      = oldLeft;
+    this.node.style.top       = oldTop;
+    this.node.style.width     = oldWidth;
+    this.node.style.boxSizing = oldBoxSizing;
+
+    return { scale, left, top };
   }
 }

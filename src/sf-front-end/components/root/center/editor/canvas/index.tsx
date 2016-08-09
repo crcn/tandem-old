@@ -52,7 +52,6 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
 
   componentWillUpdate(props) {
     if (props.zoom !== this.props.zoom) {
-      // requestAnimationFrame(this._center.bind(this, this.props.zoom, props.zoom));
       this._center(this.props.zoom, props.zoom);
     }
   }
@@ -63,26 +62,27 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
       return ((value / newZoom) * oldZoom);
     }
 
-    const body = (this.refs as any).isolate.body;
+    // const body = (this.refs as any).isolate.body;
+    // const centerLeft = body.offsetWidth / 2;
+    // const centerTop  = body.offsetHeight / 2;
 
+    // const oldPaneLeft = this.state.pane.left;
+    // const newPaneLeft = oldPaneLeft * newZoom;
+    // const paneLeftChange = newPaneLeft - oldPaneLeft;
 
-    const centerLeft = body.offsetWidth / 2;
-    const centerTop  = body.offsetTop / 2;
+    // console.log(oldPaneLeft, newPaneLeft, paneLeftChange);
 
-    const previewCenterLeft = this.state.pane.left + this._mousePosition.left;
-    const previewCenterTop  = this.state.pane.top + this._mousePosition.top;
-    const speed = 10;
+    // // const paneMouseLeft = this._mousePosition.left - this.state.pane.left;
+    // // const paneMouseTop  = this._mousePosition.top  - this.state.pane.top;
 
     // this.setState({
     //   pane: {
-    //     left: this.state.pane.left + (centerLeft - this.state.pane.left - previewCenterLeft) / speed,
-    //     top: this.state.pane.top + (centerTop - this.state.pane.top - previewCenterTop) / speed
+    //     left: this.state.pane.left + paneLeftChange,
+    //     top: this.state.pane.top
     //   }
-    // });
+    // })
 
-    // const oldPaneLeft = this.state.pane.left;
-    // const newPaneLeft = oldPaneLeft
-
+    // this.pane(paneMouseLeft / 100, paneMouseTop / 100);
     // this.setState({
     //   pane: {
     //     left: this.state.pane.left - previewMouseLeft / 100 ,
@@ -126,16 +126,21 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
 
   render() {
 
+    // console.log(this.state.pane.left, this.state.pane.top);
+
     const style = {
       cursor: this.props.editor.currentTool.cursor,
-      zoom: this.props.zoom
+      // zoom: this.props.zoom,
+      position: "absolute"
     };
 
-    const styleInner = {
+    const innerStyle = {
+      transform: `translate(${this.state.pane.left}px, ${this.state.pane.top}px) scale(${this.props.zoom})`,
+      transformOrigin: "top left",
       position: "absolute",
-      left: this.state.pane.left / this.props.zoom,
-      top: this.state.pane.top / this.props.zoom
-    }
+      width: "100%",
+      height: "100%"
+    };
 
     const entity = this.props.editor.file.entity;
     if (!entity) return null;
@@ -148,10 +153,10 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
         className="m-editor-stage-canvas"
         style={style}
         onMouseDown={this.onMouseDown}>
-        <div style={styleInner}>
-          <PreviewLayerComponent {...this.props} entity={entity} />
+          <div style={innerStyle}>
+              <PreviewLayerComponent {...this.props} entity={entity} />
+          </div>
           {this._toolsHidden ? void 0 : <ToolsLayerComponent entity={entity} {...this.props} />}
-        </div>
       </div>
     </IsolateComponent>);
   }

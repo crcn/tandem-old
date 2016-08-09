@@ -9,6 +9,10 @@ import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 
 export default class SelectorComponent extends React.Component<{ editor: Editor, app: FrontEndApplication, zoom: number }, any> {
 
+  onResizing = () => {
+    this.forceUpdate();
+  }
+
   render() {
 
     const editor = this.props.editor;
@@ -23,18 +27,19 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
     const sections: any = {};
 
     const entireBounds = selection.display.bounds;
+    const borderWidth = 1;
 
     const boundsStyle = {
       position: "absolute",
-      borderWidth: 1 / this.props.zoom,
+      borderWidth: borderWidth,
       left: entireBounds.left,
       top: entireBounds.top,
-      width: entireBounds.width - 1,
-      height: entireBounds.height - 1
+      width: entireBounds.width - borderWidth,
+      height: entireBounds.height - borderWidth
     };
 
     return (<div className="m-selector-component">
-      <ResizerComponent {...this.props} selection={selection} />
+      <ResizerComponent {...this.props} selection={selection} onResizing={this.onResizing} />
       <div className="m-selector-component--bounds" style={boundsStyle} />
       {sections.guides}
       {sections.size}

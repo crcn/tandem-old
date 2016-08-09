@@ -2,21 +2,11 @@ import "./index.scss";
 
 import * as React from "react";
 import RegisteredComponent from "sf-front-end/components/registered";
-import { CANVAS_SIZE } from "sf-front-end/constants";
-
 
 export default class PreviewComponent extends React.Component<{ zoom: number, entity: any }, any> {
   render() {
-
-    const style = {
-      width: CANVAS_SIZE,
-      height: CANVAS_SIZE
-    };
-
-    return (<div className="m-editor-stage-preview" style={style}>
-      <div className="m-editor-stage-preview-inner">
+    return (<div className="m-editor-stage-preview">
         <RegisteredComponent {...this.props} ns="components/preview" />
-      </div>
     </div>);
   }
 }
