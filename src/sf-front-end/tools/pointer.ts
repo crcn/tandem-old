@@ -22,6 +22,8 @@ export default class PointerTool extends BaseApplicationService<FrontEndApplicat
     action.preventDefault();
 
     const selection = <DisplayEntityCollection>this.app.editor.selection;
+    if (selection["display"] == null) return;
+
     const bounds = selection.display.bounds;
 
     let left = bounds.left;
@@ -40,6 +42,7 @@ export default class PointerTool extends BaseApplicationService<FrontEndApplicat
     }
 
     selection.display.position = { left, top };
+    this.app.editor.file.save();
   }
 
   deleteSelection() {

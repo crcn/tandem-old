@@ -19,55 +19,11 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     this.state = {};
   }
 
-  componentDidMount() {
-    this.props.app.actors.push(this);
-  }
-
-  execute(event) {
-    if (event.type !== "keydown") return;
-    this.onKeyDown(event);
-  }
-
-  componentWillUnmount() {
-    if (this._dragger) this._dragger.dispose();
-    this.props.app.actors.splice(this.props.app.actors.indexOf(this), 1);
-  }
-
   onDoubleClick = () => {
     // this.props.bus.execute({
     //   type      : ENTITY_PREVIEW_DOUBLE_CLICK,
     //   selection : this.props.selection,
     // });
-  }
-
-  onKeyDown(message) {
-
-    const selection = this.props.selection;
-    const style = selection.display.bounds;
-
-    let left = style.left;
-    let top  = style.top;
-
-    if (message.keyCode === 38) {
-      top--;
-    } else if (message.keyCode === 40) {
-      top++;
-    } else if (message.keyCode === 37) {
-      left--;
-    } else if (message.keyCode === 39) {
-      left++;
-    } else {
-      return;
-    }
-
-    this._isMoving();
-
-    // selection.display.setPositionFromAbsolutePoint({
-    //   top  : top,
-    //   left : left,
-    // });
-
-    event.preventDefault();
   }
 
   get targetDisplay() {

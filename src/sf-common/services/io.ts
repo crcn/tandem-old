@@ -14,21 +14,21 @@ import { Dependencies, Injector } from "sf-core/dependencies";
 export default class IOService<T extends IApplication> extends BaseApplicationService<T> {
 
   public logger: Logger;
-  public _publicService: Service;
+  public _publicActionTypes: any;
   public _remoteActors: Array<any>;
 
   load() {
 
     // this is the public service which handles all
     // incomming actions
-    this._publicService = new Service();
+    this._publicActionTypes = {};
 
     // scan the application for all public actions and add
     // then to the public service
     for (const actor of this.app.actors) {
       for (const actionType of ((actor as any).__publicProperties || [])) {
         this.logger.info(`exposing ${actor.constructor.name}.${actionType}`);
-        this._publicService.addActor(actionType, actor);
+        this._publicActionTypes[actionType] = true;
       }
     }
 
@@ -47,7 +47,7 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
   @isPublic
   @document("returns the public action types")
   getPublicActionTypes() {
-    return Object.keys(this._publicService);
+    return Object.keys(this._publicActionTypes);
   }
 
   /**
@@ -84,7 +84,7 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
     // transactions between the remote service
     const remoteBus = SocketIOBus.create({
       connection: connection
-    }, new ParallelBus([this._publicService]));
+    }, this.bus);
 
     // fetch the remote action types, and set them to the remote service
     // so that we limit the number of outbound actions

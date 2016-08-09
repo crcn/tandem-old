@@ -23,13 +23,13 @@ function roundMeasurements(style) {
   const roundedStyle = {};
   for (const key in style) {
     const measurement: string = roundedStyle[key] = style[key];
-    if (hasMeasurement(style[key])) {
+    if (hasMeasurement(key)) {
       const value = measurement.match(/^(-?[\d\.]+)/)[1];
-      const unit  = measurement.match(/(\w+)$/)[1];
-      console.log(value, unit, measurement);
+      const unit  = measurement.match(/([a-z]+)$/)[1];
       roundedStyle[key] = Number(value).toFixed(2) + unit;
     }
   }
+
   return roundedStyle;
 }
 
