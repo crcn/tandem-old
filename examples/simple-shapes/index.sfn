@@ -1,6 +1,6 @@
-<div style="position:absolute;left:100px;padding:5px;border-radius:10px;background-color:#F60; color: white; top:100px;width:69.42px;height:47.81px;">
-  12
+<div style="position:absolute;left:100px;border-radius:10px;background-color:#F60; color: white; top:100px;width:69px;height:47.81px;">
+ 123
 </div>
-<div style="position:absolute;left:0px;padding:5px;border-radius:10px;background-color:#F60; color: white; top:100px;width:69.42px;height:47.81px;">
-  12
+<div style="position:absolute;left:0px;border-radius:10px;background-color:#F60; color: white; top:100px;width:69px;height:47.81px;">
+  123
 </div>
