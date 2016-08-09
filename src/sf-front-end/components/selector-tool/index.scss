@@ -2,6 +2,10 @@
 
 .m-selector-component {
 
+  position: fixed;
+  top: 0px;
+  left: 0px;
+
   &--size {
     border-radius: 5px;
     color: #FF00FF;

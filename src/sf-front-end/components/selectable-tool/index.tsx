@@ -87,7 +87,7 @@ export default class SelectablesComponent extends React.Component<{selection: an
       />
     ));
 
-    return (<div> {selectables} </div>);
+    return (<div className="m-selectables"> {selectables} </div>);
   }
 }
 

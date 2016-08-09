@@ -1,14 +1,6 @@
-<div style="position:absolute;left:1.70px;padding:5px;margin:100px;border-radius:10px;background-color:#F60; color: white; top:-39.26px;width:69.42px;height:47.81px;">
-  1
+<div style="position:absolute;left:100px;padding:5px;border-radius:10px;background-color:#F60; color: white; top:100px;width:69.42px;height:47.81px;">
+  12
 </div>
-
-<div style="position:absolute;left:108.62px;top:-21.84px;padding:5px;margin:100px;border-radius:10px;background-color:#F60; color: white; width:70.26px;height:46.56px;">
-  hello world!
-</div>
-
-<div style="position:absolute;left:21.04px;padding:5px;margin:100px;border-radius:10px;background-color:#F60; color: white; top:51.22px;width:69.33px;height:53.80px;">
-  3
-</div>
-<div style="position:absolute;left:127.99px;padding:5px;margin:100px;border-radius:10px;background-color:#F60; color: white; top:64.26px;width:69.33px;height:53.80px;">
-  44
+<div style="position:absolute;left:0px;padding:5px;border-radius:10px;background-color:#F60; color: white; top:100px;width:69.42px;height:47.81px;">
+  12
 </div>

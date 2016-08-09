@@ -42,7 +42,7 @@ module.exports =  {
         ].join("!")
       },
       {
-        test: /\.(png|jpg|gif|eot|ttf|woff)$/,
+        test: /\.(png|jpg|gif|eot|ttf|woff|svg)$/,
         loader: getModuleDirectory("url-loader") + "?limit=1000"
       },
       {
