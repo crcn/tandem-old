@@ -50,46 +50,27 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     };
   }
 
-  componentWillUpdate(props) {
-    if (props.zoom !== this.props.zoom) {
-      this._center(this.props.zoom, props.zoom);
-    }
-  }
+  // componentWillUpdate(props) {
+  //   if (props.zoom !== this.props.zoom) {
+  //     this._center(this.props.zoom, props.zoom);
+  //   }
+  // }
 
-  _center = (oldZoom, newZoom) => {
+  // _center = (oldZoom, newZoom) => {
 
-    const calcPrev = (value) => {
-      return ((value / newZoom) * oldZoom);
-    }
+  //   const canvasLeft = this.state.canvasWidth / 2;
+  //   const canvasTop  = this.state.canvasHeight / 2;
 
-    // const body = (this.refs as any).isolate.body;
-    // const centerLeft = body.offsetWidth / 2;
-    // const centerTop  = body.offsetHeight / 2;
+  //   const newLeft = this._mousePosition.left + canvasLeft;
+  //   const newTop  = this._mousePosition.top  + canvasTop;
 
-    // const oldPaneLeft = this.state.pane.left;
-    // const newPaneLeft = oldPaneLeft * newZoom;
-    // const paneLeftChange = newPaneLeft - oldPaneLeft;
+  //   this.setState({
+  //     centerLeft: this.state.centerLeft + (newLeft - this.state.centerLeft) / 100,
+  //     centerTop: this.state.centerTop + (newTop - this.state.centerTop) / 100
+  //   });
 
-    // console.log(oldPaneLeft, newPaneLeft, paneLeftChange);
-
-    // // const paneMouseLeft = this._mousePosition.left - this.state.pane.left;
-    // // const paneMouseTop  = this._mousePosition.top  - this.state.pane.top;
-
-    // this.setState({
-    //   pane: {
-    //     left: this.state.pane.left + paneLeftChange,
-    //     top: this.state.pane.top
-    //   }
-    // })
-
-    // this.pane(paneMouseLeft / 100, paneMouseTop / 100);
-    // this.setState({
-    //   pane: {
-    //     left: this.state.pane.left - previewMouseLeft / 100 ,
-    //     top: this.state.pane.top - previewMouseTop / 100
-    //   }
-    // });
-  }
+  //   console.log(newLeft, newTop);
+  // }
 
   onWheel = (event: WheelEvent) => {
     this.onMouseEvent(event);
@@ -120,22 +101,37 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     this.forceUpdate();
   }
 
+  componentDidMount() {
+    const body = (this.refs as any).isolate.body;
+    this.setState({
+      canvasWidth  : body.offsetWidth,
+      canvasHeight : body.offsetHeight,
+      centerLeft   : body.offsetWidth / 2,
+      centerTop    : body.offsetTop / 2
+    });
+  }
+
   onKey = (event) => {
     this.bus.execute(new KeyboardAction(CANVAS_KEY_DOWN, event));
   }
 
   render() {
-
-    // console.log(this.state.pane.left, this.state.pane.top);
-
     const style = {
-      cursor: this.props.editor.currentTool.cursor,
-      // zoom: this.props.zoom,
-      position: "absolute"
+      cursor: this.props.editor.currentTool.cursor
     };
+    const canvasWidth  = this.state.canvasWidth;
+    const canvasHeight  = this.state.canvasHeight;
+
+    let transform;
+
+    if (canvasWidth) {
+      const left = this.state.centerLeft - ((this.state.centerLeft*2 - this.state.pane.left) * this.props.zoom) / 2;
+      const top  = this.state.centerTop - ((this.state.centerTop*2 - this.state.pane.top) * this.props.zoom) / 2;
+      transform = `translate(${left}px, ${top}px) scale(${this.props.zoom})`;
+    }
 
     const innerStyle = {
-      transform: `translate(${this.state.pane.left}px, ${this.state.pane.top}px) scale(${this.props.zoom})`,
+      transform: transform,
       transformOrigin: "top left",
       position: "absolute",
       width: "100%",
