@@ -10,8 +10,8 @@ export class GridToolComponent extends React.Component<{ zoom: number }, any> {
 
     if (zoom < 6) return null;
 
-    const size = CANVAS_SIZE * zoom;
-    const gridSize = zoom;
+    const size = CANVAS_SIZE;
+    const gridSize = 1;
     const paths = [
 
       // horizontal
@@ -21,15 +21,15 @@ export class GridToolComponent extends React.Component<{ zoom: number }, any> {
       [[0, 0], [0, gridSize]]
     ];
 
-    return <div className="m-grid-tool">
+    return (<div className="m-grid-tool">
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
 
         <defs>
-          <pattern id="grid" width={gridSize/size} height={gridSize/size}>
-            <g stroke="#000000">
+          <pattern id="grid" width={gridSize / size} height={gridSize / size}>
+            <g stroke="#F7F7F7">
               {
-                paths.map(([[sx, sy], [ex, ey]]) => {
-                  return <path d={`M${sx},${sy} L${ex},${ey}`}></path>
+                paths.map(([[sx, sy], [ex, ey]], i) => {
+                  return <path strokeWidth={1/this.props.zoom} key={i} d={`M${sx},${sy} L${ex},${ey}`}></path>;
                 })
               }
             </g>
@@ -37,9 +37,9 @@ export class GridToolComponent extends React.Component<{ zoom: number }, any> {
         </defs>
         <rect fill="url(#grid)" width={size} height={size} />
       </svg>
-    </div>
+    </div>);
   }
 }
 
-export const dependency = new ReactComponentFactoryDependency('components/tools/pointer/grid', GridToolComponent);
+export const dependency = new ReactComponentFactoryDependency("components/tools/pointer/grid", GridToolComponent);
 

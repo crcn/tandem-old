@@ -26,7 +26,7 @@ function roundMeasurements(style) {
     if (hasMeasurement(key)) {
       const value = measurement.match(/^(-?[\d\.]+)/)[1];
       const unit  = measurement.match(/([a-z]+)$/)[1];
-      roundedStyle[key] = Number(value).toFixed(2) + unit;
+      roundedStyle[key] = Number(value).toFixed(0) + unit;
     }
   }
 

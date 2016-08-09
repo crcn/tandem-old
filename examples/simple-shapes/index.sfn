@@ -1,6 +1,3 @@
-<div style="position:absolute;left:100px;border-radius:10px;background-color:#F60; color: white; top:100px;width:69px;height:47.81px;">
+<div style="position:absolute;padding:10px;left:0px;border-radius:10px;background-color:#F60; color: white; top:0px;width:69px;height:47.81px;">
  123
-</div>
-<div style="position:absolute;left:0px;border-radius:10px;background-color:#F60; color: white; top:100px;width:69px;height:47.81px;">
-  123
 </div>

@@ -5,11 +5,10 @@ import RegisteredComponent from "sf-front-end/components/registered";
 import { CANVAS_SIZE } from "sf-front-end/constants";
 
 
-export default class PreviewComponent extends React.Component<any, any> {
+export default class PreviewComponent extends React.Component<{ zoom: number, entity: any }, any> {
   render() {
 
     const style = {
-      zoom: this.props.zoom,
       width: CANVAS_SIZE,
       height: CANVAS_SIZE
     };

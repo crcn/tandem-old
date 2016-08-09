@@ -52,21 +52,21 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     };
 
     if (/^n/.test(point.id)) {
-      props.top    = point.currentStyle.top + point.top / this.props.zoom;
-      props.height = point.currentStyle.height - point.top / this.props.zoom;
+      props.top    = point.currentStyle.top + point.top;
+      props.height = point.currentStyle.height - point.top;
     }
 
     if (/e$/.test(point.id)) {
-      props.width = point.left / this.props.zoom;
+      props.width = point.left;
     }
 
     if (/^s/.test(point.id)) {
-      props.height = point.top / this.props.zoom;
+      props.height = point.top;
     }
 
     if (/w$/.test(point.id)) {
-      props.width = point.currentStyle.width - point.left / this.props.zoom;
-      props.left  = point.currentStyle.left + point.left / this.props.zoom;
+      props.width = point.currentStyle.width - point.left;
+      props.left  = point.currentStyle.left + point.left;
     }
 
     // ensure that the ratio between the width & the height
@@ -159,12 +159,12 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
 
   render() {
 
-    const pointRadius = (this.props.pointRadius || POINT_RADIUS);
-    const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
+    const pointRadius = (this.props.pointRadius || POINT_RADIUS) / this.props.zoom;
+    const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH) / this.props.zoom;
     const preview = this.props.selection.display;
 
     const rect       = preview.bounds;
-    const zoomedRect = rect.zoom(this.props.zoom);
+    const zoomedRect = rect;
 
     const cw = (pointRadius + strokeWidth) * 2;
 

@@ -13,12 +13,18 @@ import ToolsLayerComponent from "./tools";
 import IsolateComponent  from "sf-front-end/components/isolate";
 import { Editor } from "sf-front-end/models";
 import { Dependencies, BusDependency } from "sf-core/dependencies";
+import { IPosition } from "sf-core/geom";
 
 export default class EditorStageLayersComponent extends React.Component<{ editor: Editor, dependencies: Dependencies, zoom: number }, any> {
 
-  private _mousePosition: any;
+  private _mousePosition: IPosition;
   private _toolsHidden: any;
   private _previousZoom: number;
+
+  constructor(props) {
+    super(props);
+    this.state = { pane: { left: 0, top: 0 }};
+  }
 
   onMouseDown = (event) => {
     this.bus.execute(new MouseAction(CANVAS_MOUSE_DOWN, event));
@@ -28,31 +34,71 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     return BusDependency.getInstance(this.props.dependencies);
   }
 
-  componentWillUpdate(props: any) {
-    if (props.zoom !== this.props.zoom) {
-      requestAnimationFrame(this._center.bind(this, props.zoom, this.props.zoom));
-    }
+  pane(leftDelta, topDelta) {
+    this.setState({
+      pane: {
+        left: this.state.pane.left - leftDelta,
+        top: this.state.pane.top - topDelta
+      }
+    });
   }
 
-  componentDidMount() {
-    const isolateBody = (this.refs as any).isolate.body;
-    isolateBody.scrollTop = isolateBody.scrollHeight / 2;
-    isolateBody.scrollLeft = isolateBody.scrollWidth / 2;
-    this._mousePosition = { left: 0, top: 0 };
-  }
-
-  onMouseMove = (event) => {
+  onMouseEvent = (event: MouseEvent) => {
     this._mousePosition = {
       left: event.pageX,
-      top : event.pageY
+      top: event.pageY
     };
   }
 
-  onWheel = (event) => {
-    this.onMouseMove(event);
+  componentWillUpdate(props) {
+    if (props.zoom !== this.props.zoom) {
+      // requestAnimationFrame(this._center.bind(this, this.props.zoom, props.zoom));
+      this._center(this.props.zoom, props.zoom);
+    }
+  }
+
+  _center = (oldZoom, newZoom) => {
+
+    const calcPrev = (value) => {
+      return ((value / newZoom) * oldZoom);
+    }
+
+    const body = (this.refs as any).isolate.body;
+
+
+    const centerLeft = body.offsetWidth / 2;
+    const centerTop  = body.offsetTop / 2;
+
+    const previewCenterLeft = this.state.pane.left + this._mousePosition.left;
+    const previewCenterTop  = this.state.pane.top + this._mousePosition.top;
+    const speed = 10;
+
+    // this.setState({
+    //   pane: {
+    //     left: this.state.pane.left + (centerLeft - this.state.pane.left - previewCenterLeft) / speed,
+    //     top: this.state.pane.top + (centerTop - this.state.pane.top - previewCenterTop) / speed
+    //   }
+    // });
+
+    // const oldPaneLeft = this.state.pane.left;
+    // const newPaneLeft = oldPaneLeft
+
+    // this.setState({
+    //   pane: {
+    //     left: this.state.pane.left - previewMouseLeft / 100 ,
+    //     top: this.state.pane.top - previewMouseTop / 100
+    //   }
+    // });
+  }
+
+  onWheel = (event: WheelEvent) => {
+    this.onMouseEvent(event);
     if (event.metaKey) {
       event.preventDefault();
       this.bus.execute(new ZoomAction(event.deltaY / 250));
+    } else {
+      this.pane(event.deltaX, event.deltaY);
+      event.preventDefault();
     }
   }
 
@@ -74,32 +120,6 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     this.forceUpdate();
   }
 
-  _center = (newZoom, oldZoom) => {
-
-
-    function calcPrev(value) {
-      return Math.round((value / newZoom) * oldZoom);
-    }
-
-    const isolateBody = (this.refs as any).isolate.body;
-
-    const newHeight  = isolateBody.scrollHeight;
-    const prevHeight = calcPrev(newHeight);
-
-    const newWidth  = isolateBody.scrollWidth;
-    const prevWidth = calcPrev(newWidth);
-
-    const changeLeft = (newHeight - prevHeight) / 2;
-    const changeTop = (newWidth - prevWidth)   / 2;
-
-    const scrollTop   = isolateBody.scrollTop + changeTop;
-    const scrollLeft  = isolateBody.scrollLeft + changeLeft;
-
-    isolateBody.scrollTop = scrollTop;
-    isolateBody.scrollLeft = scrollLeft;
-    this.forceUpdate();
-  }
-
   onKey = (event) => {
     this.bus.execute(new KeyboardAction(CANVAS_KEY_DOWN, event));
   }
@@ -107,8 +127,15 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   render() {
 
     const style = {
-      cursor: this.props.editor.currentTool.cursor
+      cursor: this.props.editor.currentTool.cursor,
+      zoom: this.props.zoom
     };
+
+    const styleInner = {
+      position: "absolute",
+      left: this.state.pane.left / this.props.zoom,
+      top: this.state.pane.top / this.props.zoom
+    }
 
     const entity = this.props.editor.file.entity;
     if (!entity) return null;
@@ -116,13 +143,15 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     return (<IsolateComponent ref="isolate" onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
       <div
         onKeyDown={this.onKey}
+        onMouseMove={this.onMouseEvent}
         tabIndex={-1}
         className="m-editor-stage-canvas"
-        onMouseMove={this.onMouseMove}
         style={style}
         onMouseDown={this.onMouseDown}>
-        <PreviewLayerComponent {...this.props} entity={entity} />
-        {this._toolsHidden ? void 0 : <ToolsLayerComponent entity={entity} {...this.props} />}
+        <div style={styleInner}>
+          <PreviewLayerComponent {...this.props} entity={entity} />
+          {this._toolsHidden ? void 0 : <ToolsLayerComponent entity={entity} {...this.props} />}
+        </div>
       </div>
     </IsolateComponent>);
   }
