@@ -7,7 +7,7 @@ import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-exten
 
 function calculateCSSMeasurments(style) {
   const calculated = {};
-  for (const key in style) {
+  for (let key in style) {
     if (hasMeasurement(key)) {
       calculated[key] = Number(style[key].replace("px", ""));
     }
@@ -21,7 +21,7 @@ function hasMeasurement(key) {
 
 function roundMeasurements(style) {
   const roundedStyle = {};
-  for (const key in style) {
+  for (let key in style) {
     const measurement: string = roundedStyle[key] = style[key];
     if (hasMeasurement(key)) {
       const value = measurement.match(/^(-?[\d\.]+)/)[1];
@@ -176,7 +176,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
 
   private _setExpressionStyle(styles: Object) {
 
-    for (const key in styles) {
+    for (let key in styles) {
       const value = styles[key];
 
       let declaration: CSSStyleDeclarationExpression;

@@ -21,8 +21,8 @@ import { expect } from "chai";
 
 function element(name, attributes = {}, ...children) {
   const element = new Element(name);
-  for (const key in attributes) element.setAttribute(key, attributes[key]);
-  for (const child of children) element.appendChild(child);
+  for (let key in attributes) element.setAttribute(key, attributes[key]);
+  for (let child of children) element.appendChild(child);
   return element;
 }
 

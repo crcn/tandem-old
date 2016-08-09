@@ -39,7 +39,7 @@ export function multiplyStyle(style, zoom) {
 
   var zoomed = {};
 
-  for (const key in style) {
+  for (let key in style) {
     if (style.hasOwnProperty(key)) {
       const value = style[key];
       if (typeof value === 'number') {
@@ -56,7 +56,7 @@ export function divideStyle(style, zoom) {
 
   var zoomed = {};
 
-  for (const key in style) {
+  for (let key in style) {
     if (style.hasOwnProperty(key)) {
       const value = style[key];
       if (typeof value === 'number') {

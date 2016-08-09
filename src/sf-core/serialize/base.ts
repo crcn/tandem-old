@@ -59,14 +59,14 @@ register(Array, {
 register(Object, {
   serialize(value: Object) {
     const ret  = {};
-    for (const key in value) {
+    for (let key in value) {
       ret[key] = serialize(key);
     }
     return ret;
   },
   deserialize(value: Object) {
     const ret  = {};
-    for (const key in value) {
+    for (let key in value) {
       ret[key] = deserialize(key);
     }
     return ret;

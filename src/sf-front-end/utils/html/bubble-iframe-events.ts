@@ -9,7 +9,7 @@ export default function (iframe) {
       cancelable: true
     });
 
-    for (const key in event) {
+    for (let key in event) {
       let value = event[key];
       if (typeof value === "function") {
         value = value.bind(event);
@@ -36,7 +36,7 @@ export default function (iframe) {
     "keydown"
   ];
 
-  for (const eventType of eventTypes) {
+  for (let eventType of eventTypes) {
     body.addEventListener(eventType, bubbleEvent);
   }
 

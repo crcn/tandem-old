@@ -58,7 +58,7 @@ if (isMaster) {
 
   // worker cleanup
   setInterval(() => {
-    for (const cid in jobPromises) {
+    for (let cid in jobPromises) {
       const promise = jobPromises[cid];
 
       // may have been deleted -- waiting for GC to kick in

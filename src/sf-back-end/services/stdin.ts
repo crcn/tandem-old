@@ -38,7 +38,7 @@ export default class StdinService extends BaseApplicationService<IApplication> {
     this.app.actors.forEach((actor) => {
       var docs = (actor as any).__documentation || {};
 
-      for (const actionType in docs) {
+      for (let actionType in docs) {
         this.logger.info("{ type: %s }: %s", chalk.bold(actionType), docs[actionType]);
       }
     });

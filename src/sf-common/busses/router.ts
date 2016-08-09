@@ -6,7 +6,7 @@ export default class RouterBus extends Bus {
   constructor(routes: Object) {
     super();
     this._routes = {};
-    for (const key in routes) {
+    for (let key in routes) {
       this._routes[key] = WrapBus.create(routes[key]);
     }
   }

@@ -17,7 +17,7 @@ export class Injector {
   static inject(target: any, dependencies: Dependencies) {
     const __inject = target["__inject"];
     if (__inject) {
-      for (const property in __inject) {
+      for (let property in __inject) {
         const [ns, map] = __inject[property];
         let value;
 
