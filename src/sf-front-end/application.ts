@@ -18,6 +18,7 @@ import { dependency as selectorServiceDependency } from "./services/selector";
 import { dependency as keyBindingsServiceDependency } from "./services/key-binding";
 import { dependency as rootComponentRendererDependency } from "./services/root-component-renderer";
 import { dependency as pasteEntityServiceDependency } from "./services/paste-entity";
+import { dependency as commandServiceDependency } from "sf-common/services/commands";
 
 // tools
 import { dependency as pointerToolDependency } from "./tools/pointer";
@@ -62,6 +63,7 @@ export class FrontEndApplication extends Application {
       keyBindingsServiceDependency,
       rootComponentRendererDependency,
       pasteEntityServiceDependency,
+      commandServiceDependency,
 
       // tools
       pointerToolDependency,

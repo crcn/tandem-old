@@ -19,7 +19,6 @@ export default class PointerTool extends BaseApplicationService<FrontEndApplicat
   }
 
   canvasKeyDown(action: KeyboardAction) {
-    action.preventDefault();
 
     const selection = <DisplayEntityCollection>this.app.editor.selection;
     if (selection["display"] == null) return;
@@ -40,6 +39,8 @@ export default class PointerTool extends BaseApplicationService<FrontEndApplicat
     } else {
       return;
     }
+
+    action.preventDefault();
 
     selection.display.position = { left, top };
     this.app.editor.file.save();

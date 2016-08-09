@@ -67,8 +67,6 @@ export class HTMLElementExpression extends HTMLExpression {
   }
 }
 
-registerSerializer(HTMLElementExpression);
-
 export const HTML_ATTRIBUTE = "htmlAttribute";
 export class HTMLAttributeExpression extends BaseExpression {
   constructor(public name: string, public value: string, position: ICursorPosition) {

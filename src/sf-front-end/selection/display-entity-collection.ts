@@ -64,11 +64,4 @@ export class DisplayEntityCollection extends Selection<IVisibleEntity> {
   readonly display: IEntityDisplay = new EntitySelectionDisplay(this);
 }
 
-registerSerializer(DisplayEntityCollection, {
-  serialize: serializeArray,
-  deserialize: function(value) {
-    return new DisplayEntityCollection(...value.map((item) => deserialize(item)));
-  }
-});
-
 export const dependency = new SelectionFactoryDependency("display", DisplayEntityCollection);

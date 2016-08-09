@@ -23,6 +23,7 @@ export class SfFile extends Observable implements IInjectable, IActiveRecord, IE
   public path: string;
   public content: string;
   public ext: string;
+  readonly type: string = "text/html";
 
   @inject(DEPENDENCIES_NS)
   readonly dependencies: Dependencies;

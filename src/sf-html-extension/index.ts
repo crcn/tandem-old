@@ -7,6 +7,9 @@
  // models
  import { dependency as sfFileActiveRecordDependency } from "./active-records/sf-file";
 
+ // commands
+ import { dependency as pasteCommandDependency } from "./commands/paste";
+
  // entities
  import {
    htmlTextDependency,
@@ -20,6 +23,9 @@ export const dependency = [
 
   // components
   entityPreviewComponentDependency,
+
+  // commands
+  pasteCommandDependency,
 
   // models
   sfFileActiveRecordDependency,
