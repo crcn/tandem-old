@@ -8,11 +8,29 @@ import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-exten
 function calculateCSSMeasurments(style) {
   const calculated = {};
   for (const key in style) {
-    if (/left|top|right|bottom|width|height|paddingLeft|paddingTop|paddingRight|paddingBottom/.test(key)) {
+    if (hasMeasurement(key)) {
       calculated[key] = Number(style[key].replace("px", ""));
     }
   }
   return calculated;
+}
+
+function hasMeasurement(key) {
+  return /left|top|right|bottom|width|height|paddingLeft|paddingTop|paddingRight|paddingBottom/.test(key);
+}
+
+function roundMeasurements(style) {
+  const roundedStyle = {};
+  for (const key in style) {
+    const measurement: string = roundedStyle[key] = style[key];
+    if (hasMeasurement(style[key])) {
+      const value = measurement.match(/^(-?[\d\.]+)/)[1];
+      const unit  = measurement.match(/(\w+)$/)[1];
+      console.log(value, unit, measurement);
+      roundedStyle[key] = Number(value).toFixed(2) + unit;
+    }
+  }
+  return roundedStyle;
 }
 
 export class HTMLNodeDisplay implements IEntityDisplay {
@@ -92,7 +110,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     const existingStyle: any = calculateCSSMeasurments(this._style);
     const computedStyle: any = calculateCSSMeasurments(window.getComputedStyle(this.node));
 
-    const newStyle: any = {};
+    let newStyle: any = {};
 
     if (value.left !== bounds.left) {
       const originLeft = bounds.left - existingStyle.left || 0;
@@ -111,6 +129,8 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     if (value.height !== bounds.height) {
       newStyle.height = (value.height - computedStyle.paddingTop - computedStyle.paddingBottom) + "px";
     }
+
+    newStyle = roundMeasurements(newStyle);
 
     this._setExpressionStyle(newStyle);
   }
