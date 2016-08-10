@@ -41,10 +41,10 @@ class SelectableComponent extends React.Component<{ entity: IVisibleEntity, sele
       background : "transparent",
       position   : "absolute",
       borderWidth: borderWidth,
-      width      : bounds.width - borderWidth / 2,
-      height     : bounds.height - borderWidth / 2,
-      left       : bounds.left - borderWidth,
-      top        : bounds.top - borderWidth
+      width      : bounds.width,
+      height     : bounds.height,
+      left       : bounds.left,
+      top        : bounds.top
     };
 
     return (

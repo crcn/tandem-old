@@ -23,7 +23,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
 
   constructor(props) {
     super(props);
-    this.state = { pane: { left: 0, top: 0 }};
+    this.state = { translate: { left: 0, top: 0 }};
   }
 
   onMouseDown = (event) => {
@@ -36,9 +36,9 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
 
   pane(leftDelta, topDelta) {
     this.setState({
-      pane: {
-        left: this.state.pane.left - leftDelta,
-        top: this.state.pane.top - topDelta
+      translate: {
+        left: this.state.translate.left - leftDelta,
+        top: this.state.translate.top - topDelta
       }
     });
   }
@@ -50,27 +50,52 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     };
   }
 
-  // componentWillUpdate(props) {
-  //   if (props.zoom !== this.props.zoom) {
-  //     this._center(this.props.zoom, props.zoom);
-  //   }
-  // }
+  componentWillUpdate(props) {
+    if (props.zoom !== this.props.zoom) {
+      this._center(this.props.zoom, props.zoom);
+    }
+  }
 
-  // _center = (oldZoom, newZoom) => {
+  _center = (oldZoom, newZoom) => {
+    const zd   = (newZoom / oldZoom);
 
-  //   const canvasLeft = this.state.canvasWidth / 2;
-  //   const canvasTop  = this.state.canvasHeight / 2;
+    const v1w  = this.state.canvasWidth;
+    const v1h  = this.state.canvasHeight;
 
-  //   const newLeft = this._mousePosition.left + canvasLeft;
-  //   const newTop  = this._mousePosition.top  + canvasTop;
+    // center is based on the mouse position
+    const v1px = this._mousePosition.left / v1w;
+    const v1py = this._mousePosition.top / v1h;
 
-  //   this.setState({
-  //     centerLeft: this.state.centerLeft + (newLeft - this.state.centerLeft) / 100,
-  //     centerTop: this.state.centerTop + (newTop - this.state.centerTop) / 100
-  //   });
+    // calculate v1 center x & y
+    const v1cx = v1w * v1px;
+    const v1cy = v1h * v1py;
 
-  //   console.log(newLeft, newTop);
-  // }
+    // old screen width & height
+    const v2ow = v1w * oldZoom;
+    const v2oh = v1h * oldZoom;
+
+    // old offset pane left
+    const v2ox = this.state.translate.left;
+    const v2oy = this.state.translate.top;
+
+    // new width of view 2
+    const v2nw = v1w * newZoom;
+    const v2nh = v1h * newZoom;
+
+    // get the offset px & py of view 2
+    const v2px = (v1cx - v2ox) / v2ow;
+    const v2py = (v1cy - v2oy) / v2oh;
+
+    const left = v1w * v1px - v2nw * v2px;
+    const top  = v1h * v1py - v2nh * v2py;
+
+    this.setState({
+      translate: {
+        left: left,
+        top: top
+      }
+    })
+  }
 
   onWheel = (event: WheelEvent) => {
     this.onMouseEvent(event);
@@ -106,8 +131,8 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     this.setState({
       canvasWidth  : body.offsetWidth,
       canvasHeight : body.offsetHeight,
-      centerLeft   : body.offsetWidth / 2,
-      centerTop    : body.offsetTop / 2
+      centerLeft   : 0.5,
+      centerTop    : 0.5
     });
   }
 
@@ -120,15 +145,19 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
       cursor: this.props.editor.currentTool.cursor
     };
     const canvasWidth  = this.state.canvasWidth;
-    const canvasHeight  = this.state.canvasHeight;
+    const canvasHeight = this.state.canvasHeight;
+    const centerLeft   = this.state.centerLeft;
+    const centerTop    = this.state.centerTop;
 
     let transform;
 
     if (canvasWidth) {
-      const left = this.state.centerLeft - ((this.state.centerLeft*2 - this.state.pane.left) * this.props.zoom) / 2;
-      const top  = this.state.centerTop - ((this.state.centerTop*2 - this.state.pane.top) * this.props.zoom) / 2;
+      const { left, top } = this.state.translate;
+      // const left = canvasWidth * centerLeft - ((canvasWidth - this.state.pane.left) * this.props.zoom) * centerLeft;
+      // const top  = canvasHeight * centerTop - ((canvasHeight - this.state.pane.top) * this.props.zoom) * centerTop;
       transform = `translate(${left}px, ${top}px) scale(${this.props.zoom})`;
     }
+
 
     const innerStyle = {
       transform: transform,
