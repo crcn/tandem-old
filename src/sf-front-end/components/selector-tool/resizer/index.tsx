@@ -52,8 +52,8 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     };
 
     if (/^n/.test(point.id)) {
-      props.top    = point.currentStyle.top + point.top;
-      props.height = point.currentStyle.height - point.top;
+      props.top    = point.currentBounds.top + point.top;
+      props.height = point.currentBounds.height - point.top;
     }
 
     if (/e$/.test(point.id)) {
@@ -65,22 +65,34 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     }
 
     if (/w$/.test(point.id)) {
-      props.width = point.currentStyle.width - point.left;
-      props.left  = point.currentStyle.left + point.left;
+      props.width = point.currentBounds.width - point.left;
+      props.left  = point.currentBounds.left + point.left;
     }
 
-    // ensure that the ratio between the width & the height
-    // is always the same (no skewing) if the shift key is down.
     if (keepAspectRatio) {
-      const diffPerc = Math.min(props.width / point.currentStyle.width, props.height / point.currentStyle.height);
+      if (/^[ns]/.test(point.id)) {
+        const perc  = props.height / point.currentBounds.height;
+        props.width = point.currentBounds.width * perc;
 
-      props.width = point.currentStyle.width * diffPerc;
-      props.height = point.currentStyle.height * diffPerc;
+        // only north and south poles
+        if (!/[ew]$/.test(point.id)) {
+          props.left = point.currentBounds.left + (point.currentBounds.width / 2 - props.width / 2);
+        } else if (/w$/.test(point.id)) {
+          props.left = point.currentBounds.left + point.currentBounds.width - props.width;
+        }
+      } else if (/[ew]$/.test(point.id)) {
+        const perc   = props.width / point.currentBounds.width;
+        props.height = point.currentBounds.height * perc;
+
+        if (!/[ns]$/.test(point.id)) {
+          props.top = point.currentBounds.top + (point.currentBounds.height / 2 - props.height / 2);
+        }
+      }
     }
 
     if (keepCenter) {
-      props.left = point.currentStyle.left + (point.currentStyle.width / 2 - props.width / 2);
-      props.top  = point.currentStyle.top + (point.currentStyle.height / 2 - props.height / 2);
+      props.left = point.currentBounds.left + (point.currentBounds.width / 2 - props.width / 2);
+      props.top  = point.currentBounds.top + (point.currentBounds.height / 2 - props.height / 2);
     }
 
     this.targetDisplay.bounds = new BoundingRect(
@@ -172,7 +184,7 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
       show: show,
 
       // no zoom
-      currentStyle: rect,
+      currentBounds: rect,
       left: left,
       top: top
     }));
