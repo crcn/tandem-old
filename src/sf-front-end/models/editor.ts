@@ -2,7 +2,7 @@ import { IEditorFile } from "./base";
 import { Selection } from "../selection";
 import { IDisposable } from "sf-core/object";
 
-export const MIN_ZOOM = 0.2;
+export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;
 
 export class Editor {
