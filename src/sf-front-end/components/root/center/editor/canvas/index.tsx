@@ -153,11 +153,8 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
 
     if (canvasWidth) {
       const { left, top } = this.state.translate;
-      // const left = canvasWidth * centerLeft - ((canvasWidth - this.state.pane.left) * this.props.zoom) * centerLeft;
-      // const top  = canvasHeight * centerTop - ((canvasHeight - this.state.pane.top) * this.props.zoom) * centerTop;
       transform = `translate(${left}px, ${top}px) scale(${this.props.zoom})`;
     }
-
 
     const innerStyle = {
       transform: transform,
@@ -179,10 +176,10 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
         className="m-editor-stage-canvas"
         style={style}
         onMouseDown={this.onMouseDown}>
-          <IsolateComponent style={innerStyle}>
+          <div style={innerStyle} data-previewroot>
               <PreviewLayerComponent {...this.props} entity={entity} />
-          </IsolateComponent>
-          {this._toolsHidden ? void 0 : <ToolsLayerComponent entity={entity} {...this.props} />}
+              {this._toolsHidden ? void 0 : <ToolsLayerComponent entity={entity} {...this.props} />}
+          </div>
       </div>
     </IsolateComponent>);
   }

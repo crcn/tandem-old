@@ -15,6 +15,68 @@ function calculateCSSMeasurments(style) {
   return calculated;
 }
 
+/**
+ * Robust method for fetching parent nodes outside
+ * of an iframe
+ */
+
+function getParentNode(node: Node): HTMLElement {
+  const parentNode = <Node>node.parentNode;
+
+  if (parentNode && parentNode.nodeName === "#document") {
+    if (node.ownerDocument.defaultView !== window) {
+      const localWindow  = node.ownerDocument.defaultView;
+      const parentWindow = localWindow.parent;
+      return Array.prototype.find.call(parentWindow.document.querySelectorAll("iframe"), (iframe) => {
+        return iframe.contentWindow === localWindow;
+      });
+    }
+  }
+
+  return <HTMLElement>parentNode;
+}
+
+function parseCSSMatrixValue(value: string) {
+  return value.replace(/matrix\((.*?)\)/, "$1").split(/,\s/).map((value) => Number(value));
+}
+
+function calculateTransform(node: HTMLElement, includeIframes: boolean = true) {
+  let cnode = <HTMLElement>node;
+  let matrix = [0, 0, 0, 0, 0, 0];
+  while (cnode) {
+
+    if (cnode.nodeName === "IFRAME" && cnode !== node && !includeIframes) {
+      break;
+    }
+
+    if (cnode.nodeType === 1) {
+      const style = window.getComputedStyle(cnode);
+      if (style.transform !== "none") {
+        const cnodeMatrix = parseCSSMatrixValue(style.transform);
+        for (let i = cnodeMatrix.length; i--; ) {
+          matrix[i] += cnodeMatrix[i];
+        }
+      }
+    }
+
+    cnode = getParentNode(cnode);
+  }
+
+  return [matrix[0] || 1, matrix[1], matrix[2], matrix[3] || 1, matrix[4], matrix[5]];
+}
+
+function calculateUntransformedBoundingRect(node: HTMLElement) {
+  const rect = node.getBoundingClientRect();
+  const bounds = new BoundingRect(rect.left, rect.top, rect.right, rect.bottom);
+  const matrix = calculateTransform(node, false);
+
+  return bounds.move(-matrix[4], -matrix[5]).zoom(1 / matrix[0]);
+}
+
+function scewBounds(bounds: BoundingRect, matrix: Array<number>) {
+  return bounds.zoom(matrix[0] || 1).move(matrix[4], matrix[5]);
+}
+
 function hasMeasurement(key) {
   return /left|top|right|bottom|width|height|padding|margin/.test(key);
 }
@@ -96,10 +158,9 @@ export class HTMLNodeDisplay implements IEntityDisplay {
    */
 
   get bounds(): BoundingRect {
-    const clientRect: ClientRect = this.node.getBoundingClientRect();
 
-    // convert into something that is not DOM specific
-    let rect: BoundingRect = new BoundingRect(clientRect.left, clientRect.top, clientRect.right, clientRect.bottom);
+    let rect: BoundingRect = calculateUntransformedBoundingRect(this.node);
+
     rect = this._addIsolationOffset(rect);
 
     return rect;

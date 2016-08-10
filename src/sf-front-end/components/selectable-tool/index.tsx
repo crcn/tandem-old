@@ -35,7 +35,7 @@ class SelectableComponent extends React.Component<{ entity: IVisibleEntity, sele
 
     const bounds = entity.display.bounds;
 
-    const borderWidth = 2;
+    const borderWidth = 2 / this.props.zoom;
 
     const style = {
       background : "transparent",
@@ -43,8 +43,8 @@ class SelectableComponent extends React.Component<{ entity: IVisibleEntity, sele
       borderWidth: borderWidth,
       width      : bounds.width,
       height     : bounds.height,
-      left       : bounds.left,
-      top        : bounds.top
+      left       : bounds.left - borderWidth,
+      top        : bounds.top - borderWidth
     };
 
     return (

@@ -6,10 +6,8 @@
   left: 0px;
 }
 .m-selectable {
-  // background-color: rgba(0,0,0,0.1) !important;
-  // pointer-events: none;
 
   &.hover, &:hover {
-    box-shadow: inset 0 0 0 2px $color-sky-blue-4;
+    border: 0px solid $color-sky-blue-4;
   }
 }

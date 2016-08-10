@@ -129,8 +129,8 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
 
     this._dragger = startDrag(event, (event2, { delta }) => {
 
-      const nx = sx2 + delta.x;
-      const ny = sy2 + delta.y;
+      const nx = sx2 + delta.x / this.props.zoom;
+      const ny = sy2 + delta.y / this.props.zoom;
 
       this.moveTarget(nx, ny);
     }, () => {
@@ -151,8 +151,8 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
 
   render() {
 
-    const pointRadius = (this.props.pointRadius || POINT_RADIUS);
-    const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
+    const pointRadius = (this.props.pointRadius || POINT_RADIUS) / this.props.zoom;
+    const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH) / this.props.zoom;
     const preview = this.props.selection.display;
 
     const rect       = preview.bounds;

@@ -34,10 +34,9 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
     // is an IEntityDisplay
     if (!display) return null;
 
-    const sections: any = {};
-
     const entireBounds = selection.display.bounds;
-    const borderWidth = 1;
+
+    const borderWidth = 1 / this.props.zoom;
 
     const boundsStyle = {
       position: "absolute",
@@ -52,9 +51,6 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
       <ResizerComponent {...this.props} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} />
 
       <div className="m-selector-component--bounds" style={boundsStyle} />
-
-      {sections.guides}
-      {sections.size}
 
       {this.state.resizing ? <RulerComponent {...this.props} selection={selection} allEntities={this.props.allEntities} /> : undefined}
     </div>);

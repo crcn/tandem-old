@@ -27,7 +27,6 @@ class RulerToolComponent extends React.Component<{ selection: DisplayEntityColle
       }
     </div>);
   }
-
 }
 
 export default RulerToolComponent;

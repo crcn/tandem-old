@@ -13,8 +13,8 @@ class PathComponent extends React.Component<any, any> {
     startDrag(event, (event2, info) => {
 
       Object.assign(point, {
-        left : (sx + info.delta.x),
-        top  : (sy + info.delta.y)
+        left : (sx + info.delta.x / this.props.zoom),
+        top  : (sy + info.delta.y / this.props.zoom)
       });
 
       this.props.onPointChange(point, event2);
