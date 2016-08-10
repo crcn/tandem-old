@@ -14,7 +14,7 @@ describe(__filename + "#", () => {
 
   it(`has a max zoom level of ${MAX_ZOOM}%`, () => {
     const editor = new Editor();
-    editor.zoom = 3;
+    editor.zoom = Infinity;
     expect(editor.zoom).to.equal(MAX_ZOOM);
   });
 });
