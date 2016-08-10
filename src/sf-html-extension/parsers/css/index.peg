@@ -10,7 +10,7 @@ const {
 
 function position() {
   return {
-    start:peg$savedPos, 
+    start:peg$savedPos,
     end:peg$currPos
   };
 }
@@ -40,7 +40,7 @@ CSSStyleDeclarationValue
 CSSSingleValue
   = CSSFunctionCall/CSSLiteralValue
 
-CSSLiteralValue 
+CSSLiteralValue
   = value:CSSValue {
     return new CSSLiteralExpression(text(), position());
   }
@@ -58,7 +58,7 @@ Parameters
     return [];
   }
 
-CSSListValue 
+CSSListValue
   = values:(CSSSpaceList/CSSCommaList) {
     return values.length === 1 ? values[0] : new CSSListValueExpression(values, position());
   }
@@ -76,21 +76,21 @@ CSSSpaceList
       return v[1];
     }));
   }
-  
-CSSValue
-  = [^ ;,\(\)]+
 
-/** 
+CSSValue
+  = [^ ;,\(\)]+ { return text(); }
+
+/**
  * Generic
  */
 
-Number 
+Number
   = (Digit '.' Digit+) / ('.' Digit+) / Digit {
     return new LiteralExpression(Number(text()), position());
   }
 
 Digit
-  = [0-9] 
+  = [0-9]
 
 _
   = [ \n\r\t]*
