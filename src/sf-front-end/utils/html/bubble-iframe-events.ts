@@ -1,6 +1,6 @@
 export default function (iframe) {
   const window = iframe.contentWindow;
-  const body   = window.document.body;
+  const body   = window.document.childNodes[0];
 
   // TODO - this should be in its own util function
   function bubbleEvent(event) {

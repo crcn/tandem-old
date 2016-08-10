@@ -50,6 +50,8 @@ function calculateTransform(node: HTMLElement, includeIframes: boolean = true) {
     }
 
     if (cnode.nodeType === 1) {
+
+      // TODO - this needs to be memoized - getComputedStyle is expensive.
       const style = window.getComputedStyle(cnode);
       if (style.transform !== "none") {
         const cnodeMatrix = parseCSSMatrixValue(style.transform);

@@ -27,9 +27,13 @@ export class HTMLTemplateEntity extends VisibleHTMLElementEntity implements IInj
     iframe.setAttribute("class", "m-template-entity");
 
     this._iframe.onload = () => {
-      const body = this._body = iframe.contentWindow.document.body;
+      const doc = iframe.contentWindow.document;
+      const body = doc.body;
+      // doc.removeChild(doc.childNodes[0]); // remove HTML tag
+
       body.style.margin = body.style.padding = "0px";
       body.appendChild(this._placeholder);
+      // this._placeholder = doc.childNodes[0]
 
       // bubble all iframe events such as mouse clicks and scrolls
       // so that the editor can handle them
