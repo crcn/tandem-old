@@ -36,7 +36,7 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
     const entireBounds = selection.display.bounds;
 
-    const borderWidth = 2 / this.props.zoom;
+    const borderWidth = 1 / this.props.zoom;
 
     const boundsStyle = {
       position: "absolute",

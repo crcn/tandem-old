@@ -6,8 +6,9 @@ const STEM_WIDTH = 4;
 export default class LineComponent extends React.Component<any, any> {
   render() {
 
-    const stemWidth = this.props.showStems !== false ? STEM_WIDTH : 0;
+    const stemWidth = this.props.showStems !== false ? STEM_WIDTH : 0 / this.props.zoom;
     const bounds = this.props.bounds;
+
     const sections: any = {};
     let d;
     const padding = 3;
@@ -15,6 +16,7 @@ export default class LineComponent extends React.Component<any, any> {
     if (bounds.direction === "ew") {
 
       const y = Math.round(bounds.height / 2);
+
 
       // center & offset width of text
       sections.text = (
@@ -37,7 +39,7 @@ export default class LineComponent extends React.Component<any, any> {
     } else {
       const x = Math.round(bounds.width / 2);
 
-      sections.text = (<text x={x + 10} y={Math.round(bounds.height / 2 + 4)}>
+      sections.text = (<text x={(x + 10)}  y={Math.round(bounds.height / 2 + 4)}>
         {Math.round(this.props.bounds.height / this.props.zoom)}
       </text>);
 
@@ -62,7 +64,7 @@ export default class LineComponent extends React.Component<any, any> {
         height={h}
         viewBox={[0, 0, w, h]}
       >
-        <path d={d.join("")} strokeWidth={1} fill="transparent" />
+        <path d={d.join("")} strokeWidth={1 / this.props.zoom} fill="transparent" />
         {this.props.showDistance !== false ? sections.text : void 0}
       </svg>
     );

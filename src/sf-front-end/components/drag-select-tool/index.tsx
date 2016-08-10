@@ -94,7 +94,8 @@ class DragSelectComponent extends React.Component<any, any> {
       left   : this.state.left,
       top    : this.state.top,
       width  : this.state.width,
-      height : this.state.height
+      height : this.state.height,
+      boxShadow: `0 0 0 ${1 / this.props.zoom}px #CCC`
     };
 
     const box = (<div style={style} className="m-drag-select--box">
