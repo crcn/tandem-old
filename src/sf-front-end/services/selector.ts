@@ -95,6 +95,16 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
       }
     });
   }
+
+  selectAll() {
+
+    // TODO - select call based on focused entity
+    this.select({
+      items: (<any>this.app.editor.file.entity).childNodes,
+      keepPreviousSelection: false,
+      toggle: false
+    })
+  }
 }
 
 export const dependency = new ApplicationServiceDependency("selector", SelectorService);

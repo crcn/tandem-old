@@ -49,6 +49,13 @@ export class SelectAction extends Action {
   }
 }
 
+export const SELECT_ALL = "selectAll";
+export class SelectAllAction extends Action {
+  constructor() {
+    super(SELECT_ALL);
+  }
+}
+
 export const SELECT_SOURCE_AT_OFFSET = "selectAtSourceOffset";
 export class SelectSourceAtOffsetAction extends Action {
   readonly data: Array<IRange>;
@@ -98,3 +105,4 @@ export class SetToolAction extends Action {
     super(SET_TOOL);
   }
 }
+
