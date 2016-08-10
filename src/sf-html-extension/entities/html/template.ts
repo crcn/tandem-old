@@ -10,7 +10,7 @@ import { EntityFactoryDependency, IInjectable, APPLICATION_SINGLETON_NS } from "
 import { NodeSection, INode } from "sf-core/markup";
 import { FrontEndApplication } from "sf-front-end/application";
 
-export class HTMLTemplateEntity extends VisibleHTMLElementEntity implements IInjectable, IActor {
+export class HTMLTemplateEntity extends VisibleHTMLElementEntity implements IInjectable {
   private _placeholder: Node;
   private _iframe: HTMLIFrameElement;
   private _body: HTMLElement;
@@ -18,34 +18,7 @@ export class HTMLTemplateEntity extends VisibleHTMLElementEntity implements IInj
   @inject(APPLICATION_SINGLETON_NS)
   readonly app: FrontEndApplication;
 
-  didMount() {
-    super.didMount();
-    this.app.actors.push(this);
-  }
-
-  execute(action: Action) {
-    this._updateZoom();
-  }
-
-  willUnmount() {
-    super.willUnmount();
-    this.app.actors.splice(this.app.actors.indexOf(this), 1);
-  }
-
-  didInject() {
-    this._updateZoom();
-  }
-
-  /**
-   * Impl here is a bit odd, but iframes do not pass style.zoom to the iframe
-   * body, so we need to manually pass the zoom property of the editor to the iframe
-   * whenever it changes.
-   */
-
-  _updateZoom() {
-    if (!this._body) return;
-    this._body.style.zoom = String(this.app.editor.zoom);
-  }
+  didInject() {}
 
   createSection() {
     this._placeholder = document.createElement("div");
