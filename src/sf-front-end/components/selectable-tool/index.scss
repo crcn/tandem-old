@@ -6,8 +6,9 @@
   left: 0px;
 }
 .m-selectable {
+  opacity: 0;
 
   &.hover, &:hover {
-    border: 0px solid $color-sky-blue-4;
+    opacity: 1;
   }
 }

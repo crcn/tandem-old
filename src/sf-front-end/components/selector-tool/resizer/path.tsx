@@ -45,11 +45,11 @@ class PathComponent extends React.Component<any, any> {
     const strokeWidth = this.props.strokeWidth;
 
     const cr = this.props.pointRadius;
-    const cw = (cr + (strokeWidth || 1)) * 2;
+    const cw = cr * 2;
     const w = x2 - x1 + cw;
     const h = y2 - y1 + cw;
 
-    return (<svg width={w} height={h} viewBox={[-cw / 2, -cw / 2, w, h]}>
+    return (<svg width={w} height={h} viewBox={[-cr, -cr, w, h]}>
       <path d={d} strokeWidth={strokeWidth} stroke="transparent" fill="transparent" />
       {
         this.props.showPoints !== false ? points.map((path, key) =>
@@ -57,13 +57,13 @@ class PathComponent extends React.Component<any, any> {
             <rect
               onMouseDown={this.onPointDown.bind(this, path, key)}
               className={`point-circle-${path.id || key}`}
-              strokeWidth={strokeWidth}
+              strokeWidth={0}
               stroke="black"
               fill="transparent"
-              width={cr * 2}
-              height={cr * 2}
-              x={path.left - cr}
-              y={path.top - cr}
+              width={cw / this.props.zoom}
+              height={cw / this.props.zoom}
+              x={path.left - cr / this.props.zoom}
+              y={path.top - cr / this.props.zoom}
               rx={0}
               ry={0}
               key={key}

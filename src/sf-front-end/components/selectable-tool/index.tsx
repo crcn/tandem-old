@@ -40,11 +40,11 @@ class SelectableComponent extends React.Component<{ entity: IVisibleEntity, sele
     const style = {
       background : "transparent",
       position   : "absolute",
-      borderWidth: borderWidth,
+      boxShadow  : `0 0 0 ${borderWidth}px #6f98e0`,
       width      : bounds.width,
       height     : bounds.height,
-      left       : bounds.left - borderWidth,
-      top        : bounds.top - borderWidth
+      left       : bounds.left,
+      top        : bounds.top
     };
 
     return (

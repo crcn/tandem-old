@@ -36,19 +36,20 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
     const entireBounds = selection.display.bounds;
 
-    const borderWidth = 1 / this.props.zoom;
+    const borderWidth = 2 / this.props.zoom;
 
     const boundsStyle = {
       position: "absolute",
-      borderWidth: borderWidth,
+      boxShadow: `0 0 0 ${borderWidth}px #a4b7d7`,
       left: entireBounds.left,
       top: entireBounds.top,
-      width: entireBounds.width - borderWidth,
-      height: entireBounds.height - borderWidth
+
+      width: entireBounds.width,
+      height: entireBounds.height
     };
 
     return (<div className="m-selector-component">
-      <ResizerComponent {...this.props} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} />
+      <ResizerComponent {...this.props} strokeWidth={2} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} />
 
       <div className="m-selector-component--bounds" style={boundsStyle} />
 
