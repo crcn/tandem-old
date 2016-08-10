@@ -3,7 +3,7 @@ import * as React from "react";
 import ToolComponent from "./tool";
 import { Editor } from "sf-front-end/models";
 
-class ToolsComponent extends React.Component<{ editor: Editor }, any> {
+class ToolsComponent extends React.Component<{ editor: Editor, app: any }, any> {
   render() {
 
     // TODO - these can be added as entries as well

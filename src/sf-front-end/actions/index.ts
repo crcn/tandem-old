@@ -1,5 +1,6 @@
 import { Action } from "sf-core/actions";
 import { IRange } from "sf-core/geom";
+import { IActor } from "sf-core/actors";
 
 export const CANVAS_MOUSE_DOWN = "canvasMouseDown";
 export class MouseAction extends Action {
@@ -88,5 +89,12 @@ export const DELETE_SELECTION = "deleteSelection";
 export class DeleteSelectionAction extends Action {
   constructor() {
     super(DELETE_SELECTION);
+  }
+}
+
+export const SET_TOOL = "setTool";
+export class SetToolAction extends Action {
+  constructor(readonly tool: IActor) {
+    super(SET_TOOL);
   }
 }

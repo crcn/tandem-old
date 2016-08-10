@@ -33,8 +33,8 @@ class DragSelectComponent extends React.Component<any, any> {
 
     const entities = this.props.allEntities;
 
-    const left = event.clientX - b.left;
-    const top  = event.clientY - b.top;
+    const left = (event.clientX - b.left) / this.props.zoom;
+    const top  = (event.clientY - b.top) / this.props.zoom;
 
     this.setState({
       left: left,
@@ -46,8 +46,8 @@ class DragSelectComponent extends React.Component<any, any> {
 
       let x = left;
       let y = top;
-      let w = Math.abs(delta.x);
-      let h = Math.abs(delta.y);
+      let w = Math.abs(delta.x / this.props.zoom);
+      let h = Math.abs(delta.y / this.props.zoom);
 
 
       if (delta.x < 0) {

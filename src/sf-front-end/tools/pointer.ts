@@ -13,6 +13,7 @@ export default class PointerTool extends BaseApplicationService<FrontEndApplicat
   name = "pointer";
   main = true;
   icon = "cursor";
+  keyCommand = "p";
 
   canvasMouseDown(action: MouseAction) {
     this.bus.execute(new SelectAction());
