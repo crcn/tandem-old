@@ -10,6 +10,8 @@
  // commands
  import { dependency as pasteCommandDependency } from "./commands/paste";
 
+import { MimeTypeDependency } from "sf-core/dependencies";
+
  // entities
  import {
    htmlTextDependency,
@@ -37,4 +39,7 @@ export const dependency = [
   ...htmlElementDependencies,
   htmlTemplateEntityDependency,
 
+  // mime types
+  new MimeTypeDependency("htm", "text/html"),
+  new MimeTypeDependency("html", "text/html")
 ];

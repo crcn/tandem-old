@@ -142,3 +142,21 @@ export class CommandFactoryDependency extends ClassFactoryDependency {
     return new CommandFactoryDependency(this.actionFilter, this.clazz);
   }
 }
+
+/**
+ */
+
+export const MIME_TYPE_NS = "mimeType";
+export class MimeTypeDependency extends Dependency<string> {
+  constructor(fileExtension: string, mimeType: string) {
+    super([MIME_TYPE_NS, fileExtension].join("/"), mimeType);
+  }
+  findAll(dependencies: Dependencies) {
+    return dependencies.queryAll<MimeTypeDependency>([MIME_TYPE_NS, "**"].join("/"));
+  }
+  static lookup(filepath: string, dependencies: Dependencies): string {
+    const extension = filepath.split(".").pop();
+    const dep = dependencies.query<MimeTypeDependency>([MIME_TYPE_NS, extension].join("/"));
+    return dep ? dep.value : undefined;
+  }
+}

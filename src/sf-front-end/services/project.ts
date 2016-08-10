@@ -8,8 +8,9 @@ import { Logger } from "sf-core/logger";
 import { FindAction } from "sf-core/actions";
 import { BaseApplicationService } from "sf-core/services";
 import { isPublic, loggable, inject } from "sf-core/decorators";
-import { ApplicationServiceDependency, DEPENDENCIES_NS, Dependencies, ActiveRecordFactoryDependency } from "sf-core/dependencies";
+import { ApplicationServiceDependency, MimeTypeDependency, DEPENDENCIES_NS, Dependencies, ActiveRecordFactoryDependency } from "sf-core/dependencies";
 import { FrontEndApplication } from "sf-front-end/application";
+
 
 const COLLECTION_NAME = "files";
 
@@ -42,7 +43,7 @@ export default class ProjectService extends BaseApplicationService<FrontEndAppli
 
     this.logger.info("loaded %s", action);
 
-    const activeRecordDependency = ActiveRecordFactoryDependency.find(`${action.ext}-file`, this.dependencies);
+    const activeRecordDependency = ActiveRecordFactoryDependency.find(MimeTypeDependency.lookup(action.path, this.dependencies), this.dependencies);
     const activeRecord = activeRecordDependency.create(action);
 
     this.app.editor.file = activeRecord;
