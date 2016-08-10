@@ -11,28 +11,6 @@ import calculateDistances from "./calculate-distances";
  */
 
 class RulerToolComponent extends React.Component<{ selection: DisplayEntityCollection, allEntities: Array<IEntity> }, any> {
-  // render() {
-  //
-  //   if (true) return null;
-  //
-  //   const rootEntity = this.props.entity;
-  //   const rect       = this.props.app.selection.preview.getBoundingRect(true);
-  //
-  //   // first flatten & filter for all component entities
-  //   const allBounds = rootEntity.filter(function (entity) {
-  //     return /component/.test(entity.type) && !!entity.preview && entity !== rootEntity;
-  //   }).map(function (entity) {
-  //     return entity.preview.getBoundingRect(true);
-  //   });
-  //
-  //   return (<div className="m-ruler-tool">
-  //     {
-  //       calculateDistances(
-  //         allBounds, rect
-  //       ).map((bounds, i) => <LineComponent {...this.props} bounds={bounds} key={i} />)
-  //     }
-  //   </div>);
-  // }
 
   render() {
     const selectionDisplay = this.props.selection.display;
@@ -40,7 +18,6 @@ class RulerToolComponent extends React.Component<{ selection: DisplayEntityColle
     const allBounds = this.props.allEntities.map((entity) => {
       if (entity["display"]) return (entity as IVisibleEntity).display.bounds;
     }).filter((bounds) => !!bounds);
-
 
     return (<div className="m-ruler-tool">
       {

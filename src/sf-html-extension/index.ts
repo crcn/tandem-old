@@ -41,5 +41,6 @@ export const dependency = [
 
   // mime types
   new MimeTypeDependency("htm", "text/html"),
-  new MimeTypeDependency("html", "text/html")
+  new MimeTypeDependency("html", "text/html"),
+  new MimeTypeDependency("sfn", "text/html")
 ];

@@ -164,7 +164,8 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
       transformOrigin: "top left",
       position: "absolute",
       width: "100%",
-      height: "100%"
+      height: "100%",
+      border: "none"
     };
 
     const entity = this.props.editor.file.entity;
@@ -178,9 +179,9 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
         className="m-editor-stage-canvas"
         style={style}
         onMouseDown={this.onMouseDown}>
-          <div style={innerStyle}>
+          <IsolateComponent style={innerStyle}>
               <PreviewLayerComponent {...this.props} entity={entity} />
-          </div>
+          </IsolateComponent>
           {this._toolsHidden ? void 0 : <ToolsLayerComponent entity={entity} {...this.props} />}
       </div>
     </IsolateComponent>);
