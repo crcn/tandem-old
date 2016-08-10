@@ -23,7 +23,7 @@ export default class RootComponentRenderer extends BaseApplicationService<IAppli
   execute() {
     if (this._rendering) return;
     this._rendering = true;
-    setTimeout(this.render, 10);
+    requestAnimationFrame(this.render);
   }
 
   render = () => {

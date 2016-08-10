@@ -9,6 +9,7 @@ import { dependency as rootComponentDependency } from "./components/root";
 import { dependency as selectableToolComponentDependency } from "./components/selectable-tool";
 import { dependency as selectorToolComponentDependency } from "./components/selector-tool";
 import { dependency as gridToolComponentDependency } from "./components/grid-tool";
+import { dependency as dragSelectComponentDependency } from "./components/drag-select-tool";
 
 // services
 import { dependency as projectsDependency } from "./services/project";
@@ -55,6 +56,7 @@ export class FrontEndApplication extends Application {
       selectableToolComponentDependency,
       selectorToolComponentDependency,
       gridToolComponentDependency,
+      dragSelectComponentDependency,
 
       // services
       clipboardService,

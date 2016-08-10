@@ -1,9 +1,9 @@
-import './index.scss';
-import * as React from 'react';
-import BoundingRect from 'sf-core/geom/bounding-rect';
-import { startDrag } from 'sf-front-end/utils/component';
-import { SelectAction } from 'sf-front-end/actions/index';
-import { ReactComponentFactoryDependency } from 'sf-front-end/dependencies/index';
+import "./index.scss";
+import * as React from "react";
+import BoundingRect from "sf-core/geom/bounding-rect";
+import { startDrag } from "sf-front-end/utils/component";
+import { SelectAction, MouseAction, CANVAS_MOUSE_DOWN } from "sf-front-end/actions";
+import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 
 class DragSelectComponent extends React.Component<any, any> {
 
@@ -16,38 +16,39 @@ class DragSelectComponent extends React.Component<any, any> {
     this.props.app.actors.push(this);
   }
 
-  execute(event) {
-    if (event.type === 'canvasMouseDown') {
-      this.startDrag(event);
+  execute(action: MouseAction) {
+    if (action.type === CANVAS_MOUSE_DOWN) {
+      this.startDrag(action.originalEvent);
     }
   }
 
   componentWillUnmount() {
-    this.props.app.actors.remove(this);
+    this.props.app.actors.splice(this.props.app.actors.indexOf(this), 1);
   }
 
   startDrag(event) {
 
-    var container = (this.refs as any).container;
-    var b = container.getBoundingClientRect();
+    const container = (this.refs as any).container;
+    const b = container.getBoundingClientRect();
 
-    var entities = this.props.entity.childNodes;
+    const entities = this.props.allEntities;
 
-    var left = event.clientX - b.left;
-    var top  = event.clientY - b.top;
+    const left = event.clientX - b.left;
+    const top  = event.clientY - b.top;
 
     this.setState({
       left: left,
       top : top,
-      dragging: true,
+      dragging: true
     });
 
     startDrag(event, (event2, { delta }) => {
 
-      var x = left;
-      var y = top;
-      var w = Math.abs(delta.x);
-      var h = Math.abs(delta.y);
+      let x = left;
+      let y = top;
+      let w = Math.abs(delta.x);
+      let h = Math.abs(delta.y);
+
 
       if (delta.x < 0) {
         x = left - w;
@@ -64,12 +65,12 @@ class DragSelectComponent extends React.Component<any, any> {
         height: h,
       });
 
-      var bounds = new BoundingRect(x, y, x + w, y + h);
+      const bounds = new BoundingRect(x, y, x + w, y + h);
 
-      var selection = [];
+      const selection = [];
 
       entities.forEach(function (entity) {
-        if (entity.preview && entity.preview.bounds.intersects(bounds)) {
+        if (entity.display && entity.display.bounds.intersects(bounds)) {
           selection.push(entity);
         }
       });
@@ -82,27 +83,27 @@ class DragSelectComponent extends React.Component<any, any> {
         left: 0,
         top: 0,
         width: 0,
-        height: 0,
+        height: 0
       });
     });
   }
 
   render() {
 
-    var style = {
+    const style = {
       left   : this.state.left,
       top    : this.state.top,
       width  : this.state.width,
-      height : this.state.height,
+      height : this.state.height
     };
 
-    var box = (<div style={style} className='m-drag-select--box'>
+    const box = (<div style={style} className="m-drag-select--box">
     </div>);
 
-    return (<div ref='container' className='m-drag-select'>
+    return (<div ref="container" className="m-drag-select">
       {this.state.dragging ? box : void 0}
     </div>);
   }
 }
 
-export const dependency = new ReactComponentFactoryDependency('components/tools/pointer/drag-select', DragSelectComponent);
+export const dependency = new ReactComponentFactoryDependency("components/tools/pointer/drag-select", DragSelectComponent);

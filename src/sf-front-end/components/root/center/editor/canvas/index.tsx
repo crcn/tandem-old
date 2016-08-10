@@ -94,7 +94,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
         left: left,
         top: top
       }
-    })
+    });
   }
 
   onWheel = (event: WheelEvent) => {

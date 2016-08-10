@@ -1,11 +1,11 @@
-@import 'scss/variables';
+@import 'sf-front-end/scss/variables';
 
 .m-drag-select {
   z-index: 1024;
   position: absolute;
   &--box {
     position: absolute;
-    border: 1px solid $color-blue-4;
-    background: rgba($color-blue-4, 0.5);
+    border: 1px solid #CCC;
+    background: rgba(#CCC, 0.5);
   }
 }
