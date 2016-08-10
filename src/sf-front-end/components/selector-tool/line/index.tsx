@@ -10,6 +10,7 @@ export default class LineComponent extends React.Component<any, any> {
     const bounds = this.props.bounds;
     const sections: any = {};
     let d;
+    const padding = 3;
 
     if (bounds.direction === "ew") {
 
@@ -26,12 +27,12 @@ export default class LineComponent extends React.Component<any, any> {
       );
 
       d = [
-        "M" + 3 + " " + (y - stemWidth),
-        "L" + 3 + " " + (y + stemWidth),
-        "M" + 3 + " " + y,
-        "L" + (bounds.width - 1) + " " + y,
-        "M" + (bounds.width - 1) + " " + (y - stemWidth),
-        "L" + (bounds.width - 1) + " " + (y + stemWidth),
+        "M" + padding + " " + (y - stemWidth),
+        "L" + padding + " " + (y + stemWidth),
+        "M" + padding + " " + y,
+        "L" + (bounds.width - padding) + " " + y,
+        "M" + (bounds.width - padding) + " " + (y - stemWidth),
+        "L" + (bounds.width - padding) + " " + (y + stemWidth),
       ];
     } else {
       const x = Math.round(bounds.width / 2);
@@ -41,12 +42,12 @@ export default class LineComponent extends React.Component<any, any> {
       </text>);
 
       d = [
-        "M" + (x - stemWidth) + " " + 3,
-        "L" + (x + stemWidth) + " " + 3,
-        "M" + x + " " + 3,
-        "L" + x + " " + (bounds.height - 1),
-        "M" + (x - stemWidth) + " " + (bounds.height - 1),
-        "L" + (x + stemWidth) + " " + (bounds.height - 1),
+        "M" + (x - stemWidth) + " " + padding,
+        "L" + (x + stemWidth) + " " + padding,
+        "M" + x + " " + padding,
+        "L" + x + " " + (bounds.height - padding),
+        "M" + (x - stemWidth) + " " + (bounds.height - padding),
+        "L" + (x + stemWidth) + " " + (bounds.height - padding),
       ];
     }
 

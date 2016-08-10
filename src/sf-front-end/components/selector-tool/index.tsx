@@ -3,11 +3,12 @@ import * as React from "react";
 import ResizerComponent from "./resizer";
 import { Editor } from "sf-front-end/models";
 import { DisplayEntityCollection } from "sf-front-end/selection";
-import { IEntityDisplay } from "sf-core/entities";
+import { IEntityDisplay, IEntity } from "sf-core/entities";
 import { FrontEndApplication } from "sf-front-end/application";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
+import RulerComponent from "./ruler";
 
-export default class SelectorComponent extends React.Component<{ editor: Editor, app: FrontEndApplication, zoom: number }, any> {
+export default class SelectorComponent extends React.Component<{ editor: Editor, app: FrontEndApplication, zoom: number, allEntities: Array<IEntity> }, any> {
 
   onResizing = () => {
     this.forceUpdate();
@@ -40,9 +41,13 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
     return (<div className="m-selector-component">
       <ResizerComponent {...this.props} selection={selection} onResizing={this.onResizing} />
+
       <div className="m-selector-component--bounds" style={boundsStyle} />
+
       {sections.guides}
       {sections.size}
+
+      <RulerComponent {...this.props} selection={selection} allEntities={this.props.allEntities} />
     </div>);
   }
 }

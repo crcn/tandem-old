@@ -2,7 +2,7 @@
 
 function calculateDistances(allBounds, b1) {
 
-  var intersections = {
+  let intersections = {
     north : [b1],
     south : [b1],
     east : [b1],
@@ -48,21 +48,21 @@ function calculateIntersectingBounds(b1, b2) {
 
   // north / south
 
-  var b1Left   = b1.left;
-  var b1Right  = b1.left + b1.width;
-  var b1Top    = b1.top;
-  var b1Bottom = b1.top + b1.height;
+  let b1Left   = b1.left;
+  let b1Right  = b1.left + b1.width;
+  let b1Top    = b1.top;
+  let b1Bottom = b1.top + b1.height;
 
-  var b2Left   = b2.left;
-  var b2Right  = b2.left + b2.width;
-  var b2Top    = b2.top;
-  var b2Bottom = b2.top + b2.height;
+  let b2Left   = b2.left;
+  let b2Right  = b2.left + b2.width;
+  let b2Top    = b2.top;
+  let b2Bottom = b2.top + b2.height;
 
-  var b3Left;
-  var b3Top;
-  var b3Bottom;
-  var b3Right;
-  var direction;
+  let b3Left;
+  let b3Top;
+  let b3Bottom;
+  let b3Right;
+  let direction;
 
   // east west
   if (intersectsTop(b1, b2)) {
@@ -77,7 +77,7 @@ function calculateIntersectingBounds(b1, b2) {
 
     b3Top    = Math.max(b1Top, b2Top);
     b3Bottom = Math.min(b1Bottom, b2Bottom);
-    direction = 'ew';
+    direction = "ew";
 
   } else {
     if (b1Top < b2Top) {
@@ -90,7 +90,7 @@ function calculateIntersectingBounds(b1, b2) {
 
     b3Left    = Math.max(b1Left, b2Left);
     b3Right   = Math.min(b1Right, b2Right);
-    direction = 'ns';
+    direction = "ns";
   }
 
   return {
