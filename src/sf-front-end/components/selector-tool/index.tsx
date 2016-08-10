@@ -10,8 +10,17 @@ import RulerComponent from "./ruler";
 
 export default class SelectorComponent extends React.Component<{ editor: Editor, app: FrontEndApplication, zoom: number, allEntities: Array<IEntity> }, any> {
 
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   onResizing = () => {
-    this.forceUpdate();
+    this.setState({ resizing: true });
+  }
+
+  onStopResizing = () => {
+    this.setState({ resizing: false });
   }
 
   render() {
@@ -40,14 +49,14 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
     };
 
     return (<div className="m-selector-component">
-      <ResizerComponent {...this.props} selection={selection} onResizing={this.onResizing} />
+      <ResizerComponent {...this.props} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} />
 
       <div className="m-selector-component--bounds" style={boundsStyle} />
 
       {sections.guides}
       {sections.size}
 
-      <RulerComponent {...this.props} selection={selection} allEntities={this.props.allEntities} />
+      {this.state.resizing ? <RulerComponent {...this.props} selection={selection} allEntities={this.props.allEntities} /> : undefined}
     </div>);
   }
 }

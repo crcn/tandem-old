@@ -8,7 +8,7 @@ import { DisplayEntityCollection } from "sf-front-end/selection";
 const POINT_STROKE_WIDTH = 0;
 const POINT_RADIUS       = 3;
 
-class ResizerComponent extends React.Component<{ app: FrontEndApplication, selection: DisplayEntityCollection, onResizing: Function, zoom: number, pointRadius?: number, strokeWidth?: number }, any> {
+class ResizerComponent extends React.Component<{ app: FrontEndApplication, selection: DisplayEntityCollection, onResizing: Function, zoom: number, pointRadius?: number, strokeWidth?: number, onStopResizing: Function }, any> {
 
   private _dragger: any;
   private _movingTimer: any;
@@ -101,7 +101,6 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
       props.left + props.width,
       props.top + props.height
     );
-    // this.targetDisplay.setBoundingRect(props);
     this._isMoving();
   }
 
@@ -137,6 +136,7 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     }, () => {
       this.file.save();
       this._dragger = void 0;
+      this.props.onStopResizing();
     });
   }
 

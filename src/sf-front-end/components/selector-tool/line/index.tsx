@@ -22,7 +22,7 @@ export default class LineComponent extends React.Component<any, any> {
           x={Math.round(bounds.width / 2) - (String(this.props.bounds.width).length * 5) / 2}
           y={y + 20}
         >
-          {this.props.bounds.width}
+          {Math.round(this.props.bounds.width / this.props.zoom)}
         </text>
       );
 
@@ -38,7 +38,7 @@ export default class LineComponent extends React.Component<any, any> {
       const x = Math.round(bounds.width / 2);
 
       sections.text = (<text x={x + 10} y={Math.round(bounds.height / 2 + 4)}>
-        {this.props.bounds.height}
+        {Math.round(this.props.bounds.height / this.props.zoom)}
       </text>);
 
       d = [
