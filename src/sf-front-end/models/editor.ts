@@ -22,7 +22,7 @@ import { TypeCallbackBus } from "sf-common/busses";
 export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;
 
-export class Editor implements IInjectable, IActor {
+export class Editor {
 
   private _zoom: number = 1;
 
@@ -36,20 +36,6 @@ export class Editor implements IInjectable, IActor {
       MIN_ZOOM,
       Math.min(MAX_ZOOM, value)
     );
-  }
-
-  didInject() {
-    this._actors = [
-      new TypeCallbackBus(ZOOM, this._onZoom.bind(this)),
-      new TypeCallbackBus(SELECT_ALL, this._onSelectAll),
-      new TypeCallbackBus(DELETE_SELECTION, this._onDeleteSelection),
-      new TypeCallbackBus(SET_TOOL, this._onSetTool)
-    ];
-    this._bus = new ParallelBus(this._actors);
-  }
-
-  execute(action: Action) {
-    return this._bus.execute(action);
   }
 
   /**
@@ -77,20 +63,4 @@ export class Editor implements IInjectable, IActor {
 
   public file: IEditorFile;
 
-
-  private _onZoom = (action: ZoomAction) => {
-    this.zoom += action.delta;
-  }
-
-  private _onSelectAll = (action: SelectAllAction) => {
-    console.log("SELECT ALL")
-  }
-
-  private _onDeleteSelection = (action: DeleteSelectionAction) => {
-    console.log("SELECT")
-  }
-
-  private _onSetTool = (action: SetToolAction) => {
-    this.currentTool = action.tool;
-  }
 }

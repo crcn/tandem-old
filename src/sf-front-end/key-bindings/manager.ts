@@ -8,12 +8,12 @@ export class KeyBindingManager {
   private _mousetrap: any;
   private _keyBindings: Array<KeyBinding> = [];
 
-  constructor(private _target: IActor, element?: Element, ...keyBindings:Array<KeyBinding>) {
+  constructor(private _target: IActor, element?: Element, ...keyBindings: Array<KeyBinding>) {
     this.element = element;
     this.register(...keyBindings);
   }
 
-  public register(...values:Array<KeyBinding>) {
+  public register(...values: Array<KeyBinding>) {
     for (const value of values) {
       this._keyBindings.push(value);
       this._bind(value);
@@ -33,7 +33,7 @@ export class KeyBindingManager {
   private _reset(): void {
 
     if (this._mousetrap) {
-      for (var keyBinding of this._keyBindings) {
+      for (const keyBinding of this._keyBindings) {
         this._mousetrap.unbind(keyBinding.key);
       }
     }
