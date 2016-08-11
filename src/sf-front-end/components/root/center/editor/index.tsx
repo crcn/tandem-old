@@ -6,10 +6,14 @@ import FooterComponent from "./footer";
 import CanvasComponent from "./canvas";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import { Dependencies } from "sf-core/dependencies";
+import { KeyBindingManager } from "sf-front-end/key-bindings";
 import { FrontEndApplication } from "sf-front-end/application";
 import { Editor } from "sf-front-end/models";
 
-export default class StageComponent extends React.Component<{ app: FrontEndApplication }, any> {
+export default class StageComponent extends React.Component<{ app: FrontEndApplication, editor: Editor }, any> {
+
+  private _keyBindings: KeyBindingManager;
+
   render() {
 
     const editor = this.props.app.editor;
@@ -17,7 +21,7 @@ export default class StageComponent extends React.Component<{ app: FrontEndAppli
 
     // entity might not have been loaded yet
     if (!editor.file) return null;
-    return (<div className="m-editor-stage noselect">
+    return (<div ref="container" className="m-editor-stage noselect">
       <HeaderComponent {...this.props} editor={editor} />
       <CanvasComponent {...this.props} editor={editor} zoom={zoom} dependencies={this.props.app.dependencies} />
       <FooterComponent {...this.props} editor={editor} />

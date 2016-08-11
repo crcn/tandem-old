@@ -7,6 +7,7 @@ import { WrapBus, EmptyResponse, ParallelBus, Bus } from "mesh";
  * Basic Actor which acts on action types -- typically sub-classed
  */
 
+// TODO - deprecated - use RouteBus instead
 export class Service implements IActor {
 
   /**

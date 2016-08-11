@@ -60,14 +60,6 @@ class SelectableComponent extends React.Component<{ entity: IVisibleEntity, sele
 // @injectable
 export default class SelectablesComponent extends React.Component<{selection: any, allEntities: Array<IEntity>, bus: any, app: any, zoom: number }, {}>  {
 
-  // TODO - make this work
-  // @inject(APPLICATION_SINGLETON_NS)
-  // readonly app:FrontEndApplication;
-
-  // didInject() {
-  //   console.log("INJECT!");
-  // }
-
   render() {
 
     const selection = this.props.selection || [];

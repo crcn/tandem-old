@@ -5,7 +5,7 @@ import { IActor } from "sf-core/actors";
 import { inject } from "sf-core/decorators";
 import { BaseApplicationService } from "sf-core/services";
 import { ApplicationServiceDependency, Dependencies, DEPENDENCIES_NS } from "sf-core/dependencies";
-import { EditorToolFactoryDependency, EDITOR_TOOL_NS, KeyBindingDependency } from "sf-front-end/dependencies";
+import { EditorToolFactoryDependency, EDITOR_TOOL_NS, GlobalKeyBindingDependency } from "sf-front-end/dependencies";
 import { FrontEndApplication } from "sf-front-end/application";
 import { ProxyBus } from "sf-common/busses";
 import { KeyBinding } from "sf-front-end/key-bindings";
@@ -25,7 +25,7 @@ export class EditorService extends BaseApplicationService<FrontEndApplication> {
 
     for (const tool of this.tools) {
       if (tool["keyCommand"]) {
-        this.dependencies.register(new KeyBindingDependency(new KeyBinding(tool["keyCommand"], new SetToolAction(tool))));
+        this.dependencies.register(new GlobalKeyBindingDependency(new KeyBinding(tool["keyCommand"], new SetToolAction(tool))));
       }
     }
     this.app.actors.push(this._toolProxyBus = new ProxyBus(null));

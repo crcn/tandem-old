@@ -11,13 +11,13 @@ import { ReactComponentFactoryDependency } from "./base";
 
 export * from "./base";
 
-export const KEY_BINDINGS_NS = "key-bindings";
-export class KeyBindingDependency extends Dependency<KeyBinding> {
+export const GLOBAL_KEY_BINDINGS_NS = "global-key-bindings";
+export class GlobalKeyBindingDependency extends Dependency<KeyBinding> {
   constructor(value: KeyBinding) {
-    super(`${KEY_BINDINGS_NS}/${value.key}`, value);
+    super(`${GLOBAL_KEY_BINDINGS_NS}/${value.key}`, value);
   }
   static findAll(dependencies: Dependencies) {
-    return dependencies.queryAll<KeyBindingDependency>(`${KEY_BINDINGS_NS}/**`);
+    return dependencies.queryAll<GlobalKeyBindingDependency>(`${GLOBAL_KEY_BINDINGS_NS}/**`);
   }
 }
 

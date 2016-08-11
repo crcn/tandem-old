@@ -103,7 +103,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
       items: (<any>this.app.editor.file.entity).childNodes,
       keepPreviousSelection: false,
       toggle: false
-    })
+    });
   }
 }
 

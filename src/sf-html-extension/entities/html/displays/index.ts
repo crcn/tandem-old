@@ -92,7 +92,7 @@ function roundMeasurements(style) {
       const unit  = measurement.match(/([a-z]+)$/)[1];
 
       // ceiling is necessary here for zoomed in elements
-      roundedStyle[key] = Math.ceil(Number(value)) + unit;
+      roundedStyle[key] = Math.round(Number(value)) + unit;
     }
   }
 

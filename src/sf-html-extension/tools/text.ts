@@ -6,6 +6,8 @@ import { IApplication } from "sf-core/application";
 import { SetToolAction } from "sf-front-end/actions";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 import { inject } from "sf-core/decorators";
+import { parse as parseHTML } from "../parsers/html";
+import { HTMLElementExpression } from "../parsers/html/expressions";
 
 /*
 const editor = new HTMLEditor();
@@ -23,8 +25,12 @@ export class TextTool extends BaseApplicationService<FrontEndApplication> {
   readonly dependencies: Dependencies;
 
   canvasMouseDown(action: MouseAction) {
-    const textEntityFactory = EntityFactoryDependency.find("#text", this.dependencies);
-    console.log("create text");
+    const textSource = `<span style="position:absolute;left:${action.originalEvent.pageX}px;top:${action.originalEvent.pageY}px;">Type something</span>`;
+
+    // TODO - entity.appendChild(new HTMLElementEntity("span", {}))
+    const file = this.app.editor.file;
+    (<HTMLElementExpression>file.entity.expression).childNodes.push(parseHTML(textSource));
+    file.save();
   }
 }
 

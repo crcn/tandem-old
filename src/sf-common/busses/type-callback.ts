@@ -8,6 +8,7 @@ export default class TypeCallbackBus implements IActor {
 
   constructor(readonly type: string, callback: Function) {
     this.type = type;
+    console.log(type, callback);
     this._bus = WrapBus.create(callback as any);
   }
 

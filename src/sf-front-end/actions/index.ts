@@ -80,7 +80,7 @@ export class ZoomAction extends Action {
 
 export const OPEN_FILE = "openFile";
 export class OpenFileAction extends Action {
-  constructor(readonly path: string, readonly ext: string, readonly content: string) {
+  constructor(readonly path: string, readonly content: string) {
     super(OPEN_FILE);
   }
 }

@@ -28,7 +28,7 @@ describe(__filename + "#", () => {
 
   describe("source code selection#", () => {
     it("can select an entity based on its source code position", async () => {
-      await app.bus.execute(new OpenFileAction("something", "sfn", `
+      await app.bus.execute(new OpenFileAction("something.html", `
           <div>
             a
           </div>

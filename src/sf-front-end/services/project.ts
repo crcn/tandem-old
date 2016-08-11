@@ -43,6 +43,7 @@ export default class ProjectService extends BaseApplicationService<FrontEndAppli
 
     this.logger.info("loaded %s", action);
 
+
     const activeRecordDependency = ActiveRecordFactoryDependency.find(MimeTypeDependency.lookup(action.path, this.dependencies), this.dependencies);
     const activeRecord = activeRecordDependency.create(action);
 

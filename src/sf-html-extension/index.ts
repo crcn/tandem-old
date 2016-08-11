@@ -10,6 +10,10 @@
  // commands
  import { dependency as pasteCommandDependency } from "./commands/paste";
 
+ // tools
+import { dependency as textToolDependency } from "./tools/text";
+
+
 import { MimeTypeDependency } from "sf-core/dependencies";
 
  // entities
@@ -31,6 +35,9 @@ export const dependency = [
 
   // models
   sfFileActiveRecordDependency,
+
+  // tools
+  textToolDependency,
 
   // entities
   htmlTextDependency,
