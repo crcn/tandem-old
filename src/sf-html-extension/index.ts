@@ -5,7 +5,7 @@
  import { dependency as entityPreviewComponentDependency } from "./components/entity-preview";
 
  // models
- import { dependency as sfFileActiveRecordDependency } from "./active-records/sf-file";
+ import { dependency as sfFileActiveRecordDependency } from "./models/sf-file";
 
  // commands
  import { dependency as pasteCommandDependency } from "./commands/paste";
