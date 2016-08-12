@@ -21,7 +21,7 @@ import { dependency as rootComponentRendererDependency } from "./services/root-c
 import { dependency as workspaceDependency } from "./services/workspace";
 
 // tools
-import { dependency as pointerToolDependency } from "./tools/pointer";
+import { dependency as pointerToolDependency } from "./models/pointer-tool";
 
 // key bindings
 import { dependency as keyBindingsDependency } from "./key-bindings";

@@ -3,6 +3,7 @@ import { IActor } from "sf-core/actors";
 import { File } from "sf-common/models";
 import { IEntity } from "sf-core/entities";
 import { Workspace } from "./workspace";
+import { IInjectable } from "sf-core/dependencies";
 
 export interface IEditorTool extends IActor {
   readonly editor: IEditor;
@@ -20,7 +21,7 @@ export abstract class EntityFile extends File {
   public entity: IEntity;
 }
 
-export abstract class BaseEditorTool implements IEditorTool {
+export abstract class BaseEditorTool implements IEditorTool, IInjectable {
   abstract name: string;
   readonly cursor: string = undefined;
   constructor(readonly editor: IEditor) { }
@@ -34,4 +35,6 @@ export abstract class BaseEditorTool implements IEditorTool {
       return this[action.type](action);
     }
   }
+
+  didInject() { }
 }

@@ -18,20 +18,6 @@ export class EditorService extends BaseApplicationService<FrontEndApplication> {
 
   private _toolProxyBus: ProxyBus;
 
-  didInject() {
-    // this.editor.tools       = this.tools;
-
-    // for (const tool of this.tools) {
-    //   if (tool["keyCommand"]) {
-    //     this.dependencies.register(new GlobalKeyBindingDependency(new KeyBinding(tool["keyCommand"], new SetToolAction(tool))));
-    //   }
-    // }
-    // this.app.bus.register(this._toolProxyBus = new ProxyBus(null));
-  }
-
-  get editor() {
-    return this.app.workspace;
-  }
 }
 
 export const dependency = new ApplicationServiceDependency("editor", EditorService);

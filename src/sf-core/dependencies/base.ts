@@ -161,6 +161,14 @@ export class Dependencies {
   /**
    */
 
+  link(dependency: IDependency) {
+    dependency.dependencies = this;
+    return dependency;
+  }
+
+  /**
+   */
+
   createChild() {
     return new Dependencies(...this.queryAll<any>("/**"));
   }
@@ -186,7 +194,7 @@ export class Dependencies {
 
       // ref back so that the dependency can fetch additional information
       // for dependency injection. this line is
-      dependency.dependencies = this;
+      this.link(dependency);
 
       // the last part of the namespace is the unique id. Example namespaces:
       // entities/text, entitiesControllers/div, components/item

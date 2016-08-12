@@ -5,7 +5,6 @@ import { IEntity } from "sf-core/entities";
 import { IApplication } from "sf-core/application";
 import { IFactory, Dependency, Dependencies, ClassFactoryDependency } from "sf-core/dependencies";
 
-import { KeyBinding } from "sf-front-end/key-bindings/base";
 import { IEditor, IEditorTool } from "sf-front-end/models";
 
 import { ReactComponentFactoryDependency } from "./base";
@@ -13,9 +12,12 @@ import { ReactComponentFactoryDependency } from "./base";
 export * from "./base";
 
 export const GLOBAL_KEY_BINDINGS_NS = "global-key-bindings";
-export class GlobalKeyBindingDependency extends Dependency<KeyBinding> {
-  constructor(value: KeyBinding) {
-    super(`${GLOBAL_KEY_BINDINGS_NS}/${value.key}`, value);
+export class GlobalKeyBindingDependency extends ClassFactoryDependency {
+  constructor(readonly key: string, readonly commandClass: { new(): IActor }) {
+    super(`${GLOBAL_KEY_BINDINGS_NS}/${key}`, commandClass);
+  }
+  clone() {
+    return new GlobalKeyBindingDependency(this.key, this.commandClass);
   }
   static findAll(dependencies: Dependencies) {
     return dependencies.queryAll<GlobalKeyBindingDependency>(`${GLOBAL_KEY_BINDINGS_NS}/**`);
@@ -69,7 +71,12 @@ export class EditorToolFactoryDependency extends ClassFactoryDependency {
   create(editor: IEditor): IEditorTool {
     return super.create(editor);
   }
+
   static findAll(editorType: string, dependencies: Dependencies) {
     return dependencies.queryAll<EditorToolFactoryDependency>([EDITOR_TOOL_NS, editorType, "**"].join("/"));
+  }
+
+  static find(id: string, editorType: string, dependencies: Dependencies) {
+    return dependencies.query<EditorToolFactoryDependency>([EDITOR_TOOL_NS, editorType, id].join("/"));
   }
 }

@@ -37,7 +37,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
   }
 
   setTool(action: SetToolAction) {
-    this.app.workspace.editor.currentTool = action.toolDependency.create(this.app.workspace.editor);
+    this.app.workspace.editor.currentTool = action.textToolFactory.create(this.app.workspace.editor);
   }
 }
 

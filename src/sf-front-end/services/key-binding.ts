@@ -20,13 +20,13 @@ export default class GlobalKeyBindingService extends BaseApplicationService<IApp
   initialize() {
     this._manager = new KeyBindingManager(this.app.bus, document.body);
     for (const keyBindingDependency of GlobalKeyBindingDependency.findAll(this.app.dependencies)) {
-      this._addKeyBinding(keyBindingDependency.value);
+      this._addKeyBinding(keyBindingDependency);
     }
   }
 
-  _addKeyBinding(keyBinding: KeyBinding) {
-    this.logger.verbose("add key %s", keyBinding.key);
-    this._manager.register(keyBinding);
+  _addKeyBinding(dependency: GlobalKeyBindingDependency) {
+    this.logger.verbose("add key %s", dependency.key);
+    this._manager.register(dependency.key, dependency.create());
   }
 }
 

@@ -11,7 +11,7 @@ import { inject } from "sf-core/decorators";
 
 // TODO - everything here should just be a command
 
-export default class PointerTool extends BaseEditorTool implements IInjectable {
+export class PointerTool extends BaseEditorTool implements IInjectable {
 
   name = "pointer";
 

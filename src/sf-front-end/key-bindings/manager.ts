@@ -1,23 +1,22 @@
 import { IActor } from "sf-core/actors";
 import { KeyBinding } from "./base";
+import { KeyCommandAction } from "../actions";
+import { IFactory } from "sf-core/dependencies";
 import * as Mousetrap from "mousetrap";
 
 export class KeyBindingManager {
 
   private _element: Element;
   private _mousetrap: any;
-  private _keyBindings: Array<KeyBinding> = [];
+  private _keyBindings: any = {};
 
-  constructor(private _target: IActor, element?: Element, ...keyBindings: Array<KeyBinding>) {
+  constructor(private _target: IActor, element?: Element) {
     this.element = element;
-    this.register(...keyBindings);
   }
 
-  public register(...values: Array<KeyBinding>) {
-    for (const value of values) {
-      this._keyBindings.push(value);
-      this._bind(value);
-    }
+  public register(key: string, actor: IActor) {
+    this._keyBindings[key] = actor;
+    this._bind(key, actor);
     return this;
   }
 
@@ -33,22 +32,22 @@ export class KeyBindingManager {
   private _reset(): void {
 
     if (this._mousetrap) {
-      for (const keyBinding of this._keyBindings) {
-        this._mousetrap.unbind(keyBinding.key);
+      for (const key in this._keyBindings) {
+        this._mousetrap.unbind(key);
       }
     }
 
     this._mousetrap = Mousetrap(this._element);
 
-    for (const keyBinding of this._keyBindings) {
-      this._bind(keyBinding);
+    for (const key in this._keyBindings) {
+      this._bind(key, this._keyBindings[key]);
     }
   }
 
-  private _bind(value: KeyBinding) {
+  private _bind(key: string, actor: IActor) {
     if (!this._mousetrap) return;
-    this._mousetrap.bind(value.key, () => {
-      this._target.execute(value.action);
+    this._mousetrap.bind(key, () => {
+      actor.execute(new KeyCommandAction(key));
     });
   }
 }

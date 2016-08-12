@@ -11,8 +11,10 @@
  import { dependency as pasteCommandDependency } from "./commands/paste";
 
  // tools
-import { dependency as textToolDependency } from "./tools/text";
+import { dependency as textToolDependency } from "./models/text-tool";
 
+// key bindings
+import { dependencies as keyBindingDependencies } from "./key-bindings";
 
 import { MimeTypeDependency } from "sf-core/dependencies";
 
@@ -38,6 +40,9 @@ export const dependency = [
 
   // tools
   textToolDependency,
+
+  // key bindings
+  ...keyBindingDependencies,
 
   // entities
   htmlTextDependency,
