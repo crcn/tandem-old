@@ -4,10 +4,11 @@ import * as sift from "sift";
 
 import { Logger } from "sf-core/logger";
 import { IApplication } from "sf-core/application";
-import { UpsertAction } from "sf-core/actions";
+import { PostDBAction } from "sf-core/actions";
+import { File, FILES_COLLECTION_NAME } from "sf-common/models";
 import { BaseApplicationService } from "sf-core/services";
-import { ApplicationServiceDependency } from "sf-core/dependencies";
-import { loggable, isPublic, document, filterAction } from "sf-core/decorators";
+import { ApplicationServiceDependency, Dependencies, DEPENDENCIES_NS } from "sf-core/dependencies";
+import { inject, loggable, isPublic, document, filterAction } from "sf-core/decorators";
 
 import { Response } from "mesh";
 
@@ -16,6 +17,10 @@ export default class FileService extends BaseApplicationService<IApplication> {
 
   public logger:Logger;
   private _watchers:Object = {};
+  private _openFiles: any = {};
+
+  @inject(DEPENDENCIES_NS)
+  private _dependencies: Dependencies;
 
   /**
    */
@@ -29,9 +34,16 @@ export default class FileService extends BaseApplicationService<IApplication> {
       this._watch(action);
     }
 
-    var data = this.readFile(action);
+    const data = this.readFile(action);
+    let file: File;
 
-    return this.bus.execute(new UpsertAction("files", data, { path: data.path }));
+    if (!(file = this._openFiles[data.path])) {
+      file = this._openFiles[data.path] = File.create(data, this._dependencies);
+    } else {
+      file.deserialize(data);
+    }
+
+    return file.save();
   }
 
   /**
@@ -42,7 +54,6 @@ export default class FileService extends BaseApplicationService<IApplication> {
   readFile(action) {
     return {
       path    : action.path,
-      ext     : action.path.split(".").pop(),
       content : fs.readFileSync(action.path, "utf8")
     };
   }
@@ -52,12 +63,13 @@ export default class FileService extends BaseApplicationService<IApplication> {
    * the file watcher if it exists
    */
 
-  @filterAction(sift({ collectionName: "files" }))
-  didRemove(action) {
-    for (var item of action.data) {
-      if (this._watchers[item.path]) {
-        this._closeFileWatcher(this._watchers[item.path], item);
-      }
+  @filterAction(sift({ collectionName: FILES_COLLECTION_NAME }))
+  didRemove(action: PostDBAction ) {
+    const item = action.data;
+    this._openFiles[item.path].dispose();
+    this._openFiles[item.path] = undefined;
+    if (this._watchers[item.path]) {
+      this._closeFileWatcher(this._watchers[item.path], item);
     }
   }
 

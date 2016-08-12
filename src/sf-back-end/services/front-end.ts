@@ -40,7 +40,6 @@ export default class FrontEndService extends BaseApplicationService<IApplication
     this._port = this.app.config.port;
   }
 
-
   async load() {
     await this._loadHttpServer();
     await this._loadStaticRoutes();

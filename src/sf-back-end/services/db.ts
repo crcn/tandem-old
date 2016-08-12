@@ -32,7 +32,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
 
   @isPublic
   @document("finds an item in the database")
-  find(action:FindAction) {
+  find(action: FindAction) {
     return this._db.execute(action);
   }
 
@@ -42,7 +42,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
 
   @isPublic
   @document("removes an item in the database")
-  remove(action:RemoveAction) {
+  remove(action: RemoveAction) {
     return this._db.execute(action);
   }
 
@@ -52,7 +52,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
 
   @isPublic
   @document("inserts an item in the database")
-  insert(action:InsertAction) {
+  insert(action: InsertAction) {
     return this._db.execute(action);
   }
 
@@ -61,7 +61,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
 
   @isPublic
   @document("updates an item in the database")
-  update(action:UpdateAction) {
+  update(action: UpdateAction) {
     return this._db.execute(action);
   }
 }

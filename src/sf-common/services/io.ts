@@ -4,7 +4,8 @@ import { loggable, isPublic, document } from "sf-core/decorators";
 import * as SocketIOBus from "mesh-socket-io-bus";
 
 import { Service } from "sf-core/services";
-import { ParallelBus } from "mesh";
+import { ParallelBus, AcceptBus } from "mesh";
+import * as sift from "sift";
 
 import { IApplication } from "sf-core/application";
 import { BaseApplicationService } from "sf-core/services";
@@ -84,15 +85,18 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
     // transactions between the remote service
     const remoteBus = SocketIOBus.create({
       connection: connection
-    }, this.bus);
+    }, {
+      execute: (action) => {
+        action.remote = true;
+        return this.bus.execute(action);
+      }
+    });
 
     // fetch the remote action types, and set them to the remote service
     // so that we limit the number of outbound actions
     for (const remoteActionType of await remoteBus.execute({ type: "getPublicActionTypes" }).readAll()) {
       this.logger.verbose("adding remote action \"%s\"", remoteActionType);
-      remoteService.addActor(remoteActionType, new ParallelBus([
-        remoteBus
-      ]));
+      remoteService.addActor(remoteActionType, new AcceptBus(sift({ remote: { $ne: true }}), remoteBus, null));
     }
 
     connection.once("disconnect", () => {

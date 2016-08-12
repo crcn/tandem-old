@@ -20,6 +20,7 @@ export interface IActiveRecord extends IObservable, ISerializable, IInjectable, 
   update();
 }
 
+// TODO - need to queue actions
 // TODO - add schema here
 export abstract class ActiveRecord extends Observable implements IActiveRecord {
 
@@ -28,6 +29,10 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
 
   @inject()
   readonly collectionName: string;
+
+  constructor() {
+    super();
+  }
 
   readonly idProperty: string = "_id";
 
@@ -55,6 +60,8 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
 
     if (this._syncBus) return;
 
+    // TODO - this is not very efficient. Need to attach
+    // sync helper here that all models listen to
     this.bus.register(this._syncBus = new AcceptBus(
       sift({ collectionName: this.collectionName, [`data.${this.idProperty}`]: this[this.idProperty] }),
       new ParallelBus([

@@ -4,7 +4,7 @@ import { ApplicationServiceDependency, DEPENDENCIES_NS, Dependencies } from "sf-
 import { loggable } from "sf-core/decorators";
 import { FrontEndApplication } from "sf-front-end/application";
 import { Logger } from "sf-core/logger";
-import { File } from "sf-front-end/models/file";
+import { File } from "sf-common/models";
 import { inject } from "sf-core/decorators";
 
 const FILES_COLLECTION = "files";
