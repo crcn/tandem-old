@@ -57,11 +57,20 @@ export class ApplicationSingletonDependency extends Dependency<IApplication> {
 
 export const ENTITIES_NS = "entities";
 
+type mapSourceChildrenType = (source: any) => Array<any>;
+
 // TODO - possibly require renderer here as well
 export class EntityFactoryDependency extends ClassFactoryDependency {
 
-  constructor(id: string, value: { new(source: IDiffableNode): IEntity }) {
-    super([ENTITIES_NS, id].join("/"), value);
+  readonly mapSourceChildren: mapSourceChildrenType;
+
+  constructor(readonly id: string, readonly clazz: { new(source: IDiffableNode): IEntity, mapSourceChildren?: mapSourceChildrenType } ) {
+    super([ENTITIES_NS, id].join("/"), clazz);
+    this.mapSourceChildren = clazz.mapSourceChildren;
+  }
+
+  clone() {
+    return new EntityFactoryDependency(this.id, this.clazz);
   }
 
   create(source: IDiffableNode) {

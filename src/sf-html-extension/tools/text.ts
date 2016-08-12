@@ -28,7 +28,7 @@ export class TextTool extends BaseApplicationService<FrontEndApplication> {
     const textSource = `<span style="position:absolute;left:${action.originalEvent.pageX}px;top:${action.originalEvent.pageY}px;">Type something</span>`;
 
     const file = this.app.editor.file;
-    (<HTMLElementExpression>file.entity.expression).childNodes.push(parseHTML(textSource));
+    (<HTMLElementExpression>file.entity.source).childNodes.push(parseHTML(textSource));
     file.save();
   }
 }

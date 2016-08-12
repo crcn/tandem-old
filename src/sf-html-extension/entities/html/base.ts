@@ -25,8 +25,8 @@ import TAG_NAMES from "./tag-names";
 
 function disposeEntity(entity: IHTMLEntity) {
   if (entity.parentNode) {
-    const childNodes = (<HTMLElementEntity><any>entity.parentNode).expression.childNodes;
-    childNodes.splice(childNodes.indexOf(<any>entity.expression), 1);
+    const childNodes = (<HTMLElementEntity><any>entity.parentNode).source.childNodes;
+    childNodes.splice(childNodes.indexOf(<any>entity.source), 1);
     entity.parentNode.removeChild(entity);
   }
 }
@@ -42,21 +42,21 @@ export class HTMLElementEntity extends Element implements IHTMLEntity {
   readonly type: string = null;
 
   public section: GroupNodeSection|NodeSection;
-  constructor(readonly expression: HTMLElementExpression) {
-    super(expression.nodeName);
+  constructor(readonly source: HTMLElementExpression) {
+    super(source.nodeName);
 
     this.section = this.createSection();
 
     // TODO - attributes might need to be transformed here
-    if (expression.attributes) {
-      for (const attribute of expression.attributes) {
+    if (source.attributes) {
+      for (const attribute of source.attributes) {
         this.setAttribute(attribute.name, attribute.value);
       }
     }
   }
 
-  render() {
-    return this.expression.childNodes;
+  static mapSourceChildren(source: HTMLElementExpression) {
+    return source.childNodes;
   }
 
   removeAttribute(name: string) {
@@ -64,10 +64,10 @@ export class HTMLElementEntity extends Element implements IHTMLEntity {
     if (this.section instanceof NodeSection) {
       (<IElement>this.section.targetNode).removeAttribute(name);
     }
-    for (let i = this.expression.attributes.length; i--; ) {
-      const attribute = this.expression.attributes[i];
+    for (let i = this.source.attributes.length; i--; ) {
+      const attribute = this.source.attributes[i];
       if (attribute.name === name) {
-        this.expression.attributes.splice(i, 1);
+        this.source.attributes.splice(i, 1);
         return;
       }
     }
@@ -88,7 +88,7 @@ export class HTMLElementEntity extends Element implements IHTMLEntity {
     }
 
     let found = false;
-    for (const attribute of this.expression.attributes) {
+    for (const attribute of this.source.attributes) {
       if (attribute.name === name) {
         attribute.value = value;
         found = true;
@@ -97,7 +97,7 @@ export class HTMLElementEntity extends Element implements IHTMLEntity {
 
     // if the attribute does not exist on the expression, then create a new one.
     if (!found) {
-      this.expression.attributes.push(new HTMLAttributeExpression(name, value, undefined));
+      this.source.attributes.push(new HTMLAttributeExpression(name, value, undefined));
     }
 
     super.setAttribute(name, value);
@@ -161,21 +161,17 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   readonly section: NodeSection;
   private _node: Node;
 
-  constructor(readonly expression: T) {
-    super(expression.nodeName, expression.nodeValue);
-    this.section = new NodeSection(this._node = this.createDOMNode(expression.nodeValue) as any);
-  }
-
-  render() {
-    return null;
+  constructor(readonly source: T) {
+    super(source.nodeName, source.nodeValue);
+    this.section = new NodeSection(this._node = this.createDOMNode(source.nodeValue) as any);
   }
 
   get nodeValue(): any {
-    return this.expression.nodeValue;
+    return this.source.nodeValue;
   }
 
   set nodeValue(value: any) {
-    if (this.expression) this.expression.nodeValue = value;
+    if (this.source) this.source.nodeValue = value;
     if (this._node) this._node.nodeValue = value;
   }
 
@@ -208,3 +204,5 @@ export const htmlElementDependencies = TAG_NAMES.map((nodeName) => new EntityFac
 export const htmlTextDependency     = new EntityFactoryDependency("#text", HTMLTextEntity);
 export const htmlCommentDependency  = new EntityFactoryDependency("#comment", HTMLCommentEntity);
 export const htmlDocumentDependency = new EntityFactoryDependency("#document-fragment", HTMLDocumentFragmentEntity);
+
+console.log(htmlTextDependency.mapSourceChildren);

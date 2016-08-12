@@ -6,7 +6,7 @@ export interface IExpression {
 
   // TODO - position is something that is specific to the source of an entity, and
   // since the source could be anything, we shouldn't require a position property
-  readonly position:any;
+  readonly position: any;
 }
 
 // TODO - IEntity should not extend INode since it is not limited to the markup lang
@@ -14,7 +14,7 @@ export interface IExpression {
 export interface IEntity extends INode, IDisposable {
 
   // TODO - expression needs to be source, and source should be "any"
-  expression:IExpression;
+  source: any;
 
   /**
    * the type property helps other parts of the application figure out how
@@ -23,11 +23,6 @@ export interface IEntity extends INode, IDisposable {
    */
 
   readonly type: string;
-
-  /**
-   */
-
-  render();
 }
 
 export interface IVisibleEntity extends IEntity {

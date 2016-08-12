@@ -21,7 +21,7 @@ export default class ClipboardService extends BaseApplicationService<FrontEndApp
       if (targetIsInput(event)) return;
 
       const content = this.app.editor.selection.map((entity) => (
-        entity.expression.toString()
+        entity.source.toString()
       )).join("");
 
       event.clipboardData.setData(this.app.editor.file.type, content);

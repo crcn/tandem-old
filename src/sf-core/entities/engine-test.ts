@@ -28,11 +28,8 @@ describe(__filename + "#", () => {
   it("can register a custom entity", async () => {
     class CustomEntity extends Node implements IEntity {
       readonly type: string = null;
-      constructor(readonly expression: any) {
+      constructor(readonly source: any) {
         super();
-      }
-      render() {
-        return null;
       }
       cloneNode() { return null; }
       dispose() { }
@@ -48,12 +45,12 @@ describe(__filename + "#", () => {
   it("renders child nodes based on the returned value from load()", async () => {
     class CustomEntity extends ContainerNode implements IEntity {
       readonly type: string = null;
-      constructor(readonly expression: any) {
+      constructor(readonly source: any) {
         super();
       }
-      render() {
-        expect((this.expression as any).nodeName).to.equal("custom1");
-        return { nodeName: "#text", nodeValue: "something" };
+      static mapSourceChildren(source: any) {
+        expect(source.nodeName).to.equal("custom1");
+        return [{ nodeName: "#text", nodeValue: "something" }];
       }
       cloneNode() { return null; }
       dispose() { }
@@ -61,11 +58,8 @@ describe(__filename + "#", () => {
 
     class TextEntity extends Node implements IEntity {
       readonly type: string = null;
-      constructor(readonly expression: any) {
+      constructor(readonly source: any) {
         super();
-      }
-      render() {
-        return null;
       }
       cloneNode() { return null; }
       dispose() { }

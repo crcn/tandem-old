@@ -44,7 +44,7 @@ describe(__filename + "#", () => {
       expect(app.editor.selection.length).to.equal(1);
       app.bus.execute(new SelectSourceAtOffsetAction({ start: 0, end: 0 }));
       expect(app.editor.selection.length).to.equal(0);
-      app.bus.execute(new SelectSourceAtOffsetAction({ start: app.editor.file.entity.expression.position.start, end: app.editor.file.entity.expression.position.end }));
+      app.bus.execute(new SelectSourceAtOffsetAction({ start: app.editor.file.entity.source.position.start, end: app.editor.file.entity.source.position.end }));
       expect(app.editor.selection.length).to.equal(1);
     });
   });

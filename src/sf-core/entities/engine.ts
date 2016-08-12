@@ -50,7 +50,7 @@ export class EntityEngine {
 
       // necessary to update the source expressions so that on save(),
       // the source expressions are properly stringified back into the source string.
-      updateExpressions(this._entity, newEntity);
+      updateSources(this._entity, newEntity);
     } else {
       this._entity = newEntity;
     }
@@ -67,10 +67,9 @@ export class EntityEngine {
 
     const entity = entityFactory.create(source);
 
-    // TODO - engine making too much of an assumption about what the entity is -- it
-    // can be anything so long as it represents an expression, or some other source object, and
-    // is NOT limited to the markup API. The following code needs to be more generic.
-    for (const childExpression of toArray(await entity.render())) {
+    const childSources = entityFactory.mapSourceChildren ? await entityFactory.mapSourceChildren(source) : [];
+
+    for (const childExpression of childSources) {
       (<IContainerEntity>entity).appendChild(await this._loadAll(childExpression));
     }
 
@@ -78,11 +77,11 @@ export class EntityEngine {
   }
 }
 
-function updateExpressions(toEntity: IEntity, fromEntity: IEntity) {
-  toEntity.expression = fromEntity.expression;
+function updateSources(toEntity: IEntity, fromEntity: IEntity) {
+  toEntity.source = fromEntity.source;
   if (toEntity["childNodes"]) {
     for (let i = (<IContainerEntity>fromEntity).childNodes.length; i--; ) {
-      updateExpressions(<IEntity>(<IContainerEntity>toEntity).childNodes[i], <IEntity>(<IContainerEntity>fromEntity).childNodes[i]);
+      updateSources(<IEntity>(<IContainerEntity>toEntity).childNodes[i], <IEntity>(<IContainerEntity>fromEntity).childNodes[i]);
     }
   }
 }

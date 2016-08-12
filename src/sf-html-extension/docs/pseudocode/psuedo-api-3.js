@@ -52,6 +52,7 @@ class DOMElementEntity {
     this.section.target.setAttribute(name, value);
   }
   createSection() {
+
     return new NodeSection(this.dependencies.query('nodeFactory').createElement('div'));
   }
   save() {

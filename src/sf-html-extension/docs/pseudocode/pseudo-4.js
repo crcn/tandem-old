@@ -2,7 +2,7 @@ class TemplateComponent extends Entity {
   didMount() {
     this.nodeFactory.registerElement(this.getAttribute('id'), class extends Entity {
       render = async () => {
-        return this.expression.childNodes;
+        return this.source.childNodes;
       }
     });
   }
@@ -10,7 +10,7 @@ class TemplateComponent extends Entity {
     this.nodeFactory.unregisterElement(this.getAttribute('id'));
   }
   async render() {
-    return this.expression.childNodes;
+    return this.source.childNodes;
   }
 }
 
@@ -23,7 +23,7 @@ class ImportComponent extends Entity {
 
 class DOMElement extends Entity {
   async render() {
-    return this.expression.childNodes;
+    return this.source.childNodes;
   }
 }
 

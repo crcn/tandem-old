@@ -20,21 +20,29 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     const selection = [];
     for (const entity of allEntities) {
       if (entity["display"]) {
-        const position = entity.expression.position;
-        for (const cursor of action.data) {
-          if (
-            (cursor.start >= position.start && cursor.start <= position.end) ||
-            (cursor.end   >= position.start && cursor.end <= position.end) ||
-            (cursor.start <= position.start && cursor.end >= position.end)
-          ) {
 
-            const parentIndex = selection.indexOf(entity.parentNode);
 
-            if (parentIndex > -1) {
-              selection.splice(parentIndex, 1);
+        const position = entity.source.position;
+
+        // since the source can be anything -- even binary format,
+        // we'll need to verify here that the source does indeed have a position
+        // property
+        if (position) {
+          for (const cursor of action.data) {
+            if (
+              (cursor.start >= position.start && cursor.start <= position.end) ||
+              (cursor.end   >= position.start && cursor.end <= position.end) ||
+              (cursor.start <= position.start && cursor.end >= position.end)
+            ) {
+
+              const parentIndex = selection.indexOf(entity.parentNode);
+
+              if (parentIndex > -1) {
+                selection.splice(parentIndex, 1);
+              }
+
+              selection.push(entity);
             }
-
-            selection.push(entity);
           }
         }
       }

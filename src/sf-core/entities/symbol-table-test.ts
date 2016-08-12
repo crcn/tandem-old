@@ -20,7 +20,7 @@ describe(__filename + "#", () => {
 
   it("it can set a value in a parent from a child", () => {
     const p = new SymbolTable();
-    p.set("a", "b")
+    p.set("a", "b");
     const c = p.createChild();
     c.set("a", "c");
 

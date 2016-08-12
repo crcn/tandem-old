@@ -12,7 +12,7 @@ export class SymbolTable {
   }
 
   set(id: string, value: any) {
-    const context = this.getContext(id);
+    const context = this.getOwner(id);
     if (context === this) {
       this._vars[id] = value;
     } else {
@@ -20,8 +20,8 @@ export class SymbolTable {
     }
   }
 
-  getContext(id: string) {
-    return this._vars.hasOwnProperty(id) ? this : this._parent ? this._parent.getContext(id) : this;
+  getOwner(id: string) {
+    return this._vars.hasOwnProperty(id) ? this : this._parent ? this._parent.getOwner(id) : this;
   }
 
   createChild() {

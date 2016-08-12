@@ -90,7 +90,7 @@ describe(__filename + "#", () => {
       expect(div.innerHTML).to.equal("<div></div>");
       await engine.load(parseHTML(`<div>a b</div>`));
       expect(div.innerHTML).to.equal("<div>a b</div>");
-      expect(engine.entity.expression.toString()).to.equal(`<div>a b</div>`);
+      expect(engine.entity.source.toString()).to.equal(`<div>a b</div>`);
     });
   });
 });
