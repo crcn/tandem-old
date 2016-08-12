@@ -1,7 +1,6 @@
 import { IActor } from "sf-core/actors";
 import { IApplication } from "sf-core/application";
 
-import { isPublic } from "sf-core/decorators";
 import { BaseApplicationService } from "sf-core/services";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 
@@ -18,7 +17,6 @@ export default class UpsertService extends BaseApplicationService<IApplication> 
   /**
    */
 
-  @isPublic
   public upsert(action) {
     return this._bus.execute(action);
   }

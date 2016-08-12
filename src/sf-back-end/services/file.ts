@@ -8,7 +8,7 @@ import { PostDBAction } from "sf-core/actions";
 import { File, FILES_COLLECTION_NAME } from "sf-common/models";
 import { BaseApplicationService } from "sf-core/services";
 import { ApplicationServiceDependency, Dependencies, DEPENDENCIES_NS } from "sf-core/dependencies";
-import { inject, loggable, isPublic, document, filterAction } from "sf-core/decorators";
+import { inject, loggable, document, filterAction } from "sf-core/decorators";
 
 import { Response } from "mesh";
 
@@ -25,7 +25,6 @@ export default class FileService extends BaseApplicationService<IApplication> {
   /**
    */
 
-  @isPublic
   @document("opens a file")
   openFile(action) {
     this.logger.info(`opening ${action.path}`);
@@ -49,7 +48,6 @@ export default class FileService extends BaseApplicationService<IApplication> {
   /**
    */
 
-  @isPublic
   @document("reads a file content")
   readFile(action) {
     return {
@@ -81,7 +79,6 @@ export default class FileService extends BaseApplicationService<IApplication> {
   /**
    */
 
-  @isPublic
   @document("watches a file for any changes")
   watchFile(action) {
     return Response.create((writable) => {

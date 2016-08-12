@@ -1,7 +1,7 @@
 import { IEntity } from "sf-core/entities";
 import { BaseApplicationService } from "sf-core/services";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
-import { loggable, bindable, isPublic } from "sf-core/decorators";
+import { loggable, bindable } from "sf-core/decorators";
 import { DISPOSE } from "sf-core/actions";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
 import { Selection } from "sf-front-end/selection";
@@ -12,7 +12,6 @@ import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 @loggable()
 export default class SelectorService extends BaseApplicationService<FrontEndApplication> {
 
-  @isPublic
   selectAtSourceOffset(action: SelectSourceAtOffsetAction) {
 
     const allEntities = <Array<IEntity>>this.app.editor.file.entity.flatten();

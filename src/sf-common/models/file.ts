@@ -28,7 +28,7 @@ export class File extends ActiveRecord {
     return activeRecordFactory.create(FILES_COLLECTION_NAME, sourceData);
   }
 
-  static async find(query: any, dependencies: Dependencies) {
+  static async find(query: any, dependencies: Dependencies): Promise<Array<File>> {
 
     // TODO FILES should not be here
     return (await find(FILES_COLLECTION_NAME, query, true, dependencies)).map((sourceData) => {

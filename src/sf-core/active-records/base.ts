@@ -27,7 +27,6 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
   @inject(MAIN_BUS_NS)
   readonly bus: IBrokerBus;
 
-  @inject()
   readonly collectionName: string;
 
   constructor() {
@@ -58,7 +57,7 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
 
   sync() {
 
-    if (this._syncBus) return;
+    if (this._syncBus) return this;
 
     // TODO - this is not very efficient. Need to attach
     // sync helper here that all models listen to
@@ -70,6 +69,8 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
       ]),
       null
     ));
+
+    return this;
   }
 
   _onDidUpdate = (action: PostDBAction) => {

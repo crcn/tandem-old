@@ -7,7 +7,7 @@ import { IActor } from "sf-core/actors";
 import { Logger } from "sf-core/logger";
 import { FindAction } from "sf-core/actions";
 import { BaseApplicationService } from "sf-core/services";
-import { isPublic, loggable, inject } from "sf-core/decorators";
+import { loggable, inject } from "sf-core/decorators";
 import { ApplicationServiceDependency, MimeTypeDependency, DEPENDENCIES_NS, Dependencies, ActiveRecordFactoryDependency } from "sf-core/dependencies";
 import { FrontEndApplication } from "sf-front-end/application";
 
@@ -27,17 +27,14 @@ export default class ProjectService extends BaseApplicationService<FrontEndAppli
     this.openFile(value);
   }
 
-  @isPublic
   update(action) {
     (<any>this.app.editor.file).deserialize(action.data);
   }
 
-  @isPublic
   insert(action) {
     this.openFile(action.data);
   }
 
-  @isPublic
   openFile(action: OpenFileAction) {
 
     this.logger.info("loaded %s", action);

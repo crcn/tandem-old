@@ -20,7 +20,11 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
   }
 
   async _loadInitialFile() {
-    const files = await File.findAll(this._dependencies);
+    const files = (await File.findAll(this._dependencies)).map((file) => {
+      return file.sync();
+    });
+
+    window.files = files;
   }
 }
 
