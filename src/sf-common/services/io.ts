@@ -57,7 +57,7 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
     this.logger.info("client connected");
 
 
-    // setup the bus which will facilitate in all
+    // setup the bus which wil facilitate in all
     // transactions between the remote service
     const remoteBus = SocketIOBus.create({
       connection: connection
@@ -68,7 +68,20 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
       }
     });
 
-    this._remoteActors.push(remoteBus);
+    this._remoteActors.push({
+      execute(action) {
+        let data;
+
+        // very crude, but works for resolving circular JSON issues
+        try {
+          data = JSON.parse(JSON.stringify(action));
+        } catch(e) {
+          return;
+        }
+
+        return remoteBus.execute(data);
+      }
+    });
 
 
     connection.once("disconnect", () => {
