@@ -27,7 +27,9 @@ describe(__filename + "#", () => {
   });
 
   describe("source code selection#", () => {
-    it("can select an entity based on its source code position", async () => {
+
+    // OpenFileAction no longer supported on the front-end
+    xit("can select an entity based on its source code position", async () => {
       await app.bus.execute(new OpenFileAction("something.html", `
           <div>
             a

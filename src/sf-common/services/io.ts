@@ -27,11 +27,11 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
     // receive actions from other parts of the application
     this.app.bus.register(
       new AcceptBus(
-        sift({ type: {$nin:[LOAD, INITIALIZE, LOG, PROPERTY_CHANGE] }}),
+        sift({ remote: { $ne: true }, type: {$nin: [LOAD, INITIALIZE, LOG, PROPERTY_CHANGE] }}),
         ParallelBus.create(this._remoteActors),
         null
       )
-    )
+    );
   }
 
   /**
@@ -75,7 +75,7 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
         // very crude, but works for resolving circular JSON issues
         try {
           data = JSON.parse(JSON.stringify(action));
-        } catch(e) {
+        } catch (e) {
           return;
         }
 

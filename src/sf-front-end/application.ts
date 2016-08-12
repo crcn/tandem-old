@@ -12,7 +12,6 @@ import { dependency as gridToolComponentDependency } from "./components/grid-too
 import { dependency as dragSelectComponentDependency } from "./components/drag-select-tool";
 
 // services
-import { dependency as projectsDependency } from "./services/project";
 import { dependency as clipboardService } from "./services/clipboard";
 import { dependency as editorServiceDependency } from "./services/editor";
 import { dependency as backEndServiceDependency } from "./services/back-end";
@@ -58,7 +57,6 @@ export class FrontEndApplication extends Application {
 
       // services
       clipboardService,
-      projectsDependency,
       editorServiceDependency,
       backEndServiceDependency,
       selectorServiceDependency,

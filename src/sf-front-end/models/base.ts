@@ -3,7 +3,6 @@ import { IEntity } from "sf-core/entities";
 import { IActor } from "sf-core/actors";
 
 export interface IEditorFile {
-  ext: string;
   path: string;
   entity: IEntity;
   type: string;

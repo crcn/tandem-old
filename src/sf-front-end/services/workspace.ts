@@ -16,15 +16,16 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
   private _dependencies: Dependencies;
 
   async initialize(action: Action) {
-    await this._loadInitialFile();
+    await this._loadWorkspaces();
   }
 
-  async _loadInitialFile() {
-    const files = (await File.findAll(this._dependencies)).map((file) => {
-      return file.sync();
-    });
+  async _loadWorkspaces() {
 
-    window.files = files;
+    // TODO - File.findAll(this._dependencies).sync().observe(updateWorkspaces);
+    for (const file of (await File.findAll(this._dependencies)).map((file) => file.sync())) {
+      this.app.editor.file = <any>file;
+      file.observe(this.app.bus);
+    }
   }
 }
 
