@@ -1,4 +1,6 @@
-export class ICursorPosition {
+
+
+export interface ICursor {
   start: number;
   end: number;
 }
@@ -18,7 +20,7 @@ export function flattenEach(fromItems: Array<BaseExpression>, toItems: Array<Bas
  */
 
 export class BaseExpression {
-  constructor(readonly type: string, readonly position: ICursorPosition) {
+  constructor(readonly type: string, readonly position: ICursor) {
 
   }
 

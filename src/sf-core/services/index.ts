@@ -1,6 +1,6 @@
 import { Service } from "./base";
 import { IApplication } from "sf-core/application";
-import { APPLICATION_SINGLETON_NS, BUS_NS, IInjectable } from "sf-core/dependencies";
+import { APPLICATION_SINGLETON_NS, MAIN_BUS_NS, IInjectable } from "sf-core/dependencies";
 import { IActor, IInvoker } from "sf-core/actors";
 import { inject } from "sf-core/decorators";
 
@@ -11,7 +11,7 @@ export class BaseApplicationService<T extends IApplication> extends Service impl
   @inject(APPLICATION_SINGLETON_NS)
   readonly app: T;
 
-  @inject(BUS_NS)
+  @inject(MAIN_BUS_NS)
   readonly bus: IActor;
 
   didInject() { }

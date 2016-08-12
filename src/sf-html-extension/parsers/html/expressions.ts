@@ -1,14 +1,14 @@
-import { BaseExpression, ICursorPosition, flattenEach } from "../core/expression";
-import { IExpression } from "sf-core/entities";
+import { BaseExpression, ICursor, flattenEach } from "../core/expression";
 import { register as registerSerializer  } from "sf-core/serialize";
 
-export interface IHTMLValueNodeExpression extends IExpression {
+export interface IHTMLValueNodeExpression {
   nodeValue: any;
   nodeName: string;
+  readonly position: ICursor;
 }
 
 export abstract class HTMLExpression extends BaseExpression {
-  constructor(type: string, readonly nodeName: string, position: ICursorPosition) {
+  constructor(type: string, readonly nodeName: string, position: ICursor) {
     super(type, position);
   }
 }
@@ -16,7 +16,7 @@ export abstract class HTMLExpression extends BaseExpression {
 
 export const HTML_FRAGMENT = "htmlFragment";
 export class HTMLFragmentExpression extends HTMLExpression {
-  constructor(public childNodes: Array<HTMLExpression>, position: ICursorPosition) {
+  constructor(public childNodes: Array<HTMLExpression>, position: ICursor) {
     super(HTML_FRAGMENT, "#document-fragment", position);
   }
 
@@ -39,7 +39,7 @@ export class HTMLElementExpression extends HTMLExpression {
     nodeName: string,
     public attributes: Array<HTMLAttributeExpression>,
     public childNodes: Array<HTMLExpression>,
-    public position: ICursorPosition) {
+    public position: ICursor) {
     super(HTML_ELEMENT, nodeName, position);
   }
 
@@ -69,7 +69,7 @@ export class HTMLElementExpression extends HTMLExpression {
 
 export const HTML_ATTRIBUTE = "htmlAttribute";
 export class HTMLAttributeExpression extends BaseExpression {
-  constructor(public name: string, public value: string, position: ICursorPosition) {
+  constructor(public name: string, public value: string, position: ICursor) {
     super(HTML_ATTRIBUTE, position);
   }
   toString() {
@@ -84,7 +84,7 @@ export class HTMLAttributeExpression extends BaseExpression {
 
 export const HTML_TEXT = "htmlText";
 export class HTMLTextExpression extends HTMLExpression implements IHTMLValueNodeExpression {
-  constructor(public nodeValue: string, public position: ICursorPosition) {
+  constructor(public nodeValue: string, public position: ICursor) {
     super(HTML_TEXT, "#text", position);
   }
   toString() {
@@ -97,7 +97,7 @@ export class HTMLTextExpression extends HTMLExpression implements IHTMLValueNode
 
 export const HTML_COMMENT = "htmlComment";
 export class HTMLCommentExpression extends HTMLExpression implements IHTMLValueNodeExpression {
-  constructor(public nodeValue: string, public position: ICursorPosition) {
+  constructor(public nodeValue: string, public position: ICursor) {
     super(HTML_COMMENT, "#comment", position);
   }
 
@@ -108,7 +108,7 @@ export class HTMLCommentExpression extends HTMLExpression implements IHTMLValueN
 
 // export const HTML_BLOCK = "htmlBlock";
 // export class HTMLBlockExpression extends HTMLExpression {
-//   constructor(public script: BaseExpression, public position: ICursorPosition) {
+//   constructor(public script: BaseExpression, public position: ICursor) {
 //     super(HTML_BLOCK, position);
 //   }
 //   public _flattenDeep(items) {

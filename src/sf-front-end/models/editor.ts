@@ -17,7 +17,6 @@ import {
 } from "sf-front-end/actions";
 import { KeyBinding } from "sf-front-end/key-bindings";
 import { ParallelBus } from "mesh";
-import { TypeCallbackBus } from "sf-common/busses";
 
 export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;

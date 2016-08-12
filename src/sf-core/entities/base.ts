@@ -2,18 +2,22 @@ import { IDiffableNode, IDiffableElement, IDiffableValueNode, INode, IContainerN
 import { IEntityDisplay } from "./display";
 import { IDisposable } from "../object";
 
-export interface IExpression {
-
-  // TODO - position is something that is specific to the source of an entity, and
-  // since the source could be anything, we shouldn't require a position property
-  readonly position: any;
+export interface ICursor {
+  start: number;
+  end: number;
 }
+
+// export interface IEntityDisplayMutator extends IEntityMutator {
+//   appendChild(child: IEntity);
+//   removeChild(child: IEntity);
+// }
+
 
 // TODO - IEntity should not extend INode since it is not limited to the markup lang
 // TODO - should extend ITyped interface
 export interface IEntity extends INode, IDisposable {
 
-  // TODO - expression needs to be source, and source should be "any"
+  // TODO - do not use "any" here.
   source: any;
 
   /**

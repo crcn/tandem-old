@@ -25,3 +25,14 @@ declare module "mesh-array-ds-bus" {
   }
   export = MeshArrayDsBus;
 }
+
+declare module "mongoid-js" {
+
+  function mongoid(): string;
+
+  namespace mongoid {
+
+  }
+
+  export = mongoid;
+}

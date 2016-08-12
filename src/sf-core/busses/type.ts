@@ -2,19 +2,18 @@ import { IActor } from "sf-core/actors";
 import { Action } from "sf-core/actions";
 import { WrapBus, EmptyResponse } from "mesh";
 
-export default class TypeCallbackBus implements IActor {
+export class TypeWrapBus implements IActor {
 
   private _bus: WrapBus;
 
-  constructor(readonly type: string, callback: Function) {
+  constructor(readonly type: string, handler: Function|IActor) {
     this.type = type;
-    console.log(type, callback);
-    this._bus = WrapBus.create(callback as any);
+    this._bus = WrapBus.create(<any>handler);
   }
 
   execute(action: Action) {
     if (action.type === this.type) {
-      return this._bus.execute(event);
+      return this._bus.execute(action);
     }
     return EmptyResponse.create();
   }

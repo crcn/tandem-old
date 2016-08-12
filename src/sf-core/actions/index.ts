@@ -52,6 +52,7 @@ export class LogAction extends Action {
 }
 
 export class DBAction extends Action {
+  readonly timestamp: number = Date.now();
   constructor(actionType: string, readonly collectionName: string) {
     super(actionType);
   }
@@ -103,7 +104,7 @@ export const DID_REMOVE = "didRemove";
 export const DID_UPDATE = "didUpdate";
 export class PostDBAction extends DBAction {
 
-  constructor(type: string, collectionName: string, readonly data: any) {
+  constructor(type: string, collectionName: string, readonly data: any, readonly timestamp: number) {
     super(type, collectionName);
   }
 
@@ -112,7 +113,7 @@ export class PostDBAction extends DBAction {
       [INSERT]: DID_INSERT,
       [UPDATE]: DID_UPDATE,
       [REMOVE]: DID_REMOVE
-    }[action.type], action.collectionName, data);
+    }[action.type], action.collectionName, data, action.timestamp);
   }
 }
 

@@ -36,7 +36,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   readonly dependencies: Dependencies;
 
   didInject() {
-    this.app.actors.push(this._ioService = IOService.create<IApplication>(this.dependencies));
+    this.app.bus.register(this._ioService = IOService.create<IApplication>(this.dependencies));
     this._port = this.app.config.port;
   }
 

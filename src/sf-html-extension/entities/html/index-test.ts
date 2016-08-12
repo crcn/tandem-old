@@ -71,7 +71,6 @@ describe(__filename + "#", () => {
         hello world
       </template><test id="target" />`);
 
-      console.log(div);
     });
   });
 

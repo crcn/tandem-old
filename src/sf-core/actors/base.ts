@@ -1,5 +1,5 @@
 import { Action } from "../actions";
-import { ParallelBus, Bus } from "mesh";
+import { Response } from "mesh";
 
 /**
  * handles actions

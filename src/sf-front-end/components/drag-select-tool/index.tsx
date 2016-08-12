@@ -13,7 +13,7 @@ class DragSelectComponent extends React.Component<any, any> {
   }
 
   componentDidMount() {
-    this.props.app.actors.push(this);
+    this.props.app.bus.register(this);
   }
 
   execute(action: MouseAction) {
@@ -23,7 +23,7 @@ class DragSelectComponent extends React.Component<any, any> {
   }
 
   componentWillUnmount() {
-    this.props.app.actors.splice(this.props.app.actors.indexOf(this), 1);
+    this.props.app.bus.unregister(this);
   }
 
   startDrag(event) {

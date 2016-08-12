@@ -2,7 +2,7 @@ import { Logger } from "sf-core/logger";
 import { loggable, bindable } from "sf-core/decorators";
 import {
   ApplicationServiceDependency,
-  BusDependency,
+  MainBusDependency,
   ApplicationSingletonDependency,
   DependenciesDependency
 } from "sf-core/dependencies";
@@ -10,6 +10,7 @@ import { LoadAction, InitializeAction } from "sf-core/actions";
 import { dependency as consoleLogServiceDependency } from "../services/console-output";
 
 import { IActor } from "sf-core/actors";
+import { BrokerBus } from "sf-core/busses";
 import { IApplication } from "sf-core/application";
 import { Dependencies } from "sf-core/dependencies";
 
@@ -20,8 +21,7 @@ import { ParallelBus } from "mesh";
 export class Application implements IApplication {
 
   readonly logger: Logger;
-  readonly actors: Array<IActor> = [];
-  readonly bus: IActor = new ParallelBus(this.actors);
+  readonly bus: BrokerBus = new BrokerBus(ParallelBus);
   readonly dependencies: Dependencies = new Dependencies();
   private _initializeCalled: boolean = false;
 
@@ -58,7 +58,7 @@ export class Application implements IApplication {
     // Make the application available globally through the dependencies
     // property so that this reference isn't passed around everywhere.
     this.dependencies.register(
-      new BusDependency(this.bus),
+      new MainBusDependency(this.bus),
       new DependenciesDependency(this.dependencies),
       new ApplicationSingletonDependency(this)
     );
@@ -70,7 +70,7 @@ export class Application implements IApplication {
   private _initializeServices() {
 
     // Initialize the services (action handlers) of this application.
-    this.actors.push(...ApplicationServiceDependency.findAll(this.dependencies).map(fragment => fragment.create()));
+    this.bus.register(...ApplicationServiceDependency.findAll(this.dependencies).map(fragment => fragment.create()));
   }
 
   /**

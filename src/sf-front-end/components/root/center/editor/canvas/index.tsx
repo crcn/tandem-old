@@ -12,7 +12,7 @@ import PreviewLayerComponent from "./preview";
 import ToolsLayerComponent from "./tools";
 import IsolateComponent  from "sf-front-end/components/isolate";
 import { Editor } from "sf-front-end/models";
-import { Dependencies, BusDependency } from "sf-core/dependencies";
+import { Dependencies, MainBusDependency } from "sf-core/dependencies";
 import { IPosition } from "sf-core/geom";
 
 export default class EditorStageLayersComponent extends React.Component<{ editor: Editor, dependencies: Dependencies, zoom: number }, any> {
@@ -31,7 +31,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   get bus() {
-    return BusDependency.getInstance(this.props.dependencies);
+    return MainBusDependency.getInstance(this.props.dependencies);
   }
 
   pane(leftDelta, topDelta) {

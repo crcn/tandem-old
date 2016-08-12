@@ -23,7 +23,7 @@ export async function activate(context: vscode.ExtensionContext) {
         port: port
     });
 
-    server.actors.push({
+    server.bus.register({
         execute(action:any) {
             if (
                 action.type === "didUpdate" &&

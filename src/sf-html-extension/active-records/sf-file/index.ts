@@ -4,7 +4,7 @@ import {
   IInjectable,
   Dependencies,
   DEPENDENCIES_NS,
-  BUS_NS
+  MAIN_BUS_NS
 } from "sf-core/dependencies";
 
 import { IActor } from "sf-core/actors";
@@ -13,23 +13,21 @@ import { BubbleBus } from "sf-core/busses";
 import mergeHTML from "./merge-html";
 import { Observable } from "sf-core/observable";
 import { IEditorFile } from "sf-front-end/models/base";
-import { IActiveRecord } from "sf-core/active-records";
+import { IActiveRecord, ActiveRecord } from "sf-core/active-records";
 import { IEntity, EntityEngine } from "sf-core/entities";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
 import { PropertyChangeAction, UpdateAction } from "sf-core/actions";
 
-export class SfFile extends Observable implements IInjectable, IActiveRecord, IEditorFile {
+export class SfFile extends ActiveRecord implements IInjectable, IEditorFile {
 
   public path: string;
   public content: string;
+  readonly idProperty: string = "path";
   public ext: string;
   readonly type: string = "text/html";
 
   @inject(DEPENDENCIES_NS)
   readonly dependencies: Dependencies;
-
-  @inject(BUS_NS)
-  readonly bus: IActor;
 
   private _entityObserver: IActor;
   private _engine: EntityEngine;
@@ -47,6 +45,7 @@ export class SfFile extends Observable implements IInjectable, IActiveRecord, IE
     this.path    = data.path;
     this.content = data.content;
     this.ext     = data.ext;
+
     this._loadEntity();
   }
 
@@ -89,9 +88,7 @@ export class SfFile extends Observable implements IInjectable, IActiveRecord, IE
 
     // TODO - beautify new content here
 
-    this.bus.execute(new UpdateAction("files", this.serialize(), {
-      path: this.path
-    }));
+    return super.save();
   }
 }
 

@@ -3,6 +3,7 @@ import { IApplication } from "sf-core/application";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 import { BaseApplicationService } from "sf-core/services";
 import { loggable, isPublic, document } from "sf-core/decorators";
+import { PostDsNotifierBus } from "sf-core/busses";
 import {
   DBAction,
   FindAction,
@@ -22,7 +23,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
   private _db:IActor;
 
   didInject() {
-    this._db = MemoryDsBus.create();
+    this._db = new PostDsNotifierBus(MemoryDsBus.create(), this.bus);
   }
 
   /**
@@ -42,7 +43,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
   @isPublic
   @document("removes an item in the database")
   remove(action:RemoveAction) {
-    return this._executeWithPostAction(action);
+    return this._db.execute(action);
   }
 
   /**
@@ -52,7 +53,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
   @isPublic
   @document("inserts an item in the database")
   insert(action:InsertAction) {
-    return this._executeWithPostAction(action);
+    return this._db.execute(action);
   }
 
   /**
@@ -61,21 +62,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
   @isPublic
   @document("updates an item in the database")
   update(action:UpdateAction) {
-    return this._executeWithPostAction(action);
-  }
-
-  /**
-   */
-
-  async _executeWithPostAction(action:UpdateAction|RemoveAction|InsertAction)  {
-
-    var data = await this._db.execute(action).readAll();
-
-    if (data.length) {
-      this.bus.execute(PostDBAction.createFromDBAction(action, data));
-    }
-
-    return data;
+    return this._db.execute(action);
   }
 }
 

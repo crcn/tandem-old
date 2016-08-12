@@ -25,7 +25,7 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
 
     // scan the application for all public actions and add
     // then to the public service
-    for (const actor of this.app.actors) {
+    for (const actor of this.app.bus.actors) {
       for (const actionType of ((actor as any).__publicProperties || [])) {
         this.logger.info(`exposing ${actor.constructor.name}.${actionType}`);
         this._publicActionTypes[actionType] = true;
@@ -37,7 +37,7 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
 
     // add the remote actors to the application so that they
     // receive actions from other parts of the application
-    this.app.actors.push(ParallelBus.create(this._remoteActors));
+    this.app.bus.register(ParallelBus.create(this._remoteActors));
   }
 
   /**

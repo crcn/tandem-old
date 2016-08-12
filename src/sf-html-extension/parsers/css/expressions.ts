@@ -1,10 +1,10 @@
-import { BaseExpression, ICursorPosition, flattenEach } from "../core/expression";
+import { BaseExpression, ICursor, flattenEach } from "../core/expression";
 
 export class CSSExpression extends BaseExpression { }
 
 export const CSS_STYLE = "cssStyle";
 export class CSSStyleExpression extends CSSExpression {
-  constructor(public declarations: Array<CSSStyleDeclarationExpression>, public position: ICursorPosition) {
+  constructor(public declarations: Array<CSSStyleDeclarationExpression>, public position: ICursor) {
     super(CSS_STYLE, position);
   }
   public _flattenDeep(items) {
@@ -18,7 +18,7 @@ export class CSSStyleExpression extends CSSExpression {
 
 export const CSS_STYLE_DECLARATION = "cssStyleDeclaration";
 export class CSSStyleDeclarationExpression extends CSSExpression {
-  constructor(public key: string, public value: CSSExpression, public position: ICursorPosition) {
+  constructor(public key: string, public value: CSSExpression, public position: ICursor) {
     super(CSS_STYLE_DECLARATION, position);
   }
   public _flattenDeep(items) {
@@ -32,7 +32,7 @@ export class CSSStyleDeclarationExpression extends CSSExpression {
 
 export const CSS_LITERAL_VALUE = "cssLiteralValue";
 export class CSSLiteralExpression extends CSSExpression {
-  constructor(public value: string, public position: ICursorPosition) {
+  constructor(public value: string, public position: ICursor) {
     super(CSS_LITERAL_VALUE, position);
   }
   toString() {
@@ -42,7 +42,7 @@ export class CSSLiteralExpression extends CSSExpression {
 
 export const CSS_FUNCTION_CALL = "cssFunctionCall";
 export class CSSFunctionCallExpression extends CSSExpression {
-  constructor(public name: string, public parameters: Array<CSSExpression>, public position: ICursorPosition) {
+  constructor(public name: string, public parameters: Array<CSSExpression>, public position: ICursor) {
     super(CSS_FUNCTION_CALL, position);
   }
   public _flattenDeep(items) {
@@ -56,7 +56,7 @@ export class CSSFunctionCallExpression extends CSSExpression {
 
 export const CSS_LIST_VALUE = "cssListValue";
 export class CSSListValueExpression extends CSSExpression {
-  constructor(public values: Array<CSSExpression>, public position: ICursorPosition) {
+  constructor(public values: Array<CSSExpression>, public position: ICursor) {
     super(CSS_LIST_VALUE, position);
   }
   public _flattenDeep(items) {

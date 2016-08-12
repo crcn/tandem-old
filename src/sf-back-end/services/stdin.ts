@@ -35,7 +35,7 @@ export default class StdinService extends BaseApplicationService<IApplication> {
   @document("shows help menu")
   help() {
 
-    this.app.actors.forEach((actor) => {
+    this.app.bus.actors.forEach((actor) => {
       var docs = (actor as any).__documentation || {};
 
       for (let actionType in docs) {

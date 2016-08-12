@@ -1,4 +1,4 @@
-import { Bus } from "mesh";
+import { IBrokerBus } from "../busses";
 import { Action } from "../actions";
 import { IActor } from "../actors";
 import { IEntity } from "../entities";
@@ -89,13 +89,13 @@ export class EntityFactoryDependency extends ClassFactoryDependency {
 /**
  */
 
-export const BUS_NS = "bus";
-export class BusDependency extends Dependency<Bus> {
-  constructor(value: Bus) {
-    super(BUS_NS, value);
+export const MAIN_BUS_NS = "mainBus";
+export class MainBusDependency extends Dependency<IBrokerBus> {
+  constructor(value: IBrokerBus) {
+    super(MAIN_BUS_NS, value);
   }
-  static getInstance(Dependencies: Dependencies): Bus {
-    return Dependencies.query<BusDependency>(BUS_NS).value;
+  static getInstance(Dependencies: Dependencies): IBrokerBus {
+    return Dependencies.query<MainBusDependency>(MAIN_BUS_NS).value;
   }
 }
 
@@ -114,16 +114,19 @@ export class DependenciesDependency extends Dependency<Dependencies> {
 
 export const ACTIVE_RECORD_FACTORY_NS = "activeRecordFactories";
 export class ActiveRecordFactoryDependency extends ClassFactoryDependency {
-  constructor(id: string, value: { new(): IActiveRecord }) {
+  constructor(id: string, value: { new(sourceData: any): IActiveRecord }) {
     super([ACTIVE_RECORD_FACTORY_NS, id].join("/"), value);
   }
-  create(sourceData?: any): any {
-    const activeRecord: IActiveRecord = super.create(sourceData);
+
+  create(collectionName: string, sourceData?: any): any {
+    const activeRecord: IActiveRecord = super.create();
+    activeRecord.collectionName = collectionName;
     if (sourceData != null) {
       activeRecord.deserialize(sourceData);
     }
     return activeRecord;
   }
+
   static find(id: string, dependencies: Dependencies): ActiveRecordFactoryDependency {
     return dependencies.query<ActiveRecordFactoryDependency>([ACTIVE_RECORD_FACTORY_NS, id].join("/"));
   }

@@ -1,6 +1,6 @@
 import {
   toArray
-} from "sf-common/utils/array";
+} from "sf-core/utils/array";
 
 import {
   IEntity,

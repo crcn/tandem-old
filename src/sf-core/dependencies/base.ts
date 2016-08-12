@@ -20,13 +20,18 @@ export class Injector {
       for (let property in __inject) {
         const [ns, map] = __inject[property];
         let value;
+        let defaultValue = target[property];
 
         if (/\*\*$/.test(ns)) {
           value = dependencies.queryAll<Dependency<any>>(ns);
           target[property] = value.map(map);
         } else {
           value = dependencies.query<Dependency<any>>(ns);
-          target[property] = map(value);
+          target[property] = value ? map(value) : undefined;
+        }
+
+        if (target[property] == null) {
+          target[property] = defaultValue;
         }
 
         if (!process.env.TESTING && (value == null || value.length === 0)) {

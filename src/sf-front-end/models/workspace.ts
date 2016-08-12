@@ -1,3 +1,4 @@
+
 import { File } from "./file";
 import { Editor } from "./editor";
 
@@ -11,8 +12,7 @@ export class Workspace {
   file: File;
 
   /**
-   * The editors of the file
    */
 
-  editors: Array<Editor>;
+  editor: Editor;
 }

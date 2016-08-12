@@ -1,7 +1,7 @@
 import { Action } from "sf-core/actions";
 import { IRange } from "sf-core/geom";
 import { IActor } from "sf-core/actors";
-import { toArray } from "sf-common/utils/array";
+import { toArray } from "sf-core/utils/array";
 
 export const CANVAS_MOUSE_DOWN = "canvasMouseDown";
 export class MouseAction extends Action {

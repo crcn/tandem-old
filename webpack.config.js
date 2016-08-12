@@ -21,7 +21,10 @@ module.exports =  {
   watch: process.env.WATCH === "1",
   plugins: [
     new webpack.DefinePlugin({
-      "process.env.TESTING": process.env.TESTING === "1"
+      "process.env.TESTING": process.env.TESTING === "1",
+
+      // required for mongoid-js plugin particularly
+      "process.pid": process.pid
     })
   ],
   node: {

@@ -42,4 +42,21 @@ describe(__filename + "#", () => {
     const personDep = dependencies.query<ClassFactoryDependency>("person");
     expect(personDep.create().name).to.equal("BOB");
   });
+
+  it("can inject based on the property name", () => {
+    class Person implements IInjectable {
+      @inject()
+      readonly name: string;
+      didInject() {
+
+      }
+    }
+    const dependencies = new Dependencies(
+      new Dependency<string>("name", "joe"),
+      new ClassFactoryDependency("person", Person)
+    );
+
+    const personDep = dependencies.query<ClassFactoryDependency>("person");
+    expect(personDep.create().name).to.equal("joe");
+  });
 });

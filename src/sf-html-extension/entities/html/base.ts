@@ -205,4 +205,3 @@ export const htmlTextDependency     = new EntityFactoryDependency("#text", HTMLT
 export const htmlCommentDependency  = new EntityFactoryDependency("#comment", HTMLCommentEntity);
 export const htmlDocumentDependency = new EntityFactoryDependency("#document-fragment", HTMLDocumentFragmentEntity);
 
-console.log(htmlTextDependency.mapSourceChildren);

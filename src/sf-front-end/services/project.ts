@@ -11,7 +11,6 @@ import { isPublic, loggable, inject } from "sf-core/decorators";
 import { ApplicationServiceDependency, MimeTypeDependency, DEPENDENCIES_NS, Dependencies, ActiveRecordFactoryDependency } from "sf-core/dependencies";
 import { FrontEndApplication } from "sf-front-end/application";
 
-
 const COLLECTION_NAME = "files";
 
 @loggable()
@@ -43,9 +42,8 @@ export default class ProjectService extends BaseApplicationService<FrontEndAppli
 
     this.logger.info("loaded %s", action);
 
-
     const activeRecordDependency = ActiveRecordFactoryDependency.find(MimeTypeDependency.lookup(action.path, this.dependencies), this.dependencies);
-    const activeRecord = activeRecordDependency.create(action);
+    const activeRecord = activeRecordDependency.create(COLLECTION_NAME, action);
 
     this.app.editor.file = activeRecord;
 

@@ -28,7 +28,7 @@ export class EditorService extends BaseApplicationService<FrontEndApplication> {
         this.dependencies.register(new GlobalKeyBindingDependency(new KeyBinding(tool["keyCommand"], new SetToolAction(tool))));
       }
     }
-    this.app.actors.push(this._toolProxyBus = new ProxyBus(null));
+    this.app.bus.register(this._toolProxyBus = new ProxyBus(null));
   }
 
   load(action: LoadAction) {

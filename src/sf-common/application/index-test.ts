@@ -12,7 +12,7 @@ describe(__filename + "#", () => {
   it("initializes a load, then initialize action", async () => {
     let i = 0;
     const app = new Application({});
-    app.actors.push({
+    app.bus.register({
       execute(action) {
         if (action.type === LOAD) expect(i++).to.equal(0);
         if (action.type === INITIALIZE) expect(i++).to.equal(1);
