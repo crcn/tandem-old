@@ -12,13 +12,13 @@ import { inject } from "sf-core/decorators";
 import { BubbleBus } from "sf-core/busses";
 import mergeHTML from "./merge-html";
 import { Observable } from "sf-core/observable";
-import { IEditorFile } from "sf-front-end/models/base";
+import { EntityFile } from "sf-front-end/models/base";
 import { IActiveRecord, ActiveRecord } from "sf-core/active-records";
 import { IEntity, EntityEngine } from "sf-core/entities";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
 import { PropertyChangeAction, UpdateAction } from "sf-core/actions";
 
-export class SfFile extends ActiveRecord implements IInjectable, IEditorFile {
+export class SfFile extends EntityFile implements IInjectable {
 
   public path: string;
   public content: string;

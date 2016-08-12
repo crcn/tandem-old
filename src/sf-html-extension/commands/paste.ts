@@ -22,11 +22,11 @@ export class PasteHTMLCommand implements IActor, IInjectable {
       // meta charset is tacked on the beginning - remove it
       content = content.replace(/\<meta.*?\>/, "");
 
-      (<HTMLFragmentExpression>(<SfFile>this.app.editor.file).entity.source).childNodes.push(
+      (<HTMLFragmentExpression>(<SfFile>this.app.workspace.file).entity.source).childNodes.push(
         ...(<HTMLFragmentExpression>parseHTML(content)).childNodes
       );
 
-      this.app.editor.file.save();
+      this.app.workspace.file.save();
     });
   }
 }

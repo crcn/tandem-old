@@ -2,6 +2,8 @@ import { Action } from "sf-core/actions";
 import { IRange } from "sf-core/geom";
 import { IActor } from "sf-core/actors";
 import { toArray } from "sf-core/utils/array";
+import { IEditor, IEditorTool } from "sf-front-end/models";
+import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 
 export const CANVAS_MOUSE_DOWN = "canvasMouseDown";
 export class MouseAction extends Action {
@@ -102,7 +104,7 @@ export class DeleteSelectionAction extends Action {
 
 export const SET_TOOL = "setTool";
 export class SetToolAction extends Action {
-  constructor(readonly tool: IActor) {
+  constructor(readonly toolDependency: EditorToolFactoryDependency) {
     super(SET_TOOL);
   }
 }

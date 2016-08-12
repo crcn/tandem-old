@@ -12,6 +12,7 @@ export const FILES_COLLECTION_NAME = "files";
 export class File extends ActiveRecord {
   public path: string;
   public content: string;
+  readonly type: string;
   serialize() {
     return {
       path: this.path,

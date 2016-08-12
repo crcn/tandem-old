@@ -1,18 +1,22 @@
 
-import { File } from "./file";
+import { EntityFile } from "./base";
 import { Editor } from "./editor";
+import { IInjectable, Dependencies, Injector } from "sf-core/dependencies";
+import { inject } from "sf-core/decorators";
+import { Selection } from "./selection";
+import { IActor } from "sf-core/actors";
+import { Action } from "sf-core/actions";
 
-export class Workspace {
+export class Workspace implements IActor {
 
-  /**
-   * The active file in this workspace
-   * @type {File}
-   */
+  readonly editor: Editor;
+  public selection: Selection<any> = new Selection<any>();
 
-  file: File;
+  constructor(readonly file: EntityFile) {
+    this.editor = new Editor(this);
+  }
 
-  /**
-   */
-
-  editor: Editor;
+  execute(action: Action) {
+    this.editor.execute(action);
+  }
 }

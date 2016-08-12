@@ -2,6 +2,7 @@ import "./index.scss";
 import * as React from "react";
 import ToolComponent from "./tool";
 import { Editor } from "sf-front-end/models";
+import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 
 class ToolsComponent extends React.Component<{ editor: Editor, app: any }, any> {
   render() {
@@ -10,13 +11,9 @@ class ToolsComponent extends React.Component<{ editor: Editor, app: any }, any> 
     return (<div className="m-editor-toolbar">
       <ul className="m-toolbar-tools">
         {
-          this
-            .props
-            .editor
-            .tools
-            .filter((stageTool) => !!stageTool.icon).map((stageTool) => (
-              <ToolComponent {...this.props} tool={stageTool} key={stageTool.name} />)
-            )
+          EditorToolFactoryDependency.findAll(this.props.editor.type, this.props.app.dependencies).map((dep) => (
+            <ToolComponent {...this.props} toolDependency={dep} key={dep.id} />
+          ))
         }
       </ul>
     </div>);

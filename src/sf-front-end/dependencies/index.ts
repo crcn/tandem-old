@@ -6,6 +6,7 @@ import { IApplication } from "sf-core/application";
 import { IFactory, Dependency, Dependencies, ClassFactoryDependency } from "sf-core/dependencies";
 
 import { KeyBinding } from "sf-front-end/key-bindings/base";
+import { IEditor, IEditorTool } from "sf-front-end/models";
 
 import { ReactComponentFactoryDependency } from "./base";
 
@@ -57,13 +58,18 @@ export class SelectionFactoryDependency extends ClassFactoryDependency {
 
 export const EDITOR_TOOL_NS = "editorTool";
 export class EditorToolFactoryDependency extends ClassFactoryDependency {
-  constructor(id: string, clazz: { new(): IActor }) {
-    super([EDITOR_TOOL_NS, id].join("/"), clazz);
+  constructor(readonly id: string, readonly icon: string, readonly editorType: string, readonly clazz: { new(editor: IEditor): IEditorTool }) {
+    super([EDITOR_TOOL_NS, editorType, id].join("/"), clazz);
   }
-  create(): IActor {
-    return super.create();
+
+  clone() {
+    return new EditorToolFactoryDependency(this.id, this.icon, this.editorType, this.clazz);
   }
-  static findAll(dependencies: Dependencies) {
-    return dependencies.queryAll<EditorToolFactoryDependency>([EDITOR_TOOL_NS, "**"].join("/"));
+
+  create(editor: IEditor): IEditorTool {
+    return super.create(editor);
+  }
+  static findAll(editorType: string, dependencies: Dependencies) {
+    return dependencies.queryAll<EditorToolFactoryDependency>([EDITOR_TOOL_NS, editorType, "**"].join("/"));
   }
 }

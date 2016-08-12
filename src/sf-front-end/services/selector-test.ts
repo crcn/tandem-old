@@ -2,22 +2,25 @@
 import { dependency as selectorDependency } from "./selector";
 import { ClassFactoryDependency } from "sf-core/dependencies";
 import { FrontEndApplication } from "sf-front-end/application";
-import { Editor } from "sf-front-end/models";
+import { Workspace, Editor } from "sf-front-end/models";
 import { expect } from "chai";
 import { SelectAction, ToggleSelectAction } from "sf-front-end/actions";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
-import { Selection } from "sf-front-end/selection";
+import { Selection } from "sf-front-end/models";
 
 describe(__filename + "#", () => {
 
   let app: FrontEndApplication;
   let editor: Editor;
+  let workspace: Workspace;
 
   beforeEach(async () => {
     app = new FrontEndApplication({
       registerFrontEndDependencies: false
     });
-    editor = app.editor;
+    app.workspace = new Workspace(null);
+    workspace = app.workspace;
+    editor = app.workspace.editor;
     app.dependencies.register(selectorDependency);
     await app.initialize();
   });
@@ -25,32 +28,32 @@ describe(__filename + "#", () => {
   it("defines \"selection\" property on application on selection event", () => {
     const item = { name: "blarg" };
     app.bus.execute(new ToggleSelectAction(item));
-    expect(app.editor.selection.length).to.equal(1);
+    expect(app.workspace.selection.length).to.equal(1);
   });
 
   it("only selects one item if multi is false", () => {
     const item = { name: "blarg" };
     app.bus.execute(new SelectAction(item));
-    expect(editor.selection.length).to.equal(1);
+    expect(workspace.selection.length).to.equal(1);
     app.bus.execute(new SelectAction(item));
-    expect(editor.selection.length).to.equal(1);
+    expect(workspace.selection.length).to.equal(1);
   });
 
   it("selects multiple items if multi is true", () => {
     app.bus.execute(new ToggleSelectAction({ name: "blarg" }));
-    expect(editor.selection.length).to.equal(1);
+    expect(workspace.selection.length).to.equal(1);
     app.bus.execute(new ToggleSelectAction({ name: "blarg" }, true));
-    expect(editor.selection.length).to.equal(2);
+    expect(workspace.selection.length).to.equal(2);
     app.bus.execute(new ToggleSelectAction({ name: "blarg" }));
-    expect(editor.selection.length).to.equal(1);
+    expect(workspace.selection.length).to.equal(1);
   });
 
   it("removes an item from the selection if it already exists", () => {
     const item = { name: "blarg" };
     app.bus.execute(new ToggleSelectAction(item));
-    expect(editor.selection.length).to.equal(1);
+    expect(workspace.selection.length).to.equal(1);
     app.bus.execute(new ToggleSelectAction(item, true));
-    expect(editor.selection.length).to.equal(0);
+    expect(workspace.selection.length).to.equal(0);
   });
 
   it("picks the correct collection type depending on the item type", () => {
@@ -64,33 +67,33 @@ describe(__filename + "#", () => {
     );
 
     app.bus.execute(new ToggleSelectAction({ type: "display" }));
-    expect(editor.selection).to.be.an.instanceof(DisplayCollection);
+    expect(workspace.selection).to.be.an.instanceof(DisplayCollection);
     app.bus.execute(new ToggleSelectAction({ type: "display" }, true));
-    expect(editor.selection).to.be.an.instanceof(DisplayCollection);
-    expect(editor.selection.length).to.equal(2);
+    expect(workspace.selection).to.be.an.instanceof(DisplayCollection);
+    expect(workspace.selection.length).to.equal(2);
 
     app.bus.execute(new ToggleSelectAction({ type: "other" }, true));
-    expect(editor.selection).to.be.an.instanceof(OtherCollection);
-    expect(editor.selection.length).to.equal(1);
+    expect(workspace.selection).to.be.an.instanceof(OtherCollection);
+    expect(workspace.selection.length).to.equal(1);
   });
 
   it("can deselect all be omitting item", () => {
     app.bus.execute(new ToggleSelectAction({ type: "display" }));
     app.bus.execute(new ToggleSelectAction({ type: "display" }, true));
-    expect(editor.selection.length).to.equal(2);
+    expect(workspace.selection.length).to.equal(2);
     app.bus.execute(new ToggleSelectAction());
-    expect(editor.selection.length).to.equal(0);
+    expect(workspace.selection.length).to.equal(0);
   });
 
   it("can select multiple in an event", () => {
     app.bus.execute(new ToggleSelectAction([{ type: "display" }, { type: "display" }]));
-    expect(editor.selection.length).to.equal(2);
+    expect(workspace.selection.length).to.equal(2);
   });
 
   it("can turn toggling off", () => {
     const item = {};
     app.bus.execute(new ToggleSelectAction(item));
     app.bus.execute(new ToggleSelectAction(item));
-    expect(editor.selection.length).to.equal(0);
+    expect(workspace.selection.length).to.equal(0);
   });
 });

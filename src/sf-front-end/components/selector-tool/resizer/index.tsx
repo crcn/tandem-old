@@ -3,12 +3,12 @@ import { startDrag } from "sf-front-end/utils/component";
 import PathComponent from "./path";
 import { BoundingRect } from "sf-core/geom";
 import { FrontEndApplication } from "sf-front-end/application";
-import { DisplayEntityCollection } from "sf-front-end/selection";
+import { DisplayEntitySelection } from "sf-front-end/models";
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
 
-class ResizerComponent extends React.Component<{ app: FrontEndApplication, selection: DisplayEntityCollection, onResizing: Function, zoom: number, pointRadius?: number, strokeWidth?: number, onStopResizing: Function }, any> {
+class ResizerComponent extends React.Component<{ app: FrontEndApplication, selection: DisplayEntitySelection, onResizing: Function, zoom: number, pointRadius?: number, strokeWidth?: number, onStopResizing: Function }, any> {
 
   private _dragger: any;
   private _movingTimer: any;
@@ -31,7 +31,7 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
   }
 
   get file() {
-    return this.props.app.editor.file;
+    return this.props.app.workspace.file;
   }
 
   updatePoint = (point, event) => {

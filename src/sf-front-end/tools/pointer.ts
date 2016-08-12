@@ -1,18 +1,26 @@
 import { IActor } from "sf-core/actors";
+import { BaseEditorTool } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectAction, MouseAction, KeyboardAction } from "sf-front-end/actions";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 import { BaseApplicationService } from "sf-core/services";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
-import { DisplayEntityCollection } from "sf-front-end/selection";
+import { DisplayEntitySelection } from "sf-front-end/models";
+import { IInjectable, MAIN_BUS_NS } from "sf-core/dependencies";
+import { inject } from "sf-core/decorators";
 
 // TODO - everything here should just be a command
 
-export default class PointerTool extends BaseApplicationService<FrontEndApplication> {
+export default class PointerTool extends BaseEditorTool implements IInjectable {
 
   name = "pointer";
-  icon = "cursor";
-  keyCommand = "p";
+
+  @inject(MAIN_BUS_NS)
+  readonly bus: IActor;
+
+  didInject() {
+
+  }
 
   canvasMouseDown(action: MouseAction) {
     this.bus.execute(new SelectAction());
@@ -20,7 +28,7 @@ export default class PointerTool extends BaseApplicationService<FrontEndApplicat
 
   canvasKeyDown(action: KeyboardAction) {
 
-    const selection = <DisplayEntityCollection>this.app.editor.selection;
+    const selection = <DisplayEntitySelection>this.editor.workspace.selection;
     if (selection["display"] == null) return;
 
     const bounds = selection.display.bounds;
@@ -43,13 +51,13 @@ export default class PointerTool extends BaseApplicationService<FrontEndApplicat
     action.preventDefault();
 
     selection.display.position = { left, top };
-    this.app.editor.file.save();
+    this.workspace.file.save();
   }
 
   deleteSelection() {
-    this.app.editor.selection.dispose();
-    this.app.editor.file.save();
+    this.workspace.selection.dispose();
+    this.workspace.file.save();
   }
 }
 
-export const dependency = new EditorToolFactoryDependency("pointer", PointerTool);
+export const dependency = new EditorToolFactoryDependency("pointer", "cursor", "display", PointerTool);

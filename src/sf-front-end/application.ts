@@ -30,13 +30,13 @@ import { dependency as keyBindingsDependency } from "./key-bindings";
 import { dependency as htmlExtensionDependency } from "sf-html-extension";
 
 // selections
-import { dependency as displayEntitySelectionDependenciy } from "./selection/display-entity-collection";
+import { displayEntitySelectionDependency } from "./models";
 
-import { Editor } from "./models";
+import { Workspace } from "./models";
 
 export class FrontEndApplication extends Application {
 
-  readonly editor = new Editor();
+  public workspace: Workspace;
 
   protected registerDependencies() {
     super.registerDependencies();
@@ -68,7 +68,7 @@ export class FrontEndApplication extends Application {
       pointerToolDependency,
 
       // selection
-      displayEntitySelectionDependenciy,
+      displayEntitySelectionDependency,
 
       // dependencies
       keyBindingsDependency,

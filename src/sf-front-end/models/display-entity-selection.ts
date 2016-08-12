@@ -2,11 +2,11 @@ import { IVisibleEntity, IEntityDisplay, DisplayCapabilities } from "sf-core/ent
 import { BoundingRect, IPosition } from "sf-core/geom";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { register as registerSerializer, serializeArray, deserialize } from "sf-core/serialize";
-import { Selection } from "./base";
+import { Selection } from "./selection";
 
 class EntitySelectionDisplay implements IEntityDisplay {
 
-  constructor(readonly selection: DisplayEntityCollection) { }
+  constructor(readonly selection: DisplayEntitySelection) { }
 
   get position(): IPosition {
     const bounds = this.bounds;
@@ -60,8 +60,8 @@ class EntitySelectionDisplay implements IEntityDisplay {
   }
 }
 
-export class DisplayEntityCollection extends Selection<IVisibleEntity> {
+export class DisplayEntitySelection extends Selection<IVisibleEntity> {
   readonly display: IEntityDisplay = new EntitySelectionDisplay(this);
 }
 
-export const dependency = new SelectionFactoryDependency("display", DisplayEntityCollection);
+export const displayEntitySelectionDependency = new SelectionFactoryDependency("display", DisplayEntitySelection);

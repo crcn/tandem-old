@@ -1,7 +1,7 @@
 import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/entities";
 import { BoundingRect, IPosition } from "sf-core/geom";
 import { Element } from "sf-core/markup";
-import { DisplayEntityCollection } from "./display-entity-collection";
+import { DisplayEntitySelection } from "./display-entity-selection";
 import { expect } from "chai";
 
 describe(__filename + "#", () => {
@@ -33,7 +33,7 @@ describe(__filename + "#", () => {
   }
 
   it("can be created", () => {
-    new DisplayEntityCollection();
+    new DisplayEntitySelection();
   });
 
   function _simplifyBounds(bounds: BoundingRect) {
@@ -41,14 +41,14 @@ describe(__filename + "#", () => {
   }
 
   it("computes the entire bounds of one entity", () => {
-    const selection = new DisplayEntityCollection(
+    const selection = new DisplayEntitySelection(
       new VisibleEntity(new MockDisplay(new BoundingRect(100, 200, 300, 400)))
     );
     expect(_simplifyBounds(selection.display.bounds)).to.eql([100, 200, 300, 400]);
   });
 
   it("calculates the outer bounds for multiple entities in the collection", () => {
-    const selection = new DisplayEntityCollection(
+    const selection = new DisplayEntitySelection(
       new VisibleEntity(new MockDisplay(new BoundingRect(100, 200, 300, 400))),
       new VisibleEntity(new MockDisplay(new BoundingRect(500, 600, 700, 800))),
       new VisibleEntity(new MockDisplay(new BoundingRect(900, 1000, 1100, 1200)))
@@ -57,7 +57,7 @@ describe(__filename + "#", () => {
   });
 
   it("returns the correct display capabilities for a single entity", () => {
-    const selection = new DisplayEntityCollection(
+    const selection = new DisplayEntitySelection(
       new VisibleEntity(new MockDisplay(new BoundingRect(100, 200, 300, 400), new DisplayCapabilities(true, true)))
     );
     expect(selection.display.capabilities.movable).to.equal(true);
@@ -65,7 +65,7 @@ describe(__filename + "#", () => {
   });
 
   it("returns the correct display capabilities for multiple entities", () => {
-    const selection = new DisplayEntityCollection(
+    const selection = new DisplayEntitySelection(
       new VisibleEntity(new MockDisplay(new BoundingRect(100, 200, 300, 400), new DisplayCapabilities(true, true))),
       new VisibleEntity(new MockDisplay(new BoundingRect(100, 200, 300, 400), new DisplayCapabilities(false, true)))
     );
@@ -78,7 +78,7 @@ describe(__filename + "#", () => {
   });
 
   it("can change the bounds for multiple entities", () => {
-    const selection = new DisplayEntityCollection(
+    const selection = new DisplayEntitySelection(
       new VisibleEntity(new MockDisplay(new BoundingRect(0, 0, 100, 100))),
       new VisibleEntity(new MockDisplay(new BoundingRect(100, 100, 200, 200)))
     );

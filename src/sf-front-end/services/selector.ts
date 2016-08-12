@@ -4,7 +4,7 @@ import { ApplicationServiceDependency } from "sf-core/dependencies";
 import { loggable, bindable } from "sf-core/decorators";
 import { DISPOSE } from "sf-core/actions";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
-import { Selection } from "sf-front-end/selection";
+import { Selection } from "sf-front-end/models";
 
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
@@ -14,7 +14,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
   selectAtSourceOffset(action: SelectSourceAtOffsetAction) {
 
-    const allEntities = <Array<IEntity>>this.app.editor.file.entity.flatten();
+    const allEntities = <Array<IEntity>>this.app.workspace.file.entity.flatten();
 
     const selection = [];
     for (const entity of allEntities) {
@@ -61,10 +61,10 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     const app = this.app;
 
     if (!items.length) {
-      return app.editor.selection = new Selection<any>();
+      return app.workspace.selection = new Selection<any>();
     }
 
-    const prevSelection = app.editor.selection;
+    const prevSelection = app.workspace.selection;
 
     const type = items[0].type;
 
@@ -88,9 +88,9 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
       }
     }
 
-    app.editor.selection = <Selection<any>>newSelection;
+    app.workspace.selection = <Selection<any>>newSelection;
 
-    app.editor.selection.observe({
+    app.workspace.selection.observe({
       execute: (action) => {
         if (action.type === DISPOSE) {
           this.select({
@@ -107,7 +107,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
     // TODO - select call based on focused entity
     this.select({
-      items: (<any>this.app.editor.file.entity).childNodes,
+      items: (<any>this.app.workspace.file.entity).childNodes,
       keepPreviousSelection: false,
       toggle: false
     });

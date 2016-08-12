@@ -1,6 +1,5 @@
 import { Workspace } from "./workspace";
-import { Editor } from "./editor2";
-
+import { Editor } from "./editor";
 
 /**
  * The root model which holds all open files

@@ -20,11 +20,11 @@ export default class ClipboardService extends BaseApplicationService<FrontEndApp
     document.addEventListener("copy", (event: any) => {
       if (targetIsInput(event)) return;
 
-      const content = this.app.editor.selection.map((entity) => (
+      const content = this.app.workspace.selection.map((entity) => (
         entity.source.toString()
       )).join("");
 
-      event.clipboardData.setData(this.app.editor.file.type, content);
+      event.clipboardData.setData(this.app.workspace.file.type, content);
       event.preventDefault();
     });
 

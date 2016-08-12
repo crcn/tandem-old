@@ -17,7 +17,7 @@ export class BrokerBus implements IBrokerBus {
   }
 
   unregister(...actors: Array<IActor>) {
-    for (const actor of this.actors) {
+    for (const actor of actors) {
       const i = this.actors.indexOf(actor);
       if (i !== -1) {
         this.actors.splice(i, 1);

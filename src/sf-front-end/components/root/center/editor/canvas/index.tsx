@@ -11,11 +11,11 @@ import {
 import PreviewLayerComponent from "./preview";
 import ToolsLayerComponent from "./tools";
 import IsolateComponent  from "sf-front-end/components/isolate";
-import { Editor } from "sf-front-end/models";
+import { Editor, Workspace } from "sf-front-end/models";
 import { Dependencies, MainBusDependency } from "sf-core/dependencies";
 import { IPosition } from "sf-core/geom";
 
-export default class EditorStageLayersComponent extends React.Component<{ editor: Editor, dependencies: Dependencies, zoom: number }, any> {
+export default class EditorStageLayersComponent extends React.Component<{ editor: Editor, workspace: Workspace, dependencies: Dependencies, zoom: number }, any> {
 
   private _mousePosition: IPosition;
   private _toolsHidden: any;
@@ -142,8 +142,9 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
 
   render() {
     const style = {
-      cursor: this.props.editor.currentTool.cursor
+      cursor: this.props.editor.currentTool ? this.props.editor.currentTool.cursor : undefined
     };
+
     const canvasWidth  = this.state.canvasWidth;
     const canvasHeight = this.state.canvasHeight;
     const centerLeft   = this.state.centerLeft;
@@ -165,7 +166,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
       border: "none"
     };
 
-    const entity = this.props.editor.file.entity;
+    const entity = this.props.workspace.file.entity;
     if (!entity) return null;
 
     return (<IsolateComponent ref="isolate" onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">

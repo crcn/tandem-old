@@ -6,11 +6,9 @@ import EditorCommponent from "./editor";
 
 export default class CenterComponent extends React.Component<{ app: FrontEndApplication }, any> {
   render() {
-    const editor      = this.props.app.editor;
-    const currentFile = editor.file;
-    if (!currentFile) return null;
+    const workspace      = this.props.app.workspace;
     return (<div className="m-editor-center">
-      {currentFile ? <EditorCommponent {...this.props} editor={editor} /> : void 0}
+      {workspace ? <EditorCommponent {...this.props} editor={workspace.editor} workspace={workspace} /> : undefined}
     </div>);
   }
 }

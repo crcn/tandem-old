@@ -1,33 +1,23 @@
-import { IEditorFile, BaseTool } from "./base";
+import { IEditor, IEditorTool } from "./base";
 import { IActor } from "sf-core/actors";
 import { Action } from "sf-core/actions";
-import { Selection } from "../selection";
-import { IDisposable } from "sf-core/object";
 import { IInjectable } from "sf-core/dependencies";
+import { Workspace } from "./workspace";
 import { inject } from "sf-core/decorators";
-import {
-  ZoomAction,
-  ZOOM,
-  SELECT_ALL,
-  DELETE_SELECTION,
-  SET_TOOL,
-  SetToolAction,
-  DeleteSelectionAction,
-  SelectAllAction,
-} from "sf-front-end/actions";
 import { KeyBinding } from "sf-front-end/key-bindings";
 import { ParallelBus } from "mesh";
 
 export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;
 
-export class Editor {
+export class Editor implements IEditor {
 
   private _zoom: number = 1;
 
-  private  _actors: Array<IActor>;
+  // TODO - this may change dependening on the editor type
+  readonly type = "display";
 
-  private _bus: IActor;
+  constructor(readonly workspace: Workspace) { }
 
   get zoom() { return this._zoom; }
   set zoom(value: number) {
@@ -38,28 +28,14 @@ export class Editor {
   }
 
   /**
-   * The currently selected items in the preview
-   */
-
-  public selection: Selection<any> = new Selection<any>();
-
-  /**
    * The current tool
    */
 
-  public currentTool: any = {
-    name: "pointer",
-    cursor: "pointer"
-  };
+  public currentTool: IEditorTool;
 
-  /**
-   */
-
-  public tools: Array<any> = [];
-
-  /**
-   */
-
-  public file: IEditorFile;
-
+  execute(action: Action) {
+    if (this.currentTool) {
+      this.currentTool.execute(action);
+    }
+  }
 }

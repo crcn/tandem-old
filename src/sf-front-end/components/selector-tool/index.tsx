@@ -1,14 +1,14 @@
 import "./index.scss";
 import * as React from "react";
 import ResizerComponent from "./resizer";
-import { Editor } from "sf-front-end/models";
-import { DisplayEntityCollection } from "sf-front-end/selection";
+import { Editor, Workspace } from "sf-front-end/models";
+import { DisplayEntitySelection } from "sf-front-end/models";
 import { IEntityDisplay, IEntity } from "sf-core/entities";
 import { FrontEndApplication } from "sf-front-end/application";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import RulerComponent from "./ruler";
 
-export default class SelectorComponent extends React.Component<{ editor: Editor, app: FrontEndApplication, zoom: number, allEntities: Array<IEntity> }, any> {
+export default class SelectorComponent extends React.Component<{ editor: Editor, workspace: Workspace, app: FrontEndApplication, zoom: number, allEntities: Array<IEntity> }, any> {
 
   constructor(props) {
     super(props);
@@ -25,8 +25,8 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
   render() {
 
-    const editor = this.props.editor;
-    const selection = editor.selection as DisplayEntityCollection;
+    const workspace = this.props.workspace;
+    const selection = workspace.selection as DisplayEntitySelection;
 
     const display   = selection.display;
 
