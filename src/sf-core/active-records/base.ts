@@ -66,6 +66,8 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
   }
 
   _onDidUpdate = (action: PostDBAction) => {
+    // ignore if the DS action is older than the update action here
+    if (action.timestamp <= this._syncTimestamp) return;
     this.deserialize(action.data);
   }
 

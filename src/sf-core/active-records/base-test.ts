@@ -165,6 +165,24 @@ describe(__filename + "#", () => {
       expect(ar.name).to.equal("b");
       expect(ar2.name).to.equal("b2");
     });
+
+    it("ignores DID_UPDATE if the post ds action timestamp is equal to or older than then model update timestamp", async () => {
+      const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
+        name: "a"
+      });
+      const oldDeserialize = ar.deserialize.bind(ar);
+      let i = 0;
+      ar.deserialize = (data: any) => {
+        i++;
+        return oldDeserialize(data);
+      };
+      await ar.save();
+      ar.sync();
+      expect(i).to.equal(1);
+      ar.name = "b";
+      await ar.save();
+      expect(i).to.equal(2);
+    });
   });
 
   describe("ActiveRecordCollection#", () => {
