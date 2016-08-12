@@ -1,4 +1,8 @@
 import {
+  toArray
+} from "sf-common/utils/array";
+
+import {
   IEntity,
   IContainerEntity
 } from "./base";
@@ -72,10 +76,6 @@ export class EntityEngine {
 
     return entity;
   }
-}
-
-function toArray(value) {
-  return Array.isArray(value) ? <Array<any>>value : value == null ? [] : [value];
 }
 
 function updateExpressions(toEntity: IEntity, fromEntity: IEntity) {

@@ -27,7 +27,6 @@ export class TextTool extends BaseApplicationService<FrontEndApplication> {
   canvasMouseDown(action: MouseAction) {
     const textSource = `<span style="position:absolute;left:${action.originalEvent.pageX}px;top:${action.originalEvent.pageY}px;">Type something</span>`;
 
-    // TODO - entity.appendChild(new HTMLElementEntity("span", {}))
     const file = this.app.editor.file;
     (<HTMLElementExpression>file.entity.expression).childNodes.push(parseHTML(textSource));
     file.save();

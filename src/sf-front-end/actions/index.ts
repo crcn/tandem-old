@@ -1,6 +1,7 @@
 import { Action } from "sf-core/actions";
 import { IRange } from "sf-core/geom";
 import { IActor } from "sf-core/actors";
+import { toArray } from "sf-common/utils/array";
 
 export const CANVAS_MOUSE_DOWN = "canvasMouseDown";
 export class MouseAction extends Action {
@@ -43,7 +44,7 @@ export class SelectAction extends Action {
 
   constructor(items: any = undefined, keepPreviousSelection = false, toggle = false) {
     super(SELECT);
-    this.items = Array.isArray(items) ? items : items == null ? [] : [items];
+    this.items = toArray(items);
     this.keepPreviousSelection = !!keepPreviousSelection;
     this.toggle = toggle;
   }

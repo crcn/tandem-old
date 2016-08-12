@@ -10,11 +10,6 @@ export interface IEditorFile {
   save();
 }
 
-export interface IFileContext {
-  file: IEditorFile;
-  selection: I
-}
-
 
 export interface IEditor extends IActor {
   currentTool: BaseTool;

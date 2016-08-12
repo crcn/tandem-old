@@ -11,7 +11,6 @@ import { DisplayEntityCollection } from "sf-front-end/selection";
 export default class PointerTool extends BaseApplicationService<FrontEndApplication> {
 
   name = "pointer";
-  main = true;
   icon = "cursor";
   keyCommand = "p";
 
