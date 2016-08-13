@@ -1,7 +1,6 @@
 import "./index.scss";
 
 import * as React from "react";
-import { CANVAS_SIZE } from "sf-front-end/constants";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 
 export class GridToolComponent extends React.Component<{ zoom: number }, any> {
@@ -11,7 +10,7 @@ export class GridToolComponent extends React.Component<{ zoom: number }, any> {
 
     if (zoom <= 5) return null;
 
-    const size = CANVAS_SIZE;
+    const size = 20000;
     const gridSize = 1;
     const paths = [
 
@@ -22,7 +21,7 @@ export class GridToolComponent extends React.Component<{ zoom: number }, any> {
       [[0, 0], [0, gridSize]]
     ];
 
-    return (<div className="m-grid-tool">
+    return (<div className="m-grid-tool" style={{left:-size/2, top: -size/2}}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
 
         <defs>
