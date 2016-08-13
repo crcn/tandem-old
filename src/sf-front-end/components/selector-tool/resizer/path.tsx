@@ -56,11 +56,14 @@ class PathComponent extends React.Component<{ strokeWidth: number, showPoints: b
     const strokeWidth = this.props.strokeWidth;
 
     const cr = this.props.pointRadius;
+    const crz = cr / this.props.zoom;
     const cw = cr * 2;
-    const w = x2 - x1 + cw;
-    const h = y2 - y1 + cw;
+    const cwz = cw / this.props.zoom;
+    const w = x2 - x1 + cwz;
+    const h = y2 - y1 + cwz;
+    const p = 100;
 
-    return (<svg width={w} height={h} viewBox={[-cr, -cr, w, h]}>
+    return (<svg width={w} height={h} viewBox={[0, 0, w, h]}>
       <path d={d} strokeWidth={strokeWidth} stroke="transparent" fill="transparent" />
       {
         this.props.showPoints !== false ? points.map((path, key) =>
@@ -71,10 +74,10 @@ class PathComponent extends React.Component<{ strokeWidth: number, showPoints: b
               strokeWidth={0}
               stroke="black"
               fill="transparent"
-              width={cw / this.props.zoom}
-              height={cw / this.props.zoom}
-              x={path.left - cr / this.props.zoom}
-              y={path.top - cr / this.props.zoom}
+              width={cwz}
+              height={cwz}
+              x={path.left}
+              y={path.top}
               rx={0}
               ry={0}
               key={key}
