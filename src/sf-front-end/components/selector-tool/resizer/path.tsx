@@ -1,10 +1,17 @@
 
 import * as  React from "react";
 import { startDrag } from "sf-front-end/utils/component";
+import { Editor } from "sf-front-end/models/editor";
 
-class PathComponent extends React.Component<any, any> {
+class PathComponent extends React.Component<{ strokeWidth: number, showPoints: boolean, pointRadius: number, editor: Editor, onPointChange: Function, zoom: number, onPointMouseUp: Function, points: Array<any> }, any> {
 
   onPointDown(point, index, event) {
+
+    // slight UX tweak to ensure that the resizer cursor stays the same
+    // as the user is dragging the selected entity.
+    const oldCursor = this.props.editor.cursor;
+    this.props.editor.cursor = window.getComputedStyle(event.target).cursor;
+    console.log(this.props.editor.cursor);
 
     const sx = point.left;
     const sy = point.top;
@@ -19,7 +26,10 @@ class PathComponent extends React.Component<any, any> {
       });
 
       this.props.onPointChange(point, event2);
-    }, this.props.onPointMouseUp);
+    }, () => {
+      this.props.editor.cursor = oldCursor;
+      this.props.onPointMouseUp(...arguments);
+    });
   }
 
   render() {

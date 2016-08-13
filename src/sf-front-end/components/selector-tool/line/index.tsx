@@ -9,7 +9,7 @@ export default class LineComponent extends React.Component<any, any> {
     const stemWidth = this.props.showStems !== false ? STEM_WIDTH / this.props.zoom : 0;
     const bounds = this.props.bounds;
     const fontSize = 10 / this.props.zoom;
-    const letterSpacing = 1.5 / this.props.zoom;
+    const letterSpacing = 1.2 / this.props.zoom;
 
     const sections: any = {};
     let d;

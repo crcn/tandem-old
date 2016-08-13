@@ -15,12 +15,20 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
     this.state = {};
   }
 
-  onResizing = () => {
-    this.setState({ resizing: true });
+  onResizing = (event) => {
+    this.setState({ resizing: true, mouseLeft: event.pageX, mouseTop: event.pageY });
   }
 
   onStopResizing = () => {
     this.setState({ resizing: false });
+  }
+
+  onMoving = () => {
+    this.setState({ moving: true });
+  }
+
+  onStopMoving = () => {
+    this.setState({ moving: false });
   }
 
   render() {
@@ -49,11 +57,12 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
     };
 
     return (<div className="m-selector-component">
-      <ResizerComponent {...this.props} strokeWidth={2} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} />
+      <ResizerComponent {...this.props} strokeWidth={2} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} onMoving={this.onMoving} onStopMoving={this.onStopMoving} />
 
       <div className="m-selector-component--bounds" style={boundsStyle} />
 
-      {this.state.resizing ? <RulerComponent {...this.props} selection={selection} allEntities={this.props.allEntities} /> : undefined}
+      {this.state.resizing || this.state.moving ? <RulerComponent {...this.props} selection={selection} allEntities={this.props.allEntities} /> : undefined}
+      { this.state.resizing ? <div style={{ fontSize: 10 / this.props.zoom, letterSpacing: 1.2 / this.props.zoom, left: this.state.mouseLeft, top: this.state.mouseTop }} className="m-selector-component--size">{Math.round(entireBounds.width)} &times; { Math.round(entireBounds.height) }</div> : undefined}
     </div>);
   }
 }

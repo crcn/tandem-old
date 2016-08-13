@@ -1,6 +1,7 @@
 import { HTMLNodeDisplay } from "./displays";
 import { IEntity, IVisibleEntity, IElementEntity, findEntityBySource } from "sf-core/entities";
 import { EntityFactoryDependency } from "sf-core/dependencies";
+import { ChangeAction } from "sf-core/actions";
 
 import {
   HTMLExpression,
@@ -63,8 +64,9 @@ export class HTMLElementEntity extends Element implements IHTMLEntity, IElementE
 
   appendSourceChildNode(...childNodes:Array<HTMLExpression>): IEntity {
     this.source.appendChildNodes(...childNodes);
-    // TODO - await this.context.engine.update();
-    // return findEntityBySource(this, this.source);
+
+    // something like this...
+    // this.notify(new ChangeAction())
     return null;
   }
 

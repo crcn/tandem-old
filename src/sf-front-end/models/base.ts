@@ -14,6 +14,7 @@ export interface IEditorTool extends IActor {
 export interface IEditor extends IActor {
   currentTool: IEditorTool;
   readonly type: string;
+  readonly cursor: string;
   activeEntity: IEntity;
   zoom: number;
   readonly workspace: Workspace;

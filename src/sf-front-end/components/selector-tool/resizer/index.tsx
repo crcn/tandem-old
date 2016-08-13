@@ -1,6 +1,7 @@
 import * as React from "react";
 import { startDrag } from "sf-front-end/utils/component";
 import PathComponent from "./path";
+import { Editor } from "sf-front-end/models";
 import { BoundingRect } from "sf-core/geom";
 import { FrontEndApplication } from "sf-front-end/application";
 import { DisplayEntitySelection } from "sf-front-end/models";
@@ -8,7 +9,7 @@ import { DisplayEntitySelection } from "sf-front-end/models";
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
 
-class ResizerComponent extends React.Component<{ app: FrontEndApplication, selection: DisplayEntitySelection, onResizing: Function, zoom: number, pointRadius?: number, strokeWidth?: number, onStopResizing: Function }, any> {
+class ResizerComponent extends React.Component<{ editor: Editor, app: FrontEndApplication, selection: DisplayEntitySelection, onResizing: Function, onMoving: Function, onStopMoving: Function, zoom: number, pointRadius?: number, strokeWidth?: number, onStopResizing: Function }, any> {
 
   private _dragger: any;
   private _movingTimer: any;
@@ -20,6 +21,7 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
   }
 
   onDoubleClick = () => {
+
     // this.props.bus.execute({
     //   type      : ENTITY_PREVIEW_DOUBLE_CLICK,
     //   selection : this.props.selection,
@@ -35,6 +37,8 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
   }
 
   updatePoint = (point, event) => {
+
+    this.props.onResizing(event);
 
     const keepAspectRatio = event.shiftKey;
     const keepCenter      = event.altKey;
@@ -108,7 +112,6 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
    */
 
   _isMoving() {
-    this.props.onResizing();
     clearTimeout(this._dragTimer);
     this.setState({ dragging: true });
     this._dragTimer = setTimeout(() => {
@@ -117,6 +120,7 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
   }
 
   startDragging = (event) => {
+    this.props.onMoving();
     event.stopPropagation();
     const selection = this.props.selection;
 
@@ -136,12 +140,13 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
     }, () => {
       this.file.save();
       this._dragger = void 0;
-      this.props.onStopResizing();
+      this.props.onStopMoving();
     });
   }
 
   onPointMouseUp = () => {
     this.file.save();
+    this.props.onStopResizing();
   }
 
   moveTarget(left, top) {
@@ -198,6 +203,7 @@ class ResizerComponent extends React.Component<{ app: FrontEndApplication, selec
         onDoubleClick={this.onDoubleClick}
       >
         <PathComponent
+          editor={this.props.editor}
           showPoints={capabilities.resizable}
           onPointChange={this.updatePoint}
           onPointMouseUp={this.onPointMouseUp}

@@ -14,9 +14,11 @@ export const MAX_ZOOM = 6400 / 100;
 export class Editor implements IEditor {
 
   private _zoom: number = 1;
+  private _currentTool: IEditorTool;
 
   // TODO - this may change dependening on the editor type
   readonly type = "display";
+  public cursor = null;
 
   constructor(readonly workspace: Workspace) { }
 
@@ -32,11 +34,15 @@ export class Editor implements IEditor {
     );
   }
 
-  /**
-   * The current tool
-   */
+  get currentTool(): IEditorTool {
+    return this._currentTool;
+  }
 
-  public currentTool: IEditorTool;
+  set currentTool(value: IEditorTool) {
+    this._currentTool = value;
+    if (!value) return;
+    this.cursor = value.cursor;
+  }
 
   execute(action: Action) {
     if (this.currentTool) {

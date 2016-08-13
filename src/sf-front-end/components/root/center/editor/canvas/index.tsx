@@ -141,7 +141,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
 
   render() {
     const style = {
-      cursor: this.props.editor.currentTool ? this.props.editor.currentTool.cursor : undefined
+      cursor: this.props.editor.cursor
     };
 
     const canvasWidth  = this.state.canvasWidth;

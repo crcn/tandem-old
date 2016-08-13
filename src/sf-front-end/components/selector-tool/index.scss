@@ -8,11 +8,13 @@
 
   &--size {
     border-radius: 5px;
-    color: #FF00FF;
+    background-color: rgba($color-blue-4, 0.8);
+    color: white;
+    padding: 5px;
     position: absolute;
     white-space: nowrap;
     pointer-events: none;
-    transform: translate(-50%, 50%);
+    transform: translate(20%, 70%);
     font-size: $font-size-0;
   }
 
