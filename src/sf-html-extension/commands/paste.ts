@@ -1,6 +1,6 @@
 import { IActor } from "sf-core/actors";
 import { FrontEndApplication } from "sf-front-end/application";
-import { SfFile } from "../active-records/sf-file";
+import { SfFile } from "../models/sf-file";
 import { HTMLFragmentExpression } from "../parsers/html/expressions";
 import { parse as parseHTML } from "../parsers/html";
 import { CommandFactoryDependency, APPLICATION_SINGLETON_NS, IInjectable } from "sf-core/dependencies";

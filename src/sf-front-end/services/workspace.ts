@@ -1,13 +1,21 @@
 import { Action, FindAction } from "sf-core/actions";
 import { BaseApplicationService } from "sf-core/services";
-import { ApplicationServiceDependency, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
+
+import {
+  ApplicationServiceDependency,
+  DEPENDENCIES_NS,
+  Dependencies
+} from "sf-core/dependencies";
+
+import { File } from "sf-common/models";
+import { Logger } from "sf-core/logger";
+import { inject } from "sf-core/decorators";
 import { loggable } from "sf-core/decorators";
 import { FrontEndApplication } from "sf-front-end/application";
-import { Logger } from "sf-core/logger";
 import { Workspace, EntityFile } from "sf-front-end/models";
 import { SetToolAction, ZoomAction } from "sf-front-end/actions";
-import { File } from "sf-common/models";
-import { inject } from "sf-core/decorators";
+import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
+import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
 
 const FILES_COLLECTION = "files";
 
@@ -19,6 +27,10 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
   async initialize(action: Action) {
     await this._loadWorkspaces();
+
+    // set the pointer tool as default. TODO - this
+    // will need to change if the editor differs depending on the file type
+    await this.bus.execute(new SetToolAction(this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns)));
   }
 
   async _loadWorkspaces() {
