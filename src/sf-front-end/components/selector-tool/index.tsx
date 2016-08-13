@@ -16,7 +16,7 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
   }
 
   onResizing = (event) => {
-    this.setState({ resizing: true, mouseLeft: event.pageX, mouseTop: event.pageY });
+    this.setState({ resizing: true, mouseLeft: (event.pageX - this.props.editor.translate.left) / this.props.zoom, mouseTop: (event.pageY - this.props.editor.translate.top) / this.props.zoom });
   }
 
   onStopResizing = () => {
@@ -62,7 +62,7 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
       <div className="m-selector-component--bounds" style={boundsStyle} />
 
       {this.state.resizing || this.state.moving ? <RulerComponent {...this.props} selection={selection} allEntities={this.props.allEntities} /> : undefined}
-      { this.state.resizing ? <div style={{ fontSize: 10 / this.props.zoom, letterSpacing: 1.2 / this.props.zoom, left: this.state.mouseLeft, top: this.state.mouseTop }} className="m-selector-component--size">{Math.round(entireBounds.width)} &times; { Math.round(entireBounds.height) }</div> : undefined}
+      { this.state.resizing ? <div style={{ transform: `scale(${1/this.props.zoom})`, left: this.state.mouseLeft + 10 / this.props.zoom, top: this.state.mouseTop + 10 / this.props.zoom }} className="m-selector-component--size">{Math.round(entireBounds.width)} &times; { Math.round(entireBounds.height) }</div> : undefined}
     </div>);
   }
 }
