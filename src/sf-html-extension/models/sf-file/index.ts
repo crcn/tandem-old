@@ -3,6 +3,7 @@ import { IActor } from "sf-core/actors";
 import { inject } from "sf-core/decorators";
 import { BubbleBus } from "sf-core/busses";
 import { Observable } from "sf-core/observable";
+import * as pretty from "pretty";
 import { EntityFile } from "sf-front-end/models/base";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
 import { IEntity, EntityEngine } from "sf-core/entities";
@@ -89,9 +90,7 @@ export class SfFile extends EntityFile implements IInjectable {
     // is a bit problematic since there are a few unintended side effects from the sort of thing. For instance,
     // there is no way to properly format *new* HTML code added by the editor according to the user's preferences. The
     // editor should override whitespaces because of edges such as this.
-    this.content = this._entity.source.toString();
-
-    // TODO - beautify new content here
+    this.content = pretty(this._entity.source.toString());
 
     return super.save();
   }

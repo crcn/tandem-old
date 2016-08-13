@@ -36,3 +36,13 @@ declare module "mongoid-js" {
 
   export = mongoid;
 }
+
+declare module "pretty" {
+  function pretty(source: string): string;
+
+  namespace pretty {
+
+  }
+
+  export = pretty;
+}
