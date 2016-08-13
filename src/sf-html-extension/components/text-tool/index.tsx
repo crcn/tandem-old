@@ -1,10 +1,14 @@
-import './index.scss';
+import "./index.scss";
 
-import * as React from 'react';
-// import Reference from 'sf-common/reference';
-import WYSIWYGEditor from 'sf-front-end/components/wysiwyg';
+import * as React from "react";
+// import Reference from "sf-common/reference";
+import WYSIWYGEditor from "sf-front-end/components/wysiwyg";
+import { FrontEndApplication } from "sf-front-end/application";
+import { TextEditCompleteAction } from "sf-html-extension/actions";
+import { Workspace, DisplayEntitySelection } from "sf-front-end/models";
+import { VisibleHTMLElementEntity } from "sf-html-extension/entities/html";
 
-class TextToolComponent extends React.Component<any, any> {
+class TextToolComponent extends React.Component<{ app: FrontEndApplication, zoom: number, workspace: Workspace }, any> {
 
   componentDidMount() {
     (this.refs as any).input.focus();
@@ -25,29 +29,27 @@ class TextToolComponent extends React.Component<any, any> {
   }
 
   _complete() {
-    this.props.app.notifier.notify({
-      type: 'textEditComplete'
-    });
+    this.props.app.bus.execute(new TextEditCompleteAction());
   }
 
   render() {
-    var selection = this.props.selection;
-    var zoom      = this.props.zoom;
-    var cstyle    = selection.preview.getBoundingRect(false);
+    const selection = this.props.workspace.selection as DisplayEntitySelection;
+    const zoom      = this.props.zoom;
+    const cstyle    = selection.display.bounds;
 
-    var style = {
-      position : 'absolute',
+    const style = {
+      position : "absolute",
       left     : cstyle.left,
       top      : cstyle.top,
       zoom     : this.props.zoom,
       zIndex   : 999
     };
 
-    var element = this.props.selection[0].preview.displayObject.element;
+    const element = (selection[0] as VisibleHTMLElementEntity).section.targetNode as any as Element;
 
-    var cstyle2 = window.getComputedStyle(element);
+    const cstyle2 = window.getComputedStyle(element);
 
-    var inputStyle = {
+    const inputStyle = {
       width         : cstyle.width,
       height        : cstyle.height,
       fontSize      : cstyle2.fontSize,
@@ -55,17 +57,17 @@ class TextToolComponent extends React.Component<any, any> {
       fontWeight    : cstyle2.fontWeight,
       letterSpacing : cstyle2.letterSpacing,
       lineHeight    : cstyle2.lineHeight,
-      overflow      : 'show'
+      overflow      : "show"
     };
 
-    return <div style={style} className='reset-all m-text-tool'>
+    return <div style={style} className="reset-all m-text-tool">
       <WYSIWYGEditor
         multiline={false}
         onKeyDown={this.onKeyDown.bind(this)}
         onBlur={this.onBlur.bind(this)}
-        ref='input'
+        ref="input"
         style={inputStyle}
-        reference={null} />
+        reference={{ getValue: () => element.nodeValue, setValue: (value) => element.nodeValue = value }} />
     </div>
   }
 }

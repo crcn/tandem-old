@@ -1,9 +1,13 @@
 import * as React from 'react';
 import TextEditor from 'sf-front-end/components/text-editor';
 import Scanner from 'sf-core/string/scanner';
-import createToken from 'saffronmon/tokenizers/create-token';
-import { SPACE, TAB, NEW_LINE, TEXT } from 'saffron-common/tokenizers/token-types';
+// import createToken from 'saffronmon/tokenizers/create-token';
+// import { SPACE, TAB, NEW_LINE, TEXT } from 'saffron-common/tokenizers/token-types';
 
+const NEW_LINE = 1;
+const TAB      = NEW_LINE + 1;
+const SPACE    = TAB + 1;
+const TEXT     = SPACE + 1;
 
 var htmlTokenizer = {
   tokenize(source) {
@@ -13,7 +17,7 @@ var htmlTokenizer = {
 
     function addToken(search, type) {
       if (scanner.scan(search)) {
-        tokens.push(createToken(scanner.getCapture(), type));
+        tokens.push({ value: scanner.getCapture(), type: type });
         return true;
       }
     }
