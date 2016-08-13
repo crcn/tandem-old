@@ -6,25 +6,26 @@ const STEM_WIDTH = 4;
 export default class LineComponent extends React.Component<any, any> {
   render() {
 
-    const stemWidth = this.props.showStems !== false ? STEM_WIDTH : 0 / this.props.zoom;
+    const stemWidth = this.props.showStems !== false ? STEM_WIDTH / this.props.zoom : 0;
     const bounds = this.props.bounds;
+    const fontSize = 10 / this.props.zoom;
+    // const letterSpacing =
 
     const sections: any = {};
     let d;
-    const padding = 3;
+    const padding = 3  / this.props.zoom;
 
     if (bounds.direction === "ew") {
 
       const y = Math.round(bounds.height / 2);
 
-
       // center & offset width of text
       sections.text = (
         <text
           x={Math.round(bounds.width / 2) - (String(this.props.bounds.width).length * 5) / 2}
-          y={y + 20}
+          y={y + 20 / this.props.zoom}
         >
-          {Math.round(this.props.bounds.width / this.props.zoom)}
+          {Math.round(this.props.bounds.width)}
         </text>
       );
 
@@ -39,8 +40,8 @@ export default class LineComponent extends React.Component<any, any> {
     } else {
       const x = Math.round(bounds.width / 2);
 
-      sections.text = (<text x={(x + 10)}  y={Math.round(bounds.height / 2 + 4)}>
-        {Math.round(this.props.bounds.height / this.props.zoom)}
+      sections.text = (<text x={x + 10 / this.props.zoom}  y={Math.round(bounds.height / 2 + 4)}>
+        {Math.round(this.props.bounds.height)}
       </text>);
 
       d = [
@@ -59,6 +60,7 @@ export default class LineComponent extends React.Component<any, any> {
     return (
       <svg
         className="m-guide-line"
+        fontSize={fontSize}
         style={{ position: "absolute", left: bounds.left, top: bounds.top }}
         width={w}
         height={h}
