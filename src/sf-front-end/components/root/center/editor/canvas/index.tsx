@@ -176,7 +176,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
         className="m-editor-stage-canvas"
         style={style}
         onMouseDown={this.onMouseDown}>
-          <div style={innerStyle} data-previewroot>
+          <div style={innerStyle} className="noselect" data-previewroot>
               <PreviewLayerComponent {...this.props} entity={entity} />
               {this._toolsHidden ? void 0 : <ToolsLayerComponent entity={entity} {...this.props} />}
           </div>
