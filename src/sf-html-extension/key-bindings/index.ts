@@ -1,7 +1,7 @@
 import { inject } from "sf-core/decorators";
 import { Action } from "sf-core/actions";
 import { IEditor } from "sf-front-end/models/base";
-import { InsertTool } from "sf-html-extension/models/insert-tool";
+import { InsertTool } from "sf-front-end/models/insert-tool";
 import { BaseCommand } from "sf-core/commands";
 import { SetToolAction } from "sf-front-end/actions";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";

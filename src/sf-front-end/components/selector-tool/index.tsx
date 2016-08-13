@@ -4,6 +4,7 @@ import RulerComponent from "./ruler";
 import ResizerComponent from "./resizer";
 import { Editor, Workspace } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";
+import { SelectionSizeComponent } from "sf-front-end/components/selection-size";
 import { DisplayEntitySelection } from "sf-front-end/models";
 import { IEntityDisplay, IEntity } from "sf-core/entities";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
@@ -62,7 +63,7 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
       <div className="m-selector-component--bounds" style={boundsStyle} />
 
       {this.state.resizing || this.state.moving ? <RulerComponent {...this.props} selection={selection} allEntities={this.props.allEntities} /> : undefined}
-      { this.state.resizing ? <div style={{ transform: `scale(${1/this.props.zoom})`, left: this.state.mouseLeft + 10 / this.props.zoom, top: this.state.mouseTop + 10 / this.props.zoom }} className="m-selector-component--size">{Math.round(entireBounds.width)} &times; { Math.round(entireBounds.height) }</div> : undefined}
+      { this.state.resizing ? <SelectionSizeComponent left={this.state.mouseLeft} top={this.state.mouseTop} zoom={this.props.zoom} bounds={entireBounds} /> : undefined}
     </div>);
   }
 }

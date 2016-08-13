@@ -19,6 +19,13 @@ export abstract class InsertTool extends BaseEditorTool {
   @inject(MAIN_BUS_NS)
   readonly bus: IActor;
 
+  didInject() {
+    super.didInject();
+
+    // deselect all
+    this.bus.execute(new SelectAction());
+  }
+
   abstract get displayEntityToolFactory(): { create(editor: IEditor): IEditorTool }
   abstract createSource(): any;
 
