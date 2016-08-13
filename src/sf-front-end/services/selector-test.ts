@@ -1,12 +1,12 @@
 // import expect from "expect.js";
-import { dependency as selectorDependency } from "./selector";
-import { ClassFactoryDependency } from "sf-core/dependencies";
-import { FrontEndApplication } from "sf-front-end/application";
-import { Workspace, Editor } from "sf-front-end/models";
 import { expect } from "chai";
-import { SelectAction, ToggleSelectAction } from "sf-front-end/actions";
-import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { Selection } from "sf-front-end/models";
+import { Workspace, Editor } from "sf-front-end/models";
+import { FrontEndApplication } from "sf-front-end/application";
+import { ClassFactoryDependency } from "sf-core/dependencies";
+import { SelectionFactoryDependency } from "sf-front-end/dependencies";
+import { dependency as selectorDependency } from "./selector";
+import { SelectAction, ToggleSelectAction } from "sf-front-end/actions";
 
 describe(__filename + "#", () => {
 

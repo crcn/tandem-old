@@ -1,14 +1,20 @@
-import { FrontEndApplication } from "sf-front-end/application";
-import { IEditorTool, BaseEditorTool } from "sf-front-end/models";
+
+import { inject } from "sf-core/decorators";
 import { MouseAction } from "sf-front-end/actions";
-import { ApplicationServiceDependency, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency } from "sf-core/dependencies";
-import { BaseApplicationService } from "sf-core/services";
 import { IApplication } from "sf-core/application";
 import { SetToolAction } from "sf-front-end/actions";
-import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
-import { inject } from "sf-core/decorators";
 import { parse as parseHTML } from "../parsers/html";
+import { FrontEndApplication } from "sf-front-end/application";
 import { HTMLElementExpression } from "../parsers/html/expressions";
+import { BaseApplicationService } from "sf-core/services";
+import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
+import { IEditorTool, BaseEditorTool } from "sf-front-end/models";
+import {
+  Dependencies,
+  DEPENDENCIES_NS,
+  EntityFactoryDependency,
+  ApplicationServiceDependency
+} from "sf-core/dependencies";
 
 /*
 const editor = new HTMLEditor();

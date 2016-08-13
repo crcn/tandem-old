@@ -3,11 +3,9 @@ import * as React from "react";
 import { IActor } from "sf-core/actors";
 import { IEntity } from "sf-core/entities";
 import { IApplication } from "sf-core/application";
-import { IFactory, Dependency, Dependencies, ClassFactoryDependency } from "sf-core/dependencies";
-
 import { IEditor, IEditorTool } from "sf-front-end/models";
-
 import { ReactComponentFactoryDependency } from "./base";
+import { IFactory, Dependency, Dependencies, ClassFactoryDependency } from "sf-core/dependencies";
 
 export * from "./base";
 

@@ -1,8 +1,8 @@
 import { IActor } from "sf-core/actors";
-import { KeyBinding } from "./base";
-import { KeyCommandAction } from "../actions";
 import { IFactory } from "sf-core/dependencies";
 import * as Mousetrap from "mousetrap";
+import { KeyBinding } from "./base";
+import { KeyCommandAction } from "../actions";
 
 export class KeyBindingManager {
 

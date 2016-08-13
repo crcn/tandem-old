@@ -1,8 +1,8 @@
-import { IVisibleEntity, IEntityDisplay, DisplayCapabilities } from "sf-core/entities";
+import { Selection } from "./selection";
 import { BoundingRect, IPosition } from "sf-core/geom";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
+import { IVisibleEntity, IEntityDisplay, DisplayCapabilities } from "sf-core/entities";
 import { register as registerSerializer, serializeArray, deserialize } from "sf-core/serialize";
-import { Selection } from "./selection";
 
 class EntitySelectionDisplay implements IEntityDisplay {
 

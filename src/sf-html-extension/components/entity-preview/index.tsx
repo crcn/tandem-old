@@ -1,6 +1,6 @@
+import * as React  from "react";
 import { IApplication } from "sf-core/application";
 import { EntityPreviewDependency } from "sf-front-end/dependencies";
-import * as React  from "react";
 
 export default class PreviewComponent extends React.Component<any, any> {
   componentDidMount() {

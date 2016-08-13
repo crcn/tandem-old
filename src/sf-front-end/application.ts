@@ -6,19 +6,19 @@ import { thread, isMaster } from "sf-core/workers";
 import { dependency as rootComponentDependency } from "./components/root";
 
 // commponent tools
-import { dependency as selectableToolComponentDependency } from "./components/selectable-tool";
-import { dependency as selectorToolComponentDependency } from "./components/selector-tool";
 import { dependency as gridToolComponentDependency } from "./components/grid-tool";
 import { dependency as dragSelectComponentDependency } from "./components/drag-select-tool";
+import { dependency as selectorToolComponentDependency } from "./components/selector-tool";
+import { dependency as selectableToolComponentDependency } from "./components/selectable-tool";
 
 // services
 import { dependency as clipboardService } from "./services/clipboard";
+import { dependency as workspaceDependency } from "./services/workspace";
 import { dependency as editorServiceDependency } from "./services/editor";
 import { dependency as backEndServiceDependency } from "./services/back-end";
 import { dependency as selectorServiceDependency } from "./services/selector";
 import { dependency as keyBindingsServiceDependency } from "./services/key-binding";
 import { dependency as rootComponentRendererDependency } from "./services/root-component-renderer";
-import { dependency as workspaceDependency } from "./services/workspace";
 
 // tools
 import { dependency as pointerToolDependency } from "./models/pointer-tool";

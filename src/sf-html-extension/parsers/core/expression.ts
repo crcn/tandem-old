@@ -1,5 +1,4 @@
 
-
 export interface ICursor {
   start: number;
   end: number;

@@ -1,7 +1,7 @@
-import { loggable } from "sf-core/decorators";
 import IOService from "sf-common/services/io";
-import * as SocketIOClient from "socket.io-client";
+import { loggable } from "sf-core/decorators";
 import { IApplication } from "sf-core/application";
+import * as SocketIOClient from "socket.io-client";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 
 @loggable()

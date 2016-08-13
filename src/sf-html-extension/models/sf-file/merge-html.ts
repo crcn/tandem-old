@@ -1,6 +1,6 @@
+
 import { Diff, applyPatch } from "diff";
 import StringScanner from "sf-core/string/scanner";
-
 
 const htmlDiff = new Diff();
 htmlDiff.tokenize = (value) => {

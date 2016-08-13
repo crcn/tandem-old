@@ -3,7 +3,6 @@ import { SelectAllAction, SetToolAction } from "sf-front-end/actions";
 import { ZoomAction, DeleteSelectionAction } from "sf-front-end/actions";
 import { KeyBinding } from "./base";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
-
 import { Action } from "sf-core/actions";
 import { BaseCommand } from "sf-core/commands";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";

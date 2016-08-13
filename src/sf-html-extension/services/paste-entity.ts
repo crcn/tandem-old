@@ -1,12 +1,18 @@
-import { IActor } from "sf-core/actors";
-import { FrontEndApplication } from "sf-front-end/application";
-import { SfFile } from "../models/sf-file";
-import { HTMLFragmentExpression } from "../parsers/html/expressions";
-import { parse as parseHTML } from "../parsers/html";
-import { CommandFactoryDependency, ApplicationServiceDependency, APPLICATION_SINGLETON_NS, IInjectable } from "sf-core/dependencies";
-import { PasteAction, PASTE } from "sf-front-end/actions";
 import * as sift from "sift";
+import { IActor } from "sf-core/actors";
+import { SfFile } from "../models/sf-file";
+import { parse as parseHTML } from "../parsers/html";
+import { PASTE, PasteAction } from "sf-front-end/actions";
+import { FrontEndApplication } from "sf-front-end/application";
 import { inject, filterAction } from "sf-core/decorators";
+import { HTMLFragmentExpression } from "../parsers/html/expressions";
+
+import {
+  IInjectable,
+  APPLICATION_SINGLETON_NS,
+  CommandFactoryDependency,
+  ApplicationServiceDependency
+} from "sf-core/dependencies";
 
 export class PasteHTMLCommand implements IActor, IInjectable {
 

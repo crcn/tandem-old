@@ -1,6 +1,6 @@
+import { GroupNodeSection } from 'sf-core/markup/section';
 import { HTMLElementEntity } from './base';
 import { EntityFactoryDependency } from 'sf-core/dependencies';
-import { GroupNodeSection } from 'sf-core/markup/section';
 
 // TODO
 export class LinkEntity extends HTMLElementEntity {

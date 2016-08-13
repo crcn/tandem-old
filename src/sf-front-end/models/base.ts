@@ -1,6 +1,6 @@
-import { Action } from "sf-core/actions";
-import { IActor } from "sf-core/actors";
 import { File } from "sf-common/models";
+import { IActor } from "sf-core/actors";
+import { Action } from "sf-core/actions";
 import { IEntity } from "sf-core/entities";
 import { Workspace } from "./workspace";
 import { IInjectable } from "sf-core/dependencies";

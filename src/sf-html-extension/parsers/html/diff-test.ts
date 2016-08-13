@@ -1,3 +1,6 @@
+
+import { expect } from "chai";
+import { parse as parseHTML } from "./index.peg";
 import {
   diff,
   SET_ATTRIBUTE,
@@ -11,8 +14,6 @@ import {
   SET_NODE_VALUE
 } from "sf-core/markup";
 
-import { parse as parseHTML } from "./index.peg";
-import { expect } from "chai";
 
 describe(__filename + "#", () => {
 

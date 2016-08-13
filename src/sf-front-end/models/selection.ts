@@ -1,7 +1,7 @@
-import { IDisposable } from "sf-core/object";
-import { IObservable, Observable } from "sf-core/observable";
-import { Action, DisposeAction } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
+import { IDisposable } from "sf-core/object";
+import { Action, DisposeAction } from "sf-core/actions";
+import { IObservable, Observable } from "sf-core/observable";
 
 export class Selection<T extends IDisposable> extends Array<T> implements IObservable {
 

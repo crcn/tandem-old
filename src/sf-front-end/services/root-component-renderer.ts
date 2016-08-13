@@ -1,9 +1,8 @@
 import * as sift from "sift";
-import * as ReactDOM from "react-dom";
-import { filterAction, loggable } from "sf-core/decorators";
-
 import { Logger } from "sf-core/logger";
+import * as ReactDOM from "react-dom";
 import { IApplication } from "sf-core/application";
+import { filterAction, loggable } from "sf-core/decorators";
 import { BaseApplicationService } from "sf-core/services";
 import { ClassFactoryDependency } from "sf-core/dependencies";
 import { ApplicationServiceDependency } from "sf-core/dependencies";

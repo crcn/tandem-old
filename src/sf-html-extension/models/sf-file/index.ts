@@ -1,22 +1,23 @@
-import {
-  ClassFactoryDependency,
-  ActiveRecordFactoryDependency,
-  IInjectable,
-  Dependencies,
-  DEPENDENCIES_NS,
-  MAIN_BUS_NS
-} from "sf-core/dependencies";
 
+import mergeHTML from "./merge-html";
 import { IActor } from "sf-core/actors";
 import { inject } from "sf-core/decorators";
 import { BubbleBus } from "sf-core/busses";
-import mergeHTML from "./merge-html";
 import { Observable } from "sf-core/observable";
 import { EntityFile } from "sf-front-end/models/base";
-import { IActiveRecord, ActiveRecord } from "sf-core/active-records";
-import { IEntity, EntityEngine } from "sf-core/entities";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
+import { IEntity, EntityEngine } from "sf-core/entities";
+import { IActiveRecord, ActiveRecord } from "sf-core/active-records";
 import { PropertyChangeAction, UpdateAction } from "sf-core/actions";
+
+import {
+  IInjectable,
+  MAIN_BUS_NS,
+  Dependencies,
+  DEPENDENCIES_NS,
+  ClassFactoryDependency,
+  ActiveRecordFactoryDependency
+} from "sf-core/dependencies";
 
 export class SfFile extends EntityFile implements IInjectable {
 

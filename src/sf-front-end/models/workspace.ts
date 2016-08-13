@@ -1,11 +1,11 @@
 
-import { EntityFile } from "./base";
 import { Editor } from "./editor";
-import { IInjectable, Dependencies, Injector } from "sf-core/dependencies";
 import { inject } from "sf-core/decorators";
-import { Selection } from "./selection";
 import { IActor } from "sf-core/actors";
 import { Action } from "sf-core/actions";
+import { Selection } from "./selection";
+import { EntityFile } from "./base";
+import { IInjectable, Dependencies, Injector } from "sf-core/dependencies";
 
 export class Workspace implements IActor {
 

@@ -1,5 +1,6 @@
+
+import { register as registerSerializer } from "sf-core/serialize";
 import { BaseExpression, ICursor, flattenEach } from "../core/expression";
-import { register as registerSerializer  } from "sf-core/serialize";
 
 export interface IHTMLValueNodeExpression {
   nodeValue: any;

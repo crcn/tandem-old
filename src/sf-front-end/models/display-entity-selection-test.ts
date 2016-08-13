@@ -1,8 +1,8 @@
-import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/entities";
-import { BoundingRect, IPosition } from "sf-core/geom";
-import { Element } from "sf-core/markup";
-import { DisplayEntitySelection } from "./display-entity-selection";
 import { expect } from "chai";
+import { Element } from "sf-core/markup";
+import { BoundingRect, IPosition } from "sf-core/geom";
+import { DisplayEntitySelection } from "./display-entity-selection";
+import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/entities";
 
 describe(__filename + "#", () => {
 

@@ -1,5 +1,5 @@
  import { IApplication } from 'sf-core/application';
- import {RootReactComponentDependency} from 'sf-front-end/dependencies';
+ import { RootReactComponentDependency } from 'sf-front-end/dependencies';
 
  import * as React  from 'react';
 

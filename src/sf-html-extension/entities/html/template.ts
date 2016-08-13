@@ -2,13 +2,13 @@ import "./template.scss";
 
 import { Action } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
-import { VisibleHTMLElementEntity } from "./base";
-import { HTMLElementExpression } from "../../parsers/html/expressions";
-import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
 import { inject } from "sf-core/decorators";
-import { EntityFactoryDependency, IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
+import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
 import { NodeSection, INode } from "sf-core/markup";
 import { FrontEndApplication } from "sf-front-end/application";
+import { HTMLElementExpression } from "../../parsers/html/expressions";
+import { VisibleHTMLElementEntity } from "./base";
+import { EntityFactoryDependency, IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
 
 export class HTMLTemplateEntity extends VisibleHTMLElementEntity implements IInjectable {
   private _placeholder: Node;
