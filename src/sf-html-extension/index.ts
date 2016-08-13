@@ -7,8 +7,8 @@
  // models
  import { dependency as sfFileActiveRecordDependency } from "./models/sf-file";
 
- // commands
- import { dependency as pasteCommandDependency } from "./commands/paste";
+ // services
+ import { dependency as pasteEntityService } from "./services/paste-entity";
 
  // tools
 import { dependency as textToolDependency } from "./models/text-tool";
@@ -32,8 +32,8 @@ export const dependency = [
   // components
   entityPreviewComponentDependency,
 
-  // commands
-  pasteCommandDependency,
+  // services
+  pasteEntityService,
 
   // models
   sfFileActiveRecordDependency,

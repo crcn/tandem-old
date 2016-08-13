@@ -1,3 +1,3 @@
-import { HTMLExpression } from './expressions';
+import { HTMLFragmentExpression } from './expressions';
 
-declare function parse(source:string):HTMLExpression;
+declare function parse(source:string):HTMLFragmentExpression;

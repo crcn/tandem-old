@@ -24,6 +24,7 @@ export default class ClipboardService extends BaseApplicationService<FrontEndApp
         entity.source.toString()
       )).join("");
 
+
       event.clipboardData.setData(this.app.workspace.file.type, content);
       event.preventDefault();
     });

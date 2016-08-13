@@ -20,6 +20,10 @@ export class HTMLFragmentExpression extends HTMLExpression {
     super(HTML_FRAGMENT, "#document-fragment", position);
   }
 
+  appendChildNodes(...childNodes: Array<HTMLExpression>) {
+    this.childNodes.push(...childNodes);
+  }
+
   public _flattenDeep(items) {
     super._flattenDeep(items);
     flattenEach(this.childNodes, items);
@@ -41,6 +45,23 @@ export class HTMLElementExpression extends HTMLExpression {
     public childNodes: Array<HTMLExpression>,
     public position: ICursor) {
     super(HTML_ELEMENT, nodeName, position);
+  }
+
+  setAttribute(name: any, value: string) {
+    let found = false;
+    for (const attribute of this.attributes) {
+      if (attribute.name === value) {
+        attribute.value = value;
+        found = true;
+      }
+    }
+    if (!found) {
+      this.attributes.push(new HTMLAttributeExpression(name, value, null));
+    }
+  }
+
+  appendChildNodes(...childNodes: Array<HTMLExpression>) {
+    this.childNodes.push(...childNodes);
   }
 
   public _flattenDeep(items) {
@@ -105,16 +126,5 @@ export class HTMLCommentExpression extends HTMLExpression implements IHTMLValueN
     return ["<!--", this.nodeValue, "-->"].join("");
   }
 }
-
-// export const HTML_BLOCK = "htmlBlock";
-// export class HTMLBlockExpression extends HTMLExpression {
-//   constructor(public script: BaseExpression, public position: ICursor) {
-//     super(HTML_BLOCK, position);
-//   }
-//   public _flattenDeep(items) {
-//     super._flattenDeep(items);
-//     this.script._flattenDeep(items);
-//   }
-// }
 
 
