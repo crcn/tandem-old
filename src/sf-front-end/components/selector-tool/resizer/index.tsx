@@ -128,13 +128,17 @@ class ResizerComponent extends React.Component<{ editor: Editor, app: FrontEndAp
     // so that the dragger is relative to the entity"s position
     const style = this.targetDisplay.bounds;
 
-    const sx2 = style.left;
-    const sy2 = style.top;
+    const localLeft = event.pageX - style.left;
+    const localTop = event.pageY - style.top;
+    const translateLeft = this.props.editor.translate.left;
+    const translateTop  = this.props.editor.translate.top;
 
     this._dragger = startDrag(event, (event2, { delta }) => {
 
-      const nx = sx2 + delta.x / this.props.zoom;
-      const ny = sy2 + delta.y / this.props.zoom;
+      // ensure that as the user is dragging that if they also pane, we offset the translate
+      // difference of the editor
+      const nx = (event2.pageX - localLeft - (this.props.editor.translate.left - translateLeft)) / this.props.zoom;
+      const ny = (event2.pageY - localTop - (this.props.editor.translate.top - translateTop)) / this.props.zoom;
 
       this.moveTarget(nx, ny);
     }, () => {
