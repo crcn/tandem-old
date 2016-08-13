@@ -83,7 +83,13 @@ export class SfFile extends EntityFile implements IInjectable {
   public save() {
 
     // copy whitespace over to new content
-    this.content = mergeHTML(this.content, this._entity.source.toString());
+    // this.content = mergeHTML(this.content, this._entity.source.toString());
+
+    // TODO - beautify instead, but use settings defined by the user. Diffing whitepace
+    // is a bit problematic since there are a few unintended side effects from the sort of thing. For instance,
+    // there is no way to properly format *new* HTML code added by the editor according to the user's preferences. The
+    // editor should override whitespaces because of edges such as this.
+    this.content = this._entity.source.toString();
 
     // TODO - beautify new content here
 

@@ -24,8 +24,8 @@ export abstract class InsertTool extends BaseEditorTool {
 
   async canvasMouseDown(action: MouseAction) {
 
-    const parentEntity = <IContainerEntity>this.editor.activeEntity;
-    const entity: IVisibleEntity = <IVisibleEntity>(await parentEntity.appendSourceChildNode(this.createSource()))[0];
+    const activeEntity = <IContainerEntity>this.editor.activeEntity;
+    const entity: IVisibleEntity = <IVisibleEntity>(await activeEntity.appendSourceChildNode(this.createSource()))[0];
     this.bus.execute(new SelectAction(entity));
 
     const capabilities = entity.display.capabilities;
@@ -46,10 +46,12 @@ export abstract class InsertTool extends BaseEditorTool {
         const width  = (delta.x) / this.editor.zoom;
         const height = (delta.y) / this.editor.zoom;
 
-
         entity.display.bounds = new BoundingRect(left, top, left + width, top + height);
 
       }, () => {
+
+        // TODO - activeEntity.file.save() instead
+        this.workspace.file.save();
         this.bus.execute(new SetToolAction(this.displayEntityToolFactory));
       });
     }
