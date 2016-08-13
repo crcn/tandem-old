@@ -1,6 +1,6 @@
-import { IBrokerBus } from "./base";
 import { Action } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
+import { IBrokerBus } from "./base";
 
 export class BrokerBus implements IBrokerBus {
 

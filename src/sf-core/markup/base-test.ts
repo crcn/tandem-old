@@ -1,6 +1,6 @@
-import { ContainerNode, Element, ValueNode } from "./base";
 import { expect } from "chai";
 import { Action } from "sf-core/actions";
+import { ContainerNode, Element, ValueNode } from "./base";
 
 describe(__filename + "#", () => {
 

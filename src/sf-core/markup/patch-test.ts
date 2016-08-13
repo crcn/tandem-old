@@ -1,11 +1,5 @@
-import {
-  diff
-} from "./diff";
-
-import {
-  INode
-} from "./base";
-
+import { diff } from "./diff";
+import { INode } from "./base";
 import { patch } from "./patch";
 import { expect } from "chai";
 

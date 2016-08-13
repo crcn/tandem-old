@@ -1,8 +1,8 @@
 import "./index.scss";
 
 import * as React from "react";
-import RegisteredComponent from "sf-front-end/components/registered";
 import { Editor } from "sf-front-end/models";
+import RegisteredComponent from "sf-front-end/components/registered";
 
 class FooterComponent extends React.Component<{ editor: Editor }, any> {
   render() {

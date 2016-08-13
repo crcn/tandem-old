@@ -1,11 +1,11 @@
 import { IActor } from "sf-core/actors";
+import { find, ActiveRecord } from "sf-core/active-records";
 import {
   Dependencies,
   MainBusDependency,
   MimeTypeDependency,
-  ActiveRecordFactoryDependency
+  ActiveRecordFactoryDependency,
 } from "sf-core/dependencies";
-import { find, ActiveRecord } from "sf-core/active-records";
 
 export const FILES_COLLECTION_NAME = "files";
 

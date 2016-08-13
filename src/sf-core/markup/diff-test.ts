@@ -1,22 +1,22 @@
+import { expect } from "chai";
 import { Element, ValueNode, INode } from "./base";
 import {
   diff,
-  SetNodeValueChange,
-  SET_NODE_VALUE,
   ADD_CHILD,
   MOVE_CHILD,
   REMOVE_CHILD,
   SET_ATTRIBUTE,
-  REMOVE_ATTRIBUTE,
-  RemoveAttributeChange,
-  RemoveChildChange,
-  SetAttributeChange,
+  IndexUpChange,
+  SET_NODE_VALUE,
   AddChildChange,
-  MoveChildChange,
   IndexDownChange,
-  IndexUpChange
+  MoveChildChange,
+  REMOVE_ATTRIBUTE,
+  RemoveChildChange,
+  SetNodeValueChange,
+  SetAttributeChange,
+  RemoveAttributeChange,
 } from "./diff";
-import { expect } from "chai";
 
 
 function element(name, attributes = {}, ...children) {

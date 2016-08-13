@@ -1,8 +1,8 @@
+import { expect } from "chai";
 import { Application } from "./index.ts";
 import { LOAD, INITIALIZE } from "sf-core/actions";
-import { expect } from "chai";
-import { ApplicationSingletonDependency, ApplicationServiceDependency } from "sf-core/dependencies";
 import { BaseApplicationService } from "sf-core/services";
+import { ApplicationSingletonDependency, ApplicationServiceDependency } from "sf-core/dependencies";
 
 describe(__filename + "#", () => {
   it("can be created", () => {

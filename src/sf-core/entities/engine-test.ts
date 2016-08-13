@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { IEntity } from "./base";
-import { Node, IContainerNode, ContainerNode } from "../markup";
 import { EntityEngine } from "./engine";
+import { Node, IContainerNode, ContainerNode } from "../markup";
 import { Dependencies, EntityFactoryDependency } from "../dependencies";
 
 function element(name, attributes = [], ...childNodes) {

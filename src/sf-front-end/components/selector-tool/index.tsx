@@ -1,12 +1,12 @@
 import "./index.scss";
 import * as React from "react";
+import RulerComponent from "./ruler";
 import ResizerComponent from "./resizer";
 import { Editor, Workspace } from "sf-front-end/models";
+import { FrontEndApplication } from "sf-front-end/application";
 import { DisplayEntitySelection } from "sf-front-end/models";
 import { IEntityDisplay, IEntity } from "sf-core/entities";
-import { FrontEndApplication } from "sf-front-end/application";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
-import RulerComponent from "./ruler";
 
 export default class SelectorComponent extends React.Component<{ editor: Editor, workspace: Workspace, app: FrontEndApplication, zoom: number, allEntities: Array<IEntity> }, any> {
 

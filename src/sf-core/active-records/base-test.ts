@@ -1,10 +1,11 @@
 import { expect } from "chai";
-import { Dependencies, MainBusDependency, ActiveRecordFactoryDependency } from "sf-core/dependencies";
-import { FindAction, InsertAction, UpdateAction, RemoveAction } from "sf-core/actions";
+import { timeout } from "sf-core/test/utils";
 import { ParallelBus } from "mesh";
+import * as MemoryDSBus from "mesh-memory-ds-bus";
 import { BrokerBus, PostDsNotifierBus } from "sf-core/busses";
 import { ActiveRecord, ActiveRecordCollection, insert } from "./base";
-import * as MemoryDSBus from "mesh-memory-ds-bus";
+import { FindAction, InsertAction, UpdateAction, RemoveAction } from "sf-core/actions";
+import { Dependencies, MainBusDependency, ActiveRecordFactoryDependency } from "sf-core/dependencies";
 
 describe(__filename + "#", () => {
   describe("ActiveRecord#", () => {
@@ -131,13 +132,14 @@ describe(__filename + "#", () => {
       expect(executedActions[0].type).to.equal("dispose");
     });
 
-    it("does not receive any more sync actions after being disposed", async () => {
+    it("does not receive anymore sync actions after being disposed", async () => {
       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
         name: "a"
       });
       await ar.save();
       ar.sync();
       await broker.execute(new UpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id }));
+      await timeout(20);
       expect(ar.name).to.equal("b");
       ar.dispose();
       await broker.execute(new UpdateAction(ar.collectionName, { name: "c" }, { _id: ar._id }));

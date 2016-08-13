@@ -1,9 +1,19 @@
 import { IActor } from "sf-core/actors";
-import { Action, InsertAction, RemoveAction, FindAction, UpdateAction, PostDBAction, DID_INSERT, DID_REMOVE, DID_UPDATE } from "sf-core/actions";
-import { WrapBus } from "mesh";
-import { PostDsNotifierBus } from "./post-ds-notifier";
 import { expect } from "chai";
+import { WrapBus } from "mesh";
 import * as MemoryDsBus from "mesh-memory-ds-bus";
+import { PostDsNotifierBus } from "./post-ds-notifier";
+import {
+  Action,
+  FindAction,
+  DID_INSERT,
+  DID_REMOVE,
+  DID_UPDATE,
+  UpdateAction,
+  RemoveAction,
+  InsertAction,
+  PostDBAction,
+} from "sf-core/actions";
 
 describe(__filename + "#", () => {
 

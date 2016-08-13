@@ -1,9 +1,9 @@
+import { expect } from "chai";
 import {
+  Dependency,
   Dependencies,
-  Dependency
 } from "./base";
 
-import { expect } from "chai";
 
 describe(__filename + "#", () => {
   describe("Dependencies#", () => {

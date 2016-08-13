@@ -1,7 +1,7 @@
-import { Action, AttributeChangeAction } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
 import { CallbackBus } from "sf-core/busses";
 import { IObservable, Observable } from "sf-core/observable";
+import { Action, AttributeChangeAction } from "sf-core/actions";
 
 /**
  * Interfaces here reflect the DOM API a bit to ensure compatibility

@@ -1,4 +1,3 @@
-
 import { Editor } from "./editor";
 import { inject } from "sf-core/decorators";
 import { IActor } from "sf-core/actors";

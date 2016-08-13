@@ -1,5 +1,5 @@
-import { expect } from "chai";
 import { parse } from "./index";
+import { expect } from "chai";
 import {
   HTML_TEXT,
   HTML_COMMENT,
@@ -10,7 +10,7 @@ import {
   HTMLCommentExpression,
   HTMLElementExpression,
   HTMLFragmentExpression,
-  HTMLAttributeExpression
+  HTMLAttributeExpression,
 } from "./expressions";
 
 describe(__filename + `#`, () => {

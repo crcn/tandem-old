@@ -1,18 +1,12 @@
-import {
-  toArray
-} from "sf-core/utils/array";
-
-import {
-  IEntity,
-  IContainerEntity
-} from "./base";
+import { toArray } from "sf-core/utils/array";
+import { IEntity, IContainerEntity } from "./base";
 
 import {
   diff,
   patch,
-  IContainerNode,
+  ContainerNode,
   IDiffableNode,
-  ContainerNode
+  IContainerNode,
 } from "../markup";
 
 import {

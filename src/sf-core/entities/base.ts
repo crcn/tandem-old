@@ -1,6 +1,15 @@
-import { IDiffableNode, IDiffableElement, IDiffableValueNode, INode, IContainerNode, Element, ContainerNode, ValueNode } from "../markup";
 import { IEntityDisplay } from "./display";
 import { IDisposable } from "../object";
+import {
+  INode,
+  Element,
+  ValueNode,
+  IDiffableNode,
+  ContainerNode,
+  IContainerNode,
+  IDiffableElement,
+  IDiffableValueNode,
+} from "../markup";
 
 export interface ICursor {
   start: number;

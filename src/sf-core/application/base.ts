@@ -1,6 +1,6 @@
-import { IActor, IInvoker } from '../actors';
-import { Dependencies } from '../dependencies';
 import { IBrokerBus } from "sf-core/busses";
+import { Dependencies } from '../dependencies';
+import { IActor, IInvoker } from '../actors';
 
 interface IApplication extends IInvoker {
 

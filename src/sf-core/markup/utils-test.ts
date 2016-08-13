@@ -1,6 +1,6 @@
-import { findNode, getNodePath } from "./utils";
 import { expect } from "chai";
 import { Element } from "./base";
+import { findNode, getNodePath } from "./utils";
 
 describe(__filename + "#", () => {
   it("can find the node path of a root element", () => {

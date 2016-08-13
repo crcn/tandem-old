@@ -1,21 +1,19 @@
-import { Action, FindAction } from "sf-core/actions";
-import { BaseApplicationService } from "sf-core/services";
-
-import {
-  ApplicationServiceDependency,
-  DEPENDENCIES_NS,
-  Dependencies
-} from "sf-core/dependencies";
-
 import { File } from "sf-common/models";
 import { Logger } from "sf-core/logger";
 import { inject } from "sf-core/decorators";
 import { loggable } from "sf-core/decorators";
+import { Action, FindAction } from "sf-core/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { Workspace, EntityFile } from "sf-front-end/models";
+import { BaseApplicationService } from "sf-core/services";
 import { SetToolAction, ZoomAction } from "sf-front-end/actions";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
+import {
+  Dependencies,
+  DEPENDENCIES_NS,
+  ApplicationServiceDependency,
+} from "sf-core/dependencies";
 
 const FILES_COLLECTION = "files";
 

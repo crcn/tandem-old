@@ -1,7 +1,6 @@
-import * as LogLevel from "./levels";
-
 import { IActor } from "sf-core/actors";
 import { sprintf } from "sprintf";
+import * as LogLevel from "./levels";
 import { LogAction } from "../actions";
 
 export class Logger {

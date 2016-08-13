@@ -1,20 +1,21 @@
+
+import { IActor } from "sf-core/actors";
 import { Logger } from "sf-core/logger";
+import { BrokerBus } from "sf-core/busses";
+import { ParallelBus } from "mesh";
+import { IApplication } from "sf-core/application";
+import { Dependencies } from "sf-core/dependencies";
 import { loggable, bindable } from "sf-core/decorators";
-import {
-  ApplicationServiceDependency,
-  MainBusDependency,
-  ApplicationSingletonDependency,
-  DependenciesDependency
-} from "sf-core/dependencies";
 import { LoadAction, InitializeAction } from "sf-core/actions";
 import { dependency as consoleLogServiceDependency } from "../services/console-output";
 
-import { IActor } from "sf-core/actors";
-import { BrokerBus } from "sf-core/busses";
-import { IApplication } from "sf-core/application";
-import { Dependencies } from "sf-core/dependencies";
+import {
+  MainBusDependency,
+  DependenciesDependency,
+  ApplicationServiceDependency,
+  ApplicationSingletonDependency,
+} from "sf-core/dependencies";
 
-import { ParallelBus } from "mesh";
 
 // @observable
 @loggable()

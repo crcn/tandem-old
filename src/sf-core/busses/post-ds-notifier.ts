@@ -1,6 +1,6 @@
-import { Action, INSERT, REMOVE, UPDATE, PostDBAction } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
 import { Response } from "mesh";
+import { Action, INSERT, REMOVE, UPDATE, PostDBAction } from "sf-core/actions";
 
 export class PostDsNotifierBus implements IActor {
   constructor(private _dsBus: IActor, private _mainBus: IActor) { }

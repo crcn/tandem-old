@@ -1,10 +1,9 @@
 import { IActor } from "sf-core/actors";
+import { UpsertBus } from "sf-common/busses";
 import { IApplication } from "sf-core/application";
-
 import { BaseApplicationService } from "sf-core/services";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 
-import { UpsertBus } from "sf-common/busses";
 
 export default class UpsertService extends BaseApplicationService<IApplication> {
 

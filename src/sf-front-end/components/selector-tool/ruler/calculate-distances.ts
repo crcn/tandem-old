@@ -1,5 +1,4 @@
 
-
 function calculateDistances(allBounds, b1) {
 
   let intersections = {

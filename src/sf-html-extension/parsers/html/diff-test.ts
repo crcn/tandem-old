@@ -3,15 +3,15 @@ import { expect } from "chai";
 import { parse as parseHTML } from "./index.peg";
 import {
   diff,
-  SET_ATTRIBUTE,
-  ADD_CHILD,
-  INDEX_DOWN,
   INDEX_UP,
-  REMOVE_ATTRIBUTE,
-  REMOVE_CHILD,
+  ADD_CHILD,
   MOVE_CHILD,
+  INDEX_DOWN,
   MOVE_CURSOR,
-  SET_NODE_VALUE
+  REMOVE_CHILD,
+  SET_ATTRIBUTE,
+  SET_NODE_VALUE,
+  REMOVE_ATTRIBUTE,
 } from "sf-core/markup";
 
 

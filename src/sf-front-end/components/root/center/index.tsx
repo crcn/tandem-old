@@ -1,8 +1,9 @@
 import "./index.scss";
+
 import * as React from "react";
+import EditorCommponent from "./editor";
 import RegisteredComponent from "sf-front-end/components/registered";
 import { FrontEndApplication } from "sf-front-end/application";
-import EditorCommponent from "./editor";
 
 export default class CenterComponent extends React.Component<{ app: FrontEndApplication }, any> {
   render() {

@@ -1,19 +1,18 @@
 import "./index.scss";
 import * as React from "react";
-
-import {
-  MouseAction,
-  CANVAS_KEY_DOWN,
-  CANVAS_MOUSE_DOWN,
-  KeyboardAction,
-  ZoomAction
-} from "sf-front-end/actions";
-import PreviewLayerComponent from "./preview";
-import ToolsLayerComponent from "./tools";
+import { IPosition } from "sf-core/geom";
 import IsolateComponent  from "sf-front-end/components/isolate";
+import ToolsLayerComponent from "./tools";
+import PreviewLayerComponent from "./preview";
 import { Editor, Workspace } from "sf-front-end/models";
 import { Dependencies, MainBusDependency } from "sf-core/dependencies";
-import { IPosition } from "sf-core/geom";
+import {
+  ZoomAction,
+  MouseAction,
+  KeyboardAction,
+  CANVAS_KEY_DOWN,
+  CANVAS_MOUSE_DOWN,
+} from "sf-front-end/actions";
 
 export default class EditorStageLayersComponent extends React.Component<{ editor: Editor, workspace: Workspace, dependencies: Dependencies, zoom: number }, any> {
 

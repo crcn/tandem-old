@@ -1,16 +1,17 @@
-import { Service } from "sf-core/services";
-import { ClassFactoryDependency } from "sf-core/dependencies";
-import { LogAction } from "sf-core/actions";
 import document from "sf-core/decorators/document";
 import * as sift from "sift";
+import * as chalk from "chalk";
+import { Service } from "sf-core/services";
+import { LogAction } from "sf-core/actions";
+import { ClassFactoryDependency } from "sf-core/dependencies";
 
 import {
-  VERBOSE as VERBOSE_LEVEL,
   INFO as INFO_LEVEL,
   WARN as WARN_LEVEL,
   ERROR as ERROR_LEVEL,
+  VERBOSE as VERBOSE_LEVEL,
 } from "sf-core/logger/levels";
-import * as chalk from "chalk";
+
 
 class ConsoleService extends Service {
 

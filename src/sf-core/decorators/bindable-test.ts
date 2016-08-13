@@ -1,7 +1,7 @@
 import bindable from "./bindable";
+import { expect } from "chai";
 import { Action } from "../actions";
 import { Observable } from "../observable";
-import { expect } from "chai";
 
 describe(__filename + "#", () => {
   it("can make a property bindable for changes", () => {

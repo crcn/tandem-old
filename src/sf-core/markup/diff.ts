@@ -1,7 +1,4 @@
-import {
-  ValueNode,
-  IValueNode
-} from "./base";
+import { ValueNode, IValueNode } from "./base";
 
 /*
 TODOS:

@@ -1,10 +1,10 @@
 import "./index.scss";
 
 import * as React from "react";
-import { DisplayEntitySelection } from "sf-front-end/models";
-import { IEntity, IVisibleEntity } from "sf-core/entities";
 import LineComponent from "../line";
 import calculateDistances from "./calculate-distances";
+import { DisplayEntitySelection } from "sf-front-end/models";
+import { IEntity, IVisibleEntity } from "sf-core/entities";
 
 /**
  * shows distances between the entity and other objects

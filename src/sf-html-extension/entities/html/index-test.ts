@@ -2,7 +2,13 @@ import { expect } from "chai";
 import { Dependencies } from "sf-core/dependencies";
 import { EntityEngine } from "sf-core/entities";
 import { parse as parseHTML } from "../../parsers/html";
-import { htmlElementDependencies, htmlTextDependency, htmlCommentDependency, htmlDocumentDependency, HTMLElementEntity } from "./index";
+import {
+  HTMLElementEntity,
+  htmlTextDependency,
+  htmlCommentDependency,
+  htmlDocumentDependency,
+  htmlElementDependencies,
+} from "./index";
 
 describe(__filename + "#", () => {
   let dependencies;

@@ -1,6 +1,6 @@
 import { Action } from "../actions";
-import { Service } from "./base";
 import { expect } from "chai";
+import { Service } from "./base";
 import { BufferedBus } from "mesh";
 
 describe(__filename + "#", () => {

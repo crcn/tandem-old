@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import { IActor } from "sf-core/actors";
 import { IEntity } from "sf-core/entities";
 import { IApplication } from "sf-core/application";

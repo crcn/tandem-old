@@ -3,15 +3,14 @@
 import "./index.scss";
 
 import * as React from "react";
+import { inject } from "sf-core/decorators";
+import BoundingRect from "sf-core/geom/bounding-rect";
 import { intersection } from "lodash";
 import { SelectAction } from "sf-front-end/actions";
-import { IVisibleEntity, IEntity } from "sf-core/entities";
-import { inject } from "sf-core/decorators";
-import { IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
 import { FrontEndApplication } from "sf-front-end/application";
-import BoundingRect from "sf-core/geom/bounding-rect";
-
+import { IVisibleEntity, IEntity } from "sf-core/entities";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
+import { IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
 
 class SelectableComponent extends React.Component<{ entity: IVisibleEntity, selection: any, app: FrontEndApplication, zoom: number }, any> {
 

@@ -1,4 +1,3 @@
-
 import { register as registerSerializer } from "sf-core/serialize";
 import { BaseExpression, ICursor, flattenEach } from "../core/expression";
 

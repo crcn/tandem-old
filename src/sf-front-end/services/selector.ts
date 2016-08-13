@@ -8,7 +8,6 @@ import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 
-
 @loggable()
 export default class SelectorService extends BaseApplicationService<FrontEndApplication> {
 

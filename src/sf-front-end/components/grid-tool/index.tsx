@@ -1,7 +1,8 @@
 import "./index.scss";
+
 import * as React from "react";
-import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import { CANVAS_SIZE } from "sf-front-end/constants";
+import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 
 export class GridToolComponent extends React.Component<{ zoom: number }, any> {
   render() {

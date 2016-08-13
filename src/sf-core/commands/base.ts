@@ -1,8 +1,7 @@
-
 import { inject } from "sf-core/decorators";
-import { IInjectable, MAIN_BUS_NS, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
 import { Action } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
+import { IInjectable, MAIN_BUS_NS, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
 
 export interface ICommand extends IActor { }
 

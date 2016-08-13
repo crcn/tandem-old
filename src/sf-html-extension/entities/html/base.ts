@@ -3,22 +3,22 @@ import { IEntity, IVisibleEntity } from "sf-core/entities";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 
 import {
-  HTMLElementExpression,
   HTMLTextExpression,
-  IHTMLValueNodeExpression,
   HTMLCommentExpression,
-  HTMLAttributeExpression
+  HTMLElementExpression,
+  HTMLAttributeExpression,
+  IHTMLValueNodeExpression,
 } from "../../parsers/html/expressions";
 
 import {
-  IElement,
   INode,
-  IContainerNode,
   Element,
+  IElement,
   ValueNode,
-  IDiffableValueNode,
+  NodeSection,
+  IContainerNode,
   GroupNodeSection,
-  NodeSection
+  IDiffableValueNode,
 } from "sf-core/markup";
 
 import TAG_NAMES from "./tag-names";

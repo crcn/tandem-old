@@ -1,19 +1,18 @@
+import * as sift from "sift";
+import { expect } from "chai";
+import { BoundingRect } from "sf-core/geom";
+import { parse as parseHTML } from "../../parsers/html";
+import { FrontEndApplication } from "sf-front-end/application";
+import { EntityEngine, IVisibleEntity } from "sf-core/entities";
+import { Dependencies, ApplicationSingletonDependency } from "sf-core/dependencies";
 import {
-  htmlElementDependencies,
+  HTMLElementEntity,
   htmlTextDependency,
   htmlCommentDependency,
-  htmlTemplateEntityDependency,
   htmlDocumentDependency,
-  HTMLElementEntity
+  htmlElementDependencies,
+  htmlTemplateEntityDependency,
 } from "./index";
-
-import { BoundingRect } from "sf-core/geom";
-import * as sift from "sift";
-import { EntityEngine, IVisibleEntity } from "sf-core/entities";
-import { parse as parseHTML } from "../../parsers/html";
-import { Dependencies, ApplicationSingletonDependency } from "sf-core/dependencies";
-import { FrontEndApplication } from "sf-front-end/application";
-import { expect } from "chai";
 
 describe(__filename + "#", () => {
   let dependencies: Dependencies;

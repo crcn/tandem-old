@@ -1,4 +1,3 @@
-
 import { Logger } from "sf-core/logger";
 import { loggable } from "sf-core/decorators";
 import { serialize } from "sf-core/serialize";

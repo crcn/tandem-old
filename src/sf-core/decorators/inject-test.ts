@@ -1,6 +1,6 @@
 import { default as inject } from "./inject";
-import { Dependencies, ClassFactoryDependency, Dependency, IInjectable } from "../dependencies";
 import { expect } from "chai";
+import { Dependencies, ClassFactoryDependency, Dependency, IInjectable } from "../dependencies";
 
 describe(__filename + "#", () => {
   it("can inject a simple string into a name prop", () => {

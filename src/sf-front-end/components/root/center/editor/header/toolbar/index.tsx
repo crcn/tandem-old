@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
-import ToolComponent from "./tool";
 import { Editor } from "sf-front-end/models";
+import ToolComponent from "./tool";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 
 class ToolsComponent extends React.Component<{ editor: Editor, app: any }, any> {

@@ -1,6 +1,6 @@
 import "./index.scss";
-import * as React from "react";
 
+import * as React from "react";
 import CenterComponent from "./center";
 import { RootReactComponentDependency } from "sf-front-end/dependencies";
 

@@ -1,7 +1,7 @@
-import { IBrokerBus } from "../busses";
 import { Action } from "../actions";
 import { IActor } from "../actors";
 import { IEntity } from "../entities";
+import { IBrokerBus } from "../busses";
 import { IApplication } from "sf-core/application";
 import { IDiffableNode } from "../markup";
 import { IActiveRecord } from "../active-records";

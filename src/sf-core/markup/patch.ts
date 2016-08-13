@@ -1,33 +1,32 @@
+import { findNode } from "./utils";
+
 import {
   INode,
   IElement,
   IValueNode,
-  IContainerNode
+  IContainerNode,
 } from "./base";
 
-import {
-  findNode
-} from "./utils";
 
 import {
-  NodeChange,
-  SetAttributeChange,
-  SET_ATTRIBUTE,
-  SET_NODE_VALUE,
-  MOVE_CHILD,
-  SetNodeValueChange,
-  REMOVE_CHILD,
-  ADD_CHILD,
-  AddChildChange,
-  RemoveChildChange,
   INDEX_UP,
+  ADD_CHILD,
+  MOVE_CHILD,
   INDEX_DOWN,
-  IndexDownChange,
+  NodeChange,
+  REMOVE_CHILD,
+  SET_ATTRIBUTE,
   IndexUpChange,
+  AddChildChange,
+  SET_NODE_VALUE,
+  IndexDownChange,
+  MoveChildChange,
   MoveCursorChange,
   REMOVE_ATTRIBUTE,
-  MoveChildChange,
-  RemoveAttributeChange
+  RemoveChildChange,
+  SetNodeValueChange,
+  SetAttributeChange,
+  RemoveAttributeChange,
 } from "./diff";
 
 function _cloneNode(node: INode) {

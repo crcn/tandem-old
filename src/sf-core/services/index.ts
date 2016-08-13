@@ -1,9 +1,9 @@
-import { Service } from "./base";
-import { IApplication } from "sf-core/application";
-import { APPLICATION_SINGLETON_NS, MAIN_BUS_NS, IInjectable } from "sf-core/dependencies";
-import { IActor, IInvoker } from "sf-core/actors";
-import { BrokerBus } from "sf-core/busses";
 import { inject } from "sf-core/decorators";
+import { Service } from "./base";
+import { BrokerBus } from "sf-core/busses";
+import { IApplication } from "sf-core/application";
+import { IActor, IInvoker } from "sf-core/actors";
+import { APPLICATION_SINGLETON_NS, MAIN_BUS_NS, IInjectable } from "sf-core/dependencies";
 
 export { Service };
 

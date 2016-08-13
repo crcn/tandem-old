@@ -1,11 +1,11 @@
 {
 const {
+  LiteralExpression,
   CSSStyleExpression,
-  CSSStyleDeclarationExpression,
   CSSLiteralExpression,
-  CSSFunctionCallExpression,
   CSSListValueExpression,
-  LiteralExpression
+  CSSFunctionCallExpression,
+  CSSStyleDeclarationExpression,
 } = require('./expressions');
 
 function position() {

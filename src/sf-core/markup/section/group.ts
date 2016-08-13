@@ -1,6 +1,6 @@
 import { getNodePath, findNode } from "../utils";
-import { IMarkupSectionMarker, IMarkupSection } from "./base";
 import { IContainerNode, INode } from "../base";
+import { IMarkupSectionMarker, IMarkupSection } from "./base";
 
 /**
  */
