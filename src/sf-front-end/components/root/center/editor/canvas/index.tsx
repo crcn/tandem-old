@@ -10,6 +10,7 @@ import {
   ZoomAction,
   MouseAction,
   KeyboardAction,
+  TranslateAction,
   CANVAS_KEY_DOWN,
   CANVAS_MOUSE_DOWN,
 } from "sf-front-end/actions";
@@ -22,7 +23,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
 
   constructor(props) {
     super(props);
-    this.state = { translate: { left: 0, top: 0 }};
+    this.state = {};
   }
 
   onMouseDown = (event) => {
@@ -34,12 +35,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   pane(leftDelta, topDelta) {
-    this.setState({
-      translate: {
-        left: this.state.translate.left - leftDelta,
-        top: this.state.translate.top - topDelta
-      }
-    });
+    this.bus.execute(new TranslateAction({ left: this.props.editor.translate.left - leftDelta, top: this.props.editor.translate.top - topDelta }))
   }
 
   onMouseEvent = (event: MouseEvent) => {
@@ -74,8 +70,8 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     const v2oh = v1h * oldZoom;
 
     // old offset pane left
-    const v2ox = this.state.translate.left;
-    const v2oy = this.state.translate.top;
+    const v2ox = this.props.editor.translate.left;
+    const v2oy = this.props.editor.translate.top;
 
     // new width of view 2
     const v2nw = v1w * newZoom;
@@ -88,12 +84,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     const left = v1w * v1px - v2nw * v2px;
     const top  = v1h * v1py - v2nh * v2py;
 
-    this.setState({
-      translate: {
-        left: left,
-        top: top
-      }
-    });
+    this.bus.execute(new TranslateAction({ left, top }));
   }
 
   onWheel = (event: WheelEvent) => {
@@ -152,7 +143,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     let transform;
 
     if (canvasWidth) {
-      const { left, top } = this.state.translate;
+      const { left, top } = this.props.editor.translate;
       transform = `translate(${left}px, ${top}px) scale(${this.props.zoom})`;
     }
 

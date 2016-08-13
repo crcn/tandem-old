@@ -1,14 +1,15 @@
 import { register as registerSerializer } from "sf-core/serialize";
-import { BaseExpression, ICursor, flattenEach } from "../core/expression";
+import { IRange } from "sf-core/geom";
+import { BaseExpression, flattenEach } from "../core/expression";
 
 export interface IHTMLValueNodeExpression {
   nodeValue: any;
   nodeName: string;
-  readonly position: ICursor;
+  readonly position: IRange;
 }
 
 export abstract class HTMLExpression extends BaseExpression {
-  constructor(type: string, readonly nodeName: string, position: ICursor) {
+  constructor(type: string, readonly nodeName: string, position: IRange) {
     super(type, position);
   }
 }
@@ -16,7 +17,7 @@ export abstract class HTMLExpression extends BaseExpression {
 
 export const HTML_FRAGMENT = "htmlFragment";
 export class HTMLFragmentExpression extends HTMLExpression {
-  constructor(public childNodes: Array<HTMLExpression>, position: ICursor) {
+  constructor(public childNodes: Array<HTMLExpression>, position: IRange) {
     super(HTML_FRAGMENT, "#document-fragment", position);
   }
 
@@ -43,7 +44,7 @@ export class HTMLElementExpression extends HTMLExpression {
     nodeName: string,
     public attributes: Array<HTMLAttributeExpression>,
     public childNodes: Array<HTMLExpression>,
-    public position: ICursor) {
+    public position: IRange) {
     super(HTML_ELEMENT, nodeName, position);
   }
 
@@ -90,7 +91,7 @@ export class HTMLElementExpression extends HTMLExpression {
 
 export const HTML_ATTRIBUTE = "htmlAttribute";
 export class HTMLAttributeExpression extends BaseExpression {
-  constructor(public name: string, public value: string, position: ICursor) {
+  constructor(public name: string, public value: string, position: IRange) {
     super(HTML_ATTRIBUTE, position);
   }
   toString() {
@@ -105,7 +106,7 @@ export class HTMLAttributeExpression extends BaseExpression {
 
 export const HTML_TEXT = "htmlText";
 export class HTMLTextExpression extends HTMLExpression implements IHTMLValueNodeExpression {
-  constructor(public nodeValue: string, public position: ICursor) {
+  constructor(public nodeValue: string, public position: IRange) {
     super(HTML_TEXT, "#text", position);
   }
   toString() {
@@ -118,7 +119,7 @@ export class HTMLTextExpression extends HTMLExpression implements IHTMLValueNode
 
 export const HTML_COMMENT = "htmlComment";
 export class HTMLCommentExpression extends HTMLExpression implements IHTMLValueNodeExpression {
-  constructor(public nodeValue: string, public position: ICursor) {
+  constructor(public nodeValue: string, public position: IRange) {
     super(HTML_COMMENT, "#comment", position);
   }
 

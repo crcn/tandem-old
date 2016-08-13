@@ -1,7 +1,7 @@
 import { IEntity } from "./base";
 
-export function findEntityBySource(entity: IEntity, source: any) {
+export function findEntitiesBySource(entity: IEntity, source: any) {
 
   // crude, but works for now.
-  return entity.flatten().find((entity: IEntity) => entity.source === source);
+  return <Array<IEntity>>entity.flatten().filter((entity: IEntity) => entity.source === source);
 }

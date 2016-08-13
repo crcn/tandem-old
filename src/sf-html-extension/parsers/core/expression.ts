@@ -1,8 +1,4 @@
-
-export interface ICursor {
-  start: number;
-  end: number;
-}
+import { IRange } from "sf-core/geom";
 
 /**
  * utility function for flattening expressions
@@ -19,7 +15,7 @@ export function flattenEach(fromItems: Array<BaseExpression>, toItems: Array<Bas
  */
 
 export class BaseExpression {
-  constructor(readonly type: string, readonly position: ICursor) {
+  constructor(readonly type: string, readonly position: IRange) {
 
   }
 

@@ -1,5 +1,5 @@
 import { toArray } from "sf-core/utils/array";
-import { IEntity, IContainerEntity } from "./base";
+import { IEntity, IContainerEntity, IEntityEngine } from "./base";
 
 import {
   diff,
@@ -19,8 +19,9 @@ import {
  * in the load() method below -- it's essentially a runtime engine.
  */
 
-export class EntityEngine {
+export class EntityEngine implements IEntityEngine {
   private _entity: IEntity;
+  private _source: any;
 
   /**
    * @param {Dependencies} dependencies dependencies that contain all entity classes
@@ -32,9 +33,9 @@ export class EntityEngine {
     return this._entity;
   }
 
-  async load(source: IDiffableNode): Promise<IEntity> {
+  async update(): Promise<void> {
 
-    const newEntity = await this._loadAll(source);
+    const newEntity = await this._loadAll(this._source);
 
     // TODO - async diffing using workers here
     // TODO - check entity constructor against new entity
@@ -48,7 +49,11 @@ export class EntityEngine {
     } else {
       this._entity = newEntity;
     }
+  }
 
+  async load(source: IDiffableNode): Promise<IEntity> {
+    this._source = source;
+    await this.update();
     return this._entity;
   }
 
@@ -60,6 +65,7 @@ export class EntityEngine {
     }
 
     const entity = entityFactory.create(source);
+    entity.engine = this;
 
     const childSources = entityFactory.mapSourceChildren ? await entityFactory.mapSourceChildren(source) : [];
 

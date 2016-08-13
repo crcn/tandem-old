@@ -1,5 +1,5 @@
 import { HTMLNodeDisplay } from "./displays";
-import { IEntity, IVisibleEntity, IElementEntity, findEntityBySource } from "sf-core/entities";
+import { IEntity, IEntityEngine, IVisibleEntity, IElementEntity, findEntitiesBySource } from "sf-core/entities";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { ChangeAction } from "sf-core/actions";
 
@@ -42,6 +42,7 @@ export class HTMLElementEntity extends Element implements IHTMLEntity, IElementE
   // no type specified since certain elements such as <style />, and <link />
   // do not fit into a particular category. This may change later on.
   readonly type: string = null;
+  public engine: IEntityEngine;
 
   public section: GroupNodeSection|NodeSection;
   constructor(readonly source: HTMLElementExpression) {
@@ -62,12 +63,20 @@ export class HTMLElementEntity extends Element implements IHTMLEntity, IElementE
     // TODO - this/context.engine.update();
   }
 
-  appendSourceChildNode(...childNodes:Array<HTMLExpression>): IEntity {
-    this.source.appendChildNodes(...childNodes);
+  async appendSourceChildNode(childNode: HTMLExpression): Promise<Array<IEntity>> {
+    this.source.appendChildNodes(childNode);
 
-    // something like this...
-    // this.notify(new ChangeAction())
-    return null;
+    // since the child node is dependant on the other entities that
+    // are loaded in, we'll need to update the entire entity tree in order
+    // to return the proper entity
+    // TODO - it may be more appropriate to leave this up to whatever is calling
+    // appendSourceChildNode since there may be cases where the callee executes a batch of these. For now though,
+    // it's better to leave this here to make things more DRY.
+    await this.engine.update();
+
+    // since we don't know the entity, or where it lives in this entity, we'll need to scan for it. It could
+    // even be a collection of entities.
+    return findEntitiesBySource(this, childNode);
   }
 
   static mapSourceChildren(source: HTMLElementExpression) {
@@ -175,6 +184,7 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
 
   readonly section: NodeSection;
   private _node: Node;
+  public engine: IEntityEngine;
 
   constructor(readonly source: T) {
     super(source.nodeName, source.nodeValue);

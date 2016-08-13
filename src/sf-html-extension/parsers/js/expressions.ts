@@ -1,4 +1,5 @@
-import { BaseExpression, ICursor } from '../core/expression';
+import { IRange } from "sf-core/geom";
+import { BaseExpression } from '../core/expression';
 
 /**
  *  JavaScript
@@ -7,14 +8,14 @@ import { BaseExpression, ICursor } from '../core/expression';
 
 export const JS_REFERENCE = 'jsReference';
 export class ReferenceExpression extends BaseExpression {
-  constructor(public path:Array<string>, public position:ICursor) {
+  constructor(public path:Array<string>, public position:IRange) {
     super(JS_REFERENCE, position);
   }
 }
 
 export const JS_FUNCTION_CALL = 'jsFunctionCall';
 export class FunctionCallExpression extends BaseExpression {
-  constructor(public reference:ReferenceExpression, public parameters:Array<BaseExpression>, public position:ICursor) {
+  constructor(public reference:ReferenceExpression, public parameters:Array<BaseExpression>, public position:IRange) {
     super(JS_FUNCTION_CALL, position);
   }
   public _flattenDeep(items) {
@@ -25,21 +26,21 @@ export class FunctionCallExpression extends BaseExpression {
 
 export const JS_OPERATION = 'jsOperation';
 export class OperationExpression extends BaseExpression {
-  constructor(public operator:string, public left:BaseExpression, public right:BaseExpression, public position:ICursor) {
+  constructor(public operator:string, public left:BaseExpression, public right:BaseExpression, public position:IRange) {
     super(JS_OPERATION, position);
   }
 }
 
 export const JS_LITERAL = 'jsLiteral';
 export class LiteralExpression extends BaseExpression {
-  constructor(public value:any, public position:ICursor) {
+  constructor(public value:any, public position:IRange) {
     super(JS_LITERAL, position);
   }
 }
 
 export const JS_NEGATIVE = 'jsNegative';
 export class NegativeExpression extends BaseExpression {
-  constructor(public value:BaseExpression, public position:ICursor) {
+  constructor(public value:BaseExpression, public position:IRange) {
     super(JS_NEGATIVE, position);
   }
   public _flattenDeep(items) {
@@ -50,7 +51,7 @@ export class NegativeExpression extends BaseExpression {
 
 export const JS_NOT = 'jsNot';
 export class NotExpression extends BaseExpression {
-  constructor(public value:BaseExpression, position:ICursor) {
+  constructor(public value:BaseExpression, position:IRange) {
     super(JS_NOT, position);
   }
   public _flattenDeep(items) {
@@ -61,7 +62,7 @@ export class NotExpression extends BaseExpression {
 
 export const JS_TERNARY = 'jsTernary';
 export class TernaryExpression extends BaseExpression {
-  constructor(public condition:BaseExpression, public left:BaseExpression, public right:BaseExpression, public position:ICursor) {
+  constructor(public condition:BaseExpression, public left:BaseExpression, public right:BaseExpression, public position:IRange) {
     super(JS_TERNARY, position);
   }
   public _flattenDeep(items) {
@@ -72,7 +73,7 @@ export class TernaryExpression extends BaseExpression {
 
 export const JS_HASH = 'jsHash';
 export class HashExpression extends BaseExpression {
-  constructor(public values:any, public position:ICursor) {
+  constructor(public values:any, public position:IRange) {
     super(JS_HASH, position);
   }
 }

@@ -1,5 +1,5 @@
 import { Action } from "sf-core/actions";
-import { IRange } from "sf-core/geom";
+import { IRange, IPosition } from "sf-core/geom";
 import { IActor } from "sf-core/actors";
 import { toArray } from "sf-core/utils/array";
 import { IEditor, IEditorTool } from "sf-front-end/models";
@@ -78,6 +78,13 @@ export const ZOOM = "zoom";
 export class ZoomAction extends Action {
   constructor(readonly delta: number) {
     super(ZOOM);
+  }
+}
+
+export const TRANSLATE = "translate";
+export class TranslateAction extends Action {
+  constructor(readonly position: IPosition) {
+    super(TRANSLATE);
   }
 }
 

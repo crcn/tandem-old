@@ -8,7 +8,7 @@ import { MAIN_BUS_NS } from "sf-core/dependencies";
 import { BoundingRect } from "sf-core/geom";
 import { IVisibleEntity, IContainerEntity } from "sf-core/entities";
 import { EntityFactoryDependency } from "sf-core/dependencies";
-import { MouseAction, SetToolAction } from "sf-front-end/actions";
+import { MouseAction, SetToolAction, SelectAction } from "sf-front-end/actions";
 import { BaseEditorTool, IEditorTool, IEditor } from "sf-front-end/models";
 
 export abstract class InsertTool extends BaseEditorTool {
@@ -25,15 +25,17 @@ export abstract class InsertTool extends BaseEditorTool {
   async canvasMouseDown(action: MouseAction) {
 
     const parentEntity = <IContainerEntity>this.editor.activeEntity;
-    const entity: IVisibleEntity = <IVisibleEntity>parentEntity.appendSourceChildNode(this.createSource());
+    const entity: IVisibleEntity = <IVisibleEntity>(await parentEntity.appendSourceChildNode(this.createSource()))[0];
+    this.bus.execute(new SelectAction(entity));
+
     const capabilities = entity.display.capabilities;
 
     let left = 0;
     let top  = 0;
 
     if (capabilities.movable) {
-      left = action.originalEvent.pageX;
-      top  = action.originalEvent.pageY;
+      left = (action.originalEvent.pageX - this.editor.translate.left) / this.editor.zoom;
+      top  = (action.originalEvent.pageY - this.editor.translate.top) / this.editor.zoom;
     }
 
     entity.display.position = { left, top };
@@ -41,13 +43,14 @@ export abstract class InsertTool extends BaseEditorTool {
 
       startDrag(action.originalEvent, (event, { delta }) => {
 
-        const width  = (left + delta.x) / this.editor.zoom;
-        const height = (left + delta.y) / this.editor.zoom;
+        const width  = (delta.x) / this.editor.zoom;
+        const height = (delta.y) / this.editor.zoom;
+
 
         entity.display.bounds = new BoundingRect(left, top, left + width, top + height);
 
       }, () => {
-        // this.bus.execute(new SetToolAction({ create: (editor) => this.editorToolFactory.create(editor) }));
+        this.bus.execute(new SetToolAction(this.displayEntityToolFactory));
       });
     }
   }

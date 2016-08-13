@@ -2,6 +2,7 @@ import { IActor } from "sf-core/actors";
 import { Action } from "sf-core/actions";
 import { inject } from "sf-core/decorators";
 import { Workspace } from "./workspace";
+import { IPosition } from "sf-core/geom";
 import { KeyBinding } from "sf-front-end/key-bindings";
 import { IInjectable } from "sf-core/dependencies";
 import { ParallelBus } from "mesh";
@@ -14,6 +15,7 @@ export const MAX_ZOOM = 6400 / 100;
 export class Editor implements IEditor {
 
   private _zoom: number = 1;
+  public translate: IPosition = { left: 0, top: 0 };
   private _currentTool: IEditorTool;
 
   // TODO - this may change dependening on the editor type

@@ -6,6 +6,7 @@ import { BaseCommand } from "sf-core/commands";
 import { SetToolAction } from "sf-front-end/actions";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
 import { TextTool, dependency as textToolDependency } from "sf-html-extension/models/text-tool";
+import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
 import { ClassFactoryDependency, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
 import { EditorToolFactoryDependency, GlobalKeyBindingDependency } from "sf-front-end/dependencies";
 
@@ -19,10 +20,10 @@ abstract class BaseInsertElementTool extends InsertTool {
   }
 
   get displayEntityToolFactory() {
-    return this._dependencies.query<EditorToolFactoryDependency>(textToolDependency.ns);
+    return this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns);
   }
   createSource() {
-    return parseHTML(`<${this.tagName} style="width:100px;height:100px;background:#CCC;position:absolute;" />`).childNodes[0];
+    return parseHTML(`<${this.tagName} style="background:#CCC;position:absolute;" />`).childNodes[0];
   }
 }
 

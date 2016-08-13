@@ -6,7 +6,7 @@ import { Action, FindAction } from "sf-core/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { Workspace, EntityFile } from "sf-front-end/models";
 import { BaseApplicationService } from "sf-core/services";
-import { SetToolAction, ZoomAction } from "sf-front-end/actions";
+import { SetToolAction, ZoomAction, TranslateAction } from "sf-front-end/actions";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
 import {
@@ -44,6 +44,10 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
   zoom(action: ZoomAction) {
     this.app.workspace.editor.zoom += action.delta;
+  }
+
+  translate(action: TranslateAction) {
+    this.app.workspace.editor.translate = action.position;
   }
 
   setTool(action: SetToolAction) {

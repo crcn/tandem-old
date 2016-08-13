@@ -11,9 +11,8 @@ import {
   IDiffableValueNode,
 } from "../markup";
 
-export interface ICursor {
-  start: number;
-  end: number;
+export interface IEntityEngine {
+  update(): Promise<void>;
 }
 
 // export interface IEntityDisplayMutator extends IEntityMutator {
@@ -36,6 +35,12 @@ export interface IEntity extends INode, IDisposable {
    */
 
   readonly type: string;
+
+  /**
+   * The creator if this entity
+   */
+
+  engine: IEntityEngine;
 }
 
 export interface IVisibleEntity extends IEntity {
@@ -43,9 +48,9 @@ export interface IVisibleEntity extends IEntity {
 }
 
 export interface IContainerEntity extends IEntity, IContainerNode {
-  appendSourceChildNode(childSource: any): IEntity;
+  appendSourceChildNode(childSource: any): Promise<Array<IEntity>>;
 }
 
 export interface IElementEntity extends IContainerEntity {
-  setSourceAttribute(key: string, value: string);
+  setSourceAttribute(key: string, value: string): void;
 }
