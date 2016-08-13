@@ -1,5 +1,5 @@
 import { HTMLNodeDisplay } from "./displays";
-import { IEntity, IVisibleEntity } from "sf-core/entities";
+import { IEntity, IVisibleEntity, IElementEntity, findEntityBySource } from "sf-core/entities";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 
 import {
@@ -36,7 +36,7 @@ export interface IHTMLEntity extends IEntity {
   section: NodeSection|GroupNodeSection;
 }
 
-export class HTMLElementEntity extends Element implements IHTMLEntity {
+export class HTMLElementEntity extends Element implements IHTMLEntity, IElementEntity {
 
   // no type specified since certain elements such as <style />, and <link />
   // do not fit into a particular category. This may change later on.
@@ -56,9 +56,15 @@ export class HTMLElementEntity extends Element implements IHTMLEntity {
     }
   }
 
+  setSourceAttribute(key: string, value: string) {
+    this.source.setAttribute(key, value);
+    // TODO - this/context.engine.update();
+  }
+
   appendSourceChildNode(...childNodes:Array<HTMLExpression>): IEntity {
     this.source.appendChildNodes(...childNodes);
-    // TODO - this.context.engine.update();
+    // TODO - await this.context.engine.update();
+    // return findEntityBySource(this, this.source);
     return null;
   }
 

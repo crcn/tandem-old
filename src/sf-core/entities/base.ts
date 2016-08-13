@@ -43,5 +43,9 @@ export interface IVisibleEntity extends IEntity {
 }
 
 export interface IContainerEntity extends IEntity, IContainerNode {
-  appendSourceChildNode(childSource: any);
+  appendSourceChildNode(childSource: any): IEntity;
+}
+
+export interface IElementEntity extends IContainerEntity {
+  setSourceAttribute(key: string, value: string);
 }
