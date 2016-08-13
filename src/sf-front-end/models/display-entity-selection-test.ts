@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { Element } from "sf-core/markup";
 import { BoundingRect, IPosition } from "sf-core/geom";
 import { DisplayEntitySelection } from "./display-entity-selection";
-import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/entities";
+import { IEntityDisplay, IEntityEngine, IVisibleEntity, DisplayCapabilities } from "sf-core/entities";
 
 describe(__filename + "#", () => {
 
@@ -26,6 +26,7 @@ describe(__filename + "#", () => {
   class VisibleEntity extends Element implements IVisibleEntity {
     readonly type: string = "display";
     readonly source: any = null;
+    readonly engine: IEntityEngine;
     constructor(readonly display: IEntityDisplay) {
       super("entity");
     }

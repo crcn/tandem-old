@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { IEntity } from "./base";
+import { IEntity, IEntityEngine } from "./base";
 import { EntityEngine } from "./engine";
 import { Node, IContainerNode, ContainerNode } from "../markup";
 import { Dependencies, EntityFactoryDependency } from "../dependencies";
@@ -28,6 +28,7 @@ describe(__filename + "#", () => {
   it("can register a custom entity", async () => {
     class CustomEntity extends Node implements IEntity {
       readonly type: string = null;
+      public engine: IEntityEngine;
       constructor(readonly source: any) {
         super();
       }
@@ -45,6 +46,7 @@ describe(__filename + "#", () => {
   it("renders child nodes based on the returned value from load()", async () => {
     class CustomEntity extends ContainerNode implements IEntity {
       readonly type: string = null;
+      public engine: IEntityEngine;
       constructor(readonly source: any) {
         super();
       }
@@ -58,6 +60,7 @@ describe(__filename + "#", () => {
 
     class TextEntity extends Node implements IEntity {
       readonly type: string = null;
+      public engine: IEntityEngine;
       constructor(readonly source: any) {
         super();
       }

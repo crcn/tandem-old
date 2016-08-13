@@ -21,7 +21,7 @@ export class GridToolComponent extends React.Component<{ zoom: number }, any> {
       [[0, 0], [0, gridSize]]
     ];
 
-    return (<div className="m-grid-tool" style={{left:-size/2, top: -size/2}}>
+    return (<div className="m-grid-tool" style={{left: -size / 2, top: -size / 2 }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
 
         <defs>

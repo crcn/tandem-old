@@ -22,22 +22,8 @@ editor.open(new HTMLFile());
 */
 
 export class TextTool extends BaseEditorTool {
-
   name = "text";
-  cursor = "text";
-
-  canvasMouseDown(action: MouseAction) {
-    const position = this.editor.transform.localizePosition({
-      left: action.originalEvent.pageX,
-      top: action.originalEvent.pageY
-    });
-
-    const textSource = `<span style="position:absolute;left:${position.left}px;top:${position.top}px;">Type something</span>`;
-
-    const file = this.editor.workspace.file;
-    (<HTMLElementExpression>file.entity.source).childNodes.push(parseHTML(textSource));
-    file.save();
-  }
+  cursor = null;
 }
 
 export const dependency = new EditorToolFactoryDependency("text", "text", "display", TextTool);

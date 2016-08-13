@@ -19,6 +19,8 @@ export abstract class InsertTool extends BaseEditorTool {
   @inject(MAIN_BUS_NS)
   readonly bus: IActor;
 
+  readonly resizable: boolean = true;
+
   didInject() {
     super.didInject();
 
@@ -46,7 +48,14 @@ export abstract class InsertTool extends BaseEditorTool {
     }
 
     entity.display.position = { left, top };
-    if (capabilities.resizable) {
+
+    const complete = () => {
+      // TODO - activeEntity.file.save() instead
+      this.workspace.file.save();
+      this.bus.execute(new SetToolAction(this.displayEntityToolFactory));
+    };
+
+    if (capabilities.resizable && this.resizable) {
 
       startDrag(action.originalEvent, (event, { delta }) => {
 
@@ -55,12 +64,9 @@ export abstract class InsertTool extends BaseEditorTool {
 
         entity.display.bounds = new BoundingRect(left, top, left + width, top + height);
 
-      }, () => {
-
-        // TODO - activeEntity.file.save() instead
-        this.workspace.file.save();
-        this.bus.execute(new SetToolAction(this.displayEntityToolFactory));
-      });
+      }, complete);
+    } else {
+      complete();
     }
   }
 }

@@ -35,7 +35,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   pane(leftDelta, topDelta) {
-    this.bus.execute(new TranslateAction({ left: this.props.editor.transform.left - leftDelta, top: this.props.editor.transform.top - topDelta }))
+    this.bus.execute(new TranslateAction({ left: this.props.editor.transform.left - leftDelta, top: this.props.editor.transform.top - topDelta }));
   }
 
   onMouseEvent = (event: MouseEvent) => {

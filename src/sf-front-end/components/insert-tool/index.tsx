@@ -10,7 +10,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor }, any> {
     const selection = (this.props.editor.workspace.selection as DisplayEntitySelection);
     const zoom = this.props.editor.transform.scale;
     const display = selection.display;
-    if (!display) return null;
+    if (!display || !display.capabilities.resizable) return null;
     const bounds = display.bounds;
     return <SelectionSizeComponent left={bounds.left + bounds.width} top={bounds.top + bounds.height} bounds={bounds} zoom={zoom} />;
   }
