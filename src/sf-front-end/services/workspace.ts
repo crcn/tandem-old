@@ -43,11 +43,12 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
   }
 
   zoom(action: ZoomAction) {
-    this.app.workspace.editor.zoom += action.delta;
+    this.app.workspace.editor.transform.scale += action.delta;
   }
 
   translate(action: TranslateAction) {
-    this.app.workspace.editor.translate = action.position;
+    this.app.workspace.editor.transform.left = action.position.left;
+    this.app.workspace.editor.transform.top = action.position.top;
   }
 
   setTool(action: SetToolAction) {

@@ -1,12 +1,12 @@
 import { IActor } from "sf-core/actors";
 import { Action } from "sf-core/actions";
 import { inject } from "sf-core/decorators";
+import { IEntity } from "sf-core/entities";
 import { Workspace } from "./workspace";
-import { IPosition } from "sf-core/geom";
+import { IPosition, Transform } from "sf-core/geom";
 import { KeyBinding } from "sf-front-end/key-bindings";
 import { IInjectable } from "sf-core/dependencies";
 import { ParallelBus } from "mesh";
-import { IEntity } from "sf-core/entities";
 import { IEditor, IEditorTool } from "./base";
 
 export const MIN_ZOOM = 0.02;
@@ -17,6 +17,7 @@ export class Editor implements IEditor {
   private _zoom: number = 1;
   public translate: IPosition = { left: 0, top: 0 };
   private _currentTool: IEditorTool;
+  public transform: Transform = new Transform();
 
   // TODO - this may change dependening on the editor type
   readonly type = "display";

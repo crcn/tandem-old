@@ -130,13 +130,13 @@ class ResizerComponent extends React.Component<{ editor: Editor, app: FrontEndAp
 
     const sx2 = style.left;
     const sy2 = style.top;
-    const translateLeft = this.props.editor.translate.left;
-    const translateTop  = this.props.editor.translate.top;
+    const translateLeft = this.props.editor.transform.left;
+    const translateTop  = this.props.editor.transform.top;
 
     this._dragger = startDrag(event, (event2, { delta }) => {
 
-      const nx = (sx2 + (delta.x - (this.props.editor.translate.left - translateLeft)) / this.props.zoom);
-      const ny = (sy2 + (delta.y - (this.props.editor.translate.top - translateTop)) / this.props.zoom);
+      const nx = (sx2 + (delta.x - (this.props.editor.transform.left - translateLeft)) / this.props.zoom);
+      const ny = (sy2 + (delta.y - (this.props.editor.transform.top - translateTop)) / this.props.zoom);
 
       this.moveTarget(nx, ny);
     }, () => {

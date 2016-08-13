@@ -27,7 +27,12 @@ export class TextTool extends BaseEditorTool {
   cursor = "text";
 
   canvasMouseDown(action: MouseAction) {
-    const textSource = `<span style="position:absolute;left:${action.originalEvent.pageX}px;top:${action.originalEvent.pageY}px;">Type something</span>`;
+    const position = this.editor.transform.localizePosition({
+      left: action.originalEvent.pageX,
+      top: action.originalEvent.pageY
+    });
+
+    const textSource = `<span style="position:absolute;left:${position.left}px;top:${position.top}px;">Type something</span>`;
 
     const file = this.editor.workspace.file;
     (<HTMLElementExpression>file.entity.source).childNodes.push(parseHTML(textSource));

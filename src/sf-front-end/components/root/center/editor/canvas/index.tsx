@@ -35,7 +35,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   pane(leftDelta, topDelta) {
-    this.bus.execute(new TranslateAction({ left: this.props.editor.translate.left - leftDelta, top: this.props.editor.translate.top - topDelta }))
+    this.bus.execute(new TranslateAction({ left: this.props.editor.transform.left - leftDelta, top: this.props.editor.transform.top - topDelta }))
   }
 
   onMouseEvent = (event: MouseEvent) => {
@@ -70,8 +70,8 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     const v2oh = v1h * oldZoom;
 
     // old offset pane left
-    const v2ox = this.props.editor.translate.left;
-    const v2oy = this.props.editor.translate.top;
+    const v2ox = this.props.editor.transform.left;
+    const v2oy = this.props.editor.transform.top;
 
     // new width of view 2
     const v2nw = v1w * newZoom;
@@ -143,7 +143,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     let transform;
 
     if (canvasWidth) {
-      const { left, top } = this.props.editor.translate;
+      const { left, top } = this.props.editor.transform;
       transform = `translate(${left}px, ${top}px) scale(${this.props.zoom})`;
     }
 

@@ -17,7 +17,7 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
   }
 
   onResizing = (event) => {
-    this.setState({ resizing: true, mouseLeft: (event.pageX - this.props.editor.translate.left) / this.props.zoom, mouseTop: (event.pageY - this.props.editor.translate.top) / this.props.zoom });
+    this.setState({ resizing: true, mouseLeft: (event.pageX - this.props.editor.transform.left) / this.props.zoom, mouseTop: (event.pageY - this.props.editor.transform.top) / this.props.zoom });
   }
 
   onStopResizing = () => {

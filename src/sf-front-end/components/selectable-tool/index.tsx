@@ -4,7 +4,7 @@ import "./index.scss";
 
 import * as React from "react";
 import { inject } from "sf-core/decorators";
-import BoundingRect from "sf-core/geom/bounding-rect";
+import { BoundingRect } from "sf-core/geom";
 import { intersection } from "lodash";
 import { SelectAction } from "sf-front-end/actions";
 import { FrontEndApplication } from "sf-front-end/application";

@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
-import BoundingRect from "sf-core/geom/bounding-rect";
 import { startDrag } from "sf-front-end/utils/component";
+import { BoundingRect } from "sf-core/geom";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import { SelectAction, MouseAction, CANVAS_MOUSE_DOWN } from "sf-front-end/actions";
 

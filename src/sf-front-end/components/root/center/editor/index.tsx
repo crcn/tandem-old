@@ -17,7 +17,7 @@ export default class StageComponent extends React.Component<{ app: FrontEndAppli
 
     return (<div ref="container" className="m-editor-stage">
       <HeaderComponent {...this.props} />
-      <CanvasComponent {...this.props} zoom={this.props.editor.zoom} dependencies={this.props.app.dependencies} />
+      <CanvasComponent {...this.props} zoom={this.props.editor.transform.scale} dependencies={this.props.app.dependencies} />
       <FooterComponent {...this.props} />
     </div>);
   }

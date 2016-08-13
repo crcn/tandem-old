@@ -1,2 +1,3 @@
 export * from "./base";
-export { default as BoundingRect } from "./bounding-rect";
+export { BoundingRect } from "./bounding-rect";
+export { Transform } from "./transform";

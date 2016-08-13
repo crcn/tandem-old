@@ -41,8 +41,8 @@ export abstract class InsertTool extends BaseEditorTool {
     let top  = 0;
 
     if (capabilities.movable) {
-      left = (action.originalEvent.pageX - this.editor.translate.left) / this.editor.zoom;
-      top  = (action.originalEvent.pageY - this.editor.translate.top) / this.editor.zoom;
+      left = (action.originalEvent.pageX - this.editor.transform.left) / this.editor.transform.scale;
+      top  = (action.originalEvent.pageY - this.editor.transform.top) / this.editor.transform.scale;
     }
 
     entity.display.position = { left, top };
@@ -50,8 +50,8 @@ export abstract class InsertTool extends BaseEditorTool {
 
       startDrag(action.originalEvent, (event, { delta }) => {
 
-        const width  = (delta.x) / this.editor.zoom;
-        const height = (delta.y) / this.editor.zoom;
+        const width  = (delta.x) / this.editor.transform.scale;
+        const height = (delta.y) / this.editor.transform.scale;
 
         entity.display.bounds = new BoundingRect(left, top, left + width, top + height);
 

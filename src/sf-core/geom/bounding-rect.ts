@@ -1,4 +1,4 @@
-export default class BoundingRect {
+export class BoundingRect {
 
   constructor(
     public left: number,

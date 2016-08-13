@@ -1,6 +1,6 @@
 import { File } from "sf-common/models";
 import { IActor } from "sf-core/actors";
-import { IPosition } from "sf-core/geom";
+import { IPosition, Transform } from "sf-core/geom";
 import { Action } from "sf-core/actions";
 import { IEntity } from "sf-core/entities";
 import { Workspace } from "./workspace";
@@ -14,11 +14,11 @@ export interface IEditorTool extends IActor {
 
 export interface IEditor extends IActor {
   currentTool: IEditorTool;
-  translate: IPosition;
+  transform: Transform;
   readonly type: string;
   readonly cursor: string;
   activeEntity: IEntity;
-  zoom: number;
+
   readonly workspace: Workspace;
 }
 
