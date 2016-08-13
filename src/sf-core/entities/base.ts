@@ -42,4 +42,6 @@ export interface IVisibleEntity extends IEntity {
   readonly display: IEntityDisplay;
 }
 
-export interface IContainerEntity extends IEntity, IContainerNode { }
+export interface IContainerEntity extends IEntity, IContainerNode {
+  appendSourceChildNode(childSource: any);
+}

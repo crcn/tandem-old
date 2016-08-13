@@ -26,7 +26,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   onMouseDown = (event) => {
-    this.bus.execute(new MouseAction(CANVAS_MOUSE_DOWN, event));
+    this.bus.execute(new MouseAction(CANVAS_MOUSE_DOWN, event.nativeEvent));
   }
 
   get bus() {

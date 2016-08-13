@@ -3,6 +3,7 @@ import { IEntity, IVisibleEntity } from "sf-core/entities";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 
 import {
+  HTMLExpression,
   HTMLTextExpression,
   HTMLCommentExpression,
   HTMLElementExpression,
@@ -53,6 +54,12 @@ export class HTMLElementEntity extends Element implements IHTMLEntity {
         this.setAttribute(attribute.name, attribute.value);
       }
     }
+  }
+
+  appendSourceChildNode(...childNodes:Array<HTMLExpression>): IEntity {
+    this.source.appendChildNodes(...childNodes);
+    // TODO - this.context.engine.update();
+    return null;
   }
 
   static mapSourceChildren(source: HTMLElementExpression) {

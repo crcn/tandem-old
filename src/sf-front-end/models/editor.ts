@@ -5,6 +5,7 @@ import { Workspace } from "./workspace";
 import { KeyBinding } from "sf-front-end/key-bindings";
 import { IInjectable } from "sf-core/dependencies";
 import { ParallelBus } from "mesh";
+import { IEntity } from "sf-core/entities";
 import { IEditor, IEditorTool } from "./base";
 
 export const MIN_ZOOM = 0.02;
@@ -18,6 +19,10 @@ export class Editor implements IEditor {
   readonly type = "display";
 
   constructor(readonly workspace: Workspace) { }
+
+  get activeEntity(): IEntity {
+    return this.workspace.file.entity;
+  }
 
   get zoom() { return this._zoom; }
   set zoom(value: number) {
