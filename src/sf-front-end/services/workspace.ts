@@ -17,7 +17,6 @@ import {
 
 const FILES_COLLECTION = "files";
 
-@loggable()
 export class WorkspaceService extends BaseApplicationService<FrontEndApplication> {
 
   @inject(DEPENDENCIES_NS)
@@ -43,7 +42,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
   }
 
   zoom(action: ZoomAction) {
-    this.app.workspace.editor.transform.scale += action.delta;
+    this.app.workspace.editor.zoom += action.delta;
   }
 
   translate(action: TranslateAction) {

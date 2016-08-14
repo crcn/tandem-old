@@ -27,13 +27,30 @@ Fragment
   }
 
 Node
-  = _ node:(Comment/Element/TextNode) _ { return node; }
+  = _ node:(Comment/VoidElement/Element/TextNode) _ { return node; }
 
 Comment
   = '<!--' characters:CommentCharacter* '-->' { return new HTMLCommentExpression(characters.join(''), position()); }
 
 CommentCharacter
   = !'-->' character:. { return character; }
+
+VoidElement
+  = "<" nodeName:("area"/"base"/"br"/"col"/"command"/"embed"/"hr"/"img"/"input"/"keygen"/"link"/"meta"/"param"/"source"/"track"/"wbr") attributes:ElementAttributes (">"/"/>")? endTag:EndVoidTag? {
+
+    if (endTag && nodeName != endTag.name) {
+      expected("</" + nodeName + ">");
+    }
+
+    return new HTMLElementExpression(nodeName, attributes, [], position());
+  }
+
+EndVoidTag
+  = _ "</" name:("area"/"base"/"br"/"col"/"command"/"embed"/"hr"/"img"/"input"/"keygen"/"link"/"meta"/"param"/"source"/"track"/"wbr") ">" {
+    return {
+      name: name
+    };
+  }
 
 Element
   = ElementWithoutChildNodes

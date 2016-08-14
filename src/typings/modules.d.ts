@@ -46,3 +46,8 @@ declare module "pretty" {
 
   export = pretty;
 }
+
+declare module "ent" {
+  function encode(source: string): string;
+  function decode(source: string): string;
+}

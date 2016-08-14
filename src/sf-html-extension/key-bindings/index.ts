@@ -36,24 +36,10 @@ function createElementInsertToolClass(tagName: string) {
   };
 }
 
-class InsertTextTool extends InsertTool {
-  readonly cursor: string = "text";
-  readonly resizable: boolean = false;
-  @inject(DEPENDENCIES_NS)
-  private _dependencies: Dependencies;
-  get displayEntityToolFactory() {
-    return this._dependencies.query<EditorToolFactoryDependency>(textToolDependency.ns);
-  }
-
-  createSource() {
-    return parseHTML(`<span style="position:absolute;">Type Something</span>`).childNodes[0];
-  }
-}
 export const dependencies = [
   new GlobalKeyBindingDependency("t", class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
-      console.log("EXEC THIS THIS ");
-      this.bus.execute(new SetToolAction(<ClassFactoryDependency>this.dependencies.link(new ClassFactoryDependency(null, InsertTextTool))));
+      this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(textToolDependency.ns)));
     }
   })
 ];
@@ -62,8 +48,6 @@ const insertElementKeyBindings = {
   "d": "div",
   "s": "span"
 };
-
-
 
 for (const key in insertElementKeyBindings) {
   addElementKeyBinding(key, insertElementKeyBindings[key]);

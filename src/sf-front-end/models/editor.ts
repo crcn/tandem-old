@@ -29,9 +29,9 @@ export class Editor implements IEditor {
     return this.workspace.file.entity;
   }
 
-  get zoom() { return this._zoom; }
+  get zoom() { return this.transform.scale; }
   set zoom(value: number) {
-    this._zoom = Math.max(
+    this.transform.scale = Math.max(
       MIN_ZOOM,
       Math.min(MAX_ZOOM, value)
     );
@@ -42,6 +42,9 @@ export class Editor implements IEditor {
   }
 
   set currentTool(value: IEditorTool) {
+    if (this._currentTool) {
+      this._currentTool.dispose();
+    }
     this._currentTool = value;
     if (!value) return;
     this.cursor = value.cursor;

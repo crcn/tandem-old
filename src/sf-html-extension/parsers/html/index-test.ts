@@ -83,6 +83,14 @@ describe(__filename + `#`, () => {
       expect(element.attributes[1].value).to.equal("");
       expect(element.childNodes.length).to.equal(2);
     });
+
+    [
+      "br"
+    ].forEach((voidTagName) => {
+      it(`can parse <${voidTagName}>`, () => {
+        parse(`<${voidTagName}>`);
+      });
+    });
   });
 
   describe("comments#", () => {

@@ -153,6 +153,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
       position: "absolute",
       width: "100%",
       height: "100%",
+      overflow: "visible",
       border: "none"
     };
 
@@ -160,6 +161,13 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     if (!entity) return null;
 
     return (<IsolateComponent ref="isolate" ignoreInputEvents={true} onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
+      <style>
+        {
+          `html, body {
+            overflow: hidden;
+          }`
+        }
+      </style>
       <div
         onKeyDown={this.onKey}
         onMouseMove={this.onMouseEvent}

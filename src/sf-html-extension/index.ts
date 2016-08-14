@@ -3,7 +3,6 @@
 
  // components
  import { dependency as entityPreviewComponentDependency } from "./components/entity-preview";
- import { dependency as textToolComponentDependency } from "./components/text-tool";
 
  // models
  import { dependency as sfFileActiveRecordDependency } from "./models/sf-file";
@@ -32,7 +31,6 @@ export const dependency = [
 
   // components
   entityPreviewComponentDependency,
-  textToolComponentDependency,
 
   // services
   pasteEntityService,

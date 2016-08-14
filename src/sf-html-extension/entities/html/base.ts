@@ -1,7 +1,8 @@
-import { HTMLNodeDisplay } from "./displays";
-import { IEntity, IEntityEngine, IVisibleEntity, IElementEntity, findEntitiesBySource } from "sf-core/entities";
-import { EntityFactoryDependency } from "sf-core/dependencies";
+import { decode } from "ent";
 import { ChangeAction } from "sf-core/actions";
+import { HTMLNodeDisplay } from "./displays";
+import { EntityFactoryDependency } from "sf-core/dependencies";
+import { IEntity, IEntityEngine, IVisibleEntity, IElementEntity, findEntitiesBySource } from "sf-core/entities";
 
 import {
   HTMLExpression,
@@ -197,7 +198,7 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
 
   set nodeValue(value: any) {
     if (this.source) this.source.nodeValue = value;
-    if (this._node) this._node.nodeValue = value;
+    if (this._node) this._node.nodeValue = decode(value);
   }
 
   willUnmount() {
@@ -215,7 +216,7 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
 
 export class HTMLTextEntity extends HTMLValueNodeEntity<HTMLTextExpression> {
   createDOMNode(nodeValue: any) {
-    return document.createTextNode(nodeValue);
+    return document.createTextNode(decode(nodeValue));
   }
 }
 

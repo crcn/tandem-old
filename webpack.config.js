@@ -49,6 +49,10 @@ module.exports =  {
         loader: getModuleDirectory("url-loader") + "?limit=1000"
       },
       {
+        test: /\.json$/,
+        loader: getModuleDirectory("json-loader")
+      },
+      {
         test: /\.css$/,
         loader: [
           getModuleDirectory("style-loader"),
