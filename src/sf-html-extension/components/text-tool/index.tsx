@@ -2,20 +2,36 @@ import "./index.scss";
 
 import * as React from "react";
 // import Reference from "sf-common/reference";
-import WYSIWYGEditor from "sf-front-end/components/wysiwyg";
 import { FrontEndApplication } from "sf-front-end/application";
 import { TextEditCompleteAction } from "sf-html-extension/actions";
 import { Workspace, DisplayEntitySelection } from "sf-front-end/models";
 import { VisibleHTMLElementEntity } from "sf-html-extension/entities/html";
+import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
+import { parse as parseHTML } from "sf-html-extension/parsers/html";
 
 class TextToolComponent extends React.Component<{ app: FrontEndApplication, zoom: number, workspace: Workspace }, any> {
 
+  private _input: HTMLSpanElement;
+
   componentDidMount() {
-    (this.refs as any).input.focus();
-    (this.refs as any).input.select();
+    const element =  this.selection.section.targetNode as any as Element;
+
+    this._input = document.createElement("div");
+    this._input.addEventListener("input", this.onKeyDown);
+    this._input.tabIndex = 0;
+    this._input.innerHTML = element.textContent;
+    this._input.setAttribute("contenteditable", "true");
+    (this.refs as any).container.appendChild(this._input);
+    this._input.focus();
   }
 
-  onKeyDown(event) {
+  get selection() {
+    return (this.props.workspace.selection as DisplayEntitySelection)[0] as VisibleHTMLElementEntity;
+  }
+
+  onKeyDown = (event) => {
+    this.selection.source.childNodes = parseHTML(this._input.innerHTML).childNodes;
+    this.props.workspace.file.save();
 
     // TODO - want to support newline characters at some point
     if (event.keyCode === 13) {
@@ -34,15 +50,13 @@ class TextToolComponent extends React.Component<{ app: FrontEndApplication, zoom
 
   render() {
     const selection = this.props.workspace.selection as DisplayEntitySelection;
-    const zoom      = this.props.zoom;
     const cstyle    = selection.display.bounds;
 
     const style = {
       position : "absolute",
       left     : cstyle.left,
       top      : cstyle.top,
-      zoom     : this.props.zoom,
-      zIndex   : 999
+      zIndex   : 99999
     };
 
     const element = (selection[0] as VisibleHTMLElementEntity).section.targetNode as any as Element;
@@ -60,16 +74,11 @@ class TextToolComponent extends React.Component<{ app: FrontEndApplication, zoom
       overflow      : "show"
     };
 
-    return <div style={style} className="reset-all m-text-tool">
-      <WYSIWYGEditor
-        multiline={false}
-        onKeyDown={this.onKeyDown.bind(this)}
-        onBlur={this.onBlur.bind(this)}
-        ref="input"
-        style={inputStyle}
-        reference={{ getValue: () => element.nodeValue, setValue: (value) => element.nodeValue = value }} />
-    </div>
+    return <div style={Object.assign(style, inputStyle)} ref="container" className="m-text-tool">
+    </div>;
   }
 }
 
-export default TextToolComponent;
+export const dependency = new ReactComponentFactoryDependency("components/tools/text/edit", TextToolComponent);
+
+

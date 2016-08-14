@@ -46,7 +46,8 @@ export class KeyBindingManager {
 
   private _bind(key: string, actor: IActor) {
     if (!this._mousetrap) return;
-    this._mousetrap.bind(key, (event) => {
+    this._mousetrap.bind(key, function (event) {
+      if (event.target.dataset.mousetrap) return;
       event.preventDefault();
       actor.execute(new KeyCommandAction(key));
     });

@@ -159,7 +159,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     const entity = this.props.workspace.file.entity;
     if (!entity) return null;
 
-    return (<IsolateComponent ref="isolate" onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
+    return (<IsolateComponent ref="isolate" ignoreInputEvents={true} onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
       <div
         onKeyDown={this.onKey}
         onMouseMove={this.onMouseEvent}

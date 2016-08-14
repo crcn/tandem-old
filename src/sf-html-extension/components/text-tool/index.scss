@@ -1,0 +1,8 @@
+.m-text-tool {
+  &:not([contenteditable="true"]) {
+    all: unset;
+  }
+  & div {
+    -webkit-text-fill-color: transparent;
+  }
+}

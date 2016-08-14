@@ -53,7 +53,9 @@ export default class IsolateComponent extends React.Component<any, any> {
   }
 
   _addListeners() {
-    bubbleIframeEvents((this.refs as any).container);
+    bubbleIframeEvents((this.refs as any).container, {
+      ignoreInputEvents: this.props.ignoreInputEvents
+    });
   }
 
   render() {
