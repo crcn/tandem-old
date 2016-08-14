@@ -1,18 +1,18 @@
-import BaseObject from 'saffron-common/object/base';
+import { IActor } from "sf-core/actors";
+import { Action } from "sf-core/actions";
+import TextEditor from "./text-editor";
 
 /**
  * TODO - marks a selection of text. Also used for the cursor
  */
 
-class Marker extends BaseObject {
+class Marker implements IActor {
 
-  constructor({ editor, notifier }) {
-    super({
-      editor: editor,
-      notifier: notifier,
-      position: 0,
-      length  : 0
-    });
+  private _position: number = 0;
+  private _length: number = 0;
+
+  constructor(readonly editor: TextEditor, readonly bus: IActor) {
+
   }
 
   get endPosition() {
@@ -39,9 +39,7 @@ class Marker extends BaseObject {
     this.position = position;
     this.length   = length;
 
-    this.notifier.notify({
-      type: 'changeMarkerSelection'
-    });
+    this.bus.execute(new Action("changeMarkerSelection"));
   }
 
   getSelectedText() {
@@ -68,9 +66,7 @@ class Marker extends BaseObject {
     this.length = 0;
   }
 
-  notify(message) {
-
-  }
+  execute(message) { }
 }
 
 export default Marker;

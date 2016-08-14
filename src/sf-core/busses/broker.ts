@@ -1,13 +1,14 @@
 import { Action } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
 import { IBrokerBus } from "./base";
+import { ParallelBus } from "mesh";
 
 export class BrokerBus implements IBrokerBus {
 
   readonly actors: Array<IActor>;
   private _bus: IActor;
 
-  constructor(busClass: { new(actors: Array<IActor>): IActor }, ...actors: Array<IActor>) {
+  constructor(busClass: { new(actors: Array<IActor>): IActor } = ParallelBus, ...actors: Array<IActor>) {
     this._bus = new busClass(this.actors = []);
     this.register(...actors);
   }

@@ -1,35 +1,40 @@
-import BaseObject from 'saffron-common/object/base';
 import calcPosition from './calc-position';
 import encode from './encode';
+import Line from "./line";
 
-class Token extends BaseObject {
+class Token {
 
-  constructor({ value, type, length, line, editor }) {
-    super({
-      value: value,
-      encodedValue: encode(value),
-      line: line,
-      editor: editor,
-      type: type,
-      length: length || value.length
-    });
+  public encodedValue: any;
+
+  constructor(
+    public type: string,
+    private _value: string,
+    public length: number = _value.length,
+    public line: Line,
+    public editor: any
+  ) {
+
   }
 
   getColumn() {
     return this.line.tokens.indexOf(this);
   }
 
-  setValue(value) {
-    this.encodedValue = encode(this.value = value);
-    this.editor.splice(this.getPosition(), this.length, value);
+  get value() {
+    return this._value;
+  }
+
+  set value(value) {
+    this.encodedValue = encode(this._value = value);
+    this.editor.splice(this.position, this.length, value);
   }
 
   toString() {
     return this.encodedValue;
   }
 
-  getPosition() {
-    return this.line.getPosition() + calcPosition(this, this.line.tokens);
+  get position() {
+    return this.line.position + calcPosition(this, this.line.tokens);
   }
 }
 

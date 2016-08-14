@@ -1,29 +1,25 @@
-import BaseObject from 'saffron-common/object/base';
 import Token from './token';
+import TextEditor from "./text-editor";
 import calcPosition from './calc-position';
 
-class Line extends BaseObject {
+class Line {
 
-  constructor({ editor }) {
-    super({ editor });
-    this.length  = 0;
-    this.tokens = [];
+  public tokens: Array<Token> = [];
+  public length: number  = 0;
+
+  constructor(readonly editor: TextEditor) {
   }
 
   addRawToken(token) {
     this.length += token.length;
-    this.tokens.push(Token.create({
-      ...token,
-      editor: this.editor,
-      line: this
-    }));
+    this.tokens.push(new Token(token.type, token.value, token.length, this, this.editor));
   }
 
   calculateWidth() {
     return this.editor.textRuler.calculateSize(this.toString())[0];
   }
 
-  getIndex() {
+  get index() {
     return this.editor.lines.indexOf(this);
   }
 
@@ -45,11 +41,11 @@ class Line extends BaseObject {
     return this.tokens.indexOf(this.getTokenFromColumn(column));
   }
 
-  getPosition() {
+  get position() {
     return calcPosition(this, this.editor.lines);
   }
 
-  getHeight() {
+  get height() {
     return this.editor.textRuler.calculateSize('aZ')[1];
   }
 

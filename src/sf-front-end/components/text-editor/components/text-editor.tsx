@@ -6,13 +6,13 @@ import TextEditor from '../controllers/text-editor';
 import { startDrag } from 'sf-front-end/utils/component';
 import LineComponent from './line';
 import CaretComponent from './caret';
-import { ParallelBus } from 'mesh';
+import { BrokerBus } from 'sf-core/busses';
 import HighlightComponent from './highlight';
 import { translateAbsoluteToRelativePoint } from 'sf-front-end/utils/html';
 
 class TextEditorComponent extends React.Component<any, any> implements IActor {
 
-  readonly bus: ParallelBus;
+  readonly bus: BrokerBus;
   private _timer: any;
   private _idleTimer: any;
   private _editor: any;
@@ -26,7 +26,7 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
       style : {}
     };
 
-    this.bus = new ParallelBus([this]);
+    this.bus = new BrokerBus();
   }
 
   execute(message) {
@@ -72,9 +72,7 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
       return this._editor;
     }
 
-    this._editor = new TextEditor(Object.assign({
-      bus: this.bus
-    }, props));
+    this._editor = new TextEditor(this.bus);
 
     return this._editor;
   }

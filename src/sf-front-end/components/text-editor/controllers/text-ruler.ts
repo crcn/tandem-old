@@ -1,5 +1,3 @@
-import BaseObject from 'saffron-common/object/base';
-import ObservableObject from 'saffron-common/object/observable';
 import encode from './encode';
 import {
   calculateLengthInPixels
@@ -9,30 +7,20 @@ import {
  * Simple text width
  */
 
-class TextRuler extends BaseObject {
+class TextRuler {
 
-  constructor({ style }) {
-    super({
-      style
-    });
+  private _sizes: any = {};
+  private _span: HTMLSpanElement;
 
-    this._sizes = {};
+  constructor(private _style: any = {}) { }
 
-    this._style = ObservableObject.create(Object.assign({
-      notifier: {
-        notify: () => {
-          this._sizes = {};
-        }
-      }
-    }, style));
+  get style(): any {
+    return this._style;
   }
 
-  setProperties(properties) {
-    super.setProperties(properties);
-
-    if (properties.style && this._style) {
-      this._style.setProperties(properties.style);
-    }
+  set style(value: any) {
+    this._style = value;
+    this._sizes = {};
   }
 
   /**
@@ -77,7 +65,6 @@ class TextRuler extends BaseObject {
     // in its entirety - calculating individual characters yields
     // incorrect values.
     return this.calculateCharacterSize(text);
-
   }
 
   /**

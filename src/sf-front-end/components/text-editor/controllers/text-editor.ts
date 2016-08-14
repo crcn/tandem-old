@@ -2,39 +2,29 @@ import Line from './line';
 import Caret from './caret';
 import Marker from './marker';
 import TextRuler from './text-ruler';
-import BaseObject from 'saffron-common/object/base';
+import { IActor } from "sf-core/actors";
+import { BrokerBus } from "sf-core/busses";
+import { SourceChangeAction } from "../actions";
 import StringTokenizer from 'saffron-common/tokenizers/string';
 import { translateLengthToInteger } from 'saffron-common/utils/html/css/translate-style';
 import { SPACE, NEW_LINE, TAB } from 'saffron-common/tokenizers/token-types';
-import { clone } from 'saffron-common/utils/object';
 
-class TextEditor extends BaseObject {
+class TextEditor {
 
-  constructor(props) {
+  public lines: Array<Line>;
+  public textRuler: TextRuler;
+  public marker: Marker;
+  public caret: Caret;
+  private _source: string;
 
-    if (!props.style) props.style = {};
-    if (!props.tokenizer) props.tokenizer = StringTokenizer.create();
-    if (!props.maxColumns) props.maxColumns = Infinity;
+  constructor(public bus: BrokerBus, public maxColumns: number = Infinity, public tokenizer: any = new StringTokenizer(), private _style: any = {}) {
 
-    super(props);
+    this.textRuler = new TextRuler(this.style);
+    this.marker = new Marker(this, this.bus);
+    this.caret = new Caret(this, this.marker, this.bus);
 
-    this.textRuler = TextRuler.create({
-      style: this.style
-    });
 
-    this.marker = Marker.create({
-      notifier: this.notifier,
-      editor: this
-    });
-
-    this.caret = Caret.create({
-      notifier: this.notifier,
-      editor: this,
-      marker: this.marker
-    });
-
-    this.notifier.push(this.caret);
-    this.notifier.push(this.marker);
+    this.bus.register(this.caret, this.marker);
   }
 
   get source() {
@@ -43,25 +33,18 @@ class TextEditor extends BaseObject {
 
   set source(value) {
     this._source = String(value || '');
+    if (this.style.whitespace === "nowrap") {
+      this._source = String(this._source).replace(/[\n\r]/g, '')
+    }
+    this._createLines();
   }
 
-  /**
-   */
+  get style() {
+    return this._style;
+  }
 
-  setProperties(properties) {
-    super.setProperties(properties);
-
-    if (properties.source) {
-      if (this.style.whiteSpace === 'nowrap') {
-        this.source = String(properties.source).replace(/[\n\r]/g, '');
-      }
-
-      // FIXME: text ruler dirty type check here is kinda gross
-      if (properties.style && this.textRuler) {
-        this.textRuler.setProperties(properties);
-      }
-    }
-
+  set style(value: any) {
+    this.textRuler.style = value;
     this._createLines();
   }
 
@@ -98,7 +81,7 @@ class TextEditor extends BaseObject {
    */
 
   getPositionFromCell(cell) {
-    return this.lines[cell.row].getPosition() + cell.column;
+    return this.lines[cell.row].position + cell.column;
   }
 
   /**
@@ -124,14 +107,8 @@ class TextEditor extends BaseObject {
 
   splice(start, count, repl = '') {
     var source = this.source.substr(0, start) + repl + this.source.substr(start + count);
-    this.setProperties({
-      source: source
-    });
-
-    this.notifier.notify({
-      type: 'sourceChange',
-      source: this.source
-    });
+    this.source = source;
+    this.bus.execute(new SourceChangeAction(this.source));
   }
 
   calculateWidth() {
@@ -179,7 +156,7 @@ class TextEditor extends BaseObject {
     var addLine = () => {
       // do not add another line if there is no token stuff
       if (cline && !cline.length) return cline;
-      cline = Line.create({ editor: this });
+      cline = new Line(this)
       lines.push(cline);
       return cline;
     }
@@ -207,11 +184,11 @@ class TextEditor extends BaseObject {
               buffer = buffer.substr(0, buffer.length - 1);
             }
 
-            var c1 = clone(token);
+            var c1 = Object.assign({}, token);
             c1.length = buffer.length;
             c1.value = buffer;
 
-            var c2 = clone(token);
+            var c2 = Object.assign({}, token);
             c2.value = c2.value.substr(buffer.length);
             c2.length = c2.value.length;
 

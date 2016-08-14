@@ -1,13 +1,11 @@
-import BaseObject from 'saffron-common/object/base';
+import TextEditor from "./text-editor";
+import Marker from "./marker";
+import { IActor } from "sf-core/actors";
 
-class Caret extends BaseObject {
+class Caret implements IActor {
 
-  constructor({ editor, marker, notifier }) {
-    super({
-      editor   : editor,
-      marker   : marker,
-      notifier : notifier
-    });
+  constructor(readonly editor: TextEditor, readonly marker: Marker, readonly bus: IActor) {
+
   }
 
   get position() {
@@ -101,8 +99,7 @@ class Caret extends BaseObject {
     return this.editor.getCellFromPosition(this.position);
   }
 
-  notify(message) {
-  }
+  execute(message) { }
 }
 
 export default Caret;
