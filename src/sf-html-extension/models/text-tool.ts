@@ -71,6 +71,7 @@ export class TextTool extends BaseEditorTool {
     // don't want that since it conflicts with out paning tool.
     requestAnimationFrame(() => {
       this._targetNode.ownerDocument.body.scrollLeft = 0;
+      this._targetNode.ownerDocument.body.scrollTop  = 0;
     })
   }
 
