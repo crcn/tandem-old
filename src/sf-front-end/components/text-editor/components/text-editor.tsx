@@ -2,7 +2,7 @@ import './text-editor.scss';
 
 import * as React from 'react';
 import { IActor } from "sf-core/actors";
-import TextEditor from '../controllers/text-editor';
+import TextEditor from '../models/text-editor';
 import { startDrag } from 'sf-front-end/utils/component';
 import LineComponent from './line';
 import CaretComponent from './caret';

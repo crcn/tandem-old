@@ -65,7 +65,7 @@
 }
 
 .blink {
-  // animation: blink 2s steps(2, start) infinite;
+  animation: blink 2s steps(2, start) infinite;
   -webkit-animation: blink 0.75s steps(2, start) infinite;
 }
 @keyframes blink {
