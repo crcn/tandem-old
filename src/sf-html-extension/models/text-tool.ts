@@ -72,7 +72,7 @@ export class TextTool extends BaseEditorTool {
     requestAnimationFrame(() => {
       this._targetNode.ownerDocument.body.scrollLeft = 0;
       this._targetNode.ownerDocument.body.scrollTop  = 0;
-    })
+    });
   }
 
   private get _targetEntity() {

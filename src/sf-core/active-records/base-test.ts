@@ -139,7 +139,7 @@ describe(__filename + "#", () => {
       await ar.save();
       ar.sync();
       await broker.execute(new UpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id }));
-      await timeout(20);
+      await timeout(50);
       expect(ar.name).to.equal("b");
       ar.dispose();
       await broker.execute(new UpdateAction(ar.collectionName, { name: "c" }, { _id: ar._id }));
@@ -160,6 +160,7 @@ describe(__filename + "#", () => {
       ar2.sync();
 
       await broker.execute(new UpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id }));
+      await timeout(50);
       expect(ar.name).to.equal("b");
       expect(ar2.name).to.equal("a2");
 
