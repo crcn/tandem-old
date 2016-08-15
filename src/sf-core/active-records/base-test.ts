@@ -139,7 +139,7 @@ describe(__filename + "#", () => {
       await ar.save();
       ar.sync();
       await broker.execute(new UpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id }));
-      await timeout(50);
+      await timeout(10);
       expect(ar.name).to.equal("b");
       ar.dispose();
       await broker.execute(new UpdateAction(ar.collectionName, { name: "c" }, { _id: ar._id }));

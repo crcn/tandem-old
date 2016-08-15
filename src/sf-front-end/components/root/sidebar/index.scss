@@ -1,0 +1,9 @@
+@import "sf-front-end/scss/variables";
+
+.m-sidebar {
+  width: 250px;
+  height: 100%;
+  color: $color-blue-9;
+  border-left: 2px solid $color-blue-10;
+  background-color: $color-blue-0;
+}

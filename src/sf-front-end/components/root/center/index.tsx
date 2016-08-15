@@ -4,12 +4,12 @@ import * as React from "react";
 import EditorCommponent from "./editor";
 import RegisteredComponent from "sf-front-end/components/registered";
 import { FrontEndApplication } from "sf-front-end/application";
+import { Workspace } from "sf-front-end/models";
 
-export default class CenterComponent extends React.Component<{ app: FrontEndApplication }, any> {
+export default class CenterComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace }, any> {
   render() {
-    const workspace      = this.props.app.workspace;
     return (<div className="m-editor-center">
-      {workspace ? <EditorCommponent {...this.props} editor={workspace.editor} workspace={workspace} /> : undefined}
+      <EditorCommponent {...this.props} editor={this.props.workspace.editor} workspace={this.props.workspace} />
     </div>);
   }
 }

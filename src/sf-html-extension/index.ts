@@ -3,6 +3,7 @@
 
  // components
  import { dependency as entityPreviewComponentDependency } from "./components/entity-preview";
+ import { dependency as cssPaneComponentDependency } from "./components/css-pane";
 
  // models
  import { dependency as sfFileActiveRecordDependency } from "./models/sf-file";
@@ -30,6 +31,7 @@ import { MimeTypeDependency } from "sf-core/dependencies";
 export const dependency = [
 
   // components
+  cssPaneComponentDependency,
   entityPreviewComponentDependency,
 
   // services

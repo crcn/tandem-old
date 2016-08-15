@@ -77,3 +77,13 @@ export class EditorToolFactoryDependency extends ClassFactoryDependency {
     return dependencies.query<EditorToolFactoryDependency>([EDITOR_TOOL_NS, editorType, id].join("/"));
   }
 }
+
+export const PANE_COMPONENT_NS = "components/panes";
+export class PaneComponentFactoryDependency extends ReactComponentFactoryDependency {
+  constructor(readonly id: string, readonly componentClass: React.ComponentClass<any>) {
+    super([PANE_COMPONENT_NS, id].join("/"), componentClass);
+  }
+  clone() {
+    return new PaneComponentFactoryDependency(this.id, this.componentClass);
+  }
+}
