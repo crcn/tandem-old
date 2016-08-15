@@ -31,6 +31,9 @@ describe(__filename + "#", () => {
       super("entity");
     }
     dispose() { }
+    toSource() {
+      return this.source.toString();
+    }
   }
 
   it("can be created", () => {

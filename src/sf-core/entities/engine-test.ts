@@ -34,6 +34,9 @@ describe(__filename + "#", () => {
       }
       cloneNode() { return null; }
       dispose() { }
+      toSource() {
+        return this.source.toString();
+      }
     }
     const dependencies = new Dependencies();
     dependencies.register(new EntityFactoryDependency("custom", CustomEntity));
@@ -56,6 +59,9 @@ describe(__filename + "#", () => {
       }
       cloneNode() { return null; }
       dispose() { }
+      toSource() {
+        return this.source.toString();
+      }
     }
 
     class TextEntity extends Node implements IEntity {
@@ -66,6 +72,9 @@ describe(__filename + "#", () => {
       }
       cloneNode() { return null; }
       dispose() { }
+      toSource() {
+        return this.source.toString();
+      }
     }
 
     const dependencies = new Dependencies(

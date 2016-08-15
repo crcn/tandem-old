@@ -5,9 +5,13 @@ import PaneComponent from "sf-front-end/components/pane";
 import { HTMLElementEntity } from "sf-html-extension/entities/html";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
 import { PaneComponentFactoryDependency } from "sf-front-end/dependencies";
-import { CSSExpression, CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/parsers/css/expressions";
+import { CSSExpression, CSSStyleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/parsers/css/expressions";
 
-class StyleDeclarationComponent extends React.Component<{ declaration: any }, any> {
+class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, declaration: CSSStyleDeclarationExpression }, any> {
+  onInput = (event) => {
+    this.props.declaration.value = new CSSLiteralExpression(event.target.value, null);
+    this.props.workspace.file.save();
+  }
   render() {
     const declaration = this.props.declaration;
     return <div className="m-css-style-pane--declaration row">
@@ -15,16 +19,16 @@ class StyleDeclarationComponent extends React.Component<{ declaration: any }, an
         { declaration.key }
       </div>
       <div className="m-css-style-pane--declaration--value">
-        { String(declaration.value) }
+        <input ref="value" type="text" value={String(declaration.value)} onInput={this.onInput} />
       </div>
     </div>;
   }
 }
+
 class StylePaneComponent extends React.Component<any, any> {
   render() {
     const entity: HTMLElementEntity = this.props.entity;
-    const styleSource: string = entity.getAttribute("style") || "";
-    const styleExpression: CSSStyleExpression = parseCSS(styleSource) as CSSStyleExpression;
+    const styleExpression: CSSStyleExpression = entity.styleExpressions[0];
     return <div className="m-css-style-pane">
       {
         styleExpression.declarations.map((declaration) => (
@@ -44,7 +48,7 @@ export class CSSPaneComponent extends React.Component<{ workspace: Workspace }, 
 
     return <div className="m-css-pane m-pane-container--content">
       <PaneComponent title="style">
-        <StylePaneComponent entity={selection[0]} />
+        <StylePaneComponent {...this.props} entity={selection[0]} />
       </PaneComponent>
     </div>;
   }

@@ -41,6 +41,11 @@ export interface IEntity extends INode, IDisposable {
    */
 
   engine: IEntityEngine;
+
+  /**
+   */
+
+  toSource(): string;
 }
 
 export interface IVisibleEntity extends IEntity {

@@ -48,16 +48,24 @@ export class HTMLElementExpression extends HTMLExpression {
     super(HTML_ELEMENT, nodeName, position);
   }
 
-  setAttribute(name: any, value: string) {
+  setAttribute(name: string, value: string) {
     let found = false;
     for (const attribute of this.attributes) {
-      if (attribute.name === value) {
+      if (attribute.name === name) {
         attribute.value = value;
         found = true;
       }
     }
     if (!found) {
       this.attributes.push(new HTMLAttributeExpression(name, value, null));
+    }
+  }
+
+  getAttribute(name: string) {
+    for (const attribute of this.attributes) {
+      if (attribute.name === name) {
+        return attribute.value;
+      }
     }
   }
 

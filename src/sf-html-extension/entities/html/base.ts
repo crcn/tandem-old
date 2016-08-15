@@ -3,6 +3,8 @@ import { ChangeAction } from "sf-core/actions";
 import { HTMLNodeDisplay } from "./displays";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { IEntity, IEntityEngine, IVisibleEntity, IElementEntity, findEntitiesBySource } from "sf-core/entities";
+import { parse as parseCSS } from "sf-html-extension/parsers/css";
+import { CSSStyleExpression } from "sf-html-extension/parsers/css/expressions";
 
 import {
   HTMLExpression,
@@ -44,6 +46,7 @@ export class HTMLElementEntity extends Element implements IHTMLEntity, IElementE
   // do not fit into a particular category. This may change later on.
   readonly type: string = null;
   public engine: IEntityEngine;
+  private _styleExpression: CSSStyleExpression;
 
   public section: GroupNodeSection|NodeSection;
   constructor(readonly source: HTMLElementExpression) {
@@ -59,9 +62,38 @@ export class HTMLElementEntity extends Element implements IHTMLEntity, IElementE
     }
   }
 
+  get styleExpression(): CSSStyleExpression {
+    if (this._styleExpression) return this._styleExpression;
+    const style = this.getAttribute("style");
+    return this._styleExpression = style ? <CSSStyleExpression>parseCSS(style) : new CSSStyleExpression([], null);
+  }
+
   setSourceAttribute(key: string, value: string) {
     this.source.setAttribute(key, value);
-    // TODO - this/context.engine.update();
+  }
+
+  toSource() {
+    if (this.styleExpression.declarations.length) {
+      this.source.setAttribute("style", this.styleExpression.toString());
+    }
+
+    if (this.nodeName.toLowerCase() !== "#document-fragment") {
+      console.log(this.source.getAttribute("style"));
+    }
+    console.log(this.nodeName);
+
+    for (const child of this.childNodes) {
+      (<any>child).toSource();
+    }
+
+    return this.source.toString();
+  }
+
+  get styleExpressions(): Array<CSSStyleExpression> {
+
+    const expressions = [this.styleExpression];
+
+    return expressions;
   }
 
   async appendSourceChildNode(childNode: HTMLExpression): Promise<Array<IEntity>> {
@@ -194,6 +226,10 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
 
   get nodeValue(): any {
     return this.source.nodeValue;
+  }
+
+  toSource() {
+    return this.source.toString();
   }
 
   set nodeValue(value: any) {

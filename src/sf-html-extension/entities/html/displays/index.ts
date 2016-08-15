@@ -227,8 +227,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
   }
 
   private _updateStyles = () => {
-    const style = this.entity.getAttribute("style") || "";
-    this._styleExpression = <CSSStyleExpression>parseCSS(style);
+    this._styleExpression = this.entity.styleExpression;
     this._style = {};
     this._declarationByKey = {};
     for (const declaration of this._styleExpression.declarations) {

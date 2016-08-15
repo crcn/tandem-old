@@ -47,7 +47,7 @@ export class KeyBindingManager {
   private _bind(key: string, actor: IActor) {
     if (!this._mousetrap) return;
     this._mousetrap.bind(key, function (event) {
-      if (event.target.dataset.mousetrap) return;
+      if (event.target.dataset.mousetrap || /input|textarea/i.test(event.target.nodeName) || event.target.contentEditable === "true") return;
       event.preventDefault();
       actor.execute(new KeyCommandAction(key));
     });
