@@ -1,5 +1,5 @@
 import { decode } from "ent";
-import { ChangeAction } from "sf-core/actions";
+import { ChangeAction, AttributeChangeAction } from "sf-core/actions";
 import { HTMLNodeDisplay } from "./displays";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { IEntity, IEntityEngine, IVisibleEntity, IElementEntity, findEntitiesBySource } from "sf-core/entities";
@@ -211,6 +211,8 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
     }
 
     this.attributes.set(name, value);
+
+    this.notify(new AttributeChangeAction(name, value));
   }
 
   cloneNode(deep?: boolean) {
