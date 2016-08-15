@@ -90,7 +90,8 @@ export class SfFile extends EntityFile implements IInjectable {
     // is a bit problematic since there are a few unintended side effects from the sort of thing. For instance,
     // there is no way to properly format *new* HTML code added by the editor according to the user's preferences. The
     // editor should override whitespaces because of edges such as this.
-    this.content = pretty(this._entity.toSource());
+    this._entity.updateSource();
+    this.content = pretty(this._entity.source.toString());
 
     return super.save();
   }

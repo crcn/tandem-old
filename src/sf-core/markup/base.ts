@@ -175,7 +175,44 @@ export abstract class ContainerNode extends Node implements IContainerNode {
   }
 }
 
-class Attributes extends Array<Attribute> { }
+export class Attributes extends Array<Attribute> {
+
+  has(name: string) {
+    for (const attribute of this) {
+      if (attribute.name === name) return true;
+    }
+    return false;
+  }
+
+  set(name: string, value: any) {
+    let found = false;
+    for (const attribute of this) {
+      if (attribute.name === name) {
+        attribute.value = value;
+        found = true;
+      };
+    }
+    if (!found) {
+      this.push(new Attribute(name, value));
+    }
+  }
+
+  get(name: string) {
+    for (const attribute of this) {
+      if (attribute.name === name) return attribute.value;
+    }
+  }
+
+  remove(name: string) {
+    for (let i = this.length; i--; ) {
+      const attribute = this[i];
+      if (attribute.name === name) {
+        this.splice(i, 1);
+        return;
+      }
+    }
+  }
+}
 
 /**
  * Element examples:
@@ -183,7 +220,7 @@ class Attributes extends Array<Attribute> { }
  */
 
 export class Element extends ContainerNode implements IElement {
-  readonly attributes: Attributes = [];
+  readonly attributes: Attributes = new Attributes();
   readonly nodeName: string;
 
   constructor(nodeName: string) {
@@ -194,39 +231,18 @@ export class Element extends ContainerNode implements IElement {
   }
 
   hasAttribute(key: string) {
-    for (const attribute of this.attributes) {
-      if (attribute.name === key) return true;
-    }
-    return false;
+    return this.attributes.has(key);
   }
 
   removeAttribute(key: string) {
-    for (let i = this.attributes.length; i--; ) {
-      const attribute = this.attributes[i];
-      if (attribute.name === key) {
-        this.attributes.splice(i, 1);
-        return;
-      }
-    }
+    return this.attributes.remove(key);
   }
 
   getAttribute(key: string): any {
-    for (const attribute of this.attributes) {
-      if (attribute.name === key) return attribute.value;
-    }
+    return this.attributes.get(key);
   }
   setAttribute(key: string, value: any) {
-    let found = false;
-    for (const attribute of this.attributes) {
-      if (attribute.name === key) {
-        attribute.value = value;
-        found = true;
-      };
-    }
-    if (!found) {
-      this.attributes.push(new Attribute(key, value));
-    }
-
+    this.attributes.set(key, value);
     this.notify(new AttributeChangeAction(key, value));
   }
 

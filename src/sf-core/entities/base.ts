@@ -43,9 +43,10 @@ export interface IEntity extends INode, IDisposable {
   engine: IEntityEngine;
 
   /**
+   * update source from props on this entity
    */
 
-  toSource(): string;
+  updateSource();
 }
 
 export interface IVisibleEntity extends IEntity {
@@ -53,9 +54,9 @@ export interface IVisibleEntity extends IEntity {
 }
 
 export interface IContainerEntity extends IEntity, IContainerNode {
+
+  // deprecate this since we have updateSource()
   appendSourceChildNode(childSource: any): Promise<Array<IEntity>>;
 }
 
-export interface IElementEntity extends IContainerEntity {
-  setSourceAttribute(key: string, value: string): void;
-}
+export interface IElementEntity extends IContainerEntity { }

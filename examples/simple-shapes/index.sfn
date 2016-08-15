@@ -1,9 +1,3 @@
-<div style="color:white; background-color: blue; padding:10px 40px; position: absolute; border-radius:10px; top:75px; left:65px;">
-  1
-</div>
-<div style="color:white; background-color: blue; padding:10px 40px; position: absolute; border-radius:10px; top:120px; left:210px;">
-  2
-</div>
-<div style="color:white; background-color: blue; padding:10px 40px; position: absolute; border-radius:10px; top:143px; left:59px;">
-  4
+<div style="color:red;position:absolute;background-color:orange; padding:10px;">
+  Hello World
 </div>

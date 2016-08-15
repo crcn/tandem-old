@@ -34,8 +34,7 @@ describe(__filename + "#", () => {
       }
       cloneNode() { return null; }
       dispose() { }
-      toSource() {
-        return this.source.toString();
+      updateSource() {
       }
     }
     const dependencies = new Dependencies();
@@ -59,7 +58,7 @@ describe(__filename + "#", () => {
       }
       cloneNode() { return null; }
       dispose() { }
-      toSource() {
+      updateSource() {
         return this.source.toString();
       }
     }
@@ -72,8 +71,8 @@ describe(__filename + "#", () => {
       }
       cloneNode() { return null; }
       dispose() { }
-      toSource() {
-        return this.source.toString();
+      updateSource() {
+
       }
     }
 

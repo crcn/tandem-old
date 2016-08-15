@@ -38,7 +38,13 @@ describe(__filename + "#", () => {
     document.body.appendChild(div);
     Object.assign(div.style, { position: "fixed", top: "0px", left: "0px" });
     div.appendChild(entity.section.toFragment());
-    return <IVisibleEntity>(entity.flatten().find(sift({ "attributes.name": "id", "attributes.value": "target" })) as any);
+
+    return <IVisibleEntity>(entity.flatten().find((entity) => {
+      if (entity["attributes"]) {
+        return (<HTMLElementEntity>entity).getAttribute("id") === "target";
+       }
+      return false;
+    }) as any);
   }
 
   function simplifyBounds(bounds) {
@@ -47,6 +53,7 @@ describe(__filename + "#", () => {
 
   async function calculateBounds(source) {
     const target = await loadTarget(source);
+    // console.log(target.section.targetNode.parentNode);
     return simplifyBounds(target.display.bounds);
   }
 

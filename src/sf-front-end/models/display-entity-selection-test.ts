@@ -31,7 +31,7 @@ describe(__filename + "#", () => {
       super("entity");
     }
     dispose() { }
-    toSource() {
+    updateSource() {
       return this.source.toString();
     }
   }
