@@ -1,9 +1,16 @@
 @import "sf-front-end/scss/variables";
 .m-css-style-pane {
   &--declaration {
+    & input {
+      width: 50px;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+    }
     &--key {
       display: inline-block;
-      width: 120px;
+      width: 110px;
       opacity: 0.6;
     }
     &--value {

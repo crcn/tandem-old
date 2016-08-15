@@ -19,7 +19,7 @@ class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, 
         { declaration.key }
       </div>
       <div className="m-css-style-pane--declaration--value">
-        <input ref="value" type="text" value={String(declaration.value)} onInput={this.onInput} />
+        <input ref="value" type="text" value={String(declaration.value)} onChange={this.onInput} />
       </div>
     </div>;
   }
@@ -47,7 +47,7 @@ export class CSSPaneComponent extends React.Component<{ workspace: Workspace }, 
     if (!selection.length) return null;
 
     return <div className="m-css-pane m-pane-container--content">
-      <PaneComponent title="style">
+      <PaneComponent title="Style">
         <StylePaneComponent {...this.props} entity={selection[0]} />
       </PaneComponent>
     </div>;

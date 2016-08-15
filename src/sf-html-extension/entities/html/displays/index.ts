@@ -106,7 +106,6 @@ export class HTMLNodeDisplay implements IEntityDisplay {
   private _declarationByKey: Object;
 
   constructor(readonly entity: VisibleHTMLElementEntity) {
-    entity.observe(WrapBus.create(this._updateStyles));
     this._updateStyles();
   }
 
@@ -245,7 +244,8 @@ export class HTMLNodeDisplay implements IEntityDisplay {
       if ((declaration = this._declarationByKey[key])) {
         declaration.value = value;
       } else {
-        this._styleExpression.declarations.push(new CSSStyleDeclarationExpression(key, value, null));
+        console.log("NO EXIST");
+        this._styleExpression.declarations.push(this._declarationByKey[key] = new CSSStyleDeclarationExpression(key, value, null));
       }
     }
 
