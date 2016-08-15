@@ -244,7 +244,6 @@ export class HTMLNodeDisplay implements IEntityDisplay {
       if ((declaration = this._declarationByKey[key])) {
         declaration.value = value;
       } else {
-        console.log("NO EXIST");
         this._styleExpression.declarations.push(this._declarationByKey[key] = new CSSStyleDeclarationExpression(key, value, null));
       }
     }

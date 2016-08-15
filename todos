@@ -1,5 +1,6 @@
 - snap div elements together
-- text tool
 - panes component that allows for panes to be re-organized & detached
 - sort styles based on priority
+- delete style
+- add style + button
 - ability to display simple css style or more UI

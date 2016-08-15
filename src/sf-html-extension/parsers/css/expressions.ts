@@ -12,6 +12,15 @@ export class CSSStyleExpression extends CSSExpression {
     super._flattenDeep(items);
     flattenEach(this.declarations, items);
   }
+
+  public removeDeclaration(key: string) {
+    for (let i = this.declarations.length; i--; ) {
+      if (this.declarations[i].key === key) {
+        this.declarations.splice(i, 1);
+        break;
+      }
+    }
+  }
   toString() {
     return this.declarations.join("");
   };
@@ -27,6 +36,7 @@ export class CSSStyleDeclarationExpression extends CSSExpression {
     this.value._flattenDeep(items);
   }
   toString() {
+    if (this.key === "" || this.value.toString() === "") return "";
     return [this.key, ":", this.value.toString(), ";"].join("");
   }
 }
