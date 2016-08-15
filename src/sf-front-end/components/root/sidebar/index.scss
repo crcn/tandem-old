@@ -1,9 +1,11 @@
 @import "sf-front-end/scss/variables";
 
 .m-sidebar {
-  width: 300px;
+  width: 250px;
   height: 100%;
   color: $color-blue-9;
+  flex-shrink: 0;
+  flex-grow: 0;
   border-left: 2px solid $color-blue-10;
   background-color: $color-grey-1;
 }

@@ -8,18 +8,25 @@ import { PaneComponentFactoryDependency } from "sf-front-end/dependencies";
 import { CSSExpression, CSSStyleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/parsers/css/expressions";
 
 class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, declaration: CSSStyleDeclarationExpression }, any> {
-  onInput = (event) => {
+
+  onKeyChange = (event) => {
+    this.props.declaration.key = event.target.value;
+    this.props.workspace.file.save();
+  }
+
+  onValueChange = (event) => {
     this.props.declaration.value = new CSSLiteralExpression(event.target.value, null);
     this.props.workspace.file.save();
   }
+
   render() {
     const declaration = this.props.declaration;
     return <div className="m-css-style-pane--declaration row">
       <div className="m-css-style-pane--declaration--key">
-        { declaration.key }
+        <input ref="value" type="text" value={String(declaration.key)} onChange={this.onKeyChange} />
       </div>
       <div className="m-css-style-pane--declaration--value">
-        <input ref="value" type="text" value={String(declaration.value)} onChange={this.onInput} />
+        <input ref="value" type="text" value={String(declaration.value)} onChange={this.onValueChange} />
       </div>
     </div>;
   }
@@ -31,8 +38,8 @@ class StylePaneComponent extends React.Component<any, any> {
     const styleExpression: CSSStyleExpression = entity.styleExpressions[0];
     return <div className="m-css-style-pane">
       {
-        styleExpression.declarations.map((declaration) => (
-          <StyleDeclarationComponent {...this.props} declaration={declaration} key={declaration.key} />
+        styleExpression.declarations.map((declaration, i) => (
+          <StyleDeclarationComponent {...this.props} declaration={declaration} key={i} />
         ))
       }
     </div>;

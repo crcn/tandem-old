@@ -2,18 +2,19 @@
 .m-css-style-pane {
   &--declaration {
     & input {
-      width: 50px;
       background: transparent;
       border: none;
       outline: none;
       color: white;
+      width: calc(100% - 10px);
     }
     &--key {
       display: inline-block;
-      width: 110px;
+      width: 50%;
       opacity: 0.6;
     }
     &--value {
+      width: 50%;
       display: inline-block;
     }
   }
