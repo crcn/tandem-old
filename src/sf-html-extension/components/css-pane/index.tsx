@@ -26,7 +26,11 @@ class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, 
   }
 
   onKeyDown = (event: KeyboardEvent) => {
-    if (event.keyCode === 13 && this.props.style.declarations[this.props.style.declarations.length - 1] === this.props.declaration) {
+    // if (event.keyCode === 8 && event.target === this.refs["key"] && event.target === "") {
+
+    // }
+    if ([13, 9].indexOf(event.keyCode) !== -1 && !event.shiftKey && this.props.style.declarations[this.props.style.declarations.length - 1] === this.props.declaration) {
+      event.preventDefault();
       this.props.addNewDeclaration();
     }
   }
@@ -43,10 +47,10 @@ class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, 
   }
 
   onValueBlur = () => {
-    if ((this.refs["value"] as any).value === "") {
-      this.remove();
-    }
-    this.props.workspace.file.save();
+    // if ((this.refs["value"] as any).value === "") {
+    //   this.remove();
+    // }
+    // this.props.workspace.file.save();
   }
 
   render() {
