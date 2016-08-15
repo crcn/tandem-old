@@ -1,0 +1,13 @@
+@import "sf-front-end/scss/variables";
+.m-css-style-pane {
+  &--declaration {
+    &--key {
+      display: inline-block;
+      width: 120px;
+      opacity: 0.6;
+    }
+    &--value {
+      display: inline-block;
+    }
+  }
+}
