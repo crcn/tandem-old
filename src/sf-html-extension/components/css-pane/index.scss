@@ -9,9 +9,11 @@
       width: calc(100% - 10px);
     }
     &--key {
+      & input {
+        color: #999;
+      }
       display: inline-block;
       width: 50%;
-      opacity: 0.6;
     }
     &--value {
       width: 50%;
