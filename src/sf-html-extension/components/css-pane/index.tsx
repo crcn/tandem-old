@@ -2,10 +2,10 @@ import "./index.scss";
 import * as React from "react";
 import { Workspace } from "sf-front-end/models";
 import PaneComponent from "sf-front-end/components/pane";
-import { HTMLElementEntity } from "sf-html-extension/entities/html";
+import { HTMLElementEntity, IHTMLEntity } from "sf-html-extension/entities/html";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
 import { PaneComponentFactoryDependency } from "sf-front-end/dependencies";
-import { CSSExpression, CSSStyleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/parsers/css/expressions";
+import { CSSExpression, CSSStyleExpression, CSSRuleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/parsers/css/expressions";
 
 class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, declaration: CSSStyleDeclarationExpression, style: CSSStyleExpression, addNewDeclaration: Function }, any> {
 
@@ -66,25 +66,28 @@ class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, 
   }
 }
 
-class StylePaneComponent extends React.Component<any, any> {
+class StylePaneComponent extends React.Component<{ workspace: Workspace, entity: HTMLElementEntity, rule: CSSRuleExpression }, any> {
   addNewDeclaration = () => {
-    this.styleExpression.declarations.push(new CSSStyleDeclarationExpression("", new CSSLiteralExpression("", null), null));
+    this.props.rule.style.declarations.push(new CSSStyleDeclarationExpression("", new CSSLiteralExpression("", null), null));
     this.forceUpdate();
   }
 
-  get styleExpression(): CSSStyleExpression {
-    return this.props.entity.styleExpressions[0];
+  get styleExpressions(): Array<CSSStyleExpression> {
+    return [this.props.entity.styleExpression, ...this.props.entity.document.stylesheet.rules.map((rule) => {
+      return rule.style;
+    })];
   }
 
   render() {
-    const styleExpression: CSSStyleExpression = this.styleExpression;
-    return <div className="m-css-style-pane">
-      {
-        styleExpression.declarations.map((declaration, i) => (
-          <StyleDeclarationComponent {...this.props} declaration={declaration} style={this.styleExpression} key={i} addNewDeclaration={this.addNewDeclaration} />
-        ))
-      }
-    </div>;
+    return <PaneComponent title={this.props.rule.selector}>
+        <div className="m-css-style-pane">
+        {
+          this.props.rule.style.declarations.map((declaration, i) => (
+            <StyleDeclarationComponent {...this.props} declaration={declaration} style={this.props.rule.style} key={i} addNewDeclaration={this.addNewDeclaration} />
+          ))
+        }
+      </div>
+    </PaneComponent>;
   }
 }
 
@@ -95,10 +98,15 @@ export class CSSPaneComponent extends React.Component<{ workspace: Workspace }, 
 
     if (!selection.length) return null;
 
+    const entity: HTMLElementEntity = selection[0];
+
     return <div className="m-css-pane m-pane-container--content">
-      <PaneComponent title="Style">
-        <StylePaneComponent {...this.props} entity={selection[0]} />
-      </PaneComponent>
+        <StylePaneComponent {...this.props} entity={entity} rule={new CSSRuleExpression("element.style", entity.styleExpression, null)} key="style" />
+        {
+          entity.document.stylesheet.rules.map((rule) => {
+            return <StylePaneComponent {...this.props} entity={entity} rule={rule} key={rule.selector} />;
+          })
+        }
     </div>;
   }
 }

@@ -158,8 +158,6 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     };
 
     const entity = this.props.workspace.file.entity;
-    if (!entity) return null;
-
     return (<IsolateComponent ref="isolate" ignoreInputEvents={true} onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
       <style>
         {
@@ -176,8 +174,8 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
         style={style}
         onMouseDown={this.onMouseDown}>
           <div style={innerStyle} className="noselect" data-previewroot>
-              <PreviewLayerComponent {...this.props} entity={entity} />
-              {this._toolsHidden ? void 0 : <ToolsLayerComponent entity={entity} {...this.props} />}
+              { entity ? <PreviewLayerComponent {...this.props} entity={entity} /> : undefined }
+              {this._toolsHidden || !entity ? undefined : <ToolsLayerComponent entity={entity} {...this.props} />}
           </div>
       </div>
     </IsolateComponent>);

@@ -1,4 +1,5 @@
 - snap div elements together
+- attributes pane
 - panes component that allows for panes to be re-organized & detached
 - sort styles based on priority
 - delete style
@@ -11,3 +12,6 @@
 - layers pane
 - move layer back
 - <!--import src="something"--> tag
+- markdown editor
+
+- remove entity nameing - change to ISourcedNode

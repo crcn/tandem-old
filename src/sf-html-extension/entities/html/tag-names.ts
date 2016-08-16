@@ -114,7 +114,6 @@ export default [
   "span",
   "strike",
   "strong",
-  "style",
   "sub",
   "summary",
   "sup",

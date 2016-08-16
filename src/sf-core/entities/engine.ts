@@ -11,7 +11,8 @@ import {
 
 import {
   Dependencies,
-  EntityFactoryDependency
+  EntityFactoryDependency,
+  DocumentEntityFactoryDependency
 } from "../dependencies";
 
 /**
@@ -20,6 +21,8 @@ import {
  */
 
 export class EntityEngine implements IEntityEngine {
+
+  private _root: IContainerNode;
   private _entity: IEntity;
   private _source: any;
 
@@ -36,19 +39,26 @@ export class EntityEngine implements IEntityEngine {
   async update(): Promise<void> {
 
     const newEntity = await this._loadAll(this._source);
+    const documentEntityFactory = DocumentEntityFactoryDependency.find(this.dependencies);
 
+    const root = documentEntityFactory.create();
+    root.appendChild(newEntity);
+
+    // TODO - create root entity here
     // TODO - async diffing using workers here
     // TODO - check entity constructor against new entity
-    if (this._entity && this._entity.constructor === newEntity.constructor) {
-      const changes = diff(this._entity, newEntity);
-      patch(this._entity, changes, node => node);
+    if (this._root) {
+      const changes = diff(this._root, root);
+      patch(this._root, changes, node => node);
 
       // necessary to update the source expressions so that on save(),
       // the source expressions are properly stringified back into the source string.
-      updateSources(this._entity, newEntity);
+      updateSources(<IEntity>this._root.childNodes[0], <IEntity>root.childNodes[0]);
     } else {
-      this._entity = newEntity;
+      this._root = root;
     }
+
+    this._entity = <IEntity>this._root.childNodes[0];
   }
 
   async load(source: IDiffableNode): Promise<IEntity> {
@@ -67,7 +77,7 @@ export class EntityEngine implements IEntityEngine {
     const entity = entityFactory.create(source);
     entity.engine = this;
 
-    const childSources = entityFactory.mapSourceChildren ? await entityFactory.mapSourceChildren(source) : [];
+    const childSources = (entityFactory.mapSourceChildren ? await entityFactory.mapSourceChildren(source) : undefined) || [];
 
     for (const childExpression of childSources) {
       (<IContainerEntity>entity).appendChild(await this._loadAll(childExpression));

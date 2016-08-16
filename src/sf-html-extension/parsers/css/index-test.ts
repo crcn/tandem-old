@@ -1,10 +1,10 @@
 import { parse } from "./index";
 import { expect } from "chai";
 import {
-  CSS_FUNCTION_CALL,
+  CSS_STYLE,
   CSS_LIST_VALUE,
   CSS_LITERAL_VALUE,
-  CSS_STYLE,
+  CSS_FUNCTION_CALL,
   CSS_STYLE_DECLARATION
 } from "./expressions";
 
@@ -21,14 +21,14 @@ describe(__filename + "#", () => {
       "display:block; width:110.422px; height:50px; "
     ].forEach(source => {
       it(`can parse ${source}`, () => {
-        parse(source);
+        parse(`.style { ${source} }`);
       });
     });
   });
 
   describe("declarations", () => {
     it("can parse color values", () => {
-      const style = parse(`color:#F60;`) as any;
+      const style = parse(`.style{color:#F60;}`).rules[0].style;
       expect(style.declarations[0].value.type).to.equal(CSS_LITERAL_VALUE);
     });
     [
@@ -37,8 +37,9 @@ describe(__filename + "#", () => {
       "color:rgba(0, 0, 0.1);"
     ].forEach(source => {
       it(`parses ${source} as a function call`, () => {
-        expect((parse(source) as any).declarations[0].value.type).to.equal(CSS_FUNCTION_CALL);
+        expect(parse(`.style { ${source} }`).rules[0].style.declarations[0].value.type).to.equal(CSS_FUNCTION_CALL);
       });
+
     });
 
     [
@@ -47,9 +48,18 @@ describe(__filename + "#", () => {
       // "background:red, green, blue;"
     ].forEach(source => {
       it(`parse ${source} as a list value`, () => {
-        const style = parse(source) as any;
+        const style = parse(`.style { ${source} }`).rules[0].style;
         expect(style.declarations[0].value.type).to.equal(CSS_LIST_VALUE);
       });
+    });
+  });
+
+  describe("rules", () => {
+    it("can parse a simple class rule", () => {
+      const expr = parse(`.box { color: red; }`);
+      expect(expr.rules[0].selector).to.equal(".box");
+      expect(expr.rules[0].style.declarations[0].key).to.equal("color");
+      expect(expr.rules[0].style.declarations[0].value.toString()).to.equal("red");
     });
   });
 });

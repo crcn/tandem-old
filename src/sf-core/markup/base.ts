@@ -83,10 +83,20 @@ export abstract class Node extends Observable implements INode {
   abstract cloneNode(deep?: boolean): Node;
 }
 
-export abstract class ContainerNode extends Node implements IContainerNode {
+export class ContainerNode extends Node implements IContainerNode {
 
   protected _childNodes: Array<INode> = [];
   private _childObserver: IActor;
+
+  cloneNode(deep?: boolean) {
+    const clone = new ContainerNode();
+    if (deep) {
+      for (const child of this.childNodes) {
+        clone.appendChild(child.cloneNode(true));
+      }
+    }
+    return clone;
+  }
 
   get childNodes(): Array<INode> {
     return this._childNodes;

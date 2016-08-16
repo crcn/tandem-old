@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { IEntity, IEntityEngine } from "./base";
+import { IEntity, IEntityEngine, IContainerEntity } from "./base";
 import { EntityEngine } from "./engine";
-import { Node, IContainerNode, ContainerNode } from "../markup";
-import { Dependencies, EntityFactoryDependency } from "../dependencies";
+import { Node, IContainerNode, Element, ContainerNode } from "../markup";
+import { Dependencies, EntityFactoryDependency, DocumentEntityFactoryDependency } from "../dependencies";
 
 function element(name, attributes = [], ...childNodes) {
   return {
@@ -26,6 +26,7 @@ describe(__filename + "#", () => {
   });
 
   it("can register a custom entity", async () => {
+
     class CustomEntity extends Node implements IEntity {
       readonly type: string = null;
       public engine: IEntityEngine;
@@ -38,7 +39,7 @@ describe(__filename + "#", () => {
       }
     }
     const dependencies = new Dependencies();
-    dependencies.register(new EntityFactoryDependency("custom", CustomEntity));
+    dependencies.register(new DocumentEntityFactoryDependency(ContainerNode), new EntityFactoryDependency("custom", CustomEntity));
     const engine = new EntityEngine(dependencies);
     const rootEntity = await engine.load(element("custom"));
 
@@ -77,6 +78,7 @@ describe(__filename + "#", () => {
     }
 
     const dependencies = new Dependencies(
+      new DocumentEntityFactoryDependency(ContainerNode),
       new EntityFactoryDependency("custom1", CustomEntity),
       new EntityFactoryDependency("#text", TextEntity)
     );

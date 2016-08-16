@@ -78,3 +78,24 @@ export class CSSListValueExpression extends CSSExpression {
     return this.values.join(" ");
   }
 }
+
+export const CSS_RULE = "cssRule";
+
+export class CSSRuleExpression extends CSSExpression {
+  constructor(public selector: string, public style: CSSStyleExpression, position: IRange) {
+    super(CSS_RULE, position);
+  }
+  toString() {
+    return `${this.selector} { ${this.style} }`;
+  }
+}
+
+export const CSS_STYLE_SHEET = "cssStyleSheet";
+export class CSSStyleSheetExpression extends CSSExpression {
+  constructor(public rules: Array<CSSRuleExpression>, position: IRange) {
+    super(CSS_STYLE_SHEET, position);
+  }
+  toString() {
+    return this.rules.join(" ");
+  }
+}

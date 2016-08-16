@@ -1,3 +1,8 @@
-<div style="color:red;position:absolute;background-color:orange; padding:10px;">
+<style>
+  .box {
+    color: red;
+  }
+</style>
+<div class="box">
   Hello World!
 </div>

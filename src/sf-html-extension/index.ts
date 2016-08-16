@@ -25,7 +25,9 @@ import { MimeTypeDependency } from "sf-core/dependencies";
    htmlCommentDependency,
    htmlDocumentDependency,
    htmlElementDependencies,
-   htmlTemplateEntityDependency
+   htmlStyleEntityDependency,
+   htmlTemplateEntityDependency,
+   htmlDocumentFragmentDependency,
 } from "./entities/html";
 
 export const dependency = [
@@ -50,8 +52,10 @@ export const dependency = [
   htmlTextDependency,
   htmlCommentDependency,
   htmlDocumentDependency,
+  htmlStyleEntityDependency,
   ...htmlElementDependencies,
   htmlTemplateEntityDependency,
+  htmlDocumentFragmentDependency,
 
   // mime types
   new MimeTypeDependency("htm", "text/html"),

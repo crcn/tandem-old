@@ -1,9 +1,9 @@
 import { Action } from "../actions";
 import { IActor } from "../actors";
-import { IEntity } from "../entities";
+import { IEntity, IContainerEntity } from "../entities";
 import { IBrokerBus } from "../busses";
 import { IApplication } from "sf-core/application";
-import { IDiffableNode } from "../markup";
+import { IDiffableNode, IContainerNode } from "../markup";
 import { IActiveRecord } from "../active-records";
 
 import {
@@ -77,12 +77,28 @@ export class EntityFactoryDependency extends ClassFactoryDependency {
     return super.create(source);
   }
 
-  static find(id: string, Dependencies: Dependencies) {
-    return Dependencies.query<EntityFactoryDependency>([ENTITIES_NS, id].join("/"));
+  static find(id: string, dependencies: Dependencies) {
+    return dependencies.query<EntityFactoryDependency>([ENTITIES_NS, id].join("/"));
   }
 
-  static createEntity(source: IDiffableNode, Dependencies: Dependencies) {
-    return this.find(source.nodeName, Dependencies).create(source);
+  static createEntity(source: IDiffableNode, dependencies: Dependencies) {
+    return this.find(source.nodeName, dependencies).create(source);
+  }
+}
+
+export const DOCUMENT_ENTITY_NS = [ENTITIES_NS, "#document"].join("/");
+export class DocumentEntityFactoryDependency extends ClassFactoryDependency {
+  constructor(readonly clazz: { new(): IContainerNode }) {
+    super(DOCUMENT_ENTITY_NS, clazz);
+  }
+  create(): IContainerNode {
+    return super.create();
+  }
+  clone() {
+    return new DocumentEntityFactoryDependency(this.clazz);
+  }
+  static find(dependencies: Dependencies) {
+    return dependencies.query<DocumentEntityFactoryDependency>(DOCUMENT_ENTITY_NS);
   }
 }
 

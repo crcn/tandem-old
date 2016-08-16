@@ -54,9 +54,8 @@ export interface IVisibleEntity extends IEntity {
 }
 
 export interface IContainerEntity extends IEntity, IContainerNode {
-
-  // deprecate this since we have updateSource()
-  appendSourceChildNode(childSource: any): Promise<Array<IEntity>>;
+  appendSourceChildNode(source: any): Promise<IEntity>;
 }
 
-export interface IElementEntity extends IContainerEntity { }
+export interface IElementEntity extends IContainerEntity {
+}

@@ -10,6 +10,7 @@ import {
   htmlTextDependency,
   htmlCommentDependency,
   htmlDocumentDependency,
+  htmlDocumentFragmentDependency,
   htmlElementDependencies,
   htmlTemplateEntityDependency,
 } from "./index";
@@ -26,6 +27,7 @@ describe(__filename + "#", () => {
       htmlTextDependency,
       htmlCommentDependency,
       htmlDocumentDependency,
+      htmlDocumentFragmentDependency,
       htmlTemplateEntityDependency,
       new ApplicationSingletonDependency(app)
     );
@@ -53,7 +55,6 @@ describe(__filename + "#", () => {
 
   async function calculateBounds(source) {
     const target = await loadTarget(source);
-    // console.log(target.section.targetNode.parentNode);
     return simplifyBounds(target.display.bounds);
   }
 

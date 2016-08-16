@@ -7,6 +7,7 @@ import {
   htmlTextDependency,
   htmlCommentDependency,
   htmlDocumentDependency,
+  htmlDocumentFragmentDependency,
   htmlElementDependencies,
 } from "./index";
 
@@ -17,6 +18,7 @@ describe(__filename + "#", () => {
       ...htmlElementDependencies,
       htmlTextDependency,
       htmlDocumentDependency,
+      htmlDocumentFragmentDependency,
       htmlCommentDependency
     );
   });

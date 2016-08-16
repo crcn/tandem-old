@@ -1,3 +1,3 @@
-import { CSSExpression } from './expressions';
+import { CSSStyleSheetExpression } from './expressions';
 
-declare function parse(source:string):CSSExpression;
+declare function parse(source:string): CSSStyleSheetExpression;

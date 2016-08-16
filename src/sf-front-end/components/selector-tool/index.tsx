@@ -58,7 +58,7 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
     };
 
     return (<div className="m-selector-component">
-      <ResizerComponent {...this.props} strokeWidth={2} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} onMoving={this.onMoving} onStopMoving={this.onStopMoving} />
+      { this.state.moving || this.state.resizing ? undefined : <ResizerComponent {...this.props} strokeWidth={2} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} onMoving={this.onMoving} onStopMoving={this.onStopMoving} /> }
 
       <div className="m-selector-component--bounds" style={boundsStyle} />
 

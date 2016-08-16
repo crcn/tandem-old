@@ -1,12 +1,14 @@
 {
 const {
   LiteralExpression,
+  CSSRuleExpression,
   CSSStyleExpression,
   CSSLiteralExpression,
   CSSListValueExpression,
+  CSSStyleSheetExpression,
   CSSFunctionCallExpression,
   CSSStyleDeclarationExpression,
-} = require('./expressions');
+} = require("./expressions");
 
 function position() {
   return {
@@ -17,12 +19,28 @@ function position() {
 }
 
 Start
-  = CSSStyle
+  = CSSStyleSheetExpression
+
+CSSStyleSheetExpression
+  = rules:CSSRule* {
+    return new CSSStyleSheetExpression(rules);
+  }
+
+CSSRule
+  = _ selector: CSSSelector _ "{" style: CSSStyle "}" _ {
+    return new CSSRuleExpression(selector, style);
+  }
 
 CSSStyle
-  = declarations:CSSStyleDeclaration* {
+  = _ declarations: CSSStyleDeclaration* _ {
     return new CSSStyleExpression(declarations, position());
   }
+
+CSSSelector
+  = CSSSelectorCharacter* { return text().trim(); }
+
+CSSSelectorCharacter
+  = !("{") . { return text(); }
 
 CSSStyleDeclaration
   = _ key:CSSStyleDeclarationKey _ ':' _ value:CSSStyleDeclarationValue _ ';' _ {
