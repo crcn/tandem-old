@@ -61,5 +61,9 @@ describe(__filename + "#", () => {
       expect(expr.rules[0].style.declarations[0].key).to.equal("color");
       expect(expr.rules[0].style.declarations[0].value.toString()).to.equal("red");
     });
+
+    it("can parse multiple css rules", () => {
+      expect(parse(`.a{ color: red; } .b{ color: blue; }`).rules.length).to.equal(2);
+    });
   });
 });

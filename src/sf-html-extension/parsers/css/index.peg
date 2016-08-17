@@ -43,7 +43,7 @@ CSSSelectorCharacter
   = !("{") . { return text(); }
 
 CSSStyleDeclaration
-  = _ key:CSSStyleDeclarationKey _ ':' _ value:CSSStyleDeclarationValue _ ';' _ {
+  = !("}") _ key:CSSStyleDeclarationKey _ ':' _ value:CSSStyleDeclarationValue _ ';' _ {
     return new CSSStyleDeclarationExpression(key, value, position());
   }
 
@@ -96,8 +96,10 @@ CSSSpaceList
   }
 
 CSSValue
-  = [^ ;,\(\)]+ { return text(); }
+  = CSSValueCharacter+ { return text(); }
 
+CSSValueCharacter
+  = !([ ;,)(]). { return text(); }
 /**
  * Generic
  */

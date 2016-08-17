@@ -2,7 +2,20 @@
   .box {
     color: red;
   }
+
+  .circle {
+    color: white;
+    padding: 10px;
+    border-radius: 100px;
+    background-color: #000;
+  }
 </style>
+
 <div class="box">
+  Hello World!
+</div>
+
+
+<div class="circle">
   Hello World!
 </div>
