@@ -32,7 +32,6 @@ describe(__filename + "#", () => {
     }
     dispose() { }
     updateSource() {
-      return this.source.toString();
     }
   }
 

@@ -31,6 +31,10 @@ import {
 
 import TAG_NAMES from "./tag-names";
 
+export interface IHTMLDocument extends ContainerNode {
+  stylesheet: CSSStyleSheetExpression;
+}
+
 function disposeEntity(entity: IHTMLEntity) {
   if (entity.parentNode) {
     const childNodes = (<HTMLElementEntity><any>entity.parentNode).source.childNodes;
@@ -39,39 +43,9 @@ function disposeEntity(entity: IHTMLEntity) {
   }
 }
 
-function getDocument(node: IHTMLEntity): HTMLDocumentEntity {
-  return node.parentNode ? node.parentNode instanceof HTMLDocumentEntity ? node.parentNode : undefined : undefined;
-}
-
-
-export class HTMLDocumentEntity extends ContainerNode {
-
-  readonly stylesheet: CSSStyleSheetExpression = new CSSStyleSheetExpression([], null);
-
-  cloneNode(deep?: boolean) {
-    const clone = new HTMLDocumentEntity();
-    if (deep)
-    for (const child of this.childNodes) {
-      clone.appendChild(<IHTMLEntity>child.cloneNode(true));
-    }
-    return clone;
-  }
-
-  _unlink(child: IHTMLEntity) {
-    super._unlink(child);
-    child.document = undefined;
-  }
-
-  _link(child: IHTMLEntity) {
-    super._unlink(child);
-    child.document = this;
-  }
-}
-
-
 export interface IHTMLEntity extends IEntity {
   section: NodeSection|GroupNodeSection;
-  document: HTMLDocumentEntity;
+  document: IHTMLDocument;
 }
 
 abstract class HTMLContainerEntity extends ContainerNode implements IHTMLEntity, IElementEntity {
@@ -80,7 +54,7 @@ abstract class HTMLContainerEntity extends ContainerNode implements IHTMLEntity,
   readonly nodeName: string;
   readonly section: NodeSection|GroupNodeSection;
   public engine: IEntityEngine;
-  private _document: HTMLDocumentEntity;
+  private _document: IHTMLDocument;
 
   constructor(readonly source: HTMLElementExpression|HTMLFragmentExpression) {
     super();
@@ -88,11 +62,11 @@ abstract class HTMLContainerEntity extends ContainerNode implements IHTMLEntity,
     this.section = this.createSection();
   }
 
-  get document(): HTMLDocumentEntity {
+  get document(): IHTMLDocument {
     return this._document;
   }
 
-  set document(value: HTMLDocumentEntity) {
+  set document(value: IHTMLDocument) {
     this.willChangeDocument(value);
     const oldDocument = this._document;
     this._document = value;
@@ -307,14 +281,14 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   readonly section: NodeSection;
   private _node: Node;
   private _nodeValue: any;
-  private _document: HTMLDocumentEntity;
+  private _document: IHTMLDocument;
   public engine: IEntityEngine;
 
-  get document(): HTMLDocumentEntity {
+  get document(): IHTMLDocument {
     return this._document;
   }
 
-  set document(value: HTMLDocumentEntity) {
+  set document(value: IHTMLDocument) {
     this.willChangeDocument(value);
     const oldDocument = this._document;
     this._document = value;
@@ -370,6 +344,5 @@ export class HTMLCommentEntity extends HTMLValueNodeEntity<HTMLCommentExpression
 export const htmlElementDependencies        = TAG_NAMES.map((nodeName) => new EntityFactoryDependency(nodeName, VisibleHTMLElementEntity));
 export const htmlTextDependency             = new EntityFactoryDependency("#text", HTMLTextEntity);
 export const htmlCommentDependency          = new EntityFactoryDependency("#comment", HTMLCommentEntity);
-export const htmlDocumentDependency         = new DocumentEntityFactoryDependency(HTMLDocumentEntity);
 export const htmlDocumentFragmentDependency = new EntityFactoryDependency("#document-fragment", HTMLDocumentFragmentEntity);
 

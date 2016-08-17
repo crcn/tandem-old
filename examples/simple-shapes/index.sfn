@@ -6,16 +6,17 @@
   .circle {
     color: white;
     padding: 10px;
+    display: inline-block;
     border-radius: 100px;
     background-color: #000;
+    position: absolute;
   }
 </style>
 
 <div class="box">
-  Hello World!
+  a
 </div>
 
-
-<div class="circle">
-  Hello World!
+<div class="circle" style="left:100px;top:100px;">
+  b
 </div>

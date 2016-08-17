@@ -1,7 +1,7 @@
 import { NodeSection } from "sf-core/markup";
 import { HTMLElementEntity } from "./base";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
-import { HTMLDocumentEntity } from "./base";
+import { IHTMLDocument } from "./base";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { CSSStyleSheetExpression } from "sf-html-extension/parsers/css/expressions";
 import { HTMLElementExpression, HTMLTextExpression } from "sf-html-extension/parsers/html/expressions";
