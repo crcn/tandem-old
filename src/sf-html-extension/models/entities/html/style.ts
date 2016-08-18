@@ -1,6 +1,4 @@
-import { bindable } from "sf-core/decorators";
 import { NodeSection } from "sf-core/markup";
-import { watchProperty } from "sf-core/observable";
 import { IHTMLDocument } from "./base";
 import { HTMLElementEntity } from "./element";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
@@ -11,15 +9,10 @@ import { HTMLElementExpression, HTMLTextExpression } from "sf-html-extension/par
 export class HTMLStyleEntity extends HTMLElementEntity {
   private _style: HTMLStyleElement;
   private _source: HTMLElementExpression;
+  private _currentNodeValue: string ;
   private _styleSheetExpression: CSSStyleSheetExpression;
 
-  @bindable()
   private _childNodeValue: string;
-
-  constructor(source: HTMLElementExpression) {
-    super(source);
-    watchProperty(this, "_childNodeValue", this._onChildNodeValueChange).trigger();
-  }
 
   get source() {
     return this._source;
@@ -28,13 +21,13 @@ export class HTMLStyleEntity extends HTMLElementEntity {
   set source(value: HTMLElementExpression) {
     this._removeStyles();
     this._source = value;
-    this._childNodeValue = (<HTMLTextExpression>value.childNodes[0]).nodeValue;
-  }
-
-  private _onChildNodeValueChange = (nodeValue) => {
-    this._styleSheetExpression = parseCSS(nodeValue);
-    this._addDocStyles(this.document);
-    this._resetStyle();
+    const nodeValue = (<HTMLTextExpression>value.childNodes[0]).nodeValue;
+    if (nodeValue !== this._currentNodeValue) {
+      this._currentNodeValue = nodeValue;
+      this._styleSheetExpression = parseCSS(nodeValue);
+      this._addDocStyles(this.document);
+      this._resetStyle();
+    }
   }
 
   willChangeDocument(newDocument) {
@@ -44,7 +37,7 @@ export class HTMLStyleEntity extends HTMLElementEntity {
 
   sync() {
     super.sync();
-    (<HTMLTextExpression>this.source.childNodes[0]).nodeValue = this._styleSheetExpression.toString();
+    (<HTMLTextExpression>this.source.childNodes[0]).nodeValue = this._currentNodeValue = this._styleSheetExpression.toString();
     this._resetStyle();
   }
 

@@ -46,13 +46,6 @@ class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, 
     this.props.workspace.file.save();
   }
 
-  onValueBlur = () => {
-    // if ((this.refs["value"] as any).value === "") {
-    //   this.remove();
-    // }
-    // this.props.workspace.file.save();
-  }
-
   render() {
     const declaration = this.props.declaration;
     return <div className="m-css-style-pane--declaration row">
@@ -60,7 +53,7 @@ class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, 
         <input ref="key" type="text" value={String(declaration.key)} onChange={this.onKeyChange} onBlur={this.onKeyBlur} />
       </div>
       <div className="m-css-style-pane--declaration--value">
-        <input ref="value" type="text" value={String(declaration.value)} onChange={this.onValueChange} onKeyDown={this.onKeyDown} onBlur={this.onValueBlur} />
+        <input ref="value" type="text" value={String(declaration.value)} onChange={this.onValueChange} onKeyDown={this.onKeyDown} />
       </div>
     </div>;
   }

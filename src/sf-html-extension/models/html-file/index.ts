@@ -91,8 +91,9 @@ export class HTMLFile extends DocumentFile implements IInjectable {
     // copy whitespace over to new content
     // this.content = mergeHTML(this.content, this._entity.source.toString());
 
-    // TODO - beautify HTML here.
     await this._document.sync();
+
+    // TODO - beautify HTML here.
     this.content = pretty(this._document.root.source.toString());
 
     return super.save();

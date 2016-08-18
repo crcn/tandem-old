@@ -34,7 +34,7 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
 
   sync() {
     if (this.styleExpression.declarations.length) {
-      this.source.setAttribute("style", this.styleExpression.toString());
+      this.setAttribute("style", this.styleExpression.toString());
     }
     super.sync();
   }
@@ -64,24 +64,9 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
   }
 
   setAttribute(name: string, value: string) {
-
     (<IElement>this.section.targetNode).setAttribute(name, value);
-
-    let found = false;
-    for (const attribute of this.source.attributes) {
-      if (attribute.name === name) {
-        attribute.value = value;
-        found = true;
-      }
-    }
-
-    // if the attribute does not exist on the expression, then create a new one.
-    if (!found) {
-      this.source.attributes.push(new HTMLAttributeExpression(name, value, undefined));
-    }
-
+    this.source.setAttribute(name, value);
     this.attributes.set(name, value);
-
     this.notify(new AttributeChangeAction(name, value));
   }
 
