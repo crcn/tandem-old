@@ -14,6 +14,11 @@ export class HTMLStyleEntity extends HTMLElementEntity {
 
   private _childNodeValue: string;
 
+  constructor(source: HTMLElementExpression) {
+    super(source);
+    this._resetStyle();
+  }
+
   get source() {
     return this._source;
   }
