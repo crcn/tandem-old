@@ -64,10 +64,7 @@ export abstract class HTMLContainerEntity extends ContainerNode implements IHTML
     // since the child node is dependant on the other entities that
     // are loaded in, we'll need to update the entire entity tree in order
     // to return the proper entity
-    // TODO - it may be more appropriate to leave this up to whatever is calling
-    // appendSourceChildNode since there may be cases where the callee executes a batch of these. For now though,
-    // it's better to leave this here to make things more DRY.
-    // await this.document.update();
+    await this.document.sync();
 
     // since we don't know the entity, or where it lives in this entity, we'll need to scan for it. It could
     // even be a collection of entities.
