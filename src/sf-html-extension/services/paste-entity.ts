@@ -42,12 +42,10 @@ export class PasteHTMLCommand implements IActor, IInjectable {
         ...childNodes
       );
 
-      // TODO - this.app.workspace.activeEntity.context.file.save(); - this is
-      // necessary since since an entity can be composed of many other entities that
-      // are sourced from other files.
-      await file.save();
+      // entity may be within a different file
+      await activeEntity.document.file.save();
 
-      this.app.bus.execute(new SelectAction(flatten(childNodes.map((expression) => findEntitiesBySource(activeEntity, expression))));
+      this.app.bus.execute(new SelectAction(flatten(childNodes.map((expression) => findEntitiesBySource(activeEntity, expression)))));
     });
   }
 }

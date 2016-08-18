@@ -1,5 +1,6 @@
-import { IEntityDisplay } from "./display";
+import { IFile } from "sf-core/active-records";
 import { IDisposable } from "../object";
+import { IEntityDisplay } from "./display";
 import {
   INode,
   Element,
@@ -20,6 +21,7 @@ import {
 
 export interface IEntityDocument extends IContainerNode {
   readonly root: IEntity;
+  readonly file: IFile;
   sync();
 }
 

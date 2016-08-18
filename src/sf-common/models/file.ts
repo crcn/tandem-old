@@ -1,5 +1,5 @@
 import { IActor } from "sf-core/actors";
-import { find, ActiveRecord } from "sf-core/active-records";
+import { find, ActiveRecord, IFile } from "sf-core/active-records";
 import {
   Dependencies,
   MainBusDependency,
@@ -9,7 +9,7 @@ import {
 
 export const FILES_COLLECTION_NAME = "files";
 
-export class File extends ActiveRecord {
+export class File extends ActiveRecord implements IFile {
   public path: string;
   public content: string;
   readonly type: string;
