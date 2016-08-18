@@ -1,17 +1,19 @@
 import * as sift from "sift";
 import { IActor } from "sf-core/actors";
+import { flatten } from "lodash";
 import { HTMLFile } from "../models/html-file";
 import { parse as parseHTML } from "../parsers/html";
-import { PASTE, PasteAction } from "sf-front-end/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { inject, filterAction } from "sf-core/decorators";
+import { findEntitiesBySource } from "sf-core/entities";
 import { HTMLFragmentExpression } from "../parsers/html";
+import { PASTE, PasteAction, SelectAction } from "sf-front-end/actions";
 
 import {
   IInjectable,
   APPLICATION_SINGLETON_NS,
   CommandFactoryDependency,
-  ApplicationServiceDependency
+  ApplicationServiceDependency,
 } from "sf-core/dependencies";
 
 export class PasteHTMLCommand implements IActor, IInjectable {
@@ -25,21 +27,27 @@ export class PasteHTMLCommand implements IActor, IInjectable {
   execute(action: PasteAction) {
 
     // TODO - need to paste to editor.focus (entity)
-    action.item.getAsString((content) => {
+    action.item.getAsString(async (content) => {
+
+      const workspace = this.app.workspace;
+      const file = <HTMLFile>workspace.file;
+      const activeEntity = workspace.editor.activeEntity;
 
       // meta charset is tacked on the beginning - remove it
       content = content.replace(/\<meta.*?\>/, "");
 
-
       // TODO - this.app.workspace.activeEntity.source.appendChildNodes()
-      (<HTMLFile>this.app.workspace.file).document.root.source.appendChildNodes(
-        ...parseHTML(content).childNodes
+      const childNodes = parseHTML(content).childNodes;
+      activeEntity.source.appendChildNodes(
+        ...childNodes
       );
 
       // TODO - this.app.workspace.activeEntity.context.file.save(); - this is
       // necessary since since an entity can be composed of many other entities that
       // are sourced from other files.
-      this.app.workspace.file.save();
+      await file.save();
+
+      this.app.bus.execute(new SelectAction(flatten(childNodes.map((expression) => findEntitiesBySource(activeEntity, expression))));
     });
   }
 }

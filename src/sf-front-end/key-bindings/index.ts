@@ -38,5 +38,11 @@ export const dependency = [
     execute(action: Action) {
       this.bus.execute(new SelectAllAction());
     }
+  }),
+  new GlobalKeyBindingDependency("meta+x", class CutCommand extends BaseCommand {
+    execute(action: Action) {
+      document.execCommand("copy");
+      this.bus.execute(new DeleteSelectionAction());
+    }
   })
 ];
