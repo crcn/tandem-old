@@ -56,6 +56,13 @@ export class Attribute implements IAttribute {
 }
 
 export abstract class Node extends Observable implements INode {
+
+  constructor() {
+
+    // needed here to ensure that the target observable is always this
+    super();
+  }
+
   readonly nodeName = null;
   protected _parentNode: IContainerNode;
   get parentNode(): IContainerNode {

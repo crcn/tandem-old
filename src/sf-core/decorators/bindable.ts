@@ -1,20 +1,18 @@
 import { IObservable } from "sf-core/observable";
 import { PropertyChangeAction } from "sf-core/actions";
 
-// TODO
 export default function bindable() {
   return (proto: IObservable, property: string = undefined, descriptor: PropertyDecorator = undefined) => {
-    let _value;
     Object.defineProperty(proto, property, {
       get() {
-        return _value;
+        return this[`__${property}`];
       },
-      set(value) {
-
-        // TODO - check of value is observable
-        const oldValue = _value;
-        _value = value;
-        this.notify(new PropertyChangeAction(property, value, oldValue));
+      set(newValue) {
+        const oldValue = this[`__${property}`];
+        this[`__${property}`] = newValue;
+        if (oldValue !== newValue) {
+          this.notify(new PropertyChangeAction(property, newValue, oldValue));
+        }
       }
     });
   };

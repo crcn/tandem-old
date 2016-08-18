@@ -1,8 +1,20 @@
+import { inject } from "sf-core/decorators";
+import { HTMLFile } from "sf-html-extension/models/html-file";
+import { DocumentFile } from "sf-front-end/models";
+import { watchProperty } from "sf-core/observable";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
-import { IHTMLEntity, IHTMLDocument } from "./base";
-import { DocumentEntityFactoryDependency } from "sf-core/dependencies";
+import { parse as parseHTML } from "sf-html-extension/parsers/html";
+import { EntityFactoryDependency } from "sf-core/dependencies";
+import { Action, PropertyChangeAction } from "sf-core/actions";
+import { Dependencies, DEPENDENCIES_NS, IInjectable } from "sf-core/dependencies";
 import { CSSStyleExpression, CSSStyleSheetExpression } from "sf-html-extension/parsers/css";
-import { IEntity, IEntityEngine, IVisibleEntity, IElementEntity, findEntitiesBySource } from "sf-core/entities";
+import { IHTMLEntity, IHTMLDocument, IHTMLContainerEntity } from "./base";
+import {
+  IEntity,
+  IVisibleEntity,
+  IElementEntity,
+  findEntitiesBySource,
+} from "sf-core/entities";
 
 import {
   HTMLExpression,
@@ -14,19 +26,45 @@ import {
   IHTMLValueNodeExpression,
 } from "sf-html-extension/parsers/html";
 
-import { ContainerNode } from "sf-core/markup";
+import { ContainerNode, diff, patch, INode, IContainerNode } from "sf-core/markup";
 
-export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument {
+export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, IInjectable {
 
   readonly stylesheet: CSSStyleSheetExpression = new CSSStyleSheetExpression([], null);
 
+  /**
+   * The source content of this document
+   */
+
+  private _root: IHTMLContainerEntity;
+  private _source: string;
+  private _rootExpression: HTMLFragmentExpression;
+
+  /**
+   * Creates an instance of HTMLDocumentEntity.
+   *
+   * @param {any} [readonly=file] the source file
+   * @param {any} HTMLFile
+   */
+
+  constructor(readonly file: DocumentFile, private _dependencies: Dependencies) {
+    super();
+  }
+
+
   cloneNode(deep?: boolean) {
-    const clone = new HTMLDocumentEntity();
+    const clone = new HTMLDocumentEntity(this.file, this._dependencies);
     if (deep)
     for (const child of this.childNodes) {
       clone.appendChild(<IHTMLEntity>child.cloneNode(true));
     }
     return clone;
+  }
+
+  didInject() { }
+
+  get root(): IHTMLContainerEntity {
+    return this._root;
   }
 
   _unlink(child: IHTMLEntity) {
@@ -38,6 +76,56 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument {
     super._unlink(child);
     child.document = this;
   }
+
+  async sync() {
+    await this._render();
+    await this.root.sync();
+  }
+
+  public async load(source: string) {
+    this._source = source;
+    this._rootExpression = parseHTML(source);
+    await this._render();
+  }
+
+  private async _render() {
+    const root = <IHTMLContainerEntity>(await this._loadEntity(this._rootExpression));
+
+    const oldRoot = this._root;
+    if (this._root) {
+      patch(this._root, diff(this._root, root), (node) => node);
+      this._updateExpressions(this._root, root);
+    } else {
+      this._root = root;
+    }
+    this._root.document = this;
+
+    this.notify(new PropertyChangeAction("root", this._root, oldRoot));
+  }
+
+  private _updateExpressions(toEntity: IHTMLContainerEntity, fromEntity: IHTMLContainerEntity) {
+    toEntity.source = fromEntity.source;
+    if (fromEntity.childNodes) {
+      for (let i = fromEntity.childNodes.length; i--; ) {
+        this._updateExpressions(<IHTMLContainerEntity>toEntity.childNodes[i], <IHTMLContainerEntity>fromEntity.childNodes[i]);
+      }
+    }
+  }
+
+  private async _loadEntity(expression: any): Promise<INode> {
+
+    // TODO - change to HTMLEntityFactoryDependency
+    const entityFactory = EntityFactoryDependency.find(expression.nodeName, this._dependencies);
+    if (!entityFactory) throw new Error(`Unable to find entity factory for expression type "${expression.constructor.name}".`);
+    const entity = <INode>entityFactory.create(expression);
+    if (entityFactory.mapSourceChildren) {
+      const childExpressions: Array<any> = (await entityFactory.mapSourceChildren(expression)) || [];
+      for (const childExpression of childExpressions) {
+        (<IContainerNode>entity).appendChild(await this._loadEntity(childExpression));
+      }
+    }
+
+    return entity;
+  }
 }
 
-export const htmlDocumentDependency  = new DocumentEntityFactoryDependency(HTMLDocumentEntity);

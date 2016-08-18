@@ -105,18 +105,6 @@ class ResizerComponent extends React.Component<{ editor: Editor, app: FrontEndAp
       props.left + props.width,
       props.top + props.height
     );
-    this._isMoving();
-  }
-
-  /**
-   */
-
-  _isMoving() {
-    clearTimeout(this._dragTimer);
-    this.setState({ dragging: true });
-    this._dragTimer = setTimeout(() => {
-      this.setState({ dragging: false });
-    }, 100);
   }
 
   startDragging = (event) => {
@@ -153,7 +141,6 @@ class ResizerComponent extends React.Component<{ editor: Editor, app: FrontEndAp
 
   moveTarget(left, top) {
     this.targetDisplay.position = { left, top };
-    this._isMoving();
   }
 
   render() {

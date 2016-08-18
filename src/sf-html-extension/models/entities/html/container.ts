@@ -1,7 +1,7 @@
 import { disposeEntity } from "./utils";
 import { IHTMLEntity, IHTMLDocument } from "./base";
 import { IHTMLContainerExpression, HTMLExpression } from "sf-html-extension/parsers/html";
-import { IEntity, IElementEntity, IEntityEngine, findEntitiesBySource } from "sf-core/entities";
+import { IEntity, IElementEntity, findEntitiesBySource } from "sf-core/entities";
 import { IMarkupSection, ContainerNode, INode, NodeSection, GroupNodeSection } from "sf-core/markup";
 
 export abstract class HTMLContainerEntity extends ContainerNode implements IHTMLEntity, IElementEntity {
@@ -9,8 +9,6 @@ export abstract class HTMLContainerEntity extends ContainerNode implements IHTML
   readonly type: string = null;
   readonly nodeName: string;
   readonly section: IMarkupSection;
-
-  public engine: IEntityEngine;
 
   private _document: IHTMLDocument;
 
@@ -45,9 +43,9 @@ export abstract class HTMLContainerEntity extends ContainerNode implements IHTML
     this.section.appendChild(newChild);
   }
 
-  updateSource() {
+  sync() {
     for (const child of this.childNodes) {
-      (<any>child).updateSource();
+      (<any>child).sync();
     }
   }
 
@@ -69,7 +67,7 @@ export abstract class HTMLContainerEntity extends ContainerNode implements IHTML
     // TODO - it may be more appropriate to leave this up to whatever is calling
     // appendSourceChildNode since there may be cases where the callee executes a batch of these. For now though,
     // it's better to leave this here to make things more DRY.
-    await this.engine.update();
+    // await this.document.update();
 
     // since we don't know the entity, or where it lives in this entity, we'll need to scan for it. It could
     // even be a collection of entities.

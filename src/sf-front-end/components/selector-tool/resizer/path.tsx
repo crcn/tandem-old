@@ -11,7 +11,6 @@ class PathComponent extends React.Component<{ strokeWidth: number, showPoints: b
     // as the user is dragging the selected entity.
     const oldCursor = this.props.editor.cursor;
     this.props.editor.cursor = window.getComputedStyle(event.target).cursor;
-    console.log(this.props.editor.cursor);
 
     const sx = point.left;
     const sy = point.top;

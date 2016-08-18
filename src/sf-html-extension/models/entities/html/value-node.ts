@@ -1,6 +1,5 @@
 import { decode } from "ent";
 import { disposeEntity } from "./utils";
-import { IEntityEngine } from "sf-core/entities";
 import { NodeSection, ValueNode } from "sf-core/markup";
 import { IHTMLValueNodeExpression } from "sf-html-extension/parsers/html";
 import { IHTMLDocument, IHTMLEntity } from "./base";
@@ -8,12 +7,11 @@ import { IHTMLDocument, IHTMLEntity } from "./base";
 export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> extends ValueNode implements IHTMLEntity {
 
   readonly type: string = null;
-
   readonly section: NodeSection;
+
   private _node: Node;
   private _nodeValue: any;
   private _document: IHTMLDocument;
-  public engine: IEntityEngine;
 
   get document(): IHTMLDocument {
     return this._document;
@@ -34,7 +32,7 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
     this.section = new NodeSection(this._node = this.createDOMNode(source.nodeValue) as any);
   }
 
-  updateSource() {
+  sync() {
     this.source.nodeValue = this.nodeValue;
   }
 

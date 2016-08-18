@@ -3,7 +3,7 @@ import { inject } from "sf-core/decorators";
 import { IActor } from "sf-core/actors";
 import { Action } from "sf-core/actions";
 import { Selection } from "./selection";
-import { EntityFile } from "./base";
+import { DocumentFile } from "./base";
 import { IInjectable, Dependencies, Injector } from "sf-core/dependencies";
 
 export class Workspace implements IActor {
@@ -12,11 +12,9 @@ export class Workspace implements IActor {
   public selection: Selection<any> = new Selection<any>();
 
   // TODO - implement me
-  public getSelection(type: string) {
+  public getSelection(type: string) { }
 
-  }
-
-  constructor(readonly file: EntityFile) {
+  constructor(readonly file: DocumentFile) {
     this.editor = new Editor(this);
   }
 

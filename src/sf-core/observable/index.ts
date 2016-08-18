@@ -1,11 +1,8 @@
 import { IActor } from "sf-core/actors";
 import { Action } from "sf-core/actions";
+import { IObservable } from "./base";
 
-export interface IObservable {
-  observe(actor: IActor);
-  unobserve(actor: IActor);
-  notify(action: Action);
-}
+export { IObservable };
 
 export class Observable implements IObservable {
   private _observers: any;
@@ -53,3 +50,5 @@ export class Observable implements IObservable {
     }
   }
 }
+
+export * from "./watch-property";

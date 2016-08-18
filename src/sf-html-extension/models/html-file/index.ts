@@ -1,12 +1,13 @@
 import mergeHTML from "./merge-html";
 import { IActor } from "sf-core/actors";
-import { inject } from "sf-core/decorators";
+import * as pretty from "pretty";
 import { BubbleBus } from "sf-core/busses";
 import { Observable } from "sf-core/observable";
-import * as pretty from "pretty";
-import { EntityFile } from "sf-front-end/models/base";
+import { DocumentFile } from "sf-front-end/models/base";
+import { inject, bindable } from "sf-core/decorators";
+import { HTMLDocumentEntity } from "sf-html-extension/models/entities/html";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
-import { IEntity, EntityEngine } from "sf-core/entities";
+import { IEntity, IEntityDocument } from "sf-core/entities";
 import { IActiveRecord, ActiveRecord } from "sf-core/active-records";
 import { PropertyChangeAction, UpdateAction } from "sf-core/actions";
 import {
@@ -18,39 +19,43 @@ import {
   ActiveRecordFactoryDependency,
 } from "sf-core/dependencies";
 
-export class HTMLFile extends EntityFile implements IInjectable {
+export class HTMLFile extends DocumentFile implements IInjectable {
 
+  @bindable()
   public path: string;
+
+  @bindable()
   public content: string;
+
   readonly idProperty: string = "path";
-  public ext: string;
   readonly type: string = "text/html";
 
   @inject(DEPENDENCIES_NS)
-  readonly dependencies: Dependencies;
+  private _dependencies: Dependencies;
 
   private _entityObserver: IActor;
-  private _engine: EntityEngine;
-  private _entity: IEntity;
+  private _document: HTMLDocumentEntity;
 
   serialize() {
     return {
       path: this.path,
-      content: this.content,
-      ext: this.ext
+      content: this.content
     };
   }
 
-  deserialize(data: { path: string, content: string, ext: string }) {
+  deserialize(data: { path: string, content: string }) {
     this.path    = data.path;
-    this.content = data.content;
-    this.ext     = data.ext;
 
-    this._loadEntity();
+    const oldContent = this.content;
+    this.content = data.content;
+
+    if (this.content !== oldContent) {
+      this._document.load(this.content);
+    }
   }
 
   didInject() {
-    this._engine = new EntityEngine(this.dependencies);
+    this._document       = new HTMLDocumentEntity(this, this._dependencies);
     this._entityObserver = new BubbleBus(this);
   }
 
@@ -58,8 +63,8 @@ export class HTMLFile extends EntityFile implements IInjectable {
    * The entity object created from content
    */
 
-  get entity() {
-    return this._entity;
+  get document() {
+    return this._document;
   }
 
   /**
@@ -67,35 +72,32 @@ export class HTMLFile extends EntityFile implements IInjectable {
    * on this file object
    */
 
-  private async _loadEntity() {
-    if (this._entity) this._entity.unobserve(this._entityObserver);
-    this._entity = await this._engine.load(parseHTML(this.content));
+  // private async _loadDocument() {
+  //   if (this._entity) this._entity.unobserve(this._entityObserver);
+  //   this._entity = await this._engine.load(parseHTML(this.content));
 
-    // re-notify observers of this model when the entity changes
-    this._entity.observe(this._entityObserver);
+  //   // re-notify observers of this model when the entity changes
+  //   this._entity.observe(this._entityObserver);
 
-    // notify observers that the file has changed
-    this.notify(new PropertyChangeAction("entity", this._entity, undefined));
-  }
+  //   // notify observers that the file has changed
+  //   this.notify(new PropertyChangeAction("entity", this._entity, undefined));
+  // }
 
   /**
    */
 
-  public save() {
+  public async save() {
 
     // copy whitespace over to new content
     // this.content = mergeHTML(this.content, this._entity.source.toString());
 
-    // TODO - beautify instead, but use settings defined by the user. Diffing whitepace
-    // is a bit problematic since there are a few unintended side effects from the sort of thing. For instance,
-    // there is no way to properly format *new* HTML code added by the editor according to the user's preferences. The
-    // editor should override whitespaces because of edges such as this.
-    this._entity.updateSource();
-    this.content = pretty(this._entity.source.toString());
+    // TODO - beautify HTML here.
+    await this._document.sync();
+    this.content = pretty(this._document.root.source.toString());
 
     return super.save();
   }
 }
 
-export const dependency = new ActiveRecordFactoryDependency("text/html", HTMLFile);
+export const htmlFileModelDependency = new ActiveRecordFactoryDependency("text/html", HTMLFile);
 

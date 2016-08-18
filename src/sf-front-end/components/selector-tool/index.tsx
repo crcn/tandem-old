@@ -49,12 +49,12 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
     const boundsStyle = {
       position: "absolute",
-      boxShadow: `0 0 0 ${borderWidth}px #a4b7d7`,
-      left: entireBounds.left,
       top: entireBounds.top,
-
+      left: entireBounds.left,
       width: entireBounds.width,
-      height: entireBounds.height
+      height: entireBounds.height,
+      boxShadow: `0 0 0 ${borderWidth}px #a4b7d7`,
+      display: this.state.moving || this.state.resizing ? "none" : undefined,
     };
 
     return (<div className="m-selector-component">

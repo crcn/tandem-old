@@ -30,8 +30,9 @@ export class PasteHTMLCommand implements IActor, IInjectable {
       // meta charset is tacked on the beginning - remove it
       content = content.replace(/\<meta.*?\>/, "");
 
+
       // TODO - this.app.workspace.activeEntity.source.appendChildNodes()
-      (<HTMLFile>this.app.workspace.file).entity.source.appendChildNodes(
+      (<HTMLFile>this.app.workspace.file).document.root.source.appendChildNodes(
         ...parseHTML(content).childNodes
       );
 

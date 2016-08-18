@@ -32,11 +32,11 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
     return this._styleExpression = style ? parseCSS(`style { ${style} }`).rules[0].style : new CSSStyleExpression([], null);
   }
 
-  updateSource() {
+  sync() {
     if (this.styleExpression.declarations.length) {
       this.source.setAttribute("style", this.styleExpression.toString());
     }
-    super.updateSource();
+    super.sync();
   }
 
   static mapSourceChildren(source: HTMLElementExpression) {
@@ -65,9 +65,7 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
 
   setAttribute(name: string, value: string) {
 
-    if (this.section instanceof NodeSection) {
-      (<IElement>this.section.targetNode).setAttribute(name, value);
-    }
+    (<IElement>this.section.targetNode).setAttribute(name, value);
 
     let found = false;
     for (const attribute of this.source.attributes) {

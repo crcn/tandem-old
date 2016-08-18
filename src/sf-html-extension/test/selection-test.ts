@@ -40,13 +40,13 @@ describe(__filename + "#", () => {
       // TODO - watch for app.workspace.file.entity to change
       await timeout(10);
 
-      expect(app.workspace.file.entity).not.to.equal(undefined);
+      expect(app.workspace.file.document).not.to.equal(undefined);
       expect(app.workspace.selection.length).to.equal(0);
       app.bus.execute(new SelectSourceAtOffsetAction({ start: -Infinity, end: Infinity }));
       expect(app.workspace.selection.length).to.equal(1);
       app.bus.execute(new SelectSourceAtOffsetAction({ start: 0, end: 0 }));
       expect(app.workspace.selection.length).to.equal(0);
-      app.bus.execute(new SelectSourceAtOffsetAction({ start: app.workspace.file.entity.source.position.start, end: app.workspace.file.entity.source.position.end }));
+      app.bus.execute(new SelectSourceAtOffsetAction({ start: app.workspace.file.document.root.source.position.start, end: app.workspace.file.document.root.source.position.end }));
       expect(app.workspace.selection.length).to.equal(1);
     });
   });

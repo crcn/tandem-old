@@ -2,8 +2,8 @@ import "./index.scss";
 import * as React from "react";
 import { Workspace } from "sf-front-end/models";
 import PaneComponent from "sf-front-end/components/pane";
-import { HTMLElementEntity, IHTMLEntity } from "sf-html-extension/entities/html";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
+import { HTMLElementEntity, IHTMLEntity } from "sf-html-extension/models";
 import { PaneComponentFactoryDependency } from "sf-front-end/dependencies";
 import { CSSExpression, CSSStyleExpression, CSSRuleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/parsers/css";
 

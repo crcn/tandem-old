@@ -13,7 +13,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
   selectAtSourceOffset(action: SelectSourceAtOffsetAction) {
 
-    const allEntities = <Array<IEntity>>this.app.workspace.file.entity.flatten();
+    const allEntities = <Array<IEntity>>this.app.workspace.file.document.flatten();
 
     const selection = [];
     for (const entity of allEntities) {
@@ -106,7 +106,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
     // TODO - select call based on focused entity
     this.select({
-      items: (<any>this.app.workspace.file.entity).childNodes,
+      items: (<any>this.app.workspace.file.document).childNodes,
       keepPreviousSelection: false,
       toggle: false
     });

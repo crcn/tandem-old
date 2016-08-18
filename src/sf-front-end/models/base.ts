@@ -1,11 +1,12 @@
 import { File } from "sf-common/models";
 import { IActor } from "sf-core/actors";
-import { IPosition, Transform } from "sf-core/geom";
 import { Action } from "sf-core/actions";
-import { IEntity } from "sf-core/entities";
 import { Workspace } from "./workspace";
 import { IInjectable } from "sf-core/dependencies";
 import { IDisposable } from "sf-core/object";
+import { IContainerNode } from "sf-core/markup";
+import { IPosition, Transform } from "sf-core/geom";
+import { IEntity, IEntityDocument } from "sf-core/entities";
 
 export interface IEditorTool extends IActor, IDisposable {
   readonly editor: IEditor;
@@ -23,8 +24,8 @@ export interface IEditor extends IActor {
   readonly workspace: Workspace;
 }
 
-export abstract class EntityFile extends File {
-  public entity: IEntity;
+export abstract class DocumentFile extends File {
+  readonly document: IEntityDocument;
 }
 
 export abstract class BaseEditorTool implements IEditorTool, IInjectable {

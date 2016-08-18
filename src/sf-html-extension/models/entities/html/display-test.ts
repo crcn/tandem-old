@@ -1,19 +1,22 @@
 import * as sift from "sift";
 import { expect } from "chai";
+import { HTMLFile } from "sf-html-extension/models/html-file";
 import { BoundingRect } from "sf-core/geom";
+import { IVisibleEntity } from "sf-core/entities";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
 import { FrontEndApplication } from "sf-front-end/application";
-import { EntityEngine, IVisibleEntity } from "sf-core/entities";
-import { Dependencies, ApplicationSingletonDependency } from "sf-core/dependencies";
+import { timeout, waitForPropertyChange } from "sf-core/test/utils";
+import { Dependencies, DependenciesDependency, DEPENDENCIES_NS, ApplicationSingletonDependency, ActiveRecordFactoryDependency } from "sf-core/dependencies";
 import {
   HTMLElementEntity,
   htmlTextDependency,
+  HTMLDocumentEntity,
   htmlCommentDependency,
-  htmlDocumentDependency,
   htmlElementDependencies,
+  htmlFileModelDependency,
   htmlTemplateEntityDependency,
   htmlDocumentFragmentDependency,
-} from "./index";
+} from "sf-html-extension/models";
 
 describe(__filename + "#", () => {
   let dependencies: Dependencies;
@@ -25,23 +28,29 @@ describe(__filename + "#", () => {
     dependencies = new Dependencies(
       htmlTextDependency,
       htmlCommentDependency,
-      htmlDocumentDependency,
+      htmlFileModelDependency,
       ...htmlElementDependencies,
       htmlTemplateEntityDependency,
       htmlDocumentFragmentDependency,
       new ApplicationSingletonDependency(app)
     );
+
+    dependencies.register(new DependenciesDependency(dependencies));
   });
 
   async function loadTarget(source) {
-    const engine = new EntityEngine(dependencies);
-    const entity = await engine.load(parseHTML(source as string))as HTMLElementEntity;
+    const file: HTMLFile = ActiveRecordFactoryDependency.find("text/html", dependencies).create("files", {
+      content: source
+    });
+    await waitForPropertyChange(file.document, "root");
+    const root = file.document.root;
     const div = document.createElement("div");
     document.body.appendChild(div);
     Object.assign(div.style, { position: "fixed", top: "0px", left: "0px" });
-    div.appendChild(<Node><any>entity.section.toFragment());
+    div.appendChild(<Node><any>root.section.toFragment());
 
-    return <IVisibleEntity>(entity.flatten().find((entity) => {
+
+    return <IVisibleEntity>(root.flatten().find((entity) => {
       if (entity["attributes"]) {
         return (<HTMLElementEntity>entity).getAttribute("id") === "target";
        }
@@ -59,7 +68,6 @@ describe(__filename + "#", () => {
   }
 
   describe("bounds ", () => {
-
 
     it("are correct for a simple div", async () => {
       expect(await calculateBounds(`<div id="target" style="width:100px;height:100px;">

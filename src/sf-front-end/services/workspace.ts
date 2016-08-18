@@ -4,8 +4,8 @@ import { inject } from "sf-core/decorators";
 import { loggable } from "sf-core/decorators";
 import { Action, FindAction } from "sf-core/actions";
 import { FrontEndApplication } from "sf-front-end/application";
-import { Workspace, EntityFile } from "sf-front-end/models";
 import { BaseApplicationService } from "sf-core/services";
+import { Workspace, DocumentFile } from "sf-front-end/models";
 import { SetToolAction, ZoomAction, TranslateAction } from "sf-front-end/actions";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
@@ -35,7 +35,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     // TODO - File.findAll(this._dependencies).sync().observe(updateWorkspaces);
     for (const file of (await File.findAll(this._dependencies)).map((file) => file.sync())) {
       // TODO - this.app.workspaces = new Workspaces(files.map())
-      this.bus.register(this.app.workspace = new Workspace(<EntityFile>file));
+      this.bus.register(this.app.workspace = new Workspace(<DocumentFile>file));
       file.observe(this.app.bus);
     }
 

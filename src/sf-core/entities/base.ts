@@ -11,15 +11,17 @@ import {
   IDiffableValueNode,
 } from "../markup";
 
-export interface IEntityEngine {
-  update(): Promise<void>;
-}
 
 // export interface IEntityDisplayMutator extends IEntityMutator {
 //   appendChild(child: IEntity);
 //   removeChild(child: IEntity);
 // }
 
+
+export interface IEntityDocument extends IContainerNode {
+  readonly root: IEntity;
+  sync();
+}
 
 // TODO - IEntity should not extend INode since it is not limited to the markup lang
 // TODO - should extend ITyped interface
@@ -40,13 +42,13 @@ export interface IEntity extends INode, IDisposable {
    * The creator if this entity
    */
 
-  engine: IEntityEngine;
+  document: IEntityDocument;
 
   /**
    * update source from props on this entity
    */
 
-  updateSource();
+  sync();
 }
 
 export interface IVisibleEntity extends IEntity {

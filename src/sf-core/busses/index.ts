@@ -5,3 +5,4 @@ export * from "./broker";
 export * from "./bubble";
 export * from "./callback";
 export * from "./post-ds-notifier";
+export * from "./limit";

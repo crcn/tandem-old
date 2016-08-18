@@ -86,22 +86,6 @@ export class EntityFactoryDependency extends ClassFactoryDependency {
   }
 }
 
-export const DOCUMENT_ENTITY_NS = [ENTITIES_NS, "#document"].join("/");
-export class DocumentEntityFactoryDependency extends ClassFactoryDependency {
-  constructor(readonly clazz: { new(): IContainerNode }) {
-    super(DOCUMENT_ENTITY_NS, clazz);
-  }
-  create(): IContainerNode {
-    return super.create();
-  }
-  clone() {
-    return new DocumentEntityFactoryDependency(this.clazz);
-  }
-  static find(dependencies: Dependencies) {
-    return dependencies.query<DocumentEntityFactoryDependency>(DOCUMENT_ENTITY_NS);
-  }
-}
-
 /**
  */
 

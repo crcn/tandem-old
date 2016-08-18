@@ -2,7 +2,6 @@
   .box {
     color: red;
   }
-
   .circle {
     color: white;
     padding: 10px;
@@ -14,9 +13,9 @@
 </style>
 
 <div class="box">
-  a
+  abc
 </div>
 
 <div class="circle" style="left:100px;top:100px; background-color: #F60;">
-  abcde
+  abcdef
 </div>

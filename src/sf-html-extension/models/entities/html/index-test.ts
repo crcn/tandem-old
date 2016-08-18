@@ -1,52 +1,65 @@
 import { expect } from "chai";
-import { Dependencies } from "sf-core/dependencies";
-import { EntityEngine } from "sf-core/entities";
-import { parse as parseHTML } from "../../parsers/html";
+import { Dependencies, ActiveRecordFactoryDependency, DependenciesDependency } from "sf-core/dependencies";
+import { waitForPropertyChange, timeout } from "sf-core/test/utils";
+import { parse as parseHTML } from "sf-html-extension/parsers/html";
 import {
+  HTMLFile,
   HTMLElementEntity,
+  HTMLDocumentEntity,
   htmlTextDependency,
   htmlCommentDependency,
-  htmlDocumentDependency,
-  htmlDocumentFragmentDependency,
+  htmlFileModelDependency,
   htmlElementDependencies,
-} from "./index";
+  htmlDocumentFragmentDependency,
+} from "sf-html-extension/models";
 
 describe(__filename + "#", () => {
-  let dependencies;
+  let dependencies: Dependencies;
   beforeEach(() => {
-    dependencies = new Dependencies(
-      ...htmlElementDependencies,
+    dependencies = new Dependencies();
+
+    dependencies.register(
+      new DependenciesDependency(dependencies),
       htmlTextDependency,
-      htmlDocumentDependency,
+      htmlCommentDependency,
+      htmlFileModelDependency,
+      ...htmlElementDependencies,
       htmlDocumentFragmentDependency,
-      htmlCommentDependency
     );
   });
 
-  async function loadEngine(source) {
-    const engine = new EntityEngine(dependencies);
-    await engine.load(parseHTML(source));
-    return engine;
+  async function loadDocument(content: string) {
+    const file: HTMLFile = ActiveRecordFactoryDependency.find("text/html", dependencies).create("files", {
+      path: "a",
+      content: content
+    });
+    await timeout(20);
+    return file.document;
+  }
+
+  async function updateDocumentSource(document: HTMLDocumentEntity, source: string) {
+    document.file.deserialize({ content: source });
+    await timeout(20);
+    return document;
   }
 
   async function loadDiv(source) {
+    const doc = await loadDocument(source);
     const div = document.createElement("div");
-    div.appendChild(<Node><any>(<HTMLElementEntity>(await loadEngine(source)).entity).section.toFragment());
+    div.appendChild(<Node><any>doc.root.section.toFragment());
     return div;
   }
 
   it("can render a DIV element", async () => {
-    const engine = new EntityEngine(dependencies);
-    const entity = await engine.load(parseHTML("<div />"));
-    expect((<any>entity).childNodes[0].nodeName).to.equal("DIV");
+    const doc = await loadDocument("<div />");
+    expect(doc.root.childNodes[0].nodeName).to.equal("DIV");
   });
 
   it("emits a DOM element", async () => {
-    const engine = new EntityEngine(dependencies);
-    let source = "<div>hello world!</div>";
-    const entity = await engine.load(parseHTML(source)) as HTMLElementEntity;
+    const source = "<div>hello world!</div>";
+    const doc = await loadDocument(source);
     const div = document.createElement("div");
-    div.appendChild(<Node><any>entity.section.toFragment());
+    div.appendChild(<Node><any>doc.root.section.toFragment());
     expect(div.innerHTML).to.equal(source);
   });
 
@@ -63,12 +76,11 @@ describe(__filename + "#", () => {
     [`1<h2>2</h2>3<h3>4</h3>`, `<h2>1</h2>2<h3>3</h3>`]
   ].forEach(function([source, change]) {
     it(`can update the source from ${source} to ${change}`, async () => {
-      const engine = new EntityEngine(dependencies);
-      const entity = await engine.load(parseHTML(source as any)) as HTMLElementEntity;
+      const doc = await loadDocument(source);
       const div = document.createElement("div");
-      div.appendChild(<Node><any>entity.section.toFragment());
+      div.appendChild(<Node><any>doc.root.section.toFragment());
       expect(div.innerHTML).to.equal(source);
-      await engine.load(parseHTML(change as any));
+      await updateDocumentSource(doc, change);
       expect(div.innerHTML).to.equal(change);
     });
   });
@@ -84,20 +96,21 @@ describe(__filename + "#", () => {
 
   describe("when updating existing entities", () => {
 
-    let engine: EntityEngine;
+    let doc: HTMLDocumentEntity;
 
-    beforeEach(function() {
-      engine = new EntityEngine(dependencies);
+    beforeEach(async function() {
+      doc = await loadDocument("");
     });
 
     it("properly adds new children to the existing entity expressions", async () => {
       const div = document.createElement("div");
-      await engine.load(parseHTML(`<div />`));
-      div.appendChild(<Node><any>(<HTMLElementEntity>engine.entity).section.toFragment());
+
+      await updateDocumentSource(doc, "<div />");
+      div.appendChild(<Node><any>doc.root.section.toFragment());
       expect(div.innerHTML).to.equal("<div></div>");
-      await engine.load(parseHTML(`<div>a b</div>`));
+      await updateDocumentSource(doc, "<div>a b</div>");
       expect(div.innerHTML).to.equal("<div>a b</div>");
-      expect(engine.entity.source.toString()).to.equal(`<div>a b</div>`);
+      expect(doc.root.source.toString()).to.equal(`<div>a b</div>`);
     });
   });
 });
