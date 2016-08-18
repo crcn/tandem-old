@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { HTMLFile } from "sf-html-extension/models/html-file";
 import { BoundingRect } from "sf-core/geom";
 import { IVisibleEntity } from "sf-core/entities";
+import { HTML_MIME_TYPE } from "sf-html-extension/constants";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
 import { FrontEndApplication } from "sf-front-end/application";
 import { timeout, waitForPropertyChange } from "sf-core/test/utils";
@@ -39,7 +40,7 @@ describe(__filename + "#", () => {
   });
 
   async function loadTarget(source) {
-    const file: HTMLFile = ActiveRecordFactoryDependency.find("text/html", dependencies).create("files", {
+    const file: HTMLFile = ActiveRecordFactoryDependency.find(HTML_MIME_TYPE, dependencies).create("files", {
       content: source
     });
     await waitForPropertyChange(file.document, "root");

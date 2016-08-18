@@ -2,6 +2,7 @@ import * as sift from "sift";
 import { IActor } from "sf-core/actors";
 import { flatten } from "lodash";
 import { HTMLFile } from "../models/html-file";
+import { HTML_MIME_TYPE } from "sf-html-extension/constants";
 import { parse as parseHTML } from "../parsers/html";
 import { FrontEndApplication } from "sf-front-end/application";
 import { inject, filterAction } from "sf-core/decorators";
@@ -23,7 +24,7 @@ export class PasteHTMLCommand implements IActor, IInjectable {
 
   didInject() { }
 
-  @filterAction(sift({ type: PASTE, "item.type": "text/html" }))
+  @filterAction(sift({ type: PASTE, "item.type": HTML_MIME_TYPE }))
   execute(action: PasteAction) {
 
     // TODO - need to paste to editor.focus (entity)

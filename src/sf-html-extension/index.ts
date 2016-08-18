@@ -1,9 +1,10 @@
+import { HTML_MIME_TYPE } from "sf-html-extension/constants";
 
  import { IApplication } from "sf-core/application";
 
  // components
- import { dependency as entityPreviewComponentDependency } from "./components/entity-preview";
  import { dependency as cssPaneComponentDependency } from "./components/css-pane";
+ import { dependency as entityPreviewComponentDependency } from "./components/entity-preview";
 
  // models
  import { htmlFileModelDependency } from "./models/html-file";
@@ -56,7 +57,7 @@ export const dependency = [
   htmlDocumentFragmentDependency,
 
   // mime types
-  new MimeTypeDependency("htm", "text/html"),
-  new MimeTypeDependency("html", "text/html"),
-  new MimeTypeDependency("sfn", "text/html")
+  new MimeTypeDependency("htm", HTML_MIME_TYPE),
+  new MimeTypeDependency("html", HTML_MIME_TYPE),
+  new MimeTypeDependency("sfn", HTML_MIME_TYPE)
 ];

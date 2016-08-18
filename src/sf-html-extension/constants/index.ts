@@ -1,0 +1,1 @@
+export const HTML_MIME_TYPE = "text/html";

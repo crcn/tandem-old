@@ -4,6 +4,7 @@ import * as pretty from "pretty";
 import { BubbleBus } from "sf-core/busses";
 import { Observable } from "sf-core/observable";
 import { DocumentFile } from "sf-front-end/models/base";
+import { HTML_MIME_TYPE } from "sf-html-extension/constants";
 import { inject, bindable } from "sf-core/decorators";
 import { HTMLDocumentEntity } from "sf-html-extension/models/entities/html";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
@@ -28,7 +29,7 @@ export class HTMLFile extends DocumentFile implements IInjectable {
   public content: string;
 
   readonly idProperty: string = "path";
-  readonly type: string = "text/html";
+  readonly type: string = HTML_MIME_TYPE;
 
   @inject(DEPENDENCIES_NS)
   private _dependencies: Dependencies;
