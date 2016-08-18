@@ -58,6 +58,8 @@ export class HTMLFile extends DocumentFile implements IInjectable {
   didInject() {
     this._document       = new HTMLDocumentEntity(this, this._dependencies);
     this._entityObserver = new BubbleBus(this);
+
+    this._document.observe(new BubbleBus(this));
   }
 
   /**

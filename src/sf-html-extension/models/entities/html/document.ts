@@ -1,5 +1,6 @@
 import { inject } from "sf-core/decorators";
 import { HTMLFile } from "sf-html-extension/models/html-file";
+import { BubbleBus } from "sf-core/busses";
 import { DocumentFile } from "sf-front-end/models";
 import { watchProperty } from "sf-core/observable";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
@@ -103,6 +104,7 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
       this._updateExpressions(this._root, root);
     } else {
       this._root = root;
+      this._root.observe(new BubbleBus(this));
     }
     this._root.document = this;
 
