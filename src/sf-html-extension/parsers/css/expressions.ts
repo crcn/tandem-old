@@ -1,4 +1,5 @@
 import { IRange } from "sf-core/geom";
+import { diffArray, patchArray } from "sf-core/utils/array";
 import { BaseExpression, flattenEach } from "../core/expression";
 
 export class CSSExpression extends BaseExpression { }
@@ -10,14 +11,26 @@ export class CSSStyleExpression extends CSSExpression {
 
   constructor(public declarations: Array<CSSStyleDeclarationExpression>, public position: IRange) {
     super(CSS_STYLE, position);
+    this._reset();
+  }
+
+  private _reset() {
     this._declarationsByKey = {};
     this._values = {};
 
-    for (const declaration of declarations) {
+    for (const declaration of this.declarations) {
       this._declarationsByKey[declaration.key] = declaration;
       this._values[declaration.key] = declaration.value.toString();
     }
   }
+
+  static merge(a: CSSStyleExpression, b: CSSStyleExpression): CSSStyleExpression {
+    a.position = b.position;
+    patchArray(a.declarations, diffArray(a.declarations, b.declarations, (a, b) => a .key === b.key), CSSStyleDeclarationExpression.merge);
+    a._reset();
+    return a;
+  }
+
   public _flattenDeep(items) {
     super._flattenDeep(items);
     flattenEach(this.declarations, items);
@@ -41,17 +54,6 @@ export class CSSStyleExpression extends CSSExpression {
     return this._values;
   }
 
-  // patch(expression: CSSStyleExpression) {
-  //   this.position = expression.position;
-  //   for (const newDeclaration of expression.declarations) {
-  //     for (const existingDeclaration of this.declarations) {
-  //       if (newDeclaration.key === existingDeclaration.key) {
-  //         existingDeclaration.pat
-  //       }
-  //     }
-  //   }
-  // }
-
   public removeDeclaration(key: string) {
     for (let i = this.declarations.length; i--; ) {
       if (this.declarations[i].key === key) {
@@ -72,8 +74,16 @@ export class CSSStyleDeclarationExpression extends CSSExpression {
     super(CSS_STYLE_DECLARATION, position);
   }
 
-  patch(expression: CSSExpression) {
+  static merge(a: CSSStyleDeclarationExpression, b: CSSStyleDeclarationExpression): CSSStyleDeclarationExpression {
+    a.position = b.position;
+    a.key = b.key;
+    if (a.value.constructor === b.value.constructor && (<any>a.value.constructor).merge) {
+      (<any>a.value.constructor).merge(a.value, b.value);
+    } else {
+      a.value = b.value;
+    }
 
+    return a;
   }
 
   public _flattenDeep(items) {
@@ -81,7 +91,7 @@ export class CSSStyleDeclarationExpression extends CSSExpression {
     this.value._flattenDeep(items);
   }
   toString() {
-    if (this.key === "" || this.value.toString() === "") return "";
+    if (this.key === "") return "";
     return [this.key, ":", this.value.toString(), ";"].join("");
   }
 }
@@ -130,6 +140,11 @@ export class CSSRuleExpression extends CSSExpression {
   constructor(public selector: string, public style: CSSStyleExpression, position: IRange) {
     super(CSS_RULE, position);
   }
+  static merge(a: CSSRuleExpression, b: CSSRuleExpression) {
+    a.position = b.position;
+    a.selector = b.selector;
+    CSSStyleExpression.merge(a.style, b.style);
+  }
   toString() {
     return `${this.selector} { ${this.style} }`;
   }
@@ -137,9 +152,19 @@ export class CSSRuleExpression extends CSSExpression {
 
 export const CSS_STYLE_SHEET = "cssStyleSheet";
 export class CSSStyleSheetExpression extends CSSExpression {
+
   constructor(public rules: Array<CSSRuleExpression>, position: IRange) {
     super(CSS_STYLE_SHEET, position);
   }
+
+  static merge(a: CSSStyleSheetExpression, b: CSSStyleSheetExpression) {
+    a.position = b.position;
+    patchArray(a.rules, diffArray<CSSRuleExpression>(a.rules, b.rules, (a, b) => a.selector === b.selector), (a, b) => {
+      CSSRuleExpression.merge(a, b);
+      return a;
+    });
+  }
+
   toString() {
     return this.rules.join(" ");
   }

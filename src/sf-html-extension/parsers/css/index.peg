@@ -43,8 +43,8 @@ CSSSelectorCharacter
   = !("{") . { return text(); }
 
 CSSStyleDeclaration
-  = !("}") _ key:CSSStyleDeclarationKey _ ':' _ value:CSSStyleDeclarationValue _ ';' _ {
-    return new CSSStyleDeclarationExpression(key, value, position());
+  = !("}") _ key:CSSStyleDeclarationKey _ ':' _ value:CSSStyleDeclarationValue? _ ';' _ {
+    return new CSSStyleDeclarationExpression(key, value || new CSSLiteralExpression(""), position());
   }
 
 CSSStyleDeclarationKey

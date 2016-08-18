@@ -13,10 +13,10 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
   // no type specified since certain elements such as <style />, and <link />
   // do not fit into a particular category. This may change later on.
   readonly type: string = null;
-  private _styleExpression: CSSStyleExpression;
+  private _source: HTMLElementExpression;
   readonly attributes: Attributes = new Attributes();
 
-  constructor(public source: HTMLElementExpression) {
+  constructor(source: HTMLElementExpression) {
     super(source);
     // TODO - attributes might need to be transformed here
     if (source.attributes) {
@@ -26,17 +26,17 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
     }
   }
 
-  get styleExpression(): CSSStyleExpression {
-    if (this._styleExpression) return this._styleExpression;
-    const style = this.getAttribute("style");
-    return this._styleExpression = style ? parseCSSStyle(style) : new CSSStyleExpression([], null);
+  get source(): HTMLElementExpression {
+    return this._source;
   }
 
-  sync() {
-    if (this.styleExpression.declarations.length) {
-      this.setAttribute("style", this.styleExpression.toString());
-    }
-    super.sync();
+  set source(value: HTMLElementExpression) {
+    this.willSourceChange(value);
+    this._source = value;
+  }
+
+  protected willSourceChange(value: HTMLElementExpression) {
+    // override me
   }
 
   static mapSourceChildren(source: HTMLElementExpression) {
@@ -65,9 +65,6 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
 
   setAttribute(name: string, value: string) {
     (<IElement>this.section.targetNode).setAttribute(name, value);
-    if (name === "style") {
-      this._styleExpression = parseCSSStyle(value);
-    }
     this.source.setAttribute(name, value);
     this.attributes.set(name, value);
     this.notify(new AttributeChangeAction(name, value));

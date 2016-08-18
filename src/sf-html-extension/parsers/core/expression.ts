@@ -15,7 +15,7 @@ export function flattenEach(fromItems: Array<BaseExpression>, toItems: Array<Bas
  */
 
 export class BaseExpression {
-  constructor(readonly type: string, readonly position: IRange) {
+  constructor(readonly type: string, public position: IRange) {
 
   }
 

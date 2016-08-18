@@ -78,8 +78,12 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
   }
 
   async sync() {
-    await this._render();
+
+    // need to sync the entities first so that changes
+    // reflect back on the source
     await this.root.sync();
+
+    await this._render();
   }
 
   public async load(source: string) {
@@ -94,6 +98,8 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
     const oldRoot = this._root;
     if (this._root) {
       patch(this._root, diff(this._root, root), (node) => node);
+
+      // TODO - need to run ElementExpression.merge(this._root.source, root.source);
       this._updateExpressions(this._root, root);
     } else {
       this._root = root;

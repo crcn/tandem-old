@@ -8,31 +8,28 @@ import { HTMLElementExpression, HTMLTextExpression } from "sf-html-extension/par
 
 export class HTMLStyleEntity extends HTMLElementEntity {
   private _style: HTMLStyleElement;
-  private _source: HTMLElementExpression;
-  private _currentNodeValue: string ;
   private _styleSheetExpression: CSSStyleSheetExpression;
-
-  private _childNodeValue: string;
 
   constructor(source: HTMLElementExpression) {
     super(source);
     this._resetStyle();
   }
 
-  get source() {
-    return this._source;
-  }
-
-  set source(value: HTMLElementExpression) {
+  protected willSourceChange(value: HTMLElementExpression) {
+    super.willSourceChange(value);
     this._removeStyles();
-    this._source = value;
     const nodeValue = (<HTMLTextExpression>value.childNodes[0]).nodeValue;
-    if (nodeValue !== this._currentNodeValue) {
-      this._currentNodeValue = nodeValue;
-      this._styleSheetExpression = parseCSS(nodeValue);
-      this._addDocStyles(this.document);
-      this._resetStyle();
+
+    const newStyle = parseCSS(nodeValue);
+
+    if (this._styleSheetExpression) {
+      CSSStyleSheetExpression.merge(this._styleSheetExpression, newStyle);
+    } else {
+      this._styleSheetExpression = newStyle;
     }
+
+    this._addDocStyles(this.document);
+    this._resetStyle();
   }
 
   willChangeDocument(newDocument) {
@@ -42,7 +39,7 @@ export class HTMLStyleEntity extends HTMLElementEntity {
 
   sync() {
     super.sync();
-    (<HTMLTextExpression>this.source.childNodes[0]).nodeValue = this._currentNodeValue = this._styleSheetExpression.toString();
+    (<HTMLTextExpression>this.source.childNodes[0]).nodeValue = this._styleSheetExpression.toString();
     this._resetStyle();
   }
 
