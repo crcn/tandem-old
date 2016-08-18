@@ -106,7 +106,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
     // TODO - select call based on focused entity
     this.select({
-      items: (<any>this.app.workspace.file.document).childNodes,
+      items: (<any>this.app.workspace.file.document.root).childNodes,
       keepPreviousSelection: false,
       toggle: false
     });

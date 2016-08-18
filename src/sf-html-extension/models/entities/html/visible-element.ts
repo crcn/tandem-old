@@ -18,6 +18,8 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
   protected willSourceChange(value: HTMLElementExpression) {
     const style = value.getAttribute("style");
     const newExpression = style ? parseCSSStyle(style) : new CSSStyleExpression([], null);
+
+    // TODO - this._styleExpression = recycle(parseCSSStyle(style), this._styleExpression, CSSExpression.merge)
     if (this._styleExpression) {
       CSSStyleExpression.merge(this._styleExpression, newExpression);
     } else {
