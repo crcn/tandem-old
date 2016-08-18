@@ -1,11 +1,11 @@
 import * as sift from "sift";
 import { IActor } from "sf-core/actors";
-import { SfFile } from "../models/sf-file";
+import { HTMLFile } from "../models/html-file";
 import { parse as parseHTML } from "../parsers/html";
 import { PASTE, PasteAction } from "sf-front-end/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { inject, filterAction } from "sf-core/decorators";
-import { HTMLFragmentExpression } from "../parsers/html/expressions";
+import { HTMLFragmentExpression } from "../parsers/html";
 
 import {
   IInjectable,
@@ -31,7 +31,7 @@ export class PasteHTMLCommand implements IActor, IInjectable {
       content = content.replace(/\<meta.*?\>/, "");
 
       // TODO - this.app.workspace.activeEntity.source.appendChildNodes()
-      (<SfFile>this.app.workspace.file).entity.source.appendChildNodes(
+      (<HTMLFile>this.app.workspace.file).entity.source.appendChildNodes(
         ...parseHTML(content).childNodes
       );
 

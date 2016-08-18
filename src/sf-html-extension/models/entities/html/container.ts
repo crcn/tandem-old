@@ -1,6 +1,6 @@
 import { disposeEntity } from "./utils";
 import { IHTMLEntity, IHTMLDocument } from "./base";
-import { IHTMLContainerExpression, HTMLExpression } from "sf-html-extension/parsers/html/expressions";
+import { IHTMLContainerExpression, HTMLExpression } from "sf-html-extension/parsers/html";
 import { IEntity, IElementEntity, IEntityEngine, findEntitiesBySource } from "sf-core/entities";
 import { IMarkupSection, ContainerNode, INode, NodeSection, GroupNodeSection } from "sf-core/markup";
 

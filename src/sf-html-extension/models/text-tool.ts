@@ -1,25 +1,25 @@
 
 import { inject } from "sf-core/decorators";
 import { IActor } from "sf-core/actors";
+import { InsertTool } from "sf-front-end/models/insert-tool";
 import { MouseAction } from "sf-front-end/actions";
 import { IApplication } from "sf-core/application";
 import { SetToolAction } from "sf-front-end/actions";
 import { parse as parseHTML } from "../parsers/html";
 import { FrontEndApplication } from "sf-front-end/application";
-import { HTMLElementExpression } from "../parsers/html/expressions";
+import { HTMLElementExpression } from "../parsers/html";
 import { BaseApplicationService } from "sf-core/services";
-import { VisibleHTMLElementEntity } from "sf-html-extension/entities/html";
+import { VisibleHTMLElementEntity } from "sf-html-extension/models";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
-import { InsertTool } from "sf-front-end/models/insert-tool";
 import { IEditorTool, BaseEditorTool, IEditor } from "sf-front-end/models";
 import {
-  Dependencies,
   Dependency,
-  DEPENDENCIES_NS,
   MAIN_BUS_NS,
+  Dependencies,
+  DEPENDENCIES_NS,
   EntityFactoryDependency,
-  ApplicationServiceDependency
+  ApplicationServiceDependency,
 } from "sf-core/dependencies";
 
 /*
@@ -66,9 +66,9 @@ export class TextTool extends BaseEditorTool {
       this.dispose();
     }
 
-    // janky as hell, but this is the most straight-forward approach
-    // that I know which prevents auto body scrolling for inputs. We
-    // don't want that since it conflicts with out paning tool.
+    // janky as hell, but this is a fairly simple approach to prevent
+    //  auto body scrolling for inputs. We don't want that since it
+    // conflicts with out paning tool.
     requestAnimationFrame(() => {
       this._targetNode.ownerDocument.body.scrollLeft = 0;
       this._targetNode.ownerDocument.body.scrollTop  = 0;
@@ -113,8 +113,10 @@ export class TextTool extends BaseEditorTool {
 class InsertTextTool extends InsertTool {
   readonly cursor: string = "text";
   readonly resizable: boolean = false;
+
   @inject(DEPENDENCIES_NS)
   private _dependencies: Dependencies;
+
   get displayEntityToolFactory() {
     return <EditorToolFactoryDependency>this._dependencies.link(new EditorToolFactoryDependency(null, null, null, TextTool));
   }

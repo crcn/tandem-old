@@ -2,7 +2,7 @@ import { WrapBus } from "mesh";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
 import { BoundingRect, IPosition } from "sf-core/geom";
 import { VisibleHTMLElementEntity } from "../index";
-import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/parsers/css/expressions";
+import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/parsers/css";
 import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/entities";
 
 function calculateCSSMeasurments(style) {

@@ -6,7 +6,7 @@ import { inject } from "sf-core/decorators";
 import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
 import { NodeSection, INode } from "sf-core/markup";
 import { FrontEndApplication } from "sf-front-end/application";
-import { HTMLElementExpression } from "../../parsers/html/expressions";
+import { HTMLElementExpression } from "sf-html-extension/parsers/html";
 import { VisibleHTMLElementEntity } from "./visible-element";
 import { EntityFactoryDependency, IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
 

@@ -18,7 +18,7 @@ import {
   ActiveRecordFactoryDependency,
 } from "sf-core/dependencies";
 
-export class SfFile extends EntityFile implements IInjectable {
+export class HTMLFile extends EntityFile implements IInjectable {
 
   public path: string;
   public content: string;
@@ -97,5 +97,5 @@ export class SfFile extends EntityFile implements IInjectable {
   }
 }
 
-export const dependency = new ActiveRecordFactoryDependency("text/html", SfFile);
+export const dependency = new ActiveRecordFactoryDependency("text/html", HTMLFile);
 

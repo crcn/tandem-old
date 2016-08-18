@@ -6,7 +6,7 @@
  import { dependency as cssPaneComponentDependency } from "./components/css-pane";
 
  // models
- import { dependency as sfFileActiveRecordDependency } from "./models/sf-file";
+ import { dependency as HTMLFileActiveRecordDependency } from "./models/html-file";
 
  // services
  import { dependency as pasteEntityService } from "./services/paste-entity";
@@ -28,7 +28,7 @@ import { MimeTypeDependency } from "sf-core/dependencies";
    htmlStyleEntityDependency,
    htmlTemplateEntityDependency,
    htmlDocumentFragmentDependency,
-} from "./entities/html";
+} from "./models/entities/html";
 
 export const dependency = [
 
@@ -40,7 +40,7 @@ export const dependency = [
   pasteEntityService,
 
   // models
-  sfFileActiveRecordDependency,
+  HTMLFileActiveRecordDependency,
 
   // tools
   textToolDependency,

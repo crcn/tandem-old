@@ -1,11 +1,11 @@
 import { IHTMLEntity } from "./base";
 import { IElementEntity } from "sf-core/entities";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
-import { CSSStyleExpression } from "sf-html-extension/parsers/css/expressions";
+import { CSSStyleExpression } from "sf-html-extension/parsers/css";
 import { HTMLContainerEntity } from "./container";
 import { AttributeChangeAction } from "sf-core/actions";
 import { EntityFactoryDependency } from "sf-core/dependencies";
-import { HTMLElementExpression, HTMLAttributeExpression } from "sf-html-extension/parsers/html/expressions";
+import { HTMLElementExpression, HTMLAttributeExpression } from "sf-html-extension/parsers/html";
 import { IElement, Attributes, IMarkupSection, NodeSection } from "sf-core/markup";
 
 export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntity, IElementEntity, IElement {

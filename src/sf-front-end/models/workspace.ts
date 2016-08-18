@@ -11,6 +11,11 @@ export class Workspace implements IActor {
   readonly editor: Editor;
   public selection: Selection<any> = new Selection<any>();
 
+  // TODO - implement me
+  public getSelection(type: string) {
+
+  }
+
   constructor(readonly file: EntityFile) {
     this.editor = new Editor(this);
   }

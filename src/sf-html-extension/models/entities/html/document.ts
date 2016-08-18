@@ -1,8 +1,8 @@
+import { parse as parseCSS } from "sf-html-extension/parsers/css";
 import { IHTMLEntity, IHTMLDocument } from "./base";
 import { DocumentEntityFactoryDependency } from "sf-core/dependencies";
+import { CSSStyleExpression, CSSStyleSheetExpression } from "sf-html-extension/parsers/css";
 import { IEntity, IEntityEngine, IVisibleEntity, IElementEntity, findEntitiesBySource } from "sf-core/entities";
-import { parse as parseCSS } from "sf-html-extension/parsers/css";
-import { CSSStyleExpression, CSSStyleSheetExpression } from "sf-html-extension/parsers/css/expressions";
 
 import {
   HTMLExpression,
@@ -12,7 +12,7 @@ import {
   HTMLFragmentExpression,
   HTMLAttributeExpression,
   IHTMLValueNodeExpression,
-} from "../../parsers/html/expressions";
+} from "sf-html-extension/parsers/html";
 
 import { ContainerNode } from "sf-core/markup";
 

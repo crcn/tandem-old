@@ -1,7 +1,7 @@
 import * as sift from "sift";
 import { expect } from "chai";
 import { BoundingRect } from "sf-core/geom";
-import { parse as parseHTML } from "../../parsers/html";
+import { parse as parseHTML } from "sf-html-extension/parsers/html";
 import { FrontEndApplication } from "sf-front-end/application";
 import { EntityEngine, IVisibleEntity } from "sf-core/entities";
 import { Dependencies, ApplicationSingletonDependency } from "sf-core/dependencies";

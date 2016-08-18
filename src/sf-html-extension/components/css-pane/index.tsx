@@ -5,7 +5,7 @@ import PaneComponent from "sf-front-end/components/pane";
 import { HTMLElementEntity, IHTMLEntity } from "sf-html-extension/entities/html";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
 import { PaneComponentFactoryDependency } from "sf-front-end/dependencies";
-import { CSSExpression, CSSStyleExpression, CSSRuleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/parsers/css/expressions";
+import { CSSExpression, CSSStyleExpression, CSSRuleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/parsers/css";
 
 class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, declaration: CSSStyleDeclarationExpression, style: CSSStyleExpression, addNewDeclaration: Function }, any> {
 

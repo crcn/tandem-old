@@ -3,8 +3,8 @@ import { HTMLElementEntity } from "./element";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
 import { IHTMLDocument } from "./base";
 import { EntityFactoryDependency } from "sf-core/dependencies";
-import { CSSStyleSheetExpression } from "sf-html-extension/parsers/css/expressions";
-import { HTMLElementExpression, HTMLTextExpression } from "sf-html-extension/parsers/html/expressions";
+import { CSSStyleSheetExpression } from "sf-html-extension/parsers/css";
+import { HTMLElementExpression, HTMLTextExpression } from "sf-html-extension/parsers/html";
 
 export class HTMLStyleEntity extends HTMLElementEntity {
   private _style: HTMLStyleElement;
