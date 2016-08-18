@@ -31,7 +31,7 @@ describe(__filename + "#", () => {
 
   async function loadDiv(source) {
     const div = document.createElement("div");
-    div.appendChild((<HTMLElementEntity>(await loadEngine(source)).entity).section.toFragment());
+    div.appendChild(<Node><any>(<HTMLElementEntity>(await loadEngine(source)).entity).section.toFragment());
     return div;
   }
 
@@ -46,7 +46,7 @@ describe(__filename + "#", () => {
     let source = "<div>hello world!</div>";
     const entity = await engine.load(parseHTML(source)) as HTMLElementEntity;
     const div = document.createElement("div");
-    div.appendChild(entity.section.toFragment());
+    div.appendChild(<Node><any>entity.section.toFragment());
     expect(div.innerHTML).to.equal(source);
   });
 
@@ -66,7 +66,7 @@ describe(__filename + "#", () => {
       const engine = new EntityEngine(dependencies);
       const entity = await engine.load(parseHTML(source as any)) as HTMLElementEntity;
       const div = document.createElement("div");
-      div.appendChild(entity.section.toFragment());
+      div.appendChild(<Node><any>entity.section.toFragment());
       expect(div.innerHTML).to.equal(source);
       await engine.load(parseHTML(change as any));
       expect(div.innerHTML).to.equal(change);
@@ -93,7 +93,7 @@ describe(__filename + "#", () => {
     it("properly adds new children to the existing entity expressions", async () => {
       const div = document.createElement("div");
       await engine.load(parseHTML(`<div />`));
-      div.appendChild((<HTMLElementEntity>engine.entity).section.toFragment());
+      div.appendChild(<Node><any>(<HTMLElementEntity>engine.entity).section.toFragment());
       expect(div.innerHTML).to.equal("<div></div>");
       await engine.load(parseHTML(`<div>a b</div>`));
       expect(div.innerHTML).to.equal("<div>a b</div>");

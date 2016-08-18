@@ -14,9 +14,15 @@ export abstract class HTMLExpression extends BaseExpression {
   }
 }
 
+export interface IHTMLContainerExpression {
+  nodeName: string;
+  childNodes: Array<HTMLExpression>;
+  appendChildNodes(...childNodes: Array<HTMLExpression>);
+}
+
 
 export const HTML_FRAGMENT = "htmlFragment";
-export class HTMLFragmentExpression extends HTMLExpression {
+export class HTMLFragmentExpression extends HTMLExpression implements IHTMLContainerExpression {
   constructor(public childNodes: Array<HTMLExpression>, position: IRange) {
     super(HTML_FRAGMENT, "#document-fragment", position);
   }
@@ -39,7 +45,7 @@ export class HTMLFragmentExpression extends HTMLExpression {
  */
 
 export const HTML_ELEMENT = "htmlElement";
-export class HTMLElementExpression extends HTMLExpression {
+export class HTMLElementExpression extends HTMLExpression implements IHTMLContainerExpression {
   constructor(
     nodeName: string,
     public attributes: Array<HTMLAttributeExpression>,

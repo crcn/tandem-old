@@ -10,9 +10,9 @@ import {
   htmlTextDependency,
   htmlCommentDependency,
   htmlDocumentDependency,
-  htmlDocumentFragmentDependency,
   htmlElementDependencies,
   htmlTemplateEntityDependency,
+  htmlDocumentFragmentDependency,
 } from "./index";
 
 describe(__filename + "#", () => {
@@ -23,12 +23,12 @@ describe(__filename + "#", () => {
     app = new FrontEndApplication({});
 
     dependencies = new Dependencies(
-      ...htmlElementDependencies,
       htmlTextDependency,
       htmlCommentDependency,
       htmlDocumentDependency,
-      htmlDocumentFragmentDependency,
+      ...htmlElementDependencies,
       htmlTemplateEntityDependency,
+      htmlDocumentFragmentDependency,
       new ApplicationSingletonDependency(app)
     );
   });
@@ -39,7 +39,7 @@ describe(__filename + "#", () => {
     const div = document.createElement("div");
     document.body.appendChild(div);
     Object.assign(div.style, { position: "fixed", top: "0px", left: "0px" });
-    div.appendChild(entity.section.toFragment());
+    div.appendChild(<Node><any>entity.section.toFragment());
 
     return <IVisibleEntity>(entity.flatten().find((entity) => {
       if (entity["attributes"]) {

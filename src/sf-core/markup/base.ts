@@ -24,6 +24,7 @@ export interface INode extends IObservable {
   prevSibling: INode;
 }
 
+// TODO - maybe change to ITree
 export interface IContainerNode extends INode {
   childNodes: Array<INode>;
   removeChild(child: INode);

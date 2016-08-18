@@ -26,7 +26,7 @@ export class GroupMarker implements IMarkupSectionMarker {
  * a section is a group of nodes contained within a
  */
 
-export class GroupNodeSection implements IMarkupSection  {
+export class GroupNodeSection implements IMarkupSection {
 
   private _start: INode;
   private _end: INode;
@@ -159,7 +159,6 @@ export class GroupNodeSection implements IMarkupSection  {
    */
 
   clone() {
-
     if (this.targetNode.nodeName !== "#document-fragment") {
       throw new Error("Cannot currently clone fragment section that is attached to an element.");
     }

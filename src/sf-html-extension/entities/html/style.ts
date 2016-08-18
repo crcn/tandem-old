@@ -1,5 +1,5 @@
 import { NodeSection } from "sf-core/markup";
-import { HTMLElementEntity } from "./base";
+import { HTMLElementEntity } from "./element";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
 import { IHTMLDocument } from "./base";
 import { EntityFactoryDependency } from "sf-core/dependencies";
