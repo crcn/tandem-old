@@ -1,6 +1,6 @@
 import { IHTMLEntity } from "./base";
 import { IElementEntity } from "sf-core/entities";
-import { parse as parseCSS } from "sf-html-extension/parsers/css";
+import { parse as parseCSS, parseCSSStyle } from "sf-html-extension/parsers/css";
 import { CSSStyleExpression } from "sf-html-extension/parsers/css";
 import { HTMLContainerEntity } from "./container";
 import { AttributeChangeAction } from "sf-core/actions";
@@ -16,7 +16,7 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
   private _styleExpression: CSSStyleExpression;
   readonly attributes: Attributes = new Attributes();
 
-  constructor(readonly source: HTMLElementExpression) {
+  constructor(public source: HTMLElementExpression) {
     super(source);
     // TODO - attributes might need to be transformed here
     if (source.attributes) {
@@ -29,7 +29,7 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
   get styleExpression(): CSSStyleExpression {
     if (this._styleExpression) return this._styleExpression;
     const style = this.getAttribute("style");
-    return this._styleExpression = style ? parseCSS(`style { ${style} }`).rules[0].style : new CSSStyleExpression([], null);
+    return this._styleExpression = style ? parseCSSStyle(style) : new CSSStyleExpression([], null);
   }
 
   sync() {
@@ -65,6 +65,9 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
 
   setAttribute(name: string, value: string) {
     (<IElement>this.section.targetNode).setAttribute(name, value);
+    if (name === "style") {
+      this._styleExpression = parseCSSStyle(value);
+    }
     this.source.setAttribute(name, value);
     this.attributes.set(name, value);
     this.notify(new AttributeChangeAction(name, value));

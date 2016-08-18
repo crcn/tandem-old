@@ -5,13 +5,52 @@ export class CSSExpression extends BaseExpression { }
 
 export const CSS_STYLE = "cssStyle";
 export class CSSStyleExpression extends CSSExpression {
+  private _declarationsByKey: any;
+  private _values: any;
+
   constructor(public declarations: Array<CSSStyleDeclarationExpression>, public position: IRange) {
     super(CSS_STYLE, position);
+    this._declarationsByKey = {};
+    this._values = {};
+
+    for (const declaration of declarations) {
+      this._declarationsByKey[declaration.key] = declaration;
+      this._values[declaration.key] = declaration.value.toString();
+    }
   }
   public _flattenDeep(items) {
     super._flattenDeep(items);
     flattenEach(this.declarations, items);
   }
+
+  public updateDeclarations(style: Object) {
+    for (let key in style) {
+      const value = style[key];
+
+      let declaration: CSSStyleDeclarationExpression;
+      if ((declaration = this._declarationsByKey[key])) {
+        declaration.value = value;
+      } else {
+        this.declarations.push(this._declarationsByKey[key] = new CSSStyleDeclarationExpression(key, value, null));
+      }
+      this._values[key] = value;
+    }
+  }
+
+  get values() {
+    return this._values;
+  }
+
+  // patch(expression: CSSStyleExpression) {
+  //   this.position = expression.position;
+  //   for (const newDeclaration of expression.declarations) {
+  //     for (const existingDeclaration of this.declarations) {
+  //       if (newDeclaration.key === existingDeclaration.key) {
+  //         existingDeclaration.pat
+  //       }
+  //     }
+  //   }
+  // }
 
   public removeDeclaration(key: string) {
     for (let i = this.declarations.length; i--; ) {
@@ -21,6 +60,7 @@ export class CSSStyleExpression extends CSSExpression {
       }
     }
   }
+
   toString() {
     return this.declarations.join("");
   };
@@ -31,6 +71,11 @@ export class CSSStyleDeclarationExpression extends CSSExpression {
   constructor(public key: string, public value: CSSExpression, public position: IRange) {
     super(CSS_STYLE_DECLARATION, position);
   }
+
+  patch(expression: CSSExpression) {
+
+  }
+
   public _flattenDeep(items) {
     super._flattenDeep(items);
     this.value._flattenDeep(items);

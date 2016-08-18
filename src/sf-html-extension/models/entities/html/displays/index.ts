@@ -101,12 +101,9 @@ function roundMeasurements(style) {
 
 export class HTMLNodeDisplay implements IEntityDisplay {
 
-  private _styleExpression: CSSStyleExpression;
-  private _style: Object;
   private _declarationByKey: Object;
 
   constructor(readonly entity: VisibleHTMLElementEntity) {
-    this._updateStyles();
   }
 
   /**
@@ -171,7 +168,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
 
     const bounds = this.bounds;
 
-    const existingStyle: any = calculateCSSMeasurments(this._style);
+    const existingStyle: any = calculateCSSMeasurments(this.entity.styleExpression.values);
     const computedStyle: any = calculateCSSMeasurments(window.getComputedStyle(this.node));
 
     let newStyle: any = {};
@@ -225,30 +222,9 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     return parentDisplays;
   }
 
-  private _updateStyles = () => {
-    this._styleExpression = this.entity.styleExpression;
-    this._style = {};
-    this._declarationByKey = {};
-    for (const declaration of this._styleExpression.declarations) {
-      this._style[declaration.key] = declaration.value.toString();
-      this._declarationByKey[declaration.key] = declaration;
-    }
-  }
-
-  private _setExpressionStyle(styles: Object) {
-
-    for (let key in styles) {
-      const value = styles[key];
-
-      let declaration: CSSStyleDeclarationExpression;
-      if ((declaration = this._declarationByKey[key])) {
-        declaration.value = value;
-      } else {
-        this._styleExpression.declarations.push(this._declarationByKey[key] = new CSSStyleDeclarationExpression(key, value, null));
-      }
-    }
-
-    this.entity.setAttribute("style", this._styleExpression.toString());
+  private _setExpressionStyle(style: Object) {
+    this.entity.styleExpression.updateDeclarations(style);
+    this.entity.setAttribute("style", this.entity.styleExpression.toString());
   }
 
   /**
