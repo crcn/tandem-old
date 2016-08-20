@@ -1,8 +1,0 @@
-{
-  "resolution": "main",
-  "tree": {
-    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/3bf834b6e8808d2faddba9a5a6305937b7ae5bb3/diff/diff.d.ts",
-    "raw": "registry:dt/diff#0.0.0+20160318080727",
-    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/3bf834b6e8808d2faddba9a5a6305937b7ae5bb3/diff/diff.d.ts"
-  }
-}

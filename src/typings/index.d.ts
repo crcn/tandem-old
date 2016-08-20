@@ -2,6 +2,7 @@
 /// <reference path="globals/chalk/index.d.ts" />
 /// <reference path="globals/classnames/index.d.ts" />
 /// <reference path="globals/cors/index.d.ts" />
+/// <reference path="globals/diff/index.d.ts" />
 /// <reference path="globals/express-serve-static-core/index.d.ts" />
 /// <reference path="globals/express/index.d.ts" />
 /// <reference path="globals/inflection/index.d.ts" />
