@@ -53,6 +53,6 @@ export function patchArray<T>(to: Array<T>, changes: IArrayChange, patchValue: (
   }
 
   for (const av of changes.add) {
-    to.splice(av.index, av.value);
+    to.splice(av.index, 0, av.value);
   }
 }

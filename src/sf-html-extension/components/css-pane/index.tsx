@@ -72,7 +72,7 @@ class StylePaneComponent extends React.Component<{ workspace: Workspace, entity:
   }
 
   render() {
-    return <PaneComponent title={this.props.rule.selector}>
+    return <PaneComponent title={this.props.rule.selector ? this.props.rule.selector.toString() : "element.style"}>
         <div className="m-css-style-pane">
         {
           this.props.rule.style.declarations.map((declaration, i) => (
@@ -92,12 +92,15 @@ export class CSSPaneComponent extends React.Component<{ workspace: Workspace }, 
     if (!selection.length) return null;
 
     const entity: VisibleHTMLElementEntity = selection[0];
+    const matchedStyles: Array<CSSRuleExpression> = entity.document.stylesheet.rules.filter((rule) => {
+      return rule.test(entity);
+    });
 
     return <div className="m-css-pane m-pane-container--content">
-        <StylePaneComponent {...this.props} entity={entity} rule={new CSSRuleExpression("element.style", entity.styleExpression, null)} key="style" />
+        <StylePaneComponent {...this.props} entity={entity} rule={new CSSRuleExpression(null, entity.styleExpression, null)} key="style" />
         {
-          entity.document.stylesheet.rules.map((rule) => {
-            return <StylePaneComponent {...this.props} entity={entity} rule={rule} key={rule.selector} />;
+          matchedStyles.map((rule) => {
+            return <StylePaneComponent {...this.props} entity={entity} rule={rule} key={rule.selector.toString()} />;
           })
         }
     </div>;

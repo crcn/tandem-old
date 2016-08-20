@@ -147,19 +147,19 @@ describe(__filename + "#", () => {
       let a, b;
       el.appendChild(a = new ValueNode("#text", "a"));
       el.appendChild(b = new ValueNode("#text", "b"));
-      expect(b.prevSibling).to.equal(a);
+      expect(b.previousSibling).to.equal(a);
     });
 
     it("prev sibling is undefined if at beginning", () => {
       const el = new Element("div");
       let a, b;
       el.appendChild(a = new ValueNode("#text", "a"));
-      expect(a.prevSibling).to.equal(undefined);
+      expect(a.previousSibling).to.equal(undefined);
     });
 
     it("prev sibling is undefined if no parent", () => {
       const a = new Element("div");
-      expect(a.prevSibling).to.equal(undefined);
+      expect(a.previousSibling).to.equal(undefined);
     });
   });
 

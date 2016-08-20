@@ -1,21 +1,26 @@
 <style>
-  .box {
-    color: red;
-  }
-  .circle {
-    color: white;
-    padding: 10px;
-    display: inline-block;
-    border-radius: 100px;
-    background-color: #000;
+  .item {
+    width: 100px;
+    height: 100px;
     position: absolute;
+    background-color: #F60;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  .item1 {
+  }
+
+  .item2 {
+    opacity: 0.5;
   }
 </style>
 
-<div class="box">
+<div class="item">
   aab
 </div>
 
-<div class="circle" style="left:100px;top:100px; background-color: #F60;">
+<div class="item item2">
   abcdef
 </div>

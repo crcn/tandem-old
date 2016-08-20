@@ -1,4 +1,5 @@
 import { IRange } from "sf-core/geom";
+import { INode, IElement } from "sf-core/markup";
 import { diffArray, patchArray } from "sf-core/utils/array";
 import { BaseExpression, flattenEach } from "../core/expression";
 
@@ -137,14 +138,18 @@ export class CSSListValueExpression extends CSSExpression {
 export const CSS_RULE = "cssRule";
 
 export class CSSRuleExpression extends CSSExpression {
-  constructor(public selector: string, public style: CSSStyleExpression, position: IRange) {
+  constructor(public selector: CSSSelectorExpression, public style: CSSStyleExpression, position: IRange) {
     super(CSS_RULE, position);
   }
+  test(node: IElement): boolean {
+    return this.selector.test(node);
+  }
   static merge(a: CSSRuleExpression, b: CSSRuleExpression) {
-    a.position = b.position;
+    a.position  = b.position;
     a.selector = b.selector;
     CSSStyleExpression.merge(a.style, b.style);
   }
+
   toString() {
     return `${this.selector} { ${this.style} }`;
   }
@@ -159,7 +164,7 @@ export class CSSStyleSheetExpression extends CSSExpression {
 
   static merge(a: CSSStyleSheetExpression, b: CSSStyleSheetExpression) {
     a.position = b.position;
-    patchArray(a.rules, diffArray<CSSRuleExpression>(a.rules, b.rules, (a, b) => a.selector === b.selector), (a, b) => {
+    patchArray(a.rules, diffArray<CSSRuleExpression>(a.rules, b.rules, (a, b) => a.selector.toString() === b.selector.toString()), (a, b) => {
       CSSRuleExpression.merge(a, b);
       return a;
     });
@@ -167,5 +172,220 @@ export class CSSStyleSheetExpression extends CSSExpression {
 
   toString() {
     return this.rules.join(" ");
+  }
+}
+
+/**
+ * SELECTORS
+ */
+
+export class CSSSelectorExpression extends CSSExpression {
+  constructor(type: string, position: IRange) {
+    super(type, position);
+  }
+
+  test(node: IElement): boolean {
+    return false;
+  }
+}
+
+// a, b { }
+export const CSS_SELECTOR_LIST = "cssSelectorList";
+export class CSSSelectorListExpression extends CSSSelectorExpression {
+  constructor(public selectors: Array<CSSSelectorExpression>, position: IRange) {
+    super(CSS_SELECTOR_LIST, position);
+  }
+
+  test(node: IElement): boolean {
+    return !!this.selectors.find((selector) => selector.test(node));
+  }
+
+  toString() {
+    return this.selectors.join(" ");
+  }
+}
+
+// .class-name { }
+export const CSS_CLASS_NAME_SELECTOR = "cssClassNameSelector";
+export class CSSClassNameSelectorExpression extends CSSSelectorExpression {
+  constructor(public value: string, position: IRange) {
+    super(CSS_CLASS_NAME_SELECTOR, position);
+  }
+  test(node: IElement): boolean {
+    return node.hasAttribute("class") && node.getAttribute("class").indexOf(this.value) !== -1;
+  }
+  toString() {
+    return "." + this.value;
+  }
+}
+
+// # { }
+export const CSS_ID_SELECTOR = "cssIdSelector";
+export class CSSIDSelectorExpression extends CSSSelectorExpression {
+  constructor(public value: string, position: IRange) {
+    super(CSS_ID_SELECTOR, position);
+  }
+  test(node: IElement): boolean {
+    return node.hasAttribute("id") && node.getAttribute("id").indexOf(this.value) !== -1;
+  }
+  toString() {
+    return "#" + this.value;
+  }
+}
+
+// * { }
+export const CSS_ANY_SELECTOR = "cssAnySelector";
+export class CSSAnySelectorExpression extends CSSSelectorExpression {
+  constructor(public value: string, position: IRange) {
+    super(CSS_ANY_SELECTOR, position);
+  }
+  test(node: IElement): boolean {
+    return true;
+  }
+  toString() {
+    return "*";
+  }
+}
+
+// div { }
+export const CSS_TAG_NAME_SELECTOR = "cssTagNameSelector";
+export class CSSTagNameSelectorExpression extends CSSSelectorExpression {
+  constructor(public value: string, position: IRange) {
+    super(CSS_TAG_NAME_SELECTOR, position);
+  }
+  test(node: IElement): boolean {
+    return String(node.nodeName).toUpperCase() === this.value.toUpperCase();
+  }
+  toString() {
+    return this.value;
+  }
+}
+
+
+export const CSS_CHILD_SELECTOR = "cssChildSelector";
+export class CSSChildSelectorExpression extends CSSSelectorExpression {
+  constructor(public parent: CSSSelectorExpression, public target: CSSSelectorExpression, position: IRange) {
+    super(CSS_CHILD_SELECTOR, position);
+  }
+  test(node: IElement): boolean {
+    return this.target.test(node) && node.parentNode && this.parent.test(<IElement>node.parentNode);
+  }
+  toString() {
+    return `${this.parent} > ${this.target}`;
+  }
+}
+
+export const CSS_DESCENDENT_SELECTOR = "cssDescendentSelector";
+export class CSSDescendentSelectorExpression extends CSSSelectorExpression {
+  constructor(public parent: CSSSelectorExpression, public target: CSSSelectorExpression, position: IRange) {
+    super(CSS_DESCENDENT_SELECTOR, position);
+  }
+  test(node: IElement): boolean {
+    const matchesTarget = isElement(node) && this.target.test(node);
+    let currentParent = node.parentNode;
+    while (matchesTarget && currentParent) {
+      if (this.parent.test(<IElement>currentParent)) return true;
+      currentParent = currentParent.parentNode;
+    }
+    return false;
+  }
+  toString() {
+    return `${this.parent} ${this.target}`;
+  }
+}
+
+export const CSS_SIBLING_SELECTOR = "cssSiblingSelector";
+export class CSSSiblingSelectorExpression extends CSSSelectorExpression {
+  constructor(public prev: CSSSelectorExpression, public target: CSSSelectorExpression, position) {
+    super(CSS_SIBLING_SELECTOR, position);
+  }
+  test(node: IElement) {
+    return node.previousSibling && this.prev.test(<IElement>node.previousSibling) && this.target.test(node);
+  }
+  toString() {
+    return `${this.prev} + ${this.target}`;
+  }
+}
+
+function isElement(node: INode) {
+  return node.nodeName.substr(0, 1) !== "#";
+}
+
+export const CSS_AND_SELECTOR = "cssAndSelector";
+export class CSSAndSelectorExpression extends CSSSelectorExpression {
+  constructor(public left: CSSSelectorExpression, public right: CSSSelectorExpression, position: IRange) {
+    super(CSS_AND_SELECTOR, position);
+  }
+  test(node: IElement) {
+    return this.left.test(node) && this.right.test(node);
+  }
+  toString() {
+    return `${this.left}${this.right}`;
+  }
+}
+
+export const CSS_ATTRIBUTE_EXISTS_SELECTOR = "cssAttributeExistsSelector";
+export class CSSAttributeExistsSelectorExpression extends CSSSelectorExpression {
+  constructor(public name: string, public position: IRange) {
+    super(CSS_ATTRIBUTE_EXISTS_SELECTOR, position);
+  }
+  test(node: IElement) {
+    return node.hasAttribute(this.name);
+  }
+  toString() {
+    return `[${this.name}]`;
+  }
+}
+
+export const CSS_ATTRIBUTE_EQUALS_SELECTOR = "cssAttributeEqualsSelector";
+export class CSSAttributeEqualsSelectorExpression extends CSSSelectorExpression {
+  constructor(public name: string, public value: string, public position: IRange) {
+    super(CSS_ATTRIBUTE_EQUALS_SELECTOR, position);
+  }
+  test(node: IElement) {
+    return node.hasAttribute(this.name) && node.getAttribute(this.name) === this.value;
+  }
+  toString() {
+    return `[${this.name}="${this.value}"]`;
+  }
+}
+
+export const CSS_ATTRIBUTE_CONTAINS_SELECTOR = "cssAttributeContainsSelector";
+export class CSSAttributeContainsSelectorExpression extends CSSSelectorExpression {
+  constructor(public name: string, public value: string, public position: IRange) {
+    super(CSS_ATTRIBUTE_CONTAINS_SELECTOR, position);
+  }
+  test(node: IElement) {
+    return node.hasAttribute(this.name) && node.getAttribute(this.name).indexOf(this.value) !== -1;
+  }
+  toString() {
+    return `[${this.name}*="${this.value}"]`;
+  }
+}
+
+export const CSS_ATTRIBUTE_STARTS_WITH_SELECTOR = "cssAttributeStartsWithSelector";
+export class CSSAttributeStartsWithSelectorExpression extends CSSSelectorExpression {
+  constructor(public name: string, public value: string, public position: IRange) {
+    super(CSS_ATTRIBUTE_STARTS_WITH_SELECTOR, position);
+  }
+  test(node: IElement) {
+    return node.hasAttribute(this.name) && node.getAttribute(this.name).indexOf(this.value) === 0;
+  }
+  toString() {
+    return `[${this.name}^="${this.value}"]`;
+  }
+}
+
+export const CSS_ATTRIBUTE_ENDS_WITH_SELECTOR = "cssAttributeEndsWithSelector";
+export class CSSAttributeEndsWithSelectorExpression extends CSSSelectorExpression {
+  constructor(public name: string, public value: string, public position: IRange) {
+    super(CSS_ATTRIBUTE_ENDS_WITH_SELECTOR, position);
+
+  }
+  test(node: IElement) {
+    return node.hasAttribute(this.name) && node.getAttribute(this.name).lastIndexOf(this.value) === node.getAttribute(this.name).length - this.value.length;
+  }
+  toString() {
+    return `[${this.name}$="${this.value}"]`;
   }
 }

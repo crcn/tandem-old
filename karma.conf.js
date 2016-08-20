@@ -5,6 +5,7 @@ var watchFiles = !process.env.WATCH;
 var reporter   = process.env.REPORTER || "dots";
 var grep       = process.env.GREP;
 var bail       = !!process.env.BAIL;
+var timeout    = Number(process.env.TIMEOUT || 200);
 
 const webpackConfig = require("./webpack.config");
 
@@ -59,6 +60,7 @@ module.exports = function(config) {
 
     client: {
       mocha: {
+        timeout: timeout,
         grep: grep,
         bail: bail,
         ui: "bdd"

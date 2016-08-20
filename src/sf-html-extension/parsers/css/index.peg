@@ -1,4 +1,9 @@
 {
+
+const {
+  flatten
+} = require("lodash");
+
 const {
   LiteralExpression,
   CSSRuleExpression,
@@ -8,6 +13,22 @@ const {
   CSSStyleSheetExpression,
   CSSFunctionCallExpression,
   CSSStyleDeclarationExpression,
+
+  CSSIDSelectorExpression,
+  CSSAnySelectorExpression,
+  CSSSelectorListExpression,
+  CSSChildSelectorExpression,
+  CSSSiblingSelectorExpression,
+  CSSTagNameSelectorExpression,
+  CSSClassNameSelectorExpression,
+  CSSDescendentSelectorExpression,
+
+  CSSAndSelectorExpression,
+  CSSAttributeStartsWithSelectorExpression,
+  CSSAttributeContainsSelectorExpression,
+  CSSAttributeEndsWithSelectorExpression,
+  CSSAttributeEqualsSelectorExpression,
+  CSSAttributeExistsSelectorExpression,
 } = require("./expressions");
 
 function position() {
@@ -27,7 +48,7 @@ CSSStyleSheetExpression
   }
 
 CSSRule
-  = _ selector: CSSSelector _ "{" style: CSSStyle "}" _ {
+  = _ selector: CSSSelectors _ "{" style: CSSStyle "}" _ {
     return new CSSRuleExpression(selector, style);
   }
 
@@ -36,11 +57,111 @@ CSSStyle
     return new CSSStyleExpression(declarations, position());
   }
 
+CSSSelectors
+  = first:CSSSelector rest:CSSSelectorSibling* {
+    return new CSSSelectorListExpression([first].concat(rest));
+  }
+
+CSSSelectorSibling
+  = _ "," selector:CSSSelector { return selector; }
+
 CSSSelector
-  = CSSSelectorCharacter* { return text().trim(); }
+  = _ last: CSSSelectorRule _ rest: CSSChildSelector*  {
+
+    const classes = {
+      ">": CSSChildSelectorExpression,
+      "+": CSSSiblingSelectorExpression
+    };
+
+    function createExpression(items) {
+      const child  = items.pop();
+      const op     = items.pop();
+      if (!items.length) return child;
+      const clazz  = classes[op] || CSSDescendentSelectorExpression;
+      return new clazz(createExpression(items), child);
+    }
+
+    return createExpression(flatten([last].concat(rest)));
+  }
+  / CSSSelectorRule
+
+CSSChildSelector
+  = _ operator: (">"/"+")? _ selector: CSSSelectorRule {
+    return [operator, selector];
+  }
+
+CSSNestedSelectorRule
+  = operator:(">"/" "+) nested:CSSSelectorRule {
+    return nested;
+  }
+
+CSSSelectorRule
+  = rule: CSSItemSelector ":" pseudo: CSSPseudoSelectorRule {
+    return new CSSAndSelectorExpression(rule, pseudo)
+  }
+  / CSSItemSelector
+
+CSSPseudoSelectorRule
+  = name: [^(]+ {
+
+  }
+
+CSSItemSelector
+  = CSSAttributeSelector/CSSTagSelector
+
+CSSAttributeSelector
+  = tag:CSSTagSelector "[" rule: CSSAttributeSelectorRule "]" {
+    return new CSSAndSelectorExpression(tag, rule);
+  }
+
+CSSAttributeSelectorRule
+  = name: CSSTagSelectorText op: ("="/"~="/"|="/"^="/"$="/"*=") value: CSSAttributeSelectorValue {
+    const clazz = {
+      "=": CSSAttributeEqualsSelectorExpression,
+      "~=": CSSAttributeContainsSelectorExpression,
+      "|=": CSSAttributeStartsWithSelectorExpression,
+      "^=": CSSAttributeStartsWithSelectorExpression,
+      "$=": CSSAttributeEndsWithSelectorExpression,
+      "*=": CSSAttributeContainsSelectorExpression
+    }[op];
+    return new clazz(name, value, position());
+  }
+  / name: CSSTagSelectorText {
+    return new CSSAttributeExistsSelectorExpression(name, position());
+  }
+
+CSSAttributeSelectorValue
+  = String/CSSAttributeSelectorValueCharacter+ { return text(); }
+
+
+String
+  = '"' characters:DoubleStringCharacter* '"' { return characters.join(''); }
+  / "'" characters:SingleStringCharacter* "'" { return characters.join(''); }
+
+DoubleStringCharacter
+  = !('"' / "\\") . { return text(); }
+  / '\\"'
+
+SingleStringCharacter
+  = !("'" / "\\") . { return text(); }
+  / "\\'"
+
+
+CSSAttributeSelectorValueCharacter
+  = !"]" . { return text(); }
+
+CSSTagSelector
+  = "." value: CSSTagSelectorText { return new CSSClassNameSelectorExpression(value, position()) }
+  / "#" value: CSSTagSelectorText { return new CSSIDSelectorExpression(value, position()); }
+  / "*" { return new CSSAnySelectorExpression(position()); }
+  / CSSTagSelectorText { return new CSSTagNameSelectorExpression(text(), position()); }
+
+
+CSSTagSelectorText
+  = CSSSelectorCharacter+ { return text().trim(); }
 
 CSSSelectorCharacter
-  = !("{") . { return text(); }
+  = [a-zA-Z0-9_-] { return text(); }
 
 CSSStyleDeclaration
   = !("}") _ key:CSSStyleDeclarationKey _ ':' _ value:CSSStyleDeclarationValue? _ ';' _ {

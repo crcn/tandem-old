@@ -21,7 +21,7 @@ export interface INode extends IObservable {
   cloneNode(deep?: boolean): INode;
   flatten(): Array<INode>;
   nextSibling: INode;
-  prevSibling: INode;
+  previousSibling: INode;
 }
 
 // TODO - maybe change to ITree
@@ -73,7 +73,7 @@ export abstract class Node extends Observable implements INode {
     return this.parentNode ? this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) + 1] : undefined;
   }
 
-  get prevSibling() {
+  get previousSibling() {
     return this.parentNode ? this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) - 1] : undefined;
   }
 
