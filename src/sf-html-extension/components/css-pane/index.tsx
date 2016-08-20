@@ -3,8 +3,9 @@ import * as React from "react";
 import { Workspace } from "sf-front-end/models";
 import PaneComponent from "sf-front-end/components/pane";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
-import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLEntity } from "sf-html-extension/models";
+import { HTMLEntityDisplaySelection } from "sf-html-extension/models";
 import { PaneComponentFactoryDependency } from "sf-front-end/dependencies";
+import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLEntity } from "sf-html-extension/models";
 import { CSSExpression, CSSStyleExpression, CSSRuleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/parsers/css";
 
 class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, declaration: CSSStyleDeclarationExpression, style: CSSStyleExpression, addNewDeclaration: Function }, any> {
@@ -87,19 +88,16 @@ class StylePaneComponent extends React.Component<{ workspace: Workspace, entity:
 export class CSSPaneComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
     const workspace = this.props.workspace;
-    const selection = workspace.selection;
+    const selection = workspace.selection as HTMLEntityDisplaySelection;
 
     if (!selection.length) return null;
 
     const entity: VisibleHTMLElementEntity = selection[0];
-    const matchedStyles: Array<CSSRuleExpression> = entity.document.stylesheet.rules.filter((rule) => {
-      return rule.test(entity);
-    });
 
     return <div className="m-css-pane m-pane-container--content">
         <StylePaneComponent {...this.props} entity={entity} rule={new CSSRuleExpression(null, entity.styleExpression, null)} key="style" />
         {
-          matchedStyles.map((rule) => {
+          selection.cssRuleExpressions.map((rule) => {
             return <StylePaneComponent {...this.props} entity={entity} rule={rule} key={rule.selector.toString()} />;
           })
         }

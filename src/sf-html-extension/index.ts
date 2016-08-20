@@ -8,6 +8,7 @@ import { HTML_MIME_TYPE } from "sf-html-extension/constants";
 
  // models
  import { htmlFileModelDependency } from "./models/html-file";
+ import { htmlDisplayEntitySelectionDependency } from "./models/display-selection";
 
  // services
  import { dependency as pasteEntityService } from "./services/paste-entity";
@@ -41,6 +42,7 @@ export const dependency = [
 
   // models
   htmlFileModelDependency,
+  htmlDisplayEntitySelectionDependency,
 
   // tools
   textToolDependency,

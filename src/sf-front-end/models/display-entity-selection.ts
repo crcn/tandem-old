@@ -60,7 +60,7 @@ class EntitySelectionDisplay implements IEntityDisplay {
   }
 }
 
-export class DisplayEntitySelection extends Selection<IVisibleEntity> {
+export class DisplayEntitySelection<T extends IVisibleEntity> extends Selection<T> {
   readonly display: IEntityDisplay = new EntitySelectionDisplay(this);
 }
 

@@ -1,10 +1,11 @@
 import { IHTMLEntity } from "./base";
 import { IElementEntity } from "sf-core/entities";
-import { parse as parseCSS, parseCSSStyle } from "sf-html-extension/parsers/css";
+import { CSSRuleExpression } from "sf-html-extension/parsers/css";
 import { CSSStyleExpression } from "sf-html-extension/parsers/css";
 import { HTMLContainerEntity } from "./container";
 import { AttributeChangeAction } from "sf-core/actions";
 import { EntityFactoryDependency } from "sf-core/dependencies";
+import { parse as parseCSS, parseCSSStyle } from "sf-html-extension/parsers/css";
 import { HTMLElementExpression, HTMLAttributeExpression } from "sf-html-extension/parsers/html";
 import { IElement, Attributes, IMarkupSection, NodeSection } from "sf-core/markup";
 
@@ -33,6 +34,10 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
   set source(value: HTMLElementExpression) {
     this.willSourceChange(value);
     this._source = value;
+  }
+
+  get cssRuleExpressions(): Array<CSSRuleExpression> {
+    return this.document.stylesheet.rules.filter((rule) => rule.test(this));
   }
 
   protected willSourceChange(value: HTMLElementExpression) {

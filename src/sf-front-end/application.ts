@@ -30,9 +30,6 @@ import { dependency as keyBindingsDependency } from "./key-bindings";
 // extensions
 import { dependency as htmlExtensionDependency } from "sf-html-extension";
 
-// selections
-import { displayEntitySelectionDependency } from "./models";
-
 import { Workspace } from "./models";
 
 export class FrontEndApplication extends Application {
@@ -68,9 +65,6 @@ export class FrontEndApplication extends Application {
 
       // tools
       pointerToolDependency,
-
-      // selection
-      displayEntitySelectionDependency,
 
       // dependencies
       keyBindingsDependency,

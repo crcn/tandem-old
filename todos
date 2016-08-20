@@ -1,17 +1,22 @@
-- snap div elements together
-- attributes pane
-- panes component that allows for panes to be re-organized & detached
-- sort styles based on priority
-- delete style
-- add style + button
-- ability to display simple css style or more UI
-- enter on value frame should add a new declaration immediately below it
-- drop menu helper for declaration key
-- measurement changer for value
-- can select header of style and select other entities
-- layers pane
-- move layer back
-- <!--import src="something"--> tag
-- markdown editor
 
-- remove entity nameing - change to ISourcedNode
+
+- [ ] snap div elements together
+- [ ] attributes pane
+- [ ] combine style attributes
+- [ ] for <multiple values>, ability to select one from drop menu
+  - [ ] highlight entities with hovered value
+- [ ] highlight entities when hovering over css selectors
+- [ ] ability to collapse css styles
+- [ ] metadata attribute for entities
+- [ ] support !important;
+- [ ] panes component that allows for panes to be re-organized & detached
+- [ ] delete style
+- [ ] add style + button
+- [ ] ability to display simple css style or more UI
+- [ ] enter on value frame should add a new declaration immediately below it
+- [ ] drop menu helper for declaration key
+- [ ] measurement changer for value
+- [ ] can select header of style and select other entities
+- [ ] layers pane
+- [ ] move layer back
+- [ ] markdown editor
