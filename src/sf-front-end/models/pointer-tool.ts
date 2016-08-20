@@ -28,7 +28,7 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
 
   canvasKeyDown(action: KeyboardAction) {
 
-    const selection = <DisplayEntitySelection>this.editor.workspace.selection;
+    const selection = <DisplayEntitySelection<any>>this.editor.workspace.selection;
     if (selection["display"] == null) return;
 
     const bounds = selection.display.bounds;

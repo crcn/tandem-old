@@ -9,7 +9,7 @@ import { DisplayEntitySelection } from "sf-front-end/models";
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
 
-class ResizerComponent extends React.Component<{ editor: Editor, app: FrontEndApplication, selection: DisplayEntitySelection, onResizing: Function, onMoving: Function, onStopMoving: Function, zoom: number, pointRadius?: number, strokeWidth?: number, onStopResizing: Function }, any> {
+class ResizerComponent extends React.Component<{ editor: Editor, app: FrontEndApplication, selection: DisplayEntitySelection<any>, onResizing: Function, onMoving: Function, onStopMoving: Function, zoom: number, pointRadius?: number, strokeWidth?: number, onStopResizing: Function }, any> {
 
   private _dragger: any;
   private _movingTimer: any;

@@ -5,7 +5,7 @@ var watchFiles = !process.env.WATCH;
 var reporter   = process.env.REPORTER || "dots";
 var grep       = process.env.GREP;
 var bail       = !!process.env.BAIL;
-var timeout    = Number(process.env.TIMEOUT || 200);
+var timeout    = Number(process.env.TIMEOUT || 500);
 
 const webpackConfig = require("./webpack.config");
 

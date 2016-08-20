@@ -7,7 +7,7 @@ import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 class InsertToolComponent extends React.Component<{ editor: Editor }, any> {
 
   render() {
-    const selection = (this.props.editor.workspace.selection as DisplayEntitySelection);
+    const selection = (this.props.editor.workspace.selection as DisplayEntitySelection<any>);
     const zoom = this.props.editor.transform.scale;
     const display = selection.display;
     if (!display || !display.capabilities.resizable) return null;

@@ -6,7 +6,7 @@ import { register as registerSerializer, serializeArray, deserialize } from "sf-
 
 class EntitySelectionDisplay implements IEntityDisplay {
 
-  constructor(readonly selection: DisplayEntitySelection) { }
+  constructor(readonly selection: DisplayEntitySelection<any>) { }
 
   get position(): IPosition {
     const bounds = this.bounds;

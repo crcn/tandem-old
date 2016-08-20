@@ -10,7 +10,7 @@ import { IEntity, IVisibleEntity } from "sf-core/entities";
  * shows distances between the entity and other objects
  */
 
-class RulerToolComponent extends React.Component<{ selection: DisplayEntitySelection, allEntities: Array<IEntity> }, any> {
+class RulerToolComponent extends React.Component<{ selection: DisplayEntitySelection<any>, allEntities: Array<IEntity> }, any> {
 
   render() {
     const selectionDisplay = this.props.selection.display;

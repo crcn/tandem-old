@@ -12,6 +12,7 @@ import { HTML_MIME_TYPE } from "sf-html-extension/constants";
 
  // services
  import { dependency as pasteEntityService } from "./services/paste-entity";
+ import { dependency as selectWithCssSelectorService } from "./services/select-with-css-selector";
 
  // tools
 import { dependency as textToolDependency } from "./models/text-tool";
@@ -39,6 +40,7 @@ export const dependency = [
 
   // services
   pasteEntityService,
+  selectWithCssSelectorService,
 
   // models
   htmlFileModelDependency,

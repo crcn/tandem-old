@@ -1,13 +1,12 @@
 import * as sift from "sift";
-import { IActor } from "sf-core/actors";
 import { flatten } from "lodash";
 import { HTMLFile } from "../models/html-file";
+import { filterAction } from "sf-core/decorators";
 import { HTML_MIME_TYPE } from "sf-html-extension/constants";
 import { parse as parseHTML } from "../parsers/html";
 import { FrontEndApplication } from "sf-front-end/application";
-import { inject, filterAction } from "sf-core/decorators";
 import { findEntitiesBySource } from "sf-core/entities";
-import { HTMLFragmentExpression } from "../parsers/html";
+import { BaseApplicationService } from "sf-core/services";
 import { PASTE, PasteAction, SelectAction } from "sf-front-end/actions";
 
 import {
@@ -17,12 +16,7 @@ import {
   ApplicationServiceDependency,
 } from "sf-core/dependencies";
 
-export class PasteHTMLCommand implements IActor, IInjectable {
-
-  @inject(APPLICATION_SINGLETON_NS)
-  readonly app: FrontEndApplication;
-
-  didInject() { }
+export class PasteHTMLService extends BaseApplicationService<FrontEndApplication> {
 
   @filterAction(sift({ type: PASTE, "item.type": HTML_MIME_TYPE }))
   execute(action: PasteAction) {
@@ -46,10 +40,11 @@ export class PasteHTMLCommand implements IActor, IInjectable {
       // entity may be within a different file
       await activeEntity.document.file.save();
 
+      // TODO - SelectExpressionAction
       this.app.bus.execute(new SelectAction(flatten(childNodes.map((expression) => findEntitiesBySource(activeEntity, expression)))));
     });
   }
 }
 
-export const dependency = new ApplicationServiceDependency("paste-html-entity", PasteHTMLCommand);
+export const dependency = new ApplicationServiceDependency("paste-html-entity", PasteHTMLService);
 

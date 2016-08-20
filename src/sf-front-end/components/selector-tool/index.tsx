@@ -35,7 +35,7 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
   render() {
 
     const workspace = this.props.workspace;
-    const selection = workspace.selection as DisplayEntitySelection;
+    const selection = workspace.selection as DisplayEntitySelection<any>;
 
     const display   = selection.display;
 

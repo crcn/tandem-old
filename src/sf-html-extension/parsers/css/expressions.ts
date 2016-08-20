@@ -197,7 +197,7 @@ export class CSSSelectorListExpression extends CSSSelectorExpression {
   }
 
   test(node: IElement): boolean {
-    return !!this.selectors.find((selector) => selector.test(node));
+    return isElement(node) && !!this.selectors.find((selector) => selector.test(node));
   }
 
   toString() {
@@ -281,7 +281,7 @@ export class CSSDescendentSelectorExpression extends CSSSelectorExpression {
     super(CSS_DESCENDENT_SELECTOR, position);
   }
   test(node: IElement): boolean {
-    const matchesTarget = isElement(node) && this.target.test(node);
+    const matchesTarget = this.target.test(node);
     let currentParent = node.parentNode;
     while (matchesTarget && currentParent) {
       if (this.parent.test(<IElement>currentParent)) return true;
@@ -308,7 +308,7 @@ export class CSSSiblingSelectorExpression extends CSSSelectorExpression {
 }
 
 function isElement(node: INode) {
-  return node.nodeName.substr(0, 1) !== "#";
+  return node.nodeName && node.nodeName.substr(0, 1) !== "#";
 }
 
 export const CSS_AND_SELECTOR = "cssAndSelector";

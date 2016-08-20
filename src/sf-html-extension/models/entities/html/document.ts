@@ -104,6 +104,7 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
       this._updateExpressions(this._root, root);
     } else {
       this._root = root;
+      this.appendChild(this._root);
       this._root.observe(new BubbleBus(this));
     }
     this._root.document = this;

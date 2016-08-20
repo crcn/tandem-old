@@ -2,7 +2,10 @@ import "./index.scss";
 import * as React from "react";
 import { Workspace } from "sf-front-end/models";
 import PaneComponent from "sf-front-end/components/pane";
+import { SelectAction } from "sf-front-end/actions";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
+import { FrontEndApplication } from "sf-front-end/application";
+import { SelectWithCSSSelector } from "sf-html-extension/actions";
 import { HTMLEntityDisplaySelection } from "sf-html-extension/models";
 import { PaneComponentFactoryDependency } from "sf-front-end/dependencies";
 import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLEntity } from "sf-html-extension/models";
@@ -60,7 +63,7 @@ class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, 
   }
 }
 
-class StylePaneComponent extends React.Component<{ workspace: Workspace, entity: VisibleHTMLElementEntity, rule: CSSRuleExpression }, any> {
+class StylePaneComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, entity: VisibleHTMLElementEntity, rule: CSSRuleExpression }, any> {
   addNewDeclaration = () => {
     this.props.rule.style.declarations.push(new CSSStyleDeclarationExpression("", new CSSLiteralExpression("", null), null));
     this.forceUpdate();
@@ -72,8 +75,12 @@ class StylePaneComponent extends React.Component<{ workspace: Workspace, entity:
     })];
   }
 
+  onTitleClick = (event) => {
+    this.props.app.bus.execute(new SelectWithCSSSelector(this.props.rule.selector));
+  }
+
   render() {
-    return <PaneComponent title={this.props.rule.selector ? this.props.rule.selector.toString() : "element.style"}>
+    return <PaneComponent title={this.props.rule.selector ? this.props.rule.selector.toString() : "element.style"} onTitleClick={this.onTitleClick}>
         <div className="m-css-style-pane">
         {
           this.props.rule.style.declarations.map((declaration, i) => (
@@ -85,7 +92,7 @@ class StylePaneComponent extends React.Component<{ workspace: Workspace, entity:
   }
 }
 
-export class CSSPaneComponent extends React.Component<{ workspace: Workspace }, any> {
+export class CSSPaneComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication }, any> {
   render() {
     const workspace = this.props.workspace;
     const selection = workspace.selection as HTMLEntityDisplaySelection;
