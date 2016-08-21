@@ -1,7 +1,21 @@
+@import "sf-front-end/scss/variables";
+
 .m-editor {
   background-color: #333;
   width: 100vw;
   height: 100vh;
   display: flex;
   flex-direction: row;
+}
+
+.m-sidebar {
+  width: 250px;
+  height: 100%;
+  color: $color-blue-9;
+  flex-shrink: 0;
+  flex-grow: 0;
+  background-color: $color-grey-1;
+  border-width: 0;
+  border-color: $color-blue-10;
+  border-style: solid;
 }

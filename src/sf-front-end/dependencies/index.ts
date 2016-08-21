@@ -78,12 +78,22 @@ export class EditorToolFactoryDependency extends ClassFactoryDependency {
   }
 }
 
-export const PANE_COMPONENT_NS = "components/panes";
-export class PaneComponentFactoryDependency extends ReactComponentFactoryDependency {
+export const ENTITY_PANE_COMPONENT_NS = "components/panes/entity";
+export class EntityPaneComponentFactoryDependency extends ReactComponentFactoryDependency {
   constructor(readonly id: string, readonly componentClass: React.ComponentClass<any>) {
-    super([PANE_COMPONENT_NS, id].join("/"), componentClass);
+    super([ENTITY_PANE_COMPONENT_NS, id].join("/"), componentClass);
   }
   clone() {
-    return new PaneComponentFactoryDependency(this.id, this.componentClass);
+    return new EntityPaneComponentFactoryDependency(this.id, this.componentClass);
+  }
+}
+
+export const DOCUMENT_PANE_COMPONENT_NS = "components/panes/document";
+export class DocumentPaneComponentFactoryDependency extends ReactComponentFactoryDependency {
+  constructor(readonly id: string, readonly componentClass: React.ComponentClass<any>) {
+    super([DOCUMENT_PANE_COMPONENT_NS, id].join("/"), componentClass);
+  }
+  clone() {
+    return new DocumentPaneComponentFactoryDependency(this.id, this.componentClass);
   }
 }

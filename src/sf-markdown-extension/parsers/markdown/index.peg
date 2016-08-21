@@ -1,0 +1,60 @@
+{
+const {
+  MarkdownUrlExpression,
+  MarkdownTextExpression,
+  MarkdownBlockExpression,
+  MarkdownHeaderExpression,
+  MarkdownDocumentExpression,
+  MarkdownParagraphExpression,
+} = require("./expressions");
+
+function position() {
+  return {
+    start:peg$savedPos,
+    end:peg$currPos
+  };
+}
+}
+
+Start
+  = Document
+
+Document
+  = childNodes: ChildNodes {
+    return new MarkdownDocumentExpression(childNodes);
+  }
+
+ChildNodes
+  = (Header/Block/Url/Paragraph)*
+
+Header
+  = chars:([#]+) _ value: EOL {
+    return new MarkdownHeaderExpression(chars.length, value, position());
+  }
+
+BlockTicks
+  = "``" "`"+
+
+Block
+  = BlockTicks inner: BlockCharacter* BlockTicks {
+    return new MarkdownBlockExpression(inner.join("").trim(), position());
+  }
+
+Url
+  = "[" labelChars: [^\]]* "](" urlChars: [^\)]* ")" {
+    return new MarkdownUrlExpression(labelChars.join(""), urlChars.join(""), position());
+  }
+
+BlockCharacter
+  = !BlockTicks . { return text(); }
+
+Paragraph
+  = EOL {
+    return new MarkdownParagraphExpression(text(), position());
+  }
+
+EOL
+  = [^\n]+ { return text(); }
+
+_
+  = [ \r\n\t]*

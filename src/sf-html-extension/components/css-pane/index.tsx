@@ -7,7 +7,7 @@ import { parse as parseCSS } from "sf-html-extension/parsers/css";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectWithCSSSelector } from "sf-html-extension/actions";
 import { HTMLEntityDisplaySelection } from "sf-html-extension/models";
-import { PaneComponentFactoryDependency } from "sf-front-end/dependencies";
+import { EntityPaneComponentFactoryDependency } from "sf-front-end/dependencies";
 import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLEntity } from "sf-html-extension/models";
 import { CSSExpression, CSSStyleExpression, CSSRuleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/parsers/css";
 
@@ -112,4 +112,4 @@ export class CSSPaneComponent extends React.Component<{ workspace: Workspace, ap
   }
 }
 
-export const dependency = new PaneComponentFactoryDependency("css", CSSPaneComponent);
+export const dependency = new EntityPaneComponentFactoryDependency("css", CSSPaneComponent);
