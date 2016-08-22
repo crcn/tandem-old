@@ -7,13 +7,16 @@ import LayerComponent from "./layer";
 import { Workspace } from "sf-front-end/models";
 import HTML5Backend from "react-dnd-html5-backend";
 import { DragDropContext } from "react-dnd";
+import { IContainerEntity } from 'sf-core/entities';
 import { DocumentPaneComponentFactoryDependency } from "sf-front-end/dependencies";
 
 class LayersPaneComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
     if (!this.props.workspace.file || !this.props.workspace.file.document.root) return null;
     return <PaneComponent title="Layers">
-      <LayerComponent {...this.props} entity={this.props.workspace.file.document.root} />
+      {
+        (this.props.workspace.file.document.root as IContainerEntity).childNodes.map((entity, i) => <LayerComponent {...this.props} entity={entity} key={i} />)
+      }
     </PaneComponent>;
   }
 }

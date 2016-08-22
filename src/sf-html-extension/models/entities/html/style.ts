@@ -7,6 +7,7 @@ import { CSSStyleSheetExpression } from "sf-html-extension/parsers/css";
 import { HTMLElementExpression, HTMLTextExpression } from "sf-html-extension/parsers/html";
 
 export class HTMLStyleEntity extends HTMLElementEntity {
+  readonly type: string = "element";
   private _style: HTMLStyleElement;
   private _styleSheetExpression: CSSStyleSheetExpression;
 

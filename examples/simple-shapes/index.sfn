@@ -12,6 +12,7 @@
   .item1 {
   }
 
+
   .item2 {
     opacity: 0.5;
   }
