@@ -10,6 +10,7 @@ import { DragDropContext } from "react-dnd";
 import { IContainerEntity } from 'sf-core/entities';
 import { DocumentPaneComponentFactoryDependency } from "sf-front-end/dependencies";
 
+
 class LayersPaneComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
     if (!this.props.workspace.file || !this.props.workspace.file.document.root) return null;

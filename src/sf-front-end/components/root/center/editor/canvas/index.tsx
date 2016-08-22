@@ -10,7 +10,6 @@ import {
   ZoomAction,
   MouseAction,
   KeyboardAction,
-  TranslateAction,
   CANVAS_KEY_DOWN,
   CANVAS_MOUSE_DOWN,
 } from "sf-front-end/actions";
@@ -34,8 +33,13 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     return MainBusDependency.getInstance(this.props.dependencies);
   }
 
+  translate(left, top) {
+    this.props.editor.transform.left = left;
+    this.props.editor.transform.top = top;
+  }
+
   pane(leftDelta, topDelta) {
-    this.bus.execute(new TranslateAction({ left: this.props.editor.transform.left - leftDelta, top: this.props.editor.transform.top - topDelta }));
+    this.translate(this.props.editor.transform.left - leftDelta, this.props.editor.transform.top - topDelta);
   }
 
   onMouseEvent = (event: MouseEvent) => {
@@ -84,7 +88,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     const left = v1w * v1px - v2nw * v2px;
     const top  = v1h * v1py - v2nh * v2py;
 
-    this.bus.execute(new TranslateAction({ left, top }));
+    this.translate(left, top);
   }
 
   onWheel = (event: WheelEvent) => {
@@ -95,6 +99,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     } else {
       this.pane(event.deltaX, event.deltaY);
       event.preventDefault();
+      this.forceUpdate();
     }
   }
 

@@ -81,13 +81,6 @@ export class ZoomAction extends Action {
   }
 }
 
-export const TRANSLATE = "translate";
-export class TranslateAction extends Action {
-  constructor(readonly position: IPosition) {
-    super(TRANSLATE);
-  }
-}
-
 export const OPEN_FILE = "openFile";
 export class OpenFileAction extends Action {
   constructor(readonly path: string, readonly content: string) {
