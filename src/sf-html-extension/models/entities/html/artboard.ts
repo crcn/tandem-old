@@ -28,6 +28,8 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
   }
 
   _updateStyle() {
+    // update the iframe style with all the stylesheets loaded
+    // in the document
     this._style.innerHTML = this.document.stylesheet.toString();
   }
 
@@ -44,6 +46,9 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
       this._updateStyle();
 
       body.style.margin = body.style.padding = "0px";
+
+      // style inherited from the parent document since
+      // the iframe is isolated
       body.appendChild(this._style);
       body.appendChild(this._placeholder);
 
