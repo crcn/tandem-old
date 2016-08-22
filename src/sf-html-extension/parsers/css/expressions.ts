@@ -66,7 +66,7 @@ export class CSSStyleExpression extends CSSExpression {
   }
 
   toString() {
-    return this.declarations.join("");
+    return this.declarations.join(" ");
   };
 }
 
@@ -109,7 +109,7 @@ export class CSSStyleDeclarationExpression extends CSSExpression {
 
   toString() {
     if (this.key === "") return "";
-    return [this.key, ":", this.value.toString(), ";"].join("");
+    return [this.key, ": ", this.value.toString(), ";"].join("");
   }
 }
 
