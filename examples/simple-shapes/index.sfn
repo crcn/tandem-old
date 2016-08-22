@@ -19,5 +19,6 @@
 
 <artboard style="width: 100px; height: 100px;">
   <div class="item">
+    Hello World
   </div>
 </artboard>

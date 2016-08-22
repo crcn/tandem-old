@@ -35,6 +35,8 @@ export default function (iframe, options: any = {}) {
     "copy",
     "paste",
     "mousemove",
+    "mousedown",
+    "mouseup",
     "keyup",
     "keydown"
   ];
