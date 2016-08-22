@@ -1,8 +1,8 @@
 import { Action } from "sf-core/actions";
-import { IRange, IPosition } from "sf-core/geom";
 import { IActor } from "sf-core/actors";
 import { toArray } from "sf-core/utils/array";
-import { IEditor, IEditorTool } from "sf-front-end/models";
+import { IRange, IPosition } from "sf-core/geom";
+import { IEditor, IEditorTool, IHistoryItem } from "sf-front-end/models";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 
 export const CANVAS_MOUSE_DOWN = "canvasMouseDown";
@@ -116,10 +116,23 @@ export class SetToolAction extends Action {
   }
 }
 
-
 export const KEY_COMMAND = "keyCommand";
 export class KeyCommandAction extends Action {
   constructor(readonly combo: string) {
     super(KEY_COMMAND);
+  }
+}
+
+export const UNDO = "undo";
+export class UndoAction extends Action {
+  constructor() {
+    super(UNDO);
+  }
+}
+
+export const REDO = "redo";
+export class RedoAction extends Action {
+  constructor() {
+    super(REDO);
   }
 }

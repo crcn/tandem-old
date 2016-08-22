@@ -3,10 +3,10 @@ import { KeyBinding } from "./base";
 import { FrontEndApplication } from "sf-front-end/application";
 import { GlobalKeyBindingDependency } from "sf-front-end/dependencies";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
-import { SelectAllAction, SetToolAction } from "sf-front-end/actions";
 import { ZoomAction, DeleteSelectionAction } from "sf-front-end/actions";
 import { BaseCommand, BaseApplicationCommand } from "sf-core/commands";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
+import { SelectAllAction, SetToolAction, UndoAction, RedoAction } from "sf-front-end/actions";
 import { HIDE_LEFT_SIDEBAR_SETTIING, HIDE_RIGHT_SIDEBAR_SETTIING } from "sf-front-end/constants";
 
 export * from "./base";
@@ -46,6 +46,16 @@ export const dependency = [
       this.bus.execute(new DeleteSelectionAction());
     }
   }),
+  new GlobalKeyBindingDependency("meta+z", class UndoActionCommand extends BaseCommand {
+    execute(action: Action) {
+      this.bus.execute(new UndoAction());
+    }
+  }),
+  new GlobalKeyBindingDependency("meta+y", class RedoActionCommand extends BaseCommand {
+    execute(action: Action) {
+      this.bus.execute(new RedoAction());
+    }
+  }),
   new GlobalKeyBindingDependency("alt+\\", class ToggleLeftSidebarCommand extends BaseApplicationCommand<FrontEndApplication> {
     execute(action: Action) {
       this.app.settings.toggle(HIDE_LEFT_SIDEBAR_SETTIING);
@@ -55,5 +65,5 @@ export const dependency = [
     execute(action: Action) {
       this.app.settings.toggle(HIDE_RIGHT_SIDEBAR_SETTIING);
     }
-  })
+  }),
 ];

@@ -49,16 +49,11 @@ export class HTMLFile extends DocumentFile implements IInjectable {
 
     const oldContent = this.content;
     this.content = data.content;
-
-    if (this.content !== oldContent) {
-      this._document.load(this.content);
-    }
   }
 
   didInject() {
     this._document       = new HTMLDocumentEntity(this, this._dependencies);
     this._entityObserver = new BubbleBus(this);
-
     this._document.observe(new BubbleBus(this));
   }
 

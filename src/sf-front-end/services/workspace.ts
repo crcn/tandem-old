@@ -15,8 +15,6 @@ import {
   ApplicationServiceDependency,
 } from "sf-core/dependencies";
 
-const FILES_COLLECTION = "files";
-
 export class WorkspaceService extends BaseApplicationService<FrontEndApplication> {
 
   @inject(DEPENDENCIES_NS)

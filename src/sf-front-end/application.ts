@@ -16,6 +16,7 @@ import { dependency as clipboardService } from "./services/clipboard";
 import { dependency as workspaceDependency } from "./services/workspace";
 import { dependency as editorServiceDependency } from "./services/editor";
 import { dependency as backEndServiceDependency } from "./services/back-end";
+import { dependency as historyServiceDependency } from "./services/history";
 import { dependency as selectorServiceDependency } from "./services/selector";
 import { dependency as settingsServiceDependency } from "./services/settings";
 import { dependency as keyBindingsServiceDependency } from "./services/key-binding";
@@ -60,6 +61,7 @@ export class FrontEndApplication extends Application {
       workspaceDependency,
       editorServiceDependency,
       backEndServiceDependency,
+      historyServiceDependency,
       selectorServiceDependency,
       settingsServiceDependency,
       keyBindingsServiceDependency,

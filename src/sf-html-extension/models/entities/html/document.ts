@@ -50,6 +50,7 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
 
   constructor(readonly file: DocumentFile, private _dependencies: Dependencies) {
     super();
+    watchProperty(file, "content", this._onFileContentChange).trigger()
   }
 
 
@@ -91,6 +92,11 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
     this._source = source;
     this._rootExpression = parseHTML(source);
     await this._render();
+  }
+
+  private _onFileContentChange = (content: string) => {
+    if (content == null) return;
+    this.load(content);
   }
 
   private async _render() {

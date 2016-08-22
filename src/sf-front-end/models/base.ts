@@ -46,3 +46,7 @@ export abstract class BaseEditorTool implements IEditorTool, IInjectable {
 
   didInject() { }
 }
+
+export interface IHistoryItem {
+  use(): void;
+}

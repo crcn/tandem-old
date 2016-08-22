@@ -2,7 +2,7 @@
 import { IActor } from "sf-core/actors";
 import { Logger } from "sf-core/logger";
 import { BrokerBus } from "sf-core/busses";
-import { ParallelBus } from "mesh";
+import { SequenceBus } from "mesh";
 import { IApplication } from "sf-core/application";
 import { Dependencies } from "sf-core/dependencies";
 import { loggable, bindable } from "sf-core/decorators";
@@ -22,7 +22,7 @@ import {
 export class BaseApplication implements IApplication {
 
   readonly logger: Logger;
-  readonly bus: BrokerBus = new BrokerBus(ParallelBus);
+  readonly bus: BrokerBus = new BrokerBus(SequenceBus);
   readonly dependencies: Dependencies = new Dependencies();
   private _initializeCalled: boolean = false;
 
