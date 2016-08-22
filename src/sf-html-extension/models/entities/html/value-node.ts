@@ -33,10 +33,7 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
     this._document = value;
   }
 
-  protected willChangeDocument(newDocument) {
-
-  }
-
+  protected willChangeDocument(newDocument) { }
 
   sync() {
     this.source.nodeValue = this.nodeValue;

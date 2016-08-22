@@ -35,7 +35,7 @@ export abstract class InsertTool extends BaseEditorTool {
 
     const activeEntity = <IContainerEntity>this.editor.activeEntity;
     const entity: IVisibleEntity = <IVisibleEntity>(await activeEntity.appendSourceChildNode(this.createSource()))[0];
-    this.bus.execute(new SelectAction(entity));
+    await this.bus.execute(new SelectAction(entity));
 
     const capabilities = entity.display.capabilities;
 
