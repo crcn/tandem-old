@@ -1,17 +1,18 @@
+import { Action } from "sf-core/actions";
+import { KeyBinding } from "./base";
+import { FrontEndApplication } from "sf-front-end/application";
 import { GlobalKeyBindingDependency } from "sf-front-end/dependencies";
+import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 import { SelectAllAction, SetToolAction } from "sf-front-end/actions";
 import { ZoomAction, DeleteSelectionAction } from "sf-front-end/actions";
-import { KeyBinding } from "./base";
-import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
-import { Action } from "sf-core/actions";
-import { BaseCommand } from "sf-core/commands";
+import { BaseCommand, BaseApplicationCommand } from "sf-core/commands";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
+import { HIDE_LEFT_SIDEBAR_SETTIING, HIDE_RIGHT_SIDEBAR_SETTIING } from "sf-front-end/constants";
 
 export * from "./base";
 export * from "./manager";
 
 const ZOOM_INCREMENT = 0.1;
-
 
 export const dependency = [
   new GlobalKeyBindingDependency("meta+=", class ZoomInCommand extends BaseCommand {
@@ -43,6 +44,16 @@ export const dependency = [
     execute(action: Action) {
       document.execCommand("copy");
       this.bus.execute(new DeleteSelectionAction());
+    }
+  }),
+  new GlobalKeyBindingDependency("alt+\\", class ToggleLeftSidebarCommand extends BaseApplicationCommand<FrontEndApplication> {
+    execute(action: Action) {
+      this.app.settings.toggle(HIDE_LEFT_SIDEBAR_SETTIING);
+    }
+  }),
+  new GlobalKeyBindingDependency("alt+/", class ToggleRightSidebarCommand extends BaseApplicationCommand<FrontEndApplication> {
+    execute(action: Action) {
+      this.app.settings.toggle(HIDE_RIGHT_SIDEBAR_SETTIING);
     }
   })
 ];

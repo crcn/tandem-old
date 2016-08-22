@@ -12,13 +12,6 @@ import {
   IDiffableValueNode,
 } from "../markup";
 
-
-// export interface IEntityDisplayMutator extends IEntityMutator {
-//   appendChild(child: IEntity);
-//   removeChild(child: IEntity);
-// }
-
-
 export interface IEntityDocument extends IContainerNode {
   readonly root: IEntity;
   readonly file: IFile;

@@ -2,6 +2,7 @@ import { IRange } from "sf-core/geom";
 import { INode, IElement } from "sf-core/markup";
 import { diffArray, patchArray } from "sf-core/utils/array";
 import { BaseExpression, flattenEach } from "../core/expression";
+// import { convert} from "./convertMeasurement";
 
 export class CSSExpression extends BaseExpression { }
 
@@ -87,10 +88,25 @@ export class CSSStyleDeclarationExpression extends CSSExpression {
     return a;
   }
 
+  /**
+   * Converts the value unit to another format (px -> %. This, however, assumes that
+   * the value actually contains a measurement. This method may not apply
+   * for certain declarations such as text-align, display, position, and other styles.
+   * In other workds, this is somewhat leaky.
+   * @param {unit} string The  unit to convert to: %, em, px
+   * @param {target} the target node that this unit applies to - needed for conversions such
+   * as %
+   */
+
+  public convertValueMeasurement(unit: string, target: Node) {
+
+  }
+
   public _flattenDeep(items) {
     super._flattenDeep(items);
     this.value._flattenDeep(items);
   }
+
   toString() {
     if (this.key === "") return "";
     return [this.key, ":", this.value.toString(), ";"].join("");

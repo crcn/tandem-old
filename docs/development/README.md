@@ -4,7 +4,7 @@ TODOS:
 - [ ] docs on getting started
 
 
-#### Command line
+#### Commmand line
 
 ```
 ./scripts/exec-packages.sh npm run build-watch

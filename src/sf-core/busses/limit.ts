@@ -2,13 +2,13 @@ import { Action } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
 import { Response } from "mesh";
 
+
+// TODO - remove me - use LimitBus from mesh instead
 export class LimitBus implements IActor {
   private _queue = [];
   private _running: number = 0;
 
-  constructor(readonly max: number, readonly actor: IActor) {
-
-  }
+  constructor(readonly max: number, readonly actor: IActor) { }
 
   execute(action: Action) {
     return new Response((writable) => {

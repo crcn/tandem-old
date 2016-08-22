@@ -30,6 +30,14 @@ export class PropertyChangeAction extends Action {
   }
 }
 
+
+export const SETTING_CHANGE_ACTION = "settingChange";
+export class SettingChangeAction extends Action {
+  constructor(readonly property: string, readonly newValue: any, readonly oldValue: any) {
+    super(SETTING_CHANGE_ACTION);
+  }
+}
+
 export const LOAD = "load";
 export class LoadAction extends Action {
   constructor() {

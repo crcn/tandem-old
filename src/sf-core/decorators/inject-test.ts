@@ -8,9 +8,7 @@ describe(__filename + "#", () => {
       @inject("name")
       public name: string;
 
-      didInject() {
-
-      }
+      didInject() { }
     }
 
     const dependencies = new Dependencies(

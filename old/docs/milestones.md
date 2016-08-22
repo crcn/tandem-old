@@ -14,6 +14,9 @@ MVP also needs essentials that don't give the app an all-or-nothing approach.
 #### Hooks
 
 - import sketch diagrams as SVG.
+- features that are hard to do by hand
+  - animations
+  - media queries
 
 #### post MVP
 

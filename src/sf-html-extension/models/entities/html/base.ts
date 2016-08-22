@@ -1,5 +1,5 @@
-import { IEntity, IEntityDocument } from "sf-core/entities";
 import { CSSStyleSheetExpression } from "sf-html-extension/parsers/css";
+import { IEntity, IEntityDocument } from "sf-core/entities";
 import { IMarkupSection, IContainerNode } from "sf-core/markup";
 
 export interface IHTMLDocument extends IEntityDocument {

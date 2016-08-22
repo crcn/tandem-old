@@ -1,5 +1,4 @@
 import { expect } from "chai";
-import { timeout } from "sf-core/test/utils";
 import { ParallelBus } from "mesh";
 import * as MemoryDSBus from "mesh-memory-ds-bus";
 import { BrokerBus, PostDsNotifierBus } from "sf-core/busses";
@@ -138,8 +137,7 @@ describe(__filename + "#", () => {
       });
       await ar.save();
       ar.sync();
-      await broker.execute(new UpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id }));
-      await timeout(100);
+      await broker.execute(new UpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id })).readAll();
       expect(ar.name).to.equal("b");
       ar.dispose();
       await broker.execute(new UpdateAction(ar.collectionName, { name: "c" }, { _id: ar._id }));
@@ -159,8 +157,7 @@ describe(__filename + "#", () => {
       ar.sync();
       ar2.sync();
 
-      await broker.execute(new UpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id }));
-      await timeout(100);
+      await broker.execute(new UpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id })).readAll();
       expect(ar.name).to.equal("b");
       expect(ar2.name).to.equal("a2");
 

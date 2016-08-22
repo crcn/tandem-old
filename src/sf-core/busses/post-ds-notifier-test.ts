@@ -45,5 +45,4 @@ describe(__filename + "#", () => {
     expect(executedActions[1].type).to.equal(DID_REMOVE);
     expect(executedActions[1].data.a).to.equal("b");
   });
-
 });

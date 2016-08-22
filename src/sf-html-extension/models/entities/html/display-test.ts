@@ -6,7 +6,7 @@ import { IVisibleEntity } from "sf-core/entities";
 import { HTML_MIME_TYPE } from "sf-html-extension/constants";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
 import { FrontEndApplication } from "sf-front-end/application";
-import { timeout, waitForPropertyChange } from "sf-core/test/utils";
+import { waitForPropertyChange } from "sf-core/test/utils";
 import { Dependencies, DependenciesDependency, DEPENDENCIES_NS, ApplicationSingletonDependency, ActiveRecordFactoryDependency } from "sf-core/dependencies";
 import {
   HTMLElementEntity,

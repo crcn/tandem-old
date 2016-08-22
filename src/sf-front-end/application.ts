@@ -1,4 +1,3 @@
-
 import { Application } from "sf-common/application";
 import { thread, isMaster } from "sf-core/workers";
 
@@ -18,6 +17,7 @@ import { dependency as workspaceDependency } from "./services/workspace";
 import { dependency as editorServiceDependency } from "./services/editor";
 import { dependency as backEndServiceDependency } from "./services/back-end";
 import { dependency as selectorServiceDependency } from "./services/selector";
+import { dependency as settingsServiceDependency } from "./services/settings";
 import { dependency as keyBindingsServiceDependency } from "./services/key-binding";
 import { dependency as rootComponentRendererDependency } from "./services/root-component-renderer";
 
@@ -30,11 +30,12 @@ import { dependency as keyBindingsDependency } from "./key-bindings";
 // extensions
 import { dependency as htmlExtensionDependency } from "sf-html-extension";
 
-import { Workspace } from "./models";
+import { Workspace, Settings } from "./models";
 
 export class FrontEndApplication extends Application {
 
   public workspace: Workspace;
+  public settings: Settings;
 
   protected registerDependencies() {
     super.registerDependencies();
@@ -60,6 +61,7 @@ export class FrontEndApplication extends Application {
       editorServiceDependency,
       backEndServiceDependency,
       selectorServiceDependency,
+      settingsServiceDependency,
       keyBindingsServiceDependency,
       rootComponentRendererDependency,
 
