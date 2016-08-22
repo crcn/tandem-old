@@ -50,7 +50,7 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
 
   constructor(readonly file: DocumentFile, private _dependencies: Dependencies) {
     super();
-    watchProperty(file, "content", this._onFileContentChange).trigger()
+    watchProperty(file, "content", this._onFileContentChange).trigger();
   }
 
 

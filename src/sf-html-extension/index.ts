@@ -6,6 +6,10 @@ import { HTML_MIME_TYPE } from "sf-html-extension/constants";
  import { dependency as cssPaneComponentDependency } from "./components/css-pane";
  import { dependency as entityPreviewComponentDependency } from "./components/entity-preview";
 
+ // layer components
+ import { dependency as textLayerLabelComponentDependency } from "./components/text-layer-label";
+ import { dependency as elementLayerLabelComponentDependency } from "./components/element-layer-label";
+
  // models
  import { htmlFileModelDependency } from "./models/html-file";
  import { htmlDisplayEntitySelectionDependency } from "./models/display-selection";
@@ -37,6 +41,8 @@ export const dependency = [
   // components
   cssPaneComponentDependency,
   entityPreviewComponentDependency,
+  textLayerLabelComponentDependency,
+  elementLayerLabelComponentDependency,
 
   // services
   pasteEntityService,

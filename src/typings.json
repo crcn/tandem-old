@@ -18,6 +18,8 @@
     "mousetrap": "registry:dt/mousetrap#1.5.0+20160501152135",
     "node": "registry:dt/node#6.0.0+20160720070758",
     "react": "registry:dt/react#0.14.0+20160720060442",
+    "react-dnd": "registry:dt/react-dnd#2.0.2+20160816153011",
+    "react-dnd-html5-backend": "registry:dt/react-dnd-html5-backend#2.1.2+20160704104003",
     "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
     "serve-static": "registry:dt/serve-static#0.0.0+20160606155157",
     "socket.io": "registry:dt/socket.io#1.4.4+20160317120654",

@@ -97,3 +97,16 @@ export class DocumentPaneComponentFactoryDependency extends ReactComponentFactor
     return new DocumentPaneComponentFactoryDependency(this.id, this.componentClass);
   }
 }
+
+export const LAYER_LABEL_COMPONENT = "layerLabelComponent";
+export class LayerLabelComponentFactoryDependency extends ReactComponentFactoryDependency {
+  constructor(readonly displayType: string, readonly componentClass: React.ComponentClass<any>) {
+    super([LAYER_LABEL_COMPONENT, displayType].join("/"), componentClass);
+  }
+  static find(displayType: string, dependencies: Dependencies) {
+    return dependencies.query<LayerLabelComponentFactoryDependency>([LAYER_LABEL_COMPONENT, displayType].join("/"));
+  }
+  clone() {
+    return new LayerLabelComponentFactoryDependency(this.displayType, this.componentClass);
+  }
+}

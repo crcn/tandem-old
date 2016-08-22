@@ -1,16 +1,24 @@
-import './layer-input.scss';
-import './element.scss';
+// import './layer-input.scss';
+import './index.scss';
 
-import trim from 'lodash/string/trim';
-import React from 'react';
-import ElementEntity from '../../entities/element';
-import VOID_ELEMENTS from '../../constants/void-elements';
-import AutosizeInput from 'react-input-autosize';
-import FocusComponent from 'saffron-common/components/focus';
+import * as React from 'react';
+
+import * as AutosizeInput from 'react-input-autosize';
+import { SelectAction } from 'sf-front-end/actions';
+import { VisibleHTMLElementEntity } from "sf-html-extension/models";
+import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
+
+class FocusComponent extends React.Component<any, any> {
+  render() {
+    return this.props.children;
+  }
+}
+
+const VOID_ELEMENTS = [];
 
 import {
-  SetFocusMessage
-} from 'editor/message-types';
+  SetToolAction
+} from 'sf-front-end/actions';
 
 const CLASS_NAME_PRIORITY = [
   'id',
@@ -18,7 +26,9 @@ const CLASS_NAME_PRIORITY = [
   'src'
 ];
 
-class ElementLayerLabelComponent extends React.Component {
+class ElementLayerLabelComponent extends React.Component<any, any> {
+
+  private _updateCount: number;
 
   constructor() {
     super();
@@ -52,7 +62,7 @@ class ElementLayerLabelComponent extends React.Component {
     );
 
     this.props.app.notifier.notify(
-      SetFocusMessage.create([child])
+      new SelectAction([child])
     );
 
     //event.preventDefault();
@@ -78,30 +88,18 @@ class ElementLayerLabelComponent extends React.Component {
       buffer.push(this.renderHTMLInput());
     } else {
       buffer.push(this.state.editTagName ?
-        this.renderTagNameInput() :
-        <span className='m-element-layer-label--tag-name' key='tagName' key='tname'>{entity.tagName}</span>
+        this.renderHTMLInput() :
+        <span className='m-element-layer-label--tag-name' key='tagName'>{entity.nodeName.toLowerCase()}</span>
       );
-
-      var attrs = [];
-
-      // pluck out the attributes
-      for (var property in entity.attributes) {
-        attrs.push({
-          key: property,
-          value: entity.attributes[property]
-        });
-      }
 
       // filter them, and remove the items we do not want to display
       // (for now)
-      attrs = attrs.filter(function (a) {
-        return !!~CLASS_NAME_PRIORITY.indexOf(a.key);
-      }).sort(function (a, b) {
-        return CLASS_NAME_PRIORITY.indexOf(a.key) > CLASS_NAME_PRIORITY.indexOf(b.key) ? 1 : -1;
+      const attrs = entity.attributes.concat().sort(function (a, b) {
+        return a.key > b.key ? -1 : 1;
       });
 
       attrs.forEach(function (attr) {
-        var k = attr.key;
+        var k = attr.name;
         buffer.push(
           <span className='m-element-layer-label--key' key={k + 1}>&nbsp;{k}</span>,
           <span className='m-element-layer-label--operator' key={k + 2}>=</span>,
@@ -112,19 +110,20 @@ class ElementLayerLabelComponent extends React.Component {
 
     buffer.push(
       <span className='m-element-layer-label--tag' key='et'>
-        { entity.children.length === 0 ? ' /' : void 0 }
+        { entity.childNodes.length === 0 ? ' /' : void 0 }
         &gt;
       </span>
     );
 
+
     return <div className='m-label m-element-layer-label' onDoubleClick={this.editHTML.bind(this)}>
-      { connectDragSource(<span>{buffer}</span>) } { !~VOID_ELEMENTS.indexOf(entity.tagName.toLowerCase()) ? <span className='m-element-layer-label--add-child-button' onClick={this.addChild.bind(this)}>+</span> : void 0 }
+      { connectDragSource(<span>{buffer}</span>) } { !~VOID_ELEMENTS.indexOf(entity.nodeName.toLowerCase()) ? <span className='m-element-layer-label--add-child-button' onClick={this.addChild.bind(this)}>+</span> : void 0 }
     </div>;
   }
 
   onInputKeyDown(event) {
     if (event.keyCode === 13) {
-      this.doneEditing();
+      this.doneEditing(null);
     }
   }
 
@@ -138,7 +137,7 @@ class ElementLayerLabelComponent extends React.Component {
 
     var entity = this.props.entity;
 
-    var source = trim(String(this.state.source || ''));
+    var source = String(this.state.source || '').trim();
 
     // dumb parser here...
     var tagName = source.match(/\w+/);
@@ -166,7 +165,7 @@ class ElementLayerLabelComponent extends React.Component {
 
     // TODO - this smells funny here - need to reset selection
     // otherwise stuff breaks.
-    this.props.app.notifier.notify(SetFocusMessage.create([entity]));
+    this.props.app.notifier.notify(new SelectAction([entity]));
 
 
     this.setState({
@@ -206,3 +205,5 @@ class ElementLayerLabelComponent extends React.Component {
 }
 
 export default ElementLayerLabelComponent;
+
+export const dependency = new LayerLabelComponentFactoryDependency("element", ElementLayerLabelComponent);

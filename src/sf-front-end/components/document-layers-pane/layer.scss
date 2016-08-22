@@ -1,7 +1,9 @@
-@import 'editor/scss/variables';
+@import 'sf-front-end/scss/variables';
 
 .m-layers-pane-component-layer {
   position: relative;
+
+  @import "./layer-input.scss";
 
   &--header {
     cursor: default;

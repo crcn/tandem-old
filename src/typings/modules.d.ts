@@ -51,3 +51,15 @@ declare module "ent" {
   function encode(source: string): string;
   function decode(source: string): string;
 }
+
+declare module "react-input-autosize" {
+  class AutosizeInput extends __React.Component<any, any> {
+
+  }
+
+  namespace AutosizeInput {
+
+  }
+
+  export = AutosizeInput;
+}

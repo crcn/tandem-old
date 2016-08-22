@@ -9,6 +9,7 @@ import { parseCSSStyle, CSSStyleExpression } from "sf-html-extension/parsers/css
 export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisibleEntity {
 
   readonly type: string = "display";
+  readonly displayType: string = "element";
 
   // TODO - change to something such as DisplayComputer
   readonly display = new HTMLNodeDisplay(this);

@@ -25,6 +25,7 @@ describe(__filename + "#", () => {
 
   class VisibleEntity extends Element implements IVisibleEntity {
     readonly type: string = "display";
+    readonly displayType: string = "element";
     readonly source: any = null;
     readonly document: any;
     constructor(readonly display: IEntityDisplay) {

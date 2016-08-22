@@ -3,6 +3,7 @@ import { thread, isMaster } from "sf-core/workers";
 
 // components
 import { dependency as rootComponentDependency } from "./components/root";
+import { dependency as layersPaneComponentDepency } from "./components/document-layers-pane";
 
 // commponent tools
 import { dependency as gridToolComponentDependency } from "./components/grid-tool";
@@ -48,6 +49,7 @@ export class FrontEndApplication extends Application {
 
       // components
       rootComponentDependency,
+      layersPaneComponentDepency,
 
       // component tools
       gridToolComponentDependency,

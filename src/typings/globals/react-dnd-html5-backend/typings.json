@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/79a7fad499369ce70e79e909c0706f391c01336c/react-dnd-html5-backend/react-dnd-html5-backend.d.ts",
+    "raw": "registry:dt/react-dnd-html5-backend#2.1.2+20160704104003",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/79a7fad499369ce70e79e909c0706f391c01336c/react-dnd-html5-backend/react-dnd-html5-backend.d.ts"
+  }
+}

@@ -48,6 +48,7 @@ export interface IEntity extends INode, IDisposable {
 
 export interface IVisibleEntity extends IEntity {
   readonly display: IEntityDisplay;
+  readonly displayType: string;
 }
 
 export interface IContainerEntity extends IEntity, IContainerNode {

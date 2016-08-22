@@ -1,12 +1,19 @@
 
-import './text.scss';
+import './index.scss';
 
-import cx from 'classnames';
-import React from 'react';
-import AutosizeInput from 'react-input-autosize';
-import FocusComponent from 'saffron-common/components/focus';
+import * as cx from 'classnames';
+import * as React from 'react';
+import * as AutosizeInput from 'react-input-autosize';
+import { SelectAction } from 'sf-front-end/actions';
+import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 
-class TextLayerLabelComponent extends React.Component {
+class FocusComponent extends React.Component<any, any> {
+  render() {
+    return this.props.childNodes;
+  }
+}
+
+class TextLayerLabelComponent extends React.Component<any, any> {
 
   constructor() {
     super();
@@ -32,14 +39,14 @@ class TextLayerLabelComponent extends React.Component {
       {
         this.state.edit         ?
         this.renderInput()      :
-        this.props.entity.value
+        this.props.entity.nodeValue
       }
     </span>);
   }
 
   onInputChange(event) {
     this.props.entity.setProperties({
-      value: event.target.value
+      value: event.target.nodeValue
     });
   }
 
@@ -70,4 +77,4 @@ class TextLayerLabelComponent extends React.Component {
   }
 }
 
-export default TextLayerLabelComponent;
+export const dependency = new LayerLabelComponentFactoryDependency("text", TextLayerLabelComponent);

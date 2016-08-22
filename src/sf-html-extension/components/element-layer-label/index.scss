@@ -1,4 +1,4 @@
-@import 'editor/scss/variables';
+@import 'sf-front-end/scss/variables';
 
 .m-element-layer-label {
 
@@ -36,8 +36,5 @@
     float: right;
     color: $color-white-offset-3;
   }
-
-
-  @import './layer-input.scss';
 
 }
