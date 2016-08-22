@@ -31,10 +31,10 @@ export class PropertyChangeAction extends Action {
 }
 
 
-export const SETTING_CHANGE_ACTION = "settingChange";
+export const SETTING_CHANGE = "settingChange";
 export class SettingChangeAction extends Action {
   constructor(readonly property: string, readonly newValue: any, readonly oldValue: any) {
-    super(SETTING_CHANGE_ACTION);
+    super(SETTING_CHANGE);
   }
 }
 

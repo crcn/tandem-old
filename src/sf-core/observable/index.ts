@@ -12,29 +12,33 @@ export class Observable implements IObservable {
     }
   }
 
-  observe(actor: IActor) {
-    if (!this._observers) {
-      this._observers = actor;
-    } else if (!Array.isArray(this._observers)) {
-      this._observers = [this._observers, actor];
-    } else {
-      this._observers.push(actor);
+  observe(...actors: Array<IActor>) {
+    for (const actor of actors) {
+      if (!this._observers) {
+        this._observers = actor;
+      } else if (!Array.isArray(this._observers)) {
+        this._observers = [this._observers, actor];
+      } else {
+        this._observers.push(actor);
+      }
     }
   }
 
-  unobserve(actor: IActor) {
-    if (this._observers === actor) {
-      this._observers = null;
-    } else if (Array.isArray(this._observers)) {
-      const i = this._observers.indexOf(actor);
-      if (i !== -1) {
-        this._observers.splice(i, 1);
-      }
+  unobserve(...actors: Array<IActor>) {
+    for (const actor of actors) {
+      if (this._observers === actor) {
+        this._observers = null;
+      } else if (Array.isArray(this._observers)) {
+        const i = this._observers.indexOf(actor);
+        if (i !== -1) {
+          this._observers.splice(i, 1);
+        }
 
-      // only one left? Move to a more optimal method for notifying
-      // observers.
-      if (this._observers.length === 1) {
-        this._observers = this._observers[0];
+        // only one left? Move to a more optimal method for notifying
+        // observers.
+        if (this._observers.length === 1) {
+          this._observers = this._observers[0];
+        }
       }
     }
   }
