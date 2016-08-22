@@ -11,16 +11,28 @@ import { VisibleHTMLElementEntity } from "./visible-element";
 import { EntityFactoryDependency, IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
 
 export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInjectable {
-  private _placeholder: Node;
-  private _iframe: HTMLIFrameElement;
+
   private _body: HTMLElement;
+  private _style: HTMLStyleElement;
+  private _iframe: HTMLIFrameElement;
+  private _placeholder: Node;
 
   @inject(APPLICATION_SINGLETON_NS)
   readonly app: FrontEndApplication;
 
   didInject() {}
 
+  async sync() {
+    await super.sync();
+    this._updateStyle();
+  }
+
+  _updateStyle() {
+    this._style.innerHTML = this.document.stylesheet.toString();
+  }
+
   createSection() {
+    this._style = document.createElement("style");
     this._placeholder = document.createElement("div");
 
     const iframe = this._iframe = document.createElement("iframe");
@@ -29,11 +41,11 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
     this._iframe.onload = () => {
       const doc = iframe.contentWindow.document;
       const body = doc.body;
-      // doc.removeChild(doc.childNodes[0]); // remove HTML tag
+      this._updateStyle();
 
       body.style.margin = body.style.padding = "0px";
+      body.appendChild(this._style);
       body.appendChild(this._placeholder);
-      // this._placeholder = doc.childNodes[0]
 
       // bubble all iframe events such as mouse clicks and scrolls
       // so that the editor can handle them
