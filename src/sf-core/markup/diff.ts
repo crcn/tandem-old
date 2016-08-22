@@ -46,6 +46,7 @@ export interface IDiffableElement extends IDiffableNode {
 }
 
 export abstract class NodeChange implements INodeChange {
+  abstract score: number = 0;
   constructor(readonly type: string) {
 
   }
@@ -53,6 +54,7 @@ export abstract class NodeChange implements INodeChange {
 
 export const MOVE_CURSOR = "moveCursor";
 export class MoveCursorChange extends NodeChange {
+  readonly score = 0;
   constructor(readonly childIndex: number) {
     super(MOVE_CURSOR);
   }
@@ -60,6 +62,7 @@ export class MoveCursorChange extends NodeChange {
 
 export const REMOVE_CHILD = "removeChild";
 export class RemoveChildChange extends NodeChange {
+  readonly score = 2;
   constructor(readonly index: number) {
     super(REMOVE_CHILD);
   }
@@ -67,6 +70,7 @@ export class RemoveChildChange extends NodeChange {
 
 export const ADD_CHILD = "addChild";
 export class AddChildChange extends NodeChange {
+  readonly score = 2;
   constructor(readonly node: IDiffableNode) {
     super(ADD_CHILD);
   }
@@ -74,6 +78,7 @@ export class AddChildChange extends NodeChange {
 
 export const SET_NODE_VALUE = "setNodeValue";
 export class SetNodeValueChange extends NodeChange {
+  readonly score = 2;
   constructor(readonly index: number, readonly nodeValue: any) {
     super(SET_NODE_VALUE);
   }
@@ -81,6 +86,7 @@ export class SetNodeValueChange extends NodeChange {
 
 export const SET_ATTRIBUTE = "setAttribute";
 export class SetAttributeChange extends NodeChange {
+  readonly score = 1;
   constructor(readonly name: string, readonly value: any) {
     super(SET_ATTRIBUTE);
   }
@@ -88,6 +94,7 @@ export class SetAttributeChange extends NodeChange {
 
 export const REMOVE_ATTRIBUTE = "removeAttribute";
 export class RemoveAttributeChange extends NodeChange {
+  readonly score = 1;
   constructor(readonly name: string) {
     super(REMOVE_ATTRIBUTE);
   }
@@ -95,6 +102,7 @@ export class RemoveAttributeChange extends NodeChange {
 
 export const MOVE_CHILD = "moveChild";
 export class MoveChildChange extends NodeChange {
+  readonly score = 1;
   constructor(readonly fromIndex: number, readonly toIndex: number) {
     super(MOVE_CHILD);
   }
@@ -102,6 +110,7 @@ export class MoveChildChange extends NodeChange {
 
 export const INDEX_DOWN = "indexDown";
 export class IndexDownChange extends NodeChange {
+  readonly score = 0;
   constructor(readonly index: number) {
     super(INDEX_DOWN);
   }
@@ -109,9 +118,14 @@ export class IndexDownChange extends NodeChange {
 
 export const INDEX_UP = "indexUp";
 export class IndexUpChange extends NodeChange {
+  readonly score = 0;
   constructor() {
     super(INDEX_UP);
   }
+}
+
+function scoreChanges(changes: Array<any>): number {
+  return changes.length ? changes.reduce((first: any, second: any ) => ({score: first.score + second.score })).score : 0;
 }
 
 // TODO - use web workers to compute this
@@ -154,6 +168,7 @@ function addChanges(unmatchedOldNodes: Array<IDiffableNode>, unmatchedNewNodes: 
       diffValueNode(oldOrderedChildNodes, <IDiffableValueNode>bestCandidate, <IDiffableValueNode>newNode, changes);
     } else {
       let bestCandidateChanges = [];
+      let bestCandidateChangeScore = 0;
       for (const candidate of candidates) {
         const candidateChanges = [];
 
@@ -161,12 +176,15 @@ function addChanges(unmatchedOldNodes: Array<IDiffableNode>, unmatchedNewNodes: 
         // kind of ratchet...
         diffElement(<IDiffableElement>candidate, <IDiffableElement>newNode, candidateChanges);
 
+        const candidateChangeScore = scoreChanges(candidateChanges);
+
         // grab the candidate with the fewest changes
         // TODO - possibly weight each change as well -- adding attributes for instance is weighted
         // less than adding or removing elements
-        if (!bestCandidate || candidateChanges.length < bestCandidateChanges.length) {
-          bestCandidate        = candidate;
-          bestCandidateChanges = candidateChanges;
+        if (!bestCandidate || candidateChangeScore < bestCandidateChangeScore) {
+          bestCandidate            = candidate;
+          bestCandidateChanges     = candidateChanges;
+          bestCandidateChangeScore = candidateChangeScore;
         }
       }
 

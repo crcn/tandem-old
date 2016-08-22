@@ -18,7 +18,6 @@ import {
   RemoveAttributeChange,
 } from "./diff";
 
-
 function element(name, attributes = {}, ...children) {
   const element = new Element(name);
   for (let key in attributes) element.setAttribute(key, attributes[key]);

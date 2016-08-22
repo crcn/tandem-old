@@ -291,7 +291,7 @@ LayerDndLabelComponent = DropTarget("element", {
 
     entity.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
     (item.parentNode as any as IEntity).source.removeChild(item.source);
-    (entity as IContainerEntity).source.childNodes.push(item.source);
+    (entity as IContainerEntity).source.appendChildNodes(item.source);
     app.workspace.file.save();
     app.bus.execute(new SelectAction([item], false));
   },

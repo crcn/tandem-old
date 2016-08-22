@@ -34,6 +34,7 @@ function _cloneNode(node: INode) {
 }
 
 export function patch(node: INode, changes: Array<NodeChange>, cloneNode: Function = undefined) {
+
   if (cloneNode == null) {
     cloneNode = _cloneNode;
   }
