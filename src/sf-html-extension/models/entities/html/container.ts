@@ -1,7 +1,8 @@
+import { BubbleBus } from "sf-core/busses";
 import { disposeEntity } from "./utils";
 import { IHTMLEntity, IHTMLDocument } from "./base";
 import { IHTMLContainerExpression, HTMLExpression } from "sf-html-extension/parsers/html";
-import { IEntity, IElementEntity, findEntitiesBySource } from "sf-core/entities";
+import { IEntity, IElementEntity, findEntitiesBySource, EntityMetadata } from "sf-core/entities";
 import { IMarkupSection, ContainerNode, INode, NodeSection, GroupNodeSection } from "sf-core/markup";
 
 export abstract class HTMLContainerEntity extends ContainerNode implements IHTMLEntity, IElementEntity {
@@ -9,6 +10,7 @@ export abstract class HTMLContainerEntity extends ContainerNode implements IHTML
   readonly type: string = null;
   readonly nodeName: string;
   readonly section: IMarkupSection;
+  readonly metadata: EntityMetadata;
 
   private _document: IHTMLDocument;
 
@@ -16,6 +18,8 @@ export abstract class HTMLContainerEntity extends ContainerNode implements IHTML
     super();
     this.nodeName = source.nodeName.toUpperCase();
     this.section = this.createSection();
+    this.metadata = new EntityMetadata(this);
+    this.metadata.observe(new BubbleBus(this));
   }
 
   get document(): IHTMLDocument {

@@ -131,3 +131,10 @@ export class AttributeChangeAction extends Action {
     super(ATTRIBUTE_CHANGE);
   }
 }
+
+export const METADATA_CHANGE = "metadataChange";
+export class MetadataChangeAction extends Action {
+  constructor(readonly key: string, readonly value: string) {
+    super(METADATA_CHANGE);
+  }
+}

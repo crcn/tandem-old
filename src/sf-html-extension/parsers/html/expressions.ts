@@ -18,6 +18,7 @@ export interface IHTMLContainerExpression {
   nodeName: string;
   childNodes: Array<HTMLExpression>;
   appendChildNodes(...childNodes: Array<HTMLExpression>);
+  removeChild(node: HTMLExpression);
 }
 
 
@@ -25,6 +26,13 @@ export const HTML_FRAGMENT = "htmlFragment";
 export class HTMLFragmentExpression extends HTMLExpression implements IHTMLContainerExpression {
   constructor(public childNodes: Array<HTMLExpression>, position: IRange) {
     super(HTML_FRAGMENT, "#document-fragment", position);
+  }
+
+  removeChild(child: HTMLExpression) {
+    const i = this.childNodes.indexOf(child);
+    if (i !== -1) {
+      this.childNodes.splice(i, 1);
+    }
   }
 
   appendChildNodes(...childNodes: Array<HTMLExpression>) {
@@ -52,6 +60,13 @@ export class HTMLElementExpression extends HTMLExpression implements IHTMLContai
     public childNodes: Array<HTMLExpression>,
     public position: IRange) {
     super(HTML_ELEMENT, nodeName, position);
+  }
+
+  removeChild(child: HTMLExpression) {
+    const i = this.childNodes.indexOf(child);
+    if (i !== -1) {
+      this.childNodes.splice(i, 1);
+    }
   }
 
   setAttribute(name: string, value: string) {

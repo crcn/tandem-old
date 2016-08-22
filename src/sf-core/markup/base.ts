@@ -15,7 +15,7 @@ export interface IAttribute {
   value: any;
 }
 
-export interface INode extends IObservable {
+export interface INode extends Object, IObservable {
   parentNode: IContainerNode;
   readonly nodeName: string;
   cloneNode(deep?: boolean): INode;
@@ -23,6 +23,8 @@ export interface INode extends IObservable {
   nextSibling: INode;
   previousSibling: INode;
 }
+
+
 
 // TODO - maybe change to ITree
 export interface IContainerNode extends INode {

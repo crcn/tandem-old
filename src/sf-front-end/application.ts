@@ -32,12 +32,20 @@ import { dependency as keyBindingsDependency } from "./key-bindings";
 // extensions
 import { dependency as htmlExtensionDependency } from "sf-html-extension";
 
+import { Metadata } from "sf-core/metadata";
 import { Workspace, Settings } from "./models";
 
 export class FrontEndApplication extends Application {
 
   public workspace: Workspace;
   public settings: Settings;
+  public metadata: Metadata;
+
+  constructor(config?: any) {
+    super(config);
+    this.metadata = new Metadata();
+    this.metadata.observe(this.bus);
+  }
 
   protected registerDependencies() {
     super.registerDependencies();

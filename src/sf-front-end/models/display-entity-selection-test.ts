@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import { Element } from "sf-core/markup";
-import { BoundingRect, IPosition } from "sf-core/geom";
 import { DisplayEntitySelection } from "./display-entity-selection";
-import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/entities";
+import { BoundingRect, IPosition } from "sf-core/geom";
+import { IEntityDisplay, IVisibleEntity, DisplayCapabilities, EntityMetadata } from "sf-core/entities";
 
 describe(__filename + "#", () => {
 
@@ -28,6 +28,8 @@ describe(__filename + "#", () => {
     readonly displayType: string = "element";
     readonly source: any = null;
     readonly document: any;
+    readonly metadata: EntityMetadata = new EntityMetadata(this);
+
     constructor(readonly display: IEntityDisplay) {
       super("entity");
     }

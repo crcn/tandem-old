@@ -2,13 +2,30 @@ import "./layer.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
-import { IEntity } from "sf-core/entities";
+import { Workspace } from "sf-front-end/models";
+import { MetadataKeys } from "sf-front-end/constants";
+import { Dependencies } from "sf-core/dependencies";
+import { FrontEndApplication } from "sf-front-end/application";
 import { flatten, intersection } from "lodash";
+import { IEntity, IContainerEntity, IVisibleEntity } from "sf-core/entities";
 import { SelectAction, ToggleSelectAction } from "sf-front-end/actions";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 import { DragSource, DropTarget, DndComponent } from "react-dnd";
 
-class LayerLabelComponent extends React.Component<any, any> {
+interface ILayerLabelProps {
+  paddingLeft?: number;
+  dependencies: Dependencies;
+  workspace: Workspace;
+  app: FrontEndApplication;
+  entity: IEntity;
+  connectDragSource: Function;
+  isDragging: boolean;
+  connectDropTarget: Function;
+  isOver: boolean;
+  canDrop: boolean;
+}
+
+class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
   constructor() {
     super();
@@ -17,8 +34,10 @@ class LayerLabelComponent extends React.Component<any, any> {
 
   onClick(event) {
 
-    const entity = this.props.entity;
-    const selection = this.props.app.selection || [];
+    const { entity, workspace } = this.props;
+    const rootEntity = workspace.file.document.root;
+
+    const selection = workspace.selection || [];
     let select  = [];
     let multiSelect = false;
 
@@ -28,14 +47,14 @@ class LayerLabelComponent extends React.Component<any, any> {
       const allEntities = [];
 
       // capture only open entities
-      function each(entity) {
+      function each(entity: IEntity) {
         allEntities.push(entity);
-        if (entity.layerExpanded) {
-          entity.children.forEach(each);
+        if (entity.metadata.get(MetadataKeys.LAYER_EXPANDED) && entity.hasOwnProperty("childNodes")) {
+          (entity as IContainerEntity).childNodes.forEach(each);
         }
       }
 
-      each(this.props.app.rootEntity);
+      each(rootEntity);
 
       const currentlySelectedEntity = selection[selection.length - 1];
       const index1 = allEntities.indexOf(entity);
@@ -62,7 +81,7 @@ class LayerLabelComponent extends React.Component<any, any> {
           return entity.flatten();
         }));
 
-        const entityChildren = flatten(entity.children.map(function(entity) {
+        const entityChildren = flatten((entity as IContainerEntity).childNodes.map(function(entity) {
           return entity.flatten();
         }));
 
@@ -77,15 +96,13 @@ class LayerLabelComponent extends React.Component<any, any> {
       }
     }
 
-    this.props.app.notifier.notify(new ToggleSelectAction(select, multiSelect));
+    this.props.app.bus.execute(new ToggleSelectAction(select, multiSelect));
   }
 
   toggleExpand(expand, event) {
 
     // store on the entity so that it can be serialized
-    this.props.entity.setProperties({
-      layerExpanded: expand !== void 0 ? expand : !this.props.entity.layerExpanded
-    });
+    this.props.entity.metadata.toggle(MetadataKeys.LAYER_EXPANDED);
 
     if (event) event.stopPropagation();
   }
@@ -111,14 +128,14 @@ class LayerLabelComponent extends React.Component<any, any> {
   }
 
   render() {
-    const { connectDragSource, isDragging, connectDropTarget, isOver, canDrop } = this.props;
+    const { connectDragSource, isDragging, connectDropTarget, isOver, canDrop, entity, dependencies, workspace } = this.props;
 
-    const entity     = this.props.entity;
-    const expanded   = entity.layerExpanded;
-    const dependencies = this.props.dependencies;
-    const selection = this.props.selection;
+    const expanded   = entity.metadata.get(MetadataKeys.LAYER_EXPANDED);
 
-    const labelDependency = LayerLabelComponentFactoryDependency.find(entity.displayType || entity.type, dependencies);
+    const selection = workspace.selection;
+    const displayType = (entity as IVisibleEntity).displayType;
+
+    const labelDependency = LayerLabelComponentFactoryDependency.find(displayType || entity.type, dependencies);
 
     let labelSection;
 
@@ -129,18 +146,17 @@ class LayerLabelComponent extends React.Component<any, any> {
       }));
     } else {
       labelSection = <span>
-        <i className={"s s-" + entity.icon } />
-        { entity.label || "Entity" }
+        { entity.nodeName }
       </span>;
     }
 
     const headerClassName = cx({
       "m-layers-pane-component-layer--header": true,
       "drag-over": isOver && canDrop,
-      "hover": this.props.app.hoverItem === this.props.entity && !this.state.hover,
+      "hover": this.props.app.metadata.get(MetadataKeys.HOVER_ITEM) === this.props.entity && !this.state.hover,
       ["m-layer-type-" + entity.type]: true,
-      ["m-layer-component-type-" + entity.componentType]: true,
-      "selected": selection && selection.includes(entity)
+      ["m-layer-component-type-" + displayType]: true,
+      "selected": selection && selection.indexOf(entity) !== -1
     });
 
     const expandButtonClassName = cx({
@@ -151,7 +167,7 @@ class LayerLabelComponent extends React.Component<any, any> {
     });
 
     const expandButtonStyle = {
-      "visibility": (entity.childNodes || []).length ? "visible" : "hidden"
+      "visibility": ((entity as IContainerEntity).childNodes || []).length ? "visible" : "hidden"
     };
 
     labelSection =  <div
@@ -176,28 +192,32 @@ class LayerLabelComponent extends React.Component<any, any> {
   canDrop() {
     return true;
   },
-  drop({ entity, app, offset }, monitor, component) {
-    app.notifier.notify(new SelectAction([], false));
+  drop(args: { entity: IEntity, app: FrontEndApplication, offset: any }, monitor, component) {
+    const { entity, app, offset } = args;
+
+    app.bus.execute(new SelectAction([], false));
 
     const data = monitor.getItem() as any;
 
-    // model data is a pojo, so we need to find it somewhere from the root entity
-    const item = app.rootEntity.find(function(entity) {
-      return entity.id === data.props.id;
-    });
+    const item = app.workspace.file.document.root.flatten().find(function(entity: IEntity) {
+      return entity.metadata.get("dragSourceId") === data.id;
+    }) as IEntity;
 
     if (entity === item) return;
 
-    item.parent.children.remove(item);
+
+    (item.parentNode as any as IEntity).source.removeChild(item.source);
 
     // then add it
-    entity.parent.children.splice(
-      entity.parent.children.indexOf(entity) + offset,
+    (entity.parentNode as IContainerEntity).source.childNodes.splice(
+      (entity.parentNode as IContainerEntity).source.childNodes.indexOf(entity.source) + offset,
       0,
-      item
+      item.source
     );
 
-    app.notifier.notify(new SelectAction([item], false));
+    app.workspace.file.save();
+
+    app.bus.execute(new SelectAction([item], false));
   },
   hover(props, monitor, component) {
 
@@ -239,7 +259,8 @@ class DropLayerTargetComponent extends React.Component<any, any> {
 
 const layerSource = {
   beginDrag(props) {
-    return props.entity.serialize();
+    props.entity.metadata.set("dragSourceId", Date.now());
+    return { id: props.entity.metadata.get("dragSourceId") };
   },
   canDrag() {
     return true;
@@ -255,22 +276,26 @@ function collect(connect, monitor) {
 }
 
 let LayerDndLabelComponent = DragSource("element", layerSource, collect)(LayerLabelComponent);
-LayerDndLabelComponent = DropTarget('element', {
+LayerDndLabelComponent = DropTarget("element", {
   canDrop({ entity }, monitor) {
-    return entity.id !== (monitor.getItem() as any).props.id;
+    return entity.metadata.get("dragSourceId") !== (monitor.getItem() as any).id;
   },
-  drop({ entity, app, offset }, monitor, component) {
-    app.notifier.notify(new SelectAction([], false));
-    var data = monitor.getItem() as any;
-    var item = app.rootEntity.find(function(entity) {
-      return entity.id === data.props.id;
-    });
-    entity.layerExpanded = true;
-    entity.children.push(item);
-    app.notifier.notify(new SelectAction([item], false));
+  drop(props: { entity: IEntity, app: FrontEndApplication, offset }, monitor, component) {
+
+    const { entity, app } = props;
+    app.bus.execute(new SelectAction([], false));
+    const data = monitor.getItem() as any;
+    const item = app.workspace.file.document.root.flatten().find(function(entity: IEntity) {
+      return entity.metadata.get("dragSourceId") === data.id;
+    }) as IEntity;
+
+    entity.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
+    (item.parentNode as any as IEntity).source.removeChild(item.source);
+    (entity as IContainerEntity).source.childNodes.push(item.source);
+    app.workspace.file.save();
+    app.bus.execute(new SelectAction([item], false));
   },
   hover(props, monitor, component) {
-    //console.log('hover');
   }
 }, function(connect, monitor) {
   return {
@@ -282,12 +307,12 @@ LayerDndLabelComponent = DropTarget('element', {
   };
 })(LayerDndLabelComponent);
 
-export default class LayerComponent extends React.Component<any, any> {
+export default class LayerComponent extends React.Component<{ entity: IEntity, depth: number }, any> {
 
   render() {
 
     const entity     = this.props.entity;
-    const expanded   = entity.layerExpanded || true;
+    const expanded   = entity.metadata.get(MetadataKeys.LAYER_EXPANDED);
     const depth = this.props.depth || 0;
     const paddingLeft =  17 + depth * 12;
 
@@ -295,7 +320,7 @@ export default class LayerComponent extends React.Component<any, any> {
 
       <LayerDndLabelComponent paddingLeft={paddingLeft} {...this.props} />
 
-      { expanded ? (entity.childNodes || []).map((child, i) => {
+      { expanded ? ((entity as IContainerEntity).childNodes || []).map((child: IEntity, i) => {
         return <LayerComponent {...this.props} entity={child} key={i} depth={depth + 1}  />;
       }) : undefined }
 

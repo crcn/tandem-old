@@ -1,4 +1,5 @@
 import { IFile } from "sf-core/active-records";
+import { Metadata } from "sf-core/metadata";
 import { IDisposable } from "../object";
 import { IEntityDisplay } from "./display";
 import {
@@ -18,9 +19,23 @@ export interface IEntityDocument extends IContainerNode {
   sync();
 }
 
+export class EntityMetadata extends Metadata {
+  constructor(readonly entity: IEntity) {
+    super();
+  }
+}
+
 // TODO - IEntity should not extend INode since it is not limited to the markup lang
 // TODO - should extend ITyped interface
 export interface IEntity extends INode, IDisposable {
+
+  /**
+   * additional information about the entity that is
+   * specific to the environment that it's currently in. This
+   * may include information such as hover states, dragging states, etc.
+   */
+
+  readonly metadata: EntityMetadata;
 
   // TODO - do not use "any" here.
   source: any;
