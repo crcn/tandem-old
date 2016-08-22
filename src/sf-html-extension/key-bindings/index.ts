@@ -46,7 +46,7 @@ export const dependencies = [
 
 const insertElementKeyBindings = {
   "d": "div",
-  "s": "span"
+  "a": "artboard"
 };
 
 for (const key in insertElementKeyBindings) {

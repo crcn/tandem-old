@@ -15,7 +15,7 @@ import {
   htmlCommentDependency,
   htmlElementDependencies,
   htmlFileModelDependency,
-  htmlTemplateEntityDependency,
+  htmlArtboardDependency,
   htmlDocumentFragmentDependency,
 } from "sf-html-extension/models";
 
@@ -31,7 +31,7 @@ describe(__filename + "#", () => {
       htmlCommentDependency,
       htmlFileModelDependency,
       ...htmlElementDependencies,
-      htmlTemplateEntityDependency,
+      htmlArtboardDependency,
       htmlDocumentFragmentDependency,
       new ApplicationSingletonDependency(app)
     );
@@ -79,7 +79,7 @@ describe(__filename + "#", () => {
       expect(await calculateBounds(`<template style="position:absolute;top:100px;left:100px;">
         <div id="target" style="width:100px;height:100px;">
         </div>
-      </template>`)).to.eql([100, 100, 100, 100]);
+      </artboard>`)).to.eql([100, 100, 100, 100]);
     });
 
     it("returns the correct bounds of a DIV in a doubly nested iframe", async () => {
@@ -87,8 +87,8 @@ describe(__filename + "#", () => {
         <template style="position:absolute;top:100px;left:100px;">
           <div id="target" style="width:100px;height:100px;">
           </div>
-        </template>
-      </template>`)).to.eql([200, 200, 100, 100]);
+        </artboard>
+      </artboard>`)).to.eql([200, 200, 100, 100]);
     });
 
     it("returns the correct bounds of a DIV in a DIV", async () => {

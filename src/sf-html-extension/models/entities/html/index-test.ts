@@ -89,7 +89,7 @@ describe(__filename + "#", () => {
     xit("registers a new component based on the template ID attribute", async () => {
       const div = await loadDiv(`<template id="test">
         hello world
-      </template><test id="target" />`);
+      </artboard><test id="target" />`);
 
     });
   });

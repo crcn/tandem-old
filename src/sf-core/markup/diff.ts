@@ -25,6 +25,7 @@ diff(a, b, {
 
 export interface INodeChange {
   readonly type: string;
+  readonly score: number;
 }
 
 export interface IDiffableNode {

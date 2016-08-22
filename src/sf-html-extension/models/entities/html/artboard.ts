@@ -1,4 +1,4 @@
-import "./template.scss";
+import "./artboard.scss";
 
 import { Action } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
@@ -10,7 +10,7 @@ import { HTMLElementExpression } from "sf-html-extension/parsers/html";
 import { VisibleHTMLElementEntity } from "./visible-element";
 import { EntityFactoryDependency, IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
 
-export class HTMLTemplateEntity extends VisibleHTMLElementEntity implements IInjectable {
+export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInjectable {
   private _placeholder: Node;
   private _iframe: HTMLIFrameElement;
   private _body: HTMLElement;
@@ -57,4 +57,4 @@ export class HTMLTemplateEntity extends VisibleHTMLElementEntity implements IInj
   }
 }
 
-export const htmlTemplateEntityDependency = new EntityFactoryDependency("template", HTMLTemplateEntity);
+export const htmlArtboardDependency = new EntityFactoryDependency("artboard", HTMLArtboardEntity);

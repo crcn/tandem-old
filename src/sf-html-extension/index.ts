@@ -32,7 +32,7 @@ import { MimeTypeDependency } from "sf-core/dependencies";
    htmlCommentDependency,
    htmlElementDependencies,
    htmlStyleEntityDependency,
-   htmlTemplateEntityDependency,
+   htmlArtboardDependency,
    htmlDocumentFragmentDependency,
 } from "./models/entities/html";
 
@@ -63,7 +63,7 @@ export const dependency = [
   htmlCommentDependency,
   htmlStyleEntityDependency,
   ...htmlElementDependencies,
-  htmlTemplateEntityDependency,
+  htmlArtboardDependency,
   htmlDocumentFragmentDependency,
 
   // mime types

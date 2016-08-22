@@ -17,10 +17,7 @@
   }
 </style>
 
-<div class="item item1">
-  1
-</div>
-
-<div class="item item2">
-  2
-</div>
+<artboard style="width: 100px; height: 100px;">
+  <div class="item">
+  </div>
+</artboard>
