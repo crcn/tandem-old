@@ -17,7 +17,7 @@
   }
 </style>
 
-<artboard style="width: 100px; height: 100px;">
+<artboard title="Tablet" style="width: 500px; height: 300px;">
   <div class="item">
     Hello World
   </div>

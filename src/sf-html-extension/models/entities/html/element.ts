@@ -15,7 +15,7 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
   // do not fit into a particular category. This may change later on.
   readonly type: string = null;
   private _source: HTMLElementExpression;
-  readonly attributes: Attributes = new Attributes();
+  private _attributes: Attributes;
 
   constructor(source: HTMLElementExpression) {
     super(source);
@@ -25,6 +25,10 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
         this.setAttribute(attribute.name, attribute.value);
       }
     }
+  }
+
+  get attributes(): Attributes {
+    return this._attributes || (this._attributes = new Attributes());
   }
 
   get source(): HTMLElementExpression {

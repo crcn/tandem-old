@@ -15,23 +15,26 @@ abstract class BaseInsertElementTool extends InsertTool {
   @inject(DEPENDENCIES_NS)
   private _dependencies: Dependencies;
 
-  constructor(readonly tagName: string, editor: IEditor) {
+  constructor(readonly options: any, editor: IEditor) {
     super(editor);
   }
+
 
   get displayEntityToolFactory() {
     return this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns);
   }
 
   createSource() {
-    return parseHTML(`<${this.tagName} style="background:#CCC;position:absolute;" />`).childNodes[0];
+
+    // width & height need to be 0'd since some elements have a size by default such as iframes
+    return parseHTML(`<${this.options.nodeName} ${this.options.attributes} style="background:${this.options.background || "#CCC"};position:absolute;width:0px;height:0px;" />`).childNodes[0];
   }
 }
 
-function createElementInsertToolClass(tagName: string) {
+function createElementInsertToolClass(options) {
   return class InsertElementTool extends BaseInsertElementTool {
     constructor(editor: IEditor) {
-      super(tagName, editor);
+      super(options, editor);
     }
   };
 }
@@ -45,18 +48,18 @@ export const dependencies = [
 ];
 
 const insertElementKeyBindings = {
-  "d": "div",
-  "a": "artboard"
+  "d" : { nodeName:  "div", attributes: `` },
+  "a" : { nodeName: "artboard", attributes: `title="Artboard"`, background: "white" }
 };
 
 for (const key in insertElementKeyBindings) {
   addElementKeyBinding(key, insertElementKeyBindings[key]);
 }
 
-function addElementKeyBinding(key: string, tagName: string) {
+function addElementKeyBinding(key: string, options: { nodeName: string, attributes: string }) {
   dependencies.push(new GlobalKeyBindingDependency(key, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.execute(new SetToolAction(<ClassFactoryDependency>this.dependencies.link(new ClassFactoryDependency(null, createElementInsertToolClass(tagName)))));
+      this.bus.execute(new SetToolAction(<ClassFactoryDependency>this.dependencies.link(new ClassFactoryDependency(null, createElementInsertToolClass(options)))));
     }
   }));
 }

@@ -5,6 +5,7 @@ import { HTML_MIME_TYPE } from "sf-html-extension/constants";
  // components
  import { dependency as cssPaneComponentDependency } from "./components/css-pane";
  import { dependency as entityPreviewComponentDependency } from "./components/entity-preview";
+ import { dependency as artboardToolComponentDependency } from "./components/artboard-tool";
 
  // layer components
  import { dependency as textLayerLabelComponentDependency } from "./components/text-layer-label";
@@ -30,9 +31,9 @@ import { MimeTypeDependency } from "sf-core/dependencies";
  import {
    htmlTextDependency,
    htmlCommentDependency,
+   htmlArtboardDependency,
    htmlElementDependencies,
    htmlStyleEntityDependency,
-   htmlArtboardDependency,
    htmlDocumentFragmentDependency,
 } from "./models/entities/html";
 
@@ -40,6 +41,7 @@ export const dependency = [
 
   // components
   cssPaneComponentDependency,
+  artboardToolComponentDependency,
   entityPreviewComponentDependency,
   textLayerLabelComponentDependency,
   elementLayerLabelComponentDependency,

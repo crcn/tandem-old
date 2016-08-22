@@ -38,7 +38,7 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
     this._placeholder = document.createElement("div");
 
     const iframe = this._iframe = document.createElement("iframe");
-    iframe.setAttribute("class", "m-template-entity");
+    iframe.setAttribute("class", "m-artboard");
 
     this._iframe.onload = () => {
       const doc = iframe.contentWindow.document;
@@ -62,7 +62,7 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
       this.notify(new Action("iframeLoaded"));
     };
 
-    return new NodeSection(iframe as any);
+    return new NodeSection(this._iframe as any);
   }
 
   insertDOMChildBefore(newChild: INode, beforeChild: INode) {
