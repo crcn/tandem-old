@@ -54,7 +54,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
         }
       }
 
-      each(rootEntity);
+      (rootEntity as IContainerEntity).childNodes.forEach(each);
 
       const currentlySelectedEntity = selection[selection.length - 1];
       const index1 = allEntities.indexOf(entity);
