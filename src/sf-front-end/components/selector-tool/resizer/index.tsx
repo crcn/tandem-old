@@ -154,10 +154,12 @@ class ResizerComponent extends React.Component<{ editor: Editor, app: FrontEndAp
     // offset stroke
     const resizerStyle = {
       position : "absolute",
-      left     : rect.left - pointRadius / this.props.zoom,
-      top      : rect.top - pointRadius / this.props.zoom,
+      left     : rect.left,
+      top      : rect.top,
       width    : rect.width,
-      height   : rect.height
+      height   : rect.height,
+      transform: `translate(-${pointRadius / this.props.zoom}px, -${pointRadius / this.props.zoom}px)`,
+      transformOrigin: "top left"
     };
 
     const capabilities = display.capabilities;

@@ -26,7 +26,7 @@ export class GridToolComponent extends React.Component<{ zoom: number }, any> {
 
         <defs>
           <pattern id="grid" width={gridSize / size} height={gridSize / size}>
-            <g stroke="#F7F7F7">
+            <g stroke="#d8d8d8">
               {
                 paths.map(([[sx, sy], [ex, ey]], i) => {
                   return <path strokeWidth={1 / this.props.zoom} key={i} d={`M${sx},${sy} L${ex},${ey}`}></path>;
