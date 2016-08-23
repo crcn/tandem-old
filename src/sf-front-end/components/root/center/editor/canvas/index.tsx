@@ -2,7 +2,10 @@ import "./index.scss";
 import * as React from "react";
 import { IPosition } from "sf-core/geom";
 import IsolateComponent  from "sf-front-end/components/isolate";
+import { BoundingRect } from "sf-core/geom";
+import { IVisibleEntity } from "sf-core/entities";
 import ToolsLayerComponent from "./tools";
+import { IContainerEntity } from "sf-core/entities";
 import PreviewLayerComponent from "./preview";
 import { Editor, Workspace } from "sf-front-end/models";
 import { Dependencies, MainBusDependency } from "sf-core/dependencies";
@@ -62,8 +65,8 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     const v1h  = this.state.canvasHeight;
 
     // center is based on the mouse position
-    const v1px = this._mousePosition.left / v1w;
-    const v1py = this._mousePosition.top / v1h;
+    const v1px = this._mousePosition ? this._mousePosition.left / v1w : 0.5;
+    const v1py = this._mousePosition ? this._mousePosition.top / v1h : 0.5;
 
     // calculate v1 center x & y
     const v1cx = v1w * v1px;
@@ -89,6 +92,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     const top  = v1h * v1py - v2nh * v2py;
 
     this.translate(left, top);
+    this.setState({ showCanvas: true });
   }
 
   onWheel = (event: WheelEvent) => {
@@ -123,9 +127,27 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
 
   componentDidMount() {
     const body = (this.refs as any).isolate.body;
+
+    let width  = body.offsetWidth;
+    let height = body.offsetHeight;
+
+    let entireBounds = BoundingRect.merge(...(this.props.workspace.file.document.root as IContainerEntity).childNodes
+    .map((entity: IVisibleEntity) => entity.display && entity.display.bounds)
+    .filter((bounds) => !!bounds));
+
+    // center
+    entireBounds = entireBounds.move(
+      -entireBounds.left * 2 + width / 2 - entireBounds.width / 2 ,
+      -entireBounds.top * 2 + height / 2 - entireBounds.height / 2
+    );
+
+    this.props.editor.transform.left = entireBounds.left;
+    this.props.editor.transform.top = entireBounds.top;
+    this.props.editor.transform.scale = Math.min(width / entireBounds.width, height / entireBounds.height) * 0.8;
+
     this.setState({
-      canvasWidth  : body.offsetWidth,
-      canvasHeight : body.offsetHeight,
+      canvasWidth  : width,
+      canvasHeight : height,
       centerLeft   : 0.5,
       centerTop    : 0.5
     });
@@ -137,7 +159,8 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
 
   render() {
     const style = {
-      cursor: this.props.editor.cursor
+      cursor: this.props.editor.cursor,
+      visibility: this.state.showCanvas ? undefined : "hidden"
     };
 
     const canvasWidth  = this.state.canvasWidth;
@@ -151,6 +174,8 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
       const { left, top } = this.props.editor.transform;
       transform = `translate(${left}px, ${top}px) scale(${this.props.zoom})`;
     }
+
+    console.log(style.visibility, this.props.zoom);
 
     const innerStyle = {
       transform: transform,

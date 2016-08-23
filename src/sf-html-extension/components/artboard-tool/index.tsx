@@ -16,15 +16,23 @@ export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEnt
   }
   onTitleKeyDown = (event: KeyboardEvent) => {
     if (event.which === 13) {
-      this.props.entity.setAttribute("title", (event.target as any).value);
-      this.props.editor.workspace.file.save();
-      this.setState({ editTitle: false });
+      this.save(event);
     }
     event.stopPropagation();
   }
 
   onInputFocus = (event) => {
     event.target.select();
+  }
+
+  onBlur = (event) => {
+    this.save(event);
+  }
+
+  save(event) {
+    this.props.entity.setAttribute("title", (event.target as any).value);
+    this.props.editor.workspace.file.save();
+    this.setState({ editTitle: false });
   }
 
   render() {
@@ -52,7 +60,7 @@ export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEnt
 
     return <div style={style} className="m-artboard-tool-editor">
       <div style={titleStyle} className="m-artboard-tool-editor-title" onDoubleClick={this.onDoubleClick}>
-        { this.state.editTitle ? <FocusComponent><input onFocus={this.onInputFocus.bind(this)} defaultValue={title} onKeyDown={this.onTitleKeyDown} /></FocusComponent> : title }
+        { this.state.editTitle ? <FocusComponent><input onFocus={this.onInputFocus.bind(this)} onBlur={this.onBlur} defaultValue={title} onKeyDown={this.onTitleKeyDown} /></FocusComponent> : title }
       </div>
       <div style={borderStyle} className="m-artboard-tool-editor-border">
       </div>
