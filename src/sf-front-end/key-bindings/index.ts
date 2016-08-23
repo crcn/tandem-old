@@ -1,5 +1,5 @@
 import { Action } from "sf-core/actions";
-import { SettingKeys } from "sf-front-end/constants";
+import { SettingKeys, ZOOM_INCREMENT } from "sf-front-end/constants";
 import { KeyBinding } from "./base";
 import { FrontEndApplication } from "sf-front-end/application";
 import { GlobalKeyBindingDependency } from "sf-front-end/dependencies";
@@ -12,12 +12,10 @@ import { SelectAllAction, SetToolAction, UndoAction, RedoAction } from "sf-front
 export * from "./base";
 export * from "./manager";
 
-const ZOOM_INCREMENT = 0.1;
-
 export const dependency = [
-  new GlobalKeyBindingDependency("meta+=", class ZoomInCommand extends BaseCommand {
+  new GlobalKeyBindingDependency("meta+=", class ZoomInCommand extends BaseApplicationCommand<FrontEndApplication> {
     execute(action: Action) {
-      this.bus.execute(new ZoomAction(ZOOM_INCREMENT, true));
+      this.bus.execute(new ZoomAction(ZOOM_INCREMENT * this.app.workspace.editor.zoom, true));
     }
   }),
   new GlobalKeyBindingDependency("p", class SetPointerToolCommand extends BaseCommand {
@@ -25,9 +23,9 @@ export const dependency = [
       this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns)));
     }
   }),
-  new GlobalKeyBindingDependency("meta+-", class ZoomOutCommand extends BaseCommand {
+  new GlobalKeyBindingDependency("meta+-", class ZoomOutCommand extends BaseApplicationCommand<FrontEndApplication> {
     execute(action: Action) {
-      this.bus.execute(new ZoomAction(-ZOOM_INCREMENT, true));
+      this.bus.execute(new ZoomAction(-ZOOM_INCREMENT * this.app.workspace.editor.zoom, true));
     }
   }),
   new GlobalKeyBindingDependency("backspace", class DeleteSelectionCommand extends BaseCommand {

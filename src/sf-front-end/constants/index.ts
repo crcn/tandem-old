@@ -1,4 +1,5 @@
 export const CANVAS_SIZE = 5000;
+export const ZOOM_INCREMENT = 0.3;
 
 export namespace SettingKeys {
   export const HIDE_LEFT_SIDEBAR = "hideLeftSidebar";
