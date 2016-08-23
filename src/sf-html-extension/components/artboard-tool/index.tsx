@@ -68,12 +68,24 @@ export class ArtboardToolComponent extends React.Component<{ zoom: number, works
     if (!artboards.length) return null;
 
     const editor = this.props.workspace.editor;
+    const scale = 1 / editor.transform.scale;
+
+    const bgstyle = {
+      transform: `translate(${-editor.transform.left * scale}px, ${-editor.transform.top * scale}px) scale(${scale})`,
+      transformOrigin: "top left"
+    };
+
+    console.log(bgstyle);
 
     return (<div className="m-artboard-tool">
+      <div style={bgstyle} className="m-artboard-tool-background"></div>
       { artboards.map((entity: HTMLArtboardEntity, i) => <ArtboardComponent entity={entity} editor={editor} key={i} />)}
     </div>);
   }
 }
 
-export const dependency = new ReactComponentFactoryDependency("components/tools/pointer/artboard", ArtboardToolComponent);
+export const dependency = [
+  new ReactComponentFactoryDependency("components/tools/pointer/artboard", ArtboardToolComponent),
+  new ReactComponentFactoryDependency("components/tools/insert/artboard", ArtboardToolComponent)
+]
 

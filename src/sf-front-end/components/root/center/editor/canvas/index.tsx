@@ -161,10 +161,6 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
       overflow: "visible",
       border: "none"
     };
-
-    // TODO - this should be part of the artboard tool
-    const hasArtboard = !! this.props.workspace.file.document.flatten().find((node) => String(node.nodeName).toLowerCase() === "artboard");
-
     // TODO - add fixed tools
     const entity = this.props.workspace.file.document.root;
     return (<IsolateComponent ref="isolate" ignoreInputEvents={true} onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
@@ -172,7 +168,6 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
         {
           `html, body {
             overflow: hidden;
-            ${hasArtboard ? 'background: #ECECEC;' : ""}
           }`
         }
       </style>

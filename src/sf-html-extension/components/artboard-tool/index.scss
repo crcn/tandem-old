@@ -1,9 +1,13 @@
+@import "sf-front-end/scss/variables";
+
 .m-artboard-tool {
-  background-color: #CCC;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: -1;
+  &-background {
+    background-color: $color-blue-11;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: -1;
+  }
   &-editor {
     position: absolute;
     &-title {

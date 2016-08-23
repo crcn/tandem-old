@@ -1,9 +1,11 @@
 @import 'sf-front-end/scss/variables.scss';
 
 .m-editor-stage-isolate {
-  position: relative;
+  position: absolute;
   overflow: hidden;
-  flex-grow: 1;
+  top: 0px;
+  width: 100%;
+  height: 100%;
   border: none;
 }
 
