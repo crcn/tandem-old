@@ -11,6 +11,11 @@
   &-editor {
     position: absolute;
     & input {
+      position: relative;
+
+      // offset slight jitter
+      top: -1;
+      left: -1;
       color: $color-blue-3;
       font-size: 12;
       border: none;
