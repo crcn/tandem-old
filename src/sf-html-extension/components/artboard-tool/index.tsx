@@ -38,7 +38,7 @@ export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEnt
   render() {
     const display = this.props.entity.display;
     const bounds = display.bounds;
-    const scale = 1 / this.props.editor.transform.scale;
+    const scale = 1 / Math.max(this.props.editor.transform.scale, 0.2);
     const style = {
       left: bounds.left,
       top: bounds.top
