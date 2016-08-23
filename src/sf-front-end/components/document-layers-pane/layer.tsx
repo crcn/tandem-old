@@ -107,24 +107,19 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     if (event) event.stopPropagation();
   }
 
-  onMouseOver(event) {
+  onMouseOver = (event) => {
     this.setState({
       hover: true
     });
-
-    // this.props.app.setProperties({
-    //   hoverItem: this.props.entity
-    // });
+    this.props.app.metadata.set(MetadataKeys.HOVER_ITEM, this.props.entity);
   }
 
-  onMouseOut(event) {
+  onMouseOut = (event) => {
     this.setState({
       hover: false
     });
 
-    // this.props.app.setProperties({
-    //   hoverItem: void 0
-    // });
+    this.props.app.metadata.set(MetadataKeys.HOVER_ITEM, undefined);
   }
 
   render() {
@@ -174,8 +169,8 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
       style={{paddingLeft: this.props.paddingLeft}}
       tabIndex="0"
       onClick={this.onClick.bind(this)}
-      onMouseOver={this.onMouseOver.bind(this)}
-      onMouseOut={this.onMouseOut.bind(this)}
+      onMouseOver={this.onMouseOver}
+      onMouseOut={this.onMouseOut}
       className={headerClassName}>
       <DropLayerTargetComponent {...this.props} offset={0} />
       {connectDropTarget(<span><i onClick={this.toggleExpand.bind(this, !expanded)} className={expandButtonClassName} style={expandButtonStyle} />
