@@ -58,8 +58,8 @@ class PathComponent extends React.Component<{ strokeWidth: number, showPoints: b
     const crz = cr / this.props.zoom;
     const cw = cr * 2;
     const cwz = cw / this.props.zoom;
-    const w = x2 - x1 + cw;
-    const h = y2 - y1 + cw;
+    const w = Math.ceil(x2 - x1 + Math.max(cw, cwz));
+    const h = Math.ceil(y2 - y1 + Math.max(cw, cwz));
     const p = 100;
 
     return (<svg width={w} height={h} viewBox={[0, 0, w, h]}>
