@@ -92,7 +92,9 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     const top  = v1h * v1py - v2nh * v2py;
 
     this.translate(left, top);
-    this.setState({ showCanvas: true });
+    if (this.state.showCanvas !== true) {
+      this.setState({ showCanvas: true });
+    }
   }
 
   onWheel = (event: WheelEvent) => {
@@ -174,8 +176,6 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
       const { left, top } = this.props.editor.transform;
       transform = `translate(${left}px, ${top}px) scale(${this.props.zoom})`;
     }
-
-    console.log(style.visibility, this.props.zoom);
 
     const innerStyle = {
       transform: transform,

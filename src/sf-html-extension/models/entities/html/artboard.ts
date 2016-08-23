@@ -4,6 +4,7 @@ import { Action } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
 import { inject } from "sf-core/decorators";
 import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
+import { HTMLDocumentEntity } from "./document";
 import { NodeSection, INode } from "sf-core/markup";
 import { FrontEndApplication } from "sf-front-end/application";
 import { HTMLElementExpression } from "sf-html-extension/parsers/html";
@@ -21,6 +22,10 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
   readonly app: FrontEndApplication;
 
   didInject() {}
+
+  willChangeDocument(document: HTMLDocumentEntity) {
+    super.willChangeDocument(document);
+  }
 
   async sync() {
     await super.sync();

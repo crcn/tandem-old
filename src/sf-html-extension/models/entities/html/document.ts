@@ -48,14 +48,14 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
    * @param {any} HTMLFile
    */
 
-  constructor(readonly file: DocumentFile, private _dependencies: Dependencies) {
+  constructor(readonly file: DocumentFile, readonly dependencies: Dependencies) {
     super();
     watchProperty(file, "content", this._onFileContentChange).trigger();
   }
 
 
   cloneNode(deep?: boolean) {
-    const clone = new HTMLDocumentEntity(this.file, this._dependencies);
+    const clone = new HTMLDocumentEntity(this.file, this.dependencies);
     if (deep)
     for (const child of this.childNodes) {
       clone.appendChild(<IHTMLEntity>child.cloneNode(true));
@@ -130,7 +130,7 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
   private async _loadEntity(expression: any): Promise<INode> {
 
     // TODO - change to HTMLEntityFactoryDependency
-    const entityFactory = EntityFactoryDependency.find(expression.nodeName, this._dependencies);
+    const entityFactory = EntityFactoryDependency.find(expression.nodeName, this.dependencies);
     if (!entityFactory) throw new Error(`Unable to find entity factory for expression type "${expression.constructor.name}".`);
     const entity = <INode>entityFactory.create(expression);
     if (entityFactory.mapSourceChildren) {

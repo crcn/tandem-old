@@ -53,8 +53,7 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
       left: entireBounds.left,
       width: entireBounds.width,
       height: entireBounds.height,
-      boxShadow: `0 0 0 ${borderWidth}px #a4b7d7`,
-      display: this.state.moving || this.state.resizing ? "none" : undefined,
+      boxShadow: `0 0 0 ${borderWidth}px #a4b7d7`
     };
 
     return (<div className="m-selector-component">
