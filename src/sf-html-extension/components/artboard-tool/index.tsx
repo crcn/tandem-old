@@ -47,7 +47,8 @@ export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEnt
     const titleStyle = {
       transform: `translateY(${-25 * scale}px) scale(${scale})`,
       transformOrigin: "top left",
-      width: bounds.width
+      width: bounds.width,
+      display: this.props.editor.transform.scale < 0.1 ? "none": undefined
     };
 
     const borderStyle = {
