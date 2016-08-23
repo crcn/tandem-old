@@ -220,7 +220,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     app.bus.execute(new SelectAction([item], false));
   },
   hover(props, monitor, component) {
-
+    // props.app.metadata.set(MetadataKeys.HOVER_ITEM, props.entity);
   }
 }, function(connect, monitor) {
   return {

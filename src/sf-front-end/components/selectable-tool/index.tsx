@@ -2,11 +2,13 @@
 // areas when mouse hits the bounds of an item
 import "./index.scss";
 
+import * as cx from "classnames";
 import * as React from "react";
 import { inject } from "sf-core/decorators";
 import { BoundingRect } from "sf-core/geom";
 import { intersection } from "lodash";
 import { SelectAction } from "sf-front-end/actions";
+import { MetadataKeys } from "sf-front-end/constants";
 import { FrontEndApplication } from "sf-front-end/application";
 import { IVisibleEntity, IEntity } from "sf-core/entities";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
@@ -19,9 +21,17 @@ class SelectableComponent extends React.Component<{ entity: IVisibleEntity, sele
     this.state = {};
   }
 
-  onMouseDown(event: any): void {
+  onMouseDown = (event: MouseEvent): void => {
     this.props.app.bus.execute(new SelectAction(this.props.entity, event.shiftKey));
     event.stopPropagation();
+  }
+
+  onMouseOver = (event: MouseEvent) => {
+    this.props.app.metadata.set(MetadataKeys.HOVER_ITEM, this.props.entity);
+  }
+
+  onMouseOut = (event: MouseEvent) => {
+    this.props.app.metadata.set(MetadataKeys.HOVER_ITEM, undefined);
   }
 
   render() {
@@ -36,6 +46,11 @@ class SelectableComponent extends React.Component<{ entity: IVisibleEntity, sele
 
     const borderWidth = 2 / this.props.zoom;
 
+    const classNames = cx({
+      "m-selectable": true,
+      "hover": this.props.app.metadata.get(MetadataKeys.HOVER_ITEM) === this.props.entity
+    })
+
     const style = {
       background : "transparent",
       position   : "absolute",
@@ -49,8 +64,10 @@ class SelectableComponent extends React.Component<{ entity: IVisibleEntity, sele
     return (
       <div
         style={style}
-        className="m-selectable"
-        onMouseDown={this.onMouseDown.bind(this)}
+        className={classNames}
+        onMouseOut={this.onMouseOut}
+        onMouseOver={this.onMouseOver}
+        onMouseDown={this.onMouseDown}
       />
     );
   }
