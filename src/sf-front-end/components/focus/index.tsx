@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 class FocusComponent extends React.Component<any, any> {
   private _timeout: any;
@@ -20,7 +20,6 @@ class FocusComponent extends React.Component<any, any> {
   focus() {
     // need to wait a bit before focusing on element, otherwise
     // this does not work
-    console.log("FOC");
     this._timeout = setTimeout(() => {
       this.getRef().focus();
     }, 1);
@@ -31,9 +30,8 @@ class FocusComponent extends React.Component<any, any> {
     }, 1);
   }
   getRef(): any {
-    var node = ReactDOM.findDOMNode(this);
-
-    return (node.nodeName === 'INPUT' ? node : node.querySelector('input')) || node;
+    const node = ReactDOM.findDOMNode(this);
+    return (node.nodeName === "INPUT" ? node : node.querySelector("input")) || node;
   }
   componentWillUnmount() {
     clearTimeout(this._timeout);

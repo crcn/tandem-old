@@ -48,7 +48,7 @@ export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEnt
       transform: `translateY(${-25 * scale}px) scale(${scale})`,
       transformOrigin: "top left",
       width: bounds.width,
-      display: this.props.editor.transform.scale < 0.1 ? "none": undefined
+      display: this.props.editor.transform.scale < 0.1 ? "none" : undefined
     };
 
     const borderStyle = {
@@ -94,5 +94,5 @@ export class ArtboardToolComponent extends React.Component<{ zoom: number, works
 export const dependency = [
   new ReactComponentFactoryDependency("components/tools/pointer/artboard", ArtboardToolComponent),
   new ReactComponentFactoryDependency("components/tools/insert/artboard", ArtboardToolComponent)
-]
+];
 

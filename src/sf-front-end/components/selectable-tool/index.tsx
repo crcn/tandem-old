@@ -49,7 +49,7 @@ class SelectableComponent extends React.Component<{ entity: IVisibleEntity, sele
     const classNames = cx({
       "m-selectable": true,
       "hover": this.props.app.metadata.get(MetadataKeys.HOVER_ITEM) === this.props.entity
-    })
+    });
 
     const style = {
       background : "transparent",
