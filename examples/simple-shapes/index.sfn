@@ -18,7 +18,25 @@
   }
 </style>
 
-<artboard title="Tablet" style="width: 500px; height: 300px;">
+<artboard title="Website" style="top: 944px; width: 1024px; height: 768px;">
+  <div class="item">
+    Hello World
+  </div>
+</artboard>
+
+<artboard title="Desktop" style="width: 1024px; height: 768px;">
+  <div class="item">
+    Hello World
+  </div>
+</artboard>
+
+<artboard title="iPhone 6s" style="left: 1200px; width: 375px; height: 667px;">
+  <div class="item">
+    Hello World
+  </div>
+</artboard>
+
+<artboard title="iPhone 5" style="left: 1751px; width: 320px; height: 568px;">
   <div class="item">
     Hello World
   </div>
