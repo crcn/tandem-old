@@ -2,13 +2,14 @@ import "./layer.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
+import { Action } from "sf-core/actions";
 import { Workspace } from "sf-front-end/models";
 import { MetadataKeys } from "sf-front-end/constants";
 import { Dependencies } from "sf-core/dependencies";
 import { FrontEndApplication } from "sf-front-end/application";
 import { flatten, intersection } from "lodash";
 import { IEntity, IContainerEntity, IVisibleEntity } from "sf-core/entities";
-import { SelectAction, ToggleSelectAction } from "sf-front-end/actions";
+import { SelectAction, ToggleSelectAction, SELECT } from "sf-front-end/actions";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 import { DragSource, DropTarget, DndComponent } from "react-dnd";
 
@@ -302,7 +303,30 @@ LayerDndLabelComponent = DropTarget("element", {
   };
 })(LayerDndLabelComponent);
 
-export default class LayerComponent extends React.Component<{ entity: IEntity, depth: number }, any> {
+export default class LayerComponent extends React.Component<{ app: FrontEndApplication, entity: IEntity, depth: number }, any> {
+
+  componentDidMount() {
+    this.props.app.bus.register(this);
+  }
+
+  execute(action: Action) {
+
+    // when the select action is executed, take all items
+    // and ensure that the parent is expanded. Not pretty, encapsulated, and works.
+    if (action.type === SELECT) {
+      (action as SelectAction).items.forEach((item: IEntity) => {
+        let p = item;
+        while (p) {
+          p.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
+          p = p.parentNode as any as IEntity;
+        }
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.app.bus.unregister(this);
+  }
 
   render() {
 
