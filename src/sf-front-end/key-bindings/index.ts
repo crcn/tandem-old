@@ -15,7 +15,7 @@ export * from "./manager";
 export const dependency = [
   new GlobalKeyBindingDependency("meta+=", class ZoomInCommand extends BaseApplicationCommand<FrontEndApplication> {
     execute(action: Action) {
-      this.bus.execute(new ZoomAction(ZOOM_INCREMENT * this.app.workspace.editor.zoom, true));
+      this.bus.execute(new ZoomAction(ZOOM_INCREMENT, true));
     }
   }),
   new GlobalKeyBindingDependency("p", class SetPointerToolCommand extends BaseCommand {
@@ -25,7 +25,7 @@ export const dependency = [
   }),
   new GlobalKeyBindingDependency("meta+-", class ZoomOutCommand extends BaseApplicationCommand<FrontEndApplication> {
     execute(action: Action) {
-      this.bus.execute(new ZoomAction(-ZOOM_INCREMENT * this.app.workspace.editor.zoom, true));
+      this.bus.execute(new ZoomAction(-ZOOM_INCREMENT, true));
     }
   }),
   new GlobalKeyBindingDependency("backspace", class DeleteSelectionCommand extends BaseCommand {

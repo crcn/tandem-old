@@ -44,12 +44,14 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
   zoom(action: ZoomAction) {
     if (this._tweener) this._tweener.dispose();
+    const delta = action.delta * this.app.workspace.editor.zoom;
+
     if (!action.ease) {
-      this.app.workspace.editor.zoom += action.delta;
+      this.app.workspace.editor.zoom += delta;
       return;
     }
 
-    this._tweener = tween(this.app.workspace.editor.zoom, this.app.workspace.editor.zoom + action.delta, 200, (value) => {
+    this._tweener = tween(this.app.workspace.editor.zoom, this.app.workspace.editor.zoom + delta, 200, (value) => {
       this.app.workspace.editor.zoom = value;
       this.app.bus.execute(new Action("zooming"));
     }, easeOutCubic);

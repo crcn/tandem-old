@@ -101,7 +101,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     this.onMouseEvent(event);
     if (event.metaKey) {
       event.preventDefault();
-      this.bus.execute(new ZoomAction((event.deltaY / 250) * this.props.editor.zoom));
+      this.bus.execute(new ZoomAction((event.deltaY / 250)));
     } else {
       this.pane(event.deltaX, event.deltaY);
       event.preventDefault();
