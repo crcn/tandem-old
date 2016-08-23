@@ -2,7 +2,9 @@ import { File } from "sf-common/models";
 import { Logger } from "sf-core/logger";
 import { inject } from "sf-core/decorators";
 import { loggable } from "sf-core/decorators";
+import { IDisposable } from "sf-core/object";
 import { Action, FindAction } from "sf-core/actions";
+import { tween, easeOutCubic } from "sf-core/animate";
 import { FrontEndApplication } from "sf-front-end/application";
 import { BaseApplicationService } from "sf-core/services";
 import { Workspace, DocumentFile } from "sf-front-end/models";
@@ -19,6 +21,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
   @inject(DEPENDENCIES_NS)
   private _dependencies: Dependencies;
+  private _tweener: IDisposable;
 
   async initialize(action: Action) {
     await this._loadWorkspaces();
@@ -40,7 +43,16 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
   }
 
   zoom(action: ZoomAction) {
-    this.app.workspace.editor.zoom += action.delta;
+    if (this._tweener) this._tweener.dispose();
+    if (!action.ease) {
+      this.app.workspace.editor.zoom += action.delta;
+      return;
+    }
+
+    this._tweener = tween(this.app.workspace.editor.zoom, this.app.workspace.editor.zoom + action.delta, 200, (value) => {
+      this.app.workspace.editor.zoom = value;
+      this.app.bus.execute(new Action("zooming"));
+    }, easeOutCubic);
   }
 
   setTool(action: SetToolAction) {

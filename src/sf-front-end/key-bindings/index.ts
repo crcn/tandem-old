@@ -17,7 +17,7 @@ const ZOOM_INCREMENT = 0.1;
 export const dependency = [
   new GlobalKeyBindingDependency("meta+=", class ZoomInCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.execute(new ZoomAction(ZOOM_INCREMENT));
+      this.bus.execute(new ZoomAction(ZOOM_INCREMENT, true));
     }
   }),
   new GlobalKeyBindingDependency("p", class SetPointerToolCommand extends BaseCommand {
@@ -27,7 +27,7 @@ export const dependency = [
   }),
   new GlobalKeyBindingDependency("meta+-", class ZoomOutCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.execute(new ZoomAction(-ZOOM_INCREMENT));
+      this.bus.execute(new ZoomAction(-ZOOM_INCREMENT, true));
     }
   }),
   new GlobalKeyBindingDependency("backspace", class DeleteSelectionCommand extends BaseCommand {

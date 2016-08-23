@@ -76,7 +76,7 @@ export class ToggleSelectAction extends SelectAction {
 
 export const ZOOM = "zoom";
 export class ZoomAction extends Action {
-  constructor(readonly delta: number) {
+  constructor(readonly delta: number, readonly ease: boolean = false) {
     super(ZOOM);
   }
 }

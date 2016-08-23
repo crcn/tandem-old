@@ -96,7 +96,6 @@ class ElementLayerLabelComponent extends React.Component<any, any> {
       // filter them, and remove the items we do not want to display
       // (for now)
       const attrs = entity.attributes.concat().sort(function (a, b) {
-        console.log(a.name);
         return a.name > b.name ? -1 : 1;
       }).filter((a) => CLASS_NAME_PRIORITY.indexOf(a.name) !== -1);
 
