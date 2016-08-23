@@ -20,6 +20,7 @@ class FocusComponent extends React.Component<any, any> {
   focus() {
     // need to wait a bit before focusing on element, otherwise
     // this does not work
+    console.log("FOC");
     this._timeout = setTimeout(() => {
       this.getRef().focus();
     }, 1);

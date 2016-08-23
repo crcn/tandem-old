@@ -10,9 +10,24 @@
   }
   &-editor {
     position: absolute;
+    & input {
+      color: $color-blue-3;
+      font-size: 12;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      width: 100%;
+      &:focus {
+        box-shadow: none !important;
+        outline: none;
+      }
+    }
     &-title {
+      color: $color-blue-3;
+      font-size: 12;
       position: absolute;
       cursor: pointer;
+      white-space: nowrap;
     }
     &-border {
       position: absolute;

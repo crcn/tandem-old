@@ -2,7 +2,6 @@ import "./index.scss";
 
 import * as React from "react";
 import FocusComponent from "sf-front-end/components/focus";
-import * as AutosizeInput from "react-input-autosize";
 import { Workspace, Editor } from "sf-front-end/models";
 import { HTMLArtboardEntity } from "sf-html-extension/models";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
@@ -16,9 +15,10 @@ export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEnt
     this.setState({ editTitle: true });
   }
   onTitleKeyDown = (event: KeyboardEvent) => {
-    console.log((event.target as any).value);
-    if (event.keyCode === 13) {
-      this.setState({ editTitle: true });
+    if (event.which === 13) {
+      this.props.entity.setAttribute("title", (event.target as any).value);
+      this.props.editor.workspace.file.save();
+      this.setState({ editTitle: false });
     }
     event.stopPropagation();
   }
@@ -37,22 +37,22 @@ export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEnt
     };
 
     const titleStyle = {
-      top: -20 * scale,
-      fontSize: 12 *  scale,
-      letterSpacing: 1.5 * scale
+      transform: `translateY(${-25 * scale}px) scale(${scale})`,
+      transformOrigin: "top left",
+      width: bounds.width
     };
 
     const borderStyle = {
       width: bounds.width,
       height: bounds.height,
-      boxShadow: `0px 0px ${5 * scale}px 0px rgba(0,0,0,0.75)`
+      boxShadow: `0px 0px ${5 * scale}px 0px #586375`
     };
 
     const title = this.props.entity.getAttribute("title") || "Untitled";
 
     return <div style={style} className="m-artboard-tool-editor">
       <div style={titleStyle} className="m-artboard-tool-editor-title" onDoubleClick={this.onDoubleClick}>
-        { this.state.editTitle ? <FocusComponent><AutosizeInput onFocus={this.onInputFocus.bind(this)} value={title} onKeyDown={this.onTitleKeyDown} /></FocusComponent> : title }
+        { this.state.editTitle ? <FocusComponent><input onFocus={this.onInputFocus.bind(this)} defaultValue={title} onKeyDown={this.onTitleKeyDown} /></FocusComponent> : title }
       </div>
       <div style={borderStyle} className="m-artboard-tool-editor-border">
       </div>
@@ -74,8 +74,6 @@ export class ArtboardToolComponent extends React.Component<{ zoom: number, works
       transform: `translate(${-editor.transform.left * scale}px, ${-editor.transform.top * scale}px) scale(${scale})`,
       transformOrigin: "top left"
     };
-
-    console.log(bgstyle);
 
     return (<div className="m-artboard-tool">
       <div style={bgstyle} className="m-artboard-tool-background"></div>
