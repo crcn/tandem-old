@@ -141,7 +141,9 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
   async fetch(action: Action) {
     this._syncTimestamp = Date.now();
     const chunk = await this.bus.execute(action).read();
-    this.deserialize(chunk.value);
+    if (!chunk.done) {
+      this.deserialize(chunk.value);
+    }
     return this;
   }
 }

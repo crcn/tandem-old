@@ -1,7 +1,9 @@
 import "./index.scss";
 import * as React from "react";
 import { Guider } from "./guider";
+import { flatten } from "lodash";
 import RulerComponent from "./ruler";
+import { BoundingRect } from "sf-core/geom";
 import ResizerComponent from "./resizer";
 import { Editor, Workspace } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";
@@ -45,7 +47,9 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
     // is an IEntityDisplay
     if (!display) return null;
 
-    const entireBounds = selection.display.bounds;
+    const entireBounds = BoundingRect.merge(...flatten(selection.map((entity) => entity.flatten()))
+    .filter((entity) => !!entity["display"])
+    .map((entity: IVisibleEntity) => entity.display.bounds));
 
     const borderWidth = 1 / this.props.zoom;
 
