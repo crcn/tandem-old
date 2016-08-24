@@ -188,7 +188,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     };
     // TODO - add fixed tools
     const entity = this.props.workspace.file.document.root;
-    return (<IsolateComponent onMouseDown={this.onMouseDown} onKeyDown={this.onKey} ref="isolate" ignoreInputEvents={true} onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
+    return (<IsolateComponent onKeyDown={this.onKey} ref="isolate" ignoreInputEvents={true} onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
       <style>
         {
           `html, body {
@@ -198,6 +198,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
       </style>
       <div
         onMouseMove={this.onMouseEvent}
+        onMouseDown={this.onMouseDown}
         tabIndex={-1}
         className="m-editor-stage-canvas"
         style={style}>
