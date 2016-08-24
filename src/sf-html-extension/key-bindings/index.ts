@@ -21,7 +21,6 @@ abstract class BaseInsertElementTool extends InsertTool {
     this.entityIsRoot = options.root;
   }
 
-
   get displayEntityToolFactory() {
     return this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns);
   }
@@ -29,7 +28,7 @@ abstract class BaseInsertElementTool extends InsertTool {
   createSource() {
 
     // width & height need to be 0'd since some elements have a size by default such as iframes
-    return parseHTML(`<${this.options.nodeName} ${this.options.attributes} style="background:${this.options.background || "#CCC"};border:1px solid #999; position:absolute;width:0px;height:0px;" />`).childNodes[0];
+    return parseHTML(`<${this.options.nodeName} ${this.options.attributes} style="${this.options.style}position:absolute;width:0px;height:0px;" />`).childNodes[0];
   }
 }
 
@@ -50,8 +49,8 @@ export const dependencies = [
 ];
 
 const insertElementKeyBindings = {
-  "d" : { nodeName:  "div", attributes: `` },
-  "a" : { nodeName: "artboard", attributes: `title="Artboard"`, background: "white", root: true }
+  "d" : { nodeName:  "div", attributes: ``, style: "border: 1px solid #999; background: #CCC;" },
+  "a" : { nodeName: "artboard", attributes: `title="Artboard"`, style: "background; white;", root: true }
 };
 
 for (const key in insertElementKeyBindings) {
