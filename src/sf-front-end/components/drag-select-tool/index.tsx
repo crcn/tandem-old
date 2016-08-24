@@ -1,13 +1,15 @@
 import "./index.scss";
 import * as React from "react";
 import { startDrag } from "sf-front-end/utils/component";
+import { PointerTool } from "sf-front-end/models/pointer-tool";
 import { MetadataKeys } from "sf-front-end/constants";
 import { BoundingRect } from "sf-core/geom";
+import { FrontEndApplication } from "sf-front-end/application";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import { IEntity, IVisibleEntity, IContainerEntity } from "sf-core/entities";
 import { SelectAction, MouseAction, CANVAS_MOUSE_DOWN } from "sf-front-end/actions";
 
-class DragSelectComponent extends React.Component<any, any> {
+class DragSelectComponent extends React.Component<{ allEntities: any, app: FrontEndApplication, zoom: number, tool: PointerTool }, any> {
 
   constructor() {
     super();
@@ -91,6 +93,8 @@ class DragSelectComponent extends React.Component<any, any> {
   }
 
   render() {
+
+    if (!(this.props.tool instanceof PointerTool)) return null;
 
     const style = {
       left   : this.state.left,

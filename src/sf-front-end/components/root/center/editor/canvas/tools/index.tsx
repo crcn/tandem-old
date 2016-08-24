@@ -12,7 +12,7 @@ export default class ToolsComponent extends React.Component<{ editor: Editor, wo
     const selectedEntities = this.props.workspace.selection || [];
 
     return (<div className="m-stage-tools">
-      { currentTool ? <RegisteredComponent {...this.props} ns={`components/tools/${currentTool.name}/**`} allEntities={allEntities} selection={selectedEntities} /> : undefined }
+      { currentTool ? <RegisteredComponent {...this.props} tool={currentTool} ns={`components/tools/**`} allEntities={allEntities} selection={selectedEntities} /> : undefined }
     </div>);
   }
 }

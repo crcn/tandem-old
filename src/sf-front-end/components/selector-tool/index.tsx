@@ -11,8 +11,9 @@ import { SelectionSizeComponent } from "sf-front-end/components/selection-size";
 import { DisplayEntitySelection } from "sf-front-end/models";
 import { IEntityDisplay, IEntity, IVisibleEntity } from "sf-core/entities";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
+import { PointerTool } from "sf-front-end/models/pointer-tool";
 
-export default class SelectorComponent extends React.Component<{ editor: Editor, workspace: Workspace, app: FrontEndApplication, zoom: number, allEntities: Array<IEntity> }, any> {
+export default class SelectorComponent extends React.Component<{ editor: Editor, tool: PointerTool, workspace: Workspace, app: FrontEndApplication, zoom: number, allEntities: Array<IEntity> }, any> {
 
   constructor(props) {
     super(props);
@@ -37,7 +38,9 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
   render() {
 
-    const { workspace, allEntities } = this.props;
+    const { workspace, allEntities, tool } = this.props;
+
+    if (!(tool instanceof PointerTool)) return null;
 
     const selection = workspace.selection as DisplayEntitySelection<any>;
 

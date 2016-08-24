@@ -26,11 +26,11 @@
   - [x] should paste in parent of currently selected entity
 
 - [ ] selection
-  - [ ] cannot select parent entity with child entities
+  - [x] cannot select parent entity with child entities
 
 - [ ] document panes
   - [ ] layers pane
-    - [ ] shift click to multi select entities
+    - [x] shift click to multi select entities
     - [ ] better highlighting for drop target
     - [ ] get + button to work
     - [ ] ability to edit elements
@@ -39,12 +39,19 @@
     - [ ] ability to select entities
     - [ ] ability to add new rule
 
+- [ ] drag & drop
+  - [ ] recalc entity position when moving to different parent
+
 - [ ] stage tools
   - [ ] guides
     - [ ] display distance between each object
     - [ ] snap objects together
+    - [ ] snap elements when inserting new one
   - [ ] custom context menu
     - [ ] edit text option
+  - [ ] vector tool
+  - [ ] insert tool
+    - [ ] ability to insert custom element
 
 - [ ] entity panes
   - [ ] all styles
@@ -53,3 +60,5 @@
   - [ ] element style
   - [ ] element css styles
 
+- [ ] cleanup
+  - [ ] validate selection whenever the source changes - sometimes it doesn't have any selection

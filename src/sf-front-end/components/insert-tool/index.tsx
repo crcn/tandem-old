@@ -13,20 +13,21 @@ import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import { IEntity, IContainerEntity, IVisibleEntity } from "sf-core/entities";
 import { Workspace, Editor, DisplayEntitySelection, InsertTool } from "sf-front-end/models";
 
-class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, workspace: Workspace, app: FrontEndApplication }, any> {
+class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, workspace: Workspace, app: FrontEndApplication, tool: InsertTool }, any> {
 
   private _targetEntity: IEntity;
 
-  componentDidMount() {
-    this._targetEntity = this.props.editor.activeEntity;
+
+  private onRootMouseDown = (event) => {
+    this._targetEntity = this.props.workspace.file.document.root;
+    this._insertNewItem(event);
   }
 
   private _insertNewItem = async (syntheticEvent) => {
 
     const event = syntheticEvent.nativeEvent as MouseEvent;
 
-    const { editor, bus, workspace } = this.props;
-    const tool: InsertTool = editor.currentTool as InsertTool;
+    const { editor, bus, workspace, tool } = this.props;
 
     const activeEntity =  this._targetEntity as IContainerEntity;
     const entity: IVisibleEntity = (await activeEntity.appendSourceChildNode(tool.createSource()))[0] as IVisibleEntity;
@@ -45,11 +46,9 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     entity.display.position = { left, top };
 
-    const complete = () => {
-      workspace.file.save();
-      setTimeout(() => {
-        bus.execute(new SetToolAction(tool.displayEntityToolFactory));
-      }, 100);
+    const complete = async () => {
+      await workspace.file.save();
+      bus.execute(new SetToolAction(tool.displayEntityToolFactory));
     };
 
     if (capabilities.resizable && tool.resizable) {
@@ -73,8 +72,10 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
   }
 
   render() {
-    const { editor } = this.props;
-    const tool = editor.currentTool as InsertTool;
+    const { editor, tool } = this.props;
+
+    if (!(tool instanceof InsertTool)) return null;
+
     const selection = (this.props.editor.workspace.selection as DisplayEntitySelection<any>);
     const zoom = this.props.editor.transform.scale;
     const display = selection.display;
@@ -93,9 +94,9 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     };
 
     return <div className="m-insert-tool">
-      <div onMouseDown={this._insertNewItem} style={bgstyle} />
+      <div onMouseDown={this.onRootMouseDown} style={bgstyle} />
       { !tool.entityIsRoot ? <SelectablesComponent {...this.props} canvasRootSelectable={true} onEntityMouseDown={this.onEntityMouseDown} /> : null }
-      { display && display.capabilities.resizable ? <SelectionSizeComponent left={bounds.left + bounds.width} top={bounds.top + bounds.height} bounds={bounds} zoom={zoom} /> : undefined }
+      { display && display.capabilities.resizable && tool.resizable ? <SelectionSizeComponent left={bounds.left + bounds.width} top={bounds.top + bounds.height} bounds={bounds} zoom={zoom} /> : undefined }
     </div>;
   }
 }
