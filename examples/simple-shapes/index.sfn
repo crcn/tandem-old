@@ -10,8 +10,7 @@
     box-sizing: border-box;
   }
 
-  .item1 {
-  }
+  .item1 { }
 
   .item2 {
     opacity: 0.5;

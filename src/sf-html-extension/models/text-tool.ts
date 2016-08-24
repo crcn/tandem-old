@@ -64,6 +64,10 @@ export class TextTool extends BaseEditorTool {
 
   private _onKeyDown = (event: KeyboardEvent) => {
 
+    if (event.which === 27) {
+      this.dispose();
+    }
+
     // janky as hell, but this is a fairly simple approach to prevent
     //  auto body scrolling for inputs. We don't want that since it
     // conflicts with out paning tool.

@@ -29,7 +29,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     const tool: InsertTool = editor.currentTool as InsertTool;
 
     const activeEntity =  this._targetEntity as IContainerEntity;
-    const entity: IVisibleEntity = (await activeEntity.appendSourceChildNode(tool.createSource()))[0] as IVisibleEntity
+    const entity: IVisibleEntity = (await activeEntity.appendSourceChildNode(tool.createSource()))[0] as IVisibleEntity;
     await bus.execute(new SelectAction(entity));
 
     const capabilities = entity.display.capabilities;
@@ -46,9 +46,10 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     entity.display.position = { left, top };
 
     const complete = () => {
-      // TODO - activeEntity.file.save() instead
       workspace.file.save();
-      bus.execute(new SetToolAction(tool.displayEntityToolFactory));
+      setTimeout(() => {
+        bus.execute(new SetToolAction(tool.displayEntityToolFactory));
+      }, 100);
     };
 
     if (capabilities.resizable && tool.resizable) {

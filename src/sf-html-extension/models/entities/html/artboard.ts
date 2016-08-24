@@ -42,7 +42,12 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
   _updateStyle() {
     // update the iframe style with all the stylesheets loaded
     // in the document
-    this._style.innerHTML = this.document.stylesheet.toString();
+    this._style.innerHTML = `
+    *:focus {
+      outline: none;
+    }
+    ${ this.document.stylesheet.toString() }
+    `;
   }
 
   createSection() {
@@ -66,7 +71,9 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
 
       // bubble all iframe events such as mouse clicks and scrolls
       // so that the editor can handle them
-      bubbleIframeEvents(iframe);
+      bubbleIframeEvents(iframe, {
+        ignoreInputEvents: true
+      });
 
       // this is particularly important to ensure that the preview stage & tools
       // properly re-draw according

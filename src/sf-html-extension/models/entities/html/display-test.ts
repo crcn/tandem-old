@@ -83,12 +83,19 @@ describe(__filename + "#", () => {
     });
 
     it("returns the correct bounds of a DIV in a doubly nested iframe", async () => {
-      expect(await calculateBounds(`<artboard style="position:absolute;top:100px;left:100px;">
-        <artboard style="position:absolute;top:100px;left:100px;">
+      expect(await calculateBounds(`<artboard style="position:absolute;top:100px;left:100px;border:0px;">
+        <artboard style="position:absolute;top:100px;left:100px;border:0px;">
           <div id="target" style="width:100px;height:100px;">
           </div>
         </artboard>
       </artboard>`)).to.eql([200, 200, 100, 100]);
+    });
+
+    it("returns the correct bounds of an iframe that has a border", async () => {
+      expect(await calculateBounds(`<artboard style="position:absolute;top:100px;left:100px;border: 5px solid black;">
+        <div id="target" style="width:100px;height:100px;">
+        </div>
+      </artboard>`)).to.eql([105, 105, 100, 100]);
     });
 
     it("returns the correct bounds of a DIV in a DIV", async () => {

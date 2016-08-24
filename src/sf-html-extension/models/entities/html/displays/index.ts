@@ -5,7 +5,7 @@ import { VisibleHTMLElementEntity } from "../index";
 import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/parsers/css";
 import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/entities";
 
-function calculateCSSMeasurments(style) {
+function calculateCSSMeasurments(style): any {
   const calculated = {};
   for (let key in style) {
     if (hasMeasurement(key)) {
@@ -80,7 +80,7 @@ function scewBounds(bounds: BoundingRect, matrix: Array<number>) {
 }
 
 function hasMeasurement(key) {
-  return /left|top|right|bottom|width|height|padding|margin/.test(key);
+  return /left|top|right|bottom|width|height|padding|margin|border/.test(key);
 }
 
 function roundMeasurements(style) {
@@ -103,8 +103,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
 
   private _declarationByKey: Object;
 
-  constructor(readonly entity: VisibleHTMLElementEntity) {
-  }
+  constructor(readonly entity: VisibleHTMLElementEntity) { }
 
   /**
    */
@@ -156,12 +155,26 @@ export class HTMLNodeDisplay implements IEntityDisplay {
    */
 
   get bounds(): BoundingRect {
-
     let rect: BoundingRect = calculateUntransformedBoundingRect(this.node);
-
     rect = this._addIsolationOffset(rect);
-
     return rect;
+  }
+
+  /**
+   * bounds including the border
+   */
+
+  get innerBounds(): BoundingRect {
+    const bounds = this.bounds;
+
+    const { borderLeftWidth, borderTopWidth, borderRightWidth, borderBottomWidth } = calculateCSSMeasurments(window.getComputedStyle(this.node));
+
+    return new BoundingRect(
+      bounds.left + borderLeftWidth,
+      bounds.top + borderTopWidth,
+      bounds.right - borderLeftWidth - borderRightWidth,
+      bounds.bottom - - borderBottomWidth - borderTopWidth
+    );
   }
 
   set bounds(value: BoundingRect) {
@@ -203,7 +216,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
   private _addIsolationOffset(rect: BoundingRect): BoundingRect {
     for (const display of this._getParentDisplays()) {
       if (display.isolatedChildNodes) {
-        const parentBounds = display.bounds;
+        const parentBounds = display.innerBounds;
         return rect.move({ left: parentBounds.left, top: parentBounds.top });
       }
     }
