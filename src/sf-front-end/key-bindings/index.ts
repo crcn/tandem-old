@@ -1,5 +1,4 @@
 import { Action } from "sf-core/actions";
-import { SettingKeys, ZOOM_INCREMENT } from "sf-front-end/constants";
 import { KeyBinding } from "./base";
 import { FrontEndApplication } from "sf-front-end/application";
 import { GlobalKeyBindingDependency } from "sf-front-end/dependencies";
@@ -7,6 +6,7 @@ import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 import { ZoomAction, DeleteSelectionAction } from "sf-front-end/actions";
 import { BaseCommand, BaseApplicationCommand } from "sf-core/commands";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
+import { SettingKeys, ZOOM_INCREMENT, POINTER_TOOL_KEY_CODE } from "sf-front-end/constants";
 import { SelectAllAction, SetToolAction, UndoAction, RedoAction } from "sf-front-end/actions";
 
 export * from "./base";
@@ -18,7 +18,7 @@ export const dependency = [
       this.bus.execute(new ZoomAction(ZOOM_INCREMENT, true));
     }
   }),
-  new GlobalKeyBindingDependency(["p", "escape"], class SetPointerToolCommand extends BaseCommand {
+  new GlobalKeyBindingDependency([POINTER_TOOL_KEY_CODE, "escape"], class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
       this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns)));
     }

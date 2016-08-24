@@ -13,6 +13,8 @@ class ToolComponent extends React.Component<{ app: FrontEndApplication, editor: 
   }
 
   render() {
+    const dep = this.props.toolDependency;
+
     const className = cx({
       selected: this.props.editor.currentTool instanceof this.props.toolDependency.clazz,
       [`m-preview-tool s s-${this.props.toolDependency.icon}`]: true,
@@ -23,6 +25,7 @@ class ToolComponent extends React.Component<{ app: FrontEndApplication, editor: 
         className={className}
         tabIndex="-1"
         onClick={this.setTool}
+        alt={`${dep.id} (${dep.keyCommand})`}
       >
 
       </li>

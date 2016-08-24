@@ -1,6 +1,7 @@
 
 import { Logger } from "sf-core/logger";
 import { loggable } from "sf-core/decorators";
+import { toArray } from "sf-core/utils/array";
 import * as Mousetrap from "mousetrap";
 import { KeyBinding } from "sf-front-end/key-bindings/base";
 import { IApplication } from "sf-core/application";
@@ -24,7 +25,9 @@ export default class GlobalKeyBindingService extends BaseApplicationService<IApp
 
   _addKeyBinding(dependency: GlobalKeyBindingDependency) {
     this.logger.verbose("add key %s", dependency.key);
-    this._manager.register(dependency.key, dependency.create());
+    for (const key of toArray(dependency.key)) {
+      this._manager.register(key, dependency.create());
+    }
   }
 }
 

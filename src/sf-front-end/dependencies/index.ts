@@ -57,12 +57,12 @@ export class SelectionFactoryDependency extends ClassFactoryDependency {
 
 export const EDITOR_TOOL_NS = "editorTool";
 export class EditorToolFactoryDependency extends ClassFactoryDependency {
-  constructor(readonly id: string, readonly icon: string, readonly editorType: string, readonly clazz: { new(editor: IEditor): IEditorTool }) {
+  constructor(readonly id: string, readonly icon: string, readonly editorType: string, readonly keyCommand: string, readonly clazz: { new(editor: IEditor): IEditorTool }) {
     super([EDITOR_TOOL_NS, editorType, id].join("/"), clazz);
   }
 
   clone() {
-    return new EditorToolFactoryDependency(this.id, this.icon, this.editorType, this.clazz);
+    return new EditorToolFactoryDependency(this.id, this.icon, this.editorType, this.keyCommand, this.clazz);
   }
 
   create(editor: IEditor): IEditorTool {

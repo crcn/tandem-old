@@ -2,6 +2,7 @@ import { IActor } from "sf-core/actors";
 import { inject } from "sf-core/decorators";
 import { BaseEditorTool } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";
+import { POINTER_TOOL_KEY_CODE } from "sf-front-end/constants";
 import { DisplayEntitySelection } from "sf-front-end/models";
 import { BaseApplicationService } from "sf-core/services";
 import { IInjectable, MAIN_BUS_NS } from "sf-core/dependencies";
@@ -60,4 +61,4 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
   }
 }
 
-export const dependency = new EditorToolFactoryDependency("pointer", "cursor", "display", PointerTool);
+export const dependency = new EditorToolFactoryDependency("pointer", "cursor", "display", POINTER_TOOL_KEY_CODE, PointerTool);

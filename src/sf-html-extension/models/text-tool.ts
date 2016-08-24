@@ -6,6 +6,7 @@ import { MouseAction } from "sf-front-end/actions";
 import { IApplication } from "sf-core/application";
 import { SetToolAction } from "sf-front-end/actions";
 import { parse as parseHTML } from "../parsers/html";
+import { TEXT_TOOL_KEY_CODE } from "sf-html-extension/constants";
 import { FrontEndApplication } from "sf-front-end/application";
 import { HTMLElementExpression } from "../parsers/html";
 import { BaseApplicationService } from "sf-core/services";
@@ -115,7 +116,7 @@ class InsertTextTool extends InsertTool {
   private _dependencies: Dependencies;
 
   get displayEntityToolFactory() {
-    return <EditorToolFactoryDependency>this._dependencies.link(new EditorToolFactoryDependency(null, null, null, TextTool));
+    return <EditorToolFactoryDependency>this._dependencies.link(new EditorToolFactoryDependency(null, null, null, TEXT_TOOL_KEY_CODE, TextTool));
   }
 
   createSource() {
@@ -123,4 +124,4 @@ class InsertTextTool extends InsertTool {
   }
 }
 
-export const dependency = new EditorToolFactoryDependency("text", "text", "display", InsertTextTool);
+export const dependency = new EditorToolFactoryDependency("text", "text", "display", "t", InsertTextTool);

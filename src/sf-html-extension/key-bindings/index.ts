@@ -5,6 +5,7 @@ import { InsertTool } from "sf-front-end/models/insert-tool";
 import { BaseCommand } from "sf-core/commands";
 import { SetToolAction } from "sf-front-end/actions";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
+import { TEXT_TOOL_KEY_CODE } from "sf-html-extension/constants";
 import { TextTool, dependency as textToolDependency } from "sf-html-extension/models/text-tool";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
 import { ClassFactoryDependency, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
@@ -40,7 +41,7 @@ function createElementInsertToolClass(options) {
 }
 
 export const dependencies = [
-  new GlobalKeyBindingDependency("t", class SetPointerToolCommand extends BaseCommand {
+  new GlobalKeyBindingDependency(TEXT_TOOL_KEY_CODE, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
       this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(textToolDependency.ns)));
     }

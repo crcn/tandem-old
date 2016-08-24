@@ -104,7 +104,7 @@ export class DeleteSelectionAction extends Action {
 
 export const SET_TOOL = "setTool";
 export class SetToolAction extends Action {
-  constructor(readonly textToolFactory: { create(editor: IEditor): IEditorTool }) {
+  constructor(readonly toolFactory: { create(editor: IEditor): IEditorTool }) {
     super(SET_TOOL);
   }
 }
