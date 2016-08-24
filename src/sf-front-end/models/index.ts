@@ -4,3 +4,4 @@ export * from "./workspace";
 export * from "./selection";
 export * from "./display-entity-selection";
 export * from "./settings";
+export * from "./insert-tool";

@@ -8,7 +8,7 @@ export namespace SettingKeys {
 }
 
 export namespace MetadataKeys {
-  export const CANVAS_SELECTABLE = "canvasSelectable";
+  export const CANVAS_ROOT = "canvasRoot";
   export const HOVER_ITEM = "hoverItem";
   export const LAYER_EXPANDED = "layerExpanded";
 }

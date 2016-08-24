@@ -30,7 +30,7 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
 
   getInitialMetadata() {
     return Object.assign(super.getInitialMetadata(), {
-      [MetadataKeys.CANVAS_SELECTABLE]: false
+      [MetadataKeys.CANVAS_ROOT]: false
     });
   }
 

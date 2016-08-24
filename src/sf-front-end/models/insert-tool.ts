@@ -30,43 +30,4 @@ export abstract class InsertTool extends BaseEditorTool {
 
   abstract get displayEntityToolFactory(): { create(editor: IEditor): IEditorTool }
   abstract createSource(): any;
-
-  async canvasMouseDown(action: MouseAction) {
-
-    const activeEntity = <IContainerEntity>this.editor.activeEntity;
-    const entity: IVisibleEntity = <IVisibleEntity>(await activeEntity.appendSourceChildNode(this.createSource()))[0];
-    await this.bus.execute(new SelectAction(entity));
-
-    const capabilities = entity.display.capabilities;
-
-    let left = 0;
-    let top  = 0;
-
-    if (capabilities.movable) {
-      left = (action.originalEvent.pageX - this.editor.transform.left) / this.editor.transform.scale;
-      top  = (action.originalEvent.pageY - this.editor.transform.top) / this.editor.transform.scale;
-    }
-
-    entity.display.position = { left, top };
-
-    const complete = () => {
-      // TODO - activeEntity.file.save() instead
-      this.workspace.file.save();
-      this.bus.execute(new SetToolAction(this.displayEntityToolFactory));
-    };
-
-    if (capabilities.resizable && this.resizable) {
-
-      startDrag(action.originalEvent, (event, { delta }) => {
-
-        const width  = (delta.x) / this.editor.transform.scale;
-        const height = (delta.y) / this.editor.transform.scale;
-
-        entity.display.bounds = new BoundingRect(left, top, left + width, top + height);
-
-      }, complete);
-    } else {
-      complete();
-    }
-  }
 }

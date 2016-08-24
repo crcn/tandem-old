@@ -1,108 +1,22 @@
-// TODO - to make this faster, only display selectable
-// areas when mouse hits the bounds of an item
-import "./index.scss";
-
 import * as cx from "classnames";
 import * as React from "react";
-import { inject } from "sf-core/decorators";
 import { Workspace } from "sf-front-end/models";
-import { BoundingRect } from "sf-core/geom";
 import { SelectAction } from "sf-front-end/actions";
-import { MetadataKeys } from "sf-front-end/constants";
 import { FrontEndApplication } from "sf-front-end/application";
-import { intersection, flatten } from "lodash";
+import { SelectablesComponent } from "sf-front-end/components/selectables";
+import { IVisibleEntity, IEntity } from "sf-core/entities";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
-import { IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
-import { IVisibleEntity, IEntity, IContainerEntity } from "sf-core/entities";
-
-class SelectableComponent extends React.Component<{ entity: IVisibleEntity, selection: any, app: FrontEndApplication, zoom: number }, any> {
-
-  constructor() {
-    super();
-    this.state = {};
-  }
-
-  onMouseDown = (event: MouseEvent): void => {
-    this.props.app.bus.execute(new SelectAction(this.props.entity, event.shiftKey));
-    event.stopPropagation();
-  }
-
-  onMouseOver = (event: MouseEvent) => {
-    this.props.app.metadata.set(MetadataKeys.HOVER_ITEM, this.props.entity);
-  }
-
-  onMouseOut = (event: MouseEvent) => {
-    this.props.app.metadata.set(MetadataKeys.HOVER_ITEM, undefined);
-  }
-
-  render() {
-    const { entity, selection, app } = this.props;
-
-    if (!entity.display) return null;
-    const entities = entity.flatten();
-
-    if (intersection(entities, selection || []).length) return null;
-
-    const bounds = entity.display.bounds;
-
-    const borderWidth = 2 / this.props.zoom;
-
-    const classNames = cx({
-      "m-selectable": true,
-      "hover": this.props.app.metadata.get(MetadataKeys.HOVER_ITEM) === this.props.entity
-    });
-
-    const style = {
-      background : "transparent",
-      position   : "absolute",
-      boxShadow  : `0 0 0 ${borderWidth}px #6f98e0`,
-      width      : bounds.width,
-      height     : bounds.height,
-      left       : bounds.left,
-      top        : bounds.top
-    };
-
-    return (
-      <div
-        style={style}
-        className={classNames}
-        onMouseOut={this.onMouseOut}
-        onMouseOver={this.onMouseOver}
-        onMouseDown={this.onMouseDown}
-      />
-    );
-  }
-}
 
 // @injectable
-export default class SelectablesComponent extends React.Component<{selection: any, allEntities: Array<IEntity>, bus: any, app: any, zoom: number, workspace: Workspace }, {}>  {
+export default class SelectableToolComponent extends React.Component<{selection: any, allEntities: Array<IEntity>, bus: any, app: any, zoom: number, workspace: Workspace }, {}>  {
+
+  onEntityMouseDown = (entity: IVisibleEntity, event: MouseEvent) => {
+    this.props.app.bus.execute(new SelectAction(entity, event.shiftKey));
+  }
 
   render() {
-
-    const selection = this.props.selection || [];
-    const allEntities = this.props.allEntities;
-    const activeEntity = this.props.workspace.editor.activeEntity as IContainerEntity;
-    if (!activeEntity.childNodes) return null;
-
-    // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.
-    if (selection.display && selection.display.moving) return null;
-
-    // if (selection.preview.currentTool.type !== "pointer") return null;
-
-    const selectables = allEntities.filter((entity) => (
-      entity.hasOwnProperty("display") && entity.metadata.get(MetadataKeys.CANVAS_SELECTABLE) !== false
-    )).map((entity, i) => (
-      <SelectableComponent
-        {...this.props}
-        zoom={this.props.zoom}
-        selection={selection}
-        entity={entity as IVisibleEntity}
-        key={i}
-      />
-    ));
-
-    return (<div className="m-selectables"> {selectables} </div>);
+    return <SelectablesComponent {...this.props} onEntityMouseDown={this.onEntityMouseDown} />;
   }
 }
 
-export const dependency = new ReactComponentFactoryDependency("components/tools/pointer/selectable", SelectablesComponent);
+export const dependency = new ReactComponentFactoryDependency("components/tools/pointer/selectable", SelectableToolComponent);
