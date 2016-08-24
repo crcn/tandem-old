@@ -87,7 +87,7 @@ export default class SelectablesComponent extends React.Component<{selection: an
     // if (selection.preview.currentTool.type !== "pointer") return null;
 
     const selectables = allEntities.filter((entity) => (
-      !!entity["display"]
+      entity.hasOwnProperty("display") && entity.metadata.get(MetadataKeys.CANVAS_SELECTABLE) !== false
     )).map((entity, i) => (
       <SelectableComponent
         {...this.props}

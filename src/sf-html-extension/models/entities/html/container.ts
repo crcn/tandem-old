@@ -18,8 +18,14 @@ export abstract class HTMLContainerEntity extends ContainerNode implements IHTML
     super();
     this.nodeName = source.nodeName.toUpperCase();
     this.section = this.createSection();
-    this.metadata = new EntityMetadata(this);
+    this.metadata = new EntityMetadata(this, this.getInitialMetadata());
     this.metadata.observe(new BubbleBus(this));
+  }
+
+  getInitialMetadata(): Object {
+
+    // TODO - scan additional dependencies for metadata
+    return {};
   }
 
   get document(): IHTMLDocument {

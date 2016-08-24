@@ -3,6 +3,7 @@ import "./artboard.scss";
 import { Action } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
 import { inject } from "sf-core/decorators";
+import { MetadataKeys } from "sf-front-end/constants";
 import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
 import { HTMLDocumentEntity } from "./document";
 import { NodeSection, INode } from "sf-core/markup";
@@ -25,6 +26,12 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
 
   willChangeDocument(document: HTMLDocumentEntity) {
     super.willChangeDocument(document);
+  }
+
+  getInitialMetadata() {
+    return Object.assign(super.getInitialMetadata(), {
+      [MetadataKeys.CANVAS_SELECTABLE]: false
+    });
   }
 
   async sync() {

@@ -20,8 +20,8 @@ export interface IEntityDocument extends IContainerNode {
 }
 
 export class EntityMetadata extends Metadata {
-  constructor(readonly entity: IEntity) {
-    super();
+  constructor(readonly entity: IEntity, data?: any) {
+    super(data);
   }
 }
 

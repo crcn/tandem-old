@@ -1,6 +1,8 @@
 import "./index.scss";
 import * as React from "react";
+import { IEntity } from "sf-core/entities";
 import { startDrag } from "sf-front-end/utils/component";
+import { MetadataKeys } from "sf-front-end/constants";
 import { BoundingRect } from "sf-core/geom";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import { SelectAction, MouseAction, CANVAS_MOUSE_DOWN } from "sf-front-end/actions";
@@ -69,8 +71,8 @@ class DragSelectComponent extends React.Component<any, any> {
 
       const selection = [];
 
-      entities.forEach(function (entity) {
-        if (entity.display && entity.display.bounds.intersects(bounds)) {
+      entities.forEach(function (entity: IEntity) {
+        if (entity.hasOwnProperty("display") && entity.metadata.get(MetadataKeys.CANVAS_SELECTABLE) !== false && entity.display.bounds.intersects(bounds)) {
           selection.push(entity);
         }
       });

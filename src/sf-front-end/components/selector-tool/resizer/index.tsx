@@ -141,7 +141,7 @@ class ResizerComponent extends React.Component<{
       const ny = (sy2 + (delta.y - (this.props.editor.transform.top - translateTop)) / this.props.zoom);
 
       let position = { left: nx, top: ny };
-      position = guider.snap(this.targetDisplay.bounds.moveTo(position));
+      // position = guider.snap(this.targetDisplay.bounds.moveTo(position));
 
       this.moveTarget(position);
     }, () => {

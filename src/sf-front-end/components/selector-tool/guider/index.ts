@@ -1,12 +1,18 @@
 import { BoundingRect, IPosition } from "sf-core/geom";
 
+export class Guide {
+  constructor(readonly left: number, readonly top: number, readonly guideLeft: number, readonly guideTop: number) {
+
+  }
+}
+
 export class Guider {
 
-  constructor(public guides: Array<BoundingRect> = [], readonly padding: number = 10) {
+  constructor(public bounds: Array<BoundingRect> = [], readonly padding: number = 10) {
 
   }
 
-  snap(bounds: BoundingRect): BoundingRect {
+  getGuides(bounds: BoundingRect): Array<Guide> {
 
     const orgLeft = bounds.left;
     const orgTop  = bounds.top;
@@ -14,15 +20,16 @@ export class Guider {
     let top = bounds.top;
     let guideLeft;
     let guideTop;
+    const guides: Array<Guide> = [];
 
-    for (const guide of this.guides) {
+    for (const bound of this.bounds) {
 
       if (orgLeft === left) {
-        [guideLeft, left] = this._snapBounds(left, guide.left, bounds.width, guide.width);
+        [guideLeft, left] = this._snapBounds(left, bound.left, bounds.width, bound.width);
       }
 
       if (orgTop === top) {
-        [guideTop, top]  = this._snapBounds(top, guide.top, bounds.height, guide.height);
+        [guideTop, top]  = this._snapBounds(top, bound.top, bounds.height, bound.height);
       }
 
       // when bounds intersect two items
@@ -31,8 +38,7 @@ export class Guider {
       }
     }
 
-
-    return bounds.moveTo({ left, top });
+    return guides;
   }
 
   private _snapBounds(fromLeft, toLeft, fromWidth, toWidth) {
