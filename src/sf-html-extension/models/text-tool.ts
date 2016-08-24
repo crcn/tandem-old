@@ -62,9 +62,6 @@ export class TextTool extends BaseEditorTool {
   }
 
   private _onKeyDown = (event: KeyboardEvent) => {
-    if (event.keyCode === 27) {
-      this.dispose();
-    }
 
     // janky as hell, but this is a fairly simple approach to prevent
     //  auto body scrolling for inputs. We don't want that since it

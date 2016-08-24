@@ -10,7 +10,7 @@ export * from "./base";
 
 export const GLOBAL_KEY_BINDINGS_NS = "global-key-bindings";
 export class GlobalKeyBindingDependency extends ClassFactoryDependency {
-  constructor(readonly key: string, readonly commandClass: { new(): IActor }) {
+  constructor(readonly key: string | Array<string>, readonly commandClass: { new(): IActor }) {
     super(`${GLOBAL_KEY_BINDINGS_NS}/${key}`, commandClass);
   }
   clone() {

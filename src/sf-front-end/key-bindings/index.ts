@@ -18,7 +18,7 @@ export const dependency = [
       this.bus.execute(new ZoomAction(ZOOM_INCREMENT, true));
     }
   }),
-  new GlobalKeyBindingDependency("p", class SetPointerToolCommand extends BaseCommand {
+  new GlobalKeyBindingDependency(["p", "escape"], class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
       this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns)));
     }
