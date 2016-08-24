@@ -5,14 +5,15 @@ import "./index.scss";
 import * as cx from "classnames";
 import * as React from "react";
 import { inject } from "sf-core/decorators";
+import { Workspace } from "sf-front-end/models";
 import { BoundingRect } from "sf-core/geom";
-import { intersection } from "lodash";
 import { SelectAction } from "sf-front-end/actions";
 import { MetadataKeys } from "sf-front-end/constants";
 import { FrontEndApplication } from "sf-front-end/application";
-import { IVisibleEntity, IEntity } from "sf-core/entities";
+import { intersection, flatten } from "lodash";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import { IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
+import { IVisibleEntity, IEntity, IContainerEntity } from "sf-core/entities";
 
 class SelectableComponent extends React.Component<{ entity: IVisibleEntity, selection: any, app: FrontEndApplication, zoom: number }, any> {
 
@@ -74,12 +75,14 @@ class SelectableComponent extends React.Component<{ entity: IVisibleEntity, sele
 }
 
 // @injectable
-export default class SelectablesComponent extends React.Component<{selection: any, allEntities: Array<IEntity>, bus: any, app: any, zoom: number }, {}>  {
+export default class SelectablesComponent extends React.Component<{selection: any, allEntities: Array<IEntity>, bus: any, app: any, zoom: number, workspace: Workspace }, {}>  {
 
   render() {
 
     const selection = this.props.selection || [];
     const allEntities = this.props.allEntities;
+    const activeEntity = this.props.workspace.editor.activeEntity as IContainerEntity;
+    if (!activeEntity.childNodes) return null;
 
     // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.
     if (selection.display && selection.display.moving) return null;

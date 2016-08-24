@@ -1,8 +1,8 @@
-import { IEntity } from "sf-core/entities";
 import { DISPOSE } from "sf-core/actions";
 import { Selection } from "sf-front-end/models";
 import { loggable, bindable } from "sf-core/decorators";
 import { FrontEndApplication } from "sf-front-end/application";
+import { IEntity, IContainerEntity } from "sf-core/entities";
 import { BaseApplicationService } from "sf-core/services";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
@@ -86,6 +86,15 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
         newSelection.push(item);
       }
     }
+
+    // parents and children cannot be selected. For now - deselect
+    // parent entities that appear in the selection
+    newSelection.concat().forEach((entity: IEntity) => {
+      let i;
+      if (entity.parentNode && (i = newSelection.indexOf(<IContainerEntity>entity.parentNode)) !== -1) {
+        newSelection.splice(i, 1);
+      }
+    });
 
     app.workspace.selection = <Selection<any>>newSelection;
 

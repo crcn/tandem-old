@@ -50,7 +50,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
       // capture only open entities
       function each(entity: IEntity) {
         allEntities.push(entity);
-        if (entity.metadata.get(MetadataKeys.LAYER_EXPANDED) && entity.hasOwnProperty("childNodes")) {
+        if (entity.metadata.get(MetadataKeys.LAYER_EXPANDED) && entity["childNodes"]) {
           (entity as IContainerEntity).childNodes.forEach(each);
         }
       }
@@ -62,13 +62,6 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
       const index2 = allEntities.indexOf(currentlySelectedEntity);
       select = allEntities.slice(Math.min(index1, index2), Math.max(index1, index2) + 1);
 
-      // parents and children CANNOT be selected. Remove parents from the selection list
-      select.concat().forEach(function(entity) {
-        let i;
-        if (entity.parent && ~(i = select.indexOf(entity.parent))) {
-          select.splice(i, 1);
-        }
-      });
     } else {
 
       select = [entity];
@@ -97,7 +90,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
       }
     }
 
-    this.props.app.bus.execute(new ToggleSelectAction(select, multiSelect));
+    this.props.app.bus.execute(new SelectAction(select, false, false));
   }
 
   toggleExpand(expand, event) {
@@ -315,10 +308,10 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
     // and ensure that the parent is expanded. Not pretty, encapsulated, and works.
     if (action.type === SELECT) {
       (action as SelectAction).items.forEach((item: IEntity) => {
-        let p = item;
+        let p = item.parentNode as IContainerEntity;
         while (p) {
           p.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
-          p = p.parentNode as any as IEntity;
+          p = p.parentNode as IContainerEntity;
         }
       });
     }

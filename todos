@@ -22,6 +22,34 @@
 - [ ] focus on artboards?
 - [ ] markdown editor
 
-
 - [ ] copy & paste
-  - [ ] should paste in parent of currently selected entity
+  - [x] should paste in parent of currently selected entity
+
+- [ ] selection
+  - [ ] cannot select parent entity with child entities
+
+- [ ] document panes
+  - [ ] layers pane
+    - [ ] shift click to multi select entities
+    - [ ] better highlighting for drop target
+    - [ ] get + button to work
+    - [ ] ability to edit elements
+  - [ ] css rules
+    - [ ] show # elements associated with rules
+    - [ ] ability to select entities
+    - [ ] ability to add new rule
+
+- [ ] stage tools
+  - [ ] guides
+    - [ ] display distance between each object
+    - [ ] snap objects together
+  - [ ] custom context menu
+    - [ ] edit text option
+
+- [ ] entity panes
+  - [ ] all styles
+    - [ ] can modify the measurement
+    - [ ] enter key in name or value should add new declaration below current
+  - [ ] element style
+  - [ ] element css styles
+
