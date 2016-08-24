@@ -33,6 +33,8 @@ class DragSelectComponent extends React.Component<{ allEntities: any, app: Front
   startDrag(event) {
 
     const container = (this.refs as any).container;
+    if (!container) return;
+
     const b = container.getBoundingClientRect();
 
     const entities = this.props.allEntities;

@@ -29,7 +29,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   onMouseDown = (event) => {
-    this.bus.execute(new MouseAction(CANVAS_MOUSE_DOWN, event.nativeEvent));
+    this.bus.execute(new MouseAction(CANVAS_MOUSE_DOWN, event.nativeEvent || event));
   }
 
   get bus() {
@@ -188,7 +188,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     };
     // TODO - add fixed tools
     const entity = this.props.workspace.file.document.root;
-    return (<IsolateComponent ref="isolate" ignoreInputEvents={true} onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
+    return (<IsolateComponent onMouseDown={this.onMouseDown} onKeyDown={this.onKey} ref="isolate" ignoreInputEvents={true} onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
       <style>
         {
           `html, body {
@@ -197,12 +197,10 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
         }
       </style>
       <div
-        onKeyDown={this.onKey}
         onMouseMove={this.onMouseEvent}
         tabIndex={-1}
         className="m-editor-stage-canvas"
-        style={style}
-        onMouseDown={this.onMouseDown}>
+        style={style}>
           <div style={innerStyle} className="noselect" data-previewroot>
               { entity ? <PreviewLayerComponent {...this.props} entity={entity} /> : undefined }
               {this._toolsHidden || !entity ? undefined : <ToolsLayerComponent entity={entity} {...this.props} />}

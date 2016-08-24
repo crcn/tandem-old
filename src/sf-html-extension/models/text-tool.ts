@@ -85,7 +85,7 @@ export class TextTool extends BaseEditorTool {
     return <HTMLSpanElement><any>this._targetEntity.section.targetNode;
   }
 
-  public dispose() {
+  public async dispose() {
     if (this._disposed) return;
     this._disposed = true;
     this._targetNode.setAttribute("contenteditable", "false");
@@ -102,7 +102,7 @@ export class TextTool extends BaseEditorTool {
     }
 
     // save the workspae file -- diffing time
-    this.workspace.file.save();
+    await this.workspace.file.save();
     this.bus.execute(new SetToolAction(<EditorToolFactoryDependency>this.dependencies.query(pointerToolDependency.ns)));
   }
 

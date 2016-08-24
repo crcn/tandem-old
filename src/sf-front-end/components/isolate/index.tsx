@@ -27,6 +27,14 @@ export default class IsolateComponent extends React.Component<any, any> {
     }
 
     this.body.appendChild(this._mountElement = document.createElement("div"));
+
+    if (this.props.onMouseDown) {
+      this.body.addEventListener("mousedown", this.props.onMouseDown);
+    }
+
+    if (this.props.onKeyDown) {
+      this.body.addEventListener("keydown", this.props.onKeyDown);
+    }
     this._render();
 
     this._addListeners();

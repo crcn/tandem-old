@@ -20,7 +20,12 @@ export const dependency = [
   }),
   new GlobalKeyBindingDependency([POINTER_TOOL_KEY_CODE, "escape"], class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns)));
+
+      // slight delay to enable other tools to catch escape key if it' s hit - important
+      // for text editing tool particularly
+      setTimeout(() => {
+        this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns)));
+      }, 1);
     }
   }),
   new GlobalKeyBindingDependency("meta+-", class ZoomOutCommand extends BaseApplicationCommand<FrontEndApplication> {

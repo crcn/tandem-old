@@ -46,6 +46,12 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
     } else if (action.keyCode === 39) {
       left++;
     } else {
+
+      // deselect all when escape key is hit
+      if (action.keyCode === 27) {
+        this.bus.execute(new SelectAction());
+      }
+
       return;
     }
 
