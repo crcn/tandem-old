@@ -21,3 +21,7 @@
 - [ ] move layer back
 - [ ] focus on artboards?
 - [ ] markdown editor
+
+
+- [ ] copy & paste
+  - [ ] should paste in parent of currently selected entity

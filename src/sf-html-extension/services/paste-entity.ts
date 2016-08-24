@@ -26,7 +26,7 @@ export class PasteHTMLService extends BaseApplicationService<FrontEndApplication
 
       const workspace = this.app.workspace;
       const file = <HTMLFile>workspace.file;
-      const activeEntity = workspace.editor.activeEntity;
+      const activeEntity = workspace.selection.length ? workspace.selection[0].parentNode : file.document.root;
 
       // meta charset is tacked on the beginning - remove it
       content = content.replace(/\<meta.*?\>/, "");
