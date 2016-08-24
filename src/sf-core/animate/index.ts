@@ -20,9 +20,8 @@ export function tween(start: number, end: number, duration: number, iterate: Fun
     dispose() {
       _break = true;
     }
-  }
+  };
 }
-
 
 export function easeInCubic(t) {
   return t * t * t;

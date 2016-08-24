@@ -1,3 +1,5 @@
+import { IPosition } from "sf-core/geom";
+
 export class BoundingRect {
 
   constructor(
@@ -32,6 +34,10 @@ export class BoundingRect {
     );
   }
 
+  toArray() {
+    return [this.left, this.top, this.right, this.bottom];
+  }
+
   intersects(...rects: Array<BoundingRect>): boolean {
     return !!rects.find((rect) => (
       Math.max(this.left, rect.left) <= Math.min(this.right, rect.right) &&
@@ -43,12 +49,21 @@ export class BoundingRect {
     return BoundingRect.merge(this, ...rects);
   }
 
-  move(left: number, top: number): BoundingRect {
+  move({ left, top }: IPosition): BoundingRect {
     return new BoundingRect(
       this.left + left,
       this.top   + top,
       this.right + left,
       this.bottom + top
+    );
+  }
+
+  moveTo({ left, top }: IPosition): BoundingRect {
+    return new BoundingRect(
+      left,
+      top,
+      left + this.width,
+      top + this.height
     );
   }
 

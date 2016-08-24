@@ -72,11 +72,11 @@ function calculateUntransformedBoundingRect(node: HTMLElement) {
   const bounds = new BoundingRect(rect.left, rect.top, rect.right, rect.bottom);
   const matrix = calculateTransform(node, false);
 
-  return bounds.move(-matrix[4], -matrix[5]).zoom(1 / matrix[0]);
+  return bounds.move({ left: -matrix[4], top: -matrix[5] }).zoom(1 / matrix[0]);
 }
 
 function scewBounds(bounds: BoundingRect, matrix: Array<number>) {
-  return bounds.zoom(matrix[0] || 1).move(matrix[4], matrix[5]);
+  return bounds.zoom(matrix[0] || 1).move({ left: matrix[4], top: matrix[5] });
 }
 
 function hasMeasurement(key) {
@@ -174,7 +174,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     let newStyle: any = {};
 
     const transforms = this._calculateTransforms();
-    const scaled = value.move(-transforms.left, -transforms.top).zoom(1 / transforms.scale);
+    const scaled = value.move({ left: -transforms.left, top: -transforms.top }).zoom(1 / transforms.scale);
 
     if (value.left !== bounds.left) {
       // const scale = bounds.left / (existingStyle.left || 0);
@@ -204,7 +204,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     for (const display of this._getParentDisplays()) {
       if (display.isolatedChildNodes) {
         const parentBounds = display.bounds;
-        return rect.move(parentBounds.left, parentBounds.top);
+        return rect.move({ left: parentBounds.left, top: parentBounds.top });
       }
     }
     return rect;

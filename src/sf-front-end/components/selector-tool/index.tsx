@@ -1,12 +1,13 @@
 import "./index.scss";
 import * as React from "react";
+import { Guider } from "./guider";
 import RulerComponent from "./ruler";
 import ResizerComponent from "./resizer";
 import { Editor, Workspace } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectionSizeComponent } from "sf-front-end/components/selection-size";
 import { DisplayEntitySelection } from "sf-front-end/models";
-import { IEntityDisplay, IEntity } from "sf-core/entities";
+import { IEntityDisplay, IEntity, IVisibleEntity } from "sf-core/entities";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 
 export default class SelectorComponent extends React.Component<{ editor: Editor, workspace: Workspace, app: FrontEndApplication, zoom: number, allEntities: Array<IEntity> }, any> {
@@ -34,7 +35,8 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
   render() {
 
-    const workspace = this.props.workspace;
+    const { workspace, allEntities } = this.props;
+
     const selection = workspace.selection as DisplayEntitySelection<any>;
 
     const display   = selection.display;
@@ -56,8 +58,10 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
       boxShadow: `0 0 0 ${borderWidth}px #a4b7d7`
     };
 
+    const guider = new Guider(allEntities.map((entity: IVisibleEntity) => entity.display && entity.display.bounds).filter((b) => !!b));
+
     return (<div className="m-selector-component">
-      { this.state.moving || this.state.resizing ? undefined : <ResizerComponent {...this.props} strokeWidth={2} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} onMoving={this.onMoving} onStopMoving={this.onStopMoving} /> }
+      { this.state.moving || this.state.resizing ? undefined : <ResizerComponent {...this.props} guider={guider} strokeWidth={2} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} onMoving={this.onMoving} onStopMoving={this.onStopMoving} /> }
 
       <div className="m-selector-component--bounds" style={boundsStyle} />
 

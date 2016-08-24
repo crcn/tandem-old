@@ -1,15 +1,28 @@
 import * as React from "react";
+import { Guider } from "../guider";
+import { Editor } from "sf-front-end/models";
 import { startDrag } from "sf-front-end/utils/component";
 import PathComponent from "./path";
-import { Editor } from "sf-front-end/models";
-import { BoundingRect } from "sf-core/geom";
 import { FrontEndApplication } from "sf-front-end/application";
 import { DisplayEntitySelection } from "sf-front-end/models";
+import { BoundingRect, IPosition } from "sf-core/geom";
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
 
-class ResizerComponent extends React.Component<{ editor: Editor, app: FrontEndApplication, selection: DisplayEntitySelection<any>, onResizing: Function, onMoving: Function, onStopMoving: Function, zoom: number, pointRadius?: number, strokeWidth?: number, onStopResizing: Function }, any> {
+class ResizerComponent extends React.Component<{
+  editor: Editor,
+  app: FrontEndApplication,
+  selection: DisplayEntitySelection<any>,
+  onResizing: Function,
+  onMoving: Function,
+  onStopMoving: Function,
+  zoom: number,
+  pointRadius?: number,
+  strokeWidth?: number,
+  onStopResizing: Function,
+  guider: Guider
+}, any> {
 
   private _dragger: any;
   private _movingTimer: any;
@@ -120,13 +133,17 @@ class ResizerComponent extends React.Component<{ editor: Editor, app: FrontEndAp
     const sy2 = style.top;
     const translateLeft = this.props.editor.transform.left;
     const translateTop  = this.props.editor.transform.top;
+    const guider = this.props.guider;
 
     this._dragger = startDrag(event, (event2, { delta }) => {
 
       const nx = (sx2 + (delta.x - (this.props.editor.transform.left - translateLeft)) / this.props.zoom);
       const ny = (sy2 + (delta.y - (this.props.editor.transform.top - translateTop)) / this.props.zoom);
 
-      this.moveTarget(nx, ny);
+      let position = { left: nx, top: ny };
+      position = guider.snap(this.targetDisplay.bounds.moveTo(position));
+
+      this.moveTarget(position);
     }, () => {
       this.file.save();
       this._dragger = void 0;
@@ -139,8 +156,8 @@ class ResizerComponent extends React.Component<{ editor: Editor, app: FrontEndAp
     this.props.onStopResizing();
   }
 
-  moveTarget(left, top) {
-    this.targetDisplay.position = { left, top };
+  moveTarget(position: IPosition) {
+    this.targetDisplay.position = position;
   }
 
   render() {

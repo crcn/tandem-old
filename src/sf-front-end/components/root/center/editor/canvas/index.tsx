@@ -138,10 +138,10 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     .filter((bounds) => !!bounds));
 
     // center
-    entireBounds = entireBounds.move(
-      -entireBounds.left * 2 + width / 2 - entireBounds.width / 2 ,
-      -entireBounds.top * 2 + height / 2 - entireBounds.height / 2
-    );
+    entireBounds = entireBounds.move({
+      left: -entireBounds.left * 2 + width / 2 - entireBounds.width / 2 ,
+      top: -entireBounds.top * 2 + height / 2 - entireBounds.height / 2
+    });
 
     this.props.editor.transform.left = entireBounds.left;
     this.props.editor.transform.top = entireBounds.top;

@@ -9,9 +9,10 @@ import HTML5Backend from "react-dnd-html5-backend";
 import { Workspace } from "sf-front-end/models";
 import { DragDropContext } from "react-dnd";
 import { IContainerEntity } from "sf-core/entities";
+import { FrontEndApplication } from "sf-front-end/application";
 import { DocumentPaneComponentFactoryDependency } from "sf-front-end/dependencies";
 
-class LayersPaneComponent extends React.Component<{ workspace: Workspace }, any> {
+class LayersPaneComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication }, any> {
   render() {
     if (!this.props.workspace.file || !this.props.workspace.file.document.root) return null;
     return <PaneComponent title="Layers">
