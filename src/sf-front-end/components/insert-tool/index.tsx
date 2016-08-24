@@ -8,10 +8,10 @@ import { BoundingRect } from "sf-core/geom";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectablesComponent } from "sf-front-end/components/selectables";
 import { SelectionSizeComponent } from "sf-front-end/components/selection-size";
+import { SetToolAction, SelectAction } from "sf-front-end/actions";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import { IEntity, IContainerEntity, IVisibleEntity } from "sf-core/entities";
 import { Workspace, Editor, DisplayEntitySelection, InsertTool } from "sf-front-end/models";
-import { SetToolAction, SelectAction } from "sf-front-end/actions";
 
 class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, workspace: Workspace, app: FrontEndApplication }, any> {
 
@@ -92,7 +92,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     return <div className="m-insert-tool">
       <div onMouseDown={this._insertNewItem} style={bgstyle} />
-      <SelectablesComponent {...this.props} onEntityMouseDown={this.onEntityMouseDown} />
+      <SelectablesComponent {...this.props} canvasRootSelectable={true} onEntityMouseDown={this.onEntityMouseDown} />
       { display && display.capabilities.resizable ? <SelectionSizeComponent left={bounds.left + bounds.width} top={bounds.top + bounds.height} bounds={bounds} zoom={zoom} /> : undefined }
     </div>;
   }

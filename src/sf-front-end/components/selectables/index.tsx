@@ -85,7 +85,8 @@ class SelectableComponent extends React.Component<{
 export class SelectablesComponent extends React.Component<{
   app: any,
   workspace: Workspace,
-  onEntityMouseDown: (entity: IVisibleEntity, event?: MouseEvent) => void
+  onEntityMouseDown: (entity: IVisibleEntity, event?: MouseEvent) => void,
+  canvasRootSelectable?: boolean
 }, {}>  {
 
   render() {
@@ -101,7 +102,7 @@ export class SelectablesComponent extends React.Component<{
     // if (selection.preview.currentTool.type !== "pointer") return null;
 
     const selectables = allEntities.filter((entity) => (
-      entity.hasOwnProperty("display") && (entity.metadata.get(MetadataKeys.CANVAS_ROOT) !== false || (entity as IContainerEntity).childNodes.length === 0)
+      entity.hasOwnProperty("display") && (this.props.canvasRootSelectable || entity.metadata.get(MetadataKeys.CANVAS_ROOT) !== false || (entity as IContainerEntity).childNodes.length === 0)
     )).map((entity, i) => (
       <SelectableComponent
         {...this.props}
