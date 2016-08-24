@@ -31,7 +31,7 @@ class SelectableComponent extends React.Component<{
   onMouseDown = (event: MouseEvent): void => {
     this.props.onEntityMouseDown(this.props.entity, event);
     event.stopPropagation();
-
+    this.onMouseOut(event);
  }
 
   onMouseOver = (event: MouseEvent) => {
@@ -41,6 +41,7 @@ class SelectableComponent extends React.Component<{
   onMouseOut = (event: MouseEvent) => {
     this.props.app.metadata.set(MetadataKeys.HOVER_ITEM, undefined);
   }
+
 
   render() {
     const { entity, selection, app } = this.props;
