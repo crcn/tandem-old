@@ -15,6 +15,7 @@ export abstract class InsertTool extends BaseEditorTool {
 
   readonly cursor: string = "crosshair";
   readonly name: string =  "insert";
+  public entityIsRoot: boolean = false;
 
   @inject(MAIN_BUS_NS)
   readonly bus: IActor;

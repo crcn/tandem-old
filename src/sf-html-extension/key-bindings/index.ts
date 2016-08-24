@@ -18,6 +18,7 @@ abstract class BaseInsertElementTool extends InsertTool {
 
   constructor(readonly options: any, editor: IEditor) {
     super(editor);
+    this.entityIsRoot = options.root;
   }
 
 
@@ -50,7 +51,7 @@ export const dependencies = [
 
 const insertElementKeyBindings = {
   "d" : { nodeName:  "div", attributes: `` },
-  "a" : { nodeName: "artboard", attributes: `title="Artboard"`, background: "white" }
+  "a" : { nodeName: "artboard", attributes: `title="Artboard"`, background: "white", root: true }
 };
 
 for (const key in insertElementKeyBindings) {

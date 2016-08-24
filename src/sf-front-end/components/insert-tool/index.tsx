@@ -73,6 +73,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
   render() {
     const { editor } = this.props;
+    const tool = editor.currentTool as InsertTool;
     const selection = (this.props.editor.workspace.selection as DisplayEntitySelection<any>);
     const zoom = this.props.editor.transform.scale;
     const display = selection.display;
@@ -92,7 +93,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     return <div className="m-insert-tool">
       <div onMouseDown={this._insertNewItem} style={bgstyle} />
-      <SelectablesComponent {...this.props} canvasRootSelectable={true} onEntityMouseDown={this.onEntityMouseDown} />
+      { !tool.entityIsRoot ? <SelectablesComponent {...this.props} canvasRootSelectable={true} onEntityMouseDown={this.onEntityMouseDown} /> : null }
       { display && display.capabilities.resizable ? <SelectionSizeComponent left={bounds.left + bounds.width} top={bounds.top + bounds.height} bounds={bounds} zoom={zoom} /> : undefined }
     </div>;
   }
