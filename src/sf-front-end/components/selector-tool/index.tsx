@@ -1,17 +1,17 @@
 import "./index.scss";
 import * as React from "react";
-import { Guider } from "./guider";
 import { flatten } from "lodash";
 import RulerComponent from "./ruler";
+import { PointerTool } from "sf-front-end/models/pointer-tool";
 import { BoundingRect } from "sf-core/geom";
 import ResizerComponent from "./resizer";
 import { Editor, Workspace } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectionSizeComponent } from "sf-front-end/components/selection-size";
 import { DisplayEntitySelection } from "sf-front-end/models";
-import { IEntityDisplay, IEntity, IVisibleEntity } from "sf-core/entities";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
-import { PointerTool } from "sf-front-end/models/pointer-tool";
+import { Guider, createBoundingRectPoints } from "./guider";
+import { IEntityDisplay, IEntity, IVisibleEntity } from "sf-core/entities";
 
 export default class SelectorComponent extends React.Component<{ editor: Editor, tool: PointerTool, workspace: Workspace, app: FrontEndApplication, zoom: number, allEntities: Array<IEntity> }, any> {
 
@@ -65,15 +65,32 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
       boxShadow: `0 0 0 ${borderWidth}px #a4b7d7`
     };
 
-    const guider = new Guider(allEntities.map((entity: IVisibleEntity) => entity.display && entity.display.bounds).filter((b) => !!b));
+    const guider = new Guider();
+    const sections: any = {
+      bounds: <div className="m-selector-component--bounds" style={boundsStyle} />
+    };
+
+    if (this.state.resizing || this.state.moving) {
+      sections.ruler = <RulerComponent {...this.props} selection={selection} allEntities={this.props.allEntities} />;
+    } else {
+      sections.resizer = <ResizerComponent {...this.props} guider={guider} strokeWidth={2} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} onMoving={this.onMoving} onStopMoving={this.onStopMoving} />;
+    }
+
+    if (this.state.resizing) {
+      sections.size = <SelectionSizeComponent left={this.state.mouseLeft} top={this.state.mouseTop} zoom={this.props.zoom} bounds={entireBounds} />;
+    }
+
+    allEntities.forEach((entity: IVisibleEntity) => {
+      if (entity.display) {
+        guider.addPoint(...createBoundingRectPoints(entity.display.bounds));
+      }
+    });
 
     return (<div className="m-selector-component">
-      { this.state.moving || this.state.resizing ? undefined : <ResizerComponent {...this.props} guider={guider} strokeWidth={2} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} onMoving={this.onMoving} onStopMoving={this.onStopMoving} /> }
-
-      <div className="m-selector-component--bounds" style={boundsStyle} />
-
-      {this.state.resizing || this.state.moving ? <RulerComponent {...this.props} selection={selection} allEntities={this.props.allEntities} /> : undefined}
-      { this.state.resizing ? <SelectionSizeComponent left={this.state.mouseLeft} top={this.state.mouseTop} zoom={this.props.zoom} bounds={entireBounds} /> : undefined}
+      { sections.bounds }
+      { sections.ruler }
+      { sections.resizer }
+      { sections.size }
     </div>);
   }
 }

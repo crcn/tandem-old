@@ -1,4 +1,4 @@
-import { IPosition } from "./base";
+import { IPoint } from "./base";
 
 export class Transform {
 
@@ -6,7 +6,7 @@ export class Transform {
 
   }
 
-  localizePosition(position: IPosition) {
+  localizePosition(position: IPoint) {
     return {
       left: (position.left - this.left) / this.scale,
       top: (position.top - this.top) / this.scale

@@ -1,5 +1,5 @@
 import { Selection } from "./selection";
-import { BoundingRect, IPosition } from "sf-core/geom";
+import { BoundingRect, IPoint } from "sf-core/geom";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { IVisibleEntity, IEntityDisplay, DisplayCapabilities } from "sf-core/entities";
 import { register as registerSerializer, serializeArray, deserialize } from "sf-core/serialize";
@@ -8,12 +8,12 @@ class EntitySelectionDisplay implements IEntityDisplay {
 
   constructor(readonly selection: DisplayEntitySelection<any>) { }
 
-  get position(): IPosition {
+  get position(): IPoint {
     const bounds = this.bounds;
     return { left: bounds.left, top: bounds.top };
   }
 
-  set position(position: IPosition) {
+  set position(position: IPoint) {
     const epos = this.position;
     for (const item of this.selection) {
       const itemDisplay = item.display;

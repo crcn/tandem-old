@@ -119,10 +119,10 @@ CSSAttributeSelectorRule
     const clazz = {
       "=": CSSAttributeEqualsSelectorExpression,
       "~=": CSSAttributeContainsSelectorExpression,
+      "$=": CSSAttributeEndsWithSelectorExpression,
+      "*=": CSSAttributeContainsSelectorExpression,
       "|=": CSSAttributeStartsWithSelectorExpression,
       "^=": CSSAttributeStartsWithSelectorExpression,
-      "$=": CSSAttributeEndsWithSelectorExpression,
-      "*=": CSSAttributeContainsSelectorExpression
     }[op];
     return new clazz(name, value, position());
   }
@@ -132,7 +132,6 @@ CSSAttributeSelectorRule
 
 CSSAttributeSelectorValue
   = String/CSSAttributeSelectorValueCharacter+ { return text(); }
-
 
 String
   = '"' characters:DoubleStringCharacter* '"' { return characters.join(''); }
@@ -145,7 +144,6 @@ DoubleStringCharacter
 SingleStringCharacter
   = !("'" / "\\") . { return text(); }
   / "\\'"
-
 
 CSSAttributeSelectorValueCharacter
   = !"]" . { return text(); }

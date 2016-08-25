@@ -1,7 +1,7 @@
 import { Action } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
 import { toArray } from "sf-core/utils/array";
-import { IRange, IPosition } from "sf-core/geom";
+import { IRange, IPoint } from "sf-core/geom";
 import { IEditor, IEditorTool, IHistoryItem } from "sf-front-end/models";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 

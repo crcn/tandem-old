@@ -71,6 +71,7 @@
     "sift": "^3.2.4",
     "socket.io-client": "^1.4.8",
     "sprintf": "^0.1.5",
+    "store": "^1.3.20",
     "ts-helpers": "^1.1.1",
     "yargs": "^4.8.1"
   }

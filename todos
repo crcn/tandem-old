@@ -1,27 +1,3 @@
-
-
-- [ ] snap div elements together
-- [ ] attributes pane
-- [ ] combine style attributes
-- [ ] for <multiple values>, ability to select one from drop menu
-  - [ ] highlight entities with hovered value
-- [ ] highlight entities when hovering over css selectors
-- [ ] ability to collapse css styles
-- [ ] metadata attribute for entities
-- [ ] support !important;
-- [ ] panes component that allows for panes to be re-organized & detached
-- [ ] delete style
-- [ ] add style + button
-- [ ] ability to display simple css style or more UI
-- [ ] enter on value frame should add a new declaration immediately below it
-- [ ] drop menu helper for declaration key
-- [ ] measurement changer for value
-- [ ] can select header of style and select other entities
-- [ ] layers pane
-- [ ] move layer back
-- [ ] focus on artboards?
-- [ ] markdown editor
-
 - [ ] copy & paste
   - [x] should paste in parent of currently selected entity
 
@@ -37,7 +13,10 @@
   - [ ] css rules
     - [ ] show # elements associated with rules
     - [ ] ability to select entities
-    - [ ] ability to add new rule
+    - [ ] ability to add new rules
+
+- [ ] css parser
+  - [ ] support !important
 
 - [ ] drag & drop
   - [ ] recalc entity position when moving to different parent
@@ -59,7 +38,29 @@
     - [ ] can modify the measurement
     - [ ] enter key in name or value should add new declaration below current
   - [ ] element style
+    - [ ] changes to style pane to multi-selection
+    - [ ] show <multiple values> if differences between styles
   - [ ] element css styles
+  - [ ] element attributes
+  - [ ] artboard
+    - [ ] preset sizes for mobile devices (similar to adobe xd)
 
 - [ ] cleanup
   - [ ] validate selection whenever the source changes - sometimes it doesn't have any selection
+
+- [ ] optimizations
+  - [ ] memoize flatten() for entities
+  - [ ] replace most react components with transpiled saffron
+  - [ ] possibly custom rendering engine (later on)
+
+- [ ] proof of concept
+  - [ ] saffron must be built with saffron
+  - [ ] simple
+
+- [ ] hooks
+  - [ ]
+
+- [ ] perks
+  - [ ] markdown editor
+  - [ ] webgl / canvas editor
+  - [ ] language that transpiles to any rendering engine (similar to what Famous was)

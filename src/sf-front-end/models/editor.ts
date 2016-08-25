@@ -5,7 +5,7 @@ import { Workspace } from "./workspace";
 import { KeyBinding } from "sf-front-end/key-bindings";
 import { IInjectable } from "sf-core/dependencies";
 import { ParallelBus } from "mesh";
-import { IPosition, Transform } from "sf-core/geom";
+import { IPoint, Transform } from "sf-core/geom";
 import { IEditor, IEditorTool } from "./base";
 import { IEntity, IEntityDocument } from "sf-core/entities";
 
@@ -15,7 +15,7 @@ export const MAX_ZOOM = 6400 / 100;
 export class Editor implements IEditor {
 
   private _zoom: number = 1;
-  public translate: IPosition = { left: 0, top: 0 };
+  public translate: IPoint = { left: 0, top: 0 };
   private _currentTool: IEditorTool;
   public transform: Transform = new Transform();
 

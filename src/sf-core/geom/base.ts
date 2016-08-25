@@ -3,13 +3,13 @@ export interface IRange {
   end: number;
 }
 
-export interface IPosition {
+export interface IPoint {
   left: number;
   top: number;
 }
 
 
-export class Position implements IPosition {
+export class Point implements IPoint {
   constructor(readonly left: number, readonly top: number) {
 
   }

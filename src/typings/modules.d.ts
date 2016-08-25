@@ -63,3 +63,8 @@ declare module "react-input-autosize" {
 
   export = AutosizeInput;
 }
+
+declare module "store" {
+  export function get(key: string): any;
+  export function set(key: string, value: any);
+}

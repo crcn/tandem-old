@@ -1,6 +1,6 @@
 import { Guider } from "./index";
 import { expect } from "chai";
-import { IPosition, Position, BoundingRect } from "sf-core/geom";
+import { IPoint, Point, BoundingRect } from "sf-core/geom";
 
 describe(__filename + "#", () => {
 
@@ -25,3 +25,14 @@ describe(__filename + "#", () => {
     // });
   });
 });
+
+/*
+
+const guider = new Guider(allEntityBounds);
+const intersections: Array<intersection> = guider.getIntersections(bounds);
+
+for (const intersection of intersetions) {
+  console.log(intersection.start, intersection.end); { left, top }, { left, top }
+  if (intersection.intersects(new Point(rect.left, rect.top + rect.height)))
+}
+*/

@@ -1,6 +1,6 @@
 import "./index.scss";
 import * as React from "react";
-import { IPosition } from "sf-core/geom";
+import { IPoint } from "sf-core/geom";
 import IsolateComponent  from "sf-front-end/components/isolate";
 import { BoundingRect } from "sf-core/geom";
 import { IVisibleEntity } from "sf-core/entities";
@@ -19,7 +19,7 @@ import {
 
 export default class EditorStageLayersComponent extends React.Component<{ editor: Editor, workspace: Workspace, dependencies: Dependencies, zoom: number }, any> {
 
-  private _mousePosition: IPosition;
+  private _mousePosition: IPoint;
   private _toolsHidden: any;
   private _previousZoom: number;
 

@@ -4,7 +4,7 @@ import { Action } from "sf-core/actions";
 import { Workspace } from "./workspace";
 import { IInjectable } from "sf-core/dependencies";
 import { IDisposable } from "sf-core/object";
-import { IPosition, Transform } from "sf-core/geom";
+import { IPoint, Transform } from "sf-core/geom";
 import { IEntity, IEntityDocument } from "sf-core/entities";
 
 export interface IEditorTool extends IActor, IDisposable {

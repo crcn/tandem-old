@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { Element } from "sf-core/markup";
 import { DisplayEntitySelection } from "./display-entity-selection";
-import { BoundingRect, IPosition } from "sf-core/geom";
+import { BoundingRect, IPoint } from "sf-core/geom";
 import { IEntityDisplay, IVisibleEntity, DisplayCapabilities, EntityMetadata } from "sf-core/entities";
 
 describe(__filename + "#", () => {
@@ -18,7 +18,7 @@ describe(__filename + "#", () => {
       return { left: bounds.left, top: bounds.top };
     }
 
-    set position({ left, top }: IPosition) {
+    set position({ left, top }: IPoint) {
       this.bounds = new BoundingRect(left, top, left + this.bounds.width, top + this.bounds.height);
     }
   }

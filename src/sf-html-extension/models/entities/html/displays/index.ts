@@ -1,6 +1,6 @@
 import { WrapBus } from "mesh";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
-import { BoundingRect, IPosition } from "sf-core/geom";
+import { BoundingRect, IPoint } from "sf-core/geom";
 import { VisibleHTMLElementEntity } from "../index";
 import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/parsers/css";
 import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/entities";
@@ -119,7 +119,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     );
   }
 
-  get position(): IPosition {
+  get position(): IPoint {
     const bounds = this.bounds;
     return { left: bounds.left, top: bounds.top };
   }
@@ -127,7 +127,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
   /**
    */
 
-  set position({ left, top }: IPosition) {
+  set position({ left, top }: IPoint) {
     const bounds = this.bounds;
     this.bounds = new BoundingRect(left, top, left + bounds.width, top + bounds.height);
   }

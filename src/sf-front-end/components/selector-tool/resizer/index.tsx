@@ -5,7 +5,7 @@ import { startDrag } from "sf-front-end/utils/component";
 import PathComponent from "./path";
 import { FrontEndApplication } from "sf-front-end/application";
 import { DisplayEntitySelection } from "sf-front-end/models";
-import { BoundingRect, IPosition } from "sf-core/geom";
+import { BoundingRect, IPoint } from "sf-core/geom";
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
@@ -156,7 +156,7 @@ class ResizerComponent extends React.Component<{
     this.props.onStopResizing();
   }
 
-  moveTarget(position: IPosition) {
+  moveTarget(position: IPoint) {
     this.targetDisplay.position = position;
   }
 

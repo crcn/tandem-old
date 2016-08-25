@@ -1,4 +1,4 @@
-import { IPosition } from "sf-core/geom";
+import { IPoint } from "sf-core/geom";
 
 export class BoundingRect {
 
@@ -49,7 +49,7 @@ export class BoundingRect {
     return BoundingRect.merge(this, ...rects);
   }
 
-  move({ left, top }: IPosition): BoundingRect {
+  move({ left, top }: IPoint): BoundingRect {
     return new BoundingRect(
       this.left + left,
       this.top   + top,
@@ -58,7 +58,7 @@ export class BoundingRect {
     );
   }
 
-  moveTo({ left, top }: IPosition): BoundingRect {
+  moveTo({ left, top }: IPoint): BoundingRect {
     return new BoundingRect(
       left,
       top,
