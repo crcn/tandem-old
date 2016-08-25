@@ -6,11 +6,11 @@ describe(__filename + "#", () => {
 
   describe("guider#", () => {
     it("can be created", () => {
-      new Guider();
+      // new Guider();
     });
 
     it("can add new bounds", () => {
-      const guider = new Guider([new BoundingRect(0, 0, 100, 100)]);
+      // const guider = new Guider([new BoundingRect(0, 0, 100, 100)]);
     });
 
     // it("can snap a rectangle to the left most corner of some bounds", () => {

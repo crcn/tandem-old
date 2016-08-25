@@ -1,11 +1,13 @@
 import * as React from "react";
-import { Guider } from "../guider";
 import { Editor } from "sf-front-end/models";
 import { startDrag } from "sf-front-end/utils/component";
 import PathComponent from "./path";
+import { IVisibleEntity } from "sf-core/entities";
 import { FrontEndApplication } from "sf-front-end/application";
+import { BoundingRect, IPoint, Point } from "sf-core/geom";
 import { DisplayEntitySelection } from "sf-front-end/models";
-import { BoundingRect, IPoint } from "sf-core/geom";
+import { Guider, createBoundingRectPoints, SnapResult } from "../guider";
+import { IntersectingPointComponent } from "./intersecting-point";
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
@@ -20,8 +22,7 @@ class ResizerComponent extends React.Component<{
   zoom: number,
   pointRadius?: number,
   strokeWidth?: number,
-  onStopResizing: Function,
-  guider: Guider
+  onStopResizing: Function
 }, any> {
 
   private _dragger: any;
@@ -49,6 +50,16 @@ class ResizerComponent extends React.Component<{
     return this.props.app.workspace.file;
   }
 
+  createGuider(): Guider {
+    const guider = new Guider(3 / this.props.zoom);
+    this.file.document.root.flatten().forEach((childNode: IVisibleEntity) => {
+      if (childNode.display && this.props.selection.indexOf(childNode) === -1) {
+        guider.addPoint(...createBoundingRectPoints(childNode.display.bounds));
+      }
+    });
+    return guider;
+  }
+
   updatePoint = (point, event) => {
 
     this.props.onResizing(event);
@@ -58,15 +69,22 @@ class ResizerComponent extends React.Component<{
 
     const selection = this.props.selection;
 
-    // no ZOOM
-    const style = this.targetDisplay.bounds;
+    const bounds = this.targetDisplay.bounds;
+    const guider = this.createGuider();
 
     const props = {
-      left   : style.left,
-      top    : style.top,
-      width  : style.width,
-      height : style.height
+      left   : bounds.left,
+      top    : bounds.top,
+      width  : bounds.width,
+      height : bounds.height
     };
+
+    let snapResult: SnapResult = guider.snap(
+      new Point(point.currentBounds.left + point.left, point.currentBounds.top + point.top)
+    );
+
+    point.top  += snapResult.delta.top;
+    point.left += snapResult.delta.left;
 
     if (/^n/.test(point.id)) {
       props.top    = point.currentBounds.top + point.top;
@@ -112,6 +130,8 @@ class ResizerComponent extends React.Component<{
       props.top  = point.currentBounds.top + (point.currentBounds.height / 2 - props.height / 2);
     }
 
+    this.setState({ snap: snapResult });
+
     this.targetDisplay.bounds = new BoundingRect(
       props.left,
       props.top,
@@ -127,13 +147,15 @@ class ResizerComponent extends React.Component<{
 
     // when dragging, need to fetch style of the selection
     // so that the dragger is relative to the entity"s position
-    const style = this.targetDisplay.bounds;
+    const bounds = this.targetDisplay.bounds;
 
-    const sx2 = style.left;
-    const sy2 = style.top;
+    const sx2 = bounds.left;
+    const sy2 = bounds.top;
     const translateLeft = this.props.editor.transform.left;
     const translateTop  = this.props.editor.transform.top;
-    const guider = this.props.guider;
+    const guider = this.createGuider();
+
+    this.setState({ snap: undefined });
 
     this._dragger = startDrag(event, (event2, { delta }) => {
 
@@ -141,18 +163,22 @@ class ResizerComponent extends React.Component<{
       const ny = (sy2 + (delta.y - (this.props.editor.transform.top - translateTop)) / this.props.zoom);
 
       let position = { left: nx, top: ny };
-      // position = guider.snap(this.targetDisplay.bounds.moveTo(position));
+      let result = guider.snap(position, createBoundingRectPoints(new BoundingRect(nx, ny, nx + bounds.width, ny + bounds.height)));
 
-      this.moveTarget(position);
+      this.setState({ snap: result });
+
+      this.moveTarget(result.point);
     }, () => {
       this.file.save();
       this._dragger = void 0;
+      this.setState({ snap: undefined });
       this.props.onStopMoving();
     });
   }
 
   onPointMouseUp = () => {
     this.file.save();
+    this.setState({ snap: undefined });
     this.props.onStopResizing();
   }
 
@@ -202,7 +228,9 @@ class ResizerComponent extends React.Component<{
       top: top
     }));
 
-    return (
+    const snap: SnapResult = this.state.snap;
+
+    return (<div>
       <div
         ref="selection"
         className="m-selector-component--selection"
@@ -221,7 +249,10 @@ class ResizerComponent extends React.Component<{
           pointRadius={pointRadius}
         />
       </div>
-    );
+      { (snap ? snap.guidePoints : []).map((point: IPoint, i) => {
+        return <IntersectingPointComponent editor={this.props.editor} point={point} key={i} />;
+      })}
+    </div>);
   }
 }
 

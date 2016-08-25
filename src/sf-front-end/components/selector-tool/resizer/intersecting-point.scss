@@ -1,0 +1,7 @@
+@import "sf-front-end/scss/variables";
+
+.m-intersecting-point {
+  & line {
+    stroke: $color-sky-blue-4;
+  }
+}

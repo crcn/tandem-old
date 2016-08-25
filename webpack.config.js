@@ -1,7 +1,7 @@
-var webpack           = require("webpack");
-var path              = require("path");
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-
+var webpack               = require("webpack");
+var path                  = require("path");
+var ExtractTextPlugin     = require("extract-text-webpack-plugin");
+var WebpackNotifierPlugin = require('webpack-notifier');
 
 module.exports =  {
   entry: {
@@ -25,6 +25,9 @@ module.exports =  {
 
       // required for mongoid-js plugin particularly
       "process.pid": process.pid
+    }),
+    new WebpackNotifierPlugin({
+      alwaysNotify: true
     })
   ],
   node: {
