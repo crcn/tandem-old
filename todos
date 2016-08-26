@@ -35,7 +35,8 @@
 
 - [ ] entity panes
   - [ ] all styles
-    - [ ] can modify the measurement
+    - [ ] can translate the measurements
+    - [ ] measurements translated to % should use calc to offset right border
     - [ ] enter key in name or value should add new declaration below current
   - [ ] element style
     - [ ] changes to style pane to multi-selection
