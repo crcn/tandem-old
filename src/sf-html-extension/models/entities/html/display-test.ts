@@ -103,8 +103,6 @@ describe(__filename + "#", () => {
         <div id="target" style="width:100px;height:100px;position:absolute;top:10px;left:10px;" />
       </div>`)).to.eql([60, 110, 100, 100]);
     });
-
-
   });
 
   describe("capabilities ", function() {
@@ -172,5 +170,16 @@ describe(__filename + "#", () => {
       target.display.bounds = new BoundingRect(0, 0, 200, 200);
       expect(simplifyBounds(target.display.bounds)).to.eql([0, 0, 200, 200]);
     });
+
+
+    it("subtracts bounds", async () => {
+      const target = await loadTarget(`<div id="target" style="width:100px;height:100px; border: 2px solid black;">
+
+      </div>`);
+
+      target.display.bounds = new BoundingRect(0, 0, 200, 200);
+      expect(simplifyBounds(target.display.bounds)).to.eql([0, 0, 200, 200]);
+    });
+
   });
 });

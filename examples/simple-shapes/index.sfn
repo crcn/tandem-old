@@ -13,6 +13,7 @@
 
 <artboard title="Test Artboard" style="top: 944px; width: 800px; height: 600px;">
   <div class="item">
-    Hello World
+    Hello World!
+    This is a test
   </div>
 </artboard>

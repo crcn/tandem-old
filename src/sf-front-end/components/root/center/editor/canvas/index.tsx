@@ -133,23 +133,29 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     let width  = body.offsetWidth;
     let height = body.offsetHeight;
 
-    let entireBounds = BoundingRect.merge(...(this.props.workspace.file.document.root as IContainerEntity).childNodes
+    const allBounds = (this.props.workspace.file.document.root as IContainerEntity).childNodes
     .map((entity: IVisibleEntity) => entity.display && entity.display.bounds)
-    .filter((bounds) => !!bounds));
+    .filter((bounds) => !!bounds);
 
-    // center
-    entireBounds = entireBounds.move({
-      left: -entireBounds.left * 2 + width / 2 - entireBounds.width / 2 ,
-      top: -entireBounds.top * 2 + height / 2 - entireBounds.height / 2
-    });
+    if (allBounds.length) {
 
-    this.props.editor.transform.left = entireBounds.left;
-    this.props.editor.transform.top = entireBounds.top;
-    this.props.editor.transform.scale = Math.min(width / entireBounds.width, height / entireBounds.height) * 0.8;
+      let entireBounds = BoundingRect.merge(...allBounds);
+
+      // center
+      entireBounds = entireBounds.move({
+        left: -entireBounds.left * 2 + width / 2 - entireBounds.width / 2 ,
+        top: -entireBounds.top * 2 + height / 2 - entireBounds.height / 2
+      });
+
+      this.props.editor.transform.left = entireBounds.left;
+      this.props.editor.transform.top = entireBounds.top;
+      this.props.editor.transform.scale = Math.min(width / entireBounds.width, height / entireBounds.height) * 0.8;
+    }
 
     this.setState({
       canvasWidth  : width,
       canvasHeight : height,
+      showCanvas   : !allBounds.length,
       centerLeft   : 0.5,
       centerTop    : 0.5
     });
