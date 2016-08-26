@@ -9,6 +9,13 @@ export class BoundingRect {
     public bottom: number
   ) { }
 
+  get position(): IPoint {
+    return {
+      left: this.left,
+      top: this.top
+    };
+  }
+
   get width() {
     return this.right - this.left;
   }

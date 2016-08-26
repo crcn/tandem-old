@@ -24,9 +24,9 @@
 - [ ] stage tools
   - [ ] guides
     - [ ] display distance between each object
-    - [ ] snap objects together
+    - [x] snap objects together
     - [ ] snap elements when inserting new one
-    - [ ] guide bounds should be isolated to parent, or art board
+    - [x] guide bounds should be isolated to parent, or art board
   - [ ] custom context menu
     - [ ] edit text option
   - [ ] vector tool

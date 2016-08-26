@@ -51,11 +51,11 @@ export class Guider {
 
     for (const guidePoint of this.points) {
       for (const relativePoint of relativePoints) {
-        if (Math.round(guidePoint.top) === Math.round(relativePoint.top)) {
+        if (Math.floor(guidePoint.top) === Math.floor(relativePoint.top)) {
           guideLines.push(new GuideLine(guidePoint, guidePoint.top, true));
           guideLines.push(new GuideLine(relativePoint, relativePoint.top, true));
         }
-        if (Math.round(guidePoint.left) === Math.round(relativePoint.left)) {
+        if (Math.floor(guidePoint.left) === Math.floor(relativePoint.left)) {
           guideLines.push(new GuideLine(guidePoint, guidePoint.left, false));
           guideLines.push(new GuideLine(relativePoint, relativePoint.left, false));
         }

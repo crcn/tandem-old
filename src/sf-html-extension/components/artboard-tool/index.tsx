@@ -59,6 +59,7 @@ export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEnt
 
     const title = this.props.entity.getAttribute("title") || "Untitled";
 
+
     return <div style={style} className="m-artboard-tool-editor">
       <div style={titleStyle} className="m-artboard-tool-editor-title" onDoubleClick={this.onDoubleClick}>
         { this.state.editTitle ? <FocusComponent><input onFocus={this.onInputFocus.bind(this)} onBlur={this.onBlur} defaultValue={title} onKeyDown={this.onTitleKeyDown} /></FocusComponent> : title }
@@ -92,7 +93,6 @@ export class ArtboardToolComponent extends React.Component<{ zoom: number, works
 }
 
 export const dependency = [
-  new ReactComponentFactoryDependency("components/tools/pointer/artboard", ArtboardToolComponent),
-  new ReactComponentFactoryDependency("components/tools/insert/artboard", ArtboardToolComponent)
+  new ReactComponentFactoryDependency("components/tools/pointer/artboard", ArtboardToolComponent)
 ];
 

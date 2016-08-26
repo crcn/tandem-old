@@ -69,10 +69,6 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
       resizer: <ResizerComponent {...this.props} strokeWidth={2} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} onMoving={this.onMoving} onStopMoving={this.onStopMoving} />
     };
 
-    if (this.state.resizing || this.state.moving) {
-      sections.ruler = <RulerComponent {...this.props} selection={selection} allEntities={this.props.allEntities} />;
-    }
-
     if (this.state.resizing) {
       sections.size = <SelectionSizeComponent left={this.state.mouseLeft} top={this.state.mouseTop} zoom={this.props.zoom} bounds={entireBounds} />;
     }
@@ -80,7 +76,6 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
     return (<div className="m-selector-component">
       { sections.bounds }
-      { sections.ruler }
       { sections.resizer }
       { sections.size }
     </div>);

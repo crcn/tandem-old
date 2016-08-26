@@ -35,7 +35,7 @@ export class IntersectingPointComponent extends React.Component<{ guideLine: Gui
     }
 
     return <div style={style} className="m-intersecting-point">
-      <svg width={width} height={height} viewBox={[-halfBorderWidth, -halfBorderWidth, width + borderWidth, height + borderWidth]}>
+      <svg width={width + borderWidth} height={height + borderWidth} viewBox={[-halfBorderWidth, -halfBorderWidth, width + borderWidth, height + borderWidth]}>
         { line }
       </svg>
     </div>;

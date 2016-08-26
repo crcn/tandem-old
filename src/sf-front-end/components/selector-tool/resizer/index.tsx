@@ -2,12 +2,12 @@ import * as React from "react";
 import { Editor } from "sf-front-end/models";
 import { startDrag } from "sf-front-end/utils/component";
 import PathComponent from "./path";
-import { IVisibleEntity } from "sf-core/entities";
 import { FrontEndApplication } from "sf-front-end/application";
-import { BoundingRect, IPoint, Point } from "sf-core/geom";
 import { DisplayEntitySelection } from "sf-front-end/models";
-import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
 import { IntersectingPointComponent } from "./intersecting-point";
+import { BoundingRect, IPoint, Point } from "sf-core/geom";
+import { IVisibleEntity, IContainerEntity } from "sf-core/entities";
+import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
@@ -118,11 +118,21 @@ class ResizerComponent extends React.Component<{
 
   createGuider(): Guider {
     const guider = new Guider(5 / this.props.zoom);
-    this.file.document.root.flatten().forEach((childNode: IVisibleEntity) => {
-      if (childNode.display && this.props.selection.indexOf(childNode) === -1) {
-        guider.addPoint(...createBoundingRectPoints(childNode.display.bounds));
+
+    const each = (node: IContainerEntity) => {
+      if (this.props.selection.indexOf(node) !== -1) return;
+
+      const displayNode = node as any as IVisibleEntity;
+      if (displayNode.display) {
+        guider.addPoint(...createBoundingRectPoints(displayNode.display.bounds));
       }
-    });
+
+      if (node.childNodes) {
+        node.childNodes.forEach(each);
+      }
+    };
+
+    each(this.file.document.root as IContainerEntity);
     return guider;
   }
 
@@ -189,9 +199,15 @@ class ResizerComponent extends React.Component<{
       let position = { left: nx, top: ny };
       let changeDelta = guider.snap(position, createBoundingRectPoints(new BoundingRect(nx, ny, nx + bounds.width, ny + bounds.height)));
 
-      this.moveTarget(new Point(position.left + changeDelta.left, position.top + changeDelta.top));
+      const newBounds = bounds.moveTo({
+        left: nx + changeDelta.left,
+        top: ny + changeDelta.top
+      });
 
-      this.setState({ guideLines: guider.getGuideLines(createBoundingRectPoints(this.targetDisplay.bounds)) });
+      this.moveTarget(newBounds.position);
+      const guideLines = guider.getGuideLines(createBoundingRectPoints(newBounds));
+
+      this.setState({ guideLines: guideLines });
 
     }, () => {
       this.file.save();
@@ -253,7 +269,7 @@ class ResizerComponent extends React.Component<{
       top: top
     }));
 
-    const guideLines: Array<IPoint> = this.state.guideLines || [];
+    const guideLines: Array<GuideLine> = this.state.guideLines || [];
 
     return (<div>
       <div
