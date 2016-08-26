@@ -63,7 +63,7 @@ export const dependencies = [
 ];
 
 const insertElementKeyBindings = {
-  "d" : { nodeName:  "div", attributes: ``, style: "border: 1px solid #999; background: #CCC;" },
+  "d" : { nodeName:  "div", attributes: ``, style: "background:rgba(0,0,0,0.1);" },
   "a" : { nodeName: "artboard", attributes: `title="Artboard"`, style: "background; white;", root: true }
 };
 

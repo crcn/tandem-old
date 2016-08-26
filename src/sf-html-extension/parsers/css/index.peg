@@ -154,7 +154,6 @@ CSSTagSelector
   / "*" { return new CSSAnySelectorExpression(position()); }
   / CSSTagSelectorText { return new CSSTagNameSelectorExpression(text(), position()); }
 
-
 CSSTagSelectorText
   = CSSSelectorCharacter+ { return text().trim(); }
 
@@ -162,7 +161,7 @@ CSSSelectorCharacter
   = [a-zA-Z0-9_-] { return text(); }
 
 CSSStyleDeclaration
-  = !("}") _ key:CSSStyleDeclarationKey _ ':' _ value:CSSStyleDeclarationValue? _ ';' _ {
+  = !("}") _ key:CSSStyleDeclarationKey _ ':' _ value:CSSLiteralValue? _ ';' _ {
     return new CSSStyleDeclarationExpression(key, value || new CSSLiteralExpression(""), position());
   }
 
@@ -172,10 +171,10 @@ CSSStyleDeclarationKey
   }
 
 CSSStyleDeclarationValue
-  = CSSListValue/CSSSingleValue
+  = CSSSingleValue
 
 CSSSingleValue
-  = CSSFunctionCall/CSSLiteralValue
+  = CSSLiteralValue
 
 CSSLiteralValue
   = value:CSSValue {
@@ -218,7 +217,7 @@ CSSValue
   = CSSValueCharacter+ { return text(); }
 
 CSSValueCharacter
-  = !([ ;,)(]). { return text(); }
+  = !";". { return text(); }
 /**
  * Generic
  */
