@@ -1,0 +1,24 @@
+<link rel="stylesheet" type="text/scss" href="./style.scss" />
+
+<artboard title="Pane" style="width: 200px; left: 1076px; top: 290px;">
+  <style>
+    .header {
+      background: rgba(0,0,0,0.1);
+      padding: 10px;
+    }
+
+    .content {
+      padding: 10px;
+    }
+
+  </style>
+  <div class="header">
+    ${title}
+  </div>
+  <div class="content">
+  Content
+  </div>
+</artboard>
+
+
+<artboard title="Application" style="width: 1024px; height: 768px; top: 290px; left: -4px;" />
