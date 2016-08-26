@@ -20,11 +20,12 @@
     color: $color-orange-7;
   }
 
-  &:hover {
-    & .m-element-layer-label--add-child-button {
-      display: inline-block;
-    }
-  }
+  // TODO - uncomment me when this is working
+  // &:hover {
+  //   & .m-element-layer-label--add-child-button {
+  //     display: inline-block;
+  //   }
+  // }
 
   padding-right: 20px;
 

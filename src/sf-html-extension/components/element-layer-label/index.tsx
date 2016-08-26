@@ -39,6 +39,8 @@ class ElementLayerLabelComponent extends React.Component<any, any> {
   }
 
   editHTML() {
+    // TODO - uncomment this when this is fixed
+    return;
     this.setState({
       editTagName: true,
       source: this.getHTMLValue()
