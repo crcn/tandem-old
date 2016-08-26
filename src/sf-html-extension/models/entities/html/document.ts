@@ -94,9 +94,10 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
     await this._render();
   }
 
-  private _onFileContentChange = (content: string) => {
+  private _onFileContentChange = async (content: string) => {
     if (content == null) return;
-    this.load(content);
+    await this.load(content);
+    this.root.sync();
   }
 
   private async _render() {

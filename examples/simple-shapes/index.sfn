@@ -1,19 +1,16 @@
 <style>
-  .item {
-    width: 100%;
-    height: 100px;
-    position: absolute;
-    background-color: #CCC;
-    color: white;
+  .header {
+    background: rgba(0,0,0,0.1);
     padding: 10px;
-    font-family: Helvetica;
-    box-sizing: border-box;
+    text-align: center;
+    height: 200px;
+    position: relative;
+    color: orange;
   }
 </style>
 
-<artboard title="Test Artboard" style="top: 944px; width: 800px; height: 600px;">
-  <div class="item">
-    Hello World!
-    This is a test
+<artboard title="Website" style="top: 944px; width: 800px; height: 600px;">
+  <div class="header">
+    Header
   </div>
 </artboard>
