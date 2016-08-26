@@ -67,6 +67,10 @@ export class BoundingRect {
     );
   }
 
+  clone(): BoundingRect {
+    return new BoundingRect(this.left, this.top, this.right, this.bottom);
+  }
+
   static merge(...rects: Array<BoundingRect>): BoundingRect {
     let left   = Infinity;
     let bottom = -Infinity;

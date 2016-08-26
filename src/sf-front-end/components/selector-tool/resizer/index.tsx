@@ -6,11 +6,77 @@ import { IVisibleEntity } from "sf-core/entities";
 import { FrontEndApplication } from "sf-front-end/application";
 import { BoundingRect, IPoint, Point } from "sf-core/geom";
 import { DisplayEntitySelection } from "sf-front-end/models";
-import { Guider, createBoundingRectPoints, SnapResult } from "../guider";
+import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
 import { IntersectingPointComponent } from "./intersecting-point";
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
+
+function resize(oldBounds: BoundingRect, delta: IPoint, anchor: IPoint, keepAspectRatio: boolean, keepCenter: boolean) {
+
+  const centerLeft      = keepCenter ? 0.5 : anchor.left;
+  const centerTop       = keepCenter ? 0.5 : anchor.top;
+
+  const oldLeft   = oldBounds.left;
+  const oldTop    = oldBounds.top;
+  const oldWidth  = oldBounds.width;
+  const oldHeight = oldBounds.height;
+
+  let { left, top, width, height } = oldBounds;
+
+  // N
+  if (anchor.top === 0) {
+    top += delta.top;
+    height -= delta.top;
+    if (keepCenter) height += oldTop - top;
+  }
+
+  // S
+  if (anchor.top === 1) {
+    height += delta.top;
+    if (keepCenter) {
+      const cheight = oldHeight - height;
+      top += cheight;
+      height -= cheight;
+    }
+  }
+
+  // W
+  if (anchor.left === 0) {
+    left += delta.left;
+    width -= delta.left;
+    if (keepCenter) width += oldLeft - left;
+  }
+
+  // E
+  if (anchor.left === 1) {
+    width += delta.left;
+    if (keepCenter) {
+      const cwidth = oldWidth - width;
+      left += cwidth;
+      width -= cwidth;
+    }
+  }
+
+  if (keepAspectRatio) {
+    if (anchor.top === 0 || anchor.top === 1) {
+      const perc = height / oldHeight;
+      width = oldWidth * perc;
+      left = oldLeft + (oldWidth - width) * (1 - centerLeft);
+    } else if (anchor.top === 0.5) {
+      const perc = width / oldWidth;
+      height = oldHeight * perc;
+      top = oldTop + (oldHeight - height) * (1 - centerTop);
+    }
+  }
+
+  return new BoundingRect(
+    left,
+    top,
+    left + width,
+    top + height
+  );
+}
 
 class ResizerComponent extends React.Component<{
   editor: Editor,
@@ -51,7 +117,7 @@ class ResizerComponent extends React.Component<{
   }
 
   createGuider(): Guider {
-    const guider = new Guider(3 / this.props.zoom);
+    const guider = new Guider(5 / this.props.zoom);
     this.file.document.root.flatten().forEach((childNode: IVisibleEntity) => {
       if (childNode.display && this.props.selection.indexOf(childNode) === -1) {
         guider.addPoint(...createBoundingRectPoints(childNode.display.bounds));
@@ -60,84 +126,42 @@ class ResizerComponent extends React.Component<{
     return guider;
   }
 
-  updatePoint = (point, event) => {
-
-    this.props.onResizing(event);
-
+  updatePoint = (point, event: KeyboardEvent) => {
     const keepAspectRatio = event.shiftKey;
     const keepCenter      = event.altKey;
+    const anchor: IPoint  = point.anchor;
 
-    const selection = this.props.selection;
-
-    const bounds = this.targetDisplay.bounds;
+    let bounds = resize(point.currentBounds.clone(), point.delta, point.anchor, keepAspectRatio, keepCenter);
     const guider = this.createGuider();
 
-    const props = {
-      left   : bounds.left,
-      top    : bounds.top,
-      width  : bounds.width,
-      height : bounds.height
-    };
-
-    let snapResult: SnapResult = guider.snap(
-      new Point(point.currentBounds.left + point.left, point.currentBounds.top + point.top)
+    const currentPoint = new Point(
+      bounds.left + bounds.width * anchor.left,
+      bounds.top + bounds.height * anchor.top
     );
 
-    point.top  += snapResult.delta.top;
-    point.left += snapResult.delta.left;
+    const snapAnchors = [
+      new Point(0, 0),
+      new Point(0.5, 0),
+      new Point(1, 0),
+      new Point(1, 0.5),
+      new Point(1, 1),
+      new Point(0.5, 1),
+      new Point(0, 1),
+      new Point(0, 0.5)
+    ];
 
-    if (/^n/.test(point.id)) {
-      props.top    = point.currentBounds.top + point.top;
-      props.height = point.currentBounds.height - point.top;
+    for (const snapAnchor of snapAnchors) {
+      const snapDelta = guider.snap({
+        left: bounds.left + bounds.width * snapAnchor.left,
+        top: bounds.top + bounds.height * snapAnchor.top
+      });
+
+      bounds = resize(bounds, snapDelta, snapAnchor, keepAspectRatio, keepCenter);
+      // if (snapDelta.left || snapDelta.top) break;
     }
 
-    if (/e$/.test(point.id)) {
-      props.width = point.left;
-    }
-
-    if (/^s/.test(point.id)) {
-      props.height = point.top;
-    }
-
-    if (/w$/.test(point.id)) {
-      props.width = point.currentBounds.width - point.left;
-      props.left  = point.currentBounds.left + point.left;
-    }
-
-    if (keepAspectRatio) {
-      if (/^[ns]/.test(point.id)) {
-        const perc  = props.height / point.currentBounds.height;
-        props.width = point.currentBounds.width * perc;
-
-        // only north and south poles
-        if (!/[ew]$/.test(point.id)) {
-          props.left = point.currentBounds.left + (point.currentBounds.width / 2 - props.width / 2);
-        } else if (/w$/.test(point.id)) {
-          props.left = point.currentBounds.left + point.currentBounds.width - props.width;
-        }
-      } else if (/[ew]$/.test(point.id)) {
-        const perc   = props.width / point.currentBounds.width;
-        props.height = point.currentBounds.height * perc;
-
-        if (!/[ns]$/.test(point.id)) {
-          props.top = point.currentBounds.top + (point.currentBounds.height / 2 - props.height / 2);
-        }
-      }
-    }
-
-    if (keepCenter) {
-      props.left = point.currentBounds.left + (point.currentBounds.width / 2 - props.width / 2);
-      props.top  = point.currentBounds.top + (point.currentBounds.height / 2 - props.height / 2);
-    }
-
-    this.setState({ snap: snapResult });
-
-    this.targetDisplay.bounds = new BoundingRect(
-      props.left,
-      props.top,
-      props.left + props.width,
-      props.top + props.height
-    );
+    this.setState({ guideLines: guider.getGuideLines(createBoundingRectPoints(bounds)) });
+    this.targetDisplay.bounds = bounds;
   }
 
   startDragging = (event) => {
@@ -155,7 +179,7 @@ class ResizerComponent extends React.Component<{
     const translateTop  = this.props.editor.transform.top;
     const guider = this.createGuider();
 
-    this.setState({ snap: undefined });
+    this.setState({ guideLines: undefined });
 
     this._dragger = startDrag(event, (event2, { delta }) => {
 
@@ -163,22 +187,23 @@ class ResizerComponent extends React.Component<{
       const ny = (sy2 + (delta.y - (this.props.editor.transform.top - translateTop)) / this.props.zoom);
 
       let position = { left: nx, top: ny };
-      let result = guider.snap(position, createBoundingRectPoints(new BoundingRect(nx, ny, nx + bounds.width, ny + bounds.height)));
+      let changeDelta = guider.snap(position, createBoundingRectPoints(new BoundingRect(nx, ny, nx + bounds.width, ny + bounds.height)));
 
-      this.setState({ snap: result });
+      this.moveTarget(new Point(position.left + changeDelta.left, position.top + changeDelta.top));
 
-      this.moveTarget(result.point);
+      this.setState({ guideLines: guider.getGuideLines(createBoundingRectPoints(this.targetDisplay.bounds)) });
+
     }, () => {
       this.file.save();
       this._dragger = void 0;
-      this.setState({ snap: undefined });
+      this.setState({ guideLines: undefined });
       this.props.onStopMoving();
     });
   }
 
   onPointMouseUp = () => {
     this.file.save();
-    this.setState({ snap: undefined });
+    this.setState({ guideLines: undefined });
     this.props.onStopResizing();
   }
 
@@ -222,13 +247,13 @@ class ResizerComponent extends React.Component<{
       index: i,
       show: show,
 
-      // no zoom
+      anchor: new Point(left as number / rect.width, top as number / rect.height),
       currentBounds: rect,
       left: left,
       top: top
     }));
 
-    const snap: SnapResult = this.state.snap;
+    const guideLines: Array<IPoint> = this.state.guideLines || [];
 
     return (<div>
       <div
@@ -249,8 +274,9 @@ class ResizerComponent extends React.Component<{
           pointRadius={pointRadius}
         />
       </div>
-      { (snap ? snap.guidePoints : []).map((point: IPoint, i) => {
-        return <IntersectingPointComponent editor={this.props.editor} point={point} key={i} />;
+
+      { guideLines.map((guideLine: GuideLine, i) => {
+        return <IntersectingPointComponent editor={this.props.editor} guideLine={guideLine} key={i} />;
       })}
     </div>);
   }

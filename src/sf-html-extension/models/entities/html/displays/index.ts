@@ -72,6 +72,7 @@ function calculateUntransformedBoundingRect(node: HTMLElement) {
   const bounds = new BoundingRect(rect.left, rect.top, rect.right, rect.bottom);
   const matrix = calculateTransform(node, false);
 
+
   return bounds.move({ left: -matrix[4], top: -matrix[5] }).zoom(1 / matrix[0]);
 }
 
@@ -173,7 +174,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
       bounds.left + borderLeftWidth,
       bounds.top + borderTopWidth,
       bounds.right - borderLeftWidth - borderRightWidth,
-      bounds.bottom - - borderBottomWidth - borderTopWidth
+      bounds.bottom - borderBottomWidth - borderTopWidth
     );
   }
 
@@ -188,6 +189,10 @@ export class HTMLNodeDisplay implements IEntityDisplay {
 
     const transforms = this._calculateTransforms();
     const scaled = value.move({ left: -transforms.left, top: -transforms.top }).zoom(1 / transforms.scale);
+
+    // TODO - this needs to be tested
+    scaled.right  -= computedStyle.borderLeftWidth + computedStyle.borderRightWidth;
+    scaled.bottom -= computedStyle.borderTopWidth + computedStyle.borderBottomWidth;
 
     if (value.left !== bounds.left) {
       // const scale = bounds.left / (existingStyle.left || 0);
@@ -207,6 +212,8 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     if (Math.round(value.height) !== Math.round(bounds.height)) {
       newStyle.height = (scaled.height - computedStyle.paddingTop - computedStyle.paddingBottom) + "px";
     }
+
+
 
     newStyle = roundMeasurements(newStyle);
 
