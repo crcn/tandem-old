@@ -3,6 +3,7 @@ import * as gaze from "gaze";
 import * as sift from "sift";
 import { Logger } from "sf-core/logger";
 import { Response } from "mesh";
+import { SaveAction } from "sf-common/actions";
 import { IApplication } from "sf-core/application";
 import { PostDBAction } from "sf-core/actions";
 import { BaseApplicationService } from "sf-core/services";
@@ -42,6 +43,13 @@ export default class FileService extends BaseApplicationService<IApplication> {
     }
 
     return file.save();
+  }
+
+  /**
+   */
+  @document("saves a file to disk")
+  saveFile(action: SaveAction) {
+    fs.writeFile(action.path, action.content);
   }
 
   /**

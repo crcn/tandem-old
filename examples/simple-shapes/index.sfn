@@ -1,16 +1,13 @@
 <style>
   .header {
-    background: rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.1);
     padding: 10px;
     text-align: center;
     height: 200px;
     position: relative;
-    color: orange;
+    color: red;
   }
 </style>
-
 <artboard title="Website" style="top: 944px; width: 800px; height: 600px;">
-  <div class="header">
-    Header
-  </div>
+  <div class="header" style="">Header</div>
 </artboard>

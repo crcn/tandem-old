@@ -1,5 +1,6 @@
 import { Action } from "sf-core/actions";
 import { KeyBinding } from "./base";
+import { SaveAction } from "sf-common/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { GlobalKeyBindingDependency } from "sf-front-end/dependencies";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
@@ -31,6 +32,12 @@ export const dependency = [
   new GlobalKeyBindingDependency("meta+-", class ZoomOutCommand extends BaseApplicationCommand<FrontEndApplication> {
     execute(action: Action) {
       this.bus.execute(new ZoomAction(-ZOOM_INCREMENT, true));
+    }
+  }),
+  new GlobalKeyBindingDependency("meta+s", class SaveCommand extends BaseApplicationCommand<FrontEndApplication> {
+    async execute(action: Action) {
+      await this.bus.execute(new SaveAction(this.app.workspace.file));
+      // TODO - dispatch alert here
     }
   }),
   new GlobalKeyBindingDependency("backspace", class DeleteSelectionCommand extends BaseCommand {
