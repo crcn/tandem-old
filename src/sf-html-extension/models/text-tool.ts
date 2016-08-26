@@ -124,7 +124,7 @@ class InsertTextTool extends InsertTool {
   }
 
   createSource() {
-    return parseHTML(`<span style="position:absolute;white-space: nowrap;">Type Something</span>`).childNodes[0];
+    return parseHTML(`<span style="position:absolute;white-space: nowrap;font-family: Helvetica;">Type Something</span>`).childNodes[0];
   }
 }
 
