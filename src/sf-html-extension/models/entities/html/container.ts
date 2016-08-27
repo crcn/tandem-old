@@ -1,5 +1,6 @@
 import { inject } from "sf-core/decorators";
 import { BubbleBus } from "sf-core/busses";
+import { patch, diff } from "sf-core/markup";
 import { disposeEntity } from "./utils";
 import { IHTMLEntity, IHTMLDocument } from "./base";
 import { IHTMLContainerExpression, HTMLExpression } from "sf-html-extension/parsers/html";
@@ -29,9 +30,15 @@ export abstract class HTMLContainerEntity extends ContainerNode implements IHTML
 
   async load() {
     for (const childExpression of this.source.childNodes) {
-      const entity = EntityFactoryDependency.createEntity(childExpression, this._dependencies);
-      this.appendChild(await entity.load());
+      const entity = EntityFactoryDependency.createEntityFromSource(childExpression, this._dependencies);
+      this.appendChild(entity);
+      await entity.load();
     }
+  }
+
+  patch(entity: HTMLContainerEntity) {
+    patch(this, diff(this, entity), (node) => node);
+    this.source.patch(entity.source);
   }
 
   getInitialMetadata(): Object {

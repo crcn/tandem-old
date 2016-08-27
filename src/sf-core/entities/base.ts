@@ -1,7 +1,7 @@
 import { IFile } from "sf-core/active-records";
 import { Metadata } from "sf-core/metadata";
-import { IDisposable } from "../object";
 import { IEntityDisplay } from "./display";
+import { IDisposable, INamed } from "../object";
 import {
   INode,
   Element,
@@ -12,6 +12,10 @@ import {
   IDiffableElement,
   IDiffableValueNode,
 } from "../markup";
+
+export interface IEntitySource extends INamed {
+
+}
 
 export interface IEntityDocument extends IContainerNode {
   readonly root: IEntity;
@@ -61,6 +65,18 @@ export interface IEntity extends INode, IDisposable {
    */
 
   sync();
+
+  /**
+   * loads the entity
+   */
+
+  load();
+
+  /**
+   * patche this entity from another one
+   */
+
+  patch(entity: IEntity);
 }
 
 export interface IVisibleEntity extends IEntity {

@@ -1,6 +1,7 @@
 import { INamed } from "sf-core/object";
 import { IRange } from "sf-core/geom";
 import { IExpression } from "sf-core/expressions";
+import { diffArray, patchArray } from "sf-core/utils/array";
 import { register as registerSerializer } from "sf-core/serialize";
 
 export interface IHTMLExpression extends IExpression, INamed {
@@ -8,24 +9,34 @@ export interface IHTMLExpression extends IExpression, INamed {
 
   // name alias. Here for html compatibility
   nodeName: string;
+
+  patch(expression: IHTMLExpression);
 }
 
 export interface IHTMLValueNodeExpression extends IHTMLExpression {
   nodeValue: any;
 }
 
-
 export abstract class HTMLExpression implements IHTMLExpression {
   readonly nodeName: string;
-  constructor(readonly name: string, readonly position: IRange) {
+  constructor(readonly name: string, public position: IRange) {
     this.nodeName = name;
   }
+  abstract patch(expression: HTMLExpression);
 }
 
 export interface IHTMLContainerExpression extends IHTMLExpression {
   childNodes: Array<HTMLExpression>;
   appendChildNodes(...childNodes: Array<HTMLExpression>);
   removeChild(node: HTMLExpression);
+}
+
+function patchContainer(container: IHTMLContainerExpression, expression: IHTMLContainerExpression) {
+  patchArray(
+    container.childNodes,
+    diffArray(container.childNodes, expression.childNodes, (a, b) => a.nodeName === b.nodeName),
+    (a, b) => { a.patch(b); return a; }
+  );
 }
 
 export class HTMLFragmentExpression extends HTMLExpression implements IHTMLContainerExpression {
@@ -38,6 +49,11 @@ export class HTMLFragmentExpression extends HTMLExpression implements IHTMLConta
     if (i !== -1) {
       this.childNodes.splice(i, 1);
     }
+  }
+
+  patch(expression: HTMLFragmentExpression) {
+    this.position = expression.position;
+    patchContainer(this, expression);
   }
 
   appendChildNodes(...childNodes: Array<HTMLExpression>) {
@@ -60,6 +76,12 @@ export class HTMLElementExpression extends HTMLExpression implements IHTMLContai
     public childNodes: Array<HTMLExpression>,
     public position: IRange) {
     super(nodeName, position);
+  }
+
+  patch(expression: HTMLElementExpression) {
+    this.attributes = expression.attributes;
+    this.position = expression.position;
+    patchContainer(this, expression);
   }
 
   removeChild(child: HTMLExpression) {
@@ -130,6 +152,10 @@ export class HTMLTextExpression extends HTMLExpression implements IHTMLValueNode
   constructor(public nodeValue: string, public position: IRange) {
     super("#text", position);
   }
+  patch(expression: HTMLTextExpression) {
+    this.nodeValue = expression.nodeValue;
+    this.position = expression.position;
+  }
   toString() {
 
     // only WS - trim
@@ -142,7 +168,10 @@ export class HTMLCommentExpression extends HTMLExpression implements IHTMLValueN
   constructor(public nodeValue: string, public position: IRange) {
     super("#comment", position);
   }
-
+  patch(expression: HTMLExpression) {
+    this.nodeValue = expression.nodeName;
+    this.position = expression.position;
+  }
   toString() {
     return ["<!--", this.nodeValue, "-->"].join("");
   }

@@ -23,6 +23,13 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
     this.section = new NodeSection(this._node = this.createDOMNode(source.nodeValue) as any);
   }
 
+  patch(entity: HTMLValueNodeEntity<any>) {
+    this.nodeValue = entity.nodeName;
+    // this.source = entity.source;
+  }
+
+  load() { }
+
   get document(): IHTMLDocument {
     return this._document;
   }

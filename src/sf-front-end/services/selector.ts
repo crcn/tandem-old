@@ -2,8 +2,8 @@ import { DISPOSE } from "sf-core/actions";
 import { Selection } from "sf-front-end/models";
 import { loggable, bindable } from "sf-core/decorators";
 import { FrontEndApplication } from "sf-front-end/application";
-import { IEntity, IContainerEntity } from "sf-core/entities";
 import { BaseApplicationService } from "sf-core/services";
+import { IEntity, IContainerEntity } from "sf-core/entities";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
@@ -18,7 +18,6 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     const selection = [];
     for (const entity of allEntities) {
       if (entity["display"]) {
-
 
         const position = entity.source.position;
 

@@ -86,7 +86,7 @@ export class EntityFactoryDependency extends ClassFactoryDependency {
     return this.findByName(source.name, dependencies);
   }
 
-  static createEntity(source: INamed, dependencies: Dependencies) {
+  static createEntityFromSource(source: INamed, dependencies: Dependencies) {
     const dependency = this.findBySource(source, dependencies);
 
     if (!dependency) {

@@ -105,10 +105,7 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
 
     const oldRoot = this._root;
     if (this._root) {
-      patch(this._root, diff(this._root, root), (node) => node);
-
-      // TODO - need to run ElementExpression.merge(this._root.source, root.source);
-      this._updateExpressions(this._root, root);
+      this._root.patch(root);
     } else {
       this._root = root;
       this.appendChild(this._root);
@@ -119,28 +116,9 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
     this.notify(new PropertyChangeAction("root", this._root, oldRoot));
   }
 
-  private _updateExpressions(toEntity: IHTMLContainerEntity, fromEntity: IHTMLContainerEntity) {
-    toEntity.source = fromEntity.source;
-    if (fromEntity.childNodes) {
-      for (let i = fromEntity.childNodes.length; i--; ) {
-        this._updateExpressions(<IHTMLContainerEntity>toEntity.childNodes[i], <IHTMLContainerEntity>fromEntity.childNodes[i]);
-      }
-    }
-  }
-
   private async _loadEntity(source: INamed): Promise<INode> {
-
-    // TODO - change to HTMLEntityFactoryDependency
-    const entityFactory = EntityFactoryDependency.findBySource(source, this.dependencies);
-    if (!entityFactory) throw new Error(`Unable to find entity factory for expression type "${source.constructor.name}".`);
-    const entity = <INode>entityFactory.create(source);
-    if (entityFactory.mapSourceChildren) {
-      const childExpressions: Array<any> = (await entityFactory.mapSourceChildren(source)) || [];
-      for (const childExpression of childExpressions) {
-        (<IContainerNode>entity).appendChild(await this._loadEntity(childExpression));
-      }
-    }
-
+    const entity = EntityFactoryDependency.createEntityFromSource(source, this.dependencies);
+    await entity.load();
     return entity;
   }
 }
