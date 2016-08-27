@@ -1,1 +1,14 @@
-<artboard title="Pane" style="background: white;position: absolute; width: 284px; height: 197px; left: 1111px; top: 888px;" />
+
+
+<artboard id="website" title="Desktop 800 x 600" style="background: white; position: absolute; width: 800px; height: 700px; left: 1245px; top: 838px;">
+  <div style="background: rgba(0,0,0,0.1); position: absolute; width: 100%; height: 107px; left: 0px; top: 0px;">
+    <div style="background:rgba(0,0,0,0.1);position:absolute;width:0px;height:0px;" /></div>
+</artboard>
+
+<artboard title="Desktop 1024 x 768" style="background: white; position: absolute; width: 1024px; height: 768px; left: 87px; top: 838px;">
+  <website/>
+</artboard>
+
+<artboard title="iPhone" style="width: 375px; height: 551px; left: 2149px; top: 838px;">
+  <website/>
+</artboard>

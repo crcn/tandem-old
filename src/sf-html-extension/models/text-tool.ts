@@ -102,7 +102,7 @@ export class TextTool extends BaseEditorTool {
     }
 
     // save the workspae file -- diffing time
-    await this.workspace.file.save();
+    await this.workspace.file.update();
     this.bus.execute(new SetToolAction(<EditorToolFactoryDependency>this.dependencies.query(pointerToolDependency.ns)));
   }
 

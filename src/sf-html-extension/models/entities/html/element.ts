@@ -26,8 +26,10 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
       this.setAttribute(add.value.name, add.value.value);
     }
 
-    for (const [update] of changes.update) {
-      this.setAttribute(update.name, update.value);
+    for (const [oldAttribute, newAttribute] of changes.update) {
+      if (oldAttribute.value !== newAttribute.value) {
+        this.setAttribute(newAttribute.name, newAttribute.value);
+      }
     }
 
     for (const remove of changes.remove) {

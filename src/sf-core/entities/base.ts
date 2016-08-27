@@ -67,13 +67,13 @@ export interface IEntity extends INode, IDisposable {
   update();
 
   /**
-   * loads the entity
+   * loads the entity from the source
    */
 
   load();
 
   /**
-   * patche this entity from another one
+   * patche this entity from another one.
    */
 
   patch(entity: IEntity);
@@ -91,6 +91,8 @@ export interface IVisibleEntity extends IEntity {
 
 export interface IContainerEntitySource {
   appendChild(source: any);
+  removeChild(source: any);
+  childNodes: Array<any>;
 }
 
 export interface IContainerEntity extends IEntity, IContainerNode {

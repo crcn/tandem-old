@@ -10,7 +10,23 @@ import { NodeSection, INode } from "sf-core/markup";
 import { FrontEndApplication } from "sf-front-end/application";
 import { HTMLElementExpression } from "sf-html-extension/parsers/html";
 import { VisibleHTMLElementEntity } from "./visible-element";
-import { EntityFactoryDependency, IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
+import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "sf-core/dependencies";
+
+const ARTBOARD_NS = "artboards";
+class ArtboardDependency extends Dependency<HTMLArtboardEntity> {
+  constructor(id: string, artboard: HTMLArtboardEntity) {
+    super([ARTBOARD_NS, id].join("/"), artboard);
+  }
+  static find(id: string, dependencies: Dependencies) {
+    return dependencies.query<ArtboardDependency>([ARTBOARD_NS, id].join("/"));
+  }
+}
+
+class RegisteredArtboardEntity extends VisibleHTMLElementEntity {
+  mapSourceChildNodes() {
+    return ArtboardDependency.find(this.nodeName.toLowerCase(), this._dependencies).value.source.childNodes;
+  }
+};
 
 export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInjectable {
 
@@ -19,13 +35,14 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
   private _iframe: HTMLIFrameElement;
   private _placeholder: Node;
 
-  @inject(APPLICATION_SINGLETON_NS)
-  readonly app: FrontEndApplication;
+  async load() {
 
-  didInject() {}
+    if (this.source.getAttribute("id")) {
+      this._dependencies.register(new ArtboardDependency(this.source.getAttribute("id"), this));
+      this._dependencies.register(new EntityFactoryDependency(this.source.getAttribute("id"), RegisteredArtboardEntity));
+    }
 
-  willChangeDocument(document: HTMLDocumentEntity) {
-    super.willChangeDocument(document);
+    return super.load();
   }
 
   getInitialMetadata() {

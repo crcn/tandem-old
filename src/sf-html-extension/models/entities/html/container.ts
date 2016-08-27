@@ -17,7 +17,7 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
   readonly metadata: EntityMetadata;
 
   @inject(DEPENDENCIES_NS)
-  private _dependencies: Dependencies;
+  protected _dependencies: Dependencies;
 
   private _document: IHTMLDocument;
 
@@ -49,7 +49,7 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
   patch(entity: HTMLContainerEntity<T>) {
     this.willSourceChange(entity.source);
     this._source = entity.source;
-    const changes = diffArray(this.childNodes, entity.childNodes, (a, b) => a.nodeName === b.nodeName);
+    const changes = diffArray(this.childNodes, entity.childNodes, (a, b) => a.constructor === b.constructor);
     for (const entity of changes.remove) {
       this.removeChild(entity);
     }

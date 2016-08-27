@@ -60,7 +60,7 @@ export class BaseApplication implements IApplication {
     // property so that this reference isn't passed around everywhere.
     this.dependencies.register(
       new MainBusDependency(this.bus),
-      new DependenciesDependency(this.dependencies),
+      new DependenciesDependency(),
       new ApplicationSingletonDependency(this)
     );
   }

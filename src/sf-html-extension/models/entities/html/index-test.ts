@@ -19,7 +19,7 @@ describe(__filename + "#", () => {
     dependencies = new Dependencies();
 
     dependencies.register(
-      new DependenciesDependency(dependencies),
+      new DependenciesDependency(),
       htmlTextDependency,
       htmlCommentDependency,
       htmlFileModelDependency,

@@ -21,12 +21,12 @@ class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, 
 
   onKeyChange = (event) => {
     this.props.declaration.key = event.target.value;
-    this.props.workspace.file.save();
+    this.props.workspace.file.update();
   }
 
   onValueChange = (event) => {
     this.props.declaration.value = new CSSLiteralExpression(event.target.value, null);
-    this.props.workspace.file.save();
+    this.props.workspace.file.update();
   }
 
   onKeyDown = (event: KeyboardEvent) => {

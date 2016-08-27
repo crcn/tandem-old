@@ -118,9 +118,17 @@ class ResizerComponent extends React.Component<{
 
   createGuider(): Guider {
     const guider = new Guider(5 / this.props.zoom);
+    const { selection } = this.props;
 
     const each = (node: IContainerEntity) => {
-      if (this.props.selection.indexOf(node) !== -1) return;
+
+      for (const entity of selection) {
+
+        // do not use the node as a guide point if it's part of the selection,
+        // or the source is the same. The source will be the same in certain cases -
+        // registered components for example.
+        if (node === entity || node.source === entity.source) return;
+      }
 
       const displayNode = node as any as IVisibleEntity;
       if (displayNode.display) {
@@ -210,7 +218,7 @@ class ResizerComponent extends React.Component<{
       this.setState({ guideLines: guideLines });
 
     }, () => {
-      this.file.save();
+      this.file.update();
       this._dragger = void 0;
       this.setState({ guideLines: undefined });
       this.props.onStopMoving();
@@ -218,7 +226,7 @@ class ResizerComponent extends React.Component<{
   }
 
   onPointMouseUp = () => {
-    this.file.save();
+    this.file.update();
     this.setState({ guideLines: undefined });
     this.props.onStopResizing();
   }

@@ -5,7 +5,7 @@ import { filterAction } from "sf-core/decorators";
 import { HTML_MIME_TYPE } from "sf-html-extension/constants";
 import { parse as parseHTML } from "../parsers/html";
 import { FrontEndApplication } from "sf-front-end/application";
-import { findEntitiesBySource } from "sf-core/entities";
+import { appendSourceChildren } from "sf-core/entities";
 import { BaseApplicationService } from "sf-core/services";
 import { PASTE, PasteAction, SelectAction } from "sf-front-end/actions";
 
@@ -31,17 +31,8 @@ export class PasteHTMLService extends BaseApplicationService<FrontEndApplication
       // meta charset is tacked on the beginning - remove it
       content = content.replace(/\<meta.*?\>/, "");
 
-      // TODO - this.app.workspace.activeEntity.source.appendChildNodes()
-      const childNodes = parseHTML(content).childNodes;
-      activeEntity.source.appendChildNodes(
-        ...childNodes
-      );
-
-      // entity may be within a different file
-      await activeEntity.document.file.save();
-
       // TODO - SelectExpressionAction
-      this.app.bus.execute(new SelectAction(flatten(childNodes.map((expression) => findEntitiesBySource(activeEntity, expression)))));
+      this.app.bus.execute(new SelectAction(await appendSourceChildren(activeEntity, ...parseHTML(content).childNodes)));
     });
   }
 }

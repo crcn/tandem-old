@@ -11,7 +11,7 @@ import { flatten, intersection } from "lodash";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 import { DragSource, DropTarget, DndComponent } from "react-dnd";
 import { SelectAction, ToggleSelectAction, SELECT } from "sf-front-end/actions";
-import { IEntity, IContainerEntity, IVisibleEntity } from "sf-core/entities";
+import { IEntity, IContainerEntity, IVisibleEntity, appendSourceChildren, insertSourceChildren } from "sf-core/entities";
 
 interface ILayerLabelProps {
   paddingLeft?: number;
@@ -194,19 +194,11 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
     if (entity === item) return;
 
-
-    // (item.parentNode as any as IEntity).source.removeChild(item.source);
-
-    // // then add it
-    // (entity.parentNode as IContainerEntity).source.childNodes.splice(
-    //   (entity.parentNode as IContainerEntity).source.childNodes.indexOf(entity.source) + offset,
-    //   0,
-    //   item.source
-    // );
-
-    // app.workspace.file.save();
-
-    app.bus.execute(new SelectAction([item], false));
+    (async () => {
+      (item.parentNode as any as IContainerEntity).source.removeChild(item.source);
+      const newChildren = await insertSourceChildren(entity.parentNode as IContainerEntity, (entity.parentNode as IContainerEntity).source.childNodes.indexOf(entity.source) + offset, item.source);
+      app.bus.execute(new SelectAction(newChildren, false));
+    })();
   },
   hover(props, monitor, component) {
     // props.app.metadata.set(MetadataKeys.HOVER_ITEM, props.entity);
@@ -278,11 +270,12 @@ LayerDndLabelComponent = DropTarget("element", {
       return entity.metadata.get("dragSourceId") === data.id;
     }) as IEntity;
 
-    entity.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
-    // (item.parentNode as any as IEntity).source.removeChild(item.source);
-    // (entity as IContainerEntity).source.appendChildNodes(item.source);
-    app.workspace.file.save();
-    app.bus.execute(new SelectAction([item], false));
+    // wrap so that react-dnd doesn't barf on a promise return
+    (async () => {
+      entity.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
+      (item.parentNode as any as IContainerEntity).source.removeChild(item.source);
+      app.bus.execute(new SelectAction(await appendSourceChildren(entity as IContainerEntity, item.source), false));
+    })();
   },
   hover(props, monitor, component) {
   }

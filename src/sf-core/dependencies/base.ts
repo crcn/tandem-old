@@ -78,7 +78,7 @@ export interface IDependency {
 
 export class Dependency<T> implements IDependency {
   public dependencies: Dependencies;
-  constructor(readonly ns: string, readonly value: T) { }
+  constructor(readonly ns: string, public value: T) { }
 
   /**
    * Clones the dependency - works with base classes.

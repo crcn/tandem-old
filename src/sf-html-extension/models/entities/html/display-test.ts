@@ -36,7 +36,7 @@ describe(__filename + "#", () => {
       new ApplicationSingletonDependency(app)
     );
 
-    dependencies.register(new DependenciesDependency(dependencies));
+    dependencies.register(new DependenciesDependency());
   });
 
   async function loadTarget(source) {

@@ -84,7 +84,7 @@ export class HTMLFile extends DocumentFile implements IInjectable {
   /**
    */
 
-  public async save() {
+  public async update() {
 
     // copy whitespace over to new content
     // this.content = mergeHTML(this.content, this._entity.source.toString());
@@ -94,7 +94,7 @@ export class HTMLFile extends DocumentFile implements IInjectable {
 
     this.content = pretty(this._document.root.source.toString());
 
-    return super.save();
+    return super.update();
   }
 }
 

@@ -30,8 +30,8 @@ export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEnt
   }
 
   save(event) {
-    this.props.entity.setAttribute("title", (event.target as any).value);
-    this.props.editor.workspace.file.save();
+    this.props.entity.source.setAttribute("title", (event.target as any).value);
+    this.props.editor.workspace.file.update();
     this.setState({ editTitle: false });
   }
 

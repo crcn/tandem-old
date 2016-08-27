@@ -115,8 +115,16 @@ export class MainBusDependency extends Dependency<IBrokerBus> {
 
 export const DEPENDENCIES_NS = "dependencies";
 export class DependenciesDependency extends Dependency<Dependencies> {
-  constructor(value: Dependencies) {
-    super(DEPENDENCIES_NS, value);
+  constructor() {
+    super(DEPENDENCIES_NS, null);
+  }
+
+  get dependencies(): Dependencies {
+    return this.value;
+  }
+
+  set dependencies(value: Dependencies) {
+    this.value = value;
   }
 }
 

@@ -92,6 +92,13 @@ export class HTMLElementExpression extends HTMLExpression implements IHTMLContai
     }
   }
 
+  removeAttribute(name: string) {
+    const attribute = this.attributes.find((attr) => attr.name === name);
+    if (attribute) {
+      this.attributes.splice(this.attributes.indexOf(attribute), 1);
+    }
+  }
+
   setAttribute(name: string, value: string) {
     let found = false;
     for (const attribute of this.attributes) {

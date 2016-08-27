@@ -15,24 +15,31 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
   readonly display = new HTMLNodeDisplay(this);
 
   private _styleExpression: CSSStyleExpression;
+  private _originalStyle: string;
 
   protected willSourceChange(value: HTMLElementExpression) {
     const style = value.getAttribute("style");
     const newExpression = style ? parseCSSStyle(style) : new CSSStyleExpression([], null);
 
-    // TODO - this._styleExpression = recycle(parseCSSStyle(style), this._styleExpression, CSSExpression.merge)
     if (this._styleExpression) {
       CSSStyleExpression.merge(this._styleExpression, newExpression);
     } else {
       this._styleExpression = newExpression;
     }
 
+    this._originalStyle = this._styleExpression.toString();
   }
 
   update() {
-    if (this.hasAttribute("style")) {
-      this.source.setAttribute("style", this.getAttribute("style"));
+    if (this.styleExpression.declarations.length) {
+      const newStyle = this.styleExpression.toString();
+      if (newStyle !== this._originalStyle) {
+        this.source.setAttribute("style", this._originalStyle = newStyle);
+      }
+    } else {
+      this.source.removeAttribute("style");
     }
+
     super.update();
   }
 

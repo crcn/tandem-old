@@ -58,12 +58,12 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
     action.preventDefault();
 
     selection.display.position = { left, top };
-    this.workspace.file.save();
+    this.workspace.file.update();
   }
 
   deleteSelection() {
     this.workspace.selection.dispose();
-    this.workspace.file.save();
+    this.workspace.file.update();
   }
 }
 

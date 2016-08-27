@@ -11,7 +11,6 @@ import { File, FILES_COLLECTION_NAME } from "sf-common/models";
 import { inject, loggable, document, filterAction } from "sf-core/decorators";
 import { ApplicationServiceDependency, Dependencies, DEPENDENCIES_NS } from "sf-core/dependencies";
 
-
 @loggable()
 export default class FileService extends BaseApplicationService<IApplication> {
 
