@@ -1,0 +1,1 @@
+export { parse as parseSCSS } from "./index.peg";

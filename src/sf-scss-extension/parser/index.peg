@@ -1,0 +1,19 @@
+{
+const {
+  SCSSVariableDeclarationExpression
+} = require("./expressions");
+}
+
+Start
+  = VariableDeclaration
+
+VariableDeclaration
+  = name: VariableName ":" value: Reference ";" {
+    return new SCSSVariableDeclarationExpression(name, value);
+  }
+
+VariableName
+  = "$" [a-zA-Z_-]+ { return text(); }
+
+Reference
+  = (!";" .)+ { return text(); }
