@@ -77,6 +77,11 @@ export interface IEntity extends INode, IDisposable {
    */
 
   patch(entity: IEntity);
+
+  /**
+   */
+
+  find(filter: (entity: IEntity) => boolean): IEntity;
 }
 
 export interface IVisibleEntity extends IEntity {
@@ -84,8 +89,12 @@ export interface IVisibleEntity extends IEntity {
   readonly displayType: string;
 }
 
+export interface IContainerEntitySource {
+  appendChild(source: any);
+}
+
 export interface IContainerEntity extends IEntity, IContainerNode {
-  appendSourceChildNode(source: any): Promise<IEntity>;
+  readonly source: IContainerEntitySource;
 }
 
 export interface IElementEntity extends IContainerEntity {

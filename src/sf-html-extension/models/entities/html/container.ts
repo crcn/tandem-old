@@ -2,13 +2,14 @@ import { inject } from "sf-core/decorators";
 import { BubbleBus } from "sf-core/busses";
 import { patch, diff } from "sf-core/markup";
 import { disposeEntity } from "./utils";
+import { diffArray, patchArray } from "sf-core/utils/array";
 import { IHTMLEntity, IHTMLDocument } from "./base";
 import { IHTMLContainerExpression, HTMLExpression } from "sf-html-extension/parsers/html";
-import { IEntity, IElementEntity, findEntitiesBySource, EntityMetadata } from "sf-core/entities";
-import { IMarkupSection, ContainerNode, INode, NodeSection, GroupNodeSection } from "sf-core/markup";
+import { IEntity, IElementEntity, EntityMetadata } from "sf-core/entities";
+import { IMarkupSection, ContainerNode, Node, INode, NodeSection, GroupNodeSection } from "sf-core/markup";
 import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency } from "sf-core/dependencies";
 
-export abstract class HTMLContainerEntity extends ContainerNode implements IHTMLEntity, IElementEntity, IInjectable {
+export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> extends ContainerNode implements IHTMLEntity, IElementEntity, IInjectable {
 
   readonly type: string = null;
   readonly nodeName: string;
@@ -20,25 +21,65 @@ export abstract class HTMLContainerEntity extends ContainerNode implements IHTML
 
   private _document: IHTMLDocument;
 
-  constructor(readonly source: IHTMLContainerExpression) {
+  constructor(private _source: T) {
     super();
-    this.nodeName = source.nodeName.toUpperCase();
+    this.willSourceChange(_source);
+    this.nodeName = _source.nodeName.toUpperCase();
     this.section = this.createSection();
     this.metadata = new EntityMetadata(this, this.getInitialMetadata());
     this.metadata.observe(new BubbleBus(this));
   }
 
   async load() {
-    for (const childExpression of this.source.childNodes) {
+    for (const childExpression of await this.mapSourceChildNodes()) {
       const entity = EntityFactoryDependency.createEntityFromSource(childExpression, this._dependencies);
       this.appendChild(entity);
       await entity.load();
     }
   }
 
-  patch(entity: HTMLContainerEntity) {
-    patch(this, diff(this, entity), (node) => node);
-    this.source.patch(entity.source);
+  protected mapSourceChildNodes() {
+    return this._source.childNodes;
+  }
+
+  get source(): T {
+    return this._source;
+  }
+
+  patch(entity: HTMLContainerEntity<T>) {
+    this.willSourceChange(entity.source);
+    this._source = entity.source;
+    const changes = diffArray(this.childNodes, entity.childNodes, (a, b) => a.nodeName === b.nodeName);
+    for (const entity of changes.remove) {
+      this.removeChild(entity);
+    }
+    for (const [currentChild, patchChild] of changes.update) {
+      currentChild.patch(patchChild);
+      const patchIndex = entity.childNodes.indexOf(patchChild);
+      const currentIndex = this.childNodes.indexOf(currentChild);
+      if (currentIndex !== patchIndex) {
+        const beforeChild = <Node>this.childNodes[patchIndex];
+        if (beforeChild) {
+          this.insertBefore(currentChild, beforeChild);
+        } else {
+          this.appendChild(currentChild);
+        }
+      }
+    }
+
+    for (const addition of changes.add) {
+      const beforeChild = <Node>this.childNodes[addition.index];
+      if (beforeChild) {
+        this.insertBefore(addition.value, beforeChild);
+      } else {
+        this.appendChild(addition.value);
+      }
+    }
+  }
+
+
+  protected willSourceChange(value: IHTMLContainerExpression) {
+    // override me
   }
 
   getInitialMetadata(): Object {
@@ -49,6 +90,15 @@ export abstract class HTMLContainerEntity extends ContainerNode implements IHTML
 
   get document(): IHTMLDocument {
     return this._document;
+  }
+
+  find(filter: (entity: IEntity) => boolean): IEntity {
+    if (filter(this)) return this;
+    for (const child of this.childNodes) {
+      const ret = (<IEntity>child).find(filter);
+      if (ret) return ret;
+    }
+    return null;
   }
 
   set document(value: IHTMLDocument) {
@@ -85,19 +135,6 @@ export abstract class HTMLContainerEntity extends ContainerNode implements IHTML
   protected createSection(): IMarkupSection {
     const element = document.createElement(this.nodeName) as any;
     return new NodeSection(element);
-  }
-
-  async appendSourceChildNode(childNode: HTMLExpression): Promise<Array<IEntity>> {
-    this.source.appendChildNodes(childNode);
-
-    // since the child node is dependant on the other entities that
-    // are loaded in, we'll need to update the entire entity tree in order
-    // to return the proper entity
-    await this.document.sync();
-
-    // since we don't know the entity, or where it lives in this entity, we'll need to scan for it. It could
-    // even be a collection of entities.
-    return findEntitiesBySource(this, childNode);
   }
 
   _unlink(child: IHTMLEntity) {

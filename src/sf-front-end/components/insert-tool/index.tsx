@@ -10,7 +10,7 @@ import { SelectablesComponent } from "sf-front-end/components/selectables";
 import { SelectionSizeComponent } from "sf-front-end/components/selection-size";
 import { SetToolAction, SelectAction } from "sf-front-end/actions";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
-import { IEntity, IContainerEntity, IVisibleEntity } from "sf-core/entities";
+import { IEntity, IContainerEntity, IVisibleEntity, appendSourceChild } from "sf-core/entities";
 import { Workspace, Editor, DisplayEntitySelection, InsertTool } from "sf-front-end/models";
 
 class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, workspace: Workspace, app: FrontEndApplication, tool: InsertTool }, any> {
@@ -30,10 +30,10 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     const { editor, bus, workspace, tool } = this.props;
 
     const activeEntity =  this._targetEntity as IContainerEntity;
-    const entity: IVisibleEntity = (await activeEntity.appendSourceChildNode(tool.createSource()))[0] as IVisibleEntity;
-    await bus.execute(new SelectAction(entity));
+    const child = (await appendSourceChild(activeEntity, tool.createSource())) as IVisibleEntity;
+    await bus.execute(new SelectAction(child));
 
-    const capabilities = entity.display.capabilities;
+    const capabilities = child.display.capabilities;
 
     let left = 0;
     let top  = 0;
@@ -44,7 +44,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
       top  = (event.pageY - editor.transform.top) / editor.transform.scale;
     }
 
-    entity.display.position = { left, top };
+    child.display.position = { left, top };
 
     const complete = async () => {
       await workspace.file.save();
@@ -58,7 +58,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
         const width  = (delta.x) / editor.transform.scale;
         const height = (delta.y) / editor.transform.scale;
 
-        entity.display.bounds = new BoundingRect(left, top, left + width, top + height);
+        child.display.bounds = new BoundingRect(left, top, left + width, top + height);
 
       }, complete);
     } else {

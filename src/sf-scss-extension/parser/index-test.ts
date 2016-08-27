@@ -9,5 +9,4 @@ describe(__filename + "#", () => {
       expect(parseSCSS(source).toString()).to.equal(source);
     });
   });
-
 });

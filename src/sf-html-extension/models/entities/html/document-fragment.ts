@@ -1,8 +1,9 @@
 import { GroupNodeSection } from "sf-core/markup";
 import { HTMLContainerEntity } from "./container";
 import { EntityFactoryDependency } from "sf-core/dependencies";
+import { HTMLFragmentExpression } from "sf-html-extension/parsers/html/expressions";
 
-export class HTMLDocumentFragmentEntity extends HTMLContainerEntity {
+export class HTMLDocumentFragmentEntity extends HTMLContainerEntity<HTMLFragmentExpression> {
 
   createSection() {
     return new GroupNodeSection();

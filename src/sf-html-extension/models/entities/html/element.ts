@@ -5,16 +5,16 @@ import { CSSStyleExpression } from "sf-html-extension/parsers/css";
 import { HTMLContainerEntity } from "./container";
 import { AttributeChangeAction } from "sf-core/actions";
 import { EntityFactoryDependency } from "sf-core/dependencies";
+import { diffArray, patchArray } from "sf-core/utils/array";
 import { parse as parseCSS, parseCSSStyle } from "sf-html-extension/parsers/css";
 import { HTMLElementExpression, HTMLAttributeExpression } from "sf-html-extension/parsers/html";
 import { IElement, Attributes, IMarkupSection, NodeSection } from "sf-core/markup";
 
-export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntity, IElementEntity, IElement {
+export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression> implements IHTMLEntity, IElementEntity, IElement {
 
   // no type specified since certain elements such as <style />, and <link />
   // do not fit into a particular category. This may change later on.
   readonly type: string = null;
-  private _source: HTMLElementExpression;
   private _attributes: Attributes;
 
   constructor(source: HTMLElementExpression) {
@@ -25,6 +25,28 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
         this.setAttribute(attribute.name, attribute.value);
       }
     }
+  }
+
+  patch(entity: HTMLElementEntity) {
+
+    const changes = diffArray(this.attributes, entity.attributes, (a, b) => a.name === b.name);
+    const element = (<IElement>this.section.targetNode);
+
+    for (const add of changes.add) {
+      element.setAttribute(add.value.name, add.value.value);
+    }
+
+    for (const [update] of changes.update) {
+      element.setAttribute(update.name, update.value);
+    }
+
+    for (const remove of changes.remove) {
+      element.removeAttribute(remove.name);
+    }
+
+    patchArray(this.attributes, changes, (a, b) => { a.value = b.value; return a; });
+
+    super.patch(entity);
   }
 
   async load() {
@@ -42,21 +64,8 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
     return this._attributes || (this._attributes = new Attributes());
   }
 
-  get source(): HTMLElementExpression {
-    return this._source;
-  }
-
-  set source(value: HTMLElementExpression) {
-    this.willSourceChange(value);
-    this._source = value;
-  }
-
   get cssRuleExpressions(): Array<CSSRuleExpression> {
     return this.document.stylesheet.rules.filter((rule) => rule.test(this));
-  }
-
-  protected willSourceChange(value: HTMLElementExpression) {
-    // override me
   }
 
   static mapSourceChildren(source: HTMLElementExpression) {

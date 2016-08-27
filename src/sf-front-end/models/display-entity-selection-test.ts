@@ -42,6 +42,7 @@ describe(__filename + "#", () => {
     patch(entity) {
       patch(this, diff(this, entity));
     }
+    find(filter) { return this; }
   }
 
   it("can be created", () => {

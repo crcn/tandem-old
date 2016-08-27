@@ -28,7 +28,7 @@ import {
   IHTMLValueNodeExpression,
 } from "sf-html-extension/parsers/html";
 
-import { ContainerNode, diff, patch, INode, IContainerNode } from "sf-core/markup";
+import { ContainerNode, INode, IContainerNode } from "sf-core/markup";
 
 export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, IInjectable {
 

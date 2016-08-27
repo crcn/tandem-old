@@ -27,14 +27,15 @@ export abstract class HTMLExpression implements IHTMLExpression {
 
 export interface IHTMLContainerExpression extends IHTMLExpression {
   childNodes: Array<HTMLExpression>;
-  appendChildNodes(...childNodes: Array<HTMLExpression>);
+  appendChild(child: HTMLExpression);
   removeChild(node: HTMLExpression);
 }
 
 function patchContainer(container: IHTMLContainerExpression, expression: IHTMLContainerExpression) {
+  const changes = diffArray(container.childNodes, expression.childNodes, (a, b) => a.nodeName === b.nodeName);
   patchArray(
     container.childNodes,
-    diffArray(container.childNodes, expression.childNodes, (a, b) => a.nodeName === b.nodeName),
+    changes,
     (a, b) => { a.patch(b); return a; }
   );
 }
@@ -56,8 +57,8 @@ export class HTMLFragmentExpression extends HTMLExpression implements IHTMLConta
     patchContainer(this, expression);
   }
 
-  appendChildNodes(...childNodes: Array<HTMLExpression>) {
-    this.childNodes.push(...childNodes);
+  appendChild(childNode: HTMLExpression) {
+    this.childNodes.push(childNode);
   }
 
   public toString() {
@@ -112,8 +113,8 @@ export class HTMLElementExpression extends HTMLExpression implements IHTMLContai
     }
   }
 
-  appendChildNodes(...childNodes: Array<HTMLExpression>) {
-    this.childNodes.push(...childNodes);
+  appendChild(childNode: HTMLExpression) {
+    this.childNodes.push(childNode);
   }
 
   public toString() {

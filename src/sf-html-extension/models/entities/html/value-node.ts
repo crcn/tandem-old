@@ -16,16 +16,24 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   private _nodeValue: any;
   private _document: IHTMLDocument;
 
-  constructor(readonly source: T) {
-    super(source.nodeName, source.nodeValue);
+  constructor(private _source: T) {
+    super(_source.nodeName, _source.nodeValue);
     this.metadata = new EntityMetadata(this);
     this.metadata.observe(new BubbleBus(this));
-    this.section = new NodeSection(this._node = this.createDOMNode(source.nodeValue) as any);
+    this.section = new NodeSection(this._node = this.createDOMNode(_source.nodeValue) as any);
+  }
+
+  get source(): T {
+    return this._source;
+  }
+
+  find(filter: (entity: IHTMLEntity) => boolean) {
+    if (filter(this)) return this;
   }
 
   patch(entity: HTMLValueNodeEntity<any>) {
-    this.nodeValue = entity.nodeName;
-    // this.source = entity.source;
+    this.nodeValue = entity.nodeValue;
+    this._source = entity.source;
   }
 
   load() { }
