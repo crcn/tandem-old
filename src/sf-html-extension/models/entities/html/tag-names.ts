@@ -80,7 +80,6 @@ export default [
   "label",
   "legend",
   "li",
-  "link",
   "main",
   "map",
   "mark",

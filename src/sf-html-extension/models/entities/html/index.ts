@@ -7,3 +7,4 @@ export * from "./text-node";
 export * from "./element";
 export * from "./visible-element";
 export * from "./document-fragment";
+export * from "./link";

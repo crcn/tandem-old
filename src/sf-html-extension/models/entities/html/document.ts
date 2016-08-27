@@ -117,10 +117,8 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
   }
 
   private async _loadEntity(source: INamed): Promise<INode> {
-
     // create child dependencies in case any new ones are registered
     const entity = EntityFactoryDependency.createEntityFromSource(source, this.dependencies.createChild());
-
     await entity.load();
     return entity;
   }

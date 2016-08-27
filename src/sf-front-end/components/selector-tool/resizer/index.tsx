@@ -2,6 +2,7 @@ import * as React from "react";
 import { Editor } from "sf-front-end/models";
 import { startDrag } from "sf-front-end/utils/component";
 import PathComponent from "./path";
+import { MetadataKeys } from "sf-front-end/constants";
 import { FrontEndApplication } from "sf-front-end/application";
 import { DisplayEntitySelection } from "sf-front-end/models";
 import { IntersectingPointComponent } from "./intersecting-point";
@@ -129,6 +130,8 @@ class ResizerComponent extends React.Component<{
         // registered components for example.
         if (node === entity || node.source === entity.source) return;
       }
+
+      // if (node.metadata.get(MetadataKeys.CANVAS_ROOT) && node.flatten().indexOf()) return;
 
       const displayNode = node as any as IVisibleEntity;
       if (displayNode.display) {

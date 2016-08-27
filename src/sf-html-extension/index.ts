@@ -30,6 +30,7 @@ import { MimeTypeDependency } from "sf-core/dependencies";
  // entities
  import {
    htmlTextDependency,
+   linkEntityDependency,
    htmlCommentDependency,
    htmlArtboardDependency,
    htmlElementDependencies,
@@ -62,6 +63,7 @@ export const dependency = [
 
   // entities
   htmlTextDependency,
+  linkEntityDependency,
   htmlCommentDependency,
   htmlStyleEntityDependency,
   ...htmlElementDependencies,

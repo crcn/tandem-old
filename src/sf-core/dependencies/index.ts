@@ -191,3 +191,21 @@ export class MimeTypeDependency extends Dependency<string> {
     return dep ? dep.value : undefined;
   }
 }
+
+// /**
+//  */
+
+// export const FILE_NS = "files";
+// export class FileFactoryDependency extends Dependency<string> {
+//   constructor(mimeType: string) {
+//     super([FILE_NS, mimeType].join("/"), mimeType);
+//   }
+//   findAll(dependencies: Dependencies) {
+//     return dependencies.queryAll<MimeTypeDependency>([MIME_TYPE_NS, "**"].join("/"));
+//   }
+//   static lookup(filepath: string, dependencies: Dependencies): string {
+//     const extension = filepath.split(".").pop();
+//     const dep = dependencies.query<MimeTypeDependency>([MIME_TYPE_NS, extension].join("/"));
+//     return dep ? dep.value : undefined;
+//   }
+// }
