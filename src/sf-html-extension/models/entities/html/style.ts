@@ -38,8 +38,8 @@ export class HTMLStyleEntity extends HTMLElementEntity {
     this._addDocStyles(newDocument);
   }
 
-  sync() {
-    super.sync();
+  update() {
+    super.update();
     (<HTMLTextExpression>this.source.childNodes[0]).nodeValue = this._styleSheetExpression.toString();
     this._resetStyle();
   }

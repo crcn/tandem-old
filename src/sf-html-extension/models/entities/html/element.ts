@@ -17,34 +17,22 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   readonly type: string = null;
   private _attributes: Attributes;
 
-  constructor(source: HTMLElementExpression) {
-    super(source);
-    // TODO - attributes might need to be transformed here
-    if (source.attributes) {
-      for (const attribute of source.attributes) {
-        this.setAttribute(attribute.name, attribute.value);
-      }
-    }
-  }
-
   patch(entity: HTMLElementEntity) {
 
     const changes = diffArray(this.attributes, entity.attributes, (a, b) => a.name === b.name);
     const element = (<IElement>this.section.targetNode);
 
     for (const add of changes.add) {
-      element.setAttribute(add.value.name, add.value.value);
+      this.setAttribute(add.value.name, add.value.value);
     }
 
     for (const [update] of changes.update) {
-      element.setAttribute(update.name, update.value);
+      this.setAttribute(update.name, update.value);
     }
 
     for (const remove of changes.remove) {
-      element.removeAttribute(remove.name);
+      this.removeAttribute(remove.name);
     }
-
-    patchArray(this.attributes, changes, (a, b) => { a.value = b.value; return a; });
 
     super.patch(entity);
   }
@@ -75,13 +63,6 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   removeAttribute(name: string) {
     this.attributes.remove(name);
     (<IElement>this.section.targetNode).removeAttribute(name);
-    for (let i = this.source.attributes.length; i--; ) {
-      const attribute = this.source.attributes[i];
-      if (attribute.name === name) {
-        this.source.attributes.splice(i, 1);
-        return;
-      }
-    }
   }
 
   getAttribute(name: string) {
@@ -94,7 +75,6 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
 
   setAttribute(name: string, value: string) {
     (<IElement>this.section.targetNode).setAttribute(name, value);
-    this.source.setAttribute(name, value);
     this.attributes.set(name, value);
     this.notify(new AttributeChangeAction(name, value));
   }

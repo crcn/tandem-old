@@ -36,8 +36,7 @@ describe(__filename + "#", () => {
     }
 
     dispose() { }
-    sync() {
-    }
+    update() { }
     load() { }
     patch(entity) {
       patch(this, diff(this, entity));

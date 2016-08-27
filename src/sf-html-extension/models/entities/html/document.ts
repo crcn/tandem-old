@@ -79,11 +79,11 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
     child.document = this;
   }
 
-  async sync() {
+  async update() {
 
     // need to sync the entities first so that changes
     // reflect back on the source
-    await this.root.sync();
+    await this.root.update();
 
     await this._render();
   }
@@ -97,7 +97,7 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
   private _onFileContentChange = async (content: string) => {
     if (content == null) return;
     await this.load(content);
-    this.root.sync();
+    this.root.update();
   }
 
   private async _render() {

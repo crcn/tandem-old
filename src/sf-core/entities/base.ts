@@ -22,7 +22,7 @@ export interface IEntityDocument extends IContainerNode {
 
   // TODO - possibly change file to source since it's a bit more generic
   readonly file: IFile;
-  sync();
+  update();
 }
 
 export class EntityMetadata extends Metadata {
@@ -64,7 +64,7 @@ export interface IEntity extends INode, IDisposable {
    * update source from props on this entity
    */
 
-  sync();
+  update();
 
   /**
    * loads the entity

@@ -29,11 +29,11 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
 
   }
 
-  sync() {
-    if (this.styleExpression.declarations.length) {
-      this.setAttribute("style", this.styleExpression.toString());
+  update() {
+    if (this.hasAttribute("style")) {
+      this.source.setAttribute("style", this.getAttribute("style"));
     }
-    super.sync();
+    super.update();
   }
 
   get styleExpression(): CSSStyleExpression {

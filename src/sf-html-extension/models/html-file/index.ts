@@ -90,7 +90,7 @@ export class HTMLFile extends DocumentFile implements IInjectable {
     // this.content = mergeHTML(this.content, this._entity.source.toString());
 
 
-    await this._document.sync();
+    await this._document.update();
 
     this.content = pretty(this._document.root.source.toString());
 

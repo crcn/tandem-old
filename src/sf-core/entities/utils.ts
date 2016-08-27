@@ -8,6 +8,6 @@ export function findEntitiesBySource(entity: IEntity, source: any) {
 
 export async function appendSourceChild(entity: IContainerEntity, childSource: any) {
   entity.source.appendChild(childSource);
-  await entity.document.sync();
+  await entity.document.update();
   return entity.find((child) => child.source === childSource);
 }

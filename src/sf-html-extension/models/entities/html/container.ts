@@ -77,12 +77,11 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
     }
   }
 
-
   protected willSourceChange(value: IHTMLContainerExpression) {
     // override me
   }
 
-  getInitialMetadata(): Object {
+  protected getInitialMetadata(): Object {
 
     // TODO - scan additional dependencies for metadata
     return {};
@@ -122,9 +121,9 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
     this.section.appendChild(newChild);
   }
 
-  sync() {
+  update() {
     for (const child of this.childNodes) {
-      (<any>child).sync();
+      (<IEntity>child).update();
     }
   }
 
