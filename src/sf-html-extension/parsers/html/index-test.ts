@@ -1,11 +1,6 @@
 import { parse } from "./index";
 import { expect } from "chai";
 import {
-  HTML_TEXT,
-  HTML_COMMENT,
-  HTML_ELEMENT,
-  HTML_FRAGMENT,
-  HTML_ATTRIBUTE,
   HTMLTextExpression,
   HTMLCommentExpression,
   HTMLElementExpression,
@@ -35,7 +30,7 @@ describe(__filename + `#`, () => {
   describe("text nodes#", () => {
     it("can be parsed on their own", () => {
       const text = <HTMLTextExpression>(<HTMLFragmentExpression>parse("hello")).childNodes[0];
-      expect(text.type).to.equal(HTML_TEXT);
+      expect(text).to.an.instanceOf(HTMLTextExpression);
       expect((<HTMLTextExpression>text).nodeValue).to.equal("hello");
     });
 
@@ -47,7 +42,7 @@ describe(__filename + `#`, () => {
   describe("elements#", () => {
     it("can be parsed without attributes or children", () => {
       const element = (<HTMLFragmentExpression>parse("<div />")).childNodes[0] as HTMLFragmentExpression;
-      expect(element.type).to.equal(HTML_ELEMENT);
+      expect(element).to.be.an.instanceOf(HTMLElementExpression);
       expect(element.position.start).to.equal(0);
     });
 
@@ -68,9 +63,9 @@ describe(__filename + `#`, () => {
 
     it("can be parsed with one text child node", () => {
       const element = (<HTMLFragmentExpression>parse("<div>ab</div>")).childNodes[0] as HTMLElementExpression;
-      expect(element.type).to.equal(HTML_ELEMENT);
+      expect(element).to.be.an.instanceOf(HTMLElementExpression);
       expect(element.childNodes.length).to.equal(1);
-      expect(element.childNodes[0].type).to.equal(HTML_TEXT);
+      expect(element.childNodes[0]).to.be.an.instanceOf(HTMLTextExpression);
     });
 
     it("throws an error if the end tag does not match the start tag", () => {
@@ -104,12 +99,12 @@ describe(__filename + `#`, () => {
   describe("dependencies#", () => {
     it("are created when there are two root nodes", () => {
       const element = parse("<!-- hello -->text");
-      expect(element.type).to.equal(HTML_FRAGMENT);
+      expect(element).to.be.an.instanceOf(HTMLFragmentExpression);
     });
 
     it("are created when the source is blank", () => {
       const element = parse("");
-      expect(element.type).to.equal(HTML_FRAGMENT);
+      expect(element).to.be.an.instanceOf(HTMLFragmentExpression);
       expect((element as HTMLFragmentExpression).childNodes.length).to.equal(0);
     });
   });
@@ -143,10 +138,10 @@ describe(__filename + `#`, () => {
         </div>
       `)).childNodes[0] as HTMLElementExpression;
 
-      expect(element.type).to.equal(HTML_ELEMENT);
+      expect(element).to.be.an.instanceOf(HTMLElementExpression);
       expect(element.childNodes.length).to.equal(2);
-      expect(element.childNodes[0].type).to.equal(HTML_ELEMENT);
-      expect(element.childNodes[1].type).to.equal(HTML_ELEMENT);
+      expect(element.childNodes[0]).to.be.an.instanceOf(HTMLElementExpression);
+      expect(element.childNodes[1]).to.be.an.instanceOf(HTMLElementExpression);
     });
   });
 });

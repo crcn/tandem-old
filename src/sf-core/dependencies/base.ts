@@ -1,7 +1,7 @@
 import { flattenDeep } from "lodash";
 
 export interface IInjectable {
-  didInject(): void;
+  didInject?(): void;
 }
 
 /**
@@ -38,7 +38,9 @@ export class Injector {
           console.warn(`Cannot inject ${ns} into ${target.constructor.name}.${property} property.`);
         }
       }
-      target.didInject();
+      if (target.didInject) {
+        target.didInject();
+      }
     }
 
     return target;

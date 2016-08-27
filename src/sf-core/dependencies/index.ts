@@ -1,17 +1,18 @@
 import { Action } from "../actions";
 import { IActor } from "../actors";
-import { IEntity, IContainerEntity } from "../entities";
+import { INamed } from "sf-core/object";
 import { IBrokerBus } from "../busses";
 import { IApplication } from "sf-core/application";
-import { IDiffableNode, IContainerNode } from "../markup";
 import { IActiveRecord } from "../active-records";
+import { IEntity, IContainerEntity } from "../entities";
+import { IDiffableNode, IContainerNode } from "../markup";
 
 import {
   IFactory,
-  IDependency,
   Dependency,
+  IDependency,
   Dependencies,
-  ClassFactoryDependency
+  ClassFactoryDependency,
  } from "./base";
 
 // TODO - add more static find methods to each Dependency here
@@ -64,25 +65,35 @@ export class EntityFactoryDependency extends ClassFactoryDependency {
 
   readonly mapSourceChildren: mapSourceChildrenType;
 
-  constructor(readonly id: string, readonly clazz: { new(source: IDiffableNode): IEntity, mapSourceChildren?: mapSourceChildrenType } ) {
-    super([ENTITIES_NS, id].join("/"), clazz);
+  constructor(readonly name: string, readonly clazz: { new(source: INamed): IEntity, mapSourceChildren?: mapSourceChildrenType } ) {
+    super([ENTITIES_NS, name].join("/"), clazz);
     this.mapSourceChildren = clazz.mapSourceChildren;
   }
 
   clone() {
-    return new EntityFactoryDependency(this.id, this.clazz);
+    return new EntityFactoryDependency(this.name, this.clazz);
   }
 
-  create(source: IDiffableNode) {
+  create(source: INamed) {
     return super.create(source);
   }
 
-  static find(id: string, dependencies: Dependencies) {
-    return dependencies.query<EntityFactoryDependency>([ENTITIES_NS, id].join("/"));
+  static findByName(name: string, dependencies: Dependencies) {
+    return dependencies.query<EntityFactoryDependency>([ENTITIES_NS, name].join("/"));
   }
 
-  static createEntity(source: IDiffableNode, dependencies: Dependencies) {
-    return this.find(source.nodeName, dependencies).create(source);
+  static findBySource(source: INamed, dependencies: Dependencies) {
+    return this.findByName(source.name, dependencies);
+  }
+
+  static createEntity(source: INamed, dependencies: Dependencies) {
+    const dependency = this.findBySource(source, dependencies);
+
+    if (!dependency) {
+      throw new Error(`Unable to find entity factory for source type "${source.constructor.name}".`);
+    }
+
+    return dependency.create(source);
   }
 }
 

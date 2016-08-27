@@ -1,4 +1,3 @@
-
 import { expect } from "chai";
 import { parse as parseHTML } from "./index.peg";
 import {
@@ -13,7 +12,6 @@ import {
   SET_NODE_VALUE,
   REMOVE_ATTRIBUTE,
 } from "sf-core/markup";
-
 
 describe(__filename + "#", () => {
 

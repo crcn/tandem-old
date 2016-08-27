@@ -1,3 +1,4 @@
+import { INamed } from "sf-core/object";
 import { inject } from "sf-core/decorators";
 import { HTMLFile } from "sf-html-extension/models/html-file";
 import { BubbleBus } from "sf-core/busses";
@@ -52,7 +53,6 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
     super();
     watchProperty(file, "content", this._onFileContentChange).trigger();
   }
-
 
   cloneNode(deep?: boolean) {
     const clone = new HTMLDocumentEntity(this.file, this.dependencies);
@@ -128,14 +128,14 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
     }
   }
 
-  private async _loadEntity(expression: any): Promise<INode> {
+  private async _loadEntity(source: INamed): Promise<INode> {
 
     // TODO - change to HTMLEntityFactoryDependency
-    const entityFactory = EntityFactoryDependency.find(expression.nodeName, this.dependencies);
-    if (!entityFactory) throw new Error(`Unable to find entity factory for expression type "${expression.constructor.name}".`);
-    const entity = <INode>entityFactory.create(expression);
+    const entityFactory = EntityFactoryDependency.findBySource(source, this.dependencies);
+    if (!entityFactory) throw new Error(`Unable to find entity factory for expression type "${source.constructor.name}".`);
+    const entity = <INode>entityFactory.create(source);
     if (entityFactory.mapSourceChildren) {
-      const childExpressions: Array<any> = (await entityFactory.mapSourceChildren(expression)) || [];
+      const childExpressions: Array<any> = (await entityFactory.mapSourceChildren(source)) || [];
       for (const childExpression of childExpressions) {
         (<IContainerNode>entity).appendChild(await this._loadEntity(childExpression));
       }

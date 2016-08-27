@@ -1,31 +1,36 @@
-import { register as registerSerializer } from "sf-core/serialize";
+import { INamed } from "sf-core/object";
 import { IRange } from "sf-core/geom";
-import { BaseExpression, flattenEach } from "../core/expression";
+import { IExpression } from "sf-core/expressions";
+import { register as registerSerializer } from "sf-core/serialize";
 
-export interface IHTMLValueNodeExpression {
-  nodeValue: any;
+export interface IHTMLExpression extends IExpression, INamed {
+  name: string;
+
+  // name alias. Here for html compatibility
   nodeName: string;
-  readonly position: IRange;
 }
 
-export abstract class HTMLExpression extends BaseExpression {
-  constructor(type: string, readonly nodeName: string, position: IRange) {
-    super(type, position);
+export interface IHTMLValueNodeExpression extends IHTMLExpression {
+  nodeValue: any;
+}
+
+
+export abstract class HTMLExpression implements IHTMLExpression {
+  readonly nodeName: string;
+  constructor(readonly name: string, readonly position: IRange) {
+    this.nodeName = name;
   }
 }
 
-export interface IHTMLContainerExpression {
-  nodeName: string;
+export interface IHTMLContainerExpression extends IHTMLExpression {
   childNodes: Array<HTMLExpression>;
   appendChildNodes(...childNodes: Array<HTMLExpression>);
   removeChild(node: HTMLExpression);
 }
 
-
-export const HTML_FRAGMENT = "htmlFragment";
 export class HTMLFragmentExpression extends HTMLExpression implements IHTMLContainerExpression {
   constructor(public childNodes: Array<HTMLExpression>, position: IRange) {
-    super(HTML_FRAGMENT, "#document-fragment", position);
+    super("#document-fragment", position);
   }
 
   removeChild(child: HTMLExpression) {
@@ -37,11 +42,6 @@ export class HTMLFragmentExpression extends HTMLExpression implements IHTMLConta
 
   appendChildNodes(...childNodes: Array<HTMLExpression>) {
     this.childNodes.push(...childNodes);
-  }
-
-  public _flattenDeep(items) {
-    super._flattenDeep(items);
-    flattenEach(this.childNodes, items);
   }
 
   public toString() {
@@ -59,7 +59,7 @@ export class HTMLElementExpression extends HTMLExpression implements IHTMLContai
     public attributes: Array<HTMLAttributeExpression>,
     public childNodes: Array<HTMLExpression>,
     public position: IRange) {
-    super(HTML_ELEMENT, nodeName, position);
+    super(nodeName, position);
   }
 
   removeChild(child: HTMLExpression) {
@@ -94,12 +94,6 @@ export class HTMLElementExpression extends HTMLExpression implements IHTMLContai
     this.childNodes.push(...childNodes);
   }
 
-  public _flattenDeep(items) {
-    super._flattenDeep(items);
-    flattenEach(this.attributes, items);
-    flattenEach(this.childNodes, items);
-  }
-
   public toString() {
     const buffer = ["<", this.nodeName];
     for (const attribute of this.attributes) {
@@ -118,10 +112,9 @@ export class HTMLElementExpression extends HTMLExpression implements IHTMLContai
   }
 }
 
-export const HTML_ATTRIBUTE = "htmlAttribute";
-export class HTMLAttributeExpression extends BaseExpression {
-  constructor(public name: string, public value: string, position: IRange) {
-    super(HTML_ATTRIBUTE, position);
+export class HTMLAttributeExpression implements IExpression {
+  constructor(public name: string, public value: string, readonly position: IRange) {
+
   }
   toString() {
     const buffer = [this.name];
@@ -133,10 +126,9 @@ export class HTMLAttributeExpression extends BaseExpression {
   }
 }
 
-export const HTML_TEXT = "htmlText";
 export class HTMLTextExpression extends HTMLExpression implements IHTMLValueNodeExpression {
   constructor(public nodeValue: string, public position: IRange) {
-    super(HTML_TEXT, "#text", position);
+    super("#text", position);
   }
   toString() {
 
@@ -146,10 +138,9 @@ export class HTMLTextExpression extends HTMLExpression implements IHTMLValueNode
   }
 }
 
-export const HTML_COMMENT = "htmlComment";
 export class HTMLCommentExpression extends HTMLExpression implements IHTMLValueNodeExpression {
   constructor(public nodeValue: string, public position: IRange) {
-    super(HTML_COMMENT, "#comment", position);
+    super("#comment", position);
   }
 
   toString() {

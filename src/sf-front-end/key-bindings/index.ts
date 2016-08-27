@@ -36,6 +36,8 @@ export const dependency = [
   }),
   new GlobalKeyBindingDependency("meta+s", class SaveCommand extends BaseApplicationCommand<FrontEndApplication> {
     async execute(action: Action) {
+
+      // TODO - this.app.workspace.activeEntity.document.file instead
       await this.bus.execute(new SaveAction(this.app.workspace.file));
       // TODO - dispatch alert here
     }

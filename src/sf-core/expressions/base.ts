@@ -5,7 +5,5 @@ export interface IExpression {
 }
 
 export abstract class BaseExpression implements IExpression {
-  constructor(readonly position: IRange) {
-
-  }
+  constructor(public position: IRange) { }
 }

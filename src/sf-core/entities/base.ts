@@ -15,6 +15,8 @@ import {
 
 export interface IEntityDocument extends IContainerNode {
   readonly root: IEntity;
+
+  // TODO - possibly change file to source since it's a bit more generic
   readonly file: IFile;
   sync();
 }

@@ -27,6 +27,17 @@ export class HTMLElementEntity extends HTMLContainerEntity implements IHTMLEntit
     }
   }
 
+  async load() {
+    // TODO - attributes might need to be transformed here
+    if (this.source.attributes) {
+      for (const attribute of this.source.attributes) {
+        this.setAttribute(attribute.name, attribute.value);
+      }
+    }
+
+    return super.load();
+  }
+
   get attributes(): Attributes {
     return this._attributes || (this._attributes = new Attributes());
   }

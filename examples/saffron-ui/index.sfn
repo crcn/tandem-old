@@ -16,7 +16,7 @@
     ${title}
   </div>
   <div class="content">
-  Content
+    ${content}
   </div>
 </artboard>
 

@@ -2,11 +2,9 @@ import { parse } from "./index";
 import { expect } from "chai";
 import { IElement } from "sf-core/markup";
 import {
-  CSS_STYLE,
-  CSS_LIST_VALUE,
-  CSS_LITERAL_VALUE,
-  CSS_FUNCTION_CALL,
-  CSS_STYLE_DECLARATION
+  CSSStyleExpression,
+  CSSLiteralExpression,
+  CSSStyleDeclarationExpression,
 } from "./expressions";
 
 
@@ -32,28 +30,7 @@ describe(__filename + "#", () => {
   describe("declarations", () => {
     it("can parse color values", () => {
       const style = parse(`.style{color:#F60;}`).rules[0].style;
-      expect(style.declarations[0].value.type).to.equal(CSS_LITERAL_VALUE);
-    });
-    [
-      "color:rgba();",
-      "color:rgba(0);",
-      "color:rgba(0, 0, 0.1);"
-    ].forEach(source => {
-      it(`parses ${source} as a function call`, () => {
-        expect(parse(`.style { ${source} }`).rules[0].style.declarations[0].value.type).to.equal(CSS_FUNCTION_CALL);
-      });
-
-    });
-
-    [
-      "background:red blue;",
-      "background:red rgba(0,0,0.5) url(http://google.com);"
-      // "background:red, green, blue;"
-    ].forEach(source => {
-      it(`parse ${source} as a list value`, () => {
-        const style = parse(`.style { ${source} }`).rules[0].style;
-        expect(style.declarations[0].value.type).to.equal(CSS_LIST_VALUE);
-      });
+      expect(style.declarations[0].value).to.be.an.instanceOf(CSSLiteralExpression);
     });
   });
 
