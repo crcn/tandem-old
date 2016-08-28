@@ -92,13 +92,13 @@ export class SelectablesComponent extends React.Component<{
 
   render() {
 
-    const selection = this.props.workspace.selection || [];
+    const selection = this.props.workspace.selection;
     const allEntities = this.props.workspace.file.document.flatten() as Array<IEntity>;
     const activeEntity = this.props.workspace.editor.activeEntity as IContainerEntity;
     if (!activeEntity.childNodes) return null;
 
     // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.
-    if (selection["display"] && selection["display"].moving) return null;
+    if (selection && selection.metadata.get(MetadataKeys.MOVING)) return null;
 
     // if (selection.preview.currentTool.type !== "pointer") return null;
 

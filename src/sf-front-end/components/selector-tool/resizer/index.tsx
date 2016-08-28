@@ -201,6 +201,7 @@ class ResizerComponent extends React.Component<{
     const guider = this.createGuider();
 
     this.setState({ guideLines: undefined });
+    selection.metadata.set(MetadataKeys.MOVING, true);
 
     this._dragger = startDrag(event, (event2, { delta }) => {
 
@@ -223,6 +224,7 @@ class ResizerComponent extends React.Component<{
     }, () => {
       this.file.update();
       this._dragger = void 0;
+      selection.metadata.set(MetadataKeys.MOVING, false);
       this.setState({ guideLines: undefined });
       this.props.onStopMoving();
     });

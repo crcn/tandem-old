@@ -10,5 +10,6 @@ export namespace SettingKeys {
 export namespace MetadataKeys {
   export const CANVAS_ROOT = "canvasRoot";
   export const HOVER_ITEM = "hoverItem";
+  export const MOVING = "moving";
   export const LAYER_EXPANDED = "layerExpanded";
 }
