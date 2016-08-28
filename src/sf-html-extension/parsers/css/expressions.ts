@@ -1,5 +1,5 @@
 import { IRange } from "sf-core/geom";
-import { BaseExpression } from "sf-core/expressions";
+import { BaseExpression } from "sf-core/ast";
 import { INode, IElement } from "sf-core/markup";
 import { diffArray, patchArray } from "sf-core/utils/array";
 

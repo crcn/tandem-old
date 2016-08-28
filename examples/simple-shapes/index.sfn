@@ -1,1 +1,3 @@
-<div style="background: rgba(0,0,0,0.1); position: absolute; width: 179px; height: 155px; left: -1069px; top: 144px;" />
+<link rel="stylesheet" type="text/css" href="./style.css" />
+
+<div class="item" />

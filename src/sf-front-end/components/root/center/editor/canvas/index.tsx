@@ -1,6 +1,7 @@
 import "./index.scss";
 import * as React from "react";
 import { IPoint } from "sf-core/geom";
+import { UpdateAction } from "sf-core/actions";
 import IsolateComponent  from "sf-front-end/components/isolate";
 import { BoundingRect } from "sf-core/geom";
 import { IVisibleEntity } from "sf-core/entities";
@@ -137,9 +138,9 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     .map((entity: IVisibleEntity) => entity.display && entity.display.bounds)
     .filter((bounds) => !!bounds);
 
-    if (allBounds.length) {
-
-      let entireBounds = BoundingRect.merge(...allBounds);
+    let entireBounds = BoundingRect.merge(...allBounds);
+    let hasBounds = entireBounds.width && entireBounds.width < Infinity;
+    if (hasBounds) {
 
       // center
       entireBounds = entireBounds.move({
@@ -151,14 +152,15 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
       this.props.editor.transform.top = entireBounds.top;
       this.props.editor.transform.scale = Math.min(width / entireBounds.width, height / entireBounds.height) * 0.8;
 
-      // FIX ME - don't do this. Trigger re-render now.
-      this.bus.execute({ type: "change" } as any);
+      // FIX ME - don't do this. Necessary for now though to re-trigger
+      // render with changed transform props.
+      this.bus.execute(new UpdateAction());
     }
 
     this.setState({
       canvasWidth  : width,
       canvasHeight : height,
-      showCanvas   : !allBounds.length,
+      showCanvas   : !hasBounds,
       centerLeft   : 0.5,
       centerTop    : 0.5
     });

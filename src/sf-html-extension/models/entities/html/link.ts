@@ -11,7 +11,6 @@ export class LinkEntity extends HTMLElementEntity {
 
   async load() {
     const type = this.source.getAttribute("type");
-    console.log(type);
     // this._file = this._dependencies.query<
     // this.appendChild(this._file.document.root);
     return super.load();

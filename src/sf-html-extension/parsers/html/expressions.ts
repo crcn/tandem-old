@@ -1,6 +1,6 @@
 import { INamed } from "sf-core/object";
 import { IRange } from "sf-core/geom";
-import { IExpression } from "sf-core/expressions";
+import { IExpression } from "sf-core/ast";
 import { diffArray, patchArray } from "sf-core/utils/array";
 import { register as registerSerializer } from "sf-core/serialize";
 
