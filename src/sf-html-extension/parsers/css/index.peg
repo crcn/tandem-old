@@ -22,6 +22,7 @@ const {
   CSSTagNameSelectorExpression,
   CSSClassNameSelectorExpression,
   CSSDescendentSelectorExpression,
+  CSSComment,
 
   CSSAndSelectorExpression,
   CSSAttributeStartsWithSelectorExpression,
@@ -40,20 +41,23 @@ function position() {
 }
 
 Start
+  = Expression
+
+Expression
   = CSSStyleSheetExpression
 
 CSSStyleSheetExpression
-  = rules:CSSRule* {
-    return new CSSStyleSheetExpression(rules);
+  = _ rules:(CSSRule/CSSMedia/CSSFontFace/CSSRest)* _ {
+    return new CSSStyleSheetExpression(rules.filter((rule) => !!rule));
   }
 
 CSSRule
-  = _ selector: CSSSelectors _ "{" style: CSSStyle "}" _ {
+  = _ selector: CSSSelectors style: CSSStyle {
     return new CSSRuleExpression(selector, style);
   }
 
 CSSStyle
-  = _ declarations: CSSStyleDeclaration* _ {
+  = _ "{" _ declarations: CSSStyleDeclaration* _  "}" _ {
     return new CSSStyleExpression(declarations, position());
   }
 
@@ -70,7 +74,8 @@ CSSSelector
 
     const classes = {
       ">": CSSChildSelectorExpression,
-      "+": CSSSiblingSelectorExpression
+      "+": CSSSiblingSelectorExpression,
+      "~": CSSSiblingSelectorExpression
     };
 
     function createExpression(items) {
@@ -86,7 +91,7 @@ CSSSelector
   / CSSSelectorRule
 
 CSSChildSelector
-  = _ operator: (">"/"+")? _ selector: CSSSelectorRule {
+  = _ operator: (">"/"+"/"~")? _ selector: CSSSelectorRule {
     return [operator, selector];
   }
 
@@ -97,12 +102,13 @@ CSSNestedSelectorRule
 
 CSSSelectorRule
   = rule: CSSItemSelector ":" pseudo: CSSPseudoSelectorRule {
-    return new CSSAndSelectorExpression(rule, pseudo)
+    return rule;
+    // return new CSSAndSelectorExpression(rule, pseudo)
   }
   / CSSItemSelector
 
 CSSPseudoSelectorRule
-  = name: [^(]+ {
+  = name: [^ ]+ {
 
   }
 
@@ -110,8 +116,8 @@ CSSItemSelector
   = CSSAttributeSelector/CSSTagSelector
 
 CSSAttributeSelector
-  = tag:CSSTagSelector "[" rule: CSSAttributeSelectorRule "]" {
-    return new CSSAndSelectorExpression(tag, rule);
+  = tag:CSSTagSelector? "[" rule: CSSAttributeSelectorRule "]" {
+    return new CSSAndSelectorExpression(tag || new CSSAnySelectorExpression(null), rule);
   }
 
 CSSAttributeSelectorRule
@@ -144,6 +150,23 @@ DoubleStringCharacter
 SingleStringCharacter
   = !("'" / "\\") . { return text(); }
   / "\\'"
+
+CSSMedia
+  = "@media" [^{]+ "{" stylesheet: CSSStyleSheetExpression "}" _ {
+  }
+
+CSSFontFace
+  = "@font-face" _ style: CSSStyle _ {
+  }
+
+CSSRest
+  = "@"[^{]+ CSSRestInnerBlock _ {
+  }
+
+CSSRestInnerBlock
+  = "{" CSSRestInnerBlock* "}"
+  / !"}" .
+
 
 CSSAttributeSelectorValueCharacter
   = !"]" . { return text(); }
@@ -231,4 +254,11 @@ Digit
   = [0-9]
 
 _
+  = ws "/*" CommentCharacter* "*/" ws
+  / ws
+
+ws
   = [ \n\r\t]*
+
+CommentCharacter
+  = !"*/" .

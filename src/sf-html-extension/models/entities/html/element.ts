@@ -56,7 +56,9 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   }
 
   get cssRuleExpressions(): Array<CSSRuleExpression> {
-    return CSSStyleSheetsDependency.findOrRegister(this._dependencies).rules.filter((rule) => rule.test(this));
+    return CSSStyleSheetsDependency.findOrRegister(this._dependencies).rules.filter((rule) => {
+      return rule.test(this);
+    });
   }
 
   static mapSourceChildren(source: HTMLElementExpression) {

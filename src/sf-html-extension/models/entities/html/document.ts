@@ -110,15 +110,20 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
     } else {
       this._root = root;
 
-      // the one HTML element that injects all CSS styles into this current HTML document.
-      this._root.section.appendChild(this._globalStyle = document.createElement("style") as any);
+      if (!process.env.TESTING) {
+        // the one HTML element that injects all CSS styles into this current HTML document.
+        this._root.section.appendChild(this._globalStyle = document.createElement("style") as any);
+      }
 
       this.appendChild(this._root);
       this._root.observe(new BubbleBus(this));
     }
 
-    // after the root has been loaded in, fetch all of the CSS styles.
-    this._globalStyle.innerHTML = CSSStyleSheetsDependency.findOrRegister(this._currentChildDependencies).toString();
+    if (this._globalStyle) {
+      // after the root has been loaded in, fetch all of the CSS styles.
+      this._globalStyle.innerHTML = CSSStyleSheetsDependency.findOrRegister(this._currentChildDependencies).toString();
+    }
+
     this.notify(new PropertyChangeAction("root", this._root, oldRoot));
   }
 

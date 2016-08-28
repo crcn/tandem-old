@@ -19,13 +19,15 @@
   color: orange;
   height: 200px;
   position: relative;
-  padding: 10px;
 }
 
+
 .item div {
-  width: 100%;
-  display: block;
-  height: 100%;
-  margin: 10px;
+  width: 50%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  height: 50%;
   background-color: #F60;
 }

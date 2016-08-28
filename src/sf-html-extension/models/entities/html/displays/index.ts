@@ -75,7 +75,6 @@ function calculateUntransformedBoundingRect(node: HTMLElement) {
   const bounds = new BoundingRect(rect.left, rect.top, rect.right, rect.bottom);
   const matrix = calculateTransform(node, false);
 
-
   return bounds.move({ left: -matrix[4], top: -matrix[5] }).zoom(1 / matrix[0]);
 }
 

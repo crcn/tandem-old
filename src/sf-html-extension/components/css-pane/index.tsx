@@ -98,8 +98,8 @@ export class CSSPaneComponent extends React.Component<{ workspace: Workspace, ap
     return <div className="m-css-pane m-pane-container--content">
         <StylePaneComponent {...this.props} entity={entity} rule={new CSSRuleExpression(null, entity.styleExpression, null)} key="style" />
         {
-          selection.cssRuleExpressions.map((rule) => {
-            return <StylePaneComponent {...this.props} entity={entity} rule={rule} key={rule.selector.toString()} />;
+          selection.cssRuleExpressions.map((rule, key) => {
+            return <StylePaneComponent {...this.props} entity={entity} rule={rule} key={key} />;
           })
         }
     </div>;

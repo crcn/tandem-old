@@ -19,10 +19,26 @@ describe(__filename + "#", () => {
       "background-color:black;",
       "color:red;background-color:blue;",
       "background-color: #CCC; width: 1024px; height: 768px; display:block;",
-      "display:block; width:110.422px; height:50px; "
+      "display:block; width:110.422px; height:50px; ",
+      "/* comment */"
     ].forEach(source => {
-      it(`can parse ${source}`, () => {
+      it(`can parse ${source} declaration`, () => {
         parse(`.style { ${source} }`);
+      });
+    });
+
+    [
+      "audio:not { }",
+      "audio:not([content]) { }",
+      "@media screen { }",
+      "@media screen { div { color: red; }}",
+      "@media screen { div { color: red; }} @font-face { path: url(); }",
+      "@font-face { a: b; c: d; }",
+      "@animation { }",
+      "@-webkit-key-frames { }"
+    ].forEach(source => {
+      it(`can parse ${source} style`, () => {
+        parse(source);
       });
     });
   });
@@ -74,7 +90,8 @@ describe(__filename + "#", () => {
       ["div[class=test]", `<div class="test" target /><div class="test2" />`],
       ["div[class^=test]", `<div class="testttt" target /><div class="teb" />`],
       ["div[class$=test]", `<div class="a b test" target /><div class="test a b" />`],
-      ["div[class$='test']", `<div class="a b test" target /><div class="test a b" />`]
+      ["div[class$='test']", `<div class="a b test" target /><div class="test a b" />`],
+      ["[class$='test']", `<div class="a b test" target /><div class="test a b" />`]
 
       // pseudo - TODO
       // ["li:first-child", `<ul><li target></li><li></li></ul>`]
