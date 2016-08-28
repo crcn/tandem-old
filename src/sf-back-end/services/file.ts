@@ -5,10 +5,10 @@ import { Logger } from "sf-core/logger";
 import { Response } from "mesh";
 import { SaveAction } from "sf-common/actions";
 import { IApplication } from "sf-core/application";
-import { PostDSAction, OpenFileAction } from "sf-core/actions";
 import { BaseApplicationService } from "sf-core/services";
 import { File, FILES_COLLECTION_NAME } from "sf-common/models";
 import { inject, loggable, document, filterAction } from "sf-core/decorators";
+import { PostDSAction, OpenFileAction, WatchFileAction } from "sf-core/actions";
 import { ApplicationServiceDependency, Dependencies, DEPENDENCIES_NS } from "sf-core/dependencies";
 
 @loggable()
@@ -55,7 +55,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @document("reads a file content")
-  readFile(action: OpenFileAction) {
+  readFile(action: OpenFileAction|WatchFileAction) {
     return {
       path    : action.path,
       content : fs.readFileSync(action.path, "utf8")
@@ -86,14 +86,16 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @document("watches a file for any changes")
-  watchFile(action) {
+  watchFile(action: WatchFileAction) {
     return Response.create((writable) => {
-      var watcher = gaze(action.path, (err, w) => {
+      const watcher = gaze(action.path, (err, w) => {
+        const cancel = () => this._closeFileWatcher(watcher, action);
+        writable.then(cancel);
         w.on("all", async () => {
           try {
-            await writable.write({ type: "fileChange" });
+            await writable.write(await this.readFile(action));
           } catch (e) {
-            this._closeFileWatcher(watcher, action);
+            cancel();
           }
         });
       });

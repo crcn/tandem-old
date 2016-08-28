@@ -143,8 +143,8 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
   }
 
   _link(child: IHTMLEntity) {
-    super._link(child);
     child.document = this.document;
+    super._link(child);
     if (child.section) {
       let nextHTMLEntitySibling: IHTMLEntity;
       do {

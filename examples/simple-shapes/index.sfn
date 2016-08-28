@@ -1,5 +1,7 @@
-<link rel="stylesheet" type="text/css" href="./style.css" />
-
-<div class="item">
-  Hello
-</div>
+<link type="text/css" href="./style.css" />
+<artboard id="website" title="Website" class="desktop-1024-768">
+  <div style="background: rgba(0,0,0,0.1); position: absolute; width: 1028px; height: 280px; left: -2px; top: -2px;" />
+</artboard>
+<artboard title="iPhone 6s" class="iphone-6s" style="left: 1204px; top: 2px;">
+  <website/>
+</artboard>

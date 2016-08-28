@@ -160,3 +160,10 @@ export class ReadFileAction extends Action {
   }
 }
 
+export const WATCH_FILE = "watchFile";
+export class WatchFileAction extends Action {
+  constructor(readonly path: string) {
+    super(WATCH_FILE);
+  }
+}
+

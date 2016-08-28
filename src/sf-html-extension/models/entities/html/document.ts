@@ -116,7 +116,6 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
       this.appendChild(this._root);
       this._root.observe(new BubbleBus(this));
     }
-    this._root.document = this;
 
     // after the root has been loaded in, fetch all of the CSS styles.
     this._globalStyle.innerHTML = CSSStyleSheetsDependency.findOrRegister(this._currentChildDependencies).toString();
@@ -129,6 +128,7 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
   private async _loadEntity(source: INamed): Promise<INode> {
     // create child dependencies in case any new ones are registered
     const entity = EntityFactoryDependency.createEntityFromSource(source, this._currentChildDependencies = this.dependencies.createChild());
+    entity.document = this;
     await entity.load();
     return entity;
   }
