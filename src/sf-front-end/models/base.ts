@@ -23,8 +23,11 @@ export interface IEditor extends IActor {
   readonly workspace: Workspace;
 }
 
-export abstract class DocumentFile extends File {
-  readonly document: IEntityDocument;
+export abstract class DocumentFile<T extends IEntityDocument> extends File {
+  protected _document: T;
+  public get document(): T {
+    return this._document;
+  }
 }
 
 export abstract class BaseEditorTool implements IEditorTool, IInjectable {
@@ -43,8 +46,6 @@ export abstract class BaseEditorTool implements IEditorTool, IInjectable {
       return this[action.type](action);
     }
   }
-
-  didInject() { }
 }
 
 export interface IHistoryItem {

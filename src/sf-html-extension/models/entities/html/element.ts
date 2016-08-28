@@ -6,6 +6,7 @@ import { HTMLContainerEntity } from "./container";
 import { AttributeChangeAction } from "sf-core/actions";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { diffArray, patchArray } from "sf-core/utils/array";
+import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { parse as parseCSS, parseCSSStyle } from "sf-html-extension/parsers/css";
 import { HTMLElementExpression, HTMLAttributeExpression } from "sf-html-extension/parsers/html";
 import { IElement, Attributes, IMarkupSection, NodeSection } from "sf-core/markup";
@@ -55,7 +56,7 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   }
 
   get cssRuleExpressions(): Array<CSSRuleExpression> {
-    return this.document.stylesheet.rules.filter((rule) => rule.test(this));
+    return CSSStyleSheetsDependency.findOrRegister(this._dependencies).rules.filter((rule) => rule.test(this));
   }
 
   static mapSourceChildren(source: HTMLElementExpression) {

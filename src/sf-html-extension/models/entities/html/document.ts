@@ -7,6 +7,7 @@ import { watchProperty } from "sf-core/observable";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
 import { EntityFactoryDependency } from "sf-core/dependencies";
+import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { Action, PropertyChangeAction, UpdateAction } from "sf-core/actions";
 import { Dependencies, DEPENDENCIES_NS, IInjectable } from "sf-core/dependencies";
 import { CSSStyleExpression, CSSStyleSheetExpression } from "sf-html-extension/parsers/css";
@@ -32,8 +33,6 @@ import { ContainerNode, INode, IContainerNode } from "sf-core/markup";
 
 export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, IInjectable {
 
-  readonly stylesheet: CSSStyleSheetExpression = new CSSStyleSheetExpression([], null);
-
   /**
    * The source content of this document
    */
@@ -41,6 +40,8 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
   private _root: IHTMLContainerEntity;
   private _source: string;
   private _rootExpression: HTMLFragmentExpression;
+  private _currentChildDependencies: Dependencies;
+  private _globalStyle: HTMLStyleElement;
 
   /**
    * Creates an instance of HTMLDocumentEntity.
@@ -49,7 +50,7 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
    * @param {any} HTMLFile
    */
 
-  constructor(readonly file: DocumentFile, readonly dependencies: Dependencies) {
+  constructor(readonly file: DocumentFile<any>, readonly dependencies: Dependencies) {
     super();
     watchProperty(file, "content", this._onFileContentChange).trigger();
   }
@@ -62,8 +63,6 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
     }
     return clone;
   }
-
-  didInject() { }
 
   get root(): IHTMLContainerEntity {
     return this._root;
@@ -110,17 +109,26 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
       this._root.patch(root);
     } else {
       this._root = root;
+
+      // the one HTML element that injects all CSS styles into this current HTML document.
+      this._root.section.appendChild(this._globalStyle = document.createElement("style") as any);
+
       this.appendChild(this._root);
       this._root.observe(new BubbleBus(this));
     }
     this._root.document = this;
+
+    // after the root has been loaded in, fetch all of the CSS styles.
+    this._globalStyle.innerHTML = CSSStyleSheetsDependency.findOrRegister(this._currentChildDependencies).toString();
+
+    console.log(this._globalStyle.innerHTML);
 
     this.notify(new PropertyChangeAction("root", this._root, oldRoot));
   }
 
   private async _loadEntity(source: INamed): Promise<INode> {
     // create child dependencies in case any new ones are registered
-    const entity = EntityFactoryDependency.createEntityFromSource(source, this.dependencies.createChild());
+    const entity = EntityFactoryDependency.createEntityFromSource(source, this._currentChildDependencies = this.dependencies.createChild());
     await entity.load();
     return entity;
   }

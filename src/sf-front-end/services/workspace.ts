@@ -36,7 +36,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     // TODO - File.findAll(this._dependencies).sync().observe(updateWorkspaces);
     for (const file of (await File.findAll(this._dependencies)).map((file) => file.sync())) {
       // TODO - this.app.workspaces = new Workspaces(files.map())
-      this.bus.register(this.app.workspace = new Workspace(<DocumentFile>file));
+      this.bus.register(this.app.workspace = new Workspace(<DocumentFile<any>>file));
       file.observe(this.app.bus);
     }
 

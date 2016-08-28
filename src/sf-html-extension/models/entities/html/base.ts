@@ -3,7 +3,6 @@ import { IEntity, IEntityDocument } from "sf-core/entities";
 import { IMarkupSection, IContainerNode } from "sf-core/markup";
 
 export interface IHTMLDocument extends IEntityDocument {
-  stylesheet: CSSStyleSheetExpression;
 }
 
 export interface IHTMLEntity extends IEntity {

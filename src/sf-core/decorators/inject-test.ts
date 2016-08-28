@@ -7,8 +7,6 @@ describe(__filename + "#", () => {
     class Person implements IInjectable {
       @inject("name")
       public name: string;
-
-      didInject() { }
     }
 
     const dependencies = new Dependencies(
@@ -23,13 +21,8 @@ describe(__filename + "#", () => {
   it("can map a dependency value before it's injected", () => {
 
     class Person implements IInjectable {
-
       @inject("name", dependency => dependency.value.toUpperCase())
       public name: string;
-
-      didInject() {
-
-      }
     }
 
     const dependencies = new Dependencies(

@@ -5,7 +5,7 @@ import { Logger } from "sf-core/logger";
 import { Response } from "mesh";
 import { SaveAction } from "sf-common/actions";
 import { IApplication } from "sf-core/application";
-import { PostDSAction } from "sf-core/actions";
+import { PostDSAction, OpenFileAction } from "sf-core/actions";
 import { BaseApplicationService } from "sf-core/services";
 import { File, FILES_COLLECTION_NAME } from "sf-common/models";
 import { inject, loggable, document, filterAction } from "sf-core/decorators";
@@ -25,7 +25,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @document("opens a file")
-  openFile(action) {
+  openFile(action: OpenFileAction) {
     this.logger.info(`opening ${action.path}`);
 
     if (action.watch) {
@@ -55,7 +55,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @document("reads a file content")
-  readFile(action) {
+  readFile(action: OpenFileAction) {
     return {
       path    : action.path,
       content : fs.readFileSync(action.path, "utf8")

@@ -1,20 +1,17 @@
+import { inject } from "sf-core/decorators";
 import { NodeSection } from "sf-core/markup";
 import { IHTMLDocument } from "./base";
 import { HTMLElementEntity } from "./element";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { CSSStyleSheetExpression } from "sf-html-extension/parsers/css";
+import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { HTMLElementExpression, HTMLTextExpression } from "sf-html-extension/parsers/html";
 
 export class HTMLStyleEntity extends HTMLElementEntity {
   readonly type: string = "element";
   private _style: HTMLStyleElement;
   private _styleSheetExpression: CSSStyleSheetExpression;
-
-  constructor(source: HTMLElementExpression) {
-    super(source);
-    this._resetStyle();
-  }
 
   protected willSourceChange(value: HTMLElementExpression) {
     super.willSourceChange(value);
@@ -28,39 +25,25 @@ export class HTMLStyleEntity extends HTMLElementEntity {
     } else {
       this._styleSheetExpression = newStyle;
     }
+  }
 
-    this._addDocStyles(this.document);
-    this._resetStyle();
+  didMount() {
+    CSSStyleSheetsDependency.findOrRegister(this._dependencies).register(this._styleSheetExpression);
   }
 
   willChangeDocument(newDocument) {
     this._removeStyles();
-    this._addDocStyles(newDocument);
   }
 
   update() {
     super.update();
     (<HTMLTextExpression>this.source.childNodes[0]).nodeValue = this._styleSheetExpression.toString();
-    this._resetStyle();
-  }
-
-  private _addDocStyles(doc) {
-    if (doc) {
-      doc.stylesheet.rules.push(...this._styleSheetExpression.rules);
-    }
-  }
-
-  private _resetStyle() {
-    if (!this._style) return;
-    this._style.innerHTML = this._styleSheetExpression.toString();
   }
 
   _removeStyles() {
     const doc = this.document;
     if (!this._styleSheetExpression || !doc) return;
-    for (const rule of this._styleSheetExpression.rules) {
-      doc.stylesheet.rules.splice(doc.stylesheet.rules.indexOf(rule), 1);
-    }
+    CSSStyleSheetsDependency.findOrRegister(this._dependencies).unregister(this._styleSheetExpression);
   }
 
   static mapSourceChildren() {

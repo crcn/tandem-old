@@ -9,6 +9,7 @@ import { HTMLDocumentEntity } from "./document";
 import { NodeSection, INode } from "sf-core/markup";
 import { FrontEndApplication } from "sf-front-end/application";
 import { HTMLElementExpression } from "sf-html-extension/parsers/html";
+import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { VisibleHTMLElementEntity } from "./visible-element";
 import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "sf-core/dependencies";
 
@@ -63,7 +64,7 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
     *:focus {
       outline: none;
     }
-    ${ this.document.stylesheet.toString() }
+    ${ CSSStyleSheetsDependency.findOrRegister(this._dependencies).toString() }
     `;
   }
 

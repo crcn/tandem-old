@@ -81,13 +81,6 @@ export class ZoomAction extends Action {
   }
 }
 
-export const OPEN_FILE = "openFile";
-export class OpenFileAction extends Action {
-  constructor(readonly path: string, readonly content: string) {
-    super(OPEN_FILE);
-  }
-}
-
 export const PASTE = "paste";
 export class PasteAction extends Action {
   constructor(readonly item: DataTransferItem) {

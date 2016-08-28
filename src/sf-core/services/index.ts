@@ -14,6 +14,4 @@ export class BaseApplicationService<T extends IApplication> extends Service impl
 
   @inject(MAIN_BUS_NS)
   readonly bus: BrokerBus;
-
-  didInject() { }
 };

@@ -19,10 +19,6 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
   @inject(MAIN_BUS_NS)
   readonly bus: IActor;
 
-  didInject() {
-
-  }
-
   canvasMouseDown(action: MouseAction) {
     this.bus.execute(new SelectAction());
   }

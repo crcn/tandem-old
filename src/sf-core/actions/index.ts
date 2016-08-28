@@ -145,3 +145,18 @@ export class UpdateAction extends Action {
     super(UPDATE);
   }
 }
+
+export const OPEN_FILE = "openFile";
+export class OpenFileAction extends Action {
+  constructor(readonly path: string, readonly watch: boolean = false) {
+    super(OPEN_FILE);
+  }
+}
+
+export const READ_FILE = "readFile";
+export class ReadFileAction extends Action {
+  constructor(readonly path: string) {
+    super(READ_FILE);
+  }
+}
+

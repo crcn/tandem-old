@@ -15,7 +15,6 @@ export abstract class BaseCommand implements ICommand, IInjectable {
   protected dependencies: Dependencies;
 
   abstract execute(action: Action);
-  didInject() { }
 }
 
 export abstract class BaseApplicationCommand<T extends IApplication> extends BaseCommand {

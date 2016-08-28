@@ -20,13 +20,7 @@ import {
   ActiveRecordFactoryDependency,
 } from "sf-core/dependencies";
 
-export class HTMLFile extends DocumentFile implements IInjectable {
-
-  @bindable()
-  public path: string;
-
-  @bindable()
-  public content: string;
+export class HTMLFile extends DocumentFile<HTMLDocumentEntity> implements IInjectable {
 
   readonly idProperty: string = "path";
   readonly type: string = HTML_MIME_TYPE;
@@ -35,7 +29,6 @@ export class HTMLFile extends DocumentFile implements IInjectable {
   private _dependencies: Dependencies;
 
   private _entityObserver: IActor;
-  private _document: HTMLDocumentEntity;
 
   serialize() {
     return {
@@ -55,14 +48,6 @@ export class HTMLFile extends DocumentFile implements IInjectable {
     this._document       = new HTMLDocumentEntity(this, this._dependencies);
     this._entityObserver = new BubbleBus(this);
     this._document.observe(new BubbleBus(this));
-  }
-
-  /**
-   * The entity object created from content
-   */
-
-  get document() {
-    return this._document;
   }
 
   /**
@@ -98,5 +83,5 @@ export class HTMLFile extends DocumentFile implements IInjectable {
   }
 }
 
-export const htmlFileModelDependency = new ActiveRecordFactoryDependency("text/html", HTMLFile);
+export const htmlFileModelDependency = new ActiveRecordFactoryDependency(HTML_MIME_TYPE, HTMLFile);
 

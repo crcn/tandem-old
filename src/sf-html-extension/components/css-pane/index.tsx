@@ -69,12 +69,6 @@ class StylePaneComponent extends React.Component<{ app: FrontEndApplication, wor
     this.forceUpdate();
   }
 
-  get styleExpressions(): Array<CSSStyleExpression> {
-    return [this.props.entity.styleExpression, ...this.props.entity.document.stylesheet.rules.map((rule) => {
-      return rule.style;
-    })];
-  }
-
   onTitleClick = (event) => {
     this.props.app.bus.execute(new SelectWithCSSSelector(this.props.rule.selector));
   }

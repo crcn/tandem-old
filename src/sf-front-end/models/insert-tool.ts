@@ -23,7 +23,6 @@ export abstract class InsertTool extends BaseEditorTool {
   readonly resizable: boolean = true;
 
   didInject() {
-    super.didInject();
 
     // deselect all
     this.bus.execute(new SelectAction());
