@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { IElement } from "sf-core/markup";
 import {
   CSSMediaExpression,
+  CSSKeyFramesExpression,
   CSSStyleExpression,
   CSSLiteralExpression,
   CSSStyleDeclarationExpression,
@@ -113,11 +114,20 @@ describe(__filename + "#", () => {
     });
   });
 
-  describe("media", () => {
+  describe("@media", () => {
     it("can be parsed", () => {
       const stylesheet = parse(`@media (max-width: 1024px) { .div { color: red; }}`);
       expect(stylesheet.rules[0]).to.be.an.instanceOf(CSSMediaExpression);
       expect((<CSSMediaExpression><any>stylesheet.rules[0]).query).to.equal("(max-width: 1024px)");
+    });
+  });
+  describe("@keyframes", () => {
+    it("can be parsed", () => {
+      const stylesheet = parse(`@keyframes test { from { color: red; } to { color: blue; }}`);
+      expect(stylesheet.rules[0]).to.be.an.instanceOf(CSSKeyFramesExpression);
+      const keyframes = <CSSKeyFramesExpression><any>stylesheet.rules[0];
+      expect(keyframes.keyframes[0].start).to.equal(0);
+      expect(keyframes.keyframes[1].start).to.equal(100);
     });
   });
 });

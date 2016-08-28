@@ -132,16 +132,18 @@ export class CSSListValueExpression extends CSSExpression {
 
 
 export class CSSRuleExpression extends CSSExpression {
+  readonly name: string;
   constructor(public selector: CSSSelectorExpression, public style: CSSStyleExpression, position: IRange) {
     super(position);
+    this.name = selector.toString();
+  }
+  patch(b:CSSRuleExpression) {
+    this.position  = b.position;
+    this.selector = b.selector;
+    CSSStyleExpression.merge(this.style, b.style);
   }
   test(node: IElement): boolean {
     return this.selector.test(node);
-  }
-  static merge(a: CSSRuleExpression, b: CSSRuleExpression) {
-    a.position  = b.position;
-    a.selector = b.selector;
-    CSSStyleExpression.merge(a.style, b.style);
   }
 
   toString() {
@@ -157,8 +159,8 @@ export class CSSStyleSheetExpression extends CSSExpression {
 
   static merge(a: CSSStyleSheetExpression, b: CSSStyleSheetExpression) {
     a.position = b.position;
-    patchArray(a.rules, diffArray<CSSRuleExpression>(a.rules, b.rules, (a, b) => a.selector.toString() === b.selector.toString()), (a, b) => {
-      CSSRuleExpression.merge(a, b);
+    patchArray(a.rules, diffArray<CSSRuleExpression>(a.rules, b.rules, (a, b) => a.name === b.name), (a, b) => {
+      a.patch(b);
       return a;
     });
   }
@@ -343,8 +345,13 @@ export class CSSPsuedoSelectorExpression extends CSSSelectorExpression {
 }
 
 export class CSSMediaExpression extends CSSSelectorExpression {
+  readonly name: string;
   constructor(public query: string, public stylesheet: CSSStyleSheetExpression, position: IRange) {
     super(position);
+    this.name = query;
+  }
+  patch() {
+
   }
   test(node: IElement) {
     return false;
@@ -352,6 +359,35 @@ export class CSSMediaExpression extends CSSSelectorExpression {
 
   toString() {
     return ["@media", this.query, "{", this.stylesheet, "}"].join(" ");
+  }
+}
+
+export class CSSKeyFramesExpression extends CSSSelectorExpression {
+  constructor(public name: string, public keyframes: Array<CSSKeyFrameExpression>, position: IRange) {
+    super(position);
+  }
+  patch() {
+
+  }
+  test(node: IElement) {
+    return false;
+  }
+
+  toString() {
+    return ["@keyframes", this.name, "{", this.keyframes.join(""), "}"].join(" ");
+  }
+}
+
+export class CSSKeyFrameExpression extends CSSSelectorExpression {
+  constructor(public start: number, public style: CSSStyleDeclarationExpression, position: IRange) {
+    super(position);
+  }
+  test(node: IElement) {
+    return false;
+  }
+
+  toString() {
+    return [this.start + "%", "{", this.style, "}"].join(" ");
   }
 }
 

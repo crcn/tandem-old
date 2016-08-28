@@ -10,7 +10,9 @@ const {
   CSSStyleExpression,
   CSSMediaExpression,
   CSSLiteralExpression,
+  CSSKeyFrameExpression,
   CSSListValueExpression,
+  CSSKeyFramesExpression,
   CSSStyleSheetExpression,
   CSSFunctionCallExpression,
   CSSPsuedoSelectorExpression,
@@ -50,7 +52,7 @@ Expression
   = CSSStyleSheetExpression
 
 CSSStyleSheetExpression
-  = _ rules:(CSSRule/CSSMedia/CSSFontFace/CSSRest)* _ {
+  = _ rules:(CSSRule/CSSMedia/CSSKeyFrames/CSSFontFace/CSSRest)* _ {
     return new CSSStyleSheetExpression(rules.filter((rule) => !!rule));
   }
 
@@ -173,6 +175,25 @@ CSSRest
 CSSRestInnerBlock
   = "{" CSSRestInnerBlock* "}"
   / !"}" .
+
+CSSKeyFrames
+  = "@keyframes" _ name: CSSKeyFrameName _ "{" keyframes:CSSKeyFrame* "}" {
+    return new CSSKeyFramesExpression(name, keyframes, position());
+  }
+
+
+CSSKeyFrame
+  = _ start:CSSKeyFrameStart _ style:CSSStyle _ {
+    return new CSSKeyFrameExpression(start, style);
+  }
+
+CSSKeyFrameName
+  = [^{]+ { return text().trim(); }
+
+CSSKeyFrameStart
+  = "from" { return 0; }
+  / "to" { return 100; }
+  / value:[\d]+ "%" { return Number(value) }
 
 CSSAttributeSelectorValueCharacter
   = !"]" . { return text(); }

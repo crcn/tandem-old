@@ -31,23 +31,14 @@ export class HTMLStyleEntity extends HTMLElementEntity {
     CSSStyleSheetsDependency.findOrRegister(this._dependencies).register(this._styleSheetExpression);
   }
 
-  willChangeDocument(newDocument) {
-    this._removeStyles();
-  }
-
-  update() {
-    super.update();
-    (<HTMLTextExpression>this.source.childNodes[0]).nodeValue = this._styleSheetExpression.toString();
-  }
-
   _removeStyles() {
     const doc = this.document;
     if (!this._styleSheetExpression || !doc) return;
     CSSStyleSheetsDependency.findOrRegister(this._dependencies).unregister(this._styleSheetExpression);
   }
 
-  static mapSourceChildren() {
-    return null;
+  mapSourceChildNodes() {
+    return [];
   }
 
   createSection() {
