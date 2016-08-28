@@ -206,7 +206,7 @@ export class CSSClassNameSelectorExpression extends CSSSelectorExpression {
     super(position);
   }
   test(node: IElement): boolean {
-    return node.hasAttribute("class") && node.getAttribute("class").indexOf(this.value) !== -1;
+    return isElement(node) && node.hasAttribute("class") && node.getAttribute("class").indexOf(this.value) !== -1;
   }
   toString() {
     return "." + this.value;

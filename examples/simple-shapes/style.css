@@ -14,5 +14,18 @@
 
 .item {
   background:blue;
-  width: 10px;
+  display: block;
+  width: 50%;
+  color: orange;
+  height: 200px;
+  position: relative;
+  padding: 10px;
+}
+
+.item div {
+  width: 100%;
+  display: block;
+  height: 100%;
+  margin: 10px;
+  background-color: #F60;
 }
