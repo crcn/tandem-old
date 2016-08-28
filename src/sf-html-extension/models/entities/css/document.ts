@@ -7,7 +7,7 @@ import { IEntityDocument, IEntity } from "sf-core/entities";
 import { Dependencies, DEPENDENCIES_NS, Injector } from "sf-core/dependencies";
 import { parse as parseCSS, CSSStyleSheetExpression } from "sf-html-extension/parsers/css";
 
-export class CSSDocument extends ContainerNode implements IEntityDocument {
+  export class CSSDocument extends ContainerNode implements IEntityDocument {
   readonly root: IEntity;
   private _styleSheetExpression: CSSStyleSheetExpression;
 

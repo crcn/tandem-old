@@ -194,7 +194,7 @@ export class CSSSelectorListExpression extends CSSSelectorExpression {
   }
 
   toString() {
-    return this.selectors.join(" ");
+    return this.selectors.join(",");
   }
 }
 

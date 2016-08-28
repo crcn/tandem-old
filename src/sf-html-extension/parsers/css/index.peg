@@ -106,7 +106,7 @@ CSSNestedSelectorRule
 
 CSSSelectorRule
   = rule: CSSItemSelector? ":" pseudo: CSSPseudoSelectorRule {
-    return new CSSPsuedoSelectorExpression(rule, name, [], position())
+    return new CSSPsuedoSelectorExpression(rule, pseudo, [], position())
   }
   / CSSItemSelector
 
