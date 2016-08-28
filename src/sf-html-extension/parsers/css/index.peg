@@ -100,15 +100,16 @@ CSSNestedSelectorRule
     return nested;
   }
 
+
 CSSSelectorRule
-  = rule: CSSItemSelector ":" pseudo: CSSPseudoSelectorRule {
+  = rule: CSSItemSelector? ":" pseudo: CSSPseudoSelectorRule {
     return rule;
     // return new CSSAndSelectorExpression(rule, pseudo)
   }
   / CSSItemSelector
 
 CSSPseudoSelectorRule
-  = name: [^ ]+ {
+  = name: [^ {]+ {
 
   }
 
@@ -184,7 +185,7 @@ CSSSelectorCharacter
   = [a-zA-Z0-9_-] { return text(); }
 
 CSSStyleDeclaration
-  = !("}") _ key:CSSStyleDeclarationKey _ ':' _ value:CSSLiteralValue? _ ';' _ {
+  = !("}") _ key:CSSStyleDeclarationKey _ ':' _ value:CSSLiteralValue? _ ';'? _ {
     return new CSSStyleDeclarationExpression(key, value || new CSSLiteralExpression(""), position());
   }
 
@@ -240,7 +241,7 @@ CSSValue
   = CSSValueCharacter+ { return text(); }
 
 CSSValueCharacter
-  = !";". { return text(); }
+  = !(";"/"}"). { return text(); }
 /**
  * Generic
  */

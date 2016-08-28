@@ -35,7 +35,10 @@ describe(__filename + "#", () => {
       "@media screen { div { color: red; }} @font-face { path: url(); }",
       "@font-face { a: b; c: d; }",
       "@animation { }",
-      "@-webkit-key-frames { }"
+      "@-webkit-key-frames { }",
+      ".style{color:red;font-size:14px}",
+      "audio:not{}",
+      ":active{}"
     ].forEach(source => {
       it(`can parse ${source} style`, () => {
         parse(source);
