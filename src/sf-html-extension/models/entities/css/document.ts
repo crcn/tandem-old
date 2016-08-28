@@ -20,16 +20,12 @@ export class CSSDocument extends ContainerNode implements IEntityDocument {
     // TODO
   }
 
-  didMount() {
-    CSSStyleSheetsDependency.findOrRegister(this.dependencies).register(this._styleSheetExpression);
-  }
-
-
-  willUnmount() {
-    CSSStyleSheetsDependency.findOrRegister(this.dependencies).unregister(this._styleSheetExpression);
-  }
-
   _onContentChange = (content: string) => {
+    const styleSheetsDependency = CSSStyleSheetsDependency.findOrRegister(this.dependencies);
+    if (this._styleSheetExpression) {
+      styleSheetsDependency.unregister(this._styleSheetExpression);
+    }
     this._styleSheetExpression = parseCSS(content);
+    styleSheetsDependency.register(this._styleSheetExpression);
   }
 }
