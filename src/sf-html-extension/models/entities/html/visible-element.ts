@@ -36,8 +36,6 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
       if (newStyle !== this._originalStyle) {
         this.source.setAttribute("style", this._originalStyle = newStyle);
       }
-    } else {
-      this.source.removeAttribute("style");
     }
 
     super.update();
