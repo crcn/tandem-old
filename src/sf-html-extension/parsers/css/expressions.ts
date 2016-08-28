@@ -135,7 +135,7 @@ export class CSSRuleExpression extends CSSExpression {
   readonly name: string;
   constructor(public selector: CSSSelectorExpression, public style: CSSStyleExpression, position: IRange) {
     super(position);
-    this.name = selector.toString();
+    this.name = selector ? selector.toString() : "";
   }
   patch(b:CSSRuleExpression) {
     this.position  = b.position;
