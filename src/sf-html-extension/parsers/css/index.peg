@@ -8,10 +8,12 @@ const {
   LiteralExpression,
   CSSRuleExpression,
   CSSStyleExpression,
+  CSSMediaExpression,
   CSSLiteralExpression,
   CSSListValueExpression,
   CSSStyleSheetExpression,
   CSSFunctionCallExpression,
+  CSSPsuedoSelectorExpression,
   CSSStyleDeclarationExpression,
 
   CSSIDSelectorExpression,
@@ -19,6 +21,7 @@ const {
   CSSSelectorListExpression,
   CSSChildSelectorExpression,
   CSSSiblingSelectorExpression,
+  CSSAdjacentSiblingSelectorExpression,
   CSSTagNameSelectorExpression,
   CSSClassNameSelectorExpression,
   CSSDescendentSelectorExpression,
@@ -74,8 +77,8 @@ CSSSelector
 
     const classes = {
       ">": CSSChildSelectorExpression,
-      "+": CSSSiblingSelectorExpression,
-      "~": CSSSiblingSelectorExpression
+      "~": CSSSiblingSelectorExpression,
+      "+": CSSAdjacentSiblingSelectorExpression,
     };
 
     function createExpression(items) {
@@ -103,14 +106,13 @@ CSSNestedSelectorRule
 
 CSSSelectorRule
   = rule: CSSItemSelector? ":" pseudo: CSSPseudoSelectorRule {
-    return rule;
-    // return new CSSAndSelectorExpression(rule, pseudo)
+    return new CSSPsuedoSelectorExpression(rule, name, [], position())
   }
   / CSSItemSelector
 
 CSSPseudoSelectorRule
   = name: [^ {]+ {
-
+    return text();
   }
 
 CSSItemSelector
@@ -153,8 +155,12 @@ SingleStringCharacter
   / "\\'"
 
 CSSMedia
-  = "@media" [^{]+ "{" stylesheet: CSSStyleSheetExpression "}" _ {
+  = "@media" _ query:CSSMediaQuery _ "{" stylesheet: CSSStyleSheetExpression "}" _ {
+    return new CSSMediaExpression(query, stylesheet, position());
   }
+
+CSSMediaQuery
+  = [^{]+ { return text().trim(); }
 
 CSSFontFace
   = "@font-face" _ style: CSSStyle _ {
@@ -167,7 +173,6 @@ CSSRest
 CSSRestInnerBlock
   = "{" CSSRestInnerBlock* "}"
   / !"}" .
-
 
 CSSAttributeSelectorValueCharacter
   = !"]" . { return text(); }

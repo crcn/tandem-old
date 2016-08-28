@@ -2,12 +2,11 @@ import { parse } from "./index";
 import { expect } from "chai";
 import { IElement } from "sf-core/markup";
 import {
+  CSSMediaExpression,
   CSSStyleExpression,
   CSSLiteralExpression,
   CSSStyleDeclarationExpression,
 } from "./expressions";
-
-
 
 describe(__filename + "#", () => {
   describe("smoke tests#", () => {
@@ -86,6 +85,7 @@ describe(__filename + "#", () => {
       ["div img", `<div><img target /></div><div><ul><li></li><li><a><img target /></a></li></ul></div>`],
       ["span > *", `<span><img target /></span><div><span><p target /></span></div>`],
       ["span + img", `<span></span><img target />`],
+      ["span ~ img", `<span></span><p></p><img target />`],
       ["footer > img + span", `<img /><span></span><footer><img /><span target></span></footer>`],
 
       // attributes
@@ -110,6 +110,14 @@ describe(__filename + "#", () => {
         const matches = nodes.filter((node: Element) => node.nodeType === 1 && rule.selector.test(<IElement><any>node));
         expect(matches).to.eql(targets);
       });
+    });
+  });
+
+  describe("media", () => {
+    it("can be parsed", () => {
+      const stylesheet = parse(`@media (max-width: 1024px) { .div { color: red; }}`);
+      expect(stylesheet.rules[0]).to.be.an.instanceOf(CSSMediaExpression);
+      expect((<CSSMediaExpression><any>stylesheet.rules[0]).query).to.equal("(max-width: 1024px)");
     });
   });
 });

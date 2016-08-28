@@ -293,6 +293,26 @@ export class CSSSiblingSelectorExpression extends CSSSelectorExpression {
     super(position);
   }
   test(node: IElement) {
+    const parent = node.parentNode;
+
+    if (!this.target.test(node)) return false;
+
+    for (let i = Array.prototype.indexOf.call(parent.childNodes, node) - 1; i--; ) {
+      if (this.prev.test(<IElement>parent.childNodes[i])) return true;
+    }
+
+    return false;
+  }
+  toString() {
+    return `${this.prev} ~ ${this.target}`;
+  }
+}
+
+export class CSSAdjacentSiblingSelectorExpression extends CSSSelectorExpression {
+  constructor(public prev: CSSSelectorExpression, public target: CSSSelectorExpression, position: IRange) {
+    super(position);
+  }
+  test(node: IElement) {
     return node.previousSibling && this.prev.test(<IElement>node.previousSibling) && this.target.test(node);
   }
   toString() {
@@ -319,6 +339,19 @@ export class CSSPsuedoSelectorExpression extends CSSSelectorExpression {
   // TODO
   toDebuggableString() {
     return [this.selector, `[data-state-${this.name}]`].join("");
+  }
+}
+
+export class CSSMediaExpression extends CSSSelectorExpression {
+  constructor(public query: string, public stylesheet: CSSStyleSheetExpression, position: IRange) {
+    super(position);
+  }
+  test(node: IElement) {
+    return false;
+  }
+
+  toString() {
+    return ["@media", this.query, "{", this.stylesheet, "}"].join(" ");
   }
 }
 
