@@ -7,7 +7,7 @@ import { watchProperty } from "sf-core/observable";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
 import { EntityFactoryDependency } from "sf-core/dependencies";
-import { Action, PropertyChangeAction } from "sf-core/actions";
+import { Action, PropertyChangeAction, UpdateAction } from "sf-core/actions";
 import { Dependencies, DEPENDENCIES_NS, IInjectable } from "sf-core/dependencies";
 import { CSSStyleExpression, CSSStyleSheetExpression } from "sf-html-extension/parsers/css";
 import { IHTMLEntity, IHTMLDocument, IHTMLContainerEntity } from "./base";
@@ -86,6 +86,8 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
     await this.root.update();
 
     await this._render();
+
+    this.notify(new UpdateAction());
   }
 
   public async load(source: string) {

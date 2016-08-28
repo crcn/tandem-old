@@ -53,7 +53,6 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   componentWillUpdate(props) {
-    console.log(props.zoom, this.props.zoom);
     if (props.zoom !== this.props.zoom) {
       this._center(this.props.zoom, props.zoom);
     }

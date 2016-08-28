@@ -2,6 +2,7 @@ import { inject } from "sf-core/decorators";
 import { BubbleBus } from "sf-core/busses";
 import { patch, diff } from "sf-core/markup";
 import { disposeEntity } from "./utils";
+import { PropertyChangeAction } from "sf-core/actions";
 import { diffArray, patchArray } from "sf-core/utils/array";
 import { IHTMLEntity, IHTMLDocument } from "./base";
 import { IHTMLContainerExpression, HTMLExpression } from "sf-html-extension/parsers/html";

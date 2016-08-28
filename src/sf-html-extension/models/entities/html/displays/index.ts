@@ -1,5 +1,8 @@
-import { WrapBus } from "mesh";
+
+import { Action, UPDATE } from "sf-core/actions";
+import { watchProperty } from "sf-core/observable";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
+import { HTMLDocumentEntity } from "../document";
 import { BoundingRect, IPoint } from "sf-core/geom";
 import { VisibleHTMLElementEntity } from "../index";
 import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/parsers/css";
@@ -103,8 +106,10 @@ function roundMeasurements(style) {
 export class HTMLNodeDisplay implements IEntityDisplay {
 
   private _declarationByKey: Object;
+  private _cachedBounds: BoundingRect;
 
-  constructor(readonly entity: VisibleHTMLElementEntity) { }
+  constructor(readonly entity: VisibleHTMLElementEntity) {
+  }
 
   /**
    */
@@ -179,6 +184,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
   }
 
   set bounds(value: BoundingRect) {
+    this._cachedBounds = undefined;
 
     const bounds = this.bounds;
 

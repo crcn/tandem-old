@@ -138,3 +138,10 @@ export class MetadataChangeAction extends Action {
     super(METADATA_CHANGE);
   }
 }
+
+export const UPDATE = "update";
+export class UpdateAction extends Action {
+  constructor() {
+    super(UPDATE);
+  }
+}
