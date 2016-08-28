@@ -5,7 +5,7 @@ import { Logger } from "sf-core/logger";
 import { Response } from "mesh";
 import { SaveAction } from "sf-common/actions";
 import { IApplication } from "sf-core/application";
-import { PostDBAction } from "sf-core/actions";
+import { PostDSAction } from "sf-core/actions";
 import { BaseApplicationService } from "sf-core/services";
 import { File, FILES_COLLECTION_NAME } from "sf-common/models";
 import { inject, loggable, document, filterAction } from "sf-core/decorators";
@@ -68,7 +68,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @filterAction(sift({ collectionName: FILES_COLLECTION_NAME }))
-  didRemove(action: PostDBAction ) {
+  dsDidRemove(action: PostDSAction ) {
     const item = action.data;
     this._openFiles[item.path].dispose();
     this._openFiles[item.path] = undefined;

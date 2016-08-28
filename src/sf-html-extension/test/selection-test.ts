@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { timeout } from "sf-core/test/utils";
-import { InsertAction } from "sf-core/actions";
+import { DSInsertAction } from "sf-core/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { OpenFileAction, SelectSourceAtOffsetAction } from "sf-front-end/actions";
 

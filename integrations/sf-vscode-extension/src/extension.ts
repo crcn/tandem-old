@@ -8,7 +8,7 @@ import * as createServer from "express";
 import { WrapBus, NoopBus } from "mesh";
 import * as SocketIOBus from "mesh-socket-io-bus";
 import ServerApplication from "sf-back-end/application";
-import { UpsertAction } from "sf-core/actions";
+import { DSUpsertAction } from "sf-core/actions";
 // import mergeHTML from "sf-common/utils/html/merge";
 import { exec } from "child_process";
 import * as getPort from "get-port";
@@ -26,7 +26,7 @@ export async function activate(context: vscode.ExtensionContext) {
     server.bus.register({
         execute(action:any) {
             if (
-                action.type === "didUpdate" &&
+                action.type === "dsDidUpdate" &&
                 action.collectionName === "files" &&
                 action.data[0].content !== _content
                 ) {

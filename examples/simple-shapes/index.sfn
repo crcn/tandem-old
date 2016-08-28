@@ -1,8 +1,1 @@
-<link rel="stylesheet" type="text/css" href="./style.css" />
-
-<artboard id="website" title="Website" style="background; white;position: absolute; width: 292px; height: 163px; left: 96px; top: 29px;">
-  <div class="header" />
-</artboard>
-<artboard title="Artboard" style="background; white;position: absolute; width: 203px; height: 134px; left: 424px; top: 58px;">
-  <website />
-</artboard>
+<div style="background: rgba(0,0,0,0.1); position: absolute; width: 179px; height: 155px; left: -1069px; top: 144px;" />

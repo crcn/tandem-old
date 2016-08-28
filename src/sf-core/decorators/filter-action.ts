@@ -1,7 +1,7 @@
 /**
  * Used for actors that need to filter for particular actions. Usage:
  *
- * @filterAction(sift({ $type: DBAction }))
+ * @filterAction(sift({ $type: DSAction }))
  * update(action:UpdateAction) { }
  */
 

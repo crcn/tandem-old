@@ -53,6 +53,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   componentWillUpdate(props) {
+    console.log(props.zoom, this.props.zoom);
     if (props.zoom !== this.props.zoom) {
       this._center(this.props.zoom, props.zoom);
     }
@@ -150,6 +151,9 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
       this.props.editor.transform.left = entireBounds.left;
       this.props.editor.transform.top = entireBounds.top;
       this.props.editor.transform.scale = Math.min(width / entireBounds.width, height / entireBounds.height) * 0.8;
+
+      // FIX ME - don't do this. Trigger re-render now.
+      this.bus.execute({ type: "change" } as any);
     }
 
     this.setState({

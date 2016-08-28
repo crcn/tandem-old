@@ -7,15 +7,13 @@ import { loggable, document } from "sf-core/decorators";
 import { BaseApplicationService } from "sf-core/services";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 import {
-  DBAction,
-  FindAction,
-  InsertAction,
-  RemoveAction,
-  UpdateAction,
-  PostDBAction
+  DSAction,
+  DSFindAction,
+  DSInsertAction,
+  DSRemoveAction,
+  DSUpdateAction,
+  PostDSAction
 } from "sf-core/actions";
-
-
 
 @loggable()
 export default class DBService extends BaseApplicationService<IApplication> {
@@ -31,7 +29,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("finds an item in the database")
-  find(action: FindAction) {
+  dsFind(action: DSFindAction) {
     return this._db.execute(action);
   }
 
@@ -40,7 +38,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("removes an item in the database")
-  remove(action: RemoveAction) {
+  dsRemove(action: DSRemoveAction) {
     return this._db.execute(action);
   }
 
@@ -49,7 +47,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("inserts an item in the database")
-  insert(action: InsertAction) {
+  dsInsert(action: DSInsertAction) {
     return this._db.execute(action);
   }
 
@@ -57,7 +55,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("updates an item in the database")
-  update(action: UpdateAction) {
+  dsUpdate(action: DSUpdateAction) {
     return this._db.execute(action);
   }
 }

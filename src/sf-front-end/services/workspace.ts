@@ -3,7 +3,7 @@ import { Logger } from "sf-core/logger";
 import { inject } from "sf-core/decorators";
 import { loggable } from "sf-core/decorators";
 import { IDisposable } from "sf-core/object";
-import { Action, FindAction } from "sf-core/actions";
+import { Action, DSFindAction } from "sf-core/actions";
 import { tween, easeOutCubic } from "sf-core/animate";
 import { FrontEndApplication } from "sf-front-end/application";
 import { BaseApplicationService } from "sf-core/services";

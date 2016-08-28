@@ -59,68 +59,68 @@ export class LogAction extends Action {
   }
 }
 
-export class DBAction extends Action {
+export class DSAction extends Action {
   readonly timestamp: number = Date.now();
   constructor(actionType: string, readonly collectionName: string) {
     super(actionType);
   }
 }
 
-export const INSERT = "insert";
-export class InsertAction extends DBAction {
+export const DS_INSERT = "dsInsert";
+export class DSInsertAction extends DSAction {
   constructor(collectionName: string, readonly data: any) {
-    super(INSERT, collectionName);
+    super(DS_INSERT, collectionName);
   }
 }
 
-export const UPDATE = "update";
-export class UpdateAction extends DBAction {
+export const DS_UPDATE = "dsUpdate";
+export class DSUpdateAction extends DSAction {
   constructor(collectionName: string, readonly data: any, readonly query: any) {
-    super(UPDATE, collectionName);
+    super(DS_UPDATE, collectionName);
   }
 }
 
-export const FIND   = "find";
-export class FindAction extends DBAction {
+export const DS_FIND   = "dsFind";
+export class DSFindAction extends DSAction {
   constructor(collectionName: string, readonly query: any, readonly multi: boolean = false) {
-    super(FIND, collectionName);
+    super(DS_FIND, collectionName);
   }
 }
 
-export class FindAllAction extends FindAction {
+export class DSFindAllAction extends DSFindAction {
   constructor(collectionName: string) {
     super(collectionName, {}, true);
   }
 }
 
-export const REMOVE   = "remove";
-export class RemoveAction extends DBAction {
+export const DS_REMOVE   = "dsRemove";
+export class DSRemoveAction extends DSAction {
   constructor(collectionName: string, readonly query: any) {
-    super(REMOVE, collectionName);
+    super(DS_REMOVE, collectionName);
   }
 }
 
-export const UPSERT = "upsert";
-export class UpsertAction extends DBAction {
+export const DS_UPSERT = "dsUpsert";
+export class DSUpsertAction extends DSAction {
   constructor(collectionName: string, readonly data: any, readonly query: any) {
-    super(UPSERT, collectionName);
+    super(DS_UPSERT, collectionName);
   }
 }
 
-export const DID_INSERT = "didInsert";
-export const DID_REMOVE = "didRemove";
-export const DID_UPDATE = "didUpdate";
-export class PostDBAction extends DBAction {
+export const DS_DID_INSERT = "dsDidInsert";
+export const DS_DID_REMOVE = "dsDidRemove";
+export const DS_DID_UPDATE = "dsDidUpdate";
+export class PostDSAction extends DSAction {
 
   constructor(type: string, collectionName: string, readonly data: any, readonly timestamp: number) {
     super(type, collectionName);
   }
 
-  static createFromDBAction(action: InsertAction|UpdateAction|RemoveAction, data: any) {
-    return new PostDBAction({
-      [INSERT]: DID_INSERT,
-      [UPDATE]: DID_UPDATE,
-      [REMOVE]: DID_REMOVE
+  static createFromDSAction(action: DSInsertAction|DSUpdateAction|DSRemoveAction, data: any) {
+    return new PostDSAction({
+      [DS_INSERT]: DS_DID_INSERT,
+      [DS_UPDATE]: DS_DID_UPDATE,
+      [DS_REMOVE]: DS_DID_REMOVE
     }[action.type], action.collectionName, data, action.timestamp);
   }
 }

@@ -10,15 +10,15 @@ import { WrapBus, AcceptBus, ParallelBus } from "mesh";
 import { Dependencies, MainBusDependency, IInjectable, MAIN_BUS_NS } from "sf-core/dependencies";
 import {
   Action,
-  DBAction,
-  DID_INSERT,
-  DID_REMOVE,
-  DID_UPDATE,
-  FindAction,
-  UpdateAction,
-  PostDBAction,
-  RemoveAction,
-  InsertAction,
+  DSAction,
+  DS_DID_INSERT,
+  DS_DID_REMOVE,
+  DS_DID_UPDATE,
+  DSFindAction,
+  DSUpdateAction,
+  PostDSAction,
+  DSRemoveAction,
+  DSInsertAction,
   DisposeAction,
 } from "sf-core/actions";
 
@@ -60,7 +60,7 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
   didInject() { }
 
   load() {
-    return this.fetch(new FindAction(this.collectionName, this.sourceQuery, false));
+    return this.fetch(new DSFindAction(this.collectionName, this.sourceQuery, false));
   }
 
   save() {
@@ -76,8 +76,8 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
     this.bus.register(this._syncBus = new AcceptBus(
       sift({ collectionName: this.collectionName, [`data.${this.idProperty}`]: this[this.idProperty] }),
       new ParallelBus([
-        new TypeWrapBus(DID_UPDATE, this._onDidUpdate),
-        new TypeWrapBus(DID_REMOVE, this.dispose)
+        new TypeWrapBus(DS_DID_UPDATE, this._onDidUpdate),
+        new TypeWrapBus(DS_DID_REMOVE, this.dispose)
       ]),
       null
     ));
@@ -85,7 +85,7 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
     return this;
   }
 
-  _onDidUpdate = (action: PostDBAction) => {
+  _onDidUpdate = (action: PostDSAction) => {
     // ignore if the DS action is older than the update action here
     if (action.timestamp <= this._syncTimestamp) return;
     this.deserialize(action.data);
@@ -106,11 +106,11 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
       console.log(e.stack);
     }
 
-    return this.fetch(new InsertAction(this.collectionName, data));
+    return this.fetch(new DSInsertAction(this.collectionName, data));
   }
 
   remove() {
-    return this.fetch(new RemoveAction(this.collectionName, this.sourceQuery));
+    return this.fetch(new DSRemoveAction(this.collectionName, this.sourceQuery));
   }
 
   protected get sourceQuery() {
@@ -125,7 +125,7 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
   }
 
   update() {
-    return this.fetch(new UpdateAction(this.collectionName, this.serialize(), this.sourceQuery));
+    return this.fetch(new DSUpdateAction(this.collectionName, this.serialize(), this.sourceQuery));
   }
 
   abstract serialize();
@@ -165,7 +165,7 @@ function executeDbAction(collectionName: string, dependencies: Dependencies) {
 
 export async function find(collectionName: string, query: any, multi: boolean, dependencies: Dependencies) {
   const bus: IActor = MainBusDependency.getInstance(dependencies);
-  const result = await bus.execute(new FindAction(collectionName, query, multi)).readAll();
+  const result = await bus.execute(new DSFindAction(collectionName, query, multi)).readAll();
   return multi ? result : result[0];
 }
 

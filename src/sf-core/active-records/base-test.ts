@@ -3,7 +3,7 @@ import { ParallelBus } from "mesh";
 import * as MemoryDSBus from "mesh-memory-ds-bus";
 import { BrokerBus, PostDsNotifierBus } from "sf-core/busses";
 import { ActiveRecord, ActiveRecordCollection, insert } from "./base";
-import { FindAction, InsertAction, UpdateAction, RemoveAction } from "sf-core/actions";
+import { DSFindAction, DSInsertAction, DSUpdateAction, DSRemoveAction } from "sf-core/actions";
 import { Dependencies, MainBusDependency, ActiveRecordFactoryDependency } from "sf-core/dependencies";
 
 describe(__filename + "#", () => {
@@ -44,35 +44,35 @@ describe(__filename + "#", () => {
         name: "a"
       });
       await ar.insert();
-      const chunk = await broker.execute(new FindAction(ar.collectionName, ar.serialize() )).read();
+      const chunk = await broker.execute(new DSFindAction(ar.collectionName, ar.serialize() )).read();
       expect(chunk.value.name).to.equal("a");
     });
     it("can load an active record", async () => {
       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
         _id: "person1"
       });
-      await broker.execute(new InsertAction("people", { _id: "person1", name: "a", zip: 90210 }));
+      await broker.execute(new DSInsertAction("people", { _id: "person1", name: "a", zip: 90210 }));
       await ar.load();
       expect(ar.zip).to.equal(90210);
     });
     it("can update an active record", async () => {
-      await broker.execute(new InsertAction("people", { _id: "person1", name: "a", zip: 90210 }));
+      await broker.execute(new DSInsertAction("people", { _id: "person1", name: "a", zip: 90210 }));
       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
         _id: "person1",
         zip: 11111
       });
       await ar.update();
-      const chunk = await broker.execute(new FindAction(ar.collectionName, { _id: "person1" } )).read();
+      const chunk = await broker.execute(new DSFindAction(ar.collectionName, { _id: "person1" } )).read();
       expect(chunk.value.zip).to.equal(11111);
     });
 
     it("can remove an active record", async () => {
-      await broker.execute(new InsertAction("people", { _id: "person1", name: "a", zip: 90210 }));
+      await broker.execute(new DSInsertAction("people", { _id: "person1", name: "a", zip: 90210 }));
       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
         _id: "person1"
       });
       await ar.remove();
-      const chunk = await broker.execute(new FindAction(ar.collectionName, { _id: "person1" } )).read();
+      const chunk = await broker.execute(new DSFindAction(ar.collectionName, { _id: "person1" } )).read();
       expect(chunk.done).to.equal(true);
     });
 
@@ -100,7 +100,7 @@ describe(__filename + "#", () => {
       });
       await ar.save();
       expect(ar._id).not.to.equal(undefined);
-      const { value } = await broker.execute(new FindAction(ar.collectionName, { _id: ar._id })).read();
+      const { value } = await broker.execute(new DSFindAction(ar.collectionName, { _id: ar._id })).read();
       expect(value.name).to.equal("a");
       expect(value._id).to.equal(ar._id);
     });
@@ -111,9 +111,9 @@ describe(__filename + "#", () => {
       });
       await ar.save();
       ar.sync();
-      await broker.execute(new UpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id }));
+      await broker.execute(new DSUpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id }));
       expect(ar.name).to.equal("b");
-      await broker.execute(new UpdateAction(ar.collectionName, { name: "c" }, { _id: ar._id }));
+      await broker.execute(new DSUpdateAction(ar.collectionName, { name: "c" }, { _id: ar._id }));
       expect(ar.name).to.equal("c");
 
     });
@@ -126,7 +126,7 @@ describe(__filename + "#", () => {
       ar.sync();
       const executedActions = [];
       ar.observe({ execute: (action) => executedActions.push(action) });
-      await broker.execute(new RemoveAction(ar.collectionName, { _id: ar._id }));
+      await broker.execute(new DSRemoveAction(ar.collectionName, { _id: ar._id }));
       expect(executedActions.length).to.equal(1);
       expect(executedActions[0].type).to.equal("dispose");
     });
@@ -137,10 +137,10 @@ describe(__filename + "#", () => {
       });
       await ar.save();
       ar.sync();
-      await broker.execute(new UpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id })).readAll();
+      await broker.execute(new DSUpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id })).readAll();
       expect(ar.name).to.equal("b");
       ar.dispose();
-      await broker.execute(new UpdateAction(ar.collectionName, { name: "c" }, { _id: ar._id }));
+      await broker.execute(new DSUpdateAction(ar.collectionName, { name: "c" }, { _id: ar._id }));
       expect(ar.name).to.equal("b");
     });
 
@@ -157,16 +157,16 @@ describe(__filename + "#", () => {
       ar.sync();
       ar2.sync();
 
-      await broker.execute(new UpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id })).readAll();
+      await broker.execute(new DSUpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id })).readAll();
       expect(ar.name).to.equal("b");
       expect(ar2.name).to.equal("a2");
 
-      await broker.execute(new UpdateAction(ar.collectionName, { name: "b2" }, { _id: ar2._id }));
+      await broker.execute(new DSUpdateAction(ar.collectionName, { name: "b2" }, { _id: ar2._id }));
       expect(ar.name).to.equal("b");
       expect(ar2.name).to.equal("b2");
     });
 
-    it("ignores DID_UPDATE if the post ds action timestamp is equal to or older than then model update timestamp", async () => {
+    it("ignores DS_DID_UPDATE if the post ds action timestamp is equal to or older than then model update timestamp", async () => {
       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
         name: "a"
       });

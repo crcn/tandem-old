@@ -6,7 +6,7 @@
 // import {
 //   FindAction,
 //   UpdateAction,
-//   InsertAction,
+//   DSInsertAction,
 //   RemoveAction
 // } from 'sf-core/actions';
 
@@ -60,7 +60,7 @@
 //    */
 
 //   insert():any {
-//     return this.fetch(new InsertAction(undefined, this.serialize()));
+//     return this.fetch(new DSInsertAction(undefined, this.serialize()));
 //   }
 
 //   /**

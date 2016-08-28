@@ -15,7 +15,6 @@ export class EditorService extends BaseApplicationService<FrontEndApplication> {
   @inject(DEPENDENCIES_NS)
   readonly dependencies: Dependencies;
 
-
   private _toolProxyBus: ProxyBus;
 
 }
