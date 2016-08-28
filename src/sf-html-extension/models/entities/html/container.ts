@@ -49,6 +49,7 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
 
   patch(entity: HTMLContainerEntity<T>) {
     this.willSourceChange(entity.source);
+    this._dependencies = entity._dependencies;
     this._source = entity.source;
     const changes = diffArray(this.childNodes, entity.childNodes, (a, b) => a.constructor === b.constructor && a.nodeName === b.nodeName);
     for (const entity of changes.remove) {

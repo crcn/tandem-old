@@ -52,8 +52,8 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
     });
   }
 
-  async update() {
-    await super.update();
+  patch(source) {
+    super.patch(source);
     this._updateStyle();
   }
 

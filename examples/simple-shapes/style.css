@@ -11,3 +11,8 @@
   position: absolute;
   background-color: white;
 }
+
+.item {
+  background:blue;
+  width: 10px;
+}

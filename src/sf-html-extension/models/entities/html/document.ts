@@ -119,9 +119,6 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
 
     // after the root has been loaded in, fetch all of the CSS styles.
     this._globalStyle.innerHTML = CSSStyleSheetsDependency.findOrRegister(this._currentChildDependencies).toString();
-
-    console.log(this._globalStyle.innerHTML);
-
     this.notify(new PropertyChangeAction("root", this._root, oldRoot));
   }
 
