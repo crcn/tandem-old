@@ -33,6 +33,10 @@
   - [ ] insert tool
     - [ ] ability to insert custom element
   - [ ] grid tool
+  - [ ] media queries
+    - [ ] display media queries in a timeline
+    - [ ] highlight current media queries according to artboard resolution
+
 
 - [ ] entity panes
   - [ ] all styles

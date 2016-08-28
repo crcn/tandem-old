@@ -111,7 +111,6 @@ export class CSSLiteralExpression extends CSSExpression {
   }
 }
 
-
 export class CSSFunctionCallExpression extends CSSExpression {
   constructor(public name: string, public parameters: Array<CSSExpression>, public position: IRange) {
     super(position);
@@ -290,7 +289,7 @@ export class CSSDescendentSelectorExpression extends CSSSelectorExpression {
 
 
 export class CSSSiblingSelectorExpression extends CSSSelectorExpression {
-  constructor(public prev: CSSSelectorExpression, public target: CSSSelectorExpression, position) {
+  constructor(public prev: CSSSelectorExpression, public target: CSSSelectorExpression, position: IRange) {
     super(position);
   }
   test(node: IElement) {
@@ -305,6 +304,23 @@ function isElement(node: INode) {
   return node.nodeName && node.nodeName.substr(0, 1) !== "#";
 }
 
+export class CSSPsuedoSelectorExpression extends CSSSelectorExpression {
+  constructor(public selector: CSSSelectorExpression, public name: string, public rules: Array<CSSSelectorExpression>, position: IRange) {
+    super(position);
+  }
+  test(node: IElement) {
+    return false;
+  }
+
+  toString() {
+    return [this.selector, ":", this.name, this.rules.length ? `${this.rules.join(",")}` : ""].join("");
+  }
+
+  // TODO
+  toDebuggableString() {
+    return [this.selector, `[data-state-${this.name}]`].join("");
+  }
+}
 
 export class CSSAndSelectorExpression extends CSSSelectorExpression {
   constructor(public left: CSSSelectorExpression, public right: CSSSelectorExpression, position: IRange) {
