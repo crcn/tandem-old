@@ -1,4 +1,5 @@
 import { flattenDeep } from "lodash";
+import { ICloneable } from "sf-core/object";
 
 export interface IInjectable {
   didInject?(): void;
@@ -48,7 +49,7 @@ export class Injector {
 }
 
 
-export interface IDependency {
+export interface IDependency extends ICloneable {
 
   /**
    * The unique namespace of the dependency
@@ -128,7 +129,7 @@ export class ClassFactoryDependency extends FactoryDependency {
  * Contains a collection of Dependencies
  */
 
-export class Dependencies {
+export class Dependencies implements ICloneable {
 
   private _dependenciesByNs: any = {};
 
@@ -171,7 +172,7 @@ export class Dependencies {
   /**
    */
 
-  createChild() {
+  clone() {
     return new Dependencies(...this.queryAll<any>("/**"));
   }
 

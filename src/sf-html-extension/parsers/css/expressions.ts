@@ -4,9 +4,9 @@ import { INode, IElement } from "sf-core/markup";
 import { diffArray, patchArray } from "sf-core/utils/array";
 
 export abstract class CSSExpression extends BaseExpression {
-  patch(source: CSSExpression) {
 
-  }
+  // TODO - make this abstract
+  patch(source: CSSExpression) { }
 }
 
 export class CSSStyleExpression extends CSSExpression {

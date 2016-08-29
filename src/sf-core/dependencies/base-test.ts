@@ -53,7 +53,7 @@ describe(__filename + "#", () => {
 
     it("can create a child fragment with the same fragments", () => {
       const fragments = new Dependencies(new UndefinedDependency("a/b"), new UndefinedDependency("b/c"));
-      const child = fragments.createChild();
+      const child = fragments.clone();
       expect(child.length).to.equal(fragments.length);
     });
 

@@ -5,3 +5,8 @@ export interface IDisposable {
 export interface INamed {
   readonly name: string;
 }
+
+export interface ICloneable {
+  clone(): ICloneable;
+}
+
