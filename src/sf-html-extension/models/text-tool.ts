@@ -53,11 +53,11 @@ export class EditInnerHTMLTool extends BaseEditorTool {
     element.setAttribute("contenteditable", "true");
     element.addEventListener("keydown", this._onKeyDown);
     // element.addEventListener("keypress", (event) => event.preventDefault());
-    element.focus();
 
     // some async stuff is preventing the element
     // from being selected, so add a timeout for now.
     setTimeout(() => {
+      element.focus();
       element.ownerDocument.execCommand("selectAll", false, null);
     }, 10);
   }

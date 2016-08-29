@@ -92,7 +92,8 @@ export class SelectablesComponent extends React.Component<{
 
   render() {
 
-    const { selection } = this.props.workspace;
+    const { workspace } = this.props;
+    const { selection } = workspace;
     const activeEntity = this.props.workspace.editor.activeEntity as IContainerNodeEntity;
     if (!activeEntity.children) return null;
     // do not render selectables that are off screen
