@@ -36,7 +36,6 @@ export class EditInnerHTMLTool extends BaseEditorTool {
   @inject(DEPENDENCIES_NS)
   readonly dependencies: Dependencies;
 
-  private _startChildNodes: Array<any>;
   private _disposed: boolean;
 
   name = "text";
@@ -49,7 +48,6 @@ export class EditInnerHTMLTool extends BaseEditorTool {
 
   private _startEditing() {
     const element = this._targetNode;
-    this._startChildNodes = Array.prototype.slice.call(element.children);
     element.setAttribute("contenteditable", "true");
     element.addEventListener("keydown", this._onKeyDown);
     // element.addEventListener("keypress", (event) => event.preventDefault());
@@ -93,10 +91,6 @@ export class EditInnerHTMLTool extends BaseEditorTool {
 
     // parse the innerHTML, set the source content, and prepare to diff
     this._targetEntity.source.children = parseHTML(this._targetNode.innerHTML).children;
-
-    for (const child of this._startChildNodes) {
-      this._targetNode.appendChild(child);
-    }
 
     // save the workspae file -- diffing time
     await this.workspace.file.update();
