@@ -1,19 +1,19 @@
 
 <!-- Previews -->
 <artboard title="Application" style="width: 1024px; height: 768px; left: -4px; top: 462px;" />
-<artboard title="Context menu" style="background; white;position: absolute; width: 213px; height: 184px; left: -876px; top: 462px;" />
+<artboard title="Context menu" style="background; white;position: absolute; width: 213px; height: 184px; left: -460px; top: 462px;" />
 <artboard title="Timeline" style="background; white;position: absolute; width: 1024px; height: 184px; left: -4px; top: 1738px;" />
 
 <!-- Timelines -->
-<artboard title="Media Query Timeline" style="background; white;position: absolute; width: 1024px; height: 184px; left: -4px; top: 2143px;" />
-<artboard title="Animations Timeline" style="background; white;position: absolute; width: 1024px; height: 184px; left: 1135px; top: 2143px;" />
+<artboard title="Media Query Timeline" style="background; white;position: absolute; width: 1024px; height: 184px; left: -4px; top: 2111px;" />
+<artboard title="Animations Timeline" style="background; white;position: absolute; width: 1024px; height: 184px; left: 1135px; top: 2111px;" />
 <artboard id="pane" title="Pane" style="width: 200px; left: 1286px; top: 462px;">
   <style>
     .header {
       background: rgba(0, 0, 0, 0.1);
       padding: 10px;
     }
-
+    
     .content {
       padding: 10px;
     }
