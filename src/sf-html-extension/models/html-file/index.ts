@@ -1,4 +1,3 @@
-import mergeHTML from "./merge-html";
 import { IActor } from "sf-core/actors";
 import * as pretty from "pretty";
 import { BubbleBus } from "sf-core/busses";
@@ -71,11 +70,9 @@ export class HTMLFile extends DocumentFile<HTMLDocumentEntity> implements IInjec
 
   public async update() {
 
-    // copy whitespace over to new content
-    // this.content = mergeHTML(this.content, this._entity.source.toString());
-
-
-    await this._document.update();
+    // want to just update the expressions since the document
+    // will re-render after the content has changed
+    await this._document.root.update();
 
     this.content = pretty(this._document.root.source.toString());
 

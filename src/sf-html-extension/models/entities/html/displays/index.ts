@@ -205,7 +205,6 @@ export class HTMLNodeDisplay implements IEntityDisplay {
       newStyle.left = scaled.left + "px";
     }
 
-
     if (value.top !== bounds.top) {
       const originTop  = bounds.top  - existingStyle.top || 0;
       newStyle.top = scaled.top + "px";
@@ -220,6 +219,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     }
 
     newStyle = roundMeasurements(newStyle);
+
 
     this._setExpressionStyle(newStyle);
   }

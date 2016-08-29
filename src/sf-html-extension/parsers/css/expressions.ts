@@ -80,7 +80,7 @@ export class CSSStyleDeclarationExpression extends CSSExpression {
     if (this.value.constructor === b.value.constructor) {
       this.value.patch(b);
     } else {
-      this.value = b;
+      this.value = b.value;
     }
   }
 

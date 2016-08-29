@@ -22,7 +22,7 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
     super(_source.name, _source.value);
     this.metadata = new EntityMetadata(this);
     this.metadata.observe(new BubbleBus(this));
-    this.section = new NodeSection(this._node = this.createDOMNode(_source.value) as any);
+    this.section = new NodeSection(this._node = this.createDOMNode(_source.value));
   }
 
   flatten(): Array<IHTMLEntity> {
@@ -38,6 +38,7 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   }
 
   patch(entity: HTMLValueNodeEntity<any>) {
+    console.log("patch", this.value, entity.value);
     this.value = entity.value;
     this._source = entity.source;
   }

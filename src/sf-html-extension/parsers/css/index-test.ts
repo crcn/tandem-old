@@ -107,7 +107,7 @@ describe(__filename + "#", () => {
         const nodes = flattenNode(div);
         nodes.shift(); // remove the initial div
         const targets = nodes.filter((node: IElement) => /^#/.test(node.name) && node.hasAttribute("target"));
-        const matches = nodes.filter((node: IElement) => /^#/.test(node.name) && rule.selector.test(<IElement><any>node));
+        const matches = nodes.filter((node: IElement) => /^#/.test(node.name) && rule.selector.test(<IElement>node));
         expect(matches).to.eql(targets);
       });
     });

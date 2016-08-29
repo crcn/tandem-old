@@ -3,8 +3,9 @@ import "./index.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
-import * as AutosizeInput from "react-input-autosize";
 import { SelectAction } from "sf-front-end/actions";
+import * as AutosizeInput from "react-input-autosize";
+import { HTMLTextEntity } from "sf-html-extension/models";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 
 class FocusComponent extends React.Component<any, any> {
@@ -13,7 +14,7 @@ class FocusComponent extends React.Component<any, any> {
   }
 }
 
-class TextLayerLabelComponent extends React.Component<any, any> {
+class TextLayerLabelComponent extends React.Component<{ entity: HTMLTextEntity, connectDragSource: Function }, any> {
 
   constructor() {
     super();
@@ -30,7 +31,7 @@ class TextLayerLabelComponent extends React.Component<any, any> {
 
   render() {
 
-    const edit = this.state.edit && !!~this.props.app.selection.indexOf(this.props.entity);
+    // const edit = this.state.edit && !!~this.props.app.selection.indexOf(this.props.entity);
     const connectDragSource = this.props.connectDragSource;
 
     return connectDragSource(<span
@@ -39,15 +40,15 @@ class TextLayerLabelComponent extends React.Component<any, any> {
       {
         this.state.edit         ?
         this.renderInput()      :
-        this.props.entity.nodeValue
+        this.props.entity.value
       }
     </span>);
   }
 
   onInputChange(event) {
-    this.props.entity.setProperties({
-      value: event.target.nodeValue
-    });
+    // this.props.entity.setProperties({
+    //   value: event.target.nodeValue
+    // });
   }
 
   doneEditing() {

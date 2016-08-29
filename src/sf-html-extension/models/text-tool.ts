@@ -82,7 +82,7 @@ export class TextTool extends BaseEditorTool {
   }
 
   private get _targetNode() {
-    return <HTMLSpanElement><any>this._targetEntity.section.targetNode;
+    return <HTMLSpanElement>this._targetEntity.section.targetNode;
   }
 
   public async dispose() {
@@ -94,9 +94,6 @@ export class TextTool extends BaseEditorTool {
     // parse the innerHTML, set the source content, and prepare to diff
     this._targetEntity.source.children = parseHTML(this._targetNode.innerHTML).children;
 
-    // need to reset the display HTML to what it was before so that
-    // it can be properly diff'd
-    this._targetNode.innerHTML = "";
     for (const child of this._startChildNodes) {
       this._targetNode.appendChild(child);
     }

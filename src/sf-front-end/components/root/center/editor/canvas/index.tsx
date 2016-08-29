@@ -139,7 +139,8 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     .filter((bounds) => !!bounds);
 
     let entireBounds = BoundingRect.merge(...allBounds);
-    let hasBounds = entireBounds.width && entireBounds.width < Infinity;
+    let hasBounds = entireBounds.width && entireBounds.left < Infinity;
+
     if (hasBounds) {
 
       // center

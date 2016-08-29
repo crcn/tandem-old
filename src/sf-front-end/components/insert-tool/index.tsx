@@ -38,7 +38,6 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     let left = 0;
     let top  = 0;
 
-
     if (capabilities.movable) {
       left = (event.pageX - editor.transform.left) / editor.transform.scale;
       top  = (event.pageY - editor.transform.top) / editor.transform.scale;
@@ -47,7 +46,6 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     child.display.position = { left, top };
 
     const complete = async () => {
-      await workspace.file.save();
       bus.execute(new SetToolAction(tool.displayEntityToolFactory));
     };
 

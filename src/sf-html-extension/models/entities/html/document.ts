@@ -78,7 +78,6 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
   }
 
   async update() {
-
     // need to sync the entities first so that changes
     // reflect back on the source
     await this.root.update();
