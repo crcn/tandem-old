@@ -57,10 +57,6 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
     return this[this.idProperty] == null;
   }
 
-  load() {
-    return this.fetch(new DSFindAction(this.collectionName, this.sourceQuery, false));
-  }
-
   save() {
     return this.isNew ? this.insert() : this.update();
   }

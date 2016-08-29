@@ -11,7 +11,7 @@ import { IDOMSection, NodeSection, GroupNodeSection } from "sf-html-extension/do
 import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency } from "sf-core/dependencies";
 import { IEntity, IContainerNodeEntity, EntityMetadata, IContainerNodeEntitySource, IEntityDocument } from "sf-core/ast/entities";
 
-export abstract class BaseHTMLContainerEntity<T> extends ContainerNode implements IHTMLContainerEntity {
+export abstract class BaseHTMLContainerEntity<T extends IHTMLContainerExpression> extends ContainerNode implements IHTMLContainerEntity {
 
   readonly parent: IContainerNodeEntity;
   readonly root: IContainerNodeEntity;
@@ -71,7 +71,7 @@ export abstract class BaseHTMLContainerEntity<T> extends ContainerNode implement
 
   patch(entity: BaseHTMLContainerEntity<T>) {
     this.willSourceChange(entity.source);
-    this._source = entity.source;
+    this._source = entity._source;
     this._dependencies = entity._dependencies;
     const changes = diffArray(this.children, entity.children, (a, b) => a.constructor === b.constructor && a.name === b.name);
     for (const entity of changes.remove) {
@@ -110,8 +110,8 @@ export abstract class BaseHTMLContainerEntity<T> extends ContainerNode implement
   }
 
   _link(child: IHTMLEntity) {
-    super._link(child);
     child.document = this.document;
+    super._link(child);
     if (child.section) {
       let nextHTMLEntitySibling: IHTMLEntity;
       do {

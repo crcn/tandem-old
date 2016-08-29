@@ -170,7 +170,6 @@ export class HTMLCommentExpression extends HTMLExpression implements IHTMLValueN
     super("#comment", position);
   }
   patch(expression: HTMLCommentExpression) {
-    console.log("PATCH", expression);
     this.value = expression.value;
     this.position = expression.position;
   }

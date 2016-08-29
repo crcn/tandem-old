@@ -3,9 +3,9 @@ import * as path from "path";
 import { IActor } from "sf-core/actors";
 import { inject } from "sf-core/decorators";
 import { Response } from "mesh";
-import { NodeSection } from "sf-html-extension/dom";
 import { DocumentFile } from "sf-front-end/models";
 import { IContainerNode } from "sf-core/markup";
+import { GroupNodeSection } from "sf-html-extension/dom";
 import { HTMLElementEntity } from "./element";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { ReadFileAction, WatchFileAction } from "sf-core/actions";
@@ -37,8 +37,12 @@ export class LinkEntity extends HTMLElementEntity {
     );
   }
 
+  update() {
+    this._watch();
+  }
+
   didMount() {
-    this._watch(this.href);
+    this._watch();
   }
 
   async load() {
@@ -46,10 +50,12 @@ export class LinkEntity extends HTMLElementEntity {
     const { value } = await this._bus.execute(new ReadFileAction(this.href)).read();
     const fileFactory = ActiveRecordFactoryDependency.find(type, this._dependencies);
     this._file = fileFactory.create("linkFiles", value);
+    await this._file.load();
     return super.load();
   }
+
   createSection() {
-    return new NodeSection(document.createElement("link"));
+    return new GroupNodeSection();
   }
   cloneNode() {
     return new LinkEntity(this.source);
@@ -62,8 +68,9 @@ export class LinkEntity extends HTMLElementEntity {
     }
   }
 
-  private _watch(href: string) {
-    this._watcher = this._bus.execute(new WatchFileAction(href));
+  private _watch() {
+    this._unwatch();
+    this._watcher = this._bus.execute(new WatchFileAction(this.href));
     this._watcher.pipeTo({
       close: () => { },
       abort: () => { },

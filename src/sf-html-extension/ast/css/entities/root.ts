@@ -1,5 +1,6 @@
 import { IFile } from "sf-core/active-records";
 import { inject } from "sf-core/decorators";
+import { Observable } from "sf-core/observable";
 import { watchProperty } from "sf-core/observable";
 import { ContainerNode } from "sf-core/markup";
 import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
@@ -7,13 +8,12 @@ import { parseCSS, CSSStyleSheetExpression } from "sf-html-extension/ast";
 import { Dependencies, DEPENDENCIES_NS, Injector } from "sf-core/dependencies";
 import { IEntity, EntityMetadata, IEntityDocument } from "sf-core/ast/entities";
 
-export class CSSRootEntity implements IEntity {
+export class CSSRootEntity extends Observable implements IEntity {
   readonly parent: IEntity;
-  private _styleSheetExpression: CSSStyleSheetExpression;
   readonly metadata: EntityMetadata = new EntityMetadata(this);
 
-  constructor(private _source: string, public document: IEntityDocument, readonly dependencies: Dependencies) {
-
+  constructor(private _source: CSSStyleSheetExpression, public document: IEntityDocument, readonly dependencies: Dependencies) {
+    super();
   }
 
   dispose() {
@@ -21,7 +21,7 @@ export class CSSRootEntity implements IEntity {
   }
 
 
-  get source(): string {
+  get source(): CSSStyleSheetExpression {
     return this._source;
   }
 
@@ -36,11 +36,10 @@ export class CSSRootEntity implements IEntity {
 
   load() {
     const styleSheetsDependency = CSSStyleSheetsDependency.findOrRegister(this.dependencies);
-    if (this._styleSheetExpression) {
-      styleSheetsDependency.unregister(this._styleSheetExpression);
+    if (this._source) {
+      styleSheetsDependency.unregister(this._source);
     }
-    this._styleSheetExpression = parseCSS(this.source);
-    styleSheetsDependency.register(this._styleSheetExpression);
+    styleSheetsDependency.register(this._source);
   }
 
   update() {

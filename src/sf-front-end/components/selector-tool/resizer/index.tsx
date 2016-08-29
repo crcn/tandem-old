@@ -147,7 +147,7 @@ class ResizerComponent extends React.Component<{
     return guider;
   }
 
-  updatePoint = (point, event: KeyboardEvent) => {
+  updatePoint = (point, event: MouseEvent) => {
     const keepAspectRatio = event.shiftKey;
     const keepCenter      = event.altKey;
     const anchor: IPoint  = point.anchor;
@@ -183,6 +183,8 @@ class ResizerComponent extends React.Component<{
 
     this.setState({ guideLines: guider.getGuideLines(createBoundingRectPoints(bounds)) });
     this.targetDisplay.bounds = bounds;
+
+    this.props.onResizing(event);
   }
 
   startDragging = (event) => {

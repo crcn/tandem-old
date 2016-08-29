@@ -47,14 +47,6 @@ describe(__filename + "#", () => {
       const chunk = await broker.execute(new DSFindAction(ar.collectionName, ar.serialize() )).read();
       expect(chunk.value.name).to.equal("a");
     });
-    it("can load an active record", async () => {
-      const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
-        _id: "person1"
-      });
-      await broker.execute(new DSInsertAction("people", { _id: "person1", name: "a", zip: 90210 }));
-      await ar.load();
-      expect(ar.zip).to.equal(90210);
-    });
     it("can update an active record", async () => {
       await broker.execute(new DSInsertAction("people", { _id: "person1", name: "a", zip: 90210 }));
       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
@@ -76,21 +68,16 @@ describe(__filename + "#", () => {
       expect(chunk.done).to.equal(true);
     });
 
-    it("throws an error if load() and id does not exist", async () => {
-      expect(() => {
-        <Person>ActiveRecordFactoryDependency.find("person", deps).create("people").load();
-      }).to.throw("Cannot query active record if it does not have an identifier.");
-    });
 
     it("throws an error if remove() and id does not exist", async () => {
       expect(() => {
-        <Person>ActiveRecordFactoryDependency.find("person", deps).create("people").load();
+        <Person>ActiveRecordFactoryDependency.find("person", deps).create("people").remove();
       }).to.throw("Cannot query active record if it does not have an identifier.");
     });
 
     it("throws an error if update() and id does not exist", async () => {
       expect(() => {
-        <Person>ActiveRecordFactoryDependency.find("person", deps).create("people").load();
+        <Person>ActiveRecordFactoryDependency.find("person", deps).create("people").update();
       }).to.throw("Cannot query active record if it does not have an identifier.");
     });
 

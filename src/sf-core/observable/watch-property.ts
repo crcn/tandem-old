@@ -23,3 +23,9 @@ export function watchProperty(target: IObservable, property: string, callback: (
     }
   };
 }
+
+export function waitForPropertyChange(target: IObservable, property: string) {
+  return new Promise((resolve, reject) => {
+    const propertyWatcher = watchProperty(target, property, resolve);
+  });
+}

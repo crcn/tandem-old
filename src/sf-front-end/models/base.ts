@@ -1,10 +1,11 @@
 import { File } from "sf-common/models";
 import { IActor } from "sf-core/actors";
 import { IEntity } from "sf-core/ast/entities";
+import { BubbleBus } from "sf-core/busses";
 import { Workspace } from "./workspace";
 import { IInjectable } from "sf-core/dependencies";
+import { IObservable } from "sf-core/observable";
 import { IDisposable } from "sf-core/object";
-import { watchProperty } from "sf-core/observable";
 import { IEntityDocument } from "sf-core/ast";
 import { IPoint, Transform } from "sf-core/geom";
 import { Action, PropertyChangeAction } from "sf-core/actions";
@@ -25,12 +26,7 @@ export interface IEditor extends IActor {
   readonly workspace: Workspace;
 }
 
-export abstract class DocumentFile<T extends IEntity> extends File implements IEntityDocument {
-
-  constructor() {
-    super();
-    watchProperty(this, "content", this._onContentChange).trigger();
-  }
+export abstract class DocumentFile<T extends IEntity & IObservable> extends File implements IEntityDocument {
 
   private _entity: T;
 
@@ -38,14 +34,13 @@ export abstract class DocumentFile<T extends IEntity> extends File implements IE
     return this._entity;
   }
 
-  protected abstract createEntity(content: string): T;
-
-  private _onContentChange = async (content: string) => {
-    const entity = this.createEntity(content);
+  public async load() {
+    const entity = this.createEntity(this.content);
     entity.document = this;
     await entity.load();
     if (this._entity && this._entity.constructor === entity.constructor) {
       this._entity.patch(entity);
+      this._entity.observe(new BubbleBus(this));
     } else {
       const oldEntity = this._entity;
       this._entity = entity;
@@ -53,10 +48,13 @@ export abstract class DocumentFile<T extends IEntity> extends File implements IE
     }
   }
 
+  protected abstract createEntity(content: string): T;
+
   async update() {
     this._entity.update();
     this.content = this._entity.source.toString();
-    return super.update();
+    await super.update();
+    await this.load();
   }
 }
 
