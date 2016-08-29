@@ -55,9 +55,6 @@
 	- [ ] transpiler
 	- [ ] entities
 		- [ ] repeat
-
-- [ ] scss extension
-	- [ ] parse variables
 - [ ] optimizations
   - [ ] memoize flatten() for entities
   - [ ] replace most react components with transpiled saffron

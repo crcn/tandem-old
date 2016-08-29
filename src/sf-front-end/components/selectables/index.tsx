@@ -95,6 +95,8 @@ export class SelectablesComponent extends React.Component<{
     const { selection } = this.props.workspace;
     const activeEntity = this.props.workspace.editor.activeEntity as IContainerEntity;
     if (!activeEntity.childNodes) return null;
+    // do not render selectables that are off screen
+    //
 
     // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.
 

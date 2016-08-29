@@ -1,25 +1,35 @@
-<link rel="stylesheet" type="text/scss" href="./style.scss" />
 
-<artboard title="Pane" style="width: 200px; left: 1076px; top: 290px;">
+<!-- Previews -->
+<artboard title="Application" style="width: 1024px; height: 768px; left: -4px; top: 462px;" />
+<artboard title="Context menu" style="background; white;position: absolute; width: 213px; height: 184px; left: -876px; top: 462px;" />
+<artboard title="Timeline" style="background; white;position: absolute; width: 1024px; height: 184px; left: -4px; top: 1738px;" />
+
+<!-- Timelines -->
+<artboard title="Media Query Timeline" style="background; white;position: absolute; width: 1024px; height: 184px; left: -4px; top: 2143px;" />
+<artboard title="Animations Timeline" style="background; white;position: absolute; width: 1024px; height: 184px; left: 1135px; top: 2143px;" />
+<artboard id="pane" title="Pane" style="width: 200px; left: 1286px; top: 462px;">
   <style>
     .header {
-      background: rgba(0,0,0,0.1);
+      background: rgba(0, 0, 0, 0.1);
       padding: 10px;
     }
 
     .content {
       padding: 10px;
     }
-
   </style>
-  <div class="header">
-    ${title}
-  </div>
-  <div class="content">
-    ${content}
-  </div>
+  <div class="header" style="top: -17px; left: -56px;">${title}</div>
+  <div class="content" style="top: -17px; left: -56px;">${content}</div>
 </artboard>
 
-
-
-<artboard title="Application" style="width: 1024px; height: 768px; top: 290px; left: -4px;" />
+<!-- Entity Panes -->
+<artboard title="Layers Pane" style="background; white;position: absolute; width: 205px; height: 150px; left: 1286px; top: 706px;">
+  <pane/>
+</artboard>
+<artboard title="CSS Pane" style="background; white;position: absolute; width: 205px; height: 150px; left: 1618px; top: 706px;">
+  <pane/>
+</artboard>
+<artboard title="Key/Value inputs" style="background; white;position: absolute; width: 205px; height: 132px; left: 1618px; top: 963px;" />
+<artboard title="Key/value-input row" style="background; white;position: absolute; width: 213px; height: 132px; left: 1897px; top: 963px;" />
+<artboard title="color input" style="background; white;position: absolute; width: 213px; height: 153px; left: 1897px; top: 1190px;" />
+<artboard title="font family input" style="background; white;position: absolute; width: 213px; height: 153px; left: 1897px; top: 1441px;" />

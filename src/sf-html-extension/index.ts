@@ -10,6 +10,7 @@ import { dependency as artboardToolComponentDependency } from "./components/artb
 // layer components
 import { dependency as textLayerLabelComponentDependency } from "./components/text-layer-label";
 import { dependency as elementLayerLabelComponentDependency } from "./components/element-layer-label";
+import { dependency as commentLayerLabelComponentDependency } from "./components/comment-layer-label";
 
 // models
 import { cssFileDependency } from "./models/css-file";
@@ -46,6 +47,7 @@ export const dependency = [
   artboardToolComponentDependency,
   entityPreviewComponentDependency,
   textLayerLabelComponentDependency,
+  commentLayerLabelComponentDependency,
   elementLayerLabelComponentDependency,
 
   // services

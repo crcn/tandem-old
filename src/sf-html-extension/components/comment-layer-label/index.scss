@@ -1,0 +1,11 @@
+@import "sf-front-end/scss/variables";
+
+.m-comment-layer-label {
+  color: $color-grey-7;
+  &:before {
+    content: "<!-- "
+  }
+  &:after {
+    content: " -->"
+  }
+}
