@@ -38,7 +38,6 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   }
 
   patch(entity: HTMLValueNodeEntity<any>) {
-    console.log("patch", this.value, entity.value);
     this.value = entity.value;
     this._source = entity.source;
   }
