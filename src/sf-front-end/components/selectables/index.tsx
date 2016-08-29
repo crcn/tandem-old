@@ -100,7 +100,7 @@ export class SelectablesComponent extends React.Component<{
 
   render() {
 
-    const { workspace } = this.props;
+    const { workspace, app } = this.props;
     const { selection } = workspace;
     const activeEntity = this.props.workspace.editor.activeEntity as IContainerNodeEntity;
     if (!activeEntity.children) return null;
@@ -109,7 +109,7 @@ export class SelectablesComponent extends React.Component<{
     // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.
 
     // TODO - check if user is scrolling
-    if (selection && selection.metadata.get(MetadataKeys.MOVING)) return null;
+    if (selection && selection.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
     const allEntities = this.props.workspace.file.entity.flatten() as Array<IEntity>;
 

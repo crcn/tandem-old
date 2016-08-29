@@ -3,9 +3,10 @@ import { Logger } from "sf-core/logger";
 import { inject } from "sf-core/decorators";
 import { loggable } from "sf-core/decorators";
 import { IDisposable } from "sf-core/object";
-import { Action, DSFindAction } from "sf-core/actions";
+import { MetadataKeys } from "sf-front-end/constants";
 import { tween, easeOutCubic } from "sf-core/animate";
 import { FrontEndApplication } from "sf-front-end/application";
+import { Action, DSFindAction } from "sf-core/actions";
 import { BaseApplicationService } from "sf-core/services";
 import { Workspace, DocumentFile } from "sf-front-end/models";
 import { SetToolAction, ZoomAction } from "sf-front-end/actions";
@@ -22,6 +23,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
   @inject(DEPENDENCIES_NS)
   private _dependencies: Dependencies;
   private _tweener: IDisposable;
+  private _zoomTimeout: any;
 
   async initialize(action: Action) {
     await this._loadWorkspaces();
@@ -49,13 +51,25 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
     if (!action.ease) {
       this.app.workspace.editor.zoom += delta;
+      this._zooming();
       return;
     }
 
     this._tweener = tween(this.app.workspace.editor.zoom, this.app.workspace.editor.zoom + delta, 200, (value) => {
       this.app.workspace.editor.zoom = value;
-      this.app.bus.execute(new Action("zooming"));
+      this._zooming();
     }, easeOutCubic);
+  }
+
+
+  private _zooming() {
+    clearTimeout(this._zoomTimeout);
+    this.app.metadata.set(MetadataKeys.ZOOMING, true);
+    this.app.bus.execute(new Action("zooming"));
+    this._zoomTimeout = setTimeout(() => {
+      this.app.metadata.set(MetadataKeys.ZOOMING, false);
+      this.app.bus.execute(new Action("zoomingComplete"));
+    }, 10);
   }
 
   setTool(action: SetToolAction) {
