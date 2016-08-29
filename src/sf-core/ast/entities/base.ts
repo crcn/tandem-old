@@ -6,9 +6,9 @@ import { IEntityDisplay } from "./display";
 import { IDisposable, INamed } from "sf-core/object";
 import {
   INode,
+  IValueNode,
   IElement,
   Element,
-  ValueNode,
   ContainerNode,
   IContainerNode,
 } from "sf-core/markup";
@@ -76,6 +76,10 @@ export interface IContainerNodeEntity extends IContainerNode, INodeEntity {
   parent: IContainerNodeEntity;
   source: IContainerNodeEntitySource;
   children: Array<INodeEntity>;
+}
+
+export interface IValueNodeEntity extends INodeEntity, IValueNode {
+  parent: IContainerNodeEntity;
 }
 
 export interface IElementEntity extends IElement, IContainerNodeEntity {

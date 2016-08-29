@@ -28,7 +28,7 @@ const editor = new HTMLEditor();
 editor.open(new HTMLFile());
 */
 
-export class TextTool extends BaseEditorTool {
+export class EditInnerHTMLTool extends BaseEditorTool {
 
   @inject(MAIN_BUS_NS)
   readonly bus: IActor;
@@ -117,7 +117,7 @@ class InsertTextTool extends InsertTool {
   private _dependencies: Dependencies;
 
   get displayEntityToolFactory() {
-    return <EditorToolFactoryDependency>this._dependencies.link(new EditorToolFactoryDependency(null, null, null, TEXT_TOOL_KEY_CODE, TextTool));
+    return <EditorToolFactoryDependency>this._dependencies.query(editInnerHTMLDependency.ns);
   }
 
   createSource() {
@@ -126,3 +126,4 @@ class InsertTextTool extends InsertTool {
 }
 
 export const dependency = new EditorToolFactoryDependency("text", "text", "display", "t", InsertTextTool);
+export const editInnerHTMLDependency = new EditorToolFactoryDependency("editInnerHTML", null, null, TEXT_TOOL_KEY_CODE, EditInnerHTMLTool);

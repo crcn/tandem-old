@@ -22,7 +22,7 @@ import { dependency as pasteEntityService } from "./services/paste-entity";
 import { dependency as selectWithCssSelectorService } from "./services/select-with-css-selector";
 
  // tools
-import { dependency as textToolDependency } from "./models/text-tool";
+import { dependency as textToolDependency, editInnerHTMLDependency } from "./models/text-tool";
 
 // key bindings
 import { dependencies as keyBindingDependencies } from "./key-bindings";
@@ -61,6 +61,7 @@ export const dependency = [
 
   // tools
   textToolDependency,
+  editInnerHTMLDependency,
 
   // key bindings
   ...keyBindingDependencies,

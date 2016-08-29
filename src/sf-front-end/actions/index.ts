@@ -6,6 +6,7 @@ import { IEditor, IEditorTool, IHistoryItem } from "sf-front-end/models";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 
 export const CANVAS_MOUSE_DOWN = "canvasMouseDown";
+export const SELECTION_DOUBLE_CLICK = "selectionDoubleClick";
 export class MouseAction extends Action {
   constructor(type, readonly originalEvent: MouseEvent) {
     super(type);

@@ -27,6 +27,7 @@ class RegisteredArtboardEntity extends VisibleHTMLElementEntity {
   mapSourceChildNodes() {
     return ArtboardDependency.find(this.name.toLowerCase(), this._dependencies).value.source.children;
   }
+  // TODO - set children to context here
 };
 
 export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInjectable {
