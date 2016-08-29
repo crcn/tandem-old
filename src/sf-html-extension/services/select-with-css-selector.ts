@@ -16,7 +16,7 @@ export class SelectWithCSSSelectorService extends BaseApplicationService<FrontEn
   @filterAction(sift({ type: SELECT_WITH_CSS_SELECTOR }))
   execute(action: SelectWithCSSSelector) {
     this.bus.execute(new SelectAction(
-      this.app.workspace.file.document.flatten().filter(action.selector.test.bind(action.selector))
+      this.app.workspace.file.document.root.flatten().filter(action.selector.test.bind(action.selector))
     ));
   }
 }

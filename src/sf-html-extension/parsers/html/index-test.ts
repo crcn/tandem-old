@@ -29,25 +29,25 @@ describe(__filename + `#`, () => {
 
   describe("text nodes#", () => {
     it("can be parsed on their own", () => {
-      const text = <HTMLTextExpression>(<HTMLFragmentExpression>parse("hello")).childNodes[0];
+      const text = <HTMLTextExpression>(<HTMLFragmentExpression>parse("hello")).children[0];
       expect(text).to.an.instanceOf(HTMLTextExpression);
-      expect((<HTMLTextExpression>text).nodeValue).to.equal("hello");
+      expect((<HTMLTextExpression>text).value).to.equal("hello");
     });
 
     it("trims the ends", () => {
-      expect((<HTMLTextExpression>(<HTMLFragmentExpression>parse("  hello  ")).childNodes[0]).nodeValue).to.equal("hello");
+      expect((<HTMLTextExpression>(<HTMLFragmentExpression>parse("  hello  ")).children[0]).value).to.equal("hello");
     });
   });
 
   describe("elements#", () => {
     it("can be parsed without attributes or children", () => {
-      const element = (<HTMLFragmentExpression>parse("<div />")).childNodes[0] as HTMLFragmentExpression;
+      const element = (<HTMLFragmentExpression>parse("<div />")).children[0] as HTMLFragmentExpression;
       expect(element).to.be.an.instanceOf(HTMLElementExpression);
       expect(element.position.start).to.equal(0);
     });
 
     it("can parse attribute values", () => {
-      const element = (parse(`<div a="b" c="d" />`) as HTMLFragmentExpression).childNodes[0] as HTMLElementExpression;
+      const element = (parse(`<div a="b" c="d" />`) as HTMLFragmentExpression).children[0] as HTMLElementExpression;
       expect(element.attributes[0].name).to.equal("a");
       expect(element.attributes[0].value).to.equal("b");
       expect(element.attributes[1].name).to.equal("c");
@@ -55,17 +55,17 @@ describe(__filename + `#`, () => {
     });
 
     it("can define attributes without any values", () => {
-      const element = (parse("<div a b />") as HTMLFragmentExpression).childNodes[0] as HTMLElementExpression;
+      const element = (parse("<div a b />") as HTMLFragmentExpression).children[0] as HTMLElementExpression;
       expect(element.attributes[0].value).to.equal("");
       expect(element.attributes[0].name).to.equal("a");
       expect(element.attributes[1].value).to.equal("");
     });
 
     it("can be parsed with one text child node", () => {
-      const element = (<HTMLFragmentExpression>parse("<div>ab</div>")).childNodes[0] as HTMLElementExpression;
+      const element = (<HTMLFragmentExpression>parse("<div>ab</div>")).children[0] as HTMLElementExpression;
       expect(element).to.be.an.instanceOf(HTMLElementExpression);
-      expect(element.childNodes.length).to.equal(1);
-      expect(element.childNodes[0]).to.be.an.instanceOf(HTMLTextExpression);
+      expect(element.children.length).to.equal(1);
+      expect(element.children[0]).to.be.an.instanceOf(HTMLTextExpression);
     });
 
     it("throws an error if the end tag does not match the start tag", () => {
@@ -73,10 +73,10 @@ describe(__filename + `#`, () => {
     });
 
     it("can parse a div with attributes and child nodes", () => {
-      const element = (<any>parse("<div a=\"b\" c><span />cd</div>")).childNodes[0] as HTMLElementExpression;
+      const element = (<any>parse("<div a=\"b\" c><span />cd</div>")).children[0] as HTMLElementExpression;
       expect(element.attributes[0].value).to.equal("b");
       expect(element.attributes[1].value).to.equal("");
-      expect(element.childNodes.length).to.equal(2);
+      expect(element.children.length).to.equal(2);
     });
 
     [
@@ -90,8 +90,8 @@ describe(__filename + `#`, () => {
 
   describe("comments#", () => {
     it("can be parsed", () => {
-      const element = (<HTMLFragmentExpression>parse("<!-- hello -->")).childNodes[0] as HTMLCommentExpression;
-      expect(element.nodeValue).to.equal(" hello ");
+      const element = (<HTMLFragmentExpression>parse("<!-- hello -->")).children[0] as HTMLCommentExpression;
+      expect(element.value).to.equal(" hello ");
       expect(element.position.start).to.equal(0);
     });
   });
@@ -105,7 +105,7 @@ describe(__filename + `#`, () => {
     it("are created when the source is blank", () => {
       const element = parse("");
       expect(element).to.be.an.instanceOf(HTMLFragmentExpression);
-      expect((element as HTMLFragmentExpression).childNodes.length).to.equal(0);
+      expect((element as HTMLFragmentExpression).children.length).to.equal(0);
     });
   });
 
@@ -136,12 +136,12 @@ describe(__filename + `#`, () => {
           <div>
           </div>
         </div>
-      `)).childNodes[0] as HTMLElementExpression;
+      `)).children[0] as HTMLElementExpression;
 
       expect(element).to.be.an.instanceOf(HTMLElementExpression);
-      expect(element.childNodes.length).to.equal(2);
-      expect(element.childNodes[0]).to.be.an.instanceOf(HTMLElementExpression);
-      expect(element.childNodes[1]).to.be.an.instanceOf(HTMLElementExpression);
+      expect(element.children.length).to.equal(2);
+      expect(element.children[0]).to.be.an.instanceOf(HTMLElementExpression);
+      expect(element.children[1]).to.be.an.instanceOf(HTMLElementExpression);
     });
   });
 });

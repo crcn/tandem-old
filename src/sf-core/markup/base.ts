@@ -1,4 +1,5 @@
 import { IActor } from "sf-core/actors";
+import { INamed } from "sf-core/object";
 import { CallbackBus } from "sf-core/busses";
 import { IObservable, Observable } from "sf-core/observable";
 import { Action, AttributeChangeAction } from "sf-core/actions";
@@ -15,30 +16,26 @@ export interface IAttribute {
   value: any;
 }
 
-export interface INode extends Object, IObservable {
-  parentNode: IContainerNode;
-  readonly nodeName: string;
-  cloneNode(deep?: boolean): INode;
-  flatten(): Array<INode>;
+export interface INode extends IObservable, INamed {
+  parent: IContainerNode;
+  readonly name: string;
+  clone(): INode;
   nextSibling: INode;
   previousSibling: INode;
 }
 
-
-
 // TODO - maybe change to ITree
 export interface IContainerNode extends INode {
-  childNodes: Array<INode>;
+  children: Array<INode>;
   removeChild(child: INode);
   appendChild(child: INode);
   insertBefore(child: INode, existingChild: INode);
-  flatten(): Array<INode>;
   firstChild: INode;
   lastChild: INode;
 }
 
 export interface IValueNode extends INode {
-  nodeValue: any;
+  value: any;
 }
 
 export interface IElement extends IContainerNode {
@@ -59,105 +56,90 @@ export class Attribute implements IAttribute {
 
 export abstract class Node extends Observable implements INode {
 
-  constructor() {
+  constructor(readonly name: string) {
 
     // needed here to ensure that the target observable is always this
     super();
   }
 
-  readonly nodeName = null;
-  protected _parentNode: IContainerNode;
-  get parentNode(): IContainerNode {
-    return this._parentNode;
+  protected _parent: IContainerNode;
+  get parent(): IContainerNode {
+    return this._parent;
   }
 
   get nextSibling() {
-    return this.parentNode ? this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) + 1] : undefined;
+    return this.parent ? this.parent.children[this.parent.children.indexOf(this) + 1] : undefined;
   }
 
   get previousSibling() {
-    return this.parentNode ? this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) - 1] : undefined;
+    return this.parent ? this.parent.children[this.parent.children.indexOf(this) - 1] : undefined;
   }
 
-  flatten(): Array<INode> {
-    return this._flattenDeep([]);
-  }
-
-  public _flattenDeep(nodes: Array<INode>) {
-    nodes.push(this);
-    return nodes;
-  }
   protected didMount() { }
   protected willUnmount() { }
 
-  abstract cloneNode(deep?: boolean): Node;
+  abstract clone(): Node;
 }
 
 export class ContainerNode extends Node implements IContainerNode {
 
-  protected _childNodes: Array<INode> = [];
+  protected _children: Array<INode> = [];
   private _childObserver: IActor;
 
-  cloneNode(deep?: boolean) {
-    const clone = new ContainerNode();
-    if (deep) {
-      for (const child of this.childNodes) {
-        clone.appendChild(child.cloneNode(true));
-      }
+  constructor(name: string) {
+    super(name);
+  }
+
+  clone() {
+    const clone = new ContainerNode(this.name);
+    for (const child of this.children) {
+      clone.appendChild(child.clone());
     }
     return clone;
   }
 
-  get childNodes(): Array<INode> {
-    return this._childNodes;
+  get children(): Array<INode> {
+    return this._children;
   }
 
   get firstChild(): INode {
-    return this._childNodes[0];
+    return this._children[0];
   }
 
   get lastChild(): INode {
-    return this._childNodes[this._childNodes.length - 1];
-  }
-
-  _flattenDeep(nodes) {
-    nodes.push(this);
-    for (const child of this.childNodes) {
-      (<Node>child)._flattenDeep(nodes);
-    }
-    return nodes;
+    return this._children[this._children.length - 1];
   }
 
   appendChild(child: INode) {
-    if (child.parentNode) {
-      child.parentNode.removeChild(child);
+    if (child.parent) {
+      child.parent.removeChild(child);
     }
-    this._childNodes.push(child);
+    this._children.push(child);
     this._link(child);
   }
 
   removeChild(child: INode) {
-    const i = this._childNodes.indexOf(child);
+    const i = this._children.indexOf(child);
     if (i !== -1) {
-      this._childNodes.splice(i, 1);
+      this._children.splice(i, 1);
       this._unlink(child);
     }
   }
 
-  insertBefore(child: Node, existingChild: Node) {
-    const i = this._childNodes.indexOf(existingChild);
+  insertBefore(child: INode, existingChild: INode) {
+    const i = this._children.indexOf(existingChild);
 
-    if (child.parentNode) {
-      child.parentNode.removeChild(child);
+    if (child.parent) {
+      child.parent.removeChild(child);
     }
 
     // throw error if existing child doesn"t exist
     if (i === -1) {
       throw new Error("Cannot insert a child before a node that doesn't exist in the parent.");
     } else if (i === 0) {
-      this._childNodes.unshift(child);
+      this._children.unshift(child);
     } else {
-      this._childNodes.splice(i, 0, child);
+      this._children.splice(i, 0, child);
     }
 
     this._link(child);
@@ -166,7 +148,7 @@ export class ContainerNode extends Node implements IContainerNode {
   protected _unlink(child: INode) {
     child.unobserve(this._childObserver);
     (child as any).willUnmount();
-    (child as any)._parentNode = undefined;
+    (child as any)._parent = undefined;
   }
 
   protected _link(child: INode) {
@@ -178,13 +160,13 @@ export class ContainerNode extends Node implements IContainerNode {
     }
 
     child.observe(this._childObserver);
-    (child as any)._parentNode = this;
+    (child as any)._parent = this;
     (child as any).didMount();
   }
 
-  protected addChildNodesToClonedNode(node: ContainerNode) {
-    for (const child of this.childNodes) {
-      node.appendChild(child.cloneNode(true));
+  protected addchildrenToClonedNode(node: ContainerNode) {
+    for (const child of this.children) {
+      node.appendChild(child.clone());
     }
   }
 
@@ -241,13 +223,9 @@ export class Attributes extends Array<Attribute> {
 
 export class Element extends ContainerNode implements IElement {
   readonly attributes: Attributes = new Attributes();
-  readonly nodeName: string;
 
-  constructor(nodeName: string) {
-    super();
-
-    // reflect dom uppercase node names
-    this.nodeName = nodeName.toUpperCase();
+  constructor(name: string) {
+    super(name.toUpperCase());
   }
 
   hasAttribute(key: string) {
@@ -266,19 +244,17 @@ export class Element extends ContainerNode implements IElement {
     this.notify(new AttributeChangeAction(key, value));
   }
 
-  cloneNode(deep: boolean = false): Element {
+  clone(): Element {
     const clone = this.cloneInstance();
     for (const attribute of this.attributes) {
       clone.setAttribute(attribute.name, attribute.value);
     }
-    if (deep) {
-      this.addChildNodesToClonedNode(clone);
-    }
+    this.addchildrenToClonedNode(clone);
     return clone;
   }
 
   protected cloneInstance() {
-    return new Element(this.nodeName);
+    return new Element(this.name);
   }
 }
 
@@ -289,10 +265,10 @@ export class Element extends ContainerNode implements IElement {
  */
 
 export class ValueNode extends Node implements IValueNode {
-  constructor(readonly nodeName: string, public nodeValue: any) {
-    super();
+  constructor(name: string, public value: any) {
+    super(name);
   }
-  cloneNode() {
-    return new ValueNode(this.nodeName, this.nodeValue);
+  clone() {
+    return new ValueNode(this.name, this.value);
   }
 }

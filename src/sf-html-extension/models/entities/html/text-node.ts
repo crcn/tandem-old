@@ -4,7 +4,6 @@ import { HTMLValueNodeEntity } from "./value-node";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 
 export class HTMLTextEntity extends HTMLValueNodeEntity<HTMLTextExpression> {
-  readonly type: string = "text";
   createDOMNode(nodeValue: any) {
     return document.createTextNode(decode(nodeValue));
   }

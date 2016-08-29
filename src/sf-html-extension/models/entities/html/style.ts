@@ -1,5 +1,5 @@
 import { inject } from "sf-core/decorators";
-import { NodeSection } from "sf-core/markup";
+import { NodeSection } from "sf-html-extension/dom";
 import { IHTMLDocument } from "./base";
 import { HTMLElementEntity } from "./element";
 import { parse as parseCSS } from "sf-html-extension/parsers/css";
@@ -16,7 +16,7 @@ export class HTMLStyleEntity extends HTMLElementEntity {
   protected willSourceChange(value: HTMLElementExpression) {
     super.willSourceChange(value);
     this._removeStyles();
-    const nodeValue = (<HTMLTextExpression>value.childNodes[0]).nodeValue;
+    const nodeValue = (<HTMLTextExpression>value.children[0]).value;
 
     const newStyle = parseCSS(nodeValue);
 
@@ -42,7 +42,7 @@ export class HTMLStyleEntity extends HTMLElementEntity {
   }
 
   createSection() {
-    return new NodeSection(<any>(this._style = document.createElement("style")));
+    return new NodeSection((this._style = document.createElement("style")));
   }
 }
 

@@ -3,7 +3,7 @@ import * as path from "path";
 import { IActor } from "sf-core/actors";
 import { inject } from "sf-core/decorators";
 import { Response } from "mesh";
-import { NodeSection } from "sf-core/markup/section";
+import { NodeSection } from "sf-html-extension/dom";
 import { DocumentFile } from "sf-front-end/models";
 import { IContainerNode } from "sf-core/markup";
 import { HTMLElementEntity } from "./element";
@@ -49,7 +49,7 @@ export class LinkEntity extends HTMLElementEntity {
     return super.load();
   }
   createSection() {
-    return new NodeSection(<IContainerNode><any>document.createElement("link"));
+    return new NodeSection(document.createElement("link"));
   }
   cloneNode() {
     return new LinkEntity(this.source);

@@ -7,7 +7,7 @@ import { FrontEndApplication } from "sf-front-end/application";
 import { DisplayEntitySelection } from "sf-front-end/models";
 import { IntersectingPointComponent } from "./intersecting-point";
 import { BoundingRect, IPoint, Point } from "sf-core/geom";
-import { IVisibleEntity, IContainerEntity } from "sf-core/entities";
+import { IVisibleNodeEntity, IContainerNodeEntity } from "sf-core/ast/entities";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
 
 const POINT_STROKE_WIDTH = 1;
@@ -121,7 +121,7 @@ class ResizerComponent extends React.Component<{
     const guider = new Guider(5 / this.props.zoom);
     const { selection } = this.props;
 
-    const each = (node: IContainerEntity) => {
+    const each = (node: IContainerNodeEntity) => {
 
       for (const entity of selection) {
 
@@ -133,17 +133,17 @@ class ResizerComponent extends React.Component<{
 
       // if (node.metadata.get(MetadataKeys.CANVAS_ROOT) && node.flatten().indexOf()) return;
 
-      const displayNode = node as any as IVisibleEntity;
+      const displayNode = node as any as IVisibleNodeEntity;
       if (displayNode.display) {
         guider.addPoint(...createBoundingRectPoints(displayNode.display.bounds));
       }
 
-      if (node.childNodes) {
-        node.childNodes.forEach(each);
+      if (node.children) {
+        node.children.forEach(each);
       }
     };
 
-    each(this.file.document.root as IContainerEntity);
+    each(this.file.document.root as IContainerNodeEntity);
     return guider;
   }
 

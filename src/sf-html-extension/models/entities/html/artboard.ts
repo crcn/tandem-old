@@ -3,10 +3,10 @@ import "./artboard.scss";
 import { Action } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
 import { inject } from "sf-core/decorators";
+import { NodeSection } from "sf-html-extension/dom";
 import { MetadataKeys } from "sf-front-end/constants";
 import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
 import { HTMLDocumentEntity } from "./document";
-import { NodeSection, INode } from "sf-core/markup";
 import { FrontEndApplication } from "sf-front-end/application";
 import { HTMLElementExpression } from "sf-html-extension/parsers/html";
 import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
@@ -25,7 +25,7 @@ class ArtboardDependency extends Dependency<HTMLArtboardEntity> {
 
 class RegisteredArtboardEntity extends VisibleHTMLElementEntity {
   mapSourceChildNodes() {
-    return ArtboardDependency.find(this.nodeName.toLowerCase(), this._dependencies).value.source.childNodes;
+    return ArtboardDependency.find(this.name.toLowerCase(), this._dependencies).value.source.children;
   }
 };
 
@@ -99,15 +99,15 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
       this.notify(new Action("iframeLoaded"));
     };
 
-    return new NodeSection(this._iframe as any);
+    return new NodeSection(this._iframe);
   }
 
-  insertDOMChildBefore(newChild: INode, beforeChild: INode) {
-    this._placeholder.insertBefore(newChild as any, beforeChild as any);
+  insertDOMChildBefore(newChild: Node, beforeChild: Node) {
+    this._placeholder.insertBefore(newChild, beforeChild);
   }
 
-  appendDOMChild(newChild: INode) {
-    this._placeholder.appendChild(newChild as any);
+  appendDOMChild(newChild: Node) {
+    this._placeholder.appendChild(newChild);
   }
 }
 

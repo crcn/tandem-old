@@ -30,7 +30,7 @@ abstract class BaseInsertElementTool extends InsertTool {
   createSource() {
 
     // width & height need to be 0'd since some elements have a size by default such as iframes
-    return parseHTML(`<${this.options.nodeName} ${this.options.attributes} style="${this.options.style}position:absolute;width:0px;height:0px;" />`).childNodes[0];
+    return parseHTML(`<${this.options.nodeName} ${this.options.attributes} style="${this.options.style}position:absolute;width:0px;height:0px;" />`).children[0];
   }
 }
 
@@ -48,18 +48,6 @@ export const dependencies = [
       this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(textToolDependency.ns)));
     }
   })
-  // new GlobalKeyBindingDependency("meta+g", class GroupElementsCommand extends BaseApplicationCommand<FrontEndApplication> {
-  //   execute(action: Action) {
-  //     const selection = <HTMLEntityDisplaySelection><any>this.app.workspace.selection;
-  //     const bounds = selection.display.bounds;
-  //     const element: HTMLElementExpression = <HTMLElementExpression>parseHTML(`<div style="position:absolute;left:${bounds.left}px;top${bounds.top}px;" />`).childNodes[0];
-  //     this.app.workspace.selection.forEach((entity) =>  {
-  //       element.appendChildNodes(entity.source);
-  //       entity.parentNode.removeChild(entity);
-  //     });
-  //     this.app.workspace.file.save();
-  //   }
-  // })
 ];
 
 const insertElementKeyBindings = {

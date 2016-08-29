@@ -31,7 +31,7 @@ class CommentLayerLabel extends React.Component<{ entity: HTMLCommentEntity, con
       className="m-label m-comment-layer-label"
       onDoubleClick={this.editLabel.bind(this)}>
       {
-         String(this.props.entity.nodeValue || "").trim()
+         String(this.props.entity.value || "").trim()
       }
     </span>);
   }
@@ -57,4 +57,4 @@ class CommentLayerLabel extends React.Component<{ entity: HTMLCommentEntity, con
   }
 }
 
-export const dependency = new LayerLabelComponentFactoryDependency("comment", CommentLayerLabel);
+export const dependency = new LayerLabelComponentFactoryDependency("#comment", CommentLayerLabel);

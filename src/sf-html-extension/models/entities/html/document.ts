@@ -14,10 +14,10 @@ import { CSSStyleExpression, CSSStyleSheetExpression } from "sf-html-extension/p
 import { IHTMLEntity, IHTMLDocument, IHTMLContainerEntity } from "./base";
 import {
   IEntity,
-  IVisibleEntity,
+  IVisibleNodeEntity,
   IElementEntity,
   findEntitiesBySource,
-} from "sf-core/entities";
+} from "sf-core/ast/entities";
 
 import {
   HTMLExpression,
@@ -51,15 +51,14 @@ export class HTMLDocumentEntity extends ContainerNode implements IHTMLDocument, 
    */
 
   constructor(readonly file: DocumentFile<any>, readonly dependencies: Dependencies) {
-    super();
+    super("#document");
     watchProperty(file, "content", this._onFileContentChange).trigger();
   }
 
-  cloneNode(deep?: boolean) {
+  clone() {
     const clone = new HTMLDocumentEntity(this.file, this.dependencies);
-    if (deep)
-    for (const child of this.childNodes) {
-      clone.appendChild(<IHTMLEntity>child.cloneNode(true));
+    for (const child of this.children) {
+      clone.appendChild(<IHTMLEntity>child.clone());
     }
     return clone;
   }

@@ -10,7 +10,7 @@ import { FrontEndApplication } from "sf-front-end/application";
 import { SelectionSizeComponent } from "sf-front-end/components/selection-size";
 import { DisplayEntitySelection } from "sf-front-end/models";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
-import { IEntityDisplay, IEntity, IVisibleEntity } from "sf-core/entities";
+import { IEntityDisplay, IEntity, IVisibleNodeEntity } from "sf-core/ast/entities";
 
 export default class SelectorComponent extends React.Component<{ editor: Editor, tool: PointerTool, workspace: Workspace, app: FrontEndApplication, zoom: number, allEntities: Array<IEntity> }, any> {
 
@@ -51,7 +51,7 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
     const entireBounds = BoundingRect.merge(...flatten(selection.map((entity) => entity.flatten()))
     .filter((entity) => !!entity["display"])
-    .map((entity: IVisibleEntity) => entity.display.bounds));
+    .map((entity: IVisibleNodeEntity) => entity.display.bounds));
 
     const borderWidth = 1 / this.props.zoom;
 

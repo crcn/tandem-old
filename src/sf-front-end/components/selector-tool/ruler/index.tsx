@@ -4,7 +4,7 @@ import * as React from "react";
 import LineComponent from "../line";
 import calculateDistances from "./calculate-distances";
 import { DisplayEntitySelection } from "sf-front-end/models";
-import { IEntity, IVisibleEntity } from "sf-core/entities";
+import { IEntity, IVisibleNodeEntity } from "sf-core/ast/entities";
 
 /**
  * shows distances between the entity and other objects
@@ -16,7 +16,7 @@ class RulerToolComponent extends React.Component<{ selection: DisplayEntitySelec
     const selectionDisplay = this.props.selection.display;
 
     const allBounds = this.props.allEntities.map((entity) => {
-      if (entity["display"]) return (entity as IVisibleEntity).display.bounds;
+      if (entity["display"]) return (entity as IVisibleNodeEntity).display.bounds;
     }).filter((bounds) => !!bounds);
 
     return (<div className="m-ruler-tool">

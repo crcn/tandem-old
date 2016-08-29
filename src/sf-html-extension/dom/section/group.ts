@@ -1,18 +1,17 @@
 import { getNodePath, findNode } from "../utils";
-import { IContainerNode, INode } from "../base";
-import { IMarkupSectionMarker, IMarkupSection } from "./base";
+import { IDOMSectionMarker, IDOMSection } from "./base";
 
 /**
  */
 
-export class GroupMarker implements IMarkupSectionMarker {
+export class GroupMarker implements IDOMSectionMarker {
   constructor(
     private _startPath: Array<number>,
     private _endPath: Array<number>,
     private _nodeFactory: any
   ) { }
 
-  createSection(rootNode: IContainerNode) {
+  createSection(rootNode: Node) {
     return new GroupNodeSection(
       findNode(this._startPath, rootNode),
       findNode(this._endPath, rootNode),
@@ -21,15 +20,14 @@ export class GroupMarker implements IMarkupSectionMarker {
   }
 }
 
-
 /**
  * a section is a group of nodes contained within a
  */
 
-export class GroupNodeSection implements IMarkupSection {
+export class GroupNodeSection implements IDOMSection {
 
-  private _start: INode;
-  private _end: INode;
+  private _start: Node;
+  private _end: Node;
   private _nodeFactory: any;
   private _hiddenChildren: Array<any>;
 
@@ -82,7 +80,7 @@ export class GroupNodeSection implements IMarkupSection {
     return this.innerHTML;
   }
 
-  removeChildNodes() {
+  removeChildren() {
     for (const child of this.childNodes) {
       child.parentNode.removeChild(child);
     }
@@ -90,7 +88,7 @@ export class GroupNodeSection implements IMarkupSection {
 
   get innerHTML() {
     return this.childNodes.map((childNode) => (
-      childNode.outerHTML || childNode.nodeValue
+      childNode.outerHTML || childNode.value
     )).join("");
   }
 
@@ -113,9 +111,9 @@ export class GroupNodeSection implements IMarkupSection {
    */
 
   remove() {
-    const parent = this._nodeFactory.createDocumentFragment();
+    const parentNode = this._nodeFactory.createDocumentFragment();
     for (const child of this.allChildNodes) {
-      parent.appendChild(child);
+      parentNode.appendChild(child);
     }
   }
 
@@ -163,7 +161,7 @@ export class GroupNodeSection implements IMarkupSection {
       throw new Error("Cannot currently clone fragment section that is attached to an element.");
     }
 
-    const clone = <IContainerNode>this.targetNode.cloneNode(true);
+    const clone = <Node>this.targetNode.cloneNode(true);
     return new GroupNodeSection(clone.firstChild, clone.lastChild, this._nodeFactory);
   }
 }

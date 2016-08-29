@@ -3,7 +3,7 @@ import { inject } from "sf-core/decorators";
 import { watchProperty } from "sf-core/observable";
 import { ContainerNode } from "sf-core/markup";
 import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
-import { IEntityDocument, IEntity } from "sf-core/entities";
+import { IEntityDocument, IEntity } from "sf-core/ast/entities";
 import { Dependencies, DEPENDENCIES_NS, Injector } from "sf-core/dependencies";
 import { parse as parseCSS, CSSStyleSheetExpression } from "sf-html-extension/parsers/css";
 
@@ -12,7 +12,7 @@ import { parse as parseCSS, CSSStyleSheetExpression } from "sf-html-extension/pa
   private _styleSheetExpression: CSSStyleSheetExpression;
 
   constructor(readonly file: IFile, readonly dependencies: Dependencies) {
-    super();
+    super("#css-document");
     watchProperty(file, "content", this._onContentChange).trigger();
   }
 

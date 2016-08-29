@@ -1,7 +1,7 @@
 import { Selection } from "./selection";
 import { BoundingRect, IPoint } from "sf-core/geom";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
-import { IVisibleEntity, IEntityDisplay, DisplayCapabilities } from "sf-core/entities";
+import { IVisibleNodeEntity, IEntityDisplay, DisplayCapabilities } from "sf-core/ast/entities";
 import { register as registerSerializer, serializeArray, deserialize } from "sf-core/serialize";
 
 class EntitySelectionDisplay implements IEntityDisplay {
@@ -60,7 +60,7 @@ class EntitySelectionDisplay implements IEntityDisplay {
   }
 }
 
-export class DisplayEntitySelection<T extends IVisibleEntity> extends Selection<T> {
+export class DisplayEntitySelection<T extends IVisibleNodeEntity> extends Selection<T> {
   readonly display: IEntityDisplay = new EntitySelectionDisplay(this);
 }
 

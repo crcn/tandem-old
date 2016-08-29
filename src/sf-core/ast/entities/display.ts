@@ -1,5 +1,5 @@
-import { IPoint } from "../geom";
-import { BoundingRect } from "../geom";
+import { IPoint } from "sf-core/geom";
+import { BoundingRect } from "sf-core/geom";
 
 // TODO - possibly move this over to sf-core/display or similar
 export class DisplayCapabilities {

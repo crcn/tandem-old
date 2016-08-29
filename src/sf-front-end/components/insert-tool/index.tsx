@@ -10,7 +10,7 @@ import { SelectablesComponent } from "sf-front-end/components/selectables";
 import { SelectionSizeComponent } from "sf-front-end/components/selection-size";
 import { SetToolAction, SelectAction } from "sf-front-end/actions";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
-import { IEntity, IContainerEntity, IVisibleEntity, appendSourceChildren } from "sf-core/entities";
+import { IEntity, IContainerNodeEntity, IVisibleNodeEntity, appendSourceChildren } from "sf-core/ast/entities";
 import { Workspace, Editor, DisplayEntitySelection, InsertTool } from "sf-front-end/models";
 
 class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, workspace: Workspace, app: FrontEndApplication, tool: InsertTool }, any> {
@@ -29,8 +29,8 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     const { editor, bus, workspace, tool } = this.props;
 
-    const activeEntity =  this._targetEntity as IContainerEntity;
-    const child = (await appendSourceChildren(activeEntity, tool.createSource()))[0] as IVisibleEntity;
+    const activeEntity =  this._targetEntity as IContainerNodeEntity;
+    const child = (await appendSourceChildren(activeEntity, tool.createSource()))[0] as IVisibleNodeEntity;
     await bus.execute(new SelectAction(child));
 
     const capabilities = child.display.capabilities;

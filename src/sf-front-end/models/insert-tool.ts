@@ -7,7 +7,7 @@ import { startDrag } from "sf-front-end/utils/component";
 import { MAIN_BUS_NS } from "sf-core/dependencies";
 import { BoundingRect } from "sf-core/geom";
 import { EntityFactoryDependency } from "sf-core/dependencies";
-import { IVisibleEntity, IContainerEntity } from "sf-core/entities";
+import { IVisibleNodeEntity, IContainerNodeEntity } from "sf-core/ast/entities";
 import { BaseEditorTool, IEditorTool, IEditor } from "sf-front-end/models";
 import { MouseAction, SetToolAction, SelectAction } from "sf-front-end/actions";
 

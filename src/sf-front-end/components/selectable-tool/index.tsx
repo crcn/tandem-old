@@ -4,13 +4,13 @@ import { Workspace } from "sf-front-end/models";
 import { SelectAction } from "sf-front-end/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectablesComponent } from "sf-front-end/components/selectables";
-import { IVisibleEntity, IEntity } from "sf-core/entities";
+import { IVisibleNodeEntity, IEntity } from "sf-core/ast/entities";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 
 // @injectable
 export default class SelectableToolComponent extends React.Component<{selection: any, allEntities: Array<IEntity>, bus: any, app: any, zoom: number, workspace: Workspace }, {}>  {
 
-  onEntityMouseDown = (entity: IVisibleEntity, event: MouseEvent) => {
+  onEntityMouseDown = (entity: IVisibleNodeEntity, event: MouseEvent) => {
     this.props.app.bus.execute(new SelectAction(entity, event.shiftKey));
   }
 

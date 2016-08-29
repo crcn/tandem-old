@@ -1,11 +1,10 @@
 import { getNodePath, findNode } from "../utils";
-import { IContainerNode, INode } from "../base";
-import { IMarkupSectionMarker, IMarkupSection } from "./base";
+import { IDOMSectionMarker, IDOMSection } from "./base";
 
 /**
  */
 
-export class NodeMarker {
+export class NodeMarker implements IDOMSectionMarker {
 
   private _path: Array<number>;
   private _nodeFactory: any;
@@ -20,7 +19,7 @@ export class NodeMarker {
   }
 
   createSection(rootNode) {
-    return new NodeSection(<IContainerNode>this.getNode(rootNode), this._nodeFactory);
+    return new NodeSection(<Node>this.getNode(rootNode), this._nodeFactory);
   }
 }
 
@@ -28,10 +27,10 @@ export class NodeMarker {
  * a section is a group of nodes contained within a
  */
 
-export class NodeSection implements IMarkupSection {
+export class NodeSection implements IDOMSection {
   private _placeholderNode: any;
 
-  constructor(private _target: IContainerNode, private _nodeFactory: any = document) { }
+  constructor(private _target: Node, private _nodeFactory: any = document) { }
 
   appendChild(child) {
     this._target.appendChild(child);
@@ -63,8 +62,8 @@ export class NodeSection implements IMarkupSection {
    */
 
   remove() {
-    const parent = this._nodeFactory.createElement("div");
-    parent.appendChild(this._target);
+    const parentNode = this._nodeFactory.createElement("div");
+    parentNode.appendChild(this._target);
   }
 
   /**
@@ -101,6 +100,6 @@ export class NodeSection implements IMarkupSection {
    */
 
   clone() {
-    return new NodeSection(<IContainerNode>this.targetNode.cloneNode(true), this._nodeFactory);
+    return new NodeSection(<Node>this.targetNode.cloneNode(true), this._nodeFactory);
   }
 }

@@ -7,7 +7,7 @@ import { IInjectable } from "sf-core/dependencies";
 import { ParallelBus } from "mesh";
 import { IPoint, Transform } from "sf-core/geom";
 import { IEditor, IEditorTool } from "./base";
-import { IEntity, IEntityDocument } from "sf-core/entities";
+import { IEntity, IEntityDocument } from "sf-core/ast/entities";
 
 export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;

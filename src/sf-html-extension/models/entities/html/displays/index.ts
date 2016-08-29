@@ -6,7 +6,7 @@ import { HTMLDocumentEntity } from "../document";
 import { BoundingRect, IPoint } from "sf-core/geom";
 import { VisibleHTMLElementEntity } from "../index";
 import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/parsers/css";
-import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/entities";
+import { IEntityDisplay, IVisibleNodeEntity, DisplayCapabilities } from "sf-core/ast/entities";
 
 function calculateCSSMeasurments(style): any {
   const calculated = {};
@@ -235,13 +235,13 @@ export class HTMLNodeDisplay implements IEntityDisplay {
   }
 
   private _getParentDisplays(): Array<HTMLNodeDisplay> {
-    let p = this.entity.parentNode;
+    let p = this.entity.parent;
     const parentDisplays = [];
     while (p) {
-      if ((<IVisibleEntity><any>p).display instanceof HTMLNodeDisplay) {
-        parentDisplays.push(<HTMLNodeDisplay>(<IVisibleEntity><any>p).display);
+      if ((<IVisibleNodeEntity><any>p).display instanceof HTMLNodeDisplay) {
+        parentDisplays.push(<HTMLNodeDisplay>(<IVisibleNodeEntity><any>p).display);
       }
-      p = p.parentNode;
+      p = p.parent;
     }
     return parentDisplays;
   }

@@ -1,18 +1,19 @@
 import TAG_NAMES from "./tag-names";
-import { IVisibleEntity } from "sf-core/entities";
 import { HTMLNodeDisplay } from "./displays";
 import { HTMLElementEntity } from "./element";
-import { EntityFactoryDependency } from "sf-core/dependencies";
+import { IVisibleNodeEntity } from "sf-core/ast/entities";
 import { HTMLElementExpression } from "sf-html-extension/parsers/html";
+import { EntityFactoryDependency } from "sf-core/dependencies";
 import { parseCSSStyle, CSSStyleExpression } from "sf-html-extension/parsers/css";
 
-export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisibleEntity {
+export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisibleNodeEntity {
 
   readonly type: string = "display";
   readonly displayType: string = "element";
 
   // TODO - change to something such as DisplayComputer
   readonly display = new HTMLNodeDisplay(this);
+
 
   private _styleExpression: CSSStyleExpression;
   private _originalStyle: string;
@@ -29,7 +30,6 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
 
     this._originalStyle = this._styleExpression.toString();
   }
-
   update() {
     if (this.styleExpression.declarations.length) {
       const newStyle = this.styleExpression.toString();

@@ -49,7 +49,7 @@ export class TextTool extends BaseEditorTool {
 
   private _startEditing() {
     const element = this._targetNode;
-    this._startChildNodes = Array.prototype.slice.call(element.childNodes);
+    this._startChildNodes = Array.prototype.slice.call(element.children);
     element.setAttribute("contenteditable", "true");
     element.addEventListener("keydown", this._onKeyDown);
     // element.addEventListener("keypress", (event) => event.preventDefault());
@@ -92,7 +92,7 @@ export class TextTool extends BaseEditorTool {
     this._targetNode.removeEventListener("keydown", this._onKeyDown);
 
     // parse the innerHTML, set the source content, and prepare to diff
-    this._targetEntity.source.childNodes = parseHTML(this._targetNode.innerHTML).childNodes;
+    this._targetEntity.source.children = parseHTML(this._targetNode.innerHTML).children;
 
     // need to reset the display HTML to what it was before so that
     // it can be properly diff'd
@@ -124,7 +124,7 @@ class InsertTextTool extends InsertTool {
   }
 
   createSource() {
-    return parseHTML(`<span style="position:absolute;white-space: nowrap;font-family: Helvetica;">Type Something</span>`).childNodes[0];
+    return parseHTML(`<span style="position:absolute;white-space: nowrap;font-family: Helvetica;">Type Something</span>`).children[0];
   }
 }
 

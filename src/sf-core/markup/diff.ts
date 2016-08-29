@@ -10,11 +10,11 @@ map differences:
 
 diff(a, b, {
   equals(a, b) {
-    return a.nodeName === b.nodeName;
+    return a.name === b.name;
   },
   addChanges(a, b, changes) {
     if (/#(text|comment)/.test(a)) {
-      if (a.nodeValue !== b.nodeValue) {
+      if (a.value !== b.value) {
         changes.push({ })
       }
     }
@@ -29,11 +29,11 @@ export interface INodeChange {
 }
 
 export interface IDiffableNode {
-  nodeName: string;
+  name: string;
 }
 
 export interface IDiffableValueNode extends IDiffableNode {
-  nodeValue: string;
+  value: string;
 }
 
 export interface IDiffableAttribute {
@@ -43,7 +43,7 @@ export interface IDiffableAttribute {
 
 export interface IDiffableElement extends IDiffableNode {
   attributes: Array<IDiffableAttribute>;
-  childNodes: Array<IDiffableNode>;
+  children: Array<IDiffableNode>;
 }
 
 export abstract class NodeChange implements INodeChange {
@@ -77,10 +77,10 @@ export class AddChildChange extends NodeChange {
   }
 }
 
-export const SET_NODE_VALUE = "setNodeValue";
+export const SET_NODE_VALUE = "setValue";
 export class SetNodeValueChange extends NodeChange {
   readonly score = 2;
-  constructor(readonly index: number, readonly nodeValue: any) {
+  constructor(readonly index: number, readonly value: any) {
     super(SET_NODE_VALUE);
   }
 }
@@ -150,7 +150,7 @@ function addChanges(unmatchedOldNodes: Array<IDiffableNode>, unmatchedNewNodes: 
     for (const oldNode of unmatchedOldNodes) {
 
       // node names must be identical for them to be candidates
-      if (oldNode.constructor !== newNode.constructor || oldNode.nodeName !== newNode.nodeName) {
+      if (oldNode.constructor !== newNode.constructor || oldNode.name !== newNode.name) {
         continue;
       }
 
@@ -253,21 +253,21 @@ function diffElement(oldElement: IDiffableElement, newElement: IDiffableElement,
 
   // diff children
   addChanges(
-    Array.prototype.slice.call(oldElement.childNodes),
-    Array.prototype.slice.call(newElement.childNodes),
+    Array.prototype.slice.call(oldElement.children),
+    Array.prototype.slice.call(newElement.children),
     false,
     changes
   );
 }
 
 function diffValueNode(oldChildNodes: Array<IDiffableNode>, oldValueNode: IDiffableValueNode, newValueNode: IDiffableValueNode, changes: Array<INodeChange>) {
-  if (oldValueNode.nodeValue !== newValueNode.nodeValue) {
-    changes.push(new SetNodeValueChange(oldChildNodes.indexOf(oldValueNode), newValueNode.nodeValue));
+  if (oldValueNode.value !== newValueNode.value) {
+    changes.push(new SetNodeValueChange(oldChildNodes.indexOf(oldValueNode), newValueNode.value));
   }
 }
 
 function isValueNodeType(node: IDiffableNode) {
-  // very dirty check here - nodeValue is never undefined for the DOM, but it *could* be defined
+  // very dirty check here - value is never undefined for the DOM, but it *could* be defined
   // if the checked node is a base class of ValueNode. Check if it *is* a ValueNode if that's the case
-  return (<IValueNode>node).nodeValue != null || node instanceof ValueNode;
+  return (<IValueNode>node).value != null || node instanceof ValueNode;
 }

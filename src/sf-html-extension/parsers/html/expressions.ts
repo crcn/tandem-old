@@ -5,50 +5,43 @@ import { diffArray, patchArray } from "sf-core/utils/array";
 import { register as registerSerializer } from "sf-core/serialize";
 
 export interface IHTMLExpression extends IExpression, INamed {
-  name: string;
-
-  // name alias. Here for html compatibility
-  nodeName: string;
-
   patch(expression: IHTMLExpression);
 }
 
 export interface IHTMLValueNodeExpression extends IHTMLExpression {
-  nodeValue: any;
+  value: any;
 }
 
 export abstract class HTMLExpression implements IHTMLExpression {
-  readonly nodeName: string;
   constructor(readonly name: string, public position: IRange) {
-    this.nodeName = name;
   }
   abstract patch(expression: HTMLExpression);
 }
 
 export interface IHTMLContainerExpression extends IHTMLExpression {
-  childNodes: Array<HTMLExpression>;
+  children: Array<HTMLExpression>;
   appendChild(child: HTMLExpression);
   removeChild(node: HTMLExpression);
 }
 
 function patchContainer(container: IHTMLContainerExpression, expression: IHTMLContainerExpression) {
-  const changes = diffArray(container.childNodes, expression.childNodes, (a, b) => a.nodeName === b.nodeName);
+  const changes = diffArray(container.children, expression.children, (a, b) => a.name === b.name);
   patchArray(
-    container.childNodes,
+    container.children,
     changes,
     (a, b) => { a.patch(b); return a; }
   );
 }
 
 export class HTMLFragmentExpression extends HTMLExpression implements IHTMLContainerExpression {
-  constructor(public childNodes: Array<HTMLExpression>, position: IRange) {
+  constructor(public children: Array<HTMLExpression>, position: IRange) {
     super("#document-fragment", position);
   }
 
   removeChild(child: HTMLExpression) {
-    const i = this.childNodes.indexOf(child);
+    const i = this.children.indexOf(child);
     if (i !== -1) {
-      this.childNodes.splice(i, 1);
+      this.children.splice(i, 1);
     }
   }
 
@@ -58,11 +51,11 @@ export class HTMLFragmentExpression extends HTMLExpression implements IHTMLConta
   }
 
   appendChild(childNode: HTMLExpression) {
-    this.childNodes.push(childNode);
+    this.children.push(childNode);
   }
 
   public toString() {
-    return this.childNodes.join("");
+    return this.children.join("");
   }
 }
 /**
@@ -72,11 +65,11 @@ export class HTMLFragmentExpression extends HTMLExpression implements IHTMLConta
 export const HTML_ELEMENT = "htmlElement";
 export class HTMLElementExpression extends HTMLExpression implements IHTMLContainerExpression {
   constructor(
-    nodeName: string,
+    name: string,
     public attributes: Array<HTMLAttributeExpression>,
-    public childNodes: Array<HTMLExpression>,
+    public children: Array<HTMLExpression>,
     public position: IRange) {
-    super(nodeName, position);
+    super(name, position);
   }
 
   patch(expression: HTMLElementExpression) {
@@ -86,9 +79,9 @@ export class HTMLElementExpression extends HTMLExpression implements IHTMLContai
   }
 
   removeChild(child: HTMLExpression) {
-    const i = this.childNodes.indexOf(child);
+    const i = this.children.indexOf(child);
     if (i !== -1) {
-      this.childNodes.splice(i, 1);
+      this.children.splice(i, 1);
     }
   }
 
@@ -121,20 +114,20 @@ export class HTMLElementExpression extends HTMLExpression implements IHTMLContai
   }
 
   appendChild(childNode: HTMLExpression) {
-    this.childNodes.push(childNode);
+    this.children.push(childNode);
   }
 
   public toString() {
-    const buffer = ["<", this.nodeName];
+    const buffer = ["<", this.name];
     for (const attribute of this.attributes) {
       buffer.push(" ", attribute.toString());
     }
-    if (this.childNodes.length) {
+    if (this.children.length) {
       buffer.push(">");
-      for (const child of this.childNodes) {
+      for (const child of this.children) {
         buffer.push(child.toString());
       }
-      buffer.push("</", this.nodeName, ">");
+      buffer.push("</", this.name, ">");
     } else {
       buffer.push("/>");
     }
@@ -157,31 +150,32 @@ export class HTMLAttributeExpression implements IExpression {
 }
 
 export class HTMLTextExpression extends HTMLExpression implements IHTMLValueNodeExpression {
-  constructor(public nodeValue: string, public position: IRange) {
+  constructor(public value: string, public position: IRange) {
     super("#text", position);
   }
   patch(expression: HTMLTextExpression) {
-    this.nodeValue = expression.nodeValue;
+    this.value = expression.value;
     this.position = expression.position;
   }
   toString() {
 
     // only WS - trim
-    if (/^[\s\n\t\r]+$/.test(this.nodeValue)) return "";
-    return this.nodeValue.trim();
+    if (/^[\s\n\t\r]+$/.test(this.value)) return "";
+    return this.value.trim();
   }
 }
 
 export class HTMLCommentExpression extends HTMLExpression implements IHTMLValueNodeExpression {
-  constructor(public nodeValue: string, public position: IRange) {
+  constructor(public value: string, public position: IRange) {
     super("#comment", position);
   }
-  patch(expression: HTMLExpression) {
-    this.nodeValue = expression.nodeName;
+  patch(expression: HTMLCommentExpression) {
+    console.log("PATCH", expression);
+    this.value = expression.value;
     this.position = expression.position;
   }
   toString() {
-    return ["<!--", this.nodeValue, "-->"].join("");
+    return ["<!--", this.value, "-->"].join("");
   }
 }
 

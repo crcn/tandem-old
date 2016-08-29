@@ -3,7 +3,7 @@ import { Selection } from "sf-front-end/models";
 import { loggable, bindable } from "sf-core/decorators";
 import { FrontEndApplication } from "sf-front-end/application";
 import { BaseApplicationService } from "sf-core/services";
-import { IEntity, IContainerEntity } from "sf-core/entities";
+import { IEntity, IContainerNodeEntity } from "sf-core/ast/entities";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
@@ -13,7 +13,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
   selectAtSourceOffset(action: SelectSourceAtOffsetAction) {
 
-    const allEntities = <Array<IEntity>>this.app.workspace.file.document.flatten();
+    const allEntities = <Array<IEntity>>this.app.workspace.file.document.root.flatten();
 
     const selection = [];
     for (const entity of allEntities) {
@@ -32,7 +32,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
               (cursor.start <= position.start && cursor.end >= position.end)
             ) {
 
-              const parentIndex = selection.indexOf(entity.parentNode);
+              const parentIndex = selection.indexOf(entity.parent);
 
               if (parentIndex > -1) {
                 selection.splice(parentIndex, 1);
@@ -90,7 +90,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     // parent entities that appear in the selection
     newSelection.concat().forEach((entity: IEntity) => {
       let i;
-      if (entity.parentNode && (i = newSelection.indexOf(<IContainerEntity>entity.parentNode)) !== -1) {
+      if (entity.parent && (i = newSelection.indexOf(<IContainerNodeEntity>entity.parent)) !== -1) {
         newSelection.splice(i, 1);
       }
     });
@@ -114,7 +114,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
     // TODO - select call based on focused entity
     this.select({
-      items: (<any>this.app.workspace.file.document.root).childNodes,
+      items: (<any>this.app.workspace.file.document.root).children,
       keepPreviousSelection: false,
       toggle: false
     });

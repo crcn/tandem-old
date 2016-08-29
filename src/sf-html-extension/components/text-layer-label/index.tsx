@@ -77,4 +77,4 @@ class TextLayerLabelComponent extends React.Component<any, any> {
   }
 }
 
-export const dependency = new LayerLabelComponentFactoryDependency("text", TextLayerLabelComponent);
+export const dependency = new LayerLabelComponentFactoryDependency("#text", TextLayerLabelComponent);

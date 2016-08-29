@@ -69,7 +69,6 @@ export class CSSStyleExpression extends CSSExpression {
   };
 }
 
-
 export class CSSStyleDeclarationExpression extends CSSExpression {
   constructor(public key: string, public value: CSSExpression, public position: IRange) {
     super(position);
@@ -252,7 +251,7 @@ export class CSSTagNameSelectorExpression extends CSSSelectorExpression {
     super(position);
   }
   test(node: IElement): boolean {
-    return String(node.nodeName).toUpperCase() === this.value.toUpperCase();
+    return String(node.name).toUpperCase() === this.value.toUpperCase();
   }
   toString() {
     return this.value;
@@ -266,7 +265,7 @@ export class CSSChildSelectorExpression extends CSSSelectorExpression {
     super(position);
   }
   test(node: IElement): boolean {
-    return this.target.test(node) && node.parentNode && this.parent.test(<IElement>node.parentNode);
+    return this.target.test(node) && node.parent && this.parent.test(<IElement>node.parent);
   }
   toString() {
     return `${this.parent} > ${this.target}`;
@@ -280,10 +279,10 @@ export class CSSDescendentSelectorExpression extends CSSSelectorExpression {
   }
   test(node: IElement): boolean {
     const matchesTarget = this.target.test(node);
-    let currentParent = node.parentNode;
+    let currentParent = node.parent;
     while (matchesTarget && currentParent) {
       if (this.parent.test(<IElement>currentParent)) return true;
-      currentParent = currentParent.parentNode;
+      currentParent = currentParent.parent;
     }
     return false;
   }
@@ -298,12 +297,12 @@ export class CSSSiblingSelectorExpression extends CSSSelectorExpression {
     super(position);
   }
   test(node: IElement) {
-    const parent = node.parentNode;
+    const parent = node.parent;
 
     if (!this.target.test(node)) return false;
 
-    for (let i = Array.prototype.indexOf.call(parent.childNodes, node) - 1; i--; ) {
-      if (this.prev.test(<IElement>parent.childNodes[i])) return true;
+    for (let i = Array.prototype.indexOf.call(parent.children, node) - 1; i--; ) {
+      if (this.prev.test(<IElement>parent.children[i])) return true;
     }
 
     return false;
@@ -326,7 +325,7 @@ export class CSSAdjacentSiblingSelectorExpression extends CSSSelectorExpression 
 }
 
 function isElement(node: INode) {
-  return node.nodeName && node.nodeName.substr(0, 1) !== "#";
+  return node.name && node.name.substr(0, 1) !== "#";
 }
 
 export class CSSPsuedoSelectorExpression extends CSSSelectorExpression {

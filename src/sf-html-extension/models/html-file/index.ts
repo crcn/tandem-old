@@ -8,7 +8,7 @@ import { HTML_MIME_TYPE } from "sf-html-extension/constants";
 import { inject, bindable } from "sf-core/decorators";
 import { HTMLDocumentEntity } from "sf-html-extension/models/entities/html";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
-import { IEntity, IEntityDocument } from "sf-core/entities";
+import { IEntity, IEntityDocument } from "sf-core/ast/entities";
 import { IActiveRecord, ActiveRecord } from "sf-core/active-records";
 import { PropertyChangeAction, DSUpdateAction } from "sf-core/actions";
 import {

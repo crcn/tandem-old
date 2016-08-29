@@ -3,7 +3,7 @@ import { Element } from "sf-core/markup";
 import { patch, diff } from "sf-core/markup";
 import { DisplayEntitySelection } from "./display-entity-selection";
 import { BoundingRect, IPoint } from "sf-core/geom";
-import { IEntityDisplay, IVisibleEntity, DisplayCapabilities, EntityMetadata } from "sf-core/entities";
+import { IEntity, IEntityDisplay, INodeEntity, IVisibleNodeEntity, DisplayCapabilities, EntityMetadata } from "sf-core/ast/entities";
 
 describe(__filename + "#", () => {
 
@@ -24,11 +24,13 @@ describe(__filename + "#", () => {
     }
   }
 
-  class VisibleEntity extends Element implements IVisibleEntity {
+  class VisibleEntity extends Element implements IVisibleNodeEntity {
+    readonly parent: VisibleEntity;
     readonly type: string = "display";
     readonly displayType: string = "element";
     readonly source: any = null;
     readonly document: any;
+    readonly children: Array<INodeEntity>;
     readonly metadata: EntityMetadata = new EntityMetadata(this);
 
     constructor(readonly display: IEntityDisplay) {
@@ -41,7 +43,12 @@ describe(__filename + "#", () => {
     patch(entity) {
       patch(this, diff(this, entity));
     }
-    find(filter) { return this; }
+
+    flatten(): Array<IEntity> {
+      return [this];
+    }
+
+    find(filter: (entity: IEntity) => boolean) { return this; }
   }
 
   it("can be created", () => {

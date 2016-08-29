@@ -5,7 +5,7 @@ import { filterAction } from "sf-core/decorators";
 import { HTML_MIME_TYPE } from "sf-html-extension/constants";
 import { parse as parseHTML } from "../parsers/html";
 import { FrontEndApplication } from "sf-front-end/application";
-import { appendSourceChildren } from "sf-core/entities";
+import { appendSourceChildren } from "sf-core/ast/entities";
 import { BaseApplicationService } from "sf-core/services";
 import { PASTE, PasteAction, SelectAction } from "sf-front-end/actions";
 
@@ -32,7 +32,7 @@ export class PasteHTMLService extends BaseApplicationService<FrontEndApplication
       content = content.replace(/\<meta.*?\>/, "");
 
       // TODO - SelectExpressionAction
-      this.app.bus.execute(new SelectAction(await appendSourceChildren(activeEntity, ...parseHTML(content).childNodes)));
+      this.app.bus.execute(new SelectAction(await appendSourceChildren(activeEntity, ...parseHTML(content).children)));
     });
   }
 }

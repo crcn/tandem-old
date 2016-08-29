@@ -1,15 +1,16 @@
 import { IHTMLEntity } from "./base";
-import { IElementEntity } from "sf-core/entities";
+import { MetadataKeys } from "sf-front-end/constants";
+import { IElementEntity } from "sf-core/ast/entities";
 import { CSSRuleExpression } from "sf-html-extension/parsers/css";
 import { CSSStyleExpression } from "sf-html-extension/parsers/css";
 import { HTMLContainerEntity } from "./container";
+import { IElement, Attributes } from "sf-core/markup";
 import { AttributeChangeAction } from "sf-core/actions";
-import { EntityFactoryDependency } from "sf-core/dependencies";
 import { diffArray, patchArray } from "sf-core/utils/array";
+import { EntityFactoryDependency } from "sf-core/dependencies";
 import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { parse as parseCSS, parseCSSStyle } from "sf-html-extension/parsers/css";
 import { HTMLElementExpression, HTMLAttributeExpression } from "sf-html-extension/parsers/html";
-import { IElement, Attributes, IMarkupSection, NodeSection } from "sf-core/markup";
 
 export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression> implements IHTMLEntity, IElementEntity, IElement {
 
@@ -21,7 +22,7 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   patch(entity: HTMLElementEntity) {
 
     const changes = diffArray(this.attributes, entity.attributes, (a, b) => a.name === b.name);
-    const element = (<IElement>this.section.targetNode);
+    const element = (<Element>this.section.targetNode);
 
     for (const add of changes.add) {
       this.setAttribute(add.value.name, add.value.value);
@@ -51,6 +52,12 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
     return super.load();
   }
 
+  getInitialMetadata() {
+    return Object.assign(super.getInitialMetadata(), {
+      [MetadataKeys.LAYER_DEPENDENCY_NAME]: "element"
+    });
+  }
+
   get attributes(): Attributes {
     return this._attributes || (this._attributes = new Attributes());
   }
@@ -62,12 +69,12 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   }
 
   static mapSourceChildren(source: HTMLElementExpression) {
-    return source.childNodes;
+    return source.children;
   }
 
   removeAttribute(name: string) {
     this.attributes.remove(name);
-    (<IElement>this.section.targetNode).removeAttribute(name);
+    (<Element>this.section.targetNode).removeAttribute(name);
   }
 
   getAttribute(name: string) {
@@ -79,16 +86,15 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   }
 
   setAttribute(name: string, value: string) {
-    (<IElement>this.section.targetNode).setAttribute(name, value);
+    (<Element>this.section.targetNode).setAttribute(name, value);
     this.attributes.set(name, value);
     this.notify(new AttributeChangeAction(name, value));
   }
 
-  cloneNode(deep?: boolean) {
+  clone() {
     const entity = new HTMLElementEntity(this.source);
-    if (deep)
-    for (const child of this.childNodes) {
-      entity.appendChild(child.cloneNode(deep));
+    for (const child of this.children) {
+      entity.appendChild(child.clone());
     }
     return entity;
   }

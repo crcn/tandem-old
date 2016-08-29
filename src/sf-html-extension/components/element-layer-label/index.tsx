@@ -4,7 +4,10 @@ import "./index.scss";
 import * as React from "react";
 
 import * as AutosizeInput from "react-input-autosize";
+import { MetadataKeys } from "sf-front-end/constants";
 import { SelectAction } from "sf-front-end/actions";
+import { HTMLElementEntity } from "sf-html-extension/models";
+import { FrontEndApplication } from "sf-front-end/application";
 import { VisibleHTMLElementEntity } from "sf-html-extension/models";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 
@@ -28,7 +31,7 @@ const CLASS_NAME_PRIORITY = [
   "src"
 ];
 
-class ElementLayerLabelComponent extends React.Component<any, any> {
+class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEntity, app: FrontEndApplication, connectDragSource: Function }, any> {
 
   private _updateCount: number;
 
@@ -52,35 +55,34 @@ class ElementLayerLabelComponent extends React.Component<any, any> {
   }
 
   addChild(event) {
-    this.props.entity.layerExpanded = true;
+    this.props.entity.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
 
     // TODO - this needs to be generalized. Specific to
     // HTML right now
-    const child = this.props.app.fragments.queryOne("entities/element").factory.create({
-      tagName: "div",
-      editLayerSource: true
-    });
+    // const child = this.props.app.dependencies.queryOne("entities/element").factory.create({
+    //   tagName: "div",
+    //   editLayerSource: true
+    // });
 
-    this.props.entity.children.push(
-      child
-    );
+    // this.props.entity.children.push(
+    //   child
+    // );
 
-    this.props.app.notifier.notify(
-      new SelectAction([child])
-    );
+    // this.props.app.notifier.notify(
+    //   new SelectAction([child])
+    // );
 
-    event.stopPropagation();
+    // event.stopPropagation();
   }
 
   componentWillMount() {
-    if (this.props.entity.editLayerSource) {
-      this.editHTML();
-    }
+    // if (this.props.entity.editLayerSource) {
+    //   this.editHTML();
+    // }
   }
 
   render() {
     const entity     = this.props.entity;
-    const editSource = entity.editLayerSource;
     const connectDragSource = this.props.connectDragSource;
 
     const buffer = [
@@ -92,7 +94,7 @@ class ElementLayerLabelComponent extends React.Component<any, any> {
     } else {
       buffer.push(this.state.editTagName ?
         this.renderHTMLInput() :
-        <span className="m-element-layer-label--tag-name" key="tagName">{entity.nodeName.toLowerCase()}</span>
+        <span className="m-element-layer-label--tag-name" key="tagName">{entity.name.toLowerCase()}</span>
       );
 
       // filter them, and remove the items we do not want to display
@@ -113,14 +115,14 @@ class ElementLayerLabelComponent extends React.Component<any, any> {
 
     buffer.push(
       <span className="m-element-layer-label--tag" key="et">
-        { entity.childNodes.length === 0 ? " /" : void 0 }
+        { entity.children.length === 0 ? " /" : void 0 }
         &gt;
       </span>
     );
 
 
     return <div className="m-label m-element-layer-label" onDoubleClick={this.editHTML.bind(this)}>
-      { connectDragSource(<span>{buffer}</span>) } { !~VOID_ELEMENTS.indexOf(entity.nodeName.toLowerCase()) ? <span className="m-element-layer-label--add-child-button" onClick={this.addChild.bind(this)}>+</span> : void 0 }
+      { connectDragSource(<span>{buffer}</span>) } { !~VOID_ELEMENTS.indexOf(entity.name.toLowerCase()) ? <span className="m-element-layer-label--add-child-button" onClick={this.addChild.bind(this)}>+</span> : void 0 }
     </div>;
   }
 
@@ -147,12 +149,12 @@ class ElementLayerLabelComponent extends React.Component<any, any> {
     const attrRegExp = /\s+(\w+)(=[""](.*?)[""])?/g;
     const attributes = source.match(attrRegExp) || [];
 
-    if (tagName) {
-      entity.tagName = tagName[0];
-    }
+    // if (tagName) {
+    //   entity.tagName = tagName[0];
+    // }
 
     // turn it off so it doesn"t get copied & pasted
-    entity.editLayerSource = false;
+    // entity.editLayerSource = false;
 
     // delete ALL attributes
     for (const key in entity.attributes) {
@@ -168,7 +170,7 @@ class ElementLayerLabelComponent extends React.Component<any, any> {
 
     // TODO - this smells funny here - need to reset selection
     // otherwise stuff breaks.
-    this.props.app.notifier.notify(new SelectAction([entity]));
+    // this.props.app.notifier.notify(new SelectAction([entity]));
 
     this.setState({
       editTagName: false
@@ -194,7 +196,7 @@ class ElementLayerLabelComponent extends React.Component<any, any> {
   getHTMLValue() {
 
     const entity = this.props.entity;
-    const buffer = [entity.tagName];
+    const buffer = [entity.name];
 
     for (const key in entity.attributes) {
       const value = entity.attributes[key];

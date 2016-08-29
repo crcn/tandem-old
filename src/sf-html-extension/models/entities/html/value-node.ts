@@ -1,26 +1,32 @@
 import { decode } from "ent";
 import { BubbleBus } from "sf-core/busses";
+import { ValueNode } from "sf-core/markup";
+import { NodeSection } from "sf-html-extension/dom";
 import { disposeEntity } from "./utils";
-import { EntityMetadata } from "sf-core/entities";
-import { NodeSection, ValueNode } from "sf-core/markup";
+import { EntityMetadata } from "sf-core/ast/entities";
 import { IHTMLValueNodeExpression } from "sf-html-extension/parsers/html";
-import { IHTMLDocument, IHTMLEntity } from "./base";
+import { IHTMLDocument, IHTMLEntity, IHTMLContainerEntity } from "./base";
 
 export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> extends ValueNode implements IHTMLEntity {
 
+  readonly parent: IHTMLContainerEntity;
   readonly type: string = null;
   readonly section: NodeSection;
   readonly metadata: EntityMetadata;
 
   private _node: Node;
-  private _nodeValue: any;
+  private _value: any;
   private _document: IHTMLDocument;
 
   constructor(private _source: T) {
-    super(_source.nodeName, _source.nodeValue);
+    super(_source.name, _source.value);
     this.metadata = new EntityMetadata(this);
     this.metadata.observe(new BubbleBus(this));
-    this.section = new NodeSection(this._node = this.createDOMNode(_source.nodeValue) as any);
+    this.section = new NodeSection(this._node = this.createDOMNode(_source.value) as any);
+  }
+
+  flatten(): Array<IHTMLEntity> {
+    return [this];
   }
 
   get source(): T {
@@ -32,7 +38,7 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   }
 
   patch(entity: HTMLValueNodeEntity<any>) {
-    this.nodeValue = entity.nodeValue;
+    this.value = entity.value;
     this._source = entity.source;
   }
 
@@ -51,15 +57,15 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   protected willChangeDocument(newDocument) { }
 
   update() {
-    this.source.nodeValue = this.nodeValue;
+    this.source.value = this.value;
   }
 
-  get nodeValue(): any {
-    return this._nodeValue;
+  get value(): any {
+    return this._value;
   }
 
-  set nodeValue(value: any) {
-    this._nodeValue = value;
+  set value(value: any) {
+    this._value = value;
     if (this._node) this._node.nodeValue = decode(value);
   }
 

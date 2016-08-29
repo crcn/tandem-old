@@ -1,4 +1,4 @@
-import { GroupNodeSection } from "sf-core/markup";
+import { GroupNodeSection } from "sf-html-extension/dom";
 import { HTMLContainerEntity } from "./container";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { HTMLFragmentExpression } from "sf-html-extension/parsers/html/expressions";
@@ -8,11 +8,10 @@ export class HTMLDocumentFragmentEntity extends HTMLContainerEntity<HTMLFragment
   createSection() {
     return new GroupNodeSection();
   }
-  cloneNode(deep?: boolean) {
+  clone() {
     const entity = new HTMLDocumentFragmentEntity(this.source);
-    if (deep)
-    for (const child of this.childNodes) {
-      entity.appendChild(child.cloneNode(deep));
+    for (const child of this.children) {
+      entity.appendChild(child.clone());
     }
     return entity;
   }

@@ -5,6 +5,9 @@ import { ContainerNode, Element, ValueNode } from "./base";
 describe(__filename + "#", () => {
 
   class TestNode extends ContainerNode {
+    constructor() {
+      super("#test");
+    }
     cloneNode() {
       return new TestNode();
     }
@@ -19,8 +22,8 @@ describe(__filename + "#", () => {
     it("can append a child", () => {
       const node = new TestNode();
       node.appendChild(new TestNode());
-      expect(node.childNodes.length).to.equal(1);
-      expect(node.childNodes[0].parentNode).to.equal(node);
+      expect(node.children.length).to.equal(1);
+      expect(node.children[0].parent).to.equal(node);
     });
 
     it("removes a node from a previous parent", () => {
@@ -28,9 +31,9 @@ describe(__filename + "#", () => {
       const p2 = new TestNode();
 
       p1.appendChild(new TestNode());
-      p2.appendChild(p1.childNodes[0]);
-      expect(p1.childNodes.length).to.equal(0);
-      expect(p2.childNodes[0].parentNode).to.equal(p2);
+      p2.appendChild(p1.children[0]);
+      expect(p1.children.length).to.equal(0);
+      expect(p2.children[0].parent).to.equal(p2);
     });
 
     it("can insert a child before the first child", () => {
@@ -39,7 +42,7 @@ describe(__filename + "#", () => {
       const c2 = new TestNode();
       p1.appendChild(c1);
       p1.insertBefore(c2, c1);
-      expect(p1.childNodes[0]).to.equal(c2);
+      expect(p1.children[0]).to.equal(c2);
     });
 
     it("can insert a child somewhere in the middle", () => {
@@ -50,9 +53,9 @@ describe(__filename + "#", () => {
       p1.appendChild(c1);
       p1.appendChild(c2);
       p1.insertBefore(c3, c2);
-      expect(p1.childNodes[0]).to.equal(c1);
-      expect(p1.childNodes[1]).to.equal(c3);
-      expect(p1.childNodes[2]).to.equal(c2);
+      expect(p1.children[0]).to.equal(c1);
+      expect(p1.children[1]).to.equal(c3);
+      expect(p1.children[2]).to.equal(c2);
     });
 
     it("throws an error if inserting before a child that doesnot exist", () => {
@@ -165,7 +168,7 @@ describe(__filename + "#", () => {
 
   describe("Element#", () => {
     it("can be created", () => {
-      expect(new Element("name").nodeName).to.equal("NAME");
+      expect(new Element("name").name).to.equal("NAME");
     });
     it("can set an attribute value", () => {
       const element = new Element("div");
@@ -189,7 +192,7 @@ describe(__filename + "#", () => {
   describe("ValueNode", () => {
     it("can be created", () => {
       new ValueNode("#text", "value");
-      expect(new ValueNode("#text", "a").nodeName).to.equal("#text");
+      expect(new ValueNode("#text", "a").name).to.equal("#text");
     });
   });
 });

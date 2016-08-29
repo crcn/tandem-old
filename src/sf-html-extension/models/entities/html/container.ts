@@ -4,17 +4,20 @@ import { patch, diff } from "sf-core/markup";
 import { disposeEntity } from "./utils";
 import { PropertyChangeAction } from "sf-core/actions";
 import { diffArray, patchArray } from "sf-core/utils/array";
-import { IHTMLEntity, IHTMLDocument } from "./base";
 import { IHTMLContainerExpression, HTMLExpression } from "sf-html-extension/parsers/html";
-import { IEntity, IElementEntity, EntityMetadata } from "sf-core/entities";
-import { IMarkupSection, ContainerNode, Node, INode, NodeSection, GroupNodeSection } from "sf-core/markup";
+import { IHTMLEntity, IHTMLDocument, IHTMLContainerEntity } from "./base";
+import { IEntity, IContainerNodeEntity, EntityMetadata, IContainerNodeEntitySource } from "sf-core/ast/entities";
+import { ContainerNode, INode } from "sf-core/markup";
 import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency } from "sf-core/dependencies";
+import { IDOMSection, NodeSection, GroupNodeSection } from "sf-html-extension/dom";
 
-export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> extends ContainerNode implements IHTMLEntity, IElementEntity, IInjectable {
+export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> extends ContainerNode implements IHTMLContainerEntity, IInjectable {
 
+  readonly children: Array<IHTMLEntity>;
+  readonly parent: IContainerNodeEntity;
   readonly type: string = null;
-  readonly nodeName: string;
-  readonly section: IMarkupSection;
+  readonly name: string;
+  readonly section: IDOMSection;
   readonly metadata: EntityMetadata;
 
   @inject(DEPENDENCIES_NS)
@@ -23,9 +26,8 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
   private _document: IHTMLDocument;
 
   constructor(private _source: T) {
-    super();
+    super(_source.name.toUpperCase());
     this.willSourceChange(_source);
-    this.nodeName = _source.nodeName.toUpperCase();
     this.section = this.createSection();
     this.metadata = new EntityMetadata(this, this.getInitialMetadata());
     this.metadata.observe(new BubbleBus(this));
@@ -39,8 +41,16 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
     }
   }
 
+  flatten(): Array<IHTMLEntity> {
+    const flattened: Array<IHTMLEntity> = [this];
+    for (const child of this.children) {
+      flattened.push(...child.flatten());
+    }
+    return flattened;
+  }
+
   protected mapSourceChildNodes() {
-    return this._source.childNodes;
+    return this._source.children;
   }
 
   get source(): T {
@@ -51,16 +61,16 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
     this.willSourceChange(entity.source);
     this._dependencies = entity._dependencies;
     this._source = entity.source;
-    const changes = diffArray(this.childNodes, entity.childNodes, (a, b) => a.constructor === b.constructor && a.nodeName === b.nodeName);
+    const changes = diffArray(this.children, entity.children, (a, b) => a.constructor === b.constructor && a.name === b.name);
     for (const entity of changes.remove) {
       this.removeChild(entity);
     }
     for (const [currentChild, patchChild] of changes.update) {
       currentChild.patch(patchChild);
-      const patchIndex = entity.childNodes.indexOf(patchChild);
-      const currentIndex = this.childNodes.indexOf(currentChild);
+      const patchIndex = entity.children.indexOf(patchChild);
+      const currentIndex = this.children.indexOf(currentChild);
       if (currentIndex !== patchIndex) {
-        const beforeChild = <Node>this.childNodes[patchIndex];
+        const beforeChild = this.children[patchIndex];
         if (beforeChild) {
           this.insertBefore(currentChild, beforeChild);
         } else {
@@ -70,7 +80,7 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
     }
 
     for (const addition of changes.add) {
-      const beforeChild = <Node>this.childNodes[addition.index];
+      const beforeChild = this.children[addition.index];
       if (beforeChild) {
         this.insertBefore(addition.value, beforeChild);
       } else {
@@ -95,7 +105,7 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
 
   find(filter: (entity: IEntity) => boolean): IEntity {
     if (filter(this)) return this;
-    for (const child of this.childNodes) {
+    for (const child of this.children) {
       const ret = (<IEntity>child).find(filter);
       if (ret) return ret;
     }
@@ -106,7 +116,7 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
     this.willChangeDocument(value);
     const oldDocument = this._document;
     this._document = value;
-    for (const child of this.childNodes) {
+    for (const child of this.children) {
       (<IHTMLEntity>child).document = value;
     }
   }
@@ -115,27 +125,26 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
     // OVERRIDE ME
   }
 
-  insertDOMChildBefore(newChild: INode, beforeChild: INode) {
+  insertDOMChildBefore(newChild: Node, beforeChild: Node) {
     this.section.targetNode.insertBefore(newChild, beforeChild);
   }
 
-  appendDOMChild(newChild: INode) {
+  appendDOMChild(newChild: Node) {
     this.section.appendChild(newChild);
   }
 
   update() {
-    for (const child of this.childNodes) {
+    for (const child of this.children) {
       (<IEntity>child).update();
     }
   }
 
   static mapSourceChildren(source: IHTMLContainerExpression) {
-    return source.childNodes;
+    return source.children;
   }
 
-  protected createSection(): IMarkupSection {
-    const element = document.createElement(this.nodeName) as any;
-    return new NodeSection(element);
+  protected createSection(): IDOMSection {
+    return new NodeSection(document.createElement(this.name));
   }
 
   _unlink(child: IHTMLEntity) {
@@ -168,7 +177,7 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
     }
   }
 
-  abstract cloneNode();
+  abstract clone();
 
   dispose() {
     disposeEntity(this);

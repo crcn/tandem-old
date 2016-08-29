@@ -1,6 +1,6 @@
 import * as React from "react";
 import { IActor } from "sf-core/actors";
-import { IEntity } from "sf-core/entities";
+import { IEntity } from "sf-core/ast/entities";
 import { IApplication } from "sf-core/application";
 import { IEditor, IEditorTool } from "sf-front-end/models";
 import { ReactComponentFactoryDependency } from "./base";

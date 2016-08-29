@@ -52,7 +52,7 @@ describe(__filename + "#", () => {
 
   it("can render a DIV element", async () => {
     const doc = await loadDocument("<div />");
-    expect(doc.root.childNodes[0].nodeName).to.equal("DIV");
+    expect(doc.root.children[0].name).to.equal("DIV");
   });
 
   it("emits a DOM element", async () => {

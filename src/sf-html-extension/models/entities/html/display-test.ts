@@ -2,7 +2,7 @@ import * as sift from "sift";
 import { expect } from "chai";
 import { HTMLFile } from "sf-html-extension/models/html-file";
 import { BoundingRect } from "sf-core/geom";
-import { IVisibleEntity } from "sf-core/entities";
+import { IVisibleNodeEntity } from "sf-core/ast/entities";
 import { HTML_MIME_TYPE } from "sf-html-extension/constants";
 import { parse as parseHTML } from "sf-html-extension/parsers/html";
 import { FrontEndApplication } from "sf-front-end/application";
@@ -51,7 +51,7 @@ describe(__filename + "#", () => {
     div.appendChild(<Node><any>root.section.toFragment());
 
 
-    return <IVisibleEntity>(root.flatten().find((entity) => {
+    return <IVisibleNodeEntity>(root.flatten().find((entity) => {
       if (entity["attributes"]) {
         return (<HTMLElementEntity>entity).getAttribute("id") === "target";
        }
