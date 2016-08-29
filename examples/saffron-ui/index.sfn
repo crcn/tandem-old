@@ -21,7 +21,7 @@
   <div class="header" style="top: -17px; left: -56px;">${title}</div>
   <div class="content" style="top: -17px; left: -56px;">${content}</div>
 </artboard>
-
+\
 <!-- Entity Panes -->
 <artboard title="Layers Pane" style="background; white;position: absolute; width: 205px; height: 150px; left: 1286px; top: 706px;">
   <pane/>

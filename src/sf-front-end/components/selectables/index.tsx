@@ -18,10 +18,14 @@ import { IVisibleNodeEntity, IEntity, IContainerNodeEntity } from "sf-core/ast/e
 class SelectableComponent extends React.Component<{
   entity: IVisibleNodeEntity,
   selection: any,
+  hovering: boolean,
   app: FrontEndApplication,
+  documentContent: string,
   zoom: number,
   onEntityMouseDown: (entity: IVisibleNodeEntity, event?: MouseEvent) => void
 }, any> {
+
+  private _i: number = 0;
 
   constructor() {
     super();
@@ -42,6 +46,10 @@ class SelectableComponent extends React.Component<{
     this.props.app.metadata.set(MetadataKeys.HOVER_ITEM, undefined);
   }
 
+  shouldComponentUpdate(props) {
+    // return props.hovering;
+    return true;
+  }
 
   render() {
     const { entity, selection, app } = this.props;
@@ -57,7 +65,7 @@ class SelectableComponent extends React.Component<{
 
     const classNames = cx({
       "m-selectable": true,
-      "hover": this.props.app.metadata.get(MetadataKeys.HOVER_ITEM) === this.props.entity
+      "hover": this.props.hovering
     });
 
     const style = {
@@ -98,7 +106,6 @@ export class SelectablesComponent extends React.Component<{
     if (!activeEntity.children) return null;
     // do not render selectables that are off screen
     //
-
     // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.
 
     // TODO - check if user is scrolling
@@ -113,6 +120,8 @@ export class SelectablesComponent extends React.Component<{
     )).map((entity, i) => (
       <SelectableComponent
         {...this.props}
+        documentContent={this.props.workspace.file.content}
+        hovering={this.props.app.metadata.get(MetadataKeys.HOVER_ITEM) === entity}
         zoom={this.props.workspace.editor.zoom}
         selection={selection}
         entity={entity as IVisibleNodeEntity}

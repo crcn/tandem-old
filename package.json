@@ -58,6 +58,7 @@
     "diff": "^2.2.3",
     "ent": "^2.2.0",
     "get-port": "^2.1.0",
+    "memoizee": "^0.4.1",
     "mesh-array-ds-bus": "^2.0.0",
     "mesh-memory-ds-bus": "^5.0.1",
     "mesh-socket-io-bus": "^1.1.0",

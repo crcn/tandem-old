@@ -6,6 +6,7 @@ import { BoundingRect, IPoint } from "sf-core/geom";
 import { VisibleHTMLElementEntity } from "../index";
 import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/ast";
 import { IEntityDisplay, IVisibleNodeEntity, DisplayCapabilities } from "sf-core/ast/entities";
+import * as memoize from "memoizee";
 
 function calculateCSSMeasurments(style): any {
   const calculated = {};
@@ -73,7 +74,6 @@ function calculateUntransformedBoundingRect(node: HTMLElement) {
   const rect = node.getBoundingClientRect();
   const bounds = new BoundingRect(rect.left, rect.top, rect.right, rect.bottom);
   const matrix = calculateTransform(node, false);
-
   return bounds.move({ left: -matrix[4], top: -matrix[5] }).zoom(1 / matrix[0]);
 }
 

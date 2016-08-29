@@ -68,3 +68,13 @@ declare module "store" {
   export function get(key: string): any;
   export function set(key: string, value: any);
 }
+
+declare module "memoizee" {
+  function memoize(fn: Function, options?: any);
+
+  namespace memoize {
+
+  }
+
+  export = memoize;
+}
