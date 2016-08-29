@@ -22,7 +22,7 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
     const newExpression = style ? parseCSSStyle(style) : new CSSStyleExpression([], null);
 
     if (this._styleExpression) {
-      CSSStyleExpression.merge(this._styleExpression, newExpression);
+      this._styleExpression.patch(newExpression);
     } else {
       this._styleExpression = newExpression;
     }

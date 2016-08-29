@@ -3,7 +3,11 @@ import { BaseExpression } from "sf-core/ast";
 import { INode, IElement } from "sf-core/markup";
 import { diffArray, patchArray } from "sf-core/utils/array";
 
-export class CSSExpression extends BaseExpression { }
+export abstract class CSSExpression extends BaseExpression {
+  patch(source: CSSExpression) {
+
+  }
+}
 
 export class CSSStyleExpression extends CSSExpression {
   private _declarationsByKey: any;
@@ -24,11 +28,13 @@ export class CSSStyleExpression extends CSSExpression {
     }
   }
 
-  static merge(a: CSSStyleExpression, b: CSSStyleExpression): CSSStyleExpression {
-    a.position = b.position;
-    patchArray(a.declarations, diffArray(a.declarations, b.declarations, (a, b) => a .key === b.key), CSSStyleDeclarationExpression.merge);
-    a._reset();
-    return a;
+  patch(b: CSSStyleExpression) {
+    this.position = b.position;
+    patchArray(this.declarations, diffArray(this.declarations, b.declarations, (a, b) => a .key === b.key), (a, b) => {
+      a.patch(b);
+      return a;
+    });
+    this._reset();
   }
 
   public updateDeclarations(style: Object) {
@@ -69,16 +75,14 @@ export class CSSStyleDeclarationExpression extends CSSExpression {
     super(position);
   }
 
-  static merge(a: CSSStyleDeclarationExpression, b: CSSStyleDeclarationExpression): CSSStyleDeclarationExpression {
-    a.position = b.position;
-    a.key = b.key;
-    if (a.value.constructor === b.value.constructor && (<any>a.value.constructor).merge) {
-      (<any>a.value.constructor).merge(a.value, b.value);
+  patch(b: CSSStyleDeclarationExpression) {
+    this.position = b.position;
+    this.key = b.key;
+    if (this.value.constructor === b.value.constructor) {
+      this.value.patch(b);
     } else {
-      a.value = b.value;
+      this.value = b;
     }
-
-    return a;
   }
 
   /**
@@ -100,7 +104,6 @@ export class CSSStyleDeclarationExpression extends CSSExpression {
     return [this.key, ": ", this.value.toString(), ";"].join("");
   }
 }
-
 
 export class CSSLiteralExpression extends CSSExpression {
   constructor(public value: string, public position: IRange) {
@@ -137,10 +140,10 @@ export class CSSRuleExpression extends CSSExpression {
     super(position);
     this.name = selector ? selector.toString() : "";
   }
-  patch(b:CSSRuleExpression) {
+  patch(b: CSSRuleExpression) {
     this.position  = b.position;
     this.selector = b.selector;
-    CSSStyleExpression.merge(this.style, b.style);
+    this.style.patch(b.style);
   }
   test(node: IElement): boolean {
     return this.selector.test(node);
@@ -157,9 +160,9 @@ export class CSSStyleSheetExpression extends CSSExpression {
     super(position);
   }
 
-  static merge(a: CSSStyleSheetExpression, b: CSSStyleSheetExpression) {
-    a.position = b.position;
-    patchArray(a.rules, diffArray<CSSRuleExpression>(a.rules, b.rules, (a, b) => a.name === b.name), (a, b) => {
+  patch(b: CSSStyleSheetExpression) {
+    this.position = b.position;
+    patchArray(this.rules, diffArray<CSSRuleExpression>(this.rules, b.rules, (a, b) => a.name === b.name), (a, b) => {
       a.patch(b);
       return a;
     });

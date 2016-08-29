@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { SymbolTable } from "./symbol-table";
 
+
 describe(__filename + "#", () => {
   it("can be created", () => {
     new SymbolTable();

@@ -25,7 +25,12 @@ export class HTMLEntityDisplaySelection extends DisplayEntitySelection<VisibleHT
     }
 
     const expr = new CSSStyleExpression(<Array<CSSStyleDeclarationExpression>>values(declarationsByKey), null);
-    return this._styleExpression ? CSSStyleExpression.merge(this._styleExpression, expr) : this._styleExpression = expr;
+    if (this._styleExpression) {
+      this._styleExpression.patch(expr);
+    } else {
+      this._styleExpression = expr;
+    }
+    return this._styleExpression;
   }
 }
 

@@ -21,7 +21,7 @@ export class HTMLStyleEntity extends HTMLElementEntity {
     const newStyle = parseCSS(nodeValue);
 
     if (this._styleSheetExpression) {
-      CSSStyleSheetExpression.merge(this._styleSheetExpression, newStyle);
+      this._styleSheetExpression.patch(newStyle);
     } else {
       this._styleSheetExpression = newStyle;
     }
