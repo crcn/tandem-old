@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import { Element } from "sf-core/markup";
-import { patch, diff } from "sf-core/markup";
 import { DisplayEntitySelection } from "./display-entity-selection";
 import { BoundingRect, IPoint } from "sf-core/geom";
 import { IEntity, IEntityDisplay, INodeEntity, IVisibleNodeEntity, DisplayCapabilities, EntityMetadata } from "sf-core/ast/entities";
@@ -41,7 +40,6 @@ describe(__filename + "#", () => {
     update() { }
     load() { }
     patch(entity) {
-      patch(this, diff(this, entity));
     }
 
     flatten(): Array<IEntity> {

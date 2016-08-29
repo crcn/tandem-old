@@ -1,11 +1,11 @@
 import { parse } from "./index";
 import { expect } from "chai";
-import { IElement } from "sf-core/markup";
+import { IElement, INode } from "sf-core/markup";
 import {
   CSSMediaExpression,
-  CSSKeyFramesExpression,
   CSSStyleExpression,
   CSSLiteralExpression,
+  CSSKeyFramesExpression,
   CSSStyleDeclarationExpression,
 } from "./expressions";
 
@@ -69,7 +69,6 @@ describe(__filename + "#", () => {
   describe("selectors", () => {
 
     [
-
       // individual elements
       [".a", `<div class="a" target />`],
       [".a-b", `<div class="a-b" target />`],
@@ -107,8 +106,8 @@ describe(__filename + "#", () => {
         div.innerHTML = html;
         const nodes = flattenNode(div);
         nodes.shift(); // remove the initial div
-        const targets = nodes.filter((node: Element) => node.nodeType === 1 && node.hasAttribute("target"));
-        const matches = nodes.filter((node: Element) => node.nodeType === 1 && rule.selector.test(<IElement><any>node));
+        const targets = nodes.filter((node: IElement) => /^#/.test(node.name) && node.hasAttribute("target"));
+        const matches = nodes.filter((node: IElement) => /^#/.test(node.name) && rule.selector.test(<IElement><any>node));
         expect(matches).to.eql(targets);
       });
     });
@@ -132,10 +131,10 @@ describe(__filename + "#", () => {
   });
 });
 
-function flattenNode(node: any): Array<Node> {
+function flattenNode(node: any): Array<INode> {
   const nodes = [node];
-  if (node.childNodes) {
-    for (const child of node.childNodes) {
+  if (node.children) {
+    for (const child of node.children) {
       nodes.push(...flattenNode(child));
     }
   }

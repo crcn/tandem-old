@@ -4,8 +4,7 @@ import { INamed } from "sf-core/object";
 import { IBrokerBus } from "../busses";
 import { IApplication } from "sf-core/application";
 import { IActiveRecord } from "../active-records";
-import { IEntity, IContainerNodeEntity } from "sf-core/ast";
-import { IDiffableNode, IContainerNode } from "../markup";
+import { IEntity } from "sf-core/ast";
 
 import {
   IFactory,

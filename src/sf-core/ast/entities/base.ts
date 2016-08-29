@@ -9,10 +9,8 @@ import {
   IElement,
   Element,
   ValueNode,
-  IDiffableNode,
   ContainerNode,
   IContainerNode,
-  IDiffableValueNode,
 } from "sf-core/markup";
 
 export interface IEntityDocument extends IContainerNode {
