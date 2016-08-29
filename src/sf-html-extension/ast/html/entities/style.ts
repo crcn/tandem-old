@@ -1,8 +1,7 @@
 import { inject } from "sf-core/decorators";
-import { NodeSection } from "sf-html-extension/dom";
-import { IHTMLDocument } from "./base";
-import { HTMLElementEntity } from "./element";
 import { parseCSS } from "sf-html-extension/ast";
+import { NodeSection } from "sf-html-extension/dom";
+import { HTMLElementEntity } from "./element";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { CSSStyleSheetExpression } from "sf-html-extension/ast";
 import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
@@ -32,8 +31,7 @@ export class HTMLStyleEntity extends HTMLElementEntity {
   }
 
   _removeStyles() {
-    const doc = this.document;
-    if (!this._styleSheetExpression || !doc) return;
+    if (!this._styleSheetExpression) return;
     CSSStyleSheetsDependency.findOrRegister(this._dependencies).unregister(this._styleSheetExpression);
   }
 

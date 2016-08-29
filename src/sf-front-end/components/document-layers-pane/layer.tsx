@@ -36,7 +36,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
   onClick(event) {
 
     const { entity, workspace } = this.props;
-    const rootEntity = workspace.file.document.root;
+    const rootEntity = workspace.file.entity;
 
     const selection = workspace.selection || [];
     let select  = [];
@@ -187,7 +187,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
     const data = monitor.getItem() as any;
 
-    const item = app.workspace.file.document.root.flatten().find(function(entity: INodeEntity) {
+    const item = app.workspace.file.entity.flatten().find(function(entity: INodeEntity) {
       return entity.metadata.get("dragSourceId") === data.id;
     }) as INodeEntity;
 
@@ -265,7 +265,7 @@ LayerDndLabelComponent = DropTarget("element", {
     const { entity, app } = props;
     app.bus.execute(new SelectAction([], false));
     const data = monitor.getItem() as any;
-    const item = app.workspace.file.document.root.flatten().find(function(entity: INodeEntity) {
+    const item = app.workspace.file.entity.flatten().find(function(entity: INodeEntity) {
       return entity.metadata.get("dragSourceId") === data.id;
     }) as INodeEntity;
 

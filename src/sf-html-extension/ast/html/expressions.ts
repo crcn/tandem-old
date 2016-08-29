@@ -24,18 +24,24 @@ export interface IHTMLContainerExpression extends IHTMLExpression {
   removeChild(node: HTMLExpression);
 }
 
-function patchContainer(container: IHTMLContainerExpression, expression: IHTMLContainerExpression) {
-  const changes = diffArray(container.children, expression.children, (a, b) => a.name === b.name);
-  patchArray(
-    container.children,
-    changes,
-    (a, b) => { a.patch(b); return a; }
-  );
+export class HTMLContainerExpression extends HTMLExpression {
+  constructor(name: string, public children: Array<HTMLExpression>, position: IRange) {
+    super(name, position);
+  }
+  patch(expression: IHTMLContainerExpression) {
+    this.position = expression.position;
+    const changes = diffArray(this.children, expression.children, (a, b) => a.name === b.name);
+    patchArray(
+      this.children,
+      changes,
+      (a, b) => { a.patch(b); return a; }
+    );
+  }
 }
 
-export class HTMLFragmentExpression extends HTMLExpression implements IHTMLContainerExpression {
-  constructor(public children: Array<HTMLExpression>, position: IRange) {
-    super("#document-fragment", position);
+export class HTMLFragmentExpression extends HTMLContainerExpression implements IHTMLContainerExpression {
+  constructor(children: Array<HTMLExpression>, position: IRange) {
+    super("#document-fragment", children, position);
   }
 
   removeChild(child: HTMLExpression) {
@@ -43,11 +49,6 @@ export class HTMLFragmentExpression extends HTMLExpression implements IHTMLConta
     if (i !== -1) {
       this.children.splice(i, 1);
     }
-  }
-
-  patch(expression: HTMLFragmentExpression) {
-    this.position = expression.position;
-    patchContainer(this, expression);
   }
 
   appendChild(childNode: HTMLExpression) {
@@ -63,19 +64,18 @@ export class HTMLFragmentExpression extends HTMLExpression implements IHTMLConta
  */
 
 export const HTML_ELEMENT = "htmlElement";
-export class HTMLElementExpression extends HTMLExpression implements IHTMLContainerExpression {
+export class HTMLElementExpression extends HTMLContainerExpression implements IHTMLContainerExpression {
   constructor(
     name: string,
     public attributes: Array<HTMLAttributeExpression>,
-    public children: Array<HTMLExpression>,
+    children: Array<HTMLExpression>,
     public position: IRange) {
-    super(name, position);
+    super(name, children, position);
   }
 
   patch(expression: HTMLElementExpression) {
     this.attributes = expression.attributes;
-    this.position = expression.position;
-    patchContainer(this, expression);
+    super.patch(expression);
   }
 
   removeChild(child: HTMLExpression) {

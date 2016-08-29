@@ -4,6 +4,7 @@ import { HTMLElementEntity } from "./element";
 import { IVisibleNodeEntity } from "sf-core/ast/entities";
 import { HTMLElementExpression } from "sf-html-extension/ast";
 import { EntityFactoryDependency } from "sf-core/dependencies";
+import { IDOMSection, NodeSection } from "sf-html-extension/dom";
 import { parseCSSStyle, CSSStyleExpression } from "sf-html-extension/ast";
 
 export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisibleNodeEntity {
@@ -13,7 +14,6 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
 
   // TODO - change to something such as DisplayComputer
   readonly display = new HTMLNodeDisplay(this);
-
 
   private _styleExpression: CSSStyleExpression;
   private _originalStyle: string;
@@ -39,6 +39,10 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
     }
 
     super.update();
+  }
+
+  createSection(): NodeSection {
+    return new NodeSection(document.createElement(this.name));
   }
 
   get styleExpression(): CSSStyleExpression {

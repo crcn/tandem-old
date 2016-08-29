@@ -143,7 +143,7 @@ class ResizerComponent extends React.Component<{
       }
     };
 
-    each(this.file.document.root as IContainerNodeEntity);
+    each(this.file.entity as IContainerNodeEntity);
     return guider;
   }
 

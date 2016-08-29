@@ -25,6 +25,7 @@ describe(__filename + "#", () => {
 
   class VisibleEntity extends Element implements IVisibleNodeEntity {
     readonly parent: VisibleEntity;
+    readonly root: VisibleEntity;
     readonly type: string = "display";
     readonly displayType: string = "element";
     readonly source: any = null;

@@ -1,17 +1,16 @@
 import * as sift from "sift";
 import { expect } from "chai";
 import { HTMLFile } from "sf-html-extension/models/html-file";
-import { BoundingRect } from "sf-core/geom";
-import { IVisibleNodeEntity } from "sf-core/ast/entities";
-import { HTML_MIME_TYPE } from "sf-html-extension/constants";
 import { parseHTML } from "sf-html-extension/ast";
+import { BoundingRect } from "sf-core/geom";
+import { HTML_MIME_TYPE } from "sf-html-extension/constants";
+import { IVisibleNodeEntity } from "sf-core/ast/entities";
 import { FrontEndApplication } from "sf-front-end/application";
 import { waitForPropertyChange } from "sf-core/test/utils";
 import { Dependencies, DependenciesDependency, DEPENDENCIES_NS, ApplicationSingletonDependency, ActiveRecordFactoryDependency } from "sf-core/dependencies";
 import {
   HTMLElementEntity,
   htmlTextDependency,
-  HTMLDocumentEntity,
   htmlCommentDependency,
   htmlElementDependencies,
   htmlArtboardDependency,
@@ -46,8 +45,8 @@ describe(__filename + "#", () => {
     const file: HTMLFile = ActiveRecordFactoryDependency.find(HTML_MIME_TYPE, dependencies).create("files", {
       content: source
     });
-    await waitForPropertyChange(file.document, "root");
-    const root = file.document.root;
+    await waitForPropertyChange(file, "entity");
+    const root = file.entity;
     const div = document.createElement("div");
     document.body.appendChild(div);
     Object.assign(div.style, { position: "fixed", top: "0px", left: "0px" });

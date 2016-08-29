@@ -134,7 +134,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     let width  = body.offsetWidth;
     let height = body.offsetHeight;
 
-    const allBounds = (this.props.workspace.file.document.root as IContainerNodeEntity).children
+    const allBounds = (this.props.workspace.file.entity as IContainerNodeEntity).children
     .map((entity: IVisibleNodeEntity) => entity.display && entity.display.bounds)
     .filter((bounds) => !!bounds);
 
@@ -199,7 +199,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
       border: "none"
     };
     // TODO - add fixed tools
-    const entity = this.props.workspace.file.document.root;
+    const entity = this.props.workspace.file.entity;
     return (<IsolateComponent onKeyDown={this.onKey} ref="isolate" ignoreInputEvents={true} onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
       <style>
         {

@@ -1,4 +1,5 @@
 import { IHTMLEntity } from "./base";
+import { NodeSection } from "sf-html-extension/dom";
 import { MetadataKeys } from "sf-front-end/constants";
 import { IElementEntity } from "sf-core/ast/entities";
 import { CSSRuleExpression } from "sf-html-extension/ast";
@@ -14,15 +15,11 @@ import { HTMLElementExpression, HTMLAttributeExpression } from "sf-html-extensio
 
 export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression> implements IHTMLEntity, IElementEntity, IElement {
 
-  // no type specified since certain elements such as <style />, and <link />
-  // do not fit into a particular category. This may change later on.
-  readonly type: string = null;
   private _attributes: Attributes;
 
   patch(entity: HTMLElementEntity) {
 
     const changes = diffArray(this.attributes, entity.attributes, (a, b) => a.name === b.name);
-    const element = (<Element>this.section.targetNode);
 
     for (const add of changes.add) {
       this.setAttribute(add.value.name, add.value.value);
@@ -68,6 +65,10 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
     });
   }
 
+  createSection(): NodeSection {
+    return new NodeSection(document.createElement(this.name));
+  }
+
   static mapSourceChildren(source: HTMLElementExpression) {
     return source.children;
   }
@@ -86,7 +87,9 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   }
 
   setAttribute(name: string, value: string) {
-    (<Element>this.section.targetNode).setAttribute(name, value);
+    if (this.section instanceof NodeSection) {
+      (<Element>this.section.targetNode).setAttribute(name, value);
+    }
     this.attributes.set(name, value);
     this.notify(new AttributeChangeAction(name, value));
   }

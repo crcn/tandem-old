@@ -15,7 +15,6 @@ import {
   ApplicationServiceDependency,
 } from "sf-core/dependencies";
 
-
 export class PasteHTMLService extends BaseApplicationService<FrontEndApplication> {
 
   @filterAction(sift({ type: PASTE, "item.type": HTML_MIME_TYPE }))
@@ -26,7 +25,7 @@ export class PasteHTMLService extends BaseApplicationService<FrontEndApplication
 
       const workspace = this.app.workspace;
       const file = <HTMLFile>workspace.file;
-      const activeEntity = workspace.selection.length ? workspace.selection[0].parentNode : file.document.root;
+      const activeEntity = workspace.selection.length ? workspace.selection[0].parentNode : file.entity;
 
       // meta charset is tacked on the beginning - remove it
       content = content.replace(/\<meta.*?\>/, "");

@@ -2,7 +2,6 @@
 import { Action, UPDATE } from "sf-core/actions";
 import { watchProperty } from "sf-core/observable";
 import { parseCSS } from "sf-html-extension/ast";
-import { HTMLDocumentEntity } from "../document";
 import { BoundingRect, IPoint } from "sf-core/geom";
 import { VisibleHTMLElementEntity } from "../index";
 import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/ast";

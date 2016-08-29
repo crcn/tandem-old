@@ -104,7 +104,7 @@ export class SelectablesComponent extends React.Component<{
     // TODO - check if user is scrolling
     if (selection && selection.metadata.get(MetadataKeys.MOVING)) return null;
 
-    const allEntities = this.props.workspace.file.document.root.flatten() as Array<IEntity>;
+    const allEntities = this.props.workspace.file.entity.flatten() as Array<IEntity>;
 
     // if (selection.preview.currentTool.type !== "pointer") return null;
 

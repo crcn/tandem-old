@@ -1,5 +1,5 @@
-import { INode, IContainerNode, IValueNode, IElement, ContainerNode, Node as MarkupNode, Element as MarkupElement } from "./base";
 import { Observable } from "sf-core/observable";
+import { INode, IContainerNode, IValueNode, IElement, ContainerNode, Node as MarkupNode, Element as MarkupElement } from "./base";
 
 class WrappedNode<T extends Node> extends Observable implements INode {
   readonly name: string;
@@ -9,6 +9,9 @@ class WrappedNode<T extends Node> extends Observable implements INode {
     this.name = target.nodeName;
   }
 
+  get root(): IContainerNode {
+    return null;
+  }
 
   get nextSibling(): INode {
     return <IContainerNode>wrapDOMNode(this.target.nextSibling);

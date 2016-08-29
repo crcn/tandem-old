@@ -19,7 +19,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
 
   private onRootMouseDown = (event) => {
-    this._targetEntity = this.props.workspace.file.document.root;
+    this._targetEntity = this.props.workspace.file.entity;
     this._insertNewItem(event);
   }
 

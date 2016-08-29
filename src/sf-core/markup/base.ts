@@ -18,6 +18,7 @@ export interface IAttribute {
 
 export interface INode extends IObservable, INamed {
   parent: IContainerNode;
+  root: IContainerNode;
   readonly name: string;
   clone(): INode;
   nextSibling: INode;
@@ -65,6 +66,12 @@ export abstract class Node extends Observable implements INode {
   protected _parent: IContainerNode;
   get parent(): IContainerNode {
     return this._parent;
+  }
+
+  get root(): IContainerNode {
+    let p: INode = this;
+    while (p.parent) p = <INode>p.parent;
+    return <IContainerNode>p;
   }
 
   get nextSibling() {

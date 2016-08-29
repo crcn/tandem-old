@@ -7,10 +7,10 @@ import { NodeSection } from "sf-html-extension/dom";
 import { DocumentFile } from "sf-front-end/models";
 import { IContainerNode } from "sf-core/markup";
 import { HTMLElementEntity } from "./element";
-import { HTMLElementExpression } from "sf-html-extension/ast";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { ReadFileAction, WatchFileAction } from "sf-core/actions";
 import { DocumentPaneComponentFactoryDependency } from "sf-front-end/dependencies";
+import { HTMLElementExpression, HTMLDocumentRootEntity } from "sf-html-extension/ast";
 import { ActiveRecordFactoryDependency, MAIN_BUS_NS } from "sf-core/dependencies";
 
 // TODO
@@ -32,7 +32,7 @@ export class LinkEntity extends HTMLElementEntity {
 
   get href() {
     return path.join(
-      path.dirname(this.document.file.path),
+      path.dirname(this.document.path),
       this.source.getAttribute("href")
     );
   }
@@ -75,7 +75,6 @@ export class LinkEntity extends HTMLElementEntity {
     });
   }
 }
-
 
 export const linkEntityDependency  = new EntityFactoryDependency("link", LinkEntity);
 

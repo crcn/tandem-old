@@ -12,7 +12,6 @@ export async function appendSourceChildren(entity: IContainerNodeEntity, ...chil
 
 export async function insertSourceChildren(entity: IContainerNodeEntity, index: number = -1, ...childSources: Array<any>) {
   entity.source.children.splice(index, 0, ...childSources);
-  const doc = entity.document;
-  await doc.update();
+  await entity.document.update();
   return findEntitiesBySource(entity, ...childSources);
 }

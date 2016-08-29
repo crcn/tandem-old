@@ -1,13 +1,13 @@
 import { IActor } from "sf-core/actors";
 import { Action } from "sf-core/actions";
 import { inject } from "sf-core/decorators";
+import { IEntity } from "sf-core/ast/entities";
 import { Workspace } from "./workspace";
 import { KeyBinding } from "sf-front-end/key-bindings";
 import { IInjectable } from "sf-core/dependencies";
 import { ParallelBus } from "mesh";
 import { IPoint, Transform } from "sf-core/geom";
 import { IEditor, IEditorTool } from "./base";
-import { IEntity, IEntityDocument } from "sf-core/ast/entities";
 
 export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;
@@ -26,7 +26,7 @@ export class Editor implements IEditor {
   constructor(readonly workspace: Workspace) { }
 
   get activeEntity(): IEntity {
-    return this.workspace.file.document.root;
+    return this.workspace.file.entity;
   }
 
   get zoom() { return this.transform.scale; }

@@ -1,8 +1,9 @@
 import * as React  from "react";
 import { IApplication } from "sf-core/application";
+import { HTMLDocumentRootEntity } from "sf-html-extension/ast";
 import { EntityPreviewDependency } from "sf-front-end/dependencies";
 
-export default class PreviewComponent extends React.Component<any, any> {
+export default class PreviewComponent extends React.Component<{ entity: HTMLDocumentRootEntity }, any> {
   componentDidMount() {
     this._update();
   }

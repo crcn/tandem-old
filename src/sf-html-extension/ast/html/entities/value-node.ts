@@ -4,19 +4,22 @@ import { ValueNode } from "sf-core/markup";
 import { NodeSection } from "sf-html-extension/dom";
 import { disposeEntity } from "./utils";
 import { EntityMetadata } from "sf-core/ast/entities";
+import { IEntityDocument } from "sf-core/ast";
 import { IHTMLValueNodeExpression } from "sf-html-extension/ast";
-import { IHTMLDocument, IHTMLEntity, IHTMLContainerEntity } from "./base";
+import { IHTMLEntity, IHTMLContainerEntity } from "./base";
 
 export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> extends ValueNode implements IHTMLEntity {
 
   readonly parent: IHTMLContainerEntity;
+  readonly root: IHTMLContainerEntity;
+
   readonly type: string = null;
   readonly section: NodeSection;
   readonly metadata: EntityMetadata;
+  public document: IEntityDocument;
 
   private _node: Node;
   private _value: any;
-  private _document: IHTMLDocument;
 
   constructor(private _source: T) {
     super(_source.name, _source.value);
@@ -43,18 +46,6 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   }
 
   load() { }
-
-  get document(): IHTMLDocument {
-    return this._document;
-  }
-
-  set document(value: IHTMLDocument) {
-    this.willChangeDocument(value);
-    const oldDocument = this._document;
-    this._document = value;
-  }
-
-  protected willChangeDocument(newDocument) { }
 
   update() {
     this.source.value = this.value;

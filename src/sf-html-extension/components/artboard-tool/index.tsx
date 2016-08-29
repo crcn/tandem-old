@@ -73,7 +73,7 @@ export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEnt
 export class ArtboardToolComponent extends React.Component<{ zoom: number, workspace: Workspace }, any> {
   render() {
 
-    const artboards = this.props.workspace.file.document.root.flatten().filter((node) => String(node.name).toLowerCase() === "artboard");
+    const artboards = this.props.workspace.file.entity.flatten().filter((node) => String(node.name).toLowerCase() === "artboard");
 
     if (!artboards.length) return null;
 

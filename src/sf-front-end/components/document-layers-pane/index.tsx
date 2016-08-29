@@ -14,10 +14,10 @@ import { DocumentPaneComponentFactoryDependency } from "sf-front-end/dependencie
 
 class LayersPaneComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication }, any> {
   render() {
-    if (!this.props.workspace.file || !this.props.workspace.file.document.root) return null;
+    if (!this.props.workspace.file || !this.props.workspace.file.entity) return null;
     return <PaneComponent title="Layers">
       {
-        (this.props.workspace.file.document.root as IContainerNodeEntity).children.map((entity: INodeEntity, i) => <LayerComponent depth={0} {...this.props} entity={entity} key={i} />)
+        (this.props.workspace.file.entity as IContainerNodeEntity).children.map((entity: INodeEntity, i) => <LayerComponent depth={0} {...this.props} entity={entity} key={i} />)
       }
     </PaneComponent>;
   }

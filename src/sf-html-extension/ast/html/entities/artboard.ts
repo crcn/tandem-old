@@ -6,12 +6,12 @@ import { inject } from "sf-core/decorators";
 import { NodeSection } from "sf-html-extension/dom";
 import { MetadataKeys } from "sf-front-end/constants";
 import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
-import { HTMLDocumentEntity } from "./document";
 import { FrontEndApplication } from "sf-front-end/application";
 import { HTMLElementExpression } from "sf-html-extension/ast";
 import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { VisibleHTMLElementEntity } from "./visible-element";
 import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "sf-core/dependencies";
+
 
 const ARTBOARD_NS = "artboards";
 class ArtboardDependency extends Dependency<HTMLArtboardEntity> {

@@ -4,7 +4,6 @@ import { waitForPropertyChange, timeout } from "sf-core/test/utils";
 import { parseHTML } from "sf-html-extension/ast";
 import {
   HTMLElementEntity,
-  HTMLDocumentEntity,
   htmlTextDependency,
   htmlCommentDependency,
   htmlElementDependencies,
@@ -37,32 +36,32 @@ describe(__filename + "#", () => {
       content: content
     });
     await timeout(20);
-    return file.document;
+    return file;
   }
 
-  async function updateDocumentSource(document: HTMLDocumentEntity, source: string) {
-    document.file.deserialize({ content: source });
+  async function updateDocumentSource(file: HTMLFile, source: string) {
+    file.deserialize({ content: source, path: "a" });
     await timeout(20);
     return document;
   }
 
   async function loadDiv(source) {
-    const doc = await loadDocument(source);
+    const file = await loadDocument(source);
     const div = document.createElement("div");
-    div.appendChild(<Node><any>doc.root.section.toFragment());
+    div.appendChild(file.entity.section.toFragment());
     return div;
   }
 
   it("can render a DIV element", async () => {
-    const doc = await loadDocument("<div />");
-    expect(doc.root.children[0].name).to.equal("DIV");
+    const file = await loadDocument("<div />");
+    expect(file.entity.children[0].name).to.equal("DIV");
   });
 
   it("emits a DOM element", async () => {
     const source = "<div>hello world!</div>";
-    const doc = await loadDocument(source);
+    const file = await loadDocument(source);
     const div = document.createElement("div");
-    div.appendChild(<Node><any>doc.root.section.toFragment());
+    div.appendChild(<Node><any>file.entity.section.toFragment());
     expect(div.innerHTML).to.equal(source);
   });
 
@@ -79,11 +78,11 @@ describe(__filename + "#", () => {
     [`1<h2>2</h2>3<h3>4</h3>`, `<h2>1</h2>2<h3>3</h3>`]
   ].forEach(function([source, change]) {
     it(`can update the source from ${source} to ${change}`, async () => {
-      const doc = await loadDocument(source);
+      const file = await loadDocument(source);
       const div = document.createElement("div");
-      div.appendChild(<Node><any>doc.root.section.toFragment());
+      div.appendChild(file.entity.section.toFragment());
       expect(div.innerHTML).to.equal(source);
-      await updateDocumentSource(doc, change);
+      await updateDocumentSource(file, change);
       expect(div.innerHTML).to.equal(change);
     });
   });
@@ -99,21 +98,21 @@ describe(__filename + "#", () => {
 
   describe("when updating existing entities", () => {
 
-    let doc: HTMLDocumentEntity;
+    let file: HTMLFile;
 
     beforeEach(async function() {
-      doc = await loadDocument("");
+      file = await loadDocument("");
     });
 
     it("properly adds new children to the existing entity expressions", async () => {
       const div = document.createElement("div");
 
-      await updateDocumentSource(doc, "<div />");
-      div.appendChild(<Node><any>doc.root.section.toFragment());
+      await updateDocumentSource(file, "<div />");
+      div.appendChild(file.entity.section.toFragment());
       expect(div.innerHTML).to.equal("<div></div>");
-      await updateDocumentSource(doc, "<div>a b</div>");
+      await updateDocumentSource(file, "<div>a b</div>");
       expect(div.innerHTML).to.equal("<div>a b</div>");
-      expect(doc.root.source.toString()).to.equal(`<div>a b</div>`);
+      expect(file.entity.source.toString()).to.equal(`<div>a b</div>`);
     });
   });
 });

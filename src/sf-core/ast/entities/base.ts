@@ -13,25 +13,21 @@ import {
   IContainerNode,
 } from "sf-core/markup";
 
-export interface IEntityDocument extends IContainerNode {
-  readonly root: IEntity;
-
-  // TODO - possibly change file to source since it's a bit more generic
-  readonly file: IFile;
-  update();
-}
-
 export class EntityMetadata extends Metadata {
   constructor(readonly entity: IEntity, data?: any) {
     super(data);
   }
 }
 
+export interface IEntityDocument {
+  update();
+}
+
 export interface IEntity extends IDisposable, IInjectable {
+  document: IEntityDocument;
   readonly parent: IEntity;
   readonly metadata: EntityMetadata;
   readonly source: any;
-  readonly document: IEntityDocument;
 
   /**
    * update source from props on this entity
@@ -49,12 +45,7 @@ export interface IEntity extends IDisposable, IInjectable {
    * patche this entity from another one.
    */
 
-  patch(entity: IEntity);
-
-  /**
-   */
-
-  find(filter: (entity: IEntity) => boolean): IEntity;
+  patch(entity: IEntity): void;
 
   /**
    */
@@ -70,20 +61,23 @@ export interface IContainerNodeEntitySource {
 
 export interface INodeEntity extends INode, IEntity {
   parent: IContainerNodeEntity;
+  root: IContainerNodeEntity;
   flatten(): Array<IEntity>;
 }
 export interface IContainerNodeEntity extends IContainerNode, INodeEntity {
   parent: IContainerNodeEntity;
-  source: IContainerNodeEntitySource;
+  root: IContainerNodeEntity;
   children: Array<INodeEntity>;
 }
 
 export interface IValueNodeEntity extends INodeEntity, IValueNode {
   parent: IContainerNodeEntity;
+  root: IContainerNodeEntity;
 }
 
 export interface IElementEntity extends IElement, IContainerNodeEntity {
   parent: IContainerNodeEntity;
+  root: IContainerNodeEntity;
   children: Array<INodeEntity>;
 }
 export interface IVisibleNodeEntity extends INodeEntity {

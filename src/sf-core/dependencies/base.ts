@@ -179,7 +179,7 @@ export class Dependencies implements ICloneable {
   /**
    */
 
-  register(...Dependencies: Array<IDependency|Array<any>>) {
+  register(...Dependencies: Array<IDependency|Array<any>>): Dependencies {
 
     const flattenedDependencies: Array<IDependency> = flattenDeep(Dependencies);
 
@@ -216,6 +216,8 @@ export class Dependencies implements ICloneable {
         this._dependenciesByNs[ns].push(dependency);
       }
     }
+
+    return this;
   }
 }
 

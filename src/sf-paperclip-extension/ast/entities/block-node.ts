@@ -2,11 +2,12 @@ import { Node as MarkupNode } from "sf-core/markup";
 import { GroupNodeSection } from "sf-html-extension/dom";
 import { PCBlockNodeExpression } from "sf-paperclip-extension/ast/expressions";
 import { HTMLContainerEntity, IHTMLEntity } from "sf-html-extension/ast";
-import { INodeEntity, EntityMetadata, IContainerNodeEntity, IEntity } from "sf-core/ast/entities";
+import { INodeEntity, EntityMetadata, IContainerNodeEntity, IEntity } from "sf-core/ast";
 
 export class PCBlockNodeEntity extends MarkupNode implements INodeEntity, IHTMLEntity {
   readonly section: GroupNodeSection = new GroupNodeSection();
   readonly parent: IContainerNodeEntity;
+  readonly root: IContainerNodeEntity;
   readonly metadata: EntityMetadata = new EntityMetadata(this);
   readonly document: any;
   private _script: Function;
@@ -19,7 +20,6 @@ export class PCBlockNodeEntity extends MarkupNode implements INodeEntity, IHTMLE
   protected willSourceChange(source: PCBlockNodeExpression) {
     this._script = new Function("context", `with(context) { ${source.script} }`);
   }
-
 
   update() {
 

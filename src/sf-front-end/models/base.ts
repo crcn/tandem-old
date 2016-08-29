@@ -1,11 +1,13 @@
 import { File } from "sf-common/models";
 import { IActor } from "sf-core/actors";
-import { Action } from "sf-core/actions";
+import { IEntity } from "sf-core/ast/entities";
 import { Workspace } from "./workspace";
 import { IInjectable } from "sf-core/dependencies";
 import { IDisposable } from "sf-core/object";
+import { watchProperty } from "sf-core/observable";
+import { IEntityDocument } from "sf-core/ast";
 import { IPoint, Transform } from "sf-core/geom";
-import { IEntity, IEntityDocument } from "sf-core/ast/entities";
+import { Action, PropertyChangeAction } from "sf-core/actions";
 
 export interface IEditorTool extends IActor, IDisposable {
   readonly editor: IEditor;
@@ -23,10 +25,38 @@ export interface IEditor extends IActor {
   readonly workspace: Workspace;
 }
 
-export abstract class DocumentFile<T extends IEntityDocument> extends File {
-  protected _document: T;
-  public get document(): T {
-    return this._document;
+export abstract class DocumentFile<T extends IEntity> extends File implements IEntityDocument {
+
+  constructor() {
+    super();
+    watchProperty(this, "content", this._onContentChange).trigger();
+  }
+
+  private _entity: T;
+
+  public get entity(): T {
+    return this._entity;
+  }
+
+  protected abstract createEntity(content: string): T;
+
+  private _onContentChange = async (content: string) => {
+    const entity = this.createEntity(content);
+    entity.document = this;
+    await entity.load();
+    if (this._entity && this._entity.constructor === entity.constructor) {
+      this._entity.patch(entity);
+    } else {
+      const oldEntity = this._entity;
+      this._entity = entity;
+      this.notify(new PropertyChangeAction("entity", entity, oldEntity));
+    }
+  }
+
+  async update() {
+    this._entity.update();
+    this.content = this._entity.source.toString();
+    return super.update();
   }
 }
 
