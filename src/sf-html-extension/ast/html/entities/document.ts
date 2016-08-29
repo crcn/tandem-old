@@ -4,13 +4,13 @@ import { HTMLFile } from "sf-html-extension/models/html-file";
 import { BubbleBus } from "sf-core/busses";
 import { DocumentFile } from "sf-front-end/models";
 import { watchProperty } from "sf-core/observable";
-import { parse as parseCSS } from "sf-html-extension/parsers/css";
-import { parse as parseHTML } from "sf-html-extension/parsers/html";
+import { parseCSS } from "sf-html-extension/ast";
+import { parseHTML } from "sf-html-extension/ast";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { Action, PropertyChangeAction, UpdateAction } from "sf-core/actions";
 import { Dependencies, DEPENDENCIES_NS, IInjectable } from "sf-core/dependencies";
-import { CSSStyleExpression, CSSStyleSheetExpression } from "sf-html-extension/parsers/css";
+import { CSSStyleExpression, CSSStyleSheetExpression } from "sf-html-extension/ast";
 import { IHTMLEntity, IHTMLDocument, IHTMLContainerEntity } from "./base";
 import {
   IEntity,
@@ -27,7 +27,7 @@ import {
   HTMLFragmentExpression,
   HTMLAttributeExpression,
   IHTMLValueNodeExpression,
-} from "sf-html-extension/parsers/html";
+} from "sf-html-extension/ast";
 
 import { ContainerNode, INode, IContainerNode } from "sf-core/markup";
 

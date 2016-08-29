@@ -1,7 +1,7 @@
 import { Node as MarkupNode } from "sf-core/markup";
-import { PCBlockNodeExpression } from "sf-paperclip-extension/ast/expressions";
 import { GroupNodeSection } from "sf-html-extension/dom";
-import { HTMLContainerEntity, IHTMLEntity } from "sf-html-extension/models";
+import { PCBlockNodeExpression } from "sf-paperclip-extension/ast/expressions";
+import { HTMLContainerEntity, IHTMLEntity } from "sf-html-extension/ast";
 import { INodeEntity, EntityMetadata, IContainerNodeEntity, IEntity } from "sf-core/ast/entities";
 
 export class PCBlockNodeEntity extends MarkupNode implements INodeEntity, IHTMLEntity {

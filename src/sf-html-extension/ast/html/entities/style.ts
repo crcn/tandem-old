@@ -2,11 +2,11 @@ import { inject } from "sf-core/decorators";
 import { NodeSection } from "sf-html-extension/dom";
 import { IHTMLDocument } from "./base";
 import { HTMLElementEntity } from "./element";
-import { parse as parseCSS } from "sf-html-extension/parsers/css";
+import { parseCSS } from "sf-html-extension/ast";
 import { EntityFactoryDependency } from "sf-core/dependencies";
-import { CSSStyleSheetExpression } from "sf-html-extension/parsers/css";
+import { CSSStyleSheetExpression } from "sf-html-extension/ast";
 import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
-import { HTMLElementExpression, HTMLTextExpression } from "sf-html-extension/parsers/html";
+import { HTMLElementExpression, HTMLTextExpression } from "sf-html-extension/ast";
 
 export class HTMLStyleEntity extends HTMLElementEntity {
   readonly type: string = "element";

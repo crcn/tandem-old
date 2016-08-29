@@ -6,9 +6,8 @@ import * as React from "react";
 import * as AutosizeInput from "react-input-autosize";
 import { MetadataKeys } from "sf-front-end/constants";
 import { SelectAction } from "sf-front-end/actions";
-import { HTMLElementEntity } from "sf-html-extension/models";
 import { FrontEndApplication } from "sf-front-end/application";
-import { VisibleHTMLElementEntity } from "sf-html-extension/models";
+import { HTMLElementEntity, VisibleHTMLElementEntity } from "sf-html-extension/ast";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 
 class FocusComponent extends React.Component<any, any> {

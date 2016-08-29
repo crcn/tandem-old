@@ -5,15 +5,13 @@ import { InsertTool } from "sf-front-end/models/insert-tool";
 import { MouseAction } from "sf-front-end/actions";
 import { IApplication } from "sf-core/application";
 import { SetToolAction } from "sf-front-end/actions";
-import { parse as parseHTML } from "../parsers/html";
 import { TEXT_TOOL_KEY_CODE } from "sf-html-extension/constants";
 import { FrontEndApplication } from "sf-front-end/application";
-import { HTMLElementExpression } from "../parsers/html";
 import { BaseApplicationService } from "sf-core/services";
-import { VisibleHTMLElementEntity } from "sf-html-extension/models";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
 import { IEditorTool, BaseEditorTool, IEditor } from "sf-front-end/models";
+import { parseHTML, HTMLElementExpression , VisibleHTMLElementEntity} from "../ast";
 import {
   Dependency,
   MAIN_BUS_NS,
@@ -50,7 +48,6 @@ export class EditInnerHTMLTool extends BaseEditorTool {
     const element = this._targetNode;
     element.setAttribute("contenteditable", "true");
     element.addEventListener("keydown", this._onKeyDown);
-    // element.addEventListener("keypress", (event) => event.preventDefault());
 
     // some async stuff is preventing the element
     // from being selected, so add a timeout for now.

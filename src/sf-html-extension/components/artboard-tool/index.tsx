@@ -3,7 +3,7 @@ import "./index.scss";
 import * as React from "react";
 import FocusComponent from "sf-front-end/components/focus";
 import { Workspace, Editor } from "sf-front-end/models";
-import { HTMLArtboardEntity } from "sf-html-extension/models";
+import { HTMLArtboardEntity } from "sf-html-extension/ast";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 
 export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEntity, editor: Editor }, any> {

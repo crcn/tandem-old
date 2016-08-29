@@ -5,7 +5,7 @@ import * as cx from "classnames";
 import * as React from "react";
 import { SelectAction } from "sf-front-end/actions";
 import * as AutosizeInput from "react-input-autosize";
-import { HTMLTextEntity } from "sf-html-extension/models";
+import { HTMLTextEntity } from "sf-html-extension/ast";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 
 class FocusComponent extends React.Component<any, any> {

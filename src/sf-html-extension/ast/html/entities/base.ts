@@ -1,5 +1,5 @@
 import { IDOMSection } from "sf-html-extension/dom";
-import { CSSStyleSheetExpression } from "sf-html-extension/parsers/css";
+import { CSSStyleSheetExpression } from "sf-html-extension/ast";
 import { INodeEntity, IContainerNodeEntity, IContainerNodeEntitySource, IEntityDocument } from "sf-core/ast/entities";
 
 export interface IHTMLDocument extends IEntityDocument { }

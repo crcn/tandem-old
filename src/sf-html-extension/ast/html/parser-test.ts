@@ -1,4 +1,4 @@
-import { parse } from "./index";
+import { parse } from "./parser.peg";
 import { expect } from "chai";
 import {
   HTMLTextExpression,

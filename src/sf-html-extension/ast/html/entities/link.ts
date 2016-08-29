@@ -7,7 +7,7 @@ import { NodeSection } from "sf-html-extension/dom";
 import { DocumentFile } from "sf-front-end/models";
 import { IContainerNode } from "sf-core/markup";
 import { HTMLElementEntity } from "./element";
-import { HTMLElementExpression } from "sf-html-extension/parsers/html";
+import { HTMLElementExpression } from "sf-html-extension/ast";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { ReadFileAction, WatchFileAction } from "sf-core/actions";
 import { DocumentPaneComponentFactoryDependency } from "sf-front-end/dependencies";

@@ -7,7 +7,7 @@ const {
   HTMLCommentExpression,
   HTMLElementExpression,
   HTMLAttributeExpression
-} = require('sf-html-extension/parsers/html/expressions');
+} = require('sf-html-extension/ast');
 
 const {
   PCBlockNodeExpression

@@ -1,5 +1,5 @@
 import { decode } from "ent";
-import { HTMLTextExpression } from "sf-html-extension/parsers/html";
+import { HTMLTextExpression } from "sf-html-extension/ast";
 import { HTMLValueNodeEntity } from "./value-node";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 

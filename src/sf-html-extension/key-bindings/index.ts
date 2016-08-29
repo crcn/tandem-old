@@ -8,8 +8,8 @@ import { FrontEndApplication } from "sf-front-end/application";
 import { HTMLEntityDisplaySelection } from "sf-html-extension/models";
 import { BaseCommand, BaseApplicationCommand } from "sf-core/commands";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
-import { parse as parseHTML, HTMLElementExpression } from "sf-html-extension/parsers/html";
-import { TextTool, dependency as textToolDependency } from "sf-html-extension/models/text-tool";
+import { parseHTML, HTMLElementExpression } from "sf-html-extension/ast";
+import { dependency as textToolDependency } from "sf-html-extension/models/text-tool";
 import { ClassFactoryDependency, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
 import { EditorToolFactoryDependency, GlobalKeyBindingDependency } from "sf-front-end/dependencies";
 

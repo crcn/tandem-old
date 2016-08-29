@@ -2,9 +2,9 @@ import TAG_NAMES from "./tag-names";
 import { HTMLNodeDisplay } from "./displays";
 import { HTMLElementEntity } from "./element";
 import { IVisibleNodeEntity } from "sf-core/ast/entities";
-import { HTMLElementExpression } from "sf-html-extension/parsers/html";
+import { HTMLElementExpression } from "sf-html-extension/ast";
 import { EntityFactoryDependency } from "sf-core/dependencies";
-import { parseCSSStyle, CSSStyleExpression } from "sf-html-extension/parsers/css";
+import { parseCSSStyle, CSSStyleExpression } from "sf-html-extension/ast";
 
 export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisibleNodeEntity {
 

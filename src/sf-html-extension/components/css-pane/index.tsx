@@ -3,13 +3,13 @@ import * as React from "react";
 import { Workspace } from "sf-front-end/models";
 import PaneComponent from "sf-front-end/components/pane";
 import { SelectAction } from "sf-front-end/actions";
-import { parse as parseCSS } from "sf-html-extension/parsers/css";
+import { parseCSS } from "sf-html-extension/ast";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectWithCSSSelector } from "sf-html-extension/actions";
 import { HTMLEntityDisplaySelection } from "sf-html-extension/models";
 import { EntityPaneComponentFactoryDependency } from "sf-front-end/dependencies";
-import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLEntity } from "sf-html-extension/models";
-import { CSSExpression, CSSStyleExpression, CSSRuleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/parsers/css";
+import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLEntity } from "sf-html-extension/ast";
+import { CSSExpression, CSSStyleExpression, CSSRuleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/ast";
 
 class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, declaration: CSSStyleDeclarationExpression, style: CSSStyleExpression, addNewDeclaration: Function }, any> {
 

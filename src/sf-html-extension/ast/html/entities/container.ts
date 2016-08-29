@@ -3,7 +3,7 @@ import { BubbleBus } from "sf-core/busses";
 import { disposeEntity } from "./utils";
 import { PropertyChangeAction } from "sf-core/actions";
 import { diffArray, patchArray } from "sf-core/utils/array";
-import { IHTMLContainerExpression, HTMLExpression } from "sf-html-extension/parsers/html";
+import { IHTMLContainerExpression, HTMLExpression } from "sf-html-extension/ast";
 import { IHTMLEntity, IHTMLDocument, IHTMLContainerEntity } from "./base";
 import { IEntity, IContainerNodeEntity, EntityMetadata, IContainerNodeEntitySource } from "sf-core/ast/entities";
 import { ContainerNode, INode } from "sf-core/markup";

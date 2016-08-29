@@ -4,7 +4,7 @@ import { ValueNode } from "sf-core/markup";
 import { NodeSection } from "sf-html-extension/dom";
 import { disposeEntity } from "./utils";
 import { EntityMetadata } from "sf-core/ast/entities";
-import { IHTMLValueNodeExpression } from "sf-html-extension/parsers/html";
+import { IHTMLValueNodeExpression } from "sf-html-extension/ast";
 import { IHTMLDocument, IHTMLEntity, IHTMLContainerEntity } from "./base";
 
 export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> extends ValueNode implements IHTMLEntity {

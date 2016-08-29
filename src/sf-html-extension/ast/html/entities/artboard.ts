@@ -8,7 +8,7 @@ import { MetadataKeys } from "sf-front-end/constants";
 import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
 import { HTMLDocumentEntity } from "./document";
 import { FrontEndApplication } from "sf-front-end/application";
-import { HTMLElementExpression } from "sf-html-extension/parsers/html";
+import { HTMLElementExpression } from "sf-html-extension/ast";
 import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { VisibleHTMLElementEntity } from "./visible-element";
 import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "sf-core/dependencies";

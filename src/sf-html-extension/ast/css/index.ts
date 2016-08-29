@@ -1,6 +1,6 @@
-import { parse } from "./index.peg";
+import { parse } from "./parser.peg";
 
-export * from "./index.peg";
+export { parse as parseCSS };
 export * from "./expressions";
 
 export function parseCSSStyle(source) {

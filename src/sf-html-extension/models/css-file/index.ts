@@ -1,5 +1,5 @@
+import { CSSDocument } from "sf-html-extension/ast";
 import { DocumentFile } from "sf-front-end/models";
-import { CSSDocument } from "sf-html-extension/models";
 import { CSS_MIME_TYPE } from "sf-html-extension/constants";
 import { inject } from "sf-core/decorators";
 import { DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";

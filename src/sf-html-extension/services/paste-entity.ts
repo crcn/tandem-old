@@ -1,20 +1,20 @@
 import * as sift from "sift";
 import { flatten } from "lodash";
 import { HTMLFile } from "../models/html-file";
+import { parseHTML } from "../ast";
 import { filterAction } from "sf-core/decorators";
 import { HTML_MIME_TYPE } from "sf-html-extension/constants";
-import { parse as parseHTML } from "../parsers/html";
 import { FrontEndApplication } from "sf-front-end/application";
 import { appendSourceChildren } from "sf-core/ast/entities";
 import { BaseApplicationService } from "sf-core/services";
 import { PASTE, PasteAction, SelectAction } from "sf-front-end/actions";
-
 import {
   IInjectable,
   APPLICATION_SINGLETON_NS,
   CommandFactoryDependency,
   ApplicationServiceDependency,
 } from "sf-core/dependencies";
+
 
 export class PasteHTMLService extends BaseApplicationService<FrontEndApplication> {
 

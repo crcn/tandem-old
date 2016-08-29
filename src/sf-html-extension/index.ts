@@ -38,7 +38,7 @@ import { MimeTypeDependency } from "sf-core/dependencies";
    htmlElementDependencies,
    htmlStyleEntityDependency,
    htmlDocumentFragmentDependency,
-} from "./models/entities/html";
+} from "./ast";
 
 export const dependency = [
 

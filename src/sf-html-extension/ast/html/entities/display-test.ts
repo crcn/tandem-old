@@ -4,7 +4,7 @@ import { HTMLFile } from "sf-html-extension/models/html-file";
 import { BoundingRect } from "sf-core/geom";
 import { IVisibleNodeEntity } from "sf-core/ast/entities";
 import { HTML_MIME_TYPE } from "sf-html-extension/constants";
-import { parse as parseHTML } from "sf-html-extension/parsers/html";
+import { parseHTML } from "sf-html-extension/ast";
 import { FrontEndApplication } from "sf-front-end/application";
 import { waitForPropertyChange } from "sf-core/test/utils";
 import { Dependencies, DependenciesDependency, DEPENDENCIES_NS, ApplicationSingletonDependency, ActiveRecordFactoryDependency } from "sf-core/dependencies";
@@ -14,9 +14,12 @@ import {
   HTMLDocumentEntity,
   htmlCommentDependency,
   htmlElementDependencies,
-  htmlFileModelDependency,
   htmlArtboardDependency,
   htmlDocumentFragmentDependency,
+} from "sf-html-extension/ast";
+
+import {
+  htmlFileModelDependency
 } from "sf-html-extension/models";
 
 describe(__filename + "#", () => {

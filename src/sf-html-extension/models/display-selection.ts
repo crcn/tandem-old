@@ -1,8 +1,8 @@
 import { intersection, values } from "lodash";
-import { CSSRuleExpression, CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/parsers/css";
-import { VisibleHTMLElementEntity } from "sf-html-extension/models";
 import { DisplayEntitySelection } from "sf-front-end/models/display-entity-selection";
+import { VisibleHTMLElementEntity } from "sf-html-extension/ast";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
+import { CSSRuleExpression, CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/ast";
 
 export class HTMLEntityDisplaySelection extends DisplayEntitySelection<VisibleHTMLElementEntity> {
   private _styleExpression: CSSStyleExpression;

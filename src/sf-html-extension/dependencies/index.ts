@@ -1,5 +1,5 @@
 import { flatten } from "lodash";
-import { CSSStyleSheetExpression } from "sf-html-extension/parsers/css";
+import { CSSStyleSheetExpression } from "sf-html-extension/ast";
 import { Dependencies, Dependency } from "sf-core/dependencies";
 
 export const CSS_STYLE_SHEETS_NS = "cssStyleSheets";

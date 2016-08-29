@@ -1,5 +1,5 @@
 import { Action } from "sf-core/actions";
-import { CSSSelectorExpression } from "sf-html-extension/parsers/css";
+import { CSSSelectorExpression } from "sf-html-extension/ast";
 
 export const TEXT_EDIT_COMPLETE = "textEditComplete";
 export class TextEditCompleteAction extends Action {

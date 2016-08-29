@@ -1,16 +1,19 @@
 import { expect } from "chai";
 import { Dependencies, ActiveRecordFactoryDependency, DependenciesDependency } from "sf-core/dependencies";
 import { waitForPropertyChange, timeout } from "sf-core/test/utils";
-import { parse as parseHTML } from "sf-html-extension/parsers/html";
+import { parseHTML } from "sf-html-extension/ast";
 import {
-  HTMLFile,
   HTMLElementEntity,
   HTMLDocumentEntity,
   htmlTextDependency,
   htmlCommentDependency,
-  htmlFileModelDependency,
   htmlElementDependencies,
   htmlDocumentFragmentDependency,
+} from "sf-html-extension/ast";
+
+import {
+  HTMLFile,
+  htmlFileModelDependency,
 } from "sf-html-extension/models";
 
 describe(__filename + "#", () => {

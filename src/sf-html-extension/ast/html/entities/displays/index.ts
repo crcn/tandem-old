@@ -1,11 +1,11 @@
 
 import { Action, UPDATE } from "sf-core/actions";
 import { watchProperty } from "sf-core/observable";
-import { parse as parseCSS } from "sf-html-extension/parsers/css";
+import { parseCSS } from "sf-html-extension/ast";
 import { HTMLDocumentEntity } from "../document";
 import { BoundingRect, IPoint } from "sf-core/geom";
 import { VisibleHTMLElementEntity } from "../index";
-import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/parsers/css";
+import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/ast";
 import { IEntityDisplay, IVisibleNodeEntity, DisplayCapabilities } from "sf-core/ast/entities";
 
 function calculateCSSMeasurments(style): any {

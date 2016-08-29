@@ -4,7 +4,7 @@ import * as cx from "classnames";
 import * as React from "react";
 import { SelectAction } from "sf-front-end/actions";
 import * as AutosizeInput from "react-input-autosize";
-import { HTMLCommentEntity } from "sf-html-extension/models";
+import { HTMLCommentEntity } from "sf-html-extension/ast";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 
 class CommentLayerLabel extends React.Component<{ entity: HTMLCommentEntity, connectDragSource: Function }, any> {
