@@ -40,7 +40,7 @@ export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockNodeExpres
     try {
       value = this._script(this.context);
     } catch (e) {
-      return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(`\${${this.source.value}}`, this.source.position)))
+      return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(this.source.toString(), this.source.position)))
     }
 
     this.value = value;

@@ -3,5 +3,5 @@
   Hello ${message}
 </artboard>
 <artboard title="Hello World Example" style="left: -5px; top: 176px;">
-<hello message="bob" />
+  <hello message="bob" />
 </artboard>

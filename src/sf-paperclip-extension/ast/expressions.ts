@@ -8,4 +8,8 @@ export class PCBlockNodeExpression extends HTMLExpression {
   patch(block: PCBlockNodeExpression) {
     this.value = block.value;
   }
+
+  toString() {
+    return `\${ ${this.value} }`;
+  }
 }
