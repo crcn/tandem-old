@@ -13,7 +13,7 @@
 </artboard>
 
 <artboard title="Hello World" style="top: 211px; left: -4px;">
-  <hello message="world" count="3" style="color: red; display: block;">
-    Child!
+  <hello message="world" count="30" style="color: red; display: block;">
+    <div>Child!</div>
   </hello>
 </artboard>
