@@ -100,11 +100,16 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   }
 
   clone() {
-    const entity = new HTMLElementEntity(this.source);
-    for (const child of this.children) {
-      entity.appendChild(child.clone());
+    const clone = new HTMLElementEntity(this.source);
+    this.cloneAttributesToElement(clone);
+    this.cloneChildrenToContainerNode(clone);
+    return clone;
+  }
+
+  protected cloneAttributesToElement(element: HTMLElementEntity) {
+    for (const attribute of this.attributes) {
+      element.setAttribute(attribute.name, attribute.value);
     }
-    return entity;
   }
 
   willUnmount() {

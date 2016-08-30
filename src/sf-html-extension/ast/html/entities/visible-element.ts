@@ -45,6 +45,13 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
     return new NodeSection(document.createElement(this.name));
   }
 
+  clone() {
+     const clone = new VisibleHTMLElementEntity(this.source);
+     this.cloneAttributesToElement(clone);
+     this.cloneChildrenToContainerNode(clone);
+     return clone;
+  }
+
   get styleExpression(): CSSStyleExpression {
     return this._styleExpression;
   }

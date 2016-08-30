@@ -171,7 +171,7 @@ export class ContainerNode extends Node implements IContainerNode {
     (child as any).didMount();
   }
 
-  protected addChildrenToClonedNode(node: ContainerNode) {
+  protected cloneChildrenToContainerNode(node: ContainerNode) {
     for (const child of this.children) {
       node.appendChild(child.clone());
     }
@@ -256,12 +256,15 @@ export class Element extends ContainerNode implements IElement {
   }
 
   clone(): Element {
-    const clone = this.cloneInstance();
+    const clone = new Element(this.name);
+    this.cloneAttributesToElement(clone);
+    this.cloneChildrenToContainerNode(clone);
+    return clone;
+  }
+  cloneAttributesToElement(clone: Element) {
     for (const attribute of this.attributes) {
       clone.setAttribute(attribute.name, attribute.value);
     }
-    this.addChildrenToClonedNode(clone);
-    return clone;
   }
 
   protected cloneInstance() {

@@ -8,6 +8,9 @@ export class HTMLTextEntity extends HTMLValueNodeEntity<HTMLCommentExpression> {
   createSection() {
     return new NodeSection(document.createTextNode(decode(this.source.value)));
   }
+  clone() {
+    return new HTMLTextEntity(this.source);
+  }
 }
 
 export const htmlTextDependency             = new EntityFactoryDependency("#text", HTMLTextEntity);

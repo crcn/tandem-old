@@ -13,7 +13,7 @@ export class HTMLDocumentFragmentEntity extends HTMLContainerEntity<HTMLFragment
   getInitialMetadata() {
     return Object.assign(super.getInitialMetadata(), {
       [MetadataKeys.HIDDEN]: true
-    })
+    });
   }
 
   clone() {

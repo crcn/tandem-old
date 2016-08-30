@@ -43,23 +43,25 @@ export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockNodeExpres
     let value;
 
     if (this.error) {
-      return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(`Syntax Error: ${this.error.message}`, null)))
+      return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(`Syntax Error: ${this.error.message}`, null)));
     } else {
       try {
         value = this._script(this.context);
       } catch (e) {
-        return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(this.source.toString(), this.source.position)))
+        return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(this.source.toString(), this.source.position)));
       }
     }
 
     this.value = value;
 
-    if (value instanceof MarkupNode) {
-      this.appendChild(value);
-    } else {
-      const child = EntityFactoryDependency.createEntityFromSource(parsePC(String(value)), this._dependencies);
-      this.appendChild(child);
-      await child.load();
+    for (const item of Array.from(value)) {
+      if (item instanceof MarkupNode) {
+        this.appendChild((<MarkupNode>item).clone());
+      } else {
+        const child = EntityFactoryDependency.createEntityFromSource(parsePC(String(item)), this._dependencies);
+        this.appendChild(child);
+        await child.load();
+      }
     }
   }
 

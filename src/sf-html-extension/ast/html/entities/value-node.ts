@@ -77,4 +77,5 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   }
 
   protected didUpdate() { }
+  abstract clone();
 }

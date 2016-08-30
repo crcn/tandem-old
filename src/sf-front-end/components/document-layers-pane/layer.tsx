@@ -325,7 +325,7 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
       return ((entity as IContainerNodeEntity).children || []).map((child: INodeEntity, i) => {
         return <LayerComponent {...this.props} entity={child} key={i} depth={depth}  />;
       });
-    }
+    };
 
     if (hidden) {
       return <span>{renderChildren(depth)}</span>;
