@@ -47,7 +47,6 @@ export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockNodeExpres
     } else {
       try {
         value = this._script(this.context);
-        console.log(this._script);
       } catch (e) {
         return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(this.source.toString(), this.source.position)))
       }
@@ -62,7 +61,6 @@ export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockNodeExpres
       this.appendChild(child);
       await child.load();
     }
-
   }
 
   clone() {

@@ -1,13 +1,20 @@
 <link rel="stylesheet" type="text/css" href="./style.css" />
-
 <artboard id="hello" title="Hello World">
-  ${
-    "Hello " + Array.from({ length: Number(count) }, function(value, i) {
-      return "blah";
-    }).join("")
-  }
+  Hello ${message} <br />
+
+  Here are some children:
+
+  ${children}
 </artboard>
 
-<artboard title="Hello World Example" style="left: 4px; top: 222px;">
-  <hello message="bob" count="5" />
+<artboard  id="hello-world-demo-test" title="Hello World Demo" style="top: 190px; left: 3px;">
+  <hello message="World">
+    <div style="color: red; background-color: black; padding: 10px; position: absolute; display: block;">
+      I'm a child!!!!!!!
+    </div>
+  </hello>
+</artboard>
+
+<artboard title="Hello World Demo 2" style="top: 390px; left: 3px;">
+  <!--hello-world-demo-test /-->
 </artboard>

@@ -36,7 +36,9 @@ export abstract class BaseHTMLContainerEntity<T> extends ContainerNode implement
   protected abstract createSection();
 
   update() {
-    this.didUpdate();
+    for (const child of this.children) {
+      (<IEntity>child).update();
+    }
   }
 
   protected didUpdate() {
@@ -172,12 +174,6 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
 
     // TODO - scan additional dependencies for metadata
     return {};
-  }
-
-  update() {
-    for (const child of this.children) {
-      (<IEntity>child).update();
-    }
   }
 
   static mapSourceChildren(source: IHTMLContainerExpression) {
