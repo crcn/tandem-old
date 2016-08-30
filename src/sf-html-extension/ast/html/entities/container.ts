@@ -27,10 +27,17 @@ export abstract class BaseHTMLContainerEntity<T> extends ContainerNode implement
   constructor(name: string, protected _source: T) {
     super(name);
     this.willSourceChange(_source);
-    this.metadata = new EntityMetadata(this);
+    this.metadata = new EntityMetadata(this, this.getInitialMetadata());
     this.metadata.observe(new BubbleBus(this));
     this.section = this.createSection();
   }
+
+  protected getInitialMetadata(): Object {
+
+    // TODO - scan additional dependencies for metadata
+    return {};
+  }
+
 
   abstract load();
   protected abstract createSection();
@@ -158,12 +165,10 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
   readonly type: string = null;
   readonly name: string;
   readonly section: IDOMSection;
-  readonly metadata: EntityMetadata;
 
   constructor(source: T) {
     super(source.name.toUpperCase(), source);
     this.section = this.createSection();
-    this.metadata = new EntityMetadata(this, this.getInitialMetadata());
     this.metadata.observe(new BubbleBus(this));
   }
 
@@ -179,12 +184,6 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
 
   protected mapSourceChildNodes() {
     return this.source.children;
-  }
-
-  protected getInitialMetadata(): Object {
-
-    // TODO - scan additional dependencies for metadata
-    return {};
   }
 
   static mapSourceChildren(source: IHTMLContainerExpression) {

@@ -1,6 +1,7 @@
 import { parsePC } from "sf-paperclip-extension/ast";
-import { getContext } from "./utils";
 import { IPCEntity } from "./base";
+import { getContext } from "./utils";
+import { MetadataKeys } from "sf-front-end/constants";
 import { parseBlockScript } from "./utils";
 import { PCBlockExpression } from "sf-paperclip-extension/ast/expressions";
 import { Node as MarkupNode } from "sf-core/markup";
@@ -19,6 +20,12 @@ export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockExpression
   constructor(source: PCBlockExpression) {
     super("#block", source);
     this.willSourceChange(source);
+  }
+
+  getInitialMetadata() {
+    return Object.assign(super.getInitialMetadata(), {
+      [MetadataKeys.HIDDEN]: true
+    });
   }
 
   protected willSourceChange(source: PCBlockExpression) {
