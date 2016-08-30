@@ -18,7 +18,11 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   private _attributes: Attributes;
 
   patch(entity: HTMLElementEntity) {
+    this.patchSelf(entity);
+    super.patch(entity);
+  }
 
+  protected patchSelf(entity: HTMLElementEntity) {
     const changes = diffArray(this.attributes, entity.attributes, (a, b) => a.name === b.name);
 
     for (const add of changes.add) {
@@ -34,19 +38,20 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
     for (const remove of changes.remove) {
       this.removeAttribute(remove.name);
     }
-
-    super.patch(entity);
   }
 
   async load() {
+    await this.loadSelf();
+    return super.load();
+  }
+
+  protected async loadSelf() {
     // TODO - attributes might need to be transformed here
     if (this.source.attributes) {
       for (const attribute of this.source.attributes) {
         this.setAttribute(attribute.name, attribute.value);
       }
     }
-
-    return super.load();
   }
 
   getInitialMetadata() {

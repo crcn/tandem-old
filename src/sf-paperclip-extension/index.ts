@@ -1,12 +1,16 @@
 import { MimeTypes } from "./constants";
 import { MimeTypeDependency } from "sf-core/dependencies";
 
+// entities
+import { bcBlockNodeEntityDependency } from "./ast";
+
 // models
 import { pcFileDependency } from "./models/pc-file";
 
-// entities
-import { } from "./ast/entities/"
 export const dependency = [
+
+   // entities
+   bcBlockNodeEntityDependency,
 
   // models
   pcFileDependency,

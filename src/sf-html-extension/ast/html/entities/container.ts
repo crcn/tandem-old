@@ -35,6 +35,10 @@ export abstract class BaseHTMLContainerEntity<T extends IHTMLContainerExpression
   protected abstract createSection();
 
   update() {
+    this.didUpdate();
+  }
+
+  protected didUpdate() {
 
   }
 

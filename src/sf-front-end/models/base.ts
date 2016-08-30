@@ -38,7 +38,18 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     return this._entity;
   }
 
+  deserialize(data: any) {
+    const oldContent = this.content;
+    super.deserialize(data);
+
+    // reload
+    if (oldContent !== this.content && this._entity) {
+      this.load();
+    }
+  }
+
   public async load() {
+
     const entity = this.createEntity(this.content);
     entity.document = this;
     await entity.load();

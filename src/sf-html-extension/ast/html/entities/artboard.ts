@@ -3,15 +3,15 @@ import "./artboard.scss";
 import { Action } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
 import { inject } from "sf-core/decorators";
-import { NodeSection } from "sf-html-extension/dom";
 import { MetadataKeys } from "sf-front-end/constants";
 import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
 import { FrontEndApplication } from "sf-front-end/application";
 import { HTMLElementExpression } from "sf-html-extension/ast";
 import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { VisibleHTMLElementEntity } from "./visible-element";
+import { NodeSection, GroupNodeSection } from "sf-html-extension/dom";
+import { IContextualEntity, INodeEntity } from "sf-core/ast";
 import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "sf-core/dependencies";
-
 
 const ARTBOARD_NS = "artboards";
 class ArtboardDependency extends Dependency<HTMLArtboardEntity> {
@@ -23,11 +23,51 @@ class ArtboardDependency extends Dependency<HTMLArtboardEntity> {
   }
 }
 
-class RegisteredArtboardEntity extends VisibleHTMLElementEntity {
+class RegisteredArtboardEntity extends VisibleHTMLElementEntity implements IContextualEntity {
+
+  private _context: any;
+  private _childrenSection: GroupNodeSection;
+  private __children: INodeEntity;
+
+  constructor(source: HTMLElementExpression) {
+    super(source);
+    this._childrenSection = new GroupNodeSection();
+  }
+
+  createSection() {
+    return new GroupNodeSection();
+  }
+
   mapSourceChildNodes() {
     return ArtboardDependency.find(this.name.toLowerCase(), this._dependencies).value.source.children;
   }
-  // TODO - set children to context here
+
+  get context() {
+    return this._context;
+  }
+
+  patchSelf(entity: RegisteredArtboardEntity) {
+    super.patchSelf(entity);
+    this.__children.patch(entity.__children);
+    this.updateContext();
+  }
+
+  async loadSelf() {
+    await super.loadSelf();
+    this.__children = EntityFactoryDependency.findByName("#document-fragment", this._dependencies).create(this._source);
+    await this.__children.load();
+    this.updateContext();
+  }
+
+  updateContext() {
+    this._context = {
+      children: this.__children
+    };
+
+    for (const attribute of this.attributes) {
+      this._context[attribute.name] = attribute.value;
+    }
+  }
 };
 
 export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInjectable {
@@ -36,6 +76,10 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
   private _style: HTMLStyleElement;
   private _iframe: HTMLIFrameElement;
   private _placeholder: Node;
+
+  update() {
+    super.update();
+  }
 
   async load() {
 

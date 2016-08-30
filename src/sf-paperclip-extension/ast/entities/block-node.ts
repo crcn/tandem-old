@@ -4,7 +4,7 @@ import { GroupNodeSection } from "sf-html-extension/dom";
 import { Node as MarkupNode } from "sf-core/markup";
 import { PCBlockNodeExpression } from "sf-paperclip-extension/ast/expressions";
 import { EntityFactoryDependency } from "sf-core/dependencies";
-import { HTMLContainerEntity, HTMLValueNodeEntity, IHTMLEntity } from "sf-html-extension/ast";
+import { HTMLContainerEntity, HTMLValueNodeEntity, HTMLExpression, IHTMLEntity } from "sf-html-extension/ast";
 import { INodeEntity, EntityMetadata, IContainerNodeEntity, IEntity } from "sf-core/ast";
 
 export class PCBlockNodeEntity extends HTMLValueNodeEntity<PCBlockNodeExpression> implements IPCEntity {
@@ -24,7 +24,9 @@ export class PCBlockNodeEntity extends HTMLValueNodeEntity<PCBlockNodeExpression
     return new GroupNodeSection();
   }
 
-  update() {
+  patch(source: any) {
+    super.patch(source);
+    this.updateNodeValue();
   }
 
   get context() {
@@ -32,19 +34,20 @@ export class PCBlockNodeEntity extends HTMLValueNodeEntity<PCBlockNodeExpression
   }
 
   load() {
+    this.updateNodeValue();
+  }
+
+  updateNodeValue() {
     // TODO - get context here
     let value;
 
+    console.log(this.context);
+
     try {
       value = this._script(this.context);
-    } catch (e) {
-      if (!process.env.TESTING) {
-        console.error(e.stack);
-      }
-    }
+    } catch (e) { }
 
     this.value = value;
-
 
     this.section.removeChildren();
 

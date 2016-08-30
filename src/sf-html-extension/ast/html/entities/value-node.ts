@@ -45,12 +45,16 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   patch(entity: HTMLValueNodeEntity<any>) {
     this.value = entity.value;
     this._source = entity.source;
+    this.didUpdate();
   }
 
-  load() { }
+  load() {
+    this.didUpdate();
+  }
 
   update() {
     this.source.value = this.value;
+    this.didUpdate();
   }
 
   get value(): any {
@@ -71,4 +75,6 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   dispose() {
     disposeEntity(this);
   }
+
+  protected didUpdate() { }
 }

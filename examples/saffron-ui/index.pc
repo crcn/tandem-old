@@ -13,18 +13,20 @@
       background: rgba(0, 0, 0, 0.1);
       padding: 10px;
     }
-    
+
     .content {
       padding: 10px;
     }
   </style>
   <div class="header" style="top: -17px; left: -56px;">${title}</div>
-  <div class="content" style="top: -17px; left: -56px;">${content}</div>
+  <div class="content" style="top: -17px; left: -56px;">${children}</div>
 </artboard>
 
 <!-- Entity Panes -->
 <artboard title="Layers Pane" style="background; white;position: absolute; width: 205px; height: 150px; left: 1286px; top: 706px;">
-  <pane/>
+  <pane title="Layers">
+    Hello world!!!
+  </pane>
 </artboard>
 <artboard title="CSS Pane" style="background; white;position: absolute; width: 205px; height: 150px; left: 1618px; top: 706px;">
   <pane/>

@@ -41,7 +41,7 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
     super.update();
   }
 
-  createSection(): NodeSection {
+  createSection(): IDOMSection {
     return new NodeSection(document.createElement(this.name));
   }
 

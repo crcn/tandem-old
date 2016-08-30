@@ -31,6 +31,7 @@ import { dependency as keyBindingsDependency } from "./key-bindings";
 
 // extensions
 import { dependency as htmlExtensionDependency } from "sf-html-extension";
+import { dependency as paperclipExtensionDependency } from "sf-paperclip-extension";
 
 import { Metadata } from "sf-core/metadata";
 import { Workspace, Settings } from "./models";
@@ -84,7 +85,8 @@ export class FrontEndApplication extends Application {
       keyBindingsDependency,
 
       // extensions
-      htmlExtensionDependency
+      htmlExtensionDependency,
+      paperclipExtensionDependency
     );
   }
 }
