@@ -10,7 +10,7 @@ const {
 } = require('sf-html-extension/ast');
 
 const {
-  PCBlockNodeExpression
+  PCBlockExpression
 } = require('./expressions');
 
 function position() {
@@ -31,7 +31,7 @@ Fragment
   }
 
 Node
-  = _ node:(Comment/VoidElement/Element/Block/TextNode) _ { return node; }
+  = _ node:(Comment/VoidElement/Element/BlockNode/TextNode) _ { return node; }
 
 Comment
   = '<!--' characters:CommentCharacter* '-->' { return new HTMLCommentExpression(characters.join(''), position()); }
@@ -90,7 +90,12 @@ ElementAttribute
   }
 
 AttributeValue
-  = String
+  = AttributeBlock/String
+
+AttributeBlock
+  = value: Block {
+    return new PCBlockExpression("attributeBlock", value, position());
+  }
 
 String
   = '"' characters:DoubleStringCharacter* '"' { return characters.join(''); }
@@ -119,9 +124,14 @@ Name
 _
   = [ \n\r\t]*
 
+BlockNode
+  = value: Block {
+    return new PCBlockExpression("#block", value, position());
+  }
+
 Block
   = "${" script: BlockInner* "}" {
-    return new PCBlockNodeExpression(script.join(""), position());
+    return script.join("");
   }
 
 BlockInner

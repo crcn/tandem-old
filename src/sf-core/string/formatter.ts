@@ -4,18 +4,10 @@ export class StringFormatterOptions {
   }
 }
 
-export interface IFormattable {
-  toString() {
-
-  }
-}
-
-
-export class StringFormatter implements IFormattable {
+export class StringFormatter {
 
   private _lines: Array<Array<any>>;
   private _line: Array<any>;
-
 
   constructor(readonly options: StringFormatterOptions = new StringFormatterOptions(), readonly depth: number = 0) {
     this._lines = [];

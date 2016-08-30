@@ -2,7 +2,7 @@ import { MimeTypes } from "./constants";
 import { MimeTypeDependency } from "sf-core/dependencies";
 
 // entities
-import { bcBlockNodeEntityDependency } from "./ast";
+import { pcBlockNodeEntityDependency, pcBlockAttributeValueEntityDependency } from "./ast";
 
 // components
 import { dependency as blockNodeLayerLabelComponentDependency } from "./components/block-node-layer-label";
@@ -13,7 +13,8 @@ import { pcFileDependency } from "./models/pc-file";
 export const dependency = [
 
    // entities
-   bcBlockNodeEntityDependency,
+   pcBlockNodeEntityDependency,
+   pcBlockAttributeValueEntityDependency,
 
    // components
    blockNodeLayerLabelComponentDependency,

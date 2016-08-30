@@ -18,9 +18,19 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
   private _styleExpression: CSSStyleExpression;
   private _originalStyle: string;
 
-  protected willSourceChange(value: HTMLElementExpression) {
-    const style = value.getAttribute("style");
-    const newExpression = style ? parseCSSStyle(style) : new CSSStyleExpression([], null);
+  patch(entity: VisibleHTMLElementEntity) {
+    super.patch(entity);
+    this._updateStyleExpression();
+  }
+
+  async load() {
+    await super.load();
+    this._updateStyleExpression();
+  }
+
+  _updateStyleExpression() {
+    const style = this.getAttribute("style");
+    const newExpression = style ? parseCSSStyle(String(style)) : new CSSStyleExpression([], null);
 
     if (this._styleExpression) {
       this._styleExpression.patch(newExpression);
@@ -30,6 +40,7 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
 
     this._originalStyle = this._styleExpression.toString();
   }
+
   update() {
     if (this.styleExpression.declarations.length) {
       const newStyle = this.styleExpression.toString();

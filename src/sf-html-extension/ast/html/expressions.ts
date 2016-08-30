@@ -144,7 +144,7 @@ export class HTMLAttributeExpression extends BaseExpression implements IExpressi
     const buffer = [this.name];
     const value = this.value;
     if (value !== "\"\"") {
-      buffer.push("=", "\"", value, "\"");
+      buffer.push("=", typeof value === "object" ? value : "\"" + value + "\"");
     }
     return buffer.join("");
   }

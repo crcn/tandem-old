@@ -1,27 +1,29 @@
+import { parsePC } from "sf-paperclip-extension/ast";
 import { getContext } from "./utils";
 import { IPCEntity } from "./base";
-import { parsePC } from "sf-paperclip-extension/ast";
+import { parseBlockScript } from "./utils";
+import { PCBlockExpression } from "sf-paperclip-extension/ast/expressions";
 import { Node as MarkupNode } from "sf-core/markup";
-import { PCBlockNodeExpression } from "sf-paperclip-extension/ast/expressions";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { GroupNodeSection, IDOMSection } from "sf-html-extension/dom";
-import { HTMLContainerEntity, BaseHTMLContainerEntity, HTMLTextEntity, HTMLTextExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLEntity } from "sf-html-extension/ast";
 import { INodeEntity, EntityMetadata, IContainerNodeEntity, IEntity, IValueNodeEntity } from "sf-core/ast";
+import { HTMLContainerEntity, BaseHTMLContainerEntity, HTMLTextEntity, HTMLTextExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLEntity } from "sf-html-extension/ast";
 
-export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockNodeExpression> implements IValueNodeEntity  {
+
+export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockExpression> implements IValueNodeEntity  {
   private _script: Function;
   public value: any;
-  public source: PCBlockNodeExpression;
+  public source: PCBlockExpression;
   public error: Error;
 
-  constructor(source: PCBlockNodeExpression) {
+  constructor(source: PCBlockExpression) {
     super("#block", source);
     this.willSourceChange(source);
   }
 
-  protected willSourceChange(source: PCBlockNodeExpression) {
+  protected willSourceChange(source: PCBlockExpression) {
     try {
-      this._script = new Function("context", `with(context) { return (${source.value}); }`);
+      this._script = parseBlockScript(source.value);
     } catch (e) {
       this.error = e;
     }
@@ -70,4 +72,4 @@ export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockNodeExpres
   }
 }
 
-export const bcBlockNodeEntityDependency = new EntityFactoryDependency("#block", PCBlockNodeEntity);
+export const pcBlockNodeEntityDependency = new EntityFactoryDependency("#block", PCBlockNodeEntity);

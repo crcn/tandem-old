@@ -2,10 +2,10 @@ import { expect } from "chai";
 import { parsePC } from "../index";
 import { MimeTypes } from "sf-paperclip-extension/constants";
 import { PCFile, pcFileDependency } from "sf-paperclip-extension/models/pc-file";
-import {  bcBlockNodeEntityDependency } from "sf-paperclip-extension/ast";
 import { ActiveRecordFactoryDependency } from "sf-core/dependencies";
 import { Dependencies, DependenciesDependency } from "sf-core/dependencies";
 import { dependency as htmlExtensionDependency } from "sf-html-extension";
+import { pcBlockNodeEntityDependency, pcBlockAttributeValueEntityDependency } from "sf-paperclip-extension/ast";
 
 describe(__filename + "#", () => {
 
@@ -13,9 +13,10 @@ describe(__filename + "#", () => {
 
   beforeEach(() => {
     dependencies = new Dependencies(
-      htmlExtensionDependency,
       pcFileDependency,
-      bcBlockNodeEntityDependency,
+      htmlExtensionDependency,
+      pcBlockNodeEntityDependency,
+      pcBlockAttributeValueEntityDependency,
       new DependenciesDependency()
     );
   });
@@ -34,14 +35,25 @@ describe(__filename + "#", () => {
     });
   });
 
-  describe("blocks", () => {
+  describe("block nodes", () => {
     it("can be rendered without a context", async () => {
       const entity = await loadEntity(`hello \${message}`);
-      expect(entity.toString()).to.equal("hello undefined");
+      expect(entity.toString()).to.equal("hello ${ message }");
     });
     it("can be rendered with a context", async () => {
       const entity = await loadEntity(`hello \${message}`, { message: "world" });
       expect(entity.toString()).to.equal("hello world");
+    });
+  });
+
+   describe("block attributes", () => {
+    it("can be rendered without a context", async () => {
+      const entity = await loadEntity("<div style=${style}></div>");
+      expect(entity.section.innerHTML).to.equal("<div style=\"\"></div>");
+    });
+    it("can be rendered with a context", async () => {
+      const entity = await loadEntity("<div style=${style}></div>", { style: "color:red;"});
+      expect(entity.section.innerHTML).to.equal(`<div style="color:red;"></div>`);
     });
   });
 });

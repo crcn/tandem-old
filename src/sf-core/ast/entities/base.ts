@@ -53,6 +53,10 @@ export interface IEntity extends IDisposable, IInjectable {
   flatten(): Array<IEntity>;
 }
 
+export interface IValueEntity extends IEntity {
+  value: any;
+}
+
 export interface IContextualEntity extends IEntity {
   context: any;
 }

@@ -5,3 +5,7 @@ export function getContext(entity: IEntity) {
   while (p && !p.context) p = <IContextualEntity>p.parent;
   return p ? p.context || {} : {};
 }
+
+export function parseBlockScript(value: string) {
+  return new Function("context", `with(context) { return (${value}); }`);
+}

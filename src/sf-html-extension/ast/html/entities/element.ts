@@ -8,10 +8,10 @@ import { IElement, Attributes } from "sf-core/markup";
 import { AttributeChangeAction } from "sf-core/actions";
 import { diffArray, patchArray } from "sf-core/utils/array";
 import { parseCSS, parseCSSStyle } from "sf-html-extension/ast";
-import { EntityFactoryDependency } from "sf-core/dependencies";
 import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { IDOMSection, NodeSection } from "sf-html-extension/dom";
 import { HTMLElementExpression, HTMLAttributeExpression } from "sf-html-extension/ast";
+import { EntityFactoryDependency, ElementAttributeValueEntity } from "sf-core/dependencies";
 
 export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression> implements IHTMLEntity, IElementEntity, IElement {
 
@@ -49,7 +49,16 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
     // TODO - attributes might need to be transformed here
     if (this.source.attributes) {
       for (const attribute of this.source.attributes) {
-        this.setAttribute(attribute.name, attribute.value);
+        let value: any = attribute.value;
+
+        // is an expression
+        if (value.position) {
+          const valueEntity = ElementAttributeValueEntity.createEntityFromSource(value, this, this._dependencies);
+          await valueEntity.load();
+          value = valueEntity.value;
+        }
+
+        this.setAttribute(attribute.name, value);
       }
     }
   }

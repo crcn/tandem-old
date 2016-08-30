@@ -45,6 +45,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     super.deserialize(data);
 
     // reload
+    // TODO - reload on any change
     if (oldContent !== this.content && this._entity) {
       this.load();
     }
