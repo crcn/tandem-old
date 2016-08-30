@@ -16,11 +16,9 @@ export class HTMLDocumentFragmentEntity extends HTMLContainerEntity<HTMLFragment
     });
   }
 
-  clone() {
+  _clone() {
     const entity = new HTMLDocumentFragmentEntity(this.source);
-    for (const child of this.children) {
-      entity.appendChild(child.clone());
-    }
+    this.cloneChildrenToContainerNode(entity);
     return entity;
   }
 }

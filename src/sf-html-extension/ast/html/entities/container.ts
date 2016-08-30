@@ -8,7 +8,7 @@ import { diffArray, patchArray } from "sf-core/utils/array";
 import { IHTMLEntity, IHTMLContainerEntity } from "./base";
 import { IHTMLContainerExpression, HTMLExpression } from "sf-html-extension/ast";
 import { IDOMSection, NodeSection, GroupNodeSection } from "sf-html-extension/dom";
-import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency } from "sf-core/dependencies";
+import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency, Injector } from "sf-core/dependencies";
 import { IEntity, IContainerNodeEntity, EntityMetadata, IContainerNodeEntitySource, IEntityDocument } from "sf-core/ast/entities";
 
 export abstract class BaseHTMLContainerEntity<T> extends ContainerNode implements IHTMLContainerEntity {
@@ -116,6 +116,11 @@ export abstract class BaseHTMLContainerEntity<T> extends ContainerNode implement
     this.section.appendChild(newChild);
   }
 
+  _unlink(child: IHTMLEntity) {
+    super._unlink(child);
+    child.section.remove();
+  }
+
   _link(child: IHTMLEntity) {
     child.document = this.document;
     super._link(child);
@@ -140,6 +145,12 @@ export abstract class BaseHTMLContainerEntity<T> extends ContainerNode implement
       }
     }
   }
+
+  clone() {
+    return Injector.inject(this._clone(), this._dependencies);
+  }
+
+  abstract _clone();
 }
 
 export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> extends BaseHTMLContainerEntity<T> implements IHTMLContainerEntity, IInjectable {
@@ -179,8 +190,6 @@ export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> ex
   static mapSourceChildren(source: IHTMLContainerExpression) {
     return source.children;
   }
-
-  abstract clone();
 
   dispose() {
     disposeEntity(this);

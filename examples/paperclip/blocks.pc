@@ -1,20 +1,19 @@
 <link rel="stylesheet" type="text/css" href="./style.css" />
+
 <artboard id="hello" title="Hello World">
   Hello ${message} <br />
-
-  Here are some children:
-
-  ${Array.from({ length: 4 }, () => children)}
+  Here's a child:
+  ${
+    Array.from({ length: Number(count) }, () => {
+      return children;
+    })
+  }
 </artboard>
 
-<artboard  id="hello-world-demo-test" title="Hello World Demo" style="top: 190px; left: 3px;">
-  <hello message="World">
-    <div style="color: red; background-color: black; padding: 10px; position: relative; display: block;">
-      I'm a child!
+<artboard title="Hello World" style="top: 200px;">
+  <hello message="world" count="3">
+    <div style="color: red; display: block;">
+      This is a cloned child
     </div>
   </hello>
-</artboard>
-
-<artboard title="Hello World Demo 2" style="top: 390px; left: 3px;">
-  <!--hello-world-demo-test /-->
 </artboard>

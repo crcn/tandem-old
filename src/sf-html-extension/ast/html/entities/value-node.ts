@@ -1,4 +1,5 @@
 import { decode } from "ent";
+import { inject } from "sf-core/decorators";
 import { BubbleBus } from "sf-core/busses";
 import { ValueNode } from "sf-core/markup";
 import { disposeEntity } from "./utils";
@@ -7,11 +8,15 @@ import { IEntityDocument } from "sf-core/ast";
 import { IHTMLValueNodeExpression } from "sf-html-extension/ast";
 import { NodeSection, IDOMSection } from "sf-html-extension/dom";
 import { IHTMLEntity, IHTMLContainerEntity } from "./base";
+import { DEPENDENCIES_NS, Dependencies, Injector } from "sf-core/dependencies";
 
 export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> extends ValueNode implements IHTMLEntity {
 
   readonly parent: IHTMLContainerEntity;
   readonly root: IHTMLContainerEntity;
+
+  @inject(DEPENDENCIES_NS)
+  protected _dependencies: Dependencies;
 
   readonly type: string = null;
   readonly section: IDOMSection;
@@ -77,5 +82,8 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   }
 
   protected didUpdate() { }
-  abstract clone();
+  clone() {
+    return Injector.inject(this._clone(), this._dependencies);
+  }
+  abstract _clone();
 }

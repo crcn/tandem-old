@@ -99,7 +99,7 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
     this.notify(new AttributeChangeAction(name, value));
   }
 
-  clone() {
+  _clone() {
     const clone = new HTMLElementEntity(this.source);
     this.cloneAttributesToElement(clone);
     this.cloneChildrenToContainerNode(clone);

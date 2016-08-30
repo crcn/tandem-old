@@ -64,11 +64,9 @@ export class HTMLDocumentRootEntity extends HTMLContainerEntity<HTMLFragmentExpr
     return new GroupNodeSection();
   }
 
-  clone() {
+  _clone() {
     const clone = new HTMLDocumentRootEntity(this.source, <HTMLFile>this.document, this._dependencies);
-    for (const child of this.children) {
-      clone.appendChild(<IHTMLEntity>child.clone());
-    }
+    this.cloneChildrenToContainerNode(clone);
     return clone;
   }
 

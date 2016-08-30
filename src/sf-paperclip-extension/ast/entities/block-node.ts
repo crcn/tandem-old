@@ -54,7 +54,7 @@ export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockNodeExpres
 
     this.value = value;
 
-    for (const item of Array.from(value)) {
+    for (const item of Array.isArray(value) ? value : [value]) {
       if (item instanceof MarkupNode) {
         this.appendChild((<MarkupNode>item).clone());
       } else {
@@ -65,7 +65,7 @@ export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockNodeExpres
     }
   }
 
-  clone() {
+  _clone() {
     return new PCBlockNodeEntity(this.source);
   }
 }
