@@ -1,20 +1,20 @@
 import * as pretty from "pretty";
 import { parseHTML } from "sf-html-extension/ast";
 import { MimeTypes } from "sf-html-extension/constants";
+import { IExpression } from "sf-core/ast";
 import { DocumentFile } from "sf-front-end/models/base";
-import { HTMLDocumentRootEntity } from "sf-html-extension/ast";
+import { HTMLDocumentRootEntity, HTMLFragmentExpression } from "sf-html-extension/ast";
 import {
   ActiveRecordFactoryDependency
 } from "sf-core/dependencies";
 
 export class HTMLFile extends DocumentFile<HTMLDocumentRootEntity> {
   readonly type: string = MimeTypes.HTML_MIME_TYPE;
-  createEntity(content: string) {
-    return new HTMLDocumentRootEntity(parseHTML(content), this, this._dependencies.clone());
+  parse(content: string) {
+    return parseHTML(content);
   }
-
-  formatContent(content: string) {
-    return pretty(content);
+  createEntity(ast: HTMLFragmentExpression) {
+    return new HTMLDocumentRootEntity(ast, this, this._dependencies.clone());
   }
 }
 

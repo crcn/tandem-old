@@ -1,7 +1,7 @@
 import { INamed } from "sf-core/object";
 import { IRange } from "sf-core/geom";
-import { IExpression } from "sf-core/ast";
 import { diffArray, patchArray } from "sf-core/utils/array";
+import { IExpression, BaseExpression } from "sf-core/ast";
 import { register as registerSerializer } from "sf-core/serialize";
 
 export interface IHTMLExpression extends IExpression, INamed {
@@ -12,10 +12,11 @@ export interface IHTMLValueNodeExpression extends IHTMLExpression {
   value: any;
 }
 
-export abstract class HTMLExpression implements IHTMLExpression {
-  constructor(readonly name: string, public position: IRange) {
+export abstract class HTMLExpression extends BaseExpression implements IHTMLExpression {
+  constructor(readonly name: string, position: IRange) {
+    super(position);
   }
-  abstract patch(expression: HTMLExpression);
+  abstract patch(expression: IHTMLExpression);
 }
 
 export interface IHTMLContainerExpression extends IHTMLExpression {
@@ -36,6 +37,12 @@ export class HTMLContainerExpression extends HTMLExpression {
       changes,
       (a, b) => { a.patch(b); return a; }
     );
+  }
+  _flattenDeep(items: Array<HTMLExpression>) {
+    items.push(this);
+    for (const child of this.children) {
+      child._flattenDeep(items);
+    }
   }
 }
 
@@ -82,6 +89,16 @@ export class HTMLElementExpression extends HTMLContainerExpression implements IH
     const i = this.children.indexOf(child);
     if (i !== -1) {
       this.children.splice(i, 1);
+    }
+  }
+
+  _flattenDeep(items: Array<HTMLExpression>) {
+    items.push(this);
+    for (const attribute of this.attributes) {
+      attribute._flattenDeep(items);
+    }
+    for (const child of this.children) {
+      child._flattenDeep(items);
     }
   }
 
@@ -135,9 +152,9 @@ export class HTMLElementExpression extends HTMLContainerExpression implements IH
   }
 }
 
-export class HTMLAttributeExpression implements IExpression {
-  constructor(public name: string, public value: string, readonly position: IRange) {
-
+export class HTMLAttributeExpression extends BaseExpression implements IExpression {
+  constructor(public name: string, public value: string, position: IRange) {
+    super(position);
   }
   toString() {
     const buffer = [this.name];

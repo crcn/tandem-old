@@ -6,6 +6,7 @@ import { BubbleBus } from "sf-core/busses";
 import { Workspace } from "./workspace";
 import { IObservable } from "sf-core/observable";
 import { IDisposable } from "sf-core/object";
+import { IExpression } from "sf-core/ast";
 import { IEntityDocument } from "sf-core/ast";
 import { IPoint, Transform } from "sf-core/geom";
 import { Action, PropertyChangeAction } from "sf-core/actions";
@@ -33,6 +34,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   protected _dependencies: Dependencies;
 
   private _entity: T;
+  private _ast: IExpression;
 
   public get entity(): T {
     return this._entity;
@@ -49,8 +51,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   }
 
   public async load() {
-
-    const entity = this.createEntity(this.content);
+    const entity = this.createEntity(this._ast = this.parse(this.content));
     entity.document = this;
     await entity.load();
     if (this._entity && this._entity.constructor === entity.constructor) {
@@ -63,14 +64,12 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     }
   }
 
-  protected abstract createEntity(content: string): T;
-  protected formatContent(content: string) {
-    return content;
-  }
+  protected abstract parse(content: string): IExpression;
+  protected abstract createEntity(ast: IExpression): T;
 
   async update() {
     this._entity.update();
-    this.content = this.formatContent(this._entity.source.toString());
+    this.content = this._ast.toString();
     await super.update();
     await this.load();
   }
