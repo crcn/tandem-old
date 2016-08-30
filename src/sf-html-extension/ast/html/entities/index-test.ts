@@ -35,13 +35,14 @@ describe(__filename + "#", () => {
       path: "a",
       content: content
     });
-    await timeout(20);
+    await file.load();
     return file;
   }
 
   async function updateDocumentSource(file: HTMLFile, source: string) {
     file.deserialize({ content: source, path: "a" });
-    await timeout(20);
+    await file.load();
+
     return document;
   }
 

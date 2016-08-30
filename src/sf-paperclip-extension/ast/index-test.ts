@@ -20,7 +20,7 @@ describe(__filename + "#", () => {
       const expr = parsePC("hello ${message}");
       expect(expr.children.length).to.equal(2);
       const block = <PCBlockNodeExpression>expr.children[1];
-      expect(block.script).to.equal("message");
+      expect(block.value).to.equal("message");
     });
   });
 });

@@ -9,6 +9,7 @@ export interface IDOMSection {
   appendChild(node: Node);
   toFragment(): Node;
   visible: boolean;
+  innerHTML: string;
   childNodes: Array<Node>;
   show(): void;
   hide(): void;

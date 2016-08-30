@@ -40,6 +40,10 @@ export class NodeSection implements IDOMSection {
     return Array.prototype.slice.call(this.targetNode.childNodes);
   }
 
+  get innerHTML() {
+    return (<Element>this._target).innerHTML || this._target.nodeValue;
+  }
+
   get targetNode() {
     return this._target;
   }

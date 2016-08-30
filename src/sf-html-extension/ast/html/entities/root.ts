@@ -55,10 +55,10 @@ export class HTMLDocumentRootEntity extends HTMLContainerEntity<HTMLFragmentExpr
    * @param {any} HTMLFile
    */
 
-  constructor(source: HTMLFragmentExpression, document: HTMLFile, _dependencies: Dependencies) {
+  constructor(source: HTMLFragmentExpression, document: DocumentFile<HTMLDocumentRootEntity>, _dependencies: Dependencies) {
     super(source);
     this.document = document;
-    this._dependencies = _dependencies;
+    this._dependencies = _dependencies.clone();
   }
 
   createSection(): IDOMSection {
@@ -87,4 +87,3 @@ export class HTMLDocumentRootEntity extends HTMLContainerEntity<HTMLFragmentExpr
     this._globalStyle.innerHTML = CSSStyleSheetsDependency.findOrRegister(this._dependencies).toString();
   }
 }
-

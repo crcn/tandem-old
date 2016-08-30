@@ -1,14 +1,15 @@
 import { File } from "sf-common/models";
+import { inject } from "sf-core/decorators";
 import { IActor } from "sf-core/actors";
 import { IEntity } from "sf-core/ast/entities";
 import { BubbleBus } from "sf-core/busses";
 import { Workspace } from "./workspace";
-import { IInjectable } from "sf-core/dependencies";
 import { IObservable } from "sf-core/observable";
 import { IDisposable } from "sf-core/object";
 import { IEntityDocument } from "sf-core/ast";
 import { IPoint, Transform } from "sf-core/geom";
 import { Action, PropertyChangeAction } from "sf-core/actions";
+import { IInjectable, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
 
 export interface IEditorTool extends IActor, IDisposable {
   readonly editor: IEditor;
@@ -27,6 +28,9 @@ export interface IEditor extends IActor {
 }
 
 export abstract class DocumentFile<T extends IEntity & IObservable> extends File implements IEntityDocument {
+
+  @inject(DEPENDENCIES_NS)
+  protected _dependencies: Dependencies;
 
   private _entity: T;
 

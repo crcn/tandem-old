@@ -171,7 +171,7 @@ export class ContainerNode extends Node implements IContainerNode {
     (child as any).didMount();
   }
 
-  protected addchildrenToClonedNode(node: ContainerNode) {
+  protected addChildrenToClonedNode(node: ContainerNode) {
     for (const child of this.children) {
       node.appendChild(child.clone());
     }
@@ -181,6 +181,10 @@ export class ContainerNode extends Node implements IContainerNode {
 
     // bubble it up
     this.notify(action);
+  }
+
+  toString() {
+    return this.children.join("");
   }
 }
 
@@ -256,12 +260,28 @@ export class Element extends ContainerNode implements IElement {
     for (const attribute of this.attributes) {
       clone.setAttribute(attribute.name, attribute.value);
     }
-    this.addchildrenToClonedNode(clone);
+    this.addChildrenToClonedNode(clone);
     return clone;
   }
 
   protected cloneInstance() {
     return new Element(this.name);
+  }
+
+  toString() {
+    const buffer = ["<", this.name];
+    const attributesBuffer = [];
+    for (const attribute of this.attributes) {
+      attributesBuffer.push([attribute.name, "=", "\"", attribute.value, "\""].join(""));
+    }
+    buffer.push(" ", attributesBuffer.join(""));
+
+    if (this.children.length) {
+      buffer.push(">", this.children.join(""), "</", this.name, ">");
+    } else {
+      buffer.push("/>");
+    }
+    return buffer.join("");
   }
 }
 
@@ -277,5 +297,8 @@ export class ValueNode extends Node implements IValueNode {
   }
   clone() {
     return new ValueNode(this.name, this.value);
+  }
+  toString() {
+    return this.value;
   }
 }

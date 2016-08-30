@@ -17,7 +17,6 @@ export class CSSRootEntity extends Observable implements IEntity {
   }
 
   dispose() {
-
   }
 
 

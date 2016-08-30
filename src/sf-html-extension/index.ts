@@ -1,4 +1,4 @@
-import { HTML_MIME_TYPE } from "sf-html-extension/constants";
+import { MimeTypes } from "sf-html-extension/constants";
 
 import { IApplication } from "sf-core/application";
 
@@ -76,7 +76,7 @@ export const dependency = [
   htmlDocumentFragmentDependency,
 
   // mime types
-  new MimeTypeDependency("htm", HTML_MIME_TYPE),
-  new MimeTypeDependency("html", HTML_MIME_TYPE),
-  new MimeTypeDependency("sfn", HTML_MIME_TYPE)
+  new MimeTypeDependency("htm", MimeTypes.HTML_MIME_TYPE),
+  new MimeTypeDependency("html", MimeTypes.HTML_MIME_TYPE),
+  new MimeTypeDependency("sfn", MimeTypes.HTML_MIME_TYPE)
 ];

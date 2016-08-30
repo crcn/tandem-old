@@ -133,7 +133,7 @@ export class Dependencies implements ICloneable {
 
   private _dependenciesByNs: any = {};
 
-  constructor(...items: Array<IDependency>) {
+  constructor(...items: Array<IDependency|Array<any>>) {
     this.register(...items);
   }
 
@@ -179,9 +179,9 @@ export class Dependencies implements ICloneable {
   /**
    */
 
-  register(...Dependencies: Array<IDependency|Array<any>>): Dependencies {
+  register(...dependencies: Array<IDependency|Array<any>>): Dependencies {
 
-    const flattenedDependencies: Array<IDependency> = flattenDeep(Dependencies);
+    const flattenedDependencies: Array<IDependency> = flattenDeep(dependencies);
 
     for (let dependency of flattenedDependencies) {
 

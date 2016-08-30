@@ -1,17 +1,14 @@
 import { inject } from "sf-core/decorators";
 import { DocumentFile } from "sf-front-end/models";
-import { CSS_MIME_TYPE } from "sf-html-extension/constants";
-import { watchProperty } from "sf-core/observable";
+import { MimeTypes } from "sf-html-extension/constants";
 import { CSSRootEntity, parseCSS } from "sf-html-extension/ast";
-import { DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
 import { ActiveRecordFactoryDependency, IInjectable, Injector } from "sf-core/dependencies";
 
 export class CSSFile extends DocumentFile<CSSRootEntity> implements IInjectable {
-  @inject(DEPENDENCIES_NS)
-  private _dependencies: Dependencies;
+  readonly type: string = MimeTypes.CSS_MIME_TYPE;
   protected createEntity(content: string) {
     return new CSSRootEntity(parseCSS(content), this, this._dependencies);
   }
 }
 
-export const cssFileDependency = new ActiveRecordFactoryDependency(CSS_MIME_TYPE, CSSFile);
+export const cssFileDependency = new ActiveRecordFactoryDependency(MimeTypes.CSS_MIME_TYPE, CSSFile);

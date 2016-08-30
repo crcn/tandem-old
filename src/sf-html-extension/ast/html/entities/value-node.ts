@@ -1,11 +1,11 @@
 import { decode } from "ent";
 import { BubbleBus } from "sf-core/busses";
 import { ValueNode } from "sf-core/markup";
-import { NodeSection } from "sf-html-extension/dom";
 import { disposeEntity } from "./utils";
 import { EntityMetadata } from "sf-core/ast/entities";
 import { IEntityDocument } from "sf-core/ast";
 import { IHTMLValueNodeExpression } from "sf-html-extension/ast";
+import { NodeSection, IDOMSection } from "sf-html-extension/dom";
 import { IHTMLEntity, IHTMLContainerEntity } from "./base";
 
 export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> extends ValueNode implements IHTMLEntity {
@@ -14,7 +14,7 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   readonly root: IHTMLContainerEntity;
 
   readonly type: string = null;
-  readonly section: NodeSection;
+  readonly section: IDOMSection;
   readonly metadata: EntityMetadata;
   public document: IEntityDocument;
 
@@ -25,8 +25,10 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
     super(_source.name, _source.value);
     this.metadata = new EntityMetadata(this);
     this.metadata.observe(new BubbleBus(this));
-    this.section = new NodeSection(this._node = this.createDOMNode(_source.value));
+    this.section = this.createSection();
   }
+
+  abstract createSection();
 
   flatten(): Array<IHTMLEntity> {
     return [this];
@@ -57,16 +59,14 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
 
   set value(value: any) {
     this._value = value;
-    if (this._node) this._node.nodeValue = decode(value);
-  }
-
-  willUnmount() {
-    if (this._node.parentElement) {
-      this._node.parentNode.removeChild(this._node);
+    if (this.section instanceof NodeSection) {
+      this.section.targetNode.nodeValue = decode(value);
     }
   }
 
-  abstract createDOMNode(nodeValue: any): Node;
+  willUnmount() {
+    this.section.remove();
+  }
 
   dispose() {
     disposeEntity(this);

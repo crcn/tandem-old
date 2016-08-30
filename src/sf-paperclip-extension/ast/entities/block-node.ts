@@ -1,33 +1,51 @@
-import { Node as MarkupNode } from "sf-core/markup";
+import { getContext } from "./utils";
+import { IPCEntity } from "./base";
 import { GroupNodeSection } from "sf-html-extension/dom";
+import { Node as MarkupNode } from "sf-core/markup";
 import { PCBlockNodeExpression } from "sf-paperclip-extension/ast/expressions";
-import { HTMLContainerEntity, IHTMLEntity } from "sf-html-extension/ast";
+import { EntityFactoryDependency } from "sf-core/dependencies";
+import { HTMLContainerEntity, HTMLValueNodeEntity, IHTMLEntity } from "sf-html-extension/ast";
 import { INodeEntity, EntityMetadata, IContainerNodeEntity, IEntity } from "sf-core/ast";
 
-export class PCBlockNodeEntity extends MarkupNode implements INodeEntity, IHTMLEntity {
-  readonly section: GroupNodeSection = new GroupNodeSection();
-  readonly parent: IContainerNodeEntity;
-  readonly root: IContainerNodeEntity;
-  readonly metadata: EntityMetadata = new EntityMetadata(this);
-  readonly document: any;
+export class PCBlockNodeEntity extends HTMLValueNodeEntity<PCBlockNodeExpression> implements IPCEntity {
+  public section: GroupNodeSection;
   private _script: Function;
 
-  constructor(public source: PCBlockNodeExpression) {
-    super(source.name);
+  constructor(source: PCBlockNodeExpression) {
+    super(source);
     this.willSourceChange(source);
   }
 
   protected willSourceChange(source: PCBlockNodeExpression) {
-    this._script = new Function("context", `with(context) { ${source.script} }`);
+    this._script = new Function("context", `with(context) { return ${source.value}; }`);
+  }
+
+  createSection() {
+    return new GroupNodeSection();
   }
 
   update() {
+  }
 
+  get context() {
+    return getContext(this);
   }
 
   load() {
     // TODO - get context here
-    const value = this._script({});
+    let value;
+
+    try {
+      value = this._script(this.context);
+    } catch (e) {
+      if (!process.env.TESTING) {
+        console.error(e.stack);
+      }
+    }
+
+    this.value = value;
+
+
     this.section.removeChildren();
 
     if (value instanceof Node) {
@@ -39,25 +57,9 @@ export class PCBlockNodeEntity extends MarkupNode implements INodeEntity, IHTMLE
     }
   }
 
-
-  patch(entity: PCBlockNodeEntity) {
-    this.source = entity.source;
-    this.willSourceChange(entity.source);
-  }
-
-  find(filter: (entity: IEntity) => boolean) {
-    return filter(this) ? this : undefined;
-  }
-
-  dispose() {
-
-  }
-
-  flatten(): Array<IHTMLEntity> {
-    return [this];
-  }
   clone() {
     return new PCBlockNodeEntity(this.source);
   }
 }
 
+export const bcBlockNodeEntityDependency = new EntityFactoryDependency("#block", PCBlockNodeEntity);

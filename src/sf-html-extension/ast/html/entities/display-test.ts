@@ -2,8 +2,8 @@ import * as sift from "sift";
 import { expect } from "chai";
 import { HTMLFile } from "sf-html-extension/models/html-file";
 import { parseHTML } from "sf-html-extension/ast";
+import { MimeTypes } from "sf-html-extension/constants";
 import { BoundingRect } from "sf-core/geom";
-import { HTML_MIME_TYPE } from "sf-html-extension/constants";
 import { IVisibleNodeEntity } from "sf-core/ast/entities";
 import { FrontEndApplication } from "sf-front-end/application";
 import { waitForPropertyChange } from "sf-core/test/utils";
@@ -42,10 +42,10 @@ describe(__filename + "#", () => {
   });
 
   async function loadTarget(source) {
-    const file: HTMLFile = ActiveRecordFactoryDependency.find(HTML_MIME_TYPE, dependencies).create("files", {
+    const file: HTMLFile = ActiveRecordFactoryDependency.find(MimeTypes.HTML_MIME_TYPE, dependencies).create("files", {
       content: source
     });
-    await waitForPropertyChange(file, "entity");
+    await file.load();
     const root = file.entity;
     const div = document.createElement("div");
     document.body.appendChild(div);

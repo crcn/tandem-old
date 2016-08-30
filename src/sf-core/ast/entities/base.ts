@@ -53,6 +53,10 @@ export interface IEntity extends IDisposable, IInjectable {
   flatten(): Array<IEntity>;
 }
 
+export interface IContextualEntity extends IEntity {
+  context: any;
+}
+
 export interface IContainerNodeEntitySource {
   appendChild(source: any);
   removeChild(source: any);
