@@ -23,7 +23,7 @@ import {
 } from "sf-front-end/actions";
 
 const CLASS_IGNORE_NAME_PRIORITY = [
-  "style"
+  // "style"
 ];
 
 class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEntity, app: FrontEndApplication, connectDragSource: Function }, any> {
