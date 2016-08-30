@@ -51,13 +51,15 @@
   - [ ] artboard
     - [ ] preset sizes for mobile devices (similar to adobe xd)
 
-- [ ] paperclip extension
-	- [ ] transpiler
-	- [ ] entities
-		- [ ] repeat
+- [ ] extensions
+	- [ ] paperclip extension
+	        - [ ] transpiler
+        	- [ ] entities
+                	- [ ] repeat
+	- [ ] scss extension
+		- [ ] parse variables
+	- [ ] handlebars 
 
-- [ ] scss extension
-	- [ ] parse variables
 - [ ] optimizations
   - [ ] memoize flatten() for entities
   - [ ] replace most react components with transpiled saffron

@@ -1,11 +1,14 @@
 <link rel="stylesheet" type="text/css" href="./style.css" />
-<artboard id="hello" title="Hello World"><span style=${ style }>Hello${     message     }<br/>Here's a child:${
+<artboard id="hello" title="Hello World"><span style=${ style }>Hello${                                                                                                                                      message                                                                                                                                      }<br/>Here's a child:${                                                                                                                                 
       Array.from({ length: Number(count) }, () => {
         return children;
       })
-         }</span> </artboard>
+                                                                                                                                          }</span> </artboard>
 <artboard title="Hello World" style="top: 212px; left: 0px;">
   <hello message="world" count="1" style="color: red; display: block;">
     <div style="color:blue;">This is a cloned child</div>
   </hello>
+</artboard>
+<artboard title="Artboard" style="background; white;position: absolute; width: 468px; height: 239px; left: -1592px; top: 76px;">
+  <div style="background: rgba(0,0,0,0.1);  left: 0px; top: -1px; padding: 10px; box-size: content-box;">${ message }</div>
 </artboard>

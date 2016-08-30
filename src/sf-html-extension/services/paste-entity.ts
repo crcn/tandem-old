@@ -2,8 +2,9 @@ import * as sift from "sift";
 import { flatten } from "lodash";
 import { HTMLFile } from "../models/html-file";
 import { parseHTML } from "../ast";
-import { filterAction } from "sf-core/decorators";
 import { MimeTypes } from "sf-html-extension/constants";
+import { filterAction } from "sf-core/decorators";
+import { PasteHTMLEntity } from "sf-html-extension/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { appendSourceChildren } from "sf-core/ast/entities";
 import { BaseApplicationService } from "sf-core/services";
@@ -17,8 +18,12 @@ import {
 
 export class PasteHTMLService extends BaseApplicationService<FrontEndApplication> {
 
-  @filterAction(sift({ type: PASTE, "item.type": MimeTypes.HTML_MIME_TYPE }))
-  execute(action: PasteAction) {
+  @filterAction(sift({ "item.type": MimeTypes.HTML_MIME_TYPE }))
+  paste(action: PasteAction) {
+    this.bus.execute(new PasteHTMLEntity(action.item));
+  }
+
+  pasteHTMLEntity(action: PasteAction) {
 
     // TODO - need to paste to editor.focus (entity)
     action.item.getAsString(async (content) => {

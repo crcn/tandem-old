@@ -90,7 +90,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
     this._targetEntity.source.children = parseHTML(this._targetNode.innerHTML).children;
 
     // reset the html so that the entity is properly diffd
-    this._targetEntity.section.innerHTML = " ";
+    (<Element>this._targetEntity.section.targetNode).innerHTML = " ";
 
     // save the workspae file -- diffing time
     await this.workspace.file.update();
