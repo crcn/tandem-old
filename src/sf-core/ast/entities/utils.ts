@@ -16,7 +16,6 @@ export async function insertSourceChildren(entity: IContainerNodeEntity, index: 
 
   // update the file document
   await entity.document.update();
-  console.log(entity.source === oldSource);
 
   // source is not the same, but the entity is. Slice the new child nodes and find all the entities. Note
   // that a source expression can be represented by many entities, which is why this funny chunk of code is necessary.

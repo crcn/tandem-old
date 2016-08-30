@@ -65,12 +65,13 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   }
 
   protected abstract parse(content: string): IExpression;
-  protected abstract formatContent(content: string): string;
+  protected abstract getFormattedContent(ast: IExpression): string;
   protected abstract createEntity(ast: IExpression): T;
 
   async update() {
     this._entity.update();
-    this.content = patchSource(this.content, this.parse(this.content), this._ast);
+    this.content = this.getFormattedContent(this._ast);
+    // this.content = patchSource(this.content, this.parse(this.content), this._ast);
     await super.update();
     await this.load();
   }

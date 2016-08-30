@@ -38,12 +38,6 @@ export class HTMLContainerExpression extends HTMLExpression {
       (a, b) => { a.patch(b); return a; }
     );
   }
-  _flattenDeep(items: Array<HTMLExpression>) {
-    items.push(this);
-    for (const child of this.children) {
-      child._flattenDeep(items);
-    }
-  }
 }
 
 export class HTMLFragmentExpression extends HTMLContainerExpression implements IHTMLContainerExpression {
@@ -89,16 +83,6 @@ export class HTMLElementExpression extends HTMLContainerExpression implements IH
     const i = this.children.indexOf(child);
     if (i !== -1) {
       this.children.splice(i, 1);
-    }
-  }
-
-  _flattenDeep(items: Array<HTMLExpression>) {
-    items.push(this);
-    for (const attribute of this.attributes) {
-      attribute._flattenDeep(items);
-    }
-    for (const child of this.children) {
-      child._flattenDeep(items);
     }
   }
 

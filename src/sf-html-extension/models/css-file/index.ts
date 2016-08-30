@@ -13,8 +13,8 @@ export class CSSFile extends DocumentFile<CSSRootEntity> implements IInjectable 
   parse(content: string) {
     return parseCSS(content);
   }
-  formatContent(content: string) {
-    return pretty(content);
+  getFormattedContent(ast: CSSStyleSheetExpression) {
+    return pretty(ast.toString());
   }
 }
 

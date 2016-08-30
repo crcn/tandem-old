@@ -16,8 +16,8 @@ export class HTMLFile extends DocumentFile<HTMLDocumentRootEntity> {
   createEntity(ast: HTMLFragmentExpression) {
     return new HTMLDocumentRootEntity(ast, this, this._dependencies.clone());
   }
-  formatContent(content: string) {
-    return pretty(content);
+  getFormattedContent(ast: HTMLFragmentExpression) {
+    return pretty(ast.toString());
   }
 }
 
