@@ -120,10 +120,10 @@ _
   = [ \n\r\t]*
 
 Block
-  = "${" script: BlockInner "}" {
-    return new PCBlockNodeExpression(script, position());
+  = "${" script: BlockInner* "}" {
+    return new PCBlockNodeExpression(script.join(""), position());
   }
 
 BlockInner
   = "{" BlockInner "}" { return text(); }
-  / [^}]+ { return text(); }
+  / [^}{]+ { return text(); }

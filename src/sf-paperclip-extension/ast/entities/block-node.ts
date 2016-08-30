@@ -12,6 +12,7 @@ export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockNodeExpres
   private _script: Function;
   public value: any;
   public source: PCBlockNodeExpression;
+  public error: Error;
 
   constructor(source: PCBlockNodeExpression) {
     super("#block", source);
@@ -19,7 +20,11 @@ export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockNodeExpres
   }
 
   protected willSourceChange(source: PCBlockNodeExpression) {
-    this._script = new Function("context", `with(context) { return ${source.value}; }`);
+    try {
+      this._script = new Function("context", `with(context) { return (${source.value}); }`);
+    } catch (e) {
+      this.error = e;
+    }
   }
 
   createSection() {
@@ -37,10 +42,15 @@ export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockNodeExpres
   async load() {
     let value;
 
-    try {
-      value = this._script(this.context);
-    } catch (e) {
-      return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(this.source.toString(), this.source.position)))
+    if (this.error) {
+      return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(`Syntax Error: ${this.error.message}`, null)))
+    } else {
+      try {
+        value = this._script(this.context);
+        console.log(this._script);
+      } catch (e) {
+        return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(this.source.toString(), this.source.position)))
+      }
     }
 
     this.value = value;

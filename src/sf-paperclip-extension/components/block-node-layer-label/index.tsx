@@ -29,6 +29,7 @@ class BlockLayerLabel extends React.Component<{ entity: PCBlockNodeEntity, conne
 
     return connectDragSource(<span
       className="m-label m-block-node-layer-label"
+      title={this.props.entity.source.value}
       onDoubleClick={this.editLabel.bind(this)}>
       {
          String(this.props.entity.source.value || "").trim()

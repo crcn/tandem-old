@@ -25,7 +25,7 @@ class ToolComponent extends React.Component<{ app: FrontEndApplication, editor: 
         className={className}
         tabIndex="-1"
         onClick={this.setTool}
-        alt={`${dep.id} (${dep.keyCommand})`}
+        title={`${dep.id} (${dep.keyCommand})`}
       >
 
       </li>
