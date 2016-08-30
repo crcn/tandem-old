@@ -10,7 +10,7 @@ import { HTMLElementExpression } from "sf-html-extension/ast";
 import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { VisibleHTMLElementEntity } from "./visible-element";
 import { NodeSection, GroupNodeSection } from "sf-html-extension/dom";
-import { IContextualEntity, INodeEntity } from "sf-core/ast";
+import { IContextualEntity, INodeEntity, IContainerNodeEntity } from "sf-core/ast";
 import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "sf-core/dependencies";
 
 const ARTBOARD_NS = "artboards";
@@ -27,7 +27,7 @@ class RegisteredArtboardEntity extends VisibleHTMLElementEntity implements ICont
 
   private _context: any;
   private _childrenSection: GroupNodeSection;
-  private __children: INodeEntity;
+  private __children: IContainerNodeEntity;
 
   constructor(source: HTMLElementExpression) {
     super(source);
@@ -48,7 +48,6 @@ class RegisteredArtboardEntity extends VisibleHTMLElementEntity implements ICont
 
   patchSelf(entity: RegisteredArtboardEntity) {
     super.patchSelf(entity);
-    this.__children.patch(entity.__children);
     this.updateContext();
   }
 
@@ -63,7 +62,6 @@ class RegisteredArtboardEntity extends VisibleHTMLElementEntity implements ICont
     this._context = {
       children: this.__children
     };
-
     for (const attribute of this.attributes) {
       this._context[attribute.name] = attribute.value;
     }

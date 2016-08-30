@@ -1,3 +1,4 @@
+<link rel="stylesheet" type="text/css" href="./style.scss" />
 
 <!-- Previews -->
 <artboard title="Application" style="width: 1024px; height: 768px; left: -4px; top: 462px;" />
@@ -25,13 +26,27 @@
 <!-- Entity Panes -->
 <artboard title="Layers Pane" style="background; white;position: absolute; width: 205px; height: 150px; left: 1286px; top: 706px;">
   <pane title="Layers">
-    Hello world!!!
+    TODO
   </pane>
 </artboard>
-<artboard title="CSS Pane" style="background; white;position: absolute; width: 205px; height: 150px; left: 1618px; top: 706px;">
-  <pane/>
+
+<artboard id="repeat">
+  repeat it!
 </artboard>
-<artboard title="Key/Value inputs" style="background; white;position: absolute; width: 205px; height: 132px; left: 1618px; top: 963px;" />
+
+<artboard id="hash-input" title="Hash Input" style="background; white;position: absolute; width: 205px; height: 132px; left: 1618px; top: 963px;">
+  <repeat each="${value}">
+  </repeat>
+</artboard>
+
+<artboard title="CSS Pane" style="background; white;position: absolute; width: 205px; height: 150px; left: 1618px; top: 706px;">
+  <pane title="CSS Pane">
+    <hash-input value="${[0, 1, 2, 3]}">
+    </hash-input>
+  </pane>
+</artboard>
+
+
 <artboard title="Key/value-input row" style="background; white;position: absolute; width: 213px; height: 132px; left: 1897px; top: 963px;" />
 <artboard title="color input" style="background; white;position: absolute; width: 213px; height: 153px; left: 1897px; top: 1190px;" />
 <artboard title="font family input" style="background; white;position: absolute; width: 213px; height: 153px; left: 1897px; top: 1441px;" />

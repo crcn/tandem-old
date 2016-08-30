@@ -317,16 +317,25 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
 
     const entity     = this.props.entity;
     const expanded   = entity.metadata.get(MetadataKeys.LAYER_EXPANDED);
+    const hidden     = entity.metadata.get(MetadataKeys.HIDDEN);
     const depth = this.props.depth || 0;
     const paddingLeft =  17 + depth * 12;
+
+    const renderChildren = (depth: number) => {
+      return ((entity as IContainerNodeEntity).children || []).map((child: INodeEntity, i) => {
+        return <LayerComponent {...this.props} entity={child} key={i} depth={depth}  />;
+      });
+    }
+
+    if (hidden) {
+      return <span>{renderChildren(depth)}</span>;
+    }
 
     return <div className="m-layers-pane-component-layer">
 
       <LayerDndLabelComponent paddingLeft={paddingLeft} {...this.props} />
 
-      { expanded ? ((entity as IContainerNodeEntity).children || []).map((child: INodeEntity, i) => {
-        return <LayerComponent {...this.props} entity={child} key={i} depth={depth + 1}  />;
-      }) : undefined }
+      { expanded ? renderChildren(depth + 1) : undefined }
 
     </div>;
   }

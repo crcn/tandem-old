@@ -1,18 +1,20 @@
 import { getContext } from "./utils";
 import { IPCEntity } from "./base";
-import { GroupNodeSection } from "sf-html-extension/dom";
+import { parsePC } from "sf-paperclip-extension/ast";
 import { Node as MarkupNode } from "sf-core/markup";
 import { PCBlockNodeExpression } from "sf-paperclip-extension/ast/expressions";
 import { EntityFactoryDependency } from "sf-core/dependencies";
-import { HTMLContainerEntity, HTMLValueNodeEntity, HTMLExpression, IHTMLEntity } from "sf-html-extension/ast";
-import { INodeEntity, EntityMetadata, IContainerNodeEntity, IEntity } from "sf-core/ast";
+import { GroupNodeSection, IDOMSection } from "sf-html-extension/dom";
+import { HTMLContainerEntity, BaseHTMLContainerEntity, HTMLTextEntity, HTMLTextExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLEntity } from "sf-html-extension/ast";
+import { INodeEntity, EntityMetadata, IContainerNodeEntity, IEntity, IValueNodeEntity } from "sf-core/ast";
 
-export class PCBlockNodeEntity extends HTMLValueNodeEntity<PCBlockNodeExpression> implements IPCEntity {
-  public section: GroupNodeSection;
+export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockNodeExpression> implements IValueNodeEntity  {
   private _script: Function;
+  public value: any;
+  public source: PCBlockNodeExpression;
 
   constructor(source: PCBlockNodeExpression) {
-    super(source);
+    super("#block", source);
     this.willSourceChange(source);
   }
 
@@ -24,40 +26,33 @@ export class PCBlockNodeEntity extends HTMLValueNodeEntity<PCBlockNodeExpression
     return new GroupNodeSection();
   }
 
-  patch(source: any) {
+  patch(source: PCBlockNodeEntity) {
     super.patch(source);
-    this.updateNodeValue();
   }
 
   get context() {
     return getContext(this);
   }
 
-  load() {
-    this.updateNodeValue();
-  }
-
-  updateNodeValue() {
-    // TODO - get context here
+  async load() {
     let value;
-
-    console.log(this.context);
 
     try {
       value = this._script(this.context);
-    } catch (e) { }
+    } catch (e) {
+      return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(`\${${this.source.value}}`, this.source.position)))
+    }
 
     this.value = value;
 
-    this.section.removeChildren();
-
-    if (value instanceof Node) {
-      this.section.appendChild(value);
-    } else if (value instanceof MarkupNode && value.section) {
-      this.section.appendChild(value.section.toFragment());
+    if (value instanceof MarkupNode) {
+      this.appendChild(value);
     } else {
-      this.section.appendChild(document.createTextNode(String(value)));
+      const child = EntityFactoryDependency.createEntityFromSource(parsePC(String(value)), this._dependencies);
+      this.appendChild(child);
+      await child.load();
     }
+
   }
 
   clone() {

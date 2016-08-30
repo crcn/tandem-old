@@ -11,7 +11,7 @@ import { IDOMSection, NodeSection, GroupNodeSection } from "sf-html-extension/do
 import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency } from "sf-core/dependencies";
 import { IEntity, IContainerNodeEntity, EntityMetadata, IContainerNodeEntitySource, IEntityDocument } from "sf-core/ast/entities";
 
-export abstract class BaseHTMLContainerEntity<T extends IHTMLContainerExpression> extends ContainerNode implements IHTMLContainerEntity {
+export abstract class BaseHTMLContainerEntity<T> extends ContainerNode implements IHTMLContainerEntity {
 
   readonly parent: IContainerNodeEntity;
   readonly root: IContainerNodeEntity;
@@ -28,6 +28,7 @@ export abstract class BaseHTMLContainerEntity<T extends IHTMLContainerExpression
     super(name);
     this.willSourceChange(_source);
     this.metadata = new EntityMetadata(this);
+    this.metadata.observe(new BubbleBus(this));
     this.section = this.createSection();
   }
 

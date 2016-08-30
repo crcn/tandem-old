@@ -178,8 +178,8 @@ export class ContainerNode extends Node implements IContainerNode {
   }
 
   protected _onChildAction = (action: Action) => {
-
     // bubble it up
+
     this.notify(action);
   }
 

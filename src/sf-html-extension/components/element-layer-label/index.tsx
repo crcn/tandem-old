@@ -22,12 +22,8 @@ import {
   SetToolAction
 } from "sf-front-end/actions";
 
-const CLASS_NAME_PRIORITY = [
-  "title",
-  "name",
-  "id",
-  "class",
-  "src"
+const CLASS_IGNORE_NAME_PRIORITY = [
+  "style"
 ];
 
 class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEntity, app: FrontEndApplication, connectDragSource: Function }, any> {
@@ -100,7 +96,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
       // (for now)
       const attrs = entity.attributes.concat().sort(function (a, b) {
         return a.name > b.name ? -1 : 1;
-      }).filter((a) => CLASS_NAME_PRIORITY.indexOf(a.name) !== -1);
+      }).filter((a) => CLASS_IGNORE_NAME_PRIORITY.indexOf(a.name) === -1);
 
       attrs.forEach(function (attr) {
         const k = attr.name;

@@ -55,10 +55,10 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     await entity.load();
     if (this._entity && this._entity.constructor === entity.constructor) {
       this._entity.patch(entity);
-      this._entity.observe(new BubbleBus(this));
     } else {
       const oldEntity = this._entity;
       this._entity = entity;
+      this._entity.observe(new BubbleBus(this));
       this.notify(new PropertyChangeAction("entity", entity, oldEntity));
     }
   }

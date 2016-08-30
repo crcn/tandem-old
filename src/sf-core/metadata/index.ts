@@ -17,7 +17,6 @@ export class Metadata extends Observable {
 
   set(key: string, value: any) {
     this._data[key] = value;
-
     this.notify(new MetadataChangeAction(key, value));
   }
 }

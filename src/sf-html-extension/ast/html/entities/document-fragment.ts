@@ -10,6 +10,12 @@ export class HTMLDocumentFragmentEntity extends HTMLContainerEntity<HTMLFragment
     return new GroupNodeSection();
   }
 
+  getInitialMetadata() {
+    return Object.assign(super.getInitialMetadata(), {
+      [MetadataKeys.HIDDEN]: true
+    })
+  }
+
   clone() {
     const entity = new HTMLDocumentFragmentEntity(this.source);
     for (const child of this.children) {
