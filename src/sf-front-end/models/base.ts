@@ -7,8 +7,8 @@ import { Workspace } from "./workspace";
 import { IObservable } from "sf-core/observable";
 import { IDisposable } from "sf-core/object";
 import { IExpression } from "sf-core/ast";
-import { IEntityDocument } from "sf-core/ast";
 import { IPoint, Transform } from "sf-core/geom";
+import { IEntityDocument, patchSource } from "sf-core/ast";
 import { Action, PropertyChangeAction } from "sf-core/actions";
 import { IInjectable, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
 
@@ -65,11 +65,12 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   }
 
   protected abstract parse(content: string): IExpression;
+  protected abstract formatContent(content: string): string;
   protected abstract createEntity(ast: IExpression): T;
 
   async update() {
     this._entity.update();
-    this.content = this._ast.toString();
+    this.content = patchSource(this.content, this.parse(this.content), this._ast);
     await super.update();
     await this.load();
   }

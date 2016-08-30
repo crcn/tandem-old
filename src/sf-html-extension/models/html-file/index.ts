@@ -16,6 +16,9 @@ export class HTMLFile extends DocumentFile<HTMLDocumentRootEntity> {
   createEntity(ast: HTMLFragmentExpression) {
     return new HTMLDocumentRootEntity(ast, this, this._dependencies.clone());
   }
+  formatContent(content: string) {
+    return pretty(content);
+  }
 }
 
 export const htmlFileModelDependency = new ActiveRecordFactoryDependency(MimeTypes.HTML_MIME_TYPE, HTMLFile);
