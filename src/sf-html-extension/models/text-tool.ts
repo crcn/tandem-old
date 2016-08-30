@@ -89,6 +89,9 @@ export class EditInnerHTMLTool extends BaseEditorTool {
     // parse the innerHTML, set the source content, and prepare to diff
     this._targetEntity.source.children = parseHTML(this._targetNode.innerHTML).children;
 
+    // reset the html so that the entity is properly diffd
+    this._targetEntity.section.innerHTML = " ";
+
     // save the workspae file -- diffing time
     await this.workspace.file.update();
     this.bus.execute(new SetToolAction(<EditorToolFactoryDependency>this.dependencies.query(pointerToolDependency.ns)));

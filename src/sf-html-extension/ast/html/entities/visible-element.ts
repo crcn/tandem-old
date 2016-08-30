@@ -60,6 +60,9 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
      const clone = new VisibleHTMLElementEntity(this.source);
      this.cloneAttributesToElement(clone);
      this.cloneChildrenToContainerNode(clone);
+
+     // todo - fix me - this is kind of nasty
+     clone._updateStyleExpression();
      return clone;
   }
 

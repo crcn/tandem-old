@@ -5,5 +5,7 @@
       })
          }</span> </artboard>
 <artboard title="Hello World" style="top: 212px; left: 0px;">
-  <hello message="world" count="3" style="color: red; display: block;">This is a cloned child</hello>
+  <hello message="world" count="1" style="color: red; display: block;">
+    <div style="color:blue;">This is a cloned child</div>
+  </hello>
 </artboard>
