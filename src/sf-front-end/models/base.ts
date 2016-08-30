@@ -53,10 +53,13 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   }
 
   protected abstract createEntity(content: string): T;
+  protected formatContent(content: string) {
+    return content;
+  }
 
   async update() {
     this._entity.update();
-    this.content = this._entity.source.toString();
+    this.content = this.formatContent(this._entity.source.toString());
     await super.update();
     await this.load();
   }

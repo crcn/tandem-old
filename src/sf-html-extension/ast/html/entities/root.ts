@@ -1,6 +1,5 @@
 import { INamed } from "sf-core/object";
 import { inject } from "sf-core/decorators";
-import * as pretty from "pretty";
 import { HTMLFile } from "sf-html-extension/models/html-file";
 import { BubbleBus } from "sf-core/busses";
 import { DocumentFile } from "sf-front-end/models";
