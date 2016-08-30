@@ -91,3 +91,9 @@ export interface IElementEntity extends IElement, IContainerNodeEntity {
 export interface IVisibleNodeEntity extends INodeEntity {
   display: IEntityDisplay;
 }
+
+export function getContext(entity: IEntity) {
+  let p = <IContextualEntity>entity.parent;
+  while (p && !p.context) p = <IContextualEntity>p.parent;
+  return p ? p.context || {} : {};
+}

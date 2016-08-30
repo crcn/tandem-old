@@ -1,13 +1,12 @@
 import { parsePC } from "sf-paperclip-extension/ast";
 import { IPCEntity } from "./base";
-import { getContext } from "./utils";
 import { MetadataKeys } from "sf-front-end/constants";
 import { parseBlockScript } from "./utils";
 import { PCBlockExpression } from "sf-paperclip-extension/ast/expressions";
 import { Node as MarkupNode } from "sf-core/markup";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { GroupNodeSection, IDOMSection } from "sf-html-extension/dom";
-import { INodeEntity, EntityMetadata, IContainerNodeEntity, IEntity, IValueNodeEntity } from "sf-core/ast";
+import { INodeEntity, EntityMetadata, IContainerNodeEntity, IEntity, IValueNodeEntity, getContext } from "sf-core/ast";
 import { HTMLContainerEntity, BaseHTMLContainerEntity, HTMLTextEntity, HTMLTextExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLEntity } from "sf-html-extension/ast";
 
 
@@ -75,7 +74,9 @@ export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockExpression
   }
 
   _clone() {
-    return new PCBlockNodeEntity(this.source);
+    const clone = new PCBlockNodeEntity(this.source);
+    this.cloneChildrenToContainerNode(clone);
+    return clone;
   }
 }
 

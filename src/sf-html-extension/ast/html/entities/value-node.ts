@@ -83,7 +83,9 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
 
   protected didUpdate() { }
   clone() {
-    return Injector.inject(this._clone(), this._dependencies);
+    const clone = this._clone();
+    if (this._dependencies) Injector.inject(clone, this._dependencies);
+    return clone;
   }
   abstract _clone();
 }

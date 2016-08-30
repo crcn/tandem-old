@@ -1,8 +1,8 @@
 import { HTMLElementEntity } from "sf-html-extension/ast";
 import { PCBlockExpression } from "sf-paperclip-extension/ast";
 import { ElementAttributeValueEntity } from "sf-core/dependencies";
-import { parseBlockScript, getContext } from "./utils";
-import { IContextualEntity, IEntity, IEntityDocument, EntityMetadata } from "sf-core/ast";
+import { parseBlockScript } from "./utils";
+import { IContextualEntity, IEntity, IEntityDocument, EntityMetadata, getContext } from "sf-core/ast";
 
 export class BlockAttributeValueEntity implements IEntity {
   parent: IEntity;

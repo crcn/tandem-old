@@ -10,7 +10,7 @@ import { HTMLElementExpression } from "sf-html-extension/ast";
 import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { VisibleHTMLElementEntity } from "./visible-element";
 import { NodeSection, GroupNodeSection } from "sf-html-extension/dom";
-import { IContextualEntity, INodeEntity, IContainerNodeEntity } from "sf-core/ast";
+import { IContextualEntity, INodeEntity, IContainerNodeEntity, getContext } from "sf-core/ast";
 import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "sf-core/dependencies";
 
 const ARTBOARD_NS = "artboards";
@@ -54,8 +54,11 @@ class RegisteredArtboardEntity extends VisibleHTMLElementEntity implements ICont
   async loadSelf() {
     await super.loadSelf();
     this.__children = EntityFactoryDependency.findByName("#document-fragment", this._dependencies).create(this._source);
-    await this.__children.load();
+
+    // pass the parent context to the children
+    (<IContextualEntity><any>this.__children).context = getContext(this);
     this.updateContext();
+    await this.__children.load();
   }
 
   updateContext() {
