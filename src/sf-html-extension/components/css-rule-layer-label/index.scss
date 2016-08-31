@@ -1,5 +1,9 @@
 @import "sf-front-end/scss/variables";
 
 .m-css-rule-layer-label {
-  color: $color-orange-7;
+  color: $color-green-6;
+  &:after {
+    content: " { }";
+    color: $color-grey-7;
+  }
 }
