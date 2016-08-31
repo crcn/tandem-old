@@ -1,3 +1,4 @@
+import { INamed } from "sf-core/object";
 import { inject } from "sf-core/decorators";
 import { BubbleBus } from "sf-core/busses";
 import { DocumentFile } from "sf-front-end/models";
@@ -11,79 +12,30 @@ import { IDOMSection, NodeSection, GroupNodeSection } from "sf-html-extension/do
 import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency, Injector } from "sf-core/dependencies";
 import { IEntity, IContainerNodeEntity, EntityMetadata, IContainerNodeEntitySource, IEntityDocument, BaseContainerNodeEntity } from "sf-core/ast";
 
-export abstract class BaseHTMLContainerEntity<T> extends ContainerNode implements IHTMLContainerEntity {
+export abstract class HTMLContainerEntity<T extends INamed> extends BaseContainerNodeEntity<T> implements IHTMLContainerEntity {
 
-  readonly parent: IContainerNodeEntity;
-  readonly root: IContainerNodeEntity;
   readonly children: Array<IHTMLEntity>;
-  readonly metadata: EntityMetadata;
   readonly section: IDOMSection;
-
-  private _document: DocumentFile<any>;
+  public document: DocumentFile<any>;
 
   @inject(DEPENDENCIES_NS)
   protected _dependencies: Dependencies;
 
-  constructor(name: string, protected _source: T) {
-    super(name);
-    this.willSourceChange(_source);
-    this.metadata = new EntityMetadata(this, this.getInitialMetadata());
-    this.metadata.observe(new BubbleBus(this));
+  constructor(source: T) {
+    super(source);
+    this.willSourceChange(source);
     this.section = this.createSection();
   }
 
-  protected getInitialMetadata(): Object {
-
-    // TODO - scan additional dependencies for metadata
-    return {};
-  }
-
-
-  abstract load();
-  protected abstract createSection();
-
-  update() {
-    for (const child of this.children) {
-      (<IEntity>child).update();
+  async load() {
+    for (const childExpression of await this.mapSourceChildNodes()) {
+      const entity = EntityFactoryDependency.createEntityFromSource(childExpression, this._dependencies);
+      this.appendChild(entity);
+      await entity.load();
     }
   }
 
-  protected didUpdate() {
-
-  }
-
-  get document(): DocumentFile<any> {
-    return this._document;
-  }
-
-  set document(value: DocumentFile<any>) {
-    this._document = value;
-    for (const child of this.children) {
-      child.document = value;
-    }
-  }
-
-  get source(): T {
-    return this._source;
-  }
-
-  protected willSourceChange(value: T) {
-    // override me
-  }
-
-  flatten(): Array<IEntity> {
-    const flattened: Array<IEntity> = [this];
-    for (const child of this.children) {
-      flattened.push(...child.flatten());
-    }
-    return flattened;
-  }
-
-  dispose() {
-
-  }
-
-  patch(entity: BaseHTMLContainerEntity<T>) {
+  patch(entity: HTMLContainerEntity<T>) {
     this.willSourceChange(entity.source);
     this._source = entity._source;
     this._dependencies = entity._dependencies;
@@ -158,36 +110,17 @@ export abstract class BaseHTMLContainerEntity<T> extends ContainerNode implement
   }
 
   abstract _clone();
-}
 
-export abstract class HTMLContainerEntity<T extends IHTMLContainerExpression> extends BaseHTMLContainerEntity<T> implements IHTMLContainerEntity, IInjectable {
 
-  readonly type: string = null;
-  readonly name: string;
-  readonly section: IDOMSection;
+  protected abstract createSection();
 
-  constructor(source: T) {
-    super(source.name.toUpperCase(), source);
-    this.section = this.createSection();
-    this.metadata.observe(new BubbleBus(this));
+  protected willSourceChange(value: T) {
+    // override me
   }
 
-  abstract createSection(): IDOMSection;
-
-  async load() {
-    for (const childExpression of await this.mapSourceChildNodes()) {
-      const entity = EntityFactoryDependency.createEntityFromSource(childExpression, this._dependencies);
-      this.appendChild(entity);
-      await entity.load();
-    }
-  }
 
   protected mapSourceChildNodes() {
-    return this.source.children;
-  }
-
-  static mapSourceChildren(source: IHTMLContainerExpression) {
-    return source.children;
+    return (<IHTMLContainerExpression><any>this.source).children || [];
   }
 
   dispose() {

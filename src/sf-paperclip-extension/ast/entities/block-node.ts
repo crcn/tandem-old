@@ -7,17 +7,17 @@ import { Node as MarkupNode } from "sf-core/markup";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { GroupNodeSection, IDOMSection } from "sf-html-extension/dom";
 import { INodeEntity, EntityMetadata, IContainerNodeEntity, IEntity, IValueNodeEntity, getContext } from "sf-core/ast";
-import { HTMLContainerEntity, BaseHTMLContainerEntity, HTMLTextEntity, HTMLTextExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLEntity } from "sf-html-extension/ast";
+import { HTMLContainerEntity, HTMLTextEntity, HTMLTextExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLEntity } from "sf-html-extension/ast";
 
 
-export class PCBlockNodeEntity extends BaseHTMLContainerEntity<PCBlockExpression> implements IValueNodeEntity  {
+export class PCBlockNodeEntity extends HTMLContainerEntity<PCBlockExpression> implements IValueNodeEntity  {
   private _script: Function;
   public value: any;
   public source: PCBlockExpression;
   public error: Error;
 
   constructor(source: PCBlockExpression) {
-    super("#block", source);
+    super(source);
     this.willSourceChange(source);
   }
 

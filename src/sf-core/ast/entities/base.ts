@@ -5,7 +5,7 @@ import { IExpression } from "sf-core/ast";
 import { IInjectable } from "sf-core/dependencies";
 import { watchProperty } from "sf-core/observable";
 import { IEntityDisplay } from "./display";
-import { bindable, mixin } from "sf-core/decorators";
+import { bindable, mixin, virtual } from "sf-core/decorators";
 import { IDisposable, IOwnable, INamed, IValued } from "sf-core/object";
 import {
   INode,
@@ -96,16 +96,11 @@ export abstract class BaseNodeEntity<T extends INamed> extends MarkupNode implem
 
   readonly parent: IContainerNodeEntity;
   readonly document: IEntityDocument;
-  readonly metadata: EntityMetadata;
+  public metadata: EntityMetadata;
 
-  constructor(public _source: T) {
-    super(_source.name);
-    this.metadata = new EntityMetadata(this);
-    this.metadata.observe(new BubbleBus(this));
-  }
-
-  get source(): T {
-    return this._source;
+  constructor(public source: T) {
+    super(source.name);
+    this.initialize();
   }
 
   public flatten(): Array<IEntity> {
@@ -118,50 +113,80 @@ export abstract class BaseNodeEntity<T extends INamed> extends MarkupNode implem
 
   public abstract clone();
   public abstract patch(entity: BaseNodeEntity<T>);
+
+  protected initialize() {
+    this.metadata = new EntityMetadata(this, this.getInitialMetadata());
+    this.metadata.observe(new BubbleBus(this));
+  }
+
+  protected getInitialMetadata() {
+    return {};
+  }
 }
 
 export abstract class BaseValueNodeEntity<T extends INamed & IValued> extends BaseNodeEntity<T> implements IValueNodeEntity {
 
   @bindable()
   public value: any;
+  private _shouldUpdate: boolean;
 
   constructor(source: T) {
     super(source);
-    this.initialize();
     this.value = source.value;
-    watchProperty(this, "value", this.onValueChange.bind(this)).trigger();
+    watchProperty(this, "value", this.onValueChange.bind(this));
   }
 
-  public update() {
-    this.source.value = this.value;
+  public update() { }
+
+  public patch(entity: BaseNodeEntity<T>) {
+    this.source = entity.source;
+    this.value  = this.source.value;
   }
 
-  protected initialize() { }
-  protected onValueChange(newValue: any, oldValue: any)  {
-  }
+  public abstract clone();
 
-  patch(entity: BaseNodeEntity<T>) {
-    this._source = entity.source;
-    this.value  = this._source.value;
-  }
+  protected onValueChange(newValue: any, oldValue: any) { }
 
-  abstract clone();
 }
 
 @mixin(BaseNodeEntity)
-export abstract class BaseContainerNodeEntity<T extends INamed> extends ContainerNode implements IContainerNodeEntity, BaseNodeEntity<T> {
+export abstract class BaseContainerNodeEntity<T extends INamed> extends ContainerNode implements IContainerNodeEntity {
 
   readonly parent: IContainerNodeEntity;
-  readonly document: IEntityDocument;
   readonly metadata: EntityMetadata;
   readonly children: Array<INodeEntity>;
-  readonly source: T;
-  public _source:T;
 
-  load: () => void;
-  update: () => void;
-  patch: (source: BaseContainerNodeEntity<T>) => void;
-  dispose: () => void;
+  private _document: IEntityDocument;
+
+  constructor(protected _source: T) {
+    super(_source.name);
+    this.initialize();
+  }
+
+  @virtual load() { }
+  @virtual patch(source: BaseContainerNodeEntity<T>) { }
+  @virtual dispose() { }
+
+  get source(): T {
+    return this._source;
+  }
+
+  get document(): IEntityDocument {
+    return this._document;
+  }
+
+  set document(value: IEntityDocument) {
+    this._document = value;
+    for (const child of this.children) {
+      child.document = value;
+    }
+  }
+
+  update() {
+    for (const child of this.children) {
+      (<IEntity>child).update();
+    }
+  }
 
   flatten(): Array<IEntity> {
     const items: Array<IEntity> = [this];
@@ -170,4 +195,7 @@ export abstract class BaseContainerNodeEntity<T extends INamed> extends Containe
     }
     return items;
   }
+
+  @virtual protected initialize() { }
+  @virtual protected getInitialMetadata() { }
 }

@@ -15,8 +15,6 @@ export abstract class BaseExpression implements IExpression {
   constructor(public position: IRange) { }
 }
 
-
-
 export function patchSource(content: string, oldAst: IExpression, modAst: IExpression) {
 
   // const oldExpressions = oldAst.flatten().reverse();
