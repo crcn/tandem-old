@@ -7,7 +7,7 @@ import { Logger } from "sf-core/logger";
 import * as express from "express";
 import { IOService } from "sf-common/services";
 import { IApplication } from "sf-core/application";
-import { DSUpsertAction } from "sf-core/actions";
+import { DSUpsertAction, LOAD } from "sf-core/actions";
 import { loggable, inject } from "sf-core/decorators";
 import * as createSocketIOServer from "socket.io";
 import { BaseApplicationService } from "sf-core/services";
@@ -36,7 +36,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
     this._port = this.app.config.port;
   }
 
-  async load() {
+  async [LOAD]() {
     await this._loadHttpServer();
     await this._loadStaticRoutes();
     await this._loadSocketServer();

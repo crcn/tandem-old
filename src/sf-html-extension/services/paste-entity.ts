@@ -4,11 +4,11 @@ import { HTMLFile } from "../models/html-file";
 import { parseHTML } from "../ast";
 import { MimeTypes } from "sf-html-extension/constants";
 import { filterAction } from "sf-core/decorators";
-import { PasteHTMLEntity } from "sf-html-extension/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { appendSourceChildren } from "sf-core/ast/entities";
 import { BaseApplicationService } from "sf-core/services";
 import { PASTE, PasteAction, SelectAction } from "sf-front-end/actions";
+import { PasteHTMLEntity, PASTE_HTML_ENTITY } from "sf-html-extension/actions";
 import {
   IInjectable,
   APPLICATION_SINGLETON_NS,
@@ -19,11 +19,11 @@ import {
 export class PasteHTMLService extends BaseApplicationService<FrontEndApplication> {
 
   @filterAction(sift({ "item.type": MimeTypes.HTML_MIME_TYPE }))
-  paste(action: PasteAction) {
+  [PASTE](action: PasteAction) {
     this.bus.execute(new PasteHTMLEntity(action.item));
   }
 
-  pasteHTMLEntity(action: PasteAction) {
+  [PASTE_HTML_ENTITY](action: PasteAction) {
 
     // TODO - need to paste to editor.focus (entity)
     action.item.getAsString(async (content) => {

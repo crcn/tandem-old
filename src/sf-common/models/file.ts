@@ -13,8 +13,6 @@ export const FILES_COLLECTION_NAME = "files";
 
 export class File extends ActiveRecord implements IFile {
 
-  public idProperty: string = "path";
-
   @bindable()
   public path: string;
 

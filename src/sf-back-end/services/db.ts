@@ -8,6 +8,10 @@ import { BaseApplicationService } from "sf-core/services";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 import {
   DSAction,
+  DS_FIND,
+  DS_INSERT,
+  DS_UPDATE,
+  DS_REMOVE,
   DSFindAction,
   DSInsertAction,
   DSRemoveAction,
@@ -29,7 +33,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("finds an item in the database")
-  dsFind(action: DSFindAction) {
+  [DS_FIND](action: DSFindAction) {
     return this._db.execute(action);
   }
 
@@ -38,7 +42,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("removes an item in the database")
-  dsRemove(action: DSRemoveAction) {
+  [DS_REMOVE](action: DSRemoveAction) {
     return this._db.execute(action);
   }
 
@@ -47,7 +51,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("inserts an item in the database")
-  dsInsert(action: DSInsertAction) {
+  [DS_INSERT](action: DSInsertAction) {
     return this._db.execute(action);
   }
 
@@ -55,7 +59,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("updates an item in the database")
-  dsUpdate(action: DSUpdateAction) {
+  [DS_UPDATE](action: DSUpdateAction) {
     return this._db.execute(action);
   }
 }

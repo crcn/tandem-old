@@ -1,4 +1,5 @@
 import { IActor } from "sf-core/actors";
+import { DS_UPSERT } from "sf-core/actions";
 import { UpsertBus } from "sf-common/busses";
 import { IApplication } from "sf-core/application";
 import { BaseApplicationService } from "sf-core/services";
@@ -15,7 +16,7 @@ export default class UpsertService extends BaseApplicationService<IApplication> 
   /**
    */
 
-  public upsert(action) {
+  [DS_UPSERT](action) {
     return this._bus.execute(action);
   }
 }

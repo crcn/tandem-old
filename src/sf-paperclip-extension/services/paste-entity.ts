@@ -9,7 +9,7 @@ import { ApplicationServiceDependency } from "sf-core/dependencies";
 
 export class PastePCService extends BaseApplicationService<FrontEndApplication> {
   @filterAction(sift({ "item.type": MimeTypes.PC_MIME_TYPE }))
-  paste(action: PasteAction) {
+  [PASTE](action: PasteAction) {
     this.bus.execute(new PasteHTMLEntity(action.item));
   }
 }

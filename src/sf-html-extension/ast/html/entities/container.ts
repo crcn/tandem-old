@@ -9,7 +9,7 @@ import { IHTMLEntity, IHTMLContainerEntity } from "./base";
 import { IHTMLContainerExpression, HTMLExpression } from "sf-html-extension/ast";
 import { IDOMSection, NodeSection, GroupNodeSection } from "sf-html-extension/dom";
 import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency, Injector } from "sf-core/dependencies";
-import { IEntity, IContainerNodeEntity, EntityMetadata, IContainerNodeEntitySource, IEntityDocument } from "sf-core/ast/entities";
+import { IEntity, IContainerNodeEntity, EntityMetadata, IContainerNodeEntitySource, IEntityDocument, BaseContainerNodeEntity } from "sf-core/ast";
 
 export abstract class BaseHTMLContainerEntity<T> extends ContainerNode implements IHTMLContainerEntity {
 

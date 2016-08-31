@@ -13,8 +13,7 @@ import {
 } from "sf-core/dependencies";
 
 export class SelectWithCSSSelectorService extends BaseApplicationService<FrontEndApplication> {
-  @filterAction(sift({ type: SELECT_WITH_CSS_SELECTOR }))
-  execute(action: SelectWithCSSSelector) {
+  [SELECT_WITH_CSS_SELECTOR](action: SelectWithCSSSelector) {
     this.bus.execute(new SelectAction(
       this.app.workspace.file.entity.flatten().filter(action.selector.test.bind(action.selector))
     ));

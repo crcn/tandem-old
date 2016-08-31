@@ -8,8 +8,8 @@ import { IApplication } from "sf-core/application";
 import { BaseApplicationService } from "sf-core/services";
 import { File, FILES_COLLECTION_NAME } from "sf-common/models";
 import { inject, loggable, document, filterAction } from "sf-core/decorators";
-import { PostDSAction, OpenFileAction, WatchFileAction } from "sf-core/actions";
 import { ApplicationServiceDependency, Dependencies, DEPENDENCIES_NS } from "sf-core/dependencies";
+import { PostDSAction, OpenFileAction, WatchFileAction, OPEN_FILE, WATCH_FILE, READ_FILE, DS_DID_UPDATE } from "sf-core/actions";
 
 @loggable()
 export default class FileService extends BaseApplicationService<IApplication> {
@@ -25,14 +25,14 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @document("opens a file")
-  openFile(action: OpenFileAction) {
+  [OPEN_FILE](action: OpenFileAction) {
     this.logger.info(`opening ${action.path}`);
 
     if (action.watch) {
       this._watch(action);
     }
 
-    const data = this.readFile(action);
+    const data = this[READ_FILE](action);
     let file: File;
 
     if (!(file = this._openFiles[data.path])) {
@@ -55,7 +55,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @document("reads a file content")
-  readFile(action: OpenFileAction|WatchFileAction) {
+  [READ_FILE](action: OpenFileAction|WatchFileAction) {
     return {
       path    : action.path,
       content : fs.readFileSync(action.path, "utf8")
@@ -68,7 +68,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @filterAction(sift({ collectionName: FILES_COLLECTION_NAME }))
-  dsDidRemove(action: PostDSAction ) {
+  [DS_DID_UPDATE](action: PostDSAction ) {
     const item = action.data;
     this._openFiles[item.path].dispose();
     this._openFiles[item.path] = undefined;
@@ -86,14 +86,14 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @document("watches a file for any changes")
-  watchFile(action: WatchFileAction) {
+  [WATCH_FILE](action: WatchFileAction) {
     return Response.create((writable) => {
       const watcher = gaze(action.path, (err, w) => {
         const cancel = () => this._closeFileWatcher(watcher, action);
         writable.then(cancel);
         w.on("all", async () => {
           try {
-            await writable.write(await this.readFile(action));
+            await writable.write(await this[READ_FILE](action));
           } catch (e) {
             cancel();
           }
@@ -108,7 +108,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
   _watch(action) {
     if (this._watchers[action.path]) return;
     this._watchers[action.path] = gaze(action.path, (err, watcher) => {
-      watcher.on("all", this.openFile.bind(this, action));
+      watcher.on("all", this[OPEN_FILE].bind(this, action));
     });
   }
 }

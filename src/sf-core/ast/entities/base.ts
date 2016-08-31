@@ -2,10 +2,10 @@ import { IFile } from "sf-core/active-records";
 import { Metadata } from "sf-core/metadata";
 import { BubbleBus } from "sf-core/busses";
 import { IExpression } from "sf-core/ast";
-import { bindable } from "sf-core/decorators";
 import { IInjectable } from "sf-core/dependencies";
 import { watchProperty } from "sf-core/observable";
 import { IEntityDisplay } from "./display";
+import { bindable, mixin } from "sf-core/decorators";
 import { IDisposable, IOwnable, INamed, IValued } from "sf-core/object";
 import {
   INode,
@@ -74,7 +74,6 @@ export interface IContainerNodeEntitySource {
 
 export interface INodeEntity extends INode, IEntity {
   parent: IContainerNodeEntity;
-  flatten(): Array<IEntity>;
 }
 export interface IContainerNodeEntity extends IContainerNode, INodeEntity {
   parent: IContainerNodeEntity;
@@ -99,7 +98,7 @@ export abstract class BaseNodeEntity<T extends INamed> extends MarkupNode implem
   readonly document: IEntityDocument;
   readonly metadata: EntityMetadata;
 
-  constructor(protected _source: T) {
+  constructor(public _source: T) {
     super(_source.name);
     this.metadata = new EntityMetadata(this);
     this.metadata.observe(new BubbleBus(this));
@@ -147,4 +146,28 @@ export abstract class BaseValueNodeEntity<T extends INamed & IValued> extends Ba
   }
 
   abstract clone();
+}
+
+@mixin(BaseNodeEntity)
+export abstract class BaseContainerNodeEntity<T extends INamed> extends ContainerNode implements IContainerNodeEntity, BaseNodeEntity<T> {
+
+  readonly parent: IContainerNodeEntity;
+  readonly document: IEntityDocument;
+  readonly metadata: EntityMetadata;
+  readonly children: Array<INodeEntity>;
+  readonly source: T;
+  public _source:T;
+
+  load: () => void;
+  update: () => void;
+  patch: (source: BaseContainerNodeEntity<T>) => void;
+  dispose: () => void;
+
+  flatten(): Array<IEntity> {
+    const items: Array<IEntity> = [this];
+    for (const child of this.children) {
+      items.push(...child.flatten());
+    }
+    return items;
+  }
 }

@@ -6,17 +6,18 @@ import { IDisposable } from "sf-core/object";
 import { MetadataKeys } from "sf-front-end/constants";
 import { tween, easeOutCubic } from "sf-core/animate";
 import { FrontEndApplication } from "sf-front-end/application";
-import { Action, DSFindAction } from "sf-core/actions";
 import { BaseApplicationService } from "sf-core/services";
 import { Workspace, DocumentFile } from "sf-front-end/models";
-import { SetToolAction, ZoomAction } from "sf-front-end/actions";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
+import { Action, DSFindAction, INITIALIZE } from "sf-core/actions";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
+import { SetToolAction, ZoomAction, ZOOM, SET_TOOL } from "sf-front-end/actions";
 import {
   Dependencies,
   DEPENDENCIES_NS,
   ApplicationServiceDependency,
 } from "sf-core/dependencies";
+
 
 export class WorkspaceService extends BaseApplicationService<FrontEndApplication> {
 
@@ -25,7 +26,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
   private _tweener: IDisposable;
   private _zoomTimeout: any;
 
-  async initialize(action: Action) {
+  async [INITIALIZE](action: Action) {
     await this._loadWorkspaces();
 
     // set the pointer tool as default. TODO - this
@@ -37,6 +38,8 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
     // TODO - File.findAll(this._dependencies).sync().observe(updateWorkspaces);
     for (const file of (await File.findAll(this._dependencies)).map((file) => file.sync() as DocumentFile<any>)) {
+      console.log(file);
+
       // TODO - this.app.workspaces = new Workspaces(files.map())
       await file.load();
       this.bus.register(this.app.workspace = new Workspace(<DocumentFile<any>>file));
@@ -45,7 +48,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
   }
 
-  zoom(action: ZoomAction) {
+  [ZOOM](action: ZoomAction) {
     if (this._tweener) this._tweener.dispose();
     const delta = action.delta * this.app.workspace.editor.zoom;
 
@@ -72,7 +75,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     }, 10);
   }
 
-  setTool(action: SetToolAction) {
+  [SET_TOOL](action: SetToolAction) {
     this.app.workspace.editor.currentTool = action.toolFactory.create(this.app.workspace.editor);
   }
 }
