@@ -65,7 +65,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     }
   }
 
-  protected abstract parse(content: string): IExpression;
+  abstract parse(content: string): IExpression;
   protected abstract getFormattedContent(ast: IExpression): string;
   protected abstract createEntity(ast: IExpression): T;
 

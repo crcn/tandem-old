@@ -17,6 +17,7 @@ export class Metadata extends Observable {
   toggle(key: string) {
     const v = this.get(key);
     this.set(key, v == null ? true : !v);
+    return this.get(key);
   }
 
   set(key: string, value: any) {

@@ -21,6 +21,7 @@ export class EntityMetadata extends Metadata implements IOwnable {
 
 export interface IEntityDocument {
   update();
+  parse(source: string): IExpression;
 }
 
 export interface IEntity extends IDisposable, IInjectable {

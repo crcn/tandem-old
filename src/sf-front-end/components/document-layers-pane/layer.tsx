@@ -37,7 +37,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     this.state = {};
   }
 
-  onClick(event) {
+  onClick = (event) => {
 
     const { entity, workspace } = this.props;
     const rootEntity = workspace.file.entity;
@@ -95,6 +95,17 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     }
 
     this.props.app.bus.execute(new SelectAction(select, false, false));
+  }
+
+  onHeaderKeyDown = (event: KeyboardEvent) => {
+    if (event.keyCode === 13) {
+      if (!this.props.entity.metadata.toggle(MetadataKeys.EDIT_LAYER)) {
+
+        // re-focus on header so that the user hit enter again to edit
+        // the input
+        (this.refs as any).header.focus();
+      }
+    }
   }
 
   toggleExpand(expand, event) {
@@ -165,7 +176,9 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     labelSection =  <div
       style={{paddingLeft: this.props.paddingLeft}}
       tabIndex="0"
-      onClick={this.onClick.bind(this)}
+      ref="header"
+      onClick={this.onClick}
+      onKeyDown={this.onHeaderKeyDown}
       onMouseOver={this.onMouseOver}
       onMouseOut={this.onMouseOut}
       className={headerClassName}>

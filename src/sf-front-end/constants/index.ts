@@ -16,5 +16,6 @@ export namespace MetadataKeys {
   export const HIDDEN = "hidden";
   export const MOVING = "moving";
   export const ZOOMING = "zooming";
+  export const EDIT_LAYER = "editLayer";
   export const LAYER_EXPANDED = "layerExpanded";
 }

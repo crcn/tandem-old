@@ -11,7 +11,7 @@ import { FrontEndApplication } from "sf-front-end/application";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 import { replaceEntitySource } from "sf-core/ast";
 import { HTMLElementEntity, VisibleHTMLElementEntity } from "sf-html-extension/ast";
-import { parseHTML, HTMLFragmentExpression, HTMLElementExpression } from "sf-html-extension/ast";
+import { HTMLFragmentExpression, HTMLElementExpression } from "sf-html-extension/ast";
 
 const VOID_ELEMENTS = [];
 
@@ -31,10 +31,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
   }
 
   editHTML = () => {
-    this.setState({
-      editTagName: true,
-      source: this.getHTMLValue()
-    });
+    this.props.entity.metadata.set(MetadataKeys.EDIT_LAYER, true);
   }
 
   setState(state) {
@@ -76,10 +73,12 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
       <span className="m-element-layer-label--tag" key="lt">&lt;</span>
     ];
 
-    if (this.state.editTagName) {
+    const editTagName = this.props.entity.metadata.get(MetadataKeys.EDIT_LAYER);
+
+    if (editTagName) {
       buffer.push(this.renderHTMLInput());
     } else {
-      buffer.push(this.state.editTagName ?
+      buffer.push(editTagName ?
         this.renderHTMLInput() :
         <span className="m-element-layer-label--tag-name" key="tagName">{entity.name.toLowerCase()}</span>
       );
@@ -111,9 +110,6 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
   }
 
   onInputKeyDown = (event) => {
-    if (event.keyCode === 13) {
-      this.doneEditing(null);
-    }
     if (event.keyCode === 27) {
       this.cancelEditing();
     }
@@ -126,18 +122,20 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
   }
 
   cancelEditing = () => {
-    this.setState({ editTagName: false });
+    this.setState({ source: undefined });
+    this.props.entity.metadata.set(MetadataKeys.EDIT_LAYER, false);
   }
 
-  doneEditing = (event) => {
+  doneEditing = (event?: KeyboardEvent) => {
+
 
     const entity = this.props.entity;
-
-    const source = String(this.state.source || "").trim();
     let ast: HTMLFragmentExpression;
 
+    if (!this.state.source) return this.cancelEditing();
+
     try {
-      ast = parseHTML(`<${this.state.source} />`);
+      ast = entity.document.parse(`<${this.state.source} />`) as HTMLFragmentExpression;
     } catch (e) {
       return this.cancelEditing();
     }
@@ -145,13 +143,14 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
     // copy children
     (ast.children[0] as HTMLElementExpression).children = entity.source.children;
 
+    console.log(ast.children[0].toString());
+
     // replace - tag name might have changed -- this cannot be patched
     replaceEntitySource(entity, ast.children[0]);
 
-    this.setState({
-      editTagName: false
-    });
+    this.cancelEditing();
   }
+
 
   onInputFocus = (event) => {
     event.target.select();
@@ -163,7 +162,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
       className="m-layer-label-input"
       onFocus={this.onInputFocus}
       onBlur={this.doneEditing}
-      value={this.state.source}
+      value={this.state.source == null ? this.getHTMLValue() : this.state.source}
       onChange={this.onInputChange}
       onKeyDown={this.onInputKeyDown}
     /></FocusComponent>;
