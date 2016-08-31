@@ -123,7 +123,6 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
 
   cancelEditing = () => {
     this.setState({ source: undefined });
-    this.props.entity.metadata.set(MetadataKeys.EDIT_LAYER, false);
   }
 
   doneEditing = (event?: KeyboardEvent) => {

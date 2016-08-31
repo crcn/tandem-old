@@ -5,16 +5,17 @@ input {
   padding: 0px;
   height: auto;
 
-  padding-left: $padding-0;
-  padding-right: $padding-0;
-
   // TODO - use no-borders() helper
   border-radius: $border-radius-1;
   border: none;
   box-shadow: none;
   -webkit-user-select: text;
 
+  color: $color-blue-7;
+  padding-left: 0;
+  padding-right: 0;
   &:focus {
-    box-shadow: inset 0 0 0 1px $color-sky-blue-4 !important;
+    outline: none;
+    box-shadow: none !important;
   }
 }

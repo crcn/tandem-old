@@ -3,6 +3,4 @@
 - [ ] scss parser
 - [ ] save scss vars
 - [ ] make layers fully featured
-- [ ] ability to split screen layers
-- [ ] drag and drop components
-- [ ] artboard -> component
+- [x] ability to split screen layers

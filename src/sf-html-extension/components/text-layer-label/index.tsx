@@ -3,65 +3,55 @@ import "./index.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
+import FocusComponent from "sf-front-end/components/focus";
 import { SelectAction } from "sf-front-end/actions";
+import { MetadataKeys } from "sf-front-end/constants";
 import * as AutosizeInput from "react-input-autosize";
 import { HTMLTextEntity } from "sf-html-extension/ast";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 
-class FocusComponent extends React.Component<any, any> {
-  render() {
-    return this.props.childNodes;
-  }
-}
-
 class TextLayerLabelComponent extends React.Component<{ entity: HTMLTextEntity, connectDragSource: Function }, any> {
 
-  constructor() {
-    super();
-    this.state = {
-      edit: false
-    };
-  }
+  private _oldValue: string;
 
-  editLabel() {
-    this.setState({
-      edit: true
-    });
+  editLabel = () => {
+    this.props.entity.metadata.set(MetadataKeys.EDIT_LAYER, true);
   }
 
   render() {
 
     // const edit = this.state.edit && !!~this.props.app.selection.indexOf(this.props.entity);
     const connectDragSource = this.props.connectDragSource;
+    const edit = this.props.entity.metadata.get(MetadataKeys.EDIT_LAYER);
 
     return connectDragSource(<span
       className="m-label m-text-layer-label"
-      onDoubleClick={this.editLabel.bind(this)}>
+      onDoubleClick={this.editLabel}>
       {
-        this.state.edit         ?
+        edit         ?
         this.renderInput()      :
         this.props.entity.value
       }
     </span>);
   }
 
-  onInputChange(event) {
-    // this.props.entity.setProperties({
-    //   value: event.target.nodeValue
-    // });
+  onInputChange = (event) => {
+    this.props.entity.value = event.target.value;
+    this.forceUpdate();
   }
 
-  doneEditing() {
-    this.setState({ edit: false });
+  doneEditing = ()  => {
+    this.props.entity.metadata.set(MetadataKeys.EDIT_LAYER, false);
+    this.props.entity.document.update();
   }
 
-  onInputKeyDown(event) {
-    if (event.keyCode === 13) {
-      this.doneEditing();
+  onKeyDown = (event: KeyboardEvent) => {
+    if (event.keyCode === 27) {
+      this.props.entity.value = this.props.entity.source.value;
     }
   }
 
-  onInputFocus(event) {
+  onFocus = (event) => {
     event.target.select();
   }
 
@@ -69,11 +59,11 @@ class TextLayerLabelComponent extends React.Component<{ entity: HTMLTextEntity, 
     return <FocusComponent><AutosizeInput
       type="text"
       className="m-layer-label-input"
-      onFocus={this.onInputFocus.bind(this)}
+      onFocus={this.onFocus}
       value={this.props.entity.value}
-      onChange={this.onInputChange.bind(this)}
-      onBlur={this.doneEditing.bind(this)}
-      onKeyDown={this.onInputKeyDown.bind(this)}
+      onChange={this.onInputChange}
+      onBlur={this.doneEditing}
+      onKeyDown={this.onKeyDown}
       /></FocusComponent>;
   }
 }

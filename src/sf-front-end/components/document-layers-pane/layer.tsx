@@ -98,7 +98,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
   }
 
   onHeaderKeyDown = (event: KeyboardEvent) => {
-    if (event.keyCode === 13) {
+    if (event.keyCode === 13 || event.keyCode === 27) {
       if (!this.props.entity.metadata.toggle(MetadataKeys.EDIT_LAYER)) {
 
         // re-focus on header so that the user hit enter again to edit
