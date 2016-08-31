@@ -3,7 +3,7 @@ import { Metadata } from "sf-core/metadata";
 import { IExpression } from "sf-core/ast";
 import { IInjectable } from "sf-core/dependencies";
 import { IEntityDisplay } from "./display";
-import { IDisposable, INamed } from "sf-core/object";
+import { IDisposable, IOwnable, INamed } from "sf-core/object";
 import {
   INode,
   IValueNode,
@@ -13,8 +13,8 @@ import {
   IContainerNode,
 } from "sf-core/markup";
 
-export class EntityMetadata extends Metadata {
-  constructor(readonly entity: IEntity, data?: any) {
+export class EntityMetadata extends Metadata implements IOwnable {
+  constructor(readonly owner: IEntity, data?: any) {
     super(data);
   }
 }

@@ -3,7 +3,9 @@ import "./layer.scss";
 import * as cx from "classnames";
 import * as React from "react";
 import { Action } from "sf-core/actions";
+import { IActor } from "sf-core/actors";
 import { Workspace } from "sf-front-end/models";
+import { CallbackBus } from "sf-core/busses";
 import { MetadataKeys } from "sf-front-end/constants";
 import { Dependencies } from "sf-core/dependencies";
 import { FrontEndApplication } from "sf-front-end/application";
@@ -290,8 +292,33 @@ LayerDndLabelComponent = DropTarget("element", {
 
 export default class LayerComponent extends React.Component<{ app: FrontEndApplication, entity: INodeEntity, depth: number }, any> {
 
+  private _entityObserver: IActor;
+
+  constructor(props) {
+    super(props);
+    this.state = {};
+    this._entityObserver = new CallbackBus(this._onEntityChange);
+  }
+
+  shouldComponentUpdate(props) {
+    return this.props.entity !== props.entity;
+  }
+
+  _onEntityChange = (action: Action) => {
+    this.forceUpdate();
+  }
+
+  componentWillReceiveProps(props) {
+    if (this.props.entity !== props.entity) {
+      console.log(this.props.entity);
+      this.props.entity.unobserve(this._entityObserver);
+      props.entity.observe(this._entityObserver);
+    }
+  }
+
   componentDidMount() {
     this.props.app.bus.register(this);
+    this.props.entity.observe(this._entityObserver);
   }
 
   execute(action: Action) {
@@ -306,11 +333,14 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
           p = p.parent as IContainerNodeEntity;
         }
       });
+
+      this.forceUpdate();
     }
   }
 
   componentWillUnmount() {
     this.props.app.bus.unregister(this);
+    this.props.entity.unobserve(this);
   }
 
   render() {

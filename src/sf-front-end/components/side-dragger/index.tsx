@@ -11,7 +11,6 @@ export class SideDraggerComponent extends React.Component<{ reference: IReferenc
     this._start = this.props.reference.value;
   }
   onDrag = (delta: { left: number, top: number }) => {
-    console.log(this._start, delta.left);
     this.props.reference.value = this._start + (this.props.position === "right" ? delta.left : -delta.left);
   }
   render() {

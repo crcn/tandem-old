@@ -10,3 +10,7 @@ export interface ICloneable {
   clone(): ICloneable;
 }
 
+export interface IOwnable {
+  readonly owner: any;
+}
+
