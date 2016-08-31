@@ -31,4 +31,5 @@ export interface IEntityDisplay {
   bounds: BoundingRect;
   capabilities: DisplayCapabilities;
   position: IPoint;
+  visible: boolean;
 }

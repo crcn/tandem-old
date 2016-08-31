@@ -51,6 +51,7 @@ export class LinkEntity extends HTMLElementEntity {
     const fileFactory = ActiveRecordFactoryDependency.find(type, this._dependencies);
     this._file = fileFactory.create("linkFiles", value);
     await this._file.load();
+    this.appendChild(this._file.entity);
     return super.load();
   }
 

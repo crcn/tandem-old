@@ -6,6 +6,8 @@ import { register as registerSerializer, serializeArray, deserialize } from "sf-
 
 class EntitySelectionDisplay implements IEntityDisplay {
 
+  readonly visible: boolean = true;
+
   constructor(readonly selection: DisplayEntitySelection<any>) { }
 
   get position(): IPoint {

@@ -85,6 +85,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
 
       // filter them, and remove the items we do not want to display
       // (for now)
+      // TODO - add attribute components here
 
       entity.attributes.forEach(function (attr) {
         const k = attr.name;

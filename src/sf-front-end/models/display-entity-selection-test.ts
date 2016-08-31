@@ -13,6 +13,8 @@ describe(__filename + "#", () => {
     ) {
     }
 
+    readonly visible: boolean = true;
+
     get position() {
       const bounds = this.bounds;
       return { left: bounds.left, top: bounds.top };

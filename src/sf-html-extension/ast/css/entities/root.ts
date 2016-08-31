@@ -6,19 +6,18 @@ import { ContainerNode } from "sf-core/markup";
 import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { parseCSS, CSSStyleSheetExpression } from "sf-html-extension/ast";
 import { Dependencies, DEPENDENCIES_NS, Injector } from "sf-core/dependencies";
-import { IEntity, EntityMetadata, IEntityDocument } from "sf-core/ast/entities";
+import { IContainerNodeEntity, INodeEntity, EntityMetadata, IEntityDocument } from "sf-core/ast/entities";
 
-export class CSSRootEntity extends Observable implements IEntity {
-  readonly parent: IEntity;
+export class CSSRootEntity extends ContainerNode implements IContainerNodeEntity {
+  readonly parent: IContainerNodeEntity;
   readonly metadata: EntityMetadata = new EntityMetadata(this);
+  readonly children: Array<INodeEntity>;
 
   constructor(private _source: CSSStyleSheetExpression, public document: IEntityDocument, readonly dependencies: Dependencies) {
-    super();
+    super("#css-document");
   }
 
-  dispose() {
-  }
-
+  dispose() { }
 
   get source(): CSSStyleSheetExpression {
     return this._source;
@@ -29,7 +28,7 @@ export class CSSRootEntity extends Observable implements IEntity {
     this.load();
   }
 
-  flatten(): Array<IEntity> {
+  flatten(): Array<INodeEntity> {
     return [this];
   }
 
@@ -44,5 +43,4 @@ export class CSSRootEntity extends Observable implements IEntity {
   update() {
     // TODO
   }
-
 }

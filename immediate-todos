@@ -1,5 +1,5 @@
-- [ ] edit html in layers pane
-- [ ] edit attributes
+- [x] edit html in layers pane
+- [x] edit attributes
 - [ ] scss parser
 - [ ] save scss vars
 - [ ] make layers fully featured

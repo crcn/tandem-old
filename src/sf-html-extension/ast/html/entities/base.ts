@@ -5,7 +5,6 @@ import { INodeEntity, IContainerNodeEntity, IContainerNodeEntitySource } from "s
 
 export interface IHTMLEntity extends INodeEntity {
   section: IDOMSection;
-  flatten(): Array<IHTMLEntity>;
 }
 
 export interface IHTMLDocumentEntity extends IHTMLEntity {
@@ -13,7 +12,6 @@ export interface IHTMLDocumentEntity extends IHTMLEntity {
 
 export interface IHTMLContainerEntity extends IHTMLEntity, IContainerNodeEntity {
   children: Array<IHTMLEntity>;
-  flatten(): Array<IHTMLEntity>;
 }
 
 

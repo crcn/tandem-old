@@ -106,8 +106,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
   private _declarationByKey: Object;
   private _cachedBounds: BoundingRect;
 
-  constructor(readonly entity: VisibleHTMLElementEntity) {
-  }
+  constructor(readonly entity: VisibleHTMLElementEntity) { }
 
   /**
    */
@@ -121,6 +120,12 @@ export class HTMLNodeDisplay implements IEntityDisplay {
       style.position !== "static",
       /fixed|absolute/.test(style.position) || !/^inline$/.test(style.display)
     );
+  }
+
+  get visible(): boolean {
+    const node = this.node;
+    const visible = !!(node.offsetWidth || node.offsetHeight || node.getClientRects && node.getClientRects().length);
+    return visible;
   }
 
   get position(): IPoint {

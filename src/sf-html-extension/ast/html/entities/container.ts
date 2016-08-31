@@ -71,8 +71,8 @@ export abstract class BaseHTMLContainerEntity<T> extends ContainerNode implement
     // override me
   }
 
-  flatten(): Array<IHTMLEntity> {
-    const flattened: Array<IHTMLEntity> = [this];
+  flatten(): Array<IEntity> {
+    const flattened: Array<IEntity> = [this];
     for (const child of this.children) {
       flattened.push(...child.flatten());
     }

@@ -1,16 +1,20 @@
 import { IFile } from "sf-core/active-records";
 import { Metadata } from "sf-core/metadata";
+import { BubbleBus } from "sf-core/busses";
 import { IExpression } from "sf-core/ast";
+import { bindable } from "sf-core/decorators";
 import { IInjectable } from "sf-core/dependencies";
+import { watchProperty } from "sf-core/observable";
 import { IEntityDisplay } from "./display";
-import { IDisposable, IOwnable, INamed } from "sf-core/object";
+import { IDisposable, IOwnable, INamed, IValued } from "sf-core/object";
 import {
   INode,
-  IValueNode,
-  IElement,
   Element,
+  IElement,
+  IValueNode,
   ContainerNode,
   IContainerNode,
+  Node as MarkupNode,
 } from "sf-core/markup";
 
 export class EntityMetadata extends Metadata implements IOwnable {
@@ -70,31 +74,77 @@ export interface IContainerNodeEntitySource {
 
 export interface INodeEntity extends INode, IEntity {
   parent: IContainerNodeEntity;
-  root: IContainerNodeEntity;
   flatten(): Array<IEntity>;
 }
 export interface IContainerNodeEntity extends IContainerNode, INodeEntity {
   parent: IContainerNodeEntity;
-  root: IContainerNodeEntity;
   children: Array<INodeEntity>;
 }
 
 export interface IValueNodeEntity extends INodeEntity, IValueNode {
   parent: IContainerNodeEntity;
-  root: IContainerNodeEntity;
 }
 
 export interface IElementEntity extends IElement, IContainerNodeEntity {
   parent: IContainerNodeEntity;
-  root: IContainerNodeEntity;
   children: Array<INodeEntity>;
 }
 export interface IVisibleNodeEntity extends INodeEntity {
   display: IEntityDisplay;
 }
 
-export function getContext(entity: IEntity) {
-  let p = <IContextualEntity>entity.parent;
-  while (p && !p.context) p = <IContextualEntity>p.parent;
-  return p ? p.context || {} : {};
+export abstract class BaseNodeEntity<T extends INamed> extends MarkupNode implements INodeEntity {
+
+  readonly parent: IContainerNodeEntity;
+  readonly document: IEntityDocument;
+  readonly metadata: EntityMetadata;
+
+  constructor(protected _source: T) {
+    super(_source.name);
+    this.metadata = new EntityMetadata(this);
+    this.metadata.observe(new BubbleBus(this));
+  }
+
+  get source(): T {
+    return this._source;
+  }
+
+  public flatten(): Array<IEntity> {
+    return [this];
+  }
+
+  public load() { }
+  public update() { }
+  public dispose() { }
+
+  public abstract clone();
+  public abstract patch(entity: BaseNodeEntity<T>);
+}
+
+export abstract class BaseValueNodeEntity<T extends INamed & IValued> extends BaseNodeEntity<T> implements IValueNodeEntity {
+
+  @bindable()
+  public value: any;
+
+  constructor(source: T) {
+    super(source);
+    this.initialize();
+    this.value = source.value;
+    watchProperty(this, "value", this.onValueChange.bind(this)).trigger();
+  }
+
+  public update() {
+    this.source.value = this.value;
+  }
+
+  protected initialize() { }
+  protected onValueChange(newValue: any, oldValue: any)  {
+  }
+
+  patch(entity: BaseNodeEntity<T>) {
+    this._source = entity.source;
+    this.value  = this._source.value;
+  }
+
+  abstract clone();
 }

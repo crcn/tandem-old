@@ -1,4 +1,4 @@
-import { IEntity, IContainerNodeEntity } from "./base";
+import { IEntity, IContainerNodeEntity, IContextualEntity } from "./base";
 
 export function findEntitiesBySource(entity: IEntity, ...sources) {
 
@@ -28,3 +28,11 @@ export async function insertSourceChildren(entity: IContainerNodeEntity, index: 
   // that a source expression can be represented by many entities, which is why this funny chunk of code is necessary.
   return findEntitiesBySource(entity, ...entity.source.children.slice(index, index + childSources.length));
 }
+
+
+export function getContext(entity: IEntity) {
+  let p = <IContextualEntity>entity.parent;
+  while (p && !p.context) p = <IContextualEntity>p.parent;
+  return p ? p.context || {} : {};
+}
+
