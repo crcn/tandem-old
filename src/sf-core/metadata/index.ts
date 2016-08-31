@@ -20,7 +20,11 @@ export class Metadata extends Observable {
   }
 
   set(key: string, value: any) {
+    const oldValue = this.get(key);
     this._data[key] = value;
-    this.notify(new MetadataChangeAction(key, value));
+
+    if (value !== oldValue) {
+      this.notify(new MetadataChangeAction(key, value));
+    }
   }
 }

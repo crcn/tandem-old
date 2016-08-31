@@ -37,12 +37,6 @@ class BlockLayerLabel extends React.Component<{ entity: PCBlockNodeEntity, conne
     </span>);
   }
 
-  // onInputChange(event) {
-  //   this.props.entity.setProperties({
-  //     value: event.target.nodeValue
-  //   });
-  // }
-
   doneEditing() {
     this.setState({ edit: false });
   }

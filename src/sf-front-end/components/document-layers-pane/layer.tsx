@@ -2,7 +2,6 @@ import "./layer.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
-import { Action } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
 import { Workspace } from "sf-front-end/models";
 import { CallbackBus } from "sf-core/busses";
@@ -13,7 +12,10 @@ import { flatten, intersection } from "lodash";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 import { DragSource, DropTarget, DndComponent } from "react-dnd";
 import { SelectAction, ToggleSelectAction, SELECT } from "sf-front-end/actions";
+import { Action, MetadataChangeAction, METADATA_CHANGE } from "sf-core/actions";
 import { INodeEntity, IContainerNodeEntity, IVisibleNodeEntity, appendSourceChildren, insertSourceChildren } from "sf-core/ast/entities";
+
+
 
 interface ILayerLabelProps {
   paddingLeft?: number;
@@ -290,6 +292,10 @@ LayerDndLabelComponent = DropTarget("element", {
   };
 })(LayerDndLabelComponent);
 
+
+
+
+
 export default class LayerComponent extends React.Component<{ app: FrontEndApplication, entity: INodeEntity, depth: number }, any> {
 
   private _entityObserver: IActor;
@@ -297,32 +303,14 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
   constructor(props) {
     super(props);
     this.state = {};
-    this._entityObserver = new CallbackBus(this._onEntityChange);
-  }
-
-  shouldComponentUpdate(props) {
-    return this.props.entity !== props.entity;
-  }
-
-  _onEntityChange = (action: Action) => {
-    this.forceUpdate();
-  }
-
-  componentWillReceiveProps(props) {
-    if (this.props.entity !== props.entity) {
-      console.log(this.props.entity);
-      this.props.entity.unobserve(this._entityObserver);
-      props.entity.observe(this._entityObserver);
-    }
   }
 
   componentDidMount() {
     this.props.app.bus.register(this);
-    this.props.entity.observe(this._entityObserver);
+    // this.props.entity.observe(this._entityObserver);
   }
 
   execute(action: Action) {
-
     // when the select action is executed, take all items
     // and ensure that the parent is expanded. Not pretty, encapsulated, and works.
     if (action.type === SELECT) {
@@ -333,8 +321,6 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
           p = p.parent as IContainerNodeEntity;
         }
       });
-
-      this.forceUpdate();
     }
   }
 

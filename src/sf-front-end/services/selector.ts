@@ -1,12 +1,13 @@
 import { DISPOSE } from "sf-core/actions";
 import { Selection } from "sf-front-end/models";
+import { MetadataKeys } from "sf-front-end/constants";
 import { loggable, bindable } from "sf-core/decorators";
 import { FrontEndApplication } from "sf-front-end/application";
 import { BaseApplicationService } from "sf-core/services";
-import { IEntity, IContainerNodeEntity } from "sf-core/ast/entities";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
+import { IEntity, IContainerNodeEntity } from "sf-core/ast/entities";
 
 @loggable()
 export default class SelectorService extends BaseApplicationService<FrontEndApplication> {
@@ -96,6 +97,14 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     });
 
     app.workspace.selection = <Selection<any>>newSelection;
+
+    for (const item of prevSelection) {
+      (<IEntity>item).metadata.set(MetadataKeys.SELECTED, false);
+    }
+
+    for (const item of newSelection) {
+      (<IEntity>item).metadata.set(MetadataKeys.SELECTED, true);
+    }
 
     app.workspace.selection.observe({
       execute: (action) => {

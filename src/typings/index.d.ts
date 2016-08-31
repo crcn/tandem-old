@@ -12,6 +12,7 @@
 /// <reference path="globals/mocha/index.d.ts" />
 /// <reference path="globals/mousetrap/index.d.ts" />
 /// <reference path="globals/node/index.d.ts" />
+/// <reference path="globals/react-addons-pure-render-mixin/index.d.ts" />
 /// <reference path="globals/react-dnd-html5-backend/index.d.ts" />
 /// <reference path="globals/react-dnd/index.d.ts" />
 /// <reference path="globals/react-dom/index.d.ts" />

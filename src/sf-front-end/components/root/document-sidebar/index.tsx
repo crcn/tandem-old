@@ -12,6 +12,7 @@ export class DocumentSidebarComponent extends React.Component<{ app: FrontEndApp
       {...this.props}
       position="left"
       hideKey={SettingKeys.HIDE_LEFT_SIDEBAR}
+      maxWidth={800}
       sizeKey="documentSidebarSize"
       registeredComponentNs={[DOCUMENT_PANE_COMPONENT_NS, "**"].join("/")} />;
   }

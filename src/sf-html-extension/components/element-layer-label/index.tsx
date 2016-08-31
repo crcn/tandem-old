@@ -3,18 +3,15 @@ import "./index.scss";
 
 import * as React from "react";
 
-import * as AutosizeInput from "react-input-autosize";
+import FocusComponent from "sf-front-end/components/focus";
 import { MetadataKeys } from "sf-front-end/constants";
 import { SelectAction } from "sf-front-end/actions";
+import * as AutosizeInput from "react-input-autosize";
 import { FrontEndApplication } from "sf-front-end/application";
-import { HTMLElementEntity, VisibleHTMLElementEntity } from "sf-html-extension/ast";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
-
-class FocusComponent extends React.Component<any, any> {
-  render() {
-    return this.props.children;
-  }
-}
+import { replaceEntitySource } from "sf-core/ast";
+import { HTMLElementEntity, VisibleHTMLElementEntity } from "sf-html-extension/ast";
+import { parseHTML, HTMLFragmentExpression, HTMLElementExpression } from "sf-html-extension/ast";
 
 const VOID_ELEMENTS = [];
 
@@ -22,9 +19,6 @@ import {
   SetToolAction
 } from "sf-front-end/actions";
 
-const CLASS_IGNORE_NAME_PRIORITY = [
-  // "style"
-];
 
 class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEntity, app: FrontEndApplication, connectDragSource: Function }, any> {
 
@@ -36,13 +30,11 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
     this.state = {};
   }
 
-  editHTML() {
-    // TODO - uncomment this when this is fixed
-    // return;
-    // this.setState({
-    //   editTagName: true,
-    //   source: this.getHTMLValue()
-    // });
+  editHTML = () => {
+    this.setState({
+      editTagName: true,
+      source: this.getHTMLValue()
+    });
   }
 
   setState(state) {
@@ -94,11 +86,8 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
 
       // filter them, and remove the items we do not want to display
       // (for now)
-      const attrs = entity.attributes.concat().sort(function (a, b) {
-        return a.name > b.name ? -1 : 1;
-      }).filter((a) => CLASS_IGNORE_NAME_PRIORITY.indexOf(a.name) === -1);
 
-      attrs.forEach(function (attr) {
+      entity.attributes.forEach(function (attr) {
         const k = attr.name;
         buffer.push(
           <span className="m-element-layer-label--key" key={k + 1}>&nbsp;{k}</span>,
@@ -116,63 +105,55 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
     );
 
 
-    return <div className="m-label m-element-layer-label" onDoubleClick={this.editHTML.bind(this)}>
+    return <div className="m-label m-element-layer-label" onDoubleClick={this.editHTML}>
       { connectDragSource(<span>{buffer}</span>) } { !~VOID_ELEMENTS.indexOf(entity.name.toLowerCase()) ? <span className="m-element-layer-label--add-child-button" onClick={this.addChild.bind(this)}>+</span> : void 0 }
     </div>;
   }
 
-  onInputKeyDown(event) {
+  onInputKeyDown = (event) => {
     if (event.keyCode === 13) {
       this.doneEditing(null);
     }
+    if (event.keyCode === 27) {
+      this.cancelEditing();
+    }
   }
 
-  onInputChange(event) {
+  onInputChange = (event) => {
     this.setState({
       source: event.target.value
     });
   }
 
-  doneEditing(event) {
+  cancelEditing = () => {
+    this.setState({ editTagName: false });
+  }
+
+  doneEditing = (event) => {
 
     const entity = this.props.entity;
 
     const source = String(this.state.source || "").trim();
+    let ast: HTMLFragmentExpression;
 
-    // dumb parser here...
-    const tagName = source.match(/\w+/);
-    const attrRegExp = /\s+(\w+)(=[""](.*?)[""])?/g;
-    const attributes = source.match(attrRegExp) || [];
-
-    // if (tagName) {
-    //   entity.tagName = tagName[0];
-    // }
-
-    // turn it off so it doesn"t get copied & pasted
-    // entity.editLayerSource = false;
-
-    // delete ALL attributes
-    for (const key in entity.attributes) {
-      if (key === "style") continue;
-      entity.setAttribute(key, void 0);
+    try {
+      ast = parseHTML(`<${this.state.source} />`);
+    } catch (e) {
+      return this.cancelEditing();
     }
 
-    // reset attributes with inserted text
-    attributes.forEach(function(attr) {
-      const match = attr.match(new RegExp(attrRegExp.source));
-      entity.setAttribute(match[1], match[3]);
-    });
+    // copy children
+    (ast.children[0] as HTMLElementExpression).children = entity.source.children;
 
-    // TODO - this smells funny here - need to reset selection
-    // otherwise stuff breaks.
-    // this.props.app.notifier.notify(new SelectAction([entity]));
+    // replace - tag name might have changed -- this cannot be patched
+    replaceEntitySource(entity, ast.children[0]);
 
     this.setState({
       editTagName: false
     });
   }
 
-  onInputFocus(event) {
+  onInputFocus = (event) => {
     event.target.select();
   }
 
@@ -180,23 +161,22 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
     return <FocusComponent key="input"><AutosizeInput
       type="text"
       className="m-layer-label-input"
-      onFocus={this.onInputFocus.bind(this)}
+      onFocus={this.onInputFocus}
+      onBlur={this.doneEditing}
       value={this.state.source}
-      onChange={this.onInputChange.bind(this)}
-      onBlur={this.doneEditing.bind(this)}
-      onKeyDown={this.onInputKeyDown.bind(this)}
+      onChange={this.onInputChange}
+      onKeyDown={this.onInputKeyDown}
     /></FocusComponent>;
   }
 
   getHTMLValue() {
 
     const entity = this.props.entity;
-    const buffer = [entity.name];
+    const buffer = [entity.name.toLowerCase()];
 
-    for (const key in entity.attributes) {
-      const value = entity.attributes[key];
-      if (typeof value === "object") continue;
-      buffer.push(" ", key, "=", "\"", value, "\"");
+    for (const attribute of entity.attributes) {
+      const value = attribute.value;
+      buffer.push(" ", attribute.name, "=", typeof value === "object" ? String(value) : `"${value}"`);
     }
 
     return buffer.join("");

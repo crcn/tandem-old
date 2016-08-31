@@ -1,19 +1,2 @@
-<link rel="stylesheet" type="text/css" href="./style.css" />
-
-<artboard id="repeat" style="display:none;">
-  ${Array.from(each, () => {
-    return children;
-  })}
-</artboard>
-
-<artboard id="hello" title="Hello World">
-  <repeat each=${Array.from({ length: count }, (num) => num)}>
-    ${children}
-  </repeat>
-</artboard>
-
-<artboard title="Hello World" style="top: 211px; left: -4px;">
-  <hello message="world" count="30" style="color: red; display: block;">
-    <div>Child!</div>
-  </hello>
-</artboard>
+<artboard id="test" title="Artboard" style="background; white;position: absolute; width: 287px; height: 124px; left: 40px; top: 56px;" />
+<div style="background: rgba(0,0,0,0.1); position: absolute; width: 242px; height: 132px; left: 114px; top: 232px;" />

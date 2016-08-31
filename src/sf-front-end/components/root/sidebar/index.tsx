@@ -7,13 +7,13 @@ import { SideDraggerComponent } from "sf-front-end/components/side-dragger";
 import { ENTITY_PANE_COMPONENT_NS } from "sf-front-end/dependencies";
 import { MetadataValueReference, DefaultValueReference, MinMaxValueReference } from "sf-core/reference";
 
-export class SidebarComponent extends React.Component<{ app: FrontEndApplication, position: string, registeredComponentNs: string, hideKey: string, sizeKey: string }, any> {
+export class SidebarComponent extends React.Component<{ app: FrontEndApplication, position: string, maxWidth?: number, registeredComponentNs: string, hideKey: string, sizeKey: string }, any> {
   render() {
 
     const sidebarSizeReference = new MinMaxValueReference(
       new DefaultValueReference(new MetadataValueReference(this.props.app.settings, this.props.sizeKey), 200),
       50,
-      500
+      this.props.maxWidth
     );
 
     const style = {
