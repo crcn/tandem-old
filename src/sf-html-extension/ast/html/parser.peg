@@ -36,7 +36,7 @@ CommentCharacter
   = !'-->' character:. { return character; }
 
 VoidElement
-  = "<" nodeName:("area"/"base"/"br"/"col"/"command"/"embed"/"hr"/"img"/"input"/"keygen"/"link"/"meta"/"param"/"source"/"track"/"wbr") attributes:ElementAttributes (">"/"/>")? endTag:EndVoidTag? {
+  = "<" nodeName: VoidTagName attributes:ElementAttributes (">"/"/>")? endTag:EndVoidTag? {
 
     if (endTag && nodeName != endTag.name) {
       expected("</" + nodeName + ">");
@@ -46,11 +46,14 @@ VoidElement
   }
 
 EndVoidTag
-  = _ "</" name:("area"/"base"/"br"/"col"/"command"/"embed"/"hr"/"img"/"input"/"keygen"/"link"/"meta"/"param"/"source"/"track"/"wbr") ">" {
+  = _ "</" name: VoidTagName ">" {
     return {
       name: name
     };
   }
+
+VoidTagName
+  = name:  ("area"/"base"/"br"/"col"/"command"/"embed"/"hr"/"img"/"input"/"keygen"/"link"/"meta"/"param"/"source"/"track"/"wbr")
 
 Element
   = ElementWithoutChildNodes

@@ -6,6 +6,10 @@ export class Metadata extends Observable {
     super();
   }
 
+  get data() {
+    return this._data;
+  }
+
   get(key: string) {
     return this._data[key];
   }

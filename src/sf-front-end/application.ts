@@ -34,12 +34,12 @@ import { dependency as htmlExtensionDependency } from "sf-html-extension";
 import { dependency as paperclipExtensionDependency } from "sf-paperclip-extension";
 
 import { Metadata } from "sf-core/metadata";
-import { Workspace, Settings } from "./models";
+import { Workspace } from "./models";
 
 export class FrontEndApplication extends Application {
 
   public workspace: Workspace;
-  public settings: Settings;
+  public settings: Metadata;
   public metadata: Metadata;
 
   constructor(config?: any) {
