@@ -4,14 +4,14 @@ import { MimeTypes } from "sf-paperclip-extension/constants";
 import { DocumentFile } from "sf-front-end/models";
 import { HTMLFragmentExpression } from "sf-html-extension/ast";
 import { parsePC, PCDocumentRootEntity } from "sf-paperclip-extension/ast";
-import { ActiveRecordFactoryDependency } from "sf-core/dependencies";
+import { ActiveRecordFactoryDependency, Dependencies } from "sf-core/dependencies";
 
 export class PCFile extends HTMLFile {
   @bindable()
   public context: any;
   readonly type: string = MimeTypes.PC_MIME_TYPE;
-  createEntity(ast: HTMLFragmentExpression) {
-    return new PCDocumentRootEntity(ast, this, this._dependencies);
+  createEntity(ast: HTMLFragmentExpression, dependencies: Dependencies) {
+    return new PCDocumentRootEntity(ast, this, dependencies);
   }
   parse(content: string) {
     return parsePC(content);

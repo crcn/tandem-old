@@ -52,6 +52,11 @@ export class Injector {
 export interface IDependency extends ICloneable {
 
   /**
+   */
+
+  readonly overridable: boolean;
+
+  /**
    * The unique namespace of the dependency
    */
 
@@ -79,7 +84,7 @@ export interface IDependency extends ICloneable {
 
 export class Dependency<T> implements IDependency {
   public dependencies: Dependencies;
-  constructor(readonly ns: string, public value: T) { }
+  constructor(readonly ns: string, public value: T, readonly overridable: boolean = false) { }
 
   /**
    * Clones the dependency - works with base classes.
@@ -94,6 +99,7 @@ export class Dependency<T> implements IDependency {
     // case
     clone.ns    = this.ns;
     clone.value = this.value;
+    clone.overridable = this.overridable;
     return clone;
   }
 }
@@ -190,9 +196,13 @@ export class Dependencies implements ICloneable {
       // such as dependency injection.
       dependency = dependency.clone();
 
+      let existing: Array<IDependency>;
+
       // check if the Dependency already exists to ensure that there are no collisions
-      if (this._dependenciesByNs[dependency.ns]) {
-        throw new Error(`Dependency with namespace "${dependency.ns}" already exists.`);
+      if (existing = this._dependenciesByNs[dependency.ns]) {
+        if (!existing[0].overridable) {
+          throw new Error(`Dependency with namespace "${dependency.ns}" already exists.`);
+        }
       }
 
       // ref back so that the dependency can fetch additional information

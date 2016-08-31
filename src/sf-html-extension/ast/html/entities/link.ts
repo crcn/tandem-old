@@ -52,6 +52,7 @@ export class LinkEntity extends HTMLElementEntity {
     const { value } = await this._bus.execute(new ReadFileAction(this.href)).read();
     const fileFactory = ActiveRecordFactoryDependency.find(type, this._dependencies);
     this._file = fileFactory.create("linkFiles", value);
+    this._file.owner = this.document;
     await this._file.load();
     this._file.observe(new BubbleBus(this));
     this.appendChild(this._file.entity);

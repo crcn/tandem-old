@@ -7,11 +7,10 @@ import { MetadataKeys } from "sf-front-end/constants";
 import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
 import { FrontEndApplication } from "sf-front-end/application";
 import { HTMLElementExpression } from "sf-html-extension/ast";
-import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { VisibleHTMLElementEntity } from "./visible-element";
 import { NodeSection, GroupNodeSection } from "sf-html-extension/dom";
-import { IContextualEntity, INodeEntity, IContainerNodeEntity, getContext } from "sf-core/ast";
 import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "sf-core/dependencies";
+import { IContextualEntity, INodeEntity, IContainerNodeEntity, getContext } from "sf-core/ast";
 
 const ARTBOARD_NS = "artboards";
 class ArtboardDependency extends Dependency<HTMLArtboardEntity> {
@@ -110,7 +109,7 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
     *:focus {
       outline: none;
     }
-    ${ CSSStyleSheetsDependency.findOrRegister(this._dependencies).toString() }
+    ${ this.document.entity.stylesheets.join("") }
     `;
   }
 

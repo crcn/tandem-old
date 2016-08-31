@@ -8,7 +8,6 @@ import { IElement, Attributes } from "sf-core/markup";
 import { AttributeChangeAction } from "sf-core/actions";
 import { diffArray, patchArray } from "sf-core/utils/array";
 import { parseCSS, parseCSSStyle } from "sf-html-extension/ast";
-import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { IDOMSection, NodeSection } from "sf-html-extension/dom";
 import { HTMLElementExpression, HTMLAttributeExpression } from "sf-html-extension/ast";
 import { EntityFactoryDependency, ElementAttributeValueEntity } from "sf-core/dependencies";
@@ -74,9 +73,11 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   }
 
   get cssRuleExpressions(): Array<CSSRuleExpression> {
-    return CSSStyleSheetsDependency.findOrRegister(this._dependencies).rules.filter((rule) => {
-      return rule.test(this);
-    });
+    // return this.document.entity.findOrRegister(this._dependencies).rules.filter((rule) => {
+    //   return rule.test(this);
+    // });
+
+    return [];
   }
 
   createSection(): IDOMSection {

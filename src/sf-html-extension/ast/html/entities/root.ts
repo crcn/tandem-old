@@ -5,7 +5,6 @@ import { BubbleBus } from "sf-core/busses";
 import { DocumentFile } from "sf-front-end/models";
 import { watchProperty } from "sf-core/observable";
 import { EntityFactoryDependency } from "sf-core/dependencies";
-import { CSSStyleSheetsDependency } from "sf-html-extension/dependencies";
 import { IDOMSection, GroupNodeSection } from "sf-html-extension/dom";
 import { Action, PropertyChangeAction, UpdateAction } from "sf-core/actions";
 import { Dependencies, DEPENDENCIES_NS, IInjectable } from "sf-core/dependencies";
@@ -54,7 +53,9 @@ export class HTMLDocumentRootEntity extends HTMLContainerEntity<HTMLFragmentExpr
    * @param {any} HTMLFile
    */
 
-  constructor(source: HTMLFragmentExpression, document: DocumentFile<HTMLDocumentRootEntity>, _dependencies: Dependencies) {
+  public stylesheets: Array<CSSStyleSheetExpression> = [];
+
+  constructor(source: HTMLFragmentExpression, document: HTMLFile, _dependencies: Dependencies) {
     super(source);
     this.document = document;
     this._dependencies = _dependencies.clone();
@@ -64,11 +65,30 @@ export class HTMLDocumentRootEntity extends HTMLContainerEntity<HTMLFragmentExpr
     return new GroupNodeSection();
   }
 
+
+  addStyleSheet(stylesheet: CSSStyleSheetExpression) {
+    this.stylesheets.push(stylesheet);
+  }
+
+  removeStylesheet(stylesheet: CSSStyleSheetExpression) {
+    const index = this.stylesheets.indexOf(stylesheet);
+    if (index !== -1) {
+      this.stylesheets.splice(index, 1);
+    }
+  }
+
   _clone() {
     const clone = new HTMLDocumentRootEntity(this.source, <HTMLFile>this.document, this._dependencies);
     this.cloneChildrenToContainerNode(clone);
     return clone;
   }
+
+  patch(entity: HTMLDocumentRootEntity) {
+    super.patch(entity);
+    this.stylesheets = entity.stylesheets;
+    this._updateCSS();
+  }
+
 
   public async load() {
     await super.load();
@@ -81,6 +101,6 @@ export class HTMLDocumentRootEntity extends HTMLContainerEntity<HTMLFragmentExpr
 
   private _updateCSS() {
     // after the root has been loaded in, fetch all of the CSS styles.
-    this._globalStyle.innerHTML = CSSStyleSheetsDependency.findOrRegister(this._dependencies).toString();
+    this._globalStyle.innerHTML = this.stylesheets.join("");
   }
 }

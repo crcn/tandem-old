@@ -1,5 +1,11 @@
+
+// performs cleanup of object for GC
 export interface IDisposable {
   dispose(): void;
+}
+
+export interface IRemovable {
+  remove(): void;
 }
 
 export interface INamed {

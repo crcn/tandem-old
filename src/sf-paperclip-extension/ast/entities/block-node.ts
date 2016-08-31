@@ -9,17 +9,12 @@ import { GroupNodeSection, IDOMSection } from "sf-html-extension/dom";
 import { INodeEntity, EntityMetadata, IContainerNodeEntity, IEntity, IValueNodeEntity, getContext } from "sf-core/ast";
 import { HTMLContainerEntity, HTMLTextEntity, HTMLTextExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLEntity } from "sf-html-extension/ast";
 
-
 export class PCBlockNodeEntity extends HTMLContainerEntity<PCBlockExpression> implements IValueNodeEntity  {
   private _script: Function;
   public value: any;
   public source: PCBlockExpression;
   public error: Error;
 
-  constructor(source: PCBlockExpression) {
-    super(source);
-    this.willSourceChange(source);
-  }
 
   getInitialMetadata() {
     return Object.assign(super.getInitialMetadata(), {
@@ -27,9 +22,9 @@ export class PCBlockNodeEntity extends HTMLContainerEntity<PCBlockExpression> im
     });
   }
 
-  protected willSourceChange(source: PCBlockExpression) {
+  protected updateFromSource() {
     try {
-      this._script = parseBlockScript(source.value);
+      this._script = parseBlockScript(this.source.value);
     } catch (e) {
       this.error = e;
     }

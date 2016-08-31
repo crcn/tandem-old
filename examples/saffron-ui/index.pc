@@ -1,4 +1,11 @@
 <link rel="stylesheet" type="text/css" href="./style.scss" />
 
-<div class="item">
-</div>
+<artboard id="test">
+  <div style=${style}>
+    ${Array.from({ length: Number(count) }, () => children)}
+  </div>
+</artboard>
+
+<test count="20" style="position: absolute; background: rgba(0,0,0,0.1); width: 200px; height: 200px; top: 300px;">
+  <div class="item">child</div>
+</test>

@@ -4,7 +4,7 @@ import { ITyped } from "sf-core/object";
 import { IBrokerBus } from "../busses";
 import { IApplication } from "sf-core/application";
 import { IActiveRecord } from "../active-records";
-import { IEntity, IElementEntity, IValueEntity } from "sf-core/ast";
+import { IEntity, IElementEntity, IValueEntity, IEntityDocument } from "sf-core/ast";
 
 import {
   IFactory,
@@ -131,6 +131,13 @@ export class ElementAttributeValueEntity extends ClassFactoryDependency {
     }
 
     return dependency.create(source, element);
+  }
+}
+
+export const ENTITY_DOCUMENT_NS = "entityDocument";
+export class EntityDocumentDependency extends Dependency<IEntityDocument> {
+  constructor(document: IEntityDocument) {
+    super(ENTITY_DOCUMENT_NS, document, true);
   }
 }
 

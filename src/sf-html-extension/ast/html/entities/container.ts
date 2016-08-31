@@ -1,8 +1,8 @@
 import { ITyped } from "sf-core/object";
 import { inject } from "sf-core/decorators";
+import { HTMLFile } from "sf-html-extension/models/html-file";
 import { BubbleBus } from "sf-core/busses";
 import { DocumentFile } from "sf-front-end/models";
-import { disposeEntity } from "./utils";
 import { ContainerNode, INode } from "sf-core/markup";
 import { PropertyChangeAction } from "sf-core/actions";
 import { diffArray, patchArray } from "sf-core/utils/array";
@@ -16,11 +16,10 @@ export abstract class HTMLContainerEntity<T extends ITyped> extends BaseContaine
 
   readonly children: Array<IHTMLEntity>;
   readonly section: IDOMSection;
-  public document: DocumentFile<any>;
+  public document: HTMLFile;
 
   constructor(source: T) {
     super(source);
-    this.willSourceChange(source);
     this.section = this.createSection();
   }
 
@@ -64,16 +63,7 @@ export abstract class HTMLContainerEntity<T extends ITyped> extends BaseContaine
 
   protected abstract createSection();
 
-  protected willSourceChange(value: T) {
-    // override me
-  }
-
-
   protected mapSourceChildNodes() {
     return (<IHTMLContainerExpression><any>this.source).children || [];
-  }
-
-  dispose() {
-    disposeEntity(this);
   }
 }

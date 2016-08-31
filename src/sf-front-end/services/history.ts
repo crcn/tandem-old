@@ -5,7 +5,7 @@ import { FrontEndApplication } from "sf-front-end/application";
 import { BaseApplicationService } from "sf-core/services";
 import { loggable, filterAction } from "sf-core/decorators";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
-import { DSUpdateAction, DS_UPDATE, PostDSAction } from "sf-core/actions";
+import { DSUpdateAction, DS_DID_UPDATE, PostDSAction } from "sf-core/actions";
 
 @loggable()
 export default class HistoryService extends BaseApplicationService<FrontEndApplication> {
@@ -13,7 +13,7 @@ export default class HistoryService extends BaseApplicationService<FrontEndAppli
   private _position: number = 0;
   private _history: Array<IHistoryItem> = [];
 
-  [DS_UPDATE](action: DSUpdateAction) {
+  [DS_DID_UPDATE](action: DSUpdateAction) {
     this._addHistoryItem({
       use: () => {
         this.bus.execute(PostDSAction.createFromDSAction(new DSUpdateAction(action.collectionName, action.data, action.query), action.data));

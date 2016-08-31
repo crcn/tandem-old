@@ -10,7 +10,7 @@ import { IExpression } from "sf-core/ast";
 import { IEntityDocument } from "sf-core/ast";
 import { IPoint, Transform } from "sf-core/geom";
 import { Action, PropertyChangeAction } from "sf-core/actions";
-import { IInjectable, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
+import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityDocumentDependency } from "sf-core/dependencies";
 
 export interface IEditorTool extends IActor, IDisposable {
   readonly editor: IEditor;
@@ -31,7 +31,9 @@ export interface IEditor extends IActor {
 export abstract class DocumentFile<T extends IEntity & IObservable> extends File implements IEntityDocument {
 
   @inject(DEPENDENCIES_NS)
-  protected _dependencies: Dependencies;
+  private _dependencies: Dependencies;
+
+  public owner: IEntityDocument;
 
   private _entity: T;
   private _ast: IExpression;
@@ -52,14 +54,17 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   }
 
   public async load() {
-    const entity = this.createEntity(this._ast = this.parse(this.content));
-    entity.document = this;
-    await entity.load();
+    const entity = this.createEntity(this._ast = this.parse(this.content), this._dependencies.clone().register(new EntityDocumentDependency(this)));
     if (this._entity && this._entity.constructor === entity.constructor) {
+      await entity.load();
       this._entity.patch(entity);
     } else {
       const oldEntity = this._entity;
-      this._entity = entity;
+      this._entity    = entity;
+
+      // must load after since the document entities may reference
+      // back to this document for the root entity
+      await entity.load();
       this._entity.observe(new BubbleBus(this));
       this.notify(new PropertyChangeAction("entity", entity, oldEntity));
     }
@@ -67,12 +72,11 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
 
   abstract parse(content: string): IExpression;
   protected abstract getFormattedContent(ast: IExpression): string;
-  protected abstract createEntity(ast: IExpression): T;
+  protected abstract createEntity(ast: IExpression, dependencies: Dependencies): T;
 
   async update() {
     this._entity.update();
     this.content = this.getFormattedContent(this._ast);
-    // this.content = patchSource(this.content, this.parse(this.content), this._ast);
     await super.update();
     await this.load();
   }

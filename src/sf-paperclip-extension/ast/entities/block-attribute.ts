@@ -23,6 +23,10 @@ export class BlockAttributeValueEntity implements IEntity {
     }
   }
 
+  remove() {
+
+  }
+
   update() {
 
   }

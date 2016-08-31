@@ -2,58 +2,27 @@ import "./index.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
+import { Workspace } from "sf-front-end/models";
 import { SelectAction } from "sf-front-end/actions";
-import * as AutosizeInput from "react-input-autosize";
+import { FrontEndApplication } from "sf-front-end/application";
+import { SelectWithCSSSelector } from "sf-html-extension/actions";
 import { CSSRuleEntity, CSSRuleExpression } from "sf-html-extension/ast";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 
-class CSSRuleLayerLabel extends React.Component<{ entity: CSSRuleEntity, connectDragSource: Function }, any> {
-
-  constructor() {
-    super();
-    this.state = {
-      edit: false
-    };
-  }
-
-  editLabel() {
-    this.setState({
-      edit: true
-    });
-  }
+class CSSRuleLayerLabel extends React.Component<{ app: FrontEndApplication, workspace: Workspace, entity: CSSRuleEntity }, any> {
 
   render() {
-
-    const edit = this.state.edit;
-    const connectDragSource = this.props.connectDragSource;
-
-    return connectDragSource(<span
+    return <span
       className="m-label m-css-rule-layer-label"
-      onDoubleClick={this.editLabel.bind(this)}>
+      onClick={this.onClick}>
       {
          String(this.props.entity.source.selector.toString() || "").trim()
       }
-    </span>);
+    </span>;
   }
 
-  // onInputChange(event) {
-  //   this.props.entity.setProperties({
-  //     value: event.target.nodeValue
-  //   });
-  // }
-
-  doneEditing() {
-    this.setState({ edit: false });
-  }
-
-  onInputKeyDown(event) {
-    if (event.keyCode === 13) {
-      this.doneEditing();
-    }
-  }
-
-  onInputFocus(event) {
-    event.target.select();
+  onClick = (event: React.MouseEvent) => {
+    this.props.app.bus.execute(new SelectWithCSSSelector(this.props.entity.source.selector));
   }
 }
 

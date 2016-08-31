@@ -10,3 +10,4 @@ export * from "./document-fragment";
 export * from "./link";
 export * from "./container";
 export * from "./value-node";
+export * from "./node";

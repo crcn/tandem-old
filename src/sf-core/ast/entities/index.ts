@@ -1,10 +1,10 @@
 import { inject } from "sf-core/decorators";
 import { BubbleBus } from "sf-core/busses";
-import { watchProperty } from "sf-core/observable";
-import { EntityFactoryDependency } from "sf-core/dependencies";
-import { bindable, mixin, virtual } from "sf-core/decorators";
 import { diffArray } from "sf-core/utils/array";
+import { watchProperty } from "sf-core/observable";
+import { bindable, mixin, virtual } from "sf-core/decorators";
 import { IDisposable, ITyped, IValued } from "sf-core/object";
+import { EntityFactoryDependency, EntityDocumentDependency, ENTITY_DOCUMENT_NS } from "sf-core/dependencies";
 import { IInjectable, Injector, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
 import {
   Node as MarkupNode,
@@ -28,11 +28,13 @@ export * from "./utils";
 export abstract class BaseNodeEntity<T extends ITyped> extends MarkupNode implements INodeEntity {
 
   readonly parent: IContainerNodeEntity;
-  readonly document: IEntityDocument;
   public metadata: EntityMetadata;
 
   @inject(DEPENDENCIES_NS)
   protected _dependencies: Dependencies;
+
+  @inject(ENTITY_DOCUMENT_NS)
+  readonly document: IEntityDocument;
 
   constructor(protected _source: T) {
     super(_source.type);
@@ -61,15 +63,33 @@ export abstract class BaseNodeEntity<T extends ITyped> extends MarkupNode implem
   public patch(entity: BaseNodeEntity<T>) {
     this._source       = entity._source;
     this._dependencies = entity._dependencies;
+    this.updateFromSource();
   }
 
   protected initialize() {
+    this.updateFromSource();
     this.metadata = new EntityMetadata(this, this.getInitialMetadata());
     this.metadata.observe(new BubbleBus(this));
   }
 
+  protected updateFromSource() { }
+
   protected getInitialMetadata() {
     return {};
+  }
+
+  remove() {
+    this.removeSourceFromParent();
+    this.dispose();
+  }
+
+  protected removeSourceFromParent() {
+    const parent = this.parent;
+    if (!this.parent || !this.parent.source.children) return;
+    const index = this.parent.source.children.indexOf(this.source);
+    if (index !== -1) {
+      this.parent.source.children.splice(index, 1);
+    }
   }
 
   protected abstract _clone();
@@ -106,15 +126,14 @@ export abstract class BaseContainerNodeEntity<T extends ITyped> extends Containe
   readonly parent: IContainerNodeEntity;
   readonly metadata: EntityMetadata;
   readonly children: Array<INodeEntity>;
+  readonly document: IEntityDocument;
 
   protected _dependencies: Dependencies;
-  private _document: IEntityDocument;
 
   constructor(protected _source: T) {
     super(_source.type);
     this.initialize();
   }
-
 
   async load() {
     for (const childExpression of await this.mapSourceChildNodes()) {
@@ -126,7 +145,7 @@ export abstract class BaseContainerNodeEntity<T extends ITyped> extends Containe
 
   patch(entity: BaseContainerNodeEntity<T>) {
     BaseNodeEntity.prototype.patch.call(this, entity);
-    const changes = diffArray(this.children, entity.children, (a, b) => a.constructor === b.constructor && a.name === b.name);
+    const changes = diffArray(this.children, entity.children, this.compareChild.bind(this));
     for (const entity of changes.remove) {
       this.removeChild(entity);
     }
@@ -154,26 +173,24 @@ export abstract class BaseContainerNodeEntity<T extends ITyped> extends Containe
     }
   }
 
-  @virtual dispose() { }
-
   get source(): T {
     return this._source;
   }
 
-  get document(): IEntityDocument {
-    return this._document;
-  }
-
-  set document(value: IEntityDocument) {
-    this._document = value;
-    for (const child of this.children) {
-      child.document = value;
-    }
+  protected compareChild(a: INodeEntity, b: INodeEntity) {
+    return a.constructor === b.constructor && a.name === b.name;
   }
 
   update() {
     for (const child of this.children) {
       (<IEntity>child).update();
+    }
+  }
+
+  dispose() {
+    BaseNodeEntity.prototype.dispose.call(this);
+    for (const child of this.children) {
+      child.dispose();
     }
   }
 
@@ -185,7 +202,9 @@ export abstract class BaseContainerNodeEntity<T extends ITyped> extends Containe
     return items;
   }
 
+  @virtual remove() { }
   @virtual protected initialize() { }
   @virtual protected getInitialMetadata() { }
+  @virtual protected updateFromSource() { }
   protected abstract mapSourceChildNodes();
 }

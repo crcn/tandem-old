@@ -2,9 +2,9 @@
 import { Metadata } from "sf-core/metadata";
 import { IExpression } from "sf-core/ast";
 import { IEntityDisplay } from "./display";
-import { IInjectable  } from "sf-core/dependencies";
+import { IInjectable } from "sf-core/dependencies";
 import { EntityFactoryDependency } from "sf-core/dependencies";
-import { IDisposable, IOwnable, INamed } from "sf-core/object";
+import { IDisposable, IOwnable, IRemovable, INamed } from "sf-core/object";
 import {
   INode,
   Element,
@@ -21,12 +21,12 @@ export class EntityMetadata extends Metadata implements IOwnable {
   }
 }
 
-export interface IEntityDocument {
+export interface IEntityDocument extends IOwnable {
   update();
   parse(source: string): IExpression;
 }
 
-export interface IEntity extends IDisposable, IInjectable {
+export interface IEntity extends IRemovable, IDisposable, IInjectable {
   document: IEntityDocument;
   readonly parent: IEntity;
   readonly metadata: EntityMetadata;
@@ -54,6 +54,11 @@ export interface IEntity extends IDisposable, IInjectable {
    */
 
   flatten(): Array<IEntity>;
+
+  /**
+   */
+
+  remove();
 }
 
 export interface IValueEntity extends IEntity {

@@ -1,12 +1,12 @@
 import { decode } from "ent";
 import { inject } from "sf-core/decorators";
+import { HTMLFile } from "sf-html-extension/models/html-file";
 import { ValueNode } from "sf-core/markup";
-import { disposeEntity } from "./utils";
 import { EntityMetadata } from "sf-core/ast/entities";
-import { IEntityDocument, BaseValueNodeEntity } from "sf-core/ast";
 import { IHTMLValueNodeExpression } from "sf-html-extension/ast";
 import { NodeSection, IDOMSection } from "sf-html-extension/dom";
 import { IHTMLEntity, IHTMLContainerEntity } from "./base";
+import { IEntityDocument, BaseValueNodeEntity } from "sf-core/ast";
 import { DEPENDENCIES_NS, Dependencies, Injector } from "sf-core/dependencies";
 
 export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> extends BaseValueNodeEntity<T> implements IHTMLEntity {
@@ -15,13 +15,10 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
   protected _dependencies: Dependencies;
 
   private _section: IDOMSection;
+  public document: HTMLFile;
 
   get section() {
     return this._section;
-  }
-
-  public dispose() {
-    disposeEntity(this);
   }
 
   protected initialize() {

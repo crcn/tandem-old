@@ -1,10 +1,10 @@
 import { IActor } from "sf-core/actors";
-import { IDisposable } from "sf-core/object";
-import { Action, DisposeAction } from "sf-core/actions";
-import { IObservable, Observable } from "sf-core/observable";
 import { Metadata } from "sf-core/metadata";
+import { IRemovable } from "sf-core/object";
+import { Action, RemoveAction } from "sf-core/actions";
+import { IObservable, Observable } from "sf-core/observable";
 
-export class Selection<T extends IDisposable> extends Array<T> implements IObservable {
+export class Selection<T extends IRemovable> extends Array<T> implements IObservable {
 
   private _observable: Observable;
   readonly metadata: Metadata;
@@ -15,12 +15,12 @@ export class Selection<T extends IDisposable> extends Array<T> implements IObser
     this.metadata = new Metadata();
   }
 
-  dispose() {
-    for (const disposable of this) {
-      disposable.dispose();
+  remove() {
+    for (const removable of this) {
+      removable.remove();
     }
 
-    this.notify(new DisposeAction());
+    this.notify(new RemoveAction());
   }
 
   observe(actor: IActor) {

@@ -41,6 +41,7 @@ describe(__filename + "#", () => {
 
     dispose() { }
     update() { }
+    remove() { }
     load() { }
     patch(entity) {
     }

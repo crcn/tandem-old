@@ -329,7 +329,7 @@ export class CSSAdjacentSiblingSelectorExpression extends CSSSelectorExpression 
 }
 
 function isElement(node: INode) {
-  return node.name && node.name.substr(0, 1) !== "#";
+  return !!(<any>node).hasAttribute;
 }
 
 export class CSSPsuedoSelectorExpression extends CSSSelectorExpression {
