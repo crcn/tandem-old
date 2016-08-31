@@ -1,6 +1,6 @@
 <link rel="stylesheet" type="text/css" href="./style.css" />
 
-<artboard id="repeat">
+<artboard id="repeat" style="display:none;">
   ${Array.from(each, () => {
     return children;
   })}
