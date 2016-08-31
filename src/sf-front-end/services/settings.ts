@@ -4,10 +4,10 @@ import { Metadata } from "sf-core/metadata";
 import { FrontEndApplication } from "sf-front-end/application";
 import { BaseApplicationService } from "sf-core/services";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
-import { InitializeAction, SettingChangeAction } from "sf-core/actions";
+import { InitializeAction, SettingChangeAction, LOAD } from "sf-core/actions";
 
 export class SettingsService extends BaseApplicationService<FrontEndApplication> {
-  load(action: InitializeAction) {
+  [LOAD](action: InitializeAction) {
 
     // TODO - this.app.config.settingsKey instead of hard-coded key here
     this.app.settings = new Metadata(store.get("settings"));

@@ -1,4 +1,5 @@
 import * as sift from "sift";
+import { UNDO, REDO } from "sf-front-end/actions";
 import { IHistoryItem } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";
 import { BaseApplicationService } from "sf-core/services";
@@ -12,8 +13,7 @@ export default class HistoryService extends BaseApplicationService<FrontEndAppli
   private _position: number = 0;
   private _history: Array<IHistoryItem> = [];
 
-  @filterAction(sift({ type: DS_UPDATE }))
-  dsUpdate(action: DSUpdateAction) {
+  [DS_UPDATE](action: DSUpdateAction) {
     this._addHistoryItem({
       use: () => {
         this.bus.execute(PostDSAction.createFromDSAction(new DSUpdateAction(action.collectionName, action.data, action.query), action.data));
@@ -21,12 +21,12 @@ export default class HistoryService extends BaseApplicationService<FrontEndAppli
     });
   }
 
-  undo() {
+  [UNDO]() {
     if (!this._history.length) return;
     this._history[this._position = Math.max(Math.min(this._position - 1, this._history.length - 2), 0)].use();
   }
 
-  redo() {
+  [REDO]() {
     if (!this._history.length) return;
     this._history[this._position = Math.min(this._position + 1, this._history.length - 1)].use();
   }

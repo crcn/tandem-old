@@ -1,3 +1,4 @@
+import { LOAD } from "sf-core/actions";
 import IOService from "sf-common/services/io";
 import { loggable } from "sf-core/decorators";
 import { IApplication } from "sf-core/application";
@@ -13,8 +14,8 @@ export default class BackEndService extends IOService<IApplication> {
    * initializes the back-end actor
    */
 
-  async load() {
-    await super.load();
+  async [LOAD]() {
+    await super[LOAD]();
 
     if (!this.app.config.backend || !this.app.config.backend.port) {
       return;

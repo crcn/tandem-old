@@ -8,11 +8,12 @@ import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 import { IEntity, IContainerNodeEntity } from "sf-core/ast/entities";
+import { SELECT_SOURCE_AT_OFFSET, SELECT, SELECT_ALL } from "sf-front-end/actions";
 
 @loggable()
 export default class SelectorService extends BaseApplicationService<FrontEndApplication> {
 
-  selectAtSourceOffset(action: SelectSourceAtOffsetAction) {
+  [SELECT_SOURCE_AT_OFFSET](action: SelectSourceAtOffsetAction) {
 
     const allEntities = <Array<IEntity>>this.app.workspace.file.entity.flatten();
 
@@ -46,7 +47,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
       }
     }
 
-    this.select({
+    this[SELECT]({
       items: selection,
       toggle: false,
       keepPreviousSelection: false
@@ -56,7 +57,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
   /**
    */
 
-  select({ items, toggle, keepPreviousSelection }) {
+  [SELECT]({ items, toggle, keepPreviousSelection }) {
     const app = this.app;
 
     if (!items.length) {
@@ -109,7 +110,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     app.workspace.selection.observe({
       execute: (action) => {
         if (action.type === DISPOSE) {
-          this.select({
+          this[SELECT]({
             items: [],
             keepPreviousSelection: false,
             toggle: false
@@ -119,10 +120,10 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     });
   }
 
-  selectAll() {
+  [SELECT_ALL]() {
 
     // TODO - select call based on focused entity
-    this.select({
+    this[SELECT]({
       items: (<any>this.app.workspace.file.entity).children,
       keepPreviousSelection: false,
       toggle: false

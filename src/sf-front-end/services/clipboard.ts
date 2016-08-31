@@ -1,6 +1,7 @@
 import { Logger } from "sf-core/logger";
 import { loggable } from "sf-core/decorators";
 import { serialize } from "sf-core/serialize";
+import { INITIALIZE } from "sf-core/actions";
 import { PasteAction } from "sf-front-end/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { BaseApplicationService } from "sf-core/services";
@@ -15,7 +16,7 @@ export default class ClipboardService extends BaseApplicationService<FrontEndApp
 
   public logger: Logger;
 
-  initialize() {
+  [INITIALIZE]() {
     document.addEventListener("copy", (event: ClipboardEvent) => {
 
       if (targetIsInput(event)) return;

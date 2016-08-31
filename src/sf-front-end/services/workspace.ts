@@ -18,7 +18,6 @@ import {
   ApplicationServiceDependency,
 } from "sf-core/dependencies";
 
-
 export class WorkspaceService extends BaseApplicationService<FrontEndApplication> {
 
   @inject(DEPENDENCIES_NS)
@@ -38,7 +37,6 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
     // TODO - File.findAll(this._dependencies).sync().observe(updateWorkspaces);
     for (const file of (await File.findAll(this._dependencies)).map((file) => file.sync() as DocumentFile<any>)) {
-      console.log(file);
 
       // TODO - this.app.workspaces = new Workspaces(files.map())
       await file.load();

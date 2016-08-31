@@ -15,7 +15,7 @@ export default class IOService<T extends IApplication> extends BaseApplicationSe
   public logger: Logger;
   public _remoteActors: Array<any>;
 
-  load() {
+  [LOAD]() {
 
     // remote actors which take actions from the server
     this._remoteActors = [];
