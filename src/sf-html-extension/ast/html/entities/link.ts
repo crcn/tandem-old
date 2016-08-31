@@ -3,6 +3,7 @@ import * as path from "path";
 import { IActor } from "sf-core/actors";
 import { inject } from "sf-core/decorators";
 import { Response } from "mesh";
+import { BubbleBus } from "sf-core/busses";
 import { DocumentFile } from "sf-front-end/models";
 import { IContainerNode } from "sf-core/markup";
 import { GroupNodeSection } from "sf-html-extension/dom";
@@ -23,6 +24,7 @@ export class LinkEntity extends HTMLElementEntity {
   private _watcher: Response;
 
   patch(entity: LinkEntity) {
+    super.patch(entity);
     entity._unwatch();
   }
 
@@ -51,6 +53,7 @@ export class LinkEntity extends HTMLElementEntity {
     const fileFactory = ActiveRecordFactoryDependency.find(type, this._dependencies);
     this._file = fileFactory.create("linkFiles", value);
     await this._file.load();
+    this._file.observe(new BubbleBus(this));
     this.appendChild(this._file.entity);
     return super.load();
   }

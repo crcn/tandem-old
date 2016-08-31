@@ -1,7 +1,12 @@
 import { IRange } from "sf-core/geom";
 import { BaseExpression } from "sf-core/ast";
 
-export class SASSExpression extends BaseExpression { }
+export class SASSExpression extends BaseExpression {
+  constructor(position: IRange) {
+    super(null, position);
+    this.type = this.constructor.name;
+  }
+}
 
 export class SASSStyleSheetExpression extends SASSExpression {
   constructor(position: IRange, readonly expressions: Array<SASSExpression>) {

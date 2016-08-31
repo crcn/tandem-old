@@ -3,6 +3,11 @@ import { BaseExpression } from "sf-core/ast";
 
 export abstract class MarkdownExpression extends BaseExpression {
 
+  constructor(position: IRange) {
+    super(null, position);
+    this.type = this.constructor.name;
+  }
+
   // TODO - change to toHTMLExpression instead
   abstract toHTML(): string;
 }

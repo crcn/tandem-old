@@ -120,7 +120,7 @@ describe(__filename + "#", () => {
       expect(lastAction.type).to.equal("a");
       p1.removeChild(c1);
       c1.notify(new Action("b"));
-      expect(lastAction.type).to.equal("a");
+      expect(lastAction.type).to.equal("removeChild");
     });
   });
 

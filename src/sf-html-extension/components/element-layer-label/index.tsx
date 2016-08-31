@@ -143,8 +143,6 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
     // copy children
     (ast.children[0] as HTMLElementExpression).children = entity.source.children;
 
-    console.log(ast.children[0].toString());
-
     // replace - tag name might have changed -- this cannot be patched
     replaceEntitySource(entity, ast.children[0]);
 

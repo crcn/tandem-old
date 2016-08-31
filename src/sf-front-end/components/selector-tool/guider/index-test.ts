@@ -32,7 +32,7 @@ const guider = new Guider(allEntityBounds);
 const intersections: Array<intersection> = guider.getIntersections(bounds);
 
 for (const intersection of intersetions) {
-  console.log(intersection.start, intersection.end); { left, top }, { left, top }
+
   if (intersection.intersects(new Point(rect.left, rect.top + rect.height)))
 }
 */

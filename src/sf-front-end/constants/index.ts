@@ -10,7 +10,6 @@ export namespace SettingKeys {
 
 export namespace MetadataKeys {
   export const CANVAS_ROOT = "canvasRoot";
-  export const SELECTED    = "selected";
   export const LAYER_DEPENDENCY_NAME = "layerDependencyName";
   export const HOVER_ITEM = "hoverItem";
   export const HIDDEN = "hidden";

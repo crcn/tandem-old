@@ -4,7 +4,7 @@ import { diffArray, patchArray } from "sf-core/utils/array";
 import { IExpression, BaseExpression } from "sf-core/ast";
 import { register as registerSerializer } from "sf-core/serialize";
 
-export interface IHTMLExpression extends IExpression, INamed {
+export interface IHTMLExpression extends IExpression {
   patch(expression: IHTMLExpression);
 }
 
@@ -13,8 +13,8 @@ export interface IHTMLValueNodeExpression extends IHTMLExpression {
 }
 
 export abstract class HTMLExpression extends BaseExpression implements IHTMLExpression {
-  constructor(readonly name: string, position: IRange) {
-    super(position);
+  constructor(name: string, position: IRange) {
+    super(name, position);
   }
   abstract patch(expression: IHTMLExpression);
 }
@@ -31,7 +31,7 @@ export class HTMLContainerExpression extends HTMLExpression {
   }
   patch(expression: IHTMLContainerExpression) {
     this.position = expression.position;
-    const changes = diffArray(this.children, expression.children, (a, b) => a.name === b.name);
+    const changes = diffArray(this.children, expression.children, (a, b) => a.type === b.type);
     patchArray(
       this.children,
       changes,
@@ -119,7 +119,7 @@ export class HTMLElementExpression extends HTMLContainerExpression implements IH
   }
 
   public toString() {
-    const buffer = ["<", this.name];
+    const buffer = ["<", this.type];
     for (const attribute of this.attributes) {
       buffer.push(" ", attribute.toString());
     }
@@ -128,7 +128,7 @@ export class HTMLElementExpression extends HTMLContainerExpression implements IH
       for (const child of this.children) {
         buffer.push(child.toString());
       }
-      buffer.push("</", this.name, ">");
+      buffer.push("</", this.type, ">");
     } else {
       buffer.push("/>");
     }
@@ -138,7 +138,7 @@ export class HTMLElementExpression extends HTMLContainerExpression implements IH
 
 export class HTMLAttributeExpression extends BaseExpression implements IExpression {
   constructor(public name: string, public value: string, position: IRange) {
-    super(position);
+    super(HTMLAttributeExpression.name, position);
   }
   toString() {
     const buffer = [this.name];

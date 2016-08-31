@@ -6,6 +6,10 @@ export interface INamed {
   readonly name: string;
 }
 
+export interface ITyped {
+  readonly type: string;
+}
+
 export interface IValued {
   value: any;
 }

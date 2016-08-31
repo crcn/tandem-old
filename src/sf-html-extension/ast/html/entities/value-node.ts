@@ -31,7 +31,6 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
 
   protected onValueChange(newValue: any, oldValue: any) {
     super.onValueChange(newValue, oldValue);
-    console.log(newValue, oldValue);
     if (this.section instanceof NodeSection) {
       this.section.targetNode.nodeValue = decode(newValue);
     }

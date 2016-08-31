@@ -49,7 +49,7 @@
     "sf-front-end": "file:./lib/sf-front-end",
     "tslint": "^3.13.0",
     "tslint-loader": "^2.1.5",
-    "typescript": "next",
+    "typescript": "^2.0.0",
     "webpack-notifier": "^1.4.0"
   },
   "dependencies": {

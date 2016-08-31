@@ -88,7 +88,7 @@ export class GroupNodeSection implements IDOMSection {
 
   get innerHTML() {
     return this.childNodes.map((childNode) => (
-      childNode.outerHTML || childNode.value
+      childNode.outerHTML || childNode.nodeValue
     )).join("");
   }
 

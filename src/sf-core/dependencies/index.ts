@@ -1,6 +1,6 @@
 import { Action } from "../actions";
 import { IActor } from "../actors";
-import { INamed } from "sf-core/object";
+import { ITyped } from "sf-core/object";
 import { IBrokerBus } from "../busses";
 import { IApplication } from "sf-core/application";
 import { IActiveRecord } from "../active-records";
@@ -64,7 +64,7 @@ export class EntityFactoryDependency extends ClassFactoryDependency {
 
   readonly mapSourceChildren: mapSourceChildrenType;
 
-  constructor(readonly name: string, readonly clazz: { new(source: INamed): IEntity, mapSourceChildren?: mapSourceChildrenType } ) {
+  constructor(readonly name: string, readonly clazz: { new(source: ITyped): IEntity, mapSourceChildren?: mapSourceChildrenType } ) {
     super([ENTITIES_NS, name].join("/"), clazz);
     this.mapSourceChildren = clazz.mapSourceChildren;
   }
@@ -73,7 +73,7 @@ export class EntityFactoryDependency extends ClassFactoryDependency {
     return new EntityFactoryDependency(this.name, this.clazz);
   }
 
-  create(source: INamed) {
+  create(source: ITyped) {
     return super.create(source);
   }
 
@@ -81,11 +81,11 @@ export class EntityFactoryDependency extends ClassFactoryDependency {
     return dependencies.query<EntityFactoryDependency>([ENTITIES_NS, name].join("/"));
   }
 
-  static findBySource(source: INamed, dependencies: Dependencies) {
-    return this.findByName(source.name, dependencies);
+  static findBySource(source: ITyped, dependencies: Dependencies) {
+    return this.findByName(source.type, dependencies);
   }
 
-  static createEntityFromSource(source: INamed, dependencies: Dependencies) {
+  static createEntityFromSource(source: ITyped, dependencies: Dependencies) {
     const dependency = this.findBySource(source, dependencies);
 
     if (!dependency) {
@@ -102,16 +102,16 @@ export class ElementAttributeValueEntity extends ClassFactoryDependency {
 
   readonly mapSourceChildren: mapSourceChildrenType;
 
-  constructor(readonly name: string, readonly clazz: { new(source: INamed, target: IEntity): IEntity, mapSourceChildren?: mapSourceChildrenType } ) {
-    super([ENTITIES_NS, name].join("/"), clazz);
+  constructor(readonly type: string, readonly clazz: { new(source: ITyped, target: IEntity): IEntity, mapSourceChildren?: mapSourceChildrenType } ) {
+    super([ENTITIES_NS, type].join("/"), clazz);
     this.mapSourceChildren = clazz.mapSourceChildren;
   }
 
   clone() {
-    return new ElementAttributeValueEntity(this.name, this.clazz);
+    return new ElementAttributeValueEntity(this.type, this.clazz);
   }
 
-  create(source: INamed, element: IEntity) {
+  create(source: ITyped, element: IEntity) {
     return super.create(source, element);
   }
 
@@ -119,11 +119,11 @@ export class ElementAttributeValueEntity extends ClassFactoryDependency {
     return dependencies.query<ElementAttributeValueEntity>([ENTITIES_NS, name].join("/"));
   }
 
-  static findBySource(source: INamed, dependencies: Dependencies) {
-    return this.findByName(source.name, dependencies);
+  static findBySource(source: ITyped, dependencies: Dependencies) {
+    return this.findByName(source.type, dependencies);
   }
 
-  static createEntityFromSource(source: INamed, element: IEntity, dependencies: Dependencies): IValueEntity {
+  static createEntityFromSource(source: ITyped, element: IEntity, dependencies: Dependencies): IValueEntity {
     const dependency = this.findBySource(source, dependencies);
 
     if (!dependency) {

@@ -1,4 +1,5 @@
 import { Action } from "./base";
+import { INode } from "sf-core/markup";
 
 export { Action };
 
@@ -7,6 +8,14 @@ export interface Change {
   property: string;
   value: any;
   oldValue: any;
+}
+
+export const ADD_CHILD    = "addChild";
+export const REMOVE_CHILD = "removeChild";
+export class ChildAction extends Action {
+  constructor(type: string, readonly child: INode, readonly index: number) {
+    super(type);
+  }
 }
 
 export const CHANGE = "change";

@@ -11,6 +11,7 @@ import { dependency as artboardToolComponentDependency } from "./components/artb
 import { dependency as textLayerLabelComponentDependency } from "./components/text-layer-label";
 import { dependency as elementLayerLabelComponentDependency } from "./components/element-layer-label";
 import { dependency as commentLayerLabelComponentDependency } from "./components/comment-layer-label";
+import { dependency as cssRuleLayerLabelComponentDependency } from "./components/css-rule-layer-label";
 
 // models
 import { cssFileDependency } from "./models/css-file";
@@ -38,6 +39,7 @@ import { MimeTypeDependency } from "sf-core/dependencies";
    htmlElementDependencies,
    htmlStyleEntityDependency,
    htmlDocumentFragmentDependency,
+   cssRuleEntityFactoryDependency,
 } from "./ast";
 
 export const dependency = [
@@ -46,9 +48,12 @@ export const dependency = [
   cssPaneComponentDependency,
   artboardToolComponentDependency,
   entityPreviewComponentDependency,
+
+  // layer components
   textLayerLabelComponentDependency,
   commentLayerLabelComponentDependency,
   elementLayerLabelComponentDependency,
+  cssRuleLayerLabelComponentDependency,
 
   // services
   pasteEntityService,
@@ -64,16 +69,17 @@ export const dependency = [
   editInnerHTMLDependency,
 
   // key bindings
-  ...keyBindingDependencies,
+  keyBindingDependencies,
 
   // entities
   htmlTextDependency,
   linkEntityDependency,
   htmlCommentDependency,
-  htmlStyleEntityDependency,
-  ...htmlElementDependencies,
   htmlArtboardDependency,
+  htmlElementDependencies,
+  htmlStyleEntityDependency,
   htmlDocumentFragmentDependency,
+  cssRuleEntityFactoryDependency,
 
   // mime types
   new MimeTypeDependency("htm", MimeTypes.HTML_MIME_TYPE),

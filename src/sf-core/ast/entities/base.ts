@@ -1,12 +1,10 @@
-import { IFile } from "sf-core/active-records";
+
 import { Metadata } from "sf-core/metadata";
-import { BubbleBus } from "sf-core/busses";
 import { IExpression } from "sf-core/ast";
-import { IInjectable } from "sf-core/dependencies";
-import { watchProperty } from "sf-core/observable";
 import { IEntityDisplay } from "./display";
-import { bindable, mixin, virtual } from "sf-core/decorators";
-import { IDisposable, IOwnable, INamed, IValued } from "sf-core/object";
+import { IInjectable  } from "sf-core/dependencies";
+import { EntityFactoryDependency } from "sf-core/dependencies";
+import { IDisposable, IOwnable, INamed } from "sf-core/object";
 import {
   INode,
   Element,
@@ -90,112 +88,4 @@ export interface IElementEntity extends IElement, IContainerNodeEntity {
 }
 export interface IVisibleNodeEntity extends INodeEntity {
   display: IEntityDisplay;
-}
-
-export abstract class BaseNodeEntity<T extends INamed> extends MarkupNode implements INodeEntity {
-
-  readonly parent: IContainerNodeEntity;
-  readonly document: IEntityDocument;
-  public metadata: EntityMetadata;
-
-  constructor(public source: T) {
-    super(source.name);
-    this.initialize();
-  }
-
-  public flatten(): Array<IEntity> {
-    return [this];
-  }
-
-  public load() { }
-  public update() { }
-  public dispose() { }
-
-  public abstract clone();
-  public abstract patch(entity: BaseNodeEntity<T>);
-
-  protected initialize() {
-    this.metadata = new EntityMetadata(this, this.getInitialMetadata());
-    this.metadata.observe(new BubbleBus(this));
-  }
-
-  protected getInitialMetadata() {
-    return {};
-  }
-}
-
-export abstract class BaseValueNodeEntity<T extends INamed & IValued> extends BaseNodeEntity<T> implements IValueNodeEntity {
-
-  @bindable()
-  public value: any;
-  private _shouldUpdate: boolean;
-
-  constructor(source: T) {
-    super(source);
-    this.value = source.value;
-    watchProperty(this, "value", this.onValueChange.bind(this));
-  }
-
-  public update() { }
-
-  public patch(entity: BaseNodeEntity<T>) {
-    this.source = entity.source;
-    this.value  = this.source.value;
-  }
-
-  public abstract clone();
-
-  protected onValueChange(newValue: any, oldValue: any) { }
-
-}
-
-@mixin(BaseNodeEntity)
-export abstract class BaseContainerNodeEntity<T extends INamed> extends ContainerNode implements IContainerNodeEntity {
-
-  readonly parent: IContainerNodeEntity;
-  readonly metadata: EntityMetadata;
-  readonly children: Array<INodeEntity>;
-
-  private _document: IEntityDocument;
-
-  constructor(protected _source: T) {
-    super(_source.name);
-    this.initialize();
-  }
-
-  @virtual load() { }
-  @virtual patch(source: BaseContainerNodeEntity<T>) { }
-  @virtual dispose() { }
-
-  get source(): T {
-    return this._source;
-  }
-
-  get document(): IEntityDocument {
-    return this._document;
-  }
-
-  set document(value: IEntityDocument) {
-    this._document = value;
-    for (const child of this.children) {
-      child.document = value;
-    }
-  }
-
-  update() {
-    for (const child of this.children) {
-      (<IEntity>child).update();
-    }
-  }
-
-  flatten(): Array<IEntity> {
-    const items: Array<IEntity> = [this];
-    for (const child of this.children) {
-      items.push(...child.flatten());
-    }
-    return items;
-  }
-
-  @virtual protected initialize() { }
-  @virtual protected getInitialMetadata() { }
 }

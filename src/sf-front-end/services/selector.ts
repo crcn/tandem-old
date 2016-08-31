@@ -99,14 +99,6 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
     app.workspace.selection = <Selection<any>>newSelection;
 
-    for (const item of prevSelection) {
-      (<IEntity>item).metadata.set(MetadataKeys.SELECTED, false);
-    }
-
-    for (const item of newSelection) {
-      (<IEntity>item).metadata.set(MetadataKeys.SELECTED, true);
-    }
-
     app.workspace.selection.observe({
       execute: (action) => {
         if (action.type === DISPOSE) {

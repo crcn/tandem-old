@@ -9,7 +9,7 @@ import { BaseApplicationService } from "sf-core/services";
 import { File, FILES_COLLECTION_NAME } from "sf-common/models";
 import { inject, loggable, document, filterAction } from "sf-core/decorators";
 import { ApplicationServiceDependency, Dependencies, DEPENDENCIES_NS } from "sf-core/dependencies";
-import { PostDSAction, OpenFileAction, WatchFileAction, OPEN_FILE, WATCH_FILE, READ_FILE, DS_DID_UPDATE } from "sf-core/actions";
+import { PostDSAction, OpenFileAction, WatchFileAction, OPEN_FILE, WATCH_FILE, READ_FILE, DS_DID_REMOVE } from "sf-core/actions";
 
 @loggable()
 export default class FileService extends BaseApplicationService<IApplication> {
@@ -68,8 +68,11 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @filterAction(sift({ collectionName: FILES_COLLECTION_NAME }))
-  [DS_DID_UPDATE](action: PostDSAction ) {
+  [DS_DID_REMOVE](action: PostDSAction) {
     const item = action.data;
+    if (!this._openFiles[item.path]) {
+      return;
+    }
     this._openFiles[item.path].dispose();
     this._openFiles[item.path] = undefined;
     if (this._watchers[item.path]) {

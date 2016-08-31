@@ -1,4 +1,4 @@
-import { INamed } from "sf-core/object";
+import { ITyped } from "sf-core/object";
 import { inject } from "sf-core/decorators";
 import { BubbleBus } from "sf-core/busses";
 import { DocumentFile } from "sf-front-end/models";
@@ -12,59 +12,16 @@ import { IDOMSection, NodeSection, GroupNodeSection } from "sf-html-extension/do
 import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency, Injector } from "sf-core/dependencies";
 import { IEntity, IContainerNodeEntity, EntityMetadata, IContainerNodeEntitySource, IEntityDocument, BaseContainerNodeEntity } from "sf-core/ast";
 
-export abstract class HTMLContainerEntity<T extends INamed> extends BaseContainerNodeEntity<T> implements IHTMLContainerEntity {
+export abstract class HTMLContainerEntity<T extends ITyped> extends BaseContainerNodeEntity<T> implements IHTMLContainerEntity {
 
   readonly children: Array<IHTMLEntity>;
   readonly section: IDOMSection;
   public document: DocumentFile<any>;
 
-  @inject(DEPENDENCIES_NS)
-  protected _dependencies: Dependencies;
-
   constructor(source: T) {
     super(source);
     this.willSourceChange(source);
     this.section = this.createSection();
-  }
-
-  async load() {
-    for (const childExpression of await this.mapSourceChildNodes()) {
-      const entity = EntityFactoryDependency.createEntityFromSource(childExpression, this._dependencies);
-      this.appendChild(entity);
-      await entity.load();
-    }
-  }
-
-  patch(entity: HTMLContainerEntity<T>) {
-    this.willSourceChange(entity.source);
-    this._source = entity._source;
-    this._dependencies = entity._dependencies;
-    const changes = diffArray(this.children, entity.children, (a, b) => a.constructor === b.constructor && a.name === b.name);
-    for (const entity of changes.remove) {
-      this.removeChild(entity);
-    }
-    for (const [currentChild, patchChild] of changes.update) {
-      currentChild.patch(patchChild);
-      const patchIndex = entity.children.indexOf(patchChild);
-      const currentIndex = this.children.indexOf(currentChild);
-      if (currentIndex !== patchIndex) {
-        const beforeChild = this.children[patchIndex];
-        if (beforeChild) {
-          this.insertBefore(currentChild, beforeChild);
-        } else {
-          this.appendChild(currentChild);
-        }
-      }
-    }
-
-    for (const addition of changes.add) {
-      const beforeChild = this.children[addition.index];
-      if (beforeChild) {
-        this.insertBefore(addition.value, beforeChild);
-      } else {
-        this.appendChild(addition.value);
-      }
-    }
   }
 
   insertDOMChildBefore(newChild: Node, beforeChild: Node) {
@@ -104,13 +61,6 @@ export abstract class HTMLContainerEntity<T extends INamed> extends BaseContaine
       }
     }
   }
-
-  clone() {
-    return Injector.inject(this._clone(), this._dependencies);
-  }
-
-  abstract _clone();
-
 
   protected abstract createSection();
 

@@ -2,7 +2,7 @@ import { IActor } from "sf-core/actors";
 import { INamed } from "sf-core/object";
 import { CallbackBus } from "sf-core/busses";
 import { IObservable, Observable } from "sf-core/observable";
-import { Action, AttributeChangeAction } from "sf-core/actions";
+import { Action, AttributeChangeAction, ADD_CHILD, REMOVE_CHILD, ChildAction } from "sf-core/actions";
 
 /**
  * Interfaces here reflect the DOM API a bit to ensure compatibility
@@ -116,6 +116,7 @@ export class ContainerNode extends Node implements IContainerNode {
     }
     this._children.push(child);
     this._link(child);
+    this.notify(new ChildAction(ADD_CHILD, child, this._children.length));
   }
 
   removeChild(child: INode) {
@@ -123,6 +124,7 @@ export class ContainerNode extends Node implements IContainerNode {
     if (i !== -1) {
       this._children.splice(i, 1);
       this._unlink(child);
+      this.notify(new ChildAction(REMOVE_CHILD, child, i));
     }
   }
 
@@ -143,6 +145,7 @@ export class ContainerNode extends Node implements IContainerNode {
     }
 
     this._link(child);
+    this.notify(new ChildAction(ADD_CHILD, child, i));
   }
 
   protected _unlink(child: INode) {

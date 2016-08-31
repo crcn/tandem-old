@@ -5,6 +5,11 @@ import { diffArray, patchArray } from "sf-core/utils/array";
 
 export abstract class CSSExpression extends BaseExpression {
 
+  constructor(position: IRange) {
+    super(null, position);
+    this.type = this.constructor.name;
+  }
+
   // TODO - make this abstract
   patch(source: CSSExpression) { }
 }
@@ -153,6 +158,7 @@ export class CSSRuleExpression extends CSSExpression {
   }
 }
 
+
 export class CSSStyleSheetExpression extends CSSExpression {
 
   constructor(public rules: Array<CSSRuleExpression>, position: IRange) {
@@ -257,8 +263,6 @@ export class CSSTagNameSelectorExpression extends CSSSelectorExpression {
     return this.value;
   }
 }
-
-
 
 export class CSSChildSelectorExpression extends CSSSelectorExpression {
   constructor(public parent: CSSSelectorExpression, public target: CSSSelectorExpression, position: IRange) {

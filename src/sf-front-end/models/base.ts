@@ -7,8 +7,8 @@ import { Workspace } from "./workspace";
 import { IObservable } from "sf-core/observable";
 import { IDisposable } from "sf-core/object";
 import { IExpression } from "sf-core/ast";
+import { IEntityDocument } from "sf-core/ast";
 import { IPoint, Transform } from "sf-core/geom";
-import { IEntityDocument, patchSource } from "sf-core/ast";
 import { Action, PropertyChangeAction } from "sf-core/actions";
 import { IInjectable, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
 
