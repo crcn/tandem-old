@@ -1,18 +1,24 @@
+import { Action } from "sf-core/actions";
+import { IValued } from "sf-core/object";
+import { WrapBus } from "mesh";
+import { bindable } from "sf-core/decorators";
+import { BaseEntity } from "sf-core/ast";
 import { IHTMLEntity } from "./base";
 import { MetadataKeys } from "sf-front-end/constants";
-import { CSSRuleExpression } from "sf-html-extension/ast";
-import { CSSStyleExpression } from "sf-html-extension/ast";
 import { HTMLNodeEntity } from "./node";
-import { AttributeChangeAction } from "sf-core/actions";
+import { TreeBranch, TreeNode } from "sf-core/tree";
 import { diffArray, patchArray } from "sf-core/utils/array";
 import { parseCSS, parseCSSStyle } from "sf-html-extension/ast";
+import { EntityFactoryDependency } from "sf-core/dependencies";
 import { IDOMSection, NodeSection } from "sf-html-extension/dom";
+import { ElementAttributeEntityFactory } from "sf-html-extension/dependencies";
 import { HTMLElementExpression, HTMLAttributeExpression } from "sf-html-extension/ast";
-import { EntityFactoryDependency, ElementAttributeValueEntity } from "sf-core/dependencies";
+import { AttributeChangeAction, NODE_ADDED, NODE_REMOVING, PROPERTY_CHANGE } from "sf-core/actions";
+import { CSSRuleExpression, CSSStyleExpression, IHTMLElementAttributeEntity } from "sf-html-extension/ast";
 
 export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> implements IHTMLEntity {
 
-  private _attributes: Attributes;
+  private _attributes: AttributesBranch;
 
   patch(entity: HTMLElementEntity) {
     this.patchSelf(entity);
@@ -20,20 +26,20 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
   }
 
   protected patchSelf(entity: HTMLElementEntity) {
-    const changes = diffArray(this.attributes, entity.attributes, (a, b) => a.name === b.name);
+    const changes = diffArray(this.attributes, entity.attributes, (a, b) => a.constructor === b.constructor && a.source.name === b.source.name);
 
     for (const add of changes.add) {
-      this.setAttribute(add.value.name, add.value.value);
+      this.attributes.splice(add.index, 0, add.value);
     }
 
     for (const [oldAttribute, newAttribute] of changes.update) {
       if (oldAttribute.value !== newAttribute.value) {
-        this.setAttribute(newAttribute.name, newAttribute.value);
+        oldAttribute.value = newAttribute.value;
       }
     }
 
     for (const remove of changes.remove) {
-      this.removeAttribute(remove.name);
+      this.attributes.remove(remove);
     }
   }
 
@@ -43,19 +49,16 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
   }
 
   protected async loadSelf() {
-    // TODO - attributes might need to be transformed here
-    if (this.source.attributes) {
-      for (const attribute of this.source.attributes) {
-        let value: any = attribute.value;
+    for (const attribute of this.source.attributes) {
 
-        // is an expression
-        if (value.position) {
-          const valueEntity = ElementAttributeValueEntity.createEntityFromSource(value, this, this._dependencies);
-          await valueEntity.load();
-          value = valueEntity.value;
-        }
+      let valueEntityFactory = ElementAttributeEntityFactory.findBySource(attribute, this._dependencies) ||
+      ElementAttributeEntityFactory.findByName("defaultAttribute", this._dependencies);
 
-        this.setAttribute(attribute.name, value);
+      const attributeEntity = valueEntityFactory.create(attribute);
+      this.attributes.push(attributeEntity);
+      await attributeEntity.load();
+      if (this.section instanceof NodeSection) {
+        (<Element>this.section.targetNode).setAttribute(attributeEntity.name, attributeEntity.value);
       }
     }
   }
@@ -66,15 +69,11 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
     });
   }
 
-  get attributes(): Attributes {
-    return this._attributes || (this._attributes = new Attributes());
+  get attributes(): AttributesBranch {
+    return this._attributes || this._createAttributes();
   }
 
   get cssRuleExpressions(): Array<CSSRuleExpression> {
-    // return this.document.entity.findOrRegister(this._dependencies).rules.filter((rule) => {
-    //   return rule.test(this);
-    // });
-
     return [];
   }
 
@@ -87,24 +86,19 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
   }
 
   removeAttribute(name: string) {
-    this.attributes.remove(name);
-    (<Element>this.section.targetNode).removeAttribute(name);
+    this.attributes.removeByName(name);
   }
 
   getAttribute(name: string) {
     return this.attributes.get(name);
   }
 
-  hasAttribute(name: string) {
-    return this.attributes.has(name);
+  setAttribute(name: string, value: any) {
+    this.attributes.set(name, value);
   }
 
-  setAttribute(name: string, value: string) {
-    if (this.section instanceof NodeSection) {
-      (<Element>this.section.targetNode).setAttribute(name, value);
-    }
-    this.attributes.set(name, value);
-    this.notify(new AttributeChangeAction(name, value));
+  hasAttribute(name: string) {
+    return this.attributes.has(name);
   }
 
   cloneLeaf() {
@@ -115,21 +109,66 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
 
   protected cloneAttributesToElement(element: HTMLElementEntity) {
     for (const attribute of this.attributes) {
-      element.setAttribute(attribute.name, attribute.value);
+      element.attributes.push(attribute.clone());
     }
   }
 
-  willUnmount() {
-    this.section.remove();
+  private _createAttributes() {
+    const attributes = this._attributes = <AttributesBranch>this.addBranch(new AttributesBranch(this));
+    this._attributes.observe(new WrapBus(this.onAttributesAction.bind(this)));
+    return this._attributes;
+  }
+
+  protected onAttributesAction(action: Action) {
+    if (!(this.section instanceof NodeSection)) {
+      return;
+    }
+    const element = <Element>this.section.targetNode;
+
+    if (action.target.name) {
+      if (action.type === NODE_REMOVING) {
+        element.removeAttribute(action.target.name);
+      } else if (action.type === PROPERTY_CHANGE || action.type === NODE_ADDED) {
+        element.setAttribute(action.target.name, action.target.value);
+      }
+    }
   }
 }
 
+export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
 
-export class Attribute {
-  constructor(public name: string, public value: any) { }
+  public name: string;
+
+  @bindable()
+  public value: any;
+
+  constructor(source: HTMLAttributeExpression) {
+    super(source);
+    this.name  = source.name;
+    this.value = source.value;
+  }
+
+  get hasLoadableValue() {
+    return typeof this.source.value === "object";
+  }
+
+  async load() {
+    await super.load();
+    if (this.hasLoadableValue) {
+      this.value = (<IValued><any>this.children.first).value;
+    }
+  }
+
+  mapSourceChildren() {
+    return this.hasLoadableValue ? [this.source.value] : [];
+  }
+
+  cloneLeaf() {
+    return new HTMLAttributeEntity(this.source);
+  }
 }
 
-export class Attributes extends Array<Attribute> {
+export class AttributesBranch extends TreeBranch<HTMLElementEntity, IHTMLElementAttributeEntity> {
 
   has(name: string) {
     for (const attribute of this) {
@@ -138,32 +177,36 @@ export class Attributes extends Array<Attribute> {
     return false;
   }
 
-  set(name: string, value: any) {
-    let found = false;
-    for (const attribute of this) {
-      if (attribute.name === name) {
-        attribute.value = value;
-        found = true;
-      };
-    }
-    if (!found) {
-      this.push(new Attribute(name, value));
-    }
-  }
-
   get(name: string) {
     for (const attribute of this) {
       if (attribute.name === name) return attribute.value;
     }
   }
 
-  remove(name: string) {
+  set(name: string, value: any) {
+    let found;
+    for (const attribute of this) {
+      if (attribute.name === name) {
+        found = true;
+        attribute.value = value;
+      }
+    }
+
+    if (!found) {
+      throw new Error(`Attempting to add new attribute "${name}" to HTML Entity. Modify the source or target node instead.`);
+    }
+  }
+
+  removeByName(name: string) {
     for (let i = this.length; i--; ) {
       const attribute = this[i];
       if (attribute.name === name) {
-        this.splice(i, 1);
+        this.splice(i, 1).pop().dispose();
         return;
       }
     }
   }
 }
+
+
+export const defaultAttributeFactoryDependency = new ElementAttributeEntityFactory("defaultAttribute", HTMLAttributeEntity);

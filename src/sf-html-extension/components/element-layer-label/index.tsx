@@ -141,8 +141,8 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
     }
 
     // copy children
-    ast.children[0].removeAllChildren();
-    ast.children[0].appendChild(...entity.source.children);
+    ast.children[0].children.remove();
+    ast.children[0].children.push(...entity.source.children);
 
     // replace - tag name might have changed -- this cannot be patched
     replaceEntitySource(entity, ast.children[0]);

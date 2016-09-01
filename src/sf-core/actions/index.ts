@@ -9,13 +9,9 @@ export interface Change {
   oldValue: any;
 }
 
-export const ADD_CHILD    = "addChild";
-export const REMOVE_CHILD = "removeChild";
-export class ChildAction extends Action {
-  constructor(type: string, readonly child: ITreeNode<any>, readonly index: number) {
-    super(type);
-  }
-}
+export const NODE_ADDED    = "nodeAdded";
+export const NODE_REMOVING = "nodeRemoving";
+
 
 export const CHANGE = "change";
 export class ChangeAction extends Action {

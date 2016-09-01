@@ -59,7 +59,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   public async load() {
     for (const childExpression of await this.mapSourceChildren()) {
       const entity = EntityFactoryDependency.createEntityFromSource(childExpression, this._dependencies);
-      this.appendChild(entity);
+      this.children.push(entity);
       await entity.load();
     }
   }
@@ -83,7 +83,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     this._dependencies = entity._dependencies;
     const changes = diffArray(this.children, entity.children, this.compareChild.bind(this));
     for (const entity of changes.remove) {
-      this.removeChild(entity);
+      this.children.remove(entity);
     }
     for (const [currentChild, patchChild] of changes.update) {
       currentChild.patch(patchChild);
@@ -92,9 +92,9 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
       if (currentIndex !== patchIndex) {
         const beforeChild = this.children[patchIndex];
         if (beforeChild) {
-          this.insertChild(this.children.indexOf(beforeChild), currentChild);
+          this.children.splice(this.children.indexOf(beforeChild), 0, currentChild);
         } else {
-          this.appendChild(currentChild);
+          this.children.push(currentChild);
         }
       }
     }
@@ -102,11 +102,12 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     for (const addition of changes.add) {
       const beforeChild = this.children[addition.index];
       if (beforeChild) {
-          this.insertChild(this.children.indexOf(beforeChild), addition.value);
+          this.children.splice(this.children.indexOf(beforeChild), 0, addition.value);
       } else {
-        this.appendChild(addition.value);
+        this.children.push(addition.value);
       }
     }
+
     this.updateFromSource();
   }
 
@@ -140,8 +141,8 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     return a.constructor === b.constructor && a.source.type === b.source.type;
   }
 
-  mapSourceChildren(): Array<IExpression> {
-    return this.source.children;
+  protected mapSourceChildren(): Array<IExpression> {
+    return <Array<IExpression>>this.source.children;
   }
 
   protected abstract cloneLeaf();

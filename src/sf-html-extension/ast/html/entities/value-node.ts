@@ -1,18 +1,18 @@
 import { decode } from "ent";
 import { inject } from "sf-core/decorators";
 import { HTMLFile } from "sf-html-extension/models/html-file";
+import { IHTMLEntity } from "./base";
 import { EntityMetadata } from "sf-core/ast/entities";
+import { HTMLNodeEntity } from "./node";
 import { IHTMLValueNodeExpression } from "sf-html-extension/ast";
 import { NodeSection, IDOMSection } from "sf-html-extension/dom";
-import { IHTMLEntity } from "./base";
-import { HTMLNodeEntity } from "./node";
 import { DEPENDENCIES_NS, Dependencies, Injector } from "sf-core/dependencies";
 
 export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> extends HTMLNodeEntity<T> implements IHTMLEntity {
 
   private _value: any;
 
-  mapSourceChildren() {
+  protected mapSourceChildren() {
     return [];
   }
 
@@ -31,9 +31,6 @@ export abstract class HTMLValueNodeEntity<T extends IHTMLValueNodeExpression> ex
     this.value = this.source.value;
   }
 
-  protected willUnmount() {
-    this.section.remove();
-  }
-
   protected abstract createSection();
+
 }

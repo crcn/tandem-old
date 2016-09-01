@@ -3,6 +3,7 @@ import { IRange } from "sf-core/geom";
 import { diffArray, patchArray } from "sf-core/utils/array";
 import { IExpression, BaseExpression } from "sf-core/ast";
 import { register as registerSerializer } from "sf-core/serialize";
+import { TreeBranch, TreeNode } from "sf-core/tree";
 
 export interface IHTMLExpression extends IExpression {
   patch(expression: IHTMLExpression);
@@ -19,19 +20,13 @@ export abstract class HTMLExpression extends BaseExpression<HTMLExpression> impl
   abstract patch(expression: IHTMLExpression);
 }
 
-export interface IHTMLContainerExpression extends IHTMLExpression {
-  children: Array<HTMLExpression>;
-  appendChild(child: HTMLExpression);
-  removeChild(node: HTMLExpression);
-}
-
 export class HTMLContainerExpression extends HTMLExpression {
   constructor(name: string, children: Array<HTMLExpression>, position: IRange) {
     super(name, position);
-    children.forEach((child) => this.appendChild(child));
+    this.children.push(...children);
   }
 
-  patch(expression: IHTMLContainerExpression) {
+  patch(expression: HTMLExpression) {
     this.position = expression.position;
     const changes = diffArray(this.children, expression.children, (a, b) => a.type === b.type);
     patchArray(
@@ -42,20 +37,9 @@ export class HTMLContainerExpression extends HTMLExpression {
   }
 }
 
-export class HTMLFragmentExpression extends HTMLContainerExpression implements IHTMLContainerExpression {
+export class HTMLFragmentExpression extends HTMLContainerExpression implements IHTMLExpression {
   constructor(children: Array<HTMLExpression>, position: IRange) {
     super("#document-fragment", children, position);
-  }
-
-  removeChild(child: HTMLExpression) {
-    const i = this.children.indexOf(child);
-    if (i !== -1) {
-      this.children.splice(i, 1);
-    }
-  }
-
-  appendChild(childNode: HTMLExpression) {
-    this.children.push(childNode);
   }
 
   public toString() {
@@ -67,16 +51,17 @@ export class HTMLFragmentExpression extends HTMLContainerExpression implements I
  */
 
 export const HTML_ELEMENT = "htmlElement";
-export class HTMLElementExpression extends HTMLContainerExpression implements IHTMLContainerExpression {
+export class HTMLElementExpression extends HTMLContainerExpression {
+  public attributes: TreeBranch<HTMLExpression, HTMLAttributeExpression>;
+
   constructor(
     name: string,
-    public attributes: Array<HTMLAttributeExpression>,
+    attributes: Array<HTMLAttributeExpression>,
     children: Array<HTMLExpression>,
     public position: IRange) {
     super(name, children, position);
+    (this.attributes = this.addBranch<HTMLAttributeExpression>()).push(...attributes);
   }
-
-
 
   patch(expression: HTMLElementExpression) {
     this.attributes = expression.attributes;
@@ -137,7 +122,7 @@ export class HTMLElementExpression extends HTMLContainerExpression implements IH
 }
 
 export class HTMLAttributeExpression extends BaseExpression<HTMLAttributeExpression> implements IExpression {
-  constructor(public name: string, public value: string, position: IRange) {
+  constructor(public name: string, public value: any, position: IRange) {
     super(HTMLAttributeExpression.name, position);
   }
   toString() {

@@ -8,22 +8,22 @@ describe(__filename + "#", () => {
 
   it("can add a new child", () => {
     const node = new TreeNode();
-    node.appendChild(new TreeNode());
+    node.children.push(new TreeNode());
     expect(node.children.length).to.equal(1);
   });
 
   it("can remove a child", () => {
     const node = new TreeNode();
-    node.appendChild(new TreeNode());
+    node.children.push(new TreeNode());
     expect(node.children.length).to.equal(1);
-    node.removeChild(node.children[0]);
+    node.children.remove(node.children[0]);
     expect(node.children.length).to.equal(0);
   });
 
   it("returns the parent node", () => {
     const parent = new TreeNode();
     const child  = new TreeNode();
-    parent.appendChild(child);
+    parent.children.push(child);
     expect(child.parent).to.equal(parent);
   });
 
@@ -32,9 +32,9 @@ describe(__filename + "#", () => {
     const parent = new TreeNode();
     const parent2  = new TreeNode();
     const child  = new TreeNode();
-    parent.appendChild(child);
+    parent.children.push(child);
     expect(parent.children.length).to.equal(1);
-    parent2.appendChild(child);
+    parent2.children.push(child);
     expect(child.parent).to.equal(parent2);
     expect(parent.children.length).to.equal(0);
   });
@@ -45,8 +45,8 @@ describe(__filename + "#", () => {
     const p2 = new TreeNode();
     const p3 = new TreeNode();
 
-    p1.appendChild(p2);
-    p2.appendChild(p3);
+    p1.children.push(p2);
+    p2.children.push(p3);
     const ancenstors = p3.ancestors;
     expect(ancenstors.length).to.equal(2);
     expect(ancenstors[0]).to.equal(p2);
@@ -59,8 +59,8 @@ describe(__filename + "#", () => {
     const p2 = new TreeNode();
     const p3 = new TreeNode();
 
-    p1.appendChild(p2);
-    p2.appendChild(p3);
+    p1.children.push(p2);
+    p2.children.push(p3);
     expect(p3.root).to.equal(p1);
   });
 
@@ -70,8 +70,8 @@ describe(__filename + "#", () => {
     const p2 = new TreeNode();
     const p3 = new TreeNode();
 
-    p1.appendChild(p2);
-    p2.appendChild(p3);
+    p1.children.push(p2);
+    p2.children.push(p3);
     expect(p3.depth).to.equal(2);
   });
 
@@ -81,8 +81,8 @@ describe(__filename + "#", () => {
     const p2 = new TreeNode();
     const p3 = new TreeNode();
 
-    p1.appendChild(p2);
-    p2.appendChild(p3);
+    p1.children.push(p2);
+    p2.children.push(p3);
     expect(p1.height).to.equal(2);
   });
 
@@ -92,7 +92,7 @@ describe(__filename + "#", () => {
     const c1 = new TreeNode();
     const c2 = new TreeNode();
 
-    p1.appendChild(c1, c2);
+    p1.children.push(c1, c2);
     expect(c1.nextSibling).to.equal(c2);
   });
 
@@ -102,7 +102,7 @@ describe(__filename + "#", () => {
     const c1 = new TreeNode();
     const c2 = new TreeNode();
 
-    p1.appendChild(c1, c2);
+    p1.children.push(c1, c2);
     expect(c2.previousSibling).to.equal(c1);
   });
 
@@ -112,8 +112,8 @@ describe(__filename + "#", () => {
     const c1 = new TreeNode();
     const c2 = new TreeNode();
 
-    p1.appendChild(c1, c2);
-    expect(p1.firstChild).to.equal(c1);
+    p1.children.push(c1, c2);
+    expect(p1.children.first).to.equal(c1);
   });
 
   it("can return the last child", () => {
@@ -122,7 +122,7 @@ describe(__filename + "#", () => {
     const c1 = new TreeNode();
     const c2 = new TreeNode();
 
-    p1.appendChild(c1, c2);
-    expect(p1.lastChild).to.equal(c2);
+    p1.children.push(c1, c2);
+    expect(p1.children.last).to.equal(c2);
   });
 });

@@ -213,7 +213,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     if (entity === item) return;
 
     (async () => {
-      (item.parent as any as IEntity).source.removeChild(item.source);
+      (item.parent as any as IEntity).source.children.remove(item.source);
       const newChildren = await insertSourceChildren(entity.parent as IEntity, (entity.parent as IEntity).source.children.indexOf(entity.source) + offset, item.source);
       app.bus.execute(new SelectAction(newChildren, false));
     })();
@@ -291,7 +291,7 @@ LayerDndLabelComponent = DropTarget("element", {
     // wrap so that react-dnd doesn't barf on a promise return
     (async () => {
       entity.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
-      (item.parent as any as IEntity).source.removeChild(item.source);
+      (item.parent as any as IEntity).source.children.remove(item.source);
       app.bus.execute(new SelectAction(await appendSourceChildren(entity as IEntity, item.source), false));
     })();
   },

@@ -42,8 +42,6 @@ export class CSSStyleExpression extends CSSExpression {
     this._reset();
   }
 
-
-
   public updateDeclarations(style: Object) {
     for (let key in style) {
       const value = style[key];
@@ -90,8 +88,6 @@ export class CSSStyleDeclarationExpression extends CSSExpression {
       this.value = b.value;
     }
   }
-
-
 
   /**
    * Converts the value unit to another format (px -> %. This, however, assumes that
@@ -142,8 +138,6 @@ export class CSSListValueExpression extends CSSExpression {
   }
 }
 
-
-
 export class CSSRuleExpression extends CSSExpression {
   readonly name: string;
   constructor(public selector: CSSSelectorExpression, public style: CSSStyleExpression, position: IRange) {
@@ -171,8 +165,6 @@ export class CSSStyleSheetExpression extends CSSExpression {
   constructor(public rules: Array<CSSRuleExpression>, position: IRange) {
     super(position);
   }
-
-
 
   patch(b: CSSStyleSheetExpression) {
     this.position = b.position;
@@ -275,14 +267,12 @@ export class CSSTagNameSelectorExpression extends CSSSelectorExpression {
 }
 
 export class CSSChildSelectorExpression extends CSSSelectorExpression {
-  constructor(public parent: CSSSelectorExpression, public target: CSSSelectorExpression, position: IRange) {
+  constructor(public parentSelector: CSSSelectorExpression, public target: CSSSelectorExpression, position: IRange) {
     super(position);
   }
 
-
-
   test(node: Element): boolean {
-    return this.target.test(node) && node.parentNode && this.parent.test(<Element>node.parentNode);
+    return this.target.test(node) && node.parentNode && this.parentSelector.test(<Element>node.parentNode);
   }
   toString() {
     return `${this.parent} > ${this.target}`;
@@ -291,17 +281,15 @@ export class CSSChildSelectorExpression extends CSSSelectorExpression {
 
 
 export class CSSDescendentSelectorExpression extends CSSSelectorExpression {
-  constructor(public parent: CSSSelectorExpression, public target: CSSSelectorExpression, position: IRange) {
+  constructor(public parentSelector: CSSSelectorExpression, public target: CSSSelectorExpression, position: IRange) {
     super(position);
   }
-
-
 
   test(node: Element): boolean {
     const matchesTarget = this.target.test(node);
     let currentParent = node.parentNode;
     while (matchesTarget && currentParent) {
-      if (this.parent.test(<Element>currentParent)) return true;
+      if (this.parentSelector.test(<Element>currentParent)) return true;
       currentParent = currentParent.parentNode;
     }
     return false;

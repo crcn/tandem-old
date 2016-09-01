@@ -39,6 +39,7 @@ import { MimeTypeDependency } from "sf-core/dependencies";
    htmlStyleEntityDependency,
    htmlDocumentFragmentDependency,
    cssRuleEntityFactoryDependency,
+   defaultAttributeFactoryDependency
 } from "./ast";
 
 export const dependency = [
@@ -53,6 +54,7 @@ export const dependency = [
   commentLayerLabelComponentDependency,
   elementLayerLabelComponentDependency,
   cssRuleLayerLabelComponentDependency,
+  defaultAttributeFactoryDependency,
 
   // services
   pasteEntityService,

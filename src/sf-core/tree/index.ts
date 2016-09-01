@@ -1,19 +1,45 @@
-import { Action } from "sf-core/actions";
 import { IActor } from "sf-core/actors";
 import { WrapBus } from "mesh";
-import { ITreeNode } from "./base";
-import { Observable } from "sf-core/observable";
+import { ITreeNode, ITreeBranch } from "./base";
+import { Observable, IObservable } from "sf-core/observable";
+import { Action, NODE_ADDED, NODE_REMOVING } from "sf-core/actions";
 
-export { ITreeNode };
+export { ITreeNode, ITreeBranch };
 
-class TreeNodeChildren<T extends TreeNode<any>> extends Array<T> {
-  constructor(private _node: TreeNode<T>) {
+export class TreeBranch<T extends ITreeNode<any>, U extends ITreeNode<any>> extends Array<U> implements IObservable, ITreeBranch<T, U> {
+
+  private _observer: Observable;
+  private _childObserver: IActor;
+
+  constructor(readonly node: T) {
     super();
+    this._observer = new Observable(this);
+    this._childObserver = new WrapBus(this.onChildAction.bind(this));
+  }
+
+  observe(actor: IActor) {
+    this._observer.observe(actor);
+  }
+
+  notify(action: Action) {
+    this._observer.notify(action);
+  }
+
+  unobserve(actor: IActor) {
+    return this._observer.unobserve(actor);
   }
 
   push(...items) {
     this.splice(this.length, 0, ...items);
     return this.length;
+  }
+
+  get first(): U {
+    return this[0];
+  }
+
+  get last(): U {
+    return this[this.length - 1];
   }
 
   unshift(...items) {
@@ -25,7 +51,11 @@ class TreeNodeChildren<T extends TreeNode<any>> extends Array<T> {
     return this.splice(this.length - 1, 1)[0];
   }
 
-  remove(...items: Array<T>) {
+  removeAll() {
+    this.splice(0, this.length);
+  }
+
+  remove(...items: Array<U>) {
     for (const child of items) {
       const index = this.indexOf(child);
       if (index !== -1) {
@@ -34,39 +64,89 @@ class TreeNodeChildren<T extends TreeNode<any>> extends Array<T> {
     }
   }
 
+  concat() {
+    return Array.from(this);
+  }
+
   shift() {
     return this.splice(0, 1)[0];
   }
 
-  splice(start: number, deleteCount?: number, ...items: Array<T>) {
-    const ret = super.splice(start, deleteCount, ...items);
-    for (const removed of ret) {
-      this._node["unlinkChild"](removed);
+  splice(start: number, deleteCount?: number, ...newChildren: Array<U>) {
+
+    const removing = this.slice(start, start + deleteCount);
+
+    for (const child of removing) {
+      this.onChildRemoving(child);
     }
-    for (const added of items) {
-      this._node["linkChild"](added);
+
+    super.splice(start, deleteCount);
+
+    // need to individually push items to ensure that props such as nextSibling are
+    // not defined
+    for (const child of newChildren) {
+      if (child.branch) {
+        child.branch.remove(child);
+      }
+      super.splice(start++, 0, child);
+      this.onChildAdded(child);
     }
-    return ret;
+
+    return removing;
+  }
+
+  protected onChildAdded(child: U) {
+
+    child["_branch"] = this;
+    child["_parent"] = this.node;
+
+    child.observe(this._childObserver);
+    child.notify(new Action(NODE_ADDED));
+  }
+
+  protected onChildRemoving(child: U) {
+    child.notify(new Action(NODE_REMOVING));
+    child["_branch"] = undefined;
+    child["_parent"] = undefined;
+    child.unobserve(this._childObserver);
+  }
+
+  private onChildAction(action: Action) {
+    this.notify(action);
   }
 }
 
-export class TreeNode<T extends TreeNode<any>> extends Observable implements ITreeNode<T> {
+export class TreeNode<T extends TreeNode<T>> extends Observable implements ITreeNode<T> {
 
   private _parent: T;
-  private _children: TreeNodeChildren<T>;
-  private _childObserver: IActor;
+  private _children: ITreeBranch<T, T>;
+  private _branchObserver: IActor;
+  private _branches: Array<ITreeBranch<T, ITreeNode<any>>>;
+  private _branch: ITreeBranch<TreeNode<any>, T>;
 
   constructor() {
     super();
-    this._children = new TreeNodeChildren<T>(this);
-    this._childObserver = new WrapBus(this.onChildAction.bind(this));
+    this._branches = [];
+    this._branchObserver = new WrapBus(this.onBranchAction.bind(this));
+    this._children = this.addBranch<T>();
   }
 
-  removeAllChildren() {
-    this.children.splice(0, this.children.length);
+  addBranch<U extends ITreeNode<any>>(branch?: TreeBranch<T, U>): TreeBranch<T, U> {
+    if (!branch) branch = new TreeBranch<T, U>(<any>this);
+    branch.observe(this._branchObserver);
+    this._branches.push(branch);
+    return branch;
   }
 
-  get children(): Array<T> {
+  get branch(): ITreeBranch<TreeNode<any>, T> {
+    return this._branch;
+  }
+
+  get branches(): Array<ITreeBranch<T, ITreeNode<any>>> {
+    return this._branches;
+  }
+
+  get children(): ITreeBranch<T, T> {
     return this._children;
   }
 
@@ -91,19 +171,11 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
   }
 
   get nextSibling(): T {
-    return this._parent ? this._parent.children[this._parent.children.indexOf(this) + 1] : undefined;
+    return this._branch ? this._branch[this._branch.indexOf(<any>this) + 1] : undefined;
   }
 
   get previousSibling(): T {
-    return this._parent ? this._parent.children[this._parent.children.indexOf(this) - 1] : undefined;
-  }
-
-  get firstChild(): T {
-    return this.children[0];
-  }
-
-  get lastChild(): T {
-    return this.children[this.children.length - 1];
+    return this._branch ? this._branch[this._branch.indexOf(<any>this) - 1] : undefined;
   }
 
   get depth(): number {
@@ -114,46 +186,23 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     return Math.max(0, ...this.children.map((child) => child.height + 1));
   }
 
-  public appendChild(...children: Array<T>): void {
-    this._children.push(...children);
-  }
-  public removeChild(...children: Array<T>): void {
-    this._children.remove(...children);
-  }
-
-  public insertChild(index: number, ...children: Array<T>) {
-    if (index !== -1) {
-      this._children.splice(index, 0, ...children);
-    }
-  }
-
-  protected linkChild(child: T): void {
-    if (child._parent) {
-      child._parent.removeChild(child);
-    }
-    child.observe(this._childObserver);
-    child._parent = this;
-    child.onAdded();
-  }
-
-  protected unlinkChild(child: T): void {
-    child._parent = undefined;
-    child.unobserve(this._childObserver);
-    child.onRemoved();
-  }
-
   protected onAdded() {
-
   }
 
-  protected onRemoved() {
+  protected onChildAdded(child: T) {
+  }
 
+  protected onRemoving() {
+  }
+
+  protected onChildRemoving(child: T) {
   }
 
   public clone(): T {
     const clone = this.cloneLeaf();
-    for (const child of this.children) {
-      clone.appendChild(child.clone());
+    for (const branch of this.branches) {
+      let clonedBranch = branch === this.children ? clone.children : clone.addBranch();
+      clonedBranch.push(...branch.map((child) => child.clone()));
     }
     return <T>clone;
   }
@@ -162,7 +211,22 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     return <T>new TreeNode<T>();
   }
 
-  protected onChildAction(action: Action) {
+  protected onBranchAction(action: Action) {
+
+    if (action.type === NODE_ADDED) {
+      if (action.target === this) {
+        this.onAdded();
+      } else if (action.target.parent === this) {
+        this.onChildAdded(action.target);
+      }
+    } else if (action.type === NODE_REMOVING) {
+      if (action.target === this) {
+        this.onRemoving();
+      } else if (action.target.parent === this) {
+        this.onChildRemoving(action.target);
+      }
+    }
+
     // bubble it up
     this.notify(action);
   }

@@ -8,6 +8,7 @@ import {
   htmlCommentDependency,
   htmlElementDependencies,
   htmlDocumentFragmentDependency,
+  defaultAttributeFactoryDependency,
 } from "sf-html-extension/ast";
 
 import {
@@ -25,8 +26,9 @@ describe(__filename + "#", () => {
       htmlTextDependency,
       htmlCommentDependency,
       htmlFileModelDependency,
-      ...htmlElementDependencies,
+      htmlElementDependencies,
       htmlDocumentFragmentDependency,
+      defaultAttributeFactoryDependency,
     );
   });
 

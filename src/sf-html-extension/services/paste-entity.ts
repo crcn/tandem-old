@@ -9,7 +9,7 @@ import { appendSourceChildren } from "sf-core/ast/entities";
 import { BaseApplicationService } from "sf-core/services";
 import { VisibleEntityCollection } from "sf-front-end/collections";
 import { PASTE, PasteAction, SelectAction } from "sf-front-end/actions";
-import { PasteHTMLEntity, PASTE_HTML_ENTITY } from "sf-html-extension/actions";
+import { PasteHTMLEntityAction, PASTE_HTML_ENTITY } from "sf-html-extension/actions";
 import {
   IInjectable,
   APPLICATION_SINGLETON_NS,
@@ -21,7 +21,7 @@ export class PasteHTMLService extends BaseApplicationService<FrontEndApplication
 
   @filterAction(sift({ "item.type": MimeTypes.HTML_MIME_TYPE }))
   [PASTE](action: PasteAction) {
-    this.bus.execute(new PasteHTMLEntity(action.item));
+    this.bus.execute(new PasteHTMLEntityAction(action.item));
   }
 
   [PASTE_HTML_ENTITY](action: PasteAction) {

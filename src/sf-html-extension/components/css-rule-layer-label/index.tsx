@@ -7,7 +7,7 @@ import { MetadataKeys } from "sf-front-end/constants";
 import { SelectAction } from "sf-front-end/actions";
 import { getCSSSelection } from "sf-html-extension/ast";
 import { FrontEndApplication } from "sf-front-end/application";
-import { SelectWithCSSSelector } from "sf-html-extension/actions";
+import { SelectWithCSSSelectorAction } from "sf-html-extension/actions";
 import { CSSRuleEntity, CSSRuleExpression } from "sf-html-extension/ast";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 
@@ -31,7 +31,7 @@ class CSSRuleLayerLabel extends React.Component<{ app: FrontEndApplication, work
   }
 
   onClick = (event: React.MouseEvent) => {
-    this.props.app.bus.execute(new SelectWithCSSSelector(this.props.entity.source.selector));
+    this.props.app.bus.execute(new SelectWithCSSSelectorAction(this.props.entity.source.selector));
   }
 
   onMouseOver = (event: React.MouseEvent) => {

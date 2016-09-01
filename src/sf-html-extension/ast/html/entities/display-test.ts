@@ -12,9 +12,10 @@ import {
   HTMLElementEntity,
   htmlTextDependency,
   htmlCommentDependency,
-  htmlElementDependencies,
   htmlArtboardDependency,
+  htmlElementDependencies,
   htmlDocumentFragmentDependency,
+  defaultAttributeFactoryDependency,
 } from "sf-html-extension/ast";
 
 import {
@@ -31,10 +32,11 @@ describe(__filename + "#", () => {
     dependencies = new Dependencies(
       htmlTextDependency,
       htmlCommentDependency,
-      htmlFileModelDependency,
-      ...htmlElementDependencies,
       htmlArtboardDependency,
+      htmlFileModelDependency,
+      htmlElementDependencies,
       htmlDocumentFragmentDependency,
+      defaultAttributeFactoryDependency,
       new ApplicationSingletonDependency(app)
     );
 

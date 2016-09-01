@@ -4,9 +4,9 @@ import { HTMLFile } from "sf-html-extension/models/html-file";
 import { BubbleBus } from "sf-core/busses";
 import { IHTMLEntity } from "./base";
 import { DocumentFile } from "sf-front-end/models";
+import { HTMLExpression } from "sf-html-extension/ast";
 import { PropertyChangeAction } from "sf-core/actions";
 import { diffArray, patchArray } from "sf-core/utils/array";
-import { IHTMLContainerExpression, HTMLExpression } from "sf-html-extension/ast";
 import { IDOMSection, NodeSection, GroupNodeSection } from "sf-html-extension/dom";
 import { IEntity, EntityMetadata, IEntityDocument, BaseEntity, IExpression } from "sf-core/ast";
 import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency, Injector } from "sf-core/dependencies";
@@ -43,14 +43,14 @@ export abstract class HTMLNodeEntity<T extends IExpression> extends BaseEntity<T
     this.section.appendChild(newChild);
   }
 
-  unlinkChild(child: HTMLNodeEntity<T>) {
-    super.unlinkChild(child);
-    child.section.remove();
+  onChildRemoving(child: HTMLNodeEntity<T>) {
+    super.onChildRemoving(child);
+    if (child.section) child.section.remove();
   }
 
-  linkChild(child: HTMLNodeEntity<T>) {
+  onChildAdded(child: HTMLNodeEntity<T>) {
     child.document = this.document;
-    super.linkChild(child);
+    super.onChildAdded(child);
     if (child.section) {
       let nextHTMLEntitySibling: HTMLNodeEntity<T>;
       do {
@@ -63,7 +63,7 @@ export abstract class HTMLNodeEntity<T extends IExpression> extends BaseEntity<T
         const ppSection = (<HTMLNodeEntity<T>>child.nextSibling).section;
 
         if (nextHTMLEntitySibling.section instanceof NodeSection) {
-          this.insertDOMChildBefore(child.section.toFragment(), (<NodeSection>ppSection).targetNode);
+          this.insertDOMChildBefore(child.section.toFragment(), ppSection.targetNode);
         } else {
           this.insertDOMChildBefore(child.section.toFragment(), (<GroupNodeSection>ppSection).startNode);
         }
@@ -74,8 +74,4 @@ export abstract class HTMLNodeEntity<T extends IExpression> extends BaseEntity<T
   }
 
   protected abstract createSection();
-
-  protected mapSourceChildren() {
-    return this.source.children;
-  }
 }

@@ -1,10 +1,16 @@
 import { IObservable } from "sf-core/observable";
 
+export interface ITreeBranch<T extends ITreeNode<any>, U extends ITreeNode<any>> extends Array<U>, IObservable {
+  remove(...children: Array<U>): void;
+  removeAll(): void;
+  last: U;
+  first: U;
+}
 export interface ITreeNode<T extends ITreeNode<any>> extends IObservable {
-  appendChild(...children: Array<T>): void;
-  removeChild(...children: Array<T>): void;
-  insertChild(index: number, ...children: Array<T>): void;
-  children: Array<T>;
+  addBranch(branch?: ITreeBranch<T, ITreeNode<any>>): ITreeBranch<T, ITreeNode<any>>;
+  branch: ITreeBranch<ITreeNode<any>, T>;
+  branches: Array<ITreeBranch<T, ITreeNode<any>>>;
+  children: ITreeBranch<T, T>;
   nextSibling: T;
   previousSibling: T;
   depth: number;

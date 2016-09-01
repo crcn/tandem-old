@@ -4,7 +4,7 @@ import { ITyped } from "sf-core/object";
 import { IBrokerBus } from "../busses";
 import { IApplication } from "sf-core/application";
 import { IActiveRecord } from "../active-records";
-import { IEntity, IValueEntity, IEntityDocument } from "sf-core/ast";
+import { IEntity, IValueEntity, IEntityDocument, IExpression } from "sf-core/ast";
 
 import {
   IFactory,
@@ -57,16 +57,11 @@ export class ApplicationSingletonDependency extends Dependency<IApplication> {
 
 export const ENTITIES_NS = "entities";
 
-type mapSourceChildrenType = (source: any) => Array<any>;
-
 // TODO - possibly require renderer here as well
 export class EntityFactoryDependency extends ClassFactoryDependency {
 
-  readonly mapSourceChildren: mapSourceChildrenType;
-
-  constructor(readonly name: string, readonly clazz: { new(source: ITyped): IEntity, mapSourceChildren?: mapSourceChildrenType } ) {
+  constructor(readonly name: string, readonly clazz: { new(source: ITyped): IEntity } ) {
     super([ENTITIES_NS, name].join("/"), clazz);
-    this.mapSourceChildren = clazz.mapSourceChildren;
   }
 
   clone() {
@@ -93,44 +88,6 @@ export class EntityFactoryDependency extends ClassFactoryDependency {
     }
 
     return dependency.create(source);
-  }
-}
-
-
-// TODO - possibly require renderer here as well
-export class ElementAttributeValueEntity extends ClassFactoryDependency {
-
-  readonly mapSourceChildren: mapSourceChildrenType;
-
-  constructor(readonly type: string, readonly clazz: { new(source: ITyped, target: IEntity): IEntity, mapSourceChildren?: mapSourceChildrenType } ) {
-    super([ENTITIES_NS, type].join("/"), clazz);
-    this.mapSourceChildren = clazz.mapSourceChildren;
-  }
-
-  clone() {
-    return new ElementAttributeValueEntity(this.type, this.clazz);
-  }
-
-  create(source: ITyped, element: IEntity) {
-    return super.create(source, element);
-  }
-
-  static findByName(name: string, dependencies: Dependencies) {
-    return dependencies.query<ElementAttributeValueEntity>([ENTITIES_NS, name].join("/"));
-  }
-
-  static findBySource(source: ITyped, dependencies: Dependencies) {
-    return this.findByName(source.type, dependencies);
-  }
-
-  static createEntityFromSource(source: ITyped, element: IEntity, dependencies: Dependencies): IValueEntity {
-    const dependency = this.findBySource(source, dependencies);
-
-    if (!dependency) {
-      throw new Error(`Unable to find entity factory for source type "${source.constructor.name}".`);
-    }
-
-    return dependency.create(source, element);
   }
 }
 

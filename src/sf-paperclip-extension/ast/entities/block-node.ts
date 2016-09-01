@@ -44,12 +44,12 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockExpression> impleme
     let value;
 
     if (this.error) {
-      return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(`Syntax Error: ${this.error.message}`, null)));
+      return this.children.push(new HTMLTextEntity(new HTMLTextExpression(`Syntax Error: ${this.error.message}`, null)));
     } else {
       try {
         value = this._script(this.context);
       } catch (e) {
-        return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(this.source.toString(), this.source.position)));
+        return this.children.push(new HTMLTextEntity(new HTMLTextExpression(this.source.toString(), this.source.position)));
       }
     }
 
@@ -57,10 +57,10 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockExpression> impleme
 
     for (const item of Array.isArray(value) ? value : [value]) {
       if (item instanceof BaseEntity) {
-        this.appendChild(item.clone());
+        this.children.push(item.clone());
       } else {
         const child = EntityFactoryDependency.createEntityFromSource(parsePC(String(item)), this._dependencies);
-        this.appendChild(child);
+        this.children.push(child);
         await child.load();
       }
     }

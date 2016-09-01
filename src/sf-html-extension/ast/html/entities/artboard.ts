@@ -5,12 +5,13 @@ import { IActor } from "sf-core/actors";
 import { inject } from "sf-core/decorators";
 import { MetadataKeys } from "sf-front-end/constants";
 import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
+import { HTMLElementEntity } from "./element";
 import { FrontEndApplication } from "sf-front-end/application";
 import { HTMLElementExpression } from "sf-html-extension/ast";
 import { VisibleHTMLElementEntity } from "./visible-element";
 import { NodeSection, GroupNodeSection } from "sf-html-extension/dom";
-import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "sf-core/dependencies";
 import { IContextualEntity, IEntity, getContext } from "sf-core/ast";
+import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "sf-core/dependencies";
 
 const ARTBOARD_NS = "artboards";
 class ArtboardDependency extends Dependency<HTMLArtboardEntity> {
@@ -22,7 +23,7 @@ class ArtboardDependency extends Dependency<HTMLArtboardEntity> {
   }
 }
 
-class RegisteredArtboardEntity extends VisibleHTMLElementEntity implements IContextualEntity {
+class RegisteredArtboardEntity extends HTMLElementEntity implements IContextualEntity {
 
   private _context: any;
   private _childrenSection: GroupNodeSection;

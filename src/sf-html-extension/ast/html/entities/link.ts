@@ -27,7 +27,7 @@ export class LinkEntity extends HTMLElementEntity {
     entity._unwatch();
   }
 
-  willUnmount() {
+  onRemoving() {
     this._unwatch();
   }
 
@@ -42,7 +42,7 @@ export class LinkEntity extends HTMLElementEntity {
     this._watch();
   }
 
-  didMount() {
+  onAdded() {
     this._watch();
   }
 
@@ -54,7 +54,7 @@ export class LinkEntity extends HTMLElementEntity {
     this._file.owner = this.document;
     await this._file.load();
     this._file.observe(new BubbleBus(this));
-    this.appendChild(this._file.entity);
+    this.children.push(this._file.entity);
     return super.load();
   }
 

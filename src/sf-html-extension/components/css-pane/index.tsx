@@ -5,7 +5,7 @@ import PaneComponent from "sf-front-end/components/pane";
 import { SelectAction } from "sf-front-end/actions";
 import { parseCSS } from "sf-html-extension/ast";
 import { FrontEndApplication } from "sf-front-end/application";
-import { SelectWithCSSSelector } from "sf-html-extension/actions";
+import { SelectWithCSSSelectorAction } from "sf-html-extension/actions";
 import { EntityPaneComponentFactoryDependency } from "sf-front-end/dependencies";
 import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLEntity } from "sf-html-extension/ast";
 import { CSSExpression, CSSStyleExpression, CSSRuleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/ast";
@@ -70,7 +70,7 @@ class StylePaneComponent extends React.Component<{ app: FrontEndApplication, wor
   }
 
   onTitleClick = (event) => {
-    this.props.app.bus.execute(new SelectWithCSSSelector(this.props.rule.selector));
+    this.props.app.bus.execute(new SelectWithCSSSelectorAction(this.props.rule.selector));
   }
 
   render() {
