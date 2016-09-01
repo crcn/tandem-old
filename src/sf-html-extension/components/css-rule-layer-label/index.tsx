@@ -14,10 +14,9 @@ import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies"
 class CSSRuleLayerLabel extends React.Component<{ app: FrontEndApplication, workspace: Workspace, entity: CSSRuleEntity }, any> {
 
   render() {
-
     return <span
       className="m-label m-css-rule-layer-label">
-      <span className="m-css-rule-layer-label--rule-name">
+      <span className="m-css-rule-layer-label--rule-name" onDoubleClick={this.edit}>
         { String(this.props.entity.source.selector.toString() || "").trim() }
       </span>
       <span className="m-css-rule-layer-label--selection-count"
@@ -25,6 +24,10 @@ class CSSRuleLayerLabel extends React.Component<{ app: FrontEndApplication, work
         { this.props.entity.selectedHTMLEntities.length }
       </span>
     </span>;
+  }
+
+  edit = () => {
+    console.log("edit name");
   }
 
   onClick = (event: React.MouseEvent) => {

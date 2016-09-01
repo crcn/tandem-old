@@ -8,7 +8,7 @@ import ResizerComponent from "./resizer";
 import { Editor, Workspace } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectionSizeComponent } from "sf-front-end/components/selection-size";
-import { DisplayEntitySelection } from "sf-front-end/models";
+import { VisibleEntityCollection } from "sf-front-end/collections";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import { IEntityDisplay, IEntity, IVisibleNodeEntity } from "sf-core/ast/entities";
 
@@ -41,13 +41,11 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
     if (!(tool instanceof PointerTool)) return null;
 
-    const selection = workspace.selection as DisplayEntitySelection<any>;
-
-    const display   = selection.display;
+    const selection = new VisibleEntityCollection(...workspace.selection);
 
     // simple check to see if the selection array
     // is an IEntityDisplay
-    if (!display) return null;
+    if (!selection.length) return null;
 
     const entireBounds = BoundingRect.merge(...flatten(selection.map((entity) => entity.flatten()))
     .filter((entity) => !!entity["display"])

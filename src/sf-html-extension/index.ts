@@ -16,7 +16,6 @@ import { dependency as cssRuleLayerLabelComponentDependency } from "./components
 // models
 import { cssFileDependency } from "./models/css-file";
 import { htmlFileModelDependency } from "./models/html-file";
-import { htmlDisplayEntitySelectionDependency } from "./models/display-selection";
 
 // services
 import { dependency as pasteEntityService } from "./services/paste-entity";
@@ -62,7 +61,6 @@ export const dependency = [
   // models
   cssFileDependency,
   htmlFileModelDependency,
-  htmlDisplayEntitySelectionDependency,
 
   // tools
   textToolDependency,

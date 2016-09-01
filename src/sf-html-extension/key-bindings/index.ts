@@ -5,11 +5,10 @@ import { InsertTool } from "sf-front-end/models/insert-tool";
 import { SetToolAction } from "sf-front-end/actions";
 import { TEXT_TOOL_KEY_CODE } from "sf-html-extension/constants";
 import { FrontEndApplication } from "sf-front-end/application";
-import { HTMLEntityDisplaySelection } from "sf-html-extension/models";
-import { BaseCommand, BaseApplicationCommand } from "sf-core/commands";
-import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
 import { parseHTML, HTMLElementExpression } from "sf-html-extension/ast";
 import { dependency as textToolDependency } from "sf-html-extension/models/text-tool";
+import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
+import { BaseCommand, BaseApplicationCommand } from "sf-core/commands";
 import { ClassFactoryDependency, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
 import { EditorToolFactoryDependency, GlobalKeyBindingDependency } from "sf-front-end/dependencies";
 

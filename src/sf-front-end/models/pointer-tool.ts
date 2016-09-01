@@ -3,12 +3,12 @@ import { inject } from "sf-core/decorators";
 import { BaseEditorTool } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";
 import { POINTER_TOOL_KEY_CODE } from "sf-front-end/constants";
-import { DisplayEntitySelection } from "sf-front-end/models";
+import { VisibleEntityCollection } from "sf-front-end/collections";
 import { BaseApplicationService } from "sf-core/services";
 import { IInjectable, MAIN_BUS_NS } from "sf-core/dependencies";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
-import { SelectAction, MouseAction, KeyboardAction } from "sf-front-end/actions";
+import { SelectAction, MouseAction, KeyboardAction, RemoveSelectionAction } from "sf-front-end/actions";
 
 // TODO - everything here should just be a command
 
@@ -25,7 +25,9 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
 
   canvasKeyDown(action: KeyboardAction) {
 
-    const selection = <DisplayEntitySelection<any>>this.editor.workspace.selection;
+    const selection = new VisibleEntityCollection(...this.editor.workspace.selection);
+    if (selection.length) return;
+
     if (selection["display"] == null) return;
 
     const bounds = selection.display.bounds;
@@ -58,8 +60,8 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
   }
 
   deleteSelection() {
-    this.workspace.selection.remove();
     this.workspace.file.update();
+    this.bus.execute(new RemoveSelectionAction());
   }
 }
 

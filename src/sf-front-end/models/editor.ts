@@ -2,6 +2,7 @@ import { IActor } from "sf-core/actors";
 import { Action } from "sf-core/actions";
 import { inject } from "sf-core/decorators";
 import { IEntity } from "sf-core/ast/entities";
+import { Metadata } from "sf-core/metadata";
 import { Workspace } from "./workspace";
 import { KeyBinding } from "sf-front-end/key-bindings";
 import { IInjectable } from "sf-core/dependencies";
@@ -13,6 +14,8 @@ export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;
 
 export class Editor implements IEditor {
+
+  readonly metadata = new Metadata(this);
 
   private _zoom: number = 1;
   public translate: IPoint = { left: 0, top: 0 };

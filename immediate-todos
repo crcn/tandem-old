@@ -1,8 +1,6 @@
-- [x] edit html in layers pane
-- [x] edit attributes
+- [ ] edit html in layers pane
+- [ ] edit attributes
 - [ ] scss parser
 - [ ] save scss vars
+- [ ] make layers fully featured
 - [x] ability to split screen layers
-- [ ] explicit css selection button
-- [ ] ability to add new children (CSS and HTML)
-- [ ] remove layers label

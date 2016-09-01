@@ -8,10 +8,11 @@ import { BoundingRect } from "sf-core/geom";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectablesComponent } from "sf-front-end/components/selectables";
 import { SelectionSizeComponent } from "sf-front-end/components/selection-size";
+import { VisibleEntityCollection } from "sf-front-end/collections";
 import { SetToolAction, SelectAction } from "sf-front-end/actions";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
+import { Workspace, Editor, InsertTool } from "sf-front-end/models";
 import { IEntity, IContainerNodeEntity, IVisibleNodeEntity, appendSourceChildren } from "sf-core/ast/entities";
-import { Workspace, Editor, DisplayEntitySelection, InsertTool } from "sf-front-end/models";
 
 class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, workspace: Workspace, app: FrontEndApplication, tool: InsertTool }, any> {
 
@@ -74,7 +75,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     if (!(tool instanceof InsertTool)) return null;
 
-    const selection = (this.props.editor.workspace.selection as DisplayEntitySelection<any>);
+    const selection = new VisibleEntityCollection(...this.props.editor.workspace.selection);
     const zoom = this.props.editor.transform.scale;
     const display = selection.display;
     const bounds = display ? display.bounds : undefined;

@@ -1,5 +1,4 @@
 import { DISPOSE } from "sf-core/actions";
-import { Selection } from "sf-front-end/models";
 import { MetadataKeys } from "sf-front-end/constants";
 import { loggable, bindable } from "sf-core/decorators";
 import { FrontEndApplication } from "sf-front-end/application";
@@ -8,7 +7,7 @@ import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 import { IEntity, IContainerNodeEntity } from "sf-core/ast/entities";
-import { SELECT_SOURCE_AT_OFFSET, SELECT, SELECT_ALL } from "sf-front-end/actions";
+import { SELECT_SOURCE_AT_OFFSET, SELECT, SELECT_ALL, REMOVE_SELECTION, SelectAction } from "sf-front-end/actions";
 
 @loggable()
 export default class SelectorService extends BaseApplicationService<FrontEndApplication> {
@@ -57,11 +56,21 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
   /**
    */
 
+  [REMOVE_SELECTION]() {
+    for (const item of this.app.workspace.selection) {
+      item.remove();
+    }
+    this.bus.execute(new SelectAction());
+  }
+
+  /**
+   */
+
   [SELECT]({ items, toggle, keepPreviousSelection }) {
     const app = this.app;
 
     if (!items.length) {
-      return app.workspace.selection = new Selection<any>();
+      return app.workspace.selection = [];
     }
 
     const prevSelection = app.workspace.selection;
@@ -69,9 +78,9 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     const type = items[0].type;
 
     const newSelectionDependency = SelectionFactoryDependency.find(type, this.app.dependencies);
-    const newSelection = newSelectionDependency ? newSelectionDependency.create() : new Selection<any>();
+    const newSelection = [];
 
-    if (keepPreviousSelection && newSelection.constructor === prevSelection.constructor) {
+    if (keepPreviousSelection) {
       newSelection.push(...prevSelection);
     } else {
       newSelection.push(...prevSelection.filter((item) => !!~items.indexOf(item)));
@@ -97,19 +106,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
       }
     });
 
-    app.workspace.selection = <Selection<any>>newSelection;
-
-    app.workspace.selection.observe({
-      execute: (action) => {
-        if (action.type === DISPOSE) {
-          this[SELECT]({
-            items: [],
-            keepPreviousSelection: false,
-            toggle: false
-          });
-        }
-      }
-    });
+    app.workspace.selection = newSelection;
   }
 
   [SELECT_ALL]() {

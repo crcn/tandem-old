@@ -123,3 +123,10 @@ export class RedoAction extends Action {
     super(REDO);
   }
 }
+
+export const REMOVE_SELECTION = "removeSelection";
+export class RemoveSelectionAction extends Action {
+  constructor() {
+    super(REMOVE_SELECTION);
+  }
+}

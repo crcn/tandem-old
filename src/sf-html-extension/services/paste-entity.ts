@@ -7,6 +7,7 @@ import { filterAction } from "sf-core/decorators";
 import { FrontEndApplication } from "sf-front-end/application";
 import { appendSourceChildren } from "sf-core/ast/entities";
 import { BaseApplicationService } from "sf-core/services";
+import { VisibleEntityCollection } from "sf-front-end/collections";
 import { PASTE, PasteAction, SelectAction } from "sf-front-end/actions";
 import { PasteHTMLEntity, PASTE_HTML_ENTITY } from "sf-html-extension/actions";
 import {
@@ -30,7 +31,10 @@ export class PasteHTMLService extends BaseApplicationService<FrontEndApplication
 
       const workspace = this.app.workspace;
       const file = <HTMLFile>workspace.file;
-      const activeEntity = workspace.selection.length ? workspace.selection[0].parent : file.entity;
+
+      const visibleEntities = new VisibleEntityCollection(...workspace.selection);
+
+      const activeEntity = visibleEntities.length ? visibleEntities[0].parent : file.entity;
 
       // meta charset is tacked on the beginning - remove it
       content = content.replace(/\<meta.*?\>/, "");

@@ -1,6 +1,5 @@
 // import expect from "expect.js";
 import { expect } from "chai";
-import { Selection } from "sf-front-end/models";
 import { Workspace, Editor } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";
 import { ClassFactoryDependency } from "sf-core/dependencies";
@@ -54,27 +53,6 @@ describe(__filename + "#", () => {
     expect(workspace.selection.length).to.equal(1);
     app.bus.execute(new ToggleSelectAction(item, true));
     expect(workspace.selection.length).to.equal(0);
-  });
-
-  it("picks the correct collection type depending on the item type", () => {
-
-    class DisplayCollection extends Selection<any> { }
-    class OtherCollection extends Selection<any> { }
-
-    app.dependencies.register(
-      new SelectionFactoryDependency("display", DisplayCollection),
-      new SelectionFactoryDependency("other", OtherCollection)
-    );
-
-    app.bus.execute(new ToggleSelectAction({ type: "display" }));
-    expect(workspace.selection).to.be.an.instanceof(DisplayCollection);
-    app.bus.execute(new ToggleSelectAction({ type: "display" }, true));
-    expect(workspace.selection).to.be.an.instanceof(DisplayCollection);
-    expect(workspace.selection.length).to.equal(2);
-
-    app.bus.execute(new ToggleSelectAction({ type: "other" }, true));
-    expect(workspace.selection).to.be.an.instanceof(OtherCollection);
-    expect(workspace.selection.length).to.equal(1);
   });
 
   it("can deselect all be omitting item", () => {

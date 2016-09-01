@@ -4,10 +4,10 @@ import { startDrag } from "sf-front-end/utils/component";
 import PathComponent from "./path";
 import { MetadataKeys } from "sf-front-end/constants";
 import { FrontEndApplication } from "sf-front-end/application";
-import { DisplayEntitySelection } from "sf-front-end/models";
+import { VisibleEntityCollection } from "sf-front-end/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
 import { BoundingRect, IPoint, Point } from "sf-core/geom";
-import { IVisibleNodeEntity, IContainerNodeEntity } from "sf-core/ast/entities";
+import { IVisibleNodeEntity, IContainerNodeEntity, IEntity } from "sf-core/ast/entities";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
 
 const POINT_STROKE_WIDTH = 1;
@@ -82,7 +82,7 @@ function resize(oldBounds: BoundingRect, delta: IPoint, anchor: IPoint, keepAspe
 class ResizerComponent extends React.Component<{
   editor: Editor,
   app: FrontEndApplication,
-  selection: DisplayEntitySelection<any>,
+  selection: Array<IEntity>,
   onResizing: Function,
   onMoving: Function,
   onStopMoving: Function,
@@ -95,6 +95,7 @@ class ResizerComponent extends React.Component<{
   private _dragger: any;
   private _movingTimer: any;
   private _dragTimer: any;
+  private _visibleEntities: VisibleEntityCollection<IVisibleNodeEntity>;
 
   constructor() {
     super();
@@ -109,8 +110,9 @@ class ResizerComponent extends React.Component<{
     // });
   }
 
+
   get targetDisplay() {
-    return this.props.selection.display;
+    return this._visibleEntities.display;
   }
 
   get file() {
@@ -203,7 +205,7 @@ class ResizerComponent extends React.Component<{
     const guider = this.createGuider();
 
     this.setState({ guideLines: undefined });
-    selection.metadata.set(MetadataKeys.MOVING, true);
+    this.props.editor.metadata.set(MetadataKeys.MOVING, true);
 
     this._dragger = startDrag(event, (event2, { delta }) => {
 
@@ -226,7 +228,7 @@ class ResizerComponent extends React.Component<{
     }, () => {
       this.file.update();
       this._dragger = void 0;
-      selection.metadata.set(MetadataKeys.MOVING, false);
+      this.props.editor.metadata.set(MetadataKeys.MOVING, false);
       this.setState({ guideLines: undefined });
       this.props.onStopMoving();
     });
@@ -244,9 +246,11 @@ class ResizerComponent extends React.Component<{
 
   render() {
 
+    this._visibleEntities = new VisibleEntityCollection(...this.props.selection);
+
     const pointRadius = (this.props.pointRadius || POINT_RADIUS);
     const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
-    const display = this.props.selection.display;
+    const display = this._visibleEntities.display;
 
     const rect = display.bounds;
 

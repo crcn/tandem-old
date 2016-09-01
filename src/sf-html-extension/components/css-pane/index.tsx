@@ -6,10 +6,10 @@ import { SelectAction } from "sf-front-end/actions";
 import { parseCSS } from "sf-html-extension/ast";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectWithCSSSelector } from "sf-html-extension/actions";
-import { HTMLEntityDisplaySelection } from "sf-html-extension/models";
 import { EntityPaneComponentFactoryDependency } from "sf-front-end/dependencies";
 import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLEntity } from "sf-html-extension/ast";
 import { CSSExpression, CSSStyleExpression, CSSRuleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/ast";
+import { VisibleHTMLElementCollection } from "sf-html-extension/collections";
 
 class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, declaration: CSSStyleDeclarationExpression, style: CSSStyleExpression, addNewDeclaration: Function }, any> {
 
@@ -89,7 +89,7 @@ class StylePaneComponent extends React.Component<{ app: FrontEndApplication, wor
 export class CSSPaneComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication }, any> {
   render() {
     const workspace = this.props.workspace;
-    const selection = workspace.selection as HTMLEntityDisplaySelection;
+    const selection = new VisibleHTMLElementCollection(...workspace.selection);
 
     if (!selection.length) return null;
 

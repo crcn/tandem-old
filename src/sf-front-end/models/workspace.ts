@@ -2,14 +2,14 @@ import { Editor } from "./editor";
 import { inject } from "sf-core/decorators";
 import { IActor } from "sf-core/actors";
 import { Action } from "sf-core/actions";
-import { Selection } from "./selection";
+import { IEntity } from "sf-core/ast";
 import { DocumentFile } from "./base";
 import { IInjectable, Dependencies, Injector } from "sf-core/dependencies";
 
 export class Workspace implements IActor {
 
   readonly editor: Editor;
-  public selection: Selection<any> = new Selection<any>();
+  public selection: Array<IEntity> = [];
 
   // TODO - implement me
   public getSelection(type: string) { }

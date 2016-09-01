@@ -7,7 +7,7 @@
 - [x] document panes
   - [x] layers pane
     - [x] shift click to multi select entities
-    - [ ] better highlighting for drop target
+    - [x] better highlighting for drop target
     - [ ] get + button to work
     - [ ] ability to edit elements
   - [ ] css rules
@@ -58,7 +58,7 @@
                 	- [ ] repeat
 	- [ ] scss extension
 		- [ ] parse variables
-	- [ ] handlebars 
+	- [ ] handlebars
 
 - [ ] optimizations
   - [ ] memoize flatten() for entities

@@ -1,10 +1,10 @@
 import { intersection, values } from "lodash";
-import { DisplayEntitySelection } from "sf-front-end/models/display-entity-selection";
+import { VisibleEntityCollection } from "sf-front-end/collections/visible-entity-collection";
 import { VisibleHTMLElementEntity } from "sf-html-extension/ast";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { CSSRuleExpression, CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/ast";
 
-export class HTMLEntityDisplaySelection extends DisplayEntitySelection<VisibleHTMLElementEntity> {
+export class VisibleHTMLElementCollection<T extends VisibleHTMLElementEntity>  extends VisibleEntityCollection<T> {
   private _styleExpression: CSSStyleExpression;
 
   get cssRuleExpressions(): Array<CSSRuleExpression> {
@@ -33,7 +33,5 @@ export class HTMLEntityDisplaySelection extends DisplayEntitySelection<VisibleHT
     return this._styleExpression;
   }
 }
-
-export const htmlDisplayEntitySelectionDependency = new SelectionFactoryDependency("display", HTMLEntityDisplaySelection);
 
 
