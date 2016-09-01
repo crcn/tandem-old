@@ -1,3 +1,6 @@
+import { Action } from "sf-core/actions";
+import { IActor } from "sf-core/actors";
+import { WrapBus } from "mesh";
 import { ITreeNode } from "./base";
 import { Observable } from "sf-core/observable";
 
@@ -51,10 +54,12 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
 
   private _parent: T;
   private _children: TreeNodeChildren<T>;
+  private _childObserver: IActor;
 
   constructor() {
     super();
     this._children = new TreeNodeChildren<T>(this);
+    this._childObserver = new WrapBus(this.onChildAction.bind(this));
   }
 
   removeAllChildren() {
@@ -126,12 +131,14 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     if (child._parent) {
       child._parent.removeChild(child);
     }
+    child.observe(this._childObserver);
     child._parent = this;
     child.onAdded();
   }
 
   protected unlinkChild(child: T): void {
     child._parent = undefined;
+    child.unobserve(this._childObserver);
     child.onRemoved();
   }
 
@@ -153,5 +160,10 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
 
   protected cloneLeaf(): T {
     return <T>new TreeNode<T>();
+  }
+
+  protected onChildAction(action: Action) {
+    // bubble it up
+    this.notify(action);
   }
 }

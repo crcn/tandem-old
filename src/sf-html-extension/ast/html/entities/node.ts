@@ -75,7 +75,7 @@ export abstract class HTMLNodeEntity<T extends IExpression> extends BaseEntity<T
 
   protected abstract createSection();
 
-  protected mapSourceChildNodes() {
+  protected mapSourceChildren() {
     return this.source.children;
   }
 }

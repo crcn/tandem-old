@@ -38,7 +38,7 @@ export class CSSRootEntity extends BaseEntity<CSSStyleSheetExpression> {
     (<HTMLFile>this.document.owner).entity.addStyleSheet(this.source);
   }
 
-  mapSourceChildNodes() {
+  mapSourceChildren() {
     return this.source.rules;
   }
 

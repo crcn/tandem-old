@@ -37,7 +37,7 @@ class RegisteredArtboardEntity extends VisibleHTMLElementEntity implements ICont
     return new GroupNodeSection();
   }
 
-  mapSourceChildNodes() {
+  mapSourceChildren() {
     return ArtboardDependency.find(this.source.type.toLowerCase(), this._dependencies).value.source.children;
   }
 
