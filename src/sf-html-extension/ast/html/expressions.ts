@@ -12,7 +12,7 @@ export interface IHTMLValueNodeExpression extends IHTMLExpression {
   value: any;
 }
 
-export abstract class HTMLExpression extends BaseExpression implements IHTMLExpression {
+export abstract class HTMLExpression extends BaseExpression<HTMLExpression> implements IHTMLExpression {
   constructor(name: string, position: IRange) {
     super(name, position);
   }
@@ -26,8 +26,9 @@ export interface IHTMLContainerExpression extends IHTMLExpression {
 }
 
 export class HTMLContainerExpression extends HTMLExpression {
-  constructor(name: string, public children: Array<HTMLExpression>, position: IRange) {
+  constructor(name: string, children: Array<HTMLExpression>, position: IRange) {
     super(name, position);
+    children.forEach((child) => this.appendChild(child));
   }
 
   patch(expression: IHTMLContainerExpression) {
@@ -117,10 +118,6 @@ export class HTMLElementExpression extends HTMLContainerExpression implements IH
     }
   }
 
-  appendChild(childNode: HTMLExpression) {
-    this.children.push(childNode);
-  }
-
   public toString() {
     const buffer = ["<", this.type];
     for (const attribute of this.attributes) {
@@ -139,7 +136,7 @@ export class HTMLElementExpression extends HTMLContainerExpression implements IH
   }
 }
 
-export class HTMLAttributeExpression extends BaseExpression implements IExpression {
+export class HTMLAttributeExpression extends BaseExpression<HTMLAttributeExpression> implements IExpression {
   constructor(public name: string, public value: string, position: IRange) {
     super(HTMLAttributeExpression.name, position);
   }

@@ -3,7 +3,7 @@ import { BaseExpression } from "sf-core/ast";
 
 import { diffArray, patchArray } from "sf-core/utils/array";
 
-export abstract class CSSExpression extends BaseExpression {
+export abstract class CSSExpression extends BaseExpression<CSSExpression> {
 
   constructor(position: IRange) {
     super(null, position);

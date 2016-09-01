@@ -87,7 +87,8 @@ export class EditInnerHTMLTool extends BaseEditorTool {
     this._targetNode.removeEventListener("keydown", this._onKeyDown);
 
     // parse the innerHTML, set the source content, and prepare to diff
-    this._targetEntity.source.children = parseHTML(this._targetNode.innerHTML).children;
+    this._targetEntity.source.removeAllChildren();
+    this._targetEntity.source.appendChild(...parseHTML(this._targetNode.innerHTML).children);
 
     // reset the html so that the entity is properly diffd
     (<Element>this._targetEntity.section.targetNode).innerHTML = " ";

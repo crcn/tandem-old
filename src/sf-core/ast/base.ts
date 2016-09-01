@@ -12,7 +12,7 @@ export interface IExpression extends ITreeNode<IExpression> {
   type: string;
 }
 
-export abstract class BaseExpression extends TreeNode<BaseExpression> implements IExpression {
+export abstract class BaseExpression<T extends BaseExpression<any>> extends TreeNode<T> implements IExpression {
   constructor(public type: string, public position: IRange) {
     super();
   }

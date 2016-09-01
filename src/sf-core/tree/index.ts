@@ -57,6 +57,10 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     this._children = new TreeNodeChildren<T>(this);
   }
 
+  removeAllChildren() {
+    this.children.splice(0, this.children.length);
+  }
+
   get children(): Array<T> {
     return this._children;
   }

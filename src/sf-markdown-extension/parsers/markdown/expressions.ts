@@ -1,7 +1,7 @@
 import { IRange } from "sf-core/geom";
 import { BaseExpression } from "sf-core/ast";
 
-export abstract class MarkdownExpression extends BaseExpression {
+export abstract class MarkdownExpression extends BaseExpression<MarkdownExpression> {
 
   constructor(position: IRange) {
     super(null, position);
