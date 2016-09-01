@@ -2,18 +2,17 @@ import { HTMLElementEntity } from "sf-html-extension/ast";
 import { PCBlockExpression } from "sf-paperclip-extension/ast";
 import { ElementAttributeValueEntity } from "sf-core/dependencies";
 import { parseBlockScript } from "./utils";
-import { IContextualEntity, IEntity, IEntityDocument, EntityMetadata, getContext } from "sf-core/ast";
+import { IContextualEntity, IEntityDocument, BaseEntity, EntityMetadata, getContext } from "sf-core/ast";
 
-export class BlockAttributeValueEntity implements IEntity {
-  parent: IEntity;
+export class BlockAttributeValueEntity extends BaseEntity<PCBlockExpression> {
   public value: any;
   private _script: Function;
   public document: IEntityDocument;
   public metadata: EntityMetadata = new EntityMetadata(this);
 
   constructor(readonly source: PCBlockExpression, readonly element: IContextualEntity) {
+    super(source);
     this.document = element.document;
-    this.parent = element;
     try {
       this._script = parseBlockScript(source.value);
     } catch (e) {
@@ -23,30 +22,16 @@ export class BlockAttributeValueEntity implements IEntity {
     }
   }
 
-  remove() {
-
-  }
-
-  update() {
-
-  }
-
-  patch() {
-
-  }
-
-  flatten() {
-    return [this];
-  }
-
-  dispose() { }
-
-  load() {
+  async load() {
     try {
       this.value = this._script(getContext(this.element));
     } catch (e) {
       this.value = ""; // this.source.toString();
     }
+  }
+
+  cloneLeaf() {
+    return new BlockAttributeValueEntity(this.source, this.element);
   }
 }
 

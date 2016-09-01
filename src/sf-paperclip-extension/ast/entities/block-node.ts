@@ -1,15 +1,13 @@
 import { parsePC } from "sf-paperclip-extension/ast";
-import { IPCEntity } from "./base";
 import { MetadataKeys } from "sf-front-end/constants";
 import { parseBlockScript } from "./utils";
 import { PCBlockExpression } from "sf-paperclip-extension/ast/expressions";
-import { Node as MarkupNode } from "sf-core/markup";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { GroupNodeSection, IDOMSection } from "sf-html-extension/dom";
-import { INodeEntity, EntityMetadata, IContainerNodeEntity, IEntity, IValueNodeEntity, getContext } from "sf-core/ast";
-import { HTMLContainerEntity, HTMLTextEntity, HTMLTextExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLEntity } from "sf-html-extension/ast";
+import { BaseEntity, IEntity, IValueEntity, getContext } from "sf-core/ast";
+import { HTMLNodeEntity, HTMLTextEntity, HTMLTextExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLEntity } from "sf-html-extension/ast";
 
-export class PCBlockNodeEntity extends HTMLContainerEntity<PCBlockExpression> implements IValueNodeEntity  {
+export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockExpression> implements IValueEntity  {
   private _script: Function;
   public value: any;
   public source: PCBlockExpression;
@@ -58,8 +56,8 @@ export class PCBlockNodeEntity extends HTMLContainerEntity<PCBlockExpression> im
     this.value = value;
 
     for (const item of Array.isArray(value) ? value : [value]) {
-      if (item instanceof MarkupNode) {
-        this.appendChild((<MarkupNode>item).clone());
+      if (item instanceof BaseEntity) {
+        this.appendChild(item.clone());
       } else {
         const child = EntityFactoryDependency.createEntityFromSource(parsePC(String(item)), this._dependencies);
         this.appendChild(child);
@@ -68,10 +66,8 @@ export class PCBlockNodeEntity extends HTMLContainerEntity<PCBlockExpression> im
     }
   }
 
-  _clone() {
-    const clone = new PCBlockNodeEntity(this.source);
-    this.cloneChildrenToContainerNode(clone);
-    return clone;
+  cloneLeaf() {
+    return new PCBlockNodeEntity(this.source);
   }
 }
 

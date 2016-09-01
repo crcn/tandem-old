@@ -4,16 +4,11 @@ import { IExpression } from "sf-core/ast";
 import { IEntityDisplay } from "./display";
 import { IInjectable } from "sf-core/dependencies";
 import { EntityFactoryDependency } from "sf-core/dependencies";
-import { IDisposable, IOwnable, IRemovable, INamed } from "sf-core/object";
+import { IDisposable, IOwnable, IValued, IRemovable, INamed } from "sf-core/object";
+
 import {
-  INode,
-  Element,
-  IElement,
-  IValueNode,
-  ContainerNode,
-  IContainerNode,
-  Node as MarkupNode,
-} from "sf-core/markup";
+  ITreeNode
+} from "sf-core/tree";
 
 export class EntityMetadata extends Metadata implements IOwnable {
   constructor(readonly owner: IEntity, data?: any) {
@@ -26,11 +21,11 @@ export interface IEntityDocument extends IOwnable {
   parse(source: string): IExpression;
 }
 
-export interface IEntity extends IRemovable, IDisposable, IInjectable {
+export interface IEntity extends ITreeNode<IEntity>, IRemovable, IDisposable, IInjectable {
   document: IEntityDocument;
   readonly parent: IEntity;
   readonly metadata: EntityMetadata;
-  readonly source: any;
+  readonly source: IExpression;
 
   /**
    * update source from props on this entity
@@ -61,36 +56,12 @@ export interface IEntity extends IRemovable, IDisposable, IInjectable {
   remove();
 }
 
-export interface IValueEntity extends IEntity {
-  value: any;
-}
+export interface IValueEntity extends IEntity, IValued { }
 
 export interface IContextualEntity extends IEntity {
   context: any;
 }
 
-export interface IContainerNodeEntitySource {
-  appendChild(source: any);
-  removeChild(source: any);
-  children: Array<any>;
-}
-
-export interface INodeEntity extends INode, IEntity {
-  parent: IContainerNodeEntity;
-}
-export interface IContainerNodeEntity extends IContainerNode, INodeEntity {
-  parent: IContainerNodeEntity;
-  children: Array<INodeEntity>;
-}
-
-export interface IValueNodeEntity extends INodeEntity, IValueNode {
-  parent: IContainerNodeEntity;
-}
-
-export interface IElementEntity extends IElement, IContainerNodeEntity {
-  parent: IContainerNodeEntity;
-  children: Array<INodeEntity>;
-}
-export interface IVisibleNodeEntity extends INodeEntity {
+export interface IVisibleEntity extends IEntity {
   display: IEntityDisplay;
 }

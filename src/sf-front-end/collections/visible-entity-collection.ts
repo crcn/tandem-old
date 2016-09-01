@@ -1,13 +1,13 @@
 import { BoundingRect, IPoint } from "sf-core/geom";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { register as registerSerializer, serializeArray, deserialize } from "sf-core/serialize";
-import { IVisibleNodeEntity, IEntityDisplay, DisplayCapabilities, IEntity } from "sf-core/ast/entities";
+import { IVisibleEntity, IEntityDisplay, DisplayCapabilities, IEntity } from "sf-core/ast/entities";
 
 class EntitySelectionDisplay implements IEntityDisplay {
 
   readonly visible: boolean = true;
 
-  constructor(readonly selection: VisibleEntityCollection<IVisibleNodeEntity>) { }
+  constructor(readonly selection: VisibleEntityCollection<IVisibleEntity>) { }
 
   get position(): IPoint {
     const bounds = this.bounds;
@@ -61,10 +61,10 @@ class EntitySelectionDisplay implements IEntityDisplay {
   }
 }
 
-export class VisibleEntityCollection<T extends IVisibleNodeEntity> extends Array<T> {
+export class VisibleEntityCollection<T extends IVisibleEntity> extends Array<T> {
   readonly display: IEntityDisplay = new EntitySelectionDisplay(this);
   constructor(...entities: Array<IEntity>) {
-    super(...(<Array<T>>entities).filter((entity: IVisibleNodeEntity) => entity.display));
+    super(...(<Array<T>>entities).filter((entity: IVisibleEntity) => entity.display));
   }
 
 }

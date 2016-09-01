@@ -4,30 +4,26 @@ import { diffArray } from "sf-core/utils/array";
 import { watchProperty } from "sf-core/observable";
 import { bindable, mixin, virtual } from "sf-core/decorators";
 import { IDisposable, ITyped, IValued } from "sf-core/object";
-import { EntityFactoryDependency, EntityDocumentDependency, ENTITY_DOCUMENT_NS } from "sf-core/dependencies";
 import { IInjectable, Injector, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
-import {
-  Node as MarkupNode,
-  ContainerNode,
-} from "sf-core/markup";
+import { EntityFactoryDependency, EntityDocumentDependency, ENTITY_DOCUMENT_NS } from "sf-core/dependencies";
+
+
+import { TreeNode } from "sf-core/tree";
+import { IExpression } from "sf-core/ast";
 
 import {
-  IValueNodeEntity,
-  IContainerNodeEntity,
   IEntityDocument,
   EntityMetadata,
-  IEntity,
-  INodeEntity
+  IValueEntity,
+  IEntity
 } from "./base";
 
 export * from "./base";
 export * from "./display";
 export * from "./utils";
 
+export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEntity<any>> implements IEntity {
 
-export abstract class BaseNodeEntity<T extends ITyped> extends MarkupNode implements INodeEntity {
-
-  readonly parent: IContainerNodeEntity;
   public metadata: EntityMetadata;
 
   @inject(DEPENDENCIES_NS)
@@ -37,7 +33,7 @@ export abstract class BaseNodeEntity<T extends ITyped> extends MarkupNode implem
   readonly document: IEntityDocument;
 
   constructor(protected _source: T) {
-    super(_source.type);
+    super();
     this.initialize();
   }
 
@@ -45,24 +41,72 @@ export abstract class BaseNodeEntity<T extends ITyped> extends MarkupNode implem
     return this._source;
   }
 
-  public flatten(): Array<IEntity> {
-    return [this];
+  public dispose() {
+    for (const child of this.children) {
+      child.dispose();
+    }
   }
 
-  public load() { }
-  public update() { }
-  public dispose() { }
+  public flatten(): Array<IEntity> {
+    const items: Array<IEntity> = [this];
+    for (const child of this.children) {
+      items.push(...child.flatten());
+    }
+    return items;
+  }
+
+
+  public async load() {
+    for (const childExpression of await this.mapSourceChildren()) {
+      const entity = EntityFactoryDependency.createEntityFromSource(childExpression, this._dependencies);
+      this.appendChild(entity);
+      await entity.load();
+    }
+  }
+
+  public update() {
+    for (const child of this.children) {
+      child.update();
+    }
+  }
+
   public clone() {
-    let clone = this._clone();
+    let clone = super.clone();
     if (this._dependencies) {
       clone = Injector.inject(clone, this._dependencies);
     }
     return clone;
   }
 
-  public patch(entity: BaseNodeEntity<T>) {
+  public patch(entity: BaseEntity<T>) {
     this._source       = entity._source;
     this._dependencies = entity._dependencies;
+    const changes = diffArray(this.children, entity.children, this.compareChild.bind(this));
+    for (const entity of changes.remove) {
+      this.removeChild(entity);
+    }
+    for (const [currentChild, patchChild] of changes.update) {
+      currentChild.patch(patchChild);
+      const patchIndex   = entity.children.indexOf(patchChild);
+      const currentIndex = this.children.indexOf(currentChild);
+      if (currentIndex !== patchIndex) {
+        const beforeChild = this.children[patchIndex];
+        if (beforeChild) {
+          this.insertChild(this.children.indexOf(beforeChild), currentChild);
+        } else {
+          this.appendChild(currentChild);
+        }
+      }
+    }
+
+    for (const addition of changes.add) {
+      const beforeChild = this.children[addition.index];
+      if (beforeChild) {
+          this.insertChild(this.children.indexOf(beforeChild), addition.value);
+      } else {
+        this.appendChild(addition.value);
+      }
+    }
     this.updateFromSource();
   }
 
@@ -85,17 +129,25 @@ export abstract class BaseNodeEntity<T extends ITyped> extends MarkupNode implem
 
   protected removeSourceFromParent() {
     const parent = this.parent;
-    if (!this.parent || !this.parent.source.children) return;
+    if (!this.parent) return;
     const index = this.parent.source.children.indexOf(this.source);
     if (index !== -1) {
       this.parent.source.children.splice(index, 1);
     }
   }
 
-  protected abstract _clone();
+  protected compareChild(a: IEntity, b: IEntity) {
+    return a.constructor === b.constructor && a.source.type === b.source.type;
+  }
+
+  mapSourceChildren(): Array<IExpression> {
+    return this.source.children;
+  }
+
+  protected abstract cloneLeaf();
 }
 
-export abstract class BaseValueNodeEntity<T extends ITyped & IValued> extends BaseNodeEntity<T> implements IValueNodeEntity {
+export abstract class BaseValueEntity<T extends IExpression & IValued> extends BaseEntity<T> implements IValueEntity {
 
   @bindable()
   public value: any;
@@ -107,104 +159,15 @@ export abstract class BaseValueNodeEntity<T extends ITyped & IValued> extends Ba
     watchProperty(this, "value", this.onValueChange.bind(this));
   }
 
-  public update() { }
-
-  public patch(entity: BaseNodeEntity<T>) {
+  public patch(entity: BaseValueEntity<T>) {
     super.patch(entity);
     this.value  = this.source.value;
   }
 
-  public abstract clone();
+  mapSourceChildren() {
+    return [];
+  }
 
   protected onValueChange(newValue: any, oldValue: any) { }
 
-}
-
-@mixin(BaseNodeEntity)
-export abstract class BaseContainerNodeEntity<T extends ITyped> extends ContainerNode implements IContainerNodeEntity {
-
-  readonly parent: IContainerNodeEntity;
-  readonly metadata: EntityMetadata;
-  readonly children: Array<INodeEntity>;
-  readonly document: IEntityDocument;
-
-  protected _dependencies: Dependencies;
-
-  constructor(protected _source: T) {
-    super(_source.type);
-    this.initialize();
-  }
-
-  async load() {
-    for (const childExpression of await this.mapSourceChildNodes()) {
-      const entity = EntityFactoryDependency.createEntityFromSource(childExpression, this._dependencies);
-      this.appendChild(entity);
-      await entity.load();
-    }
-  }
-
-  patch(entity: BaseContainerNodeEntity<T>) {
-    BaseNodeEntity.prototype.patch.call(this, entity);
-    const changes = diffArray(this.children, entity.children, this.compareChild.bind(this));
-    for (const entity of changes.remove) {
-      this.removeChild(entity);
-    }
-    for (const [currentChild, patchChild] of changes.update) {
-      currentChild.patch(patchChild);
-      const patchIndex   = entity.children.indexOf(patchChild);
-      const currentIndex = this.children.indexOf(currentChild);
-      if (currentIndex !== patchIndex) {
-        const beforeChild = this.children[patchIndex];
-        if (beforeChild) {
-          this.insertBefore(currentChild, beforeChild);
-        } else {
-          this.appendChild(currentChild);
-        }
-      }
-    }
-
-    for (const addition of changes.add) {
-      const beforeChild = this.children[addition.index];
-      if (beforeChild) {
-        this.insertBefore(addition.value, beforeChild);
-      } else {
-        this.appendChild(addition.value);
-      }
-    }
-  }
-
-  get source(): T {
-    return this._source;
-  }
-
-  protected compareChild(a: INodeEntity, b: INodeEntity) {
-    return a.constructor === b.constructor && a.name === b.name;
-  }
-
-  update() {
-    for (const child of this.children) {
-      (<IEntity>child).update();
-    }
-  }
-
-  dispose() {
-    BaseNodeEntity.prototype.dispose.call(this);
-    for (const child of this.children) {
-      child.dispose();
-    }
-  }
-
-  flatten(): Array<IEntity> {
-    const items: Array<IEntity> = [this];
-    for (const child of this.children) {
-      items.push(...child.flatten());
-    }
-    return items;
-  }
-
-  @virtual remove() { }
-  @virtual protected initialize() { }
-  @virtual protected getInitialMetadata() { }
-  @virtual protected updateFromSource() { }
-  protected abstract mapSourceChildNodes();
 }

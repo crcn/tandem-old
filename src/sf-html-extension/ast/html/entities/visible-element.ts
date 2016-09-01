@@ -1,13 +1,13 @@
 import TAG_NAMES from "./tag-names";
+import { IVisibleEntity } from "sf-core/ast/entities";
 import { HTMLNodeDisplay } from "./displays";
 import { HTMLElementEntity } from "./element";
-import { IVisibleNodeEntity } from "sf-core/ast/entities";
 import { HTMLElementExpression } from "sf-html-extension/ast";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { IDOMSection, NodeSection } from "sf-html-extension/dom";
 import { parseCSSStyle, CSSStyleExpression } from "sf-html-extension/ast";
 
-export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisibleNodeEntity {
+export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisibleEntity {
 
   readonly type: string = "display";
   readonly displayType: string = "element";
@@ -53,13 +53,12 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
   }
 
   createSection(): IDOMSection {
-    return new NodeSection(document.createElement(this.name));
+    return new NodeSection(document.createElement(this.source.type));
   }
 
-  _clone() {
+  cloneLeaf() {
      const clone = new VisibleHTMLElementEntity(this.source);
      this.cloneAttributesToElement(clone);
-     this.cloneChildrenToContainerNode(clone);
 
      // todo - fix me - this is kind of nasty
      clone._updateStyleExpression();

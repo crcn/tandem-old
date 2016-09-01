@@ -1,6 +1,5 @@
 import { Action } from "./base";
-import { INode } from "sf-core/markup";
-
+import { ITreeNode } from "sf-core/tree";
 export { Action };
 
 export interface Change {
@@ -13,7 +12,7 @@ export interface Change {
 export const ADD_CHILD    = "addChild";
 export const REMOVE_CHILD = "removeChild";
 export class ChildAction extends Action {
-  constructor(type: string, readonly child: INode, readonly index: number) {
+  constructor(type: string, readonly child: ITreeNode<any>, readonly index: number) {
     super(type);
   }
 }

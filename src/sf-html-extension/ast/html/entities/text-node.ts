@@ -8,7 +8,7 @@ export class HTMLTextEntity extends HTMLValueNodeEntity<HTMLCommentExpression> {
   createSection() {
     return new NodeSection(document.createTextNode(decode(this.source.value)));
   }
-  _clone() {
+  cloneLeaf() {
     return new HTMLTextEntity(this.source);
   }
 }

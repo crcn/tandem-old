@@ -5,16 +5,15 @@ import { Observable } from "sf-core/observable";
 import { MetadataKeys } from "sf-front-end/constants";
 import { DocumentFile } from "sf-front-end/models";
 import { watchProperty } from "sf-core/observable";
-import { ContainerNode } from "sf-core/markup";
 import { GroupNodeSection } from "sf-html-extension/dom";
-import { HTMLContainerEntity } from "sf-html-extension/ast/html/entities";
 import { parseCSS, CSSStyleSheetExpression } from "sf-html-extension/ast";
 import { Dependencies, DEPENDENCIES_NS, Injector } from "sf-core/dependencies";
-import { IContainerNodeEntity, BaseNodeEntity, BaseContainerNodeEntity, INodeEntity, EntityMetadata, IEntityDocument } from "sf-core/ast/entities";
+import {BaseEntity, EntityMetadata, IEntityDocument } from "sf-core/ast/entities";
 
 import { CSSRuleEntity } from "./rule";
+import  { ICSSRuleEntity } from "./base";
 
-export class CSSRootEntity extends BaseContainerNodeEntity<CSSStyleSheetExpression> implements IContainerNodeEntity {
+export class CSSRootEntity extends BaseEntity<CSSStyleSheetExpression> {
 
   public owner: HTMLFile;
 
@@ -22,7 +21,7 @@ export class CSSRootEntity extends BaseContainerNodeEntity<CSSStyleSheetExpressi
     super(source);
   }
 
-  compareChild(a: INodeEntity, b: INodeEntity) {
+  compareChild(a: ICSSRuleEntity, b: ICSSRuleEntity) {
     if (a.constructor !== b.constructor) return false;
 
     if (a.source.selector) {
@@ -47,5 +46,9 @@ export class CSSRootEntity extends BaseContainerNodeEntity<CSSStyleSheetExpressi
     return Object.assign(super.getInitialMetadata(), {
       [MetadataKeys.HIDDEN]: true
     });
+  }
+
+  cloneLeaf() {
+    return new CSSRootEntity(this.source, this.document, this._dependencies);
   }
 }

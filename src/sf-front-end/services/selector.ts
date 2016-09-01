@@ -1,4 +1,5 @@
 import { DISPOSE } from "sf-core/actions";
+import { IEntity } from "sf-core/ast/entities";
 import { MetadataKeys } from "sf-front-end/constants";
 import { loggable, bindable } from "sf-core/decorators";
 import { FrontEndApplication } from "sf-front-end/application";
@@ -6,7 +7,6 @@ import { BaseApplicationService } from "sf-core/services";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
-import { IEntity, IContainerNodeEntity } from "sf-core/ast/entities";
 import { SELECT_SOURCE_AT_OFFSET, SELECT, SELECT_ALL, REMOVE_SELECTION, SelectAction } from "sf-front-end/actions";
 
 @loggable()
@@ -101,7 +101,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     // parent entities that appear in the selection
     newSelection.concat().forEach((entity: IEntity) => {
       let i;
-      if (entity.parent && (i = newSelection.indexOf(<IContainerNodeEntity>entity.parent)) !== -1) {
+      if (entity.parent && (i = newSelection.indexOf(entity.parent)) !== -1) {
         newSelection.splice(i, 1);
       }
     });

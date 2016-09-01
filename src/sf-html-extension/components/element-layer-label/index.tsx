@@ -80,7 +80,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
     } else {
       buffer.push(editTagName ?
         this.renderHTMLInput() :
-        <span className="m-element-layer-label--tag-name" key="tagName">{entity.name.toLowerCase()}</span>
+        <span className="m-element-layer-label--tag-name" key="tagName">{entity.source.type.toLowerCase()}</span>
       );
 
       // filter them, and remove the items we do not want to display
@@ -106,7 +106,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
 
 
     return <div className="m-label m-element-layer-label" onDoubleClick={this.editHTML}>
-      { connectDragSource(<span>{buffer}</span>) } { !~VOID_ELEMENTS.indexOf(entity.name.toLowerCase()) ? <span className="m-element-layer-label--add-child-button" onClick={this.addChild.bind(this)}>+</span> : void 0 }
+      { connectDragSource(<span>{buffer}</span>) } { !~VOID_ELEMENTS.indexOf(entity.source.type.toLowerCase()) ? <span className="m-element-layer-label--add-child-button" onClick={this.addChild.bind(this)}>+</span> : void 0 }
     </div>;
   }
 
@@ -169,7 +169,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
   getHTMLValue() {
 
     const entity = this.props.entity;
-    const buffer = [entity.name.toLowerCase()];
+    const buffer = [entity.source.type.toLowerCase()];
 
     for (const attribute of entity.attributes) {
       const value = attribute.value;

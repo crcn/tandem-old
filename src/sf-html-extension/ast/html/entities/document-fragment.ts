@@ -1,10 +1,10 @@
 import { MetadataKeys } from "sf-front-end/constants";
 import { GroupNodeSection } from "sf-html-extension/dom";
-import { HTMLContainerEntity } from "./container";
+import { HTMLNodeEntity } from "./node";
 import { HTMLFragmentExpression } from "sf-html-extension/ast";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 
-export class HTMLDocumentFragmentEntity extends HTMLContainerEntity<HTMLFragmentExpression> {
+export class HTMLDocumentFragmentEntity extends HTMLNodeEntity<HTMLFragmentExpression> {
 
   createSection() {
     return new GroupNodeSection();
@@ -16,10 +16,8 @@ export class HTMLDocumentFragmentEntity extends HTMLContainerEntity<HTMLFragment
     });
   }
 
-  _clone() {
-    const entity = new HTMLDocumentFragmentEntity(this.source);
-    this.cloneChildrenToContainerNode(entity);
-    return entity;
+  cloneLeaf() {
+    return new HTMLDocumentFragmentEntity(this.source);
   }
 }
 

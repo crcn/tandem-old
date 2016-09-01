@@ -1,5 +1,4 @@
-import { INode } from "sf-core/markup";
 
-export function convertMeasurement(declarationValue: string, unit: string, target: INode): string {
+export function convertMeasurement(declarationValue: string, unit: string, target: any): string {
   return undefined;
 }

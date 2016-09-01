@@ -5,7 +5,6 @@ import { inject } from "sf-core/decorators";
 import { Response } from "mesh";
 import { BubbleBus } from "sf-core/busses";
 import { DocumentFile } from "sf-front-end/models";
-import { IContainerNode } from "sf-core/markup";
 import { GroupNodeSection } from "sf-html-extension/dom";
 import { HTMLElementEntity } from "./element";
 import { EntityFactoryDependency } from "sf-core/dependencies";

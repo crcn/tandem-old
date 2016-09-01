@@ -10,7 +10,7 @@ import { HTMLElementExpression } from "sf-html-extension/ast";
 import { VisibleHTMLElementEntity } from "./visible-element";
 import { NodeSection, GroupNodeSection } from "sf-html-extension/dom";
 import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "sf-core/dependencies";
-import { IContextualEntity, INodeEntity, IContainerNodeEntity, getContext } from "sf-core/ast";
+import { IContextualEntity, IEntity, getContext } from "sf-core/ast";
 
 const ARTBOARD_NS = "artboards";
 class ArtboardDependency extends Dependency<HTMLArtboardEntity> {
@@ -26,7 +26,7 @@ class RegisteredArtboardEntity extends VisibleHTMLElementEntity implements ICont
 
   private _context: any;
   private _childrenSection: GroupNodeSection;
-  private __children: IContainerNodeEntity;
+  private __children: IEntity;
 
   constructor(source: HTMLElementExpression) {
     super(source);
@@ -38,7 +38,7 @@ class RegisteredArtboardEntity extends VisibleHTMLElementEntity implements ICont
   }
 
   mapSourceChildNodes() {
-    return ArtboardDependency.find(this.name.toLowerCase(), this._dependencies).value.source.children;
+    return ArtboardDependency.find(this.source.type.toLowerCase(), this._dependencies).value.source.children;
   }
 
   get context() {

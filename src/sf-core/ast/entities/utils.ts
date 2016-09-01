@@ -1,4 +1,4 @@
-import { IEntity, IContainerNodeEntity, IContextualEntity } from "./base";
+import { IEntity, IContextualEntity } from "./base";
 
 export function findEntitiesBySource(entity: IEntity, ...sources) {
 
@@ -6,18 +6,18 @@ export function findEntitiesBySource(entity: IEntity, ...sources) {
   return <Array<IEntity>>entity.flatten().filter((entity: IEntity) => sources.indexOf(entity.source) !== -1);
 }
 
-export async function appendSourceChildren(entity: IContainerNodeEntity, ...childSources: Array<any>) {
+export async function appendSourceChildren(entity: IEntity, ...childSources: Array<any>) {
   return insertSourceChildren(entity, entity.source.children.length, ...childSources);
 }
 
-export async function replaceEntitySource(entity: IContainerNodeEntity, ...sources) {
-  const parent = <IContainerNodeEntity>entity.parent;
+export async function replaceEntitySource(entity: IEntity, ...sources) {
+  const parent = <IEntity>entity.parent;
   const index: number = parent.source.children.indexOf(entity.source);
   parent.source.children.splice(index, 1);
   return insertSourceChildren(parent, index, ...sources);
 }
 
-export async function insertSourceChildren(entity: IContainerNodeEntity, index: number = -1, ...childSources: Array<any>) {
+export async function insertSourceChildren(entity: IEntity, index: number = -1, ...childSources: Array<any>) {
   const oldSource = entity.source;
   entity.source.children.splice(index, 0, ...childSources);
 

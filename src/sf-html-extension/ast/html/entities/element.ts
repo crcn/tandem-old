@@ -1,10 +1,8 @@
 import { IHTMLEntity } from "./base";
 import { MetadataKeys } from "sf-front-end/constants";
-import { IElementEntity } from "sf-core/ast/entities";
 import { CSSRuleExpression } from "sf-html-extension/ast";
 import { CSSStyleExpression } from "sf-html-extension/ast";
-import { HTMLContainerEntity } from "./container";
-import { IElement, Attributes } from "sf-core/markup";
+import { HTMLNodeEntity } from "./node";
 import { AttributeChangeAction } from "sf-core/actions";
 import { diffArray, patchArray } from "sf-core/utils/array";
 import { parseCSS, parseCSSStyle } from "sf-html-extension/ast";
@@ -12,7 +10,7 @@ import { IDOMSection, NodeSection } from "sf-html-extension/dom";
 import { HTMLElementExpression, HTMLAttributeExpression } from "sf-html-extension/ast";
 import { EntityFactoryDependency, ElementAttributeValueEntity } from "sf-core/dependencies";
 
-export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression> implements IHTMLEntity, IElementEntity, IElement {
+export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> implements IHTMLEntity {
 
   private _attributes: Attributes;
 
@@ -81,7 +79,7 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   }
 
   createSection(): IDOMSection {
-    return new NodeSection(document.createElement(this.name));
+    return new NodeSection(document.createElement(this.source.type));
   }
 
   static mapSourceChildren(source: HTMLElementExpression) {
@@ -109,10 +107,9 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
     this.notify(new AttributeChangeAction(name, value));
   }
 
-  _clone() {
+  cloneLeaf() {
     const clone = new HTMLElementEntity(this.source);
     this.cloneAttributesToElement(clone);
-    this.cloneChildrenToContainerNode(clone);
     return clone;
   }
 
@@ -127,3 +124,46 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   }
 }
 
+
+export class Attribute {
+  constructor(public name: string, public value: any) { }
+}
+
+export class Attributes extends Array<Attribute> {
+
+  has(name: string) {
+    for (const attribute of this) {
+      if (attribute.name === name) return true;
+    }
+    return false;
+  }
+
+  set(name: string, value: any) {
+    let found = false;
+    for (const attribute of this) {
+      if (attribute.name === name) {
+        attribute.value = value;
+        found = true;
+      };
+    }
+    if (!found) {
+      this.push(new Attribute(name, value));
+    }
+  }
+
+  get(name: string) {
+    for (const attribute of this) {
+      if (attribute.name === name) return attribute.value;
+    }
+  }
+
+  remove(name: string) {
+    for (let i = this.length; i--; ) {
+      const attribute = this[i];
+      if (attribute.name === name) {
+        this.splice(i, 1);
+        return;
+      }
+    }
+  }
+}

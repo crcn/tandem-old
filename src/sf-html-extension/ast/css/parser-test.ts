@@ -1,6 +1,5 @@
 import { parse } from "./parser.peg";
 import { expect } from "chai";
-import { IElement, INode } from "sf-core/markup";
 import {
   CSSMediaExpression,
   CSSStyleExpression,
@@ -106,8 +105,8 @@ describe(__filename + "#", () => {
         div.innerHTML = html;
         const nodes = flattenNode(div);
         nodes.shift(); // remove the initial div
-        const targets = nodes.filter((node: IElement) => /^#/.test(node.name) && node.hasAttribute("target"));
-        const matches = nodes.filter((node: IElement) => /^#/.test(node.name) && rule.selector.test(<IElement>node));
+        const targets = nodes.filter((node) => /^#/.test(node.name) && node.hasAttribute("target"));
+        const matches = nodes.filter((node) => /^#/.test(node.name) && rule.selector.test(node));
         expect(matches).to.eql(targets);
       });
     });
@@ -131,7 +130,7 @@ describe(__filename + "#", () => {
   });
 });
 
-function flattenNode(node: any): Array<INode> {
+function flattenNode(node: any): Array<any> {
   const nodes = [node];
   if (node.children) {
     for (const child of node.children) {

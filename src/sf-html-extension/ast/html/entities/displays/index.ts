@@ -5,7 +5,7 @@ import { parseCSS } from "sf-html-extension/ast";
 import { BoundingRect, IPoint } from "sf-core/geom";
 import { VisibleHTMLElementEntity } from "../index";
 import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/ast";
-import { IEntityDisplay, IVisibleNodeEntity, DisplayCapabilities } from "sf-core/ast/entities";
+import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/ast/entities";
 import * as memoize from "memoizee";
 
 function calculateCSSMeasurments(style): any {
@@ -242,8 +242,8 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     let p = this.entity.parent;
     const parentDisplays = [];
     while (p) {
-      if ((<IVisibleNodeEntity><any>p).display instanceof HTMLNodeDisplay) {
-        parentDisplays.push(<HTMLNodeDisplay>(<IVisibleNodeEntity><any>p).display);
+      if ((<IVisibleEntity><any>p).display instanceof HTMLNodeDisplay) {
+        parentDisplays.push(<HTMLNodeDisplay>(<IVisibleEntity><any>p).display);
       }
       p = p.parent;
     }

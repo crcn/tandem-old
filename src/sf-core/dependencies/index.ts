@@ -4,7 +4,7 @@ import { ITyped } from "sf-core/object";
 import { IBrokerBus } from "../busses";
 import { IApplication } from "sf-core/application";
 import { IActiveRecord } from "../active-records";
-import { IEntity, IElementEntity, IValueEntity, IEntityDocument } from "sf-core/ast";
+import { IEntity, IValueEntity, IEntityDocument } from "sf-core/ast";
 
 import {
   IFactory,

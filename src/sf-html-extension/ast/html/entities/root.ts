@@ -8,13 +8,11 @@ import { EntityFactoryDependency } from "sf-core/dependencies";
 import { IDOMSection, GroupNodeSection } from "sf-html-extension/dom";
 import { Action, PropertyChangeAction, UpdateAction } from "sf-core/actions";
 import { Dependencies, DEPENDENCIES_NS, IInjectable } from "sf-core/dependencies";
-import { IHTMLEntity, IHTMLDocumentEntity, IHTMLContainerEntity } from "./base";
+import { IHTMLEntity } from "./base";
 import {
   IEntity,
   EntityMetadata,
-  IElementEntity,
   IEntityDocument,
-  IVisibleNodeEntity,
   findEntitiesBySource,
 } from "sf-core/ast/entities";
 
@@ -32,13 +30,11 @@ import {
 } from "sf-html-extension/ast";
 
 import {
-  HTMLContainerEntity
-} from "sf-html-extension/ast/html/entities/container";
+  HTMLNodeEntity
+} from "sf-html-extension/ast/html/entities/node";
 
 
-import { ContainerNode, INode, IContainerNode } from "sf-core/markup";
-
-export class HTMLDocumentRootEntity extends HTMLContainerEntity<HTMLFragmentExpression> implements IHTMLDocumentEntity {
+export class HTMLDocumentRootEntity extends HTMLNodeEntity<HTMLFragmentExpression> implements IHTMLEntity {
 
   /**
    * The source content of this document
@@ -77,10 +73,8 @@ export class HTMLDocumentRootEntity extends HTMLContainerEntity<HTMLFragmentExpr
     }
   }
 
-  _clone() {
-    const clone = new HTMLDocumentRootEntity(this.source, <HTMLFile>this.document, this._dependencies);
-    this.cloneChildrenToContainerNode(clone);
-    return clone;
+  cloneLeaf() {
+    return new HTMLDocumentRootEntity(this.source, <HTMLFile>this.document, this._dependencies);
   }
 
   patch(entity: HTMLDocumentRootEntity) {

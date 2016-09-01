@@ -29,6 +29,7 @@ export class HTMLContainerExpression extends HTMLExpression {
   constructor(name: string, public children: Array<HTMLExpression>, position: IRange) {
     super(name, position);
   }
+
   patch(expression: IHTMLContainerExpression) {
     this.position = expression.position;
     const changes = diffArray(this.children, expression.children, (a, b) => a.type === b.type);
@@ -73,6 +74,8 @@ export class HTMLElementExpression extends HTMLContainerExpression implements IH
     public position: IRange) {
     super(name, children, position);
   }
+
+
 
   patch(expression: HTMLElementExpression) {
     this.attributes = expression.attributes;

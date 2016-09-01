@@ -10,7 +10,7 @@ export class HTMLCommentEntity extends HTMLValueNodeEntity<HTMLCommentExpression
   toString() {
     return `<!-- ${this.value} -->`;
   }
-  _clone() {
+  cloneLeaf() {
     return new HTMLCommentEntity(this.source);
   }
 }

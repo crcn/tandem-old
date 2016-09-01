@@ -12,7 +12,7 @@ import { VisibleEntityCollection } from "sf-front-end/collections";
 import { SetToolAction, SelectAction } from "sf-front-end/actions";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import { Workspace, Editor, InsertTool } from "sf-front-end/models";
-import { IEntity, IContainerNodeEntity, IVisibleNodeEntity, appendSourceChildren } from "sf-core/ast/entities";
+import { IEntity, IVisibleEntity, appendSourceChildren } from "sf-core/ast/entities";
 
 class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, workspace: Workspace, app: FrontEndApplication, tool: InsertTool }, any> {
 
@@ -30,8 +30,8 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     const { editor, bus, workspace, tool } = this.props;
 
-    const activeEntity =  this._targetEntity as IContainerNodeEntity;
-    const child = (await appendSourceChildren(activeEntity, tool.createSource()))[0] as IVisibleNodeEntity;
+    const activeEntity =  this._targetEntity as IEntity;
+    const child = (await appendSourceChildren(activeEntity, tool.createSource()))[0] as IVisibleEntity;
     await bus.execute(new SelectAction(child));
 
     const capabilities = child.display.capabilities;

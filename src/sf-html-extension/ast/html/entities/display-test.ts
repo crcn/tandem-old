@@ -4,7 +4,7 @@ import { HTMLFile } from "sf-html-extension/models/html-file";
 import { parseHTML } from "sf-html-extension/ast";
 import { MimeTypes } from "sf-html-extension/constants";
 import { BoundingRect } from "sf-core/geom";
-import { IVisibleNodeEntity } from "sf-core/ast/entities";
+import { IVisibleEntity } from "sf-core/ast/entities";
 import { FrontEndApplication } from "sf-front-end/application";
 import { waitForPropertyChange } from "sf-core/test/utils";
 import { Dependencies, DependenciesDependency, DEPENDENCIES_NS, ApplicationSingletonDependency, ActiveRecordFactoryDependency } from "sf-core/dependencies";
@@ -53,7 +53,7 @@ describe(__filename + "#", () => {
     div.appendChild(<Node><any>root.section.toFragment());
 
 
-    return <IVisibleNodeEntity>(root.flatten().find((entity) => {
+    return <IVisibleEntity>(root.flatten().find((entity) => {
       if (entity["attributes"]) {
         return (<HTMLElementEntity>entity).getAttribute("id") === "target";
        }

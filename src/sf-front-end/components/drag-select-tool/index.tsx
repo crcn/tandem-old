@@ -5,9 +5,9 @@ import { PointerTool } from "sf-front-end/models/pointer-tool";
 import { MetadataKeys } from "sf-front-end/constants";
 import { BoundingRect } from "sf-core/geom";
 import { FrontEndApplication } from "sf-front-end/application";
+import { IEntity, IVisibleEntity } from "sf-core/ast/entities";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import { SelectAction, MouseAction, CANVAS_MOUSE_DOWN } from "sf-front-end/actions";
-import { IEntity, IVisibleNodeEntity, IContainerNodeEntity } from "sf-core/ast/entities";
 
 class DragSelectComponent extends React.Component<{ allEntities: any, app: FrontEndApplication, zoom: number, tool: PointerTool }, any> {
 
@@ -75,8 +75,8 @@ class DragSelectComponent extends React.Component<{ allEntities: any, app: Front
 
       const selection = [];
 
-      entities.forEach(function (entity: IVisibleNodeEntity) {
-        if (entity["display"] && (entity.metadata.get(MetadataKeys.CANVAS_ROOT) !== true || (entity as any as IContainerNodeEntity).children.length === 0) && entity.display.bounds.intersects(bounds)) {
+      entities.forEach(function (entity: IVisibleEntity) {
+        if (entity.display && (entity.metadata.get(MetadataKeys.CANVAS_ROOT) !== true || entity.children.length === 0) && entity.display.bounds.intersects(bounds)) {
           selection.push(entity);
         }
       });

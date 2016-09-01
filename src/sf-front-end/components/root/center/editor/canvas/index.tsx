@@ -4,9 +4,8 @@ import { IPoint } from "sf-core/geom";
 import { UpdateAction } from "sf-core/actions";
 import IsolateComponent  from "sf-front-end/components/isolate";
 import { BoundingRect } from "sf-core/geom";
-import { IVisibleNodeEntity } from "sf-core/ast/entities";
+import { IVisibleEntity } from "sf-core/ast/entities";
 import ToolsLayerComponent from "./tools";
-import { IContainerNodeEntity } from "sf-core/ast/entities";
 import PreviewLayerComponent from "./preview";
 import { Editor, Workspace } from "sf-front-end/models";
 import { Dependencies, MainBusDependency } from "sf-core/dependencies";
@@ -134,8 +133,8 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     let width  = body.offsetWidth;
     let height = body.offsetHeight;
 
-    const allBounds = (this.props.workspace.file.entity as IContainerNodeEntity).children
-    .map((entity: IVisibleNodeEntity) => entity.display && entity.display.bounds)
+    const allBounds = this.props.workspace.file.entity.children
+    .map((entity: IVisibleEntity) => entity.display && entity.display.bounds)
     .filter((bounds) => !!bounds);
 
     let entireBounds = BoundingRect.merge(...allBounds);

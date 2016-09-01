@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { Element } from "sf-core/markup";
+import { TreeNode } from "sf-core/tree";
 import { BoundingRect, IPoint } from "sf-core/geom";
 import { VisibleEntityCollection } from "./visible-entity-collection";
-import { IEntity, IEntityDisplay, INodeEntity, IVisibleNodeEntity, DisplayCapabilities, EntityMetadata } from "sf-core/ast/entities";
+import { IEntity, IEntityDisplay, IVisibleEntity, DisplayCapabilities, EntityMetadata, BaseEntity, IExpression } from "sf-core/ast";
 
 describe(__filename + "#", () => {
 
@@ -25,32 +25,24 @@ describe(__filename + "#", () => {
     }
   }
 
-  class VisibleEntity extends Element implements IVisibleNodeEntity {
-    readonly parent: VisibleEntity;
-    readonly root: VisibleEntity;
+  class MockExpression extends TreeNode<MockExpression> implements IExpression {
+    position = null;
+    type = null;
+  }
+
+
+  class VisibleEntity extends BaseEntity<MockExpression> implements IVisibleEntity {
+
     readonly type: string = "display";
     readonly displayType: string = "element";
-    readonly source: any = null;
-    readonly document: any;
-    readonly children: Array<INodeEntity>;
-    readonly metadata: EntityMetadata = new EntityMetadata(this);
 
     constructor(readonly display: IEntityDisplay) {
-      super("entity");
+      super(new MockExpression());
     }
 
-    dispose() { }
-    update() { }
-    remove() { }
-    load() { }
-    patch(entity) {
+    cloneLeaf() {
+      return new VisibleEntity(this.display);
     }
-
-    flatten(): Array<IEntity> {
-      return [this];
-    }
-
-    find(filter: (entity: IEntity) => boolean) { return this; }
   }
 
   it("can be created", () => {

@@ -11,17 +11,17 @@ import { SelectAction } from "sf-front-end/actions";
 import { MetadataKeys } from "sf-front-end/constants";
 import { FrontEndApplication } from "sf-front-end/application";
 import { intersection, flatten } from "lodash";
+import { IVisibleEntity, IEntity } from "sf-core/ast/entities";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import { IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
-import { IVisibleNodeEntity, IEntity, IContainerNodeEntity } from "sf-core/ast/entities";
 
 class SelectableComponent extends React.Component<{
-  entity: IVisibleNodeEntity,
+  entity: IVisibleEntity,
   selection: any,
   app: FrontEndApplication,
   documentContent: string,
   zoom: number,
-  onEntityMouseDown: (entity: IVisibleNodeEntity, event?: MouseEvent) => void
+  onEntityMouseDown: (entity: IVisibleEntity, event?: MouseEvent) => void
 }, any> {
 
   private _i: number = 0;
@@ -93,7 +93,7 @@ class SelectableComponent extends React.Component<{
 export class SelectablesComponent extends React.Component<{
   app: any,
   workspace: Workspace,
-  onEntityMouseDown: (entity: IVisibleNodeEntity, event?: MouseEvent) => void,
+  onEntityMouseDown: (entity: IVisibleEntity, event?: MouseEvent) => void,
   canvasRootSelectable?: boolean
 }, {}>  {
 
@@ -101,7 +101,7 @@ export class SelectablesComponent extends React.Component<{
 
     const { workspace, app } = this.props;
     const { selection } = workspace;
-    const activeEntity = this.props.workspace.editor.activeEntity as IContainerNodeEntity;
+    const activeEntity = this.props.workspace.editor.activeEntity;
     if (!activeEntity.children) return null;
     // do not render selectables that are off screen
     //
@@ -114,15 +114,15 @@ export class SelectablesComponent extends React.Component<{
 
     // if (selection.preview.currentTool.type !== "pointer") return null;
 
-    const selectables = allEntities.filter((entity: IVisibleNodeEntity) => (
-      entity.display && (this.props.canvasRootSelectable || entity.metadata.get(MetadataKeys.CANVAS_ROOT) !== true || (entity as any as IContainerNodeEntity).children.length === 0) && entity.display.visible
+    const selectables = allEntities.filter((entity: IVisibleEntity) => (
+      entity.display && (this.props.canvasRootSelectable || entity.metadata.get(MetadataKeys.CANVAS_ROOT) !== true || entity.children.length === 0) && entity.display.visible
     )).map((entity, i) => (
       <SelectableComponent
         {...this.props}
         documentContent={this.props.workspace.file.content}
         zoom={this.props.workspace.editor.zoom}
         selection={selection}
-        entity={entity as IVisibleNodeEntity}
+        entity={entity as IVisibleEntity}
         key={i}
       />
     ));
