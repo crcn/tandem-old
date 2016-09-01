@@ -18,7 +18,6 @@ import { IVisibleNodeEntity, IEntity, IContainerNodeEntity } from "sf-core/ast/e
 class SelectableComponent extends React.Component<{
   entity: IVisibleNodeEntity,
   selection: any,
-  hovering: boolean,
   app: FrontEndApplication,
   documentContent: string,
   zoom: number,
@@ -39,11 +38,11 @@ class SelectableComponent extends React.Component<{
  }
 
   onMouseOver = (event: MouseEvent) => {
-    this.props.app.metadata.set(MetadataKeys.HOVER_ITEM, this.props.entity);
+    this.props.entity.metadata.set(MetadataKeys.HOVERING, true);
   }
 
   onMouseOut = (event: MouseEvent) => {
-    this.props.app.metadata.set(MetadataKeys.HOVER_ITEM, undefined);
+    this.props.entity.metadata.set(MetadataKeys.HOVERING, false);
   }
 
   shouldComponentUpdate(props) {
@@ -65,7 +64,7 @@ class SelectableComponent extends React.Component<{
 
     const classNames = cx({
       "m-selectable": true,
-      "hover": this.props.hovering
+      "hover": this.props.entity.metadata.get(MetadataKeys.HOVERING)
     });
 
     const style = {
@@ -121,7 +120,6 @@ export class SelectablesComponent extends React.Component<{
       <SelectableComponent
         {...this.props}
         documentContent={this.props.workspace.file.content}
-        hovering={this.props.app.metadata.get(MetadataKeys.HOVER_ITEM) === entity}
         zoom={this.props.workspace.editor.zoom}
         selection={selection}
         entity={entity as IVisibleNodeEntity}

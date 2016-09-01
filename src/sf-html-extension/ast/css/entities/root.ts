@@ -16,6 +16,8 @@ import { CSSRuleEntity } from "./rule";
 
 export class CSSRootEntity extends BaseContainerNodeEntity<CSSStyleSheetExpression> implements IContainerNodeEntity {
 
+  public owner: HTMLFile;
+
   constructor(source: CSSStyleSheetExpression, public document: DocumentFile<any>, protected _dependencies: Dependencies) {
     super(source);
   }

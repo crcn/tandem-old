@@ -215,7 +215,7 @@ export class CSSClassNameSelectorExpression extends CSSSelectorExpression {
     super(position);
   }
   test(node: IElement): boolean {
-    return isElement(node) && node.hasAttribute("class") && node.getAttribute("class").indexOf(this.value) !== -1;
+    return isElement(node) && node.hasAttribute("class") && node.getAttribute("class").split(" ").indexOf(this.value) !== -1;
   }
   toString() {
     return "." + this.value;
@@ -229,7 +229,7 @@ export class CSSIDSelectorExpression extends CSSSelectorExpression {
     super(position);
   }
   test(node: IElement): boolean {
-    return node.hasAttribute("id") && node.getAttribute("id").indexOf(this.value) !== -1;
+    return node.hasAttribute("id") && node.getAttribute("id") === this.value;
   }
   toString() {
     return "#" + this.value;

@@ -1,11 +1,10 @@
 <link rel="stylesheet" type="text/css" href="./style.scss" />
 
-<artboard id="test">
-  <div style=${style}>
-    ${Array.from({ length: Number(count) }, () => children)}
-  </div>
+<artboard id="repeat" title="Repeat component">
+  ${Array.from({ length: Number(count) }, () => children)}
 </artboard>
 
-<test count="20" style="position: absolute; background: rgba(0,0,0,0.1); width: 200px; height: 200px; top: 300px;">
-  <div class="item">child</div>
-</test>
+<repeat count="5">
+  <div class="item" />
+  <div class="item2" />
+</repeat>

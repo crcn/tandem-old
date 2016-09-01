@@ -120,7 +120,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     this.setState({
       hover: true
     });
-    this.props.app.metadata.set(MetadataKeys.HOVER_ITEM, this.props.entity);
+    this.props.entity.metadata.set(MetadataKeys.HOVERING, true);
   }
 
   onMouseOut = (event) => {
@@ -128,7 +128,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
       hover: false
     });
 
-    this.props.app.metadata.set(MetadataKeys.HOVER_ITEM, undefined);
+    this.props.entity.metadata.set(MetadataKeys.HOVERING, false);
   }
 
   render() {
@@ -154,12 +154,14 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
       </span>;
     }
 
+    const selected = selection && selection.indexOf(entity) !== -1;
+
     const headerClassName = cx({
       "m-layers-pane-component-layer--header": true,
       "drag-over": isOver && canDrop,
-      "hover": this.props.app.metadata.get(MetadataKeys.HOVER_ITEM) === this.props.entity && !this.state.hover,
+      "hover": this.props.entity.metadata.get(MetadataKeys.HOVERING) && !this.state.hover && !selected,
       ["m-layer-component-type-" + layerName]: true,
-      "selected": selection && selection.indexOf(entity) !== -1
+      "selected": selected
     });
 
     const expandButtonClassName = cx({
