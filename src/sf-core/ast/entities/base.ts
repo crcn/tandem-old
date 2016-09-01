@@ -21,7 +21,7 @@ export interface IEntityDocument extends IOwnable {
   parse(source: string): IExpression;
 }
 
-export interface IEntity extends ITreeNode<IEntity>, IRemovable, IDisposable, IInjectable {
+export interface IEntity extends ITreeNode<IEntity>, IDisposable, IInjectable {
   document: IEntityDocument;
   readonly parent: IEntity;
   readonly metadata: EntityMetadata;
@@ -49,11 +49,6 @@ export interface IEntity extends ITreeNode<IEntity>, IRemovable, IDisposable, II
    */
 
   flatten(): Array<IEntity>;
-
-  /**
-   */
-
-  remove();
 }
 
 export interface IValueEntity extends IEntity, IValued { }

@@ -1,5 +1,4 @@
 import { DISPOSE } from "sf-core/actions";
-import { IEntity } from "sf-core/ast/entities";
 import { MetadataKeys } from "sf-front-end/constants";
 import { loggable, bindable } from "sf-core/decorators";
 import { FrontEndApplication } from "sf-front-end/application";
@@ -7,6 +6,7 @@ import { BaseApplicationService } from "sf-core/services";
 import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
+import { IEntity, removeEntitySources } from "sf-core/ast";
 import { SELECT_SOURCE_AT_OFFSET, SELECT, SELECT_ALL, REMOVE_SELECTION, SelectAction } from "sf-front-end/actions";
 
 @loggable()
@@ -56,10 +56,8 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
   /**
    */
 
-  [REMOVE_SELECTION]() {
-    for (const item of this.app.workspace.selection) {
-      item.remove();
-    }
+  async [REMOVE_SELECTION]() {
+    await removeEntitySources(...this.app.workspace.selection);
     this.bus.execute(new SelectAction());
   }
 

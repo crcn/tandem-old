@@ -78,7 +78,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     const selection = new VisibleEntityCollection(...this.props.editor.workspace.selection);
     const zoom = this.props.editor.transform.scale;
     const display = selection.display;
-    const bounds = display ? display.bounds : undefined;
+    const bounds = selection.length ? display.bounds : undefined;
     const scale = 1 / editor.transform.scale;
 
     const bgstyle = {
@@ -95,7 +95,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     return <div className="m-insert-tool">
       <div onMouseDown={this.onRootMouseDown} style={bgstyle} />
       { !tool.entityIsRoot ? <SelectablesComponent {...this.props} canvasRootSelectable={true} onEntityMouseDown={this.onEntityMouseDown} /> : null }
-      { display && display.capabilities.resizable && tool.resizable ? <SelectionSizeComponent left={bounds.left + bounds.width} top={bounds.top + bounds.height} bounds={bounds} zoom={zoom} /> : undefined }
+      { selection.length && display.capabilities.resizable && tool.resizable ? <SelectionSizeComponent left={bounds.left + bounds.width} top={bounds.top + bounds.height} bounds={bounds} zoom={zoom} /> : undefined }
     </div>;
   }
 }

@@ -29,6 +29,16 @@ export async function insertSourceChildren(entity: IEntity, index: number = -1, 
   return findEntitiesBySource(entity, ...entity.source.children.slice(index, index + childSources.length));
 }
 
+export async function removeEntitySources(...entities: Array<IEntity>) {
+  const document = entities[0].document;
+
+  entities.forEach((entity) => {
+    if (entity.source.parent) {
+      entity.source.parent.children.remove(entity.source);
+    }
+  });
+  await document.update();
+}
 
 export function getContext(entity: IEntity) {
   let p = <IContextualEntity>entity.parent;

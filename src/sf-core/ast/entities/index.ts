@@ -55,7 +55,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     return items;
   }
 
-
   public async load() {
     for (const childExpression of await this.mapSourceChildren()) {
       const entity = EntityFactoryDependency.createEntityFromSource(childExpression, this._dependencies);
@@ -121,20 +120,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   protected getInitialMetadata() {
     return {};
-  }
-
-  remove() {
-    this.removeSourceFromParent();
-    this.dispose();
-  }
-
-  protected removeSourceFromParent() {
-    const parent = this.parent;
-    if (!this.parent) return;
-    const index = this.parent.source.children.indexOf(this.source);
-    if (index !== -1) {
-      this.parent.source.children.splice(index, 1);
-    }
   }
 
   protected compareChild(a: IEntity, b: IEntity) {

@@ -49,7 +49,6 @@ export abstract class HTMLNodeEntity<T extends IExpression> extends BaseEntity<T
   }
 
   onChildAdded(child: HTMLNodeEntity<T>) {
-    child.document = this.document;
     super.onChildAdded(child);
     if (child.section) {
       let nextHTMLEntitySibling: HTMLNodeEntity<T>;
