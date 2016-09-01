@@ -4,7 +4,7 @@
   ${Array.from({ length: Number(count) }, () => children)}!!!
 </artboard>
 
-<repeat count="5">
+<repeat count="10">
   <div class="item" />
   <div class="item2" />
 </repeat>
