@@ -126,6 +126,11 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
     return typeof this.source.value === "object";
   }
 
+  patch(entity: HTMLAttributeEntity) {
+    super.patch(entity);
+    this.value = entity.value;
+  }
+
   async load() {
     await super.load();
     if (this.hasLoadableValue) {

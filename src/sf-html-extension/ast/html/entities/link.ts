@@ -5,6 +5,7 @@ import { inject } from "sf-core/decorators";
 import { Response } from "mesh";
 import { BubbleBus } from "sf-core/busses";
 import { DocumentFile } from "sf-front-end/models";
+import { MetadataKeys } from "sf-front-end/constants";
 import { GroupNodeSection } from "sf-html-extension/dom";
 import { HTMLElementEntity } from "./element";
 import { EntityFactoryDependency } from "sf-core/dependencies";
@@ -29,6 +30,16 @@ export class LinkEntity extends HTMLElementEntity {
 
   onRemoving() {
     this._unwatch();
+  }
+
+  get documentChildren() {
+    return this._file.entity.children;
+  }
+
+  getInitialMetadata() {
+    return Object.assign(super.getInitialMetadata(), {
+      [MetadataKeys.CHILD_LAYER_PROPERTY]: "documentChildren"
+    });
   }
 
   get href() {

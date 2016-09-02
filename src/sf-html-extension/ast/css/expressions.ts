@@ -163,6 +163,7 @@ export class CSSStyleSheetExpression extends CSSExpression {
 
   constructor(public rules: Array<CSSRuleExpression>, position: IRange) {
     super(position);
+    rules.forEach((child) => this.appendChild(child));
   }
 
   patch(b: CSSStyleSheetExpression) {
