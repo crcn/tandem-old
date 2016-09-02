@@ -3,7 +3,6 @@ import { MetadataKeys } from "sf-front-end/constants";
 import { loggable, bindable } from "sf-core/decorators";
 import { FrontEndApplication } from "sf-front-end/application";
 import { BaseApplicationService } from "sf-core/services";
-import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
 import { ApplicationServiceDependency } from "sf-core/dependencies";
 import { IEntity, removeEntitySources } from "sf-core/ast";
@@ -70,12 +69,10 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     if (!items.length) {
       return app.workspace.selection = [];
     }
-
     const prevSelection = app.workspace.selection;
 
     const type = items[0].type;
 
-    const newSelectionDependency = SelectionFactoryDependency.find(type, this.app.dependencies);
     const newSelection = [];
 
     if (keepPreviousSelection) {

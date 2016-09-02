@@ -1,5 +1,4 @@
 import { BoundingRect, IPoint } from "sf-core/geom";
-import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { register as registerSerializer, serializeArray, deserialize } from "sf-core/serialize";
 import { IVisibleEntity, IEntityDisplay, DisplayCapabilities, IEntity } from "sf-core/ast/entities";
 

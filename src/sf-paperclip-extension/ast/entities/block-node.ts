@@ -52,7 +52,7 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
       }
     }
     this._executed = scriptExecuted;
-    this.metadata.set(MetadataKeys.HIDDEN, scriptExecuted);
+    this.metadata.set(MetadataKeys.HIDDEN, true);
     this.value = value;
     if (!scriptExecuted) return;
 

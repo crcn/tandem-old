@@ -3,7 +3,6 @@ import { expect } from "chai";
 import { Workspace, Editor } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";
 import { ClassFactoryDependency } from "sf-core/dependencies";
-import { SelectionFactoryDependency } from "sf-front-end/dependencies";
 import { dependency as selectorDependency } from "./selector";
 import { SelectAction, ToggleSelectAction } from "sf-front-end/actions";
 

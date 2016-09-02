@@ -88,6 +88,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     if (this._dependencies) {
       clone = Injector.inject(clone, this._dependencies);
     }
+    clone.metadata.copyFrom(this.metadata);
     clone.updateFromLoaded();
     return clone;
   }

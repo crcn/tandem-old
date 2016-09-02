@@ -62,7 +62,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
         }
       }
 
-      getLayerChildren(entity).forEach(each);
+      getLayerChildren(rootEntity).forEach(each);
 
       const currentlySelectedEntity = selection[selection.length - 1];
       const index1 = allEntities.indexOf(entity);
@@ -97,7 +97,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
       }
     }
 
-    this.props.app.bus.execute(new SelectAction(select, false, false));
+    this.props.app.bus.execute(new SelectAction(select, multiSelect, false));
   }
 
   onHeaderKeyDown = (event: KeyboardEvent) => {

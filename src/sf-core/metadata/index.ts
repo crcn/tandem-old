@@ -10,6 +10,11 @@ export class Metadata extends Observable {
     return this._data;
   }
 
+  copyFrom(source: Metadata) {
+    for (const key in source.data) {
+      this.set(key, source.data[key]);
+    }
+  }
   get(key: string) {
     return this._data[key];
   }

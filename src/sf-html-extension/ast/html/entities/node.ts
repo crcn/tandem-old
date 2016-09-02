@@ -64,8 +64,6 @@ export abstract class HTMLNodeEntity<T extends HTMLExpression> extends BaseEntit
       const nextHTMLEntitySibling: HTMLNodeEntity<T> = childNodes[childNodes.indexOf(child) + 1];
 
       if (nextHTMLEntitySibling) {
-
-
         const ppSection = nextHTMLEntitySibling.section;
 
         if (nextHTMLEntitySibling.section instanceof NodeSection) {

@@ -41,20 +41,6 @@ export class EntityPreviewDependency extends ReactComponentFactoryDependency {
   }
 }
 
-export const SELECTION_FACTORY_NS = "selection";
-type entitySelectionType = { new(...items: Array<IEntity>): Array<IEntity> };
-export class SelectionFactoryDependency extends ClassFactoryDependency {
-  constructor(entityType: string, collectionClass: entitySelectionType) {
-    super([SELECTION_FACTORY_NS, entityType].join("/"), collectionClass);
-  }
-  create(...selection: Array<IEntity>): Array<IEntity> {
-    return super.create(...selection);
-  }
-  static find(entityType: string, dependencies: Dependencies): SelectionFactoryDependency {
-    return dependencies.query<SelectionFactoryDependency>([SELECTION_FACTORY_NS, entityType].join("/"));
-  }
-}
-
 export const EDITOR_TOOL_NS = "editorTool";
 export class EditorToolFactoryDependency extends ClassFactoryDependency {
   constructor(readonly id: string, readonly icon: string, readonly editorType: string, readonly keyCommand: string, readonly clazz: { new(editor: IEditor): IEditorTool }) {
