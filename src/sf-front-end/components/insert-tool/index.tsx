@@ -32,6 +32,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     const activeEntity =  this._targetEntity as IEntity;
     const child = (await appendSourceChildren(activeEntity, tool.createSource()))[0] as IVisibleEntity;
+    console.log(child);
     await bus.execute(new SelectAction(child));
 
     const capabilities = child.display.capabilities;

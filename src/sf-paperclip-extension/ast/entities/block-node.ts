@@ -1,24 +1,20 @@
 import { parsePC } from "sf-paperclip-extension/ast";
+import { TreeNode } from "sf-core/tree";
 import { MetadataKeys } from "sf-front-end/constants";
 import { parseBlockScript } from "./utils";
 import { PCBlockNodeExpression } from "sf-paperclip-extension/ast/expressions";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { GroupNodeSection, IDOMSection } from "sf-html-extension/dom";
 import { BaseEntity, IEntity, IValueEntity, getContext } from "sf-core/ast";
-import { HTMLNodeEntity, HTMLTextEntity, HTMLTextExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLNodeEntity } from "sf-html-extension/ast";
+import { HTMLNodeEntity, HTMLTextEntity, HTMLTextExpression, HTMLNodeExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLNodeEntity } from "sf-html-extension/ast";
 
 export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> implements IValueEntity  {
   private _script: Function;
+  private _sourceParent: TreeNode<HTMLNodeExpression>;
+  private _executed: boolean;
   public value: any;
   public source: PCBlockNodeExpression;
   public error: Error;
-
-
-  getInitialMetadata() {
-    return Object.assign(super.getInitialMetadata(), {
-      [MetadataKeys.HIDDEN]: true
-    });
-  }
 
   protected updateFromSource() {
     try {
@@ -28,12 +24,13 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
     }
   }
 
-  createSection() {
-    return new GroupNodeSection();
+  patch(entity: PCBlockNodeEntity) {
+    super.patch(entity);
+    this.metadata.set(MetadataKeys.HIDDEN, entity._executed);
   }
 
-  patch(source: PCBlockNodeEntity) {
-    super.patch(source);
+  createSection() {
+    return new GroupNodeSection();
   }
 
   get context() {
@@ -42,19 +39,22 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
 
   async load() {
     let value;
+    let scriptExecuted = false;
 
     if (this.error) {
-      return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(`Syntax Error: ${this.error.message}`, null)));
+      value = `Syntax Error: ${this.error.message}`;
     } else {
       try {
         value = this._script(this.context);
+        scriptExecuted = true;
       } catch (e) {
-        return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(this.source.toString(), this.source.position)));
+        value = this.source.toString();
       }
     }
-
+    this._executed = scriptExecuted;
+    this.metadata.set(MetadataKeys.HIDDEN, scriptExecuted);
     this.value = value;
-
+    if (!scriptExecuted) return;
 
     for (const item of Array.isArray(value) ? value : [value]) {
       if (item instanceof BaseEntity) {

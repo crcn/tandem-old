@@ -4,8 +4,8 @@ import * as cx from "classnames";
 import * as React from "react";
 import { SelectAction } from "sf-front-end/actions";
 import * as AutosizeInput from "react-input-autosize";
-import { PCBlockNodeEntity } from "sf-paperclip-extension/ast";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
+import { PCBlockNodeEntity, PCBlockNodeExpression } from "sf-paperclip-extension/ast";
 
 class BlockLayerLabel extends React.Component<{ entity: PCBlockNodeEntity, connectDragSource: Function }, any> {
 
@@ -52,4 +52,4 @@ class BlockLayerLabel extends React.Component<{ entity: PCBlockNodeEntity, conne
   }
 }
 
-export const dependency = new LayerLabelComponentFactoryDependency("#block", BlockLayerLabel);
+export const dependency = new LayerLabelComponentFactoryDependency(PCBlockNodeExpression.name, BlockLayerLabel);

@@ -20,7 +20,7 @@ export async function replaceEntitySource(entity: IEntity, ...sources) {
 export async function insertSourceChildren(entity: IEntity, index: number = -1, ...childSources: Array<any>) {
 
   for (const child of childSources.reverse()) {
-    entity.insertAt(child, index);
+    entity.source.insertAt(child, index);
   }
 
   // update the file document

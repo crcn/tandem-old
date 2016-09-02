@@ -346,6 +346,7 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
   render() {
 
     const entity            = this.props.entity;
+
     const expanded          = entity.metadata.get(MetadataKeys.LAYER_EXPANDED);
     const hidden            = entity.metadata.get(MetadataKeys.HIDDEN);
     const depth = this.props.depth || 0;

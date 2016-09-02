@@ -9,6 +9,6 @@
     hello!
   </div>
   <div class="item2">
-    hello!
+    hello!!!
   </div>
 </repeat>
