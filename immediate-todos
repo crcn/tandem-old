@@ -1,6 +1,8 @@
-- [ ] edit html in layers pane
-- [ ] edit attributes
+- [x] edit html in layers pane
 - [ ] scss parser
 - [ ] save scss vars
-- [ ] make layers fully featured
 - [x] ability to split screen layers
+- [ ] add children to layers
+- [ ] remove layers label
+- [ ] link.ts needs to load files from DB
+- [ ] load local files such as images

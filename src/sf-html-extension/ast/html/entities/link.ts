@@ -10,8 +10,8 @@ import { HTMLElementEntity } from "./element";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { ReadFileAction, WatchFileAction } from "sf-core/actions";
 import { DocumentPaneComponentFactoryDependency } from "sf-front-end/dependencies";
-import { HTMLElementExpression, HTMLDocumentRootEntity } from "sf-html-extension/ast";
 import { ActiveRecordFactoryDependency, MAIN_BUS_NS } from "sf-core/dependencies";
+import { HTMLElementExpression, HTMLDocumentRootEntity } from "sf-html-extension/ast";
 
 // TODO
 export class LinkEntity extends HTMLElementEntity {
@@ -48,6 +48,8 @@ export class LinkEntity extends HTMLElementEntity {
 
   async load() {
     const type = this.source.getAttribute("type");
+
+    // TODO - need to use active record db here
     const { value } = await this._bus.execute(new ReadFileAction(this.href)).read();
     const fileFactory = ActiveRecordFactoryDependency.find(type, this._dependencies);
     this._file = fileFactory.create("linkFiles", value);

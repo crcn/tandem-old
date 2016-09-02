@@ -12,13 +12,15 @@ export async function appendSourceChildren(entity: IEntity, ...childSources: Arr
 
 export async function replaceEntitySource(entity: IEntity, ...sources) {
   const parent = <IEntity>entity.parent;
-  const index: number = parent.source.children.indexOf(entity.source);
-  parent.source.children.splice(index, 1);
+  const sourceBranch = entity.source.branch;
+  const index: number = sourceBranch.indexOf(entity.source);
+  sourceBranch.splice(index, 1);
   return insertSourceChildren(parent, index, ...sources);
 }
 
 export async function insertSourceChildren(entity: IEntity, index: number = -1, ...childSources: Array<any>) {
-  const oldSource = entity.source;
+
+  // TODO - entity still may change. get source path instead.
   entity.source.children.splice(index, 0, ...childSources);
 
   // update the file document
@@ -33,8 +35,8 @@ export async function removeEntitySources(...entities: Array<IEntity>) {
   const document = entities[0].document;
 
   entities.forEach((entity) => {
-    if (entity.source.parent) {
-      entity.source.parent.children.remove(entity.source);
+    if (entity.source.branch) {
+      entity.source.branch.remove(entity.source);
     }
   });
   await document.update();
