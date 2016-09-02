@@ -13,4 +13,4 @@ export class HTMLTextEntity extends HTMLValueNodeEntity<HTMLTextExpression> {
   }
 }
 
-export const htmlTextDependency             = new EntityFactoryDependency(HTMLTextExpression, HTMLTextEntity);
+export const htmlTextDependency = new EntityFactoryDependency(HTMLTextExpression, HTMLTextEntity);

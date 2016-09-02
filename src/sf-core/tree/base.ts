@@ -9,7 +9,6 @@ export interface ITreeNode<T extends ITreeNode<any>> extends IObservable {
   insertAt(newChild: T, index: number);
   insertBefore(newChild: T, existingChild: T);
   depth: number;
-  height: number;
   parent: T;
   ancestors: Array<T>;
   root: T;

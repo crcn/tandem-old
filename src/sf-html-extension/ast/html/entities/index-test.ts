@@ -6,6 +6,7 @@ import {
   HTMLElementEntity,
   htmlTextDependency,
   htmlCommentDependency,
+  defaultElementFactoyDependency,
   htmlDocumentFragmentDependency,
   defaultAttributeFactoryDependency,
 } from "sf-html-extension/ast";
@@ -25,6 +26,7 @@ describe(__filename + "#", () => {
       htmlTextDependency,
       htmlCommentDependency,
       htmlFileModelDependency,
+      defaultElementFactoyDependency,
       htmlDocumentFragmentDependency,
       defaultAttributeFactoryDependency,
     );

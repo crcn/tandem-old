@@ -1,6 +1,7 @@
 import { INamed } from "sf-core/object";
 import { IRange } from "sf-core/geom";
 import { TreeNode } from "sf-core/tree";
+import * as sift from "sift";
 import { diffArray, patchArray } from "sf-core/utils/array";
 import { IExpression, BaseExpression } from "sf-core/ast";
 import { register as registerSerializer } from "sf-core/serialize";
@@ -20,10 +21,16 @@ export abstract class HTMLExpression extends BaseExpression<HTMLExpression> impl
   abstract patch(expression: IHTMLExpression);
 }
 
-export class HTMLContainerExpression extends HTMLExpression {
-  constructor(name: string, public childNodes: Array<HTMLExpression>, position: IRange) {
+export abstract class HTMLNodeExpression extends HTMLExpression { }
+
+export class HTMLContainerExpression extends HTMLNodeExpression {
+  constructor(name: string, childNodes: Array<HTMLExpression>, position: IRange) {
     super(name, position);
     childNodes.forEach((child) => this.appendChild(child));
+  }
+
+  get childNodes(): Array<HTMLAttributeExpression> {
+    return <any>this.children.filter(<any>sift({ $type: HTMLNodeExpression }));
   }
 
   patch(expression: HTMLExpression) {
@@ -62,16 +69,15 @@ export class HTMLElementExpression extends HTMLContainerExpression {
 
   constructor(
     name: string,
-    public attributes: Array<HTMLAttributeExpression>,
+    attributes: Array<HTMLAttributeExpression>,
     childNodes: Array<HTMLExpression>,
     public position: IRange) {
     super(name, childNodes, position);
     attributes.forEach((attribute) => this.appendChild(attribute));
   }
 
-  patch(expression: HTMLElementExpression) {
-    this.attributes = expression.attributes;
-    super.patch(expression);
+  get attributes(): Array<HTMLAttributeExpression> {
+    return <any>this.children.filter(<any>sift({ $type: HTMLAttributeExpression }));
   }
 
   removeAttribute(name: string) {
@@ -118,7 +124,7 @@ export class HTMLElementExpression extends HTMLContainerExpression {
     }
     if (this.children.length) {
       buffer.push(">");
-      for (const child of this.children) {
+      for (const child of this.childNodes) {
         buffer.push(child.toString());
       }
       buffer.push("</", this.name, ">");
@@ -155,7 +161,7 @@ export class HTMLAttributeExpression extends BaseExpression<HTMLAttributeExpress
   }
 }
 
-export class HTMLTextExpression extends HTMLExpression implements IHTMLValueNodeExpression {
+export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValueNodeExpression {
   constructor(public value: string, public position: IRange) {
     super("#text", position);
   }
@@ -179,7 +185,7 @@ export class HTMLTextExpression extends HTMLExpression implements IHTMLValueNode
   }
 }
 
-export class HTMLCommentExpression extends HTMLExpression implements IHTMLValueNodeExpression {
+export class HTMLCommentExpression extends HTMLNodeExpression implements IHTMLValueNodeExpression {
   constructor(public value: string, public position: IRange) {
     super("#comment", position);
   }

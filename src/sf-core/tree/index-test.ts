@@ -33,7 +33,6 @@ describe(__filename + "#", () => {
     const parent2  = new TreeNode();
     const child  = new TreeNode();
     parent.appendChild(child);
-    parent.appendChild(child);
     expect(parent.children.length).to.equal(1);
     parent2.appendChild(child);
     expect(child.parent).to.equal(parent2);
@@ -76,16 +75,6 @@ describe(__filename + "#", () => {
     expect(p3.depth).to.equal(2);
   });
 
-  it("can return the height", () => {
-
-    const p1 = new TreeNode();
-    const p2 = new TreeNode();
-    const p3 = new TreeNode();
-
-    p1.appendChild(p2);
-    p2.appendChild(p3);
-    expect(p1.height).to.equal(2);
-  });
 
   it("can return the next sibling", () => {
 

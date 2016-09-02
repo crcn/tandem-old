@@ -1,11 +1,5 @@
 <link rel="stylesheet" type="text/css" href="./style.scss" />
 
-<artboard id="repeat" title="Repeat component">
-  ${Array.from({ length: Number(count) }, () => children)}!!!
-</artboard>
-
-<repeat count="10">
-  <div class="item" />
-  <div class="item2" />
-</repeat>
-
+<div>
+11
+</div>

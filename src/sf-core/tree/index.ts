@@ -50,6 +50,9 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
   }
 
   insertAt(newChild: T, index: number) {
+    if (newChild._parent) {
+      newChild._parent.removeChild(newChild);
+    }
     this._children.splice(index, 0, newChild);
     this.onChildAdded(newChild);
   }
@@ -93,14 +96,7 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     return this.ancestors.length;
   }
 
-  get height(): number {
-    return Math.max(0, ...this._children.map((child) => child.height));
-  }
-
   protected onChildAdded(child: T) {
-    if (child._parent) {
-      child._parent.removeChild(child);
-    }
     child._parent = this;
     child.observe(this._childObserver);
     child.onAdded();

@@ -26,8 +26,8 @@ export abstract class HTMLNodeEntity<T extends HTMLExpression> extends BaseEntit
     return this.parent;
   }
 
-  get childNodes(): Array<BaseEntity<T>> {
-    return this.children.filter(<any>sift({ $type: HTMLNodeEntity }));
+  get childNodes(): Array<HTMLNodeEntity<T>> {
+    return <any>this.children.filter(<any>sift({ $type: HTMLNodeEntity }));
   }
 
   get nodeName(): string {
@@ -60,15 +60,13 @@ export abstract class HTMLNodeEntity<T extends HTMLExpression> extends BaseEntit
   onChildAdded(child: HTMLNodeEntity<T>) {
     super.onChildAdded(child);
     if (child.section) {
-      let nextHTMLEntitySibling: HTMLNodeEntity<T>;
-      do {
-        nextHTMLEntitySibling = <HTMLNodeEntity<T>>child.nextSibling;
-      } while (nextHTMLEntitySibling && !nextHTMLEntitySibling.section);
+      const childNodes = this.childNodes;
+      const nextHTMLEntitySibling: HTMLNodeEntity<T> = childNodes[childNodes.indexOf(child) + 1];
 
       if (nextHTMLEntitySibling) {
-        // TODO - this assumes that the next sibling has a section property - it
-        // might not. Need to traverse the next sibling for a node that actually has a section
-        const ppSection = (<HTMLNodeEntity<T>>child.nextSibling).section;
+
+
+        const ppSection = nextHTMLEntitySibling.section;
 
         if (nextHTMLEntitySibling.section instanceof NodeSection) {
           this.insertDOMChildBefore(child.section.toFragment(), ppSection.targetNode);

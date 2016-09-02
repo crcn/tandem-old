@@ -64,8 +64,8 @@ describe(__filename + `#`, () => {
     it("can be parsed with one text child node", () => {
       const element = (<HTMLFragmentExpression>parse("<div>ab</div>")).children[0] as HTMLElementExpression;
       expect(element).to.be.an.instanceOf(HTMLElementExpression);
-      expect(element.children.length).to.equal(1);
-      expect(element.children[0]).to.be.an.instanceOf(HTMLTextExpression);
+      expect(element.childNodes.length).to.equal(1);
+      expect(element.childNodes[0]).to.be.an.instanceOf(HTMLTextExpression);
     });
 
     it("throws an error if the end tag does not match the start tag", () => {
@@ -76,7 +76,7 @@ describe(__filename + `#`, () => {
       const element = (<any>parse("<div a=\"b\" c><span />cd</div>")).children[0] as HTMLElementExpression;
       expect(element.attributes[0].value).to.equal("b");
       expect(element.attributes[1].value).to.equal("");
-      expect(element.children.length).to.equal(2);
+      expect(element.childNodes.length).to.equal(2);
     });
 
     [

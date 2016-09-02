@@ -35,10 +35,9 @@ export async function removeEntitySources(...entities: Array<IEntity>) {
   const document = entities[0].document;
 
   entities.forEach((entity) => {
-    if (entity.parent) {
-      entity.parent.source.removeChild(entity.source);
-    }
+    entity.source.parent.removeChild(entity.source);
   });
+
   await document.update();
 }
 

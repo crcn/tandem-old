@@ -13,6 +13,7 @@ import {
   htmlTextDependency,
   htmlCommentDependency,
   htmlArtboardDependency,
+  defaultElementFactoyDependency,
   htmlDocumentFragmentDependency,
   defaultAttributeFactoryDependency,
 } from "sf-html-extension/ast";
@@ -33,6 +34,7 @@ describe(__filename + "#", () => {
       htmlCommentDependency,
       htmlArtboardDependency,
       htmlFileModelDependency,
+      defaultElementFactoyDependency,
       htmlDocumentFragmentDependency,
       defaultAttributeFactoryDependency,
       new ApplicationSingletonDependency(app)

@@ -64,6 +64,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     for (const childExpression of await this.mapSourceChildren()) {
       await this.loadExpressionAndAppendChild(childExpression);
     }
+    this.updateFromLoaded();
   }
 
   protected async loadExpressionAndAppendChild(childExpression: IExpression) {
@@ -87,6 +88,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     if (this._dependencies) {
       clone = Injector.inject(clone, this._dependencies);
     }
+    clone.updateFromLoaded();
     return clone;
   }
 
@@ -98,30 +100,24 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
       this.removeChild(entity);
     }
     for (const [currentChild, patchChild] of changes.update) {
-      currentChild.patch(patchChild);
       const patchIndex   = entity.children.indexOf(patchChild);
       const currentIndex = this.children.indexOf(currentChild);
       if (currentIndex !== patchIndex) {
-        const beforeChild = this.children[patchIndex];
-        if (beforeChild) {
-          this.insertBefore(currentChild, beforeChild);
-        } else {
-          this.appendChild(currentChild);
-        }
+        this.insertAt(currentChild, patchIndex);
       }
+      currentChild.patch(patchChild);
     }
 
     for (const addition of changes.add) {
       const beforeChild = this.children[addition.index];
-      if (beforeChild) {
-          this.insertBefore(addition.value, beforeChild);
-      } else {
-        this.appendChild(addition.value);
-      }
+      this.insertAt(addition.value, addition.index);
     }
 
     this.updateFromSource();
+    this.updateFromLoaded();
   }
+
+  protected updateFromLoaded() { }
 
   protected initialize() {
     this.updateFromSource();

@@ -1,20 +1,16 @@
 import { IRange } from "sf-core/geom";
 import { BaseExpression } from "sf-core/ast";
-import { HTMLExpression } from "sf-html-extension/ast";
+import { HTMLNodeExpression } from "sf-html-extension/ast";
 
-export class PCBlockExpression extends HTMLExpression {
+export class PCBlockAttributeExpression extends BaseExpression<any> {
+
   constructor(public name: string, public value: string, position: IRange) {
-    super(name, position);
-  }
-  patch(block: PCBlockExpression) {
-    this.value = block.value;
+    super(position);
   }
   toString() {
     return `\${ ${this.value} }`;
   }
-}
 
-export class PCBlockAttributeExpression extends PCBlockExpression {
   clone(): PCBlockAttributeExpression {
     return new PCBlockAttributeExpression(
       this.name,
@@ -24,15 +20,21 @@ export class PCBlockAttributeExpression extends PCBlockExpression {
   }
 }
 
-export class PCBlockNodeExpression extends PCBlockExpression {
-  constructor(value: any, position: IRange) {
-    super("#block", value, position);
+export class PCBlockNodeExpression extends HTMLNodeExpression {
+  constructor(public value: any, position: IRange) {
+    super("#block", position);
+  }
+  patch(entity: PCBlockNodeExpression) {
+    this.value = entity.value;
   }
   clone(): PCBlockNodeExpression {
     return new PCBlockNodeExpression(
       this.value,
       this.position
     );
+  }
+  toString() {
+    return `\${ ${this.value} }`;
   }
 }
 

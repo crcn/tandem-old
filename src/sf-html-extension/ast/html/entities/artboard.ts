@@ -41,7 +41,7 @@ class RegisteredArtboardEntity extends HTMLElementEntity implements IContextualE
 
   async loadLeaf() {
     await super.loadLeaf();
-    this.__children = EntityFactoryDependency.findBySourceType(HTMLFragmentExpression, this._dependencies).create(new HTMLFragmentExpression(this.source.clone().childNodes, null));
+    this.__children = EntityFactoryDependency.findBySourceType(HTMLFragmentExpression, this._dependencies).create(this.source);
 
     Object.defineProperty(<IContextualEntity><any>this.__children, "context", {
       get: () => this.context

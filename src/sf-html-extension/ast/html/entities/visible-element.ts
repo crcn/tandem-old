@@ -17,18 +17,7 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
   private _styleExpression: CSSStyleExpression;
   private _originalStyle: string;
 
-  patch(entity: VisibleHTMLElementEntity) {
-    super.patch(entity);
-    this._updateStyleExpression();
-  }
-
-  async load() {
-    await super.load();
-    this._updateStyleExpression();
-  }
-
-
-  _updateStyleExpression() {
+  updateFromLoaded() {
     const style = this.getAttribute("style");
     const newExpression = style ? parseCSSStyle(String(style)) : new CSSStyleExpression([], null);
 
@@ -54,11 +43,6 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
 
   createSection(): IDOMSection {
     return new NodeSection(document.createElement(this.source.name));
-  }
-
-  cloneLeaf() {
-     const clone = new VisibleHTMLElementEntity(this.source);
-     return clone;
   }
 
   get styleExpression(): CSSStyleExpression {

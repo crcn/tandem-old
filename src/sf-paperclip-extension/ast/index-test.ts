@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { parsePC } from "./index";
-import { PCBlockExpression } from "./expressions";
+import { PCBlockNodeExpression } from "./expressions";
 
 describe(__filename + "#", () => {
 
@@ -20,7 +20,7 @@ describe(__filename + "#", () => {
     it("can be parsed", () => {
       const expr = parsePC("hello ${message}");
       expect(expr.children.length).to.equal(2);
-      const block = <PCBlockExpression>expr.children[1];
+      const block = <PCBlockNodeExpression>expr.children[1];
       expect(block.value).to.equal("message");
     });
   });
