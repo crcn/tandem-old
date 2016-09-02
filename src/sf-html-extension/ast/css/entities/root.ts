@@ -21,25 +21,11 @@ export class CSSRootEntity extends BaseEntity<CSSStyleSheetExpression> {
     super(source);
   }
 
-  compareChild(a: ICSSRuleEntity, b: ICSSRuleEntity) {
-    if (a.constructor !== b.constructor) return false;
-
-    if (a.source.selector) {
-      return String(a.source.selector) === String(b.source.selector);
-    }
-
-    return super.compareChild(a, b);
-  }
-
   async load() {
     await super.load();
 
     // TODO - need to add children here instead
     (<HTMLFile>this.document.owner).entity.addStyleSheet(this.source);
-  }
-
-  mapSourceChildren() {
-    return this.source.rules;
   }
 
   getInitialMetadata() {

@@ -18,4 +18,4 @@ export class HTMLStyleEntity extends HTMLElementEntity {
   }
 }
 
-export const htmlStyleEntityDependency = new EntityFactoryDependency("style", HTMLStyleEntity);
+export const htmlStyleEntityDependency = new EntityFactoryDependency(HTMLElementExpression, HTMLStyleEntity, "style");

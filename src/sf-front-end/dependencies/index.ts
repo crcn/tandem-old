@@ -100,7 +100,7 @@ export class DocumentPaneComponentFactoryDependency extends ReactComponentFactor
 
 export const LAYER_LABEL_COMPONENT = "layerLabelComponent";
 export class LayerLabelComponentFactoryDependency extends ReactComponentFactoryDependency {
-  constructor(readonly displayType: string, readonly componentClass: React.ComponentClass<any>) {
+  constructor(readonly displayType: string, readonly componentClass: React.ComponentClass<any>, readonly childrenProperty: string = "children") {
     super([LAYER_LABEL_COMPONENT, displayType].join("/"), componentClass);
   }
   static find(displayType: string, dependencies: Dependencies) {

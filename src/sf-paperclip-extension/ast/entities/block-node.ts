@@ -1,16 +1,16 @@
 import { parsePC } from "sf-paperclip-extension/ast";
 import { MetadataKeys } from "sf-front-end/constants";
 import { parseBlockScript } from "./utils";
-import { PCBlockExpression } from "sf-paperclip-extension/ast/expressions";
+import { PCBlockNodeExpression } from "sf-paperclip-extension/ast/expressions";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { GroupNodeSection, IDOMSection } from "sf-html-extension/dom";
 import { BaseEntity, IEntity, IValueEntity, getContext } from "sf-core/ast";
-import { HTMLNodeEntity, HTMLTextEntity, HTMLTextExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLEntity } from "sf-html-extension/ast";
+import { HTMLNodeEntity, HTMLTextEntity, HTMLTextExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLNodeEntity } from "sf-html-extension/ast";
 
-export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockExpression> implements IValueEntity  {
+export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> implements IValueEntity  {
   private _script: Function;
   public value: any;
-  public source: PCBlockExpression;
+  public source: PCBlockNodeExpression;
   public error: Error;
 
 
@@ -44,24 +44,23 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockExpression> impleme
     let value;
 
     if (this.error) {
-      return this.children.push(new HTMLTextEntity(new HTMLTextExpression(`Syntax Error: ${this.error.message}`, null)));
+      return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(`Syntax Error: ${this.error.message}`, null)));
     } else {
       try {
         value = this._script(this.context);
       } catch (e) {
-        return this.children.push(new HTMLTextEntity(new HTMLTextExpression(this.source.toString(), this.source.position)));
+        return this.appendChild(new HTMLTextEntity(new HTMLTextExpression(this.source.toString(), this.source.position)));
       }
     }
 
     this.value = value;
 
+
     for (const item of Array.isArray(value) ? value : [value]) {
       if (item instanceof BaseEntity) {
-        this.children.push(item.clone());
+        this.appendChild(item.clone());
       } else {
-        const child = EntityFactoryDependency.createEntityFromSource(parsePC(String(item)), this._dependencies);
-        this.children.push(child);
-        await child.load();
+        await this.loadExpressionAndAppendChild(parsePC(String(item)));
       }
     }
   }
@@ -71,4 +70,4 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockExpression> impleme
   }
 }
 
-export const pcBlockNodeEntityDependency = new EntityFactoryDependency("#block", PCBlockNodeEntity);
+export const pcBlockNodeEntityDependency = new EntityFactoryDependency(PCBlockNodeExpression, PCBlockNodeEntity);

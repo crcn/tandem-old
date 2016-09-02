@@ -7,7 +7,7 @@ import { parseCSS } from "sf-html-extension/ast";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectWithCSSSelectorAction } from "sf-html-extension/actions";
 import { EntityPaneComponentFactoryDependency } from "sf-front-end/dependencies";
-import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLEntity } from "sf-html-extension/ast";
+import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLNodeEntity } from "sf-html-extension/ast";
 import { CSSExpression, CSSStyleExpression, CSSRuleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/ast";
 import { VisibleHTMLElementCollection } from "sf-html-extension/collections";
 

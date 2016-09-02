@@ -7,7 +7,7 @@ import FocusComponent from "sf-front-end/components/focus";
 import { SelectAction } from "sf-front-end/actions";
 import { MetadataKeys } from "sf-front-end/constants";
 import * as AutosizeInput from "react-input-autosize";
-import { HTMLTextEntity } from "sf-html-extension/ast";
+import { HTMLTextEntity, HTMLTextExpression } from "sf-html-extension/ast";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 
 class TextLayerLabelComponent extends React.Component<{ entity: HTMLTextEntity, connectDragSource: Function }, any> {
@@ -69,4 +69,4 @@ class TextLayerLabelComponent extends React.Component<{ entity: HTMLTextEntity, 
   }
 }
 
-export const dependency = new LayerLabelComponentFactoryDependency("#text", TextLayerLabelComponent);
+export const dependency = new LayerLabelComponentFactoryDependency(HTMLTextExpression.name, TextLayerLabelComponent);

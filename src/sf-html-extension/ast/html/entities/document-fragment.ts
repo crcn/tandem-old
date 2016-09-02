@@ -21,4 +21,4 @@ export class HTMLDocumentFragmentEntity extends HTMLNodeEntity<HTMLFragmentExpre
   }
 }
 
-export const htmlDocumentFragmentDependency = new EntityFactoryDependency("#document-fragment", HTMLDocumentFragmentEntity);
+export const htmlDocumentFragmentDependency = new EntityFactoryDependency(HTMLFragmentExpression, HTMLDocumentFragmentEntity);

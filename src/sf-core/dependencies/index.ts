@@ -1,6 +1,7 @@
 import { Action } from "../actions";
 import { IActor } from "../actors";
 import { ITyped } from "sf-core/object";
+import { INamed } from "sf-core/object";
 import { IBrokerBus } from "../busses";
 import { IApplication } from "sf-core/application";
 import { IActiveRecord } from "../active-records";
@@ -57,30 +58,39 @@ export class ApplicationSingletonDependency extends Dependency<IApplication> {
 
 export const ENTITIES_NS = "entities";
 
+type expressionType = { new(...rest): IExpression };
+type entityType     = { new(source: IExpression): IEntity };
+
 // TODO - possibly require renderer here as well
 export class EntityFactoryDependency extends ClassFactoryDependency {
 
-  constructor(readonly name: string, readonly clazz: { new(source: ITyped): IEntity } ) {
-    super([ENTITIES_NS, name].join("/"), clazz);
+  constructor(readonly expressionClass: expressionType, readonly entityClass: entityType, readonly name?: string) {
+    super(EntityFactoryDependency.getNamespace(expressionClass, name), entityClass);
   }
 
   clone() {
-    return new EntityFactoryDependency(this.name, this.clazz);
+    return new EntityFactoryDependency(this.expressionClass, this.entityClass, this.name);
   }
 
-  create(source: ITyped) {
+  create(source: IExpression) {
     return super.create(source);
   }
 
-  static findByName(name: string, dependencies: Dependencies) {
-    return dependencies.query<EntityFactoryDependency>([ENTITIES_NS, name].join("/"));
+  static getNamespace(expressionClass: Function, name?: string) {
+    return [ENTITIES_NS, expressionClass.name, name || "default"].join("/");
   }
 
-  static findBySource(source: ITyped, dependencies: Dependencies) {
-    return this.findByName(source.type, dependencies);
+  static findBySourceType(expressonClass: Function, dependencies: Dependencies) {
+    return dependencies.query<EntityFactoryDependency>(this.getNamespace(expressonClass));
   }
 
-  static createEntityFromSource(source: ITyped, dependencies: Dependencies) {
+  static findBySource(source: IExpression, dependencies: Dependencies) {
+    return dependencies.query<EntityFactoryDependency>(this.getNamespace(source.constructor, (<INamed><any>source).name)) ||
+    this.findBySourceType(source.constructor, dependencies);
+  }
+
+  static createEntityFromSource(source: IExpression, dependencies: Dependencies) {
+
     const dependency = this.findBySource(source, dependencies);
 
     if (!dependency) {

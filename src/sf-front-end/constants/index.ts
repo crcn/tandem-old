@@ -17,4 +17,5 @@ export namespace MetadataKeys {
   export const ZOOMING = "zooming";
   export const EDIT_LAYER = "editLayer";
   export const LAYER_EXPANDED = "layerExpanded";
+  export const CHILD_LAYER_PROPERTY = "childLayerProperty";
 }

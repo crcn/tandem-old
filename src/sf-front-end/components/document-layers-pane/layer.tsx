@@ -15,8 +15,6 @@ import { SelectAction, ToggleSelectAction, SELECT } from "sf-front-end/actions";
 import { Action, MetadataChangeAction, METADATA_CHANGE } from "sf-core/actions";
 import { IEntity, appendSourceChildren, insertSourceChildren } from "sf-core/ast/entities";
 
-
-
 interface ILayerLabelProps {
   paddingLeft?: number;
   dependencies: Dependencies;
@@ -30,12 +28,17 @@ interface ILayerLabelProps {
   canDrop: boolean;
 }
 
+function getLayerChildren(entity: IEntity) {
+  return entity[entity.metadata.get(MetadataKeys.CHILD_LAYER_PROPERTY) || "children"];
+}
+
 class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
   constructor() {
     super();
     this.state = {};
   }
+
 
   onClick = (event) => {
 
@@ -54,12 +57,12 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
       // capture only open entities
       function each(entity: IEntity) {
         allEntities.push(entity);
-        if (entity.metadata.get(MetadataKeys.LAYER_EXPANDED) && entity["children"]) {
-          (entity as IEntity).children.forEach(each);
+        if (entity.metadata.get(MetadataKeys.LAYER_EXPANDED)) {
+          getLayerChildren(entity).forEach(each);
         }
       }
 
-      (rootEntity as IEntity).children.forEach(each);
+      getLayerChildren(entity).forEach(each);
 
       const currentlySelectedEntity = selection[selection.length - 1];
       const index1 = allEntities.indexOf(entity);
@@ -137,7 +140,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     const expanded   = entity.metadata.get(MetadataKeys.LAYER_EXPANDED);
 
     const selection = workspace.selection;
-    const layerName = entity.metadata.get(MetadataKeys.LAYER_DEPENDENCY_NAME) || entity.source.type;
+    const layerName = entity.metadata.get(MetadataKeys.LAYER_DEPENDENCY_NAME) || entity.source.constructor.name;
 
     const labelDependency = LayerLabelComponentFactoryDependency.find(layerName, dependencies);
 
@@ -150,7 +153,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
       }));
     } else {
       labelSection = <span>
-        { entity.source.type }
+        { entity.source.constructor.name }
       </span>;
     }
 
@@ -172,7 +175,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     });
 
     const expandButtonStyle = {
-      "visibility": ((entity as IEntity).children || []).length ? "visible" : "hidden"
+      "visibility": getLayerChildren(entity).length ? "visible" : "hidden"
     };
 
     labelSection =  <div
@@ -213,7 +216,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     if (entity === item) return;
 
     (async () => {
-      (item.parent as any as IEntity).source.children.remove(item.source);
+      (item.parent as any as IEntity).source.removeChild(item.source);
       const newChildren = await insertSourceChildren(entity.parent as IEntity, (entity.parent as IEntity).source.children.indexOf(entity.source) + offset, item.source);
       app.bus.execute(new SelectAction(newChildren, false));
     })();
@@ -291,7 +294,7 @@ LayerDndLabelComponent = DropTarget("element", {
     // wrap so that react-dnd doesn't barf on a promise return
     (async () => {
       entity.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
-      (item.parent as any as IEntity).source.children.remove(item.source);
+      (item.parent as any as IEntity).source.removeChild(item.source);
       app.bus.execute(new SelectAction(await appendSourceChildren(entity as IEntity, item.source), false));
     })();
   },
@@ -306,10 +309,6 @@ LayerDndLabelComponent = DropTarget("element", {
     itemType: monitor.getItemType()
   };
 })(LayerDndLabelComponent);
-
-
-
-
 
 export default class LayerComponent extends React.Component<{ app: FrontEndApplication, entity: IEntity, depth: number }, any> {
 
@@ -346,14 +345,14 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
 
   render() {
 
-    const entity     = this.props.entity;
-    const expanded   = entity.metadata.get(MetadataKeys.LAYER_EXPANDED);
-    const hidden     = entity.metadata.get(MetadataKeys.HIDDEN);
+    const entity            = this.props.entity;
+    const expanded          = entity.metadata.get(MetadataKeys.LAYER_EXPANDED);
+    const hidden            = entity.metadata.get(MetadataKeys.HIDDEN);
     const depth = this.props.depth || 0;
     const paddingLeft =  17 + depth * 12;
 
     const renderChildren = (depth: number) => {
-      return ((entity as IEntity).children || []).map((child: IEntity, i) => {
+      return getLayerChildren(entity).map((child: IEntity, i) => {
         return <LayerComponent {...this.props} entity={child} key={i} depth={depth}  />;
       });
     };
@@ -363,11 +362,8 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
     }
 
     return <div className="m-layers-pane-component-layer">
-
       <LayerDndLabelComponent paddingLeft={paddingLeft} {...this.props} />
-
       { expanded ? renderChildren(depth + 1) : undefined }
-
     </div>;
   }
 }

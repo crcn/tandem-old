@@ -14,9 +14,13 @@ export class CSSRuleEntity extends BaseEntity<CSSRuleExpression> implements ICSS
     return <Array<IEntity>>this.document.owner.entity.flatten().filter(this.source.selector.test.bind(this.source.selector));
   }
 
+  compare(entity: CSSRuleEntity) {
+    return super.compare(entity) && String(entity.source.selector) === String(this.source.selector);
+  }
+
   cloneLeaf() {
     return new CSSRuleEntity(this.source);
   }
 }
 
-export const cssRuleEntityFactoryDependency = new EntityFactoryDependency(CSSRuleExpression.name, CSSRuleEntity);
+export const cssRuleEntityFactoryDependency = new EntityFactoryDependency(CSSRuleExpression, CSSRuleEntity);

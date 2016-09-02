@@ -56,7 +56,7 @@ export class LinkEntity extends HTMLElementEntity {
     this._file.owner = this.document;
     await this._file.load();
     this._file.observe(new BubbleBus(this));
-    this.children.push(this._file.entity);
+    this.appendChild(this._file.entity);
     return super.load();
   }
 
@@ -89,5 +89,5 @@ export class LinkEntity extends HTMLElementEntity {
   }
 }
 
-export const linkEntityDependency  = new EntityFactoryDependency("link", LinkEntity);
+export const linkEntityDependency  = new EntityFactoryDependency(HTMLElementExpression, LinkEntity, "link");
 

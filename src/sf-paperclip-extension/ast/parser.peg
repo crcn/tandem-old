@@ -10,7 +10,8 @@ const {
 } = require('sf-html-extension/ast');
 
 const {
-  PCBlockExpression
+  PCBlockNodeExpression,
+  PCBlockAttributeExpression,
 } = require('./expressions');
 
 function position() {
@@ -94,7 +95,7 @@ AttributeValue
 
 AttributeBlock
   = value: Block {
-    return new PCBlockExpression("attributeBlock", value, position());
+    return new PCBlockAttributeExpression("attributeBlockValue", value, position());
   }
 
 String
@@ -126,7 +127,7 @@ _
 
 BlockNode
   = value: Block {
-    return new PCBlockExpression("#block", value, position());
+    return new PCBlockNodeExpression(value, position());
   }
 
 Block

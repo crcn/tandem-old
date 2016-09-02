@@ -7,10 +7,10 @@ import { MetadataKeys } from "sf-front-end/constants";
 import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
 import { HTMLElementEntity } from "./element";
 import { FrontEndApplication } from "sf-front-end/application";
-import { HTMLElementExpression } from "sf-html-extension/ast";
 import { VisibleHTMLElementEntity } from "./visible-element";
 import { NodeSection, GroupNodeSection } from "sf-html-extension/dom";
 import { IContextualEntity, IEntity, getContext } from "sf-core/ast";
+import { HTMLElementExpression, HTMLFragmentExpression } from "sf-html-extension/ast";
 import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "sf-core/dependencies";
 
 const ARTBOARD_NS = "artboards";
@@ -26,48 +26,40 @@ class ArtboardDependency extends Dependency<HTMLArtboardEntity> {
 class RegisteredArtboardEntity extends HTMLElementEntity implements IContextualEntity {
 
   private _context: any;
-  private _childrenSection: GroupNodeSection;
   private __children: IEntity;
-
-  constructor(source: HTMLElementExpression) {
-    super(source);
-    this._childrenSection = new GroupNodeSection();
-  }
 
   createSection() {
     return new GroupNodeSection();
   }
 
   mapSourceChildren() {
-    return ArtboardDependency.find(this.source.type.toLowerCase(), this._dependencies).value.source.children;
+    return [
+      ...this.source.attributes,
+      ...ArtboardDependency.find(this.source.name.toLowerCase(), this._dependencies).value.source.childNodes
+    ];
   }
 
-  get context() {
-    return this._context;
-  }
+  async loadLeaf() {
+    await super.loadLeaf();
+    this.__children = EntityFactoryDependency.findBySourceType(HTMLFragmentExpression, this._dependencies).create(new HTMLFragmentExpression(this.source.clone().childNodes, null));
 
-  patchSelf(entity: RegisteredArtboardEntity) {
-    super.patchSelf(entity);
-    this.updateContext();
-  }
+    Object.defineProperty(<IContextualEntity><any>this.__children, "context", {
+      get: () => this.context
+    });
 
-  async loadSelf() {
-    await super.loadSelf();
-    this.__children = EntityFactoryDependency.findByName("#document-fragment", this._dependencies).create(this._source);
-
-    // pass the parent context to the children
-    (<IContextualEntity><any>this.__children).context = getContext(this);
-    this.updateContext();
     await this.__children.load();
   }
 
-  updateContext() {
-    this._context = {
+  get context() {
+    const context = {
       children: this.__children
     };
+
     for (const attribute of this.attributes) {
-      this._context[attribute.name] = attribute.value;
+      context[attribute.name] = attribute.value;
     }
+
+    return context;
   }
 };
 
@@ -86,7 +78,7 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
 
     if (this.source.getAttribute("id")) {
       this._dependencies.register(new ArtboardDependency(this.source.getAttribute("id"), this));
-      this._dependencies.register(new EntityFactoryDependency(this.source.getAttribute("id"), RegisteredArtboardEntity));
+      this._dependencies.register(new EntityFactoryDependency(HTMLElementExpression, RegisteredArtboardEntity, this.source.getAttribute("id")));
     }
 
     return super.load();
@@ -157,4 +149,4 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
   }
 }
 
-export const htmlArtboardDependency = new EntityFactoryDependency("artboard", HTMLArtboardEntity);
+export const htmlArtboardDependency = new EntityFactoryDependency(HTMLElementExpression, HTMLArtboardEntity, "artboard");

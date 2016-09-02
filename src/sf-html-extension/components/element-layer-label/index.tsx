@@ -80,7 +80,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
     } else {
       buffer.push(editTagName ?
         this.renderHTMLInput() :
-        <span className="m-element-layer-label--tag-name" key="tagName">{entity.source.type.toLowerCase()}</span>
+        <span className="m-element-layer-label--tag-name" key="tagName">{entity.source.name.toLowerCase()}</span>
       );
 
       // filter them, and remove the items we do not want to display
@@ -106,7 +106,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
 
 
     return <div className="m-label m-element-layer-label" onDoubleClick={this.editHTML}>
-      { connectDragSource(<span>{buffer}</span>) } { !~VOID_ELEMENTS.indexOf(entity.source.type.toLowerCase()) ? <span className="m-element-layer-label--add-child-button" onClick={this.addChild.bind(this)}>+</span> : void 0 }
+      { connectDragSource(<span>{buffer}</span>) } { !~VOID_ELEMENTS.indexOf(entity.source.name.toLowerCase()) ? <span className="m-element-layer-label--add-child-button" onClick={this.addChild.bind(this)}>+</span> : void 0 }
     </div>;
   }
 
@@ -141,8 +141,8 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
     }
 
     // copy children
-    ast.children[0].children.remove();
-    ast.children[0].children.push(...entity.source.children);
+    ast.children[0].removeAllChildren();
+    entity.source.children.forEach((child) => ast.children[0].appendChild(child));
 
     // replace - tag name might have changed -- this cannot be patched
     replaceEntitySource(entity, ast.children[0]);
@@ -170,7 +170,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
   getHTMLValue() {
 
     const entity = this.props.entity;
-    const buffer = [entity.source.type.toLowerCase()];
+    const buffer = [entity.source.name.toLowerCase()];
 
     for (const attribute of entity.attributes) {
       const value = attribute.value;
@@ -183,4 +183,4 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
 
 export default ElementLayerLabelComponent;
 
-export const dependency = new LayerLabelComponentFactoryDependency("element", ElementLayerLabelComponent);
+export const dependency = new LayerLabelComponentFactoryDependency("element", ElementLayerLabelComponent, "childNodes");

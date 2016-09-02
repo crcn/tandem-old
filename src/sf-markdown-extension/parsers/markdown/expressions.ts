@@ -4,8 +4,7 @@ import { BaseExpression } from "sf-core/ast";
 export abstract class MarkdownExpression extends BaseExpression<MarkdownExpression> {
 
   constructor(position: IRange) {
-    super(null, position);
-    this.type = this.constructor.name;
+    super(position);
   }
 
   // TODO - change to toHTMLExpression instead

@@ -8,7 +8,7 @@ import { EntityFactoryDependency } from "sf-core/dependencies";
 import { IDOMSection, GroupNodeSection } from "sf-html-extension/dom";
 import { Action, PropertyChangeAction, UpdateAction } from "sf-core/actions";
 import { Dependencies, DEPENDENCIES_NS, IInjectable } from "sf-core/dependencies";
-import { IHTMLEntity } from "./base";
+import { IHTMLNodeEntity } from "./base";
 import {
   IEntity,
   EntityMetadata,
@@ -34,7 +34,7 @@ import {
 } from "sf-html-extension/ast/html/entities/node";
 
 
-export class HTMLDocumentRootEntity extends HTMLNodeEntity<HTMLFragmentExpression> implements IHTMLEntity {
+export class HTMLDocumentRootEntity extends HTMLNodeEntity<HTMLFragmentExpression> implements IHTMLNodeEntity {
 
   /**
    * The source content of this document
@@ -61,7 +61,6 @@ export class HTMLDocumentRootEntity extends HTMLNodeEntity<HTMLFragmentExpressio
     return new GroupNodeSection();
   }
 
-
   addStyleSheet(stylesheet: CSSStyleSheetExpression) {
     this.stylesheets.push(stylesheet);
   }
@@ -77,12 +76,12 @@ export class HTMLDocumentRootEntity extends HTMLNodeEntity<HTMLFragmentExpressio
     return new HTMLDocumentRootEntity(this.source, <HTMLFile>this.document, this._dependencies);
   }
 
+
   patch(entity: HTMLDocumentRootEntity) {
     super.patch(entity);
     this.stylesheets = entity.stylesheets;
     this._updateCSS();
   }
-
 
   public async load() {
     await super.load();

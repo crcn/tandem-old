@@ -1,6 +1,6 @@
 import { CSSSelectorExpression } from "./expressions";
-import { IHTMLEntity }  from "../index";
+import { IHTMLNodeEntity }  from "../index";
 
-export function getCSSSelection(selector: CSSSelectorExpression, root: IHTMLEntity) {
+export function getCSSSelection(selector: CSSSelectorExpression, root: IHTMLNodeEntity) {
   return root.flatten().filter(selector.test.bind(selector));
 }

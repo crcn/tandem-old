@@ -55,12 +55,25 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     return items;
   }
 
+  public compare(entity: IEntity) {
+    return entity.constructor === this.constructor;
+  }
+
   public async load() {
+    await this.loadLeaf();
     for (const childExpression of await this.mapSourceChildren()) {
-      const entity = EntityFactoryDependency.createEntityFromSource(childExpression, this._dependencies);
-      this.children.push(entity);
-      await entity.load();
+      await this.loadExpressionAndAppendChild(childExpression);
     }
+  }
+
+  protected async loadExpressionAndAppendChild(childExpression: IExpression) {
+    const entity = EntityFactoryDependency.createEntityFromSource(childExpression, this._dependencies);
+    this.appendChild(entity);
+    await entity.load();
+  }
+
+  loadLeaf() {
+
   }
 
   public update() {
@@ -80,9 +93,9 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   public patch(entity: BaseEntity<T>) {
     this._source       = entity._source;
     this._dependencies = entity._dependencies;
-    const changes = diffArray(this.children, entity.children, this.compareChild.bind(this));
+    const changes = diffArray(this.children, entity.children, (a, b) => a.compare(b));
     for (const entity of changes.remove) {
-      this.children.remove(entity);
+      this.removeChild(entity);
     }
     for (const [currentChild, patchChild] of changes.update) {
       currentChild.patch(patchChild);
@@ -91,9 +104,9 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
       if (currentIndex !== patchIndex) {
         const beforeChild = this.children[patchIndex];
         if (beforeChild) {
-          this.children.splice(this.children.indexOf(beforeChild), 0, currentChild);
+          this.insertBefore(currentChild, beforeChild);
         } else {
-          this.children.push(currentChild);
+          this.appendChild(currentChild);
         }
       }
     }
@@ -101,9 +114,9 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     for (const addition of changes.add) {
       const beforeChild = this.children[addition.index];
       if (beforeChild) {
-          this.children.splice(this.children.indexOf(beforeChild), 0, addition.value);
+          this.insertBefore(addition.value, beforeChild);
       } else {
-        this.children.push(addition.value);
+        this.appendChild(addition.value);
       }
     }
 
@@ -119,11 +132,9 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   protected updateFromSource() { }
 
   protected getInitialMetadata() {
-    return {};
-  }
 
-  protected compareChild(a: IEntity, b: IEntity) {
-    return a.constructor === b.constructor && a.source.type === b.source.type;
+    // TODO - possibly search for metadata from dependencies
+    return {};
   }
 
   protected mapSourceChildren(): Array<IExpression> {
@@ -155,5 +166,4 @@ export abstract class BaseValueEntity<T extends IExpression & IValued> extends B
   }
 
   protected onValueChange(newValue: any, oldValue: any) { }
-
 }

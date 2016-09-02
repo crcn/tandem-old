@@ -6,7 +6,6 @@ import {
   HTMLElementEntity,
   htmlTextDependency,
   htmlCommentDependency,
-  htmlElementDependencies,
   htmlDocumentFragmentDependency,
   defaultAttributeFactoryDependency,
 } from "sf-html-extension/ast";
@@ -26,7 +25,6 @@ describe(__filename + "#", () => {
       htmlTextDependency,
       htmlCommentDependency,
       htmlFileModelDependency,
-      htmlElementDependencies,
       htmlDocumentFragmentDependency,
       defaultAttributeFactoryDependency,
     );
@@ -57,7 +55,7 @@ describe(__filename + "#", () => {
 
   it("can render a DIV element", async () => {
     const file = await loadDocument("<div />");
-    expect(file.entity.children[0].source.type).to.equal("div");
+    expect(file.entity.children[0].source.name).to.equal("div");
   });
 
   it("emits a DOM element", async () => {

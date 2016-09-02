@@ -35,11 +35,11 @@ import { MimeTypeDependency } from "sf-core/dependencies";
    linkEntityDependency,
    htmlCommentDependency,
    htmlArtboardDependency,
-   htmlElementDependencies,
    htmlStyleEntityDependency,
    htmlDocumentFragmentDependency,
    cssRuleEntityFactoryDependency,
-   defaultAttributeFactoryDependency
+   defaultElementFactoyDependency,
+   defaultAttributeFactoryDependency,
 } from "./ast";
 
 export const dependency = [
@@ -76,8 +76,8 @@ export const dependency = [
   linkEntityDependency,
   htmlCommentDependency,
   htmlArtboardDependency,
-  htmlElementDependencies,
   htmlStyleEntityDependency,
+  defaultElementFactoyDependency,
   htmlDocumentFragmentDependency,
   cssRuleEntityFactoryDependency,
 

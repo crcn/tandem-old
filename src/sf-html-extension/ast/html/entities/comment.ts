@@ -15,4 +15,4 @@ export class HTMLCommentEntity extends HTMLValueNodeEntity<HTMLCommentExpression
   }
 }
 
-export const htmlCommentDependency          = new EntityFactoryDependency("#comment", HTMLCommentEntity);
+export const htmlCommentDependency          = new EntityFactoryDependency(HTMLCommentExpression, HTMLCommentEntity);

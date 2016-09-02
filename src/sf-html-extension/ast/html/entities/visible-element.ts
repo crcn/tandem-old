@@ -1,4 +1,3 @@
-import TAG_NAMES from "./tag-names";
 import { IVisibleEntity } from "sf-core/ast/entities";
 import { HTMLNodeDisplay } from "./displays";
 import { HTMLElementEntity } from "./element";
@@ -28,6 +27,7 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
     this._updateStyleExpression();
   }
 
+
   _updateStyleExpression() {
     const style = this.getAttribute("style");
     const newExpression = style ? parseCSSStyle(String(style)) : new CSSStyleExpression([], null);
@@ -53,15 +53,11 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
   }
 
   createSection(): IDOMSection {
-    return new NodeSection(document.createElement(this.source.type));
+    return new NodeSection(document.createElement(this.source.name));
   }
 
   cloneLeaf() {
      const clone = new VisibleHTMLElementEntity(this.source);
-     this.cloneAttributesToElement(clone);
-
-     // todo - fix me - this is kind of nasty
-     clone._updateStyleExpression();
      return clone;
   }
 
@@ -70,4 +66,5 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
   }
 }
 
-export const htmlElementDependencies        = TAG_NAMES.map((nodeName) => new EntityFactoryDependency(nodeName, VisibleHTMLElementEntity));
+
+export const defaultElementFactoyDependency =  new EntityFactoryDependency(HTMLElementExpression, VisibleHTMLElementEntity);

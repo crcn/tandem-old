@@ -2,7 +2,7 @@ import { IEntity } from "sf-core/ast";
 import { IDOMSection } from "sf-html-extension/dom";
 import { CSSStyleSheetExpression } from "sf-html-extension/ast";
 
-export interface IHTMLEntity extends IEntity {
+export interface IHTMLNodeEntity extends IEntity {
   section: IDOMSection;
 }
 export interface IHTMLElementAttributeEntity extends IEntity {

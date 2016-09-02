@@ -1,38 +1,47 @@
+import * as sift from "sift";
 import { ITyped } from "sf-core/object";
 import { inject } from "sf-core/decorators";
 import { HTMLFile } from "sf-html-extension/models/html-file";
 import { BubbleBus } from "sf-core/busses";
-import { IHTMLEntity } from "./base";
 import { DocumentFile } from "sf-front-end/models";
+import { MetadataKeys } from "sf-front-end/constants";
 import { HTMLExpression } from "sf-html-extension/ast";
+import { IHTMLNodeEntity } from "./base";
 import { PropertyChangeAction } from "sf-core/actions";
 import { diffArray, patchArray } from "sf-core/utils/array";
 import { IDOMSection, NodeSection, GroupNodeSection } from "sf-html-extension/dom";
 import { IEntity, EntityMetadata, IEntityDocument, BaseEntity, IExpression } from "sf-core/ast";
 import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency, Injector } from "sf-core/dependencies";
 
-export abstract class HTMLNodeEntity<T extends IExpression> extends BaseEntity<T> implements IHTMLEntity {
+export abstract class HTMLNodeEntity<T extends HTMLExpression> extends BaseEntity<T> implements IHTMLNodeEntity {
 
-  readonly section: IDOMSection;
+  private _section: IDOMSection;
   public document: HTMLFile;
 
-  constructor(source: T) {
-    super(source);
-    this.section = this.createSection();
+  get section(): IDOMSection {
+    return this._section;
   }
-
-  // DOM api compatibility
 
   get parentNode(): BaseEntity<T> {
     return this.parent;
   }
 
   get childNodes(): Array<BaseEntity<T>> {
-    return this.children;
+    return this.children.filter(<any>sift({ $type: HTMLNodeEntity }));
   }
 
   get nodeName(): string {
-    return this.source.type;
+    return this.source.name;
+  }
+
+  compare(entity: HTMLNodeEntity<any>) {
+    return super.compare(entity) && entity.nodeName === this.nodeName;
+  }
+
+  getInitialMetadata() {
+    return Object.assign(super.getInitialMetadata(), {
+      [MetadataKeys.CHILD_LAYER_PROPERTY]: "childNodes"
+    });
   }
 
   insertDOMChildBefore(newChild: Node, beforeChild: Node) {
@@ -43,8 +52,8 @@ export abstract class HTMLNodeEntity<T extends IExpression> extends BaseEntity<T
     this.section.appendChild(newChild);
   }
 
-  onChildRemoving(child: HTMLNodeEntity<T>) {
-    super.onChildRemoving(child);
+  onRemovingChild(child: HTMLNodeEntity<T>) {
+    super.onRemovingChild(child);
     if (child.section) child.section.remove();
   }
 
@@ -70,6 +79,11 @@ export abstract class HTMLNodeEntity<T extends IExpression> extends BaseEntity<T
         this.appendDOMChild(child.section.toFragment());
       }
     }
+  }
+
+  protected initialize() {
+    super.initialize();
+    this._section  = this.createSection();
   }
 
   protected abstract createSection();

@@ -6,8 +6,7 @@ import { diffArray, patchArray } from "sf-core/utils/array";
 export abstract class CSSExpression extends BaseExpression<CSSExpression> {
 
   constructor(position: IRange) {
-    super(null, position);
-    this.type = this.constructor.name;
+    super(position);
   }
 
   // TODO - make this abstract
