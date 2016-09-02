@@ -4,11 +4,12 @@ import { HTMLFile } from "sf-html-extension/models/html-file";
 import { BubbleBus } from "sf-core/busses";
 import { DocumentFile } from "sf-front-end/models";
 import { watchProperty } from "sf-core/observable";
+import { IHTMLNodeEntity } from "./base";
 import { EntityFactoryDependency } from "sf-core/dependencies";
 import { IDOMSection, GroupNodeSection } from "sf-html-extension/dom";
 import { Action, PropertyChangeAction, UpdateAction } from "sf-core/actions";
 import { Dependencies, DEPENDENCIES_NS, IInjectable } from "sf-core/dependencies";
-import { IHTMLNodeEntity } from "./base";
+import { CSSStylesheetsDependency } from "sf-html-extension/dependencies";
 import {
   IEntity,
   EntityMetadata,
@@ -41,45 +42,26 @@ export class HTMLDocumentRootEntity extends HTMLNodeEntity<HTMLFragmentExpressio
    */
 
   private _globalStyle: HTMLStyleElement;
+  private _styleSheetsDependency: CSSStylesheetsDependency;
 
-  /**
-   * Creates an instance of HTMLDocumentEntity.
-   *
-   * @param {any} [readonly=file] the source file
-   * @param {any} HTMLFile
-   */
 
-  public stylesheets: Array<CSSStyleSheetExpression> = [];
-
-  constructor(source: HTMLFragmentExpression, document: HTMLFile, _dependencies: Dependencies) {
+  constructor(source: HTMLFragmentExpression, document: HTMLFile, readonly _dependencies: Dependencies) {
     super(source);
     this.document = document;
-    this._dependencies = _dependencies.clone();
+    this._styleSheetsDependency = CSSStylesheetsDependency.getInstance(this._dependencies);
   }
 
   createSection(): IDOMSection {
     return new GroupNodeSection();
   }
 
-  addStyleSheet(stylesheet: CSSStyleSheetExpression) {
-    this.stylesheets.push(stylesheet);
-  }
-
-  removeStylesheet(stylesheet: CSSStyleSheetExpression) {
-    const index = this.stylesheets.indexOf(stylesheet);
-    if (index !== -1) {
-      this.stylesheets.splice(index, 1);
-    }
-  }
-
   cloneLeaf() {
     return new HTMLDocumentRootEntity(this.source, <HTMLFile>this.document, this._dependencies);
   }
 
-
   patch(entity: HTMLDocumentRootEntity) {
     super.patch(entity);
-    this.stylesheets = entity.stylesheets;
+    this._styleSheetsDependency = entity._styleSheetsDependency;
     this._updateCSS();
   }
 
@@ -94,6 +76,6 @@ export class HTMLDocumentRootEntity extends HTMLNodeEntity<HTMLFragmentExpressio
 
   private _updateCSS() {
     // after the root has been loaded in, fetch all of the CSS styles.
-    this._globalStyle.innerHTML = this.stylesheets.join("");
+    this._globalStyle.innerHTML = this._styleSheetsDependency.toString();
   }
 }

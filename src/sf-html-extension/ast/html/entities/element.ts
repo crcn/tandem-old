@@ -22,26 +22,6 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
     return <any>this.children.filter((child) => child.source.constructor === HTMLAttributeExpression);
   }
 
-  // async load() {
-  //   await this.loadSelf();
-  //   return super.load();
-  // }
-
-  // protected async loadSelf() {
-  //   for (const attribute of this.source.attributes) {
-
-  //     let valueEntityFactory = ElementAttributeEntityFactory.findBySource(attribute, this._dependencies) ||
-  //     ElementAttributeEntityFactory.findByName("defaultAttribute", this._dependencies);
-
-  //     const attributeEntity = valueEntityFactory.create(attribute);
-  //     this.attributes.push(attributeEntity);
-  //     await attributeEntity.load();
-  //     if (this.section instanceof NodeSection) {
-  //       (<Element>this.section.targetNode).setAttribute(attributeEntity.name, attributeEntity.value);
-  //     }
-  //   }
-  // }
-
   getInitialMetadata() {
     return Object.assign(super.getInitialMetadata(), {
       [MetadataKeys.LAYER_DEPENDENCY_NAME]: "element"
@@ -75,7 +55,13 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
 
   setAttribute(name: string, value: any) {
     const attribute = this.getAttributeEntity(name);
-    if (!attribute) throw new Error(`Attempting to set value on attribute entity "${name}" that does not exist. Add a new attribute entity to the children, modify the target node, or the element entity source instead.`);
+    if (!attribute) {
+      const expr = new HTMLAttributeExpression(name, value, null);
+      this.source.appendChild(expr);
+      const entity = new HTMLAttributeEntity(expr);
+      this.appendChild(entity);
+      return entity;
+    }
     attribute.value = value;
   }
 
@@ -124,6 +110,10 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
 
   get hasLoadableValue() {
     return typeof this.source.value === "object";
+  }
+
+  compare(entity: HTMLAttributeEntity) {
+    return super.compare(entity) && entity.name === this.name;
   }
 
   patch(entity: HTMLAttributeEntity) {

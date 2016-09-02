@@ -10,7 +10,7 @@ import { IExpression } from "sf-core/ast";
 import { IEntityDocument } from "sf-core/ast";
 import { IPoint, Transform } from "sf-core/geom";
 import { Action, PropertyChangeAction } from "sf-core/actions";
-import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityDocumentDependency } from "sf-core/dependencies";
+import { IInjectable, DEPENDENCIES_NS, DependenciesDependency, Dependencies, EntityDocumentDependency } from "sf-core/dependencies";
 
 export interface IEditorTool extends IActor, IDisposable {
   readonly editor: IEditor;
@@ -54,6 +54,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   }
 
   public async load() {
+
     const entity = this.createEntity(this._ast = this.parse(this.content), this._dependencies.clone().register(new EntityDocumentDependency(this)));
     if (this._entity && this._entity.constructor === entity.constructor) {
       await entity.load();

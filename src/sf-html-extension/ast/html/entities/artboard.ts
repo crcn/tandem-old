@@ -8,6 +8,7 @@ import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
 import { HTMLElementEntity } from "./element";
 import { FrontEndApplication } from "sf-front-end/application";
 import { VisibleHTMLElementEntity } from "./visible-element";
+import { CSSStylesheetsDependency } from "sf-html-extension/dependencies";
 import { NodeSection, GroupNodeSection } from "sf-html-extension/dom";
 import { IContextualEntity, IEntity, getContext } from "sf-core/ast";
 import { HTMLElementExpression, HTMLFragmentExpression } from "sf-html-extension/ast";
@@ -102,7 +103,7 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
     *:focus {
       outline: none;
     }
-    ${ this.document.entity.stylesheets.join("") }
+    ${ CSSStylesheetsDependency.getInstance(this._dependencies).toString() }
     `;
   }
 

@@ -99,7 +99,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
 
     buffer.push(
       <span className="m-element-layer-label--tag" key="et">
-        { entity.children.length === 0 ? " /" : void 0 }
+        { entity.childNodes.length === 0 ? " /" : void 0 }
         &gt;
       </span>
     );
@@ -140,12 +140,10 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
       return this.cancelEditing();
     }
 
-    // copy children
-    ast.children[0].removeAllChildren();
-    entity.source.children.forEach((child) => ast.children[0].appendChild(child));
+    entity.source.childNodes.forEach((child) => ast.childNodes[0].appendChild(child));
 
     // replace - tag name might have changed -- this cannot be patched
-    replaceEntitySource(entity, ast.children[0]);
+    replaceEntitySource(entity, ast.childNodes[0]);
 
     this.cancelEditing();
   }

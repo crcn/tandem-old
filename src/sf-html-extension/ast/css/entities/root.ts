@@ -6,6 +6,7 @@ import { MetadataKeys } from "sf-front-end/constants";
 import { DocumentFile } from "sf-front-end/models";
 import { watchProperty } from "sf-core/observable";
 import { GroupNodeSection } from "sf-html-extension/dom";
+import { CSSStylesheetsDependency } from "sf-html-extension/dependencies";
 import { parseCSS, CSSStyleSheetExpression } from "sf-html-extension/ast";
 import { Dependencies, DEPENDENCIES_NS, Injector } from "sf-core/dependencies";
 import {BaseEntity, EntityMetadata, IEntityDocument } from "sf-core/ast/entities";
@@ -23,9 +24,7 @@ export class CSSRootEntity extends BaseEntity<CSSStyleSheetExpression> {
 
   async load() {
     await super.load();
-
-    // TODO - need to add children here instead
-    (<HTMLFile>this.document.owner).entity.addStyleSheet(this.source);
+    CSSStylesheetsDependency.getInstance(this._dependencies).addStyleSheet(this.source);
   }
 
   getInitialMetadata() {
