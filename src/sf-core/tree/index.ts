@@ -183,7 +183,7 @@ export class TreeNode<T extends TreeNode<T>> extends Observable implements ITree
   }
 
   get height(): number {
-    return Math.max(0, ...this.children.map((child) => child.height + 1));
+    return Math.max(0, ...this.branches.map((branch) => Math.max(...branch.map((child) => child.height + 1))));
   }
 
   protected onAdded() {
