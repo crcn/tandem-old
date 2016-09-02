@@ -38,7 +38,7 @@ describe(__filename + "#", () => {
   describe("block nodes", () => {
     it("can be rendered without a context", async () => {
       const entity = await loadEntity(`hello \${message}`);
-      expect(entity.section.innerHTML).to.equal("hello ${ message }");
+      expect(entity.section.innerHTML).to.equal("hello ");
     });
     it("can be rendered with a context", async () => {
       const entity = await loadEntity(`hello \${message}`, { message: "world" });
