@@ -33,6 +33,12 @@ export class HTMLContainerExpression extends HTMLNodeExpression {
     return <any>this.children.filter(<any>sift({ $type: HTMLNodeExpression }));
   }
 
+  removeAllChildNodes(): void {
+    for (const childNode of this.childNodes) {
+      this.removeChild(childNode);
+    }
+  }
+
   patch(expression: HTMLExpression) {
     this.position = expression.position;
     const changes = diffArray(this.children, expression.children, (a, b) => a.name === b.name && a.constructor === b.constructor);
