@@ -13,7 +13,7 @@ export interface IArrayChange {
   remove: Array<any>;
 }
 
-export function diffArray<T>(a: Array<T>, b: Array<T>, test: (a: T, b: T) => boolean): IArrayChange {
+export function diffArray<T>(a: Array<T>, b: Array<T>, compare: (a: T, b: T) => number|boolean): IArrayChange {
   const update  = [];
 
   const aPool = a.concat();
@@ -22,14 +22,25 @@ export function diffArray<T>(a: Array<T>, b: Array<T>, test: (a: T, b: T) => boo
 
   for (let i = aPool.length; i--; ) {
     const av = aPool[i];
+    const candidates = [];
+    let bestCandidate;
+    let bestCandidateScore;
+
     for (let j = bPool.length; j--; ) {
       const bv = bPool[j];
-      if (test(av, bv)) {
-        aPool.splice(i, 1);
-        bPool.splice(j, 1);
-        update.push([av, bv]);
-        break;
+      let score;
+      if (score = Number(compare(av, bv))) {
+        if (!bestCandidate || score > bestCandidateScore) {
+          bestCandidate      = bv;
+          bestCandidateScore = score;
+        }
       }
+    }
+
+    if (bestCandidate) {
+      aPool.splice(i, 1);
+      bPool.splice(bPool.indexOf(bestCandidate), 1);
+      update.push([av, bestCandidate, a.indexOf(av), b.indexOf(bestCandidate)]);
     }
   }
 

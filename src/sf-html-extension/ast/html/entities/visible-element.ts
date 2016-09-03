@@ -30,7 +30,7 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
     this._originalStyle = this._styleExpression.toString();
   }
 
-  update() {
+  updateSource() {
     if (this.styleExpression.declarations.length) {
       const newStyle = this.styleExpression.toString();
       if (newStyle !== this._originalStyle) {
@@ -38,7 +38,7 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
       }
     }
 
-    super.update();
+    super.updateSource();
   }
 
   createSection(): IDOMSection {

@@ -28,6 +28,12 @@ describe(__filename + "#", () => {
   class MockExpression extends TreeNode<MockExpression> implements IExpression {
     position = null;
     type = null;
+    compare(b) {
+      return 0;
+    }
+    patch(b) {
+
+    }
   }
 
 

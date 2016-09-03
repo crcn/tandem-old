@@ -23,10 +23,13 @@ export async function insertSourceChildren(entity: IEntity, index: number = -1, 
     entity.source.insertAt(child, index);
   }
 
+  const root = entity.root;
+
   // update the file document
   await entity.document.update();
 
-  return findEntitiesBySource(entity, ...childSources);
+  const entities = findEntitiesBySource(root, ...childSources);
+  return entities;
 }
 
 export async function removeEntitySources(...entities: Array<IEntity>) {

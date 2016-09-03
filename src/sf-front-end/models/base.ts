@@ -7,6 +7,7 @@ import { Workspace } from "./workspace";
 import { IObservable } from "sf-core/observable";
 import { IDisposable } from "sf-core/object";
 import { IExpression } from "sf-core/ast";
+import { patchTreeNode } from "sf-core/tree";
 import { IEntityDocument } from "sf-core/ast";
 import { IPoint, Transform } from "sf-core/geom";
 import { Action, PropertyChangeAction } from "sf-core/actions";
@@ -55,12 +56,16 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
 
   public async load() {
 
-    const ast = this.parse(this.content);
+    // do not parse the content if it's the same as the previously parsed ast.
+    // This is necessary since parts of the application hold references to entity sources when they're
+    // modified. The only case where the ast should be re-parsed is when new content is coming in externally. In that case, the
+    // entire ast needs to be replaced.
+    const ast = !this._entity || this._entity.source.toString() !== this.content ? this.parse(this.content) : this._entity.source;
+
     const entity = this.createEntity(ast, this._dependencies.clone().register(new EntityDocumentDependency(this)));
     if (this._entity && this._entity.constructor === entity.constructor) {
       await entity.load();
-      // this._entity.source.patch(ast);
-      this._entity.patch(entity);
+      patchTreeNode(this._entity, entity);
     } else {
       const oldEntity = this._entity;
       this._entity    = entity;
@@ -74,12 +79,13 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   }
 
   abstract parse(content: string): IExpression;
-  protected abstract getFormattedContent(ast: IExpression): string;
   protected abstract createEntity(ast: IExpression, dependencies: Dependencies): T;
 
   async update() {
-    this._entity.update();
-    this.content = this.getFormattedContent(this._ast);
+
+    // persist change changed from the entity to the source
+    this._entity.updateSource();
+    this.content = this._entity.source.toString();
     await super.update();
     await this.load();
   }

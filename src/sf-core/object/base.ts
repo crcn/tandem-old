@@ -28,3 +28,11 @@ export interface IOwnable {
   readonly owner: any;
 }
 
+export interface IComparable {
+  compare(node: IComparable): number;
+}
+
+export interface IPatchable {
+  patch(node: IPatchable);
+}
+

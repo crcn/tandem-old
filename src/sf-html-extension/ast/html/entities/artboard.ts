@@ -71,10 +71,6 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
   private _iframe: HTMLIFrameElement;
   private _placeholder: Node;
 
-  update() {
-    super.update();
-  }
-
   async load() {
 
     if (this.source.getAttribute("id")) {

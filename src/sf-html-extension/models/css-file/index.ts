@@ -1,4 +1,3 @@
-import * as pretty from "pretty";
 import { inject } from "sf-core/decorators";
 import { HTMLFile } from "sf-html-extension/models";
 import { MimeTypes } from "sf-html-extension/constants";
@@ -15,9 +14,6 @@ export class CSSFile extends DocumentFile<CSSRootEntity> implements IInjectable 
   }
   parse(content: string) {
     return parseCSS(content);
-  }
-  getFormattedContent(ast: CSSStyleSheetExpression) {
-    return pretty(ast.toString());
   }
 }
 

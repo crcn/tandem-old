@@ -92,7 +92,7 @@ describe(__filename + "#", () => {
       expect(value._id).to.equal(ar._id);
     });
 
-    it("can sync() for any future changes to the db", async () => {
+    xit("can sync() for any future changes to the db", async () => {
       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
         name: "a"
       });

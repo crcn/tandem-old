@@ -1,11 +1,11 @@
 import { IActor } from "sf-core/actors";
 import { WrapBus } from "mesh";
 import { ITreeNode } from "./base";
+import { patchTreeNode } from "./patch";
 import { Observable, IObservable } from "sf-core/observable";
 import { Action, NODE_ADDED, NODE_REMOVING } from "sf-core/actions";
 
-export { ITreeNode };
-
+export { ITreeNode, patchTreeNode };
 
 export class TreeNode<T extends TreeNode<any>> extends Observable implements ITreeNode<T> {
 

@@ -1,12 +1,10 @@
 import { inject } from "sf-core/decorators";
 import { BubbleBus } from "sf-core/busses";
-import { diffArray } from "sf-core/utils/array";
 import { watchProperty } from "sf-core/observable";
 import { bindable, mixin, virtual } from "sf-core/decorators";
 import { IDisposable, ITyped, IValued } from "sf-core/object";
 import { IInjectable, Injector, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
 import { EntityFactoryDependency, EntityDocumentDependency, ENTITY_DOCUMENT_NS } from "sf-core/dependencies";
-
 
 import { TreeNode } from "sf-core/tree";
 import { IExpression } from "sf-core/ast";
@@ -55,8 +53,8 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     return items;
   }
 
-  public compare(entity: IEntity) {
-    return entity.constructor === this.constructor;
+  public compare(entity: IEntity): number {
+    return Number(entity.constructor === this.constructor);
   }
 
   public async load() {
@@ -77,9 +75,9 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   }
 
-  public update() {
+  public updateSource() {
     for (const child of this.children) {
-      child.update();
+      child.updateSource();
     }
   }
 
@@ -96,24 +94,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   public patch(entity: BaseEntity<T>) {
     this._source       = entity._source;
     this._dependencies = entity._dependencies;
-    const changes = diffArray(this.children, entity.children, (a, b) => a.compare(b));
-    for (const entity of changes.remove) {
-      this.removeChild(entity);
-    }
-    for (const [currentChild, patchChild] of changes.update) {
-      const patchIndex   = entity.children.indexOf(patchChild);
-      const currentIndex = this.children.indexOf(currentChild);
-      if (currentIndex !== patchIndex) {
-        this.insertAt(currentChild, patchIndex);
-      }
-      currentChild.patch(patchChild);
-    }
-
-    for (const addition of changes.add) {
-      const beforeChild = this.children[addition.index];
-      this.insertAt(addition.value, addition.index);
-    }
-
     this.updateFromSource();
     this.updateFromLoaded();
   }
