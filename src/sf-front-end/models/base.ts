@@ -55,9 +55,11 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
 
   public async load() {
 
-    const entity = this.createEntity(this._ast = this.parse(this.content), this._dependencies.clone().register(new EntityDocumentDependency(this)));
+    const ast = this.parse(this.content);
+    const entity = this.createEntity(ast, this._dependencies.clone().register(new EntityDocumentDependency(this)));
     if (this._entity && this._entity.constructor === entity.constructor) {
       await entity.load();
+      // this._entity.source.patch(ast);
       this._entity.patch(entity);
     } else {
       const oldEntity = this._entity;
