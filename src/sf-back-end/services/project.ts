@@ -1,12 +1,30 @@
-import { IApplication } from "sf-common/application";
-import { BaseApplicationService } from "sf-common/services";
-import { inject, loggable, document, filterAction } from "sf-common/decorators";
-import { ApplicationServiceDependency, Dependencies, DEPENDENCIES_NS } from "sf-common/dependencies";
-import { } from "sf-common/actions";
+import {
+  File,
+  inject,
+  loggable,
+  document,
+  filterAction,
+  Dependencies,
+  IApplication,
+  OpenFileAction,
+  DEPENDENCIES_NS,
+  OpenProjectAction,
+  BaseApplicationService,
+  GetPrimaryProjectFilePathAction,
+  ApplicationServiceDependency,
+} from "sf-common";
 
 @loggable()
 export default class ProjectService extends BaseApplicationService<IApplication> {
+  private _primaryProjectPath: string;
 
+  async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
+    this._primaryProjectPath = action.path;
+  }
+
+  async [GetPrimaryProjectFilePathAction.GET_PRIMARY_PROJECT_FILE_PATH](action: GetPrimaryProjectFilePathAction) {
+    return this._primaryProjectPath;
+  }
 };
 
-export const projectServiceDependency = new ApplicationServiceDependency("projectService", ProjectService);
+export const dependency = new ApplicationServiceDependency("projectService", ProjectService);

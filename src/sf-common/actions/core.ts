@@ -1,5 +1,7 @@
 import { Action } from "./base";
+import { IActor } from "sf-common/actors";
 import { ITreeNode } from "sf-common/tree";
+import { IDisposable } from "sf-common/object";
 export { Action };
 
 export interface Change {
@@ -89,6 +91,10 @@ export class DSUpdateAction extends DSAction {
   constructor(collectionName: string, readonly data: any, readonly query: any) {
     super(DS_UPDATE, collectionName);
   }
+
+  static async execute(collectionName: string, data: any, query: any, bus: IActor): Promise<Array<any>> {
+    return await bus.execute(new DSUpdateAction(collectionName, data, query)).readAll();
+  }
 }
 
 export const DS_FIND   = "dsFind";
@@ -157,24 +163,69 @@ export class UpdateAction extends Action {
   }
 }
 
-export const OPEN_FILE = "openFile";
+export interface IReadFileActionResponseData {
+  path: string;
+  content: string;
+  mtime: number;
+}
+
+export interface IFileModelActionResponseData extends IReadFileActionResponseData {
+
+}
+
+
 export class OpenFileAction extends Action {
-  constructor(readonly path: string, readonly watch: boolean = false) {
-    super(OPEN_FILE);
+  static readonly OPEN_FILE = "openFile";
+  constructor(readonly path: string) {
+    super(OpenFileAction.OPEN_FILE);
+  }
+
+  static async execute(action: { path: string }, bus: IActor): Promise<IFileModelActionResponseData> {
+    return (await bus.execute(new OpenFileAction(action.path)).read()).value;
   }
 }
 
-export const READ_FILE = "readFile";
+
 export class ReadFileAction extends Action {
+  static readonly READ_FILE = "readFile";
   constructor(readonly path: string) {
-    super(READ_FILE);
+    super(ReadFileAction.READ_FILE);
+  }
+
+  static async execute({ path }: { path: string }, bus: IActor): Promise<IReadFileActionResponseData> {
+    return (await bus.execute(new ReadFileAction(path)).read()).value;
   }
 }
 
-export const WATCH_FILE = "watchFile";
+export class UpdateTemporaryFileContentAction extends Action {
+  static readonly UPDATE_TEMP_FILE_CONTENT = "updateTemporyFileContent";
+  constructor(readonly path: string, readonly content: string) {
+    super(UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT);
+  }
+
+  static async execute({ path, content }, bus: IActor) {
+    return (await bus.execute(new UpdateTemporaryFileContentAction(path, content)).read()).value;
+  }
+}
+
 export class WatchFileAction extends Action {
+  static readonly WATCH_FILE = "watchFile";
   constructor(readonly path: string) {
-    super(WATCH_FILE);
+    super(WatchFileAction.WATCH_FILE);
+  }
+
+  static execute(path: string, bus: IActor, onFileChange: Function): IDisposable {
+    const stream = bus.execute(new WatchFileAction(path));
+
+    stream.pipeTo({
+      abort: () => {},
+      close: () => {},
+      write: onFileChange
+    });
+
+    return {
+      dispose: () => stream.cancel()
+    };
   }
 }
 

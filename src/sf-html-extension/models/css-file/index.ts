@@ -4,7 +4,7 @@ import { MimeTypes } from "sf-html-extension/constants";
 import { DocumentFile } from "sf-front-end/models";
 import { EntityFactoryDependency, Dependencies } from "sf-common/dependencies";
 import { CSSRootEntity, parseCSS, CSSStyleSheetExpression } from "sf-html-extension/ast";
-import { ActiveRecordFactoryDependency, IInjectable, Injector } from "sf-common/dependencies";
+import { FileFactoryDependency, IInjectable, Injector } from "sf-common/dependencies";
 
 export class CSSFile extends DocumentFile<CSSRootEntity> implements IInjectable {
   public owner: HTMLFile;
@@ -17,4 +17,4 @@ export class CSSFile extends DocumentFile<CSSRootEntity> implements IInjectable 
   }
 }
 
-export const cssFileDependency = new ActiveRecordFactoryDependency(MimeTypes.CSS_MIME_TYPE, CSSFile);
+export const cssFileDependency = new FileFactoryDependency(MimeTypes.CSS_MIME_TYPE, CSSFile);

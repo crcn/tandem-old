@@ -4,7 +4,7 @@ import { MimeTypes } from "sf-paperclip-extension/constants";
 import { DocumentFile } from "sf-front-end/models";
 import { HTMLFragmentExpression } from "sf-html-extension/ast";
 import { parsePC, PCDocumentRootEntity } from "sf-paperclip-extension/ast";
-import { ActiveRecordFactoryDependency, Dependencies } from "sf-common/dependencies";
+import { FileFactoryDependency, Dependencies } from "sf-common/dependencies";
 
 export class PCFile extends HTMLFile {
   @bindable()
@@ -18,4 +18,4 @@ export class PCFile extends HTMLFile {
   }
 }
 
-export const pcFileDependency = new ActiveRecordFactoryDependency(MimeTypes.PC_MIME_TYPE, PCFile);
+export const pcFileDependency = new FileFactoryDependency(MimeTypes.PC_MIME_TYPE, PCFile);

@@ -4,7 +4,7 @@ import { MimeTypes } from "sf-html-extension/constants";
 import { IExpression } from "sf-common/ast";
 import { DocumentFile } from "sf-front-end/models/base";
 import { Dependencies } from "sf-common/dependencies";
-import { ActiveRecordFactoryDependency } from "sf-common/dependencies";
+import { FileFactoryDependency } from "sf-common/dependencies";
 import { HTMLDocumentRootEntity, HTMLFragmentExpression } from "sf-html-extension/ast";
 
 export class HTMLFile extends DocumentFile<HTMLDocumentRootEntity> {
@@ -17,5 +17,5 @@ export class HTMLFile extends DocumentFile<HTMLDocumentRootEntity> {
   }
 }
 
-export const htmlFileModelDependency = new ActiveRecordFactoryDependency(MimeTypes.HTML_MIME_TYPE, HTMLFile);
+export const htmlFileModelDependency = new FileFactoryDependency(MimeTypes.HTML_MIME_TYPE, HTMLFile);
 

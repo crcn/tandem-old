@@ -1,22 +1,26 @@
-import { File } from "sf-common/models";
-import { Logger } from "sf-common/logger";
-import { inject } from "sf-common/decorators";
-import { loggable } from "sf-common/decorators";
-import { IDisposable } from "sf-common/object";
+
 import { MetadataKeys } from "sf-front-end/constants";
-import { tween, easeOutCubic } from "sf-common/animate";
 import { FrontEndApplication } from "sf-front-end/application";
-import { BaseApplicationService } from "sf-common/services";
 import { Workspace, DocumentFile } from "sf-front-end/models";
+import { SetToolAction, ZoomAction } from "sf-front-end/actions";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
-import { Action, DSFindAction, INITIALIZE } from "sf-common/actions";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
-import { SetToolAction, ZoomAction, ZOOM, SET_TOOL } from "sf-front-end/actions";
+
 import {
+  File,
+  tween,
+  Action,
+  inject,
+  IDisposable,
+  INITIALIZE,
+  easeOutCubic,
+  DSFindAction,
   Dependencies,
   DEPENDENCIES_NS,
+  BaseApplicationService,
   ApplicationServiceDependency,
-} from "sf-common/dependencies";
+  GetPrimaryProjectFilePathAction,
+} from "sf-common";
 
 export class WorkspaceService extends BaseApplicationService<FrontEndApplication> {
 
@@ -35,18 +39,15 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
   async _loadWorkspaces() {
 
-    // TODO - File.findAll(this._dependencies).sync().observe(updateWorkspaces);
-    for (const file of (await File.findAll(this._dependencies)).map((file) => file.sync() as DocumentFile<any>)) {
+    const file = await File.open(await GetPrimaryProjectFilePathAction.execute(this.bus), this._dependencies) as DocumentFile<any>;
+    file.sync();
+    await file.load();
 
-      // TODO - this.app.workspaces = new Workspaces(files.map())
-      await file.load();
-      this.bus.register(this.app.workspace = new Workspace(<DocumentFile<any>>file));
-      file.observe(this.app.bus);
-    }
-
+    this.bus.register(this.app.workspace = new Workspace(<DocumentFile<any>>file));
+    file.observe(this.app.bus);
   }
 
-  [ZOOM](action: ZoomAction) {
+  [ZoomAction.ZOOM](action: ZoomAction) {
     if (this._tweener) this._tweener.dispose();
     const delta = action.delta * this.app.workspace.editor.zoom;
 
@@ -73,7 +74,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     }, 10);
   }
 
-  [SET_TOOL](action: SetToolAction) {
+  [SetToolAction.SET_TOOL](action: SetToolAction) {
     this.app.workspace.editor.currentTool = action.toolFactory.create(this.app.workspace.editor);
   }
 }

@@ -60,7 +60,6 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
   }
 
   deleteSelection() {
-    this.workspace.file.update();
     this.bus.execute(new RemoveSelectionAction());
   }
 }

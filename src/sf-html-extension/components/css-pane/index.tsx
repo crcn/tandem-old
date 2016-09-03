@@ -2,14 +2,14 @@ import "./index.scss";
 import * as React from "react";
 import { Workspace } from "sf-front-end/models";
 import PaneComponent from "sf-front-end/components/pane";
-import { SelectAction } from "sf-front-end/actions";
 import { parseCSS } from "sf-html-extension/ast";
+import { SelectAction } from "sf-front-end/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectWithCSSSelectorAction } from "sf-html-extension/actions";
+import { VisibleHTMLElementCollection } from "sf-html-extension/collections";
 import { EntityPaneComponentFactoryDependency } from "sf-front-end/dependencies";
 import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLNodeEntity } from "sf-html-extension/ast";
 import { CSSExpression, CSSStyleExpression, CSSRuleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "sf-html-extension/ast";
-import { VisibleHTMLElementCollection } from "sf-html-extension/collections";
 
 class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, declaration: CSSStyleDeclarationExpression, style: CSSStyleExpression, addNewDeclaration: Function }, any> {
 
@@ -47,7 +47,7 @@ class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, 
     if ((this.refs["key"] as any).value === "") {
       this.remove();
     }
-    this.props.workspace.file.save();
+    this.props.workspace.file.update();
   }
 
   render() {

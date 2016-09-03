@@ -75,10 +75,10 @@ export class ToggleSelectAction extends SelectAction {
   }
 }
 
-export const ZOOM = "zoom";
 export class ZoomAction extends Action {
+  static readonly ZOOM = "zoom";
   constructor(readonly delta: number, readonly ease: boolean = false) {
-    super(ZOOM);
+    super(ZoomAction.ZOOM);
   }
 }
 
@@ -96,10 +96,10 @@ export class DeleteSelectionAction extends Action {
   }
 }
 
-export const SET_TOOL = "setTool";
 export class SetToolAction extends Action {
+  static readonly SET_TOOL = "setTool";
   constructor(readonly toolFactory: { create(editor: IEditor): IEditorTool }) {
-    super(SET_TOOL);
+    super(SetToolAction.SET_TOOL);
   }
 }
 

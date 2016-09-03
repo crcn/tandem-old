@@ -1,51 +1,46 @@
 import * as fs from "fs";
 import * as gaze from "gaze";
 import * as sift from "sift";
-import { Logger } from "sf-common/logger";
 import { Response } from "mesh";
-import { SaveAction } from "sf-common/actions";
-import { IApplication } from "sf-common/application";
-import { BaseApplicationService } from "sf-common/services";
-import { File, FILES_COLLECTION_NAME } from "sf-common/models";
-import { inject, loggable, document, filterAction } from "sf-common/decorators";
-import { ApplicationServiceDependency, Dependencies, DEPENDENCIES_NS } from "sf-common/dependencies";
-import { PostDSAction, OpenFileAction, WatchFileAction, OPEN_FILE, WATCH_FILE, READ_FILE, DS_DID_REMOVE } from "sf-common/actions";
+import {
+  File,
+  inject,
+  Logger,
+  loggable,
+  document,
+  SaveAction,
+  filterAction,
+  IApplication,
+  PostDSAction,
+  Dependencies,
+  DS_DID_UPDATE,
+  OpenFileAction,
+  DSUpdateAction,
+  ReadFileAction,
+  WatchFileAction,
+  DEPENDENCIES_NS,
+  UpdateTemporaryFileContentAction,
+  BaseApplicationService,
+  ApplicationServiceDependency,
+} from "sf-common";
 
 @loggable()
 export default class FileService extends BaseApplicationService<IApplication> {
 
   public logger:Logger;
-  private _watchers:Object = {};
-  private _openFiles: any = {};
+  private _fileWatchers: Object = {};
+  private _fileCache: Object = {};
 
   @inject(DEPENDENCIES_NS)
   private _dependencies: Dependencies;
 
-  /**
-   */
-
-  @document("opens a file")
-  [OPEN_FILE](action: OpenFileAction) {
-    this.logger.info(`opening ${action.path}`);
-
-    if (action.watch) {
-      this._watch(action);
-    }
-
-    const data = this[READ_FILE](action);
-    let file: File;
-
-    if (!(file = this._openFiles[data.path])) {
-      file = this._openFiles[data.path] = File.create(data, this._dependencies);
-    } else {
-      file.deserialize(data);
-    }
-
-    return file.save();
+  [UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT] (action: UpdateTemporaryFileContentAction) {
+    this._fileCache[action.path] = { path: action.path, content: action.content, mtime: Date.now() };
   }
 
   /**
    */
+
   @document("saves a file to disk")
   saveFile(action: SaveAction) {
     fs.writeFile(action.path, action.content);
@@ -55,29 +50,13 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @document("reads a file content")
-  [READ_FILE](action: OpenFileAction|WatchFileAction) {
-    return {
+  [ReadFileAction.READ_FILE](action: ReadFileAction|OpenFileAction|WatchFileAction) {
+    this.logger.info("reading file %s", action.path);
+    return this._fileCache[action.path] || {
       path    : action.path,
+      mtime   : fs.lstatSync(action.path).mtime.getTime(),
       content : fs.readFileSync(action.path, "utf8")
     };
-  }
-
-  /**
-   * when an item has been removed from the db, close
-   * the file watcher if it exists
-   */
-
-  @filterAction(sift({ collectionName: FILES_COLLECTION_NAME }))
-  [DS_DID_REMOVE](action: PostDSAction) {
-    const item = action.data;
-    if (!this._openFiles[item.path]) {
-      return;
-    }
-    this._openFiles[item.path].dispose();
-    this._openFiles[item.path] = undefined;
-    if (this._watchers[item.path]) {
-      this._closeFileWatcher(this._watchers[item.path], item);
-    }
   }
 
   _closeFileWatcher(watcher, item) {
@@ -89,29 +68,21 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @document("watches a file for any changes")
-  [WATCH_FILE](action: WatchFileAction) {
+  [WatchFileAction.WATCH_FILE](action: WatchFileAction) {
     return Response.create((writable) => {
       const watcher = gaze(action.path, (err, w) => {
         const cancel = () => this._closeFileWatcher(watcher, action);
         writable.then(cancel);
         w.on("all", async () => {
           try {
-            await writable.write(await this[READ_FILE](action));
+            this._fileCache[action.path] = null;
+            const data = this._fileCache[action.path] = await ReadFileAction.execute(action, this.bus);
+            await writable.write(data);
           } catch (e) {
             cancel();
           }
         });
       });
-    });
-  }
-
-  /**
-   */
-
-  _watch(action) {
-    if (this._watchers[action.path]) return;
-    this._watchers[action.path] = gaze(action.path, (err, watcher) => {
-      watcher.on("all", this[OPEN_FILE].bind(this, action));
     });
   }
 }

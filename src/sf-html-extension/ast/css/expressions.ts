@@ -175,7 +175,7 @@ export class CSSStyleSheetExpression extends CSSExpression {
   }
 
   toString() {
-    return this.rules.join(" ");
+    return this.children.join("\n");
   }
 }
 

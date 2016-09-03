@@ -1,18 +1,24 @@
 // import { File } from "sf-common/models";
 import * as path from "path";
-import { IActor } from "sf-common/actors";
-import { inject } from "sf-common/decorators";
 import { Response } from "mesh";
-import { BubbleBus } from "sf-common/busses";
 import { DocumentFile } from "sf-front-end/models";
 import { MetadataKeys } from "sf-front-end/constants";
 import { GroupNodeSection } from "sf-html-extension/dom";
 import { HTMLElementEntity } from "./element";
-import { EntityFactoryDependency } from "sf-common/dependencies";
-import { ReadFileAction, WatchFileAction } from "sf-common/actions";
 import { DocumentPaneComponentFactoryDependency } from "sf-front-end/dependencies";
-import { ActiveRecordFactoryDependency, MAIN_BUS_NS } from "sf-common/dependencies";
+import { FileFactoryDependency, MAIN_BUS_NS } from "sf-common/dependencies";
 import { HTMLElementExpression, HTMLDocumentRootEntity } from "sf-html-extension/ast";
+
+import {
+  File,
+  IActor,
+  inject,
+  BubbleBus,
+  watchProperty,
+  OpenFileAction,
+  WatchFileAction,
+  EntityFactoryDependency,
+} from "sf-common";
 
 // TODO
 export class LinkEntity extends HTMLElementEntity {
@@ -21,15 +27,14 @@ export class LinkEntity extends HTMLElementEntity {
 
   @inject(MAIN_BUS_NS)
   private _bus: IActor;
-  private _watcher: Response;
 
   patch(entity: LinkEntity) {
     super.patch(entity);
-    entity._unwatch();
+    entity._file.dispose();
   }
 
   onRemoving() {
-    this._unwatch();
+    this._file.dispose();
   }
 
   get documentChildren() {
@@ -49,21 +54,14 @@ export class LinkEntity extends HTMLElementEntity {
     );
   }
 
-  update() {
-    this._watch();
-  }
-
-  onAdded() {
-    this._watch();
-  }
-
   async load() {
     const type = this.source.getAttribute("type");
 
-    // TODO - need to use active record db here
-    const { value } = await this._bus.execute(new ReadFileAction(this.href)).read();
-    const fileFactory = ActiveRecordFactoryDependency.find(type, this._dependencies);
-    this._file = fileFactory.create("linkFiles", value);
+    this._file = await File.open(this.href, this._dependencies, type) as DocumentFile<any>;
+    this._file.sync();
+
+    watchProperty(this._file, "content", this.document.update.bind(this.document));
+
     this._file.owner = this.document;
     await this._file.load();
     this._file.observe(new BubbleBus(this));
@@ -76,27 +74,6 @@ export class LinkEntity extends HTMLElementEntity {
   }
   cloneNode() {
     return new LinkEntity(this.source);
-  }
-
-  private _unwatch() {
-    if (this._watcher) {
-      this._watcher.cancel();
-      this._watcher = undefined;
-    }
-  }
-
-  private _watch() {
-    this._unwatch();
-    this._watcher = this._bus.execute(new WatchFileAction(this.href));
-    this._watcher.pipeTo({
-      close: () => { },
-      abort: () => { },
-      write: (value) =>  {
-        // reload the entire document since other entities
-        // may be affected
-        this.document.update();
-      }
-    });
   }
 }
 

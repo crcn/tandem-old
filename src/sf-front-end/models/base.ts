@@ -31,9 +31,6 @@ export interface IEditor extends IActor {
 
 export abstract class DocumentFile<T extends IEntity & IObservable> extends File implements IEntityDocument {
 
-  @inject(DEPENDENCIES_NS)
-  private _dependencies: Dependencies;
-
   public owner: IEntityDocument;
 
   private _entity: T;
@@ -43,13 +40,8 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     return this._entity;
   }
 
-  deserialize(data: any) {
-    const oldContent = this.content;
-    super.deserialize(data);
-
-    // reload
-    // TODO - reload on any change
-    if (oldContent !== this.content && this._entity) {
+  onContentChange(newContent: string) {
+    if (this._entity) {
       this.load();
     }
   }

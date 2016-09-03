@@ -1,4 +1,3 @@
-import { IFile } from "sf-common/active-records";
 import { inject } from "sf-common/decorators";
 import { HTMLFile } from "sf-html-extension/models/html-file";
 import { Observable } from "sf-common/observable";

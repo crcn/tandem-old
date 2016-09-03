@@ -1,12 +1,12 @@
-import { Action } from "../actions";
 import { IActor } from "../actors";
 import { ITyped } from "sf-common/object";
 import { INamed } from "sf-common/object";
 import { IBrokerBus } from "../busses";
 import { IApplication } from "sf-common/application";
-import { IActiveRecord } from "../active-records";
+import { Action, IFileModelActionResponseData } from "../actions";
 import { IEntity, IValueEntity, IEntityDocument, IExpression } from "sf-common/ast";
 
+import { File } from "sf-common/models";
 import {
   IFactory,
   Dependency,
@@ -139,26 +139,22 @@ export class DependenciesDependency extends Dependency<Dependencies> {
   }
 }
 
+
 /**
  */
 
-export const ACTIVE_RECORD_FACTORY_NS = "activeRecordFactories";
-export class ActiveRecordFactoryDependency extends ClassFactoryDependency {
-  constructor(id: string, value: { new(sourceData: any): IActiveRecord }) {
-    super([ACTIVE_RECORD_FACTORY_NS, id].join("/"), value);
+export const FILE_FACTORY_NS = "fileFactories";
+export class FileFactoryDependency extends ClassFactoryDependency {
+  constructor(mimeType: string, value: { new(sourceData: IFileModelActionResponseData): File }) {
+    super([FILE_FACTORY_NS, mimeType].join("/"), value);
   }
 
-  create(collectionName: string, sourceData?: any): any {
-    const activeRecord: IActiveRecord = super.create();
-    activeRecord.collectionName = collectionName;
-    if (sourceData != null) {
-      activeRecord.deserialize(sourceData);
-    }
-    return activeRecord;
+  create(sourceData: any): any {
+    return super.create(sourceData);
   }
 
-  static find(id: string, dependencies: Dependencies): ActiveRecordFactoryDependency {
-    return dependencies.query<ActiveRecordFactoryDependency>([ACTIVE_RECORD_FACTORY_NS, id].join("/"));
+  static find(mimetype: string, dependencies: Dependencies): FileFactoryDependency {
+    return dependencies.query<FileFactoryDependency>([FILE_FACTORY_NS, mimetype].join("/"));
   }
 }
 

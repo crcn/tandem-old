@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Dependencies, ActiveRecordFactoryDependency, DependenciesDependency } from "sf-common/dependencies";
+import { Dependencies, FileFactoryDependency, DependenciesDependency } from "sf-common/dependencies";
 import { waitForPropertyChange, timeout } from "sf-common/test/utils";
 import { parseHTML } from "sf-html-extension/ast";
 import {
@@ -33,7 +33,8 @@ describe(__filename + "#", () => {
   });
 
   async function loadDocument(content: string) {
-    const file: HTMLFile = ActiveRecordFactoryDependency.find("text/html", dependencies).create("files", {
+    const file: HTMLFile = FileFactoryDependency.find("text/html", dependencies).create({
+      mtime: Date.now(),
       path: "a",
       content: content
     });
@@ -42,7 +43,7 @@ describe(__filename + "#", () => {
   }
 
   async function updateDocumentSource(file: HTMLFile, source: string) {
-    file.deserialize({ content: source, path: "a" });
+    file.content = source;
     await file.load();
 
     return document;

@@ -6,6 +6,7 @@ import { dependency as fileServicerDependency } from "./services/file";
 import { dependency as stdinServiceDependency } from "./services/stdin";
 import { dependency as upsertServiceDependency } from "./services/upsert";
 import { dependency as frontEndServiceDependency } from "./services/front-end";
+import { dependency as projectServiceDependency } from "./services/project";
 
 export default class ServerApplication extends Application {
   constructor(config) {
@@ -20,7 +21,8 @@ export default class ServerApplication extends Application {
       fileServicerDependency,
       stdinServiceDependency,
       upsertServiceDependency,
-      frontEndServiceDependency
+      projectServiceDependency,
+      frontEndServiceDependency,
     );
   }
 }

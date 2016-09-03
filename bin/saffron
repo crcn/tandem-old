@@ -12,9 +12,8 @@ if (!/^\//.test(filepath)) {
 }
 
 app.bus.execute({
-  type  : 'openFile',
-  path  : filepath,
-  watch : true
+  type  : 'openProjectFile',
+  path  : filepath
 }).then(function() {
   exec(`open http://localhost:${app.config.port}`);
 });

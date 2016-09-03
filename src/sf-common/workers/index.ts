@@ -73,7 +73,7 @@ if (isMaster) {
       }
     }
   }, 1000 * 10);
-} else {
+} else if (typeof self !== "undefined") {
   self.addEventListener("message", async function(message: MessageEvent) {
 
     const { cid, index, args } = message.data;

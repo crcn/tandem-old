@@ -1,48 +1,85 @@
 import { IActor } from "sf-common/actors";
-import { find, ActiveRecord, IFile } from "sf-common/active-records";
 import {
   Dependencies,
   MainBusDependency,
   MimeTypeDependency,
-  ActiveRecordFactoryDependency,
+  FileFactoryDependency,
+  MAIN_BUS_NS,
+  DEPENDENCIES_NS
 } from "sf-common/dependencies";
+import { IDisposable } from "sf-common/object";
 
-import { bindable } from "sf-common/decorators";
+import { bindable, inject } from "sf-common/decorators";
+import { Observable, watchProperty } from "sf-common/observable";
+import {
+  WatchFileAction,
+  ReadFileAction,
+  UpdateTemporaryFileContentAction,
+  IFileModelActionResponseData
+} from "sf-common/actions";
 
-export const FILES_COLLECTION_NAME = "files";
 
-export class File extends ActiveRecord implements IFile {
+
+export class File extends Observable {
 
   @bindable()
   public path: string;
 
   @bindable()
+  public mtime: number;
+
+  @bindable()
   public content: string;
 
   readonly type: string;
-  serialize() {
-    return {
-      path: this.path,
-      content: this.content
-    };
+
+  private _watcher: IDisposable;
+
+  @inject(DEPENDENCIES_NS)
+  protected _dependencies: Dependencies;
+
+  @inject(MAIN_BUS_NS)
+  protected _bus: IActor;
+
+  constructor(data: IFileModelActionResponseData) {
+    super();
+    this.updateFromSourceData(data);
+    watchProperty(this, "content", this.onContentChange.bind(this));
   }
 
-  static findAll(dependencies: Dependencies) {
-    return this.find(undefined, dependencies);
+  dispose() {
+    if (this._watcher) {
+      this._watcher.dispose();
+      this._watcher = undefined;
+    }
   }
 
-  static create(sourceData: any, dependencies: Dependencies) {
-    const activeRecordFactory = ActiveRecordFactoryDependency.find(MimeTypeDependency.lookup(sourceData.path, dependencies), dependencies) || ActiveRecordFactoryDependency.find("file", dependencies);
-    return activeRecordFactory.create(FILES_COLLECTION_NAME, sourceData);
+  async update() {
+    this.mtime = Date.now();
+    await UpdateTemporaryFileContentAction.execute(this, this._bus);
+
   }
 
-  static async find(query: any, dependencies: Dependencies): Promise<Array<File>> {
+  static async open(path: string, dependencies: Dependencies, mimeType?: string): Promise<File> {
+    const bus = MainBusDependency.getInstance(dependencies);
+    const data = await ReadFileAction.execute({ path }, bus);
+    const fileFactory = FileFactoryDependency.find(mimeType || MimeTypeDependency.lookup(path, dependencies), dependencies) || FileFactoryDependency.find("file", dependencies);
+    return fileFactory.create(data);
+  }
 
-    // TODO FILES should not be here
-    return (await find(FILES_COLLECTION_NAME, query, true, dependencies)).map((sourceData) => {
-      return File.create(sourceData, dependencies);
-    });
+  protected updateFromSourceData(data: IFileModelActionResponseData) {
+    this.path    = data.path;
+    this.mtime   = data.mtime;
+    this.content = data.content;
+  }
+
+  protected onContentChange(newContent: string, oldContent: string) {
+    // override me
+  }
+
+  sync() {
+    this._watcher = WatchFileAction.execute(this.path, this._bus, this.updateFromSourceData.bind(this));
   }
 }
 
-export const fileModelDependency = new ActiveRecordFactoryDependency("file", File);
+export const fileModelDependency = new FileFactoryDependency("file", File);

@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import { parsePC } from "../index";
 import { MimeTypes } from "sf-paperclip-extension/constants";
+import { FileFactoryDependency } from "sf-common/dependencies";
 import { PCFile, pcFileDependency } from "sf-paperclip-extension/models/pc-file";
-import { ActiveRecordFactoryDependency } from "sf-common/dependencies";
 import { Dependencies, DependenciesDependency } from "sf-common/dependencies";
 import { dependency as htmlExtensionDependency } from "sf-html-extension";
 import { pcBlockNodeEntityDependency, pcBlockAttributeValueEntityDependency } from "sf-paperclip-extension/ast";
@@ -22,8 +22,8 @@ describe(__filename + "#", () => {
   });
 
   async function loadEntity(content: string, context?: any) {
-    const fileFactory = ActiveRecordFactoryDependency.find(MimeTypes.PC_MIME_TYPE, dependencies);
-    const file: PCFile = fileFactory.create("files", { content: content, context: context });
+    const fileFactory = FileFactoryDependency.find(MimeTypes.PC_MIME_TYPE, dependencies);
+    const file: PCFile = fileFactory.create({ mtime: 102, content: content, context: context });
     await file.load();
     return file.entity;
   }

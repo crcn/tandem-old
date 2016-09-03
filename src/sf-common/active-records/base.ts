@@ -41,6 +41,7 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
 
   readonly collectionName: string;
 
+
   constructor() {
     super();
   }
@@ -55,6 +56,14 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
 
   get isNew() {
     return this[this.idProperty] == null;
+  }
+
+  get sourceData() {
+    return this._sourceData;
+  }
+
+  reload() {
+    return this.fetch(new DSFindAction(this.collectionName, this.sourceQuery));
   }
 
   save() {
@@ -123,6 +132,10 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
   }
 
   abstract serialize();
+
+  toJSON() {
+    return this.serialize();
+  }
 
   deserialize(sourceData: any) {
     this._sourceData = sourceData;

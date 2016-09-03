@@ -7,7 +7,7 @@ import { BoundingRect } from "sf-common/geom";
 import { IVisibleEntity } from "sf-common/ast/entities";
 import { FrontEndApplication } from "sf-front-end/application";
 import { waitForPropertyChange } from "sf-common/test/utils";
-import { Dependencies, DependenciesDependency, DEPENDENCIES_NS, ApplicationSingletonDependency, ActiveRecordFactoryDependency } from "sf-common/dependencies";
+import { Dependencies, DependenciesDependency, DEPENDENCIES_NS, ApplicationSingletonDependency, FileFactoryDependency } from "sf-common/dependencies";
 import {
   HTMLElementEntity,
   htmlTextDependency,
@@ -44,7 +44,9 @@ describe(__filename + "#", () => {
   });
 
   async function loadTarget(source) {
-    const file: HTMLFile = ActiveRecordFactoryDependency.find(MimeTypes.HTML_MIME_TYPE, dependencies).create("files", {
+    const file: HTMLFile = FileFactoryDependency.find(MimeTypes.HTML_MIME_TYPE, dependencies).create({
+      path: "nothing",
+      mtime: Date.now(),
       content: source
     });
     await file.load();
