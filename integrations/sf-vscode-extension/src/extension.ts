@@ -1,17 +1,22 @@
 "use strict";
 // The module "vscode" contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-/// <reference path="./test.d.ts" />
 
 import * as vscode from "vscode";
 import * as createServer from "express";
-import { WrapBus, NoopBus } from "mesh";
-import * as SocketIOBus from "mesh-socket-io-bus";
 import ServerApplication from "sf-back-end/application";
-import { DSUpsertAction } from "sf-common/actions";
-// import mergeHTML from "sf-common/utils/html/merge";
+import { WrapBus } from "mesh";
 import { exec } from "child_process";
 import * as getPort from "get-port";
+
+import {
+    DSUpsertAction,
+    OpenProjectAction,
+    BaseApplicationService,
+    ApplicationServiceDependency,
+    UpdateTemporaryFileContentAction
+} from "sf-common";
+
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -23,17 +28,15 @@ export async function activate(context: vscode.ExtensionContext) {
         port: port
     });
 
-    server.bus.register({
-        execute(action:any) {
-            if (
-                action.type === "dsDidUpdate" &&
-                action.collectionName === "files" &&
-                action.data[0].content !== _content
-                ) {
-                    _setEditorContent(action.data[0].content);
-            }
+    class VSCodeService extends BaseApplicationService<ServerApplication> {
+        [UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT](action: UpdateTemporaryFileContentAction) {
+            _setEditorContent(action);
         }
-    })
+    }
+
+    server.dependencies.register(
+        new ApplicationServiceDependency("vsCodeService", VSCodeService)
+    );
 
     server.initialize();
 
@@ -41,11 +44,15 @@ export async function activate(context: vscode.ExtensionContext) {
     var _content;
     var _documentUri:vscode.Uri;
 
-    async function _setEditorContent(content) {
+    async function _setEditorContent({ content, path }) {
+
+        if (_content === content) return;
 
         let editor = vscode.window.visibleTextEditors.find(function(editor) {
             return editor.document.uri == _documentUri;
         });
+
+        if (editor.document.fileName !== path) return;
 
         let oldText = editor.document.getText();
         var newContent = _content = content;
@@ -59,26 +66,36 @@ export async function activate(context: vscode.ExtensionContext) {
                 newContent
             );
         });
-
     }
 
-    function _update(document:vscode.TextDocument) {
+    let initialFile;
+
+    async function _update(document:vscode.TextDocument) {
 
         _documentUri = document.uri;
-        const path = "/root/file.sfn";
+        const newContent = document.getText();
 
-        return server.bus.execute({
-            type: "upsert",
-            collectionName: "files",
-            query: {
-                path: path
-            },
-            data: {
-                path: path,
-                ext: "sfn",
-                content: _content = document.getText()
-            }
-        } as any).read();
+        if (_content === newContent) return;
+
+        let fileName = document.fileName;
+
+        // no extension? add HTML
+        if (fileName.split(".")[0] === fileName) {
+            fileName += ".html";
+        }
+
+        await UpdateTemporaryFileContentAction.execute({
+            path: fileName,
+            content: _content = newContent
+        }, server.bus);
+
+        if (initialFile && fileName !== initialFile) return;
+
+        initialFile = fileName;
+
+        return OpenProjectAction.execute({
+            path: fileName
+        }, server.bus);
     }
 
     class SaffronDocumentContentProvider {
@@ -164,6 +181,7 @@ export async function activate(context: vscode.ExtensionContext) {
     });
 
     vscode.workspace.onDidChangeTextDocument(onChange);
+    run(vscode.window.activeTextEditor);
     vscode.window.onDidChangeActiveTextEditor(run);
 }
 

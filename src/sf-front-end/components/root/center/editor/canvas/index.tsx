@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
 import { IPoint } from "sf-common/geom";
-import { UpdateAction } from "sf-common/actions";
+import { UpdateAction, IActor } from "sf-common";
 import IsolateComponent  from "sf-front-end/components/isolate";
 import { BoundingRect } from "sf-common/geom";
 import { IVisibleEntity } from "sf-common/ast/entities";
@@ -32,7 +32,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     this.bus.execute(new MouseAction(CANVAS_MOUSE_DOWN, event.nativeEvent || event));
   }
 
-  get bus() {
+  get bus(): IActor {
     return MainBusDependency.getInstance(this.props.dependencies);
   }
 

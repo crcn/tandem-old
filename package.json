@@ -45,7 +45,6 @@
     "react-dom": "^15.2.1",
     "sf-back-end": "file:./lib/sf-back-end",
     "sf-common": "file:./lib/sf-common",
-    "sf-core": "file:./lib/sf-core",
     "sf-front-end": "file:./lib/sf-front-end",
     "tslint": "^3.13.0",
     "tslint-loader": "^2.1.5",

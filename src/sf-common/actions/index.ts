@@ -19,6 +19,9 @@ export class OpenProjectAction extends Action {
   constructor(readonly path: string) {
     super(OpenProjectAction.OPEN_PROJECT_FILE);
   }
+  static async execute({ path }: { path: string }, bus: IActor) {
+    return (await bus.execute(new OpenProjectAction(path)).read()).value;
+  }
 }
 
 export class GetPrimaryProjectFilePathAction extends Action {

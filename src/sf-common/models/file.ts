@@ -57,7 +57,6 @@ export class File extends Observable {
   async update() {
     this.mtime = Date.now();
     await UpdateTemporaryFileContentAction.execute(this, this._bus);
-
   }
 
   static async open(path: string, dependencies: Dependencies, mimeType?: string): Promise<File> {

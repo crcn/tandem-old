@@ -58,13 +58,10 @@ export class ApplicationSingletonDependency extends Dependency<IApplication> {
 
 export const ENTITIES_NS = "entities";
 
-type expressionType = { new(...rest): IExpression };
-type entityType     = { new(source: IExpression): IEntity };
-
 // TODO - possibly require renderer here as well
 export class EntityFactoryDependency extends ClassFactoryDependency {
 
-  constructor(readonly expressionClass: expressionType, readonly entityClass: entityType, readonly name?: string) {
+  constructor(readonly expressionClass: { new(...rest): IExpression }, readonly entityClass: { new(source: IExpression): IEntity }, readonly name?: string) {
     super(EntityFactoryDependency.getNamespace(expressionClass, name), entityClass);
   }
 

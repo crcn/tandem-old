@@ -5,6 +5,8 @@ export * from "./expressions";
 export * from "./entities";
 export * from "./utils";
 
-export function parseCSSStyle(source) {
+import { CSSStyleExpression } from "./expressions";
+
+export function parseCSSStyle(source): CSSStyleExpression {
   return parse(`style { ${source} }`).rules[0].style;
 }

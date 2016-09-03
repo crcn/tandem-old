@@ -36,6 +36,11 @@ export default class FileService extends BaseApplicationService<IApplication> {
 
   [UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT] (action: UpdateTemporaryFileContentAction) {
     this._fileCache[action.path] = { path: action.path, content: action.content, mtime: Date.now() };
+    this.logger.info("updating cached content for %s", action.path);
+    const watcher = this._fileWatchers[action.path];
+    if (watcher) {
+      this._fileWatchers[action.path].forEach((writable) => writable.write(this._fileCache[action.path]));
+    }
   }
 
   /**
@@ -73,8 +78,18 @@ export default class FileService extends BaseApplicationService<IApplication> {
   @document("watches a file for any changes")
   [WatchFileAction.WATCH_FILE](action: WatchFileAction) {
     return Response.create((writable) => {
+      if (!this._fileWatchers[action.path]) {
+        this._fileWatchers[action.path] = [];
+      }
+      this._fileWatchers[action.path].push(writable);
       const watcher = gaze(action.path, (err, w) => {
-        const cancel = () => this._closeFileWatcher(watcher, action);
+        const cancel = () => {
+          this._fileWatchers[action.path].splice(this._fileWatchers[action.path].indexOf(writable), 1);
+          if (this._fileWatchers[action.path].length === 0) {
+            this._fileWatchers[action.path] = undefined;
+          }
+          this._closeFileWatcher(watcher, action);
+        }
         writable.then(cancel);
         w.on("all", async () => {
           try {

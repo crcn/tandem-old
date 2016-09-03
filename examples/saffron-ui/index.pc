@@ -1,1 +1,1 @@
-<link rel="stylesheet" type="text/css" href="./style.scss"></link><artboard id="test" title="Something" style="position: absolute; top: 44px; left: 344px;"><span class="item">${ message }</span></artboard><test message="fsdfsdfsdfsdfsdf"></test>
+<link rel="stylesheet" type="text/css" href="./style.scss"></link><div class="item" style="left: 8px; top: -2px;">fsdfs</div>

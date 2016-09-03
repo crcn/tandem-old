@@ -48,7 +48,6 @@ export default class FrontEndService extends BaseApplicationService<IApplication
     this._socket = this._server.listen(this._port);
   }
 
-
   async _loadStaticRoutes() {
 
     this._server.use(cors());

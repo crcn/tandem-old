@@ -2,12 +2,13 @@ import * as React from "react";
 import { Editor } from "sf-front-end/models";
 import { startDrag } from "sf-front-end/utils/component";
 import PathComponent from "./path";
+import { DocumentFile } from "sf-front-end/models";
 import { MetadataKeys } from "sf-front-end/constants";
 import { FrontEndApplication } from "sf-front-end/application";
 import { VisibleEntityCollection } from "sf-front-end/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
 import { BoundingRect, IPoint, Point } from "sf-common/geom";
-import { IEntity, IVisibleEntity} from "sf-common/ast/entities";
+import { IEntity, IVisibleEntity, IEntityDisplay } from "sf-common";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
 
 const POINT_STROKE_WIDTH = 1;
@@ -111,11 +112,11 @@ class ResizerComponent extends React.Component<{
   }
 
 
-  get targetDisplay() {
+  get targetDisplay(): IEntityDisplay {
     return this._visibleEntities.display;
   }
 
-  get file() {
+  get file(): DocumentFile<any> {
     return this.props.app.workspace.file;
   }
 

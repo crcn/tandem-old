@@ -6,11 +6,11 @@ import { BaseEntity } from "sf-common/ast";
 import { IHTMLNodeEntity } from "./base";
 import { MetadataKeys } from "sf-front-end/constants";
 import { HTMLNodeEntity } from "./node";
-import { INamed, IValued } from "sf-common/object";
 import { diffArray, patchArray } from "sf-common/utils/array";
 import { parseCSS, parseCSSStyle } from "sf-html-extension/ast";
 import { EntityFactoryDependency } from "sf-common/dependencies";
 import { IDOMSection, NodeSection } from "sf-html-extension/dom";
+import { INamed, IValued, IExpression } from "sf-common";
 import { HTMLElementExpression, HTMLAttributeExpression } from "sf-html-extension/ast";
 import { AttributeChangeAction, NODE_ADDED, NODE_REMOVING, PROPERTY_CHANGE } from "sf-common/actions";
 import { CSSRuleExpression, CSSStyleExpression, IHTMLElementAttributeEntity } from "sf-html-extension/ast";
@@ -36,7 +36,7 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
     return new NodeSection(document.createElement(this.source.name));
   }
 
-  static mapSourceChildren(source: HTMLElementExpression) {
+  static mapSourceChildren(source: HTMLElementExpression): Array<IExpression> {
     return source.children;
   }
 

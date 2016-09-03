@@ -11,18 +11,23 @@ import {
   tween,
   Action,
   inject,
+  loggable,
   IDisposable,
   INITIALIZE,
+  Logger,
   easeOutCubic,
   DSFindAction,
   Dependencies,
   DEPENDENCIES_NS,
+  OpenProjectAction,
   BaseApplicationService,
   ApplicationServiceDependency,
   GetPrimaryProjectFilePathAction,
 } from "sf-common";
 
+@loggable()
 export class WorkspaceService extends BaseApplicationService<FrontEndApplication> {
+  public logger: Logger;
 
   @inject(DEPENDENCIES_NS)
   private _dependencies: Dependencies;
@@ -39,12 +44,20 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
   async _loadWorkspaces() {
 
-    const file = await File.open(await GetPrimaryProjectFilePathAction.execute(this.bus), this._dependencies) as DocumentFile<any>;
+    const filePath = await GetPrimaryProjectFilePathAction.execute(this.bus);
+
+    this.logger.info("loading project file %s", filePath);
+
+    const file = await File.open(filePath, this._dependencies) as DocumentFile<any>;
     file.sync();
     await file.load();
 
     this.bus.register(this.app.workspace = new Workspace(<DocumentFile<any>>file));
     file.observe(this.app.bus);
+  }
+
+  [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
+    return this._loadWorkspaces();
   }
 
   [ZoomAction.ZOOM](action: ZoomAction) {

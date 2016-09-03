@@ -106,7 +106,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
 
 
     return <div className="m-label m-element-layer-label" onDoubleClick={this.editHTML}>
-      { connectDragSource(<span>{buffer}</span>) } { !~VOID_ELEMENTS.indexOf(entity.source.name.toLowerCase()) ? <span className="m-element-layer-label--add-child-button" onClick={this.addChild.bind(this)}>+</span> : void 0 }
+      { connectDragSource(<span>{buffer}</span>) }
     </div>;
   }
 

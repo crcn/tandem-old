@@ -134,6 +134,11 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     this.props.entity.metadata.set(MetadataKeys.HOVERING, false);
   }
 
+  addNewChild = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    console.log("add new child button. Make this a drop menu with options");
+  }
+
   render() {
     const { connectDragSource, isDragging, connectDropTarget, isOver, canDrop, entity, dependencies, workspace } = this.props;
 
@@ -188,8 +193,14 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
       onMouseOut={this.onMouseOut}
       className={headerClassName}>
       <DropLayerTargetComponent {...this.props} offset={0} />
-      {connectDropTarget(<span><i onClick={this.toggleExpand.bind(this, !expanded)} className={expandButtonClassName} style={expandButtonStyle} />
-      { labelSection }</span>)}
+      {
+        connectDropTarget(<span>
+          <i onClick={this.toggleExpand.bind(this, !expanded)} className={expandButtonClassName} style={expandButtonStyle} />
+          { labelSection }
+          <span className="m-layers-pane-component-layer--add-child-button" onClick={this.addNewChild}>+</span>
+        </span>)
+      }
+
       <DropLayerTargetComponent {...this.props} bottom={true} offset={1} />
     </div>;
 
