@@ -8,6 +8,7 @@ import ServerApplication from "sf-back-end/application";
 import { WrapBus } from "mesh";
 import { exec } from "child_process";
 import * as getPort from "get-port";
+import { debounce, throttle } from "lodash";
 
 import {
     DSUpsertAction,
@@ -16,7 +17,6 @@ import {
     ApplicationServiceDependency,
     UpdateTemporaryFileContentAction
 } from "sf-common";
-
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -68,97 +68,39 @@ export async function activate(context: vscode.ExtensionContext) {
         });
     }
 
-    let initialFile;
-
-    async function _update(document:vscode.TextDocument) {
-
-        _documentUri = document.uri;
-        const newContent = document.getText();
-
-        if (_content === newContent) return;
-
-        let fileName = document.fileName;
+    const fixFileName = (fileName) => {
 
         // no extension? add HTML
         if (fileName.split(".")[0] === fileName) {
             fileName += ".html";
         }
 
+        return fileName;
+    }
+
+    const _update = throttle(async (document:vscode.TextDocument) => {
+
+        _documentUri = document.uri;
+        const newContent = document.getText();
+
+        if (_content === newContent) return;
+
         await UpdateTemporaryFileContentAction.execute({
-            path: fileName,
+            path: fixFileName(document.fileName),
             content: _content = newContent
         }, server.bus);
+    }, 500);
 
-        if (initialFile && fileName !== initialFile) return;
+    let startServerCommand = vscode.commands.registerCommand("extension.sfOpenCurrentFile", () => {
 
-        initialFile = fileName;
+        _update(vscode.window.activeTextEditor.document);
 
         return OpenProjectAction.execute({
-            path: fileName
+            path: fixFileName(vscode.window.activeTextEditor.document.fileName)
         }, server.bus);
-    }
-
-    class SaffronDocumentContentProvider {
-
-        private _onDidChange:vscode.EventEmitter<any>;
-        private _inserted:boolean;
-
-        constructor() {
-            this._onDidChange =  new vscode.EventEmitter<any>();
-            this._inserted = false;
-        }
-
-        async provideTextDocumentContent(uri, token) {
-
-            if (!this._inserted) {
-                await _update(vscode.window.activeTextEditor.document);
-            }
-
-            return `
-                <style>
-                    body {
-                        width: 100%;
-                        height: 99%;
-                        position: absolute;
-                    }
-
-                    .container {
-                        width: 100%;
-                        height: 100%;
-                        border: none;
-                    }
-                </style>
-                <body>
-                    <iframe class="container" src="http://localhost:${port}/" />
-                </body>
-            `;
-        }
-
-        get onDidChange() {
-            return this._onDidChange.event;
-        }
-
-        unthrottleUpdate (uri) {
-            console.log("unthrottle this");
-        }
-    }
-
-    let previewUri = vscode.Uri.parse("saffron-preview://authority/saffron-preview");
-
-    let provider = new SaffronDocumentContentProvider();
-    let registration = vscode.workspace.registerTextDocumentContentProvider("saffron-preview", provider);
-
-    let previewSaffronDocumentCommand = vscode.commands.registerCommand("extension.previewSaffronDocument", () => {
-        vscode.commands.executeCommand("vscode.previewHtml", previewUri, vscode.ViewColumn.Two).then((success) => {
-
-        })
     });
 
-    let startServerCommand = vscode.commands.registerCommand("extension.startSaffronBackEnd", () => {
-        exec(`open http://localhost:${port}`);
-    });
-
-    context.subscriptions.push(previewSaffronDocumentCommand, startServerCommand, registration);
+    context.subscriptions.push(startServerCommand);
 
     function onChange(e:vscode.TextDocumentChangeEvent) {
         _update(e.document);
@@ -181,8 +123,9 @@ export async function activate(context: vscode.ExtensionContext) {
     });
 
     vscode.workspace.onDidChangeTextDocument(onChange);
-    run(vscode.window.activeTextEditor);
     vscode.window.onDidChangeActiveTextEditor(run);
+
+    exec(`open http://localhost:${port}`);
 }
 
 // this method is called when your extension is deactivated

@@ -11,19 +11,14 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.previewSaffronDocument",
-    "onCommand:extension.startSaffronBackEnd"
+    "onCommand:extension.sfOpenCurrentFile"
   ],
   "main": "./lib/src/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "extension.previewSaffronDocument",
-        "title": "Display Saffron Preview"
-      },
-      {
-        "command": "extension.startSaffronBackEnd",
-        "title": "Start Saffron"
+        "command": "extension.sfOpenCurrentFile",
+        "title": "Open Current File with Saffron"
       }
     ]
   },
@@ -38,12 +33,13 @@
     "vscode": "^0.11.0"
   },
   "dependencies": {
-    "sf-back-end": "file:../../lib/sf-back-end",
-    "sf-front-end": "file:../../src/sf-front-end",
-    "sf-common": "file:../../lib/sf-common",
     "express": "^4.14.0",
     "get-port": "^2.1.0",
-    "mesh": "^6.0.26"
+    "lodash": "^4.15.0",
+    "mesh": "^6.0.26",
+    "sf-back-end": "file:../../lib/sf-back-end",
+    "sf-common": "file:../../lib/sf-common",
+    "sf-front-end": "file:../../src/sf-front-end"
   },
   "directories": {
     "test": "test"
