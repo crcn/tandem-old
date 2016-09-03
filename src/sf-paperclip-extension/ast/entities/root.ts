@@ -1,5 +1,5 @@
 import { PCFile } from "sf-paperclip-extension/models/pc-file";
-import { IContextualEntity } from "sf-core/ast";
+import { IContextualEntity } from "sf-common/ast";
 import { HTMLDocumentRootEntity } from "sf-html-extension/ast";
 
 export class PCDocumentRootEntity extends HTMLDocumentRootEntity implements IContextualEntity {

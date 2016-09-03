@@ -3,14 +3,14 @@ import * as React from "react";
 import { flatten } from "lodash";
 import RulerComponent from "./ruler";
 import { PointerTool } from "sf-front-end/models/pointer-tool";
-import { BoundingRect } from "sf-core/geom";
+import { BoundingRect } from "sf-common/geom";
 import ResizerComponent from "./resizer";
 import { Editor, Workspace } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectionSizeComponent } from "sf-front-end/components/selection-size";
 import { VisibleEntityCollection } from "sf-front-end/collections";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
-import { IEntityDisplay, IEntity, IVisibleEntity } from "sf-core/ast/entities";
+import { IEntityDisplay, IEntity, IVisibleEntity } from "sf-common/ast/entities";
 
 export default class SelectorComponent extends React.Component<{ editor: Editor, tool: PointerTool, workspace: Workspace, app: FrontEndApplication, zoom: number, allEntities: Array<IEntity> }, any> {
 

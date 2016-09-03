@@ -3,11 +3,11 @@ import { expect } from "chai";
 import { HTMLFile } from "sf-html-extension/models/html-file";
 import { parseHTML } from "sf-html-extension/ast";
 import { MimeTypes } from "sf-html-extension/constants";
-import { BoundingRect } from "sf-core/geom";
-import { IVisibleEntity } from "sf-core/ast/entities";
+import { BoundingRect } from "sf-common/geom";
+import { IVisibleEntity } from "sf-common/ast/entities";
 import { FrontEndApplication } from "sf-front-end/application";
-import { waitForPropertyChange } from "sf-core/test/utils";
-import { Dependencies, DependenciesDependency, DEPENDENCIES_NS, ApplicationSingletonDependency, ActiveRecordFactoryDependency } from "sf-core/dependencies";
+import { waitForPropertyChange } from "sf-common/test/utils";
+import { Dependencies, DependenciesDependency, DEPENDENCIES_NS, ApplicationSingletonDependency, ActiveRecordFactoryDependency } from "sf-common/dependencies";
 import {
   HTMLElementEntity,
   htmlTextDependency,

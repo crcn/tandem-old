@@ -8,7 +8,7 @@ import * as createServer from "express";
 import { WrapBus, NoopBus } from "mesh";
 import * as SocketIOBus from "mesh-socket-io-bus";
 import ServerApplication from "sf-back-end/application";
-import { DSUpsertAction } from "sf-core/actions";
+import { DSUpsertAction } from "sf-common/actions";
 // import mergeHTML from "sf-common/utils/html/merge";
 import { exec } from "child_process";
 import * as getPort from "get-port";

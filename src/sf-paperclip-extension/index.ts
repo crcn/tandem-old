@@ -1,5 +1,5 @@
 import { MimeTypes } from "./constants";
-import { MimeTypeDependency } from "sf-core/dependencies";
+import { MimeTypeDependency } from "sf-common/dependencies";
 
 // entities
 import { pcBlockNodeEntityDependency, pcBlockAttributeValueEntityDependency } from "./ast";

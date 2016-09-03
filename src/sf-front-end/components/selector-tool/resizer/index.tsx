@@ -6,8 +6,8 @@ import { MetadataKeys } from "sf-front-end/constants";
 import { FrontEndApplication } from "sf-front-end/application";
 import { VisibleEntityCollection } from "sf-front-end/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
-import { BoundingRect, IPoint, Point } from "sf-core/geom";
-import { IEntity, IVisibleEntity} from "sf-core/ast/entities";
+import { BoundingRect, IPoint, Point } from "sf-common/geom";
+import { IEntity, IVisibleEntity} from "sf-common/ast/entities";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
 
 const POINT_STROKE_WIDTH = 1;

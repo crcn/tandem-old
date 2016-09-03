@@ -1,7 +1,7 @@
 import * as sift from "sift";
 import { AcceptBus, Response } from "mesh";
 
-export default {
+export const UpsertBus = {
   create(bus) {
 
     return AcceptBus.create(sift({ type: "upsert" }), {

@@ -1,7 +1,7 @@
-import { IRange } from "sf-core/geom";
-import { BaseExpression } from "sf-core/ast";
+import { IRange } from "sf-common/geom";
+import { BaseExpression } from "sf-common/ast";
 
-import { diffArray, patchArray } from "sf-core/utils/array";
+import { diffArray, patchArray } from "sf-common/utils/array";
 
 export abstract class CSSExpression extends BaseExpression<CSSExpression> {
 

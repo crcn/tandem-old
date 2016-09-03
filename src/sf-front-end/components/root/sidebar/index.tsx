@@ -5,7 +5,7 @@ import RegisteredComponent from "sf-front-end/components/registered";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SideDraggerComponent } from "sf-front-end/components/side-dragger";
 import { ENTITY_PANE_COMPONENT_NS } from "sf-front-end/dependencies";
-import { MetadataValueReference, DefaultValueReference, MinMaxValueReference } from "sf-core/reference";
+import { MetadataValueReference, DefaultValueReference, MinMaxValueReference } from "sf-common/reference";
 
 export class SidebarComponent extends React.Component<{ app: FrontEndApplication, position: string, maxWidth?: number, registeredComponentNs: string, hideKey: string, sizeKey: string }, any> {
   render() {

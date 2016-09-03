@@ -3,17 +3,17 @@ import * as path from "path";
 import * as gaze from "gaze";
 import * as sift from "sift";
 import * as cors from "cors";
-import { Logger } from "sf-core/logger";
+import { Logger } from "sf-common/logger";
 import * as express from "express";
 import { IOService } from "sf-common/services";
-import { IApplication } from "sf-core/application";
-import { DSUpsertAction, LOAD } from "sf-core/actions";
-import { loggable, inject } from "sf-core/decorators";
+import { IApplication } from "sf-common/application";
+import { DSUpsertAction, LOAD } from "sf-common/actions";
+import { loggable, inject } from "sf-common/decorators";
 import * as createSocketIOServer from "socket.io";
-import { BaseApplicationService } from "sf-core/services";
+import { BaseApplicationService } from "sf-common/services";
 import { sync as getPackagePath } from "package-path";
-import { DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
-import { ApplicationServiceDependency } from "sf-core/dependencies";
+import { DEPENDENCIES_NS, Dependencies } from "sf-common/dependencies";
+import { ApplicationServiceDependency } from "sf-common/dependencies";
 
 import { Response } from "mesh";
 

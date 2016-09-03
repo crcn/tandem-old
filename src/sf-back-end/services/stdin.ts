@@ -1,10 +1,10 @@
-import { Logger } from "sf-core/logger";
+import { Logger } from "sf-common/logger";
 import * as chalk from "chalk";
 import * as readline from "readline";
-import { IApplication } from "sf-core/application";
-import { loggable, document } from "sf-core/decorators";
-import { BaseApplicationService } from "sf-core/services";
-import { ApplicationServiceDependency } from "sf-core/dependencies";
+import { IApplication } from "sf-common/application";
+import { loggable, document } from "sf-common/decorators";
+import { BaseApplicationService } from "sf-common/services";
+import { ApplicationServiceDependency } from "sf-common/dependencies";
 
 /**
  * console input command handler

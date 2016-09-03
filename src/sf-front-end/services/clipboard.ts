@@ -1,11 +1,11 @@
-import { Logger } from "sf-core/logger";
-import { loggable } from "sf-core/decorators";
-import { serialize } from "sf-core/serialize";
-import { INITIALIZE } from "sf-core/actions";
+import { Logger } from "sf-common/logger";
+import { loggable } from "sf-common/decorators";
+import { serialize } from "sf-common/serialize";
+import { INITIALIZE } from "sf-common/actions";
 import { PasteAction } from "sf-front-end/actions";
 import { FrontEndApplication } from "sf-front-end/application";
-import { BaseApplicationService } from "sf-core/services";
-import { ApplicationServiceDependency } from "sf-core/dependencies";
+import { BaseApplicationService } from "sf-common/services";
+import { ApplicationServiceDependency } from "sf-common/dependencies";
 
 function targetIsInput(event) {
   return /input|textarea/i.test(event.target.nodeName);

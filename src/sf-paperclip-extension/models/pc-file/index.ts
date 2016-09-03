@@ -1,10 +1,10 @@
-import { bindable } from "sf-core/decorators";
+import { bindable } from "sf-common/decorators";
 import { HTMLFile } from "sf-html-extension/models";
 import { MimeTypes } from "sf-paperclip-extension/constants";
 import { DocumentFile } from "sf-front-end/models";
 import { HTMLFragmentExpression } from "sf-html-extension/ast";
 import { parsePC, PCDocumentRootEntity } from "sf-paperclip-extension/ast";
-import { ActiveRecordFactoryDependency, Dependencies } from "sf-core/dependencies";
+import { ActiveRecordFactoryDependency, Dependencies } from "sf-common/dependencies";
 
 export class PCFile extends HTMLFile {
   @bindable()

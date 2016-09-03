@@ -1,10 +1,10 @@
 import "./index.scss";
 
 import * as React from "react";
-import { IActor } from "sf-core/actors";
-import { Action } from "sf-core/actions";
+import { IActor } from "sf-common/actors";
+import { Action } from "sf-common/actions";
 import { startDrag } from "sf-front-end/utils/component";
-import { BoundingRect } from "sf-core/geom";
+import { BoundingRect } from "sf-common/geom";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectablesComponent } from "sf-front-end/components/selectables";
 import { SelectionSizeComponent } from "sf-front-end/components/selection-size";
@@ -12,7 +12,7 @@ import { VisibleEntityCollection } from "sf-front-end/collections";
 import { SetToolAction, SelectAction } from "sf-front-end/actions";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import { Workspace, Editor, InsertTool } from "sf-front-end/models";
-import { IEntity, IVisibleEntity, appendSourceChildren } from "sf-core/ast/entities";
+import { IEntity, IVisibleEntity, appendSourceChildren } from "sf-common/ast/entities";
 
 class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, workspace: Workspace, app: FrontEndApplication, tool: InsertTool }, any> {
 

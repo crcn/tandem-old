@@ -3,7 +3,7 @@ import "./index.scss";
 import * as React from "react";
 import LineComponent from "../line";
 import calculateDistances from "./calculate-distances";
-import { IEntity, IVisibleEntity } from "sf-core/ast/entities";
+import { IEntity, IVisibleEntity } from "sf-common/ast/entities";
 import { VisibleEntityCollection } from "sf-front-end/collections";
 
 /**

@@ -1,17 +1,17 @@
 import * as sift from "sift";
-import { ITyped } from "sf-core/object";
-import { inject } from "sf-core/decorators";
+import { ITyped } from "sf-common/object";
+import { inject } from "sf-common/decorators";
 import { HTMLFile } from "sf-html-extension/models/html-file";
-import { BubbleBus } from "sf-core/busses";
+import { BubbleBus } from "sf-common/busses";
 import { DocumentFile } from "sf-front-end/models";
 import { MetadataKeys } from "sf-front-end/constants";
 import { HTMLExpression } from "sf-html-extension/ast";
 import { IHTMLNodeEntity } from "./base";
-import { PropertyChangeAction } from "sf-core/actions";
-import { diffArray, patchArray } from "sf-core/utils/array";
+import { PropertyChangeAction } from "sf-common/actions";
+import { diffArray, patchArray } from "sf-common/utils/array";
 import { IDOMSection, NodeSection, GroupNodeSection } from "sf-html-extension/dom";
-import { IEntity, EntityMetadata, IEntityDocument, BaseEntity, IExpression } from "sf-core/ast";
-import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency, Injector } from "sf-core/dependencies";
+import { IEntity, EntityMetadata, IEntityDocument, BaseEntity, IExpression } from "sf-common/ast";
+import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency, Injector } from "sf-common/dependencies";
 
 export abstract class HTMLNodeEntity<T extends HTMLExpression> extends BaseEntity<T> implements IHTMLNodeEntity {
 

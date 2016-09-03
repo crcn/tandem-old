@@ -1,5 +1,5 @@
 import { CSSFile } from "sf-html-extension/models";
-import { IEntity } from "sf-core/ast";
+import { IEntity } from "sf-common/ast";
 import { CSSRuleExpression } from "sf-html-extension/ast";
 
 export interface ICSSEntity extends IEntity {

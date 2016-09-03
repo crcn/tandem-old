@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { timeout } from "sf-core/test/utils";
-import { DSInsertAction } from "sf-core/actions";
+import { timeout } from "sf-common/test/utils";
+import { DSInsertAction } from "sf-common/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
 

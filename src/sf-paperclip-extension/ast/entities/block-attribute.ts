@@ -1,8 +1,8 @@
 import { HTMLElementEntity } from "sf-html-extension/ast";
 import { PCBlockAttributeExpression } from "sf-paperclip-extension/ast/expressions";
 import { parseBlockScript } from "./utils";
-import { EntityFactoryDependency } from "sf-core/dependencies";
-import { IContextualEntity, IEntityDocument, BaseEntity, EntityMetadata, getContext } from "sf-core/ast";
+import { EntityFactoryDependency } from "sf-common/dependencies";
+import { IContextualEntity, IEntityDocument, BaseEntity, EntityMetadata, getContext } from "sf-common/ast";
 
 export class BlockAttributeValueEntity extends BaseEntity<PCBlockAttributeExpression> {
   public value: any;

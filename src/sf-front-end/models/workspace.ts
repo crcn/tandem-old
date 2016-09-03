@@ -1,10 +1,10 @@
 import { Editor } from "./editor";
-import { inject } from "sf-core/decorators";
-import { IActor } from "sf-core/actors";
-import { Action } from "sf-core/actions";
-import { IEntity } from "sf-core/ast";
+import { inject } from "sf-common/decorators";
+import { IActor } from "sf-common/actors";
+import { Action } from "sf-common/actions";
+import { IEntity } from "sf-common/ast";
 import { DocumentFile } from "./base";
-import { IInjectable, Dependencies, Injector } from "sf-core/dependencies";
+import { IInjectable, Dependencies, Injector } from "sf-common/dependencies";
 
 export class Workspace implements IActor {
 

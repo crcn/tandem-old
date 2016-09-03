@@ -3,8 +3,8 @@ import { NodeSection } from "sf-html-extension/dom";
 import { ICSSRuleEntity } from "./base";
 import { HTMLNodeEntity } from "sf-html-extension/ast/html/entities";
 import { CSSRuleExpression } from "../expressions";
-import { EntityFactoryDependency } from "sf-core/dependencies";
-import { BaseEntity, IEntity } from "sf-core/ast";
+import { EntityFactoryDependency } from "sf-common/dependencies";
+import { BaseEntity, IEntity } from "sf-common/ast";
 
 export class CSSRuleEntity extends BaseEntity<CSSRuleExpression> implements ICSSRuleEntity {
 

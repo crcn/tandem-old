@@ -1,10 +1,10 @@
-import { INamed } from "sf-core/object";
-import { IRange } from "sf-core/geom";
-import { TreeNode } from "sf-core/tree";
+import { INamed } from "sf-common/object";
+import { IRange } from "sf-common/geom";
+import { TreeNode } from "sf-common/tree";
 import * as sift from "sift";
-import { diffArray, patchArray } from "sf-core/utils/array";
-import { IExpression, BaseExpression } from "sf-core/ast";
-import { register as registerSerializer } from "sf-core/serialize";
+import { diffArray, patchArray } from "sf-common/utils/array";
+import { IExpression, BaseExpression } from "sf-common/ast";
+import { register as registerSerializer } from "sf-common/serialize";
 
 export interface IHTMLExpression extends IExpression {
   patch(expression: IHTMLExpression);

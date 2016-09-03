@@ -2,7 +2,7 @@ import { decode } from "ent";
 import { NodeSection } from "sf-html-extension/dom";
 import { HTMLValueNodeEntity } from "./value-node";
 import { HTMLTextExpression } from "sf-html-extension/ast";
-import { EntityFactoryDependency } from "sf-core/dependencies";
+import { EntityFactoryDependency } from "sf-common/dependencies";
 
 export class HTMLTextEntity extends HTMLValueNodeEntity<HTMLTextExpression> {
   createSection() {

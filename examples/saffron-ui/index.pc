@@ -1,3 +1,2 @@
 <link rel="stylesheet" type="text/css" href="./style.scss" />
-<div class="item">
-</div>
+<div class="item" />

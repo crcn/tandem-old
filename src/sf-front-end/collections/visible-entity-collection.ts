@@ -1,6 +1,6 @@
-import { BoundingRect, IPoint } from "sf-core/geom";
-import { register as registerSerializer, serializeArray, deserialize } from "sf-core/serialize";
-import { IVisibleEntity, IEntityDisplay, DisplayCapabilities, IEntity } from "sf-core/ast/entities";
+import { BoundingRect, IPoint } from "sf-common/geom";
+import { register as registerSerializer, serializeArray, deserialize } from "sf-common/serialize";
+import { IVisibleEntity, IEntityDisplay, DisplayCapabilities, IEntity } from "sf-common/ast/entities";
 
 class EntitySelectionDisplay implements IEntityDisplay {
 

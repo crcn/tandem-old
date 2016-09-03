@@ -1,8 +1,8 @@
-import { IVisibleEntity } from "sf-core/ast/entities";
+import { IVisibleEntity } from "sf-common/ast/entities";
 import { HTMLNodeDisplay } from "./displays";
 import { HTMLElementEntity } from "./element";
 import { HTMLElementExpression } from "sf-html-extension/ast";
-import { EntityFactoryDependency } from "sf-core/dependencies";
+import { EntityFactoryDependency } from "sf-common/dependencies";
 import { IDOMSection, NodeSection } from "sf-html-extension/dom";
 import { parseCSSStyle, CSSStyleExpression } from "sf-html-extension/ast";
 

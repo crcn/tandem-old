@@ -3,10 +3,10 @@ import { flatten } from "lodash";
 import { HTMLFile } from "../models/html-file";
 import { parseHTML } from "../ast";
 import { MimeTypes } from "sf-html-extension/constants";
-import { filterAction } from "sf-core/decorators";
+import { filterAction } from "sf-common/decorators";
 import { FrontEndApplication } from "sf-front-end/application";
-import { appendSourceChildren } from "sf-core/ast/entities";
-import { BaseApplicationService } from "sf-core/services";
+import { appendSourceChildren } from "sf-common/ast/entities";
+import { BaseApplicationService } from "sf-common/services";
 import { VisibleEntityCollection } from "sf-front-end/collections";
 import { PASTE, PasteAction, SelectAction } from "sf-front-end/actions";
 import { PasteHTMLEntityAction, PASTE_HTML_ENTITY } from "sf-html-extension/actions";
@@ -15,7 +15,7 @@ import {
   APPLICATION_SINGLETON_NS,
   CommandFactoryDependency,
   ApplicationServiceDependency,
-} from "sf-core/dependencies";
+} from "sf-common/dependencies";
 
 export class PasteHTMLService extends BaseApplicationService<FrontEndApplication> {
 

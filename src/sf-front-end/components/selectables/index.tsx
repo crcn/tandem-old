@@ -4,16 +4,16 @@ import "./index.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
-import { inject } from "sf-core/decorators";
+import { inject } from "sf-common/decorators";
 import { Workspace } from "sf-front-end/models";
-import { BoundingRect } from "sf-core/geom";
+import { BoundingRect } from "sf-common/geom";
 import { SelectAction } from "sf-front-end/actions";
 import { MetadataKeys } from "sf-front-end/constants";
 import { FrontEndApplication } from "sf-front-end/application";
 import { intersection, flatten } from "lodash";
-import { IVisibleEntity, IEntity } from "sf-core/ast/entities";
+import { IVisibleEntity, IEntity } from "sf-common/ast/entities";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
-import { IInjectable, APPLICATION_SINGLETON_NS } from "sf-core/dependencies";
+import { IInjectable, APPLICATION_SINGLETON_NS } from "sf-common/dependencies";
 
 class SelectableComponent extends React.Component<{
   entity: IVisibleEntity,

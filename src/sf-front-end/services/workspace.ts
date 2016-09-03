@@ -1,22 +1,22 @@
 import { File } from "sf-common/models";
-import { Logger } from "sf-core/logger";
-import { inject } from "sf-core/decorators";
-import { loggable } from "sf-core/decorators";
-import { IDisposable } from "sf-core/object";
+import { Logger } from "sf-common/logger";
+import { inject } from "sf-common/decorators";
+import { loggable } from "sf-common/decorators";
+import { IDisposable } from "sf-common/object";
 import { MetadataKeys } from "sf-front-end/constants";
-import { tween, easeOutCubic } from "sf-core/animate";
+import { tween, easeOutCubic } from "sf-common/animate";
 import { FrontEndApplication } from "sf-front-end/application";
-import { BaseApplicationService } from "sf-core/services";
+import { BaseApplicationService } from "sf-common/services";
 import { Workspace, DocumentFile } from "sf-front-end/models";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
-import { Action, DSFindAction, INITIALIZE } from "sf-core/actions";
+import { Action, DSFindAction, INITIALIZE } from "sf-common/actions";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
 import { SetToolAction, ZoomAction, ZOOM, SET_TOOL } from "sf-front-end/actions";
 import {
   Dependencies,
   DEPENDENCIES_NS,
   ApplicationServiceDependency,
-} from "sf-core/dependencies";
+} from "sf-common/dependencies";
 
 export class WorkspaceService extends BaseApplicationService<FrontEndApplication> {
 

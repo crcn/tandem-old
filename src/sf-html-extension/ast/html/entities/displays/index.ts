@@ -1,11 +1,11 @@
 
-import { Action, UPDATE } from "sf-core/actions";
-import { watchProperty } from "sf-core/observable";
+import { Action, UPDATE } from "sf-common/actions";
+import { watchProperty } from "sf-common/observable";
 import { parseCSS } from "sf-html-extension/ast";
-import { BoundingRect, IPoint } from "sf-core/geom";
+import { BoundingRect, IPoint } from "sf-common/geom";
 import { VisibleHTMLElementEntity } from "../index";
 import { CSSStyleExpression, CSSStyleDeclarationExpression } from "sf-html-extension/ast";
-import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-core/ast/entities";
+import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "sf-common/ast/entities";
 import * as memoize from "memoizee";
 
 function calculateCSSMeasurments(style): any {

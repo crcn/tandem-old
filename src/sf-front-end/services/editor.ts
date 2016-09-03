@@ -1,13 +1,13 @@
 
-import { IActor } from "sf-core/actors";
-import { inject } from "sf-core/decorators";
+import { IActor } from "sf-common/actors";
+import { inject } from "sf-common/decorators";
 import { ProxyBus } from "sf-common/busses";
 import { KeyBinding } from "sf-front-end/key-bindings";
-import { LoadAction } from "sf-core/actions";
+import { LoadAction } from "sf-common/actions";
 import { FrontEndApplication } from "sf-front-end/application";
-import { BaseApplicationService } from "sf-core/services";
+import { BaseApplicationService } from "sf-common/services";
 import { ZoomAction, SetToolAction } from "sf-front-end/actions";
-import { ApplicationServiceDependency, Dependencies, DEPENDENCIES_NS } from "sf-core/dependencies";
+import { ApplicationServiceDependency, Dependencies, DEPENDENCIES_NS } from "sf-common/dependencies";
 import { EditorToolFactoryDependency, EDITOR_TOOL_NS, GlobalKeyBindingDependency } from "sf-front-end/dependencies";
 
 export class EditorService extends BaseApplicationService<FrontEndApplication> {

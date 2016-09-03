@@ -1,8 +1,8 @@
 import "./artboard.scss";
 
-import { Action } from "sf-core/actions";
-import { IActor } from "sf-core/actors";
-import { inject } from "sf-core/decorators";
+import { Action } from "sf-common/actions";
+import { IActor } from "sf-common/actors";
+import { inject } from "sf-common/decorators";
 import { MetadataKeys } from "sf-front-end/constants";
 import bubbleIframeEvents from "sf-front-end/utils/html/bubble-iframe-events";
 import { HTMLElementEntity } from "./element";
@@ -10,9 +10,9 @@ import { FrontEndApplication } from "sf-front-end/application";
 import { VisibleHTMLElementEntity } from "./visible-element";
 import { CSSStylesheetsDependency } from "sf-html-extension/dependencies";
 import { NodeSection, GroupNodeSection } from "sf-html-extension/dom";
-import { IContextualEntity, IEntity, getContext } from "sf-core/ast";
+import { IContextualEntity, IEntity, getContext } from "sf-common/ast";
 import { HTMLElementExpression, HTMLFragmentExpression } from "sf-html-extension/ast";
-import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "sf-core/dependencies";
+import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "sf-common/dependencies";
 
 const ARTBOARD_NS = "artboards";
 class ArtboardDependency extends Dependency<HTMLArtboardEntity> {

@@ -1,11 +1,11 @@
-import { IActor } from "sf-core/actors";
+import { IActor } from "sf-common/actors";
 import { titleize } from "inflection";
 import * as MemoryDsBus from "mesh-memory-ds-bus";
-import { IApplication } from "sf-core/application";
-import { PostDsNotifierBus } from "sf-core/busses";
-import { loggable, document } from "sf-core/decorators";
-import { BaseApplicationService } from "sf-core/services";
-import { ApplicationServiceDependency } from "sf-core/dependencies";
+import { IApplication } from "sf-common/application";
+import { PostDsNotifierBus } from "sf-common/busses";
+import { loggable, document } from "sf-common/decorators";
+import { BaseApplicationService } from "sf-common/services";
+import { ApplicationServiceDependency } from "sf-common/dependencies";
 import {
   DSAction,
   DS_FIND,
@@ -17,7 +17,7 @@ import {
   DSRemoveAction,
   DSUpdateAction,
   PostDSAction
-} from "sf-core/actions";
+} from "sf-common/actions";
 
 @loggable()
 export default class DBService extends BaseApplicationService<IApplication> {

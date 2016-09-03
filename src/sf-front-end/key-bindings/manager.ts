@@ -1,5 +1,5 @@
-import { IActor } from "sf-core/actors";
-import { IFactory } from "sf-core/dependencies";
+import { IActor } from "sf-common/actors";
+import { IFactory } from "sf-common/dependencies";
 import * as Mousetrap from "mousetrap";
 import { KeyBinding } from "./base";
 import { KeyCommandAction } from "../actions";

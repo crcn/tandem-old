@@ -1,6 +1,6 @@
 import { Bus, WrapBus, EmptyResponse } from "mesh";
 
-export default class RouterBus extends Bus {
+export class RouterBus extends Bus {
   private _routes: Object;
 
   constructor(routes: Object) {

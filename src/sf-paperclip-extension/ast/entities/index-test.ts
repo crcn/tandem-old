@@ -2,8 +2,8 @@ import { expect } from "chai";
 import { parsePC } from "../index";
 import { MimeTypes } from "sf-paperclip-extension/constants";
 import { PCFile, pcFileDependency } from "sf-paperclip-extension/models/pc-file";
-import { ActiveRecordFactoryDependency } from "sf-core/dependencies";
-import { Dependencies, DependenciesDependency } from "sf-core/dependencies";
+import { ActiveRecordFactoryDependency } from "sf-common/dependencies";
+import { Dependencies, DependenciesDependency } from "sf-common/dependencies";
 import { dependency as htmlExtensionDependency } from "sf-html-extension";
 import { pcBlockNodeEntityDependency, pcBlockAttributeValueEntityDependency } from "sf-paperclip-extension/ast";
 

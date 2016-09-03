@@ -1,8 +1,8 @@
-import { inject } from "sf-core/decorators";
+import { inject } from "sf-common/decorators";
 import { parseCSS } from "sf-html-extension/ast";
 import { GroupNodeSection } from "sf-html-extension/dom";
 import { HTMLElementEntity } from "./element";
-import { EntityFactoryDependency } from "sf-core/dependencies";
+import { EntityFactoryDependency } from "sf-common/dependencies";
 import { CSSStyleSheetExpression } from "sf-html-extension/ast";
 import { CSSStylesheetsDependency } from "sf-html-extension/dependencies";
 import { HTMLElementExpression, HTMLTextExpression } from "sf-html-extension/ast";

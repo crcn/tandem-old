@@ -1,6 +1,6 @@
 import { Guider } from "./index";
 import { expect } from "chai";
-import { IPoint, Point, BoundingRect } from "sf-core/geom";
+import { IPoint, Point, BoundingRect } from "sf-common/geom";
 
 describe(__filename + "#", () => {
 

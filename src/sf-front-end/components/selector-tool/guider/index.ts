@@ -1,4 +1,4 @@
-import { IPoint, Point, BoundingRect } from "sf-core/geom";
+import { IPoint, Point, BoundingRect } from "sf-common/geom";
 
 export class BoundingRectPoint implements IPoint {
   constructor(readonly rect: BoundingRect, readonly anchor: IPoint) {

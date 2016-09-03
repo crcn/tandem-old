@@ -1,15 +1,15 @@
-import { IFile } from "sf-core/active-records";
-import { inject } from "sf-core/decorators";
+import { IFile } from "sf-common/active-records";
+import { inject } from "sf-common/decorators";
 import { HTMLFile } from "sf-html-extension/models/html-file";
-import { Observable } from "sf-core/observable";
+import { Observable } from "sf-common/observable";
 import { MetadataKeys } from "sf-front-end/constants";
 import { DocumentFile } from "sf-front-end/models";
-import { watchProperty } from "sf-core/observable";
+import { watchProperty } from "sf-common/observable";
 import { GroupNodeSection } from "sf-html-extension/dom";
 import { CSSStylesheetsDependency } from "sf-html-extension/dependencies";
 import { parseCSS, CSSStyleSheetExpression } from "sf-html-extension/ast";
-import { Dependencies, DEPENDENCIES_NS, Injector } from "sf-core/dependencies";
-import {BaseEntity, EntityMetadata, IEntityDocument } from "sf-core/ast/entities";
+import { Dependencies, DEPENDENCIES_NS, Injector } from "sf-common/dependencies";
+import {BaseEntity, EntityMetadata, IEntityDocument } from "sf-common/ast/entities";
 
 import { CSSRuleEntity } from "./rule";
 import  { ICSSRuleEntity } from "./base";

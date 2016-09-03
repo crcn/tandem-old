@@ -1,5 +1,5 @@
-// import { Action } from 'sf-core/actions';
-// import { IActor, IInvoker } from "sf-core/actors";
+// import { Action } from 'sf-common/actions';
+// import { IActor, IInvoker } from "sf-common/actors";
 
 // // TODO - implement
 
@@ -8,7 +8,7 @@
 //   UpdateAction,
 //   DSInsertAction,
 //   RemoveAction
-// } from 'sf-core/actions';
+// } from 'sf-common/actions';
 
 // export default class BaseModel implements IInvoker {
 

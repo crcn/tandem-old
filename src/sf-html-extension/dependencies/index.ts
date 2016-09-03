@@ -1,4 +1,4 @@
-import { Dependency, Dependencies } from "sf-core/dependencies";
+import { Dependency, Dependencies } from "sf-common/dependencies";
 import { CSSStyleSheetExpression } from "sf-html-extension/ast";
 
 export const CSS_STYLESHEET_NS = "cssStyleSheet";

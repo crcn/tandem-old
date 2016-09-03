@@ -1,13 +1,13 @@
 
-import { inject } from "sf-core/decorators";
-import { IActor } from "sf-core/actors";
+import { inject } from "sf-common/decorators";
+import { IActor } from "sf-common/actors";
 import { InsertTool } from "sf-front-end/models/insert-tool";
 import { MouseAction } from "sf-front-end/actions";
-import { IApplication } from "sf-core/application";
+import { IApplication } from "sf-common/application";
 import { SetToolAction } from "sf-front-end/actions";
 import { TEXT_TOOL_KEY_CODE } from "sf-html-extension/constants";
 import { FrontEndApplication } from "sf-front-end/application";
-import { BaseApplicationService } from "sf-core/services";
+import { BaseApplicationService } from "sf-common/services";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
 import { IEditorTool, BaseEditorTool, IEditor } from "sf-front-end/models";
@@ -19,7 +19,7 @@ import {
   DEPENDENCIES_NS,
   EntityFactoryDependency,
   ApplicationServiceDependency,
-} from "sf-core/dependencies";
+} from "sf-common/dependencies";
 
 /*
 const editor = new HTMLEditor();

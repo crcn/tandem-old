@@ -1,16 +1,16 @@
-import document from "sf-core/decorators/document";
+import document from "sf-common/decorators/document";
 import * as sift from "sift";
 import * as chalk from "chalk";
-import { Service } from "sf-core/services";
-import { LogAction } from "sf-core/actions";
-import { ClassFactoryDependency } from "sf-core/dependencies";
+import { Service } from "sf-common/services";
+import { LogAction } from "sf-common/actions";
+import { ClassFactoryDependency } from "sf-common/dependencies";
 
 import {
   INFO as INFO_LEVEL,
   WARN as WARN_LEVEL,
   ERROR as ERROR_LEVEL,
   VERBOSE as VERBOSE_LEVEL,
-} from "sf-core/logger/levels";
+} from "sf-common/logger/levels";
 
 
 class ConsoleService extends Service {
@@ -49,4 +49,4 @@ class ConsoleService extends Service {
   }
 }
 
-export const dependency = new ClassFactoryDependency("application/services/console", ConsoleService);
+export const consoleLogServiceDependency = new ClassFactoryDependency("application/services/console", ConsoleService);

@@ -1,5 +1,5 @@
 
-import StringScanner from "sf-core/string/scanner";
+import StringScanner from "sf-common/string/scanner";
 import { Diff, applyPatch } from "diff";
 
 const htmlDiff = new Diff();

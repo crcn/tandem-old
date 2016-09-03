@@ -1,17 +1,17 @@
 // import { File } from "sf-common/models";
 import * as path from "path";
-import { IActor } from "sf-core/actors";
-import { inject } from "sf-core/decorators";
+import { IActor } from "sf-common/actors";
+import { inject } from "sf-common/decorators";
 import { Response } from "mesh";
-import { BubbleBus } from "sf-core/busses";
+import { BubbleBus } from "sf-common/busses";
 import { DocumentFile } from "sf-front-end/models";
 import { MetadataKeys } from "sf-front-end/constants";
 import { GroupNodeSection } from "sf-html-extension/dom";
 import { HTMLElementEntity } from "./element";
-import { EntityFactoryDependency } from "sf-core/dependencies";
-import { ReadFileAction, WatchFileAction } from "sf-core/actions";
+import { EntityFactoryDependency } from "sf-common/dependencies";
+import { ReadFileAction, WatchFileAction } from "sf-common/actions";
 import { DocumentPaneComponentFactoryDependency } from "sf-front-end/dependencies";
-import { ActiveRecordFactoryDependency, MAIN_BUS_NS } from "sf-core/dependencies";
+import { ActiveRecordFactoryDependency, MAIN_BUS_NS } from "sf-common/dependencies";
 import { HTMLElementExpression, HTMLDocumentRootEntity } from "sf-html-extension/ast";
 
 // TODO

@@ -5,7 +5,7 @@ import { Bus, Response, EmptyResponse } from "mesh";
  * if there is none until there is
  */
 
-export default class ProxyBus extends Bus {
+export class ProxyBus extends Bus {
 
   private _queue: Array<any> = [];
   private _paused: boolean;

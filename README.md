@@ -35,3 +35,10 @@ platforms and rendering engines such as WebGL, and Canvas.
 #### Web application tool
 
 -
+
+#### Write sophisticated features
+
+- CSS animations
+
+#### Write code faster
+

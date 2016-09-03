@@ -1,11 +1,11 @@
 import * as sift from "sift";
-import { Logger } from "sf-core/logger";
+import { Logger } from "sf-common/logger";
 import * as ReactDOM from "react-dom";
-import { IApplication } from "sf-core/application";
-import { filterAction, loggable } from "sf-core/decorators";
-import { BaseApplicationService } from "sf-core/services";
-import { ClassFactoryDependency } from "sf-core/dependencies";
-import { ApplicationServiceDependency } from "sf-core/dependencies";
+import { IApplication } from "sf-common/application";
+import { filterAction, loggable } from "sf-common/decorators";
+import { BaseApplicationService } from "sf-common/services";
+import { ClassFactoryDependency } from "sf-common/dependencies";
+import { ApplicationServiceDependency } from "sf-common/dependencies";
 import { RootReactComponentDependency } from "sf-front-end/dependencies";
 
 @loggable()

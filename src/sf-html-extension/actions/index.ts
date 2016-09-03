@@ -1,4 +1,4 @@
-import { Action } from "sf-core/actions";
+import { Action } from "sf-common/actions";
 import { PasteAction } from "sf-front-end/actions";
 import { CSSSelectorExpression } from "sf-html-extension/ast";
 import { IHTMLElementAttributeEntity } from "sf-html-extension/ast";

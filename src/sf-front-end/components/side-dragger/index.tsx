@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
 import { DragDropComponent } from "sf-front-end/components/drag-drop";
-import { IReference } from "sf-core/reference";
+import { IReference } from "sf-common/reference";
 
 export class SideDraggerComponent extends React.Component<{ reference: IReference, position: string }, any> {
 

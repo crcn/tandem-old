@@ -1,17 +1,17 @@
 import { File } from "sf-common/models";
-import { inject } from "sf-core/decorators";
-import { IActor } from "sf-core/actors";
-import { IEntity } from "sf-core/ast/entities";
-import { BubbleBus } from "sf-core/busses";
+import { inject } from "sf-common/decorators";
+import { IActor } from "sf-common/actors";
+import { IEntity } from "sf-common/ast/entities";
+import { BubbleBus } from "sf-common/busses";
 import { Workspace } from "./workspace";
-import { IObservable } from "sf-core/observable";
-import { IDisposable } from "sf-core/object";
-import { IExpression } from "sf-core/ast";
-import { patchTreeNode } from "sf-core/tree";
-import { IEntityDocument } from "sf-core/ast";
-import { IPoint, Transform } from "sf-core/geom";
-import { Action, PropertyChangeAction } from "sf-core/actions";
-import { IInjectable, DEPENDENCIES_NS, DependenciesDependency, Dependencies, EntityDocumentDependency } from "sf-core/dependencies";
+import { IObservable } from "sf-common/observable";
+import { IDisposable } from "sf-common/object";
+import { IExpression } from "sf-common/ast";
+import { patchTreeNode } from "sf-common/tree";
+import { IEntityDocument } from "sf-common/ast";
+import { IPoint, Transform } from "sf-common/geom";
+import { Action, PropertyChangeAction } from "sf-common/actions";
+import { IInjectable, DEPENDENCIES_NS, DependenciesDependency, Dependencies, EntityDocumentDependency } from "sf-common/dependencies";
 
 export interface IEditorTool extends IActor, IDisposable {
   readonly editor: IEditor;

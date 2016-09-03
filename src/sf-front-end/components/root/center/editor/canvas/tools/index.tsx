@@ -1,6 +1,6 @@
 import "./index.scss";
 import * as React from "react";
-import { IEntity } from "sf-core/ast/entities";
+import { IEntity } from "sf-common/ast/entities";
 import RegisteredComponent from "sf-front-end/components/registered";
 import { Editor, Workspace } from "sf-front-end/models";
 

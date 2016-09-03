@@ -1,5 +1,5 @@
 import { Application } from "sf-common/application";
-import { thread, isMaster } from "sf-core/workers";
+import { thread, isMaster } from "sf-common/workers";
 
 // components
 import { dependency as rootComponentDependency } from "./components/root";
@@ -33,7 +33,7 @@ import { dependency as keyBindingsDependency } from "./key-bindings";
 import { dependency as htmlExtensionDependency } from "sf-html-extension";
 import { dependency as paperclipExtensionDependency } from "sf-paperclip-extension";
 
-import { Metadata } from "sf-core/metadata";
+import { Metadata } from "sf-common/metadata";
 import { Workspace } from "./models";
 
 export class FrontEndApplication extends Application {

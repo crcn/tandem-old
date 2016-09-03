@@ -1,13 +1,13 @@
 {
   "name": "sf-common",
   "version": "1.0.0",
-  "description": "common dependencies between the back-end and front-end applications. Different from `sf-core` since `sf-core` contains libraries to help extensions communicate with the front-end and back-end applications.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
+  "description": "",
   "dependencies": {
   }
 }

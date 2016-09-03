@@ -1,13 +1,13 @@
-import { IActor } from "sf-core/actors";
-import { inject } from "sf-core/decorators";
+import { IActor } from "sf-common/actors";
+import { inject } from "sf-common/decorators";
 import { BaseEditorTool } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";
 import { POINTER_TOOL_KEY_CODE } from "sf-front-end/constants";
 import { VisibleEntityCollection } from "sf-front-end/collections";
-import { BaseApplicationService } from "sf-core/services";
-import { IInjectable, MAIN_BUS_NS } from "sf-core/dependencies";
+import { BaseApplicationService } from "sf-common/services";
+import { IInjectable, MAIN_BUS_NS } from "sf-common/dependencies";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
-import { ApplicationServiceDependency } from "sf-core/dependencies";
+import { ApplicationServiceDependency } from "sf-common/dependencies";
 import { SelectAction, MouseAction, KeyboardAction, RemoveSelectionAction } from "sf-front-end/actions";
 
 // TODO - everything here should just be a command

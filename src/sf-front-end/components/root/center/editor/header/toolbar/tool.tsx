@@ -1,7 +1,7 @@
 import * as cx from "classnames";
 import * as React from "react";
 import { Editor } from "sf-front-end/models/editor";
-import { IActor } from "sf-core/actors";
+import { IActor } from "sf-common/actors";
 import { SetToolAction } from "sf-front-end/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";

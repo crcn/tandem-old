@@ -2,10 +2,10 @@ import * as sift from "sift";
 import { UNDO, REDO } from "sf-front-end/actions";
 import { IHistoryItem } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";
-import { BaseApplicationService } from "sf-core/services";
-import { loggable, filterAction } from "sf-core/decorators";
-import { ApplicationServiceDependency } from "sf-core/dependencies";
-import { DSUpdateAction, DS_DID_UPDATE, PostDSAction } from "sf-core/actions";
+import { BaseApplicationService } from "sf-common/services";
+import { loggable, filterAction } from "sf-common/decorators";
+import { ApplicationServiceDependency } from "sf-common/dependencies";
+import { DSUpdateAction, DS_DID_UPDATE, PostDSAction } from "sf-common/actions";
 
 @loggable()
 export default class HistoryService extends BaseApplicationService<FrontEndApplication> {

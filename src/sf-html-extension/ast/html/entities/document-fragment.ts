@@ -2,7 +2,7 @@ import { MetadataKeys } from "sf-front-end/constants";
 import { GroupNodeSection } from "sf-html-extension/dom";
 import { HTMLNodeEntity } from "./node";
 import { HTMLFragmentExpression } from "sf-html-extension/ast";
-import { EntityFactoryDependency } from "sf-core/dependencies";
+import { EntityFactoryDependency } from "sf-common/dependencies";
 
 export class HTMLDocumentFragmentEntity extends HTMLNodeEntity<HTMLFragmentExpression> {
 

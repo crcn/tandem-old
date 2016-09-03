@@ -1,11 +1,11 @@
-import { DISPOSE } from "sf-core/actions";
+import { DISPOSE } from "sf-common/actions";
 import { MetadataKeys } from "sf-front-end/constants";
-import { loggable, bindable } from "sf-core/decorators";
+import { loggable, bindable } from "sf-common/decorators";
 import { FrontEndApplication } from "sf-front-end/application";
-import { BaseApplicationService } from "sf-core/services";
+import { BaseApplicationService } from "sf-common/services";
 import { SelectSourceAtOffsetAction } from "sf-front-end/actions";
-import { ApplicationServiceDependency } from "sf-core/dependencies";
-import { IEntity, removeEntitySources } from "sf-core/ast";
+import { ApplicationServiceDependency } from "sf-common/dependencies";
+import { IEntity, removeEntitySources } from "sf-common/ast";
 import { SELECT_SOURCE_AT_OFFSET, SELECT, SELECT_ALL, REMOVE_SELECTION, SelectAction } from "sf-front-end/actions";
 
 @loggable()

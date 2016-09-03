@@ -2,7 +2,7 @@ import "./intersecting-point.scss";
 
 
 import * as React from "react";
-import { IPoint } from "sf-core/geom";
+import { IPoint } from "sf-common/geom";
 import { Editor } from "sf-front-end/models/editor";
 import { BoundingRectPoint, GuideLine } from "../guider";
 

@@ -3,7 +3,7 @@ import "./scss/modules/all.scss";
 import "./scss/fonts.scss";
 
 import config from "./config";
-import { isMaster, fork } from "sf-core/workers";
+import { isMaster, fork } from "sf-common/workers";
 import { FrontEndApplication } from "./application";
 
 // none for now - need to figure out NULL exceptions with

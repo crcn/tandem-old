@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { TreeNode } from "sf-core/tree";
-import { BoundingRect, IPoint } from "sf-core/geom";
+import { TreeNode } from "sf-common/tree";
+import { BoundingRect, IPoint } from "sf-common/geom";
 import { VisibleEntityCollection } from "./visible-entity-collection";
-import { IEntity, IEntityDisplay, IVisibleEntity, DisplayCapabilities, EntityMetadata, BaseEntity, IExpression } from "sf-core/ast";
+import { IEntity, IEntityDisplay, IVisibleEntity, DisplayCapabilities, EntityMetadata, BaseEntity, IExpression } from "sf-common/ast";
 
 describe(__filename + "#", () => {
 

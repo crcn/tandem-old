@@ -1,21 +1,21 @@
-import { INamed } from "sf-core/object";
-import { inject } from "sf-core/decorators";
+import { INamed } from "sf-common/object";
+import { inject } from "sf-common/decorators";
 import { HTMLFile } from "sf-html-extension/models/html-file";
-import { BubbleBus } from "sf-core/busses";
+import { BubbleBus } from "sf-common/busses";
 import { DocumentFile } from "sf-front-end/models";
-import { watchProperty } from "sf-core/observable";
+import { watchProperty } from "sf-common/observable";
 import { IHTMLNodeEntity } from "./base";
-import { EntityFactoryDependency } from "sf-core/dependencies";
+import { EntityFactoryDependency } from "sf-common/dependencies";
 import { IDOMSection, GroupNodeSection } from "sf-html-extension/dom";
-import { Action, PropertyChangeAction, UpdateAction } from "sf-core/actions";
-import { Dependencies, DEPENDENCIES_NS, IInjectable } from "sf-core/dependencies";
+import { Action, PropertyChangeAction, UpdateAction } from "sf-common/actions";
+import { Dependencies, DEPENDENCIES_NS, IInjectable } from "sf-common/dependencies";
 import { CSSStylesheetsDependency } from "sf-html-extension/dependencies";
 import {
   IEntity,
   EntityMetadata,
   IEntityDocument,
   findEntitiesBySource,
-} from "sf-core/ast/entities";
+} from "sf-common/ast/entities";
 
 import {
   parseHTML,

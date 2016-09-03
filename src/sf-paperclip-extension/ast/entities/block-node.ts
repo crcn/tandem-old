@@ -1,11 +1,11 @@
 import { parsePC } from "sf-paperclip-extension/ast";
-import { TreeNode } from "sf-core/tree";
+import { TreeNode } from "sf-common/tree";
 import { MetadataKeys } from "sf-front-end/constants";
 import { parseBlockScript } from "./utils";
 import { PCBlockNodeExpression } from "sf-paperclip-extension/ast/expressions";
-import { EntityFactoryDependency } from "sf-core/dependencies";
+import { EntityFactoryDependency } from "sf-common/dependencies";
 import { GroupNodeSection, IDOMSection } from "sf-html-extension/dom";
-import { BaseEntity, IEntity, IValueEntity, getContext } from "sf-core/ast";
+import { BaseEntity, IEntity, IValueEntity, getContext } from "sf-common/ast";
 import { HTMLNodeEntity, HTMLTextEntity, HTMLTextExpression, HTMLNodeExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLNodeEntity } from "sf-html-extension/ast";
 
 export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> implements IValueEntity  {

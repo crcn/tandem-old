@@ -1,5 +1,5 @@
-import { inject } from "sf-core/decorators";
-import { Action } from "sf-core/actions";
+import { inject } from "sf-common/decorators";
+import { Action } from "sf-common/actions";
 import { IEditor } from "sf-front-end/models/base";
 import { InsertTool } from "sf-front-end/models/insert-tool";
 import { SetToolAction } from "sf-front-end/actions";
@@ -8,8 +8,8 @@ import { FrontEndApplication } from "sf-front-end/application";
 import { parseHTML, HTMLElementExpression } from "sf-html-extension/ast";
 import { dependency as textToolDependency } from "sf-html-extension/models/text-tool";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
-import { BaseCommand, BaseApplicationCommand } from "sf-core/commands";
-import { ClassFactoryDependency, DEPENDENCIES_NS, Dependencies } from "sf-core/dependencies";
+import { BaseCommand, BaseApplicationCommand } from "sf-common/commands";
+import { ClassFactoryDependency, DEPENDENCIES_NS, Dependencies } from "sf-common/dependencies";
 import { EditorToolFactoryDependency, GlobalKeyBindingDependency } from "sf-front-end/dependencies";
 
 abstract class BaseInsertElementTool extends InsertTool {

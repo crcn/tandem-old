@@ -1,10 +1,10 @@
 import  * as store from "store";
 import { WrapBus } from "mesh";
-import { Metadata } from "sf-core/metadata";
+import { Metadata } from "sf-common/metadata";
 import { FrontEndApplication } from "sf-front-end/application";
-import { BaseApplicationService } from "sf-core/services";
-import { ApplicationServiceDependency } from "sf-core/dependencies";
-import { InitializeAction, SettingChangeAction, LOAD } from "sf-core/actions";
+import { BaseApplicationService } from "sf-common/services";
+import { ApplicationServiceDependency } from "sf-common/dependencies";
+import { InitializeAction, SettingChangeAction, LOAD } from "sf-common/actions";
 
 export class SettingsService extends BaseApplicationService<FrontEndApplication> {
   [LOAD](action: InitializeAction) {

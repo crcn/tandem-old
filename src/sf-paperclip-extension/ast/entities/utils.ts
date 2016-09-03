@@ -1,4 +1,4 @@
-import { IContextualEntity, IEntity } from "sf-core/ast";
+import { IContextualEntity, IEntity } from "sf-common/ast";
 
 
 

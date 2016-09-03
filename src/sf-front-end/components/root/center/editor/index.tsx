@@ -3,7 +3,7 @@ import * as React from "react";
 import HeaderComponent from "./header";
 import FooterComponent from "./footer";
 import CanvasComponent from "./canvas";
-import { Dependencies } from "sf-core/dependencies";
+import { Dependencies } from "sf-common/dependencies";
 import { KeyBindingManager } from "sf-front-end/key-bindings";
 import { Editor, Workspace } from "sf-front-end/models";
 import { FrontEndApplication } from "sf-front-end/application";

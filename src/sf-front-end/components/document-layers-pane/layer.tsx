@@ -2,18 +2,18 @@ import "./layer.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
-import { IActor } from "sf-core/actors";
+import { IActor } from "sf-common/actors";
 import { Workspace } from "sf-front-end/models";
-import { CallbackBus } from "sf-core/busses";
+import { CallbackBus } from "sf-common/busses";
 import { MetadataKeys } from "sf-front-end/constants";
-import { Dependencies } from "sf-core/dependencies";
+import { Dependencies } from "sf-common/dependencies";
 import { FrontEndApplication } from "sf-front-end/application";
 import { flatten, intersection } from "lodash";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
 import { DragSource, DropTarget, DndComponent } from "react-dnd";
 import { SelectAction, ToggleSelectAction, SELECT } from "sf-front-end/actions";
-import { Action, MetadataChangeAction, METADATA_CHANGE } from "sf-core/actions";
-import { IEntity, appendSourceChildren, insertSourceChildren } from "sf-core/ast/entities";
+import { Action, MetadataChangeAction, METADATA_CHANGE } from "sf-common/actions";
+import { IEntity, appendSourceChildren, insertSourceChildren } from "sf-common/ast/entities";
 
 interface ILayerLabelProps {
   paddingLeft?: number;

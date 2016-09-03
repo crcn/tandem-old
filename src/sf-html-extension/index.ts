@@ -1,6 +1,6 @@
 import { MimeTypes } from "sf-html-extension/constants";
 
-import { IApplication } from "sf-core/application";
+import { IApplication } from "sf-common/application";
 
 // components
 import { dependency as cssPaneComponentDependency } from "./components/css-pane";
@@ -27,7 +27,7 @@ import { dependency as textToolDependency, editInnerHTMLDependency } from "./mod
 // key bindings
 import { dependencies as keyBindingDependencies } from "./key-bindings";
 
-import { MimeTypeDependency } from "sf-core/dependencies";
+import { MimeTypeDependency } from "sf-common/dependencies";
 
  // entities
  import {

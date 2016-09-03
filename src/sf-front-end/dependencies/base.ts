@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FactoryDependency } from "sf-core/dependencies";
+import { FactoryDependency } from "sf-common/dependencies";
 
 /**
  */

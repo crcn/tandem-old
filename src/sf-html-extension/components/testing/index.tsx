@@ -1,4 +1,4 @@
- import { IApplication } from 'sf-core/application';
+ import { IApplication } from 'sf-common/application';
  import { RootReactComponentDependency } from 'sf-front-end/dependencies';
 
  import * as React  from 'react';

@@ -1,15 +1,15 @@
 
-import { Logger } from "sf-core/logger";
-import { loggable } from "sf-core/decorators";
-import { toArray } from "sf-core/utils/array";
+import { Logger } from "sf-common/logger";
+import { loggable } from "sf-common/decorators";
+import { toArray } from "sf-common/utils/array";
 import * as Mousetrap from "mousetrap";
 import { KeyBinding } from "sf-front-end/key-bindings/base";
-import { INITIALIZE } from "sf-core/actions";
-import { IApplication } from "sf-core/application";
+import { INITIALIZE } from "sf-common/actions";
+import { IApplication } from "sf-common/application";
 import { KeyBindingManager } from "sf-front-end/key-bindings";
-import { BaseApplicationService } from "sf-core/services";
+import { BaseApplicationService } from "sf-common/services";
 import { GlobalKeyBindingDependency } from "sf-front-end/dependencies";
-import { ApplicationServiceDependency } from "sf-core/dependencies";
+import { ApplicationServiceDependency } from "sf-common/dependencies";
 
 @loggable()
 export default class GlobalKeyBindingService extends BaseApplicationService<IApplication> {

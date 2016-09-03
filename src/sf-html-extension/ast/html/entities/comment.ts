@@ -1,7 +1,7 @@
 import { NodeSection } from "sf-html-extension/dom";
 import { HTMLValueNodeEntity } from "./value-node";
 import { HTMLCommentExpression } from "sf-html-extension/ast";
-import { EntityFactoryDependency } from "sf-core/dependencies";
+import { EntityFactoryDependency } from "sf-common/dependencies";
 
 export class HTMLCommentEntity extends HTMLValueNodeEntity<HTMLCommentExpression> {
   createSection() {

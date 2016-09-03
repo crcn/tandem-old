@@ -1,9 +1,9 @@
-import { LOAD } from "sf-core/actions";
-import IOService from "sf-common/services/io";
-import { loggable } from "sf-core/decorators";
-import { IApplication } from "sf-core/application";
+import { LOAD } from "sf-common/actions";
+import { loggable } from "sf-common/decorators";
+import { IOService } from "sf-common/services";
+import { IApplication } from "sf-common/application";
 import * as SocketIOClient from "socket.io-client";
-import { ApplicationServiceDependency } from "sf-core/dependencies";
+import { ApplicationServiceDependency } from "sf-common/dependencies";
 
 @loggable()
 export default class BackEndService extends IOService<IApplication> {

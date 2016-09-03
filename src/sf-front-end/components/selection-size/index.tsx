@@ -1,6 +1,6 @@
 import "./index.scss";
 import * as React from "react";
-import { BoundingRect } from "sf-core/geom";
+import { BoundingRect } from "sf-common/geom";
 
 export class SelectionSizeComponent extends React.Component<{ zoom: number, left: number, top: number, bounds: BoundingRect }, any> {
 

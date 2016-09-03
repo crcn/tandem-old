@@ -1,11 +1,11 @@
-import { Action } from "sf-core/actions";
+import { Action } from "sf-common/actions";
 import { KeyBinding } from "./base";
 import { SaveAction } from "sf-common/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { GlobalKeyBindingDependency } from "sf-front-end/dependencies";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
 import { ZoomAction, DeleteSelectionAction } from "sf-front-end/actions";
-import { BaseCommand, BaseApplicationCommand } from "sf-core/commands";
+import { BaseCommand, BaseApplicationCommand } from "sf-common/commands";
 import { dependency as pointerToolDependency } from "sf-front-end/models/pointer-tool";
 import { SettingKeys, ZOOM_INCREMENT, POINTER_TOOL_KEY_CODE } from "sf-front-end/constants";
 import { SelectAllAction, SetToolAction, UndoAction, RedoAction } from "sf-front-end/actions";

@@ -1,14 +1,14 @@
 import "./index.scss";
 import * as React from "react";
-import { IPoint } from "sf-core/geom";
-import { UpdateAction } from "sf-core/actions";
+import { IPoint } from "sf-common/geom";
+import { UpdateAction } from "sf-common/actions";
 import IsolateComponent  from "sf-front-end/components/isolate";
-import { BoundingRect } from "sf-core/geom";
-import { IVisibleEntity } from "sf-core/ast/entities";
+import { BoundingRect } from "sf-common/geom";
+import { IVisibleEntity } from "sf-common/ast/entities";
 import ToolsLayerComponent from "./tools";
 import PreviewLayerComponent from "./preview";
 import { Editor, Workspace } from "sf-front-end/models";
-import { Dependencies, MainBusDependency } from "sf-core/dependencies";
+import { Dependencies, MainBusDependency } from "sf-common/dependencies";
 import {
   ZoomAction,
   MouseAction,

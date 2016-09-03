@@ -1,13 +1,13 @@
-import { IActor } from "sf-core/actors";
-import { Action } from "sf-core/actions";
-import { inject } from "sf-core/decorators";
-import { IEntity } from "sf-core/ast/entities";
-import { Metadata } from "sf-core/metadata";
+import { IActor } from "sf-common/actors";
+import { Action } from "sf-common/actions";
+import { inject } from "sf-common/decorators";
+import { IEntity } from "sf-common/ast/entities";
+import { Metadata } from "sf-common/metadata";
 import { Workspace } from "./workspace";
 import { KeyBinding } from "sf-front-end/key-bindings";
-import { IInjectable } from "sf-core/dependencies";
+import { IInjectable } from "sf-common/dependencies";
 import { ParallelBus } from "mesh";
-import { IPoint, Transform } from "sf-core/geom";
+import { IPoint, Transform } from "sf-common/geom";
 import { IEditor, IEditorTool } from "./base";
 
 export const MIN_ZOOM = 0.02;

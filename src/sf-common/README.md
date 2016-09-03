@@ -1,2 +1,0 @@
-common dependencies between the back-end and front-end applications. Different from `sf-core`
-since `sf-core` contains libraries to help extensions communicate with the front-end and back-end applications.

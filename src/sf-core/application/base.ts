@@ -1,4 +1,4 @@
-import { IBrokerBus } from "sf-core/busses";
+import { IBrokerBus } from "sf-common/busses";
 import { Dependencies } from '../dependencies';
 import { IActor, IInvoker } from '../actors';
 

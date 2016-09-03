@@ -3,9 +3,9 @@ import * as React from "react";
 import { startDrag } from "sf-front-end/utils/component";
 import { PointerTool } from "sf-front-end/models/pointer-tool";
 import { MetadataKeys } from "sf-front-end/constants";
-import { BoundingRect } from "sf-core/geom";
+import { BoundingRect } from "sf-common/geom";
 import { FrontEndApplication } from "sf-front-end/application";
-import { IEntity, IVisibleEntity } from "sf-core/ast/entities";
+import { IEntity, IVisibleEntity } from "sf-common/ast/entities";
 import { ReactComponentFactoryDependency } from "sf-front-end/dependencies";
 import { SelectAction, MouseAction, CANVAS_MOUSE_DOWN } from "sf-front-end/actions";
 

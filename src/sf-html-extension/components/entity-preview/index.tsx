@@ -1,5 +1,5 @@
 import * as React  from "react";
-import { IApplication } from "sf-core/application";
+import { IApplication } from "sf-common/application";
 import { HTMLDocumentRootEntity } from "sf-html-extension/ast";
 import { EntityPreviewDependency } from "sf-front-end/dependencies";
 

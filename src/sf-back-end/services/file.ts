@@ -1,15 +1,15 @@
 import * as fs from "fs";
 import * as gaze from "gaze";
 import * as sift from "sift";
-import { Logger } from "sf-core/logger";
+import { Logger } from "sf-common/logger";
 import { Response } from "mesh";
 import { SaveAction } from "sf-common/actions";
-import { IApplication } from "sf-core/application";
-import { BaseApplicationService } from "sf-core/services";
+import { IApplication } from "sf-common/application";
+import { BaseApplicationService } from "sf-common/services";
 import { File, FILES_COLLECTION_NAME } from "sf-common/models";
-import { inject, loggable, document, filterAction } from "sf-core/decorators";
-import { ApplicationServiceDependency, Dependencies, DEPENDENCIES_NS } from "sf-core/dependencies";
-import { PostDSAction, OpenFileAction, WatchFileAction, OPEN_FILE, WATCH_FILE, READ_FILE, DS_DID_REMOVE } from "sf-core/actions";
+import { inject, loggable, document, filterAction } from "sf-common/decorators";
+import { ApplicationServiceDependency, Dependencies, DEPENDENCIES_NS } from "sf-common/dependencies";
+import { PostDSAction, OpenFileAction, WatchFileAction, OPEN_FILE, WATCH_FILE, READ_FILE, DS_DID_REMOVE } from "sf-common/actions";
 
 @loggable()
 export default class FileService extends BaseApplicationService<IApplication> {

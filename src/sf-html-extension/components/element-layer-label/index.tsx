@@ -9,7 +9,7 @@ import { SelectAction } from "sf-front-end/actions";
 import * as AutosizeInput from "react-input-autosize";
 import { FrontEndApplication } from "sf-front-end/application";
 import { LayerLabelComponentFactoryDependency } from "sf-front-end/dependencies";
-import { replaceEntitySource } from "sf-core/ast";
+import { replaceEntitySource } from "sf-common/ast";
 import { HTMLElementEntity, VisibleHTMLElementEntity } from "sf-html-extension/ast";
 import { HTMLFragmentExpression, HTMLElementExpression } from "sf-html-extension/ast";
 

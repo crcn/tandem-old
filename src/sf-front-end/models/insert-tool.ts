@@ -1,12 +1,12 @@
 
-import { Action } from "sf-core/actions";
-import { IActor } from "sf-core/actors";
-import { inject } from "sf-core/decorators";
-import { Service } from "sf-core/services";
+import { Action } from "sf-common/actions";
+import { IActor } from "sf-common/actors";
+import { inject } from "sf-common/decorators";
+import { Service } from "sf-common/services";
 import { startDrag } from "sf-front-end/utils/component";
-import { MAIN_BUS_NS } from "sf-core/dependencies";
-import { BoundingRect } from "sf-core/geom";
-import { EntityFactoryDependency } from "sf-core/dependencies";
+import { MAIN_BUS_NS } from "sf-common/dependencies";
+import { BoundingRect } from "sf-common/geom";
+import { EntityFactoryDependency } from "sf-common/dependencies";
 import { BaseEditorTool, IEditorTool, IEditor } from "sf-front-end/models";
 import { MouseAction, SetToolAction, SelectAction } from "sf-front-end/actions";
 

@@ -1,10 +1,10 @@
 import * as pretty from "pretty";
 import { parseHTML } from "sf-html-extension/ast";
 import { MimeTypes } from "sf-html-extension/constants";
-import { IExpression } from "sf-core/ast";
+import { IExpression } from "sf-common/ast";
 import { DocumentFile } from "sf-front-end/models/base";
-import { Dependencies } from "sf-core/dependencies";
-import { ActiveRecordFactoryDependency } from "sf-core/dependencies";
+import { Dependencies } from "sf-common/dependencies";
+import { ActiveRecordFactoryDependency } from "sf-common/dependencies";
 import { HTMLDocumentRootEntity, HTMLFragmentExpression } from "sf-html-extension/ast";
 
 export class HTMLFile extends DocumentFile<HTMLDocumentRootEntity> {

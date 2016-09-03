@@ -1,5 +1,5 @@
-import { IRange } from "sf-core/geom";
-import { BaseExpression } from "sf-core/ast";
+import { IRange } from "sf-common/geom";
+import { BaseExpression } from "sf-common/ast";
 
 export class SASSExpression extends BaseExpression<SASSExpression> {
   constructor(position: IRange) {

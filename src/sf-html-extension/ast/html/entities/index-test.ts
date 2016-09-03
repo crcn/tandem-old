@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { Dependencies, ActiveRecordFactoryDependency, DependenciesDependency } from "sf-core/dependencies";
-import { waitForPropertyChange, timeout } from "sf-core/test/utils";
+import { Dependencies, ActiveRecordFactoryDependency, DependenciesDependency } from "sf-common/dependencies";
+import { waitForPropertyChange, timeout } from "sf-common/test/utils";
 import { parseHTML } from "sf-html-extension/ast";
 import {
   HTMLElementEntity,

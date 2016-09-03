@@ -1,13 +1,13 @@
-import { IActor } from "sf-core/actors";
-import { find, ActiveRecord, IFile } from "sf-core/active-records";
+import { IActor } from "sf-common/actors";
+import { find, ActiveRecord, IFile } from "sf-common/active-records";
 import {
   Dependencies,
   MainBusDependency,
   MimeTypeDependency,
   ActiveRecordFactoryDependency,
-} from "sf-core/dependencies";
+} from "sf-common/dependencies";
 
-import { bindable } from "sf-core/decorators";
+import { bindable } from "sf-common/decorators";
 
 export const FILES_COLLECTION_NAME = "files";
 

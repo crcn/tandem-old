@@ -1,12 +1,12 @@
 import { decode } from "ent";
-import { inject } from "sf-core/decorators";
+import { inject } from "sf-common/decorators";
 import { HTMLFile } from "sf-html-extension/models/html-file";
-import { EntityMetadata } from "sf-core/ast/entities";
+import { EntityMetadata } from "sf-common/ast/entities";
 import { HTMLNodeEntity } from "./node";
 import { IHTMLNodeEntity } from "./base";
 import { HTMLExpression, IHTMLValueNodeExpression } from "sf-html-extension/ast";
 import { NodeSection, IDOMSection } from "sf-html-extension/dom";
-import { DEPENDENCIES_NS, Dependencies, Injector } from "sf-core/dependencies";
+import { DEPENDENCIES_NS, Dependencies, Injector } from "sf-common/dependencies";
 
 export abstract class HTMLValueNodeEntity<T extends HTMLExpression & IHTMLValueNodeExpression> extends HTMLNodeEntity<T> implements IHTMLNodeEntity {
 

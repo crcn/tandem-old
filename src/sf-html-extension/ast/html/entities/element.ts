@@ -1,18 +1,18 @@
-import { Action } from "sf-core/actions";
+import { Action } from "sf-common/actions";
 import { WrapBus } from "mesh";
-import { IEntity } from "sf-core/ast";
-import { bindable } from "sf-core/decorators";
-import { BaseEntity } from "sf-core/ast";
+import { IEntity } from "sf-common/ast";
+import { bindable } from "sf-common/decorators";
+import { BaseEntity } from "sf-common/ast";
 import { IHTMLNodeEntity } from "./base";
 import { MetadataKeys } from "sf-front-end/constants";
 import { HTMLNodeEntity } from "./node";
-import { INamed, IValued } from "sf-core/object";
-import { diffArray, patchArray } from "sf-core/utils/array";
+import { INamed, IValued } from "sf-common/object";
+import { diffArray, patchArray } from "sf-common/utils/array";
 import { parseCSS, parseCSSStyle } from "sf-html-extension/ast";
-import { EntityFactoryDependency } from "sf-core/dependencies";
+import { EntityFactoryDependency } from "sf-common/dependencies";
 import { IDOMSection, NodeSection } from "sf-html-extension/dom";
 import { HTMLElementExpression, HTMLAttributeExpression } from "sf-html-extension/ast";
-import { AttributeChangeAction, NODE_ADDED, NODE_REMOVING, PROPERTY_CHANGE } from "sf-core/actions";
+import { AttributeChangeAction, NODE_ADDED, NODE_REMOVING, PROPERTY_CHANGE } from "sf-common/actions";
 import { CSSRuleExpression, CSSStyleExpression, IHTMLElementAttributeEntity } from "sf-html-extension/ast";
 import * as sift from "sift";
 
