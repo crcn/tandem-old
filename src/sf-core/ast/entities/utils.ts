@@ -36,7 +36,12 @@ export async function removeEntitySources(...entities: Array<IEntity>) {
   const document = entities[0].document;
 
   entities.forEach((entity) => {
-    entity.source.parent.removeChild(entity.source);
+
+    // may have already been removed. This will happen in cases
+    // where multiple entities that share the same source are removed.
+    if (entity.source.parent) {
+      entity.source.parent.removeChild(entity.source);
+    }
   });
 
   await document.update();

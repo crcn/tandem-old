@@ -1,14 +1,3 @@
 <link rel="stylesheet" type="text/css" href="./style.scss" />
-
-<artboard id="repeat">
-  ${Array.from({ length: Number(count) }, () => children)}
-</artboard>
-
-<repeat count="10">
-  <div class="item">
-    hello!
-  </div>
-  <div class="item2">
-    hello!!
-  </div>
-</repeat>
+<div class="item">
+</div>
