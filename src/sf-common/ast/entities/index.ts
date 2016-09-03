@@ -1,8 +1,8 @@
 import { inject } from "sf-common/decorators";
 import { BubbleBus } from "sf-common/busses";
 import { watchProperty } from "sf-common/observable";
-import { bindable, mixin, virtual } from "sf-common/decorators";
 import { IDisposable, ITyped, IValued } from "sf-common/object";
+import { bindable, mixin, virtual, patchable } from "sf-common/decorators";
 import { IInjectable, Injector, DEPENDENCIES_NS, Dependencies } from "sf-common/dependencies";
 import { EntityFactoryDependency, EntityDocumentDependency, ENTITY_DOCUMENT_NS } from "sf-common/dependencies";
 
@@ -25,13 +25,19 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   public metadata: EntityMetadata;
 
   @inject(DEPENDENCIES_NS)
+  @patchable
   protected _dependencies: Dependencies;
 
   @inject(ENTITY_DOCUMENT_NS)
+  @patchable
   readonly document: IEntityDocument;
 
-  constructor(protected _source: T) {
+  @patchable
+  protected _source: T;
+
+  constructor(_source: T) {
     super();
+    this._source = _source;
     this.initialize();
   }
 
@@ -71,9 +77,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     await entity.load();
   }
 
-  loadLeaf() {
-
-  }
+  loadLeaf() { }
 
   public updateSource() {
     for (const child of this.children) {
@@ -92,8 +96,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   }
 
   public patch(entity: BaseEntity<T>) {
-    this._source       = entity._source;
-    this._dependencies = entity._dependencies;
     this.updateFromSource();
     this.updateFromLoaded();
   }
@@ -124,18 +126,15 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 export abstract class BaseValueEntity<T extends IExpression & IValued> extends BaseEntity<T> implements IValueEntity {
 
   @bindable()
+  @patchable
   public value: any;
+
   private _shouldUpdate: boolean;
 
   constructor(source: T) {
     super(source);
     this.value = source.value;
     watchProperty(this, "value", this.onValueChange.bind(this));
-  }
-
-  public patch(entity: BaseValueEntity<T>) {
-    super.patch(entity);
-    this.value  = this.source.value;
   }
 
   mapSourceChildren() {

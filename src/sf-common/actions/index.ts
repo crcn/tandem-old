@@ -5,16 +5,12 @@ import { File } from "../models";
 export * from "./base";
 export * from "./core";
 
-export class SaveAction extends Action {
-  static readonly SAVE_FILE = "saveFile";
 
-  readonly path: string;
-  readonly content: string;
+export class SaveAllFilesAction extends Action {
+  static readonly SAVE_ALL_FILES = "saveAllFiles";
 
-  constructor(file: File) {
-    super(SaveAction.SAVE_FILE);
-    this.path = file.path;
-    this.content = file.content;
+  constructor() {
+    super(SaveAllFilesAction.SAVE_ALL_FILES);
   }
 }
 

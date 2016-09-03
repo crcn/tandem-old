@@ -4,8 +4,8 @@ import { HTMLFile } from "sf-html-extension/models/html-file";
 import { EntityMetadata } from "sf-common/ast/entities";
 import { HTMLNodeEntity } from "./node";
 import { IHTMLNodeEntity } from "./base";
-import { HTMLExpression, IHTMLValueNodeExpression } from "sf-html-extension/ast";
 import { NodeSection, IDOMSection } from "sf-html-extension/dom";
+import { HTMLExpression, IHTMLValueNodeExpression } from "sf-html-extension/ast";
 import { DEPENDENCIES_NS, Dependencies, Injector } from "sf-common/dependencies";
 
 export abstract class HTMLValueNodeEntity<T extends HTMLExpression & IHTMLValueNodeExpression> extends HTMLNodeEntity<T> implements IHTMLNodeEntity {

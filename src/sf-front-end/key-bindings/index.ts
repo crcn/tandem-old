@@ -1,6 +1,6 @@
 import { Action } from "sf-common/actions";
 import { KeyBinding } from "./base";
-import { SaveAction } from "sf-common/actions";
+import { SaveAllFilesAction } from "sf-common/actions";
 import { FrontEndApplication } from "sf-front-end/application";
 import { GlobalKeyBindingDependency } from "sf-front-end/dependencies";
 import { EditorToolFactoryDependency } from "sf-front-end/dependencies";
@@ -36,10 +36,7 @@ export const dependency = [
   }),
   new GlobalKeyBindingDependency("meta+s", class SaveCommand extends BaseApplicationCommand<FrontEndApplication> {
     async execute(action: Action) {
-
-      // TODO - this.app.workspace.activeEntity.document.file instead
-      await this.bus.execute(new SaveAction(this.app.workspace.file));
-      // TODO - dispatch alert here
+      await this.bus.execute(new SaveAllFilesAction());
     }
   }),
   new GlobalKeyBindingDependency("backspace", class DeleteSelectionCommand extends BaseCommand {

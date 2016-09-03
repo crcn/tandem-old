@@ -8,7 +8,6 @@ import {
   Logger,
   loggable,
   document,
-  SaveAction,
   filterAction,
   IApplication,
   PostDSAction,
@@ -19,9 +18,10 @@ import {
   ReadFileAction,
   WatchFileAction,
   DEPENDENCIES_NS,
-  UpdateTemporaryFileContentAction,
+  SaveAllFilesAction,
   BaseApplicationService,
   ApplicationServiceDependency,
+  UpdateTemporaryFileContentAction,
 } from "sf-common";
 
 @loggable()
@@ -42,8 +42,11 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @document("saves a file to disk")
-  saveFile(action: SaveAction) {
-    fs.writeFile(action.path, action.content);
+  [SaveAllFilesAction.SAVE_ALL_FILES](action: SaveAllFilesAction) {
+    for (const key in this._fileCache) {
+      this.logger.info("saving %s", key);
+      fs.writeFileSync(key, this._fileCache[key].content);
+    }
   }
 
   /**

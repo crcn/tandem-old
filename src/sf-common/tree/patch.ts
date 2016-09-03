@@ -1,6 +1,7 @@
 import { ITreeNode } from "./base";
-import { IComparable, IPatchable } from "sf-common/object";
 import { diffArray } from "sf-common/utils/array";
+import { getPatchableProperties } from "sf-common/decorators";
+import { IComparable, IPatchable } from "sf-common/object";
 
 type ComparableTreeType = ITreeNode<any> & IComparable & IPatchable;
 
@@ -35,5 +36,10 @@ export const compareTreeNodes = (a: ITreeNode<any>, b: ITreeNode<any>): number =
 };
 
 export const patchLeaf = (oldNode: ComparableTreeType, newNode: ComparableTreeType) => {
+
+  for (const property of getPatchableProperties(oldNode)) {
+    oldNode[property] = newNode[property];
+  }
+
   oldNode.patch(newNode);
 };
