@@ -46,6 +46,8 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
     const filePath = await GetPrimaryProjectFilePathAction.execute(this.bus);
 
+    if (this.app.workspace && this.app.workspace.file.path === filePath) return;
+
     this.logger.info("loading project file %s", filePath);
 
     const file = await File.open(filePath, this._dependencies) as DocumentFile<any>;
