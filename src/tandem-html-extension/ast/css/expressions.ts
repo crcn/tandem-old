@@ -1,25 +1,35 @@
-import { IRange } from "tandem-common/geom";
-import { BaseExpression } from "tandem-common/ast";
+import {
+  IRange,
+  diffArray,
+  patchArray,
+  BaseExpression,
+} from "tandem-common";
 
-import { diffArray, patchArray } from "tandem-common/utils/array";
+import * as sift from "sift";
 
 export abstract class CSSExpression extends BaseExpression<CSSExpression> {
 
-  constructor(position: IRange) {
-    super(position);
+  constructor(source: string, position: IRange) {
+    super(source, position);
   }
 
   // TODO - make this abstract
   patch(source: CSSExpression) { }
+
 }
 
 export class CSSStyleExpression extends CSSExpression {
   private _declarationsByKey: any;
   private _values: any;
 
-  constructor(public declarations: Array<CSSStyleDeclarationExpression>, public position: IRange) {
-    super(position);
+  constructor(declarations: Array<CSSStyleDeclarationExpression>, source: string, position: IRange) {
+    super(source, position);
     this._reset();
+    declarations.forEach((declaration) => this.appendChild(declaration));
+  }
+
+  get declarations(): Array<CSSStyleDeclarationExpression> {
+    return <any>this.children;
   }
 
   private _reset() {
@@ -32,15 +42,6 @@ export class CSSStyleExpression extends CSSExpression {
     }
   }
 
-  patch(b: CSSStyleExpression) {
-    this.position = b.position;
-    patchArray(this.declarations, diffArray(this.declarations, b.declarations, (a, b) => a .key === b.key), (a, b) => {
-      a.patch(b);
-      return a;
-    });
-    this._reset();
-  }
-
   public updateDeclarations(style: Object) {
     for (let key in style) {
       const value = style[key];
@@ -49,7 +50,7 @@ export class CSSStyleExpression extends CSSExpression {
       if ((declaration = this._declarationsByKey[key])) {
         declaration.value = value;
       } else {
-        this.declarations.push(this._declarationsByKey[key] = new CSSStyleDeclarationExpression(key, value, null));
+        this.appendChild(this._declarationsByKey[key] = new CSSStyleDeclarationExpression(key, new CSSLiteralExpression(value, this.source, null), null, null));
       }
       this._values[key] = value;
     }
@@ -69,23 +70,23 @@ export class CSSStyleExpression extends CSSExpression {
   }
 
   toString() {
-    return this.declarations.join(" ");
+    return this.declarations.join("");
   };
 }
 
 export class CSSStyleDeclarationExpression extends CSSExpression {
-  constructor(public key: string, public value: CSSExpression, public position: IRange) {
-    super(position);
+  constructor(public key: string, value: CSSExpression, source: string, position: IRange) {
+    super(source, position);
+    this.appendChild(value);
   }
 
-  patch(b: CSSStyleDeclarationExpression) {
-    this.position = b.position;
-    this.key = b.key;
-    if (this.value.constructor === b.value.constructor) {
-      this.value.patch(b);
-    } else {
-      this.value = b.value;
-    }
+  set value(value: CSSExpression) {
+    this.removeChild(this.value);
+    this.appendChild(value);
+  }
+
+  get value(): CSSExpression {
+    return <any>this.children[0];
   }
 
   /**
@@ -104,13 +105,13 @@ export class CSSStyleDeclarationExpression extends CSSExpression {
 
   toString() {
     if (this.key === "") return "";
-    return [this.key, ": ", this.value.toString(), ";"].join("");
+    return [this.getWhitespaceBeforeStart(), this.key, ": ", this.value.toString(), ";", this.parent.lastChild === this ? this.getWhitespaceAfterEnd() : ""].join("");
   }
 }
 
 export class CSSLiteralExpression extends CSSExpression {
-  constructor(public value: string, public position: IRange) {
-    super(position);
+  constructor(public value: string, source: string, position: IRange) {
+    super(source, position);
   }
   toString() {
     return this.value;
@@ -118,8 +119,13 @@ export class CSSLiteralExpression extends CSSExpression {
 }
 
 export class CSSFunctionCallExpression extends CSSExpression {
-  constructor(public name: string, public parameters: Array<CSSExpression>, public position: IRange) {
-    super(position);
+  constructor(public name: string, parameters: Array<CSSExpression>, source, position: IRange) {
+    super(source, position);
+    parameters.forEach((param) => this.appendChild(param));
+  }
+
+  get parameters(): Array<CSSExpression> {
+    return <any>this.children;
   }
 
   toString() {
@@ -128,8 +134,8 @@ export class CSSFunctionCallExpression extends CSSExpression {
 }
 
 export class CSSListValueExpression extends CSSExpression {
-  constructor(public values: Array<CSSExpression>, public position: IRange) {
-    super(position);
+  constructor(public values: Array<CSSExpression>, source, position: IRange) {
+    super(source, position);
   }
 
   toString() {
@@ -139,43 +145,51 @@ export class CSSListValueExpression extends CSSExpression {
 
 export class CSSRuleExpression extends CSSExpression {
   readonly name: string;
-  constructor(public selector: CSSSelectorExpression, public style: CSSStyleExpression, position: IRange) {
-    super(position);
+  constructor(selector: CSSSelectorExpression, style: CSSStyleExpression, source: string, position: IRange) {
+    super(source, position);
     this.name = selector ? selector.toString() : "";
+    this.appendChild(selector);
+    this.appendChild(style);
   }
 
-  patch(b: CSSRuleExpression) {
-    this.position  = b.position;
-    this.selector = b.selector;
-    this.style.patch(b.style);
+  get selector(): CSSSelectorExpression {
+    return <any>this.children[0];
   }
+
+  get style(): CSSStyleExpression {
+    return <any>this.children[1];
+  }
+
   test(node: Element): boolean {
     return this.selector.test(node);
   }
 
   toString() {
-    return `${this.selector} { ${this.style} }`;
+    return [
+      this.getWhitespaceBeforeStart() || " ",
+      this.selector.toString(),
+      " {",
+      this.style.toString(),
+      "}",
+      this.parent.lastChild === this ? this.getWhitespaceAfterEnd() : ""
+    ].join("");
   }
 }
 
 
 export class CSSStyleSheetExpression extends CSSExpression {
 
-  constructor(public rules: Array<CSSRuleExpression>, position: IRange) {
-    super(position);
+  constructor(rules: Array<CSSRuleExpression>, source: string, position: IRange) {
+    super(source, position);
     rules.forEach((child) => this.appendChild(child));
   }
 
-  patch(b: CSSStyleSheetExpression) {
-    this.position = b.position;
-    patchArray(this.rules, diffArray<CSSRuleExpression>(this.rules, b.rules, (a, b) => a.name === b.name), (a, b) => {
-      a.patch(b);
-      return a;
-    });
+  get rules(): Array<CSSRuleExpression> {
+    return <any>this.children;
   }
 
   toString() {
-    return this.children.join("\n");
+    return this.children.join("");
   }
 }
 
@@ -183,9 +197,9 @@ export class CSSStyleSheetExpression extends CSSExpression {
  * SELECTORS
  */
 
-export class CSSSelectorExpression extends CSSExpression {
-  constructor(position: IRange) {
-    super(position);
+export abstract class CSSSelectorExpression extends CSSExpression {
+  constructor(source: string, position: IRange) {
+    super(source, position);
   }
 
   test(node: Element): boolean {
@@ -196,10 +210,14 @@ export class CSSSelectorExpression extends CSSExpression {
 // a, b { }
 
 export class CSSSelectorListExpression extends CSSSelectorExpression {
-  constructor(public selectors: Array<CSSSelectorExpression>, position: IRange) {
-    super(position);
+  constructor(selectors: Array<CSSSelectorExpression>, source: string, position: IRange) {
+    super(source, position);
+    selectors.forEach((selector) => this.appendChild(selector));
   }
 
+  get selectors(): Array<CSSSelectorExpression> {
+    return <any>this.children;
+  }
 
   test(node: Element): boolean {
     return isElement(node) && !!this.selectors.find((selector) => selector.test(node));
@@ -213,8 +231,8 @@ export class CSSSelectorListExpression extends CSSSelectorExpression {
 // .class-name { }
 
 export class CSSClassNameSelectorExpression extends CSSSelectorExpression {
-  constructor(public value: string, position: IRange) {
-    super(position);
+  constructor(public value: string, source: string, position: IRange) {
+    super(source, position);
   }
   test(node: Element): boolean {
     return isElement(node) && node.hasAttribute("class") && node.getAttribute("class").split(" ").indexOf(this.value) !== -1;
@@ -227,8 +245,8 @@ export class CSSClassNameSelectorExpression extends CSSSelectorExpression {
 // # { }
 
 export class CSSIDSelectorExpression extends CSSSelectorExpression {
-  constructor(public value: string, position: IRange) {
-    super(position);
+  constructor(public value: string, source: string, position: IRange) {
+    super(source, position);
   }
   test(node: Element): boolean {
     return node.hasAttribute("id") && node.getAttribute("id") === this.value;
@@ -241,8 +259,8 @@ export class CSSIDSelectorExpression extends CSSSelectorExpression {
 // * { }
 
 export class CSSAnySelectorExpression extends CSSSelectorExpression {
-  constructor(public value: string, position: IRange) {
-    super(position);
+  constructor(source: string, position: IRange) {
+    super(source, position);
   }
   test(node: Element): boolean {
     return true;
@@ -255,8 +273,8 @@ export class CSSAnySelectorExpression extends CSSSelectorExpression {
 // div { }
 
 export class CSSTagNameSelectorExpression extends CSSSelectorExpression {
-  constructor(public value: string, position: IRange) {
-    super(position);
+  constructor(public value: string, source: string, position: IRange) {
+    super(source, position);
   }
   test(node: Element): boolean {
     return String(node.nodeName).toUpperCase() === this.value.toUpperCase();
@@ -267,22 +285,42 @@ export class CSSTagNameSelectorExpression extends CSSSelectorExpression {
 }
 
 export class CSSChildSelectorExpression extends CSSSelectorExpression {
-  constructor(public parentSelector: CSSSelectorExpression, public target: CSSSelectorExpression, position: IRange) {
-    super(position);
+  constructor(parentSelector: CSSSelectorExpression, target: CSSSelectorExpression, source: string, position: IRange) {
+    super(source, position);
+    this.appendChild(parentSelector);
+    this.appendChild(target);
+  }
+
+  get parentSelector(): CSSSelectorExpression {
+    return <any>this.children[0];
+  }
+
+  get target(): CSSSelectorExpression {
+    return <any>this.children[1];
   }
 
   test(node: Element): boolean {
     return this.target.test(node) && node.parentNode && this.parentSelector.test(<Element>node.parentNode);
   }
   toString() {
-    return `${this.parent} > ${this.target}`;
+    return `${this.parentSelector} > ${this.target}`;
   }
 }
 
 
 export class CSSDescendentSelectorExpression extends CSSSelectorExpression {
-  constructor(public parentSelector: CSSSelectorExpression, public target: CSSSelectorExpression, position: IRange) {
-    super(position);
+  constructor(parentSelector: CSSSelectorExpression, target: CSSSelectorExpression, source: string, position: IRange) {
+    super(source, position);
+    this.appendChild(parentSelector);
+    this.appendChild(target);
+  }
+
+  get parentSelector(): CSSSelectorExpression {
+    return <any>this.children[0];
+  }
+
+  get target(): CSSSelectorExpression {
+    return <any>this.children[1];
   }
 
   test(node: Element): boolean {
@@ -295,16 +333,25 @@ export class CSSDescendentSelectorExpression extends CSSSelectorExpression {
     return false;
   }
   toString() {
-    return `${this.parent} ${this.target}`;
+    return `${this.parentSelector} ${this.target}`;
   }
 }
 
 
 export class CSSSiblingSelectorExpression extends CSSSelectorExpression {
-  constructor(public prev: CSSSelectorExpression, public target: CSSSelectorExpression, position: IRange) {
-    super(position);
+  constructor(prev: CSSSelectorExpression, target: CSSSelectorExpression, source: string, position: IRange) {
+    super(source, position);
+    this.appendChild(prev);
+    this.appendChild(target);
   }
 
+  get prev(): CSSSelectorExpression {
+    return <any>this.children[0];
+  }
+
+  get target(): CSSSelectorExpression {
+    return <any>this.children[1];
+  }
 
   test(node: Element) {
     const parent = node.parentNode;
@@ -323,8 +370,18 @@ export class CSSSiblingSelectorExpression extends CSSSelectorExpression {
 }
 
 export class CSSAdjacentSiblingSelectorExpression extends CSSSelectorExpression {
-  constructor(public prev: CSSSelectorExpression, public target: CSSSelectorExpression, position: IRange) {
-    super(position);
+  constructor(prev: CSSSelectorExpression, target: CSSSelectorExpression, source: string, position: IRange) {
+    super(source, position);
+    this.appendChild(prev);
+    this.appendChild(target);
+  }
+
+  get prev(): CSSSelectorExpression {
+    return <any>this.children[0];
+  }
+
+  get target(): CSSSelectorExpression {
+    return <any>this.children[1];
   }
 
   test(node: Element) {
@@ -340,8 +397,22 @@ function isElement(node: Node) {
 }
 
 export class CSSPsuedoSelectorExpression extends CSSSelectorExpression {
-  constructor(public selector: CSSSelectorExpression, public name: string, public rules: Array<CSSSelectorExpression>, position: IRange) {
-    super(position);
+  constructor(selector: CSSSelectorExpression, public name: string, rules: Array<CSSSelectorExpression>, source: string, position: IRange) {
+    super(source, position);
+    this.appendChild(selector);
+    rules.forEach((rule) => rule && this.appendChild(rule));
+  }
+
+  get selector(): CSSSelectorExpression {
+    return <CSSSelectorExpression>this.children[0];
+  }
+
+  get rules(): Array<CSSSelectorExpression> {
+    return <Array<CSSSelectorExpression>>this.children.slice(1);
+  }
+
+  get target(): CSSSelectorExpression {
+    return <any>this.children[1];
   }
 
   test(node: Element) {
@@ -360,14 +431,16 @@ export class CSSPsuedoSelectorExpression extends CSSSelectorExpression {
 
 export class CSSMediaExpression extends CSSSelectorExpression {
   readonly name: string;
-  constructor(public query: string, public stylesheet: CSSStyleSheetExpression, position: IRange) {
-    super(position);
+  constructor(public query: string, stylesheet: CSSStyleSheetExpression, source: string, position: IRange) {
+    super(source, position);
     this.name = query;
+    this.appendChild(stylesheet);
   }
 
-  patch() {
-
+  get stylesheet(): CSSStyleSheetExpression {
+    return <CSSStyleSheetExpression>this.children[0];
   }
+
   test(node: Element) {
     return false;
   }
@@ -378,13 +451,15 @@ export class CSSMediaExpression extends CSSSelectorExpression {
 }
 
 export class CSSKeyFramesExpression extends CSSSelectorExpression {
-  constructor(public name: string, public keyframes: Array<CSSKeyFrameExpression>, position: IRange) {
-    super(position);
-  }
-  patch() {
-
+  constructor(public name: string, keyframes: Array<CSSKeyFrameExpression>, source: string, position: IRange) {
+    super(source, position);
+    keyframes.forEach((keyframe) => this.appendChild(keyframe));
   }
 
+  get keyframes(): Array<CSSKeyFrameExpression> {
+    return <Array<CSSKeyFrameExpression>>this.children;
+
+  }
   test(node: Element) {
     return false;
   }
@@ -395,8 +470,13 @@ export class CSSKeyFramesExpression extends CSSSelectorExpression {
 }
 
 export class CSSKeyFrameExpression extends CSSSelectorExpression {
-  constructor(public start: number, public style: CSSStyleDeclarationExpression, position: IRange) {
-    super(position);
+  constructor(public start: number, style: CSSStyleDeclarationExpression, source: string, position: IRange) {
+    super(source, position);
+    this.appendChild(style);
+  }
+
+  get style(): CSSStyleDeclarationExpression {
+    return <CSSStyleDeclarationExpression>this.children[0];
   }
 
   test(node: Element) {
@@ -409,8 +489,18 @@ export class CSSKeyFrameExpression extends CSSSelectorExpression {
 }
 
 export class CSSAndSelectorExpression extends CSSSelectorExpression {
-  constructor(public left: CSSSelectorExpression, public right: CSSSelectorExpression, position: IRange) {
-    super(position);
+  constructor(left: CSSSelectorExpression, right: CSSSelectorExpression, source: string, position: IRange) {
+    super(source, position);
+    this.appendChild(left);
+    this.appendChild(right);
+  }
+
+  get left(): CSSSelectorExpression {
+    return <CSSSelectorExpression>this.children[0];
+  }
+
+  get right(): CSSSelectorExpression {
+    return <CSSSelectorExpression>this.children[0];
   }
 
   test(node: Element) {
@@ -423,8 +513,8 @@ export class CSSAndSelectorExpression extends CSSSelectorExpression {
 
 
 export class CSSAttributeExistsSelectorExpression extends CSSSelectorExpression {
-  constructor(public name: string, public position: IRange) {
-    super(position);
+  constructor(public name: string, source: string, position: IRange) {
+    super(source, position);
   }
   test(node: Element) {
     return node.hasAttribute(this.name);
@@ -436,8 +526,8 @@ export class CSSAttributeExistsSelectorExpression extends CSSSelectorExpression 
 
 
 export class CSSAttributeEqualsSelectorExpression extends CSSSelectorExpression {
-  constructor(public name: string, public value: string, public position: IRange) {
-    super(position);
+  constructor(public name: string, public value: string, source: string, position: IRange) {
+    super(source, position);
   }
   test(node: Element) {
     return node.hasAttribute(this.name) && node.getAttribute(this.name) === this.value;
@@ -449,8 +539,8 @@ export class CSSAttributeEqualsSelectorExpression extends CSSSelectorExpression 
 
 
 export class CSSAttributeContainsSelectorExpression extends CSSSelectorExpression {
-  constructor(public name: string, public value: string, public position: IRange) {
-    super(position);
+  constructor(public name: string, public value: string, source: string, position: IRange) {
+    super(source, position);
   }
   test(node: Element) {
     return node.hasAttribute(this.name) && node.getAttribute(this.name).indexOf(this.value) !== -1;
@@ -462,8 +552,8 @@ export class CSSAttributeContainsSelectorExpression extends CSSSelectorExpressio
 
 
 export class CSSAttributeStartsWithSelectorExpression extends CSSSelectorExpression {
-  constructor(public name: string, public value: string, public position: IRange) {
-    super(position);
+  constructor(public name: string, public value: string, source: string, position: IRange) {
+    super(source, position);
   }
   test(node: Element) {
     return node.hasAttribute(this.name) && node.getAttribute(this.name).indexOf(this.value) === 0;
@@ -475,8 +565,8 @@ export class CSSAttributeStartsWithSelectorExpression extends CSSSelectorExpress
 
 
 export class CSSAttributeEndsWithSelectorExpression extends CSSSelectorExpression {
-  constructor(public name: string, public value: string, public position: IRange) {
-    super(position);
+  constructor(public name: string, public value: string, source: string, position: IRange) {
+    super(source, position);
 
   }
   test(node: Element) {

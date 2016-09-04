@@ -1,12 +1,15 @@
 import * as sift from "sift";
-import { INamed } from "tandem-common/object";
-import { IRange } from "tandem-common/geom";
-import { TreeNode } from "tandem-common/tree";
-import { IExpression, BaseExpression } from "tandem-common/ast";
-import { register as registerSerializer } from "tandem-common/serialize";
+import {
+  INamed,
+  IRange,
+  TreeNode,
+  IExpression,
+  BaseExpression,
+  register as registerSerializer,
+} from "tandem-common";
+
 
 export interface IHTMLExpression extends IExpression {
-  patch(expression: IHTMLExpression);
 }
 
 export interface IHTMLValueNodeExpression extends IHTMLExpression {
@@ -14,21 +17,24 @@ export interface IHTMLValueNodeExpression extends IHTMLExpression {
 }
 
 export abstract class HTMLExpression extends BaseExpression<HTMLExpression> implements IHTMLExpression {
-  constructor(readonly name: string, position: IRange) {
-    super(position);
+  constructor(source: string, position: IRange) {
+    super(source, position);
   }
-  abstract patch(expression: IHTMLExpression);
 }
 
-export abstract class HTMLNodeExpression extends HTMLExpression { }
+export abstract class HTMLNodeExpression extends HTMLExpression {
+  constructor(readonly name: string, source: string, position: IRange) {
+    super(source, position);
+  }
+}
 
 export class HTMLContainerExpression extends HTMLNodeExpression {
-  constructor(name: string, childNodes: Array<HTMLExpression>, position: IRange) {
-    super(name, position);
+  constructor(name: string, childNodes: Array<HTMLExpression>, source: string, position: IRange) {
+    super(name, source, position);
     childNodes.forEach((child) => this.appendChild(child));
   }
 
-  get childNodes(): Array<HTMLAttributeExpression> {
+  get childNodes(): Array<HTMLNodeExpression> {
     return <any>this.children.filter(<any>sift({ $type: HTMLNodeExpression }));
   }
 
@@ -37,18 +43,17 @@ export class HTMLContainerExpression extends HTMLNodeExpression {
       this.removeChild(childNode);
     }
   }
-
-  patch(expression: HTMLExpression) { }
 }
 
 export class HTMLFragmentExpression extends HTMLContainerExpression implements IHTMLExpression {
-  constructor(children: Array<HTMLExpression>, position: IRange) {
-    super("#document-fragment", children, position);
+  constructor(children: Array<HTMLExpression>, source: string, position: IRange) {
+    super("#document-fragment", children, source, position);
   }
 
   clone(): HTMLFragmentExpression {
     return new HTMLFragmentExpression(
       this.childNodes.map(node => node.clone()),
+      this.source,
       this.position
     );
   }
@@ -68,8 +73,9 @@ export class HTMLElementExpression extends HTMLContainerExpression {
     name: string,
     attributes: Array<HTMLAttributeExpression>,
     childNodes: Array<HTMLExpression>,
-    public position: IRange) {
-    super(name, childNodes, position);
+    source: string,
+    position: IRange) {
+    super(name, childNodes, source, position);
     attributes.forEach((attribute) => this.appendChild(attribute));
   }
 
@@ -93,7 +99,7 @@ export class HTMLElementExpression extends HTMLContainerExpression {
       }
     }
     if (!found) {
-      this.attributes.push(new HTMLAttributeExpression(name, value, null));
+      this.attributes.push(new HTMLAttributeExpression(name, value, null, null));
     }
   }
 
@@ -110,15 +116,25 @@ export class HTMLElementExpression extends HTMLContainerExpression {
       this.name,
       this.attributes.map(attribute => attribute.clone()),
       this.childNodes.map(node => node.clone()),
+      this.source,
       this.position
     );
   }
 
   public toString() {
-    const buffer = ["<", this.name];
+
+    const buffer = [];
+
+    let preWhitespace = this.getWhitespaceBeforeStart();
+
+    buffer.push(preWhitespace);
+
+    buffer.push("<", this.name);
+
     for (const attribute of this.attributes) {
       buffer.push(" ", attribute.toString());
     }
+
     if (this.children.length) {
       buffer.push(">");
       for (const child of this.childNodes) {
@@ -126,24 +142,35 @@ export class HTMLElementExpression extends HTMLContainerExpression {
       }
       buffer.push("</", this.name, ">");
     } else {
-      buffer.push("/>");
+      buffer.push(" />");
     }
+
+    let endWhitespace = this.getWhitespaceAfterEnd();
+
+    if (this.parent.lastChild === this) {
+      buffer.push(endWhitespace);
+    }
+
+    // necessary to add a newline character at the end of a source in case new
+    // expressions are added at the end
+    // if (isEOF(this.position, this.source) && /^\n/.test(endWhitespace)) {
+    //   buffer.push("\n");
+    // }
+
     return buffer.join("");
   }
 }
 
-export class HTMLAttributeExpression extends BaseExpression<HTMLAttributeExpression> implements IExpression {
-  constructor(public name: string, public value: any, position: IRange) {
-    super(position);
-  }
-  patch(attribute: HTMLAttributeExpression) {
-
+export class HTMLAttributeExpression extends HTMLExpression implements IExpression {
+  constructor(public name: string, public value: any, source: string, position: IRange) {
+    super(source, position);
   }
 
   clone(): HTMLAttributeExpression {
     return new HTMLAttributeExpression(
       this.name,
       this.value,
+      this.source,
       this.position
     );
   }
@@ -159,48 +186,49 @@ export class HTMLAttributeExpression extends BaseExpression<HTMLAttributeExpress
 }
 
 export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValueNodeExpression {
-  constructor(public value: string, public position: IRange) {
-    super("#text", position);
+  constructor(public value: string, source: string, position: IRange) {
+    super("#text", source, position);
   }
 
   clone(): HTMLTextExpression {
     return new HTMLTextExpression(
       this.value,
+      this.source,
       this.position
     );
   }
 
-  patch(expression: HTMLTextExpression) {
-    this.value = expression.value;
-    this.position = expression.position;
-  }
   toString() {
 
     // only WS - trim
     if (/^[\s\n\t\r]+$/.test(this.value)) return "";
-    return this.value.trim();
+
+    return [
+      this.getWhitespaceBeforeStart(),
+      this.value.trim(),
+      this.getWhitespaceAfterEnd()
+    ].join("");
   }
 }
 
 export class HTMLCommentExpression extends HTMLNodeExpression implements IHTMLValueNodeExpression {
-  constructor(public value: string, public position: IRange) {
-    super("#comment", position);
+  constructor(public value: string, source: string, position: IRange) {
+    super("#comment", source, position);
   }
 
   clone(): HTMLCommentExpression {
     return new HTMLCommentExpression(
       this.value,
+      this.source,
       this.position
     );
   }
 
-  patch(expression: HTMLCommentExpression) {
-    this.value = expression.value;
-    this.position = expression.position;
-  }
   toString() {
-    return ["<!--", this.value, "-->"].join("");
+    return [
+      this.getWhitespaceBeforeStart(),
+      "<!--", this.value, "-->"
+    ].join("");
   }
 }
-
 

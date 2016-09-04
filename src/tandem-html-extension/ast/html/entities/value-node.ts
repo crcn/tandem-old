@@ -5,10 +5,10 @@ import { EntityMetadata } from "tandem-common/ast/entities";
 import { HTMLNodeEntity } from "./node";
 import { IHTMLNodeEntity } from "./base";
 import { NodeSection, IDOMSection } from "tandem-html-extension/dom";
-import { HTMLExpression, IHTMLValueNodeExpression } from "tandem-html-extension/ast";
 import { DEPENDENCIES_NS, Dependencies, Injector } from "tandem-common/dependencies";
+import { HTMLNodeExpression, IHTMLValueNodeExpression } from "tandem-html-extension/ast";
 
-export abstract class HTMLValueNodeEntity<T extends HTMLExpression & IHTMLValueNodeExpression> extends HTMLNodeEntity<T> implements IHTMLNodeEntity {
+export abstract class HTMLValueNodeEntity<T extends HTMLNodeExpression & IHTMLValueNodeExpression> extends HTMLNodeEntity<T> implements IHTMLNodeEntity {
 
   private _value: any;
 

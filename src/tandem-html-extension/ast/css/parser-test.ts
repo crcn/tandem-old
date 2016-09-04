@@ -61,7 +61,7 @@ describe(__filename + "#", () => {
     });
 
     it("can parse multiple css rules", () => {
-      expect(parse(`.a{ color: red; } .b{ color: blue; }`).rules.length).to.equal(2);
+      expect(parse(`.a{ color: red; } .b{ color: blue; }  .c{ color: blue; }`).rules.length).to.equal(3);
     });
   });
 

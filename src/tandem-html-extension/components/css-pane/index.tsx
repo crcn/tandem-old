@@ -25,7 +25,7 @@ class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, 
   }
 
   onValueChange = (event) => {
-    this.props.declaration.value = new CSSLiteralExpression(event.target.value, null);
+    this.props.declaration.value = new CSSLiteralExpression(event.target.value, null, null);
     this.props.workspace.file.update();
   }
 
@@ -65,7 +65,7 @@ class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, 
 
 class StylePaneComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, entity: VisibleHTMLElementEntity, rule: CSSRuleExpression }, any> {
   addNewDeclaration = () => {
-    this.props.rule.style.declarations.push(new CSSStyleDeclarationExpression("", new CSSLiteralExpression("", null), null));
+    this.props.rule.style.declarations.push(new CSSStyleDeclarationExpression("", new CSSLiteralExpression("", null, null), null, null));
     this.forceUpdate();
   }
 
@@ -96,7 +96,7 @@ export class CSSPaneComponent extends React.Component<{ workspace: Workspace, ap
     const entity: VisibleHTMLElementEntity = selection[0];
 
     return <div className="m-css-pane m-pane-container--content">
-        <StylePaneComponent {...this.props} entity={entity} rule={new CSSRuleExpression(null, entity.styleExpression, null)} key="style" />
+        <StylePaneComponent {...this.props} entity={entity} rule={new CSSRuleExpression(null, entity.styleExpression, null, null)} key="style" />
         {
           selection.cssRuleExpressions.map((rule, key) => {
             return <StylePaneComponent {...this.props} entity={entity} rule={rule} key={key} />;

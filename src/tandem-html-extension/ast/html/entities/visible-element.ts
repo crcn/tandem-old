@@ -19,7 +19,7 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
 
   updateFromLoaded() {
     const style = this.getAttribute("style");
-    const newExpression = style ? parseCSSStyle(String(style)) : new CSSStyleExpression([], null);
+    const newExpression = style ? parseCSSStyle(String(style)) : new CSSStyleExpression([], null, null);
 
     if (this._styleExpression) {
       this._styleExpression.patch(newExpression);

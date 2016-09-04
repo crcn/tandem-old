@@ -28,14 +28,14 @@ Start
 
 Fragment
   = nodes:Node* {
-    return new HTMLFragmentExpression(nodes, position());
+    return new HTMLFragmentExpression(nodes, input, position());
   }
 
 Node
   = _ node:(Comment/VoidElement/Element/BlockNode/TextNode) _ { return node; }
 
 Comment
-  = '<!--' characters:CommentCharacter* '-->' { return new HTMLCommentExpression(characters.join(''), position()); }
+  = '<!--' characters:CommentCharacter* '-->' { return new HTMLCommentExpression(characters.join(''), input, position()); }
 
 CommentCharacter
   = !'-->' character:. { return character; }
@@ -47,7 +47,7 @@ VoidElement
       expected("</" + nodeName + ">");
     }
 
-    return new HTMLElementExpression(nodeName, attributes, [], position());
+    return new HTMLElementExpression(nodeName, attributes, [], input, position());
   }
 
 EndVoidTag
@@ -63,7 +63,7 @@ Element
 
 ElementWithoutChildNodes
   = startTag:ElementStart attributes:ElementAttributes '/>' {
-    return new HTMLElementExpression(startTag, attributes, [], position());
+    return new HTMLElementExpression(startTag, attributes, [], input, position());
   }
 
 ElementWithChildNodes
@@ -71,7 +71,7 @@ ElementWithChildNodes
     if (startTag != endTag) {
       expected('</' + startTag + '>');
     }
-    return new HTMLElementExpression(startTag, attributes, childNodes, position());
+    return new HTMLElementExpression(startTag, attributes, childNodes, input, position());
   }
 
 ElementStart
@@ -84,7 +84,7 @@ ElementAttributes
 
 ElementAttribute
   = _ key:Name '=' value:AttributeValue _ {
-    return new HTMLAttributeExpression(key, value, position());
+    return new HTMLAttributeExpression(key, value, input, position());
   }
   / _ key:Name _ {
     return new HTMLAttributeExpression(key, "");
@@ -95,7 +95,7 @@ AttributeValue
 
 AttributeBlock
   = value: Block {
-    return new PCBlockAttributeExpression("attributeBlockValue", value, position());
+    return new PCBlockAttributeExpression("attributeBlockValue", value, input, position());
   }
 
 String
@@ -112,7 +112,7 @@ SingleStringCharacter
 
 TextNode
   = TextNodeCharacter+ {
-    return new HTMLTextExpression(text(), position());
+    return new HTMLTextExpression(text(), input, position());
   }
 
 TextNodeCharacter
@@ -127,7 +127,7 @@ _
 
 BlockNode
   = value: Block {
-    return new PCBlockNodeExpression(value, position());
+    return new PCBlockNodeExpression(value, input, position());
   }
 
 Block

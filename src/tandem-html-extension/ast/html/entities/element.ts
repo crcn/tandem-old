@@ -56,7 +56,7 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
   setAttribute(name: string, value: any) {
     const attribute = this.getAttributeEntity(name);
     if (!attribute) {
-      const expr = new HTMLAttributeExpression(name, value, null);
+      const expr = new HTMLAttributeExpression(name, value, null, null);
       this.source.appendChild(expr);
       const entity = new HTMLAttributeEntity(expr);
       this.appendChild(entity);

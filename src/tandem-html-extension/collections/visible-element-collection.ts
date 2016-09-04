@@ -23,7 +23,7 @@ export class VisibleHTMLElementCollection<T extends VisibleHTMLElementEntity>  e
       }
     }
 
-    const expr = new CSSStyleExpression(<Array<CSSStyleDeclarationExpression>>values(declarationsByKey), null);
+    const expr = new CSSStyleExpression(<Array<CSSStyleDeclarationExpression>>values(declarationsByKey), null, null);
     if (this._styleExpression) {
       this._styleExpression.patch(expr);
     } else {

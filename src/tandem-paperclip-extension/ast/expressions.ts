@@ -1,11 +1,11 @@
 import { IRange } from "tandem-common/geom";
 import { BaseExpression } from "tandem-common/ast";
-import { HTMLNodeExpression } from "tandem-html-extension/ast";
+import { HTMLNodeExpression, HTMLExpression } from "tandem-html-extension/ast";
 
-export class PCBlockAttributeExpression extends BaseExpression<any> {
+export class PCBlockAttributeExpression extends HTMLExpression {
 
-  constructor(public name: string, public value: string, position: IRange) {
-    super(position);
+  constructor(public name: string, public value: string, source: string, position: IRange) {
+    super(source, position);
   }
   toString() {
     return `\${ ${this.value} }`;
@@ -15,21 +15,20 @@ export class PCBlockAttributeExpression extends BaseExpression<any> {
     return new PCBlockAttributeExpression(
       this.name,
       this.value,
+      this.source,
       this.position
     );
   }
 }
 
 export class PCBlockNodeExpression extends HTMLNodeExpression {
-  constructor(public value: any, position: IRange) {
-    super("#block", position);
-  }
-  patch(entity: PCBlockNodeExpression) {
-    this.value = entity.value;
+  constructor(public value: any, source: string, position: IRange) {
+    super("#block", source, position);
   }
   clone(): PCBlockNodeExpression {
     return new PCBlockNodeExpression(
       this.value,
+      this.source,
       this.position
     );
   }

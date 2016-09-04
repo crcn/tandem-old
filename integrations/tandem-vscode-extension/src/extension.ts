@@ -96,6 +96,7 @@ export async function activate(context: vscode.ExtensionContext) {
     }, 500);
 
     let startServerCommand = vscode.commands.registerCommand("extension.tandemOpenCurrentFile", () => {
+        exec(`open http://localhost:${port}`);
 
         _update(vscode.window.activeTextEditor.document);
 
@@ -128,8 +129,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
     vscode.workspace.onDidChangeTextDocument(onChange);
     vscode.window.onDidChangeActiveTextEditor(run);
-
-    exec(`open http://localhost:${port}`);
 }
 
 // this method is called when your extension is deactivated

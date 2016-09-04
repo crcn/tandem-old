@@ -58,24 +58,25 @@ CSSStyleSheetExpression
 
 CSSRule
   = _ selector: CSSSelectors style: CSSStyle {
-    return new CSSRuleExpression(selector, style);
+    return new CSSRuleExpression(selector, style, input, position());
   }
 
 CSSStyle
   = _ "{" _ declarations: CSSStyleDeclaration* _  "}" _ {
-    return new CSSStyleExpression(declarations, position());
+    return new CSSStyleExpression(declarations, input, position());
   }
 
 CSSSelectors
   = first:CSSSelector rest:CSSSelectorSibling* {
-    return new CSSSelectorListExpression([first].concat(rest));
+    const items = [first].concat(rest);
+    return items.length === 1 && false ? items[0] : new CSSSelectorListExpression(items);
   }
 
 CSSSelectorSibling
   = _ "," selector:CSSSelector { return selector; }
 
 CSSSelector
-  = _ last: CSSSelectorRule _ rest: CSSChildSelector*  {
+  = _ first: CSSSelectorRule _ rest: CSSChildSelector*  {
 
     const classes = {
       ">": CSSChildSelectorExpression,
@@ -91,7 +92,8 @@ CSSSelector
       return new clazz(createExpression(items), child);
     }
 
-    return createExpression(flatten([last].concat(rest)));
+    const expr = createExpression(flatten([first].concat(rest)));
+    return expr;
   }
   / CSSSelectorRule
 
@@ -108,7 +110,7 @@ CSSNestedSelectorRule
 
 CSSSelectorRule
   = rule: CSSItemSelector? ":" pseudo: CSSPseudoSelectorRule {
-    return new CSSPsuedoSelectorExpression(rule, pseudo, [], position())
+    return new CSSPsuedoSelectorExpression(rule || new CSSAnySelectorExpression(), pseudo, [], input, position())
   }
   / CSSItemSelector
 
@@ -122,7 +124,7 @@ CSSItemSelector
 
 CSSAttributeSelector
   = tag:CSSTagSelector? "[" rule: CSSAttributeSelectorRule "]" {
-    return new CSSAndSelectorExpression(tag || new CSSAnySelectorExpression(null), rule);
+    return new CSSAndSelectorExpression(tag || new CSSAnySelectorExpression(), rule, input, position());
   }
 
 CSSAttributeSelectorRule
@@ -135,10 +137,10 @@ CSSAttributeSelectorRule
       "|=": CSSAttributeStartsWithSelectorExpression,
       "^=": CSSAttributeStartsWithSelectorExpression,
     }[op];
-    return new clazz(name, value, position());
+    return new clazz(name, value, input, position());
   }
   / name: CSSTagSelectorText {
-    return new CSSAttributeExistsSelectorExpression(name, position());
+    return new CSSAttributeExistsSelectorExpression(name, input, position());
   }
 
 CSSAttributeSelectorValue
@@ -158,7 +160,7 @@ SingleStringCharacter
 
 CSSMedia
   = "@media" _ query:CSSMediaQuery _ "{" stylesheet: CSSStyleSheetExpression "}" _ {
-    return new CSSMediaExpression(query, stylesheet, position());
+    return new CSSMediaExpression(query, stylesheet, input, position());
   }
 
 CSSMediaQuery
@@ -178,7 +180,7 @@ CSSRestInnerBlock
 
 CSSKeyFrames
   = "@keyframes" _ name: CSSKeyFrameName _ "{" keyframes:CSSKeyFrame* "}" {
-    return new CSSKeyFramesExpression(name, keyframes, position());
+    return new CSSKeyFramesExpression(name, keyframes, input, input, position());
   }
 
 
@@ -199,10 +201,10 @@ CSSAttributeSelectorValueCharacter
   = !"]" . { return text(); }
 
 CSSTagSelector
-  = "." value: CSSTagSelectorText { return new CSSClassNameSelectorExpression(value, position()) }
-  / "#" value: CSSTagSelectorText { return new CSSIDSelectorExpression(value, position()); }
-  / "*" { return new CSSAnySelectorExpression(position()); }
-  / CSSTagSelectorText { return new CSSTagNameSelectorExpression(text(), position()); }
+  = "." value: CSSTagSelectorText { return new CSSClassNameSelectorExpression(value, input, input, position()) }
+  / "#" value: CSSTagSelectorText { return new CSSIDSelectorExpression(value, input, position()); }
+  / "*" { return new CSSAnySelectorExpression(input, position()); }
+  / CSSTagSelectorText { return new CSSTagNameSelectorExpression(text(), input, position()); }
 
 CSSTagSelectorText
   = CSSSelectorCharacter+ { return text().trim(); }
@@ -212,7 +214,7 @@ CSSSelectorCharacter
 
 CSSStyleDeclaration
   = !("}") _ key:CSSStyleDeclarationKey _ ':' _ value:CSSLiteralValue? _ ';'? _ {
-    return new CSSStyleDeclarationExpression(key, value || new CSSLiteralExpression(""), position());
+    return new CSSStyleDeclarationExpression(key, value || new CSSLiteralExpression(""), input, position());
   }
 
 CSSStyleDeclarationKey
@@ -228,12 +230,12 @@ CSSSingleValue
 
 CSSLiteralValue
   = value:CSSValue {
-    return new CSSLiteralExpression(text(), position());
+    return new CSSLiteralExpression(text().trim(), input, position());
   }
 
 CSSFunctionCall
   = name:CSSValue parameters:Parameters {
-    return new CSSFunctionCallExpression(name, parameters, position());
+    return new CSSFunctionCallExpression(name, parameters, input, position());
   }
 
 Parameters
@@ -246,7 +248,7 @@ Parameters
 
 CSSListValue
   = values:(CSSSpaceList/CSSCommaList) {
-    return values.length === 1 ? values[0] : new CSSListValueExpression(values, position());
+    return values.length === 1 ? values[0] : new CSSListValueExpression(values, input, position());
   }
 
 CSSCommaList
@@ -274,7 +276,7 @@ CSSValueCharacter
 
 Number
   = (Digit '.' Digit+) / ('.' Digit+) / Digit {
-    return new LiteralExpression(Number(text()), position());
+    return new LiteralExpression(Number(text()), input, position());
   }
 
 Digit

@@ -33,10 +33,6 @@ describe(__filename + `#`, () => {
       expect(text).to.an.instanceOf(HTMLTextExpression);
       expect((<HTMLTextExpression>text).value).to.equal("hello");
     });
-
-    it("trims the ends", () => {
-      expect((<HTMLTextExpression>(<HTMLFragmentExpression>parse("  hello  ")).children[0]).value).to.equal("hello");
-    });
   });
 
   describe("elements#", () => {
