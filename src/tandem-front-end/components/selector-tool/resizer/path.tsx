@@ -3,7 +3,7 @@ import * as  React from "react";
 import { startDrag } from "tandem-front-end/utils/component";
 import { Editor } from "tandem-front-end/models/editor";
 
-class PathComponent extends React.Component<{ strokeWidth: number, showPoints: boolean, pointRadius: number, editor: Editor, onPointChange: Function, zoom: number, onPointMouseUp: Function, points: Array<any> }, any> {
+class PathComponent extends React.Component<{ strokeWidth: number, showPoints: boolean, pointRadius: number, editor: Editor, onPointChange: Function, zoom: number, onPointMouseUp: Function, onPointMouseDown: Function, points: Array<any> }, any> {
 
   onPointDown(point, index, event) {
 
@@ -16,6 +16,7 @@ class PathComponent extends React.Component<{ strokeWidth: number, showPoints: b
     const sy = point.top;
 
     event.stopPropagation();
+    this.props.onPointMouseDown(...arguments);
 
     startDrag(event, (event2, info) => {
 

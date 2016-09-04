@@ -96,6 +96,7 @@ class ResizerComponent extends React.Component<{
   private _dragger: any;
   private _movingTimer: any;
   private _dragTimer: any;
+  private _currentGuider: Guider;
   private _visibleEntities: VisibleEntityCollection<IVisibleEntity>;
 
   constructor() {
@@ -156,7 +157,7 @@ class ResizerComponent extends React.Component<{
     const anchor: IPoint  = point.anchor;
 
     let bounds = resize(point.currentBounds.clone(), point.delta, point.anchor, keepAspectRatio, keepCenter);
-    const guider = this.createGuider();
+    const guider = this._currentGuider;
 
     const currentPoint = new Point(
       bounds.left + bounds.width * anchor.left,
@@ -235,8 +236,14 @@ class ResizerComponent extends React.Component<{
     });
   }
 
+  onPointMouseDown = () => {
+    this._currentGuider = this.createGuider();
+    this.props.editor.metadata.set(MetadataKeys.MOVING, true);
+  }
+
   onPointMouseUp = () => {
     this.file.update();
+    this.props.editor.metadata.set(MetadataKeys.MOVING, false);
     this.setState({ guideLines: undefined });
     this.props.onStopResizing();
   }
@@ -303,6 +310,7 @@ class ResizerComponent extends React.Component<{
           editor={this.props.editor}
           showPoints={capabilities.resizable}
           onPointChange={this.updatePoint}
+          onPointMouseDown={this.onPointMouseDown}
           onPointMouseUp={this.onPointMouseUp}
           zoom={this.props.zoom}
           points={points}

@@ -24,9 +24,9 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
       return (<DocumentFile<any>>entity.document).path.indexOf(action.filePath) !== -1;
     });
 
-    console.log(selectableEntities);
-
     const selection = [];
+    const selectedSources = [];
+
     for (const entity of selectableEntities) {
 
       const position = entity.source.position;
@@ -44,11 +44,15 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
             const parentIndex = selection.indexOf(entity.parent);
 
+            // there are cases where registered components will use the same source -- skip them.
+            if (selectedSources.indexOf(entity.source) !== -1) continue;
+
             if (parentIndex > -1) {
               selection.splice(parentIndex, 1);
             }
 
             selection.push(entity);
+            selectedSources.push(entity.source);
           }
         }
       }

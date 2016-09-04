@@ -85,7 +85,7 @@ export async function activate(context: vscode.ExtensionContext) {
         return fileName;
     }
 
-    const _update = throttle(async (document:vscode.TextDocument) => {
+    const _update = debounce(async (document:vscode.TextDocument) => {
 
         _documentUri = document.uri;
         const newContent = document.getText();
