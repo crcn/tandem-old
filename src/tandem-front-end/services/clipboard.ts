@@ -1,11 +1,14 @@
-import { Logger } from "tandem-common/logger";
-import { loggable } from "tandem-common/decorators";
-import { serialize } from "tandem-common/serialize";
-import { INITIALIZE } from "tandem-common/actions";
+
 import { PasteAction } from "tandem-front-end/actions";
 import { FrontEndApplication } from "tandem-front-end/application";
-import { BaseApplicationService } from "tandem-common/services";
-import { ApplicationServiceDependency } from "tandem-common/dependencies";
+import {
+  Logger,
+  loggable,
+  serialize,
+  InitializeAction,
+  BaseApplicationService,
+  ApplicationServiceDependency,
+} from "tandem-common";
 
 function targetIsInput(event) {
   return /input|textarea/i.test(event.target.nodeName);
@@ -16,7 +19,7 @@ export default class ClipboardService extends BaseApplicationService<FrontEndApp
 
   public logger: Logger;
 
-  [INITIALIZE]() {
+  [InitializeAction.INITIALIZE]() {
     document.addEventListener("copy", (event: ClipboardEvent) => {
 
       if (targetIsInput(event)) return;

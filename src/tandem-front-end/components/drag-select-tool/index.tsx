@@ -6,8 +6,8 @@ import { MetadataKeys } from "tandem-front-end/constants";
 import { BoundingRect } from "tandem-common/geom";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { IEntity, IVisibleEntity } from "tandem-common/ast/entities";
+import { SelectAction, MouseAction } from "tandem-front-end/actions";
 import { ReactComponentFactoryDependency } from "tandem-front-end/dependencies";
-import { SelectAction, MouseAction, CANVAS_MOUSE_DOWN } from "tandem-front-end/actions";
 
 class DragSelectComponent extends React.Component<{ allEntities: any, app: FrontEndApplication, zoom: number, tool: PointerTool }, any> {
 
@@ -21,7 +21,7 @@ class DragSelectComponent extends React.Component<{ allEntities: any, app: Front
   }
 
   execute(action: MouseAction) {
-    if (action.type === CANVAS_MOUSE_DOWN) {
+    if (action.type === MouseAction.CANVAS_MOUSE_DOWN) {
       this.startDrag(action.originalEvent);
     }
   }

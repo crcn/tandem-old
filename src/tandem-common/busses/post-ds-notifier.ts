@@ -1,13 +1,13 @@
 import { IActor } from "tandem-common/actors";
 import { Response } from "mesh";
-import { Action, DS_INSERT, DS_REMOVE, DS_UPDATE, PostDSAction } from "tandem-common/actions";
+import { Action, DSInsertAction, DSRemoveAction, DSUpdateAction, PostDSAction } from "tandem-common/actions";
 
 export class PostDsNotifierBus implements IActor {
   constructor(private _dsBus: IActor, private _mainBus: IActor) { }
 
   execute(action: Action) {
 
-    if ([DS_INSERT, DS_REMOVE, DS_UPDATE].indexOf(action.type) > -1) {
+    if ([DSInsertAction.DS_INSERT, DSRemoveAction.DS_REMOVE, DSUpdateAction.DS_UPDATE].indexOf(action.type) > -1) {
       return new Response((writable) => {
           (<Response>this._dsBus.execute(action)).pipeTo({
           write: (data) => {

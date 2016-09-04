@@ -1,9 +1,11 @@
-import { LOAD } from "tandem-common/actions";
-import { loggable } from "tandem-common/decorators";
-import { IOService } from "tandem-common/services";
-import { IApplication } from "tandem-common/application";
 import * as SocketIOClient from "socket.io-client";
-import { ApplicationServiceDependency } from "tandem-common/dependencies";
+import {
+  loggable,
+  IOService,
+  LoadAction,
+  IApplication,
+  ApplicationServiceDependency,
+} from "tandem-common";
 
 @loggable()
 export default class BackEndService extends IOService<IApplication> {
@@ -14,8 +16,8 @@ export default class BackEndService extends IOService<IApplication> {
    * initializes the back-end actor
    */
 
-  async [LOAD]() {
-    await super[LOAD]();
+  async [LoadAction.LOAD]() {
+    await super[LoadAction.LOAD]();
 
     if (!this.app.config.backend || !this.app.config.backend.port) {
       return;

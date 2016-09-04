@@ -4,8 +4,8 @@ import { loggable } from "tandem-common/decorators";
 import { toArray } from "tandem-common/utils/array";
 import * as Mousetrap from "mousetrap";
 import { KeyBinding } from "tandem-front-end/key-bindings/base";
-import { INITIALIZE } from "tandem-common/actions";
 import { IApplication } from "tandem-common/application";
+import { InitializeAction } from "tandem-common/actions";
 import { KeyBindingManager } from "tandem-front-end/key-bindings";
 import { BaseApplicationService } from "tandem-common/services";
 import { GlobalKeyBindingDependency } from "tandem-front-end/dependencies";
@@ -17,7 +17,7 @@ export default class GlobalKeyBindingService extends BaseApplicationService<IApp
   public logger: Logger;
   private _manager: KeyBindingManager;
 
-  [INITIALIZE]() {
+  [InitializeAction.INITIALIZE]() {
     this._manager = new KeyBindingManager(this.app.bus, document.body);
     for (const keyBindingDependency of GlobalKeyBindingDependency.findAll(this.app.dependencies)) {
       this._addKeyBinding(keyBindingDependency);

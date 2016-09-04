@@ -18,8 +18,6 @@ import {
   IFileModelActionResponseData
 } from "tandem-common/actions";
 
-
-
 export class File extends Observable {
 
   @bindable()

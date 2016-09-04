@@ -5,9 +5,11 @@ import { IRange, IPoint } from "tandem-common/geom";
 import { IEditor, IEditorTool, IHistoryItem } from "tandem-front-end/models";
 import { EditorToolFactoryDependency } from "tandem-front-end/dependencies";
 
-export const CANVAS_MOUSE_DOWN = "canvasMouseDown";
-export const SELECTION_DOUBLE_CLICK = "selectionDoubleClick";
 export class MouseAction extends Action {
+
+  static readonly CANVAS_MOUSE_DOWN = "canvasMouseDown";
+  static readonly SELECTION_DOUBLE_CLICK = "selectionDoubleClick";
+
   constructor(type, readonly originalEvent: MouseEvent) {
     super(type);
     Object.assign(this, {
@@ -21,8 +23,10 @@ export class MouseAction extends Action {
   }
 }
 
-export const CANVAS_KEY_DOWN = "canvasKeyDown";
 export class KeyboardAction extends Action {
+
+  static readonly CANVAS_KEY_DOWN = "canvasKeyDown";
+
   readonly keyCode: number;
   readonly which: number;
   constructor(type, readonly originalEvent: KeyboardEvent) {
@@ -38,33 +42,35 @@ export class KeyboardAction extends Action {
   }
 }
 
-export const SELECT = "select";
 export class SelectAction extends Action {
+
+  static readonly SELECT = "SELECT";
 
   public items: Array<any>;
   public keepPreviousSelection: boolean;
   public toggle: boolean;
 
   constructor(items: any = undefined, keepPreviousSelection = false, toggle = false) {
-    super(SELECT);
+    super(SelectAction.SELECT);
     this.items = toArray(items);
     this.keepPreviousSelection = !!keepPreviousSelection;
     this.toggle = toggle;
   }
 }
 
-export const SELECT_ALL = "selectAll";
+
 export class SelectAllAction extends Action {
+  static readonly SELECT_ALL = "selectAll";
   constructor() {
-    super(SELECT_ALL);
+    super(SelectAllAction.SELECT_ALL);
   }
 }
 
-export const SELECT_SOURCE_AT_OFFSET = "selectAtSourceOffset";
 export class SelectSourceAtOffsetAction extends Action {
+  static readonly SELECT_SOURCE_AT_OFFSET = "selectAtSourceOffset";
   readonly data: Array<IRange>;
   constructor(...data: Array<IRange>) {
-    super(SELECT_SOURCE_AT_OFFSET);
+    super(SelectSourceAtOffsetAction.SELECT_SOURCE_AT_OFFSET);
     this.data = data;
   }
 }
@@ -82,17 +88,17 @@ export class ZoomAction extends Action {
   }
 }
 
-export const PASTE = "paste";
 export class PasteAction extends Action {
+  static readonly PASTE = "paste";
   constructor(readonly item: DataTransferItem) {
-    super(PASTE);
+    super(PasteAction.PASTE);
   }
 }
 
-export const DELETE_SELECTION = "deleteSelection";
 export class DeleteSelectionAction extends Action {
+  static readonly DELETE_SELECTION = "deleteSelection";
   constructor() {
-    super(DELETE_SELECTION);
+    super(DeleteSelectionAction.DELETE_SELECTION);
   }
 }
 
@@ -103,30 +109,30 @@ export class SetToolAction extends Action {
   }
 }
 
-export const KEY_COMMAND = "keyCommand";
 export class KeyCommandAction extends Action {
+  static readonly KEY_COMMAND = "keyCommand";
   constructor(readonly combo: string) {
-    super(KEY_COMMAND);
+    super(KeyCommandAction.KEY_COMMAND);
   }
 }
 
-export const UNDO = "undo";
 export class UndoAction extends Action {
+  static readonly UNDO = "undo";
   constructor() {
-    super(UNDO);
+    super(UndoAction.UNDO);
   }
 }
 
-export const REDO = "redo";
 export class RedoAction extends Action {
+  static readonly REDO = "redo";
   constructor() {
-    super(REDO);
+    super(RedoAction.REDO);
   }
 }
 
-export const REMOVE_SELECTION = "removeSelection";
 export class RemoveSelectionAction extends Action {
+  static readonly REMOVE_SELECTION = "removeSelection";
   constructor() {
-    super(REMOVE_SELECTION);
+    super(RemoveSelectionAction.REMOVE_SELECTION);
   }
 }

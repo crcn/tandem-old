@@ -10,15 +10,15 @@ import {
   File,
   tween,
   Action,
+  Logger,
   inject,
   loggable,
   IDisposable,
-  INITIALIZE,
-  Logger,
   easeOutCubic,
   DSFindAction,
   Dependencies,
   DEPENDENCIES_NS,
+  InitializeAction,
   OpenProjectAction,
   BaseApplicationService,
   ApplicationServiceDependency,
@@ -34,7 +34,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
   private _tweener: IDisposable;
   private _zoomTimeout: any;
 
-  async [INITIALIZE](action: Action) {
+  async [InitializeAction.INITIALIZE](action: Action) {
     await this._loadWorkspaces();
 
     // set the pointer tool as default. TODO - this

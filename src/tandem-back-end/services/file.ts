@@ -12,7 +12,6 @@ import {
   IApplication,
   PostDSAction,
   Dependencies,
-  DS_DID_UPDATE,
   OpenFileAction,
   DSUpdateAction,
   ReadFileAction,

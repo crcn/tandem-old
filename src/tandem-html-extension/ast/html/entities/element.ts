@@ -12,7 +12,7 @@ import { EntityFactoryDependency } from "tandem-common/dependencies";
 import { IDOMSection, NodeSection } from "tandem-html-extension/dom";
 import { INamed, IValued, IExpression } from "tandem-common";
 import { HTMLElementExpression, HTMLAttributeExpression } from "tandem-html-extension/ast";
-import { AttributeChangeAction, NODE_ADDED, NODE_REMOVING, PROPERTY_CHANGE } from "tandem-common/actions";
+import { AttributeChangeAction, TreeNodeAction, PropertyChangeAction } from "tandem-common/actions";
 import { CSSRuleExpression, CSSStyleExpression, IHTMLElementAttributeEntity } from "tandem-html-extension/ast";
 import * as sift from "sift";
 
@@ -86,9 +86,9 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
     const element = <Element>this.section.targetNode;
 
     if (action.target.parent === this && action.target.source instanceof HTMLAttributeExpression) {
-      if (action.type === NODE_REMOVING) {
+      if (action.type === TreeNodeAction.NODE_REMOVING) {
         element.removeAttribute(action.target.name);
-      } else if (action.type === PROPERTY_CHANGE || action.type === NODE_ADDED) {
+      } else if (action.type === PropertyChangeAction.PROPERTY_CHANGE || action.type === TreeNodeAction.NODE_ADDED) {
         element.setAttribute(action.target.name, action.target.value);
       }
     }

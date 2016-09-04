@@ -8,8 +8,8 @@ import { FrontEndApplication } from "tandem-front-end/application";
 import { appendSourceChildren } from "tandem-common/ast/entities";
 import { BaseApplicationService } from "tandem-common/services";
 import { VisibleEntityCollection } from "tandem-front-end/collections";
-import { PASTE, PasteAction, SelectAction } from "tandem-front-end/actions";
-import { PasteHTMLEntityAction, PASTE_HTML_ENTITY } from "tandem-html-extension/actions";
+import { PasteAction, SelectAction } from "tandem-front-end/actions";
+import { PasteHTMLEntityAction } from "tandem-html-extension/actions";
 import {
   IInjectable,
   APPLICATION_SINGLETON_NS,
@@ -20,11 +20,11 @@ import {
 export class PasteHTMLService extends BaseApplicationService<FrontEndApplication> {
 
   @filterAction(sift({ "item.type": MimeTypes.HTML_MIME_TYPE }))
-  [PASTE](action: PasteAction) {
+  [PasteAction.PASTE](action: PasteAction) {
     this.bus.execute(new PasteHTMLEntityAction(action.item));
   }
 
-  [PASTE_HTML_ENTITY](action: PasteAction) {
+  [PasteHTMLEntityAction.PASTE_HTML_ENTITY](action: PasteHTMLEntityAction) {
 
     // TODO - need to paste to editor.focus (entity)
     action.item.getAsString(async (content) => {

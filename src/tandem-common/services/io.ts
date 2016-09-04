@@ -7,7 +7,7 @@ import { loggable, document } from "tandem-common/decorators";
 import { ParallelBus, AcceptBus } from "mesh";
 import { BaseApplicationService } from "tandem-common/services";
 import { Dependencies, Injector } from "tandem-common/dependencies";
-import { INITIALIZE, LOG, LOAD, PROPERTY_CHANGE } from "tandem-common/actions";
+import { LoadAction, InitializeAction, PropertyChangeAction, LogAction } from "tandem-common/actions";
 
 @loggable()
 export class IOService<T extends IApplication> extends BaseApplicationService<T> {
@@ -15,7 +15,7 @@ export class IOService<T extends IApplication> extends BaseApplicationService<T>
   public logger: Logger;
   public _remoteActors: Array<any>;
 
-  [LOAD]() {
+  [LoadAction.LOAD]() {
 
     // remote actors which take actions from the server
     this._remoteActors = [];
@@ -24,7 +24,7 @@ export class IOService<T extends IApplication> extends BaseApplicationService<T>
     // receive actions from other parts of the application
     this.app.bus.register(
       new AcceptBus(
-        sift({ remote: { $ne: true }, type: {$nin: [LOAD, INITIALIZE, LOG, PROPERTY_CHANGE] }}),
+        sift({ remote: { $ne: true }, type: {$nin: [LoadAction.LOAD, InitializeAction.INITIALIZE, LogAction.LOG, PropertyChangeAction.PROPERTY_CHANGE] }}),
         ParallelBus.create(this._remoteActors),
         null
       )
@@ -37,14 +37,6 @@ export class IOService<T extends IApplication> extends BaseApplicationService<T>
   @document("pings remote connections")
   ping() {
     return "pong";
-  }
-
-  /**
-   */
-
-  @document("returns the number of remote connections")
-  getRemoteConnectionCount() {
-    return this._remoteActors.length;
   }
 
   /**

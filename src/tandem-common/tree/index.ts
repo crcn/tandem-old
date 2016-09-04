@@ -3,7 +3,7 @@ import { WrapBus } from "mesh";
 import { ITreeNode } from "./base";
 import { patchTreeNode } from "./patch";
 import { Observable, IObservable } from "tandem-common/observable";
-import { Action, NODE_ADDED, NODE_REMOVING } from "tandem-common/actions";
+import { Action, TreeNodeAction } from "tandem-common/actions";
 
 export { ITreeNode, patchTreeNode };
 
@@ -109,11 +109,11 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
   }
 
   protected onAdded() {
-    this.notify(new Action(NODE_ADDED));
+    this.notify(new TreeNodeAction(TreeNodeAction.NODE_ADDED));
   }
 
   protected onRemoving() {
-    this.notify(new Action(NODE_REMOVING));
+    this.notify(new TreeNodeAction(TreeNodeAction.NODE_REMOVING));
   }
 
   public clone(): T {

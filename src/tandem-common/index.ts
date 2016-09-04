@@ -21,3 +21,4 @@ export * from "./services";
 export * from "./string";
 export * from "./tree";
 export * from "./workers";
+export * from "./serialize";

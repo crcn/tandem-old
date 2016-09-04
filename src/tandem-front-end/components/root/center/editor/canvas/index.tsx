@@ -13,8 +13,6 @@ import {
   ZoomAction,
   MouseAction,
   KeyboardAction,
-  CANVAS_KEY_DOWN,
-  CANVAS_MOUSE_DOWN,
 } from "tandem-front-end/actions";
 
 export default class EditorStageLayersComponent extends React.Component<{ editor: Editor, workspace: Workspace, dependencies: Dependencies, zoom: number }, any> {
@@ -29,7 +27,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   onMouseDown = (event) => {
-    this.bus.execute(new MouseAction(CANVAS_MOUSE_DOWN, event.nativeEvent || event));
+    this.bus.execute(new MouseAction(MouseAction.CANVAS_MOUSE_DOWN, event.nativeEvent || event));
   }
 
   get bus(): IActor {
@@ -167,7 +165,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   onKey = (event) => {
-    this.bus.execute(new KeyboardAction(CANVAS_KEY_DOWN, event));
+    this.bus.execute(new KeyboardAction(KeyboardAction.CANVAS_KEY_DOWN, event));
   }
 
   render() {

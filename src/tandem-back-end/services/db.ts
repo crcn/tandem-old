@@ -8,10 +8,6 @@ import { BaseApplicationService } from "tandem-common/services";
 import { ApplicationServiceDependency } from "tandem-common/dependencies";
 import {
   DSAction,
-  DS_FIND,
-  DS_INSERT,
-  DS_UPDATE,
-  DS_REMOVE,
   DSFindAction,
   DSInsertAction,
   DSRemoveAction,
@@ -33,7 +29,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("finds an item in the database")
-  [DS_FIND](action: DSFindAction) {
+  [DSFindAction.DS_FIND](action: DSFindAction) {
     return this._db.execute(action);
   }
 
@@ -42,7 +38,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("removes an item in the database")
-  [DS_REMOVE](action: DSRemoveAction) {
+  [DSRemoveAction.DS_REMOVE](action: DSRemoveAction) {
     return this._db.execute(action);
   }
 
@@ -51,7 +47,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("inserts an item in the database")
-  [DS_INSERT](action: DSInsertAction) {
+  [DSInsertAction.DS_INSERT](action: DSInsertAction) {
     return this._db.execute(action);
   }
 
@@ -59,7 +55,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("updates an item in the database")
-  [DS_UPDATE](action: DSUpdateAction) {
+  [DSUpdateAction.DS_UPDATE](action: DSUpdateAction) {
     return this._db.execute(action);
   }
 }

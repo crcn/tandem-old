@@ -11,64 +11,65 @@ export interface Change {
   oldValue: any;
 }
 
-export const NODE_ADDED    = "nodeAdded";
-export const NODE_REMOVING = "nodeRemoving";
+export class TreeNodeAction extends Action {
+  static readonly NODE_ADDED    = "nodeAdded";
+  static readonly NODE_REMOVING = "nodeRemoving";
+}
 
-
-export const CHANGE = "change";
 export class ChangeAction extends Action {
+  static readonly CHANGE = "change";
   constructor(readonly changes: Array<Change>) {
-    super(CHANGE);
+    super(ChangeAction.CHANGE);
   }
 }
 
-export const DISPOSE = "dispose";
 export class DisposeAction extends Action {
+  static readonly DISPOSE = "dispose";
   constructor() {
-    super(DISPOSE);
+    super(DisposeAction.DISPOSE);
   }
 }
 
-export const REMOVE = "remove";
 export class RemoveAction extends Action {
+  static readonly REMOVE = "remove";
   constructor() {
-    super(REMOVE);
+    super(RemoveAction.REMOVE);
   }
 }
 
-export const PROPERTY_CHANGE = "propertyChange";
 export class PropertyChangeAction extends Action {
+  static readonly PROPERTY_CHANGE = "propertyChange";
   constructor(readonly property: string, readonly newValue: any, readonly oldValue: any) {
-    super(PROPERTY_CHANGE);
+    super(PropertyChangeAction.PROPERTY_CHANGE);
   }
 }
 
 
-export const SETTING_CHANGE = "settingChange";
 export class SettingChangeAction extends Action {
+  static readonly SETTING_CHANGE = "settingChange";
   constructor(readonly property: string, readonly newValue: any, readonly oldValue: any) {
-    super(SETTING_CHANGE);
+    super(SettingChangeAction.SETTING_CHANGE);
   }
 }
 
-export const LOAD = "load";
 export class LoadAction extends Action {
+  static readonly LOAD = "load";
   constructor() {
-    super(LOAD);
+    super(LoadAction.LOAD);
   }
 }
 
-export const INITIALIZE = "initialize";
 export class InitializeAction extends Action {
+  static readonly INITIALIZE = "initialize";
   constructor() {
-    super(INITIALIZE);
+    super(InitializeAction.INITIALIZE);
   }
 }
 
-export const LOG        = "log";
 export class LogAction extends Action {
+  static readonly LOG        = "log";
   constructor(readonly level: number, readonly text: string) {
-    super(LOG);
+    super(LogAction.LOG);
   }
 }
 
@@ -79,17 +80,20 @@ export class DSAction extends Action {
   }
 }
 
-export const DS_INSERT = "dsInsert";
 export class DSInsertAction extends DSAction {
+  static readonly DS_INSERT = "dsInsert";
   constructor(collectionName: string, readonly data: any) {
-    super(DS_INSERT, collectionName);
+    super(DSInsertAction.DS_INSERT, collectionName);
+  }
+  static async execute({ collectionName, data }: { collectionName: string, data: any }, bus: IActor) {
+    return await bus.execute(new DSInsertAction(collectionName, data)).readAll();
   }
 }
 
-export const DS_UPDATE = "dsUpdate";
 export class DSUpdateAction extends DSAction {
+  static readonly DS_UPDATE = "dsUpdate";
   constructor(collectionName: string, readonly data: any, readonly query: any) {
-    super(DS_UPDATE, collectionName);
+    super(DSUpdateAction.DS_UPDATE, collectionName);
   }
 
   static async execute(collectionName: string, data: any, query: any, bus: IActor): Promise<Array<any>> {
@@ -97,10 +101,10 @@ export class DSUpdateAction extends DSAction {
   }
 }
 
-export const DS_FIND   = "dsFind";
 export class DSFindAction extends DSAction {
+  static readonly DS_FIND   = "dsFind";
   constructor(collectionName: string, readonly query: any, readonly multi: boolean = false) {
-    super(DS_FIND, collectionName);
+    super(DSFindAction.DS_FIND, collectionName);
   }
 }
 
@@ -110,24 +114,25 @@ export class DSFindAllAction extends DSFindAction {
   }
 }
 
-export const DS_REMOVE   = "dsRemove";
 export class DSRemoveAction extends DSAction {
+  static readonly DS_REMOVE   = "dsRemove";
   constructor(collectionName: string, readonly query: any) {
-    super(DS_REMOVE, collectionName);
+    super(DSRemoveAction.DS_REMOVE, collectionName);
   }
 }
 
-export const DS_UPSERT = "dsUpsert";
 export class DSUpsertAction extends DSAction {
+  static readonly DS_UPSERT = "dsUpsert";
   constructor(collectionName: string, readonly data: any, readonly query: any) {
-    super(DS_UPSERT, collectionName);
+    super(DSUpsertAction.DS_UPSERT, collectionName);
   }
 }
 
-export const DS_DID_INSERT = "dsDidInsert";
-export const DS_DID_REMOVE = "dsDidRemove";
-export const DS_DID_UPDATE = "dsDidUpdate";
 export class PostDSAction extends DSAction {
+
+  static readonly DS_DID_INSERT = "dsDidInsert";
+  static readonly DS_DID_REMOVE = "dsDidRemove";
+  static readonly DS_DID_UPDATE = "dsDidUpdate";
 
   constructor(type: string, collectionName: string, readonly data: any, readonly timestamp: number) {
     super(type, collectionName);
@@ -135,9 +140,9 @@ export class PostDSAction extends DSAction {
 
   static createFromDSAction(action: DSInsertAction|DSUpdateAction|DSRemoveAction, data: any) {
     return new PostDSAction({
-      [DS_INSERT]: DS_DID_INSERT,
-      [DS_UPDATE]: DS_DID_UPDATE,
-      [DS_REMOVE]: DS_DID_REMOVE
+      [DSInsertAction.DS_INSERT]: PostDSAction.DS_DID_INSERT,
+      [DSUpdateAction.DS_UPDATE]: PostDSAction.DS_DID_UPDATE,
+      [DSRemoveAction.DS_REMOVE]: PostDSAction.DS_DID_REMOVE
     }[action.type], action.collectionName, data, action.timestamp);
   }
 }

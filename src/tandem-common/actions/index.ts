@@ -8,7 +8,6 @@ export * from "./core";
 
 export class SaveAllFilesAction extends Action {
   static readonly SAVE_ALL_FILES = "saveAllFiles";
-
   constructor() {
     super(SaveAllFilesAction.SAVE_ALL_FILES);
   }

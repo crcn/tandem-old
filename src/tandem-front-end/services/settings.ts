@@ -4,10 +4,10 @@ import { Metadata } from "tandem-common/metadata";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { BaseApplicationService } from "tandem-common/services";
 import { ApplicationServiceDependency } from "tandem-common/dependencies";
-import { InitializeAction, SettingChangeAction, LOAD } from "tandem-common/actions";
+import { SettingChangeAction, LoadAction } from "tandem-common/actions";
 
 export class SettingsService extends BaseApplicationService<FrontEndApplication> {
-  [LOAD](action: InitializeAction) {
+  [LoadAction.LOAD](action: LoadAction) {
 
     // TODO - this.app.config.settingsKey instead of hard-coded key here
     this.app.settings = new Metadata(store.get("settings"));

@@ -11,9 +11,6 @@ import { Dependencies, MainBusDependency, IInjectable, MAIN_BUS_NS } from "tande
 import {
   Action,
   DSAction,
-  DS_DID_INSERT,
-  DS_DID_REMOVE,
-  DS_DID_UPDATE,
   DSFindAction,
   DSUpdateAction,
   PostDSAction,
@@ -79,8 +76,8 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
     this.bus.register(this._syncBus = new AcceptBus(
       sift({ collectionName: this.collectionName, [`data.${this.idProperty}`]: this[this.idProperty] }),
       new ParallelBus([
-        new TypeWrapBus(DS_DID_UPDATE, this._onDidUpdate),
-        new TypeWrapBus(DS_DID_REMOVE, this.dispose)
+        new TypeWrapBus(PostDSAction.DS_DID_UPDATE, this._onDidUpdate),
+        new TypeWrapBus(PostDSAction.DS_DID_REMOVE, this.dispose)
       ]),
       null
     ));

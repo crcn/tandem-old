@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { Application } from "./index.ts";
-import { LOAD, INITIALIZE } from "tandem-common/actions";
+import { LoadAction, InitializeAction } from "tandem-common/actions";
 import { BaseApplicationService } from "tandem-common/services";
 import { ApplicationSingletonDependency, ApplicationServiceDependency } from "tandem-common/dependencies";
 
@@ -14,8 +14,8 @@ describe(__filename + "#", () => {
     const app = new Application({});
     app.bus.register({
       execute(action) {
-        if (action.type === LOAD) expect(i++).to.equal(0);
-        if (action.type === INITIALIZE) expect(i++).to.equal(1);
+        if (action.type === LoadAction.LOAD) expect(i++).to.equal(0);
+        if (action.type === InitializeAction.INITIALIZE) expect(i++).to.equal(1);
       }
     });
 

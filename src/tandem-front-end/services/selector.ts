@@ -1,17 +1,16 @@
-import { DISPOSE } from "tandem-common/actions";
+
 import { MetadataKeys } from "tandem-front-end/constants";
 import { loggable, bindable } from "tandem-common/decorators";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { BaseApplicationService } from "tandem-common/services";
-import { SelectSourceAtOffsetAction } from "tandem-front-end/actions";
 import { ApplicationServiceDependency } from "tandem-common/dependencies";
 import { IEntity, removeEntitySources } from "tandem-common/ast";
-import { SELECT_SOURCE_AT_OFFSET, SELECT, SELECT_ALL, REMOVE_SELECTION, SelectAction } from "tandem-front-end/actions";
+import { SelectSourceAtOffsetAction, SelectAllAction, RemoveSelectionAction, SelectAction } from "tandem-front-end/actions";
 
 @loggable()
 export default class SelectorService extends BaseApplicationService<FrontEndApplication> {
 
-  [SELECT_SOURCE_AT_OFFSET](action: SelectSourceAtOffsetAction) {
+  [SelectSourceAtOffsetAction.SELECT_SOURCE_AT_OFFSET](action: SelectSourceAtOffsetAction) {
 
     const allEntities = <Array<IEntity>>this.app.workspace.file.entity.flatten();
 
@@ -45,17 +44,13 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
       }
     }
 
-    this[SELECT]({
-      items: selection,
-      toggle: false,
-      keepPreviousSelection: false
-    });
+    this.bus.execute(new SelectAction(selection, false, false));
   }
 
   /**
    */
 
-  async [REMOVE_SELECTION]() {
+  async [RemoveSelectionAction.REMOVE_SELECTION]() {
     await removeEntitySources(...this.app.workspace.selection);
     this.bus.execute(new SelectAction());
   }
@@ -63,7 +58,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
   /**
    */
 
-  [SELECT]({ items, toggle, keepPreviousSelection }) {
+  [SelectAction.SELECT]({ items, toggle, keepPreviousSelection }) {
     const app = this.app;
 
     if (!items.length) {
@@ -104,14 +99,10 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     app.workspace.selection = newSelection;
   }
 
-  [SELECT_ALL]() {
+  [SelectAllAction.SELECT_ALL]() {
 
     // TODO - select call based on focused entity
-    this[SELECT]({
-      items: (<any>this.app.workspace.file.entity).children,
-      keepPreviousSelection: false,
-      toggle: false
-    });
+    this.bus.execute(new SelectAction((<any>this.app.workspace.file.entity).children, false, false));
   }
 }
 

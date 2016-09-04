@@ -1,7 +1,7 @@
 import { IActor } from "tandem-common/actors";
-import { DS_UPSERT } from "tandem-common/actions";
 import { UpsertBus } from "tandem-common/busses";
 import { IApplication } from "tandem-common/application";
+import { DSUpsertAction } from "tandem-common/actions";
 import { BaseApplicationService } from "tandem-common/services";
 import { ApplicationServiceDependency } from "tandem-common/dependencies";
 
@@ -16,7 +16,7 @@ export default class UpsertService extends BaseApplicationService<IApplication> 
   /**
    */
 
-  [DS_UPSERT](action) {
+  [DSUpsertAction.DS_UPSERT](action: DSUpsertAction) {
     return this._bus.execute(action);
   }
 }

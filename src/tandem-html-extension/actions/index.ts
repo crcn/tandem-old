@@ -16,10 +16,9 @@ export class SelectWithCSSSelectorAction extends Action {
     super(SELECT_WITH_CSS_SELECTOR);
   }
 }
-
-export const PASTE_HTML_ENTITY = "pasteHTMLEntity";
 export class PasteHTMLEntityAction extends Action {
+  static readonly PASTE_HTML_ENTITY = "pasteHTMLEntity";
   constructor(readonly item: DataTransferItem) {
-    super(PASTE_HTML_ENTITY);
+    super(PasteHTMLEntityAction.PASTE_HTML_ENTITY);
   }
 }

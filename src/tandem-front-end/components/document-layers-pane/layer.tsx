@@ -11,7 +11,7 @@ import { FrontEndApplication } from "tandem-front-end/application";
 import { flatten, intersection } from "lodash";
 import { LayerLabelComponentFactoryDependency } from "tandem-front-end/dependencies";
 import { DragSource, DropTarget, DndComponent } from "react-dnd";
-import { SelectAction, ToggleSelectAction, SELECT } from "tandem-front-end/actions";
+import { SelectAction, ToggleSelectAction } from "tandem-front-end/actions";
 import { Action, MetadataChangeAction, METADATA_CHANGE } from "tandem-common/actions";
 import { IEntity, appendSourceChildren, insertSourceChildren } from "tandem-common/ast/entities";
 
@@ -338,7 +338,7 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
   execute(action: Action) {
     // when the select action is executed, take all items
     // and ensure that the parent is expanded. Not pretty, encapsulated, and works.
-    if (action.type === SELECT) {
+    if (action.type === SelectAction.SELECT) {
       (action as SelectAction).items.forEach((item: IEntity) => {
         let p = item.parent as IEntity;
         while (p) {
