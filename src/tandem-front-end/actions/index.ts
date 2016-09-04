@@ -69,7 +69,7 @@ export class SelectAllAction extends Action {
 export class SelectSourceAtOffsetAction extends Action {
   static readonly SELECT_SOURCE_AT_OFFSET = "selectAtSourceOffset";
   readonly data: Array<IRange>;
-  constructor(...data: Array<IRange>) {
+  constructor(readonly filePath: string, ...data: Array<IRange>) {
     super(SelectSourceAtOffsetAction.SELECT_SOURCE_AT_OFFSET);
     this.data = data;
   }

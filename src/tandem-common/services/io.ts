@@ -64,7 +64,7 @@ export class IOService<T extends IApplication> extends BaseApplicationService<T>
         // very crude, but works for resolving circular JSON issues
         try {
           for (const key in action) {
-            if (/object/.test(action[key]) && action[key].constructor !== Object) return;
+            if (/object/.test(action[key]) && !/Array|Object/.test(action[key].constructor.name)) return;
           }
 
           data = JSON.parse(JSON.stringify(action));

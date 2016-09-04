@@ -5,5 +5,5 @@
 </div>
 
 <span style="position: absolute;white-space: nowrap;font-family: Helvetica;left: 304px;top: 614px;">
-  Type Something
+  Someting
 </span>

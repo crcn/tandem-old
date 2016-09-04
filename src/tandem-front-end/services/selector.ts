@@ -1,44 +1,54 @@
 
 import { MetadataKeys } from "tandem-front-end/constants";
-import { loggable, bindable } from "tandem-common/decorators";
 import { FrontEndApplication } from "tandem-front-end/application";
-import { BaseApplicationService } from "tandem-common/services";
-import { ApplicationServiceDependency } from "tandem-common/dependencies";
-import { IEntity, removeEntitySources } from "tandem-common/ast";
+import {
+  IEntity,
+  loggable,
+  bindable,
+  BaseEntity,
+  removeEntitySources,
+  BaseApplicationService,
+  ApplicationServiceDependency,
+} from "tandem-common";
+
 import { SelectSourceAtOffsetAction, SelectAllAction, RemoveSelectionAction, SelectAction } from "tandem-front-end/actions";
+
+import { DocumentFile } from "tandem-front-end/models";
 
 @loggable()
 export default class SelectorService extends BaseApplicationService<FrontEndApplication> {
 
   [SelectSourceAtOffsetAction.SELECT_SOURCE_AT_OFFSET](action: SelectSourceAtOffsetAction) {
 
-    const allEntities = <Array<IEntity>>this.app.workspace.file.entity.flatten();
+    const selectableEntities = this.app.workspace.file.entity.flatten().filter((entity: IEntity) => {
+      return (<DocumentFile<any>>entity.document).path.indexOf(action.filePath) !== -1;
+    });
+
+    console.log(selectableEntities);
 
     const selection = [];
-    for (const entity of allEntities) {
-      if (entity["display"]) {
+    for (const entity of selectableEntities) {
 
-        const position = entity.source.position;
+      const position = entity.source.position;
 
-        // since the source can be anything -- even binary format,
-        // we'll need to verify here that the source does indeed have a position
-        // property
-        if (position) {
-          for (const cursor of action.data) {
-            if (
-              (cursor.start >= position.start && cursor.start <= position.end) ||
-              (cursor.end   >= position.start && cursor.end <= position.end) ||
-              (cursor.start <= position.start && cursor.end >= position.end)
-            ) {
+      // since the source can be anything -- even binary format,
+      // we'll need to verify here that the source does indeed have a position
+      // property
+      if (position) {
+        for (const cursor of action.data) {
+          if (
+            (cursor.start >= position.start && cursor.start <= position.end) ||
+            (cursor.end   >= position.start && cursor.end <= position.end) ||
+            (cursor.start <= position.start && cursor.end >= position.end)
+          ) {
 
-              const parentIndex = selection.indexOf(entity.parent);
+            const parentIndex = selection.indexOf(entity.parent);
 
-              if (parentIndex > -1) {
-                selection.splice(parentIndex, 1);
-              }
-
-              selection.push(entity);
+            if (parentIndex > -1) {
+              selection.splice(parentIndex, 1);
             }
+
+            selection.push(entity);
           }
         }
       }

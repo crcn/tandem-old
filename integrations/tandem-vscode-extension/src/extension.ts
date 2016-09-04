@@ -18,6 +18,10 @@ import {
     UpdateTemporaryFileContentAction
 } from "tandem-common";
 
+import {
+    SelectSourceAtOffsetAction
+} from "tandem-front-end/actions";
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
@@ -33,8 +37,7 @@ export async function activate(context: vscode.ExtensionContext) {
             _setEditorContent(action);
             // const uri = (await vscode.workspace.findFiles(action.path, "")).pop();
             // console.log(uri);
-            console.log("UP", action.path);
-            vscode.workspace.openTextDocument(action.path);
+            // vscode.workspace.openTextDocument(action.path);
         }
     }
 
@@ -116,15 +119,11 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     vscode.window.onDidChangeTextEditorSelection(function(e:vscode.TextEditorSelectionChangeEvent) {
-        server.bus.execute({
-            type: "selectAtSourceOffset",
-            data: e.selections.map(function(selection) {
-                return {
-                    start: e.textEditor.document.offsetAt(selection.start),
-                    end: e.textEditor.document.offsetAt(selection.end)
-                };
-            })
-        } as any);
+        const ranges = e.selections.map(selection => ({
+            start: e.textEditor.document.offsetAt(selection.start),
+            end: e.textEditor.document.offsetAt(selection.end)
+        }));
+        server.bus.execute(new SelectSourceAtOffsetAction(fixFileName(e.textEditor.document.fileName), ...ranges));
     });
 
     vscode.workspace.onDidChangeTextDocument(onChange);
