@@ -1,8 +1,7 @@
+import * as sift from "sift";
 import { INamed } from "sf-common/object";
 import { IRange } from "sf-common/geom";
 import { TreeNode } from "sf-common/tree";
-import * as sift from "sift";
-import { diffArray, patchArray } from "sf-common/utils/array";
 import { IExpression, BaseExpression } from "sf-common/ast";
 import { register as registerSerializer } from "sf-common/serialize";
 
@@ -39,15 +38,7 @@ export class HTMLContainerExpression extends HTMLNodeExpression {
     }
   }
 
-  patch(expression: HTMLExpression) {
-    this.position = expression.position;
-    const changes = diffArray(this.children, expression.children, (a, b) => a.name === b.name && a.constructor === b.constructor);
-    patchArray(
-      this.children,
-      changes,
-      (a, b) => { a.patch(b); return a; }
-    );
-  }
+  patch(expression: HTMLExpression) { }
 }
 
 export class HTMLFragmentExpression extends HTMLContainerExpression implements IHTMLExpression {
