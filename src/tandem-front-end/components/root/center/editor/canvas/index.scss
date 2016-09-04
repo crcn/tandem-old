@@ -1,0 +1,16 @@
+@import 'tandem-front-end/scss/variables.scss';
+
+.m-editor-stage-isolate {
+  position: absolute;
+  overflow: hidden;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.m-editor-stage-canvas {
+  background: transparent;
+  width: 100%;
+  height: 100%;
+}

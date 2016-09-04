@@ -5,10 +5,10 @@ var WebpackNotifierPlugin = require('webpack-notifier');
 
 module.exports =  {
   entry: {
-    "sf-front-end": __dirname + "/src/sf-front-end/entry.ts"
+    "tandem-front-end": __dirname + "/src/tandem-front-end/entry.ts"
   },
   output: {
-    path: "lib/sf-front-end/bundle",
+    path: "lib/tandem-front-end/bundle",
     filename: "[name].js"
   },
   sassLoader: {

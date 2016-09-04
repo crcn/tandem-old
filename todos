@@ -62,11 +62,11 @@
 
 - [ ] optimizations
   - [ ] memoize flatten() for entities
-  - [ ] replace most react components with transpiled saffron
+  - [ ] replace most react components with transpiled tandem
   - [ ] possibly custom rendering engine (later on)
 
 - [ ] proof of concept
-  - [ ] saffron must be built with saffron
+  - [ ] tandem must be built with tandem
   - [ ] simple
 
 - [ ] hooks

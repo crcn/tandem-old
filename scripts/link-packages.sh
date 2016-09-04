@@ -6,14 +6,14 @@ var eachAsync = require('./utils/each-async');
 var log = require('./utils/log');
 var path  = require('path');
 
-var saffronPackageFiles = require('./utils/package-paths');
+var tandemPackageFiles = require('./utils/package-paths');
 
-var packageNames = saffronPackageFiles.map(function(packagePath) {
+var packageNames = tandemPackageFiles.map(function(packagePath) {
   return require(packagePath).name;
 });
 
-(!~process.argv.indexOf('--skip-install') ? eachAsync(saffronPackageFiles, npmLink) : Promise.resolve()) 
-.then(eachAsync.bind(this, saffronPackageFiles, linkEachLocalDependency.bind(this, packageNames))).
+(!~process.argv.indexOf('--skip-install') ? eachAsync(tandemPackageFiles, npmLink) : Promise.resolve())
+.then(eachAsync.bind(this, tandemPackageFiles, linkEachLocalDependency.bind(this, packageNames))).
 then(log.done);
 
 function npmLink(packagePath, deps) {

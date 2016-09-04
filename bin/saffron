@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var app = require('../lib/sf-back-end/server');
+var app = require('../lib/tandem-back-end/server');
 
 var argv = require('yargs').argv;
 var path = require('path');

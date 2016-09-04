@@ -1,10 +1,10 @@
 {
-  "name": "saffron",
+  "name": "tandemcode",
   "version": "1.0.0",
-  "description": "[![Build Status](https://travis-ci.org/crcn/saffron.svg?branch=master)](https://travis-ci.org/crcn/saffron) [![Join the chat at https://gitter.im/crcn/saffron](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/saffron?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)",
+  "description": "[![Build Status](https://travis-ci.org/crcn/tandem.svg?branch=master)](https://travis-ci.org/crcn/tandem) [![Join the chat at https://gitter.im/crcn/tandem](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/tandem?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)",
   "main": "index.js",
   "bin": {
-    "sfn": "./bin/saffron"
+    "tandem": "./bin/tandem"
   },
   "directories": {
     "doc": "docs",
@@ -20,14 +20,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/crcn/saffron.git"
+    "url": "git+https://github.com/crcn/tandem.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/crcn/saffron/issues"
+    "url": "https://github.com/crcn/tandem/issues"
   },
-  "homepage": "https://github.com/crcn/saffron#readme",
+  "homepage": "https://github.com/crcn/tandem#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "css-loader": "^0.23.1",
@@ -43,9 +43,9 @@
     "pegjs-loader": "^0.4.0",
     "react": "^15.3.1",
     "react-dom": "^15.2.1",
-    "sf-back-end": "file:./lib/sf-back-end",
-    "sf-common": "file:./lib/sf-common",
-    "sf-front-end": "file:./lib/sf-front-end",
+    "tandem-back-end": "file:./lib/tandem-back-end",
+    "tandem-common": "file:./lib/tandem-common",
+    "tandem-front-end": "file:./lib/tandem-front-end",
     "tslint": "^3.13.0",
     "tslint-loader": "^2.1.5",
     "typescript": "^2.0.0",

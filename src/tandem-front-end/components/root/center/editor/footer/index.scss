@@ -1,0 +1,10 @@
+@import 'tandem-front-end/scss/variables';
+
+.m-preview-footer {
+  font-size: $font-size-1;
+  position: absolute;
+  color: $color-blue-4;
+  padding: $padding-1 $padding-2;
+  bottom: 0px;
+  // background-color:$color-blue-11;
+}

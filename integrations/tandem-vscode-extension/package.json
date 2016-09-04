@@ -1,0 +1,49 @@
+{
+  "name": "tandem-vscode-extension",
+  "displayName": "tandem",
+  "description": "Richer experience for Tandem app",
+  "version": "0.0.3",
+  "publisher": "me",
+  "engines": {
+    "vscode": "^1.0.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.tandemOpenCurrentFile"
+  ],
+  "main": "./lib/src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.tandemOpenCurrentFile",
+        "title": "Open Current File in Tandem"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "build-watch": "echo 'cannot build watch'"
+  },
+  "devDependencies": {
+    "typescript": "^2.0.0",
+    "vscode": "^0.11.0"
+  },
+  "dependencies": {
+    "express": "^4.14.0",
+    "get-port": "^2.1.0",
+    "lodash": "^4.15.0",
+    "mesh": "^6.0.26",
+    "tandem-back-end": "file:../../lib/tandem-back-end",
+    "tandem-common": "file:../../lib/tandem-common",
+    "tandem-front-end": "file:../../src/tandem-front-end"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC"
+}
