@@ -34,6 +34,14 @@ export class HTMLContainerExpression extends HTMLNodeExpression {
     childNodes.forEach((child) => this.appendChild(child));
   }
 
+  get firstChildNode(): HTMLNodeExpression {
+    return this.childNodes[0];
+  }
+
+  get lastChildNode(): HTMLNodeExpression {
+    return this.childNodes[this.childNodes.length - 1];
+  }
+
   get childNodes(): Array<HTMLNodeExpression> {
     return <any>this.children.filter(<any>sift({ $type: HTMLNodeExpression }));
   }
@@ -125,9 +133,7 @@ export class HTMLElementExpression extends HTMLContainerExpression {
 
     const buffer = [];
 
-    let preWhitespace = this.getWhitespaceBeforeStart();
-
-    buffer.push(preWhitespace);
+    buffer.push(this.getWhitespaceBeforeStart());
 
     buffer.push("<", this.name);
 
@@ -145,10 +151,8 @@ export class HTMLElementExpression extends HTMLContainerExpression {
       buffer.push(" />");
     }
 
-    let endWhitespace = this.getWhitespaceAfterEnd();
-
-    if (this.parent.lastChild === this) {
-      buffer.push(endWhitespace);
+    if ((<HTMLContainerExpression>this.parent).lastChildNode === this) {
+      buffer.push(this.getWhitespaceAfterEnd());
     }
 
     // necessary to add a newline character at the end of a source in case new
@@ -199,10 +203,6 @@ export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValue
   }
 
   toString() {
-
-    // only WS - trim
-    if (/^[\s\n\t\r]+$/.test(this.value)) return "";
-
     return [
       this.getWhitespaceBeforeStart(),
       this.value.trim(),

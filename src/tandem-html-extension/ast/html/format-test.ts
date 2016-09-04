@@ -21,6 +21,11 @@ describe(__filename + "#", () => {
     `,
     `
       <span>  hello </span>
+    `,
+    `
+      <div class="item">
+  <div>a</div>
+</div>
     `
   ].forEach((source) => {
     it(`preserves the whitespace for ${source.replace(/\n/g, "\\n")}`, () => {

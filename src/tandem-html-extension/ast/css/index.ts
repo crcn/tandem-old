@@ -8,5 +8,5 @@ export * from "./utils";
 import { CSSStyleExpression } from "./expressions";
 
 export function parseCSSStyle(source): CSSStyleExpression {
-  return parse(`style { ${source} }`).rules[0].style;
+  return parse(`style {${source}}`).rules[0].style;
 }

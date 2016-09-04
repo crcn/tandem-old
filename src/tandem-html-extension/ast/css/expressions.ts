@@ -2,6 +2,7 @@ import {
   IRange,
   diffArray,
   patchArray,
+  TreeNodeAction,
   BaseExpression,
 } from "tandem-common";
 
@@ -19,27 +20,16 @@ export abstract class CSSExpression extends BaseExpression<CSSExpression> {
 }
 
 export class CSSStyleExpression extends CSSExpression {
-  private _declarationsByKey: any;
-  private _values: any;
+  private _declarationsByKey: any = {};
+  private _values: any = {};
 
   constructor(declarations: Array<CSSStyleDeclarationExpression>, source: string, position: IRange) {
     super(source, position);
-    this._reset();
     declarations.forEach((declaration) => this.appendChild(declaration));
   }
 
   get declarations(): Array<CSSStyleDeclarationExpression> {
     return <any>this.children;
-  }
-
-  private _reset() {
-    this._declarationsByKey = {};
-    this._values = {};
-
-    for (const declaration of this.declarations) {
-      this._declarationsByKey[declaration.key] = declaration;
-      this._values[declaration.key] = declaration.value.toString();
-    }
   }
 
   public updateDeclarations(style: Object) {
@@ -48,12 +38,24 @@ export class CSSStyleExpression extends CSSExpression {
 
       let declaration: CSSStyleDeclarationExpression;
       if ((declaration = this._declarationsByKey[key])) {
-        declaration.value = value;
+        declaration.value = new CSSLiteralExpression(value, null, null);
       } else {
-        this.appendChild(this._declarationsByKey[key] = new CSSStyleDeclarationExpression(key, new CSSLiteralExpression(value, this.source, null), null, null));
+        this.appendChild(new CSSStyleDeclarationExpression(key, new CSSLiteralExpression(value, this.source, null), null, null));
       }
       this._values[key] = value;
     }
+  }
+
+  protected onChildAdded(declaration: CSSStyleDeclarationExpression) {
+    super.onChildAdded(declaration);
+    this._declarationsByKey[declaration.key] = declaration;
+    this._values[declaration.key] = String(declaration.value);
+  }
+
+  protected onRemovingChild(declaration: CSSStyleDeclarationExpression) {
+    super.onRemovingChild(declaration);
+    this._declarationsByKey[declaration.key] =  undefined;
+    this._values[declaration.key] = undefined;
   }
 
   get values() {
@@ -61,11 +63,8 @@ export class CSSStyleExpression extends CSSExpression {
   }
 
   public removeDeclaration(key: string) {
-    for (let i = this.declarations.length; i--; ) {
-      if (this.declarations[i].key === key) {
-        this.declarations.splice(i, 1);
-        break;
-      }
+    if (this._declarationsByKey[key]) {
+      this.removeChild(this._declarationsByKey[key]);
     }
   }
 
