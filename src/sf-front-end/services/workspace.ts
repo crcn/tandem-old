@@ -86,7 +86,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     this._zoomTimeout = setTimeout(() => {
       this.app.metadata.set(MetadataKeys.ZOOMING, false);
       this.app.bus.execute(new Action("zoomingComplete"));
-    }, 10);
+    }, 100);
   }
 
   [SetToolAction.SET_TOOL](action: SetToolAction) {

@@ -70,7 +70,7 @@ class SelectableComponent extends React.Component<{
     const style = {
       background : "transparent",
       position   : "absolute",
-      boxShadow  : `0 0 0 ${borderWidth}px #6f98e0`,
+      boxShadow  : `inset 0 0 0 ${borderWidth}px #6f98e0`,
       width      : bounds.width,
       height     : bounds.height,
       left       : bounds.left,

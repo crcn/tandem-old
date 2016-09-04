@@ -29,8 +29,12 @@ export async function activate(context: vscode.ExtensionContext) {
     });
 
     class VSCodeService extends BaseApplicationService<ServerApplication> {
-        [UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT](action: UpdateTemporaryFileContentAction) {
+        async [UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT](action: UpdateTemporaryFileContentAction) {
             _setEditorContent(action);
+            // const uri = (await vscode.workspace.findFiles(action.path, "")).pop();
+            // console.log(uri);
+            console.log("UP", action.path);
+            vscode.workspace.openTextDocument(action.path);
         }
     }
 
