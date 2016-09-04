@@ -1,4 +1,2 @@
 <link rel="stylesheet" type="text/css" href="./style.css"></link>
-<artboard title="Something" style="background; white;position: absolute;width: 208px;height: 151px;left: -29px;top: 146px;">
-  Something like this
-</artboard>
+<artboard title="Something" style="background; white;position: absolute;width: 208px;height: 151px;left: -29px;top: 146px;"></artboard>

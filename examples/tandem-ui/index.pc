@@ -1,0 +1,10 @@
+<link rel="stylesheet" type="text/css" href="./style.scss" />
+
+<artboard title="Pane" style="background: white;position:absolute;width:100px;height:100px;">
+  <div class="m-pane">
+    <div class="header">
+      Header
+    </div>
+  </div>
+
+</artboard>
