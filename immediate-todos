@@ -3,3 +3,4 @@
 - [ ] save scss vars
 - [x] ability to split screen layers
 - [ ] react transpiler
+- [ ] data-target-style attribute

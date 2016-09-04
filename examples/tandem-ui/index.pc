@@ -1,10 +1,10 @@
-<link rel="stylesheet" type="text/css" href="./style.scss" />
-
-<artboard title="Pane" style="background: white;position:absolute;width:100px;height:100px;">
+<link rel="stylesheet" type="text/css" href="./style.scss"></link>
+<artboard id="pane" title="Pane" style="background: white;position:absolute;width:100px;height:100px;">
   <div class="m-pane">
-    <div class="header">
-      Header
-    </div>
+    <div class="header">${ title }</div>
   </div>
+</artboard>
 
+<artboard  title="CSS Pane" style="left: 4px;top: 171px;">
+  <pane title="CSS Styles"></pane>
 </artboard>
