@@ -103,7 +103,6 @@ function roundMeasurements(style) {
 
 export class HTMLNodeDisplay implements IEntityDisplay {
 
-  private _declarationByKey: Object;
   private _cachedBounds: BoundingRect;
 
   constructor(readonly entity: VisibleHTMLElementEntity) { }
@@ -223,7 +222,6 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     }
 
     newStyle = roundMeasurements(newStyle);
-
 
     this._setExpressionStyle(newStyle);
   }

@@ -6,8 +6,6 @@ import { IComparable, IPatchable } from "tandem-common/object";
 type ComparableTreeType = ITreeNode<any> & IComparable & IPatchable;
 
 export const patchTreeNode = (oldNode: ComparableTreeType, newNode: ComparableTreeType) => {
-  patchLeaf(oldNode, newNode);
-
   const changes = diffArray(oldNode.children, newNode.children, compareTreeNodes);
 
   for (const rm of changes.remove) {
@@ -24,6 +22,7 @@ export const patchTreeNode = (oldNode: ComparableTreeType, newNode: ComparableTr
       oldNode.insertAt(oldChild, newIndex);
     }
   }
+  patchLeaf(oldNode, newNode);
 };
 
 export const compareTreeNodes = (a: ITreeNode<any>, b: ITreeNode<any>): number => {

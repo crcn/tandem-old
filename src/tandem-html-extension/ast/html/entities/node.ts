@@ -8,7 +8,6 @@ import { MetadataKeys } from "tandem-front-end/constants";
 import { IHTMLNodeEntity } from "./base";
 import { HTMLNodeExpression } from "tandem-html-extension/ast";
 import { PropertyChangeAction } from "tandem-common/actions";
-import { diffArray, patchArray } from "tandem-common/utils/array";
 import { IDOMSection, NodeSection, GroupNodeSection } from "tandem-html-extension/dom";
 import { IEntity, EntityMetadata, IEntityDocument, BaseEntity, IExpression } from "tandem-common/ast";
 import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency, Injector } from "tandem-common/dependencies";

@@ -26,10 +26,6 @@ export class CSSRootEntity extends BaseEntity<CSSStyleSheetExpression> {
     CSSStylesheetsDependency.getInstance(this._dependencies).addStyleSheet(this.source);
   }
 
-  mapSourceChildren() {
-    return [];
-  }
-
   getInitialMetadata() {
     return Object.assign(super.getInitialMetadata(), {
       [MetadataKeys.HIDDEN]: true
