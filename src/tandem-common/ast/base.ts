@@ -42,16 +42,14 @@ export abstract class BaseExpression<T extends BaseExpression<any>> extends Tree
 }
 
 function getStartWhitespace(str: string) {
-  const search = /^[\s\r\n\t]+/g;
+  const search = /^[\s\r\n\t]+/;
   const match  = str.match(search);
   return match ? match[0] : "";
 }
 
 function getReverseWhitespace(str: string) {
-  return reverseString(getStartWhitespace(reverseString(str)));
+  const search = /[\s\r\n\t]+$/;
+  const match  = str.match(search);
+  return match ? match[0] : "";
 }
 
-
-function reverseString(str: string) {
-  return str.split("").reverse().join("");
-}

@@ -55,17 +55,19 @@ export class LinkEntity extends HTMLElementEntity {
   }
 
   async load() {
+
     const type = this.source.getAttribute("type");
 
     this._file = await File.open(this.href, this._dependencies, type) as DocumentFile<any>;
     this._file.sync();
-
     watchProperty(this._file, "content", this.document.update.bind(this.document));
 
     this._file.owner = this.document;
+
     await this._file.load();
     this._file.observe(new BubbleBus(this));
     this.appendChild(this._file.entity);
+
     return super.load();
   }
 

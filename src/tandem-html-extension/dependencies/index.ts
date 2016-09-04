@@ -8,7 +8,12 @@ export class CSSStylesheetsDependency extends Dependency<Array<CSSStyleSheetExpr
   }
 
   toString() {
-    return this.value.join("");
+
+    // this is MUCH faster than calling toString on the expression since toString
+    // will iterate through all child expressions -- which will also perform formatting. Assuming
+    // that the stylesheet being stringified has 4k+ selectors, calling toString() will be incredibly slow.
+    return this.value.map((expression) => expression.getSourcePart()).join("\n");
+    // return this.value.join("");
   }
 
   addStyleSheet(stylesheet: CSSStyleSheetExpression) {

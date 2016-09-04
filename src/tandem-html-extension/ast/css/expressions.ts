@@ -6,8 +6,6 @@ import {
   BaseExpression,
 } from "tandem-common";
 
-import * as sift from "sift";
-
 export abstract class CSSExpression extends BaseExpression<CSSExpression> {
 
   constructor(source: string, position: IRange) {

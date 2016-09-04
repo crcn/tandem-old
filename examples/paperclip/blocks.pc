@@ -1,7 +1,9 @@
 
-<div class="item" style="position: absolute; left: -1px; top: 6px;">
-  fsdfsdfsdfsd<br />
-  <div style="top: 0px;left: -4px;">fdf</div>
+<div class="item" style="position: absolute; left: -28px; top: -16px;width: 112px;height: 39px;">
+  fsdfsdfsdfsdsad<br />
+  <div style="top: -7px;left: -8px;">fdddf</div>
 </div>
 
-
+<span style="position: absolute;white-space: nowrap;font-family: Helvetica;left: 304px;top: 614px;">
+  Type Something
+</span>

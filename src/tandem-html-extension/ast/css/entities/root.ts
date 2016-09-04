@@ -21,9 +21,13 @@ export class CSSRootEntity extends BaseEntity<CSSStyleSheetExpression> {
     super(source);
   }
 
-  async load() {
-    await super.load();
+  load() {
+    super.load();
     CSSStylesheetsDependency.getInstance(this._dependencies).addStyleSheet(this.source);
+  }
+
+  mapSourceChildren() {
+    return [];
   }
 
   getInitialMetadata() {

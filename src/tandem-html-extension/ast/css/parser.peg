@@ -53,7 +53,7 @@ Expression
 
 CSSStyleSheetExpression
   = _ rules:(CSSRule/CSSMedia/CSSKeyFrames/CSSFontFace/CSSRest)* _ {
-    return new CSSStyleSheetExpression(rules.filter((rule) => !!rule));
+    return new CSSStyleSheetExpression(rules.filter((rule) => !!rule), input, position());
   }
 
 CSSRule
@@ -69,7 +69,7 @@ CSSStyle
 CSSSelectors
   = first:CSSSelector rest:CSSSelectorSibling* {
     const items = [first].concat(rest);
-    return items.length === 1 && false ? items[0] : new CSSSelectorListExpression(items);
+    return items.length === 1 && false ? items[0] : new CSSSelectorListExpression(items, input, position());
   }
 
 CSSSelectorSibling

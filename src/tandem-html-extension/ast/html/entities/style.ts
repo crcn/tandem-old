@@ -8,7 +8,7 @@ import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
 import { HTMLElementExpression, HTMLTextExpression } from "tandem-html-extension/ast";
 
 export class HTMLStyleEntity extends HTMLElementEntity {
-  async load() {
+  load() {
     super.load();
     const nodeValue = (<HTMLTextExpression>this.source.children[0]).value;
     CSSStylesheetsDependency.getInstance(this._dependencies).addStyleSheet(parseCSS(nodeValue));
