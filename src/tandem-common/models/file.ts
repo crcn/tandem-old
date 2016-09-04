@@ -65,9 +65,7 @@ export class File extends Observable {
   }
 
   protected updateFromSourceData(data: IFileModelActionResponseData) {
-    this.path    = data.path;
-    this.mtime   = data.mtime;
-    this.content = data.content;
+    Object.assign(this, data);
   }
 
   protected onContentChange(newContent: string, oldContent: string) {
