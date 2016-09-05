@@ -1,0 +1,18 @@
+@import "tandem-front-end/scss/variables";
+
+.m-declaration-layer-label {
+  &--name {
+    color: $color-grey-7;
+    &:after {
+      content: ": ";
+    }
+  }
+
+  &--value {
+    color: rgba(255, 255, 255, 0.7);
+    &:after {
+      color: $color-grey-7;
+      content: ";"
+    }
+  }
+}

@@ -12,19 +12,19 @@ import {
 
 import {
   MediaExpression,
-  ATRuleExpression,
   CSSRootExpression,
   CSSRuleExpression,
   KeyframesExpression,
+  CSSATRuleExpression,
   CSSCommentExpression,
   CSSDeclarationExpression,
 } from "./expressions";
 
 const defaultExpressionClasses = {
   media     : MediaExpression,
-  atrule    : ATRuleExpression,
   root      : CSSRootExpression,
   rule      : CSSRuleExpression,
+  atrule    : CSSATRuleExpression,
   keyframes : KeyframesExpression,
   comment   : CSSCommentExpression,
   decl      : CSSDeclarationExpression,

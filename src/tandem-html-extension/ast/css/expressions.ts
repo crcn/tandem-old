@@ -102,7 +102,7 @@ export class CSSDeclarationExpression extends CSSExpression {
   }
 }
 
-export class ATRuleExpression extends CSSExpression {
+export class CSSATRuleExpression extends CSSExpression {
   readonly name: string;
   public params: string;
 
@@ -125,12 +125,12 @@ export class ATRuleExpression extends CSSExpression {
   }
 }
 
-export class KeyframesExpression extends ATRuleExpression {
+export class KeyframesExpression extends CSSATRuleExpression {
   constructor(node: postcss.AtRule, children: Array<CSSExpression>, position: IRange) {
     super(node, children, position);
   }
 }
-export class MediaExpression extends ATRuleExpression {
+export class MediaExpression extends CSSATRuleExpression {
   constructor(node: postcss.AtRule, children: Array<CSSExpression>, position: IRange) {
     super(node, children, position);
   }

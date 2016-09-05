@@ -30,6 +30,7 @@ import { dependency as pointerToolDependency } from "./models/pointer-tool";
 import { dependency as keyBindingsDependency } from "./key-bindings";
 
 // extensions
+import { scssExtensionDependency  } from "tandem-scss-extension";
 import { dependency as htmlExtensionDependency } from "tandem-html-extension";
 import { dependency as paperclipExtensionDependency } from "tandem-paperclip-extension";
 
@@ -85,8 +86,9 @@ export class FrontEndApplication extends Application {
       keyBindingsDependency,
 
       // extensions
+      scssExtensionDependency,
       htmlExtensionDependency,
-      paperclipExtensionDependency
+      paperclipExtensionDependency,
     );
   }
 }

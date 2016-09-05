@@ -1,4 +1,5 @@
-<link rel="stylesheet" type="text/css" href="./style.scss"></link>
+<link rel="stylesheet" type="text/scss" href="./style.scss"></link>
+
 <artboard id="pane" title="Pane" style="background: white;position:absolute;width:100px;height:100px;">
   <div class="m-pane">
     <div class="header">${ title }</div>

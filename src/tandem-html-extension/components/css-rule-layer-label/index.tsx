@@ -19,10 +19,6 @@ class CSSRuleLayerLabel extends React.Component<{ app: FrontEndApplication, work
       <span className="m-css-rule-layer-label--rule-name" onDoubleClick={this.edit}>
         { String(this.props.entity.source.selector.toString() || "").trim() }
       </span>
-      <span className="m-css-rule-layer-label--selection-count"
-      onClick={this.onClick}>
-        &nbsp;
-      </span>
     </span>;
   }
 
