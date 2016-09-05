@@ -1,12 +1,77 @@
-import { parse } from "./parser.peg";
+import * as postcss from "postcss";
 
-export { parse as parseCSS };
 export * from "./expressions";
 export * from "./entities";
 export * from "./utils";
 
-import { CSSStyleExpression } from "./expressions";
 
-export function parseCSSStyle(source): CSSStyleExpression {
-  return parse(`style {${source}}`).rules[0].style;
+import {
+  IExpression,
+  IRange
+} from "tandem-common";
+
+import {
+  MediaExpression,
+  ATRuleExpression,
+  CSSRootExpression,
+  CSSRuleExpression,
+  KeyframesExpression,
+  CSSCommentExpression,
+  CSSDeclarationExpression,
+} from "./expressions";
+
+const defaultExpressionClasses = {
+  media     : MediaExpression,
+  atrule    : ATRuleExpression,
+  root      : CSSRootExpression,
+  rule      : CSSRuleExpression,
+  keyframes : KeyframesExpression,
+  comment   : CSSCommentExpression,
+  decl      : CSSDeclarationExpression,
+};
+
+export function parseCSS(source: string, expressionClasses?: any): CSSRootExpression {
+  return convertPostCSSAST(postcss.parse(source));
+}
+
+export function convertPostCSSAST(root: postcss.Root, expressionClasses: any = {}) {
+  let previousLine = new Line({ start: 0, end: 0 });
+  const lines = root.source.input.css.split("\n").map((line) => {
+    const start = previousLine.position.end;
+    return previousLine = new Line({ start: start, end: start + line.length + 1 });
+  });
+  return _convertPostCSSAST(root, lines, root, Object.assign({}, defaultExpressionClasses, expressionClasses));
+}
+
+
+// used just for converting lines to positions
+class Line {
+  constructor(readonly position: IRange) {
+
+  }
+}
+
+function _convertPostCSSAST(root: postcss.Container, lines: Array<Line>, currentNode: postcss.Container, expressionClasses: any) {
+
+  const expressionClass = (expressionClasses[name] || expressionClasses[currentNode.type]) as { new(node: postcss.Node, children: Array<IExpression>, source: string, position: IRange): IExpression };
+
+  if (!expressionClass) {
+    throw new Error(`Cannot find css expression type for ${currentNode.type}`);
+  }
+
+  const source    = root.source.input.css;
+  const startLine = lines[currentNode.source.start.line - 1];
+  const endLine   = currentNode.source.end ? lines[currentNode.source.end.line - 1] : null;
+
+  const position = {
+    start: startLine.position.start + currentNode.source.start.column - 1,
+    end: endLine ? endLine.position.start + currentNode.source.end.column : source.length
+  };
+
+  return new expressionClass(currentNode, (currentNode.nodes || []).map((child) => _convertPostCSSAST(root, lines, <postcss.Container>child, expressionClasses)), source, position);
+}
+
+
+export function parseCSSStyle(source): CSSRuleExpression {
+  return <CSSRuleExpression>parseCSS(`style {${source}}`).children[0];
 }

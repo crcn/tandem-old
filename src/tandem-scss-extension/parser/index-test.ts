@@ -3,10 +3,12 @@ import { parseSCSS } from "./index";
 
 describe(__filename + "#", () => {
   [
-    `$color:red;`
+    `.a {}`,
+    `$color: red;`,
+    `.a { & b { color: red; }}`
   ].forEach((source) => {
-    it(`can parse ${source}`, () => {
-      expect(parseSCSS(source).toString()).to.equal(source);
+    it(`can parse ${source}`, async () => {
+      expect((await parseSCSS(source)).toString()).to.equal(source);
     });
   });
 });

@@ -13,7 +13,7 @@ import { IDOMSection, NodeSection } from "tandem-html-extension/dom";
 import { INamed, IValued, IExpression } from "tandem-common";
 import { HTMLElementExpression, HTMLAttributeExpression } from "tandem-html-extension/ast";
 import { AttributeChangeAction, TreeNodeAction, PropertyChangeAction } from "tandem-common/actions";
-import { CSSRuleExpression, CSSStyleExpression, IHTMLElementAttributeEntity } from "tandem-html-extension/ast";
+import { CSSRuleExpression, IHTMLElementAttributeEntity } from "tandem-html-extension/ast";
 import * as sift from "sift";
 
 export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> implements IHTMLNodeEntity {

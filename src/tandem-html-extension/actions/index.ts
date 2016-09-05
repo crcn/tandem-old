@@ -1,6 +1,6 @@
 import { Action } from "tandem-common/actions";
 import { PasteAction } from "tandem-front-end/actions";
-import { CSSSelectorExpression } from "tandem-html-extension/ast";
+import { CSSRuleExpression } from "tandem-html-extension/ast";
 import { IHTMLElementAttributeEntity } from "tandem-html-extension/ast";
 
 export const TEXT_EDIT_COMPLETE = "textEditComplete";
@@ -12,7 +12,7 @@ export class TextEditCompleteAction extends Action {
 
 export const SELECT_WITH_CSS_SELECTOR = "selectWithCSSSelector";
 export class SelectWithCSSSelectorAction extends Action {
-  constructor(readonly selector: CSSSelectorExpression) {
+  constructor(readonly rule: CSSRuleExpression) {
     super(SELECT_WITH_CSS_SELECTOR);
   }
 }

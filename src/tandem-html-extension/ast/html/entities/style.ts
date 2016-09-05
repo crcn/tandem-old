@@ -3,7 +3,6 @@ import { parseCSS } from "tandem-html-extension/ast";
 import { GroupNodeSection } from "tandem-html-extension/dom";
 import { HTMLElementEntity } from "./element";
 import { EntityFactoryDependency } from "tandem-common/dependencies";
-import { CSSStyleSheetExpression } from "tandem-html-extension/ast";
 import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
 import { HTMLElementExpression, HTMLTextExpression } from "tandem-html-extension/ast";
 

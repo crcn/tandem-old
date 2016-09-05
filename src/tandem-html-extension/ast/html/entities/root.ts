@@ -21,8 +21,6 @@ import {
   parseHTML,
   HTMLExpression,
   HTMLTextExpression,
-  CSSStyleExpression,
-  CSSStyleSheetExpression,
   HTMLCommentExpression,
   HTMLElementExpression,
   HTMLFragmentExpression,

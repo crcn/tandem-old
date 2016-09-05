@@ -18,8 +18,7 @@ import { cssFileDependency } from "./models/css-file";
 import { htmlFileModelDependency } from "./models/html-file";
 
 // services
-import { dependency as pasteEntityService } from "./services/paste-entity";
-import { dependency as selectWithCssSelectorService } from "./services/select-with-css-selector";
+import { pastHTMLServiceDependency, cssSelectorServiceDependency  } from "./services";
 
  // tools
 import { dependency as textToolDependency, editInnerHTMLDependency } from "./models/text-tool";
@@ -57,8 +56,8 @@ export const dependency = [
   defaultAttributeFactoryDependency,
 
   // services
-  pasteEntityService,
-  selectWithCssSelectorService,
+  pastHTMLServiceDependency,
+  cssSelectorServiceDependency,
 
   // models
   cssFileDependency,
@@ -86,3 +85,13 @@ export const dependency = [
   new MimeTypeDependency("html", MimeTypes.HTML_MIME_TYPE),
   new MimeTypeDependency("sfn", MimeTypes.HTML_MIME_TYPE)
 ];
+
+export * from "./actions";
+export * from "./ast";
+// export * from "./collections";
+export * from "./constants";
+export * from "./dependencies";
+export * from "./dom";
+export * from "./key-bindings";
+export * from "./models";
+export * from "./services";

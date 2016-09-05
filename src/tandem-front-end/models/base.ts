@@ -53,7 +53,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     // modified. The only case where the ast should be re-parsed is when new content is coming in externally. In that case, the
     // entire ast needs to be replaced.
 
-    const ast = !this._entity || this._entity.source.toString() !== this.content ? this.parse(this.content) : this._entity.source;
+    const ast = !this._entity || this._entity.source.toString() !== this.content ? await this.parse(this.content) : this._entity.source;
 
     const entity = this.createEntity(ast, this._dependencies.clone().register(new EntityDocumentDependency(this)));
     if (this._entity && this._entity.constructor === entity.constructor) {
@@ -71,7 +71,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     }
   }
 
-  abstract parse(content: string): IExpression;
+  abstract async parse(content: string): Promise<IExpression>;
   protected abstract createEntity(ast: IExpression, dependencies: Dependencies): T;
 
   async update() {

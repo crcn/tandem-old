@@ -4,7 +4,6 @@ import { watchProperty } from "tandem-common/observable";
 import { parseCSS } from "tandem-html-extension/ast";
 import { BoundingRect, IPoint } from "tandem-common/geom";
 import { VisibleHTMLElementEntity } from "../index";
-import { CSSStyleExpression, CSSStyleDeclarationExpression } from "tandem-html-extension/ast";
 import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "tandem-common/ast/entities";
 import * as memoize from "memoizee";
 
@@ -250,7 +249,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
 
   private _setExpressionStyle(style: Object) {
     this.entity.styleExpression.updateDeclarations(style);
-    this.entity.setAttribute("style", this.entity.styleExpression.toString());
+    this.entity.setAttribute("style", this.entity.styleExpression.children.join(""));
   }
 
   /**

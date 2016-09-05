@@ -78,3 +78,11 @@ declare module "memoizee" {
 
   export = memoize;
 }
+
+declare module "postcss-scss" {
+  function parseSCSS();
+  namespace parseSCSS {
+
+  }
+  export = parseSCSS;
+}

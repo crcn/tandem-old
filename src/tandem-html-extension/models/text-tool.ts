@@ -88,7 +88,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
 
     // parse the innerHTML, set the source content, and prepare to diff
     this._targetEntity.source.removeAllChildNodes();
-    this._targetEntity.document.parse(this._targetNode.innerHTML).children.forEach((child) => this._targetEntity.source.appendChild(child));
+    (await this._targetEntity.document.parse(this._targetNode.innerHTML)).children.forEach((child) => this._targetEntity.source.appendChild(child));
 
     // reset the html so that the entity is properly diffd
     (<Element>this._targetEntity.section.targetNode).innerHTML = " ";

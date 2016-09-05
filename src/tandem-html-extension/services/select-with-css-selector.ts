@@ -14,11 +14,11 @@ import {
 
 export class SelectWithCSSSelectorActionService extends BaseApplicationService<FrontEndApplication> {
   [SELECT_WITH_CSS_SELECTOR](action: SelectWithCSSSelectorAction) {
-    this.bus.execute(new SelectAction(
-      this.app.workspace.file.entity.flatten().filter(action.selector.test.bind(action.selector))
-    ));
+    // this.bus.execute(new SelectAction(
+    //   this.app.workspace.file.entity.flatten().filter(action.selector.test.bind(action.ru))
+    // ));
   }
 }
 
-export const dependency = new ApplicationServiceDependency(SELECT_WITH_CSS_SELECTOR, SelectWithCSSSelectorActionService);
+export const cssSelectorServiceDependency = new ApplicationServiceDependency(SELECT_WITH_CSS_SELECTOR, SelectWithCSSSelectorActionService);
 

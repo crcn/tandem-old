@@ -4,7 +4,8 @@ import { HTMLElementEntity } from "./element";
 import { HTMLElementExpression } from "tandem-html-extension/ast";
 import { EntityFactoryDependency } from "tandem-common/dependencies";
 import { IDOMSection, NodeSection } from "tandem-html-extension/dom";
-import { parseCSSStyle, CSSStyleExpression } from "tandem-html-extension/ast";
+import { parseCSSStyle } from "tandem-html-extension/ast";
+import { CSSRuleExpression } from "tandem-html-extension/ast/css/expressions";
 
 export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisibleEntity {
 
@@ -14,21 +15,22 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
   // TODO - change to something such as DisplayComputer
   readonly display = new HTMLNodeDisplay(this);
 
-  private _styleExpression: CSSStyleExpression;
+  private _styleExpression: CSSRuleExpression;
   private _originalStyle: string;
 
   updateFromLoaded() {
     const style = this.getAttribute("style");
-    const newExpression = style ? parseCSSStyle(String(style)) : new CSSStyleExpression([], null, null);
+    const newExpression = parseCSSStyle(String(style || ""));
+
 
     this._styleExpression = newExpression;
 
-    this._originalStyle = this._styleExpression.toString();
+    this._originalStyle = this._styleExpression.children.join("");
   }
 
   updateSource() {
-    if (this.styleExpression.declarations.length) {
-      const newStyle = this.styleExpression.toString();
+    if (this.styleExpression.children.length) {
+      const newStyle = this.styleExpression.children.join("");
       if (newStyle !== this._originalStyle) {
         this.source.setAttribute("style", this._originalStyle = newStyle);
       }
@@ -41,7 +43,7 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
     return new NodeSection(document.createElement(this.source.name));
   }
 
-  get styleExpression(): CSSStyleExpression {
+  get styleExpression(): CSSRuleExpression {
     return this._styleExpression;
   }
 }

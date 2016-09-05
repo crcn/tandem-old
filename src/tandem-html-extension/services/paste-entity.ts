@@ -45,5 +45,5 @@ export class PasteHTMLService extends BaseApplicationService<FrontEndApplication
   }
 }
 
-export const dependency = new ApplicationServiceDependency("paste-html-entity", PasteHTMLService);
+export const pastHTMLServiceDependency = new ApplicationServiceDependency("paste-html-entity", PasteHTMLService);
 

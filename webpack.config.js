@@ -31,7 +31,8 @@ module.exports =  {
     })
   ],
   node: {
-    __filename: true
+    __filename: true,
+    fs: "empty"
   },
 
   // more options in the optional tslint object

@@ -13,7 +13,7 @@ export class PCFile extends HTMLFile {
   createEntity(ast: HTMLFragmentExpression, dependencies: Dependencies) {
     return new PCDocumentRootEntity(ast, this, dependencies);
   }
-  parse(content: string) {
+  async parse(content: string) {
     return parsePC(content);
   }
 }

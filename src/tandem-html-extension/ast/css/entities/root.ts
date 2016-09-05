@@ -6,18 +6,18 @@ import { DocumentFile } from "tandem-front-end/models";
 import { watchProperty } from "tandem-common/observable";
 import { GroupNodeSection } from "tandem-html-extension/dom";
 import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
-import { parseCSS, CSSStyleSheetExpression } from "tandem-html-extension/ast";
+import { parseCSS, CSSRootExpression } from "tandem-html-extension/ast";
 import { Dependencies, DEPENDENCIES_NS, Injector } from "tandem-common/dependencies";
 import {BaseEntity, EntityMetadata, IEntityDocument } from "tandem-common/ast/entities";
 
 import { CSSRuleEntity } from "./rule";
 import  { ICSSRuleEntity } from "./base";
 
-export class CSSRootEntity extends BaseEntity<CSSStyleSheetExpression> {
+export class CSSRootEntity extends BaseEntity<CSSRootExpression> {
 
   public owner: HTMLFile;
 
-  constructor(source: CSSStyleSheetExpression, public document: DocumentFile<any>, protected _dependencies: Dependencies) {
+  constructor(source: CSSRootExpression, public document: DocumentFile<any>, protected _dependencies: Dependencies) {
     super(source);
   }
 

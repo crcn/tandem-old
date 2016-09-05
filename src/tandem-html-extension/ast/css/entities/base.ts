@@ -7,7 +7,6 @@ export interface ICSSEntity extends IEntity {
 }
 
 export interface ICSSRuleEntity extends ICSSEntity {
-  selectedHTMLEntities: Array<IEntity>;
   readonly source: CSSRuleExpression;
 }
 

@@ -9,7 +9,7 @@ import { HTMLDocumentRootEntity, HTMLFragmentExpression } from "tandem-html-exte
 
 export class HTMLFile extends DocumentFile<HTMLDocumentRootEntity> {
   readonly type: string = MimeTypes.HTML_MIME_TYPE;
-  parse(content: string) {
+  async parse(content: string) {
     return parseHTML(content);
   }
   createEntity(ast: HTMLFragmentExpression, dependencies: Dependencies) {

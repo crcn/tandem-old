@@ -6,12 +6,11 @@ import { parseCSS } from "tandem-html-extension/ast";
 import { SelectAction } from "tandem-front-end/actions";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { SelectWithCSSSelectorAction } from "tandem-html-extension/actions";
-import { VisibleHTMLElementCollection } from "tandem-html-extension/collections";
 import { EntityPaneComponentFactoryDependency } from "tandem-front-end/dependencies";
 import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLNodeEntity } from "tandem-html-extension/ast";
-import { CSSExpression, CSSStyleExpression, CSSRuleExpression, CSSStyleDeclarationExpression, CSSLiteralExpression } from "tandem-html-extension/ast";
+import { CSSExpression, CSSRuleExpression, CSSDeclarationExpression } from "tandem-html-extension/ast";
 
-class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, declaration: CSSStyleDeclarationExpression, style: CSSStyleExpression, addNewDeclaration: Function }, any> {
+class StyleDeclarationComponent extends React.Component<any, any> {
 
   componentDidMount() {
     if (this.props.declaration.key === "") {
@@ -25,7 +24,7 @@ class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, 
   }
 
   onValueChange = (event) => {
-    this.props.declaration.value = new CSSLiteralExpression(event.target.value, null, null);
+    this.props.declaration.value = String(event.target.value);
     this.props.workspace.file.update();
   }
 
@@ -65,20 +64,20 @@ class StyleDeclarationComponent extends React.Component<{ workspace: Workspace, 
 
 class StylePaneComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, entity: VisibleHTMLElementEntity, rule: CSSRuleExpression }, any> {
   addNewDeclaration = () => {
-    this.props.rule.style.declarations.push(new CSSStyleDeclarationExpression("", new CSSLiteralExpression("", null, null), null, null));
+    // this.props.rule.style.declarations.push(new CSSRuleExpression("", new CSSLiteralExpression("", null, null), null, null));
     this.forceUpdate();
   }
 
   onTitleClick = (event) => {
-    this.props.app.bus.execute(new SelectWithCSSSelectorAction(this.props.rule.selector));
+    this.props.app.bus.execute(new SelectWithCSSSelectorAction(this.props.rule));
   }
 
   render() {
     return <PaneComponent title={this.props.rule.selector ? this.props.rule.selector.toString() : "element.style"} onTitleClick={this.onTitleClick}>
         <div className="m-css-style-pane">
         {
-          this.props.rule.style.declarations.map((declaration, i) => (
-            <StyleDeclarationComponent {...this.props} declaration={declaration} style={this.props.rule.style} key={i} addNewDeclaration={this.addNewDeclaration} />
+          this.props.rule.children.map((declaration, i) => (
+            <StyleDeclarationComponent {...this.props} declaration={declaration} style={this.props.rule} key={i} addNewDeclaration={this.addNewDeclaration} />
           ))
         }
       </div>
@@ -89,19 +88,14 @@ class StylePaneComponent extends React.Component<{ app: FrontEndApplication, wor
 export class CSSPaneComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication }, any> {
   render() {
     const workspace = this.props.workspace;
-    const selection = new VisibleHTMLElementCollection(...workspace.selection);
+    const selection = [];
 
     if (!selection.length) return null;
 
     const entity: VisibleHTMLElementEntity = selection[0];
 
     return <div className="m-css-pane m-pane-container--content">
-        <StylePaneComponent {...this.props} entity={entity} rule={new CSSRuleExpression(null, entity.styleExpression, null, null)} key="style" />
-        {
-          selection.cssRuleExpressions.map((rule, key) => {
-            return <StylePaneComponent {...this.props} entity={entity} rule={rule} key={key} />;
-          })
-        }
+        <StylePaneComponent {...this.props} entity={entity} rule={null} key="style" />
     </div>;
   }
 }

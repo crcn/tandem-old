@@ -20,8 +20,8 @@ class CSSRuleLayerLabel extends React.Component<{ app: FrontEndApplication, work
         { String(this.props.entity.source.selector.toString() || "").trim() }
       </span>
       <span className="m-css-rule-layer-label--selection-count"
-      onClick={this.onClick} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}>
-        { this.props.entity.selectedHTMLEntities.length }
+      onClick={this.onClick}>
+        &nbsp;
       </span>
     </span>;
   }
@@ -31,20 +31,20 @@ class CSSRuleLayerLabel extends React.Component<{ app: FrontEndApplication, work
   }
 
   onClick = (event: React.MouseEvent) => {
-    this.props.app.bus.execute(new SelectWithCSSSelectorAction(this.props.entity.source.selector));
+    this.props.app.bus.execute(new SelectWithCSSSelectorAction(this.props.entity.source));
   }
 
-  onMouseOver = (event: React.MouseEvent) => {
-    this.props.entity.selectedHTMLEntities.forEach((entity) => {
-      entity.metadata.set(MetadataKeys.HOVERING, true);
-    });
-  }
+  // onMouseOver = (event: React.MouseEvent) => {
+  //   this.props.entity.selectedHTMLEntities.forEach((entity) => {
+  //     entity.metadata.set(MetadataKeys.HOVERING, true);
+  //   });
+  // }
 
-  onMouseOut = (event: React.MouseEvent) => {
-    this.props.entity.selectedHTMLEntities.forEach((entity) => {
-      entity.metadata.set(MetadataKeys.HOVERING, false);
-    });
-  }
+  // onMouseOut = (event: React.MouseEvent) => {
+  //   this.props.entity.selectedHTMLEntities.forEach((entity) => {
+  //     entity.metadata.set(MetadataKeys.HOVERING, false);
+  //   });
+  // }
 }
 
 export const dependency = new LayerLabelComponentFactoryDependency(CSSRuleExpression.name, CSSRuleLayerLabel);

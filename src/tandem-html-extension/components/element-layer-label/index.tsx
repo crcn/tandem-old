@@ -126,7 +126,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
     this.setState({ source: undefined });
   }
 
-  doneEditing = (event?: KeyboardEvent) => {
+  doneEditing = async (event?: KeyboardEvent) => {
 
 
     const entity = this.props.entity;
@@ -135,7 +135,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
     if (!this.state.source) return this.cancelEditing();
 
     try {
-      ast = entity.document.parse(`<${this.state.source} />`) as HTMLFragmentExpression;
+      ast = await entity.document.parse(`<${this.state.source} />`) as HTMLFragmentExpression;
     } catch (e) {
       return this.cancelEditing();
     }

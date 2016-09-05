@@ -1,8 +1,8 @@
 import { Dependency, Dependencies } from "tandem-common/dependencies";
-import { CSSStyleSheetExpression } from "tandem-html-extension/ast";
+import { CSSRootExpression } from "tandem-html-extension/ast";
 
 export const CSS_STYLESHEET_NS = "cssStyleSheet";
-export class CSSStylesheetsDependency extends Dependency<Array<CSSStyleSheetExpression>> {
+export class CSSStylesheetsDependency extends Dependency<Array<CSSRootExpression>> {
   private constructor() {
     super(CSS_STYLESHEET_NS, []);
   }
@@ -16,7 +16,7 @@ export class CSSStylesheetsDependency extends Dependency<Array<CSSStyleSheetExpr
     // return this.value.join("");
   }
 
-  addStyleSheet(stylesheet: CSSStyleSheetExpression) {
+  addStyleSheet(stylesheet: CSSRootExpression) {
     this.value.push(stylesheet);
   }
 
