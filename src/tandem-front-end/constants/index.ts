@@ -12,6 +12,7 @@ export namespace MetadataKeys {
   export const LAYER_DEPENDENCY_NAME = "layerDependencyName";
   export const HOVERING = "hovering";
   export const HIDDEN = "hidden";
+  export const SELECTABLE = "selectable";
   export const MOVING = "moving";
   export const ZOOMING = "zooming";
   export const EDIT_LAYER = "editLayer";

@@ -112,6 +112,12 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
     return typeof this.source.value === "object";
   }
 
+  getInitialMetadata() {
+    return Object.assign(super.getInitialMetadata(), {
+      [MetadataKeys.SELECTABLE]: false
+    });
+  }
+
   compare(entity: HTMLAttributeEntity) {
     return super.compare(entity) && entity.name === this.name;
   }

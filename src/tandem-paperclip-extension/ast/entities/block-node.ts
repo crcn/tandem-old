@@ -24,11 +24,6 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
     }
   }
 
-  patch(entity: PCBlockNodeEntity) {
-    super.patch(entity);
-    this.metadata.set(MetadataKeys.HIDDEN, entity._executed);
-  }
-
   createSection() {
     return new GroupNodeSection();
   }
@@ -52,7 +47,6 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
       }
     }
     this._executed = scriptExecuted;
-    this.metadata.set(MetadataKeys.HIDDEN, true);
     this.value = value;
     if (!scriptExecuted) return;
 
