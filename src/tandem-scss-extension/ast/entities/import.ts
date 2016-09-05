@@ -2,10 +2,13 @@ import * as path from "path";
 import { SCSSFile } from "tandem-scss-extension/models";
 import { MimeTypes } from "tandem-scss-extension/constants";
 import { CSSATRuleExpression } from "tandem-html-extension";
+import { parseSCSS } from "tandem-scss-extension/ast";
 import {
   File,
   BaseEntity,
   watchProperty,
+  ReadFileAction,
+  WatchFileAction,
   FileFactoryDependency,
   EntityFactoryDependency,
 } from "tandem-common";
@@ -30,17 +33,18 @@ export class SCSSImportEntity extends BaseEntity<CSSATRuleExpression> {
       this.source.params.replace(/['"]/g, "")
     );
 
-
     const file: SCSSFile = this._file = await File.open(absolutePath, this._dependencies, MimeTypes.SCSS) as SCSSFile;
     file.sync();
+
+    file.imported = true;
 
     await file.load();
 
     this.appendChild(file.entity);
 
-    watchProperty(file, "content", () => {
-      console.log("update imported content");
-    });
+    // watchProperty(file, "content", () => {
+    //   console.log("update imported content");
+    // });
   }
 
   cloneLeaf() {

@@ -9,8 +9,8 @@ import { HTMLElementExpression, HTMLTextExpression } from "tandem-html-extension
 export class HTMLStyleEntity extends HTMLElementEntity {
   load() {
     super.load();
-    const nodeValue = (<HTMLTextExpression>this.source.children[0]).value;
-    CSSStylesheetsDependency.getInstance(this._dependencies).addStyleSheet(parseCSS(nodeValue));
+    // const nodeValue = (<HTMLTextExpression>this.source.children[0]).value;
+    // CSSStylesheetsDependency.getInstance(this._dependencies).addStyleSheet(parseCSS(nodeValue));
   }
 
   createSection() {

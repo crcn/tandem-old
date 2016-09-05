@@ -1,8 +1,8 @@
 import { Dependency, Dependencies } from "tandem-common/dependencies";
-import { CSSRootExpression } from "tandem-html-extension/ast";
+import { CSSRootExpression, CSSRootEntity } from "tandem-html-extension/ast";
 
 export const CSS_STYLESHEET_NS = "cssStyleSheet";
-export class CSSStylesheetsDependency extends Dependency<Array<CSSRootExpression>> {
+export class CSSStylesheetsDependency extends Dependency<Array<CSSRootEntity>> {
   private constructor() {
     super(CSS_STYLESHEET_NS, []);
   }
@@ -12,11 +12,11 @@ export class CSSStylesheetsDependency extends Dependency<Array<CSSRootExpression
     // this is MUCH faster than calling toString on the expression since toString
     // will iterate through all child expressions -- which will also perform formatting. Assuming
     // that the stylesheet being stringified has 4k+ selectors, calling toString() will be incredibly slow.
-    return this.value.map((expression) => expression.getSourcePart()).join("\n");
+    return this.value.map((entity) => entity.content).join("\n");
     // return this.value.join("");
   }
 
-  addStyleSheet(stylesheet: CSSRootExpression) {
+  addStyleSheet(stylesheet: CSSRootEntity) {
     this.value.push(stylesheet);
   }
 

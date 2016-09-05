@@ -16,6 +16,7 @@ import  { ICSSRuleEntity } from "./base";
 export class CSSRootEntity extends BaseEntity<CSSRootExpression> {
 
   public owner: HTMLFile;
+  public content: string;
 
   constructor(source: CSSRootExpression, public document: DocumentFile<any>, protected _dependencies: Dependencies) {
     super(source);
@@ -23,7 +24,12 @@ export class CSSRootEntity extends BaseEntity<CSSRootExpression> {
 
   async load() {
     await super.load();
-    CSSStylesheetsDependency.getInstance(this._dependencies).addStyleSheet(this.source);
+    this.content = await this.loadCSS();
+    CSSStylesheetsDependency.getInstance(this._dependencies).addStyleSheet(this);
+  }
+
+  async loadCSS() {
+    return this.document.content;
   }
 
   getInitialMetadata() {

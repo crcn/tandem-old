@@ -86,3 +86,15 @@ declare module "postcss-scss" {
   }
   export = parseSCSS;
 }
+
+declare module "sass.js" {
+
+  namespace sass {
+    export function options(ops: any, callback?: Function);
+    export function compile(text: string, options: any, callback: Function);
+    export function compileFile(filename: string, options: any, callback: Function);
+    export function importer(callback: Function);
+  }
+
+  export = sass;
+}
