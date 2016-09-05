@@ -8,7 +8,7 @@ import { FileFactoryDependency, IInjectable, Injector } from "tandem-common/depe
 
 export class CSSFile extends DocumentFile<CSSRootEntity> implements IInjectable {
   public owner: HTMLFile;
-  readonly type: string = MimeTypes.CSS_MIME_TYPE;
+  readonly type: string = MimeTypes.CSS;
   protected createEntity(ast: CSSRootExpression, dependencies: Dependencies) {
     return new CSSRootEntity(ast, this, dependencies);
   }
@@ -17,4 +17,4 @@ export class CSSFile extends DocumentFile<CSSRootEntity> implements IInjectable 
   }
 }
 
-export const cssFileDependency = new FileFactoryDependency(MimeTypes.CSS_MIME_TYPE, CSSFile);
+export const cssFileDependency = new FileFactoryDependency(MimeTypes.CSS, CSSFile);

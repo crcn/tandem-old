@@ -44,7 +44,7 @@ describe(__filename + "#", () => {
   });
 
   async function loadTarget(source) {
-    const file: HTMLFile = FileFactoryDependency.find(MimeTypes.HTML_MIME_TYPE, dependencies).create({
+    const file: HTMLFile = FileFactoryDependency.find(MimeTypes.HTML, dependencies).create({
       path: "nothing",
       mtime: Date.now(),
       content: source

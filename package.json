@@ -80,6 +80,7 @@
     "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^15.2.1",
     "react-input-autosize": "^1.1.0",
+    "sass.js": "^0.9.12",
     "sift": "^3.2.4",
     "socket.io-client": "^1.4.8",
     "sprintf": "^0.1.5",

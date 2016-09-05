@@ -8,7 +8,7 @@ import { FileFactoryDependency } from "tandem-common/dependencies";
 import { HTMLDocumentRootEntity, HTMLFragmentExpression } from "tandem-html-extension/ast";
 
 export class HTMLFile extends DocumentFile<HTMLDocumentRootEntity> {
-  readonly type: string = MimeTypes.HTML_MIME_TYPE;
+  readonly type: string = MimeTypes.HTML;
   async parse(content: string) {
     return parseHTML(content);
   }
@@ -17,5 +17,5 @@ export class HTMLFile extends DocumentFile<HTMLDocumentRootEntity> {
   }
 }
 
-export const htmlFileModelDependency = new FileFactoryDependency(MimeTypes.HTML_MIME_TYPE, HTMLFile);
+export const htmlFileModelDependency = new FileFactoryDependency(MimeTypes.HTML, HTMLFile);
 

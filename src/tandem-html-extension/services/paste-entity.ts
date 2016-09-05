@@ -19,7 +19,7 @@ import {
 
 export class PasteHTMLService extends BaseApplicationService<FrontEndApplication> {
 
-  @filterAction(sift({ "item.type": MimeTypes.HTML_MIME_TYPE }))
+  @filterAction(sift({ "item.type": MimeTypes.HTML }))
   [PasteAction.PASTE](action: PasteAction) {
     this.bus.execute(new PasteHTMLEntityAction(action.item));
   }

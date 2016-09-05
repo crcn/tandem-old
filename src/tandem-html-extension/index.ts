@@ -89,9 +89,9 @@ export const dependency = [
   cssAtRuleEntityFactoryDependency,
 
   // mime types
-  new MimeTypeDependency("htm", MimeTypes.HTML_MIME_TYPE),
-  new MimeTypeDependency("html", MimeTypes.HTML_MIME_TYPE),
-  new MimeTypeDependency("sfn", MimeTypes.HTML_MIME_TYPE)
+  new MimeTypeDependency("htm", MimeTypes.HTML),
+  new MimeTypeDependency("html", MimeTypes.HTML),
+  new MimeTypeDependency("sfn", MimeTypes.HTML)
 ];
 
 export * from "./actions";

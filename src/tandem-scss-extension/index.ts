@@ -1,5 +1,13 @@
 import { scssFileDependency } from "./models";
+import {
+  scssImportEntityFactoryDependency
+} from "./ast";
 
 export const scssExtensionDependency = [
-  scssFileDependency
+
+  // models
+  scssFileDependency,
+
+  // entities
+  scssImportEntityFactoryDependency
 ];

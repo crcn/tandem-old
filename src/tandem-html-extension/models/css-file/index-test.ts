@@ -17,13 +17,13 @@ describe(__filename + "#", () => {
 
   beforeEach(() => {
     dependencies = new Dependencies(
-      new FileFactoryDependency(MimeTypes.CSS_MIME_TYPE, CSSFile),
+      new FileFactoryDependency(MimeTypes.CSS, CSSFile),
       new DependenciesDependency()
     );
   });
 
   const createCSSFile = (content: string) => {
-    const factory = FileFactoryDependency.find(MimeTypes.CSS_MIME_TYPE, dependencies);
+    const factory = FileFactoryDependency.find(MimeTypes.CSS, dependencies);
     return factory.create({ content: content, path: "file.css" });
   };
 
