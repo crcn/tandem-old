@@ -23,14 +23,14 @@ Start
 
 Fragment
   = nodes:Node* {
-    return new HTMLFragmentExpression(nodes, input, position());
+    return new HTMLFragmentExpression(nodes, position());
   }
 
 Node
   = _ node:(Comment/VoidElement/Element/TextNode) _ { return node; }
 
 Comment
-  = '<!--' characters:CommentCharacter* '-->' { return new HTMLCommentExpression(characters.join(''), input, position()); }
+  = '<!--' characters:CommentCharacter* '-->' { return new HTMLCommentExpression(characters.join(''), position()); }
 
 CommentCharacter
   = !'-->' character:. { return character; }
@@ -42,7 +42,7 @@ VoidElement
       expected("</" + nodeName + ">");
     }
 
-    return new HTMLElementExpression(nodeName, attributes, [], input, position());
+    return new HTMLElementExpression(nodeName, attributes, [], position());
   }
 
 EndVoidTag
@@ -61,7 +61,7 @@ Element
 
 ElementWithoutChildNodes
   = startTag:ElementStart attributes:ElementAttributes '/>' {
-    return new HTMLElementExpression(startTag, attributes, [], input, position());
+    return new HTMLElementExpression(startTag, attributes, [], position());
   }
 
 ElementWithChildNodes
@@ -69,7 +69,7 @@ ElementWithChildNodes
     if (startTag != endTag) {
       expected('</' + startTag + '>');
     }
-    return new HTMLElementExpression(startTag, attributes, childNodes, input, position());
+    return new HTMLElementExpression(startTag, attributes, childNodes, position());
   }
 
 ElementStart
@@ -82,7 +82,7 @@ ElementAttributes
 
 ElementAttribute
   = _ key:Name '=' value:AttributeValue _ {
-    return new HTMLAttributeExpression(key, value, input, position());
+    return new HTMLAttributeExpression(key, value, position());
   }
   / _ key:Name _ {
     return new HTMLAttributeExpression(key, "");
@@ -105,7 +105,7 @@ SingleStringCharacter
 
 TextNode
   = [^<]+ {
-    return new HTMLTextExpression(text(), input, position());
+    return new HTMLTextExpression(text(), position());
   }
 
 Name

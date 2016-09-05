@@ -3,20 +3,40 @@ import { diffArray } from "tandem-common/utils/array";
 import { ITreeNode, TreeNode } from "tandem-common/tree";
 import { IDisposable, IComparable, IPatchable } from "tandem-common/object";
 
+export interface IExpressionSource {
+  content: any;
+}
+
 /**
  * represents a a part of a source string
  */
 
 export interface IExpression extends ITreeNode<IExpression>, IComparable, IPatchable {
   position: IRange;
+  source: IExpressionSource;
 }
 
+const noSource = {
+  content: ""
+};
+
 export abstract class BaseExpression<T extends BaseExpression<any>> extends TreeNode<T> implements IExpression {
-  constructor(readonly source: string, readonly position: IRange) {
+
+  private _source: IExpressionSource;
+
+  constructor(readonly position: IRange) {
     super();
     if (!position) this.position = { start: -1, end: -1 };
-    if (!source) this.source = "";
   }
+
+  get source(): IExpressionSource {
+    return this._source || (this.parent ? this.parent.source : undefined) || noSource;
+  }
+
+  set source(value: IExpressionSource) {
+    this._source = value;
+  }
+
   patch(expression: IExpression) {
     // override me
   }
@@ -25,19 +45,19 @@ export abstract class BaseExpression<T extends BaseExpression<any>> extends Tree
   }
 
   getWhitespaceBeforeStart() {
-    return getReverseWhitespace(this.source.substr(0, this.position.start)) + getStartWhitespace(this.getSourcePart());
+    return getReverseWhitespace(this.source.content.substr(0, this.position.start)) + getStartWhitespace(this.getSourcePart());
   }
 
   getSourcePart() {
-    return this.source.substr(this.position.start, this.position.end - this.position.start);
+    return this.source.content.substr(this.position.start, this.position.end - this.position.start);
   }
 
   getWhitespaceAfterEnd() {
-    return getReverseWhitespace(this.getSourcePart()) + getStartWhitespace(this.source.substr(this.position.end));
+    return getReverseWhitespace(this.getSourcePart()) + getStartWhitespace(this.source.content.substr(this.position.end));
   }
 
   isEOF() {
-    return this.position.end === this.source.length;
+    return this.position.end === this.source.content.length;
   }
 }
 

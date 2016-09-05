@@ -54,6 +54,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     // entire ast needs to be replaced.
 
     const ast = !this._entity || this._entity.source.toString() !== this.content ? await this.parse(this.content) : this._entity.source;
+    ast.source = this;
 
     const entity = this.createEntity(ast, this._dependencies.clone().register(new EntityDocumentDependency(this)));
     if (this._entity && this._entity.constructor === entity.constructor) {

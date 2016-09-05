@@ -3,8 +3,8 @@ import { BaseExpression } from "tandem-common/ast";
 
 export abstract class MarkdownExpression extends BaseExpression<MarkdownExpression> {
 
-  constructor(source: string, position: IRange) {
-    super(source, position);
+  constructor(position: IRange) {
+    super(position);
   }
 
   // TODO - change to toHTMLExpression instead
@@ -12,8 +12,8 @@ export abstract class MarkdownExpression extends BaseExpression<MarkdownExpressi
 }
 
 export class MarkdownDocumentExpression extends MarkdownExpression {
-  constructor(public childNodes: Array<MarkdownExpression>, source: string, position: IRange) {
-    super(source, position);
+  constructor(public childNodes: Array<MarkdownExpression>, position: IRange) {
+    super(position);
   }
   toHTML() {
     return this.childNodes.map((child) => child.toHTML()).join("");
@@ -21,8 +21,8 @@ export class MarkdownDocumentExpression extends MarkdownExpression {
 }
 
 export class MarkdownHeaderExpression extends MarkdownExpression {
-  constructor(readonly size: number, public value: string, source: string, position: IRange) {
-    super(source, position);
+  constructor(readonly size: number, public value: string, position: IRange) {
+    super(position);
   }
   toHTML() {
     return `<h${this.size}>${this.value}</h${this.size}>`;
@@ -30,8 +30,8 @@ export class MarkdownHeaderExpression extends MarkdownExpression {
 }
 
 export class MarkdownParagraphExpression extends MarkdownExpression {
-  constructor(public value: string, source: string, position: IRange) {
-    super(source, position);
+  constructor(public value: string, position: IRange) {
+    super(position);
   }
   toHTML() {
     return `<p>${this.value}</p>`;
@@ -39,8 +39,8 @@ export class MarkdownParagraphExpression extends MarkdownExpression {
 }
 
 export class MarkdownBlockExpression extends MarkdownExpression {
-  constructor(public value: string, source: string, position: IRange) {
-    super(source, position);
+  constructor(public value: string, position: IRange) {
+    super(position);
   }
   toHTML() {
     return `<block>${this.value}</block>`;
@@ -48,8 +48,8 @@ export class MarkdownBlockExpression extends MarkdownExpression {
 }
 
 export class MarkdownUrlExpression extends MarkdownExpression {
-  constructor(public label: string, public url: string, source: string, position: IRange) {
-    super(source, position);
+  constructor(public label: string, public url: string, position: IRange) {
+    super(position);
   }
   toHTML() {
     return `<a href="${this.url}">${this.label}</a>`;
@@ -57,8 +57,8 @@ export class MarkdownUrlExpression extends MarkdownExpression {
 }
 
 export class MarkdownTextExpression extends MarkdownExpression {
-  constructor(public value: string, source: string, position: IRange) {
-    super(source, position);
+  constructor(public value: string, position: IRange) {
+    super(position);
   }
   toHTML() {
     return this.value;

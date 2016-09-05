@@ -40,7 +40,9 @@ export function convertPostCSSAST(root: postcss.Root, expressionClasses: any = {
     const start = previousLine.position.end;
     return previousLine = new Line({ start: start, end: start + line.length + 1 });
   });
-  return _convertPostCSSAST(root, lines, root, Object.assign({}, defaultExpressionClasses, expressionClasses));
+  const newRoot = _convertPostCSSAST(root, lines, root, Object.assign({}, defaultExpressionClasses, expressionClasses));
+  newRoot.source = { content: root.source.input.css };
+  return newRoot;
 }
 
 
@@ -53,7 +55,7 @@ class Line {
 
 function _convertPostCSSAST(root: postcss.Container, lines: Array<Line>, currentNode: postcss.Container, expressionClasses: any) {
 
-  const expressionClass = (expressionClasses[name] || expressionClasses[currentNode.type]) as { new(node: postcss.Node, children: Array<IExpression>, source: string, position: IRange): IExpression };
+  const expressionClass = (expressionClasses[name] || expressionClasses[currentNode.type]) as { new(node: postcss.Node, children: Array<IExpression>, position: IRange): IExpression };
 
   if (!expressionClass) {
     throw new Error(`Cannot find css expression type for ${currentNode.type}`);
@@ -68,7 +70,7 @@ function _convertPostCSSAST(root: postcss.Container, lines: Array<Line>, current
     end: endLine ? endLine.position.start + currentNode.source.end.column : source.length
   };
 
-  return new expressionClass(currentNode, (currentNode.nodes || []).map((child) => _convertPostCSSAST(root, lines, <postcss.Container>child, expressionClasses)), source, position);
+  return new expressionClass(currentNode, (currentNode.nodes || []).map((child) => _convertPostCSSAST(root, lines, <postcss.Container>child, expressionClasses)), position);
 }
 
 

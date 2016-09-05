@@ -17,20 +17,20 @@ export interface IHTMLValueNodeExpression extends IHTMLExpression {
 }
 
 export abstract class HTMLExpression extends BaseExpression<HTMLExpression> implements IHTMLExpression {
-  constructor(source: string, position: IRange) {
-    super(source, position);
+  constructor(position: IRange) {
+    super(position);
   }
 }
 
 export abstract class HTMLNodeExpression extends HTMLExpression {
-  constructor(readonly name: string, source: string, position: IRange) {
-    super(source, position);
+  constructor(readonly name: string, position: IRange) {
+    super(position);
   }
 }
 
 export class HTMLContainerExpression extends HTMLNodeExpression {
-  constructor(name: string, childNodes: Array<HTMLExpression>, source: string, position: IRange) {
-    super(name, source, position);
+  constructor(name: string, childNodes: Array<HTMLExpression>, position: IRange) {
+    super(name, position);
     childNodes.forEach((child) => this.appendChild(child));
   }
 
@@ -54,14 +54,13 @@ export class HTMLContainerExpression extends HTMLNodeExpression {
 }
 
 export class HTMLFragmentExpression extends HTMLContainerExpression implements IHTMLExpression {
-  constructor(children: Array<HTMLExpression>, source: string, position: IRange) {
-    super("#document-fragment", children, source, position);
+  constructor(children: Array<HTMLExpression>, position: IRange) {
+    super("#document-fragment", children, position);
   }
 
   clone(): HTMLFragmentExpression {
     return new HTMLFragmentExpression(
       this.childNodes.map(node => node.clone()),
-      this.source,
       this.position
     );
   }
@@ -81,9 +80,8 @@ export class HTMLElementExpression extends HTMLContainerExpression {
     name: string,
     attributes: Array<HTMLAttributeExpression>,
     childNodes: Array<HTMLExpression>,
-    source: string,
     position: IRange) {
-    super(name, childNodes, source, position);
+    super(name, childNodes, position);
     attributes.forEach((attribute) => this.appendChild(attribute));
   }
 
@@ -107,7 +105,7 @@ export class HTMLElementExpression extends HTMLContainerExpression {
       }
     }
     if (!found) {
-      this.attributes.push(new HTMLAttributeExpression(name, value, null, null));
+      this.attributes.push(new HTMLAttributeExpression(name, value, null));
     }
   }
 
@@ -124,7 +122,6 @@ export class HTMLElementExpression extends HTMLContainerExpression {
       this.name,
       this.attributes.map(attribute => attribute.clone()),
       this.childNodes.map(node => node.clone()),
-      this.source,
       this.position
     );
   }
@@ -166,15 +163,14 @@ export class HTMLElementExpression extends HTMLContainerExpression {
 }
 
 export class HTMLAttributeExpression extends HTMLExpression implements IExpression {
-  constructor(public name: string, public value: any, source: string, position: IRange) {
-    super(source, position);
+  constructor(public name: string, public value: any, position: IRange) {
+    super(position);
   }
 
   clone(): HTMLAttributeExpression {
     return new HTMLAttributeExpression(
       this.name,
       this.value,
-      this.source,
       this.position
     );
   }
@@ -190,14 +186,13 @@ export class HTMLAttributeExpression extends HTMLExpression implements IExpressi
 }
 
 export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValueNodeExpression {
-  constructor(public value: string, source: string, position: IRange) {
-    super("#text", source, position);
+  constructor(public value: string, position: IRange) {
+    super("#text", position);
   }
 
   clone(): HTMLTextExpression {
     return new HTMLTextExpression(
       this.value,
-      this.source,
       this.position
     );
   }
@@ -212,14 +207,13 @@ export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValue
 }
 
 export class HTMLCommentExpression extends HTMLNodeExpression implements IHTMLValueNodeExpression {
-  constructor(public value: string, source: string, position: IRange) {
-    super("#comment", source, position);
+  constructor(public value: string, position: IRange) {
+    super("#comment", position);
   }
 
   clone(): HTMLCommentExpression {
     return new HTMLCommentExpression(
       this.value,
-      this.source,
       this.position
     );
   }
