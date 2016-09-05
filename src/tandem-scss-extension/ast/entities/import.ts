@@ -6,6 +6,7 @@ import { parseSCSS } from "tandem-scss-extension/ast";
 import {
   File,
   BaseEntity,
+  EntityAction,
   watchProperty,
   ReadFileAction,
   WatchFileAction,
@@ -42,9 +43,9 @@ export class SCSSImportEntity extends BaseEntity<CSSATRuleExpression> {
 
     this.appendChild(file.entity);
 
-    // watchProperty(file, "content", () => {
-    //   console.log("update imported content");
-    // });
+    watchProperty(file, "content", () => {
+      this.notify(new EntityAction(EntityAction.ENTITY_UPDATE));
+    });
   }
 
   cloneLeaf() {

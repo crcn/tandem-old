@@ -32,3 +32,11 @@ export class GetPrimaryProjectFilePathAction extends Action {
     return (await bus.execute(new GetPrimaryProjectFilePathAction()).read()).value;
   }
 }
+
+
+export class EntityAction extends Action {
+  static readonly ENTITY_UPDATE = "entityUpdate";
+  constructor(type: string) {
+    super(EntityAction.ENTITY_UPDATE);
+  }
+}

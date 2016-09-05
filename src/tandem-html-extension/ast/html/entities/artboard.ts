@@ -57,7 +57,7 @@ class RegisteredArtboardEntity extends HTMLElementEntity implements IContextualE
     };
 
     for (const attribute of this.attributes) {
-      context[attribute.name] = attribute.value;
+      context[attribute.name] = attribute;
     }
 
     return context;

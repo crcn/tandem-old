@@ -1,7 +1,7 @@
-@import "./variables.scss";
+@import "../../src/tandem-front-end/scss/variables.scss";
 
 body {
-  font-family: Helvetica;
+  font-family: Helvetica !important;
 }
 
 .m-pane {
@@ -11,6 +11,6 @@ body {
 .m-pane .header {
   padding: 10px;
   font-size: 30px;
-  color: $color-blue-4;
-  background: rgba(0,0,0, 0.5);
+  background: $color-blue-0;
+  color: $color-blue-9;
 }

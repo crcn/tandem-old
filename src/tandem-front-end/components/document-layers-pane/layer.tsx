@@ -147,7 +147,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     const selection = workspace.selection;
     const layerName = entity.metadata.get(MetadataKeys.LAYER_DEPENDENCY_NAME) || entity.source.constructor.name;
 
-    const labelDependency = LayerLabelComponentFactoryDependency.find(layerName, dependencies);
+    const labelDependency = LayerLabelComponentFactoryDependency.find(layerName, dependencies) || LayerLabelComponentFactoryDependency.find(entity.constructor.name, dependencies);
 
     let labelSection;
 

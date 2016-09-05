@@ -1,17 +1,29 @@
-import { File } from "tandem-common/models";
-import { inject } from "tandem-common/decorators";
-import { IActor } from "tandem-common/actors";
-import { IEntity } from "tandem-common/ast/entities";
-import { BubbleBus } from "tandem-common/busses";
+
+import { WrapBus } from "mesh";
 import { Workspace } from "./workspace";
-import { IObservable } from "tandem-common/observable";
-import { IDisposable } from "tandem-common/object";
-import { IExpression } from "tandem-common/ast";
-import { patchTreeNode } from "tandem-common/tree";
-import { IEntityDocument } from "tandem-common/ast";
-import { IPoint, Transform } from "tandem-common/geom";
-import { Action, PropertyChangeAction } from "tandem-common/actions";
-import { IInjectable, DEPENDENCIES_NS, DependenciesDependency, Dependencies, EntityDocumentDependency } from "tandem-common/dependencies";
+import { debounce } from "lodash";
+import {
+  File,
+  IPoint,
+  inject,
+  Action,
+  IActor,
+  IEntity,
+  BubbleBus,
+  Transform,
+  IDisposable,
+  IObservable,
+  IExpression,
+  IInjectable,
+  EntityAction,
+  Dependencies,
+  patchTreeNode,
+  IEntityDocument,
+  DEPENDENCIES_NS,
+  PropertyChangeAction,
+  DependenciesDependency,
+  EntityDocumentDependency,
+} from "tandem-common";
 
 export interface IEditorTool extends IActor, IDisposable {
   readonly editor: IEditor;
@@ -53,6 +65,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     // modified. The only case where the ast should be re-parsed is when new content is coming in externally. In that case, the
     // entire ast needs to be replaced.
 
+    // TODO - listen to source when it changes, then update the document
     const ast = !this._entity || this._entity.source.toString() !== this.content ? await this.parse(this.content) : this._entity.source;
     ast.source = this;
 
@@ -67,7 +80,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
       // must load after since the document entities may reference
       // back to this document for the root entity
       await entity.load();
-      this._entity.observe(new BubbleBus(this));
+      this._entity.observe(new WrapBus(this.onEntityAction.bind(this)));
       this.notify(new PropertyChangeAction("entity", entity, oldEntity));
     }
   }
@@ -83,6 +96,18 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     await super.update();
     await this.load();
   }
+
+  protected onEntityAction(action: Action) {
+    if (action.type === EntityAction.ENTITY_UPDATE) {
+      console.log("updating source");
+      this._updateDebounce();
+    }
+    this.notify(action);
+  }
+
+  private _updateDebounce = debounce(() => {
+    this.update();
+  }, 500);
 }
 
 export abstract class BaseEditorTool implements IEditorTool, IInjectable {

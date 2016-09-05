@@ -4,3 +4,4 @@
 - [x] ability to split screen layers
 - [ ] react transpiler
 - [ ] data-target-style attribute
+- [ ] updating doc should be automatic

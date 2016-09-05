@@ -1,12 +1,31 @@
 import { parsePC } from "tandem-paperclip-extension/ast";
-import { TreeNode } from "tandem-common/tree";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { parseBlockScript } from "./utils";
 import { PCBlockNodeExpression } from "tandem-paperclip-extension/ast/expressions";
-import { EntityFactoryDependency } from "tandem-common/dependencies";
-import { GroupNodeSection, IDOMSection } from "tandem-html-extension/dom";
-import { BaseEntity, IEntity, IValueEntity, getContext } from "tandem-common/ast";
-import { HTMLNodeEntity, HTMLTextEntity, HTMLTextExpression, HTMLNodeExpression, HTMLValueNodeEntity, HTMLExpression, IHTMLNodeEntity } from "tandem-html-extension/ast";
+
+import {
+  IEntity,
+  TreeNode,
+  Injector,
+  getContext,
+  BaseEntity,
+  IValueEntity,
+  EntityFactoryDependency
+} from "tandem-common";
+
+import {
+  IDOMSection,
+  HTMLNodeEntity,
+  HTMLTextEntity,
+  HTMLExpression,
+  IHTMLNodeEntity,
+  GroupNodeSection,
+  HTMLTextExpression,
+  HTMLNodeExpression,
+  HTMLValueNodeEntity,
+  HTMLAttributeEntity,
+  HTMLAttributeExpression,
+} from "tandem-html-extension";
 
 export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> implements IValueEntity  {
   private _script: Function;
@@ -52,7 +71,15 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
 
     for (const item of Array.isArray(value) ? value : [value]) {
       if (item instanceof BaseEntity) {
-        this.appendChild(item.clone());
+
+        // a bit of a hack, but we need a container for the attribute -- closest
+        // thing is to re-use the HTML Text entity. This way any changes to the item
+        // source get reflected back to the attribute it came from
+        if (item instanceof HTMLAttributeEntity) {
+          this.appendChild(Injector.inject(new HTMLTextEntity(item.source), this._dependencies));
+        } else {
+          this.appendChild(item.clone());
+        }
       } else {
         await this.loadExpressionAndAppendChild(parsePC(String(item)));
       }

@@ -5,8 +5,8 @@ import { DocumentFile } from "tandem-front-end/models";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { GroupNodeSection } from "tandem-html-extension/dom";
 import { HTMLElementEntity } from "./element";
-import { DocumentPaneComponentFactoryDependency } from "tandem-front-end/dependencies";
 import { FileFactoryDependency, MAIN_BUS_NS } from "tandem-common/dependencies";
+import { DocumentPaneComponentFactoryDependency } from "tandem-front-end/dependencies";
 import { HTMLElementExpression, HTMLDocumentRootEntity } from "tandem-html-extension/ast";
 
 import {
@@ -14,6 +14,7 @@ import {
   IActor,
   inject,
   BubbleBus,
+  EntityAction,
   watchProperty,
   OpenFileAction,
   WatchFileAction,
@@ -60,7 +61,9 @@ export class LinkEntity extends HTMLElementEntity {
 
     this._file = await File.open(this.href, this._dependencies, type) as DocumentFile<any>;
     this._file.sync();
-    watchProperty(this._file, "content", this.document.update.bind(this.document));
+    watchProperty(this._file, "content", () => {
+      this.notify(new EntityAction(EntityAction.ENTITY_UPDATE));
+    });
 
     this._file.owner = this.document;
 
