@@ -26,7 +26,7 @@ export async function insertSourceChildren(entity: IEntity, index: number = -1, 
   const root = entity.root;
 
   // update the file document
-  await entity.document.update();
+  // await entity.document.update();
 
   const entities = findEntitiesBySource(root, ...childSources);
   return entities;
@@ -44,7 +44,7 @@ export async function removeEntitySources(...entities: Array<IEntity>) {
     }
   });
 
-  await document.update();
+  // await document.update();
 }
 
 export function getContext(entity: IEntity) {

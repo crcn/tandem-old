@@ -2,6 +2,7 @@ import * as sift from "sift";
 import {
   INamed,
   IRange,
+  bindable,
   TreeNode,
   IExpression,
   BaseExpression,
@@ -163,8 +164,17 @@ export class HTMLElementExpression extends HTMLContainerExpression {
 }
 
 export class HTMLAttributeExpression extends HTMLExpression implements IExpression {
-  constructor(public name: string, public value: any, position: IRange) {
+
+  @bindable()
+  public value: any;
+
+  @bindable()
+  public name: string;
+
+  constructor(name: string, value: any, position: IRange) {
     super(position);
+    this.name = name;
+    this.value = value;
   }
 
   clone(): HTMLAttributeExpression {
@@ -186,8 +196,12 @@ export class HTMLAttributeExpression extends HTMLExpression implements IExpressi
 }
 
 export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValueNodeExpression {
-  constructor(public value: string, position: IRange) {
+  @bindable()
+  public value: string;
+
+  constructor(value: string, position: IRange) {
     super("#text", position);
+    this.value = value;
   }
 
   clone(): HTMLTextExpression {
@@ -207,8 +221,13 @@ export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValue
 }
 
 export class HTMLCommentExpression extends HTMLNodeExpression implements IHTMLValueNodeExpression {
-  constructor(public value: string, position: IRange) {
+
+  @bindable()
+  public value: string;
+
+  constructor(value: string, position: IRange) {
     super("#comment", position);
+    this.value = value;
   }
 
   clone(): HTMLCommentExpression {

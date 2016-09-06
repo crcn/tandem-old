@@ -20,12 +20,10 @@ class StyleDeclarationComponent extends React.Component<any, any> {
 
   onKeyChange = (event) => {
     this.props.declaration.key = event.target.value;
-    this.props.workspace.file.update();
   }
 
   onValueChange = (event) => {
     this.props.declaration.value = String(event.target.value);
-    this.props.workspace.file.update();
   }
 
   onKeyDown = (event: KeyboardEvent) => {
@@ -46,7 +44,6 @@ class StyleDeclarationComponent extends React.Component<any, any> {
     if ((this.refs["key"] as any).value === "") {
       this.remove();
     }
-    this.props.workspace.file.update();
   }
 
   render() {

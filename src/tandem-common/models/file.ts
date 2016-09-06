@@ -52,7 +52,7 @@ export class File extends Observable {
     }
   }
 
-  async update() {
+  async save() {
     this.mtime = Date.now();
     await UpdateTemporaryFileContentAction.execute(this, this._bus);
   }

@@ -94,7 +94,6 @@ export class EditInnerHTMLTool extends BaseEditorTool {
     (<Element>this._targetEntity.section.targetNode).innerHTML = " ";
 
     // save the workspae file -- diffing time
-    await this.workspace.file.update();
     this.bus.execute(new SetToolAction(<EditorToolFactoryDependency>this.dependencies.query(pointerToolDependency.ns)));
   }
 

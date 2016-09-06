@@ -43,7 +43,6 @@ class TextLayerLabelComponent extends React.Component<{ entity: HTMLTextEntity, 
   doneEditing = ()  => {
     this.props.entity.metadata.set(MetadataKeys.EDIT_LAYER, false);
     this.props.entity.source.value = this.props.entity.value;
-    this.props.entity.document.update();
   }
 
   onKeyDown = (event: KeyboardEvent) => {

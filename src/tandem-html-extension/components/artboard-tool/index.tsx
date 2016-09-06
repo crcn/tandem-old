@@ -31,7 +31,6 @@ export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEnt
 
   save(event) {
     this.props.entity.source.setAttribute("title", (event.target as any).value);
-    this.props.editor.workspace.file.update();
     this.setState({ editTitle: false });
   }
 
@@ -73,7 +72,7 @@ export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEnt
 export class ArtboardToolComponent extends React.Component<{ zoom: number, workspace: Workspace }, any> {
   render() {
 
-    const artboards = this.props.workspace.file.entity.flatten().filter((entity) => String(entity.source.name).toLowerCase() === "artboard");
+    const artboards = this.props.workspace.file.entity.flatten().filter((entity) => String((entity.source as any).name).toLowerCase() === "artboard");
 
     if (!artboards.length) return null;
 

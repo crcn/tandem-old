@@ -17,7 +17,6 @@ export class EntityMetadata extends Metadata implements IOwnable {
 }
 
 export interface IEntityDocument extends IOwnable {
-  update();
   parse(source: string): Promise<IExpression>;
 }
 

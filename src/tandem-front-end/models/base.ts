@@ -47,67 +47,87 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
 
   private _entity: T;
   private _ast: IExpression;
+  private _sourceContent: string;
+  private _entityObserver: IActor;
+  private _expressionObserver: IActor;
+
+  constructor(data) {
+    super(data);
+    this._entityObserver     = new WrapBus(this.onEntityAction.bind(this));
+    this._expressionObserver = new WrapBus(this.onExpressionAction.bind(this));
+  }
 
   public get entity(): T {
     return this._entity;
   }
 
   onContentChange(newContent: string) {
-    if (this._entity) {
+    if (this._sourceContent !== newContent) {
       this.load();
     }
   }
 
   public async load() {
 
-    // do not parse the content if it's the same as the previously parsed ast.
-    // This is necessary since parts of the application hold references to entity sources when they're
-    // modified. The only case where the ast should be re-parsed is when new content is coming in externally. In that case, the
-    // entire ast needs to be replaced.
-
-    // TODO - listen to source when it changes, then update the document
-    const ast = !this._entity || this._entity.source.toString() !== this.content ? await this.parse(this.content) : this._entity.source;
-    ast.source = this;
-
-    const entity = this.createEntity(ast, this._dependencies.clone().register(new EntityDocumentDependency(this)));
-    if (this._entity && this._entity.constructor === entity.constructor) {
-      await entity.load();
-      patchTreeNode(this._entity, entity);
-    } else {
-      const oldEntity = this._entity;
-      this._entity    = entity;
-
-      // must load after since the document entities may reference
-      // back to this document for the root entity
-      await entity.load();
-      this._entity.observe(new WrapBus(this.onEntityAction.bind(this)));
-      this.notify(new PropertyChangeAction("entity", entity, oldEntity));
+    if (this._ast) {
+      this._ast.unobserve(this._expressionObserver);
     }
+
+    this._ast =  await this.parse(this._sourceContent = this.content);
+    this._ast.source = this;
+    this._ast.observe(this._expressionObserver);
+
+    this.requestUpdateEntitiy();
   }
 
   abstract async parse(content: string): Promise<IExpression>;
   protected abstract createEntity(ast: IExpression, dependencies: Dependencies): T;
 
-  async update() {
-
-    // persist change changed from the entity to the source
+  async save() {
     this._entity.updateSource();
-    this.content = this._entity.source.toString();
-    await super.update();
-    await this.load();
+    this.content = this._sourceContent = this._entity.source.toString();
+    await super.save();
+  }
+
+  protected onExpressionAction(action: Action) {
+    console.log("EXPR ACTION");
+    console.log(action.target);
+    this.requestUpdateEntitiy();
   }
 
   protected onEntityAction(action: Action) {
     if (action.type === EntityAction.ENTITY_UPDATE) {
-      console.log("updating source");
-      this._updateDebounce();
+      this.requestUpdateEntitiy();
     }
     this.notify(action);
   }
 
-  private _updateDebounce = debounce(() => {
-    this.update();
+  private requestUpdateEntitiy = debounce(() => {
+    this.updateEntity();
   }, 500);
+
+  private async updateEntity() {
+    console.log("update entity");
+    const entity = this.createEntity(this._ast, this._dependencies.clone().register(new EntityDocumentDependency(this)));
+    if (this._entity && this._entity.constructor === entity.constructor) {
+      await entity.load();
+      patchTreeNode(this._entity, entity);
+    } else {
+      const oldEntity = this._entity;
+
+      if (oldEntity) {
+        this._entity.unobserve(this._entityObserver);
+      }
+
+      this._entity    = entity;
+
+      // must load after since the document entities may reference
+      // back to this document for the root entity
+      await entity.load();
+      this._entity.observe(this._entityObserver);
+      this.notify(new PropertyChangeAction("entity", entity, oldEntity));
+    }
+  }
 }
 
 export abstract class BaseEditorTool implements IEditorTool, IInjectable {
