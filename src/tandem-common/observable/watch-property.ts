@@ -5,7 +5,7 @@ import { TypeWrapBus, LimitBus } from "tandem-common/busses";
 export function watchProperty(target: IObservable, property: string, callback: (newValue: any, oldValue: any) => void) {
 
   const observer = new LimitBus(1, new TypeWrapBus(PropertyChangeAction.PROPERTY_CHANGE, (action: PropertyChangeAction) => {
-    if (action.property === property) {
+    if (action.property === property && action.target === target) {
       callback(action.newValue, action.oldValue);
     }
   }));

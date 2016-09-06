@@ -1,10 +1,10 @@
 import * as postcss from "postcss";
 import * as scssSyntax  from "postcss-scss";
 import { convertPostCSSAST } from "tandem-html-extension";
-import { SCSSRootExpression } from "./expressions";
+import { SCSSRootExpression, SCSSImportExpression } from "./expressions";
 
 const expressionClasses = {
-  root: SCSSRootExpression
+  root   : SCSSRootExpression
 };
 
 export async function parseSCSS(source: string) {

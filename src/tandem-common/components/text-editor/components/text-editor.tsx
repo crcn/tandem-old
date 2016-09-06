@@ -1,21 +1,23 @@
 import "./text-editor.scss";
 
 import * as React from "react";
-import { IActor } from "tandem-common/actors";
 import TextEditor from "../models/text-editor";
+import { IActor } from "tandem-common/actors";
 import { startDrag } from "tandem-common/utils/component";
 import LineComponent from "./line";
-import CaretComponent from "./caret";
 import { BrokerBus } from "tandem-common/busses";
+import { ITokenizer } from "tandem-common/tokenizers";
+import CaretComponent from "./caret";
+import { Dependencies } from "tandem-common/dependencies";
 import HighlightComponent from "./highlight";
-import { translateAbsoluteToRelativePoint } from "sf-front-end/utils/html";
+import { translateAbsoluteToRelativePoint } from "tandem-common/utils/html";
 
-class TextEditorComponent extends React.Component<any, any> implements IActor {
+export class TextEditorComponent extends React.Component<{ onKeyDown?: Function, onFocus?: Function, onChange?: Function, onBlur?: Function, style?: Object, className?: string, source: string, dependencies: Dependencies, tokenizer: ITokenizer }, any> implements IActor {
 
   readonly bus: BrokerBus;
   private _timer: any;
   private _idleTimer: any;
-  private _editor: any;
+  private _editor: TextEditor;
 
   constructor() {
     super();
@@ -27,7 +29,9 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
     };
 
     this.bus = new BrokerBus();
+    this.bus.register(this);
   }
+
 
   execute(message) {
 
@@ -49,30 +53,32 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
   }
 
   componentWillReceiveProps(nextProps, nextState) {
-    this.getEditor().setProperties(Object.assign({}, nextProps, nextState));
+    this._resetEditor(nextProps);
+  }
+
+  private _resetEditor(props) {
+    this._editor.source = props.source;
+    this._editor.style = Object.assign({}, this._editor.style || {}, props.style);
   }
 
   componentDidMount() {
-    var style = window.getComputedStyle((this.refs as any).editor);
-    this.setState({
-      style: {
-        fontSize      : style.fontSize,
-        fontFamily    : style.fontFamily,
-        color         : style.color,
-        whiteSpace    : style.whiteSpace,
-        fontWeight    : style.fontWeight,
-        letterSpacing : style.letterSpacing
-      }
+    const style = window.getComputedStyle((this.refs as any).editor);
+    this._editor.style = Object.assign({}, this._editor.style, {
+      fontSize      : style.fontSize,
+      fontFamily    : style.fontFamily,
+      color         : style.color,
+      whiteSpace    : style.whiteSpace,
+      fontWeight    : style.fontWeight,
+      letterSpacing : style.letterSpacing
     });
   }
 
-  getEditor(props = {}): any {
-    if (this._editor) {
-      if (props) this._editor.setProperties(props);
-      return this._editor;
-    }
+  get editor(): TextEditor {
 
-    this._editor = new TextEditor(this.bus);
+    if (!this._editor) {
+      this._editor = new TextEditor(this.bus);
+      this._resetEditor(this.props);
+    }
 
     return this._editor;
   }
@@ -82,43 +88,43 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
     event.preventDefault();
   }
 
-  get controller() {
-    return this.getEditor();
+  shouldComponentUpdate(props, state) {
+    return this.props.source !== props.source || this.state.idle !== state.idle || this.state.focus !== state.focus;
   }
 
   onKeyCommand(event) {
 
-    var editor = this._editor;
+    const editor = this._editor;
 
-    var setPosition = (position) => {
+    const setPosition = (position) => {
       if (event.shiftKey) {
-        var min = Math.min(position, editor.marker.position);
-        var max = Math.max(position, editor.marker.endPosition);
+        const min = Math.min(position, editor.marker.position);
+        const max = Math.max(position, editor.marker.endPosition);
         editor.marker.setSelection(min, max - min);
       } else {
         editor.marker.setSelection(position);
       }
     };
 
-    var removeSelection = (event) => {
+    const removeSelection = (event) => {
 
       if (event.altKey && editor.marker.length === 0) {
-        var token = editor.getTokenFromPosition(editor.marker.position);
+        const token = editor.getTokenFromPosition(editor.marker.position);
 
         editor.marker.setSelection(
-          token.getPosition(),
-          editor.marker.position - token.getPosition()
+          token.position,
+          editor.marker.position - token.position
         );
       }
 
       editor.marker.removeSelection();
     };
 
-    var moveDown = (event) => {
+    const moveDown = (event) => {
       editor.caret.moveLine(1);
     };
 
-    var moveRight = (event) => {
+    const moveRight = (event: KeyboardEvent) => {
 
       if (event.shiftKey) {
         editor.marker.setSelection(
@@ -132,13 +138,13 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
       }
     };
 
-    var moveUp = (event) => {
+    const moveUp = (event) => {
       editor.caret.moveLine(-1);
     };
 
-    var moveLeft = (event) => {
+    const moveLeft = (event) => {
       if (event.altKey) {
-        // var token = editor.getTokenFromPosition(editor.marker.position);
+        // const token = editor.getTokenFromPosition(editor.marker.position);
 
       }
       editor.marker.setSelection(
@@ -147,31 +153,31 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
       );
     };
 
-    var aKey = (event) => {
+    const aKey = (event: KeyboardEvent): any => {
       if (event.metaKey) return editor.marker.setSelection(0, Infinity);
       if (event.ctrlKey) return editor.caret.moveToLinePosition(0);
       return false;
-    }
+    };
 
-    var eKey = (event) => {
+    const eKey = (event: KeyboardEvent): any => {
       if (event.ctrlKey) {
         editor.marker.setSelection(editor.marker.position + editor.marker.length);
         return editor.caret.moveToLinePosition(Infinity);
       }
       return false;
-    }
+    };
 
-    var kKey = (event) => {
+    const kKey = (event: KeyboardEvent): any => {
       if (event.ctrlKey) return editor.caret.removeCharsUntilEndOfLine();
       return false;
-    }
+    };
 
-    var dKey = (event) => {
+    const dKey = (event: KeyboardEvent): any => {
       if (event.ctrlKey) return editor.caret.removeNextCharacter();
       return false;
-    }
+    };
 
-    var handlers = {
+    const handlers = {
       40 : moveDown,
       39 : moveRight,
       38 : moveUp,
@@ -183,7 +189,7 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
       8  : removeSelection
     };
 
-    var handler = handlers[event.keyCode];
+    const handler = handlers[event.keyCode];
 
     if (handler) {
       // necessary to prevent scrolling
@@ -206,7 +212,7 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
   }
 
   setSelection(start, length) {
-    this.getEditor().marker.setSelection(start, length);
+    this.editor.marker.setSelection(start, length);
   }
 
   select() {
@@ -221,11 +227,11 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
   }
 
   onPaste(event) {
-    this.getEditor().marker.addText(event.clipboardData.getData("text/plain"));
+    this.editor.marker.addText(event.clipboardData.getData("text/plain"));
   }
 
   onCopy(event) {
-    event.clipboardData.setData("text/plain", this.controller.marker.getSelectedText());
+    event.clipboardData.setData("text/plain", this.editor.marker.getSelectedText());
     event.preventDefault();
   }
 
@@ -240,7 +246,7 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
     // out when we interact with the text editor
     event.preventDefault();
 
-    var startPosition = this._getSourcePositionFromMouseEvent(event);
+    const startPosition = this._getSourcePositionFromMouseEvent(event);
 
     // shift highlight
     if (event.shiftKey) {
@@ -250,48 +256,45 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
     }
 
     startDrag(event, (event, info) => {
-      var endPosition = this._getSourcePositionFromMouseEvent(event);
+      const endPosition = this._getSourcePositionFromMouseEvent(event);
       this._markSelection(startPosition, endPosition);
     });
   }
 
   _markSelection(startPosition, endPosition) {
     if (endPosition !== startPosition) {
-      var min = Math.min(endPosition, startPosition);
-      var max = Math.max(endPosition, startPosition);
+      const min = Math.min(endPosition, startPosition);
+      const max = Math.max(endPosition, startPosition);
       this._editor.marker.setSelection(min, max - min);
     }
   }
 
   onDoubleClick(event) {
-    var position = this._getSourcePositionFromMouseEvent(event);
-    var token = this._editor.getTokenFromPosition(position);
-    this._editor.marker.setSelection(token.getPosition(), token.length);
+    const position = this._getSourcePositionFromMouseEvent(event);
+    const token = this._editor.getTokenFromPosition(position);
+    this._editor.marker.setSelection(token.position, token.length);
   }
 
   _getSourcePositionFromMouseEvent(event) {
-    var { left, top } = translateAbsoluteToRelativePoint(event, (this.refs as any).editor);
+    const { left, top } = translateAbsoluteToRelativePoint(event, (this.refs as any).editor);
 
-    var tr = this._editor.textRuler;
-    var lh = tr.calculateLineHeight();
-    var i = 0;
-    while((i + 1) * lh < top) i++;
+    const tr = this._editor.textRuler;
+    const lh = tr.calculateLineHeight();
+    let i = 0;
+    while ((i + 1) * lh < top) i++;
 
-    var line = this._editor.lines[i];
-    var column = tr.convertPointToCharacterPosition(line.toString(), left)
+    const line = this._editor.lines[i];
+    const column = tr.convertPointToCharacterPosition(line.toString(), left);
 
-    return line.getPosition() + column;
+    return line.position + column;
   }
 
   render() {
 
-    var editor = this.getEditor(Object.assign({}, this.state, this.props, {
-      style: Object.assign({}, this.state.style, this.props.style || {})
-    }));
+    const editor = this.editor;
 
-    var style = Object.assign({}, editor.style, {
+    const style = Object.assign({}, editor.style, {
       height: editor.textRuler.calculateLineHeight() * editor.lines.length
-      // width: editor.calculateWidth()
     });
 
     return <div
@@ -307,7 +310,7 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
 
         {
           editor.lines.map((line, i) => {
-            return <LineComponent editor={editor} line={line} key={i} tokenComponentFactory={this.props.tokenComponentFactory} />
+            return <LineComponent editor={editor} line={line} key={i} dependencies={this.props.dependencies} />;
           })
         }
 
@@ -324,5 +327,3 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
     </div>;
   }
 }
-
-export default TextEditorComponent;

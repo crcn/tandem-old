@@ -1,1 +1,1 @@
-export { default } from './components/text-editor';
+export * from "./components/text-editor";

@@ -1,61 +1,53 @@
-import Line from './line';
-import Caret from './caret';
-import Marker from './marker';
-import TextRuler from './text-ruler';
+import Line from "./line";
+import Caret from "./caret";
+import Marker from "./marker";
+import TextRuler from "./text-ruler";
 import { IActor } from "tandem-common/actors";
-import { BrokerBus, BubbleBus } from "tandem-common/busses";
+import { bindable } from "tandem-common/decorators";
 import { SourceChangeAction } from "../actions";
-import StringTokenizer from 'saffron-common/tokenizers/string';
-import { translateLengthToInteger } from 'saffron-common/utils/html/css/translate-style';
-import { SPACE, NEW_LINE, TAB } from 'saffron-common/tokenizers/token-types';
+import { BrokerBus, BubbleBus } from "tandem-common/busses";
+import { PropertyChangeAction } from "tandem-common/actions";
+import { Observable, watchProperty } from "tandem-common/observable";
+import { StringTokenizer, TokenTypes } from "tandem-common/tokenizers";
 
-class TextEditor {
+class TextEditor extends Observable {
 
   public lines: Array<Line>;
   public textRuler: TextRuler;
   public marker: Marker;
   public caret: Caret;
-  private _source: string;
+
+  @bindable()
+  public style: any = {};
+
+  @bindable()
+  public source: string;
+
+  private _workableSource: string = "";
 
   constructor(public bus: BrokerBus, public maxColumns: number = Infinity, public tokenizer: any = new StringTokenizer(), private _style: any = {}) {
+    super();
 
     this.textRuler = new TextRuler(this.style);
     this.marker = new Marker(this);
     this.caret = new Caret(this, this.marker);
 
     this.marker.observe(this.bus);
+
+    watchProperty(this, "style", this.onStyleChange.bind(this));
+    watchProperty(this, "source", this.onSourceChange.bind(this));
   }
 
-  get source() {
-    return this._source || '';
-  }
-
-  set source(value) {
-    this._source = String(value || '');
-    if (this.style.whitespace === "nowrap") {
-      this._source = String(this._source).replace(/[\n\r]/g, '')
-    }
-    this._createLines();
-  }
-
-  get style() {
-    return this._style;
-  }
-
-  set style(value: any) {
-    this.textRuler.style = value;
-    this.source = this.source;
-  }
 
   /**
    * returns an x-y cell based on the buffer position
    */
 
   getCellFromPosition(position) {
-    var cpos = 0;
-    for (var i = 0, n = this.lines.length; i < n; i++) {
+    let cpos = 0;
+    for (let i = 0, n = this.lines.length; i < n; i++) {
 
-      var line = this.lines[i];
+      const line = this.lines[i];
       cpos    += line.length;
 
       // on the right line. Find the column
@@ -68,7 +60,7 @@ class TextEditor {
     }
 
     // return EOL
-    var lastRow = this.lines.length - 1;
+    const lastRow = this.lines.length - 1;
 
     return {
       row    : lastRow,
@@ -88,14 +80,14 @@ class TextEditor {
 
   scanPosition(start, regexp, reverse = false) {
 
-    var rest;
+    let rest;
     if (reverse) {
-      rest = this.source.substr(0, start).split('').reverse().join('');
+      rest = this.source.substr(0, start).split("").reverse().join("");
     } else {
       rest = this.source.substr(start);
     }
 
-    var match = rest.match(regexp);
+    const match = rest.match(regexp);
 
     if (!match) return start;
     return start + (rest.indexOf(match[0]) + match[0].length) * (reverse ? -1 : 1);
@@ -104,8 +96,8 @@ class TextEditor {
   /**
    */
 
-  splice(start, count, repl = '') {
-    var source = this.source.substr(0, start) + repl + this.source.substr(start + count);
+  splice(start, count, repl = "") {
+    const source = this.source.substr(0, start) + repl + this.source.substr(start + count);
     this.source = source;
     this.bus.execute(new SourceChangeAction(this.source));
   }
@@ -117,25 +109,25 @@ class TextEditor {
   }
 
   getMaxWidth() {
-    var maxWidth = Infinity;
+    let maxWidth = Infinity;
 
     if (this.style.width) {
-      maxWidth = translateLengthToInteger(this.style.width);
+      maxWidth = Number(this.style.width.replace(/[^\d]/g, ""));
     }
 
     return maxWidth;
   }
 
-  getTokenFromPosition(position) {
-    var cell = this.getCellFromPosition(position);
-    var line = this.lines[cell.row];
-    var diff = position - line.position;
-    var col  = cell.column;
+  getTokenFromPosition(position: number) {
 
+    const cell = this.getCellFromPosition(position);
+    const line = this.lines[cell.row];
+    const diff = position - line.position;
+    const col  = cell.column;
 
-    var p = 0;
-    for (var i = 0, n = line.tokens.length; i < n; i++) {
-      var token = line.tokens[i];
+    let p = 0;
+    for (let i = 0, n = line.tokens.length; i < n; i++) {
+      const token = line.tokens[i];
       p += token.length;
       if (p > diff) return token;
     }
@@ -147,28 +139,28 @@ class TextEditor {
    */
 
   _createLines() {
-    var tokens = this.tokenizer.tokenize(this.source);
+    const tokens = this.tokenizer.tokenize(this._workableSource);
 
-    var lines = [];
-    var cline;
+    const lines = [];
+    let cline;
 
-    var addLine = () => {
+    const addLine = () => {
       // do not add another line if there is no token stuff
       if (cline && !cline.length) return cline;
-      cline = new Line(this)
+      cline = new Line(this);
       lines.push(cline);
       return cline;
-    }
+    };
 
     // add the first line
     addLine();
 
     // TODO - take max columns into consideration here
-    var maxWidth = this.getMaxWidth();
+    const maxWidth = this.getMaxWidth();
 
-    var breakWord = this.style.wordWrap === 'break-word';
+    const breakWord = this.style.wordWrap === "break-word";
 
-    var addToken = (token) => {
+    const addToken = (token) => {
 
       if (this.textRuler) {
 
@@ -177,17 +169,17 @@ class TextEditor {
 
           if (breakWord) {
 
-            var buffer = token.value;
+            let buffer = token.value;
 
-            while(this.textRuler.calculateSize(buffer)[0] >= maxWidth) {
+            while (this.textRuler.calculateSize(buffer)[0] >= maxWidth) {
               buffer = buffer.substr(0, buffer.length - 1);
             }
 
-            var c1 = Object.assign({}, token);
+            const c1 = Object.assign({}, token);
             c1.length = buffer.length;
             c1.value = buffer;
 
-            var c2 = Object.assign({}, token);
+            const c2 = Object.assign({}, token);
             c2.value = c2.value.substr(buffer.length);
             c2.length = c2.value.length;
 
@@ -206,14 +198,14 @@ class TextEditor {
       }
 
       cline.addRawToken(token);
-    }
+    };
 
-    for (var i = 0, n = tokens.length; i < n; i++) {
-      var token = tokens[i];
+    for (let i = 0, n = tokens.length; i < n; i++) {
+      const token = tokens[i];
 
       addToken(token);
 
-      if (token.type === NEW_LINE) {
+      if (token.type === TokenTypes.NEW_LINE) {
         addLine();
       }
     }
@@ -221,6 +213,25 @@ class TextEditor {
     this.lines = lines;
   }
 
+  private onStyleChange(newStyle: any) {
+    this.textRuler.style = newStyle;
+    this._reset();
+  }
+
+  private onSourceChange() {
+    this._reset();
+  }
+
+  private _reset() {
+
+    this._workableSource = this.source || "";
+
+    if (this.style.whitespace === "nowrap") {
+      this._workableSource = String(this._workableSource).replace(/[\n\r]/g, "");
+    }
+
+    this._createLines();
+  }
 }
 
 export default TextEditor;

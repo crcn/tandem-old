@@ -1,7 +1,7 @@
-import encode from './encode';
-import {
-  calculateLengthInPixels
-} from 'saffron-common/utils/html/css';
+import encode from "./encode";
+// import {
+//   calculateLengthInPixels
+// } from "saffron-common/utils/html/css";
 
 /**
  * Simple text width
@@ -28,12 +28,12 @@ class TextRuler {
    */
 
   convertPointToCharacterPosition(text, point) {
-    var position = 0;
-    var w = 0;
-    for (var i = 0, n = text.length; i < n; i++) {
+    let position = 0;
+    let w = 0;
+    for (let i = 0, n = text.length; i < n; i++) {
 
-      var charWidth = this.calculateCharacterSize(text.charAt(i))[0];
-      var halfWidth = charWidth / 2;
+      const charWidth = this.calculateCharacterSize(text.charAt(i))[0];
+      const halfWidth = charWidth / 2;
 
       if (i > 0) {
         w = this.calculateSize(text.substr(0, i))[0];
@@ -52,7 +52,7 @@ class TextRuler {
   }
 
   calculateLineHeight() {
-    return this.calculateSize('Aa')[1];
+    return this.calculateSize("Aa")[1];
   }
 
   /**
@@ -74,11 +74,11 @@ class TextRuler {
   calculateCharacterSize(char) {
     if (this._sizes[char]) return this._sizes[char];
 
-    var span = this._getTemporarySpan();
+    const span = this._getTemporarySpan();
 
     // copy over the styles defined for the text ruler so that
     // we can make an accurate measurement
-    var ts = this._style;
+    const ts = this._style;
 
     Object.assign(span.style, {
       letterSpacing: ts.letterSpacing,
@@ -91,8 +91,8 @@ class TextRuler {
     // set the encoded
     span.innerHTML = encode(char);
 
-    var w = span.offsetWidth; // + this._getLetterSpacing();
-    var h = span.offsetHeight;
+    const w = span.offsetWidth; // + this._getLetterSpacing();
+    const h = span.offsetHeight;
 
     return this._sizes[char] = [w, h];
   }
@@ -103,8 +103,9 @@ class TextRuler {
   _getLetterSpacing() {
     if (this._sizes.letterSpacing) return this._sizes.letterSpacing;
     if (!this.style) return 0;
-    var ls = calculateLengthInPixels(this.style.letterSpacing);
-    return this._sizes.letterSpacing = typeof ls === 'number' ? ls : 0;
+    console.log(this.style.letterSpacing);
+    const ls = 0; // calculateLengthInPixels(this.style.letterSpacing);
+    return this._sizes.letterSpacing = typeof ls === "number" ? ls : 0;
   }
 
   /**
@@ -114,16 +115,16 @@ class TextRuler {
 
   _getTemporarySpan() {
     if (this._span) return this._span;
-    var span = this._span = document.createElement('span');
+    const span = this._span = document.createElement("span");
 
     // move off screen
     Object.assign(span.style, {
-      left     : '0px',
-      // left: '0px',
-      // top: '0px',
+      left     : "0px",
+      // left: "0px",
+      // top: "0px",
       // zIndex: 1024,
-      top      : '-1024px',
-      position : 'absolute'
+      top      : "-1024px",
+      position : "absolute"
     });
 
     document.body.appendChild(span);

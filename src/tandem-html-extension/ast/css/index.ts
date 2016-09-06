@@ -4,7 +4,6 @@ export * from "./expressions";
 export * from "./entities";
 export * from "./utils";
 
-
 import {
   IExpression,
   IRange
@@ -55,7 +54,7 @@ class Line {
 
 function _convertPostCSSAST(root: postcss.Container, lines: Array<Line>, currentNode: postcss.Container, expressionClasses: any) {
 
-  const expressionClass = (expressionClasses[name] || expressionClasses[currentNode.type]) as { new(node: postcss.Node, children: Array<IExpression>, position: IRange): IExpression };
+  const expressionClass = (expressionClasses[(<any>currentNode).name] || expressionClasses[currentNode.type]) as { new(node: postcss.Node, children: Array<IExpression>, position: IRange): IExpression };
 
   if (!expressionClass) {
     throw new Error(`Cannot find css expression type for ${currentNode.type}`);

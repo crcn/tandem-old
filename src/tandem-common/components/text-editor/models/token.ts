@@ -1,10 +1,8 @@
-import calcPosition from './calc-position';
-import encode from './encode';
+import calcPosition from "./calc-position";
+import encode from "./encode";
 import Line from "./line";
 
 class Token {
-
-  public encodedValue: any;
 
   constructor(
     public type: string,
@@ -16,6 +14,10 @@ class Token {
 
   }
 
+  get encodedValue() {
+    return encode(this._value);
+  }
+
   getColumn() {
     return this.line.tokens.indexOf(this);
   }
@@ -25,7 +27,7 @@ class Token {
   }
 
   set value(value) {
-    this.encodedValue = encode(this._value = value);
+    this._value = value;
     this.editor.splice(this.position, this.length, value);
   }
 

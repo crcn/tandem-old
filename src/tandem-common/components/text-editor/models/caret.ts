@@ -33,13 +33,13 @@ class Caret {
   }
 
   moveToLinePosition(position) {
-    var cline = this._getLine();
+    const cline = this._getLine();
 
-    var newLineToken = cline.tokens.find(function(token) {
-      return token.type === 'newLine';
+    const newLineToken = cline.tokens.find(function(token) {
+      return token.type === "newLine";
     });
 
-    var eol        = newLineToken ? cline.length - 1 : cline.length;
+    const eol        = newLineToken ? cline.length - 1 : cline.length;
 
     // TODO - scan position until new line
     this.setPosition(
@@ -53,13 +53,13 @@ class Caret {
 
   moveToToken(delta) {
 
-    var neg = delta < 0;
+    const neg = delta < 0;
 
     // never should be rounded, but just in case...
-    var rest = Math.round(Math.abs(delta));
-    var pos  = this.position;
+    let rest = Math.round(Math.abs(delta));
+    let pos  = this.position;
 
-    while(rest--)  {
+    while (rest--)  {
       pos = this.editor.scanPosition(pos, /[^\s]/, neg) + (neg ? 1 : -1); // skip ws
       pos = this.editor.scanPosition(pos, /\s/, neg) + (neg ? 1 : -1);
     }
@@ -68,8 +68,8 @@ class Caret {
   }
 
   moveLine(delta) {
-    var nline = this._getLine(delta);
-    var cline = this._getLine();
+    const nline = this._getLine(delta);
+    const cline = this._getLine();
 
     // TODO - need to calculate character width here
     this.setPosition(nline === cline ? Infinity * delta : nline.position + (this.position - cline.position));
@@ -82,7 +82,7 @@ class Caret {
   }
 
   removeCharsUntilEndOfLine() {
-    var line = this._getLine();
+    const line = this._getLine();
 
     this.editor.splice(this.position, line.position + line.length - this.position);
   }

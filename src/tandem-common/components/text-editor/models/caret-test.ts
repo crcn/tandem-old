@@ -20,9 +20,9 @@ describe(__filename + "#", function() {
 
   it("can return the cell position", function() {
 
-    editor.source = "abc\n123"
+    editor.source = "abc\n123";
 
-    var c = editor.caret;
+    const c = editor.caret;
 
     expect(c.getCell()).to.eql({
       row: 0,

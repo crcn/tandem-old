@@ -1,17 +1,16 @@
-import * as React from 'react';
+import * as React from "react";
+import Token from "../models/token";
+import Line from "../models/line";
+import TextEditor from "../models/text-editor";
+import { Dependencies } from "tandem-common/dependencies";
 
-class TokenComponent extends React.Component<any, any> {
+class TokenComponent extends React.Component<{ token: Token, editor: TextEditor, line: Line, dependencies: Dependencies }, any> {
 
 
   render() {
-    var token = this.props.token;
-    var factory = this.props.tokenComponentFactory;
+    const { token, dependencies } = this.props;
 
-    var props: any = {};
-
-    if (factory) {
-      props.children = factory.create(this.props);
-    }
+    const props: any = {};
 
     if (!props.children) {
       props.dangerouslySetInnerHTML = {
@@ -20,10 +19,10 @@ class TokenComponent extends React.Component<any, any> {
     }
 
     return <div
-      ref='token'
-      className={'m-text-editor--token ' + 'm-text-editor--token-' + token.type }
+      ref="token"
+      className={"m-text-editor--token " + "m-text-editor--token-" + token.type }
       {...props}>
-    </div>
+    </div>;
   }
 }
 

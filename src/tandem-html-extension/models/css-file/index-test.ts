@@ -2,7 +2,10 @@ import { expect } from "chai";
 
 import {
   MimeTypes,
-  CSSFile
+  CSSFile,
+  cssAtRuleEntityFactoryDependency,
+  cssRuleEntityFactoryDependency,
+  cssDeclarationEntityDependency
 } from "tandem-html-extension";
 
 import {
@@ -18,7 +21,10 @@ describe(__filename + "#", () => {
   beforeEach(() => {
     dependencies = new Dependencies(
       new FileFactoryDependency(MimeTypes.CSS, CSSFile),
-      new DependenciesDependency()
+      new DependenciesDependency(),
+      cssRuleEntityFactoryDependency,
+      cssAtRuleEntityFactoryDependency,
+      cssDeclarationEntityDependency,
     );
   });
 

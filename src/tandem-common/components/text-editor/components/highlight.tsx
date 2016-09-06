@@ -1,18 +1,20 @@
-import * as React from 'react';
+import Marker from "../models/marker";
+import * as React from "react";
+import TextEditor from "../models/text-editor";
 
-class HighlightComponent extends React.Component<any, any> {
+class HighlightComponent extends React.Component<{ editor: TextEditor, marker: Marker }, any> {
   render() {
 
-    var editor = this.props.editor;
-    var marker = this.props.marker;
-    var p1     = this._calcPosition(editor.getCellFromPosition(marker.position));
+    const editor = this.props.editor;
+    const marker = this.props.marker;
+    const p1     = this._calcPosition(editor.getCellFromPosition(marker.position));
 
-    var p2 = this._calcPosition(editor.getCellFromPosition(marker.position + marker.length));
+    const p2 = this._calcPosition(editor.getCellFromPosition(marker.position + marker.length));
 
-    var h = editor.textRuler.calculateLineHeight();
-    var w = editor.calculateWidth();
+    const h = editor.textRuler.calculateLineHeight();
+    const w = editor.calculateWidth();
 
-    var highlights = [];
+    const highlights = [];
 
     // start
     highlights.push(
@@ -33,31 +35,31 @@ class HighlightComponent extends React.Component<any, any> {
       );
     }
 
-    return <div className='m-text-editor--highlights'>
+    return <div className="m-text-editor--highlights">
       { highlights }
     </div>;
   }
 
   _calcPosition(cell) {
-    var editor = this.props.editor;
-    var line = editor.lines[cell.row];
+    const editor = this.props.editor;
+    const line = editor.lines[cell.row];
     return {
-      top: editor.textRuler.calculateLineHeight() * line.getIndex(),
+      top: editor.textRuler.calculateLineHeight() * line.index,
       left: editor.textRuler.calculateSize(line.toString().substr(0, cell.column))[0]
-    }
+    };
   }
 
   renderHighlight(left, top, width, height) {
 
-    var style = {
-      transform: 'translate(' + left + 'px,' + top + 'px)',
+    const style = {
+      transform: "translate(" + left + "px," + top + "px)",
       width    : width,
       height   : height
     };
 
-    return <div style={style} className='m-text-editor--highlight' key={top}>
+    return <div style={style} className="m-text-editor--highlight" key={top}>
 
-    </div>
+    </div>;
   }
 }
 

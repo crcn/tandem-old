@@ -14,6 +14,7 @@ import { dependency as commentLayerLabelComponentDependency } from "./components
 import { dependency as cssRuleLayerLabelComponentDependency } from "./components/css-rule-layer-label";
 import { cssDeclarationLayerLabelComponentDependency }from "./components/css-declaration-layer-label";
 import { cssAtRuleLayerLabelComponentDependency } from "./components/css-atrule-layer-label";
+import { cssCommentLayerLabelComponentDependency } from "./components/css-comment-layer-label";
 
 // models
 import { cssFileDependency } from "./models/css-file";
@@ -43,6 +44,7 @@ import { MimeTypeDependency } from "tandem-common/dependencies";
    cssDeclarationEntityDependency,
    cssAtRuleEntityFactoryDependency,
    defaultAttributeFactoryDependency,
+   cssCommentEntityFactoryDependency,
 } from "./ast";
 
 export const dependency = [
@@ -52,6 +54,7 @@ export const dependency = [
   artboardToolComponentDependency,
   entityPreviewComponentDependency,
   cssAtRuleLayerLabelComponentDependency,
+  cssCommentLayerLabelComponentDependency,
 
   // layer components
   textLayerLabelComponentDependency,
@@ -87,6 +90,7 @@ export const dependency = [
   cssRuleEntityFactoryDependency,
   cssDeclarationEntityDependency,
   cssAtRuleEntityFactoryDependency,
+  cssCommentEntityFactoryDependency,
 
   // mime types
   new MimeTypeDependency("htm", MimeTypes.HTML),

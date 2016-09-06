@@ -1,5 +1,5 @@
 
-class Scanner {
+export class StringScanner {
 
   private _source: string;
   private _position: number;
@@ -31,5 +31,3 @@ class Scanner {
     return this._capture;
   }
 }
-
-export default Scanner;

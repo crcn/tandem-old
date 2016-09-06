@@ -1,5 +1,5 @@
 
-import StringScanner from "tandem-common/string/scanner";
+import { StringScanner } from "tandem-common/string/scanner";
 import { Diff, applyPatch } from "diff";
 
 const htmlDiff = new Diff();

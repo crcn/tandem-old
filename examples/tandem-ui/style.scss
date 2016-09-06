@@ -7,7 +7,14 @@
 .m-pane .header {
   font-family: Helvetica;
   padding: 10px;
-  font-size: 12px;
+  font-size: 10px;
   background: $color-blue-0;
   color: $color-blue-9;
+}
+
+.item {
+  width: 100px;
+  height: 100px;
+  background-color: #FF9;
+  position: absolute;
 }

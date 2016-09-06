@@ -16,11 +16,11 @@ describe(__filename + "#", function() {
     xit("can calculate the size of " + text, function() {
       let style = { fontSize: "14px" };
 
-      var tr = new TextRuler({
+      const tr = new TextRuler({
         style: style
       });
 
-      var span = document.createElement("span");
+      const span = document.createElement("span");
       Object.assign(span.style, style);
       span.innerHTML = encode(text);
       document.body.appendChild(span);
@@ -38,10 +38,8 @@ describe(__filename + "#", function() {
     ["a\t\s12", 7, 1]
   ].forEach(function([text, point, position]) {
     it("converts " + point + " point in " + text + " to " + position + " position", function() {
-      var tr = new TextRuler({});
+      const tr = new TextRuler({});
       expect(tr.convertPointToCharacterPosition(text, point)).to.equal(position);
     });
-  })
-
-
+  });
 });

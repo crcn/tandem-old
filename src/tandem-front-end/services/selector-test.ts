@@ -23,14 +23,21 @@ describe(__filename + "#", () => {
     await app.initialize();
   });
 
+  class MockEntity {
+    readonly source = {
+      source: {
+
+      }
+    };
+  }
+
   it("defines \"selection\" property on application on selection event", () => {
-    const item = { name: "blarg" };
-    app.bus.execute(new ToggleSelectAction(item));
+    app.bus.execute(new ToggleSelectAction(new MockEntity()));
     expect(app.workspace.selection.length).to.equal(1);
   });
 
   it("only selects one item if multi is false", () => {
-    const item = { name: "blarg" };
+    const item = new MockEntity();
     app.bus.execute(new SelectAction(item));
     expect(workspace.selection.length).to.equal(1);
     app.bus.execute(new SelectAction(item));
@@ -38,16 +45,16 @@ describe(__filename + "#", () => {
   });
 
   it("selects multiple items if multi is true", () => {
-    app.bus.execute(new ToggleSelectAction({ name: "blarg" }));
+    app.bus.execute(new ToggleSelectAction(new MockEntity()));
     expect(workspace.selection.length).to.equal(1);
-    app.bus.execute(new ToggleSelectAction({ name: "blarg" }, true));
+    app.bus.execute(new ToggleSelectAction(new MockEntity(), true));
     expect(workspace.selection.length).to.equal(2);
-    app.bus.execute(new ToggleSelectAction({ name: "blarg" }));
+    app.bus.execute(new ToggleSelectAction(new MockEntity()));
     expect(workspace.selection.length).to.equal(1);
   });
 
   it("removes an item from the selection if it already exists", () => {
-    const item = { name: "blarg" };
+    const item = new MockEntity();
     app.bus.execute(new ToggleSelectAction(item));
     expect(workspace.selection.length).to.equal(1);
     app.bus.execute(new ToggleSelectAction(item, true));
@@ -55,20 +62,20 @@ describe(__filename + "#", () => {
   });
 
   it("can deselect all be omitting item", () => {
-    app.bus.execute(new ToggleSelectAction({ type: "display" }));
-    app.bus.execute(new ToggleSelectAction({ type: "display" }, true));
+    app.bus.execute(new ToggleSelectAction(new MockEntity()));
+    app.bus.execute(new ToggleSelectAction(new MockEntity(), true));
     expect(workspace.selection.length).to.equal(2);
     app.bus.execute(new ToggleSelectAction());
     expect(workspace.selection.length).to.equal(0);
   });
 
   it("can select multiple in an event", () => {
-    app.bus.execute(new ToggleSelectAction([{ type: "display" }, { type: "display" }]));
+    app.bus.execute(new ToggleSelectAction([new MockEntity(), new MockEntity()]));
     expect(workspace.selection.length).to.equal(2);
   });
 
   it("can turn toggling off", () => {
-    const item = {};
+    const item = new MockEntity();
     app.bus.execute(new ToggleSelectAction(item));
     app.bus.execute(new ToggleSelectAction(item));
     expect(workspace.selection.length).to.equal(0);

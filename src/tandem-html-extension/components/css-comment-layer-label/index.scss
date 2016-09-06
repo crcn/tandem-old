@@ -1,0 +1,11 @@
+@import "tandem-front-end/scss/variables";
+
+.m-css-comment-layer-label {
+  color: $color-grey-7;
+  &:before {
+    content: "/* ";
+  }
+  &:after {
+    content: " */";
+  }
+}

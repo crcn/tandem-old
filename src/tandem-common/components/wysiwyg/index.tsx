@@ -1,19 +1,19 @@
-import * as React from 'react';
-import TextEditor from 'sf-front-end/components/text-editor';
-import Scanner from 'tandem-common/string/scanner';
-// import createToken from 'saffronmon/tokenizers/create-token';
-// import { SPACE, TAB, NEW_LINE, TEXT } from 'saffron-common/tokenizers/token-types';
+import * as React from "react";
+import { TextEditorComponent } from "tandem-common/components/text-editor";
+import { StringScanner } from "tandem-common/string/scanner";
+// import createToken from "saffronmon/tokenizers/create-token";
+// import { SPACE, TAB, NEW_LINE, TEXT } from "saffron-common/tokenizers/token-types";
 
 const NEW_LINE = 1;
 const TAB      = NEW_LINE + 1;
 const SPACE    = TAB + 1;
 const TEXT     = SPACE + 1;
 
-var htmlTokenizer = {
+const htmlTokenizer = {
   tokenize(source) {
-    var scanner = new Scanner(source);
+    const scanner = new StringScanner(source);
 
-    var tokens = [];
+    const tokens = [];
 
     function addToken(search, type) {
       if (scanner.scan(search)) {
@@ -22,27 +22,27 @@ var htmlTokenizer = {
       }
     }
 
-    while(!scanner.hasTerminated()) {
+    while (!scanner.hasTerminated()) {
       if (addToken(/^[\n\r]/, NEW_LINE)) continue;
       if (addToken(/^\t+/, TAB)) continue;
       if (addToken(/^\u0020+/, SPACE)) continue;
       if (addToken(/^[^\<\s\t\n\r]+/, TEXT)) continue;
-      if (addToken(/^<\w+.*?\/?>/, 'startTag')) continue;
-      if (addToken(/^<\/\w+.*?>/, 'endTag')) continue;
+      if (addToken(/^<\w+.*?\/?>/, "startTag")) continue;
+      if (addToken(/^<\/\w+.*?>/, "endTag")) continue;
       scanner.nextChar();
     }
 
 
     return tokens;
   }
-}
+};
 
-var tokenComponentFactory = {
+const tokenComponentFactory = {
   create({ token }) {
     console.log(token);
     return null;
   }
-}
+};
 
 class WYSIWYGEditor extends React.Component<any, any> {
 
@@ -60,15 +60,15 @@ class WYSIWYGEditor extends React.Component<any, any> {
 
   onKeyDown(event) {
 
-    var controller = (this.refs as any).editor.controller;
-    var ref        = this.props.reference;
+    const controller = (this.refs as any).editor.controller;
+    const ref        = this.props.reference;
 
     function getSelectedText() {
       return controller.marker.getSelectedText();
     }
 
     function replaceSelection(text) {
-      var p = controller.marker.position;
+      const p = controller.marker.position;
       ref.setValue(
         ref.getValue().substr(0, p) +
         text +
@@ -81,37 +81,37 @@ class WYSIWYGEditor extends React.Component<any, any> {
 
     const bKey = (event): any => {
       if (event.metaKey) {
-        return replaceSelection('<b>' + getSelectedText() + '</b>');
+        return replaceSelection("<b>" + getSelectedText() + "</b>");
       }
       return false;
-    }
+    };
 
-    var iKey = (event): any => {
+    const iKey = (event): any => {
       if (event.metaKey) {
-        return replaceSelection('<i>' + getSelectedText() + '</i>');
+        return replaceSelection("<i>" + getSelectedText() + "</i>");
       }
       return false;
-    }
+    };
 
-    var uKey = (event): any => {
+    const uKey = (event): any => {
       if (event.metaKey) {
-        return replaceSelection('<u>' + getSelectedText() + '</u>');
+        return replaceSelection("<u>" + getSelectedText() + "</u>");
       }
       return false;
-    }
+    };
 
-    var enterKey = (event): any => {
-      controller.marker.addText('<br>');
-    }
+    const enterKey = (event): any => {
+      controller.marker.addText("<br>");
+    };
 
-    var handlers = {
+    const handlers = {
       66: bKey,
       73: iKey,
       85: uKey,
       13: enterKey
     };
 
-    var handler = handlers[event.keyCode];
+    const handler = handlers[event.keyCode];
     if (handler && handler(event) !== false) {
       event.preventDefault();
     }
@@ -128,15 +128,14 @@ class WYSIWYGEditor extends React.Component<any, any> {
   }
 
   render() {
-    var value = this.props.reference.getValue();
-    return <TextEditor
-      ref='editor'
+    const value = this.props.reference.getValue();
+    return <TextEditorComponent
+      ref="editor"
       {...this.props}
       source={value}
-      tokenComponentFactory={tokenComponentFactory}
       tokenizer={htmlTokenizer}
       onChange={this.onChange.bind(this)}
-      onKeyDown={this.onKeyDown.bind(this)} />
+      onKeyDown={this.onKeyDown.bind(this)} />;
   }
 }
 

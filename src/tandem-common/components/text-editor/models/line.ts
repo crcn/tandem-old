@@ -1,6 +1,6 @@
-import Token from './token';
+import Token from "./token";
 import TextEditor from "./text-editor";
-import calcPosition from './calc-position';
+import calcPosition from "./calc-position";
 
 class Line {
 
@@ -24,10 +24,10 @@ class Line {
   }
 
   getTokenFromColumn(column) {
-    var p = 0;
+    let p = 0;
 
-    for (var i = 0, n = this.tokens.length; i < n; i++) {
-      var token = this.tokens[i];
+    for (let i = 0, n = this.tokens.length; i < n; i++) {
+      const token = this.tokens[i];
       p += token.length;
       if (p > column) {
         return token;
@@ -46,13 +46,13 @@ class Line {
   }
 
   get height() {
-    return this.editor.textRuler.calculateSize('aZ')[1];
+    return this.editor.textRuler.calculateSize("aZ")[1];
   }
 
   toString() {
     return this.tokens.map(function(token) {
       return token.value;
-    }).join('');
+    }).join("");
   }
 }
 

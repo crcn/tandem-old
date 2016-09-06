@@ -59,7 +59,7 @@ class Marker extends Observable {
   addText(text) {
 
     if (/[\n\r]/.test(text)) {
-      if (this.editor.style.whiteSpace === 'nowrap') return;
+      if (this.editor.style.whiteSpace === "nowrap") return;
     }
 
     this.editor.splice(this.position, this.length, text);

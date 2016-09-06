@@ -12,11 +12,10 @@ import {
 } from "tandem-common";
 
 import {
-  SelectEntitiesAtSourceOffsetAction,
+  SelectAction,
   SelectAllAction,
   RemoveSelectionAction,
-  SelectAction,
-  FilesSelectedAction
+  SelectEntitiesAtSourceOffsetAction,
 } from "tandem-front-end/actions";
 
 import { DocumentFile } from "tandem-front-end/models";
@@ -118,7 +117,6 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
     app.workspace.selection = newSelection;
 
-    this.bus.execute(new FilesSelectedAction(...newSelection.map((selection) => selection.source)));
   }
 
   [SelectAllAction.SELECT_ALL]() {

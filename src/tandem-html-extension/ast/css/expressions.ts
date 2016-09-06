@@ -1,6 +1,10 @@
 import * as postcss from "postcss";
 
-import { BaseExpression, IRange } from "tandem-common";
+import {
+  BaseExpression,
+  bindable,
+  IRange
+} from "tandem-common";
 
 export class CSSExpression extends BaseExpression<CSSExpression> {
   constructor(children: Array<CSSExpression>, position: IRange) {
@@ -85,8 +89,13 @@ export class CSSRuleExpression extends CSSExpression {
 }
 
 export class CSSDeclarationExpression extends CSSExpression {
+
+  @bindable()
   public name: string;
+
+  @bindable()
   public value: string;
+
   constructor({ prop , value }, children: Array<CSSExpression>, position: IRange) {
     super(children, position);
     this.name = prop;
@@ -104,6 +113,8 @@ export class CSSDeclarationExpression extends CSSExpression {
 
 export class CSSATRuleExpression extends CSSExpression {
   readonly name: string;
+
+  @bindable()
   public params: string;
 
   constructor(protected _node: postcss.AtRule, children: Array<CSSExpression>, position: IRange) {
@@ -113,15 +124,24 @@ export class CSSATRuleExpression extends CSSExpression {
   }
 
   toString() {
-    return [
+
+    const buffer = [
       this.getWhitespaceBeforeStart(),
       "@" + this.name + " ",
-      this.params,
-      " {",
+      this.params
+    ];
+
+    if (this.children.length) {
+      buffer.push(" {",
       this.children.join(""),
-      "}",
-      this.parent.lastChild === this ? this.getWhitespaceAfterEnd() : ""
-    ].join("");
+      "}");
+    } else {
+      buffer.push(";");
+    }
+
+    buffer.push(this.parent.lastChild === this ? this.getWhitespaceAfterEnd() : "");
+
+    return buffer.join("");
   }
 }
 
@@ -137,7 +157,12 @@ export class MediaExpression extends CSSATRuleExpression {
 }
 
 export class CSSCommentExpression extends CSSExpression {
+
+  @bindable()
+  public value: string;
+
   constructor(node: postcss.Comment, children: Array<CSSExpression>, position: IRange) {
     super(children, position);
+    this.value = node.text;
   }
 }
