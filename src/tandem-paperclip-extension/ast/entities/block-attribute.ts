@@ -19,7 +19,7 @@ export class BlockAttributeValueEntity extends BaseEntity<PCBlockAttributeExpres
     }
   }
 
-  load() {
+  async load() {
     try {
       this.value = this._script(getContext(this.parent));
     } catch (e) {

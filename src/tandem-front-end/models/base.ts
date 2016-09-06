@@ -69,6 +69,8 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
 
   public async load() {
 
+    // TODO - diff source here and only change
+    // what is necessary
     if (this._ast) {
       this._ast.unobserve(this._expressionObserver);
     }
@@ -87,35 +89,38 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     this._entity.updateSource();
     this.content = this._sourceContent = this._entity.source.toString();
     await super.save();
+    await this.updateEntity();
   }
 
   protected onExpressionAction(action: Action) {
-    this._entity.updateSource();
-    this.requestUpdateEntitiy();
+    this.requestSave();
   }
 
   protected onEntityAction(action: Action) {
     if (action.type === EntityAction.ENTITY_UPDATE) {
-      this.requestUpdateEntitiy();
+      this.requestSave();
     }
     this.notify(action);
   }
 
-  private requestUpdateEntitiy = debounce(() => {
-    this.updateEntity();
+  private requestSave = debounce(() => {
+    this.save();
   }, 10);
 
   private async updateEntity() {
-    console.log("update entity");
     const entity = this.createEntity(this._ast, this._dependencies.clone().register(new EntityDocumentDependency(this)));
     if (this._entity && this._entity.constructor === entity.constructor) {
       await entity.load();
       patchTreeNode(this._entity, entity);
+
+      // changes made - clean up anything that might case leakage
+      entity.dispose();
     } else {
       const oldEntity = this._entity;
 
       if (oldEntity) {
         this._entity.unobserve(this._entityObserver);
+        oldEntity.dispose();
       }
 
       this._entity    = entity;

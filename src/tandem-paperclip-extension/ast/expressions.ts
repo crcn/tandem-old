@@ -8,7 +8,7 @@ export class PCBlockAttributeExpression extends HTMLExpression {
     super(position);
   }
   toString() {
-    return `\${ ${this.value} }`;
+    return `\${${this.value}}`;
   }
 
   clone(): PCBlockAttributeExpression {
@@ -31,7 +31,7 @@ export class PCBlockNodeExpression extends HTMLNodeExpression {
     );
   }
   toString() {
-    return `\${ ${this.value} }`;
+    return `\${${this.value}}`;
   }
 }
 

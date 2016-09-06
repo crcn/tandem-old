@@ -1,7 +1,8 @@
+<link rel="stylesheet" type="text/scss" href="./style.scss"></link>
 
 <artboard id="pane" title="Pane" style="background: white;position:absolute;width:100px;height:100px;">
   <div class="m-pane">
-    <div class="header">${      title      }</div>
+    <div class="header">${ title }</div>
   </div>
 </artboard>
 
@@ -10,4 +11,3 @@
 </artboard>
 
 <artboard title="Artboard" style="background: white;position:absolute;width:0px;height:0px;"></artboard>
-<div style="background:rgba(0,0,0,0.1);position:absolute;width:0px;height:0px;"></div>

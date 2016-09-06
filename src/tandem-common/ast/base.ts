@@ -44,6 +44,8 @@ export abstract class BaseExpression<T extends BaseExpression<any>> extends Tree
     return Number(this.constructor === expression.constructor);
   }
 
+  // TODO -
+
   getWhitespaceBeforeStart() {
     return getReverseWhitespace(this.source.content.substr(0, this.position.start)) + getStartWhitespace(this.getSourcePart());
   }

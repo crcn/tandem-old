@@ -63,16 +63,12 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     return Number(entity.constructor === this.constructor);
   }
 
-  public load(): any {
-    const load = async () => {
-      await this.loadLeaf();
-      for (const childExpression of await this.mapSourceChildren()) {
-        await this.loadExpressionAndAppendChild(childExpression);
-      }
-      this.updateFromLoaded();
-    };
-
-    return load();
+  public async load() {
+    await this.loadLeaf();
+    for (const childExpression of await this.mapSourceChildren()) {
+      await this.loadExpressionAndAppendChild(childExpression);
+    }
+    this.updateFromLoaded();
   }
 
   public async loadExpressionAndAppendChild(childExpression: IExpression) {

@@ -29,11 +29,6 @@ export class LinkEntity extends HTMLElementEntity {
   @inject(MAIN_BUS_NS)
   private _bus: IActor;
 
-  patch(entity: LinkEntity) {
-    super.patch(entity);
-    entity._file.dispose();
-  }
-
   onRemoving() {
     this._file.dispose();
   }
@@ -79,6 +74,13 @@ export class LinkEntity extends HTMLElementEntity {
   }
   cloneNode() {
     return new LinkEntity(this.source);
+  }
+
+  dispose() {
+    console.log("DISP IT");
+    if (this._file) {
+      this._file.dispose();
+    }
   }
 }
 
