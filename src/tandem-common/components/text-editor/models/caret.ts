@@ -1,10 +1,10 @@
 import TextEditor from "./text-editor";
 import Marker from "./marker";
-import { IActor } from "sf-core/actors";
+import { IActor } from "tandem-common/actors";
 
-class Caret implements IActor {
+class Caret {
 
-  constructor(readonly editor: TextEditor, readonly marker: Marker, readonly bus: IActor) {
+  constructor(readonly editor: TextEditor, readonly marker: Marker) {
 
   }
 
@@ -43,7 +43,7 @@ class Caret implements IActor {
 
     // TODO - scan position until new line
     this.setPosition(
-      cline.getPosition() + Math.max(0, Math.min(eol, position))
+      cline.position + Math.max(0, Math.min(eol, position))
     );
   }
 
@@ -72,7 +72,7 @@ class Caret implements IActor {
     var cline = this._getLine();
 
     // TODO - need to calculate character width here
-    this.setPosition(nline === cline ? Infinity * delta : nline.getPosition() + (this.position - cline.getPosition()));
+    this.setPosition(nline === cline ? Infinity * delta : nline.position + (this.position - cline.position));
   }
 
   _getLine(shift = 0) {
@@ -84,7 +84,7 @@ class Caret implements IActor {
   removeCharsUntilEndOfLine() {
     var line = this._getLine();
 
-    this.editor.splice(this.position, line.getPosition() + line.length - this.position);
+    this.editor.splice(this.position, line.position + line.length - this.position);
   }
 
   getLine() {
@@ -98,8 +98,6 @@ class Caret implements IActor {
   getCell() {
     return this.editor.getCellFromPosition(this.position);
   }
-
-  execute(message) { }
 }
 
 export default Caret;

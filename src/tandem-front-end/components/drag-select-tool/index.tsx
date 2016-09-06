@@ -1,6 +1,6 @@
 import "./index.scss";
 import * as React from "react";
-import { startDrag } from "tandem-front-end/utils/component";
+import { startDrag } from "tandem-common/utils/component";
 import { PointerTool } from "tandem-front-end/models/pointer-tool";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { BoundingRect } from "tandem-common/geom";

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import TextEditor from 'sf-front-end/components/text-editor';
-import Scanner from 'sf-core/string/scanner';
+import Scanner from 'tandem-common/string/scanner';
 // import createToken from 'saffronmon/tokenizers/create-token';
 // import { SPACE, TAB, NEW_LINE, TEXT } from 'saffron-common/tokenizers/token-types';
 

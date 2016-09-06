@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Editor } from "tandem-front-end/models";
-import { startDrag } from "tandem-front-end/utils/component";
+import { startDrag } from "tandem-common/utils/component";
 import PathComponent from "./path";
 import { DocumentFile } from "tandem-front-end/models";
 import { MetadataKeys } from "tandem-front-end/constants";

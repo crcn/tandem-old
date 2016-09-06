@@ -1,6 +1,5 @@
 import * as React from 'react';
 import TokenComponent from './token';
-import { translateAbsoluteToRelativePoint } from 'sf-front-end/utils/html';
 
 class LineComponent extends React.Component<any, any> {
 

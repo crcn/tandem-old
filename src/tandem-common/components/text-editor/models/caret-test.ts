@@ -1,26 +1,28 @@
-import Caret from './caret';
-import Marker from './marker';
-import TextEditor from './text-editor';
-import expect from 'expect.js';
-import NotifierCollection from 'saffron-common/notifiers/collection';
+import Caret from "./caret";
+import Marker from "./marker";
+import TextEditor from "./text-editor";
+import { WrapBus, NoopBus } from "mesh";
+import { BrokerBus } from "tandem-common/busses";
+import { expect } from "chai";
 
-describe(__filename + '#', function() {
 
-  it('can be created', function() {
-    Caret.create({
-      editor: TextEditor.create({
-        notifier: NotifierCollection.create()
-      })
-    });
+describe(__filename + "#", function() {
+
+  let editor: TextEditor;
+
+  beforeEach(() => {
+    editor = new TextEditor(new BrokerBus());
   });
 
-  it('can return the cell position', function() {
-    var te = TextEditor.create({
-      source: 'abc\n123',
-      notifier: NotifierCollection.create()
-    });
+  it("can be created", function() {
+    new Caret(editor, new Marker(editor));
+  });
 
-    var c = te.caret;
+  it("can return the cell position", function() {
+
+    editor.source = "abc\n123"
+
+    var c = editor.caret;
 
     expect(c.getCell()).to.eql({
       row: 0,
@@ -35,14 +37,11 @@ describe(__filename + '#', function() {
     });
   });
 
-  it('does not move the position of the cursor if the entered character is a new line and whiteSpace is nowrap', function() {
-    var te = TextEditor.create({
-      notifier: NotifierCollection.create(),
-      source: 'abc',
-      style: { whiteSpace: 'nowrap' }
-    });
+  it("does not move the position of the cursor if the entered character is a new line and whiteSpace is nowrap", function() {
+    editor.style = { whitespace: "nowrap" };
+    editor.source = "abc";
 
-    te.notifier.notify({ type: 'input', text: '\n', preventDefault: function() { } });
-    expect(te.marker.position).to.be(0);
+    editor.bus.execute(<any>{ type: "input", text: "\n", preventDefault: function() { } });
+    expect(editor.marker.position).to.equal(0);
   });
 });

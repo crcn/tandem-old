@@ -1,14 +1,14 @@
-import './text-editor.scss';
+import "./text-editor.scss";
 
-import * as React from 'react';
-import { IActor } from "sf-core/actors";
-import TextEditor from '../models/text-editor';
-import { startDrag } from 'sf-front-end/utils/component';
-import LineComponent from './line';
-import CaretComponent from './caret';
-import { BrokerBus } from 'sf-core/busses';
-import HighlightComponent from './highlight';
-import { translateAbsoluteToRelativePoint } from 'sf-front-end/utils/html';
+import * as React from "react";
+import { IActor } from "tandem-common/actors";
+import TextEditor from "../models/text-editor";
+import { startDrag } from "tandem-common/utils/component";
+import LineComponent from "./line";
+import CaretComponent from "./caret";
+import { BrokerBus } from "tandem-common/busses";
+import HighlightComponent from "./highlight";
+import { translateAbsoluteToRelativePoint } from "sf-front-end/utils/html";
 
 class TextEditorComponent extends React.Component<any, any> implements IActor {
 
@@ -41,7 +41,7 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
       this.setState({ idle: true });
     }, 100);
 
-    if (message.type === 'sourceChange') {
+    if (message.type === "sourceChange") {
       if (this.props.onChange) {
         this.props.onChange(message.source);
       }
@@ -221,11 +221,11 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
   }
 
   onPaste(event) {
-    this.getEditor().marker.addText(event.clipboardData.getData('text/plain'));
+    this.getEditor().marker.addText(event.clipboardData.getData("text/plain"));
   }
 
   onCopy(event) {
-    event.clipboardData.setData('text/plain', this.controller.marker.getSelectedText());
+    event.clipboardData.setData("text/plain", this.controller.marker.getSelectedText());
     event.preventDefault();
   }
 
@@ -236,7 +236,7 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
   onMouseDown(event) {
     this.focus();
 
-    // prevent default here to ensure that the text input doesn't blur
+    // prevent default here to ensure that the text input doesn"t blur
     // out when we interact with the text editor
     event.preventDefault();
 
@@ -295,15 +295,15 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
     });
 
     return <div
-      ref='editor'
+      ref="editor"
       style={style}
       data-mouse-trap={false}
-      className={['m-text-editor', this.props.className].join(' ')}
+      className={["m-text-editor", this.props.className].join(" ")}
       onDoubleClick={this.onDoubleClick.bind(this)}
       onMouseDown={this.onMouseDown.bind(this)}
       >
 
-      <div className='m-text-editor--inner'>
+      <div className="m-text-editor--inner">
 
         {
           editor.lines.map((line, i) => {
@@ -314,7 +314,7 @@ class TextEditorComponent extends React.Component<any, any> implements IActor {
         { this.state.focus ? editor.marker.length > 0 ? <HighlightComponent marker={editor.marker} editor={editor} /> : <CaretComponent idle={this.state.idle} editor={editor} caret={editor.caret} /> : void 0 }
       </div>
 
-      <input ref='hiddenInput' type='text'
+      <input ref="hiddenInput" type="text"
              onKeyPress={this.onKey.bind(this)}
              onPaste={this.onPaste.bind(this)}
              onCopy={this.onCopy.bind(this)}

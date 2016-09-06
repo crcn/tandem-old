@@ -1,6 +1,6 @@
 
 import * as  React from "react";
-import { startDrag } from "tandem-front-end/utils/component";
+import { startDrag } from "tandem-common/utils/component";
 import { Editor } from "tandem-front-end/models/editor";
 
 class PathComponent extends React.Component<{ strokeWidth: number, showPoints: boolean, pointRadius: number, editor: Editor, onPointChange: Function, zoom: number, onPointMouseUp: Function, onPointMouseDown: Function, points: Array<any> }, any> {

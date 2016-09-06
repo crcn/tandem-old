@@ -1,18 +1,19 @@
-import { IActor } from "sf-core/actors";
-import { Action } from "sf-core/actions";
+import { IActor } from "tandem-common/actors";
+import { Action } from "tandem-common/actions";
+import { Observable } from "tandem-common/observable";
 import TextEditor from "./text-editor";
 
 /**
  * TODO - marks a selection of text. Also used for the cursor
  */
 
-class Marker implements IActor {
+class Marker extends Observable {
 
   private _position: number = 0;
   private _length: number = 0;
 
-  constructor(readonly editor: TextEditor, readonly bus: IActor) {
-
+  constructor(readonly editor: TextEditor) {
+    super();
   }
 
   get endPosition() {
@@ -39,7 +40,7 @@ class Marker implements IActor {
     this.position = position;
     this.length   = length;
 
-    this.bus.execute(new Action("changeMarkerSelection"));
+    this.notify(new Action("changeMarkerSelection"));
   }
 
   getSelectedText() {

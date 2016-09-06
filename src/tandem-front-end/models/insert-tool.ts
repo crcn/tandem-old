@@ -3,7 +3,7 @@ import { Action } from "tandem-common/actions";
 import { IActor } from "tandem-common/actors";
 import { inject } from "tandem-common/decorators";
 import { Service } from "tandem-common/services";
-import { startDrag } from "tandem-front-end/utils/component";
+import { startDrag } from "tandem-common/utils/component";
 import { MAIN_BUS_NS } from "tandem-common/dependencies";
 import { BoundingRect } from "tandem-common/geom";
 import { EntityFactoryDependency } from "tandem-common/dependencies";

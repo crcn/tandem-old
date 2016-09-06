@@ -39,7 +39,6 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     this.state = {};
   }
 
-
   onClick = (event) => {
 
     const { entity, workspace } = this.props;

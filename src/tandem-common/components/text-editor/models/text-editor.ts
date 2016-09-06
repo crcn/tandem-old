@@ -2,8 +2,8 @@ import Line from './line';
 import Caret from './caret';
 import Marker from './marker';
 import TextRuler from './text-ruler';
-import { IActor } from "sf-core/actors";
-import { BrokerBus } from "sf-core/busses";
+import { IActor } from "tandem-common/actors";
+import { BrokerBus, BubbleBus } from "tandem-common/busses";
 import { SourceChangeAction } from "../actions";
 import StringTokenizer from 'saffron-common/tokenizers/string';
 import { translateLengthToInteger } from 'saffron-common/utils/html/css/translate-style';
@@ -20,11 +20,10 @@ class TextEditor {
   constructor(public bus: BrokerBus, public maxColumns: number = Infinity, public tokenizer: any = new StringTokenizer(), private _style: any = {}) {
 
     this.textRuler = new TextRuler(this.style);
-    this.marker = new Marker(this, this.bus);
-    this.caret = new Caret(this, this.marker, this.bus);
+    this.marker = new Marker(this);
+    this.caret = new Caret(this, this.marker);
 
-
-    this.bus.register(this.caret, this.marker);
+    this.marker.observe(this.bus);
   }
 
   get source() {
@@ -45,7 +44,7 @@ class TextEditor {
 
   set style(value: any) {
     this.textRuler.style = value;
-    this._createLines();
+    this.source = this.source;
   }
 
   /**
@@ -130,7 +129,7 @@ class TextEditor {
   getTokenFromPosition(position) {
     var cell = this.getCellFromPosition(position);
     var line = this.lines[cell.row];
-    var diff = position - line.getPosition();
+    var diff = position - line.position;
     var col  = cell.column;
 
 

@@ -1,45 +1,45 @@
-import TextRuler from './text-ruler';
-import expect from 'expect.js';
-import encode from './encode';
+import TextRuler from "./text-ruler";
+import { expect } from "chai";
+import encode from "./encode";
 
-describe(__filename + '#', function() {
+describe(__filename + "#", function() {
 
-  it('can be created', function() {
-    TextRuler.create({});
+  it("can be created", function() {
+    new TextRuler({});
   });
 
   [
-    ['abc'],
-    ['M437•'],
-    ['\s\t\s\tabc']
+    ["abc"],
+    ["M437•"],
+    ["\s\t\s\tabc"]
   ].forEach(function([text, width]) {
-    xit('can calculate the size of ' + text, function() {
-      var style = { fontSize: '14px' };
+    xit("can calculate the size of " + text, function() {
+      let style = { fontSize: "14px" };
 
-      var tr = TextRuler.create({
+      var tr = new TextRuler({
         style: style
       });
 
-      var span = document.createElement('span');
+      var span = document.createElement("span");
       Object.assign(span.style, style);
       span.innerHTML = encode(text);
       document.body.appendChild(span);
-      var style = window.getComputedStyle(span);
-      expect(tr.calculateSize(text)[0]).to.be(span.offsetWidth);
+      style = window.getComputedStyle(span);
+      expect(tr.calculateSize(text)[0]).to.equal(span.offsetWidth);
       document.body.removeChild(span);
     });
   });
 
   [
-    ['abc', Infinity, 3],
-    ['abc', 3, 0],
-    ['abc', 4, 1],
-    ['abc', 14, 2],
-    ['a\t\s12', 7, 1]
+    ["abc", Infinity, 3],
+    ["abc", 3, 0],
+    ["abc", 4, 1],
+    ["abc", 14, 2],
+    ["a\t\s12", 7, 1]
   ].forEach(function([text, point, position]) {
-    it('converts ' + point + ' point in ' + text + ' to ' + position + ' position', function() {
-      var tr = TextRuler.create({});
-      expect(tr.convertPointToCharacterPosition(text, point)).to.be(position);
+    it("converts " + point + " point in " + text + " to " + position + " position", function() {
+      var tr = new TextRuler({});
+      expect(tr.convertPointToCharacterPosition(text, point)).to.equal(position);
     });
   })
 
