@@ -77,7 +77,6 @@ export class LinkEntity extends HTMLElementEntity {
   }
 
   dispose() {
-    console.log("DISP IT");
     if (this._file) {
       this._file.dispose();
     }

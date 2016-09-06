@@ -41,6 +41,7 @@ export interface IEditor extends IActor {
   readonly workspace: Workspace;
 }
 
+// TODO - need to separate this from runtime
 export abstract class DocumentFile<T extends IEntity & IObservable> extends File implements IEntityDocument {
 
   public owner: IEntityDocument;
