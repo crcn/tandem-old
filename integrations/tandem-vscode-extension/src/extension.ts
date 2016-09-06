@@ -19,7 +19,8 @@ import {
 } from "tandem-common";
 
 import {
-    SelectSourceAtOffsetAction
+    FilesSelectedAction,
+    SelectEntitiesAtSourceOffsetAction,
 } from "tandem-front-end/actions";
 
 // this method is called when your extension is activated
@@ -35,9 +36,11 @@ export async function activate(context: vscode.ExtensionContext) {
     class VSCodeService extends BaseApplicationService<ServerApplication> {
         async [UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT](action: UpdateTemporaryFileContentAction) {
             _setEditorContent(action);
-            // const uri = (await vscode.workspace.findFiles(action.path, "")).pop();
-            // console.log(uri);
-            // vscode.workspace.openTextDocument(action.path);
+            const uri = (await vscode.workspace.findFiles(action.path, "")).pop();
+        }
+        async [FilesSelectedAction.FILES_SELECTED](action: FilesSelectedAction) {
+            const document = await vscode.workspace.openTextDocument(action.items[0].path);
+            const editor = await vscode.window.showTextDocument(document);
         }
     }
 
@@ -123,7 +126,7 @@ export async function activate(context: vscode.ExtensionContext) {
             start: e.textEditor.document.offsetAt(selection.start),
             end: e.textEditor.document.offsetAt(selection.end)
         }));
-        server.bus.execute(new SelectSourceAtOffsetAction(fixFileName(e.textEditor.document.fileName), ...ranges));
+        server.bus.execute(new SelectEntitiesAtSourceOffsetAction(fixFileName(e.textEditor.document.fileName), ...ranges));
     });
 
     vscode.workspace.onDidChangeTextDocument(onChange);

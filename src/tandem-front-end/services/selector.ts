@@ -11,14 +11,20 @@ import {
   ApplicationServiceDependency,
 } from "tandem-common";
 
-import { SelectSourceAtOffsetAction, SelectAllAction, RemoveSelectionAction, SelectAction } from "tandem-front-end/actions";
+import {
+  SelectEntitiesAtSourceOffsetAction,
+  SelectAllAction,
+  RemoveSelectionAction,
+  SelectAction,
+  FilesSelectedAction
+} from "tandem-front-end/actions";
 
 import { DocumentFile } from "tandem-front-end/models";
 
 @loggable()
 export default class SelectorService extends BaseApplicationService<FrontEndApplication> {
 
-  [SelectSourceAtOffsetAction.SELECT_SOURCE_AT_OFFSET](action: SelectSourceAtOffsetAction) {
+  [SelectEntitiesAtSourceOffsetAction.SELECT_ENTITIES_AT_SOURCE_OFFSET](action: SelectEntitiesAtSourceOffsetAction) {
 
     const selectableEntities = this.app.workspace.file.entity.flatten().filter((entity: IEntity) => {
       return String((<DocumentFile<any>>entity.source.source).path).indexOf(action.filePath) !== -1 && entity.metadata.get(MetadataKeys.SELECTABLE) !== false;
@@ -111,6 +117,8 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     });
 
     app.workspace.selection = newSelection;
+
+    this.bus.execute(new FilesSelectedAction(...newSelection.map((selection) => selection.source)));
   }
 
   [SelectAllAction.SELECT_ALL]() {

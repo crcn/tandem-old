@@ -1,7 +1,9 @@
 import { Action } from "tandem-common/actions";
 import { IActor } from "tandem-common/actors";
+import { IExpression, File } from "tandem-common";
 import { toArray } from "tandem-common/utils/array";
 import { IRange, IPoint } from "tandem-common/geom";
+import { uniq } from "lodash";
 import { IEditor, IEditorTool, IHistoryItem } from "tandem-front-end/models";
 import { EditorToolFactoryDependency } from "tandem-front-end/dependencies";
 
@@ -66,12 +68,26 @@ export class SelectAllAction extends Action {
   }
 }
 
-export class SelectSourceAtOffsetAction extends Action {
-  static readonly SELECT_SOURCE_AT_OFFSET = "selectAtSourceOffset";
+export class SelectEntitiesAtSourceOffsetAction extends Action {
+  static readonly SELECT_ENTITIES_AT_SOURCE_OFFSET = "selectEntitiesAtSourceOffset";
   readonly data: Array<IRange>;
   constructor(readonly filePath: string, ...data: Array<IRange>) {
-    super(SelectSourceAtOffsetAction.SELECT_SOURCE_AT_OFFSET);
+    super(SelectEntitiesAtSourceOffsetAction.SELECT_ENTITIES_AT_SOURCE_OFFSET);
     this.data = data;
+  }
+}
+
+export class FilesSelectedAction extends Action {
+  static readonly FILES_SELECTED = "filesSelected";
+  readonly items: Array<{ path: string, position: IRange }>;
+  constructor(...expressions: Array<IExpression>) {
+    super(FilesSelectedAction.FILES_SELECTED);
+    this.items = uniq(expressions).map((expression) => {
+      return {
+        path: (<File>expression.source).path,
+        position: expression.position
+      };
+    })
   }
 }
 
