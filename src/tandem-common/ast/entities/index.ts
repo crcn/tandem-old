@@ -75,16 +75,15 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     return load();
   }
 
-  protected async loadExpressionAndAppendChild(childExpression: IExpression) {
+  public async loadExpressionAndAppendChild(childExpression: IExpression) {
     const factory = EntityFactoryDependency.findBySource(childExpression, this._dependencies);
     if (!factory) {
-      // return console.warn(`Unable to find entity factory expression ${childExpression.constructor.name}`);
-      return;
+      return console.warn(`Unable to find entity factory expression ${childExpression.constructor.name}`);
     }
-
     const entity = factory.create(childExpression);
     this.appendChild(entity);
     await entity.load();
+    return entity;
   }
 
   loadLeaf() { }

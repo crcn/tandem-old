@@ -77,7 +77,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     this._ast.source = this;
     this._ast.observe(this._expressionObserver);
 
-    this.requestUpdateEntitiy();
+    await this.updateEntity();
   }
 
   abstract async parse(content: string): Promise<IExpression>;
@@ -90,8 +90,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   }
 
   protected onExpressionAction(action: Action) {
-    console.log("EXPR ACTION");
-    console.log(action.target);
+    this._entity.updateSource();
     this.requestUpdateEntitiy();
   }
 
@@ -104,7 +103,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
 
   private requestUpdateEntitiy = debounce(() => {
     this.updateEntity();
-  }, 500);
+  }, 10);
 
   private async updateEntity() {
     console.log("update entity");

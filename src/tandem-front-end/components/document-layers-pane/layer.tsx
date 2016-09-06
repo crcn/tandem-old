@@ -64,6 +64,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
       getLayerChildren(rootEntity).forEach(each);
 
+
       const currentlySelectedEntity = selection[selection.length - 1];
       const index1 = allEntities.indexOf(entity);
       const index2 = allEntities.indexOf(currentlySelectedEntity);
@@ -357,6 +358,8 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
   render() {
 
     const entity            = this.props.entity;
+
+    if (!entity) return null;
 
     const expanded          = entity.metadata.get(MetadataKeys.LAYER_EXPANDED);
     const hidden            = entity.metadata.get(MetadataKeys.HIDDEN);

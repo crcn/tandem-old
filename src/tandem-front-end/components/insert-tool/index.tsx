@@ -10,6 +10,7 @@ import { SelectablesComponent } from "tandem-front-end/components/selectables";
 import { SelectionSizeComponent } from "tandem-front-end/components/selection-size";
 import { VisibleEntityCollection } from "tandem-front-end/collections";
 import { SetToolAction, SelectAction } from "tandem-front-end/actions";
+import { BaseEntity } from "tandem-common";
 import { ReactComponentFactoryDependency } from "tandem-front-end/dependencies";
 import { Workspace, Editor, InsertTool } from "tandem-front-end/models";
 import { IEntity, IVisibleEntity, appendSourceChildren } from "tandem-common/ast/entities";
@@ -30,8 +31,9 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     const { editor, bus, workspace, tool } = this.props;
 
-    const activeEntity =  this._targetEntity as IEntity;
-    const child = (await appendSourceChildren(activeEntity, tool.createSource()))[0] as IVisibleEntity;
+    const activeEntity =  this._targetEntity as BaseEntity<any>;
+    const childExpression = tool.createSource();
+    const child = await activeEntity.loadExpressionAndAppendChild(childExpression) as IVisibleEntity;
     await bus.execute(new SelectAction(child));
 
     const capabilities = child.display.capabilities;
@@ -47,6 +49,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     child.display.position = { left, top };
 
     const complete = async () => {
+      child.parent.source.appendChild(childExpression);
       bus.execute(new SetToolAction(tool.displayEntityToolFactory));
     };
 
