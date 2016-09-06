@@ -87,7 +87,7 @@ export class FilesSelectedAction extends Action {
         path: (<File>expression.source).path,
         position: expression.position
       };
-    })
+    });
   }
 }
 

@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { timeout } from "tandem-common/test/utils";
 import { DSInsertAction } from "tandem-common/actions";
 import { FrontEndApplication } from "tandem-front-end/application";
-import { SelectSourceAtOffsetAction } from "tandem-front-end/actions";
+import { SelectEntitiesAtSourceOffsetAction } from "tandem-front-end/actions";
 
 describe(__filename + "#", () => {
 
