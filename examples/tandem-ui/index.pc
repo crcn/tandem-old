@@ -11,3 +11,5 @@
 </artboard>
 
 <artboard title="Artboard" style="background: white;position:absolute;width:0px;height:0px;"></artboard>
+
+<div class="item" style="position: absolute;width: 103px;height: 65px;left: 139px;top: 67px;"></div>

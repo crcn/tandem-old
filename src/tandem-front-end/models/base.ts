@@ -99,13 +99,17 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
 
   protected onEntityAction(action: Action) {
     if (action.type === EntityAction.ENTITY_UPDATE) {
-      this.requestSave();
+      this.requestUpdate();
     }
     this.notify(action);
   }
 
   private requestSave = debounce(() => {
     this.save();
+  }, 10);
+
+  private requestUpdate = debounce(() => {
+    this.updateEntity();
   }, 10);
 
   private async updateEntity() {
