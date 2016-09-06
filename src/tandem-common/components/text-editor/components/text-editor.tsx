@@ -293,13 +293,9 @@ export class TextEditorComponent extends React.Component<{ onKeyDown?: Function,
 
     const editor = this.editor;
 
-    const style = Object.assign({}, editor.style, {
-      height: editor.textRuler.calculateLineHeight() * editor.lines.length
-    });
-
     return <div
       ref="editor"
-      style={style}
+      style={editor.style}
       data-mouse-trap={false}
       className={["m-text-editor", this.props.className].join(" ")}
       onDoubleClick={this.onDoubleClick.bind(this)}
