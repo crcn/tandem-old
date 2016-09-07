@@ -51,7 +51,7 @@ export const dependencies = [
 
 const insertElementKeyBindings = {
   "d" : { nodeName:  "div", attributes: ``, style: "background:rgba(0,0,0,0.1);" },
-  "a" : { nodeName: "artboard", attributes: `title="Artboard"`, style: "background: white;", root: true }
+  "a" : { nodeName: "template", attributes: `title="Template"`, style: "background: white;", root: true }
 };
 
 for (const key in insertElementKeyBindings) {
