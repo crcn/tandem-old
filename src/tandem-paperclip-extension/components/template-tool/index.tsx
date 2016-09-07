@@ -3,10 +3,10 @@ import "./index.scss";
 import * as React from "react";
 import FocusComponent from "tandem-front-end/components/focus";
 import { Workspace, Editor } from "tandem-front-end/models";
-import { HTMLArtboardEntity } from "tandem-html-extension/ast";
+import { PCTemplateEntity } from "tandem-paperclip-extension/ast";
 import { ReactComponentFactoryDependency } from "tandem-front-end/dependencies";
 
-export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEntity, editor: Editor }, any> {
+export class ArtboardComponent extends React.Component<{ entity: PCTemplateEntity, editor: Editor }, any> {
   constructor(props) {
     super(props);
     this.state = { editTitle: false };
@@ -72,7 +72,7 @@ export class ArtboardComponent extends React.Component<{ entity: HTMLArtboardEnt
 export class ArtboardToolComponent extends React.Component<{ zoom: number, workspace: Workspace }, any> {
   render() {
 
-    const artboards = this.props.workspace.file.entity.flatten().filter((entity) => String((entity.source as any).name).toLowerCase() === "artboard");
+    const artboards = this.props.workspace.file.entity.flatten().filter((entity) => entity instanceof PCTemplateEntity);
 
     if (!artboards.length) return null;
 
@@ -86,12 +86,12 @@ export class ArtboardToolComponent extends React.Component<{ zoom: number, works
 
     return (<div className="m-artboard-tool">
       <div style={bgstyle} className="m-artboard-tool-background"></div>
-      { artboards.map((entity: HTMLArtboardEntity, i) => <ArtboardComponent entity={entity} editor={editor} key={i} />)}
+      { artboards.map((entity: PCTemplateEntity, i) => <ArtboardComponent entity={entity} editor={editor} key={i} />)}
     </div>);
   }
 }
 
 export const dependency = [
-  new ReactComponentFactoryDependency("components/tools/pointer/artboard", ArtboardToolComponent)
+  new ReactComponentFactoryDependency("components/tools/pointer/template", ArtboardToolComponent)
 ];
 

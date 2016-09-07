@@ -5,7 +5,6 @@ import { IApplication } from "tandem-common/application";
 // components
 import { dependency as cssPaneComponentDependency } from "./components/css-pane";
 import { dependency as entityPreviewComponentDependency } from "./components/entity-preview";
-import { dependency as artboardToolComponentDependency } from "./components/artboard-tool";
 import { cssColorTokenComponentFactoryDependency } from "./components/css-color-token";
 
 // layer components
@@ -37,7 +36,6 @@ import { MimeTypeDependency } from "tandem-common/dependencies";
    htmlTextDependency,
    linkEntityDependency,
    htmlCommentDependency,
-   htmlArtboardDependency,
    htmlStyleEntityDependency,
    htmlDocumentFragmentDependency,
    cssRuleEntityFactoryDependency,
@@ -52,7 +50,6 @@ export const dependency = [
 
   // components
   cssPaneComponentDependency,
-  artboardToolComponentDependency,
   entityPreviewComponentDependency,
   cssAtRuleLayerLabelComponentDependency,
   cssCommentLayerLabelComponentDependency,
@@ -85,7 +82,6 @@ export const dependency = [
   htmlTextDependency,
   linkEntityDependency,
   htmlCommentDependency,
-  htmlArtboardDependency,
   htmlStyleEntityDependency,
   defaultElementFactoyDependency,
   htmlDocumentFragmentDependency,

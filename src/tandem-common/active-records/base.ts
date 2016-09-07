@@ -38,7 +38,6 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
 
   readonly collectionName: string;
 
-
   constructor() {
     super();
   }

@@ -1,13 +1,12 @@
-import "./artboard.scss";
+import "./template.scss";
 
 import { Action } from "tandem-common/actions";
 import { IActor } from "tandem-common/actors";
 import { inject } from "tandem-common/decorators";
 import { MetadataKeys } from "tandem-front-end/constants";
 import bubbleIframeEvents from "tandem-front-end/utils/html/bubble-iframe-events";
-import { HTMLElementEntity } from "./element";
 import { FrontEndApplication } from "tandem-front-end/application";
-import { VisibleHTMLElementEntity } from "./visible-element";
+import { VisibleHTMLElementEntity, HTMLElementEntity } from "tandem-html-extension";
 import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
 import { NodeSection, GroupNodeSection } from "tandem-html-extension/dom";
 import { IContextualEntity, IEntity, getContext } from "tandem-common/ast";
@@ -15,8 +14,8 @@ import { HTMLElementExpression, HTMLFragmentExpression } from "tandem-html-exten
 import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "tandem-common/dependencies";
 
 const ARTBOARD_NS = "artboards";
-class ArtboardDependency extends Dependency<HTMLArtboardEntity> {
-  constructor(id: string, artboard: HTMLArtboardEntity) {
+class ArtboardDependency extends Dependency<PCTemplateEntity> {
+  constructor(id: string, artboard: PCTemplateEntity) {
     super([ARTBOARD_NS, id].join("/"), artboard);
   }
   static find(id: string, dependencies: Dependencies) {
@@ -24,7 +23,7 @@ class ArtboardDependency extends Dependency<HTMLArtboardEntity> {
   }
 }
 
-class RegisteredArtboardEntity extends HTMLElementEntity implements IContextualEntity {
+class RegisteredPCTemplateEntity extends HTMLElementEntity implements IContextualEntity {
 
   private _context: any;
   private __children: IEntity;
@@ -64,7 +63,7 @@ class RegisteredArtboardEntity extends HTMLElementEntity implements IContextualE
   }
 };
 
-export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInjectable {
+export class PCTemplateEntity extends VisibleHTMLElementEntity implements IInjectable {
 
   private _placeholder: Node;
   private _body: HTMLElement;
@@ -75,7 +74,7 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
 
     if (this.source.getAttribute("id")) {
       this._dependencies.register(new ArtboardDependency(this.source.getAttribute("id"), this));
-      this._dependencies.register(new EntityFactoryDependency(HTMLElementExpression, RegisteredArtboardEntity, this.source.getAttribute("id")));
+      this._dependencies.register(new EntityFactoryDependency(HTMLElementExpression, RegisteredPCTemplateEntity, this.source.getAttribute("id")));
     }
 
     return super.load();
@@ -146,4 +145,4 @@ export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInj
   }
 }
 
-export const htmlArtboardDependency = new EntityFactoryDependency(HTMLElementExpression, HTMLArtboardEntity, "artboard");
+export const pcTemplateDependency = new EntityFactoryDependency(HTMLElementExpression, PCTemplateEntity, "template");

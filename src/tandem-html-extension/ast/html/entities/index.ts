@@ -1,5 +1,4 @@
 export * from "./base";
-export * from "./artboard";
 export * from "./style";
 export * from "./root";
 export * from "./comment";
