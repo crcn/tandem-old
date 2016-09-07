@@ -3,6 +3,7 @@ import Token from "../models/token";
 import Line from "../models/line";
 import TextEditor from "../models/text-editor";
 import { Dependencies } from "tandem-common/dependencies";
+import { TokenComponentFactoryDependency } from "tandem-front-end/dependencies";
 
 class TokenComponent extends React.Component<{ token: Token, editor: TextEditor, line: Line, dependencies: Dependencies }, any> {
 
@@ -11,6 +12,12 @@ class TokenComponent extends React.Component<{ token: Token, editor: TextEditor,
     const { token, dependencies } = this.props;
 
     const props: any = {};
+
+    const tokenFactory = TokenComponentFactoryDependency.find(token.type, dependencies);
+
+    if (tokenFactory) {
+      props.children = tokenFactory.create(this.props);
+    }
 
     if (!props.children) {
       props.dangerouslySetInnerHTML = {

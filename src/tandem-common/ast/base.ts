@@ -1,4 +1,5 @@
 import { IRange } from "tandem-common/geom";
+import { patchable } from "tandem-common/decorators";
 import { diffArray } from "tandem-common/utils/array";
 import { ITreeNode, TreeNode } from "tandem-common/tree";
 import { IDisposable, IComparable, IPatchable } from "tandem-common/object";
@@ -22,11 +23,15 @@ const noSource = {
 
 export abstract class BaseExpression<T extends BaseExpression<any>> extends TreeNode<T> implements IExpression {
 
+  @patchable
   private _source: IExpressionSource;
 
-  constructor(readonly position: IRange) {
+  @patchable
+  readonly position: IRange;
+
+  constructor(position: IRange) {
     super();
-    if (!position) this.position = { start: -1, end: -1 };
+    this.position = position || { start: -1, end: -1 };
   }
 
   get source(): IExpressionSource {

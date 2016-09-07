@@ -27,12 +27,6 @@ export interface IEntity extends ITreeNode<IEntity>, IDisposable, IInjectable, I
   readonly source: IExpression;
 
   /**
-   * update source from props on this entity
-   */
-
-  updateSource();
-
-  /**
    * loads the entity from the source
    */
 

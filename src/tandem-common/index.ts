@@ -5,7 +5,6 @@ export * from "./application";
 export * from "./ast";
 export * from "./busses";
 export * from "./commands";
-export * from "./components";
 export * from "./commands";
 export * from "./decorators";
 export * from "./dependencies";

@@ -1,6 +1,9 @@
+import { IActor } from "tandem-common/actors";
 import { inject } from "tandem-common/decorators";
+import { WrapBus } from "mesh";
 import { BubbleBus } from "tandem-common/busses";
 import { watchProperty } from "tandem-common/observable";
+import { Action, TreeNodeAction } from "tandem-common/actions";
 import { IDisposable, ITyped, IValued } from "tandem-common/object";
 import { bindable, mixin, virtual, patchable } from "tandem-common/decorators";
 import { IInjectable, Injector, DEPENDENCIES_NS, Dependencies } from "tandem-common/dependencies";
@@ -83,12 +86,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   }
 
   loadLeaf() { }
-
-  public updateSource() {
-    for (const child of this.children) {
-      child.updateSource();
-    }
-  }
 
   public clone() {
     let clone = super.clone();

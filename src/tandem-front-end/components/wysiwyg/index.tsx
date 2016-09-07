@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TextEditorComponent } from "tandem-common/components/text-editor";
+import { TextEditorComponent } from "../text-editor";
 import { StringScanner } from "tandem-common/string/scanner";
 // import createToken from "saffronmon/tokenizers/create-token";
 // import { SPACE, TAB, NEW_LINE, TEXT } from "saffron-common/tokenizers/token-types";

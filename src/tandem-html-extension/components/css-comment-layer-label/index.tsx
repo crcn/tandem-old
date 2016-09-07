@@ -9,7 +9,7 @@ import { SelectAction } from "tandem-front-end/actions";
 import { getCSSSelection } from "tandem-html-extension/ast";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { SelectWithCSSSelectorAction } from "tandem-html-extension/actions";
-import { TextEditorComponent, Dependencies } from "tandem-common";
+import { Dependencies } from "tandem-common";
 import { LayerLabelComponentFactoryDependency } from "tandem-front-end/dependencies";
 import { CSSCommentEntity, CSSCommentExpression } from "tandem-html-extension/ast";
 

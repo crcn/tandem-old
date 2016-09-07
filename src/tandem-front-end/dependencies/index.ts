@@ -96,3 +96,25 @@ export class LayerLabelComponentFactoryDependency extends ReactComponentFactoryD
     return new LayerLabelComponentFactoryDependency(this.displayType, this.componentClass);
   }
 }
+
+/**
+ */
+
+export class TokenComponentFactoryDependency extends ReactComponentFactoryDependency {
+  static readonly TOKEN_COMPONENT_FACTORIES_NS = "tokenComponentFactories";
+  constructor(readonly tokenType: string, readonly componentClass: React.ComponentClass<any>) {
+    super(TokenComponentFactoryDependency.getNamespace(tokenType), componentClass);
+  }
+
+  static getNamespace(tokenType: string) {
+    return [TokenComponentFactoryDependency.TOKEN_COMPONENT_FACTORIES_NS, tokenType].join("/");
+  }
+
+  static find(tokenType: string, dependencies: Dependencies) {
+    return dependencies.query<TokenComponentFactoryDependency>(this.getNamespace(tokenType));
+  }
+  clone() {
+    return new TokenComponentFactoryDependency(this.tokenType, this.componentClass);
+  }
+}
+

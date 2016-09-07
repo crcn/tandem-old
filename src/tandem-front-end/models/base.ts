@@ -87,10 +87,10 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   protected abstract createEntity(ast: IExpression, dependencies: Dependencies): T;
 
   async save() {
-    this._entity.updateSource();
     this.content = this._sourceContent = this._entity.source.toString();
-    await super.save();
+
     await this.updateEntity();
+    return super.save();
   }
 
   protected onExpressionAction(action: Action) {

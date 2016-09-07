@@ -5,13 +5,20 @@ import { Token, StringScanner } from "tandem-common";
 // linear-gradient(0deg, blue, green 40%, red);
 import { TokenTypes } from "tandem-common";
 
+export namespace CSSTokenTypes {
+  export const COLOR = "color";
+  export const REFERENCE = "reference";
+}
+
 const tokenMap = {
   ".": TokenTypes.DOT,
   ":": TokenTypes.COLON,
   "(": TokenTypes.LEFT_PAREN,
   ")": TokenTypes.RIGHT_PAREN,
-  ",": TokenTypes.COMMA
+  ",": TokenTypes.COMMA,
+  "white": CSSTokenTypes.COLOR
 };
+
 
 export class CSSTokenizer {
   tokenize(source) {
@@ -45,8 +52,8 @@ export class CSSTokenizer {
         continue;
       }
 
-      if (addToken(/^\#\w{1,6}/, "color")) continue;
-      if (addToken(/^\w+(\-\w+)?/, "reference")) continue;
+      if (addToken(/^\#\w{1,6}/, CSSTokenTypes.COLOR)) continue;
+      if (addToken(/^\w+(\-\w+)?/, CSSTokenTypes.REFERENCE)) continue;
       if (addToken(/^\u0020+/, TokenTypes.SPACE)) continue;
       if (addToken(/^\t+/, TokenTypes.TAB)) continue;
       if (addToken(/^[\/\*\-\+]/, TokenTypes.OPERATOR)) continue;

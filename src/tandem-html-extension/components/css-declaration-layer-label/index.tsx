@@ -8,9 +8,10 @@ import { cssTokenizer } from "tandem-html-extension/tokenizers/css";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { SelectAction } from "tandem-front-end/actions";
 import { getCSSSelection } from "tandem-html-extension/ast";
+import { TextEditorComponent } from "tandem-front-end/components/text-editor";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { SelectWithCSSSelectorAction } from "tandem-html-extension/actions";
-import { TextEditorComponent, Dependencies } from "tandem-common";
+import { Dependencies } from "tandem-common";
 import { LayerLabelComponentFactoryDependency } from "tandem-front-end/dependencies";
 import { CSSDeclarationEntity, CSSDeclarationExpression } from "tandem-html-extension/ast";
 
@@ -18,9 +19,9 @@ class CSSDeclarationLayerLabelComponent extends React.Component<{ app: FrontEndA
 
   private _value: string;
 
-  onValueChange = debounce((value) => {
+  onValueChange = (value) => {
     this.props.entity.source.value = this._value = value;
-  }, 400);
+  };
 
   onKeyDown = (event: KeyboardEvent) => {
     event.stopPropagation();

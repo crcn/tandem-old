@@ -5,3 +5,4 @@
 - [ ] react transpiler
 - [ ] data-target-style attribute
 - [ ] updating doc should be automatic
+- [ ] do not reload entire tree

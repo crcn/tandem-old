@@ -66,10 +66,10 @@ class RegisteredArtboardEntity extends HTMLElementEntity implements IContextualE
 
 export class HTMLArtboardEntity extends VisibleHTMLElementEntity implements IInjectable {
 
+  private _placeholder: Node;
   private _body: HTMLElement;
   private _style: HTMLStyleElement;
   private _iframe: HTMLIFrameElement;
-  private _placeholder: Node;
 
   load() {
 

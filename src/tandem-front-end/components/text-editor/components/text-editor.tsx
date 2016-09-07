@@ -9,6 +9,7 @@ import { BrokerBus } from "tandem-common/busses";
 import { ITokenizer } from "tandem-common/tokenizers";
 import CaretComponent from "./caret";
 import { Dependencies } from "tandem-common/dependencies";
+import { stringTokenizer } from "tandem-common/tokenizers";
 import HighlightComponent from "./highlight";
 import { translateAbsoluteToRelativePoint } from "tandem-common/utils/html";
 
@@ -57,8 +58,9 @@ export class TextEditorComponent extends React.Component<{ onKeyDown?: Function,
   }
 
   private _resetEditor(props) {
-    this._editor.source = props.source;
-    this._editor.style = Object.assign({}, this._editor.style || {}, props.style);
+    this._editor.source    = props.source;
+    this._editor.tokenizer = props.tokenizer || stringTokenizer;
+    this._editor.style     = Object.assign({}, this._editor.style || {}, props.style);
   }
 
   componentDidMount() {

@@ -19,24 +19,24 @@ describe(__filename + "#", () => {
 
     it("can query for a fragment", () => {
       const ab = new Dependency<string>("a/b", undefined);
-      const fragments = new Dependencies(ab, new Dependency<string>("c/d", undefined));
-      expect(fragments.query("a/b")).not.to.equal(undefined);
+      const deps = new Dependencies(ab, new Dependency<string>("c/d", undefined));
+      expect(deps.query("a/b")).not.to.equal(undefined);
     });
 
     it("throws an error if a ns already exists", () => {
       expect(() => new Dependencies(new Dependency<string>("a/b", undefined), new Dependency<string>("a/b", undefined))).to.throw("Dependency with namespace \"a/b\" already exists.");
     });
 
-    it("registers fragments when calling register()", () => {
-      const fragments = new Dependencies();
+    it("registers deps when calling register()", () => {
+      const deps = new Dependencies();
       const ab = new Dependency<string>("a/b", "a");
-      fragments.register(ab);
-      expect(fragments.query("a/b")).not.to.equal(undefined);
+      deps.register(ab);
+      expect(deps.query("a/b")).not.to.equal(undefined);
     });
 
 
-    it("can query for multiple fragments that share the same path", () => {
-      const fragments = new Dependencies(
+    it("can query for multiple deps that share the same path", () => {
+      const deps = new Dependencies(
         new UndefinedDependency("a/b"),
         new UndefinedDependency("a/c"),
         new UndefinedDependency("a/d"),
@@ -46,29 +46,29 @@ describe(__filename + "#", () => {
         new UndefinedDependency("b")
       );
 
-      expect(fragments.queryAll("a/**").length).to.equal(5);
-      expect(fragments.queryAll("a/d/**").length).to.equal(2); // a/d/e, a/d/f
-      expect(fragments.queryAll("/**").length).to.equal(fragments.length);
+      expect(deps.queryAll("a/**").length).to.equal(5);
+      expect(deps.queryAll("a/d/**").length).to.equal(2); // a/d/e, a/d/f
+      expect(deps.queryAll("/**").length).to.equal(deps.length);
     });
 
-    it("can create a child fragment with the same fragments", () => {
-      const fragments = new Dependencies(new UndefinedDependency("a/b"), new UndefinedDependency("b/c"));
-      const child = fragments.clone();
-      expect(child.length).to.equal(fragments.length);
+    it("can create a child fragment with the same deps", () => {
+      const deps = new Dependencies(new UndefinedDependency("a/b"), new UndefinedDependency("b/c"));
+      const child = deps.clone();
+      expect(child.length).to.equal(deps.length);
     });
 
-    it("can register multiple fragments via register()", () => {
-      const fragments = new Dependencies();
-      fragments.register(new UndefinedDependency("a/b"), new UndefinedDependency("b/c"));
-      expect(fragments.length).to.equal(2);
+    it("can register multiple deps via register()", () => {
+      const deps = new Dependencies();
+      deps.register(new UndefinedDependency("a/b"), new UndefinedDependency("b/c"));
+      expect(deps.length).to.equal(2);
     });
 
-    it("can register nested fragments", () => {
-      const fragments = new Dependencies();
+    it("can register nested deps", () => {
+      const deps = new Dependencies();
       let de;
-      fragments.register(new UndefinedDependency("a/b"), new UndefinedDependency("b/c"), [new UndefinedDependency("b/d"), [de = new UndefinedDependency("d/e")]]);
-      expect(fragments.length).to.equal(4);
-      expect(fragments.query("d/e")).not.to.equal(undefined);
+      deps.register(new UndefinedDependency("a/b"), new UndefinedDependency("b/c"), [new UndefinedDependency("b/d"), [de = new UndefinedDependency("d/e")]]);
+      expect(deps.length).to.equal(4);
+      expect(deps.query("d/e")).not.to.equal(undefined);
     });
   });
 });

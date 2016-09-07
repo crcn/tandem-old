@@ -6,6 +6,7 @@ import { IApplication } from "tandem-common/application";
 import { dependency as cssPaneComponentDependency } from "./components/css-pane";
 import { dependency as entityPreviewComponentDependency } from "./components/entity-preview";
 import { dependency as artboardToolComponentDependency } from "./components/artboard-tool";
+import { cssColorTokenComponentFactoryDependency } from "./components/css-color-token";
 
 // layer components
 import { dependency as textLayerLabelComponentDependency } from "./components/text-layer-label";
@@ -55,6 +56,7 @@ export const dependency = [
   entityPreviewComponentDependency,
   cssAtRuleLayerLabelComponentDependency,
   cssCommentLayerLabelComponentDependency,
+  cssColorTokenComponentFactoryDependency,
 
   // layer components
   textLayerLabelComponentDependency,

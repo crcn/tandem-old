@@ -228,7 +228,6 @@ class ResizerComponent extends React.Component<{
       this.setState({ guideLines: guideLines });
 
     }, () => {
-      this.props.editor.workspace.file.entity.updateSource();
       this._dragger = void 0;
       this.props.editor.metadata.set(MetadataKeys.MOVING, false);
       this.setState({ guideLines: undefined });
@@ -242,7 +241,6 @@ class ResizerComponent extends React.Component<{
   }
 
   onPointMouseUp = () => {
-    this.props.editor.workspace.file.entity.updateSource();
     this.props.editor.metadata.set(MetadataKeys.MOVING, false);
     this.setState({ guideLines: undefined });
     this.props.onStopResizing();

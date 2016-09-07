@@ -1,11 +1,13 @@
+import { Action } from "tandem-common/actions";
+import { WrapBus } from "mesh";
+import { parseCSSStyle } from "tandem-html-extension/ast";
 import { IVisibleEntity } from "tandem-common/ast/entities";
 import { HTMLNodeDisplay } from "./displays";
 import { HTMLElementEntity } from "./element";
+import { CSSRuleExpression } from "tandem-html-extension/ast/css/expressions";
 import { HTMLElementExpression } from "tandem-html-extension/ast";
 import { EntityFactoryDependency } from "tandem-common/dependencies";
 import { IDOMSection, NodeSection } from "tandem-html-extension/dom";
-import { parseCSSStyle } from "tandem-html-extension/ast";
-import { CSSRuleExpression } from "tandem-html-extension/ast/css/expressions";
 
 export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisibleEntity {
 
@@ -16,27 +18,18 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
   readonly display = new HTMLNodeDisplay(this);
 
   private _styleExpression: CSSRuleExpression;
-  private _originalStyle: string;
 
   updateFromLoaded() {
     const style = this.getAttribute("style");
     const newExpression = parseCSSStyle(String(style || ""));
 
-
     this._styleExpression = newExpression;
 
-    this._originalStyle = this._styleExpression.children.join("");
+    this._styleExpression.observe(new WrapBus(this.onStyleExpressionChange.bind(this)));
   }
 
-  updateSource() {
-    if (this.styleExpression.children.length) {
-      const newStyle = this.styleExpression.children.join("");
-      if (newStyle !== this._originalStyle) {
-        this.source.setAttribute("style", this._originalStyle = newStyle);
-      }
-    }
-
-    super.updateSource();
+  private onStyleExpressionChange(action: Action) {
+    this.source.setAttribute("style", this._styleExpression.children.join(""));
   }
 
   createSection(): IDOMSection {
