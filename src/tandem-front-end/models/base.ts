@@ -88,6 +88,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
       await this._entity.update();
     } else {
       this._ast = newAst;
+      this._ast.source = this;
       this._ast.observe(this._expressionObserver);
 
       const entity = this._entity = this.createEntity(this._ast);
