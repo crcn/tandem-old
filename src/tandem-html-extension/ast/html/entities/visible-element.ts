@@ -29,7 +29,11 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
   }
 
   private onStyleExpressionChange(action: Action) {
-    this.source.setAttribute("style", this._styleExpression.children.join(""));
+    const styleSource = this._styleExpression.children.join("");
+    this.source.setAttribute("style", styleSource);
+
+    // immediate feedback
+    this.setAttribute("style", styleSource);
   }
 
   createSection(): IDOMSection {

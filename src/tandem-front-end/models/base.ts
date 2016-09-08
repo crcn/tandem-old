@@ -46,6 +46,8 @@ export interface IEditor extends IActor {
   readonly workspace: Workspace;
 }
 
+const REQUEST_SAVE_TIMEOUT = 200;
+
 // TODO - need to separate this from runtime
 export abstract class DocumentFile<T extends IEntity & IObservable> extends File implements IEntityDocument {
 
@@ -98,7 +100,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
 
   private requestSave = debounce(() => {
     this.save();
-  }, 10);
+  }, REQUEST_SAVE_TIMEOUT);
 }
 
 export abstract class BaseEditorTool implements IEditorTool, IInjectable {

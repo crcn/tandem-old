@@ -53,6 +53,7 @@ export async function activate(context: vscode.ExtensionContext) {
     var _inserted = false;
     var _content;
     var _documentUri:vscode.Uri;
+    var _ignoreSelect: boolean;
 
     async function _setEditorContent({ content, path }) {
 
@@ -67,6 +68,8 @@ export async function activate(context: vscode.ExtensionContext) {
         let oldText = editor.document.getText();
         var newContent = _content = content;
 
+        _ignoreSelect = true;
+
         await editor.edit(function(edit) {
             edit.replace(
                 new vscode.Range(
@@ -76,6 +79,8 @@ export async function activate(context: vscode.ExtensionContext) {
                 newContent
             );
         });
+
+        _ignoreSelect = false;
     }
 
     const fixFileName = (fileName) => {
@@ -122,6 +127,7 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     vscode.window.onDidChangeTextEditorSelection(function(e:vscode.TextEditorSelectionChangeEvent) {
+        if (_ignoreSelect) return;
         const ranges = e.selections.map(selection => ({
             start: e.textEditor.document.offsetAt(selection.start),
             end: e.textEditor.document.offsetAt(selection.end)

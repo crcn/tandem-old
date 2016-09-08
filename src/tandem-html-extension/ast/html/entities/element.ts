@@ -56,13 +56,16 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
   setAttribute(name: string, value: any) {
     const attribute = this.getAttributeEntity(name);
     if (!attribute) {
-      const expr = new HTMLAttributeExpression(name, value, null);
-      this.source.appendChild(expr);
-      const entity = new HTMLAttributeEntity(expr);
-      this.appendChild(entity);
-      return entity;
+      // has not updated yet
+      if(!this.source.getAttribute(name)) {
+        const expr = new HTMLAttributeExpression(name, value, null);
+        this.source.appendChild(expr);
+        const entity = new HTMLAttributeEntity(expr);
+        this.appendChild(entity);
+      }
+    } else {
+      attribute.value = value;
     }
-    attribute.value = value;
   }
 
   hasAttribute(name: string) {
@@ -70,7 +73,7 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
   }
 
   getAttributeEntity(name: string): IHTMLElementAttributeEntity {
-    return this.attributes.find((attribute) => attribute.name === name);
+    return this.attributes.find((attribute) => attribute.source.name === name);
   }
 
   cloneLeaf() {

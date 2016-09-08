@@ -4,5 +4,5 @@
 - [x] ability to split screen layers
 - [ ] react transpiler
 - [ ] data-target-style attribute
-- [ ] updating doc should be automatic
-- [ ] do not reload entire tree
+- [x] updating doc should be automatic
+- [x] do not reload entire tree

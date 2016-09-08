@@ -249,7 +249,6 @@ export class HTMLNodeDisplay implements IEntityDisplay {
 
   private _setExpressionStyle(style: Object) {
     this.entity.styleExpression.updateDeclarations(style);
-    this.entity.setAttribute("style", this.entity.styleExpression.children.join(""));
   }
 
   /**
