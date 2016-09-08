@@ -47,11 +47,9 @@ class RegisteredPCTemplateEntity extends HTMLElementEntity {
     ];
   }
 
-  async loadLeaf() {
-
-    await super.loadLeaf();
+  async load() {
+    await super.load();
     this.__children = EntityFactoryDependency.findBySourceType(HTMLFragmentExpression, this.dependencies).create(this.source);
-
     await this.__children.evaluate(this.context);
   }
 };
@@ -78,8 +76,8 @@ export class PCTemplateEntity extends VisibleHTMLElementEntity implements IInjec
     return context;
   }
 
-  updateFromLoaded() {
-    super.updateFromLoaded();
+  onEvaluated() {
+    super.onEvaluated();
     this._updateStyle();
   }
 

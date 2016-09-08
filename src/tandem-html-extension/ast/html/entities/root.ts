@@ -50,7 +50,7 @@ export class HTMLDocumentRootEntity extends HTMLNodeEntity<HTMLFragmentExpressio
     return new HTMLDocumentRootEntity(this.source);
   }
 
-  updateFromLoaded() {
+  onEvaluated() {
     // after the root has been loaded in, fetch all of the CSS styles.
     this._globalStyle.innerHTML = CSSStylesheetsDependency.getInstance(this.context.dependencies).toString();
   }

@@ -35,14 +35,6 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
   public source: PCBlockNodeExpression;
   public error: Error;
 
-  protected updateFromSource() {
-    try {
-      this._script = parseBlockScript(this.source.value);
-    } catch (e) {
-      this.error = e;
-    }
-  }
-
   createSection() {
     return new GroupNodeSection();
   }
@@ -55,8 +47,15 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
     let value;
     let scriptExecuted = false;
 
-    if (this.error) {
-      value = `Syntax Error: ${this.error.message}`;
+    let error: Error;
+    try {
+      const script = parseBlockScript(this.source.value);
+    } catch (e) {
+      error = e;
+    }
+
+    if (error) {
+      value = `Syntax Error: ${error.message}`;
     } else {
       try {
         value = this._script(this.context);

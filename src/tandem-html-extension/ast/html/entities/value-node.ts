@@ -27,14 +27,8 @@ export abstract class HTMLValueNodeEntity<T extends HTMLNodeExpression & IHTMLVa
     }
   }
 
-  protected onSourceAction(action: Action) {
-    if (action.target === this.source) {
-      this.value = this.source.value;
-    }
-  }
-
-  protected updateFromSource() {
-    super.updateFromSource();
+  protected onEvaluated() {
+    super.onEvaluated();
     this.value = this.source.value;
   }
 

@@ -19,7 +19,7 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
 
   private _styleExpression: CSSRuleExpression;
 
-  updateFromLoaded() {
+  onEvaluated() {
     const style = this.getAttribute("style");
     const newExpression = parseCSSStyle(String(style || ""));
 

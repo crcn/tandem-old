@@ -55,7 +55,7 @@ export class LinkEntity extends HTMLElementEntity {
     return context;
   }
 
-  updateFromLoaded() {
+  onEvaluated() {
     this.context.dependencies = this._file.entity.context.dependencies;
   }
 

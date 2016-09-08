@@ -78,7 +78,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
       await this.load();
     }
 
-    this.updateFromLoaded();
+    this.onEvaluated();
 
     // mapContext may need evaluated children, so execute
     // it at the end
@@ -90,7 +90,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   }
 
   protected async load() {
-    await this.loadLeaf();
     for (const childExpression of this.mapSourceChildren()) {
       await this.loadExpressionAndAppendChild(childExpression);
     }
@@ -124,8 +123,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
       this.removeChild(child);
       child.dispose();
     }
-
-    this.updateFromSource();
   }
 
   protected shouldDispose() {
@@ -147,25 +144,22 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     return this.loadExpressionAndInsertChildAt(childExpression, this.children.length);
   }
 
-  loadLeaf() { }
-
   public clone() {
     let clone = super.clone();
     clone.metadata.copyFrom(this.metadata);
-    clone.updateFromLoaded();
+    if (this._loaded) {
+      clone.onEvaluated();
+    }
     return clone;
   }
 
   // TODO - onEvaluated
-  protected updateFromLoaded() { }
+  protected onEvaluated() { }
 
   protected initialize() {
-    this.updateFromSource();
     this.metadata = new EntityMetadata(this, this.getInitialMetadata());
     this.metadata.observe(new BubbleBus(this));
   }
-
-  protected updateFromSource() { }
 
   protected getInitialMetadata() {
 

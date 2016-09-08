@@ -56,8 +56,10 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
   setAttribute(name: string, value: any) {
     const attribute = this.getAttributeEntity(name);
     if (!attribute) {
-      // has not updated yet
-      if(!this.source.getAttribute(name)) {
+
+      // this will happen if the entity has not updated yet -- i.e:
+      // it's dirty.
+      if (!this.source.getAttribute(name)) {
         const expr = new HTMLAttributeExpression(name, value, null);
         this.source.appendChild(expr);
         const entity = new HTMLAttributeEntity(expr);
@@ -91,11 +93,10 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
     if (action.target.parent === this && action.target.source instanceof HTMLAttributeExpression) {
       if (action.type === TreeNodeAction.NODE_REMOVING) {
 
-
         // diffing algorithim may remove an attribute if it's out of order, but it
         // still may exist -- ignore the node removal if it's still there
         if (!this.source.getAttribute(action.target.name)) {
-          element.removeAttribute(action.target.name)
+          element.removeAttribute(action.target.name);
         }
       } else if (action.type === PropertyChangeAction.PROPERTY_CHANGE || action.type === TreeNodeAction.NODE_ADDED) {
         element.setAttribute(action.target.name, action.target.value);
@@ -116,7 +117,7 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
     this.name = source.name;
   }
 
-  updateFromLoaded() {
+  onEvaluated() {
     if (this.hasLoadableValue) {
       this.value = (<IValued><any>this.firstChild).value;
     } else {
