@@ -9,15 +9,19 @@ import {
   Action,
   IActor,
   IEntity,
+  bindable,
   BubbleBus,
   Transform,
   IDisposable,
   IObservable,
+  bindProperty,
   IExpression,
   IInjectable,
   EntityAction,
+  EntityRuntime,
   Dependencies,
   patchTreeNode,
+  BaseExpression,
   IEntityDocument,
   DEPENDENCIES_NS,
   PropertyChangeAction,
@@ -47,20 +51,18 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
 
   public owner: IEntityDocument;
 
-  private _entity: T;
+  @bindable()
+  public entity: T;
+
   private _ast: IExpression;
   private _sourceContent: string;
-  private _entityObserver: IActor;
-  private _expressionObserver: IActor;
+  private _runtimeObserver: IActor;
+  private _runtime: EntityRuntime;
 
-  constructor(data) {
-    super(data);
-    this._entityObserver     = new WrapBus(this.onEntityAction.bind(this));
-    this._expressionObserver = new WrapBus(this.onExpressionAction.bind(this));
-  }
-
-  public get entity(): T {
-    return this._entity;
+  didInject() {
+    this._runtime = new EntityRuntime({ document: this }, this._dependencies.clone(), this.createEntity.bind(this));
+    this._runtime.observe(this._runtimeObserver = new WrapBus(this.onRuntimeAction.bind(this)));
+    bindProperty(this._runtime, "entity", this);
   }
 
   onContentChange(newContent: string) {
@@ -70,62 +72,23 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   }
 
   public async load() {
-    const newAst = await this.parse(this._sourceContent = this.content);
-
-    if (this._ast) {
-
-      // remove the expression observer for now so that the patching
-      // does not trigger a save() below
-      this._ast.unobserve(this._expressionObserver);
-
-      // apply the changes to the current AST -- this will notify any entities
-      // that also need to change
-      patchTreeNode(this._ast, newAst);
-
-      this._ast.observe(this._expressionObserver);
-
-      // since the entity tree is dirty at this point, we'll need to apply an update
-      await this._entity.update();
-    } else {
-      this._ast = newAst;
-      this._ast.source = this;
-      this._ast.observe(this._expressionObserver);
-
-      const entity = this._entity = this.createEntity(this._ast);
-
-      entity.context = {
-        document: this,
-        dependencies: new Dependencies(EntityFactoryDependency.findAll(this._dependencies))
-      };
-
-      console.log(entity.context);
-
-      await entity.load();
-
-      // listen for any changes so that the rest of the application may reflect
-      // changes onthe entity tree
-      this._entity.observe(this._entityObserver);
-
-      this.notify(new PropertyChangeAction("entity", entity, undefined));
-    }
+    const ast = await this.parse(this._sourceContent = this.content);
+    ast.source = this;
+    this._runtime.load(ast);
   }
 
   abstract async parse(content: string): Promise<IExpression>;
   protected abstract createEntity(ast: IExpression): T;
 
   async save() {
-    this.content = this._sourceContent = this._entity.source.toString();
-
-    await this._entity.update();
+    this.content = this._sourceContent = this.entity.source.toString();
     return super.save();
   }
 
-  protected onExpressionAction(action: Action) {
-    this.requestSave();
-    this.notify(action);
-  }
-
-  protected onEntityAction(action: Action) {
+  protected onRuntimeAction(action: Action) {
+    if (action.target instanceof BaseExpression) {
+      this.requestSave();
+    }
     this.notify(action);
   }
 

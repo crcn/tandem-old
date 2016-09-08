@@ -24,6 +24,12 @@ export function watchProperty(target: IObservable, property: string, callback: (
   };
 }
 
+export function bindProperty(source: IObservable, sourceProperty: string, target: any, destProperty: string = sourceProperty) {
+  watchProperty(source, sourceProperty, (newValue, oldValue) => {
+    target[destProperty] = newValue;
+  }).trigger();
+}
+
 export function waitForPropertyChange(target: IObservable, property: string) {
   return new Promise((resolve, reject) => {
     const propertyWatcher = watchProperty(target, property, resolve);

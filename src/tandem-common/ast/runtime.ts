@@ -1,41 +1,68 @@
-// import { IActor } from "tandem-common/actors";
-// import { Action } from "tandem-common/actions";
-// import { WrapBus } from "mesh";
-// import { IEntity } from "./entities/base";
-// import { debounce } from "lodash";
-// import { Observable } from "tandem-common/observable";
-// import { IExpression } from "tandem-common/ast/base";
-// import { Dependencies, EntityFactoryDependency } from "tandem-common/dependencies";
+import { IActor } from "tandem-common/actors";
+import { IEntity } from "./entities/base";
+import { WrapBus } from "mesh";
+import { debounce } from "lodash";
+import { Observable } from "tandem-common/observable";
+import { IExpression } from "./base";
+import { Dependencies } from "tandem-common/dependencies";
+import { patchTreeNode } from "tandem-common/tree";
+import { Action, PropertyChangeAction } from "tandem-common/actions";
 
-// export class EntityRuntime extends Observable {
+export class EntityRuntime extends Observable {
 
-//   private _source: IExpression;
-//   private _entity: IEntity;
-//   private _sourceObserver: IActor;
+  private _ast: IExpression;
+  private _entity: IEntity;
+  private _astObserver: IActor;
+  private _entityObserver: IActor;
 
-//   constructor(readonly dependencies: Dependencies) {
-//     super();
-//     this._sourceObserver = new WrapBus(this.onSourceAction.bind(this));
-//   }
+  constructor(public context: any = {}, private _dependencies: Dependencies, readonly createEntity: (ast: IExpression) => IEntity) {
+    super();
+    this._astObserver = new WrapBus(this.onASTAction.bind(this));
+    this._entityObserver = new WrapBus(this.onEntityAction.bind(this));
+  }
 
-//   protected get source(): IExpression {
-//     return this._source;
-//   }
+  get entity(): IEntity {
+    return this._entity;
+  }
 
-//   async load(source: IExpression) {
+  async load(ast: IExpression) {
+    if (this._ast) {
 
-//     if (this._source) {
-//       this._source.unobserve(this._sourceObserver);
-//     }
+      // remove the expression observer for now so that the patching
+      // does not trigger a save() below
+      this._ast.unobserve(this._astObserver);
 
-//     this._source.observe(this._sourceObserver);
-//   }
+      // apply the changes to the current AST -- this will notify any entities
+      // that also need to change
+      patchTreeNode(this._ast, ast);
 
-//   protected onSourceAction(action: Action) {
-//     this.requestReload();
-//   }
+      this._ast.observe(this._astObserver);
 
-//   private requestReload = debounce(() => {
-//     this.load(this.source);
-//   }, 10);
-// }
+      // since the entity tree is dirty at this point, we'll need to apply an update
+      await this._entity.update();
+    } else {
+      this._ast = ast;
+
+      this._ast.observe(this._astObserver);
+      this._entity = this.createEntity(this._ast);
+      this._entity.observe(this._entityObserver);
+      this._entity.context = Object.assign(this.context, {
+        dependencies: this._dependencies
+      });
+      await this._entity.load();
+
+      // listen for any changes so that the rest of the application may reflect
+      // changes onthe entity tree
+      this.notify(new PropertyChangeAction("entity", this._entity, undefined));
+    }
+  }
+
+  protected onASTAction(action: Action) {
+    this._entity.update();
+    this.notify(action);
+  }
+
+  protected onEntityAction(action: Action) {
+    this.notify(action);
+  }
+}
