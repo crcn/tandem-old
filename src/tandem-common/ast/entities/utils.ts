@@ -13,7 +13,7 @@ export async function appendSourceChildren(entity: IEntity, ...childSources: Arr
 export async function insertSourceChildren(entity: IEntity, index: number = -1, ...childSources: Array<any>) {
 
   for (const child of childSources.reverse()) {
-    entity.source.insertAt(child, index);
+    entity.source.insertChildAt(child, index);
   }
 
   const root = entity.root;

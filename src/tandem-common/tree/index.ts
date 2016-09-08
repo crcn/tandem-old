@@ -32,7 +32,7 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
   }
 
   appendChild(child: T) {
-    this.insertAt(child, this._children.length);
+    this.insertChildAt(child, this._children.length);
   }
 
   removeAllChildren() {
@@ -49,7 +49,7 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     }
   }
 
-  insertAt(newChild: T, index: number) {
+  insertChildAt(newChild: T, index: number) {
     if (newChild._parent) {
       newChild._parent.removeChild(newChild);
     }
@@ -60,7 +60,7 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
   insertBefore(newChild: T, existingChild: T) {
     const index = this._children.indexOf(existingChild);
     if (index !== -1) {
-      this.insertAt(newChild, index);
+      this.insertChildAt(newChild, index);
     }
   }
 

@@ -142,7 +142,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
 
     // replace - tag name might have changed -- this cannot be patched
     const parentSource = entity.source.parent;
-    parentSource.insertAt(ast, parentSource.children.indexOf(entity.source));
+    parentSource.insertChildAt(ast, parentSource.children.indexOf(entity.source));
     parentSource.removeChild(entity.source);
 
     this.cancelEditing();

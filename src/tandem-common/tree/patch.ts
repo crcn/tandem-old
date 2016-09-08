@@ -13,13 +13,13 @@ export const patchTreeNode = (oldNode: ComparableTreeType, newNode: ComparableTr
   }
 
   for (const add of changes.add) {
-    oldNode.insertAt(add.value, add.index);
+    oldNode.insertChildAt(add.value, add.index);
   }
 
   for (const [oldChild, newChild, oldIndex, newIndex] of changes.update) {
     patchTreeNode(oldChild, newChild);
     if (oldIndex !== newIndex) {
-      oldNode.insertAt(oldChild, newIndex);
+      oldNode.insertChildAt(oldChild, newIndex);
     }
   }
   patchLeaf(oldNode, newNode);

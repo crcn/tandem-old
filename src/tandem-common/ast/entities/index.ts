@@ -108,7 +108,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
         }
 
         childEntity = childEntityFactory.create(childSource);
-        this.insertAt(childEntity, i);
+        this.insertChildAt(childEntity, i);
       }
 
       this.context = await childEntity.evaluate(this.context);
@@ -128,7 +128,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
       throw new Error(`Unable to find entity factory expression ${childExpression.constructor.name}`);
     }
     const entity = factory.create(childExpression);
-    this.insertAt(entity, index);
+    this.insertChildAt(entity, index);
     this.context = await entity.evaluate(this.context);
     return entity;
   }
