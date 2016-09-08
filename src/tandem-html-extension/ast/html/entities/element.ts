@@ -90,7 +90,13 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
 
     if (action.target.parent === this && action.target.source instanceof HTMLAttributeExpression) {
       if (action.type === TreeNodeAction.NODE_REMOVING) {
-        element.removeAttribute(action.target.name);
+
+
+        // diffing algorithim may remove an attribute if it's out of order, but it
+        // still may exist -- ignore the node removal if it's still there
+        if (!this.source.getAttribute(action.target.name)) {
+          element.removeAttribute(action.target.name)
+        }
       } else if (action.type === PropertyChangeAction.PROPERTY_CHANGE || action.type === TreeNodeAction.NODE_ADDED) {
         element.setAttribute(action.target.name, action.target.value);
       }
