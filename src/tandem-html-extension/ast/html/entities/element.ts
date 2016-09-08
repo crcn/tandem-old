@@ -70,7 +70,7 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
   }
 
   getAttributeEntity(name: string): IHTMLElementAttributeEntity {
-    return this.attributes.find((attribute) => attribute.source.name === name);
+    return this.attributes.find((attribute) => attribute.name === name);
   }
 
   cloneLeaf() {
@@ -97,15 +97,17 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
 
 export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
 
-  @bindable()
   public name: string;
 
   @bindable()
   public value: any;
 
-  updateFromLoaded() {
-    this.name  = this.source.name;
+  constructor(source: HTMLAttributeExpression) {
+    super(source);
+    this.name = source.name;
+  }
 
+  updateFromLoaded() {
     if (this.hasLoadableValue) {
       this.value = (<IValued><any>this.firstChild).value;
     } else {
@@ -115,6 +117,10 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
 
   get hasLoadableValue() {
     return typeof this.source.value === "object";
+  }
+
+  shouldDispose() {
+    return super.shouldDispose() || this.name !== this.source.name;
   }
 
   getInitialMetadata() {
