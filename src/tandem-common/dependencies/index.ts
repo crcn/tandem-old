@@ -81,6 +81,10 @@ export class EntityFactoryDependency extends ClassFactoryDependency {
     return dependencies.query<EntityFactoryDependency>(this.getNamespace(expressonClass));
   }
 
+  static findAll(dependencies: Dependencies): Array<EntityFactoryDependency> {
+    return dependencies.queryAll<EntityFactoryDependency>([ENTITIES_NS, "**"].join("/"));
+  }
+
   static findBySource(source: IExpression, dependencies: Dependencies) {
     return dependencies.query<EntityFactoryDependency>(this.getNamespace(source.constructor, (<INamed><any>source).name)) ||
     this.findBySourceType(source.constructor, dependencies);

@@ -17,15 +17,12 @@ export class CSSRootEntity extends BaseEntity<CSSRootExpression> {
 
   public owner: HTMLFile;
   public content: string;
-
-  constructor(source: CSSRootExpression, public document: DocumentFile<any>, protected _dependencies: Dependencies) {
-    super(source);
-  }
+  public document: DocumentFile<any>;
 
   async load() {
     await super.load();
     this.content = await this.loadCSS();
-    CSSStylesheetsDependency.getInstance(this._dependencies).addStyleSheet(this);
+    CSSStylesheetsDependency.getInstance(this.dependencies).addStyleSheet(this);
   }
 
   async loadCSS() {
@@ -39,6 +36,6 @@ export class CSSRootEntity extends BaseEntity<CSSRootExpression> {
   }
 
   cloneLeaf() {
-    return new CSSRootEntity(this.source, this.document, this._dependencies);
+    return new CSSRootEntity(this.source);
   }
 }

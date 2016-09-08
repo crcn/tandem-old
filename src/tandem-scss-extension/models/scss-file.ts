@@ -8,8 +8,8 @@ export class SCSSFile extends CSSFile {
   readonly type: string = MimeTypes.SCSS;
   public imported: boolean = false;
 
-  protected createEntity(ast: SCSSRootExpression, dependencies: Dependencies) {
-    return new SCSSRootEntity(ast, this, dependencies);
+  protected createEntity(ast: SCSSRootExpression) {
+    return new SCSSRootEntity(ast);
   }
 
   async parse(content: string) {

@@ -2,6 +2,7 @@ import { IActor } from "tandem-common/actors";
 import { inject } from "tandem-common/decorators";
 import { WrapBus } from "mesh";
 import { BubbleBus } from "tandem-common/busses";
+import { diffArray } from "tandem-common/utils/array";
 import { watchProperty } from "tandem-common/observable";
 import { Action, TreeNodeAction } from "tandem-common/actions";
 import { IDisposable, ITyped, IValued } from "tandem-common/object";
@@ -27,21 +28,20 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   public metadata: EntityMetadata;
 
-  @inject(DEPENDENCIES_NS)
-  @patchable
-  protected _dependencies: Dependencies;
-
-  @inject(ENTITY_DOCUMENT_NS)
-  @patchable
-  readonly document: IEntityDocument;
 
   @patchable
   protected _source: T;
+
+  private _context: any;
 
   constructor(_source: T) {
     super();
     this._source = _source;
     this.initialize();
+  }
+
+  get document(): IEntityDocument {
+    return this.context.document;
   }
 
   get source(): T {
@@ -52,6 +52,18 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     for (const child of this.children) {
       child.dispose();
     }
+  }
+
+  get context(): any {
+    return this._context;
+  }
+
+  set context(value: any) {
+    this._context = Object.assign({}, value);
+  }
+
+  protected get dependencies(): Dependencies {
+    return this.context.dependencies;
   }
 
   public flatten(): Array<IEntity> {
@@ -68,38 +80,74 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   public async load() {
     await this.loadLeaf();
-    for (const childExpression of await this.mapSourceChildren()) {
+    for (const childExpression of this.mapSourceChildren()) {
       await this.loadExpressionAndAppendChild(childExpression);
     }
     this.updateFromLoaded();
   }
 
-  public async loadExpressionAndAppendChild(childExpression: IExpression) {
-    const factory = EntityFactoryDependency.findBySource(childExpression, this._dependencies);
+  public async update() {
+    let currentContext = this.context;
+    const mappedSourceChildren = this.mapSourceChildren();
+    for (let i = 0, n = mappedSourceChildren.length; i < n; i++) {
+      const childSource = mappedSourceChildren[i];
+      let childEntity   = this.children[i];
+      const childEntityFactory = EntityFactoryDependency.findBySource(childSource, currentContext.dependencies);
+      if (!childEntity || childEntity.source !== childSource || childEntity.constructor !== childEntityFactory.entityClass) {
+
+        if (childEntity) {
+          this.removeChild(childEntity);
+          childEntity.dispose();
+        }
+
+        childEntity = childEntityFactory.create(childSource);
+        childEntity.context = currentContext;
+        this.insertAt(childEntity, i);
+        await childEntity.load();
+      } else {
+        childEntity.context = currentContext;
+        await childEntity.update();
+      }
+
+      currentContext = childEntity.context;
+    }
+
+    while (this.children.length !== mappedSourceChildren.length) {
+      const child = this.lastChild;
+      this.removeChild(child);
+      child.dispose();
+    }
+
+    this.updateFromSource();
+    this.updateFromLoaded();
+  }
+
+  public async loadExpressionAndInsertChildAt(childExpression: IExpression, index: number) {
+    const factory = EntityFactoryDependency.findBySource(childExpression, this.context.dependencies);
     if (!factory) {
       throw new Error(`Unable to find entity factory expression ${childExpression.constructor.name}`);
     }
     const entity = factory.create(childExpression);
-    this.appendChild(entity);
+    this.insertAt(entity, index);
+    entity.context = this.context;
     await entity.load();
     return entity;
+  }
+
+  public loadExpressionAndAppendChild(childExpression: IExpression) {
+    return this.loadExpressionAndInsertChildAt(childExpression, this.children.length);
   }
 
   loadLeaf() { }
 
   public clone() {
     let clone = super.clone();
-    if (this._dependencies) {
-      clone = Injector.inject(clone, this._dependencies);
-    }
     clone.metadata.copyFrom(this.metadata);
     clone.updateFromLoaded();
     return clone;
   }
 
   public patch(entity: BaseEntity<T>) {
-    this.updateFromSource();
-    this.updateFromLoaded();
   }
 
   protected updateFromLoaded() { }
@@ -135,13 +183,14 @@ export abstract class BaseValueEntity<T extends IExpression & IValued> extends B
 
   constructor(source: T) {
     super(source);
-    this.value = source.value;
-    watchProperty(this, "value", this.onValueChange.bind(this));
+    watchProperty(this.source, "value", this.onSourceValueChange.bind(this)).trigger();
   }
 
   mapSourceChildren() {
     return [];
   }
 
-  protected onValueChange(newValue: any, oldValue: any) { }
+  protected onSourceValueChange(newValue: any, oldValue: any) {
+    this.value = newValue;
+  }
 }

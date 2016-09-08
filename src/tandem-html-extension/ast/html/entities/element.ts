@@ -102,10 +102,9 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
   @bindable()
   public value: any;
 
-  constructor(source: HTMLAttributeExpression) {
-    super(source);
-    this.name  = source.name;
-    this.value = source.value;
+  updateFromLoaded() {
+    this.name = this.source.name;
+    this.value = this.source.value;
   }
 
   get hasLoadableValue() {

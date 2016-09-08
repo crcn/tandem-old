@@ -76,7 +76,7 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
         // thing is to re-use the HTML Text entity. This way any changes to the item
         // source get reflected back to the attribute it came from
         if (item instanceof HTMLAttributeEntity) {
-          this.appendChild(Injector.inject(new HTMLTextEntity(item.source), this._dependencies));
+          this.appendChild(Injector.inject(new HTMLTextEntity(item.source), this.dependencies));
         } else {
           this.appendChild(item.clone());
         }

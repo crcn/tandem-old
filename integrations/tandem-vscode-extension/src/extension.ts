@@ -88,7 +88,7 @@ export async function activate(context: vscode.ExtensionContext) {
         return fileName;
     }
 
-    const _update = debounce(async (document:vscode.TextDocument) => {
+    const _update = throttle(async (document:vscode.TextDocument) => {
 
         _documentUri = document.uri;
         const newContent = document.getText();
@@ -99,7 +99,7 @@ export async function activate(context: vscode.ExtensionContext) {
             path: fixFileName(document.fileName),
             content: _content = newContent
         }, server.bus);
-    }, 500);
+    }, 50);
 
     let startServerCommand = vscode.commands.registerCommand("extension.tandemOpenCurrentFile", () => {
         exec(`open http://localhost:${port}`);

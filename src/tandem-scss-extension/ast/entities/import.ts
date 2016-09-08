@@ -34,7 +34,7 @@ export class SCSSImportEntity extends BaseEntity<CSSATRuleExpression> {
       this.source.params.replace(/['"]/g, "")
     );
 
-    const file: SCSSFile = this._file = await File.open(absolutePath, this._dependencies, MimeTypes.SCSS) as SCSSFile;
+    const file: SCSSFile = this._file = await File.open(absolutePath, this.dependencies, MimeTypes.SCSS) as SCSSFile;
     file.sync();
 
     file.imported = true;

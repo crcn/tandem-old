@@ -1,5 +1,5 @@
 import { decode } from "ent";
-import { inject } from "tandem-common/decorators";
+import { Action, inject } from "tandem-common";
 import { HTMLFile } from "tandem-html-extension/models/html-file";
 import { EntityMetadata } from "tandem-common/ast/entities";
 import { HTMLNodeEntity } from "./node";
@@ -27,10 +27,16 @@ export abstract class HTMLValueNodeEntity<T extends HTMLNodeExpression & IHTMLVa
     }
   }
 
+  protected onSourceAction(action: Action) {
+    if (action.target === this.source) {
+      this.value = this.source.value;
+    }
+  }
+
   protected updateFromSource() {
+    super.updateFromSource();
     this.value = this.source.value;
   }
 
   protected abstract createSection();
-
 }

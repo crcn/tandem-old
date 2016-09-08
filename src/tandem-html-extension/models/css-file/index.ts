@@ -9,8 +9,8 @@ import { FileFactoryDependency, IInjectable, Injector } from "tandem-common/depe
 export class CSSFile extends DocumentFile<CSSRootEntity> implements IInjectable {
   public owner: HTMLFile;
   readonly type: string = MimeTypes.CSS;
-  protected createEntity(ast: CSSRootExpression, dependencies: Dependencies) {
-    return new CSSRootEntity(ast, this, dependencies);
+  protected createEntity(ast: CSSRootExpression) {
+    return new CSSRootEntity(ast);
   }
   async parse(content: string) {
     return parseCSS(content);

@@ -12,8 +12,8 @@ export class HTMLFile extends DocumentFile<HTMLDocumentRootEntity> {
   async parse(content: string) {
     return parseHTML(content);
   }
-  createEntity(ast: HTMLFragmentExpression, dependencies: Dependencies) {
-    return new HTMLDocumentRootEntity(ast, this, dependencies);
+  createEntity(ast: HTMLFragmentExpression) {
+    return new HTMLDocumentRootEntity(ast);
   }
 }
 

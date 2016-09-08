@@ -4,6 +4,7 @@ import {
   IRange,
   bindable,
   TreeNode,
+  patchable,
   IExpression,
   BaseExpression,
   register as registerSerializer,
@@ -24,8 +25,11 @@ export abstract class HTMLExpression extends BaseExpression<HTMLExpression> impl
 }
 
 export abstract class HTMLNodeExpression extends HTMLExpression {
-  constructor(readonly name: string, position: IRange) {
+  @patchable
+  readonly name: string;
+  constructor(name: string, position: IRange) {
     super(position);
+    this.name = name;
   }
 }
 
@@ -166,9 +170,11 @@ export class HTMLElementExpression extends HTMLContainerExpression {
 export class HTMLAttributeExpression extends HTMLExpression implements IExpression {
 
   @bindable()
+  @patchable
   public value: any;
 
   @bindable()
+  @patchable
   public name: string;
 
   constructor(name: string, value: any, position: IRange) {
@@ -196,7 +202,9 @@ export class HTMLAttributeExpression extends HTMLExpression implements IExpressi
 }
 
 export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValueNodeExpression {
+
   @bindable()
+  @patchable
   public value: string;
 
   constructor(value: string, position: IRange) {
@@ -223,6 +231,7 @@ export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValue
 export class HTMLCommentExpression extends HTMLNodeExpression implements IHTMLValueNodeExpression {
 
   @bindable()
+  @patchable
   public value: string;
 
   constructor(value: string, position: IRange) {

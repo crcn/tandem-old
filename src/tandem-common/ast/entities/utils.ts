@@ -1,4 +1,4 @@
-import { IEntity, IContextualEntity } from "./base";
+import { IEntity } from "./base";
 
 export function findEntitiesBySource(entity: IEntity, ...sources) {
 
@@ -48,8 +48,8 @@ export async function removeEntitySources(...entities: Array<IEntity>) {
 }
 
 export function getContext(entity: IEntity) {
-  let p = <IContextualEntity>entity.parent;
-  while (p && !p.context) p = <IContextualEntity>p.parent;
+  let p = entity.parent;
+  while (p && !p.context) p = p.parent;
   return p ? p.context || {} : {};
 }
 

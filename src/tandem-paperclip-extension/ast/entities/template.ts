@@ -1,15 +1,14 @@
 import "./template.scss";
 
-import { Action } from "tandem-common/actions";
-import { IActor } from "tandem-common/actors";
-import { inject } from "tandem-common/decorators";
+import { WrapBus } from "mesh";
 import { MetadataKeys } from "tandem-front-end/constants";
 import bubbleIframeEvents from "tandem-front-end/utils/html/bubble-iframe-events";
 import { FrontEndApplication } from "tandem-front-end/application";
-import { VisibleHTMLElementEntity, HTMLElementEntity } from "tandem-html-extension";
+import { IEntity, getContext } from "tandem-common/ast";
 import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
 import { NodeSection, GroupNodeSection } from "tandem-html-extension/dom";
-import { IContextualEntity, IEntity, getContext } from "tandem-common/ast";
+import { Action, IActor, inject, TreeNodeAction } from "tandem-common";
+import { VisibleHTMLElementEntity, HTMLElementEntity } from "tandem-html-extension";
 import { HTMLElementExpression, HTMLFragmentExpression } from "tandem-html-extension/ast";
 import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "tandem-common/dependencies";
 
@@ -23,44 +22,50 @@ class ArtboardDependency extends Dependency<PCTemplateEntity> {
   }
 }
 
-class RegisteredPCTemplateEntity extends HTMLElementEntity implements IContextualEntity {
+class RegisteredPCTemplateEntity extends HTMLElementEntity {
 
-  private _context: any;
   private __children: IEntity;
+  private _templateObserver: IActor;
+
+  initialize() {
+    super.initialize();
+
+  }
 
   createSection() {
     return new GroupNodeSection();
   }
 
+  get template(): PCTemplateEntity {
+    return null;
+  }
+
   mapSourceChildren() {
     return [
       ...this.source.attributes,
-      ...ArtboardDependency.find(this.source.name.toLowerCase(), this._dependencies).value.source.childNodes
+      ...ArtboardDependency.find(this.source.name.toLowerCase(), this.dependencies).value.source.childNodes
     ];
   }
 
   async loadLeaf() {
-    await super.loadLeaf();
-    this.__children = EntityFactoryDependency.findBySourceType(HTMLFragmentExpression, this._dependencies).create(this.source);
 
-    Object.defineProperty(<IContextualEntity><any>this.__children, "context", {
-      get: () => this.context
-    });
+    await super.loadLeaf();
+    this.__children = EntityFactoryDependency.findBySourceType(HTMLFragmentExpression, this.dependencies).create(this.source);
 
     await this.__children.load();
   }
 
-  get context() {
-    const context = {
-      children: this.__children
-    };
+  // get context() {
+  //   const context = {
+  //     children: this.__children
+  //   };
 
-    for (const attribute of this.attributes) {
-      context[attribute.name] = attribute;
-    }
+  //   for (const attribute of this.attributes) {
+  //     context[attribute.name] = attribute;
+  //   }
 
-    return context;
-  }
+  //   return context;
+  // }
 };
 
 export class PCTemplateEntity extends VisibleHTMLElementEntity implements IInjectable {
@@ -70,14 +75,15 @@ export class PCTemplateEntity extends VisibleHTMLElementEntity implements IInjec
   private _style: HTMLStyleElement;
   private _iframe: HTMLIFrameElement;
 
-  load() {
-
-    if (this.source.getAttribute("id")) {
-      this._dependencies.register(new ArtboardDependency(this.source.getAttribute("id"), this));
-      this._dependencies.register(new EntityFactoryDependency(HTMLElementExpression, RegisteredPCTemplateEntity, this.source.getAttribute("id")));
+  updateFromLoaded() {
+    if (this.getAttribute("id")) {
+      const deps = this.dependencies.clone();
+      deps.register(
+        new ArtboardDependency(this.getAttribute("id"), this),
+        new EntityFactoryDependency(HTMLElementExpression, RegisteredPCTemplateEntity, this.getAttribute("id"))
+      );
+      this.context.dependencies = deps;
     }
-
-    return super.load();
   }
 
   getInitialMetadata() {
@@ -98,7 +104,7 @@ export class PCTemplateEntity extends VisibleHTMLElementEntity implements IInjec
     *:focus {
       outline: none;
     }
-    ${ CSSStylesheetsDependency.getInstance(this._dependencies).toString() }
+    ${ CSSStylesheetsDependency.getInstance(this.dependencies).toString() }
     `;
   }
 

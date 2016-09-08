@@ -2,7 +2,7 @@ import { HTMLElementEntity } from "tandem-html-extension/ast";
 import { PCBlockAttributeExpression } from "tandem-paperclip-extension/ast/expressions";
 import { parseBlockScript } from "./utils";
 import { EntityFactoryDependency } from "tandem-common/dependencies";
-import { IContextualEntity, IEntityDocument, BaseEntity, EntityMetadata, getContext } from "tandem-common/ast";
+import { IEntityDocument, BaseEntity, EntityMetadata, getContext } from "tandem-common/ast";
 
 export class BlockAttributeValueEntity extends BaseEntity<PCBlockAttributeExpression> {
   public value: any;
@@ -21,7 +21,7 @@ export class BlockAttributeValueEntity extends BaseEntity<PCBlockAttributeExpres
 
   async load() {
     try {
-      this.value = this._script(getContext(this.parent));
+      this.value = this._script(this.context);
     } catch (e) {
       this.value = ""; // this.source.toString();
     }

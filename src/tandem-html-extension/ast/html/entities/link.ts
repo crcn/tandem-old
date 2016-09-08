@@ -54,7 +54,7 @@ export class LinkEntity extends HTMLElementEntity {
 
     const type = this.source.getAttribute("type");
 
-    this._file = await File.open(this.href, this._dependencies, type) as DocumentFile<any>;
+    this._file = await File.open(this.href, this.dependencies, type) as DocumentFile<any>;
     this._file.sync();
     watchProperty(this._file, "content", () => {
       this.notify(new EntityAction(EntityAction.ENTITY_UPDATE));

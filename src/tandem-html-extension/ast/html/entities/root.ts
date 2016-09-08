@@ -9,7 +9,6 @@ import { EntityFactoryDependency } from "tandem-common/dependencies";
 import { IDOMSection, GroupNodeSection } from "tandem-html-extension/dom";
 import { Action, PropertyChangeAction, UpdateAction } from "tandem-common/actions";
 import { Dependencies, DEPENDENCIES_NS, IInjectable } from "tandem-common/dependencies";
-import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
 import {
   IEntity,
   EntityMetadata,
@@ -40,26 +39,17 @@ export class HTMLDocumentRootEntity extends HTMLNodeEntity<HTMLFragmentExpressio
    */
 
   private _globalStyle: HTMLStyleElement;
-  private _styleSheetsDependency: CSSStylesheetsDependency;
-
-
-  constructor(source: HTMLFragmentExpression, document: HTMLFile, readonly _dependencies: Dependencies) {
-    super(source);
-    this.document = document;
-    this._styleSheetsDependency = CSSStylesheetsDependency.getInstance(this._dependencies);
-  }
 
   createSection(): IDOMSection {
     return new GroupNodeSection();
   }
 
   cloneLeaf() {
-    return new HTMLDocumentRootEntity(this.source, <HTMLFile>this.document, this._dependencies);
+    return new HTMLDocumentRootEntity(this.source);
   }
 
   patch(entity: HTMLDocumentRootEntity) {
     super.patch(entity);
-    this._styleSheetsDependency = entity._styleSheetsDependency;
     this._updateCSS();
   }
 
@@ -74,6 +64,6 @@ export class HTMLDocumentRootEntity extends HTMLNodeEntity<HTMLFragmentExpressio
 
   private _updateCSS() {
     // after the root has been loaded in, fetch all of the CSS styles.
-    this._globalStyle.innerHTML = this._styleSheetsDependency.toString();
+    // this._globalStyle.innerHTML = this._styleSheetsDependency.toString();
   }
 }

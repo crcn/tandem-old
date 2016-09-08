@@ -22,6 +22,7 @@ import {
   DEPENDENCIES_NS,
   PropertyChangeAction,
   DependenciesDependency,
+  EntityFactoryDependency,
   EntityDocumentDependency,
 } from "tandem-common";
 
@@ -69,74 +70,67 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   }
 
   public async load() {
+    const newAst = await this.parse(this._sourceContent = this.content);
 
-    // TODO - diff source here and only change
-    // what is necessary
     if (this._ast) {
+
+      // remove the expression observer for now so that the patching
+      // does not trigger a save() below
       this._ast.unobserve(this._expressionObserver);
+
+      // apply the changes to the current AST -- this will notify any entities
+      // that also need to change
+      patchTreeNode(this._ast, newAst);
+
+      this._ast.observe(this._expressionObserver);
+
+      // since the entity tree is dirty at this point, we'll need to apply an update
+      await this._entity.update();
+    } else {
+      this._ast = newAst;
+      this._ast.observe(this._expressionObserver);
+
+      const entity = this._entity = this.createEntity(this._ast);
+
+      entity.context = {
+        document: this,
+        dependencies: new Dependencies(EntityFactoryDependency.findAll(this._dependencies))
+      };
+
+      console.log(entity.context);
+
+      await entity.load();
+
+      // listen for any changes so that the rest of the application may reflect
+      // changes onthe entity tree
+      this._entity.observe(this._entityObserver);
+
+      this.notify(new PropertyChangeAction("entity", entity, undefined));
     }
-
-    this._ast =  await this.parse(this._sourceContent = this.content);
-    this._ast.source = this;
-    this._ast.observe(this._expressionObserver);
-
-    await this.updateEntity();
   }
 
   abstract async parse(content: string): Promise<IExpression>;
-  protected abstract createEntity(ast: IExpression, dependencies: Dependencies): T;
+  protected abstract createEntity(ast: IExpression): T;
 
   async save() {
     this.content = this._sourceContent = this._entity.source.toString();
 
-    await this.updateEntity();
+    await this._entity.update();
     return super.save();
   }
 
   protected onExpressionAction(action: Action) {
     this.requestSave();
+    this.notify(action);
   }
 
   protected onEntityAction(action: Action) {
-    if (action.type === EntityAction.ENTITY_UPDATE) {
-      this.requestUpdate();
-    }
     this.notify(action);
   }
 
   private requestSave = debounce(() => {
     this.save();
   }, 10);
-
-  private requestUpdate = debounce(() => {
-    this.updateEntity();
-  }, 10);
-
-  private async updateEntity() {
-    const entity = this.createEntity(this._ast, this._dependencies.clone().register(new EntityDocumentDependency(this)));
-    if (this._entity && this._entity.constructor === entity.constructor) {
-      await entity.load();
-      patchTreeNode(this._entity, entity);
-
-      // changes made - clean up anything that might case leakage
-      entity.dispose();
-    } else {
-      const oldEntity = this._entity;
-
-      if (oldEntity) {
-        this._entity.unobserve(this._entityObserver);
-        oldEntity.dispose();
-      }
-
-      this._entity    = entity;
-
-      // must load after since the document entities may reference
-      // back to this document for the root entity
-      await entity.load();
-      this._entity.observe(this._entityObserver);
-      this.notify(new PropertyChangeAction("entity", entity, oldEntity));
-    }
-  }
 }
 
 export abstract class BaseEditorTool implements IEditorTool, IInjectable {
