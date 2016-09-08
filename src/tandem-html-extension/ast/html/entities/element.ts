@@ -103,8 +103,13 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
   public value: any;
 
   updateFromLoaded() {
-    this.name = this.source.name;
-    this.value = this.source.value;
+    this.name  = this.source.name;
+
+    if (this.hasLoadableValue) {
+      this.value = (<IValued><any>this.firstChild).value;
+    } else {
+      this.value = this.source.value;
+    }
   }
 
   get hasLoadableValue() {
@@ -119,18 +124,6 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
 
   compare(entity: HTMLAttributeEntity) {
     return super.compare(entity) && entity.name === this.name;
-  }
-
-  patch(entity: HTMLAttributeEntity) {
-    super.patch(entity);
-    this.value = entity.value;
-  }
-
-  async load() {
-    await super.load();
-    if (this.hasLoadableValue) {
-      this.value = (<IValued><any>this.firstChild).value;
-    }
   }
 
   mapSourceChildren() {

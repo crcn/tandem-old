@@ -33,6 +33,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   protected _source: T;
 
   private _context: any;
+  private _loaded: boolean;
 
   constructor(_source: T) {
     super();
@@ -58,10 +59,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     return this._context;
   }
 
-  set context(value: any) {
-    this._context = Object.assign({}, value);
-  }
-
   protected get dependencies(): Dependencies {
     return this.context.dependencies;
   }
@@ -78,15 +75,36 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     return Number(entity.constructor === this.constructor);
   }
 
-  public async load() {
+  public async evaluate(context: any) {
+    this._context = context;
+    if (this._loaded) {
+      await this.update();
+    } else {
+      this._loaded = true;
+      await this.load();
+    }
+    this.onEvaluated();
+  }
+
+  protected onEvaluated() {
+
+  }
+
+  protected async load() {
     await this.loadLeaf();
+    this.updateContext();
     for (const childExpression of this.mapSourceChildren()) {
       await this.loadExpressionAndAppendChild(childExpression);
     }
     this.updateFromLoaded();
   }
 
-  public async update() {
+  protected updateContext() {
+
+  }
+
+  protected async update() {
+    this.updateContext();
     let currentContext = this.context;
     const mappedSourceChildren = this.mapSourceChildren();
     for (let i = 0, n = mappedSourceChildren.length; i < n; i++) {
@@ -101,15 +119,12 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
         }
 
         childEntity = childEntityFactory.create(childSource);
-        childEntity.context = currentContext;
         this.insertAt(childEntity, i);
-        await childEntity.load();
-      } else {
-        childEntity.context = currentContext;
-        await childEntity.update();
       }
 
-      currentContext = childEntity.context;
+      await childEntity.evaluate(currentContext);
+
+      currentContext = childEntity.currentContext;
     }
 
     while (this.children.length !== mappedSourceChildren.length) {
@@ -123,7 +138,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   }
 
   protected get currentContext() {
-    return this.lastChild ? this.lastChild.context : this._context;
+    return this.lastChild ? this.lastChild.currentContext : this._context;
   }
 
   public async loadExpressionAndInsertChildAt(childExpression: IExpression, index: number) {
@@ -132,9 +147,9 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
       throw new Error(`Unable to find entity factory expression ${childExpression.constructor.name}`);
     }
     const entity = factory.create(childExpression);
-    entity.context = this.currentContext;
+    const context = this.currentContext;
     this.insertAt(entity, index);
-    await entity.load();
+    await entity.evaluate(context);
     return entity;
   }
 
@@ -149,9 +164,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     clone.metadata.copyFrom(this.metadata);
     clone.updateFromLoaded();
     return clone;
-  }
-
-  public patch(entity: BaseEntity<T>) {
   }
 
   protected updateFromLoaded() { }

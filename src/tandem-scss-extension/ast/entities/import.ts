@@ -22,11 +22,6 @@ export class SCSSImportEntity extends BaseEntity<CSSATRuleExpression> {
     super.updateFromSource();
   }
 
-  patch(entity: SCSSImportEntity) {
-    super.patch(entity);
-    entity._file.dispose();
-  }
-
   async load() {
     await super.load();
     const absolutePath = path.join(
@@ -42,10 +37,11 @@ export class SCSSImportEntity extends BaseEntity<CSSATRuleExpression> {
     await file.load();
 
     this.appendChild(file.entity);
+  }
 
-    watchProperty(file, "content", () => {
-      this.notify(new EntityAction(EntityAction.ENTITY_UPDATE));
-    });
+  dispose() {
+    super.dispose();
+    this._file.dispose();
   }
 
   cloneLeaf() {

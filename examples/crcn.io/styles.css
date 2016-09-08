@@ -1,8 +1,9 @@
 body {
-  font-family: Helvetica;
+  font-family: Helvetic;
 }
 
 .container {
   padding: 10px;
-  color: #F0F;
+  color: #FF7700;
+  position: absolute;
 }

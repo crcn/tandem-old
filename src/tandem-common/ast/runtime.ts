@@ -26,6 +26,7 @@ export class EntityRuntime extends Observable {
   }
 
   async load(ast: IExpression) {
+
     if (this._ast) {
 
       // remove the expression observer for now so that the patching
@@ -38,31 +39,38 @@ export class EntityRuntime extends Observable {
 
       this._ast.observe(this._astObserver);
 
-      // since the entity tree is dirty at this point, we'll need to apply an update
-      await this._entity.update();
     } else {
       this._ast = ast;
 
       this._ast.observe(this._astObserver);
       this._entity = this.createEntity(this._ast);
       this._entity.observe(this._entityObserver);
-      this._entity.context = Object.assign(this.context, {
-        dependencies: this._dependencies
-      });
-      await this._entity.load();
 
       // listen for any changes so that the rest of the application may reflect
       // changes onthe entity tree
       this.notify(new PropertyChangeAction("entity", this._entity, undefined));
     }
+
+    // since the entity tree is dirty at this point, we'll need to apply an update
+    await this._entity.evaluate(this.createContext());
+  }
+
+  protected createContext() {
+    return Object.assign(this.context, {
+      dependencies: this._dependencies.clone()
+    });
   }
 
   protected onASTAction(action: Action) {
-    this._entity.update();
+    this.requestEntityUpdate();
     this.notify(action);
   }
 
   protected onEntityAction(action: Action) {
     this.notify(action);
   }
+
+  private requestEntityUpdate = debounce(() => {
+    this._entity.evaluate(this.createContext());
+  }, 50);
 }

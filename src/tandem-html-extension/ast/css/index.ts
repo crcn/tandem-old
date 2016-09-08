@@ -20,11 +20,11 @@ import {
 } from "./expressions";
 
 const defaultExpressionClasses = {
-  media     : MediaExpression,
+  // media     : MediaExpression,
   root      : CSSRootExpression,
   rule      : CSSRuleExpression,
   atrule    : CSSATRuleExpression,
-  keyframes : KeyframesExpression,
+  // keyframes : KeyframesExpression,
   comment   : CSSCommentExpression,
   decl      : CSSDeclarationExpression,
 };

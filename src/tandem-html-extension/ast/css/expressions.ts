@@ -1,9 +1,10 @@
 import * as postcss from "postcss";
 
 import {
-  BaseExpression,
+  IRange,
   bindable,
-  IRange
+  patchable,
+  BaseExpression,
 } from "tandem-common";
 
 export class CSSExpression extends BaseExpression<CSSExpression> {
@@ -91,9 +92,11 @@ export class CSSRuleExpression extends CSSExpression {
 export class CSSDeclarationExpression extends CSSExpression {
 
   @bindable()
+  @patchable
   public name: string;
 
   @bindable()
+  @patchable
   public value: string;
 
   constructor({ prop , value }, children: Array<CSSExpression>, position: IRange) {

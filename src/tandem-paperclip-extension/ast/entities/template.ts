@@ -52,20 +52,8 @@ class RegisteredPCTemplateEntity extends HTMLElementEntity {
     await super.loadLeaf();
     this.__children = EntityFactoryDependency.findBySourceType(HTMLFragmentExpression, this.dependencies).create(this.source);
 
-    await this.__children.load();
+    await this.__children.evaluate(this.context);
   }
-
-  // get context() {
-  //   const context = {
-  //     children: this.__children
-  //   };
-
-  //   for (const attribute of this.attributes) {
-  //     context[attribute.name] = attribute;
-  //   }
-
-  //   return context;
-  // }
 };
 
 export class PCTemplateEntity extends VisibleHTMLElementEntity implements IInjectable {
@@ -76,6 +64,7 @@ export class PCTemplateEntity extends VisibleHTMLElementEntity implements IInjec
   private _iframe: HTMLIFrameElement;
 
   updateFromLoaded() {
+    super.updateFromLoaded();
     if (this.getAttribute("id")) {
       const deps = this.dependencies.clone();
       deps.register(
@@ -84,17 +73,13 @@ export class PCTemplateEntity extends VisibleHTMLElementEntity implements IInjec
       );
       this.context.dependencies = deps;
     }
+    this._updateStyle();
   }
 
   getInitialMetadata() {
     return Object.assign(super.getInitialMetadata(), {
       [MetadataKeys.CANVAS_ROOT]: true
     });
-  }
-
-  patch(source) {
-    super.patch(source);
-    this._updateStyle();
   }
 
   _updateStyle() {

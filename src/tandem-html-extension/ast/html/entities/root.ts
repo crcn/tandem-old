@@ -6,6 +6,7 @@ import { DocumentFile } from "tandem-front-end/models";
 import { watchProperty } from "tandem-common/observable";
 import { IHTMLNodeEntity } from "./base";
 import { EntityFactoryDependency } from "tandem-common/dependencies";
+import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
 import { IDOMSection, GroupNodeSection } from "tandem-html-extension/dom";
 import { Action, PropertyChangeAction, UpdateAction } from "tandem-common/actions";
 import { Dependencies, DEPENDENCIES_NS, IInjectable } from "tandem-common/dependencies";
@@ -18,13 +19,14 @@ import {
 
 import {
   parseHTML,
+  CSSRootEntity,
   HTMLExpression,
   HTMLTextExpression,
   HTMLCommentExpression,
   HTMLElementExpression,
   HTMLFragmentExpression,
   HTMLAttributeExpression,
-  IHTMLValueNodeExpression
+  IHTMLValueNodeExpression,
 } from "tandem-html-extension/ast";
 
 import {
@@ -48,22 +50,17 @@ export class HTMLDocumentRootEntity extends HTMLNodeEntity<HTMLFragmentExpressio
     return new HTMLDocumentRootEntity(this.source);
   }
 
-  patch(entity: HTMLDocumentRootEntity) {
-    super.patch(entity);
-    this._updateCSS();
+  updateFromLoaded() {
+    console.log(this.currentContext);
+    // after the root has been loaded in, fetch all of the CSS styles.
+    this._globalStyle.innerHTML = CSSStylesheetsDependency.getInstance(this.currentContext.dependencies).toString();
   }
 
   public async load() {
-    await super.load();
     this._globalStyle = document.createElement("style");
     if (!process.env.TESTING) {
       this.section.appendChild(this._globalStyle);
     }
-    this._updateCSS();
-  }
-
-  private _updateCSS() {
-    // after the root has been loaded in, fetch all of the CSS styles.
-    // this._globalStyle.innerHTML = this._styleSheetsDependency.toString();
+    await super.load();
   }
 }

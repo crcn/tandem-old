@@ -74,7 +74,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   public async load() {
     const ast = await this.parse(this._sourceContent = this.content);
     ast.source = this;
-    this._runtime.load(ast);
+    await this._runtime.load(ast);
   }
 
   abstract async parse(content: string): Promise<IExpression>;

@@ -26,7 +26,7 @@ export interface IEntityDocument extends IOwnable {
   parse(source: string): Promise<IExpression>;
 }
 
-export interface IEntity extends ITreeNode<IEntity>, IDisposable, IInjectable, IPatchable, IComparable {
+export interface IEntity extends ITreeNode<IEntity>, IDisposable, IInjectable, IComparable {
   document: IEntityDocument;
   readonly parent: IEntity;
   readonly metadata: EntityMetadata;
@@ -34,15 +34,9 @@ export interface IEntity extends ITreeNode<IEntity>, IDisposable, IInjectable, I
   context: any;
 
   /**
-   * loads the entity from the source
    */
 
-  load();
-
-  /**
-   */
-
-  update();
+  evaluate(context: any);
 
   /**
    */

@@ -15,9 +15,6 @@ import {
   inject,
   BubbleBus,
   EntityAction,
-  watchProperty,
-  OpenFileAction,
-  WatchFileAction,
   EntityFactoryDependency,
 } from "tandem-common";
 
@@ -50,15 +47,20 @@ export class LinkEntity extends HTMLElementEntity {
     );
   }
 
+  updateContext() {
+    const rel  = this.source.getAttribute("rel");
+    if (!this.context[rel]) {
+      this.context[rel] = [];
+    }
+    this.context[rel].push(this.firstChild);
+  }
+
   async load() {
 
     const type = this.source.getAttribute("type");
 
     this._file = await File.open(this.href, this.dependencies, type) as DocumentFile<any>;
     this._file.sync();
-    watchProperty(this._file, "content", () => {
-      this.notify(new EntityAction(EntityAction.ENTITY_UPDATE));
-    });
 
     this._file.owner = this.document;
 
