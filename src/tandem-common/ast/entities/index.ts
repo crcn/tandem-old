@@ -28,8 +28,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   public metadata: EntityMetadata;
 
-
-  @patchable
   protected _source: T;
 
   public context: any;
