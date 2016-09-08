@@ -73,7 +73,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   public async evaluate(context: any) {
     this.context = await this.mapContext(context);
-    this.updateContext();
     if (this._loaded) {
       await this.update();
     } else {
@@ -95,10 +94,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     for (const childExpression of this.mapSourceChildren()) {
       await this.loadExpressionAndAppendChild(childExpression);
     }
-  }
-
-  protected updateContext() {
-
   }
 
   protected async update() {
