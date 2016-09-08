@@ -70,7 +70,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   }
 
   public async evaluate(context: any) {
-    this.context = await this.mapContext(context);
+    this.context = context;
     if (this._loaded) {
       await this.update();
     } else {
@@ -80,7 +80,9 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
     this.updateFromLoaded();
 
-    return this.context;
+    // mapContext may need evaluated children, so execute
+    // it at the end
+    return await this.mapContext(this.context);
   }
 
   protected mapContext(context: any) {

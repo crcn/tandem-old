@@ -12,13 +12,13 @@ import { VisibleHTMLElementEntity, HTMLElementEntity } from "tandem-html-extensi
 import { HTMLElementExpression, HTMLFragmentExpression } from "tandem-html-extension/ast";
 import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "tandem-common/dependencies";
 
-const ARTBOARD_NS = "artboards";
-class ArtboardDependency extends Dependency<PCTemplateEntity> {
+const TEMPLATES_NS = "templates";
+class TemplateDependency extends Dependency<PCTemplateEntity> {
   constructor(id: string, artboard: PCTemplateEntity) {
-    super([ARTBOARD_NS, id].join("/"), artboard);
+    super([TEMPLATES_NS, id].join("/"), artboard);
   }
   static find(id: string, dependencies: Dependencies) {
-    return dependencies.query<ArtboardDependency>([ARTBOARD_NS, id].join("/"));
+    return dependencies.query<TemplateDependency>([TEMPLATES_NS, id].join("/"));
   }
 }
 
@@ -43,7 +43,7 @@ class RegisteredPCTemplateEntity extends HTMLElementEntity {
   mapSourceChildren() {
     return [
       ...this.source.attributes,
-      ...ArtboardDependency.find(this.source.name.toLowerCase(), this.dependencies).value.source.childNodes
+      ...TemplateDependency.find(this.source.name.toLowerCase(), this.dependencies).value.source.childNodes
     ];
   }
 
@@ -69,7 +69,7 @@ export class PCTemplateEntity extends VisibleHTMLElementEntity implements IInjec
       context = Object.assign({}, context);
       const deps = context.dependencies.clone();
       deps.register(
-        new ArtboardDependency(this.getAttribute("id"), this),
+        new TemplateDependency(this.getAttribute("id"), this),
         new EntityFactoryDependency(HTMLElementExpression, RegisteredPCTemplateEntity, this.getAttribute("id"))
       );
       context.dependencies = deps;

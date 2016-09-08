@@ -70,7 +70,7 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
   }
 
   getAttributeEntity(name: string): IHTMLElementAttributeEntity {
-    return this.attributes.find((attribute) => attribute.name === name);
+    return this.attributes.find((attribute) => attribute.source.name === name);
   }
 
   cloneLeaf() {

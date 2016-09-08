@@ -110,7 +110,7 @@ export class HTMLElementExpression extends HTMLContainerExpression {
       }
     }
     if (!found) {
-      this.attributes.push(new HTMLAttributeExpression(name, value, null));
+      this.appendChild(new HTMLAttributeExpression(name, value, null));
     }
   }
 
