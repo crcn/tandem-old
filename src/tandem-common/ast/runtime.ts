@@ -94,7 +94,11 @@ export class EntityRuntime extends Observable {
     }
 
     this._evaluating = true;
-    await this._entity.evaluate(this.createContext());
+    try {
+      await this._entity.evaluate(this.createContext());
+    } catch (e) {
+      console.error(e.stack);
+    }
     this._evaluating = false;
     this.notify(new EntityRuntimeAction(EntityRuntimeAction.RUNTIME_EVALUATED));
   }

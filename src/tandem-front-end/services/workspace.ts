@@ -1,10 +1,11 @@
 
+import { WrapBus } from "mesh";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { Workspace, DocumentFile } from "tandem-front-end/models";
-import { SetToolAction, ZoomAction } from "tandem-front-end/actions";
 import { EditorToolFactoryDependency } from "tandem-front-end/dependencies";
 import { dependency as pointerToolDependency } from "tandem-front-end/models/pointer-tool";
+import { SetToolAction, ZoomAction, DocumentFileAction } from "tandem-front-end/actions";
 
 import {
   File,
@@ -16,6 +17,7 @@ import {
   IDisposable,
   easeOutCubic,
   DSFindAction,
+  watchProperty,
   Dependencies,
   DEPENDENCIES_NS,
   InitializeAction,
@@ -52,10 +54,24 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
     const file = await File.open(filePath, this._dependencies) as DocumentFile<any>;
     file.sync();
-    await file.load();
 
-    this.bus.register(this.app.workspace = new Workspace(<DocumentFile<any>>file));
-    file.observe(this.app.bus);
+    await new Promise((resolve, reject) => {
+
+      // odd code, but we need to listen when the document is *successfuly*
+      // loaded in before initializing the app. It may load with errors which
+      // will break initialization
+      const loadObserver = new WrapBus((action: Action) => {
+        if (action.type !== DocumentFileAction.LOADED) return;
+        this.bus.register(this.app.workspace = new Workspace(<DocumentFile<any>>file));
+        file.observe(this.app.bus);
+        file.unobserve(loadObserver);
+        resolve();
+      });
+
+      file.observe(loadObserver);
+
+      file.load();
+    });
   }
 
   [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {

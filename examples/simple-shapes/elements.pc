@@ -1,2 +1,1 @@
-
-<div>this is fucking amaxin</div>
+<div style="left: 10px;top: 21px;"> this is fucking amaxin </div>

@@ -152,3 +152,11 @@ export class RemoveSelectionAction extends Action {
     super(RemoveSelectionAction.REMOVE_SELECTION);
   }
 }
+
+
+export class DocumentFileAction extends Action {
+  static readonly LOADED = "loaded";
+  constructor(readonly type: string) {
+    super(type);
+  }
+}

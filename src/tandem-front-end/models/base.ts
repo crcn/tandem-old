@@ -2,6 +2,7 @@
 import { WrapBus } from "mesh";
 import { Workspace } from "./workspace";
 import { debounce } from "lodash";
+import { DocumentFileAction } from "tandem-front-end/actions";
 import {
   File,
   IPoint,
@@ -77,6 +78,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     const ast = await this.parse(this._sourceContent = this.content);
     ast.source = this;
     await this._runtime.load(ast);
+    this.notify(new DocumentFileAction(DocumentFileAction.LOADED));
   }
 
   abstract async parse(content: string): Promise<IExpression>;
