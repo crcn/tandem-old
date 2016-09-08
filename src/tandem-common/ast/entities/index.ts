@@ -95,12 +95,14 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   }
 
   protected async update() {
+
     const mappedSourceChildren = this.mapSourceChildren();
     for (let i = 0, n = mappedSourceChildren.length; i < n; i++) {
       const childSource = mappedSourceChildren[i];
       let childEntity   = this.children[i];
       const childEntityFactory = EntityFactoryDependency.findBySource(childSource, this.context.dependencies);
-      if (!childEntity || childEntity.source !== childSource || childEntity.constructor !== childEntityFactory.entityClass) {
+      if (!childEntity || childEntity.source !== childSource || childEntity.constructor !== childEntityFactory.entityClass || childEntity.shouldDispose()) {
+
 
         if (childEntity) {
           this.removeChild(childEntity);
@@ -108,13 +110,14 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
         }
 
         childEntity = childEntityFactory.create(childSource);
+        this.context = await childEntity.evaluate(this.context);
         this.insertChildAt(childEntity, i);
+      } else {
+        this.context = await childEntity.evaluate(this.context);
       }
-
-      this.context = await childEntity.evaluate(this.context);
     }
 
-    while (this.children.length !== mappedSourceChildren.length) {
+    while (this.children.length > mappedSourceChildren.length) {
       const child = this.lastChild;
       this.removeChild(child);
       child.dispose();
@@ -122,14 +125,19 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
     this.updateFromSource();
   }
+
+  protected shouldDispose() {
+    return false;
+  }
+
   public async loadExpressionAndInsertChildAt(childExpression: IExpression, index: number) {
     const factory = EntityFactoryDependency.findBySource(childExpression, this.context.dependencies);
     if (!factory) {
       throw new Error(`Unable to find entity factory expression ${childExpression.constructor.name}`);
     }
     const entity = factory.create(childExpression);
-    this.insertChildAt(entity, index);
     this.context = await entity.evaluate(this.context);
+    this.insertChildAt(entity, index);
     return entity;
   }
 
@@ -173,7 +181,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 export abstract class BaseValueEntity<T extends IExpression & IValued> extends BaseEntity<T> implements IValueEntity {
 
   @bindable()
-  @patchable
   public value: any;
 
   private _shouldUpdate: boolean;

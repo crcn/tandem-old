@@ -97,6 +97,7 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
 
 export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
 
+  @bindable()
   public name: string;
 
   @bindable()
@@ -120,10 +121,6 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
     return Object.assign(super.getInitialMetadata(), {
       [MetadataKeys.SELECTABLE]: false
     });
-  }
-
-  compare(entity: HTMLAttributeEntity) {
-    return super.compare(entity) && entity.name === this.name;
   }
 
   mapSourceChildren() {

@@ -15,6 +15,10 @@ export class HTMLFile extends DocumentFile<HTMLDocumentRootEntity> {
   createEntity(ast: HTMLFragmentExpression) {
     return new HTMLDocumentRootEntity(ast);
   }
+
+  getFormattedSource(ast: HTMLFragmentExpression) {
+    return ast.toString();
+  }
 }
 
 export const htmlFileModelDependency = new FileFactoryDependency(MimeTypes.HTML, HTMLFile);

@@ -16,6 +16,7 @@ export class EntityRuntime extends Observable {
   private _astObserver: IActor;
   private _entityObserver: IActor;
   private _evaluating: boolean;
+  private _shouldEvaluateAgain: boolean;
 
   constructor(public context: any = {}, private _dependencies: Dependencies, readonly createEntity: (ast: IExpression) => IEntity) {
     super();
@@ -79,6 +80,19 @@ export class EntityRuntime extends Observable {
   }
 
   private async evaluate() {
+
+    if (this._evaluating) {
+      return new Promise((resolve, reject) => {
+        const observer = new WrapBus((action: Action) => {
+          if (action.type === EntityRuntimeAction.RUNTIME_EVALUATED) {
+            this.unobserve(observer);
+            resolve();
+          }
+        });
+        this.observe(observer);
+      });
+    }
+
     this._evaluating = true;
     await this._entity.evaluate(this.createContext());
     this._evaluating = false;

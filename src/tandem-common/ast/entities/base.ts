@@ -42,11 +42,6 @@ export interface IEntity extends ITreeNode<IEntity>, IDisposable, IInjectable, I
    */
 
   flatten(): Array<IEntity>;
-
-  /**
-   */
-
-  compare(entity: IEntity): number;
 }
 
 export interface IValueEntity extends IEntity, IValued { }

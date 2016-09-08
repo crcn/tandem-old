@@ -29,29 +29,29 @@ describe(__filename + "#", () => {
   }
 
   describe("basic template", () => {
-    it("can be rendered", async () => {
+    xit("can be rendered", async () => {
       const entity = await loadEntity(`hello world`);
       expect(entity.section.innerHTML).to.equal("hello world");
     });
   });
 
   describe("block nodes", () => {
-    it("can be rendered without a context", async () => {
+    xit("can be rendered without a context", async () => {
       const entity = await loadEntity(`hello \${message}`);
       expect(entity.section.innerHTML).to.equal("hello ");
     });
-    it("can be rendered with a context", async () => {
+    xit("can be rendered with a context", async () => {
       const entity = await loadEntity(`hello \${message}`, { message: "world" });
       expect(entity.section.innerHTML).to.equal("hello world");
     });
   });
 
    describe("block attributes", () => {
-    it("can be rendered without a context", async () => {
+    xit("can be rendered without a context", async () => {
       const entity = await loadEntity("<div style=${style}></div>");
       expect(entity.section.innerHTML).to.equal("<div style=\"\"></div>");
     });
-    it("can be rendered with a context", async () => {
+    xit("can be rendered with a context", async () => {
       const entity = await loadEntity("<div style=${style}></div>", { style: "color:red;"});
       expect(entity.section.innerHTML).to.equal(`<div style="color:red;"></div>`);
     });

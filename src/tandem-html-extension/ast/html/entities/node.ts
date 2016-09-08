@@ -15,6 +15,7 @@ import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency, In
 export abstract class HTMLNodeEntity<T extends HTMLNodeExpression> extends BaseEntity<T> implements IHTMLNodeEntity {
 
   private _section: IDOMSection;
+  private _nodeName: string;
   public document: HTMLFile;
 
   get section(): IDOMSection {
@@ -30,11 +31,11 @@ export abstract class HTMLNodeEntity<T extends HTMLNodeExpression> extends BaseE
   }
 
   get nodeName(): string {
-    return this.source.name;
+    return this._nodeName;
   }
 
-  compare(entity: HTMLNodeEntity<any>) {
-    return super.compare(entity) && entity.nodeName === this.nodeName;
+  shouldDispose() {
+    return super.shouldDispose() || this.nodeName !== this.source.name;
   }
 
   getInitialMetadata() {
@@ -79,6 +80,7 @@ export abstract class HTMLNodeEntity<T extends HTMLNodeExpression> extends BaseE
   protected initialize() {
     super.initialize();
     this._section  = this.createSection();
+    this._nodeName = this.source.name;
   }
 
   protected abstract createSection();

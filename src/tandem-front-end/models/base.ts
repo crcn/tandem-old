@@ -81,8 +81,12 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   protected abstract createEntity(ast: IExpression): T;
 
   async save() {
-    this.content = this._sourceContent = this.entity.source.toString();
+    this.content = this._sourceContent = this.getFormattedSource(this.entity.source);
     return super.save();
+  }
+
+  protected getFormattedSource(ast: IExpression) {
+    return ast.toString();
   }
 
   protected onRuntimeAction(action: Action) {
