@@ -9,7 +9,7 @@ export class SCSSRootEntity extends CSSRootEntity {
 
   public document: SCSSFile;
 
-  loadCSS() {
+  loadCSS(context: any) {
 
     if (this.document.imported) return Promise.resolve(this.document.content);
 
@@ -21,7 +21,7 @@ export class SCSSRootEntity extends CSSRootEntity {
 
       done(await ReadFileAction.execute({
         path: filePath
-      }, MainBusDependency.getInstance(this.dependencies)));
+      }, MainBusDependency.getInstance(context.dependencies)));
     });
 
     return new Promise((resolve, reject) => {

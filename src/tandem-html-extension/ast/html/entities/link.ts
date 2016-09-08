@@ -1,4 +1,5 @@
 // import { File } from "tandem-common/models";
+import { WrapBus } from "mesh";
 import * as path from "path";
 import { Response } from "mesh";
 import { DocumentFile } from "tandem-front-end/models";
@@ -13,8 +14,10 @@ import {
   File,
   IActor,
   inject,
+  Action,
   BubbleBus,
   EntityAction,
+  EntityRuntimeAction,
   EntityFactoryDependency,
 } from "tandem-common";
 
@@ -47,12 +50,13 @@ export class LinkEntity extends HTMLElementEntity {
     );
   }
 
-  updateContext() {
-    const rel  = this.source.getAttribute("rel");
-    if (!this.context[rel]) {
-      this.context[rel] = [];
-    }
-    this.context[rel].push(this.firstChild);
+  mapContext(context) {
+    context.a = 1234;
+    return context;
+  }
+
+  updateFromLoaded() {
+    this.context.dependencies = this._file.entity.context.dependencies;
   }
 
   async load() {

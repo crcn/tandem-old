@@ -4,9 +4,10 @@ import { WrapBus } from "mesh";
 import { debounce } from "lodash";
 import { Observable } from "tandem-common/observable";
 import { IExpression } from "./base";
+import { EntityAction } from "tandem-common/actions";
 import { Dependencies } from "tandem-common/dependencies";
 import { patchTreeNode } from "tandem-common/tree";
-import { Action, PropertyChangeAction } from "tandem-common/actions";
+import { Action, PropertyChangeAction, EntityRuntimeAction } from "tandem-common/actions";
 
 export class EntityRuntime extends Observable {
 
@@ -14,6 +15,7 @@ export class EntityRuntime extends Observable {
   private _entity: IEntity;
   private _astObserver: IActor;
   private _entityObserver: IActor;
+  private _evaluating: boolean;
 
   constructor(public context: any = {}, private _dependencies: Dependencies, readonly createEntity: (ast: IExpression) => IEntity) {
     super();
@@ -51,8 +53,7 @@ export class EntityRuntime extends Observable {
       this.notify(new PropertyChangeAction("entity", this._entity, undefined));
     }
 
-    // since the entity tree is dirty at this point, we'll need to apply an update
-    await this._entity.evaluate(this.createContext());
+    await this.evaluate();
   }
 
   protected createContext() {
@@ -62,15 +63,29 @@ export class EntityRuntime extends Observable {
   }
 
   protected onASTAction(action: Action) {
-    this.requestEntityUpdate();
+    this.deferEvaluate();
     this.notify(action);
   }
 
   protected onEntityAction(action: Action) {
+
+    // entities may contain separate, isolated runtimes. Capture events from them and re-evaluate
+    // to ensure that all other entities are in sync
+    if (action.type === EntityRuntimeAction.RUNTIME_EVALUATED && !this._evaluating) {
+      this.deferEvaluate();
+    }
+
     this.notify(action);
   }
 
-  private requestEntityUpdate = debounce(() => {
-    this._entity.evaluate(this.createContext());
+  private async evaluate() {
+    this._evaluating = true;
+    await this._entity.evaluate(this.createContext());
+    this._evaluating = false;
+    this.notify(new EntityRuntimeAction(EntityRuntimeAction.RUNTIME_EVALUATED));
+  }
+
+  private deferEvaluate = debounce(() => {
+    this.evaluate();
   }, 50);
 }

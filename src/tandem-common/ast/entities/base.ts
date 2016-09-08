@@ -36,7 +36,7 @@ export interface IEntity extends ITreeNode<IEntity>, IDisposable, IInjectable, I
   /**
    */
 
-  evaluate(context: any);
+  evaluate(context: any): any;
 
   /**
    */

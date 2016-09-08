@@ -5,6 +5,7 @@ import { CSSATRuleExpression } from "tandem-html-extension";
 import { parseSCSS } from "tandem-scss-extension/ast";
 import {
   File,
+  BubbleBus,
   BaseEntity,
   EntityAction,
   watchProperty,
@@ -18,18 +19,19 @@ export class SCSSImportEntity extends BaseEntity<CSSATRuleExpression> {
 
   private _file: SCSSFile;
 
-  updateFromSource() {
-    super.updateFromSource();
+  get href() {
+    return path.join(
+      path.dirname((<File>this.source.source).path),
+      this.source.params.replace(/['"]/g, "")
+    );
   }
 
   async load() {
     await super.load();
-    const absolutePath = path.join(
-      path.dirname((<File>this.source.source).path),
-      this.source.params.replace(/['"]/g, "")
-    );
+    const absolutePath = this.href;
 
     const file: SCSSFile = this._file = await File.open(absolutePath, this.dependencies, MimeTypes.SCSS) as SCSSFile;
+    file.observe(new BubbleBus(this));
     file.sync();
 
     file.imported = true;

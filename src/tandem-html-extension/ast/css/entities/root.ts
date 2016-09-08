@@ -19,17 +19,14 @@ export class CSSRootEntity extends BaseEntity<CSSRootExpression> {
   public content: string;
   public document: DocumentFile<any>;
 
-  async evaluate(context: any) {
-    await super.evaluate(context);
-    await this.registerCSS();
+  async mapContext(context) {
+    this.content = await this.loadCSS(context);
+    context.dependencies = context.dependencies.clone();
+    CSSStylesheetsDependency.getInstance(context.dependencies).addStyleSheet(this);
+    return context;
   }
 
-  async registerCSS() {
-    this.content = await this.loadCSS();
-    CSSStylesheetsDependency.getInstance(this.dependencies).addStyleSheet(this);
-  }
-
-  async loadCSS() {
+  async loadCSS(context) {
     return this.document.content;
   }
 
