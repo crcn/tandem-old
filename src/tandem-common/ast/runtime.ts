@@ -29,7 +29,7 @@ export class EntityRuntime extends Observable {
     if (this._ast) {
 
       // remove the expression observer for now so that the patching
-      // does not trigger a save() below
+      // does not trigger unecessary events below
       this._ast.unobserve(this._astObserver);
 
       // apply the changes to the current AST -- this will notify any entities
