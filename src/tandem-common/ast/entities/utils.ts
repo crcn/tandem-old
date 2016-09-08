@@ -10,13 +10,6 @@ export async function appendSourceChildren(entity: IEntity, ...childSources: Arr
   return insertSourceChildren(entity, entity.source.children.length, ...childSources);
 }
 
-export async function replaceEntitySource(entity: IEntity, ...sources) {
-  const parent = <IEntity>entity.parent;
-  const index: number = parent.source.children.indexOf(entity.source);
-  parent.source.removeChild(entity.source);
-  return insertSourceChildren(parent, index, ...sources);
-}
-
 export async function insertSourceChildren(entity: IEntity, index: number = -1, ...childSources: Array<any>) {
 
   for (const child of childSources.reverse()) {

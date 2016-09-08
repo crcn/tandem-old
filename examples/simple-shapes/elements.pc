@@ -1,7 +1,1 @@
-<template id="test">
-  <div>
-    Hello World
-  </div>
-</template>
-
-<test  />
+<template id="test"><div style="position: absolute;background: #F60; width: 100px; height: 100px;top: 27px;left: 58px;"></div></template><test></test>

@@ -122,14 +122,18 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     this.updateFromLoaded();
   }
 
+  protected get currentContext() {
+    return this.lastChild ? this.lastChild.context : this._context;
+  }
+
   public async loadExpressionAndInsertChildAt(childExpression: IExpression, index: number) {
-    const factory = EntityFactoryDependency.findBySource(childExpression, this.context.dependencies);
+    const factory = EntityFactoryDependency.findBySource(childExpression, this.currentContext.dependencies);
     if (!factory) {
       throw new Error(`Unable to find entity factory expression ${childExpression.constructor.name}`);
     }
     const entity = factory.create(childExpression);
+    entity.context = this.currentContext;
     this.insertAt(entity, index);
-    entity.context = this.context;
     await entity.load();
     return entity;
   }

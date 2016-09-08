@@ -9,7 +9,6 @@ import { SelectAction } from "tandem-front-end/actions";
 import * as AutosizeInput from "react-input-autosize";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { LayerLabelComponentFactoryDependency } from "tandem-front-end/dependencies";
-import { replaceEntitySource } from "tandem-common/ast";
 import { HTMLElementEntity, VisibleHTMLElementEntity } from "tandem-html-extension/ast";
 import { HTMLFragmentExpression, HTMLElementExpression } from "tandem-html-extension/ast";
 
@@ -18,7 +17,6 @@ const VOID_ELEMENTS = [];
 import {
   SetToolAction
 } from "tandem-front-end/actions";
-
 
 class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEntity, app: FrontEndApplication, connectDragSource: Function }, any> {
 
@@ -143,7 +141,9 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
     entity.source.childNodes.forEach((child) => ast.childNodes[0].appendChild(child));
 
     // replace - tag name might have changed -- this cannot be patched
-    replaceEntitySource(entity, ast.childNodes[0]);
+    const parentSource = entity.source.parent;
+    parentSource.insertAt(ast, parentSource.children.indexOf(entity.source));
+    parentSource.removeChild(entity.source);
 
     this.cancelEditing();
   }
