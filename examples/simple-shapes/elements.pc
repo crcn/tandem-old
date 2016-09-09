@@ -1,1 +1,1 @@
-<div style="left: 10px;top: 21px;"> this is fucking amaxin </div>
+<link rel="stylesheet" type="text/css" href="./style.css"></link><div class="item iphone-6s" style="left: 10px;top: 21px;">this is fucking amazing</div>

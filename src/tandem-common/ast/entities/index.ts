@@ -90,12 +90,14 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   }
 
   protected async load() {
-    for (const childExpression of this.mapSourceChildren()) {
-      await this.loadExpressionAndAppendChild(childExpression);
-    }
+    await this.evaluateChildren();
   }
 
   protected async update() {
+    await this.evaluateChildren();
+  }
+
+  protected async evaluateChildren() {
 
     const mappedSourceChildren = this.mapSourceChildren();
     for (let i = 0, n = mappedSourceChildren.length; i < n; i++) {
@@ -103,7 +105,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
       let childEntity   = this.children[i];
       const childEntityFactory = EntityFactoryDependency.findBySource(childSource, this.context.dependencies);
       if (!childEntity || childEntity.source !== childSource || childEntity.constructor !== childEntityFactory.entityClass || childEntity.shouldDispose()) {
-
 
         if (childEntity) {
           this.removeChild(childEntity);
