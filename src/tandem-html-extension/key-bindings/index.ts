@@ -29,7 +29,7 @@ abstract class BaseInsertElementTool extends InsertTool {
   createSource() {
 
     // width & height need to be 0'd since some elements have a size by default such as iframes
-    return parseHTML(`<${this.options.nodeName} ${this.options.attributes} style="${this.options.style}position:absolute;width:0px;height:0px;" />`).children[0];
+    return parseHTML(`<${this.options.nodeName} ${this.options.attributes ? this.options.attribute + " " : ""}style="${this.options.style}position:absolute;width:0px;height:0px;" />`).children[0];
   }
 }
 

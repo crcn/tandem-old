@@ -81,8 +81,6 @@ export class HTMLASTStringFormatter extends Observable {
           buffer.push(`=`, `${quoteChar}`, target.value, `${quoteChar}`);
         }
 
-        buffer.push("");
-
         const chunk = buffer.join("");
 
         const index = attribs.indexOf(action.target);
@@ -139,6 +137,7 @@ export class HTMLASTStringFormatter extends Observable {
 
             buffer.push("\n", parentIndentation);
             buffer.push(`</${element.name}>`);
+
           } else {
             buffer.push(spliceChunk(oldParentChunk, targetChunk, {
               start: offset,
