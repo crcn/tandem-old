@@ -1,6 +1,6 @@
-import { patchTreeNode } from "./patch";
 import { expect } from "chai";
 import { TreeNode } from "./index";
+import { patchable, patchTreeNode } from "tandem-common";
 import { IComparable, IPatchable } from "tandem-common/object";
 
 describe(__filename + "#", () => {
@@ -19,12 +19,14 @@ describe(__filename + "#", () => {
   });
 });
 
-abstract class HTMLNode extends TreeNode<HTMLNode> implements IComparable, IPatchable {
+abstract class HTMLNode extends TreeNode<HTMLNode> implements IComparable {
   readonly nodeName: string;
-  constructor(public target: Node) {
+  @patchable
+  public target: Node;
+  constructor(target: Node) {
     super();
+    this.target = target;
     this.nodeName = target.nodeName.toLowerCase();
-    this.updateFromTarget();
     Array.prototype.forEach.call(target.childNodes, (childNode) => {
       this.appendChild(convertDOMToTreeNode(childNode));
     });
@@ -32,34 +34,27 @@ abstract class HTMLNode extends TreeNode<HTMLNode> implements IComparable, IPatc
   compare(node: HTMLNode) {
     return Number(this.constructor === node.constructor && this.nodeName === node.nodeName);
   }
-  patch(node: HTMLNode) {
-    this.target = node.target;
-    this.updateFromTarget();
-  }
-
-  abstract updateFromTarget();
 }
 
 class HTMLTextNode extends HTMLNode {
-  public nodeValue: string;
   toString() {
     return this.nodeValue;
   }
-  updateFromTarget() {
-    this.nodeValue = this.target.nodeValue;
+  get nodeValue() {
+    return this.target.nodeValue;
   }
 }
 
 class HTMLElement extends HTMLNode {
-  public attributes: any;
-  updateFromTarget() {
-    this.attributes = {};
+  get attributes() {
+    const attributes = {};
     for (const key in this.target.attributes) {
       const attr: Attr = this.target.attributes[key];
       if (attr.value) {
-        this.attributes[key] = attr.value;
+        attributes[key] = attr.value;
       }
     }
+    return attributes;
   }
   toString() {
     const buffer = ["<", this.nodeName];

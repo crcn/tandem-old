@@ -20,13 +20,13 @@ export function diffArray<T>(a: Array<T>, b: Array<T>, compare: (a: T, b: T) => 
   const bPool = b.concat();
   const add   = [];
 
-  for (let i = aPool.length; i--; ) {
+  for (let i = 0, n = aPool.length; i < n; i++) {
     const av = aPool[i];
     const candidates = [];
     let bestCandidate;
     let bestCandidateScore;
 
-    for (let j = bPool.length; j--; ) {
+    for (let j = 0, n2 = bPool.length; j < n2; j++) {
       const bv = bPool[j];
       let score;
       if (score = Number(compare(av, bv))) {
@@ -38,7 +38,8 @@ export function diffArray<T>(a: Array<T>, b: Array<T>, compare: (a: T, b: T) => 
     }
 
     if (bestCandidate) {
-      aPool.splice(i, 1);
+      aPool.splice(i--, 1);
+      n--;
       bPool.splice(bPool.indexOf(bestCandidate), 1);
       update.push([av, bestCandidate, a.indexOf(av), b.indexOf(bestCandidate)]);
     }

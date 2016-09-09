@@ -23,7 +23,7 @@ export class CSSRootExpression extends CSSExpression {
   }
 
   toString() {
-    return this.children.join("");
+    return this.children.join("\n\n");
   }
 }
 
@@ -81,12 +81,10 @@ export class CSSRuleExpression extends CSSExpression {
 
   toString() {
     return [
-      this.getWhitespaceBeforeStart(),
       this.selector,
       " {",
       this.children.join(""),
       "}",
-      this.parent.lastChild === this ? this.getWhitespaceAfterEnd() : ""
     ].join("");
   }
 }
@@ -109,9 +107,7 @@ export class CSSDeclarationExpression extends CSSExpression {
 
   toString() {
     return [
-      this.getWhitespaceBeforeStart(),
       this.name + ": " + this.value + ";",
-      this.parent.lastChild === this ? this.getWhitespaceAfterEnd() : ""
     ].join("");
   }
 }
@@ -135,20 +131,17 @@ export class CSSATRuleExpression extends CSSExpression {
   toString() {
 
     const buffer = [
-      this.getWhitespaceBeforeStart(),
       "@" + this.name + " ",
       this.params
     ];
 
     if (this.children.length) {
       buffer.push(" {",
-      this.children.join(""),
+      this.children.join(" "),
       "}");
     } else {
       buffer.push(";");
     }
-
-    buffer.push(this.parent.lastChild === this ? this.getWhitespaceAfterEnd() : "");
 
     return buffer.join("");
   }

@@ -44,7 +44,7 @@ describe(__filename + "#", () => {
 
   async function updateDocumentSource(file: HTMLFile, source: string) {
     file.content = source;
-    await file.load();
+    await timeout(10);
 
     return document;
   }

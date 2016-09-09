@@ -1,1 +1,8 @@
-<link rel="stylesheet" type="text/css" href="./style.css"></link><div class="item iphone-6s" style="left: 10px;top: 21px;">this is fucking amazing</div>
+<div class="item iphone-6s" style="left: 80px;top: 23px;width: 91px;height: 35px;">blargffter</div>
+
+<div class="item iphone-6s" style="left: 80px;top: 23px;width: 78px;height: 34px;">
+  blob!!!
+</div>
+<div class="item iphone-6s" style="left: 80px;top: 23px;width: 94px;height: 34px;">
+  blob!!!
+</div>

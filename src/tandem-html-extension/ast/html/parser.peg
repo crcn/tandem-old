@@ -60,7 +60,7 @@ Element
   / ElementWithChildNodes
 
 ElementWithoutChildNodes
-  = startTag:ElementStart attributes:ElementAttributes '/>' {
+  = startTag:ElementStart attributes:ElementAttributes _ '/>' {
     return new HTMLElementExpression(startTag, attributes, [], position());
   }
 
@@ -76,16 +76,16 @@ ElementStart
   = '<' name:Name { return name; }
 
 ElementAttributes
-  = _ attributes:ElementAttribute* _ {
+  = attributes:ElementAttribute* {
     return attributes;
   }
 
 ElementAttribute
-  = _ key:Name '=' value:AttributeValue _ {
+  = _ key:Name '=' value:AttributeValue {
     return new HTMLAttributeExpression(key, value, position());
   }
   / _ key:Name _ {
-    return new HTMLAttributeExpression(key, "");
+    return new HTMLAttributeExpression(key, "", position());
   }
 
 AttributeValue

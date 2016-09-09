@@ -31,28 +31,18 @@ export class EntityRuntime extends Observable {
   async load(ast: IExpression) {
 
     if (this._ast) {
-
-      // remove the expression observer for now so that the patching
-      // does not trigger unecessary events below
       this._ast.unobserve(this._astObserver);
-
-      // apply the changes to the current AST -- this will notify any entities
-      // that also need to change
-      patchTreeNode(this._ast, ast);
-
-      this._ast.observe(this._astObserver);
-
-    } else {
-      this._ast = ast;
-
-      this._ast.observe(this._astObserver);
-      this._entity = this.createEntity(this._ast);
-      this._entity.observe(this._entityObserver);
-
-      // listen for any changes so that the rest of the application may reflect
-      // changes onthe entity tree
-      this.notify(new PropertyChangeAction("entity", this._entity, undefined));
     }
+
+    this._ast = ast;
+
+    this._ast.observe(this._astObserver);
+    this._entity = this.createEntity(this._ast);
+    this._entity.observe(this._entityObserver);
+
+    // listen for any changes so that the rest of the application may reflect
+    // changes onthe entity tree
+    this.notify(new PropertyChangeAction("entity", this._entity, undefined));
 
     await this.evaluate();
   }
@@ -105,5 +95,5 @@ export class EntityRuntime extends Observable {
 
   private deferEvaluate = debounce(() => {
     this.evaluate();
-  }, 50);
+  }, process.env.TESTING ? 1 : 50);
 }

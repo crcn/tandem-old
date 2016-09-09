@@ -22,9 +22,11 @@ import {
   EntityRuntime,
   Dependencies,
   patchTreeNode,
+  watchProperty,
   BaseExpression,
   IEntityDocument,
   DEPENDENCIES_NS,
+  IASTStringFormatter,
   PropertyChangeAction,
   DependenciesDependency,
   EntityFactoryDependency,
@@ -47,7 +49,7 @@ export interface IEditor extends IActor {
   readonly workspace: Workspace;
 }
 
-const REQUEST_SAVE_TIMEOUT = 200;
+const REQUEST_SAVE_TIMEOUT = process.env.TESTING ? 1 : 200;
 
 // TODO - need to separate this from runtime
 export abstract class DocumentFile<T extends IEntity & IObservable> extends File implements IEntityDocument {
@@ -61,15 +63,19 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   private _sourceContent: string;
   private _runtimeObserver: IActor;
   private _runtime: EntityRuntime;
+  private _formatter: IASTStringFormatter;
 
   didInject() {
     this._runtime = new EntityRuntime({ document: this }, this._dependencies.clone(), this.createEntity.bind(this));
     this._runtime.observe(this._runtimeObserver = new WrapBus(this.onRuntimeAction.bind(this)));
     bindProperty(this._runtime, "entity", this);
+
+    this._formatter = this.createASTFormatter();
+    watchProperty(this._formatter, "content", this.onFormattedContent.bind(this));
   }
 
   onContentChange(newContent: string) {
-    if (this._sourceContent !== newContent) {
+    if (this._formatter.content !== newContent) {
       this.load();
     }
   }
@@ -77,27 +83,34 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   public async load() {
     const ast = await this.parse(this._sourceContent = this.content);
     ast.source = this;
-    await this._runtime.load(ast);
+
+    this._formatter.expression = undefined;
+
+    if (this._ast) {
+      patchTreeNode(this._ast, ast);
+    } else {
+      await this._runtime.load(this._ast = ast);
+    }
+
+    this._formatter.expression = this._ast;
+
     this.notify(new DocumentFileAction(DocumentFileAction.LOADED));
   }
 
   abstract async parse(content: string): Promise<IExpression>;
   protected abstract createEntity(ast: IExpression): T;
-
-  async save() {
-    this.content = this._sourceContent = this.getFormattedSource(this.entity.source);
-    return super.save();
-  }
-
-  protected getFormattedSource(ast: IExpression) {
-    return ast.toString();
+  abstract protected createASTFormatter(): IASTStringFormatter {
+    // OVERRIDE ME
+    return null;
   }
 
   protected onRuntimeAction(action: Action) {
-    if (action.target instanceof BaseExpression) {
-      this.requestSave();
-    }
     this.notify(action);
+  }
+
+  protected onFormattedContent(content: string) {
+    this.content = content;
+    this.requestSave();
   }
 
   private requestSave = debounce(() => {

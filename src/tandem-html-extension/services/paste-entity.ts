@@ -6,10 +6,10 @@ import { MimeTypes } from "tandem-html-extension/constants";
 import { filterAction } from "tandem-common/decorators";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { appendSourceChildren } from "tandem-common/ast/entities";
+import { PasteHTMLEntityAction } from "tandem-html-extension/actions";
 import { BaseApplicationService } from "tandem-common/services";
 import { VisibleEntityCollection } from "tandem-front-end/collections";
 import { PasteAction, SelectAction } from "tandem-front-end/actions";
-import { PasteHTMLEntityAction } from "tandem-html-extension/actions";
 import {
   IInjectable,
   APPLICATION_SINGLETON_NS,

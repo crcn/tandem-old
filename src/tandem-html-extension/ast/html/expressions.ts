@@ -25,11 +25,14 @@ export abstract class HTMLExpression extends BaseExpression<HTMLExpression> impl
 }
 
 export abstract class HTMLNodeExpression extends HTMLExpression {
-  @patchable
   readonly name: string;
   constructor(name: string, position: IRange) {
     super(position);
     this.name = name;
+  }
+
+  compare(expression: HTMLNodeExpression): number {
+    return Number(super.compare(expression) && expression.name === this.name);
   }
 }
 
@@ -135,8 +138,6 @@ export class HTMLElementExpression extends HTMLContainerExpression {
 
     const buffer = [];
 
-    buffer.push(this.getWhitespaceBeforeStart());
-
     buffer.push("<", this.name);
 
     for (const attribute of this.attributes) {
@@ -151,10 +152,6 @@ export class HTMLElementExpression extends HTMLContainerExpression {
       buffer.push("</", this.name, ">");
     } else {
       buffer.push(" />");
-    }
-
-    if ((<HTMLContainerExpression>this.parent).lastChildNode === this) {
-      buffer.push(this.getWhitespaceAfterEnd());
     }
 
     // necessary to add a newline character at the end of a source in case new
@@ -181,6 +178,10 @@ export class HTMLAttributeExpression extends HTMLExpression implements IExpressi
     super(position);
     this.name = name;
     this.value = value;
+  }
+
+  compare(expression: HTMLAttributeExpression) {
+    return super.compare(expression) && this.name === expression.name;
   }
 
   clone(): HTMLAttributeExpression {
@@ -220,11 +221,7 @@ export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValue
   }
 
   toString() {
-    return [
-      this.getWhitespaceBeforeStart(),
-      this.value.trim(),
-      this.getWhitespaceAfterEnd()
-    ].join("");
+    return this.value.trim();
   }
 }
 
@@ -248,7 +245,6 @@ export class HTMLCommentExpression extends HTMLNodeExpression implements IHTMLVa
 
   toString() {
     return [
-      this.getWhitespaceBeforeStart(),
       "<!--", this.value, "-->"
     ].join("");
   }
