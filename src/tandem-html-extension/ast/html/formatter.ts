@@ -13,6 +13,10 @@ import {
 } from "mesh";
 
 import {
+  repeat
+} from "lodash";
+
+import {
   HTMLExpression,
   HTMLTextExpression,
   HTMLNodeExpression,
@@ -28,9 +32,13 @@ export class HTMLASTStringFormatter extends Observable {
   private _expression: HTMLExpression;
   private _expressionObserver: IActor;
   private _content: string;
+  private _defaultIndentation: string = "  ";
 
-  constructor(expression?: HTMLExpression) {
+  constructor(expression?: HTMLExpression, options?: { defaultIndentation: string }, ) {
     super();
+    if (options) {
+      this._defaultIndentation = options.defaultIndentation;
+    }
     this._expressionObserver = new WrapBus(this.onExpressionAction.bind(this));
     this.expression = expression;
   }
@@ -49,9 +57,6 @@ export class HTMLASTStringFormatter extends Observable {
     }
 
     if (value) {
-      if (isExpressionDirty(value, value.source.content)) {
-        throw new Error(`The expression loaded differs from its source content.`);
-      }
       this._content = value.source.content;
       value.observe(this._expressionObserver);
     }
@@ -93,13 +98,15 @@ export class HTMLASTStringFormatter extends Observable {
         const oldParentChunk = getChunk(this._content, parent.position);
 
         // fetch __text in case the target has been detached from the source
-        const targetChunk = target["__text"] || getChunk(target.source.content, target.position);
+        let targetChunk = target["__text"] || getChunk(target.source.content, target.position);
         target["__text"] = undefined;
 
         const targetIndex = parent.childNodes.indexOf(target);
 
         let offset    = 0;
         const buffer = [];
+
+        // const indentation = this.getSiblingIndentation(target);
 
         if (targetIndex === 0) {
 
@@ -109,13 +116,30 @@ export class HTMLASTStringFormatter extends Observable {
             offset += oldParentChunk.indexOf(">") + 1;
           }
 
+          // parent is an element, and the only child that exists
           if (parent instanceof HTMLElementExpression && parent.childNodes.length === 1) {
             const element = <HTMLElementExpression>parent;
-            buffer.push(oldParentChunk.replace(/(\s+\/>|>.*?<\/\w+>)$/, ">"));
+            buffer.push(oldParentChunk.replace(/(\s+\/>|>[\w\W]*?<\/\w+>)$/, ">"));
+
+            const parentIndentation = this.getIndentationBeforePosition(element.position);
+
+            const indentation = "\n" +
+
+              // copy indentation
+              parentIndentation +
+
+              // add doc indentation
+              this.calculateIndentation();
+
+            offset += indentation.length;
+
+            buffer.push(indentation);
+
             buffer.push(targetChunk);
+
+            buffer.push("\n", parentIndentation);
             buffer.push(`</${element.name}>`);
           } else {
-
             buffer.push(spliceChunk(oldParentChunk, targetChunk, {
               start: offset,
               end: offset
@@ -123,28 +147,31 @@ export class HTMLASTStringFormatter extends Observable {
           }
 
         } else {
-          offset = parent.childNodes[targetIndex - 1].position.end - parent.position.start;
-          buffer.push(spliceChunk(oldParentChunk, targetChunk, {
+          const previousSibling = parent.childNodes[targetIndex - 1];
+
+          offset = previousSibling.position.end - parent.position.start;
+          const indentation = this.getWhitespaceBeforePosition(previousSibling.position);
+
+          buffer.push(spliceChunk(oldParentChunk, indentation + targetChunk, {
             start: offset,
             end: offset
           }));
+
+          offset += indentation.length;
         }
 
         target.position.start = parent.position.start + offset;
         target.position.end   = target.position.start + targetChunk.length;
 
-        shiftPositionsAfterExpression(target, targetChunk.length);
-
         this.replaceChunk(parent, buffer.join(""), false, false);
+        shiftPositionsAfterExpression(target, targetChunk.length);
       }
     } else if (action.type === TreeNodeAction.NODE_REMOVING) {
       const chunk = getChunk(this._content, action.target.position);
       this.replaceChunk(action.target, "", false);
 
-      // detached from the AST - doesn't have a source anymore
-      // This doesn't belong here.
+      // detached from the AST  -- can't access source anymore
       action.target.__text = chunk;
-
 
       // TODO - respect close tag style
     } else if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
@@ -191,6 +218,41 @@ export class HTMLASTStringFormatter extends Observable {
     if (shift) {
       shiftPositionsAfterExpression(target, delta);
     }
+  }
+
+  private calculateIndentation(): string {
+    const lines = this._content.split(/\n+/g);
+
+    // go with the first line with whitespace before it -- use
+    // that as indentation.
+    for (let i = 0, n = lines.length; i < n; i++) {
+      const cline  = lines[i];
+      const clinews = cline.match(/[\t\s]*/)[0];
+      if (clinews.length) return clinews;
+    }
+
+    return this._defaultIndentation;
+  }
+
+  private getSiblingIndentation(target: HTMLNodeExpression): string {
+
+    const parent = <HTMLContainerExpression>target.parent;
+    if (parent) {
+      for (const child of parent.childNodes) {
+        if (child === target) continue;
+        const ws = this.getWhitespaceBeforePosition(child.position);
+        if (ws !== "") return ws;
+      }
+    }
+    return this._defaultIndentation;
+  }
+
+  private getWhitespaceBeforePosition(position: IRange) {
+    const match = this._content.substr(0, position.start).match(/[ \r\n\t]+$/);
+    return match ? match[0] : "";
+  }
+  private getIndentationBeforePosition(position: IRange) {
+    return this.getWhitespaceBeforePosition(position).match(/ *$/)[0];
   }
 
   private getAttributeQuoteCharacter(target: HTMLAttributeExpression) {
@@ -244,21 +306,6 @@ function shiftPositionsAfterExpression(expression: HTMLExpression, delta: number
 
 export function spliceChunk(source: string, chunk: string, { start, end }: IRange) {
   return source.substr(0, start) + chunk + source.substr(end);
-}
-
-export function isExpressionDirty(expression: HTMLExpression, content: string) {
-  let  destContent  = "";
-  const srcContent  = <string>content;
-
-  for (const child of flatten(expression)) {
-    const { start, end } = child.position;
-    if (start === -1 || end === -1) {
-      return true;
-    }
-    destContent = destContent.substr(0, start) + srcContent.substr(start, end - start) + destContent.substr(end);
-  }
-
-  return destContent !== srcContent;
 }
 
 function flatten<T extends TreeNode<any>>(node: T): Array<T> {

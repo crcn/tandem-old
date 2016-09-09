@@ -1,5 +1,5 @@
 import { TreeNodeAction, patchTreeNode } from "tandem-common";
-import { HTMLASTStringFormatter, isExpressionDirty } from "./formatter";
+import { HTMLASTStringFormatter } from "./formatter";
 import {
   parseHTML,
   HTMLTextExpression,
@@ -12,18 +12,6 @@ import {
 import { expect } from "chai";
 
 describe(__filename + "#", () => {
-
-  function createFormatter(source: string) {
-    return new HTMLASTStringFormatter(parseHTML(source));
-  }
-
-  it("throws an error if the expression is dirty", () => {
-    const ast = parseHTML(`<div />`);
-    (<HTMLElementExpression>ast.childNodes[0]).setAttribute("a", "b");
-    expect(function() {
-      new HTMLASTStringFormatter(ast);
-    }).to.throw("The expression loaded differs from its source content.");
-  });
 
   [
 
@@ -44,21 +32,25 @@ describe(__filename + "#", () => {
     [`<div a />`, `<div a="c" />`, `<div a="c" />`],
     [`<div a='b' c />`, `<div a="b" c="d" />`, `<div a='b' c='d' />`],
 
+
     // children
-    [`<div />`, `<div>a</div>`, `<div>a</div>`],
-    [`<div />`, `<div><div /></div>`, `<div><div /></div>`],
-    [`<div></div>`, `<div>a</div>`, `<div>a</div>`],
+    [`<div />`, `<div>a</div>`, `<div>\n a\n</div>`],
+    [`<div />`, `<div><div /></div>`, `<div>\n <div />\n</div>`],
+    [`<div></div>`, `<div>a</div>`, `<div>\n a\n</div>`],
     [`<div><span /></div>`, `<div><span />a</div>`, `<div><span />a</div>`],
     [`<div><span /></div>`, `<div>a<span /></div>`, `<div>a<span /></div>`],
     [`<div><h1>3</h1><h2>2</h2><h3>1</h3></div>`, `<div><h3>1</h3><h2>2</h2><h1>3</h1></div>`, `<div><h3>1</h3><h2>2</h2><h1>3</h1></div>`],
-    [`<div id="b"><h1>3<br></h1></div>`, `<div><h3>1</h3><br></div>`, `<div><h3>1</h3><br></div>`],
+    [`<div id="b"><h1>3<br></h1></div>`, `<div><h3>1</h3><br></div>`, `<div>\n <h3>1</h3>\n <br>\n</div>`],
     [`<div  style="left:10px" />`, `<div style="left:20px" />`, `<div  style="left:20px" />`],
+
+    // adding more ws
+    [`<div>\n <div /></div>`, `<div><div>a</div></div>`, `<div>\n <div>\n  a\n </div></div>`],
+    [`<div>\n <div>\n </div></div>`, `<div><div>a</div></div>`, `<div>\n <div>\n  a\n </div></div>`],
   ].forEach(([input, change, output]) => {
-    it(`can format ${input} to ${output}`, () => {
-      const formatter = new HTMLASTStringFormatter(parseHTML(input));
+    it(`can format ${input.replace(/([\r\n])/g," ")} to ${input.replace(/([\r\n])/g," ")}`, () => {
+      const formatter = new HTMLASTStringFormatter(parseHTML(input), { defaultIndentation: " " });
       patchTreeNode(formatter.expression, parseHTML(change));
       expect(formatter.content).to.equal(output);
-      // expect(isExpressionDirty(formatter.expression, formatter.content)).to.equal(false);
     });
   });
 });

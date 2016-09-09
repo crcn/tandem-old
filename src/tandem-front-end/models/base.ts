@@ -99,10 +99,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
 
   abstract async parse(content: string): Promise<IExpression>;
   protected abstract createEntity(ast: IExpression): T;
-  abstract protected createASTFormatter(): IASTStringFormatter {
-    // OVERRIDE ME
-    return null;
-  }
+  protected abstract createASTFormatter(): IASTStringFormatter;
 
   protected onRuntimeAction(action: Action) {
     this.notify(action);
