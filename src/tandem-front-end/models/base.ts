@@ -26,7 +26,6 @@ import {
   BaseExpression,
   IEntityDocument,
   DEPENDENCIES_NS,
-  IASTStringFormatter,
   PropertyChangeAction,
   DependenciesDependency,
   EntityFactoryDependency,
@@ -60,10 +59,8 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   public entity: T;
 
   private _ast: IExpression;
-  private _sourceContent: string;
-  private _runtimeObserver: IActor;
   private _runtime: EntityRuntime;
-  private _formatter: IASTStringFormatter;
+  private _runtimeObserver: IActor;
 
   didInject() {
 
@@ -71,15 +68,11 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
 
     this._runtime.observe(this._runtimeObserver = new WrapBus(this.onRuntimeAction.bind(this)));
     bindProperty(this._runtime, "entity", this);
-
-    this._formatter = this.createASTFormatter();
-    watchProperty(this._formatter, "content", this.onFormattedContent.bind(this));
   }
 
-  onContentChange(newContent: string) {
-    if (this._formatter.content !== newContent) {
-      this.load();
-    }
+  onUpdated() {
+    super.onUpdated();
+    this.load();
   }
 
   protected createContext() {
@@ -90,33 +83,27 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   }
 
   public async load() {
-    const ast = await this.parse(this._sourceContent = this.content);
+    const ast = await this.parse(this.content);
     ast.source = this;
 
-    this._formatter.expression = undefined;
-
     if (this._ast) {
+      if (ast.formatter) {
+        ast.formatter.dispose();
+      }
       patchTreeNode(this._ast, ast);
     } else {
+      ast.observe(new WrapBus(this.requestSave));
       await this._runtime.load(this._ast = ast);
     }
-
-    this._formatter.expression = this._ast;
 
     this.notify(new DocumentFileAction(DocumentFileAction.LOADED));
   }
 
   abstract async parse(content: string): Promise<IExpression>;
   protected abstract createEntity(ast: IExpression): T;
-  protected abstract createASTFormatter(): IASTStringFormatter;
 
   protected onRuntimeAction(action: Action) {
     this.notify(action);
-  }
-
-  protected onFormattedContent(content: string) {
-    this.content = content;
-    this.requestSave();
   }
 
   private requestSave = debounce(() => {

@@ -8,8 +8,9 @@ import { FileFactoryDependency, IInjectable, Injector } from "tandem-common/depe
 
 class CSSASTStringFormatter extends Observable implements IASTStringFormatter {
   public expression: IExpression;
-  get content(): string {
-    return this.expression.toString();
+  public options: any;
+  dispose() {
+
   }
 }
 
@@ -19,9 +20,6 @@ export class CSSFile extends DocumentFile<CSSRootEntity> implements IInjectable 
   readonly type: string = MimeTypes.CSS;
   protected createEntity(ast: CSSRootExpression) {
     return new CSSRootEntity(ast);
-  }
-  createASTFormatter() {
-    return new CSSASTStringFormatter();
   }
   async parse(content: string) {
     return parseCSS(content);

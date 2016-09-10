@@ -5,6 +5,7 @@ import {
   TreeNode,
   Observable,
   TreeNodeAction,
+  IASTStringFormatter,
   PropertyChangeAction,
 } from "tandem-common";
 
@@ -27,45 +28,41 @@ import {
   HTMLAttributeExpression,
 } from "./expressions";
 
-export class HTMLASTStringFormatter extends Observable {
+export class HTMLASTStringFormatter extends Observable implements IASTStringFormatter {
 
-  private _expression: HTMLExpression;
   private _expressionObserver: IActor;
-  private _content: string;
-  private _defaultIndentation: string = "  ";
+  private _options: any;
 
-  constructor(expression?: HTMLExpression, options?: { defaultIndentation: string }, ) {
+  constructor(readonly expression: HTMLExpression, options?: { defaultIndentation: string }, ) {
     super();
-    if (options) {
-      this._defaultIndentation = options.defaultIndentation;
-    }
-    this._expressionObserver = new WrapBus(this.onExpressionAction.bind(this));
-    this.expression = expression;
+    this.expression.observe(this._expressionObserver = new WrapBus(this.onExpressionAction.bind(this)));
+    this.options = options;
   }
 
-  get expression(): HTMLExpression {
-    return this._expression;
+  get options(): any {
+    return this._options;
   }
 
-  get content(): string {
-    return this._content;
+  set options(options: any) {
+    this._options = Object.assign({
+      defaultIndentation: "  "
+    }, options);
   }
 
-  set expression(value: HTMLExpression) {
-    if (this._expression) {
-      this._expression.unobserve(this._expressionObserver);
-    }
+  public dispose() {
+    this.expression.unobserve(this._expressionObserver);
+  }
 
-    if (value) {
-      this._content = value.source.content;
-      value.observe(this._expressionObserver);
-    }
+  private get content(): string {
+    return this.expression.source.content;
+  }
 
-    this._expression = value;
+  private set content(value: string) {
+    this.expression.source.content = value;
   }
 
   private onExpressionAction(action: Action) {
-    const oldContent = this._content;
+    const oldContent = this.content;
 
     if (action.type === TreeNodeAction.NODE_ADDED) {
 
@@ -86,17 +83,17 @@ export class HTMLASTStringFormatter extends Observable {
         const index = attribs.indexOf(action.target);
         const start = (index === 0 ? element.position.start + element.name.length + 1 : attribs[index - 1].position.end);
         const end   = start + chunk.length;
-        this._content = spliceChunk(this._content, chunk, { start: start, end: start });
+        this.content = spliceChunk(this.content, chunk, { start: start, end: start });
 
         target.position = { start, end };
         shiftPositionsAfterExpression(target, end - start);
       } else if (action.target instanceof HTMLNodeExpression) {
         const target = <HTMLNodeExpression>action.target;
         const parent = <HTMLContainerExpression>target.parent;
-        const oldParentChunk = getChunk(this._content, parent.position);
+        const oldParentChunk = getChunk(this.content, parent.position);
 
         // fetch __text in case the target has been detached from the source
-        let targetChunk = target["__text"] || getChunk(target.source.content, target.position);
+        let targetChunk = target["__text"] || (target.source ? getChunk(target.source.content, target.position) : target.toString());
         target["__text"] = undefined;
 
         const targetIndex = parent.childNodes.indexOf(target);
@@ -166,7 +163,7 @@ export class HTMLASTStringFormatter extends Observable {
         shiftPositionsAfterExpression(target, targetChunk.length);
       }
     } else if (action.type === TreeNodeAction.NODE_REMOVING) {
-      const chunk = getChunk(this._content, action.target.position);
+      const chunk = getChunk(this.content, action.target.position);
       this.replaceChunk(action.target, "", false);
 
       // detached from the AST  -- can't access source anymore
@@ -179,7 +176,7 @@ export class HTMLASTStringFormatter extends Observable {
         const target = <HTMLAttributeExpression>action.target;
 
         if (propertyChangeAction.property === "value") {
-          const oldChunk = getChunk(this._content, target.position);
+          const oldChunk = getChunk(this.content, target.position);
           let newChunk   = oldChunk;
 
           // look for attribute without value
@@ -202,14 +199,14 @@ export class HTMLASTStringFormatter extends Observable {
       }
     }
 
-    if (this._content !== oldContent) {
-      this.notify(new PropertyChangeAction("content", this._content, oldContent));
+    if (this.content !== oldContent) {
+      this.notify(new PropertyChangeAction("content", this.content, oldContent));
     }
   }
 
   private replaceChunk(target: HTMLExpression, newChunk: string, offsetTarget: boolean = true, shift: boolean = true) {
-    this._content = spliceChunk(this._content, newChunk, target.position);
-    const delta = newChunk.length - getChunk(this._content, target.position).length;
+    this.content = spliceChunk(this.content, newChunk, target.position);
+    const delta = newChunk.length - getChunk(this.content, target.position).length;
     if (offsetTarget) {
       target.position.end += delta;
     }
@@ -220,7 +217,7 @@ export class HTMLASTStringFormatter extends Observable {
   }
 
   private calculateIndentation(): string {
-    const lines = this._content.split(/\n+/g);
+    const lines = this.content.split(/\n+/g);
 
     // go with the first line with whitespace before it -- use
     // that as indentation.
@@ -230,7 +227,7 @@ export class HTMLASTStringFormatter extends Observable {
       if (clinews.length) return clinews;
     }
 
-    return this._defaultIndentation;
+    return this._options.defaultIndentation;
   }
 
   private getSiblingIndentation(target: HTMLNodeExpression): string {
@@ -243,11 +240,11 @@ export class HTMLASTStringFormatter extends Observable {
         if (ws !== "") return ws;
       }
     }
-    return this._defaultIndentation;
+    return this._options.defualtIndentation;
   }
 
   private getWhitespaceBeforePosition(position: IRange) {
-    const match = this._content.substr(0, position.start).match(/[ \r\n\t]+$/);
+    const match = this.content.substr(0, position.start).match(/[ \r\n\t]+$/);
     return match ? match[0] : "";
   }
   private getIndentationBeforePosition(position: IRange) {
@@ -262,7 +259,7 @@ export class HTMLASTStringFormatter extends Observable {
     for (const node of flatten(root)) {
       if (!(node instanceof HTMLAttributeExpression) || node === target) continue;
       const attrib = <HTMLAttributeExpression>node;
-      const chunk = getChunk(this._content, attrib.position);
+      const chunk = getChunk(this.content, attrib.position);
       const match = chunk.match(/\w+\=(['"])/);
       if (match) {
         return match[1];

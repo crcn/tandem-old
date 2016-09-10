@@ -1,19 +1,15 @@
 import "./index.scss";
 
 import * as React from "react";
-import { IActor } from "tandem-common/actors";
-import { Action } from "tandem-common/actions";
 import { startDrag } from "tandem-common/utils/component";
-import { BoundingRect } from "tandem-common/geom";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { SelectablesComponent } from "tandem-front-end/components/selectables";
 import { SelectionSizeComponent } from "tandem-front-end/components/selection-size";
 import { VisibleEntityCollection } from "tandem-front-end/collections";
 import { SetToolAction, SelectAction } from "tandem-front-end/actions";
-import { BaseEntity } from "tandem-common";
-import { ReactComponentFactoryDependency } from "tandem-front-end/dependencies";
 import { Workspace, Editor, InsertTool } from "tandem-front-end/models";
-import { IEntity, IVisibleEntity, appendSourceChildren } from "tandem-common/ast/entities";
+import { ReactComponentFactoryDependency } from "tandem-front-end/dependencies";
+import { IActor, Action, BaseEntity, BoundingRect, appendSourceChildren, IEntity, IVisibleEntity } from "tandem-common";
 
 class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, workspace: Workspace, app: FrontEndApplication, tool: InsertTool }, any> {
 
@@ -57,8 +53,8 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
       startDrag(event, (event, { delta }) => {
 
-        const width  = (delta.x) / editor.transform.scale;
-        const height = (delta.y) / editor.transform.scale;
+        const width  = delta.x / editor.transform.scale;
+        const height = delta.y / editor.transform.scale;
 
         child.display.bounds = new BoundingRect(left, top, left + width, top + height);
 

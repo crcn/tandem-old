@@ -29,6 +29,7 @@ describe(__filename + "#", () => {
     position = null;
     type = null;
     source: any;
+    formatter: any;
     compare(b) {
       return 0;
     }

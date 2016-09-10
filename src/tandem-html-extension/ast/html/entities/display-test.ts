@@ -54,7 +54,6 @@ describe(__filename + "#", () => {
     Object.assign(div.style, { position: "fixed", top: "0px", left: "0px" });
     div.appendChild(<Node><any>root.section.toFragment());
 
-
     return <IVisibleEntity>(root.flatten().find((entity) => {
       if (entity["attributes"]) {
         return (<HTMLElementEntity>entity).getAttribute("id") === "target";

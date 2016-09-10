@@ -9,6 +9,11 @@ export interface IExpressionSource {
   content: any;
 }
 
+export interface IASTStringFormatter extends IObservable, IDisposable {
+  expression: IExpression;
+  options: any;
+}
+
 /**
  * represents a a part of a source string
  */
@@ -16,16 +21,13 @@ export interface IExpressionSource {
 export interface IExpression extends ITreeNode<IExpression>, IComparable {
   position: IRange;
   source: IExpressionSource;
+  formatter: IASTStringFormatter;
 }
 
 const noSource = {
   content: ""
 };
 
-export interface IASTStringFormatter extends IObservable {
-  expression: IExpression;
-  content: string;
-}
 
 export abstract class BaseExpression<T extends BaseExpression<any>> extends TreeNode<T> implements IExpression {
 
@@ -35,6 +37,8 @@ export abstract class BaseExpression<T extends BaseExpression<any>> extends Tree
   @patchable
   public position: IRange;
 
+  private _formatter: IASTStringFormatter;
+
   constructor(position: IRange) {
     super();
     this.position = position || { start: -1, end: -1 };
@@ -42,6 +46,14 @@ export abstract class BaseExpression<T extends BaseExpression<any>> extends Tree
 
   get source(): IExpressionSource {
     return this._source;
+  }
+
+  get formatter(): IASTStringFormatter {
+    return this._formatter || (this.parent ? this.parent.formatter : undefined);
+  }
+
+  set formatter(value: IASTStringFormatter) {
+    this._formatter = value;
   }
 
   set source(value: IExpressionSource) {

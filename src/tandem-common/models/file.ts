@@ -42,7 +42,6 @@ export class File extends Observable {
   constructor(data: IFileModelActionResponseData) {
     super();
     this.updateFromSourceData(data);
-    watchProperty(this, "content", this.onContentChange.bind(this));
   }
 
   dispose() {
@@ -68,12 +67,17 @@ export class File extends Observable {
     Object.assign(this, data);
   }
 
-  protected onContentChange(newContent: string, oldContent: string) {
-    // override me
+  protected onFileDataChange(data: IFileModelActionResponseData) {
+    this.updateFromSourceData(data);
+    this.onUpdated();
+  }
+
+  protected onUpdated() {
+
   }
 
   sync() {
-    this._watcher = WatchFileAction.execute(this.path, this._bus, this.updateFromSourceData.bind(this));
+    this._watcher = WatchFileAction.execute(this.path, this._bus, this.onFileDataChange.bind(this));
   }
 }
 

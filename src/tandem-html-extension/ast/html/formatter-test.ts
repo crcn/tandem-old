@@ -48,9 +48,13 @@ describe(__filename + "#", () => {
     [`<div>\n <div>\n </div></div>`, `<div><div>a</div></div>`, `<div>\n <div>\n  a\n </div></div>`],
   ].forEach(([input, change, output]) => {
     it(`can format ${input.replace(/([\r\n])/g," ")} to ${input.replace(/([\r\n])/g," ")}`, () => {
-      const formatter = new HTMLASTStringFormatter(parseHTML(input), { defaultIndentation: " " });
-      patchTreeNode(formatter.expression, parseHTML(change));
-      expect(formatter.content).to.equal(output);
+      const a = parseHTML(input);
+      a.formatter.options = { defaultIndentation: " " };
+      const b = parseHTML(change);
+      b.formatter.dispose();
+      const source = a.source;
+      patchTreeNode(a, b);
+      expect(source.content).to.equal(output);
     });
   });
 });
