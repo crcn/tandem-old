@@ -26,10 +26,12 @@ import {
   BaseExpression,
   IEntityDocument,
   DEPENDENCIES_NS,
+  IExpressionLoader,
   PropertyChangeAction,
   DependenciesDependency,
   EntityFactoryDependency,
   EntityDocumentDependency,
+  IFileModelActionResponseData,
 } from "tandem-common";
 
 export interface IEditorTool extends IActor, IDisposable {
@@ -59,20 +61,19 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   public entity: T;
 
   private _ast: IExpression;
+  private _loaded: boolean;
   private _runtime: EntityRuntime;
   private _runtimeObserver: IActor;
+  private _formatterObserver: IActor;
+  private _expressionLoader: IExpressionLoader;
+  private _ignoreExpressionActions: boolean;
 
   didInject() {
-
     this._runtime = new EntityRuntime(this.createEntity.bind(this), this.createContext());
-
     this._runtime.observe(this._runtimeObserver = new WrapBus(this.onRuntimeAction.bind(this)));
+    this._expressionLoader = this.createExpressionLoader();
+    this._expressionLoader.observe(new WrapBus(this.onExpressionLoaderAction.bind(this)));
     bindProperty(this._runtime, "entity", this);
-  }
-
-  onUpdated() {
-    super.onUpdated();
-    this.load();
   }
 
   protected createContext() {
@@ -83,30 +84,26 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   }
 
   public async load() {
-    const ast = await this.parse(this.content);
-    ast.source = this;
-
-    if (this._ast) {
-      if (ast.formatter) {
-        ast.formatter.dispose();
-      }
-      patchTreeNode(this._ast, ast);
-    } else {
-      ast.observe(new WrapBus(this.requestSave));
-      await this._runtime.load(this._ast = ast);
-    }
-
+    if (this._loaded) return;
+    this._loaded = true;
+    const ast = await this._expressionLoader.load(this);
+    await this._runtime.load(this._ast = ast);
     this.notify(new DocumentFileAction(DocumentFileAction.LOADED));
   }
 
-  abstract async parse(content: string): Promise<IExpression>;
+  protected abstract createExpressionLoader(): IExpressionLoader;
+
   protected abstract createEntity(ast: IExpression): T;
+
+  protected onExpressionLoaderAction(action: Action) {
+    this.deferSave();
+  }
 
   protected onRuntimeAction(action: Action) {
     this.notify(action);
   }
 
-  private requestSave = debounce(() => {
+  private deferSave = debounce(() => {
     this.save();
   }, REQUEST_SAVE_TIMEOUT);
 }

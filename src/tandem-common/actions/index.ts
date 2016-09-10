@@ -40,6 +40,13 @@ export class EntityAction extends Action {
   }
 }
 
+export class EntityLoaderAction extends Action {
+  static readonly ENTITY_CONTENT_FORMATTED = "entityContentFormatted";
+  constructor(type: string) {
+    super(type);
+  }
+}
+
 export class EntityRuntimeAction extends Action {
   static readonly RUNTIME_EVALUATED = "runtimeEvaluated";
   constructor(type: string) {

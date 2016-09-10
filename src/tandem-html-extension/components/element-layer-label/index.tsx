@@ -9,8 +9,13 @@ import { SelectAction } from "tandem-front-end/actions";
 import * as AutosizeInput from "react-input-autosize";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { LayerLabelComponentFactoryDependency } from "tandem-front-end/dependencies";
-import { HTMLElementEntity, VisibleHTMLElementEntity } from "tandem-html-extension/ast";
-import { HTMLFragmentExpression, HTMLElementExpression } from "tandem-html-extension/ast";
+import {
+  parseHTML,
+  HTMLElementEntity,
+  HTMLElementExpression,
+  HTMLFragmentExpression,
+  VisibleHTMLElementEntity,
+} from "tandem-html-extension/ast";
 
 const VOID_ELEMENTS = [];
 
@@ -126,14 +131,13 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
 
   doneEditing = async (event?: KeyboardEvent) => {
 
-
     const entity = this.props.entity;
     let ast: HTMLFragmentExpression;
 
     if (!this.state.source) return this.cancelEditing();
 
     try {
-      ast = await entity.document.parse(`<${this.state.source} />`) as HTMLFragmentExpression;
+      ast = await parseHTML(`<${this.state.source} />`) as HTMLFragmentExpression;
     } catch (e) {
       return this.cancelEditing();
     }

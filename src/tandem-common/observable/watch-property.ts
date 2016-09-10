@@ -12,7 +12,7 @@ export function watchProperty(target: IObservable, property: string, callback: (
 
   target.observe(observer);
 
-  return {
+  const ret = {
     dispose: () => {
       target.unobserve(observer);
     },
@@ -20,12 +20,15 @@ export function watchProperty(target: IObservable, property: string, callback: (
       if (target[property] != null) {
         callback(target[property], undefined);
       }
+      return ret;
     }
   };
+
+  return ret;
 }
 
 export function bindProperty(source: IObservable, sourceProperty: string, target: any, destProperty: string = sourceProperty) {
-  watchProperty(source, sourceProperty, (newValue, oldValue) => {
+  return watchProperty(source, sourceProperty, (newValue, oldValue) => {
     target[destProperty] = newValue;
   }).trigger();
 }

@@ -23,7 +23,6 @@ export class EntityContext {
 }
 
 export interface IEntityDocument extends IOwnable {
-  parse(source: string): Promise<IExpression>;
 }
 
 export interface IEntity extends ITreeNode<IEntity>, IDisposable, IInjectable, IComparable {

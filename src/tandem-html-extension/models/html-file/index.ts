@@ -5,19 +5,16 @@ import { IExpression } from "tandem-common/ast";
 import { DocumentFile } from "tandem-front-end/models/base";
 import { Dependencies } from "tandem-common/dependencies";
 import { FileFactoryDependency } from "tandem-common/dependencies";
-import { HTMLDocumentRootEntity, HTMLFragmentExpression } from "tandem-html-extension/ast";
+import { HTMLDocumentRootEntity, HTMLFragmentExpression, HTMLExpressionLoader } from "tandem-html-extension/ast";
 
 export class HTMLFile extends DocumentFile<HTMLDocumentRootEntity> {
   readonly type: string = MimeTypes.HTML;
-  async parse(content: string) {
-    return parseHTML(content);
-  }
   createEntity(ast: HTMLFragmentExpression) {
     return new HTMLDocumentRootEntity(ast);
   }
 
-  getFormattedSource(ast: HTMLFragmentExpression) {
-    return ast.toString();
+  createExpressionLoader(): HTMLExpressionLoader {
+    return new HTMLExpressionLoader();
   }
 }
 

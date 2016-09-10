@@ -69,11 +69,6 @@ export class File extends Observable {
 
   protected onFileDataChange(data: IFileModelActionResponseData) {
     this.updateFromSourceData(data);
-    this.onUpdated();
-  }
-
-  protected onUpdated() {
-
   }
 
   sync() {
