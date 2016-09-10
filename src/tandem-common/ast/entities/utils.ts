@@ -26,8 +26,6 @@ export async function insertSourceChildren(entity: IEntity, index: number = -1, 
 }
 
 export async function removeEntitySources(...entities: Array<IEntity>) {
-  const document = entities[0].document;
-
   entities.forEach((entity) => {
 
     // may have already been removed. This will happen in cases
@@ -36,8 +34,6 @@ export async function removeEntitySources(...entities: Array<IEntity>) {
       entity.source.parent.removeChild(entity.source);
     }
   });
-
-  // await document.update();
 }
 
 export function getContext(entity: IEntity) {

@@ -13,17 +13,11 @@ export abstract class BaseExpressionLoader extends Observable {
   private _expression: IExpression;
   private _contentWatcher: IDisposable;
   private _expressionObserver: IActor;
-
-  @bindable()
   private _content: string;
 
   constructor() {
     super();
     this._expressionObserver = new WrapBus(this.onExpressionAction.bind(this));
-  }
-
-  public get content(): string {
-    return this._content;
   }
 
   public get source(): IExpressionSource {
@@ -38,6 +32,7 @@ export abstract class BaseExpressionLoader extends Observable {
     if (this._source) {
       this._contentWatcher.dispose();
     }
+
     this._source = source;
 
     this._contentWatcher  = watchProperty(this._source, "content", this.onSourceContentChange.bind(this));
@@ -53,6 +48,7 @@ export abstract class BaseExpressionLoader extends Observable {
 
   protected onExpressionAction(action: Action) {
     this.source.content = this.createFormattedSourceContent(action);
+    this.parse();
     this.notify(new EntityLoaderAction(EntityLoaderAction.ENTITY_CONTENT_FORMATTED));
   }
 
@@ -62,7 +58,12 @@ export abstract class BaseExpressionLoader extends Observable {
 
   private parse(): IExpression {
 
-    const newExpression = this.parseContent(this._source.content);
+    if (this._content === this.source.content) {
+      console.log("IG");
+      return;
+    }
+
+    const newExpression = this.parseContent(this._content = this.source.content);
     newExpression.source = this._source;
 
     if (this._expression) {

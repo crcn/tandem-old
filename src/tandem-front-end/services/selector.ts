@@ -70,7 +70,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
    */
 
   async [RemoveSelectionAction.REMOVE_SELECTION]() {
-    await removeEntitySources(...this.app.workspace.selection);
+    removeEntitySources(...this.app.workspace.selection);
     this.bus.execute(new SelectAction());
   }
 
