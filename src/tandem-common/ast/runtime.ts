@@ -5,7 +5,6 @@ import { debounce } from "lodash";
 import { Observable } from "tandem-common/observable";
 import { IExpression } from "./base";
 import { EntityAction } from "tandem-common/actions";
-import { Dependencies } from "tandem-common/dependencies";
 import { patchTreeNode } from "tandem-common/tree";
 import { Action, PropertyChangeAction, EntityRuntimeAction } from "tandem-common/actions";
 
@@ -18,7 +17,7 @@ export class EntityRuntime extends Observable {
   private _evaluating: boolean;
   private _shouldEvaluateAgain: boolean;
 
-  constructor(public context: any = {}, private _dependencies: Dependencies, readonly createEntity: (ast: IExpression) => IEntity) {
+  constructor(private _createRootEntity: (ast: IExpression) => IEntity, public context: any = {}) {
     super();
     this._astObserver = new WrapBus(this.onASTAction.bind(this));
     this._entityObserver = new WrapBus(this.onEntityAction.bind(this));
@@ -37,7 +36,7 @@ export class EntityRuntime extends Observable {
     this._ast = ast;
 
     this._ast.observe(this._astObserver);
-    this._entity = this.createEntity(this._ast);
+    this._entity = this._createRootEntity(this._ast);
     this._entity.observe(this._entityObserver);
 
     // listen for any changes so that the rest of the application may reflect
@@ -45,12 +44,6 @@ export class EntityRuntime extends Observable {
     this.notify(new PropertyChangeAction("entity", this._entity, undefined));
 
     await this.evaluate();
-  }
-
-  protected createContext() {
-    return Object.assign(this.context, {
-      dependencies: this._dependencies.clone()
-    });
   }
 
   protected onASTAction(action: Action) {
@@ -85,7 +78,7 @@ export class EntityRuntime extends Observable {
 
     this._evaluating = true;
     try {
-      await this._entity.evaluate(this.createContext());
+      await this._entity.evaluate(this.context);
     } catch (e) {
       console.error(e.stack);
     }

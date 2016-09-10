@@ -1,6 +1,9 @@
 import { parse } from "./parser.peg";
+import { HTMLASTStringFormatter } from "./formatter";
+
 export * from "./expressions";
-export * from "./formatter";
+export { HTMLASTStringFormatter };
+import { bindProperty } from "tandem-common/observable";
 
 export function parseHTML(content: string) {
   const ast = parse(content);

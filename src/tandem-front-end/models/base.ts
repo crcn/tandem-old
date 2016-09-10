@@ -66,7 +66,9 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   private _formatter: IASTStringFormatter;
 
   didInject() {
-    this._runtime = new EntityRuntime({ document: this }, this._dependencies.clone(), this.createEntity.bind(this));
+
+    this._runtime = new EntityRuntime(this.createEntity.bind(this), this.createContext());
+
     this._runtime.observe(this._runtimeObserver = new WrapBus(this.onRuntimeAction.bind(this)));
     bindProperty(this._runtime, "entity", this);
 
@@ -78,6 +80,13 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     if (this._formatter.content !== newContent) {
       this.load();
     }
+  }
+
+  protected createContext() {
+    return {
+      document: this,
+      dependencies: this._dependencies.clone()
+    };
   }
 
   public async load() {
