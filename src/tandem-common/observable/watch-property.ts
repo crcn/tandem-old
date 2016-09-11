@@ -2,7 +2,7 @@ import { IObservable } from "./base";
 import { PropertyChangeAction } from "tandem-common/actions";
 import { TypeWrapBus, LimitBus } from "tandem-common/busses";
 
-export function watchProperty(target: IObservable, property: string, callback: (newValue: any, oldValue: any) => void) {
+export function watchProperty(target: any, property: string, callback: (newValue: any, oldValue: any) => void) {
 
   const observer = new LimitBus(1, new TypeWrapBus(PropertyChangeAction.PROPERTY_CHANGE, (action: PropertyChangeAction) => {
     if (action.property === property && action.target === target) {
@@ -10,11 +10,13 @@ export function watchProperty(target: IObservable, property: string, callback: (
     }
   }));
 
-  target.observe(observer);
+  if (target.observe) {
+    (<IObservable>target).observe(observer);
+  }
 
   const ret = {
     dispose: () => {
-      target.unobserve(observer);
+      if (target.unobserve) target.unobserve(observer);
     },
     trigger: () => {
       if (target[property] != null) {

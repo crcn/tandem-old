@@ -16,14 +16,11 @@ export const patchTreeNode = (oldNode: ComparableTreeType, newNode: ComparableTr
     oldNode.insertChildAt(add.value, add.index);
   }
 
-  for (const [oldChild, newChild, oldIndex, newIndex] of changes.update) {
-    if (oldIndex !== newIndex) {
+  for (const [oldChild, newChild, newIndex] of changes.update) {
+    const oldIndex = oldNode.children.indexOf(oldChild);
+    if (oldIndex !== -1 && oldIndex !== newIndex) {
       oldNode.insertChildAt(oldChild, newIndex);
     }
-
-    // must come after inserting the child to ensure that
-    // any listeners can fetch old properties before they
-    // are patched.
     patchTreeNode(oldChild, newChild);
   }
 

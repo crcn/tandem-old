@@ -34,8 +34,6 @@ import {
 
 export class HTMLExpressionLoader extends BaseExpressionLoader {
 
-  private _defaultIndentation: string = "";
-
   parseContent(content: string) {
     return parse(content);
   }
@@ -187,7 +185,7 @@ export class HTMLExpressionLoader extends BaseExpressionLoader {
       if (clinews.length) return clinews;
     }
 
-    return this._defaultIndentation;
+    return this.options.indentation;
   }
 
   private getSiblingIndentation(target: HTMLNodeExpression): string {
@@ -200,7 +198,13 @@ export class HTMLExpressionLoader extends BaseExpressionLoader {
         if (ws !== "") return ws;
       }
     }
-    return this._defaultIndentation;
+    return this.options.inentation;
+  }
+
+  getDefaultOptions() {
+    return {
+      indentation: "  "
+    };
   }
 
   private getWhitespaceBeforePosition(position: IRange) {
@@ -215,6 +219,7 @@ export class HTMLExpressionLoader extends BaseExpressionLoader {
     // simple implementation that just finds one attribute quote in the doc
 
     const root = target.root;
+    console.log(root.toString());
     // match attribute quote characters in the original element.
     for (const node of flatten(root)) {
       if (!(node instanceof HTMLAttributeExpression) || node === target) continue;

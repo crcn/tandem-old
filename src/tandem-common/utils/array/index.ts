@@ -41,10 +41,9 @@ export function diffArray<T>(a: Array<T>, b: Array<T>, compare: (a: T, b: T) => 
       aPool.splice(i--, 1);
       n--;
       bPool.splice(bPool.indexOf(bestCandidate), 1);
-      update.push([av, bestCandidate, a.indexOf(av), b.indexOf(bestCandidate)]);
+      update.push([av, bestCandidate, b.indexOf(bestCandidate)]);
     }
   }
-
   for (const value of bPool) {
     add.push({ index: b.indexOf(value), value: value });
   }

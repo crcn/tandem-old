@@ -10,7 +10,6 @@ import {
   register as registerSerializer,
 } from "tandem-common";
 
-
 export interface IHTMLExpression extends IExpression {
 }
 
@@ -181,7 +180,7 @@ export class HTMLAttributeExpression extends HTMLExpression implements IExpressi
   }
 
   compare(expression: HTMLAttributeExpression) {
-    return super.compare(expression) && this.name === expression.name;
+    return Number(super.compare(expression) && this.name === expression.name);
   }
 
   clone(): HTMLAttributeExpression {

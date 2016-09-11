@@ -9,15 +9,25 @@ import { IExpressionSource, IExpression, IExpressionStringFormatter } from "./ba
 
 export abstract class BaseExpressionLoader extends Observable {
 
-  private _source: IExpressionSource & IObservable;
+  private _source: IExpressionSource;
   private _expression: IExpression;
   private _contentWatcher: IDisposable;
   private _expressionObserver: IActor;
   private _content: string;
+  private _options: any;
 
   constructor() {
     super();
     this._expressionObserver = new WrapBus(this.onExpressionAction.bind(this));
+    this.options = {};
+  }
+
+  public get options(): any {
+    return this._options;
+  }
+
+  public set options(value: any) {
+    this._options = Object.assign({}, this.getDefaultOptions(), value);
   }
 
   public get source(): IExpressionSource {
@@ -28,7 +38,7 @@ export abstract class BaseExpressionLoader extends Observable {
     return this._expression;
   }
 
-  async load(source: IExpressionSource & IObservable) {
+  async load(source: IExpressionSource) {
     if (this._source) {
       this._contentWatcher.dispose();
     }
@@ -59,7 +69,6 @@ export abstract class BaseExpressionLoader extends Observable {
   private parse(): IExpression {
 
     if (this._content === this.source.content) {
-      console.log("IG");
       return;
     }
 
@@ -69,12 +78,16 @@ export abstract class BaseExpressionLoader extends Observable {
     if (this._expression) {
       this._expression.unobserve(this._expressionObserver);
       patchTreeNode(this._expression, newExpression);
-      this._expression.observe(this._expressionObserver);
+      this._expression.observe( this._expressionObserver);
     } else {
       this._expression = newExpression;
       this._expression.observe(this._expressionObserver);
     }
 
     return this._expression;
+  }
+
+  protected getDefaultOptions() {
+    return {};
   }
 }
