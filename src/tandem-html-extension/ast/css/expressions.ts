@@ -63,8 +63,8 @@ export class CSSRuleExpression extends CSSExpression {
     this._values[declaration.value] = String(declaration.value);
   }
 
-  protected onRemovingChild(declaration: CSSDeclarationExpression) {
-    super.onRemovingChild(declaration);
+  protected onChildRemoved(declaration: CSSDeclarationExpression) {
+    super.onChildRemoved(declaration);
     this._declarationsByKey[declaration.name] =  undefined;
     this._values[declaration.value] = undefined;
   }

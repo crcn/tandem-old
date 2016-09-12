@@ -78,7 +78,7 @@ export abstract class BaseExpressionLoader extends Observable {
     if (this._expression) {
       this._expression.unobserve(this._expressionObserver);
       patchTreeNode(this._expression, newExpression);
-      this._expression.observe( this._expressionObserver);
+      this._expression.observe(this._expressionObserver);
     } else {
       this._expression = newExpression;
       this._expression.observe(this._expressionObserver);

@@ -13,7 +13,7 @@ export interface Change {
 
 export class TreeNodeAction extends Action {
   static readonly NODE_ADDED    = "nodeAdded";
-  static readonly NODE_REMOVING = "nodeRemoving";
+  static readonly NODE_REMOVED  = "nodeRemoved";
 }
 
 export class ChangeAction extends Action {

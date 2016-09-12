@@ -40,7 +40,7 @@ describe(__filename + "#", () => {
     [`<div><span /></div>`, `<div><span />a</div>`, `<div><span />a</div>`],
     [`<div><span /></div>`, `<div>a<span /></div>`, `<div>a<span /></div>`],
     [`<div><h1>3</h1><h2>2</h2><h3>1</h3></div>`, `<div><h3>1</h3><h2>2</h2><h1>3</h1></div>`, `<div><h3>1</h3><h2>2</h2><h1>3</h1></div>`],
-    [`<div id="b"><h1>3<br></h1></div>`, `<div><h3>1</h3><br></div>`, `<div>\n <h3>1</h3>\n <br>\n</div>`],
+    [`<div id="b"><h1>3<br></h1></div>`, `<div><h3>1</h3><br></div>`, `<div>\n <h3>1</h3>\n <br />\n</div>`],
     [`<div  style="left:10px" />`, `<div style="left:20px" />`, `<div  style="left:20px" />`],
 
     // adding more ws

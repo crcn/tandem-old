@@ -17,8 +17,7 @@ export const patchTreeNode = (oldNode: ComparableTreeType, newNode: ComparableTr
   }
 
   for (const [oldChild, newChild, newIndex] of changes.update) {
-    const oldIndex = oldNode.children.indexOf(oldChild);
-    if (oldIndex !== -1 && oldIndex !== newIndex) {
+    if (oldNode.children.indexOf(oldChild) !== newIndex) {
       oldNode.insertChildAt(oldChild, newIndex);
     }
     patchTreeNode(oldChild, newChild);

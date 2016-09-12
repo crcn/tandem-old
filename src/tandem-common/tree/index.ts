@@ -43,10 +43,12 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
 
   removeChild(child: T) {
     const index = this._children.indexOf(child);
-    if (index !== -1) {
-      this.onRemovingChild(child);
-      this._children.splice(index, 1);
+    if (index === -1) {
+      return;
     }
+
+    this._children.splice(index, 1);
+    this.onChildRemoved(child);
   }
 
   insertChildAt(newChild: T, index: number) {
@@ -102,8 +104,8 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     child.onAdded();
   }
 
-  protected onRemovingChild(child: T) {
-    child.onRemoving();
+  protected onChildRemoved(child: T) {
+    child.onRemoved();
     child.unobserve(this._childObserver);
     child._parent = undefined;
   }
@@ -112,8 +114,8 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     this.notify(new TreeNodeAction(TreeNodeAction.NODE_ADDED));
   }
 
-  protected onRemoving() {
-    this.notify(new TreeNodeAction(TreeNodeAction.NODE_REMOVING));
+  protected onRemoved() {
+    this.notify(new TreeNodeAction(TreeNodeAction.NODE_REMOVED));
   }
 
   public clone(): T {

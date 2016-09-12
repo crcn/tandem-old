@@ -52,8 +52,8 @@ export abstract class HTMLNodeEntity<T extends HTMLNodeExpression> extends BaseE
     this.section.appendChild(newChild);
   }
 
-  onRemovingChild(child: HTMLNodeEntity<T>) {
-    super.onRemovingChild(child);
+  onChildRemoved(child: HTMLNodeEntity<T>) {
+    super.onChildRemoved(child);
     if (child.section) child.section.remove();
   }
 

@@ -91,7 +91,7 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
     const element = <Element>this.section.targetNode;
 
     if (action.target.parent === this && action.target.source instanceof HTMLAttributeExpression) {
-      if (action.type === TreeNodeAction.NODE_REMOVING) {
+      if (action.type === TreeNodeAction.NODE_REMOVED) {
 
         // diffing algorithim may remove an attribute if it's out of order, but it
         // still may exist -- ignore the node removal if it's still there

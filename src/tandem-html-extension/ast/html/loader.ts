@@ -134,7 +134,7 @@ export class HTMLExpressionLoader extends BaseExpressionLoader {
 
         content = spliceChunk(content, buffer.join(""), parent.position);
       }
-    } else if (action.type === TreeNodeAction.NODE_REMOVING) {
+    } else if (action.type === TreeNodeAction.NODE_REMOVED) {
       const chunk = getChunk(content, action.target.position);
       content = spliceChunk(content, "", action.target.position);
 
@@ -219,7 +219,6 @@ export class HTMLExpressionLoader extends BaseExpressionLoader {
     // simple implementation that just finds one attribute quote in the doc
 
     const root = target.root;
-    console.log(root.toString());
     // match attribute quote characters in the original element.
     for (const node of flatten(root)) {
       if (!(node instanceof HTMLAttributeExpression) || node === target) continue;

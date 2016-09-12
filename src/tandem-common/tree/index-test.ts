@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { TreeNode } from "./index";
+import { Action, TreeNode, TreeNodeAction } from "tandem-common";
 
 describe(__filename + "#", () => {
   it("can create a new node", () => {
@@ -118,5 +118,30 @@ describe(__filename + "#", () => {
     p1.appendChild(c1);
     p1.appendChild(c2);
     expect(p1.lastChild).to.equal(c2);
+  });
+
+  it("can remove a child in the removing action without removing other parent children", () => {
+    const p1 = new TreeNode();
+    const c1 = new TreeNode();
+    const c2 = new TreeNode();
+    p1.appendChild(c1);
+    p1.appendChild(c2);
+
+    let _ignoreAction = false;
+
+    p1.observe({
+      execute(action: Action) {
+        if (_ignoreAction) return;
+        _ignoreAction = true;
+        if (action.type === TreeNodeAction.NODE_REMOVED) {
+          action.target.parent.removeChild(action.target);
+        }
+        _ignoreAction = false;
+      }
+    });
+
+    p1.removeChild(c1);
+
+    expect(p1.children.indexOf(c2)).to.equal(0);
   });
 });

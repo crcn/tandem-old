@@ -29,7 +29,7 @@ export class LinkEntity extends HTMLElementEntity {
   @inject(MAIN_BUS_NS)
   private _bus: IActor;
 
-  onRemoving() {
+  onRemoved() {
     this._file.dispose();
   }
 
