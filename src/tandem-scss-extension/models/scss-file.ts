@@ -1,8 +1,8 @@
 import { CSSFile } from "tandem-html-extension/models";
 import { MimeTypes } from "tandem-scss-extension/constants";
 import { DocumentFile } from "tandem-front-end/models";
-import { parseSCSS, SCSSRootExpression, SCSSRootEntity } from "tandem-scss-extension/ast";
 import { EntityFactoryDependency, FileFactoryDependency, Dependencies } from "tandem-common";
+import { parseSCSS, SCSSRootExpression, SCSSRootEntity, SCSSExpressionLoader } from "tandem-scss-extension/ast";
 
 export class SCSSFile extends CSSFile {
   readonly type: string = MimeTypes.SCSS;
@@ -12,8 +12,8 @@ export class SCSSFile extends CSSFile {
     return new SCSSRootEntity(ast);
   }
 
-  async parse(content: string) {
-    return parseSCSS(content);
+  createExpressionLoader() {
+    return new SCSSExpressionLoader();
   }
 }
 

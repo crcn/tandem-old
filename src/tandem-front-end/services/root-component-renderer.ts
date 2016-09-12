@@ -1,5 +1,6 @@
 import * as sift from "sift";
 import { Logger } from "tandem-common/logger";
+import { throttle } from "lodash";
 import * as ReactDOM from "react-dom";
 import { IApplication } from "tandem-common/application";
 import { filterAction, loggable } from "tandem-common/decorators";

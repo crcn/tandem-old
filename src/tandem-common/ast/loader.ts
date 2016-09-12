@@ -54,7 +54,7 @@ export abstract class BaseExpressionLoader extends Observable {
     this.parse();
   }
 
-  protected abstract parseContent(content: string): IExpression;
+  protected abstract async parseContent(content: string): Promise<IExpression>;
 
   protected onExpressionAction(action: Action) {
     this.source.content = this.createFormattedSourceContent(action);
@@ -66,13 +66,13 @@ export abstract class BaseExpressionLoader extends Observable {
     return this._expression.toString();
   }
 
-  private parse(): IExpression {
+  private async parse(): Promise<IExpression> {
 
     if (this._content === this.source.content) {
       return;
     }
 
-    const newExpression = this.parseContent(this._content = this.source.content);
+    const newExpression = await this.parseContent(this._content = this.source.content);
     newExpression.source = this._source;
 
     if (this._expression) {

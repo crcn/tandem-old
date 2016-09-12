@@ -60,6 +60,7 @@ export class LinkEntity extends HTMLElementEntity {
   }
 
   async load() {
+    await super.load();
 
     const type = this.source.getAttribute("type");
 
@@ -75,8 +76,6 @@ export class LinkEntity extends HTMLElementEntity {
     await this._file.load();
     this._file.observe(new BubbleBus(this));
     this.appendChild(this._file.entity);
-
-    return super.load();
   }
 
   createSection() {

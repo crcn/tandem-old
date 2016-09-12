@@ -32,6 +32,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   public context: any;
   private _loaded: boolean;
+  private _allChildEntities: Array<IEntity>;
   private _mappedSourceChildren: Array<IExpression>;
 
   constructor(_source: T) {
@@ -59,11 +60,12 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   }
 
   public flatten(): Array<IEntity> {
+    if (this._allChildEntities) return this._allChildEntities;
     const items: Array<IEntity> = [this];
     for (const child of this.children) {
       items.push(...child.flatten());
     }
-    return items;
+    return this._allChildEntities = items;
   }
 
   public compare(entity: IEntity): number {
@@ -90,6 +92,16 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     return context;
   }
 
+  protected onChildAdded(child: BaseEntity<any>) {
+    super.onChildAdded(child);
+    this._allChildEntities = undefined;
+  }
+
+  protected onChildRemoved(child: BaseEntity<any>) {
+    super.onChildRemoved(child);
+    this._allChildEntities = undefined;
+  }
+
   protected async load() {
     await this.evaluateChildren();
   }
@@ -100,11 +112,12 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   protected async evaluateChildren() {
 
-    console.log("EVAUATE", this.constructor.name, (<any>this).source.name);
+    const previousMappedSourceChildren = this._mappedSourceChildren || [];
 
-    const previousMappedSourceChildren = (this._mappedSourceChildren || []).concat();
+    // copy source children in case the returned value is a reference that could
+    // be mutated outside of this implemenetation.
     const mappedSourceChildren = this.mapSourceChildren().concat();
-    this._mappedSourceChildren =  mappedSourceChildren.concat();
+    this._mappedSourceChildren =  mappedSourceChildren;
     for (let i = 0, n = mappedSourceChildren.length; i < n; i++) {
       const childSource = mappedSourceChildren[i];
       let childEntity   = this.children[i];
@@ -125,8 +138,9 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     }
 
     for (let i = mappedSourceChildren.length, n  = this.children.length; i < n; i++) {
-      if (mappedSourceChildren.indexOf(this.children[i].source) !== -1) {
+      if (previousMappedSourceChildren.indexOf(this.children[i].source) !== -1) {
         this.removeChild(this.children[i--]);
+        n--;
       }
     }
   }

@@ -1,15 +1,13 @@
-<link rel="stylesheet" type="text/scss" href="./style.scss"></link>
-
-<artboard id="pane" title="Pane" style="background: white;position:absolute;width:100px;height:100px;">
+<link rel="stylesheet" type="text/scss" href="./style.scss">
+<template id="pane" title="Pane">
   <div class="m-pane">
-    <div class="header">${ title }</div>
+    <div class="m-pane--header">${ title }</div>
+    <div class="m-pane--content">
+      Content
+    </div>
   </div>
-</artboard>
+</template>
 
-<artboard title="CSS Pane" style="left: 4px;top: 171px;">
-  <pane title="tattle"></pane>
-</artboard>
-
-<artboard title="Artboard" style="background: white;position:absolute;width:0px;height:0px;"></artboard>
-
-<div class="item" style="position: absolute;width: 103px;height: 65px;left: 231px;top: -4px;"></div>
+<template title="CSS Pane" style="top: 182px;left: 1px;">
+  <pane title="CSS" />
+</template>
