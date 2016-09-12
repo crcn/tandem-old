@@ -92,7 +92,6 @@ export class CSSRuleExpression extends CSSExpression {
 export class CSSDeclarationExpression extends CSSExpression {
 
   @bindable()
-  @patchable
   public name: string;
 
   @bindable()
@@ -103,6 +102,10 @@ export class CSSDeclarationExpression extends CSSExpression {
     super(children, position);
     this.name = prop;
     this.value = value;
+  }
+
+  compare(expression: CSSDeclarationExpression) {
+    return Number(super.compare(expression) && expression.name === this.name);
   }
 
   toString() {

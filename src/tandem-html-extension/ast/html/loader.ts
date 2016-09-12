@@ -3,10 +3,15 @@ import {
   IRange,
   IActor,
   TreeNode,
+  getChunk,
   Observable,
+  spliceChunk,
   TreeNodeAction,
   BaseExpressionLoader,
   PropertyChangeAction,
+  calculateIndentation,
+  getWhitespaceBeforePosition,
+  getIndentationBeforePosition,
 } from "tandem-common";
 
 import {
@@ -32,6 +37,9 @@ import {
   HTMLAttributeExpression,
 } from "./expressions";
 
+import {
+
+} from "./utils";
 export class HTMLExpressionLoader extends BaseExpressionLoader {
 
   parseContent(content: string) {
@@ -89,7 +97,7 @@ export class HTMLExpressionLoader extends BaseExpressionLoader {
             const element = <HTMLElementExpression>parent;
             buffer.push(oldParentChunk.replace(/(\s+\/>|>[\w\W]*?<\/\w+>)$/, ">"));
 
-            const parentIndentation = this.getIndentationBeforePosition(element.position);
+            const parentIndentation = getIndentationBeforePosition(content, element.position);
 
             const indentation = "\n" +
 
@@ -97,7 +105,7 @@ export class HTMLExpressionLoader extends BaseExpressionLoader {
               parentIndentation +
 
               // add doc indentation
-              this.calculateIndentation();
+              calculateIndentation(content, this.options.indentation);
 
             offset += indentation.length;
 
@@ -119,7 +127,7 @@ export class HTMLExpressionLoader extends BaseExpressionLoader {
           const previousSibling = parent.childNodes[targetIndex - 1];
 
           offset = previousSibling.position.end - parent.position.start;
-          const indentation = this.getWhitespaceBeforePosition(previousSibling.position);
+          const indentation = getWhitespaceBeforePosition(content, previousSibling.position);
 
           buffer.push(spliceChunk(oldParentChunk, indentation + targetChunk, {
             start: offset,
@@ -174,45 +182,10 @@ export class HTMLExpressionLoader extends BaseExpressionLoader {
     return content;
   }
 
-  private calculateIndentation(): string {
-    const lines = this.source.content.split(/\n+/g);
-
-    // go with the first line with whitespace before it -- use
-    // that as indentation.
-    for (let i = 0, n = lines.length; i < n; i++) {
-      const cline  = lines[i];
-      const clinews = cline.match(/[\t\s]*/)[0];
-      if (clinews.length) return clinews;
-    }
-
-    return this.options.indentation;
-  }
-
-  private getSiblingIndentation(target: HTMLNodeExpression): string {
-
-    const parent = <HTMLContainerExpression>target.parent;
-    if (parent) {
-      for (const child of parent.childNodes) {
-        if (child === target) continue;
-        const ws = this.getWhitespaceBeforePosition(child.position);
-        if (ws !== "") return ws;
-      }
-    }
-    return this.options.inentation;
-  }
-
   getDefaultOptions() {
     return {
       indentation: "  "
     };
-  }
-
-  private getWhitespaceBeforePosition(position: IRange) {
-    const match = this.source.content.substr(0, position.start).match(/[ \r\n\t]+$/);
-    return match ? match[0] : "";
-  }
-  private getIndentationBeforePosition(position: IRange) {
-    return this.getWhitespaceBeforePosition(position).match(/ *$/)[0];
   }
 
   private getAttributeQuoteCharacter(target: HTMLAttributeExpression) {
@@ -232,15 +205,6 @@ export class HTMLExpressionLoader extends BaseExpressionLoader {
 
     return `"`;
   }
-}
-
-
-function getChunk(content: string, range: IRange) {
-  return content.substr(range.start, range.end - range.start);
-}
-
-export function spliceChunk(source: string, chunk: string, { start, end }: IRange) {
-  return source.substr(0, start) + chunk + source.substr(end);
 }
 
 function flatten<T extends TreeNode<any>>(node: T): Array<T> {

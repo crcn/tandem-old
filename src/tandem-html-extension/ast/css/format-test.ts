@@ -1,28 +1,18 @@
-import { parseCSS } from "./index";
+
 import { expect } from "chai";
+import { patchTreeNode } from "tandem-common";
+import { CSSExpressionLoader, parseCSS } from "tandem-html-extension";
 
 describe(__filename + "#", () => {
   [
-    `   .style { color: red; }`,
-    `
-    .a {
-      color: red;
-      background: url();
-    }
-    `,
-    `
-    .a {
-      color: red;
-      background: url();
-    }
-    .b {
-      color: red;
-      background: url();
-    }
-    `
-  ].forEach((source) => {
-    xit(`preserves the whitespace for ${source}`, () => {
-      expect(parseCSS(source).toString()).to.equal(source);
+    [`color: red;  `, `color: blue;`, `color: blue;  `],
+    [`color: red  ;  `, `color: blue;`, `color: blue;  `]
+  ].forEach(([input, change, output]) => {
+    it(`can change ${input} to ${output} while maintaining whitespace`, async () => {
+      const loader = new CSSExpressionLoader();
+      await loader.load({ content: input });
+      patchTreeNode(loader.expression, parseCSS(change));
+      expect(loader.source.content).to.equal(output);
     });
   });
 });

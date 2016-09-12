@@ -36,6 +36,20 @@ export async function removeEntitySources(...entities: Array<IEntity>) {
   });
 }
 
+export function calculateIndentation(content: string, defaultIndentation: string = "  "): string {
+  const lines = content.split(/\n+/g);
+
+  // go with the first line with whitespace before it -- use
+  // that as indentation.
+  for (let i = 0, n = lines.length; i < n; i++) {
+    const cline  = lines[i];
+    const clinews = cline.match(/[\t\s]*/)[0];
+    if (clinews.length) return clinews;
+  }
+
+  return defaultIndentation;
+}
+
 export function getContext(entity: IEntity) {
   let p = entity.parent;
   while (p && !p.context) p = p.parent;
