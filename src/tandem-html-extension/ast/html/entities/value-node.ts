@@ -23,7 +23,7 @@ export abstract class HTMLValueNodeEntity<T extends HTMLNodeExpression & IHTMLVa
   set value(value: any) {
     this._value = value;
     if (this.section instanceof NodeSection) {
-      this.section.targetNode.nodeValue = decode(value);
+      this.section.targetNode.nodeValue = decode(value.trim());
     }
   }
 

@@ -59,6 +59,11 @@ class RegisteredPCTemplateEntity extends HTMLElementEntity {
     return context;
   }
 
+  async update() {
+    await this.__children.evaluate(this.context);
+    return await super.update();
+  }
+
   async load() {
     this.__children = EntityFactoryDependency.findBySourceType(HTMLFragmentExpression, this.dependencies).create(this.source);
     await this.__children.evaluate(this.context);

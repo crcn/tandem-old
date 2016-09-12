@@ -1,10 +1,30 @@
-@import "../../src/tandem-front-end/scss/variables.scss";
+@import "../../src/tandem-front-end/scss/modules/all.scss";
+
+body {
+  font-family: Helvetica;
+}
 
 .m-pane {
-  color: white;
   &--header {
     color: rgba(255, 255, 255, 0.8);
     background: $color-blue-2;
     padding: 10px;
   }
+  &--content {
+    padding: 10px;
+  }
+
+
+}
+
+.operator {
+  color: red;
+}
+
+.string {
+  color: green;
+}
+
+.modifier {
+  color: blue;
 }
