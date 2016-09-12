@@ -7,7 +7,6 @@ import {
   IEntity,
   TreeNode,
   Injector,
-  getContext,
   BaseEntity,
   IValueEntity,
   EntityFactoryDependency
@@ -28,8 +27,6 @@ import {
 } from "tandem-html-extension";
 
 export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> implements IValueEntity  {
-  private _script: Function;
-  private _sourceParent: TreeNode<HTMLNodeExpression>;
   private _executed: boolean;
   public value: any;
   public source: PCBlockNodeExpression;
@@ -39,17 +36,17 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
     return new GroupNodeSection();
   }
 
-  get context() {
-    return getContext(this);
-  }
+  async evaluate(context: any) {
+    const ret = await super.evaluate(context);
 
-  async load() {
+
     let value;
     let scriptExecuted = false;
 
     let error: Error;
+    let execute: Function;
     try {
-      const script = parseBlockScript(this.source.value);
+      execute = parseBlockScript(this.source.value);
     } catch (e) {
       error = e;
     }
@@ -58,15 +55,17 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
       value = `Syntax Error: ${error.message}`;
     } else {
       try {
-        value = this._script(this.context);
+        value = execute(this.context);
         scriptExecuted = true;
       } catch (e) {
+        console.log(e.stack);
         value = this.source.toString();
       }
     }
+
     this._executed = scriptExecuted;
     this.value = value;
-    if (!scriptExecuted) return;
+    if (!scriptExecuted) return ret;
 
     for (const item of Array.isArray(value) ? value : [value]) {
       if (item instanceof BaseEntity) {
@@ -83,6 +82,8 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
         await this.loadExpressionAndAppendChild(parsePC(String(item)));
       }
     }
+
+    return ret;
   }
 
   cloneLeaf() {

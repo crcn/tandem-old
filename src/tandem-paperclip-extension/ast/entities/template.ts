@@ -47,10 +47,23 @@ class RegisteredPCTemplateEntity extends HTMLElementEntity {
     ];
   }
 
+  getChildContext() {
+    const context =  Object.assign({}, this.context, {
+      children: this.__children
+    });
+
+    for (const attribute of this.attributes) {
+      context[attribute.name] = attribute.value;
+    }
+
+    return context;
+  }
+
   async load() {
-    await super.load();
     this.__children = EntityFactoryDependency.findBySourceType(HTMLFragmentExpression, this.dependencies).create(this.source);
     await this.__children.evaluate(this.context);
+
+    await super.load();
   }
 };
 

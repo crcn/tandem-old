@@ -50,11 +50,6 @@ export class LinkEntity extends HTMLElementEntity {
     );
   }
 
-  mapContext(context) {
-    context.a = 1234;
-    return context;
-  }
-
   onEvaluated() {
     this.context.dependencies = this._file.entity.context.dependencies;
   }

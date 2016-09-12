@@ -59,6 +59,10 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     return this.context.dependencies;
   }
 
+  protected getChildContext() {
+    return this.context;
+  }
+
   public flatten(): Array<IEntity> {
     if (this._allChildEntities) return this._allChildEntities;
     const items: Array<IEntity> = [this];
@@ -130,10 +134,10 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
         }
 
         childEntity = childEntityFactory.create(childSource);
-        this.context = await childEntity.evaluate(this.context);
+        this.context = await childEntity.evaluate(this.getChildContext());
         this.insertChildAt(childEntity, i);
       } else {
-        this.context = await childEntity.evaluate(this.context);
+        this.context = await childEntity.evaluate(this.getChildContext());
       }
     }
 
@@ -155,7 +159,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
       throw new Error(`Unable to find entity factory expression ${childExpression.constructor.name}`);
     }
     const entity = factory.create(childExpression);
-    this.context = await entity.evaluate(this.context);
+    this.context = await entity.evaluate(this.getChildContext());
     this.insertChildAt(entity, index);
     return entity;
   }
