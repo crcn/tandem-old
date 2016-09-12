@@ -1,4 +1,4 @@
-@import "../../src/tandem-front-end/scss/modules/all.scss";
+@import "../../src/tandem-front-end/scss/variables.scss";
 
 body {
   font-family: Helvetica;
@@ -13,12 +13,11 @@ body {
   &--content {
     padding: 10px;
   }
-
-
 }
 
 .operator {
-  color: red;
+  font-weight: 100 !important;
+  color: violet;
 }
 
 .string {

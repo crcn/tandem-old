@@ -10,5 +10,6 @@
 - [ ] helper tools for manipulating css
 - [ ] mobile presets
 - [ ] ui kits
-- [ ] highlight entities on stage that match selector
+- [ ] highlight entities on stage that match selector or declaration
 - [ ] ability to move style to separate scss file
+- [ ] import multiple scss files

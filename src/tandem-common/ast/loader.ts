@@ -72,7 +72,15 @@ export abstract class BaseExpressionLoader extends Observable {
       return;
     }
 
-    const newExpression = this.parseContent(this._content = this.source.content);
+    let newExpression: IExpression;
+
+    try {
+      newExpression = this.parseContent(this._content = this.source.content);
+    } catch (e) {
+      console.error(e.stack);
+      return;
+    }
+
     newExpression.source = this._source;
 
     if (this._expression) {
