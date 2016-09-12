@@ -35,9 +35,11 @@ export const compareTreeNodes = (a: ITreeNode<any>, b: ITreeNode<any>): number =
 };
 
 export const patchLeaf = (oldNode: ComparableTreeType, newNode: ComparableTreeType) => {
+
   for (const property of getPatchableProperties(oldNode)) {
     oldNode[property] = newNode[property];
   }
+
 
   if (oldNode["patch"]) {
     (<IPatchable><any>oldNode).patch(<IPatchable><any>newNode);

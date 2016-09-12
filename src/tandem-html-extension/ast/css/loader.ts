@@ -19,7 +19,7 @@ import {
 } from "./expressions";
 
 export class CSSExpressionLoader extends BaseExpressionLoader {
-  async parseContent(content: string): Promise<CSSRootExpression> {
+  parseContent(content: string): CSSRootExpression {
     return parseCSS(content);
   }
   createFormattedSourceContent(action: Action) {

@@ -42,7 +42,7 @@ import {
 } from "./utils";
 export class HTMLExpressionLoader extends BaseExpressionLoader {
 
-  async parseContent(content: string) {
+  parseContent(content: string) {
     return parse(content);
   }
 

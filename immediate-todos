@@ -11,3 +11,4 @@
 - [ ] mobile presets
 - [ ] ui kits
 - [ ] highlight entities on stage that match selector
+- [ ] ability to move style to separate scss file

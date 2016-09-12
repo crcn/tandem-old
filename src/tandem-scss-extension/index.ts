@@ -13,3 +13,6 @@ export const scssExtensionDependency = [
   scssImportEntityFactoryDependency,
 
 ];
+
+export * from "./models";
+export * from "./ast";

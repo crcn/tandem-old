@@ -3,7 +3,7 @@ import { parseSCSS } from "./parser";
 import { IExpression } from "tandem-common";
 
 export class SCSSExpressionLoader extends CSSExpressionLoader {
-  async parseContent(content: string): Promise<IExpression> {
+  parseContent(content: string) {
     return parseSCSS(content);
   }
 }

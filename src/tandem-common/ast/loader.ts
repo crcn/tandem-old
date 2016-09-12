@@ -1,9 +1,9 @@
-import { Action, EntityLoaderAction } from "tandem-common/actions";
 import { IActor } from "tandem-common/actors";
 import { WrapBus } from "mesh";
+import { bindable } from "tandem-common/decorators";
 import { IDisposable } from "tandem-common/object";
 import { patchTreeNode } from "tandem-common/tree";
-import { bindable } from "tandem-common/decorators";
+import { Action, EntityLoaderAction } from "tandem-common/actions";
 import { IObservable, Observable, watchProperty } from "tandem-common/observable";
 import { IExpressionSource, IExpression, IExpressionStringFormatter } from "./base";
 
@@ -38,7 +38,7 @@ export abstract class BaseExpressionLoader extends Observable {
     return this._expression;
   }
 
-  async load(source: IExpressionSource) {
+  load(source: IExpressionSource) {
     if (this._source) {
       this._contentWatcher.dispose();
     }
@@ -47,14 +47,14 @@ export abstract class BaseExpressionLoader extends Observable {
 
     this._contentWatcher  = watchProperty(this._source, "content", this.onSourceContentChange.bind(this));
 
-    return await this.parse();
+    return this.parse();
   }
 
   protected onSourceContentChange(newContent: string, oldContent: string) {
     this.parse();
   }
 
-  protected abstract async parseContent(content: string): Promise<IExpression>;
+  protected abstract parseContent(content: string): IExpression;
 
   protected onExpressionAction(action: Action) {
     this.source.content = this.createFormattedSourceContent(action);
@@ -66,13 +66,13 @@ export abstract class BaseExpressionLoader extends Observable {
     return this._expression.toString();
   }
 
-  private async parse(): Promise<IExpression> {
+  private parse(): IExpression {
 
     if (this._content === this.source.content) {
       return;
     }
 
-    const newExpression = await this.parseContent(this._content = this.source.content);
+    const newExpression = this.parseContent(this._content = this.source.content);
     newExpression.source = this._source;
 
     if (this._expression) {

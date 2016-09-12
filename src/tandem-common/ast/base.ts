@@ -15,7 +15,7 @@ export interface IExpressionStringFormatter extends IObservable, IDisposable {
 }
 
 export interface IExpressionLoader extends IObservable {
-  load(source: IExpressionSource): Promise<IExpression>;
+  load(source: IExpressionSource): IExpression;
 }
 
 /**

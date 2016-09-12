@@ -9,6 +9,8 @@ import {
   HTMLContainerExpression,
 } from "./index";
 
+import { timeout } from "tandem-common/test/utils";
+
 import { expect } from "chai";
 
 describe(__filename + "#", () => {
@@ -53,6 +55,7 @@ describe(__filename + "#", () => {
       loader.options = { indentation: " " };
       const b = parseHTML(change);
       patchTreeNode(loader.expression, b);
+      await timeout(50);
       expect(loader.source.content).to.equal(output);
     });
   });

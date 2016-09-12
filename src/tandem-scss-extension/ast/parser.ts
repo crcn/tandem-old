@@ -7,7 +7,7 @@ const expressionClasses = {
   root   : SCSSRootExpression
 };
 
-export async function parseSCSS(source: string) {
-  const root = (await postcss().process(source, { syntax: scssSyntax })).root;
+export function parseSCSS(source: string) {
+  const root = postcss().process(source, { syntax: scssSyntax }).root;
   return convertPostCSSAST(root, expressionClasses);
 }
