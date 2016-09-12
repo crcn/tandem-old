@@ -5,7 +5,7 @@ import { BubbleBus } from "tandem-common/busses";
 import { diffArray } from "tandem-common/utils/array";
 import { watchProperty } from "tandem-common/observable";
 import { Action, TreeNodeAction } from "tandem-common/actions";
-import { IDisposable, ITyped, IValued } from "tandem-common/object";
+import { IDisposable, ITyped, IValued, IPatchable } from "tandem-common/object";
 import { bindable, mixin, virtual, patchable } from "tandem-common/decorators";
 import { IInjectable, Injector, DEPENDENCIES_NS, Dependencies } from "tandem-common/dependencies";
 import { EntityFactoryDependency, EntityDocumentDependency, ENTITY_DOCUMENT_NS } from "tandem-common/dependencies";
@@ -24,10 +24,11 @@ export * from "./base";
 export * from "./display";
 export * from "./utils";
 
-export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEntity<any>> implements IEntity {
+export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEntity<any>> implements IEntity, IPatchable {
 
   public metadata: EntityMetadata;
 
+  @patchable
   protected _source: T;
 
   public context: any;
@@ -61,6 +62,10 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   protected getChildContext() {
     return this.context;
+  }
+
+  public patch(entity: BaseEntity<any>) {
+    this.onEvaluated();
   }
 
   public flatten(): Array<IEntity> {

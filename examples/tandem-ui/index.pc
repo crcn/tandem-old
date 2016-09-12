@@ -9,5 +9,5 @@
 </template>
 
 <template title="CSS Pane" style="top: 182px;left: 1px;">
-  <pane title="CSS" />
+  <pane title="Block mist" />
 </template>

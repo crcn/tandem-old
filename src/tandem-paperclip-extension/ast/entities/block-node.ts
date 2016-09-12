@@ -9,6 +9,7 @@ import {
   Injector,
   BaseEntity,
   IValueEntity,
+  patchTreeNode,
   EntityFactoryDependency
 } from "tandem-common";
 
@@ -36,10 +37,7 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
     return new GroupNodeSection();
   }
 
-  async evaluate(context: any) {
-    const ret = await super.evaluate(context);
-
-
+  async load() {
     let value;
     let scriptExecuted = false;
 
@@ -58,14 +56,13 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
         value = execute(this.context);
         scriptExecuted = true;
       } catch (e) {
-        console.log(e.stack);
         value = this.source.toString();
       }
     }
 
     this._executed = scriptExecuted;
     this.value = value;
-    if (!scriptExecuted) return ret;
+    if (!scriptExecuted) return;
 
     for (const item of Array.isArray(value) ? value : [value]) {
       if (item instanceof BaseEntity) {
@@ -74,7 +71,9 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
         // thing is to re-use the HTML Text entity. This way any changes to the item
         // source get reflected back to the attribute it came from
         if (item instanceof HTMLAttributeEntity) {
-          this.appendChild(Injector.inject(new HTMLTextEntity(item.source), this.dependencies));
+          const entity = new HTMLTextEntity(item.source);
+          this.appendChild(entity);
+          await entity.evaluate(this.context);
         } else {
           this.appendChild(item.clone());
         }
@@ -82,8 +81,12 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
         await this.loadExpressionAndAppendChild(parsePC(String(item)));
       }
     }
+  }
 
-    return ret;
+  async update() {
+    const clone = this.cloneLeaf();
+    await clone.evaluate(this.context);
+    patchTreeNode(this, clone);
   }
 
   cloneLeaf() {

@@ -36,7 +36,6 @@ export function convertPostCSSAST(root: postcss.Root, expressionClasses: any = {
     return previousLine = new Line({ start: start, end: start + line.length + 1 });
   });
   const newRoot = _convertPostCSSAST(root, lines, root, Object.assign({}, defaultExpressionClasses, expressionClasses));
-  newRoot.source = { content: root.source.input.css };
   return newRoot;
 }
 

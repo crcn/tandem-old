@@ -1,10 +1,10 @@
 import "./template.scss";
 
 import { WrapBus } from "mesh";
+import { IEntity } from "tandem-common/ast";
 import { MetadataKeys } from "tandem-front-end/constants";
 import bubbleIframeEvents from "tandem-front-end/utils/html/bubble-iframe-events";
 import { FrontEndApplication } from "tandem-front-end/application";
-import { IEntity, getContext } from "tandem-common/ast";
 import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
 import { NodeSection, GroupNodeSection } from "tandem-html-extension/dom";
 import { Action, IActor, inject, TreeNodeAction } from "tandem-common";
@@ -53,7 +53,7 @@ class RegisteredPCTemplateEntity extends HTMLElementEntity {
     });
 
     for (const attribute of this.attributes) {
-      context[attribute.name] = attribute.value;
+      context[attribute.name] = attribute;
     }
 
     return context;
