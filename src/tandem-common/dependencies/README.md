@@ -22,7 +22,6 @@ class SomeService implements IInjectable {
   public started: boolean;
 
   didInject() {
-    console.log(this.app.config); // { port: 8080 }
     const server = new Server();
     server.listen(this.app.config.port);
     this.started = true;
@@ -39,7 +38,6 @@ const classFactoryDependency = dependencies.query<ClassFactoryDependency<SomeSer
 const service:SomeService = classFactoryDependency.create();
 
 // didInject triggered - server started
-console.log(service.started); // true
 ```
 
 TODOS:

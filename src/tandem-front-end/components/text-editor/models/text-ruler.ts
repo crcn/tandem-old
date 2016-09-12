@@ -103,7 +103,6 @@ class TextRuler {
   _getLetterSpacing() {
     if (this._sizes.letterSpacing) return this._sizes.letterSpacing;
     if (!this.style) return 0;
-    console.log(this.style.letterSpacing);
     const ls = 0; // calculateLengthInPixels(this.style.letterSpacing);
     return this._sizes.letterSpacing = typeof ls === "number" ? ls : 0;
   }

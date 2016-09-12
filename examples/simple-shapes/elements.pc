@@ -1,5 +1,4 @@
+<link rel="stylesheet" type="text/css" href="./style.css">
 <div style="background: rgba(0,0,0,0.1);position: absolute;width: 209px;height: 137px;left: 136px;top: 71px;">
-    <div style="background: rgba(0,0,0,0.1);position: absolute;width: 55px;height: 38px;left: 64px;top: 33px;">
-        <div style="background: rgba(0,0,0,0.1);position: absolute;width: 17px;height: 7px;left: 12px;top: 10px;"></div>
-    </div>
+  <div class="item" style="top: 57px;left: 98px;width: 69px;height: 63px;"></div>
 </div>

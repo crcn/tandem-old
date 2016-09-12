@@ -143,6 +143,8 @@ export class HTMLExpressionLoader extends BaseExpressionLoader {
         content = spliceChunk(content, buffer.join(""), parent.position);
       }
     } else if (action.type === TreeNodeAction.NODE_REMOVED) {
+
+      // TODO - remove whitespace before node
       const chunk = getChunk(content, action.target.position);
       content = spliceChunk(content, "", action.target.position);
 

@@ -1,4 +1,4 @@
-<link type="text/css" href="./style.css" />
+<link rel="stylesheet" type="text/css" href="./style.css" />
 <artboard id="website" title="Website" class="desktop-1024-768">
   <div class="item">
     <div /></div>

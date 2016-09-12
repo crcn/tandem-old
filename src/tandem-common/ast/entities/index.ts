@@ -32,6 +32,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   public context: any;
   private _loaded: boolean;
+  private _mappedSourceChildren: Array<IExpression>;
 
   constructor(_source: T) {
     super();
@@ -99,7 +100,11 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   protected async evaluateChildren() {
 
-    const mappedSourceChildren = this.mapSourceChildren();
+    console.log("EVAUATE", this.constructor.name, (<any>this).source.name);
+
+    const previousMappedSourceChildren = (this._mappedSourceChildren || []).concat();
+    const mappedSourceChildren = this.mapSourceChildren().concat();
+    this._mappedSourceChildren =  mappedSourceChildren.concat();
     for (let i = 0, n = mappedSourceChildren.length; i < n; i++) {
       const childSource = mappedSourceChildren[i];
       let childEntity   = this.children[i];
@@ -119,10 +124,10 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
       }
     }
 
-    while (this.children.length > mappedSourceChildren.length) {
-      const child = this.lastChild;
-      this.removeChild(child);
-      child.dispose();
+    for (let i = mappedSourceChildren.length, n  = this.children.length; i < n; i++) {
+      if (mappedSourceChildren.indexOf(this.children[i].source) !== -1) {
+        this.removeChild(this.children[i--]);
+      }
     }
   }
 

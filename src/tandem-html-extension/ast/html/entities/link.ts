@@ -63,6 +63,10 @@ export class LinkEntity extends HTMLElementEntity {
 
     const type = this.source.getAttribute("type");
 
+    if (!type) {
+      throw new Error(`type property is missing from link entity`);
+    }
+
     this._file = await File.open(this.href, this.dependencies, type) as DocumentFile<any>;
     this._file.sync();
 

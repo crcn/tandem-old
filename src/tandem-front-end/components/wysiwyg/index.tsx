@@ -39,7 +39,6 @@ const htmlTokenizer = {
 
 const tokenComponentFactory = {
   create({ token }) {
-    console.log(token);
     return null;
   }
 };

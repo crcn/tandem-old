@@ -36,10 +36,6 @@ export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> imp
     return new NodeSection(document.createElement(this.source.name));
   }
 
-  static mapSourceChildren(source: HTMLElementExpression): Array<IExpression> {
-    return source.children;
-  }
-
   removeAttribute(name: string) {
     for (const attribute of this.attributes) {
       if (attribute.name === name) {
