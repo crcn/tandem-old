@@ -125,15 +125,28 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   protected async evaluateChildren() {
 
     const previousMappedSourceChildren = this._mappedSourceChildren || [];
+    const mappedSourceChildren         = this.mapSourceChildren().concat();
 
     // copy source children in case the returned value is a reference that could
     // be mutated outside of this implemenetation.
-    const mappedSourceChildren = this.mapSourceChildren().concat();
     this._mappedSourceChildren =  mappedSourceChildren;
     for (let i = 0, n = mappedSourceChildren.length; i < n; i++) {
       const childSource = mappedSourceChildren[i];
-      let childEntity   = this.children[i];
+      const oldIndex    = previousMappedSourceChildren.indexOf(childSource);
+
+      let childEntity: BaseEntity<T>;
+
+      // shuffle children around if the source exists but the entity
+      // is out of order. Note that the children may still be removed
+      // if the type is incorrect.
+      if (oldIndex !== -1 && i !== oldIndex) {
+        this.insertChildAt(this.children[oldIndex], i);
+      }
+
+      childEntity   = this.children[i];
+
       const childEntityFactory = EntityFactoryDependency.findBySource(childSource, this.context.dependencies);
+
       if (!childEntity || childEntity.source !== childSource || childEntity.constructor !== childEntityFactory.entityClass || childEntity.shouldDispose()) {
 
         if (childEntity) {
