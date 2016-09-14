@@ -14,10 +14,13 @@ import { LayerLabelComponentFactoryDependency } from "tandem-front-end/dependenc
 class CSSRuleLayerLabel extends React.Component<{ app: FrontEndApplication, workspace: Workspace, entity: CSSRuleEntity }, any> {
 
   render() {
+
+    const selector = String(this.props.entity.source.selector).trim();
+
     return <span
       className="m-label m-css-rule-layer-label">
-      <span className="m-css-rule-layer-label--rule-name" onDoubleClick={this.edit}>
-        { String(this.props.entity.source.selector.toString() || "").trim() }
+      <span className="entity other attribute-name" onDoubleClick={this.edit}>
+        { selector }
       </span>
     </span>;
   }

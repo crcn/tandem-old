@@ -1,17 +1,12 @@
 @import "tandem-front-end/scss/variables";
 
 .m-css-atrule-layer-label {
-  &--name {
-    color: $color-pink-10;
+  & .keyword {
     &:before {
       content: "@";
     }
     &:after {
       content: " ";
     }
-  }
-
-  &--params {
-    color: palevioletred;
   }
 }

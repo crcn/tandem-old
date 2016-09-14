@@ -17,10 +17,10 @@ class CSSAtRuleLayerLabelComponent extends React.Component<{ app: FrontEndApplic
   render() {
     return <span
       className="m-label m-css-atrule-layer-label">
-      <span className="m-css-atrule-layer-label--name">
+      <span className="entity name keyword control">
         { String(this.props.entity.source.name || "").trim() }
       </span>
-      <span className="m-css-atrule-layer-label--params">
+      <span className="string">
         { String(this.props.entity.source.params || "").trim() }
       </span>
     </span>;

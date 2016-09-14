@@ -1,15 +1,3 @@
-@import "tandem-front-end/scss/variables";
-
-.m-css-rule-layer-label {
-  &--rule-name {
-    color: $color-purple-6;
-    &:after {
-      color: $color-grey-7;
-    }
-  }
-
-  &--selection-count {
-    cursor: pointer;
-    color: rgba(255, 255, 255, 0.3);
-  }
+div {
+  color: 10px;
 }

@@ -28,7 +28,7 @@ class CommentLayerLabel extends React.Component<{ entity: HTMLCommentEntity, con
     const connectDragSource = this.props.connectDragSource;
 
     return connectDragSource(<span
-      className="m-label m-comment-layer-label"
+      className="m-label m-comment-layer-label comment"
       onDoubleClick={this.editLabel.bind(this)}>
       {
          String(this.props.entity.value || "").trim()

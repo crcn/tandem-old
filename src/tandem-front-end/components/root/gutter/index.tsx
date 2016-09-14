@@ -7,7 +7,7 @@ import { SideDraggerComponent } from "tandem-front-end/components/side-dragger";
 import { ENTITY_PANE_COMPONENT_NS } from "tandem-front-end/dependencies";
 import { MetadataValueReference, DefaultValueReference, MinMaxValueReference } from "tandem-common/reference";
 
-export class SidebarComponent extends React.Component<{ app: FrontEndApplication, position: string, maxWidth?: number, registeredComponentNs: string, hideKey: string, sizeKey: string }, any> {
+export class GutterComponent extends React.Component<{ app: FrontEndApplication, position: string, maxWidth?: number, registeredComponentNs: string, hideKey: string, sizeKey: string }, any> {
   render() {
 
     const sidebarSizeReference = new MinMaxValueReference(
@@ -20,7 +20,7 @@ export class SidebarComponent extends React.Component<{ app: FrontEndApplication
       width: sidebarSizeReference.value
     };
 
-    return this.props.app.settings.get(this.props.hideKey) === true ? null : <div className={["m-sidebar", this.props.position].join(" ")} style={style}>
+    return this.props.app.settings.get(this.props.hideKey) === true ? null : <div className={["m-sidebar gutter", this.props.position].join(" ")} style={style}>
       <RegisteredComponent {...this.props} ns={this.props.registeredComponentNs} />
       <SideDraggerComponent position={this.props.position === "right" ? "left" : "right"} reference={sidebarSizeReference} />
     </div>;

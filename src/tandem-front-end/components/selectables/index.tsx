@@ -115,7 +115,7 @@ export class SelectablesComponent extends React.Component<{
     // if (selection.preview.currentTool.type !== "pointer") return null;
 
     const selectables = allEntities.filter((entity: IVisibleEntity) => (
-      entity.display && (this.props.canvasRootSelectable || entity.metadata.get(MetadataKeys.CANVAS_ROOT) !== true || entity.children.length === 0) && entity.display.visible
+      entity.display && (this.props.canvasRootSelectable || entity.metadata.get(MetadataKeys.CANVAS_ROOT) !== true || entity.children.find((child) => child["display"]) == null) && entity.display.visible
     )).map((entity, i) => (
       <SelectableComponent
         {...this.props}

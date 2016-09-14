@@ -17,7 +17,7 @@ class CSSCommentLayerLabelComponent extends React.Component<{ app: FrontEndAppli
 
   render() {
     return <span
-      className="m-label m-css-comment-layer-label">
+      className="m-label m-css-comment-layer-label comment">
       { String(this.props.entity.source.value || "").trim() }
     </span>;
   }

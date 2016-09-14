@@ -35,9 +35,10 @@ class CSSDeclarationLayerLabelComponent extends React.Component<{ app: FrontEndA
   render() {
     return <span
       className="m-label m-declaration-layer-label">
-      <span className="m-declaration-layer-label--name">
+      <span className="support type">
         { String(this.props.entity.source.name.toString() || "").trim() }
       </span>
+      <span>:&nbsp;</span>
       <span className="m-declaration-layer-label--value">
         <TextEditorComponent
           ref="editor"
@@ -47,6 +48,8 @@ class CSSDeclarationLayerLabelComponent extends React.Component<{ app: FrontEndA
           onKeyDown={this.onKeyDown}
           onChange={this.onValueChange}
           source={this._value = this.props.entity.source.value} />
+
+          <span>;</span>
       </span>
     </span>;
   }

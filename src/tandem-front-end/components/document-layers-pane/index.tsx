@@ -13,7 +13,7 @@ import { DocumentPaneComponentFactoryDependency } from "tandem-front-end/depende
 class LayersPaneComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication }, any> {
   render() {
     if (!this.props.workspace.file || !this.props.workspace.file.entity) return null;
-    return <PaneComponent title="Layers">
+    return <PaneComponent>
       {
         this.props.workspace.file.entity.children.map((entity, i) => <LayerComponent depth={0} {...this.props} entity={entity} key={i} />)
       }

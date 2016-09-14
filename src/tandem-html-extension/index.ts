@@ -16,6 +16,11 @@ import { cssDeclarationLayerLabelComponentDependency }from "./components/css-dec
 import { cssAtRuleLayerLabelComponentDependency } from "./components/css-atrule-layer-label";
 import { cssCommentLayerLabelComponentDependency } from "./components/css-comment-layer-label";
 
+// token components
+import { cssUnitEditorTokenComponentFactoryDependency } from "./components/css-unit-editor-token";
+import { cssNumericEditorTokenComponentFactoryDependency } from "./components/css-numeric-editor-token";
+import { cssReferenceEditorTokenComponentFactoryDependency } from "./components/css-reference-editor-token";
+
 // models
 import { cssFileDependency } from "./models/css-file";
 import { htmlFileModelDependency } from "./models/html-file";
@@ -62,6 +67,11 @@ export const dependency = [
   elementLayerLabelComponentDependency,
   cssRuleLayerLabelComponentDependency,
   cssDeclarationLayerLabelComponentDependency,
+
+  // unit components
+  cssUnitEditorTokenComponentFactoryDependency,
+  cssNumericEditorTokenComponentFactoryDependency,
+  cssReferenceEditorTokenComponentFactoryDependency,
 
   // services
   pastHTMLServiceDependency,

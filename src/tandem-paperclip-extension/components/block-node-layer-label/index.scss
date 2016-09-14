@@ -1,12 +1,4 @@
 @import "tandem-front-end/scss/variables";
 
 .m-block-node-layer-label {
-  color: $color-pink-10;
-  &:before {
-    content: "${ ";
-  }
-
-  &:after {
-    content: " }";
-  }
 }

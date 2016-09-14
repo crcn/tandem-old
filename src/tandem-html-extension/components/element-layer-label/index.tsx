@@ -10,8 +10,8 @@ import * as AutosizeInput from "react-input-autosize";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { LayerLabelComponentFactoryDependency } from "tandem-front-end/dependencies";
 import {
-  parseHTML,
   HTMLElementEntity,
+  HTMLExpressionLoader,
   HTMLElementExpression,
   HTMLFragmentExpression,
   VisibleHTMLElementEntity,
@@ -73,7 +73,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
     const connectDragSource = this.props.connectDragSource;
 
     const buffer = [
-      <span className="m-element-layer-label--tag" key="lt">&lt;</span>
+      <span className="meta punctuation definition tag begin" key="lt">&lt;</span>
     ];
 
     const editTagName = this.props.entity.metadata.get(MetadataKeys.EDIT_LAYER);
@@ -83,7 +83,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
     } else {
       buffer.push(editTagName ?
         this.renderHTMLInput() :
-        <span className="m-element-layer-label--tag-name" key="tagName">{entity.source.name.toLowerCase()}</span>
+        <span className="entity name tag" key="tagName">{entity.source.name.toLowerCase()}</span>
       );
 
       // filter them, and remove the items we do not want to display
@@ -93,15 +93,15 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
       entity.attributes.forEach(function (attr) {
         const k = attr.name;
         buffer.push(
-          <span className="m-element-layer-label--key" key={k + 1}>&nbsp;{k}</span>,
-          <span className="m-element-layer-label--operator" key={k + 2}>=</span>,
-          <span className="m-element-layer-label--string" key={ k + 3}>"{attr.value}"</span>
+          <span className="entity other attribute-name" key={k + 1}>&nbsp;{k}</span>,
+          <span className="entity name meta" key={k + 2}>=</span>,
+          <span className="string" key={ k + 3}>"{attr.value}"</span>
         );
       });
     }
 
     buffer.push(
-      <span className="m-element-layer-label--tag" key="et">
+      <span className="meta punctuation definition tag end" key="et">
         { entity.childNodes.length === 0 ? " /" : void 0 }
         &gt;
       </span>
@@ -136,8 +136,10 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
 
     if (!this.state.source) return this.cancelEditing();
 
+    const loader = new HTMLExpressionLoader();
+
     try {
-      ast = await parseHTML(`<${this.state.source} />`) as HTMLFragmentExpression;
+      ast = await loader.load({ content: `<${this.state.source} />` }) as HTMLFragmentExpression;
     } catch (e) {
       return this.cancelEditing();
     }
@@ -146,7 +148,8 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
 
     // replace - tag name might have changed -- this cannot be patched
     const parentSource = entity.source.parent;
-    parentSource.insertChildAt(ast, parentSource.children.indexOf(entity.source));
+
+    parentSource.insertChildAt(ast, parentSource.children.indexOf(entity.source) + 1);
     parentSource.removeChild(entity.source);
 
     this.cancelEditing();

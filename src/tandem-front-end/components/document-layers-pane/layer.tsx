@@ -165,6 +165,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     const selected = selection && selection.indexOf(entity) !== -1;
 
     const headerClassName = cx({
+      "layer": true,
       "m-layers-pane-component-layer--header": true,
       "drag-over": isOver && canDrop,
       "hover": this.props.entity.metadata.get(MetadataKeys.HOVERING) && !this.state.hover && !selected,

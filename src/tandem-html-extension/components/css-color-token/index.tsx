@@ -6,9 +6,8 @@ import { CSSTokenTypes } from "tandem-html-extension/tokenizers";
 
 export class ColorTokenComponent extends React.Component<{ token: Token }, any> {
   render() {
-    return <span>
-      <span style={{ color: this.props.token.value }}>#</span>
-      { this.props.token.value.substr(1) }
+    return <span className="constant other">
+      { this.props.token.value }
     </span>;
   }
 }

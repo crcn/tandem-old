@@ -28,12 +28,17 @@ class BlockLayerLabel extends React.Component<{ entity: PCBlockNodeEntity, conne
     const connectDragSource = this.props.connectDragSource;
 
     return connectDragSource(<span
-      className="m-label m-block-node-layer-label"
       title={this.props.entity.source.value}
       onDoubleClick={this.editLabel.bind(this)}>
-      {
-         String(this.props.entity.source.value || "").trim()
-      }
+      <span className="meta definition punctuation tag begin">
+        {"${ "}
+      </span>
+      <span className="entity name instance">
+        { String(this.props.entity.source.value).trim() }
+      </span>
+      <span className="meta definition punctuation tag end">
+        {" }"}
+      </span>
     </span>);
   }
 

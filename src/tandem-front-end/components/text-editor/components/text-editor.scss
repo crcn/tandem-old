@@ -7,6 +7,10 @@
     left: -100px;
   }
 
+  &--token {
+    display: inline-block;
+  }
+
 
   position: relative;
   // background-color: rgba(0,0,0,0.05);
@@ -30,29 +34,6 @@
     position: absolute;
     top: 0px;
     left: 0px;
-  }
-
-  &--token {
-
-    display: inline-block;
-    user-select: none;
-
-    &-space {
-      position: relative;
-    }
-    &-unit {
-      color: grey;
-      cursor: pointer;
-    }
-    &-reference {
-      color: grey;
-    }
-    &-leftParen {
-      color: grey;
-    }
-    &-rightParen {
-      color: grey;
-    }
   }
 
   &--highlight {

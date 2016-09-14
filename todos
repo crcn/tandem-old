@@ -10,9 +10,9 @@
     - [x] better highlighting for drop target
     - [ ] get + button to work
     - [ ] ability to edit elements
-  - [ ] css rules
+  - [x] css rules
     - [ ] show # elements associated with rules
-    - [ ] ability to select entities
+    - [x] ability to select entities
     - [ ] ability to add new rules
 
 - [x] css parser
@@ -39,7 +39,7 @@
 
 
 - [ ] entity panes
-  - [ ] all styles
+  - [x] all styles
     - [ ] can translate the measurements
     - [ ] measurements translated to % should use calc to offset right border
     - [ ] enter key in name or value should add new declaration below current
@@ -56,21 +56,20 @@
 	        - [ ] transpiler
         	- [ ] entities
                 	- [ ] repeat
-	- [ ] scss extension
+	- [x] scss extension
 		- [ ] parse variables
 	- [ ] handlebars
 
 - [ ] optimizations
-  - [ ] memoize flatten() for entities
+  - [x] memoize flatten() for entities
   - [ ] replace most react components with transpiled tandem
   - [ ] possibly custom rendering engine (later on)
 
 - [ ] proof of concept
   - [ ] tandem must be built with tandem
-  - [ ] simple
 
 - [ ] hooks
-  - [ ]
+  - [ ] tandem built
 
 - [ ] perks
   - [ ] markdown editor

@@ -2,10 +2,10 @@ import "./index.scss";
 
 import * as React from "react";
 
-class PaneContainerComponent extends React.Component<{ title: string, onTitleClick?: Function }, any> {
+class PaneContainerComponent extends React.Component<{ title?: string, onTitleClick?: Function }, any> {
   render() {
     return <div className="m-pane-container">
-      <div style={{ cursor: this.props.onTitleClick ? "pointer" : "default" }} className="m-pane-container--header" onClick={this.props.onTitleClick}>
+      <div style={{ display: this.props.title ? "block" : "none", cursor: this.props.onTitleClick ? "pointer" : "default" }} className="m-pane-container--header" onClick={this.props.onTitleClick}>
         { this.props.title }
       </div>
       <div className="m-pane-container--content">

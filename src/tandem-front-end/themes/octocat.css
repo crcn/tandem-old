@@ -1,0 +1,308 @@
+
+
+.editor .gutter {
+  background-color: #fff;
+  color: #999;
+}
+ .gutter .line-number.cursor-line,
+ .gutter .line-number.cursor-line,
+ .gutter .line-number.cursor-line {
+  background-color: #f5f5f5;
+  color: #333;
+}
+ .has-selection .gutter .line-number.cursor-line,
+ .has-selection .gutter .line-number.cursor-line,
+ .has-selection .gutter .line-number.cursor-line {
+  background-color: #b0d6ff;
+}
+ .gutter .line-number.cursor-line-no-selection,
+ .gutter .line-number.cursor-line-no-selection,
+ .gutter .line-number.cursor-line-no-selection {
+  color: #333;
+}
+ .wrap-guide,
+ .wrap-guide,
+ .wrap-guide {
+  color: #c0c0c0;
+}
+ .indent-guide,
+ .indent-guide,
+ .indent-guide {
+  color: #c0c0c0;
+}
+ .invisible-character,
+ .invisible-character,
+ .invisible-character {
+  color: #c0c0c0;
+}
+ .search-results .marker .region,
+ .search-results .marker .region,
+ .search-results .marker .region {
+  background-color: transparent;
+  border: #c0c0c0;
+}
+ .search-results .marker.current-result .region,
+ .search-results .marker.current-result .region,
+ .search-results .marker.current-result .region {
+  border: #333;
+}
+ .cursor,
+ .cursor,
+ .cursor {
+  border-color: #000;
+}
+ .line-number.cursor-line-no-selection,
+ .line-number.cursor-line-no-selection,
+ .line-number.cursor-line-no-selection,
+ .line.cursor-line,
+ .line.cursor-line,
+ .line.cursor-line {
+  background-color: #f5f5f5;
+}
+ .line.highlight-line,
+ .line.highlight-line,
+ .line.highlight-line {
+  background: #f5f5f5 !important;
+}
+ .has-selection .line.highlight-line,
+ .has-selection .line.highlight-line,
+ .has-selection .line.highlight-line {
+  background: transparent !important;
+}
+ .highlights .highlight-selected .region,
+ .highlights .highlight-selected .region,
+ .highlights .highlight-selected .region {
+  background: transparent;
+  border-color: #e5e5e5;
+  border-radius: 2px;
+}
+ .highlights .selection .region,
+ .highlights .selection .region,
+ .highlights .selection .region {
+  background-color: #b0d6ff;
+}
+ .comment,
+ .comment,
+ .comment {
+  color: #969896;
+}
+ .constant,
+ .constant,
+ .constant,
+ .variable.other.constant,
+ .variable.other.constant,
+ .variable.other.constant {
+  color: #0086b3;
+}
+ .entity,
+ .entity,
+ .entity,
+ .entity.name,
+ .entity.name,
+ .entity.name {
+  color: #795da3;
+}
+ .variable.parameter.function,
+ .variable.parameter.function,
+ .variable.parameter.function {
+  color: #333;
+}
+ .entity.name.tag,
+ .entity.name.tag,
+ .entity.name.tag {
+  color: #63a35c;
+}
+ .keyword,
+ .keyword,
+ .keyword {
+  color: #a71d5d;
+}
+ .storage,
+ .storage,
+ .storage,
+ .storage.type,
+ .storage.type,
+ .storage.type {
+  color: #a71d5d;
+}
+ .storage.modifier.package,
+ .storage.modifier.package,
+ .storage.modifier.package,
+ .storage.modifier.import,
+ .storage.modifier.import,
+ .storage.modifier.import,
+ .storage.type.java,
+ .storage.type.java,
+ .storage.type.java {
+  color: #333;
+}
+ .string,
+ .string,
+ .string,
+ .punctuation.definition.string,
+ .punctuation.definition.string,
+ .punctuation.definition.string,
+ .string .punctuation.section.embedded .source,
+ .string .punctuation.section.embedded .source,
+ .string .punctuation.section.embedded .source {
+  color: #183691;
+}
+ .support,
+ .support,
+ .support {
+  color: #0086b3;
+}
+ .meta.property-name,
+ .meta.property-name,
+ .meta.property-name {
+  color: #0086b3;
+}
+ .variable,
+ .variable,
+ .variable {
+  color: #333;
+}
+ .variable.other,
+ .variable.other,
+ .variable.other {
+  color: #333;
+}
+ .invalid.deprecated,
+ .invalid.deprecated,
+ .invalid.deprecated {
+  color: #b52a1d;
+}
+ .invalid.illegal,
+ .invalid.illegal,
+ .invalid.illegal {
+  font-style: italic;
+  text-decoration: underline;
+  color: #f8f8f8;
+  background-color: #b52a1d;
+}
+ .string .source,
+ .string .source,
+ .string .source {
+  color: #333;
+}
+ .string .variable,
+ .string .variable,
+ .string .variable {
+  color: #0086b3;
+}
+ .string.regexp,
+ .string.regexp,
+ .string.regexp {
+  color: #183691;
+}
+ .string.regexp.character-class,
+ .string.regexp.character-class,
+ .string.regexp.character-class,
+ .string.regexp .constant.character.escape,
+ .string.regexp .constant.character.escape,
+ .string.regexp .constant.character.escape,
+ .string.regexp .source.ruby.embedded,
+ .string.regexp .source.ruby.embedded,
+ .string.regexp .source.ruby.embedded,
+ .string.regexp .string.regexp.arbitrary-repitition,
+ .string.regexp .string.regexp.arbitrary-repitition,
+ .string.regexp .string.regexp.arbitrary-repitition {
+  color: #183691;
+}
+ .string.regexp .constant.character.escape,
+ .string.regexp .constant.character.escape,
+ .string.regexp .constant.character.escape {
+  font-weight: bold;
+  color: #63a35c;
+}
+ .support.constant,
+ .support.constant,
+ .support.constant {
+  color: #0086b3;
+}
+ .support.variable,
+ .support.variable,
+ .support.variable {
+  color: #0086b3;
+}
+ .meta.module-reference,
+ .meta.module-reference,
+ .meta.module-reference {
+  color: #0086b3;
+}
+ .markup.list,
+ .markup.list,
+ .markup.list {
+  color: #693a17;
+}
+ .markup.heading,
+ .markup.heading,
+ .markup.heading,
+ .markup.heading .entity.name,
+ .markup.heading .entity.name,
+ .markup.heading .entity.name {
+  font-weight: bold;
+  color: #1d3e81;
+}
+ .markup.quote,
+ .markup.quote,
+ .markup.quote {
+  color: #008080;
+}
+ .markup.italic,
+ .markup.italic,
+ .markup.italic {
+  font-style: italic;
+  color: #333;
+}
+ .markup.bold,
+ .markup.bold,
+ .markup.bold {
+  font-weight: bold;
+  color: #333;
+}
+ .markup.raw,
+ .markup.raw,
+ .markup.raw {
+  color: #0086b3;
+}
+ .markup.deleted,
+ .markup.deleted,
+ .markup.deleted,
+ .meta.diff.header.from-file,
+ .meta.diff.header.from-file,
+ .meta.diff.header.from-file {
+  color: #bd2c00;
+  background-color: #ffecec;
+}
+ .markup.inserted,
+ .markup.inserted,
+ .markup.inserted,
+ .meta.diff.header.to-file,
+ .meta.diff.header.to-file,
+ .meta.diff.header.to-file {
+  color: #55a532;
+  background-color: #eaffea;
+}
+ .meta.diff.range,
+ .meta.diff.range,
+ .meta.diff.range {
+  font-weight: bold;
+  color: #795da3;
+}
+ .meta.diff.header,
+ .meta.diff.header,
+ .meta.diff.header {
+  color: #0086b3;
+}
+ .meta.separator,
+ .meta.separator,
+ .meta.separator {
+  font-weight: bold;
+  color: #1d3e81;
+}
+ .meta.output,
+ .meta.output,
+ .meta.output {
+  color: #1d3e81;
+}

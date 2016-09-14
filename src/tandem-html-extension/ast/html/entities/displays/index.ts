@@ -26,8 +26,8 @@ function getParentNode(node: Node): HTMLElement {
   const parentNode = <Node>node.parentNode;
 
   if (parentNode && parentNode.nodeName === "#document") {
-    if (node.ownerDocument.defaultView !== window) {
-      const localWindow  = node.ownerDocument.defaultView;
+    const localWindow  = node.ownerDocument.defaultView;
+    if (localWindow && localWindow !== window) {
       const parentWindow = localWindow.parent;
       return Array.prototype.find.call(parentWindow.document.querySelectorAll("iframe"), (iframe) => {
         return iframe.contentWindow === localWindow;

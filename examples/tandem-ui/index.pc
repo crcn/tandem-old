@@ -1,52 +1,5 @@
 <link rel="stylesheet" type="text/scss" href="./style.scss">
-<template id="pane" title="Pane">
-  <div class="m-pane">
-    <div class="m-pane--header">${ title }</div>
-    <div class="m-pane--content">
-      ${children}
-    </div>
-  </div>
+
+<template id="gutter">
+
 </template>
-
-<template title="CSS Pane" style="top: 182px;left: 1px;">
-  <pane title="CSS Pane">
-    <div>
-      container this
-    </div>
-  </pane>
-</template>
-
-<template title="Layers" style="background: white;position: absolute;width: 191px;height: 336px;left: 343px;top: -2px;">
-  <span class="m-layer m-element">
-    <span class="label">
-
-      <span class="operator">
-        &lt;
-      </span>
-
-      <span class="modifier">
-        div
-      </span>
-      &nbsp;
-      <span class="modifier">
-        class
-      </span>
-      <span class="operator">
-        =
-      </span>
-      <span class="string">
-        "item"
-      </span>
-
-      <span class="operator">
-        &gt;
-      </span>
-    </span>
-
-    <div class="m-layer-children">
-      child
-    </div>
-
-  </span>
-</template>
-

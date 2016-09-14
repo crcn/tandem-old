@@ -53,7 +53,7 @@ export class CSSTokenizer {
       }
 
       if (addToken(/^\#\w{1,6}/, CSSTokenTypes.COLOR)) continue;
-      if (addToken(/^\w+(\-\w+)?/, CSSTokenTypes.REFERENCE)) continue;
+      if (addToken(/^[$\w]+[\-\w\d]+/, CSSTokenTypes.REFERENCE)) continue;
       if (addToken(/^\u0020+/, TokenTypes.SPACE)) continue;
       if (addToken(/^\t+/, TokenTypes.TAB)) continue;
       if (addToken(/^[\/\*\-\+]/, TokenTypes.OPERATOR)) continue;
