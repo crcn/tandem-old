@@ -40,6 +40,7 @@ import {
 import {
 
 } from "./utils";
+
 export class HTMLExpressionLoader extends BaseExpressionLoader {
 
   parseContent(content: string) {
@@ -48,8 +49,6 @@ export class HTMLExpressionLoader extends BaseExpressionLoader {
 
   createFormattedSourceContent(action: Action) {
     let content = this.source.content;
-
-    console.log(action.type, action.target.toString());
 
     if (action.type === TreeNodeAction.NODE_ADDED) {
 

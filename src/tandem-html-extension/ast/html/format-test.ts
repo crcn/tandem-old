@@ -55,7 +55,6 @@ describe(__filename + "#", () => {
       loader.options = { indentation: " " };
       const b = parseHTML(change);
       patchTreeNode(loader.expression, b);
-      await timeout(50);
       expect(loader.source.content).to.equal(output);
     });
   });

@@ -54,7 +54,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
     setTimeout(() => {
       element.focus();
       element.ownerDocument.execCommand("selectAll", false, null);
-    }, 10);
+    }, 100);
   }
 
   private _onKeyDown = (event: KeyboardEvent) => {

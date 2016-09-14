@@ -17,9 +17,9 @@ export class Observable implements IObservable {
       if (!this._observers) {
         this._observers = actor;
       } else if (!Array.isArray(this._observers)) {
-        this._observers = [this._observers, actor];
+        this._observers = [actor, this._observers];
       } else {
-        this._observers.push(actor);
+        this._observers.unshift(actor);
       }
     }
   }
@@ -48,9 +48,9 @@ export class Observable implements IObservable {
     action.currentTarget = this._target;
     if (!this._observers) return;
     if (!Array.isArray(this._observers)) return this._observers.execute(action);
-    for (const observer of this._observers) {
+    for (let i = this._observers.length; i--; ) {
       if (action.canPropagateImmediately === false) break;
-      observer.execute(action);
+      this._observers[i].execute(action);
     }
   }
 }

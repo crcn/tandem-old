@@ -114,27 +114,24 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     this._allChildEntities = undefined;
   }
 
+  // TODO - make this abstract
   protected async load() {
     await this.evaluateChildren();
   }
 
+  // TODO - make this abstract
   protected async update() {
     await this.evaluateChildren();
   }
 
   protected async evaluateChildren() {
 
-    const previousMappedSourceChildren = this._mappedSourceChildren || [];
-    const mappedSourceChildren         = this.mapSourceChildren().concat();
+    const mappedSourceChildren         = this.mapSourceChildren();
 
-    // copy source children in case the returned value is a reference that could
-    // be mutated outside of this implemenetation.
-    this._mappedSourceChildren =  mappedSourceChildren;
     for (let i = 0, n = mappedSourceChildren.length; i < n; i++) {
       const childSource = mappedSourceChildren[i];
-      const oldIndex    = previousMappedSourceChildren.indexOf(childSource);
-
-      let childEntity: BaseEntity<T>;
+      let childEntity: BaseEntity<T>   = this.children.find((child) => child.source === childSource);
+      let oldIndex      = this.children.indexOf(childEntity);
 
       // shuffle children around if the source exists but the entity
       // is out of order. Note that the children may still be removed
@@ -162,10 +159,10 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
       }
     }
 
-    for (let i = mappedSourceChildren.length, n  = this.children.length; i < n; i++) {
-      if (previousMappedSourceChildren.indexOf(this.children[i].source) !== -1) {
-        this.removeChild(this.children[i--]);
-        n--;
+    for (let i = this.children.length; i--; ) {
+      const child = this.children[i];
+      if (mappedSourceChildren.indexOf(child.source) === -1) {
+        this.removeChild(child);
       }
     }
   }
@@ -237,5 +234,15 @@ export abstract class BaseValueEntity<T extends IExpression & IValued> extends B
 
   protected onSourceValueChange(newValue: any, oldValue: any) {
     this.value = newValue;
+  }
+}
+
+// TODO
+export class EntityChildSourceSynchronizer {
+  constructor(readonly entity: IEntity, readonly mapSourceChildren: Function) {
+
+  }
+  async load() {
+
   }
 }
