@@ -51,7 +51,10 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   componentWillUpdate(props) {
-    if (props.zoom !== this.props.zoom) {
+    if (props.workspace !== this.props.workspace) {
+      requestAnimationFrame(this._recenter);
+    } else if (props.zoom !== this.props.zoom) {
+      console.log(this.props.zoom, props.zoom);
       this._center(this.props.zoom, props.zoom);
     }
   }
@@ -126,7 +129,12 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   componentDidMount() {
+    this._recenter();
+  }
+
+  _recenter = () => {
     const body = (this.refs as any).isolate.body;
+    this._mousePosition = undefined;
 
     let width  = body.offsetWidth;
     let height = body.offsetHeight;

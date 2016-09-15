@@ -27,7 +27,6 @@ export default class BackEndService extends IOService<IApplication> {
     this._client = SocketIOClient(`//${window.location.hostname}:${this.app.config.backend.port}`);
     await this.addConnection(this._client);
   }
-
 }
 
 export const dependency = new ApplicationServiceDependency("back-end", BackEndService);

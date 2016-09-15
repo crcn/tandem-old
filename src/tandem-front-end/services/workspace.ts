@@ -38,10 +38,6 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
   async [InitializeAction.INITIALIZE](action: Action) {
     await this._loadWorkspaces();
-
-    // set the pointer tool as default. TODO - this
-    // will need to change if the editor differs depending on the file type
-    await this.bus.execute(new SetToolAction(this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns)));
   }
 
   async _loadWorkspaces() {
@@ -60,11 +56,14 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
       // odd code, but we need to listen when the document is *successfuly*
       // loaded in before initializing the app. It may load with errors which
       // will break initialization
-      const loadObserver = new WrapBus((action: Action) => {
+      const loadObserver = new WrapBus(async (action: Action) => {
         if (action.type !== DocumentFileAction.LOADED) return;
         this.bus.register(this.app.workspace = new Workspace(<DocumentFile<any>>file));
         file.observe(this.app.bus);
         file.unobserve(loadObserver);
+        // set the pointer tool as default. TODO - this
+        // will need to change if the editor differs depending on the file type
+        await this.bus.execute(new SetToolAction(this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns)));
         resolve();
       });
 
@@ -74,8 +73,13 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     });
   }
 
-  [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
-    return this._loadWorkspaces();
+  async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
+    await this._loadWorkspaces();
+
+    // if the document is hidden, then notify the back-end
+    // that there is no visible tandem window, so it should open another
+    // browser tab
+    return !document.hidden;
   }
 
   [ZoomAction.ZOOM](action: ZoomAction) {

@@ -18,7 +18,7 @@ export class OpenProjectAction extends Action {
   constructor(readonly path: string) {
     super(OpenProjectAction.OPEN_PROJECT_FILE);
   }
-  static async execute({ path }: { path: string }, bus: IActor) {
+  static async execute({ path }: { path: string }, bus: IActor): Promise<boolean> {
     return (await bus.execute(new OpenProjectAction(path)).read()).value;
   }
 }

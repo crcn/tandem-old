@@ -106,14 +106,17 @@ export async function activate(context: vscode.ExtensionContext) {
         }, server.bus);
     }, 50);
 
-    let startServerCommand = vscode.commands.registerCommand("extension.tandemOpenCurrentFile", () => {
-        exec(`open http://localhost:${port}`);
+    let startServerCommand = vscode.commands.registerCommand("extension.tandemOpenCurrentFile", async () => {
 
         _update(vscode.window.activeTextEditor.document);
 
-        return OpenProjectAction.execute({
+        const hasOpenWindow = (await OpenProjectAction.execute({
             path: fixFileName(vscode.window.activeTextEditor.document.fileName)
-        }, server.bus);
+        }, server.bus));
+
+        if (!hasOpenWindow) {
+            exec(`open http://localhost:${port}`);
+        }
     });
 
     context.subscriptions.push(startServerCommand);

@@ -10,8 +10,8 @@ import {
   DEPENDENCIES_NS,
   OpenProjectAction,
   BaseApplicationService,
-  GetPrimaryProjectFilePathAction,
   ApplicationServiceDependency,
+  GetPrimaryProjectFilePathAction,
 } from "tandem-common";
 
 @loggable()
