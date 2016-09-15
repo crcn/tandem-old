@@ -126,7 +126,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   protected async evaluateChildren() {
 
-    const mappedSourceChildren         = this.mapSourceChildren();
+    const mappedSourceChildren         = this.mapSourceChildren().concat();
 
     for (let i = 0, n = mappedSourceChildren.length; i < n; i++) {
       const childSource = mappedSourceChildren[i];

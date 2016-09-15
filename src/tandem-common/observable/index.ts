@@ -14,6 +14,10 @@ export class Observable implements IObservable {
 
   observe(...actors: Array<IActor>) {
     for (const actor of actors) {
+      if (!actor) {
+        throw new Error(`Cannot add undefined observer`);
+      }
+
       if (!this._observers) {
         this._observers = actor;
       } else if (!Array.isArray(this._observers)) {
@@ -48,9 +52,12 @@ export class Observable implements IObservable {
     action.currentTarget = this._target;
     if (!this._observers) return;
     if (!Array.isArray(this._observers)) return this._observers.execute(action);
-    for (let i = this._observers.length; i--; ) {
+
+    // fix case where observable unlistens and re-listens to events during a notifiction
+    const observers = this._observers.concat();
+    for (let i = observers.length; i--; ) {
       if (action.canPropagateImmediately === false) break;
-      this._observers[i].execute(action);
+      observers[i].execute(action);
     }
   }
 }

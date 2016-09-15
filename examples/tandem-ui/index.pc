@@ -1,15 +1,8 @@
-
-<style type="text/css">
-  .item {
-    color: red;
-  }
-</style>
-
-
-<template id="gutter" title="test">
-<div class="item">
-  color
-</div>
+<template id="gutter" title="tefsd">
+  <div class="item">
+    color
+  </div>
 </template>
+
 
 

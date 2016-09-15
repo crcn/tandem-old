@@ -145,7 +145,9 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
       return this.cancelEditing();
     }
 
-    entity.source.childNodes.forEach((child) => ast.childNodes[0].appendChild(child));
+    entity.source.childNodes.forEach((child) => {
+      ast.childNodes[0].appendChild(child);
+    });
 
     // replace - tag name might have changed -- this cannot be patched
     const parentSource = entity.source.parent;
