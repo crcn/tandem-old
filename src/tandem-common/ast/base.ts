@@ -6,6 +6,7 @@ import { IObservable, Observable } from "tandem-common/observable";
 import { IDisposable, IComparable, IPatchable } from "tandem-common/object";
 
 export interface IExpressionSource {
+  offset?: number;
   content: any;
 }
 
@@ -43,6 +44,16 @@ export abstract class BaseExpression<T extends BaseExpression<any>> extends Tree
   constructor(position: IRange) {
     super();
     this.position = position || { start: -1, end: -1 };
+  }
+
+  inRange(selection: IRange) {
+    const offset = this.source.offset || 0;
+    const start = this.position.start + offset;
+    const end   = this.position.end + offset;
+
+    return (selection.start >= start && selection.start <= end) ||
+    (selection.end   >= start && selection.end <= end) ||
+    (selection.start <= start && selection.end >= end);
   }
 
   get source(): IExpressionSource {

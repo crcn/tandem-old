@@ -6,6 +6,7 @@ import {
   loggable,
   bindable,
   BaseEntity,
+  BaseExpression,
   removeEntitySources,
   BaseApplicationService,
   ApplicationServiceDependency,
@@ -34,31 +35,22 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
     for (const entity of selectableEntities) {
 
-      const position = entity.source.position;
+      const source = <BaseExpression<any>>entity.source;
 
-      // since the source can be anything -- even binary format,
-      // we'll need to verify here that the source does indeed have a position
-      // property
-      if (position) {
-        for (const cursor of action.data) {
-          if (
-            (cursor.start >= position.start && cursor.start <= position.end) ||
-            (cursor.end   >= position.start && cursor.end <= position.end) ||
-            (cursor.start <= position.start && cursor.end >= position.end)
-          ) {
+      for (const cursor of action.data) {
+        if (source.inRange(cursor)) {
 
-            const parentIndex = selection.indexOf(entity.parent);
+          const parentIndex = selection.indexOf(entity.parent);
 
-            // there are cases where registered components will use the same source -- skip them.
-            if (selectedSources.indexOf(entity.source) !== -1) continue;
+          // there are cases where registered components will use the same source -- skip them.
+          if (selectedSources.indexOf(entity.source) !== -1) continue;
 
-            if (parentIndex > -1) {
-              selection.splice(parentIndex, 1);
-            }
-
-            selection.push(entity);
-            selectedSources.push(entity.source);
+          if (parentIndex > -1) {
+            selection.splice(parentIndex, 1);
           }
+
+          selection.push(entity);
+          selectedSources.push(entity.source);
         }
       }
     }

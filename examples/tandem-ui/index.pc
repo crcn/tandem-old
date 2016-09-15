@@ -1,8 +1,16 @@
+<style type="text/css">
+  .color, .item {
+    color: red;
+  }
+</style>
+
 <template id="gutter" title="tefsd">
   <div class="item">
     color
   </div>
 </template>
+
+
 
 
 

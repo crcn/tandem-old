@@ -55,7 +55,9 @@ const REQUEST_SAVE_TIMEOUT = process.env.TESTING ? 1 : 200;
 // TODO - need to separate this from runtime
 export abstract class DocumentFile<T extends IEntity & IObservable> extends File implements IEntityDocument {
 
+  public offset: number;
   public owner: IEntityDocument;
+  public autoSave: boolean;
 
   @bindable()
   public entity: T;
@@ -96,7 +98,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   protected abstract createEntity(ast: IExpression): T;
 
   protected onExpressionLoaderAction(action: Action) {
-    this.deferSave();
+    if (this.autoSave !== false) this.deferSave();
   }
 
   protected onRuntimeAction(action: Action) {

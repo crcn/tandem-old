@@ -52,9 +52,12 @@ export class HTMLStyleEntity extends HTMLElementEntity {
     const type = this.getAttribute("type");
     const fileFactory = FileFactoryDependency.find(type || MimeTypes.CSS, this.dependencies);
     const file = this._file = fileFactory.create({
-      content: valueSourceNode.value
-    });
+      content: valueSourceNode.value,
+      path: this.document.path
+    }) as DocumentFile<any>;
 
+    file.autoSave = false;
+    file.offset = valueSourceNode.position.start;
     file.owner = this.document;
 
     await file.load();
