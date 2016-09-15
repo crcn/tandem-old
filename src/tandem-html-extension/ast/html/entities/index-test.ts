@@ -67,7 +67,7 @@ describe(__filename + "#", () => {
     const file = await loadDocument(source);
     const div = document.createElement("div");
     div.appendChild(<Node><any>file.entity.section.toFragment());
-    expect(div.innerHTML).to.equal(source);
+    expect(div.innerHTML).to.equal(`<style></style>` + source);
   });
 
   [
@@ -86,9 +86,9 @@ describe(__filename + "#", () => {
       const file = await loadDocument(source);
       const div = document.createElement("div");
       div.appendChild(file.entity.section.toFragment());
-      expect(div.innerHTML).to.equal(source);
+      expect(div.innerHTML).to.equal(`<style></style>` + source);
       await updateDocumentSource(file, change);
-      expect(div.innerHTML).to.equal(change);
+      expect(div.innerHTML).to.equal(`<style></style>` + change);
     });
   });
 
@@ -114,9 +114,9 @@ describe(__filename + "#", () => {
 
       await updateDocumentSource(file, "<div />");
       div.appendChild(file.entity.section.toFragment());
-      expect(div.innerHTML).to.equal("<div></div>");
+      expect(div.innerHTML).to.equal("<style></style><div></div>");
       await updateDocumentSource(file, "<div>a b</div>");
-      expect(div.innerHTML).to.equal("<div>a b</div>");
+      expect(div.innerHTML).to.equal("<style></style><div>a b</div>");
       expect(file.entity.source.toString()).to.equal(`<div>a b</div>`);
     });
   });

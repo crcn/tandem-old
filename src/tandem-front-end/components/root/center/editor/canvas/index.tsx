@@ -54,7 +54,6 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
     if (props.workspace !== this.props.workspace) {
       requestAnimationFrame(this._recenter);
     } else if (props.zoom !== this.props.zoom) {
-      console.log(this.props.zoom, props.zoom);
       this._center(this.props.zoom, props.zoom);
     }
   }

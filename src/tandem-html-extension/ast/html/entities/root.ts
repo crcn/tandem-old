@@ -57,9 +57,7 @@ export class HTMLDocumentRootEntity extends HTMLNodeEntity<HTMLFragmentExpressio
 
   public async load() {
     this._globalStyle = document.createElement("style");
-    if (!process.env.TESTING) {
-      this.section.appendChild(this._globalStyle);
-    }
+    this.section.appendChild(this._globalStyle);
     await super.load();
   }
 }

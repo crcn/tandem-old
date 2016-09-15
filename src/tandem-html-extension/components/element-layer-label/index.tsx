@@ -100,13 +100,14 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
       });
     }
 
+    const childNodesKey = entity.metadata.get(MetadataKeys.CHILD_LAYER_PROPERTY) || "childNodes";
+
     buffer.push(
       <span className="meta punctuation definition tag end" key="et">
-        { entity.childNodes.length === 0 ? " /" : void 0 }
+        { entity[childNodesKey].length === 0 ? " /" : void 0 }
         &gt;
       </span>
     );
-
 
     return <div className="m-label m-element-layer-label" onDoubleClick={this.editHTML}>
       { connectDragSource(<span>{buffer}</span>) }

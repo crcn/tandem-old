@@ -30,6 +30,7 @@ import {
   HTMLExpression,
   HTMLTextExpression,
   HTMLNodeExpression,
+  IHTMLValueNodeExpression,
   HTMLCommentExpression,
   HTMLElementExpression,
   HTMLFragmentExpression,
@@ -154,8 +155,9 @@ export class HTMLExpressionLoader extends BaseExpressionLoader {
 
       // TODO - respect close tag style
     } else if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
+      const propertyChangeAction = <PropertyChangeAction>action;
+
       if (action.target instanceof HTMLAttributeExpression) {
-        const propertyChangeAction = <PropertyChangeAction>action;
         const target = <HTMLAttributeExpression>action.target;
 
         if (propertyChangeAction.property === "value") {
@@ -179,6 +181,10 @@ export class HTMLExpressionLoader extends BaseExpressionLoader {
 
           content = spliceChunk(content, newChunk, target.position);
         }
+      } else if (action.target instanceof HTMLNodeExpression) {
+        const target = <IHTMLValueNodeExpression>action.target;
+        const currentChunk = getChunk(content, target.position);
+        content = spliceChunk(content, currentChunk.replace(propertyChangeAction.oldValue, propertyChangeAction.newValue), target.position);
       }
     }
 

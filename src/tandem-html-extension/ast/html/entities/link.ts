@@ -74,10 +74,10 @@ export class LinkEntity extends HTMLElementEntity {
     this.appendChild(this._file.entity);
   }
 
-
   createSection() {
     return new GroupNodeSection();
   }
+
   cloneNode() {
     return new LinkEntity(this.source);
   }

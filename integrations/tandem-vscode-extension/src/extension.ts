@@ -104,7 +104,7 @@ export async function activate(context: vscode.ExtensionContext) {
             path: fixFileName(document.fileName),
             content: _content = newContent
         }, server.bus);
-    }, 50);
+    }, 25);
 
     let startServerCommand = vscode.commands.registerCommand("extension.tandemOpenCurrentFile", async () => {
 

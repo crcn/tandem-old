@@ -30,7 +30,6 @@ export class CSSRootEntity extends BaseEntity<CSSRootExpression> {
   }
 
   async loadCSS(context) {
-
     // slight optimization -- if the ast is modified, then we want to use that
     // for the HTML document, otherwise we want to go the faster rought and use the document content
     return this._useASTAsContent ? this.source.toString() : this.document.content;

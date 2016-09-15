@@ -1,6 +1,15 @@
-<link rel="stylesheet" type="text/scss" href="./style.scss">
 
-<template id="gutter">
+<style type="text/css">
+  .item {
+    color: red;
+  }
+</style>
 
+
+<template id="gutter" title="test">
+<div class="item">
+  color
+</div>
 </template>
+
 
