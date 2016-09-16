@@ -8,12 +8,16 @@
   }
 </style>
 
-<template id="gutter" title="Pane">
+<template id="pane" title="Pane">
   <div class="pane">
     <div class="header">
-      colorful
+      ${title}
     </div>
   </div>
+</template>
+
+<template style="left: 406px;top: 2px;">
+  <pane title="blarg" />
 </template>
 
 
