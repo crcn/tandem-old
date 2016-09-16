@@ -2,30 +2,33 @@
 
 <style type="text/scss">
   .pane {
-    & .header {
-      padding: 14px;
+    & .header, .content {
+      padding: 17px;
     }
   }
 </style>
 
 <template id="pane" title="Pane">
   <div class="pane">
-    <div class="header">
+    <div class="inner header">
       ${title}
     </div>
-    <div class="body">
+    <div class="inner content">
       ${children}
     </div>
   </div>
 </template>
 
 <template style="left: 406px;top: 2px;">
-  <pane title="CSS Pane">
+  <pane title="CSS Pane!">
     <div class="declaration">
       Declaration
     </div>
   </pane>
 </template>
+
+
+
 
 
 

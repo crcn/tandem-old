@@ -15,6 +15,7 @@ import {
     OpenProjectAction,
     BaseApplicationService,
     ApplicationServiceDependency,
+    ReadTemporaryFileContentAction,
     UpdateTemporaryFileContentAction
 } from "tandem-common";
 
@@ -96,13 +97,14 @@ export async function activate(context: vscode.ExtensionContext) {
     const _update = throttle(async (document:vscode.TextDocument) => {
 
         _documentUri = document.uri;
-        const newContent = document.getText();
+        const editorContent = document.getText();
+        const path = fixFileName(document.fileName);
 
-        if (_content === newContent) return;
+        if (_content === editorContent) return;
 
         await UpdateTemporaryFileContentAction.execute({
-            path: fixFileName(document.fileName),
-            content: _content = newContent
+            path: path,
+            content: _content = editorContent
         }, server.bus);
     }, 25);
 
@@ -121,12 +123,27 @@ export async function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(startServerCommand);
 
-    function onChange(e:vscode.TextDocumentChangeEvent) {
-        _update(e.document);
+    async function onChange(e:vscode.TextDocumentChangeEvent) {
+        const doc  = e.document;
+        _update(doc);
     }
 
-    function run(e:vscode.TextEditor) {
-        _update(e.document);
+    async function run(e:vscode.TextEditor) {
+        const doc  = e.document;
+        const path = fixFileName(doc.fileName);
+
+        const editorContent = doc.getText();
+
+        const cachedFile = await ReadTemporaryFileContentAction.execute({
+            path: path
+        }, server.bus);
+
+        // cached content does not match, meaning that it likely changed in the browser
+        if (cachedFile.content !== editorContent) {
+            _setEditorContent({ path: doc.fileName, content: cachedFile.content });
+        } else {
+            _update(doc);
+        }
     }
 
     vscode.window.onDidChangeTextEditorSelection(function(e:vscode.TextEditorSelectionChangeEvent) {

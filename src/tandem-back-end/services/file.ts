@@ -20,6 +20,7 @@ import {
   SaveAllFilesAction,
   BaseApplicationService,
   ApplicationServiceDependency,
+  ReadTemporaryFileContentAction,
   UpdateTemporaryFileContentAction,
 } from "tandem-common";
 
@@ -64,6 +65,13 @@ export default class FileService extends BaseApplicationService<IApplication> {
       mtime   : fs.lstatSync(action.path).mtime.getTime(),
       content : fs.readFileSync(action.path, "utf8")
     };
+  }
+
+  /**
+   */
+
+  [ReadTemporaryFileContentAction.READ_TEMP_FILE_CONTENT](action: ReadTemporaryFileContentAction) {
+    return this._fileCache[action.path];
   }
 
   _closeFileWatcher(watcher, item) {

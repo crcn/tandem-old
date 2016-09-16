@@ -213,6 +213,17 @@ export class UpdateTemporaryFileContentAction extends Action {
   }
 }
 
+export class ReadTemporaryFileContentAction extends Action {
+  static readonly READ_TEMP_FILE_CONTENT = "readTemporyFileContent";
+  constructor(readonly path: string) {
+    super(ReadTemporaryFileContentAction.READ_TEMP_FILE_CONTENT);
+  }
+
+  static async execute({ path }, bus: IActor): Promise<IReadFileActionResponseData> {
+    return (await bus.execute(new ReadTemporaryFileContentAction(path)).read()).value;
+  }
+}
+
 export class WatchFileAction extends Action {
   static readonly WATCH_FILE = "watchFile";
   constructor(readonly path: string) {
