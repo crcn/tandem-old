@@ -1,11 +1,27 @@
 <link rel="stylesheet" href="./styles.scss" type="text/scss" />
+<link rel="stylesheet" href="./bootstrap.css" type="text/css" />
 
 <style type="text/scss">
   .pane {
+
+    font-weight: 200;
+    letter-spacing: 0.05em;
+
     & .header, .content {
-      padding: 17px;
+      padding: 8px;
+    }
+
+    & .row {
+      margin-top: 8px;
+    }
+
+    & input {
+      width: 100%;
+      background: transparent;
+      border: 1px solid white;
     }
   }
+
 </style>
 
 <template id="pane" title="Pane">
@@ -19,13 +35,40 @@
   </div>
 </template>
 
-<template style="left: 406px;top: 2px;">
-  <pane title="CSS Pane!">
-    <div class="declaration">
-      Declaration
+<template style="left: 406px;top: 0px;height: 291px;" title="Properties Pane">
+  <pane title="Properties">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-4">
+          Size
+        </div>
+        <div class="col-xs-4">
+          <input type="text" />
+          x
+        </div>
+        <div class="col-xs-4">
+          <input type="text" />
+          y
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-4">
+          Position
+        </div>
+        <div class="col-xs-4">
+          <input type="text" />
+          Width
+        </div>
+        <div class="col-xs-4">
+          <input type="text" />
+          Height
+        </div>
+      </div>
     </div>
   </pane>
 </template>
+
+
 
 
 
