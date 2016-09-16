@@ -84,9 +84,7 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
   }
 
   async update() {
-    const clone = this.cloneLeaf();
-    await clone.evaluate(this.context);
-    patchTreeNode(this, clone);
+    await this.reload();
   }
 
   cloneLeaf() {

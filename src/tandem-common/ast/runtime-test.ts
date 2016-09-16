@@ -11,7 +11,7 @@ import {
 
 import {
   timeout
-} from "tandem-common/test/utils";
+} from "tandem-common/test";
 
 
 class MockExpression extends BaseExpression<MockExpression> {

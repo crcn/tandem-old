@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { Dependencies, FileFactoryDependency, DependenciesDependency } from "tandem-common/dependencies";
-import { waitForPropertyChange, timeout } from "tandem-common/test/utils";
+import { waitForPropertyChange, timeout } from "tandem-common/test";
 import { parseHTML } from "tandem-html-extension/ast";
 import {
   HTMLElementEntity,

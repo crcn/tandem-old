@@ -55,4 +55,3 @@ export function getContext(entity: IEntity) {
   while (p && !p.context) p = p.parent;
   return p ? p.context || {} : {};
 }
-

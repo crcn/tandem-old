@@ -9,7 +9,7 @@ import {
   HTMLContainerExpression,
 } from "./index";
 
-import { timeout } from "tandem-common/test/utils";
+import { timeout } from "tandem-common/test";
 
 import { expect } from "chai";
 

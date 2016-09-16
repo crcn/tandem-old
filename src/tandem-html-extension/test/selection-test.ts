@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { timeout } from "tandem-common/test/utils";
+import { timeout } from "tandem-common/test";
 import { DSInsertAction } from "tandem-common/actions";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { SelectEntitiesAtSourceOffsetAction } from "tandem-front-end/actions";

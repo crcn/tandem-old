@@ -6,7 +6,7 @@ import { MimeTypes } from "tandem-html-extension/constants";
 import { BoundingRect } from "tandem-common/geom";
 import { IVisibleEntity } from "tandem-common/ast/entities";
 import { FrontEndApplication } from "tandem-front-end/application";
-import { waitForPropertyChange } from "tandem-common/test/utils";
+import { waitForPropertyChange } from "tandem-common/test";
 import { Dependencies, DependenciesDependency, DEPENDENCIES_NS, ApplicationSingletonDependency, FileFactoryDependency } from "tandem-common/dependencies";
 import {
   HTMLElementEntity,

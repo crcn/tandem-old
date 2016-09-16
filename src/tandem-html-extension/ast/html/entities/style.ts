@@ -6,28 +6,35 @@ import { HTMLElementEntity } from "./element";
 import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
 import { HTMLElementExpression, HTMLTextExpression } from "tandem-html-extension/ast";
 import {
-  patchable,
   inject,
-  watchProperty,
+  BubbleBus,
+  patchable,
+  BaseEntity,
+  IDisposable,
   bindProperty,
-  EntityFactoryDependency,
-  FileFactoryDependency,
+  watchProperty,
   patchTreeNode,
-  BubbleBus
+  FileFactoryDependency,
+  EntityFactoryDependency,
 } from "tandem-common";
 
 // TODO - merge this with link.ts
 export class HTMLStyleEntity extends HTMLElementEntity {
 
-  @patchable
   private _file: DocumentFile<any>;
+
+  private _contentWatcher: IDisposable;
 
   mapSourceChildren() {
     return this.source.attributes;
   }
 
+  get rootChild() {
+    return this.children.find((child) => child instanceof this._file.entity.constructor);
+  }
+
   get documentChildren() {
-    return this._file.entity.children;
+    return this.rootChild ? this.rootChild.children : [];
   }
 
   getInitialMetadata() {
@@ -38,7 +45,7 @@ export class HTMLStyleEntity extends HTMLElementEntity {
 
   mapContext() {
     return Object.assign({}, this.context, {
-      dependencies: this._file ? this._file.entity.context.dependencies : this.dependencies
+      dependencies: this.rootChild ? this.rootChild.context.dependencies : this.dependencies
     });
   }
 
@@ -51,7 +58,7 @@ export class HTMLStyleEntity extends HTMLElementEntity {
 
     const type = this.getAttribute("type");
     const fileFactory = FileFactoryDependency.find(type || MimeTypes.CSS, this.dependencies);
-    const file = this._file = fileFactory.create({
+    const file = fileFactory.create({
       content: valueSourceNode.value,
       path: this.document.path
     }) as DocumentFile<any>;
@@ -61,18 +68,39 @@ export class HTMLStyleEntity extends HTMLElementEntity {
     file.owner = this.document;
 
     await file.load();
-    watchProperty(file, "content", (content) => {
-      (<HTMLTextExpression>this.source.children[0]).value = content;
-    });
+    this.file = file;
 
-    // bindProperty(file, "content", valueSourceNode, "value");
     this.appendChild(file.entity);
   }
 
+  @patchable
+  get file(): DocumentFile<any> {
+    return this._file;
+  }
+
+  set file(value: DocumentFile<any>) {
+    if (this._contentWatcher) {
+      this._contentWatcher.dispose();
+    }
+
+    this._file = value;
+
+    if (value) {
+      this._contentWatcher = watchProperty(value, "content", (content) => {
+        (<HTMLTextExpression>this.source.children[0]).value = content;
+      });
+    }
+  }
+
   async update() {
-    const clone = this.cloneLeaf();
-    this.context = await clone.evaluate(this.context);
-    patchTreeNode(this, clone);
+    await this.reload();
+  }
+
+  dispose() {
+    if (this._contentWatcher) {
+      this._contentWatcher.dispose();
+      this._contentWatcher = undefined;
+    }
   }
 
   createSection() {

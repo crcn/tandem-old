@@ -10,8 +10,8 @@ import { bindable, mixin, virtual, patchable } from "tandem-common/decorators";
 import { IInjectable, Injector, DEPENDENCIES_NS, Dependencies } from "tandem-common/dependencies";
 import { EntityFactoryDependency, EntityDocumentDependency, ENTITY_DOCUMENT_NS } from "tandem-common/dependencies";
 
-import { TreeNode } from "tandem-common/tree";
 import { IExpression } from "tandem-common/ast";
+import { TreeNode, patchTreeNode } from "tandem-common/tree";
 
 import {
   IEntityDocument,
@@ -31,7 +31,9 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   @patchable
   protected _source: T;
 
+  @patchable
   public context: any;
+
   private _loaded: boolean;
   private _allChildEntities: Array<IEntity>;
   private _mappedSourceChildren: Array<IExpression>;
@@ -117,6 +119,13 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   // TODO - make this abstract
   protected async load() {
     await this.evaluateChildren();
+  }
+
+  protected async reload() {
+    const clone = this.cloneLeaf();
+    await clone.evaluate(this.context);
+    patchTreeNode(this, clone);
+    clone.dispose();
   }
 
   // TODO - make this abstract
@@ -242,7 +251,5 @@ export class EntityChildSourceSynchronizer {
   constructor(readonly entity: IEntity, readonly mapSourceChildren: Function) {
 
   }
-  async load() {
-
-  }
+  async load() { }
 }

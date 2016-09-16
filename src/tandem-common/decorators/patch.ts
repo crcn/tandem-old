@@ -1,4 +1,4 @@
-export const patchable = (proto: any, property: string = undefined, descriptor: PropertyDecorator = undefined) => {
+export const patchable = (proto: any, property: string = undefined, descriptor: any = undefined) => {
    const patchableProperties = proto.__patchableProperties = (proto.__patchableProperties || []).concat();
    if (patchableProperties.indexOf(property) === -1) {
      patchableProperties.push(property);

@@ -1,6 +1,6 @@
 <style type="text/css">
-  .color, .item {
-    color: red;
+  .item {
+    color: green;
   }
 </style>
 
@@ -9,8 +9,3 @@
     color
   </div>
 </template>
-
-
-
-
-
