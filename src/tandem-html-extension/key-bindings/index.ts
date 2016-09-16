@@ -29,7 +29,7 @@ abstract class BaseInsertElementTool extends InsertTool {
   createSource() {
 
     // width & height need to be 0'd since some elements have a size by default such as iframes
-    return parseHTML(`<${this.options.nodeName} ${this.options.attributes ? this.options.attribute + " " : ""}style="${this.options.style}position:absolute;width:0px;height:0px;" />`).children[0];
+    return parseHTML(`<${this.options.nodeName} ${this.options.attributes ? this.options.attributes + " " : ""}style="${this.options.style}position:absolute;width:0px;height:0px;" />`).children[0];
   }
 }
 
@@ -51,7 +51,7 @@ export const dependencies = [
 
 const insertElementKeyBindings = {
   "d" : { nodeName:  "div", attributes: ``, style: "background:rgba(0,0,0,0.1);" },
-  "a" : { nodeName: "template", attributes: `title="Template"`, style: "background: white;", root: true }
+  "a" : { nodeName: "template", attributes: `title="Untitled"`, style: "background: white;", root: true }
 };
 
 for (const key in insertElementKeyBindings) {
