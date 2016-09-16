@@ -4,7 +4,8 @@ import { WrapBus } from "mesh";
 import { BubbleBus } from "tandem-common/busses";
 import { diffArray } from "tandem-common/utils/array";
 import { watchProperty } from "tandem-common/observable";
-import { Action, TreeNodeAction } from "tandem-common/actions";
+import { Action, TreeNodeAction, EntityAction } from "tandem-common/actions";
+
 import { IDisposable, ITyped, IValued, IPatchable } from "tandem-common/object";
 import { bindable, mixin, virtual, patchable } from "tandem-common/decorators";
 import { IInjectable, Injector, DEPENDENCIES_NS, Dependencies } from "tandem-common/dependencies";
@@ -34,7 +35,9 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   @patchable
   public context: any;
 
+  protected _dirty: boolean;
   private _loaded: boolean;
+  private _sourceObserver: IActor;
   private _allChildEntities: Array<IEntity>;
   private _mappedSourceChildren: Array<IExpression>;
 
@@ -53,6 +56,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   }
 
   public dispose() {
+    this._source.unobserve(this._sourceObserver);
     for (const child of this.children) {
       child.dispose();
     }
@@ -90,6 +94,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     this.context = context;
     if (this._loaded) {
       await this.update();
+      this._dirty = false;
     } else {
       this._loaded = true;
       await this.load();
@@ -208,6 +213,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   protected onEvaluated() { }
 
   protected initialize() {
+    this._source.observe(this._sourceObserver = new WrapBus(this.onSourceAction.bind(this)));
     this.metadata = new EntityMetadata(this, this.getInitialMetadata());
     this.metadata.observe(new BubbleBus(this));
   }
@@ -216,6 +222,19 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
     // TODO - possibly search for metadata from dependencies
     return {};
+  }
+
+  protected onSourceAction(action: Action) {
+    this._dirty = true;
+    this.notify(new EntityAction(EntityAction.ENTITY_DIRTY));
+  }
+
+  protected onChildAction(action: Action) {
+    if (action.type === EntityAction.ENTITY_DIRTY) {
+      if (this._dirty) return;
+      this._dirty = true;
+    }
+    super.onChildAction(action);
   }
 
   protected mapSourceChildren(): Array<IExpression> {

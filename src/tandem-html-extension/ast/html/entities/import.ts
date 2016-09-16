@@ -74,7 +74,7 @@ export class HTMLImportEntity extends HTMLElementEntity {
     if (href) {
       try {
         file = await File.open(href, this.dependencies, type) as DocumentFile<any>;
-      } catch(e) {
+      } catch (e) {
 
         // does not exist
         console.error(e.stack);
@@ -92,11 +92,12 @@ export class HTMLImportEntity extends HTMLElementEntity {
       file.offset = valueSourceNode.position.start;
     }
 
-    await file.load();
-    file.owner = this.document;
-    this.file = file;
-
-    this.appendChild(file.entity);
+    if (file) {
+      await file.load();
+      file.owner = this.document;
+      this.file = file;
+      this.appendChild(file.entity);
+    }
   }
 
   @patchable
@@ -120,10 +121,11 @@ export class HTMLImportEntity extends HTMLElementEntity {
   }
 
   async update() {
-    await this.reload();
+    if (this._dirty) await this.reload();
   }
 
   dispose() {
+    super.dispose();
     if (this._contentWatcher) {
       this._contentWatcher.dispose();
       this._contentWatcher = undefined;

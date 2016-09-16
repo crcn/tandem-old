@@ -35,9 +35,7 @@ export class GetPrimaryProjectFilePathAction extends Action {
 
 export class EntityAction extends Action {
   static readonly ENTITY_STALE = "entityStale";
-  constructor(type: string) {
-    super(type);
-  }
+  static readonly ENTITY_DIRTY = "entityDirty";
 }
 
 export class EntityLoaderAction extends Action {
