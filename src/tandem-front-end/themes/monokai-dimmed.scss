@@ -1,3 +1,9 @@
+$grey: #9A9B99;
+$green: #90A959;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
 
 .editor, .editor .gutter {
   background-color: #1e1e1e;
@@ -8,13 +14,20 @@
   background-color: #373B41;
 }
 
+.pane {
+  background-color: $grey;
+  .header {
+    background-color: $grey;
+    color: white;
+  }
+}
 
 .comment {
-  color: #9A9B99;
+  color: $grey;
 }
 
 .string {
-  color: #90A959;
+  color: $green;
 }
 
 .string .source {

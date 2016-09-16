@@ -1,18 +1,20 @@
+<link rel="stylesheet" href="../../src/tandem-front-end/themes/monokai-dimmed.scss" type="text/scss" />
+
 <style type="text/scss">
-  $color: red;
-  .item {
-    color: $color;
-  }
-  .item2 {
-    color: blue;
+  .pane {
+    & .header {
+      padding: 14px;
+    }
   }
 </style>
 
-<template id="gutter" title="tefsd">
-  <div class="item">
-    colorful
-  </div>
-  <div class="item2" style="height: 24px;">
-    colorful
+<template id="gutter" title="Pane">
+  <div class="pane">
+    <div class="header">
+      colorful
+    </div>
   </div>
 </template>
+
+
+

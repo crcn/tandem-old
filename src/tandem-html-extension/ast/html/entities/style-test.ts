@@ -3,7 +3,7 @@ import { MimeTypes } from "tandem-html-extension/constants";
 import { DocumentFile } from "tandem-front-end/models";
 import { timeout } from "tandem-common/test";
 import { Dependencies, DependenciesDependency, FileFactoryDependency, BaseEntity } from "tandem-common";
-import { HTMLStyleEntity, HTMLDocumentRootEntity, dependency as htmlExtensionDependency } from "tandem-html-extension";
+import { HTMLImportEntity, HTMLDocumentRootEntity, dependency as htmlExtensionDependency } from "tandem-html-extension";
 
 describe(__filename + "#", () => {
 
@@ -32,7 +32,7 @@ describe(__filename + "#", () => {
   it("can be loaded into a document", async () => {
     const entity = await loadEntity(`<style></style>`);
     const styleEntity = entity.children[0];
-    expect(styleEntity).to.be.an.instanceOf(HTMLStyleEntity);
+    expect(styleEntity).to.be.an.instanceOf(HTMLImportEntity);
   });
 
   it("loads css in by default", async () => {
@@ -42,11 +42,11 @@ describe(__filename + "#", () => {
 
   it("is patched when new content is loaded in", async () => {
     const entity = await loadEntity(`<style>.item { color: blue; }</style>`) as HTMLDocumentRootEntity;
-    const styleEntity = <HTMLStyleEntity>entity.childNodes[0];
+    const styleEntity = <HTMLImportEntity>entity.childNodes[0];
     expect(entity.section.innerHTML).to.equal(`<style>.item { color: blue; }</style>`);
     await reloadContent(entity, `<style>.item { color: green; }</style>`);
     expect(entity.section.innerHTML).to.equal(`<style>.item { color: green; }</style>`);
-    const patchedStyleEntity = <HTMLStyleEntity>entity.childNodes[0];
+    const patchedStyleEntity = <HTMLImportEntity>entity.childNodes[0];
     expect(styleEntity).to.equal(patchedStyleEntity);
     expect(styleEntity.children[0]).to.equal(patchedStyleEntity.children[0]);
   });

@@ -26,6 +26,8 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
   [SelectEntitiesAtSourceOffsetAction.SELECT_ENTITIES_AT_SOURCE_OFFSET](action: SelectEntitiesAtSourceOffsetAction) {
 
+    if (!this.app.workspace) return;
+
     const selectableEntities = this.app.workspace.file.entity.flatten().filter((entity: IEntity) => {
       return entity.source.source ? String((<DocumentFile<any>>entity.source.source).path).indexOf(action.filePath) !== -1 && entity.metadata.get(MetadataKeys.SELECTABLE) !== false : false;
     });

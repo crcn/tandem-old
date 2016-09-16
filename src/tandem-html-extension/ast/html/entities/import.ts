@@ -2,10 +2,12 @@ import { MimeTypes } from "tandem-html-extension/constants";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { DocumentFile } from "tandem-front-end/models";
 import { GroupNodeSection } from "tandem-html-extension/dom";
+import * as path from "path";
 import { HTMLElementEntity } from "./element";
 import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
 import { HTMLElementExpression, HTMLTextExpression } from "tandem-html-extension/ast/html/expressions";
 import {
+  File,
   inject,
   BubbleBus,
   patchable,
@@ -19,11 +21,14 @@ import {
 } from "tandem-common";
 
 // TODO - merge this with link.ts
-export class HTMLStyleEntity extends HTMLElementEntity {
+export class HTMLImportEntity extends HTMLElementEntity {
+
+  public defaultMimeType: string;
 
   private _file: DocumentFile<any>;
 
   private _contentWatcher: IDisposable;
+  private _fileWatcher: IDisposable;
 
   mapSourceChildren() {
     return this.source.attributes;
@@ -53,21 +58,36 @@ export class HTMLStyleEntity extends HTMLElementEntity {
     await super.load();
     const valueSourceNode = this.source.children[0] as HTMLTextExpression;
 
-    // may be a blank style
-    if (!valueSourceNode) return;
+    const type = this.getAttribute("type") || this.defaultMimeType;
+    let href = this.getAttribute("href");
 
-    const type = this.getAttribute("type");
-    const fileFactory = FileFactoryDependency.find(type || MimeTypes.CSS, this.dependencies);
-    const file = fileFactory.create({
-      content: valueSourceNode.value,
-      path: this.document.path
-    }) as DocumentFile<any>;
+    // check for relative path
+    if (href && !/^(\/\/|http)/.test(href)) {
+      href = path.join(
+        path.dirname(this.document.path),
+        href
+      );
+    }
 
-    file.autoSave = false;
-    file.offset = valueSourceNode.position.start;
-    file.owner = this.document;
+    console.log(type, href);
+
+    let file: DocumentFile<any>;
+
+    if (href) {
+      file = await File.open(href, this.dependencies, type) as DocumentFile<any>;
+      file.sync();
+    } else if (valueSourceNode) {
+      const fileFactory = FileFactoryDependency.find(type, this.dependencies);
+      file = fileFactory.create({
+        content: valueSourceNode.value,
+        path: this.document.path
+      });
+      file.autoSave = false;
+      file.offset = valueSourceNode.position.start;
+    }
 
     await file.load();
+    file.owner = this.document;
     this.file = file;
 
     this.appendChild(file.entity);
@@ -80,12 +100,13 @@ export class HTMLStyleEntity extends HTMLElementEntity {
 
   set file(value: DocumentFile<any>) {
     if (this._contentWatcher) {
+      this._file.dispose();
       this._contentWatcher.dispose();
     }
 
     this._file = value;
 
-    if (value) {
+    if (value && this.source.children.length) {
       this._contentWatcher = watchProperty(value, "content", (content) => {
         (<HTMLTextExpression>this.source.children[0]).value = content;
       });
@@ -108,4 +129,11 @@ export class HTMLStyleEntity extends HTMLElementEntity {
   }
 }
 
-export const htmlStyleEntityDependency = new EntityFactoryDependency(HTMLElementExpression, HTMLStyleEntity, "style");
+class HTMLStyleEntity extends HTMLImportEntity {
+  defaultMimeType = MimeTypes.CSS;
+}
+
+export const htmlStyleEntityDependency = [
+  new EntityFactoryDependency(HTMLElementExpression, HTMLStyleEntity, "style"),
+  new EntityFactoryDependency(HTMLElementExpression, HTMLImportEntity, "link")
+];

@@ -43,7 +43,6 @@ import { MimeTypeDependency } from "tandem-common/dependencies";
  // entities
  import {
    htmlTextDependency,
-   linkEntityDependency,
    htmlCommentDependency,
    htmlStyleEntityDependency,
    htmlDocumentFragmentDependency,
@@ -97,7 +96,6 @@ export const dependency = [
 
   // entities
   htmlTextDependency,
-  linkEntityDependency,
   htmlCommentDependency,
   htmlStyleEntityDependency,
   defaultElementFactoyDependency,
