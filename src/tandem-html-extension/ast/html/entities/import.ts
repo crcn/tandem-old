@@ -69,12 +69,18 @@ export class HTMLImportEntity extends HTMLElementEntity {
       );
     }
 
-    console.log(type, href);
-
     let file: DocumentFile<any>;
 
     if (href) {
-      file = await File.open(href, this.dependencies, type) as DocumentFile<any>;
+      try {
+        file = await File.open(href, this.dependencies, type) as DocumentFile<any>;
+      } catch(e) {
+
+        // does not exist
+        console.error(e.stack);
+        return null;
+      }
+
       file.sync();
     } else if (valueSourceNode) {
       const fileFactory = FileFactoryDependency.find(type, this.dependencies);

@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="../../src/tandem-front-end/themes/monokai-dimmed.scss" type="text/scss" />
+<link rel="stylesheet" href="./styles.scss" type="text/scss" />
 
 <style type="text/scss">
   .pane {
@@ -13,11 +13,18 @@
     <div class="header">
       ${title}
     </div>
+    <div class="body">
+      ${children}
+    </div>
   </div>
 </template>
 
 <template style="left: 406px;top: 2px;">
-  <pane title="blarg" />
+  <pane title="CSS Pane">
+    <div class="declaration">
+      Declaration
+    </div>
+  </pane>
 </template>
 
 

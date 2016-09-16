@@ -1,0 +1,12 @@
+
+
+<template id="pane" title="Pane">
+  <div class="pane">
+    <div class="header">
+      ${title}
+    </div>
+    <div class="body">
+      ${children}
+    </div>
+  </div>
+</template>

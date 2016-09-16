@@ -8,14 +8,16 @@ export class PCExpressionLoader extends HTMLExpressionLoader {
     return parse(content);
   }
 
-  createFormattedSourceContent(action: Action) {
-    let content = super.createFormattedSourceContent(action);
+  // createFormattedSourceContent(action: Action) {
+  //   let content = super.createFormattedSourceContent(action);
 
-    if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
-      if (action.target instanceof PCBlockNodeExpression) {
-        // TODO
-      }
-    }
-  }
+  //   if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
+  //     if (action.target instanceof PCBlockNodeExpression) {
+  //       // TODO
+  //     }
+  //   }
+
+  //   return content;
+  // }
 
 }
