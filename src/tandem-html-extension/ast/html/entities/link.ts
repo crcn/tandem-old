@@ -8,7 +8,7 @@ import { GroupNodeSection } from "tandem-html-extension/dom";
 import { HTMLElementEntity } from "./element";
 import { FileFactoryDependency, MAIN_BUS_NS } from "tandem-common/dependencies";
 import { DocumentPaneComponentFactoryDependency } from "tandem-front-end/dependencies";
-import { HTMLElementExpression, HTMLDocumentRootEntity } from "tandem-html-extension/ast";
+import { HTMLElementExpression, HTMLDocumentRootEntity } from "tandem-html-extension/ast/html";
 
 import {
   File,

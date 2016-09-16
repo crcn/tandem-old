@@ -1,11 +1,18 @@
-<style type="text/css">
+<style type="text/scss">
+  $color: red;
   .item {
-    color: green;
+    color: $color;
+  }
+  .item2 {
+    color: blue;
   }
 </style>
 
 <template id="gutter" title="tefsd">
   <div class="item">
-    color
+    colorful
+  </div>
+  <div class="item2" style="height: 24px;">
+    colorful
   </div>
 </template>

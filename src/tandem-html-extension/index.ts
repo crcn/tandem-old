@@ -7,6 +7,9 @@ import { dependency as cssPaneComponentDependency } from "./components/css-pane"
 import { dependency as entityPreviewComponentDependency } from "./components/entity-preview";
 import { cssColorTokenComponentFactoryDependency } from "./components/css-color-token";
 
+// stage tool components
+import { cssHighlightElementToolComponentFactoryDependency } from "./components/css-highlight-element-tool";
+
 // layer components
 import { dependency as textLayerLabelComponentDependency } from "./components/text-layer-label";
 import { dependency as elementLayerLabelComponentDependency } from "./components/element-layer-label";
@@ -15,6 +18,7 @@ import { dependency as cssRuleLayerLabelComponentDependency } from "./components
 import { cssDeclarationLayerLabelComponentDependency }from "./components/css-declaration-layer-label";
 import { cssAtRuleLayerLabelComponentDependency } from "./components/css-atrule-layer-label";
 import { cssCommentLayerLabelComponentDependency } from "./components/css-comment-layer-label";
+
 
 // token components
 import { cssUnitEditorTokenComponentFactoryDependency } from "./components/css-unit-editor-token";
@@ -59,6 +63,9 @@ export const dependency = [
   cssAtRuleLayerLabelComponentDependency,
   cssCommentLayerLabelComponentDependency,
   cssColorTokenComponentFactoryDependency,
+
+  // stage tool components
+  cssHighlightElementToolComponentFactoryDependency,
 
   // layer components
   textLayerLabelComponentDependency,

@@ -1,7 +1,7 @@
 import { MetadataKeys } from "tandem-front-end/constants";
 import { GroupNodeSection } from "tandem-html-extension/dom";
 import { HTMLNodeEntity } from "./node";
-import { HTMLFragmentExpression } from "tandem-html-extension/ast";
+import { HTMLFragmentExpression } from "tandem-html-extension/ast/html/expressions";
 import { EntityFactoryDependency } from "tandem-common/dependencies";
 
 export class HTMLDocumentFragmentEntity extends HTMLNodeEntity<HTMLFragmentExpression> {

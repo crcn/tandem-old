@@ -11,9 +11,9 @@ import { parseCSS, parseCSSStyle } from "tandem-html-extension/ast";
 import { EntityFactoryDependency } from "tandem-common/dependencies";
 import { IDOMSection, NodeSection } from "tandem-html-extension/dom";
 import { INamed, IValued, IExpression } from "tandem-common";
-import { HTMLElementExpression, HTMLAttributeExpression } from "tandem-html-extension/ast";
-import { AttributeChangeAction, TreeNodeAction, PropertyChangeAction } from "tandem-common/actions";
+import { HTMLElementExpression, HTMLAttributeExpression } from "tandem-html-extension/ast/html/expressions";
 import { CSSRuleExpression, IHTMLElementAttributeEntity } from "tandem-html-extension/ast";
+import { AttributeChangeAction, TreeNodeAction, PropertyChangeAction } from "tandem-common/actions";
 import * as sift from "sift";
 
 export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> implements IHTMLNodeEntity {

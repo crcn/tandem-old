@@ -5,7 +5,7 @@ import { IVisibleEntity } from "tandem-common/ast/entities";
 import { HTMLNodeDisplay } from "./displays";
 import { HTMLElementEntity } from "./element";
 import { CSSRuleExpression } from "tandem-html-extension/ast/css/expressions";
-import { HTMLElementExpression } from "tandem-html-extension/ast";
+import { HTMLElementExpression } from "tandem-html-extension/ast/html/expressions";
 import { EntityFactoryDependency } from "tandem-common/dependencies";
 import { IDOMSection, NodeSection } from "tandem-html-extension/dom";
 

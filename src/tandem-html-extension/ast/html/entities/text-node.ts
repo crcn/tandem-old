@@ -1,7 +1,7 @@
 import { decode } from "ent";
 import { NodeSection } from "tandem-html-extension/dom";
 import { HTMLValueNodeEntity } from "./value-node";
-import { HTMLTextExpression } from "tandem-html-extension/ast";
+import { HTMLTextExpression } from "tandem-html-extension/ast/html/expressions";
 import { EntityFactoryDependency } from "tandem-common/dependencies";
 
 export class HTMLTextEntity extends HTMLValueNodeEntity<HTMLTextExpression> {
