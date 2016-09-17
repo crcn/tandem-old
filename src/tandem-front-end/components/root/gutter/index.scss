@@ -15,4 +15,12 @@
   border-color: $color-blue-10;
   border-style: solid;
   position: relative;
+
+  & .left {
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+  }
+
+  & .right {
+    border-right: 2px solid rgba(255, 255, 255, 0.2);
+  }
 }
