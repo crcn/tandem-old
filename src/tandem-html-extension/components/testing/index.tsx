@@ -6,7 +6,7 @@
  class HTMLDebuggingComponent extends React.Component<any, any> {
    render() {
      return <div>
-     hello
+     hello world
      </div>;
    }
  }

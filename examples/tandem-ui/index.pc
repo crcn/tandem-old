@@ -57,7 +57,7 @@
 </template>
 
 
-<div style="position: absolute;width: 200px;left: 386px;top: -5px;">
+<div style="position: absolute;width: 190px;left: 386px;top: -5px;">
 
   <template style="width: 100%;" title="Style Properties" export>
     <pane title="blarg">
@@ -92,36 +92,8 @@
     </pane>
   </template>
 
-  <template style="width: 200px;" title=" " export>
+  <template style="width: 100%;" title=" " export>
     <pane title="Background" class="background">
-      <div class="container">
-        <div class="row">
-          <div class="col-xs-4">
-            Size
-          </div>
-          <div class="col-xs-4">
-            <input type="text" />
-            x
-          </div>
-          <div class="col-xs-4">
-            <input type="text" />
-            y
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-4">
-            Position
-          </div>
-          <div class="col-xs-4">
-            <input type="text" />
-            Width
-          </div>
-          <div class="col-xs-4">
-            <input type="text" />
-            Height
-          </div>
-        </div>
-      </div>
     </pane>
   </template>
 
@@ -129,6 +101,9 @@
     <pane title="Shadows" />
   </template>
 </div>
+
+
+<div style="background: rgba(0,0,0,0.1);position: absolute;width: 0px;height: 0px;left: 364px;top: 189px;"></div>
 
 
 
