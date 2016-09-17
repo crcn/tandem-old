@@ -6,8 +6,8 @@ import { diffArray } from "tandem-common/utils/array";
 import { watchProperty } from "tandem-common/observable";
 import { Action, TreeNodeAction, EntityAction } from "tandem-common/actions";
 
-import { IDisposable, ITyped, IValued, IPatchable } from "tandem-common/object";
 import { bindable, mixin, virtual, patchable } from "tandem-common/decorators";
+import { IDisposable, ITyped, IValued, IPatchable } from "tandem-common/object";
 import { IInjectable, Injector, DEPENDENCIES_NS, Dependencies } from "tandem-common/dependencies";
 import { EntityFactoryDependency, EntityDocumentDependency, ENTITY_DOCUMENT_NS } from "tandem-common/dependencies";
 
@@ -15,10 +15,10 @@ import { IExpression } from "tandem-common/ast";
 import { TreeNode, patchTreeNode } from "tandem-common/tree";
 
 import {
-  IEntityDocument,
-  EntityMetadata,
+  IEntity,
   IValueEntity,
-  IEntity
+  EntityMetadata,
+  IEntityDocument,
 } from "./base";
 
 export * from "./base";
@@ -76,13 +76,13 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   public flatten(): Array<IEntity> {
 
-    // eventually want to do this. though, this is causing some caching
-    // issues for the moment.
+    // caching gets busted here when children are added or removed
     if (this._allChildEntities) return this._allChildEntities;
     const items: Array<IEntity> = [this];
     for (const child of this.children) {
       items.push(...child.flatten());
     }
+
     return this._allChildEntities = items;
   }
 
@@ -111,16 +111,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     return context;
   }
 
-  protected onChildAdded(child: BaseEntity<any>) {
-    super.onChildAdded(child);
-    this._allChildEntities = undefined;
-  }
-
-  protected onChildRemoved(child: BaseEntity<any>) {
-    super.onChildRemoved(child);
-    this._allChildEntities = undefined;
-  }
-
   // TODO - make this abstract
   protected async load() {
     await this.evaluateChildren();
@@ -139,6 +129,9 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   }
 
   protected async evaluateChildren() {
+
+    // TODO - move all of this logic to an entity controller instead - likely
+    // something such as EntityChildController or similar
 
     const mappedSourceChildren         = this.mapSourceChildren().concat();
 
@@ -234,6 +227,11 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
       if (this._dirty) return;
       this._dirty = true;
     }
+
+    if (action.type === TreeNodeAction.NODE_ADDED || action.type === TreeNodeAction.NODE_REMOVED) {
+      this._allChildEntities = undefined;
+    }
+
     super.onChildAction(action);
   }
 

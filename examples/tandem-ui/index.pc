@@ -48,7 +48,7 @@
 
 </style>
 
-<template id="pane" title="Pane" style="position: absolute;left: -210px;top: -252px;">
+<template id="pane" title="Pane" style="position: absolute;left: 660px;top: -5px;">
   <div class="pane">
     <div class="inner header">
       ${title}

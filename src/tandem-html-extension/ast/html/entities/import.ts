@@ -22,6 +22,8 @@ import {
   EntityFactoryDependency,
 } from "tandem-common";
 
+// TODO - move all of this to EntityImportController
+
 class ImportedFileDependency extends Dependency<string> {
   static IMPORTED_FILES_NS = "importedFiles";
   constructor(value: string) {
