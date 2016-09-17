@@ -192,11 +192,11 @@ class ResizerComponent extends React.Component<{
   }
 
   startDragging = (event) => {
+    event.stopPropagation();
 
     if (!this.targetDisplay.capabilities.movable) return;
 
     this.props.onMoving();
-    event.stopPropagation();
     const selection = this.props.selection;
 
     // when dragging, need to fetch style of the selection
