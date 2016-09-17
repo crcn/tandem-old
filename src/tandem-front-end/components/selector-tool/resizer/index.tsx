@@ -198,6 +198,7 @@ class ResizerComponent extends React.Component<{
 
     // when dragging, need to fetch style of the selection
     // so that the dragger is relative to the entity"s position
+    if (!this.targetDisplay.capabilities.movable) return;
     const bounds = this.targetDisplay.bounds;
 
     const sx2 = bounds.left;

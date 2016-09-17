@@ -29,3 +29,5 @@
 
 - [ ] compilation errors
 - [ ] start using @angular2/core for components
+
+- [ ] dnd components in left panel
