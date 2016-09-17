@@ -56,10 +56,11 @@
   </div>
 </template>
 
+
 <div style="position: absolute;width: 200px;left: 386px;top: -5px;">
 
   <template style="width: 100%;" title=" " export>
-    <pane title="Properties">
+    <pane title="blarg">
       <div class="container">
         <div class="row">
           <div class="col-xs-4">
@@ -122,6 +123,10 @@
         </div>
       </div>
     </pane>
+  </template>
+
+  <template style="width:100%" title=" ">
+    <pane title="test" />
   </template>
 </div>
 

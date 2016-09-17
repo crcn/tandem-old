@@ -29,6 +29,7 @@ import {
 
 export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> implements IValueEntity  {
   private _executed: boolean;
+  private _textNodePlaceholder: Text;
   public value: any;
   public source: PCBlockNodeExpression;
   public error: Error;
@@ -62,7 +63,9 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
 
     this._executed = scriptExecuted;
     this.value = value;
-    if (!scriptExecuted) return;
+    if (!scriptExecuted) {
+      return this._addPlaceholder();
+    }
 
     for (const item of Array.isArray(value) ? value : [value]) {
       if (item instanceof BaseEntity) {
@@ -84,7 +87,24 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
   }
 
   async update() {
-    await this.reload();
+    if (this._dirty) await this.reload();
+
+    if (this.childNodes.length) {
+      this._removePlaceholder();
+    } else {
+      this._addPlaceholder();
+    }
+  }
+
+  private _addPlaceholder() {
+    if (this._textNodePlaceholder) return;
+    this.section.appendChild(this._textNodePlaceholder = document.createTextNode(this.source.toString()));
+  }
+
+  private _removePlaceholder() {
+    if (!this._textNodePlaceholder) return;
+    this._textNodePlaceholder.parentNode.removeChild(this._textNodePlaceholder);
+    this._textNodePlaceholder = undefined;
   }
 
   cloneLeaf() {
