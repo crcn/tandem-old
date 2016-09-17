@@ -2,18 +2,22 @@ import * as path from "path";
 import { SCSSFile } from "tandem-scss-extension/models";
 import { MimeTypes } from "tandem-scss-extension/constants";
 import { CSSATRuleExpression } from "tandem-html-extension";
-import { parseSCSS } from "tandem-scss-extension/ast";
 import {
   File,
   BubbleBus,
   BaseEntity,
+  Dependency,
   EntityAction,
+  Dependencies,
   watchProperty,
   ReadFileAction,
   WatchFileAction,
   FileFactoryDependency,
   EntityFactoryDependency,
 } from "tandem-common";
+
+
+
 
 export class SCSSImportEntity extends BaseEntity<CSSATRuleExpression> {
 
@@ -25,7 +29,6 @@ export class SCSSImportEntity extends BaseEntity<CSSATRuleExpression> {
       this.source.params.replace(/['"]/g, "")
     );
   }
-
   async load() {
     await super.load();
     const absolutePath = this.href;
@@ -39,6 +42,10 @@ export class SCSSImportEntity extends BaseEntity<CSSATRuleExpression> {
     await file.load();
 
     this.appendChild(file.entity);
+  }
+
+  async update() {
+    if (this._dirty) this.reload();
   }
 
   dispose() {

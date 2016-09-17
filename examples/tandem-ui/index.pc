@@ -7,6 +7,9 @@
 
   .pane {
 
+    width: 100%;
+    min-height: 200px;
+
     font-size: 12px;
 
     font-weight: 200;
@@ -45,7 +48,7 @@
 
 </style>
 
-<template id="pane" title="Pane" style="position: absolute;left: -519px;top: -367px;">
+<template id="pane" title="Pane" style="position: absolute;left: -210px;top: -252px;">
   <div class="pane">
     <div class="inner header">
       ${title}
@@ -57,53 +60,45 @@
 </template>
 
 
-<div style="position: absolute;width: 190px;left: 386px;top: -5px;">
+<template style="position: absolute;width: 190px;left: 386px;top: -5px; height: 500px;" title="Style Properties">
 
-  <template style="width: 100%;" title="Style Properties" export>
-    <pane title="blarg">
-      <div class="container">
-        <div class="row">
-          <div class="col-xs-4">
-            Position
-          </div>
-          <div class="col-xs-4">
-            <input type="text" />
-            <span class="label">Left</span>
-          </div>
-          <div class="col-xs-4">
-            <input type="text" />
-            <span class="label">Top</span>
-          </div>
+  <pane title="Properties">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-4">
+          Position
         </div>
-        <div class="row">
-          <div class="col-xs-4">
-            Size
-          </div>
-          <div class="col-xs-4">
-            <input type="text" />
-            <span class="label">Width</span>
-          </div>
-          <div class="col-xs-4">
-            <input type="text" />
-            <span class="label">Height</span>
-          </div>
+        <div class="col-xs-4">
+          <input type="text" />
+          <span class="label">Left</span>
+        </div>
+        <div class="col-xs-4">
+          <input type="text" />
+          <span class="label">Top</span>
         </div>
       </div>
-    </pane>
-  </template>
+      <div class="row">
+        <div class="col-xs-4">
+          Size
+        </div>
+        <div class="col-xs-4">
+          <input type="text" />
+          <span class="label">Width</span>
+        </div>
+        <div class="col-xs-4">
+          <input type="text" />
+          <span class="label">Height</span>
+        </div>
+      </div>
+    </div>
+  </pane>
 
-  <template style="width: 100%;" title=" " export>
-    <pane title="Background" class="background">
-    </pane>
-  </template>
+  <pane title="Background" class="background">
+  </pane>
 
-  <template style="width:100%" title=" ">
-    <pane title="Shadows" />
-  </template>
-</div>
+  <pane title="Shadows" />
+</template>
 
-
-<div style="background: rgba(0,0,0,0.1);position: absolute;width: 0px;height: 0px;left: 364px;top: 189px;"></div>
 
 
 

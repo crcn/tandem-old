@@ -12,13 +12,30 @@ import {
   BubbleBus,
   patchable,
   BaseEntity,
+  Dependency,
   IDisposable,
   bindProperty,
+  Dependencies,
   watchProperty,
   patchTreeNode,
   FileFactoryDependency,
   EntityFactoryDependency,
 } from "tandem-common";
+
+class ImportedFileDependency extends Dependency<string> {
+  static IMPORTED_FILES_NS = "importedFiles";
+  constructor(value: string) {
+    super(ImportedFileDependency.getNamespace(value), value, true);
+  }
+
+  static getNamespace(value: string) {
+    return [this.IMPORTED_FILES_NS, value].join("/");
+  }
+
+  static find(value: string, dependencies: Dependencies) {
+    return dependencies.query<ImportedFileDependency>(this.getNamespace(value));
+  }
+}
 
 // TODO - merge this with link.ts
 export class HTMLImportEntity extends HTMLElementEntity {
@@ -35,12 +52,13 @@ export class HTMLImportEntity extends HTMLElementEntity {
   }
 
   get rootChild() {
-    return this.children.find((child) => child instanceof this._file.entity.constructor);
+    return this._file ? this.children.find((child) => child instanceof this._file.entity.constructor) : undefined;
   }
 
   get documentChildren() {
     return this.rootChild ? this.rootChild.children : [];
   }
+
 
   getInitialMetadata() {
     return Object.assign(super.getInitialMetadata(), {
@@ -49,17 +67,29 @@ export class HTMLImportEntity extends HTMLElementEntity {
   }
 
   mapContext() {
+    let deps: Dependencies = (this.rootChild ? this.rootChild.context.dependencies : this.dependencies);
+    const href = this.getAttribute("href");
+
+    if (href) {
+      deps = deps.clone().register(new ImportedFileDependency(href));
+    }
+
     return Object.assign({}, this.context, {
-      dependencies: this.rootChild ? this.rootChild.context.dependencies : this.dependencies
+      dependencies: deps
     });
   }
 
   async load() {
     await super.load();
+    let href = this.getAttribute("href");
+
+    if (ImportedFileDependency.find(href, this.dependencies)) {
+      return;
+    }
+
     const valueSourceNode = this.source.children[0] as HTMLTextExpression;
 
     const type = this.getAttribute("type") || this.defaultMimeType;
-    let href = this.getAttribute("href");
 
     // check for relative path
     if (href && !/^(\/\/|http)/.test(href)) {

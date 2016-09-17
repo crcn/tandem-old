@@ -1,4 +1,4 @@
-
+<link type="text/scss" href="./styles.scss" />
 
 <template id="pane" title="Pane">
   <div class="pane">
