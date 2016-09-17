@@ -175,6 +175,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
     const expandButtonClassName = cx({
       "m-layers-pane-component-layer--expand-button": true,
+      "expand-arrow": true,
       "expanded": !!expanded,
       "ion-arrow-right-b": !expanded,
       "ion-arrow-down-b": expanded

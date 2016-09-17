@@ -1,8 +1,8 @@
+import * as path from "path";
 import { MimeTypes } from "tandem-html-extension/constants";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { DocumentFile } from "tandem-front-end/models";
 import { GroupNodeSection } from "tandem-html-extension/dom";
-import * as path from "path";
 import { HTMLElementEntity } from "./element";
 import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
 import { HTMLElementExpression, HTMLTextExpression } from "tandem-html-extension/ast/html/expressions";
