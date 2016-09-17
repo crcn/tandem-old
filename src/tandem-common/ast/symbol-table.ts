@@ -1,3 +1,5 @@
+// TODO - add _history prop here and reduce
+// context
 
 export class SymbolTable {
 

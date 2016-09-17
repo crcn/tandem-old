@@ -24,6 +24,7 @@ import {
 export * from "./base";
 export * from "./display";
 export * from "./utils";
+export * from "./controllers";
 
 export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEntity<any>> implements IEntity, IPatchable {
 

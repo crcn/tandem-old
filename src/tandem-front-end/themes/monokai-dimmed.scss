@@ -14,6 +14,11 @@ body {
 .editor, .editor .gutter {
   background-color: $dark-grey;
   color: #C5C8C6;
+  font-size: 13px;
+}
+
+.editor .canvas {
+  background-color: #F60;
 }
 
 .editor .layer.selected {
