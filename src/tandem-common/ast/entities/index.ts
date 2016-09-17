@@ -78,7 +78,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
     // eventually want to do this. though, this is causing some caching
     // issues for the moment.
-    // if (this._allChildEntities) return this._allChildEntities;
+    if (this._allChildEntities) return this._allChildEntities;
     const items: Array<IEntity> = [this];
     for (const child of this.children) {
       items.push(...child.flatten());

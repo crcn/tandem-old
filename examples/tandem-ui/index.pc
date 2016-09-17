@@ -45,7 +45,7 @@
 
 </style>
 
-<template id="pane" title="Pane">
+<template id="pane" title="Pane" style="position: absolute;left: -519px;top: -367px;">
   <div class="pane">
     <div class="inner header">
       ${title}
@@ -59,7 +59,7 @@
 
 <div style="position: absolute;width: 200px;left: 386px;top: -5px;">
 
-  <template style="width: 100%;" title=" " export>
+  <template style="width: 100%;" title="Style Properties" export>
     <pane title="blarg">
       <div class="container">
         <div class="row">
@@ -126,9 +126,15 @@
   </template>
 
   <template style="width:100%" title=" ">
-    <pane title="test" />
+    <pane title="Shadows" />
   </template>
 </div>
+
+
+
+
+
+
 
 
 
