@@ -4,6 +4,7 @@ input {
   background: rgba(0,0,0,0.1);
   padding: 0px;
   height: auto;
+  font-size: inherit;
 
   // TODO - use no-borders() helper
   border-radius: $border-radius-1;
