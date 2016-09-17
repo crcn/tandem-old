@@ -9,16 +9,17 @@ import {
 } from "./ast";
 
 // components
-import { dependency as blockNodeLayerLabelComponentDependency } from "./components/block-node-layer-label";
-import { dependency as templateToolComponentDependency } from "./components/template-tool";
+
+import { blockNodeLayerLabelComponentDependency } from "./components/block-node-layer-label";
+import { templateToolComponentDependency } from "./components/template-tool";
 
 // services
-import { dependency as pastePCEntitServiceyDependency } from "./services/paste-entity";
+import { pastePCEntitServiceyDependency } from "./services/paste-entity";
 
 // models
 import { pcFileDependency } from "./models/pc-file";
 
-export const dependency = [
+export const paperclipExtensionDependency = [
 
    // entities
    pcTemplateDependency,

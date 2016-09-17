@@ -97,4 +97,4 @@ export class CSSPaneComponent extends React.Component<{ workspace: Workspace, ap
   }
 }
 
-export const dependency = new EntityPaneComponentFactoryDependency("css", CSSPaneComponent);
+export const cssPaneComponentDependency = new EntityPaneComponentFactoryDependency("css", CSSPaneComponent);

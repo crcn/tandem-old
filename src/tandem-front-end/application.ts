@@ -2,37 +2,38 @@ import { Application } from "tandem-common/application";
 import { thread, isMaster } from "tandem-common/workers";
 
 // components
-import { dependency as rootComponentDependency } from "./components/root";
-import { dependency as layersPaneComponentDepency } from "./components/document-layers-pane";
+import { rootComponentDependency } from "./components/root";
+import { layersPaneComponentDepency } from "./components/document-layers-pane";
 
 // commponent tools
-import { dependency as gridToolComponentDependency } from "./components/grid-tool";
-import { dependency as insertToolComponentDependency } from "./components/insert-tool";
-import { dependency as dragSelectComponentDependency } from "./components/drag-select-tool";
-import { dependency as selectorToolComponentDependency } from "./components/selector-tool";
-import { dependency as selectableToolComponentDependency } from "./components/selectable-tool";
+import { gridToolComponentDependency } from "./components/grid-tool";
+import { insertToolComponentDependency } from "./components/insert-tool";
+import { dragSelectComponentDependency } from "./components/drag-select-tool";
+import { selectorToolComponentDependency } from "./components/selector-tool";
+import { selectableToolComponentDependency } from "./components/selectable-tool";
 
 // services
-import { dependency as clipboardService } from "./services/clipboard";
-import { dependency as workspaceDependency } from "./services/workspace";
-import { dependency as editorServiceDependency } from "./services/editor";
-import { dependency as backEndServiceDependency } from "./services/back-end";
-import { dependency as historyServiceDependency } from "./services/history";
-import { dependency as selectorServiceDependency } from "./services/selector";
-import { dependency as settingsServiceDependency } from "./services/settings";
-import { dependency as keyBindingsServiceDependency } from "./services/key-binding";
-import { dependency as rootComponentRendererDependency } from "./services/root-component-renderer";
+import { clipboardServiceDependency } from "./services/clipboard";
+import { workspaceDependency } from "./services/workspace";
+import { editorServiceDependency } from "./services/editor";
+import { backEndServiceDependency } from "./services/back-end";
+import { historyServiceDependency } from "./services/history";
+import { selectorServiceDependency } from "./services/selector";
+import { settingsServiceDependency } from "./services/settings";
+import { keyBindingsServiceDependency } from "./services/key-binding";
+import { rootComponentRendererDependency } from "./services/root-component-renderer";
 
 // tools
-import { dependency as pointerToolDependency } from "./models/pointer-tool";
+import { pointerToolDependency } from "./models/pointer-tool";
 
 // key bindings
-import { dependency as keyBindingsDependency } from "./key-bindings";
+import { keyBindingsDependency } from "./key-bindings";
 
 // extensions
 import { scssExtensionDependency  } from "tandem-scss-extension";
-import { dependency as htmlExtensionDependency } from "tandem-html-extension";
-import { dependency as paperclipExtensionDependency } from "tandem-paperclip-extension";
+import { angular2ExtensionDependency } from "tandem-angular2-extension";
+import { htmlExtensionDependency } from "tandem-html-extension";
+import { paperclipExtensionDependency } from "tandem-paperclip-extension";
 
 import { Metadata } from "tandem-common/metadata";
 import { Workspace } from "./models";
@@ -69,13 +70,13 @@ export class FrontEndApplication extends Application {
       selectableToolComponentDependency,
 
       // services
-      clipboardService,
       workspaceDependency,
       editorServiceDependency,
       backEndServiceDependency,
       historyServiceDependency,
       selectorServiceDependency,
       settingsServiceDependency,
+      clipboardServiceDependency,
       keyBindingsServiceDependency,
       rootComponentRendererDependency,
 
@@ -88,6 +89,7 @@ export class FrontEndApplication extends Application {
       // extensions
       scssExtensionDependency,
       htmlExtensionDependency,
+      angular2ExtensionDependency,
       paperclipExtensionDependency,
     );
   }

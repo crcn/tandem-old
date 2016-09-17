@@ -7,9 +7,9 @@ import { IApplication } from "tandem-common/application";
 import { SetToolAction } from "tandem-front-end/actions";
 import { TEXT_TOOL_KEY_CODE } from "tandem-html-extension/constants";
 import { FrontEndApplication } from "tandem-front-end/application";
+import { pointerToolDependency } from "tandem-front-end/models/pointer-tool";
 import { BaseApplicationService } from "tandem-common/services";
 import { EditorToolFactoryDependency } from "tandem-front-end/dependencies";
-import { dependency as pointerToolDependency } from "tandem-front-end/models/pointer-tool";
 import { IEditorTool, BaseEditorTool, IEditor } from "tandem-front-end/models";
 import { parseHTML, HTMLElementExpression , VisibleHTMLElementEntity} from "../ast";
 import {
@@ -119,5 +119,5 @@ class InsertTextTool extends InsertTool {
   }
 }
 
-export const dependency = new EditorToolFactoryDependency("text", "text", "display", "t", InsertTextTool);
+export const textToolDependency = new EditorToolFactoryDependency("text", "text", "display", "t", InsertTextTool);
 export const editInnerHTMLDependency = new EditorToolFactoryDependency("editInnerHTML", null, null, TEXT_TOOL_KEY_CODE, EditInnerHTMLTool);

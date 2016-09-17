@@ -57,4 +57,4 @@ class CommentLayerLabel extends React.Component<{ entity: HTMLCommentEntity, con
   }
 }
 
-export const dependency = new LayerLabelComponentFactoryDependency(HTMLCommentExpression.name, CommentLayerLabel);
+export const commentLayerLabelComponentDependency = new LayerLabelComponentFactoryDependency(HTMLCommentExpression.name, CommentLayerLabel);

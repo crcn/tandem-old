@@ -99,4 +99,4 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
   }
 }
 
-export const dependency = new ReactComponentFactoryDependency("components/tools/insert/size", InsertToolComponent);
+export const insertToolComponentDependency = new ReactComponentFactoryDependency("components/tools/insert/size", InsertToolComponent);

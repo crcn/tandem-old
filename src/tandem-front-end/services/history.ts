@@ -40,4 +40,4 @@ export default class HistoryService extends BaseApplicationService<FrontEndAppli
   }
 }
 
-export const dependency = new ApplicationServiceDependency("history", HistoryService);
+export const historyServiceDependency = new ApplicationServiceDependency("history", HistoryService);

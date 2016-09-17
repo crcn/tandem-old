@@ -14,5 +14,5 @@ export class PastePCService extends BaseApplicationService<FrontEndApplication> 
   }
 }
 
-export const dependency = new ApplicationServiceDependency("paste-pc-entity", PastePCService);
+export const pastePCEntitServiceyDependency = new ApplicationServiceDependency("paste-pc-entity", PastePCService);
 

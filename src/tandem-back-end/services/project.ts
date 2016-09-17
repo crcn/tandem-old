@@ -27,4 +27,4 @@ export default class ProjectService extends BaseApplicationService<IApplication>
   }
 };
 
-export const dependency = new ApplicationServiceDependency("projectService", ProjectService);
+export const projectServiceDependency = new ApplicationServiceDependency("projectService", ProjectService);

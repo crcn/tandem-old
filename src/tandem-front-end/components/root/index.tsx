@@ -18,4 +18,4 @@ export default class RootEditorComponent extends React.Component<any, any> {
   }
 }
 
-export const dependency = new RootReactComponentDependency(RootEditorComponent);
+export const rootComponentDependency = new RootReactComponentDependency(RootEditorComponent);

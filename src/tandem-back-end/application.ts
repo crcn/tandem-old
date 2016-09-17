@@ -1,12 +1,12 @@
 import * as path from "path";
 import { Application } from "tandem-common/application";
 
-import { dependency as dbServiceDependency } from "./services/db";
-import { dependency as fileServicerDependency } from "./services/file";
-import { dependency as stdinServiceDependency } from "./services/stdin";
-import { dependency as upsertServiceDependency } from "./services/upsert";
-import { dependency as frontEndServiceDependency } from "./services/front-end";
-import { dependency as projectServiceDependency } from "./services/project";
+import { dbServiceDependency } from "./services/db";
+import { fileServicerDependency } from "./services/file";
+import { stdinServiceDependency } from "./services/stdin";
+import { upsertServiceDependency } from "./services/upsert";
+import { projectServiceDependency } from "./services/project";
+import { frontEndServiceDependency } from "./services/front-end";
 
 export default class ServerApplication extends Application {
   constructor(config) {

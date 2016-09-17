@@ -120,4 +120,4 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
   }
 }
 
-export const dependency = new ApplicationServiceDependency("selector", SelectorService);
+export const selectorServiceDependency = new ApplicationServiceDependency("selector", SelectorService);

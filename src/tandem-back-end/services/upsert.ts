@@ -21,4 +21,4 @@ export default class UpsertService extends BaseApplicationService<IApplication> 
   }
 }
 
-export const dependency = new ApplicationServiceDependency("upsert", UpsertService);
+export const upsertServiceDependency = new ApplicationServiceDependency("upsert", UpsertService);

@@ -1,24 +1,22 @@
 import { MimeTypes } from "tandem-html-extension/constants";
-
 import { IApplication } from "tandem-common/application";
 
 // components
-import { dependency as cssPaneComponentDependency } from "./components/css-pane";
-import { dependency as entityPreviewComponentDependency } from "./components/entity-preview";
+import { cssPaneComponentDependency } from "./components/css-pane";
+import { entityPreviewComponentDependency } from "./components/entity-preview";
 import { cssColorTokenComponentFactoryDependency } from "./components/css-color-token";
 
 // stage tool components
 import { cssHighlightElementToolComponentFactoryDependency } from "./components/css-highlight-element-tool";
 
 // layer components
-import { dependency as textLayerLabelComponentDependency } from "./components/text-layer-label";
-import { dependency as elementLayerLabelComponentDependency } from "./components/element-layer-label";
-import { dependency as commentLayerLabelComponentDependency } from "./components/comment-layer-label";
-import { dependency as cssRuleLayerLabelComponentDependency } from "./components/css-rule-layer-label";
-import { cssDeclarationLayerLabelComponentDependency }from "./components/css-declaration-layer-label";
+import { textLayerLabelComponentDependency } from "./components/text-layer-label";
+import { elementLayerLabelComponentDependency } from "./components/element-layer-label";
+import { commentLayerLabelComponentDependency } from "./components/comment-layer-label";
+import { cssRuleLayerLabelComponentDependency } from "./components/css-rule-layer-label";
 import { cssAtRuleLayerLabelComponentDependency } from "./components/css-atrule-layer-label";
 import { cssCommentLayerLabelComponentDependency } from "./components/css-comment-layer-label";
-
+import { cssDeclarationLayerLabelComponentDependency } from "./components/css-declaration-layer-label";
 
 // token components
 import { cssUnitEditorTokenComponentFactoryDependency } from "./components/css-unit-editor-token";
@@ -33,10 +31,10 @@ import { htmlFileModelDependency } from "./models/html-file";
 import { pastHTMLServiceDependency, cssSelectorServiceDependency  } from "./services";
 
  // tools
-import { dependency as textToolDependency, editInnerHTMLDependency } from "./models/text-tool";
+import { textToolDependency, editInnerHTMLDependency } from "./models/text-tool";
 
 // key bindings
-import { dependencies as keyBindingDependencies } from "./key-bindings";
+import { keyBindingDependency } from "./key-bindings";
 
 import { MimeTypeDependency } from "tandem-common/dependencies";
 
@@ -54,7 +52,7 @@ import { MimeTypeDependency } from "tandem-common/dependencies";
    cssCommentEntityFactoryDependency,
 } from "./ast";
 
-export const dependency = [
+export const htmlExtensionDependency = [
 
   // components
   cssPaneComponentDependency,
@@ -92,7 +90,7 @@ export const dependency = [
   editInnerHTMLDependency,
 
   // key bindings
-  keyBindingDependencies,
+  keyBindingDependency,
 
   // entities
   htmlTextDependency,

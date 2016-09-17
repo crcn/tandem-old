@@ -21,4 +21,4 @@ class LayersPaneComponent extends React.Component<{ workspace: Workspace, app: F
   }
 }
 
-export const dependency = new DocumentPaneComponentFactoryDependency("layers", DragDropContext(HTML5Backend)(LayersPaneComponent));
+export const layersPaneComponentDepency = new DocumentPaneComponentFactoryDependency("layers", DragDropContext(HTML5Backend)(LayersPaneComponent));

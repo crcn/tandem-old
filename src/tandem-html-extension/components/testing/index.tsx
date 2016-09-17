@@ -10,5 +10,3 @@
      </div>;
    }
  }
-
-export const dependency = new RootReactComponentDependency(HTMLDebuggingComponent);

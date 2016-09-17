@@ -47,4 +47,4 @@ export default class ClipboardService extends BaseApplicationService<FrontEndApp
   }
 }
 
-export const dependency = new ApplicationServiceDependency("clipboard", ClipboardService);
+export const clipboardServiceDependency = new ApplicationServiceDependency("clipboard", ClipboardService);

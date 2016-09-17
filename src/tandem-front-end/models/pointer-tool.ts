@@ -63,4 +63,4 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
   }
 }
 
-export const dependency = new EditorToolFactoryDependency("pointer", "cursor", "display", POINTER_TOOL_KEY_CODE, PointerTool);
+export const pointerToolDependency = new EditorToolFactoryDependency("pointer", "cursor", "display", POINTER_TOOL_KEY_CODE, PointerTool);

@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { Workspace, Editor } from "tandem-front-end/models";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { ClassFactoryDependency } from "tandem-common/dependencies";
-import { dependency as selectorDependency } from "./selector";
+import { selectorServiceDependency } from "./selector";
 import { SelectAction, ToggleSelectAction } from "tandem-front-end/actions";
 
 describe(__filename + "#", () => {
@@ -19,7 +19,7 @@ describe(__filename + "#", () => {
     app.workspace = new Workspace(null);
     workspace = app.workspace;
     editor = app.workspace.editor;
-    app.dependencies.register(selectorDependency);
+    app.dependencies.register(selectorServiceDependency);
     await app.initialize();
   });
 

@@ -115,4 +115,4 @@ class DragSelectComponent extends React.Component<{ allEntities: any, app: Front
   }
 }
 
-export const dependency = new ReactComponentFactoryDependency("components/tools/pointer/drag-select", DragSelectComponent);
+export const dragSelectComponentDependency = new ReactComponentFactoryDependency("components/tools/pointer/drag-select", DragSelectComponent);

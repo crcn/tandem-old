@@ -2,12 +2,21 @@
 <link rel="stylesheet" href="./bootstrap.css" type="text/css" />
 
 <style type="text/scss">
+
+  $font-weight: 200;
+
   .pane {
+
+    font-size: 12px;
 
     font-weight: 200;
     letter-spacing: 0.05em;
 
-    & .header, .content {
+    .col-xs-4 {
+      padding:0 8px;
+    }
+
+    & .header {
       padding: 8px;
     }
 
@@ -18,7 +27,19 @@
     & input {
       width: 100%;
       background: transparent;
-      border: 1px solid white;
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+
+    & .label {
+      color: inherit;
+      text-align: center;
+      display: block;
+      margin-top: 2px;
+      font-weight: $font-weight;
+    }
+
+    & .background {
+
     }
   }
 
@@ -35,38 +56,74 @@
   </div>
 </template>
 
-<template style="left: 406px;top: 0px;height: 291px;" title="Properties Pane">
-  <pane title="Properties">
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-4">
-          Size
+<div style="position: absolute;width: 200px;left: 386px;top: -5px;">
+
+  <template style="width: 100%;" title=" " export>
+    <pane title="Properties">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-4">
+            Position
+          </div>
+          <div class="col-xs-4">
+            <input type="text" />
+            <span class="label">Left</span>
+          </div>
+          <div class="col-xs-4">
+            <input type="text" />
+            <span class="label">Top</span>
+          </div>
         </div>
-        <div class="col-xs-4">
-          <input type="text" />
-          x
-        </div>
-        <div class="col-xs-4">
-          <input type="text" />
-          y
+        <div class="row">
+          <div class="col-xs-4">
+            Size
+          </div>
+          <div class="col-xs-4">
+            <input type="text" />
+            <span class="label">Width</span>
+          </div>
+          <div class="col-xs-4">
+            <input type="text" />
+            <span class="label">Height</span>
+          </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-xs-4">
-          Position
+    </pane>
+  </template>
+
+  <template style="width: 200px;" title=" " export>
+    <pane title="Background" class="background">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-4">
+            Size
+          </div>
+          <div class="col-xs-4">
+            <input type="text" />
+            x
+          </div>
+          <div class="col-xs-4">
+            <input type="text" />
+            y
+          </div>
         </div>
-        <div class="col-xs-4">
-          <input type="text" />
-          Width
-        </div>
-        <div class="col-xs-4">
-          <input type="text" />
-          Height
+        <div class="row">
+          <div class="col-xs-4">
+            Position
+          </div>
+          <div class="col-xs-4">
+            <input type="text" />
+            Width
+          </div>
+          <div class="col-xs-4">
+            <input type="text" />
+            Height
+          </div>
         </div>
       </div>
-    </div>
-  </pane>
-</template>
+    </pane>
+  </template>
+</div>
 
 
 

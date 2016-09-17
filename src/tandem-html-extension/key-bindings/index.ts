@@ -5,9 +5,9 @@ import { InsertTool } from "tandem-front-end/models/insert-tool";
 import { SetToolAction } from "tandem-front-end/actions";
 import { TEXT_TOOL_KEY_CODE } from "tandem-html-extension/constants";
 import { FrontEndApplication } from "tandem-front-end/application";
+import { textToolDependency } from "tandem-html-extension/models/text-tool";
+import { pointerToolDependency } from "tandem-front-end/models/pointer-tool";
 import { parseHTML, HTMLElementExpression } from "tandem-html-extension/ast";
-import { dependency as textToolDependency } from "tandem-html-extension/models/text-tool";
-import { dependency as pointerToolDependency } from "tandem-front-end/models/pointer-tool";
 import { BaseCommand, BaseApplicationCommand } from "tandem-common/commands";
 import { ClassFactoryDependency, DEPENDENCIES_NS, Dependencies } from "tandem-common/dependencies";
 import { EditorToolFactoryDependency, GlobalKeyBindingDependency } from "tandem-front-end/dependencies";
@@ -41,7 +41,7 @@ function createElementInsertToolClass(options) {
   };
 }
 
-export const dependencies = [
+export const keyBindingDependency = [
   new GlobalKeyBindingDependency(TEXT_TOOL_KEY_CODE, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
       this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(textToolDependency.ns)));
@@ -51,7 +51,7 @@ export const dependencies = [
 
 const insertElementKeyBindings = {
   "d" : { nodeName:  "div", attributes: ``, style: "background:rgba(0,0,0,0.1);" },
-  "a" : { nodeName: "template", attributes: `title="Untitled"`, style: "background: white;", root: true }
+  "a" : { nodeName: "template", attributes: `title="Untitled"`, style: "background: white; position:absolute; ", root: true }
 };
 
 for (const key in insertElementKeyBindings) {
@@ -59,7 +59,7 @@ for (const key in insertElementKeyBindings) {
 }
 
 function addElementKeyBinding(key: string, options: { nodeName: string, attributes: string }) {
-  dependencies.push(new GlobalKeyBindingDependency(key, class SetPointerToolCommand extends BaseCommand {
+  keyBindingDependency.push(new GlobalKeyBindingDependency(key, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
       this.bus.execute(new SetToolAction(<ClassFactoryDependency>this.dependencies.link(new ClassFactoryDependency(null, createElementInsertToolClass(options)))));
     }

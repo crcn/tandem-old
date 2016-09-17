@@ -6,14 +6,14 @@ import { GlobalKeyBindingDependency } from "tandem-front-end/dependencies";
 import { EditorToolFactoryDependency } from "tandem-front-end/dependencies";
 import { ZoomAction, DeleteSelectionAction } from "tandem-front-end/actions";
 import { BaseCommand, BaseApplicationCommand } from "tandem-common/commands";
-import { dependency as pointerToolDependency } from "tandem-front-end/models/pointer-tool";
+import { pointerToolDependency } from "tandem-front-end/models/pointer-tool";
 import { SettingKeys, ZOOM_INCREMENT, POINTER_TOOL_KEY_CODE } from "tandem-front-end/constants";
 import { SelectAllAction, SetToolAction, UndoAction, RedoAction } from "tandem-front-end/actions";
 
 export * from "./base";
 export * from "./manager";
 
-export const dependency = [
+export const keyBindingsDependency = [
   new GlobalKeyBindingDependency("meta+=", class ZoomInCommand extends BaseApplicationCommand<FrontEndApplication> {
     execute(action: Action) {
       this.bus.execute(new ZoomAction(ZOOM_INCREMENT, true));

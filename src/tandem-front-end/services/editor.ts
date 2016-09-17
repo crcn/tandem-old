@@ -19,4 +19,4 @@ export class EditorService extends BaseApplicationService<FrontEndApplication> {
 
 }
 
-export const dependency = new ApplicationServiceDependency("editor", EditorService);
+export const editorServiceDependency = new ApplicationServiceDependency("editor", EditorService);

@@ -60,4 +60,4 @@ export default class DBService extends BaseApplicationService<IApplication> {
   }
 }
 
-export const dependency = new ApplicationServiceDependency("db", DBService);
+export const dbServiceDependency = new ApplicationServiceDependency("db", DBService);

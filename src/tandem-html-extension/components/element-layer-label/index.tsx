@@ -191,4 +191,4 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
 
 export default ElementLayerLabelComponent;
 
-export const dependency = new LayerLabelComponentFactoryDependency("element", ElementLayerLabelComponent, "childNodes");
+export const elementLayerLabelComponentDependency = new LayerLabelComponentFactoryDependency("element", ElementLayerLabelComponent, "childNodes");

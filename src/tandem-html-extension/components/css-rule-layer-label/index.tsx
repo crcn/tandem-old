@@ -46,4 +46,4 @@ class CSSRuleLayerLabel extends React.Component<{ app: FrontEndApplication, work
   // }
 }
 
-export const dependency = new LayerLabelComponentFactoryDependency(CSSRuleExpression.name, CSSRuleLayerLabel);
+export const cssRuleLayerLabelComponentDependency = new LayerLabelComponentFactoryDependency(CSSRuleExpression.name, CSSRuleLayerLabel);

@@ -19,5 +19,5 @@ export class SettingsService extends BaseApplicationService<FrontEndApplication>
   }
 }
 
-export const dependency = new ApplicationServiceDependency("settings", SettingsService);
+export const settingsServiceDependency = new ApplicationServiceDependency("settings", SettingsService);
 

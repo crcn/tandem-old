@@ -112,4 +112,4 @@ export default class FileService extends BaseApplicationService<IApplication> {
   }
 }
 
-export const dependency = new ApplicationServiceDependency("file", FileService);
+export const fileServicerDependency = new ApplicationServiceDependency("file", FileService);

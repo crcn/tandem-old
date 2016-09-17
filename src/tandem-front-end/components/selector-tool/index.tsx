@@ -80,6 +80,4 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
   }
 }
 
-export const dependency = [
-  new ReactComponentFactoryDependency("components/tools/pointer/selector", SelectorComponent)
-];
+export const selectorToolComponentDependency = new ReactComponentFactoryDependency("components/tools/pointer/selector", SelectorComponent);

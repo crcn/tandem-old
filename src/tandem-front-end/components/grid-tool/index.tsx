@@ -41,5 +41,5 @@ export class GridToolComponent extends React.Component<{ zoom: number }, any> {
   }
 }
 
-export const dependency = new ReactComponentFactoryDependency("components/tools/pointer/grid", GridToolComponent);
+export const gridToolComponentDependency = new ReactComponentFactoryDependency("components/tools/pointer/grid", GridToolComponent);
 

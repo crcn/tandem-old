@@ -26,4 +26,4 @@ export default class PreviewComponent extends React.Component<{ entity: HTMLDocu
   }
 }
 
-export const dependency = new EntityPreviewDependency(PreviewComponent);
+export const entityPreviewComponentDependency = new EntityPreviewDependency(PreviewComponent);

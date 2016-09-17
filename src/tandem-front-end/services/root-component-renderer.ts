@@ -49,4 +49,4 @@ export default class RootComponentRenderer extends BaseApplicationService<IAppli
   }
 }
 
-export const dependency = new ApplicationServiceDependency("root-component-renderer", RootComponentRenderer);
+export const rootComponentRendererDependency = new ApplicationServiceDependency("root-component-renderer", RootComponentRenderer);

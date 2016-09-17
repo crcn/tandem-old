@@ -32,4 +32,4 @@ export default class GlobalKeyBindingService extends BaseApplicationService<IApp
   }
 }
 
-export const dependency = new ApplicationServiceDependency("global-key-binding", GlobalKeyBindingService);
+export const keyBindingsServiceDependency = new ApplicationServiceDependency("global-key-binding", GlobalKeyBindingService);

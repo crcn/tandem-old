@@ -19,4 +19,4 @@ export default class SelectableToolComponent extends React.Component<{selection:
   }
 }
 
-export const dependency = new ReactComponentFactoryDependency("components/tools/pointer/selectable", SelectableToolComponent);
+export const selectableToolComponentDependency = new ReactComponentFactoryDependency("components/tools/pointer/selectable", SelectableToolComponent);

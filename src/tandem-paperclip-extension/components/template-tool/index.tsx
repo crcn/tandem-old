@@ -91,7 +91,5 @@ export class ArtboardToolComponent extends React.Component<{ zoom: number, works
   }
 }
 
-export const dependency = [
-  new ReactComponentFactoryDependency("components/tools/pointer/template", ArtboardToolComponent)
-];
+export const templateToolComponentDependency = new ReactComponentFactoryDependency("components/tools/pointer/template", ArtboardToolComponent);
 

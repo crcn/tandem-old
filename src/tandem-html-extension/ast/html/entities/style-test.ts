@@ -2,8 +2,8 @@ import { expect } from "chai";
 import { MimeTypes } from "tandem-html-extension/constants";
 import { DocumentFile } from "tandem-front-end/models";
 import { timeout } from "tandem-common/test";
+import { HTMLImportEntity, HTMLDocumentRootEntity, htmlExtensionDependency } from "tandem-html-extension";
 import { Dependencies, DependenciesDependency, FileFactoryDependency, BaseEntity } from "tandem-common";
-import { HTMLImportEntity, HTMLDocumentRootEntity, dependency as htmlExtensionDependency } from "tandem-html-extension";
 
 describe(__filename + "#", () => {
 

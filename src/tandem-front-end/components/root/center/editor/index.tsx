@@ -23,5 +23,3 @@ export default class StageComponent extends React.Component<{ app: FrontEndAppli
   }
 }
 
-
-export const dependency = new ReactComponentFactoryDependency("components/editors/sfn", StageComponent);

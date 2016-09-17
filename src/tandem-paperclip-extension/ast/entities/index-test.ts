@@ -2,9 +2,9 @@ import { expect } from "chai";
 import { parsePC } from "../index";
 import { MimeTypes } from "tandem-paperclip-extension/constants";
 import { FileFactoryDependency } from "tandem-common/dependencies";
+import { htmlExtensionDependency } from "tandem-html-extension";
 import { PCFile, pcFileDependency } from "tandem-paperclip-extension/models/pc-file";
 import { Dependencies, DependenciesDependency } from "tandem-common/dependencies";
-import { dependency as htmlExtensionDependency } from "tandem-html-extension";
 import { pcBlockNodeEntityDependency, pcBlockAttributeValueEntityDependency } from "tandem-paperclip-extension/ast";
 
 describe(__filename + "#", () => {

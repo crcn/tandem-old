@@ -57,4 +57,4 @@ class BlockLayerLabel extends React.Component<{ entity: PCBlockNodeEntity, conne
   }
 }
 
-export const dependency = new LayerLabelComponentFactoryDependency(PCBlockNodeExpression.name, BlockLayerLabel);
+export const blockNodeLayerLabelComponentDependency = new LayerLabelComponentFactoryDependency(PCBlockNodeExpression.name, BlockLayerLabel);
