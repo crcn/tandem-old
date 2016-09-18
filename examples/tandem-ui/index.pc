@@ -113,21 +113,6 @@
   <pane title="Shadows" />
 </template>
 
-<template title="Context Menu" style="background: white;position: absolute;position: absolute;width: 154px;height: 175px;left: 95px;top: -17px;">
-
-  <ul class="menu">
-    <li>
-      Menu item 1
-    </li>
-    <li>
-      Menu item 1
-    </li>
-    <li>
-      Menu item 1
-    </li>
-  </ul>
-</template>
-
 
 
 
