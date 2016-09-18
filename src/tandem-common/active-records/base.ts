@@ -94,6 +94,7 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
     if (this._syncBus) {
       this.bus.unregister(this._syncBus);
     }
+
     this.notify(new DisposeAction());
   }
 
@@ -102,7 +103,7 @@ export abstract class ActiveRecord extends Observable implements IActiveRecord {
     try {
       data[this.idProperty] = String(mongoid());
     } catch (e) {
-      console.log(e.stack);
+      console.error(e.stack);
     }
 
     return this.fetch(new DSInsertAction(this.collectionName, data));

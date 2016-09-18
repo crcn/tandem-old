@@ -81,7 +81,7 @@ export class EntityRuntime extends Observable {
 
     this._evaluating = true;
     try {
-      await this._entity.evaluate(this._getContext());
+      await this._entity.evaluate(this._getContext() || {});
     } catch (e) {
       console.error(e.stack);
     }
