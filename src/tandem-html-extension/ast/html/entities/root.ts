@@ -6,7 +6,6 @@ import { DocumentFile } from "tandem-front-end/models";
 import { watchProperty } from "tandem-common/observable";
 import { IHTMLNodeEntity } from "./base";
 import { EntityFactoryDependency } from "tandem-common/dependencies";
-import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
 import { IDOMSection, GroupNodeSection } from "tandem-html-extension/dom";
 import { Action, PropertyChangeAction, UpdateAction } from "tandem-common/actions";
 import { Dependencies, DEPENDENCIES_NS, IInjectable } from "tandem-common/dependencies";
@@ -22,6 +21,7 @@ import {
   CSSRootEntity,
   HTMLExpression,
   HTMLTextExpression,
+  getCSSStyleContent,
   HTMLCommentExpression,
   HTMLElementExpression,
   HTMLFragmentExpression,
@@ -52,8 +52,9 @@ export class HTMLDocumentRootEntity extends HTMLContainerEntity<HTMLFragmentExpr
 
   async evaluate(context: any) {
     await super.evaluate(context);
+
     // after the root has been loaded in, fetch all of the CSS styles.
-    this._globalStyle.innerHTML = CSSStylesheetsDependency.getInstance(this.context.dependencies).toString();
+    this._globalStyle.innerHTML = getCSSStyleContent(this);
   }
 
   public async load() {

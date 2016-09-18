@@ -5,11 +5,10 @@ import { IEntity } from "tandem-common/ast";
 import { MetadataKeys } from "tandem-front-end/constants";
 import bubbleIframeEvents from "tandem-front-end/utils/html/bubble-iframe-events";
 import { FrontEndApplication } from "tandem-front-end/application";
-import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
 import { NodeSection, GroupNodeSection } from "tandem-html-extension/dom";
 import { Action, IActor, inject, TreeNodeAction } from "tandem-common";
-import { VisibleHTMLElementEntity, HTMLElementEntity } from "tandem-html-extension";
 import { HTMLElementExpression, HTMLFragmentExpression } from "tandem-html-extension/ast";
+import { VisibleHTMLElementEntity, HTMLElementEntity, getCSSStyleContent } from "tandem-html-extension";
 import { EntityFactoryDependency, IInjectable, Dependency, Dependencies } from "tandem-common/dependencies";
 
 const TEMPLATES_NS = "templates";
@@ -104,7 +103,7 @@ export class PCTemplateEntity extends VisibleHTMLElementEntity implements IInjec
     *:focus {
       outline: none;
     }
-    ${ CSSStylesheetsDependency.getInstance(this.dependencies).toString() }
+    ${ getCSSStyleContent(this) }
     `;
   }
 

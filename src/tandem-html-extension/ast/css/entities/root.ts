@@ -3,7 +3,6 @@ import { HTMLFile } from "tandem-html-extension/models/html-file";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { DocumentFile } from "tandem-front-end/models";
 import { GroupNodeSection } from "tandem-html-extension/dom";
-import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
 import { parseCSS, CSSRootExpression } from "tandem-html-extension/ast";
 
 import {
@@ -35,7 +34,6 @@ export class CSSRootEntity extends BaseEntity<CSSRootExpression> {
     await super.evaluate(context);
     await this._childController.evaluate(context);
     this.content = await this.loadCSS(context);
-    CSSStylesheetsDependency.getInstance(context.dependencies).addStyleSheet(this);
   }
 
   async loadCSS(context) {

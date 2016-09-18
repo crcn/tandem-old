@@ -8,24 +8,13 @@ import {
   EntityFactoryDependency,
 } from "tandem-common";
 
+import {
+  MockEntity,
+  MockExpression,
+} from "./test-helpers";
+
 describe(__filename + "#", () => {
 
-  class MockExpression extends BaseExpression<MockExpression> {
-    constructor(...children: Array<MockExpression>) {
-      super({ start: -1, end: -1 });
-      children.forEach((child) => this.appendChild(child));
-    }
-  }
-
-  class MockEntity extends BaseEntity<MockExpression> {
-    constructor(source: MockExpression) {
-      super(source);
-    }
-
-    cloneLeaf() {
-      return new MockEntity(this.source);
-    }
-  }
 
   let deps: Dependencies;
 
