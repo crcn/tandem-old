@@ -21,8 +21,7 @@ export class EntityBodyController extends BaseEntityController {
 
     // TODO - move all of this logic to an entity controller instead - likely
     // something such as EntityChildController or similar
-
-    const mappedSourceChildren         = this._mapSourceChildren().concat();
+    const mappedSourceChildren = this._mapSourceChildren().concat();
 
     for (let i = 0, n = mappedSourceChildren.length; i < n; i++) {
       const childSource = mappedSourceChildren[i];
@@ -49,10 +48,10 @@ export class EntityBodyController extends BaseEntityController {
         }
 
         childEntity = childEntityFactory.create(childSource);
-        entity.context = await childEntity.evaluate(this._getChildContext());
+        await childEntity.evaluate(context);
         entity.insertChildAt(childEntity, i);
       } else {
-        entity.context = await childEntity.evaluate(this._getChildContext());
+        await childEntity.evaluate(context);
       }
     }
 
@@ -66,9 +65,5 @@ export class EntityBodyController extends BaseEntityController {
 
   private _defaultMapSourceChildren() {
     return this.entity.source.children;
-  }
-
-  private _getChildContext() {
-    return this.entity.context;
   }
 }

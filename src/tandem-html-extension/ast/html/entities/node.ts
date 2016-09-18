@@ -1,16 +1,27 @@
 import * as sift from "sift";
-import { ITyped } from "tandem-common/object";
-import { inject } from "tandem-common/decorators";
 import { HTMLFile } from "tandem-html-extension/models/html-file";
-import { BubbleBus } from "tandem-common/busses";
 import { DocumentFile } from "tandem-front-end/models";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { IHTMLNodeEntity } from "./base";
-import { HTMLNodeExpression } from "tandem-html-extension/ast";
-import { PropertyChangeAction } from "tandem-common/actions";
 import { IDOMSection, NodeSection, GroupNodeSection } from "tandem-html-extension/dom";
-import { IEntity, EntityMetadata, IEntityDocument, BaseEntity, IExpression } from "tandem-common/ast";
-import { IInjectable, DEPENDENCIES_NS, Dependencies, EntityFactoryDependency, Injector } from "tandem-common/dependencies";
+import { HTMLNodeExpression, HTMLContainerExpression } from "tandem-html-extension/ast";
+import {
+  inject,
+  ITyped,
+  IEntity,
+  Injector,
+  BubbleBus,
+  BaseEntity,
+  IInjectable,
+  IExpression,
+  Dependencies,
+  EntityMetadata,
+  IEntityDocument,
+  DEPENDENCIES_NS,
+  PropertyChangeAction,
+  EntityBodyController,
+  EntityFactoryDependency,
+} from "tandem-common";
 
 export abstract class HTMLNodeEntity<T extends HTMLNodeExpression> extends BaseEntity<T> implements IHTMLNodeEntity {
 
@@ -84,4 +95,29 @@ export abstract class HTMLNodeEntity<T extends HTMLNodeExpression> extends BaseE
   }
 
   protected abstract createSection();
+}
+
+
+export abstract class HTMLContainerEntity<T extends HTMLContainerExpression> extends HTMLNodeEntity<T> {
+  protected _childController: EntityBodyController;
+  protected initialize() {
+    super.initialize();
+    this._childController = new EntityBodyController(this, this.mapSourceChildren.bind(this));
+  }
+
+  protected async load() {
+    await this._childController.evaluate(this.getChildContext());
+  }
+
+  protected async update() {
+    await this._childController.evaluate(this.getChildContext());
+  }
+
+  protected mapSourceChildren() {
+    return this.source.children;
+  }
+
+  protected getChildContext() {
+    return this.context;
+  }
 }

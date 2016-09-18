@@ -22,11 +22,10 @@ export class CSSRootEntity extends BaseEntity<CSSRootExpression> {
     source.observe(new WrapBus(this.onSourceAction.bind(this)));
   }
 
-  async mapContext(context) {
+  async evaluate(context: any) {
+    await super.evaluate(context);
     this.content = await this.loadCSS(context);
-    context.dependencies = context.dependencies.clone();
     CSSStylesheetsDependency.getInstance(context.dependencies).addStyleSheet(this);
-    return context;
   }
 
   async loadCSS(context) {

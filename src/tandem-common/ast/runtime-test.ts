@@ -6,6 +6,7 @@ import {
   Dependencies,
   EntityRuntime,
   BaseExpression,
+  EntityBodyController,
   EntityFactoryDependency,
 } from "tandem-common";
 
@@ -21,8 +22,16 @@ class MockExpression extends BaseExpression<MockExpression> {
 }
 
 class MockEntity extends BaseEntity<MockExpression> {
+  private _childController: EntityBodyController;
   constructor(source: MockExpression) {
     super(source);
+    this._childController = new EntityBodyController(this);
+  }
+  protected async load() {
+    await this._childController.evaluate(this.context);
+  }
+  protected async update() {
+    await this._childController.evaluate(this.context);
   }
   cloneLeaf() {
     return new MockEntity(this.source);

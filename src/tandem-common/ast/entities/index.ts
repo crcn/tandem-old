@@ -4,9 +4,8 @@ import { WrapBus } from "mesh";
 import { BubbleBus } from "tandem-common/busses";
 import { diffArray } from "tandem-common/utils/array";
 import { watchProperty } from "tandem-common/observable";
-import { Action, TreeNodeAction, EntityAction } from "tandem-common/actions";
-
 import { bindable, mixin, virtual, patchable } from "tandem-common/decorators";
+import { Action, TreeNodeAction, EntityAction } from "tandem-common/actions";
 import { IDisposable, ITyped, IValued, IPatchable } from "tandem-common/object";
 import { IInjectable, Injector, DEPENDENCIES_NS, Dependencies } from "tandem-common/dependencies";
 import { EntityFactoryDependency, EntityDocumentDependency, ENTITY_DOCUMENT_NS } from "tandem-common/dependencies";
@@ -33,14 +32,32 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   @patchable
   protected _source: T;
 
-  @patchable
   public context: any;
 
+  /**
+   * TRUE if the source expression has changed and the entity has not evaluated
+   * yet
+   */
+
   protected _dirty: boolean;
+
+  /**
+   * true if the entity has has evaluated for the first time
+   */
+
   private _loaded: boolean;
+
+  /**
+   * Observer for any changes on the source expression
+   */
   private _sourceObserver: IActor;
+
+  /**
+   * All Child entities of thie entity -- used for flatten() caching
+   */
+
   private _allChildEntities: Array<IEntity>;
-  private _mappedSourceChildren: Array<IExpression>;
+
 
   constructor(_source: T) {
     super();
@@ -71,9 +88,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
     return this.context;
   }
 
-  public patch(entity: BaseEntity<any>) {
-    this.onEvaluated();
-  }
+  public patch(entity: BaseEntity<any>) { }
 
   public flatten(): Array<IEntity> {
 
@@ -93,6 +108,7 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   public async evaluate(context: any) {
     this.context = context;
+
     if (this._loaded) {
       await this.update();
       this._dirty = false;
@@ -100,21 +116,10 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
       this._loaded = true;
       await this.load();
     }
-
-    this.onEvaluated();
-
-    // mapContext may need evaluated children, so execute
-    // it at the end
-    return await this.mapContext(this.context);
-  }
-
-  protected mapContext(context: any) {
-    return context;
   }
 
   // TODO - make this abstract
   protected async load() {
-    await this.evaluateChildren();
   }
 
   protected async reload() {
@@ -126,53 +131,6 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   // TODO - make this abstract
   protected async update() {
-    await this.evaluateChildren();
-  }
-
-  protected async evaluateChildren() {
-
-    // TODO - move all of this logic to an entity controller instead - likely
-    // something such as EntityChildController or similar
-
-    const mappedSourceChildren         = this.mapSourceChildren().concat();
-
-    for (let i = 0, n = mappedSourceChildren.length; i < n; i++) {
-      const childSource = mappedSourceChildren[i];
-      let childEntity: BaseEntity<T>   = this.children.find((child) => child.source === childSource);
-      let oldIndex      = this.children.indexOf(childEntity);
-
-      // shuffle children around if the source exists but the entity
-      // is out of order. Note that the children may still be removed
-      // if the type is incorrect.
-      if (oldIndex !== -1 && i !== oldIndex) {
-        this.insertChildAt(this.children[oldIndex], i);
-      }
-
-      childEntity   = this.children[i];
-
-      const childEntityFactory = EntityFactoryDependency.findBySource(childSource, this.context.dependencies);
-
-      if (!childEntity || childEntity.source !== childSource || childEntity.constructor !== childEntityFactory.entityClass || childEntity.shouldDispose()) {
-
-        if (childEntity) {
-          this.removeChild(childEntity);
-          childEntity.dispose();
-        }
-
-        childEntity = childEntityFactory.create(childSource);
-        this.context = await childEntity.evaluate(this.getChildContext());
-        this.insertChildAt(childEntity, i);
-      } else {
-        this.context = await childEntity.evaluate(this.getChildContext());
-      }
-    }
-
-    for (let i = this.children.length; i--; ) {
-      const child = this.children[i];
-      if (mappedSourceChildren.indexOf(child.source) === -1) {
-        this.removeChild(child);
-      }
-    }
   }
 
   protected shouldDispose() {
@@ -197,14 +155,8 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   public clone() {
     let clone = super.clone();
     clone.metadata.copyFrom(this.metadata);
-    if (this._loaded) {
-      clone.onEvaluated();
-    }
     return clone;
   }
-
-  // TODO - onEvaluated
-  protected onEvaluated() { }
 
   protected initialize() {
     this._source.observe(this._sourceObserver = new WrapBus(this.onSourceAction.bind(this)));
@@ -224,11 +176,16 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   }
 
   protected onChildAction(action: Action) {
+
+    // child entity is dirty from a source expression change -- this entity is dirty. Note
+    // that child entities may contain sources from different documents, hence why there
+    // are two places where this entity can be flagged as dirty.
     if (action.type === EntityAction.ENTITY_DIRTY) {
       if (this._dirty) return;
       this._dirty = true;
     }
 
+    // child entity added or removed -- bust the allChildEntities cache
     if (action.type === TreeNodeAction.NODE_ADDED || action.type === TreeNodeAction.NODE_REMOVED) {
       this._allChildEntities = undefined;
     }

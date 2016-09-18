@@ -19,7 +19,7 @@ export class EntityRuntime extends Observable {
 
   constructor(private _createRootEntity: (ast: IExpression) => IEntity, public context: any = {}) {
     super();
-    this._astObserver = new WrapBus(this.onASTAction.bind(this));
+    this._astObserver    = new WrapBus(this.onASTAction.bind(this));
     this._entityObserver = new WrapBus(this.onEntityAction.bind(this));
   }
 

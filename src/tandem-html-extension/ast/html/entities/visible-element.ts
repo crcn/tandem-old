@@ -19,7 +19,8 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
 
   private _styleExpression: CSSRuleExpression;
 
-  onEvaluated() {
+  async evaluate(context: any) {
+    await super.evaluate(context);
     const style = this.getAttribute("style");
     const newExpression = parseCSSStyle(String(style || ""));
 

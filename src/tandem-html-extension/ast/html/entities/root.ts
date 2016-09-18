@@ -30,11 +30,11 @@ import {
 } from "tandem-html-extension/ast";
 
 import {
-  HTMLNodeEntity
+  HTMLContainerEntity
 } from "tandem-html-extension/ast/html/entities/node";
 
 
-export class HTMLDocumentRootEntity extends HTMLNodeEntity<HTMLFragmentExpression> implements IHTMLNodeEntity {
+export class HTMLDocumentRootEntity extends HTMLContainerEntity<HTMLFragmentExpression> implements IHTMLNodeEntity {
 
   /**
    * The source content of this document
@@ -50,7 +50,8 @@ export class HTMLDocumentRootEntity extends HTMLNodeEntity<HTMLFragmentExpressio
     return new HTMLDocumentRootEntity(this.source);
   }
 
-  onEvaluated() {
+  async evaluate(context: any) {
+    await super.evaluate(context);
     // after the root has been loaded in, fetch all of the CSS styles.
     this._globalStyle.innerHTML = CSSStylesheetsDependency.getInstance(this.context.dependencies).toString();
   }

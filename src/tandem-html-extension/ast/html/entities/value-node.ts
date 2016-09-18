@@ -27,8 +27,8 @@ export abstract class HTMLValueNodeEntity<T extends HTMLNodeExpression & IHTMLVa
     }
   }
 
-  protected onEvaluated() {
-    super.onEvaluated();
+  public async evaluate(context: any) {
+    await super.evaluate(context);
     this.value = this.source.value;
   }
 

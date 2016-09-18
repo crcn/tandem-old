@@ -79,23 +79,15 @@ export class PCTemplateEntity extends VisibleHTMLElementEntity implements IInjec
   private _style: HTMLStyleElement;
   private _iframe: HTMLIFrameElement;
 
-  mapContext(context) {
 
+  async evaluate(context: any) {
+    await super.evaluate(context);
     if (this.getAttribute("id")) {
-      context = Object.assign({}, context);
-      const deps = context.dependencies.clone();
-      deps.register(
+      context.dependencies.register(
         new TemplateDependency(this.getAttribute("id"), this),
         new EntityFactoryDependency(HTMLElementExpression, RegisteredPCTemplateEntity, this.getAttribute("id"))
       );
-      context.dependencies = deps;
     }
-
-    return context;
-  }
-
-  onEvaluated() {
-    super.onEvaluated();
     this._updateStyle();
   }
 

@@ -68,17 +68,13 @@ export class HTMLImportEntity extends HTMLElementEntity {
     });
   }
 
-  mapContext() {
-    let deps: Dependencies = (this.rootChild ? this.rootChild.context.dependencies : this.dependencies);
+  async evaluate(context: any) {
+    await super.evaluate(context);
     const href = this.getAttribute("href");
 
     if (href) {
-      deps = deps.clone().register(new ImportedFileDependency(href));
+      context.dependencies.register(new ImportedFileDependency(href));
     }
-
-    return Object.assign({}, this.context, {
-      dependencies: deps
-    });
   }
 
   async load() {

@@ -1,22 +1,28 @@
-import { Action } from "tandem-common/actions";
+import * as sift from "sift";
 import { WrapBus } from "mesh";
-import { IEntity } from "tandem-common/ast";
-import { bindable } from "tandem-common/decorators";
-import { BaseEntity } from "tandem-common/ast";
-import { IHTMLNodeEntity } from "./base";
 import { MetadataKeys } from "tandem-front-end/constants";
-import { HTMLNodeEntity } from "./node";
-import { diffArray, patchArray } from "tandem-common/utils/array";
+import { HTMLContainerEntity } from "./node";
+import { IHTMLNodeEntity } from "./base";
 import { parseCSS, parseCSSStyle } from "tandem-html-extension/ast";
-import { EntityFactoryDependency } from "tandem-common/dependencies";
 import { IDOMSection, NodeSection } from "tandem-html-extension/dom";
-import { INamed, IValued, IExpression } from "tandem-common";
 import { HTMLElementExpression, HTMLAttributeExpression } from "tandem-html-extension/ast/html/expressions";
 import { CSSRuleExpression, IHTMLElementAttributeEntity } from "tandem-html-extension/ast";
-import { AttributeChangeAction, TreeNodeAction, PropertyChangeAction } from "tandem-common/actions";
-import * as sift from "sift";
+import {
+  Action,
+  INamed,
+  IValued,
+  IEntity,
+  bindable,
+  BaseEntity,
+  IExpression,
+  TreeNodeAction,
+  EntityBodyController,
+  PropertyChangeAction,
+  AttributeChangeAction,
+  EntityFactoryDependency,
+} from "tandem-common";
 
-export class HTMLElementEntity extends HTMLNodeEntity<HTMLElementExpression> implements IHTMLNodeEntity {
+export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression> implements IHTMLNodeEntity {
 
   get attributes(): Array<BaseEntity<any> & IHTMLElementAttributeEntity> {
     return <any>this.children.filter((child) => child.source.constructor === HTMLAttributeExpression);
@@ -113,14 +119,14 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
     this.name = source.name;
   }
 
-  onEvaluated() {
+  async evaluate(context: any) {
+    await super.evaluate(context);
     if (this.hasLoadableValue) {
       this.value = (<IValued><any>this.firstChild).value;
     } else {
       this.value = this.source.value;
     }
   }
-
   get hasLoadableValue() {
     return typeof this.source.value === "object";
   }
@@ -133,10 +139,6 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
     return Object.assign(super.getInitialMetadata(), {
       [MetadataKeys.SELECTABLE]: false
     });
-  }
-
-  mapSourceChildren() {
-    return this.hasLoadableValue ? [this.source.value] : [];
   }
 
   cloneLeaf() {
