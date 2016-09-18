@@ -21,7 +21,7 @@ export class EntityBodyController extends BaseEntityController {
 
     // TODO - move all of this logic to an entity controller instead - likely
     // something such as EntityChildController or similar
-    const mappedSourceChildren = this._mapSourceChildren().concat();
+    const mappedSourceChildren = this._mapSourceChildren();
 
     for (let i = 0, n = mappedSourceChildren.length; i < n; i++) {
       const childSource = mappedSourceChildren[i];

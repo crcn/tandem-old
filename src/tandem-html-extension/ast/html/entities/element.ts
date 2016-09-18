@@ -28,6 +28,13 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
     return <any>this.children.filter((child) => child.source.constructor === HTMLAttributeExpression);
   }
 
+  mapSourceChildren() {
+    return [
+      ...this.source.attributes,
+      ...this.source.childNodes
+    ];
+  }
+
   getInitialMetadata() {
     return Object.assign(super.getInitialMetadata(), {
       [MetadataKeys.LAYER_DEPENDENCY_NAME]: "element"
@@ -87,9 +94,7 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   protected onChildAction(action: Action) {
     super.onChildAction(action);
 
-    if (!(this.section instanceof NodeSection)) {
-      return;
-    }
+
     const element = <Element>this.section.targetNode;
 
     if (action.target.parent === this && action.target.source instanceof HTMLAttributeExpression) {
@@ -98,12 +103,22 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
         // diffing algorithim may remove an attribute if it's out of order, but it
         // still may exist -- ignore the node removal if it's still there
         if (!this.source.getAttribute(action.target.name)) {
-          element.removeAttribute(action.target.name);
+          if (this.section instanceof NodeSection) {
+            element.removeAttribute(action.target.name);
+          }
+          this.onAttributeChange(action.target.name, undefined);
         }
       } else if (action.type === PropertyChangeAction.PROPERTY_CHANGE || action.type === TreeNodeAction.NODE_ADDED) {
-        element.setAttribute(action.target.name, action.target.value);
+        if (this.section instanceof NodeSection) {
+          element.setAttribute(action.target.name, action.target.value);
+        }
+        this.onAttributeChange(action.target.name, action.target.value);
       }
     }
+
+  }
+  protected onAttributeChange(name: string, value: any) {
+
   }
 }
 

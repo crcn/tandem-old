@@ -23,20 +23,12 @@ class TemplateDependency extends Dependency<PCTemplateEntity> {
 
 class RegisteredPCTemplateEntity extends HTMLElementEntity {
 
-  private __children: IEntity;
   private _templateObserver: IActor;
-
-  initialize() {
-    super.initialize();
-
-  }
+  private state: any;
+  private _childContext: any = {};
 
   createSection() {
     return new GroupNodeSection();
-  }
-
-  get template(): PCTemplateEntity {
-    return null;
   }
 
   mapSourceChildren() {
@@ -46,28 +38,31 @@ class RegisteredPCTemplateEntity extends HTMLElementEntity {
     ];
   }
 
+  async evaluate(context: any) {
+    Object.assign(this._childContext, context);
+    await super.evaluate(context);
+  }
+
   getChildContext() {
-    const context =  Object.assign({}, this.context, {
-      children: this.__children
-    });
-
-    for (const attribute of this.attributes) {
-      context[attribute.name] = attribute;
-    }
-
-    return context;
+    return this._childContext;
   }
 
   async update() {
-    await this.__children.evaluate(this.context);
+    await this._childContext.children.evaluate(this.context);
     return await super.update();
   }
 
   async load() {
-    this.__children = EntityFactoryDependency.findBySourceType(HTMLFragmentExpression, this.dependencies).create(this.source);
-    await this.__children.evaluate(this.context);
-
+    this._childContext.children = EntityFactoryDependency.findBySourceType(HTMLFragmentExpression, this.dependencies).create(this.source);
+    await this._childContext.children.evaluate(this.context);
     await super.load();
+  }
+
+  onAttributeChange(key: string, value: any) {
+    super.onAttributeChange(key, value);
+    console.log("ATT CH");
+    this._childContext[key] = value;
+    console.log(this._childContext);
   }
 };
 
