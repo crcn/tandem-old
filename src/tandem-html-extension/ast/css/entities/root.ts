@@ -8,6 +8,8 @@ import { parseCSS, CSSRootExpression } from "tandem-html-extension/ast";
 import {
   inject,
   Action,
+  bindable,
+  patchable,
   Observable,
   BaseEntity,
   EntityBodyController,
@@ -19,6 +21,9 @@ import  { ICSSRuleEntity } from "./base";
 export class CSSRootEntity extends BaseEntity<CSSRootExpression> {
 
   public owner: HTMLFile;
+
+  @patchable
+  @bindable()
   public content: string;
   public document: DocumentFile<any>;
   private _useASTAsContent: boolean;

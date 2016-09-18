@@ -46,6 +46,21 @@
     }
   }
 
+  .menu {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    font-size: 12px;
+    & li {
+      &:hover {
+        color: red;
+      }
+      background: #fff;
+      padding: 3px 10px;
+      border-bottom: 1px solid white !important;
+    }
+  }
+
 </style>
 
 <template id="pane" title="Pane" style="position: absolute;left: 660px;top: -5px;">
@@ -58,7 +73,6 @@
     </div>
   </div>
 </template>
-
 
 <template style="position: absolute;width: 190px;left: 386px;top: -5px; height: 500px;" title="Style Properties">
 
@@ -98,6 +112,23 @@
 
   <pane title="Shadows" />
 </template>
+
+<template title="Context Menu" style="background: white;position: absolute;position: absolute;width: 154px;height: 175px;left: 95px;top: -17px;">
+
+  <ul class="menu">
+    <li>
+      Menu item 1
+    </li>
+    <li>
+      Menu item 1
+    </li>
+    <li>
+      Menu item 1
+    </li>
+  </ul>
+</template>
+
+
 
 
 

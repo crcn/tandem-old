@@ -45,6 +45,8 @@ export default function (iframe, options: any = {}) {
     body.addEventListener(eventType, bubbleEvent);
   }
 
-  window.addEventListener("wheel", bubbleEvent);
-  window.addEventListener("scroll", bubbleEvent);
+  if (options.ignoreScrollEvents !== true) {
+    window.addEventListener("wheel", bubbleEvent);
+    window.addEventListener("scroll", bubbleEvent);
+  }
 }

@@ -129,7 +129,8 @@ export class PCTemplateEntity extends VisibleHTMLElementEntity implements IInjec
       // bubble all iframe events such as mouse clicks and scrolls
       // so that the editor can handle them
       bubbleIframeEvents(iframe, {
-        ignoreInputEvents: true
+        ignoreInputEvents: true,
+        ignoreScrollEvents: false
       });
 
       // this is particularly important to ensure that the preview stage & tools

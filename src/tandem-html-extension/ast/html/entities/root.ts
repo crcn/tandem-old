@@ -52,7 +52,6 @@ export class HTMLDocumentRootEntity extends HTMLContainerEntity<HTMLFragmentExpr
 
   async evaluate(context: any) {
     await super.evaluate(context);
-
     // after the root has been loaded in, fetch all of the CSS styles.
     this._globalStyle.innerHTML = getCSSStyleContent(this);
   }

@@ -13,7 +13,7 @@ import { FrontEndApplication } from "tandem-front-end/application";
 import { intersection, flatten } from "lodash";
 import { IVisibleEntity, IEntity } from "tandem-common/ast/entities";
 import { ReactComponentFactoryDependency } from "tandem-front-end/dependencies";
-import { IInjectable, APPLICATION_SINGLETON_NS } from "tandem-common/dependencies";
+import { IInjectable, APPLICATION_SINGLETON_NS, IActor, Action } from "tandem-common";
 
 class SelectableComponent extends React.Component<{
   entity: IVisibleEntity,
@@ -91,13 +91,36 @@ class SelectableComponent extends React.Component<{
 
 // @injectable
 export class SelectablesComponent extends React.Component<{
-  app: any,
+  app: FrontEndApplication,
   workspace: Workspace,
   onEntityMouseDown: (entity: IVisibleEntity, event?: MouseEvent) => void,
   canvasRootSelectable?: boolean
-}, {}>  {
+}, { showSelectables: boolean }> {
 
+  constructor(props: any) {
+    super(props);
+    this.state = { showSelectables: false };
+  }
+
+  componentDidMount() {
+    document.body.addEventListener("keydown", this.onDocumentKeyDown);
+    document.body.addEventListener("keyup", this.onDocumentKeyUp);
+  }
+
+  onDocumentKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "Meta") {
+      this.setState({ showSelectables: true });
+    }
+  }
+
+  onDocumentKeyUp = (event: KeyboardEvent) => {
+    if (event.key === "Meta") {
+      this.setState({ showSelectables: false });
+    }
+  }
   render() {
+
+    if (!this.state.showSelectables) return null;
 
     const { workspace, app } = this.props;
     const { selection } = workspace;
