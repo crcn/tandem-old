@@ -44,9 +44,17 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   onMouseEvent = (event: MouseEvent) => {
+
+    if (event.target instanceof HTMLIFrameElement) {
+      return;
+    }
+
+    let left: number = event.pageX;
+    let top: number = event.pageY;
+
     this._mousePosition = {
-      left: event.pageX,
-      top: event.pageY
+      left: left,
+      top: top
     };
   }
 
@@ -98,7 +106,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
   }
 
   onWheel = (event: WheelEvent) => {
-    // this.onMouseEvent(event);
+    this.onMouseEvent(event);
     if (event.metaKey) {
       event.preventDefault();
       this.bus.execute(new ZoomAction((event.deltaY / 250)));
@@ -202,6 +210,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
       overflow: "visible",
       border: "none"
     };
+
     // TODO - add fixed tools
     const entity = this.props.workspace.file.entity;
     return (<IsolateComponent onKeyDown={this.onKey} ref="isolate" ignoreInputEvents={true} onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
@@ -213,6 +222,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
         }
       </style>
       <div
+        ref="canvas"
         onMouseMove={this.onMouseEvent}
         onMouseDown={this.onMouseDown}
         tabIndex={-1}

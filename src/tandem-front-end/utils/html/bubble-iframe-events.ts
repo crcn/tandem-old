@@ -17,10 +17,12 @@ export default function (iframe, options: any = {}) {
       if (typeof value === "function") {
         value = value.bind(event);
       }
+
       // bypass read-only issues here
       try {
         clonedEvent[key] = value;
       } catch (e) { }
+
     }
 
     iframe.dispatchEvent(clonedEvent);

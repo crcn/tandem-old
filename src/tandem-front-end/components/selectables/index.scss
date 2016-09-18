@@ -4,11 +4,10 @@
   position: fixed;
   top: 0px;
   left: 0px;
-  z-index: 99;
+  z-index: 1;
 }
 .m-selectable {
   opacity: 0;
-  cursor: pointer;
 
   &.hover, &:hover {
     opacity: 1;

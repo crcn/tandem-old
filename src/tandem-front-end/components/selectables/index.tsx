@@ -99,7 +99,7 @@ export class SelectablesComponent extends React.Component<{
 
   constructor(props: any) {
     super(props);
-    this.state = { showSelectables: false };
+    this.state = { showSelectables: true };
   }
 
   componentDidMount() {
@@ -108,14 +108,19 @@ export class SelectablesComponent extends React.Component<{
   }
 
   onDocumentKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "Meta") {
-      this.setState({ showSelectables: true });
+    if (/Meta|Alt/.test(event.key)) {
+      this.setState({ showSelectables: false });
+
+      // hack to fix issue where selectables are highlighted after showSelectables becomes true
+      for (const entity of this.props.workspace.file.entity.flatten()) {
+        entity.metadata.set(MetadataKeys.HOVERING, false);
+      }
     }
   }
 
   onDocumentKeyUp = (event: KeyboardEvent) => {
-    if (event.key === "Meta") {
-      this.setState({ showSelectables: false });
+    if (/Meta|Alt/.test(event.key)) {
+      this.setState({ showSelectables: true });
     }
   }
   render() {
