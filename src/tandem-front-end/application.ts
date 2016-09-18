@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Application } from "tandem-common/application";
 import { thread, isMaster } from "tandem-common/workers";
 

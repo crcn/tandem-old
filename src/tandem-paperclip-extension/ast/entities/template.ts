@@ -60,9 +60,7 @@ class RegisteredPCTemplateEntity extends HTMLElementEntity {
 
   onAttributeChange(key: string, value: any) {
     super.onAttributeChange(key, value);
-    console.log("ATT CH");
     this._childContext[key] = value;
-    console.log(this._childContext);
   }
 };
 
