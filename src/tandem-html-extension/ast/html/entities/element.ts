@@ -119,7 +119,8 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
     this.name = source.name;
   }
 
-  protected onEvaluated() {
+  async evaluate(context) {
+    await super.evaluate(context);
     if (typeof this.source.value === "object") {
       this.value = (<IValued><any>this.firstChild).value;
     } else {
@@ -138,7 +139,9 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
   }
 
   cloneLeaf() {
-    return new HTMLAttributeEntity(this.source);
+    const clone = new HTMLAttributeEntity(this.source);
+    clone.value = this.value;
+    return clone;
   }
 }
 

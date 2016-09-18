@@ -17,6 +17,7 @@ export class Metadata extends Observable {
       }
     }
   }
+
   get(key: string) {
     return this._data[key];
   }

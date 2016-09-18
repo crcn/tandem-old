@@ -55,6 +55,9 @@ export class CSSRootEntity extends BaseEntity<CSSRootExpression> {
   }
 
   cloneLeaf() {
-    return new CSSRootEntity(this.source);
+    const clone = new CSSRootEntity(this.source);
+    clone.content = this.content;
+    clone.context = this.context;
+    return clone;
   }
 }
