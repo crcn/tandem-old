@@ -116,6 +116,12 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
       this._loaded = true;
       await this.load();
     }
+
+    this.onEvaluated();
+  }
+
+  protected onEvaluated() {
+
   }
 
   // TODO - make this abstract
@@ -155,6 +161,9 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   public clone() {
     let clone = super.clone();
     clone.metadata.copyFrom(this.metadata);
+    if (this._loaded) {
+      clone.onEvaluated();
+    }
     return clone;
   }
 

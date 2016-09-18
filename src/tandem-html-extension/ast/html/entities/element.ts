@@ -119,16 +119,12 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
     this.name = source.name;
   }
 
-  async evaluate(context: any) {
-    await super.evaluate(context);
-    if (this.hasLoadableValue) {
+  protected onEvaluated() {
+    if (typeof this.source.value === "object") {
       this.value = (<IValued><any>this.firstChild).value;
     } else {
       this.value = this.source.value;
     }
-  }
-  get hasLoadableValue() {
-    return typeof this.source.value === "object";
   }
 
   shouldDispose() {

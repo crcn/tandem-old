@@ -9,9 +9,9 @@ export class EntityBodyController extends BaseEntityController {
 
   private _mapSourceChildren: mapSourceChildrenType;
 
-  constructor(entity: BaseEntity<any>, mapSourceChidren?: mapSourceChildrenType) {
+  constructor(entity: BaseEntity<any>, mapSourceChildren?: mapSourceChildrenType) {
     super(entity);
-    this._mapSourceChildren = mapSourceChidren || this._defaultMapSourceChildren.bind(this);
+    this._mapSourceChildren = mapSourceChildren || this._defaultMapSourceChildren.bind(this);
   }
 
   public async evaluate(context: any) {

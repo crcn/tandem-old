@@ -5,7 +5,14 @@ import { DocumentFile } from "tandem-front-end/models";
 import { GroupNodeSection } from "tandem-html-extension/dom";
 import { CSSStylesheetsDependency } from "tandem-html-extension/dependencies";
 import { parseCSS, CSSRootExpression } from "tandem-html-extension/ast";
-import { inject, Action, Observable, BaseEntity } from "tandem-common";
+
+import {
+  inject,
+  Action,
+  Observable,
+  BaseEntity,
+  EntityBodyController,
+} from "tandem-common";
 
 import { CSSRuleEntity } from "./rule";
 import  { ICSSRuleEntity } from "./base";
@@ -16,14 +23,17 @@ export class CSSRootEntity extends BaseEntity<CSSRootExpression> {
   public content: string;
   public document: DocumentFile<any>;
   private _useASTAsContent: boolean;
+  private _childController: EntityBodyController;
 
   constructor(source: CSSRootExpression) {
     super(source);
     source.observe(new WrapBus(this.onSourceAction.bind(this)));
+    this._childController = new EntityBodyController(this);
   }
 
   async evaluate(context: any) {
     await super.evaluate(context);
+    await this._childController.evaluate(context);
     this.content = await this.loadCSS(context);
     CSSStylesheetsDependency.getInstance(context.dependencies).addStyleSheet(this);
   }
