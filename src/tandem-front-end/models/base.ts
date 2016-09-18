@@ -58,6 +58,7 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   public offset: number;
   public owner: IEntityDocument;
   public autoSave: boolean;
+  public context: any;
 
   @bindable()
   public entity: T;
@@ -71,15 +72,15 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   private _ignoreExpressionActions: boolean;
 
   didInject() {
-    this._runtime = new EntityRuntime(this.createEntity.bind(this), this.createContext());
+    this._runtime = new EntityRuntime(this.createEntity.bind(this), this.getRuntimeContext.bind(this));
     this._runtime.observe(this._runtimeObserver = new WrapBus(this.onRuntimeAction.bind(this)));
     this._expressionLoader = this.createExpressionLoader();
     this._expressionLoader.observe(new WrapBus(this.onExpressionLoaderAction.bind(this)));
     bindProperty(this._runtime, "entity", this);
   }
 
-  protected createContext() {
-    return {
+  private getRuntimeContext() {
+    return this.context || {
       document: this,
       dependencies: this._dependencies.clone()
     };

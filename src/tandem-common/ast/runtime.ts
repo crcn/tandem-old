@@ -17,10 +17,13 @@ export class EntityRuntime extends Observable {
   private _evaluating: boolean;
   private _shouldEvaluateAgain: boolean;
 
-  constructor(private _createRootEntity: (ast: IExpression) => IEntity, public context: any = {}) {
+  constructor(private _createRootEntity: (ast: IExpression) => IEntity, private _getContext?: () => any) {
     super();
     this._astObserver    = new WrapBus(this.onASTAction.bind(this));
     this._entityObserver = new WrapBus(this.onEntityAction.bind(this));
+    if (!this._getContext) {
+      this._getContext = () => {};
+    }
   }
 
   get entity(): IEntity {
@@ -78,7 +81,7 @@ export class EntityRuntime extends Observable {
 
     this._evaluating = true;
     try {
-      await this._entity.evaluate(this.context);
+      await this._entity.evaluate(this._getContext());
     } catch (e) {
       console.error(e.stack);
     }

@@ -62,11 +62,11 @@ describe(__filename + "#", () => {
     const expr = new MockExpression();
     const runtime = new EntityRuntime((ast:  MockExpression) => {
       return new MockEntity(ast);
-    }, {
+    }, () => ({
       dependencies: new Dependencies(
         new EntityFactoryDependency(MockExpression, MockEntity)
       )
-    });
+    }));
 
     await runtime.load(expr);
     const entity = runtime.entity;

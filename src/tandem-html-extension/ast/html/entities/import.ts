@@ -116,11 +116,16 @@ export class HTMLImportEntity extends HTMLElementEntity {
         content: valueSourceNode.value,
         path: this.document.path
       });
+
       file.autoSave = false;
       file.offset = valueSourceNode.position.start;
     }
 
+    // need to pass down context here so that anything defined in the document
+    // is also passed to this document.
+
     if (file) {
+      file.context = this.context;
       await file.load();
       file.owner = this.document;
       this.file = file;
