@@ -1,0 +1,50 @@
+<link rel="stylesheet" href="./bootstrap.css" type="text/css" />
+<style type="text/scss">
+
+  $background-color: #CCC;
+  $hover-color: #F0F;
+  $color: #FFF;
+
+  .context-menu {
+
+    color: $color;
+    border-radius:2px;
+    box-shadow: 2px 2px 5px 0px rgba(0,0,0,1);
+
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    border: 1px solid rgba(0,0,0,0.5);
+    background: $background-color;
+    & li {
+      cursor: pointer;
+      &:hover {
+        background: $hover-color;
+      }
+      &.divide {
+        padding: 0px;
+        height: 2px;
+        background-color: rgba(0,0,0,0.5);
+      }
+      &:last-child {
+        border-bottom: none;
+      }
+      padding: 10px;
+    }
+  }
+</style>
+
+<template title="Context Menu" style="background: white;position: absolute;position: absolute;width: 255px;height: 149px;left: 178px;top: 261px; padding: 10px;">
+  <ul class="context-menu">
+    <li>
+      Menu item 1
+    </li>
+    <li class="divide" />
+    <li>
+      Menu item 2
+    </li>
+    <li>
+      Menu item 3
+    </li>
+  </ul>
+</template>

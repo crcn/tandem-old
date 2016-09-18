@@ -174,13 +174,22 @@ export class HTMLNodeDisplay implements IEntityDisplay {
   get innerBounds(): BoundingRect {
     const bounds = this.bounds;
 
-    const { borderLeftWidth, borderTopWidth, borderRightWidth, borderBottomWidth } = calculateCSSMeasurments(window.getComputedStyle(this.node));
+    const {
+      borderLeftWidth,
+      borderTopWidth,
+      borderRightWidth,
+      borderBottomWidth,
+      paddingLeft,
+      paddingTop,
+      paddingRight,
+      paddingBottom,
+    } = calculateCSSMeasurments(window.getComputedStyle(this.node));
 
     return new BoundingRect(
-      bounds.left + borderLeftWidth,
-      bounds.top + borderTopWidth,
-      bounds.right - borderLeftWidth - borderRightWidth,
-      bounds.bottom - borderBottomWidth - borderTopWidth
+      bounds.left + borderLeftWidth + paddingLeft,
+      bounds.top + borderTopWidth + paddingTop,
+      bounds.right - borderLeftWidth - borderRightWidth - paddingRight,
+      bounds.bottom - borderBottomWidth - borderTopWidth - paddingBottom
     );
   }
 
