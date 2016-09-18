@@ -32,9 +32,10 @@ import { keyBindingsDependency } from "./key-bindings";
 
 // extensions
 import { scssExtensionDependency  } from "tandem-scss-extension";
-import { angular2ExtensionDependency } from "tandem-angular2-extension";
+// import { angular2ExtensionDependency } from "tandem-angular2-extension";
 import { htmlExtensionDependency } from "tandem-html-extension";
 import { paperclipExtensionDependency } from "tandem-paperclip-extension";
+import { typescriptExtensionDependency } from "tandem-typescript-extension";
 
 import { Metadata } from "tandem-common/metadata";
 import { Workspace } from "./models";
@@ -90,7 +91,8 @@ export class FrontEndApplication extends Application {
       // extensions
       scssExtensionDependency,
       htmlExtensionDependency,
-      angular2ExtensionDependency,
+      typescriptExtensionDependency,
+      // angular2ExtensionDependency,
       paperclipExtensionDependency,
     );
   }
