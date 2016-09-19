@@ -87,8 +87,7 @@ export class PCBlockNodeEntity extends HTMLNodeEntity<PCBlockNodeExpression> imp
   }
 
   async update() {
-    if (this._dirty) await this.reload();
-
+    await super.update();
     if (this.childNodes.length) {
       this._removePlaceholder();
     } else {

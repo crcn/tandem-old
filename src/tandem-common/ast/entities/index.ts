@@ -62,6 +62,8 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
   constructor(_source: T) {
     super();
     this._source = _source;
+
+    // TODO - deprecate this
     this.initialize();
   }
 
@@ -131,6 +133,13 @@ export abstract class BaseEntity<T extends IExpression> extends TreeNode<BaseEnt
 
   // TODO - make this abstract
   protected async update() {
+    await this.reloadIfDirty();
+  }
+
+  protected async reloadIfDirty() {
+    if (this._dirty) {
+      await this.reload();
+    }
   }
 
   protected shouldDispose() {

@@ -47,6 +47,10 @@ export class EntityBodyController extends BaseEntityController {
           childEntity.dispose();
         }
 
+        if (!childEntityFactory) {
+          throw new Error(`Cannot find entity factory for expression type ${childSource.constructor.name}.`);
+        }
+
         childEntity = childEntityFactory.create(childSource);
         await childEntity.evaluate(context);
         entity.insertChildAt(childEntity, i);

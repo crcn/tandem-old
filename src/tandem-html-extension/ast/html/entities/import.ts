@@ -153,7 +153,7 @@ export class HTMLImportEntity extends HTMLElementEntity {
   }
 
   async update() {
-    if (this._dirty) await this.reload();
+    await this.reloadIfDirty();
   }
 
   dispose() {

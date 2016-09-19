@@ -4,6 +4,9 @@ import { MimeTypeDependency } from "tandem-common";
 
 import  {
   tsRootEntityFactoryDependency,
+  tsCallEntityFactoryDependency,
+  tsEmptyEntityFactoryDependency,
+  tsStatementEntityFactoryDependency,
   tsFunctionDeclarationEntityFactoryDependency,
 } from "./ast";
 
@@ -20,6 +23,9 @@ export const typescriptExtensionDependency = [
 
   // entities
   tsRootEntityFactoryDependency,
+  tsCallEntityFactoryDependency,
+  tsEmptyEntityFactoryDependency,
+  tsStatementEntityFactoryDependency,
   tsFunctionDeclarationEntityFactoryDependency,
 
   // mime types

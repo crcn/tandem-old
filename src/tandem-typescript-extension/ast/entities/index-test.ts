@@ -38,7 +38,7 @@ describe(__filename + "#", () => {
     it(`can evaluate ${content}`, async () => {
       const entity = await loadEntity(content as string, context);
       // expect(context).to.eql(contextChange);
-      console.log(context);
+      // console.log(context);
     });
   });
 });

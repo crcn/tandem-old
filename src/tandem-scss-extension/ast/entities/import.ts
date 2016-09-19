@@ -43,10 +43,6 @@ export class SCSSImportEntity extends BaseEntity<CSSATRuleExpression> {
     this.appendChild(file.entity);
   }
 
-  async update() {
-    if (this._dirty) this.reload();
-  }
-
   dispose() {
     super.dispose();
     this._file.dispose();
