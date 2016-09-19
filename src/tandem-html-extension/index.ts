@@ -111,9 +111,7 @@ export const htmlExtensionDependency = [
 
 export * from "./actions";
 export * from "./ast";
-// export * from "./collections";
 export * from "./constants";
-export * from "./dependencies";
 export * from "./dom";
 export * from "./key-bindings";
 export * from "./models";
