@@ -130,6 +130,14 @@ export class TSPropertyAccessExpression extends BaseTSExpression<ts.PropertyAcce
   }
 }
 
+export class TSPostfixUnaryExpression extends BaseTSExpression<ts.PostfixUnaryExpression> {
+
+}
+
+export class TSEmptyExpression extends BaseTSExpression<ts.PostfixUnaryExpression> {
+
+}
+
 export function mapTSASTNode(node: ts.Node): BaseTSExpression<any> {
 
   const clazz = {
@@ -140,11 +148,13 @@ export function mapTSASTNode(node: ts.Node): BaseTSExpression<any> {
     [ts.SyntaxKind.JsxAttribute]             : TSJSXAttributeExpression,
     [ts.SyntaxKind.StringLiteral]            : TSLiteralExpression,
     [ts.SyntaxKind.CallExpression]           : TSCallExpression,
+    [ts.SyntaxKind.EmptyStatement]           : TSEmptyExpression,
     [ts.SyntaxKind.ReturnStatement]          : TSReturnStatementExpression,
     [ts.SyntaxKind.ImportDeclaration]        : TSImportExpression,
     [ts.SyntaxKind.ExpressionStatement]      : TSStatementExpression,
     [ts.SyntaxKind.FunctionDeclaration]      : TSFunctionDeclarationExpression,
     [ts.SyntaxKind.JsxSelfClosingElement]    : TSJSXElementExpression,
+    [ts.SyntaxKind.PostfixUnaryExpression]   : TSPostfixUnaryExpression,
     [ts.SyntaxKind.PropertyAccessExpression] : TSPropertyAccessExpression,
   }[node.kind] as { new(node: ts.Node): BaseTSExpression<any> };
 
