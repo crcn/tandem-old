@@ -16,17 +16,17 @@ import {
   IDisposable,
   IObservable,
   bindProperty,
-  IExpression,
+  IASTNode,
   IInjectable,
   EntityAction,
   EntityRuntime,
   Dependencies,
   patchTreeNode,
   watchProperty,
-  BaseExpression,
+  BaseASTNode,
   IEntityDocument,
   DEPENDENCIES_NS,
-  IExpressionLoader,
+  IASTNodeLoader,
   PropertyChangeAction,
   DependenciesDependency,
   EntityFactoryDependency,
@@ -63,12 +63,12 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
   @bindable()
   public entity: T;
 
-  private _ast: IExpression;
+  private _ast: IASTNode;
   private _loaded: boolean;
   private _runtime: EntityRuntime;
   private _runtimeObserver: IActor;
   private _formatterObserver: IActor;
-  private _expressionLoader: IExpressionLoader;
+  private _expressionLoader: IASTNodeLoader;
   private _ignoreExpressionActions: boolean;
 
   didInject() {
@@ -94,9 +94,9 @@ export abstract class DocumentFile<T extends IEntity & IObservable> extends File
     this.notify(new DocumentFileAction(DocumentFileAction.LOADED));
   }
 
-  protected abstract createExpressionLoader(): IExpressionLoader;
+  protected abstract createExpressionLoader(): IASTNodeLoader;
 
-  protected abstract createEntity(ast: IExpression): T;
+  protected abstract createEntity(ast: IASTNode): T;
 
   protected onExpressionLoaderAction(action: Action) {
     if (this.autoSave !== false) this.deferSave();

@@ -2,13 +2,13 @@ import "./index.scss";
 import * as React from "react";
 import { Workspace } from "tandem-front-end/models";
 import PaneComponent from "tandem-front-end/components/pane";
-import { parseCSS } from "tandem-html-extension/ast";
+import { parseCSS } from "tandem-html-extension/lang";
 import { SelectAction } from "tandem-front-end/actions";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { SelectWithCSSSelectorAction } from "tandem-html-extension/actions";
 import { EntityPaneComponentFactoryDependency } from "tandem-front-end/dependencies";
-import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLNodeEntity } from "tandem-html-extension/ast";
-import { CSSExpression, CSSRuleExpression, CSSDeclarationExpression } from "tandem-html-extension/ast";
+import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLNodeEntity } from "tandem-html-extension/lang";
+import { CSSExpression, CSSRuleExpression, CSSDeclarationExpression } from "tandem-html-extension/lang";
 
 class StyleDeclarationComponent extends React.Component<any, any> {
 

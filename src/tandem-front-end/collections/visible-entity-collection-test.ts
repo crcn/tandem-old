@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { TreeNode } from "tandem-common/tree";
 import { BoundingRect, IPoint } from "tandem-common/geom";
 import { VisibleEntityCollection } from "./visible-entity-collection";
-import { IEntity, IEntityDisplay, IVisibleEntity, DisplayCapabilities, EntityMetadata, BaseEntity, IExpression } from "tandem-common/ast";
+import { IEntity, IEntityDisplay, IVisibleEntity, DisplayCapabilities, EntityMetadata, BaseEntity, IASTNode } from "tandem-common/lang";
 
 describe(__filename + "#", () => {
 
@@ -25,7 +25,7 @@ describe(__filename + "#", () => {
     }
   }
 
-  class MockExpression extends TreeNode<MockExpression> implements IExpression {
+  class MockExpression extends TreeNode<MockExpression> implements IASTNode {
     position = null;
     type = null;
     source: any;

@@ -11,7 +11,7 @@ import { pointerToolDependency } from "tandem-front-end/models/pointer-tool";
 import { BaseApplicationService } from "tandem-common/services";
 import { EditorToolFactoryDependency } from "tandem-front-end/dependencies";
 import { IEditorTool, BaseEditorTool, IEditor } from "tandem-front-end/models";
-import { parseHTML, HTMLElementExpression , VisibleHTMLElementEntity} from "../ast";
+import { parseHTML, HTMLElementExpression , VisibleHTMLElementEntity } from "../lang";
 import {
   Dependency,
   MAIN_BUS_NS,

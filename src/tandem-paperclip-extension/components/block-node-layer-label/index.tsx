@@ -5,7 +5,7 @@ import * as React from "react";
 import { SelectAction } from "tandem-front-end/actions";
 import * as AutosizeInput from "react-input-autosize";
 import { LayerLabelComponentFactoryDependency } from "tandem-front-end/dependencies";
-import { PCBlockNodeEntity, PCBlockNodeExpression } from "tandem-paperclip-extension/ast";
+import { PCBlockNodeEntity, PCBlockNodeExpression } from "tandem-paperclip-extension/lang";
 
 class BlockLayerLabel extends React.Component<{ entity: PCBlockNodeEntity, connectDragSource: Function }, any> {
 

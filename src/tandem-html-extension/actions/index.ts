@@ -1,7 +1,7 @@
 import { Action } from "tandem-common/actions";
 import { PasteAction } from "tandem-front-end/actions";
-import { CSSRuleExpression } from "tandem-html-extension/ast";
-import { IHTMLElementAttributeEntity } from "tandem-html-extension/ast";
+import { CSSRuleExpression } from "tandem-html-extension/lang";
+import { IHTMLElementAttributeEntity } from "tandem-html-extension/lang";
 
 export const TEXT_EDIT_COMPLETE = "textEditComplete";
 export class TextEditCompleteAction extends Action {

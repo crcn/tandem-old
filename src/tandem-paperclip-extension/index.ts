@@ -6,7 +6,7 @@ import {
   pcTemplateDependency,
   pcBlockNodeEntityDependency,
   pcBlockAttributeValueEntityDependency,
-} from "./ast";
+} from "./lang";
 
 // components
 

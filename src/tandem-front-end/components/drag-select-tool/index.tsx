@@ -5,7 +5,7 @@ import { PointerTool } from "tandem-front-end/models/pointer-tool";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { BoundingRect } from "tandem-common/geom";
 import { FrontEndApplication } from "tandem-front-end/application";
-import { IEntity, IVisibleEntity } from "tandem-common/ast/entities";
+import { IEntity, IVisibleEntity } from "tandem-common/lang/entities";
 import { SelectAction, MouseAction } from "tandem-front-end/actions";
 import { ReactComponentFactoryDependency } from "tandem-front-end/dependencies";
 

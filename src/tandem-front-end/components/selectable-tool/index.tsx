@@ -4,7 +4,7 @@ import { Workspace } from "tandem-front-end/models";
 import { SelectAction } from "tandem-front-end/actions";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { SelectablesComponent } from "tandem-front-end/components/selectables";
-import { IVisibleEntity, IEntity } from "tandem-common/ast/entities";
+import { IVisibleEntity, IEntity } from "tandem-common/lang/entities";
 import { ReactComponentFactoryDependency } from "tandem-front-end/dependencies";
 
 // @injectable

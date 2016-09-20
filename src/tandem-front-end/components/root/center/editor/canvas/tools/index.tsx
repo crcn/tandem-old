@@ -1,6 +1,6 @@
 import "./index.scss";
 import * as React from "react";
-import { IEntity } from "tandem-common/ast/entities";
+import { IEntity } from "tandem-common/lang/entities";
 import RegisteredComponent from "tandem-front-end/components/registered";
 import { Editor, Workspace } from "tandem-front-end/models";
 

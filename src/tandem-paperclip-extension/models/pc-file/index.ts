@@ -3,8 +3,8 @@ import { HTMLFile } from "tandem-html-extension/models";
 import { MimeTypes } from "tandem-paperclip-extension/constants";
 import { DocumentFile } from "tandem-front-end/models";
 import { FileFactoryDependency } from "tandem-common/dependencies";
-import { HTMLFragmentExpression } from "tandem-html-extension/ast";
-import { PCDocumentRootEntity, PCExpressionLoader } from "tandem-paperclip-extension/ast";
+import { HTMLFragmentExpression } from "tandem-html-extension/lang";
+import { PCDocumentRootEntity, PCExpressionLoader } from "tandem-paperclip-extension/lang";
 
 
 export class PCFile extends HTMLFile {

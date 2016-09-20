@@ -2,7 +2,7 @@ export * from "./actions";
 export * from "./actors";
 export * from "./animate";
 export * from "./application";
-export * from "./ast";
+export * from "./lang";
 export * from "./busses";
 export * from "./commands";
 export * from "./commands";

@@ -1,7 +1,7 @@
 import { IRange } from "tandem-common/geom";
-import { BaseExpression } from "tandem-common/ast";
+import { BaseASTNode } from "tandem-common/lang";
 
-export abstract class MarkdownExpression extends BaseExpression<MarkdownExpression> {
+export abstract class MarkdownExpression extends BaseASTNode<MarkdownExpression> {
 
   constructor(position: IRange) {
     super(position);

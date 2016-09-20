@@ -6,10 +6,10 @@ import * as React from "react";
 import { Workspace } from "tandem-front-end/models";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { SelectAction } from "tandem-front-end/actions";
-import { getCSSSelection } from "tandem-html-extension/ast";
+import { getCSSSelection } from "tandem-html-extension/lang";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { SelectWithCSSSelectorAction } from "tandem-html-extension/actions";
-import { CSSAtRuleEntity, CSSATRuleExpression } from "tandem-html-extension/ast";
+import { CSSAtRuleEntity, CSSATRuleExpression } from "tandem-html-extension/lang";
 import { LayerLabelComponentFactoryDependency } from "tandem-front-end/dependencies";
 
 class CSSAtRuleLayerLabelComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, entity: CSSAtRuleEntity }, any> {

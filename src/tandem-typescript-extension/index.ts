@@ -8,13 +8,13 @@ import  {
   tsEmptyEntityFactoryDependency,
   tsStatementEntityFactoryDependency,
   tsFunctionDeclarationEntityFactoryDependency,
-} from "./ast";
+} from "./lang";
 
 import {
   tsFileFactoryDependency
 } from "./models";
 
-export * from "./ast";
+export * from "./lang";
 export * from "./models";
 export const typescriptExtensionDependency = [
 

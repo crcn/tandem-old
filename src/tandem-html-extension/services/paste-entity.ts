@@ -1,11 +1,11 @@
 import * as sift from "sift";
 import { flatten } from "lodash";
 import { HTMLFile } from "../models/html-file";
-import { parseHTML } from "../ast";
+import { parseHTML } from "../lang";
 import { MimeTypes } from "tandem-html-extension/constants";
 import { filterAction } from "tandem-common/decorators";
 import { FrontEndApplication } from "tandem-front-end/application";
-import { appendSourceChildren } from "tandem-common/ast/entities";
+import { appendSourceChildren } from "tandem-common/lang/entities";
 import { PasteHTMLEntityAction } from "tandem-html-extension/actions";
 import { BaseApplicationService } from "tandem-common/services";
 import { VisibleEntityCollection } from "tandem-front-end/collections";

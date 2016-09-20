@@ -4,7 +4,7 @@ import { INamed } from "tandem-common/object";
 import { IBrokerBus } from "../busses";
 import { IApplication } from "tandem-common/application";
 import { Action, IFileModelActionResponseData } from "../actions";
-import { IEntity, IValueEntity, IEntityDocument, IExpression } from "tandem-common/ast";
+import { IEntity, IValueEntity, IEntityDocument, IASTNode } from "tandem-common/lang";
 
 import { File } from "tandem-common/models";
 import {
@@ -61,7 +61,7 @@ export const ENTITIES_NS = "entities";
 // TODO - possibly require renderer here as well
 export class EntityFactoryDependency extends ClassFactoryDependency {
 
-  constructor(readonly expressionClass: { new(...rest): IExpression }, readonly entityClass: { new(source: IExpression): IEntity }, readonly name?: string) {
+  constructor(readonly expressionClass: { new(...rest): IASTNode }, readonly entityClass: { new(source: IASTNode): IEntity }, readonly name?: string) {
     super(EntityFactoryDependency.getNamespace(expressionClass, name), entityClass);
   }
 
@@ -69,7 +69,7 @@ export class EntityFactoryDependency extends ClassFactoryDependency {
     return new EntityFactoryDependency(this.expressionClass, this.entityClass, this.name);
   }
 
-  create(source: IExpression) {
+  create(source: IASTNode) {
     return super.create(source);
   }
 
@@ -85,12 +85,12 @@ export class EntityFactoryDependency extends ClassFactoryDependency {
     return dependencies.queryAll<EntityFactoryDependency>([ENTITIES_NS, "**"].join("/"));
   }
 
-  static findBySource(source: IExpression, dependencies: Dependencies) {
+  static findBySource(source: IASTNode, dependencies: Dependencies) {
     return dependencies.query<EntityFactoryDependency>(this.getNamespace(source.constructor, (<INamed><any>source).name)) ||
     this.findBySourceType(source.constructor, dependencies);
   }
 
-  static createEntityFromSource(source: IExpression, dependencies: Dependencies) {
+  static createEntityFromSource(source: IASTNode, dependencies: Dependencies) {
 
     const dependency = this.findBySource(source, dependencies);
 

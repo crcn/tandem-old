@@ -1,7 +1,7 @@
 import { IActor } from "tandem-common/actors";
 import { Action } from "tandem-common/actions";
 import { inject } from "tandem-common/decorators";
-import { IEntity } from "tandem-common/ast/entities";
+import { IEntity } from "tandem-common/lang/entities";
 import { Metadata } from "tandem-common/metadata";
 import { Workspace } from "./workspace";
 import { KeyBinding } from "tandem-front-end/key-bindings";

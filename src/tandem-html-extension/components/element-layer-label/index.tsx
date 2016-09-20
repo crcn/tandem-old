@@ -15,7 +15,7 @@ import {
   HTMLElementExpression,
   HTMLFragmentExpression,
   VisibleHTMLElementEntity,
-} from "tandem-html-extension/ast";
+} from "tandem-html-extension/lang";
 
 const VOID_ELEMENTS = [];
 

@@ -2,7 +2,7 @@ import { scssFileDependency } from "./models";
 
 import {
   scssImportEntityFactoryDependency
-} from "./ast";
+} from "./lang";
 
 export const scssExtensionDependency = [
 
@@ -15,4 +15,4 @@ export const scssExtensionDependency = [
 ];
 
 export * from "./models";
-export * from "./ast";
+export * from "./lang";

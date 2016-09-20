@@ -3,7 +3,7 @@ import "./index.scss";
 import * as React from "react";
 import FocusComponent from "tandem-front-end/components/focus";
 import { Workspace, Editor } from "tandem-front-end/models";
-import { PCTemplateEntity } from "tandem-paperclip-extension/ast";
+import { PCTemplateEntity } from "tandem-paperclip-extension/lang";
 import { ReactComponentFactoryDependency } from "tandem-front-end/dependencies";
 
 export class ArtboardComponent extends React.Component<{ entity: PCTemplateEntity, editor: Editor }, any> {

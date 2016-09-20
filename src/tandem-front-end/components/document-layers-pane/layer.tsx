@@ -13,7 +13,7 @@ import { LayerLabelComponentFactoryDependency } from "tandem-front-end/dependenc
 import { DragSource, DropTarget, DndComponent } from "react-dnd";
 import { SelectAction, ToggleSelectAction } from "tandem-front-end/actions";
 import { Action, MetadataChangeAction, METADATA_CHANGE } from "tandem-common/actions";
-import { IEntity, appendSourceChildren, insertSourceChildren } from "tandem-common/ast/entities";
+import { IEntity, appendSourceChildren, insertSourceChildren } from "tandem-common/lang/entities";
 
 interface ILayerLabelProps {
   paddingLeft?: number;

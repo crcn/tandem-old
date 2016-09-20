@@ -7,7 +7,7 @@ import FocusComponent from "tandem-front-end/components/focus";
 import { SelectAction } from "tandem-front-end/actions";
 import { MetadataKeys } from "tandem-front-end/constants";
 import * as AutosizeInput from "react-input-autosize";
-import { HTMLTextEntity, HTMLTextExpression } from "tandem-html-extension/ast";
+import { HTMLTextEntity, HTMLTextExpression } from "tandem-html-extension/lang";
 import { LayerLabelComponentFactoryDependency } from "tandem-front-end/dependencies";
 
 class TextLayerLabelComponent extends React.Component<{ entity: HTMLTextEntity, connectDragSource: Function }, any> {

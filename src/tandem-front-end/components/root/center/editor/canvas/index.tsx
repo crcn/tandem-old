@@ -4,7 +4,7 @@ import { IPoint } from "tandem-common/geom";
 import { UpdateAction, IActor } from "tandem-common";
 import IsolateComponent  from "tandem-front-end/components/isolate";
 import { BoundingRect } from "tandem-common/geom";
-import { IVisibleEntity } from "tandem-common/ast/entities";
+import { IVisibleEntity } from "tandem-common/lang/entities";
 import ToolsLayerComponent from "./tools";
 import PreviewLayerComponent from "./preview";
 import { Editor, Workspace } from "tandem-front-end/models";

@@ -10,7 +10,7 @@ import { FrontEndApplication } from "tandem-front-end/application";
 import { SelectionSizeComponent } from "tandem-front-end/components/selection-size";
 import { VisibleEntityCollection } from "tandem-front-end/collections";
 import { ReactComponentFactoryDependency } from "tandem-front-end/dependencies";
-import { IEntityDisplay, IEntity, IVisibleEntity } from "tandem-common/ast/entities";
+import { IEntityDisplay, IEntity, IVisibleEntity } from "tandem-common/lang/entities";
 
 export default class SelectorComponent extends React.Component<{ editor: Editor, tool: PointerTool, workspace: Workspace, app: FrontEndApplication, zoom: number, allEntities: Array<IEntity> }, any> {
 

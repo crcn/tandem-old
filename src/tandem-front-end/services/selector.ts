@@ -6,7 +6,7 @@ import {
   loggable,
   bindable,
   BaseEntity,
-  BaseExpression,
+  BaseASTNode,
   removeEntitySources,
   BaseApplicationService,
   ApplicationServiceDependency,
@@ -37,7 +37,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
     for (const entity of selectableEntities) {
 
-      const source = <BaseExpression<any>>entity.source;
+      const source = <BaseASTNode<any>>entity.source;
 
       for (const cursor of action.data) {
         if (source.inRange(cursor)) {

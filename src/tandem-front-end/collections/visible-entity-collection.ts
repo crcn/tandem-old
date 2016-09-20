@@ -1,6 +1,6 @@
 import { BoundingRect, IPoint } from "tandem-common/geom";
 import { register as registerSerializer, serializeArray, deserialize } from "tandem-common/serialize";
-import { IVisibleEntity, IEntityDisplay, DisplayCapabilities, IEntity } from "tandem-common/ast/entities";
+import { IVisibleEntity, IEntityDisplay, DisplayCapabilities, IEntity } from "tandem-common/lang/entities";
 
 class EntitySelectionDisplay implements IEntityDisplay {
 

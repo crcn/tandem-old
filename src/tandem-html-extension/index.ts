@@ -50,7 +50,7 @@ import { MimeTypeDependency } from "tandem-common/dependencies";
    cssAtRuleEntityFactoryDependency,
    defaultAttributeFactoryDependency,
    cssCommentEntityFactoryDependency,
-} from "./ast";
+} from "./lang";
 
 export const htmlExtensionDependency = [
 
@@ -110,7 +110,7 @@ export const htmlExtensionDependency = [
 ];
 
 export * from "./actions";
-export * from "./ast";
+export * from "./lang";
 export * from "./constants";
 export * from "./dom";
 export * from "./key-bindings";

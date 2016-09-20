@@ -11,7 +11,7 @@ import { SelectAction } from "tandem-front-end/actions";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { intersection, flatten } from "lodash";
-import { IVisibleEntity, IEntity } from "tandem-common/ast/entities";
+import { IVisibleEntity, IEntity } from "tandem-common/lang/entities";
 import { ReactComponentFactoryDependency } from "tandem-front-end/dependencies";
 import { IInjectable, APPLICATION_SINGLETON_NS, IActor, Action } from "tandem-common";
 

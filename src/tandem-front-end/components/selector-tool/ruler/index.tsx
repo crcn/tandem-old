@@ -3,7 +3,7 @@ import "./index.scss";
 import * as React from "react";
 import LineComponent from "../line";
 import calculateDistances from "./calculate-distances";
-import { IEntity, IVisibleEntity } from "tandem-common/ast/entities";
+import { IEntity, IVisibleEntity } from "tandem-common/lang/entities";
 import { VisibleEntityCollection } from "tandem-front-end/collections";
 
 /**

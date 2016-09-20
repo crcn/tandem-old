@@ -7,7 +7,7 @@ import { TEXT_TOOL_KEY_CODE } from "tandem-html-extension/constants";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { textToolDependency } from "tandem-html-extension/models/text-tool";
 import { pointerToolDependency } from "tandem-front-end/models/pointer-tool";
-import { parseHTML, HTMLElementExpression } from "tandem-html-extension/ast";
+import { parseHTML, HTMLElementExpression } from "tandem-html-extension/lang";
 import { BaseCommand, BaseApplicationCommand } from "tandem-common/commands";
 import { ClassFactoryDependency, DEPENDENCIES_NS, Dependencies } from "tandem-common/dependencies";
 import { EditorToolFactoryDependency, GlobalKeyBindingDependency } from "tandem-front-end/dependencies";

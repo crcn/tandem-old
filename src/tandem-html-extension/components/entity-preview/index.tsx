@@ -1,6 +1,6 @@
 import * as React  from "react";
 import { IApplication } from "tandem-common/application";
-import { HTMLDocumentRootEntity } from "tandem-html-extension/ast";
+import { HTMLDocumentRootEntity } from "tandem-html-extension/lang";
 import { EntityPreviewDependency } from "tandem-front-end/dependencies";
 
 export default class PreviewComponent extends React.Component<{ entity: HTMLDocumentRootEntity }, any> {

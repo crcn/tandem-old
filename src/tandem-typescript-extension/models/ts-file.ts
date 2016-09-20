@@ -1,5 +1,5 @@
 import { DocumentFile } from "tandem-front-end/models";
-import { TSRootEntity, TSExpressionLoader, TSRootExpression } from "tandem-typescript-extension/ast";
+import { TSRootEntity, TSExpressionLoader, TSRootExpression } from "tandem-typescript-extension/lang";
 import { MimeTypes } from "tandem-typescript-extension/constants";
 import {
   FileFactoryDependency
