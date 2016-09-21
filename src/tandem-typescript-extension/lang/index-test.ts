@@ -3,10 +3,10 @@ import { parseTypescript } from "./parser";
 
 describe(__filename + "#", () => {
   [
-    `function test() { }`
+    `export const i = 10;`
   ].forEach((content: string) => {
-    it(`can parse ${content}`, () => {
-      parseTypescript(content);
+    xit(`can evaluate ${content}`, () => {
+      const ast = parseTypescript(content);
     });
   });
 });

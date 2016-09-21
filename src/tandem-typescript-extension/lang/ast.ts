@@ -6,7 +6,15 @@ import {
   BaseASTNode,
 } from "tandem-common";
 
-export abstract class BaseTSExpression<T extends ts.Node> extends BaseASTNode<BaseTSExpression<any>> {
+export namespace entities {
+  export class Literal {
+    constructor(readonly value: any, readonly source: BaseTSExpression<any>) {
+
+    }
+  }
+};
+
+export abstract class BaseTSASTNode<T extends ts.Node> extends BaseASTNode<BaseTSASTNode<any>> {
   @patchable
   public tsNode: T;
   constructor(tsNode: T) {
@@ -15,14 +23,22 @@ export abstract class BaseTSExpression<T extends ts.Node> extends BaseASTNode<Ba
   }
 }
 
-export class TSRootExpression extends BaseTSExpression<ts.SourceFile> {
+export interface IEntity {
+  source: BaseASTNode<any>;
+}
+
+export abstract class BaseTSExpression<T extends ts.Expression> extends BaseTSASTNode<T> {
+  abstract execute(context: any): IEntity;
+}
+
+export class TSRoot extends BaseTSASTNode<ts.SourceFile> {
   constructor(node: ts.SourceFile) {
     super(node);
     node.statements.forEach(child => this.appendChild(mapTSASTNode(child)));
   }
 }
 
-export class TSFunctionDeclarationExpression extends BaseTSExpression<ts.FunctionDeclaration> {
+export class TSFunctionDeclaration extends BaseTSASTNode<ts.FunctionDeclaration> {
   constructor(node: ts.FunctionDeclaration) {
     super(node);
     this.appendChild(mapTSASTNode(node.name));
@@ -30,12 +46,12 @@ export class TSFunctionDeclarationExpression extends BaseTSExpression<ts.Functio
     this.appendChild(mapTSASTNode(node.body));
   }
 
-  get name(): BaseTSExpression<any> {
+  get name(): BaseTSASTNode<any> {
     return this.children[0];
   }
 }
 
-export class TSIdentifierExpression extends BaseTSExpression<ts.Identifier> {
+export class TSIdentifier extends BaseTSASTNode<ts.Identifier> {
   public value: string;
   constructor(node: ts.Identifier) {
     super(node);
@@ -43,23 +59,23 @@ export class TSIdentifierExpression extends BaseTSExpression<ts.Identifier> {
   }
 }
 
-export class TSReturnStatementExpression extends BaseTSExpression<ts.ReturnStatement> {
+export class TSReturnStatementExpression extends BaseTSASTNode<ts.ReturnStatement> {
   constructor(node: ts.ReturnStatement) {
     super(node);
     this.appendChild(mapTSASTNode(node.expression));
   }
 }
 
-export class TSBlockExpression extends BaseTSExpression<ts.Block> {
+export class TSBlockExpression extends BaseTSASTNode<ts.Block> {
   constructor(node: ts.Block) {
     super(node);
     node.statements.forEach(child => this.appendChild(mapTSASTNode(child)));
   }
 }
 
-export class TSJSXAttributeExpression extends BaseTSExpression<ts.JsxAttribute> {
-  readonly name: BaseTSExpression<any>;
-  public value: BaseTSExpression<any>;
+export class TSJSXAttributeExpression extends BaseTSASTNode<ts.JsxAttribute> {
+  readonly name: BaseTSASTNode<any>;
+  public value: BaseTSASTNode<any>;
   constructor(node: ts.JsxAttribute) {
     super(node);
     this.appendChild(this.name = mapTSASTNode(node.name));
@@ -67,16 +83,19 @@ export class TSJSXAttributeExpression extends BaseTSExpression<ts.JsxAttribute> 
   }
 }
 
-export class TSLiteralExpression extends BaseTSExpression<ts.StringLiteral> {
+export class TSLiteral extends BaseTSExpression<ts.StringLiteral> {
   public value: any;
   constructor(node: ts.StringLiteral) {
     super(node);
     this.value = node.text;
   }
+  execute(context: any): IEntity {
+    return new entities.Literal(this.value, this);
+  }
 }
 
-export class TSJSXElementExpression extends BaseTSExpression<ts.JsxElement|ts.JsxSelfClosingElement> {
-  public name: BaseTSExpression<any>;
+export class TSJSXElement extends BaseTSASTNode<ts.JsxElement|ts.JsxSelfClosingElement> {
+  public name: BaseTSASTNode<any>;
   constructor(node: any) {
     super(node);
     if (node.kind === ts.SyntaxKind.JsxSelfClosingElement) {
@@ -90,31 +109,35 @@ export class TSJSXElementExpression extends BaseTSExpression<ts.JsxElement|ts.Js
       target.children.forEach(child => this.appendChild(mapTSASTNode(child)));
     }
   }
+  execute(context: any): IEntity {
+    // return html.entities.VirtualElement(this.name, )
+    return null;
+  }
 }
 
-export class TSImportExpression extends BaseTSExpression<ts.ImportDeclaration> {
+export class TSImportExpression extends BaseTSASTNode<ts.ImportDeclaration> {
   constructor(node: ts.ImportDeclaration) {
     super(node);
     this.appendChild(mapTSASTNode(node.moduleSpecifier));
   }
 
-  get moduleSpecifier(): BaseTSExpression<any> {
+  get moduleSpecifier(): BaseTSASTNode<any> {
     return this.children[0];
   }
 }
 
-export class TSStatementExpression extends BaseTSExpression<ts.ExpressionStatement> {
+export class TSStatementExpression extends BaseTSASTNode<ts.ExpressionStatement> {
   constructor(node: ts.ExpressionStatement) {
     super(node);
     this.appendChild(mapTSASTNode(node.expression));
   }
 
-  get targetExpression(): BaseTSExpression<any> {
+  get targetExpression(): BaseTSASTNode<any> {
     return this.children[0];
   }
 }
 
-export class TSCallExpression extends BaseTSExpression<ts.CallExpression> {
+export class TSCallExpression extends BaseTSASTNode<ts.CallExpression> {
   constructor(node: ts.CallExpression) {
     super(node);
     this.appendChild(mapTSASTNode(node.expression));
@@ -122,45 +145,45 @@ export class TSCallExpression extends BaseTSExpression<ts.CallExpression> {
   }
 }
 
-export class TSPropertyAccessExpression extends BaseTSExpression<ts.PropertyAccessExpression> {
+export class TSPropertyAccessExpression extends BaseTSASTNode<ts.PropertyAccessExpression> {
   constructor(node: ts.PropertyAccessExpression) {
     super(node);
     this.appendChild(mapTSASTNode(node.expression));
     this.appendChild(mapTSASTNode(node.name));
   }
 
-  get targetExpression(): BaseTSExpression<any> {
+  get targetExpression(): BaseTSASTNode<any> {
     return this.children.find(child => child.tsNode === this.tsNode.expression);
   }
 }
 
-export class TSPostfixUnaryExpression extends BaseTSExpression<ts.PostfixUnaryExpression> {
+export class TSPostfixUnaryExpression extends BaseTSASTNode<ts.PostfixUnaryExpression> {
 
 }
 
-export class TSEmptyExpression extends BaseTSExpression<ts.PostfixUnaryExpression> {
+export class TSEmptyExpression extends BaseTSASTNode<ts.PostfixUnaryExpression> {
 
 }
 
-export function mapTSASTNode(node: ts.Node): BaseTSExpression<any> {
+export function mapTSASTNode(node: ts.Node): BaseTSASTNode<any> {
 
   const clazz = {
     [ts.SyntaxKind.Block]                    : TSBlockExpression,
-    [ts.SyntaxKind.SourceFile]               : TSRootExpression,
-    [ts.SyntaxKind.JsxElement]               : TSJSXElementExpression,
-    [ts.SyntaxKind.Identifier]               : TSIdentifierExpression,
+    [ts.SyntaxKind.SourceFile]               : TSRoot,
+    [ts.SyntaxKind.JsxElement]               : TSJSXElement,
+    [ts.SyntaxKind.Identifier]               : TSIdentifier,
     [ts.SyntaxKind.JsxAttribute]             : TSJSXAttributeExpression,
-    [ts.SyntaxKind.StringLiteral]            : TSLiteralExpression,
+    [ts.SyntaxKind.StringLiteral]            : TSLiteral,
     [ts.SyntaxKind.CallExpression]           : TSCallExpression,
     [ts.SyntaxKind.EmptyStatement]           : TSEmptyExpression,
     [ts.SyntaxKind.ReturnStatement]          : TSReturnStatementExpression,
     [ts.SyntaxKind.ImportDeclaration]        : TSImportExpression,
     [ts.SyntaxKind.ExpressionStatement]      : TSStatementExpression,
-    [ts.SyntaxKind.FunctionDeclaration]      : TSFunctionDeclarationExpression,
-    [ts.SyntaxKind.JsxSelfClosingElement]    : TSJSXElementExpression,
+    [ts.SyntaxKind.FunctionDeclaration]      : TSFunctionDeclaration,
+    [ts.SyntaxKind.JsxSelfClosingElement]    : TSJSXElement,
     [ts.SyntaxKind.PostfixUnaryExpression]   : TSPostfixUnaryExpression,
     [ts.SyntaxKind.PropertyAccessExpression] : TSPropertyAccessExpression,
-  }[node.kind] as { new(node: ts.Node): BaseTSExpression<any> };
+  }[node.kind] as { new(node: ts.Node): BaseTSASTNode<any> };
 
   if (!clazz) {
     throw new Error(`Cannot map TS ast kind ${node.kind} to expression.`);

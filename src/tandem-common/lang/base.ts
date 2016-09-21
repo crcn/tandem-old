@@ -10,11 +10,6 @@ export interface IASTNodeSource {
   content: any;
 }
 
-export interface IASTNodeStringFormatter extends IObservable, IDisposable {
-  expression: IASTNode;
-  options: any;
-}
-
 export interface IASTNodeLoader extends IObservable {
   load(source: IASTNodeSource): IASTNode;
 }
@@ -67,8 +62,8 @@ export abstract class BaseASTNode<T extends BaseASTNode<any>> extends TreeNode<T
     }
   }
 
-  compare(expression: IASTNode): number {
-    return Number(this.constructor === expression.constructor);
+  compare(node: IASTNode): number {
+    return Number(this.constructor === node.constructor);
   }
 }
 

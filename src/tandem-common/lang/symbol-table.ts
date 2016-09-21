@@ -13,6 +13,10 @@ export class SymbolTable {
     return this._vars[id] != null ? this._vars[id] : this._parent ? this._parent.get(id) : undefined;
   }
 
+  defineVariable(id: string, value?: any) {
+    this._vars[id] = value;
+  }
+
   set(id: string, value: any) {
     const context = this.getOwner(id);
     if (context === this) {

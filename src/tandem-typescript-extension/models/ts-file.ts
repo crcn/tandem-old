@@ -1,16 +1,18 @@
 import { DocumentFile } from "tandem-front-end/models";
-import { TSRootEntity, TSExpressionLoader, TSRootExpression } from "tandem-typescript-extension/lang";
+// import { TSRootEntity, TSExpressionLoader, TSRootExpression } from "tandem-typescript-extension/lang";
 import { MimeTypes } from "tandem-typescript-extension/constants";
 import {
   FileFactoryDependency
 } from "tandem-common";
 
-export class TSFile extends DocumentFile<TSRootEntity> {
+export class TSFile extends DocumentFile<any> {
   createExpressionLoader() {
-    return new TSExpressionLoader();
+    // return new TSExpressionLoader();
+    return null;
   }
-  createEntity(ast: TSRootExpression) {
-    return new TSRootEntity(ast);
+  createEntity(ast: any) {
+    // return new TSRootEntity(ast);
+    return null;
   }
 }
 
