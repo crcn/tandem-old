@@ -17,6 +17,10 @@ export class SymbolTable {
     this._vars[id] = value;
   }
 
+  defineConstant(id: string, value: any) {
+    this._vars[id] = value;
+  }
+
   set(id: string, value: any) {
     const context = this.getOwner(id);
     if (context === this) {
@@ -32,5 +36,14 @@ export class SymbolTable {
 
   createChild() {
     return new SymbolTable(this);
+  }
+}
+
+export class JSRootSymbolTable extends SymbolTable {
+  constructor(parent?: SymbolTable) {
+    super(parent);
+    this.defineConstant("NaN", NaN);
+    this.defineConstant("Infinity", Infinity);
+    this.defineConstant("undefined", undefined);
   }
 }
