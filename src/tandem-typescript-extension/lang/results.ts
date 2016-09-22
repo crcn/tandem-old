@@ -1,4 +1,4 @@
-import * as entities from "./entities";
+import * as synthetic from "./synthetic";
 
 export namespace ResultKind {
   export const Return = 1;
@@ -23,14 +23,14 @@ export class VoidResult extends Result<undefined> {
   }
 }
 
-export class DeclarationResult extends Result<entities.IEntity> {
-  constructor(readonly name: string, value: entities.IEntity) {
+export class DeclarationResult extends Result<synthetic.ISynthetic> {
+  constructor(readonly name: string, value: synthetic.ISynthetic) {
     super(ResultKind.Declaration, value);
   }
 }
 
-export class LiteralResult extends Result<entities.IEntity> {
-  constructor(value: entities.IEntity) {
+export class LiteralResult extends Result<synthetic.ISynthetic> {
+  constructor(value: synthetic.ISynthetic) {
     super(ResultKind.Literal, value);
   }
 }
@@ -41,8 +41,8 @@ export class ReturnResult extends Result<any> {
   }
 }
 
-export class ExportsResult extends Result<entities.IEntity> {
-  constructor(value: entities.IEntity) {
+export class ExportsResult extends Result<synthetic.ISynthetic> {
+  constructor(value: synthetic.ISynthetic) {
     super(ResultKind.Exports, value);
   }
 }

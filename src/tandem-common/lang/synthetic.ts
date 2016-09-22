@@ -1,4 +1,4 @@
-export namespace EntityKind {
+export namespace SyntheticKind {
   export const Native = 1;
   export const Function = Native + 1;
   export const SymbolTable = Function + 1;
@@ -6,18 +6,18 @@ export namespace EntityKind {
   export const JSXAttribute = JSXElement + 1;
 }
 
-export interface IEntity {
+export interface ISynthetic {
   kind: number;
-  get(propertyName: string): IEntity;
-  set(propertyName: string, value: IEntity);
+  get(propertyName: string): ISynthetic;
+  set(propertyName: string, value: ISynthetic);
   toJSON();
 }
 
-export interface IFunctionEntity extends IEntity {
-  evaluate(args: Array<IEntity>): IEntity;
+export interface ISyntheticFunction extends ISynthetic {
+  evaluate(args: Array<ISynthetic>): ISynthetic;
 }
 
-export interface ILiteralEntity extends IEntity {
+export interface ISyntheticValueObject extends ISynthetic {
   value: any;
 }
 
@@ -32,26 +32,26 @@ export function mapNativeAsEntity(value: any, context?: any) {
         properties[propertyName] = mapNativeAsEntity(value[propertyName]);
       }
       return new ObjectEntity(properties);
-    default: return new LiteralEntity(value);
+    default: return new SyntheticValueObject(value);
   }
 }
 
-export function mapEntityAsNative(value: IEntity) {
+export function mapEntityAsNative(value: ISynthetic) {
   switch (value.kind) {
-    case EntityKind.Function: return mapFunctionEntityAsNative(<IFunctionEntity>value);
-    default: return (<LiteralEntity<any>>value).toJSON();
+    case SyntheticKind.Function: return mapFunctionEntityAsNative(<ISyntheticFunction>value);
+    default: return (<SyntheticValueObject<any>>value).toJSON();
   }
 }
 
-function mapFunctionEntityAsNative(value: IFunctionEntity) {
+function mapFunctionEntityAsNative(value: ISyntheticFunction) {
   return function(...args: Array<any>) {
-    const result = (<IFunctionEntity>value.get("apply")).evaluate([mapNativeAsEntity(this), mapNativeAsEntity(args)]);
+    const result = (<ISyntheticFunction>value.get("apply")).evaluate([mapNativeAsEntity(this), mapNativeAsEntity(args)]);
     return mapEntityAsNative(result);
   };
 }
 
-export class LiteralEntity<T> implements ILiteralEntity {
-  kind = EntityKind.Native;
+export class SyntheticValueObject<T> implements ISyntheticValueObject {
+  kind = SyntheticKind.Native;
   private _vars: any;
   constructor(readonly value: T) {
     this._vars = {};
@@ -61,7 +61,7 @@ export class LiteralEntity<T> implements ILiteralEntity {
     return mapNativeAsEntity(this.value[propertyName], this.value);
   }
 
-  set(propertyName: string, value: IEntity) {
+  set(propertyName: string, value: ISynthetic) {
     this.value[propertyName] = mapEntityAsNative(value);
   }
 
@@ -71,7 +71,7 @@ export class LiteralEntity<T> implements ILiteralEntity {
   }
 }
 
-export class ArrayEntity<T extends IEntity> extends LiteralEntity<Array<T>> {
+export class ArrayEntity<T extends ISynthetic> extends SyntheticValueObject<Array<T>> {
   constructor(value: Array<T>) {
     super(value);
   }
@@ -81,7 +81,7 @@ export class ArrayEntity<T extends IEntity> extends LiteralEntity<Array<T>> {
   }
 }
 
-export class ObjectEntity extends LiteralEntity<Object> {
+export class ObjectEntity extends SyntheticValueObject<Object> {
   constructor(value: any = {}) {
     super(value);
   }
@@ -95,7 +95,7 @@ export class ObjectEntity extends LiteralEntity<Object> {
   }
 }
 
-export class NativeFunction extends LiteralEntity<Function> implements IFunctionEntity {
+export class NativeFunction extends SyntheticValueObject<Function> implements ISyntheticFunction {
   constructor(value: Function, readonly context: any) {
     super(value);
   }
@@ -104,9 +104,9 @@ export class NativeFunction extends LiteralEntity<Function> implements IFunction
   }
 }
 
-export class SymbolTable implements IEntity {
+export class SymbolTable implements ISynthetic {
 
-  kind = EntityKind.SymbolTable;
+  kind = SyntheticKind.SymbolTable;
 
   private _vars: any;
 
@@ -115,18 +115,18 @@ export class SymbolTable implements IEntity {
   }
 
   get(id: string) {
-    return this._vars[id] != null ? this._vars[id] : this._parent ? this._parent.get(id) : new LiteralEntity(undefined);
+    return this._vars[id] != null ? this._vars[id] : this._parent ? this._parent.get(id) : new SyntheticValueObject(undefined);
   }
 
-  defineVariable(id: string, value?: IEntity) {
+  defineVariable(id: string, value?: ISynthetic) {
     this._vars[id] = value;
   }
 
-  defineConstant(id: string, value: IEntity) {
+  defineConstant(id: string, value: ISynthetic) {
     this._vars[id] = value;
   }
 
-  set(id: string, value: IEntity) {
+  set(id: string, value: ISynthetic) {
     const context = this.getOwner(id);
     if (context === this) {
       this._vars[id] = value;
@@ -146,18 +146,18 @@ export class SymbolTable implements IEntity {
   toJSON() {
     const value = {};
     for (const propertyName in this._vars) {
-      const propertyValue = <IEntity>this._vars[propertyName];
+      const propertyValue = <ISynthetic>this._vars[propertyName];
       value[propertyName] = (propertyValue ? propertyValue.toJSON() : undefined);
     }
     return value;
   }
 }
 
-export class JSXElementEntity extends LiteralEntity<Object> {
+export class JSXElement extends SyntheticValueObject<Object> {
 
-  kind = EntityKind.JSXElement;
+  kind = SyntheticKind.JSXElement;
 
-  constructor(name: IEntity, attributes: ArrayEntity<IEntity>, children: ArrayEntity<IEntity>) {
+  constructor(name: ISynthetic, attributes: ArrayEntity<ISynthetic>, children: ArrayEntity<ISynthetic>) {
     super({
       name: name,
       attributes: attributes,
@@ -174,9 +174,9 @@ export class JSXElementEntity extends LiteralEntity<Object> {
   }
 }
 
-export class JSXAttributeEntity extends LiteralEntity<Object> {
-  kind = EntityKind.JSXAttribute;
-  constructor(name: IEntity, value: IEntity) {
+export class JSXAttributeEntity extends SyntheticValueObject<Object> {
+  kind = SyntheticKind.JSXAttribute;
+  constructor(name: ISynthetic, value: ISynthetic) {
     super({
       name: name,
       value: value
@@ -194,8 +194,8 @@ export class JSXAttributeEntity extends LiteralEntity<Object> {
 export class JSRootSymbolTable extends SymbolTable {
   constructor(parent?: SymbolTable) {
     super(parent);
-    this.defineConstant("NaN", new LiteralEntity(NaN));
-    this.defineConstant("Infinity", new LiteralEntity(Infinity));
-    this.defineConstant("undefined", new LiteralEntity(undefined));
+    this.defineConstant("NaN", new SyntheticValueObject(NaN));
+    this.defineConstant("Infinity", new SyntheticValueObject(Infinity));
+    this.defineConstant("undefined", new SyntheticValueObject(undefined));
   }
 }

@@ -1,11 +1,13 @@
 import * as ts from "typescript";
 import { evaluateTypescript } from "./evaluator";
-import { SymbolTable, EntityKind, IEntity, ILiteralEntity, ArrayEntity, LiteralEntity, IFunctionEntity } from "tandem-common/lang/entities2";
+import { SymbolTable, SyntheticKind, ISynthetic, ISyntheticValueObject, ArrayEntity, SyntheticValueObject, ISyntheticFunction } from "tandem-common/lang/synthetic";
 
-export * from "tandem-common/lang/entities2";
+export * from "tandem-common/lang/synthetic";
 
-export class FunctionEntity implements IFunctionEntity {
-  kind = EntityKind.Function;
+// change to virtual
+
+export class FunctionEntity implements ISyntheticFunction {
+  kind = SyntheticKind.Function;
 
   private _call: CallFunctionEntity;
 
@@ -20,7 +22,7 @@ export class FunctionEntity implements IFunctionEntity {
     this[propertyName] = value;
   }
 
-  evaluate(args: Array<any>): IEntity {
+  evaluate(args: Array<any>): ISynthetic {
     const bodyContext = this._context.createChild();
     bodyContext.defineConstant("this", this.mapContext(args));
     const callArgs = this.mapArgs(args);
@@ -43,7 +45,7 @@ export class FunctionEntity implements IFunctionEntity {
   }
 
   toJSON() {
-    return { kind: EntityKind.Function, scriptText: this._expression.getText() };
+    return { kind: SyntheticKind.Function, scriptText: this._expression.getText() };
   }
 }
 

@@ -3,6 +3,11 @@ import * as ts from "typescript";
 import { evaluateTypescript } from "./evaluator";
 
 describe(__filename + "#", () => {
+
+  function parse(content: string) {
+    return ts.createSourceFile("tmp.tsx", content, ts.ScriptTarget.ES6, true);
+  }
+
   [
     // literal types
     [`export const a = true;`, { a: true }],
@@ -74,10 +79,15 @@ describe(__filename + "#", () => {
 
   ].forEach(([scriptSource, exports]) => {
     it(`can evaluate ${scriptSource}`, () => {
-      const ast = ts.createSourceFile("tmp.tsx", scriptSource as string, ts.ScriptTarget.ES6, true);
+      const ast = parse(<string>scriptSource);
       const resultExports = evaluateTypescript(ast).value;
       const json = resultExports.toJSON();
       expect(json).to.eql(exports);
     });
+  });
+
+  it("can import documents", async () => {
+    const ast = parse(`import { b } from "./test; export const a = b;`);
+    const result = evaluateTypescript(ast).value.toJSON();
   });
 });

@@ -1,19 +1,18 @@
 import * as ts from "typescript";
 import * as rs from "./results";
-import * as entities from "./entities";
 import { flatten } from "lodash";
-import { FunctionEntity } from "./entities";
+import { FunctionEntity } from "./synthetic";
 import {
-  IEntity,
+  ISynthetic,
   SymbolTable,
   ArrayEntity,
-  LiteralEntity,
-  JSXElementEntity,
+  SyntheticValueObject,
+  JSXElement,
   mapEntityAsNative,
   mapNativeAsEntity,
   JSRootSymbolTable,
   JSXAttributeEntity,
-} from "tandem-common/lang/entities2";
+} from "tandem-common/lang/synthetic";
 
 function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
 
@@ -23,21 +22,22 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
     case ts.SyntaxKind.SourceFile: return evaluateSourceFile();
     case ts.SyntaxKind.JsxElement: return evaluateJSXElement();
     case ts.SyntaxKind.Identifier: return evaluateIdentifier();
-    case ts.SyntaxKind.TrueKeyword: return new rs.LiteralResult(new LiteralEntity(true));
+    case ts.SyntaxKind.TrueKeyword: return new rs.LiteralResult(new SyntheticValueObject(true));
     case ts.SyntaxKind.ThisKeyword: return new rs.LiteralResult(context.get("this"));
-    case ts.SyntaxKind.NullKeyword: return new rs.LiteralResult(new LiteralEntity(null));
+    case ts.SyntaxKind.NullKeyword: return new rs.LiteralResult(new SyntheticValueObject(null));
     case ts.SyntaxKind.JsxAttribute: return evaluateJSXAttribute();
-    case ts.SyntaxKind.FalseKeyword: return new rs.LiteralResult(new LiteralEntity(false));
-    case ts.SyntaxKind.FalseKeyword: return new rs.LiteralResult(new LiteralEntity(false));
-    case ts.SyntaxKind.StringLiteral: return new rs.LiteralResult(new LiteralEntity((<ts.LiteralExpression>node).text));
+    case ts.SyntaxKind.FalseKeyword: return new rs.LiteralResult(new SyntheticValueObject(false));
+    case ts.SyntaxKind.FalseKeyword: return new rs.LiteralResult(new SyntheticValueObject(false));
+    case ts.SyntaxKind.StringLiteral: return new rs.LiteralResult(new SyntheticValueObject((<ts.LiteralExpression>node).text));
     case ts.SyntaxKind.ArrowFunction: return evaluateArrowFunction();
     case ts.SyntaxKind.JsxExpression: return evaluateJSXExpression();
     case ts.SyntaxKind.EmptyStatement: return new rs.VoidResult();
-    case ts.SyntaxKind.VoidExpression: return new rs.LiteralResult(new LiteralEntity(void 0));
-    case ts.SyntaxKind.NumericLiteral: return new rs.LiteralResult(new LiteralEntity(Number((<ts.LiteralExpression>node).text)));
+    case ts.SyntaxKind.VoidExpression: return new rs.LiteralResult(new SyntheticValueObject(void 0));
+    case ts.SyntaxKind.NumericLiteral: return new rs.LiteralResult(new SyntheticValueObject(Number((<ts.LiteralExpression>node).text)));
     case ts.SyntaxKind.CallExpression: return evaluateCallExpression();
     case ts.SyntaxKind.ReturnStatement: return evaluateReturnStatement();
     case ts.SyntaxKind.BinaryExpression: return evaluateBinaryExpression();
+    case ts.SyntaxKind.ImportDeclaration: return evaluateImportDeclaration();
     case ts.SyntaxKind.VariableStatement: return evaluateVariableStatement();
     case ts.SyntaxKind.PropertyAssignment: return evaluatePropertyAssignment();
     case ts.SyntaxKind.FunctionDeclaration: return evaluateFunctionDeclaration();
@@ -65,7 +65,7 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
     return new rs.ExportsResult(exports);
   }
 
-  function exportDeclarations(result: rs.Result<any>, exports: IEntity) {
+  function exportDeclarations(result: rs.Result<any>, exports: ISynthetic) {
     if (result.kind === rs.ResultKind.List) {
       (<rs.ListResult>result).value.forEach((result) => {
         exportDeclarations(result, exports);
@@ -78,7 +78,7 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
 
   function evaluateJSXText() {
     const jsxText = <ts.JsxText>node;
-    return new rs.LiteralResult(new LiteralEntity(jsxText.getText()));
+    return new rs.LiteralResult(new SyntheticValueObject(jsxText.getText()));
   }
 
   function evaluateJSXExpression() {
@@ -92,6 +92,11 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
       jsxElement.tagName,
       jsxElement.attributes
     );
+  }
+
+  function evaluateImportDeclaration() {
+    const importDeclaration = <ts.ImportDeclaration>node;
+    return new rs.VoidResult();
   }
 
   function evaluateJSXElement() {
@@ -111,7 +116,7 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
       evaluated = getIdentifierEntity(nodeName);
     }
 
-    return new rs.LiteralResult(new JSXElementEntity(
+    return new rs.LiteralResult(new JSXElement(
       evaluated,
       new ArrayEntity(attributes.map((attribute) => evaluate(attribute, context).value)),
       new ArrayEntity(children.map((child) => evaluate(child, context).value))
@@ -119,7 +124,7 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
   }
 
   function getIdentifierEntity(node: ts.Node) {
-    return node.kind === ts.SyntaxKind.Identifier ? new LiteralEntity((<ts.Identifier>node).text) : evaluate(node, context).value;
+    return node.kind === ts.SyntaxKind.Identifier ? new SyntheticValueObject((<ts.Identifier>node).text) : evaluate(node, context).value;
   }
 
   function evaluateJSXAttribute() {
@@ -168,12 +173,12 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
     }
     /* tslint:enable */
 
-    return new rs.LiteralResult(new LiteralEntity(value));
+    return new rs.LiteralResult(new SyntheticValueObject(value));
   }
 
   function evaluatePropertyAccessExpression() {
     const propertyAccessExpression = <ts.PropertyAccessExpression>node;
-    const reference = <IEntity>evaluate(propertyAccessExpression.expression, context).value;
+    const reference = <ISynthetic>evaluate(propertyAccessExpression.expression, context).value;
     return new rs.LiteralResult(reference.get(getIdentifierEntity(propertyAccessExpression.name).value));
   }
 
@@ -226,7 +231,7 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
     return new rs.LiteralResult(new FunctionEntity(arrowFunction, context));
   }
 
-  function defineVariable(name: ts.Node, value: IEntity): rs.Result<any> {
+  function defineVariable(name: ts.Node, value: ISynthetic): rs.Result<any> {
     if (name.kind === ts.SyntaxKind.Identifier) {
       const nameText = (<ts.Identifier>name).text;
       context.defineVariable(nameText, value);
@@ -260,8 +265,6 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
     const propertyAssignment = <ts.PropertyAssignment>node;
     return new rs.DeclarationResult(getIdentifierEntity(propertyAssignment.name).value,  evaluate(propertyAssignment.initializer, context).value);
   }
-
-
 
   function evaluateShorthandPropertyAssignment() {
     const shorthandPropertyAssignment = <ts.ShorthandPropertyAssignment>node;

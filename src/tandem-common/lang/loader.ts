@@ -3,9 +3,9 @@ import { WrapBus } from "mesh";
 import { bindable } from "tandem-common/decorators";
 import { IDisposable } from "tandem-common/object";
 import { patchTreeNode } from "tandem-common/tree";
+import { IASTNodeSource, IASTNode } from "./base";
 import { Action, EntityLoaderAction } from "tandem-common/actions";
 import { IObservable, Observable, watchProperty } from "tandem-common/observable";
-import { IASTNodeSource, IASTNode } from "./base";
 
 export abstract class BaseASTNodeLoader extends Observable {
 
