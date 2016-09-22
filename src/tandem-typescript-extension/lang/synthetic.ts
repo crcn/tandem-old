@@ -1,39 +1,64 @@
 import * as ts from "typescript";
 import { evaluateTypescript } from "./evaluator";
-import { SymbolTable, SyntheticKind, ISynthetic, ISyntheticValueObject, ArrayEntity, SyntheticValueObject, ISyntheticFunction } from "tandem-common/lang/synthetic";
+import {
+  ISynthetic,
+  ArrayEntity,
+  SymbolTable,
+  SyntheticKind,
+  SyntheticObject,
+  ISyntheticFunction,
+  SyntheticValueObject,
+  ISyntheticValueObject,
+  IInstantiableSynthetic,
+} from "tandem-common/lang/synthetic";
 
 export * from "tandem-common/lang/synthetic";
 
-// change to virtual
-
-export class FunctionEntity implements ISyntheticFunction {
+export class SyntheticFunction extends SyntheticObject implements ISyntheticFunction {
   kind = SyntheticKind.Function;
 
-  private _call: CallFunctionEntity;
+  private _call: SyntheticCallFunction;
 
-  constructor(private _expression: ts.FunctionLikeDeclaration, private _context: SymbolTable) { }
-  get(key: string) {
-    if (key === "call") return new CallFunctionEntity(this._expression, this._context);
-    if (key === "apply") return new ApplyFunctionEntity(this._expression, this._context);
-    return this[key];
+  constructor(private _expression: ts.FunctionLikeDeclaration, private _context: SymbolTable) {
+    super();
+    SyntheticObject.defineProperty(this, "call", {
+      get: () => {
+        return new SyntheticCallFunction(this._expression, this._context);
+      }
+    });
+
+    SyntheticObject.defineProperty(this, "apply", {
+      get: () => {
+        return new SyntheticApplyFunction(this._expression, this._context);
+      }
+    });
+
+    this.set("prototype", new SyntheticObject());
   }
 
-  set(propertyName: string, value: any) {
-    this[propertyName] = value;
-  }
-
-  evaluate(args: Array<any>): ISynthetic {
+  evaluate(args: Array<ISynthetic>): ISynthetic {
     const bodyContext = this._context.createChild();
     bodyContext.defineConstant("this", this.mapContext(args));
     const callArgs = this.mapArgs(args);
+    const ctxArgs  = new SyntheticObject();
+
     this._expression.parameters.forEach((parameter, i) => {
-      const value = parameter.dotDotDotToken ? new ArrayEntity(callArgs.slice(i)) : callArgs[i];
+      const varName = (<ts.Identifier>parameter.name).text;
+      const value   = (parameter.dotDotDotToken ? new ArrayEntity(callArgs.slice(i)) : callArgs[i]) || new SyntheticValueObject(undefined);
+      ctxArgs.set(varName, value);
       bodyContext.defineVariable(
-        (<ts.Identifier>parameter.name).text,
+        varName,
         value
       );
     });
+
+    bodyContext.set("arguments", ctxArgs);
+
     return evaluateTypescript(this._expression.body, bodyContext).value;
+  }
+
+  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
+    return this.get("call").evaluate([context, ...args]);
   }
 
   protected mapContext(arg: Array<any>) {
@@ -44,12 +69,18 @@ export class FunctionEntity implements ISyntheticFunction {
     return args;
   }
 
+  createInstance(args: Array<ISynthetic>): ISynthetic {
+    const instance = SyntheticObject.create(this.get("prototype"));
+    this.apply(instance, args);
+    return instance;
+  }
+
   toJSON() {
     return { kind: SyntheticKind.Function, scriptText: this._expression.getText() };
   }
 }
 
-export class CallFunctionEntity extends FunctionEntity {
+export class SyntheticCallFunction extends SyntheticFunction {
   mapContext(args: Array<any>) {
     return args[0];
   }
@@ -58,11 +89,40 @@ export class CallFunctionEntity extends FunctionEntity {
   }
 }
 
-export class ApplyFunctionEntity extends FunctionEntity {
+export class SyntheticApplyFunction extends SyntheticFunction {
   mapContext(args: Array<any>) {
     return args[0];
   }
   mapArgs(args: Array<any>) {
     return args[1] ? args[1].value || [] : [];
+  }
+}
+
+export class SyntheticClass extends SyntheticObject implements IInstantiableSynthetic {
+  constructor(private _expression: ts.ClassDeclaration, private _context: SymbolTable) {
+    super();
+  }
+
+  createInstance(args: Array<ISynthetic>): ISynthetic {
+    const instance = new SyntheticObject();
+    const ctx = this._context.createChild();
+    ctx.defineConstant("this", instance);
+    for (const member of this._expression.members) {
+      const value = evaluateTypescript(member, ctx).value;
+      console.log(value);
+
+      if (member.kind === ts.SyntaxKind.Constructor) {
+        ctx.set("constructor", value);
+      } else if (member.name) {
+        ctx.set((<ts.Identifier>member.name).text, value);
+      }
+    }
+
+    const ctor = <ISyntheticFunction>ctx.get("constructor");
+    if (ctor) {
+      ctor.apply(ctx, args);
+    }
+
+    return ctx;
   }
 }

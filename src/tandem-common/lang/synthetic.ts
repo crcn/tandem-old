@@ -4,6 +4,7 @@ export namespace SyntheticKind {
   export const SymbolTable = Function + 1;
   export const JSXElement = SymbolTable + 1;
   export const JSXAttribute = JSXElement + 1;
+  export const Object = JSXAttribute + 1;
 }
 
 export interface ISynthetic {
@@ -13,8 +14,13 @@ export interface ISynthetic {
   toJSON();
 }
 
-export interface ISyntheticFunction extends ISynthetic {
+export interface IInstantiableSynthetic extends ISynthetic {
+  createInstance(args: Array<ISynthetic>): ISynthetic;
+}
+
+export interface ISyntheticFunction extends IInstantiableSynthetic {
   evaluate(args: Array<ISynthetic>): ISynthetic;
+  apply(context: ISynthetic, args?: Array<ISynthetic>): ISynthetic;
 }
 
 export interface ISyntheticValueObject extends ISynthetic {
@@ -31,7 +37,7 @@ export function mapNativeAsEntity(value: any, context?: any) {
       for (const propertyName in value) {
         properties[propertyName] = mapNativeAsEntity(value[propertyName]);
       }
-      return new ObjectEntity(properties);
+      return new SyntheticObject(properties);
     default: return new SyntheticValueObject(value);
   }
 }
@@ -50,6 +56,41 @@ function mapFunctionEntityAsNative(value: ISyntheticFunction) {
   };
 }
 
+export class SyntheticObject implements ISynthetic {
+
+  kind = SyntheticKind.Object;
+  constructor(private __properties: any = {}) {
+
+  }
+
+  get(propertyName: string) {
+    return this.__properties[propertyName];
+  }
+
+  set(propertyName: string, value: ISynthetic) {
+    this.__properties[propertyName] = value;
+  }
+
+  static defineProperty(target: SyntheticObject, propertyName: string, attributes: PropertyDescriptor) {
+    Object.defineProperty(target.__properties, propertyName, attributes);
+  }
+
+  static assign(target: SyntheticObject, ...from: Array<SyntheticObject>) {
+    return Object.assign(target.__properties, ...from.map((object) => object.__properties));
+  }
+
+  static create(prototype: SyntheticObject) {
+    return new SyntheticObject(Object.create(prototype.__properties));
+  }
+
+  toJSON() {
+    const object = {};
+    for (const propertyName in this.__properties) {
+      object[propertyName] = this.__properties[propertyName].toJSON();
+    }
+    return object;
+  }
+}
 export class SyntheticValueObject<T> implements ISyntheticValueObject {
   kind = SyntheticKind.Native;
   private _vars: any;
@@ -58,7 +99,7 @@ export class SyntheticValueObject<T> implements ISyntheticValueObject {
   }
 
   get(propertyName: string) {
-    return mapNativeAsEntity(this.value[propertyName], this.value);
+    return mapNativeAsEntity(this.value[propertyName], this);
   }
 
   set(propertyName: string, value: ISynthetic) {
@@ -80,27 +121,20 @@ export class ArrayEntity<T extends ISynthetic> extends SyntheticValueObject<Arra
     return this.value.map(mapEntityAsNative);
   }
 }
-
-export class ObjectEntity extends SyntheticValueObject<Object> {
-  constructor(value: any = {}) {
-    super(value);
-  }
-
-  toJSON() {
-    const value = {};
-    for (const propertyName in this.value) {
-      value[propertyName] = this.value[propertyName].toJSON();
-    }
-    return value;
-  }
-}
-
 export class NativeFunction extends SyntheticValueObject<Function> implements ISyntheticFunction {
-  constructor(value: Function, readonly context: any) {
+  constructor(value: Function, readonly context: ISynthetic) {
     super(value);
   }
-  evaluate(args: Array<any>) {
-    return mapNativeAsEntity(this.value.apply(this.context, args.map(mapEntityAsNative)));
+  evaluate(args: Array<ISynthetic>) {
+    return this.apply(this.context, args);
+  }
+  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
+    return mapNativeAsEntity(this.value.apply(mapEntityAsNative(this.context), args.map(mapEntityAsNative)));
+  }
+  createInstance(args: Array<ISynthetic>) {
+    const instance = new SyntheticValueObject(Object.create(this.value.prototype));
+    this.apply(instance, args);
+    return instance;
   }
 }
 
@@ -197,5 +231,7 @@ export class JSRootSymbolTable extends SymbolTable {
     this.defineConstant("NaN", new SyntheticValueObject(NaN));
     this.defineConstant("Infinity", new SyntheticValueObject(Infinity));
     this.defineConstant("undefined", new SyntheticValueObject(undefined));
+    this.defineConstant("Object", new SyntheticValueObject(Object));
+    this.defineConstant("Date", new SyntheticValueObject(Date));
   }
 }

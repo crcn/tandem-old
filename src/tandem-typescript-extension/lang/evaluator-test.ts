@@ -75,7 +75,42 @@ describe(__filename + "#", () => {
     [`const render = () => <div>a</div>; export const element = render();`, { element: { name: "div", attributes: [], children: ["a"] }}],
     [`const render = (a) => <div>{a}</div>; export const element = render("b");`, { element: { name: "div", attributes: [], children: ["b"] }}],
     [`const render = (...rest) => <ul>{rest.map(i => <li>{i}</li>)}</ul>; export const element = render(1, 2);`, { element: { name: "ul", attributes: [], children: [[{ name: "li", attributes: [], children: [1] }, { name: "li", attributes: [], children: [2] }]] }}],
-    [`const Component = () => null; const render = () => <Component />; export const element = render();`, { element: { name: "Component", attributes: [], children: [] }}]
+    [`const Component = () => null; const render = () => <Component />; export const element = render();`, { element: { name: "Component", attributes: [], children: [] }}],
+
+    // Synthetic Object
+    [`export const v = Object.create({ a: 1 })`, { v: { a: 1 } }],
+    [`export const v = Object.assign({ a: 1 }, { b: 2 }, { c: 3 })`, { v: { a: 1, b: 2, c: 3 } }],
+
+    // function classes
+    [`function Test() { } new Test();`, {}],
+    [`function A(c) { this.b = c; } const inst = new A(1); export const value = inst.b;`, { value: 1 }],
+    [`
+      function A(name) {
+        this.name = name;
+      }
+
+      function B(name) {
+        A.call(this, name);
+      }
+
+      B.prototype = Object.create(A.prototype);
+
+      const inst = new B(2);
+
+      export const value = inst.name;
+    `, { value: 2 }],
+
+    [`
+      class A {
+        public b: string;
+        constructor(b) {
+          this.b = b;
+        }
+      }
+
+      const inst = new A(100);
+      export const v = inst.b;
+    `, { v: 100 }]
 
   ].forEach(([scriptSource, exports]) => {
     it(`can evaluate ${scriptSource}`, () => {
