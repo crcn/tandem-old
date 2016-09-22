@@ -19,7 +19,6 @@ export interface IInstantiableSynthetic extends ISynthetic {
 }
 
 export interface ISyntheticFunction extends IInstantiableSynthetic {
-  evaluate(args: Array<ISynthetic>): ISynthetic;
   apply(context: ISynthetic, args?: Array<ISynthetic>): ISynthetic;
 }
 
@@ -27,10 +26,10 @@ export interface ISyntheticValueObject extends ISynthetic {
   value: any;
 }
 
-export function mapNativeAsEntity(value: any, context?: any) {
+export function mapNativeAsEntity(value: any) {
   if (value && value.kind) return value;
   switch (typeof value) {
-    case "function": return new NativeFunction(value, context);
+    case "function": return new NativeFunction(value);
     case "object":
       if (Array.isArray(value)) return new ArrayEntity(value.map(mapNativeAsEntity));
       const properties = {};
@@ -51,7 +50,7 @@ export function mapEntityAsNative(value: ISynthetic) {
 
 function mapFunctionEntityAsNative(value: ISyntheticFunction) {
   return function(...args: Array<any>) {
-    const result = (<ISyntheticFunction>value.get("apply")).evaluate([mapNativeAsEntity(this), mapNativeAsEntity(args)]);
+    const result = (<ISyntheticFunction>value).apply(mapNativeAsEntity(this), args.map(mapNativeAsEntity));
     return mapEntityAsNative(result);
   };
 }
@@ -99,7 +98,7 @@ export class SyntheticValueObject<T> implements ISyntheticValueObject {
   }
 
   get(propertyName: string) {
-    return mapNativeAsEntity(this.value[propertyName], this);
+    return mapNativeAsEntity(this.value[propertyName]);
   }
 
   set(propertyName: string, value: ISynthetic) {
@@ -122,14 +121,11 @@ export class ArrayEntity<T extends ISynthetic> extends SyntheticValueObject<Arra
   }
 }
 export class NativeFunction extends SyntheticValueObject<Function> implements ISyntheticFunction {
-  constructor(value: Function, readonly context: ISynthetic) {
+  constructor(value: Function) {
     super(value);
   }
-  evaluate(args: Array<ISynthetic>) {
-    return this.apply(this.context, args);
-  }
   apply(context: ISynthetic, args: Array<ISynthetic> = []) {
-    return mapNativeAsEntity(this.value.apply(mapEntityAsNative(this.context), args.map(mapEntityAsNative)));
+    return mapNativeAsEntity(this.value.apply(mapEntityAsNative(context), args.map(mapEntityAsNative)));
   }
   createInstance(args: Array<ISynthetic>) {
     const instance = new SyntheticValueObject(Object.create(this.value.prototype));

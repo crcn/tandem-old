@@ -67,6 +67,8 @@ describe(__filename + "#", () => {
     [`function add(a) { return this + a; }; export const result = add.call(1, 2)`, { result: 3 }],
     [`const add = (a, b) => a + b; export const result = add.apply(null, [2, 3])`, { result: 5 }],
     [`const add = (...rest) => rest.reduce((a, b) => a + b); export const result = add(1, 2, 3, 4, 5)`, { result: 1 + 2 + 3 + 4 + 5 }],
+    [`function test() { } export const name = test.name`, { name: "test" }],
+    // [`function test(b) { return this + b; } export const value = test.bind(1)(2);`, { value: 3 }],
 
     // JSX
     [`const render = () => <div />; export const element = render();`, { element: { name: "div", attributes: [], children: [] }}],

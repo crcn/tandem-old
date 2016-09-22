@@ -4,6 +4,7 @@ import { flatten } from "lodash";
 import { SyntheticFunction, SyntheticClass } from "./synthetic";
 import {
   ISynthetic,
+  ISyntheticFunction,
   IInstantiableSynthetic,
   SyntheticObject,
   SymbolTable,
@@ -25,6 +26,7 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
     case ts.SyntaxKind.SourceFile: return evaluateSourceFile();
     case ts.SyntaxKind.JsxElement: return evaluateJSXElement();
     case ts.SyntaxKind.PropertyDeclaration: return evaluatePropertyDeclaration();
+    case ts.SyntaxKind.MethodDeclaration: return evaluateMethodDeclaration();
     case ts.SyntaxKind.Identifier: return evaluateIdentifier();
     case ts.SyntaxKind.TrueKeyword: return new rs.LiteralResult(new SyntheticValueObject(true));
     case ts.SyntaxKind.ThisKeyword: return new rs.LiteralResult(context.get("this"));
@@ -131,6 +133,11 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
     ));
   }
 
+  function evaluateMethodDeclaration() {
+    const methodDeclaration = <ts.MethodDeclaration>node;
+    return evaluateArrowFunction();
+  }
+
   function getIdentifierEntity(node: ts.Node) {
     return node.kind === ts.SyntaxKind.Identifier ? new SyntheticValueObject((<ts.Identifier>node).text) : evaluate(node, context).value;
   }
@@ -191,23 +198,26 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
 
   function evaluateAssignmentExpression() {
     const assignmentExpression = <ts.BinaryExpression>node;
-    const left = assignmentExpression.left;
+    const { ctx, propertyName } = getReference(assignmentExpression.left);
+    const value = evaluate(assignmentExpression.right, context).value;
+    ctx.set(propertyName, value);
+    return new rs.LiteralResult(value);
+  }
+
+  function getReference(node: ts.Node) {
+
     let propertyName: string;
     let ctx: ISynthetic;
 
-    if (left.kind === ts.SyntaxKind.PropertyAccessExpression) {
-      ctx = evaluate((<ts.PropertyAccessExpression>left).expression, context).value;
-      propertyName = getIdentifierEntity((<ts.PropertyAccessExpression>left).name).value;
-    } else if (left.kind === ts.SyntaxKind.Identifier) {
+    if (node.kind === ts.SyntaxKind.PropertyAccessExpression) {
+      ctx = evaluate((<ts.PropertyAccessExpression>node).expression, context).value;
+      propertyName = getIdentifierEntity((<ts.PropertyAccessExpression>node).name).value;
+    } else if (node.kind === ts.SyntaxKind.Identifier) {
       ctx = context;
-      propertyName = (<ts.Identifier>left).text;
+      propertyName = (<ts.Identifier>node).text;
     }
 
-    const value = evaluate(assignmentExpression.right, context).value;
-
-    ctx.set(propertyName, value);
-
-    return new rs.LiteralResult(value);
+    return { ctx, propertyName };
   }
 
   function evaluateConstructorDeclaration() {
@@ -228,10 +238,10 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
 
   function evaluateClassDeclaration() {
     const classDeclaration = <ts.ClassDeclaration>node;
-
-    const syntheticClass = new SyntheticClass(classDeclaration, context);
+    const name = classDeclaration.name.text;
+    const syntheticClass = new SyntheticClass(classDeclaration, context, name);
     context.defineConstant(
-      classDeclaration.name.text,
+      name,
       syntheticClass
     );
 
@@ -340,7 +350,7 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
     const functionDeclaration = <ts.FunctionDeclaration>node;
 
     const name = getIdentifierEntity(functionDeclaration.name).value;
-    const value = new SyntheticFunction(functionDeclaration, context);
+    const value = new SyntheticFunction(functionDeclaration, context, name);
 
     context.defineConstant(name, value);
     return new rs.DeclarationResult(name, value);
@@ -348,8 +358,8 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
 
   function evaluateCallExpression() {
     const callExpression = <ts.CallExpression>node;
-    const reference = <SyntheticFunction>evaluate(callExpression.expression, context).value;
-    return new rs.LiteralResult(reference.evaluate(evaluateCallArguments(callExpression.arguments)));
+    const { ctx, propertyName } = getReference(callExpression.expression);
+    return new rs.LiteralResult((<ISyntheticFunction>ctx.get(propertyName)).apply(ctx, evaluateCallArguments(callExpression.arguments)));
   }
 
   function evaluateCallArguments(callArgs: Array<ts.Node>) {

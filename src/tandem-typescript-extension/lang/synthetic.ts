@@ -5,6 +5,7 @@ import {
   ArrayEntity,
   SymbolTable,
   SyntheticKind,
+  NativeFunction,
   SyntheticObject,
   ISyntheticFunction,
   SyntheticValueObject,
@@ -14,37 +15,54 @@ import {
 
 export * from "tandem-common/lang/synthetic";
 
-export class SyntheticFunction extends SyntheticObject implements ISyntheticFunction {
+export abstract class SyntheticBaseFunction extends SyntheticObject implements ISyntheticFunction {
   kind = SyntheticKind.Function;
-
-  private _call: SyntheticCallFunction;
-
-  constructor(private _expression: ts.FunctionLikeDeclaration, private _context: SymbolTable) {
+  constructor(name?: string) {
     super();
     SyntheticObject.defineProperty(this, "call", {
       get: () => {
-        return new SyntheticCallFunction(this._expression, this._context);
+        return new SyntheticCallFunction(this);
       }
     });
-
     SyntheticObject.defineProperty(this, "apply", {
       get: () => {
-        return new SyntheticApplyFunction(this._expression, this._context);
+        return new SyntheticApplyFunction(this);
       }
     });
 
+    SyntheticObject.defineProperty(this, "bind", {
+      get: () => {
+        return new SyntheticBindFunction(this);
+      }
+    });
     this.set("prototype", new SyntheticObject());
+    this.set("name", new SyntheticValueObject(name));
   }
 
-  evaluate(args: Array<ISynthetic>): ISynthetic {
+  abstract apply(context: ISynthetic, args: Array<ISynthetic>);
+
+  createInstance(args: Array<ISynthetic>): ISynthetic {
+    const instance = SyntheticObject.create(this.get("prototype"));
+    this.apply(instance, args);
+    return instance;
+  }
+}
+
+export class SyntheticFunction extends SyntheticBaseFunction implements ISyntheticFunction {
+  kind = SyntheticKind.Function;
+
+  constructor(private _expression: ts.FunctionLikeDeclaration, private _context: SymbolTable, name?: string) {
+    super(name);
+  }
+
+  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
     const bodyContext = this._context.createChild();
-    bodyContext.defineConstant("this", this.mapContext(args));
-    const callArgs = this.mapArgs(args);
+    bodyContext.defineConstant("this", context);
     const ctxArgs  = new SyntheticObject();
 
     this._expression.parameters.forEach((parameter, i) => {
       const varName = (<ts.Identifier>parameter.name).text;
-      const value   = (parameter.dotDotDotToken ? new ArrayEntity(callArgs.slice(i)) : callArgs[i]) || new SyntheticValueObject(undefined);
+      const value   = (parameter.dotDotDotToken ? new ArrayEntity(args.slice(i)) : args[i]) || new SyntheticValueObject(undefined);
       ctxArgs.set(varName, value);
       bodyContext.defineVariable(
         varName,
@@ -57,72 +75,71 @@ export class SyntheticFunction extends SyntheticObject implements ISyntheticFunc
     return evaluateTypescript(this._expression.body, bodyContext).value;
   }
 
-  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
-    return this.get("call").evaluate([context, ...args]);
-  }
-
-  protected mapContext(arg: Array<any>) {
-    return this._context;
-  }
-
-  protected mapArgs(args: Array<any>) {
-    return args;
-  }
-
-  createInstance(args: Array<ISynthetic>): ISynthetic {
-    const instance = SyntheticObject.create(this.get("prototype"));
-    this.apply(instance, args);
-    return instance;
-  }
-
   toJSON() {
     return { kind: SyntheticKind.Function, scriptText: this._expression.getText() };
   }
 }
 
-export class SyntheticCallFunction extends SyntheticFunction {
-  mapContext(args: Array<any>) {
-    return args[0];
+class SyntheticCallFunction extends SyntheticBaseFunction {
+  constructor(private _target: ISyntheticFunction) {
+    super("name");
   }
-  mapArgs(args: Array<any>) {
-    return args.slice(1);
+  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
+    return this._target.apply(args[0], args.slice(1));
   }
 }
 
-export class SyntheticApplyFunction extends SyntheticFunction {
-  mapContext(args: Array<any>) {
-    return args[0];
+class SyntheticApplyFunction extends SyntheticBaseFunction {
+  constructor(private _target: ISyntheticFunction) {
+    super("apply");
   }
-  mapArgs(args: Array<any>) {
-    return args[1] ? args[1].value || [] : [];
+  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
+    return this._target.apply(args[0], (<ArrayEntity<any>>args[1]).value);
+  }
+}
+
+class SyntheticBindFunction extends SyntheticBaseFunction {
+  constructor(private _target: ISyntheticFunction) {
+    super("bind");
+  }
+  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
+    return new SyntheticBoundFunction(this._target, args);
+  }
+}
+
+class SyntheticBoundFunction extends SyntheticBaseFunction {
+  constructor(private _target: ISyntheticFunction, private _args: Array<ISynthetic>) {
+    super();
+  }
+  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
+    return this._target.apply(this._args[0], this._args.slice(1).concat(args));
   }
 }
 
 export class SyntheticClass extends SyntheticObject implements IInstantiableSynthetic {
-  constructor(private _expression: ts.ClassDeclaration, private _context: SymbolTable) {
+  constructor(private _expression: ts.ClassDeclaration, private _context: SymbolTable, name?: string) {
     super();
+    this.set("name", new SyntheticValueObject(name));
   }
 
   createInstance(args: Array<ISynthetic>): ISynthetic {
     const instance = new SyntheticObject();
-    const ctx = this._context.createChild();
-    ctx.defineConstant("this", instance);
     for (const member of this._expression.members) {
-      const value = evaluateTypescript(member, ctx).value;
+      const value = evaluateTypescript(member, this._context).value;
       if (value == null) continue;
 
       if (member.kind === ts.SyntaxKind.Constructor) {
-        ctx.set("ctor", value);
+        instance.set("constructor", value);
       } else if (member.name) {
-        ctx.set((<ts.Identifier>member.name).text, value);
+        instance.set((<ts.Identifier>member.name).text, value);
       }
     }
 
-    const ctor = <ISyntheticFunction>ctx.get("ctor");
+    const ctor = <ISyntheticFunction>instance.get("constructor");
     if (ctor) {
-      ctor.apply(ctx, args);
+      ctor.apply(instance, args);
     }
 
-    return ctx;
+    return instance;
   }
 }
