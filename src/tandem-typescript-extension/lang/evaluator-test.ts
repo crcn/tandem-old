@@ -69,6 +69,20 @@ describe(__filename + "#", () => {
     [`const add = (...rest) => rest.reduce((a, b) => a + b); export const result = add(1, 2, 3, 4, 5)`, { result: 1 + 2 + 3 + 4 + 5 }],
     [`function test() { } export const name = test.name`, { name: "test" }],
     // [`function test(b) { return this + b; } export const value = test.bind(1)(2);`, { value: 3 }],
+    /*[`
+      function bind(fn, ctx, ...args) {
+        return function(...rest) {
+          return fn.apply(ctx, [...args, ...rest]);
+        }
+      }
+
+      function add(...numbers) {
+        return numbers.reduce((a, b) => a + b);
+      }
+
+      const bound = bind(add, null, 1, 2, 3);
+      export const value = bound(4, 5, 6);
+    `, { value: 1 + 2 + 3 + 4 + 5 + 6 }],*/
 
     // JSX
     [`const render = () => <div />; export const element = render();`, { element: { name: "div", attributes: [], children: [] }}],
