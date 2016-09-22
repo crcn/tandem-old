@@ -233,5 +233,6 @@ export class JSRootSymbolTable extends SymbolTable {
     this.defineConstant("undefined", new SyntheticValueObject(undefined));
     this.defineConstant("Object", new SyntheticValueObject(Object));
     this.defineConstant("Date", new SyntheticValueObject(Date));
+    this.defineConstant("console", new SyntheticValueObject(console));
   }
 }

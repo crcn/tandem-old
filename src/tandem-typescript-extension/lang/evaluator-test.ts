@@ -110,7 +110,22 @@ describe(__filename + "#", () => {
 
       const inst = new A(100);
       export const v = inst.b;
-    `, { v: 100 }]
+    `, { v: 100 }],
+
+    [`
+      class ValueObject {
+        public  value: any;
+        constructor(value) {
+          this.value = value;
+        }
+        valueOf() {
+          return this.value;
+        }
+      }
+
+      const vo = new ValueObject("a");
+      export const value = vo.valueOf();
+      `, { value: "a" }]
 
   ].forEach(([scriptSource, exports]) => {
     it(`can evaluate ${scriptSource}`, () => {

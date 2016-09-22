@@ -109,16 +109,16 @@ export class SyntheticClass extends SyntheticObject implements IInstantiableSynt
     ctx.defineConstant("this", instance);
     for (const member of this._expression.members) {
       const value = evaluateTypescript(member, ctx).value;
-      console.log(value);
+      if (value == null) continue;
 
       if (member.kind === ts.SyntaxKind.Constructor) {
-        ctx.set("constructor", value);
+        ctx.set("ctor", value);
       } else if (member.name) {
         ctx.set((<ts.Identifier>member.name).text, value);
       }
     }
 
-    const ctor = <ISyntheticFunction>ctx.get("constructor");
+    const ctor = <ISyntheticFunction>ctx.get("ctor");
     if (ctor) {
       ctor.apply(ctx, args);
     }
