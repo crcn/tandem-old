@@ -223,10 +223,6 @@ export class SymbolTable extends SyntheticObject implements ISynthetic {
     }
   }
 
-  patch(source: SymbolTable) {
-
-  }
-
   getOwner(id: string) {
     return this.__properties.hasOwnProperty(id) ? this : this._parent ? this._parent.getOwner(id) : this;
   }

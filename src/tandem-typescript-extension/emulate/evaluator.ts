@@ -319,7 +319,7 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     const variableDeclaration = <ts.VariableDeclaration>node;
     return defineVariable(
       variableDeclaration.name,
-      variableDeclaration.initializer ? evaluate(variableDeclaration.initializer, context).value : undefined
+      variableDeclaration.initializer ? evaluate(variableDeclaration.initializer, context).value : new SyntheticValueObject(undefined)
     );
   }
 
