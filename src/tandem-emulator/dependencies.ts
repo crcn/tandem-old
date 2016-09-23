@@ -14,8 +14,8 @@ export class ModuleFactoryDependency extends ClassFactoryDependency {
     return [this.MODULE_FACTORIES_NS, envKind, mimeType].join("/");
   }
 
-  create(content: string): IModule {
-    return super.create(content);
+  create(fileName: string, content: string): IModule {
+    return super.create(fileName, content);
   }
 
   static find(envKind: EnvironmentKind, mimeType: string, dependencies: Dependencies) {

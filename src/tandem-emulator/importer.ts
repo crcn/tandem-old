@@ -64,7 +64,7 @@ export class ModuleImporter extends Observable implements IDisposable {
       context.set("__filename", new SyntheticValueObject(filePath));
       context.set("__dirname", new SyntheticValueObject(path.dirname(filePath)));
 
-      return await factory.create((await this._fileSystem.readFile(filePath)).content).evaluate(context);
+      return await factory.create(filePath, (await this._fileSystem.readFile(filePath)).content).evaluate(context);
     }));
   }
 

@@ -1,5 +1,6 @@
 
 import { WrapBus } from "mesh";
+import { Browser } from "tandem-emulator";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { pointerToolDependency } from "tandem-front-end/models/pointer-tool";
@@ -47,6 +48,9 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     if (this.app.workspace && this.app.workspace.file.path === filePath) return;
 
     this.logger.info("loading project file %s", filePath);
+
+    const browser = new Browser(this._dependencies);
+    await browser.open(filePath);
 
     const file = await File.open(filePath, this._dependencies) as DocumentFile<any>;
     file.sync();
