@@ -1,5 +1,5 @@
-export namespace EnvironmentKind {
-  export const JavaScript = 1;
-  export const DOM = JavaScript + 1;
-  export const CSS = DOM + 1;
-}
+export enum EnvironmentKind {
+  JavaScript = 1,
+  DOM = JavaScript + 1,
+  CSS = DOM + 1
+};

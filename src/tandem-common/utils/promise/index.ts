@@ -32,7 +32,6 @@ export class SingletonThenable extends Observable {
     } else if (this._success === false) {
       return reject(this._value);
     }
-
     this.observe(new WrapBus(() => this.then(resolve, reject)));
   }
 }

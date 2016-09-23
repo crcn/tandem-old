@@ -3,22 +3,22 @@ import * as rs from "./results";
 import { flatten } from "lodash";
 import { SyntheticFunction, SyntheticClass } from "./synthetic";
 import {
+  JSXElement,
   ISynthetic,
-  ISyntheticFunction,
-  IInstantiableSynthetic,
-  SyntheticObject,
   SymbolTable,
   ArrayEntity,
   NativeFunction,
-  SyntheticValueObject,
-  JSXElement,
-  mapEntityAsNative,
+  SyntheticObject,
   mapNativeAsEntity,
   JSRootSymbolTable,
+  mapEntityAsNative,
   JSXAttributeEntity,
+  ISyntheticFunction,
+  SyntheticValueObject,
+  IInstantiableSynthetic,
 } from "tandem-emulator";
 
-function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
+function evaluate(node: ts.Node, context: SymbolTable): any {
 
   switch (node.kind) {
     case ts.SyntaxKind.Block: return evaluateBlock();
@@ -60,17 +60,16 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
     default: throw new Error(`Cannot evaluate Typescript node kind ${node.getText()}:${node.kind}.`);
   }
 
-  function evaluateSourceFile() {
+  async function evaluateSourceFile() {
     const sourceFile = <ts.SourceFile>node;
     const exports = new SymbolTable();
-    sourceFile.statements.forEach((statement) => {
 
-      const result = evaluate(statement, context) as rs.DeclarationResult;
-
+    for (const statement of sourceFile.statements) {
+      const result = (await evaluate(statement, context)) as rs.DeclarationResult;
       if (shouldExport(statement)) {
         exportDeclarations(result, exports);
       }
-    });
+    }
 
     return new rs.ExportsResult(exports);
   }
@@ -104,8 +103,30 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
     );
   }
 
-  function evaluateImportDeclaration() {
+  async function evaluateImportDeclaration() {
     const importDeclaration = <ts.ImportDeclaration>node;
+    const require = <ISyntheticFunction>context.get("require");
+    const imports = await require.apply(context, [evaluate(importDeclaration.moduleSpecifier, context).value]);
+
+    const nameBindings = importDeclaration.importClause.namedBindings;
+    const name         = importDeclaration.importClause.name;
+
+    // import a from "./source"
+    if (name) {
+        context.defineConstant(name.text, imports.get("default"));
+
+    // import { b, c } from "./source";
+    } else if (nameBindings.kind === ts.SyntaxKind.NamedImports) {
+      for (const nameBinding of (<ts.NamedImports>nameBindings).elements) {
+        const propertyName = nameBinding.name.text;
+        context.defineConstant(propertyName, imports.get(propertyName));
+      }
+
+    // import * as s from "./source""
+    } else if (nameBindings.kind === ts.SyntaxKind.NamespaceImport) {
+      context.defineConstant((<ts.NamespaceImport>nameBindings).name.text, imports);
+    }
+
     return new rs.VoidResult();
   }
 
@@ -382,7 +403,7 @@ function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
 
 window["ts"] = ts;
 
-export const evaluateTypescript = function(node: ts.Node, context?: SymbolTable) {
+export const evaluateTypescript = function(node: ts.Node, context?: SymbolTable): any {
 
   if (!context) {
     context = context || new JSRootSymbolTable();

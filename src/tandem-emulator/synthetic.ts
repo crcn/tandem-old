@@ -125,7 +125,18 @@ export class NativeFunction extends SyntheticValueObject<Function> implements IS
     super(value);
   }
   apply(context: ISynthetic, args: Array<ISynthetic> = []) {
-    return mapNativeAsEntity(this.value.apply(mapEntityAsNative(context), args.map(mapEntityAsNative)));
+    const result = this.value.apply(mapEntityAsNative(context), args.map(mapEntityAsNative));
+
+    // thenable
+    if (result && result.then) {
+      return new Promise((resolve, reject) => {
+        result.then((result) => {
+          resolve(mapNativeAsEntity(result));
+        }, reject);
+      });
+    }
+
+    return mapNativeAsEntity(result);
   }
   createInstance(args: Array<ISynthetic>) {
     const instance = new SyntheticValueObject(Object.create(this.value.prototype));

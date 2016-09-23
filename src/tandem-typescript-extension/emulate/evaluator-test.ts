@@ -1,6 +1,8 @@
-import { expect } from "chai";
 import * as ts from "typescript";
+import { expect } from "chai";
+import { timeout } from "tandem-common/test";
 import { evaluateTypescript } from "./evaluator";
+import { SymbolTable, NativeFunction, SyntheticObject, SyntheticValueObject } from "tandem-emulator";
 
 describe(__filename + "#", () => {
 
@@ -144,16 +146,23 @@ describe(__filename + "#", () => {
       `, { value: "a" }]
 
   ].forEach(([scriptSource, exports]) => {
-    it(`can evaluate ${scriptSource}`, () => {
+    it(`can evaluate ${scriptSource}`, async () => {
       const ast = parse(<string>scriptSource);
-      const resultExports = evaluateTypescript(ast).value;
+      const resultExports = (await evaluateTypescript(ast)).value;
       const json = resultExports.toJSON();
       expect(json).to.eql(exports);
     });
   });
 
   it("can import documents", async () => {
-    const ast = parse(`import { b } from "./test; export const a = b;`);
-    const result = evaluateTypescript(ast).value.toJSON();
+    const ast = parse(`import { b } from "./test"; export const a = b;`);
+    const context = new SymbolTable();
+    context.set("require", new NativeFunction(async function(fileName: string) {
+      return new SyntheticObject({
+        b: new SyntheticValueObject("c")
+      });
+    }));
+    const result = (await evaluateTypescript(ast, context)).value.toJSON();
+    expect(result.a).to.equal("c");
   });
 });

@@ -6,7 +6,7 @@ export interface IModule {
 }
 
 export abstract class BaseModule<T extends ISynthetic> {
-  constructor(readonly fileName: string, private _content: string) {
+  constructor(readonly fileName: string, protected _content: string) {
 
   }
 

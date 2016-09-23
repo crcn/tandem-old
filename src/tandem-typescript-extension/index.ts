@@ -6,7 +6,7 @@ import {
   tsFileFactoryDependency
 } from "./models";
 
-export * from "./lang";
+export * from "./emulate";
 export * from "./models";
 export const typescriptExtensionDependency = [
 
