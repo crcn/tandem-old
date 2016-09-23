@@ -1,6 +1,5 @@
 import { MimeTypes } from "../constants";
-import * as ts from "typescript";
-import { evaluateTypescript } from "./evaluator";
+import { TSJSModule } from "./js-module";
 import {
   BaseModule,
   SymbolTable,
@@ -8,14 +7,16 @@ import {
   ModuleFactoryDependency,
 } from "tandem-emulator";
 
-class TSDOMModule extends BaseModule<any> {
-  private _ast: ts.Node;
+export class TSDOMModule extends BaseModule<any> {
+  private _module: TSJSModule;
   constructor(fileName: string, content: string) {
     super(fileName, content);
-    this._ast = ts.createSourceFile(fileName, content, ts.ScriptTarget.ES6);
+    this._module = new TSJSModule(fileName, content);
   }
   async evaluate(context: SymbolTable) {
-    return await evaluateTypescript(this._ast, context);
+
+    // TODO -- attach to context.element or context.document
+    return this._module.evaluate(context);
   }
 }
 

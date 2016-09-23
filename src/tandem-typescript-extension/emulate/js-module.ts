@@ -1,5 +1,22 @@
-// import { BaseModule, SyntheticObject } from "tandem-emulator";
+import * as ts from "typescript";
+import { MimeTypes } from "../constants";
+import { evaluateTypescript } from "./evaluator";
+import {
+  BaseModule,
+  SymbolTable,
+  EnvironmentKind,
+  ModuleFactoryDependency,
+} from "tandem-emulator";
 
-// export class JSTSModule extends BaseModule<SyntheticObject> {
-//   // evaluate()
-// }
+export class TSJSModule extends BaseModule<any> {
+  private _ast: ts.Node;
+  constructor(fileName: string, content: string) {
+    super(fileName, content);
+    this._ast = ts.createSourceFile(fileName, content, ts.ScriptTarget.ES6);
+  }
+  async evaluate(context: SymbolTable) {
+    return await evaluateTypescript(this._ast, context);
+  }
+}
+
+export const tsJsModuleFactoryDependency = new ModuleFactoryDependency(EnvironmentKind.JavaScript, MimeTypes.TS, TSJSModule);
