@@ -58,7 +58,7 @@ export class ModuleImporter extends Observable implements IDisposable {
     // necessary for cases where we don't want a module to be loaded in, such as react
     const shimFactroy = ModuleShimFactoryDependency.find(envKind, filePath, this._dependencies);
 
-    filePath = this.resolve(filePath);
+    filePath = this.resolve(filePath, relativePath);
 
     return this._modules[envKind + filePath] || (this._modules[envKind + filePath] = new SingletonThenable(async () => {
 

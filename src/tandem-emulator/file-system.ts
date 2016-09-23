@@ -36,6 +36,7 @@ export class FileSystem implements IFileSystem {
   }
 
   async readFile(path: string) {
+    console.log("read", path);
     return ReadFileAction.execute({ path }, this._bus);
   }
 

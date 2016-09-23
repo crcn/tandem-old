@@ -52,6 +52,8 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     const browser = new Browser(this._dependencies);
     await browser.open(filePath);
 
+    return;
+
     const file = await File.open(filePath, this._dependencies) as DocumentFile<any>;
     file.sync();
 

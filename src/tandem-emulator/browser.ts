@@ -1,4 +1,5 @@
 import * as sift from "sift";
+import { debounce } from "lodash";
 import { ModuleImporter } from "./importer";
 import { EnvironmentKind } from "./environment";
 import { SyntheticDocument } from "./dom";
@@ -41,8 +42,9 @@ export class Browser {
   }
 
   protected onImportedFileChange(action: Action) {
-
-    // re-open the doc
-    this.open(this._currentFileName);
+    this.reopen();
   }
+
+  // throttle in case the user is typing really really fast
+  private reopen = debounce((() => this.open(this._currentFileName)), 10);
 }

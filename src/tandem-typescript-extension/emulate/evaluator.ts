@@ -64,7 +64,7 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
 
   async function evaluateSourceFile() {
     const sourceFile = <ts.SourceFile>node;
-    const exports = new SymbolTable();
+    const exports = new SyntheticObject();
 
     for (const statement of sourceFile.statements) {
       const result = (await evaluate(statement, context)) as rs.DeclarationResult;
@@ -110,23 +110,28 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     const require = <ISyntheticFunction>context.get("import");
     const imports = await require.apply(context, [new SyntheticNumber(EnvironmentKind.JavaScript), evaluate(importDeclaration.moduleSpecifier, context).value]);
 
-    const nameBindings = importDeclaration.importClause.namedBindings;
-    const name         = importDeclaration.importClause.name;
+    if (importDeclaration.importClause) {
 
-    // import a from "./source"
-    if (name) {
-        context.defineConstant(name.text, imports.get("default"));
+      const nameBindings = importDeclaration.importClause.namedBindings;
+      const name         = importDeclaration.importClause.name;
 
-    // import { b, c } from "./source";
-    } else if (nameBindings.kind === ts.SyntaxKind.NamedImports) {
-      for (const nameBinding of (<ts.NamedImports>nameBindings).elements) {
-        const propertyName = nameBinding.name.text;
-        context.defineConstant(propertyName, imports.get(propertyName));
+      // import a from "./source"
+      if (name) {
+          context.defineConstant(name.text, imports.get("default"));
+
+      // import { b, c } from "./source";
+      } else if (nameBindings) {
+        if (nameBindings.kind === ts.SyntaxKind.NamedImports) {
+          for (const nameBinding of (<ts.NamedImports>nameBindings).elements) {
+            const propertyName = nameBinding.name.text;
+            context.defineConstant(propertyName, imports.get(propertyName));
+          }
+
+        // import * as s from "./source""
+        } else if (nameBindings.kind === ts.SyntaxKind.NamespaceImport) {
+          context.defineConstant((<ts.NamespaceImport>nameBindings).name.text, imports);
+        }
       }
-
-    // import * as s from "./source""
-    } else if (nameBindings.kind === ts.SyntaxKind.NamespaceImport) {
-      context.defineConstant((<ts.NamespaceImport>nameBindings).name.text, imports);
     }
 
     return new rs.VoidResult();

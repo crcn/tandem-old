@@ -1,14 +1,16 @@
-export namespace SyntheticKind {
-  export const Native = 1;
-  export const Function = Native + 1;
-  export const SymbolTable = Function + 1;
-  export const JSXElement = SymbolTable + 1;
-  export const JSXAttribute = JSXElement + 1;
-  export const Object = JSXAttribute + 1;
+import { IPatchable, IComparable } from "tandem-common";
+
+export enum SyntheticKind {
+  Native = 1,
+  Function = Native + 1,
+  SymbolTable = Function + 1,
+  JSXElement = SymbolTable + 1,
+  JSXAttribute = JSXElement + 1,
+  Object = JSXAttribute + 1
 }
 
-export interface ISynthetic {
-  kind: number;
+export interface ISynthetic extends IPatchable, IComparable {
+  kind: SyntheticKind;
   get(propertyName: string): ISynthetic;
   set(propertyName: string, value: ISynthetic);
   toJSON();
@@ -55,11 +57,22 @@ function mapFunctionEntityAsNative(value: ISyntheticFunction) {
   };
 }
 
-export class SyntheticObject implements ISynthetic {
+export abstract class BaseSynthetic implements ISynthetic {
+  abstract kind: SyntheticKind;
+  abstract get(propertyName: string): ISynthetic;
+  abstract set(propertyName: string, value: ISynthetic): void;
+  abstract patch(source: ISynthetic): void;
+  abstract toJSON(): Object;
+  compare(value: ISynthetic) {
+    return Number(this.constructor === value.constructor);
+  }
+}
+
+export class SyntheticObject extends BaseSynthetic {
 
   kind = SyntheticKind.Object;
-  constructor(private __properties: any = {}) {
-
+  constructor(protected __properties: any = {}) {
+    super();
   }
 
   get(propertyName: string) {
@@ -82,6 +95,28 @@ export class SyntheticObject implements ISynthetic {
     return new SyntheticObject(Object.create(prototype.__properties));
   }
 
+  patch(source: SyntheticObject) {
+
+    // update / insert
+    for (const propertyName in this.__properties) {
+      const oldSyntheticValue = this.get(propertyName);
+      const newSyntheticValue = source.get(propertyName);
+      if (oldSyntheticValue.compare(newSyntheticValue)) {
+        oldSyntheticValue.patch(newSyntheticValue);
+      } else {
+        this.set(propertyName, newSyntheticValue);
+      }
+    }
+
+    // remove
+    for (const propertyName in source.__properties) {
+      const newSyntheticValue = source.get(propertyName);
+      if (this.__properties[propertyName] == null) {
+        this.set(propertyName, newSyntheticValue);
+      }
+    }
+  }
+
   toJSON() {
     const object = {};
     for (const propertyName in this.__properties) {
@@ -90,11 +125,16 @@ export class SyntheticObject implements ISynthetic {
     return object;
   }
 }
-export class SyntheticValueObject<T> implements ISyntheticValueObject {
+export class SyntheticValueObject<T> extends BaseSynthetic implements ISyntheticValueObject {
   kind = SyntheticKind.Native;
   private _vars: any;
-  constructor(readonly value: T) {
+  constructor(public value: T) {
+    super();
     this._vars = {};
+  }
+
+  patch(source: SyntheticValueObject<T>) {
+    this.value = source.value;
   }
 
   get(propertyName: string) {
@@ -154,38 +194,41 @@ export class NativeFunction extends SyntheticValueObject<Function> implements IS
   }
 }
 
-export class SymbolTable implements ISynthetic {
+export class SymbolTable extends SyntheticObject implements ISynthetic {
 
   kind = SyntheticKind.SymbolTable;
-  private _vars: any;
 
   constructor(private _parent?: SymbolTable) {
-    this._vars = {};
+    super();
   }
 
   get(id: string) {
-    return this._vars[id] != null ? this._vars[id] : this._parent ? this._parent.get(id) : new SyntheticValueObject(undefined);
+    return this.__properties[id] != null ? this.__properties[id] : this._parent ? this._parent.get(id) : new SyntheticValueObject(undefined);
   }
 
   defineVariable(id: string, value?: ISynthetic) {
-    this._vars[id] = value;
+    this.__properties[id] = value;
   }
 
   defineConstant(id: string, value: ISynthetic) {
-    this._vars[id] = value;
+    this.__properties[id] = value;
   }
 
   set(id: string, value: ISynthetic) {
     const context = this.getOwner(id);
     if (context === this) {
-      this._vars[id] = value;
+      this.__properties[id] = value;
     } else {
       context.set(id, value);
     }
   }
 
+  patch(source: SymbolTable) {
+
+  }
+
   getOwner(id: string) {
-    return this._vars.hasOwnProperty(id) ? this : this._parent ? this._parent.getOwner(id) : this;
+    return this.__properties.hasOwnProperty(id) ? this : this._parent ? this._parent.getOwner(id) : this;
   }
 
   createChild() {
@@ -194,8 +237,8 @@ export class SymbolTable implements ISynthetic {
 
   toJSON() {
     const value = {};
-    for (const propertyName in this._vars) {
-      const propertyValue = <ISynthetic>this._vars[propertyName];
+    for (const propertyName in this.__properties) {
+      const propertyValue = <ISynthetic>this.__properties[propertyName];
       value[propertyName] = (propertyValue ? propertyValue.toJSON() : undefined);
     }
     return value;
