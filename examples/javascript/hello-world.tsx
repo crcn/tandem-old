@@ -1,4 +1,11 @@
+
 import * as React from "react";
-export const render = (props) => {
-  return <span>{props}</span>;
-};
+
+class Component extends React.Component {
+  render() {
+    return <span>{this}</span>;
+  }
+}
+
+const component = new Component();
+console.log("Hello!!f", component.render());

@@ -5,6 +5,7 @@
     "chai": "registry:dt/chai#3.4.0+20160601211834",
     "chalk": "registry:dt/chalk#0.4.0+20160317120654",
     "classnames": "registry:dt/classnames#0.0.0+20160316155526",
+    "compression": "registry:dt/compression#0.0.0+20160501162003",
     "cors": "registry:dt/cors#0.0.0+20160708202709",
     "diff": "registry:dt/diff#0.0.0+20160809232139",
     "esprima": "registry:dt/esprima#2.1.0+20160830194246",

@@ -29,6 +29,7 @@ export class FileSystem implements IFileSystem {
 
   private _bus: IActor;
   private _fileWatchers: any;
+  private _urls: any = {};
 
   constructor(dependencies: Dependencies) {
     this._bus = MainBusDependency.getInstance(dependencies);
@@ -36,8 +37,10 @@ export class FileSystem implements IFileSystem {
   }
 
   async readFile(path: string) {
-    console.log("read", path);
-    return ReadFileAction.execute({ path }, this._bus);
+    return {
+      path: path,
+      content: await (await fetch(`/asset/${encodeURIComponent(path)}`)).text()
+    };
   }
 
   async writeFile(path: string, content: string) {

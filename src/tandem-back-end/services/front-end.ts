@@ -6,8 +6,9 @@ import * as cors from "cors";
 import { Logger } from "tandem-common/logger";
 import * as express from "express";
 import { IOService } from "tandem-common/services";
+import * as compression from "compression";
 import { IApplication } from "tandem-common/application";
-import { DSUpsertAction, LoadAction } from "tandem-common/actions";
+import { DSUpsertAction, LoadAction, ReadFileAction } from "tandem-common/actions";
 import { loggable, inject } from "tandem-common/decorators";
 import * as createSocketIOServer from "socket.io";
 import { BaseApplicationService } from "tandem-common/services";
@@ -20,7 +21,7 @@ import { Response } from "mesh";
 @loggable()
 export default class FrontEndService extends BaseApplicationService<IApplication> {
 
-  private _server:any;
+  private _server: express.Express;
   private _ioService:IOService<IApplication>;
   private _port:number;
   private _socket:any;
@@ -51,8 +52,20 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   async _loadStaticRoutes() {
 
     this._server.use(cors());
+    this._server.use(compression());
+
+    this._server.get("/asset/:uri", async (req, res, next) => {
+
+      const uri = decodeURIComponent(req.params.uri);
+      const { content } = await ReadFileAction.execute({ path: uri }, this.bus);
+
+
+      // need to sandbox this in project directory
+      res.send(content);
+    });
 
     var entryPath = this.app.config.frontEndEntry;
+    console.log(entryPath);
 
     var scriptName = path.basename(entryPath);
 
@@ -109,10 +122,10 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   }
 
   async _loadSocketServer() {
-    this._server = createSocketIOServer();
-    this._server.set("origins", "*domain.com*:*");
-    this._server.on("connection", this._ioService.addConnection);
-    this._server.listen(this._socket);
+    const io = createSocketIOServer() as any;
+    io.set("origins", "*domain.com*:*");
+    io.on("connection", this._ioService.addConnection);
+    io.listen(this._socket);
   }
 }
 

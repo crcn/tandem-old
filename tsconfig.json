@@ -14,7 +14,8 @@
     "*-test",
     "old",
     "lib",
-    "integrations"
+    "integrations",
+    "examples"
   ],
   "filesGlob": [
       "./src/**/*.ts",
