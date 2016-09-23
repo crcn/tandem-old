@@ -1,11 +1,2 @@
-
-import * as React from "react";
-
-class Component extends React.Component {
-  render() {
-    return <span>{this}</span>;
-  }
-}
-
-const component = new Component();
-console.log("Hello!!f", component.render());
+const element = <div>{"hello!!a1"}</div>;
+console.log(element,"abcdefg");

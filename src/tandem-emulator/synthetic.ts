@@ -59,6 +59,7 @@ function mapFunctionEntityAsNative(value: ISyntheticFunction) {
 
 export abstract class BaseSynthetic implements ISynthetic {
   abstract kind: SyntheticKind;
+  protected _patchedTo: BaseSynthetic;
   abstract get(propertyName: string): ISynthetic;
   abstract set(propertyName: string, value: ISynthetic): void;
   abstract patch(source: ISynthetic): void;
@@ -100,8 +101,19 @@ export class SyntheticObject extends BaseSynthetic {
     // update / insert
     for (const propertyName in this.__properties) {
       const oldSyntheticValue = this.get(propertyName);
-      const newSyntheticValue = source.get(propertyName);
+      let newSyntheticValue = source.get(propertyName);
+
+      // if the new synthetic value has already been patched, then
+      // this is a reference, so set -- TODO - seems a bit janky. Possibly
+      // check for something more explicit such as SyntheticReference. Also possibly
+      // enforce that synthetics can only have one owner object.
+      if (newSyntheticValue._patchedTo) {
+        this.set(propertyName, newSyntheticValue._patchedTo);
+        continue;
+      }
+
       if (oldSyntheticValue.compare(newSyntheticValue)) {
+        newSyntheticValue._patchedTo = newSyntheticValue;
         oldSyntheticValue.patch(newSyntheticValue);
       } else {
         this.set(propertyName, newSyntheticValue);
