@@ -43,7 +43,8 @@ describe(__filename + "#", () => {
   it("can open a new file", async () => {
     fs.addMockFile({ path: "a.test", content: "abc", mtime: Date.now() });
     const browser = new Browser(deps);
-    const window = await browser.open("a.test");
+    const window = browser.window;
+    await browser.open("a.test");
     expect(window.get("i").value).to.equal(1);
   });
 });

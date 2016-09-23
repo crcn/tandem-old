@@ -16,11 +16,17 @@ export class Browser {
   private _fileChangeObserver: IActor;
   private _fileSystem: IFileSystem;
   private _importer: ModuleImporter;
+  private _window: SymbolTable;
   private _currentFileName: string;
 
   constructor(private _dependencies: Dependencies) {
     this._bus = new BrokerBus();
     this._fileSystem     = new CachedFileSystem(new FileSystem(_dependencies));
+    this._window = new SymbolTable();
+  }
+
+  get window(): SymbolTable {
+    return this._window;
   }
 
   async open(fileName: string) {
@@ -30,6 +36,7 @@ export class Browser {
     }
 
     this._currentFileName = fileName;
+
     const window = new SymbolTable();
     window.set("window", window);
     window.set("document", new SyntheticDocument());
@@ -38,7 +45,8 @@ export class Browser {
     await this._importer.require(EnvironmentKind.DOM, fileName);
     this._importer.observe(new WrapBus(this.onImportedFileChange.bind(this)));
 
-    return window;
+    // patch the window memory to maintain existing references
+    this._window.patch(window);
   }
 
   protected onImportedFileChange(action: Action) {
