@@ -1,11 +1,14 @@
+import { SymbolTable, ISynthetic } from "./synthetic";
+
 export interface IModule {
-  evaluate(context: any): any;
+  readonly fileName: string;
+  evaluate(context: SymbolTable): any;
 }
 
-export abstract class BaseModule<T extends any> {
-  constructor(private _content: string) {
+export abstract class BaseModule<T extends ISynthetic> {
+  constructor(readonly fileName: string, private _content: string) {
 
   }
 
-  abstract evaluate(context: any): T
+  abstract evaluate(context: SymbolTable): T
 }

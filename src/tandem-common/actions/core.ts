@@ -4,13 +4,6 @@ import { ITreeNode } from "tandem-common/tree";
 import { IDisposable } from "tandem-common/object";
 export { Action };
 
-export interface Change {
-  target: any;
-  property: string;
-  value: any;
-  oldValue: any;
-}
-
 export class TreeNodeAction extends Action {
   static readonly NODE_ADDED    = "nodeAdded";
   static readonly NODE_REMOVED  = "nodeRemoved";
@@ -18,7 +11,7 @@ export class TreeNodeAction extends Action {
 
 export class ChangeAction extends Action {
   static readonly CHANGE = "change";
-  constructor(readonly changes: Array<Change>) {
+  constructor() {
     super(ChangeAction.CHANGE);
   }
 }

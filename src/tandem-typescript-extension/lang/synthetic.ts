@@ -11,9 +11,7 @@ import {
   SyntheticValueObject,
   ISyntheticValueObject,
   IInstantiableSynthetic,
-} from "tandem-common/lang/synthetic";
-
-export * from "tandem-common/lang/synthetic";
+} from "tandem-emulator";
 
 export abstract class SyntheticBaseFunction extends SyntheticObject implements ISyntheticFunction {
   kind = SyntheticKind.Function;

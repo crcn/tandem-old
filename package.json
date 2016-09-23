@@ -59,8 +59,6 @@
     "webpack-notifier": "^1.4.0"
   },
   "dependencies": {
-    "@angular/compiler": "^2.0.0",
-    "@angular/core": "^2.0.0",
     "classnames": "^2.2.5",
     "cors": "^2.7.1",
     "diff": "^2.2.3",
@@ -76,6 +74,7 @@
     "mousetrap": "^1.6.0",
     "node-sass": "^3.8.0",
     "postcss": "^5.1.2",
+    "postcss-scss": "^0.3.0",
     "pretty": "^1.0.0",
     "react": "^15.2.1",
     "react-addons-pure-render-mixin": "^15.3.1",

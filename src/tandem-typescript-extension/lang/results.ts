@@ -1,4 +1,4 @@
-import * as synthetic from "./synthetic";
+import { ISynthetic } from "tandem-emulator";
 
 export namespace ResultKind {
   export const Return = 1;
@@ -23,14 +23,14 @@ export class VoidResult extends Result<undefined> {
   }
 }
 
-export class DeclarationResult extends Result<synthetic.ISynthetic> {
-  constructor(readonly name: string, value: synthetic.ISynthetic) {
+export class DeclarationResult extends Result<ISynthetic> {
+  constructor(readonly name: string, value: ISynthetic) {
     super(ResultKind.Declaration, value);
   }
 }
 
-export class LiteralResult extends Result<synthetic.ISynthetic> {
-  constructor(value: synthetic.ISynthetic) {
+export class LiteralResult extends Result<ISynthetic> {
+  constructor(value: ISynthetic) {
     super(ResultKind.Literal, value);
   }
 }
@@ -41,8 +41,8 @@ export class ReturnResult extends Result<any> {
   }
 }
 
-export class ExportsResult extends Result<synthetic.ISynthetic> {
-  constructor(value: synthetic.ISynthetic) {
+export class ExportsResult extends Result<ISynthetic> {
+  constructor(value: ISynthetic) {
     super(ResultKind.Exports, value);
   }
 }

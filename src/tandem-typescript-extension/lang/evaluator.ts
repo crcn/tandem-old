@@ -16,7 +16,7 @@ import {
   mapNativeAsEntity,
   JSRootSymbolTable,
   JSXAttributeEntity,
-} from "tandem-common/lang/synthetic";
+} from "tandem-emulator";
 
 function evaluate(node: ts.Node, context: SymbolTable): rs.Result<any> {
 

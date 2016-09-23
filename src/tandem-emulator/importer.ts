@@ -1,60 +1,76 @@
 import { IModule } from "./module";
 import { WrapBus } from "mesh";
 import { IFileSystem } from "./file-system";
-import { IEnvironment } from "./environment";
+import { SymbolTable } from "./synthetic";
+import { ModuleImporterAction } from "./actions";
 import { ModuleFactoryDependency } from "./dependencies";
-import { Dependencies, MimeTypeDependency, Observable, Action } from "tandem-common";
+import {
+  Action,
+  Observable,
+  IDisposable,
+  Dependencies,
+  SingletonThenable,
+  MimeTypeDependency,
+} from "tandem-common";
 
-export class ModuleImporter {
-  private _moduleLoaders: {};
+import {
+  NativeFunction,
+  SyntheticValueObject
+} from "./synthetic";
 
-  constructor(private _environmentKind: number, private readonly  _fileSystem: IFileSystem, private _dependencies: Dependencies) { }
+import * as path from "path";
 
-  async importModule(path: string, mimeType?: string): Promise<IModule> {
-    if (this._moduleLoaders[path]) return await this._moduleLoaders[path].load();
-    const factory = ModuleFactoryDependency.find(this._environmentKind, mimeType || MimeTypeDependency.lookup(path, this._dependencies), this._dependencies);
-    this._moduleLoaders[path] = new ModuleLoader(this._fileSystem, path, factory);
-    return this.importModule(path, mimeType);
-  }
-}
+export class ModuleImporter extends Observable implements IDisposable {
+  private _modules: any;
+  private _fileWatchers: Array<IDisposable> = [];
 
-class ModuleLoader extends Observable {
-  private _module: IModule;
-  private _loading: boolean;
-
-  constructor(private _fileSystem: IFileSystem, private _path: string, private _moduleFactory: ModuleFactoryDependency) {
+  constructor(private readonly  _fileSystem: IFileSystem, private _dependencies: Dependencies, private _context: SymbolTable) {
     super();
+    this._modules = {};
   }
 
-  get module(): IModule {
-    return this._module;
-  }
+  resolve(filePath: string, relativePath?: string) {
 
-  async load(): Promise<IModule> {
-
-    if (this._module) {
-      return this._module;
+    // TODO - check module directories here
+    if (relativePath && filePath.charAt(0) !== "/") {
+      filePath = path.join(path.dirname(relativePath), filePath);
     }
 
-    if (this._loading) {
-      return new Promise<IModule>((resolve, reject) => {
+    return filePath;
+  }
 
-        const observer = new WrapBus((action) => {
-          if (action.type !== "loaded") return;
-          this.unobserve(observer);
-          resolve(this._module);
-        });
+  require(envKind: number, filePath: string, mimeType?: string, relativePath?: string): Promise<any> {
 
-        this.observe(observer);
+    filePath = this.resolve(filePath);
+
+    return this._modules[envKind + filePath] || (this._modules[envKind + filePath] = new SingletonThenable(async () => {
+      const factory = ModuleFactoryDependency.find(envKind, mimeType || MimeTypeDependency.lookup(filePath, this._dependencies), this._dependencies);
+
+      const fileWatcher = this._fileSystem.watchFile(filePath, () => {
+        this._fileWatchers.splice(this._fileWatchers.indexOf(fileWatcher), 1);
+        fileWatcher.dispose();
+        this.notify(new ModuleImporterAction(ModuleImporterAction.IMPORTED_MODULE_FILE_CHANGE));
       });
-    }
-    this._loading = true;
-    const { content } = await this._fileSystem.readFile(this._path);
-    this._module = this._moduleFactory.create(content);
 
-    // TODO
-    // this._module.evaluate()
-    this._loading = false;
-    this.notify(new Action("loaded"));
+      this._fileWatchers.push(fileWatcher);
+
+      const context = this._context.createChild();
+      context.set("require", new NativeFunction(async (reqPath: string) => {
+        return this.require(envKind, reqPath, undefined, filePath);
+      }));
+
+      // make thie importer accessible
+      context.set("__importer", new SyntheticValueObject(this));
+      context.set("__filename", new SyntheticValueObject(filePath));
+      context.set("__dirname", new SyntheticValueObject(path.dirname(filePath)));
+
+      return await factory.create((await this._fileSystem.readFile(filePath)).content).evaluate(context);
+    }));
+  }
+
+  dispose() {
+    for (const fileWatcher of this._fileWatchers) {
+      fileWatcher.dispose();
+    }
   }
 }
