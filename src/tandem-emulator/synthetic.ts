@@ -111,6 +111,15 @@ export class SyntheticValueObject<T> implements ISyntheticValueObject {
   }
 }
 
+export class SyntheticString extends SyntheticValueObject<string> {
+
+}
+
+
+export class SyntheticNumber extends SyntheticValueObject<number> {
+
+}
+
 export class ArrayEntity<T extends ISynthetic> extends SyntheticValueObject<Array<T>> {
   constructor(value: Array<T>) {
     super(value);

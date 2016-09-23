@@ -157,7 +157,7 @@ describe(__filename + "#", () => {
   it("can import documents", async () => {
     const ast = parse(`import { b } from "./test"; export const a = b;`);
     const context = new SymbolTable();
-    context.set("require", new NativeFunction(async function(fileName: string) {
+    context.set("import", new NativeFunction(async function(fileName: string) {
       return new SyntheticObject({
         b: new SyntheticValueObject("c")
       });

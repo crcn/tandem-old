@@ -1,4 +1,5 @@
-const element = document.createElement("div");
-element.innerHTML = "Hello World";
+import * as React from "react";
 
-document.body.appendChild(element);
+export const element = <div> </div>;
+
+console.log("Hello World");

@@ -1,11 +1,12 @@
 import * as sift from "sift";
-import { SymbolTable } from "./synthetic";
 import { ModuleImporter } from "./importer";
 import { EnvironmentKind } from "./environment";
+import { SyntheticDocument } from "./dom";
 import { WrapBus, AcceptBus } from "mesh";
 import { ModuleImporterAction } from "./actions";
 import { BrokerBus, IActor, Action } from "tandem-common";
 import { Dependencies, MainBusDependency } from "tandem-common/dependencies";
+import { SymbolTable, SyntheticValueObject } from "./synthetic";
 import { IFileSystem, FileSystem, CachedFileSystem } from "./file-system";
 
 export class Browser {
@@ -30,6 +31,8 @@ export class Browser {
     this._currentFileName = fileName;
     const window = new SymbolTable();
     window.set("window", window);
+    window.set("document", new SyntheticDocument());
+    window.set("console", new SyntheticValueObject(console));
     this._importer = new ModuleImporter(this._fileSystem, this._dependencies, window);
     await this._importer.require(EnvironmentKind.DOM, fileName);
     this._importer.observe(new WrapBus(this.onImportedFileChange.bind(this)));

@@ -7,8 +7,10 @@ import {
   ISynthetic,
   SymbolTable,
   ArrayEntity,
+  EnvironmentKind,
   NativeFunction,
   SyntheticObject,
+  SyntheticNumber,
   mapNativeAsEntity,
   JSRootSymbolTable,
   mapEntityAsNative,
@@ -105,8 +107,8 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
 
   async function evaluateImportDeclaration() {
     const importDeclaration = <ts.ImportDeclaration>node;
-    const require = <ISyntheticFunction>context.get("require");
-    const imports = await require.apply(context, [evaluate(importDeclaration.moduleSpecifier, context).value]);
+    const require = <ISyntheticFunction>context.get("import");
+    const imports = await require.apply(context, [new SyntheticNumber(EnvironmentKind.JavaScript), evaluate(importDeclaration.moduleSpecifier, context).value]);
 
     const nameBindings = importDeclaration.importClause.namedBindings;
     const name         = importDeclaration.importClause.name;
