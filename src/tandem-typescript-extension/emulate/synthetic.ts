@@ -2,7 +2,7 @@ import * as ts from "typescript";
 import { evaluateTypescript } from "./evaluator";
 import {
   ISynthetic,
-  ArrayEntity,
+  SyntheticArray,
   SymbolTable,
   SyntheticKind,
   NativeFunction,
@@ -60,7 +60,7 @@ export class SyntheticFunction extends SyntheticBaseFunction implements ISynthet
 
     this._expression.parameters.forEach((parameter, i) => {
       const varName = (<ts.Identifier>parameter.name).text;
-      const value   = (parameter.dotDotDotToken ? new ArrayEntity(args.slice(i)) : args[i]) || new SyntheticValueObject(undefined);
+      const value   = (parameter.dotDotDotToken ? new SyntheticArray(args.slice(i)) : args[i]) || new SyntheticValueObject(undefined);
       ctxArgs.set(varName, value);
       bodyContext.defineVariable(
         varName,
@@ -92,7 +92,7 @@ class SyntheticApplyFunction extends SyntheticBaseFunction {
     super("apply");
   }
   apply(context: ISynthetic, args: Array<ISynthetic> = []) {
-    return this._target.apply(args[0], (<ArrayEntity<any>>args[1]).value);
+    return this._target.apply(args[0], (<SyntheticArray<any>>args[1]).value);
   }
 }
 

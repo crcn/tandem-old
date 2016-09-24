@@ -6,7 +6,7 @@ import {
   JSXElement,
   ISynthetic,
   SymbolTable,
-  ArrayEntity,
+  SyntheticArray,
   EnvironmentKind,
   NativeFunction,
   SyntheticObject,
@@ -156,8 +156,8 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
 
     return new rs.LiteralResult(new JSXElement(
       evaluated,
-      new ArrayEntity(attributes.map((attribute) => evaluate(attribute, context).value)),
-      new ArrayEntity(children.map((child) => evaluate(child, context).value))
+      new SyntheticArray(attributes.map((attribute) => evaluate(attribute, context).value)),
+      new SyntheticArray(children.map((child) => evaluate(child, context).value))
     ));
   }
 
@@ -261,7 +261,7 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
   function evaluateArrayLiteralExpression() {
     const arrayLiteralExpression = <ts.ArrayLiteralExpression>node;
     const value = arrayLiteralExpression.elements.map((element) => evaluate(element, context).value);
-    return new rs.LiteralResult(new ArrayEntity(value));
+    return new rs.LiteralResult(new SyntheticArray(value));
   }
 
   function evaluateClassDeclaration() {

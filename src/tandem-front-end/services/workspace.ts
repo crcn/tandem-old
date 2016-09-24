@@ -4,7 +4,7 @@ import { Browser } from "tandem-emulator";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { pointerToolDependency } from "tandem-front-end/models/pointer-tool";
-import { Workspace, DocumentFile } from "tandem-front-end/models";
+import { Workspace, DocumentFile, Editor2 } from "tandem-front-end/models";
 import { EditorToolFactoryDependency } from "tandem-front-end/dependencies";
 import { SetToolAction, ZoomAction, DocumentFileAction } from "tandem-front-end/actions";
 
@@ -51,6 +51,8 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
     const browser = new Browser(this._dependencies);
     await browser.open(filePath);
+
+    this.app.editor = new Editor2(browser);
 
     return;
 

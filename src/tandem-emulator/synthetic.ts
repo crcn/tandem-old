@@ -1,4 +1,5 @@
 import { IPatchable, IComparable } from "tandem-common";
+import { uniq } from "lodash";
 
 export enum SyntheticKind {
   Native = 1,
@@ -33,7 +34,7 @@ export function mapNativeAsEntity(value: any) {
   switch (typeof value) {
     case "function": return new NativeFunction(value);
     case "object":
-      if (Array.isArray(value)) return new ArrayEntity(value.map(mapNativeAsEntity));
+      if (Array.isArray(value)) return new SyntheticArray(value.map(mapNativeAsEntity));
       const properties = {};
       for (const propertyName in value) {
         properties[propertyName] = mapNativeAsEntity(value[propertyName]);
@@ -59,7 +60,19 @@ function mapFunctionEntityAsNative(value: ISyntheticFunction) {
 
 export abstract class BaseSynthetic implements ISynthetic {
   abstract kind: SyntheticKind;
+  private __syntheticMembers: Array<string>;
+
+  constructor() {
+    this.initialize();
+  }
+
   protected _patchedTo: BaseSynthetic;
+  protected initialize() {
+    for (const syntheticPropertyName of (this.__syntheticMembers || [])) {
+      const value = this[syntheticPropertyName];
+      this.set(syntheticPropertyName, typeof value === "function" ? new SyntheticMemberFunction(this, value) : new SyntheticValueObject(value));
+    }
+  }
   abstract get(propertyName: string): ISynthetic;
   abstract set(propertyName: string, value: ISynthetic): void;
   abstract patch(source: ISynthetic): void;
@@ -68,12 +81,15 @@ export abstract class BaseSynthetic implements ISynthetic {
     return Number(this.constructor === value.constructor);
   }
 }
-
 export class SyntheticObject extends BaseSynthetic {
 
   kind = SyntheticKind.Object;
-  constructor(protected __properties: any = {}) {
+  protected __properties: any;
+  constructor(properties?: any) {
     super();
+    if (properties != null) {
+      Object.assign(this.__properties, properties);
+    }
   }
 
   get(propertyName: string) {
@@ -82,6 +98,11 @@ export class SyntheticObject extends BaseSynthetic {
 
   set(propertyName: string, value: ISynthetic) {
     this.__properties[propertyName] = value;
+  }
+
+  protected initialize() {
+    this.__properties = {};
+    super.initialize();
   }
 
   static defineProperty(target: SyntheticObject, propertyName: string, attributes: PropertyDescriptor) {
@@ -163,6 +184,22 @@ export class SyntheticValueObject<T> extends BaseSynthetic implements ISynthetic
   }
 }
 
+class SyntheticMemberFunction extends SyntheticValueObject<Function> implements ISyntheticFunction {
+  kind = SyntheticKind.Function;
+  constructor(private _context: ISynthetic, fn: Function) {
+    super(fn);
+  }
+  createInstance(args: Array<ISynthetic>) {
+    return null; // TODO
+  }
+  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
+    return this.value.apply(context, args) || new SyntheticValueObject(undefined);
+  }
+  toJSON() {
+    return undefined;
+  }
+}
+
 export class SyntheticString extends SyntheticValueObject<string> {
 
 }
@@ -172,8 +209,8 @@ export class SyntheticNumber extends SyntheticValueObject<number> {
 
 }
 
-export class ArrayEntity<T extends ISynthetic> extends SyntheticValueObject<Array<T>> {
-  constructor(value: Array<T>) {
+export class SyntheticArray<T extends ISynthetic> extends SyntheticValueObject<Array<T>> {
+  constructor(value: Array<T> = []) {
     super(value);
   }
 
@@ -257,7 +294,7 @@ export class JSXElement extends SyntheticValueObject<Object> {
 
   kind = SyntheticKind.JSXElement;
 
-  constructor(name: ISynthetic, attributes: ArrayEntity<ISynthetic>, children: ArrayEntity<ISynthetic>) {
+  constructor(name: ISynthetic, attributes: SyntheticArray<ISynthetic>, children: SyntheticArray<ISynthetic>) {
     super({
       name: name,
       attributes: attributes,
@@ -301,4 +338,8 @@ export class JSRootSymbolTable extends SymbolTable {
     this.defineConstant("Date", new SyntheticValueObject(Date));
     this.defineConstant("console", new SyntheticValueObject(console));
   }
+}
+
+export function synthetic(proto: any, propertyName: String) {
+  proto.__syntheticMembers = uniq((proto.__syntheticMembers || []).concat(propertyName));
 }

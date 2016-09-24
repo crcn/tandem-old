@@ -1,5 +1,6 @@
 import * as sift from "sift";
 import { debounce } from "lodash";
+import { DOMRenderer } from "./renderer";
 import { ModuleImporter } from "./importer";
 import { EnvironmentKind } from "./environment";
 import { SyntheticDocument } from "./dom";
@@ -19,10 +20,16 @@ export class Browser {
   private _window: SymbolTable;
   private _currentFileName: string;
 
+  readonly renderer: DOMRenderer;
+
   constructor(private _dependencies: Dependencies) {
     this._bus = new BrokerBus();
     this._fileSystem     = new CachedFileSystem(new FileSystem(_dependencies));
     this._window = new SymbolTable();
+
+    // TODO - renderer should be separate from Browser
+    // instance to support other devices
+    this.renderer = new DOMRenderer(this);
   }
 
   get window(): SymbolTable {

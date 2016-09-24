@@ -1,6 +1,7 @@
-import { SyntheticObject, SyntheticString } from "../synthetic";
-import { SyntheticElement } from "./element";
 import { SyntheticNode } from "./node";
+import { SyntheticElement } from "./element";
+import { SyntheticTextNode } from "./text-node";
+import { synthetic, SyntheticObject, SyntheticString } from "../synthetic";
 
 export class SyntheticDocument extends SyntheticNode {
 
@@ -11,15 +12,15 @@ export class SyntheticDocument extends SyntheticNode {
     this.appendChild(this.body = this.createElement(new SyntheticString("body")));
   }
 
-  createElement(tagName: SyntheticString) {
+  @synthetic createElement(tagName: SyntheticString) {
     return new SyntheticElement(tagName.value);
   }
 
-  createTextNode(value: SyntheticString) {
-
+  @synthetic createTextNode(nodeValue: SyntheticString) {
+    return new SyntheticTextNode(nodeValue);
   }
 
-  createComment(value: SyntheticString) {
+  @synthetic createComment(value: SyntheticString) {
 
   }
 }
