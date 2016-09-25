@@ -1,5 +1,8 @@
-import { IPatchable, IComparable } from "tandem-common";
 import { uniq } from "lodash";
+import { SyntheticAction } from "../actions";
+import { IPatchable, IComparable, Observable, diffArray } from "tandem-common";
+
+// TODO - synthetic immetubale value object -- booleans, numbers, and strings
 
 export enum SyntheticKind {
   Native = 1,
@@ -11,10 +14,12 @@ export enum SyntheticKind {
 }
 
 export interface ISynthetic extends IPatchable, IComparable {
+  readonly id: number;
   kind: SyntheticKind;
   get(propertyName: string): ISynthetic;
   set(propertyName: string, value: ISynthetic);
   toJSON();
+  toString();
 }
 
 export interface IInstantiableSynthetic extends ISynthetic {
@@ -29,53 +34,68 @@ export interface ISyntheticValueObject extends ISynthetic {
   value: any;
 }
 
-export function mapNativeAsEntity(value: any) {
+export function mapNativeAsSynthetic(value: any) {
   if (value && value.kind) return value;
   switch (typeof value) {
     case "function": return new NativeFunction(value);
     case "object":
-      if (Array.isArray(value)) return new SyntheticArray(value.map(mapNativeAsEntity));
+      if (Array.isArray(value)) return new SyntheticArray(value.map(mapNativeAsSynthetic));
       const properties = {};
       for (const propertyName in value) {
-        properties[propertyName] = mapNativeAsEntity(value[propertyName]);
+        properties[propertyName] = mapNativeAsSynthetic(value[propertyName]);
       }
       return new SyntheticObject(properties);
     default: return new SyntheticValueObject(value);
   }
 }
 
-export function mapEntityAsNative(value: ISynthetic) {
+export function mapSyntheticAsNative(value: ISynthetic) {
   switch (value.kind) {
-    case SyntheticKind.Function: return mapFunctionEntityAsNative(<ISyntheticFunction>value);
+    case SyntheticKind.Function: return mapFunctionSyntheticAsNative(<ISyntheticFunction>value);
     default: return (<SyntheticValueObject<any>>value).toJSON();
   }
 }
 
-function mapFunctionEntityAsNative(value: ISyntheticFunction) {
+function mapFunctionSyntheticAsNative(value: ISyntheticFunction) {
   return function(...args: Array<any>) {
-    const result = (<ISyntheticFunction>value).apply(mapNativeAsEntity(this), args.map(mapNativeAsEntity));
-    return mapEntityAsNative(result);
+    const result = (<ISyntheticFunction>value).apply(mapNativeAsSynthetic(this), args.map(mapNativeAsSynthetic));
+    return mapSyntheticAsNative(result);
   };
 }
 
-export abstract class BaseSynthetic implements ISynthetic {
+let _i: number = 0;
+function createId() {
+  return ++_i;
+}
+
+export abstract class BaseSynthetic extends Observable implements ISynthetic {
   abstract kind: SyntheticKind;
   private __syntheticMembers: Array<string>;
 
+  readonly id: number;
+
   constructor() {
+    super();
     this.initialize();
+    this.id = createId();
   }
 
-  protected _patchedTo: BaseSynthetic;
+  public patchTarget: BaseSynthetic;
   protected initialize() {
     for (const syntheticPropertyName of (this.__syntheticMembers || [])) {
       const value = this[syntheticPropertyName];
-      this.set(syntheticPropertyName, typeof value === "function" ? new SyntheticMemberFunction(this, value) : new SyntheticValueObject(value));
+      this.set(syntheticPropertyName, typeof value === "function" ? new SyntheticWrapperFunction(value) : new SyntheticValueObject(value));
     }
   }
+
+  public patch(source: BaseSynthetic) {
+    this.applyPatch(source);
+    this.notify(new SyntheticAction(SyntheticAction.PATCHED));
+  }
+
   abstract get(propertyName: string): ISynthetic;
   abstract set(propertyName: string, value: ISynthetic): void;
-  abstract patch(source: ISynthetic): void;
+  protected abstract applyPatch(source: ISynthetic): void;
   abstract toJSON(): Object;
   compare(value: ISynthetic) {
     return Number(this.constructor === value.constructor);
@@ -92,8 +112,8 @@ export class SyntheticObject extends BaseSynthetic {
     }
   }
 
-  get(propertyName: string) {
-    return this.__properties[propertyName];
+  get<T extends ISynthetic>(propertyName: string): T {
+    return this.__properties[propertyName] || new SyntheticValueObject(undefined);
   }
 
   set(propertyName: string, value: ISynthetic) {
@@ -117,24 +137,32 @@ export class SyntheticObject extends BaseSynthetic {
     return new SyntheticObject(Object.create(prototype.__properties));
   }
 
-  patch(source: SyntheticObject) {
+  protected applyPatch(source: SyntheticObject) {
 
     // update / insert
     for (const propertyName in this.__properties) {
       const oldSyntheticValue = this.get(propertyName);
-      let newSyntheticValue = source.get(propertyName);
+      let newSyntheticValue = source.get(propertyName) as BaseSynthetic;
+
+      if (!newSyntheticValue) {
+        console.log(source, propertyName);
+      }
 
       // if the new synthetic value has already been patched, then
       // this is a reference, so set -- TODO - seems a bit janky. Possibly
       // check for something more explicit such as SyntheticReference. Also possibly
       // enforce that synthetics can only have one owner object.
-      if (newSyntheticValue._patchedTo) {
-        this.set(propertyName, newSyntheticValue._patchedTo);
+      if (newSyntheticValue.patchTarget) {
+        this.set(propertyName, newSyntheticValue.patchTarget);
         continue;
       }
 
+      if (!oldSyntheticValue.compare) {
+        console.log(this, oldSyntheticValue);
+      }
+
       if (oldSyntheticValue.compare(newSyntheticValue)) {
-        newSyntheticValue._patchedTo = newSyntheticValue;
+        newSyntheticValue.patchTarget = newSyntheticValue;
         oldSyntheticValue.patch(newSyntheticValue);
       } else {
         this.set(propertyName, newSyntheticValue);
@@ -166,16 +194,20 @@ export class SyntheticValueObject<T> extends BaseSynthetic implements ISynthetic
     this._vars = {};
   }
 
-  patch(source: SyntheticValueObject<T>) {
+  toString() {
+    return String(this.value);
+  }
+
+  applyPatch(source: SyntheticValueObject<T>) {
     this.value = source.value;
   }
 
   get(propertyName: string) {
-    return mapNativeAsEntity(this.value[propertyName]);
+    return mapNativeAsSynthetic(this.value[propertyName]);
   }
 
   set(propertyName: string, value: ISynthetic) {
-    this.value[propertyName] = mapEntityAsNative(value);
+    this.value[propertyName] = mapSyntheticAsNative(value);
   }
 
   // deprecated -- entities need to be serializable
@@ -184,9 +216,9 @@ export class SyntheticValueObject<T> extends BaseSynthetic implements ISynthetic
   }
 }
 
-class SyntheticMemberFunction extends SyntheticValueObject<Function> implements ISyntheticFunction {
+export class SyntheticWrapperFunction extends SyntheticValueObject<Function> implements ISyntheticFunction {
   kind = SyntheticKind.Function;
-  constructor(private _context: ISynthetic, fn: Function) {
+  constructor(fn: Function) {
     super(fn);
   }
   createInstance(args: Array<ISynthetic>) {
@@ -214,27 +246,50 @@ export class SyntheticArray<T extends ISynthetic> extends SyntheticValueObject<A
     super(value);
   }
 
+  applyPatch(source: SyntheticArray<T>) {
+    const changes = diffArray(this.value, source.value, ((a, b) => a.compare(b)));
+    for (const rm of changes.remove) {
+      const index = this.value.indexOf(rm);
+      this.value.splice(index, 1);
+    }
+
+    for (const add of changes.add) {
+      this.value.splice(add.index, 0, add.value);
+    }
+
+    for (const [oldItem, newItem, newIndex] of changes.update) {
+      const oldIndex = this.value.indexOf(oldItem);
+      if (oldIndex !== newIndex) {
+        this.value.splice(oldIndex, 1);
+        this.value.splice(newIndex, 1, oldItem);
+      }
+      oldItem.patch(newItem);
+    }
+  }
+
   toJSON() {
-    return this.value.map(mapEntityAsNative);
+    return this.value.map(mapSyntheticAsNative);
   }
 }
+
 export class NativeFunction extends SyntheticValueObject<Function> implements ISyntheticFunction {
   constructor(value: Function) {
     super(value);
   }
+
   apply(context: ISynthetic, args: Array<ISynthetic> = []) {
-    const result = this.value.apply(mapEntityAsNative(context), args.map(mapEntityAsNative));
+    const result = this.value.apply(mapSyntheticAsNative(context), args.map(mapSyntheticAsNative));
 
     // thenable
     if (result && result.then) {
       return new Promise((resolve, reject) => {
         result.then((result) => {
-          resolve(mapNativeAsEntity(result));
+          resolve(mapNativeAsSynthetic(result));
         }, reject);
       });
     }
 
-    return mapNativeAsEntity(result);
+    return mapNativeAsSynthetic(result);
   }
   createInstance(args: Array<ISynthetic>) {
     const instance = new SyntheticValueObject(Object.create(this.value.prototype));
@@ -290,7 +345,7 @@ export class SymbolTable extends SyntheticObject implements ISynthetic {
   }
 }
 
-export class JSXElement extends SyntheticValueObject<Object> {
+export class SyntheticJSXElement extends SyntheticObject {
 
   kind = SyntheticKind.JSXElement;
 
@@ -302,16 +357,28 @@ export class JSXElement extends SyntheticValueObject<Object> {
     });
   }
 
+  get name(): SyntheticValueObject<string> {
+    return this.get<SyntheticValueObject<string>>("name");
+  }
+
+  get attributes(): SyntheticArray<SyntheticJSXAttribute> {
+    return this.get<SyntheticArray<SyntheticJSXAttribute>>("attributes");
+  }
+
+  get children(): SyntheticArray<SyntheticJSXElement|SyntheticString> {
+    return this.get<SyntheticArray<SyntheticJSXElement|SyntheticString>>("children");
+  }
+
   toJSON() {
     return {
-      name: this.value["name"].toJSON(),
-      attributes: this.value["attributes"].toJSON(),
-      children: this.value["children"].toJSON()
+      name: this.name.toJSON(),
+      attributes: this.attributes.toJSON(),
+      children: this.children.toJSON()
     };
   }
 }
 
-export class JSXAttributeEntity extends SyntheticValueObject<Object> {
+export class SyntheticJSXAttribute extends SyntheticObject {
   kind = SyntheticKind.JSXAttribute;
   constructor(name: ISynthetic, value: ISynthetic) {
     super({
@@ -320,10 +387,18 @@ export class JSXAttributeEntity extends SyntheticValueObject<Object> {
     });
   }
 
+  get name(): SyntheticString {
+    return this.get<SyntheticString>("name");
+  }
+
+  get value(): ISynthetic {
+    return this.get("value");
+  }
+
   toJSON() {
     return {
-      name: this.value["name"].toJSON(),
-      value: this.value["value"].toJSON()
+      name: this.name.toJSON(),
+      value: this.value.toJSON()
     };
   }
 }

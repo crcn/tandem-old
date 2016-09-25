@@ -9,7 +9,7 @@ import { Workspace } from "tandem-front-end/models";
 export default class CenterComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace }, any> {
   render() {
     return (<div className="m-editor-center">
-      <EditorCommponent {...this.props} editor={this.props.workspace.editor} workspace={this.props.workspace} />
+      <EditorCommponent {...this.props} editor={this.props.app.editor}  />
     </div>);
   }
 }

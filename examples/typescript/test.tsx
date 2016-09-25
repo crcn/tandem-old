@@ -1,1 +1,1 @@
-document.body.appendChild(document.createTextNode("Hello"))
+export const renderMessage = (message) => <span>{message}</span>;

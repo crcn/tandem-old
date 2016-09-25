@@ -3,7 +3,8 @@ import { debounce } from "lodash";
 import { DOMRenderer } from "./renderer";
 import { ModuleImporter } from "./importer";
 import { EnvironmentKind } from "./environment";
-import { SyntheticDocument } from "./dom";
+import { renderSyntheticJSX } from "./synthetic";
+import { SyntheticDocument } from "./synthetic";
 import { WrapBus, AcceptBus } from "mesh";
 import { ModuleImporterAction } from "./actions";
 import { BrokerBus, IActor, Action } from "tandem-common";
@@ -48,9 +49,20 @@ export class Browser {
     window.set("window", window);
     window.set("document", new SyntheticDocument());
     window.set("console", new SyntheticValueObject(console));
+    window.set("renderJSX", renderSyntheticJSX);
     this._importer = new ModuleImporter(this._fileSystem, this._dependencies, window);
-    await this._importer.require(EnvironmentKind.DOM, fileName);
     this._importer.observe(new WrapBus(this.onImportedFileChange.bind(this)));
+
+    // since evaluation happens as the user is modifying the docuent, errors will
+    // definitely occur -- don't like that break other things
+    try {
+      await this._importer.require(EnvironmentKind.DOM, fileName);
+    } catch (e) {
+
+      // TODO - do something with this
+      console.error(e);
+      return;
+    }
 
     // patch the window memory to maintain existing references
     this._window.patch(window);

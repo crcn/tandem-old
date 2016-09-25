@@ -6,3 +6,10 @@ export class ModuleImporterAction extends Action {
     super(type);
   }
 }
+
+export class SyntheticAction extends Action {
+  static readonly PATCHED = "patched";
+  constructor(type: string) {
+    super(type);
+  }
+}

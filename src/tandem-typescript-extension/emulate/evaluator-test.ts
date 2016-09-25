@@ -94,6 +94,8 @@ describe(__filename + "#", () => {
     [`const render = (a) => <div>{a}</div>; export const element = render("b");`, { element: { name: "div", attributes: [], children: ["b"] }}],
     [`const render = (...rest) => <ul>{rest.map(i => <li>{i}</li>)}</ul>; export const element = render(1, 2);`, { element: { name: "ul", attributes: [], children: [[{ name: "li", attributes: [], children: [1] }, { name: "li", attributes: [], children: [2] }]] }}],
     [`const Component = () => null; const render = () => <Component />; export const element = render();`, { element: { name: "Component", attributes: [], children: [] }}],
+    [`<div>{}</div>`, {}],
+    [`<div style></div>`, {}],
 
     // Synthetic Object
     [`export const v = Object.create({ a: 1 })`, { v: { a: 1 } }],

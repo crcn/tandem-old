@@ -15,7 +15,7 @@ import {
   KeyboardAction,
 } from "tandem-front-end/actions";
 
-export default class EditorStageLayersComponent extends React.Component<{ editor: Editor, workspace: Workspace, dependencies: Dependencies, zoom: number }, any> {
+export default class EditorStageLayersComponent extends React.Component<{ app: any, editor: Editor, workspace: Workspace, dependencies: Dependencies, zoom: number }, any> {
 
   private _mousePosition: IPoint;
   private _toolsHidden: any;
@@ -229,7 +229,7 @@ export default class EditorStageLayersComponent extends React.Component<{ editor
         className="m-editor-stage-canvas"
         style={style}>
           <div style={innerStyle} className="noselect" data-previewroot>
-              { entity ? <PreviewLayerComponent {...this.props} entity={entity} /> : undefined }
+              <PreviewLayerComponent {...this.props} />
               {this._toolsHidden || !entity ? undefined : <ToolsLayerComponent entity={entity} {...this.props} />}
           </div>
       </div>

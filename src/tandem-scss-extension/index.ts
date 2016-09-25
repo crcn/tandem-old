@@ -1,4 +1,7 @@
+import { MimeTypes } from "./constants";
 import { scssFileDependency } from "./models";
+import { MimeTypeDependency } from "tandem-common";
+import { jsSCSSModuleFactoryDependency } from "./emulate";
 
 import {
   scssImportEntityFactoryDependency
@@ -12,7 +15,11 @@ export const scssExtensionDependency = [
   // entities
   scssImportEntityFactoryDependency,
 
+  jsSCSSModuleFactoryDependency,
+
+  new MimeTypeDependency("scss", MimeTypes.SCSS)
 ];
 
-export * from "./models";
 export * from "./lang";
+export * from "./models";
+export * from "./emulate";

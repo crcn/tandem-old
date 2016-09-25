@@ -3,7 +3,7 @@ import * as rs from "./results";
 import { flatten } from "lodash";
 import { SyntheticFunction, SyntheticClass } from "./synthetic";
 import {
-  JSXElement,
+  SyntheticJSXElement,
   ISynthetic,
   SymbolTable,
   SyntheticArray,
@@ -11,10 +11,8 @@ import {
   NativeFunction,
   SyntheticObject,
   SyntheticNumber,
-  mapNativeAsEntity,
   JSRootSymbolTable,
-  mapEntityAsNative,
-  JSXAttributeEntity,
+  SyntheticJSXAttribute,
   ISyntheticFunction,
   SyntheticValueObject,
   IInstantiableSynthetic,
@@ -26,7 +24,7 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     case ts.SyntaxKind.Block: return evaluateBlock();
     case ts.SyntaxKind.JsxText: return evaluateJSXText();
     case ts.SyntaxKind.SourceFile: return evaluateSourceFile();
-    case ts.SyntaxKind.JsxElement: return evaluateJSXElement();
+    case ts.SyntaxKind.JsxElement: return evaluateSyntheticJSXElement();
     case ts.SyntaxKind.PropertyDeclaration: return evaluatePropertyDeclaration();
     case ts.SyntaxKind.MethodDeclaration: return evaluateMethodDeclaration();
     case ts.SyntaxKind.Identifier: return evaluateIdentifier();
@@ -94,12 +92,12 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
 
   function evaluateJSXExpression() {
     const jsxExpression = <ts.JsxExpression>node;
-    return evaluate(jsxExpression.expression, context);
+    return jsxExpression.expression ? evaluate(jsxExpression.expression, context) : new rs.LiteralResult(new SyntheticValueObject(undefined));
   }
 
   function evaluateJSXSelfClosingElement() {
     const jsxElement = <ts.JsxSelfClosingElement>node;
-    return createJSXElementResult(
+    return createSyntheticJSXElementResult(
       jsxElement.tagName,
       jsxElement.attributes
     );
@@ -137,16 +135,16 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     return new rs.VoidResult();
   }
 
-  function evaluateJSXElement() {
+  function evaluateSyntheticJSXElement() {
     const jsxElement = <ts.JsxElement>node;
-    return createJSXElementResult(
+    return createSyntheticJSXElementResult(
       jsxElement.openingElement.tagName,
       jsxElement.openingElement.attributes,
       jsxElement.children
     );
   }
 
-  function createJSXElementResult(nodeName: ts.Node, attributes: Array<ts.Node>, children: Array<ts.Node> = []) {
+  function createSyntheticJSXElementResult(nodeName: ts.Node, attributes: Array<ts.Node>, children: Array<ts.Node> = []) {
 
     // check for Component
     let evaluated = evaluate(nodeName, context).value;
@@ -154,7 +152,7 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
       evaluated = getIdentifierEntity(nodeName);
     }
 
-    return new rs.LiteralResult(new JSXElement(
+    return new rs.LiteralResult(new SyntheticJSXElement(
       evaluated,
       new SyntheticArray(attributes.map((attribute) => evaluate(attribute, context).value)),
       new SyntheticArray(children.map((child) => evaluate(child, context).value))
@@ -172,9 +170,9 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
 
   function evaluateJSXAttribute() {
     const jsxAttribute = <ts.JsxAttribute>node;
-    return new rs.LiteralResult(new JSXAttributeEntity(
+    return new rs.LiteralResult(new SyntheticJSXAttribute(
       getIdentifierEntity(jsxAttribute.name),
-      evaluate(jsxAttribute.initializer, context).value
+      jsxAttribute.initializer ? evaluate(jsxAttribute.initializer, context).value : new SyntheticValueObject(true)
     ));
   }
 

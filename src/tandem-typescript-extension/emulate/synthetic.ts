@@ -40,7 +40,7 @@ export abstract class SyntheticBaseFunction extends SyntheticObject implements I
   abstract apply(context: ISynthetic, args: Array<ISynthetic>);
 
   createInstance(args: Array<ISynthetic>): ISynthetic {
-    const instance = SyntheticObject.create(this.get("prototype"));
+    const instance = SyntheticObject.create(this.get<SyntheticObject>("prototype"));
     this.apply(instance, args);
     return instance;
   }
@@ -79,38 +79,38 @@ export class SyntheticFunction extends SyntheticBaseFunction implements ISynthet
 }
 
 class SyntheticCallFunction extends SyntheticBaseFunction {
-  constructor(private _target: ISyntheticFunction) {
+  constructor(private __target: ISyntheticFunction) {
     super("name");
   }
   apply(context: ISynthetic, args: Array<ISynthetic> = []) {
-    return this._target.apply(args[0], args.slice(1));
+    return this.__target.apply(args[0], args.slice(1));
   }
 }
 
 class SyntheticApplyFunction extends SyntheticBaseFunction {
-  constructor(private _target: ISyntheticFunction) {
+  constructor(private __target: ISyntheticFunction) {
     super("apply");
   }
   apply(context: ISynthetic, args: Array<ISynthetic> = []) {
-    return this._target.apply(args[0], (<SyntheticArray<any>>args[1]).value);
+    return this.__target.apply(args[0], (<SyntheticArray<any>>args[1]).value);
   }
 }
 
 class SyntheticBindFunction extends SyntheticBaseFunction {
-  constructor(private _target: ISyntheticFunction) {
+  constructor(private __target: ISyntheticFunction) {
     super("bind");
   }
   apply(context: ISynthetic, args: Array<ISynthetic> = []) {
-    return new SyntheticBoundFunction(this._target, args);
+    return new SyntheticBoundFunction(this.__target, args);
   }
 }
 
 class SyntheticBoundFunction extends SyntheticBaseFunction {
-  constructor(private _target: ISyntheticFunction, private _args: Array<ISynthetic>) {
+  constructor(private __target: ISyntheticFunction, private _args: Array<ISynthetic>) {
     super();
   }
   apply(context: ISynthetic, args: Array<ISynthetic> = []) {
-    return this._target.apply(this._args[0], this._args.slice(1).concat(args));
+    return this.__target.apply(this._args[0], this._args.slice(1).concat(args));
   }
 }
 
