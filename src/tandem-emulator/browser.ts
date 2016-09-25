@@ -50,6 +50,8 @@ export class Browser {
     window.set("document", new SyntheticDocument());
     window.set("console", new SyntheticValueObject(console));
     window.set("renderJSX", renderSyntheticJSX);
+
+    // todo only have one instance here
     this._importer = new ModuleImporter(this._fileSystem, this._dependencies, window);
     this._importer.observe(new WrapBus(this.onImportedFileChange.bind(this)));
 
