@@ -1,9 +1,9 @@
 import "./hello-world.scss";
 
-const render = (message) => {
-  return <div class="item">hello { message }</div>;
+const render = (a, b) => {
+  return <div class="item">hello {a} {b}</div>;
 }
 
 const element = document.createElement("div");
 document.body.appendChild(element);
-renderJSX(render("blarg"), element);
+renderJSX(render("a", "b"), element);

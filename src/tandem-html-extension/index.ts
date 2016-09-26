@@ -18,6 +18,9 @@ import { cssAtRuleLayerLabelComponentDependency } from "./components/css-atrule-
 import { cssCommentLayerLabelComponentDependency } from "./components/css-comment-layer-label";
 import { cssDeclarationLayerLabelComponentDependency } from "./components/css-declaration-layer-label";
 
+// runtime
+import { domHTMLModuleFactoryDependency } from "./runtime";
+
 // token components
 import { cssUnitEditorTokenComponentFactoryDependency } from "./components/css-unit-editor-token";
 import { cssNumericEditorTokenComponentFactoryDependency } from "./components/css-numeric-editor-token";
@@ -60,6 +63,9 @@ export const htmlExtensionDependency = [
   cssAtRuleLayerLabelComponentDependency,
   cssCommentLayerLabelComponentDependency,
   cssColorTokenComponentFactoryDependency,
+
+  // runtime
+  domHTMLModuleFactoryDependency,
 
   // stage tool components
   cssHighlightElementToolComponentFactoryDependency,

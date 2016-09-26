@@ -1,4 +1,4 @@
-import { Browser, ISynthetic } from "tandem-emulator";
+import { Browser, ISynthetic } from "tandem-runtime";
 
 export class Editor2 {
 

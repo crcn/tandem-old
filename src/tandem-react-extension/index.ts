@@ -1,6 +1,6 @@
 // TODO - ADD doc search
 
-import { reactModuleShimFactoryDependency } from "./emulate/shim";
+import { reactModuleShimFactoryDependency } from "./runtime/shim";
 
 export const reactExtensionDependency = [
   reactModuleShimFactoryDependency

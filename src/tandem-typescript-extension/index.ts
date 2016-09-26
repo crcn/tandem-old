@@ -5,13 +5,13 @@ import { MimeTypeDependency } from "tandem-common";
 import {
   tsJsModuleFactoryDependency,
   tsDomModuleFactoryDependency,
-} from "./emulate";
+} from "./runtime";
 
 import {
   tsFileFactoryDependency
 } from "./models";
 
-export * from "./emulate";
+export * from "./runtime";
 export * from "./models";
 export const typescriptExtensionDependency = [
 

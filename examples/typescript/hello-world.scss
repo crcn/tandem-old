@@ -2,7 +2,15 @@
   color: white;
   font-size:20px;
   margin: 20px;
-  background-color: #F0F;
+  background-color: #FF6600;
+  border: 4px solid white;
   padding:20px;
   border-radius: 100px;
+}
+
+.item:before {
+  content: "<";
+}
+.item:after {
+  content: ">";
 }

@@ -1,6 +1,6 @@
 
 import { WrapBus } from "mesh";
-import { Browser } from "tandem-emulator";
+import { Browser } from "tandem-runtime";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { pointerToolDependency } from "tandem-front-end/models/pointer-tool";
