@@ -1,6 +1,6 @@
 import { IModule } from "./module";
-import { EnvironmentKind } from "./environment";
 import { ISynthetic } from "./synthetic";
+import { EnvironmentKind } from "./environment";
 import { ClassFactoryDependency, FactoryDependency, Dependencies } from "tandem-common";
 
 type moduleType = { new(fileName: string, content: any): IModule };

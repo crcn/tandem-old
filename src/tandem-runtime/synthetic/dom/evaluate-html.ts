@@ -1,9 +1,15 @@
 import {
   SymbolTable,
-  SyntheticNode,
   SyntheticString,
+} from "../core";
+
+import {
   SyntheticDocument,
-} from "tandem-runtime";
+} from "./document";
+
+import {
+  SyntheticNode,
+} from "./node";
 
 import {
   IHTMLExpression,
@@ -11,11 +17,9 @@ import {
   HTMLElementExpression,
   HTMLCommentExpression,
   HTMLTextExpression
-} from "./ast";
+} from "./html-ast";
 
-export function evaluateHTML(node: IHTMLExpression, context: SymbolTable): SyntheticNode {
-
-  const doc = context.get<SyntheticDocument>("document");
+export function evaluateHTML(node: IHTMLExpression, doc: SyntheticDocument): SyntheticNode {
 
   switch (node.kind) {
     case HTMLExpressionKind.ELEMENT   : return evaluateElement(node as any);
@@ -30,7 +34,7 @@ export function evaluateHTML(node: IHTMLExpression, context: SymbolTable): Synth
       element.setAttribute(new SyntheticString(attribute.name), new SyntheticString(attribute.value));
     }
     for (const child of node.childNodes) {
-      element.appendChild(evaluateHTML(child, context));
+      element.appendChild(evaluateHTML(child, doc));
     }
     return element;
   }
@@ -39,7 +43,7 @@ export function evaluateHTML(node: IHTMLExpression, context: SymbolTable): Synth
     const fragment = doc.createDocumentFragment();
 
     for (const child of node.childNodes) {
-      fragment.appendChild(evaluateHTML(child, context));
+      fragment.appendChild(evaluateHTML(child, doc));
     }
     return fragment;
   }

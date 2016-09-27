@@ -45,6 +45,6 @@ describe(__filename + "#", () => {
     const browser = new Browser(deps);
     const window = browser.window;
     await browser.open("a.test");
-    expect(window.get("i").value).to.equal(1);
+    expect(window.get<any>("i").value).to.equal(1);
   });
 });

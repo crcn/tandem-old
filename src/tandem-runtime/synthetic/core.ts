@@ -57,10 +57,10 @@ function createId() {
 
 export abstract class BaseSynthetic extends Observable implements ISynthetic {
   abstract kind: SyntheticKind;
-  private __syntheticMembers: Array<string>;
   private __currentNative: any;
 
   readonly id: number;
+  public patchTarget: BaseSynthetic;
 
   constructor() {
     super();
@@ -68,12 +68,7 @@ export abstract class BaseSynthetic extends Observable implements ISynthetic {
     this.id = createId();
   }
 
-  public patchTarget: BaseSynthetic;
   protected initialize() {
-    for (const syntheticPropertyName of (this.__syntheticMembers || [])) {
-      const value = this[syntheticPropertyName];
-      this.set(syntheticPropertyName, typeof value === "function" ? new SyntheticWrapperFunction(value) : new SyntheticValueObject(value));
-    }
   }
 
   public patch(source: BaseSynthetic) {
@@ -111,6 +106,7 @@ export class SyntheticObject extends BaseSynthetic {
 
   kind = SyntheticKind.Object;
   protected __properties: any;
+  private __syntheticMembers: Object;
   constructor(properties?: any) {
     super();
     if (properties != null) {
@@ -128,6 +124,18 @@ export class SyntheticObject extends BaseSynthetic {
 
   protected initialize() {
     this.__properties = {};
+    for (const syntheticPropertyName in (this.__syntheticMembers || {})) {
+      const descriptor = this.__syntheticMembers[syntheticPropertyName];
+      const value = descriptor["value"];
+      if (typeof value === "function") {
+        this.set(syntheticPropertyName, new SyntheticWrapperFunction(value));
+      } else {
+        SyntheticObject.defineProperty(this, syntheticPropertyName, {
+          get: descriptor.get ? descriptor.get.bind(this) : undefined,
+          set: descriptor.set ? descriptor.set.bind(this) : undefined
+        });
+      }
+    }
     super.initialize();
   }
 
@@ -434,6 +442,8 @@ export class JSRootSymbolTable extends SymbolTable {
   }
 }
 
-export function synthetic(proto: any, propertyName: String) {
-  proto.__syntheticMembers = uniq((proto.__syntheticMembers || []).concat(propertyName));
+export function synthetic(proto: any, propertyName: string, descriptor?: any): any {
+  proto.__syntheticMembers = Object.assign({}, proto.__syntheticMembers || {}, {
+    [propertyName]: descriptor
+  });
 }

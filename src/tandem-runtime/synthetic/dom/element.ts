@@ -1,5 +1,8 @@
+import { evaluateHTML } from "./evaluate-html";
+import { SyntheticDocument } from "./document";
+import { parse as parseHTML } from "./html-parser.peg";
 import { SyntheticNode, SyntheticContainerNode } from "./node";
-import { synthetic, SyntheticValueObject, SyntheticObject, SyntheticArray, ISynthetic } from "../core";
+import { synthetic, SyntheticValueObject, SyntheticString, SyntheticObject, SyntheticArray, ISynthetic } from "../core";
 
 class SyntheticAttribute extends SyntheticObject {
   constructor(name: SyntheticValueObject<string>, value: SyntheticValueObject<string>) {
@@ -39,8 +42,8 @@ interface ISyntheticElement {
 }
 
 export class SyntheticElement extends SyntheticContainerNode implements ISyntheticElement {
-  constructor(tagName: SyntheticValueObject<string>) {
-    super(tagName);
+  constructor(tagName: SyntheticValueObject<string>, doc: SyntheticDocument) {
+    super(tagName, doc);
     this.set("attributes", new SyntheticAttributes());
   }
 
@@ -48,7 +51,23 @@ export class SyntheticElement extends SyntheticContainerNode implements ISynthet
     return this.get<SyntheticAttributes>("attributes");
   }
 
-  get outerHTML() {
+  @synthetic
+  get innerHTML() {
+    return new SyntheticString(this.childNodes.value.map(child => child.outerHTML).join(""));
+  }
+
+  set innerHTML(value: SyntheticString) {
+
+    // TODO - value needs to be SyntheticString here
+    const ast = parseHTML(value.toString());
+    const node = evaluateHTML(ast, this.ownerDocument) as SyntheticContainerNode;
+
+    for (const child of node.childNodes.value) {
+      this.appendChild(child);
+    }
+  }
+
+  get outerHTML(): SyntheticString {
     const buffer = [
       "<", this.nodeName.value
     ];
@@ -57,9 +76,9 @@ export class SyntheticElement extends SyntheticContainerNode implements ISynthet
       buffer.push(` ${attribute.name}=${attribute.value}`);
     }
 
-    buffer.push(">", this.innerHTML, "</", this.nodeName.value, ">");
+    buffer.push(">", this.innerHTML.toString(), "</", this.nodeName.value, ">");
 
-    return buffer.join("");
+    return new SyntheticString(buffer.join(""));
   }
 
   @synthetic setAttribute(name: SyntheticValueObject<string>, value: ISynthetic) {

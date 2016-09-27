@@ -1,22 +1,22 @@
 import { WrapBus } from "mesh";
 import { SymbolTable } from "../core";
-import { SyntheticNodeAction } from "../../actions";
 import { IActor, Action } from "tandem-common";
-import { synthetic, SyntheticObject, SyntheticValueObject, SyntheticArray } from "../core";
+import { SyntheticDocument } from "./document";
+import { SyntheticNodeAction } from "../../actions";
+import { synthetic, SyntheticObject, SyntheticString, SyntheticValueObject, SyntheticArray } from "../core";
 
 // TODO - implement innerHTML parse
 export abstract class SyntheticNode extends SyntheticObject {
   private _parentNode: SyntheticNode;
-  private _childObserver: IActor;
 
-  constructor(nodeName: SyntheticValueObject<string>) {
+  constructor(nodeName: SyntheticValueObject<string>, public ownerDocument: SyntheticDocument) {
     super();
     this.set("nodeName", nodeName);
     this.set("childNodes", new SyntheticArray<SyntheticNode>());
   }
 
-  abstract get innerHTML();
-  abstract get outerHTML();
+  abstract get innerHTML(): SyntheticString;
+  abstract get outerHTML(): SyntheticString;
 
   get nodeName(): SyntheticValueObject<string> {
     return this.get<SyntheticValueObject<string>>("nodeName");
@@ -31,23 +31,15 @@ export abstract class SyntheticNode extends SyntheticObject {
   }
 
   @synthetic appendChild(node: SyntheticNode) {
+    if (node._parentNode) {
+      node._parentNode.removeChild(node);
+    }
     this.childNodes.value.push(node);
     node._parentNode = this;
-    if (!this._childObserver) {
-      this._childObserver = new WrapBus(this.onChildAction.bind(this));
-    }
-    node.observe(this._childObserver);
-    node.notify(new SyntheticNodeAction(SyntheticNodeAction.NODE_ADDED));
   }
 
   @synthetic removeChild(node: SyntheticNode) {
     const index = this.childNodes.value.indexOf(node);
-    if (index !== -1) {
-      this.childNodes.value.splice(index, 1);
-      node.notify(new SyntheticNodeAction(SyntheticNodeAction.NODE_REMOVED));
-      node._parentNode = undefined;
-      node.unobserve(this._childObserver);
-    }
   }
 
   protected onChildAction(action: Action) {
@@ -62,13 +54,6 @@ export abstract class SyntheticContainerNode extends SyntheticNode {
   }
 
   get innerHTML() {
-
-    const buffer = [];
-
-    for (const child of this.childNodes.value) {
-      buffer.push(child.outerHTML);
-    }
-
-    return buffer.join("");
+    return new SyntheticString(this.childNodes.value.map(child => child.outerHTML).join(""));
   }
 }

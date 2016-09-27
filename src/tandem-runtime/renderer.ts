@@ -45,7 +45,7 @@ export class DOMRenderer extends BaseRenderer {
     const body     = document.get("body") as SyntheticElement;
 
     // simple for now -- just reset the entire outer HTML
-    this.element.innerHTML = body.outerHTML;
+    this.element.innerHTML = body.outerHTML.toString();
 
     const rectangles: BoundingRect[] = [];
     for (const node of this.element.querySelectorAll("*")) {

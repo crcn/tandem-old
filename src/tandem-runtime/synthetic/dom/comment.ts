@@ -1,10 +1,11 @@
 import { SyntheticNode } from "./node";
+import { SyntheticDocument } from "./document";
 import { synthetic, SyntheticValueObject, SyntheticString } from "../core";
 
 export class SyntheticComment extends SyntheticNode {
 
-  constructor(nodeValue: SyntheticValueObject<string>) {
-    super(new SyntheticString("#comment"));
+  constructor(nodeValue: SyntheticValueObject<string>, doc: SyntheticDocument) {
+    super(new SyntheticString("#comment"), doc);
     this.set("nodeValue", nodeValue);
   }
 
@@ -13,6 +14,6 @@ export class SyntheticComment extends SyntheticNode {
   }
 
   get innerHTML()  {
-    return `<!-- ${this.get("nodeValue").toString()} -->`;
+    return new SyntheticString(`<!-- ${this.get("nodeValue").toString()} -->`);
   }
 }

@@ -8,9 +8,7 @@ import { synthetic, SyntheticObject, SyntheticString } from "../core";
 export class SyntheticDocument extends SyntheticContainerNode {
 
   constructor() {
-
-    // TODO - get cu
-    super(new SyntheticString("#document"));
+    super(new SyntheticString("#document"), null);
     const body = this.createElement(new SyntheticString("body"));
     this.appendChild(body);
     this.set("body", body);
@@ -25,18 +23,18 @@ export class SyntheticDocument extends SyntheticContainerNode {
   }
 
   @synthetic createElement(tagName: SyntheticString) {
-    return new SyntheticElement(tagName);
+    return new SyntheticElement(tagName, this);
   }
 
   @synthetic createDocumentFragment() {
-    return new SyntheticDocumentFragment();
+    return new SyntheticDocumentFragment(this);
   }
 
   @synthetic createTextNode(nodeValue: SyntheticString) {
-    return new SyntheticTextNode(nodeValue);
+    return new SyntheticTextNode(nodeValue, this);
   }
 
   @synthetic createComment(nodeValue: SyntheticString) {
-    return new SyntheticComment(nodeValue);
+    return new SyntheticComment(nodeValue, this);
   }
 }
