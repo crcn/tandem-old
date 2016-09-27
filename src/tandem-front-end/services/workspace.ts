@@ -4,8 +4,8 @@ import { Browser } from "tandem-runtime";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { pointerToolDependency } from "tandem-front-end/models/pointer-tool";
-import { Workspace, DocumentFile, Editor } from "tandem-front-end/models";
 import { EditorToolFactoryDependency } from "tandem-front-end/dependencies";
+import { Workspace, DocumentFile, Editor } from "tandem-front-end/models";
 import { SetToolAction, ZoomAction, DocumentFileAction } from "tandem-front-end/actions";
 
 import {
@@ -54,31 +54,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
     this.app.editor = new Editor(browser);
 
-    // return;
-
-    // const file = await File.open(filePath, this._dependencies) as DocumentFile<any>;
-    // file.sync();
-
-    // await new Promise((resolve, reject) => {
-
-    //   // odd code, but we need to listen when the document is *successfuly*
-    //   // loaded in before initializing the app. It may load with errors which
-    //   // will break initialization
-    //   const loadObserver = new WrapBus(async (action: Action) => {
-    //     if (action.type !== DocumentFileAction.LOADED) return;
-    //     this.bus.register(this.app.workspace = new Workspace(<DocumentFile<any>>file));
-    //     file.observe(this.app.bus);
-    //     file.unobserve(loadObserver);
-    //     // set the pointer tool as default. TODO - this
-    //     // will need to change if the editor differs depending on the file type
-    //     await this.bus.execute(new SetToolAction(this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns)));
-    //     resolve();
-    //   });
-
-    //   file.observe(loadObserver);
-
-    //   file.load();
-    // });
+    await this.bus.execute(new SetToolAction(this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns)));
   }
 
   async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {

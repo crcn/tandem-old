@@ -1,5 +1,4 @@
 import * as sift from "sift";
-import { debounce } from "lodash";
 import { DOMRenderer } from "./renderer";
 import { ModuleImporter } from "./importer";
 import { EnvironmentKind } from "./environment";
@@ -8,8 +7,8 @@ import { WrapBus, AcceptBus } from "mesh";
 import { ModuleImporterAction } from "./actions";
 import { SyntheticNodeComponentFactory } from "./dependencies";
 import { Dependencies, MainBusDependency } from "tandem-common/dependencies";
-import { SymbolTable, SyntheticValueObject, SyntheticLocation } from "./synthetic";
 import { IFileSystem, FileSystem, CachedFileSystem } from "./file-system";
+import { SymbolTable, SyntheticValueObject, SyntheticLocation } from "./synthetic";
 import { SyntheticDocument, NativeFunction, BaseSyntheticNodeComponent } from "./synthetic";
 import { BrokerBus, IActor, Action, Observable, PropertyChangeAction, bindable } from "tandem-common";
 
@@ -100,7 +99,9 @@ export class Browser extends Observable {
   }
 
   protected onImportedFileChange(action: Action) {
-    this.reopen();
+
+    // small fix to let other change watchers to bust caches
+    setTimeout(this.reopen, 0);
   }
 
   /**
@@ -115,6 +116,19 @@ export class Browser extends Observable {
     this.notify(new PropertyChangeAction("documentComponent", this._documentComponent, oldDocumentComponent));
   }
 
-  // throttle in case the user is typing really really fast
-  private reopen = debounce((() => this.open(this._currentFileName)), 10);
+  private _reopening: boolean;
+  private _shouldReopenAgain: boolean;
+  private reopen = async () => {
+    if (this._reopening) {
+      this._shouldReopenAgain = true;
+      return;
+    }
+    this._reopening = true;
+    await this.open(this._currentFileName);
+    this._reopening = false;
+    if (this._shouldReopenAgain) {
+      this._shouldReopenAgain = false;
+      this.reopen();
+    }
+  }
 }
