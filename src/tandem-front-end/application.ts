@@ -40,12 +40,12 @@ import { paperclipExtensionDependency } from "tandem-paperclip-extension";
 import { typescriptExtensionDependency } from "tandem-typescript-extension";
 
 import { Metadata } from "tandem-common/metadata";
-import { Workspace, Editor2 } from "./models";
+import { Workspace, Editor } from "./models";
 
 export class FrontEndApplication extends Application {
 
   public workspace: Workspace;
-  public editor: Editor2;
+  public editor: Editor;
   public settings: Metadata;
   public metadata: Metadata;
 

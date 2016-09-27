@@ -15,7 +15,7 @@ import {
   KeyboardAction,
 } from "tandem-front-end/actions";
 
-export default class EditorStageLayersComponent extends React.Component<{ app: any, editor: Editor, workspace: Workspace, dependencies: Dependencies, zoom: number }, any> {
+export default class EditorStageLayersComponent extends React.Component<{ app: any, editor: Editor, dependencies: Dependencies, zoom: number }, any> {
 
   private _mousePosition: IPoint;
   private _toolsHidden: any;
@@ -59,7 +59,7 @@ export default class EditorStageLayersComponent extends React.Component<{ app: a
   }
 
   componentWillUpdate(props) {
-    if (props.workspace !== this.props.workspace) {
+    if (props.editor !== this.props.editor) {
       requestAnimationFrame(this._recenter);
     } else if (props.zoom !== this.props.zoom) {
       this._center(this.props.zoom, props.zoom);
@@ -146,34 +146,9 @@ export default class EditorStageLayersComponent extends React.Component<{ app: a
     let width  = body.offsetWidth;
     let height = body.offsetHeight;
 
-    const allBounds = this.props.workspace.file.entity.children
-    .map((entity: IVisibleEntity) => entity.display && entity.display.bounds)
-    .filter((bounds) => !!bounds);
-
-    let entireBounds = BoundingRect.merge(...allBounds);
-    let hasBounds = entireBounds.width && entireBounds.left < Infinity;
-
-    if (hasBounds) {
-
-      // center
-      entireBounds = entireBounds.move({
-        left: -entireBounds.left * 2 + width / 2 - entireBounds.width / 2 ,
-        top: -entireBounds.top * 2 + height / 2 - entireBounds.height / 2
-      });
-
-      this.props.editor.transform.left = entireBounds.left;
-      this.props.editor.transform.top = entireBounds.top;
-      this.props.editor.transform.scale = Math.min(width / entireBounds.width, height / entireBounds.height) * 0.8;
-
-      // FIX ME - don't do this. Necessary for now though to re-trigger
-      // render with changed transform props.
-      this.bus.execute(new UpdateAction());
-    }
-
     this.setState({
       canvasWidth  : width,
       canvasHeight : height,
-      showCanvas   : !hasBounds,
       centerLeft   : 0.5,
       centerTop    : 0.5
     });
@@ -185,8 +160,7 @@ export default class EditorStageLayersComponent extends React.Component<{ app: a
 
   render() {
     const style = {
-      cursor: this.props.editor.cursor,
-      visibility: this.state.showCanvas ? undefined : "hidden"
+      cursor: this.props.editor.cursor
     };
 
     const canvasWidth  = this.state.canvasWidth;
@@ -211,8 +185,6 @@ export default class EditorStageLayersComponent extends React.Component<{ app: a
       border: "none"
     };
 
-    // TODO - add fixed tools
-    const entity = this.props.workspace.file.entity;
     return (<IsolateComponent onKeyDown={this.onKey} ref="isolate" ignoreInputEvents={true} onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
       <style>
         {
@@ -230,7 +202,7 @@ export default class EditorStageLayersComponent extends React.Component<{ app: a
         style={style}>
           <div style={innerStyle} className="noselect" data-previewroot>
               <PreviewLayerComponent {...this.props} renderer={this.props.app.editor.browser.renderer} />
-              {this._toolsHidden || !entity ? undefined : <ToolsLayerComponent entity={entity} {...this.props} />}
+              {this._toolsHidden || true ? undefined : <ToolsLayerComponent entity={entity} {...this.props} />}
           </div>
       </div>
     </IsolateComponent>);

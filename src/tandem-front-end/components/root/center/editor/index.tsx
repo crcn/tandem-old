@@ -18,13 +18,11 @@ export default class StageComponent extends React.Component<{ app: FrontEndAppli
 
     if (!this.props.app.editor) return null;
 
-    return <PreviewComponent {...this.props} renderer={this.props.app.editor.browser.renderer} />;
-
-    // return (<div ref="container" className="m-editor-stage">
-    //   <HeaderComponent {...this.props} />
-    //   <CanvasComponent {...this.props} zoom={1 || this.props.editor.transform.scale} workspace={this.props.workspace} dependencies={this.props.app.dependencies} />
-    //   <FooterComponent {...this.props} />
-    // </div>);
+    return (<div ref="container" className="m-editor-stage">
+      <HeaderComponent {...this.props} />
+      <CanvasComponent {...this.props} zoom={this.props.editor.transform.scale} dependencies={this.props.app.dependencies} />
+      <FooterComponent {...this.props} />
+    </div>);
   }
 }
 

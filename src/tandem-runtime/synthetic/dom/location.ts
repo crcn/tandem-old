@@ -3,8 +3,9 @@ import { Browser } from "../../browser";
 import * as Url from "url";
 
 export class SyntheticLocation extends SyntheticObject {
-  constructor(urlStr: string, browser: Browser) {
-    const url = Url.parse(urlStr);
+  private _urlStr: String;
+  constructor(_urlStr: string, browser: Browser) {
+    const url = Url.parse(_urlStr);
     super({
       hash: new SyntheticString(url.hash),
       pathname: new SyntheticString(url.hash),
@@ -15,6 +16,7 @@ export class SyntheticLocation extends SyntheticObject {
       search: new SyntheticString(url.search),
       protocol: new SyntheticString(url.protocol),
     });
+    this._urlStr = _urlStr;
   }
 
   get hash() {
@@ -47,5 +49,9 @@ export class SyntheticLocation extends SyntheticObject {
 
   @synthetic reload() {
 
+  }
+
+  toString() {
+    return this._urlStr;
   }
 }

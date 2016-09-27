@@ -1,5 +1,6 @@
 import { IActor } from "tandem-common/actors";
 import { Action } from "tandem-common/actions";
+import { Browser } from "tandem-runtime";
 import { inject } from "tandem-common/decorators";
 import { IEntity } from "tandem-common/lang/entities";
 import { Metadata } from "tandem-common/metadata";
@@ -21,15 +22,16 @@ export class Editor implements IEditor {
   public translate: IPoint = { left: 0, top: 0 };
   private _currentTool: IEditorTool;
   public transform: Transform = new Transform();
+  public selection: any[];
 
   // TODO - this may change dependening on the editor type
   readonly type = "display";
   public cursor = null;
 
-  constructor(readonly workspace: Workspace) { }
+  constructor(readonly browser: Browser) {}
 
   get activeEntity(): IEntity {
-    return this.workspace.file.entity;
+    return null;
   }
 
   get zoom() { return this.transform.scale; }

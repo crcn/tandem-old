@@ -4,7 +4,7 @@ import { Browser } from "tandem-runtime";
 import { MetadataKeys } from "tandem-front-end/constants";
 import { FrontEndApplication } from "tandem-front-end/application";
 import { pointerToolDependency } from "tandem-front-end/models/pointer-tool";
-import { Workspace, DocumentFile, Editor2 } from "tandem-front-end/models";
+import { Workspace, DocumentFile, Editor } from "tandem-front-end/models";
 import { EditorToolFactoryDependency } from "tandem-front-end/dependencies";
 import { SetToolAction, ZoomAction, DocumentFileAction } from "tandem-front-end/actions";
 
@@ -45,14 +45,14 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
     const filePath = await GetPrimaryProjectFilePathAction.execute(this.bus);
 
-    if (this.app.workspace && this.app.workspace.file.path === filePath) return;
+    if (this.app.editor && this.app.editor.browser.location.toString() === filePath) return;
 
     this.logger.info("loading project file %s", filePath);
 
     const browser = new Browser(this._dependencies);
     await browser.open(filePath);
 
-    this.app.editor = new Editor2(browser);
+    this.app.editor = new Editor(browser);
 
     // return;
 
@@ -92,16 +92,16 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
   [ZoomAction.ZOOM](action: ZoomAction) {
     if (this._tweener) this._tweener.dispose();
-    const delta = action.delta * this.app.workspace.editor.zoom;
+    const delta = action.delta * this.app.editor.zoom;
 
     if (!action.ease) {
-      this.app.workspace.editor.zoom += delta;
+      this.app.editor.zoom += delta;
       this._zooming();
       return;
     }
 
-    this._tweener = tween(this.app.workspace.editor.zoom, this.app.workspace.editor.zoom + delta, 200, (value) => {
-      this.app.workspace.editor.zoom = value;
+    this._tweener = tween(this.app.editor.zoom, this.app.editor.zoom + delta, 200, (value) => {
+      this.app.editor.zoom = value;
       this._zooming();
     }, easeOutCubic);
   }
@@ -118,7 +118,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
   }
 
   [SetToolAction.SET_TOOL](action: SetToolAction) {
-    this.app.workspace.editor.currentTool = action.toolFactory.create(this.app.workspace.editor);
+    this.app.editor.currentTool = action.toolFactory.create(this.app.editor);
   }
 }
 

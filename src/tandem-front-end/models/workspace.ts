@@ -15,7 +15,7 @@ export class Workspace implements IActor {
   public getSelection(type: string) { }
 
   constructor(readonly file: DocumentFile<IEntity>) {
-    this.editor = new Editor(this);
+    this.editor = null;
   }
 
   execute(action: Action) {

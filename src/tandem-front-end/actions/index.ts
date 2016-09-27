@@ -4,7 +4,7 @@ import { IASTNode, File } from "tandem-common";
 import { toArray } from "tandem-common/utils/array";
 import { IRange, IPoint } from "tandem-common/geom";
 import { uniq } from "lodash";
-import { IEditor, IEditorTool, IHistoryItem } from "tandem-front-end/models";
+import { Editor, IEditorTool, IHistoryItem } from "tandem-front-end/models";
 import { EditorToolFactoryDependency } from "tandem-front-end/dependencies";
 
 export class MouseAction extends Action {
@@ -120,7 +120,7 @@ export class DeleteSelectionAction extends Action {
 
 export class SetToolAction extends Action {
   static readonly SET_TOOL = "setTool";
-  constructor(readonly toolFactory: { create(editor: IEditor): IEditorTool }) {
+  constructor(readonly toolFactory: { create(editor: Editor): IEditorTool }) {
     super(SetToolAction.SET_TOOL);
   }
 }

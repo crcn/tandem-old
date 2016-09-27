@@ -42,6 +42,10 @@ export class Browser extends Observable {
     return this._window;
   }
 
+  get location(): SyntheticLocation {
+    return this._location;
+  }
+
   @bindable()
   get documentComponent(): BaseSyntheticNodeComponent<any> {
     return this._documentComponent;

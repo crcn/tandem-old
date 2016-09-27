@@ -34,6 +34,8 @@ import {
   IFileModelActionResponseData,
 } from "tandem-common";
 
+import { Browser } from "tandem-runtime";
+
 export interface IEditorTool extends IActor, IDisposable {
   readonly editor: IEditor;
   readonly name: string;
@@ -42,12 +44,12 @@ export interface IEditorTool extends IActor, IDisposable {
 
 export interface IEditor extends IActor {
   currentTool: IEditorTool;
+  selection: Array<any>;
   transform: Transform;
   readonly type: string;
   readonly cursor: string;
   activeEntity: IEntity;
-
-  readonly workspace: Workspace;
+  readonly browser: Browser;
 }
 
 const REQUEST_SAVE_TIMEOUT = process.env.TESTING ? 1 : 200;
@@ -117,10 +119,6 @@ export abstract class BaseEditorTool implements IEditorTool, IInjectable {
   constructor(readonly editor: IEditor) { }
 
   dispose() { }
-
-  get workspace(): Workspace {
-    return this.editor.workspace;
-  }
 
   execute(action: Action) {
     if (this[action.type]) {
