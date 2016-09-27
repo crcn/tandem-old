@@ -1,3 +1,4 @@
+import { HTMLNodeType } from "./node-types";
 import { SyntheticComment } from "./comment";
 import { SyntheticElement } from "./element";
 import { SyntheticTextNode } from "./text-node";
@@ -6,6 +7,7 @@ import { SyntheticNode, SyntheticContainerNode } from "./node";
 import { synthetic, SyntheticObject, SyntheticString } from "../core";
 
 export class SyntheticDocument extends SyntheticContainerNode {
+  readonly nodeType = HTMLNodeType.DOCUMENT;
 
   constructor() {
     super(new SyntheticString("#document"), null);

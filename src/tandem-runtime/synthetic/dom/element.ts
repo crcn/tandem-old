@@ -1,4 +1,5 @@
 import { evaluateHTML } from "./evaluate-html";
+import { HTMLNodeType } from "./node-types";
 import { SyntheticDocument } from "./document";
 import { parse as parseHTML } from "./html-parser.peg";
 import { SyntheticNode, SyntheticContainerNode } from "./node";
@@ -42,6 +43,7 @@ interface ISyntheticElement {
 }
 
 export class SyntheticElement extends SyntheticContainerNode implements ISyntheticElement {
+  readonly nodeType = HTMLNodeType.ELEMENT;
   constructor(tagName: SyntheticValueObject<string>, doc: SyntheticDocument) {
     super(tagName, doc);
     this.set("attributes", new SyntheticAttributes());

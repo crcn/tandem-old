@@ -18,7 +18,7 @@ import {
 
 class MockModule extends BaseModule<any> {
   evaluate(context: SymbolTable) {
-    context.get("window").set("i", new SyntheticValueObject((context.get("window").get("i").value || 0) + 1));
+    context.get("window").set("i", new SyntheticValueObject(((context.get("window").get("i") as any).value || 0) + 1));
   }
 }
 

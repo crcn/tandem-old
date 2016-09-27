@@ -8,9 +8,10 @@ describe(__filename + "#", () => {
   it("can be created", () => {
     const element = new SyntheticElement(new SyntheticString("div"), doc);
   });
+
   it("can set the innerHTML", () => {
     const element = new SyntheticElement(new SyntheticString("div"), doc);
-    element.innerHTML = "<span>hello</span>";
+    element.innerHTML = new SyntheticString("<span>hello</span>");
     expect(element.childNodes.value.length).to.equal(1);
   });
 });

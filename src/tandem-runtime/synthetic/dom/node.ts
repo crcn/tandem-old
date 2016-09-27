@@ -1,5 +1,6 @@
 import { WrapBus } from "mesh";
 import { SymbolTable } from "../core";
+import { HTMLNodeType } from "./node-types";
 import { IActor, Action } from "tandem-common";
 import { SyntheticDocument } from "./document";
 import { SyntheticNodeAction } from "../../actions";
@@ -8,6 +9,7 @@ import { synthetic, SyntheticObject, SyntheticString, SyntheticValueObject, Synt
 // TODO - implement innerHTML parse
 export abstract class SyntheticNode extends SyntheticObject {
   private _parentNode: SyntheticNode;
+  abstract readonly nodeType: HTMLNodeType;
 
   constructor(nodeName: SyntheticValueObject<string>, public ownerDocument: SyntheticDocument) {
     super();

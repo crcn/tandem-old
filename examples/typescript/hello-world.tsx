@@ -5,6 +5,6 @@ const render = (a, b) => {
 }
 
 const element = document.createElement("div");
-element.innerHTML = "<div style='color:white;'>hello</div>";
+// element.innerHTML = "<div style='color:white;'>hello</div>";
 document.body.appendChild(element);
-// renderJSX(render("a", "b"), element);
+renderJSX(render("a", "b"), element);

@@ -1,6 +1,6 @@
 import { IModule } from "./module";
-import { ISynthetic } from "./synthetic";
 import { EnvironmentKind } from "./environment";
+import { ISynthetic, SyntheticNode, BaseSyntheticNodeComponent, HTMLNodeType } from "./synthetic";
 import { ClassFactoryDependency, FactoryDependency, Dependencies } from "tandem-common";
 
 type moduleType = { new(fileName: string, content: any): IModule };
@@ -42,5 +42,35 @@ export class ModuleShimFactoryDependency extends FactoryDependency {
 
   static find(envKind: EnvironmentKind, filePath: string, dependencies: Dependencies) {
     return dependencies.query<ModuleShimFactoryDependency>(this.getNamespace(envKind, filePath));
+  }
+}
+
+type componentClassType = { new(target: SyntheticNode): BaseSyntheticNodeComponent<any> };
+
+
+export class SyntheticNodeComponentFactory extends ClassFactoryDependency {
+  static readonly SYNTHETIC_NODE_COMPONENT_FACTORIES_NS = "syntheticNodeComponentFactories";
+  constructor(nodeName: string, nodeType: HTMLNodeType, readonly componentClass: componentClassType) {
+    super(SyntheticNodeComponentFactory.getNamespace(nodeName, nodeType), componentClass);
+  }
+
+  create(node: SyntheticNode): BaseSyntheticNodeComponent<any>  {
+    return super.create(node);
+  }
+
+  static getNamespace(nodeName: string, nodeType: number) {
+    return [this.SYNTHETIC_NODE_COMPONENT_FACTORIES_NS, nodeType, nodeName].join("/");
+  }
+
+  static find(nodeName: string, nodeType: number, dependencies: Dependencies): SyntheticNodeComponentFactory {
+    return dependencies.query<SyntheticNodeComponentFactory>(this.getNamespace(nodeName, nodeType));
+  }
+
+  static create(node: SyntheticNode, dependencies: Dependencies) {
+    const factory = this.find(node.nodeName.value, node.nodeType, dependencies) || this.find("default", node.nodeType, dependencies);
+    if (!factory) {
+      throw new Error(`Synthetic node component factory does not exist for node ${node.nodeName}:${node.nodeType}.`);
+    }
+    return factory.create(node);
   }
 }
