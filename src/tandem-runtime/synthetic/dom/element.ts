@@ -87,7 +87,7 @@ export class SyntheticElement extends SyntheticContainerNode implements ISynthet
     this.get("attributes").set(name.value, value);
   }
 
-  @synthetic getAttribute(name: SyntheticValueObject<string>) {
-    return this.get("attributes").get(name.value).get("value");
+  @synthetic getAttribute(name: SyntheticValueObject<string>): SyntheticString {
+    return this.get("attributes").get(name.value).get("value") as SyntheticString;
   }
 }

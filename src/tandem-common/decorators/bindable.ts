@@ -2,7 +2,7 @@ import { IObservable } from "tandem-common/observable";
 import { PropertyChangeAction } from "tandem-common/actions";
 
 export default function bindable() {
-  return (proto: IObservable, property: string = undefined, descriptor: PropertyDecorator = undefined) => {
+  return (proto: IObservable, property: string = undefined, descriptor: PropertyDescriptor = undefined) => {
     Object.defineProperty(proto, property, {
       get() {
         return this[`__${property}`];

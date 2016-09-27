@@ -1,7 +1,7 @@
 // import "./hello-world.scss";
 
 const render = (a, b) => {
-  return <div class="item" style="color:white;font-size:20px;">hello {a} {b}</div>;
+  return <div class="item" style="color:orange;font-size:60px;">hello {a} {b}</div>;
 }
 
 const element = document.createElement("div");

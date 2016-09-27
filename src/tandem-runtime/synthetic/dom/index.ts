@@ -6,3 +6,4 @@ export * from "./comment";
 export { parse as parseHTML } from "./html-parser.peg";
 export * from "./component";
 export * from "./node-types";
+export * from "./location";

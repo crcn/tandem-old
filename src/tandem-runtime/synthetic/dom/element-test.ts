@@ -3,7 +3,7 @@ import { expect } from "chai";
 
 describe(__filename + "#", () => {
 
-  const doc = new SyntheticDocument()
+  const doc = new SyntheticDocument(null);
 
   it("can be created", () => {
     const element = new SyntheticElement(new SyntheticString("div"), doc);

@@ -2,8 +2,8 @@ import { Action } from "tandem-common";
 import { Browser } from "./browser";
 import { WrapBus } from "mesh";
 import { SyntheticAction } from "./actions";
-import { SyntheticElement } from "./synthetic";
-import { BoundingRect } from "tandem-common";
+import { BoundingRect, watchProperty } from "tandem-common";
+import { SyntheticElement, BaseSyntheticNodeComponent } from "./synthetic";
 
 export interface ISyntheticDocumentRenderer {
   readonly element: HTMLElement;
@@ -14,15 +14,14 @@ export abstract class BaseRenderer implements ISyntheticDocumentRenderer {
   readonly element: HTMLElement;
 
   constructor(readonly browser: Browser) {
-    browser.window.observe(new WrapBus(this.onWindowAction.bind(this)));
+    watchProperty(browser, "documentComponent", this.onDocumentComponentChange.bind(this));
     this.element = document.createElement("div");
   }
 
-  protected onWindowAction(action: Action) {
-    if (action.type === SyntheticAction.PATCHED) {
-      this.update();
-    }
+  protected onDocumentComponentChange(newDocumentComponent: BaseSyntheticNodeComponent<any>) {
+    this.update();
   }
+
 
   // TODO
   get rectangles(): Array<any> {
@@ -41,11 +40,8 @@ export class DOMRenderer extends BaseRenderer {
   }
 
   update() {
-    const document = this.browser.window.get("document");
-    const body     = document.get("body") as SyntheticElement;
-
     // simple for now -- just reset the entire outer HTML
-    this.element.innerHTML = body.outerHTML.toString();
+    this.element.innerHTML = this.browser.documentComponent.outerHTML;
 
     const rectangles: BoundingRect[] = [];
     for (const node of this.element.querySelectorAll("*")) {

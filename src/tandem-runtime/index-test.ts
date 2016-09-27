@@ -6,6 +6,7 @@ import {
   EnvironmentKind,
   SyntheticValueObject,
   ModuleFactoryDependency,
+  runtimeExtensionDependencies,
 } from "./index";
 
 import { MockFileSystem } from "./test";
@@ -30,6 +31,7 @@ describe(__filename + "#", () => {
   beforeEach(() => {
     fs = new MockFileSystem();
     deps = new Dependencies(
+      runtimeExtensionDependencies,
       new MainBusDependency(new BrokerBus(undefined, fs)),
       new MimeTypeDependency("test", "application/test"),
       new ModuleFactoryDependency(EnvironmentKind.DOM, "application/test", MockModule)

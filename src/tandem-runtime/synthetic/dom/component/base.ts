@@ -41,21 +41,17 @@ export class DefaultSyntheticNodeComponent<T> extends BaseSyntheticNodeComponent
   get outerHTML() {
     return this.target.outerHTML.toString();
   }
-  async load(context: SymbolTable) {
-    for (const child of this.target.childNodes.value) {
-    }
-  }
 }
 
 /**
  */
 
-export class DefaultSyntheticElementComponent extends BaseSyntheticNodeComponent<SyntheticElement> {
-  constructor(target: SyntheticElement) {
+export class SyntheticContainerComponent<T extends SyntheticNode> extends BaseSyntheticNodeComponent<T> {
+  constructor(target: T) {
     super(target);
   }
   get outerHTML() {
-    return this.target.outerHTML.toString();
+    return this.innerHTML;
   }
   get innerHTML() {
     return this.children.map((child) => child.outerHTML).join("");
@@ -73,8 +69,24 @@ export class DefaultSyntheticElementComponent extends BaseSyntheticNodeComponent
 /**
  */
 
+export class SyntheticElementComponent extends SyntheticContainerComponent<SyntheticElement> {
+  get outerHTML() {
+    const buffer = ["<", this.target.nodeName];
+    for (const attribute of this.target.attributes.value) {
+      buffer.push(" ", attribute.name, "=", `"`, attribute.value, `"`);
+    }
+    buffer.push(">", this.innerHTML, "</", this.target.nodeName, ">");
+    return buffer.join("");
+  }
+}
+
+/**
+ */
+
 export const defaultSyntheticNodeComponentDependencies = [
-  new SyntheticNodeComponentFactory("default", HTMLNodeType.ELEMENT, DefaultSyntheticElementComponent),
+  new SyntheticNodeComponentFactory("default", HTMLNodeType.ELEMENT, SyntheticElementComponent),
   new SyntheticNodeComponentFactory("default", HTMLNodeType.TEXT, DefaultSyntheticNodeComponent),
-  new SyntheticNodeComponentFactory("default", HTMLNodeType.COMMENT, DefaultSyntheticNodeComponent)
+  new SyntheticNodeComponentFactory("default", HTMLNodeType.COMMENT, DefaultSyntheticNodeComponent),
+  new SyntheticNodeComponentFactory("default", HTMLNodeType.DOCUMENT, SyntheticContainerComponent),
+  new SyntheticNodeComponentFactory("default", HTMLNodeType.DOCUMENT_FRAGMENT, SyntheticContainerComponent)
 ];

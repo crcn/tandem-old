@@ -19,7 +19,12 @@ import { cssCommentLayerLabelComponentDependency } from "./components/css-commen
 import { cssDeclarationLayerLabelComponentDependency } from "./components/css-declaration-layer-label";
 
 // runtime
-import { domHTMLModuleFactoryDependency } from "./runtime";
+import {
+  domCSSModuleFactoryDependency,
+  domHTMLModuleFactoryDependency,
+  cssModuleFactoryDependency,
+  syntheticLinkComponentFactoryDependency,
+} from "./runtime";
 
 // token components
 import { cssUnitEditorTokenComponentFactoryDependency } from "./components/css-unit-editor-token";
@@ -65,7 +70,10 @@ export const htmlExtensionDependency = [
   cssColorTokenComponentFactoryDependency,
 
   // runtime
+  cssModuleFactoryDependency,
+  domCSSModuleFactoryDependency,
   domHTMLModuleFactoryDependency,
+  syntheticLinkComponentFactoryDependency,
 
   // stage tool components
   cssHighlightElementToolComponentFactoryDependency,
@@ -110,9 +118,9 @@ export const htmlExtensionDependency = [
   cssCommentEntityFactoryDependency,
 
   // mime types
+  new MimeTypeDependency("css", MimeTypes.CSS),
   new MimeTypeDependency("htm", MimeTypes.HTML),
-  new MimeTypeDependency("html", MimeTypes.HTML),
-  new MimeTypeDependency("sfn", MimeTypes.HTML)
+  new MimeTypeDependency("html", MimeTypes.HTML)
 ];
 
 export * from "./actions";
