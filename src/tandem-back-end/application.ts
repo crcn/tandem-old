@@ -7,6 +7,7 @@ import { stdinServiceDependency } from "./services/stdin";
 import { upsertServiceDependency } from "./services/upsert";
 import { projectServiceDependency } from "./services/project";
 import { frontEndServiceDependency } from "./services/front-end";
+import { resolverServiceDependency } from "./services/resolver";
 
 export default class ServerApplication extends Application {
   constructor(config) {
@@ -23,6 +24,7 @@ export default class ServerApplication extends Application {
       upsertServiceDependency,
       projectServiceDependency,
       frontEndServiceDependency,
+      resolverServiceDependency,
     );
   }
 }

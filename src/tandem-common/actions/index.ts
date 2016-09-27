@@ -5,7 +5,6 @@ import { File } from "../models";
 export * from "./base";
 export * from "./core";
 
-
 export class SaveAllFilesAction extends Action {
   static readonly SAVE_ALL_FILES = "saveAllFiles";
   constructor() {
@@ -49,5 +48,15 @@ export class EntityRuntimeAction extends Action {
   static readonly RUNTIME_EVALUATED = "runtimeEvaluated";
   constructor(type: string) {
     super(type);
+  }
+}
+
+export class ResolveAction extends Action {
+  static readonly RESOLVE = "resolve";
+  constructor(readonly filePath: string, readonly relativeFilePath? :string) {
+    super(ResolveAction.RESOLVE);
+  }
+  static async execute(path: string, relativeFile: string, bus: IActor): Promise<string> {
+    return (await bus.execute(new ResolveAction(path, relativeFile)).read()).value;
   }
 }

@@ -24,6 +24,7 @@
     "react-dnd": "registry:dt/react-dnd#2.0.2+20160816153011",
     "react-dnd-html5-backend": "registry:dt/react-dnd-html5-backend#2.1.2+20160704104003",
     "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
+    "resolve": "registry:dt/resolve#0.0.0+20160620212904",
     "serve-static": "registry:dt/serve-static#0.0.0+20160606155157",
     "socket.io": "registry:dt/socket.io#1.4.4+20160317120654",
     "socket.io-client": "registry:dt/socket.io-client#1.4.4+20160317120654",

@@ -1,11 +1,13 @@
 import ServerApplication from "./application";
-import config from "./config";
-var app = new ServerApplication(config);
+import defaultConfig from "./config";
+
+export function create(config = {}) {
+  var app = new ServerApplication(Object.assign({}, defaultConfig, config));
+  app.initialize();
+  return app;
+}
 
 process.on("unhandledRejection", function(error) {
   console.log("unhandled rejection", error);
 });
 
-app.initialize();
-
-module.exports = app;

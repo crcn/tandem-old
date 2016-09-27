@@ -13,9 +13,11 @@ import {
   Action,
   Observable,
   IDisposable,
+  ResolveAction,
   Dependencies,
   SingletonThenable,
   MimeTypeDependency,
+  MainBusDependency,
 } from "tandem-common";
 
 import {
@@ -33,32 +35,30 @@ import * as path from "path";
 export class ModuleImporter extends Observable implements IDisposable {
   private _modules: any;
   private _fileWatchers: Array<IDisposable> = [];
+  private _resolvedPaths: any;
+
 
   constructor(private readonly  _fileSystem: IFileSystem, private _dependencies: Dependencies, private _context: SymbolTable) {
     super();
+    this._resolvedPaths = {};
     this._modules = {};
   }
 
-  resolve(filePath: string, relativePath?: string) {
-
-    // TODO - check module directories here
-    if (relativePath && filePath.charAt(0) !== "/") {
-      filePath = path.join(path.dirname(relativePath), filePath);
-    }
-
-    return filePath;
+  async resolve(filePath: string, relativePath?: string) {
+    return this._resolvedPaths[filePath] || (this._resolvedPaths[filePath] = await ResolveAction.execute(filePath, relativePath, MainBusDependency.getInstance(this._dependencies)));
   }
 
   /**
    * includes a module from the file system
    */
 
-  require(envKind: EnvironmentKind, filePath: string, mimeType?: string, relativePath?: string): Promise<any> {
+  async require(envKind: EnvironmentKind, filePath: string, mimeType?: string, relativePath?: string): Promise<any> {
 
     // necessary for cases where we don't want a module to be loaded in, such as react
     const shimFactroy = ModuleShimFactoryDependency.find(envKind, filePath, this._dependencies);
 
-    filePath = this.resolve(filePath, relativePath);
+    filePath = await this.resolve(filePath, relativePath);
+    console.log(filePath);
 
     return this._modules[envKind + filePath] || (this._modules[envKind + filePath] = new SingletonThenable(async () => {
 

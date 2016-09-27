@@ -28,6 +28,7 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     case ts.SyntaxKind.PropertyDeclaration: return evaluatePropertyDeclaration();
     case ts.SyntaxKind.MethodDeclaration: return evaluateMethodDeclaration();
     case ts.SyntaxKind.Identifier: return evaluateIdentifier();
+    case ts.SyntaxKind.ExportAssignment: return evaluateExportAssignment();
     case ts.SyntaxKind.TrueKeyword: return new rs.LiteralResult(new SyntheticValueObject(true));
     case ts.SyntaxKind.ThisKeyword: return new rs.LiteralResult(context.get("this"));
     case ts.SyntaxKind.NullKeyword: return new rs.LiteralResult(new SyntheticValueObject(null));
@@ -101,6 +102,11 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
       jsxElement.tagName,
       jsxElement.attributes
     );
+  }
+
+  function evaluateExportAssignment() {
+    const exportAssignment = <ts.ExportAssignment>node;
+    return new rs.DeclarationResult(exportAssignment.name ? exportAssignment.name.text : "default", evaluate(exportAssignment.expression, context).value);
   }
 
   async function evaluateImportDeclaration() {
@@ -296,7 +302,9 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
   }
 
   function shouldExport(declaration: ts.Node) {
-    return !!(declaration.modifiers || []).find(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword);
+    return !!(declaration.modifiers || []).find(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword) || [
+      ts.SyntaxKind.ExportAssignment
+    ].indexOf(declaration.kind) !== -1;
   }
 
   function evaluateExpressionStatement() {

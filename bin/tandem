@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var app = require('../lib/tandem-back-end/server');
+var createApp = require('../lib/tandem-back-end/server').create;
 
 var argv = require('yargs').argv;
 var path = require('path');
@@ -10,6 +10,15 @@ var filepath = argv._[0];
 if (!/^\//.test(filepath)) {
   filepath = path.join(process.cwd(), filepath);
 }
+
+var projectConfig;
+try {
+  projectConfig = require(path.dirname(filepath) + "/tandem.config");
+} catch(e) {
+  projectConfig = {};
+}
+
+var app = createApp(projectConfig);
 
 app.bus.execute({
   type  : 'openProjectFile',
