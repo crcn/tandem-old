@@ -10,7 +10,9 @@ export enum SyntheticKind {
   SymbolTable  = Function     + 1,
   JSXElement   = SymbolTable  + 1,
   JSXAttribute = JSXElement   + 1,
-  Object       = JSXAttribute + 1
+  Object       = JSXAttribute + 1,
+  Undefined    = Object + 1,
+  Array        = Undefined + 1
 }
 
 export interface ISynthetic extends IPatchable, IComparable {
@@ -40,12 +42,8 @@ export function mapNativeAsSynthetic(value: any) {
   switch (typeof value) {
     case "function": return new NativeFunction(value);
     case "object":
-      if (Array.isArray(value)) return new SyntheticArray(value.map(mapNativeAsSynthetic));
-      const properties = {};
-      for (const propertyName in value) {
-        properties[propertyName] = mapNativeAsSynthetic(value[propertyName]);
-      }
-      return new SyntheticObject(properties);
+      // if (Array.isArray(value)) return new SyntheticArray(value.map(mapNativeAsSynthetic));
+      return new SyntheticValueObject(value);
     default: return new SyntheticValueObject(value);
   }
 }
@@ -106,31 +104,40 @@ export class SyntheticObject extends BaseSynthetic {
 
   kind = SyntheticKind.Object;
   protected __properties: any;
+  protected __syntheticProperties: any;
   private __syntheticMembers: Object;
   constructor(properties?: any) {
     super();
+    if (!this.__syntheticMembers) {
+      this.__syntheticMembers = {};
+    }
     if (properties != null) {
       Object.assign(this.__properties, properties);
     }
   }
 
   get<T extends ISynthetic>(propertyName: string): T {
-    return this.__properties[propertyName] || new SyntheticValueObject(undefined);
+    return (Object.keys(this.__syntheticMembers).indexOf(propertyName) !== -1 ? this.__syntheticProperties[propertyName] : this.__properties[propertyName]) || new SyntheticValueObject(undefined);
   }
 
   set(propertyName: string, value: ISynthetic) {
-    this.__properties[propertyName] = value;
+    if (Object.keys(this.__syntheticMembers).indexOf(propertyName) !== -1) {
+      this.__syntheticProperties[propertyName] = value;
+    } else {
+      this.__properties[propertyName] = value;
+    }
   }
 
   protected initialize() {
-    this.__properties = {};
+    this.__properties = this.createNativeValue();
+    this.__syntheticProperties = {};
     for (const syntheticPropertyName in (this.__syntheticMembers || {})) {
       const descriptor = this.__syntheticMembers[syntheticPropertyName];
       const value = descriptor["value"];
       if (typeof value === "function") {
-        this.set(syntheticPropertyName, new SyntheticWrapperFunction(value));
+        this.__syntheticProperties[syntheticPropertyName] = new SyntheticWrapperFunction(value);
       } else {
-        SyntheticObject.defineProperty(this, syntheticPropertyName, {
+        Object.defineProperty(this.__syntheticProperties, syntheticPropertyName, {
           get: descriptor.get ? descriptor.get.bind(this) : undefined,
           set: descriptor.set ? descriptor.set.bind(this) : undefined
         });
@@ -158,7 +165,11 @@ export class SyntheticObject extends BaseSynthetic {
   }
 
   static create(prototype: SyntheticObject) {
-    return new SyntheticObject(Object.create(prototype.__properties));
+    return new SyntheticObject(Object.create(prototype.__properties || prototype["value"]));
+  }
+
+  static keys(object: SyntheticObject) {
+    return Object.keys(object.toNative());
   }
 
   protected applyPatch(source: SyntheticObject) {
@@ -204,10 +215,8 @@ export class SyntheticObject extends BaseSynthetic {
 }
 export class SyntheticValueObject<T> extends BaseSynthetic implements ISyntheticValueObject {
   kind = SyntheticKind.Native;
-  private _vars: any;
   constructor(public value: T) {
     super();
-    this._vars = {};
   }
 
   toString() {
@@ -258,35 +267,82 @@ export class SyntheticNumber extends SyntheticValueObject<number> {
 
 }
 
-export class SyntheticArray<T extends ISynthetic> extends SyntheticValueObject<Array<T>> {
+export class SyntheticBoolean extends SyntheticValueObject<boolean> {
+
+}
+
+export class SyntheticRegExp extends SyntheticValueObject<RegExp> {
+  constructor(value: RegExp) {
+    super(value);
+  }
+  @synthetic test(value: any) {
+    return new SyntheticBoolean(this.value.test(value));
+  }
+}
+
+export class SyntheticArray<T extends ISynthetic> extends SyntheticObject {
+  kind = SyntheticKind.Array;
   constructor(value: T[] = []) {
     super(value);
+  }
+
+  get value(): T[] {
+    return this.__properties;
   }
 
   createNativeValue() {
     return [];
   }
 
+  @synthetic get length() {
+    return new SyntheticValueObject(this.__properties.length);
+  }
+
+  @synthetic indexOf(value: T) {
+    return new SyntheticValueObject(this.__properties.indexOf(value));
+  }
+
+  @synthetic reduce(reducer: ISyntheticFunction) {
+    return new SyntheticValueObject(this.__properties.reduce(reducer.toNative()));
+  }
+
+  @synthetic push(...items) {
+    return new SyntheticValueObject(this.__properties.push(...items));
+  }
+
+  @synthetic map(transform: ISyntheticFunction) {
+    return new SyntheticArray(this.__properties.map(wrapSyntheticFunction(transform)));
+  }
+
+  @synthetic join(sep: SyntheticString) {
+    return new SyntheticString(this.__properties.join(sep.toNative()));
+  }
+
+  @synthetic find(filter: Function) {
+    return this.__properties.find(filter);
+  }
+
   addNativeProperties(value: any[]) {
-    value.push(...this.value.map((synthetic) => synthetic.toNative()));
+
+    value.push(...this.__properties.map(synthetic => synthetic.toNative()));
   }
 
   applyPatch(source: SyntheticArray<T>) {
-    const changes = diffArray(this.value, source.value, ((a, b) => a.compare(b)));
+    const changes = diffArray(this.__properties, source.__properties, ((a: ISynthetic, b: ISynthetic) => a.compare(b)));
     for (const rm of changes.remove) {
-      const index = this.value.indexOf(rm);
-      this.value.splice(index, 1);
+      const index = this.__properties.indexOf(rm);
+      this.__properties.splice(index, 1);
     }
 
     for (const add of changes.add) {
-      this.value.splice(add.index, 0, add.value);
+      this.__properties.splice(add.index, 0, add.value);
     }
 
     for (const [oldItem, newItem, newIndex] of changes.update) {
-      const oldIndex = this.value.indexOf(oldItem);
+      const oldIndex = this.__properties.indexOf(oldItem);
       if (oldIndex !== newIndex) {
-        this.value.splice(oldIndex, 1);
-        this.value.splice(newIndex, 1, oldItem);
+        this.__properties.splice(oldIndex, 1);
+        this.__properties.splice(newIndex, 1, oldItem);
       }
       oldItem.patch(newItem);
     }
@@ -295,6 +351,10 @@ export class SyntheticArray<T extends ISynthetic> extends SyntheticValueObject<A
   toJSON() {
     return this.toNative();
   }
+
+  [Symbol.iterator] = function*() {
+    for (const value of this.__properties) yield value;
+  };
 }
 
 export class NativeFunction extends SyntheticValueObject<Function> implements ISyntheticFunction {
@@ -319,10 +379,15 @@ export class NativeFunction extends SyntheticValueObject<Function> implements IS
   }
 
   createInstance(args: Array<ISynthetic>) {
-    const instance = new SyntheticValueObject(Object.create(this.value.prototype));
-    this.apply(instance, args);
-    return instance;
+    const inst = new (this.value as any)(...args.map((arg) => arg.toNative()));
+    return new SyntheticValueObject(inst);
   }
+}
+
+function wrapSyntheticFunction(fn: ISyntheticFunction) {
+  return function(...args: Array<any>) {
+    return fn.apply(this, args);
+  };
 }
 
 export class SymbolTable extends SyntheticObject implements ISynthetic {
@@ -436,8 +501,14 @@ export class JSRootSymbolTable extends SymbolTable {
     this.defineConstant("NaN", new SyntheticValueObject(NaN));
     this.defineConstant("Infinity", new SyntheticValueObject(Infinity));
     this.defineConstant("undefined", new SyntheticValueObject(undefined));
-    this.defineConstant("Object", new SyntheticValueObject(Object));
-    this.defineConstant("Date", new SyntheticValueObject(Date));
+    this.defineConstant("Object", new NativeFunction(Object));
+    this.defineConstant("Date", new NativeFunction(Date));
+    this.defineConstant("Function", new NativeFunction(Function));
+    this.defineConstant("RegExp", new NativeFunction(RegExp));
+
+    // todo - needs to be SyntheticArray here
+    this.defineConstant("Array", new NativeFunction(Array));
+    this.defineConstant("Error", new NativeFunction(Error));
     this.defineConstant("console", new SyntheticValueObject(console));
   }
 }

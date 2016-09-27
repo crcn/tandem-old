@@ -58,7 +58,7 @@ export class SyntheticContainerComponent<T extends SyntheticNode> extends BaseSy
   }
   async load(context: SymbolTable) {
     this.removeAllChildren();
-    for (const childNode of this.target.childNodes.value) {
+    for (const childNode of this.target.childNodes) {
       const childComponent = SyntheticNodeComponentFactory.create(childNode, this._dependencies);
       await childComponent.load(context);
       this.appendChild(childComponent);
@@ -72,7 +72,7 @@ export class SyntheticContainerComponent<T extends SyntheticNode> extends BaseSy
 export class SyntheticElementComponent extends SyntheticContainerComponent<SyntheticElement> {
   get outerHTML() {
     const buffer = ["<", this.target.nodeName];
-    for (const attribute of this.target.attributes.value) {
+    for (const attribute of this.target.attributes) {
       buffer.push(" ", attribute.name, "=", `"`, attribute.value, `"`);
     }
     buffer.push(">", this.innerHTML, "</", this.target.nodeName, ">");

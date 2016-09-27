@@ -3,6 +3,7 @@ import {
   ISynthetic,
   SymbolTable,
   SyntheticKind,
+  SyntheticArray,
   SyntheticJSXElement,
   SyntheticJSXAttribute,
   SyntheticWrapperFunction,
@@ -12,25 +13,27 @@ export const renderSyntheticJSX = new SyntheticWrapperFunction(function (jsx: Sy
 
   // no diffing here -- just render out the DOM elements since they'yre also synthetic -- they'll
   // be patched later on.
-  while (element.childNodes.value.length) {
+  while (element.childNodes.length.toNative()) {
     element.removeChild(element.childNodes[0]);
   }
 
-  _render(this, element, [jsx]);
+  _render(this, element, new SyntheticArray([jsx]));
 });
 
-function _render(context: SymbolTable, parent: SyntheticElement, children: Array<any>) {
+function _render(context: SymbolTable, parent: SyntheticElement, children: SyntheticArray<any>) {
   const doc = context.get<SyntheticDocument>("document");
 
   for (const child of children) {
     if (child.kind === SyntheticKind.JSXElement) {
       const childJSXElement = <SyntheticJSXElement>child;
       const childElement = doc.createElement(childJSXElement.name);
-      for (const attribute of childJSXElement.attributes.value) {
+      for (const attribute of childJSXElement.attributes) {
         childElement.setAttribute(attribute.name, attribute.value);
       }
-      _render(context, childElement, childJSXElement.children.value);
+      _render(context, childElement, childJSXElement.children);
       parent.appendChild(childElement);
+    } else if (child.kind === SyntheticKind.Array) {
+      _render(context, parent, child as SyntheticArray<any>);
     } else {
       parent.appendChild(doc.createTextNode(child));
     }

@@ -38,6 +38,7 @@ import { reactExtensionDependency } from "tandem-react-extension";
 import { runtimeExtensionDependencies } from "tandem-runtime";
 import { paperclipExtensionDependency } from "tandem-paperclip-extension";
 import { typescriptExtensionDependency } from "tandem-typescript-extension";
+import { javascriptExtensionDependency } from "tandem-javascript-extension";
 
 import { Metadata } from "tandem-common/metadata";
 import { Workspace, Editor } from "./models";
@@ -96,6 +97,7 @@ export class FrontEndApplication extends Application {
       htmlExtensionDependency,
       reactExtensionDependency,
       runtimeExtensionDependencies,
+      javascriptExtensionDependency,
       typescriptExtensionDependency,
       // angular2ExtensionDependency,
       paperclipExtensionDependency,

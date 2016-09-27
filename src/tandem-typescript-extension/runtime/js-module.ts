@@ -5,6 +5,7 @@ import {
   BaseModule,
   SymbolTable,
   EnvironmentKind,
+  SyntheticObject,
   ModuleFactoryDependency,
 } from "tandem-runtime";
 
@@ -15,7 +16,7 @@ export class TSJSModule extends BaseModule<any> {
     this._ast = ts.createSourceFile(fileName, content, ts.ScriptTarget.ES6, true);
   }
   async evaluate(context: SymbolTable) {
-    return (await evaluateTypescript(this._ast, context)).value;
+    return await evaluateTypescript(this._ast, context);
   }
 }
 

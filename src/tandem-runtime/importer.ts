@@ -23,7 +23,8 @@ import {
 import {
   ISynthetic,
   NativeFunction,
-  SyntheticValueObject
+  SyntheticObject,
+  SyntheticValueObject,
 } from "./synthetic";
 
 import {
@@ -36,9 +37,9 @@ export class ModuleImporter extends Observable implements IDisposable {
   private _modules: any;
   private _fileWatchers: Array<IDisposable> = [];
   private _resolvedPaths: any;
+  public context: SymbolTable;
 
-
-  constructor(private readonly  _fileSystem: IFileSystem, private _dependencies: Dependencies, private _context: SymbolTable) {
+  constructor(private readonly  _fileSystem: IFileSystem, private _dependencies: Dependencies) {
     super();
     this._resolvedPaths = {};
     this._modules = {};
@@ -70,13 +71,14 @@ export class ModuleImporter extends Observable implements IDisposable {
 
       const fileWatcher = this._fileSystem.watchFile(filePath, () => {
         this._fileWatchers.splice(this._fileWatchers.indexOf(fileWatcher), 1);
+        this._modules[envKind + filePath] = undefined;
         fileWatcher.dispose();
         this.notify(new ModuleImporterAction(ModuleImporterAction.IMPORTED_MODULE_FILE_CHANGE));
       });
 
       this._fileWatchers.push(fileWatcher);
 
-      const context = this._context.createChild();
+      const context = this.context.createChild();
       context.set("import", new NativeFunction(async (envKind: EnvironmentKind, reqPath: string) => {
         return this.require(envKind, reqPath, undefined, filePath);
       }));
@@ -86,7 +88,13 @@ export class ModuleImporter extends Observable implements IDisposable {
       context.set("__filename", new SyntheticValueObject(filePath));
       context.set("__dirname", new SyntheticValueObject(path.dirname(filePath)));
 
-      return await factory.create(filePath, (await this._fileSystem.readFile(filePath)).content).evaluate(context);
+      context.set("module", new SyntheticObject({
+        exports: new SyntheticObject()
+      }));
+
+      await factory.create(filePath, (await this._fileSystem.readFile(filePath)).content).evaluate(context);
+
+      return context.get("module").get("exports");
     }));
   }
 

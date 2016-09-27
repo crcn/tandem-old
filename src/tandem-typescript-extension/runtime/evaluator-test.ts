@@ -53,6 +53,9 @@ describe(__filename + "#", () => {
     [`export const a = 1 && 2;`, { a: 2 }],
     [`export const a = 0 && 2;`, { a: 0 }],
 
+    // prefix operators
+    [`let i = 0; export const j = ++i;`, { j: 1 }],
+
     // declarations
     [`export const a, b = 1`, { a: undefined, b: 1 }],
     [`export const a = 1, b = 2, c = 3`, { a: 1, b: 2, c: 3 }],

@@ -42,7 +42,7 @@ describe(__filename + "#", () => {
     new Browser(deps);
   });
 
-  it("can open a new file", async () => {
+  xit("can open a new file", async () => {
     fs.addMockFile({ path: "a.test", content: "abc", mtime: Date.now() });
     const browser = new Browser(deps);
     const window = browser.window;

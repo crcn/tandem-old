@@ -10,7 +10,9 @@ import {
   EnvironmentKind,
   NativeFunction,
   SyntheticObject,
+  SyntheticString,
   SyntheticNumber,
+  SyntheticRegExp,
   JSRootSymbolTable,
   SyntheticJSXAttribute,
   ISyntheticFunction,
@@ -25,10 +27,19 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     case ts.SyntaxKind.JsxText: return evaluateJSXText();
     case ts.SyntaxKind.SourceFile: return evaluateSourceFile();
     case ts.SyntaxKind.JsxElement: return evaluateSyntheticJSXElement();
+    case ts.SyntaxKind.ThrowStatement: return evaluateThrowStatement();
     case ts.SyntaxKind.PropertyDeclaration: return evaluatePropertyDeclaration();
+    case ts.SyntaxKind.ConditionalExpression: return evaluateConditionalExpression();
     case ts.SyntaxKind.MethodDeclaration: return evaluateMethodDeclaration();
+    case ts.SyntaxKind.ForStatement: return evaluateForStatement();
+    case ts.SyntaxKind.ParenthesizedExpression: return evaluateParenthizedExpression();
+    case ts.SyntaxKind.ElementAccessExpression: return evaluateElementAccessExpression();
+    case ts.SyntaxKind.IfStatement: return evaluateIfStatement();
     case ts.SyntaxKind.Identifier: return evaluateIdentifier();
     case ts.SyntaxKind.ExportAssignment: return evaluateExportAssignment();
+    case ts.SyntaxKind.ForInStatement: return evaluateForInStatement();
+    case ts.SyntaxKind.FunctionExpression: return evaluateArrowFunction();
+    case ts.SyntaxKind.InstanceOfKeyword: return evaluateInstanceOfKeyword();
     case ts.SyntaxKind.TrueKeyword: return new rs.LiteralResult(new SyntheticValueObject(true));
     case ts.SyntaxKind.ThisKeyword: return new rs.LiteralResult(context.get("this"));
     case ts.SyntaxKind.NullKeyword: return new rs.LiteralResult(new SyntheticValueObject(null));
@@ -37,6 +48,8 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     case ts.SyntaxKind.ClassDeclaration: return evaluateClassDeclaration();
     case ts.SyntaxKind.Constructor: return evaluateConstructorDeclaration();
     case ts.SyntaxKind.ExpressionStatement: return evaluateExpressionStatement();
+    case ts.SyntaxKind.VariableDeclarationList: return evaluateVariableDeclarationList();
+    case ts.SyntaxKind.TypeOfExpression: return evaluateTypeOfExpression();
     case ts.SyntaxKind.NewExpression: return evaluateNewExpression();
     case ts.SyntaxKind.FalseKeyword: return new rs.LiteralResult(new SyntheticValueObject(false));
     case ts.SyntaxKind.StringLiteral: return new rs.LiteralResult(new SyntheticValueObject((<ts.LiteralExpression>node).text));
@@ -49,6 +62,9 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     case ts.SyntaxKind.ReturnStatement: return evaluateReturnStatement();
     case ts.SyntaxKind.BinaryExpression: return evaluateBinaryExpression();
     case ts.SyntaxKind.ImportDeclaration: return evaluateImportDeclaration();
+    case ts.SyntaxKind.PrefixUnaryExpression: return evaluatePrefixUnaryExpression();
+    case ts.SyntaxKind.PostfixUnaryExpression: return evaluatePostfixUnaryExpression();
+    case ts.SyntaxKind.RegularExpressionLiteral: return evaluateRegularExpressionLiteral();
     case ts.SyntaxKind.VariableStatement: return evaluateVariableStatement();
     case ts.SyntaxKind.PropertyAssignment: return evaluatePropertyAssignment();
     case ts.SyntaxKind.FunctionDeclaration: return evaluateFunctionDeclaration();
@@ -57,13 +73,13 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     case ts.SyntaxKind.ArrayLiteralExpression: return evaluateArrayLiteralExpression();
     case ts.SyntaxKind.ObjectLiteralExpression: return evaluateObjectLiteral();
     case ts.SyntaxKind.PropertyAccessExpression: return evaluatePropertyAccessExpression();
-    case ts.SyntaxKind.ShorthandPropertyAssignment: return evaluateShorthandPropertyAssignment();
+    // case ts.SyntaxKind.ShorthandPropertyAssignment: return evaluateShorthandPropertyAssignment();
     default: throw new Error(`Cannot evaluate Typescript node kind ${node.getText()}:${node.kind}.`);
   }
 
   async function evaluateSourceFile() {
     const sourceFile = <ts.SourceFile>node;
-    const exports = new SyntheticObject();
+    const exports = context.get("module").toNative() ? context.get("module").get("exports") : new SyntheticObject();
 
     for (const statement of sourceFile.statements) {
       const result = (await evaluate(statement, context)) as rs.DeclarationResult;
@@ -86,6 +102,10 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     }
   }
 
+  function evaluateInstanceOfKeyword() {
+    console.log(node);
+  }
+
   function evaluateJSXText() {
     const jsxText = <ts.JsxText>node;
     return new rs.LiteralResult(new SyntheticValueObject(jsxText.getText()));
@@ -104,9 +124,80 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     );
   }
 
+  function evaluateRegularExpressionLiteral() {
+    const [source, flags] = (<ts.LiteralExpression>node).text.split("/").slice(1);
+    return new rs.LiteralResult(new SyntheticRegExp(new RegExp(source, flags)));
+  }
+
+  function evaluatePrefixUnaryExpression() {
+    const prefixUnaryExpression = <ts.PrefixUnaryExpression>node;
+    const { ctx, propertyName } = getReference(prefixUnaryExpression.operand);
+    let value = evaluate(prefixUnaryExpression.operand, context).value as SyntheticValueObject<any>;
+    switch (prefixUnaryExpression.operator) {
+      case ts.SyntaxKind.PlusPlusToken:
+        value = new SyntheticValueObject(value.toNative() + 1);
+      break;
+      case ts.SyntaxKind.ExclamationToken:
+        value = new SyntheticValueObject(!value.toNative());
+      break;
+      case ts.SyntaxKind.MinusToken:
+        value = new SyntheticValueObject(-value.toNative());
+      break;
+    }
+    return new rs.LiteralResult(value);
+  }
+
+  function evaluatePostfixUnaryExpression() {
+    const prefixUnaryExpression = <ts.PrefixUnaryExpression>node;
+    const { ctx, propertyName } = getReference(prefixUnaryExpression.operand);
+    const value = evaluate(prefixUnaryExpression.operand, context).value as SyntheticValueObject<any>;
+    const ret = new SyntheticValueObject(value.value + 1);
+    ctx.set(propertyName, ret);
+    return new rs.LiteralResult(ret);
+  }
+
+  function evaluateParenthizedExpression() {
+    const parenthizedExpression = <ts.ParenthesizedExpression>node;
+    return evaluate(parenthizedExpression.expression, context);
+  }
+
+  function evaluateConditionalExpression() {
+    const conditionalExpression = <ts.ConditionalExpression>node;
+    return evaluate(conditionalExpression.condition, context).value.toNative() ? evaluate(conditionalExpression.whenTrue, context) : evaluate(conditionalExpression.whenFalse, context);
+  }
+
+  function evaluateForInStatement() {
+    const forInStatement = <ts.ForInStatement>node;
+    const target = evaluate(forInStatement.expression, context).value;
+    const keys = SyntheticObject.keys(target);
+    const decl = <ts.VariableDeclarationList>forInStatement.initializer;
+    for (const key of keys) {
+      defineVariable(decl.declarations[0].name, new SyntheticString(key));
+      const result = evaluate(forInStatement.statement, context);
+      if (result.breaks) return result;
+    }
+    return new rs.VoidResult();
+  }
+
+  function evaluateIfStatement() {
+    const ifStatement = <ts.IfStatement>node;
+
+    if (evaluate(ifStatement.expression, context).value.toNative()) {
+      return evaluate(ifStatement.thenStatement, context);
+    } else if (ifStatement.elseStatement) {
+      return evaluate(ifStatement.elseStatement, context);
+    }
+    return new rs.VoidResult();
+  }
+
   function evaluateExportAssignment() {
     const exportAssignment = <ts.ExportAssignment>node;
     return new rs.DeclarationResult(exportAssignment.name ? exportAssignment.name.text : "default", evaluate(exportAssignment.expression, context).value);
+  }
+
+  function evaluateElementAccessExpression() {
+    const elementAccessExpression = <ts.ElementAccessExpression>node;
+    return new rs.LiteralResult(evaluate(elementAccessExpression.expression, context).value.get(evaluate(elementAccessExpression.argumentExpression, context).value));
   }
 
   async function evaluateImportDeclaration() {
@@ -141,6 +232,11 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     return new rs.VoidResult();
   }
 
+  function evaluateTypeOfExpression() {
+    const typeofExpression = <ts.TypeOfExpression>node;
+    return new rs.LiteralResult(new SyntheticValueObject(typeof evaluate(typeofExpression.expression, context).value.toNative()));
+  }
+
   function evaluateSyntheticJSXElement() {
     const jsxElement = <ts.JsxElement>node;
     return createSyntheticJSXElementResult(
@@ -148,6 +244,21 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
       jsxElement.openingElement.attributes,
       jsxElement.children
     );
+  }
+
+  function evaluateForStatement() {
+    const forStatement = <ts.ForStatement>node;
+    evaluate(forStatement.initializer, context);
+    for (evaluate(forStatement.initializer, context); evaluate(forStatement.condition, context).value.toNative(); evaluate(forStatement.incrementor, context)) {
+      const result = evaluate(forStatement.statement, context);
+      if (result.breaks) return result;
+    }
+    return new rs.VoidResult();
+  }
+
+  function evaluateThrowStatement() {
+    const throwStatement = <ts.ThrowStatement>node;
+    throw evaluate(throwStatement.expression, context).value.toNative();
   }
 
   function createSyntheticJSXElementResult(nodeName: ts.Node, attributes: Array<ts.Node>, children: Array<ts.Node> = []) {
@@ -189,37 +300,46 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
       return evaluateAssignmentExpression();
     }
 
-    const left = evaluate(binaryExpression.left, context).value.value;
-    const right = evaluate(binaryExpression.right, context).value.value;
+    function eleft() {
+      return evaluate(binaryExpression.left, context).value;
+    }
+
+    function eright() {
+      return evaluate(binaryExpression.right, context).value;
+    }
+
     let value;
 
     /* tslint:disable */
     switch (binaryExpression.operatorToken.kind) {
 
       // math
-      case ts.SyntaxKind.PlusToken: value = left + right; break;
-      case ts.SyntaxKind.MinusToken: value = left - right; break;
-      case ts.SyntaxKind.SlashToken: value = left / right; break;
-      case ts.SyntaxKind.AsteriskToken: value = left * right; break;
-      case ts.SyntaxKind.PercentToken: value = left % right; break;
+      case ts.SyntaxKind.PlusToken: value = eleft().value + eright().value; break;
+      case ts.SyntaxKind.MinusToken: value = eleft().value - eright().value; break;
+      case ts.SyntaxKind.SlashToken: value = eleft().value / eright().value; break;
+      case ts.SyntaxKind.AsteriskToken: value = eleft().value * eright().value; break;
+      case ts.SyntaxKind.PercentToken: value = eleft().value % eright().value; break;
 
       // bool
-      case ts.SyntaxKind.BarBarToken: value = left || right; break;
-      case ts.SyntaxKind.LessThanToken: value = left < right; break;
-      case ts.SyntaxKind.GreaterThanToken: value = left > right; break;
-      case ts.SyntaxKind.EqualsEqualsToken: value = left == right; break;
-      case ts.SyntaxKind.LessThanEqualsToken: value = left <= right; break;
-      case ts.SyntaxKind.EqualsGreaterThanToken: value = left > right; break;
-      case ts.SyntaxKind.GreaterThanEqualsToken: value = left >= right; break;
-      case ts.SyntaxKind.ExclamationEqualsToken: value = left != right; break;
-      case ts.SyntaxKind.EqualsEqualsEqualsToken: value = left === right; break;
-      case ts.SyntaxKind.AmpersandAmpersandToken: value = left && right; break;
-      case ts.SyntaxKind.ExclamationEqualsEqualsToken: value = left !== right; break;
+      case ts.SyntaxKind.BarBarToken: value = eleft().value || eright().value; break;
+      case ts.SyntaxKind.LessThanToken: value = eleft().value < eright().value; break;
+      case ts.SyntaxKind.GreaterThanToken: value = eleft().value > eright().value; break;
+      case ts.SyntaxKind.EqualsEqualsToken: value = eleft().value == eright().value; break;
+      case ts.SyntaxKind.LessThanEqualsToken: value = eleft().value <= eright().value; break;
+      case ts.SyntaxKind.EqualsGreaterThanToken: value = eleft().value > eright().value; break;
+      case ts.SyntaxKind.GreaterThanEqualsToken: value = eleft().value >= eright().value; break;
+      case ts.SyntaxKind.ExclamationEqualsToken: value = eleft().value != eright().value; break;
+      case ts.SyntaxKind.EqualsEqualsEqualsToken: value = eleft().value === eright().value; break;
+      case ts.SyntaxKind.AmpersandAmpersandToken: value = eleft().value && eright().value; break;
+      case ts.SyntaxKind.ExclamationEqualsEqualsToken: value = eleft().value !== eright().value; break;
 
       // bit
-      case ts.SyntaxKind.AmpersandToken: value = left & right; break;
-      case ts.SyntaxKind.CaretToken: value = left ^ right; break;
-      case ts.SyntaxKind.BarToken: value = left | right; break;
+      case ts.SyntaxKind.AmpersandToken: value = eleft().value & eright().value; break;
+      case ts.SyntaxKind.CaretToken: value = eleft().value ^ eright().value; break;
+      case ts.SyntaxKind.BarToken: value = eleft().value | eright().value; break;
+
+      // op
+      case ts.SyntaxKind.InstanceOfKeyword: value = eleft().toNative() instanceof eright().toNative(); break;
 
       default: throw new Error(`Unknown binary token ${binaryExpression.operatorToken.getText()}:${binaryExpression.operatorToken.kind}.`);
     }
@@ -247,6 +367,8 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     } else if (node.kind === ts.SyntaxKind.Identifier) {
       ctx = context;
       propertyName = (<ts.Identifier>node).text;
+    } else {
+      ctx = context;
     }
 
     return { ctx, propertyName };
@@ -298,7 +420,7 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
 
   function evaluateReturnStatement() {
     const returnStatement = <ts.ReturnStatement>node;
-    return new rs.ReturnResult(evaluate(returnStatement.expression, context).value);
+    return new rs.ReturnResult(returnStatement.expression ? evaluate(returnStatement.expression, context).value : new SyntheticValueObject(undefined));
   }
 
   function shouldExport(declaration: ts.Node) {
@@ -314,8 +436,13 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
 
   function evaluateVariableStatement() {
     const variableStatement = <ts.VariableStatement>node;
+    return evaluate(variableStatement.declarationList, context);
+  }
+
+  function evaluateVariableDeclarationList() {
+    const variableStatement = <ts.VariableDeclarationList>node;
     const results = [];
-    variableStatement.declarationList.declarations.forEach((declaration) => {
+    variableStatement.declarations.forEach((declaration) => {
       results.push(evaluate(declaration, context));
     });
     return new rs.ListResult(results);
@@ -362,7 +489,7 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
 
   function evaluateObjectLiteral() {
     const objectLiteral = <ts.ObjectLiteralExpression>node;
-    const object = new SymbolTable();
+    const object = new SyntheticValueObject({});
     objectLiteral.properties.forEach((property) => {
       const { name, value } = evaluate(property, context) as rs.DeclarationResult;
       object.set(name, value);
@@ -377,7 +504,7 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
 
   function evaluateShorthandPropertyAssignment() {
     const shorthandPropertyAssignment = <ts.ShorthandPropertyAssignment>node;
-    return null;
+    return new rs.VoidResult();
   }
 
   function evaluateFunctionDeclaration() {
@@ -392,8 +519,10 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
 
   function evaluateCallExpression() {
     const callExpression = <ts.CallExpression>node;
-    const { ctx, propertyName } = getReference(callExpression.expression);
-    return new rs.LiteralResult((<ISyntheticFunction>ctx.get(propertyName)).apply(ctx, evaluateCallArguments(callExpression.arguments)));
+    const { ctx } = getReference(callExpression.expression);
+    const fn = evaluate(callExpression.expression, context).value;
+
+    return new rs.LiteralResult(fn.apply(ctx, evaluateCallArguments(callExpression.arguments)));
   }
 
   function evaluateCallArguments(callArgs: Array<ts.Node>) {
@@ -419,7 +548,7 @@ window["ts"] = ts;
 export const evaluateTypescript = function(node: ts.Node, context?: SymbolTable): any {
 
   if (!context) {
-    context = context || new JSRootSymbolTable();
+    context = new JSRootSymbolTable();
   }
 
   return evaluate(node, context);

@@ -81,6 +81,10 @@ export class SyntheticFunction extends SyntheticBaseFunction implements ISynthet
     };
   }
 
+  toString() {
+    return this._expression.getText();
+  }
+
   toJSON() {
     return { kind: SyntheticKind.Function, scriptText: this._expression.getText() };
   }
@@ -138,20 +142,20 @@ export class SyntheticClass extends SyntheticObject implements IInstantiableSynt
 
   createInstance(args: Array<ISynthetic>): ISynthetic {
     const instance = new SyntheticObject();
+    let constructor;
     for (const member of this._expression.members) {
       const value = evaluateTypescript(member, this._context).value;
       if (value == null) continue;
 
       if (member.kind === ts.SyntaxKind.Constructor) {
-        instance.set("constructor", value);
+        constructor = value;
       } else if (member.name) {
         instance.set((<ts.Identifier>member.name).text, value);
       }
     }
 
-    const ctor = <ISyntheticFunction>instance.get("constructor");
-    if (ctor) {
-      ctor.apply(instance, args);
+    if (constructor) {
+      constructor.apply(instance, args);
     }
 
     return instance;

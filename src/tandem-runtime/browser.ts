@@ -8,7 +8,7 @@ import { ModuleImporterAction } from "./actions";
 import { SyntheticNodeComponentFactory } from "./dependencies";
 import { Dependencies, MainBusDependency } from "tandem-common/dependencies";
 import { IFileSystem, FileSystem, CachedFileSystem } from "./file-system";
-import { SymbolTable, SyntheticValueObject, SyntheticLocation } from "./synthetic";
+import { SymbolTable, JSRootSymbolTable, SyntheticValueObject, SyntheticLocation } from "./synthetic";
 import { SyntheticDocument, NativeFunction, BaseSyntheticNodeComponent } from "./synthetic";
 import { BrokerBus, IActor, Action, Observable, PropertyChangeAction, bindable } from "tandem-common";
 
@@ -30,6 +30,7 @@ export class Browser extends Observable {
     this._bus = new BrokerBus();
     this._fileSystem     = new CachedFileSystem(new FileSystem(_dependencies));
     this._window = this.createWindow();
+    // todo only have one instance here
     // this._window.get<SyntheticDocument>("document").observe(new WrapBus(this.onDocumentChange.bind(this)));
 
     // TODO - renderer should be separate from Browser
@@ -61,14 +62,14 @@ export class Browser extends Observable {
     this._currentFileName = fileName;
 
     const window = this.createWindow();
+
+    this._importer = new ModuleImporter(this._fileSystem, this._dependencies);
+    this._importer.observe(new WrapBus(this.onImportedFileChange.bind(this)));
+    this._importer.context = window;
     window.set("location", this._location);
 
     // TODO - this needs to be defined as a module instead of a global
     window.set("renderJSX", renderSyntheticJSX);
-
-    // todo only have one instance here
-    this._importer = new ModuleImporter(this._fileSystem, this._dependencies, window);
-    this._importer.observe(new WrapBus(this.onImportedFileChange.bind(this)));
 
     // since evaluation happens as the user is modifying the docuent, errors will
     // definitely occur -- don't like that break other things
@@ -87,7 +88,7 @@ export class Browser extends Observable {
   }
 
   protected createWindow(): SymbolTable {
-    const window = new SymbolTable();
+    const window = new JSRootSymbolTable();
     window.set("window", window);
     window.set("document", new SyntheticDocument(this._location));
     window.set("console", new SyntheticValueObject(console));

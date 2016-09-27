@@ -25,7 +25,7 @@ class SyntheticAttributes extends SyntheticArray<SyntheticAttribute> {
   }
 
   get(name: string|number) {
-    return this.value.find((attribute, index) => attribute.get<SyntheticValueObject<string>>("name").value === name || index === name) || new SyntheticValueObject(undefined);
+    return this.find((attribute, index) => attribute.get("name").value === name || index === name) || new SyntheticValueObject(undefined);
   }
 
   set(name: string|number, value: SyntheticValueObject<string>) {
@@ -33,7 +33,7 @@ class SyntheticAttributes extends SyntheticArray<SyntheticAttribute> {
     if (attribute instanceof SyntheticAttribute) {
       attribute.set("value", value);
     } else {
-      this.value.push(new SyntheticAttribute(new SyntheticValueObject<any>(name), value));
+      this.push(new SyntheticAttribute(new SyntheticValueObject<any>(name), value));
     }
   }
 }
@@ -55,7 +55,7 @@ export class SyntheticElement extends SyntheticContainerNode implements ISynthet
 
   @synthetic
   get innerHTML() {
-    return new SyntheticString(this.childNodes.value.map(child => child.outerHTML).join(""));
+    return this.childNodes.map(child => child.outerHTML).join(new SyntheticString(""));
   }
 
   set innerHTML(value: SyntheticString) {
@@ -64,7 +64,7 @@ export class SyntheticElement extends SyntheticContainerNode implements ISynthet
     const ast = parseHTML(value.toString());
     const node = evaluateHTML(ast, this.ownerDocument) as SyntheticContainerNode;
 
-    for (const child of node.childNodes.value) {
+    for (const child of node.childNodes.toNative()) {
       this.appendChild(child);
     }
   }
@@ -74,7 +74,7 @@ export class SyntheticElement extends SyntheticContainerNode implements ISynthet
       "<", this.nodeName.value
     ];
 
-    for (const attribute of this.attributes.value) {
+    for (const attribute of this.attributes.toNative()) {
       buffer.push(` ${attribute.name}=${attribute.value}`);
     }
 

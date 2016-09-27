@@ -36,12 +36,12 @@ export abstract class SyntheticNode extends SyntheticObject {
     if (node._parentNode) {
       node._parentNode.removeChild(node);
     }
-    this.childNodes.value.push(node);
+    this.childNodes.push(node);
     node._parentNode = this;
   }
 
   @synthetic removeChild(node: SyntheticNode) {
-    const index = this.childNodes.value.indexOf(node);
+    const index = this.childNodes.indexOf(node);
   }
 
   protected onChildAction(action: Action) {
@@ -56,6 +56,6 @@ export abstract class SyntheticContainerNode extends SyntheticNode {
   }
 
   get innerHTML() {
-    return new SyntheticString(this.childNodes.value.map(child => child.outerHTML).join(""));
+    return this.childNodes.map(child => child.outerHTML).join(new SyntheticString(""));
   }
 }

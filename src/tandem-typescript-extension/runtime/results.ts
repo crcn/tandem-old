@@ -12,7 +12,7 @@ export namespace ResultKind {
 }
 
 export abstract class Result<T> {
-  constructor(readonly kind: number, readonly value: T = undefined) {
+  constructor(readonly kind: number, readonly value: T = undefined, readonly breaks: boolean = false) {
 
   }
 }
@@ -37,7 +37,7 @@ export class LiteralResult extends Result<ISynthetic> {
 
 export class ReturnResult extends Result<any> {
   constructor(value: any) {
-    super(ResultKind.Return, value);
+    super(ResultKind.Return, value, true);
   }
 }
 
