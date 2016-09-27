@@ -27,9 +27,9 @@ export class SyntheticLinkElementComponent extends SyntheticContainerComponent<S
     const ownerDocument = this.target.ownerDocument;
     const href          = this.target.getAttribute(new SyntheticString("href")).value;
 
-    const exports = await importer.require(EnvironmentKind.CSS, href, MimeTypeDependency.lookup(href, this._dependencies), ownerDocument.location.href.toString()) as SyntheticObject;
+    const exports = await importer.require(EnvironmentKind.CSS, href, MimeTypeDependency.lookup(href, this._dependencies), ownerDocument.location.href.toString()) as SyntheticString;
     const element = ownerDocument.createElement(new SyntheticString("style"));
-    element.appendChild(ownerDocument.createTextNode(exports.get<SyntheticString>("content")));
+    element.appendChild(ownerDocument.createTextNode(exports.get("content")));
 
     const child = SyntheticNodeComponentFactory.create(element, this._dependencies);
     await child.load(context);

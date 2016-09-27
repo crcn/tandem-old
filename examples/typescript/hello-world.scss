@@ -2,15 +2,9 @@
   color: white;
   font-size:20px;
   margin: 20px;
-  background-color: #FF6600;
+  background-color: #F60;
+  opacity: 1;
   border: 8px solid black;
   padding:50px;
   border-radius: 100px;
-}
-
-.item:before {
-  content: "<";
-}
-.item:after {
-  content: ">";
 }
