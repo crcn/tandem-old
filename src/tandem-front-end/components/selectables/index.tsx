@@ -111,9 +111,9 @@ export class SelectablesComponent extends React.Component<{
       this.setState({ showSelectables: false });
 
       // hack to fix issue where selectables are highlighted after showSelectables becomes true
-      for (const entity of this.props.workspace.file.entity.flatten()) {
-        entity.metadata.set(MetadataKeys.HOVERING, false);
-      }
+      // for (const entity of this.props.workspace.file.entity.flatten()) {
+      //   entity.metadata.set(MetadataKeys.HOVERING, false);
+      // }
     }
   }
 
@@ -137,7 +137,7 @@ export class SelectablesComponent extends React.Component<{
     // TODO - check if user is scrolling
     if (selection && editor.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
-    const allEntities = this.props.workspace.file.entity.flatten() as Array<IEntity>;
+    const allEntities = []; // this.props.workspace.file.entity.flatten() as Array<IEntity>;
 
     // if (selection.preview.currentTool.type !== "pointer") return null;
 

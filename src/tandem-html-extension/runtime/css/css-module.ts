@@ -11,10 +11,9 @@ import {
 
 import { MimeTypes } from "../../constants";
 
-export class CSSModule extends BaseModule<SyntheticObject> {
+export class CSSModule extends BaseModule<any> {
   evaluate(context: SymbolTable) {
-    context.get("context").set("content", new SyntheticString(this._content));
-    return null;
+    context.get("exports").set("content", new SyntheticString(this._content));
   }
 }
 

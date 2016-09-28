@@ -53,6 +53,16 @@ describe(__filename + "#", () => {
     [`export const a = 1 && 2;`, { a: 2 }],
     [`export const a = 0 && 2;`, { a: 0 }],
 
+    // unary postfix
+    [`let i = 1; export const a = i++; export const b = i;`, { a: 1, b: 2 }],
+    [`let i = 0; export const a = i--; export const b = i;`, { a: 0, b: -1 }],
+
+    // unary prefix
+    [`let i = 0; export const a = --i; export const b = i;`, { a: -1, b: -1 }],
+    [`let i = 0; export const a = ++i; export const b = i;`, { a: 1, b: 1 }],
+    [`let i = 0; export const a = !i; export const b = !!i`, { a: true, b: false }],
+    [`let i = 1; export const a = -i; export const b = i`, { a: -1, b: 1 }],
+
     // prefix operators
     [`let i = 0; export const j = ++i;`, { j: 1 }],
 
@@ -64,6 +74,10 @@ describe(__filename + "#", () => {
     [`export const { a: { b } } = { a: { b: 2 } }`, { b: 2 }],
     [`const a = 1; export const b = { c: a };`, {b: { c: 1 }}],
     [`const { a } = { a: 1 }; export const b = a;`, { b: 1 }],
+
+    // Objects
+    // Strings
+    // Arrays
 
     // functions
     [`function a() { }`, {}],
@@ -148,7 +162,32 @@ describe(__filename + "#", () => {
 
       const vo = new ValueObject("a");
       export const value = vo.valueOf();
-      `, { value: "a" }]
+      `, { value: "a" }],
+
+    // for statements
+    [`
+    const items = [];
+    for (let i = 0; i < 4; i++) {
+      items.push(i);
+    }
+    export const value = items;
+    `, { value: [0, 1, 2, 3]}],
+
+    [`
+    const items = [];
+    for (let i = 4; i >= 0; i--) {
+      items.push(i);
+    }
+    export const value = items;
+    `, { value: [4, 3, 2, 1, 0]}],
+
+    [`
+    const items = [];
+    for (let i = 4; i--;) {
+      items.push(i);
+    }
+    export const value = items;
+    `, { value: [3, 2, 1, 0]}],
 
   ].forEach(([scriptSource, exports]) => {
     it(`can evaluate ${scriptSource}`, async () => {

@@ -19,4 +19,4 @@ const element = document.createElement("div");
 document.body.appendChild(element);
 
 
-renderJSX(renderItems(0, 1, 2, 3, 4), element);
+renderJSX(renderItems(1,2,3), element);

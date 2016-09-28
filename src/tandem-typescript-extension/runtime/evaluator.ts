@@ -133,9 +133,15 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     const prefixUnaryExpression = <ts.PrefixUnaryExpression>node;
     const { ctx, propertyName } = getReference(prefixUnaryExpression.operand);
     let value = evaluate(prefixUnaryExpression.operand, context).value as SyntheticValueObject<any>;
+    let setValue: boolean = false;
     switch (prefixUnaryExpression.operator) {
       case ts.SyntaxKind.PlusPlusToken:
         value = new SyntheticValueObject(value.toNative() + 1);
+        setValue = true;
+      break;
+      case ts.SyntaxKind.MinusMinusToken:
+        value = new SyntheticValueObject(value.toNative() - 1);
+        setValue = true;
       break;
       case ts.SyntaxKind.ExclamationToken:
         value = new SyntheticValueObject(!value.toNative());
@@ -144,6 +150,11 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
         value = new SyntheticValueObject(-value.toNative());
       break;
     }
+
+    if (setValue) {
+      ctx.set(propertyName, value);
+    }
+
     return new rs.LiteralResult(value);
   }
 
@@ -151,9 +162,18 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     const prefixUnaryExpression = <ts.PrefixUnaryExpression>node;
     const { ctx, propertyName } = getReference(prefixUnaryExpression.operand);
     const value = evaluate(prefixUnaryExpression.operand, context).value as SyntheticValueObject<any>;
-    const ret = new SyntheticValueObject(value.value + 1);
-    ctx.set(propertyName, ret);
-    return new rs.LiteralResult(ret);
+
+    let newValue;
+    switch (prefixUnaryExpression.operator) {
+      case ts.SyntaxKind.MinusMinusToken:
+        newValue = new SyntheticValueObject(value.toNative() - 1);
+      break;
+      case ts.SyntaxKind.PlusPlusToken:
+        newValue = new SyntheticValueObject(value.toNative() + 1);
+      break;
+    }
+    ctx.set(propertyName, newValue);
+    return new rs.LiteralResult(value);
   }
 
   function evaluateParenthizedExpression() {
@@ -251,7 +271,6 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     evaluate(forStatement.initializer, context);
     for (evaluate(forStatement.initializer, context); evaluate(forStatement.condition, context).value.toNative(); forStatement.incrementor ? evaluate(forStatement.incrementor, context) : null) {
       const result = evaluate(forStatement.statement, context);
-      console.log("OK");
       if (result.breaks) return result;
     }
     return new rs.VoidResult();

@@ -3,7 +3,15 @@ import { HTMLNodeType } from "./node-types";
 import { SyntheticDocument } from "./document";
 import { parse as parseHTML } from "./html-parser.peg";
 import { SyntheticNode, SyntheticContainerNode } from "./node";
-import { synthetic, SyntheticValueObject, SyntheticString, SyntheticObject, SyntheticArray, ISynthetic } from "../core";
+import {
+  synthetic,
+  SyntheticValueObject,
+  SyntheticString,
+  SyntheticObject,
+  SyntheticWrapperFunction,
+  SyntheticArray,
+  ISynthetic
+} from "../core";
 
 class SyntheticAttribute extends SyntheticObject {
   constructor(name: SyntheticValueObject<string>, value: SyntheticValueObject<string>) {
@@ -55,7 +63,7 @@ export class SyntheticElement extends SyntheticContainerNode implements ISynthet
 
   @synthetic
   get innerHTML() {
-    return this.childNodes.map(child => child.outerHTML).join(new SyntheticString(""));
+    return this.childNodes.map(new SyntheticWrapperFunction(child => child.outerHTML)).join(new SyntheticString(""));
   }
 
   set innerHTML(value: SyntheticString) {

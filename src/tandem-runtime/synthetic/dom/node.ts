@@ -4,7 +4,14 @@ import { HTMLNodeType } from "./node-types";
 import { IActor, Action } from "tandem-common";
 import { SyntheticDocument } from "./document";
 import { SyntheticNodeAction } from "../../actions";
-import { synthetic, SyntheticObject, SyntheticString, SyntheticValueObject, SyntheticArray } from "../core";
+import {
+  synthetic,
+  SyntheticArray,
+  SyntheticWrapperFunction,
+  SyntheticObject,
+  SyntheticString,
+  SyntheticValueObject,
+} from "../core";
 
 // TODO - implement innerHTML parse
 export abstract class SyntheticNode extends SyntheticObject {
@@ -56,6 +63,6 @@ export abstract class SyntheticContainerNode extends SyntheticNode {
   }
 
   get innerHTML() {
-    return this.childNodes.map(child => child.outerHTML).join(new SyntheticString(""));
+    return this.childNodes.map(new SyntheticWrapperFunction(child => child.outerHTML)).join(new SyntheticString(""));
   }
 }

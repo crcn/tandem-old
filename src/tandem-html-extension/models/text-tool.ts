@@ -73,7 +73,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
   }
 
   private get _targetEntity() {
-    return <VisibleHTMLElementEntity>this.workspace.selection[0];
+    return <VisibleHTMLElementEntity>this.editor.selection[0];
   }
 
   private get _targetNode() {
