@@ -53,6 +53,12 @@ describe(__filename + "#", () => {
     [`export const a = 1 && 2;`, { a: 2 }],
     [`export const a = 0 && 2;`, { a: 0 }],
 
+    // assignment
+    [`let i = 0; i += 2; export const a = i`, { a: 2 }],
+    [`let i = 0; i -= 2; export const a = i`, { a: -2 }],
+    [`let i = 4; i *= 2; export const a = i`, { a: 8 }],
+    [`let i = 4; i /= 2; export const a = i`, { a: 2 }],
+
     // unary postfix
     [`let i = 1; export const a = i++; export const b = i;`, { a: 1, b: 2 }],
     [`let i = 0; export const a = i--; export const b = i;`, { a: 0, b: -1 }],
@@ -78,6 +84,36 @@ describe(__filename + "#", () => {
     // Objects
     // Strings
     // Arrays
+    [`export const value = new Array(1, 2, 3)`, { value: [1, 2, 3] }],
+    [`export const value = Array.from([1, 2, 3])`, { value: [1, 2, 3] }],
+    [`export const value = Array.from([1, 2, 3], value => value + 1)`, { value: [2, 3, 4] }],
+    [`export const value = Array.isArray(1)`, { value: false }],
+    [`export const value = Array.isArray({})`, { value: false }],
+    [`export const value = Array.isArray([])`, { value: true }],
+    [`export const value = Array.isArray(new Array())`, { value: true }],
+    [`export const value = [1, 2].concat([3, 4])`, { value: [1, 2, 3, 4] }],
+    [`export const value = [].concat([3, 4], [5, 6])`, { value: [3, 4, 5, 6] }],
+    [`export const value = [].concat([3, 4], 5, 6)`, { value: [3, 4, 5, 6] }],
+    [`export const value = [0, 1, 2, 3].length`, { value: 4 }],
+    [`const a = [1]; a.push(2); export const v = a;`, { v: [1, 2] }],
+    [`const a = [1]; a.unshift(2); export const v = a;`, { v: [2, 1] }],
+    [`const a = [1, 2]; a.splice(1, 0, 3); export const v = a;`, { v: [1, 3, 2] }],
+    [`const a = [1, 2, 3]; a.splice(1, 1, 4); export const v = a;`, { v: [1, 4, 3] }],
+    [`const a = [1, 2, 3]; a.pop(); export const v = a;`, { v: [1, 2] }],
+    [`const a = [1, 2, 3]; a.shift(); export const v = a;`, { v: [2, 3] }],
+    [`const a = [1, 2, 3]; export const v = a.slice(1);`, { v: [2, 3] }],
+    [`const a = [3, 2, 1]; export const v = a.sort((a, b) => a > b ? 1 : -1)`, { v: [1, 2, 3] }],
+    [`const a = [1, 2, 3, 4]; export const v = a.filter((i) => i % 2)`, { v: [1, 3] }],
+    [`const a = [1, 2, 3, 4]; export const v = a.find((i) => i > 1)`, { v: 2 }],
+    [`const a = [1, 2, 3, 4]; export const v = a.reverse()`, { v: [4, 3, 2, 1] }],
+    // [`export const v = [].indexOf(0)`, { v: -1 }],
+    // [`export const v = [1, 0].indexOf(0)`, { v: 1 }],
+    [`export const v = [1, 2, 3].join('--')`, { v: "1--2--3" }],
+    [`
+      let sum = 0;
+      [0, 1, 2, 3].forEach(i => sum = sum + i);
+      export const value = sum;
+    `, { value: 6 }],
 
     // functions
     [`function a() { }`, {}],

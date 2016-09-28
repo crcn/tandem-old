@@ -62,7 +62,7 @@ export class SyntheticFunction extends SyntheticBaseFunction implements ISynthet
 
     this._expression.parameters.forEach((parameter, i) => {
       const varName = (<ts.Identifier>parameter.name).text;
-      const value   = (parameter.dotDotDotToken ? new SyntheticArray(args.slice(i)) : args[i]) || new SyntheticValueObject(undefined);
+      const value   = (parameter.dotDotDotToken ? new SyntheticArray(...args.slice(i)) : args[i]) || new SyntheticValueObject(undefined);
       ctxArgs.set(varName, value);
       bodyContext.defineVariable(
         varName,

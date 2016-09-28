@@ -40,7 +40,7 @@ export interface ISyntheticValueObject extends ISynthetic {
 export function mapNativeAsSynthetic(value: any) {
   if (value && value.kind) return value;
   switch (typeof value) {
-    case "function": return new NativeFunction(value);
+    case "function": return value.__synthetic ? new SyntheticWrapperFunction(value) : new NativeFunction(value);
     case "object":
       // if (Array.isArray(value)) return new SyntheticArray(value.map(mapNativeAsSynthetic));
       return new SyntheticValueObject(value);
@@ -213,6 +213,7 @@ export class SyntheticObject extends BaseSynthetic {
     return object;
   }
 }
+
 export class SyntheticValueObject<T> extends BaseSynthetic implements ISyntheticValueObject {
   kind = SyntheticKind.Native;
   constructor(public value: T) {
@@ -248,7 +249,7 @@ export class SyntheticValueObject<T> extends BaseSynthetic implements ISynthetic
 export class SyntheticWrapperFunction extends SyntheticValueObject<Function> implements ISyntheticFunction {
   kind = SyntheticKind.Function;
   createInstance(args: Array<ISynthetic>) {
-    return null; // TODO
+    return new (this.value as any)(...args);
   }
   apply(context: ISynthetic, args: Array<ISynthetic> = []) {
     return this.value.apply(context, args) || new SyntheticValueObject(undefined);
@@ -282,8 +283,8 @@ export class SyntheticRegExp extends SyntheticValueObject<RegExp> {
 
 export class SyntheticArray<T extends ISynthetic> extends SyntheticObject {
   kind = SyntheticKind.Array;
-  constructor(value: T[] = []) {
-    super(value);
+  constructor(...items: T[]) {
+    super(items);
   }
 
   get value(): T[] {
@@ -310,20 +311,81 @@ export class SyntheticArray<T extends ISynthetic> extends SyntheticObject {
     return new SyntheticValueObject(this.__properties.push(...items));
   }
 
+  @synthetic unshift(...items) {
+    return new SyntheticValueObject(this.__properties.unshift(...items));
+  }
+
+  @synthetic splice(...items) {
+    return new SyntheticArray(...this.__properties.splice(...items));
+  }
+
+  @synthetic slice(...items) {
+    return new SyntheticArray(...this.__properties.slice(...items));
+  }
+
   @synthetic map(transform: ISyntheticFunction) {
-    return new SyntheticArray(this.__properties.map(wrapSyntheticFunction(transform)));
+    return new SyntheticArray(...this.__properties.map(wrapSyntheticFunction(transform)));
+  }
+
+  @synthetic sort(sort: ISyntheticFunction) {
+    return new SyntheticArray(...this.__properties.sort(wrapSyntheticFunction(sort)));
+  }
+
+  @synthetic filter(filter: ISyntheticFunction) {
+    return new SyntheticArray(...this.__properties.filter((item) => {
+      return filter.apply(this, [item]).toNative();
+    }));
+  }
+
+  @synthetic shift() {
+    return this.__properties.shift();
+  }
+
+  @synthetic pop() {
+    return this.__properties.pop();
   }
 
   @synthetic join(sep: SyntheticString) {
     return new SyntheticString(this.__properties.join(sep.toNative()));
   }
 
-  @synthetic find(filter: Function) {
-    return this.__properties.find(filter);
+  @synthetic find(filter: ISyntheticFunction) {
+    return this.__properties.find((item) => {
+      return filter.apply(this, [item]).toNative();
+    });
+  }
+
+  @synthetic reverse(filter: ISyntheticFunction) {
+    return new SyntheticArray(...this.__properties.reverse());
+  }
+
+  @synthetic concat(...items: ISynthetic[]) {
+    const flattened = [...this];
+    for (const item of items) {
+      if (SyntheticArray.isArray(item).toNative()) {
+        flattened.push(...<SyntheticArray<any>>item);
+      } else {
+        flattened.push(item);
+      }
+    }
+    return new SyntheticArray(...flattened);
+  }
+
+  @synthetic forEach(each: ISyntheticFunction) {
+    this.value.forEach((value, index, array) => {
+      each.apply(this, [value, new SyntheticNumber(index), this]);
+    });
+  }
+
+  @synthetic static from(arrayLike: { [Symbol.iterator] }, map: ISyntheticFunction) {
+    return new SyntheticArray(...([...arrayLike].map(map ? wrapSyntheticFunction(map) : item => item) as ISynthetic[]));
+  }
+
+  @synthetic static isArray(value: ISynthetic) {
+    return new SyntheticBoolean(value.kind === SyntheticKind.Array);
   }
 
   addNativeProperties(value: any[]) {
-
     value.push(...this.__properties.map(synthetic => synthetic.toNative()));
   }
 
@@ -380,7 +442,7 @@ export class NativeFunction extends SyntheticValueObject<Function> implements IS
 
   createInstance(args: Array<ISynthetic>) {
     const inst = new (this.value as any)(...args.map((arg) => arg.toNative()));
-    return new SyntheticValueObject(inst);
+    return mapNativeAsSynthetic(inst);
   }
 }
 
@@ -507,13 +569,19 @@ export class JSRootSymbolTable extends SymbolTable {
     this.defineConstant("RegExp", new NativeFunction(RegExp));
 
     // todo - needs to be SyntheticArray here
-    this.defineConstant("Array", new NativeFunction(Array));
+    this.defineConstant("Array", new SyntheticWrapperFunction(SyntheticArray));
     this.defineConstant("Error", new NativeFunction(Error));
     this.defineConstant("console", new SyntheticValueObject(console));
   }
 }
 
 export function synthetic(proto: any, propertyName: string, descriptor?: any): any {
+
+  // ignore getters
+  if (!descriptor.get && typeof proto[propertyName] === "function") {
+    proto[propertyName].__synthetic = true;
+  }
+
   proto.__syntheticMembers = Object.assign({}, proto.__syntheticMembers || {}, {
     [propertyName]: descriptor
   });

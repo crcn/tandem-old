@@ -291,8 +291,8 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
 
     return new rs.LiteralResult(new SyntheticJSXElement(
       evaluated,
-      new SyntheticArray(attributes.map((attribute) => evaluate(attribute, context).value)),
-      new SyntheticArray(children.map((child) => evaluate(child, context).value))
+      new SyntheticArray(...attributes.map((attribute) => evaluate(attribute, context).value)),
+      new SyntheticArray(...children.map((child) => evaluate(child, context).value))
     ));
   }
 
@@ -329,6 +329,7 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     }
 
     let value;
+    let assignLeft = false;
 
     /* tslint:disable */
     switch (binaryExpression.operatorToken.kind) {
@@ -358,6 +359,12 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
       case ts.SyntaxKind.CaretToken: value = eleft().value ^ eright().value; break;
       case ts.SyntaxKind.BarToken: value = eleft().value | eright().value; break;
 
+      // assignment
+      case ts.SyntaxKind.PlusEqualsToken: value = eleft().value + eright().value; assignLeft = true; break;
+      case ts.SyntaxKind.MinusEqualsToken: value = eleft().value - eright().value; assignLeft = true; break;
+      case ts.SyntaxKind.AsteriskEqualsToken: value = eleft().value * eright().value; assignLeft = true; break;
+      case ts.SyntaxKind.SlashEqualsToken: value = eleft().value / eright().value; assignLeft = true; break;
+
       // op
       case ts.SyntaxKind.InstanceOfKeyword: value = eleft().toNative() instanceof eright().toNative(); break;
 
@@ -365,7 +372,14 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
     }
     /* tslint:enable */
 
-    return new rs.LiteralResult(new SyntheticValueObject(value));
+    const vo = new SyntheticValueObject(value);
+
+    if (assignLeft) {
+      const { ctx, propertyName } = getReference(binaryExpression.left);
+      ctx.set(propertyName, vo);
+    }
+
+    return new rs.LiteralResult(vo);
   }
 
   function evaluateAssignmentExpression() {
@@ -407,7 +421,7 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
   function evaluateArrayLiteralExpression() {
     const arrayLiteralExpression = <ts.ArrayLiteralExpression>node;
     const value = arrayLiteralExpression.elements.map((element) => evaluate(element, context).value);
-    return new rs.LiteralResult(new SyntheticArray(value));
+    return new rs.LiteralResult(new SyntheticArray(...value));
   }
 
   function evaluateClassDeclaration() {

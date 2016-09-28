@@ -17,7 +17,7 @@ export const renderSyntheticJSX = new SyntheticWrapperFunction(function (jsx: Sy
     element.removeChild(element.childNodes[0]);
   }
 
-  _render(this, element, new SyntheticArray([jsx]));
+  _render(this, element, new SyntheticArray(jsx));
 });
 
 function _render(context: SymbolTable, parent: SyntheticElement, children: SyntheticArray<any>) {
