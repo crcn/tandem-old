@@ -202,7 +202,7 @@ export default class EditorStageLayersComponent extends React.Component<{ app: a
         style={style}>
           <div style={innerStyle} className="noselect" data-previewroot>
               <PreviewLayerComponent {...this.props} renderer={this.props.app.editor.browser.renderer} />
-              {this._toolsHidden || true ? undefined : <ToolsLayerComponent entity={entity} {...this.props} />}
+              {this._toolsHidden ? undefined : <ToolsLayerComponent {...this.props} />}
           </div>
       </div>
     </IsolateComponent>);

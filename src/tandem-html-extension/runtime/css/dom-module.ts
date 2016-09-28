@@ -11,13 +11,14 @@ import {
 
 import { MimeTypes } from "../../constants";
 
-export class DOMCSSModule extends BaseModule<SyntheticObject> {
+export class DOMCSSModule extends BaseModule<any> {
   evaluate(context: SymbolTable) {
+    const content = new SyntheticString(this._content);
     const doc = context.get("document") as SyntheticDocument;
+    context.get("module").get("exports").set("content", content);
     const element = doc.createElement(new SyntheticString("style"));
-    element.appendChild(doc.createTextNode(new SyntheticString(this._content)));
+    element.appendChild(doc.createTextNode(content));
     doc.body.appendChild(element);
-    return new SyntheticObject();
   }
 }
 

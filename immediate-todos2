@@ -1,0 +1,5 @@
+- [ ] shoelace multiple browsers into Tandem
+- [ ] ability to open multiple component files in same window
+- [ ] cache opened files
+- [ ] only manipulate css styles for now (with JSX, things become overly complicated & buggy for manipulating html)
+- [ ] execute runtime in web worker

@@ -37,11 +37,11 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
   render() {
 
-    const { workspace, allEntities, tool } = this.props;
+    const { workspace, editor, allEntities, tool } = this.props;
 
     if (!(tool instanceof PointerTool)) return null;
 
-    const selection = new VisibleEntityCollection(...workspace.selection);
+    const selection = new VisibleEntityCollection(...editor.selection);
 
     // simple check to see if the selection array
     // is an IEntityDisplay

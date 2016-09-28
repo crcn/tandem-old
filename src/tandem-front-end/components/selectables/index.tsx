@@ -5,7 +5,7 @@ import "./index.scss";
 import * as cx from "classnames";
 import * as React from "react";
 import { inject } from "tandem-common/decorators";
-import { Workspace } from "tandem-front-end/models";
+import { Editor } from "tandem-front-end/models";
 import { BoundingRect } from "tandem-common/geom";
 import { SelectAction } from "tandem-front-end/actions";
 import { MetadataKeys } from "tandem-front-end/constants";
@@ -19,7 +19,6 @@ class SelectableComponent extends React.Component<{
   entity: IVisibleEntity,
   selection: any,
   app: FrontEndApplication,
-  documentContent: string,
   zoom: number,
   onEntityMouseDown: (entity: IVisibleEntity, event?: MouseEvent) => void
 }, any> {
@@ -92,7 +91,7 @@ class SelectableComponent extends React.Component<{
 // @injectable
 export class SelectablesComponent extends React.Component<{
   app: FrontEndApplication,
-  workspace: Workspace,
+  editor: Editor,
   onEntityMouseDown: (entity: IVisibleEntity, event?: MouseEvent) => void,
   canvasRootSelectable?: boolean
 }, { showSelectables: boolean }> {
@@ -127,16 +126,16 @@ export class SelectablesComponent extends React.Component<{
 
     if (!this.state.showSelectables) return null;
 
-    const { workspace, app } = this.props;
-    const { selection } = workspace;
-    const activeEntity = this.props.workspace.editor.activeEntity;
-    if (!activeEntity.children) return null;
+    const { editor, app } = this.props;
+    const { selection } = editor;
+    const activeEntity = editor.activeEntity;
+    if (!activeEntity || !activeEntity.children) return null;
     // do not render selectables that are off screen
     //
     // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.
 
     // TODO - check if user is scrolling
-    if (selection && workspace.editor.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
+    if (selection && editor.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
     const allEntities = this.props.workspace.file.entity.flatten() as Array<IEntity>;
 
@@ -147,8 +146,7 @@ export class SelectablesComponent extends React.Component<{
     )).map((entity, i) => (
       <SelectableComponent
         {...this.props}
-        documentContent={this.props.workspace.file.content}
-        zoom={this.props.workspace.editor.zoom}
+        zoom={editor.zoom}
         selection={selection}
         entity={entity as IVisibleEntity}
         key={i}

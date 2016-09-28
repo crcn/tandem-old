@@ -1,0 +1,1 @@
+This package defers HTML rendering to remote browsers

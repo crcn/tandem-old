@@ -22,7 +22,7 @@ export class Editor implements IEditor {
   public translate: IPoint = { left: 0, top: 0 };
   private _currentTool: IEditorTool;
   public transform: Transform = new Transform();
-  public selection: any[];
+  public selection: any[] = [];
 
   // TODO - this may change dependening on the editor type
   readonly type = "display";

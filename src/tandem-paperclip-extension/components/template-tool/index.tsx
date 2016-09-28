@@ -72,22 +72,24 @@ export class ArtboardComponent extends React.Component<{ entity: PCTemplateEntit
 export class ArtboardToolComponent extends React.Component<{ zoom: number, workspace: Workspace }, any> {
   render() {
 
-    const artboards = this.props.workspace.file.entity.flatten().filter((entity) => entity instanceof PCTemplateEntity);
+    return null;
 
-    if (!artboards.length) return null;
+    // const artboards = this.props.workspace.file.entity.flatten().filter((entity) => entity instanceof PCTemplateEntity);
 
-    const editor = this.props.workspace.editor;
-    const scale = 1 / editor.transform.scale;
+    // if (!artboards.length) return null;
 
-    const bgstyle = {
-      transform: `translate(${-editor.transform.left * scale}px, ${-editor.transform.top * scale}px) scale(${scale})`,
-      transformOrigin: "top left"
-    };
+    // const editor = this.props.workspace.editor;
+    // const scale = 1 / editor.transform.scale;
 
-    return (<div className="m-artboard-tool">
-      <div style={bgstyle} className="m-artboard-tool-background"></div>
-      { artboards.map((entity: PCTemplateEntity, i) => <ArtboardComponent entity={entity} editor={editor} key={i} />)}
-    </div>);
+    // const bgstyle = {
+    //   transform: `translate(${-editor.transform.left * scale}px, ${-editor.transform.top * scale}px) scale(${scale})`,
+    //   transformOrigin: "top left"
+    // };
+
+    // return (<div className="m-artboard-tool">
+    //   <div style={bgstyle} className="m-artboard-tool-background"></div>
+    //   { artboards.map((entity: PCTemplateEntity, i) => <ArtboardComponent entity={entity} editor={editor} key={i} />)}
+    // </div>);
   }
 }
 

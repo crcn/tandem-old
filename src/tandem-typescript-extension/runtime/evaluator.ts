@@ -249,8 +249,9 @@ function evaluate(node: ts.Node, context: SymbolTable): any {
   function evaluateForStatement() {
     const forStatement = <ts.ForStatement>node;
     evaluate(forStatement.initializer, context);
-    for (evaluate(forStatement.initializer, context); evaluate(forStatement.condition, context).value.toNative(); evaluate(forStatement.incrementor, context)) {
+    for (evaluate(forStatement.initializer, context); evaluate(forStatement.condition, context).value.toNative(); forStatement.incrementor ? evaluate(forStatement.incrementor, context) : null) {
       const result = evaluate(forStatement.statement, context);
+      console.log("OK");
       if (result.breaks) return result;
     }
     return new rs.VoidResult();
