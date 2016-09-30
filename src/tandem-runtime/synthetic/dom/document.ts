@@ -26,23 +26,23 @@ export class SyntheticDocument extends SyntheticContainerNode {
     return this.get("body") as SyntheticElement;
   }
 
-  @synthetic registerElement(tagName: SyntheticString, properties?: SyntheticObject) {
+  @synthetic() registerElement(tagName: SyntheticString, properties?: SyntheticObject) {
     // http://www.html5rocks.com/en/tutorials/webcomponents/customelements/
   }
 
-  @synthetic createElement(tagName: SyntheticString) {
+  @synthetic() createElement(tagName: SyntheticString) {
     return new SyntheticElement(tagName, this);
   }
 
-  @synthetic createDocumentFragment() {
+  @synthetic() createDocumentFragment() {
     return new SyntheticDocumentFragment(this);
   }
 
-  @synthetic createTextNode(nodeValue: SyntheticString) {
+  @synthetic() createTextNode(nodeValue: SyntheticString) {
     return new SyntheticTextNode(nodeValue, this);
   }
 
-  @synthetic createComment(nodeValue: SyntheticString) {
+  @synthetic() createComment(nodeValue: SyntheticString) {
     return new SyntheticComment(nodeValue, this);
   }
 }

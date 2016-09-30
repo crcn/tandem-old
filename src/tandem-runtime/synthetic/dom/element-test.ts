@@ -3,7 +3,11 @@ import { expect } from "chai";
 
 describe(__filename + "#", () => {
 
-  const doc = new SyntheticDocument(null);
+  let doc;
+
+  beforeEach(() => {
+    doc = new SyntheticDocument(null);
+  });
 
   it("can be created", () => {
     const element = new SyntheticElement(new SyntheticString("div"), doc);
@@ -12,6 +16,6 @@ describe(__filename + "#", () => {
   it("can set the innerHTML", () => {
     const element = new SyntheticElement(new SyntheticString("div"), doc);
     element.innerHTML = new SyntheticString("<span>hello</span>");
-    expect(element.childNodes.length.toNative()).to.equal(1);
+    expect(element.childNodes.value.length).to.equal(1);
   });
 });

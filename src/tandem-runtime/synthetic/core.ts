@@ -21,6 +21,8 @@ export interface ISynthetic extends IPatchable, IComparable {
   get(propertyName: string): ISynthetic;
   set(propertyName: string, value: ISynthetic);
   toJSON();
+  equalsEquals(target: ISynthetic): boolean;
+  equalsEqualsEquals(target: ISynthetic): boolean;
   toString();
   toNative();
 }
@@ -66,13 +68,17 @@ export abstract class BaseSynthetic extends Observable implements ISynthetic {
     this.id = createId();
   }
 
-  protected initialize() {
-  }
+  protected initialize() { }
+
+  abstract isTrueLike();
 
   public patch(source: BaseSynthetic) {
     this.applyPatch(source);
     this.notify(new SyntheticAction(SyntheticAction.PATCHED));
   }
+
+  abstract equalsEquals(target: BaseSynthetic);
+  abstract equalsEqualsEquals(target: BaseSynthetic);
 
   toNative() {
 
@@ -85,7 +91,6 @@ export abstract class BaseSynthetic extends Observable implements ISynthetic {
     this.__currentNative = undefined;
     return ret;
   }
-
 
   abstract get(propertyName: string): ISynthetic;
   abstract set(propertyName: string, value: ISynthetic): void;
@@ -105,49 +110,74 @@ export class SyntheticObject extends BaseSynthetic {
   kind = SyntheticKind.Object;
   protected __properties: any;
   protected __syntheticProperties: any;
+  protected __initialProperties: any;
   private __syntheticMembers: Object;
   constructor(properties?: any) {
     super();
     if (!this.__syntheticMembers) {
       this.__syntheticMembers = {};
     }
-    if (properties != null) {
-      Object.assign(this.__properties, properties);
+
+    this.__initialProperties = properties || {};
+    for (const propertyName in this.__initialProperties) {
+      this.set(propertyName, this.__initialProperties[propertyName]);
     }
   }
 
   get<T extends ISynthetic>(propertyName: string): T {
-    return (Object.keys(this.__syntheticMembers).indexOf(propertyName) !== -1 ? this.__syntheticProperties[propertyName] : this.__properties[propertyName]) || new SyntheticValueObject(undefined);
+    if (propertyName in this.__syntheticMembers) {
+      if (this.__syntheticProperties[propertyName] == null) {
+        const descriptor = this.__syntheticMembers[propertyName];
+        const value = descriptor["value"];
+        if (typeof value === "function") {
+          this.__syntheticProperties[propertyName] = new SyntheticWrapperFunction(value);
+        } else {
+          Object.defineProperty(this.__syntheticProperties, propertyName, {
+            get: descriptor.get ? descriptor.get.bind(this) : undefined,
+            set: descriptor.set ? descriptor.set.bind(this) : undefined
+          });
+        }
+      }
+
+      return this.__syntheticProperties[propertyName];
+    }
+
+    return mapNativeAsSynthetic(this.__properties[propertyName] || new SyntheticValueObject(undefined));
   }
 
   set(propertyName: string, value: ISynthetic) {
-    if (Object.keys(this.__syntheticMembers).indexOf(propertyName) !== -1) {
-      this.__syntheticProperties[propertyName] = value;
-    } else {
-      this.__properties[propertyName] = value;
-    }
+    this.__syntheticProperties[propertyName] = value;
+    this.__properties[propertyName] = value;
+  }
+
+  equalsEquals(value: SyntheticObject) {
+    return this === value;
+  }
+
+  equalsEqualsEquals(value: SyntheticObject) {
+    return this === value;
+  }
+
+  isTrueLike() {
+    return true;
   }
 
   protected initialize() {
     this.__properties = this.createNativeValue();
     this.__syntheticProperties = {};
-    for (const syntheticPropertyName in (this.__syntheticMembers || {})) {
-      const descriptor = this.__syntheticMembers[syntheticPropertyName];
-      const value = descriptor["value"];
-      if (typeof value === "function") {
-        this.__syntheticProperties[syntheticPropertyName] = new SyntheticWrapperFunction(value);
-      } else {
-        Object.defineProperty(this.__syntheticProperties, syntheticPropertyName, {
-          get: descriptor.get ? descriptor.get.bind(this) : undefined,
-          set: descriptor.set ? descriptor.set.bind(this) : undefined
-        });
-      }
-    }
     super.initialize();
   }
 
   createNativeValue() {
     return {};
+  }
+
+  @synthetic() hasOwnProperty(propertyName: string) {
+    return new SyntheticBoolean(!(propertyName in this.__initialProperties));
+  }
+
+  @synthetic("toString") toString2() {
+    return new SyntheticString("[object Object]");
   }
 
   addNativeProperties(value: any) {
@@ -165,7 +195,7 @@ export class SyntheticObject extends BaseSynthetic {
   }
 
   static create(prototype: SyntheticObject) {
-    return new SyntheticObject(Object.create(prototype.__properties || prototype["value"]));
+    return new SyntheticObject(Object.assign({}, prototype.__properties || prototype["value"]));
   }
 
   static keys(object: SyntheticObject) {
@@ -220,8 +250,22 @@ export class SyntheticValueObject<T> extends BaseSynthetic implements ISynthetic
     super();
   }
 
+  equalsEquals(target: SyntheticValueObject<any>) {
+    /* tslint:disable */
+    return this.value == target.value;
+    /* tslint:enable */
+  }
+
+  equalsEqualsEquals(target: SyntheticValueObject<any>) {
+    return this.value === target.value;
+  }
+
   toString() {
     return String(this.value);
+  }
+
+  isTrueLike() {
+    return !!this.value;
   }
 
   createNativeValue() {
@@ -246,8 +290,40 @@ export class SyntheticValueObject<T> extends BaseSynthetic implements ISynthetic
   }
 }
 
-export class SyntheticWrapperFunction extends SyntheticValueObject<Function> implements ISyntheticFunction {
+export abstract class SyntheticBaseFunction extends SyntheticObject implements ISyntheticFunction {
   kind = SyntheticKind.Function;
+  constructor(name?: string, properties?: any) {
+    super(properties);
+    this.set("prototype", new SyntheticObject());
+    this.set("name", new SyntheticValueObject(name));
+  }
+
+  @synthetic() get call() {
+    return new SyntheticCallFunction(this);
+  }
+
+  @synthetic("apply") get apply2() {
+    return new SyntheticApplyFunction(this);
+  }
+
+  @synthetic("apply") get bind() {
+    return new SyntheticBindFunction(this);
+  }
+
+  abstract apply(context: ISynthetic, args: Array<ISynthetic>);
+
+  createInstance(args: Array<ISynthetic>): ISynthetic {
+    const instance = SyntheticObject.create(this.get<SyntheticObject>("prototype"));
+    this.apply(instance, args);
+    return instance;
+  }
+}
+
+export class SyntheticWrapperFunction extends SyntheticBaseFunction {
+  kind = SyntheticKind.Function;
+  constructor(readonly value: Function) {
+    super(value.name);
+  }
   createInstance(args: Array<ISynthetic>) {
     return new (this.value as any)(...args);
   }
@@ -256,6 +332,43 @@ export class SyntheticWrapperFunction extends SyntheticValueObject<Function> imp
   }
   toJSON() {
     return undefined;
+  }
+}
+
+
+class SyntheticCallFunction extends SyntheticBaseFunction {
+  constructor(private __target: ISyntheticFunction) {
+    super("name");
+  }
+  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
+    return this.__target.apply(args[0], args.slice(1));
+  }
+}
+
+class SyntheticApplyFunction extends SyntheticBaseFunction {
+  constructor(private __target: ISyntheticFunction) {
+    super("apply");
+  }
+  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
+    return this.__target.apply(args[0], (<SyntheticArray<any>>args[1]).value);
+  }
+}
+
+class SyntheticBindFunction extends SyntheticBaseFunction {
+  constructor(private __target: ISyntheticFunction) {
+    super("bind");
+  }
+  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
+    return new SyntheticBoundFunction(this.__target, args);
+  }
+}
+
+class SyntheticBoundFunction extends SyntheticBaseFunction {
+  constructor(private __target: ISyntheticFunction, private _args: Array<ISynthetic>) {
+    super();
+  }
+  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
+    return this.__target.apply(this._args[0], this._args.slice(1).concat(args));
   }
 }
 
@@ -276,7 +389,7 @@ export class SyntheticRegExp extends SyntheticValueObject<RegExp> {
   constructor(value: RegExp) {
     super(value);
   }
-  @synthetic test(value: any) {
+  @synthetic() test(value: any) {
     return new SyntheticBoolean(this.value.test(value));
   }
 }
@@ -295,71 +408,71 @@ export class SyntheticArray<T extends ISynthetic> extends SyntheticObject {
     return [];
   }
 
-  @synthetic get length() {
-    return new SyntheticValueObject(this.__properties.length);
+  @synthetic() get length() {
+    return new SyntheticNumber(this.__properties.length);
   }
 
-  @synthetic indexOf(value: T) {
+  @synthetic() indexOf(value: T) {
     return new SyntheticValueObject(this.__properties.indexOf(value));
   }
 
-  @synthetic reduce(reducer: ISyntheticFunction) {
+  @synthetic() reduce(reducer: ISyntheticFunction) {
     return new SyntheticValueObject(this.__properties.reduce(reducer.toNative()));
   }
 
-  @synthetic push(...items) {
+  @synthetic() push(...items) {
     return new SyntheticValueObject(this.__properties.push(...items));
   }
 
-  @synthetic unshift(...items) {
+  @synthetic() unshift(...items) {
     return new SyntheticValueObject(this.__properties.unshift(...items));
   }
 
-  @synthetic splice(...items) {
+  @synthetic() splice(...items) {
     return new SyntheticArray(...this.__properties.splice(...items));
   }
 
-  @synthetic slice(...items) {
+  @synthetic() slice(...items) {
     return new SyntheticArray(...this.__properties.slice(...items));
   }
 
-  @synthetic map(transform: ISyntheticFunction) {
+  @synthetic() map(transform: ISyntheticFunction) {
     return new SyntheticArray(...this.__properties.map(wrapSyntheticFunction(transform)));
   }
 
-  @synthetic sort(sort: ISyntheticFunction) {
+  @synthetic() sort(sort: ISyntheticFunction) {
     return new SyntheticArray(...this.__properties.sort(wrapSyntheticFunction(sort)));
   }
 
-  @synthetic filter(filter: ISyntheticFunction) {
+  @synthetic() filter(filter: ISyntheticFunction) {
     return new SyntheticArray(...this.__properties.filter((item) => {
       return filter.apply(this, [item]).toNative();
     }));
   }
 
-  @synthetic shift() {
+  @synthetic() shift() {
     return this.__properties.shift();
   }
 
-  @synthetic pop() {
+  @synthetic() pop() {
     return this.__properties.pop();
   }
 
-  @synthetic join(sep: SyntheticString) {
+  @synthetic() join(sep: SyntheticString) {
     return new SyntheticString(this.__properties.join(sep.toNative()));
   }
 
-  @synthetic find(filter: ISyntheticFunction) {
+  @synthetic() find(filter: ISyntheticFunction) {
     return this.__properties.find((item) => {
       return filter.apply(this, [item]).toNative();
     });
   }
 
-  @synthetic reverse(filter: ISyntheticFunction) {
+  @synthetic() reverse(filter: ISyntheticFunction) {
     return new SyntheticArray(...this.__properties.reverse());
   }
 
-  @synthetic concat(...items: ISynthetic[]) {
+  @synthetic() concat(...items: ISynthetic[]) {
     const flattened = [...this];
     for (const item of items) {
       if (SyntheticArray.isArray(item).toNative()) {
@@ -371,17 +484,17 @@ export class SyntheticArray<T extends ISynthetic> extends SyntheticObject {
     return new SyntheticArray(...flattened);
   }
 
-  @synthetic forEach(each: ISyntheticFunction) {
+  @synthetic() forEach(each: ISyntheticFunction) {
     this.value.forEach((value, index, array) => {
       each.apply(this, [value, new SyntheticNumber(index), this]);
     });
   }
 
-  @synthetic static from(arrayLike: { [Symbol.iterator] }, map: ISyntheticFunction) {
+  @synthetic() static from(arrayLike: { [Symbol.iterator] }, map: ISyntheticFunction) {
     return new SyntheticArray(...([...arrayLike].map(map ? wrapSyntheticFunction(map) : item => item) as ISynthetic[]));
   }
 
-  @synthetic static isArray(value: ISynthetic) {
+  @synthetic() static isArray(value: ISynthetic) {
     return new SyntheticBoolean(value.kind === SyntheticKind.Array);
   }
 
@@ -567,6 +680,7 @@ export class JSRootSymbolTable extends SymbolTable {
     this.defineConstant("Date", new NativeFunction(Date));
     this.defineConstant("Function", new NativeFunction(Function));
     this.defineConstant("RegExp", new NativeFunction(RegExp));
+    this.defineConstant("Math", new SyntheticValueObject(Math));
 
     // todo - needs to be SyntheticArray here
     this.defineConstant("Array", new SyntheticWrapperFunction(SyntheticArray));
@@ -575,14 +689,16 @@ export class JSRootSymbolTable extends SymbolTable {
   }
 }
 
-export function synthetic(proto: any, propertyName: string, descriptor?: any): any {
+export function synthetic(newPropertyName?: string) {
+  return (proto: any, propertyName: string, descriptor?: any) => {
 
-  // ignore getters
-  if (!descriptor.get && typeof proto[propertyName] === "function") {
-    proto[propertyName].__synthetic = true;
-  }
+    // ignore getters
+    if (!descriptor.get && typeof proto[propertyName] === "function") {
+      proto[propertyName].__synthetic = true;
+    }
 
-  proto.__syntheticMembers = Object.assign({}, proto.__syntheticMembers || {}, {
-    [propertyName]: descriptor
-  });
+    proto.__syntheticMembers = Object.assign({}, proto.__syntheticMembers || {}, {
+      [newPropertyName || propertyName]: descriptor
+    });
+  };
 }

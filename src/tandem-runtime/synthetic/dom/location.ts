@@ -47,7 +47,7 @@ export class SyntheticLocation extends SyntheticObject {
     return this.get("protocol") as SyntheticString;
   }
 
-  @synthetic reload() {
+  @synthetic() reload() {
 
   }
 

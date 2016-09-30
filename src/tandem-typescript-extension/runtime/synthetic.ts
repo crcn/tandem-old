@@ -12,40 +12,8 @@ import {
   mapNativeAsSynthetic,
   ISyntheticValueObject,
   IInstantiableSynthetic,
+  SyntheticBaseFunction,
 } from "tandem-runtime";
-
-export abstract class SyntheticBaseFunction extends SyntheticObject implements ISyntheticFunction {
-  kind = SyntheticKind.Function;
-  constructor(name?: string) {
-    super();
-    SyntheticObject.defineProperty(this, "call", {
-      get: () => {
-        return new SyntheticCallFunction(this);
-      }
-    });
-    SyntheticObject.defineProperty(this, "apply", {
-      get: () => {
-        return new SyntheticApplyFunction(this);
-      }
-    });
-
-    SyntheticObject.defineProperty(this, "bind", {
-      get: () => {
-        return new SyntheticBindFunction(this);
-      }
-    });
-    this.set("prototype", new SyntheticObject());
-    this.set("name", new SyntheticValueObject(name));
-  }
-
-  abstract apply(context: ISynthetic, args: Array<ISynthetic>);
-
-  createInstance(args: Array<ISynthetic>): ISynthetic {
-    const instance = SyntheticObject.create(this.get<SyntheticObject>("prototype"));
-    this.apply(instance, args);
-    return instance;
-  }
-}
 
 export class SyntheticFunction extends SyntheticBaseFunction implements ISyntheticFunction {
   kind = SyntheticKind.Function;
@@ -58,12 +26,12 @@ export class SyntheticFunction extends SyntheticBaseFunction implements ISynthet
 
     const bodyContext = this._context.createChild();
     bodyContext.defineConstant("this", context);
-    const ctxArgs  = new SyntheticObject();
+    const ctxArgs  = new SyntheticArray();
 
     this._expression.parameters.forEach((parameter, i) => {
       const varName = (<ts.Identifier>parameter.name).text;
       const value   = (parameter.dotDotDotToken ? new SyntheticArray(...args.slice(i)) : args[i]) || new SyntheticValueObject(undefined);
-      ctxArgs.set(varName, value);
+      ctxArgs.push(value);
       bodyContext.defineVariable(
         varName,
         value
@@ -90,42 +58,6 @@ export class SyntheticFunction extends SyntheticBaseFunction implements ISynthet
   }
 }
 
-class SyntheticCallFunction extends SyntheticBaseFunction {
-  constructor(private __target: ISyntheticFunction) {
-    super("name");
-  }
-  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
-    return this.__target.apply(args[0], args.slice(1));
-  }
-}
-
-class SyntheticApplyFunction extends SyntheticBaseFunction {
-  constructor(private __target: ISyntheticFunction) {
-    super("apply");
-  }
-  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
-    return this.__target.apply(args[0], (<SyntheticArray<any>>args[1]).value);
-  }
-}
-
-class SyntheticBindFunction extends SyntheticBaseFunction {
-  constructor(private __target: ISyntheticFunction) {
-    super("bind");
-  }
-  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
-    return new SyntheticBoundFunction(this.__target, args);
-  }
-}
-
-class SyntheticBoundFunction extends SyntheticBaseFunction {
-  constructor(private __target: ISyntheticFunction, private _args: Array<ISynthetic>) {
-    super();
-  }
-  apply(context: ISynthetic, args: Array<ISynthetic> = []) {
-    return this.__target.apply(this._args[0], this._args.slice(1).concat(args));
-  }
-}
-
 export class SyntheticClass extends SyntheticObject implements IInstantiableSynthetic {
   constructor(private _expression: ts.ClassDeclaration, private _context: SymbolTable, name?: string) {
     super();
@@ -141,7 +73,7 @@ export class SyntheticClass extends SyntheticObject implements IInstantiableSynt
   }
 
   createInstance(args: Array<ISynthetic>): ISynthetic {
-    const instance = new SyntheticObject();
+    const initialProperties = {};
     let constructor;
     for (const member of this._expression.members) {
       const value = evaluateTypescript(member, this._context).value;
@@ -150,9 +82,11 @@ export class SyntheticClass extends SyntheticObject implements IInstantiableSynt
       if (member.kind === ts.SyntaxKind.Constructor) {
         constructor = value;
       } else if (member.name) {
-        instance.set((<ts.Identifier>member.name).text, value);
+        initialProperties[(<ts.Identifier>member.name).text] =  value;
       }
     }
+
+    const instance = new SyntheticObject(initialProperties);
 
     if (constructor) {
       constructor.apply(instance, args);

@@ -25,53 +25,6 @@ describe(__filename + "#", () => {
     [`export const a = { b: { c: 2 } };`, { a: { b: { c: 2 } } }],
     [`export const a = [0, 1, 2];`, { a: [0, 1, 2] }],
 
-    // binary PEMDAS operations
-    [`export const a = 1 + 2;`, { a: 3 }],
-    [`export const a = 1 - 2;`, { a: -1 }],
-    [`export const a = 2 * 3;`, { a: 6 }],
-    [`export const a = 1 / 2;`, { a: 0.5 }],
-    [`export const a = 1 % 2;`, { a: 1 }],
-
-    // binary
-    [`export const a = 1 | 2;`, { a: 1 | 2 }],
-    [`export const a = 1 & 2;`, { a: 1 & 2 }],
-    [`export const a = 1 ^ 2;`, { a: 1 ^ 2 }],
-
-    // binary bool operations
-    [`export const a = 1 == 0;`, { a: false }],
-    [`export const a = 1 == 1;`, { a: true }],
-    [`export const a = 1 == "1";`, { a: true }],
-    [`export const a = 1 === "1";`, { a: false }],
-    [`export const a = 1 != "1";`, { a: false }],
-    [`export const a = 1 !== "1";`, { a: true }],
-    [`export const a = 1 > 0;`, { a: true }],
-    [`export const a = 1 > 1;`, { a: false }],
-    [`export const a = 1 >= 1;`, { a: true }],
-    [`export const a = 1 < 1;`, { a: false }],
-    [`export const a = 1 <= 1;`, { a: true }],
-    [`export const a = 0 || 1;`, { a: 1 }],
-    [`export const a = 1 && 2;`, { a: 2 }],
-    [`export const a = 0 && 2;`, { a: 0 }],
-
-    // assignment
-    [`let i = 0; i += 2; export const a = i`, { a: 2 }],
-    [`let i = 0; i -= 2; export const a = i`, { a: -2 }],
-    [`let i = 4; i *= 2; export const a = i`, { a: 8 }],
-    [`let i = 4; i /= 2; export const a = i`, { a: 2 }],
-
-    // unary postfix
-    [`let i = 1; export const a = i++; export const b = i;`, { a: 1, b: 2 }],
-    [`let i = 0; export const a = i--; export const b = i;`, { a: 0, b: -1 }],
-
-    // unary prefix
-    [`let i = 0; export const a = --i; export const b = i;`, { a: -1, b: -1 }],
-    [`let i = 0; export const a = ++i; export const b = i;`, { a: 1, b: 1 }],
-    [`let i = 0; export const a = !i; export const b = !!i`, { a: true, b: false }],
-    [`let i = 1; export const a = -i; export const b = i`, { a: -1, b: 1 }],
-
-    // prefix operators
-    [`let i = 0; export const j = ++i;`, { j: 1 }],
-
     // declarations
     [`export const a, b = 1`, { a: undefined, b: 1 }],
     [`export const a = 1, b = 2, c = 3`, { a: 1, b: 2, c: 3 }],
@@ -82,7 +35,14 @@ describe(__filename + "#", () => {
     [`const { a } = { a: 1 }; export const b = a;`, { b: 1 }],
 
     // Objects
+
+    [`export const a = { b: 1 }`, { a: { b: 1}}],
+    [`const a = {}; a.b = 2; export const v = a.b;`, { v: 2 }],
+    [`const a = {}; a.b = (a, b) => a + b; export const v = a.b(1, 2);`, { v: 3 }],
+
     // Strings
+    [`export const v = "abc".split('')`, { v: ["a", "b", "c"] }],
+
     // Arrays
     [`export const value = new Array(1, 2, 3)`, { value: [1, 2, 3] }],
     [`export const value = Array.from([1, 2, 3])`, { value: [1, 2, 3] }],
@@ -115,7 +75,19 @@ describe(__filename + "#", () => {
       export const value = sum;
     `, { value: 6 }],
 
-    // functions
+    // Math
+    [`Math.random()`, {}],
+    [`export const v = Math.max(1, 2, 3)`, { v: 3 }],
+    [`export const v = Math.min(1, 2)`, { v: 1 }],
+    [`export const v = Math.pow(4, 3)`, { v: 64 }],
+    [`export const v = Math.floor(1.9)`, { v: 1 }],
+    [`export const v = Math.ceil(1.9)`, { v: 2 }],
+    [`export const v = Math.round(1.5)`, { v: 2 }],
+    [`export const v = Math.abs(-1)`, { v: 1 }],
+    [`export const v = Math.PI`, { v: Math.PI }],
+    [`export const v = Math.LN2`, { v: Math.LN2 }],
+
+    // Function
     [`function a() { }`, {}],
     [`function b() { return 1; } export const a = b();`, { a: 1 }],
     [`const add = (a, b) => a + b; export const result = add(1, 2)`, { result: 3 }],
@@ -123,21 +95,10 @@ describe(__filename + "#", () => {
     [`const add = (a, b) => a + b; export const result = add.apply(null, [2, 3])`, { result: 5 }],
     [`const add = (...rest) => rest.reduce((a, b) => a + b); export const result = add(1, 2, 3, 4, 5)`, { result: 1 + 2 + 3 + 4 + 5 }],
     [`function test() { } export const name = test.name`, { name: "test" }],
-    // [`function test(b) { return this + b; } export const value = test.bind(1)(2);`, { value: 3 }],
-    /*[`
-      function bind(fn, ctx, ...args) {
-        return function(...rest) {
-          return fn.apply(ctx, [...args, ...rest]);
-        }
-      }
-
-      function add(...numbers) {
-        return numbers.reduce((a, b) => a + b);
-      }
-
-      const bound = bind(add, null, 1, 2, 3);
-      export const value = bound(4, 5, 6);
-    `, { value: 1 + 2 + 3 + 4 + 5 + 6 }],*/
+    [`const a = { fn: (a, b) => a + b; }; export const v = a.fn(1, 2);`, { v: 3 }],
+    [`export const a = echo("b"); function echo(a) { return a; }`, {
+      a: "b"
+    }],
 
     // JSX
     [`const render = () => <div />; export const element = render();`, { element: { name: "div", attributes: [], children: [] }}],
@@ -200,6 +161,97 @@ describe(__filename + "#", () => {
       export const value = vo.valueOf();
       `, { value: "a" }],
 
+    // hasOwnProperty
+    [`const a = { b: 1 }; export const v = a.hasOwnProperty("b")`, { v: true }],
+    [`
+      function A() { }
+      A.prototype.b = 1;
+      const a = new A();
+      a.c = 2;
+      export const v = a.hasOwnProperty("b");
+      export const v2 = a.hasOwnProperty("c");`, { v: false, v2: true }],
+
+    // toString()
+
+    [`export const v = Object.prototype.toString()`, { v: "[object Object]"}],
+    [`export const v = Object.prototype.toString.call("")`, { v: "[object String]"}],
+    [`export const v = Object.prototype.toString.call(false)`, { v: "[object Boolean]"}],
+    [`export const v = Object.prototype.toString.call([])`, { v: "[object Array]"}],
+    [`
+      function A() {
+
+      }
+      A.prototype.toString = () => {
+        return "b";
+      }
+
+      export const v = new A().toString();
+    `, { v: "b" }],
+    [`const a = {}; export const v = a.toString();`, { v: "[object Object]" }],
+    [`const toString = ({}).toString(); export const v = toString.call("")`, { v: "[object String]"}],
+
+    // assignments
+    [`const a = {}; a["name"] = 1; export const v = a.name`, { v: 1 }],
+
+    // binary PEMDAS operations
+    [`export const a = 1 + 2;`, { a: 3 }],
+    [`export const a = 1 - 2;`, { a: -1 }],
+    [`export const a = 2 * 3;`, { a: 6 }],
+    [`export const a = 1 / 2;`, { a: 0.5 }],
+    [`export const a = 1 % 2;`, { a: 1 }],
+
+    // binary
+    [`export const a = 1 | 2;`, { a: 1 | 2 }],
+    [`export const a = 1 & 2;`, { a: 1 & 2 }],
+    [`export const a = 1 ^ 2;`, { a: 1 ^ 2 }],
+
+    // binary bool operations
+
+    // eqeq
+    [`export const a = 1 == 0;`, { a: false }],
+    [`export const a = 1 == 1;`, { a: true }],
+    [`export const a = 1 == "1";`, { a: true }],
+    [`const a = {}; export const a = a == a;`, { a: true }],
+    [`const a = {}; export const a = a == {};`, { a: false }],
+
+    // eqeqeq
+    [`export const a = 1 === "1";`, { a: false }],
+    [`const a = {}; export const a = a === {};`, { a: false }],
+
+    [`export const a = 1 != "1";`, { a: false }],
+    [`export const a = ({}) != null;`, { a: true }],
+    [`export const a = 1 !== "1";`, { a: true }],
+    [`export const a = 1 > 0;`, { a: true }],
+    [`export const a = 1 > 1;`, { a: false }],
+    [`export const a = 1 >= 1;`, { a: true }],
+    [`export const a = 1 < 1;`, { a: false }],
+    [`export const a = 1 <= 1;`, { a: true }],
+    [`export const a = 0 || 1;`, { a: 1 }],
+    [`export const a = { b: 1} || {}`, { a: { b: 1 }}],
+    [`export const a = 1 && 2;`, { a: 2 }],
+    [`export const a = 0 && 2;`, { a: 0 }],
+    [`export const a = 0 && { b: 1 }`, { a: 0 }],
+    [`export const a = 1 && { b: 1 }`, { a: { b: 1 }}],
+
+    // assignment
+    [`let i = 0; i += 2; export const a = i`, { a: 2 }],
+    [`let i = 0; i -= 2; export const a = i`, { a: -2 }],
+    [`let i = 4; i *= 2; export const a = i`, { a: 8 }],
+    [`let i = 4; i /= 2; export const a = i`, { a: 2 }],
+
+    // unary postfix
+    [`let i = 1; export const a = i++; export const b = i;`, { a: 1, b: 2 }],
+    [`let i = 0; export const a = i--; export const b = i;`, { a: 0, b: -1 }],
+
+    // unary prefix
+    [`let i = 0; export const a = --i; export const b = i;`, { a: -1, b: -1 }],
+    [`let i = 0; export const a = ++i; export const b = i;`, { a: 1, b: 1 }],
+    [`let i = 0; export const a = !i; export const b = !!i`, { a: true, b: false }],
+    [`let i = 1; export const a = -i; export const b = i`, { a: -1, b: 1 }],
+
+    // prefix operators
+    [`let i = 0; export const j = ++i;`, { j: 1 }],
+
     // for statements
     [`
     const items = [];
@@ -224,6 +276,47 @@ describe(__filename + "#", () => {
     }
     export const value = items;
     `, { value: [3, 2, 1, 0]}],
+
+    [`
+    let i = 0;
+    for (;;) {
+      if (++i > 10) break;
+    }
+    export const value = i;
+    `, { value: 11}],
+
+    // for-in
+    [`
+    const a = {b: 1};
+    let name;
+    let names = [];
+    for(name in a) {
+      names.push(name);
+    }
+    export const v = names;
+    `, {v: ["b"]}],
+
+    [`
+    const a = {b: 1};
+    for(const name in a) {
+
+    }
+    `, {}],
+
+    // in
+    [`export const v = "a" in { a: 1}`, { v: true }],
+
+    // try/catch
+    [`
+    let a;
+    try {
+      a = 1;
+    } catch(e) {
+
+    }
+
+    export const a = a;
+    `, { a: 1 }],
 
   ].forEach(([scriptSource, exports]) => {
     it(`can evaluate ${scriptSource}`, async () => {

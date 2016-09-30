@@ -13,7 +13,7 @@ export const renderSyntheticJSX = new SyntheticWrapperFunction(function (jsx: Sy
 
   // no diffing here -- just render out the DOM elements since they'yre also synthetic -- they'll
   // be patched later on.
-  while (element.childNodes.length.toNative()) {
+  while (element.childNodes.value.length) {
     element.removeChild(element.childNodes[0]);
   }
 

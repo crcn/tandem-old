@@ -33,7 +33,7 @@ class SyntheticAttributes extends SyntheticArray<SyntheticAttribute> {
   }
 
   get(name: string|number) {
-    return this.find((attribute, index) => attribute.get("name").value === name || index === name) || new SyntheticValueObject(undefined);
+    return this.find(new SyntheticWrapperFunction((attribute, index) => attribute.get("name").value === name || index === name)) || new SyntheticValueObject(undefined);
   }
 
   set(name: string|number, value: SyntheticValueObject<string>) {
@@ -61,7 +61,7 @@ export class SyntheticElement extends SyntheticContainerNode implements ISynthet
     return this.get<SyntheticAttributes>("attributes");
   }
 
-  @synthetic
+  @synthetic()
   get innerHTML() {
     return this.childNodes.map(new SyntheticWrapperFunction(child => child.outerHTML)).join(new SyntheticString(""));
   }
@@ -91,11 +91,11 @@ export class SyntheticElement extends SyntheticContainerNode implements ISynthet
     return new SyntheticString(buffer.join(""));
   }
 
-  @synthetic setAttribute(name: SyntheticValueObject<string>, value: ISynthetic) {
+  @synthetic() setAttribute(name: SyntheticValueObject<string>, value: ISynthetic) {
     this.get("attributes").set(name.value, value);
   }
 
-  @synthetic getAttribute(name: SyntheticValueObject<string>): SyntheticString {
+  @synthetic() getAttribute(name: SyntheticValueObject<string>): SyntheticString {
     return this.get("attributes").get(name.value).get("value") as SyntheticString;
   }
 }

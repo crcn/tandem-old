@@ -39,7 +39,7 @@ export abstract class SyntheticNode extends SyntheticObject {
     return this.get<SyntheticArray<SyntheticNode>>("childNodes");
   }
 
-  @synthetic appendChild(node: SyntheticNode) {
+  @synthetic() appendChild(node: SyntheticNode) {
     if (node._parentNode) {
       node._parentNode.removeChild(node);
     }
@@ -47,7 +47,7 @@ export abstract class SyntheticNode extends SyntheticObject {
     node._parentNode = this;
   }
 
-  @synthetic removeChild(node: SyntheticNode) {
+  @synthetic() removeChild(node: SyntheticNode) {
     const index = this.childNodes.indexOf(node);
   }
 

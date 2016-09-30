@@ -9,6 +9,7 @@ export namespace ResultKind {
   export const Break = Literal + 1;
   export const Continue = Break + 1;
   export const List = Continue + 1;
+  export const Exception = List + 1;
 }
 
 export abstract class Result<T> {
@@ -41,6 +42,12 @@ export class ReturnResult extends Result<any> {
   }
 }
 
+export class BreakResult extends Result<undefined> {
+  constructor() {
+    super(ResultKind.Break, undefined, true);
+  }
+}
+
 export class ExportsResult extends Result<ISynthetic> {
   constructor(value: ISynthetic) {
     super(ResultKind.Exports, value);
@@ -50,5 +57,11 @@ export class ExportsResult extends Result<ISynthetic> {
 export class ListResult extends Result<Array<Result<any>>> {
   constructor(value: Array<Result<any>>) {
     super(ResultKind.List, value);
+  }
+}
+
+export class ExceptionResult extends Result<any> {
+  constructor(value: any) {
+    super(ResultKind.Exception, value);
   }
 }
