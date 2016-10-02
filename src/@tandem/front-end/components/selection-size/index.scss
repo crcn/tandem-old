@@ -1,0 +1,13 @@
+@import '@tandem/front-end/scss/variables';
+
+.m-selection-size {
+  background-color: rgba($color-blue-4, 0.8);
+  color: white;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  white-space: nowrap;
+  pointer-events: none;
+  transform-origin: top left;
+  font-size: $font-size-0;
+}

@@ -1,0 +1,10 @@
+@import "@tandem/front-end/scss/variables";
+
+.m-css-comment-layer-label {
+  &:before {
+    content: "/* ";
+  }
+  &:after {
+    content: " */";
+  }
+}

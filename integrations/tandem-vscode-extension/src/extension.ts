@@ -4,7 +4,7 @@
 
 import * as vscode from "vscode";
 import * as createServer from "express";
-import ServerApplication from "tandem-back-end/application";
+import ServerApplication from "@tandem/back-end/application";
 import { WrapBus } from "mesh";
 import { exec } from "child_process";
 import * as getPort from "get-port";
@@ -17,12 +17,12 @@ import {
     ApplicationServiceDependency,
     ReadTemporaryFileContentAction,
     UpdateTemporaryFileContentAction
-} from "tandem-common";
+} from "@tandem/common";
 
 import {
     FilesSelectedAction,
     SelectEntitiesAtSourceOffsetAction,
-} from "tandem-front-end/actions";
+} from "@tandem/front-end/actions";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed

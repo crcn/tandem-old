@@ -1,0 +1,11 @@
+{
+  "name": "@tandem/front-end",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./bundle/@tandem/front-end.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

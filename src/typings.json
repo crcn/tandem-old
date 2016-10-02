@@ -1,5 +1,5 @@
 {
-  "name": "tandem-common",
+  "name": "@tandem/common",
   "main": "./typings/index.d.ts",
   "globalDependencies": {
     "chai": "registry:dt/chai#3.4.0+20160601211834",

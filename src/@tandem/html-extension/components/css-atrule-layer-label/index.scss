@@ -1,0 +1,12 @@
+@import "@tandem/front-end/scss/variables";
+
+.m-css-atrule-layer-label {
+  & .keyword {
+    &:before {
+      content: "@";
+    }
+    &:after {
+      content: " ";
+    }
+  }
+}

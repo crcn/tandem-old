@@ -1,5 +1,5 @@
 {
-  "name": "tandem-vscode-extension",
+  "name": "@tandem/vscode-extension",
   "displayName": "tandem",
   "description": "Richer experience for Tandem app",
   "version": "0.0.3",
@@ -37,9 +37,9 @@
     "get-port": "^2.1.0",
     "lodash": "^4.15.0",
     "mesh": "^6.0.26",
-    "tandem-back-end": "file:../../lib/tandem-back-end",
-    "tandem-common": "file:../../lib/tandem-common",
-    "tandem-front-end": "file:../../src/tandem-front-end"
+    "@tandem/back-end": "file:../../lib/@tandem/back-end",
+    "@tandem/common": "file:../../lib/@tandem/common",
+    "@tandem/front-end": "file:../../src/@tandem/front-end"
   },
   "directories": {
     "test": "test"
