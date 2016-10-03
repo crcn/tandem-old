@@ -1,11 +1,22 @@
 import { IASTNode } from "@tandem/ast";
+import { SyntheticDocument } from "./document";
+import { TreeNode, patchTreeNode } from "@tandem/common/tree";
 
-export abstract class SyntheticNode {
-  constructor(readonly nodeName: string, protected _source?: IASTNode) {
+export abstract class SyntheticHTMLNode extends TreeNode<SyntheticHTMLNode> {
+  readonly childNodes: SyntheticHTMLNode[];
+  abstract readonly nodeType: number;
 
+  constructor(readonly nodeName: string, public ownerDocument: SyntheticDocument) {
+    super();
+
+    this.childNodes = this.children;
   }
 
-  get source(): IASTNode {
-    return this._source;
+  addEventListener() {
+    // TODO
+  }
+
+  removeEventListener() {
+    // TODO
   }
 }

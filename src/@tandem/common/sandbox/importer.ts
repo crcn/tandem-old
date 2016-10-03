@@ -75,7 +75,7 @@ export class ModuleImporter extends Observable implements IInvoker {
     const moduleCache = this._modules[resolvedPath] || (this._modules[resolvedPath] = {});
 
     if (!moduleCache[envKind]) {
-      this.logger.verbose("creating module: %s", filePath);
+      // this.logger.verbose("creating module: %s", filePath);
       const moduleFactory = ModuleFactoryDependency.find(envKind, MimeTypeDependency.lookup(resolvedPath, this._dependencies), this._dependencies);
       moduleCache[envKind] = moduleFactory.create(resolvedPath, content, this._sandbox);
     }
@@ -85,7 +85,7 @@ export class ModuleImporter extends Observable implements IInvoker {
     const importsKey = envKind + resolvedPath;
 
     if (!this._imports[importsKey]) {
-      this.logger.verbose("evaluating module: %s", filePath);
+      // this.logger.verbose("evaluating module: %s", filePath);
       this._imports[importsKey] = module.evaluate();
     }
 
@@ -98,7 +98,7 @@ export class ModuleImporter extends Observable implements IInvoker {
     }));
 
     if (!this._fileWatchers[filePath]) {
-      this.logger.verbose("watching %s", filePath);
+      // this.logger.verbose("watching %s", filePath);
       this._fileWatchers[filePath] = WatchFileAction.execute(filePath, this.bus, this.onFileChange.bind(this));
     }
 
@@ -106,7 +106,7 @@ export class ModuleImporter extends Observable implements IInvoker {
   }
 
   protected onFileChange(data: IReadFileActionResponseData) {
-    this.logger.verbose("file change: %s", data.path);
+    // this.logger.verbose("file change: %s", data.path);
     this._fileContentCache[data.path] = data.content;
 
     // bust all modules for the given path to ensure that it gets re-evaluated

@@ -13,6 +13,7 @@ interface ISandboxEntry {
 
 export class Sandbox extends Observable {
 
+  private _shouldResetAgain: boolean;
   private _importer: ModuleImporter;
   private _entry: ISandboxEntry;
   private _globals: any;
@@ -41,11 +42,11 @@ export class Sandbox extends Observable {
     this.notify(action);
   }
 
-  protected reset() {
+  protected async reset() {
     this._importer.reset();
     this._globals = undefined;
     if (this._entry) {
-      this.open(this._entry.envMimeType, this._entry.filePath);
+      await this.open(this._entry.envMimeType, this._entry.filePath);
     }
   }
 }
