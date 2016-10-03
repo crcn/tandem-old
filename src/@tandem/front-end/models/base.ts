@@ -25,6 +25,7 @@ import {
   watchProperty,
   BaseASTNode,
   IEntityDocument,
+  SyntheticBrowser,
   DEPENDENCIES_NS,
   IASTNodeLoader,
   PropertyChangeAction,
@@ -33,8 +34,6 @@ import {
   EntityDocumentDependency,
   IFileModelActionResponseData,
 } from "@tandem/common";
-
-import { Browser } from "@tandem/runtime";
 
 export interface IEditorTool extends IActor, IDisposable {
   readonly editor: IEditor;
@@ -49,7 +48,7 @@ export interface IEditor extends IActor {
   readonly type: string;
   readonly cursor: string;
   activeEntity: IEntity;
-  readonly browser: Browser;
+  readonly browser: SyntheticBrowser;
 }
 
 const REQUEST_SAVE_TIMEOUT = process.env.TESTING ? 1 : 200;

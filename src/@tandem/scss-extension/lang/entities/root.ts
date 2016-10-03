@@ -19,9 +19,7 @@ export class SCSSRootEntity extends CSSRootEntity {
         request.current
       );
 
-      done(await ReadFileAction.execute({
-        path: filePath
-      }, MainBusDependency.getInstance(context.dependencies)));
+      done(await ReadFileAction.execute(filePath, MainBusDependency.getInstance(context.dependencies)));
     });
 
     return new Promise((resolve, reject) => {

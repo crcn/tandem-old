@@ -89,6 +89,7 @@ export class ModuleImporter extends Observable implements IDisposable {
       context.set("__dirname", new SyntheticValueObject(path.dirname(filePath)));
       context.set("exports", new SyntheticObject());
 
+      console.log(context);
       context.set("module", new SyntheticObject({
         exports: context.get("exports")
       }));

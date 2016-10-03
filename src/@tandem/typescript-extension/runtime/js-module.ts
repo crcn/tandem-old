@@ -1,23 +1,18 @@
 import * as ts from "typescript";
 import { MimeTypes } from "../constants";
-import { evaluateTypescript } from "./evaluator";
 import {
   BaseModule,
-  SymbolTable,
-  EnvironmentKind,
-  SyntheticObject,
+  CommonJSModule,
   ModuleFactoryDependency,
-} from "@tandem/runtime";
+} from "@tandem/common";
 
-export class TSJSModule extends BaseModule<any> {
-  private _ast: ts.Node;
-  constructor(fileName: string, content: string) {
-    super(fileName, content);
-    this._ast = ts.createSourceFile(fileName, content, ts.ScriptTarget.ES6, true);
-  }
-  async evaluate(context: SymbolTable) {
-    return await evaluateTypescript(this._ast, context);
+export class TSJSModule extends CommonJSModule {
+  transpile() {
+    return ts.transpile(this.content, {
+      module: ts.ModuleKind.CommonJS,
+      jsx: ts.JsxEmit.React
+    }, this.fileName);
   }
 }
 
-export const tsJsModuleFactoryDependency = new ModuleFactoryDependency(EnvironmentKind.JavaScript, MimeTypes.TS, TSJSModule);
+export const tsJsModuleFactoryDependency = new ModuleFactoryDependency("javascript", MimeTypes.TS, TSJSModule);

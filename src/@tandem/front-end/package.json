@@ -1,6 +1,7 @@
 {
   "name": "@tandem/front-end",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "private":false,
   "description": "",
   "main": "./bundle/@tandem/front-end.js",
   "scripts": {

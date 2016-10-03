@@ -58,7 +58,7 @@ export class File extends Observable {
 
   static async open(path: string, dependencies: Dependencies, mimeType?: string): Promise<File> {
     const bus = MainBusDependency.getInstance(dependencies);
-    const data = await ReadFileAction.execute({ path }, bus);
+    const data = await ReadFileAction.execute(path, bus);
     const fileFactory = FileFactoryDependency.find(mimeType || MimeTypeDependency.lookup(path, dependencies), dependencies) || FileFactoryDependency.find("file", dependencies);
     return fileFactory.create(data);
   }

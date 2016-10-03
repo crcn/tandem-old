@@ -1,15 +1,19 @@
-import { IActor } from "@tandem/common/actors";
-import { Action } from "@tandem/common/actions";
-import { Browser } from "@tandem/runtime";
-import { inject } from "@tandem/common/decorators";
-import { IEntity } from "@tandem/common/lang/entities";
-import { Metadata } from "@tandem/common/metadata";
 import { Workspace } from "./workspace";
 import { KeyBinding } from "@tandem/front-end/key-bindings";
-import { IInjectable } from "@tandem/common/dependencies";
 import { ParallelBus } from "mesh";
-import { IPoint, Transform } from "@tandem/common/geom";
 import { IEditor, IEditorTool } from "./base";
+
+import {
+  SyntheticBrowser,
+  IActor,
+  Action,
+  inject,
+  IEntity,
+  Metadata ,
+  IInjectable,
+  IPoint,
+  Transform
+} from "@tandem/common";
 
 export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;
@@ -28,7 +32,7 @@ export class Editor implements IEditor {
   readonly type = "display";
   public cursor = null;
 
-  constructor(readonly browser: Browser) {}
+  constructor(readonly browser: SyntheticBrowser) {}
 
   get activeEntity(): IEntity {
     return null;

@@ -101,7 +101,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
         w.on("all", async () => {
           try {
             this._fileCache[action.path] = null;
-            const data = this._fileCache[action.path] = await ReadFileAction.execute(action, this.bus);
+            const data = this._fileCache[action.path] = await ReadFileAction.execute(action.path, this.bus);
             await writable.write(data);
           } catch (e) {
             cancel();

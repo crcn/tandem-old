@@ -4,7 +4,7 @@
     "target": "es6",
     "sourceMap": true,
     "module": "commonjs",
-    "outDir": "lib",
+    "outDir": "lib/@tandem",
     "baseUrl": "src",
     "experimentalDecorators": true,
     "jsx": "react"

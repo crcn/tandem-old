@@ -190,7 +190,7 @@ export class ReadFileAction extends Action {
     super(ReadFileAction.READ_FILE);
   }
 
-  static async execute({ path }: { path: string }, bus: IActor): Promise<IReadFileActionResponseData> {
+  static async execute(path: string, bus: IActor): Promise<IReadFileActionResponseData> {
     return (await bus.execute(new ReadFileAction(path)).read()).value;
   }
 }

@@ -1,5 +1,5 @@
 import { SyntheticDocument } from "./document";
-import { SyntheticLocation } from "./location";
+import { SyntheticLocation } from "../location";
 
 export class SyntheticWindow {
   private _location: SyntheticLocation;

@@ -1,7 +1,7 @@
 
 import { WrapBus } from "mesh";
-import { Browser } from "@tandem/runtime";
 import { MetadataKeys } from "@tandem/front-end/constants";
+import { SyntheticBrowser } from "@tandem/common";
 import { FrontEndApplication } from "@tandem/front-end/application";
 import { pointerToolDependency } from "@tandem/front-end/models/pointer-tool";
 import { EditorToolFactoryDependency } from "@tandem/front-end/dependencies";
@@ -49,7 +49,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
     this.logger.info("loading project file %s", filePath);
 
-    const browser = new Browser(this._dependencies);
+    const browser = new SyntheticBrowser(this._dependencies);
     await browser.open(filePath);
 
     this.app.editor = new Editor(browser);
@@ -65,6 +65,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     // browser tab
     return !document.hidden;
   }
+
 
   [ZoomAction.ZOOM](action: ZoomAction) {
     if (this._tweener) this._tweener.dispose();
