@@ -1,5 +1,7 @@
-import { ModuleFactoryDependency, EnvironmentKind } from "@tandem/runtime";
-import { TSJSModule } from "@tandem/typescript-extension";
-import { MimeType } from "../constants";
+import {
+  MimeTypes,
+  CommonJSModule,
+  ModuleFactoryDependency,
+} from "@tandem/common";
 
-export const jsModuleFactoryDependency = new ModuleFactoryDependency(EnvironmentKind.JavaScript, MimeType.JS, TSJSModule);
+export const jsModuleFactoryDependency = new ModuleFactoryDependency(MimeTypes.JavaScript, MimeTypes.JavaScript, CommonJSModule);

@@ -1,8 +1,10 @@
+import * as path from "path";
 import { Sandbox } from "./sandbox";
+import { MimeTypes } from "@tandem/common/constants";
 import { ModuleImporter } from "./importer";
 
 export interface IModule {
-  async evaluate(): Promise<any>;
+  evaluate(): Promise<any>;
 }
 
 export abstract class BaseModule implements IModule {
@@ -17,10 +19,10 @@ export abstract class BaseModule implements IModule {
 
   }
 
-  abstract async evaluate(): Promise<any>;
+  abstract evaluate(): Promise<any>;
 }
 
-export abstract class CommonJSModule extends BaseModule {
+export class CommonJSModule extends BaseModule {
 
   private _imports: Array<string>;
   private _evaluate: Function;
@@ -39,20 +41,33 @@ export abstract class CommonJSModule extends BaseModule {
     `);
   }
 
-  protected abstract transpile();
+  protected transpile() {
+    return this.content;
+  }
 
   async evaluate(): Promise<any> {
 
-    const modules = {};
+    const importedModules = {};
 
     for (const dep of this._source.match(/require\(.*?\)/g) || []) {
       const modulePath = dep.match(/require\(["']([^'"]+)/)[1];
-      console.log(modulePath);
-      modules[modulePath] = await this.sandbox.import("javascript", modulePath, this.fileName);
+      importedModules[modulePath] = await this.sandbox.importer.import(MimeTypes.JavaScript, modulePath, this.fileName);
     }
 
-    return this._evaluate({
-      require: (path) => modules[path]
+    const module = {
+      exports: {}
+    };
+
+    const context = Object.assign({}, this.sandbox.globals, {
+      require    : (path) => importedModules[path],
+      module     : module,
+      exports    : module.exports,
+      __filename : this.fileName,
+      __dirname  : path.dirname(this.fileName),
     });
+
+    this._evaluate(context);
+
+    return module.exports;
   }
 }

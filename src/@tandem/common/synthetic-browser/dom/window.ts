@@ -3,9 +3,10 @@ import { SyntheticLocation } from "../location";
 
 export class SyntheticWindow {
   private _location: SyntheticLocation;
+  readonly document: SyntheticDocument;
 
   constructor() {
-
+    this.document = new SyntheticDocument(this);
   }
 
   get location(): SyntheticLocation {

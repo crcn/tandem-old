@@ -1,6 +1,7 @@
 import { SyntheticWindow } from "./window";
 import { SyntheticLocation } from "../location";
 import { SyntheticElement } from "./element";
+// import { SyntheticComment } from "./comment";
 
 export class SyntheticDocument {
 
@@ -23,7 +24,7 @@ export class SyntheticDocument {
   }
 
   createElement(tagName: string) {
-
+    return new SyntheticElement(tagName);
   }
 
   createComment(nodeValue: string) {

@@ -15,4 +15,4 @@ export class TSJSModule extends CommonJSModule {
   }
 }
 
-export const tsJsModuleFactoryDependency = new ModuleFactoryDependency("javascript", MimeTypes.TS, TSJSModule);
+export const tsJsModuleFactoryDependency = new ModuleFactoryDependency(MimeTypes.JS, MimeTypes.TS, TSJSModule);

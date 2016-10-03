@@ -223,7 +223,7 @@ export class WatchFileAction extends Action {
     super(WatchFileAction.WATCH_FILE);
   }
 
-  static execute(path: string, bus: IActor, onFileChange: Function): IDisposable {
+  static execute(path: string, bus: IActor, onFileChange: (data: IReadFileActionResponseData) => any): IDisposable {
     const stream = bus.execute(new WatchFileAction(path));
 
     stream.pipeTo({
