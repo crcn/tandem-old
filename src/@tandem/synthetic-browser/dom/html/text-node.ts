@@ -1,6 +1,7 @@
 import { HTMLNodeType } from "./node-types";
-import { SyntheticHTMLValueNode } from "./value-node";
+import { IHTMLNodeVisitor } from "./visitor";
 import { SyntheticHTMLDocument } from "./document";
+import { SyntheticHTMLValueNode } from "./value-node";
 
 export class SyntheticHTMLTextNode extends SyntheticHTMLValueNode {
   readonly nodeType: number = HTMLNodeType.TEXT;
@@ -14,5 +15,13 @@ export class SyntheticHTMLTextNode extends SyntheticHTMLValueNode {
 
   get outerHTML() {
     return this.nodeValue;
+  }
+
+  accept(visitor: IHTMLNodeVisitor) {
+    return visitor.visitTextNode(this);
+  }
+
+  cloneNode() {
+    return new SyntheticHTMLTextNode(this.nodeValue, this.ownerDocument);
   }
 }

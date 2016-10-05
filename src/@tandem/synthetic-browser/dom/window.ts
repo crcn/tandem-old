@@ -1,3 +1,4 @@
+import { Sandbox } from "@tandem/sandbox";
 import { bindable } from "@tandem/common/decorators";
 import { Observable } from "@tandem/common/observable";
 import { IPatchable } from "@tandem/common/object";
@@ -12,13 +13,14 @@ export class SyntheticWindow extends Observable implements IPatchable {
   readonly document: SyntheticHTMLDocument;
   readonly window: SyntheticWindow;
 
-  constructor(location: SyntheticLocation) {
+  constructor(readonly sandbox: Sandbox, location: SyntheticLocation) {
     super();
     this.document = new SyntheticHTMLDocument(this);
     this.location = location;
     this.window   = this;
   }
 
+  // TODO - use visitor pattern here
   patch(source: SyntheticWindow) {
 
     // move this to if(patchGuard(this, source)) return;

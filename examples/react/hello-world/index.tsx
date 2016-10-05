@@ -15,5 +15,5 @@ class TestComponent extends React.Component<any, any> {
   }
 }
 
-ReactDOM.render(<TestComponent message={<Message text="blogf" />} />, document.body, () => {
+ReactDOM.render(<TestComponent message={<Message text="blogffsdfsfdsfdsfs" />} />, document.body, () => {
 });

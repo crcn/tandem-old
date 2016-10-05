@@ -24,8 +24,6 @@ export default class ResolverService extends BaseApplicationService<IApplication
       paths: config.rootDirectories
     });
 
-    console.log(filePath, relativeFilePath, resolvedPath);
-
     return resolvedPath;
   }
 }

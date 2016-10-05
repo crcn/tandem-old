@@ -31,7 +31,7 @@ import { pointerToolDependency } from "./models/pointer-tool";
 import { keyBindingsDependency } from "./key-bindings";
 
 // extensions
-import { scssExtensionDependency  } from "@tandem/scss-extension";
+import { sassExtensionDependency  } from "@tandem/sass-extension";
 // import { angular2ExtensionDependency } from "@tandem/angular2-extension";
 import { htmlExtensionDependency } from "@tandem/html-extension";
 import { typescriptExtensionDependency } from "@tandem/typescript-extension";
@@ -90,7 +90,7 @@ export class FrontEndApplication extends Application {
       keyBindingsDependency,
 
       // extensions
-      scssExtensionDependency,
+      sassExtensionDependency,
       htmlExtensionDependency,
       javascriptExtensionDependency,
       typescriptExtensionDependency,

@@ -2,13 +2,14 @@ import { Action, PropertyChangeAction } from "@tandem/common/actions";
 import { bindable } from "@tandem/common/decorators";
 import { BubbleBus } from "@tandem/common/busses";
 import { HTMLNodeType } from "./node-types";
-import { evaluateHTML } from "./evaluate-html";
-import { parse as parseHTML } from "./html-parser.peg";
+import { evaluateHTML } from "./evaluate";
+import { parse as parseHTML } from "./parser.peg";
 import { diffArray, patchArray } from "@tandem/common/utils";
 import { SyntheticHTMLDocument } from "./document";
 import { SyntheticHTMLContainer } from "./container";
 import { SyntheticCSSStyleDeclaration } from "../css";
 import { WrapBus } from "mesh";
+import { IHTMLNodeVisitor } from "./visitor";
 import {
   Observable,
   ArrayChangeAction,
@@ -94,6 +95,10 @@ export class SyntheticHTMLElement extends SyntheticHTMLContainer {
     return this.attributes.hasOwnProperty(name) ? this.attributes[name].value : null;
   }
 
+  accept(visitor: IHTMLNodeVisitor) {
+    return visitor.visitElement(this);
+  }
+
   patch(source: SyntheticHTMLElement) {
     super.patch(source);
     patchArray(
@@ -136,5 +141,19 @@ export class SyntheticHTMLElement extends SyntheticHTMLContainer {
         // TODO - parse CSS
       }
     }
+
+    // bubble
+    this.notify(action);
+  }
+
+  cloneNode() {
+    const element = new SyntheticHTMLElement(this.tagName, this.ownerDocument);
+    for (const attribute of this.attributes) {
+      element.setAttribute(attribute.name, attribute.value);
+    }
+    for (const child of this.childNodes) {
+      element.appendChild(child.cloneNode());
+    }
+    return element;
   }
 }

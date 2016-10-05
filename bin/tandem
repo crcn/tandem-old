@@ -11,12 +11,16 @@ if (!/^\//.test(filepath)) {
   filepath = path.join(process.cwd(), filepath);
 }
 
-var projectConfig;
-try {
-  projectConfig = require(path.dirname(filepath) + "/tandem.config");
-} catch(e) {
-  projectConfig = {};
-}
+var projectConfig = {};
+
+[
+  path.dirname(filepath),
+  process.cwd()
+].forEach(function(dir) {
+  try {
+    Object.assign(projectConfig, require(dir + "/tandem.config"));
+  } catch(e) { }
+});
 
 var app = createApp(projectConfig);
 

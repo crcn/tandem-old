@@ -3,7 +3,7 @@ import { Sandbox } from "@tandem/sandbox";
 import { Dependencies } from "@tandem/dependencies";
 
 const deps = new Dependencies(
-  new SandboxEnvironmentDependency("scss")
+  new SandboxEnvironmentDependency("sass")
 );
 
 const sandbox = new Sandbox(deps);

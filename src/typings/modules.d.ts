@@ -80,9 +80,9 @@ declare module "memoizee" {
 }
 
 declare module "postcss-scss" {
-  function parseSCSS();
-  namespace parseSCSS { }
-  export = parseSCSS;
+  function parseSass();
+  namespace parseSass { }
+  export = parseSass;
 }
 
 declare module "sass.js" {

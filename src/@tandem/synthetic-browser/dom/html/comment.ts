@@ -1,6 +1,7 @@
 import { HTMLNodeType } from "./node-types";
-import { SyntheticHTMLValueNode } from "./value-node";
+import { IHTMLNodeVisitor } from "./visitor";
 import { SyntheticHTMLDocument } from "./document";
+import { SyntheticHTMLValueNode } from "./value-node";
 
 export class SyntheticHTMLComment extends SyntheticHTMLValueNode {
   readonly nodeType: number = HTMLNodeType.COMMENT;
@@ -10,5 +11,13 @@ export class SyntheticHTMLComment extends SyntheticHTMLValueNode {
 
   get textContent() {
     return "";
+  }
+
+  accept(visitor: IHTMLNodeVisitor) {
+    return visitor.visitComment(this);
+  }
+
+  cloneNode() {
+    return new SyntheticHTMLComment(this.nodeValue, this.ownerDocument);
   }
 }

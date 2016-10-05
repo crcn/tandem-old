@@ -71,7 +71,6 @@ export class ModuleImporter extends Observable implements IInvoker {
     // object
     const content      = await this.readFile(resolvedPath);
 
-
     const moduleCache = this._modules[resolvedPath] || (this._modules[resolvedPath] = {});
 
     if (!moduleCache[envKind]) {

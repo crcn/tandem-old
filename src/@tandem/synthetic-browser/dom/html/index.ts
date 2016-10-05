@@ -5,3 +5,7 @@ export * from "./comment";
 export * from "./document-fragment";
 export * from "./node";
 export * from "./node-types";
+export * from "./parser";
+export * from "./evaluate";
+export * from "./visitor";
+export * from "./types";

@@ -32,4 +32,10 @@ export class SyntheticLocation extends Observable {
     super();
     Object.assign(this, Url.parse(urlStr));
   }
+
+  toString() {
+    return (this.protocol ? this.protocol + "//" : "") +
+    (this.host || "") +
+    this.pathname;
+  }
 }

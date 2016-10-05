@@ -9,6 +9,16 @@ import { cssColorTokenComponentFactoryDependency } from "./components/css-color-
 // stage tool components
 import { cssHighlightElementToolComponentFactoryDependency } from "./components/css-highlight-element-tool";
 
+// sandbox
+import {
+  cssModuleFactoryDependency,
+  htmlDOMModuleFactoryDependency
+} from "./sandbox";
+import { 
+  syntheticHTMLLinkClassDependency,
+  syntheticHTMLImageClassDependency,
+} from "./synthetic";
+
 // layer components
 import { textLayerLabelComponentDependency } from "./components/text-layer-label";
 import { elementLayerLabelComponentDependency } from "./components/element-layer-label";
@@ -60,6 +70,12 @@ export const htmlExtensionDependency = [
   cssAtRuleLayerLabelComponentDependency,
   cssCommentLayerLabelComponentDependency,
   cssColorTokenComponentFactoryDependency,
+
+  // sandbox
+  cssModuleFactoryDependency,
+  htmlDOMModuleFactoryDependency,
+  syntheticHTMLLinkClassDependency,
+  syntheticHTMLImageClassDependency,
 
   // stage tool components
   cssHighlightElementToolComponentFactoryDependency,

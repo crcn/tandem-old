@@ -1,0 +1,114 @@
+{
+
+const {
+  HTMLFragmentExpression,
+  HTMLTextExpression,
+  HTMLScriptExpression,
+  HTMLCommentExpression,
+  HTMLElementExpression,
+  HTMLAttributeExpression
+} = require("./ast");
+
+function position() {
+  return {
+    start:peg$savedPos,
+    end:peg$currPos
+  };
+}
+
+}
+
+Start
+  = Fragment
+
+Fragment
+  = nodes:(Node/TextNode)* {
+    return new HTMLFragmentExpression(nodes, position());
+  }
+
+Node
+  = _ node:(Comment/VoidElement/Element/TextNode) _ { return node; }
+
+Comment
+  = '<!--' characters:CommentCharacter* '-->' { return new HTMLCommentExpression(characters.join(''), position()); }
+
+CommentCharacter
+  = !'-->' character:. { return character; }
+
+VoidElement
+  = "<" nodeName: VoidTagName attributes:ElementAttributes (">"/"/>")? endTag:EndVoidTag? {
+
+    if (endTag && nodeName != endTag.name) {
+      expected("</" + nodeName + ">");
+    }
+
+    return new HTMLElementExpression(nodeName, attributes, [], position());
+  }
+
+EndVoidTag
+  = _ "</" name: VoidTagName ">" {
+    return {
+      name: name
+    };
+  }
+
+VoidTagName
+  = name:  ("area"/"base"/"br"/"col"/"command"/"embed"/"hr"/"img"/"input"/"keygen"/"link"/"meta"/"param"/"source"/"track"/"wbr")
+
+Element
+  = ElementWithoutChildNodes
+  / ElementWithChildNodes
+
+ElementWithoutChildNodes
+  = startTag:ElementStart attributes:ElementAttributes _ '/>' {
+    return new HTMLElementExpression(startTag, attributes, [], position());
+  }
+
+ElementWithChildNodes
+  = startTag:ElementStart attributes:ElementAttributes '>' _ childNodes:Node* _ '</' endTag:Name '>' {
+    if (startTag != endTag) {
+      expected('</' + startTag + '>');
+    }
+    return new HTMLElementExpression(startTag, attributes, childNodes, position());
+  }
+
+ElementStart
+  = '<' name:Name { return name; }
+
+ElementAttributes
+  = attributes:ElementAttribute* {
+    return attributes;
+  }
+
+ElementAttribute
+  = _ key:Name '=' value:AttributeValue {
+    return new HTMLAttributeExpression(key, value, position());
+  }
+  / _ key:Name _ {
+    return new HTMLAttributeExpression(key, "", position());
+  }
+
+AttributeValue
+  = String
+
+String
+  = '"' characters:DoubleStringCharacter* '"' { return characters.join(''); }
+  / "'" characters:SingleStringCharacter* "'" { return characters.join(''); }
+
+DoubleStringCharacter
+  = !('"' / "\\") . { return text(); }
+  / '\\"'
+
+SingleStringCharacter
+  = !("'" / "\\") . { return text(); }
+  / "\\'"
+
+TextNode
+  = [^<]+ {
+    return new HTMLTextExpression(text(), position());
+  }
+
+Name
+  = [a-z0-9$-.]+ { return text(); }
+_
+  = [ \n\r\t]*

@@ -23,7 +23,7 @@ export class DOMRenderer extends BaseRenderer {
   update() {
 
     // simple for now -- just reset the entire outer HTML
-    this.element.innerHTML = getSyntheticPreviewHTMLPreviewString(this.target);
+    this.element.innerHTML = this.target.outerHTML;
 
     const rectangles: BoundingRect[] = [];
     for (const node of this.element.querySelectorAll("*")) {
@@ -32,29 +32,6 @@ export class DOMRenderer extends BaseRenderer {
     }
 
     this._rectangles = rectangles;
-  }
-}
-
-/**
- * Preview HTML specific to the editor
- */
-
-function getSyntheticPreviewHTMLPreviewString(node: SyntheticHTMLNode) {
-  switch (node.nodeType) {
-    case HTMLNodeType.COMMENT: return ``;
-    case HTMLNodeType.TEXT: return (<SyntheticHTMLTextNode>node).nodeValue;
-    case HTMLNodeType.DOCUMENT:
-    case HTMLNodeType.DOCUMENT_FRAGMENT: return node.childNodes.map(getSyntheticPreviewHTMLPreviewString).join("");
-    case HTMLNodeType.ELEMENT:
-      const element = <SyntheticHTMLElement>node;
-      return [
-      "<", element.nodeName,
-      element.attributes.map((attribute) => ` ${attribute.name}="${attribute.value}"`).join(""),
-      ` style="${getStyleDeclarationString(element.style)}"`,
-      ">",
-      element.childNodes.map(getSyntheticPreviewHTMLPreviewString).join(""),
-      "</", element.nodeName + ">"
-    ].join("");
   }
 }
 

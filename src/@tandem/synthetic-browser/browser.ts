@@ -3,19 +3,23 @@ import { SyntheticHTMLDocument, SyntheticWindow } from "./dom";
 import { ISyntheticHTMLDocumentRenderer, DOMRenderer, TetherRenderer } from "./renderers";
 import {
   bindable,
-  MainBusDependency,
-  Dependencies,
   MimeTypes,
-  TypeWrapBus,
-  PropertyChangeAction,
-  ChangeAction,
   Observable,
+  TypeWrapBus,
+  ChangeAction,
+  Dependencies,
+  MainBusDependency,
+  PropertyChangeAction,
 } from "@tandem/common";
 
 import {
   Sandbox,
   SandboxAction,
 } from "@tandem/sandbox";
+
+import {
+  SyntheticHTMLElementClassDependency
+} from "./dependencies";
 
 import { WrapBus } from "mesh";
 
@@ -56,7 +60,8 @@ export class SyntheticBrowser extends Observable {
   }
 
   protected createSandboxGlobals(): SyntheticWindow {
-    const window = new SyntheticWindow(this._location);
+    const window = new SyntheticWindow(this._sandbox, this._location);
+    this._registerElements(window);
 
     // TODO - this shouldn't be here
     window["process"] = {
@@ -68,12 +73,20 @@ export class SyntheticBrowser extends Observable {
     return window;
   }
 
-  protected onSandboxEvaluated(action: SandboxAction) {
+  protected async onSandboxEvaluated(action: SandboxAction) {
+    const window = this._sandbox.global as SyntheticWindow;
+    await window.document.load();
     if (this._window) {
-      this._window.patch(this._sandbox.global);
+      this._window.patch(window);
     } else {
-      this._window = this._sandbox.global;
+      this._window = window;
       this._renderer.target = this._window.document;
+    }
+  }
+
+  private _registerElements(window: SyntheticWindow) {
+    for (const elementClassDependency of SyntheticHTMLElementClassDependency.findAll(this._dependencies)) {
+      window.document.registerElement(elementClassDependency.tagName, elementClassDependency.value);
     }
   }
 }

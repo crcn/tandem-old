@@ -1,10 +1,13 @@
+import { IHTMLNodeVisitor } from "./visitor";
 import { SyntheticHTMLDocument } from "./document";
 import { TreeNode, patchTreeNode } from "@tandem/common/tree";
 import { IPatchable, IComparable } from "@tandem/common/object";
 
 export abstract class SyntheticHTMLNode extends TreeNode<SyntheticHTMLNode> implements IComparable, IPatchable {
+
   readonly childNodes: SyntheticHTMLNode[];
   abstract readonly nodeType: number;
+  private _loaded: boolean;
 
   constructor(readonly nodeName: string, public ownerDocument: SyntheticHTMLDocument) {
     super();
@@ -33,4 +36,29 @@ export abstract class SyntheticHTMLNode extends TreeNode<SyntheticHTMLNode> impl
   removeEventListener() {
     // TODO
   }
+
+  onChildAdded(child: SyntheticHTMLNode) {
+    super.onChildAdded(child);
+    if (this._loaded) {
+      child.load();
+    }
+  }
+
+  async load() {
+    if (this._loaded) return;
+    this._loaded = true;
+    await this.loadLeaf();
+    await this.loadChildNodes();
+  }
+
+  protected loadLeaf() { }
+
+  protected async loadChildNodes() {
+    for (const child of this.childNodes) {
+      await child.load();
+    }
+  }
+
+  abstract accept(visitor: IHTMLNodeVisitor);
+  abstract cloneNode();
 }
