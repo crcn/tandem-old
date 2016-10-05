@@ -60,6 +60,7 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
   }
 
   insertBefore(newChild: T, existingChild: T) {
+    if (existingChild == null) return this.appendChild(newChild);
     const index = this._children.indexOf(existingChild);
     if (index !== -1) {
       this.insertChildAt(newChild, index);

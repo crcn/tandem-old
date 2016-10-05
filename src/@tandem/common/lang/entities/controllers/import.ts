@@ -13,7 +13,7 @@ import { BaseEntityController } from "./base";
 // - [ ] expose exported docs
 // - [ ] check for already imported documents
 
-interface IImportContext {
+export interface IImportContext {
   dependencies: Dependencies;
 }
 

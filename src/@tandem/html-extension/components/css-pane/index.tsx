@@ -1,12 +1,12 @@
 import "./index.scss";
 import * as React from "react";
-import { Workspace } from "@tandem/front-end/models";
-import PaneComponent from "@tandem/front-end/components/pane";
+import { Workspace } from "@tandem/editor/models";
+import PaneComponent from "@tandem/editor/components/pane";
 import { parseCSS } from "@tandem/html-extension/lang";
-import { SelectAction } from "@tandem/front-end/actions";
-import { FrontEndApplication } from "@tandem/front-end/application";
+import { SelectAction } from "@tandem/editor/actions";
+import { FrontEndApplication } from "@tandem/editor/application";
 import { SelectWithCSSSelectorAction } from "@tandem/html-extension/actions";
-import { EntityPaneComponentFactoryDependency } from "@tandem/front-end/dependencies";
+import { EntityPaneComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLNodeEntity } from "@tandem/html-extension/lang";
 import { CSSExpression, CSSRuleExpression, CSSDeclarationExpression } from "@tandem/html-extension/lang";
 

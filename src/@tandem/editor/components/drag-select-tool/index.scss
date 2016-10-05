@@ -1,0 +1,10 @@
+@import '@tandem/editor/scss/variables';
+
+.m-drag-select {
+  z-index: 1024;
+  position: absolute;
+  &--box {
+    position: absolute;
+    background: rgba(#CCC, 0.5);
+  }
+}

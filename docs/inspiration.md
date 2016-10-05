@@ -1,4 +1,0 @@
-- adobe xd
-- sketch
-- http://www.weebly.com/
-- https://alpha.trycarbide.com/

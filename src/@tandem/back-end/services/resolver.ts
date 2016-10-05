@@ -18,11 +18,15 @@ export default class ResolverService extends BaseApplicationService<IApplication
 
     const dir = relativeFilePath ? path.dirname(relativeFilePath) : process.cwd();
 
-    return resolve.sync(filePath, {
+    const resolvedPath = resolve.sync(filePath, {
       basedir: dir,
       extensions: config.extensions,
       paths: config.rootDirectories
     });
+
+    console.log(filePath, relativeFilePath, resolvedPath);
+
+    return resolvedPath;
   }
 }
 

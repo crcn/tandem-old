@@ -21,7 +21,7 @@ describe(__filename + "#", () => {
 
 abstract class HTMLNode extends TreeNode<HTMLNode> implements IComparable {
   readonly nodeName: string;
-  @patchable
+  @patchable()
   public target: Node;
   constructor(target: Node) {
     super();

@@ -1,7 +1,7 @@
 import * as sift from "sift";
-import { SelectAction } from "@tandem/front-end/actions";
+import { SelectAction } from "@tandem/editor/actions";
 import { filterAction } from "@tandem/common/decorators";
-import { FrontEndApplication } from "@tandem/front-end/application";
+import { FrontEndApplication } from "@tandem/editor/application";
 import { BaseApplicationService } from "@tandem/common/services";
 import { SELECT_WITH_CSS_SELECTOR, SelectWithCSSSelectorAction } from "@tandem/html-extension/actions";
 

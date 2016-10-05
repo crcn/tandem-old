@@ -2,7 +2,7 @@ import { INamed } from "@tandem/common/object";
 import { inject } from "@tandem/common/decorators";
 import { HTMLFile } from "@tandem/html-extension/models/html-file";
 import { BubbleBus } from "@tandem/common/busses";
-import { DocumentFile } from "@tandem/front-end/models";
+import { DocumentFile } from "@tandem/editor/models";
 import { watchProperty } from "@tandem/common/observable";
 import { IHTMLNodeEntity } from "./base";
 import { EntityFactoryDependency } from "@tandem/common/dependencies";

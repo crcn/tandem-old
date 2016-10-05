@@ -1,7 +1,7 @@
 import { WrapBus } from "mesh";
 import { HTMLFile } from "@tandem/html-extension/models/html-file";
-import { MetadataKeys } from "@tandem/front-end/constants";
-import { DocumentFile } from "@tandem/front-end/models";
+import { MetadataKeys } from "@tandem/editor/constants";
+import { DocumentFile } from "@tandem/editor/models";
 import { GroupNodeSection } from "@tandem/html-extension/dom";
 import { parseCSS, CSSRootExpression } from "@tandem/html-extension/lang";
 
@@ -22,7 +22,7 @@ export class CSSRootEntity extends BaseEntity<CSSRootExpression> {
 
   public owner: HTMLFile;
 
-  @patchable
+  @patchable()
   @bindable()
   public content: string;
   public document: DocumentFile<any>;

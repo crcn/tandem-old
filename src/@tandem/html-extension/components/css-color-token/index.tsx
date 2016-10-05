@@ -1,6 +1,6 @@
 import * as React from "react";
-import { TokenComponentFactoryDependency } from "@tandem/front-end/dependencies";
-import Token from "@tandem/front-end/components/text-editor/models/token";
+import { TokenComponentFactoryDependency } from "@tandem/editor/dependencies";
+import Token from "@tandem/editor/components/text-editor/models/token";
 
 import { CSSTokenTypes } from "@tandem/html-extension/tokenizers";
 

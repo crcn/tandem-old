@@ -1,4 +1,4 @@
-import { jsModuleFactoryDependency } from "./runtime";
+import { jsModuleFactoryDependency } from "./sandbox";
 import { MimeType } from "./constants";
 import { MimeTypeDependency } from "@tandem/common";
 

@@ -1,2 +1,0 @@
-- CMS editor
-   - drag & drop components

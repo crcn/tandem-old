@@ -1,3 +1,9 @@
+import "./hello-world.scss";
+
 const element = document.createElement("div");
-element.innerHTML = "hello <span>world</span>";
-console.log(Array.prototype.slice.call(element.childNodes));
+element.innerHTML = `<div class="container item">
+  <div class="row">Hello World</div>
+  <strong>blarg</strong>!!!
+</div>`;
+
+document.body.appendChild(element);

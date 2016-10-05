@@ -8,7 +8,6 @@ type ComparableTreeType = ITreeNode<any> & IComparable;
 export const patchTreeNode = (oldNode: ComparableTreeType, newNode: ComparableTreeType) => {
   const changes = diffArray(oldNode.children, newNode.children, compareTreeNodes);
 
-
   for (const rm of changes.remove) {
     oldNode.removeChild(rm);
   }
@@ -21,7 +20,11 @@ export const patchTreeNode = (oldNode: ComparableTreeType, newNode: ComparableTr
     if (oldNode.children.indexOf(oldChild) !== newIndex) {
       oldNode.insertChildAt(oldChild, newIndex);
     }
-    patchTreeNode(oldChild, newChild);
+    if (oldChild["patch"]) {
+      (<IPatchable>oldChild).patch(<IPatchable>newChild);
+    } else {
+      patchTreeNode(oldChild, newChild);
+    }
   }
 
   patchLeaf(oldNode, newNode);
@@ -36,12 +39,7 @@ export const compareTreeNodes = (a: ITreeNode<any>, b: ITreeNode<any>): number =
 };
 
 export const patchLeaf = (oldNode: ComparableTreeType, newNode: ComparableTreeType) => {
-
   for (const property of getPatchableProperties(oldNode)) {
     oldNode[property] = newNode[property];
-  }
-
-  if (oldNode["patch"]) {
-    (<IPatchable><any>oldNode).patch(<IPatchable><any>newNode);
   }
 };

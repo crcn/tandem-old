@@ -22,7 +22,7 @@ import {
 import {
     FilesSelectedAction,
     SelectEntitiesAtSourceOffsetAction,
-} from "@tandem/front-end/actions";
+} from "@tandem/editor/actions";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -117,7 +117,7 @@ export async function activate(context: vscode.ExtensionContext) {
         }, server.bus));
 
         if (!hasOpenWindow) {
-            exec(`open http://localhost:${port}`);
+            exec(`open http://localhost:${port}/editor`);
         }
     });
 

@@ -12,7 +12,10 @@ import { resolverServiceDependency } from "./services/resolver";
 export default class ServerApplication extends Application {
   constructor(config) {
     super(Object.assign({
-      frontEndEntry: require.resolve("@tandem/front-end")
+      entries: {
+        editor: require.resolve("@tandem/editor"),
+        tether: require.resolve("@tandem/tether")
+      }
     }, config));
   }
   registerDependencies() {

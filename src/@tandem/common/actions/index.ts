@@ -60,3 +60,4 @@ export class ResolveAction extends Action {
     return (await bus.execute(new ResolveAction(path, relativeFile)).read()).value;
   }
 }
+

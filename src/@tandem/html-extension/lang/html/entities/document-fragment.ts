@@ -1,4 +1,4 @@
-import { MetadataKeys } from "@tandem/front-end/constants";
+import { MetadataKeys } from "@tandem/editor/constants";
 import { GroupNodeSection } from "@tandem/html-extension/dom";
 import { HTMLContainerEntity } from "./node";
 import { HTMLFragmentExpression } from "@tandem/html-extension/lang/html/ast";

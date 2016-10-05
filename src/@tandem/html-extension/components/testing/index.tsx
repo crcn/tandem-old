@@ -1,5 +1,5 @@
  import { IApplication } from '@tandem/common/application';
- import { RootReactComponentDependency } from '@tandem/front-end/dependencies';
+ import { RootReactComponentDependency } from '@tandem/editor/dependencies';
 
  import * as React  from 'react';
 

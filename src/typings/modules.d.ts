@@ -81,9 +81,7 @@ declare module "memoizee" {
 
 declare module "postcss-scss" {
   function parseSCSS();
-  namespace parseSCSS {
-
-  }
+  namespace parseSCSS { }
   export = parseSCSS;
 }
 
@@ -97,4 +95,11 @@ declare module "sass.js" {
   }
 
   export = sass;
+}
+
+declare module "rasterizehtml" {
+  namespace rasterizeHTML {
+    export function drawDocument(document: HTMLDocument, canvas: HTMLCanvasElement): Promise<any>;
+  }
+  export = rasterizeHTML;
 }

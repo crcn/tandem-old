@@ -3,12 +3,12 @@ import "./index.scss";
 
 import * as React from "react";
 
-import FocusComponent from "@tandem/front-end/components/focus";
-import { MetadataKeys } from "@tandem/front-end/constants";
-import { SelectAction } from "@tandem/front-end/actions";
+import FocusComponent from "@tandem/editor/components/focus";
+import { MetadataKeys } from "@tandem/editor/constants";
+import { SelectAction } from "@tandem/editor/actions";
 import * as AutosizeInput from "react-input-autosize";
-import { FrontEndApplication } from "@tandem/front-end/application";
-import { LayerLabelComponentFactoryDependency } from "@tandem/front-end/dependencies";
+import { FrontEndApplication } from "@tandem/editor/application";
+import { LayerLabelComponentFactoryDependency } from "@tandem/editor/dependencies";
 import {
   HTMLElementEntity,
   HTMLExpressionLoader,
@@ -21,7 +21,7 @@ const VOID_ELEMENTS = [];
 
 import {
   SetToolAction
-} from "@tandem/front-end/actions";
+} from "@tandem/editor/actions";
 
 class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEntity, app: FrontEndApplication, connectDragSource: Function }, any> {
 

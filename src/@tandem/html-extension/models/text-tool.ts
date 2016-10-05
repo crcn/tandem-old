@@ -1,16 +1,16 @@
 
 import { inject } from "@tandem/common/decorators";
 import { IActor } from "@tandem/common/actors";
-import { InsertTool } from "@tandem/front-end/models/insert-tool";
-import { MouseAction } from "@tandem/front-end/actions";
+import { InsertTool } from "@tandem/editor/models/insert-tool";
+import { MouseAction } from "@tandem/editor/actions";
 import { IApplication } from "@tandem/common/application";
-import { SetToolAction } from "@tandem/front-end/actions";
+import { SetToolAction } from "@tandem/editor/actions";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
-import { FrontEndApplication } from "@tandem/front-end/application";
-import { pointerToolDependency } from "@tandem/front-end/models/pointer-tool";
+import { FrontEndApplication } from "@tandem/editor/application";
+import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { BaseApplicationService } from "@tandem/common/services";
-import { EditorToolFactoryDependency } from "@tandem/front-end/dependencies";
-import { IEditorTool, BaseEditorTool, IEditor } from "@tandem/front-end/models";
+import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
+import { IEditorTool, BaseEditorTool, IEditor } from "@tandem/editor/models";
 import { parseHTML, HTMLElementExpression , VisibleHTMLElementEntity } from "../lang";
 import {
   Dependency,

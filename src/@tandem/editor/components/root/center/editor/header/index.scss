@@ -1,0 +1,21 @@
+@import '@tandem/editor/scss/variables';
+
+.m-editor-stage-header {
+  position: relative;
+  width: 100%;
+  padding-top: 8px;
+  padding-bottom: 12px;
+
+  & li {
+    display: inline-block;
+    padding-left: $padding-3;
+    font-size: $font-size-5;
+    cursor: pointer;
+    &:hover {
+      color: $color-blue-4;
+    }
+    &.selected {
+      color: $color-sky-blue-4;
+    }
+  }
+}

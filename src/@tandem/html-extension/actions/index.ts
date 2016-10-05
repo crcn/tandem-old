@@ -1,5 +1,5 @@
 import { Action } from "@tandem/common/actions";
-import { PasteAction } from "@tandem/front-end/actions";
+import { PasteAction } from "@tandem/editor/actions";
 import { CSSRuleExpression } from "@tandem/html-extension/lang";
 import { IHTMLElementAttributeEntity } from "@tandem/html-extension/lang";
 

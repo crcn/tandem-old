@@ -1,7 +1,7 @@
 import { inject, Observable, IASTNode } from "@tandem/common";
 import { HTMLFile } from "@tandem/html-extension/models";
 import { MimeTypes } from "@tandem/html-extension/constants";
-import { DocumentFile } from "@tandem/front-end/models";
+import { DocumentFile } from "@tandem/editor/models";
 import { CSSRootEntity, parseCSS, CSSRootExpression, CSSExpressionLoader } from "@tandem/html-extension/lang";
 import {
   Injector,

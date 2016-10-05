@@ -45,7 +45,6 @@ export class IOService<T extends IApplication> extends BaseApplicationService<T>
   addConnection = async (connection) => {
     this.logger.info("client connected");
 
-
     // setup the bus which wil facilitate in all
     // transactions between the remote service
     const remoteBus = SocketIOBus.create({
@@ -64,7 +63,9 @@ export class IOService<T extends IApplication> extends BaseApplicationService<T>
         // very crude, but works for resolving circular JSON issues
         try {
           for (const key in action) {
-            if (/object/.test(action[key]) && !/Array|Object/.test(action[key].constructor.name)) return;
+            if (/object/.test(typeof action[key]) && !/Array|Object/.test(action[key].constructor.name)) {
+              return;
+            }
           }
 
           data = JSON.parse(JSON.stringify(action));

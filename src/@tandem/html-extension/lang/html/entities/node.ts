@@ -1,7 +1,7 @@
 import * as sift from "sift";
 import { HTMLFile } from "@tandem/html-extension/models/html-file";
-import { DocumentFile } from "@tandem/front-end/models";
-import { MetadataKeys } from "@tandem/front-end/constants";
+import { DocumentFile } from "@tandem/editor/models";
+import { MetadataKeys } from "@tandem/editor/constants";
 import { IHTMLNodeEntity } from "./base";
 import { IDOMSection, NodeSection, GroupNodeSection } from "@tandem/html-extension/dom";
 import { HTMLNodeExpression, HTMLContainerExpression } from "@tandem/html-extension/lang";

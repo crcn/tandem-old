@@ -1,16 +1,16 @@
 import { inject } from "@tandem/common/decorators";
 import { Action } from "@tandem/common/actions";
-import { IEditor } from "@tandem/front-end/models/base";
-import { InsertTool } from "@tandem/front-end/models/insert-tool";
-import { SetToolAction } from "@tandem/front-end/actions";
+import { IEditor } from "@tandem/editor/models/base";
+import { InsertTool } from "@tandem/editor/models/insert-tool";
+import { SetToolAction } from "@tandem/editor/actions";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
-import { FrontEndApplication } from "@tandem/front-end/application";
+import { FrontEndApplication } from "@tandem/editor/application";
 import { textToolDependency } from "@tandem/html-extension/models/text-tool";
-import { pointerToolDependency } from "@tandem/front-end/models/pointer-tool";
+import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { parseHTML, HTMLElementExpression } from "@tandem/html-extension/lang";
 import { BaseCommand, BaseApplicationCommand } from "@tandem/common/commands";
 import { ClassFactoryDependency, DEPENDENCIES_NS, Dependencies } from "@tandem/common/dependencies";
-import { EditorToolFactoryDependency, GlobalKeyBindingDependency } from "@tandem/front-end/dependencies";
+import { EditorToolFactoryDependency, GlobalKeyBindingDependency } from "@tandem/editor/dependencies";
 
 abstract class BaseInsertElementTool extends InsertTool {
 

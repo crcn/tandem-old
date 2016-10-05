@@ -1,8 +1,8 @@
 import "./index.scss";
 
 import * as React from "react";
-import { Editor, Workspace } from "@tandem/front-end/models";
-import { ReactComponentFactoryDependency } from "@tandem/front-end/dependencies";
+import { Editor, Workspace } from "@tandem/editor/models";
+import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { CSSRuleEntity, CSSDeclarationEntity, VisibleHTMLElementEntity } from "@tandem/html-extension/lang";
 
 export class CSSHighlightElementTool extends React.Component<{ editor: Editor, workspace: Workspace }, any> {

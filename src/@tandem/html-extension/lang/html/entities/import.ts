@@ -1,7 +1,7 @@
 import * as path from "path";
 import { MimeTypes } from "@tandem/html-extension/constants";
-import { MetadataKeys } from "@tandem/front-end/constants";
-import { DocumentFile } from "@tandem/front-end/models";
+import { MetadataKeys } from "@tandem/editor/constants";
+import { DocumentFile } from "@tandem/editor/models";
 import { GroupNodeSection } from "@tandem/html-extension/dom";
 import { HTMLElementEntity } from "./element";
 import { HTMLElementExpression, HTMLTextExpression } from "@tandem/html-extension/lang/html/ast";
@@ -132,7 +132,7 @@ export class HTMLImportEntity extends HTMLElementEntity {
     }
   }
 
-  @patchable
+  @patchable()
   get file(): DocumentFile<any> {
     return this._file;
   }

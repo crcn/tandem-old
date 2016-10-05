@@ -1,6 +1,6 @@
 import * as sift from "sift";
 import { WrapBus } from "mesh";
-import { MetadataKeys } from "@tandem/front-end/constants";
+import { MetadataKeys } from "@tandem/editor/constants";
 import { HTMLContainerEntity } from "./node";
 import { IHTMLNodeEntity } from "./base";
 import { parseCSS, parseCSSStyle } from "@tandem/html-extension/lang";

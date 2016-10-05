@@ -166,11 +166,11 @@ export class HTMLElementExpression extends HTMLContainerExpression {
 export class HTMLAttributeExpression extends HTMLExpression implements IASTNode {
 
   @bindable()
-  @patchable
+  @patchable()
   public value: any;
 
   @bindable()
-  @patchable
+  @patchable()
   public name: string;
 
   constructor(name: string, value: any, position: IRange) {
@@ -204,7 +204,7 @@ export class HTMLAttributeExpression extends HTMLExpression implements IASTNode 
 export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValueNodeExpression {
 
   @bindable()
-  @patchable
+  @patchable()
   public value: string;
 
   constructor(value: string, position: IRange) {
@@ -227,7 +227,7 @@ export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValue
 export class HTMLCommentExpression extends HTMLNodeExpression implements IHTMLValueNodeExpression {
 
   @bindable()
-  @patchable
+  @patchable()
   public value: string;
 
   constructor(value: string, position: IRange) {

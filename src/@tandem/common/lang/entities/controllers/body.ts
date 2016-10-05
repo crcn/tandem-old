@@ -3,7 +3,7 @@ import { BaseEntity } from "../index";
 import { BaseASTNode } from "../../base";
 import { EntityFactoryDependency } from "@tandem/common/dependencies";
 
-type mapSourceChildrenType = () => Array<BaseASTNode<any>>;
+export type mapSourceChildrenType = () => Array<BaseASTNode<any>>;
 
 export class EntityBodyController extends BaseEntityController {
 

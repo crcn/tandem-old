@@ -39,7 +39,8 @@
     "mesh": "^6.0.26",
     "@tandem/back-end": "file:../../lib/@tandem/back-end",
     "@tandem/common": "file:../../lib/@tandem/common",
-    "@tandem/front-end": "file:../../src/@tandem/front-end"
+    "@tandem/editor": "file:../../lib/@tandem/editor",
+    "@tandem/tether": "file:../../lib/@tandem/tether"
   },
   "directories": {
     "test": "test"

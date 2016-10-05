@@ -64,24 +64,29 @@ export default class FrontEndService extends BaseApplicationService<IApplication
       res.send(content);
     });
 
-    var entryPath = this.app.config.frontEndEntry;
-    console.log(entryPath);
+    for (const entryName in this.app.config.entries) {
+      var entryPath = this.app.config.entries[entryName];
 
-    var scriptName = path.basename(entryPath);
+      var scriptName = path.basename(entryPath);
 
-    // this should be part of the config
-    const entryDirectory = path.dirname(entryPath);
-    this._server.use(express.static(entryDirectory));
+      const prefix = "/" + entryName;
 
-    if (this.app.config.publicDirectory) {
-      this._server.use(express.static(this.app.config.publicDirectory));
+      // this should be part of the config
+      const entryDirectory = path.dirname(entryPath);
+      this._server.use(prefix, express.static(entryDirectory));
+
+      if (this.app.config.publicDirectory) {
+        this._server.use(prefix, express.static(this.app.config.publicDirectory));
+      }
+
+      const staticFileNames = fs.readdirSync(entryDirectory);
+
+      this._server.use(prefix, (req, res) => {
+        res.send(this.getIndexHtmlContent(staticFileNames));
+      });
     }
 
-    const staticFileNames = fs.readdirSync(entryDirectory);
 
-    this._server.use((req, res) => {
-      res.send(this.getIndexHtmlContent(staticFileNames));
-    });
   }
 
   getIndexHtmlContent(staticFileNames) {
@@ -122,8 +127,8 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   }
 
   async _loadSocketServer() {
-    const io = createSocketIOServer() as any;
-    io.set("origins", "*domain.com*:*");
+    const io = createSocketIOServer();
+    io["set"]("origins", "*domain.com*:*");
     io.on("connection", this._ioService.addConnection);
     io.listen(this._socket);
   }

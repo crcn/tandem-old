@@ -30,10 +30,10 @@ const noSource = {
 
 export abstract class BaseASTNode<T extends BaseASTNode<any>> extends TreeNode<T> implements IASTNode {
 
-  @patchable
+  @patchable()
   private _source: IASTNodeSource;
 
-  @patchable
+  @patchable()
   public position: IRange;
 
   constructor(position: IRange) {

@@ -1,0 +1,8 @@
+.component {
+  color: red;
+  font-weight: 400;
+}
+
+.component:before {
+  content: "> ";
+}

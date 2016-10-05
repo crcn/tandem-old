@@ -29,7 +29,7 @@ export class CSSRootExpression extends CSSExpression {
 
 export class CSSRuleExpression extends CSSExpression {
   @bindable()
-  @patchable
+  @patchable()
   readonly selector: string;
   private _values: Object;
   private _declarationsByKey: Object;
@@ -95,7 +95,7 @@ export class CSSDeclarationExpression extends CSSExpression {
   public name: string;
 
   @bindable()
-  @patchable
+  @patchable()
   public value: string;
 
   constructor({ prop , value }, children: Array<CSSExpression>, position: IRange) {
@@ -118,11 +118,11 @@ export class CSSDeclarationExpression extends CSSExpression {
 export class CSSATRuleExpression extends CSSExpression {
 
   @bindable()
-  @patchable
+  @patchable()
   readonly name: string;
 
   @bindable()
-  @patchable
+  @patchable()
   public params: string;
 
   constructor(protected _node: postcss.AtRule, children: Array<CSSExpression>, position: IRange) {
@@ -164,7 +164,7 @@ export class MediaExpression extends CSSATRuleExpression {
 export class CSSCommentExpression extends CSSExpression {
 
   @bindable()
-  @patchable
+  @patchable()
   public value: string;
 
   constructor(node: postcss.Comment, children: Array<CSSExpression>, position: IRange) {

@@ -3,12 +3,12 @@ import "./index.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
-import FocusComponent from "@tandem/front-end/components/focus";
-import { SelectAction } from "@tandem/front-end/actions";
-import { MetadataKeys } from "@tandem/front-end/constants";
+import FocusComponent from "@tandem/editor/components/focus";
+import { SelectAction } from "@tandem/editor/actions";
+import { MetadataKeys } from "@tandem/editor/constants";
 import * as AutosizeInput from "react-input-autosize";
 import { HTMLTextEntity, HTMLTextExpression } from "@tandem/html-extension/lang";
-import { LayerLabelComponentFactoryDependency } from "@tandem/front-end/dependencies";
+import { LayerLabelComponentFactoryDependency } from "@tandem/editor/dependencies";
 
 class TextLayerLabelComponent extends React.Component<{ entity: HTMLTextEntity, connectDragSource: Function }, any> {
 

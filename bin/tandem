@@ -24,5 +24,5 @@ app.bus.execute({
   type  : 'openProjectFile',
   path  : filepath
 }).then(function() {
-  exec(`open http://localhost:${app.config.port}`);
+  exec(`open http://localhost:${app.config.port}/editor`);
 });

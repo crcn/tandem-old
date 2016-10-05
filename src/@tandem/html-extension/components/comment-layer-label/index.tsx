@@ -2,10 +2,10 @@ import "./index.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
-import { SelectAction } from "@tandem/front-end/actions";
+import { SelectAction } from "@tandem/editor/actions";
 import * as AutosizeInput from "react-input-autosize";
 import { HTMLCommentEntity, HTMLCommentExpression } from "@tandem/html-extension/lang";
-import { LayerLabelComponentFactoryDependency } from "@tandem/front-end/dependencies";
+import { LayerLabelComponentFactoryDependency } from "@tandem/editor/dependencies";
 
 class CommentLayerLabel extends React.Component<{ entity: HTMLCommentEntity, connectDragSource: Function }, any> {
 

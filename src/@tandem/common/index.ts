@@ -24,6 +24,4 @@ export * from "./tree";
 export * from "./workers";
 export * from "./serialize";
 export * from "./utils";
-export * from "./synthetic-browser";
-export * from "./sandbox";
 export * from "./constants";

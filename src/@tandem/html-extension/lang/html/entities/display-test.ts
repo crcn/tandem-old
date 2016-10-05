@@ -5,7 +5,7 @@ import { parseHTML } from "@tandem/html-extension/lang";
 import { MimeTypes } from "@tandem/html-extension/constants";
 import { BoundingRect } from "@tandem/common/geom";
 import { IVisibleEntity } from "@tandem/common/lang/entities";
-import { FrontEndApplication } from "@tandem/front-end/application";
+import { FrontEndApplication } from "@tandem/editor/application";
 import { waitForPropertyChange } from "@tandem/common/test";
 import { Dependencies, DependenciesDependency, DEPENDENCIES_NS, ApplicationSingletonDependency, FileFactoryDependency } from "@tandem/common/dependencies";
 import {

@@ -29,7 +29,7 @@ export abstract class BaseEntity<T extends IASTNode> extends TreeNode<BaseEntity
 
   public metadata: EntityMetadata;
 
-  @patchable
+  @patchable()
   protected _source: T;
 
   public context: any;
