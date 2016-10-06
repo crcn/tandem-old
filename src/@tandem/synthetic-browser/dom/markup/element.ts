@@ -4,6 +4,7 @@ import { BubbleBus } from "@tandem/common/busses";
 import { BoundingRect } from "@tandem/common/geom";
 import { MarkupNodeType } from "./node-types";
 import { evaluateMarkup } from "./evaluate";
+import { getBoundingRect } from "@tandem/synthetic-browser";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { parse as parseMarkup } from "./parser.peg";
@@ -61,13 +62,16 @@ export class SyntheticMarkupElement extends SyntheticMarkupContainer {
 
   readonly nodeType: number = MarkupNodeType.ELEMENT;
   readonly attributes: SyntheticMarkupAttributes;
-  public bounds: BoundingRect;
 
   constructor(readonly namespaceURI: string, readonly tagName: string, ownerDocument: SyntheticDocument) {
     super(tagName, ownerDocument);
     this.attributes = new SyntheticMarkupAttributes();
     this.setAttribute("data-uid", String(++_i));
     this.attributes.observe(new WrapBus(this.onAttributesAction.bind(this)));
+  }
+
+  getBoundingClientRect() {
+    return getBoundingRect(this);
   }
 
   // non-standard

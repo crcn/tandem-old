@@ -14,6 +14,7 @@ import {
 export interface ISyntheticDocumentRenderer {
   readonly element: HTMLElement;
   target: SyntheticMarkupNode;
+  getBoundingRect(element: SyntheticMarkupElement);
 }
 
 export abstract class BaseRenderer implements ISyntheticDocumentRenderer {
@@ -37,7 +38,8 @@ export abstract class BaseRenderer implements ISyntheticDocumentRenderer {
     this.update();
   }
 
-  abstract update();
+  abstract getBoundingRect(element: SyntheticMarkupElement);
+  protected abstract update();
 
   protected onTargetChange(action: Action) {
     if (this._updating) {

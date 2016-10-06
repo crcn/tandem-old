@@ -56,7 +56,7 @@ export class SyntheticBrowser extends Observable {
   }
 
   protected createSandboxGlobals(): SyntheticWindow {
-    const window = new SyntheticWindow(this._sandbox, this._location);
+    const window = new SyntheticWindow(this._sandbox, this._renderer, this._location);
     this._registerElements(window);
 
     // TODO - this shouldn't be here

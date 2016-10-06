@@ -7,6 +7,7 @@ import { HTML_XMLNS } from "./constants";
 import { SyntheticLocation } from "../location";
 import { SyntheticDocument } from "./document";
 import { SyntheticHTMLElement } from "./html";
+import { ISyntheticDocumentRenderer } from "../renderers";
 
 export class SyntheticWindow extends Observable implements IPatchable {
 
@@ -16,7 +17,7 @@ export class SyntheticWindow extends Observable implements IPatchable {
   readonly document: SyntheticDocument;
   readonly window: SyntheticWindow;
 
-  constructor(readonly sandbox: Sandbox, location: SyntheticLocation) {
+  constructor(readonly sandbox: Sandbox, readonly renderer: ISyntheticDocumentRenderer, location: SyntheticLocation) {
     super();
     this.document = this.createDocument();
     this.location = location;

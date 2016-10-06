@@ -14,23 +14,24 @@ import {
 
 export class DOMRenderer extends BaseRenderer {
 
+  private _rects: any;
+
+  getBoundingRect(element: SyntheticMarkupElement) {
+    return (this._rects && this._rects[element.uid]) || new BoundingRect(0, 0, 0, 0);
+  }
+
   update() {
 
     // simple for now -- just reset the entire outer HTML
     this.element.innerHTML = this.target.toString();
 
     const allSyntheticElementsById = {};
-
-    this.target.querySelectorAll("*").forEach((element) => {
-      allSyntheticElementsById[element.uid] = element;
-    });
+    this._rects = {};
 
     for (const node of this.element.querySelectorAll("*")) {
       const rect = node.getBoundingClientRect();
       const syntheticElement = allSyntheticElementsById[node["dataset"].uid];
-      if (syntheticElement) {
-        syntheticElement.bounds = new BoundingRect(rect.left, rect.top, rect.right, rect.bottom);
-      }
+      this._rects[node["dataset"].uid] = new BoundingRect(rect.left, rect.top, rect.right, rect.bottom);
     }
   }
 }

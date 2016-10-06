@@ -57,7 +57,8 @@ class SelectableComponent extends React.Component<{
 
     // if (intersection(entities, selection || []).length) return null;
 
-    const bounds = element.bounds;
+    const bounds = element.getBoundingClientRect();
+    if (!bounds) return null;
 
     const borderWidth = 2 / this.props.zoom;
 
@@ -140,9 +141,7 @@ export class SelectablesComponent extends React.Component<{
 
     // if (selection.preview.currentTool.type !== "pointer") return null;
 
-    const selectables = allEntities.filter((element: SyntheticMarkupElement) => (
-      !!element.bounds
-    )).map((element, i) => (
+    const selectables = allEntities.map((element, i) => (
       <SelectableComponent
         {...this.props}
         zoom={editor.zoom}
