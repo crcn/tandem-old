@@ -7,7 +7,6 @@ export abstract class SyntheticHTMLNode extends TreeNode<SyntheticHTMLNode> impl
 
   readonly childNodes: SyntheticHTMLNode[];
   abstract readonly nodeType: number;
-  readonly namespaceURI: string;
   private _loaded: boolean;
 
   constructor(readonly nodeName: string, public ownerDocument: SyntheticDocument) {

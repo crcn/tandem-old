@@ -106,7 +106,7 @@ export class SyntheticDocument extends SyntheticMarkupContainer {
       throw new Error(`Cannot create synthetic element ${ns}:${tagName}`);
     }
 
-    return new elementClass(tagName, this);
+    return new elementClass(ns, tagName, this);
   }
 
   createElement(tagName: string) {

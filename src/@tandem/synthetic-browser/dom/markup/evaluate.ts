@@ -10,7 +10,7 @@ import {
   IMarkupExpression
 } from "./ast";
 
-export function evaluateMarkup(node: IMarkupExpression, doc: SyntheticDocument): SyntheticHTMLNode {
+export function evaluateMarkup(node: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string): SyntheticHTMLNode {
   return node.accept({
     visitAttribute(expression) {
       return { name: expression.name, value: expression.value };
@@ -19,7 +19,7 @@ export function evaluateMarkup(node: IMarkupExpression, doc: SyntheticDocument):
       return doc.createComment(expression.value);
     },
     visitElement(expression) {
-      const element = doc.createElement(expression.name);
+      const element = doc.createElementNS(namespaceURI || doc.defaultNamespaceURI, expression.name);
       for (const childExpression of expression.childNodes) {
         element.appendChild(childExpression.accept(this));
       }

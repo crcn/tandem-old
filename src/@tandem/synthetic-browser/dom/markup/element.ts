@@ -49,7 +49,7 @@ export class SyntheticMarkupElement extends SyntheticMarkupContainer {
   readonly nodeType: number = HTMLNodeType.ELEMENT;
   readonly attributes: SyntheticMarkupAttributes;
 
-  constructor(readonly tagName: string, ownerDocument: SyntheticDocument) {
+  constructor(readonly namespaceURI: string, readonly tagName: string, ownerDocument: SyntheticDocument) {
     super(tagName, ownerDocument);
     this.attributes = new SyntheticMarkupAttributes();
     this.attributes.observe(new WrapBus(this.onAttributesAction.bind(this)));
@@ -111,7 +111,7 @@ export class SyntheticMarkupElement extends SyntheticMarkupContainer {
   }
 
   cloneNode() {
-    const element = new SyntheticMarkupElement(this.tagName, this.ownerDocument);
+    const element = new SyntheticMarkupElement(this.namespaceURI, this.tagName, this.ownerDocument);
     for (const attribute of this.attributes) {
       element.setAttribute(attribute.name, attribute.value);
     }

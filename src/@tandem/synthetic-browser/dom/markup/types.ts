@@ -1,4 +1,4 @@
 import { SyntheticMarkupElement } from "./element";
 import { SyntheticDocument } from "../document";
 
-export type syntheticElementClassType = { new(tagName: string, ownerDocument: SyntheticDocument): SyntheticMarkupElement };
+export type syntheticElementClassType = { new(ns: string, tagName: string, ownerDocument: SyntheticDocument): SyntheticMarkupElement };

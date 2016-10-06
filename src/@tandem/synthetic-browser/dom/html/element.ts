@@ -6,8 +6,8 @@ export class SyntheticHTMLElement extends SyntheticMarkupElement {
 
   private _style: SyntheticCSSStyleDeclaration;
 
-  constructor(tagName: string, ownerDocument: SyntheticDocument) {
-    super(tagName, ownerDocument);
+  constructor(ns: string, tagName: string, ownerDocument: SyntheticDocument) {
+    super(ns, tagName, ownerDocument);
     this._style = new SyntheticCSSStyleDeclaration();
   }
 
