@@ -11,6 +11,9 @@ export function createSelectorTester(selectorSource: string) {
     return ast.accept({
       visitAllSelector(expression) {
         return true;
+      },
+      visitTagNameSelector(expression) {
+        return expression.tagName.toLowerCase() === node.tagName.toLowerCase();
       }
     });
   }

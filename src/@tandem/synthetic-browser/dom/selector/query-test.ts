@@ -9,7 +9,8 @@ import {
 
 describe(__filename + "#", () => {
   [
-    ["*", "<div>a</div>b<span>c</span>", "<div>a</div><span>c</span>"]
+    ["*", "<div>a</div>b<span>c</span>", "<div>a</div><span>c</span>"],
+    ["div", "<div>a</div>b<span>c</span><div>d</div>", "<div>a</div><div>d</div>"],
   ].forEach(([selector, a, b]) => {
     it(`selector ${selector} for ${a} equals ${b}`, () => {
       const el = evaluateMarkup(parseMarkup(a), new SyntheticDocument(null, ""));

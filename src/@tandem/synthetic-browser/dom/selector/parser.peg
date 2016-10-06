@@ -1,6 +1,7 @@
 {
   const {
-    AllSelectorExpression
+    AllSelectorExpression,
+    TagNameSelectorExpression,
   } = require("./ast");
 
   function position() {
@@ -11,8 +12,15 @@
   }
 }
 
-Start = AllSelector
+Start = ElementSelector
 
+ElementSelector = TagNameSelector/AllSelector
+
+TagNameSelector = Word {
+  return new TagNameSelectorExpression(text(), position());
+}
 AllSelector = "*" {
   return new AllSelectorExpression(position());
 }
+
+Word = [a-zA-Z]+ { text() }
