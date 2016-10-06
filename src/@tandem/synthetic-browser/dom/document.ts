@@ -121,7 +121,7 @@ export class SyntheticDocument extends SyntheticMarkupContainer {
   }
 
   // non-standard APIs to enable custom elements according to the doc type -- necessary for
-  // cases where we're using different template engines such as typescript, vuejs, etc.
+  // cases where we're mixing different template engines such as angular, vuejs, etc.
   registerElementNS(ns: string, tagName: string, elementClass: syntheticElementClassType);
   registerElementNS(ns: string, tagName: string, options: IRegisterComponentOptions);
 
