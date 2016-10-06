@@ -3,7 +3,7 @@ import { bindable } from "@tandem/common";
 import {
   HTMLNodeType,
   IMarkupNodeVisitor,
-  SyntheticHTMLNode,
+  SyntheticMarkupNode,
   SyntheticMarkupText,
   SyntheticMarkupElement,
   SyntheticMarkupComment,
@@ -47,7 +47,7 @@ export class SyntheticDocument extends SyntheticMarkupContainer {
     this.styleSheets = [];
     this._registeredElements = {};
 
-    this.registerElement("default", SyntheticHTMLElement);
+    this.registerElement("default", SyntheticMarkupElement);
 
     const documentElement = this.createElement("div");
 

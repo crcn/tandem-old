@@ -31,11 +31,11 @@ import { pointerToolDependency } from "./models/pointer-tool";
 import { keyBindingsDependency } from "./key-bindings";
 
 // extensions
-import { sassExtensionDependency  } from "@tandem/sass-extension";
-// import { angular2ExtensionDependency } from "@tandem/angular2-extension";
 import { htmlExtensionDependency } from "@tandem/html-extension";
+import { sassExtensionDependency  } from "@tandem/sass-extension";
 import { typescriptExtensionDependency } from "@tandem/typescript-extension";
 import { javascriptExtensionDependency } from "@tandem/javascript-extension";
+import { tdprojectExtensionDependencies } from "@tandem/tdproject-extension";
 
 import { Metadata } from "@tandem/common/metadata";
 import { Workspace, Editor } from "./models";
@@ -94,7 +94,7 @@ export class FrontEndApplication extends Application {
       htmlExtensionDependency,
       javascriptExtensionDependency,
       typescriptExtensionDependency,
-      // angular2ExtensionDependency,
+      tdprojectExtensionDependencies,
     );
   }
 }

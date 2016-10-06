@@ -3,7 +3,7 @@ import { WrapBus } from "mesh";
 import { BoundingRect, watchProperty } from "@tandem/common";
 import {
   HTMLNodeType,
-  SyntheticHTMLNode,
+  SyntheticMarkupNode,
   SyntheticMarkupText,
   SyntheticMarkupElement,
   SyntheticCSSStyleDeclaration,
@@ -11,23 +11,23 @@ import {
 
 export interface ISyntheticDocumentRenderer {
   readonly element: HTMLElement;
-  target: SyntheticHTMLNode;
+  target: SyntheticMarkupNode;
 }
 
 export abstract class BaseRenderer implements ISyntheticDocumentRenderer {
 
   readonly element: HTMLElement;
-  private _target: SyntheticHTMLNode;
+  private _target: SyntheticMarkupNode;
 
   constructor() {
     this.element = document.createElement("div");
   }
 
-  get target(): SyntheticHTMLNode {
+  get target(): SyntheticMarkupNode {
     return this._target;
   }
 
-  set target(value: SyntheticHTMLNode) {
+  set target(value: SyntheticMarkupNode) {
     this._target = value;
     this._target.observe(new WrapBus(this.onTargetChange.bind(this)));
     this.update();

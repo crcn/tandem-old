@@ -1,9 +1,9 @@
 import { Action } from "@tandem/common/actions";
 import { MimeTypes } from "@tandem/common/constants";
+
 import {
   SyntheticHTMLElement,
   SyntheticCSSStyleSheet,
-  SyntheticMarkupElementClassDependency,
 } from "@tandem/synthetic-browser";
 
 export class SyntheticHTMLLink extends SyntheticHTMLElement {
@@ -19,5 +19,3 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
     return "";
   }
 }
-
-export const syntheticHTMLLinkClassDependency = new SyntheticMarkupElementClassDependency("link", SyntheticHTMLLink);

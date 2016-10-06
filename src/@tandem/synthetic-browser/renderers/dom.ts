@@ -3,7 +3,7 @@ import { WrapBus } from "mesh";
 import { BoundingRect, watchProperty } from "@tandem/common";
 import {
   HTMLNodeType,
-  SyntheticHTMLNode,
+  SyntheticMarkupNode,
   SyntheticMarkupText,
   SyntheticMarkupElement,
   SyntheticCSSStyleDeclaration,

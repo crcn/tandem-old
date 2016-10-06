@@ -57,11 +57,11 @@ export default class FrontEndService extends BaseApplicationService<IApplication
     this._server.get("/asset/:uri", async (req, res, next) => {
 
       const uri = decodeURIComponent(req.params.uri);
-      const { content } = await ReadFileAction.execute(uri, this.bus);
+      // const { content } = await ReadFileAction.execute(uri, this.bus);
 
 
       // need to sandbox this in project directory
-      res.send(content);
+      res.sendFile(uri);
     });
 
     for (const entryName in this.app.config.entries) {

@@ -21,6 +21,7 @@ export class Sandbox extends Observable {
   private _global: any;
   private _importer: ModuleImporter;
   private _shouldResetAgain: boolean;
+  private _mainExports: any;
 
   constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}) {
     super();
@@ -36,9 +37,13 @@ export class Sandbox extends Observable {
     return this._importer;
   }
 
+  get mainExports(): any {
+    return this._mainExports;
+  }
+
   async open(envMimeType: string, filePath: string, relativePath?: string) {
     this._entry = { envMimeType: envMimeType, filePath: filePath };
-    await this._importer.import(envMimeType, filePath, relativePath);
+    this._mainExports = await this._importer.import(envMimeType, filePath, relativePath);
     this.notify(new SandboxAction(SandboxAction.EVALUATED));
   }
 

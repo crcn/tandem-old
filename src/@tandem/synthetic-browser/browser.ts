@@ -1,5 +1,5 @@
 import { SyntheticLocation } from "./location";
-import { SyntheticDocument, SyntheticWindow } from "./dom";
+import { SyntheticDocument, SyntheticWindow, SyntheticMarkupNode } from "./dom";
 import { ISyntheticDocumentRenderer, DOMRenderer, TetherRenderer } from "./renderers";
 import {
   bindable,
@@ -75,6 +75,13 @@ export class SyntheticBrowser extends Observable {
 
   protected async onSandboxEvaluated(action: SandboxAction) {
     const window = this._sandbox.global as SyntheticWindow;
+    const mainExports = this._sandbox.mainExports;
+
+    // is a synthetic node
+    if (mainExports && mainExports.nodeType) {
+      window.document.body.appendChild(mainExports);
+    }
+
     await window.document.load();
     if (this._window) {
       this._window.patch(window);
@@ -86,7 +93,7 @@ export class SyntheticBrowser extends Observable {
 
   private _registerElements(window: SyntheticWindow) {
     for (const elementClassDependency of SyntheticMarkupElementClassDependency.findAll(this._dependencies)) {
-      window.document.registerElement(elementClassDependency.tagName, elementClassDependency.value);
+      window.document.registerElementNS(elementClassDependency.xmlns, elementClassDependency.tagName, elementClassDependency.value);
     }
   }
 }

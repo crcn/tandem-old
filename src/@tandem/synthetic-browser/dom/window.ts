@@ -2,7 +2,7 @@ import { Sandbox } from "@tandem/sandbox";
 import { bindable } from "@tandem/common/decorators";
 import { Observable } from "@tandem/common/observable";
 import { IPatchable } from "@tandem/common/object";
-import { DOMNamespaceURI } from "./constants";
+import { HTML_XMLNS } from "./constants";
 import { SyntheticLocation } from "../location";
 import { SyntheticDocument } from "./document";
 
@@ -16,7 +16,7 @@ export class SyntheticWindow extends Observable implements IPatchable {
 
   constructor(readonly sandbox: Sandbox, location: SyntheticLocation) {
     super();
-    this.document = new SyntheticDocument(this, DOMNamespaceURI.HTML);
+    this.document = new SyntheticDocument(this, HTML_XMLNS);
     this.location = location;
     this.window   = this;
   }

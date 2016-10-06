@@ -1,0 +1,6 @@
+<link rel="stylesheet" href="../html/hello-world.css">
+
+<tdproject xmlns="tandem">
+  <frame src="./component.html" />
+  <frame src="../html/hello-world.html" />
+</tdproject>

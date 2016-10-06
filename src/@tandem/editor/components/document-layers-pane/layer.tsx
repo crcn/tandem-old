@@ -210,7 +210,6 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
   }
 }
 
-
 @DropTarget("element", {
   canDrop() {
     return true;

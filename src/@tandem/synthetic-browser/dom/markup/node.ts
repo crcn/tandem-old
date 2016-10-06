@@ -3,9 +3,9 @@ import { SyntheticDocument } from "../document";
 import { TreeNode, patchTreeNode } from "@tandem/common/tree";
 import { IPatchable, IComparable } from "@tandem/common/object";
 
-export abstract class SyntheticHTMLNode extends TreeNode<SyntheticHTMLNode> implements IComparable, IPatchable {
+export abstract class SyntheticMarkupNode extends TreeNode<SyntheticMarkupNode> implements IComparable, IPatchable {
 
-  readonly childNodes: SyntheticHTMLNode[];
+  readonly childNodes: SyntheticMarkupNode[];
   abstract readonly nodeType: number;
   private _loaded: boolean;
 
@@ -19,13 +19,13 @@ export abstract class SyntheticHTMLNode extends TreeNode<SyntheticHTMLNode> impl
     // TODO
   }
 
-  patch(source: SyntheticHTMLNode) {
+  patch(source: SyntheticMarkupNode) {
     patchTreeNode(this, source);
   }
 
   abstract textContent: string;
 
-  compare(source: SyntheticHTMLNode) {
+  compare(source: SyntheticMarkupNode) {
     return Number(source.constructor === this.constructor && this.nodeName === source.nodeName);
   }
 
@@ -33,7 +33,7 @@ export abstract class SyntheticHTMLNode extends TreeNode<SyntheticHTMLNode> impl
     // TODO
   }
 
-  onChildAdded(child: SyntheticHTMLNode) {
+  onChildAdded(child: SyntheticMarkupNode) {
     super.onChildAdded(child);
     if (this._loaded) {
       child.load();

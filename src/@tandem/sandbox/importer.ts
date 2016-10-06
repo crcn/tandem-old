@@ -39,7 +39,7 @@ export class ModuleImporter extends Observable implements IInvoker {
     this._fileContentCache = {};
   }
 
-  async resolve(filePath: string, relativePath?: string) {
+  public async resolve(filePath: string, relativePath?: string) {
     return this._resolvedFiles[filePath] || (this._resolvedFiles[filePath] = new SingletonThenable(() => {
       return ResolveAction.execute(String(filePath), relativePath, this.bus);
     }));
@@ -98,17 +98,24 @@ export class ModuleImporter extends Observable implements IInvoker {
       // return await response.text();
     }));
 
-    if (!this._fileWatchers[filePath]) {
-      // this.logger.verbose("watching %s", filePath);
-      this._fileWatchers[filePath] = WatchFileAction.execute(filePath, this.bus, this.onFileChange.bind(this));
-    }
+    this.watchFile(filePath);
 
     return content;
   }
 
+  public watchFile(filePath: string) {
+    if (!this._fileWatchers[filePath]) {
+      // this.logger.verbose("watching %s", filePath);
+      this._fileWatchers[filePath] = WatchFileAction.execute(filePath, this.bus, this.onFileChange.bind(this));
+    }
+  }
+
   protected onFileChange(data: IReadFileActionResponseData) {
     // this.logger.verbose("file change: %s", data.path);
-    this._fileContentCache[data.path] = data.content;
+
+    if (this._fileContentCache[data.path]) {
+      this._fileContentCache[data.path] = data.content;
+    }
 
     // bust all modules for the given path to ensure that it gets re-evaluated
     this._modules[data.path] = undefined;

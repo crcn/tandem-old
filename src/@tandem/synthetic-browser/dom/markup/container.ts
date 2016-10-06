@@ -1,11 +1,11 @@
-import { SyntheticHTMLNode } from "./node";
+import { SyntheticMarkupNode } from "./node";
 import { HTMLNodeType } from "./node-types";
 import { SyntheticMarkupText } from "./text-node";
 
-export abstract class SyntheticMarkupContainer extends SyntheticHTMLNode {
+export abstract class SyntheticMarkupContainer extends SyntheticMarkupNode {
 
   // TODO - insertBefore here
-  appendChild(child: SyntheticHTMLNode) {
+  appendChild(child: SyntheticMarkupNode) {
     if (child.nodeType === HTMLNodeType.DOCUMENT_FRAGMENT) {
       return child.children.concat().forEach((child) => this.appendChild(child));
     }

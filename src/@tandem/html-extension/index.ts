@@ -11,13 +11,18 @@ import { cssHighlightElementToolComponentFactoryDependency } from "./components/
 
 // sandbox
 import {
-  cssModuleFactoryDependency,
-  htmlDOMModuleFactoryDependency
+  cssModuleFactoryDependency
 } from "./sandbox";
+
+import { HTML_XMLNS, SyntheticMarkupElementClassDependency } from "@tandem/synthetic-browser";
+
 import { 
-  syntheticHTMLLinkClassDependency,
-  syntheticHTMLImageClassDependency,
+  SyntheticHTMLImage,
+  SyntheticHTMLLink,
 } from "./synthetic";
+
+import { MarkupModule } from "@tandem/synthetic-browser";
+import { ModuleFactoryDependency } from "@tandem/sandbox";
 
 // layer components
 import { textLayerLabelComponentDependency } from "./components/text-layer-label";
@@ -73,9 +78,9 @@ export const htmlExtensionDependency = [
 
   // sandbox
   cssModuleFactoryDependency,
-  htmlDOMModuleFactoryDependency,
-  syntheticHTMLLinkClassDependency,
-  syntheticHTMLImageClassDependency,
+  new ModuleFactoryDependency(MimeTypes.HTML, MimeTypes.HTML, MarkupModule),
+  new SyntheticMarkupElementClassDependency(HTML_XMLNS, "img", SyntheticHTMLImage),
+  new SyntheticMarkupElementClassDependency(HTML_XMLNS, "link", SyntheticHTMLLink),
 
   // stage tool components
   cssHighlightElementToolComponentFactoryDependency,
