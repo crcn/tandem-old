@@ -24,8 +24,7 @@ export default class PreviewComponent extends React.Component<{ app: FrontEndApp
     this._update();
   }
   render() {
-    return (<div className="m-editor-stage-preview">
-      <div ref="container"></div>
+    return (<div ref="container" className="m-editor-stage-preview">
     </div>);
   }
 }

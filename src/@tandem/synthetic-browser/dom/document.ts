@@ -14,7 +14,6 @@ import {
 
 import { SyntheticWindow } from "./window";
 import { SyntheticLocation } from "../location";
-import { SyntheticHTMLElement } from "./html";
 import { SyntheticCSSStyleSheet } from "./css";
 
 interface IRegisterComponentOptions {
@@ -36,14 +35,6 @@ export class SyntheticDocument extends SyntheticMarkupContainer {
     super("#document", null);
     this.styleSheets = [];
     this._registeredElements = {};
-
-    this.registerElement("default", SyntheticMarkupElement);
-
-    const documentElement = this.createElement("div");
-
-    this.appendChild(documentElement);
-    documentElement.appendChild(this.createElement("div"));
-    documentElement.appendChild(this.createElement("div"));
   }
 
   get defaultView(): SyntheticWindow {
@@ -88,7 +79,7 @@ export class SyntheticDocument extends SyntheticMarkupContainer {
     this.styleSheets = source.styleSheets;
   }
 
-  createElementNS(ns: string, tagName: string) {
+  createElementNS(ns: string, tagName: string): SyntheticMarkupElement {
     const nsElements = this._registeredElements[ns] || {};
     const elementClass = nsElements[tagName.toLowerCase()] || nsElements.default;
 

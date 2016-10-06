@@ -9,13 +9,14 @@ import PreviewLayerComponent from "./preview";
 import { Editor, Workspace } from "@tandem/editor/models";
 import { UpdateAction, IActor } from "@tandem/common";
 import { Dependencies, MainBusDependency } from "@tandem/common/dependencies";
+import { FrontEndApplication } from "@tandem/editor/application";
 import {
   ZoomAction,
   MouseAction,
   KeyboardAction,
 } from "@tandem/editor/actions";
 
-export default class EditorStageLayersComponent extends React.Component<{ app: any, editor: Editor, dependencies: Dependencies, zoom: number }, any> {
+export default class EditorStageLayersComponent extends React.Component<{ app: FrontEndApplication, editor: Editor, dependencies: Dependencies, zoom: number }, any> {
 
   private _mousePosition: IPoint;
   private _toolsHidden: any;
@@ -202,7 +203,7 @@ export default class EditorStageLayersComponent extends React.Component<{ app: a
         style={style}>
           <div style={innerStyle} className="noselect" data-previewroot>
               <PreviewLayerComponent {...this.props} renderer={this.props.app.editor.browser.renderer} />
-              {this._toolsHidden ? undefined : <ToolsLayerComponent workspace={null} {...this.props} />}
+              {this._toolsHidden || !this.props.app.editor.browser.window ? undefined : <ToolsLayerComponent workspace={null} {...this.props} />}
           </div>
       </div>
     </IsolateComponent>);

@@ -15,6 +15,10 @@ export abstract class SyntheticMarkupNode extends TreeNode<SyntheticMarkupNode> 
     this.childNodes = this.children;
   }
 
+  get parentNode() {
+    return this.parent;
+  }
+
   addEventListener() {
     // TODO
   }

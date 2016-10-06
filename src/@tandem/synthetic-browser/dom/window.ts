@@ -6,6 +6,7 @@ import { IPatchable } from "@tandem/common/object";
 import { HTML_XMLNS } from "./constants";
 import { SyntheticLocation } from "../location";
 import { SyntheticDocument } from "./document";
+import { SyntheticHTMLElement } from "./html";
 
 export class SyntheticWindow extends Observable implements IPatchable {
 
@@ -17,9 +18,24 @@ export class SyntheticWindow extends Observable implements IPatchable {
 
   constructor(readonly sandbox: Sandbox, location: SyntheticLocation) {
     super();
-    this.document = new SyntheticDocument(this, HTML_XMLNS);
+    this.document = this.createDocument();
     this.location = location;
     this.window   = this;
+  }
+
+  private createDocument() {
+    const document = new SyntheticDocument(this, HTML_XMLNS);
+    document.registerElementNS(HTML_XMLNS, "default", SyntheticHTMLElement);
+    const documentElement = document.createElement("div");
+
+    // head
+    documentElement.appendChild(document.createElement("div"));
+
+    // body
+    documentElement.appendChild(document.createElement("div"));
+
+    document.appendChild(documentElement);
+    return document;
   }
 
   // TODO - use visitor pattern here

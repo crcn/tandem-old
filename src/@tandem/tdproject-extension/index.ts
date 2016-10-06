@@ -1,5 +1,10 @@
-import { MimeTypeDependency, MimeTypes as CommonMimeTypes } from "@tandem/common";
 import { MimeTypes, TDPROJECT_XMLNS } from "./constants";
+import { ReactComponentFactoryDependency } from "@tandem/editor";
+import { MimeTypeDependency, MimeTypes as CommonMimeTypes } from "@tandem/common";
+
+import {
+  TDProjectStageToolComponent
+} from "./components";
 
 import {
   SyntheticTDFrame,
@@ -7,9 +12,17 @@ import {
 } from "./synthetic";
 
 import { ModuleFactoryDependency } from "@tandem/sandbox";
-import { MarkupModule, SyntheticMarkupElementClassDependency, SyntheticMarkupElement } from "@tandem/synthetic-browser";
+
+import {
+  MarkupModule,
+  SyntheticMarkupElement,
+  SyntheticMarkupElementClassDependency,
+} from "@tandem/synthetic-browser";
 
 export const tdprojectExtensionDependencies = [
+
+  // stage tool components
+  new ReactComponentFactoryDependency("components/tools/pointer/tdprojectFrame", TDProjectStageToolComponent),
 
   // elements
   new SyntheticMarkupElementClassDependency(TDPROJECT_XMLNS, "tdproject", SyntheticTDProject),
