@@ -1,6 +1,7 @@
 import { WrapBus } from "mesh";
 import { bindable } from "@tandem/common/decorators";
 import { BubbleBus } from "@tandem/common/busses";
+import { BoundingRect } from "@tandem/common/geom";
 import { MarkupNodeType } from "./node-types";
 import { evaluateMarkup } from "./evaluate";
 import { SyntheticDocument } from "../document";
@@ -25,6 +26,10 @@ export class SyntheticMarkupAttribute extends Observable {
     super();
     this.value = value;
   }
+
+  toString() {
+    return `${this.name}="${this.value}"`;
+  }
 }
 
 export class SyntheticMarkupAttributes extends ObservableCollection<SyntheticMarkupAttribute> {
@@ -42,17 +47,32 @@ export class SyntheticMarkupAttributes extends ObservableCollection<SyntheticMar
 
     return super.splice(start, deleteCount, ...items);
   }
+
+  toString() {
+    return this.map((attribute) => {
+      return ` ${attribute}`;
+    }).join("");
+  }
 }
+
+let _i = 0;
 
 export class SyntheticMarkupElement extends SyntheticMarkupContainer {
 
   readonly nodeType: number = MarkupNodeType.ELEMENT;
   readonly attributes: SyntheticMarkupAttributes;
+  public bounds: BoundingRect;
 
   constructor(readonly namespaceURI: string, readonly tagName: string, ownerDocument: SyntheticDocument) {
     super(tagName, ownerDocument);
     this.attributes = new SyntheticMarkupAttributes();
+    this.setAttribute("data-uid", String(++_i));
     this.attributes.observe(new WrapBus(this.onAttributesAction.bind(this)));
+  }
+
+  // non-standard
+  get uid(): string {
+    return this.getAttribute("data-uid");
   }
 
   getAttribute(name: string) {
@@ -87,15 +107,17 @@ export class SyntheticMarkupElement extends SyntheticMarkupContainer {
     return [
       "<",
       this.nodeName,
-      ...this.attributes.map((attribute) => {
-        return ` ${attribute.name}="${attribute.value}"`;
-      }),
+      this.attributes,
       ">",
-      super.toString(),
+      this.childrenToString(),
       "</",
       this.nodeName,
       ">"
     ].join("");
+  }
+
+  childrenToString(): string {
+    return super.toString();
   }
 
   protected onAttributesAction(action: Action) {

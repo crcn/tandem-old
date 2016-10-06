@@ -3,7 +3,7 @@ import { ReactComponentFactoryDependency } from "@tandem/editor";
 import { MimeTypeDependency, MimeTypes as CommonMimeTypes } from "@tandem/common";
 
 import {
-  TDProjectStageToolComponent
+  TDFrameStageToolComponent
 } from "./components";
 
 import {
@@ -22,7 +22,7 @@ import {
 export const tdprojectExtensionDependencies = [
 
   // stage tool components
-  new ReactComponentFactoryDependency("components/tools/pointer/tdprojectFrame", TDProjectStageToolComponent),
+  new ReactComponentFactoryDependency("components/tools/pointer/tdprojectFrame", TDFrameStageToolComponent),
 
   // elements
   new SyntheticMarkupElementClassDependency(TDPROJECT_XMLNS, "tdproject", SyntheticTDProject),

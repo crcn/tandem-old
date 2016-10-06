@@ -13,7 +13,7 @@ export class SyntheticTDFrame extends SyntheticMarkupElement {
     this.appendChild(exports);
   }
 
-  // toString() {
-  //   return `<div>Hello World</div>`;
-  // }
+  toString() {
+    return `<div ${this.attributes["data-uid"]}>${this.childrenToString()}</div>`;
+  }
 }

@@ -14,13 +14,14 @@ import { intersection, flatten } from "lodash";
 import { IVisibleEntity, IEntity } from "@tandem/common/lang/entities";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { IInjectable, APPLICATION_SINGLETON_NS, IActor, Action } from "@tandem/common";
+import { SyntheticMarkupElement } from "@tandem/synthetic-browser";
 
 class SelectableComponent extends React.Component<{
-  entity: IVisibleEntity,
+  element: SyntheticMarkupElement,
   selection: any,
   app: FrontEndApplication,
   zoom: number,
-  onEntityMouseDown: (entity: IVisibleEntity, event?: MouseEvent) => void
+  onEntityMouseDown: (element: SyntheticMarkupElement, event?: MouseEvent) => void
 }, any> {
 
   private _i: number = 0;
@@ -31,17 +32,17 @@ class SelectableComponent extends React.Component<{
   }
 
   onMouseDown = (event: MouseEvent): void => {
-    this.props.onEntityMouseDown(this.props.entity, event);
+    this.props.onEntityMouseDown(this.props.element, event);
     event.stopPropagation();
     this.onMouseOut(event);
  }
 
   onMouseOver = (event: MouseEvent) => {
-    this.props.entity.metadata.set(MetadataKeys.HOVERING, true);
+    this.props.element.setAttribute(`data-${MetadataKeys.HOVERING}`, true);
   }
 
   onMouseOut = (event: MouseEvent) => {
-    this.props.entity.metadata.set(MetadataKeys.HOVERING, false);
+    this.props.element.setAttribute(`data-${MetadataKeys.HOVERING}`, false);
   }
 
   shouldComponentUpdate(props) {
@@ -50,20 +51,19 @@ class SelectableComponent extends React.Component<{
   }
 
   render() {
-    const { entity, selection, app } = this.props;
+    const { element, selection, app } = this.props;
 
-    if (!entity.display) return null;
-    const entities = entity.flatten();
+    // const entities = element.querySelectorAll("*");
 
-    if (intersection(entities, selection || []).length) return null;
+    // if (intersection(entities, selection || []).length) return null;
 
-    const bounds = entity.display.bounds;
+    const bounds = element.bounds;
 
     const borderWidth = 2 / this.props.zoom;
 
     const classNames = cx({
       "m-selectable": true,
-      "hover": this.props.entity.metadata.get(MetadataKeys.HOVERING)
+      "hover": this.props.element.getAttribute(`data-${MetadataKeys.HOVERING}`)
     });
 
     const style = {
@@ -92,7 +92,7 @@ class SelectableComponent extends React.Component<{
 export class SelectablesComponent extends React.Component<{
   app: FrontEndApplication,
   editor: Editor,
-  onEntityMouseDown: (entity: IVisibleEntity, event?: MouseEvent) => void,
+  onEntityMouseDown: (element: SyntheticMarkupElement, event?: MouseEvent) => void,
   canvasRootSelectable?: boolean
 }, { showSelectables: boolean }> {
 
@@ -125,11 +125,10 @@ export class SelectablesComponent extends React.Component<{
   render() {
 
     if (!this.state.showSelectables) return null;
+    const { document } = this.props.app.editor.browser.window;
 
     const { editor, app } = this.props;
     const { selection } = editor;
-    const activeEntity = editor.activeEntity;
-    if (!activeEntity || !activeEntity.children) return null;
     // do not render selectables that are off screen
     //
     // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.
@@ -137,18 +136,18 @@ export class SelectablesComponent extends React.Component<{
     // TODO - check if user is scrolling
     if (selection && editor.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
-    const allEntities = []; // this.props.workspace.file.entity.flatten() as Array<IEntity>;
+    const allEntities = document.querySelectorAll("*"); // this.props.workspace.file.entity.flatten() as Array<IEntity>;
 
     // if (selection.preview.currentTool.type !== "pointer") return null;
 
-    const selectables = allEntities.filter((entity: IVisibleEntity) => (
-      entity.display && (this.props.canvasRootSelectable || entity.metadata.get(MetadataKeys.CANVAS_ROOT) !== true || entity.children.find((child) => child["display"]) == null) && entity.display.visible
-    )).map((entity, i) => (
+    const selectables = allEntities.filter((element: SyntheticMarkupElement) => (
+      !!element.bounds
+    )).map((element, i) => (
       <SelectableComponent
         {...this.props}
         zoom={editor.zoom}
         selection={selection}
-        entity={entity as IVisibleEntity}
+        element={element}
         key={i}
       />
     ));

@@ -23,8 +23,10 @@ const defaultExpressionClasses = {
   decl      : CSSDeclarationExpression,
 };
 
+const _cache = {};
+
 export function parseCSS(source: string, expressionClasses?: any): CSSStyleSheetExpression {
-  return convertPostCSSAST(postcss.parse(source));
+  return _cache[source] || (_cache[source] = convertPostCSSAST(postcss.parse(source)));
 }
 
 export function convertPostCSSAST(root: postcss.Root, expressionClasses: any = {}) {

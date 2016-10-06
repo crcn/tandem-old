@@ -30,13 +30,10 @@ export class SyntheticBrowser extends Observable {
   private _location: SyntheticLocation;
   private _renderer: ISyntheticDocumentRenderer;
 
-  constructor(private _dependencies: Dependencies) {
+  constructor(private _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer) {
     super();
-
-    // TODO - renderer should not be part of the synthetic browser -- needs
-    // to be part of the preview instead.
-    this._renderer = new DOMRenderer();
-    this._sandbox = new Sandbox(_dependencies, this.createSandboxGlobals.bind(this));
+    this._renderer = renderer || new DOMRenderer();
+    this._sandbox  = new Sandbox(_dependencies, this.createSandboxGlobals.bind(this));
     this._sandbox.observe(new TypeWrapBus(SandboxAction.EVALUATED, this.onSandboxEvaluated.bind(this)));
   }
 
@@ -82,6 +79,7 @@ export class SyntheticBrowser extends Observable {
     }
 
     await window.document.load();
+
     if (this._window) {
       this._window.patch(window);
     } else {
