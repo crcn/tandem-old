@@ -1,0 +1,18 @@
+{
+  const {
+    AllSelectorExpression
+  } = require("./ast");
+
+  function position() {
+    return {
+      start:peg$savedPos,
+      end:peg$currPos
+    };
+  }
+}
+
+Start = AllSelector
+
+AllSelector = "*" {
+  return new AllSelectorExpression(position());
+}

@@ -4,11 +4,6 @@ import { ITreeNode } from "@tandem/common/tree";
 import { IDisposable } from "@tandem/common/object";
 export { Action };
 
-export class TreeNodeAction extends Action {
-  static readonly NODE_ADDED    = "nodeAdded";
-  static readonly NODE_REMOVED  = "nodeRemoved";
-}
-
 export class ChangeAction extends Action {
   static readonly CHANGE = "change";
   constructor() {

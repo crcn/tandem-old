@@ -1,15 +1,15 @@
-import { Action, PropertyChangeAction } from "@tandem/common/actions";
+import { WrapBus } from "mesh";
 import { bindable } from "@tandem/common/decorators";
 import { BubbleBus } from "@tandem/common/busses";
-import { HTMLNodeType } from "./node-types";
+import { MarkupNodeType } from "./node-types";
 import { evaluateMarkup } from "./evaluate";
+import { SyntheticDocument } from "../document";
+import { IMarkupNodeVisitor } from "./visitor";
 import { parse as parseMarkup } from "./parser.peg";
 import { diffArray, patchArray } from "@tandem/common/utils";
-import { SyntheticDocument } from "../document";
 import { SyntheticMarkupContainer } from "./container";
 import { SyntheticCSSStyleDeclaration } from "../css";
-import { WrapBus } from "mesh";
-import { IMarkupNodeVisitor } from "./visitor";
+import { Action, PropertyChangeAction } from "@tandem/common/actions";
 import {
   Observable,
   ArrayChangeAction,
@@ -46,7 +46,7 @@ export class SyntheticMarkupAttributes extends ObservableCollection<SyntheticMar
 
 export class SyntheticMarkupElement extends SyntheticMarkupContainer {
 
-  readonly nodeType: number = HTMLNodeType.ELEMENT;
+  readonly nodeType: number = MarkupNodeType.ELEMENT;
   readonly attributes: SyntheticMarkupAttributes;
 
   constructor(readonly namespaceURI: string, readonly tagName: string, ownerDocument: SyntheticDocument) {

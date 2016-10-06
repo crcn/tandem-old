@@ -1,4 +1,4 @@
-import { HTMLNodeType } from "./node-types";
+import { MarkupNodeType } from "./node-types";
 import { SyntheticMarkupNode } from "./node";
 import { SyntheticDocument } from "../document";
 import { patchable, bindable } from "@tandem/common/decorators";

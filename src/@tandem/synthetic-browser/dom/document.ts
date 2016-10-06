@@ -1,7 +1,7 @@
 import { bindable } from "@tandem/common";
 
 import {
-  HTMLNodeType,
+  MarkupNodeType,
   IMarkupNodeVisitor,
   SyntheticMarkupNode,
   SyntheticMarkupText,
@@ -12,21 +12,11 @@ import {
   SyntheticDocumentFragment,
 } from "./markup";
 
-import {
-  SyntheticHTMLElement
-} from "./html";
+import { SyntheticWindow } from "./window";
+import { SyntheticLocation } from "../location";
+import { SyntheticHTMLElement } from "./html";
+import { SyntheticCSSStyleSheet } from "./css";
 
-import {
-  SyntheticLocation
-} from "../location";
-
-import {
-  SyntheticWindow
-} from "./window";
-
-import {
-  SyntheticCSSStyleSheet,
-} from "./css";
 interface IRegisterComponentOptions {
   prototype: any;
   extends: string;
@@ -34,7 +24,7 @@ interface IRegisterComponentOptions {
 
 export class SyntheticDocument extends SyntheticMarkupContainer {
 
-  readonly nodeType: number = HTMLNodeType.DOCUMENT;
+  readonly nodeType: number = MarkupNodeType.DOCUMENT;
 
   @bindable()
   public styleSheets: SyntheticCSSStyleSheet[];

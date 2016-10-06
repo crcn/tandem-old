@@ -1,12 +1,13 @@
+import { MarkupNodeType } from "./node-types";
 import { SyntheticMarkupNode } from "./node";
-import { HTMLNodeType } from "./node-types";
 import { SyntheticMarkupText } from "./text-node";
+import { querySelector, querySelectorAll } from "../selector";
 
 export abstract class SyntheticMarkupContainer extends SyntheticMarkupNode {
 
   // TODO - insertBefore here
   appendChild(child: SyntheticMarkupNode) {
-    if (child.nodeType === HTMLNodeType.DOCUMENT_FRAGMENT) {
+    if (child.nodeType === MarkupNodeType.DOCUMENT_FRAGMENT) {
       return child.children.concat().forEach((child) => this.appendChild(child));
     }
     return super.appendChild(child);
@@ -23,5 +24,14 @@ export abstract class SyntheticMarkupContainer extends SyntheticMarkupNode {
 
   toString() {
     return this.childNodes.map((child) => child.toString()).join("");
+  }
+
+
+  public querySelector(selector: string) {
+    return querySelector(this, selector);
+  }
+
+  public querySelectorAll(selector: string) {
+    return querySelectorAll(this, selector);
   }
 }

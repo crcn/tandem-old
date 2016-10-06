@@ -36,7 +36,6 @@ export class SyntheticBrowser extends Observable {
     // TODO - renderer should not be part of the synthetic browser -- needs
     // to be part of the preview instead.
     this._renderer = new DOMRenderer();
-    // this._renderer = new TetherRenderer(MainBusDependency.getInstance(_dependencies));
     this._sandbox = new Sandbox(_dependencies, this.createSandboxGlobals.bind(this));
     this._sandbox.observe(new TypeWrapBus(SandboxAction.EVALUATED, this.onSandboxEvaluated.bind(this)));
   }

@@ -2,7 +2,7 @@ import { Action } from "@tandem/common";
 import { WrapBus } from "mesh";
 import { BoundingRect, watchProperty } from "@tandem/common";
 import {
-  HTMLNodeType,
+  MarkupNodeType,
   SyntheticMarkupNode,
   SyntheticMarkupText,
   SyntheticMarkupElement,

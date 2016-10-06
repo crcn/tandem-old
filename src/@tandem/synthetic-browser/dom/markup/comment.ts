@@ -1,10 +1,10 @@
-import { HTMLNodeType } from "./node-types";
+import { MarkupNodeType } from "./node-types";
 import { IMarkupNodeVisitor } from "./visitor";
 import { SyntheticDocument } from "../document";
 import { SyntheticMarkupValueNode } from "./value-node";
 
 export class SyntheticMarkupComment extends SyntheticMarkupValueNode {
-  readonly nodeType: number = HTMLNodeType.COMMENT;
+  readonly nodeType: number = MarkupNodeType.COMMENT;
 
   constructor(nodeValue: string, ownerDocument: SyntheticDocument) {
     super("#comment", nodeValue, ownerDocument);

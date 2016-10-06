@@ -1,10 +1,10 @@
-import { HTMLNodeType } from "./node-types";
+import { MarkupNodeType } from "./node-types";
 import { IMarkupNodeVisitor } from "./visitor";
 import { SyntheticDocument } from "../document";
 import { SyntheticMarkupContainer } from "./container";
 
 export class SyntheticDocumentFragment extends SyntheticMarkupContainer {
-  readonly nodeType: number = HTMLNodeType.DOCUMENT_FRAGMENT;
+  readonly nodeType: number = MarkupNodeType.DOCUMENT_FRAGMENT;
   constructor(ownerDocument: SyntheticDocument) {
     super("#document-fragment", ownerDocument);
   }
