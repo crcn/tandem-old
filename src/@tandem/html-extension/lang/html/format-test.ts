@@ -1,12 +1,12 @@
 import { TreeNodeAction, patchTreeNode } from "@tandem/common";
 import {
-  parseHTML,
-  HTMLTextExpression,
-  HTMLExpressionLoader,
-  HTMLCommentExpression,
-  HTMLElementExpression,
+  parseMarkup,
+  MarkupTextExpression,
+  MarkupExpressionLoader,
+  MarkupCommentExpression,
+  MarkupElementExpression,
   HTMLFragmentExpression,
-  HTMLContainerExpression,
+  MarkupContainerExpression,
 } from "./index";
 
 import { timeout } from "@tandem/common/test";
@@ -50,10 +50,10 @@ describe(__filename + "#", () => {
     [`<div>\n <div>\n </div></div>`, `<div><div>a</div></div>`, `<div>\n <div>\n  a\n </div></div>`],
   ].forEach(([input, change, output]) => {
     it(`can format ${input.replace(/([\r\n])/g," ")} to ${output.replace(/([\r\n])/g," ")}`, async () => {
-      const loader = new HTMLExpressionLoader();
+      const loader = new MarkupExpressionLoader();
       await loader.load({ content: input });
       loader.options = { indentation: " " };
-      const b = parseHTML(change);
+      const b = parseMarkup(change);
       patchTreeNode(loader.expression, b);
       expect(loader.source.content).to.equal(output);
     });

@@ -1,12 +1,12 @@
 {
 
 const {
-  HTMLFragmentExpression,
-  HTMLTextExpression,
+  MarkupTextExpression,
   HTMLScriptExpression,
-  HTMLCommentExpression,
-  HTMLElementExpression,
-  HTMLAttributeExpression
+  MarkupCommentExpression,
+  MarkupElementExpression,
+  MarkupAttributeExpression,
+  MarkupFragmentExpression,
 } = require("./ast");
 
 function position() {
@@ -23,14 +23,14 @@ Start
 
 Fragment
   = nodes:(Node/TextNode)* {
-    return new HTMLFragmentExpression(nodes, position());
+    return new MarkupFragmentExpression(nodes, position());
   }
 
 Node
   = _ node:(Comment/VoidElement/Element/TextNode) _ { return node; }
 
 Comment
-  = '<!--' characters:CommentCharacter* '-->' { return new HTMLCommentExpression(characters.join(''), position()); }
+  = '<!--' characters:CommentCharacter* '-->' { return new MarkupCommentExpression(characters.join(''), position()); }
 
 CommentCharacter
   = !'-->' character:. { return character; }
@@ -42,7 +42,7 @@ VoidElement
       expected("</" + nodeName + ">");
     }
 
-    return new HTMLElementExpression(nodeName, attributes, [], position());
+    return new MarkupElementExpression(nodeName, attributes, [], position());
   }
 
 EndVoidTag
@@ -61,7 +61,7 @@ Element
 
 ElementWithoutChildNodes
   = startTag:ElementStart attributes:ElementAttributes _ '/>' {
-    return new HTMLElementExpression(startTag, attributes, [], position());
+    return new MarkupElementExpression(startTag, attributes, [], position());
   }
 
 ElementWithChildNodes
@@ -69,7 +69,7 @@ ElementWithChildNodes
     if (startTag != endTag) {
       expected('</' + startTag + '>');
     }
-    return new HTMLElementExpression(startTag, attributes, childNodes, position());
+    return new MarkupElementExpression(startTag, attributes, childNodes, position());
   }
 
 ElementStart
@@ -82,10 +82,10 @@ ElementAttributes
 
 ElementAttribute
   = _ key:Name '=' value:AttributeValue {
-    return new HTMLAttributeExpression(key, value, position());
+    return new MarkupAttributeExpression(key, value, position());
   }
   / _ key:Name _ {
-    return new HTMLAttributeExpression(key, "", position());
+    return new MarkupAttributeExpression(key, "", position());
   }
 
 AttributeValue
@@ -105,7 +105,7 @@ SingleStringCharacter
 
 TextNode
   = [^<]+ {
-    return new HTMLTextExpression(text(), position());
+    return new MarkupTextExpression(text(), position());
   }
 
 Name

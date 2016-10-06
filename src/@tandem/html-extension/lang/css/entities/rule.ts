@@ -4,7 +4,7 @@ import { ICSSRuleEntity } from "./base";
 import { CSSRuleExpression } from "../ast";
 import { BaseEntity, IEntity } from "@tandem/common/lang";
 import { EntityFactoryDependency } from "@tandem/common/dependencies";
-import { HTMLNodeEntity, HTMLElementEntity } from "@tandem/html-extension/lang/html/entities";
+import { HTMLNodeEntity, MarkupElementEntity } from "@tandem/html-extension/lang/html/entities";
 
 export class CSSRuleEntity extends BaseEntity<CSSRuleExpression> implements ICSSRuleEntity {
 
@@ -14,10 +14,10 @@ export class CSSRuleEntity extends BaseEntity<CSSRuleExpression> implements ICSS
   }
 
   selectorMatches(entity: IEntity) {
-    if (!(entity instanceof HTMLElementEntity)) {
+    if (!(entity instanceof MarkupElementEntity)) {
       return false;
     }
-    return (<Element>(<HTMLElementEntity>entity).section.targetNode).webkitMatchesSelector(this.source.selector);
+    return (<Element>(<MarkupElementEntity>entity).section.targetNode).webkitMatchesSelector(this.source.selector);
   }
 
   cloneLeaf() {

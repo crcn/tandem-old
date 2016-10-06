@@ -3,8 +3,8 @@ import { MimeTypes } from "@tandem/html-extension/constants";
 import { MetadataKeys } from "@tandem/editor/constants";
 import { DocumentFile } from "@tandem/editor/models";
 import { GroupNodeSection } from "@tandem/html-extension/dom";
-import { HTMLElementEntity } from "./element";
-import { HTMLElementExpression, HTMLTextExpression } from "@tandem/html-extension/lang/html/ast";
+import { MarkupElementEntity } from "./element";
+import { MarkupElementExpression, MarkupTextExpression } from "@tandem/html-extension/lang/html/ast";
 import {
   File,
   inject,
@@ -39,7 +39,7 @@ class ImportedFileDependency extends Dependency<string> {
 }
 
 // TODO - merge this with link.ts
-export class HTMLImportEntity extends HTMLElementEntity {
+export class HTMLImportEntity extends MarkupElementEntity {
 
   public defaultMimeType: string;
 
@@ -84,7 +84,7 @@ export class HTMLImportEntity extends HTMLElementEntity {
       return;
     }
 
-    const valueSourceNode = this.source.children[0] as HTMLTextExpression;
+    const valueSourceNode = this.source.children[0] as MarkupTextExpression;
 
     const type = this.getAttribute("type") || this.defaultMimeType;
 
@@ -147,7 +147,7 @@ export class HTMLImportEntity extends HTMLElementEntity {
 
     if (value && this.source.children.length) {
       this._contentWatcher = watchProperty(value, "content", (content) => {
-        (<HTMLTextExpression>this.source.children[0]).value = content;
+        (<MarkupTextExpression>this.source.children[0]).value = content;
       });
     }
   }
@@ -174,6 +174,6 @@ class HTMLStyleEntity extends HTMLImportEntity {
 }
 
 export const htmlStyleEntityDependency = [
-  new EntityFactoryDependency(HTMLElementExpression, HTMLStyleEntity, "style"),
-  new EntityFactoryDependency(HTMLElementExpression, HTMLImportEntity, "link")
+  new EntityFactoryDependency(MarkupElementExpression, HTMLStyleEntity, "style"),
+  new EntityFactoryDependency(MarkupElementExpression, HTMLImportEntity, "link")
 ];

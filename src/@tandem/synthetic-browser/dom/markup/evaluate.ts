@@ -1,30 +1,24 @@
 import {
-  SyntheticHTMLDocument,
-} from "./document";
+  SyntheticDocument,
+} from "../document";
 
 import {
   SyntheticHTMLNode,
 } from "./node";
 
 import {
-  IHTMLExpression,
-  HTMLExpressionKind,
-  HTMLAttributeExpression,
-  HTMLFragmentExpression,
-  HTMLElementExpression,
-  HTMLCommentExpression,
-  HTMLTextExpression
+  IMarkupExpression
 } from "./ast";
 
-export function evaluateHTML(node: IHTMLExpression, doc: SyntheticHTMLDocument): SyntheticHTMLNode {
+export function evaluateMarkup(node: IMarkupExpression, doc: SyntheticDocument): SyntheticHTMLNode {
   return node.accept({
-    visitAttribute(expression: HTMLAttributeExpression) {
+    visitAttribute(expression) {
       return { name: expression.name, value: expression.value };
     },
-    visitComment(expression: HTMLCommentExpression) {
+    visitComment(expression) {
       return doc.createComment(expression.value);
     },
-    visitElement(expression: HTMLElementExpression) {
+    visitElement(expression) {
       const element = doc.createElement(expression.name);
       for (const childExpression of expression.childNodes) {
         element.appendChild(childExpression.accept(this));
@@ -35,14 +29,14 @@ export function evaluateHTML(node: IHTMLExpression, doc: SyntheticHTMLDocument):
       }
       return element;
     },
-    visitDocumentFragment(expression: HTMLFragmentExpression) {
+    visitDocumentFragment(expression) {
       const fragment = doc.createDocumentFragment();
       for (const child of expression.childNodes) {
         fragment.appendChild(child.accept(this));
       }
       return fragment;
     },
-    visitTextNode(expression: HTMLTextExpression) {
+    visitText(expression) {
       return doc.createTextNode(expression.value);
     }
   });

@@ -1,7 +1,7 @@
 import { Action } from "@tandem/common/actions";
 import { PasteAction } from "@tandem/editor/actions";
 import { CSSRuleExpression } from "@tandem/html-extension/lang";
-import { IHTMLElementAttributeEntity } from "@tandem/html-extension/lang";
+import { IMarkupElementAttributeEntity } from "@tandem/html-extension/lang";
 
 export const TEXT_EDIT_COMPLETE = "textEditComplete";
 export class TextEditCompleteAction extends Action {

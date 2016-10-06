@@ -7,7 +7,7 @@ import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { textToolDependency } from "@tandem/html-extension/models/text-tool";
 import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
-import { parseHTML, HTMLElementExpression } from "@tandem/html-extension/lang";
+import { parseMarkup, MarkupElementExpression } from "@tandem/html-extension/lang";
 import { BaseCommand, BaseApplicationCommand } from "@tandem/common/commands";
 import { ClassFactoryDependency, DEPENDENCIES_NS, Dependencies } from "@tandem/common/dependencies";
 import { EditorToolFactoryDependency, GlobalKeyBindingDependency } from "@tandem/editor/dependencies";
@@ -29,7 +29,7 @@ abstract class BaseInsertElementTool extends InsertTool {
   createSource() {
 
     // width & height need to be 0'd since some elements have a size by default such as iframes
-    return parseHTML(`<${this.options.nodeName} ${this.options.attributes ? this.options.attributes + " " : ""}style="${this.options.style}position:absolute;width:0px;height:0px;" />`).children[0];
+    return parseMarkup(`<${this.options.nodeName} ${this.options.attributes ? this.options.attributes + " " : ""}style="${this.options.style}position:absolute;width:0px;height:0px;" />`).children[0];
   }
 }
 

@@ -2,20 +2,21 @@ import { Sandbox } from "@tandem/sandbox";
 import { bindable } from "@tandem/common/decorators";
 import { Observable } from "@tandem/common/observable";
 import { IPatchable } from "@tandem/common/object";
+import { DOMNamespaceURI } from "./constants";
 import { SyntheticLocation } from "../location";
-import { SyntheticHTMLDocument, SyntheticHTMLTextNode } from "./html";
+import { SyntheticDocument } from "./document";
 
 export class SyntheticWindow extends Observable implements IPatchable {
 
   @bindable()
   public location: SyntheticLocation;
 
-  readonly document: SyntheticHTMLDocument;
+  readonly document: SyntheticDocument;
   readonly window: SyntheticWindow;
 
   constructor(readonly sandbox: Sandbox, location: SyntheticLocation) {
     super();
-    this.document = new SyntheticHTMLDocument(this);
+    this.document = new SyntheticDocument(this, DOMNamespaceURI.HTML);
     this.location = location;
     this.window   = this;
   }

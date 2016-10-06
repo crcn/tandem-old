@@ -3,7 +3,7 @@ import "./index.scss";
 import * as React from "react";
 import { Editor, Workspace } from "@tandem/editor/models";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
-import { CSSRuleEntity, CSSDeclarationEntity, VisibleHTMLElementEntity } from "@tandem/html-extension/lang";
+import { CSSRuleEntity, CSSDeclarationEntity, VisibleMarkupElementEntity } from "@tandem/html-extension/lang";
 
 export class CSSHighlightElementTool extends React.Component<{ editor: Editor, workspace: Workspace }, any> {
   render() {
@@ -40,13 +40,13 @@ export class CSSHighlightElementTool extends React.Component<{ editor: Editor, w
 
     // if (!rules.length) return null;
 
-    // const matchedEntities: Array<VisibleHTMLElementEntity> = [];
+    // const matchedEntities: Array<VisibleMarkupElementEntity> = [];
     // const allEntities = workspace.file.entity.flatten();
 
     // for (const entity of allEntities) {
     //   for (const rule of rules) {
     //     if (rule.selectorMatches(entity)) {
-    //       matchedEntities.push(entity as VisibleHTMLElementEntity);
+    //       matchedEntities.push(entity as VisibleMarkupElementEntity);
     //     }
     //   }
     // }
@@ -54,7 +54,7 @@ export class CSSHighlightElementTool extends React.Component<{ editor: Editor, w
     // const borderWidth = 2 / zoom;
 
     // return <div className="m-highlight-element-stage-tool">
-    //   {matchedEntities.map((entity: VisibleHTMLElementEntity, i) => {
+    //   {matchedEntities.map((entity: VisibleMarkupElementEntity, i) => {
     //     const bounds = entity.display.bounds;
     //     const style = {
     //       position: "absolute",

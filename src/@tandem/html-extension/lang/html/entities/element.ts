@@ -1,12 +1,12 @@
 import * as sift from "sift";
 import { WrapBus } from "mesh";
 import { MetadataKeys } from "@tandem/editor/constants";
-import { HTMLContainerEntity } from "./node";
+import { MarkupContainerEntity } from "./node";
 import { IHTMLNodeEntity } from "./base";
 import { parseCSS, parseCSSStyle } from "@tandem/html-extension/lang";
 import { IDOMSection, NodeSection } from "@tandem/html-extension/dom";
-import { HTMLElementExpression, HTMLAttributeExpression } from "@tandem/html-extension/lang/html/ast";
-import { CSSRuleExpression, IHTMLElementAttributeEntity } from "@tandem/html-extension/lang";
+import { MarkupElementExpression, MarkupAttributeExpression } from "@tandem/html-extension/lang/html/ast";
+import { CSSRuleExpression, IMarkupElementAttributeEntity } from "@tandem/html-extension/lang";
 import {
   Action,
   INamed,
@@ -22,10 +22,10 @@ import {
   EntityFactoryDependency,
 } from "@tandem/common";
 
-export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression> implements IHTMLNodeEntity {
+export class MarkupElementEntity extends MarkupContainerEntity<MarkupElementExpression> implements IHTMLNodeEntity {
 
-  get attributes(): Array<BaseEntity<any> & IHTMLElementAttributeEntity> {
-    return <any>this.children.filter((child) => child.source.constructor === HTMLAttributeExpression);
+  get attributes(): Array<BaseEntity<any> & IMarkupElementAttributeEntity> {
+    return <any>this.children.filter((child) => child.source.constructor === MarkupAttributeExpression);
   }
 
   mapSourceChildren() {
@@ -69,9 +69,9 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
       // this will happen if the entity has not updated yet -- i.e:
       // it's dirty.
       if (!this.source.getAttribute(name)) {
-        const expr = new HTMLAttributeExpression(name, value, null);
+        const expr = new MarkupAttributeExpression(name, value, null);
         this.source.appendChild(expr);
-        const entity = new HTMLAttributeEntity(expr);
+        const entity = new MarkupAttributeEntity(expr);
         this.appendChild(entity);
       }
     } else {
@@ -83,7 +83,7 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
     return !!this.getAttributeEntity(name);
   }
 
-  getAttributeEntity(name: string): IHTMLElementAttributeEntity {
+  getAttributeEntity(name: string): IMarkupElementAttributeEntity {
     return this.attributes.find((attribute) => attribute.source.name === name);
   }
 
@@ -97,7 +97,7 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
 
     const element = <Element>this.section.targetNode;
 
-    if (action.target.parent === this && action.target.source instanceof HTMLAttributeExpression) {
+    if (action.target.parent === this && action.target.source instanceof MarkupAttributeExpression) {
       if (action.type === TreeNodeAction.NODE_REMOVED) {
 
         // diffing algorithim may remove an attribute if it's out of order, but it
@@ -122,14 +122,14 @@ export class HTMLElementEntity extends HTMLContainerEntity<HTMLElementExpression
   }
 }
 
-export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
+export class MarkupAttributeEntity extends BaseEntity<MarkupAttributeExpression> {
 
   public name: string;
 
   @bindable()
   public value: any;
 
-  constructor(source: HTMLAttributeExpression) {
+  constructor(source: MarkupAttributeExpression) {
     super(source);
     this.name = source.name;
   }
@@ -154,10 +154,10 @@ export class HTMLAttributeEntity extends BaseEntity<HTMLAttributeExpression> {
   }
 
   cloneLeaf() {
-    const clone = new HTMLAttributeEntity(this.source);
+    const clone = new MarkupAttributeEntity(this.source);
     clone.value = this.value;
     return clone;
   }
 }
 
-export const defaultAttributeFactoryDependency = new EntityFactoryDependency(HTMLAttributeExpression, HTMLAttributeEntity);
+export const defaultAttributeFactoryDependency = new EntityFactoryDependency(MarkupAttributeExpression, MarkupAttributeEntity);

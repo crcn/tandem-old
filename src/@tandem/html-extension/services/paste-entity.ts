@@ -1,7 +1,7 @@
 import * as sift from "sift";
 import { flatten } from "lodash";
 import { HTMLFile } from "../models/html-file";
-import { parseHTML } from "../lang";
+import { parseMarkup } from "../lang";
 import { MimeTypes } from "@tandem/html-extension/constants";
 import { filterAction } from "@tandem/common/decorators";
 import { FrontEndApplication } from "@tandem/editor/application";
@@ -40,7 +40,7 @@ export class PasteHTMLService extends BaseApplicationService<FrontEndApplication
       content = content.replace(/\<meta.*?\>/, "");
 
       // TODO - SelectExpressionAction
-      this.app.bus.execute(new SelectAction(await appendSourceChildren(activeEntity, ...parseHTML(content).children)));
+      this.app.bus.execute(new SelectAction(await appendSourceChildren(activeEntity, ...parseMarkup(content).children)));
     });
   }
 }

@@ -36,7 +36,7 @@ abstract class HTMLNode extends TreeNode<HTMLNode> implements IComparable {
   }
 }
 
-class HTMLTextNode extends HTMLNode {
+class MarkupText extends HTMLNode {
   toString() {
     return this.nodeValue;
   }
@@ -69,7 +69,7 @@ class HTMLElement extends HTMLNode {
 const convertDOMToTreeNode = (node: Node): HTMLNode => {
   switch (node.nodeType) {
     case 1: return new HTMLElement(<Element>node);
-    case 3: return new HTMLTextNode(<Text>node);
+    case 3: return new MarkupText(<Text>node);
   }
   return null;
 };

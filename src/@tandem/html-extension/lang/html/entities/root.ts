@@ -17,24 +17,24 @@ import {
 } from "@tandem/common/lang/entities";
 
 import {
-  parseHTML,
+  parseMarkup,
   CSSRootEntity,
-  HTMLExpression,
-  HTMLTextExpression,
+  MarkupExpression,
+  MarkupTextExpression,
   getCSSStyleContent,
-  HTMLCommentExpression,
-  HTMLElementExpression,
+  MarkupCommentExpression,
+  MarkupElementExpression,
   HTMLFragmentExpression,
-  HTMLAttributeExpression,
-  IHTMLValueNodeExpression,
+  MarkupAttributeExpression,
+  IMarkupValueNodeExpression,
 } from "@tandem/html-extension/lang";
 
 import {
-  HTMLContainerEntity
+  MarkupContainerEntity
 } from "@tandem/html-extension/lang/html/entities/node";
 
 
-export class HTMLDocumentRootEntity extends HTMLContainerEntity<HTMLFragmentExpression> implements IHTMLNodeEntity {
+export class HTMLDocumentRootEntity extends MarkupContainerEntity<HTMLFragmentExpression> implements IHTMLNodeEntity {
 
   /**
    * The source content of this document

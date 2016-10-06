@@ -1,15 +1,15 @@
 import { Dependency, Dependencies } from "@tandem/common";
 import { syntheticElementClassType } from "./dom";
 
-export class SyntheticHTMLElementClassDependency extends Dependency<syntheticElementClassType> {
-  static readonly SYNTHETIC_ELEMENT_CLASS_NS_PREFIX = "syntheticHTMLElementClass/";
+export class SyntheticMarkupElementClassDependency extends Dependency<syntheticElementClassType> {
+  static readonly SYNTHETIC_ELEMENT_CLASS_NS_PREFIX = "syntheticMarkupElementClass/";
 
   constructor(readonly tagName: string, value: syntheticElementClassType) {
-    super(SyntheticHTMLElementClassDependency.getNamespace(tagName), value);
+    super(SyntheticMarkupElementClassDependency.getNamespace(tagName), value);
   }
 
   clone() {
-    return new SyntheticHTMLElementClassDependency(this.tagName, this.value);
+    return new SyntheticMarkupElementClassDependency(this.tagName, this.value);
   }
 
   static getNamespace(tagName: string) {
@@ -17,6 +17,6 @@ export class SyntheticHTMLElementClassDependency extends Dependency<syntheticEle
   }
 
   static findAll(dependencies: Dependencies) {
-    return dependencies.queryAll<SyntheticHTMLElementClassDependency>(this.getNamespace("**"));
+    return dependencies.queryAll<SyntheticMarkupElementClassDependency>(this.getNamespace("**"));
   }
 }

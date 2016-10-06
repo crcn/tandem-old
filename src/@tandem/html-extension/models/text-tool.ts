@@ -11,7 +11,7 @@ import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { BaseApplicationService } from "@tandem/common/services";
 import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
 import { IEditorTool, BaseEditorTool, IEditor } from "@tandem/editor/models";
-import { parseHTML, HTMLElementExpression , VisibleHTMLElementEntity } from "../lang";
+import { parseMarkup, MarkupElementExpression , VisibleMarkupElementEntity } from "../lang";
 import {
   Dependency,
   MAIN_BUS_NS,
@@ -73,7 +73,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
   }
 
   private get _targetEntity() {
-    return <VisibleHTMLElementEntity>this.editor.selection[0];
+    return <VisibleMarkupElementEntity>this.editor.selection[0];
   }
 
   private get _targetNode() {
@@ -88,7 +88,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
 
     // parse the innerHTML, set the source content, and prepare to diff
     this._targetEntity.source.removeAllChildNodes();
-    (await parseHTML(this._targetNode.innerHTML)).children.forEach((child) => this._targetEntity.source.appendChild(child));
+    (await parseMarkup(this._targetNode.innerHTML)).children.forEach((child) => this._targetEntity.source.appendChild(child));
 
     // reset the html so that the entity is properly diffd
     (<Element>this._targetEntity.section.targetNode).innerHTML = " ";
@@ -115,7 +115,7 @@ class InsertTextTool extends InsertTool {
   }
 
   createSource() {
-    return parseHTML(`<span style="position:absolute;white-space: nowrap;font-family: Helvetica;">Type Something</span>`).children[0];
+    return parseMarkup(`<span style="position:absolute;white-space: nowrap;font-family: Helvetica;">Type Something</span>`).children[0];
   }
 }
 

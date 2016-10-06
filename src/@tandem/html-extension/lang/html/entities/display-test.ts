@@ -1,7 +1,7 @@
 import * as sift from "sift";
 import { expect } from "chai";
 import { HTMLFile } from "@tandem/html-extension/models/html-file";
-import { parseHTML } from "@tandem/html-extension/lang";
+import { parseMarkup } from "@tandem/html-extension/lang";
 import { MimeTypes } from "@tandem/html-extension/constants";
 import { BoundingRect } from "@tandem/common/geom";
 import { IVisibleEntity } from "@tandem/common/lang/entities";
@@ -9,7 +9,7 @@ import { FrontEndApplication } from "@tandem/editor/application";
 import { waitForPropertyChange } from "@tandem/common/test";
 import { Dependencies, DependenciesDependency, DEPENDENCIES_NS, ApplicationSingletonDependency, FileFactoryDependency } from "@tandem/common/dependencies";
 import {
-  HTMLElementEntity,
+  MarkupElementEntity,
   htmlTextDependency,
   htmlCommentDependency,
   defaultElementFactoyDependency,
@@ -56,7 +56,7 @@ describe(__filename + "#", () => {
 
     return <IVisibleEntity>(root.flatten().find((entity) => {
       if (entity["attributes"]) {
-        return (<HTMLElementEntity>entity).getAttribute("id") === "target";
+        return (<MarkupElementEntity>entity).getAttribute("id") === "target";
        }
       return false;
     }) as any);

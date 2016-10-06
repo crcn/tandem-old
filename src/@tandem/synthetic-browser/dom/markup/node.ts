@@ -1,5 +1,5 @@
-import { IHTMLNodeVisitor } from "./visitor";
-import { SyntheticHTMLDocument } from "./document";
+import { IMarkupNodeVisitor } from "./visitor";
+import { SyntheticDocument } from "../document";
 import { TreeNode, patchTreeNode } from "@tandem/common/tree";
 import { IPatchable, IComparable } from "@tandem/common/object";
 
@@ -7,9 +7,10 @@ export abstract class SyntheticHTMLNode extends TreeNode<SyntheticHTMLNode> impl
 
   readonly childNodes: SyntheticHTMLNode[];
   abstract readonly nodeType: number;
+  readonly namespaceURI: string;
   private _loaded: boolean;
 
-  constructor(readonly nodeName: string, public ownerDocument: SyntheticHTMLDocument) {
+  constructor(readonly nodeName: string, public ownerDocument: SyntheticDocument) {
     super();
 
     this.childNodes = this.children;
@@ -24,10 +25,6 @@ export abstract class SyntheticHTMLNode extends TreeNode<SyntheticHTMLNode> impl
   }
 
   abstract textContent: string;
-
-  get outerHTML() {
-    return "";
-  }
 
   compare(source: SyntheticHTMLNode) {
     return Number(source.constructor === this.constructor && this.nodeName === source.nodeName);
@@ -59,6 +56,6 @@ export abstract class SyntheticHTMLNode extends TreeNode<SyntheticHTMLNode> impl
     }
   }
 
-  abstract accept(visitor: IHTMLNodeVisitor);
+  abstract accept(visitor: IMarkupNodeVisitor);
   abstract cloneNode();
 }

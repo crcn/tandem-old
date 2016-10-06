@@ -7,7 +7,7 @@ import { SelectAction } from "@tandem/editor/actions";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { SelectWithCSSSelectorAction } from "@tandem/html-extension/actions";
 import { EntityPaneComponentFactoryDependency } from "@tandem/editor/dependencies";
-import { HTMLElementEntity, VisibleHTMLElementEntity, IHTMLNodeEntity } from "@tandem/html-extension/lang";
+import { MarkupElementEntity, VisibleMarkupElementEntity, IHTMLNodeEntity } from "@tandem/html-extension/lang";
 import { CSSExpression, CSSRuleExpression, CSSDeclarationExpression } from "@tandem/html-extension/lang";
 
 class StyleDeclarationComponent extends React.Component<any, any> {
@@ -59,7 +59,7 @@ class StyleDeclarationComponent extends React.Component<any, any> {
   }
 }
 
-class StylePaneComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, entity: VisibleHTMLElementEntity, rule: CSSRuleExpression }, any> {
+class StylePaneComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, entity: VisibleMarkupElementEntity, rule: CSSRuleExpression }, any> {
   addNewDeclaration = () => {
     // this.props.rule.style.declarations.push(new CSSRuleExpression("", new CSSLiteralExpression("", null, null), null, null));
     this.forceUpdate();
@@ -89,7 +89,7 @@ export class CSSPaneComponent extends React.Component<{ workspace: Workspace, ap
 
     if (!selection.length) return null;
 
-    const entity: VisibleHTMLElementEntity = selection[0];
+    const entity: VisibleMarkupElementEntity = selection[0];
 
     return <div className="m-css-pane m-pane-container--content">
         <StylePaneComponent {...this.props} entity={entity} rule={null} key="style" />

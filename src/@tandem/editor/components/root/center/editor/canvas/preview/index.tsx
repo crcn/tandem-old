@@ -3,9 +3,9 @@ import "./index.scss";
 import * as React from "react";
 import RegisteredComponent from "@tandem/editor/components/registered";
 import { FrontEndApplication } from "@tandem/editor/application";
-import { ISyntheticHTMLDocumentRenderer } from "@tandem/synthetic-browser";
+import { ISyntheticDocumentRenderer } from "@tandem/synthetic-browser";
 
-export default class PreviewComponent extends React.Component<{ app: FrontEndApplication, renderer: ISyntheticHTMLDocumentRenderer }, any> {
+export default class PreviewComponent extends React.Component<{ app: FrontEndApplication, renderer: ISyntheticDocumentRenderer }, any> {
   shouldComponentUpdate(props) {
     return this.props.renderer !== props.renderer;
   }

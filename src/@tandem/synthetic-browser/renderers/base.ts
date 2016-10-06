@@ -4,17 +4,17 @@ import { BoundingRect, watchProperty } from "@tandem/common";
 import {
   HTMLNodeType,
   SyntheticHTMLNode,
-  SyntheticHTMLTextNode,
-  SyntheticHTMLElement,
+  SyntheticMarkupText,
+  SyntheticMarkupElement,
   SyntheticCSSStyleDeclaration,
 } from "../dom";
 
-export interface ISyntheticHTMLDocumentRenderer {
+export interface ISyntheticDocumentRenderer {
   readonly element: HTMLElement;
   target: SyntheticHTMLNode;
 }
 
-export abstract class BaseRenderer implements ISyntheticHTMLDocumentRenderer {
+export abstract class BaseRenderer implements ISyntheticDocumentRenderer {
 
   readonly element: HTMLElement;
   private _target: SyntheticHTMLNode;

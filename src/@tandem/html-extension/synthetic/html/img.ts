@@ -1,4 +1,4 @@
-import { SyntheticHTMLElementClassDependency, SyntheticHTMLElement } from "@tandem/synthetic-browser";
+import { SyntheticMarkupElementClassDependency, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 
 export class SyntheticHTMLImage extends SyntheticHTMLElement {
   onAdded() {
@@ -7,4 +7,4 @@ export class SyntheticHTMLImage extends SyntheticHTMLElement {
   }
 }
 
-export const syntheticHTMLImageClassDependency = new SyntheticHTMLElementClassDependency("img", SyntheticHTMLImage);
+export const syntheticHTMLImageClassDependency = new SyntheticMarkupElementClassDependency("img", SyntheticHTMLImage);

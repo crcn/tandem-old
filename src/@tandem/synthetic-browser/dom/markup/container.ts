@@ -1,8 +1,8 @@
 import { SyntheticHTMLNode } from "./node";
 import { HTMLNodeType } from "./node-types";
-import { SyntheticHTMLTextNode } from "./text-node";
+import { SyntheticMarkupText } from "./text-node";
 
-export abstract class SyntheticHTMLContainer extends SyntheticHTMLNode {
+export abstract class SyntheticMarkupContainer extends SyntheticHTMLNode {
 
   // TODO - insertBefore here
   appendChild(child: SyntheticHTMLNode) {
@@ -21,7 +21,7 @@ export abstract class SyntheticHTMLContainer extends SyntheticHTMLNode {
     this.appendChild(this.ownerDocument.createTextNode(value));
   }
 
-  get outerHTML() {
-    return this.childNodes.map((child) => child.outerHTML).join("");
+  toString() {
+    return this.childNodes.map((child) => child.toString()).join("");
   }
 }

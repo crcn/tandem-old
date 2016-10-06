@@ -3,7 +3,7 @@ import { MimeTypes } from "@tandem/common/constants";
 import {
   SyntheticHTMLElement,
   SyntheticCSSStyleSheet,
-  SyntheticHTMLElementClassDependency,
+  SyntheticMarkupElementClassDependency,
 } from "@tandem/synthetic-browser";
 
 export class SyntheticHTMLLink extends SyntheticHTMLElement {
@@ -14,9 +14,9 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
     const exports = await window.sandbox.importer.import(MimeTypes.HTML, href, window.location.toString());
     this.notify(new Action("loaded"));
   }
-  get outerHTML() {
+  toString() {
     return "";
   }
 }
 
-export const syntheticHTMLLinkClassDependency = new SyntheticHTMLElementClassDependency("link", SyntheticHTMLLink);
+export const syntheticHTMLLinkClassDependency = new SyntheticMarkupElementClassDependency("link", SyntheticHTMLLink);

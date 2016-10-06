@@ -12,67 +12,67 @@ import {
   register as registerSerializer,
 } from "@tandem/common";
 
-export enum HTMLExpressionKind {
+export enum MarkupExpressionKind {
   FRAGMENT = 1,
   ATTRIBUTE = FRAGMENT + 1,
   ELEMENT   = ATTRIBUTE + 1,
-  TEXT_NODE = ELEMENT + 1,
-  COMMENT   = TEXT_NODE + 1
+  TEXT = ELEMENT + 1,
+  COMMENT   = TEXT + 1
 }
 
-export interface IHTMLExpression extends IASTNode {
-  readonly kind: HTMLExpressionKind;
-  accept(visitor: IHTMLExpressionVisitor);
+export interface IMarkupExpression extends IASTNode {
+  readonly kind: MarkupExpressionKind;
+  accept(visitor: IMarkupExpressionVisitor);
 }
 
-export interface IHTMLExpressionVisitor {
-  visitElement(expression: HTMLElementExpression);
-  visitComment(expression: HTMLCommentExpression);
-  visitTextNode(expression: HTMLTextExpression);
-  visitAttribute(attribute: HTMLAttributeExpression);
-  visitDocumentFragment(attribute: HTMLFragmentExpression);
+export interface IMarkupExpressionVisitor {
+  visitElement(expression: MarkupElementExpression);
+  visitComment(expression: MarkupCommentExpression);
+  visitText(expression: MarkupTextExpression);
+  visitAttribute(attribute: MarkupAttributeExpression);
+  visitDocumentFragment(attribute: MarkupFragmentExpression);
 }
 
-export interface IHTMLValueNodeExpression extends IHTMLExpression {
+export interface IMarkupValueNodeExpression extends IMarkupExpression {
   value: any;
 }
 
-export abstract class HTMLExpression extends BaseASTNode<HTMLExpression> implements IHTMLExpression {
-  abstract readonly kind: HTMLExpressionKind;
+export abstract class MarkupExpression extends BaseASTNode<MarkupExpression> implements IMarkupExpression {
+  abstract readonly kind: MarkupExpressionKind;
   constructor(position: IRange) {
     super(position);
   }
-  abstract accept(visitor: IHTMLExpressionVisitor);
+  abstract accept(visitor: IMarkupExpressionVisitor);
 }
 
-export abstract class HTMLNodeExpression extends HTMLExpression {
+export abstract class MarkupNodeExpression extends MarkupExpression {
   readonly name: string;
   constructor(name: string, position: IRange) {
     super(position);
     this.name = name;
   }
 
-  compare(expression: HTMLNodeExpression): number {
+  compare(expression: MarkupNodeExpression): number {
     return Number(super.compare(expression) && expression.name === this.name);
   }
 }
 
-export abstract class HTMLContainerExpression extends HTMLNodeExpression {
-  constructor(name: string, childNodes: Array<HTMLExpression>, position: IRange) {
+export abstract class MarkupContainerExpression extends MarkupNodeExpression {
+  constructor(name: string, childNodes: Array<MarkupExpression>, position: IRange) {
     super(name, position);
     childNodes.forEach((child) => this.appendChild(child));
   }
 
-  get firstChildNode(): HTMLNodeExpression {
+  get firstChildNode(): MarkupNodeExpression {
     return this.childNodes[0];
   }
 
-  get lastChildNode(): HTMLNodeExpression {
+  get lastChildNode(): MarkupNodeExpression {
     return this.childNodes[this.childNodes.length - 1];
   }
 
-  get childNodes(): Array<HTMLNodeExpression> {
-    return <any>this.children.filter(<any>sift({ $type: HTMLNodeExpression }));
+  get childNodes(): Array<MarkupNodeExpression> {
+    return <any>this.children.filter(<any>sift({ $type: MarkupNodeExpression }));
   }
 
   removeAllChildNodes(): void {
@@ -82,20 +82,20 @@ export abstract class HTMLContainerExpression extends HTMLNodeExpression {
   }
 }
 
-export class HTMLFragmentExpression extends HTMLContainerExpression implements IHTMLExpression {
-  readonly kind = HTMLExpressionKind.FRAGMENT;
-  constructor(children: Array<HTMLExpression>, position: IRange) {
+export class MarkupFragmentExpression extends MarkupContainerExpression implements IMarkupExpression {
+  readonly kind = MarkupExpressionKind.FRAGMENT;
+  constructor(children: Array<MarkupExpression>, position: IRange) {
     super("#document-fragment", children, position);
   }
 
-  clone(): HTMLFragmentExpression {
-    return new HTMLFragmentExpression(
+  clone(): MarkupFragmentExpression {
+    return new MarkupFragmentExpression(
       this.childNodes.map(node => node.clone()),
       this.position
     );
   }
 
-  accept(visitor: IHTMLExpressionVisitor) {
+  accept(visitor: IMarkupExpressionVisitor) {
     return visitor.visitDocumentFragment(this);
   }
 
@@ -104,23 +104,23 @@ export class HTMLFragmentExpression extends HTMLContainerExpression implements I
   }
 }
 /**
- * HTML
+ * Markup
  */
 
-export const HTML_ELEMENT = "htmlElement";
-export class HTMLElementExpression extends HTMLContainerExpression {
-  readonly kind = HTMLExpressionKind.ELEMENT;
+export const Markup_ELEMENT = "HTMLElement";
+export class MarkupElementExpression extends MarkupContainerExpression {
+  readonly kind = MarkupExpressionKind.ELEMENT;
   constructor(
     name: string,
-    attributes: Array<HTMLAttributeExpression>,
-    childNodes: Array<HTMLExpression>,
+    attributes: Array<MarkupAttributeExpression>,
+    childNodes: Array<MarkupExpression>,
     position: IRange) {
     super(name, childNodes, position);
     attributes.forEach((attribute) => this.appendChild(attribute));
   }
 
-  get attributes(): Array<HTMLAttributeExpression> {
-    return <any>this.children.filter(<any>sift({ $type: HTMLAttributeExpression }));
+  get attributes(): Array<MarkupAttributeExpression> {
+    return <any>this.children.filter(<any>sift({ $type: MarkupAttributeExpression }));
   }
 
   removeAttribute(name: string) {
@@ -130,7 +130,7 @@ export class HTMLElementExpression extends HTMLContainerExpression {
     }
   }
 
-  accept(visitor: IHTMLExpressionVisitor) {
+  accept(visitor: IMarkupExpressionVisitor) {
     return visitor.visitElement(this);
   }
 
@@ -143,7 +143,7 @@ export class HTMLElementExpression extends HTMLContainerExpression {
       }
     }
     if (!found) {
-      this.appendChild(new HTMLAttributeExpression(name, value, null));
+      this.appendChild(new MarkupAttributeExpression(name, value, null));
     }
   }
 
@@ -155,8 +155,8 @@ export class HTMLElementExpression extends HTMLContainerExpression {
     }
   }
 
-  clone(): HTMLElementExpression {
-    return new HTMLElementExpression(
+  clone(): MarkupElementExpression {
+    return new MarkupElementExpression(
       this.name,
       this.attributes.map(attribute => attribute.clone()),
       this.childNodes.map(node => node.clone()),
@@ -194,8 +194,8 @@ export class HTMLElementExpression extends HTMLContainerExpression {
   }
 }
 
-export class HTMLAttributeExpression extends HTMLExpression implements IASTNode {
-  readonly kind = HTMLExpressionKind.ATTRIBUTE;
+export class MarkupAttributeExpression extends MarkupExpression implements IASTNode {
+  readonly kind = MarkupExpressionKind.ATTRIBUTE;
 
   @bindable()
   @patchable()
@@ -211,16 +211,16 @@ export class HTMLAttributeExpression extends HTMLExpression implements IASTNode 
     this.value = value;
   }
 
-  accept(visitor: IHTMLExpressionVisitor) {
+  accept(visitor: IMarkupExpressionVisitor) {
     return visitor.visitAttribute(this);
   }
 
-  compare(expression: HTMLAttributeExpression) {
+  compare(expression: MarkupAttributeExpression) {
     return Number(super.compare(expression) && this.name === expression.name);
   }
 
-  clone(): HTMLAttributeExpression {
-    return new HTMLAttributeExpression(
+  clone(): MarkupAttributeExpression {
+    return new MarkupAttributeExpression(
       this.name,
       this.value,
       this.position
@@ -237,8 +237,8 @@ export class HTMLAttributeExpression extends HTMLExpression implements IASTNode 
   }
 }
 
-export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValueNodeExpression {
-  readonly kind = HTMLExpressionKind.TEXT_NODE;
+export class MarkupTextExpression extends MarkupNodeExpression implements IMarkupValueNodeExpression {
+  readonly kind = MarkupExpressionKind.TEXT;
 
   @bindable()
   @patchable()
@@ -249,12 +249,12 @@ export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValue
     this.value = value;
   }
 
-  accept(visitor: IHTMLExpressionVisitor) {
-    return visitor.visitTextNode(this);
+  accept(visitor: IMarkupExpressionVisitor) {
+    return visitor.visitText(this);
   }
 
-  clone(): HTMLTextExpression {
-    return new HTMLTextExpression(
+  clone(): MarkupTextExpression {
+    return new MarkupTextExpression(
       this.value,
       this.position
     );
@@ -265,8 +265,8 @@ export class HTMLTextExpression extends HTMLNodeExpression implements IHTMLValue
   }
 }
 
-export class HTMLCommentExpression extends HTMLNodeExpression implements IHTMLValueNodeExpression {
-  readonly kind = HTMLExpressionKind.COMMENT;
+export class MarkupCommentExpression extends MarkupNodeExpression implements IMarkupValueNodeExpression {
+  readonly kind = MarkupExpressionKind.COMMENT;
 
   @bindable()
   @patchable()
@@ -277,12 +277,12 @@ export class HTMLCommentExpression extends HTMLNodeExpression implements IHTMLVa
     this.value = value;
   }
 
-  accept(visitor: IHTMLExpressionVisitor) {
+  accept(visitor: IMarkupExpressionVisitor) {
     return visitor.visitComment(this);
   }
 
-  clone(): HTMLCommentExpression {
-    return new HTMLCommentExpression(
+  clone(): MarkupCommentExpression {
+    return new MarkupCommentExpression(
       this.value,
       this.position
     );

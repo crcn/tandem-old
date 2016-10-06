@@ -7,10 +7,10 @@ import FocusComponent from "@tandem/editor/components/focus";
 import { SelectAction } from "@tandem/editor/actions";
 import { MetadataKeys } from "@tandem/editor/constants";
 import * as AutosizeInput from "react-input-autosize";
-import { HTMLTextEntity, HTMLTextExpression } from "@tandem/html-extension/lang";
+import { MarkupTextEntity, MarkupTextExpression } from "@tandem/html-extension/lang";
 import { LayerLabelComponentFactoryDependency } from "@tandem/editor/dependencies";
 
-class TextLayerLabelComponent extends React.Component<{ entity: HTMLTextEntity, connectDragSource: Function }, any> {
+class TextLayerLabelComponent extends React.Component<{ entity: MarkupTextEntity, connectDragSource: Function }, any> {
 
   private _oldValue: string;
 
@@ -68,4 +68,4 @@ class TextLayerLabelComponent extends React.Component<{ entity: HTMLTextEntity, 
   }
 }
 
-export const textLayerLabelComponentDependency = new LayerLabelComponentFactoryDependency(HTMLTextEntity.name, TextLayerLabelComponent);
+export const textLayerLabelComponentDependency = new LayerLabelComponentFactoryDependency(MarkupTextEntity.name, TextLayerLabelComponent);

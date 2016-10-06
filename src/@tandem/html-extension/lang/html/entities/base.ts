@@ -4,7 +4,7 @@ import { IDOMSection } from "@tandem/html-extension/dom";
 export interface IHTMLNodeEntity extends IEntity {
   section: IDOMSection;
 }
-export interface IHTMLElementAttributeEntity extends IEntity {
+export interface IMarkupElementAttributeEntity extends IEntity {
   name: string;
   value: any;
 }

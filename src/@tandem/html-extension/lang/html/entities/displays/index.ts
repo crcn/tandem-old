@@ -3,7 +3,7 @@ import { Action, UPDATE } from "@tandem/common/actions";
 import { watchProperty } from "@tandem/common/observable";
 import { parseCSS } from "@tandem/html-extension/lang";
 import { BoundingRect, IPoint } from "@tandem/common/geom";
-import { VisibleHTMLElementEntity } from "../index";
+import { VisibleMarkupElementEntity } from "../index";
 import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "@tandem/common/lang/entities";
 import * as memoize from "memoizee";
 
@@ -104,7 +104,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
 
   private _cachedBounds: BoundingRect;
 
-  constructor(readonly entity: VisibleHTMLElementEntity) { }
+  constructor(readonly entity: VisibleMarkupElementEntity) { }
 
   /**
    */

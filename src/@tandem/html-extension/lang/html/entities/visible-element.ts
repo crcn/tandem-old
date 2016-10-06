@@ -3,13 +3,13 @@ import { WrapBus } from "mesh";
 import { parseCSSStyle } from "@tandem/html-extension/lang";
 import { IVisibleEntity } from "@tandem/common/lang/entities";
 import { HTMLNodeDisplay } from "./displays";
-import { HTMLElementEntity } from "./element";
+import { MarkupElementEntity } from "./element";
 import { CSSRuleExpression } from "@tandem/html-extension/lang/css/ast";
-import { HTMLElementExpression } from "@tandem/html-extension/lang/html/ast";
+import { MarkupElementExpression } from "@tandem/html-extension/lang/html/ast";
 import { EntityFactoryDependency } from "@tandem/common/dependencies";
 import { IDOMSection, NodeSection } from "@tandem/html-extension/dom";
 
-export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisibleEntity {
+export class VisibleMarkupElementEntity extends MarkupElementEntity implements IVisibleEntity {
 
   readonly type: string = "display";
   readonly displayType: string = "element";
@@ -47,4 +47,4 @@ export class VisibleHTMLElementEntity extends HTMLElementEntity implements IVisi
 }
 
 
-export const defaultElementFactoyDependency =  new EntityFactoryDependency(HTMLElementExpression, VisibleHTMLElementEntity);
+export const defaultElementFactoyDependency =  new EntityFactoryDependency(MarkupElementExpression, VisibleMarkupElementEntity);

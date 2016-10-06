@@ -4,7 +4,7 @@ import { DocumentFile } from "@tandem/editor/models";
 import { MetadataKeys } from "@tandem/editor/constants";
 import { IHTMLNodeEntity } from "./base";
 import { IDOMSection, NodeSection, GroupNodeSection } from "@tandem/html-extension/dom";
-import { HTMLNodeExpression, HTMLContainerExpression } from "@tandem/html-extension/lang";
+import { MarkupNodeExpression, MarkupContainerExpression } from "@tandem/html-extension/lang";
 import {
   inject,
   ITyped,
@@ -23,7 +23,7 @@ import {
   EntityFactoryDependency,
 } from "@tandem/common";
 
-export abstract class HTMLNodeEntity<T extends HTMLNodeExpression> extends BaseEntity<T> implements IHTMLNodeEntity {
+export abstract class HTMLNodeEntity<T extends MarkupNodeExpression> extends BaseEntity<T> implements IHTMLNodeEntity {
 
   private _section: IDOMSection;
   private _nodeName: string;
@@ -98,7 +98,7 @@ export abstract class HTMLNodeEntity<T extends HTMLNodeExpression> extends BaseE
 }
 
 
-export abstract class HTMLContainerEntity<T extends HTMLContainerExpression> extends HTMLNodeEntity<T> {
+export abstract class MarkupContainerEntity<T extends MarkupContainerExpression> extends HTMLNodeEntity<T> {
   protected _childController: EntityBodyController;
   protected initialize() {
     super.initialize();

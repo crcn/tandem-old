@@ -4,8 +4,8 @@ import { BoundingRect, watchProperty } from "@tandem/common";
 import {
   HTMLNodeType,
   SyntheticHTMLNode,
-  SyntheticHTMLTextNode,
-  SyntheticHTMLElement,
+  SyntheticMarkupText,
+  SyntheticMarkupElement,
   SyntheticCSSStyleDeclaration,
 } from "../dom";
 import {
@@ -23,7 +23,7 @@ export class DOMRenderer extends BaseRenderer {
   update() {
 
     // simple for now -- just reset the entire outer HTML
-    this.element.innerHTML = this.target.outerHTML;
+    this.element.innerHTML = this.target.toString();
 
     const rectangles: BoundingRect[] = [];
     for (const node of this.element.querySelectorAll("*")) {

@@ -6,9 +6,9 @@ import { HTMLNodeEntity } from "./node";
 import { IHTMLNodeEntity } from "./base";
 import { NodeSection, IDOMSection } from "@tandem/html-extension/dom";
 import { DEPENDENCIES_NS, Dependencies, Injector } from "@tandem/common/dependencies";
-import { HTMLNodeExpression, IHTMLValueNodeExpression } from "@tandem/html-extension/lang";
+import { MarkupNodeExpression, IMarkupValueNodeExpression } from "@tandem/html-extension/lang";
 
-export abstract class HTMLValueNodeEntity<T extends HTMLNodeExpression & IHTMLValueNodeExpression> extends HTMLNodeEntity<T> implements IHTMLNodeEntity {
+export abstract class MarkupValueNodeEntity<T extends MarkupNodeExpression & IMarkupValueNodeExpression> extends HTMLNodeEntity<T> implements IHTMLNodeEntity {
 
   private _value: any;
 

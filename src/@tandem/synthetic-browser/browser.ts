@@ -1,6 +1,6 @@
 import { SyntheticLocation } from "./location";
-import { SyntheticHTMLDocument, SyntheticWindow } from "./dom";
-import { ISyntheticHTMLDocumentRenderer, DOMRenderer, TetherRenderer } from "./renderers";
+import { SyntheticDocument, SyntheticWindow } from "./dom";
+import { ISyntheticDocumentRenderer, DOMRenderer, TetherRenderer } from "./renderers";
 import {
   bindable,
   MimeTypes,
@@ -18,7 +18,7 @@ import {
 } from "@tandem/sandbox";
 
 import {
-  SyntheticHTMLElementClassDependency
+  SyntheticMarkupElementClassDependency
 } from "./dependencies";
 
 import { WrapBus } from "mesh";
@@ -28,7 +28,7 @@ export class SyntheticBrowser extends Observable {
   private _window: SyntheticWindow;
   private _sandbox: Sandbox;
   private _location: SyntheticLocation;
-  private _renderer: ISyntheticHTMLDocumentRenderer;
+  private _renderer: ISyntheticDocumentRenderer;
 
   constructor(private _dependencies: Dependencies) {
     super();
@@ -46,7 +46,7 @@ export class SyntheticBrowser extends Observable {
     return this._window;
   }
 
-  get renderer(): ISyntheticHTMLDocumentRenderer {
+  get renderer(): ISyntheticDocumentRenderer {
     return this._renderer;
   }
 
@@ -85,7 +85,7 @@ export class SyntheticBrowser extends Observable {
   }
 
   private _registerElements(window: SyntheticWindow) {
-    for (const elementClassDependency of SyntheticHTMLElementClassDependency.findAll(this._dependencies)) {
+    for (const elementClassDependency of SyntheticMarkupElementClassDependency.findAll(this._dependencies)) {
       window.document.registerElement(elementClassDependency.tagName, elementClassDependency.value);
     }
   }

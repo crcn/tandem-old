@@ -1,11 +1,11 @@
 import * as pretty from "pretty";
-import { parseHTML } from "@tandem/html-extension/lang";
+import { parseMarkup } from "@tandem/html-extension/lang";
 import { MimeTypes } from "@tandem/html-extension/constants";
 import { IASTNode } from "@tandem/common/lang";
 import { DocumentFile } from "@tandem/editor/models/base";
 import { Dependencies } from "@tandem/common/dependencies";
 import { FileFactoryDependency } from "@tandem/common/dependencies";
-import { HTMLDocumentRootEntity, HTMLFragmentExpression, HTMLExpressionLoader } from "@tandem/html-extension/lang";
+import { HTMLDocumentRootEntity, HTMLFragmentExpression, MarkupExpressionLoader } from "@tandem/html-extension/lang";
 
 export class HTMLFile extends DocumentFile<HTMLDocumentRootEntity> {
   readonly type: string = MimeTypes.HTML;
@@ -13,8 +13,8 @@ export class HTMLFile extends DocumentFile<HTMLDocumentRootEntity> {
     return new HTMLDocumentRootEntity(ast);
   }
 
-  createExpressionLoader(): HTMLExpressionLoader {
-    return new HTMLExpressionLoader();
+  createExpressionLoader(): MarkupExpressionLoader {
+    return new MarkupExpressionLoader();
   }
 }
 

@@ -27,22 +27,22 @@ import {
 } from "lodash";
 
 import {
-  HTMLExpression,
-  HTMLTextExpression,
-  HTMLNodeExpression,
-  HTMLCommentExpression,
-  HTMLElementExpression,
+  MarkupExpression,
+  MarkupTextExpression,
+  MarkupNodeExpression,
+  MarkupCommentExpression,
+  MarkupElementExpression,
   HTMLFragmentExpression,
-  HTMLContainerExpression,
-  HTMLAttributeExpression,
-  IHTMLValueNodeExpression,
+  MarkupContainerExpression,
+  MarkupAttributeExpression,
+  IMarkupValueNodeExpression,
 } from "./ast";
 
 import {
 
 } from "./utils";
 
-export class HTMLExpressionLoader extends BaseASTNodeLoader {
+export class MarkupExpressionLoader extends BaseASTNodeLoader {
 
   parseContent(content: string) {
     return parse(content);
@@ -53,9 +53,9 @@ export class HTMLExpressionLoader extends BaseASTNodeLoader {
 
     if (action.type === TreeNodeAction.NODE_ADDED) {
 
-      if (action.target instanceof HTMLAttributeExpression) {
-        const target = <HTMLAttributeExpression>action.target;
-        const element = <HTMLElementExpression>target.parent;
+      if (action.target instanceof MarkupAttributeExpression) {
+        const target = <MarkupAttributeExpression>action.target;
+        const element = <MarkupElementExpression>target.parent;
         const attribs = element.attributes;
 
         const buffer = [" ", target.name];
@@ -72,9 +72,9 @@ export class HTMLExpressionLoader extends BaseASTNodeLoader {
         const end   = start + chunk.length;
         content = spliceChunk(content, chunk, { start: start, end: start });
 
-      } else if (action.target instanceof HTMLNodeExpression) {
-        const target = <HTMLNodeExpression>action.target;
-        const parent = <HTMLContainerExpression>target.parent;
+      } else if (action.target instanceof MarkupNodeExpression) {
+        const target = <MarkupNodeExpression>action.target;
+        const parent = <MarkupContainerExpression>target.parent;
         const oldParentChunk = getChunk(content, parent.position);
 
         // fetch __text in case the target has been detached from the source
@@ -90,13 +90,13 @@ export class HTMLExpressionLoader extends BaseASTNodeLoader {
 
           let startTag = "";
 
-          if (parent instanceof HTMLElementExpression) {
+          if (parent instanceof MarkupElementExpression) {
             offset += oldParentChunk.indexOf(">") + 1;
           }
 
           // parent is an element, and the only child that exists
-          if (parent instanceof HTMLElementExpression && parent.childNodes.length === 1) {
-            const element = <HTMLElementExpression>parent;
+          if (parent instanceof MarkupElementExpression && parent.childNodes.length === 1) {
+            const element = <MarkupElementExpression>parent;
             buffer.push(oldParentChunk.replace(/(\s+\/>|>[\w\W]*?<\/\w+>)$/, ">"));
 
             const parentIndentation = getIndentationBeforePosition(content, element.position);
@@ -157,8 +157,8 @@ export class HTMLExpressionLoader extends BaseASTNodeLoader {
     } else if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
       const propertyChangeAction = <PropertyChangeAction>action;
 
-      if (action.target instanceof HTMLAttributeExpression) {
-        const target = <HTMLAttributeExpression>action.target;
+      if (action.target instanceof MarkupAttributeExpression) {
+        const target = <MarkupAttributeExpression>action.target;
 
         if (propertyChangeAction.property === "value") {
           const oldChunk = getChunk(content, target.position);
@@ -181,8 +181,8 @@ export class HTMLExpressionLoader extends BaseASTNodeLoader {
 
           content = spliceChunk(content, newChunk, target.position);
         }
-      } else if (action.target instanceof HTMLNodeExpression) {
-        const target = <IHTMLValueNodeExpression>action.target;
+      } else if (action.target instanceof MarkupNodeExpression) {
+        const target = <IMarkupValueNodeExpression>action.target;
         const currentChunk = getChunk(content, target.position);
         content = spliceChunk(content, currentChunk.replace(propertyChangeAction.oldValue, propertyChangeAction.newValue), target.position);
       }
@@ -197,14 +197,14 @@ export class HTMLExpressionLoader extends BaseASTNodeLoader {
     };
   }
 
-  private getAttributeQuoteCharacter(target: HTMLAttributeExpression) {
+  private getAttributeQuoteCharacter(target: MarkupAttributeExpression) {
     // simple implementation that just finds one attribute quote in the doc
 
     const root = target.root;
     // match attribute quote characters in the original element.
     for (const node of flatten(root)) {
-      if (!(node instanceof HTMLAttributeExpression) || node === target) continue;
-      const attrib = <HTMLAttributeExpression>node;
+      if (!(node instanceof MarkupAttributeExpression) || node === target) continue;
+      const attrib = <MarkupAttributeExpression>node;
       const chunk = getChunk(this.source.content, attrib.position);
       const match = chunk.match(/\w+\=(['"])/);
       if (match) {

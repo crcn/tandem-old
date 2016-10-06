@@ -4,10 +4,10 @@ import * as cx from "classnames";
 import * as React from "react";
 import { SelectAction } from "@tandem/editor/actions";
 import * as AutosizeInput from "react-input-autosize";
-import { HTMLCommentEntity, HTMLCommentExpression } from "@tandem/html-extension/lang";
+import { MarkupCommentEntity, MarkupCommentExpression } from "@tandem/html-extension/lang";
 import { LayerLabelComponentFactoryDependency } from "@tandem/editor/dependencies";
 
-class CommentLayerLabel extends React.Component<{ entity: HTMLCommentEntity, connectDragSource: Function }, any> {
+class CommentLayerLabel extends React.Component<{ entity: MarkupCommentEntity, connectDragSource: Function }, any> {
 
   constructor() {
     super();
@@ -57,4 +57,4 @@ class CommentLayerLabel extends React.Component<{ entity: HTMLCommentEntity, con
   }
 }
 
-export const commentLayerLabelComponentDependency = new LayerLabelComponentFactoryDependency(HTMLCommentExpression.name, CommentLayerLabel);
+export const commentLayerLabelComponentDependency = new LayerLabelComponentFactoryDependency(MarkupCommentExpression.name, CommentLayerLabel);

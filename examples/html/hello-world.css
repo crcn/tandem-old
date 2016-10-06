@@ -1,5 +1,7 @@
 .container {
   background-color: yellow;
-  color: green;
+  color: orange;
   font-size: 40px;
+  padding: 10px;
+  border-radius: 20px;
 }

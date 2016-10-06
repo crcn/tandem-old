@@ -10,11 +10,11 @@ import * as AutosizeInput from "react-input-autosize";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { LayerLabelComponentFactoryDependency } from "@tandem/editor/dependencies";
 import {
-  HTMLElementEntity,
-  HTMLExpressionLoader,
-  HTMLElementExpression,
+  MarkupElementEntity,
+  MarkupExpressionLoader,
+  MarkupElementExpression,
   HTMLFragmentExpression,
-  VisibleHTMLElementEntity,
+  VisibleMarkupElementEntity,
 } from "@tandem/html-extension/lang";
 
 const VOID_ELEMENTS = [];
@@ -23,7 +23,7 @@ import {
   SetToolAction
 } from "@tandem/editor/actions";
 
-class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEntity, app: FrontEndApplication, connectDragSource: Function }, any> {
+class ElementLayerLabelComponent extends React.Component<{ entity: MarkupElementEntity, app: FrontEndApplication, connectDragSource: Function }, any> {
 
   private _updateCount: number;
 
@@ -137,7 +137,7 @@ class ElementLayerLabelComponent extends React.Component<{ entity: HTMLElementEn
 
     if (!this.state.source) return this.cancelEditing();
 
-    const loader = new HTMLExpressionLoader();
+    const loader = new MarkupExpressionLoader();
 
     try {
       ast = await loader.load({ content: `<${this.state.source} />` }) as HTMLFragmentExpression;
