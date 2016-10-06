@@ -14,13 +14,13 @@ import { selectorToolComponentDependency } from "./components/selector-tool";
 import { selectableToolComponentDependency } from "./components/selectable-tool";
 
 // services
-import { clipboardServiceDependency } from "./services/clipboard";
 import { workspaceDependency } from "./services/workspace";
 import { editorServiceDependency } from "./services/editor";
 import { backEndServiceDependency } from "./services/back-end";
 import { historyServiceDependency } from "./services/history";
 import { selectorServiceDependency } from "./services/selector";
 import { settingsServiceDependency } from "./services/settings";
+import { clipboardServiceDependency } from "./services/clipboard";
 import { keyBindingsServiceDependency } from "./services/key-binding";
 import { rootComponentRendererDependency } from "./services/root-component-renderer";
 

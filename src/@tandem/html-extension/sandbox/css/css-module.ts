@@ -5,8 +5,8 @@ import { BaseModule, ModuleFactoryDependency } from "@tandem/sandbox";
 export class HTMLCSSModule extends BaseModule {
   async evaluate() {
     const { document } = this.sandbox.global;
-    document.styleSheets.push(evaluateCSS(parseCSS(this.content)));
+    return evaluateCSS(parseCSS(this.content));
   }
 }
 
-export const cssModuleFactoryDependency = new ModuleFactoryDependency(MimeTypes.HTML, MimeTypes.CSS, HTMLCSSModule);
+export const cssModuleFactoryDependency = new ModuleFactoryDependency(MimeTypes.CSS, MimeTypes.CSS, HTMLCSSModule);

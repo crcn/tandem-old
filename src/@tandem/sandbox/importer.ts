@@ -91,7 +91,7 @@ export class ModuleImporter extends Observable implements IInvoker {
     return this._imports[importsKey];
   }
 
-  private async readFile(filePath: string): Promise<string> {
+  public async readFile(filePath: string): Promise<string> {
     const content = await this._fileContentCache[filePath] || (this._fileContentCache[filePath] = new SingletonThenable(async () => {
       return (await ReadFileAction.execute(filePath, this.bus)).content;
       // const response = await fetch(`/asset/${encodeURIComponent(filePath)}`);

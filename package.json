@@ -79,7 +79,6 @@
     "node-sass": "^3.8.0",
     "parallel-webpack": "^1.5.0",
     "postcss": "^5.1.2",
-    "postcss-scss": "^0.3.0",
     "pretty": "^1.0.0",
     "rasterizehtml": "^1.2.2",
     "react": "^15.2.1",
