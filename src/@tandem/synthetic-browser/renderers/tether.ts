@@ -12,6 +12,7 @@ export class TetherRenderer extends BaseRenderer {
     this._connection = io(`${window.location.host}`);
     this._connection.on("tether:connect", this.onTetherConnected.bind(this));
     this._connection.on("tether:paint", this.paint.bind(this));
+    this._connection.on("tether:clear", this.clear.bind(this));
     this._connection.on("tether:rects", this.setRemoteRects.bind(this));
     this._canvas = document.createElement("canvas");
     this.element.appendChild(this._canvas);
@@ -44,13 +45,19 @@ export class TetherRenderer extends BaseRenderer {
     this.setRects(conv);
   }
 
-  private paint({ data, left, top, width, height }) {
+  private paint({ dataUrl, left, top, width, height }) {
     const img = new Image();
-    img.src = data;
+    img.src = dataUrl;
     img.onload = () => {
       const ctx = this._canvas.getContext("2d");
       ctx.clearRect(left, top, width, height);
       ctx.drawImage(img, left, top);
     }
+  }
+
+
+  private clear() {
+    // const ctx = this._canvas.getContext("2d");
+    // ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
   }
 }

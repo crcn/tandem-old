@@ -17,6 +17,10 @@ const tetherSocketIoHandlerDependency = new SocketIOHandlerDependency("tether", 
     connection.on("tether:rects", (message) => {
       server.emit("tether:rects", message);
     });
+
+    connection.on("tether:clear", (message) => {
+      server.emit("tether:clear", message);
+    });
   });
 
 });

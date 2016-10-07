@@ -1,7 +1,4 @@
-import * as SocketIOClient from "socket.io-client";
-
 import * as io from "socket.io-client";
-import { Action } from "@tandem/common/actions";
 import * as html2canvas from "html2canvas";
 
 export function start(channel: string) {
@@ -15,20 +12,47 @@ export function start(channel: string) {
 
   function render({ html, width, height }) {
     targetElement.innerHTML = html;
-    paint();
+    renderCanvas();
     emitRects();
   }
 
-  async function paint() {
+  let previousCanvas: HTMLCanvasElement;
+
+  function renderCanvas() {
     html2canvas(document.body).then((canvas) => {
-      connection.compress(true).emit("tether:paint", {
-        left: 0,
-        top: 0,
-        width: canvas.width,
-        height: canvas.height,
-        data: canvas.toDataURL()
-      });
+      if (previousCanvas && false) {
+        paintChanges(previousCanvas, canvas);
+      } else {
+        clear();
+        paint(canvas, 0, 0);
+      }
+
+      previousCanvas = canvas;
     })
+  }
+
+  function clear() {
+    connection.emit("tether:clear");
+  }
+
+  function paintChanges(oldCanvas: HTMLCanvasElement, newCanvas: HTMLCanvasElement) {
+    const oldCtx  = oldCanvas.getContext("2d");
+    const newCtx  = newCanvas.getContext("2d");
+    const oldData = oldCtx.getImageData(0, 0, oldCanvas.width, oldCanvas.height).data;
+    const newData = oldCtx.getImageData(0, 0, newCanvas.width, newCanvas.height).data;
+
+    console.log(oldData.length, oldCanvas.width, oldCanvas.height);
+
+  }
+
+  function paint(canvas: HTMLCanvasElement, left: number, top: number) {
+    connection.compress(true).emit("tether:paint", {
+      left: left,
+      top: top,
+      width: canvas.width,
+      height: canvas.height,
+      dataUrl: canvas.toDataURL()
+    });
   }
 
   function emitRects() {
