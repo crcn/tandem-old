@@ -28,7 +28,7 @@ export function start(channel: string) {
       }
 
       previousCanvas = canvas;
-    })
+    });
   }
 
   function clear() {

@@ -6,12 +6,15 @@ var createVariants = require('parallel-webpack').createVariants;
 
 
 function createConfig(options) {
+
+  var target = options.entry.target;
+
   var config = {
     entry: {
-      [options.entry]: __dirname + `/src/@tandem/${options.entry}/entry.ts`,
+      [options.entry.name]: (target === "es5" ? ["babel-polyfill"] : []).concat([__dirname + `/src/@tandem/${options.entry.name}/entry.ts`]),
     },
     output: {
-      path: `lib/@tandem/${options.entry}/bundle/`,
+      path: `lib/@tandem/${options.entry.name}/bundle/`,
       filename: "[name].js"
     },
     sassLoader: {
@@ -72,7 +75,9 @@ function createConfig(options) {
         },
         {
           test: /\.tsx?$/,
-          loader: getModuleDirectory("ts-loader")
+          loader: (target === "es5" ? [getModuleDirectory("babel-loader") + "?presets[]=es2015"] : [])
+          .concat(getModuleDirectory("ts-loader"))
+          .join("!")
         },
         {
           test: /\.tsx?$/,
@@ -90,7 +95,10 @@ function getModuleDirectory(moduleName) {
 }
 
 var variants = {
-  entry: ["editor", "tether"]
+  entry: [
+    { name: "editor" },
+    { name: "tether", target: "es5" }
+  ]
 };
 
 
