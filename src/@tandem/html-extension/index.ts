@@ -3,7 +3,6 @@ import { IApplication } from "@tandem/common/application";
 
 // components
 import { cssPaneComponentDependency } from "./components/css-pane";
-import { entityPreviewComponentDependency } from "./components/entity-preview";
 import { cssColorTokenComponentFactoryDependency } from "./components/css-color-token";
 
 // stage tool components
@@ -71,7 +70,6 @@ export const htmlExtensionDependency = [
 
   // components
   cssPaneComponentDependency,
-  entityPreviewComponentDependency,
   cssAtRuleLayerLabelComponentDependency,
   cssCommentLayerLabelComponentDependency,
   cssColorTokenComponentFactoryDependency,

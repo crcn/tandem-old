@@ -11,6 +11,7 @@
     "esprima": "registry:dt/esprima#2.1.0+20160830194246",
     "express": "registry:dt/express#4.0.0+20160708185218",
     "express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20160715232503",
+    "html2canvas": "registry:dt/html2canvas#0.0.0+20160627164915",
     "inflection": "registry:dt/inflection#1.5.0+20160316155526",
     "lodash": "registry:dt/lodash#3.10.0+20160720001309",
     "mesh": "npm:mesh",

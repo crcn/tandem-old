@@ -1,10 +1,9 @@
 {
-  "name": "@tandem/tether",
+  "name": "@tandem/tether-back-end",
   "version": "1.0.1",
   "private":false,
   "description": "",
-  "bundle": "./bundle/tether.js",
-  "main": "./back-end.js",
+  "main": "./index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

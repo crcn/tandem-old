@@ -4,19 +4,19 @@ import * as gaze from "gaze";
 import * as sift from "sift";
 import * as cors from "cors";
 import { Logger } from "@tandem/common/logger";
+import { Response } from "mesh";
 import * as express from "express";
 import { IOService } from "@tandem/common/services";
 import * as compression from "compression";
 import { IApplication } from "@tandem/common/application";
-import { DSUpsertAction, LoadAction, ReadFileAction } from "@tandem/common/actions";
 import { loggable, inject } from "@tandem/common/decorators";
 import * as createSocketIOServer from "socket.io";
 import { BaseApplicationService } from "@tandem/common/services";
-import { sync as getPackagePath } from "package-path";
-import { DEPENDENCIES_NS, Dependencies } from "@tandem/common/dependencies";
+import { SocketIOHandlerDependency  } from "@tandem/back-end/dependencies";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
+import { DEPENDENCIES_NS, Dependencies } from "@tandem/common/dependencies";
+import { DSUpsertAction, LoadAction, ReadFileAction } from "@tandem/common/actions";
 
-import { Response } from "mesh";
 
 @loggable()
 export default class FrontEndService extends BaseApplicationService<IApplication> {
@@ -128,6 +128,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
 
   async _loadSocketServer() {
     const io = createSocketIOServer();
+    SocketIOHandlerDependency.plugin(io, this.app.dependencies);
     io["set"]("origins", "*domain.com*:*");
     io.on("connection", this._ioService.addConnection);
     io.listen(this._socket);

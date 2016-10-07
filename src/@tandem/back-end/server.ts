@@ -10,4 +10,3 @@ export function create(config = {}) {
 process.on("unhandledRejection", function(error) {
   console.log("unhandled rejection", error);
 });
-

@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/08d5c6e69dfc6fe1637bd6a036a48d454cf8bddd/html2canvas/html2canvas.d.ts",
+    "raw": "registry:dt/html2canvas#0.0.0+20160627164915",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/08d5c6e69dfc6fe1637bd6a036a48d454cf8bddd/html2canvas/html2canvas.d.ts"
+  }
+}

@@ -6,6 +6,7 @@
 /// <reference path="globals/diff/index.d.ts" />
 /// <reference path="globals/express-serve-static-core/index.d.ts" />
 /// <reference path="globals/express/index.d.ts" />
+/// <reference path="globals/html2canvas/index.d.ts" />
 /// <reference path="globals/inflection/index.d.ts" />
 /// <reference path="globals/lodash/index.d.ts" />
 /// <reference path="globals/mesh/index.d.ts" />

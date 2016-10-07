@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "private":false,
   "description": "",
-  "main": "./bundle/editor.js",
+  "bundle": "./bundle/editor.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

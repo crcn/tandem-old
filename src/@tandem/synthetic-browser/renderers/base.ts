@@ -22,6 +22,7 @@ export abstract class BaseRenderer implements ISyntheticDocumentRenderer {
   readonly element: HTMLElement;
   private _target: SyntheticDocument;
   private _updating: boolean;
+  private _rects: any;
   private _shouldUpdateAgain: boolean;
 
   constructor() {
@@ -38,8 +39,15 @@ export abstract class BaseRenderer implements ISyntheticDocumentRenderer {
     this.update();
   }
 
-  abstract getBoundingRect(element: SyntheticMarkupElement);
+  getBoundingRect(element: SyntheticMarkupElement) {
+    return (this._rects && this._rects[element.uid]) || new BoundingRect(0, 0, 0, 0);
+  }
+
   protected abstract update();
+
+  protected setRects(rects: any) {
+    this._rects = rects;
+  }
 
   protected onTargetChange(action: Action) {
     if (this._updating) {
