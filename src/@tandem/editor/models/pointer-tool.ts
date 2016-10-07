@@ -3,7 +3,7 @@ import { inject } from "@tandem/common/decorators";
 import { BaseEditorTool } from "@tandem/editor/models";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { POINTER_TOOL_KEY_CODE } from "@tandem/editor/constants";
-import { VisibleEntityCollection } from "@tandem/editor/collections";
+import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
 import { BaseApplicationService } from "@tandem/common/services";
 import { IInjectable, MAIN_BUS_NS } from "@tandem/common/dependencies";
 import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
@@ -25,37 +25,37 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
 
   canvasKeyDown(action: KeyboardAction) {
 
-    const selection = new VisibleEntityCollection(...this.editor.selection);
-    if (selection.length) return;
+    // const selection = new VisibleSyntheticElementCollection(...this.editor.selection);
+    // if (selection.length) return;
 
-    if (selection["display"] == null) return;
+    // if (selection["display"] == null) return;
 
-    const bounds = selection.display.bounds;
+    // const bounds = selection.display.bounds;
 
-    let left = bounds.left;
-    let top  = bounds.top;
+    // let left = bounds.left;
+    // let top  = bounds.top;
 
-    if (action.keyCode === 38) {
-      top--;
-    } else if (action.keyCode === 40) {
-      top++;
-    } else if (action.keyCode === 37) {
-      left--;
-    } else if (action.keyCode === 39) {
-      left++;
-    } else {
+    // if (action.keyCode === 38) {
+    //   top--;
+    // } else if (action.keyCode === 40) {
+    //   top++;
+    // } else if (action.keyCode === 37) {
+    //   left--;
+    // } else if (action.keyCode === 39) {
+    //   left++;
+    // } else {
 
-      // deselect all when escape key is hit
-      if (action.keyCode === 27) {
-        this.bus.execute(new SelectAction());
-      }
+    //   // deselect all when escape key is hit
+    //   if (action.keyCode === 27) {
+    //     this.bus.execute(new SelectAction());
+    //   }
 
-      return;
-    }
+    //   return;
+    // }
 
-    action.preventDefault();
+    // action.preventDefault();
 
-    selection.display.position = { left, top };
+    // selection.display.position = { left, top };
   }
 
   deleteSelection() {

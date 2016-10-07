@@ -1,7 +1,7 @@
 import { TreeNode } from "./core";
 
 export function traverseTree<T extends TreeNode<any>>(node: T, each: (node: T) => any) {
-  each(node);
+  if (each(node) === false) return false;
   node.children.forEach((child) => traverseTree(child, each));
 };
 

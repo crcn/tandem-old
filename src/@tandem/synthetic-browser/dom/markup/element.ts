@@ -17,6 +17,7 @@ import {
   ArrayChangeAction,
   ObservableCollection,
 } from "@tandem/common/observable";
+import { MarkupElementExpression } from "./ast";
 
 export class SyntheticMarkupAttribute extends Observable {
 
@@ -62,6 +63,7 @@ export class SyntheticMarkupElement extends SyntheticMarkupContainer {
 
   readonly nodeType: number = MarkupNodeType.ELEMENT;
   readonly attributes: SyntheticMarkupAttributes;
+  readonly expression: MarkupElementExpression;
 
   constructor(readonly namespaceURI: string, readonly tagName: string, ownerDocument: SyntheticDocument) {
     super(tagName, ownerDocument);

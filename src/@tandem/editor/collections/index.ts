@@ -1,1 +1,1 @@
-export * from "./visible-entity-collection";
+export * from "./visible-synthetic-element-collection";

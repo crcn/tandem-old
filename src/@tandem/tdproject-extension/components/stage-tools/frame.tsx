@@ -5,6 +5,7 @@ import { BoundingRect } from "@tandem/common";
 import * as AutosizeInput from "react-input-autosize";
 import { SyntheticTDFrame } from "@tandem/tdproject-extension/synthetic";
 import { FrontEndApplication, Editor } from "@tandem/editor";
+// import {  } from "@tandem/synthetic-browser";
 
 export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrame, editor: Editor }, { editTitle: boolean }> {
 
@@ -16,22 +17,34 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrame,
   }
 
   editTitle = () => {
+    if (!this.props.frame.editor) return;
     this.setState({ editTitle: true });
     requestAnimationFrame(() => {
       (this.refs as any).input.select();
-    })
+    });
   }
 
   onTitleChange = (event) => {
+    // edit(this.props.frame.source, new SetAttributeEdit());
     this.props.frame.setAttribute("title", event.target.value);
   }
 
   cancelEdit = () => {
     this.setState({ editTitle: false });
+    this.props.frame.setAttribute("title", this.props.frame.expression.getAttributeValue("title"));
   }
 
   onKeyDown = (event) => {
-    if (/27|13/.test(event.which)) {
+    const keyCode = event.which;
+    const shouldSave = keyCode === 13;
+    if (shouldSave) {
+      // this.props.frame.editor.execute();
+      // this.props.frame.editor.setElementAttribute(this.props.frame, "title", this.props.frame.getAttribute("title"));
+    }
+
+    const shouldStopEditting = shouldSave || keyCode === 27;
+
+    if (shouldStopEditting) {
       this.setState({ editTitle: false });
     }
   }
@@ -52,7 +65,7 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrame,
 
     const titleStyle = {
       position: "absolute",
-      display: editor.transform.scale > 0.2 ? "block": "none",
+      display: editor.transform.scale > 0.2 ? "block" : "none",
       top: 0,
       fontSize: 12,
       transform: `translateY(${-25 * scale}px) scale(${scale})`,
@@ -77,7 +90,7 @@ export class TDFrameStageToolComponent extends React.Component<{ app: FrontEndAp
     if (!frames.length) return null;
 
     const backgroundStyle = {
-      transform: `translate(${-transform.left/transform.scale}px, ${-transform.top/transform.scale}px) scale(${1/transform.scale})`,
+      transform: `translate(${-transform.left / transform.scale}px, ${-transform.top / transform.scale}px) scale(${1 / transform.scale})`,
       transformOrigin: "top left"
     };
 

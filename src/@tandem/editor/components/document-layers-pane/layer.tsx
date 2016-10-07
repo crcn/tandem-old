@@ -2,25 +2,37 @@ import "./layer.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
-import { IActor } from "@tandem/common/actors";
 import { Workspace } from "@tandem/editor/models";
-import { CallbackBus } from "@tandem/common/busses";
 import { MetadataKeys } from "@tandem/editor/constants";
-import { Dependencies } from "@tandem/common/dependencies";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { flatten, intersection } from "lodash";
 import { LayerLabelComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { DragSource, DropTarget, DndComponent } from "react-dnd";
 import { SelectAction, ToggleSelectAction } from "@tandem/editor/actions";
-import { Action, MetadataChangeAction, METADATA_CHANGE } from "@tandem/common/actions";
-import { IEntity, appendSourceChildren, insertSourceChildren } from "@tandem/common/lang/entities";
+import {
+  Action,
+  IActor,
+  IEntity,
+  CallbackBus,
+  Dependencies,
+  flattenTree,
+  METADATA_CHANGE,
+  traverseTree,
+  findTreeNode,
+  MetadataChangeAction,
+  appendSourceChildren,
+  insertSourceChildren,
+} from "@tandem/common";
+
+import {
+  SyntheticMarkupNode
+} from "@tandem/synthetic-browser";
 
 interface ILayerLabelProps {
   paddingLeft?: number;
   dependencies: Dependencies;
-  workspace: Workspace;
   app: FrontEndApplication;
-  entity: IEntity;
+  node: SyntheticMarkupNode;
   connectDragSource: Function;
   isDragging: boolean;
   connectDropTarget: Function;
@@ -41,10 +53,10 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
   onClick = (event) => {
 
-    const { entity, workspace } = this.props;
-    const rootEntity = workspace.file.entity;
+    const { node, app } = this.props;
+    const { editor } = app;
 
-    const selection = workspace.selection || [];
+    const selection = editor.selection || [];
     let select  = [];
     let multiSelect = false;
 
@@ -53,25 +65,20 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
       const allEntities = [];
 
-      // capture only open entities
-      function each(entity: IEntity) {
-        allEntities.push(entity);
-        if (entity.metadata.get(MetadataKeys.LAYER_EXPANDED)) {
-          getLayerChildren(entity).forEach(each);
-        }
-      }
-
-      getLayerChildren(rootEntity).forEach(each);
+      traverseTree(editor.document, (child) => {
+        allEntities.push(child);
+        return child.metadata.get(MetadataKeys.LAYER_EXPANDED);
+      });
 
 
       const currentlySelectedEntity = selection[selection.length - 1];
-      const index1 = allEntities.indexOf(entity);
+      const index1 = allEntities.indexOf(node);
       const index2 = allEntities.indexOf(currentlySelectedEntity);
       select = allEntities.slice(Math.min(index1, index2), Math.max(index1, index2) + 1);
 
     } else {
 
-      select = [entity];
+      select = [node];
 
       // selecting individual components
       multiSelect = event.metaKey;
@@ -79,15 +86,15 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
       if (multiSelect) {
 
         const allSelectedChildren = flatten(selection.map(function(entity) {
-          return entity.flatten();
+          return entity;
         }));
 
-        const entityChildren = flatten((entity as IEntity).children.map(function(entity) {
-          return entity.flatten();
+        const entityChildren = flatten((node).children.map(function(entity) {
+          return flattenTree(entity);
         }));
 
         // selecting a child
-        if (~allSelectedChildren.indexOf(entity) && !~selection.indexOf(entity)) {
+        if (~allSelectedChildren.indexOf(node) && !~selection.indexOf(node)) {
           multiSelect = false;
         } else if (intersection(entityChildren, selection).length) {
 
@@ -102,7 +109,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
   onHeaderKeyDown = (event: KeyboardEvent) => {
     if (event.keyCode === 13 || event.keyCode === 27) {
-      if (!this.props.entity.metadata.toggle(MetadataKeys.EDIT_LAYER)) {
+      if (!this.props.node.metadata.toggle(MetadataKeys.EDIT_LAYER)) {
 
         // re-focus on header so that the user hit enter again to edit
         // the input
@@ -114,7 +121,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
   toggleExpand(expand, event) {
 
     // store on the entity so that it can be serialized
-    this.props.entity.metadata.toggle(MetadataKeys.LAYER_EXPANDED);
+    this.props.node.metadata.toggle(MetadataKeys.LAYER_EXPANDED);
 
     if (event) event.stopPropagation();
   }
@@ -123,7 +130,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     this.setState({
       hover: true
     });
-    this.props.entity.metadata.set(MetadataKeys.HOVERING, true);
+    this.props.node.metadata.set(MetadataKeys.HOVERING, true);
   }
 
   onMouseOut = (event) => {
@@ -131,7 +138,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
       hover: false
     });
 
-    this.props.entity.metadata.set(MetadataKeys.HOVERING, false);
+    this.props.node.metadata.set(MetadataKeys.HOVERING, false);
   }
 
   addNewChild = (event: React.MouseEvent) => {
@@ -140,35 +147,35 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
   }
 
   render() {
-    const { connectDragSource, isDragging, connectDropTarget, isOver, canDrop, entity, dependencies, workspace } = this.props;
+    const { connectDragSource, isDragging, connectDropTarget, isOver, canDrop, node, dependencies, app } = this.props;
 
-    const expanded   = entity.metadata.get(MetadataKeys.LAYER_EXPANDED);
+    const expanded   = node.metadata.get(MetadataKeys.LAYER_EXPANDED);
 
-    const selection = workspace.selection;
-    const layerName = entity.metadata.get(MetadataKeys.LAYER_DEPENDENCY_NAME) || entity.source.constructor.name;
+    const selection = app.editor.selection;
+    const layerName = node.metadata.get(MetadataKeys.LAYER_DEPENDENCY_NAME); // || node.source.constructor.name;
 
-    const labelDependency = LayerLabelComponentFactoryDependency.find(layerName, dependencies) || LayerLabelComponentFactoryDependency.find(entity.constructor.name, dependencies);
+    const labelDependency = LayerLabelComponentFactoryDependency.find(layerName, dependencies) || LayerLabelComponentFactoryDependency.find(node.constructor.name, dependencies);
 
     let labelSection;
 
     if (labelDependency)  {
       labelSection = labelDependency.create(Object.assign({}, this.props, {
-        entity: entity,
+        node: node,
         connectDragSource
       }));
     } else {
       labelSection = <span>
-        { entity.source.constructor.name }
+        { /*node.source.constructor.name */ }
       </span>;
     }
 
-    const selected = selection && selection.indexOf(entity) !== -1;
+    const selected = selection && selection.indexOf(node) !== -1;
 
     const headerClassName = cx({
       "layer": true,
       "m-layers-pane-component-layer--header": true,
       "drag-over": isOver && canDrop,
-      "hover": this.props.entity.metadata.get(MetadataKeys.HOVERING) && !this.state.hover && !selected,
+      "hover": this.props.node.metadata.get(MetadataKeys.HOVERING) && !this.state.hover && !selected,
       ["m-layer-component-type-" + layerName]: true,
       "selected": selected
     });
@@ -182,7 +189,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     });
 
     const expandButtonStyle = {
-      "visibility": getLayerChildren(entity).length ? "visible" : "hidden"
+      "visibility": node.children.length ? "visible" : "hidden"
     };
 
     labelSection =  <div
@@ -221,9 +228,8 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
     const data = monitor.getItem() as any;
 
-    const item = app.workspace.file.entity.flatten().find(function(entity: IEntity) {
-      return entity.metadata.get("dragSourceId") === data.id;
-    }) as IEntity;
+    const item = null; // findTreeNode(app.editor.document, (node) => node )
+
 
     if (entity === item) return;
 
@@ -299,9 +305,7 @@ LayerDndLabelComponent = DropTarget("element", {
     const { entity, app } = props;
     app.bus.execute(new SelectAction([], false));
     const data = monitor.getItem() as any;
-    const item = app.workspace.file.entity.flatten().find(function(entity: IEntity) {
-      return entity.metadata.get("dragSourceId") === data.id;
-    }) as IEntity;
+    const item = null; // TODO - find
 
     // wrap so that react-dnd doesn't barf on a promise return
     (async () => {
@@ -322,7 +326,7 @@ LayerDndLabelComponent = DropTarget("element", {
   };
 })(LayerDndLabelComponent);
 
-export default class LayerComponent extends React.Component<{ app: FrontEndApplication, entity: IEntity, depth: number }, any> {
+export default class LayerComponent extends React.Component<{ app: FrontEndApplication, node: SyntheticMarkupNode, depth: number }, any> {
 
   private _entityObserver: IActor;
 
@@ -352,23 +356,23 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
 
   componentWillUnmount() {
     this.props.app.bus.unregister(this);
-    this.props.entity.unobserve(this);
+    this.props.node.unobserve(this);
   }
 
   render() {
 
-    const entity            = this.props.entity;
+    const node            = this.props.node;
 
-    if (!entity) return null;
+    if (!node) return null;
 
-    const expanded          = entity.metadata.get(MetadataKeys.LAYER_EXPANDED);
-    const hidden            = entity.metadata.get(MetadataKeys.HIDDEN);
+    const expanded          = node.metadata.get(MetadataKeys.LAYER_EXPANDED);
+    const hidden            = node.metadata.get(MetadataKeys.HIDDEN);
     const depth = this.props.depth || 0;
     const paddingLeft =  17 + depth * 12;
 
     const renderChildren = (depth: number) => {
-      return getLayerChildren(entity).map((child: IEntity, i) => {
-        return <LayerComponent {...this.props} entity={child} key={i} depth={depth}  />;
+      return node.children.map((child: SyntheticMarkupNode, i) => {
+        return <LayerComponent {...this.props} node={child} key={i} depth={depth}  />;
       });
     };
 

@@ -10,12 +10,14 @@ import { DragDropContext } from "react-dnd";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { DocumentPaneComponentFactoryDependency } from "@tandem/editor/dependencies";
 
-class LayersPaneComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication }, any> {
+class LayersPaneComponent extends React.Component<{ app: FrontEndApplication }, any> {
   render() {
-    if (!this.props.workspace || !this.props.workspace.file.entity) return null;
+    const { editor } = this.props.app;
+
+    if (!editor || !editor.document) return null;
     return <PaneComponent>
       {
-        this.props.workspace.file.entity.children.map((entity, i) => <LayerComponent depth={0} {...this.props} entity={entity} key={i} />)
+        editor.document.children.map((node, i) => <LayerComponent depth={0} {...this.props} node={node} key={node.uid} />)
       }
     </PaneComponent>;
   }

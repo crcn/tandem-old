@@ -3,12 +3,12 @@ import * as React from "react";
 import { flatten } from "lodash";
 import RulerComponent from "./ruler";
 import { PointerTool } from "@tandem/editor/models/pointer-tool";
-import { BoundingRect } from "@tandem/common/geom";
+import { BoundingRect, flattenTree } from "@tandem/common";
 import ResizerComponent from "./resizer";
 import { Editor, Workspace } from "@tandem/editor/models";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { SelectionSizeComponent } from "@tandem/editor/components/selection-size";
-import { VisibleEntityCollection } from "@tandem/editor/collections";
+import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { IEntityDisplay, IEntity, IVisibleEntity } from "@tandem/common/lang/entities";
 
@@ -41,15 +41,13 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
     if (!(tool instanceof PointerTool)) return null;
 
-    const selection = new VisibleEntityCollection(...editor.selection);
+    const selection = new VisibleSyntheticElementCollection(...(editor.selection as any));
 
     // simple check to see if the selection array
     // is an IEntityDisplay
     if (!selection.length) return null;
 
-    const entireBounds = BoundingRect.merge(...flatten(selection.map((entity) => entity.flatten()))
-    .filter((entity) => !!entity["display"])
-    .map((entity: IVisibleEntity) => entity.display.bounds));
+    const entireBounds = BoundingRect.merge(...flatten(selection.map((element) => element.getBoundingClientRect())));
 
     const borderWidth = 1 / this.props.zoom;
 

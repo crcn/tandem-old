@@ -20,21 +20,21 @@ export default class ClipboardService extends BaseApplicationService<FrontEndApp
   public logger: Logger;
 
   [InitializeAction.INITIALIZE]() {
-    document.addEventListener("copy", (event: ClipboardEvent) => {
+    // document.addEventListener("copy", (event: ClipboardEvent) => {
 
-      if (targetIsInput(event)) return;
+    //   if (targetIsInput(event)) return;
 
-      const content = this.app.workspace.selection.map((entity) => (
-        entity.source.toString()
-      )).join("");
+    //   const content = this.app.workspace.selection.map((entity) => (
+    //     entity.source.toString()
+    //   )).join("");
 
-      event.clipboardData.setData(this.app.workspace.file.type, content);
-      event.preventDefault();
-    });
+    //   event.clipboardData.setData(this.app.workspace.file.type, content);
+    //   event.preventDefault();
+    // });
 
-    document.addEventListener("paste", (event: any) => {
-      Array.prototype.forEach.call(event.clipboardData.items, this._paste);
-    });
+    // document.addEventListener("paste", (event: any) => {
+    //   Array.prototype.forEach.call(event.clipboardData.items, this._paste);
+    // });
   }
 
   _paste = async (item: DataTransferItem) => {

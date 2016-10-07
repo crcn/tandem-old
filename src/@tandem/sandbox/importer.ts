@@ -2,20 +2,22 @@ import { IModule } from "./module";
 import { Sandbox } from "./sandbox";
 import { ModuleFactoryDependency } from "./dependencies";
 import {
+  Logger,
   IActor,
+  loggable,
+  IInvoker,
   Observable,
   Dependencies,
+  watchProperty,
   ResolveAction,
   ChangeAction,
   ReadFileAction,
   WatchFileAction,
   MainBusDependency,
   SingletonThenable,
-  loggable,
-  IInvoker,
-  Logger,
   MimeTypeDependency,
   IReadFileActionResponseData,
+  UpdateTemporaryFileContentAction,
 } from "@tandem/common";
 
 @loggable()
@@ -50,14 +52,6 @@ export class ModuleImporter extends Observable implements IInvoker {
    */
 
   public reset() {
-
-    // remove all file watchers to ensure that the importer is only watching
-    // the files it needs to after re-evaluation.
-    // for (const key in this._fileWatchers) {
-    //   this._fileWatchers[key].dispose();
-    //   delete this._fileWatchers[key];
-    // }
-
     // clear all imports to ensure that all modules get re-evaluated. Important
     // in case any module accesses global variables such as the DOM
     this._imports = {};
@@ -74,9 +68,9 @@ export class ModuleImporter extends Observable implements IInvoker {
     const moduleCache = this._modules[resolvedPath] || (this._modules[resolvedPath] = {});
 
     if (!moduleCache[envKind]) {
-      // this.logger.verbose("creating module: %s", filePath);
       const moduleFactory = ModuleFactoryDependency.find(envKind, MimeTypeDependency.lookup(resolvedPath, this._dependencies), this._dependencies);
-      moduleCache[envKind] = moduleFactory.create(resolvedPath, content, this._sandbox);
+      const module = moduleCache[envKind] = moduleFactory.create(resolvedPath, content, this._sandbox);
+      watchProperty(module, "content", this.onModuleContentChange.bind(this, module));
     }
 
     const module: IModule = moduleCache[envKind];
@@ -84,7 +78,6 @@ export class ModuleImporter extends Observable implements IInvoker {
     const importsKey = envKind + resolvedPath;
 
     if (!this._imports[importsKey]) {
-      // this.logger.verbose("evaluating module: %s", filePath);
       this._imports[importsKey] = module.evaluate();
     }
 
@@ -94,8 +87,6 @@ export class ModuleImporter extends Observable implements IInvoker {
   public async readFile(filePath: string): Promise<string> {
     const content = await this._fileContentCache[filePath] || (this._fileContentCache[filePath] = new SingletonThenable(async () => {
       return (await ReadFileAction.execute(filePath, this.bus)).content;
-      // const response = await fetch(`/asset/${encodeURIComponent(filePath)}`);
-      // return await response.text();
     }));
 
     this.watchFile(filePath);
@@ -105,13 +96,11 @@ export class ModuleImporter extends Observable implements IInvoker {
 
   public watchFile(filePath: string) {
     if (!this._fileWatchers[filePath]) {
-      // this.logger.verbose("watching %s", filePath);
       this._fileWatchers[filePath] = WatchFileAction.execute(filePath, this.bus, this.onFileChange.bind(this));
     }
   }
 
   protected onFileChange(data: IReadFileActionResponseData) {
-    // this.logger.verbose("file change: %s", data.path);
 
     if (this._fileContentCache[data.path]) {
       this._fileContentCache[data.path] = data.content;
@@ -120,5 +109,12 @@ export class ModuleImporter extends Observable implements IInvoker {
     // bust all modules for the given path to ensure that it gets re-evaluated
     this._modules[data.path] = undefined;
     this.notify(new ChangeAction());
+  }
+
+  protected onModuleContentChange(module: IModule, newContent: string, oldContent: string) {
+    if (this._fileContentCache[module.fileName]) {
+      this._fileContentCache[module.fileName] = newContent;
+    }
+    UpdateTemporaryFileContentAction.execute({ path: module.fileName, content: newContent }, this.bus);
   }
 }

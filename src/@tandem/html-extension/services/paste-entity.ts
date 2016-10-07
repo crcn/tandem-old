@@ -8,7 +8,7 @@ import { FrontEndApplication } from "@tandem/editor/application";
 import { appendSourceChildren } from "@tandem/common/lang/entities";
 import { PasteHTMLEntityAction } from "@tandem/html-extension/actions";
 import { BaseApplicationService } from "@tandem/common/services";
-import { VisibleEntityCollection } from "@tandem/editor/collections";
+import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
 import { PasteAction, SelectAction } from "@tandem/editor/actions";
 import {
   IInjectable,
@@ -26,22 +26,22 @@ export class PasteHTMLService extends BaseApplicationService<FrontEndApplication
 
   [PasteHTMLEntityAction.PASTE_HTML_ENTITY](action: PasteHTMLEntityAction) {
 
-    // TODO - need to paste to editor.focus (entity)
-    action.item.getAsString(async (content) => {
+    // // TODO - need to paste to editor.focus (entity)
+    // action.item.getAsString(async (content) => {
 
-      const workspace = this.app.workspace;
-      const file = <HTMLFile>workspace.file;
+    //   const workspace = this.app.workspace;
+    //   const file = <HTMLFile>workspace.file;
 
-      const visibleEntities = new VisibleEntityCollection(...workspace.selection);
+    //   const visibleEntities = new VisibleSyntheticElementCollection(...workspace.selection);
 
-      const activeEntity = visibleEntities.length ? visibleEntities[0].parent : file.entity;
+    //   const activeEntity = visibleEntities.length ? visibleEntities[0].parent : file.entity;
 
-      // meta charset is tacked on the beginning - remove it
-      content = content.replace(/\<meta.*?\>/, "");
+    //   // meta charset is tacked on the beginning - remove it
+    //   content = content.replace(/\<meta.*?\>/, "");
 
-      // TODO - SelectExpressionAction
-      this.app.bus.execute(new SelectAction(await appendSourceChildren(activeEntity, ...parseMarkup(content).children)));
-    });
+    //   // TODO - SelectExpressionAction
+    //   this.app.bus.execute(new SelectAction(await appendSourceChildren(activeEntity, ...parseMarkup(content).children)));
+    // });
   }
 }
 

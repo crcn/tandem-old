@@ -25,3 +25,4 @@ export * from "./workers";
 export * from "./serialize";
 export * from "./utils";
 export * from "./constants";
+export * from "./synthetic";

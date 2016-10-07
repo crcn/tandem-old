@@ -6,7 +6,7 @@ import { FrontEndApplication } from "@tandem/editor/application";
 import { SelectablesComponent } from "@tandem/editor/components/selectables";
 import { SyntheticMarkupElement } from "@tandem/synthetic-browser";
 import { SelectionSizeComponent } from "@tandem/editor/components/selection-size";
-import { VisibleEntityCollection } from "@tandem/editor/collections";
+import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
 import { SetToolAction, SelectAction } from "@tandem/editor/actions";
 import { Workspace, Editor, InsertTool } from "@tandem/editor/models";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
@@ -75,28 +75,29 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     if (!(tool instanceof InsertTool)) return null;
 
-    const selection = new VisibleEntityCollection(...this.props.editor.selection);
+    const selection = new VisibleSyntheticElementCollection(...this.props.editor.selection);
     const zoom = this.props.editor.transform.scale;
-    const display = selection.display;
-    const bounds = selection.length ? display.bounds : undefined;
-    const scale = 1 / editor.transform.scale;
+    return null;
+    // const display = selection.display;
+    // const bounds = selection.length ? display.bounds : undefined;
+    // const scale = 1 / editor.transform.scale;
 
-    const bgstyle = {
-      position: "fixed",
-      background: "transparent",
-      top: 0,
-      left: 0,
-      transform: `translate(${-editor.transform.left * scale}px, ${-editor.transform.top * scale}px) scale(${scale})`,
-      transformOrigin: "top left",
-      width: "100%",
-      height: "100%"
-    };
+    // const bgstyle = {
+    //   position: "fixed",
+    //   background: "transparent",
+    //   top: 0,
+    //   left: 0,
+    //   transform: `translate(${-editor.transform.left * scale}px, ${-editor.transform.top * scale}px) scale(${scale})`,
+    //   transformOrigin: "top left",
+    //   width: "100%",
+    //   height: "100%"
+    // };
 
-    return <div className="m-insert-tool">
-      <div onMouseDown={this.onRootMouseDown} style={bgstyle} />
-      { !tool.entityIsRoot ? <SelectablesComponent {...this.props} canvasRootSelectable={true} onSyntheticMouseDown={this.onSyntheticMouseDown} /> : null }
-      { selection.length && display.capabilities.resizable && tool.resizable ? <SelectionSizeComponent left={bounds.left + bounds.width} top={bounds.top + bounds.height} bounds={bounds} zoom={zoom} /> : undefined }
-    </div>;
+    // return <div className="m-insert-tool">
+    //   <div onMouseDown={this.onRootMouseDown} style={bgstyle} />
+    //   { !tool.entityIsRoot ? <SelectablesComponent {...this.props} canvasRootSelectable={true} onSyntheticMouseDown={this.onSyntheticMouseDown} /> : null }
+    //   { selection.length && display.capabilities.resizable && tool.resizable ? <SelectionSizeComponent left={bounds.left + bounds.width} top={bounds.top + bounds.height} bounds={bounds} zoom={zoom} /> : undefined }
+    // </div>;
   }
 }
 

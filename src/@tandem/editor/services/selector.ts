@@ -8,7 +8,7 @@ import {
   BaseEntity,
   BaseASTNode,
   flattenTree,
-  removeEntitySources,
+  RemoveSyntheticEditAction,
   BaseApplicationService,
   ApplicationServiceDependency,
 } from "@tandem/common";
@@ -34,46 +34,50 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     if (!this.app.editor) return;
 
     const selectableSynthetics = flattenTree(this.app.editor.document).filter((element) => {
-      return element
+      return element;
     });
 
-    const selectableEntities = this.app.workspace.file.entity.flatten().filter((entity: IEntity) => {
-      return entity.source.source ? String((<DocumentFile<any>>entity.source.source).path).indexOf(action.filePath) !== -1 && entity.metadata.get(MetadataKeys.SELECTABLE) !== false : false;
-    });
+    // const selectableEntities = this.app.workspace.file.entity.flatten().filter((entity: IEntity) => {
+    //   return entity.source.source ? String((<DocumentFile<any>>entity.source.source).path).indexOf(action.filePath) !== -1 && entity.metadata.get(MetadataKeys.SELECTABLE) !== false : false;
+    // });
 
-    const selection = [];
-    const selectedSources = [];
+    // const selection = [];
+    // const selectedSources = [];
 
-    for (const entity of selectableEntities) {
+    // for (const entity of selectableEntities) {
 
-      const source = <BaseASTNode<any>>entity.source;
+    //   const source = <BaseASTNode<any>>entity.source;
 
-      for (const cursor of action.data) {
-        if (source.inRange(cursor)) {
+    //   for (const cursor of action.data) {
+    //     if (source.inRange(cursor)) {
 
-          const parentIndex = selection.indexOf(entity.parent);
+    //       const parentIndex = selection.indexOf(entity.parent);
 
-          // there are cases where registered components will use the same source -- skip them.
-          if (selectedSources.indexOf(entity.source) !== -1) continue;
+    //       // there are cases where registered components will use the same source -- skip them.
+    //       if (selectedSources.indexOf(entity.source) !== -1) continue;
 
-          if (parentIndex > -1) {
-            selection.splice(parentIndex, 1);
-          }
+    //       if (parentIndex > -1) {
+    //         selection.splice(parentIndex, 1);
+    //       }
 
-          selection.push(entity);
-          selectedSources.push(entity.source);
-        }
-      }
-    }
+    //       selection.push(entity);
+    //       selectedSources.push(entity.source);
+    //     }
+    //   }
+    // }
 
-    this.bus.execute(new SelectAction(selection, false, false));
+    // this.bus.execute(new SelectAction(selection, false, false));
   }
 
   /**
    */
 
   async [RemoveSelectionAction.REMOVE_SELECTION]() {
-    removeEntitySources(...this.app.editor.selection);
+    this.app.editor.selection.forEach((synthetic) => {
+      if (synthetic.editor) {
+        synthetic.editor.execute(new RemoveSyntheticEditAction(synthetic));
+      }
+    });
     this.bus.execute(new SelectAction());
   }
 

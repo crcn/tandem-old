@@ -1,18 +1,24 @@
 import * as path from "path";
 import { Sandbox } from "./sandbox";
-import { MimeTypes } from "@tandem/common/constants";
 import { ModuleImporter } from "./importer";
+import { MimeTypes, Observable, bindable } from "@tandem/common";
 
 export interface IModule {
+  fileName: string;
+  content: string;
   evaluate(): Promise<any>;
 }
 
-export abstract class BaseModule implements IModule {
+export abstract class BaseModule extends Observable implements IModule {
 
-  constructor(readonly fileName: string, readonly content: string, readonly sandbox: Sandbox) {
+  @bindable()
+  public content: string;
+
+  constructor(readonly fileName: string, content: string, readonly sandbox: Sandbox) {
+    super();
     this.initialize();
+    this.content = content;
   }
-
 
   protected initialize() {
 

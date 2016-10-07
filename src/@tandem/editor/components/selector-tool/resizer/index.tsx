@@ -5,11 +5,11 @@ import PathComponent from "./path";
 import { DocumentFile } from "@tandem/editor/models";
 import { MetadataKeys } from "@tandem/editor/constants";
 import { FrontEndApplication } from "@tandem/editor/application";
-import { VisibleEntityCollection } from "@tandem/editor/collections";
+import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
 import { BoundingRect, IPoint, Point } from "@tandem/common/geom";
-import { IEntity, IVisibleEntity, IEntityDisplay } from "@tandem/common";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
+import { SyntheticMarkupElement, combinedSyntheticElementCapabilities } from "@tandem/synthetic-browser";
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
@@ -83,7 +83,7 @@ function resize(oldBounds: BoundingRect, delta: IPoint, anchor: IPoint, keepAspe
 class ResizerComponent extends React.Component<{
   editor: Editor,
   app: FrontEndApplication,
-  selection: Array<IEntity>,
+  selection: Array<any>,
   onResizing: Function,
   onMoving: Function,
   onStopMoving: Function,
@@ -97,7 +97,7 @@ class ResizerComponent extends React.Component<{
   private _movingTimer: any;
   private _dragTimer: any;
   private _currentGuider: Guider;
-  private _visibleEntities: VisibleEntityCollection<IVisibleEntity>;
+  private _visibleEntities: VisibleSyntheticElementCollection<SyntheticMarkupElement>;
 
   constructor() {
     super();
@@ -112,44 +112,35 @@ class ResizerComponent extends React.Component<{
     // });
   }
 
+  // createGuider(): Guider {
+  //   const guider = new Guider(5 / this.props.zoom);
+  //   const { selection } = this.props;
 
-  get targetDisplay(): IEntityDisplay {
-    return this._visibleEntities.display;
-  }
+  //   const each = (node) => {
 
-  get file(): DocumentFile<any> {
-    return this.props.app.workspace.file;
-  }
+  //     for (const entity of selection) {
 
-  createGuider(): Guider {
-    const guider = new Guider(5 / this.props.zoom);
-    const { selection } = this.props;
+  //       // do not use the node as a guide point if it's part of the selection,
+  //       // or the source is the same. The source will be the same in certain cases -
+  //       // registered components for example.
+  //       if (node === entity || node.source === entity.source) return;
+  //     }
 
-    const each = (node) => {
+  //     // if (node.metadata.get(MetadataKeys.CANVAS_ROOT) && node.flatten().indexOf()) return;
 
-      for (const entity of selection) {
+  //     const displayNode = node as any as IVisibleEntity;
+  //     if (displayNode.display) {
+  //       guider.addPoint(...createBoundingRectPoints(displayNode.display.bounds));
+  //     }
 
-        // do not use the node as a guide point if it's part of the selection,
-        // or the source is the same. The source will be the same in certain cases -
-        // registered components for example.
-        if (node === entity || node.source === entity.source) return;
-      }
+  //     if (node.children) {
+  //       node.children.forEach(each);
+  //     }
+  //   };
 
-      // if (node.metadata.get(MetadataKeys.CANVAS_ROOT) && node.flatten().indexOf()) return;
-
-      const displayNode = node as any as IVisibleEntity;
-      if (displayNode.display) {
-        guider.addPoint(...createBoundingRectPoints(displayNode.display.bounds));
-      }
-
-      if (node.children) {
-        node.children.forEach(each);
-      }
-    };
-
-    each(this.file.entity);
-    return guider;
-  }
+  //   each(this.file.entity);
+  //   return guider;
+  // }
 
   updatePoint = (point, event: MouseEvent) => {
     const keepAspectRatio = event.shiftKey;
@@ -186,60 +177,60 @@ class ResizerComponent extends React.Component<{
     }
 
     this.setState({ guideLines: guider.getGuideLines(createBoundingRectPoints(bounds)) });
-    this.targetDisplay.bounds = bounds;
+    // this.targetDisplay.bounds = bounds;
 
     this.props.onResizing(event);
   }
 
   startDragging = (event) => {
-    event.stopPropagation();
+    // event.stopPropagation();
 
-    if (!this.targetDisplay.capabilities.movable) return;
+    // if (!this.targetDisplay.capabilities.movable) return;
 
-    this.props.onMoving();
-    const selection = this.props.selection;
+    // this.props.onMoving();
+    // const selection = this.props.selection;
 
-    // when dragging, need to fetch style of the selection
-    // so that the dragger is relative to the entity"s position
-    const bounds = this.targetDisplay.bounds;
+    // // when dragging, need to fetch style of the selection
+    // // so that the dragger is relative to the entity"s position
+    // const bounds = this.targetDisplay.bounds;
 
-    const sx2 = bounds.left;
-    const sy2 = bounds.top;
-    const translateLeft = this.props.editor.transform.left;
-    const translateTop  = this.props.editor.transform.top;
-    const guider = this.createGuider();
+    // const sx2 = bounds.left;
+    // const sy2 = bounds.top;
+    // const translateLeft = this.props.editor.transform.left;
+    // const translateTop  = this.props.editor.transform.top;
+    // const guider = this.createGuider();
 
-    this.setState({ guideLines: undefined });
-    this.props.editor.metadata.set(MetadataKeys.MOVING, true);
+    // this.setState({ guideLines: undefined });
+    // this.props.editor.metadata.set(MetadataKeys.MOVING, true);
 
-    this._dragger = startDrag(event, (event2, { delta }) => {
+    // this._dragger = startDrag(event, (event2, { delta }) => {
 
-      const nx = (sx2 + (delta.x - (this.props.editor.transform.left - translateLeft)) / this.props.zoom);
-      const ny = (sy2 + (delta.y - (this.props.editor.transform.top - translateTop)) / this.props.zoom);
+    //   const nx = (sx2 + (delta.x - (this.props.editor.transform.left - translateLeft)) / this.props.zoom);
+    //   const ny = (sy2 + (delta.y - (this.props.editor.transform.top - translateTop)) / this.props.zoom);
 
-      let position = { left: nx, top: ny };
-      let changeDelta = guider.snap(position, createBoundingRectPoints(new BoundingRect(nx, ny, nx + bounds.width, ny + bounds.height)));
+    //   let position = { left: nx, top: ny };
+    //   let changeDelta = guider.snap(position, createBoundingRectPoints(new BoundingRect(nx, ny, nx + bounds.width, ny + bounds.height)));
 
-      const newBounds = bounds.moveTo({
-        left: nx + changeDelta.left,
-        top: ny + changeDelta.top
-      });
+    //   const newBounds = bounds.moveTo({
+    //     left: nx + changeDelta.left,
+    //     top: ny + changeDelta.top
+    //   });
 
-      this.moveTarget(newBounds.position);
-      const guideLines = guider.getGuideLines(createBoundingRectPoints(newBounds));
+    //   this.moveTarget(newBounds.position);
+    //   const guideLines = guider.getGuideLines(createBoundingRectPoints(newBounds));
 
-      this.setState({ guideLines: guideLines });
+    //   this.setState({ guideLines: guideLines });
 
-    }, () => {
-      this._dragger = void 0;
-      this.props.editor.metadata.set(MetadataKeys.MOVING, false);
-      this.setState({ guideLines: undefined });
-      this.props.onStopMoving();
-    });
+    // }, () => {
+    //   this._dragger = void 0;
+    //   this.props.editor.metadata.set(MetadataKeys.MOVING, false);
+    //   this.setState({ guideLines: undefined });
+    //   this.props.onStopMoving();
+    // });
   }
 
   onPointMouseDown = () => {
-    this._currentGuider = this.createGuider();
+    // this._currentGuider = this.createGuider();
     this.props.editor.metadata.set(MetadataKeys.MOVING, true);
   }
 
@@ -250,18 +241,19 @@ class ResizerComponent extends React.Component<{
   }
 
   moveTarget(position: IPoint) {
-    this.targetDisplay.position = position;
+    // this.targetDisplay.position = position;
   }
 
   render() {
 
-    this._visibleEntities = new VisibleEntityCollection(...this.props.selection);
+    const { selection } = this.props;
+
+    const elements = new VisibleSyntheticElementCollection(...selection);
 
     const pointRadius = (this.props.pointRadius || POINT_RADIUS);
     const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
-    const display = this._visibleEntities.display;
 
-    const rect = display.bounds;
+    const rect = BoundingRect.merge(...elements.map(element => element.getBoundingClientRect()));
 
     // offset stroke
     const resizerStyle = {
@@ -274,7 +266,7 @@ class ResizerComponent extends React.Component<{
       transformOrigin: "top left"
     };
 
-    const capabilities = display.capabilities;
+    const capabilities = combinedSyntheticElementCapabilities(...selection);
     const movable = capabilities.movable;
 
     const points = [

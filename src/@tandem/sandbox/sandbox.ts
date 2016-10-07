@@ -22,6 +22,8 @@ export class Sandbox extends Observable {
   private _importer: ModuleImporter;
   private _shouldResetAgain: boolean;
   private _mainExports: any;
+  private _evaluating: boolean;
+  private _shouldEvaluateAgain: boolean;
 
   constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}) {
     super();
@@ -48,15 +50,27 @@ export class Sandbox extends Observable {
   }
 
   protected onImporterChange(action: ChangeAction) {
-    this.reset();
+    this.reopen();
     this.notify(action);
   }
 
-  protected async reset() {
+  protected async reopen() {
+    if (this._evaluating) {
+      this._shouldEvaluateAgain = true;
+      return;
+    }
+    this._evaluating = true;
+
     this._importer.reset();
     this._global = undefined;
+
     if (this._entry) {
       await this.open(this._entry.envMimeType, this._entry.filePath);
+    }
+    this._evaluating = false;
+    if (this._shouldEvaluateAgain) {
+      this._shouldEvaluateAgain = false;
+      await this.reopen();
     }
   }
 }

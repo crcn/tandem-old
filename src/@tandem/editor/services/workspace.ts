@@ -54,6 +54,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     await browser.open(filePath);
 
     this.app.editor = new Editor(browser);
+    this.bus.register(this.app.editor);
 
     await this.bus.execute(new SetToolAction(this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns)));
   }

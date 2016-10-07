@@ -165,7 +165,7 @@ export abstract class BaseEntity<T extends IASTNode> extends TreeNode<BaseEntity
 
   public clone() {
     let clone = super.clone();
-    clone.metadata.copyFrom(this.metadata);
+    clone.metadata.data = Object.assign({}, this.metadata.data);
     clone.context = this.context;
     clone._dirty =  this._dirty;
     return clone;

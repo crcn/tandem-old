@@ -25,17 +25,6 @@ export async function insertSourceChildren(entity: IEntity, index: number = -1, 
   return entities;
 }
 
-export async function removeEntitySources(...entities: Array<IEntity>) {
-  entities.forEach((entity) => {
-
-    // may have already been removed. This will happen in cases
-    // where multiple entities that share the same source are removed.
-    if (entity.source.parent) {
-      entity.source.parent.removeChild(entity.source);
-    }
-  });
-}
-
 export function calculateIndentation(content: string, defaultIndentation: string = "  "): string {
   const lines = content.split(/\n+/g);
 

@@ -23,11 +23,23 @@ export interface IASTNode extends ITreeNode<IASTNode>, IComparable {
   source: IASTNodeSource;
 }
 
+export interface IASTNode2 {
+  parent: IASTNode2;
+  readonly kind: number;
+  position: IRange;
+  accept(visitor);
+}
+
+
+export interface IExpression extends IASTNode2 {
+  position: IRange;
+}
+
 const noSource = {
   content: ""
 };
 
-
+// DEPRECATED
 export abstract class BaseASTNode<T extends BaseASTNode<any>> extends TreeNode<T> implements IASTNode {
 
   @patchable()
@@ -65,5 +77,31 @@ export abstract class BaseASTNode<T extends BaseASTNode<any>> extends TreeNode<T
   compare(node: IASTNode): number {
     return Number(this.constructor === node.constructor);
   }
+}
+
+
+export abstract class BaseExpression implements IExpression {
+
+  abstract readonly kind: number;
+
+  public parent: IASTNode2;
+  public position: IRange;
+  public offset: number = 0;
+
+  constructor(position: IRange) {
+    this.position = position;
+  }
+
+  inRange(selection: IRange) {
+    const offset = this.offset;
+    const start = this.position.start + offset;
+    const end   = this.position.end + offset;
+
+    return (selection.start >= start && selection.start <= end) ||
+    (selection.end   >= start && selection.end <= end) ||
+    (selection.start <= start && selection.end >= end);
+  }
+
+  abstract accept(visitor);
 }
 
