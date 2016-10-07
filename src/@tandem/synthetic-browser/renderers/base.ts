@@ -1,5 +1,7 @@
 import { Action } from "@tandem/common";
+import { SyntheticRendererAction } from "../actions";
 import { WrapBus } from "mesh";
+import { Observable, IObservable } from "@tandem/common";
 import { BoundingRect, watchProperty } from "@tandem/common";
 import {
   MarkupNodeType,
@@ -11,31 +13,32 @@ import {
 } from "../dom";
 
 
-export interface ISyntheticDocumentRenderer {
+export interface ISyntheticDocumentRenderer extends IObservable {
   readonly element: HTMLElement;
   target: SyntheticMarkupNode;
   getBoundingRect(element: SyntheticMarkupElement);
 }
 
-export abstract class BaseRenderer implements ISyntheticDocumentRenderer {
+export abstract class BaseRenderer extends Observable implements ISyntheticDocumentRenderer {
 
   readonly element: HTMLElement;
-  private _target: SyntheticDocument;
+  private _document: SyntheticDocument;
   private _updating: boolean;
   private _rects: any;
   private _shouldUpdateAgain: boolean;
 
   constructor() {
+    super();
     this.element = document.createElement("div");
   }
 
   get target(): SyntheticDocument {
-    return this._target;
+    return this._document;
   }
 
   set target(value: SyntheticDocument) {
-    this._target = value;
-    this._target.observe(new WrapBus(this.onTargetChange.bind(this)));
+    this._document = value;
+    this._document.observe(new WrapBus(this.onTargetChange.bind(this)));
     this.update();
   }
 
@@ -47,6 +50,7 @@ export abstract class BaseRenderer implements ISyntheticDocumentRenderer {
 
   protected setRects(rects: any) {
     this._rects = rects;
+    this.notify(new SyntheticRendererAction(SyntheticRendererAction.UPDATE_RECTANGLES));
   }
 
   protected onTargetChange(action: Action) {

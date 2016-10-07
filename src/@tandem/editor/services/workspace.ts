@@ -50,6 +50,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     this.logger.info("loading project file %s", filePath);
 
     const browser = new SyntheticBrowser(this._dependencies);
+    browser.observe({ execute: (action) => this.bus.execute(action) });
     await browser.open(filePath);
 
     this.app.editor = new Editor(browser);

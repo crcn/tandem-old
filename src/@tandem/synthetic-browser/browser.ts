@@ -4,6 +4,7 @@ import { ISyntheticDocumentRenderer, DOMRenderer, TetherRenderer } from "./rende
 import {
   bindable,
   MimeTypes,
+  BubbleBus,
   Observable,
   TypeWrapBus,
   ChangeAction,
@@ -33,6 +34,7 @@ export class SyntheticBrowser extends Observable {
   constructor(private _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer) {
     super();
     this._renderer = renderer || new DOMRenderer();
+    this._renderer.observe(new BubbleBus(this));
     this._sandbox  = new Sandbox(_dependencies, this.createSandboxGlobals.bind(this));
     this._sandbox.observe(new TypeWrapBus(SandboxAction.EVALUATED, this.onSandboxEvaluated.bind(this)));
   }
@@ -90,6 +92,8 @@ export class SyntheticBrowser extends Observable {
       this._window = window;
       this._renderer.target = this._window.document;
     }
+
+    this.notify(action);
   }
 
   private _registerElements(window: SyntheticWindow) {
