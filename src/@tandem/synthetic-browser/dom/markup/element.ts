@@ -70,7 +70,7 @@ export class SyntheticMarkupElement extends SyntheticMarkupContainer {
     this.attributes.observe(new WrapBus(this.onAttributesAction.bind(this)));
   }
 
-  getBoundingClientRect() {
+  getBoundingClientRect(): BoundingRect {
     return getBoundingRect(this);
   }
 
@@ -122,6 +122,10 @@ export class SyntheticMarkupElement extends SyntheticMarkupContainer {
 
   childrenToString(): string {
     return super.toString();
+  }
+
+  attributesToString(...include: string[]): string {
+    return this.attributes.filter((attr) => include.indexOf(attr.name) !== -1).join(" ");
   }
 
   protected onAttributesAction(action: Action) {

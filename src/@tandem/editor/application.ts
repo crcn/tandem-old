@@ -42,7 +42,7 @@ import { Workspace, Editor } from "./models";
 
 export class FrontEndApplication extends Application {
 
-  public workspace: Workspace;
+  // public workspace: Workspace;
   public editor: Editor;
   public settings: Metadata;
   public metadata: Metadata;

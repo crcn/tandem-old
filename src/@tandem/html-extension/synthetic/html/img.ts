@@ -12,7 +12,8 @@ export class SyntheticHTMLImage extends SyntheticHTMLElement {
     this._absolutePath = await importer.resolve(src, this.ownerDocument.location.toString());
     importer.watchFile(this._absolutePath);
   }
+
   toString() {
-    return `<img src="/asset/${encodeURIComponent(this._absolutePath)}?${Date.now()}">`;
+    return `<img ${this.attributesToString("class", "style")} src="/asset/${encodeURIComponent(this._absolutePath)}?${Date.now()}">`;
   }
 }

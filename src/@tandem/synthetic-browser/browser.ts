@@ -55,6 +55,10 @@ export class SyntheticBrowser extends Observable {
     this._sandbox.open(MimeTypes.HTML, url);
   }
 
+  get document() {
+    return this._window && this._window.document;
+  }
+
   protected createSandboxGlobals(): SyntheticWindow {
     const window = new SyntheticWindow(this._sandbox, this._renderer, this._location);
     this._registerElements(window);

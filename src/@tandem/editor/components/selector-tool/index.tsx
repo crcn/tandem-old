@@ -71,7 +71,6 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
       sections.size = <SelectionSizeComponent left={this.state.mouseLeft} top={this.state.mouseTop} zoom={this.props.zoom} bounds={entireBounds} />;
     }
 
-
     return (<div className="m-selector-component">
       { sections.bounds }
       { sections.resizer }

@@ -13,7 +13,7 @@ export function filterTree<T extends TreeNode<any>>(node: T, filter: (node: T) =
   return nodes;
 };
 
-export function flattenTree<T extends TreeNode<any>>(node: T, each: (node: T) => any) {
+export function flattenTree<T extends TreeNode<any>>(node: T) {
   return filterTree(node, child => true);
 };
 

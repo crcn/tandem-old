@@ -126,7 +126,7 @@ export class SelectablesComponent extends React.Component<{
   render() {
 
     if (!this.state.showSelectables) return null;
-    const { document } = this.props.app.editor.browser.window;
+    const { document } = this.props.app.editor;
 
     const { editor, app } = this.props;
     const { selection } = editor;

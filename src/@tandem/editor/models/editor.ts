@@ -39,6 +39,10 @@ export class Editor implements IEditor {
     return null;
   }
 
+  get document() {
+    return this.browser && this.browser.document;
+  }
+
   get zoom() { return this.transform.scale; }
   set zoom(value: number) {
     this.transform.scale = Math.max(

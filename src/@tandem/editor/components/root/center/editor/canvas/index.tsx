@@ -46,10 +46,6 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
 
   onMouseEvent = (event: MouseEvent) => {
 
-    if (event.target instanceof HTMLIFrameElement) {
-      return;
-    }
-
     let left: number = event.pageX;
     let top: number = event.pageY;
 
@@ -203,7 +199,7 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
         style={style}>
           <div style={innerStyle} className="noselect" data-previewroot>
               <PreviewLayerComponent {...this.props} renderer={this.props.app.editor.browser.renderer} />
-              {this._toolsHidden || !this.props.app.editor.browser.window ? undefined : <ToolsLayerComponent workspace={null} {...this.props} />}
+              {this._toolsHidden || !this.props.app.editor.document ? undefined : <ToolsLayerComponent workspace={null} {...this.props} />}
           </div>
       </div>
     </IsolateComponent>);

@@ -7,10 +7,15 @@ import {
   bindable,
   BaseEntity,
   BaseASTNode,
+  flattenTree,
   removeEntitySources,
   BaseApplicationService,
   ApplicationServiceDependency,
 } from "@tandem/common";
+
+import {
+
+} from "@tandem/synthetic-browser";
 
 import {
   SelectAction,
@@ -26,7 +31,11 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
   [SelectEntitiesAtSourceOffsetAction.SELECT_ENTITIES_AT_SOURCE_OFFSET](action: SelectEntitiesAtSourceOffsetAction) {
 
-    if (!this.app.workspace) return;
+    if (!this.app.editor) return;
+
+    const selectableSynthetics = flattenTree(this.app.editor.document).filter((element) => {
+      return element
+    });
 
     const selectableEntities = this.app.workspace.file.entity.flatten().filter((entity: IEntity) => {
       return entity.source.source ? String((<DocumentFile<any>>entity.source.source).path).indexOf(action.filePath) !== -1 && entity.metadata.get(MetadataKeys.SELECTABLE) !== false : false;
@@ -64,7 +73,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
    */
 
   async [RemoveSelectionAction.REMOVE_SELECTION]() {
-    removeEntitySources(...this.app.workspace.selection);
+    removeEntitySources(...this.app.editor.selection);
     this.bus.execute(new SelectAction());
   }
 
@@ -75,9 +84,9 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     const app = this.app;
 
     if (!items.length) {
-      return app.workspace.selection = [];
+      return app.editor.selection = [];
     }
-    const prevSelection = app.workspace.selection;
+    const prevSelection = app.editor.selection;
 
     const type = items[0].type;
 
@@ -109,14 +118,14 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
       }
     });
 
-    app.workspace.selection = newSelection;
+    app.editor.selection = newSelection;
 
   }
 
   [SelectAllAction.SELECT_ALL]() {
 
     // TODO - select call based on focused entity
-    this.bus.execute(new SelectAction((<any>this.app.workspace.file.entity).children, false, false));
+    this.bus.execute(new SelectAction(this.app.editor.document.body.children, false, false));
   }
 }
 

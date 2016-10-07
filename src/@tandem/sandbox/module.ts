@@ -21,6 +21,7 @@ export abstract class BaseModule implements IModule {
   abstract evaluate(): Promise<any>;
 }
 
+// TODO - move to another extension
 export class CommonJSModule extends BaseModule {
 
   private _evaluate: Function;

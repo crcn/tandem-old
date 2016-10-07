@@ -4,6 +4,34 @@
     height: 100%;
     position: fixed;
     z-index: -1;
-    background: #F60;
+    background: rgba(0,0,0,0.02);
   }
+
+  &--item {
+    background: white;
+    position: absolute;
+    z-index: -1;
+    border: 1px solid rgba(0,0,0, 0.1);
+
+    &--title {
+      color: rgba(0,0,0,0.5);
+      & span {
+        cursor: default;
+      }
+      & input {
+        &:focus {
+          outline: none;
+          box-shadow: none !important;
+          border: none;
+        }
+        padding: 0;
+        letter-spacing: inherit;
+        color: inherit;
+        border: none;
+        background: none;
+        font-size: inherit;
+      }
+    }
+  }
+
 }

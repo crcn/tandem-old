@@ -14,6 +14,6 @@ export class SyntheticTDFrame extends SyntheticMarkupElement {
   }
 
   toString() {
-    return `<div ${this.attributes["data-uid"]}>${this.childrenToString()}</div>`;
+    return `<div ${this.attributesToString("data-uid", "style", "class")}>${this.childrenToString()}</div>`;
   }
 }
