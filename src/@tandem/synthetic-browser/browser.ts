@@ -32,7 +32,7 @@ export class SyntheticBrowser extends Observable {
 
   constructor(private _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer) {
     super();
-    this._renderer = renderer || new TetherRenderer();
+    this._renderer = renderer || new DOMRenderer();
     this._sandbox  = new Sandbox(_dependencies, this.createSandboxGlobals.bind(this));
     this._sandbox.observe(new TypeWrapBus(SandboxAction.EVALUATED, this.onSandboxEvaluated.bind(this)));
   }

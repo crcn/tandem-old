@@ -1,6 +1,6 @@
 import { Action } from "@tandem/common";
 import { WrapBus } from "mesh";
-import { BoundingRect, watchProperty } from "@tandem/common";
+import { BoundingRect, watchProperty, calculateAbsoluteBounds } from "@tandem/common";
 import {
   MarkupNodeType,
   SyntheticMarkupNode,
@@ -19,13 +19,12 @@ export class DOMRenderer extends BaseRenderer {
     // simple for now -- just reset the entire outer HTML
     this.element.innerHTML = this.target.toString();
 
-    const allSyntheticElementsById = {};
     const rects = {};
 
     for (const node of this.element.querySelectorAll("*")) {
-      const rect = node.getBoundingClientRect();
-      const syntheticElement = allSyntheticElementsById[node["dataset"].uid];
-      rects[node["dataset"].uid] = new BoundingRect(rect.left, rect.top, rect.right, rect.bottom);
+      const element = <HTMLElement>node;
+      const uid = element.dataset["uid"];
+      rects[uid] = calculateAbsoluteBounds(element);
     }
 
     this.setRects(rects);

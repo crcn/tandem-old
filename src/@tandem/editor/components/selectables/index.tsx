@@ -21,7 +21,7 @@ class SelectableComponent extends React.Component<{
   selection: any,
   app: FrontEndApplication,
   zoom: number,
-  onEntityMouseDown: (element: SyntheticMarkupElement, event?: MouseEvent) => void
+  onSyntheticMouseDown: (element: SyntheticMarkupElement, event?: MouseEvent) => void
 }, any> {
 
   private _i: number = 0;
@@ -32,7 +32,7 @@ class SelectableComponent extends React.Component<{
   }
 
   onMouseDown = (event: MouseEvent): void => {
-    this.props.onEntityMouseDown(this.props.element, event);
+    this.props.onSyntheticMouseDown(this.props.element, event);
     event.stopPropagation();
     this.onMouseOut(event);
  }
@@ -93,7 +93,7 @@ class SelectableComponent extends React.Component<{
 export class SelectablesComponent extends React.Component<{
   app: FrontEndApplication,
   editor: Editor,
-  onEntityMouseDown: (element: SyntheticMarkupElement, event?: MouseEvent) => void,
+  onSyntheticMouseDown: (element: SyntheticMarkupElement, event?: MouseEvent) => void,
   canvasRootSelectable?: boolean
 }, { showSelectables: boolean }> {
 

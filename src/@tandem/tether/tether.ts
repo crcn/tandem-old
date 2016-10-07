@@ -20,7 +20,7 @@ export function start(channel: string) {
 
   function renderCanvas() {
     html2canvas(document.body).then((canvas) => {
-      if (previousCanvas && false) {
+      if (previousCanvas) {
         paintChanges(previousCanvas, canvas);
       } else {
         clear();
@@ -36,13 +36,13 @@ export function start(channel: string) {
   }
 
   function paintChanges(oldCanvas: HTMLCanvasElement, newCanvas: HTMLCanvasElement) {
-    const oldCtx  = oldCanvas.getContext("2d");
-    const newCtx  = newCanvas.getContext("2d");
-    const oldData = oldCtx.getImageData(0, 0, oldCanvas.width, oldCanvas.height).data;
-    const newData = oldCtx.getImageData(0, 0, newCanvas.width, newCanvas.height).data;
+    // const oldCtx  = oldCanvas.getContext("2d");
+    // const newCtx  = newCanvas.getContext("2d");
+    // const oldData = oldCtx.getImageData(0, 0, oldCanvas.width, oldCanvas.height).data;
+    // const newData = oldCtx.getImageData(0, 0, newCanvas.width, newCanvas.height).data;
 
-    console.log(oldData.length, oldCanvas.width, oldCanvas.height);
-
+    // console.log(oldData.length, oldCanvas.width, oldCanvas.height);
+    paint(newCanvas, 0, 0);
   }
 
   function paint(canvas: HTMLCanvasElement, left: number, top: number) {

@@ -21,8 +21,6 @@ export class TetherRenderer extends BaseRenderer {
   }
 
   update() {
-
-
     const rect = this.element.getBoundingClientRect();
 
     this._connection.emit("tether:render", {
@@ -52,7 +50,7 @@ export class TetherRenderer extends BaseRenderer {
       const ctx = this._canvas.getContext("2d");
       ctx.clearRect(left, top, width, height);
       ctx.drawImage(img, left, top);
-    }
+    };
   }
 
 
