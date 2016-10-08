@@ -1,10 +1,9 @@
 import { IMarkupExpression } from "./ast";
 import { SyntheticDocument } from "../document";
-import { SyntheticMarkupNode } from "./node";
-import { SyntheticMarkupAttribute } from "./element";
-import { ISyntheticMarkupNodeEditor } from "./editor";
+import { SyntheticDOMNode } from "./node";
+import { SyntheticDOMAttribute } from "./element";
 
-export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, editor?: ISyntheticMarkupNodeEditor): SyntheticMarkupNode {
+export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string): SyntheticDOMNode {
 
   const synthetic = expression.accept({
     visitAttribute(expression) {
@@ -18,10 +17,10 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
 
       const element = doc.createElementNS(xmlns, expression.name);
       for (const childExpression of expression.childNodes) {
-        element.appendChild(evaluateMarkup(childExpression, doc, xmlns, editor));
+        element.appendChild(evaluateMarkup(childExpression, doc, xmlns));
       }
       for (const attributeExpression of expression.attributes) {
-        const attribute = evaluateMarkup(attributeExpression, doc, xmlns) as any as SyntheticMarkupAttribute;
+        const attribute = evaluateMarkup(attributeExpression, doc, xmlns) as any as SyntheticDOMAttribute;
         element.setAttribute(attribute.name, attribute.value);
       }
       return element;
@@ -29,7 +28,7 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
     visitDocumentFragment(expression) {
       const fragment = doc.createDocumentFragment();
       for (const childExpression of expression.childNodes) {
-        fragment.appendChild(evaluateMarkup(childExpression, doc, namespaceURI, editor));
+        fragment.appendChild(evaluateMarkup(childExpression, doc, namespaceURI));
       }
       return fragment;
     },
@@ -39,7 +38,7 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
   });
 
   synthetic.expression = expression;
-  synthetic.editor     = editor;
+  synthetic.module     = doc.sandbox.currentModule;
 
   return synthetic;
 }

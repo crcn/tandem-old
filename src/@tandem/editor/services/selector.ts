@@ -8,7 +8,6 @@ import {
   BaseEntity,
   BaseASTNode,
   flattenTree,
-  RemoveSyntheticEditAction,
   BaseApplicationService,
   ApplicationServiceDependency,
 } from "@tandem/common";
@@ -73,11 +72,11 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
    */
 
   async [RemoveSelectionAction.REMOVE_SELECTION]() {
-    this.app.editor.selection.forEach((synthetic) => {
-      if (synthetic.editor) {
-        synthetic.editor.execute(new RemoveSyntheticEditAction(synthetic));
-      }
-    });
+    // this.app.editor.selection.forEach((synthetic) => {
+    //   if (synthetic.editor) {
+    //     synthetic.editor.execute(new RemoveSyntheticEditAction(synthetic));
+    //   }
+    // });
     this.bus.execute(new SelectAction());
   }
 

@@ -3,11 +3,11 @@ import { bindable } from "@tandem/common";
 import {
   MarkupNodeType,
   IMarkupNodeVisitor,
-  SyntheticMarkupNode,
-  SyntheticMarkupText,
-  SyntheticMarkupElement,
-  SyntheticMarkupComment,
-  SyntheticMarkupContainer,
+  SyntheticDOMNode,
+  SyntheticDOMText,
+  SyntheticDOMElement,
+  SyntheticDOMComment,
+  SyntheticDOMContainer,
   syntheticElementClassType,
   SyntheticDocumentFragment,
 } from "./markup";
@@ -21,7 +21,7 @@ interface IRegisterComponentOptions {
   extends: string;
 }
 
-export class SyntheticDocument extends SyntheticMarkupContainer {
+export class SyntheticDocument extends SyntheticDOMContainer {
 
   readonly nodeType: number = MarkupNodeType.DOCUMENT;
 
@@ -37,20 +37,24 @@ export class SyntheticDocument extends SyntheticMarkupContainer {
     this._registeredElements = {};
   }
 
+  get sandbox() {
+    return this.defaultView.sandbox;
+  }
+
   get defaultView(): SyntheticWindow {
     return this._window;
   }
 
-  get documentElement(): SyntheticMarkupElement {
-    return this.childNodes[0] as SyntheticMarkupElement;
+  get documentElement(): SyntheticDOMElement {
+    return this.childNodes[0] as SyntheticDOMElement;
   }
 
-  get head(): SyntheticMarkupElement {
-    return this.documentElement.childNodes[0] as SyntheticMarkupElement;
+  get head(): SyntheticDOMElement {
+    return this.documentElement.childNodes[0] as SyntheticDOMElement;
   }
 
-  get body(): SyntheticMarkupElement {
-    return this.documentElement.childNodes[1] as SyntheticMarkupElement;
+  get body(): SyntheticDOMElement {
+    return this.documentElement.childNodes[1] as SyntheticDOMElement;
   }
 
   get location(): SyntheticLocation {
@@ -79,7 +83,7 @@ export class SyntheticDocument extends SyntheticMarkupContainer {
     this.styleSheets = source.styleSheets;
   }
 
-  createElementNS(ns: string, tagName: string): SyntheticMarkupElement {
+  createElementNS(ns: string, tagName: string): SyntheticDOMElement {
     const nsElements = this._registeredElements[ns] || {};
     const elementClass = nsElements[tagName.toLowerCase()] || nsElements.default;
 
@@ -114,11 +118,11 @@ export class SyntheticDocument extends SyntheticMarkupContainer {
   }
 
   createComment(nodeValue: string) {
-    return new SyntheticMarkupComment(nodeValue, this);
+    return new SyntheticDOMComment(nodeValue, this);
   }
 
   createTextNode(nodeValue: string) {
-    return new SyntheticMarkupText(nodeValue, this);
+    return new SyntheticDOMText(nodeValue, this);
   }
 
   createDocumentFragment() {
@@ -135,7 +139,7 @@ export class SyntheticDocument extends SyntheticMarkupContainer {
 }
 
 function createElementClass(options: IRegisterComponentOptions): syntheticElementClassType {
-  return class extends SyntheticMarkupElement {
+  return class extends SyntheticDOMElement {
     // TODO
   };
 }

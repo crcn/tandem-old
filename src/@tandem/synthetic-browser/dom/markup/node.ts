@@ -1,23 +1,22 @@
-import { IMarkupNodeVisitor } from "./visitor";
 import { SyntheticDocument } from "../document";
+import { IMarkupNodeVisitor } from "./visitor";
 import { MarkupNodeExpression } from "./ast";
+import { IModule, ISynthetic } from "@tandem/sandbox";
 
 import {
   TreeNode,
   Metadata,
   BubbleBus,
   IASTNode,
-  ISynthetic,
   IPatchable,
   IComparable,
   patchTreeNode,
 } from "@tandem/common";
 
-import { ISyntheticMarkupNodeEditor } from "./editor";
 
 let _i = 0;
 
-export abstract class SyntheticMarkupNode extends TreeNode<SyntheticMarkupNode> implements IComparable, IPatchable, ISynthetic {
+export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, IPatchable, ISynthetic {
 
   /**
    * Unique id for the node -- used particularly for matching rendered DOM nodes
@@ -46,16 +45,16 @@ export abstract class SyntheticMarkupNode extends TreeNode<SyntheticMarkupNode> 
   public expression: MarkupNodeExpression;
 
   /**
-   * The AST manipulator
-   */
-
-  public editor: ISyntheticMarkupNodeEditor;
-
-  /**
    * The DOM node type
    */
 
   abstract readonly nodeType: number;
+
+  /**
+   */
+
+  public module: IModule;
+
 
   constructor(readonly nodeName: string, public ownerDocument: SyntheticDocument) {
     super();
@@ -67,7 +66,7 @@ export abstract class SyntheticMarkupNode extends TreeNode<SyntheticMarkupNode> 
     this._metadata.observe(new BubbleBus(this));
   }
 
-  get childNodes(): SyntheticMarkupNode[] {
+  get childNodes(): SyntheticDOMNode[] {
     return this.children;
   }
 
@@ -87,7 +86,7 @@ export abstract class SyntheticMarkupNode extends TreeNode<SyntheticMarkupNode> 
     // TODO
   }
 
-  patch(source: SyntheticMarkupNode) {
+  patch(source: SyntheticDOMNode) {
     patchTreeNode(this, source);
     this._metadata.data = Object.assign({}, source.metadata.data);
     this.expression = source.expression;
@@ -95,7 +94,7 @@ export abstract class SyntheticMarkupNode extends TreeNode<SyntheticMarkupNode> 
 
   abstract textContent: string;
 
-  compare(source: SyntheticMarkupNode) {
+  compare(source: SyntheticDOMNode) {
     return Number(source.constructor === this.constructor && this.nodeName === source.nodeName);
   }
 
@@ -103,7 +102,7 @@ export abstract class SyntheticMarkupNode extends TreeNode<SyntheticMarkupNode> 
     // TODO
   }
 
-  onChildAdded(child: SyntheticMarkupNode) {
+  onChildAdded(child: SyntheticDOMNode) {
     super.onChildAdded(child);
     if (this._loaded) {
       child.load();

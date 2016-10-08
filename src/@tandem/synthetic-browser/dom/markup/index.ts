@@ -9,4 +9,3 @@ export * from "./visitor";
 export * from "./types";
 export * from "./parser";
 export * from "./evaluate";
-export * from "./editor";

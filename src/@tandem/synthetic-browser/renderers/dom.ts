@@ -3,9 +3,9 @@ import { WrapBus } from "mesh";
 import { BoundingRect, watchProperty, calculateAbsoluteBounds } from "@tandem/common";
 import {
   MarkupNodeType,
-  SyntheticMarkupNode,
-  SyntheticMarkupText,
-  SyntheticMarkupElement,
+  SyntheticDOMNode,
+  SyntheticDOMText,
+  SyntheticDOMElement,
   SyntheticCSSStyleDeclaration,
 } from "../dom";
 import {

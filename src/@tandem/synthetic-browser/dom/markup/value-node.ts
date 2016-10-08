@@ -1,9 +1,9 @@
 import { MarkupNodeType } from "./node-types";
-import { SyntheticMarkupNode } from "./node";
+import { SyntheticDOMNode } from "./node";
 import { SyntheticDocument } from "../document";
 import { patchable, bindable } from "@tandem/common/decorators";
 
-export abstract class SyntheticMarkupValueNode extends SyntheticMarkupNode {
+export abstract class SyntheticDOMValueNode extends SyntheticDOMNode {
 
   @patchable()
   @bindable()

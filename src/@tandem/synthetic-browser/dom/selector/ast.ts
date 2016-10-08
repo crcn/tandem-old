@@ -1,6 +1,6 @@
 import { BaseASTNode, IRange } from "@tandem/common";
 
-import { SyntheticMarkupElement } from "../markup";
+import { SyntheticDOMElement } from "../markup";
 
 export interface ISelectorVisitor {
   visitAllSelector(expression: AllSelectorExpression);

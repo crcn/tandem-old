@@ -6,7 +6,8 @@ import { BaseModule, ModuleFactoryDependency } from "@tandem/sandbox";
 import { MainBusDependency, MimeTypes as CommonMimeTypes } from "@tandem/common";
 
 export class SCSSModule extends BaseModule {
-  evaluate() {
+
+  compile() {
     sass.importer(async (request, done) => {
       const filePath = request.path || path.join(
         path.dirname(this.fileName),
@@ -18,7 +19,7 @@ export class SCSSModule extends BaseModule {
 
     return new Promise((resolve, reject) => {
       sass.compile(this.content, {}, (result) => {
-        resolve(evaluateCSS(parseCSS(String(result.text))));
+        resolve(() => evaluateCSS(parseCSS(String(result.text))));
       });
     });
   }

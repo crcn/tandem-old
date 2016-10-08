@@ -13,7 +13,7 @@ import {
   cssModuleFactoryDependency
 } from "./sandbox";
 
-import { HTML_XMLNS, SyntheticMarkupElementClassDependency } from "@tandem/synthetic-browser";
+import { HTML_XMLNS, SyntheticDOMElementClassDependency } from "@tandem/synthetic-browser";
 
 import { 
   SyntheticHTMLImage,
@@ -77,8 +77,8 @@ export const htmlExtensionDependency = [
   // sandbox
   cssModuleFactoryDependency,
   new ModuleFactoryDependency(MimeTypes.HTML, MimeTypes.HTML, MarkupModule),
-  new SyntheticMarkupElementClassDependency(HTML_XMLNS, "img", SyntheticHTMLImage),
-  new SyntheticMarkupElementClassDependency(HTML_XMLNS, "link", SyntheticHTMLLink),
+  new SyntheticDOMElementClassDependency(HTML_XMLNS, "img", SyntheticHTMLImage),
+  new SyntheticDOMElementClassDependency(HTML_XMLNS, "link", SyntheticHTMLLink),
 
   // stage tool components
   cssHighlightElementToolComponentFactoryDependency,

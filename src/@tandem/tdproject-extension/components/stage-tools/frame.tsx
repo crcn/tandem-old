@@ -5,6 +5,7 @@ import { BoundingRect } from "@tandem/common";
 import * as AutosizeInput from "react-input-autosize";
 import { SyntheticTDFrame } from "@tandem/tdproject-extension/synthetic";
 import { FrontEndApplication, Editor } from "@tandem/editor";
+import { } from "@tandem/synthetic-browser";
 // import {  } from "@tandem/synthetic-browser";
 
 export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrame, editor: Editor }, { editTitle: boolean }> {
@@ -17,7 +18,7 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrame,
   }
 
   editTitle = () => {
-    if (!this.props.frame.editor) return;
+    if (!this.props.frame.module.editor) return;
     this.setState({ editTitle: true });
     requestAnimationFrame(() => {
       (this.refs as any).input.select();
@@ -31,21 +32,19 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrame,
 
   cancelEdit = () => {
     this.setState({ editTitle: false });
-    this.props.frame.setAttribute("title", this.props.frame.expression.getAttributeValue("title"));
+    this.props.frame.ownerDocument.sandbox.reload();
+  }
+
+  save = () => {
+    this.setState({ editTitle: false });
+    // this.props.frame.ownerDocument.sandbox.reload();
   }
 
   onKeyDown = (event) => {
     const keyCode = event.which;
-    const shouldSave = keyCode === 13;
-    if (shouldSave) {
-      // this.props.frame.editor.execute();
-      // this.props.frame.editor.setElementAttribute(this.props.frame, "title", this.props.frame.getAttribute("title"));
-    }
-
-    const shouldStopEditting = shouldSave || keyCode === 27;
-
-    if (shouldStopEditting) {
-      this.setState({ editTitle: false });
+    switch (event.which) {
+      case 27: return this.cancelEdit();
+      case 13: return this.save();
     }
   }
 

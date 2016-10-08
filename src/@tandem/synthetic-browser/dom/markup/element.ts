@@ -9,7 +9,7 @@ import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { parse as parseMarkup } from "./parser.peg";
 import { diffArray, patchArray } from "@tandem/common/utils";
-import { SyntheticMarkupContainer } from "./container";
+import { SyntheticDOMContainer } from "./container";
 import { SyntheticCSSStyleDeclaration } from "../css";
 import { Action, PropertyChangeAction } from "@tandem/common/actions";
 import {
@@ -19,7 +19,7 @@ import {
 } from "@tandem/common/observable";
 import { MarkupElementExpression } from "./ast";
 
-export class SyntheticMarkupAttribute extends Observable {
+export class SyntheticDOMAttribute extends Observable {
 
   @bindable()
   public value: any;
@@ -34,8 +34,8 @@ export class SyntheticMarkupAttribute extends Observable {
   }
 }
 
-export class SyntheticMarkupAttributes extends ObservableCollection<SyntheticMarkupAttribute> {
-  splice(start: number, deleteCount: number = 0, ...items: SyntheticMarkupAttribute[]) {
+export class SyntheticDOMAttributes extends ObservableCollection<SyntheticDOMAttribute> {
+  splice(start: number, deleteCount: number = 0, ...items: SyntheticDOMAttribute[]) {
     for (let i = start, n = start + deleteCount; i < n; i++) {
       const rmAttribute = this[i];
 
@@ -59,15 +59,15 @@ export class SyntheticMarkupAttributes extends ObservableCollection<SyntheticMar
 
 let _i = 0;
 
-export class SyntheticMarkupElement extends SyntheticMarkupContainer {
+export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   readonly nodeType: number = MarkupNodeType.ELEMENT;
-  readonly attributes: SyntheticMarkupAttributes;
+  readonly attributes: SyntheticDOMAttributes;
   readonly expression: MarkupElementExpression;
 
   constructor(readonly namespaceURI: string, readonly tagName: string, ownerDocument: SyntheticDocument) {
     super(tagName, ownerDocument);
-    this.attributes = new SyntheticMarkupAttributes();
+    this.attributes = new SyntheticDOMAttributes();
     this.setAttribute("data-uid", String(++_i));
     this.attributes.observe(new WrapBus(this.onAttributesAction.bind(this)));
   }
@@ -89,7 +89,7 @@ export class SyntheticMarkupElement extends SyntheticMarkupContainer {
     return visitor.visitElement(this);
   }
 
-  patch(source: SyntheticMarkupElement) {
+  patch(source: SyntheticDOMElement) {
     super.patch(source);
     patchArray(
       this.attributes,
@@ -105,7 +105,7 @@ export class SyntheticMarkupElement extends SyntheticMarkupContainer {
     if (this.attributes.hasOwnProperty(name)) {
       this.attributes[name].value = value;
     } else {
-      this.attributes.push(new SyntheticMarkupAttribute(name, value));
+      this.attributes.push(new SyntheticDOMAttribute(name, value));
     }
   }
 
@@ -132,8 +132,8 @@ export class SyntheticMarkupElement extends SyntheticMarkupContainer {
 
   protected onAttributesAction(action: Action) {
     if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
-      if (action.target instanceof SyntheticMarkupAttribute) {
-        (<SyntheticMarkupAttribute>action.target).name === "style";
+      if (action.target instanceof SyntheticDOMAttribute) {
+        (<SyntheticDOMAttribute>action.target).name === "style";
         // TODO - parse CSS
       }
     }
@@ -143,7 +143,7 @@ export class SyntheticMarkupElement extends SyntheticMarkupContainer {
   }
 
   cloneNode() {
-    const element = new SyntheticMarkupElement(this.namespaceURI, this.tagName, this.ownerDocument);
+    const element = new SyntheticDOMElement(this.namespaceURI, this.tagName, this.ownerDocument);
     for (const attribute of this.attributes) {
       element.setAttribute(attribute.name, attribute.value);
     }

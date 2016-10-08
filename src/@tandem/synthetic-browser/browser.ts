@@ -1,5 +1,5 @@
 import { SyntheticLocation } from "./location";
-import { SyntheticDocument, SyntheticWindow, SyntheticMarkupNode } from "./dom";
+import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode } from "./dom";
 import { ISyntheticDocumentRenderer, DOMRenderer, TetherRenderer } from "./renderers";
 import {
   bindable,
@@ -19,7 +19,7 @@ import {
 } from "@tandem/sandbox";
 
 import {
-  SyntheticMarkupElementClassDependency
+  SyntheticDOMElementClassDependency
 } from "./dependencies";
 
 import { WrapBus } from "mesh";
@@ -36,7 +36,7 @@ export class SyntheticBrowser extends Observable {
     this._renderer = renderer || new DOMRenderer();
     this._renderer.observe(new BubbleBus(this));
     this._sandbox  = new Sandbox(_dependencies, this.createSandboxGlobals.bind(this));
-    this._sandbox.observe(new TypeWrapBus(SandboxAction.EVALUATED, this.onSandboxEvaluated.bind(this)));
+    this._sandbox.observe(new TypeWrapBus(SandboxAction.OPENED_MAIN_ENTRY, this.onSandboxLoaded.bind(this)));
   }
 
   @bindable()
@@ -75,7 +75,7 @@ export class SyntheticBrowser extends Observable {
     return window;
   }
 
-  protected async onSandboxEvaluated(action: SandboxAction) {
+  protected async onSandboxLoaded(action: SandboxAction) {
     const window = this._sandbox.global as SyntheticWindow;
     const mainExports = this._sandbox.mainExports;
 
@@ -97,7 +97,7 @@ export class SyntheticBrowser extends Observable {
   }
 
   private _registerElements(window: SyntheticWindow) {
-    for (const elementClassDependency of SyntheticMarkupElementClassDependency.findAll(this._dependencies)) {
+    for (const elementClassDependency of SyntheticDOMElementClassDependency.findAll(this._dependencies)) {
       window.document.registerElementNS(elementClassDependency.xmlns, elementClassDependency.tagName, elementClassDependency.value);
     }
   }

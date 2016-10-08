@@ -15,8 +15,8 @@ import { ModuleFactoryDependency } from "@tandem/sandbox";
 
 import {
   MarkupModule,
-  SyntheticMarkupElement,
-  SyntheticMarkupElementClassDependency,
+  SyntheticDOMElement,
+  SyntheticDOMElementClassDependency,
 } from "@tandem/synthetic-browser";
 
 export const tdprojectExtensionDependencies = [
@@ -25,9 +25,9 @@ export const tdprojectExtensionDependencies = [
   new ReactComponentFactoryDependency("components/tools/pointer/tdprojectFrame", TDFrameStageToolComponent),
 
   // elements
-  new SyntheticMarkupElementClassDependency(TDPROJECT_XMLNS, "tdproject", SyntheticTDProject),
-  new SyntheticMarkupElementClassDependency(TDPROJECT_XMLNS, "default", SyntheticMarkupElement),
-  new SyntheticMarkupElementClassDependency(TDPROJECT_XMLNS, "frame", SyntheticTDFrame),
+  new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "tdproject", SyntheticTDProject),
+  new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "default", SyntheticDOMElement),
+  new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "frame", SyntheticTDFrame),
 
   // sandbox
   new ModuleFactoryDependency(CommonMimeTypes.HTML, MimeTypes.TDPROJECT, MarkupModule),

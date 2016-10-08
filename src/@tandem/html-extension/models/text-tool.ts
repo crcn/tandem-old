@@ -11,7 +11,7 @@ import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { BaseApplicationService } from "@tandem/common/services";
 import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
 import { IEditorTool, BaseEditorTool, IEditor } from "@tandem/editor/models";
-import { parseMarkup, MarkupElementExpression , VisibleMarkupElementEntity } from "../lang";
+import { MarkupElementExpression , VisibleMarkupElementEntity } from "../lang";
 import {
   Dependency,
   MAIN_BUS_NS,
@@ -20,6 +20,11 @@ import {
   EntityFactoryDependency,
   ApplicationServiceDependency,
 } from "@tandem/common/dependencies";
+import {
+  parseMarkup,
+  evaluateMarkup,
+  SyntheticDOMElement
+} from "@tandem/synthetic-browser";
 
 /*
 const editor = new HTMLEditor();
@@ -88,7 +93,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
 
     // parse the innerHTML, set the source content, and prepare to diff
     this._targetEntity.source.removeAllChildNodes();
-    (await parseMarkup(this._targetNode.innerHTML)).children.forEach((child) => this._targetEntity.source.appendChild(child));
+    // parseMarkup(this._targetNode.innerHTML).children.forEach((child) => this._targetEntity.source.appendChild(child));
 
     // reset the html so that the entity is properly diffd
     (<Element>this._targetEntity.section.targetNode).innerHTML = " ";
@@ -114,8 +119,8 @@ class InsertTextTool extends InsertTool {
     return <EditorToolFactoryDependency>this._dependencies.query(editInnerHTMLDependency.ns);
   }
 
-  createSource() {
-    return parseMarkup(`<span style="position:absolute;white-space: nowrap;font-family: Helvetica;">Type Something</span>`).children[0];
+  createSyntheticDOMElement() {
+    return evaluateMarkup(parseMarkup(`<span style="position:absolute;white-space: nowrap;font-family: Helvetica;">Type Something</span>`).childNodes[0], this.editor.document) as SyntheticDOMElement;
   }
 }
 

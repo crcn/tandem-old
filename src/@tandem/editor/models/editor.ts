@@ -10,11 +10,11 @@ import {
   IEntity,
   Metadata ,
   IInjectable,
-  ISynthetic,
   IPoint,
   Transform
 } from "@tandem/common";
 
+import { ISynthetic } from "@tandem/sandbox";
 import { SyntheticBrowser } from "@tandem/synthetic-browser";
 
 export const MIN_ZOOM = 0.02;

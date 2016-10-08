@@ -1,47 +1,83 @@
 import * as path from "path";
 import { Sandbox } from "./sandbox";
 import { ModuleImporter } from "./importer";
-import { MimeTypes, Observable, bindable } from "@tandem/common";
+import { SandboxModuleAction } from "./actions";
+import {
+  bindable,
+  MimeTypes,
+  Observable,
+  IObservable,
+} from "@tandem/common";
 
-export interface IModule {
+export interface IModuleEditor {
+
+}
+
+export interface IModule extends IObservable {
   fileName: string;
   content: string;
+  editor: IModuleEditor;
   evaluate(): Promise<any>;
 }
 
+export type moduleScriptType = (...rest: any[]) => any;
 export abstract class BaseModule extends Observable implements IModule {
 
   @bindable()
   public content: string;
 
+  readonly editor: IModuleEditor;
+
+  protected _script: moduleScriptType;
+
   constructor(readonly fileName: string, content: string, readonly sandbox: Sandbox) {
     super();
     this.initialize();
     this.content = content;
+    this.editor = this.createEditor();
   }
 
-  protected initialize() {
-
+  protected createEditor(): IModuleEditor {
+    return null;
   }
 
-  abstract evaluate(): Promise<any>;
+  protected initialize() { }
+
+  async evaluate() {
+    const run = await this.getScript();
+    return await run();
+  }
+
+  protected abstract compile(): Promise<moduleScriptType>;
+
+  protected async getScript() {
+    if (this._script) return this._script;
+    const run = await this.compile();
+    return this._script = (...rest: any[]) => {
+      this.notify(new SandboxModuleAction(SandboxModuleAction.EVALUATING));
+      return run(...rest);
+    };
+  }
 }
 
 // TODO - move to another extension
 export class CommonJSModule extends BaseModule {
 
-  private _evaluate: Function;
-  private _source: string;
+  private _transpiledSource: string;
 
   initialize() {
-    const source = this._source = this.transpile();
-    this._evaluate = new Function("global", "context", `
+    super.initialize();
+    this._transpiledSource = this.transpile();
+  }
+
+  protected async compile() {
+    return new Function("global", "context", `
       with(global) {
         with(context) {
-        ${source}
+        ${this._transpiledSource}
         }
       }
-    `);
+    `) as moduleScriptType;
   }
 
   protected transpile() {
@@ -52,7 +88,7 @@ export class CommonJSModule extends BaseModule {
 
     const importedModules = {};
 
-    const deps = this._source
+    const deps = this._transpiledSource
 
     // strip comments since they may contain require statements
     .replace(/\/\*[\s\S]*?\*\/|\/\/[^\n\r]+/g, "")
@@ -77,7 +113,7 @@ export class CommonJSModule extends BaseModule {
       __dirname  : path.dirname(this.fileName),
     };
 
-    this._evaluate.call(global, global, context);
+    (await this.getScript()).call(global, global, context);
 
     return module.exports;
   }

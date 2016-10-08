@@ -19,10 +19,6 @@ import {
 } from "mesh";
 
 import {
-  parse
-} from "./parser.peg";
-
-import {
   repeat
 } from "lodash";
 
@@ -45,7 +41,8 @@ import {
 export class MarkupExpressionLoader extends BaseASTNodeLoader {
 
   parseContent(content: string) {
-    return parse(content);
+    // return parse(content);
+    return null;
   }
 
   createFormattedSourceContent(action: Action) {

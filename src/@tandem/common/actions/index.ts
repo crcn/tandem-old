@@ -45,7 +45,7 @@ export class EntityLoaderAction extends Action {
 }
 
 export class EntityRuntimeAction extends Action {
-  static readonly RUNTIME_EVALUATED = "runtimeEvaluated";
+  static readonly RUNTIME_OPENED_MAIN_ENTRY = "runtimeEvaluated";
   constructor(type: string) {
     super(type);
   }

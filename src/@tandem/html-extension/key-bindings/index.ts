@@ -3,12 +3,13 @@ import { Action } from "@tandem/common/actions";
 import { IEditor } from "@tandem/editor/models/base";
 import { InsertTool } from "@tandem/editor/models/insert-tool";
 import { SetToolAction } from "@tandem/editor/actions";
+import { textToolDependency } from "@tandem/html-extension/models/text-tool";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { FrontEndApplication } from "@tandem/editor/application";
-import { textToolDependency } from "@tandem/html-extension/models/text-tool";
 import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
-import { parseMarkup, MarkupElementExpression } from "@tandem/html-extension/lang";
+import { MarkupElementExpression } from "@tandem/html-extension/lang";
 import { BaseCommand, BaseApplicationCommand } from "@tandem/common/commands";
+import { parseMarkup, evaluateMarkup, SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { ClassFactoryDependency, DEPENDENCIES_NS, Dependencies } from "@tandem/common/dependencies";
 import { EditorToolFactoryDependency, GlobalKeyBindingDependency } from "@tandem/editor/dependencies";
 
@@ -26,10 +27,10 @@ abstract class BaseInsertElementTool extends InsertTool {
     return this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns);
   }
 
-  createSource() {
+  createSyntheticDOMElement() {
 
     // width & height need to be 0'd since some elements have a size by default such as iframes
-    return parseMarkup(`<${this.options.nodeName} ${this.options.attributes ? this.options.attributes + " " : ""}style="${this.options.style}position:absolute;width:0px;height:0px;" />`).children[0];
+    return evaluateMarkup(parseMarkup(`<${this.options.nodeName} ${this.options.attributes ? this.options.attributes + " " : ""}style="${this.options.style}position:absolute;width:0px;height:0px;" />`).childNodes[0], this.editor.document) as SyntheticDOMElement;
   }
 }
 

@@ -1,13 +1,13 @@
 import { createSelectorTester } from "./tester";
 import { traverseTree, findTreeNode, filterTree } from "@tandem/common";
-import { SyntheticMarkupNode, SyntheticMarkupElement } from "../markup";
+import { SyntheticDOMNode, SyntheticDOMElement } from "../markup";
 
-export function querySelector(node: SyntheticMarkupNode, selectorSource: string): SyntheticMarkupElement {
+export function querySelector(node: SyntheticDOMNode, selectorSource: string): SyntheticDOMElement {
   const tester = createSelectorTester(selectorSource);
   return findTreeNode(node, tester.test.bind(tester));
 }
 
-export function querySelectorAll(node: SyntheticMarkupNode, selectorSource: string): SyntheticMarkupElement[] {
+export function querySelectorAll(node: SyntheticDOMNode, selectorSource: string): SyntheticDOMElement[] {
   const tester = createSelectorTester(selectorSource);
-  return filterTree(node, tester.test.bind(tester)) as SyntheticMarkupElement[];
+  return filterTree(node, tester.test.bind(tester)) as SyntheticDOMElement[];
 }

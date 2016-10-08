@@ -1,9 +1,9 @@
 import {
-  SyntheticMarkupElement,
+  SyntheticDOMElement,
 } from "@tandem/synthetic-browser";
 import { MimeTypes } from "@tandem/common";
 
-export class SyntheticTDFrame extends SyntheticMarkupElement {
+export class SyntheticTDFrame extends SyntheticDOMElement {
 
   async loadLeaf() {
     const src = this.getAttribute("src");

@@ -25,14 +25,14 @@ import {
 } from "@tandem/common";
 
 import {
-  SyntheticMarkupNode
+  SyntheticDOMNode
 } from "@tandem/synthetic-browser";
 
 interface ILayerLabelProps {
   paddingLeft?: number;
   dependencies: Dependencies;
   app: FrontEndApplication;
-  node: SyntheticMarkupNode;
+  node: SyntheticDOMNode;
   connectDragSource: Function;
   isDragging: boolean;
   connectDropTarget: Function;
@@ -326,7 +326,7 @@ LayerDndLabelComponent = DropTarget("element", {
   };
 })(LayerDndLabelComponent);
 
-export default class LayerComponent extends React.Component<{ app: FrontEndApplication, node: SyntheticMarkupNode, depth: number }, any> {
+export default class LayerComponent extends React.Component<{ app: FrontEndApplication, node: SyntheticDOMNode, depth: number }, any> {
 
   private _entityObserver: IActor;
 
@@ -371,7 +371,7 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
     const paddingLeft =  17 + depth * 12;
 
     const renderChildren = (depth: number) => {
-      return node.children.map((child: SyntheticMarkupNode, i) => {
+      return node.children.map((child: SyntheticDOMNode, i) => {
         return <LayerComponent {...this.props} node={child} key={i} depth={depth}  />;
       });
     };

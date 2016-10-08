@@ -6,17 +6,17 @@ import { BoundingRect, watchProperty } from "@tandem/common";
 import {
   MarkupNodeType,
   SyntheticDocument,
-  SyntheticMarkupNode,
-  SyntheticMarkupText,
-  SyntheticMarkupElement,
+  SyntheticDOMNode,
+  SyntheticDOMText,
+  SyntheticDOMElement,
   SyntheticCSSStyleDeclaration,
 } from "../dom";
 
 
 export interface ISyntheticDocumentRenderer extends IObservable {
   readonly element: HTMLElement;
-  target: SyntheticMarkupNode;
-  getBoundingRect(element: SyntheticMarkupElement);
+  target: SyntheticDOMNode;
+  getBoundingRect(element: SyntheticDOMElement);
 }
 
 export abstract class BaseRenderer extends Observable implements ISyntheticDocumentRenderer {
@@ -42,7 +42,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     this.update();
   }
 
-  getBoundingRect(element: SyntheticMarkupElement) {
+  getBoundingRect(element: SyntheticDOMElement) {
     return (this._rects && this._rects[element.uid]) || new BoundingRect(0, 0, 0, 0);
   }
 

@@ -1,12 +1,12 @@
 import { parseSelector } from "./parser";
-import { SyntheticMarkupNode, SyntheticMarkupElement, MarkupNodeType } from "../markup";
+import { SyntheticDOMNode, SyntheticDOMElement, MarkupNodeType } from "../markup";
 import { SelectorExpression, AllSelectorExpression } from "./ast";
 
 export function createSelectorTester(selectorSource: string) {
 
   const ast = parseSelector(selectorSource);
 
-  function test(ast: SelectorExpression, node: SyntheticMarkupElement) {
+  function test(ast: SelectorExpression, node: SyntheticDOMElement) {
     if (node.nodeType !== MarkupNodeType.ELEMENT) return false;
     return ast.accept({
       visitAllSelector(expression) {

@@ -1,15 +1,21 @@
+import { IModule } from "./module";
 import { ModuleImporter } from "./importer";
 import {
+  Action,
   Observable,
   TypeWrapBus,
   Dependencies,
   ChangeAction,
+  PropertyChangeAction,
 } from "@tandem/common";
 
 import {
-  SandboxAction
+  SandboxAction,
+  SandboxModuleAction,
+  ModuleImporterAction,
 } from "./actions";
 
+import { WrapBus } from "mesh";
 interface ISandboxEntry {
   envMimeType: string;
   filePath: string;
@@ -22,17 +28,22 @@ export class Sandbox extends Observable {
   private _importer: ModuleImporter;
   private _shouldResetAgain: boolean;
   private _mainExports: any;
-  private _evaluating: boolean;
-  private _shouldEvaluateAgain: boolean;
+  private _reloading: boolean;
+  private _shouldReloadAgain: boolean;
+  private _currentModule: IModule;
 
   constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}) {
     super();
     this._importer = new ModuleImporter(this, _dependencies);
-    this._importer.observe(new TypeWrapBus(ChangeAction.CHANGE, this.onImporterChange.bind(this)));
+    this._importer.observe(new WrapBus(this.onImporterAction.bind(this)));
   }
 
   get global(): any {
     return this._global || (this._global = this.createGlobal());
+  }
+
+  get currentModule(): IModule {
+    return this._currentModule;
   }
 
   get importer(): ModuleImporter {
@@ -46,20 +57,26 @@ export class Sandbox extends Observable {
   async open(envMimeType: string, filePath: string, relativePath?: string) {
     this._entry = { envMimeType: envMimeType, filePath: filePath };
     this._mainExports = await this._importer.import(envMimeType, filePath, relativePath);
-    this.notify(new SandboxAction(SandboxAction.EVALUATED));
+    this.notify(new SandboxAction(SandboxAction.OPENED_MAIN_ENTRY));
   }
 
-  protected onImporterChange(action: ChangeAction) {
-    this.reopen();
+  protected onImporterAction(action: Action) {
+    if (action.type === ModuleImporterAction.MODULE_CONTENT_CHANGED) {
+      this.reload();
+    } else if (action.type === SandboxModuleAction.EVALUATING) {
+      const currentModule = this._currentModule;
+      this._currentModule = action.target;
+      this.notify(new PropertyChangeAction("currentModule", this._currentModule, currentModule));
+    }
     this.notify(action);
   }
 
-  protected async reopen() {
-    if (this._evaluating) {
-      this._shouldEvaluateAgain = true;
+  public async reload() {
+    if (this._reloading) {
+      this._shouldReloadAgain = true;
       return;
     }
-    this._evaluating = true;
+    this._reloading = true;
 
     this._importer.reset();
     this._global = undefined;
@@ -67,10 +84,10 @@ export class Sandbox extends Observable {
     if (this._entry) {
       await this.open(this._entry.envMimeType, this._entry.filePath);
     }
-    this._evaluating = false;
-    if (this._shouldEvaluateAgain) {
-      this._shouldEvaluateAgain = false;
-      await this.reopen();
+    this._reloading = false;
+    if (this._shouldReloadAgain) {
+      this._shouldReloadAgain = false;
+      await this.reload();
     }
   }
 }

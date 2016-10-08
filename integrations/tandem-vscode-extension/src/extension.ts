@@ -72,6 +72,7 @@ export async function activate(context: vscode.ExtensionContext) {
         _ignoreSelect = true;
 
         await editor.edit(function(edit) {
+
             edit.replace(
                 new vscode.Range(
                     editor.document.positionAt(0),

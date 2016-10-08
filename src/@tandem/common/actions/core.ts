@@ -32,7 +32,6 @@ export class PropertyChangeAction extends Action {
   }
 }
 
-
 export class SettingChangeAction extends Action {
   static readonly SETTING_CHANGE = "settingChange";
   constructor(readonly property: string, readonly newValue: any, readonly oldValue: any) {

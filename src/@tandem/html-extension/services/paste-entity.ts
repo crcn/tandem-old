@@ -1,21 +1,23 @@
 import * as sift from "sift";
 import { flatten } from "lodash";
 import { HTMLFile } from "../models/html-file";
-import { parseMarkup } from "../lang";
 import { MimeTypes } from "@tandem/html-extension/constants";
 import { filterAction } from "@tandem/common/decorators";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { appendSourceChildren } from "@tandem/common/lang/entities";
 import { PasteHTMLEntityAction } from "@tandem/html-extension/actions";
 import { BaseApplicationService } from "@tandem/common/services";
-import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
 import { PasteAction, SelectAction } from "@tandem/editor/actions";
+import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
 import {
   IInjectable,
   APPLICATION_SINGLETON_NS,
   CommandFactoryDependency,
   ApplicationServiceDependency,
 } from "@tandem/common/dependencies";
+import {
+  parseMarkup
+} from "@tandem/synthetic-browser";
 
 export class PasteHTMLService extends BaseApplicationService<FrontEndApplication> {
 

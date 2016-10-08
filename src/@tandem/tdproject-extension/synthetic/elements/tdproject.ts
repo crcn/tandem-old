@@ -1,4 +1,4 @@
-import { SyntheticMarkupElement, SyntheticMarkupElementClassDependency } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement, SyntheticDOMElementClassDependency } from "@tandem/synthetic-browser";
 
-export class SyntheticTDProject extends SyntheticMarkupElement {
+export class SyntheticTDProject extends SyntheticDOMElement {
 }

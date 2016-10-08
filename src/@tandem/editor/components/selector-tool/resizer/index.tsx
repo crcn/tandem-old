@@ -9,7 +9,7 @@ import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
 import { BoundingRect, IPoint, Point } from "@tandem/common/geom";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
-import { SyntheticMarkupElement, combinedSyntheticElementCapabilities } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
@@ -97,7 +97,7 @@ class ResizerComponent extends React.Component<{
   private _movingTimer: any;
   private _dragTimer: any;
   private _currentGuider: Guider;
-  private _visibleEntities: VisibleSyntheticElementCollection<SyntheticMarkupElement>;
+  private _visibleEntities: VisibleSyntheticElementCollection<SyntheticDOMElement>;
 
   constructor() {
     super();
@@ -266,7 +266,8 @@ class ResizerComponent extends React.Component<{
       transformOrigin: "top left"
     };
 
-    const capabilities = combinedSyntheticElementCapabilities(...selection);
+    // const capabilities = combinedSyntheticElementCapabilities(...selection);
+    const capabilities = { movable: false, resizable: false };
     const movable = capabilities.movable;
 
     const points = [

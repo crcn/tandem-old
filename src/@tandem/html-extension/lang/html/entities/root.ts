@@ -17,7 +17,6 @@ import {
 } from "@tandem/common/lang/entities";
 
 import {
-  parseMarkup,
   CSSRootEntity,
   MarkupExpression,
   MarkupTextExpression,

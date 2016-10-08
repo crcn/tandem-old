@@ -1,9 +1,9 @@
 import { MarkupNodeType } from "./node-types";
 import { IMarkupNodeVisitor } from "./visitor";
 import { SyntheticDocument } from "../document";
-import { SyntheticMarkupValueNode } from "./value-node";
+import { SyntheticDOMValueNode } from "./value-node";
 
-export class SyntheticMarkupText extends SyntheticMarkupValueNode {
+export class SyntheticDOMText extends SyntheticDOMValueNode {
   readonly nodeType: number = MarkupNodeType.TEXT;
   constructor(nodeValue: string, ownerDocument: SyntheticDocument) {
     super("#text", nodeValue, ownerDocument);
@@ -22,6 +22,6 @@ export class SyntheticMarkupText extends SyntheticMarkupValueNode {
   }
 
   cloneNode() {
-    return new SyntheticMarkupText(this.nodeValue, this.ownerDocument);
+    return new SyntheticDOMText(this.nodeValue, this.ownerDocument);
   }
 }

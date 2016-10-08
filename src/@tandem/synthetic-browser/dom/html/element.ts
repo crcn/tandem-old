@@ -1,8 +1,8 @@
-import { SyntheticMarkupElement, parseMarkup, evaluateMarkup } from "../markup";
+import { SyntheticDOMElement, parseMarkup, evaluateMarkup } from "../markup";
 import { SyntheticCSSStyleDeclaration } from "../css";
 import { SyntheticDocument } from "../document";
 
-export class SyntheticHTMLElement extends SyntheticMarkupElement {
+export class SyntheticHTMLElement extends SyntheticDOMElement {
 
   private _style: SyntheticCSSStyleDeclaration;
 

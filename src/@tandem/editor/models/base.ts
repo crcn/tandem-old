@@ -11,22 +11,22 @@ import {
   IActor,
   IEntity,
   bindable,
+  IASTNode,
   BubbleBus,
   Transform,
   IDisposable,
   IObservable,
   bindProperty,
-  IASTNode,
   IInjectable,
+  BaseASTNode,
   EntityAction,
   EntityRuntime,
   Dependencies,
   patchTreeNode,
   watchProperty,
-  BaseASTNode,
+  IASTNodeLoader,
   IEntityDocument,
   DEPENDENCIES_NS,
-  IASTNodeLoader,
   PropertyChangeAction,
   DependenciesDependency,
   EntityFactoryDependency,
@@ -35,7 +35,8 @@ import {
 } from "@tandem/common";
 
 import {
-  SyntheticBrowser
+  SyntheticBrowser,
+  SyntheticDocument
 } from "@tandem/synthetic-browser";
 
 export interface IEditorTool extends IActor, IDisposable {
@@ -52,6 +53,7 @@ export interface IEditor extends IActor {
   readonly cursor: string;
   activeEntity: IEntity;
   readonly browser: SyntheticBrowser;
+  readonly document: SyntheticDocument;
 }
 
 const REQUEST_SAVE_TIMEOUT = process.env.TESTING ? 1 : 200;

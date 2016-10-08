@@ -14,14 +14,14 @@ import { intersection, flatten } from "lodash";
 import { IVisibleEntity, IEntity } from "@tandem/common/lang/entities";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { IInjectable, APPLICATION_SINGLETON_NS, IActor, Action } from "@tandem/common";
-import { SyntheticMarkupElement } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 
 class SelectableComponent extends React.Component<{
-  element: SyntheticMarkupElement,
+  element: SyntheticDOMElement,
   selection: any,
   app: FrontEndApplication,
   zoom: number,
-  onSyntheticMouseDown: (element: SyntheticMarkupElement, event?: MouseEvent) => void
+  onSyntheticMouseDown: (element: SyntheticDOMElement, event?: MouseEvent) => void
 }, any> {
 
   private _i: number = 0;
@@ -93,7 +93,7 @@ class SelectableComponent extends React.Component<{
 export class SelectablesComponent extends React.Component<{
   app: FrontEndApplication,
   editor: Editor,
-  onSyntheticMouseDown: (element: SyntheticMarkupElement, event?: MouseEvent) => void,
+  onSyntheticMouseDown: (element: SyntheticDOMElement, event?: MouseEvent) => void,
   canvasRootSelectable?: boolean
 }, { showSelectables: boolean }> {
 

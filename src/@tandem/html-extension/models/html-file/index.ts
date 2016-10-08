@@ -1,5 +1,4 @@
 import * as pretty from "pretty";
-import { parseMarkup } from "@tandem/html-extension/lang";
 import { MimeTypes } from "@tandem/html-extension/constants";
 import { IASTNode } from "@tandem/common/lang";
 import { DocumentFile } from "@tandem/editor/models/base";

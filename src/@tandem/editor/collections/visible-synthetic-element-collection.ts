@@ -1,5 +1,6 @@
-import { BoundingRect, ISynthetic, IPoint } from "@tandem/common";
-import { SyntheticMarkupElement, MarkupNodeType } from "@tandem/synthetic-browser";
+import { ISynthetic } from "@tandem/sandbox";
+import { BoundingRect, IPoint } from "@tandem/common";
+import { SyntheticDOMElement, MarkupNodeType } from "@tandem/synthetic-browser";
 
 // class EntitySelectionDisplay implements IEntityDisplay {
 
@@ -59,8 +60,8 @@ import { SyntheticMarkupElement, MarkupNodeType } from "@tandem/synthetic-browse
 //   }
 // }
 
-export class VisibleSyntheticElementCollection<T extends SyntheticMarkupElement> extends Array<T> {
+export class VisibleSyntheticElementCollection<T extends SyntheticDOMElement> extends Array<T> {
   constructor(...elements: Array<ISynthetic>) {
-    super(...(<Array<T>>elements).filter((element: SyntheticMarkupElement) => element.nodeType === MarkupNodeType.ELEMENT));
+    super(...(<Array<T>>elements).filter((element: SyntheticDOMElement) => element.nodeType === MarkupNodeType.ELEMENT));
   }
 }

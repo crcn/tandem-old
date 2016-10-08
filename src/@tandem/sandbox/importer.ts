@@ -4,6 +4,7 @@ import { ModuleFactoryDependency } from "./dependencies";
 import {
   Logger,
   IActor,
+  Action,
   loggable,
   IInvoker,
   Observable,
@@ -16,9 +17,19 @@ import {
   MainBusDependency,
   SingletonThenable,
   MimeTypeDependency,
+  PropertyChangeAction,
   IReadFileActionResponseData,
   UpdateTemporaryFileContentAction,
 } from "@tandem/common";
+
+import {
+  SandboxModuleAction,
+  ModuleImporterAction,
+} from "./actions";
+
+import {
+  WrapBus
+} from "mesh";
 
 @loggable()
 export class ModuleImporter extends Observable implements IInvoker {
@@ -70,7 +81,8 @@ export class ModuleImporter extends Observable implements IInvoker {
     if (!moduleCache[envKind]) {
       const moduleFactory = ModuleFactoryDependency.find(envKind, MimeTypeDependency.lookup(resolvedPath, this._dependencies), this._dependencies);
       const module = moduleCache[envKind] = moduleFactory.create(resolvedPath, content, this._sandbox);
-      watchProperty(module, "content", this.onModuleContentChange.bind(this, module));
+      module.observe(new WrapBus(this.onModuleAction.bind(this)));
+      watchProperty(module, "content", this.onModuleContentChange.bind(this));
     }
 
     const module: IModule = moduleCache[envKind];
@@ -78,7 +90,7 @@ export class ModuleImporter extends Observable implements IInvoker {
     const importsKey = envKind + resolvedPath;
 
     if (!this._imports[importsKey]) {
-      this._imports[importsKey] = module.evaluate();
+      this._imports[importsKey] = await module.evaluate();
     }
 
     return this._imports[importsKey];
@@ -108,7 +120,7 @@ export class ModuleImporter extends Observable implements IInvoker {
 
     // bust all modules for the given path to ensure that it gets re-evaluated
     this._modules[data.path] = undefined;
-    this.notify(new ChangeAction());
+    this.notify(new ModuleImporterAction(ModuleImporterAction.MODULE_CONTENT_CHANGED));
   }
 
   protected onModuleContentChange(module: IModule, newContent: string, oldContent: string) {
@@ -116,5 +128,9 @@ export class ModuleImporter extends Observable implements IInvoker {
       this._fileContentCache[module.fileName] = newContent;
     }
     UpdateTemporaryFileContentAction.execute({ path: module.fileName, content: newContent }, this.bus);
+  }
+
+  protected onModuleAction(action: Action) {
+    this.notify(action);
   }
 }

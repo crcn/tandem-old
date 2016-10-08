@@ -4,17 +4,25 @@ import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { SelectablesComponent } from "@tandem/editor/components/selectables";
-import { SyntheticMarkupElement } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { SelectionSizeComponent } from "@tandem/editor/components/selection-size";
-import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
 import { SetToolAction, SelectAction } from "@tandem/editor/actions";
 import { Workspace, Editor, InsertTool } from "@tandem/editor/models";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
-import { IActor, Action, BaseEntity, BoundingRect, appendSourceChildren, IEntity, IVisibleEntity } from "@tandem/common";
+import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
+import {
+  IActor,
+  Action,
+  IEntity,
+  BaseEntity,
+  BoundingRect,
+  IVisibleEntity,
+  appendSourceChildren,
+} from "@tandem/common";
 
 class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, workspace: Workspace, app: FrontEndApplication, tool: InsertTool }, any> {
 
-  private _targetElement: SyntheticMarkupElement;
+  private _targetElement: SyntheticDOMElement;
 
 
   private onRootMouseDown = (event) => {
@@ -28,10 +36,12 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     const { editor, bus, workspace, tool } = this.props;
 
-    const activeEntity =  this._targetElement;
-    const childExpression = tool.createSource();
+    const childElement = tool.createSyntheticDOMElement();
+    // const elementEditor = this._targetElement.editor;
+    this._targetElement.appendChild(childElement);
+    // await elementEditor.execute()
     // const child = await activeEntity.loadExpressionAndAppendChild(childExpression) as IVisibleEntity;
-    // await bus.execute(new SelectAction(child));
+    await bus.execute(new SelectAction(childElement));
 
     // const capabilities = child.display.capabilities;
 
@@ -44,6 +54,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     // }
 
     // child.display.position = { left, top };
+
 
     // const complete = async () => {
     //   child.parent.source.appendChild(childExpression);
@@ -65,7 +76,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     // }
   }
 
-  onSyntheticMouseDown = (element: SyntheticMarkupElement, event: MouseEvent) => {
+  onSyntheticMouseDown = (element: SyntheticDOMElement, event: MouseEvent) => {
     this._targetElement = element;
     this._insertNewItem(event);
   }
@@ -77,27 +88,23 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     const selection = new VisibleSyntheticElementCollection(...this.props.editor.selection);
     const zoom = this.props.editor.transform.scale;
-    return null;
-    // const display = selection.display;
-    // const bounds = selection.length ? display.bounds : undefined;
-    // const scale = 1 / editor.transform.scale;
+    const scale = 1 / editor.transform.scale;
 
-    // const bgstyle = {
-    //   position: "fixed",
-    //   background: "transparent",
-    //   top: 0,
-    //   left: 0,
-    //   transform: `translate(${-editor.transform.left * scale}px, ${-editor.transform.top * scale}px) scale(${scale})`,
-    //   transformOrigin: "top left",
-    //   width: "100%",
-    //   height: "100%"
-    // };
+    const bgstyle = {
+      position: "fixed",
+      background: "transparent",
+      top: 0,
+      left: 0,
+      transform: `translate(${-editor.transform.left * scale}px, ${-editor.transform.top * scale}px) scale(${scale})`,
+      transformOrigin: "top left",
+      width: "100%",
+      height: "100%"
+    };
 
-    // return <div className="m-insert-tool">
-    //   <div onMouseDown={this.onRootMouseDown} style={bgstyle} />
-    //   { !tool.entityIsRoot ? <SelectablesComponent {...this.props} canvasRootSelectable={true} onSyntheticMouseDown={this.onSyntheticMouseDown} /> : null }
-    //   { selection.length && display.capabilities.resizable && tool.resizable ? <SelectionSizeComponent left={bounds.left + bounds.width} top={bounds.top + bounds.height} bounds={bounds} zoom={zoom} /> : undefined }
-    // </div>;
+    return <div className="m-insert-tool">
+      <div onMouseDown={this.onRootMouseDown} style={bgstyle} />
+      { !tool.entityIsRoot ? <SelectablesComponent {...this.props} canvasRootSelectable={true} onSyntheticMouseDown={this.onSyntheticMouseDown} /> : null }
+    </div>;
   }
 }
 

@@ -1,12 +1,12 @@
 import { MarkupNodeType } from "./node-types";
-import { SyntheticMarkupNode } from "./node";
-import { SyntheticMarkupText } from "./text-node";
+import { SyntheticDOMNode } from "./node";
+import { SyntheticDOMText } from "./text-node";
 import { querySelector, querySelectorAll } from "../selector";
 
-export abstract class SyntheticMarkupContainer extends SyntheticMarkupNode {
+export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
 
   // TODO - insertBefore here
-  appendChild(child: SyntheticMarkupNode) {
+  appendChild(child: SyntheticDOMNode) {
     if (child.nodeType === MarkupNodeType.DOCUMENT_FRAGMENT) {
       return child.children.concat().forEach((child) => this.appendChild(child));
     }

@@ -58,7 +58,7 @@ export class EntityRuntime extends Observable {
 
     // entities may contain separate, isolated runtimes. Capture events from them and re-evaluate
     // to ensure that all other entities are in sync
-    if (action.type === EntityRuntimeAction.RUNTIME_EVALUATED && !this._evaluating) {
+    if (action.type === EntityRuntimeAction.RUNTIME_OPENED_MAIN_ENTRY && !this._evaluating) {
       this.deferEvaluate();
     }
 
@@ -70,7 +70,7 @@ export class EntityRuntime extends Observable {
     if (this._evaluating) {
       return new Promise((resolve, reject) => {
         const observer = new WrapBus((action: Action) => {
-          if (action.type === EntityRuntimeAction.RUNTIME_EVALUATED) {
+          if (action.type === EntityRuntimeAction.RUNTIME_OPENED_MAIN_ENTRY) {
             this.unobserve(observer);
             resolve();
           }
@@ -86,7 +86,7 @@ export class EntityRuntime extends Observable {
       console.error(e.stack);
     }
     this._evaluating = false;
-    this.notify(new EntityRuntimeAction(EntityRuntimeAction.RUNTIME_EVALUATED));
+    this.notify(new EntityRuntimeAction(EntityRuntimeAction.RUNTIME_OPENED_MAIN_ENTRY));
   }
 
   private deferEvaluate = debounce(() => {

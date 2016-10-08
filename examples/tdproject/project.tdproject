@@ -1,20 +1,6 @@
 <link rel="stylesheet" href="../html/hello-world.css">
 
 <tdproject xmlns="tandem">
-  <!--frame title="website 5" style="position:relative;width:1024px;height:768px;" src="../html/hello-world.html" /-->
-  <div class="container">
-    Hello World!!
-  </div>
-  <div class="container">
-    Hello World!
-  </div>
-  <div class="container">
-    Hello World!!
-  </div>
-  <div class="container">
-    Hello World!!!
-  </div>
-  <div class="container">
-    Hello World!!!!
-  </div>
+  <frame title="website 6" style="position:relative;width:1024px;height:768px;" src="../html/hello-world.html" />
+
 </tdproject>
