@@ -10,12 +10,12 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
       return { name: expression.name, value: expression.value };
     },
     visitComment(expression) {
-      return doc.createComment(expression.value);
+      return doc.createComment(expression.nodeValue);
     },
     visitElement(expression) {
       const xmlns = expression.getAttributeValue("xmlns") || namespaceURI || doc.defaultNamespaceURI;
 
-      const element = doc.createElementNS(xmlns, expression.name);
+      const element = doc.createElementNS(xmlns, expression.nodeName);
       for (const childExpression of expression.childNodes) {
         element.appendChild(evaluateMarkup(childExpression, doc, xmlns));
       }
@@ -33,7 +33,7 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
       return fragment;
     },
     visitText(expression) {
-      return doc.createTextNode(expression.value);
+      return doc.createTextNode(expression.nodeValue);
     }
   });
 

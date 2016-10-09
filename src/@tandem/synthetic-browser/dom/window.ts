@@ -4,12 +4,13 @@ import { bindable } from "@tandem/common/decorators";
 import { Observable } from "@tandem/common/observable";
 import { IPatchable } from "@tandem/common/object";
 import { HTML_XMLNS } from "./constants";
+import { SyntheticBrowser } from "../browser";
 import { SyntheticLocation } from "../location";
 import { SyntheticDocument } from "./document";
 import { SyntheticHTMLElement } from "./html";
 import { ISyntheticDocumentRenderer } from "../renderers";
 
-export class SyntheticWindow extends Observable implements IPatchable {
+export class SyntheticWindow extends Observable {
 
   @bindable()
   public location: SyntheticLocation;
@@ -17,11 +18,15 @@ export class SyntheticWindow extends Observable implements IPatchable {
   readonly document: SyntheticDocument;
   readonly window: SyntheticWindow;
 
-  constructor(readonly sandbox: Sandbox, readonly renderer: ISyntheticDocumentRenderer, location: SyntheticLocation) {
+  constructor(readonly browser: SyntheticBrowser, readonly renderer: ISyntheticDocumentRenderer, location: SyntheticLocation) {
     super();
     this.document = this.createDocument();
     this.location = location;
     this.window   = this;
+  }
+
+  get sandbox() {
+    return this.browser.sandbox;
   }
 
   private createDocument() {
@@ -37,40 +42,5 @@ export class SyntheticWindow extends Observable implements IPatchable {
 
     document.appendChild(documentElement);
     return document;
-  }
-
-  // TODO - use visitor pattern here
-  patch(source: SyntheticWindow) {
-
-    // move this to if(patchGuard(this, source)) return;
-    if (source["__patchTarget"]) return;
-    source["__patchTarget"] = this;
-
-    // TODO - move this logic to patchObject utility
-
-    // update / remove old values
-    for (const key in this) {
-      const oldValue = this[key];
-      const newValue = source[key];
-
-      if (!newValue) {
-        if (oldValue && oldValue.dispose) {
-          oldValue.dispose();
-        }
-        this[key] = undefined;
-        continue;
-      }
-
-      if (oldValue && oldValue.patch) {
-        oldValue.patch(newValue);
-      }
-    }
-
-    // add new values
-    for (const key in source) {
-      if (!this[key]) {
-        this[key] = source[key];
-      }
-    }
   }
 }

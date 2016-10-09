@@ -17,7 +17,7 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
 
   constructor() {
     super();
-    this._children = [];
+    this._children = this.createChildren();
     this._childObserver = new WrapBus(this.onChildAction.bind(this));
   }
 
@@ -41,6 +41,10 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     while (this._children.length) {
       this.removeChild(this._children[0]);
     }
+  }
+
+  protected createChildren(): T[] {
+    return [];
   }
 
   removeChild(child: T) {
@@ -67,6 +71,15 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     if (index !== -1) {
       this.insertChildAt(newChild, index);
     }
+  }
+
+  replaceChild(newChild: T, existingChild: T) {
+    const index = this._children.indexOf(existingChild);
+    if (index !== -1) {
+      this.insertChildAt(newChild, index);
+      this.removeChild(existingChild);
+    }
+    return existingChild;
   }
 
   get parent(): T {

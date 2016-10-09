@@ -1,14 +1,13 @@
 import { WrapBus } from "mesh";
 import { bindable } from "@tandem/common/decorators";
+import { IDOMNode } from "./node";
 import { BubbleBus } from "@tandem/common/busses";
 import { BoundingRect } from "@tandem/common/geom";
 import { MarkupNodeType } from "./node-types";
 import { evaluateMarkup } from "./evaluate";
-import { getBoundingRect } from "@tandem/synthetic-browser";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { parse as parseMarkup } from "./parser.peg";
-import { diffArray, patchArray } from "@tandem/common/utils";
 import { SyntheticDOMContainer } from "./container";
 import { SyntheticCSSStyleDeclaration } from "../css";
 import { Action, PropertyChangeAction } from "@tandem/common/actions";
@@ -18,6 +17,7 @@ import {
   ObservableCollection,
 } from "@tandem/common/observable";
 import { MarkupElementExpression } from "./ast";
+import { SyntheticDOMNode } from "./node";
 
 export class SyntheticDOMAttribute extends Observable {
 
@@ -59,6 +59,37 @@ export class SyntheticDOMAttributes extends ObservableCollection<SyntheticDOMAtt
 
 let _i = 0;
 
+export interface ISyntheticDOMCapabilities {
+  movable: boolean;
+  resizable: boolean;
+}
+
+export interface IDOMElement extends IDOMNode {
+  uid: string;
+  attributes: SyntheticDOMAttributes;
+  accept(visitor: IMarkupNodeVisitor);
+  getAttribute(name: string);
+  cloneNode(): IDOMElement;
+  setAttribute(name: string, value: any);
+}
+
+export interface IVisibleDOMElement extends IDOMElement {
+  getCapabilities(): ISyntheticDOMCapabilities;
+
+  /**
+   * Returns computed bounding client rect from the browser
+   */
+
+  getBoundingClientRect(): BoundingRect;
+
+  /**
+   * Returns the untransformed bounding client rect without margins,
+   * padding, transforms, etc -- only outlines the bounds according to what's visible
+   */
+
+  getUntransformedBoundingClientRect(): BoundingRect;
+}
+
 export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   readonly nodeType: number = MarkupNodeType.ELEMENT;
@@ -68,12 +99,8 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   constructor(readonly namespaceURI: string, readonly tagName: string, ownerDocument: SyntheticDocument) {
     super(tagName, ownerDocument);
     this.attributes = new SyntheticDOMAttributes();
-    this.setAttribute("data-uid", String(++_i));
+    this.setAttribute("data-uid", this._uid);
     this.attributes.observe(new WrapBus(this.onAttributesAction.bind(this)));
-  }
-
-  getBoundingClientRect(): BoundingRect {
-    return getBoundingRect(this);
   }
 
   // non-standard
@@ -87,18 +114,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   accept(visitor: IMarkupNodeVisitor) {
     return visitor.visitElement(this);
-  }
-
-  patch(source: SyntheticDOMElement) {
-    super.patch(source);
-    patchArray(
-      this.attributes,
-      diffArray(this.attributes, source.attributes, (a, b) => a.name === b.name),
-      (a, b) => {
-        a.value = b.value;
-        return a;
-      }
-    );
   }
 
   setAttribute(name: string, value: any) {
@@ -131,14 +146,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   protected onAttributesAction(action: Action) {
-    if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
-      if (action.target instanceof SyntheticDOMAttribute) {
-        (<SyntheticDOMAttribute>action.target).name === "style";
-        // TODO - parse CSS
-      }
-    }
-
-    // bubble
     this.notify(action);
   }
 

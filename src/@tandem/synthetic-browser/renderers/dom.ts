@@ -1,13 +1,20 @@
 import { Action } from "@tandem/common";
 import { WrapBus } from "mesh";
-import { BoundingRect, watchProperty, calculateAbsoluteBounds } from "@tandem/common";
+import { BoundingRect, watchProperty, patchTreeNode, flattenTree } from "@tandem/common";
 import {
   MarkupNodeType,
   SyntheticDOMNode,
   SyntheticDOMText,
   SyntheticDOMElement,
+  SyntheticDocument,
+  querySelectorAll,
   SyntheticCSSStyleDeclaration,
 } from "../dom";
+
+import {
+  ISyntheticComponent
+} from "../components";
+
 import {
   BaseRenderer
 } from "./base";
@@ -17,14 +24,25 @@ export class DOMRenderer extends BaseRenderer {
   update() {
 
     // simple for now -- just reset the entire outer HTML
-    this.element.innerHTML = this.target.toString();
+    // this.element.appendChild(this.target.render(document as any as SyntheticDocument) as any as Node);
+    this.element.innerHTML = this.target.render();
+    const syntheticComponentsBySourceUID = {};
+
+    for (const component of flattenTree(this.target)) {
+      syntheticComponentsBySourceUID[component.source.uid] = component;
+    }
 
     const rects = {};
 
     for (const node of this.element.querySelectorAll("*")) {
       const element = <HTMLElement>node;
+      if (!element.dataset) continue;
       const uid = element.dataset["uid"];
-      rects[uid] = calculateAbsoluteBounds(element);
+      const sourceComponent: ISyntheticComponent = syntheticComponentsBySourceUID[uid];
+      if (sourceComponent) {
+        sourceComponent.target = <HTMLElement>node;
+      }
+      rects[uid] = BoundingRect.fromClientRect(element.getBoundingClientRect());
     }
 
     this.setRects(rects);

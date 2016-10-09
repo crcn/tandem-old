@@ -198,8 +198,8 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
         className="m-editor-stage-canvas"
         style={style}>
           <div style={innerStyle} className="noselect" data-previewroot>
-              <PreviewLayerComponent {...this.props} renderer={this.props.app.editor.browser.renderer} />
-              {this._toolsHidden || !this.props.app.editor.document ? undefined : <ToolsLayerComponent workspace={null} {...this.props} />}
+            <PreviewLayerComponent {...this.props} renderer={this.props.app.editor.browser.renderer} />
+            {this._toolsHidden || !this.props.app.editor.document ? undefined : <ToolsLayerComponent workspace={null} {...this.props} />}
           </div>
       </div>
     </IsolateComponent>);

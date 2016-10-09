@@ -1,4 +1,5 @@
-import { Action } from "@tandem/common/actions";
+import { Action, IASTNode2 } from "@tandem/common";
+import { ISynthetic } from "./synthetic";
 
 export class SandboxAction extends Action {
   static readonly OPENED_MAIN_ENTRY = "openedMainEntry";

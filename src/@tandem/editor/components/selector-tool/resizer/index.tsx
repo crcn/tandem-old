@@ -9,7 +9,7 @@ import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
 import { BoundingRect, IPoint, Point } from "@tandem/common/geom";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
-import { SyntheticDOMElement } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement, IVisibleDOMElement } from "@tandem/synthetic-browser";
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
@@ -97,7 +97,7 @@ class ResizerComponent extends React.Component<{
   private _movingTimer: any;
   private _dragTimer: any;
   private _currentGuider: Guider;
-  private _visibleEntities: VisibleSyntheticElementCollection<SyntheticDOMElement>;
+  private _visibleEntities: VisibleSyntheticElementCollection<IVisibleDOMElement>;
 
   constructor() {
     super();
@@ -148,36 +148,39 @@ class ResizerComponent extends React.Component<{
     const anchor: IPoint  = point.anchor;
 
     let bounds = resize(point.currentBounds.clone(), point.delta, point.anchor, keepAspectRatio, keepCenter);
-    const guider = this._currentGuider;
 
-    const currentPoint = new Point(
-      bounds.left + bounds.width * anchor.left,
-      bounds.top + bounds.height * anchor.top
-    );
+    // const guider = this._currentGuider;
 
-    const snapAnchors = [
-      new Point(0, 0),
-      new Point(0.5, 0),
-      new Point(1, 0),
-      new Point(1, 0.5),
-      new Point(1, 1),
-      new Point(0.5, 1),
-      new Point(0, 1),
-      new Point(0, 0.5)
-    ];
+    // const currentPoint = new Point(
+    //   bounds.left + bounds.width * anchor.left,
+    //   bounds.top + bounds.height * anchor.top
+    // );
 
-    for (const snapAnchor of snapAnchors) {
-      const snapDelta = guider.snap({
-        left: bounds.left + bounds.width * snapAnchor.left,
-        top: bounds.top + bounds.height * snapAnchor.top
-      });
+    // const snapAnchors = [
+    //   new Point(0, 0),
+    //   new Point(0.5, 0),
+    //   new Point(1, 0),
+    //   new Point(1, 0.5),
+    //   new Point(1, 1),
+    //   new Point(0.5, 1),
+    //   new Point(0, 1),
+    //   new Point(0, 0.5)
+    // ];
 
-      bounds = resize(bounds, snapDelta, snapAnchor, keepAspectRatio, keepCenter);
-      // if (snapDelta.left || snapDelta.top) break;
-    }
+    // for (const snapAnchor of snapAnchors) {
+    //   const snapDelta = guider.snap({
+    //     left: bounds.left + bounds.width * snapAnchor.left,
+    //     top: bounds.top + bounds.height * snapAnchor.top
+    //   });
 
-    this.setState({ guideLines: guider.getGuideLines(createBoundingRectPoints(bounds)) });
+    //   bounds = resize(bounds, snapDelta, snapAnchor, keepAspectRatio, keepCenter);
+    //   // if (snapDelta.left || snapDelta.top) break;
+    // }
+
+    // this.setState({ guideLines: guider.getGuideLines(createBoundingRectPoints(bounds)) });
     // this.targetDisplay.bounds = bounds;
+
+    this._visibleEntities.setBounds(bounds);
 
     this.props.onResizing(event);
   }
@@ -248,7 +251,7 @@ class ResizerComponent extends React.Component<{
 
     const { selection } = this.props;
 
-    const elements = new VisibleSyntheticElementCollection(...selection);
+    const elements = this._visibleEntities = new VisibleSyntheticElementCollection(...selection);
 
     const pointRadius = (this.props.pointRadius || POINT_RADIUS);
     const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
@@ -266,8 +269,7 @@ class ResizerComponent extends React.Component<{
       transformOrigin: "top left"
     };
 
-    // const capabilities = combinedSyntheticElementCapabilities(...selection);
-    const capabilities = { movable: false, resizable: false };
+    const capabilities = { movable: false, resizable: false }; // elements.getCapabilities();
     const movable = capabilities.movable;
 
     const points = [

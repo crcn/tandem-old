@@ -14,13 +14,18 @@ import {
 } from "@tandem/common";
 
 import {
+  ISyntheticComponent,
+  BaseSyntheticComponent,
+  DefaultSyntheticComponent,
+  evaluateSyntheticComponent,
+} from "./components";
+
+import {
   Sandbox,
   SandboxAction,
 } from "@tandem/sandbox";
 
-import {
-  SyntheticDOMElementClassDependency
-} from "./dependencies";
+import { SyntheticDOMNodeComponentClassDependency, SyntheticDOMElementClassDependency } from "./dependencies";
 
 import { WrapBus } from "mesh";
 
@@ -30,6 +35,7 @@ export class SyntheticBrowser extends Observable {
   private _sandbox: Sandbox;
   private _location: SyntheticLocation;
   private _renderer: ISyntheticDocumentRenderer;
+  private _documentComponent: BaseSyntheticComponent<any, any>;
 
   constructor(private _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer) {
     super();
@@ -37,6 +43,14 @@ export class SyntheticBrowser extends Observable {
     this._renderer.observe(new BubbleBus(this));
     this._sandbox  = new Sandbox(_dependencies, this.createSandboxGlobals.bind(this));
     this._sandbox.observe(new TypeWrapBus(SandboxAction.OPENED_MAIN_ENTRY, this.onSandboxLoaded.bind(this)));
+  }
+
+  get sandbox(): Sandbox {
+    return this._sandbox;
+  }
+
+  get dependencies(): Dependencies {
+    return this._dependencies;
   }
 
   @bindable()
@@ -54,16 +68,20 @@ export class SyntheticBrowser extends Observable {
 
   async open(url: string) {
     this._location = new SyntheticLocation(url);
-    this._sandbox.open(MimeTypes.HTML, url);
+    await this._sandbox.open(MimeTypes.HTML, url);
   }
 
   get document() {
     return this._window && this._window.document;
   }
 
+  get documentComponent() {
+    return this._documentComponent;
+  }
+
   protected createSandboxGlobals(): SyntheticWindow {
-    const window = new SyntheticWindow(this._sandbox, this._renderer, this._location);
-    this._registerElements(window);
+    const window = new SyntheticWindow(this, this._renderer, this._location);
+    this._registerElementClasses(window.document);
 
     // TODO - this shouldn't be here
     window["process"] = {
@@ -75,30 +93,25 @@ export class SyntheticBrowser extends Observable {
     return window;
   }
 
+  private _registerElementClasses(document: SyntheticDocument) {
+    for (const dependency of SyntheticDOMElementClassDependency.findAll(this._dependencies)) {
+      document.registerElementNS(dependency.xmlns, dependency.tagName, dependency.value);
+    }
+  }
+
   protected async onSandboxLoaded(action: SandboxAction) {
     const window = this._sandbox.global as SyntheticWindow;
     const mainExports = this._sandbox.mainExports;
 
-    // is a synthetic node
+    // The main entry module may be an HTML document. If that's the case, then the default
+    // exports will be a synthetic DOM node -- append that to the document body
     if (mainExports && mainExports.nodeType) {
       window.document.body.appendChild(mainExports);
     }
 
-    await window.document.load();
-
-    if (this._window) {
-      this._window.patch(window);
-    } else {
-      this._window = window;
-      this._renderer.target = this._window.document;
-    }
+    this._window = window;
+    this._documentComponent = this._renderer.target = await evaluateSyntheticComponent(window.document, this._documentComponent, this._dependencies) as BaseSyntheticComponent<any, any>;
 
     this.notify(action);
-  }
-
-  private _registerElements(window: SyntheticWindow) {
-    for (const elementClassDependency of SyntheticDOMElementClassDependency.findAll(this._dependencies)) {
-      window.document.registerElementNS(elementClassDependency.xmlns, elementClassDependency.tagName, elementClassDependency.value);
-    }
   }
 }

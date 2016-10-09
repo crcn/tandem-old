@@ -11,6 +11,7 @@ import { SelectionSizeComponent } from "@tandem/editor/components/selection-size
 import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { IEntityDisplay, IEntity, IVisibleEntity } from "@tandem/common/lang/entities";
+import { IVisibleDOMElement } from "@tandem/synthetic-browser";
 
 export default class SelectorComponent extends React.Component<{ editor: Editor, tool: PointerTool, workspace: Workspace, app: FrontEndApplication, zoom: number, allEntities: Array<IEntity> }, any> {
 
@@ -47,7 +48,7 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
     // is an IEntityDisplay
     if (!selection.length) return null;
 
-    const entireBounds = BoundingRect.merge(...flatten(selection.map((element) => element.getBoundingClientRect())));
+    const entireBounds = BoundingRect.merge(...flatten(selection.map((element) => element["getBoundingClientRect"] && (element as any as IVisibleDOMElement).getBoundingClientRect())));
 
     const borderWidth = 1 / this.props.zoom;
 

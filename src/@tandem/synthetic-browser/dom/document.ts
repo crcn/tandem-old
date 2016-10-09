@@ -8,6 +8,7 @@ import {
   SyntheticDOMElement,
   SyntheticDOMComment,
   SyntheticDOMContainer,
+  SyntheticDOMValueNode,
   syntheticElementClassType,
   SyntheticDocumentFragment,
 } from "./markup";
@@ -35,6 +36,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     super("#document", null);
     this.styleSheets = [];
     this._registeredElements = {};
+
   }
 
   get sandbox() {
@@ -61,15 +63,6 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     return this._window.location;
   }
 
-  toString() {
-    return `
-      <style>
-        ${this.styleSheets.map((styleSheet) => styleSheet.cssText).join("\n")}
-      </style>
-      ${this.childNodes.map((childNode) => childNode.toString()).join("")}
-    `;
-  }
-
   set location(value: SyntheticLocation) {
     this._window.location = value;
   }
@@ -78,19 +71,9 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     return visitor.visitDocument(this);
   }
 
-  patch(source: SyntheticDocument) {
-    super.patch(source);
-    this.styleSheets = source.styleSheets;
-  }
-
   createElementNS(ns: string, tagName: string): SyntheticDOMElement {
     const nsElements = this._registeredElements[ns] || {};
-    const elementClass = nsElements[tagName.toLowerCase()] || nsElements.default;
-
-    if (!elementClass) {
-      throw new Error(`Cannot create synthetic element ${ns}:${tagName}`);
-    }
-
+    const elementClass = nsElements[tagName.toLowerCase()] || nsElements.default || SyntheticDOMElement;
     return new elementClass(ns, tagName, this);
   }
 

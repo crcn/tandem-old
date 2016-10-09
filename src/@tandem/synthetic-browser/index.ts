@@ -4,3 +4,4 @@ export * from "./renderers";
 export * from "./dependencies";
 export * from "./sandbox";
 export * from "./location";
+export * from "./components";

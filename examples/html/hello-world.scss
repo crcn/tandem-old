@@ -2,6 +2,8 @@ $color: green;
 
 .container {
   padding: 20px;
+  position: fixed;
+  top: 10px;
   color: $color;
   background-color: yellow;
   border-radius: 10px;

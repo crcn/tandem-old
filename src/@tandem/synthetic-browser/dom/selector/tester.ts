@@ -2,7 +2,10 @@ import { parseSelector } from "./parser";
 import { SyntheticDOMNode, SyntheticDOMElement, MarkupNodeType } from "../markup";
 import { SelectorExpression, AllSelectorExpression } from "./ast";
 
-export function createSelectorTester(selectorSource: string) {
+const _testers = {};
+
+export function getSelectorTester(selectorSource: string): { test(node: SyntheticDOMElement): boolean } {
+  if (_testers[selectorSource]) return _testers[selectorSource];
 
   const ast = parseSelector(selectorSource);
 
@@ -18,7 +21,7 @@ export function createSelectorTester(selectorSource: string) {
     });
   }
 
-  return {
+  return _testers[selectorSource] = {
     test: test.bind(this, ast)
   };
 }

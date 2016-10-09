@@ -5,7 +5,9 @@ import { IComparable, IPatchable } from "@tandem/common/object";
 
 type ComparableTreeType = ITreeNode<any> & IComparable;
 
-export const patchTreeNode = (oldNode: ComparableTreeType, newNode: ComparableTreeType) => {
+export const patchTreeNode = (oldNode: ComparableTreeType, newNode: ComparableTreeType, patchLeaf?: (oldNode: ComparableTreeType, newNode: ComparableTreeType) => any) => {
+  if (!patchLeaf) patchLeaf = defaultPatchLeaf;
+
   const changes = diffArray(oldNode.children, newNode.children, compareTreeNodes);
 
   for (const rm of changes.remove) {
@@ -20,11 +22,7 @@ export const patchTreeNode = (oldNode: ComparableTreeType, newNode: ComparableTr
     if (oldNode.children.indexOf(oldChild) !== newIndex) {
       oldNode.insertChildAt(oldChild, newIndex);
     }
-    if (oldChild["patch"]) {
-      (<IPatchable>oldChild).patch(<IPatchable>newChild);
-    } else {
-      patchTreeNode(oldChild, newChild);
-    }
+    patchTreeNode(oldChild, newChild, patchLeaf);
   }
 
   patchLeaf(oldNode, newNode);
@@ -38,7 +36,7 @@ export const compareTreeNodes = (a: ITreeNode<any>, b: ITreeNode<any>): number =
   return 1;
 };
 
-export const patchLeaf = (oldNode: ComparableTreeType, newNode: ComparableTreeType) => {
+export const defaultPatchLeaf = (oldNode: ComparableTreeType, newNode: ComparableTreeType) => {
   for (const property of getPatchableProperties(oldNode)) {
     oldNode[property] = newNode[property];
   }

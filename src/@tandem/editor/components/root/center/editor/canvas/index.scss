@@ -12,6 +12,15 @@
   border: none;
 }
 
+.m-editor-stage-preview-isolate {
+  top: 0px;
+  left: 0px;
+  width: 2000px;
+  height: 2000px;
+  border: none;
+  background: #F60;
+}
+
 .m-editor-stage-canvas {
   background: transparent;
   width: 100%;

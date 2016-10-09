@@ -1,6 +1,12 @@
 <link rel="stylesheet" href="../html/hello-world.css">
+<link rel="stylesheet" href="./default.css">
 
 <tdproject xmlns="tandem">
-  <frame title="website 6" style="position:relative;width:1024px;height:768px;" src="../html/hello-world.html" />
-
+  <frame title="website 7" style="position:relative;width:1024px;height:768px;" src="../html/hello-world.html" />
+  <div>hello1</div>
+  <div>hello2</div>
+  <div>hello3</div>
+  <div>hello4</div>
+  <div>hello5</div>
+  <div>hello6</div>
 </tdproject>

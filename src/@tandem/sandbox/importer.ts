@@ -82,7 +82,7 @@ export class ModuleImporter extends Observable implements IInvoker {
       const moduleFactory = ModuleFactoryDependency.find(envKind, MimeTypeDependency.lookup(resolvedPath, this._dependencies), this._dependencies);
       const module = moduleCache[envKind] = moduleFactory.create(resolvedPath, content, this._sandbox);
       module.observe(new WrapBus(this.onModuleAction.bind(this)));
-      watchProperty(module, "content", this.onModuleContentChange.bind(this));
+      watchProperty(module, "content", this.onModuleContentChange.bind(this, module));
     }
 
     const module: IModule = moduleCache[envKind];
@@ -124,9 +124,11 @@ export class ModuleImporter extends Observable implements IInvoker {
   }
 
   protected onModuleContentChange(module: IModule, newContent: string, oldContent: string) {
+
     if (this._fileContentCache[module.fileName]) {
       this._fileContentCache[module.fileName] = newContent;
     }
+
     UpdateTemporaryFileContentAction.execute({ path: module.fileName, content: newContent }, this.bus);
   }
 

@@ -14,9 +14,12 @@ import {
 import { ModuleFactoryDependency } from "@tandem/sandbox";
 
 import {
+  HTML_XMLNS,
   MarkupModule,
-  SyntheticDOMElement,
+  SyntheticHTMLElement,
+  DefaultSyntheticComponent,
   SyntheticDOMElementClassDependency,
+  SyntheticDOMNodeComponentClassDependency,
 } from "@tandem/synthetic-browser";
 
 export const tdprojectExtensionDependencies = [
@@ -25,9 +28,12 @@ export const tdprojectExtensionDependencies = [
   new ReactComponentFactoryDependency("components/tools/pointer/tdprojectFrame", TDFrameStageToolComponent),
 
   // elements
-  new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "tdproject", SyntheticTDProject),
-  new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "default", SyntheticDOMElement),
-  new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "frame", SyntheticTDFrame),
+  new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "default", SyntheticHTMLElement),
+
+  // components
+  new SyntheticDOMNodeComponentClassDependency(TDPROJECT_XMLNS, "frame", SyntheticTDFrame),
+  new SyntheticDOMNodeComponentClassDependency(TDPROJECT_XMLNS, "default", DefaultSyntheticComponent),
+  new SyntheticDOMNodeComponentClassDependency(TDPROJECT_XMLNS, "tdproject", SyntheticTDProject),
 
   // sandbox
   new ModuleFactoryDependency(CommonMimeTypes.HTML, MimeTypes.TDPROJECT, MarkupModule),

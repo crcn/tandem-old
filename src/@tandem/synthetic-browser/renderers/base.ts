@@ -2,7 +2,7 @@ import { Action } from "@tandem/common";
 import { SyntheticRendererAction } from "../actions";
 import { WrapBus } from "mesh";
 import { Observable, IObservable } from "@tandem/common";
-import { BoundingRect, watchProperty } from "@tandem/common";
+import { BoundingRect, watchProperty, IActor } from "@tandem/common";
 import {
   MarkupNodeType,
   SyntheticDocument,
@@ -12,33 +12,44 @@ import {
   SyntheticCSSStyleDeclaration,
 } from "../dom";
 
+import {
+  ISyntheticComponent
+} from "../components";
+
 
 export interface ISyntheticDocumentRenderer extends IObservable {
   readonly element: HTMLElement;
-  target: SyntheticDOMNode;
+  target: ISyntheticComponent;
   getBoundingRect(element: SyntheticDOMElement);
 }
 
 export abstract class BaseRenderer extends Observable implements ISyntheticDocumentRenderer {
 
   readonly element: HTMLElement;
-  private _document: SyntheticDocument;
+  private _component: ISyntheticComponent;
   private _updating: boolean;
   private _rects: any;
   private _shouldUpdateAgain: boolean;
+  private _targetObserver: IActor;
 
   constructor() {
     super();
     this.element = document.createElement("div");
+    this._targetObserver = new WrapBus(this.onTargetAction.bind(this));
   }
 
-  get target(): SyntheticDocument {
-    return this._document;
+  get target(): ISyntheticComponent {
+    return this._component;
   }
 
-  set target(value: SyntheticDocument) {
-    this._document = value;
-    this._document.observe(new WrapBus(this.onTargetChange.bind(this)));
+  set target(value: ISyntheticComponent) {
+    if (this._component === value) return;
+
+    if (this._component) {
+      this._component.unobserve(this._targetObserver);
+    }
+    this._component = value;
+    this._component.observe(this._targetObserver);
     this.update();
   }
 
@@ -53,7 +64,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     this.notify(new SyntheticRendererAction(SyntheticRendererAction.UPDATE_RECTANGLES));
   }
 
-  protected onTargetChange(action: Action) {
+  protected onTargetAction(action: Action) {
     if (this._updating) {
       this._shouldUpdateAgain = true;
       return;

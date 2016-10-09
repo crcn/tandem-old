@@ -26,7 +26,6 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
     return this.childNodes.map((child) => child.toString()).join("");
   }
 
-
   public querySelector(selector: string) {
     return querySelector(this, selector);
   }

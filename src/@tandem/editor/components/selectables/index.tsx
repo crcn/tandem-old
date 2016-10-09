@@ -14,14 +14,14 @@ import { intersection, flatten } from "lodash";
 import { IVisibleEntity, IEntity } from "@tandem/common/lang/entities";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { IInjectable, APPLICATION_SINGLETON_NS, IActor, Action } from "@tandem/common";
-import { SyntheticDOMElement } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement, IVisibleDOMElement } from "@tandem/synthetic-browser";
 
 class SelectableComponent extends React.Component<{
-  element: SyntheticDOMElement,
+  element: IVisibleDOMElement,
   selection: any,
   app: FrontEndApplication,
   zoom: number,
-  onSyntheticMouseDown: (element: SyntheticDOMElement, event?: MouseEvent) => void
+  onSyntheticMouseDown: (element: IVisibleDOMElement, event?: MouseEvent) => void
 }, any> {
 
   private _i: number = 0;
@@ -57,7 +57,7 @@ class SelectableComponent extends React.Component<{
 
     // if (intersection(entities, selection || []).length) return null;
 
-    const bounds = element.getBoundingClientRect();
+    const bounds = (element as any as IVisibleDOMElement).getBoundingClientRect();
     if (!bounds) return null;
 
     const borderWidth = 2 / this.props.zoom;
@@ -93,7 +93,7 @@ class SelectableComponent extends React.Component<{
 export class SelectablesComponent extends React.Component<{
   app: FrontEndApplication,
   editor: Editor,
-  onSyntheticMouseDown: (element: SyntheticDOMElement, event?: MouseEvent) => void,
+  onSyntheticMouseDown: (element: IVisibleDOMElement, event?: MouseEvent) => void,
   canvasRootSelectable?: boolean
 }, { showSelectables: boolean }> {
 
@@ -137,7 +137,7 @@ export class SelectablesComponent extends React.Component<{
     // TODO - check if user is scrolling
     if (selection && editor.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
-    const allEntities = document.querySelectorAll("*"); // this.props.workspace.file.entity.flatten() as Array<IEntity>;
+    const allEntities = document.querySelectorAll("*").filter((element) => !!element["getBoundingClientRect"]) as any as IVisibleDOMElement[];
 
     // if (selection.preview.currentTool.type !== "pointer") return null;
 

@@ -72,11 +72,13 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
    */
 
   async [RemoveSelectionAction.REMOVE_SELECTION]() {
-    // this.app.editor.selection.forEach((synthetic) => {
-    //   if (synthetic.editor) {
-    //     synthetic.editor.execute(new RemoveSyntheticEditAction(synthetic));
-    //   }
-    // });
+
+    Promise.all(this.app.editor.selection.map((selection) => {
+      return selection.module.editor ? selection.module.editor.edit((edit) => {
+        edit.remove(selection);
+      }) : Promise.resolve();
+    }));
+
     this.bus.execute(new SelectAction());
   }
 

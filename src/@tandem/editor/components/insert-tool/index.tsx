@@ -4,7 +4,7 @@ import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { SelectablesComponent } from "@tandem/editor/components/selectables";
-import { SyntheticDOMElement } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement, IVisibleDOMElement } from "@tandem/synthetic-browser";
 import { SelectionSizeComponent } from "@tandem/editor/components/selection-size";
 import { SetToolAction, SelectAction } from "@tandem/editor/actions";
 import { Workspace, Editor, InsertTool } from "@tandem/editor/models";
@@ -22,11 +22,11 @@ import {
 
 class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, workspace: Workspace, app: FrontEndApplication, tool: InsertTool }, any> {
 
-  private _targetElement: SyntheticDOMElement;
+  private _targetElement: IVisibleDOMElement;
 
 
   private onRootMouseDown = (event) => {
-    this._targetElement = this.props.editor.document.body;
+    this._targetElement = this.props.editor.document.body as any as IVisibleDOMElement;
     this._insertNewItem(event);
   }
 
@@ -76,7 +76,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     // }
   }
 
-  onSyntheticMouseDown = (element: SyntheticDOMElement, event: MouseEvent) => {
+  onSyntheticMouseDown = (element: IVisibleDOMElement, event: MouseEvent) => {
     this._targetElement = element;
     this._insertNewItem(event);
   }

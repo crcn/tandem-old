@@ -8,22 +8,49 @@ import {
   Metadata,
   BubbleBus,
   IASTNode,
-  IPatchable,
   IComparable,
+  findTreeNode,
   patchTreeNode,
 } from "@tandem/common";
 
+import {
+  IMarkupModule,
+} from "@tandem/synthetic-browser/sandbox";
+
+import {
+  MarkupNodeType
+} from "./node-types";
+
+import { ISyntheticComponent } from "../../components";
 
 let _i = 0;
 
-export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, IPatchable, ISynthetic {
+export interface IDOMNode extends TreeNode<any>, IComparable {
+  uid: string;
+  firstChild: IDOMNode;
+  lastChild: IDOMNode;
+  nextSibling: IDOMNode;
+  previousSibling: IDOMNode;
+  insertBefore(newChild: IDOMNode, existingChild: IDOMNode);
+  replaceChild(child: IDOMNode, existingChild: IDOMNode);
+  nodeType: number;
+  nodeName: string;
+  appendChild(child: IDOMNode);
+  removeChild(child: IDOMNode);
+}
+
+export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, ISynthetic, IDOMNode {
+
+  public target: ISyntheticComponent;
+
+  readonly namespaceURI: string;
 
   /**
    * Unique id for the node -- used particularly for matching rendered DOM nodes
    * with with their synthetic versions.
    */
 
-  private _uid: string;
+  protected _uid: string;
 
   /**
    * TRUE if the node has been loaded
@@ -53,20 +80,24 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   /**
    */
 
-  public module: IModule;
+  public module: IMarkupModule;
+
+
+  private _targetNode: SyntheticDOMNode;
+  private _targetDocument: SyntheticDocument;
 
 
   constructor(readonly nodeName: string, public ownerDocument: SyntheticDocument) {
     super();
 
     this._metadata = new Metadata();
-    this._uid = String(++_i);
+    this._uid = Date.now() + "." + String(++_i);
 
     // similar to dataset -- specific to the editor
     this._metadata.observe(new BubbleBus(this));
   }
 
-  get childNodes(): SyntheticDOMNode[] {
+  get childNodes() {
     return this.children;
   }
 
@@ -78,6 +109,14 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return this._metadata;
   }
 
+  get parentElement(): HTMLElement {
+    const parent = this.parentNode;
+    if (!parent || parent.nodeType !== MarkupNodeType.ELEMENT) {
+      return null;
+    }
+    return parent as any as HTMLElement;
+  }
+
   get parentNode() {
     return this.parent;
   }
@@ -86,15 +125,13 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     // TODO
   }
 
-  patch(source: SyntheticDOMNode) {
-    patchTreeNode(this, source);
-    this._metadata.data = Object.assign({}, source.metadata.data);
-    this.expression = source.expression;
+  contains(node: IDOMNode) {
+    return !!findTreeNode(this, child => (<IDOMNode><any>child) === node);
   }
 
   abstract textContent: string;
 
-  compare(source: SyntheticDOMNode) {
+  compare(source: IDOMNode) {
     return Number(source.constructor === this.constructor && this.nodeName === source.nodeName);
   }
 
@@ -102,27 +139,22 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     // TODO
   }
 
-  onChildAdded(child: SyntheticDOMNode) {
-    super.onChildAdded(child);
-    if (this._loaded) {
-      child.load();
-    }
+  // isDefaultNamespace(namespaceURI: string) {
+  //   return this.namespaceURI === namespaceURI;
+  // }
+
+  isEqualNode(node: IDOMNode) {
+    return !!this.compare(node);
   }
 
-  async load() {
-    if (this._loaded) return;
-    this._loaded = true;
-    await this.loadLeaf();
-    await this.loadChildNodes();
+  isSameNode(node: IDOMNode) {
+    return (<IDOMNode><any>this) === node;
   }
 
-  protected loadLeaf() { }
-
-  protected async loadChildNodes() {
-    for (const child of this.childNodes) {
-      await child.load();
-    }
+  hasChildNodes() {
+    return this.childNodes.length !== 0;
   }
+
 
   abstract accept(visitor: IMarkupNodeVisitor);
   abstract cloneNode();

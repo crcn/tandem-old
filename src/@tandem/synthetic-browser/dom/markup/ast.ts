@@ -35,7 +35,7 @@ export interface IMarkupExpressionVisitor {
 }
 
 export interface IMarkupValueNodeExpression extends IMarkupExpression {
-  value: any;
+  nodeValue: any;
 }
 
 export abstract class MarkupExpression extends BaseExpression implements IMarkupExpression {
@@ -47,24 +47,30 @@ export abstract class MarkupExpression extends BaseExpression implements IMarkup
 }
 
 export abstract class MarkupNodeExpression extends MarkupExpression {
-  readonly name: string;
-  constructor(name: string, position: IRange) {
+  public parent: MarkupContainerExpression;
+  constructor(public nodeName: string, position: IRange) {
     super(position);
-    this.name = name;
   }
 }
 
 export abstract class MarkupContainerExpression extends MarkupNodeExpression {
-  constructor(name: string, readonly childNodes: Array<MarkupExpression>, position: IRange) {
+  constructor(name: string, readonly childNodes: Array<MarkupNodeExpression>, position: IRange) {
     super(name, position);
     childNodes.forEach((child) => child.parent = this);
+  }
+  removeChild(child: MarkupNodeExpression) {
+    const i = this.childNodes.indexOf(child);
+    if (i !== -1) {
+      child.parent = undefined;
+      this.childNodes.splice(i, 1);
+    }
   }
 }
 
 export class MarkupFragmentExpression extends MarkupContainerExpression implements IMarkupExpression {
   readonly kind = MarkupExpressionKind.FRAGMENT;
-  constructor(children: Array<MarkupExpression>, position: IRange) {
-    super("#document-fragment", children, position);
+  constructor(childNodes: Array<MarkupNodeExpression>, position: IRange) {
+    super("#document-fragment", childNodes, position);
   }
 
   accept(visitor: IMarkupExpressionVisitor) {
@@ -80,7 +86,7 @@ export class MarkupElementExpression extends MarkupContainerExpression {
   constructor(
     name: string,
     readonly attributes: Array<MarkupAttributeExpression>,
-    childNodes: Array<MarkupExpression>,
+    childNodes: Array<MarkupNodeExpression>,
     position: IRange) {
     super(name, childNodes, position);
     attributes.forEach((attribute) => attribute.parent = this);
@@ -90,6 +96,15 @@ export class MarkupElementExpression extends MarkupContainerExpression {
       if (attribute.name === name) return attribute.value;
     }
   }
+  setAttributeValue(name: string, value: string) {
+    for (const attribute of this.attributes) {
+      if (attribute.name === name) {
+        attribute.value = value;
+        return;
+      }
+    }
+    this.attributes.push(new MarkupAttributeExpression(name, value, null));
+  }
   accept(visitor: IMarkupExpressionVisitor) {
     return visitor.visitElement(this);
   }
@@ -97,7 +112,7 @@ export class MarkupElementExpression extends MarkupContainerExpression {
 
 export class MarkupAttributeExpression extends MarkupExpression {
   readonly kind = MarkupExpressionKind.ATTRIBUTE;
-  constructor(readonly name: string, readonly value: any, position: IRange) {
+  constructor(readonly name: string, public value: any, position: IRange) {
     super(position);
   }
 
@@ -108,9 +123,8 @@ export class MarkupAttributeExpression extends MarkupExpression {
 
 export class MarkupTextExpression extends MarkupNodeExpression implements IMarkupValueNodeExpression {
   readonly kind = MarkupExpressionKind.TEXT;
-  constructor(readonly value: string, position: IRange) {
+  constructor(public nodeValue: string, position: IRange) {
     super("#text", position);
-    this.value = value;
   }
 
   accept(visitor: IMarkupExpressionVisitor) {
@@ -121,9 +135,8 @@ export class MarkupTextExpression extends MarkupNodeExpression implements IMarku
 export class MarkupCommentExpression extends MarkupNodeExpression implements IMarkupValueNodeExpression {
   readonly kind = MarkupExpressionKind.COMMENT;
 
-  constructor(readonly value: string, position: IRange) {
+  constructor(public nodeValue: string, position: IRange) {
     super("#comment", position);
-    this.value = value;
   }
 
   accept(visitor: IMarkupExpressionVisitor) {

@@ -1,6 +1,6 @@
 import { ISynthetic } from "@tandem/sandbox";
 import { BoundingRect, IPoint } from "@tandem/common";
-import { SyntheticDOMElement, MarkupNodeType } from "@tandem/synthetic-browser";
+import { IVisibleDOMElement, MarkupNodeType, ISyntheticDOMCapabilities } from "@tandem/synthetic-browser";
 
 // class EntitySelectionDisplay implements IEntityDisplay {
 
@@ -25,9 +25,7 @@ import { SyntheticDOMElement, MarkupNodeType } from "@tandem/synthetic-browser";
 //     }
 //   }
 
-//   get bounds() {
-//     return BoundingRect.merge(...this.selection.map((entity) => entity.display.bounds));
-//   }
+
 
 //   set bounds(nbounds: BoundingRect) {
 
@@ -60,8 +58,51 @@ import { SyntheticDOMElement, MarkupNodeType } from "@tandem/synthetic-browser";
 //   }
 // }
 
-export class VisibleSyntheticElementCollection<T extends SyntheticDOMElement> extends Array<T> {
+export class VisibleSyntheticElementCollection<T extends IVisibleDOMElement> extends Array<T> {
+
   constructor(...elements: Array<ISynthetic>) {
-    super(...(<Array<T>>elements).filter((element: SyntheticDOMElement) => element.nodeType === MarkupNodeType.ELEMENT));
+    super(...(<Array<T>><any>elements).filter((element: IVisibleDOMElement) => element.nodeType === MarkupNodeType.ELEMENT));
   }
+
+  getBounds() {
+    return BoundingRect.merge(...this.map((entity) => entity.getBoundingClientRect()));
+  }
+
+  setBounds(nbounds: BoundingRect) {
+
+    const cbounds = this.getBounds();
+    for (const item of this) {
+      const ibounds     = item.getBoundingClientRect();
+
+      const percLeft   = (ibounds.left - cbounds.left) / cbounds.width;
+      const percTop    = (ibounds.top  - cbounds.top)  / cbounds.height;
+      const percWidth  = ibounds.width / cbounds.width;
+      const percHeight = ibounds.height / cbounds.height;
+
+      const left   = nbounds.left + nbounds.width * percLeft;
+      const top    = nbounds.top  + nbounds.height * percTop;
+      const right  = left + nbounds.width * percWidth;
+      const bottom = top + nbounds.height * percHeight;
+
+      console.log(left, top, right, bottom);
+      // itemDisplay.bounds = new BoundingRect(
+      //   left,
+      //   top,
+      //   right,
+      //   bottom
+      // );
+    }
+  }
+
+  getCapabilities(): ISyntheticDOMCapabilities {
+    const capabilities = { movable: true, resizable: true };
+    for (const item of this) {
+      const cap = item.getCapabilities();
+      for (const key in cap) {
+        capabilities[key] = capabilities[key] && cap[key];
+      }
+    }
+    return capabilities;
+  }
+
 }

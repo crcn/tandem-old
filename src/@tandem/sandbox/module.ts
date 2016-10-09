@@ -3,21 +3,30 @@ import { Sandbox } from "./sandbox";
 import { ModuleImporter } from "./importer";
 import { SandboxModuleAction } from "./actions";
 import {
+  Action,
   bindable,
   MimeTypes,
   Observable,
   IObservable,
 } from "@tandem/common";
-
-export interface IModuleEditor {
-
-}
+import { IModuleEditor } from "./editor";
+import { WrapBus } from "mesh";
 
 export interface IModule extends IObservable {
+
+  /**
+   * File name associated with the module
+   */
+
   fileName: string;
+
+  /**
+   * The source content
+   */
+
   content: string;
-  editor: IModuleEditor;
   evaluate(): Promise<any>;
+  editor: IModuleEditor;
 }
 
 export type moduleScriptType = (...rest: any[]) => any;
@@ -25,7 +34,6 @@ export abstract class BaseModule extends Observable implements IModule {
 
   @bindable()
   public content: string;
-
   readonly editor: IModuleEditor;
 
   protected _script: moduleScriptType;
@@ -59,6 +67,7 @@ export abstract class BaseModule extends Observable implements IModule {
     };
   }
 }
+
 
 // TODO - move to another extension
 export class CommonJSModule extends BaseModule {

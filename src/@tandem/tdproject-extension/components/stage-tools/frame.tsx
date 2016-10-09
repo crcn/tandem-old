@@ -3,12 +3,10 @@ import "./index.scss";
 import * as React from "react";
 import { BoundingRect } from "@tandem/common";
 import * as AutosizeInput from "react-input-autosize";
-import { SyntheticTDFrame } from "@tandem/tdproject-extension/synthetic";
 import { FrontEndApplication, Editor } from "@tandem/editor";
-import { } from "@tandem/synthetic-browser";
-// import {  } from "@tandem/synthetic-browser";
+import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 
-export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrame, editor: Editor }, { editTitle: boolean }> {
+export class TDFrameComponent extends React.Component<{ frame: SyntheticHTMLElement, editor: Editor }, { editTitle: boolean }> {
 
   constructor() {
     super();
@@ -32,12 +30,17 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrame,
 
   cancelEdit = () => {
     this.setState({ editTitle: false });
+
+    // easiest way to revert changes -- just reload the sandbox entirely
     this.props.frame.ownerDocument.sandbox.reload();
   }
 
   save = () => {
+    const frame = this.props.frame;
     this.setState({ editTitle: false });
-    // this.props.frame.ownerDocument.sandbox.reload();
+    frame.module.editor.edit((edit) => {
+      edit.setElementAttribute(frame, "title", frame.getAttribute("title"));
+    });
   }
 
   onKeyDown = (event) => {
@@ -51,15 +54,16 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrame,
   render() {
     const { frame, editor } = this.props;
     const bounds = frame.getBoundingClientRect();
+    const scale = 1 / editor.transform.scale;
 
     const style = {
       left   : bounds.left,
+      boxShadow: `0 0 0 ${scale}px rgba(0,0,0,0.1)`,
       top    : bounds.top,
       width  : bounds.width,
       height : bounds.height
     };
 
-    const scale = 1 / editor.transform.scale;
     const fontSize = 12;
 
     const titleStyle = {
@@ -85,7 +89,7 @@ export class TDFrameStageToolComponent extends React.Component<{ app: FrontEndAp
   render() {
     const { editor } = this.props.app;
     const { document, transform } = editor;
-    const frames = document.querySelectorAll("frame") as SyntheticTDFrame[];
+    const frames = document.querySelectorAll("frame") as SyntheticHTMLElement[];
     if (!frames.length) return null;
 
     const backgroundStyle = {
