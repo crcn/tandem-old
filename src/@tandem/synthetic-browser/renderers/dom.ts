@@ -1,6 +1,6 @@
 import { Action } from "@tandem/common";
 import { WrapBus } from "mesh";
-import { BoundingRect, watchProperty, patchTreeNode, flattenTree } from "@tandem/common";
+import { BoundingRect, watchProperty, patchTreeNode, flattenTree, calculateAbsoluteBounds } from "@tandem/common";
 import {
   MarkupNodeType,
   SyntheticDOMNode,
@@ -19,13 +19,14 @@ import {
   BaseRenderer
 } from "./base";
 
-export class DOMRenderer extends BaseRenderer {
+export class SyntheticDOMRenderer extends BaseRenderer {
 
   update() {
 
     // simple for now -- just reset the entire outer HTML
     // this.element.appendChild(this.target.render(document as any as SyntheticDocument) as any as Node);
     this.element.innerHTML = this.target.render();
+
     const syntheticComponentsBySourceUID = {};
 
     for (const component of flattenTree(this.target)) {

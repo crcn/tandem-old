@@ -29,12 +29,13 @@ export class Editor implements IEditor {
   private _currentTool: IEditorTool;
   public transform: Transform = new Transform();
   public selection: ISynthetic[] = [];
+  public browser: SyntheticBrowser;
 
   // TODO - this may change dependening on the editor type
   readonly type = "display";
   public cursor = null;
 
-  constructor(readonly browser: SyntheticBrowser) {}
+  constructor() {}
 
   get activeEntity(): IEntity {
     return null;
@@ -42,6 +43,10 @@ export class Editor implements IEditor {
 
   get document() {
     return this.browser && this.browser.document;
+  }
+
+  get documentComponent() {
+    return this.browser && this.browser.documentComponent;
   }
 
   get zoom() { return this.transform.scale; }

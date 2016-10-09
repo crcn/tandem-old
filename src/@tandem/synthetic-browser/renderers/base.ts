@@ -20,7 +20,7 @@ import {
 export interface ISyntheticDocumentRenderer extends IObservable {
   readonly element: HTMLElement;
   target: ISyntheticComponent;
-  getBoundingRect(element: SyntheticDOMElement);
+  getBoundingRect(element: SyntheticDOMElement): BoundingRect;
 }
 
 export abstract class BaseRenderer extends Observable implements ISyntheticDocumentRenderer {
@@ -43,7 +43,10 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   }
 
   set target(value: ISyntheticComponent) {
-    if (this._component === value) return;
+    if (this._component === value) {
+      this.update();
+      return;
+    }
 
     if (this._component) {
       this._component.unobserve(this._targetObserver);
@@ -51,6 +54,10 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     this._component = value;
     this._component.observe(this._targetObserver);
     this.update();
+  }
+
+  get rects() {
+    return this._rects;
   }
 
   getBoundingRect(element: SyntheticDOMElement) {
@@ -78,5 +85,37 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
         this.update();
       }
     });
+  }
+}
+
+
+export class BaseDecoratorRenderer implements ISyntheticDocumentRenderer {
+  constructor(protected _renderer: ISyntheticDocumentRenderer) {
+    _renderer.observe(new WrapBus(this.onTargetRendererAction.bind(this)));
+  }
+  getBoundingRect(element) {
+    return this._renderer.getBoundingRect(element);
+  }
+  observe(actor) {
+    return this._renderer.observe(actor);
+  }
+  unobserve(actor) {
+    return this._renderer.unobserve(actor);
+  }
+  notify(action) {
+    return this._renderer.notify(action);
+  }
+  get element() {
+    return this._renderer.element;
+  }
+  get target() {
+    return this._renderer.target;
+  }
+  set target(value) {
+    this._renderer.target = value;
+  }
+
+  protected onTargetRendererAction(action: Action) {
+
   }
 }

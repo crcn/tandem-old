@@ -1,6 +1,6 @@
 import { SyntheticLocation } from "./location";
 import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode } from "./dom";
-import { ISyntheticDocumentRenderer, DOMRenderer, TetherRenderer } from "./renderers";
+import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, TetherRenderer } from "./renderers";
 import {
   bindable,
   MimeTypes,
@@ -39,7 +39,7 @@ export class SyntheticBrowser extends Observable {
 
   constructor(private _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer) {
     super();
-    this._renderer = renderer || new DOMRenderer();
+    this._renderer = renderer || new SyntheticDOMRenderer();
     this._renderer.observe(new BubbleBus(this));
     this._sandbox  = new Sandbox(_dependencies, this.createSandboxGlobals.bind(this));
     this._sandbox.observe(new TypeWrapBus(SandboxAction.OPENED_MAIN_ENTRY, this.onSandboxLoaded.bind(this)));
@@ -109,8 +109,14 @@ export class SyntheticBrowser extends Observable {
       window.document.body.appendChild(mainExports);
     }
 
+    const documentComponent = this._documentComponent;
+
     this._window = window;
     this._documentComponent = this._renderer.target = await evaluateSyntheticComponent(window.document, this._documentComponent, this._dependencies) as BaseSyntheticComponent<any, any>;
+
+    if (this._documentComponent !== documentComponent) {
+      this.notify(new PropertyChangeAction("documentComponent", this._documentComponent, documentComponent));
+    }
 
     this.notify(action);
   }

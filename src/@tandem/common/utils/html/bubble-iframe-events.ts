@@ -1,12 +1,15 @@
-export default function (iframe, options: any = {}) {
+
+export function bubbleHTMLIframeEvents(iframe: HTMLIFrameElement, options: any = {}) {
   const window = iframe.contentWindow;
   const body   = window.document.childNodes[0];
 
   // TODO - this should be in its own util function
   function bubbleEvent(event) {
+
     if (/key|input/.test(event.type) && options.ignoreInputEvents && (/textarea|input/i.test(event.target.nodeName) || event.target.contentEditable === "true")) {
       return;
     }
+
     const clonedEvent = new Event(event.type, {
       bubbles: true,
       cancelable: true
@@ -22,7 +25,6 @@ export default function (iframe, options: any = {}) {
       try {
         clonedEvent[key] = value;
       } catch (e) { }
-
     }
 
     iframe.dispatchEvent(clonedEvent);

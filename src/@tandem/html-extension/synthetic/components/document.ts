@@ -2,7 +2,7 @@ import { BaseSyntheticComponent, SyntheticDocument } from "@tandem/synthetic-bro
 
 export class SyntheticHTMLDocument extends BaseSyntheticComponent<SyntheticDocument, HTMLDivElement> {
   render() {
-    return `<div data-uid="${this.source.uid}">
+    return `<div>
       <style>
         ${this.source.styleSheets.join("")}
       </style>

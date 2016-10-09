@@ -1,7 +1,14 @@
 
 import { WrapBus } from "mesh";
 import { MetadataKeys } from "@tandem/editor/constants";
-import { SyntheticBrowser } from "@tandem/synthetic-browser";
+import {
+  BaseRenderer,
+  SyntheticDOMNode,
+  SyntheticBrowser,
+  SyntheticDOMRenderer,
+  BaseDecoratorRenderer,
+  SyntheticRendererAction,
+} from "@tandem/synthetic-browser";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
@@ -17,6 +24,7 @@ import {
   loggable,
   IDisposable,
   easeOutCubic,
+  BoundingRect,
   DSFindAction,
   watchProperty,
   Dependencies,
@@ -49,11 +57,12 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
     this.logger.info("loading project file %s", filePath);
 
-    const browser = new SyntheticBrowser(this._dependencies);
+    const editor = new Editor();
+    const browser = editor.browser = new SyntheticBrowser(this._dependencies, new CanvasRenderer(editor, new SyntheticDOMRenderer()));
     browser.observe({ execute: (action) => this.bus.execute(action) });
     await browser.open(filePath);
 
-    this.app.editor = new Editor(browser);
+    this.app.editor = editor;
     this.bus.register(this.app.editor);
 
     await this.bus.execute(new SetToolAction(this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns)));
@@ -103,3 +112,34 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
 export const workspaceDependency = new ApplicationServiceDependency("workspace", WorkspaceService);
 
+/**
+ * Offset the transform skewing that happens with the editor
+ */
+
+class CanvasRenderer extends BaseDecoratorRenderer {
+  private _rects: any;
+
+  constructor(readonly editor: Editor, _renderer: BaseRenderer) {
+    super(_renderer);
+    this._rects = {};
+  }
+
+  getBoundingRect(element: SyntheticDOMNode) {
+    return this._rects[element.uid] || new BoundingRect(0, 0, 0, 0);
+  }
+
+  protected onTargetRendererAction(action: Action) {
+    if (action.type === SyntheticRendererAction.UPDATE_RECTANGLES) {
+      const offsetRects = {};
+      const { transform } = this.editor;
+      const rects = (<BaseRenderer>this._renderer).rects;
+      for (const uid in rects) {
+        offsetRects[uid] = (<BoundingRect>rects[uid]).move({
+          left: -transform.left,
+          top: -transform.top
+        }).zoom(1 / transform.scale);
+      }
+      this._rects = offsetRects;
+    }
+  }
+}

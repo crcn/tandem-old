@@ -8,3 +8,8 @@
   border-radius: 10px;
   color: orange;
 }
+
+html, body {
+  padding: 0px;
+  margin: 0px;
+}

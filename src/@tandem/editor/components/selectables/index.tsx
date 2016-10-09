@@ -126,7 +126,9 @@ export class SelectablesComponent extends React.Component<{
   render() {
 
     if (!this.state.showSelectables) return null;
-    const { document } = this.props.app.editor;
+    const { documentComponent } = this.props.app.editor;
+
+    if (!documentComponent) return null;
 
     const { editor, app } = this.props;
     const { selection } = editor;
@@ -137,11 +139,9 @@ export class SelectablesComponent extends React.Component<{
     // TODO - check if user is scrolling
     if (selection && editor.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
-    const allEntities = document.querySelectorAll("*").filter((element) => !!element["getBoundingClientRect"]) as any as IVisibleDOMElement[];
+    const allElements = documentComponent.querySelectorAll("*").map((component) => component.source).filter((element) => !!element["getBoundingClientRect"]) as any as IVisibleDOMElement[];
 
-    // if (selection.preview.currentTool.type !== "pointer") return null;
-
-    const selectables = allEntities.map((element, i) => (
+    const selectables = allElements.map((element, i) => (
       <SelectableComponent
         {...this.props}
         zoom={editor.zoom}

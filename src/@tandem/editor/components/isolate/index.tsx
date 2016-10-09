@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import bubbleIframeEvents from "@tandem/editor/utils/html/bubble-iframe-events";
+import { bubbleHTMLIframeEvents } from "@tandem/common";
 
 export default class IsolateComponent extends React.Component<any, any> {
 
@@ -61,7 +61,7 @@ export default class IsolateComponent extends React.Component<any, any> {
   }
 
   _addListeners() {
-    bubbleIframeEvents((this.refs as any).container, {
+    bubbleHTMLIframeEvents((this.refs as any).container, {
       ignoreInputEvents: this.props.ignoreInputEvents
     });
   }

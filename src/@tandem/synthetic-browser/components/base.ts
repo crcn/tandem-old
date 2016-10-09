@@ -1,5 +1,5 @@
-import { TreeNode, ITreeNode } from "@tandem/common";
-import { SyntheticDOMNode, MarkupNodeType, SyntheticDOMElement } from "../dom";
+import { TreeNode, ITreeNode, PropertyChangeAction, filterTree, findTreeNode } from "@tandem/common";
+import { SyntheticDOMNode, MarkupNodeType, SyntheticDOMElement, getSelectorTester } from "../dom";
 
 /**
  * Represents synthetic DOM nodes in a synthetic environment. Components include images, links, etc.
@@ -53,6 +53,16 @@ export abstract class BaseSyntheticComponent<T extends SyntheticDOMNode, U exten
     this.didEvaluate();
   }
 
+  querySelector(selector: string) {
+    const tester = getSelectorTester(selector);
+    return findTreeNode(this, (node) => tester.test(<SyntheticDOMElement><any>node.source));
+  }
+
+  querySelectorAll(selector: string) {
+    const tester = getSelectorTester(selector);
+    return filterTree(this, (node) => tester.test(<SyntheticDOMElement><any>node.source));
+  }
+
   get target(): U {
     return this._targetElement;
   }
@@ -65,6 +75,7 @@ export abstract class BaseSyntheticComponent<T extends SyntheticDOMNode, U exten
       this.targetDidUnmount();
     }
 
+    const oldElement = this._targetElement;
     this._targetElement = value;
 
     if (this._targetElement) {
@@ -76,15 +87,11 @@ export abstract class BaseSyntheticComponent<T extends SyntheticDOMNode, U exten
   async update() { }
   abstract render(): string;
 
-
-
   renderChildren() {
     return this.children.map((child) => child.render()).join("");
   }
 
-  protected didEvaluate() {
-
-  }
+  protected didEvaluate() { }
 
   protected targetDidUnmount() {
 
