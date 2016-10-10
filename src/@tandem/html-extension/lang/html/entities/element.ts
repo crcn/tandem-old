@@ -94,7 +94,6 @@ export class MarkupElementEntity extends MarkupContainerEntity<MarkupElementExpr
   protected onChildAction(action: Action) {
     super.onChildAction(action);
 
-
     const element = <Element>this.section.targetNode;
 
     if (action.target.parent === this && action.target.source instanceof MarkupAttributeExpression) {
@@ -115,7 +114,6 @@ export class MarkupElementEntity extends MarkupContainerEntity<MarkupElementExpr
         this.onAttributeChange(action.target.name, action.target.value);
       }
     }
-
   }
   protected onAttributeChange(name: string, value: any) {
 

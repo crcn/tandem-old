@@ -60,7 +60,7 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
   }
 
   render() {
-    return `<div class="frame-entity" ${this.uidToAttributeString()} ${this.source.attributesToString("style")}>
+    return `<div class="frame-entity" ${this.extraAttributesToString()} ${this.source.attributesToString("style")}>
       <iframe style="border:none;width:100%;height:100%;position:absolute;top:0px;left:0px;"></iframe>
 
       <!-- overlay to ensure that the iframe does not receive any mouse events that will foo with the editing tools -->

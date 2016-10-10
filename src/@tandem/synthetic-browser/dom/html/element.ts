@@ -1,5 +1,5 @@
+import { BoundingRect } from "@tandem/common";
 import { SyntheticDocument } from "../document";
-import { PropertyChangeAction, Action, BoundingRect } from "@tandem/common";
 import { SyntheticCSSStyleDeclaration, parseCSS, evaluateCSS } from "../css";
 import {
   parseMarkup,
@@ -11,9 +11,10 @@ import {
 
 import { getComputedStyle } from "./get-computed-style";
 
-export class SyntheticHTMLElement extends SyntheticDOMElement  {
+export class SyntheticHTMLElement extends SyntheticDOMElement {
 
   private _style: SyntheticCSSStyleDeclaration;
+  private _styleProxy: SyntheticCSSStyleDeclaration;
   private _rect: BoundingRect;
 
   constructor(ns: string, tagName: string, ownerDocument: SyntheticDocument) {
@@ -30,7 +31,7 @@ export class SyntheticHTMLElement extends SyntheticDOMElement  {
   }
 
   get style(): SyntheticCSSStyleDeclaration {
-    return this._style;
+    return this._styleProxy || this._resetStyleProxy();
   }
 
   get text(): string {
@@ -52,15 +53,12 @@ export class SyntheticHTMLElement extends SyntheticDOMElement  {
   set style(value: SyntheticCSSStyleDeclaration) {
     const style = this._style = new SyntheticCSSStyleDeclaration();
     Object.assign(style, value);
+    this.onStyleChange();
   }
 
-  protected onAttributesChange(action: Action) {
-    super.onAttributesAction(action);
-    if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
-      if (action.target instanceof SyntheticDOMAttribute) {
-        (<SyntheticDOMAttribute>action.target).name === "style";
-        this._style = evaluateCSS(parseCSS(`.style{${(<SyntheticDOMAttribute>action.target).value}}`)).rules[0].style;
-      }
+  protected onAttributeChange(name: string, value: string) {
+    if (name === "style") {
+      this._resetStyleFromAttribute();
     }
   }
 
@@ -75,5 +73,29 @@ export class SyntheticHTMLElement extends SyntheticDOMElement  {
   set innerHTML(value: string) {
     this.removeAllChildren();
     this.appendChild(evaluateMarkup(parseMarkup(value), this.ownerDocument));
+  }
+
+  private _resetStyleFromAttribute() {
+    this._style = SyntheticCSSStyleDeclaration.fromString(this.getAttribute("style") || "");
+    if (this._styleProxy) {
+      this._resetStyleProxy();
+    }
+  }
+
+  private _resetStyleProxy() {
+    return this._styleProxy = new Proxy(this._style, {
+      get: (target, propertyName, receiver) => {
+        return target[propertyName];
+      },
+      set: (target, propertyName, value, receiver) => {
+        target[propertyName] = value;
+        this.onStyleChange();
+        return true;
+      }
+    });
+  }
+
+  protected onStyleChange() {
+    this.setAttribute("style", this.style.cssText);
   }
 }

@@ -180,7 +180,7 @@ class ResizerComponent extends React.Component<{
     // this.setState({ guideLines: guider.getGuideLines(createBoundingRectPoints(bounds)) });
     // this.targetDisplay.bounds = bounds;
 
-    this._visibleEntities.scaledBounds = bounds;
+    this._visibleEntities.absoluteBounds = bounds;
 
     this.props.onResizing(event);
   }
@@ -195,7 +195,7 @@ class ResizerComponent extends React.Component<{
 
     // when dragging, need to fetch style of the selection
     // so that the dragger is relative to the entity"s position
-    const bounds = this._visibleEntities.scaledBounds;
+    const bounds = this._visibleEntities.absoluteBounds;
 
     const sx2 = bounds.left;
     const sy2 = bounds.top;
@@ -258,7 +258,7 @@ class ResizerComponent extends React.Component<{
     const pointRadius = (this.props.pointRadius || POINT_RADIUS);
     const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
 
-    const rect = BoundingRect.merge(...entities.map(entity => entity.scaledBounds));
+    const rect = BoundingRect.merge(...entities.map(entity => entity.absoluteBounds));
 
     // offset stroke
     const resizerStyle = {

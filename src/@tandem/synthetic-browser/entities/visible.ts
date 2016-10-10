@@ -28,7 +28,7 @@ export class SyntheticDOMCapabilities {
 export abstract class BaseVisibleSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U extends HTMLElement> extends BaseSyntheticDOMContainerEntity<T, U> {
 
   protected _renderedBounds: BoundingRect = BoundingRect.zeros();
-  abstract scaledBounds: BoundingRect;
+  abstract absoluteBounds: BoundingRect;
   abstract position: IPoint;
   abstract capabilities: SyntheticDOMCapabilities;
 

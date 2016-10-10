@@ -12,19 +12,24 @@ import { BoundingRect, IPoint } from "@tandem/common";
 export class SyntheticVisibleHTMLEntity extends BaseVisibleSyntheticDOMNodeEntity<SyntheticHTMLElement, any> {
 
   get position(): IPoint {
-    const bounds = this.scaledBounds;
+    const bounds = this.absoluteBounds;
     return { left: bounds.left, top: bounds.top };
   }
 
   set position(value: IPoint) {
-    this.scaledBounds = this.scaledBounds.move(value);
+    this.source.style.left = value.left + "px";
+    this.source.style.top  = value.top + "px";
   }
 
-  get scaledBounds() {
+  get absoluteBounds() {
     return this._renderedBounds;
   }
-  set scaledBounds(bounds: BoundingRect) {
-    console.log(bounds);
+
+  set absoluteBounds(bounds: BoundingRect) {
+    this.source.style.left   = bounds.left + "px";
+    this.source.style.top    = bounds.top + "px";
+    this.source.style.width  = bounds.width + "px";
+    this.source.style.height = bounds.height + "px";
   }
 
   get capabilities() {

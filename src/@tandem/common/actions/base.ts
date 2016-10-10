@@ -11,7 +11,7 @@ export class Action {
   private _canPropagate: boolean = true;
   private _canPropagateImmediately: boolean = true;
 
-  constructor(readonly type: string) { }
+  constructor(readonly type: string, readonly bubbles: boolean = true) { }
 
   set currentTarget(value) {
 

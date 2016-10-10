@@ -14,6 +14,6 @@ export class SyntheticHTMLImageEntity extends BaseSyntheticDOMNodeEntity<Synthet
   }
 
   render() {
-    return `<img ${this.uidToAttributeString()} ${this.source.attributesToString("class", "style")} src="${window.location.protocol}${window.location.host}/asset/${encodeURIComponent(this._absolutePath)}?${Date.now()}">`;
+    return `<img ${this.extraAttributesToString()} ${this.source.attributesToString("class", "style")} src="${window.location.protocol}${window.location.host}/asset/${encodeURIComponent(this._absolutePath)}?${Date.now()}">`;
   }
 }

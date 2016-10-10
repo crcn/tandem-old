@@ -14,6 +14,7 @@ export class ObservableCollection<T> extends Array<T> implements IObservable {
     super(...items);
     this._observable = new Observable(this);
     this._itemObserver = new BubbleBus(this);
+    this._watchItems(this);
   }
 
   observe(actor: IActor) {
@@ -50,13 +51,16 @@ export class ObservableCollection<T> extends Array<T> implements IObservable {
     }
     const ret = super.splice(start, deleteCount, ...newItems);
 
+    this._watchItems(newItems);
+    this.notify(new ArrayChangeAction(removedItems, newItems));
+    return ret;
+  }
+
+  private _watchItems(newItems: T[]) {
     for (const item of newItems) {
       if (item && item["observe"]) {
         (<IObservable><any>item).observe(this._itemObserver);
       }
     }
-
-    this.notify(new ArrayChangeAction(removedItems, newItems));
-    return ret;
   }
 }

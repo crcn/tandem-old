@@ -49,6 +49,7 @@ export class Observable implements IObservable {
 
   public notify(action: Action) {
     if (action.canPropagate === false) return;
+    if (action.target && action.bubbles === false) return;
     action.currentTarget = this._target;
     if (!this._observers) return;
     if (!Array.isArray(this._observers)) return this._observers.execute(action);

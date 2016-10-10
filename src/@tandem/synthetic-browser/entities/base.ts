@@ -13,6 +13,10 @@ import {
 } from "@tandem/common";
 
 import {
+  SyntheticDOMEntityAction
+} from "../actions";
+
+import {
   MarkupNodeType,
   SyntheticDOMNode,
   getSelectorTester,
@@ -103,8 +107,19 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
     return this._source;
   }
 
-  protected uidToAttributeString() {
-    return `data-uid="${this._uid}"`;
+  protected extraAttributesToString() {
+    const extra = this.getExtraAttributes();
+    const buffer = [];
+    for (const name in extra) {
+      buffer.push(` ${name}="${extra[name]}"`);
+    }
+    return buffer.join("");
+  }
+
+  getExtraAttributes() {
+    return {
+      "data-uid": this._uid
+    };
   }
 
   protected getDefaultMetadata() {
@@ -151,14 +166,10 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
   async load() { }
   async update() { }
 
-  loadSourceChildren() {
-
-  }
-
   render(): string {
     if (this.source.nodeType === MarkupNodeType.ELEMENT) {
       return `
-      <${this.source.nodeName} ${this.uidToAttributeString()} ${(<SyntheticDOMElement><any>this.source).attributes}>
+      <${this.source.nodeName} ${this.extraAttributesToString()} ${(<SyntheticDOMElement><any>this.source).attributes}>
         ${this.renderChildren()}
       </${this.source.nodeName}>
       `;
@@ -174,13 +185,16 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
   }
 
   protected didEvaluate() { }
-
-  protected targetDidUnmount() {
-
-  }
-
+  protected targetDidUnmount() { }
   protected onSourceAction(action: Action) {
+
+    // flag this entity as dirty, but do not bubble since the source is already covering that -- all
+    // entity ancestorys from here should receive a source action, and as a result should also emit
+    // a dirty notification.
+    this.notify(new SyntheticDOMEntityAction(SyntheticDOMEntityAction.DOM_ENTITY_DIRTY, false));
   }
+
+  protected onChildAction(action: Action) {}
 
   protected onBrowserAction(action: Action) {
     if (action.type === SyntheticRendererAction.UPDATE_RECTANGLES) {

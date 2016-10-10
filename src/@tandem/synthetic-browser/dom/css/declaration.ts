@@ -336,9 +336,22 @@ export class SyntheticCSSStyleDeclaration {
       const buffer = [];
 
       for (const key in this) {
-        buffer.push(kebabCase(key), ":", this[key], ";");
+        const value = this[key];
+        if (value) {
+          buffer.push(kebabCase(key), ":", value, ";");
+        }
       }
 
       return buffer.join("");
+    }
+
+    static fromString(source: string) {
+      const decl = new SyntheticCSSStyleDeclaration();
+      for (const expr of source.split(";")) {
+        const [name, value] = expr.split(":");
+        if (!name || !value) continue;
+        decl[name.trim()] = value.trim();
+      }
+      return decl;
     }
 }

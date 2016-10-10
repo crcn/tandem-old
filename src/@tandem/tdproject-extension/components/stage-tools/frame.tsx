@@ -54,7 +54,7 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrameE
 
   render() {
     const { frame, editor } = this.props;
-    const bounds = frame.scaledBounds;
+    const bounds = frame.absoluteBounds;
     const scale = 1 / editor.transform.scale;
 
     const style = {

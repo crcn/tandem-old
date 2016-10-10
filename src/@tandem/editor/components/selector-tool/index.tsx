@@ -47,7 +47,7 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
     // is an IEntityDisplay
     if (!selection.length) return null;
 
-    const entireBounds = selection.scaledBounds;
+    const entireBounds = selection.absoluteBounds;
 
     const borderWidth = 1 / this.props.zoom;
 

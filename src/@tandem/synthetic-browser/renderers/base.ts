@@ -34,7 +34,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   constructor() {
     super();
     this.element = document.createElement("div");
-    this._targetObserver = new WrapBus(this.onTargetAction.bind(this));
+    this._targetObserver = new WrapBus(this.onEntityAction.bind(this));
   }
 
   get entity(): BaseSyntheticDOMNodeEntity<any, any> {
@@ -70,7 +70,11 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     this.notify(new SyntheticRendererAction(SyntheticRendererAction.UPDATE_RECTANGLES));
   }
 
-  protected onTargetAction(action: Action) {
+  protected onEntityAction(action: Action) {
+    this.requestUpdate();
+  }
+
+  protected requestUpdate() {
     if (this._updating) {
       this._shouldUpdateAgain = true;
       return;
@@ -81,7 +85,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
       this._updating = false;
       if (this._shouldUpdateAgain) {
         this._shouldUpdateAgain = false;
-        this.update();
+        this.requestUpdate();
       }
     });
   }

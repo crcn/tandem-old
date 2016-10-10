@@ -57,7 +57,7 @@ class SelectableComponent extends React.Component<{
 
     // if (intersection(entities, selection || []).length) return null;
 
-    const bounds = entity.scaledBounds;
+    const bounds = entity.absoluteBounds;
     if (!bounds) return null;
 
     const borderWidth = 2 / this.props.zoom;
@@ -139,7 +139,7 @@ export class SelectablesComponent extends React.Component<{
     // TODO - check if user is scrolling
     if (selection && editor.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
-    const allEntities = documentEntity.querySelectorAll("*").filter((entity) => entity["scaledBounds"]) as any as BaseVisibleSyntheticDOMNodeEntity<any, any>[];
+    const allEntities = documentEntity.querySelectorAll("*").filter((entity) => entity["absoluteBounds"]) as any as BaseVisibleSyntheticDOMNodeEntity<any, any>[];
 
     const selectables = allEntities.map((entity, i) => (
       <SelectableComponent

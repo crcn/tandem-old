@@ -102,6 +102,8 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     } else {
       this.attributes.push(new SyntheticDOMAttribute(name, value));
     }
+
+    this.onAttributeChange(name, value);
   }
 
   toString(): string {
@@ -127,6 +129,10 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   protected onAttributesAction(action: Action) {
     this.notify(action);
+  }
+
+  protected onAttributeChange(name: string, value: any) {
+
   }
 
   cloneNode() {

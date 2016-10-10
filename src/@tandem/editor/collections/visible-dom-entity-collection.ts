@@ -69,19 +69,19 @@ export class VisibleDOMEntityCollection<T extends BaseVisibleSyntheticDOMNodeEnt
     super(...(<Array<T>><any>components).filter((entity: BaseVisibleSyntheticDOMNodeEntity<any, any>) => entity instanceof BaseVisibleSyntheticDOMNodeEntity));
   }
 
-  get scaledBounds() {
-    return BoundingRect.merge(...this.map((entity) => entity.scaledBounds));
+  get absoluteBounds() {
+    return BoundingRect.merge(...this.map((entity) => entity.absoluteBounds));
   }
 
   get position(): IPoint {
-    const bounds = this.scaledBounds;
+    const bounds = this.absoluteBounds;
     return { left: bounds.left, top: bounds.top };
   }
 
   set position(position: IPoint) {
     const epos = this.position;
     for (const item of this) {
-      const itemBounds  = item.scaledBounds;
+      const itemBounds  = item.absoluteBounds;
       item.position = {
         left: position.left + (itemBounds.left - epos.left),
         top : position.top  + (itemBounds.top  - epos.top)
@@ -89,11 +89,11 @@ export class VisibleDOMEntityCollection<T extends BaseVisibleSyntheticDOMNodeEnt
     }
   }
 
-  set scaledBounds(nbounds: BoundingRect) {
+  set absoluteBounds(nbounds: BoundingRect) {
 
-    const cbounds = this.scaledBounds;
+    const cbounds = this.absoluteBounds;
     for (const item of this) {
-      const ibounds     = item.scaledBounds;
+      const ibounds     = item.absoluteBounds;
 
       const percLeft   = (ibounds.left - cbounds.left) / cbounds.width;
       const percTop    = (ibounds.top  - cbounds.top)  / cbounds.height;
@@ -105,13 +105,12 @@ export class VisibleDOMEntityCollection<T extends BaseVisibleSyntheticDOMNodeEnt
       const right  = left + nbounds.width * percWidth;
       const bottom = top + nbounds.height * percHeight;
 
-      console.log(left, top, right, bottom);
-      // itemDisplay.bounds = new BoundingRect(
-      //   left,
-      //   top,
-      //   right,
-      //   bottom
-      // );
+      item.absoluteBounds = new BoundingRect(
+        left,
+        top,
+        right,
+        bottom
+      );
     }
   }
 
