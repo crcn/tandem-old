@@ -5,6 +5,7 @@ import {
   BaseRenderer,
   SyntheticDOMNode,
   SyntheticBrowser,
+  SyntheticDOMElement,
   SyntheticDOMRenderer,
   BaseDecoratorRenderer,
   SyntheticRendererAction,
@@ -69,7 +70,22 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
   }
 
   async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
-    await this._loadWorkspaces();
+
+    const path = action.path;
+
+    if (!/\.tdproject$/.test(path)) {
+      const body = this.app.editor.browser.document.body;
+      const tdproject = <SyntheticDOMElement>body.querySelector("tdproject");
+      const { editor } = tdproject.module;
+
+      editor.edit((edit) => {
+        const frame = this.app.editor.browser.document.createElement("frame");
+        frame.setAttribute("src", path);
+        edit.appendChildNode(tdproject, frame);
+      });
+    } else {
+      await this._loadWorkspaces();
+    }
 
     // if the document is hidden, then notify the back-end
     // that there is no visible tandem window, so it should open another

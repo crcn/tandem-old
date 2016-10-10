@@ -16,12 +16,14 @@ export class SyntheticTDFrame extends BaseSyntheticComponent<SyntheticHTMLElemen
 
   private _browser: SyntheticBrowser;
 
-  async load() {
+  async evaluate() {
 
-    const documentRenderer = new SyntheticDOMRenderer();
 
-    this._browser = new SyntheticBrowser(this.source.ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer));
-    watchProperty(this._browser, "documentComponent", this.onBrowserDocumentComponentChange.bind(this));
+    if (!this._browser) {
+      const documentRenderer = new SyntheticDOMRenderer();
+      this._browser = new SyntheticBrowser(this.source.ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer));
+      watchProperty(this._browser, "documentComponent", this.onBrowserDocumentComponentChange.bind(this));
+    }
 
     if (this.source.getAttribute("src")) {
       const src = this.source.getAttribute("src");
@@ -37,23 +39,20 @@ export class SyntheticTDFrame extends BaseSyntheticComponent<SyntheticHTMLElemen
     return this._browser.documentComponent;
   }
 
-  didEvaluate() {
-
-  }
-
   protected onBrowserDocumentComponentChange() {
     while (this.firstChild) this.removeChild(this.firstChild);
-    console.log(this._browser.documentComponent);
     this.appendChild(this._browser.documentComponent);
   }
 
   targetDidMount() {
     const iframe = this.target.querySelector("iframe") as HTMLIFrameElement;
-    iframe.contentDocument.body.appendChild(this._browser.renderer.element);
+    if (iframe.contentDocument) {
+      iframe.contentDocument.body.appendChild(this._browser.renderer.element);
+    }
   }
 
   render() {
-    return `<div class="m-frame-component" ${this.source.attributesToString("data-uid", "style")}>
+    return `<div class="m-frame-component" style="width:1024px;height:768px;position:relative;" ${this.source.attributesToString("data-uid", "style")}>
       <iframe style="border:none;width:100%;height:100%;position:absolute;top:0px;left:0px;"></iframe>
 
       <!-- overlay to ensure that the iframe does not receive any mouse events that will foo with the editing tools -->

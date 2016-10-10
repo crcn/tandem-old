@@ -139,7 +139,7 @@ export class SelectablesComponent extends React.Component<{
     // TODO - check if user is scrolling
     if (selection && editor.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
-    const allElements = documentComponent.querySelectorAll("*").map((component) => component.source).filter((element) => !!element["getBoundingClientRect"]) as any as IVisibleDOMElement[];
+    const allElements = documentComponent.querySelectorAll("*").map((component) => component.source).filter((element) => !!element["getBoundingClientRect"] && element.module && element.module.editor) as any as IVisibleDOMElement[];
 
     const selectables = allElements.map((element, i) => (
       <SelectableComponent

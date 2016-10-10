@@ -40,9 +40,9 @@ export abstract class BaseModule extends Observable implements IModule {
 
   constructor(readonly fileName: string, content: string, readonly sandbox: Sandbox) {
     super();
-    this.initialize();
     this.content = content;
     this.editor = this.createEditor();
+    this.initialize();
   }
 
   protected createEditor(): IModuleEditor {
@@ -67,7 +67,6 @@ export abstract class BaseModule extends Observable implements IModule {
     };
   }
 }
-
 
 // TODO - move to another extension
 export class CommonJSModule extends BaseModule {

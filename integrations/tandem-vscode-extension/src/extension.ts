@@ -37,7 +37,6 @@ export async function activate(context: vscode.ExtensionContext) {
     class VSCodeService extends BaseApplicationService<ServerApplication> {
         async [UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT](action: UpdateTemporaryFileContentAction) {
             _setEditorContent(action);
-            const uri = (await vscode.workspace.findFiles(action.path, "")).pop();
         }
         async [FilesSelectedAction.FILES_SELECTED](action: FilesSelectedAction) {
             const document = await vscode.workspace.openTextDocument(action.items[0].path);
@@ -58,13 +57,11 @@ export async function activate(context: vscode.ExtensionContext) {
 
     async function _setEditorContent({ content, path }) {
 
-        if (_content === content) return;
+        const editor = vscode.window.activeTextEditor;
 
-        let editor = vscode.window.visibleTextEditors.find(function(editor) {
-            return editor.document.uri == _documentUri;
-        });
+        if (editor.document.fileName !== path || editor.document.getText() === content) return;
 
-        if (editor.document.fileName !== path) return;
+        console.log("IGNORE");
 
         let oldText = editor.document.getText();
         var newContent = _content = content;
@@ -139,9 +136,16 @@ export async function activate(context: vscode.ExtensionContext) {
             path: path
         }, server.bus);
 
+        console.log("UPDATE DOC");
+
         // cached content does not match, meaning that it likely changed in the browser
         if (cachedFile.content !== editorContent) {
-            _setEditorContent({ path: doc.fileName, content: cachedFile.content });
+            console.log("SET CONTENT", cachedFile.content);
+            try {
+                await _setEditorContent({ path: doc.fileName, content: cachedFile.content });
+            } catch(e) {
+                console.log
+            }
         } else {
             _update(doc);
         }

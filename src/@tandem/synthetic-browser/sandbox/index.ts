@@ -3,6 +3,7 @@ import {
   parseMarkup,
   evaluateMarkup,
   SyntheticWindow,
+  SyntheticDOMNode,
   MarkupExpression,
   SyntheticDOMElement,
   MarkupNodeExpression,
@@ -44,6 +45,7 @@ export class MarkupModule extends BaseModule implements IMarkupModule {
 
 export interface IMarkupEdit extends IModuleEdit {
   setElementAttribute(element: SyntheticDOMElement, name: string, value: string);
+  appendChildNode(parent: SyntheticDOMElement, child: SyntheticDOMNode);
 }
 
 export interface IMarkupEditor extends IModuleEditor {
@@ -57,9 +59,19 @@ export class SetElementAttributeAction extends Action {
   }
 }
 
+export class AppendChildNodeAction extends Action {
+  static readonly APPEND_CHILD_NODE = "appendChildNode";
+  constructor(readonly parent: SyntheticDOMElement, readonly child: SyntheticDOMNode) {
+    super(AppendChildNodeAction.APPEND_CHILD_NODE);
+  }
+}
+
 export class MarkupEdit extends BaseModuleEdit implements IMarkupEdit {
   setElementAttribute(element, name, value) {
     this.actions.push(new SetElementAttributeAction(element, name, value));
+  }
+  appendChildNode(parent: SyntheticDOMElement, child: SyntheticDOMNode) {
+    this.actions.push(new AppendChildNodeAction(parent, child));
   }
 }
 
@@ -74,6 +86,10 @@ export class MarkupEditor extends BaseModuleEditor<MarkupEdit> implements IMarku
 
   [SetElementAttributeAction.SET_ELEMENT_ATTRIBUTE](action: SetElementAttributeAction) {
     (<MarkupElementExpression>action.item.expression).setAttributeValue(action.name, action.value);
+  }
+
+  [AppendChildNodeAction.APPEND_CHILD_NODE](action: AppendChildNodeAction) {
+    (<MarkupElementExpression>action.parent.expression).appendChild(parseMarkup(action.child.toString()));
   }
 
   removeSynthetic(action: RemoveSyntheticAction) {

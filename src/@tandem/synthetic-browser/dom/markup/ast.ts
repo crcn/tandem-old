@@ -96,6 +96,9 @@ export class MarkupElementExpression extends MarkupContainerExpression {
       if (attribute.name === name) return attribute.value;
     }
   }
+  appendChild(child: MarkupNodeExpression) {
+    this.childNodes.push(child);
+  }
   setAttributeValue(name: string, value: string) {
     for (const attribute of this.attributes) {
       if (attribute.name === name) {
