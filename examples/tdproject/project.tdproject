@@ -1,3 +1,4 @@
 <tdproject xmlns="tandem">
-  <frame title="something" style="position:absolute;width:1024px;height:768px;" src="../html/hello-world.html"></frame>
+  <frame title="A b" style="position:absolute;width:1024px;height:768px;" src="../html/hello-world.html"></frame>
+  <frame src="/Users/crcn/Developer/public/tandem/examples/bootstrap/hello-world.html" title="fsdfsd" style="left:100px;width:1024px;height:1024px;position:absolute;"></frame>
 </tdproject>

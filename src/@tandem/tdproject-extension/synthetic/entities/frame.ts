@@ -23,6 +23,11 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
 
   async evaluate() {
 
+    if (!this.source.hasAttribute("style")) {
+      // TODO - define platform preset here
+      this.source.setAttribute("style", "position: absolute; width: 1024px; height: 768px;");
+    }
+
     if (!this._browser) {
       const documentRenderer = new SyntheticDOMRenderer();
       this._browser = new SyntheticBrowser(this.source.ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer));
@@ -35,7 +40,7 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
       const absolutePath = await window.sandbox.importer.resolve(src, window.location.toString());
       await this._browser.open(absolutePath);
     } else {
-
+      // add frame body here
     }
   }
 

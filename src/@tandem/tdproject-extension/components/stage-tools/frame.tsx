@@ -7,30 +7,29 @@ import { FrontEndApplication, Editor } from "@tandem/editor";
 import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { SyntheticTDFrameEntity } from "@tandem/tdproject-extension/synthetic";
 
-export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrameEntity, editor: Editor }, { editTitle: boolean }> {
+export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrameEntity, editor: Editor }, { editedTitle: string }> {
 
   constructor() {
     super();
     this.state = {
-      editTitle: false
+      editedTitle: undefined
     };
   }
 
   editTitle = () => {
     if (!this.props.frame.module.editor) return;
-    this.setState({ editTitle: true });
+    this.setState({ editedTitle: this.props.frame.source.getAttribute("title") });
     requestAnimationFrame(() => {
       (this.refs as any).input.select();
     });
   }
 
   onTitleChange = (event) => {
-    // edit(this.props.frame.source, new SetAttributeEdit());
-    this.props.frame.source.setAttribute("title", event.target.value);
+    this.setState({ editedTitle: event.target.value });
   }
 
   cancelEdit = () => {
-    this.setState({ editTitle: false });
+    this.setState({ editedTitle: undefined });
 
     // easiest way to revert changes -- just reload the sandbox entirely
     this.props.frame.sandbox.reload();
@@ -38,9 +37,15 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrameE
 
   save = () => {
     const frame = this.props.frame;
-    this.setState({ editTitle: false });
     frame.module.editor.edit((edit) => {
-      edit.setElementAttribute(frame.source, "title", frame.source.getAttribute("title"));
+
+      // trigger immediate change
+      this.props.frame.source.setAttribute("title", this.state.editedTitle);
+
+      // save it
+      edit.setElementAttribute(frame.source, "title", this.state.editedTitle);
+
+      this.setState({ editedTitle: undefined });
     });
   }
 
@@ -76,11 +81,9 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrameE
       transformOrigin: "top left"
     };
 
-    const title = frame.source.getAttribute("title");
-
     return <div className="m-tdframe-stage-tool--item" style={style}>
       <div className="m-tdframe-stage-tool--item--title" onDoubleClick={this.editTitle} style={titleStyle}>
-        { this.state.editTitle ? <AutosizeInput ref="input" value={title} onChange={this.onTitleChange} onBlur={this.cancelEdit} onKeyDown={this.onKeyDown} /> : <span>{frame.source.getAttribute("title") || "Untitled"}</span> }
+        { this.state.editedTitle != null ? <AutosizeInput ref="input" value={this.state.editedTitle} onChange={this.onTitleChange} onBlur={this.cancelEdit} onKeyDown={this.onKeyDown} /> : <span>{frame.source.getAttribute("title") || "Untitled"}</span> }
       </div>
     </div>;
   }
