@@ -51,7 +51,7 @@ export class SyntheticTDFrame extends BaseSyntheticComponent<SyntheticHTMLElemen
   }
 
   render() {
-    return `<div class="m-frame-component" style="width:1024px;height:768px;position:relative;" ${this.source.attributesToString("data-uid", "style")}>
+    return `<div class="m-frame-component" ${this.source.attributesToString("data-uid", "style")} style="width:1024px;height:768px;position:relative;">
       <iframe style="border:none;width:100%;height:100%;position:absolute;top:0px;left:0px;"></iframe>
 
       <!-- overlay to ensure that the iframe does not receive any mouse events that will foo with the editing tools -->

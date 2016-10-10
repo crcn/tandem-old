@@ -14,6 +14,6 @@ export class SyntheticHTMLImage extends BaseSyntheticComponent<SyntheticDOMEleme
   }
 
   render() {
-    return `<img ${this.source.attributesToString("class", "style")} src="/asset/${encodeURIComponent(this._absolutePath)}?${Date.now()}">`;
+    return `<img ${this.source.attributesToString("class", "style")} src="${window.location.protocol}${window.location.host}/asset/${encodeURIComponent(this._absolutePath)}?${Date.now()}">`;
   }
 }

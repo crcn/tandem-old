@@ -1,5 +1,20 @@
-import { TreeNode, ITreeNode, PropertyChangeAction, filterTree, findTreeNode } from "@tandem/common";
-import { SyntheticDOMNode, MarkupNodeType, SyntheticDOMElement, getSelectorTester } from "../dom";
+import {
+  IActor,
+  Action,
+  TreeNode,
+  ITreeNode,
+  filterTree,
+  findTreeNode,
+  PropertyChangeAction,
+} from "@tandem/common";
+import {
+  MarkupNodeType,
+  SyntheticDOMNode,
+  getSelectorTester,
+  SyntheticDOMElement,
+} from "../dom";
+
+import { WrapBus } from "mesh";
 
 /**
  * Represents synthetic DOM nodes in a synthetic environment. Components include images, links, etc.
@@ -37,9 +52,13 @@ export abstract class BaseSyntheticComponent<T extends SyntheticDOMNode, U exten
 
   private _evaluated: boolean;
   private _targetElement: U;
+  private _sourceObserver: IActor;
+  private _source: T;
 
-  constructor(public source: T) {
+  constructor(source: T) {
     super();
+    this._sourceObserver = new WrapBus(this.onSourceAction.bind(this));
+    this.source = source;
   }
 
   async evaluate() {
@@ -61,6 +80,20 @@ export abstract class BaseSyntheticComponent<T extends SyntheticDOMNode, U exten
   querySelectorAll(selector: string) {
     const tester = getSelectorTester(selector);
     return filterTree(this, (node) => tester.test(<SyntheticDOMElement><any>node.source));
+  }
+
+  get source(): T {
+    return this._source;
+  }
+
+  set source(value: T) {
+    const oldSource = this._source;
+    if (this._source) {
+      this._source.unobserve(this._sourceObserver);
+    }
+    this._source = value;
+    this._source.observe(this._sourceObserver);
+    this.notify(new PropertyChangeAction("source", this._source, oldSource));
   }
 
   get target(): U {
@@ -96,6 +129,9 @@ export abstract class BaseSyntheticComponent<T extends SyntheticDOMNode, U exten
   protected targetDidUnmount() {
 
   }
+
+  protected onSourceAction(action: Action) {
+  };
 
   protected targetDidMount() {
 
