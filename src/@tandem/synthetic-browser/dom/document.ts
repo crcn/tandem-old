@@ -38,8 +38,12 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     this._registeredElements = {};
   }
 
+  get browser() {
+    return this._window.browser;
+  }
+
   get sandbox() {
-    return this.defaultView.sandbox;
+    return this.defaultView && this.defaultView.sandbox;
   }
 
   get defaultView(): SyntheticWindow {

@@ -1,7 +1,14 @@
 {
+
+  // http://www.w3schools.com/cssref/css_selectors.asp
+
   const {
+    ClassNameSelectorExpression,
+    IDSelectorExpression,
     AllSelectorExpression,
     TagNameSelectorExpression,
+    ListSelectorExpression,
+    DescendentSelectorExpression,
   } = require("./ast");
 
   function position() {
@@ -12,15 +19,40 @@
   }
 }
 
-Start = ElementSelector
+Start = ListSelector
 
-ElementSelector = TagNameSelector/AllSelector
-
-TagNameSelector = Word {
-  return new TagNameSelectorExpression(text(), position());
+ListSelector = first:CombinatorSelector rest:ListSelectorRest* {
+  return rest.length ? new ListSelectorExpression([first].concat(rest), position) : first;
 }
+
+ListSelectorRest = _ "," _ selector: CombinatorSelector { return selector }
+
+CombinatorSelector = DescendentSelector/ElementSelector
+
+ElementSelector = ClassNameSelector/IDSelector/AllSelector/TagNameSelector
+
+ClassNameSelector = "." className: Word {
+  return new ClassNameSelectorExpression(className, position());
+}
+
+IDSelector = "#" id: Word {
+  return new IDSelectorExpression(id, position());
+}
+
+TagNameSelector = tagName: Word {
+  return new TagNameSelectorExpression(tagName, position());
+}
+
 AllSelector = "*" {
   return new AllSelectorExpression(position());
 }
 
-Word = [a-zA-Z]+ { text() }
+DescendentSelector = parent:ElementSelector " "+ descendent:CombinatorSelector {
+  console.log("DESC");
+  return new DescendentSelectorExpression(parent, descendent);
+}
+
+
+Word = [a-zA-Z0-9_$-]+ { return text(); }
+
+_ = [ \n\r\t]*

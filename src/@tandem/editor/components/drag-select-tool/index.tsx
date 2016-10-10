@@ -1,15 +1,16 @@
 import "./index.scss";
 import * as React from "react";
+import { IEntity } from "@tandem/common/lang/entities";
 import { startDrag } from "@tandem/common/utils/component";
 import { PointerTool } from "@tandem/editor/models/pointer-tool";
 import { MetadataKeys } from "@tandem/editor/constants";
 import { BoundingRect } from "@tandem/common/geom";
 import { FrontEndApplication } from "@tandem/editor/application";
-import { IEntity, IVisibleEntity } from "@tandem/common/lang/entities";
+import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { SelectAction, MouseAction } from "@tandem/editor/actions";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 
-class DragSelectComponent extends React.Component<{ allEntities: any, app: FrontEndApplication, zoom: number, tool: PointerTool }, any> {
+class DragSelectComponent extends React.Component<{ app: FrontEndApplication, zoom: number, tool: PointerTool }, any> {
 
   constructor() {
     super();
@@ -37,7 +38,7 @@ class DragSelectComponent extends React.Component<{ allEntities: any, app: Front
 
     const b = container.getBoundingClientRect();
 
-    const entities = this.props.allEntities;
+    const visibleEntities = new VisibleDOMEntityCollection(...this.props.app.editor.documentEntity.querySelectorAll("*"));
 
     const left = (event.clientX - b.left) / this.props.zoom;
     const top  = (event.clientY - b.top) / this.props.zoom;
@@ -75,8 +76,8 @@ class DragSelectComponent extends React.Component<{ allEntities: any, app: Front
 
       const selection = [];
 
-      entities.forEach(function (entity: IVisibleEntity) {
-        if (entity.display && (entity.metadata.get(MetadataKeys.CANVAS_ROOT) !== true || entity.children.length === 0) && entity.display.bounds.intersects(bounds)) {
+      visibleEntities.forEach(function (entity) {
+        if ((entity.metadata.get(MetadataKeys.CANVAS_ROOT) !== true || entity.children.length === 0) && entity.scaledBounds.intersects(bounds)) {
           selection.push(entity);
         }
       });

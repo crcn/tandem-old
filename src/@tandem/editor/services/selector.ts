@@ -75,7 +75,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
     Promise.all(this.app.editor.selection.map((selection) => {
       return selection.module.editor ? selection.module.editor.edit((edit) => {
-        edit.remove(selection);
+        edit.remove(selection.target);
       }) : Promise.resolve();
     }));
 

@@ -1,4 +1,4 @@
-import { syntheticComponentType } from "./components";
+import { syntheticEntityType, BaseSyntheticDOMNodeEntity, DefaultSyntheticDOMEntity } from "./entities";
 import { SyntheticDOMNode } from "./dom";
 import { Dependency, Dependencies } from "@tandem/common";
 import { syntheticElementClassType } from "./dom";
@@ -23,15 +23,15 @@ export class SyntheticDOMElementClassDependency extends Dependency<syntheticElem
   }
 }
 
-export class SyntheticDOMNodeComponentClassDependency extends Dependency<syntheticComponentType> {
+export class SyntheticDOMNodeEntityClassDependency extends Dependency<syntheticEntityType> {
   static readonly SYNTHETIC_NODE_COMPONENT_NS_PREFIX = "syntheticNodeComponentClass";
 
-  constructor(readonly xmlns: string, readonly tagName: string, value: syntheticComponentType) {
-    super(SyntheticDOMNodeComponentClassDependency.getNamespace(xmlns, tagName), value);
+  constructor(readonly xmlns: string, readonly tagName: string, value: syntheticEntityType) {
+    super(SyntheticDOMNodeEntityClassDependency.getNamespace(xmlns, tagName), value);
   }
 
   clone() {
-    return new SyntheticDOMNodeComponentClassDependency(this.xmlns, this.tagName, this.value);
+    return new SyntheticDOMNodeEntityClassDependency(this.xmlns, this.tagName, this.value);
   }
 
   create(source: SyntheticDOMNode) {
@@ -42,15 +42,25 @@ export class SyntheticDOMNodeComponentClassDependency extends Dependency<synthet
     return [this.SYNTHETIC_NODE_COMPONENT_NS_PREFIX, encodeURIComponent(xmlns), tagName].join("/");
   }
 
+  static reuse(source: SyntheticDOMNode, entity: BaseSyntheticDOMNodeEntity<any, any>, dependencies: Dependencies) {
+    if (entity && entity.source.compare(source)) {
+      entity.source = source;
+      return entity;
+    } else {
+      return this.create(source, dependencies);
+    }
+  }
 
   static find(source: SyntheticDOMNode, dependencies: Dependencies) {
-    return dependencies.query<SyntheticDOMNodeComponentClassDependency>(this.getNamespace(source.namespaceURI, source.nodeName));
+    return this.findByNodeName(source.namespaceURI, source.nodeName, dependencies);
   }
+
+  static findByNodeName(xmlns: string, nodeName: string, dependencies: Dependencies) {
+    return dependencies.query<SyntheticDOMNodeEntityClassDependency>(this.getNamespace(xmlns, nodeName));
+  }
+
   static create(source: SyntheticDOMNode, dependencies: Dependencies) {
-    const dependency = this.find(source, dependencies);
-    if (!dependency) {
-      throw new Error(`Cannot create synthetic DOM component from ${source.namespaceURI}:${source.nodeName}`);
-    }
-    return dependency.create(source);
+    const factory = this.find(source, dependencies) || this.findByNodeName(source.namespaceURI, "default", dependencies) || this.findByNodeName(null, "default", dependencies);
+    return factory ? factory.create(source) : new DefaultSyntheticDOMEntity(source);
   }
 }

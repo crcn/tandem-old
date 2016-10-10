@@ -1,6 +1,7 @@
 import { parseSelector } from "./parser";
-import { SyntheticDOMNode, SyntheticDOMElement, MarkupNodeType } from "../markup";
+import { getTreeAncestors } from "@tandem/common";
 import { SelectorExpression, AllSelectorExpression } from "./ast";
+import { SyntheticDOMNode, SyntheticDOMElement, MarkupNodeType } from "../markup";
 
 const _testers = {};
 
@@ -12,11 +13,33 @@ export function getSelectorTester(selectorSource: string): { test(node: Syntheti
   function test(ast: SelectorExpression, node: SyntheticDOMElement) {
     if (node.nodeType !== MarkupNodeType.ELEMENT) return false;
     return ast.accept({
+      visitClassNameSelector(expression) {
+        return node.hasAttribute("class") && String(node.getAttribute("class")).split(" ").indexOf(expression.className) !== -1;
+      },
+      visitIDSelector(expression) {
+        return node.getAttribute("id") === expression.id;
+      },
       visitAllSelector(expression) {
         return true;
       },
       visitTagNameSelector(expression) {
         return expression.tagName.toLowerCase() === node.tagName.toLowerCase();
+      },
+      visitListSelector(expression) {
+        return !!expression.selectors.find((selector) => test(selector, node));
+      },
+      visitDescendentSelector(expression) {
+        console.log("DESC");
+        test(expression.targetSelector, node) && !!getTreeAncestors(node).find((ancestor) => test(expression.ancestorSelector, ancestor));
+      },
+      visitChildSelector(expression) {
+        return test(expression.targetSelector, node) && node.parent && test(expression.parentSelector, <SyntheticDOMElement>node.parent);
+      },
+      visitAdjacentSelector(expression) {
+
+      },
+      visitProceedingSiblingSelector(expression) {
+
       }
     });
   }

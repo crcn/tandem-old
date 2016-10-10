@@ -7,7 +7,7 @@ var grep       = process.env.GREP;
 var bail       = !!process.env.BAIL;
 var timeout    = Number(process.env.TIMEOUT || 5000);
 
-const webpackConfig = require("./webpack.config");
+const webpackConfig = require("./webpack.config")[0];
 
 delete webpackConfig["entry"];
 

@@ -1,6 +1,5 @@
 import { INamed } from "@tandem/common/object";
 import { inject } from "@tandem/common/decorators";
-import { HTMLFile } from "@tandem/html-extension/models/html-file";
 import { BubbleBus } from "@tandem/common/busses";
 import { DocumentFile } from "@tandem/editor/models";
 import { watchProperty } from "@tandem/common/observable";

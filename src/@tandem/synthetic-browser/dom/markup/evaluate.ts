@@ -1,6 +1,6 @@
+import { SyntheticDOMNode } from "./node";
 import { IMarkupExpression } from "./ast";
 import { SyntheticDocument } from "../document";
-import { SyntheticDOMNode } from "./node";
 import { SyntheticDOMAttribute } from "./element";
 
 export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string): SyntheticDOMNode {
@@ -38,7 +38,7 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
   });
 
   synthetic.expression = expression;
-  synthetic.module     = doc.sandbox.currentModule;
+  synthetic.module     = doc.sandbox && doc.sandbox.currentModule;
 
   return synthetic;
 }

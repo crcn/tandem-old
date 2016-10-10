@@ -1,9 +1,8 @@
 .container {
   background-color: yellow;
   padding: 20px;
-  position: fixed;
   top: 0px;
-  width: 100%;
+
   font-size: 20px;
   border-radius: 10px;
   color: orange;

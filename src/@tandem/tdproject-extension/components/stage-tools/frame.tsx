@@ -5,8 +5,9 @@ import { BoundingRect } from "@tandem/common";
 import * as AutosizeInput from "react-input-autosize";
 import { FrontEndApplication, Editor } from "@tandem/editor";
 import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
+import { SyntheticTDFrameEntity } from "@tandem/tdproject-extension/synthetic";
 
-export class TDFrameComponent extends React.Component<{ frame: SyntheticHTMLElement, editor: Editor }, { editTitle: boolean }> {
+export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrameEntity, editor: Editor }, { editTitle: boolean }> {
 
   constructor() {
     super();
@@ -25,21 +26,21 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticHTMLElem
 
   onTitleChange = (event) => {
     // edit(this.props.frame.source, new SetAttributeEdit());
-    this.props.frame.setAttribute("title", event.target.value);
+    this.props.frame.source.setAttribute("title", event.target.value);
   }
 
   cancelEdit = () => {
     this.setState({ editTitle: false });
 
     // easiest way to revert changes -- just reload the sandbox entirely
-    this.props.frame.ownerDocument.sandbox.reload();
+    this.props.frame.sandbox.reload();
   }
 
   save = () => {
     const frame = this.props.frame;
     this.setState({ editTitle: false });
     frame.module.editor.edit((edit) => {
-      edit.setElementAttribute(frame, "title", frame.getAttribute("title"));
+      edit.setElementAttribute(frame.source, "title", frame.source.getAttribute("title"));
     });
   }
 
@@ -53,7 +54,7 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticHTMLElem
 
   render() {
     const { frame, editor } = this.props;
-    const bounds = frame.getBoundingClientRect();
+    const bounds = frame.scaledBounds;
     const scale = 1 / editor.transform.scale;
 
     const style = {
@@ -75,11 +76,11 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticHTMLElem
       transformOrigin: "top left"
     };
 
-    const title = frame.getAttribute("title");
+    const title = frame.source.getAttribute("title");
 
     return <div className="m-tdframe-stage-tool--item" style={style}>
       <div className="m-tdframe-stage-tool--item--title" onDoubleClick={this.editTitle} style={titleStyle}>
-        { this.state.editTitle ? <AutosizeInput ref="input" value={title} onChange={this.onTitleChange} onBlur={this.cancelEdit} onKeyDown={this.onKeyDown} /> : <span>{frame.getAttribute("title") || "Untitled"}</span> }
+        { this.state.editTitle ? <AutosizeInput ref="input" value={title} onChange={this.onTitleChange} onBlur={this.cancelEdit} onKeyDown={this.onKeyDown} /> : <span>{frame.source.getAttribute("title") || "Untitled"}</span> }
       </div>
     </div>;
   }
@@ -88,8 +89,10 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticHTMLElem
 export class TDFrameStageToolComponent extends React.Component<{ app: FrontEndApplication }, any> {
   render() {
     const { editor } = this.props.app;
-    const { document, transform } = editor;
-    const frames = document.querySelectorAll("frame") as SyntheticHTMLElement[];
+    const { documentEntity, transform } = editor;
+
+    const frames = documentEntity.querySelectorAll("frame") as SyntheticTDFrameEntity[];
+
     if (!frames.length) return null;
 
     const backgroundStyle = {

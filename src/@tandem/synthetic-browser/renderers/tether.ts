@@ -26,7 +26,7 @@ export class TetherRenderer extends BaseRenderer {
     this._connection.emit("tether:render", {
       width: rect.width,
       height: rect.height,
-      html: this.target.toString()
+      html: this.entity.render()
     });
   }
 

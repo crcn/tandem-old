@@ -1,19 +1,18 @@
 import "./index.scss";
 import * as React from "react";
 import { flatten } from "lodash";
+import { IEntity } from "@tandem/common/lang/entities";
 import RulerComponent from "./ruler";
 import { PointerTool } from "@tandem/editor/models/pointer-tool";
-import { BoundingRect, flattenTree } from "@tandem/common";
 import ResizerComponent from "./resizer";
 import { Editor, Workspace } from "@tandem/editor/models";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { SelectionSizeComponent } from "@tandem/editor/components/selection-size";
-import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
+import { BoundingRect, flattenTree } from "@tandem/common";
+import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
-import { IEntityDisplay, IEntity, IVisibleEntity } from "@tandem/common/lang/entities";
-import { IVisibleDOMElement } from "@tandem/synthetic-browser";
 
-export default class SelectorComponent extends React.Component<{ editor: Editor, tool: PointerTool, workspace: Workspace, app: FrontEndApplication, zoom: number, allEntities: Array<IEntity> }, any> {
+export default class SelectorComponent extends React.Component<{ editor: Editor, tool: PointerTool, workspace: Workspace, app: FrontEndApplication, zoom: number  }, any> {
 
   constructor(props) {
     super(props);
@@ -38,17 +37,17 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
   render() {
 
-    const { workspace, editor, allEntities, tool } = this.props;
+    const { workspace, editor, tool } = this.props;
 
     if (!(tool instanceof PointerTool)) return null;
 
-    const selection = new VisibleSyntheticElementCollection(...(editor.selection as any));
+    const selection = new VisibleDOMEntityCollection(...(editor.selection as any));
 
     // simple check to see if the selection array
     // is an IEntityDisplay
     if (!selection.length) return null;
 
-    const entireBounds = BoundingRect.merge(...flatten(selection.map((element) => element["getBoundingClientRect"] && (element as any as IVisibleDOMElement).getBoundingClientRect())));
+    const entireBounds = selection.scaledBounds;
 
     const borderWidth = 1 / this.props.zoom;
 

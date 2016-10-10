@@ -3,13 +3,12 @@ import * as React from "react";
 import { IPoint } from "@tandem/common/geom";
 import IsolateComponent  from "@tandem/editor/components/isolate";
 import { BoundingRect } from "@tandem/common/geom";
-import { IVisibleEntity } from "@tandem/common/lang/entities";
 import ToolsLayerComponent from "./tools";
 import PreviewLayerComponent from "./preview";
 import { Editor, Workspace } from "@tandem/editor/models";
+import { FrontEndApplication } from "@tandem/editor/application";
 import { UpdateAction, IActor } from "@tandem/common";
 import { Dependencies, MainBusDependency } from "@tandem/common/dependencies";
-import { FrontEndApplication } from "@tandem/editor/application";
 import {
   ZoomAction,
   MouseAction,
@@ -199,7 +198,7 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
         style={style}>
           <div style={innerStyle} className="noselect" data-previewroot>
             <PreviewLayerComponent {...this.props} renderer={this.props.app.editor.browser.renderer} />
-            {this._toolsHidden || !this.props.app.editor.document ? undefined : <ToolsLayerComponent workspace={null} {...this.props} />}
+            {this._toolsHidden || !this.props.app.editor.documentEntity ? undefined : <ToolsLayerComponent workspace={null} {...this.props} />}
           </div>
       </div>
     </IsolateComponent>);

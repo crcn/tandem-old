@@ -5,11 +5,11 @@ import PathComponent from "./path";
 import { DocumentFile } from "@tandem/editor/models";
 import { MetadataKeys } from "@tandem/editor/constants";
 import { FrontEndApplication } from "@tandem/editor/application";
-import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
+import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
 import { BoundingRect, IPoint, Point } from "@tandem/common/geom";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
-import { SyntheticDOMElement, IVisibleDOMElement } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
@@ -97,7 +97,7 @@ class ResizerComponent extends React.Component<{
   private _movingTimer: any;
   private _dragTimer: any;
   private _currentGuider: Guider;
-  private _visibleEntities: VisibleSyntheticElementCollection<IVisibleDOMElement>;
+  private _visibleEntities: VisibleDOMEntityCollection<any>;
 
   constructor() {
     super();
@@ -180,56 +180,58 @@ class ResizerComponent extends React.Component<{
     // this.setState({ guideLines: guider.getGuideLines(createBoundingRectPoints(bounds)) });
     // this.targetDisplay.bounds = bounds;
 
-    this._visibleEntities.setBounds(bounds);
+    this._visibleEntities.scaledBounds = bounds;
 
     this.props.onResizing(event);
   }
 
   startDragging = (event) => {
-    // event.stopPropagation();
+    event.stopPropagation();
 
-    // if (!this.targetDisplay.capabilities.movable) return;
+    if (!this._visibleEntities.capabilities.movable) return;
 
-    // this.props.onMoving();
-    // const selection = this.props.selection;
+    this.props.onMoving();
+    const selection = this.props.selection;
 
-    // // when dragging, need to fetch style of the selection
-    // // so that the dragger is relative to the entity"s position
-    // const bounds = this.targetDisplay.bounds;
+    // when dragging, need to fetch style of the selection
+    // so that the dragger is relative to the entity"s position
+    const bounds = this._visibleEntities.scaledBounds;
 
-    // const sx2 = bounds.left;
-    // const sy2 = bounds.top;
-    // const translateLeft = this.props.editor.transform.left;
-    // const translateTop  = this.props.editor.transform.top;
+    const sx2 = bounds.left;
+    const sy2 = bounds.top;
+    const translateLeft = this.props.editor.transform.left;
+    const translateTop  = this.props.editor.transform.top;
     // const guider = this.createGuider();
 
-    // this.setState({ guideLines: undefined });
-    // this.props.editor.metadata.set(MetadataKeys.MOVING, true);
+    this.setState({ guideLines: undefined });
+    this.props.editor.metadata.set(MetadataKeys.MOVING, true);
 
-    // this._dragger = startDrag(event, (event2, { delta }) => {
+    this._dragger = startDrag(event, (event2, { delta }) => {
 
-    //   const nx = (sx2 + (delta.x - (this.props.editor.transform.left - translateLeft)) / this.props.zoom);
-    //   const ny = (sy2 + (delta.y - (this.props.editor.transform.top - translateTop)) / this.props.zoom);
+      const nx = (sx2 + (delta.x - (this.props.editor.transform.left - translateLeft)) / this.props.zoom);
+      const ny = (sy2 + (delta.y - (this.props.editor.transform.top - translateTop)) / this.props.zoom);
 
-    //   let position = { left: nx, top: ny };
-    //   let changeDelta = guider.snap(position, createBoundingRectPoints(new BoundingRect(nx, ny, nx + bounds.width, ny + bounds.height)));
+      let position = { left: nx, top: ny };
+      // let changeDelta = guider.snap(position, createBoundingRectPoints(new BoundingRect(nx, ny, nx + bounds.width, ny + bounds.height)));
 
-    //   const newBounds = bounds.moveTo({
-    //     left: nx + changeDelta.left,
-    //     top: ny + changeDelta.top
-    //   });
+      const newBounds = bounds.moveTo(position);
 
-    //   this.moveTarget(newBounds.position);
-    //   const guideLines = guider.getGuideLines(createBoundingRectPoints(newBounds));
+      // const newBounds = bounds.moveTo({
+      //   left: nx + changeDelta.left,
+      //   top: ny + changeDelta.top
+      // });
 
-    //   this.setState({ guideLines: guideLines });
+      this.moveTarget(newBounds.position);
+      // const guideLines = guider.getGuideLines(createBoundingRectPoints(newBounds));
 
-    // }, () => {
-    //   this._dragger = void 0;
-    //   this.props.editor.metadata.set(MetadataKeys.MOVING, false);
-    //   this.setState({ guideLines: undefined });
-    //   this.props.onStopMoving();
-    // });
+      // this.setState({ guideLines: guideLines });
+
+    }, () => {
+      this._dragger = void 0;
+      this.props.editor.metadata.set(MetadataKeys.MOVING, false);
+      this.setState({ guideLines: undefined });
+      this.props.onStopMoving();
+    });
   }
 
   onPointMouseDown = () => {
@@ -244,19 +246,19 @@ class ResizerComponent extends React.Component<{
   }
 
   moveTarget(position: IPoint) {
-    // this.targetDisplay.position = position;
+    this._visibleEntities.position = position;
   }
 
   render() {
 
     const { selection } = this.props;
 
-    const elements = this._visibleEntities = new VisibleSyntheticElementCollection(...selection);
+    const entities = this._visibleEntities = new VisibleDOMEntityCollection(...selection);
 
     const pointRadius = (this.props.pointRadius || POINT_RADIUS);
     const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
 
-    const rect = BoundingRect.merge(...elements.map(element => element.getBoundingClientRect()));
+    const rect = BoundingRect.merge(...entities.map(entity => entity.scaledBounds));
 
     // offset stroke
     const resizerStyle = {
@@ -269,7 +271,7 @@ class ResizerComponent extends React.Component<{
       transformOrigin: "top left"
     };
 
-    const capabilities = { movable: false, resizable: false }; // elements.getCapabilities();
+    const capabilities = entities.capabilities;
     const movable = capabilities.movable;
 
     const points = [

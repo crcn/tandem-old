@@ -7,7 +7,7 @@ import { appendSourceChildren } from "@tandem/common/lang/entities";
 import { PasteHTMLEntityAction } from "@tandem/html-extension/actions";
 import { BaseApplicationService } from "@tandem/common/services";
 import { PasteAction, SelectAction } from "@tandem/editor/actions";
-import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
+import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import {
   IInjectable,
   APPLICATION_SINGLETON_NS,
@@ -33,7 +33,7 @@ export class PasteHTMLService extends BaseApplicationService<FrontEndApplication
     //   const workspace = this.app.workspace;
     //   const file = <HTMLFile>workspace.file;
 
-    //   const visibleEntities = new VisibleSyntheticElementCollection(...workspace.selection);
+    //   const visibleEntities = new VisibleDOMEntityCollection(...workspace.selection);
 
     //   const activeEntity = visibleEntities.length ? visibleEntities[0].parent : file.entity;
 

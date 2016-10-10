@@ -4,29 +4,29 @@ import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { SelectablesComponent } from "@tandem/editor/components/selectables";
-import { SyntheticDOMElement, IVisibleDOMElement } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { SelectionSizeComponent } from "@tandem/editor/components/selection-size";
+import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { SetToolAction, SelectAction } from "@tandem/editor/actions";
 import { Workspace, Editor, InsertTool } from "@tandem/editor/models";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
-import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
+import { BaseVisibleSyntheticDOMNodeEntity } from "@tandem/synthetic-browser";
 import {
   IActor,
   Action,
   IEntity,
   BaseEntity,
   BoundingRect,
-  IVisibleEntity,
   appendSourceChildren,
 } from "@tandem/common";
 
 class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, workspace: Workspace, app: FrontEndApplication, tool: InsertTool }, any> {
 
-  private _targetElement: IVisibleDOMElement;
+  private _targetEntity: any;
 
 
   private onRootMouseDown = (event) => {
-    this._targetElement = this.props.editor.document.body as any as IVisibleDOMElement;
+    this._targetEntity = this.props.editor.document.body as any;
     this._insertNewItem(event);
   }
 
@@ -37,8 +37,8 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     const { editor, bus, workspace, tool } = this.props;
 
     const childElement = tool.createSyntheticDOMElement();
-    // const elementEditor = this._targetElement.editor;
-    this._targetElement.appendChild(childElement);
+    // const elementEditor = this._targetEntity.editor;
+    this._targetEntity.appendChild(childElement);
     // await elementEditor.execute()
     // const child = await activeEntity.loadExpressionAndAppendChild(childExpression) as IVisibleEntity;
     await bus.execute(new SelectAction(childElement));
@@ -76,8 +76,8 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     // }
   }
 
-  onSyntheticMouseDown = (element: IVisibleDOMElement, event: MouseEvent) => {
-    this._targetElement = element;
+  onSyntheticMouseDown = (entity: BaseVisibleSyntheticDOMNodeEntity<any, any>, event: MouseEvent) => {
+    this._targetEntity = entity;
     this._insertNewItem(event);
   }
 
@@ -86,7 +86,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     if (!(tool instanceof InsertTool)) return null;
 
-    const selection = new VisibleSyntheticElementCollection(...this.props.editor.selection);
+    const selection = new VisibleDOMEntityCollection(...this.props.editor.selection);
     const zoom = this.props.editor.transform.scale;
     const scale = 1 / editor.transform.scale;
 

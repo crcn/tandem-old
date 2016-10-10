@@ -65,29 +65,11 @@ export interface ISyntheticDOMCapabilities {
 }
 
 export interface IDOMElement extends IDOMNode {
-  uid: string;
   attributes: SyntheticDOMAttributes;
   accept(visitor: IMarkupNodeVisitor);
   getAttribute(name: string);
   cloneNode(): IDOMElement;
   setAttribute(name: string, value: any);
-}
-
-export interface IVisibleDOMElement extends IDOMElement {
-  getCapabilities(): ISyntheticDOMCapabilities;
-
-  /**
-   * Returns computed bounding client rect from the browser
-   */
-
-  getBoundingClientRect(): BoundingRect;
-
-  /**
-   * Returns the untransformed bounding client rect without margins,
-   * padding, transforms, etc -- only outlines the bounds according to what's visible
-   */
-
-  getUntransformedBoundingClientRect(): BoundingRect;
 }
 
 export class SyntheticDOMElement extends SyntheticDOMContainer {
@@ -99,17 +81,15 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   constructor(readonly namespaceURI: string, readonly tagName: string, ownerDocument: SyntheticDocument) {
     super(tagName, ownerDocument);
     this.attributes = new SyntheticDOMAttributes();
-    this.setAttribute("data-uid", this._uid);
     this.attributes.observe(new WrapBus(this.onAttributesAction.bind(this)));
   }
 
-  // non-standard
-  get uid(): string {
-    return this.getAttribute("data-uid");
+  getAttribute(name: string) {
+    return this.hasAttribute(name) ? this.attributes[name].value : null;
   }
 
-  getAttribute(name: string) {
-    return this.attributes.hasOwnProperty(name) ? this.attributes[name].value : null;
+  hasAttribute(name: string) {
+    return this.attributes.hasOwnProperty(name);
   }
 
   accept(visitor: IMarkupNodeVisitor) {
@@ -117,7 +97,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   setAttribute(name: string, value: any) {
-    if (this.attributes.hasOwnProperty(name)) {
+    if (this.hasAttribute(name)) {
       this.attributes[name].value = value;
     } else {
       this.attributes.push(new SyntheticDOMAttribute(name, value));

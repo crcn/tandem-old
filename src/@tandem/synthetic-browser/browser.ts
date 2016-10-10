@@ -14,18 +14,16 @@ import {
 } from "@tandem/common";
 
 import {
-  ISyntheticComponent,
-  BaseSyntheticComponent,
-  DefaultSyntheticComponent,
-  evaluateSyntheticComponent,
-} from "./components";
+  BaseSyntheticDOMNodeEntity,
+  DefaultSyntheticDOMEntity,
+} from "./entities";
 
 import {
   Sandbox,
   SandboxAction,
 } from "@tandem/sandbox";
 
-import { SyntheticDOMNodeComponentClassDependency, SyntheticDOMElementClassDependency } from "./dependencies";
+import { SyntheticDOMNodeEntityClassDependency, SyntheticDOMElementClassDependency } from "./dependencies";
 
 import { WrapBus } from "mesh";
 
@@ -35,7 +33,7 @@ export class SyntheticBrowser extends Observable {
   private _sandbox: Sandbox;
   private _location: SyntheticLocation;
   private _renderer: ISyntheticDocumentRenderer;
-  private _documentComponent: BaseSyntheticComponent<any, any>;
+  private _documentEntity: BaseSyntheticDOMNodeEntity<any, any>;
 
   constructor(private _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer) {
     super();
@@ -75,8 +73,8 @@ export class SyntheticBrowser extends Observable {
     return this._window && this._window.document;
   }
 
-  get documentComponent() {
-    return this._documentComponent;
+  get documentEntity() {
+    return this._documentEntity;
   }
 
   protected createSandboxGlobals(): SyntheticWindow {
@@ -109,13 +107,14 @@ export class SyntheticBrowser extends Observable {
       window.document.body.appendChild(mainExports);
     }
 
-    const documentComponent = this._documentComponent;
+    const documentEntity = this._documentEntity;
 
     this._window = window;
-    this._documentComponent = this._renderer.target = await evaluateSyntheticComponent(window.document, this._documentComponent, this._dependencies) as BaseSyntheticComponent<any, any>;
+    this._documentEntity = this._renderer.entity = SyntheticDOMNodeEntityClassDependency.reuse(window.document, this._documentEntity, this._dependencies);
+    await this._documentEntity.evaluate();
 
-    if (this._documentComponent !== documentComponent) {
-      this.notify(new PropertyChangeAction("documentComponent", this._documentComponent, documentComponent));
+    if (this._documentEntity !== documentEntity) {
+      this.notify(new PropertyChangeAction("documentEntity", this._documentEntity, documentEntity));
     }
 
     this.notify(action);

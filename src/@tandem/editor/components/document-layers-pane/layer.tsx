@@ -25,14 +25,15 @@ import {
 } from "@tandem/common";
 
 import {
-  SyntheticDOMNode
+  SyntheticDOMNode,
+  BaseSyntheticDOMNodeEntity
 } from "@tandem/synthetic-browser";
 
 interface ILayerLabelProps {
   paddingLeft?: number;
   dependencies: Dependencies;
   app: FrontEndApplication;
-  node: SyntheticDOMNode;
+  entity: BaseSyntheticDOMNodeEntity<any, any>;
   connectDragSource: Function;
   isDragging: boolean;
   connectDropTarget: Function;
@@ -53,7 +54,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
   onClick = (event) => {
 
-    const { node, app } = this.props;
+    const { entity, app } = this.props;
     const { editor } = app;
 
     const selection = editor.selection || [];
@@ -63,22 +64,22 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     // shift select range
     if (event.shiftKey && selection.length) {
 
-      const allEntities = [];
+      const VisibleDOMEntityCollection = [];
 
-      traverseTree(editor.document, (child) => {
-        allEntities.push(child);
+      traverseTree(editor.documentEntity, (child) => {
+        VisibleDOMEntityCollection.push(child);
         return child.metadata.get(MetadataKeys.LAYER_EXPANDED);
       });
 
 
       const currentlySelectedEntity = selection[selection.length - 1];
-      const index1 = allEntities.indexOf(node);
-      const index2 = allEntities.indexOf(currentlySelectedEntity);
-      select = allEntities.slice(Math.min(index1, index2), Math.max(index1, index2) + 1);
+      const index1 = VisibleDOMEntityCollection.indexOf(entity);
+      const index2 = VisibleDOMEntityCollection.indexOf(currentlySelectedEntity);
+      select = VisibleDOMEntityCollection.slice(Math.min(index1, index2), Math.max(index1, index2) + 1);
 
     } else {
 
-      select = [node];
+      select = [entity];
 
       // selecting individual components
       multiSelect = event.metaKey;
@@ -89,12 +90,12 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
           return entity;
         }));
 
-        const entityChildren = flatten((node).children.map(function(entity) {
+        const entityChildren = flatten((entity).children.map(function(entity) {
           return flattenTree(entity);
         }));
 
         // selecting a child
-        if (~allSelectedChildren.indexOf(node) && !~selection.indexOf(node)) {
+        if (~allSelectedChildren.indexOf(entity) && !~selection.indexOf(entity)) {
           multiSelect = false;
         } else if (intersection(entityChildren, selection).length) {
 
@@ -109,7 +110,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
   onHeaderKeyDown = (event: KeyboardEvent) => {
     if (event.keyCode === 13 || event.keyCode === 27) {
-      if (!this.props.node.metadata.toggle(MetadataKeys.EDIT_LAYER)) {
+      if (!this.props.entity.metadata.toggle(MetadataKeys.EDIT_LAYER)) {
 
         // re-focus on header so that the user hit enter again to edit
         // the input
@@ -121,7 +122,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
   toggleExpand(expand, event) {
 
     // store on the entity so that it can be serialized
-    this.props.node.metadata.toggle(MetadataKeys.LAYER_EXPANDED);
+    this.props.entity.metadata.toggle(MetadataKeys.LAYER_EXPANDED);
 
     if (event) event.stopPropagation();
   }
@@ -130,7 +131,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     this.setState({
       hover: true
     });
-    this.props.node.metadata.set(MetadataKeys.HOVERING, true);
+    this.props.entity.metadata.set(MetadataKeys.HOVERING, true);
   }
 
   onMouseOut = (event) => {
@@ -138,7 +139,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
       hover: false
     });
 
-    this.props.node.metadata.set(MetadataKeys.HOVERING, false);
+    this.props.entity.metadata.set(MetadataKeys.HOVERING, false);
   }
 
   addNewChild = (event: React.MouseEvent) => {
@@ -147,20 +148,20 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
   }
 
   render() {
-    const { connectDragSource, isDragging, connectDropTarget, isOver, canDrop, node, dependencies, app } = this.props;
+    const { connectDragSource, isDragging, connectDropTarget, isOver, canDrop, entity, dependencies, app } = this.props;
 
-    const expanded   = node.metadata.get(MetadataKeys.LAYER_EXPANDED);
+    const expanded   = entity.metadata.get(MetadataKeys.LAYER_EXPANDED);
 
     const selection = app.editor.selection;
-    const layerName = node.metadata.get(MetadataKeys.LAYER_DEPENDENCY_NAME); // || node.source.constructor.name;
+    const layerName = entity.metadata.get(MetadataKeys.LAYER_DEPENDENCY_NAME); // || node.source.constructor.name;
 
-    const labelDependency = LayerLabelComponentFactoryDependency.find(layerName, dependencies) || LayerLabelComponentFactoryDependency.find(node.constructor.name, dependencies);
+    const labelDependency = LayerLabelComponentFactoryDependency.find(layerName, dependencies) || LayerLabelComponentFactoryDependency.find(entity.constructor.name, dependencies);
 
     let labelSection;
 
     if (labelDependency)  {
       labelSection = labelDependency.create(Object.assign({}, this.props, {
-        node: node,
+        entity: entity,
         connectDragSource
       }));
     } else {
@@ -169,13 +170,13 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
       </span>;
     }
 
-    const selected = selection && selection.indexOf(node) !== -1;
+    const selected = selection && selection.indexOf(entity) !== -1;
 
     const headerClassName = cx({
       "layer": true,
       "m-layers-pane-component-layer--header": true,
       "drag-over": isOver && canDrop,
-      "hover": this.props.node.metadata.get(MetadataKeys.HOVERING) && !this.state.hover && !selected,
+      "hover": this.props.entity.metadata.get(MetadataKeys.HOVERING) && !this.state.hover && !selected,
       ["m-layer-component-type-" + layerName]: true,
       "selected": selected
     });
@@ -189,7 +190,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     });
 
     const expandButtonStyle = {
-      "visibility": node.children.length ? "visible" : "hidden"
+      "visibility": entity.children.length ? "visible" : "hidden"
     };
 
     labelSection =  <div
@@ -276,7 +277,6 @@ class DropLayerTargetComponent extends React.Component<any, any> {
   }
 }
 
-
 const layerSource = {
   beginDrag(props) {
     props.entity.metadata.set("dragSourceId", Date.now());
@@ -326,7 +326,7 @@ LayerDndLabelComponent = DropTarget("element", {
   };
 })(LayerDndLabelComponent);
 
-export default class LayerComponent extends React.Component<{ app: FrontEndApplication, node: SyntheticDOMNode, depth: number }, any> {
+export default class LayerComponent extends React.Component<{ app: FrontEndApplication, entity: BaseSyntheticDOMNodeEntity<any, any>, depth: number }, any> {
 
   private _entityObserver: IActor;
 
@@ -356,23 +356,23 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
 
   componentWillUnmount() {
     this.props.app.bus.unregister(this);
-    this.props.node.unobserve(this);
+    this.props.entity.unobserve(this);
   }
 
   render() {
 
-    const node            = this.props.node;
+    const entity            = this.props.entity;
 
-    if (!node) return null;
+    if (!entity) return null;
 
-    const expanded          = node.metadata.get(MetadataKeys.LAYER_EXPANDED);
-    const hidden            = node.metadata.get(MetadataKeys.HIDDEN);
+    const expanded          = entity.metadata.get(MetadataKeys.LAYER_EXPANDED);
+    const hidden            = entity.metadata.get(MetadataKeys.HIDDEN);
     const depth = this.props.depth || 0;
     const paddingLeft =  17 + depth * 12;
 
     const renderChildren = (depth: number) => {
-      return node.children.map((child: SyntheticDOMNode, i) => {
-        return <LayerComponent {...this.props} node={child} key={i} depth={depth}  />;
+      return entity.children.map((child, i) => {
+        return <LayerComponent {...this.props} entity={child} key={i} depth={depth}  />;
       });
     };
 

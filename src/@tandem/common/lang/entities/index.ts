@@ -17,13 +17,11 @@ import { TreeNode, patchTreeNode } from "@tandem/common/tree";
 
 import {
   IEntity,
-  IValueEntity,
   EntityMetadata,
   IEntityDocument,
 } from "./base";
 
 export * from "./base";
-export * from "./display";
 export * from "./utils";
 export * from "./controllers";
 
@@ -213,7 +211,7 @@ export abstract class BaseEntity<T extends IASTNode> extends TreeNode<BaseEntity
   protected abstract cloneLeaf();
 }
 
-export abstract class BaseValueEntity<T extends IASTNode & IValued> extends BaseEntity<T> implements IValueEntity {
+export abstract class BaseValueEntity<T extends IASTNode & IValued> extends BaseEntity<T>  {
 
   @bindable()
   public value: any;

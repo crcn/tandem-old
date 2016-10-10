@@ -17,7 +17,7 @@ class LayersPaneComponent extends React.Component<{ app: FrontEndApplication }, 
     if (!editor || !editor.document) return null;
     return <PaneComponent>
       {
-        editor.document.children.map((node, i) => <LayerComponent depth={0} {...this.props} node={node} key={node.uid} />)
+        editor.documentEntity.children.map((entity, i) => <LayerComponent depth={0} {...this.props} entity={entity} key={entity.uid} />)
       }
     </PaneComponent>;
   }

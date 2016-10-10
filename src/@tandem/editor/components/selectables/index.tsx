@@ -6,22 +6,22 @@ import * as cx from "classnames";
 import * as React from "react";
 import { inject } from "@tandem/common/decorators";
 import { Editor } from "@tandem/editor/models";
+import { IEntity } from "@tandem/common/lang/entities";
 import { BoundingRect } from "@tandem/common/geom";
 import { SelectAction } from "@tandem/editor/actions";
 import { MetadataKeys } from "@tandem/editor/constants";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { intersection, flatten } from "lodash";
-import { IVisibleEntity, IEntity } from "@tandem/common/lang/entities";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { IInjectable, APPLICATION_SINGLETON_NS, IActor, Action } from "@tandem/common";
-import { SyntheticDOMElement, IVisibleDOMElement } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement, BaseVisibleSyntheticDOMNodeEntity } from "@tandem/synthetic-browser";
 
 class SelectableComponent extends React.Component<{
-  element: IVisibleDOMElement,
+  entity: BaseVisibleSyntheticDOMNodeEntity<any, any>,
   selection: any,
   app: FrontEndApplication,
   zoom: number,
-  onSyntheticMouseDown: (element: IVisibleDOMElement, event?: MouseEvent) => void
+  onSyntheticMouseDown: (entity: BaseVisibleSyntheticDOMNodeEntity<any, any>, event?: MouseEvent) => void
 }, any> {
 
   private _i: number = 0;
@@ -32,17 +32,17 @@ class SelectableComponent extends React.Component<{
   }
 
   onMouseDown = (event: MouseEvent): void => {
-    this.props.onSyntheticMouseDown(this.props.element, event);
+    this.props.onSyntheticMouseDown(this.props.entity, event);
     event.stopPropagation();
     this.onMouseOut(event);
  }
 
   onMouseOver = (event: MouseEvent) => {
-    this.props.element.setAttribute(`data-${MetadataKeys.HOVERING}`, true);
+    this.props.entity.metadata.set(MetadataKeys.HOVERING, true);
   }
 
   onMouseOut = (event: MouseEvent) => {
-    this.props.element.setAttribute(`data-${MetadataKeys.HOVERING}`, false);
+    this.props.entity.metadata.set(MetadataKeys.HOVERING, false);
   }
 
   shouldComponentUpdate(props) {
@@ -51,20 +51,20 @@ class SelectableComponent extends React.Component<{
   }
 
   render() {
-    const { element, selection, app } = this.props;
+    const { entity, selection, app } = this.props;
 
     // const entities = element.querySelectorAll("*");
 
     // if (intersection(entities, selection || []).length) return null;
 
-    const bounds = (element as any as IVisibleDOMElement).getBoundingClientRect();
+    const bounds = entity.scaledBounds;
     if (!bounds) return null;
 
     const borderWidth = 2 / this.props.zoom;
 
     const classNames = cx({
       "m-selectable": true,
-      "hover": this.props.element.getAttribute(`data-${MetadataKeys.HOVERING}`)
+      "hover": this.props.entity.metadata.get(MetadataKeys.HOVERING)
     });
 
     const style = {
@@ -93,7 +93,7 @@ class SelectableComponent extends React.Component<{
 export class SelectablesComponent extends React.Component<{
   app: FrontEndApplication,
   editor: Editor,
-  onSyntheticMouseDown: (element: IVisibleDOMElement, event?: MouseEvent) => void,
+  onSyntheticMouseDown: (entity: BaseVisibleSyntheticDOMNodeEntity<any, any>, event?: MouseEvent) => void,
   canvasRootSelectable?: boolean
 }, { showSelectables: boolean }> {
 
@@ -126,9 +126,9 @@ export class SelectablesComponent extends React.Component<{
   render() {
 
     if (!this.state.showSelectables) return null;
-    const { documentComponent } = this.props.app.editor;
+    const { documentEntity } = this.props.app.editor;
 
-    if (!documentComponent) return null;
+    if (!documentEntity) return null;
 
     const { editor, app } = this.props;
     const { selection } = editor;
@@ -139,14 +139,14 @@ export class SelectablesComponent extends React.Component<{
     // TODO - check if user is scrolling
     if (selection && editor.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
-    const allElements = documentComponent.querySelectorAll("*").map((component) => component.source).filter((element) => !!element["getBoundingClientRect"] && element.module && element.module.editor) as any as IVisibleDOMElement[];
+    const allEntities = documentEntity.querySelectorAll("*").filter((entity) => entity["scaledBounds"]) as any as BaseVisibleSyntheticDOMNodeEntity<any, any>[];
 
-    const selectables = allElements.map((element, i) => (
+    const selectables = allEntities.map((entity, i) => (
       <SelectableComponent
         {...this.props}
         zoom={editor.zoom}
         selection={selection}
-        element={element}
+        entity={entity}
         key={i}
       />
     ));

@@ -14,6 +14,8 @@ export interface IModule extends IObservable {
 
   fileName: string;
 
+  sandbox: Sandbox;
+
   /**
    * The source content
    */

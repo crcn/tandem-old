@@ -21,3 +21,13 @@ export function findTreeNode<T extends ITreeNode<any>>(node: T, filter: (node: T
   if (filter(node)) return node;
   return node.children.find(child => findTreeNode(child, filter));
 };
+
+export function getTreeAncestors<T extends ITreeNode<any>>(node: T) {
+  const ancestors = [];
+  let current = node.parent;
+  while (current) {
+    ancestors.push(current);
+    current = current.parent;
+  }
+  return ancestors;
+};

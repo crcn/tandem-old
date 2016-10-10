@@ -82,6 +82,10 @@ export class BoundingRect {
     return new BoundingRect(rect.left, rect.top, rect.right, rect.bottom);
   }
 
+  static zeros() {
+    return new BoundingRect(0, 0, 0, 0);
+  }
+
   static merge(...rects: Array<BoundingRect>): BoundingRect {
     let left   = Infinity;
     let bottom = -Infinity;

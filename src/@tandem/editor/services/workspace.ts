@@ -140,8 +140,8 @@ class CanvasRenderer extends BaseDecoratorRenderer {
     this._rects = {};
   }
 
-  getBoundingRect(element: SyntheticDOMNode) {
-    return this._rects[element.uid] || new BoundingRect(0, 0, 0, 0);
+  getBoundingRect(uid: string) {
+    return this._rects[uid] || BoundingRect.zeros();
   }
 
   protected onTargetRendererAction(action: Action) {

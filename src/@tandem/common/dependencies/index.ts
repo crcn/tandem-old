@@ -3,8 +3,8 @@ import { ITyped } from "@tandem/common/object";
 import { INamed } from "@tandem/common/object";
 import { IBrokerBus } from "../busses";
 import { IApplication } from "@tandem/common/application";
+import { IEntity, IEntityDocument, IASTNode } from "@tandem/common/lang";
 import { Action, IFileModelActionResponseData } from "../actions";
-import { IEntity, IValueEntity, IEntityDocument, IASTNode } from "@tandem/common/lang";
 
 import { File } from "@tandem/common/models";
 import {

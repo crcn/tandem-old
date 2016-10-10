@@ -4,7 +4,7 @@ import { watchProperty } from "@tandem/common/observable";
 import { parseCSS } from "@tandem/html-extension/lang";
 import { BoundingRect, IPoint } from "@tandem/common/geom";
 import { VisibleMarkupElementEntity } from "../index";
-import { IEntityDisplay, IVisibleEntity, DisplayCapabilities } from "@tandem/common/lang/entities";
+import { SyntheticDOMCapabilities } from "@tandem/synthetic-browser";
 import * as memoize from "memoizee";
 
 function calculateCSSMeasurments(style): any {
@@ -100,7 +100,7 @@ function roundMeasurements(style) {
   return roundedStyle;
 }
 
-export class HTMLNodeDisplay implements IEntityDisplay {
+export class HTMLNodeDisplay  {
 
   private _cachedBounds: BoundingRect;
 
@@ -114,7 +114,7 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     const style = window.getComputedStyle(this.node);
 
     // TODO - need to wire this up
-    return new DisplayCapabilities(
+    return new SyntheticDOMCapabilities(
       style.position !== "static",
       /fixed|absolute/.test(style.position) || !/^inline$/.test(style.display)
     );
@@ -248,8 +248,8 @@ export class HTMLNodeDisplay implements IEntityDisplay {
     let p = this.entity.parent;
     const parentDisplays = [];
     while (p) {
-      if ((<IVisibleEntity><any>p).display instanceof HTMLNodeDisplay) {
-        parentDisplays.push(<HTMLNodeDisplay>(<IVisibleEntity><any>p).display);
+      if ((<any>p).display instanceof HTMLNodeDisplay) {
+        parentDisplays.push(<HTMLNodeDisplay>(<any>p).display);
       }
       p = p.parent;
     }

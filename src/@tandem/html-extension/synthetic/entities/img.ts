@@ -1,6 +1,6 @@
-import { BaseSyntheticComponent, SyntheticDOMElement } from "@tandem/synthetic-browser";
+import { BaseSyntheticDOMNodeEntity, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
-export class SyntheticHTMLImage extends BaseSyntheticComponent<SyntheticDOMElement, HTMLImageElement> {
+export class SyntheticHTMLImageEntity extends BaseSyntheticDOMNodeEntity<SyntheticDOMElement, HTMLImageElement> {
   private _absolutePath: string;
 
   async load() {
@@ -14,6 +14,6 @@ export class SyntheticHTMLImage extends BaseSyntheticComponent<SyntheticDOMEleme
   }
 
   render() {
-    return `<img ${this.source.attributesToString("class", "style")} src="${window.location.protocol}${window.location.host}/asset/${encodeURIComponent(this._absolutePath)}?${Date.now()}">`;
+    return `<img ${this.uidToAttributeString()} ${this.source.attributesToString("class", "style")} src="${window.location.protocol}${window.location.host}/asset/${encodeURIComponent(this._absolutePath)}?${Date.now()}">`;
   }
 }

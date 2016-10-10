@@ -4,11 +4,11 @@ import { CSS_MIME_TYPE } from "@tandem/common/constants";
 import {
   SyntheticDocument,
   SyntheticHTMLElement,
-  BaseSyntheticComponent,
+  BaseSyntheticDOMNodeEntity,
   SyntheticCSSStyleSheet,
 } from "@tandem/synthetic-browser";
 
-export class SyntheticHTMLLink extends BaseSyntheticComponent<SyntheticHTMLElement, HTMLElement> {
+export class SyntheticHTMLLinkEntity extends BaseSyntheticDOMNodeEntity<SyntheticHTMLElement, HTMLElement> {
   private _styleSheet: SyntheticCSSStyleSheet;
   async evaluate() {
     const window = this.source.ownerDocument.defaultView;

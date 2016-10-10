@@ -1,6 +1,11 @@
 import { Action } from "@tandem/common";
 import { WrapBus } from "mesh";
-import { BoundingRect, watchProperty, patchTreeNode, flattenTree, calculateAbsoluteBounds } from "@tandem/common";
+import {
+  BoundingRect,
+  watchProperty,
+  flattenTree,
+  calculateAbsoluteBounds
+} from "@tandem/common";
 import {
   MarkupNodeType,
   querySelectorAll,
@@ -11,13 +16,8 @@ import {
   SyntheticCSSStyleDeclaration,
 } from "../dom";
 
-import {
-  ISyntheticComponent
-} from "../components";
-
-import {
-  BaseRenderer
-} from "./base";
+import { BaseRenderer } from "./base";
+import { BaseSyntheticDOMNodeEntity } from "../entities";
 
 export class SyntheticDOMRenderer extends BaseRenderer {
 
@@ -25,12 +25,12 @@ export class SyntheticDOMRenderer extends BaseRenderer {
 
     // simple for now -- just reset the entire outer HTML
     // this.element.appendChild(this.target.render(document as any as SyntheticDocument) as any as Node);
-    this.element.innerHTML = this.target.render();
+    this.element.innerHTML = this.entity.render();
 
     const syntheticComponentsBySourceUID = {};
 
-    for (const component of flattenTree(this.target)) {
-      syntheticComponentsBySourceUID[component.source.uid] = component;
+    for (const component of flattenTree(this.entity)) {
+      syntheticComponentsBySourceUID[component.uid] = component;
     }
 
     const rects = {};
@@ -39,7 +39,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       const element = <HTMLElement>node;
       if (!element.dataset) continue;
       const uid = element.dataset["uid"];
-      const sourceComponent: ISyntheticComponent = syntheticComponentsBySourceUID[uid];
+      const sourceComponent: BaseSyntheticDOMNodeEntity<any, any> = syntheticComponentsBySourceUID[uid];
       if (sourceComponent) {
         sourceComponent.target = <HTMLElement>node;
       }

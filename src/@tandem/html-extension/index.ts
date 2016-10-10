@@ -11,15 +11,16 @@ import { cssHighlightElementToolComponentFactoryDependency } from "./components/
 // sandbox
 import { HTMLCSSModule } from "./sandbox";
 
-import { HTML_XMLNS, SyntheticDOMNodeComponentClassDependency } from "@tandem/synthetic-browser";
+import { HTML_XMLNS, SyntheticDOMNodeEntityClassDependency } from "@tandem/synthetic-browser";
 
 import { 
-  SyntheticHTMLImage,
-  SyntheticHTMLLink,
-  SyntheticHTMLDocument
+  SyntheticHTMLImageEntity,
+  SyntheticHTMLLinkEntity,
+  SyntheticHTMLDocumentEntity,
+  SyntheticVisibleHTMLEntity,
 } from "./synthetic";
 
-import { MarkupModule } from "@tandem/synthetic-browser";
+import { MarkupModule, HTML_TAG_NAMES } from "@tandem/synthetic-browser";
 import { ModuleFactoryDependency } from "@tandem/sandbox";
 
 // layer components
@@ -61,6 +62,8 @@ import { MimeTypeDependency } from "@tandem/common/dependencies";
    cssCommentEntityFactoryDependency,
 } from "./lang";
 
+const visibleEntityDependencies = HTML_TAG_NAMES.map((tagName) => new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, tagName, SyntheticVisibleHTMLEntity));
+
 export const htmlExtensionDependency = [
 
   // components
@@ -72,9 +75,10 @@ export const htmlExtensionDependency = [
   // sandbox
   new ModuleFactoryDependency(CSS_MIME_TYPE, CSS_MIME_TYPE, HTMLCSSModule),
   new ModuleFactoryDependency(HTML_MIME_TYPE, HTML_MIME_TYPE, MarkupModule),
-  new SyntheticDOMNodeComponentClassDependency(HTML_XMLNS, "img", SyntheticHTMLImage),
-  new SyntheticDOMNodeComponentClassDependency(undefined, "#document", SyntheticHTMLDocument),
-  new SyntheticDOMNodeComponentClassDependency(HTML_XMLNS, "link", SyntheticHTMLLink),
+  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "img", SyntheticHTMLImageEntity),
+  new SyntheticDOMNodeEntityClassDependency(undefined, "#document", SyntheticHTMLDocumentEntity),
+  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "link", SyntheticHTMLLinkEntity),
+  ...visibleEntityDependencies,
 
   // stage tool components
   cssHighlightElementToolComponentFactoryDependency,
@@ -126,3 +130,4 @@ export * from "./constants";
 export * from "./dom";
 export * from "./key-bindings";
 export * from "./services";
+export * from "./synthetic";

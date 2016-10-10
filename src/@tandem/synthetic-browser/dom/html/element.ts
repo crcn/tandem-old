@@ -1,11 +1,9 @@
-import { getBoundingRect } from "@tandem/synthetic-browser";
 import { SyntheticDocument } from "../document";
 import { PropertyChangeAction, Action, BoundingRect } from "@tandem/common";
 import { SyntheticCSSStyleDeclaration, parseCSS, evaluateCSS } from "../css";
 import {
   parseMarkup,
   evaluateMarkup,
-  IVisibleDOMElement,
   SyntheticDOMElement,
   SyntheticDOMAttribute,
   ISyntheticDOMCapabilities,
@@ -13,30 +11,22 @@ import {
 
 import { getComputedStyle } from "./get-computed-style";
 
-export class SyntheticHTMLElement extends SyntheticDOMElement implements IVisibleDOMElement {
+export class SyntheticHTMLElement extends SyntheticDOMElement  {
 
   private _style: SyntheticCSSStyleDeclaration;
+  private _rect: BoundingRect;
 
   constructor(ns: string, tagName: string, ownerDocument: SyntheticDocument) {
     super(ns, tagName, ownerDocument);
     this._style = new SyntheticCSSStyleDeclaration();
   }
 
-  getUntransformedBoundingClientRect() {
-    return new BoundingRect(0, 0, 0, 0);
-  }
-
   getBoundingClientRect() {
-    return this.ownerDocument.defaultView.renderer.getBoundingRect(this);
+    return this._rect || BoundingRect.zeros();
   }
 
-  getCapabilities() {
-
-    const style = getComputedStyle(this);
-    return {
-      movable: style.position && style.position !== "static",
-      resizable: /fixed|absolute/.test(style.position) || !/^inline$/.test(style.display)
-    };
+  setBoundingClientRect(rect: BoundingRect) {
+    this._rect = rect;
   }
 
   get style(): SyntheticCSSStyleDeclaration {
@@ -72,8 +62,6 @@ export class SyntheticHTMLElement extends SyntheticDOMElement implements IVisibl
         this._style = evaluateCSS(parseCSS(`.style{${(<SyntheticDOMAttribute>action.target).value}}`)).rules[0].style;
       }
     }
-
-    // bubble
   }
 
   get innerHTML(): string {

@@ -1,12 +1,17 @@
 import { ISynthetic } from "@tandem/sandbox";
 import { BoundingRect, IPoint } from "@tandem/common";
-import { IVisibleDOMElement, MarkupNodeType, ISyntheticDOMCapabilities } from "@tandem/synthetic-browser";
+import {
+  MarkupNodeType,
+  BaseSyntheticDOMNodeEntity,
+  BaseVisibleSyntheticDOMNodeEntity,
+  ISyntheticDOMCapabilities,
+} from "@tandem/synthetic-browser";
 
 // class EntitySelectionDisplay implements IEntityDisplay {
 
 //   readonly visible: boolean = true;
 
-//   constructor(readonly selection: VisibleSyntheticElementCollection<IVisibleEntity>) { }
+//   constructor(readonly selection: VisibleDOMEntityCollection<IVisibleEntity>) { }
 
 //   get position(): IPoint {
 //     const bounds = this.bounds;
@@ -58,21 +63,37 @@ import { IVisibleDOMElement, MarkupNodeType, ISyntheticDOMCapabilities } from "@
 //   }
 // }
 
-export class VisibleSyntheticElementCollection<T extends IVisibleDOMElement> extends Array<T> {
+export class VisibleDOMEntityCollection<T extends BaseVisibleSyntheticDOMNodeEntity<any, any>> extends Array<T> {
 
-  constructor(...elements: Array<ISynthetic>) {
-    super(...(<Array<T>><any>elements).filter((element: IVisibleDOMElement) => element.nodeType === MarkupNodeType.ELEMENT));
+  constructor(...components: BaseSyntheticDOMNodeEntity<any, any>[]) {
+    super(...(<Array<T>><any>components).filter((entity: BaseVisibleSyntheticDOMNodeEntity<any, any>) => entity instanceof BaseVisibleSyntheticDOMNodeEntity));
   }
 
-  getBounds() {
-    return BoundingRect.merge(...this.map((entity) => entity.getBoundingClientRect()));
+  get scaledBounds() {
+    return BoundingRect.merge(...this.map((entity) => entity.scaledBounds));
   }
 
-  setBounds(nbounds: BoundingRect) {
+  get position(): IPoint {
+    const bounds = this.scaledBounds;
+    return { left: bounds.left, top: bounds.top };
+  }
 
-    const cbounds = this.getBounds();
+  set position(position: IPoint) {
+    const epos = this.position;
     for (const item of this) {
-      const ibounds     = item.getBoundingClientRect();
+      const itemBounds  = item.scaledBounds;
+      item.position = {
+        left: position.left + (itemBounds.left - epos.left),
+        top : position.top  + (itemBounds.top  - epos.top)
+      };
+    }
+  }
+
+  set scaledBounds(nbounds: BoundingRect) {
+
+    const cbounds = this.scaledBounds;
+    for (const item of this) {
+      const ibounds     = item.scaledBounds;
 
       const percLeft   = (ibounds.left - cbounds.left) / cbounds.width;
       const percTop    = (ibounds.top  - cbounds.top)  / cbounds.height;
@@ -94,10 +115,10 @@ export class VisibleSyntheticElementCollection<T extends IVisibleDOMElement> ext
     }
   }
 
-  getCapabilities(): ISyntheticDOMCapabilities {
+  get capabilities(): ISyntheticDOMCapabilities {
     const capabilities = { movable: true, resizable: true };
     for (const item of this) {
-      const cap = item.getCapabilities();
+      const cap = item.capabilities;
       for (const key in cap) {
         capabilities[key] = capabilities[key] && cap[key];
       }

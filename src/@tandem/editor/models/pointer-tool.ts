@@ -3,7 +3,7 @@ import { inject } from "@tandem/common/decorators";
 import { BaseEditorTool } from "@tandem/editor/models";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { POINTER_TOOL_KEY_CODE } from "@tandem/editor/constants";
-import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
+import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { BaseApplicationService } from "@tandem/common/services";
 import { IInjectable, MAIN_BUS_NS } from "@tandem/common/dependencies";
 import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
@@ -25,7 +25,7 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
 
   canvasKeyDown(action: KeyboardAction) {
 
-    // const selection = new VisibleSyntheticElementCollection(...this.editor.selection);
+    // const selection = new VisibleDOMEntityCollection(...this.editor.selection);
     // if (selection.length) return;
 
     // if (selection["display"] == null) return;

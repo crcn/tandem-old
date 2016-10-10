@@ -1,7 +1,6 @@
 import { Action } from "@tandem/common/actions";
 import { WrapBus } from "mesh";
 import { parseCSSStyle } from "@tandem/html-extension/lang";
-import { IVisibleEntity } from "@tandem/common/lang/entities";
 import { HTMLNodeDisplay } from "./displays";
 import { MarkupElementEntity } from "./element";
 import { CSSRuleExpression } from "@tandem/html-extension/lang/css/ast";
@@ -9,7 +8,7 @@ import { MarkupElementExpression } from "@tandem/html-extension/lang/html/ast";
 import { EntityFactoryDependency } from "@tandem/common/dependencies";
 import { IDOMSection, NodeSection } from "@tandem/html-extension/dom";
 
-export class VisibleMarkupElementEntity extends MarkupElementEntity implements IVisibleEntity {
+export class VisibleMarkupElementEntity extends MarkupElementEntity {
 
   readonly type: string = "display";
   readonly displayType: string = "element";

@@ -1,7 +1,6 @@
 
 import { Metadata } from "@tandem/common/metadata";
 import { IASTNode } from "@tandem/common/lang";
-import { IEntityDisplay } from "./display";
 import { EntityFactoryDependency } from "@tandem/common/dependencies";
 import { IInjectable, Dependencies } from "@tandem/common/dependencies";
 import { IDisposable, IOwnable, IValued, IRemovable, INamed, IPatchable, IComparable } from "@tandem/common/object";
@@ -41,10 +40,4 @@ export interface IEntity extends ITreeNode<IEntity>, IDisposable, IInjectable, I
    */
 
   flatten(): Array<IEntity>;
-}
-
-export interface IValueEntity extends IEntity, IValued { }
-
-export interface IVisibleEntity extends IEntity {
-  display: IEntityDisplay;
 }

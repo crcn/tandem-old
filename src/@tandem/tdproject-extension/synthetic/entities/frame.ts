@@ -1,18 +1,23 @@
+import "./frame.scss";
 
 import {
-  SyntheticDOMRenderer,
   SyntheticBrowser,
   SyntheticDocument,
   SyntheticDOMElement,
   SyntheticHTMLElement,
+  SyntheticDOMRenderer,
   BaseDecoratorRenderer,
-  BaseSyntheticComponent,
+  BaseSyntheticDOMNodeEntity,
+  SyntheticDOMCapabilities,
   ISyntheticDocumentRenderer,
+  BaseVisibleSyntheticDOMNodeEntity,
 } from "@tandem/synthetic-browser";
+
+import { SyntheticVisibleHTMLEntity } from "@tandem/html-extension";
 
 import { watchProperty } from "@tandem/common";
 
-export class SyntheticTDFrame extends BaseSyntheticComponent<SyntheticHTMLElement, HTMLDivElement> {
+export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
 
   private _browser: SyntheticBrowser;
 
@@ -21,7 +26,7 @@ export class SyntheticTDFrame extends BaseSyntheticComponent<SyntheticHTMLElemen
     if (!this._browser) {
       const documentRenderer = new SyntheticDOMRenderer();
       this._browser = new SyntheticBrowser(this.source.ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer));
-      watchProperty(this._browser, "documentComponent", this.onBrowserDocumentComponentChange.bind(this));
+      watchProperty(this._browser, "documentEntity", this.onBrowserDocumentComponentChange.bind(this));
     }
 
     if (this.source.getAttribute("src")) {
@@ -34,13 +39,17 @@ export class SyntheticTDFrame extends BaseSyntheticComponent<SyntheticHTMLElemen
     }
   }
 
+  get capabilities() {
+    return new SyntheticDOMCapabilities(true, true);
+  }
+
   get contentDocument() {
-    return this._browser.documentComponent;
+    return this._browser.documentEntity;
   }
 
   protected onBrowserDocumentComponentChange() {
     while (this.firstChild) this.removeChild(this.firstChild);
-    this.appendChild(this._browser.documentComponent);
+    this.appendChild(this._browser.documentEntity);
   }
 
   targetDidMount() {
@@ -51,21 +60,21 @@ export class SyntheticTDFrame extends BaseSyntheticComponent<SyntheticHTMLElemen
   }
 
   render() {
-    return `<div class="m-frame-component" ${this.source.attributesToString("data-uid", "style")} style="width:1024px;height:768px;position:relative;">
+    return `<div class="frame-entity" ${this.uidToAttributeString()} ${this.source.attributesToString("style")}>
       <iframe style="border:none;width:100%;height:100%;position:absolute;top:0px;left:0px;"></iframe>
 
       <!-- overlay to ensure that the iframe does not receive any mouse events that will foo with the editing tools -->
-      <div class="m-frame-component--overlay" style="width:100%;height:100%;position:absolute;top:0px;left:0px;background:transparent;"></div>
+      <div class="frame-entity-overlay" style="width:100%;height:100%;position:absolute;top:0px;left:0px;background:transparent;"></div>
     </div>`;
   }
 }
 
 export class SyntheticFrameRenderer extends BaseDecoratorRenderer {
-  constructor(private _frame: SyntheticTDFrame, _renderer: ISyntheticDocumentRenderer) {
+  constructor(private _frame: SyntheticTDFrameEntity, _renderer: ISyntheticDocumentRenderer) {
     super(_renderer);
   }
-  getBoundingRect(element: SyntheticDOMElement) {
-    const rect = this._renderer.getBoundingRect(element);
+  getBoundingRect(uid: string) {
+    const rect = this._renderer.getBoundingRect(uid);
     const offset = this._frame.source.getBoundingClientRect();
     return rect.move({ left: offset.left, top: offset.top });
   }
