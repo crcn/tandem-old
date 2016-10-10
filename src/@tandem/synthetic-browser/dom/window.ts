@@ -1,5 +1,4 @@
 import { Sandbox } from "@tandem/sandbox";
-import { MimeTypes } from "@tandem/common";
 import { bindable } from "@tandem/common/decorators";
 import { Observable } from "@tandem/common/observable";
 import { IPatchable } from "@tandem/common/object";

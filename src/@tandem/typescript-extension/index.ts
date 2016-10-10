@@ -1,29 +1,19 @@
 import * as ts from "typescript";
-import { MimeTypes } from "./constants";
-import { MimeTypeDependency } from "@tandem/common";
+import { TSJSModule } from "./sandbox";
+import { TS_MIME_TYPE } from "./constants";
+import { ModuleFactoryDependency } from "@tandem/sandbox";
+import { MimeTypeDependency, JS_MIME_TYPE, HTML_MIME_TYPE } from "@tandem/common";
 
-import {
-  tsJsModuleFactoryDependency,
-  tsDomModuleFactoryDependency,
-} from "./sandbox";
-
-import {
-  tsFileFactoryDependency
-} from "./models";
-
-export * from "./sandbox";
-export * from "./models";
 export const typescriptExtensionDependency = [
 
-  // models
-  tsFileFactoryDependency,
-
   // module deps
-  tsJsModuleFactoryDependency,
-  tsDomModuleFactoryDependency,
+  new ModuleFactoryDependency(JS_MIME_TYPE, TS_MIME_TYPE, TSJSModule),
+  new ModuleFactoryDependency(HTML_MIME_TYPE, TS_MIME_TYPE, TSJSModule),
 
   // mime types
-  new MimeTypeDependency("ts", MimeTypes.TS),
-  new MimeTypeDependency("tsx", MimeTypes.TS),
+  new MimeTypeDependency("ts", TS_MIME_TYPE),
+  new MimeTypeDependency("tsx", TS_MIME_TYPE),
 ];
 
+export * from "./sandbox";
+export * from "./constants";

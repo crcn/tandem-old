@@ -1,7 +1,6 @@
 import * as sift from "sift";
 import { flatten } from "lodash";
-import { HTMLFile } from "../models/html-file";
-import { MimeTypes } from "@tandem/html-extension/constants";
+import { HTML_MIME_TYPE } from "@tandem/common";
 import { filterAction } from "@tandem/common/decorators";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { appendSourceChildren } from "@tandem/common/lang/entities";
@@ -21,7 +20,7 @@ import {
 
 export class PasteHTMLService extends BaseApplicationService<FrontEndApplication> {
 
-  @filterAction(sift({ "item.type": MimeTypes.HTML }))
+  @filterAction(sift({ "item.type": HTML_MIME_TYPE }))
   [PasteAction.PASTE](action: PasteAction) {
     this.bus.execute(new PasteHTMLEntityAction(action.item));
   }

@@ -10,14 +10,13 @@ import {
   ISyntheticDocumentRenderer,
 } from "@tandem/synthetic-browser";
 
-import { MimeTypes, bubbleHTMLIframeEvents, watchProperty } from "@tandem/common";
+import { watchProperty } from "@tandem/common";
 
 export class SyntheticTDFrame extends BaseSyntheticComponent<SyntheticHTMLElement, HTMLDivElement> {
 
   private _browser: SyntheticBrowser;
 
   async evaluate() {
-
 
     if (!this._browser) {
       const documentRenderer = new SyntheticDOMRenderer();

@@ -1,5 +1,4 @@
 import * as sift from "sift";
-import { HTMLFile } from "@tandem/html-extension/models/html-file";
 import { DocumentFile } from "@tandem/editor/models";
 import { MetadataKeys } from "@tandem/editor/constants";
 import { IHTMLNodeEntity } from "./base";
@@ -27,7 +26,7 @@ export abstract class HTMLNodeEntity<T extends MarkupNodeExpression> extends Bas
 
   private _section: IDOMSection;
   private _nodeName: string;
-  public document: HTMLFile;
+  public document: any;
 
   get section(): IDOMSection {
     return this._section;

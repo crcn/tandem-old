@@ -3,12 +3,12 @@ import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode } from "./dom";
 import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, TetherRenderer } from "./renderers";
 import {
   bindable,
-  MimeTypes,
   BubbleBus,
   Observable,
   TypeWrapBus,
   ChangeAction,
   Dependencies,
+  HTML_MIME_TYPE,
   MainBusDependency,
   PropertyChangeAction,
 } from "@tandem/common";
@@ -68,7 +68,7 @@ export class SyntheticBrowser extends Observable {
 
   async open(url: string) {
     this._location = new SyntheticLocation(url);
-    await this._sandbox.open(MimeTypes.HTML, url);
+    await this._sandbox.open(HTML_MIME_TYPE, url);
   }
 
   get document() {

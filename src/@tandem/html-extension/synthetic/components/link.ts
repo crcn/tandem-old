@@ -1,10 +1,10 @@
 import { Action } from "@tandem/common/actions";
-import { MimeTypes } from "@tandem/common/constants";
+import { CSS_MIME_TYPE } from "@tandem/common/constants";
 
 import {
-  BaseSyntheticComponent,
   SyntheticDocument,
   SyntheticHTMLElement,
+  BaseSyntheticComponent,
   SyntheticCSSStyleSheet,
 } from "@tandem/synthetic-browser";
 
@@ -13,7 +13,7 @@ export class SyntheticHTMLLink extends BaseSyntheticComponent<SyntheticHTMLEleme
   async evaluate() {
     const window = this.source.ownerDocument.defaultView;
     const href    = this.source.getAttribute("href");
-    const exports = this._styleSheet = await window.sandbox.importer.import(MimeTypes.CSS, href, window.location.toString());
+    const exports = this._styleSheet = await window.sandbox.importer.import(CSS_MIME_TYPE, href, window.location.toString());
     window.document.styleSheets.push(this._styleSheet);
     await super.evaluate();
   }

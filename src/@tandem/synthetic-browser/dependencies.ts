@@ -23,7 +23,6 @@ export class SyntheticDOMElementClassDependency extends Dependency<syntheticElem
   }
 }
 
-
 export class SyntheticDOMNodeComponentClassDependency extends Dependency<syntheticComponentType> {
   static readonly SYNTHETIC_NODE_COMPONENT_NS_PREFIX = "syntheticNodeComponentClass";
 

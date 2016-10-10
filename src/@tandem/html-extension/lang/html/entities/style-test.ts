@@ -1,9 +1,8 @@
 import { expect } from "chai";
-import { MimeTypes } from "@tandem/html-extension/constants";
-import { DocumentFile } from "@tandem/editor/models";
 import { timeout } from "@tandem/common/test";
+import { DocumentFile } from "@tandem/editor/models";
 import { HTMLImportEntity, HTMLDocumentRootEntity, htmlExtensionDependency } from "@tandem/html-extension";
-import { Dependencies, DependenciesDependency, FileFactoryDependency, BaseEntity } from "@tandem/common";
+import { Dependencies, DependenciesDependency, FileFactoryDependency, BaseEntity, HTML_MIME_TYPE } from "@tandem/common";
 
 describe(__filename + "#", () => {
 
@@ -14,7 +13,7 @@ describe(__filename + "#", () => {
   });
 
   async function loadEntity(content: string): Promise<BaseEntity<any>> {
-    const file: DocumentFile<any> = FileFactoryDependency.find(MimeTypes.HTML, deps).create({
+    const file: DocumentFile<any> = FileFactoryDependency.find(HTML_MIME_TYPE, deps).create({
       content: content
     });
 

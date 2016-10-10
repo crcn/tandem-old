@@ -1,4 +1,3 @@
-import { CSSFile } from "@tandem/html-extension/models";
 import { NodeSection } from "@tandem/html-extension/dom";
 import { ICSSRuleEntity } from "./base";
 import { CSSRuleExpression } from "../ast";
@@ -8,7 +7,6 @@ import { HTMLNodeEntity, MarkupElementEntity } from "@tandem/html-extension/lang
 
 export class CSSRuleEntity extends BaseEntity<CSSRuleExpression> implements ICSSRuleEntity {
 
-  readonly document: CSSFile;
   compare(entity: CSSRuleEntity) {
     return super.compare(entity) && String(entity.source.selector) === String(this.source.selector);
   }

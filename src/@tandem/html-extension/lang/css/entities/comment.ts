@@ -1,4 +1,3 @@
-import { CSSFile } from "@tandem/html-extension/models";
 import { NodeSection } from "@tandem/html-extension/dom";
 import { ICSSRuleEntity } from "./base";
 import { CSSCommentExpression } from "../ast";
@@ -7,7 +6,6 @@ import { EntityFactoryDependency } from "@tandem/common/dependencies";
 
 export class CSSCommentEntity extends BaseEntity<CSSCommentExpression> {
 
-  readonly document: CSSFile;
 
   cloneLeaf() {
     return new CSSCommentEntity(this.source);

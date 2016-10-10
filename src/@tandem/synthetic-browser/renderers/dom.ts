@@ -3,11 +3,11 @@ import { WrapBus } from "mesh";
 import { BoundingRect, watchProperty, patchTreeNode, flattenTree, calculateAbsoluteBounds } from "@tandem/common";
 import {
   MarkupNodeType,
+  querySelectorAll,
   SyntheticDOMNode,
   SyntheticDOMText,
-  SyntheticDOMElement,
   SyntheticDocument,
-  querySelectorAll,
+  SyntheticDOMElement,
   SyntheticCSSStyleDeclaration,
 } from "../dom";
 

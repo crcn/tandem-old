@@ -1,6 +1,5 @@
 import { decode } from "ent";
 import { Action, inject } from "@tandem/common";
-import { HTMLFile } from "@tandem/html-extension/models/html-file";
 import { EntityMetadata } from "@tandem/common/lang/entities";
 import { HTMLNodeEntity } from "./node";
 import { IHTMLNodeEntity } from "./base";

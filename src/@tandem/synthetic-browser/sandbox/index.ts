@@ -12,8 +12,6 @@ import {
   MarkupFragmentExpression,
 } from "../dom";
 
-import { repeat } from "lodash";
-
 import {
   IModule,
   BaseModule,

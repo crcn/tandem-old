@@ -1,10 +1,5 @@
 import * as ts from "typescript";
-import { MimeTypes } from "../constants";
-import {
-  BaseModule,
-  CommonJSModule,
-  ModuleFactoryDependency,
-} from "@tandem/sandbox";
+import { BaseModule, CommonJSModule, ModuleFactoryDependency } from "@tandem/sandbox";
 
 export class TSJSModule extends CommonJSModule {
   transpile() {
@@ -14,5 +9,3 @@ export class TSJSModule extends CommonJSModule {
     }, this.fileName);
   }
 }
-
-export const tsJsModuleFactoryDependency = new ModuleFactoryDependency(MimeTypes.JS, MimeTypes.TS, TSJSModule);

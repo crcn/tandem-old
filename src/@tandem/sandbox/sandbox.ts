@@ -81,9 +81,16 @@ export class Sandbox extends Observable {
     this._importer.reset();
     this._global = undefined;
 
-    if (this._entry) {
-      await this.open(this._entry.envMimeType, this._entry.filePath);
+    // parsing errors may occur -- catch them to ensure
+    // that they don't prohibit reload() from running next time
+    try {
+      if (this._entry) {
+        await this.open(this._entry.envMimeType, this._entry.filePath);
+      }
+    } catch (e) {
+      console.error(e.stack);
     }
+
     this._reloading = false;
     if (this._shouldReloadAgain) {
       this._shouldReloadAgain = false;

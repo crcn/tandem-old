@@ -1,4 +1,4 @@
-import { MimeTypes } from "@tandem/html-extension/constants";
+import { CSS_MIME_TYPE, HTML_MIME_TYPE } from "@tandem/common";
 import { IApplication } from "@tandem/common/application";
 
 // components
@@ -9,9 +9,7 @@ import { cssColorTokenComponentFactoryDependency } from "./components/css-color-
 import { cssHighlightElementToolComponentFactoryDependency } from "./components/css-highlight-element-tool";
 
 // sandbox
-import {
-  cssModuleFactoryDependency
-} from "./sandbox";
+import { HTMLCSSModule } from "./sandbox";
 
 import { HTML_XMLNS, SyntheticDOMNodeComponentClassDependency } from "@tandem/synthetic-browser";
 
@@ -37,10 +35,6 @@ import { cssDeclarationLayerLabelComponentDependency } from "./components/css-de
 import { cssUnitEditorTokenComponentFactoryDependency } from "./components/css-unit-editor-token";
 import { cssNumericEditorTokenComponentFactoryDependency } from "./components/css-numeric-editor-token";
 import { cssReferenceEditorTokenComponentFactoryDependency } from "./components/css-reference-editor-token";
-
-// models
-import { cssFileDependency } from "./models/css-file";
-import { htmlFileModelDependency } from "./models/html-file";
 
 // services
 import { pastHTMLServiceDependency, cssSelectorServiceDependency  } from "./services";
@@ -76,8 +70,8 @@ export const htmlExtensionDependency = [
   cssColorTokenComponentFactoryDependency,
 
   // sandbox
-  cssModuleFactoryDependency,
-  new ModuleFactoryDependency(MimeTypes.HTML, MimeTypes.HTML, MarkupModule),
+  new ModuleFactoryDependency(CSS_MIME_TYPE, CSS_MIME_TYPE, HTMLCSSModule),
+  new ModuleFactoryDependency(HTML_MIME_TYPE, HTML_MIME_TYPE, MarkupModule),
   new SyntheticDOMNodeComponentClassDependency(HTML_XMLNS, "img", SyntheticHTMLImage),
   new SyntheticDOMNodeComponentClassDependency(undefined, "#document", SyntheticHTMLDocument),
   new SyntheticDOMNodeComponentClassDependency(HTML_XMLNS, "link", SyntheticHTMLLink),
@@ -102,10 +96,6 @@ export const htmlExtensionDependency = [
   pastHTMLServiceDependency,
   cssSelectorServiceDependency,
 
-  // models
-  cssFileDependency,
-  htmlFileModelDependency,
-
   // tools
   textToolDependency,
   editInnerHTMLDependency,
@@ -125,9 +115,9 @@ export const htmlExtensionDependency = [
   cssCommentEntityFactoryDependency,
 
   // mime types
-  new MimeTypeDependency("css", MimeTypes.CSS),
-  new MimeTypeDependency("htm", MimeTypes.HTML),
-  new MimeTypeDependency("html", MimeTypes.HTML)
+  new MimeTypeDependency("css", CSS_MIME_TYPE),
+  new MimeTypeDependency("htm", HTML_MIME_TYPE),
+  new MimeTypeDependency("html", HTML_MIME_TYPE)
 ];
 
 export * from "./actions";
@@ -135,5 +125,4 @@ export * from "./lang";
 export * from "./constants";
 export * from "./dom";
 export * from "./key-bindings";
-export * from "./models";
 export * from "./services";

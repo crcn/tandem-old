@@ -1,5 +1,5 @@
 import * as path from "path";
-import { MimeTypes } from "@tandem/html-extension/constants";
+import { CSS_MIME_TYPE } from "@tandem/common";
 import { MetadataKeys } from "@tandem/editor/constants";
 import { DocumentFile } from "@tandem/editor/models";
 import { GroupNodeSection } from "@tandem/html-extension/dom";
@@ -170,7 +170,7 @@ export class HTMLImportEntity extends MarkupElementEntity {
 }
 
 class HTMLStyleEntity extends HTMLImportEntity {
-  defaultMimeType = MimeTypes.CSS;
+  defaultMimeType = CSS_MIME_TYPE;
 }
 
 export const htmlStyleEntityDependency = [

@@ -1,5 +1,3 @@
-export namespace MimeTypes {
-  export const HTML = "text/html";
-  export const CSS = "text/css";
-  export const JavaScript = "application/javascript";
-}
+export const HTML_MIME_TYPE = "text/html";
+export const CSS_MIME_TYPE  = "text/css";
+export const JS_MIME_TYPE   = "application/javascript";

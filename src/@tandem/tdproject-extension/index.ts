@@ -1,10 +1,7 @@
-import { MimeTypes, TDPROJECT_XMLNS } from "./constants";
+import { TDFrameStageToolComponent } from "./components";
 import { ReactComponentFactoryDependency } from "@tandem/editor";
-import { MimeTypeDependency, MimeTypes as CommonMimeTypes } from "@tandem/common";
-
-import {
-  TDFrameStageToolComponent
-} from "./components";
+import { MimeTypeDependency, HTML_MIME_TYPE } from "@tandem/common";
+import { TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS } from "./constants";
 
 import {
   SyntheticTDFrame,
@@ -36,8 +33,8 @@ export const tdprojectExtensionDependencies = [
   new SyntheticDOMNodeComponentClassDependency(TDPROJECT_XMLNS, "tdproject", SyntheticTDProject),
 
   // sandbox
-  new ModuleFactoryDependency(CommonMimeTypes.HTML, MimeTypes.TDPROJECT, MarkupModule),
+  new ModuleFactoryDependency(HTML_MIME_TYPE, TDPROJECT_MIME_TYPE, MarkupModule),
 
   // mime types
-  new MimeTypeDependency("tdproject", MimeTypes.TDPROJECT)
+  new MimeTypeDependency("tdproject", TDPROJECT_MIME_TYPE)
 ];

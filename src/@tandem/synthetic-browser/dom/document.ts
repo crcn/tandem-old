@@ -2,9 +2,9 @@ import { bindable } from "@tandem/common";
 
 import {
   MarkupNodeType,
-  IMarkupNodeVisitor,
-  SyntheticDOMNode,
   SyntheticDOMText,
+  SyntheticDOMNode,
+  IMarkupNodeVisitor,
   SyntheticDOMElement,
   SyntheticDOMComment,
   SyntheticDOMContainer,
@@ -36,7 +36,6 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     super("#document", null);
     this.styleSheets = [];
     this._registeredElements = {};
-
   }
 
   get sandbox() {

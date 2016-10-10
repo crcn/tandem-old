@@ -1,12 +1,10 @@
-import { MimeTypes } from "../constants";
 import { TSJSModule } from "./js-module";
-import {
-  MimeTypes as CommonMimeTypes
-} from "@tandem/common";
+import { TS_MIME_TYPE } from "../constants";
+import { HTML_MIME_TYPE, JS_MIME_TYPE } from "@tandem/common";
 
 import {
   BaseModule,
   ModuleFactoryDependency,
 } from "@tandem/sandbox";
 
-export const tsDomModuleFactoryDependency = new ModuleFactoryDependency(CommonMimeTypes.HTML, MimeTypes.TS, TSJSModule);
+export const tsDomModuleFactoryDependency = new ModuleFactoryDependency(HTML_MIME_TYPE, TS_MIME_TYPE, TSJSModule);

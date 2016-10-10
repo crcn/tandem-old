@@ -88,7 +88,6 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   }
 }
 
-
 export class BaseDecoratorRenderer implements ISyntheticDocumentRenderer {
   constructor(protected _renderer: ISyntheticDocumentRenderer) {
     _renderer.observe(new WrapBus(this.onTargetRendererAction.bind(this)));

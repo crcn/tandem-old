@@ -1,7 +1,7 @@
-import { BaseRenderer } from "./base";
-import { IActor, BoundingRect } from "@tandem/common";
-import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import * as io from "socket.io-client";
+import { BaseRenderer } from "./base";
+import { SyntheticDOMElement } from "@tandem/synthetic-browser";
+import { IActor, BoundingRect } from "@tandem/common";
 
 export class TetherRenderer extends BaseRenderer {
   private _connection: SocketIOClient.Socket;
@@ -52,7 +52,6 @@ export class TetherRenderer extends BaseRenderer {
       ctx.drawImage(img, left, top);
     };
   }
-
 
   private clear() {
     // const ctx = this._canvas.getContext("2d");

@@ -1,12 +1,9 @@
-import { MimeTypes } from "./constants";
-import { MimeTypeDependency } from "@tandem/common";
-import { scssModuleFactoryDependency } from "./sandbox";
-
+import { SCSSModule } from "./sandbox";
+import { SASS_MIME_TYPE } from "./constants";
+import { ModuleFactoryDependency } from "@tandem/sandbox";
+import { MimeTypeDependency, CSS_MIME_TYPE } from "@tandem/common";
 
 export const sassExtensionDependency = [
-
-  // models
-  scssModuleFactoryDependency,
-
-  new MimeTypeDependency("scss", MimeTypes.Sass)
+  new ModuleFactoryDependency(CSS_MIME_TYPE, SASS_MIME_TYPE, SCSSModule),
+  new MimeTypeDependency("scss", SASS_MIME_TYPE)
 ];

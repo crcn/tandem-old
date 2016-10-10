@@ -1,16 +1,10 @@
 import * as path from "path";
 import { Sandbox } from "./sandbox";
+import { WrapBus } from "mesh";
+import { IModuleEditor } from "./editor";
 import { ModuleImporter } from "./importer";
 import { SandboxModuleAction } from "./actions";
-import {
-  Action,
-  bindable,
-  MimeTypes,
-  Observable,
-  IObservable,
-} from "@tandem/common";
-import { IModuleEditor } from "./editor";
-import { WrapBus } from "mesh";
+import { Action, bindable, JS_MIME_TYPE, Observable, IObservable } from "@tandem/common";
 
 export interface IModule extends IObservable {
 
@@ -104,7 +98,7 @@ export class CommonJSModule extends BaseModule {
 
     for (const dep of deps) {
       const modulePath = dep.match(/require\(["']([^'"]+)/)[1];
-      importedModules[modulePath] = await this.sandbox.importer.import(MimeTypes.JavaScript, modulePath, this.fileName);
+      importedModules[modulePath] = await this.sandbox.importer.import(JS_MIME_TYPE, modulePath, this.fileName);
     }
 
     const module = {

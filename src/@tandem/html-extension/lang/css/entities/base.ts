@@ -1,9 +1,7 @@
-import { CSSFile } from "@tandem/html-extension/models";
 import { CSSRuleExpression } from "@tandem/html-extension/lang";
 import { IEntity, BaseEntity, IASTNode } from "@tandem/common";
 
 export interface ICSSEntity extends IEntity {
-  document: CSSFile;
 }
 
 export interface ICSSRuleEntity extends ICSSEntity {

@@ -1,5 +1,4 @@
 import { WrapBus } from "mesh";
-import { HTMLFile } from "@tandem/html-extension/models/html-file";
 import { MetadataKeys } from "@tandem/editor/constants";
 import { DocumentFile } from "@tandem/editor/models";
 import { GroupNodeSection } from "@tandem/html-extension/dom";
@@ -20,7 +19,7 @@ import  { ICSSRuleEntity } from "./base";
 
 export class CSSRootEntity extends BaseEntity<CSSRootExpression> {
 
-  public owner: HTMLFile;
+  public owner: any;
 
   @patchable()
   @bindable()

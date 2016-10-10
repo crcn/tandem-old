@@ -1,3 +1,1 @@
-export namespace MimeTypes {
-  export const Sass = "text/sass";
-}
+export const SASS_MIME_TYPE = "text/sass";
