@@ -1,1 +1,3 @@
-Hello {{window.location.host}}
+<div>
+  Hello!!!!
+</div>

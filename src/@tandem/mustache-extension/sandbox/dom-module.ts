@@ -3,6 +3,7 @@ import {
   parseMarkup,
   MarkupModule,
   SyntheticWindow,
+  MarkupExpression,
   SyntheticDocument,
   MarkupNodeExpression,
 } from "@tandem/synthetic-browser";
@@ -38,24 +39,24 @@ function evaluateBlocks(value: string, context: any) {
   return value;
 }
 
-function evaluateMustacheTemplate(ast: MarkupNodeExpression, document: SyntheticDocument, context?: any) {
+function evaluateMustacheTemplate(ast: MarkupExpression, document: SyntheticDocument, context?: any) {
 
   if (!context) {
     context = document.defaultView;
   }
 
-  return ast.accept({
+  const synthetic = ast.accept({
     visitAttribute(expression) {
       return { name: expression.name, value: evaluateBlocks(expression.value, context) };
     },
     visitElement(expression) {
       const node = document.createElement(expression.nodeName);
       for (const attribute of expression.attributes) {
-        const { name, value } = attribute.accept(this);
+        const { name, value } = evaluateMustacheTemplate(attribute, document, context);
         node.setAttribute(name, value);
       }
       for (const child of expression.childNodes) {
-        node.appendChild(child.accept(this));
+        node.appendChild(evaluateMustacheTemplate(child, document, context));
       }
       return node;
     },
@@ -65,7 +66,7 @@ function evaluateMustacheTemplate(ast: MarkupNodeExpression, document: Synthetic
     visitDocumentFragment(expression) {
       const node = document.createDocumentFragment();
       for (const child of expression.childNodes) {
-        node.appendChild(child.accept(this));
+        node.appendChild(evaluateMustacheTemplate(child, document, context));
       }
       return node;
     },
@@ -73,4 +74,9 @@ function evaluateMustacheTemplate(ast: MarkupNodeExpression, document: Synthetic
       return document.createTextNode(evaluateBlocks(expression.nodeValue, context));
     }
   });
+
+  synthetic.module     = document.defaultView.sandbox.currentModule;
+  synthetic.expression = ast;
+
+  return synthetic;
 }

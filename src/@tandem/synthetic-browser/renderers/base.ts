@@ -20,6 +20,7 @@ export interface ISyntheticDocumentRenderer extends IObservable {
   readonly element: HTMLElement;
   entity: BaseSyntheticDOMNodeEntity<any, any>;
   getBoundingRect(uid: string): BoundingRect;
+  requestUpdate(): void;
 }
 
 export abstract class BaseRenderer extends Observable implements ISyntheticDocumentRenderer {
@@ -74,7 +75,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     this.requestUpdate();
   }
 
-  protected requestUpdate() {
+  public requestUpdate() {
     if (this._updating) {
       this._shouldUpdateAgain = true;
       return;
@@ -115,6 +116,10 @@ export class BaseDecoratorRenderer implements ISyntheticDocumentRenderer {
   }
   set entity(value) {
     this._renderer.entity = value;
+  }
+
+  requestUpdate() {
+    return this._renderer.requestUpdate();
   }
 
   protected onTargetRendererAction(action: Action) {

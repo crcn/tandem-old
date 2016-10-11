@@ -44,10 +44,10 @@ export class SyntheticDOMRenderer extends BaseRenderer {
             if (!element.dataset) continue;
             const uid = element.dataset["uid"];
             const sourceComponent: BaseSyntheticDOMNodeEntity<any, any> = syntheticComponentsBySourceUID[uid];
+            rects[uid] = BoundingRect.fromClientRect(element.getBoundingClientRect());
             if (sourceComponent) {
               sourceComponent.target = <HTMLElement>node;
             }
-            rects[uid] = BoundingRect.fromClientRect(element.getBoundingClientRect());
           }
 
           this.setRects(rects);

@@ -16,7 +16,7 @@ export class CommonJSSandboxModule extends BaseSandboxModule {
     return new Function("global", "context", `
       with(global) {
         with(context) {
-        ${this._transpiledSource}
+          ${this._transpiledSource}
         }
       }
     `) as sandboxModuleScriptType;

@@ -50,6 +50,7 @@ const DEFAULT_FRAME_STYLE_SHEET = evaluateCSS(parseCSS(`
 // - [ ] userAgent attribute
 // - [ ] location attribute
 // - [ ] preset attribute
+// - [ ] fixtures
 export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
 
   private _frameBrowser: SyntheticBrowser;
@@ -67,7 +68,7 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
 
     if (!this._frameBrowser) {
       const documentRenderer = new SyntheticDOMRenderer();
-      this._frameBrowser = new SyntheticBrowser(ownerDocument.defaultView.browser.dependencies, documentRenderer);
+      this._frameBrowser = new SyntheticBrowser(ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer));
       this._frameBrowser.observe(this._frameBrowserObserver = new WrapBus(this.onFrameBrowserAction.bind(this)));
       watchProperty(this._frameBrowser, "documentEntity", this.onBrowserDocumentEntityChange.bind(this));
     }
@@ -127,7 +128,13 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
 
   targetDidMount() {
     const iframe = this.target.querySelector("iframe") as HTMLIFrameElement;
-    const onload = () => iframe.contentDocument.body.appendChild(this._frameBrowser.renderer.element);
+    const onload = () => {
+      iframe.contentDocument.body.appendChild(this._frameBrowser.renderer.element);
+
+      // re-render the renderer so that it can make proper bounding rect calculations
+      // on the native DOM.
+      this._frameBrowser.renderer.requestUpdate();
+    }
     iframe.onload = onload;
     if (iframe.contentDocument) onload();
   }

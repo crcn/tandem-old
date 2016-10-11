@@ -141,6 +141,7 @@ export class SelectablesComponent extends React.Component<{
 
     const allEntities = documentEntity.querySelectorAll("*").filter((entity) => entity.editable && entity["absoluteBounds"]) as any as BaseVisibleSyntheticDOMNodeEntity<any, any>[];
 
+
     const selectables = allEntities.map((entity, i) => (
       <SelectableComponent
         {...this.props}
