@@ -51,8 +51,8 @@ export class SyntheticHTMLElement extends SyntheticDOMElement {
   }
 
   set style(value: SyntheticCSSStyleDeclaration) {
-    const style = this._style = new SyntheticCSSStyleDeclaration();
-    Object.assign(style, value);
+    this._style.clearAll();
+    Object.assign(this._style, value);
     this.onStyleChange();
   }
 
@@ -76,10 +76,8 @@ export class SyntheticHTMLElement extends SyntheticDOMElement {
   }
 
   private _resetStyleFromAttribute() {
-    this._style = SyntheticCSSStyleDeclaration.fromString(this.getAttribute("style") || "");
-    if (this._styleProxy) {
-      this._resetStyleProxy();
-    }
+    this._style.clearAll();
+    Object.assign(this._style, SyntheticCSSStyleDeclaration.fromString(this.getAttribute("style") || ""));
   }
 
   private _resetStyleProxy() {
@@ -92,6 +90,11 @@ export class SyntheticHTMLElement extends SyntheticDOMElement {
         return target[propertyName];
       },
       set: (target, propertyName, value, receiver) => {
+
+        if (typeof value === "number") {
+          value = value + "px";
+        }
+
         target[propertyName] = value;
         this.onStyleChange();
         return true;

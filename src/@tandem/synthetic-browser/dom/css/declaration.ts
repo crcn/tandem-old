@@ -345,6 +345,12 @@ export class SyntheticCSSStyleDeclaration {
       return buffer.join("");
     }
 
+    clearAll() {
+      for (const key in this) {
+        this[key] = "";
+      }
+    }
+
     static fromString(source: string) {
       const decl = new SyntheticCSSStyleDeclaration();
       for (const expr of source.split(";")) {

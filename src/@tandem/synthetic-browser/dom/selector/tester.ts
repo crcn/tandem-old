@@ -12,7 +12,7 @@ export function getSelectorTester(selectorSource: string): { test(node: Syntheti
   // that also always returns
   if (!selectorSource) {
     return {
-      test() { return false }
+      test: () => false
     };
   }
 
