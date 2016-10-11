@@ -21,6 +21,6 @@ export class SyntheticHTMLLinkEntity extends BaseSyntheticDOMNodeEntity<Syntheti
     return document.createTextNode("");
   }
   render() {
-    return "";
+    return null;
   }
 }

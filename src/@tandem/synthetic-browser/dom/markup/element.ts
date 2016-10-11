@@ -50,6 +50,17 @@ export class SyntheticDOMAttributes extends ObservableCollection<SyntheticDOMAtt
     return super.splice(start, deleteCount, ...items);
   }
 
+  toObject(...only: string[]) {
+    const ret = {};
+    for (const attribute of this) {
+      if (only.length !== 0 && only.indexOf(attribute.name) === -1) {
+        continue;
+        }
+      ret[attribute.name] = attribute.value;
+    }
+    return ret;
+  }
+
   toString() {
     return this.map((attribute) => {
       return ` ${attribute}`;

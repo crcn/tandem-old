@@ -80,8 +80,8 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
       return;
     }
     this._updating = true;
-    requestAnimationFrame(() => {
-      this.update();
+    requestAnimationFrame(async () => {
+      await this.update();
       this._updating = false;
       if (this._shouldUpdateAgain) {
         this._shouldUpdateAgain = false;

@@ -6,4 +6,5 @@ export class SyntheticRendererAction extends Action {
 
 export class SyntheticDOMEntityAction extends Action {
   static readonly DOM_ENTITY_DIRTY = "domEntityDirty";
+  static readonly DOM_ENTITY_EVALUATED = "domEntityEvaluated";
 }

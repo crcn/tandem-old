@@ -13,10 +13,15 @@ import {
   BaseVisibleSyntheticDOMNodeEntity,
 } from "@tandem/synthetic-browser";
 
+import * as React from "react";
+import { watchProperty } from "@tandem/common";
 import { SyntheticVisibleHTMLEntity } from "@tandem/html-extension";
 
-import { watchProperty } from "@tandem/common";
 
+// TODOS:
+// - [ ] userAgent attribute
+// - [ ] location attribute
+// - [ ] preset attribute
 export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
 
   private _browser: SyntheticBrowser;
@@ -59,18 +64,17 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
 
   targetDidMount() {
     const iframe = this.target.querySelector("iframe") as HTMLIFrameElement;
+    console.log("did mount");
     if (iframe.contentDocument) {
       iframe.contentDocument.body.appendChild(this._browser.renderer.element);
     }
   }
 
   render() {
-    return `<div class="frame-entity" ${this.extraAttributesToString()} ${this.source.attributesToString("style")}>
-      <iframe style="border:none;width:100%;height:100%;position:absolute;top:0px;left:0px;"></iframe>
-
-      <!-- overlay to ensure that the iframe does not receive any mouse events that will foo with the editing tools -->
-      <div class="frame-entity-overlay" style="width:100%;height:100%;position:absolute;top:0px;left:0px;background:transparent;"></div>
-    </div>`;
+    return <div className="frame-entity" {...this.renderAttributes()}>
+      <iframe style={{border:"none", width: "100%", height: "100%", position: "absolute", top: 0, left: 0}} />
+      <div style={{width:"100%",height:"100%",position:"absolute",top: 0, left: 0, background: "transparent"}} />
+    </div>;
   }
 }
 

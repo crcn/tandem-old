@@ -12,23 +12,22 @@ import {
   PropertyChangeAction,
 } from "@tandem/common";
 
-import {
-  SyntheticDOMEntityAction
-} from "../actions";
+import { SyntheticDOMEntityAction } from "../actions";
 
 import {
   MarkupNodeType,
   SyntheticDOMNode,
+  SyntheticDOMText,
   getSelectorTester,
   SyntheticDOMElement,
   SyntheticHTMLElement,
 } from "../dom";
 
+import * as React from "react";
+
 import { SyntheticDOMNodeEntityClassDependency } from "../dependencies";
 
-import {
-  SyntheticRendererAction
-} from "../actions";
+import { SyntheticRendererAction } from "../actions";
 
 import { WrapBus } from "mesh";
 
@@ -91,6 +90,7 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
     }
 
     this.didEvaluate();
+    this.notify(new SyntheticDOMEntityAction(SyntheticDOMEntityAction.DOM_ENTITY_EVALUATED, false));
   }
 
   querySelector(selector: string) {
@@ -118,6 +118,7 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
 
   getExtraAttributes() {
     return {
+      "key": this._uid,
       "data-uid": this._uid
     };
   }
@@ -166,22 +167,41 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
   async load() { }
   async update() { }
 
-  render(): string {
+  protected renderAttributes() {
+
+    const attribs = {};
+    Object.assign(attribs, this.getExtraAttributes());
+
     if (this.source.nodeType === MarkupNodeType.ELEMENT) {
-      return `
-      <${this.source.nodeName} ${this.extraAttributesToString()} ${(<SyntheticDOMElement><any>this.source).attributes}>
-        ${this.renderChildren()}
-      </${this.source.nodeName}>
-      `;
-    } else if (this.source.nodeType === MarkupNodeType.DOCUMENT_FRAGMENT || this.source.nodeType === MarkupNodeType.DOCUMENT) {
-      return this.renderChildren();
+      const sourceElement = (<SyntheticDOMElement><any>this.source);
+      for (const attribute of sourceElement.attributes) {
+        let name = attribute.name;
+        let value = attribute.value;
+        if (name === "class") {
+          name = "className";
+        } else if (name === "style") {
+          value = Object.assign({}, (<SyntheticHTMLElement>sourceElement).style);
+        }
+        attribs[name] = value;
+      }
     }
 
-    return this.source.toString();
+    return attribs;
   }
 
-  renderChildren() {
-    return this.children.map((child) => child.render()).join("");
+  render(): React.ReactElement<any> {
+    if (this.source.nodeType === MarkupNodeType.ELEMENT) {
+      return React.createElement(this.source.nodeName, this.renderAttributes(), this.renderChildren());
+    } else if (this.source.nodeType === MarkupNodeType.DOCUMENT_FRAGMENT || this.source.nodeType === MarkupNodeType.DOCUMENT) {
+      return React.createElement("span", this.renderAttributes(), this.renderChildren());
+    } else if (this.source.nodeType === MarkupNodeType.TEXT) {
+      return React.createElement("span", this.renderAttributes(), (<SyntheticDOMText><any>this.source).nodeValue);
+    }
+    return null;
+  }
+
+  renderChildren(): React.ReactElement<any>[] {
+    return this.children.map((child) => child.render());
   }
 
   protected didEvaluate() { }
@@ -202,12 +222,8 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
     }
   }
 
-  protected onRendered(action) {
-  }
-
-  protected targetDidMount() {
-
-  }
+  protected onRendered(action) { }
+  protected targetDidMount() { }
 }
 
 export class BaseSyntheticDOMContainerEntity<T extends SyntheticDOMNode, U extends HTMLElement> extends BaseSyntheticDOMNodeEntity<T, U> {

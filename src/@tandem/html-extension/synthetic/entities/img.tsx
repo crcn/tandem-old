@@ -1,3 +1,5 @@
+import { omit } from "lodash";
+import * as React from "react";
 import { BaseSyntheticDOMNodeEntity, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
 export class SyntheticHTMLImageEntity extends BaseSyntheticDOMNodeEntity<SyntheticDOMElement, HTMLImageElement> {
@@ -14,6 +16,6 @@ export class SyntheticHTMLImageEntity extends BaseSyntheticDOMNodeEntity<Synthet
   }
 
   render() {
-    return `<img ${this.extraAttributesToString()} ${this.source.attributesToString("class", "style")} src="${window.location.protocol}${window.location.host}/asset/${encodeURIComponent(this._absolutePath)}?${Date.now()}">`;
+    return <img {...omit(this.renderAttributes(), ["src"])} src={`${window.location.protocol}${window.location.host}/asset/${encodeURIComponent(this._absolutePath)}?${Date.now()}`} />;
   }
 }
