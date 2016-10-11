@@ -17,8 +17,10 @@ export class SyntheticVisibleHTMLEntity extends BaseVisibleSyntheticDOMNodeEntit
   }
 
   set position(value: IPoint) {
-    this.source.style.left = value.left + "px";
-    this.source.style.top  = value.top + "px";
+    Object.assign(this.source.style, {
+      left: value.left,
+      top: value.top
+    });
   }
 
   get absoluteBounds() {
@@ -26,10 +28,12 @@ export class SyntheticVisibleHTMLEntity extends BaseVisibleSyntheticDOMNodeEntit
   }
 
   set absoluteBounds(bounds: BoundingRect) {
-    this.source.style.left   = bounds.left + "px";
-    this.source.style.top    = bounds.top + "px";
-    this.source.style.width  = bounds.width + "px";
-    this.source.style.height = bounds.height + "px";
+    Object.assign(this.source.style, {
+      left: bounds.left,
+      top: bounds.top,
+      width: bounds.width,
+      height: bounds.
+    });
   }
 
   get capabilities() {

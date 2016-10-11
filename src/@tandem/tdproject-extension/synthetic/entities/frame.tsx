@@ -21,7 +21,6 @@ import { WrapBus } from "mesh";
 import { SyntheticVisibleHTMLEntity } from "@tandem/html-extension";
 import { watchProperty, IActor, Action } from "@tandem/common";
 
-
 // TODOS:
 // - [ ] userAgent attribute
 // - [ ] location attribute
@@ -41,7 +40,7 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
     if (!this._frameBrowser) {
       const documentRenderer = new SyntheticDOMRenderer();
       this._frameBrowser = new SyntheticBrowser(this.source.ownerDocument.defaultView.browser.dependencies, documentRenderer);
-      this.browser.observe(this._frameBrowserObserver = new WrapBus(this.onFrameBrowserAction.bind(this)));
+      this._frameBrowser.observe(this._frameBrowserObserver = new WrapBus(this.onFrameBrowserAction.bind(this)));
       watchProperty(this._frameBrowser, "documentEntity", this.onBrowserDocumentEntityChange.bind(this));
     }
 

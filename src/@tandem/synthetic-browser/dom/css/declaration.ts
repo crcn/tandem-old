@@ -1,4 +1,4 @@
-import { kebabCase } from "lodash";
+import { kebabCase, camelCase } from "lodash";
 
 export class SyntheticCSSStyleDeclaration {
     public alignContent: string | null;
@@ -356,7 +356,7 @@ export class SyntheticCSSStyleDeclaration {
       for (const expr of source.split(";")) {
         const [name, value] = expr.split(":");
         if (!name || !value) continue;
-        decl[name.trim()] = value.trim();
+        decl[camelCase(name.trim())] = value.trim();
       }
       return decl;
     }
