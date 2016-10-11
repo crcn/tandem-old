@@ -1,5 +1,6 @@
 import * as ts from "typescript";
-import { BaseSandboxModule, CommonJSSandboxModule, SandboxModuleFactoryDependency } from "@tandem/sandbox";
+import { BaseSandboxModule, SandboxModuleFactoryDependency } from "@tandem/sandbox";
+import { CommonJSSandboxModule } from "@tandem/javascript-extension";
 
 export class TSJSModule extends CommonJSSandboxModule {
   transpile() {
@@ -9,3 +10,4 @@ export class TSJSModule extends CommonJSSandboxModule {
     }, this.fileName);
   }
 }
+

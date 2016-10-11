@@ -25,14 +25,15 @@ export interface IModule extends IObservable {
   editor: IModuleEditor;
 }
 
-export type moduleScriptType = (...rest: any[]) => any;
+export type sandboxModuleScriptType = (...rest: any[]) => any;
+
 export abstract class BaseSandboxModule extends Observable implements IModule {
 
   @bindable()
   public content: string;
   readonly editor: IModuleEditor;
 
-  protected _script: moduleScriptType;
+  protected _script: sandboxModuleScriptType;
 
   constructor(readonly fileName: string, content: string, readonly sandbox: Sandbox) {
     super();
@@ -52,7 +53,7 @@ export abstract class BaseSandboxModule extends Observable implements IModule {
     return await run();
   }
 
-  protected abstract compile(): Promise<moduleScriptType>|moduleScriptType;
+  protected abstract compile(): Promise<sandboxModuleScriptType>|sandboxModuleScriptType;
 
   protected async getScript() {
     if (this._script) return this._script;
@@ -61,64 +62,5 @@ export abstract class BaseSandboxModule extends Observable implements IModule {
       this.notify(new SandboxModuleAction(SandboxModuleAction.EVALUATING));
       return run(...rest);
     };
-  }
-}
-
-// TODO - move to another extension
-export class CommonJSSandboxModule extends BaseSandboxModule {
-
-  private _transpiledSource: string;
-
-  initialize() {
-    super.initialize();
-    this._transpiledSource = this.transpile();
-  }
-
-  protected async compile() {
-    return new Function("global", "context", `
-      with(global) {
-        with(context) {
-        ${this._transpiledSource}
-        }
-      }
-    `) as moduleScriptType;
-  }
-
-  protected transpile() {
-    return this.content;
-  }
-
-  async evaluate(): Promise<any> {
-
-    const importedModules = {};
-
-    const deps = this._transpiledSource
-
-    // strip comments since they may contain require statements
-    .replace(/\/\*[\s\S]*?\*\/|\/\/[^\n\r]+/g, "")
-    .match(/require\(.*?\)/g) || [];
-
-    for (const dep of deps) {
-      const modulePath = dep.match(/require\(["']([^'"]+)/)[1];
-      importedModules[modulePath] = await this.sandbox.importer.import(JS_MIME_TYPE, modulePath, this.fileName);
-    }
-
-    const module = {
-      exports: {}
-    };
-
-    const global = this.sandbox.global;
-
-    const context = {
-      require    : (path) => importedModules[path],
-      module     : module,
-      exports    : module.exports,
-      __filename : this.fileName,
-      __dirname  : path.dirname(this.fileName),
-    };
-
-    (await this.getScript()).call(global, global, context);
-
-    return module.exports;
   }
 }

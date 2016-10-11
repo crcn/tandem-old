@@ -5,6 +5,7 @@ import {
   SyntheticWindow,
   SyntheticDOMNode,
   MarkupExpression,
+  SyntheticDocument,
   SyntheticDOMElement,
   MarkupNodeExpression,
   formatMarkupExpression,
@@ -37,10 +38,12 @@ export class MarkupModule extends BaseSandboxModule implements IMarkupModule {
     return new MarkupEditor(this);
   }
   compile() {
-    return Promise.resolve(() => {
-      const window = <SyntheticWindow>this.sandbox.global;
-      return evaluateMarkup(this.ast = parseMarkup(this.content), window.document, MarkupMimeTypeXMLNSDependency.lookup(this.fileName, window.browser.dependencies));
-    });
+    this.ast = parseMarkup(this.content);
+    return () => this.evaluateMarkup(this.ast, this.sandbox.global, MarkupMimeTypeXMLNSDependency.lookup(this.fileName, this.sandbox.global.browser.dependencies));
+  }
+
+  protected evaluateMarkup(ast: MarkupNodeExpression, window: SyntheticWindow, xmlns: string) {
+    return evaluateMarkup(this.ast, window.document, xmlns);
   }
 }
 

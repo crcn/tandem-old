@@ -34,9 +34,10 @@ import { keyBindingsDependency } from "./key-bindings";
 import { htmlExtensionDependencies } from "@tandem/html-extension";
 import { sassExtensionDependencies  } from "@tandem/sass-extension";
 import { markdownExtensionDependencies } from "@tandem/markdown-extension";
+import { mustacheExtensionDependencies } from "@tandem/mustache-extension";
+import { tdprojectExtensionDependencies } from "@tandem/tdproject-extension";
 import { typescriptExtensionDependencies } from "@tandem/typescript-extension";
 import { javascriptExtensionDependencies } from "@tandem/javascript-extension";
-import { tdprojectExtensionDependencies } from "@tandem/tdproject-extension";
 
 import { Metadata } from "@tandem/common/metadata";
 import { Workspace, Editor } from "./models";
@@ -94,9 +95,10 @@ export class FrontEndApplication extends Application {
       sassExtensionDependencies,
       htmlExtensionDependencies,
       markdownExtensionDependencies,
+      mustacheExtensionDependencies,
+      tdprojectExtensionDependencies,
       javascriptExtensionDependencies,
       typescriptExtensionDependencies,
-      tdprojectExtensionDependencies,
     );
   }
 }
