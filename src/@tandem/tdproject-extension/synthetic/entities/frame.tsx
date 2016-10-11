@@ -35,7 +35,7 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
 
     if (!this._browser) {
       const documentRenderer = new SyntheticDOMRenderer();
-      this._browser = new SyntheticBrowser(this.source.ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer));
+      this._browser = new SyntheticBrowser(this.source.ownerDocument.defaultView.browser.dependencies, documentRenderer);
       watchProperty(this._browser, "documentEntity", this.onBrowserDocumentComponentChange.bind(this));
     }
 

@@ -14,6 +14,7 @@
     "html2canvas": "registry:dt/html2canvas#0.0.0+20160627164915",
     "inflection": "registry:dt/inflection#1.5.0+20160316155526",
     "lodash": "registry:dt/lodash#3.10.0+20160720001309",
+    "marked": "registry:dt/marked#0.0.0+20160325085301",
     "mesh": "npm:mesh",
     "mesh-socket-io-bus": "file:./node_modules/mesh-socket-io-bus/typings.json",
     "mime": "registry:dt/mime#0.0.0+20160316155526",

@@ -21,7 +21,7 @@ import { 
 } from "./synthetic";
 
 import { MarkupModule, HTML_TAG_NAMES } from "@tandem/synthetic-browser";
-import { ModuleFactoryDependency } from "@tandem/sandbox";
+import { SandboxModuleFactoryDependency } from "@tandem/sandbox";
 
 // layer components
 import { textLayerLabelComponentDependency } from "./components/text-layer-label";
@@ -64,7 +64,7 @@ import { MimeTypeDependency } from "@tandem/common/dependencies";
 
 const visibleEntityDependencies = HTML_TAG_NAMES.map((tagName) => new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, tagName, SyntheticVisibleHTMLEntity));
 
-export const htmlExtensionDependency = [
+export const htmlExtensionDependencies = [
 
   // components
   cssPaneComponentDependency,
@@ -73,8 +73,8 @@ export const htmlExtensionDependency = [
   cssColorTokenComponentFactoryDependency,
 
   // sandbox
-  new ModuleFactoryDependency(CSS_MIME_TYPE, CSS_MIME_TYPE, HTMLCSSModule),
-  new ModuleFactoryDependency(HTML_MIME_TYPE, HTML_MIME_TYPE, MarkupModule),
+  new SandboxModuleFactoryDependency(CSS_MIME_TYPE, CSS_MIME_TYPE, HTMLCSSModule),
+  new SandboxModuleFactoryDependency(HTML_MIME_TYPE, HTML_MIME_TYPE, MarkupModule),
   new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "img", SyntheticHTMLImageEntity),
   new SyntheticDOMNodeEntityClassDependency(undefined, "#document", SyntheticHTMLDocumentEntity),
   new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "link", SyntheticHTMLLinkEntity),

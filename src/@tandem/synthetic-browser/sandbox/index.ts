@@ -14,20 +14,22 @@ import {
 
 import {
   IModule,
-  BaseModule,
   IModuleEdit,
   IModuleEditor,
-  BaseModuleEdit,
-  BaseModuleEditor,
+  BaseSandboxModule,
   RemoveSyntheticAction,
-  ModuleFactoryDependency,
+  BaseSandboxModuleEdit,
+  BaseSandboxModuleEditor,
+  SandboxModuleFactoryDependency,
 } from "@tandem/sandbox";
+
+import { MarkupMimeTypeXMLNSDependency } from "../dependencies";
 
 export interface IMarkupModule extends IModule {
   readonly editor: IMarkupEditor;
 }
 
-export class MarkupModule extends BaseModule implements IMarkupModule {
+export class MarkupModule extends BaseSandboxModule implements IMarkupModule {
   readonly editor: IMarkupEditor;
   public ast: MarkupFragmentExpression;
 
@@ -36,7 +38,8 @@ export class MarkupModule extends BaseModule implements IMarkupModule {
   }
   compile() {
     return Promise.resolve(() => {
-      return evaluateMarkup(this.ast = parseMarkup(this.content), (<SyntheticWindow>this.sandbox.global).document, null);
+      const window = <SyntheticWindow>this.sandbox.global;
+      return evaluateMarkup(this.ast = parseMarkup(this.content), window.document, MarkupMimeTypeXMLNSDependency.lookup(this.fileName, window.browser.dependencies));
     });
   }
 }
@@ -64,7 +67,7 @@ export class AppendChildNodeAction extends Action {
   }
 }
 
-export class MarkupEdit extends BaseModuleEdit implements IMarkupEdit {
+export class MarkupEdit extends BaseSandboxModuleEdit implements IMarkupEdit {
   setElementAttribute(element, name, value) {
     this.actions.push(new SetElementAttributeAction(element, name, value));
   }
@@ -73,7 +76,7 @@ export class MarkupEdit extends BaseModuleEdit implements IMarkupEdit {
   }
 }
 
-export class MarkupEditor extends BaseModuleEditor<MarkupEdit> implements IMarkupEditor {
+export class MarkupEditor extends BaseSandboxModuleEditor<MarkupEdit> implements IMarkupEditor {
   createEdit(): MarkupEdit {
     return new MarkupEdit();
   }

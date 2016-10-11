@@ -25,7 +25,7 @@ export class RemoveSyntheticAction extends Action {
   }
 }
 
-export class BaseModuleEdit implements IModuleEdit {
+export class BaseSandboxModuleEdit implements IModuleEdit {
   readonly actions: Action[];
   constructor() {
     this.actions = [];
@@ -35,7 +35,7 @@ export class BaseModuleEdit implements IModuleEdit {
   }
 }
 
-export abstract class BaseModuleEditor<T extends IModuleEdit> extends Observable implements IModuleEditor {
+export abstract class BaseSandboxModuleEditor<T extends IModuleEdit> extends Observable implements IModuleEditor {
 
   private _ticking: boolean;
   private _edits: Array<[Action, Writable]>;

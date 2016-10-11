@@ -9,6 +9,7 @@
 /// <reference path="globals/html2canvas/index.d.ts" />
 /// <reference path="globals/inflection/index.d.ts" />
 /// <reference path="globals/lodash/index.d.ts" />
+/// <reference path="globals/marked/index.d.ts" />
 /// <reference path="globals/mesh/index.d.ts" />
 /// <reference path="globals/mime/index.d.ts" />
 /// <reference path="globals/mocha/index.d.ts" />

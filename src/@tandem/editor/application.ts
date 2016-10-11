@@ -31,10 +31,11 @@ import { pointerToolDependency } from "./models/pointer-tool";
 import { keyBindingsDependency } from "./key-bindings";
 
 // extensions
-import { htmlExtensionDependency } from "@tandem/html-extension";
-import { sassExtensionDependency  } from "@tandem/sass-extension";
-import { typescriptExtensionDependency } from "@tandem/typescript-extension";
-import { javascriptExtensionDependency } from "@tandem/javascript-extension";
+import { htmlExtensionDependencies } from "@tandem/html-extension";
+import { sassExtensionDependencies  } from "@tandem/sass-extension";
+import { markdownExtensionDependencies } from "@tandem/markdown-extension";
+import { typescriptExtensionDependencies } from "@tandem/typescript-extension";
+import { javascriptExtensionDependencies } from "@tandem/javascript-extension";
 import { tdprojectExtensionDependencies } from "@tandem/tdproject-extension";
 
 import { Metadata } from "@tandem/common/metadata";
@@ -90,10 +91,11 @@ export class FrontEndApplication extends Application {
       keyBindingsDependency,
 
       // extensions
-      sassExtensionDependency,
-      htmlExtensionDependency,
-      javascriptExtensionDependency,
-      typescriptExtensionDependency,
+      sassExtensionDependencies,
+      htmlExtensionDependencies,
+      markdownExtensionDependencies,
+      javascriptExtensionDependencies,
+      typescriptExtensionDependencies,
       tdprojectExtensionDependencies,
     );
   }

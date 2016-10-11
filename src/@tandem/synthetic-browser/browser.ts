@@ -35,7 +35,7 @@ export class SyntheticBrowser extends Observable {
   private _renderer: ISyntheticDocumentRenderer;
   private _documentEntity: BaseSyntheticDOMNodeEntity<any, any>;
 
-  constructor(private _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer) {
+  constructor(private _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, readonly parent?: SyntheticBrowser) {
     super();
     this._renderer = renderer || new SyntheticDOMRenderer();
     this._renderer.observe(new BubbleBus(this));

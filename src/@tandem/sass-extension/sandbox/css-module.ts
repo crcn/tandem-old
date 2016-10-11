@@ -1,9 +1,9 @@
 import * as path from "path";
 import * as sass from "sass.js";
 import { parseCSS, evaluateCSS } from "@tandem/synthetic-browser";
-import { BaseModule, ModuleFactoryDependency } from "@tandem/sandbox";
+import { BaseSandboxModule, SandboxModuleFactoryDependency } from "@tandem/sandbox";
 
-export class SCSSModule extends BaseModule {
+export class SCSSModule extends BaseSandboxModule {
   compile() {
     sass.importer(async (request, done) => {
       const filePath = request.path || path.join(

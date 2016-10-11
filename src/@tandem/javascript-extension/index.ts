@@ -1,7 +1,7 @@
 import { MimeTypeDependency, JS_MIME_TYPE } from "@tandem/common";
-import { CommonJSModule, ModuleFactoryDependency } from "@tandem/sandbox";
+import { CommonJSSandboxModule, SandboxModuleFactoryDependency } from "@tandem/sandbox";
 
-export const javascriptExtensionDependency = [
-  new ModuleFactoryDependency(JS_MIME_TYPE, JS_MIME_TYPE, CommonJSModule),
+export const javascriptExtensionDependencies = [
+  new SandboxModuleFactoryDependency(JS_MIME_TYPE, JS_MIME_TYPE, CommonJSSandboxModule),
   new MimeTypeDependency("js", JS_MIME_TYPE)
 ];

@@ -60,6 +60,10 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
     this._metadata.observe(new BubbleBus(this));
   }
 
+  get editable() {
+    return !!(this.module && this.module.editor);
+  }
+
   get sourceWindow() {
     return this.source.ownerDocument.defaultView;
   }

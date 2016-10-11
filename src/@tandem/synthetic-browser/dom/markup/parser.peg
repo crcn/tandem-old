@@ -36,7 +36,7 @@ CommentCharacter
   = !'-->' character:. { return character; }
 
 VoidElement
-  = "<" nodeName: VoidTagName attributes:ElementAttributes (">"/"/>")? endTag:EndVoidTag? {
+  = "<" nodeName: VoidTagName attributes:ElementAttributes _ (">"/"/>")? endTag:EndVoidTag? {
 
     if (endTag && nodeName != endTag.name) {
       expected("</" + nodeName + ">");

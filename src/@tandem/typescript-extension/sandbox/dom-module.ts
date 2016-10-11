@@ -3,8 +3,8 @@ import { TS_MIME_TYPE } from "../constants";
 import { HTML_MIME_TYPE, JS_MIME_TYPE } from "@tandem/common";
 
 import {
-  BaseModule,
-  ModuleFactoryDependency,
+  BaseSandboxModule,
+  SandboxModuleFactoryDependency,
 } from "@tandem/sandbox";
 
-export const tsDomModuleFactoryDependency = new ModuleFactoryDependency(HTML_MIME_TYPE, TS_MIME_TYPE, TSJSModule);
+export const tsDomSandboxModuleFactoryDependency = new SandboxModuleFactoryDependency(HTML_MIME_TYPE, TS_MIME_TYPE, TSJSModule);

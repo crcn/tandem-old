@@ -26,7 +26,7 @@ export interface IModule extends IObservable {
 }
 
 export type moduleScriptType = (...rest: any[]) => any;
-export abstract class BaseModule extends Observable implements IModule {
+export abstract class BaseSandboxModule extends Observable implements IModule {
 
   @bindable()
   public content: string;
@@ -52,7 +52,7 @@ export abstract class BaseModule extends Observable implements IModule {
     return await run();
   }
 
-  protected abstract compile(): Promise<moduleScriptType>;
+  protected abstract compile(): Promise<moduleScriptType>|moduleScriptType;
 
   protected async getScript() {
     if (this._script) return this._script;
@@ -65,7 +65,7 @@ export abstract class BaseModule extends Observable implements IModule {
 }
 
 // TODO - move to another extension
-export class CommonJSModule extends BaseModule {
+export class CommonJSSandboxModule extends BaseSandboxModule {
 
   private _transpiledSource: string;
 

@@ -8,13 +8,14 @@ import {
   SyntheticTDProject,
 } from "./synthetic";
 
-import { ModuleFactoryDependency } from "@tandem/sandbox";
+import { SandboxModuleFactoryDependency } from "@tandem/sandbox";
 
 import {
   HTML_XMLNS,
   MarkupModule,
   SyntheticHTMLElement,
   DefaultSyntheticDOMEntity,
+  MarkupMimeTypeXMLNSDependency,
   SyntheticDOMElementClassDependency,
   SyntheticDOMNodeEntityClassDependency,
 } from "@tandem/synthetic-browser";
@@ -35,8 +36,11 @@ export const tdprojectExtensionDependencies = [
   new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "tdproject", SyntheticTDProject),
 
   // sandbox
-  new ModuleFactoryDependency(HTML_MIME_TYPE, TDPROJECT_MIME_TYPE, MarkupModule),
+  new SandboxModuleFactoryDependency(HTML_MIME_TYPE, TDPROJECT_MIME_TYPE, MarkupModule),
 
   // mime types
-  new MimeTypeDependency("tdproject", TDPROJECT_MIME_TYPE)
+  new MimeTypeDependency("tdproject", TDPROJECT_MIME_TYPE),
+
+  // xml namespaces
+  new MarkupMimeTypeXMLNSDependency(TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS)
 ];

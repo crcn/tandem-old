@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { timeout } from "@tandem/common/test";
 import { DocumentFile } from "@tandem/editor/models";
-import { HTMLImportEntity, HTMLDocumentRootEntity, htmlExtensionDependency } from "@tandem/html-extension";
+import { HTMLImportEntity, HTMLDocumentRootEntity, htmlExtensionDependencies } from "@tandem/html-extension";
 import { Dependencies, DependenciesDependency, FileFactoryDependency, BaseEntity, HTML_MIME_TYPE } from "@tandem/common";
 
 describe(__filename + "#", () => {
@@ -9,7 +9,7 @@ describe(__filename + "#", () => {
   let deps: Dependencies;
 
   beforeEach(() => {
-    deps = new Dependencies(htmlExtensionDependency, new DependenciesDependency());
+    deps = new Dependencies(htmlExtensionDependencies, new DependenciesDependency());
   });
 
   async function loadEntity(content: string): Promise<BaseEntity<any>> {

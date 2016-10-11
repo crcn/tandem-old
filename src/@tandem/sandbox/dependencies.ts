@@ -6,10 +6,10 @@ export type moduleType = { new(fileName: string, content: string, sandbox: Sandb
 
 // ModuleTranspilerDependency
 
-export class ModuleFactoryDependency extends ClassFactoryDependency {
+export class SandboxModuleFactoryDependency extends ClassFactoryDependency {
   static readonly MODULE_FACTORIES_NS = "moduleFactories";
   constructor(envMimeType: string, mimeType: string, clazz: moduleType) {
-    super(ModuleFactoryDependency.getNamespace(envMimeType, mimeType), clazz);
+    super(SandboxModuleFactoryDependency.getNamespace(envMimeType, mimeType), clazz);
   }
 
   static getNamespace(envMimeType: string, mimeType: string) {
@@ -21,6 +21,6 @@ export class ModuleFactoryDependency extends ClassFactoryDependency {
   }
 
   static find(envMimeType: string, mimeType: string, dependencies: Dependencies) {
-    return dependencies.query<ModuleFactoryDependency>(this.getNamespace(envMimeType, mimeType));
+    return dependencies.query<SandboxModuleFactoryDependency>(this.getNamespace(envMimeType, mimeType));
   }
 }

@@ -2,6 +2,8 @@
   background-color: yellow;
   padding: 20px;
   top: 0px;
+  width:50%;
+  position: fixed;
 
   font-size: 20px;
   border-radius: 10px;

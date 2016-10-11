@@ -1,6 +1,6 @@
 import { IModule } from "./module";
 import { Sandbox } from "./sandbox";
-import { ModuleFactoryDependency } from "./dependencies";
+import { SandboxModuleFactoryDependency } from "./dependencies";
 import {
   Logger,
   IActor,
@@ -79,7 +79,7 @@ export class ModuleImporter extends Observable implements IInvoker {
     const moduleCache = this._modules[resolvedPath] || (this._modules[resolvedPath] = {});
 
     if (!moduleCache[envKind]) {
-      const moduleFactory = ModuleFactoryDependency.find(envKind, MimeTypeDependency.lookup(resolvedPath, this._dependencies), this._dependencies);
+      const moduleFactory = SandboxModuleFactoryDependency.find(envKind, MimeTypeDependency.lookup(resolvedPath, this._dependencies), this._dependencies);
       const module = moduleCache[envKind] = moduleFactory.create(resolvedPath, content, this._sandbox);
       module.observe(new WrapBus(this.onModuleAction.bind(this)));
       watchProperty(module, "content", this.onModuleContentChange.bind(this, module));

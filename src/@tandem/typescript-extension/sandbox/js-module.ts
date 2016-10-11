@@ -1,7 +1,7 @@
 import * as ts from "typescript";
-import { BaseModule, CommonJSModule, ModuleFactoryDependency } from "@tandem/sandbox";
+import { BaseSandboxModule, CommonJSSandboxModule, SandboxModuleFactoryDependency } from "@tandem/sandbox";
 
-export class TSJSModule extends CommonJSModule {
+export class TSJSModule extends CommonJSSandboxModule {
   transpile() {
     return ts.transpile(this.content, {
       module: ts.ModuleKind.CommonJS,
