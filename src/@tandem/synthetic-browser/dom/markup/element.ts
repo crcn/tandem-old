@@ -9,6 +9,7 @@ import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { parse as parseMarkup } from "./parser.peg";
 import { SyntheticDOMContainer } from "./container";
+import { syntheticElementClassType } from "./types";
 import { SyntheticCSSStyleDeclaration } from "../css";
 import { Action, PropertyChangeAction } from "@tandem/common/actions";
 import {
@@ -31,6 +32,10 @@ export class SyntheticDOMAttribute extends Observable {
 
   toString() {
     return `${this.name}="${this.value}"`;
+  }
+
+  clone() {
+    return new SyntheticDOMAttribute(this.name, this.value);
   }
 }
 
@@ -108,6 +113,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   setAttribute(name: string, value: any) {
+
     if (this.hasAttribute(name)) {
       this.attributes[name].value = value;
     } else {
@@ -123,37 +129,31 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
       this.nodeName,
       this.attributes,
       ">",
-      this.childrenToString(),
+      this.childNodes.map((child) => child.toString()).join(""),
       "</",
       this.nodeName,
       ">"
     ].join("");
   }
 
-  childrenToString(): string {
-    return super.toString();
-  }
-
-  attributesToString(...include: string[]): string {
-    return this.attributes.filter((attr) => include.indexOf(attr.name) !== -1).join(" ");
-  }
-
   protected onAttributesAction(action: Action) {
     this.notify(action);
   }
 
-  protected onAttributeChange(name: string, value: any) {
+  protected onAttributeChange(name: string, value: any) { }
 
-  }
-
-  cloneNode() {
-    const element = new SyntheticDOMElement(this.namespaceURI, this.tagName, this.ownerDocument);
+  cloneNode(deep?: boolean) {
+    const constructor = this.constructor as syntheticElementClassType;
+    const clone = new constructor(this.namespaceURI, this.tagName, this.ownerDocument);
     for (const attribute of this.attributes) {
-      element.setAttribute(attribute.name, attribute.value);
+      clone.setAttribute(attribute.name, attribute.value);
     }
-    for (const child of this.childNodes) {
-      element.appendChild(child.cloneNode());
+
+    if (deep === true) {
+      for (const child of this.childNodes) {
+        clone.appendChild(child.cloneNode(deep));
+      }
     }
-    return element;
+    return clone;
   }
 }

@@ -11,11 +11,13 @@ export class SyntheticDocumentFragment extends SyntheticDOMContainer {
   accept(visitor: IMarkupNodeVisitor) {
     return visitor.visitDocumentFragment(this);
   }
-  cloneNode() {
+  cloneNode(deep?: boolean) {
     const fragment = new SyntheticDocumentFragment(this.ownerDocument);
-    for (const child of this.childNodes) {
-      this.appendChild(child.cloneNode());
-    }
+    if (deep === true) {
+      for (const child of this.childNodes) {
+        this.appendChild(child.cloneNode(true));
+      }
+      }
     return fragment;
   }
 }

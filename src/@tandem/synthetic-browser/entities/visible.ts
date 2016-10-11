@@ -28,6 +28,8 @@ export abstract class BaseVisibleSyntheticDOMNodeEntity<T extends SyntheticDOMNo
   abstract position: IPoint;
   abstract capabilities: SyntheticDOMCapabilities;
   abstract absoluteBounds: BoundingRect;
+  abstract save(): Promise<any>;
+
   protected _renderedBounds: BoundingRect = BoundingRect.zeros();
 
   protected onRendered() {

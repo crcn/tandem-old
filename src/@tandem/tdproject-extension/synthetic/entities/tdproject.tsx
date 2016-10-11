@@ -4,6 +4,6 @@ import { pick } from "lodash";
 
 export class SyntheticTDProject extends BaseSyntheticDOMContainerEntity<SyntheticHTMLElement, HTMLElement> {
   render() {
-    return <div {...this.getExtraAttributes()}>{this.renderChildren()}</div>;
+    return <div {...this.renderEntityAttributes()}>{this.renderChildren()}</div>;
   }
 }

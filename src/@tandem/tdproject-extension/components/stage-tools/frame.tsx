@@ -18,7 +18,7 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrameE
 
   editTitle = () => {
     if (!this.props.frame.module.editor) return;
-    this.setState({ editedTitle: this.props.frame.source.getAttribute("title") || "" });
+    this.setState({ editedTitle: this.props.frame.title || "" });
     requestAnimationFrame(() => {
       (this.refs as any).input.select();
     });
@@ -40,10 +40,9 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrameE
     frame.module.editor.edit((edit) => {
 
       // trigger immediate change
-      this.props.frame.source.setAttribute("title", this.state.editedTitle);
+      this.props.frame.title = this.state.editedTitle;
 
-      // save it
-      edit.setElementAttribute(frame.source, "title", this.state.editedTitle);
+      this.props.frame.save();
 
       this.setState({ editedTitle: undefined });
     });
@@ -83,7 +82,7 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrameE
 
     return <div className="m-tdframe-stage-tool--item" style={style}>
       <div className="m-tdframe-stage-tool--item--title" onDoubleClick={this.editTitle} style={titleStyle}>
-        { this.state.editedTitle != null ? <AutosizeInput ref="input" value={this.state.editedTitle} onChange={this.onTitleChange} onBlur={this.cancelEdit} onKeyDown={this.onKeyDown} /> : <span>{frame.source.getAttribute("title") || "Untitled"}</span> }
+        { this.state.editedTitle != null ? <AutosizeInput ref="input" value={this.state.editedTitle} onChange={this.onTitleChange} onBlur={this.cancelEdit} onKeyDown={this.onKeyDown} /> : <span>{frame.title || "Untitled"}</span> }
       </div>
     </div>;
   }
@@ -97,6 +96,7 @@ export class TDFrameStageToolComponent extends React.Component<{ app: FrontEndAp
     const frames = documentEntity.querySelectorAll("frame") as SyntheticTDFrameEntity[];
 
     if (!frames.length) return null;
+
 
     const backgroundStyle = {
       transform: `translate(${-transform.left / transform.scale}px, ${-transform.top / transform.scale}px) scale(${1 / transform.scale})`,

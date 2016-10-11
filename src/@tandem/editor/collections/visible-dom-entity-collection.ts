@@ -125,4 +125,9 @@ export class VisibleDOMEntityCollection<T extends BaseVisibleSyntheticDOMNodeEnt
     return capabilities;
   }
 
+  async save() {
+    for (const entity of this) {
+      await entity.save();
+    }
+  }
 }

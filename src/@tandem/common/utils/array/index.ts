@@ -55,7 +55,10 @@ export function diffArray<T>(a: Array<T>, b: Array<T>, compare: (a: T, b: T) => 
   };
 }
 
-export function patchArray<T>(to: Array<T>, changes: IArrayChange, patchValue: (a: T, b: T) => T) {
+export function patchArray<T>(to: Array<T>, changes: IArrayChange, patchValue: (a: T, b: T) => T, addValue?: (b: T) => T) {
+  if (!addValue) {
+    addValue = (b) => b;
+  }
   for (const rm of changes.remove) {
     to.splice(to.indexOf(rm), 1);
   }
@@ -66,6 +69,6 @@ export function patchArray<T>(to: Array<T>, changes: IArrayChange, patchValue: (
   }
 
   for (const av of changes.add) {
-    to.splice(av.index, 0, av.value);
+    to.splice(av.index, 0, addValue(av.value));
   }
 }

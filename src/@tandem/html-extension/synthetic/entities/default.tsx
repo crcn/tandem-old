@@ -1,4 +1,5 @@
 import {
+  IMarkupEdit,
   getComputedStyle,
   SyntheticHTMLElement,
   SyntheticDOMCapabilities,
@@ -6,7 +7,7 @@ import {
   BaseVisibleSyntheticDOMNodeEntity,
 } from "@tandem/synthetic-browser";
 
-import { BoundingRect, IPoint } from "@tandem/common";
+import { BoundingRect, IPoint, diffArray } from "@tandem/common";
 
 export class SyntheticVisibleHTMLEntity extends BaseVisibleSyntheticDOMNodeEntity<SyntheticHTMLElement, any> {
 
@@ -16,10 +17,11 @@ export class SyntheticVisibleHTMLEntity extends BaseVisibleSyntheticDOMNodeEntit
   }
 
   set position(value: IPoint) {
-    Object.assign(this.source.style, {
-      left: value.left,
-      top: value.top
+    Object.assign(this.change.style, {
+      left: Math.round(value.left),
+      top: Math.round(value.top)
     });
+
   }
 
   get absoluteBounds() {
@@ -27,12 +29,22 @@ export class SyntheticVisibleHTMLEntity extends BaseVisibleSyntheticDOMNodeEntit
   }
 
   set absoluteBounds(bounds: BoundingRect) {
-    Object.assign(this.source.style, {
-      left: bounds.left,
-      top: bounds.top,
-      width: bounds.width,
-      height: bounds.height
+    Object.assign(this.change.style, {
+      left: Math.round(bounds.left),
+      top: Math.round(bounds.top),
+      width: Math.round(bounds.width),
+      height: Math.round(bounds.height)
     });
+  }
+
+  async save() {
+
+    // this may happen if whatever's mutating the entity doesn't check the "editable" property.
+    if (!this.editable) {
+      return Promise.reject(new Error("Cannot save entity source that is not editable."));
+    }
+
+    this.module.editor.edit(this.onEdit.bind(this));
   }
 
   get capabilities() {
@@ -41,6 +53,25 @@ export class SyntheticVisibleHTMLEntity extends BaseVisibleSyntheticDOMNodeEntit
       style.position !== "static",
       /fixed|absolute/.test(style.position) || !/^inline$/.test(style.display)
     );
+  }
+
+  protected onEdit(edit: IMarkupEdit) {
+    const changes = diffArray(this.source.attributes, this.change.attributes, (a, b) => a.name === b.name);
+
+    for (const add of changes.add) {
+      console.log(add.value);
+      edit.setElementAttribute(this.source, add.value.name, add.value.value);
+    }
+
+    for (const [oldAttribute, newAttribute] of changes.update) {
+      if (oldAttribute.value !== newAttribute.value) {
+        edit.setElementAttribute(this.source, newAttribute.name, newAttribute.value);
+      }
+    }
+
+    for (const rm of changes.remove) {
+      edit.removeElementAttribute(this.source, rm.name);
+    }
   }
 }
 

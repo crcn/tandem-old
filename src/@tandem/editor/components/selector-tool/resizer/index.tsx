@@ -8,8 +8,8 @@ import { FrontEndApplication } from "@tandem/editor/application";
 import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
 import { BoundingRect, IPoint, Point } from "@tandem/common/geom";
+import { SyntheticDOMElement, BaseVisibleSyntheticDOMNodeEntity } from "@tandem/synthetic-browser";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
-import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
@@ -97,7 +97,7 @@ class ResizerComponent extends React.Component<{
   private _movingTimer: any;
   private _dragTimer: any;
   private _currentGuider: Guider;
-  private _visibleEntities: VisibleDOMEntityCollection<any>;
+  private _visibleEntities: VisibleDOMEntityCollection<BaseVisibleSyntheticDOMNodeEntity<SyntheticDOMElement, any>>;
 
   constructor() {
     super();
@@ -227,6 +227,7 @@ class ResizerComponent extends React.Component<{
       // this.setState({ guideLines: guideLines });
 
     }, () => {
+      this._visibleEntities.save();
       this._dragger = void 0;
       this.props.editor.metadata.set(MetadataKeys.MOVING, false);
       this.setState({ guideLines: undefined });
@@ -240,6 +241,7 @@ class ResizerComponent extends React.Component<{
   }
 
   onPointMouseUp = () => {
+    this._visibleEntities.save();
     this.props.editor.metadata.set(MetadataKeys.MOVING, false);
     this.setState({ guideLines: undefined });
     this.props.onStopResizing();

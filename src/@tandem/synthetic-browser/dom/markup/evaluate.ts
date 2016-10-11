@@ -13,7 +13,7 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
       return doc.createComment(expression.nodeValue);
     },
     visitElement(expression) {
-      const xmlns = expression.getAttributeValue("xmlns") || namespaceURI || doc.defaultNamespaceURI;
+      const xmlns = expression.getAttribute("xmlns") || namespaceURI || doc.defaultNamespaceURI;
 
       const element = doc.createElementNS(xmlns, expression.nodeName);
       for (const childExpression of expression.childNodes) {

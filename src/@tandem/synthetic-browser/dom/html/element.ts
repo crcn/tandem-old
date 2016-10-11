@@ -91,6 +91,7 @@ export class SyntheticHTMLElement extends SyntheticDOMElement {
       },
       set: (target, propertyName, value, receiver) => {
 
+        // normalize the value if it's a pixel unit. Numbers are invalid for CSS declarations.
         if (typeof value === "number") {
           value = value + "px";
         }

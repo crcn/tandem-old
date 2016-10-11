@@ -9,13 +9,39 @@ import {
   SingletonThenable,
 } from "@tandem/common";
 
+/**
+ * Batch edit object specific to the module. The methods
+ * here may differ depending on the module type.
+ */
+
 export interface IModuleEdit {
   readonly actions: Action[];
+
+  /**
+   * Removes an expression that is representing a synthetic
+   */
+
   remove(item: ISynthetic);
 }
 
+/**
+ * Editor specific to the module abstract syntax tree since synthetic objects may be produced
+ * by different combinations of AST nodes. A JS module for example:
+ *
+ * document.createElement("div"): SyntheticElement
+ *
+ * Markup Module example:
+ *
+ * <div /> : SyntheticElement
+ */
+
 export interface IModuleEditor extends IObservable {
-  edit(onEdit: (edit: IModuleEdit) => any);
+
+  /**
+   * batch method for making edits against the module
+   */
+
+  edit(onEdit: (edit: IModuleEdit) => any): Promise<void>;
 }
 
 export class RemoveSyntheticAction extends Action {

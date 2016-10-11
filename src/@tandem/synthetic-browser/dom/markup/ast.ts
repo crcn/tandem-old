@@ -91,7 +91,7 @@ export class MarkupElementExpression extends MarkupContainerExpression {
     super(name, childNodes, position);
     attributes.forEach((attribute) => attribute.parent = this);
   }
-  getAttributeValue(name: string) {
+  getAttribute(name: string) {
     for (const attribute of this.attributes) {
       if (attribute.name === name) return attribute.value;
     }
@@ -99,7 +99,7 @@ export class MarkupElementExpression extends MarkupContainerExpression {
   appendChild(child: MarkupNodeExpression) {
     this.childNodes.push(child);
   }
-  setAttributeValue(name: string, value: string) {
+  setAttribute(name: string, value: string) {
     for (const attribute of this.attributes) {
       if (attribute.name === name) {
         attribute.value = value;
@@ -107,6 +107,15 @@ export class MarkupElementExpression extends MarkupContainerExpression {
       }
     }
     this.attributes.push(new MarkupAttributeExpression(name, value, null));
+  }
+  removeAttribute(name: string) {
+    for (let i = 0, n = this.attributes.length; i < n; i++) {
+      const attribute = this.attributes[i];
+      if (attribute.name === name) {
+        this.attributes.splice(i, 1);
+        return;
+      }
+    }
   }
   accept(visitor: IMarkupExpressionVisitor) {
     return visitor.visitElement(this);

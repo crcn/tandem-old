@@ -1,6 +1,6 @@
-import "./frame.scss";
 
 import {
+  IMarkupEdit,
   SyntheticBrowser,
   SyntheticDocument,
   SyntheticDOMElement,
@@ -9,6 +9,9 @@ import {
   BaseDecoratorRenderer,
   SyntheticDOMCapabilities,
   BaseSyntheticDOMNodeEntity,
+  SyntheticCSSStyleSheet,
+  parseCSS,
+  evaluateCSS,
   ISyntheticDocumentRenderer,
   BaseVisibleSyntheticDOMNodeEntity,
 } from "@tandem/synthetic-browser";
@@ -21,6 +24,28 @@ import { WrapBus } from "mesh";
 import { SyntheticVisibleHTMLEntity } from "@tandem/html-extension";
 import { watchProperty, IActor, Action } from "@tandem/common";
 
+// default CSS styles to inject into the synthetic document
+const DEFAULT_FRAME_STYLE_SHEET = evaluateCSS(parseCSS(`
+  .frame-entity {
+    width: 1024px;
+    height: 768px;
+    position: absolute;
+  }
+
+  .frame-entity iframe, .frame-entity-overlay {
+    border: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+
+  .frame-entity-overlay {
+    background: transparent;
+  }
+`));
+
 // TODOS:
 // - [ ] userAgent attribute
 // - [ ] location attribute
@@ -32,26 +57,37 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
 
   async evaluate() {
 
-    if (!this.source.hasAttribute("style")) {
-      // TODO - define platform preset here
-      this.source.setAttribute("style", "position: absolute; width: 1024px; height: 768px;");
+    const ownerDocument = this.source.ownerDocument;
+
+    // TODO - possibly move this logic to the parent where it checks for the default style sheet & automatically
+    // injects it into the document
+    if (ownerDocument.styleSheets.indexOf(DEFAULT_FRAME_STYLE_SHEET) === -1) {
+      ownerDocument.styleSheets.push(DEFAULT_FRAME_STYLE_SHEET);
     }
 
     if (!this._frameBrowser) {
       const documentRenderer = new SyntheticDOMRenderer();
-      this._frameBrowser = new SyntheticBrowser(this.source.ownerDocument.defaultView.browser.dependencies, documentRenderer);
+      this._frameBrowser = new SyntheticBrowser(ownerDocument.defaultView.browser.dependencies, documentRenderer);
       this._frameBrowser.observe(this._frameBrowserObserver = new WrapBus(this.onFrameBrowserAction.bind(this)));
       watchProperty(this._frameBrowser, "documentEntity", this.onBrowserDocumentEntityChange.bind(this));
     }
 
     if (this.source.getAttribute("src")) {
       const src = this.source.getAttribute("src");
-      const window = this.source.ownerDocument.defaultView;
+      const window = ownerDocument.defaultView;
       const absolutePath = await window.sandbox.importer.resolve(src, window.location.toString());
       await this._frameBrowser.open(absolutePath);
     } else {
       // add frame body here
     }
+  }
+
+  get title(): string {
+    return this.change.getAttribute("title");
+  }
+
+  set title(value: string) {
+    this.change.setAttribute("title", value);
   }
 
   get capabilities() {
@@ -77,6 +113,12 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
     }
   }
 
+  protected renderEntityAttributes() {
+
+    // todo - add presets here
+    return super.renderEntityAttributes();
+  }
+
   protected onFrameBrowserRevaluated() {
     if (this.inheritCSS) {
       this._frameBrowser.document.styleSheets.push(...this.browser.document.styleSheets);
@@ -85,15 +127,15 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
 
   targetDidMount() {
     const iframe = this.target.querySelector("iframe") as HTMLIFrameElement;
-    if (iframe.contentDocument) {
-      iframe.contentDocument.body.appendChild(this._frameBrowser.renderer.element);
-    }
+    const onload = () => iframe.contentDocument.body.appendChild(this._frameBrowser.renderer.element);
+    iframe.onload = onload;
+    if (iframe.contentDocument) onload();
   }
 
   render() {
-    return <div className="frame-entity" {...omit(this.renderAttributes(), ["inherit-css"])}>
-      <iframe style={{border:"none", width: "100%", height: "100%", position: "absolute", top: 0, left: 0}} />
-      <div key="overlay" style={{width:"100%",height:"100%",position:"absolute",top: 0, left: 0, background: "transparent"}} />
+    return <div className="frame-entity" {...omit(this.renderAttributes(), ["inheritCss"])}>
+      <iframe />
+      <div className="frame-entity-overlay" />
     </div>;
   }
 }

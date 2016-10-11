@@ -124,5 +124,5 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
 
   abstract accept(visitor: IMarkupNodeVisitor);
-  abstract cloneNode();
+  abstract cloneNode(deep?: boolean);
 }

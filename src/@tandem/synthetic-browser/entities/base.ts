@@ -5,6 +5,8 @@ import {
   IEntity2,
   TreeNode,
   ITreeNode,
+  diffArray,
+  patchArray,
   BubbleBus,
   filterTree,
   BoundingRect,
@@ -21,26 +23,33 @@ import {
   getSelectorTester,
   SyntheticDOMElement,
   SyntheticHTMLElement,
+  SyntheticCSSStyleDeclaration,
 } from "../dom";
 
 import * as React from "react";
 import { decode } from "ent";
 
 import { WrapBus } from "mesh";
+import { camelCase } from "lodash";
 import { SyntheticRendererAction } from "../actions";
 import { SyntheticDOMNodeEntityClassDependency } from "../dependencies";
+import { SyntheticDOMAttributes, SyntheticDOMAttribute } from "../dom";
 
 let _i: number = 0;
+
+/**
+ * A representation of a synthetic DOM
+ */
 
 export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U extends HTMLElement>  extends TreeNode<BaseSyntheticDOMNodeEntity<any, any>> {
 
   private _uid: string;
   private _source: T;
+  private _change: T;
   private _evaluated: boolean;
   private _targetElement: U;
-  private _sourceObserver: IActor;
+  private _changeObserver: IActor;
   private _browserObserver: IActor;
-
   /**
    * extra information specific to the environment that this node is running un
    */
@@ -49,7 +58,10 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
 
   constructor(source: T) {
     super();
-    this._sourceObserver = new WrapBus(this.onSourceAction.bind(this));
+
+    // attributes of this entity which are indenpendent from the source. The values
+    // here are primarily to diff and apply edits to the source module
+    this._changeObserver = new WrapBus(this.onChangeAction.bind(this));
     this._browserObserver = new WrapBus(this.onBrowserAction.bind(this));
     this.source = source;
 
@@ -58,6 +70,10 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
 
     // similar to dataset -- specific to the editor
     this._metadata.observe(new BubbleBus(this));
+  }
+
+  get change(): T {
+    return this._change;
   }
 
   get editable() {
@@ -110,19 +126,10 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
     return this._source;
   }
 
-  protected extraAttributesToString() {
-    const extra = this.getExtraAttributes();
-    const buffer = [];
-    for (const name in extra) {
-      buffer.push(` ${name}="${extra[name]}"`);
-    }
-    return buffer.join("");
-  }
-
-  getExtraAttributes() {
+  protected renderEntityAttributes() {
     return {
-      "key": this._uid,
-      "data-uid": this._uid
+      "data-uid": this.uid,
+      "key": this.uid
     };
   }
 
@@ -132,12 +139,20 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
 
   set source(value: T) {
     const oldSource = this._source;
+
     if (this._source) {
+      this._change.unobserve(this._changeObserver);
       this._source.browser.unobserve(this._browserObserver);
-      this._source.unobserve(this._sourceObserver);
     }
+
+    // Immutable.
     this._source = value;
-    this._source.observe(this._sourceObserver);
+
+    // Mutable. This node leaf is used to diff changes
+    // that need to be persisted back to the source node.
+    this._change = value.cloneNode(false);
+    this._change.observe(this._changeObserver);
+
     this._source.browser.observe(this._browserObserver);
     this.notify(new PropertyChangeAction("source", this._source, oldSource));
   }
@@ -170,27 +185,37 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
   async load() { }
   async update() { }
 
+
   protected renderAttributes() {
 
     const attribs = {};
-    Object.assign(attribs, this.getExtraAttributes());
+
+    Object.assign(attribs, this.renderEntityAttributes());
 
     // fix attributes for React
-    if (this.source.nodeType === MarkupNodeType.ELEMENT) {
-      const sourceElement = (<SyntheticDOMElement><any>this.source);
-      for (const attribute of sourceElement.attributes) {
-        let name = attribute.name;
-        let value = attribute.value;
-        if (name === "class") {
-          name = "className";
-        } else if (name === "style") {
-          value = Object.assign({}, (<SyntheticHTMLElement>sourceElement).style);
-        }
-        attribs[name] = value;
-      }
+    if (this.change.nodeType === MarkupNodeType.ELEMENT) {
+      const changeElement = (<SyntheticDOMElement><any>this.change);
+      Object.assign(attribs, changeElement.attributes.toObject());
     }
 
-    return attribs;
+    const renderedAttribs = {};
+
+    for (let name in attribs) {
+      let value = attribs[name];
+      if (name === "class") {
+        name = "className";
+      } else if (name === "style") {
+        value = SyntheticCSSStyleDeclaration.fromString(value);
+      }
+
+      if (!/^data-/.test(name)) {
+        name = camelCase(name);
+      }
+
+      renderedAttribs[name] = value;
+    }
+
+    return renderedAttribs;
   }
 
   render(): React.ReactElement<any> {
@@ -210,15 +235,10 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
 
   protected didEvaluate() { }
   protected targetDidUnmount() { }
-  protected onSourceAction(action: Action) {
 
-    // flag this entity as dirty, but do not bubble since the source is already covering that -- all
-    // entity ancestorys from here should receive a source action, and as a result should also emit
-    // a dirty notification.
-    this.notify(new SyntheticDOMEntityAction(SyntheticDOMEntityAction.DOM_ENTITY_DIRTY, false));
+  protected onChangeAction(action: Action) {
+    this.notify(new SyntheticDOMEntityAction(SyntheticDOMEntityAction.DOM_ENTITY_DIRTY, true));
   }
-
-  protected onChildAction(action: Action) {}
 
   protected onBrowserAction(action: Action) {
     if (action.type === SyntheticRendererAction.UPDATE_RECTANGLES) {
