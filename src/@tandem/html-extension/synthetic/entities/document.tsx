@@ -3,7 +3,7 @@ import * as React from "react";
 
 export class SyntheticHTMLDocumentEntity extends BaseSyntheticDOMContainerEntity<SyntheticDocument, HTMLDivElement> {
   render() {
-    return <div>
+    return <div {...this.renderAttributes()}>
       <style>
         {this.source.styleSheets.join("")}
       </style>

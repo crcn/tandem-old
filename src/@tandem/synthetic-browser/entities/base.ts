@@ -24,12 +24,11 @@ import {
 } from "../dom";
 
 import * as React from "react";
-
-import { SyntheticDOMNodeEntityClassDependency } from "../dependencies";
-
-import { SyntheticRendererAction } from "../actions";
+import { decode } from "ent";
 
 import { WrapBus } from "mesh";
+import { SyntheticRendererAction } from "../actions";
+import { SyntheticDOMNodeEntityClassDependency } from "../dependencies";
 
 let _i: number = 0;
 
@@ -172,6 +171,7 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
     const attribs = {};
     Object.assign(attribs, this.getExtraAttributes());
 
+    // fix attributes for React
     if (this.source.nodeType === MarkupNodeType.ELEMENT) {
       const sourceElement = (<SyntheticDOMElement><any>this.source);
       for (const attribute of sourceElement.attributes) {
@@ -195,13 +195,13 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
     } else if (this.source.nodeType === MarkupNodeType.DOCUMENT_FRAGMENT || this.source.nodeType === MarkupNodeType.DOCUMENT) {
       return React.createElement("span", this.renderAttributes(), this.renderChildren());
     } else if (this.source.nodeType === MarkupNodeType.TEXT) {
-      return React.createElement("span", this.renderAttributes(), (<SyntheticDOMText><any>this.source).nodeValue);
+      return React.createElement("span", this.renderAttributes(), decode((<SyntheticDOMText><any>this.source).nodeValue));
     }
     return null;
   }
 
   renderChildren(): React.ReactElement<any>[] {
-    return this.children.map((child) => child.render());
+    return this.children.length ? this.children.map((child) => child.render()) : null;
   }
 
   protected didEvaluate() { }

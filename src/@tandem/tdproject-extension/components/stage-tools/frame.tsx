@@ -18,7 +18,7 @@ export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrameE
 
   editTitle = () => {
     if (!this.props.frame.module.editor) return;
-    this.setState({ editedTitle: this.props.frame.source.getAttribute("title") });
+    this.setState({ editedTitle: this.props.frame.source.getAttribute("title") || "" });
     requestAnimationFrame(() => {
       (this.refs as any).input.select();
     });

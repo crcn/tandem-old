@@ -1,8 +1,9 @@
 import { SyntheticHTMLElement, BaseSyntheticDOMContainerEntity, SyntheticDocument } from "@tandem/synthetic-browser";
 import * as React from "react";
+import { pick } from "lodash";
 
 export class SyntheticTDProject extends BaseSyntheticDOMContainerEntity<SyntheticHTMLElement, HTMLElement> {
   render() {
-    return <div>{this.renderChildren()}</div>;
+    return <div {...this.getExtraAttributes()}>{this.renderChildren()}</div>;
   }
 }

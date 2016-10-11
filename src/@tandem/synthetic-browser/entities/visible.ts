@@ -7,9 +7,7 @@ export class SyntheticDOMCapabilities {
   constructor(
     readonly movable: boolean,
     readonly resizable: boolean
-  ) {
-
-  }
+  ) {}
 
   merge(...capabilities: SyntheticDOMCapabilities[]) {
     return SyntheticDOMCapabilities.merge(this, ...capabilities);
@@ -27,10 +25,10 @@ export class SyntheticDOMCapabilities {
 
 export abstract class BaseVisibleSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U extends HTMLElement> extends BaseSyntheticDOMContainerEntity<T, U> {
 
-  protected _renderedBounds: BoundingRect = BoundingRect.zeros();
-  abstract absoluteBounds: BoundingRect;
   abstract position: IPoint;
   abstract capabilities: SyntheticDOMCapabilities;
+  abstract absoluteBounds: BoundingRect;
+  protected _renderedBounds: BoundingRect = BoundingRect.zeros();
 
   protected onRendered() {
     if (this.source instanceof SyntheticHTMLElement) {

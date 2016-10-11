@@ -8,6 +8,14 @@ const _testers = {};
 export function getSelectorTester(selectorSource: string): { test(node: SyntheticDOMElement): boolean } {
   if (_testers[selectorSource]) return _testers[selectorSource];
 
+  // if selectorSource is undefined or false, then return a tester
+  // that also always returns
+  if (!selectorSource) {
+    return {
+      test() { return false }
+    };
+  }
+
   const ast = parseSelector(selectorSource);
 
   function test(ast: SelectorExpression, node: SyntheticDOMElement) {

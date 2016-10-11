@@ -64,7 +64,6 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
 
   targetDidMount() {
     const iframe = this.target.querySelector("iframe") as HTMLIFrameElement;
-    console.log("did mount");
     if (iframe.contentDocument) {
       iframe.contentDocument.body.appendChild(this._browser.renderer.element);
     }
@@ -73,7 +72,7 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
   render() {
     return <div className="frame-entity" {...this.renderAttributes()}>
       <iframe style={{border:"none", width: "100%", height: "100%", position: "absolute", top: 0, left: 0}} />
-      <div style={{width:"100%",height:"100%",position:"absolute",top: 0, left: 0, background: "transparent"}} />
+      <div key="overlay" style={{width:"100%",height:"100%",position:"absolute",top: 0, left: 0, background: "transparent"}} />
     </div>;
   }
 }
