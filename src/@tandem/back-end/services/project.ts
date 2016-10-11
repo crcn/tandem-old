@@ -27,7 +27,7 @@ export default class ProjectService extends BaseApplicationService<IApplication>
     if (/\.tdproject$/.test(action.path)) {
       this._primaryProjectPath = action.path;
     } else if (!this._primaryProjectPath) {
-      fs.writeFileSync(tmpProjectFile, `<tdproject xmlns="tandem"><frame src="${action.path}" /></tdproject>`);
+      fs.writeFileSync(tmpProjectFile, `<tdproject xmlns="tandem"><frame src="${action.path}" inherit-css /></tdproject>`);
       this._primaryProjectPath = tmpProjectFile;
     }
   }

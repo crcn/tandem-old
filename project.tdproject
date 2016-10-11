@@ -1,3 +1,9 @@
+<style>
+  body, html {
+    color: black;
+    font-family: Helvetica;
+  }
+</style>
 <tdproject>
-  <frame src="/Users/crcn/Developer/public/tandem/README.md"></frame>
+  <frame src="./README.md" title="Main README" inherit-css=""></frame>
 </tdproject>

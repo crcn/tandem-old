@@ -20,7 +20,7 @@ import {
   SyntheticDOMNodeEntityClassDependency,
 } from "@tandem/synthetic-browser";
 
-import { SyntheticVisibleHTMLEntity } from "@tandem/html-extension";
+import { SyntheticVisibleHTMLEntity, SyntheticHTMLStyleEntity, SyntheticHTMLLinkEntity } from "@tandem/html-extension";
 
 export const tdprojectExtensionDependencies = [
 
@@ -34,6 +34,8 @@ export const tdprojectExtensionDependencies = [
   new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "frame", SyntheticTDFrameEntity),
   new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "default", SyntheticVisibleHTMLEntity),
   new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "tdproject", SyntheticTDProject),
+  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "style", SyntheticHTMLStyleEntity),
+  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "link", SyntheticHTMLLinkEntity),
 
   // sandbox
   new SandboxModuleFactoryDependency(HTML_MIME_TYPE, TDPROJECT_MIME_TYPE, MarkupModule),

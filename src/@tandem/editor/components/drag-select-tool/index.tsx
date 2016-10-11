@@ -77,7 +77,7 @@ class DragSelectComponent extends React.Component<{ app: FrontEndApplication, zo
       const selection = [];
 
       visibleEntities.forEach(function (entity) {
-        if ((entity.metadata.get(MetadataKeys.CANVAS_ROOT) !== true || entity.children.length === 0) && entity.absoluteBounds.intersects(bounds)) {
+        if (entity.editable && (entity.metadata.get(MetadataKeys.CANVAS_ROOT) !== true || entity.children.length === 0) && entity.absoluteBounds.intersects(bounds)) {
           selection.push(entity);
         }
       });

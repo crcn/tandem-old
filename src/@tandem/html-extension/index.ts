@@ -14,10 +14,11 @@ import { HTMLCSSModule } from "./sandbox";
 import { HTML_XMLNS, SyntheticDOMNodeEntityClassDependency } from "@tandem/synthetic-browser";
 
 import { 
-  SyntheticHTMLImageEntity,
   SyntheticHTMLLinkEntity,
-  SyntheticHTMLDocumentEntity,
+  SyntheticHTMLStyleEntity,
+  SyntheticHTMLImageEntity,
   SyntheticVisibleHTMLEntity,
+  SyntheticHTMLDocumentEntity,
 } from "./synthetic";
 
 import { MarkupModule, HTML_TAG_NAMES } from "@tandem/synthetic-browser";
@@ -78,6 +79,7 @@ export const htmlExtensionDependencies = [
   new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "img", SyntheticHTMLImageEntity),
   new SyntheticDOMNodeEntityClassDependency(undefined, "#document", SyntheticHTMLDocumentEntity),
   new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "link", SyntheticHTMLLinkEntity),
+  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "style", SyntheticHTMLStyleEntity),
   ...visibleEntityDependencies,
 
   // stage tool components
