@@ -1,6 +1,6 @@
-- [ ] tdproject
-- [ ] ability to import files into tdproject (CSS, html)
-- [ ] scss transpiler
-- [ ] browsertap renderer
-- [ ] css editing pane
-- [ ]
+- [ ] point move / resize edits to proper CSS rules or prompt user
+- [ ] make edits to CSS sources
+- [ ] make edits to SCSS sources
+- [ ] shadow DOM renderer (for calculating properties)
+- [ ] get insert frame tool to work
+- [ ] get insert text to work
