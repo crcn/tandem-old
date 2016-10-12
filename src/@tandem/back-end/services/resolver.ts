@@ -14,14 +14,14 @@ export default class ResolverService extends BaseApplicationService<IApplication
 
   [ResolveAction.RESOLVE](action: ResolveAction) {
     const { config } = this.app;
-    const { filePath, relativeFilePath } = action;
+    const { filePath, relativeFilePath, extensions, directories } = action;
 
     const dir = relativeFilePath ? path.dirname(relativeFilePath) : process.cwd();
 
     const resolvedPath = resolve.sync(filePath, {
       basedir: dir,
-      extensions: config.extensions,
-      paths: config.rootDirectories
+      extensions: extensions,
+      paths: directories
     });
 
     return resolvedPath;

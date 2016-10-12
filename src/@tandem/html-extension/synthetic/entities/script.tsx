@@ -1,3 +1,5 @@
+import * as path from "path";
+
 import {
   SyntheticDOMElement,
   BaseDOMNodeEntity
@@ -10,6 +12,8 @@ export class HTMLScriptEntity extends BaseDOMNodeEntity<SyntheticDOMElement, HTM
     const src    = this.source.getAttribute("src");
     const window = this.sourceWindow;
     const importer = window.sandbox.importer;
+    const fileName = this.module.fileName;
+
     let scriptContent = "";
 
     if (src) {
@@ -20,21 +24,27 @@ export class HTMLScriptEntity extends BaseDOMNodeEntity<SyntheticDOMElement, HTM
       scriptContent = this.source.textContent;
     }
 
-    const context = window;
+    const global = window;
+    const context = {
+      __filename: fileName,
+      __dirname: path.dirname(fileName)
+    };
 
     // dirty fetch of variable declarations. Need to define these on the context
     // so that the with statement works properly
     for (const variableDeclaration of (scriptContent.match(/(var|const)\s*\w+/g) || [])) {
       const variableName = variableDeclaration.match(/(var|const)\s*(\w+)/)[2];
-      if (context[variableName] == null) context[variableName] = null;
+      if (global[variableName] == null) global[variableName] = null;
     }
 
-    const run = new Function("context", `
-      with(context) {
-        ${scriptContent}
+    const run = new Function("global", "context", `
+      with(global) {
+        with(context) {
+          ${scriptContent}
+        }
       }
     `);
 
-    run(context);
+    run(global, context);
   }
 }

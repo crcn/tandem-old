@@ -53,11 +53,11 @@ export class EntityRuntimeAction extends Action {
 
 export class ResolveAction extends Action {
   static readonly RESOLVE = "resolve";
-  constructor(readonly filePath: string, readonly relativeFilePath?: string) {
+  constructor(readonly filePath: string, readonly relativeFilePath: string, readonly extensions: string[], readonly directories: string[]) {
     super(ResolveAction.RESOLVE);
   }
-  static async execute(path: string, relativeFile: string, bus: IActor): Promise<string> {
-    return (await bus.execute(new ResolveAction(path, relativeFile)).read()).value;
+  static async execute(path: string, relativeFile: string, extensions: string[], directories: string[], bus: IActor): Promise<string> {
+    return (await bus.execute(new ResolveAction(path, relativeFile, extensions, directories)).read()).value;
   }
 }
 

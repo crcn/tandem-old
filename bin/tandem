@@ -11,18 +11,7 @@ if (!/^\//.test(filepath)) {
   filepath = path.join(process.cwd(), filepath);
 }
 
-var projectConfig = {};
-
-[
-  path.dirname(filepath),
-  process.cwd()
-].forEach(function(dir) {
-  try {
-    Object.assign(projectConfig, require(dir + "/tandem.config"));
-  } catch(e) { }
-});
-
-var app = createApp(projectConfig);
+var app = createApp();
 
 app.bus.execute({
   type  : 'openProjectFile',

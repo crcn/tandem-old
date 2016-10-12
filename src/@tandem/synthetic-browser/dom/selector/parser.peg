@@ -8,7 +8,7 @@
     ListSelectorExpression,
     ChildSelectorExpression,
     PseudoElementExpression,
-    PseudoSelectorExpression
+    PseudoSelectorExpression,
     TagNameSelectorExpression,
     ElementSelectorsExpression,
     AttributeSelectorExpression,

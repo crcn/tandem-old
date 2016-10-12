@@ -1,5 +1,5 @@
 import { IModule } from "./module";
-import { ModuleImporter } from "./importer";
+import { ModuleImporter, IModuleResolveOptions } from "./importer";
 import {
   Action,
   Observable,
@@ -32,9 +32,9 @@ export class Sandbox extends Observable {
   private _shouldReloadAgain: boolean;
   private _currentModule: IModule;
 
-  constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}) {
+  constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}, getResolveOptions?: () => IModuleResolveOptions) {
     super();
-    this._importer = new ModuleImporter(this, _dependencies);
+    this._importer = new ModuleImporter(this, _dependencies, getResolveOptions);
     this._importer.observe(new WrapBus(this.onImporterAction.bind(this)));
   }
 

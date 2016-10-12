@@ -4,3 +4,4 @@ export * from "./module";
 export * from "./actions";
 export * from "./synthetic";
 export * from "./editor";
+export * from "./importer";

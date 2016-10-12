@@ -11,6 +11,7 @@ import {
   Dependencies,
   HTML_MIME_TYPE,
   MainBusDependency,
+  MimeTypeDependency,
   PropertyChangeAction,
 } from "@tandem/common";
 
@@ -22,6 +23,7 @@ import {
 import {
   Sandbox,
   SandboxAction,
+  IModuleResolveOptions,
 } from "@tandem/sandbox";
 
 import {
@@ -43,7 +45,7 @@ export class SyntheticBrowser extends Observable {
     super();
     this._renderer = renderer || new SyntheticDOMRenderer();
     this._renderer.observe(new BubbleBus(this));
-    this._sandbox  = new Sandbox(_dependencies, this.createSandboxGlobals.bind(this));
+    this._sandbox  = new Sandbox(_dependencies, this.createSandboxGlobals.bind(this), this.getResolveOptions.bind(this));
     this._sandbox.observe(new WrapBus(this.onSandboxAction.bind(this)));
   }
 
@@ -96,6 +98,29 @@ export class SyntheticBrowser extends Observable {
     this.notify(new PropertyChangeAction("window", window, oldWindow));
 
     return window;
+  }
+
+  protected getResolveOptions(): IModuleResolveOptions {
+
+    const extensions  = [];
+    const directories = [];
+
+    if (this.window) {
+      const windowResolve = this.window.resolve;
+      extensions.push(...windowResolve.extensions);
+      directories.push(...windowResolve.directories);
+    }
+
+    if (this.parent) {
+      const parentResolve = this.parent.getResolveOptions();
+      extensions.push(...parentResolve.extensions);
+      directories.push(...parentResolve.directories);
+    }
+
+    return {
+      extensions: extensions,
+      directories: directories
+    };
   }
 
   private _registerElementClasses(document: SyntheticDocument) {

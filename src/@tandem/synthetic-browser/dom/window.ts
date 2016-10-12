@@ -16,9 +16,11 @@ export class SyntheticWindow extends Observable {
 
   readonly document: SyntheticDocument;
   readonly window: SyntheticWindow;
+  public resolve: { extensions: string[], directories: string[] };
 
   constructor(readonly browser: SyntheticBrowser, readonly renderer: ISyntheticDocumentRenderer, location: SyntheticLocation) {
     super();
+    this.resolve = { extensions: [], directories: [] };
     this.document = this.createDocument();
     this.location = location;
     this.window   = this;

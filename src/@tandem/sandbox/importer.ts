@@ -1,6 +1,7 @@
 import { IModule } from "./module";
 import { Sandbox } from "./sandbox";
 import { SandboxModuleFactoryDependency } from "./dependencies";
+import { uniq } from "lodash";
 import {
   Logger,
   IActor,
@@ -31,20 +32,31 @@ import {
   WrapBus
 } from "mesh";
 
+export interface IModuleResolveOptions {
+  extensions: string[];
+  directories: string[];
+}
+
 @loggable()
-export class ModuleImporter extends Observable implements IInvoker {
+export class ModuleImporter extends Observable implements IInvoker, IModuleResolveOptions {
 
   private _resolvedFiles: any;
   readonly bus: IActor;
+
+  public extensions: string[];
+  public directories: string[];
+
   private _modules: any;
   private _imports: any;
   private _fileWatchers: any;
   private _fileContentCache: any;
   readonly logger: Logger;
 
-  constructor(private _sandbox: Sandbox, private _dependencies: Dependencies) {
+  constructor(private _sandbox: Sandbox, private _dependencies: Dependencies, private _getResolveOptions?: () => IModuleResolveOptions) {
     super();
     this.bus = MainBusDependency.getInstance(_dependencies);
+    this.extensions = [];
+    this.directories = [];
     this._fileWatchers     = {};
     this._resolvedFiles    = {};
     this._imports          = {};
@@ -52,9 +64,30 @@ export class ModuleImporter extends Observable implements IInvoker {
     this._fileContentCache = {};
   }
 
+  public getResolveOptions(): IModuleResolveOptions {
+    const extensions = this.extensions.concat();
+    const directories = this.directories.concat();
+
+    extensions.push(...MimeTypeDependency.findAll(this._dependencies).map((dep) => "." + dep.fileExtension));
+
+    if (this._getResolveOptions) {
+      const extraRops = this._getResolveOptions();
+      if (extraRops) {
+        extensions.push(...extraRops.extensions);
+        directories.push(...extraRops.directories);
+      }
+    }
+
+    return {
+      extensions: uniq(directories),
+      directories: uniq(directories)
+    };
+  }
+
   public async resolve(filePath: string, relativePath?: string) {
     return this._resolvedFiles[filePath] || (this._resolvedFiles[filePath] = new SingletonThenable(() => {
-      return ResolveAction.execute(String(filePath), relativePath, this.bus);
+      const { extensions, directories } = this.getResolveOptions();
+      return ResolveAction.execute(String(filePath), relativePath, extensions, directories, this.bus);
     }));
   }
 

@@ -187,10 +187,13 @@ export class CommandFactoryDependency extends ClassFactoryDependency {
 
 export const MIME_TYPE_NS = "mimeType";
 export class MimeTypeDependency extends Dependency<string> {
-  constructor(fileExtension: string, mimeType: string) {
+  constructor(readonly fileExtension: string, readonly mimeType: string) {
     super([MIME_TYPE_NS, fileExtension].join("/"), mimeType);
   }
-  findAll(dependencies: Dependencies) {
+  clone() {
+    return new MimeTypeDependency(this.fileExtension, this.mimeType);
+  }
+  static findAll(dependencies: Dependencies) {
     return dependencies.queryAll<MimeTypeDependency>([MIME_TYPE_NS, "**"].join("/"));
   }
   static lookup(filepath: string, dependencies: Dependencies): string {
