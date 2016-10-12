@@ -5,7 +5,6 @@
     __dirname + "/node_modules"
   );
 </script>
-
 <!-- TD project specific styles -->
 <style>
   body, html {
@@ -13,9 +12,7 @@
     font-family: Helvetica;
   }
 </style>
-
 <link rel="stylesheet" type="text/css" href="./examples/bootstrap/bootstrap.css"></link>
-
 <frame src="./examples/bootstrap/hello-world.html" title="Bootstrap Demo" inherit-css=""></frame>
-<frame src="./examples/mustache/hello.mu" title="Test template" inherit-css="" inherit-globals="" style="left:0px;top:964px;width:1024px;height:756px;"></frame>
+<frame src="./examples/mustache/hello.mu" title="Test template" inherit-css="" inherit-globals="" style="left:0px;top:935px;width:1024px;height:756px;"></frame>
 <frame src="/Users/crcn/Developer/public/tandem/examples/animations/simple.html" style="left:1240px;top:0px;"></frame>

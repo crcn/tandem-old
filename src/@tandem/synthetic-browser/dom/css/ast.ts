@@ -4,6 +4,7 @@ import {
   IRange,
   bindable,
   patchable,
+  IASTNode2,
   BaseASTNode,
 } from "@tandem/common";
 
@@ -15,84 +16,59 @@ export interface ICSSExpressionVisitor {
   visitComment(comment: CSSCommentExpression);
 }
 
-export abstract class CSSExpression extends BaseASTNode<CSSExpression> {
-  constructor(position: IRange) {
-    super(position);
-    this.initialize();
-  }
+export enum CSSExpressionKind {
+  STYLE_SHEET  = 1,
+  STYLE_RULE   = STYLE_SHEET + 1,
+  AT_RULE      = STYLE_RULE + 1,
+  DECLARATION  = AT_RULE + 1,
+  COMMENT      = DECLARATION + 1,
+}
+
+export abstract class CSSExpression implements IASTNode2 {
+  public parent: CSSExpression;
+  abstract readonly kind: CSSExpressionKind;
+
+  constructor(readonly position: IRange) { }
 
   abstract accept(visitor: ICSSExpressionVisitor);
-
-  protected initialize() { }
 }
 
 export class CSSStyleSheetExpression extends CSSExpression {
-  readonly rules: CSSRuleExpression[];
-  constructor(private _node: postcss.Root, children: CSSExpression[], position: IRange) {
+  readonly kind = CSSExpressionKind.STYLE_SHEET;
+  constructor(private _node: postcss.Root, readonly rules: CSSRuleExpression[], position: IRange) {
     super(position);
-    this.rules = children as any;
   }
 
   accept(visitor: ICSSExpressionVisitor) {
     return visitor.visitRoot(this);
   }
-
-  toString() {
-    return this.children.join("\n\n");
-  }
 }
 
 export class CSSRuleExpression extends CSSExpression {
-  @bindable()
-  @patchable()
   readonly selector: string;
+  readonly kind = CSSExpressionKind.STYLE_RULE;
   private _declarationsByKey: Object;
   constructor(private _node: postcss.Rule, readonly declarations: CSSDeclarationExpression[], position: IRange) {
     super(position);
     this.selector = _node.selector;
-  }
-
-  protected initialize() {
-    this._declarationsByKey = {};
+    declarations.forEach((child) => child.parent = this);
   }
 
   accept(visitor: ICSSExpressionVisitor) {
     return visitor.visitRule(this);
   }
-
-  public removeDeclaration(key: string) {
-    if (this._declarationsByKey[key]) {
-      this.removeChild(this._declarationsByKey[key]);
-    }
-  }
-
-  toString() {
-    return [
-      this.selector,
-      " {",
-      this.children.join(""),
-      "}",
-    ].join("");
-  }
 }
 
 export class CSSDeclarationExpression extends CSSExpression {
 
-  @bindable()
   public name: string;
-
-  @bindable()
-  @patchable()
   public value: string;
+  readonly kind = CSSExpressionKind.DECLARATION;
 
   constructor({ prop , value }, position: IRange) {
     super(position);
     this.name = prop;
     this.value = value;
-  }
-
-  compare(expression: CSSDeclarationExpression) {
-    return Number(super.compare(expression) && expression.name === this.name);
   }
 
   accept(visitor: ICSSExpressionVisitor) {
@@ -107,41 +83,19 @@ export class CSSDeclarationExpression extends CSSExpression {
 }
 
 export class CSSATRuleExpression extends CSSExpression {
-
-  @bindable()
-  @patchable()
   readonly name: string;
-
-  @bindable()
-  @patchable()
   public params: string;
+  readonly kind = CSSExpressionKind.AT_RULE;
 
-  constructor(protected _node: postcss.AtRule, children: Array<CSSExpression>, position: IRange) {
+  constructor(protected _node: postcss.AtRule, readonly rules: Array<CSSExpression>, position: IRange) {
     super(position);
     this.name = _node.name;
     this.params = _node.params;
+    rules.forEach((child) => child.parent = this);
   }
 
   accept(visitor: ICSSExpressionVisitor) {
     return visitor.visitAtRule(this);
-  }
-
-  toString() {
-
-    const buffer = [
-      "@" + this.name + " ",
-      this.params
-    ];
-
-    if (this.children.length) {
-      buffer.push(" {",
-      this.children.join(" "),
-      "}");
-    } else {
-      buffer.push(";");
-    }
-
-    return buffer.join("");
   }
 }
 
@@ -157,10 +111,8 @@ export class MediaExpression extends CSSATRuleExpression {
 }
 
 export class CSSCommentExpression extends CSSExpression {
-
-  @bindable()
-  @patchable()
   public value: string;
+  readonly kind = CSSExpressionKind.COMMENT;
 
   constructor(node: postcss.Comment, position: IRange) {
     super(position);

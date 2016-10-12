@@ -6,3 +6,20 @@
   height: 100%;
   flex-grow: 1;
 }
+
+
+@keyframes test {
+  0% {
+
+  }
+  100% {
+
+  }
+}
+
+/* Customize container */
+@media (min-width: 48em) {
+  .container {
+    max-width: 20em;
+  }
+}

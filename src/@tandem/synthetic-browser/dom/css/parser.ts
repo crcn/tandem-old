@@ -44,9 +44,7 @@ export function convertPostCSSAST(root: postcss.Root, expressionClasses: any = {
 
 // used just for converting lines to positions
 class Line {
-  constructor(readonly position: IRange) {
-
-  }
+  constructor(readonly position: IRange) { }
 }
 
 function _convertPostCSSAST(root: postcss.Container, lines: Array<Line>, currentNode: postcss.Container, expressionClasses: any) {
@@ -67,9 +65,4 @@ function _convertPostCSSAST(root: postcss.Container, lines: Array<Line>, current
   };
 
   return new expressionClass(currentNode, (currentNode.nodes || []).map((child) => _convertPostCSSAST(root, lines, <postcss.Container>child, expressionClasses)), position);
-}
-
-
-export function parseCSSStyle(source): CSSRuleExpression {
-  return <CSSRuleExpression>parseCSS(`style {${source}}`).children[0];
 }

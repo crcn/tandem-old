@@ -1,4 +1,4 @@
-import { SyntheticCSSStyleRule } from "./rule";
+import { SyntheticCSSStyleRule } from "./style-rule";
 
 export class SyntheticCSSStyleSheet {
   constructor(readonly rules: SyntheticCSSStyleRule[]) { }
