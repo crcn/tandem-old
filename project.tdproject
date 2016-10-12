@@ -1,3 +1,5 @@
+<link rel="stylesheet" type="text/css" href="./examples/bootstrap/bootstrap.css"></link>
+
 <style>
   body, html {
     color: black;
@@ -6,10 +8,10 @@
 </style>
 <script>
   var fixtures = {
-    message: "hello"
+    message: "name!!"
   }
 </script>
 <tdproject>
-  <frame src="./examples/mustache/hello.mu" title="Test template" inherit-css="" inherit-globals="fixtures" style="left:0px;top:0px;"></frame>
-  <frame src="/Users/crcn/Developer/public/tandem/README.md" style="left:-1220px;" title="Main README" inherit-css=""></frame>
+  <frame src="./examples/bootstrap/hello-world.html" title="Bootstrap Demo" inherit-css></frame>
+  <frame src="./examples/mustache/hello.mu" title="Test template" inherit-css="" inherit-globals="fixtures" style="left:13px;top:952px;width:1015px;height:761px;"></frame>
 </tdproject>
