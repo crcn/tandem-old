@@ -2,14 +2,19 @@ import * as path from "path";
 
 import {
   SyntheticDOMElement,
-  BaseDOMNodeEntity
+  BaseDOMNodeEntity,
 } from "@tandem/synthetic-browser";
+
+import { SandboxModuleFactoryDependency } from "@tandem/sandbox";
+import { JS_MIME_TYPE } from "@tandem/common";
 
 export class HTMLScriptEntity extends BaseDOMNodeEntity<SyntheticDOMElement, HTMLElement> {
   private _fn: Function;
   async evaluate() {
 
     const src    = this.source.getAttribute("src");
+    const type   = this.source.getAttribute("type") || "application/javascript";
+
     const window = this.sourceWindow;
     const importer = window.sandbox.importer;
     const fileName = this.module.fileName;
@@ -24,11 +29,13 @@ export class HTMLScriptEntity extends BaseDOMNodeEntity<SyntheticDOMElement, HTM
       scriptContent = this.source.textContent;
     }
 
+    const moduleDependency = SandboxModuleFactoryDependency.find(JS_MIME_TYPE, type, this.browser.dependencies);
+
+    if (!moduleDependency) {
+      throw new Error(`Cannot execute script with content type "${type}".`);
+    }
+
     const global = window;
-    const context = {
-      __filename: fileName,
-      __dirname: path.dirname(fileName)
-    };
 
     // dirty fetch of variable declarations. Need to define these on the context
     // so that the with statement works properly
@@ -37,14 +44,7 @@ export class HTMLScriptEntity extends BaseDOMNodeEntity<SyntheticDOMElement, HTM
       if (global[variableName] == null) global[variableName] = null;
     }
 
-    const run = new Function("global", "context", `
-      with(global) {
-        with(context) {
-          ${scriptContent}
-        }
-      }
-    `);
-
-    run(global, context);
+    const module = moduleDependency.create(this.module.fileName, scriptContent, this.module.sandbox);
+    await module.evaluate();
   }
 }
