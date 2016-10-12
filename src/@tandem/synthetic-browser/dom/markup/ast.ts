@@ -65,6 +65,13 @@ export abstract class MarkupContainerExpression extends MarkupNodeExpression {
       this.childNodes.splice(i, 1);
     }
   }
+  appendChild(child: MarkupNodeExpression) {
+    this.childNodes.push(child);
+  }
+  insertBefore(child: MarkupNodeExpression, referenceNode: MarkupNodeExpression) {
+    const index = this.childNodes.indexOf(referenceNode);
+    this.childNodes.splice(index, 0, child);
+  }
 }
 
 export class MarkupFragmentExpression extends MarkupContainerExpression implements IMarkupExpression {
@@ -95,9 +102,6 @@ export class MarkupElementExpression extends MarkupContainerExpression {
     for (const attribute of this.attributes) {
       if (attribute.name === name) return attribute.value;
     }
-  }
-  appendChild(child: MarkupNodeExpression) {
-    this.childNodes.push(child);
   }
   setAttribute(name: string, value: string) {
     for (const attribute of this.attributes) {

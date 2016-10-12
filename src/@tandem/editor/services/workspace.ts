@@ -75,13 +75,12 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
     if (!/\.tdproject$/.test(path)) {
       const body = this.app.editor.browser.document.body;
-      const tdproject = <SyntheticDOMElement>body.querySelector("tdproject");
-      const { editor } = tdproject.module;
+      const { editor } = body.firstChild.module;
 
       editor.edit((edit) => {
         const frame = this.app.editor.browser.document.createElement("frame");
         frame.setAttribute("src", path);
-        edit.appendChildNode(tdproject, frame);
+        edit.appendChildNode(frame);
       });
     } else {
       await this._loadWorkspaces();

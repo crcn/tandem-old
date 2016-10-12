@@ -11,6 +11,7 @@ import {
   formatMarkupExpression,
   MarkupElementExpression,
   MarkupFragmentExpression,
+  MarkupContainerExpression,
 } from "../dom";
 
 import {
@@ -50,13 +51,8 @@ export class MarkupModule extends BaseSandboxModule implements IMarkupModule {
 export interface IMarkupEdit extends IModuleEdit {
   setElementAttribute(element: SyntheticDOMElement, name: string, value: string);
   removeElementAttribute(element: SyntheticDOMElement, name: string);
-  appendChildNode(parent: SyntheticDOMElement, child: SyntheticDOMNode);
-  appendChildNode(parent: SyntheticDOMElement, child: SyntheticDOMNode);
-}
-
-export interface IHTMLEdit extends IMarkupEdit {
-  setElementAttribute(element: SyntheticDOMElement, name: string, value: string);
-  appendChildNode(parent: SyntheticDOMElement, child: SyntheticDOMNode);
+  appendChildNode(child: SyntheticDOMNode, parent?: SyntheticDOMElement);
+  insertChildBefore(newNode: SyntheticDOMNode, referenceNode: SyntheticDOMNode);
 }
 
 export interface IMarkupEditor extends IModuleEditor {
@@ -84,6 +80,13 @@ export class AppendChildNodeAction extends Action {
   }
 }
 
+export class InsertChildNodeBeforeAction extends Action {
+  static readonly INSERT_CHILD_NODE_BEFORE = "insertChildNodeBefore";
+  constructor(readonly child: SyntheticDOMNode, readonly referenceNode: SyntheticDOMNode) {
+    super(InsertChildNodeBeforeAction.INSERT_CHILD_NODE_BEFORE);
+  }
+}
+
 export class MarkupEdit extends BaseSandboxModuleEdit implements IMarkupEdit {
   setElementAttribute(element, name, value) {
     this.actions.push(new SetElementAttributeAction(element, name, value));
@@ -91,12 +94,18 @@ export class MarkupEdit extends BaseSandboxModuleEdit implements IMarkupEdit {
   removeElementAttribute(element, name) {
     this.actions.push(new RemoveElementAttributeAction(element, name));
   }
-  appendChildNode(parent: SyntheticDOMElement, child: SyntheticDOMNode) {
+  appendChildNode(child: SyntheticDOMNode, parent?: SyntheticDOMElement) {
     this.actions.push(new AppendChildNodeAction(parent, child));
+  }
+  insertChildBefore(child: SyntheticDOMNode, referenceNode: SyntheticDOMNode) {
+    this.actions.push(new InsertChildNodeBeforeAction(child, referenceNode));
   }
 }
 
 export class MarkupEditor extends BaseSandboxModuleEditor<MarkupEdit> implements IMarkupEditor {
+
+  readonly module: MarkupModule;
+
   createEdit(): MarkupEdit {
     return new MarkupEdit();
   }
@@ -114,7 +123,12 @@ export class MarkupEditor extends BaseSandboxModuleEditor<MarkupEdit> implements
   }
 
   [AppendChildNodeAction.APPEND_CHILD_NODE](action: AppendChildNodeAction) {
-    (<MarkupElementExpression>action.parent.expression).appendChild(parseMarkup(action.child.toString()));
+    const parent = (action.parent ? action.parent.expression : this.module.ast) as MarkupContainerExpression;
+    parent.appendChild(parseMarkup(action.child.toString()));
+  }
+
+  [InsertChildNodeBeforeAction.INSERT_CHILD_NODE_BEFORE](action: InsertChildNodeBeforeAction) {
+    (<MarkupElementExpression>action.referenceNode.expression.parent).insertBefore(parseMarkup(action.child.toString()), action.referenceNode.expression);
   }
 
   removeSynthetic(action: RemoveSyntheticAction) {

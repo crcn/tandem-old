@@ -163,7 +163,7 @@ export class TDFrameEntity extends VisibleHTMLEntity {
   }
 
   render() {
-    return <div className="frame-entity" {...omit(this.renderAttributes(), ["inheritCss", "inheritGlobals"])}>
+    return <div className="frame-entity" {...omit(this.renderAttributes(), ["inheritCss", "inheritGlobals", "src"])}>
       <iframe />
       <div className="frame-entity-overlay" />
     </div>;

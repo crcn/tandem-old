@@ -1,14 +1,21 @@
+<!-- TD project configuration settings -->
 <script>
-  let resolve = window.resolve;
-  resolve.directories.push(__dirname + "/src", __dirname + "/node_modules");
-  var message = "blarg";
+  resolve.directories.push(
+    __dirname + "/src",
+    __dirname + "/node_modules"
+  );
 </script>
-<link rel="stylesheet" type="text/css" href="./examples/bootstrap/bootstrap.css"></link>
+
+<!-- TD project specific styles -->
 <style>
   body, html {
     color: black;
     font-family: Helvetica;
   }
 </style>
+
+<link rel="stylesheet" type="text/css" href="./examples/bootstrap/bootstrap.css"></link>
+
 <frame src="./examples/bootstrap/hello-world.html" title="Bootstrap Demo" inherit-css=""></frame>
-<frame src="./examples/mustache/hello.mu" title="Test template" inherit-css="" inherit-globals="" style="left:0px;top:881px;width:1008px;height:756px;"></frame>
+<frame src="./examples/mustache/hello.mu" title="Test template" inherit-css="" inherit-globals="" style="left:0px;top:964px;width:1024px;height:756px;"></frame>
+<frame src="/Users/crcn/Developer/public/tandem/examples/animations/simple.html" style="left:1240px;top:0px;"></frame>

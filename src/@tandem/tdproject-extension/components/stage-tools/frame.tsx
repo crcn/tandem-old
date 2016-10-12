@@ -97,7 +97,6 @@ export class TDFrameStageToolComponent extends React.Component<{ app: FrontEndAp
 
     if (!frames.length) return null;
 
-
     const backgroundStyle = {
       transform: `translate(${-transform.left / transform.scale}px, ${-transform.top / transform.scale}px) scale(${1 / transform.scale})`,
       transformOrigin: "top left"
