@@ -1,5 +1,5 @@
-import { SyntheticDOMNode } from "./dom";
-import { syntheticElementClassType } from "./dom";
+import { SyntheticBrowser } from "./browser";
+import { syntheticElementClassType, SyntheticDOMNode } from "./dom";
 import { Dependency, Dependencies, MimeTypeDependency } from "@tandem/common";
 import { entityType, BaseDOMNodeEntity, DefaultSyntheticDOMEntity } from "./entities";
 
@@ -77,5 +77,33 @@ export class MarkupMimeTypeXMLNSDependency extends Dependency<string> {
     const mimeType = MimeTypeDependency.lookup(path, dependencies);
     const dependency = dependencies.query<MarkupMimeTypeXMLNSDependency>(this.getNamespace(mimeType));
     return dependency && dependency.value;
+  }
+}
+
+/**
+ * Casts vanilla objects as synthetic DOM nodes. Used to mount library components such as
+ * React, Vue, Ember, Angular, and others.
+ */
+
+export interface IMarkupDOMCaster {
+  cast(object: any, browser: SyntheticBrowser): Promise<SyntheticDOMNode>|SyntheticDOMNode;
+}
+
+export class SyntheticDOMCasterDependency extends Dependency<IMarkupDOMCaster> {
+  static readonly MARKUP_DOM_CASTER_NS = "markupDOMCaster";
+  constructor(id: string, value: IMarkupDOMCaster) {
+    super(SyntheticDOMCasterDependency.getNamespace(id), value);
+  }
+
+  static getNamespace(id: string) {
+    return [this.MARKUP_DOM_CASTER_NS, id].join("/");
+  }
+
+  static async castAsDOMNode(object: any, browser: SyntheticBrowser, dependencies: Dependencies): Promise<SyntheticDOMNode> {
+    for (const dep of dependencies.queryAll<SyntheticDOMCasterDependency>(this.getNamespace("**"))) {
+      const ret = await dep.value.cast(object, browser);
+      if (ret instanceof SyntheticDOMNode) return ret;
+    }
+    return undefined;
   }
 }

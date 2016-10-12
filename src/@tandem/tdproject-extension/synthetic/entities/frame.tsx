@@ -18,7 +18,7 @@ import {
 
 import { SandboxAction } from "@tandem/sandbox";
 
-import { omit } from "lodash";
+import { pick } from "lodash";
 import * as React from "react";
 import { WrapBus } from "mesh";
 import { VisibleHTMLEntity } from "@tandem/html-extension";
@@ -127,18 +127,27 @@ export class TDFrameEntity extends VisibleHTMLEntity {
 
   protected onBrowserWindowChange() {
 
+    let childWindowProps = {};
+
+    // these frame props accessible in the child window
+    for (const attribute of this.change.attributes) {
+      childWindowProps[attribute.name] = attribute.value;
+    }
+
     let inheritGlobalKey = this.inheritGlobals;
     if (inheritGlobalKey === "" || inheritGlobalKey === true) {
       inheritGlobalKey = "window";
     }
 
     if (inheritGlobalKey) {
-      const global = this.browser.window[inheritGlobalKey];
+      childWindowProps = Object.assign({}, this.browser.window[inheritGlobalKey], childWindowProps);
+    }
 
-      for (const key in global) {
-        if (this._frameBrowser.window[key] != null) continue;
-        this._frameBrowser.window[key] = global[key];
-      }
+    for (const key in childWindowProps) {
+
+      // respect scope here -- do not override any properties that currently exist
+      if (this._frameBrowser.window[key] != null) continue;
+      this._frameBrowser.window[key] = childWindowProps[key];
     }
   }
 
@@ -163,7 +172,7 @@ export class TDFrameEntity extends VisibleHTMLEntity {
   }
 
   render() {
-    return <div className="frame-entity" {...omit(this.renderAttributes(), ["inheritCss", "inheritGlobals", "src"])}>
+    return <div className="frame-entity" {...pick(this.renderAttributes(), ["style", "id", "className", "data-uid", "key"])}>
       <iframe />
       <div className="frame-entity-overlay" />
     </div>;

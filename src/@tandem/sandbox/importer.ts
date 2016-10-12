@@ -79,13 +79,13 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     }
 
     return {
-      extensions: uniq(directories),
+      extensions: uniq(extensions),
       directories: uniq(directories)
     };
   }
 
   public async resolve(filePath: string, relativePath?: string) {
-    return this._resolvedFiles[filePath] || (this._resolvedFiles[filePath] = new SingletonThenable(() => {
+    return this._resolvedFiles[relativePath + filePath] || (this._resolvedFiles[relativePath + filePath] = new SingletonThenable(() => {
       const { extensions, directories } = this.getResolveOptions();
       return ResolveAction.execute(String(filePath), relativePath, extensions, directories, this.bus);
     }));
@@ -113,6 +113,10 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
 
     if (!moduleCache[envKind]) {
       const moduleFactory = SandboxModuleFactoryDependency.find(envKind, MimeTypeDependency.lookup(resolvedPath, this._dependencies), this._dependencies);
+      if (!moduleFactory) {
+        throw new Error(`Unable to find sandbox module for file ${resolvedPath}`);
+      }
+
       const module = moduleCache[envKind] = moduleFactory.create(resolvedPath, content, this._sandbox);
       module.observe(new WrapBus(this.onModuleAction.bind(this)));
       watchProperty(module, "content", this.onModuleContentChange.bind(this, module));

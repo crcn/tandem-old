@@ -27,6 +27,7 @@ import {
 } from "@tandem/sandbox";
 
 import {
+  SyntheticDOMCasterDependency,
   SyntheticDOMElementClassDependency,
   SyntheticDOMNodeEntityClassDependency,
 } from "./dependencies";
@@ -140,10 +141,22 @@ export class SyntheticBrowser extends Observable {
     const window = this._sandbox.global as SyntheticWindow;
     const mainExports = this._sandbox.mainExports;
 
-    // The main entry module may be an HTML document. If that's the case, then the default
-    // exports will be a synthetic DOM node -- append that to the document body
-    if (mainExports && mainExports.nodeType) {
-      window.document.body.appendChild(mainExports);
+    let exportsElement: SyntheticDOMNode;
+
+    if (mainExports) {
+
+      // if the main exports is a dom node, then add it to the document body
+      if (mainExports.nodeType) {
+        exportsElement = mainExports;
+      } else {
+        // otherwise try to cast the main exports as a DOM node. Note that this is async since the caster
+        // may make async calls such as importing libraries. the React caster for instance imports the react-dom library.
+        exportsElement = await SyntheticDOMCasterDependency.castAsDOMNode(mainExports, this, this._dependencies);
+      }
+    }
+
+    if (exportsElement) {
+      window.document.body.appendChild(exportsElement);
     }
 
     const documentEntity = this._documentEntity;
@@ -154,6 +167,5 @@ export class SyntheticBrowser extends Observable {
     if (this._documentEntity !== documentEntity) {
       this.notify(new PropertyChangeAction("documentEntity", this._documentEntity, documentEntity));
     }
-
   }
 }

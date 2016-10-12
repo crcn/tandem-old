@@ -76,6 +76,8 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   }
 
   public requestUpdate() {
+    if (!this._entity) return;
+
     if (this._updating) {
       this._shouldUpdateAgain = true;
       return;
