@@ -3,19 +3,19 @@
   // http://www.w3schools.com/cssref/css_selectors.asp
 
   const {
-    ClassNameSelectorExpression,
     IDSelectorExpression,
     AllSelectorExpression,
-    TagNameSelectorExpression,
     ListSelectorExpression,
-    DescendentSelectorExpression,
     ChildSelectorExpression,
-    AdjacentSiblingSelectorExpression,
-    ProceedingSiblingSelectorExpression,
-    AttributeSelectorExpression,
-    ElementSelectorsExpression,
     PseudoElementExpression,
     PseudoSelectorExpression
+    TagNameSelectorExpression,
+    ElementSelectorsExpression,
+    AttributeSelectorExpression,
+    ClassNameSelectorExpression,
+    DescendentSelectorExpression,
+    AdjacentSiblingSelectorExpression,
+    ProceedingSiblingSelectorExpression,
   } = require("./ast");
 
   function position() {

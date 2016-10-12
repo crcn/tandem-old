@@ -1,2 +1,0 @@
-- synthetic CSS
-- synthetic DOM
