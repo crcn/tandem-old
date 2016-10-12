@@ -6,12 +6,12 @@
     font-family: Helvetica;
   }
 </style>
+
 <script>
   var fixtures = {
     message: "name!!"
   }
 </script>
-<tdproject>
-  <frame src="./examples/bootstrap/hello-world.html" title="Bootstrap Demo" inherit-css></frame>
-  <frame src="./examples/mustache/hello.mu" title="Test template" inherit-css="" inherit-globals="fixtures" style="left:13px;top:952px;width:1015px;height:761px;"></frame>
-</tdproject>
+
+<frame src="./examples/bootstrap/hello-world.html" title="Bootstrap Demo" inherit-css=""></frame>
+<frame src="./examples/mustache/hello.mu" title="Test template" inherit-css="" inherit-globals="fixtures" style="left:12px;top:944px;width:1008px;height:756px;"></frame>

@@ -1,3 +1,4 @@
+- [ ] fix vscode extension
 - [ ] point move / resize edits to proper CSS rules or prompt user
 - [ ] make edits to CSS sources
 - [ ] make edits to SCSS sources

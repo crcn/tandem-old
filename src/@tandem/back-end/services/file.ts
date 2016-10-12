@@ -35,7 +35,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
   private _dependencies: Dependencies;
 
   [UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT] (action: UpdateTemporaryFileContentAction) {
-    this._fileCache[action.path] = { path: action.path, content: action.content, mtime: Date.now() };
+    this._fileCache[action.path] = { path: action.path, content: action.content, mtime: action.mtime };
     this.logger.info("updating cached content for %s", action.path);
     const watcher = this._fileWatchers[action.path];
     if (watcher) {

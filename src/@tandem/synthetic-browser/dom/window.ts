@@ -24,6 +24,16 @@ export class SyntheticWindow extends Observable {
     this.window   = this;
   }
 
+  get depth(): number {
+    let i = 0;
+    let c = this;
+    while (c) {
+      i++;
+      c = <any>c.parent;
+    }
+    return i;
+  }
+
   get parent(): SyntheticWindow {
     return this.browser.parent && this.browser.parent.window && this.browser.parent.window;
   }

@@ -7,12 +7,13 @@ import { MetadataKeys } from "@tandem/editor/constants";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
-import { BoundingRect, IPoint, Point } from "@tandem/common/geom";
-import { SyntheticDOMElement, BaseVisibleDOMNodeEntity } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement, BaseVisibleDOMNodeEntity, BaseDOMNodeEntity } from "@tandem/synthetic-browser";
+import { BoundingRect, IPoint, Point, traverseTree, findTreeNode } from "@tandem/common";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
+
 
 function resize(oldBounds: BoundingRect, delta: IPoint, anchor: IPoint, keepAspectRatio: boolean, keepCenter: boolean) {
 
@@ -112,35 +113,38 @@ class ResizerComponent extends React.Component<{
     // });
   }
 
-  // createGuider(): Guider {
-  //   const guider = new Guider(5 / this.props.zoom);
-  //   const { selection } = this.props;
+  createGuider(): Guider {
+    const guider = new Guider(5 / this.props.zoom);
+    const { selection } = this.props;
 
-  //   const each = (node) => {
+    const bottomOwnerDocument = (selection as BaseDOMNodeEntity<any, any>[]).reduce((a: BaseDOMNodeEntity<any, any>, b: BaseDOMNodeEntity<any, any>) => {
+      return a.source.ownerDocument.defaultView.depth > a.source.ownerDocument.defaultView.depth ? a : b;
+    }).source.ownerDocument;
 
-  //     for (const entity of selection) {
+    const bottomOwnerDocumentEntity = findTreeNode(this.props.app.editor.documentEntity, (entity) => entity.source === bottomOwnerDocument);
 
-  //       // do not use the node as a guide point if it's part of the selection,
-  //       // or the source is the same. The source will be the same in certain cases -
-  //       // registered components for example.
-  //       if (node === entity || node.source === entity.source) return;
-  //     }
+    traverseTree(bottomOwnerDocumentEntity, (node) => {
+      if (node.source.ownerDocument !== bottomOwnerDocument) return;
 
-  //     // if (node.metadata.get(MetadataKeys.CANVAS_ROOT) && node.flatten().indexOf()) return;
+      for (const entity of selection) {
 
-  //     const displayNode = node as any as IVisibleEntity;
-  //     if (displayNode.display) {
-  //       guider.addPoint(...createBoundingRectPoints(displayNode.display.bounds));
-  //     }
+        // do not use the node as a guide point if it's part of the selection,
+        // or the source is the same. The source will be the same in certain cases -
+        // registered components for example.
+        if (node === entity || node.source === entity.source) return;
+      }
 
-  //     if (node.children) {
-  //       node.children.forEach(each);
-  //     }
-  //   };
+      // if (node.metadata.get(MetadataKeys.CANVAS_ROOT) && node.flatten().indexOf()) return;
 
-  //   each(this.file.entity);
-  //   return guider;
-  // }
+      const displayNode = node as any as BaseVisibleDOMNodeEntity<any, any>;
+      const bounds = displayNode.absoluteBounds;
+      if (bounds && bounds.visible) {
+        guider.addPoint(...createBoundingRectPoints(bounds));
+      }
+    });
+
+    return guider;
+  }
 
   updatePoint = (point, event: MouseEvent) => {
     const keepAspectRatio = event.shiftKey;
@@ -149,38 +153,37 @@ class ResizerComponent extends React.Component<{
 
     let bounds = resize(point.currentBounds.clone(), point.delta, point.anchor, keepAspectRatio, keepCenter);
 
-    // const guider = this._currentGuider;
+    const guider = this._currentGuider;
 
-    // const currentPoint = new Point(
-    //   bounds.left + bounds.width * anchor.left,
-    //   bounds.top + bounds.height * anchor.top
-    // );
+    const currentPoint = new Point(
+      bounds.left + bounds.width * anchor.left,
+      bounds.top + bounds.height * anchor.top
+    );
 
-    // const snapAnchors = [
-    //   new Point(0, 0),
-    //   new Point(0.5, 0),
-    //   new Point(1, 0),
-    //   new Point(1, 0.5),
-    //   new Point(1, 1),
-    //   new Point(0.5, 1),
-    //   new Point(0, 1),
-    //   new Point(0, 0.5)
-    // ];
+    const snapAnchors = [
+      new Point(0, 0),
+      new Point(0.5, 0),
+      new Point(1, 0),
+      new Point(1, 0.5),
+      new Point(1, 1),
+      new Point(0.5, 1),
+      new Point(0, 1),
+      new Point(0, 0.5)
+    ];
 
-    // for (const snapAnchor of snapAnchors) {
-    //   const snapDelta = guider.snap({
-    //     left: bounds.left + bounds.width * snapAnchor.left,
-    //     top: bounds.top + bounds.height * snapAnchor.top
-    //   });
+    for (const snapAnchor of snapAnchors) {
+      const snapDelta = guider.snap({
+        left: bounds.left + bounds.width * snapAnchor.left,
+        top: bounds.top + bounds.height * snapAnchor.top
+      });
 
-    //   bounds = resize(bounds, snapDelta, snapAnchor, keepAspectRatio, keepCenter);
-    //   // if (snapDelta.left || snapDelta.top) break;
-    // }
+      bounds = resize(bounds, snapDelta, snapAnchor, keepAspectRatio, keepCenter);
+      // if (snapDelta.left || snapDelta.top) break;
+    }
 
-    // this.setState({ guideLines: guider.getGuideLines(createBoundingRectPoints(bounds)) });
-    // this.targetDisplay.bounds = bounds;
-
+    this.setState({ guideLines: guider.getGuideLines(createBoundingRectPoints(bounds)) });
     this._visibleEntities.absoluteBounds = bounds;
+
 
     this.props.onResizing(event);
   }
@@ -201,7 +204,7 @@ class ResizerComponent extends React.Component<{
     const sy2 = bounds.top;
     const translateLeft = this.props.editor.transform.left;
     const translateTop  = this.props.editor.transform.top;
-    // const guider = this.createGuider();
+    const guider = this.createGuider();
 
     this.setState({ guideLines: undefined });
     this.props.editor.metadata.set(MetadataKeys.MOVING, true);
@@ -212,19 +215,18 @@ class ResizerComponent extends React.Component<{
       const ny = (sy2 + (delta.y - (this.props.editor.transform.top - translateTop)) / this.props.zoom);
 
       let position = { left: nx, top: ny };
-      // let changeDelta = guider.snap(position, createBoundingRectPoints(new BoundingRect(nx, ny, nx + bounds.width, ny + bounds.height)));
+      let changeDelta = guider.snap(position, createBoundingRectPoints(new BoundingRect(nx, ny, nx + bounds.width, ny + bounds.height)));
 
-      const newBounds = bounds.moveTo(position);
 
-      // const newBounds = bounds.moveTo({
-      //   left: nx + changeDelta.left,
-      //   top: ny + changeDelta.top
-      // });
+      const newBounds = bounds.moveTo({
+        left: nx + changeDelta.left,
+        top: ny + changeDelta.top
+      });
 
       this.moveTarget(newBounds.position);
-      // const guideLines = guider.getGuideLines(createBoundingRectPoints(newBounds));
+      const guideLines = guider.getGuideLines(createBoundingRectPoints(newBounds));
 
-      // this.setState({ guideLines: guideLines });
+      this.setState({ guideLines: guideLines });
 
     }, () => {
       this._visibleEntities.save();
@@ -236,7 +238,7 @@ class ResizerComponent extends React.Component<{
   }
 
   onPointMouseDown = () => {
-    // this._currentGuider = this.createGuider();
+    this._currentGuider = this.createGuider();
     this.props.editor.metadata.set(MetadataKeys.MOVING, true);
   }
 

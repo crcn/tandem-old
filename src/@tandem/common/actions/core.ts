@@ -191,12 +191,14 @@ export class ReadFileAction extends Action {
 
 export class UpdateTemporaryFileContentAction extends Action {
   static readonly UPDATE_TEMP_FILE_CONTENT = "updateTemporyFileContent";
-  constructor(readonly path: string, readonly content: string) {
+  readonly mtime: number;
+  constructor(readonly path: string, readonly content: string, readonly ignoreIfNotCached: boolean = false) {
     super(UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT);
+    this.mtime = Date.now();
   }
 
-  static async execute({ path, content }, bus: IActor) {
-    return (await bus.execute(new UpdateTemporaryFileContentAction(path, content)).read()).value;
+  static async execute({ path, content, ignoreIfNotCached = false }, bus: IActor) {
+    return (await bus.execute(new UpdateTemporaryFileContentAction(path, content, ignoreIfNotCached)).read()).value;
   }
 }
 

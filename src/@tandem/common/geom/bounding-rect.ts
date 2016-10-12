@@ -41,6 +41,10 @@ export class BoundingRect {
     );
   }
 
+  get visible() {
+    return this.width > 0 && this.height > 0;
+  }
+
   toArray() {
     return [this.left, this.top, this.right, this.bottom];
   }

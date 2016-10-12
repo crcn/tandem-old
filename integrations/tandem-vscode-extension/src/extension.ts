@@ -2,13 +2,13 @@
 // The module "vscode" contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 
-import * as vscode from "vscode";
-import * as createServer from "express";
-import ServerApplication from "@tandem/back-end/application";
-import { WrapBus } from "mesh";
 import { exec } from "child_process";
+import { WrapBus } from "mesh";
+import * as vscode from "vscode";
 import * as getPort from "get-port";
+import * as createServer from "express";
 import { debounce, throttle } from "lodash";
+import ServerApplication from "@tandem/back-end/application";
 
 import {
     DSUpsertAction,
@@ -53,15 +53,15 @@ export async function activate(context: vscode.ExtensionContext) {
     var _inserted = false;
     var _content;
     var _documentUri:vscode.Uri;
+    var _mtime: number = Date.now();
     var _ignoreSelect: boolean;
 
-    async function _setEditorContent({ content, path }) {
+    async function _setEditorContent({ content, path, mtime }) {
 
         const editor = vscode.window.activeTextEditor;
+        if (mtime < _mtime) return;
 
         if (editor.document.fileName !== path || editor.document.getText() === content) return;
-
-        console.log("IGNORE");
 
         let oldText = editor.document.getText();
         var newContent = _content = content;
@@ -102,16 +102,26 @@ export async function activate(context: vscode.ExtensionContext) {
 
         await UpdateTemporaryFileContentAction.execute({
             path: path,
-            content: _content = editorContent
+            content: _content = editorContent,
+            ignoreIfNotCached: true
         }, server.bus);
     }, 25);
 
     let startServerCommand = vscode.commands.registerCommand("extension.tandemOpenCurrentFile", async () => {
 
+        const doc = vscode.window.activeTextEditor.document;
+        const fileName = fixFileName(doc.fileName)
+
         _update(vscode.window.activeTextEditor.document);
 
+        await UpdateTemporaryFileContentAction.execute({
+            path: fileName,
+            content: _content = doc.getText(),
+            ignoreIfNotCached: false
+        }, server.bus);
+
         const hasOpenWindow = (await OpenProjectAction.execute({
-            path: fixFileName(vscode.window.activeTextEditor.document.fileName)
+            path: fileName
         }, server.bus));
 
         if (!hasOpenWindow) {
@@ -123,6 +133,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     async function onChange(e:vscode.TextDocumentChangeEvent) {
         const doc  = e.document;
+        _mtime    = Date.now();
         _update(doc);
     }
 
@@ -136,15 +147,12 @@ export async function activate(context: vscode.ExtensionContext) {
             path: path
         }, server.bus);
 
-        console.log("UPDATE DOC");
-
         // cached content does not match, meaning that it likely changed in the browser
         if (cachedFile.content !== editorContent) {
-            console.log("SET CONTENT", cachedFile.content);
             try {
-                await _setEditorContent({ path: doc.fileName, content: cachedFile.content });
+                await _setEditorContent({ path: doc.fileName, content: cachedFile.content, mtime: cachedFile.mtime });
             } catch(e) {
-                console.log
+                // console.log
             }
         } else {
             _update(doc);
