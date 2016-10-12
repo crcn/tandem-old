@@ -15,7 +15,11 @@ export interface ISelectorVisitor {
   visitListSelector(expression: ListSelectorExpression);
   visitDescendentSelector(expression: DescendentSelectorExpression);
   visitChildSelector(expression: ChildSelectorExpression);
-  visitAdjacentSelector(expression: AdjacentSelectorExpression);
+  visitAttributeSelector(expression: AttributeSelectorExpression);
+  visitAdjacentSiblingSelector(expression: AdjacentSiblingSelectorExpression);
+  visitPseudoSelector(expression: PseudoSelectorExpression);
+  visitElementSelectors(expression: ElementSelectorsExpression);
+  visitPseudoElement(expression: PseudoElementExpression);
   visitProceedingSiblingSelector(expression: ProceedingSiblingSelectorExpression);
 }
 
@@ -91,21 +95,62 @@ export class ChildSelectorExpression extends SelectorExpression {
 }
 
 // div + span { }
-export class AdjacentSelectorExpression extends SelectorExpression {
-  constructor(readonly previousSiblingSelector: SelectorExpression, readonly targetSelector: SelectorExpression, position: IRange) {
+export class AdjacentSiblingSelectorExpression extends SelectorExpression {
+  constructor(readonly startSelector: SelectorExpression, readonly targetSelector: SelectorExpression, position: IRange) {
     super(position);
   }
   accept(visitor: ISelectorVisitor) {
-    return visitor.visitAdjacentSelector(this);
+    return visitor.visitAdjacentSiblingSelector(this);
   }
 }
 
-// div + span { }
+// div ~ span { }
 export class ProceedingSiblingSelectorExpression extends SelectorExpression {
-  constructor(readonly previousSiblingSelector: SelectorExpression, readonly targetSelector: SelectorExpression, position: IRange) {
+  constructor(readonly startSelector: SelectorExpression, readonly targetSelector: SelectorExpression, position: IRange) {
     super(position);
   }
   accept(visitor: ISelectorVisitor) {
     return visitor.visitProceedingSiblingSelector(this);
+  }
+}
+
+// [attribute]
+// [attribute~=value]
+// [attribute^=value]
+// [attribute$=value]
+// [attribute*=value]
+export class AttributeSelectorExpression extends SelectorExpression {
+  constructor(readonly name: string, readonly operator: string, readonly value: string, position: IRange) {
+    super(position);
+  }
+  accept(visitor: ISelectorVisitor) {
+    return visitor.visitAttributeSelector(this);
+  }
+}
+
+export class PseudoSelectorExpression extends SelectorExpression {
+  constructor(readonly name: string, readonly parameterSelector: SelectorExpression, position: IRange) {
+    super(position);
+  }
+  accept(visitor: ISelectorVisitor) {
+    return visitor.visitPseudoSelector(this);
+  }
+}
+
+export class ElementSelectorsExpression extends SelectorExpression {
+  constructor(readonly selectors: SelectorExpression[], position: IRange) {
+    super(position);
+  }
+  accept(visitor: ISelectorVisitor) {
+    return visitor.visitElementSelectors(this);
+  }
+}
+
+export class PseudoElementExpression extends SelectorExpression {
+  constructor(readonly elementSelector: SelectorExpression, readonly name: string, position: IRange) {
+    super(position);
+  }
+  accept(visitor: ISelectorVisitor) {
+    return visitor.visitPseudoElement(this);
   }
 }

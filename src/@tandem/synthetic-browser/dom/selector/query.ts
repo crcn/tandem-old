@@ -4,7 +4,7 @@ import { SyntheticDOMNode, SyntheticDOMElement } from "../markup";
 
 export function querySelector(node: SyntheticDOMNode, selectorSource: string): SyntheticDOMElement {
   const tester = getSelectorTester(selectorSource);
-  return findTreeNode(node, tester.test.bind(tester));
+  return findTreeNode(node, tester.test.bind(tester)) as SyntheticDOMElement;
 }
 
 export function querySelectorAll(node: SyntheticDOMNode, selectorSource: string): SyntheticDOMElement[] {

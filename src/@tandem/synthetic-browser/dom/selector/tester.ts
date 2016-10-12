@@ -1,5 +1,5 @@
 import { parseSelector } from "./parser";
-import { getTreeAncestors } from "@tandem/common";
+import { getTreeAncestors, getPreviousTreeSiblings } from "@tandem/common";
 import { SelectorExpression, AllSelectorExpression } from "./ast";
 import { SyntheticDOMNode, SyntheticDOMElement, MarkupNodeType } from "../markup";
 
@@ -19,34 +19,69 @@ export function getSelectorTester(selectorSource: string): { test(node: Syntheti
   const ast = parseSelector(selectorSource);
 
   function test(ast: SelectorExpression, node: SyntheticDOMElement) {
-    if (node.nodeType !== MarkupNodeType.ELEMENT) return false;
+    if (node && node.nodeType !== MarkupNodeType.ELEMENT) return false;
     return ast.accept({
-      visitClassNameSelector(expression) {
-        return node.hasAttribute("class") && String(node.getAttribute("class")).split(" ").indexOf(expression.className) !== -1;
+      visitClassNameSelector({ className }) {
+        return node.hasAttribute("class") && String(node.getAttribute("class")).split(" ").indexOf(className) !== -1;
       },
-      visitIDSelector(expression) {
-        return node.getAttribute("id") === expression.id;
+      visitIDSelector({ id }) {
+        return node.getAttribute("id") === id;
       },
       visitAllSelector(expression) {
         return true;
       },
-      visitTagNameSelector(expression) {
-        return expression.tagName.toLowerCase() === node.tagName.toLowerCase();
+      visitTagNameSelector({ tagName }) {
+        return tagName.toLowerCase() === node.tagName.toLowerCase();
       },
-      visitListSelector(expression) {
-        return !!expression.selectors.find((selector) => test(selector, node));
+      visitListSelector({ selectors }) {
+        return !!selectors.find((selector) => test(selector, node));
       },
-      visitDescendentSelector(expression) {
-        test(expression.targetSelector, node) && !!getTreeAncestors(node).find((ancestor) => test(expression.ancestorSelector, ancestor));
+      visitDescendentSelector({ targetSelector, ancestorSelector }) {
+        return test(targetSelector, node) && !!getTreeAncestors(node).find((ancestor) => test(ancestorSelector, ancestor));
       },
-      visitChildSelector(expression) {
-        return test(expression.targetSelector, node) && node.parent && test(expression.parentSelector, <SyntheticDOMElement>node.parent);
+      visitChildSelector({ targetSelector, parentSelector }) {
+        return test(targetSelector, node) && node.parent && test(parentSelector, <SyntheticDOMElement>node.parent);
       },
-      visitAdjacentSelector(expression) {
+      visitAdjacentSiblingSelector({ startSelector, targetSelector }) {
+        return test(targetSelector, node) && test(startSelector, <SyntheticDOMElement>node.previousSibling);
+      },
+      visitProceedingSiblingSelector({ startSelector, targetSelector }) {
+        return test(targetSelector, node) && getPreviousTreeSiblings(node).filter((previousSibling) => test(startSelector, previousSibling));
+      },
+      visitAttributeSelector({ name, operator, value }) {
 
-      },
-      visitProceedingSiblingSelector(expression) {
+        if (!node.hasAttribute(name)) return false;
+        const nodeValue = String(node.getAttribute(name));
 
+        switch (operator) {
+          case "=": return value === nodeValue;
+          case "~=": return nodeValue.indexOf(value) !== -1;
+          case "^=": return nodeValue.indexOf(value) === 0;
+          case "|=": return nodeValue.indexOf(value) === 0;
+          case "$=": return nodeValue.indexOf(value) + value.length === nodeValue.length;
+          case "*=": return nodeValue.indexOf(value) !== -1;
+          default: return true;
+        }
+      },
+      visitPseudoSelector({ name, parameterSelector }) {
+
+        switch (name) {
+          case "not": return !test(parameterSelector, node);
+
+          // TODO
+          // case "nth-child": return !test(parameterSelector, node);
+        }
+
+        return false;
+      },
+      visitPseudoElement({ elementSelector, name }) {
+        return false;
+      },
+      visitElementSelectors({ selectors }) {
+        for (const attributeSelector of selectors) {
+          if (!test(attributeSelector, node)) return false;
+        }
+        return true;
       }
     });
   }
