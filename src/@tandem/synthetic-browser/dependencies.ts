@@ -1,7 +1,7 @@
 import { SyntheticDOMNode } from "./dom";
 import { syntheticElementClassType } from "./dom";
 import { Dependency, Dependencies, MimeTypeDependency } from "@tandem/common";
-import { syntheticEntityType, BaseSyntheticDOMNodeEntity, DefaultSyntheticDOMEntity } from "./entities";
+import { entityType, BaseDOMNodeEntity, DefaultSyntheticDOMEntity } from "./entities";
 
 export class SyntheticDOMElementClassDependency extends Dependency<syntheticElementClassType> {
   static readonly SYNTHETIC_ELEMENT_CLASS_NS_PREFIX = "syntheticMarkupElementClass/";
@@ -23,11 +23,11 @@ export class SyntheticDOMElementClassDependency extends Dependency<syntheticElem
   }
 }
 
-export class SyntheticDOMNodeEntityClassDependency extends Dependency<syntheticEntityType> {
+export class SyntheticDOMNodeEntityClassDependency extends Dependency<entityType> {
   static readonly SYNTHETIC_NODE_COMPONENT_NS_PREFIX = "syntheticNodeComponentClass";
 
-  constructor(readonly xmlns: string, readonly tagName: string, value: syntheticEntityType) {
-    super(SyntheticDOMNodeEntityClassDependency.getNamespace(xmlns, tagName), value);
+  constructor(readonly xmlns: string, readonly tagName: string, value: entityType) {
+    super(SyntheticDOMNodeEntityClassDependency.getNamespace(xmlns, tagName), value, true);
   }
 
   clone() {
@@ -42,7 +42,7 @@ export class SyntheticDOMNodeEntityClassDependency extends Dependency<syntheticE
     return [this.SYNTHETIC_NODE_COMPONENT_NS_PREFIX, encodeURIComponent(xmlns), tagName].join("/");
   }
 
-  static reuse(source: SyntheticDOMNode, entity: BaseSyntheticDOMNodeEntity<any, any>, dependencies: Dependencies) {
+  static reuse(source: SyntheticDOMNode, entity: BaseDOMNodeEntity<any, any>, dependencies: Dependencies) {
     if (entity && entity.source.compare(source)) {
       entity.source = source;
       return entity;

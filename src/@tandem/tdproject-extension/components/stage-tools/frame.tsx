@@ -5,9 +5,9 @@ import { BoundingRect } from "@tandem/common";
 import * as AutosizeInput from "react-input-autosize";
 import { FrontEndApplication, Editor } from "@tandem/editor";
 import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
-import { SyntheticTDFrameEntity } from "@tandem/tdproject-extension/synthetic";
+import { TDFrameEntity } from "@tandem/tdproject-extension/synthetic";
 
-export class TDFrameComponent extends React.Component<{ frame: SyntheticTDFrameEntity, editor: Editor }, { editedTitle: string }> {
+export class TDFrameComponent extends React.Component<{ frame: TDFrameEntity, editor: Editor }, { editedTitle: string }> {
 
   constructor() {
     super();
@@ -93,7 +93,7 @@ export class TDFrameStageToolComponent extends React.Component<{ app: FrontEndAp
     const { editor } = this.props.app;
     const { documentEntity, transform } = editor;
 
-    const frames = documentEntity.querySelectorAll("frame") as SyntheticTDFrameEntity[];
+    const frames = documentEntity.querySelectorAll("frame") as TDFrameEntity[];
 
     if (!frames.length) return null;
 

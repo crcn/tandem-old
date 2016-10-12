@@ -1,8 +1,8 @@
 import { omit } from "lodash";
 import * as React from "react";
-import { BaseSyntheticDOMNodeEntity, SyntheticDOMElement } from "@tandem/synthetic-browser";
+import { BaseDOMNodeEntity, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
-export class SyntheticHTMLImageEntity extends BaseSyntheticDOMNodeEntity<SyntheticDOMElement, HTMLImageElement> {
+export class HTMLImageEntity extends BaseDOMNodeEntity<SyntheticDOMElement, HTMLImageElement> {
 
   private _src: string;
 

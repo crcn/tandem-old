@@ -6,7 +6,7 @@ import {
   evaluateMarkup,
   SyntheticDOMElement,
   SyntheticDOMAttribute,
-  ISyntheticDOMCapabilities,
+  IDOMNodeEntityCapabilities,
 } from "../markup";
 
 import { getComputedStyle } from "./get-computed-style";

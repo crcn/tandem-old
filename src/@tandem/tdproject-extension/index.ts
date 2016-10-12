@@ -4,8 +4,8 @@ import { MimeTypeDependency, HTML_MIME_TYPE } from "@tandem/common";
 import { TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS } from "./constants";
 
 import {
-  SyntheticTDFrameEntity,
-  SyntheticTDProject,
+  TDFrameEntity,
+  TDProjectEntity,
 } from "./synthetic";
 
 import { SandboxModuleFactoryDependency } from "@tandem/sandbox";
@@ -20,7 +20,12 @@ import {
   SyntheticDOMNodeEntityClassDependency,
 } from "@tandem/synthetic-browser";
 
-import { SyntheticVisibleHTMLEntity, SyntheticHTMLStyleEntity, SyntheticHTMLLinkEntity } from "@tandem/html-extension";
+import {
+  HTMLLinkEntity,
+  HTMLStyleEntity,
+  HTMLScriptEntity,
+  VisibleHTMLEntity,
+} from "@tandem/html-extension";
 
 export const tdprojectExtensionDependencies = [
 
@@ -31,11 +36,12 @@ export const tdprojectExtensionDependencies = [
   new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "default", SyntheticHTMLElement),
 
   // components
-  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "frame", SyntheticTDFrameEntity),
-  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "default", SyntheticVisibleHTMLEntity),
-  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "tdproject", SyntheticTDProject),
-  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "style", SyntheticHTMLStyleEntity),
-  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "link", SyntheticHTMLLinkEntity),
+  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "frame", TDFrameEntity),
+  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "default", VisibleHTMLEntity),
+  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "tdproject", TDProjectEntity),
+  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "style", HTMLStyleEntity),
+  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "link", HTMLLinkEntity),
+  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "script", HTMLScriptEntity),
 
   // sandbox
   new SandboxModuleFactoryDependency(HTML_MIME_TYPE, TDPROJECT_MIME_TYPE, MarkupModule),

@@ -48,7 +48,6 @@ AllSelector = "*" {
 }
 
 DescendentSelector = parent:ElementSelector " "+ descendent:CombinatorSelector {
-  console.log("DESC");
   return new DescendentSelectorExpression(parent, descendent);
 }
 

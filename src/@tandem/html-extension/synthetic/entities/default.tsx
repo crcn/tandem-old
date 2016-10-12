@@ -2,14 +2,14 @@ import {
   IMarkupEdit,
   getComputedStyle,
   SyntheticHTMLElement,
-  SyntheticDOMCapabilities,
+  DOMNodeEntityCapabilities,
   SyntheticCSSStyleDeclaration,
-  BaseVisibleSyntheticDOMNodeEntity,
+  BaseVisibleDOMNodeEntity,
 } from "@tandem/synthetic-browser";
 
 import { BoundingRect, IPoint, diffArray } from "@tandem/common";
 
-export class SyntheticVisibleHTMLEntity extends BaseVisibleSyntheticDOMNodeEntity<SyntheticHTMLElement, any> {
+export class VisibleHTMLEntity extends BaseVisibleDOMNodeEntity<SyntheticHTMLElement, any> {
 
   get position(): IPoint {
     const bounds = this.absoluteBounds;
@@ -21,7 +21,6 @@ export class SyntheticVisibleHTMLEntity extends BaseVisibleSyntheticDOMNodeEntit
       left: Math.round(value.left),
       top: Math.round(value.top)
     });
-
   }
 
   get absoluteBounds() {
@@ -49,7 +48,7 @@ export class SyntheticVisibleHTMLEntity extends BaseVisibleSyntheticDOMNodeEntit
 
   get capabilities() {
     const style: SyntheticCSSStyleDeclaration = getComputedStyle(this.source);
-    return new SyntheticDOMCapabilities(
+    return new DOMNodeEntityCapabilities(
       style.position !== "static",
       /fixed|absolute/.test(style.position) || !/^inline$/.test(style.display)
     );

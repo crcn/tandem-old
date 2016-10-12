@@ -13,12 +13,12 @@ import {
 } from "../dom";
 
 import {
-  BaseSyntheticDOMNodeEntity
+  BaseDOMNodeEntity
 } from "../entities";
 
 export interface ISyntheticDocumentRenderer extends IObservable {
   readonly element: HTMLElement;
-  entity: BaseSyntheticDOMNodeEntity<any, any>;
+  entity: BaseDOMNodeEntity<any, any>;
   getBoundingRect(uid: string): BoundingRect;
   requestUpdate(): void;
 }
@@ -26,7 +26,7 @@ export interface ISyntheticDocumentRenderer extends IObservable {
 export abstract class BaseRenderer extends Observable implements ISyntheticDocumentRenderer {
 
   readonly element: HTMLElement;
-  private _entity: BaseSyntheticDOMNodeEntity<any, any>;
+  private _entity: BaseDOMNodeEntity<any, any>;
   private _updating: boolean;
   private _rects: any;
   private _shouldUpdateAgain: boolean;
@@ -38,11 +38,11 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     this._targetObserver = new WrapBus(this.onEntityAction.bind(this));
   }
 
-  get entity(): BaseSyntheticDOMNodeEntity<any, any> {
+  get entity(): BaseDOMNodeEntity<any, any> {
     return this._entity;
   }
 
-  set entity(value: BaseSyntheticDOMNodeEntity<any, any>) {
+  set entity(value: BaseDOMNodeEntity<any, any>) {
     if (this._entity === value) {
       this.update();
       return;

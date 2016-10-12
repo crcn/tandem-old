@@ -26,14 +26,14 @@ import {
 
 import {
   SyntheticDOMNode,
-  BaseSyntheticDOMNodeEntity
+  BaseDOMNodeEntity
 } from "@tandem/synthetic-browser";
 
 interface ILayerLabelProps {
   paddingLeft?: number;
   dependencies: Dependencies;
   app: FrontEndApplication;
-  entity: BaseSyntheticDOMNodeEntity<any, any>;
+  entity: BaseDOMNodeEntity<any, any>;
   connectDragSource: Function;
   isDragging: boolean;
   connectDropTarget: Function;
@@ -326,7 +326,7 @@ LayerDndLabelComponent = DropTarget("element", {
   };
 })(LayerDndLabelComponent);
 
-export default class LayerComponent extends React.Component<{ app: FrontEndApplication, entity: BaseSyntheticDOMNodeEntity<any, any>, depth: number }, any> {
+export default class LayerComponent extends React.Component<{ app: FrontEndApplication, entity: BaseDOMNodeEntity<any, any>, depth: number }, any> {
 
   private _entityObserver: IActor;
 

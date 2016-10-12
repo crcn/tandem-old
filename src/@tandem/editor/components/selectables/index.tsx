@@ -14,14 +14,14 @@ import { FrontEndApplication } from "@tandem/editor/application";
 import { intersection, flatten } from "lodash";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { IInjectable, APPLICATION_SINGLETON_NS, IActor, Action } from "@tandem/common";
-import { SyntheticDOMElement, BaseVisibleSyntheticDOMNodeEntity } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement, BaseVisibleDOMNodeEntity } from "@tandem/synthetic-browser";
 
 class SelectableComponent extends React.Component<{
-  entity: BaseVisibleSyntheticDOMNodeEntity<any, any>,
+  entity: BaseVisibleDOMNodeEntity<any, any>,
   selection: any,
   app: FrontEndApplication,
   zoom: number,
-  onSyntheticMouseDown: (entity: BaseVisibleSyntheticDOMNodeEntity<any, any>, event?: MouseEvent) => void
+  onSyntheticMouseDown: (entity: BaseVisibleDOMNodeEntity<any, any>, event?: MouseEvent) => void
 }, any> {
 
   private _i: number = 0;
@@ -93,7 +93,7 @@ class SelectableComponent extends React.Component<{
 export class SelectablesComponent extends React.Component<{
   app: FrontEndApplication,
   editor: Editor,
-  onSyntheticMouseDown: (entity: BaseVisibleSyntheticDOMNodeEntity<any, any>, event?: MouseEvent) => void,
+  onSyntheticMouseDown: (entity: BaseVisibleDOMNodeEntity<any, any>, event?: MouseEvent) => void,
   canvasRootSelectable?: boolean
 }, { showSelectables: boolean }> {
 
@@ -139,7 +139,7 @@ export class SelectablesComponent extends React.Component<{
     // TODO - check if user is scrolling
     if (selection && editor.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
-    const allEntities = documentEntity.querySelectorAll("*").filter((entity) => entity.editable && entity["absoluteBounds"]) as any as BaseVisibleSyntheticDOMNodeEntity<any, any>[];
+    const allEntities = documentEntity.querySelectorAll("*").filter((entity) => entity.editable && entity["absoluteBounds"]) as any as BaseVisibleDOMNodeEntity<any, any>[];
 
 
     const selectables = allEntities.map((entity, i) => (

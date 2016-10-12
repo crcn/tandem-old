@@ -4,7 +4,7 @@ export class SyntheticRendererAction extends Action {
   static readonly UPDATE_RECTANGLES = "updateRectangles";
 }
 
-export class SyntheticDOMEntityAction extends Action {
+export class DOMEntityAction extends Action {
   static readonly DOM_ENTITY_DIRTY = "domEntityDirty";
   static readonly DOM_ENTITY_EVALUATED = "domEntityEvaluated";
 }

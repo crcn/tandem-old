@@ -25,7 +25,7 @@ export class SyntheticWindow extends Observable {
   }
 
   get parent(): SyntheticWindow {
-    return this.browser.parent && this.browser.parent.window && this.browser.parent.window.parent;
+    return this.browser.parent && this.browser.parent.window && this.browser.parent.window;
   }
 
   get sandbox() {

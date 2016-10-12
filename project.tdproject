@@ -4,6 +4,12 @@
     font-family: Helvetica;
   }
 </style>
+<script>
+  var fixtures = {
+    message: "hello"
+  }
+</script>
 <tdproject>
-  <frame src="./examples/mustache/hello.mu" style="top:1024px;"></frame>
+  <frame src="./examples/mustache/hello.mu" title="Test template" inherit-css="" inherit-globals="fixtures" style="left:0px;top:0px;"></frame>
+  <frame src="/Users/crcn/Developer/public/tandem/README.md" style="left:-1220px;" title="Main README" inherit-css=""></frame>
 </tdproject>

@@ -37,7 +37,6 @@ export function getSelectorTester(selectorSource: string): { test(node: Syntheti
         return !!expression.selectors.find((selector) => test(selector, node));
       },
       visitDescendentSelector(expression) {
-        console.log("DESC");
         test(expression.targetSelector, node) && !!getTreeAncestors(node).find((ancestor) => test(expression.ancestorSelector, ancestor));
       },
       visitChildSelector(expression) {

@@ -2,6 +2,7 @@ import { SyntheticLocation } from "./location";
 import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode } from "./dom";
 import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, TetherRenderer } from "./renderers";
 import {
+  Action,
   bindable,
   BubbleBus,
   Observable,
@@ -14,7 +15,7 @@ import {
 } from "@tandem/common";
 
 import {
-  BaseSyntheticDOMNodeEntity,
+  BaseDOMNodeEntity,
   DefaultSyntheticDOMEntity,
 } from "./entities";
 
@@ -23,7 +24,10 @@ import {
   SandboxAction,
 } from "@tandem/sandbox";
 
-import { SyntheticDOMNodeEntityClassDependency, SyntheticDOMElementClassDependency } from "./dependencies";
+import {
+  SyntheticDOMElementClassDependency,
+  SyntheticDOMNodeEntityClassDependency,
+} from "./dependencies";
 
 import { WrapBus } from "mesh";
 
@@ -33,14 +37,14 @@ export class SyntheticBrowser extends Observable {
   private _sandbox: Sandbox;
   private _location: SyntheticLocation;
   private _renderer: ISyntheticDocumentRenderer;
-  private _documentEntity: BaseSyntheticDOMNodeEntity<any, any>;
+  private _documentEntity: BaseDOMNodeEntity<any, any>;
 
   constructor(private _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, readonly parent?: SyntheticBrowser) {
     super();
     this._renderer = renderer || new SyntheticDOMRenderer();
     this._renderer.observe(new BubbleBus(this));
     this._sandbox  = new Sandbox(_dependencies, this.createSandboxGlobals.bind(this));
-    this._sandbox.observe(new TypeWrapBus(SandboxAction.OPENED_MAIN_ENTRY, this.onSandboxLoaded.bind(this)));
+    this._sandbox.observe(new WrapBus(this.onSandboxAction.bind(this)));
   }
 
   get sandbox(): Sandbox {
@@ -78,7 +82,8 @@ export class SyntheticBrowser extends Observable {
   }
 
   protected createSandboxGlobals(): SyntheticWindow {
-    const window = new SyntheticWindow(this, this._renderer, this._location);
+    const oldWindow = this._window;
+    const window = this._window = new SyntheticWindow(this, this._renderer, this._location);
     this._registerElementClasses(window.document);
 
     // TODO - this shouldn't be here
@@ -88,6 +93,8 @@ export class SyntheticBrowser extends Observable {
       }
     };
 
+    this.notify(new PropertyChangeAction("window", window, oldWindow));
+
     return window;
   }
 
@@ -95,6 +102,13 @@ export class SyntheticBrowser extends Observable {
     for (const dependency of SyntheticDOMElementClassDependency.findAll(this._dependencies)) {
       document.registerElementNS(dependency.xmlns, dependency.tagName, dependency.value);
     }
+  }
+
+  protected onSandboxAction(action: Action) {
+    if (action.type === SandboxAction.OPENED_MAIN_ENTRY) {
+      this.onSandboxLoaded(action);
+    }
+    this.notify(action);
   }
 
   protected async onSandboxLoaded(action: SandboxAction) {
@@ -109,7 +123,6 @@ export class SyntheticBrowser extends Observable {
 
     const documentEntity = this._documentEntity;
 
-    this._window = window;
     this._documentEntity = this._renderer.entity = SyntheticDOMNodeEntityClassDependency.reuse(window.document, this._documentEntity, this._dependencies);
     await this._documentEntity.evaluate();
 
@@ -117,6 +130,5 @@ export class SyntheticBrowser extends Observable {
       this.notify(new PropertyChangeAction("documentEntity", this._documentEntity, documentEntity));
     }
 
-    this.notify(action);
   }
 }

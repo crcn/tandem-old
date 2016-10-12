@@ -8,7 +8,7 @@ import { FrontEndApplication } from "@tandem/editor/application";
 import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
 import { BoundingRect, IPoint, Point } from "@tandem/common/geom";
-import { SyntheticDOMElement, BaseVisibleSyntheticDOMNodeEntity } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement, BaseVisibleDOMNodeEntity } from "@tandem/synthetic-browser";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
 
 const POINT_STROKE_WIDTH = 1;
@@ -97,7 +97,7 @@ class ResizerComponent extends React.Component<{
   private _movingTimer: any;
   private _dragTimer: any;
   private _currentGuider: Guider;
-  private _visibleEntities: VisibleDOMEntityCollection<BaseVisibleSyntheticDOMNodeEntity<SyntheticDOMElement, any>>;
+  private _visibleEntities: VisibleDOMEntityCollection<BaseVisibleDOMNodeEntity<SyntheticDOMElement, any>>;
 
   constructor() {
     super();

@@ -3,6 +3,7 @@ import { ISynthetic } from "./synthetic";
 
 export class SandboxAction extends Action {
   static readonly OPENED_MAIN_ENTRY = "openedMainEntry";
+  static readonly OPENING_MAIN_ENTRY = "openingMainEntry";
 }
 
 export class ModuleImporterAction extends Action {

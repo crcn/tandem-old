@@ -4,7 +4,7 @@ import { watchProperty } from "@tandem/common/observable";
 import { parseCSS } from "@tandem/html-extension/lang";
 import { BoundingRect, IPoint } from "@tandem/common/geom";
 import { VisibleMarkupElementEntity } from "../index";
-import { SyntheticDOMCapabilities } from "@tandem/synthetic-browser";
+import { DOMNodeEntityCapabilities } from "@tandem/synthetic-browser";
 import * as memoize from "memoizee";
 
 function calculateCSSMeasurments(style): any {
@@ -114,7 +114,7 @@ export class HTMLNodeDisplay  {
     const style = window.getComputedStyle(this.node);
 
     // TODO - need to wire this up
-    return new SyntheticDOMCapabilities(
+    return new DOMNodeEntityCapabilities(
       style.position !== "static",
       /fixed|absolute/.test(style.position) || !/^inline$/.test(style.display)
     );

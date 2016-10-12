@@ -1,14 +1,19 @@
 import { IObservable } from "./base";
-import { PropertyChangeAction } from "@tandem/common/actions";
+import { PropertyChangeAction, Action } from "@tandem/common/actions";
 import { TypeWrapBus, LimitBus } from "@tandem/common/busses";
 
 export function watchProperty(target: any, property: string, callback: (newValue: any, oldValue: any) => void) {
 
-  const observer = new LimitBus(1, new TypeWrapBus(PropertyChangeAction.PROPERTY_CHANGE, (action: PropertyChangeAction) => {
-    if (action.property === property && action.target === target) {
-      callback(action.newValue, action.oldValue);
+  const observer = {
+    execute(action: Action) {
+      if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
+        const propertyAction = <PropertyChangeAction>action;
+        if (propertyAction.property === property && propertyAction.target === target) {
+          callback(propertyAction.newValue, propertyAction.oldValue);
+        }
+      }
     }
-  }));
+  };
 
   if (target.observe) {
     (<IObservable>target).observe(observer);

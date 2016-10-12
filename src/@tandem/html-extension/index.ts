@@ -14,11 +14,12 @@ import { HTMLCSSModule } from "./sandbox";
 import { HTML_XMLNS, SyntheticDOMNodeEntityClassDependency } from "@tandem/synthetic-browser";
 
 import { 
-  SyntheticHTMLLinkEntity,
-  SyntheticHTMLStyleEntity,
-  SyntheticHTMLImageEntity,
-  SyntheticVisibleHTMLEntity,
-  SyntheticHTMLDocumentEntity,
+  HTMLLinkEntity,
+  HTMLStyleEntity,
+  HTMLImageEntity,
+  HTMLScriptEntity,
+  VisibleHTMLEntity,
+  HTMLDocumentEntity,
 } from "./synthetic";
 
 import { MarkupModule, HTML_TAG_NAMES } from "@tandem/synthetic-browser";
@@ -63,7 +64,7 @@ import { MimeTypeDependency } from "@tandem/common/dependencies";
    cssCommentEntityFactoryDependency,
 } from "./lang";
 
-const visibleEntityDependencies = HTML_TAG_NAMES.map((tagName) => new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, tagName, SyntheticVisibleHTMLEntity));
+const visibleEntityDependencies = HTML_TAG_NAMES.map((tagName) => new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, tagName, VisibleHTMLEntity));
 
 export const htmlExtensionDependencies = [
 
@@ -74,13 +75,14 @@ export const htmlExtensionDependencies = [
   cssColorTokenComponentFactoryDependency,
 
   // sandbox
+  ...visibleEntityDependencies,
   new SandboxModuleFactoryDependency(CSS_MIME_TYPE, CSS_MIME_TYPE, HTMLCSSModule),
   new SandboxModuleFactoryDependency(HTML_MIME_TYPE, HTML_MIME_TYPE, MarkupModule),
-  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "img", SyntheticHTMLImageEntity),
-  new SyntheticDOMNodeEntityClassDependency(undefined, "#document", SyntheticHTMLDocumentEntity),
-  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "link", SyntheticHTMLLinkEntity),
-  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "style", SyntheticHTMLStyleEntity),
-  ...visibleEntityDependencies,
+  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "img", HTMLImageEntity),
+  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "script", HTMLScriptEntity),
+  new SyntheticDOMNodeEntityClassDependency(undefined, "#document", HTMLDocumentEntity),
+  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "link", HTMLLinkEntity),
+  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "style", HTMLStyleEntity),
 
   // stage tool components
   cssHighlightElementToolComponentFactoryDependency,

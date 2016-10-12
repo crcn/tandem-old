@@ -4,13 +4,13 @@ import { Editor } from "@tandem/editor/models";
 import { SelectAction } from "@tandem/editor/actions";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { SelectablesComponent } from "../selectables";
-import { BaseVisibleSyntheticDOMNodeEntity } from "@tandem/synthetic-browser";
+import { BaseVisibleDOMNodeEntity } from "@tandem/synthetic-browser";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 
 // @injectable
 export default class SelectableToolComponent extends React.Component<{selection: any,  bus: any, app: any, zoom: number, editor: Editor }, {}>  {
 
-  onSyntheticMouseDown = (entity: BaseVisibleSyntheticDOMNodeEntity<any, any>, event: MouseEvent) => {
+  onSyntheticMouseDown = (entity: BaseVisibleDOMNodeEntity<any, any>, event: MouseEvent) => {
     this.props.app.bus.execute(new SelectAction(entity, event.shiftKey));
   }
 

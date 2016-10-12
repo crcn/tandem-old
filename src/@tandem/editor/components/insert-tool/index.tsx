@@ -10,7 +10,7 @@ import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { SetToolAction, SelectAction } from "@tandem/editor/actions";
 import { Workspace, Editor, InsertTool } from "@tandem/editor/models";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
-import { BaseVisibleSyntheticDOMNodeEntity } from "@tandem/synthetic-browser";
+import { BaseVisibleDOMNodeEntity } from "@tandem/synthetic-browser";
 import {
   IActor,
   Action,
@@ -76,7 +76,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     // }
   }
 
-  onSyntheticMouseDown = (entity: BaseVisibleSyntheticDOMNodeEntity<any, any>, event: MouseEvent) => {
+  onSyntheticMouseDown = (entity: BaseVisibleDOMNodeEntity<any, any>, event: MouseEvent) => {
     this._targetEntity = entity;
     this._insertNewItem(event);
   }

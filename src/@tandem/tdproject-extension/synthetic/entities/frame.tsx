@@ -1,19 +1,19 @@
 
 import {
+  parseCSS,
+  evaluateCSS,
   IMarkupEdit,
   SyntheticBrowser,
   SyntheticDocument,
+  BaseDOMNodeEntity,
   SyntheticDOMElement,
-  SyntheticHTMLElement,
   SyntheticDOMRenderer,
+  SyntheticHTMLElement,
   BaseDecoratorRenderer,
-  SyntheticDOMCapabilities,
-  BaseSyntheticDOMNodeEntity,
   SyntheticCSSStyleSheet,
-  parseCSS,
-  evaluateCSS,
+  BaseVisibleDOMNodeEntity,
+  DOMNodeEntityCapabilities,
   ISyntheticDocumentRenderer,
-  BaseVisibleSyntheticDOMNodeEntity,
 } from "@tandem/synthetic-browser";
 
 import { SandboxAction } from "@tandem/sandbox";
@@ -21,7 +21,7 @@ import { SandboxAction } from "@tandem/sandbox";
 import { omit } from "lodash";
 import * as React from "react";
 import { WrapBus } from "mesh";
-import { SyntheticVisibleHTMLEntity } from "@tandem/html-extension";
+import { VisibleHTMLEntity } from "@tandem/html-extension";
 import { watchProperty, IActor, Action } from "@tandem/common";
 
 // default CSS styles to inject into the synthetic document
@@ -51,7 +51,7 @@ const DEFAULT_FRAME_STYLE_SHEET = evaluateCSS(parseCSS(`
 // - [ ] location attribute
 // - [ ] preset attribute
 // - [ ] fixtures
-export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
+export class TDFrameEntity extends VisibleHTMLEntity {
 
   private _frameBrowser: SyntheticBrowser;
   private _frameBrowserObserver: IActor;
@@ -68,8 +68,9 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
 
     if (!this._frameBrowser) {
       const documentRenderer = new SyntheticDOMRenderer();
-      this._frameBrowser = new SyntheticBrowser(ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer));
+      this._frameBrowser = new SyntheticBrowser(ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer), this.browser);
       this._frameBrowser.observe(this._frameBrowserObserver = new WrapBus(this.onFrameBrowserAction.bind(this)));
+      watchProperty(this._frameBrowser, "window", this.onBrowserWindowChange.bind(this));
       watchProperty(this._frameBrowser, "documentEntity", this.onBrowserDocumentEntityChange.bind(this));
     }
 
@@ -92,7 +93,7 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
   }
 
   get capabilities() {
-    return new SyntheticDOMCapabilities(true, true);
+    return new DOMNodeEntityCapabilities(true, true);
   }
 
   get contentDocument() {
@@ -100,7 +101,11 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
   }
 
   get inheritCSS() {
-    return this.source.hasAttribute("inherit-css");
+    return this.change.hasAttribute("inherit-css");
+  }
+
+  get inheritGlobals() {
+    return this.change.getAttribute("inherit-globals");
   }
 
   protected onBrowserDocumentEntityChange() {
@@ -120,6 +125,23 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
     return super.renderEntityAttributes();
   }
 
+  protected onBrowserWindowChange() {
+
+    let inheritGlobalKey = this.inheritGlobals;
+    if (inheritGlobalKey === "" || inheritGlobalKey === true) {
+      inheritGlobalKey = "window";
+    }
+
+    if (inheritGlobalKey) {
+      const global = this.browser.window[inheritGlobalKey];
+
+      for (const key in global) {
+        if (this._frameBrowser.window[key] != null) continue;
+        this._frameBrowser.window[key] = global[key];
+      }
+    }
+  }
+
   protected onFrameBrowserRevaluated() {
     if (this.inheritCSS) {
       this._frameBrowser.document.styleSheets.push(...this.browser.document.styleSheets);
@@ -134,13 +156,14 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
       // re-render the renderer so that it can make proper bounding rect calculations
       // on the native DOM.
       this._frameBrowser.renderer.requestUpdate();
-    }
+    };
+
     iframe.onload = onload;
     if (iframe.contentDocument) onload();
   }
 
   render() {
-    return <div className="frame-entity" {...omit(this.renderAttributes(), ["inheritCss"])}>
+    return <div className="frame-entity" {...omit(this.renderAttributes(), ["inheritCss", "inheritGlobals"])}>
       <iframe />
       <div className="frame-entity-overlay" />
     </div>;
@@ -148,7 +171,7 @@ export class SyntheticTDFrameEntity extends SyntheticVisibleHTMLEntity {
 }
 
 export class SyntheticFrameRenderer extends BaseDecoratorRenderer {
-  constructor(private _frame: SyntheticTDFrameEntity, _renderer: ISyntheticDocumentRenderer) {
+  constructor(private _frame: TDFrameEntity, _renderer: ISyntheticDocumentRenderer) {
     super(_renderer);
   }
   getBoundingRect(uid: string) {

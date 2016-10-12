@@ -1,21 +1,21 @@
 import { BoundingRect, IPoint } from "@tandem/common";
-import { BaseSyntheticDOMContainerEntity, DefaultSyntheticDOMEntity } from "./base";
+import { BaseDOMContainerEntity, DefaultSyntheticDOMEntity } from "./base";
 import { SyntheticDOMElement, SyntheticDOMNode, SyntheticHTMLElement } from "../dom";
 
 // TODO - possibly move this over to @tandem/common/display or similar
-export class SyntheticDOMCapabilities {
+export class DOMNodeEntityCapabilities {
   constructor(
     readonly movable: boolean,
     readonly resizable: boolean
   ) {}
 
-  merge(...capabilities: SyntheticDOMCapabilities[]) {
-    return SyntheticDOMCapabilities.merge(this, ...capabilities);
+  merge(...capabilities: DOMNodeEntityCapabilities[]) {
+    return DOMNodeEntityCapabilities.merge(this, ...capabilities);
   }
 
-  static merge(...capabilities: SyntheticDOMCapabilities[]) {
+  static merge(...capabilities: DOMNodeEntityCapabilities[]) {
     return capabilities.reduce((a, b) => (
-      new SyntheticDOMCapabilities(
+      new DOMNodeEntityCapabilities(
         a ? a.movable   && b.movable   : b.movable,
         b ? a.resizable && b.resizable : b.resizable
       )
@@ -23,10 +23,10 @@ export class SyntheticDOMCapabilities {
   }
 }
 
-export abstract class BaseVisibleSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U extends HTMLElement> extends BaseSyntheticDOMContainerEntity<T, U> {
+export abstract class BaseVisibleDOMNodeEntity<T extends SyntheticDOMNode, U extends HTMLElement> extends BaseDOMContainerEntity<T, U> {
 
   abstract position: IPoint;
-  abstract capabilities: SyntheticDOMCapabilities;
+  abstract capabilities: DOMNodeEntityCapabilities;
   abstract absoluteBounds: BoundingRect;
   abstract save(): Promise<any>;
 

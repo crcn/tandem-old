@@ -14,7 +14,7 @@ import {
   PropertyChangeAction,
 } from "@tandem/common";
 
-import { SyntheticDOMEntityAction } from "../actions";
+import { DOMEntityAction } from "../actions";
 
 import {
   MarkupNodeType,
@@ -41,7 +41,7 @@ let _i: number = 0;
  * A representation of a synthetic DOM
  */
 
-export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U extends HTMLElement>  extends TreeNode<BaseSyntheticDOMNodeEntity<any, any>> {
+export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HTMLElement>  extends TreeNode<BaseDOMNodeEntity<any, any>> {
 
   private _uid: string;
   private _source: T;
@@ -109,7 +109,7 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
     }
 
     this.didEvaluate();
-    this.notify(new SyntheticDOMEntityAction(SyntheticDOMEntityAction.DOM_ENTITY_EVALUATED, false));
+    this.notify(new DOMEntityAction(DOMEntityAction.DOM_ENTITY_EVALUATED, false));
   }
 
   querySelector(selector: string) {
@@ -237,7 +237,7 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
   protected targetDidUnmount() { }
 
   protected onChangeAction(action: Action) {
-    this.notify(new SyntheticDOMEntityAction(SyntheticDOMEntityAction.DOM_ENTITY_DIRTY, true));
+    this.notify(new DOMEntityAction(DOMEntityAction.DOM_ENTITY_DIRTY, true));
   }
 
   protected onBrowserAction(action: Action) {
@@ -250,7 +250,7 @@ export abstract class BaseSyntheticDOMNodeEntity<T extends SyntheticDOMNode, U e
   protected targetDidMount() { }
 }
 
-export class BaseSyntheticDOMContainerEntity<T extends SyntheticDOMNode, U extends HTMLElement> extends BaseSyntheticDOMNodeEntity<T, U> {
+export class BaseDOMContainerEntity<T extends SyntheticDOMNode, U extends HTMLElement> extends BaseDOMNodeEntity<T, U> {
   async evaluate() {
     await this.evaluateChildren();
     await super.evaluate();
@@ -263,7 +263,7 @@ export class BaseSyntheticDOMContainerEntity<T extends SyntheticDOMNode, U exten
 
     for (let i = 0; i < sourceChildCount; i++) {
 
-      let child: BaseSyntheticDOMNodeEntity<any, any> = this.children[i];
+      let child: BaseDOMNodeEntity<any, any> = this.children[i];
 
       const sourceChild = this.source.children[i];
 
@@ -288,4 +288,4 @@ export class BaseSyntheticDOMContainerEntity<T extends SyntheticDOMNode, U exten
   }
 }
 
-export class DefaultSyntheticDOMEntity extends BaseSyntheticDOMContainerEntity<SyntheticDOMNode, HTMLElement> { }
+export class DefaultSyntheticDOMEntity extends BaseDOMContainerEntity<SyntheticDOMNode, HTMLElement> { }

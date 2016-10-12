@@ -75,7 +75,7 @@ export class SyntheticDOMAttributes extends ObservableCollection<SyntheticDOMAtt
 
 let _i = 0;
 
-export interface ISyntheticDOMCapabilities {
+export interface IDOMNodeEntityCapabilities {
   movable: boolean;
   resizable: boolean;
 }

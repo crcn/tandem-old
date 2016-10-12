@@ -55,7 +55,16 @@ export class Sandbox extends Observable {
   }
 
   async open(envMimeType: string, filePath: string, relativePath?: string) {
+
+    this._importer.reset();
+
+    if (this._global) {
+      // TODO - check if disposable
+      this._global = undefined;
+    }
+
     this._entry = { envMimeType: envMimeType, filePath: filePath };
+    this.notify(new SandboxAction(SandboxAction.OPENING_MAIN_ENTRY));
     this._mainExports = await this._importer.import(envMimeType, filePath, relativePath);
     this.notify(new SandboxAction(SandboxAction.OPENED_MAIN_ENTRY));
   }
@@ -77,9 +86,6 @@ export class Sandbox extends Observable {
       return;
     }
     this._reloading = true;
-
-    this._importer.reset();
-    this._global = undefined;
 
     // parsing errors may occur -- catch them to ensure
     // that they don't prohibit reload() from running next time

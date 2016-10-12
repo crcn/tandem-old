@@ -4,10 +4,10 @@ import {
   parseCSS,
   evaluateCSS,
   SyntheticDOMElement,
-  BaseSyntheticDOMNodeEntity,
+  BaseDOMNodeEntity,
 } from "@tandem/synthetic-browser";
 
-export class SyntheticHTMLStyleEntity extends BaseSyntheticDOMNodeEntity<SyntheticDOMElement, HTMLImageElement> {
+export class HTMLStyleEntity extends BaseDOMNodeEntity<SyntheticDOMElement, HTMLImageElement> {
 
   async evaluate() {
     this.source.ownerDocument.styleSheets.push(evaluateCSS(parseCSS(this.source.textContent)));

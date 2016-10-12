@@ -1,4 +1,4 @@
-import { BaseSyntheticDOMNodeEntity } from "./base";
+import { BaseDOMNodeEntity } from "./base";
 import { SyntheticDOMNode } from "../dom";
 
-export type syntheticEntityType = { new(source: SyntheticDOMNode): BaseSyntheticDOMNodeEntity<any, any> };
+export type entityType = { new(source: SyntheticDOMNode): BaseDOMNodeEntity<any, any> };

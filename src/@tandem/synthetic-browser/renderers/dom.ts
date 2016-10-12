@@ -19,7 +19,7 @@ import {
 import * as ReactDOM from "react-dom";
 
 import { BaseRenderer } from "./base";
-import { BaseSyntheticDOMNodeEntity } from "../entities";
+import { BaseDOMNodeEntity } from "../entities";
 
 export class SyntheticDOMRenderer extends BaseRenderer {
 
@@ -43,7 +43,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
             const element = <HTMLElement>node;
             if (!element.dataset) continue;
             const uid = element.dataset["uid"];
-            const sourceComponent: BaseSyntheticDOMNodeEntity<any, any> = syntheticComponentsBySourceUID[uid];
+            const sourceComponent: BaseDOMNodeEntity<any, any> = syntheticComponentsBySourceUID[uid];
             rects[uid] = BoundingRect.fromClientRect(element.getBoundingClientRect());
             if (sourceComponent) {
               sourceComponent.target = <HTMLElement>node;

@@ -2,9 +2,9 @@ import { ISynthetic } from "@tandem/sandbox";
 import { BoundingRect, IPoint } from "@tandem/common";
 import {
   MarkupNodeType,
-  BaseSyntheticDOMNodeEntity,
-  BaseVisibleSyntheticDOMNodeEntity,
-  ISyntheticDOMCapabilities,
+  BaseDOMNodeEntity,
+  BaseVisibleDOMNodeEntity,
+  IDOMNodeEntityCapabilities,
 } from "@tandem/synthetic-browser";
 
 // class EntitySelectionDisplay implements IEntityDisplay {
@@ -63,10 +63,10 @@ import {
 //   }
 // }
 
-export class VisibleDOMEntityCollection<T extends BaseVisibleSyntheticDOMNodeEntity<any, any>> extends Array<T> {
+export class VisibleDOMEntityCollection<T extends BaseVisibleDOMNodeEntity<any, any>> extends Array<T> {
 
-  constructor(...components: BaseSyntheticDOMNodeEntity<any, any>[]) {
-    super(...(<Array<T>><any>components).filter((entity: BaseVisibleSyntheticDOMNodeEntity<any, any>) => entity instanceof BaseVisibleSyntheticDOMNodeEntity));
+  constructor(...components: BaseDOMNodeEntity<any, any>[]) {
+    super(...(<Array<T>><any>components).filter((entity: BaseVisibleDOMNodeEntity<any, any>) => entity instanceof BaseVisibleDOMNodeEntity));
   }
 
   get absoluteBounds() {
@@ -114,7 +114,7 @@ export class VisibleDOMEntityCollection<T extends BaseVisibleSyntheticDOMNodeEnt
     }
   }
 
-  get capabilities(): ISyntheticDOMCapabilities {
+  get capabilities(): IDOMNodeEntityCapabilities {
     const capabilities = { movable: true, resizable: true };
     for (const item of this) {
       const cap = item.capabilities;
