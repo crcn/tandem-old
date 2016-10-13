@@ -1,7 +1,4 @@
-import "./themes/monokai-dimmed.scss";
-import "./vendor/ionicons/css/ionicons.css";
-import "./scss/modules/all.scss";
-import "./scss/fonts.scss";
+import "./styles";
 
 import config from "./config";
 import { isMaster, fork } from "@tandem/common/workers";

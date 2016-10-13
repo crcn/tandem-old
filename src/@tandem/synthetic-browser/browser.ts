@@ -88,16 +88,7 @@ export class SyntheticBrowser extends Observable {
     const oldWindow = this._window;
     const window = this._window = new SyntheticWindow(this, this._renderer, this._location);
     this._registerElementClasses(window.document);
-
-    // TODO - this shouldn't be here
-    window["process"] = {
-      env: {
-        NODE_ENV: "development"
-      }
-    };
-
     this.notify(new PropertyChangeAction("window", window, oldWindow));
-
     return window;
   }
 

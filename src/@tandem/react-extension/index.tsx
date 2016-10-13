@@ -39,7 +39,7 @@ export class ReactDOMNodeCaster implements IMarkupDOMCaster {
         for (const key in componentClasses) {
 
           // the component is being into the global namespace, so pass the window object as the props
-          children.push(React.createElement(componentClasses[key], Object.assign({}, window, { key: key })));
+          children.push(React.createElement(componentClasses[key], Object.assign({}, window["reactProps"] || window, { key: key })));
         }
 
         return <div>

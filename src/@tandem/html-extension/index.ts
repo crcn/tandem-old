@@ -1,5 +1,5 @@
-import { CSS_MIME_TYPE, HTML_MIME_TYPE } from "@tandem/common";
 import { IApplication } from "@tandem/common/application";
+import { CSS_MIME_TYPE, HTML_MIME_TYPE, JS_MIME_TYPE } from "@tandem/common";
 
 // components
 import { cssPaneComponentDependency } from "./components/css-pane";
@@ -9,7 +9,7 @@ import { cssColorTokenComponentFactoryDependency } from "./components/css-color-
 import { cssHighlightElementToolComponentFactoryDependency } from "./components/css-highlight-element-tool";
 
 // sandbox
-import { HTMLCSSModule } from "./sandbox";
+import { HTMLCSSModule, HTMLCSSDOMModule } from "./sandbox";
 
 import { HTML_XMLNS, SyntheticDOMNodeEntityClassDependency } from "@tandem/synthetic-browser";
 
@@ -77,6 +77,8 @@ export const htmlExtensionDependencies = [
   // sandbox
   ...visibleEntityDependencies,
   new SandboxModuleFactoryDependency(CSS_MIME_TYPE, CSS_MIME_TYPE, HTMLCSSModule),
+  new SandboxModuleFactoryDependency(HTML_MIME_TYPE, CSS_MIME_TYPE, HTMLCSSModule),
+  new SandboxModuleFactoryDependency(JS_MIME_TYPE, CSS_MIME_TYPE, HTMLCSSDOMModule),
   new SandboxModuleFactoryDependency(HTML_MIME_TYPE, HTML_MIME_TYPE, MarkupModule),
   new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "img", HTMLImageEntity),
   new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "script", HTMLScriptEntity),

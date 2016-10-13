@@ -58,7 +58,6 @@ export class VisibleHTMLEntity extends BaseVisibleDOMNodeEntity<SyntheticHTMLEle
     const changes = diffArray(this.source.attributes, this.change.attributes, (a, b) => a.name === b.name);
 
     for (const add of changes.add) {
-      console.log(add.value);
       edit.setElementAttribute(this.source, add.value.name, add.value.value);
     }
 

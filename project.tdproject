@@ -1,17 +1,28 @@
 <!-- TD project configuration settings -->
 <script>
+  resolve.extensions.push(".ts", ".tsx");
   resolve.directories.push(
     __dirname + "/src",
     __dirname + "/node_modules",
     __dirname + "/src/editor/scss"
   );
   var props = { selection: [] };
+  var process = {
+    argv: [],
+    env: {}
+  };
+
 </script>
+
 <!-- TD project specific styles -->
 <style>
   body, html {
     color: black;
     font-family: Helvetica;
+    padding: 0;
+    margin: 0;
   }
 </style>
-<frame src="/Users/crcn/Developer/public/tandem/examples/bootstrap/hello-world.html" title="fdsfds"></frame>
+
+
+<frame src="@tandem/editor/entry.ts" title="Tandem" style="top:862px;left:-85px;width:373px;height:563px;" inherit-css="" inherit-globals></frame>

@@ -3,9 +3,10 @@ let lastScriptSrc;
 
 export const isMaster = typeof window !== "undefined";
 
+
 if (isMaster) {
   loadedScripts = document.querySelectorAll("script");
-  lastScriptSrc = loadedScripts[loadedScripts.length - 1].src;
+  lastScriptSrc = loadedScripts.length && loadedScripts[loadedScripts.length - 1].src;
 }
 
 export class Serializer<T> {
@@ -28,6 +29,7 @@ let cid = 0;
 function getNextWorker(): Worker {
   return workers.length ? workers[currentWorkerIndex = (currentWorkerIndex + 1) % workers.length] : undefined;
 }
+
 /**
  */
 

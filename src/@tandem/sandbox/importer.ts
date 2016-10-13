@@ -1,5 +1,5 @@
-import { IModule } from "./module";
 import { Sandbox } from "./sandbox";
+import { IModule, BaseSandboxModule } from "./module";
 import { SandboxModuleFactoryDependency } from "./dependencies";
 import { uniq } from "lodash";
 import {
@@ -35,6 +35,15 @@ import {
 export interface IModuleResolveOptions {
   extensions: string[];
   directories: string[];
+}
+
+export class EmptyModule extends BaseSandboxModule {
+  constructor(fileName: string, exports: any, sandbox: Sandbox) {
+    super(fileName, null, sandbox);
+    this.exports = exports;
+  }
+  load() { }
+  evaluate2() { }
 }
 
 @loggable()
@@ -73,8 +82,8 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     if (this._getResolveOptions) {
       const extraRops = this._getResolveOptions();
       if (extraRops) {
-        extensions.push(...extraRops.extensions);
-        directories.push(...extraRops.directories);
+        extensions.unshift(...extraRops.extensions);
+        directories.unshift(...extraRops.directories);
       }
     }
 
@@ -87,7 +96,11 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
   public async resolve(filePath: string, relativePath?: string) {
     return this._resolvedFiles[relativePath + filePath] || (this._resolvedFiles[relativePath + filePath] = new SingletonThenable(() => {
       const { extensions, directories } = this.getResolveOptions();
-      return ResolveAction.execute(String(filePath), relativePath, extensions, directories, this.bus);
+      try {
+        return ResolveAction.execute(String(filePath), relativePath, extensions, directories, this.bus);
+      } catch (e) {
+        return null;
+      }
     }));
   }
 
@@ -101,36 +114,45 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     this._imports = {};
   }
 
-  async import(envKind: string, filePath: string, relativePath?: string) {
+  async load(envKind: string, filePath: string, relativePath?: string): Promise<IModule> {
+
+    // if (mock[filePath]) {
+    //   return new MockModule(filePath, mock[filePath], this._sandbox);
+    // }
 
     const resolvedPath = await this.resolve(filePath, relativePath);
 
+    if (resolvedPath == null) {
+      return new EmptyModule(filePath, {}, this._sandbox);
+    }
+
+    // TODO - add missintModule if no resolution
+
     // readFile executed here to ensure that file watchers get added after resetting the importer
     // object
+    console.log("loading", resolvedPath);
     const content      = await this.readFile(resolvedPath);
+
 
     const moduleCache = this._modules[resolvedPath] || (this._modules[resolvedPath] = {});
 
     if (!moduleCache[envKind]) {
       const moduleFactory = SandboxModuleFactoryDependency.find(envKind, MimeTypeDependency.lookup(resolvedPath, this._dependencies), this._dependencies);
       if (!moduleFactory) {
-        throw new Error(`Unable to find sandbox module for file ${resolvedPath}`);
+        throw new Error(`Unable to find sandbox module for file ${envKind}:${resolvedPath}`);
       }
 
       const module = moduleCache[envKind] = moduleFactory.create(resolvedPath, content, this._sandbox);
+      await module.load();
       module.observe(new WrapBus(this.onModuleAction.bind(this)));
       watchProperty(module, "content", this.onModuleContentChange.bind(this, module));
     }
 
-    const module: IModule = moduleCache[envKind];
+    return moduleCache[envKind];
+  }
 
-    const importsKey = envKind + resolvedPath;
-
-    if (!this._imports[importsKey]) {
-      this._imports[importsKey] = await module.evaluate();
-    }
-
-    return this._imports[importsKey];
+  async import(envKind: string, filePath: string, relativePath?: string) {
+    return (await this.load(envKind, filePath, relativePath)).evaluate();
   }
 
   public async readFile(filePath: string): Promise<string> {

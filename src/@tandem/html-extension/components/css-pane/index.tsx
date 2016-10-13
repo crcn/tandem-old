@@ -86,7 +86,6 @@ export class CSSPaneComponent extends React.Component<{ workspace: Workspace, ap
   render() {
     const workspace = this.props.workspace;
     const selection = [];
-    return <div>ggellfdsfffso</div>;
 
     if (!selection.length) return null;
 

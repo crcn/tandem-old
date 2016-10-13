@@ -8,6 +8,8 @@ import { Action, bindable, JS_MIME_TYPE, Observable, IObservable } from "@tandem
 
 export interface IModule extends IObservable {
 
+  exports: any;
+
   /**
    * File name associated with the module
    */
@@ -21,7 +23,16 @@ export interface IModule extends IObservable {
    */
 
   content: string;
-  evaluate(): Promise<any>;
+
+  /**
+   * Loads the module along with all dependencies
+   */
+
+  load(): Promise<any>|any;
+
+  evaluate(): any;
+
+
   editor: IModuleEditor;
 }
 
@@ -32,8 +43,10 @@ export abstract class BaseSandboxModule extends Observable implements IModule {
   @bindable()
   public content: string;
   readonly editor: IModuleEditor;
+  public exports: any;
 
   protected _script: sandboxModuleScriptType;
+  private _evaluated: boolean;
 
   constructor(readonly fileName: string, content: string, readonly sandbox: Sandbox) {
     super();
@@ -48,19 +61,15 @@ export abstract class BaseSandboxModule extends Observable implements IModule {
 
   protected initialize() { }
 
-  async evaluate() {
-    const run = await this.getScript();
-    return await run();
+  abstract load(): Promise<any>|any;
+
+  evaluate() {
+    if (this._evaluated) return this.exports;
+    this._evaluated = true;
+    this.notify(new SandboxModuleAction(SandboxModuleAction.EVALUATING));
+    this.evaluate2();
+    return this.exports;
   }
 
-  protected abstract compile(): Promise<sandboxModuleScriptType>|sandboxModuleScriptType;
-
-  protected async getScript() {
-    if (this._script) return this._script;
-    const run = await this.compile();
-    return this._script = (...rest: any[]) => {
-      this.notify(new SandboxModuleAction(SandboxModuleAction.EVALUATING));
-      return run(...rest);
-    };
-  }
+  protected abstract evaluate2();
 }

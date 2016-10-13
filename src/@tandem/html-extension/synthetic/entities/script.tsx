@@ -45,6 +45,7 @@ export class HTMLScriptEntity extends BaseDOMNodeEntity<SyntheticDOMElement, HTM
     }
 
     const module = moduleDependency.create(this.module.fileName, scriptContent, this.module.sandbox);
-    await module.evaluate();
+    await module.load();
+    module.evaluate();
   }
 }

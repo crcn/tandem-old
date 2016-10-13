@@ -38,11 +38,12 @@ export class MarkupModule extends BaseSandboxModule implements IMarkupModule {
   createEditor() {
     return new MarkupEditor(this);
   }
-  compile() {
+  load() {
     this.ast = parseMarkup(this.content);
-    return () => this.evaluateMarkup(this.ast, this.sandbox.global, MarkupMimeTypeXMLNSDependency.lookup(this.fileName, this.sandbox.global.browser.dependencies));
   }
-
+  evaluate2() {
+    this.exports = this.evaluateMarkup(this.ast, this.sandbox.global, MarkupMimeTypeXMLNSDependency.lookup(this.fileName, this.sandbox.global.browser.dependencies));
+  }
   protected evaluateMarkup(ast: MarkupNodeExpression, window: SyntheticWindow, xmlns: string) {
     return evaluateMarkup(this.ast, window.document, xmlns);
   }

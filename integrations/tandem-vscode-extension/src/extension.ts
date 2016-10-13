@@ -134,7 +134,7 @@ export async function activate(context: vscode.ExtensionContext) {
     async function onChange(e:vscode.TextDocumentChangeEvent) {
         const doc  = e.document;
         _mtime    = Date.now();
-        _update(doc);
+        // _update(doc);
     }
 
     async function run(e:vscode.TextEditor) {
@@ -168,6 +168,7 @@ export async function activate(context: vscode.ExtensionContext) {
         server.bus.execute(new SelectEntitiesAtSourceOffsetAction(fixFileName(e.textEditor.document.fileName), ...ranges));
     });
 
+    // this needs to be a config setting
     vscode.workspace.onDidChangeTextDocument(onChange);
     vscode.window.onDidChangeActiveTextEditor(run);
 }

@@ -12,7 +12,6 @@ import {
   VERBOSE as VERBOSE_LEVEL,
 } from "@tandem/common/logger/levels";
 
-
 class ConsoleService extends Service {
 
   private _filter: Function;

@@ -1,12 +1,14 @@
 import * as marked from "marked";
 import { BaseSandboxModule } from "@tandem/sandbox";
-import { evaluateMarkup, parseMarkup, SyntheticWindow } from "@tandem/synthetic-browser";
+import { evaluateMarkup, parseMarkup, SyntheticWindow, MarkupExpression } from "@tandem/synthetic-browser";
 
 export class MarkdownSandboxModule extends BaseSandboxModule {
-  compile() {
-    return () => {
-      const window = <SyntheticWindow>this.sandbox.global;
-      return evaluateMarkup(parseMarkup(marked(this.content)), window.document);
-    };
+  public ast: MarkupExpression;
+  load() {
+    this.ast = parseMarkup(marked(this.content));
+  }
+
+  evaluate2() {
+    this.exports = evaluateMarkup(this.ast, (<SyntheticWindow>this.sandbox.global).document);
   }
 }
