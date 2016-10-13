@@ -17,7 +17,6 @@ import { ApplicationServiceDependency } from "@tandem/common/dependencies";
 import { DEPENDENCIES_NS, Dependencies } from "@tandem/common/dependencies";
 import { DSUpsertAction, LoadAction, ReadFileAction } from "@tandem/common/actions";
 
-
 @loggable()
 export default class FrontEndService extends BaseApplicationService<IApplication> {
 
@@ -105,6 +104,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
           <script type="text/javascript">
             var config = {
               backend: {
+                hostname: window.location.hostname,
                 port: ${this._port}
               }
             };

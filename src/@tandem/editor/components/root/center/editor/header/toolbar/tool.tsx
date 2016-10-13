@@ -23,7 +23,7 @@ class ToolComponent extends React.Component<{ app: FrontEndApplication, editor: 
     return (
       <li
         className={className}
-        tabIndex="-1"
+        tabIndex={-1}
         onClick={this.setTool}
         title={`${dep.id} (${dep.keyCommand})`}
       >

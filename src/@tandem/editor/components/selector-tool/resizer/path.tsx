@@ -69,7 +69,7 @@ class PathComponent extends React.Component<{ strokeWidth: number, showPoints: b
     const h = Math.ceil(y2 - y1 + Math.max(cw, cwz));
     const p = 100;
 
-    return (<svg width={w} height={h} viewBox={[0, 0, w, h]}>
+    return (<svg width={w} height={h} viewBox={[0, 0, w, h].join(" ")}>
       <path d={d} strokeWidth={strokeWidth} stroke="transparent" fill="transparent" />
       {
         this.props.showPoints !== false ? points.map((path, key) =>

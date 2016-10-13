@@ -108,7 +108,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     this.props.app.bus.execute(new SelectAction(select, multiSelect, false));
   }
 
-  onHeaderKeyDown = (event: KeyboardEvent) => {
+  onHeaderKeyDown = (event: React.KeyboardEvent) => {
     if (event.keyCode === 13 || event.keyCode === 27) {
       if (!this.props.entity.metadata.toggle(MetadataKeys.EDIT_LAYER)) {
 
@@ -195,7 +195,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
     labelSection =  <div
       style={{paddingLeft: this.props.paddingLeft}}
-      tabIndex="0"
+      tabIndex={0}
       ref="header"
       onClick={this.onClick}
       onKeyDown={this.onHeaderKeyDown}

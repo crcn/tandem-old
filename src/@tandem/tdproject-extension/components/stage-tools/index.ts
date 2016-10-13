@@ -1,1 +1,1 @@
-export * from "./frame.tsx";
+export * from "./frame";

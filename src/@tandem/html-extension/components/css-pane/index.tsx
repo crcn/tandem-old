@@ -26,7 +26,7 @@ class StyleDeclarationComponent extends React.Component<any, any> {
     this.props.declaration.value = String(event.target.value);
   }
 
-  onKeyDown = (event: KeyboardEvent) => {
+  onKeyDown = (event: React.KeyboardEvent) => {
     // if (event.keyCode === 8 && event.target === this.refs["key"] && event.target === "") {
 
     // }

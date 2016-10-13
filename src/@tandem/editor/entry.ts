@@ -11,8 +11,12 @@ const NUM_WORKERS = 0;
 if (isMaster) {
 
   window.onload = () => {
+
+    const element = document.createElement("div");;
+    document.body.appendChild(element);
+
     const app = window["app"] = new FrontEndApplication(Object.assign(config, {
-      element: document.getElementById("app")
+      element: element
     }));
     app.initialize();
   };

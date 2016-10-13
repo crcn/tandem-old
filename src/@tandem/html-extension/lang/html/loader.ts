@@ -179,7 +179,7 @@ export class MarkupExpressionLoader extends BaseASTNodeLoader {
           content = spliceChunk(content, newChunk, target.position);
         }
       } else if (action.target instanceof MarkupNodeExpression) {
-        const target = <IMarkupValueNodeExpression>action.target;
+        const target = <IMarkupValueNodeExpression><any>action.target;
         const currentChunk = getChunk(content, target.position);
         content = spliceChunk(content, currentChunk.replace(propertyChangeAction.oldValue, propertyChangeAction.newValue), target.position);
       }

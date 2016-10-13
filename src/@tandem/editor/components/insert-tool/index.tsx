@@ -76,7 +76,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
     // }
   }
 
-  onSyntheticMouseDown = (entity: BaseVisibleDOMNodeEntity<any, any>, event: MouseEvent) => {
+  onSyntheticMouseDown = (entity: BaseVisibleDOMNodeEntity<any, any>, event: React.MouseEvent) => {
     this._targetEntity = entity;
     this._insertNewItem(event);
   }

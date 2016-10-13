@@ -3,14 +3,21 @@ var path                  = require("path");
 var WebpackNotifierPlugin = require('webpack-notifier');
 var createVariants = require('parallel-webpack').createVariants;
 
-
 function createConfig(options) {
 
   var target = options.entry.target;
 
   var config = {
     entry: {
-      [options.entry.name]: (target === "es5" ? ["babel-polyfill"] : []).concat([__dirname + `/src/@tandem/${options.entry.name}/entry.ts`]),
+      [options.entry.name]: (target === "es5" ? ["babel-polyfill"] : []).concat([
+        __dirname + `/src/@tandem/${options.entry.name}/entry.ts`
+      ]),
+    },
+    resolve: {
+      alias: {
+        'react': 'node_modules/react/dist/react.js',
+        'react-dom': 'node_modules/react-dom/dist/react-dom.js'
+      }
     },
     output: {
       path: `lib/@tandem/${options.entry.name}/bundle/`,
@@ -33,7 +40,8 @@ function createConfig(options) {
       }),
       new WebpackNotifierPlugin({
         alwaysNotify: true
-      })
+      }),
+      new webpack.HotModuleReplacementPlugin()
     ],
     node: {
       __filename: true,
@@ -57,13 +65,14 @@ function createConfig(options) {
         {
           test: /\.tsx?$/,
           loader: (target === "es5" ? [getModuleDirectory("babel-loader") + "?presets[]=es2015"] : [])
-          .concat(getModuleDirectory("ts-loader"))
-          .join("!")
+          .concat(getModuleDirectory("awesome-typescript-loader"))
+          .join("!"),
+          exclude: __dirname + "/node_modules"
         },
-        {
-          test: /\.tsx?$/,
-          loader: getModuleDirectory("tslint-loader")
-        },
+        // {
+        //   test: /\.tsx?$/,
+        //   loader: getModuleDirectory("tslint-loader")
+        // },
         {
           test: /\.scss$/,
           loader: [

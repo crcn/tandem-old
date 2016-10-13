@@ -16,7 +16,8 @@
     "clean": "rm -rf lib",
     "postinstall": "scripts/copy-src-assets.sh; tsc --declaration; linklocal",
     "start": "./scripts/exec-packages.sh npm start",
-    "build": "./scripts/exec-packages.sh npm run build"
+    "build": "./scripts/exec-packages.sh npm run build",
+    "start-dev": "webpack-dev-server --inline --progress"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,12 @@
   },
   "homepage": "https://github.com/crcn/tandem#readme",
   "devDependencies": {
+    "@tandem/back-end": "file:./lib/@tandem/back-end",
+    "@tandem/common": "file:./lib/@tandem/common",
+    "@tandem/editor": "file:./lib/@tandem/editor",
+    "@tandem/tether": "file:./lib/@tandem/tether",
+    "@tandem/tether-back-end": "file:./lib/@tandem/tether-back-end",
+    "awesome-typescript-loader": "^2.2.4",
     "chai": "^3.5.0",
     "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",
@@ -49,15 +56,9 @@
     "react-dom": "^15.2.1",
     "sass-loader": "^4.0.1",
     "style-loader": "^0.13.1",
-    "@tandem/back-end": "file:./lib/@tandem/back-end",
-    "@tandem/common": "file:./lib/@tandem/common",
-    "@tandem/editor": "file:./lib/@tandem/editor",
-    "@tandem/tether": "file:./lib/@tandem/tether",
-    "@tandem/tether-back-end": "file:./lib/@tandem/tether-back-end",
-    "ts-loader": "^0.8.2",
     "tslint": "^3.13.0",
     "tslint-loader": "^2.1.5",
-    "typescript": "beta",
+    "typescript": "2.0.x",
     "url-loader": "^0.5.7",
     "webpack-notifier": "^1.4.0"
   },
@@ -85,7 +86,6 @@
     "mousetrap": "^1.6.0",
     "node-sass": "^3.8.0",
     "package-path": "^1.0.0",
-    "parallel-webpack": "^1.5.0",
     "postcss": "^5.1.2",
     "pretty": "^1.0.0",
     "react": "^15.2.1",

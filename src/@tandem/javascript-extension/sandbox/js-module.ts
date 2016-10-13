@@ -38,10 +38,12 @@ export class CommonJSSandboxModule extends BaseSandboxModule {
     .replace(/\/\*[\s\S]*?\*\/|\/\/[^\n\r]+/g, "")
     .match(/require\(.*?\)/g) || [];
 
-    for (const dep of deps) {
+    // load these modules in parallel
+    await Promise.all(deps.map(async (dep) => {
       const modulePath = dep.match(/require\(["']([^'"]+)/)[1];
       importedModules[modulePath] = await this.sandbox.importer.load(JS_MIME_TYPE, modulePath, this.fileName);
-    }
+    }));
+
     this._run = this.compile();
   }
 
@@ -60,6 +62,8 @@ export class CommonJSSandboxModule extends BaseSandboxModule {
       __filename : this.fileName,
       __dirname  : path.dirname(this.fileName),
     };
+
+    console.log("evaluate");
 
     this._run(global, context);
   }

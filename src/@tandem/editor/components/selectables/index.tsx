@@ -21,7 +21,7 @@ class SelectableComponent extends React.Component<{
   selection: any,
   app: FrontEndApplication,
   zoom: number,
-  onSyntheticMouseDown: (entity: BaseVisibleDOMNodeEntity<any, any>, event?: MouseEvent) => void
+  onSyntheticMouseDown: (entity: BaseVisibleDOMNodeEntity<any, any>, event?: React.MouseEvent) => void
 }, any> {
 
   private _i: number = 0;
@@ -31,17 +31,17 @@ class SelectableComponent extends React.Component<{
     this.state = {};
   }
 
-  onMouseDown = (event: MouseEvent): void => {
+  onMouseDown = (event: React.MouseEvent): void => {
     this.props.onSyntheticMouseDown(this.props.entity, event);
     event.stopPropagation();
     this.onMouseOut(event);
  }
 
-  onMouseOver = (event: MouseEvent) => {
+  onMouseOver = (event: React.MouseEvent) => {
     this.props.entity.metadata.set(MetadataKeys.HOVERING, true);
   }
 
-  onMouseOut = (event: MouseEvent) => {
+  onMouseOut = (event: React.MouseEvent) => {
     this.props.entity.metadata.set(MetadataKeys.HOVERING, false);
   }
 
@@ -93,7 +93,7 @@ class SelectableComponent extends React.Component<{
 export class SelectablesComponent extends React.Component<{
   app: FrontEndApplication,
   editor: Editor,
-  onSyntheticMouseDown: (entity: BaseVisibleDOMNodeEntity<any, any>, event?: MouseEvent) => void,
+  onSyntheticMouseDown: (entity: BaseVisibleDOMNodeEntity<any, any>, event?: React.MouseEvent) => void,
   canvasRootSelectable?: boolean
 }, { showSelectables: boolean }> {
 

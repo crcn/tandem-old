@@ -26,6 +26,10 @@ export default class RootComponentRenderer extends BaseApplicationService<IAppli
     requestAnimationFrame(this.render);
   }
 
+  constructor() {
+    super();
+  }
+
   render = () => {
     this._rendering = false;
     const app = this.app;

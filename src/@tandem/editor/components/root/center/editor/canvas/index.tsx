@@ -43,7 +43,7 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
     this.translate(this.props.editor.transform.left - leftDelta, this.props.editor.transform.top - topDelta);
   }
 
-  onMouseEvent = (event: MouseEvent) => {
+  onMouseEvent = (event: React.MouseEvent) => {
 
     let left: number = event.pageX;
     let top: number = event.pageY;
@@ -101,7 +101,7 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
     }
   }
 
-  onWheel = (event: WheelEvent) => {
+  onWheel = (event: React.WheelEvent) => {
     this.onMouseEvent(event);
     if (event.metaKey) {
       event.preventDefault();

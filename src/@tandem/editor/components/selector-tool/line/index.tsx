@@ -65,7 +65,7 @@ export default class LineComponent extends React.Component<any, any> {
         style={{ position: "absolute", left: bounds.left, top: bounds.top }}
         width={w}
         height={h}
-        viewBox={[0, 0, w, h]}
+        viewBox={[0, 0, w, h].join(" ")}
       >
         <path d={d.join("")} strokeWidth={1 / this.props.zoom} fill="transparent" />
         {this.props.showDistance !== false ? sections.text : void 0}

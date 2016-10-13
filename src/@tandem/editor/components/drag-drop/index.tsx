@@ -6,7 +6,6 @@ import * as React from "react";
  * Enables people to drag componens & drop components
  * around the app
  */
-
 export class DragDropComponent extends React.Component<{ onDragStart?: Function, onDragStop?: Function, onDrag: Function, canMove?: boolean }, any> {
 
   constructor() {
@@ -17,7 +16,6 @@ export class DragDropComponent extends React.Component<{ onDragStart?: Function,
   startDragging = (event) => {
 
     if (this.props.onDragStart) this.props.onDragStart();
-
 
     // stop dragging immediately in case it was never fired from mouseup. This *might*
     // happen if the user moves their cursor outside of the app

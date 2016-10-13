@@ -7,7 +7,7 @@ var exec = require('child_process').exec;
 
 var filepath = argv._[0];
 
-if (!/^\//.test(filepath)) {
+if (filepath && !/^\//.test(filepath)) {
   filepath = path.join(process.cwd(), filepath);
 }
 
@@ -17,5 +17,7 @@ app.bus.execute({
   type  : 'openProjectFile',
   path  : filepath
 }).then(function() {
-  exec(`open http://localhost:${app.config.port}/editor`);
+  if (argv.open !== false) {
+    exec(`open http://localhost:${app.config.port}/editor`);
+  }
 });

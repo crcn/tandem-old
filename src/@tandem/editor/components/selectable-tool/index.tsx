@@ -10,7 +10,7 @@ import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 // @injectable
 export default class SelectableToolComponent extends React.Component<{selection: any,  bus: any, app: any, zoom: number, editor: Editor }, {}>  {
 
-  onSyntheticMouseDown = (entity: BaseVisibleDOMNodeEntity<any, any>, event: MouseEvent) => {
+  onSyntheticMouseDown = (entity: BaseVisibleDOMNodeEntity<any, any>, event: React.MouseEvent) => {
     this.props.app.bus.execute(new SelectAction(entity, event.shiftKey));
   }
 
