@@ -112,9 +112,9 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
 
     // clear all imports to ensure that all modules get re-evaluated. Important
     // in case any module accesses global variables such as the DOM
-    for (const env in this._modules) {
-      for (const path in this._modules[env]) {
-        (<IModule>this._modules[env][path]).reset();
+    for (const path in this._modules) {
+      for (const env in this._modules[path]) {
+        (<IModule>this._modules[path][env]).reset();
       }
     }
   }
@@ -130,6 +130,8 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     if (resolvedPath == null) {
       return new EmptyModule(filePath, {}, this._sandbox);
     }
+
+    console.log("load", resolvedPath);
 
     // TODO - add missintModule if no resolution
 

@@ -21,6 +21,7 @@
     "mocha": "registry:dt/mocha#2.2.5+20160720003353",
     "mousetrap": "registry:dt/mousetrap#1.5.0+20160501152135",
     "node": "registry:dt/node#6.0.0+20160720070758",
+    "pegjs": "registry:dt/pegjs#0.0.0+20160317120654",
     "react": "registry:dt/react#0.14.0+20160720060442",
     "react-addons-pure-render-mixin": "registry:dt/react-addons-pure-render-mixin#0.14.0+20160316155526",
     "react-dnd": "registry:dt/react-dnd#2.0.2+20160816153011",

@@ -1,6 +1,5 @@
 var webpack               = require("webpack");
 var path                  = require("path");
-var ExtractTextPlugin     = require("extract-text-webpack-plugin");
 var WebpackNotifierPlugin = require('webpack-notifier');
 var createVariants = require('parallel-webpack').createVariants;
 
@@ -40,20 +39,9 @@ function createConfig(options) {
       __filename: true,
       fs: "empty"
     },
-
-    // more options in the optional tslint object
-    tslint: {
-    },
     module: {
       loaders: [
-        {
-          test: /\.scss$/,
-          loader: [
-            getModuleDirectory("style-loader"),
-            getModuleDirectory("css-loader"),
-            getModuleDirectory("sass-loader")
-          ].join("!")
-        },
+
         {
           test: /\.(png|jpg|gif|eot|ttf|woff|svg)$/,
           loader: getModuleDirectory("url-loader") + "?limit=1000"
@@ -61,13 +49,6 @@ function createConfig(options) {
         {
           test: /\.json$/,
           loader: getModuleDirectory("json-loader")
-        },
-        {
-          test: /\.css$/,
-          loader: [
-            getModuleDirectory("style-loader"),
-            getModuleDirectory("css-loader")
-          ].join("!")
         },
         {
           test: /\.peg$/,
@@ -82,7 +63,22 @@ function createConfig(options) {
         {
           test: /\.tsx?$/,
           loader: getModuleDirectory("tslint-loader")
-        }
+        },
+        {
+          test: /\.scss$/,
+          loader: [
+            getModuleDirectory("style-loader"),
+            getModuleDirectory("css-loader"),
+            getModuleDirectory("sass-loader")
+          ].join("!")
+        },
+        {
+          test: /\.css$/,
+          loader: [
+            getModuleDirectory("style-loader"),
+            getModuleDirectory("css-loader")
+          ].join("!")
+        },
       ]
     }
   };
