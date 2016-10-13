@@ -32,6 +32,7 @@ export interface IModule extends IObservable {
 
   evaluate(): any;
 
+  reset(): void;
 
   editor: IModuleEditor;
 }
@@ -53,6 +54,11 @@ export abstract class BaseSandboxModule extends Observable implements IModule {
     this.content = content;
     this.editor = this.createEditor();
     this.initialize();
+  }
+
+  reset() {
+    this._evaluated = false;
+    this.exports = {};
   }
 
   protected createEditor(): IModuleEditor {

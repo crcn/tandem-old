@@ -132,6 +132,7 @@ export class SyntheticBrowser extends Observable {
     const window = this._sandbox.global as SyntheticWindow;
     const mainExports = this._sandbox.mainExports;
 
+
     let exportsElement: SyntheticDOMNode;
 
     if (mainExports) {

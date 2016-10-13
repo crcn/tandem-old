@@ -109,9 +109,14 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
    */
 
   public reset() {
+
     // clear all imports to ensure that all modules get re-evaluated. Important
     // in case any module accesses global variables such as the DOM
-    this._imports = {};
+    for (const env in this._modules) {
+      for (const path in this._modules[env]) {
+        (<IModule>this._modules[env][path]).reset();
+      }
+    }
   }
 
   async load(envKind: string, filePath: string, relativePath?: string): Promise<IModule> {
@@ -130,9 +135,7 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
 
     // readFile executed here to ensure that file watchers get added after resetting the importer
     // object
-    console.log("loading", resolvedPath);
     const content      = await this.readFile(resolvedPath);
-
 
     const moduleCache = this._modules[resolvedPath] || (this._modules[resolvedPath] = {});
 
