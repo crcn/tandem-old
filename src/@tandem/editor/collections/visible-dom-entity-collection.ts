@@ -1,7 +1,7 @@
 import { ISynthetic } from "@tandem/sandbox";
 import { BoundingRect, IPoint } from "@tandem/common";
 import {
-  MarkupNodeType,
+  DOMNodeType,
   BaseDOMNodeEntity,
   BaseVisibleDOMNodeEntity,
   IDOMNodeEntityCapabilities,

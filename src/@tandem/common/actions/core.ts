@@ -177,7 +177,6 @@ export class OpenFileAction extends Action {
   }
 }
 
-
 export class ReadFileAction extends Action {
   static readonly READ_FILE = "readFile";
   constructor(readonly path: string) {

@@ -1,7 +1,7 @@
 import { parseSelector } from "./parser";
 import { getTreeAncestors, getPreviousTreeSiblings } from "@tandem/common";
 import { SelectorExpression, AllSelectorExpression } from "./ast";
-import { SyntheticDOMNode, SyntheticDOMElement, MarkupNodeType } from "../markup";
+import { SyntheticDOMNode, SyntheticDOMElement, DOMNodeType } from "../markup";
 
 const _testers = {};
 
@@ -19,7 +19,7 @@ export function getSelectorTester(selectorSource: string): { test(node: Syntheti
   const ast = parseSelector(selectorSource);
 
   function test(ast: SelectorExpression, node: SyntheticDOMElement) {
-    if (!node || node.nodeType !== MarkupNodeType.ELEMENT) return false;
+    if (!node || node.nodeType !== DOMNodeType.ELEMENT) return false;
     return ast.accept({
       visitClassNameSelector({ className }) {
         return node.hasAttribute("class") && String(node.getAttribute("class")).split(" ").indexOf(className) !== -1;

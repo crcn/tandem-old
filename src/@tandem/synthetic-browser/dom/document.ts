@@ -1,7 +1,7 @@
 import { bindable } from "@tandem/common";
 
 import {
-  MarkupNodeType,
+  DOMNodeType,
   SyntheticDOMText,
   SyntheticDOMNode,
   IMarkupNodeVisitor,
@@ -24,7 +24,7 @@ interface IRegisterComponentOptions {
 
 export class SyntheticDocument extends SyntheticDOMContainer {
 
-  readonly nodeType: number = MarkupNodeType.DOCUMENT;
+  readonly nodeType: number = DOMNodeType.DOCUMENT;
 
   @bindable()
   public styleSheets: SyntheticCSSStyleSheet[];

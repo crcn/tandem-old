@@ -1,4 +1,4 @@
-export enum MarkupNodeType {
+export enum DOMNodeType {
   ELEMENT = 1,
   TEXT = 3,
   COMMENT = 8,

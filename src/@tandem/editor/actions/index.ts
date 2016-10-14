@@ -104,6 +104,13 @@ export class ZoomAction extends Action {
   }
 }
 
+export class SetZoomAction extends Action {
+  static readonly SET_ZOOM = "setZoom";
+  constructor(readonly value: number, readonly ease: boolean = false) {
+    super(SetZoomAction.SET_ZOOM);
+  }
+}
+
 export class PasteAction extends Action {
   static readonly PASTE = "paste";
   constructor(readonly item: DataTransferItem) {

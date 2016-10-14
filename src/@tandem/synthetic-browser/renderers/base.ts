@@ -4,7 +4,7 @@ import { WrapBus } from "mesh";
 import { Observable, IObservable } from "@tandem/common";
 import { BoundingRect, watchProperty, IActor } from "@tandem/common";
 import {
-  MarkupNodeType,
+  DOMNodeType,
   SyntheticDocument,
   SyntheticDOMNode,
   SyntheticDOMText,

@@ -9,5 +9,17 @@
   bottom: 0px;
   width: 100%;
   box-sizing: border-box;
+  & .footer-zoom-input {
+    & input {
+      border: none;
+      &:focus {
+        outline: none !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      background: transparent;
+      padding: 0;
+    }
+  }
   // background-color:$color-blue-11;
 }

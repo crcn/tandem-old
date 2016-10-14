@@ -1,11 +1,11 @@
 @import "@tandem/editor/scss/variables";
 
-.m-pane-container {
+.gutter-pane {
 
   margin-top: $padding-1;
   font-weight: 100;
 
-  &--header {
+  &-header {
 
     // border-top: 1px solid $color-black-offset-2;
     // border-bottom: 1px solid $color-black-offset-2;
@@ -31,7 +31,7 @@
     }
   }
 
-  &--content {
+  &-content {
 
     & .col-sm-3, .col-sm-6, .col-sm-4 {
       padding: 0 $padding-0;

@@ -1,5 +1,5 @@
 import { parse } from "./parser.peg";
-import { SyntheticDOMNode, SyntheticDOMElement, MarkupNodeType } from "../markup";
+import { SyntheticDOMNode, SyntheticDOMElement, DOMNodeType } from "../markup";
 import { SelectorExpression, AllSelectorExpression } from "./ast";
 
 const _cache = {};

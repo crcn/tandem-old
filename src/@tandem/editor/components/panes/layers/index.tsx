@@ -4,6 +4,7 @@ import * as React from "react";
 import { PaneComponent } from "@tandem/editor/components/common";
 import LayerComponent from "./layer";
 import { findTreeNode } from "@tandem/common";
+import * as path from "path";
 
 import HTML5Backend from "react-dnd-html5-backend";
 import { Workspace } from "@tandem/editor/models";
@@ -15,7 +16,7 @@ class LayersPaneComponent extends React.Component<{ app: FrontEndApplication }, 
   render() {
     const { editor } = this.props.app;
     if (!editor || !editor.bodyEntity) return null;
-    return <PaneComponent>
+    return <PaneComponent title={path.basename(editor.browser.location.toString())}>
       {
         editor.bodyEntity.children.map((entity, i) => <LayerComponent depth={0} {...this.props} entity={entity} key={entity.uid} />)
       }

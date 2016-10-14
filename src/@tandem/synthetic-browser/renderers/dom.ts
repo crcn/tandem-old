@@ -7,7 +7,7 @@ import {
   calculateAbsoluteBounds
 } from "@tandem/common";
 import {
-  MarkupNodeType,
+  DOMNodeType,
   querySelectorAll,
   SyntheticDOMNode,
   SyntheticDOMText,

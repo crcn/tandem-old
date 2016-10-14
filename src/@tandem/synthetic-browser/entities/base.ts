@@ -17,7 +17,7 @@ import {
 import { DOMEntityAction } from "../actions";
 
 import {
-  MarkupNodeType,
+  DOMNodeType,
   SyntheticDOMNode,
   SyntheticDOMText,
   getSelectorTester,
@@ -216,7 +216,7 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
     Object.assign(attribs, this.renderEntityAttributes());
 
     // fix attributes for React
-    if (this.change.nodeType === MarkupNodeType.ELEMENT) {
+    if (this.change.nodeType === DOMNodeType.ELEMENT) {
       const changeElement = (<SyntheticDOMElement><any>this.change);
       Object.assign(attribs, changeElement.attributes.toObject());
     }
@@ -242,11 +242,11 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
   }
 
   render(): React.ReactElement<any> {
-    if (this.source.nodeType === MarkupNodeType.ELEMENT) {
+    if (this.source.nodeType === DOMNodeType.ELEMENT) {
       return React.createElement(this.source.nodeName, this.renderAttributes(), this.renderChildren());
-    } else if (this.source.nodeType === MarkupNodeType.DOCUMENT_FRAGMENT || this.source.nodeType === MarkupNodeType.DOCUMENT) {
+    } else if (this.source.nodeType === DOMNodeType.DOCUMENT_FRAGMENT || this.source.nodeType === DOMNodeType.DOCUMENT) {
       return React.createElement("span", this.renderAttributes(), this.renderChildren());
-    } else if (this.source.nodeType === MarkupNodeType.TEXT) {
+    } else if (this.source.nodeType === DOMNodeType.TEXT) {
       return React.createElement("span", this.renderAttributes(), decode((<SyntheticDOMText><any>this.source).nodeValue));
     }
     return null;

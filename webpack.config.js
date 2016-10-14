@@ -51,7 +51,7 @@ function createConfig(options) {
       loaders: [
 
         {
-          test: /\.(png|jpg|gif|eot|ttf|woff|svg)$/,
+          test: /\.(png|jpg|gif|eot|ttf|woff|woff2|svg)$/,
           loader: getModuleDirectory("url-loader") + "?limit=1000"
         },
         {

@@ -1,4 +1,4 @@
-import { MarkupNodeType } from "./node-types";
+import { DOMNodeType } from "./node-types";
 import { SyntheticDOMNode } from "./node";
 import { SyntheticDocument } from "../document";
 import { patchable, bindable, PropertyChangeAction } from "@tandem/common";

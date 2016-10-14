@@ -17,7 +17,7 @@ import {
 } from "@tandem/synthetic-browser/sandbox";
 
 import {
-  MarkupNodeType
+  DOMNodeType
 } from "./node-types";
 
 
@@ -82,7 +82,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   get parentElement(): HTMLElement {
     const parent = this.parentNode;
-    if (!parent || parent.nodeType !== MarkupNodeType.ELEMENT) {
+    if (!parent || parent.nodeType !== DOMNodeType.ELEMENT) {
       return null;
     }
     return parent as any as HTMLElement;

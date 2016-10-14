@@ -14,7 +14,7 @@ import { FrontEndApplication } from "@tandem/editor/application";
 import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
 import { Workspace, DocumentFile, Editor } from "@tandem/editor/models";
-import { SetToolAction, ZoomAction, DocumentFileAction } from "@tandem/editor/actions";
+import { SetToolAction, ZoomAction, SetZoomAction, DocumentFileAction } from "@tandem/editor/actions";
 
 import {
   File,
@@ -107,6 +107,10 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
       this.app.editor.zoom = value;
       this._zooming();
     }, easeOutCubic);
+  }
+
+  [SetZoomAction.SET_ZOOM](action: SetZoomAction) {
+    this.app.editor.zoom = action.value;
   }
 
 

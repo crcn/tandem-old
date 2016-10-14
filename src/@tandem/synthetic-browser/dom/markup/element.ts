@@ -3,7 +3,7 @@ import { bindable } from "@tandem/common/decorators";
 import { IDOMNode } from "./node";
 import { BubbleBus } from "@tandem/common/busses";
 import { BoundingRect } from "@tandem/common/geom";
-import { MarkupNodeType } from "./node-types";
+import { DOMNodeType } from "./node-types";
 import { evaluateMarkup } from "./evaluate";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
@@ -90,7 +90,7 @@ export interface IDOMElement extends IDOMNode {
 
 export class SyntheticDOMElement extends SyntheticDOMContainer {
 
-  readonly nodeType: number = MarkupNodeType.ELEMENT;
+  readonly nodeType: number = DOMNodeType.ELEMENT;
   readonly attributes: SyntheticDOMAttributes;
   readonly expression: MarkupElementExpression;
 

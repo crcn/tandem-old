@@ -23,15 +23,21 @@ import {
   SyntheticDOMComment,
   SyntheticHTMLElement,
 } from "@tandem/synthetic-browser";
+
 import { SandboxModuleFactoryDependency } from "@tandem/sandbox";
 
-
-import { LayerLabelComponentFactoryDependency } from "@tandem/editor/dependencies";
+import {
+  LayerLabelComponentFactoryDependency,
+  EntityPaneComponentFactoryDependency
+} from "@tandem/editor/dependencies";
 
 // layer components
-import { TextLayerLabelComponent } from "./components/layer-labels/text";
-import { CommentLayerLabelCoponent } from "./components/layer-labels/comment";
-import { ElementLayerLabelComponent } from "./components/layer-labels/element";
+import {
+  TextLayerLabelComponent,
+  CommentLayerLabelCoponent,
+  ElementLayerLabelComponent,
+  EntityAttributesPaneComponent,
+} from "./components";
 
 // services
 import { pastHTMLServiceDependency  } from "./services";
@@ -66,6 +72,9 @@ export const htmlExtensionDependencies = [
   new LayerLabelComponentFactoryDependency(SyntheticDOMText.name, TextLayerLabelComponent),
   new LayerLabelComponentFactoryDependency(SyntheticDOMElement.name, ElementLayerLabelComponent),
   new LayerLabelComponentFactoryDependency(SyntheticDOMComment.name, CommentLayerLabelCoponent),
+
+  // entity panes
+  new EntityPaneComponentFactoryDependency("htmlAttributes", EntityAttributesPaneComponent),
 
   // services
   pastHTMLServiceDependency,
