@@ -119,6 +119,9 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
     if (action.type === SandboxAction.OPENED_MAIN_ENTRY) {
       this.onArtboardBrowserRevaluated();
     }
+
+    // bubble actions up to the root
+    this.notify(action);
   }
 
   protected renderEntityAttributes() {

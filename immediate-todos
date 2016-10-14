@@ -1,5 +1,18 @@
-- [ ] layers
+- [ ] layers pane
   - [ ] drag and drop
+  - [ ] drag and drop
+
+- [ ] components pane
+  - [
+
+- [ ] styling pane
+
+
+- [  ] history
+  - [ ] ctrl z / y hotkeys
+  - [ ] footer slider
+
+- [ ]
 - [ ] scss parsing
 - [ ] history slider
 - [ ] ability to save specific modules

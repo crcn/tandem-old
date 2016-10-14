@@ -1,8 +1,10 @@
 import { SyntheticLocation } from "./location";
+import { SyntheticRendererAction, SyntheticBrowserAction } from "./actions";
 import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode } from "./dom";
 import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, TetherRenderer } from "./renderers";
 import {
   Action,
+  IActor,
   bindable,
   BubbleBus,
   Observable,
@@ -10,6 +12,7 @@ import {
   ChangeAction,
   findTreeNode,
   Dependencies,
+  waitForPropertyChange,
   HTML_MIME_TYPE,
   MainBusDependency,
   MimeTypeDependency,
@@ -42,12 +45,14 @@ export class SyntheticBrowser extends Observable {
   private _location: SyntheticLocation;
   private _renderer: ISyntheticDocumentRenderer;
   private _documentEntity: BaseDOMNodeEntity<any, any>;
+  private _documentEntityObserver: IActor;
 
   constructor(private _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, readonly parent?: SyntheticBrowser) {
     super();
     this._renderer = renderer || new SyntheticDOMRenderer();
     this._renderer.observe(new BubbleBus(this));
     this._sandbox  = new Sandbox(_dependencies, this.createSandboxGlobals.bind(this), this.getResolveOptions.bind(this));
+    this._documentEntityObserver = new BubbleBus(this);
     this._sandbox.observe(new WrapBus(this.onSandboxAction.bind(this)));
   }
 
@@ -75,6 +80,8 @@ export class SyntheticBrowser extends Observable {
   async open(url: string) {
     this._location = new SyntheticLocation(url);
     await this._sandbox.open(HTML_MIME_TYPE, url);
+    this.notify(new SyntheticBrowserAction(SyntheticBrowserAction.OPENED));
+    await waitForPropertyChange(this, "documentEntity");
   }
 
   get document() {
@@ -137,7 +144,6 @@ export class SyntheticBrowser extends Observable {
     const window = this._sandbox.global as SyntheticWindow;
     const mainExports = this._sandbox.mainExports;
 
-
     let exportsElement: SyntheticDOMNode;
 
     if (mainExports) {
@@ -158,7 +164,12 @@ export class SyntheticBrowser extends Observable {
 
     const documentEntity = this._documentEntity;
 
+    if (documentEntity) {
+      documentEntity.unobserve(this._documentEntityObserver);
+    }
+
     this._documentEntity = this._renderer.entity = SyntheticDOMNodeEntityClassDependency.reuse(window.document, this._documentEntity, this._dependencies);
+    this._documentEntity.observe(this._documentEntityObserver);
     await this._documentEntity.evaluate();
 
     if (this._documentEntity !== documentEntity) {

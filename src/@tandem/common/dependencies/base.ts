@@ -1,5 +1,6 @@
 import { flattenDeep } from "lodash";
 import { ICloneable } from "@tandem/common/object";
+import * as assert from "assert";
 
 export interface IInjectable {
   didInject?(): void;
@@ -15,36 +16,61 @@ export class Injector {
    * Injects dependencies into the target injectable
    */
 
-  static inject(target: any, dependencies: Dependencies) {
-    const __inject = target["__inject"];
+  static getPropertyValues(target: any, dependencies: Dependencies) {
+    const __inject = Reflect.getMetadata("injectProperties", target);
+    const properties = {};
+
+
     if (__inject) {
       for (let property in __inject) {
         const [ns, map] = __inject[property];
         let value;
-        let defaultValue = target[property];
 
         if (/\*\*$/.test(ns)) {
-          value = dependencies.queryAll<Dependency<any>>(ns);
-          target[property] = value.map(map);
+          value = dependencies.queryAll<Dependency<any>>(ns).map(map);
         } else {
           value = dependencies.query<Dependency<any>>(ns);
-          target[property] = value ? map(value) : undefined;
+          value = value ? map(value) : undefined;
         }
 
-        if (target[property] == null) {
-          target[property] = defaultValue;
+        if (value != null) {
+          properties[property] = value;
         }
 
         if (!process.env.TESTING && (value == null || value.length === 0)) {
           console.warn(`Cannot inject ${ns} into ${target.constructor.name}.${property} property.`);
         }
       }
-      if (target.didInject) {
-        target.didInject();
-      }
+    }
+
+    return properties;
+  }
+
+  static inject(target: any, dependencies: Dependencies) {
+    const values = this.getPropertyValues(target, dependencies);
+    for (const property in values) {
+      target[property] = values[property];
+    }
+
+    if (target.didInject) {
+      target.didInject();
     }
 
     return target;
+  }
+
+  /**
+   */
+
+  static create(clazz: { new(...rest): any }, parameters: any[], dependencies: Dependencies) {
+    const values = this.getPropertyValues(clazz, dependencies);
+    for (const property in values) {
+      if (parameters[property] == null) {
+        parameters[property] = values[property];
+      }
+    }
+
+    return this.inject(new clazz(...parameters), dependencies);
   }
 }
 
@@ -56,10 +82,10 @@ export interface IDependency extends ICloneable {
   readonly overridable: boolean;
 
   /**
-   * The unique namespace of the dependency
+   * The unique id of the the dependency
    */
 
-  readonly ns: string;
+  readonly id: string;
 
   /**
    * The actual dependency object itself
@@ -83,7 +109,7 @@ export interface IDependency extends ICloneable {
 
 export class Dependency<T> implements IDependency {
   public dependencies: Dependencies;
-  constructor(readonly ns: string, public value: T, readonly overridable: boolean = false) { }
+  constructor(readonly id: string, public value: T, readonly overridable: boolean = false) { }
 
   /**
    * Clones the dependency - works with base classes.
@@ -91,12 +117,12 @@ export class Dependency<T> implements IDependency {
 
   clone(): Dependency<T> {
     const constructor = this.constructor;
-    const clone = new (<any>constructor)(this.ns, this.value);
+    const clone = new (<any>constructor)(this.id, this.value);
 
     // ns might not match up -- since it's common for constructors
     // to prefix the ns before calling super. This fixes that specific
     // case
-    clone.ns    = this.ns;
+    clone.id    = this.id;
     clone.value = this.value;
     clone.overridable = this.overridable;
     return clone;
@@ -115,7 +141,7 @@ export interface IFactory {
  */
 
 export class FactoryDependency extends Dependency<IFactory> implements IFactory {
-  create(...rest: Array<any>): any {
+  create(...rest: any[]): any {
     return Injector.inject(this.value.create(...rest), this.dependencies);
   }
 }
@@ -124,9 +150,14 @@ export class FactoryDependency extends Dependency<IFactory> implements IFactory 
  * factory Dependency for classes
  */
 
-export class ClassFactoryDependency extends FactoryDependency {
-  constructor(ns: string, clazz: { new(...rest): any }) {
-    super(ns, { create: (...rest) => new clazz(...rest) });
+
+export class ClassFactoryDependency extends Dependency<{ new(...rest): any}> implements IFactory {
+  constructor(id: string, readonly clazz: { new(...rest): any }) {
+    super(id, clazz);
+    assert(clazz, `Class must be defined for ${id}.`);
+  }
+  create(...rest: any[]) {
+    return Injector.create(this.clazz, rest, this.dependencies);
   }
 }
 
@@ -138,7 +169,7 @@ export class Dependencies implements ICloneable {
 
   private _dependenciesByNs: any = {};
 
-  constructor(...items: Array<IDependency|Array<any>>) {
+  constructor(...items: Array<IDependency|any[]>) {
     this.register(...items);
   }
 
@@ -184,7 +215,7 @@ export class Dependencies implements ICloneable {
   /**
    */
 
-  register(...dependencies: Array<IDependency|Array<any>>): Dependencies {
+  register(...dependencies: Array<IDependency|any[]>): Dependencies {
 
     const flattenedDependencies: Array<IDependency> = flattenDeep(dependencies);
 
@@ -198,9 +229,9 @@ export class Dependencies implements ICloneable {
       let existing: Array<IDependency>;
 
       // check if the Dependency already exists to ensure that there are no collisions
-      if (existing = this._dependenciesByNs[dependency.ns]) {
+      if (existing = this._dependenciesByNs[dependency.id]) {
         if (!existing[0].overridable) {
-          throw new Error(`Dependency with namespace "${dependency.ns}" already exists.`);
+          throw new Error(`Dependency with namespace "${dependency.id}" already exists.`);
         }
       }
 
@@ -210,11 +241,11 @@ export class Dependencies implements ICloneable {
 
       // the last part of the namespace is the unique id. Example namespaces:
       // entities/text, entitiesControllers/div, components/item
-      this._dependenciesByNs[dependency.ns] = [dependency];
+      this._dependenciesByNs[dependency.id] = [dependency];
 
       // store the Dependency in a spot where it can be queried with globs (**).
       // This is much faster than parsing this stuff on the fly when calling query()
-      const nsParts = dependency.ns.split("/");
+      const nsParts = dependency.id.split("/");
       for (let i = 0, n = nsParts.length; i < n; i++) {
         const ns = nsParts.slice(0, i).join("/") + "/**";
 

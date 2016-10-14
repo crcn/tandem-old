@@ -8,8 +8,12 @@ export type moduleType = { new(fileName: string, content: string, sandbox: Sandb
 
 export class SandboxModuleFactoryDependency extends ClassFactoryDependency {
   static readonly MODULE_FACTORIES_NS = "moduleFactories";
-  constructor(envMimeType: string, mimeType: string, clazz: moduleType) {
+  constructor(readonly envMimeType: string, readonly mimeType: string, clazz: moduleType) {
     super(SandboxModuleFactoryDependency.getNamespace(envMimeType, mimeType), clazz);
+  }
+
+  clone() {
+    return new SandboxModuleFactoryDependency(this.envMimeType, this.mimeType, this.value);
   }
 
   static getNamespace(envMimeType: string, mimeType: string) {

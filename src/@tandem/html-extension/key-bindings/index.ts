@@ -23,7 +23,7 @@ abstract class BaseInsertElementTool extends InsertTool {
   }
 
   get displayEntityToolFactory() {
-    return this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns);
+    return this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.id);
   }
 
   createSyntheticDOMElement() {
@@ -44,7 +44,7 @@ function createElementInsertToolClass(options) {
 export const keyBindingDependency = [
   new GlobalKeyBindingDependency(TEXT_TOOL_KEY_CODE, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(textToolDependency.ns)));
+      this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(textToolDependency.id)));
     }
   })
 ];

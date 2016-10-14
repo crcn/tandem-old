@@ -39,7 +39,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
     this.logger.info("updating cached content for %s", action.path);
     const watcher = this._fileWatchers[action.path];
     if (watcher) {
-      this._fileWatchers[action.path].forEach((writable) => writable.write(this._fileCache[action.path]));
+      this._fileWatchers[action.path].items.forEach((writable) => writable.write(this._fileCache[action.path]));
     }
   }
 
@@ -76,6 +76,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
 
   _closeFileWatcher(watcher, item) {
     this.logger.info("closing file watcher for %s", item.path);
+    this._fileWatchers[item.path] = undefined;
     watcher.close();
   }
 
@@ -85,29 +86,33 @@ export default class FileService extends BaseApplicationService<IApplication> {
   @document("watches a file for any changes")
   [WatchFileAction.WATCH_FILE](action: WatchFileAction) {
     return Response.create((writable) => {
-      if (!this._fileWatchers[action.path]) {
-        this._fileWatchers[action.path] = [];
-      }
-      this._fileWatchers[action.path].push(writable);
-      const watcher = gaze(action.path, (err, w) => {
-        const cancel = () => {
-          this._fileWatchers[action.path].splice(this._fileWatchers[action.path].indexOf(writable), 1);
-          if (this._fileWatchers[action.path].length === 0) {
-            this._fileWatchers[action.path] = undefined;
-          }
+
+
+      const { watcher, items } = this._fileWatchers[action.path] || (() => {
+        const watcher = gaze(action.path, (err, w) => {
+          w.on("all", async () => {
+            try {
+              this._fileCache[action.path] = null;
+              UpdateTemporaryFileContentAction.execute(await ReadFileAction.execute(action.path, this.bus), this.app.bus);
+            } catch (e) {
+              cancel();
+            }
+          });
+        });
+
+        return this._fileWatchers[action.path] = { watcher: watcher, items: [] };
+      })();
+
+      const cancel = () => {
+        items.splice(items.indexOf(writable), 1);
+        if (items.length === 0) {
           this._closeFileWatcher(watcher, action);
         }
-        writable.then(cancel);
-        w.on("all", async () => {
-          try {
-            this._fileCache[action.path] = null;
-            const data = this._fileCache[action.path] = await ReadFileAction.execute(action.path, this.bus);
-            await writable.write(data);
-          } catch (e) {
-            cancel();
-          }
-        });
-      });
+      }
+
+      writable.then(cancel);
+      items.push(writable);
+
     });
   }
 }

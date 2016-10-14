@@ -50,6 +50,10 @@ export class Sandbox extends Observable {
     return this._importer;
   }
 
+  get modules(): IModule[] {
+    return this._importer.modules;
+  }
+
   get mainExports(): any {
     return this._mainExports;
   }

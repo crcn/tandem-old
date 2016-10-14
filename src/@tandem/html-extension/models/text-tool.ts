@@ -98,7 +98,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
     (<Element>this._targetEntity.section.targetNode).innerHTML = " ";
 
     // save the workspae file -- diffing time
-    this.bus.execute(new SetToolAction(<EditorToolFactoryDependency>this.dependencies.query(pointerToolDependency.ns)));
+    this.bus.execute(new SetToolAction(<EditorToolFactoryDependency>this.dependencies.query(pointerToolDependency.id)));
   }
 
   public canvasMouseDown(event: MouseAction) {
@@ -115,7 +115,7 @@ class InsertTextTool extends InsertTool {
   private _dependencies: Dependencies;
 
   get displayEntityToolFactory() {
-    return <EditorToolFactoryDependency>this._dependencies.query(editInnerHTMLDependency.ns);
+    return <EditorToolFactoryDependency>this._dependencies.query(editInnerHTMLDependency.id);
   }
 
   createSyntheticDOMElement() {

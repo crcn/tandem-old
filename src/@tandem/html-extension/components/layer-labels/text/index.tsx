@@ -59,7 +59,7 @@ export class TextLayerLabelComponent extends React.Component<{ entity: BaseDOMNo
       type="text"
       className="m-layer-label-input"
       onFocus={this.onFocus}
-      value={this.props.entity.change.nodeValue}
+      value={String(this.props.entity.change.nodeValue).trim()}
       onChange={this.onInputChange}
       onBlur={this.doneEditing}
       onKeyDown={this.onKeyDown}

@@ -5,9 +5,21 @@ import { Dependency, IDependency, Dependencies, IInjectable } from "../dependenc
  * inject decorator for properties of classes that live in a Dependencies object
  */
 
-export default function inject(ns?: string, map: (dependency: IDependency) => any = undefined) {
-  return function(target: IInjectable, property: string, descriptor: PropertyDecorator = undefined) {
-    let inject = target["__inject"] = Object.assign({}, target["__inject"] || {});
-    inject[property] = [ns || property, map || (dependency => dependency.value)];
+// deprecated
+export function inject(id?: string, map: (dependency: IDependency) => any = undefined) {
+  return function(target: any, property: any, index: any = undefined) {
+    const key = typeof target === "function" ? index : property;
+    const inject = Reflect.getMetadata("injectProperties", target) || {};
+    inject[key] = [id || property, map || (dependency => dependency.value)];
+    Reflect.defineMetadata("injectProperties", inject, target)
+  }
+}
+
+type injectableType = { new(...rest: any[]): Dependency<any> }
+
+export function inject2(id: string, map: (dependency: IDependency) => any = undefined) {
+  return function(target: IInjectable, property: string, index:number = undefined) {
+
+    console.log(id, arguments, index);
   };
 }

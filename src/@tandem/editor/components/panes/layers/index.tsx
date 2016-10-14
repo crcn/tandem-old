@@ -14,7 +14,6 @@ import { DocumentPaneComponentFactoryDependency } from "@tandem/editor/dependenc
 class LayersPaneComponent extends React.Component<{ app: FrontEndApplication }, any> {
   render() {
     const { editor } = this.props.app;
-
     if (!editor || !editor.bodyEntity) return null;
     return <PaneComponent>
       {

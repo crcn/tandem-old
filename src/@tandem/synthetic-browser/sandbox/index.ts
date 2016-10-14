@@ -58,7 +58,7 @@ export interface IMarkupEdit extends IModuleEdit {
   appendChildNode(child: SyntheticDOMNode, parent?: SyntheticDOMElement);
   insertChildBefore(newNode: SyntheticDOMNode, referenceNode: SyntheticDOMNode);
   replaceChildNode(newNode: SyntheticDOMNode, oldNode: SyntheticDOMNode);
-  setNodeValue(node: SyntheticDOMText|SyntheticDOMComment, nodeValue: string);;
+  setNodeValue(node: SyntheticDOMText|SyntheticDOMComment, nodeValue: string);
 }
 
 export interface IMarkupEditor extends IModuleEditor {

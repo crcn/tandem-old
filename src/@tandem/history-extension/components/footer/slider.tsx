@@ -8,14 +8,19 @@ import { HistorySingletonDependency } from "@tandem/history-extension/dependenci
 
 export class HistorySliderComponent extends React.Component<{ app: FrontEndApplication }, any> {
 
+  get history() {
+    return HistorySingletonDependency.getInstance(this.props.app.dependencies);
+  }
 
   onSliderChange(value) {
     var h = this.props.app.editor;
     // h.move(value);
+
+    this.history.position = value;
   }
 
   render() {
-    const history = HistorySingletonDependency.getInstance(this.props.app.dependencies);
+    const history = this.history;
 
     if (history.length < 2) {
       return null;

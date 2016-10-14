@@ -66,7 +66,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     this.app.editor = editor;
     this.bus.register(this.app.editor);
 
-    await this.bus.execute(new SetToolAction(this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns)));
+    await this.bus.execute(new SetToolAction(this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.id)));
   }
 
   async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {

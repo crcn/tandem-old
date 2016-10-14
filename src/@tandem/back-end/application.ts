@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import * as path from "path";
 import { Application } from "@tandem/common/application";
 
@@ -15,12 +17,12 @@ import { tetherBackEndDependencies } from "@tandem/tether-back-end";
 export default class ServerApplication extends Application {
   constructor(config) {
 
-    const entryNames = ["editor", "tether"];
+    const entryNames = ["editor"];
     const entries = {};
 
     for (const entryName of entryNames) {
       const packagePath = getPackagePath(require.resolve(`@tandem/${entryName}`));
-      const bundlePath   = packagePath + "/" + require(packagePath + "/package.json").bundle
+      const bundlePath   = packagePath + "/" + require(packagePath + "/package.json").bundle;
       Object.assign(entries, {
         [entryName]: require.resolve(bundlePath)
       });

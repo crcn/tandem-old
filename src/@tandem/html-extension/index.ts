@@ -77,7 +77,6 @@ export const htmlExtensionDependencies = [
   // key bindings
   keyBindingDependency,
 
-
   // mime types
   new MimeTypeDependency("css", CSS_MIME_TYPE),
   new MimeTypeDependency("htm", HTML_MIME_TYPE),

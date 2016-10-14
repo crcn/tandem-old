@@ -8,7 +8,7 @@ import { ZoomAction, DeleteSelectionAction } from "@tandem/editor/actions";
 import { BaseCommand, BaseApplicationCommand } from "@tandem/common/commands";
 import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { SettingKeys, ZOOM_INCREMENT, POINTER_TOOL_KEY_CODE } from "@tandem/editor/constants";
-import { SelectAllAction, SetToolAction, UndoAction, RedoAction } from "@tandem/editor/actions";
+import { SelectAllAction, SetToolAction } from "@tandem/editor/actions";
 
 export * from "./base";
 export * from "./manager";
@@ -25,7 +25,7 @@ export const keyBindingsDependency = [
       // slight delay to enable other tools to catch escape key if it' s hit - important
       // for text editing tool particularly
       setTimeout(() => {
-        this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.ns)));
+        this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.id)));
       }, 1);
     }
   }),
@@ -53,16 +53,6 @@ export const keyBindingsDependency = [
     execute(action: Action) {
       document.execCommand("copy");
       this.bus.execute(new DeleteSelectionAction());
-    }
-  }),
-  new GlobalKeyBindingDependency("meta+z", class UndoActionCommand extends BaseCommand {
-    execute(action: Action) {
-      this.bus.execute(new UndoAction());
-    }
-  }),
-  new GlobalKeyBindingDependency("meta+y", class RedoActionCommand extends BaseCommand {
-    execute(action: Action) {
-      this.bus.execute(new RedoAction());
     }
   }),
   new GlobalKeyBindingDependency("alt+\\", class ToggleLeftSidebarCommand extends BaseApplicationCommand<FrontEndApplication> {

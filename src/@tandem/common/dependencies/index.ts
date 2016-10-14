@@ -145,10 +145,10 @@ export class DependenciesDependency extends Dependency<Dependencies> {
 /**
  */
 
-export const FILE_FACTORY_NS = "fileFactories";
 export class FileFactoryDependency extends ClassFactoryDependency {
+  static readonly NS_PREFIX = "fileFactories";
   constructor(mimeType: string, value: { new(sourceData: IFileModelActionResponseData): File }) {
-    super([FILE_FACTORY_NS, mimeType].join("/"), value);
+    super([FileFactoryDependency.NS_PREFIX, mimeType].join("/"), value);
   }
 
   create(sourceData: any): any {
@@ -156,26 +156,33 @@ export class FileFactoryDependency extends ClassFactoryDependency {
   }
 
   static find(mimetype: string, dependencies: Dependencies): FileFactoryDependency {
-    return dependencies.query<FileFactoryDependency>([FILE_FACTORY_NS, mimetype].join("/"));
+    return dependencies.query<FileFactoryDependency>([FileFactoryDependency.NS_PREFIX, mimetype].join("/"));
   }
 }
 
 /**
  */
 
-export const COMMAND_FACTORY_NS = "commands";
 export class CommandFactoryDependency extends ClassFactoryDependency {
+  static readonly NS_PREFIX = "commands";
   readonly actionFilter: Function;
-  constructor(actionFilter: string|Function, readonly clazz: { new(): IActor }) {
-    super([COMMAND_FACTORY_NS, clazz.name].join("/"), clazz);
+  constructor(actionFilter: string|Function, readonly clazz: { new(...rest: any[]): IActor }) {
+    super([CommandFactoryDependency.NS_PREFIX, clazz.name].join("/"), clazz);
     if (typeof actionFilter === "string") {
       this.actionFilter = (action: Action) => action.type === actionFilter;
     } else {
       this.actionFilter = actionFilter;
     }
   }
+  create(): IActor {
+    return super.create();
+  }
   static findAll(dependencies: Dependencies) {
-    return dependencies.query<CommandFactoryDependency>([COMMAND_FACTORY_NS, "**"].join("/"));
+    return dependencies.queryAll<CommandFactoryDependency>([CommandFactoryDependency.NS_PREFIX, "**"].join("/"));
+  }
+
+  static findAllByAction(action: Action, dependencies: Dependencies) {
+    return this.findAll(dependencies).filter((dep) => dep.actionFilter(action));
   }
 
   clone() {
@@ -186,38 +193,43 @@ export class CommandFactoryDependency extends ClassFactoryDependency {
 /**
  */
 
-export const MIME_TYPE_NS = "mimeType";
 export class MimeTypeDependency extends Dependency<string> {
+  static readonly NS_PREFIX = "mimeType";
   constructor(readonly fileExtension: string, readonly mimeType: string) {
-    super([MIME_TYPE_NS, fileExtension].join("/"), mimeType);
+    super([MimeTypeDependency.NS_PREFIX, fileExtension].join("/"), mimeType);
   }
   clone() {
     return new MimeTypeDependency(this.fileExtension, this.mimeType);
   }
   static findAll(dependencies: Dependencies) {
-    return dependencies.queryAll<MimeTypeDependency>([MIME_TYPE_NS, "**"].join("/"));
+    return dependencies.queryAll<MimeTypeDependency>([MimeTypeDependency.NS_PREFIX, "**"].join("/"));
   }
   static lookup(filepath: string, dependencies: Dependencies): string {
     const extension = filepath.split(".").pop();
-    const dep = dependencies.query<MimeTypeDependency>([MIME_TYPE_NS, extension].join("/"));
+    const dep = dependencies.query<MimeTypeDependency>([MimeTypeDependency.NS_PREFIX, extension].join("/"));
     return dep ? dep.value : undefined;
   }
 }
 
 
-export function createSingletonDependency<T>(id: string, clazz: { new(): T }) {
-  return class SingletonDependency extends Dependency<T> {
-    constructor(instance: T) {
-      super(id, instance);
+export function createSingletonDependency<T>(id: string, clazz: { new(...rest): T }) {
+  return class SingletonDependency implements IDependency {
+    static NS: string;
+    private _value: T;
+    readonly overridable = false;
+    readonly id = id;
+    public dependencies: Dependencies;
+
+    constructor(){ }
+    get value(): T {
+      return this._value || (this._value = Injector.create(clazz, [], this.dependencies));
+    }
+    clone() {
+      return new SingletonDependency();
     }
     static getInstance(dependencies: Dependencies): T {
-      let dependency = dependencies.query<Dependency<T>>(id);
-      if (dependency) return dependency.value;
-      const instance = new clazz();
-      Injector.inject(instance, dependencies);
-      dependency = new SingletonDependency(instance);
-      dependencies.register(dependency);
-      return dependency.value;
+      const dep = dependencies.query<SingletonDependency>(id);
+      return dep ? dep.value : undefined;
     }
   }
 }

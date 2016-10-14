@@ -10,7 +10,7 @@ export * from "./base";
 
 export const GLOBAL_KEY_BINDINGS_NS = "global-key-bindings";
 export class GlobalKeyBindingDependency extends ClassFactoryDependency {
-  constructor(readonly key: string | Array<string>, readonly commandClass: { new(): IActor }) {
+  constructor(readonly key: string | Array<string>, readonly commandClass: { new(...rest: any[]): IActor }) {
     super(`${GLOBAL_KEY_BINDINGS_NS}/${key}`, commandClass);
   }
   clone() {
@@ -43,12 +43,12 @@ export class EntityPreviewDependency extends ReactComponentFactoryDependency {
 
 export const EDITOR_TOOL_NS = "editorTool";
 export class EditorToolFactoryDependency extends ClassFactoryDependency {
-  constructor(readonly id: string, readonly icon: string, readonly editorType: string, readonly keyCommand: string, readonly clazz: { new(editor: IEditor): IEditorTool }) {
-    super([EDITOR_TOOL_NS, editorType, id].join("/"), clazz);
+  constructor(readonly name: string, readonly icon: string, readonly editorType: string, readonly keyCommand: string, readonly clazz: { new(editor: IEditor): IEditorTool }) {
+    super([EDITOR_TOOL_NS, editorType, name].join("/"), clazz);
   }
 
   clone() {
-    return new EditorToolFactoryDependency(this.id, this.icon, this.editorType, this.keyCommand, this.clazz);
+    return new EditorToolFactoryDependency(this.name, this.icon, this.editorType, this.keyCommand, this.clazz);
   }
 
   create(editor: IEditor): IEditorTool {
@@ -66,21 +66,21 @@ export class EditorToolFactoryDependency extends ClassFactoryDependency {
 
 export const ENTITY_PANE_COMPONENT_NS = "components/panes/entity";
 export class EntityPaneComponentFactoryDependency extends ReactComponentFactoryDependency {
-  constructor(readonly id: string, readonly componentClass: React.ComponentClass<any>) {
-    super([ENTITY_PANE_COMPONENT_NS, id].join("/"), componentClass);
+  constructor(readonly name: string, readonly componentClass: React.ComponentClass<any>) {
+    super([ENTITY_PANE_COMPONENT_NS, name].join("/"), componentClass);
   }
   clone() {
-    return new EntityPaneComponentFactoryDependency(this.id, this.componentClass);
+    return new EntityPaneComponentFactoryDependency(this.name, this.componentClass);
   }
 }
 
 export const DOCUMENT_PANE_COMPONENT_NS = "components/panes/document";
 export class DocumentPaneComponentFactoryDependency extends ReactComponentFactoryDependency {
-  constructor(readonly id: string, readonly componentClass: React.ComponentClass<any>) {
-    super([DOCUMENT_PANE_COMPONENT_NS, id].join("/"), componentClass);
+  constructor(readonly name: string, readonly componentClass: React.ComponentClass<any>) {
+    super([DOCUMENT_PANE_COMPONENT_NS, name].join("/"), componentClass);
   }
   clone() {
-    return new DocumentPaneComponentFactoryDependency(this.id, this.componentClass);
+    return new DocumentPaneComponentFactoryDependency(this.name, this.componentClass);
   }
 }
 

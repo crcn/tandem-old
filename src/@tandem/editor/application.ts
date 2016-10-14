@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { Application } from "@tandem/common/application";
-import { thread, isMaster } from "@tandem/common/workers";
+import { ApplicationServiceDependency } from "@tandem/common";
 
 // components
 import { rootComponentDependency } from "./components/root";
@@ -17,8 +17,8 @@ import { selectableToolComponentDependency } from "./components/stage-tools/sele
 import { workspaceDependency } from "./services/workspace";
 import { editorServiceDependency } from "./services/editor";
 import { backEndServiceDependency } from "./services/back-end";
-import { historyServiceDependency } from "./services/history";
 import { selectorServiceDependency } from "./services/selector";
+import { receiverServiceDependency } from "./services/receiver";
 import { settingsServiceDependency } from "./services/settings";
 import { clipboardServiceDependency } from "./services/clipboard";
 import { keyBindingsServiceDependency } from "./services/key-binding";
@@ -81,9 +81,9 @@ export class FrontEndApplication extends Application {
       workspaceDependency,
       editorServiceDependency,
       backEndServiceDependency,
-      historyServiceDependency,
       selectorServiceDependency,
       settingsServiceDependency,
+      receiverServiceDependency,
       clipboardServiceDependency,
       keyBindingsServiceDependency,
       rootComponentRendererDependency,
@@ -96,10 +96,10 @@ export class FrontEndApplication extends Application {
 
       // extensions
       sassExtensionDependencies,
-      historyExtensionDependencies,
       htmlExtensionDependencies,
       reactExtensionDependencies,
       pegjsExtensionDependencies,
+      historyExtensionDependencies,
       markdownExtensionDependencies,
       mustacheExtensionDependencies,
       tdprojectExtensionDependencies,
