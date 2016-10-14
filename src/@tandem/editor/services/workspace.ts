@@ -78,7 +78,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
       const { editor } = body.firstChild.module;
 
       editor.edit((edit) => {
-        const frame = this.app.editor.browser.document.createElement("frame");
+        const frame = this.app.editor.browser.document.createElement("artboard");
         frame.setAttribute("src", path);
         edit.appendChildNode(frame);
       });

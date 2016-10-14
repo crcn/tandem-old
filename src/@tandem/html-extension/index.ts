@@ -1,13 +1,6 @@
 import { IApplication } from "@tandem/common/application";
 import { CSS_MIME_TYPE, HTML_MIME_TYPE, JS_MIME_TYPE } from "@tandem/common";
 
-// components
-import { cssPaneComponentDependency } from "./components/css-pane";
-import { cssColorTokenComponentFactoryDependency } from "./components/css-color-token";
-
-// stage tool components
-import { cssHighlightElementToolComponentFactoryDependency } from "./components/css-highlight-element-tool";
-
 // sandbox
 import { HTMLCSSModule, HTMLCSSDOMModule } from "./sandbox";
 
@@ -22,25 +15,26 @@ import { 
   HTMLDocumentEntity,
 } from "./synthetic";
 
-import { MarkupModule, HTML_TAG_NAMES } from "@tandem/synthetic-browser";
+import {
+  MarkupModule,
+  HTML_TAG_NAMES,
+  SyntheticDOMText,
+  SyntheticDOMElement,
+  SyntheticDOMComment,
+  SyntheticHTMLElement,
+} from "@tandem/synthetic-browser";
 import { SandboxModuleFactoryDependency } from "@tandem/sandbox";
 
-// layer components
-import { textLayerLabelComponentDependency } from "./components/text-layer-label";
-import { elementLayerLabelComponentDependency } from "./components/element-layer-label";
-import { commentLayerLabelComponentDependency } from "./components/comment-layer-label";
-import { cssRuleLayerLabelComponentDependency } from "./components/css-rule-layer-label";
-import { cssAtRuleLayerLabelComponentDependency } from "./components/css-atrule-layer-label";
-import { cssCommentLayerLabelComponentDependency } from "./components/css-comment-layer-label";
-import { cssDeclarationLayerLabelComponentDependency } from "./components/css-declaration-layer-label";
 
-// token components
-import { cssUnitEditorTokenComponentFactoryDependency } from "./components/css-unit-editor-token";
-import { cssNumericEditorTokenComponentFactoryDependency } from "./components/css-numeric-editor-token";
-import { cssReferenceEditorTokenComponentFactoryDependency } from "./components/css-reference-editor-token";
+import { LayerLabelComponentFactoryDependency } from "@tandem/editor/dependencies";
+
+// layer components
+import { TextLayerLabelComponent } from "./components/layer-labels/text";
+import { CommentLayerLabelCoponent } from "./components/layer-labels/comment";
+import { ElementLayerLabelComponent } from "./components/layer-labels/element";
 
 // services
-import { pastHTMLServiceDependency, cssSelectorServiceDependency  } from "./services";
+import { pastHTMLServiceDependency  } from "./services";
 
  // tools
 import { textToolDependency, editInnerHTMLDependency } from "./models/text-tool";
@@ -50,29 +44,10 @@ import { keyBindingDependency } from "./key-bindings";
 
 import { MimeTypeDependency } from "@tandem/common/dependencies";
 
- // entities
- import {
-   htmlTextDependency,
-   htmlCommentDependency,
-   htmlStyleEntityDependency,
-   htmlDocumentFragmentDependency,
-   cssRuleEntityFactoryDependency,
-   defaultElementFactoyDependency,
-   cssDeclarationEntityDependency,
-   cssAtRuleEntityFactoryDependency,
-   defaultAttributeFactoryDependency,
-   cssCommentEntityFactoryDependency,
-} from "./lang";
 
 const visibleEntityDependencies = HTML_TAG_NAMES.map((tagName) => new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, tagName, VisibleHTMLEntity));
 
 export const htmlExtensionDependencies = [
-
-  // components
-  cssPaneComponentDependency,
-  cssAtRuleLayerLabelComponentDependency,
-  cssCommentLayerLabelComponentDependency,
-  cssColorTokenComponentFactoryDependency,
 
   // sandbox
   ...visibleEntityDependencies,
@@ -86,25 +61,14 @@ export const htmlExtensionDependencies = [
   new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "link", HTMLLinkEntity),
   new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "style", HTMLStyleEntity),
 
-  // stage tool components
-  cssHighlightElementToolComponentFactoryDependency,
-
   // layer components
-  textLayerLabelComponentDependency,
-  defaultAttributeFactoryDependency,
-  commentLayerLabelComponentDependency,
-  elementLayerLabelComponentDependency,
-  cssRuleLayerLabelComponentDependency,
-  cssDeclarationLayerLabelComponentDependency,
-
-  // unit components
-  cssUnitEditorTokenComponentFactoryDependency,
-  cssNumericEditorTokenComponentFactoryDependency,
-  cssReferenceEditorTokenComponentFactoryDependency,
+  new LayerLabelComponentFactoryDependency(SyntheticHTMLElement.name, ElementLayerLabelComponent),
+  new LayerLabelComponentFactoryDependency(SyntheticDOMText.name, TextLayerLabelComponent),
+  new LayerLabelComponentFactoryDependency(SyntheticDOMElement.name, ElementLayerLabelComponent),
+  new LayerLabelComponentFactoryDependency(SyntheticDOMComment.name, CommentLayerLabelCoponent),
 
   // services
   pastHTMLServiceDependency,
-  cssSelectorServiceDependency,
 
   // tools
   textToolDependency,
@@ -113,16 +77,6 @@ export const htmlExtensionDependencies = [
   // key bindings
   keyBindingDependency,
 
-  // entities
-  htmlTextDependency,
-  htmlCommentDependency,
-  htmlStyleEntityDependency,
-  defaultElementFactoyDependency,
-  htmlDocumentFragmentDependency,
-  cssRuleEntityFactoryDependency,
-  cssDeclarationEntityDependency,
-  cssAtRuleEntityFactoryDependency,
-  cssCommentEntityFactoryDependency,
 
   // mime types
   new MimeTypeDependency("css", CSS_MIME_TYPE),
@@ -131,9 +85,7 @@ export const htmlExtensionDependencies = [
 ];
 
 export * from "./actions";
-export * from "./lang";
 export * from "./constants";
-export * from "./dom";
 export * from "./key-bindings";
 export * from "./services";
 export * from "./synthetic";

@@ -1,10 +1,10 @@
-import { TDFrameStageToolComponent } from "./components";
+import { TDArtboardStageToolComponent } from "./components";
 import { ReactComponentFactoryDependency } from "@tandem/editor";
 import { MimeTypeDependency, HTML_MIME_TYPE } from "@tandem/common";
 import { TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS } from "./constants";
 
 import {
-  TDFrameEntity,
+  TDArtboardEntity,
   TDProjectEntity,
 } from "./synthetic";
 
@@ -30,13 +30,13 @@ import {
 export const tdprojectExtensionDependencies = [
 
   // stage tool components
-  new ReactComponentFactoryDependency("components/tools/pointer/tdprojectFrame", TDFrameStageToolComponent),
+  new ReactComponentFactoryDependency("components/tools/pointer/tdprojectFrame", TDArtboardStageToolComponent),
 
   // elements
   new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "default", SyntheticHTMLElement),
 
   // components
-  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "frame", TDFrameEntity),
+  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "artboard", TDArtboardEntity),
   new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "default", VisibleHTMLEntity),
   new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "tdproject", TDProjectEntity),
   new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "style", HTMLStyleEntity),

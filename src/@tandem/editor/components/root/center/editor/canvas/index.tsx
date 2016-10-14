@@ -1,10 +1,10 @@
 import "./index.scss";
 import * as React from "react";
 import { IPoint } from "@tandem/common/geom";
-import IsolateComponent  from "@tandem/editor/components/isolate";
 import { BoundingRect } from "@tandem/common/geom";
 import ToolsLayerComponent from "./tools";
 import PreviewLayerComponent from "./preview";
+import { IsolateComponent }  from "@tandem/editor/components/common";
 import { Editor, Workspace } from "@tandem/editor/models";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { UpdateAction, IActor } from "@tandem/common";

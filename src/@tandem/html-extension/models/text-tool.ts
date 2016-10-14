@@ -11,7 +11,6 @@ import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { BaseApplicationService } from "@tandem/common/services";
 import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
 import { IEditorTool, BaseEditorTool, IEditor } from "@tandem/editor/models";
-import { MarkupElementExpression , VisibleMarkupElementEntity } from "../lang";
 import {
   Dependency,
   MAIN_BUS_NS,
@@ -78,7 +77,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
   }
 
   private get _targetEntity() {
-    return <VisibleMarkupElementEntity>this.editor.selection[0];
+    return this.editor.selection[0];
   }
 
   private get _targetNode() {

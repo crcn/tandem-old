@@ -6,6 +6,9 @@ import {
   SyntheticDOMNode,
   MarkupExpression,
   SyntheticDocument,
+  SyntheticDOMComment,
+  IMarkupValueNodeExpression,
+  SyntheticDOMText,
   SyntheticDOMElement,
   MarkupNodeExpression,
   formatMarkupExpression,
@@ -54,6 +57,8 @@ export interface IMarkupEdit extends IModuleEdit {
   removeElementAttribute(element: SyntheticDOMElement, name: string);
   appendChildNode(child: SyntheticDOMNode, parent?: SyntheticDOMElement);
   insertChildBefore(newNode: SyntheticDOMNode, referenceNode: SyntheticDOMNode);
+  replaceChildNode(newNode: SyntheticDOMNode, oldNode: SyntheticDOMNode);
+  setNodeValue(node: SyntheticDOMText|SyntheticDOMComment, nodeValue: string);;
 }
 
 export interface IMarkupEditor extends IModuleEditor {
@@ -88,6 +93,20 @@ export class InsertChildNodeBeforeAction extends Action {
   }
 }
 
+export class ReplaceChildNodeAction extends Action {
+  static readonly REPLACE_CHILD_NODE = "replaceChildNode";
+  constructor(readonly newChild: SyntheticDOMNode, readonly oldChild: SyntheticDOMNode) {
+    super(ReplaceChildNodeAction.REPLACE_CHILD_NODE);
+  }
+}
+
+export class SetNodeValueAction extends Action {
+  static readonly SET_NODE_VALUE = "setNodeValue";
+  constructor(readonly node: SyntheticDOMComment|SyntheticDOMText, readonly nodeValue: string) {
+    super(SetNodeValueAction.SET_NODE_VALUE);
+  }
+}
+
 export class MarkupEdit extends BaseSandboxModuleEdit implements IMarkupEdit {
   setElementAttribute(element, name, value) {
     this.actions.push(new SetElementAttributeAction(element, name, value));
@@ -100,6 +119,12 @@ export class MarkupEdit extends BaseSandboxModuleEdit implements IMarkupEdit {
   }
   insertChildBefore(child: SyntheticDOMNode, referenceNode: SyntheticDOMNode) {
     this.actions.push(new InsertChildNodeBeforeAction(child, referenceNode));
+  }
+  replaceChildNode(child: SyntheticDOMNode, oldChild: SyntheticDOMNode) {
+    this.actions.push(new ReplaceChildNodeAction(child, oldChild));
+  }
+  setNodeValue(node: SyntheticDOMComment|SyntheticDOMText, nodeValue: string) {
+    this.actions.push(new SetNodeValueAction(node, nodeValue));
   }
 }
 
@@ -130,6 +155,14 @@ export class MarkupEditor extends BaseSandboxModuleEditor<MarkupEdit> implements
 
   [InsertChildNodeBeforeAction.INSERT_CHILD_NODE_BEFORE](action: InsertChildNodeBeforeAction) {
     (<MarkupElementExpression>action.referenceNode.expression.parent).insertBefore(parseMarkup(action.child.toString()), action.referenceNode.expression);
+  }
+
+  [ReplaceChildNodeAction.REPLACE_CHILD_NODE](action: ReplaceChildNodeAction) {
+    (<MarkupElementExpression>action.oldChild.expression.parent).replaceChild(parseMarkup(action.newChild.toString()), action.oldChild.expression);
+  }
+
+  [SetNodeValueAction.SET_NODE_VALUE](action: SetNodeValueAction) {
+    (<IMarkupValueNodeExpression><any>action.node.expression).nodeValue = action.nodeValue;
   }
 
   removeSynthetic(action: RemoveSyntheticAction) {

@@ -49,6 +49,10 @@ export class Editor implements IEditor {
     return this.browser && this.browser.documentEntity;
   }
 
+  get bodyEntity() {
+    return this.browser && this.browser.bodyEntity;
+  }
+
   get zoom() { return this.transform.scale; }
   set zoom(value: number) {
     this.transform.scale = Math.max(

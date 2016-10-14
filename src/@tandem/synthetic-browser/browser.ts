@@ -8,6 +8,7 @@ import {
   Observable,
   TypeWrapBus,
   ChangeAction,
+  findTreeNode,
   Dependencies,
   HTML_MIME_TYPE,
   MainBusDependency,
@@ -82,6 +83,10 @@ export class SyntheticBrowser extends Observable {
 
   get documentEntity() {
     return this._documentEntity;
+  }
+
+  get bodyEntity() {
+    return findTreeNode(this.documentEntity, (entity) => entity.source === this.document.body);
   }
 
   protected createSandboxGlobals(): SyntheticWindow {

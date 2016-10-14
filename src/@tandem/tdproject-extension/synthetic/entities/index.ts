@@ -1,2 +1,2 @@
 export * from "./tdproject";
-export * from "./frame";
+export * from "./artboard";

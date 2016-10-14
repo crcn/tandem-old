@@ -9,6 +9,7 @@ import { Action, IFileModelActionResponseData } from "../actions";
 import { File } from "@tandem/common/models";
 import {
   IFactory,
+  Injector,
   Dependency,
   IDependency,
   Dependencies,
@@ -200,5 +201,23 @@ export class MimeTypeDependency extends Dependency<string> {
     const extension = filepath.split(".").pop();
     const dep = dependencies.query<MimeTypeDependency>([MIME_TYPE_NS, extension].join("/"));
     return dep ? dep.value : undefined;
+  }
+}
+
+
+export function createSingletonDependency<T>(id: string, clazz: { new(): T }) {
+  return class SingletonDependency extends Dependency<T> {
+    constructor(instance: T) {
+      super(id, instance);
+    }
+    static getInstance(dependencies: Dependencies): T {
+      let dependency = dependencies.query<Dependency<T>>(id);
+      if (dependency) return dependency.value;
+      const instance = new clazz();
+      Injector.inject(instance, dependencies);
+      dependency = new SingletonDependency(instance);
+      dependencies.register(dependency);
+      return dependency.value;
+    }
   }
 }

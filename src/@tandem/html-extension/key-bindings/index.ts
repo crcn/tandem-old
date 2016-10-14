@@ -7,7 +7,6 @@ import { textToolDependency } from "@tandem/html-extension/models/text-tool";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
-import { MarkupElementExpression } from "@tandem/html-extension/lang";
 import { BaseCommand, BaseApplicationCommand } from "@tandem/common/commands";
 import { parseMarkup, evaluateMarkup, SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { ClassFactoryDependency, DEPENDENCIES_NS, Dependencies } from "@tandem/common/dependencies";

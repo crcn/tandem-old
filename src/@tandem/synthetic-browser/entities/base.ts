@@ -31,9 +31,11 @@ import { decode } from "ent";
 
 import { WrapBus } from "mesh";
 import { camelCase } from "lodash";
+import { IMarkupEdit } from "@tandem/synthetic-browser";
 import { SyntheticRendererAction } from "../actions";
-import { SyntheticDOMNodeEntityClassDependency } from "../dependencies";
+import { SyntheticDOMNodeEntityClassDependency } from "../dependencies"
 import { SyntheticDOMAttributes, SyntheticDOMAttribute } from "../dom";
+
 
 let _i: number = 0;
 
@@ -100,6 +102,24 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
     return this._uid;
   }
 
+  async save(): Promise<any> {
+    this.module.editor.edit(this.onEdit.bind(this));
+  }
+
+  async remove(): Promise<any> {
+    return this.edit((edit) => {
+      edit.remove(this.source);
+    });
+  }
+
+  public edit(onEdit: (edit: IMarkupEdit) => any) {
+    // this may happen if whatever's mutating the entity doesn't check the "editable" property.
+    if (!this.editable) {
+      return Promise.reject(new Error("Cannot save entity source that is not editable."));
+    }
+    this.module.editor.edit(onEdit.bind(this));
+  }
+
   async evaluate() {
     if (this._evaluated) {
       await this.update();
@@ -124,6 +144,10 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 
   get source(): T {
     return this._source;
+  }
+
+  protected onEdit(edit: IMarkupEdit) {
+    // OVERRIDE ME
   }
 
   protected renderEntityAttributes() {
@@ -184,7 +208,6 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 
   async load() { }
   async update() { }
-
 
   protected renderAttributes() {
 

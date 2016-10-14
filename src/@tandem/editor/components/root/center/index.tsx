@@ -2,7 +2,8 @@ import "./index.scss";
 
 import * as React from "react";
 import EditorCommponent from "./editor";
-import RegisteredComponent from "@tandem/editor/components/registered";
+import { RegisteredComponent } from "@tandem/editor/components/common";
+
 import { FrontEndApplication } from "@tandem/editor/application";
 import { Workspace } from "@tandem/editor/models";
 

@@ -2,9 +2,12 @@
 
 .m-preview-footer {
   font-size: $font-size-1;
+  background: $color-grey-10;
   position: absolute;
-  color: $color-blue-4;
+  color: $color-grey-7;
   padding: $padding-1 $padding-2;
   bottom: 0px;
+  width: 100%;
+  box-sizing: border-box;
   // background-color:$color-blue-11;
 }

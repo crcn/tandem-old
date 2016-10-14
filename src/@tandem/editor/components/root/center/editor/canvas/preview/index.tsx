@@ -1,7 +1,7 @@
 import "./index.scss";
 
 import * as React from "react";
-import RegisteredComponent from "@tandem/editor/components/registered";
+import { RegisteredComponent } from "@tandem/editor/components/common";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { ISyntheticDocumentRenderer } from "@tandem/synthetic-browser";
 

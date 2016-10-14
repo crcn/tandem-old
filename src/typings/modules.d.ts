@@ -37,6 +37,17 @@ declare module "mongoid-js" {
   export = mongoid;
 }
 
+declare module "react-slider" {
+
+  function ReactSlider();
+
+  namespace ReactSlider {
+
+  }
+
+  export = ReactSlider;
+}
+
 declare module "pretty" {
   function pretty(source: string): string;
 

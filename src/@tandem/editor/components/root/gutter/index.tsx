@@ -1,9 +1,8 @@
 import "./index.scss";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/models";
-import RegisteredComponent from "@tandem/editor/components/registered";
+import { RegisteredComponent, SideDraggerComponent } from "@tandem/editor/components/common";
 import { FrontEndApplication } from "@tandem/editor/application";
-import { SideDraggerComponent } from "@tandem/editor/components/side-dragger";
 import { ENTITY_PANE_COMPONENT_NS } from "@tandem/editor/dependencies";
 import { MetadataValueReference, DefaultValueReference, MinMaxValueReference } from "@tandem/common/reference";
 

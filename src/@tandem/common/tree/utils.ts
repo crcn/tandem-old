@@ -18,8 +18,11 @@ export function flattenTree<T extends ITreeNode<any>>(node: T): T[] {
 };
 
 export function findTreeNode<T extends ITreeNode<any>>(node: T, filter: (node: T) => boolean): T {
-  if (filter(node)) return node;
-  return node.children.find(child => findTreeNode(child, filter));
+  if(filter(node)) return node;
+  for (const child of node.children) {
+    const found = findTreeNode(child, filter);
+    if (found) return found;
+  }
 };
 
 export function getTreeAncestors<T extends ITreeNode<any>>(node: T): T[] {

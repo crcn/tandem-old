@@ -1,9 +1,5 @@
-- css pane
-- display tandem components in tandem
-
-- [ ] point move / resize edits to proper CSS rules or prompt user
-- [ ] make edits to CSS sources
-- [ ] make edits to SCSS sources
-- [ ] shadow DOM renderer (for calculating properties)
-- [ ] get insert frame tool to work
-- [ ] get insert text to work
+- [ ] layers
+  - [ ] drag and drop
+- [ ] scss parsing
+- [ ] history slider
+- [ ] ability to save specific modules

@@ -1,1 +1,1 @@
-export * from "./frame";
+export * from "./artboard";

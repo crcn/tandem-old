@@ -63,8 +63,6 @@ export class CommonJSSandboxModule extends BaseSandboxModule {
       __dirname  : path.dirname(this.fileName),
     };
 
-    console.log("evaluate");
-
     this._run(global, context);
   }
 }

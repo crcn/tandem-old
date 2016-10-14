@@ -150,7 +150,6 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
       const module = moduleCache[envKind] = moduleFactory.create(resolvedPath, content, this._sandbox);
       await module.load();
       module.observe(new WrapBus(this.onModuleAction.bind(this)));
-      watchProperty(module, "content", this.onModuleContentChange.bind(this, module));
     }
 
     return moduleCache[envKind];
@@ -187,7 +186,7 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     this.notify(new ModuleImporterAction(ModuleImporterAction.MODULE_CONTENT_CHANGED));
   }
 
-  protected onModuleContentChange(module: IModule, newContent: string, oldContent: string) {
+  protected onModuleEdited(module: IModule, newContent: string) {
 
     if (this._fileContentCache[module.fileName]) {
       this._fileContentCache[module.fileName] = newContent;
@@ -197,6 +196,9 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
   }
 
   protected onModuleAction(action: Action) {
+    if (action.type === SandboxModuleAction.EDITED) {
+      this.onModuleEdited(action.target, action.target.content);
+    }
     this.notify(action);
   }
 }

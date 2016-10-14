@@ -1,6 +1,7 @@
 import { IModule } from "./module";
 import { ISynthetic } from "./synthetic";
 import { Response, Writable } from "mesh";
+import { SandboxModuleAction } from "./actions";
 import {
   Action,
   IActor,
@@ -107,6 +108,7 @@ export abstract class BaseSandboxModuleEditor<T extends IModuleEdit> extends Obs
     }
 
     this.module.content = this.getFormattedContent();
+    this.module.notify(new SandboxModuleAction(SandboxModuleAction.EDITED));
   }
 
   protected abstract removeSynthetic(action: RemoveSyntheticAction);

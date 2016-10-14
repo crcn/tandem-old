@@ -118,3 +118,18 @@ export class TokenComponentFactoryDependency extends ReactComponentFactoryDepend
   }
 }
 
+export class FooterComponentFactoryDependency extends ReactComponentFactoryDependency {
+  static readonly NS_PREFIX = "footerComponentFactories";
+  constructor(readonly name: string, readonly componentClass: React.ComponentClass<any>) {
+    super(FooterComponentFactoryDependency.getNamespace(name), componentClass);
+  }
+  static getNamespace(name: string) {
+    return [FooterComponentFactoryDependency.NS_PREFIX, name].join("/");
+  }
+  static find(name: string, dependencies: Dependencies) {
+    return dependencies.query<FooterComponentFactoryDependency>(this.getNamespace(name));
+  }
+  clone() {
+    return new FooterComponentFactoryDependency(this.name, this.componentClass);
+  }
+}

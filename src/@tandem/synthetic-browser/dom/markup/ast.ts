@@ -68,9 +68,15 @@ export abstract class MarkupContainerExpression extends MarkupNodeExpression {
   appendChild(child: MarkupNodeExpression) {
     this.childNodes.push(child);
   }
+
   insertBefore(child: MarkupNodeExpression, referenceNode: MarkupNodeExpression) {
     const index = this.childNodes.indexOf(referenceNode);
     this.childNodes.splice(index, 0, child);
+  }
+
+  replaceChild(newChild: MarkupNodeExpression, oldChild: MarkupNodeExpression) {
+    const index = this.childNodes.indexOf(oldChild);
+    this.childNodes.splice(index, 1, newChild);
   }
 }
 

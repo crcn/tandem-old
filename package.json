@@ -94,6 +94,7 @@
     "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^15.2.1",
     "react-input-autosize": "^1.1.0",
+    "react-slider": "^0.7.0",
     "reflect-metadata": "^0.1.8",
     "resolve": "^1.1.7",
     "sass.js": "^0.9.12",

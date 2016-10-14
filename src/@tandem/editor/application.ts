@@ -4,14 +4,14 @@ import { thread, isMaster } from "@tandem/common/workers";
 
 // components
 import { rootComponentDependency } from "./components/root";
-import { layersPaneComponentDepency } from "./components/document-layers-pane";
+import { layersPaneComponentDepency } from "./components/panes/layers";
 
 // commponent tools
-import { gridToolComponentDependency } from "./components/grid-tool";
-import { insertToolComponentDependency } from "./components/insert-tool";
-import { dragSelectComponentDependency } from "./components/drag-select-tool";
-import { selectorToolComponentDependency } from "./components/selector-tool";
-import { selectableToolComponentDependency } from "./components/selectable-tool";
+import { gridToolComponentDependency } from "./components/stage-tools/grid";
+import { insertToolComponentDependency } from "./components/stage-tools/insert";
+import { dragSelectComponentDependency } from "./components/stage-tools/drag-select";
+import { selectorToolComponentDependency } from "./components/stage-tools/selector";
+import { selectableToolComponentDependency } from "./components/stage-tools/selectable";
 
 // services
 import { workspaceDependency } from "./services/workspace";
@@ -35,6 +35,7 @@ import { htmlExtensionDependencies } from "@tandem/html-extension";
 import { sassExtensionDependencies  } from "@tandem/sass-extension";
 import { pegjsExtensionDependencies } from "@tandem/peg-extension";
 import { reactExtensionDependencies } from "@tandem/react-extension";
+import { historyExtensionDependencies } from "@tandem/history-extension";
 import { markdownExtensionDependencies } from "@tandem/markdown-extension";
 import { mustacheExtensionDependencies } from "@tandem/mustache-extension";
 import { tdprojectExtensionDependencies } from "@tandem/tdproject-extension";
@@ -95,6 +96,7 @@ export class FrontEndApplication extends Application {
 
       // extensions
       sassExtensionDependencies,
+      historyExtensionDependencies,
       htmlExtensionDependencies,
       reactExtensionDependencies,
       pegjsExtensionDependencies,

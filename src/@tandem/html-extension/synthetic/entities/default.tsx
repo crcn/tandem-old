@@ -36,16 +36,6 @@ export class VisibleHTMLEntity extends BaseVisibleDOMNodeEntity<SyntheticHTMLEle
     });
   }
 
-  async save() {
-
-    // this may happen if whatever's mutating the entity doesn't check the "editable" property.
-    if (!this.editable) {
-      return Promise.reject(new Error("Cannot save entity source that is not editable."));
-    }
-
-    this.module.editor.edit(this.onEdit.bind(this));
-  }
-
   get capabilities() {
     const style: SyntheticCSSStyleDeclaration = getComputedStyle(this.source);
     return new DOMNodeEntityCapabilities(

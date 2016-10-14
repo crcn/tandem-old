@@ -12,4 +12,5 @@ export class ModuleImporterAction extends Action {
 
 export class SandboxModuleAction extends Action {
   static readonly EVALUATING = "evaluating";
+  static readonly EDITED = "edited";
 }
