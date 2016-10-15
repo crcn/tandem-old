@@ -43,11 +43,10 @@ import { typescriptExtensionDependencies } from "@tandem/typescript-extension";
 import { javascriptExtensionDependencies } from "@tandem/javascript-extension";
 
 import { Metadata } from "@tandem/common/metadata";
-import { Workspace, Editor } from "./models";
+import { Editor } from "./models";
 
 export class FrontEndApplication extends Application {
 
-  // public workspace: Workspace;
   public editor: Editor;
   public settings: Metadata;
   public metadata: Metadata;

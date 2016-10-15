@@ -1,19 +1,77 @@
-<link rel="import" href="pane.tdm">
 <link rel="import" href="gutter.tdm">
+<link rel="import" href="components.tdm">
 
-<template id="html-element-style">
-  <pane title="Stroke">
-  </pane>
-  <pane title="Stroke">
-  </pane>
-  <pane title="Stroke">
-  </pane>
-  <pane title="Background">
-  </pane>
-  <pane title="Stroke">
-  </pane>
+<style type="text/scss">
+  .color-input {
+  }
+
+  // position
+  .border-input {
+  }
+
+</style>
+
+<template id="html-element-style-typography">
+  <div class="td-pane">
+    <div class="td-pane-header">
+      Typography
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <dropdown label="Font Family" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-8">
+          <dropdown label="Regular" />
+        </div>
+        <div class="col-xs-4">
+          <dropdown label="12pt" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-8">
+          <input value="100%" />
+        </div>
+        <div class="col-xs-4">
+          <input value="0%" />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="html-element-style-pane">
+  <div class="td-pane">
+    <div class="td-pane-header">
+      Borders
+    </div>
+    <div class="container">
+
+    </div>
+  </div>
+
+  <div class="td-pane">
+    <div class="td-pane-header">
+      Fills
+    </div>
+    <div class="container">
+    </div>
+  </div>
+
+  <html-element-style-typography />
+
+  <div class="td-pane">
+    <div class="td-pane-header">
+      Borders
+    </div>
+    <div class="container">
+
+    </div>
+  </div>
 </template>
 
 <gutter>
-  <html-element-style />
+  <html-element-style-pane />
 </gutter>

@@ -3,11 +3,12 @@ import "./index.scss";
 import * as React from "react";
 import { BoundingRect } from "@tandem/common";
 import * as AutosizeInput from "react-input-autosize";
-import { FrontEndApplication, Editor } from "@tandem/editor";
-import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
+import { SelectAction } from "@tandem/editor/actions";
 import { TDArtboardEntity } from "@tandem/tdproject-extension/synthetic";
+import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
+import { FrontEndApplication, Editor } from "@tandem/editor";
 
-export class TDArtboardComponent extends React.Component<{ frame: TDArtboardEntity, editor: Editor }, { editedTitle: string }> {
+export class TDArtboardComponent extends React.Component<{ frame: TDArtboardEntity, editor: Editor, app: FrontEndApplication }, { editedTitle: string }> {
 
   constructor() {
     super();
@@ -48,6 +49,10 @@ export class TDArtboardComponent extends React.Component<{ frame: TDArtboardEnti
     });
   }
 
+  selectEntity = () => {
+    this.props.app.bus.execute(new SelectAction([this.props.frame]));
+  }
+
   onKeyDown = (event) => {
     const keyCode = event.which;
     switch (event.which) {
@@ -81,7 +86,7 @@ export class TDArtboardComponent extends React.Component<{ frame: TDArtboardEnti
     };
 
     return <div className="m-tdartboard-stage-tool--item" style={style}>
-      <div className="m-tdartboard-stage-tool--item--title" onDoubleClick={this.editTitle} style={titleStyle}>
+      <div className="m-tdartboard-stage-tool--item--title" onClick={this.selectEntity} onDoubleClick={this.editTitle} style={titleStyle}>
         { this.state.editedTitle != null ? <AutosizeInput ref="input" value={this.state.editedTitle} onChange={this.onTitleChange} onBlur={this.cancelEdit} onKeyDown={this.onKeyDown} /> : <span>{frame.title || "Untitled"}</span> }
       </div>
     </div>;
@@ -106,7 +111,7 @@ export class TDArtboardStageToolComponent extends React.Component<{ app: FrontEn
       <div style={backgroundStyle} className="m-tdartboard-stage-tool--background" />
       {
         frames.map((frame) => {
-          return <TDArtboardComponent key={frame.uid} editor={editor} frame={frame} />;
+          return <TDArtboardComponent key={frame.uid} editor={editor} frame={frame} app={this.props.app} />;
         })
       }
     </div>;

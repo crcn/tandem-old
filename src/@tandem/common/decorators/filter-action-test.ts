@@ -1,7 +1,7 @@
 import { Action } from "@tandem/common/actions";
 import { expect } from "chai";
 import { Service } from "@tandem/common/services";
-import filterAction from "./filter-action";
+import { filterAction } from "./filter-action";
 import { DSInsertAction } from "../actions";
 
 describe(__filename + "#", () => {

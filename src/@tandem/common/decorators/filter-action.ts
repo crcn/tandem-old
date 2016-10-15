@@ -5,8 +5,8 @@
  * update(action:UpdateAction) { }
  */
 
-export default (filter: Function) => (
-  (proto, name, inf) => {
+export function filterAction (filter: Function) {
+  return (proto, name, inf) => {
     const oldValue = inf.value;
     inf.value = function (action) {
       if (filter(action)) {
@@ -14,4 +14,4 @@ export default (filter: Function) => (
       }
     };
   }
-);
+};

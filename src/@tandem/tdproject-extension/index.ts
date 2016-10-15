@@ -4,7 +4,6 @@ import { MimeTypeDependency, HTML_MIME_TYPE } from "@tandem/common";
 import { TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS } from "./constants";
 
 import {
-  TDProjectEntity,
   TDArtboardEntity,
   SyntheticTDRepeatElement,
   SyntheticTDTemplateElement,
@@ -46,7 +45,6 @@ export const tdprojectExtensionDependencies = [
   // components
   new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "artboard", TDArtboardEntity),
   new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "default", VisibleHTMLEntity),
-  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "tdproject", TDProjectEntity),
   new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "script", NoopDOMENtity),
   new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "link", NoopDOMENtity),
 

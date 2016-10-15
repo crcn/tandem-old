@@ -3,7 +3,7 @@ import { ITyped } from "@tandem/common/object";
 import { INamed } from "@tandem/common/object";
 import { IBrokerBus } from "../busses";
 import { IApplication } from "@tandem/common/application";
-import { IEntity, IEntityDocument, IASTNode } from "@tandem/common/lang";
+import { IASTNode } from "@tandem/common/lang";
 import { Action, IFileModelActionResponseData } from "../actions";
 
 import { File } from "@tandem/common/models";
@@ -51,62 +51,6 @@ export class ApplicationSingletonDependency extends Dependency<IApplication> {
 
   static find(Dependencies: Dependencies): ApplicationSingletonDependency {
     return Dependencies.query<ApplicationSingletonDependency>(APPLICATION_SINGLETON_NS);
-  }
-}
-
-/**
- */
-
-export const ENTITIES_NS = "entities";
-
-// TODO - possibly require renderer here as well
-export class EntityFactoryDependency extends ClassFactoryDependency {
-
-  constructor(readonly expressionClass: { new(...rest): IASTNode }, readonly entityClass: { new(source: IASTNode): IEntity }, readonly name?: string) {
-    super(EntityFactoryDependency.getNamespace(expressionClass, name), entityClass);
-  }
-
-  clone() {
-    return new EntityFactoryDependency(this.expressionClass, this.entityClass, this.name);
-  }
-
-  create(source: IASTNode) {
-    return super.create(source);
-  }
-
-  static getNamespace(expressionClass: Function, name?: string) {
-    return [ENTITIES_NS, expressionClass.name, name || "default"].join("/");
-  }
-
-  static findBySourceType(expressonClass: Function, dependencies: Dependencies) {
-    return dependencies.query<EntityFactoryDependency>(this.getNamespace(expressonClass));
-  }
-
-  static findAll(dependencies: Dependencies): Array<EntityFactoryDependency> {
-    return dependencies.queryAll<EntityFactoryDependency>([ENTITIES_NS, "**"].join("/"));
-  }
-
-  static findBySource(source: IASTNode, dependencies: Dependencies) {
-    return dependencies.query<EntityFactoryDependency>(this.getNamespace(source.constructor, (<INamed><any>source).name)) ||
-    this.findBySourceType(source.constructor, dependencies);
-  }
-
-  static createEntityFromSource(source: IASTNode, dependencies: Dependencies) {
-
-    const dependency = this.findBySource(source, dependencies);
-
-    if (!dependency) {
-      throw new Error(`Unable to find entity factory for source type "${source.constructor.name}".`);
-    }
-
-    return dependency.create(source);
-  }
-}
-
-export const ENTITY_DOCUMENT_NS = "entityDocument";
-export class EntityDocumentDependency extends Dependency<IEntityDocument> {
-  constructor(document: IEntityDocument) {
-    super(ENTITY_DOCUMENT_NS, document, true);
   }
 }
 

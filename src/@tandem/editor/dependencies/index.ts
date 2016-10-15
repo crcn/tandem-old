@@ -1,6 +1,5 @@
 import * as React from "react";
 import { IActor } from "@tandem/common/actors";
-import { IEntity } from "@tandem/common/lang/entities";
 import { IApplication } from "@tandem/common/application";
 import { IEditor, IEditorTool } from "@tandem/editor/models";
 import { ReactComponentFactoryDependency } from "./base";

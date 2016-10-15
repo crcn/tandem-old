@@ -1,1 +1,0 @@
-An entity is a runtime representation of an expression.

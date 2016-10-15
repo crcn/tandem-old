@@ -2,7 +2,6 @@ import "./layer.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
-import { Workspace } from "@tandem/editor/models";
 import { MetadataKeys } from "@tandem/editor/constants";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { flatten, intersection } from "lodash";
@@ -12,7 +11,6 @@ import { DragSource, DropTarget, DndComponent } from "react-dnd";
 import {
   Action,
   IActor,
-  IEntity,
   CallbackBus,
   Dependencies,
   flattenTree,
@@ -20,8 +18,6 @@ import {
   traverseTree,
   findTreeNode,
   MetadataChangeAction,
-  appendSourceChildren,
-  insertSourceChildren,
 } from "@tandem/common";
 
 import {
@@ -41,7 +37,7 @@ interface ILayerLabelProps {
   canDrop: boolean;
 }
 
-function getLayerChildren(entity: IEntity) {
+function getLayerChildren(entity: any) {
   return entity[entity.metadata.get(MetadataKeys.CHILD_LAYER_PROPERTY) || "children"];
 }
 
@@ -221,7 +217,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
   canDrop() {
     return true;
   },
-  drop(args: { entity: IEntity, app: FrontEndApplication, offset: any }, monitor, component) {
+  drop(args: { entity: BaseDOMNodeEntity<any, any>, app: FrontEndApplication, offset: any }, monitor, component) {
     const { entity, app, offset } = args;
 
     app.bus.execute(new SelectAction([], false));
@@ -233,11 +229,11 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
     if (entity === item) return;
 
-    (async () => {
-      (item.parent as any as IEntity).source.removeChild(item.source);
-      const newChildren = await insertSourceChildren(entity.parent as IEntity, (entity.parent as IEntity).source.children.indexOf(entity.source) + offset, item.source);
-      app.bus.execute(new SelectAction(newChildren, false));
-    })();
+    // (async () => {
+    //   (item.parent as any as Base).source.removeChild(item.source);
+    //   const newChildren = await insertSourceChildren(entity.parent as IEntity, (entity.parent as IEntity).source.children.indexOf(entity.source) + offset, item.source);
+    //   app.bus.execute(new SelectAction(newChildren, false));
+    // })();
   },
   hover(props, monitor, component) {
     // props.app.metadata.set(MetadataKeys.HOVER_ITEM, props.entity);
@@ -299,7 +295,7 @@ LayerDndLabelComponent = DropTarget("element", {
   canDrop({ entity }, monitor) {
     return entity.metadata.get("dragSourceId") !== (monitor.getItem() as any).id;
   },
-  drop(props: { entity: IEntity, app: FrontEndApplication, offset }, monitor, component) {
+  drop(props: { entity: BaseDOMNodeEntity<any, any>, app: FrontEndApplication, offset }, monitor, component) {
 
     const { entity, app } = props;
     app.bus.execute(new SelectAction([], false));
@@ -307,11 +303,11 @@ LayerDndLabelComponent = DropTarget("element", {
     const item = null; // TODO - find
 
     // wrap so that react-dnd doesn't barf on a promise return
-    (async () => {
-      entity.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
-      (item.parent as any as IEntity).source.removeChild(item.source);
-      app.bus.execute(new SelectAction(await appendSourceChildren(entity as IEntity, item.source), false));
-    })();
+    // (async () => {
+    //   entity.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
+    //   (item.parent as any as BaseDOMNodeEntity<any, any>).source.removeChild(item.source);
+    //   app.bus.execute(new SelectAction(await appendSourceChildren(entity as IEntity, item.source), false));
+    // })();
   },
   hover(props, monitor, component) {
   }
@@ -343,11 +339,11 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
     // when the select action is executed, take all items
     // and ensure that the parent is expanded. Not pretty, encapsulated, and works.
     if (action.type === SelectAction.SELECT) {
-      (action as SelectAction).items.forEach((item: IEntity) => {
-        let p = item.parent as IEntity;
+      (action as SelectAction).items.forEach((item: BaseDOMNodeEntity<any, any>) => {
+        let p = item.parent as BaseDOMNodeEntity<any, any>;
         while (p) {
           p.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
-          p = p.parent as IEntity;
+          p = p.parent as BaseDOMNodeEntity<any, any>;
         }
       });
     }

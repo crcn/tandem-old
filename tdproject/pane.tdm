@@ -25,3 +25,12 @@
     {{childNodes}}
   </div>
 </template>
+
+<template id="pane-header">
+  <div class="td-gutter-pane">
+    <div class="td-gutter-pane-header">
+      {{title}}
+    </div>
+    {{childNodes}}
+  </div>
+</template>

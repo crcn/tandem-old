@@ -1,6 +1,4 @@
-
 <style type="text/scss">
-
   $td-stage-background: #FFF;
 
   .td-stage {
@@ -16,9 +14,7 @@
       background: $td-stage-background;
     }
 
-    &-header {
-
-    }
+    &-header { }
 
     &-canvas {
       flex: 1;
@@ -30,7 +26,6 @@
     }
   }
 </style>
-
 <template id="stage">
   <div class="td-stage">
     <div class="td-stage-header td-stage-nav">
@@ -43,7 +38,7 @@
       {{childNodes[2]}}
     </div>
   </div>
-
 </template>
 
-<stage></stage>
+<stage>
+</stage>

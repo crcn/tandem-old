@@ -1,4 +1,4 @@
-import document from "@tandem/common/decorators/document";
+import { document } from "@tandem/common/decorators";
 import * as sift from "sift";
 import * as chalk from "chalk";
 import { Service } from "@tandem/common/services";

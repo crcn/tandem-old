@@ -11,5 +11,4 @@ export class SyntheticBrowserAction extends Action {
 
 export class DOMEntityAction extends Action {
   static readonly DOM_ENTITY_DIRTY = "domEntityDirty";
-  static readonly DOM_ENTITY_EVALUATED = "domEntityEvaluated";
 }

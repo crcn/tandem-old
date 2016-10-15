@@ -1,8 +1,10 @@
 <link rel="import" href="gutter.tdm">
-<link rel="import" href="pane.tdm">
 
-<template id="element-attributes-pane">
-  <pane title="Attributes">
+<template id="html-element-attributes-pane">
+  <div class="td-pane">
+    <div class="td-pane-header">
+      attributes
+    </div>
     <div class="container">
       <div class="row">
         <div class="col-xs-4">
@@ -12,11 +14,27 @@
           <input value="{{item}}" />
         </div>
       </div>
+      <div class="row">
+        <div class="col-xs-4">
+          {{item}}
+        </div>
+        <div class="col-xs-8">
+          <input value="{{item}}" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-4">
+          {{item}}
+        </div>
+        <div class="col-xs-8">
+          <input value="{{item}}" />
+        </div>
+      </div>
     </div>
-  </pane>
+  </div>
 </template>
 
 <gutter>
-  <element-attributes-pane />
+  <html-element-attributes-pane />
 </gutter>
 

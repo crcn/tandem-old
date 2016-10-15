@@ -2,7 +2,6 @@ import * as React from "react";
 import { Editor } from "@tandem/editor/models";
 import { startDrag } from "@tandem/common/utils/component";
 import PathComponent from "./path";
-import { DocumentFile } from "@tandem/editor/models";
 import { MetadataKeys } from "@tandem/editor/constants";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { VisibleDOMEntityCollection } from "@tandem/editor/collections";

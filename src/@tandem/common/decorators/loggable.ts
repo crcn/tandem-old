@@ -4,7 +4,7 @@ import { IInvoker } from "@tandem/common/actors";
 
 const noopBus = new NoopBus();
 
-export default function () {
+export function loggable () {
   return (clazz: { new(...args): IInvoker }) => {
     Object.defineProperty(clazz.prototype, "logger", {
       get() {

@@ -3,6 +3,8 @@ import * as sass from "sass.js";
 import { parseCSS, evaluateCSS, SyntheticWindow, CSSExpression } from "@tandem/synthetic-browser";
 import { BaseSandboxModule, SandboxModuleFactoryDependency } from "@tandem/sandbox";
 
+const _cache = {};
+
 export class SCSSModule extends BaseSandboxModule {
   public ast: CSSExpression;
 

@@ -10,10 +10,10 @@ import {
   BaseDecoratorRenderer,
   SyntheticRendererAction,
 } from "@tandem/synthetic-browser";
+import { Editor } from "@tandem/editor/models";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
-import { Workspace, DocumentFile, Editor } from "@tandem/editor/models";
 import { SetToolAction, ZoomAction, SetZoomAction, DocumentFileAction } from "@tandem/editor/actions";
 
 import {

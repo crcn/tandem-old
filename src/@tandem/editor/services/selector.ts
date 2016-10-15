@@ -2,10 +2,8 @@
 import { MetadataKeys } from "@tandem/editor/constants";
 import { FrontEndApplication } from "@tandem/editor/application";
 import {
-  IEntity,
   loggable,
   bindable,
-  BaseEntity,
   BaseASTNode,
   flattenTree,
   BaseApplicationService,
@@ -13,7 +11,7 @@ import {
 } from "@tandem/common";
 
 import {
-
+  BaseDOMNodeEntity
 } from "@tandem/synthetic-browser";
 
 import {
@@ -22,8 +20,6 @@ import {
   RemoveSelectionAction,
   SelectEntitiesAtSourceOffsetAction,
 } from "@tandem/editor/actions";
-
-import { DocumentFile } from "@tandem/editor/models";
 
 @loggable()
 export default class SelectorService extends BaseApplicationService<FrontEndApplication> {
@@ -114,7 +110,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
     // parents and children cannot be selected. For now - deselect
     // parent entities that appear in the selection
-    newSelection.concat().forEach((entity: IEntity) => {
+    newSelection.concat().forEach((entity: BaseDOMNodeEntity<any, any>) => {
       let i;
       if (entity.parent && (i = newSelection.indexOf(entity.parent)) !== -1) {
         newSelection.splice(i, 1);

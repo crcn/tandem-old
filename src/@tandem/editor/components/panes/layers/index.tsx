@@ -7,7 +7,6 @@ import { findTreeNode } from "@tandem/common";
 import * as path from "path";
 
 import HTML5Backend from "react-dnd-html5-backend";
-import { Workspace } from "@tandem/editor/models";
 import { DragDropContext } from "react-dnd";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { DocumentPaneComponentFactoryDependency } from "@tandem/editor/dependencies";

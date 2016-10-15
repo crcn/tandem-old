@@ -78,7 +78,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
       const src = this.source.getAttribute("src");
       const window = ownerDocument.defaultView;
       const absolutePath = await window.sandbox.importer.resolve(src, window.location.toString());
-      await this._artboardBrowser.open(absolutePath);
+      this._artboardBrowser.open(absolutePath);
     }
   }
 

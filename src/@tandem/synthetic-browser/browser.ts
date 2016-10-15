@@ -183,7 +183,7 @@ export class SyntheticBrowser extends Observable {
 
     this._documentEntity = SyntheticDOMNodeEntityClassDependency.reuse(window.document, this._documentEntity, this._dependencies);
     this._documentEntity.observe(this._documentEntityObserver);
-    await this._documentEntity.evaluate();
+    this._documentEntity.evaluate();
 
     // set entity now - should cause a re-render
     this._renderer.entity = this._documentEntity;

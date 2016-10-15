@@ -6,7 +6,6 @@ import * as cx from "classnames";
 import * as React from "react";
 import { inject } from "@tandem/common/decorators";
 import { Editor } from "@tandem/editor/models";
-import { IEntity } from "@tandem/common/lang/entities";
 import { BoundingRect } from "@tandem/common/geom";
 import { SelectAction } from "@tandem/editor/actions";
 import { MetadataKeys } from "@tandem/editor/constants";

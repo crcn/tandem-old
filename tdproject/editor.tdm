@@ -13,7 +13,7 @@
     }
     & .sidebar {
       flex: 1;
-      min-width: 100px;
+      min-width: 200px;
       flex-grow: 0;
       flex-shrink: 0;
     }
@@ -25,9 +25,7 @@
     <gutter class="sidebar">
       {{childNodes[0]}}
     </gutter>
-    <stage class="center">
-      {{childNodes[1]}}
-    </stage>
+    {{childNodes[1]}}
     <gutter class="sidebar">
       {{childNodes[2]}}
     </gutter>
@@ -35,6 +33,8 @@
 </template>
 
 <!-- Preview -->
+<link rel="import" href="html/element-style.tdm">
+<link rel="import" href="html/element-attributes.tdm">
 <editor>
   <div>
     <pane title="index.tdm">
@@ -43,10 +43,11 @@
       </div>
     </pane>
   </div>
+  <stage class="center">
+    {{childNodes[1]}}
+  </stage>
   <div>
-    <div>header</div>
-    <div>content</div>
-    <div>footer</div>
+    <html-element-attributes-pane />
+    <html-element-style-pane />
   </div>
-  <div>c</div>
 </editor>

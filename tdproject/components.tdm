@@ -1,0 +1,81 @@
+<style type="text/scss">
+
+  $dropdown-radius: 3px;
+  $dropdown-padding: 2px 8px;
+  $dropdown-border: 1px solid #555;
+
+  .td-dropdown {
+
+    font-size: 12px;
+
+    &.open {
+      & a {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom: none;
+      }
+      & ul {
+        transform: translateY(-2px);
+        border: $dropdown-border;
+        border-top: none;
+        display: block;
+        & li:hover {
+          background: blue;
+          color: white;
+        }
+      }
+    }
+
+    color: #333;
+    position: relative;
+
+    & a {
+      color: inherit;
+      display: block;
+      background: #FFF;
+      border-radius: $dropdown-radius;
+      padding: $dropdown-padding;
+      border: $dropdown-border;
+    }
+
+    ul {
+      display: none;
+      position: absolute;
+      width: 100%;
+      z-index: 1024;
+      background: white;
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      max-height: 100px;
+      overflow: scroll;
+      border-bottom-left-radius: $dropdown-radius;
+      border-bottom-right-radius: $dropdown-radius;
+      & li {
+        padding: $dropdown-padding;
+      }
+    }
+  }
+</style>
+
+<template id="dropdown">
+  <div class="td-dropdown">
+    <a href="#">
+      {{label}}
+    </a>
+    <ul>
+      <li>item</li>
+      <li>item</li>
+      <li>item</li>
+      <li>item</li>
+      <li>item</li>
+      <li>item</li>
+      <li>item</li>
+      <li>item</li>
+    </ul>
+  </div>
+</template>
+
+<dropdown label="Font Family">
+
+</dropdown>

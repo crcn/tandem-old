@@ -1,10 +1,9 @@
 import "./index.scss";
 import * as React from "react";
-import { IEntity } from "@tandem/common/lang/entities";
+import { Editor } from "@tandem/editor/models";
 import { RegisteredComponent } from "@tandem/editor/components/common";
-import { Editor, Workspace } from "@tandem/editor/models";
 
-export default class ToolsComponent extends React.Component<{ editor: Editor, workspace: Workspace }, any> {
+export default class ToolsComponent extends React.Component<{ editor: Editor }, any> {
   render() {
     const allEntities      = [];
     const currentTool      = this.props.editor.currentTool;

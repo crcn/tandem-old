@@ -1,4 +1,3 @@
-import { Workspace } from "./workspace";
 import { KeyBinding } from "@tandem/editor/key-bindings";
 import { ParallelBus } from "mesh";
 import { IEditor, IEditorTool } from "./base";
@@ -7,7 +6,6 @@ import {
   IActor,
   Action,
   inject,
-  IEntity,
   Metadata ,
   IInjectable,
   IPoint,
@@ -36,10 +34,6 @@ export class Editor implements IEditor {
   public cursor = null;
 
   constructor() {}
-
-  get activeEntity(): IEntity {
-    return null;
-  }
 
   get document() {
     return this.browser && this.browser.document;

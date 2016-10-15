@@ -111,6 +111,8 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
 
   async load(envKind: string, filePath: string, relativePath?: string): Promise<IModule> {
 
+    const now = Date.now();
+
     const resolvedPath = await this.resolve(filePath, relativePath);
 
     if (resolvedPath == null) {
@@ -147,6 +149,7 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
 
   public async readFile(filePath: string): Promise<string> {
     const content = await this._fileContentCache[filePath] || (this._fileContentCache[filePath] = new SingletonThenable(async () => {
+
       return (await ReadFileAction.execute(filePath, this.bus)).content;
     }));
 

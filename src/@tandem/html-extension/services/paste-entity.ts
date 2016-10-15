@@ -3,7 +3,6 @@ import { flatten } from "lodash";
 import { HTML_MIME_TYPE } from "@tandem/common";
 import { filterAction } from "@tandem/common/decorators";
 import { FrontEndApplication } from "@tandem/editor/application";
-import { appendSourceChildren } from "@tandem/common/lang/entities";
 import { PasteHTMLEntityAction } from "@tandem/html-extension/actions";
 import { BaseApplicationService } from "@tandem/common/services";
 import { PasteAction, SelectAction } from "@tandem/editor/actions";

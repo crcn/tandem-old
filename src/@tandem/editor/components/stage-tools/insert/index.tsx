@@ -7,19 +7,16 @@ import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { BaseVisibleDOMNodeEntity } from "@tandem/synthetic-browser";
 import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { SetToolAction, SelectAction } from "@tandem/editor/actions";
-import { Workspace, Editor, InsertTool } from "@tandem/editor/models";
+import { Editor, InsertTool } from "@tandem/editor/models";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { SelectionSizeComponent, SelectablesComponent } from "@tandem/editor/components/common";
 import {
   IActor,
   Action,
-  IEntity,
-  BaseEntity,
   BoundingRect,
-  appendSourceChildren,
 } from "@tandem/common";
 
-class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, workspace: Workspace, app: FrontEndApplication, tool: InsertTool }, any> {
+class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, app: FrontEndApplication, tool: InsertTool }, any> {
 
   private _targetEntity: any;
 
@@ -33,7 +30,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     const event = syntheticEvent.nativeEvent as MouseEvent;
 
-    const { editor, bus, workspace, tool } = this.props;
+    const { editor, bus, tool } = this.props;
 
     const childElement = tool.createSyntheticDOMElement();
     // const elementEditor = this._targetEntity.editor;

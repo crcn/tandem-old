@@ -1,18 +1,17 @@
 import "./index.scss";
 import * as React from "react";
+import { Editor } from "@tandem/editor/models";
 import { flatten } from "lodash";
-import { IEntity } from "@tandem/common/lang/entities";
 import RulerComponent from "./ruler";
 import { PointerTool } from "@tandem/editor/models/pointer-tool";
 import ResizerComponent from "./resizer";
-import { Editor, Workspace } from "@tandem/editor/models";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { SelectionSizeComponent } from "@tandem/editor/components/common";
 import { BoundingRect, flattenTree } from "@tandem/common";
 import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 
-export default class SelectorComponent extends React.Component<{ editor: Editor, tool: PointerTool, workspace: Workspace, app: FrontEndApplication, zoom: number  }, any> {
+export default class SelectorComponent extends React.Component<{ editor: Editor, tool: PointerTool, app: FrontEndApplication, zoom: number  }, any> {
 
   constructor(props) {
     super(props);
@@ -37,7 +36,7 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
   render() {
 
-    const { workspace, editor, tool } = this.props;
+    const { editor, tool } = this.props;
 
     if (!(tool instanceof PointerTool)) return null;
 

@@ -16,7 +16,6 @@ import {
   MAIN_BUS_NS,
   Dependencies,
   DEPENDENCIES_NS,
-  EntityFactoryDependency,
   ApplicationServiceDependency,
 } from "@tandem/common/dependencies";
 import {

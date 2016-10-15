@@ -47,7 +47,6 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
   private _uid: string;
   private _source: T;
   private _change: T;
-  private _evaluated: boolean;
   private _targetElement: U;
   private _changeObserver: IActor;
   private _browserObserver: IActor;
@@ -119,16 +118,7 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
     this.module.editor.edit(onEdit.bind(this));
   }
 
-  async evaluate() {
-    if (this._evaluated) {
-      await this.update();
-    } else {
-      this._evaluated = true;
-      await this.load();
-    }
-
-    this.didEvaluate();
-    this.notify(new DOMEntityAction(DOMEntityAction.DOM_ENTITY_EVALUATED, false));
+  evaluate() {
   }
 
   querySelector(selector: string) {
@@ -274,9 +264,9 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 
 export class BaseDOMContainerEntity<T extends SyntheticDOMNode, U extends HTMLElement> extends BaseDOMNodeEntity<T, U> {
 
-  async evaluate() {
-    await this.evaluateChildren();
-    await super.evaluate();
+  evaluate() {
+    this.evaluateChildren();
+    super.evaluate();
   }
 
   async evaluateChildren() {

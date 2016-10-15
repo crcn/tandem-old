@@ -1,6 +1,5 @@
 import "./index.scss";
 import * as React from "react";
-import { IEntity } from "@tandem/common/lang/entities";
 import { startDrag } from "@tandem/common/utils/component";
 import { PointerTool } from "@tandem/editor/models/pointer-tool";
 import { MetadataKeys } from "@tandem/editor/constants";

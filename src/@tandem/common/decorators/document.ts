@@ -3,7 +3,7 @@
  * backend
  */
 
-export default function (documentation) {
+export function document(documentation) {
   return (proto, name) => {
 
     if (!proto.__documentation) {

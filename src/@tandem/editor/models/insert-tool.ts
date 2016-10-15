@@ -9,7 +9,6 @@ import {
   startDrag,
   MAIN_BUS_NS,
   BoundingRect,
-  EntityFactoryDependency,
 } from "@tandem/common";
 
 

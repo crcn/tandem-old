@@ -1,4 +1,4 @@
-import bindable from "./bindable";
+import { bindable } from "./bindable";
 import { expect } from "chai";
 import { Action } from "../actions";
 import { Observable } from "../observable";

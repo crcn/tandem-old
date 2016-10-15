@@ -49,9 +49,7 @@ export class SyntheticTDTemplateElement extends SyntheticHTMLElement {
     const shadow = element.attachShadow({ mode: "open" });
     const div = element.ownerDocument.createElementNS(this.namespaceURI, "div") as SyntheticHTMLElement;
     div.innerHTML = this.parseTemplate(element, this.innerHTML);
-    for (const child of div.childNodes) {
-      shadow.appendChild(child);
-    }
+    while(div.firstChild) shadow.appendChild(div.firstChild);
   }
 
   parseTemplate(element: SyntheticHTMLElement, source: string) {
