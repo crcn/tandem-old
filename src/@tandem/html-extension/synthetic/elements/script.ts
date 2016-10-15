@@ -4,18 +4,22 @@ import {
   SyntheticDOMElement,
   BaseDOMNodeEntity,
 } from "@tandem/synthetic-browser";
+import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 
 import { SandboxModuleFactoryDependency } from "@tandem/sandbox";
 import { JS_MIME_TYPE } from "@tandem/common";
 
-export class HTMLScriptEntity extends BaseDOMNodeEntity<SyntheticDOMElement, HTMLElement> {
+export class SyntheticHTMLScript extends SyntheticHTMLElement {
   private _fn: Function;
-  async evaluate() {
+  createdCallback() {
+    this.attachShadow({ mode: "open" });
+  }
+  async $load() {
 
-    const src    = this.source.getAttribute("src");
-    const type   = this.source.getAttribute("type") || "application/javascript";
+    const src    = this.getAttribute("src");
+    const type   = this.getAttribute("type") || "application/javascript";
 
-    const window = this.sourceWindow;
+    const window = this.ownerDocument.defaultView;
     const importer = window.sandbox.importer;
     const fileName = this.module.fileName;
 
@@ -26,7 +30,7 @@ export class HTMLScriptEntity extends BaseDOMNodeEntity<SyntheticDOMElement, HTM
       const content = await importer.readFile(filePath);
       await importer.watchFile(filePath);
     } else {
-      scriptContent = this.source.textContent;
+      scriptContent = this.textContent;
     }
 
     const moduleDependency = SandboxModuleFactoryDependency.find(JS_MIME_TYPE, type, this.browser.dependencies);
@@ -47,10 +51,5 @@ export class HTMLScriptEntity extends BaseDOMNodeEntity<SyntheticDOMElement, HTM
     const module = moduleDependency.create(this.module.fileName, scriptContent, this.module.sandbox);
     await module.load();
     module.evaluate();
-
-    this.removeAllChildren();
-  }
-  render() {
-    return null;
   }
 }

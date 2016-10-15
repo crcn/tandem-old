@@ -4,19 +4,20 @@ import { SyntheticDocument } from "../document";
 import { SyntheticDOMContainer } from "./container";
 import { SyntheticDOMAttribute, SyntheticDOMElement } from "./element";
 import { IMarkupExpression, MarkupContainerExpression } from "./ast";
+import { BaseSandboxModule } from "@tandem/sandbox";
 
-export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, async?: boolean): SyntheticDOMNode {
+function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: BaseSandboxModule, async?: boolean): any {
 
   function appendChildNodesSync(container: SyntheticDOMContainer, expression: MarkupContainerExpression) {
     for (const childExpression of expression.childNodes) {
-      container.appendChild(evaluateMarkup(childExpression, doc, namespaceURI, async));
+      container.appendChild(evaluateMarkup(childExpression, doc, namespaceURI, module, async));
     }
     return container;
   }
 
   async function appendChildNodesAsync(container: SyntheticDOMContainer, expression: MarkupContainerExpression) {
     for (const childExpression of expression.childNodes) {
-      container.appendChild(await evaluateMarkup(childExpression, doc, namespaceURI, async));
+      container.appendChild(await evaluateMarkup(childExpression, doc, namespaceURI, module, async));
     }
     return container;
   }
@@ -25,7 +26,7 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
     return async ? appendChildNodesAsync(container, expression) : appendChildNodesSync(container, expression);
   }
 
-  const synthetic = expression.accept({
+  const result = expression.accept({
     visitAttribute(expression) {
       return { name: expression.name, value: expression.value };
     },
@@ -53,18 +54,33 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
     }
   });
 
-  synthetic.$expression = expression;
-  synthetic.$module     = doc.sandbox && doc.sandbox.currentModule;
+  const onSynthetic = (synthetic: SyntheticDOMNode) => {
 
-  if (synthetic.nodeType === DOMNodeType.ELEMENT) {
-    (<SyntheticDOMElement>synthetic).$createdCallback();
+    synthetic.$expression = expression as any;
+    synthetic.$module     = module;
+
+    if (synthetic.nodeType === DOMNodeType.ELEMENT) {
+      (<SyntheticDOMElement>synthetic).$createdCallback();
+    }
+
+    return new Promise(async (resolve) => {
+      await synthetic.$load();
+      resolve(synthetic);
+    });
   }
 
-  if (async) {
-    // return new Promise((resolve) => {
-      // return synthetic.$load();
-    // });
+  if (async && result.then) {
+    return result.then(onSynthetic);
+  } else {
+    onSynthetic(result);
+    return async ? Promise.resolve(result) : result;
   }
+}
 
-  return synthetic;
+export function evaluateMarkupAsync(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: BaseSandboxModule): Promise<SyntheticDOMNode> {
+  return evaluateMarkup(expression, doc, namespaceURI, module, true);
+}
+
+export function evaluateMarkupSync(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: BaseSandboxModule): SyntheticDOMNode {
+  return evaluateMarkup(expression, doc, namespaceURI, module, false);
 }

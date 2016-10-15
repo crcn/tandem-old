@@ -30,7 +30,6 @@ export class Sandbox extends Observable {
   private _mainExports: any;
   private _reloading: boolean;
   private _shouldReloadAgain: boolean;
-  private _currentModule: IModule;
 
   constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}, getResolveOptions?: () => IModuleResolveOptions) {
     super();
@@ -40,10 +39,6 @@ export class Sandbox extends Observable {
 
   get global(): any {
     return this._global || (this._global = this.createGlobal());
-  }
-
-  get currentModule(): IModule {
-    return this._currentModule;
   }
 
   get importer(): ModuleImporter {
@@ -76,10 +71,6 @@ export class Sandbox extends Observable {
   protected onImporterAction(action: Action) {
     if (action.type === ModuleImporterAction.MODULE_CONTENT_CHANGED) {
       this.reload();
-    } else if (action.type === SandboxModuleAction.EVALUATING) {
-      const currentModule = this._currentModule;
-      this._currentModule = action.target;
-      this.notify(new PropertyChangeAction("currentModule", this._currentModule, currentModule));
     }
     this.notify(action);
   }

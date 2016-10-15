@@ -1,7 +1,7 @@
 import { Action, spliceChunk, getChunk } from "@tandem/common";
 import {
   parseMarkup,
-  evaluateMarkup,
+  evaluateMarkupAsync,
   SyntheticWindow,
   SyntheticDOMNode,
   MarkupExpression,
@@ -41,14 +41,12 @@ export class MarkupModule extends BaseSandboxModule implements IMarkupModule {
   createEditor() {
     return new MarkupEditor(this);
   }
-  load() {
+  async load() {
     this.ast = parseMarkup(this.content);
-  }
-  evaluate2() {
-    this.exports = this.evaluateMarkup(this.ast, this.sandbox.global, MarkupMimeTypeXMLNSDependency.lookup(this.fileName, this.sandbox.global.browser.dependencies));
+    this.exports = await this.evaluateMarkup(this.ast, this.sandbox.global, MarkupMimeTypeXMLNSDependency.lookup(this.fileName, this.sandbox.global.browser.dependencies));
   }
   protected evaluateMarkup(ast: MarkupNodeExpression, window: SyntheticWindow, xmlns: string) {
-    return evaluateMarkup(this.ast, window.document, xmlns);
+    return evaluateMarkupAsync(this.ast, window.document, xmlns, this);
   }
 }
 

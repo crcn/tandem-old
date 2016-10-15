@@ -3,7 +3,7 @@ import { SyntheticDocument } from "../document";
 import { SyntheticCSSStyleDeclaration, parseCSS, evaluateCSS } from "../css";
 import {
   parseMarkup,
-  evaluateMarkup,
+  evaluateMarkupSync,
   SyntheticDOMElement,
   SyntheticDOMAttribute,
   IDOMNodeEntityCapabilities,
@@ -70,7 +70,7 @@ export class SyntheticHTMLElement extends SyntheticDOMElement {
 
   set innerHTML(value: string) {
     this.removeAllChildren();
-    this.appendChild(evaluateMarkup(parseMarkup(value), this.ownerDocument, this.namespaceURI));
+    this.appendChild(evaluateMarkupSync(parseMarkup(value), this.ownerDocument, this.namespaceURI));
   }
 
   private _resetStyleFromAttribute() {

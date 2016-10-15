@@ -4,19 +4,24 @@ import { CSS_MIME_TYPE, HTML_MIME_TYPE, JS_MIME_TYPE } from "@tandem/common";
 // sandbox
 import { HTMLCSSModule, HTMLCSSDOMModule } from "./sandbox";
 
-import { HTML_XMLNS, SyntheticDOMNodeEntityClassDependency } from "@tandem/synthetic-browser";
+import {
+  HTML_XMLNS,
+  SyntheticDOMElementClassDependency,
+  SyntheticDOMNodeEntityClassDependency,
+} from "@tandem/synthetic-browser";
 
 import { 
-  HTMLLinkEntity,
-  HTMLStyleEntity,
   HTMLImageEntity,
-  HTMLScriptEntity,
   VisibleHTMLEntity,
   HTMLDocumentEntity,
+  SyntheticHTMLLink,
+  SyntheticHTMLScript,
+  SyntheticHTMLStyle,
 } from "./synthetic";
 
 import {
   MarkupModule,
+  NoopDOMENtity,
   HTML_TAG_NAMES,
   SyntheticDOMText,
   SyntheticDOMElement,
@@ -55,17 +60,22 @@ const visibleEntityDependencies = HTML_TAG_NAMES.map((tagName) => new SyntheticD
 
 export const htmlExtensionDependencies = [
 
-  // sandbox
+  // entities
   ...visibleEntityDependencies,
   new SandboxModuleFactoryDependency(CSS_MIME_TYPE, CSS_MIME_TYPE, HTMLCSSModule),
   new SandboxModuleFactoryDependency(HTML_MIME_TYPE, CSS_MIME_TYPE, HTMLCSSModule),
   new SandboxModuleFactoryDependency(JS_MIME_TYPE, CSS_MIME_TYPE, HTMLCSSDOMModule),
   new SandboxModuleFactoryDependency(HTML_MIME_TYPE, HTML_MIME_TYPE, MarkupModule),
   new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "img", HTMLImageEntity),
-  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "script", HTMLScriptEntity),
   new SyntheticDOMNodeEntityClassDependency(undefined, "#document", HTMLDocumentEntity),
-  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "link", HTMLLinkEntity),
-  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "style", HTMLStyleEntity),
+  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "script", NoopDOMENtity),
+  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "link", NoopDOMENtity),
+
+  // elements
+  new SyntheticDOMElementClassDependency(HTML_MIME_TYPE, "link", SyntheticHTMLLink),
+  new SyntheticDOMElementClassDependency(HTML_MIME_TYPE, "script", SyntheticHTMLScript),
+  new SyntheticDOMElementClassDependency(HTML_MIME_TYPE, "style", SyntheticHTMLStyle),
+
 
   // layer components
   new LayerLabelComponentFactoryDependency(SyntheticHTMLElement.name, ElementLayerLabelComponent),

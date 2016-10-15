@@ -15,6 +15,7 @@ import { SandboxModuleFactoryDependency } from "@tandem/sandbox";
 import {
   HTML_XMLNS,
   MarkupModule,
+  NoopDOMENtity,
   SyntheticHTMLElement,
   DefaultSyntheticDOMEntity,
   MarkupMimeTypeXMLNSDependency,
@@ -23,10 +24,10 @@ import {
 } from "@tandem/synthetic-browser";
 
 import {
-  HTMLLinkEntity,
-  HTMLStyleEntity,
-  HTMLScriptEntity,
   VisibleHTMLEntity,
+  SyntheticHTMLLink,
+  SyntheticHTMLScript,
+  SyntheticHTMLStyle,
 } from "@tandem/html-extension";
 
 export const tdprojectExtensionDependencies = [
@@ -37,15 +38,17 @@ export const tdprojectExtensionDependencies = [
   // elements
   new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "template", SyntheticTDTemplateElement),
   new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "dom-repeat", SyntheticTDRepeatElement),
+  new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "link", SyntheticHTMLLink),
   new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "default", SyntheticHTMLElement),
+  new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "script", SyntheticHTMLScript),
+  new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "style", SyntheticHTMLStyle),
 
   // components
   new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "artboard", TDArtboardEntity),
   new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "default", VisibleHTMLEntity),
   new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "tdproject", TDProjectEntity),
-  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "style", HTMLStyleEntity),
-  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "link", HTMLLinkEntity),
-  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "script", HTMLScriptEntity),
+  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "script", NoopDOMENtity),
+  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "link", NoopDOMENtity),
 
   // sandbox
   new SandboxModuleFactoryDependency(HTML_MIME_TYPE, TDPROJECT_MIME_TYPE, MarkupModule),

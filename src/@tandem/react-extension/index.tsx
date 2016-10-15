@@ -59,5 +59,5 @@ export class ReactDOMNodeCaster implements IMarkupDOMCaster {
 }
 
 export const reactExtensionDependencies = [
-  new SyntheticDOMCasterDependency("react", new ReactDOMNodeCaster())
+  // new SyntheticDOMCasterDependency("react", new ReactDOMNodeCaster())
 ];

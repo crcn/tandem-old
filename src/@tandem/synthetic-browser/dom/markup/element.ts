@@ -4,7 +4,6 @@ import { IDOMNode } from "./node";
 import { BubbleBus } from "@tandem/common/busses";
 import { BoundingRect } from "@tandem/common/geom";
 import { DOMNodeType } from "./node-types";
-import { evaluateMarkup } from "./evaluate";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { parse as parseMarkup } from "./parser.peg";
@@ -17,8 +16,8 @@ import {
   ArrayChangeAction,
   ObservableCollection,
 } from "@tandem/common/observable";
-import { MarkupElementExpression } from "./ast";
 import { SyntheticDOMNode } from "./node";
+import { MarkupElementExpression } from "./ast";
 import { SyntheticDocumentFragment } from "./document-fragment";
 
 export class SyntheticDOMAttribute extends Observable {

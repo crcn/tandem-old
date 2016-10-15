@@ -10,7 +10,7 @@ import {
 
 export class MustacheSandboxModule extends MarkupModule {
   evaluateMarkup(ast: MarkupNodeExpression, window: SyntheticWindow, xmlns?: string) {
-    return evaluateMustacheTemplate(ast, window.document);
+    return evaluateMustacheTemplate(ast, window.document, null, this);
   }
 }
 
@@ -39,7 +39,7 @@ function evaluateBlocks(value: string, context: any) {
   return value;
 }
 
-function evaluateMustacheTemplate(ast: MarkupExpression, document: SyntheticDocument, context?: any) {
+function evaluateMustacheTemplate(ast: MarkupExpression, document: SyntheticDocument, context?: any, module?: BaseSandboxModule) {
 
   if (!context) {
     context = document.defaultView;
@@ -52,11 +52,11 @@ function evaluateMustacheTemplate(ast: MarkupExpression, document: SyntheticDocu
     visitElement(expression) {
       const node = document.createElement(expression.nodeName);
       for (const attribute of expression.attributes) {
-        const { name, value } = evaluateMustacheTemplate(attribute, document, context);
+        const { name, value } = evaluateMustacheTemplate(attribute, document, context, module);
         node.setAttribute(name, value);
       }
       for (const child of expression.childNodes) {
-        node.appendChild(evaluateMustacheTemplate(child, document, context));
+        node.appendChild(evaluateMustacheTemplate(child, document, context, module));
       }
       return node;
     },
@@ -66,7 +66,7 @@ function evaluateMustacheTemplate(ast: MarkupExpression, document: SyntheticDocu
     visitDocumentFragment(expression) {
       const node = document.createDocumentFragment();
       for (const child of expression.childNodes) {
-        node.appendChild(evaluateMustacheTemplate(child, document, context));
+        node.appendChild(evaluateMustacheTemplate(child, document, context, module));
       }
       return node;
     },
@@ -75,8 +75,8 @@ function evaluateMustacheTemplate(ast: MarkupExpression, document: SyntheticDocu
     }
   });
 
-  synthetic.module     = document.defaultView.sandbox.currentModule;
-  synthetic.expression = ast;
+  synthetic.$module     = module;
+  synthetic.$expression = ast;
 
   return synthetic;
 }

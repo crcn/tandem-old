@@ -1,6 +1,6 @@
 <link href="./css-pane.scss">
 
-<template id="gutter" export>
+<template id="gutter">
   <div class="td-gutter">
     {{childNodes}}
   </div>
@@ -15,8 +15,9 @@
   </div>
 </template>
 
+
 <gutter>
-  <pane title="CSS Properties">
+  <pane title="CSS Properties!!">
     <div class="container">
       <div class="row">
         <div class="col-xs-4">

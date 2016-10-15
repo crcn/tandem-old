@@ -5,5 +5,4 @@ export class SyntheticTDRepeatElement extends SyntheticHTMLElement {
     console.log("repeat");
     console.log(this.innerHTML);
   }
-
 }

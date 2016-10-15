@@ -18,6 +18,8 @@ export class SyntheticTDTemplateElement extends SyntheticHTMLElement {
 
   createdCallback() {
 
+    this.attachShadow({ mode: "open" });
+
     if (this.hasAttribute("id")) {
 
       const id = this.getAttribute("id");
@@ -45,6 +47,7 @@ export class SyntheticTDTemplateElement extends SyntheticHTMLElement {
     const shadow = this.attachShadow({ mode: "open" });
     shadow.appendChild(element);
     this.attach(element);
+    element.$createdCallback();
   }
 
   private attach(element: SyntheticHTMLElement) {

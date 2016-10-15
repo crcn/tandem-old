@@ -72,10 +72,11 @@ export abstract class BaseSandboxModule extends Observable implements IModule {
   evaluate() {
     if (this._evaluated) return this.exports;
     this._evaluated = true;
-    this.notify(new SandboxModuleAction(SandboxModuleAction.EVALUATING));
     this.evaluate2();
     return this.exports;
   }
 
-  protected abstract evaluate2();
+  protected evaluate2() {
+
+  }
 }

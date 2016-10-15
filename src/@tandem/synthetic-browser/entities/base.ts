@@ -319,4 +319,10 @@ export class BaseDOMContainerEntity<T extends SyntheticDOMNode, U extends HTMLEl
   }
 }
 
+
 export class DefaultSyntheticDOMEntity extends BaseDOMContainerEntity<SyntheticDOMNode, HTMLElement> { }
+export class NoopDOMENtity extends BaseDOMNodeEntity<any, any> {
+  render() {
+    return null;
+  }
+}
