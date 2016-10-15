@@ -1,8 +1,8 @@
-<link rel="import" href="./gutter.tdm">
-<link rel="import" href="./pane.tdm">
+<link rel="import" href="gutter.tdm">
+<link rel="import" href="pane.tdm">
 
-<gutter>
-  <pane title="CSS Properties">
+<template id="element-attributes-pane">
+  <pane title="Attributes">
     <div class="container">
       <div class="row">
         <div class="col-xs-4">
@@ -14,10 +14,9 @@
       </div>
     </div>
   </pane>
-  <pane title="layers">
-    <div class="container">
-      container
-    </div>
-  </pane>
+</template>
+
+<gutter>
+  <element-attributes-pane />
 </gutter>
 

@@ -91,7 +91,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
   }
 
   get layerChildren() {
-    return this._artboardBrowser && this._artboardBrowser.bodyEntity.children;
+    return this._artboardBrowser && this._artboardBrowser.bodyEntity && this._artboardBrowser.bodyEntity.children;
   }
 
   get capabilities() {

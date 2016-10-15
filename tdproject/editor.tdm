@@ -1,0 +1,52 @@
+<link rel="import" href="./gutter.tdm">
+<link rel="import" href="./stage.tdm">
+<link rel="import" href="./pane.tdm">
+
+<style type="text/scss">
+  .td-editor {
+    display: flex;
+    display: -webkit-flex;
+    width: 100%;
+    height: 100%;
+    & .center {
+      flex: 1;
+    }
+    & .sidebar {
+      flex: 1;
+      min-width: 100px;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+  }
+</style>
+
+<template id="editor">
+  <div class="td-editor">
+    <gutter class="sidebar">
+      {{childNodes[0]}}
+    </gutter>
+    <stage class="center">
+      {{childNodes[1]}}
+    </stage>
+    <gutter class="sidebar">
+      {{childNodes[2]}}
+    </gutter>
+  </div>
+</template>
+
+<!-- Preview -->
+<editor>
+  <div>
+    <pane title="index.tdm">
+      <div class="container">
+        layers
+      </div>
+    </pane>
+  </div>
+  <div>
+    <div>header</div>
+    <div>content</div>
+    <div>footer</div>
+  </div>
+  <div>c</div>
+</editor>

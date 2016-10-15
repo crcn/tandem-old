@@ -17,13 +17,8 @@ function getScript(source) {
 export class SyntheticTDTemplateElement extends SyntheticHTMLElement {
 
   createdCallback() {
-
-    this.attachShadow({ mode: "open" });
-
     if (this.hasAttribute("id")) {
-
       const id = this.getAttribute("id");
-
       this.registerTemplateElement(id);
     } else if (this.hasAttribute("is")) {
       this.cast(this.getAttribute("is"));

@@ -1,0 +1,19 @@
+<link rel="import" href="pane.tdm">
+<link rel="import" href="gutter.tdm">
+
+<template id="html-element-style">
+  <pane title="Stroke">
+  </pane>
+  <pane title="Stroke">
+  </pane>
+  <pane title="Stroke">
+  </pane>
+  <pane title="Background">
+  </pane>
+  <pane title="Stroke">
+  </pane>
+</template>
+
+<gutter>
+  <html-element-style />
+</gutter>

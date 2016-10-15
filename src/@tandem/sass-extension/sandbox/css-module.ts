@@ -15,7 +15,9 @@ export class SCSSModule extends BaseSandboxModule {
 
     return new Promise((resolve, reject) => {
       sass.compile(this.content, {}, (result) => {
-        if (result.status !== 0) return reject(result);
+
+        // 3 = empty string exception
+        if (result.status !== 0 && result.status !== 3) return reject(result);
         resolve(this.ast = parseCSS(String(result.text || "")));
       });
     });
