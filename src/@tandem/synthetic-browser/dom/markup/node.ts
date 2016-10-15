@@ -50,7 +50,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
    * depending on the environment
    */
 
-  public expression: MarkupNodeExpression;
+  private _expression: MarkupNodeExpression;
 
   /**
    * The DOM node type
@@ -61,11 +61,27 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   /**
    */
 
-  public module: IMarkupModule;
+  private _module: IMarkupModule;
 
 
   constructor(readonly nodeName: string, public ownerDocument: SyntheticDocument) {
     super();
+  }
+
+  get module(): IMarkupModule {
+    return this._module;
+  }
+
+  set $module(value: IMarkupModule) {
+    this._module = value;
+  }
+
+  get expression(): MarkupNodeExpression {
+    return this._expression;
+  }
+
+  set $expression(value: MarkupNodeExpression) {
+    this._expression = value;
   }
 
   get browser() {

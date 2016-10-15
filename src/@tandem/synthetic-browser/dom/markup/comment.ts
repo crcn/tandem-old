@@ -23,6 +23,9 @@ export class SyntheticDOMComment extends SyntheticDOMValueNode {
   }
 
   cloneNode() {
-    return new SyntheticDOMComment(this.nodeValue, this.ownerDocument);
+    const clone = new SyntheticDOMComment(this.nodeValue, this.ownerDocument);
+    clone.$expression = this.expression;
+    clone.$module = this.module;
+    return clone;
   }
 }

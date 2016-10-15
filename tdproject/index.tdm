@@ -1,0 +1,11 @@
+<script>
+  const basedir = __dirname + "/..";
+  resolve.directories.push(
+    basedir + "/src"
+  );
+</script>
+<link href="./global.scss" type="text/scss"></link>
+<link href="@tandem/editor/vendor/bootstrap/css/bootstrap.css"></link>
+<link href="@tandem/editor/vendor/ionicons/css/ionicons.css"></link>
+<artboard title="CSS pane" src="./css-pane.tdm" style="width:264px;left:0px;top:0px;height:768px;" inherit-css=""></artboard>
+<artboard title="stage" src="./stage.tdm" style="width:1024px;left:-1126px;top:0px;height:768px;" inherit-css=""></artboard>

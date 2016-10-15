@@ -2,6 +2,7 @@ import { BaseDOMContainerEntity, SyntheticDocument } from "@tandem/synthetic-bro
 import * as React from "react";
 
 export class HTMLDocumentEntity extends BaseDOMContainerEntity<SyntheticDocument, HTMLDivElement> {
+  private _currentCSS: string;
   render() {
     return <div {...this.renderAttributes()}>
       <style>

@@ -40,8 +40,7 @@ function createConfig(options) {
       }),
       new WebpackNotifierPlugin({
         alwaysNotify: true
-      }),
-      new webpack.HotModuleReplacementPlugin()
+      })
     ],
     node: {
       __filename: true,

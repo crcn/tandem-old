@@ -34,7 +34,7 @@ import { camelCase } from "lodash";
 import { IMarkupEdit } from "@tandem/synthetic-browser";
 import { SyntheticRendererAction } from "../actions";
 import { SyntheticDOMNodeEntityClassDependency } from "../dependencies"
-import { SyntheticDOMAttributes, SyntheticDOMAttribute } from "../dom";
+import { SyntheticDOMAttributes, SyntheticDOMAttribute, SyntheticDocumentFragment } from "../dom";
 
 
 let _i: number = 0;
@@ -274,6 +274,7 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 }
 
 export class BaseDOMContainerEntity<T extends SyntheticDOMNode, U extends HTMLElement> extends BaseDOMNodeEntity<T, U> {
+
   async evaluate() {
     await this.evaluateChildren();
     await super.evaluate();
@@ -281,14 +282,21 @@ export class BaseDOMContainerEntity<T extends SyntheticDOMNode, U extends HTMLEl
 
   async evaluateChildren() {
     const childCount       = this.children.length;
-    const sourceChildCount = this.source.children.length;
+
+    let target: SyntheticDOMNode = this.source;
+
+    if (this.source.nodeType === DOMNodeType.ELEMENT) {
+      target = (<SyntheticDOMElement><any>this.source).shadowRoot || this.source;
+    }
+
+    const sourceChildCount = target.children.length;
     const dependencies     = this.browser.dependencies;
 
     for (let i = 0; i < sourceChildCount; i++) {
 
       let child: BaseDOMNodeEntity<any, any> = this.children[i];
 
-      const sourceChild = this.source.children[i];
+      const sourceChild = target.children[i];
 
       if (child && child.source.compare(sourceChild)) {
         child.source = sourceChild;

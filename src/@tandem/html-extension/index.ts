@@ -69,6 +69,7 @@ export const htmlExtensionDependencies = [
 
   // layer components
   new LayerLabelComponentFactoryDependency(SyntheticHTMLElement.name, ElementLayerLabelComponent),
+  new LayerLabelComponentFactoryDependency(VisibleHTMLEntity.name, ElementLayerLabelComponent),
   new LayerLabelComponentFactoryDependency(SyntheticDOMText.name, TextLayerLabelComponent),
   new LayerLabelComponentFactoryDependency(SyntheticDOMElement.name, ElementLayerLabelComponent),
   new LayerLabelComponentFactoryDependency(SyntheticDOMComment.name, CommentLayerLabelCoponent),

@@ -1,25 +1,37 @@
 @import "./variables";
 
-$gutter-background: #444;
-$gutter-color: #FFF;
+$gutter-background: #FFF;
+$gutter-color: #555;
 
-.gutter {
+.td-gutter {
   width: 100%;
   height: 100%;
   color: $gutter-color;
   background-color: $gutter-background;
+
+  & input {
+    border-bottom: 1px solid $gutter-color;
+    width:100%;
+  }
 }
 
-.gutter-pane {
+.td-gutter-pane {
   &-header {
-    background-color: rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+    font-weight: 400;
+    opacity: 0.8;
+    // background-color: rgba(0, 0, 0, 0.2);
     padding: 10px;
   }
   &-content {
     word-break: break-all;
   }
+  & .row {
+    margin-top: 8px;
+  }
+
 }
 
-.css-pane {
+.td-css-pane {
   color: red;
 }

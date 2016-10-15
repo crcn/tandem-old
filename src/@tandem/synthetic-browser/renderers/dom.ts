@@ -25,34 +25,29 @@ export class SyntheticDOMRenderer extends BaseRenderer {
 
   update() {
     return new Promise((resolve) => {
+      // render immediately to the DOM element
+      ReactDOM.render(this.entity.render(), this.element, () => {
+        const syntheticComponentsBySourceUID = {};
 
-      // rAF to prevent layout thrashing
-      requestAnimationFrame(() => {
+        for (const component of flattenTree(this.entity)) {
+          syntheticComponentsBySourceUID[component.uid] = component;
+        }
 
-        // render immediately to the DOM element
-        ReactDOM.render(this.entity.render(), this.element, () => {
-          const syntheticComponentsBySourceUID = {};
+        const rects = {};
 
-          for (const component of flattenTree(this.entity)) {
-            syntheticComponentsBySourceUID[component.uid] = component;
+        for (const node of this.element.querySelectorAll("*")) {
+          const element = <HTMLElement>node;
+          if (!element.dataset) continue;
+          const uid = element.dataset["uid"];
+          const sourceComponent: BaseDOMNodeEntity<any, any> = syntheticComponentsBySourceUID[uid];
+          rects[uid] = BoundingRect.fromClientRect(element.getBoundingClientRect());
+          if (sourceComponent) {
+            sourceComponent.target = <HTMLElement>node;
           }
+        }
 
-          const rects = {};
-
-          for (const node of this.element.querySelectorAll("*")) {
-            const element = <HTMLElement>node;
-            if (!element.dataset) continue;
-            const uid = element.dataset["uid"];
-            const sourceComponent: BaseDOMNodeEntity<any, any> = syntheticComponentsBySourceUID[uid];
-            rects[uid] = BoundingRect.fromClientRect(element.getBoundingClientRect());
-            if (sourceComponent) {
-              sourceComponent.target = <HTMLElement>node;
-            }
-          }
-
-          this.setRects(rects);
-          resolve();
-        });
+        this.setRects(rects);
+        resolve();
       });
     });
   }

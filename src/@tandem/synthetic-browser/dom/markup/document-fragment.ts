@@ -12,12 +12,14 @@ export class SyntheticDocumentFragment extends SyntheticDOMContainer {
     return visitor.visitDocumentFragment(this);
   }
   cloneNode(deep?: boolean) {
-    const fragment = new SyntheticDocumentFragment(this.ownerDocument);
+    const clone = new SyntheticDocumentFragment(this.ownerDocument);
     if (deep === true) {
       for (const child of this.childNodes) {
-        this.appendChild(child.cloneNode(true));
+        clone.appendChild(child.cloneNode(true));
       }
-      }
-    return fragment;
+    }
+    clone.$expression = this.expression;
+    clone.$module     = this.module;
+    return clone;
   }
 }

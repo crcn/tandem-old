@@ -4,8 +4,10 @@ import { MimeTypeDependency, HTML_MIME_TYPE } from "@tandem/common";
 import { TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS } from "./constants";
 
 import {
-  TDArtboardEntity,
   TDProjectEntity,
+  TDArtboardEntity,
+  SyntheticTDRepeatElement,
+  SyntheticTDTemplateElement,
 } from "./synthetic";
 
 import { SandboxModuleFactoryDependency } from "@tandem/sandbox";
@@ -33,6 +35,8 @@ export const tdprojectExtensionDependencies = [
   new ReactComponentFactoryDependency("components/tools/pointer/tdprojectFrame", TDArtboardStageToolComponent),
 
   // elements
+  new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "template", SyntheticTDTemplateElement),
+  new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "dom-repeat", SyntheticTDRepeatElement),
   new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "default", SyntheticHTMLElement),
 
   // components
@@ -48,6 +52,7 @@ export const tdprojectExtensionDependencies = [
 
   // mime types
   new MimeTypeDependency("tdproject", TDPROJECT_MIME_TYPE),
+  new MimeTypeDependency("tdm", TDPROJECT_MIME_TYPE),
 
   // xml namespaces
   new MarkupMimeTypeXMLNSDependency(TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS)

@@ -113,6 +113,7 @@ export class ModuleHistory implements IInjectable {
 
     // target may be comming from an embedded browser instance
     if (action.type === SyntheticBrowserAction.OPENED && action.target === this.browser) {
+      console.log("RESET");
       this.reset();
     } else if (action.type === UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT) {
       const contentAction = (<UpdateTemporaryFileContentAction>action);
@@ -139,7 +140,8 @@ export class ModuleHistory implements IInjectable {
           mtime: now
         };
       }
-    })
+    });
+
 
     this._history.clear();
     this._history.push(data);

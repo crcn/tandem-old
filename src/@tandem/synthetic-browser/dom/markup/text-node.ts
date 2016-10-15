@@ -22,6 +22,9 @@ export class SyntheticDOMText extends SyntheticDOMValueNode {
   }
 
   cloneNode() {
-    return new SyntheticDOMText(this.nodeValue, this.ownerDocument);
+    const clone = new SyntheticDOMText(this.nodeValue, this.ownerDocument);
+    clone.$expression = this.expression;
+    clone.$module = this.module;
+    return clone;
   }
 }

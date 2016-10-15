@@ -164,6 +164,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
 
   targetDidMount() {
     const iframe = this.target.querySelector("iframe") as HTMLIFrameElement;
+
     const onload = () => {
       iframe.contentDocument.body.appendChild(this._artboardBrowser.renderer.element);
 

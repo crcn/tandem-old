@@ -79,9 +79,19 @@ export class SyntheticBrowser extends Observable {
 
   async open(url: string) {
     this._location = new SyntheticLocation(url);
-    await this._sandbox.open(HTML_MIME_TYPE, url);
+    await new Promise(async (resolve) => {
+      const openedObserver = {
+        execute: (action) => {
+          if (action.type === SyntheticBrowserAction.LOADED && action.target === this) {
+            resolve();
+            this.unobserve(openedObserver);
+          }
+        }
+      };
+      this.observe(openedObserver);
+      await this._sandbox.open(HTML_MIME_TYPE, url);
+    });
     this.notify(new SyntheticBrowserAction(SyntheticBrowserAction.OPENED));
-    await waitForPropertyChange(this, "documentEntity");
   }
 
   get document() {
@@ -168,12 +178,20 @@ export class SyntheticBrowser extends Observable {
       documentEntity.unobserve(this._documentEntityObserver);
     }
 
-    this._documentEntity = this._renderer.entity = SyntheticDOMNodeEntityClassDependency.reuse(window.document, this._documentEntity, this._dependencies);
+    // remove entity for now to prevent re-renders
+    this._renderer.entity = undefined;
+
+    this._documentEntity = SyntheticDOMNodeEntityClassDependency.reuse(window.document, this._documentEntity, this._dependencies);
     this._documentEntity.observe(this._documentEntityObserver);
     await this._documentEntity.evaluate();
+
+    // set entity now - should cause a re-render
+    this._renderer.entity = this._documentEntity;
 
     if (this._documentEntity !== documentEntity) {
       this.notify(new PropertyChangeAction("documentEntity", this._documentEntity, documentEntity));
     }
+
+    this.notify(new SyntheticBrowserAction(SyntheticBrowserAction.LOADED));
   }
 }

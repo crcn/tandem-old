@@ -9,8 +9,6 @@ import {
   IDOMNodeEntityCapabilities,
 } from "../markup";
 
-import { getComputedStyle } from "./get-computed-style";
-
 export class SyntheticHTMLElement extends SyntheticDOMElement {
 
   private _style: SyntheticCSSStyleDeclaration;
@@ -56,7 +54,7 @@ export class SyntheticHTMLElement extends SyntheticDOMElement {
     this.onStyleChange();
   }
 
-  protected onAttributeChange(name: string, value: string) {
+  protected attributeChangedCallback(name: string, value: string) {
     if (name === "style") {
       this._resetStyleFromAttribute();
     }
@@ -72,7 +70,7 @@ export class SyntheticHTMLElement extends SyntheticDOMElement {
 
   set innerHTML(value: string) {
     this.removeAllChildren();
-    this.appendChild(evaluateMarkup(parseMarkup(value), this.ownerDocument));
+    this.appendChild(evaluateMarkup(parseMarkup(value), this.ownerDocument, this.namespaceURI));
   }
 
   private _resetStyleFromAttribute() {

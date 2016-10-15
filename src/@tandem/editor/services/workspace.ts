@@ -73,7 +73,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
     const path = action.path;
 
-    if (!/\.tdproject$/.test(path)) {
+    if (!/\.tdm$/.test(path)) {
       const body = this.app.editor.browser.document.body;
       const { editor } = body.firstChild.module;
 

@@ -17,14 +17,14 @@ import {
   UpdateTemporaryFileContentAction,
 } from "@tandem/common";
 
-const tmpProjectFile = "/tmp/project.tdproject";
+const tmpProjectFile = "/tmp/project.tdm";
 
 @loggable()
 export default class ProjectService extends BaseApplicationService<IApplication> {
   private _primaryProjectPath: string;
 
   async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
-    if (/\.tdproject$/.test(action.path)) {
+    if (/\.tdm$/.test(action.path)) {
       this._primaryProjectPath = action.path;
     } else if (!this._primaryProjectPath) {
       fs.writeFileSync(tmpProjectFile, `<tdproject xmlns="tandem"><frame src="${action.path}" inherit-css /></tdproject>`);

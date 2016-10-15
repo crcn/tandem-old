@@ -19,6 +19,7 @@ import {
 } from "@tandem/common/observable";
 import { MarkupElementExpression } from "./ast";
 import { SyntheticDOMNode } from "./node";
+import { SyntheticDocumentFragment } from "./document-fragment";
 
 export class SyntheticDOMAttribute extends Observable {
 
@@ -93,6 +94,8 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   readonly nodeType: number = DOMNodeType.ELEMENT;
   readonly attributes: SyntheticDOMAttributes;
   readonly expression: MarkupElementExpression;
+  private _shadowRoot: SyntheticDocumentFragment;
+  private _createdCallbackCalled: boolean;
 
   constructor(readonly namespaceURI: string, readonly tagName: string, ownerDocument: SyntheticDocument) {
     super(tagName, ownerDocument);
@@ -112,15 +115,28 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     return visitor.visitElement(this);
   }
 
+  attachShadow({ mode }: { mode: "open"|"close" }) {
+    return this._shadowRoot = this.ownerDocument.createDocumentFragment();
+  }
+
+  get shadowRoot(): SyntheticDocumentFragment {
+    return this._shadowRoot;
+  }
+
   setAttribute(name: string, value: any) {
 
-    if (this.hasAttribute(name)) {
-      this.attributes[name].value = value;
+    let oldValue;
+    const attribute = this.attributes[name];
+
+    if (attribute) {
+      oldValue = attribute.value;
+      attribute.value = value;
     } else {
       this.attributes.push(new SyntheticDOMAttribute(name, value));
     }
 
-    this.onAttributeChange(name, value);
+    // W3C standard
+    this.attributeChangedCallback(name, oldValue, value);
   }
 
   toString(): string {
@@ -136,11 +152,36 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     ].join("");
   }
 
+  $createdCallback() {
+
+    if (this._createdCallbackCalled) {
+      throw new Error(`createdCallback() has already been called.`);
+    }
+
+    this._createdCallbackCalled = true;
+    this.createdCallback();
+  }
+
   protected onAttributesAction(action: Action) {
     this.notify(action);
   }
 
-  protected onAttributeChange(name: string, value: any) { }
+  protected createdCallback() {
+
+  }
+
+
+  protected attributeChangedCallback(name: string, oldValue: any, newValue: any) {
+
+  }
+
+  protected attachedCallback() {
+    // TODO
+  }
+
+  protected detachedCallback() {
+    // TODO
+  }
 
   cloneNode(deep?: boolean) {
     const constructor = this.constructor as syntheticElementClassType;
@@ -154,6 +195,11 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
         clone.appendChild(child.cloneNode(deep));
       }
     }
+
+    clone.$module     = this.module;
+    clone.$expression = this.expression;
+    clone.$createdCallback();
+
     return clone;
   }
 }

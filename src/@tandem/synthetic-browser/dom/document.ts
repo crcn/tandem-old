@@ -76,8 +76,16 @@ export class SyntheticDocument extends SyntheticDOMContainer {
 
   createElementNS(ns: string, tagName: string): SyntheticDOMElement {
     const nsElements = this._registeredElements[ns] || {};
+    const elementClass = this.$getElementClassNS(ns, tagName);
+    const element = new elementClass(ns, tagName, this);
+    element.$createdCallback();
+    return element;
+  }
+
+  $getElementClassNS(ns: string, tagName: string): syntheticElementClassType {
+    const nsElements = this._registeredElements[ns] || {};
     const elementClass = nsElements[tagName.toLowerCase()] || nsElements.default || SyntheticDOMElement;
-    return new elementClass(ns, tagName, this);
+    return elementClass;
   }
 
   createElement(tagName: string) {

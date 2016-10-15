@@ -44,7 +44,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
 
   set entity(value: BaseDOMNodeEntity<any, any>) {
     if (this._entity === value) {
-      this.update();
+      this.requestUpdate();
       return;
     }
 
@@ -52,8 +52,9 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
       this._entity.unobserve(this._targetObserver);
     }
     this._entity = value;
+    if (!this._entity) return;
     this._entity.observe(this._targetObserver);
-    this.update();
+    this.requestUpdate();
   }
 
   get rects() {
@@ -84,14 +85,15 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     }
     this._updating = true;
 
-    (async () => {
+    requestAnimationFrame(async () => {
+      if (!this.entity) return;
       await this.update();
       this._updating = false;
       if (this._shouldUpdateAgain) {
         this._shouldUpdateAgain = false;
         this.requestUpdate();
       }
-    })();
+    });
   }
 }
 

@@ -48,7 +48,7 @@ class ZoomLabelComponent extends React.Component<{ editor: Editor, app: FrontEnd
       type="text"
       className="footer-zoom-input"
       onFocus={this.onFocus}
-      value={this.state.editZoom}
+      value={Math.round(this.state.editZoom)}
       onChange={this.onInputChange}
       onBlur={this.doneEditing}
       onKeyDown={this.onKeyDown}

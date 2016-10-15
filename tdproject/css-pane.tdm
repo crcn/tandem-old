@@ -1,0 +1,37 @@
+<link href="./css-pane.scss">
+
+<template id="gutter" export>
+  <div class="td-gutter">
+    {{childNodes}}
+  </div>
+</template>
+
+<template id="pane">
+  <div class="td-gutter-pane">
+    <div class="td-gutter-pane-header">
+      {{title}}
+    </div>
+    {{childNodes}}
+  </div>
+</template>
+
+<gutter>
+  <pane title="CSS Properties">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-4">
+          {{item}}
+        </div>
+        <div class="col-xs-8">
+          <input value="{{item}}" />
+        </div>
+      </div>
+    </div>
+  </pane>
+  <pane title="layers">
+    <div class="container">
+      container
+    </div>
+  </pane>
+</gutter>
+
