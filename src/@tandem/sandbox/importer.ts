@@ -40,10 +40,9 @@ export interface IModuleResolveOptions {
 export class EmptyModule extends BaseSandboxModule {
   constructor(fileName: string, exports: any, sandbox: Sandbox) {
     super(fileName, null, sandbox);
-    this.exports = exports;
   }
   load() { }
-  evaluate2() { }
+  evaluate() { return {}; }
 }
 
 @loggable()
@@ -56,7 +55,6 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
   public directories: string[];
 
   private _modules: any;
-  private _imports: any;
   private _fileWatchers: any;
   private _fileContentCache: any;
   readonly logger: Logger;
@@ -68,7 +66,6 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     this.directories = [];
     this._fileWatchers     = {};
     this._resolvedFiles    = {};
-    this._imports          = {};
     this._modules          = {};
     this._fileContentCache = {};
   }
@@ -93,19 +90,6 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     };
   }
 
-  get modules(): IModule[] {
-    const allModules = [];
-
-    // clear all imports to ensure that all modules get re-evaluated. Important
-    // in case any module accesses global variables such as the DOM
-    for (const path in this._modules) {
-      for (const env in this._modules[path]) {
-        allModules.push(<IModule>this._modules[path][env]);
-      }
-    }
-    return allModules;
-  }
-
   public async resolve(filePath: string, relativePath?: string) {
     return this._resolvedFiles[relativePath + filePath] || (this._resolvedFiles[relativePath + filePath] = new SingletonThenable(() => {
       const { extensions, directories } = this.getResolveOptions();
@@ -122,19 +106,10 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
    */
 
   public reset() {
-
-    // clear all imports to ensure that all modules get re-evaluated. Important
-    // in case any module accesses global variables such as the DOM
-    for (const module of this.modules) {
-      module.reset();
-    }
+    this._modules = {};
   }
 
   async load(envKind: string, filePath: string, relativePath?: string): Promise<IModule> {
-
-    // if (mock[filePath]) {
-    //   return new MockModule(filePath, mock[filePath], this._sandbox);
-    // }
 
     const resolvedPath = await this.resolve(filePath, relativePath);
 
@@ -149,6 +124,8 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     const content      = await this.readFile(resolvedPath);
 
     const moduleCache = this._modules[resolvedPath] || (this._modules[resolvedPath] = {});
+
+    let module = moduleCache[envKind];
 
     if (!moduleCache[envKind]) {
       const moduleFactory = SandboxModuleFactoryDependency.find(envKind, MimeTypeDependency.lookup(resolvedPath, this._dependencies), this._dependencies);
@@ -184,14 +161,12 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     }
   }
 
-  protected onFileChange(data: IReadFileActionResponseData) {
+  protected async onFileChange(data: IReadFileActionResponseData) {
 
     if (this._fileContentCache[data.path]) {
       this._fileContentCache[data.path] = data.content;
     }
 
-    // bust all modules for the given path to ensure that it gets re-evaluated
-    this._modules[data.path] = undefined;
     this.notify(new ModuleImporterAction(ModuleImporterAction.MODULE_CONTENT_CHANGED));
   }
 

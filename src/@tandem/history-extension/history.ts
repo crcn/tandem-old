@@ -84,10 +84,6 @@ export class ModuleHistory implements IInjectable {
     return this._app.bus;
   }
 
-  private get modules() {
-    return this.browser.sandbox.modules;
-  }
-
   public initialize() {
     this._app.editor.browser.observe(new WrapBus(this.onAction.bind(this)));
     this._app.bus.register(new WrapBus(this.onAction.bind(this)));

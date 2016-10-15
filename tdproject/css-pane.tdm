@@ -1,23 +1,8 @@
-<link href="./css-pane.scss">
-
-<template id="gutter">
-  <div class="td-gutter">
-    {{childNodes}}
-  </div>
-</template>
-
-<template id="pane">
-  <div class="td-gutter-pane">
-    <div class="td-gutter-pane-header">
-      {{title}}
-    </div>
-    {{childNodes}}
-  </div>
-</template>
-
+<link rel="import" href="./gutter.tdm">
+<link rel="import" href="./pane.tdm">
 
 <gutter>
-  <pane title="CSS Properties!!">
+  <pane title="CSS Properties">
     <div class="container">
       <div class="row">
         <div class="col-xs-4">

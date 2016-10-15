@@ -5,9 +5,9 @@ export class HTMLDocumentEntity extends BaseDOMContainerEntity<SyntheticDocument
   private _currentCSS: string;
   render() {
     return <div {...this.renderAttributes()}>
-      <style>
-        {this.source.styleSheets.join("")}
-      </style>
+      {this.source.styleSheets.map((styleSheet) => {
+        return <style>{styleSheet.cssText}</style>;
+      })}
       {this.renderChildren()}
     </div>;
   }

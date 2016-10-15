@@ -1,0 +1,26 @@
+<style type="text/scss">
+  .td-gutter-pane {
+    &-header {
+      text-transform: uppercase;
+      font-weight: 400;
+      opacity: 0.8;
+      // background-color: rgba(0, 0, 0, 0.2);
+      padding: 10px;
+    }
+    &-content {
+      word-break: break-all;
+    }
+    & .row {
+      margin-top: 8px;
+    }
+  }
+</style>
+
+<template id="pane">
+  <div class="td-gutter-pane">
+    <div class="td-gutter-pane-header">
+      {{title}}
+    </div>
+    {{childNodes}}
+  </div>
+</template>

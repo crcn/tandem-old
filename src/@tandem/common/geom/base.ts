@@ -3,6 +3,10 @@ export interface IRange {
   end: number;
 }
 
+export function cloneRange(range: IRange) {
+  return { start: range.start, end: range.end };
+}
+
 export interface IPoint {
   left: number;
   top: number;

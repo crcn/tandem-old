@@ -4,6 +4,7 @@ import * as sift from "sift";
 import {
   INamed,
   IRange,
+  cloneRange,
   bindable,
   TreeNode,
   patchable,
@@ -44,6 +45,7 @@ export abstract class MarkupExpression extends BaseExpression implements IMarkup
     super(position);
   }
   abstract accept(visitor: IMarkupExpressionVisitor);
+  abstract clone();
 }
 
 export abstract class MarkupNodeExpression extends MarkupExpression {
@@ -51,6 +53,7 @@ export abstract class MarkupNodeExpression extends MarkupExpression {
   constructor(public nodeName: string, position: IRange) {
     super(position);
   }
+  abstract clone();
 }
 
 export abstract class MarkupContainerExpression extends MarkupNodeExpression {
@@ -88,6 +91,12 @@ export class MarkupFragmentExpression extends MarkupContainerExpression implemen
 
   accept(visitor: IMarkupExpressionVisitor) {
     return visitor.visitDocumentFragment(this);
+  }
+  clone() {
+    return new MarkupFragmentExpression(
+      this.childNodes.map((child) => child.clone()),
+      cloneRange(this.position)
+    );
   }
 }
 /**
@@ -130,6 +139,14 @@ export class MarkupElementExpression extends MarkupContainerExpression {
   accept(visitor: IMarkupExpressionVisitor) {
     return visitor.visitElement(this);
   }
+  clone() {
+    return new MarkupElementExpression(
+      this.nodeName,
+      this.attributes.map((child) => child.clone()),
+      this.childNodes.map((child) => child.clone()),
+      cloneRange(this.position)
+    );
+  }
 }
 
 export class MarkupAttributeExpression extends MarkupExpression {
@@ -137,9 +154,11 @@ export class MarkupAttributeExpression extends MarkupExpression {
   constructor(readonly name: string, public value: any, position: IRange) {
     super(position);
   }
-
   accept(visitor: IMarkupExpressionVisitor) {
     return visitor.visitAttribute(this);
+  }
+  clone() {
+    return new MarkupAttributeExpression(this.name, this.value, cloneRange(this.position));
   }
 }
 
@@ -148,21 +167,24 @@ export class MarkupTextExpression extends MarkupNodeExpression implements IMarku
   constructor(public nodeValue: string, position: IRange) {
     super("#text", position);
   }
-
   accept(visitor: IMarkupExpressionVisitor) {
     return visitor.visitText(this);
+  }
+  clone() {
+    return new MarkupTextExpression(this.nodeValue, cloneRange(this.position));
   }
 }
 
 export class MarkupCommentExpression extends MarkupNodeExpression implements IMarkupValueNodeExpression {
   readonly kind = MarkupExpressionKind.COMMENT;
-
   constructor(public nodeValue: string, position: IRange) {
     super("#comment", position);
   }
-
   accept(visitor: IMarkupExpressionVisitor) {
     return visitor.visitComment(this);
+  }
+  clone() {
+    return new MarkupCommentExpression(this.nodeValue, cloneRange(this.position));
   }
 }
 

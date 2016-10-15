@@ -1,5 +1,12 @@
-<link href="./stage.scss">
-<link rel="importa" href="./css-pane.tdm">
+<style type="text/scss">
+  .td-stage {
+    color: red;
+  }
+</style>
+
+<link rel="import" href="./css-pane.tdm">
 <div class="td-stage">
-  fdsffdsf
+  <pane title="blarg">
+    gutted :o!
+  </pane>
 </div>

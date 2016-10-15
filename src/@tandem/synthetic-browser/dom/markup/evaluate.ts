@@ -4,9 +4,10 @@ import { SyntheticDocument } from "../document";
 import { SyntheticDOMContainer } from "./container";
 import { SyntheticDOMAttribute, SyntheticDOMElement } from "./element";
 import { IMarkupExpression, MarkupContainerExpression } from "./ast";
+import { IMarkupModule } from "@tandem/synthetic-browser/sandbox";
 import { BaseSandboxModule } from "@tandem/sandbox";
 
-function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: BaseSandboxModule, async?: boolean): any {
+function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: IMarkupModule, async?: boolean): any {
 
   function appendChildNodesSync(container: SyntheticDOMContainer, expression: MarkupContainerExpression) {
     for (const childExpression of expression.childNodes) {
@@ -63,9 +64,8 @@ function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, n
       (<SyntheticDOMElement>synthetic).$createdCallback();
     }
 
-    return new Promise(async (resolve) => {
-      await synthetic.$load();
-      resolve(synthetic);
+    return new Promise((resolve, reject) => {
+      synthetic.$load().then(() => resolve(synthetic), reject);
     });
   }
 
@@ -77,10 +77,10 @@ function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, n
   }
 }
 
-export function evaluateMarkupAsync(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: BaseSandboxModule): Promise<SyntheticDOMNode> {
+export function evaluateMarkupAsync(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: IMarkupModule): Promise<SyntheticDOMNode> {
   return evaluateMarkup(expression, doc, namespaceURI, module, true);
 }
 
-export function evaluateMarkupSync(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: BaseSandboxModule): SyntheticDOMNode {
+export function evaluateMarkupSync(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: IMarkupModule): SyntheticDOMNode {
   return evaluateMarkup(expression, doc, namespaceURI, module, false);
 }

@@ -27,9 +27,9 @@ const defaultExpressionClasses = {
 const _cache = {};
 
 export function parseCSS(source: string, expressionClasses?: any): CSSStyleSheetExpression {
-  return _cache[source] || (_cache[source] = convertPostCSSAST(postcss.parse(source)));
+  if (_cache[source]) return _cache[source].clone();
+  return _cache[source] = convertPostCSSAST(postcss.parse(source));
 }
-
 
 export function convertPostCSSAST(root: postcss.Root, expressionClasses: any = {}) {
   let previousLine = new Line({ start: 0, end: 0 });

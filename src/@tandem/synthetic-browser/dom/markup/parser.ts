@@ -1,3 +1,7 @@
 import { parse } from "./parser.peg";
 
-export const parseMarkup = parse;
+const _cache = {};
+export const parseMarkup = (source: string) => {
+  // if (_cache[source]) return _cache[source].clone();
+  return _cache[source] = parse(source);
+};

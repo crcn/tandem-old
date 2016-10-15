@@ -21,14 +21,17 @@ export class SCSSModule extends BaseSandboxModule {
     });
   }
 
-  evaluate2() {
-    this.exports = evaluateCSS(this.ast);
+  evaluate() {
+    return evaluateCSS(this.ast) as any;
   }
 }
 
 export class HTMLSCSSDOMModule extends SCSSModule {
+  async load() {
+    await super.load();
+    (<SyntheticWindow>this.sandbox.global).window.document.styleSheets.push(super.evaluate());
+  }
   evaluate2() {
-    super.evaluate2();
-    (<SyntheticWindow>this.sandbox.global).window.document.styleSheets.push(this.exports);
+    return {};
   }
 }

@@ -8,6 +8,8 @@ export class CommonJSSandboxModule extends BaseSandboxModule {
   private _transpiledSource: string;
   private _imports: any;
   private _run: Function;
+  private _exports: any;
+  public exports: any;
 
   initialize() {
     super.initialize();
@@ -28,8 +30,11 @@ export class CommonJSSandboxModule extends BaseSandboxModule {
     return this.content;
   }
 
+  reset() {
+    this._exports = undefined;
+  }
+
   async load() {
-    this.exports = {};
     const importedModules = this._imports = {};
 
     const deps = this._transpiledSource
@@ -47,22 +52,22 @@ export class CommonJSSandboxModule extends BaseSandboxModule {
     this._run = this.compile();
   }
 
-  evaluate2() {
-
-    const module = {
-      exports: this.exports
-    };
+  evaluate() {
+    if (this.exports) return this.exports;
+    this.exports = {};
 
     const global = this.sandbox.global;
 
     const context = {
       require    : (path) => this._imports[path].evaluate(),
-      module     : module,
-      exports    : module.exports,
+      module     : this,
+      exports    : this.exports,
       __filename : this.fileName,
       __dirname  : path.dirname(this.fileName),
     };
 
     this._run(global, context);
+
+    return this.exports;
   }
 }

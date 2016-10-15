@@ -7,14 +7,17 @@ export class HTMLCSSModule extends BaseSandboxModule {
   load() {
     this.ast = parseCSS(this.content);
   }
-  evaluate2() {
-    this.exports = evaluateCSS(this.ast);
+  evaluate() {
+    return evaluateCSS(this.ast) as any;
   }
 }
 
 export class HTMLCSSDOMModule extends HTMLCSSModule {
-  evaluate2() {
-    super.evaluate2();
-    (<SyntheticWindow>this.sandbox.global).window.document.styleSheets.push(this.exports);
+  private _evaluated: boolean;
+  evaluate() {
+    if (this._evaluated) return;
+    this._evaluated = true;
+    (<SyntheticWindow>this.sandbox.global).window.document.styleSheets.push(super.evaluate());
+    return {};
   }
 }

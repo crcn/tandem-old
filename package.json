@@ -35,7 +35,6 @@
     "@tandem/editor": "file:./lib/@tandem/editor",
     "@tandem/tether": "file:./lib/@tandem/tether",
     "@tandem/tether-back-end": "file:./lib/@tandem/tether-back-end",
-    "awesome-typescript-loader": "^2.2.4",
     "chai": "^3.5.0",
     "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",

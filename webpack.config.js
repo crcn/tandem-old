@@ -64,7 +64,7 @@ function createConfig(options) {
         {
           test: /\.tsx?$/,
           loader: (target === "es5" ? [getModuleDirectory("babel-loader") + "?presets[]=es2015"] : [])
-          .concat(getModuleDirectory("awesome-typescript-loader"))
+          .concat(getModuleDirectory("ts-loader"))
           .join("!"),
           exclude: __dirname + "/node_modules"
         },

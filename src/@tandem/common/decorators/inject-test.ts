@@ -1,4 +1,4 @@
-import { default as inject } from "./inject";
+import { inject } from "./inject";
 import { expect } from "chai";
 import { Dependencies, ClassFactoryDependency, Dependency, IInjectable } from "../dependencies";
 

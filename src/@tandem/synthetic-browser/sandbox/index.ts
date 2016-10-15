@@ -35,15 +35,15 @@ export interface IMarkupModule extends IModule {
 }
 
 export class MarkupModule extends BaseSandboxModule implements IMarkupModule {
-  readonly editor: IMarkupEditor;
+  readonly editor: IMarkupEditor = new MarkupEditor(this);
   public ast: MarkupFragmentExpression;
-
-  createEditor() {
-    return new MarkupEditor(this);
-  }
+  public node: SyntheticDOMNode;
   async load() {
     this.ast = parseMarkup(this.content);
-    this.exports = await this.evaluateMarkup(this.ast, this.sandbox.global, MarkupMimeTypeXMLNSDependency.lookup(this.fileName, this.sandbox.global.browser.dependencies));
+    this.node = await this.evaluateMarkup(this.ast, this.sandbox.global, MarkupMimeTypeXMLNSDependency.lookup(this.fileName, this.sandbox.global.browser.dependencies));
+  }
+  public evaluate() {
+    return this.node;
   }
   protected evaluateMarkup(ast: MarkupNodeExpression, window: SyntheticWindow, xmlns: string) {
     return evaluateMarkupAsync(this.ast, window.document, xmlns, this);

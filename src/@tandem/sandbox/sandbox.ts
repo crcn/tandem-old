@@ -45,10 +45,6 @@ export class Sandbox extends Observable {
     return this._importer;
   }
 
-  get modules(): IModule[] {
-    return this._importer.modules;
-  }
-
   get mainExports(): any {
     return this._mainExports;
   }
@@ -89,7 +85,7 @@ export class Sandbox extends Observable {
         await this.open(this._entry.envMimeType, this._entry.filePath);
       }
     } catch (e) {
-      console.error(e.stack);
+      console.error(e);
     }
 
     this._reloading = false;

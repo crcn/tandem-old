@@ -8,8 +8,6 @@ import { Action, bindable, JS_MIME_TYPE, Observable, IObservable } from "@tandem
 
 export interface IModule extends IObservable {
 
-  exports: any;
-
   /**
    * File name associated with the module
    */
@@ -32,9 +30,7 @@ export interface IModule extends IObservable {
 
   evaluate(): any;
 
-  reset(): void;
-
-  editor: IModuleEditor;
+  editor?: IModuleEditor;
 }
 
 export type sandboxModuleScriptType = (...rest: any[]) => any;
@@ -43,40 +39,15 @@ export abstract class BaseSandboxModule extends Observable implements IModule {
 
   @bindable()
   public content: string;
-  readonly editor: IModuleEditor;
-  public exports: any;
-
-  protected _script: sandboxModuleScriptType;
-  private _evaluated: boolean;
 
   constructor(readonly fileName: string, content: string, readonly sandbox: Sandbox) {
     super();
     this.content = content;
-    this.editor = this.createEditor();
     this.initialize();
-  }
-
-  reset() {
-    this._evaluated = false;
-    this.exports = {};
-  }
-
-  protected createEditor(): IModuleEditor {
-    return null;
   }
 
   protected initialize() { }
 
   abstract load(): Promise<any>|any;
-
-  evaluate() {
-    if (this._evaluated) return this.exports;
-    this._evaluated = true;
-    this.evaluate2();
-    return this.exports;
-  }
-
-  protected evaluate2() {
-
-  }
+  abstract evaluate(): any;
 }

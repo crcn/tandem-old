@@ -36,7 +36,6 @@ import { SyntheticRendererAction } from "../actions";
 import { SyntheticDOMNodeEntityClassDependency } from "../dependencies"
 import { SyntheticDOMAttributes, SyntheticDOMAttribute, SyntheticDocumentFragment } from "../dom";
 
-
 let _i: number = 0;
 
 /**

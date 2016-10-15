@@ -5,6 +5,7 @@ import {
   bindable,
   patchable,
   IASTNode2,
+  cloneRange,
   BaseASTNode,
 } from "@tandem/common";
 
@@ -31,6 +32,7 @@ export abstract class CSSExpression implements IASTNode2 {
   constructor(readonly position: IRange) { }
 
   abstract accept(visitor: ICSSExpressionVisitor);
+  abstract clone();
 }
 
 export class CSSStyleSheetExpression extends CSSExpression {
@@ -41,6 +43,13 @@ export class CSSStyleSheetExpression extends CSSExpression {
 
   accept(visitor: ICSSExpressionVisitor) {
     return visitor.visitRoot(this);
+  }
+  clone() {
+    return new CSSStyleSheetExpression(
+      this._node,
+      this.rules.map((rule) => rule.clone()),
+      cloneRange(this.position)
+    );
   }
 }
 
@@ -56,6 +65,14 @@ export class CSSRuleExpression extends CSSExpression {
 
   accept(visitor: ICSSExpressionVisitor) {
     return visitor.visitRule(this);
+  }
+
+  clone() {
+    return new CSSRuleExpression(
+      this._node,
+      this.declarations.map((decl) => decl.clone()),
+      cloneRange(this.position)
+    );
   }
 }
 
@@ -80,6 +97,13 @@ export class CSSDeclarationExpression extends CSSExpression {
       this.name + ": " + this.value + ";",
     ].join("");
   }
+
+  clone() {
+    return new CSSDeclarationExpression(
+      { prop: this.name, value: this.value },
+      cloneRange(this.position)
+    );
+  }
 }
 
 export class CSSATRuleExpression extends CSSExpression {
@@ -97,16 +121,37 @@ export class CSSATRuleExpression extends CSSExpression {
   accept(visitor: ICSSExpressionVisitor) {
     return visitor.visitAtRule(this);
   }
+  clone() {
+    return new CSSATRuleExpression(
+      this._node,
+      this.rules.map((rule) => rule.clone()),
+      cloneRange(this.position)
+    );
+  }
 }
 
 export class KeyframesExpression extends CSSATRuleExpression {
   constructor(node: postcss.AtRule, children: Array<CSSExpression>, position: IRange) {
     super(node, children, position);
   }
+  clone() {
+    return new KeyframesExpression(
+      this._node,
+      this.rules.map((rule) => rule.clone()),
+      cloneRange(this.position)
+    );
+  }
 }
 export class MediaExpression extends CSSATRuleExpression {
   constructor(node: postcss.AtRule, children: Array<CSSExpression>, position: IRange) {
     super(node, children, position);
+  }
+  clone() {
+    return new MediaExpression(
+      this._node,
+      this.rules.map((rule) => rule.clone()),
+      cloneRange(this.position)
+    );
   }
 }
 
@@ -114,12 +159,18 @@ export class CSSCommentExpression extends CSSExpression {
   public value: string;
   readonly kind = CSSExpressionKind.COMMENT;
 
-  constructor(node: postcss.Comment, position: IRange) {
+  constructor(private _node: postcss.Comment, position: IRange) {
     super(position);
-    this.value = node.text;
+    this.value = _node.text;
   }
 
   accept(visitor: ICSSExpressionVisitor) {
     return visitor.visitComment(this);
+  }
+  clone() {
+    return new CSSCommentExpression(
+      this._node,
+      cloneRange(this.position)
+    );
   }
 }

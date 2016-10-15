@@ -76,12 +76,12 @@ export const htmlExtensionDependencies = [
   new SyntheticDOMElementClassDependency(HTML_MIME_TYPE, "script", SyntheticHTMLScript),
   new SyntheticDOMElementClassDependency(HTML_MIME_TYPE, "style", SyntheticHTMLStyle),
 
-
   // layer components
   new LayerLabelComponentFactoryDependency(SyntheticHTMLElement.name, ElementLayerLabelComponent),
-  new LayerLabelComponentFactoryDependency(VisibleHTMLEntity.name, ElementLayerLabelComponent),
+  new LayerLabelComponentFactoryDependency(SyntheticHTMLStyle.name, ElementLayerLabelComponent),
+  new LayerLabelComponentFactoryDependency(SyntheticHTMLScript.name, ElementLayerLabelComponent),
+  new LayerLabelComponentFactoryDependency(SyntheticHTMLLink.name, ElementLayerLabelComponent),
   new LayerLabelComponentFactoryDependency(SyntheticDOMText.name, TextLayerLabelComponent),
-  new LayerLabelComponentFactoryDependency(SyntheticDOMElement.name, ElementLayerLabelComponent),
   new LayerLabelComponentFactoryDependency(SyntheticDOMComment.name, CommentLayerLabelCoponent),
 
   // entity panes
