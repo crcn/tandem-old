@@ -1,4 +1,5 @@
 <link rel="import" href="gutter.tdm">
+<link rel="import" href="components.tdm">
 
 <template id="html-element-attributes-pane">
   <div class="td-pane">
@@ -11,7 +12,7 @@
           {{item}}
         </div>
         <div class="col-xs-8">
-          <input value="{{item}}" />
+          <input type="text" value="{{item}}" />
         </div>
       </div>
       <div class="row">
@@ -19,7 +20,7 @@
           {{item}}
         </div>
         <div class="col-xs-8">
-          <input value="{{item}}" />
+          <input type="text" value="{{item}}" />
         </div>
       </div>
       <div class="row">
@@ -27,7 +28,7 @@
           {{item}}
         </div>
         <div class="col-xs-8">
-          <input value="{{item}}" />
+          <input type="text" value="{{item}}" />
         </div>
       </div>
     </div>

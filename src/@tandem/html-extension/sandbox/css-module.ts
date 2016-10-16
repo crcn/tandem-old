@@ -1,3 +1,4 @@
+import * as path from "path";
 import { CSS_MIME_TYPE } from "@tandem/common";
 import { evaluateCSS, parseCSS, SyntheticWindow, CSSExpression } from "@tandem/synthetic-browser";
 import { BaseSandboxModule, SandboxModuleFactoryDependency } from "@tandem/sandbox";
@@ -5,7 +6,11 @@ import { BaseSandboxModule, SandboxModuleFactoryDependency } from "@tandem/sandb
 export class HTMLCSSModule extends BaseSandboxModule {
   public ast: CSSExpression;
   load() {
-    this.ast = parseCSS(this.content);
+
+    const content = this.content.replace(/url\(['"]?(.*?)['"]?\)/g, (match, fileName) => {
+      return `url("http://${window.location.host}/asset/` + encodeURIComponent(path.join(path.dirname(this.fileName), fileName.split(/\?|#/).shift())) + '")';
+    });
+    this.ast = parseCSS(content);
   }
   evaluate() {
     return evaluateCSS(this.ast) as any;

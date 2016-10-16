@@ -1,9 +1,11 @@
 import {
   CSSExpression,
+  CSSDeclarationExpression
 } from "./ast";
 
 import { without } from "lodash";
 import { camelCase } from "lodash";
+import { SyntheticCSSFontFace } from "./font-face";
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSStyleSheet } from "./style-sheet";
@@ -12,25 +14,34 @@ import { SyntheticCSSStyleDeclaration } from "./declaration";
 
 export function evaluateCSS(expression: CSSExpression): SyntheticCSSStyleSheet {
 
+  function getStyleDeclaration(rules: CSSDeclarationExpression[]) {
+    const declaration = new SyntheticCSSStyleDeclaration();
+    for (const decl of rules) {
+      declaration[camelCase(decl.name)] = decl.value;
+    }return declaration;
+  }
+
   const visitor = {
     visitRoot(root) {
       return new SyntheticCSSStyleSheet(acceptRules(root.rules));
     },
-    visitAtRule(atRule) {
-
-      let parentRule: SyntheticCSSKeyframesRule|SyntheticCSSMediaRule;
+    visitAtRule(atRule): any {
 
       if (atRule.name === "keyframes") {
-        parentRule = new SyntheticCSSKeyframesRule(atRule.params);
+        const rule = new SyntheticCSSKeyframesRule(atRule.params);
+        rule.cssRules.push(...acceptRules(atRule.rules));
+        return rule;
       } else if (atRule.name === "media") {
-        parentRule = new SyntheticCSSMediaRule([atRule.params]);
-      } else {
-        return null;
+        const rule = new SyntheticCSSMediaRule([atRule.params]);
+        rule.cssRules.push(...acceptRules(atRule.rules));
+        return rule;
+      } else if (atRule.name === "font-face") {
+        const rule = new SyntheticCSSFontFace();
+        rule.declaration = getStyleDeclaration(atRule.rules);
+        return rule;
       }
 
-      parentRule.cssRules.push(...acceptRules(atRule.rules));
-
-      return parentRule;
+      return null;
     },
     visitComment(comment) {
       return null;
@@ -39,11 +50,7 @@ export function evaluateCSS(expression: CSSExpression): SyntheticCSSStyleSheet {
       return null;
     },
     visitRule(rule) {
-      const declaration = new SyntheticCSSStyleDeclaration();
-      for (const decl of rule.declarations) {
-        declaration[camelCase(decl.name)] = decl.value;
-      }
-      return new SyntheticCSSStyleRule(rule.selector, declaration);
+      return new SyntheticCSSStyleRule(rule.selector, getStyleDeclaration(rule.declarations));
     }
   };
 

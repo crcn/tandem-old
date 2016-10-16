@@ -20,6 +20,8 @@ export interface ISyntheticDocumentRenderer extends IObservable {
   readonly element: HTMLElement;
   entity: BaseDOMNodeEntity<any, any>;
   getBoundingRect(uid: string): BoundingRect;
+  getComputedStyle(uid: string): any;
+  fetchComputedStyle(uid: string): Promise<any>;
   requestUpdate(): void;
 }
 
@@ -61,6 +63,14 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     return this._rects;
   }
 
+  getComputedStyle(uid: string) {
+    return undefined;
+  }
+
+  async fetchComputedStyle(uid: string) {
+
+  }
+
   getBoundingRect(uid: string) {
     return (this._rects && this._rects[uid]) || new BoundingRect(0, 0, 0, 0);
   }
@@ -100,6 +110,12 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
 export class BaseDecoratorRenderer implements ISyntheticDocumentRenderer {
   constructor(protected _renderer: ISyntheticDocumentRenderer) {
     _renderer.observe(new WrapBus(this.onTargetRendererAction.bind(this)));
+  }
+  getComputedStyle(uid) {
+    return this._renderer.getComputedStyle(uid);
+  }
+  fetchComputedStyle(uid) {
+    return this._renderer.fetchComputedStyle(uid);
   }
   getBoundingRect(uid) {
     return this._renderer.getBoundingRect(uid);

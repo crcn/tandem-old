@@ -1,0 +1,24 @@
+.td-html-element-info {
+  &-item {
+    position: absolute;
+
+    .td-html-padding-info {
+      border-color: #87D37C;
+      border-style: solid inset;
+    }
+
+    .td-html-margin-info {
+      border-color: #e67e22;
+    }
+
+    .td-html-padding-info, .td-html-margin-info {
+      opacity: 0.8;
+      border-style: solid;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}

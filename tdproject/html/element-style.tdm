@@ -1,5 +1,6 @@
 <link rel="import" href="gutter.tdm">
 <link rel="import" href="components.tdm">
+<link rel="stylesheet" href="global.scss">
 
 <style type="text/scss">
   .color-input {
@@ -11,7 +12,7 @@
 
 </style>
 
-<template id="html-element-style-typography">
+<template id="html-element-typography-pane">
   <div class="td-pane">
     <div class="td-pane-header">
       Typography
@@ -32,17 +33,33 @@
       </div>
       <div class="row">
         <div class="col-xs-8">
-          <input value="100%" />
+          <input type="text" value="Regular" />
         </div>
         <div class="col-xs-4">
-          <input value="0%" />
+          <span class="glyphicon glyphicon-text-width"></span><input type="text" value="0%" />
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<template id="html-element-style-pane">
+<template id="html-element-background-pane">
+  <div class="td-pane">
+    <div class="td-pane-header">
+      background
+      <a href="#">
+        &plus;
+      </a>
+    </div>
+    <div class="container">
+      <div class="row">
+
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="html-element-style-group">
   <div class="td-pane">
     <div class="td-pane-header">
       Borders
@@ -52,15 +69,8 @@
     </div>
   </div>
 
-  <div class="td-pane">
-    <div class="td-pane-header">
-      Fills
-    </div>
-    <div class="container">
-    </div>
-  </div>
-
-  <html-element-style-typography />
+  <html-element-typography-pane />
+  <html-element-background-pane />
 
   <div class="td-pane">
     <div class="td-pane-header">
@@ -73,5 +83,5 @@
 </template>
 
 <gutter>
-  <html-element-style-pane />
+  <html-element-style-group />
 </gutter>

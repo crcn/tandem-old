@@ -15,4 +15,4 @@
 
 - [ ] insert tool
 - [ ] scss parser
-- [ ] group element
+- [ ] compiler should be global - like FS

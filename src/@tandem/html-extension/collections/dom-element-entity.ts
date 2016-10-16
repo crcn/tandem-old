@@ -9,7 +9,7 @@ import {
 
 export class DOMElementEntityCollection extends Array<BaseDOMNodeEntity<SyntheticDOMElement, any>> {
   constructor(...items: Array<BaseDOMNodeEntity<SyntheticDOMNode, any>>) {
-    super(...items.filter((entity) => entity.source.nodeType === DOMNodeType.ELEMENT) as any);
+    super(...items.filter((entity) => entity.source && entity.source.nodeType === DOMNodeType.ELEMENT) as any);
   }
 
   setAttribute(name: string, value: string) {

@@ -13,7 +13,7 @@
     }
     & .sidebar {
       flex: 1;
-      min-width: 200px;
+      min-width: 250px;
       flex-grow: 0;
       flex-shrink: 0;
     }
@@ -48,6 +48,6 @@
   </stage>
   <div>
     <html-element-attributes-pane />
-    <html-element-style-pane />
+    <html-element-style-group />
   </div>
 </editor>

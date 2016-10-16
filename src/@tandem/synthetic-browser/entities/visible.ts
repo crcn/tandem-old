@@ -31,6 +31,14 @@ export abstract class BaseVisibleDOMNodeEntity<T extends SyntheticDOMNode, U ext
 
   protected _renderedBounds: BoundingRect = BoundingRect.zeros();
 
+  getComputedStyle() {
+    return this.browser.renderer.getComputedStyle(this.uid);
+  }
+
+  fetchComputedStyle() {
+    return this.browser.renderer.fetchComputedStyle(this.uid);
+  }
+
   protected onRendered() {
     if (this.source instanceof SyntheticHTMLElement) {
       this.source.setBoundingClientRect(this._renderedBounds = this.browser.renderer.getBoundingRect(this.uid));

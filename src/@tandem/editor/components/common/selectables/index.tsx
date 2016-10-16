@@ -138,8 +138,7 @@ export class SelectablesComponent extends React.Component<{
     // TODO - check if user is scrolling
     if (selection && editor.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
-    const allEntities = documentEntity.querySelectorAll("*").filter((entity) => entity.editable && entity["absoluteBounds"]) as any as BaseVisibleDOMNodeEntity<any, any>[];
-
+    const allEntities = documentEntity.querySelectorAll("*").filter((entity) => entity["absoluteBounds"]) as any as BaseVisibleDOMNodeEntity<any, any>[];
 
     const selectables = allEntities.map((entity, i) => (
       <SelectableComponent

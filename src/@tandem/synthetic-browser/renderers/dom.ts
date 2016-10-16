@@ -23,7 +23,21 @@ import { BaseDOMNodeEntity } from "../entities";
 
 export class SyntheticDOMRenderer extends BaseRenderer {
 
+  private _computedStyles: any = {};
+
+  getComputedStyle(uid: string) {
+    if (this._computedStyles[uid]) return this._computedStyles[uid];
+    const element = this.element.querySelector(`[data-uid="${uid}"]`);
+    return this._computedStyles[uid] = element ? getComputedStyle(element) : undefined;
+  }
+
+  async fetchComputedStyle(uid: string) {
+    return this.getComputedStyle(uid);
+  }
+
   update() {
+    this._computedStyles = {};
+
     return new Promise((resolve) => {
       // render immediately to the DOM element
       ReactDOM.render(this.entity.render(), this.element, () => {

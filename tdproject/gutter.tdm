@@ -1,14 +1,28 @@
 
 <style type="text/scss">
+  @import "./variables";
 
   $gutter-background: #444;
-  $gutter-color: rgba(255, 255, 255, 0.8);
 
   .td-gutter {
     height: 100%;
     min-width: 150px;
-    color: $gutter-color;
+    color: $font-color-white;
     background-color: $gutter-background;
+
+    & .container {
+      width: 100%;
+    }
+
+    [class*="col-"], .container {
+      padding: 4px;
+      margin: 0px;
+    }
+
+    .row {
+      padding: 0px 4px;
+      margin: 0px;
+    }
 
     & .td-pane {
       border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -21,18 +35,13 @@
         opacity: 0.7;
         letter-spacing: 0.15em;
         padding: 10px;
+
+        // buttons
+        & a {
+          float: right;
+          color: inherit;
+        }
       }
-    }
-
-    & .row {
-      margin-top: 10px;
-    }
-
-    & input {
-      border-bottom: 1px solid $gutter-color;
-      width:100%;
-      background: transparent;
-      padding: 0;
     }
   }
 </style>

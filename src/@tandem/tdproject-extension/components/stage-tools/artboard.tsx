@@ -49,8 +49,8 @@ export class TDArtboardComponent extends React.Component<{ frame: TDArtboardEnti
     });
   }
 
-  selectEntity = () => {
-    this.props.app.bus.execute(new SelectAction([this.props.frame]));
+  selectEntity = (event: React.MouseEvent) => {
+    this.props.app.bus.execute(new SelectAction([this.props.frame], event.metaKey || event.shiftKey));
   }
 
   onKeyDown = (event) => {

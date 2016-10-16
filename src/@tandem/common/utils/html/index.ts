@@ -17,7 +17,7 @@ export function translateAbsoluteToRelativePoint(event, relativeElement) {
   return { left: rx, top: ry };
 }
 
-function calculateCSSMeasurments(style): any {
+export function calculateCSSMeasurments(style): any {
   const calculated = {};
   for (let key in style) {
     if (hasMeasurement(key)) {

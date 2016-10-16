@@ -83,6 +83,20 @@ export class DocumentPaneComponentFactoryDependency extends ReactComponentFactor
   }
 }
 
+export class StageToolComponentFactoryDependency extends ReactComponentFactoryDependency {
+  static readonly NS_PREFIX = "components/tools";
+  constructor(readonly name: string, readonly toolType: string, readonly componentClass: React.ComponentClass<any>) {
+    super(StageToolComponentFactoryDependency.getNamespace(name, toolType), componentClass);
+  }
+
+  static getNamespace(name: string, toolType: string) {
+    return [this.NS_PREFIX, name, toolType].join("/");
+  }
+
+  clone() {
+    return new StageToolComponentFactoryDependency(this.name, this.toolType, this.componentClass);
+  }
+}
 export const LAYER_LABEL_COMPONENT = "layerLabelComponent";
 export class LayerLabelComponentFactoryDependency extends ReactComponentFactoryDependency {
   constructor(readonly displayType: string, readonly componentClass: React.ComponentClass<any>, readonly childrenProperty: string = "children") {

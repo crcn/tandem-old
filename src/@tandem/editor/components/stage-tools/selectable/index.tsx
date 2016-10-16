@@ -5,7 +5,7 @@ import { SelectAction } from "@tandem/editor/actions";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { SelectablesComponent } from "@tandem/editor/components/common";
 import { BaseVisibleDOMNodeEntity } from "@tandem/synthetic-browser";
-import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
+import { StageToolComponentFactoryDependency } from "@tandem/editor/dependencies";
 
 // @injectable
 export default class SelectableToolComponent extends React.Component<{selection: any,  bus: any, app: any, zoom: number, editor: Editor }, {}>  {
@@ -19,4 +19,4 @@ export default class SelectableToolComponent extends React.Component<{selection:
   }
 }
 
-export const selectableToolComponentDependency = new ReactComponentFactoryDependency("components/tools/pointer/selectable", SelectableToolComponent);
+export const selectableToolComponentDependency = new StageToolComponentFactoryDependency("selectable", "pointer", SelectableToolComponent);

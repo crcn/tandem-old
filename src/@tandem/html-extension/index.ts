@@ -32,8 +32,9 @@ import {
 import { SandboxModuleFactoryDependency } from "@tandem/sandbox";
 
 import {
+  StageToolComponentFactoryDependency,
   LayerLabelComponentFactoryDependency,
-  EntityPaneComponentFactoryDependency
+  EntityPaneComponentFactoryDependency,
 } from "@tandem/editor/dependencies";
 
 // layer components
@@ -41,6 +42,7 @@ import {
   TextLayerLabelComponent,
   CommentLayerLabelCoponent,
   ElementLayerLabelComponent,
+  ElementInfoStageToolComponent,
   EntityAttributesPaneComponent,
 } from "./components";
 
@@ -87,6 +89,9 @@ export const htmlExtensionDependencies = [
 
   // entity panes
   new EntityPaneComponentFactoryDependency("htmlAttributes", EntityAttributesPaneComponent),
+
+  // stage tool components
+  new StageToolComponentFactoryDependency("elementInfo", "pointer", ElementInfoStageToolComponent),
 
   // services
   pastHTMLServiceDependency,
