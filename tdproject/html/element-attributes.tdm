@@ -9,26 +9,18 @@
     <div class="container">
       <div class="row">
         <div class="col-xs-4">
-          {{item}}
+          data-type
         </div>
         <div class="col-xs-8">
-          <input type="text" value="{{item}}" />
+          <input type="text" value="test" />
         </div>
       </div>
       <div class="row">
         <div class="col-xs-4">
-          {{item}}
+          class
         </div>
         <div class="col-xs-8">
-          <input type="text" value="{{item}}" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-4">
-          {{item}}
-        </div>
-        <div class="col-xs-8">
-          <input type="text" value="{{item}}" />
+          <input type="text" value="container" />
         </div>
       </div>
     </div>

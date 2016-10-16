@@ -1,9 +1,14 @@
 <link rel="import" href="gutter.tdm">
+<link rel="import" href="components.tdm">
+<link rel="import "href="html/element-style.tdm">
 
 <style type="text/scss">
   .td-css-pane {
     & .selector {
-      color: red;
+      text-transform: none;
+
+      background: rgba(0,0,0,0.4);
+
       &:after {
         content: " ";
       }
@@ -29,12 +34,29 @@
 
 <template id="html-element-css">
   <gutter>
-    <div class="td-pane td-css-pane">
+    <div>
+      <div class="td-section-header">.container</div>
+      <html-element-style-group />
+    </div>
+    <div>
+      <div class="td-section-header">.selectables > [data-type="test"]</div>
       <div class="container">
-        <div><span class="selector">.container</span> {</div>
-          <div class="declaration"><span class="key">color</span><span class="value">red</span></div>
-          <div class="declaration"><span class="key">color</span><span class="value">red</span></div>
-        <div>}</div>
+        <div class="row">
+          <div class="col-xs-4">
+            color
+          </div>
+          <div class="col-xs-8">
+            <input type="text" value="red" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">
+            background
+          </div>
+          <div class="col-xs-8">
+            <input type="text" value="rgba(0,0,0,0.5)" />
+          </div>
+        </div>
       </div>
     </div>
   </gutter>

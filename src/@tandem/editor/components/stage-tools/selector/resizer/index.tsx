@@ -275,7 +275,7 @@ class ResizerComponent extends React.Component<{
     };
 
     const capabilities = entities.capabilities;
-    const movable = false; // capabilities.movable;
+    const movable = capabilities.movable && entities.editable;
 
     const points = [
       ["nw", movable === true, 0, 0],
@@ -309,7 +309,7 @@ class ResizerComponent extends React.Component<{
       >
         <PathComponent
           editor={this.props.editor}
-          showPoints={capabilities.resizable && false}
+          showPoints={capabilities.resizable && entities.editable}
           onPointChange={this.updatePoint}
           onPointMouseDown={this.onPointMouseDown}
           onPointMouseUp={this.onPointMouseUp}

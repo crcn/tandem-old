@@ -8,7 +8,7 @@ export class GridToolComponent extends React.Component<{ zoom: number }, any> {
 
     const { zoom } = this.props;
 
-    if (zoom <= 5) return null;
+    if (zoom <= 12) return null;
 
     const size = 20000;
     const gridSize = 1;

@@ -13,7 +13,7 @@
 </style>
 
 <template id="html-element-typography-pane">
-  <div class="td-pane">
+  <div class="td-pane td-section">
     <div class="td-pane-header">
       Typography
     </div>
@@ -36,7 +36,7 @@
           <input type="text" value="Regular" />
         </div>
         <div class="col-xs-4">
-          <span class="glyphicon glyphicon-text-width"></span><input type="text" value="0%" />
+          <!--span class="glyphicon glyphicon-text-width"></span--><input type="text" value="0%" />
         </div>
       </div>
     </div>
@@ -44,7 +44,7 @@
 </template>
 
 <template id="html-element-background-pane">
-  <div class="td-pane">
+  <div class="td-pane td-section">
     <div class="td-pane-header">
       background
       <a href="#">
@@ -60,7 +60,7 @@
 </template>
 
 <template id="html-element-style-group">
-  <div class="td-pane">
+  <div class="td-pane td-section">
     <div class="td-pane-header">
       Borders
     </div>

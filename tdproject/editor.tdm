@@ -35,6 +35,7 @@
 <!-- Preview -->
 <link rel="import" href="html/element-style.tdm">
 <link rel="import" href="html/element-attributes.tdm">
+<link rel="import" href="html/element-css.tdm">
 <editor>
   <div>
     <pane title="index.tdm">
@@ -48,6 +49,6 @@
   </stage>
   <div>
     <html-element-attributes-pane />
-    <html-element-style-group />
+    <html-element-css />
   </div>
 </editor>
