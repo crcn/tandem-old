@@ -1,13 +1,40 @@
 <link rel="import" href="gutter.tdm">
 
+<style type="text/scss">
+  .td-css-pane {
+    & .selector {
+      color: red;
+      &:after {
+        content: " ";
+      }
+    }
+
+    & .declaration {
+      margin-left: 10px;
+      & .key {
+        color: red;
+        &:after {
+          content: ": ";
+        }
+      }
+      & .value {
+        color: blue;
+        &:after {
+          content: ";";
+        }
+      }
+    }
+  }
+</style>
+
 <template id="html-element-css">
   <gutter>
-    <div class="td-pane">
-      <div class="td-pane-header">
-        .container
-      </div>
+    <div class="td-pane td-css-pane">
       <div class="container">
-        a
+        <div><span class="selector">.container</span> {</div>
+          <div class="declaration"><span class="key">color</span><span class="value">red</span></div>
+          <div class="declaration"><span class="key">color</span><span class="value">red</span></div>
+        <div>}</div>
       </div>
     </div>
   </gutter>

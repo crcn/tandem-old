@@ -47,12 +47,15 @@ class ElementInfoComponent extends React.Component<{ entity: BaseVisibleDOMNodeE
       borderBottomWidth: paddingBottom
     };
 
-
     const marginStyle = {
       borderLeftWidth: marginLeft,
       borderRightWidth: marginRight,
       borderTopWidth: marginTop,
-      borderBottomWidth: marginBottom
+      borderBottomWidth: marginBottom,
+      left: -marginLeft,
+      top: -marginTop,
+      width: `calc(100% + ${marginLeft + marginRight}px)`,
+      height: `calc(100% + ${marginTop + marginBottom}px)`
     };
 
     return <div className="td-html-element-info-item" style={style}>

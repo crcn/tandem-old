@@ -69,6 +69,10 @@ export class VisibleDOMEntityCollection<T extends BaseVisibleDOMNodeEntity<any, 
     super(...(<Array<T>><any>components).filter((entity: BaseVisibleDOMNodeEntity<any, any>) => entity instanceof BaseVisibleDOMNodeEntity));
   }
 
+  get editable() {
+    return this.find((entity) => entity.editable === false) == null;
+  }
+
   get absoluteBounds() {
     return BoundingRect.merge(...this.map((entity) => entity.absoluteBounds));
   }
