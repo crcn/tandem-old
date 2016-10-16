@@ -68,7 +68,7 @@ class ElementInfoComponent extends React.Component<{ entity: BaseVisibleDOMNodeE
 export class ElementInfoStageToolComponent extends React.Component<{ editor: Editor }, any> {
   render() {
     const { editor } = this.props;
-    const entities = editor.bodyEntity.querySelectorAll("*").filter((entity) => entity.target && entity.target.getBoundingClientRect && entity.metadata.get(MetadataKeys.HOVERING));
+    const entities = editor.documentEntity.querySelectorAll("*").filter((entity) => entity.target && entity.target.getBoundingClientRect && entity.metadata.get(MetadataKeys.HOVERING));
 
     return <div className="td-html-element-info">
       { entities.map((entity) => <ElementInfoComponent entity={entity as any} editor={editor} key={entity.uid} />)}

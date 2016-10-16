@@ -16,3 +16,11 @@
 - [ ] insert tool
 - [ ] scss parser
 - [ ] compiler should be global - like FS
+- [ ] only one process for tandem - check local socket
+
+- [ ] optimizations
+  - [ ]
+
+- [ ] ux
+  - [ ] loader screen
+  - [ ] error bar
