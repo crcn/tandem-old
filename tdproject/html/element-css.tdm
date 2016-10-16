@@ -35,6 +35,12 @@
 <template id="html-element-css">
   <gutter>
     <div>
+
+      <!--
+      TODOS:
+       - {} for toggling raw CSS
+       - nail polish icon for prettier styler
+      -->
       <div class="td-section-header">.container</div>
       <html-element-style-group />
     </div>

@@ -17,7 +17,8 @@
     "postinstall": "scripts/copy-src-assets.sh; tsc --declaration; linklocal",
     "start": "./scripts/exec-packages.sh npm start",
     "build": "./scripts/exec-packages.sh npm run build",
-    "start-dev": "webpack-dev-server --inline --progress"
+    "start-dev": "webpack-dev-server --inline --progress",
+    "start-desktop-dev": "./scripts/copy-src-assets.sh; electron lib/@tandem/desktop"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,8 @@
     "@tandem/common": "file:./lib/@tandem/common",
     "@tandem/editor": "file:./lib/@tandem/editor",
     "@tandem/tether": "file:./lib/@tandem/tether",
+    "@tandem/sandbox": "file:./lib/@tandem/sandbox",
+    "@tandem/synthetic-browser": "file:./lib/@tandem/synthetic-browser",
     "@tandem/tether-back-end": "file:./lib/@tandem/tether-back-end",
     "chai": "^3.5.0",
     "css-loader": "^0.23.1",

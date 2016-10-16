@@ -1,6 +1,12 @@
 import { IModule } from "./module";
 import { Sandbox } from "./sandbox";
-import { ClassFactoryDependency, FactoryDependency, Dependencies } from "@tandem/common";
+import { IFileSystem } from "./file-system";
+import {
+  Dependency,
+  Dependencies,
+  FactoryDependency,
+  ClassFactoryDependency,
+} from "@tandem/common";
 
 export type moduleType = { new(fileName: string, content: string, sandbox: Sandbox): IModule };
 
@@ -26,5 +32,17 @@ export class SandboxModuleFactoryDependency extends ClassFactoryDependency {
 
   static find(envMimeType: string, mimeType: string, dependencies: Dependencies) {
     return dependencies.query<SandboxModuleFactoryDependency>(this.getNamespace(envMimeType, mimeType));
+  }
+}
+
+export class FileSystemDependency extends Dependency<IFileSystem> {
+  static readonly NS = "fileSystem";
+  constructor(value: IFileSystem) {
+    super(FileSystemDependency.NS, value);
+  }
+
+  static getInstance(dependencies: Dependencies): IFileSystem {
+    const dependency = dependencies.query<FileSystemDependency>(this.NS);
+    return dependency && dependency.value;
   }
 }

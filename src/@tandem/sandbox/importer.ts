@@ -1,4 +1,6 @@
 import { Sandbox } from "./sandbox";
+import { IFileSystem } from "./file-system";
+import { FileSystemDependency } from "./dependencies";
 import { IModule, BaseSandboxModule } from "./module";
 import { SandboxModuleFactoryDependency } from "./dependencies";
 import { uniq } from "lodash";
@@ -13,8 +15,6 @@ import {
   watchProperty,
   ResolveAction,
   ChangeAction,
-  ReadFileAction,
-  WatchFileAction,
   MainBusDependency,
   SingletonThenable,
   MimeTypeDependency,
@@ -55,6 +55,7 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
   public directories: string[];
 
   private _modules: any;
+  private _fileSystem: IFileSystem;
   private _fileWatchers: any;
   private _fileContentCache: any;
   readonly logger: Logger;
@@ -62,6 +63,7 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
   constructor(private _sandbox: Sandbox, private _dependencies: Dependencies, private _getResolveOptions?: () => IModuleResolveOptions) {
     super();
     this.bus = MainBusDependency.getInstance(_dependencies);
+    this._fileSystem = FileSystemDependency.getInstance(_dependencies);
     this.extensions = [];
     this.directories = [];
     this._fileWatchers     = {};
@@ -149,8 +151,7 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
 
   public async readFile(filePath: string): Promise<string> {
     const content = await this._fileContentCache[filePath] || (this._fileContentCache[filePath] = new SingletonThenable(async () => {
-
-      return (await ReadFileAction.execute(filePath, this.bus)).content;
+      return await this._fileSystem.readFile(filePath);
     }));
 
     this.watchFile(filePath);
@@ -160,15 +161,13 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
 
   public watchFile(filePath: string) {
     if (!this._fileWatchers[filePath]) {
-      this._fileWatchers[filePath] = WatchFileAction.execute(filePath, this.bus, this.onFileChange.bind(this));
+      this._fileWatchers[filePath] = this._fileSystem.watchFile(filePath, this.onFileChange.bind(this, filePath));
     }
   }
 
-  protected async onFileChange(data: IReadFileActionResponseData) {
+  protected async onFileChange(fileName: string) {
 
-    if (this._fileContentCache[data.path]) {
-      this._fileContentCache[data.path] = data.content;
-    }
+    this._fileContentCache[fileName] = null;
 
     this.notify(new ModuleImporterAction(ModuleImporterAction.MODULE_CONTENT_CHANGED));
   }

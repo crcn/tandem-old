@@ -50,7 +50,6 @@ export class Sandbox extends Observable {
   }
 
   async open(envMimeType: string, filePath: string, relativePath?: string) {
-    const now = Date.now();
     this._importer.reset();
 
     if (this._global) {
@@ -62,7 +61,6 @@ export class Sandbox extends Observable {
     this.notify(new SandboxAction(SandboxAction.OPENING_MAIN_ENTRY));
     this._mainExports = await this._importer.import(envMimeType, filePath, relativePath);
     this.notify(new SandboxAction(SandboxAction.OPENED_MAIN_ENTRY));
-    console.log(Date.now() - now);
   }
 
   protected onImporterAction(action: Action) {

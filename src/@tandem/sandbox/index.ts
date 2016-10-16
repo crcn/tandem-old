@@ -5,3 +5,5 @@ export * from "./actions";
 export * from "./synthetic";
 export * from "./editor";
 export * from "./importer";
+export * from "./file-system";
+export * from "./resolver";
