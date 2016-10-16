@@ -75,7 +75,7 @@ export class RemoteFileSystem extends BaseFileSystem {
   }
 
   async writeFile(fileName: string, content: any) {
-    UpdateTemporaryFileContentAction.execute({
+    return await UpdateTemporaryFileContentAction.execute({
       path: fileName,
       content: content
     }, this.bus);
