@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as fsa from "fs-extra";
 import * as path from "path";
 import * as gaze from "gaze";
 import * as sift from "sift";
@@ -15,7 +16,8 @@ import { BaseApplicationService } from "@tandem/common/services";
 import { SocketIOHandlerDependency  } from "@tandem/back-end/dependencies";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
 import { DEPENDENCIES_NS, Dependencies } from "@tandem/common/dependencies";
-import { DSUpsertAction, LoadAction, ReadFileAction } from "@tandem/common/actions";
+import { DSUpsertAction, LoadAction, InitializeAction, ReadFileAction } from "@tandem/common/actions";
+import * as getPort from "get-port";
 
 @loggable()
 export default class FrontEndService extends BaseApplicationService<IApplication> {
@@ -33,10 +35,10 @@ export default class FrontEndService extends BaseApplicationService<IApplication
 
   didInject() {
     this.app.bus.register(this._ioService = IOService.create<IApplication>(this.dependencies));
-    this._port = this.app.config.port;
   }
 
-  async [LoadAction.LOAD]() {
+  async [InitializeAction.INITIALIZE]() {
+    this._port = this.app.config.port || await getPort();
     await this._loadHttpServer();
     await this._loadStaticRoutes();
     await this._loadSocketServer();
@@ -44,6 +46,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
 
   async _loadHttpServer() {
     this.logger.info(`listening on port ${this._port}`);
+
     this._server = express();
     this._socket = this._server.listen(this._port);
   }
@@ -84,8 +87,6 @@ export default class FrontEndService extends BaseApplicationService<IApplication
         res.send(this.getIndexHtmlContent(staticFileNames));
       });
     }
-
-
   }
 
   getIndexHtmlContent(staticFileNames) {

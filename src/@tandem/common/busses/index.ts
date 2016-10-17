@@ -9,3 +9,4 @@ export * from "./limit";
 export * from "./proxy";
 export * from "./upsert";
 export * from "./router";
+export * from "./sock";

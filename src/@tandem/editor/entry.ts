@@ -13,12 +13,14 @@ if (isMaster) {
 
   window.onload = () => {
 
-    const element = document.createElement("div");;
-    document.body.appendChild(element);
+    if (!config.element) {
+      const element = document.createElement("div");
+      document.body.appendChild(element);
+      Object.assign(config, { element: element });
+    }
 
-    const app = window["app"] = new FrontEndApplication(Object.assign(config, {
-      element: element
-    }));
+    const app = window["app"] = new FrontEndApplication(config);
+
     app.initialize();
   };
 

@@ -12,6 +12,7 @@
     "esprima": "registry:dt/esprima#2.1.0+20160830194246",
     "express": "registry:dt/express#4.0.0+20160708185218",
     "express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20160715232503",
+    "fs-extra": "registry:dt/fs-extra#0.0.0+20161004190449",
     "get-port": "registry:dt/get-port#0.0.0+20160809113333",
     "github-electron": "registry:dt/github-electron#1.4.2+20161012142539",
     "html2canvas": "registry:dt/html2canvas#0.0.0+20160627164915",

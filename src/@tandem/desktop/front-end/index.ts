@@ -10,4 +10,5 @@ window["config"] = {
   }
 };
 
+
 require("@tandem/editor/bundle/editor");

@@ -3,7 +3,6 @@ import defaultConfig from "./config";
 
 export function create(config = {}) {
   var app = new ServerApplication(Object.assign({}, defaultConfig, config));
-  app.initialize();
   return app;
 }
 

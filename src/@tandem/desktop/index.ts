@@ -2,6 +2,9 @@ import ServerApplication from "@tandem/back-end/application";
 import { OpenProjectAction } from "@tandem/common";
 import * as getPort from "get-port";
 const electron = require("electron");
+const argv = require('yargs').argv;
+
+console.log(argv);
 
 let backend: ServerApplication
 
@@ -26,8 +29,7 @@ const BrowserWindow = electron.BrowserWindow
 let mainWindow
 
 function createWindow () {
-
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({width: 1024, height: 768 });
   mainWindow.loadURL(`file://${__dirname}/index.html?backendPort=${backend.config.port}`)
   mainWindow.webContents.openDevTools()
 }

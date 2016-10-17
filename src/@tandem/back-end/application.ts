@@ -4,6 +4,7 @@ import * as path from "path";
 import { Application } from "@tandem/common/application";
 
 import { dbServiceDependency } from "./services/db";
+import { sockServiceDependency } from "./services/sock";
 import { sync as getPackagePath } from "package-path";
 import { fileServicerDependency } from "./services/file";
 import { stdinServiceDependency } from "./services/stdin";
@@ -43,6 +44,7 @@ export default class ServerApplication extends Application {
       frontEndServiceDependency,
       resolverServiceDependency,
       tetherBackEndDependencies,
+      sockServiceDependency
     );
   }
 }

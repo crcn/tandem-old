@@ -7,6 +7,7 @@
 /// <reference path="globals/electron/index.d.ts" />
 /// <reference path="globals/express-serve-static-core/index.d.ts" />
 /// <reference path="globals/express/index.d.ts" />
+/// <reference path="globals/fs-extra/index.d.ts" />
 /// <reference path="globals/get-port/index.d.ts" />
 /// <reference path="globals/github-electron/index.d.ts" />
 /// <reference path="globals/html2canvas/index.d.ts" />

@@ -114,3 +114,40 @@ declare module "rasterizehtml" {
   }
   export = rasterizeHTML;
 }
+
+declare module "titlebar" {
+
+  interface ITitlebar {
+    appendTo(element: HTMLElement);
+    on(event:"close", listener: Function);
+    element: HTMLElement;
+    destroy();
+  }
+
+  function titlebar(): ITitlebar;
+
+  namespace titlebar {
+
+  }
+
+  export = titlebar;
+}
+
+declare module "mesh-remote-bus" {
+
+  import { IActor, Action } from "@tandem/common";
+
+  interface IRemoteBusAdapter {
+    send(data: any);
+    addListener(listener: (data: any) => any);
+  }
+
+  class RemoteBus implements IActor {
+    constructor(adapter: IRemoteBusAdapter, localBus: IActor);
+    execute(action: Action): any;
+  }
+
+  namespace RemoteBus { }
+
+  export = RemoteBus;
+}
