@@ -10,17 +10,20 @@ import {
   Action,
   loggable,
   IInvoker,
+  DSFindAction,
+  DSUpdateAction,
+  DSInsertAction,
+  DSRemoveAction,
   Observable,
   Dependencies,
   watchProperty,
   ResolveAction,
   ChangeAction,
+  BaseActiveRecord,
   MainBusDependency,
   SingletonThenable,
   MimeTypeDependency,
   PropertyChangeAction,
-  IReadFileActionResponseData,
-  UpdateTemporaryFileContentAction,
 } from "@tandem/common";
 
 import {
@@ -43,6 +46,42 @@ export class EmptyModule extends BaseSandboxModule {
   }
   load() { }
   evaluate() { return {}; }
+}
+
+interface IFileCacheSource {
+  filePath: string;
+  url?: string;
+  mtime?: number;
+}
+
+class FileCacheItem extends BaseActiveRecord {
+
+  static readonly COLLECTION_NAME = "fileCache";
+  public filePath: string;
+  public url: string;
+  public mtime: number;
+
+  constructor(source: IFileCacheSource, bus: IActor) {
+    super(source, FileCacheItem.COLLECTION_NAME, bus);
+  }
+
+  save() {
+    this.mtime = Date.now();
+    return super.save();
+  }
+
+  serialize() {
+    return {
+      url: this.url,
+      mtime: this.mtime,
+      filePath: this.filePath,
+    }
+  }
+
+  static async findByFilePath(filePath: string, bus: IActor) {
+    const data = await DSFindAction.findOne(this.COLLECTION_NAME, { filePath: filePath }, bus);
+    return data && new FileCacheItem(data, bus);
+  }
 }
 
 @loggable()
@@ -92,11 +131,11 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     };
   }
 
-  public async resolve(filePath: string, relativePath?: string) {
-    return this._resolvedFiles[relativePath + filePath] || (this._resolvedFiles[relativePath + filePath] = new SingletonThenable(() => {
+  public async resolve(relativePath: string, cwd?: string) {
+    return this._resolvedFiles[cwd + relativePath] || (this._resolvedFiles[cwd + relativePath] = new SingletonThenable(() => {
       const { extensions, directories } = this.getResolveOptions();
       try {
-        return ResolveAction.execute(String(filePath), relativePath, extensions, directories, this.bus);
+        return ResolveAction.execute(String(relativePath), cwd, extensions, directories, this.bus);
       } catch (e) {
         return null;
       }
@@ -111,33 +150,43 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     this._modules = {};
   }
 
-  async load(envKind: string, filePath: string, relativePath?: string): Promise<IModule> {
+  async load(envKind: string, relativePath: string, cwd?: string): Promise<IModule> {
 
-    const now = Date.now();
+    const filePath = await this.resolve(relativePath, cwd);
 
-    const resolvedPath = await this.resolve(filePath, relativePath);
-
-    if (resolvedPath == null) {
+    if (filePath == null) {
       return new EmptyModule(filePath, {}, this._sandbox);
     }
 
-    // TODO - add missintModule if no resolution
+    let fileCache: FileCacheItem = await FileCacheItem.findByFilePath(filePath, this.bus)
+
+    if (!fileCache) {
+
+      console.log("file://" + filePath);
+
+      fileCache = new FileCacheItem({
+        filePath: filePath,
+        url: "file://" + filePath
+      }, this.bus);
+
+      await fileCache.save();
+    }
 
     // readFile executed here to ensure that file watchers get added after resetting the importer
     // object
-    const content      = await this.readFile(resolvedPath);
+    const content      = await this.readUrl(fileCache.url);
 
-    const moduleCache = this._modules[resolvedPath] || (this._modules[resolvedPath] = {});
+    const moduleCache = this._modules[filePath] || (this._modules[filePath] = {});
 
     let module = moduleCache[envKind];
 
     if (!moduleCache[envKind]) {
-      const moduleFactory = SandboxModuleFactoryDependency.find(envKind, MimeTypeDependency.lookup(resolvedPath, this._dependencies), this._dependencies);
+      const moduleFactory = SandboxModuleFactoryDependency.find(envKind, MimeTypeDependency.lookup(filePath, this._dependencies), this._dependencies);
       if (!moduleFactory) {
-        throw new Error(`Unable to find sandbox module for file ${envKind}:${resolvedPath}`);
+        throw new Error(`Unable to find sandbox module for file ${envKind}:${filePath}`);
       }
 
-      const module = moduleCache[envKind] = moduleFactory.create(resolvedPath, content, this._sandbox);
+      const module = moduleCache[envKind] = moduleFactory.create(filePath, content, this._sandbox);
       await module.load();
       module.observe(new WrapBus(this.onModuleAction.bind(this)));
     }
@@ -145,8 +194,8 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     return moduleCache[envKind];
   }
 
-  async import(envKind: string, filePath: string, relativePath?: string) {
-    return (await this.load(envKind, filePath, relativePath)).evaluate();
+  async import(envKind: string, relativePath: string, cwd?: string) {
+    return (await this.load(envKind, relativePath, cwd)).evaluate();
   }
 
   public async readFile(filePath: string): Promise<string> {
@@ -157,6 +206,15 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     this.watchFile(filePath);
 
     return content;
+  }
+
+  public async readUrl(url: string): Promise<string> {
+    if (/^file:\/\//.test(url)) {
+      return await this.readFile(url.substr("file://".length));
+    } else {
+      const response = await fetch(url);
+      return await response.text();
+    }
   }
 
   public watchFile(filePath: string) {
@@ -172,13 +230,16 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     this.notify(new ModuleImporterAction(ModuleImporterAction.MODULE_CONTENT_CHANGED));
   }
 
-  protected onModuleEdited(module: IModule, newContent: string) {
+  protected async onModuleEdited(module: IModule, newContent: string) {
 
     if (this._fileContentCache[module.fileName]) {
       this._fileContentCache[module.fileName] = newContent;
     }
 
-    UpdateTemporaryFileContentAction.execute({ path: module.fileName, content: newContent }, this.bus);
+    const fileCache = await FileCacheItem.findByFilePath(module.fileName, this.bus);
+    fileCache.url = "data:text/plain," + encodeURIComponent(newContent);
+    await fileCache.save();
+
   }
 
   protected onModuleAction(action: Action) {

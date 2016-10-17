@@ -4,7 +4,6 @@
 /// <reference path="globals/compression/index.d.ts" />
 /// <reference path="globals/cors/index.d.ts" />
 /// <reference path="globals/diff/index.d.ts" />
-/// <reference path="globals/electron/index.d.ts" />
 /// <reference path="globals/express-serve-static-core/index.d.ts" />
 /// <reference path="globals/express/index.d.ts" />
 /// <reference path="globals/fs-extra/index.d.ts" />

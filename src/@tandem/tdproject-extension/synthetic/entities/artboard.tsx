@@ -19,6 +19,7 @@ import {
 import { SandboxAction } from "@tandem/sandbox";
 
 import { pick } from "lodash";
+import * as path from "path";
 import * as React from "react";
 import { WrapBus } from "mesh";
 import { VisibleHTMLEntity } from "@tandem/html-extension";
@@ -77,7 +78,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
     if (this.source.hasAttribute("src")) {
       const src = this.source.getAttribute("src");
       const window = ownerDocument.defaultView;
-      const absolutePath = await window.sandbox.importer.resolve(src, window.location.toString());
+      const absolutePath = await window.sandbox.importer.resolve(src, path.dirname(window.location.toString()));
       this._artboardBrowser.open(absolutePath);
     }
   }

@@ -25,7 +25,6 @@ import {
   DEPENDENCIES_NS,
   PropertyChangeAction,
   DependenciesDependency,
-  IFileModelActionResponseData,
 } from "@tandem/common";
 
 import {

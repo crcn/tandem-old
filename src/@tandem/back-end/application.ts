@@ -30,14 +30,15 @@ export default class ServerApplication extends Application {
     }
 
     super(Object.assign({
+      cwd: process.cwd(),
       entries: entries
     }, config));
   }
   registerDependencies() {
     super.registerDependencies();
     this.dependencies.register(
-      dbServiceDependency,
       fileServicerDependency,
+      dbServiceDependency,
       stdinServiceDependency,
       upsertServiceDependency,
       projectServiceDependency,

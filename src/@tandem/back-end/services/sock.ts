@@ -50,11 +50,15 @@ export default class SockService extends BaseApplicationService<IApplication> {
   }
 
   [ExecAction.EXEC]({ config }: ExecAction) {
-    OpenProjectAction.execute({ path: path.resolve(config.cwd, config.argv._[0]) }, this.bus);
+    if (config.argv._.length) {
+      OpenProjectAction.execute({ path: path.resolve(config.cwd, config.argv._[0]) }, this.bus);
+    }
   }
 
   [InitializeAction.INITIALIZE](action: LoadAction) {
-    ExecAction.execute(this.app.config, this.bus);
+    if (this.app.config.argv) {
+      ExecAction.execute(this.app.config, this.bus);
+    }
   }
 
   private _startSocketServer() {

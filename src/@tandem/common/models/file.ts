@@ -3,7 +3,6 @@ import {
   Dependencies,
   MainBusDependency,
   MimeTypeDependency,
-  FileFactoryDependency,
   MAIN_BUS_NS,
   DEPENDENCIES_NS
 } from "@tandem/common/dependencies";
@@ -14,8 +13,6 @@ import { Observable, watchProperty } from "@tandem/common/observable";
 import {
   WatchFileAction,
   ReadFileAction,
-  UpdateTemporaryFileContentAction,
-  IFileModelActionResponseData
 } from "@tandem/common/actions";
 
 export class File extends Observable {
@@ -39,9 +36,9 @@ export class File extends Observable {
   @inject(MAIN_BUS_NS)
   protected _bus: IActor;
 
-  constructor(data: IFileModelActionResponseData) {
+  constructor() {
     super();
-    this.updateFromSourceData(data);
+    // this.updateFromSourceData(data);
   }
 
   dispose() {
@@ -53,27 +50,27 @@ export class File extends Observable {
 
   async save() {
     this.mtime = Date.now();
-    await UpdateTemporaryFileContentAction.execute(this, this._bus);
+    // await UpdateTemporaryFileContentAction.execute(this, this._bus);
   }
 
-  static async open(path: string, dependencies: Dependencies, mimeType?: string): Promise<File> {
-    const bus = MainBusDependency.getInstance(dependencies);
-    const data = await ReadFileAction.execute(path, bus);
-    const fileFactory = FileFactoryDependency.find(mimeType || MimeTypeDependency.lookup(path, dependencies), dependencies) || FileFactoryDependency.find("file", dependencies);
-    return fileFactory.create(data);
-  }
+  // static async open(path: string, dependencies: Dependencies, mimeType?: string): Promise<File> {
+  //   const bus = MainBusDependency.getInstance(dependencies);
+  //   const data = await ReadFileAction.execute(path, bus);
+  //   const fileFactory = FileFactoryDependency.find(mimeType || MimeTypeDependency.lookup(path, dependencies), dependencies) || FileFactoryDependency.find("file", dependencies);
+  //   return fileFactory.create(data);
+  // }
 
-  protected updateFromSourceData(data: IFileModelActionResponseData) {
-    Object.assign(this, data);
-  }
+  // protected updateFromSourceData(data: IFileModelActionResponseData) {
+  //   Object.assign(this, data);
+  // }
 
-  protected onFileDataChange(data: IFileModelActionResponseData) {
-    this.updateFromSourceData(data);
-  }
+  // protected onFileDataChange(data: IFileModelActionResponseData) {
+  //   this.updateFromSourceData(data);
+  // }
 
-  sync() {
-    this._watcher = WatchFileAction.execute(this.path, this._bus, this.onFileDataChange.bind(this));
-  }
+  // sync() {
+  //   this._watcher = WatchFileAction.execute(this.path, this._bus, this.onFileDataChange.bind(this));
+  // }
 }
 
-export const fileModelDependency = new FileFactoryDependency("file", File);
+// export const fileModelDependency = new FileFactoryDependency("file", File);

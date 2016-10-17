@@ -1,4 +1,5 @@
 import { omit } from "lodash";
+import * as path from "path";
 import * as React from "react";
 import { BaseDOMNodeEntity, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
@@ -16,7 +17,7 @@ export class HTMLImageEntity extends BaseDOMNodeEntity<SyntheticDOMElement, HTML
 
     // set the src attribute to trigger a re-render
     const importer = this.source.ownerDocument.defaultView.sandbox.importer;
-    const absolutePath = await importer.resolve(src, this.source.ownerDocument.location.toString());
+    const absolutePath = await importer.resolve(src, path.dirname(this.source.ownerDocument.location.toString()));
     importer.watchFile(absolutePath);
 
     this._src = `${window.location.protocol}${window.location.host}/asset/${encodeURIComponent(absolutePath)}?${Date.now()}`;

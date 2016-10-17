@@ -4,7 +4,7 @@ import { INamed } from "@tandem/common/object";
 import { IBrokerBus } from "../busses";
 import { IApplication } from "@tandem/common/application";
 import { IASTNode } from "@tandem/common/lang";
-import { Action, IFileModelActionResponseData } from "../actions";
+import { Action } from "../actions";
 
 import { File } from "@tandem/common/models";
 import {
@@ -82,25 +82,6 @@ export class DependenciesDependency extends Dependency<Dependencies> {
 
   set dependencies(value: Dependencies) {
     this.value = value;
-  }
-}
-
-
-/**
- */
-
-export class FileFactoryDependency extends ClassFactoryDependency {
-  static readonly NS_PREFIX = "fileFactories";
-  constructor(mimeType: string, value: { new(sourceData: IFileModelActionResponseData): File }) {
-    super([FileFactoryDependency.NS_PREFIX, mimeType].join("/"), value);
-  }
-
-  create(sourceData: any): any {
-    return super.create(sourceData);
-  }
-
-  static find(mimetype: string, dependencies: Dependencies): FileFactoryDependency {
-    return dependencies.query<FileFactoryDependency>([FileFactoryDependency.NS_PREFIX, mimetype].join("/"));
   }
 }
 

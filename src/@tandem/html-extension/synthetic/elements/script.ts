@@ -26,7 +26,7 @@ export class SyntheticHTMLScript extends SyntheticHTMLElement {
     let scriptContent = "";
 
     if (src) {
-      const filePath = await importer.resolve(src, this.module.fileName);
+      const filePath = await importer.resolve(src, path.dirname(this.module.fileName));
       const content = await importer.readFile(filePath);
       await importer.watchFile(filePath);
     } else {

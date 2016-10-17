@@ -9,6 +9,7 @@ import { Response } from "mesh";
 import * as express from "express";
 import { IOService } from "@tandem/common/services";
 import * as compression from "compression";
+import { exec } from "child_process";
 import { IApplication } from "@tandem/common/application";
 import { loggable, inject } from "@tandem/common/decorators";
 import * as createSocketIOServer from "socket.io";
@@ -42,6 +43,9 @@ export default class FrontEndService extends BaseApplicationService<IApplication
     await this._loadHttpServer();
     await this._loadStaticRoutes();
     await this._loadSocketServer();
+    if (this.app.config.argv.open) {
+      exec(`open http://localhost:${this._port}/editor`);
+    }
   }
 
   async _loadHttpServer() {

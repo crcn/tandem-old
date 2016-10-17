@@ -8,7 +8,6 @@ import {
   IInjectable,
   PropertyChangeAction,
   APPLICATION_SINGLETON_NS,
-  UpdateTemporaryFileContentAction,
 } from "@tandem/common";
 
 class History {
@@ -109,19 +108,19 @@ export class ModuleHistory implements IInjectable {
 
     // target may be comming from an embedded browser instance
     if (action.type === SyntheticBrowserAction.OPENED && action.target === this.browser) {
-      console.log("RESET");
       this.reset();
-    } else if (action.type === UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT) {
-      const contentAction = (<UpdateTemporaryFileContentAction>action);
-      if (contentAction.mtime > this._mtime) {
-        this._history.push({
-          [contentAction.path]: {
-            mtime: this._mtime = contentAction.mtime,
-            content: contentAction.content
-          }
-        });
-      }
     }
+    // } else if (action.type === UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT) {
+    //   const contentAction = (<UpdateTemporaryFileContentAction>action);
+    //   if (contentAction.mtime > this._mtime) {
+    //     this._history.push({
+    //       [contentAction.path]: {
+    //         mtime: this._mtime = contentAction.mtime,
+    //         content: contentAction.content
+    //       }
+    //     });
+    //   }
+    // }
   }
 
   protected reset() {
@@ -148,7 +147,7 @@ export class ModuleHistory implements IInjectable {
     this._settingState = true;
 
     for (const fileName in data) {
-      await UpdateTemporaryFileContentAction.execute({ path: fileName, content: data[fileName].content, mtime: data[fileName].mtime }, this.bus);
+      // await UpdateTemporaryFileContentAction.execute({ path: fileName, content: data[fileName].content, mtime: data[fileName].mtime }, this.bus);
     }
 
     this._settingState = false;

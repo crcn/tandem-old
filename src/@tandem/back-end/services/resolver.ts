@@ -17,34 +17,31 @@ export default class ResolverService extends BaseApplicationService<IApplication
 
   [ResolveAction.RESOLVE](action: ResolveAction): any {
     const { config } = this.app;
-    let { filePath, relativeFilePath, extensions, directories } = action;
+    let { relativePath, cwd, extensions, directories } = action;
 
-    let dir;
-
-    if (relativeFilePath) {
-      dir = path.dirname(relativeFilePath);
-      const pkgPath = pkgpath.sync(relativeFilePath);
+    if (cwd) {
+      const pkgPath = pkgpath.sync(cwd);
       const pkg = require(pkgPath + "/package.json");
 
       // check browser flag in package.json
 
-      if (!/^(\.|\/)/.test(filePath)) {
-        dir = pkgPath;
+      if (!/^(\.|\/)/.test(relativePath)) {
+        cwd = pkgPath;
       }
 
-      if (pkg && pkg.browser && pkg.browser[filePath] != null) {
-        filePath = pkg.browser[filePath];
+      if (pkg && pkg.browser && pkg.browser[relativePath] != null) {
+        relativePath = pkg.browser[relativePath];
       }
 
-      directories.push(dir + "/node_modules");
+      directories.push(cwd + "/node_modules");
 
-      if (<boolean><any>filePath === false) return new EmptyResponse();
+      if (<boolean><any>relativePath === false) return new EmptyResponse();
     } else {
-      dir = process.cwd();
+      cwd = process.cwd();
     }
 
-    return resolve.sync(filePath, {
-      basedir: dir,
+    return resolve.sync(relativePath, {
+      basedir: cwd,
       extensions: extensions,
       paths: directories,
 

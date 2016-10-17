@@ -137,13 +137,13 @@ declare module "mesh-remote-bus" {
 
   import { IActor, Action } from "@tandem/common";
 
-  interface IRemoteBusAdapter {
+  interface IRemoteBusAdapter2 {
     send(data: any);
     addListener(listener: (data: any) => any);
   }
 
   class RemoteBus implements IActor {
-    constructor(adapter: IRemoteBusAdapter, localBus: IActor);
+    constructor(adapter: IRemoteBusAdapter2, localBus: IActor);
     execute(action: Action): any;
   }
 

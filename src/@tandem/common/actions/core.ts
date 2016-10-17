@@ -1,3 +1,4 @@
+import * as sift from "sift";
 import { Action } from "./base";
 import { IActor } from "@tandem/common/actors";
 import { ITreeNode } from "@tandem/common/tree";
@@ -72,7 +73,7 @@ export class DSInsertAction extends DSAction {
   constructor(collectionName: string, readonly data: any) {
     super(DSInsertAction.DS_INSERT, collectionName);
   }
-  static async execute({ collectionName, data }: { collectionName: string, data: any }, bus: IActor) {
+  static async execute(collectionName: string, data: any, bus: IActor) {
     return await bus.execute(new DSInsertAction(collectionName, data)).readAll();
   }
 }
@@ -92,6 +93,15 @@ export class DSFindAction extends DSAction {
   static readonly DS_FIND   = "dsFind";
   constructor(collectionName: string, readonly query: any, readonly multi: boolean = false) {
     super(DSFindAction.DS_FIND, collectionName);
+  }
+  static createFilter(collectionName: string) {
+    return sift({ collectionName: collectionName });
+  }
+  static async findOne(collectionName: string, query: Object, bus: IActor): Promise<any> {
+    return (await bus.execute(new DSFindAction(collectionName, query, true)).read()).value;
+  }
+  static async findMulti(collectionName: string, query: Object, bus: IActor): Promise<any[]> {
+    return await bus.execute(new DSFindAction(collectionName, query, true)).readAll();
   }
 }
 
@@ -155,24 +165,13 @@ export class UpdateAction extends Action {
   }
 }
 
-export interface IReadFileActionResponseData {
-  path: string;
-  content: string;
-  mtime: number;
-}
-
-export interface IFileModelActionResponseData extends IReadFileActionResponseData {
-
-}
-
-
 export class OpenFileAction extends Action {
   static readonly OPEN_FILE = "openFile";
   constructor(readonly path: string) {
     super(OpenFileAction.OPEN_FILE);
   }
 
-  static async execute(action: { path: string }, bus: IActor): Promise<IFileModelActionResponseData> {
+  static async execute(action: { path: string }, bus: IActor): Promise<string> {
     return (await bus.execute(new OpenFileAction(action.path)).read()).value;
   }
 }
@@ -183,30 +182,8 @@ export class ReadFileAction extends Action {
     super(ReadFileAction.READ_FILE);
   }
 
-  static async execute(path: string, bus: IActor): Promise<IReadFileActionResponseData> {
+  static async execute(path: string, bus: IActor): Promise<string> {
     return (await bus.execute(new ReadFileAction(path)).read()).value;
-  }
-}
-
-export class UpdateTemporaryFileContentAction extends Action {
-  static readonly UPDATE_TEMP_FILE_CONTENT = "updateTemporyFileContent";
-  constructor(readonly path: string, readonly content: string, readonly ignoreIfNotCached: boolean = false, readonly mtime = Date.now()) {
-    super(UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT);
-  }
-
-  static async execute({ path, content, ignoreIfNotCached = false, mtime = Date.now() }, bus: IActor) {
-    return (await bus.execute(new UpdateTemporaryFileContentAction(path, content, ignoreIfNotCached, mtime)).read()).value;
-  }
-}
-
-export class ReadTemporaryFileContentAction extends Action {
-  static readonly READ_TEMP_FILE_CONTENT = "readTemporyFileContent";
-  constructor(readonly path: string) {
-    super(ReadTemporaryFileContentAction.READ_TEMP_FILE_CONTENT);
-  }
-
-  static async execute({ path }, bus: IActor): Promise<IReadFileActionResponseData> {
-    return (await bus.execute(new ReadTemporaryFileContentAction(path)).read()).value;
   }
 }
 
@@ -216,7 +193,7 @@ export class WatchFileAction extends Action {
     super(WatchFileAction.WATCH_FILE);
   }
 
-  static execute(path: string, bus: IActor, onFileChange: (data: IReadFileActionResponseData) => any): IDisposable {
+  static execute(path: string, bus: IActor, onFileChange: () => any): IDisposable {
     const stream = bus.execute(new WatchFileAction(path));
 
     stream.pipeTo({
@@ -230,4 +207,5 @@ export class WatchFileAction extends Action {
     };
   }
 }
+
 

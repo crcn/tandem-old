@@ -14,7 +14,6 @@ import {
   BaseApplicationService,
   ApplicationServiceDependency,
   GetPrimaryProjectFilePathAction,
-  UpdateTemporaryFileContentAction,
 } from "@tandem/common";
 
 const tmpProjectFile = "/tmp/project.tdm";

@@ -4,20 +4,16 @@ import * as getPort from "get-port";
 const electron = require("electron");
 const argv = require('yargs').argv;
 
-console.log(argv);
-
 let backend: ServerApplication
 
 async function getBackend() {
   if (backend) return backend;
   backend = new ServerApplication({
+    argv: argv,
     port: await getPort()
   });
 
   backend.initialize();
-
-  // temporray
-  backend.bus.execute(new  OpenProjectAction(__dirname + "/../../../tdproject/index.tdm"));
 
   return backend;
 };

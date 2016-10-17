@@ -4,13 +4,13 @@ import {
   OpenFileAction,
   ReadFileAction,
   WatchFileAction,
-  UpdateTemporaryFileContentAction
 } from "@tandem/common";
 
 import * as fs from "fs";
 import * as gaze from "gaze";
 
 export interface IFileWatcher extends IDisposable { }
+
 
 export interface IFileSystem {
   readFile(fileName: string): Promise<any>;
@@ -71,14 +71,11 @@ export class RemoteFileSystem extends BaseFileSystem {
   }
 
   async readFile(fileName: string) {
-    return (await ReadFileAction.execute(fileName, this.bus)).content;
+    return await ReadFileAction.execute(fileName, this.bus);
   }
 
   async writeFile(fileName: string, content: any) {
-    return await UpdateTemporaryFileContentAction.execute({
-      path: fileName,
-      content: content
-    }, this.bus);
+    return Promise.reject(new Error("not implemented yet"))
   }
 
   watchFile2(fileName: string, onChange: () => any) {
@@ -86,7 +83,7 @@ export class RemoteFileSystem extends BaseFileSystem {
   }
 }
 
-export class LocalFileSystem {
+export class LocalFileSystem extends BaseFileSystem {
 
   async readFile(fileName: string) {
     return new Promise((resolve, reject) => {
@@ -104,7 +101,7 @@ export class LocalFileSystem {
     });
   }
 
-  async watchFile(fileName: string, onChange: () => any) {
+  watchFile2(fileName: string, onChange: () => any) {
     const watcher = fs.watch(fileName, onChange);
     return {
       dispose: () => {

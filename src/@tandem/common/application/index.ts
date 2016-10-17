@@ -1,6 +1,6 @@
 export * from "./base";
 
-import { fileModelDependency } from "../models";
+// import { fileModelDependency } from "../models";
 
 import { IActor } from "@tandem/common/actors";
 import { Logger } from "@tandem/common/logger";
@@ -98,8 +98,5 @@ export class BaseApplication implements IApplication {
 export class Application extends BaseApplication {
   protected registerDependencies() {
     super.registerDependencies();
-    this.dependencies.register(
-      fileModelDependency
-    );
   }
 }
