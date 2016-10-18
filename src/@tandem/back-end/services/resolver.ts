@@ -16,7 +16,7 @@ export default class ResolverService extends BaseApplicationService<IApplication
 
   constructor() {
     super();
-    this._resolver = new LocalFileResolver(this.app.dependencies);
+    this._resolver = new LocalFileResolver();
   }
 
   /**

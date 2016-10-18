@@ -33,9 +33,9 @@
 </template>
 
 <!-- Preview -->
-<link rel="import" href="html/element-style.tdm">
-<link rel="import" href="html/element-attributes.tdm">
-<link rel="import" href="html/element-css.tdm">
+<link rel="import" href="./html/element-style.tdm">
+<link rel="import" href="./html/element-attributes.tdm">
+<link rel="import" href="./html/element-css.tdm">
 <editor>
   <div>
     <pane title="index.tdm">

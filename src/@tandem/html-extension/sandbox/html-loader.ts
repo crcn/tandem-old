@@ -10,8 +10,10 @@ export class HTMLBundleResult implements IBundleLoaderResult {
     const dependencyPaths = [];
 
     this.ast.accept({
-      visitAttribute({ name, value }) {
-        if (/src|href/.test(name)) {
+      visitAttribute({ name, value, parent }) {
+
+        // ignore redirecting tag names
+        if (/src|href/.test(name) && !/a/i.test(parent.nodeName)) {
           dependencyPaths.push(value);
         }
       },

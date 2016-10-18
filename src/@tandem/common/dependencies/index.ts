@@ -139,7 +139,7 @@ export class MimeTypeDependency extends Dependency<string> {
 
 export function createSingletonDependencyClass<T>(id: string, clazz: { new(...rest): T }) {
   return class SingletonDependency implements IDependency {
-    static NS: string;
+    static readonly NS: string = id;
     private _value: T;
     readonly overridable = false;
     readonly id = id;

@@ -27,14 +27,15 @@ import {
 
 const FILES_COLLECTION_NAME = "files";
 
-import { LocalFileSystem } from "@tandem/sandbox";
+import { LocalFileSystem, FileSystemDependency, IFileSystem } from "@tandem/sandbox";
 
 @loggable()
 export default class FileService extends BaseApplicationService<IApplication> {
 
   public logger:Logger;
-  private _fileSystem = new LocalFileSystem();
 
+  @inject(FileSystemDependency.NS)
+  private _fileSystem: IFileSystem;
 
   /**
    */

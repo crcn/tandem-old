@@ -60,7 +60,8 @@ export class RemoteFileResolver extends BaseFileResolver {
     super();
   }
   async resolve2(filePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
-    return (await this._bus.execute(new ResolveFileAction(filePath, cwd, combineResoverOptions(this.options, options))).read()).value;
+    const combinedOptions = combineResoverOptions(this.options, options);
+    return (await this._bus.execute(new ResolveFileAction(filePath, cwd, combinedOptions)).read()).value;
   }
 }
 

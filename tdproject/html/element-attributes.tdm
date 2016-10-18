@@ -1,5 +1,5 @@
-<link rel="import" href="gutter.tdm">
-<link rel="import" href="components.tdm">
+<link rel="import" href="../gutter.tdm">
+<link rel="import" href="../components.tdm">
 
 <template id="html-element-attributes-pane">
   <div class="td-pane">

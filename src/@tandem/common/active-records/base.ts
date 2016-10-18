@@ -91,7 +91,7 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
     return this.fetch(new DSUpdateAction(this.collectionName, this.serialize(), this.sourceQuery));
   }
 
-  abstract serialize();
+  abstract serialize(): T;
 
   toJSON() {
     return this.serialize();

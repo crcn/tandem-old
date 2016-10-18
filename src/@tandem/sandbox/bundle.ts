@@ -1,7 +1,7 @@
 import * as path from "path";
 import { IFileSystem } from "./file-system";
-import { IFileResolver } from "./resolver";
-import { Dependencies, Dependency, Observable, MimeTypeDependency } from "@tandem/common";
+import { IFileResolver, IFileResolverOptions } from "./resolver";
+import { Dependencies, Dependency, Observable, MimeTypeDependency, BaseActiveRecord } from "@tandem/common";
 import {
   FileSystemDependency,
   FileResolverDependency,
@@ -63,22 +63,91 @@ class BundleDependency extends Dependency<IBundleFile> {
   }
 }
 
+export interface IBundleItemContentData {
+  readonly type: string;
+  readonly value: string;
+}
+
+export interface IBundleItemContent {
+  readonly type: string;
+  readonly data: any;
+  serialize(): IBundleItemContentData;
+  deserialize(source: IBundleItemContentData);
+}
+
+export interface IBundleItemData {
+  fileName: string;
+  content: IBundleItemContentData;
+  dependencyPaths: string[];
+}
+
+/**
+ */
+
+export class BundleEntry extends BaseActiveRecord<IBundleItemData> {
+
+  private _fileName: string;
+  private _dependencyPaths: string[];
+  private _content: IBundleItemContent;
+
+  constructor(source: IBundleItemData, collectionName: string) {
+    super(source, collectionName, null);
+  }
+
+  get fileName() {
+    return this._fileName;
+  }
+
+  get dependencyPaths() {
+    return this._dependencyPaths;
+  }
+
+  get content(): IBundleItemContent {
+    return this._content;
+  }
+
+  serialize() {
+    return {
+      fileName: this.fileName,
+      dependencyPaths: this.dependencyPaths,
+      content: this.content.serialize()
+    };
+  }
+
+  deserialize(source: IBundleItemData) {
+    this._fileName = source.fileName;
+    this._dependencyPaths = source.dependencyPaths;
+    // this._content = // BundleItemContentFactoryDependency.create(source.content)
+  }
+
+  async load() {
+
+  }
+
+  async bundle() {
+
+  }
+}
+
 /**
  * Recursively scans for entry dependencies and bundles them up into one encapsulated
  * package.
  */
 
+// TODO - chance to bundler
 export class Bundle extends Observable {
 
   private _fileSystem: IFileSystem;
   private _fileResolver: IFileResolver;
   private _loading: boolean;
 
-  constructor(private _entryFilePath: string, private _dependencies: Dependencies) {
+  constructor(private _entryFilePath: string, private _dependencies: Dependencies, public resolveOptions?: IFileResolverOptions) {
     super();
     this._fileSystem   = FileSystemDependency.getInstance(this._dependencies);
     this._fileResolver = FileResolverDependency.getInstance(this._dependencies);
-    this.load(this._entryFilePath);
+    this.load(this._entryFilePath).then(() => {
+      console.log("COMPLETE");
+    });
   }
 
   get entryFilePath() {
@@ -86,11 +155,17 @@ export class Bundle extends Observable {
   }
 
   private async load(filePath: string) {
+
+    const dep = BundleDependency.find(filePath, this._dependencies);
+
     const transformResult: IBundleTransformResult = await this.loadTransformed(filePath);
     const loader = BundlerLoaderFactoryDependency.create(transformResult.mimeType, this._dependencies);
     const loadResult: IBundleLoaderResult = await loader.load(transformResult.content);
-    const resolvedDependencyPaths = await this.resolveDependencyPaths(loadResult.dependencyPaths || [], path.dirname(filePath));
+    const resolvedDependencyPaths = await this.resolveDependencyPaths(loadResult.dependencyPaths || [], filePath);
 
+    for (const resolvedFilePath of resolvedDependencyPaths) {
+      this.load(resolvedFilePath);
+    }
   }
 
   private async loadTransformed(filePath: string) {
@@ -110,10 +185,25 @@ export class Bundle extends Observable {
     return current;
   }
 
-  private async resolveDependencyPaths(dependencyPaths?: string[], cwd?: string) {
+  private async resolveDependencyPaths(dependencyPaths?: string[], dependentPath?: string) {
+    const cwd = path.dirname(dependentPath);
     const resolvedPaths = [];
     for (const dependencyPath of dependencyPaths) {
-      resolvedPaths.push(await this._fileResolver.resolve(dependencyPath, cwd));
+
+      if (/^#/.test(dependencyPath)) {
+        continue;
+      }
+
+      // check for protocol -- // at the minium
+      if (/^(\w+:)?\/\//.test(dependencyPath)) {
+        resolvedPaths.push(dependencyPath);
+      } else {
+        try {
+          resolvedPaths.push(await this._fileResolver.resolve(dependencyPath, cwd));
+        } catch(e) {
+          console.error(`Cannot find dependency file ${dependencyPath} for ${dependentPath}.`);
+        }
+      }
     }
     return resolvedPaths;
   }

@@ -151,6 +151,7 @@ export class MarkupElementExpression extends MarkupContainerExpression {
 
 export class MarkupAttributeExpression extends MarkupExpression {
   readonly kind = MarkupExpressionKind.ATTRIBUTE;
+  public parent: MarkupElementExpression;
   constructor(readonly name: string, public value: any, position: IRange) {
     super(position);
   }

@@ -12,6 +12,7 @@ import {
   DSFindAllAction,
   BubbleBus,
   DSUpdateAction,
+  PostDSAction,
   DSRemoveAction,
   DEPENDENCIES_NS,
   IBrokerBus,
@@ -155,6 +156,7 @@ export class FileCache extends Observable {
     this._entities   = {};
     this._fileSystem = FileSystemDependency.getInstance(_dependencies);
     this._globalActionObserver = new WrapBus(this.onGlobalAction.bind(this));
+    this._bus.register(this._globalActionObserver);
   }
 
   get collectionName() {
@@ -186,8 +188,8 @@ export class FileCache extends Observable {
     return value && this._updateEntity(value);
   }
 
-  private onGlobalAction(action: DSUpdateAction<IFileCacheItemData, any>|DSInsertAction<IFileCacheItemData>) {
-    if ((action.type === DSUpdateAction.DS_UPDATE || action.type === DSInsertAction.DS_INSERT) && action.collectionName === this._entities.collectionName) {
+  private onGlobalAction(action: PostDSAction) {
+    if ((action.type === PostDSAction.DS_DID_UPDATE || action.type === PostDSAction.DS_DID_INSERT) && action.collectionName === this.collectionName) {
       this._updateEntity(action.data);
     }
   }

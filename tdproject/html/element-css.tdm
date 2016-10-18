@@ -1,6 +1,6 @@
-<link rel="import" href="gutter.tdm">
-<link rel="import" href="components.tdm">
-<link rel="import "href="html/element-style.tdm">
+<link rel="import" href="../gutter.tdm">
+<link rel="import" href="../components.tdm">
+<link rel="import "href="./element-style.tdm">
 
 <style type="text/scss">
   .td-css-pane {

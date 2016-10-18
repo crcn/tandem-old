@@ -1,6 +1,5 @@
-<link rel="import" href="gutter.tdm">
-<link rel="import" href="components.tdm">
-<link rel="stylesheet" href="global.scss">
+<link rel="import" href="../gutter.tdm">
+<link rel="import" href="../components.tdm">
 
 <style type="text/scss">
   .color-input {

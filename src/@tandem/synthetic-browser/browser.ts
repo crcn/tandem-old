@@ -81,7 +81,10 @@ export class SyntheticBrowser extends Observable {
   }
 
   async open(url: string) {
-    // this._bundle = new Bundle(url, this._dependencies);
+    this._bundle = new Bundle(url, this._dependencies, {
+      extensions: MimeTypeDependency.findAll(this._dependencies).map((dep) => "." + dep.fileExtension),
+      directories: []
+    });
 
     this._location = new SyntheticLocation(url);
     await new Promise(async (resolve) => {
