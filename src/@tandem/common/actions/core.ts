@@ -68,9 +68,9 @@ export class DSAction extends Action {
   }
 }
 
-export class DSInsertAction extends DSAction {
+export class DSInsertAction<T> extends DSAction {
   static readonly DS_INSERT = "dsInsert";
-  constructor(collectionName: string, readonly data: any) {
+  constructor(collectionName: string, readonly data: T) {
     super(DSInsertAction.DS_INSERT, collectionName);
   }
   static async execute(collectionName: string, data: any, bus: IActor) {
@@ -78,9 +78,9 @@ export class DSInsertAction extends DSAction {
   }
 }
 
-export class DSUpdateAction extends DSAction {
+export class DSUpdateAction<T, U> extends DSAction {
   static readonly DS_UPDATE = "dsUpdate";
-  constructor(collectionName: string, readonly data: any, readonly query: any) {
+  constructor(collectionName: string, readonly data: T, readonly query: U) {
     super(DSUpdateAction.DS_UPDATE, collectionName);
   }
 
@@ -89,9 +89,9 @@ export class DSUpdateAction extends DSAction {
   }
 }
 
-export class DSFindAction extends DSAction {
+export class DSFindAction<T> extends DSAction {
   static readonly DS_FIND   = "dsFind";
-  constructor(collectionName: string, readonly query: any, readonly multi: boolean = false) {
+  constructor(collectionName: string, readonly query: T, readonly multi: boolean = false) {
     super(DSFindAction.DS_FIND, collectionName);
   }
   static createFilter(collectionName: string) {
@@ -105,22 +105,22 @@ export class DSFindAction extends DSAction {
   }
 }
 
-export class DSFindAllAction extends DSFindAction {
+export class DSFindAllAction extends DSFindAction<any> {
   constructor(collectionName: string) {
     super(collectionName, {}, true);
   }
 }
 
-export class DSRemoveAction extends DSAction {
+export class DSRemoveAction<T> extends DSAction {
   static readonly DS_REMOVE   = "dsRemove";
-  constructor(collectionName: string, readonly query: any) {
+  constructor(collectionName: string, readonly query: T) {
     super(DSRemoveAction.DS_REMOVE, collectionName);
   }
 }
 
-export class DSUpsertAction extends DSAction {
+export class DSUpsertAction<T> extends DSAction {
   static readonly DS_UPSERT = "dsUpsert";
-  constructor(collectionName: string, readonly data: any, readonly query: any) {
+  constructor(collectionName: string, readonly data: any, readonly query: T) {
     super(DSUpsertAction.DS_UPSERT, collectionName);
   }
 }
@@ -135,7 +135,7 @@ export class PostDSAction extends DSAction {
     super(type, collectionName);
   }
 
-  static createFromDSAction(action: DSInsertAction|DSUpdateAction|DSRemoveAction, data: any) {
+  static createFromDSAction(action: DSInsertAction<any>|DSUpdateAction<any, any>|DSRemoveAction<any>, data: any) {
     return new PostDSAction({
       [DSInsertAction.DS_INSERT]: PostDSAction.DS_DID_INSERT,
       [DSUpdateAction.DS_UPDATE]: PostDSAction.DS_DID_UPDATE,

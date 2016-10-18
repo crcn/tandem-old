@@ -1,8 +1,9 @@
 import { Sandbox } from "./sandbox";
+import { FileCache } from "./file-cache";
 import { IFileSystem } from "./file-system";
 import { FileSystemDependency } from "./dependencies";
 import { IModule, BaseSandboxModule } from "./module";
-import { SandboxModuleFactoryDependency } from "./dependencies";
+import { SandboxModuleFactoryDependency, FileResolverDependency, FileCacheDependency } from "./dependencies";
 import { uniq } from "lodash";
 import {
   Logger,
@@ -10,14 +11,9 @@ import {
   Action,
   loggable,
   IInvoker,
-  DSFindAction,
-  DSUpdateAction,
-  DSInsertAction,
-  DSRemoveAction,
   Observable,
   Dependencies,
   watchProperty,
-  ResolveAction,
   ChangeAction,
   BaseActiveRecord,
   MainBusDependency,
@@ -26,7 +22,10 @@ import {
   PropertyChangeAction,
 } from "@tandem/common";
 
+import { IFileResolver } from "./resolver";
+
 import {
+  ResolveFileAction,
   SandboxModuleAction,
   ModuleImporterAction,
 } from "./actions";
@@ -41,8 +40,8 @@ export interface IModuleResolveOptions {
 }
 
 export class EmptyModule extends BaseSandboxModule {
-  constructor(fileName: string, exports: any, sandbox: Sandbox) {
-    super(fileName, null, sandbox);
+  constructor(filePath: string, exports: any, sandbox: Sandbox) {
+    super(filePath, null, sandbox);
   }
   load() { }
   evaluate() { return {}; }
@@ -54,40 +53,9 @@ interface IFileCacheSource {
   mtime?: number;
 }
 
-class FileCacheItem extends BaseActiveRecord {
-
-  static readonly COLLECTION_NAME = "fileCache";
-  public filePath: string;
-  public url: string;
-  public mtime: number;
-
-  constructor(source: IFileCacheSource, bus: IActor) {
-    super(source, FileCacheItem.COLLECTION_NAME, bus);
-  }
-
-  save() {
-    this.mtime = Date.now();
-    return super.save();
-  }
-
-  serialize() {
-    return {
-      url: this.url,
-      mtime: this.mtime,
-      filePath: this.filePath,
-    }
-  }
-
-  static async findByFilePath(filePath: string, bus: IActor) {
-    const data = await DSFindAction.findOne(this.COLLECTION_NAME, { filePath: filePath }, bus);
-    return data && new FileCacheItem(data, bus);
-  }
-}
-
 @loggable()
 export class ModuleImporter extends Observable implements IInvoker, IModuleResolveOptions {
 
-  private _resolvedFiles: any;
   readonly bus: IActor;
 
   public extensions: string[];
@@ -97,16 +65,19 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
   private _fileSystem: IFileSystem;
   private _fileWatchers: any;
   private _fileContentCache: any;
+  private _fileResolver: IFileResolver;
+  private _fileCache: FileCache;
   readonly logger: Logger;
 
   constructor(private _sandbox: Sandbox, private _dependencies: Dependencies, private _getResolveOptions?: () => IModuleResolveOptions) {
     super();
     this.bus = MainBusDependency.getInstance(_dependencies);
     this._fileSystem = FileSystemDependency.getInstance(_dependencies);
+    this._fileResolver = FileResolverDependency.getInstance(_dependencies);
+    this._fileCache = FileCacheDependency.getInstance(this._dependencies);
     this.extensions = [];
     this.directories = [];
     this._fileWatchers     = {};
-    this._resolvedFiles    = {};
     this._modules          = {};
     this._fileContentCache = {};
   }
@@ -131,15 +102,8 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     };
   }
 
-  public async resolve(relativePath: string, cwd?: string) {
-    return this._resolvedFiles[cwd + relativePath] || (this._resolvedFiles[cwd + relativePath] = new SingletonThenable(() => {
-      const { extensions, directories } = this.getResolveOptions();
-      try {
-        return ResolveAction.execute(String(relativePath), cwd, extensions, directories, this.bus);
-      } catch (e) {
-        return null;
-      }
-    }));
+  public resolve(relativePath: string, cwd?: string) {
+    return this._fileResolver.resolve(relativePath, cwd, this.getResolveOptions());
   }
 
   /**
@@ -158,23 +122,11 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
       return new EmptyModule(filePath, {}, this._sandbox);
     }
 
-    let fileCache: FileCacheItem = await FileCacheItem.findByFilePath(filePath, this.bus)
-
-    if (!fileCache) {
-
-      console.log("file://" + filePath);
-
-      fileCache = new FileCacheItem({
-        filePath: filePath,
-        url: "file://" + filePath
-      }, this.bus);
-
-      await fileCache.save();
-    }
+    const fileCache = await this._fileCache.item(filePath);
 
     // readFile executed here to ensure that file watchers get added after resetting the importer
     // object
-    const content      = await this.readUrl(fileCache.url);
+    const content      = await fileCache.read();
 
     const moduleCache = this._modules[filePath] || (this._modules[filePath] = {});
 
@@ -187,7 +139,12 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
       }
 
       const module = moduleCache[envKind] = moduleFactory.create(filePath, content, this._sandbox);
-      await module.load();
+      try {
+        await module.load();
+      } catch(e) {
+        console.error(`Cannot load module ${filePath}`);
+        throw e;
+      }
       module.observe(new WrapBus(this.onModuleAction.bind(this)));
     }
 
@@ -208,38 +165,25 @@ export class ModuleImporter extends Observable implements IInvoker, IModuleResol
     return content;
   }
 
-  public async readUrl(url: string): Promise<string> {
-    if (/^file:\/\//.test(url)) {
-      return await this.readFile(url.substr("file://".length));
-    } else {
-      const response = await fetch(url);
-      return await response.text();
-    }
-  }
-
   public watchFile(filePath: string) {
     if (!this._fileWatchers[filePath]) {
       this._fileWatchers[filePath] = this._fileSystem.watchFile(filePath, this.onFileChange.bind(this, filePath));
     }
   }
 
-  protected async onFileChange(fileName: string) {
-
-    this._fileContentCache[fileName] = null;
-
+  protected async onFileChange(filePath: string) {
+    this._fileContentCache[filePath] = null;
     this.notify(new ModuleImporterAction(ModuleImporterAction.MODULE_CONTENT_CHANGED));
   }
 
   protected async onModuleEdited(module: IModule, newContent: string) {
 
-    if (this._fileContentCache[module.fileName]) {
-      this._fileContentCache[module.fileName] = newContent;
+    if (this._fileContentCache[module.filePath]) {
+      this._fileContentCache[module.filePath] = newContent;
     }
 
-    const fileCache = await FileCacheItem.findByFilePath(module.fileName, this.bus);
-    fileCache.url = "data:text/plain," + encodeURIComponent(newContent);
-    await fileCache.save();
-
+    const fileCache = await this._fileCache.item(module.filePath);
+    await fileCache.setDataUrl(newContent).save();
   }
 
   protected onModuleAction(action: Action) {

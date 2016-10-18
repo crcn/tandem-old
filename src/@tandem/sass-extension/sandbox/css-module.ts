@@ -12,7 +12,7 @@ export class SCSSModule extends BaseSandboxModule {
 
   async load() {
     sass.importer(async (request, done) => {
-      const filePath = request.path || await this.sandbox.importer.resolve(request.current, path.dirname(this.fileName));
+      const filePath = request.path || await this.sandbox.importer.resolve(request.current, path.dirname(this.filePath));
       const content = await this.sandbox.importer.readFile(filePath);
       done({ path: filePath, content: content || " " });
     });

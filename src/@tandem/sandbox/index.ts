@@ -7,3 +7,5 @@ export * from "./editor";
 export * from "./importer";
 export * from "./file-system";
 export * from "./resolver";
+export * from "./bundle";
+export * from "./file-cache";

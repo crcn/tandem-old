@@ -9,7 +9,7 @@ import {
   SyntheticTDTemplateElement,
 } from "./synthetic";
 
-import { SandboxModuleFactoryDependency } from "@tandem/sandbox";
+import { SandboxModuleFactoryDependency, BundlerLoaderFactoryDependency } from "@tandem/sandbox";
 
 import {
   HTML_XMLNS,
@@ -26,6 +26,7 @@ import {
   VisibleHTMLEntity,
   SyntheticHTMLLink,
   SyntheticHTMLScript,
+  HTMLBundleLoader,
   SyntheticHTMLStyle,
 } from "@tandem/html-extension";
 
@@ -50,6 +51,9 @@ export const tdprojectExtensionDependencies = [
 
   // sandbox
   new SandboxModuleFactoryDependency(HTML_MIME_TYPE, TDPROJECT_MIME_TYPE, MarkupModule),
+
+  // sandbox loaders
+  new BundlerLoaderFactoryDependency(TDPROJECT_MIME_TYPE, HTMLBundleLoader),
 
   // mime types
   new MimeTypeDependency("tdproject", TDPROJECT_MIME_TYPE),

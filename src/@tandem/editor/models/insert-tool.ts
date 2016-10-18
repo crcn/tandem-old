@@ -7,7 +7,7 @@ import {
   inject,
   Service,
   startDrag,
-  MAIN_BUS_NS,
+  MainBusDependency,
   BoundingRect,
 } from "@tandem/common";
 
@@ -18,7 +18,7 @@ export abstract class InsertTool extends BaseEditorTool {
   readonly name: string =  "insert";
   public entityIsRoot: boolean = false;
 
-  @inject(MAIN_BUS_NS)
+  @inject(MainBusDependency.NS)
   readonly bus: IActor;
 
   readonly resizable: boolean = true;

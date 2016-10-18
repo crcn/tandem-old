@@ -5,9 +5,9 @@ import { FrontEndApplication } from "@tandem/editor/application";
 import { POINTER_TOOL_KEY_CODE } from "@tandem/editor/constants";
 import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { BaseApplicationService } from "@tandem/common/services";
-import { IInjectable, MAIN_BUS_NS } from "@tandem/common/dependencies";
 import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
+import { IInjectable, MainBusDependency } from "@tandem/common/dependencies";
 import { SelectAction, MouseAction, KeyboardAction, RemoveSelectionAction } from "@tandem/editor/actions";
 
 // TODO - everything here should just be a command
@@ -16,7 +16,7 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
 
   name = "pointer";
 
-  @inject(MAIN_BUS_NS)
+  @inject(MainBusDependency.NS)
   readonly bus: IActor;
 
   canvasMouseDown(action: MouseAction) {

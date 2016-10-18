@@ -57,13 +57,14 @@ export class ApplicationSingletonDependency extends Dependency<IApplication> {
 /**
  */
 
-export const MAIN_BUS_NS = "mainBus";
+// TODO - GlobalActorDependency instead of broker bus here
 export class MainBusDependency extends Dependency<IBrokerBus> {
+  static NS = "mainBus";
   constructor(value: IBrokerBus) {
-    super(MAIN_BUS_NS, value);
+    super(MainBusDependency.NS, value);
   }
   static getInstance(Dependencies: Dependencies): IBrokerBus {
-    return Dependencies.query<MainBusDependency>(MAIN_BUS_NS).value;
+    return Dependencies.query<MainBusDependency>(MainBusDependency.NS).value;
   }
 }
 
@@ -76,11 +77,11 @@ export class DependenciesDependency extends Dependency<Dependencies> {
     super(DEPENDENCIES_NS, null);
   }
 
-  get dependencies(): Dependencies {
+  get owner(): Dependencies {
     return this.value;
   }
 
-  set dependencies(value: Dependencies) {
+  set owner(value: Dependencies) {
     this.value = value;
   }
 }
@@ -129,25 +130,24 @@ export class MimeTypeDependency extends Dependency<string> {
   static findAll(dependencies: Dependencies) {
     return dependencies.queryAll<MimeTypeDependency>([MimeTypeDependency.NS_PREFIX, "**"].join("/"));
   }
-  static lookup(filepath: string, dependencies: Dependencies): string {
-    const extension = filepath.split(".").pop();
+  static lookup(filePath: string, dependencies: Dependencies): string {
+    const extension = filePath.split(".").pop();
     const dep = dependencies.query<MimeTypeDependency>([MimeTypeDependency.NS_PREFIX, extension].join("/"));
     return dep ? dep.value : undefined;
   }
 }
 
-
-export function createSingletonDependency<T>(id: string, clazz: { new(...rest): T }) {
+export function createSingletonDependencyClass<T>(id: string, clazz: { new(...rest): T }) {
   return class SingletonDependency implements IDependency {
     static NS: string;
     private _value: T;
     readonly overridable = false;
     readonly id = id;
-    public dependencies: Dependencies;
+    public owner: Dependencies;
 
     constructor(){ }
     get value(): T {
-      return this._value || (this._value = Injector.create(clazz, [], this.dependencies));
+      return this._value || (this._value = Injector.create(clazz, [], this.owner));
     }
     clone() {
       return new SingletonDependency();

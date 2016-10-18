@@ -21,12 +21,14 @@ export class SyntheticHTMLScript extends SyntheticHTMLElement {
 
     const window = this.ownerDocument.defaultView;
     const importer = window.sandbox.importer;
-    const fileName = this.module.fileName;
+    const filePath = this.module.filePath;
 
     let scriptContent = "";
 
     if (src) {
-      const filePath = await importer.resolve(src, path.dirname(this.module.fileName));
+
+      // TODO - nono to this -- this should happen with the bundler
+      const filePath = await window.sandbox.fileResolver.resolve(src, path.dirname(this.module.filePath));
       const content = await importer.readFile(filePath);
       await importer.watchFile(filePath);
     } else {
@@ -48,7 +50,7 @@ export class SyntheticHTMLScript extends SyntheticHTMLElement {
       if (global[variableName] == null) global[variableName] = null;
     }
 
-    const module = moduleDependency.create(this.module.fileName, scriptContent, this.module.sandbox);
+    const module = moduleDependency.create(this.module.filePath, scriptContent, this.module.sandbox);
     await module.load();
     module.evaluate();
   }

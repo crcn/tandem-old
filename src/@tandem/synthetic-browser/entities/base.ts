@@ -11,6 +11,7 @@ import {
   filterTree,
   BoundingRect,
   findTreeNode,
+  TreeNodeAction,
   PropertyChangeAction,
 } from "@tandem/common";
 
@@ -50,6 +51,7 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
   private _targetElement: U;
   private _changeObserver: IActor;
   private _browserObserver: IActor;
+  private _cache: any;
   /**
    * extra information specific to the environment that this node is running un
    */
@@ -58,6 +60,8 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 
   constructor(source: T) {
     super();
+
+    this._cache = {};
 
     // attributes of this entity which are indenpendent from the source. The values
     // here are primarily to diff and apply edits to the source module
@@ -70,6 +74,7 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 
     // similar to dataset -- specific to the editor
     this._metadata.observe(new BubbleBus(this));
+    this.observe(new WrapBus(this.onAction.bind(this)));
   }
 
   get change(): T {
@@ -118,17 +123,21 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
     this.module.editor.edit(onEdit.bind(this));
   }
 
-  evaluate() {
-  }
+  evaluate() { }
 
   querySelector(selector: string) {
+    const cacheKey = "querySelector:" + selector;
+    if (this._cache[cacheKey]) return this._cache[cacheKey];
+
     const tester = getSelectorTester(selector);
-    return findTreeNode(this, (node) => tester.test(<SyntheticDOMElement><any>node.source));
+    return this._cache[cacheKey] = findTreeNode(this, (node) => tester.test(<SyntheticDOMElement><any>node.source));
   }
 
   querySelectorAll(selector: string) {
+    const cacheKey = "querySelectorAll:" + selector;
+    if (this._cache[cacheKey]) return this._cache[cacheKey];
     const tester = getSelectorTester(selector);
-    return filterTree(this, (node) => tester.test(<SyntheticDOMElement><any>node.source));
+    return this._cache[cacheKey] = filterTree(this, (node) => tester.test(<SyntheticDOMElement><any>node.source));
   }
 
   get source(): T {
@@ -247,6 +256,11 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 
   protected didEvaluate() { }
   protected targetDidUnmount() { }
+  protected onAction(action: Action) {
+    if (action.type === PropertyChangeAction.PROPERTY_CHANGE || action.type === TreeNodeAction.NODE_ADDED || action.type === TreeNodeAction.NODE_REMOVED) {
+      this._cache = {};
+    }
+  }
 
   protected onChangeAction(action: Action) {
     this.notify(new DOMEntityAction(DOMEntityAction.DOM_ENTITY_DIRTY, true));

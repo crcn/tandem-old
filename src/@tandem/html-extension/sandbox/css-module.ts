@@ -7,8 +7,8 @@ export class HTMLCSSModule extends BaseSandboxModule {
   public ast: CSSExpression;
   load() {
 
-    const content = this.content.replace(/url\(['"]?(.*?)['"]?\)/g, (match, fileName) => {
-      return `url("http://${window.location.host}/asset/` + encodeURIComponent(path.join(path.dirname(this.fileName), fileName.split(/\?|#/).shift())) + '")';
+    const content = this.content.replace(/url\(['"]?(.*?)['"]?\)/g, (match, filePath) => {
+      return `url("http://${window.location.host}/asset/` + encodeURIComponent(path.join(path.dirname(this.filePath), filePath.split(/\?|#/).shift())) + '")';
     });
     this.ast = parseCSS(content);
   }

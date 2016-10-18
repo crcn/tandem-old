@@ -13,9 +13,9 @@ import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
 import { IEditorTool, BaseEditorTool, IEditor } from "@tandem/editor/models";
 import {
   Dependency,
-  MAIN_BUS_NS,
   Dependencies,
   DEPENDENCIES_NS,
+  MainBusDependency,
   ApplicationServiceDependency,
 } from "@tandem/common/dependencies";
 import {
@@ -31,7 +31,7 @@ editor.open(new HTMLFile());
 
 export class EditInnerHTMLTool extends BaseEditorTool {
 
-  @inject(MAIN_BUS_NS)
+  @inject(MainBusDependency.NS)
   readonly bus: IActor;
 
   @inject(DEPENDENCIES_NS)

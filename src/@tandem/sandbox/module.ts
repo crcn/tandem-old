@@ -12,7 +12,7 @@ export interface IModule extends IObservable {
    * File name associated with the module
    */
 
-  fileName: string;
+  filePath: string;
 
   sandbox: Sandbox;
 
@@ -33,6 +33,10 @@ export interface IModule extends IObservable {
   editor?: IModuleEditor;
 }
 
+export interface IModuleCompiler {
+  compile(content: string): any;
+}
+
 export type sandboxModuleScriptType = (...rest: any[]) => any;
 
 export abstract class BaseSandboxModule extends Observable implements IModule {
@@ -40,7 +44,9 @@ export abstract class BaseSandboxModule extends Observable implements IModule {
   @bindable()
   public content: string;
 
-  constructor(readonly fileName: string, content: string, readonly sandbox: Sandbox) {
+  // TODO - constructor(readonly filePath: string, compiledContent: any, readonly sandbox: Sandbox);
+
+  constructor(readonly filePath: string, content: string, readonly sandbox: Sandbox) {
     super();
     this.content = content;
     this.initialize();

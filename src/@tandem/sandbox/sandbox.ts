@@ -1,5 +1,8 @@
 import { IModule } from "./module";
+import { FileCache } from "./file-cache";
+import { IFileResolver } from "./resolver";
 import { ModuleImporter, IModuleResolveOptions } from "./importer";
+import { FileResolverDependency, FileCacheDependency } from "./dependencies";
 import {
   Action,
   Observable,
@@ -15,6 +18,7 @@ import {
   ModuleImporterAction,
 } from "./actions";
 
+
 import { WrapBus } from "mesh";
 interface ISandboxEntry {
   envMimeType: string;
@@ -29,12 +33,20 @@ export class Sandbox extends Observable {
   private _shouldResetAgain: boolean;
   private _mainExports: any;
   private _reloading: boolean;
+  // private _fileCache: FileCache;
+  private _resolver: IFileResolver;
   private _shouldReloadAgain: boolean;
 
   constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}, getResolveOptions?: () => IModuleResolveOptions) {
     super();
+    this._resolver = FileResolverDependency.getInstance(_dependencies);
+    // this._fileCache = FileCacheDependency.getInstance(_dependencies);
     this._importer = new ModuleImporter(this, _dependencies, getResolveOptions);
     this._importer.observe(new WrapBus(this.onImporterAction.bind(this)));
+  }
+
+  get fileResolver(): IFileResolver {
+    return this._resolver;
   }
 
   get global(): any {

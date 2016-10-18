@@ -8,7 +8,7 @@ export class TSJSModule extends CommonJSSandboxModule {
       module: ts.ModuleKind.CommonJS,
       target: ts.ScriptTarget.ES6,
       jsx: ts.JsxEmit.React
-    }, this.fileName);
+    }, this.filePath);
   }
 }
 

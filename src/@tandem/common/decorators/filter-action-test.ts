@@ -7,7 +7,7 @@ import { DSInsertAction } from "../actions";
 describe(__filename + "#", () => {
   it("can filter for actions invoked on a service method", async () => {
     class CustomService extends Service {
-      @filterAction((action: DSInsertAction) => action.collectionName === "test")
+      @filterAction((action: DSInsertAction<any>) => action.collectionName === "test")
       dsInsert() {
         return "pong";
       }

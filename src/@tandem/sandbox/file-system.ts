@@ -13,10 +13,10 @@ export interface IFileWatcher extends IDisposable { }
 
 
 export interface IFileSystem {
-  readFile(fileName: string): Promise<any>;
+  readFile(filePath: string): Promise<any>;
   // readDirectory(directory: string): Promise<string[]>;
-  writeFile(fileName: string, content: any): Promise<any>;
-  watchFile(fileName: string, onChange: () => any): IFileWatcher;
+  writeFile(filePath: string, content: any): Promise<any>;
+  watchFile(filePath: string, onChange: () => any): IFileWatcher;
 }
 
 export abstract class BaseFileSystem implements IFileSystem {
@@ -26,18 +26,18 @@ export abstract class BaseFileSystem implements IFileSystem {
     this._fileWatchers = {};
   }
 
-  abstract readFile(fileName: string): Promise<any>;
+  abstract readFile(filePath: string): Promise<any>;
   // abstract readDirectory(directory: string): Promise<string[]>;
-  abstract writeFile(fileName: string, content: any): Promise<any>;
+  abstract writeFile(filePath: string, content: any): Promise<any>;
 
-  public watchFile(fileName: string, onChange: () => any) {
+  public watchFile(filePath: string, onChange: () => any) {
 
     let _fileWatcher: { instance: IFileWatcher, listeners: Function[] };
 
-    if (!(_fileWatcher = this._fileWatchers[fileName])) {
-      _fileWatcher = this._fileWatchers[fileName] = {
+    if (!(_fileWatcher = this._fileWatchers[filePath])) {
+      _fileWatcher = this._fileWatchers[filePath] = {
         listeners: [],
-        instance: this.watchFile2(fileName, () => {
+        instance: this.watchFile2(filePath, () => {
           for (const listener of _fileWatcher.listeners) {
             listener();
           }
@@ -61,7 +61,7 @@ export abstract class BaseFileSystem implements IFileSystem {
     }
   }
 
-  protected abstract watchFile2(fileName: string, onChange: () => any);
+  protected abstract watchFile2(filePath: string, onChange: () => any);
 }
 
 export class RemoteFileSystem extends BaseFileSystem {
@@ -70,39 +70,39 @@ export class RemoteFileSystem extends BaseFileSystem {
     super();
   }
 
-  async readFile(fileName: string) {
-    return await ReadFileAction.execute(fileName, this.bus);
+  async readFile(filePath: string) {
+    return await ReadFileAction.execute(filePath, this.bus);
   }
 
-  async writeFile(fileName: string, content: any) {
+  async writeFile(filePath: string, content: any) {
     return Promise.reject(new Error("not implemented yet"))
   }
 
-  watchFile2(fileName: string, onChange: () => any) {
-    return WatchFileAction.execute(fileName, this.bus, onChange);
+  watchFile2(filePath: string, onChange: () => any) {
+    return WatchFileAction.execute(filePath, this.bus, onChange);
   }
 }
 
 export class LocalFileSystem extends BaseFileSystem {
 
-  async readFile(fileName: string) {
+  async readFile(filePath: string) {
     return new Promise((resolve, reject) => {
-      fs.readFile(fileName, "utf8", (err, data) => {
+      fs.readFile(filePath, "utf8", (err, data) => {
         if (err) return reject(err);
         resolve(data);
       });
     });
   }
 
-  async writeFile(fileName: string, content: any) {
+  async writeFile(filePath: string, content: any) {
     return new Promise((resolve, reject) => {
       // fs.writeFile()
       resolve();
     });
   }
 
-  watchFile2(fileName: string, onChange: () => any) {
-    const watcher = fs.watch(fileName, onChange);
+  watchFile2(filePath: string, onChange: () => any) {
+    const watcher = fs.watch(filePath, onChange);
     return {
       dispose: () => {
         watcher.close()

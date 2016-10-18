@@ -14,6 +14,7 @@ import { frontEndServiceDependency } from "./services/front-end";
 import { resolverServiceDependency } from "./services/resolver";
 
 import { tetherBackEndDependencies } from "@tandem/tether-back-end";
+import { FileCacheDependency } from "@tandem/sandbox";
 
 export default class ServerApplication extends Application {
   constructor(config) {
@@ -45,7 +46,8 @@ export default class ServerApplication extends Application {
       frontEndServiceDependency,
       resolverServiceDependency,
       tetherBackEndDependencies,
-      sockServiceDependency
+      sockServiceDependency,
+      new FileCacheDependency()
     );
   }
 }

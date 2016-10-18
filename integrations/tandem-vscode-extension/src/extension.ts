@@ -15,8 +15,7 @@ import {
     OpenProjectAction,
     BaseApplicationService,
     ApplicationServiceDependency,
-    ReadTemporaryFileContentAction,
-    UpdateTemporaryFileContentAction
+    PostDSAction,
 } from "@tandem/common";
 
 import {
@@ -35,9 +34,9 @@ export async function activate(context: vscode.ExtensionContext) {
     });
 
     class VSCodeService extends BaseApplicationService<ServerApplication> {
-        async [UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT](action: UpdateTemporaryFileContentAction) {
-            _setEditorContent(action);
-        }
+        // async [UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT](action: UpdateTemporaryFileContentAction) {
+        //     _setEditorContent(action);
+        // }
         async [FilesSelectedAction.FILES_SELECTED](action: FilesSelectedAction) {
             const document = await vscode.workspace.openTextDocument(action.items[0].path);
             const editor = await vscode.window.showTextDocument(document);

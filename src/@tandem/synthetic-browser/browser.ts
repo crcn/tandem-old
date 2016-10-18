@@ -15,6 +15,7 @@ import {
   waitForPropertyChange,
   HTML_MIME_TYPE,
   MainBusDependency,
+  Injector,
   MimeTypeDependency,
   PropertyChangeAction,
 } from "@tandem/common";
@@ -25,6 +26,7 @@ import {
 } from "./entities";
 
 import {
+  Bundle,
   Sandbox,
   SandboxAction,
   IModuleResolveOptions,
@@ -46,6 +48,7 @@ export class SyntheticBrowser extends Observable {
   private _renderer: ISyntheticDocumentRenderer;
   private _documentEntity: BaseDOMNodeEntity<any, any>;
   private _documentEntityObserver: IActor;
+  private _bundle: Bundle;
 
   constructor(private _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, readonly parent?: SyntheticBrowser) {
     super();
@@ -78,6 +81,8 @@ export class SyntheticBrowser extends Observable {
   }
 
   async open(url: string) {
+    // this._bundle = new Bundle(url, this._dependencies);
+
     this._location = new SyntheticLocation(url);
     await new Promise(async (resolve) => {
       const openedObserver = {

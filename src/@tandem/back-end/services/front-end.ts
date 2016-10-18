@@ -4,21 +4,25 @@ import * as path from "path";
 import * as gaze from "gaze";
 import * as sift from "sift";
 import * as cors from "cors";
+import * as getPort from "get-port";
+import * as express from "express";
+import * as compression from "compression";
+import * as createSocketIOServer from "socket.io";
+
+import { exec } from "child_process";
 import { Logger } from "@tandem/common/logger";
 import { Response } from "mesh";
-import * as express from "express";
 import { IOService } from "@tandem/common/services";
-import * as compression from "compression";
-import { exec } from "child_process";
 import { IApplication } from "@tandem/common/application";
 import { loggable, inject } from "@tandem/common/decorators";
-import * as createSocketIOServer from "socket.io";
 import { BaseApplicationService } from "@tandem/common/services";
 import { SocketIOHandlerDependency  } from "@tandem/back-end/dependencies";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
 import { DEPENDENCIES_NS, Dependencies } from "@tandem/common/dependencies";
+import { FileCacheDependency, FileCache } from "@tandem/sandbox";
 import { DSUpsertAction, LoadAction, InitializeAction, ReadFileAction } from "@tandem/common/actions";
-import * as getPort from "get-port";
+
+// TODO - split this out into separate files -- turning into a god object.
 
 @loggable()
 export default class FrontEndService extends BaseApplicationService<IApplication> {
@@ -34,6 +38,9 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   @inject(DEPENDENCIES_NS)
   readonly dependencies: Dependencies;
 
+  @inject(FileCacheDependency.NS)
+  private _fileCache: FileCache;
+
   didInject() {
     this.app.bus.register(this._ioService = IOService.create<IApplication>(this.dependencies));
   }
@@ -43,9 +50,12 @@ export default class FrontEndService extends BaseApplicationService<IApplication
     await this._loadHttpServer();
     await this._loadStaticRoutes();
     await this._loadSocketServer();
+
     if (this.app.config.argv.open) {
       exec(`open http://localhost:${this._port}/editor`);
     }
+
+    this._fileCache.syncWithLocalFiles();
   }
 
   async _loadHttpServer() {

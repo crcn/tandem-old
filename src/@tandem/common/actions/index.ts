@@ -50,14 +50,3 @@ export class EntityRuntimeAction extends Action {
     super(type);
   }
 }
-
-export class ResolveAction extends Action {
-  static readonly RESOLVE = "resolve";
-  constructor(readonly relativePath: string, readonly cwd: string, readonly extensions: string[], readonly directories: string[]) {
-    super(ResolveAction.RESOLVE);
-  }
-  static async execute(path: string, cwd: string, extensions: string[], directories: string[], bus: IActor): Promise<string> {
-    return (await bus.execute(new ResolveAction(path, cwd, extensions, directories)).read()).value;
-  }
-}
-

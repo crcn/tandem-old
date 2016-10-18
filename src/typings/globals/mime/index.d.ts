@@ -3,7 +3,7 @@
 declare module "mime" {
 	export function lookup(path: string): string;
 	export function extension(mime: string): string;
-	export function load(filepath: string): void;
+	export function load(filePath: string): void;
 	export function define(mimes: Object): void;
 
 	interface Charsets {

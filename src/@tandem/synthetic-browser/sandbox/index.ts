@@ -40,7 +40,7 @@ export class MarkupModule extends BaseSandboxModule implements IMarkupModule {
   public node: SyntheticDOMNode;
   async load() {
     this.ast = parseMarkup(this.content);
-    this.node = await this.evaluateMarkup(this.ast, this.sandbox.global, MarkupMimeTypeXMLNSDependency.lookup(this.fileName, this.sandbox.global.browser.dependencies));
+    this.node = await this.evaluateMarkup(this.ast, this.sandbox.global, MarkupMimeTypeXMLNSDependency.lookup(this.filePath, this.sandbox.global.browser.dependencies));
   }
   public evaluate() {
     return this.node;

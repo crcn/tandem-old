@@ -7,7 +7,7 @@ import { ISerializable } from "@tandem/common/serialize";
 import { IBrokerBus, TypeWrapBus } from "@tandem/common/busses";
 import { Observable, IObservable } from "@tandem/common/observable";
 import { WrapBus, AcceptBus, ParallelBus } from "mesh";
-import { Dependencies, MainBusDependency, IInjectable, MAIN_BUS_NS } from "@tandem/common/dependencies";
+import { Dependencies, MainBusDependency, IInjectable, Injector } from "@tandem/common/dependencies";
 import {
   Action,
   DSAction,
@@ -30,10 +30,11 @@ export interface IActiveRecord extends IObservable, ISerializable, IInjectable, 
 
 // TODO - need to queue actions
 // TODO - add schema here
-export abstract class BaseActiveRecord extends Observable implements IActiveRecord {
+
+export abstract class BaseActiveRecord<T> extends Observable implements IActiveRecord {
   readonly idProperty: string = "_id";
 
-  constructor(private _source: any, readonly collectionName: string, @inject(MAIN_BUS_NS) readonly bus: IActor) {
+  constructor(private _source: T, readonly collectionName: string, @inject(MainBusDependency.NS) readonly bus: IActor) {
     super();
     if (this._source) {
       this.deserialize(_source);
@@ -96,7 +97,7 @@ export abstract class BaseActiveRecord extends Observable implements IActiveReco
     return this.serialize();
   }
 
-  deserialize(source: any) {
+  deserialize(source: T) {
     this._source = source;
 
     for (const key in source) {
@@ -113,17 +114,3 @@ export abstract class BaseActiveRecord extends Observable implements IActiveReco
   }
 }
 
-
-// function executeDbAction(collectionName: string, dependencies: Dependencies) {
-
-// }
-
-// export async function find(collectionName: string, query: any, multi: boolean, dependencies: Dependencies) {
-//   const bus: IActor = MainBusDependency.getInstance(dependencies);
-//   const result = await bus.execute(new DSFindAction(collectionName, query, multi)).readAll();
-//   return multi ? result : result[0];
-// }
-
-// export async function insert(collectionName: string, data: any, dependencies: Dependencies) {
-
-// }

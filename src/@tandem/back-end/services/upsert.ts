@@ -16,7 +16,7 @@ export default class UpsertService extends BaseApplicationService<IApplication> 
   /**
    */
 
-  [DSUpsertAction.DS_UPSERT](action: DSUpsertAction) {
+  [DSUpsertAction.DS_UPSERT](action: DSUpsertAction<any>) {
     return this._bus.execute(action);
   }
 }

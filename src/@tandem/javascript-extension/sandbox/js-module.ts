@@ -46,7 +46,7 @@ export class CommonJSSandboxModule extends BaseSandboxModule {
     // load these modules in parallel
     await Promise.all(deps.map(async (dep) => {
       const modulePath = dep.match(/require\(["']([^'"]+)/)[1];
-      importedModules[modulePath] = await this.sandbox.importer.load(JS_MIME_TYPE, modulePath, path.dirname(this.fileName));
+      importedModules[modulePath] = await this.sandbox.importer.load(JS_MIME_TYPE, modulePath, path.dirname(this.filePath));
     }));
 
     this._run = this.compile();
@@ -62,8 +62,8 @@ export class CommonJSSandboxModule extends BaseSandboxModule {
       require    : (path) => this._imports[path].evaluate(),
       module     : this,
       exports    : this.exports,
-      __filename : this.fileName,
-      __dirname  : path.dirname(this.fileName),
+      __filename : this.filePath,
+      __dirname  : path.dirname(this.filePath),
     };
 
     this._run(global, context);

@@ -97,7 +97,7 @@ export interface IDependency extends ICloneable {
    * The collection that this dependency belongs to
    */
 
-  dependencies: Dependencies;
+  owner: Dependencies;
 
   /**
    * Clones the dependency. Required in case the dependency
@@ -108,7 +108,7 @@ export interface IDependency extends ICloneable {
 }
 
 export class Dependency<T> implements IDependency {
-  public dependencies: Dependencies;
+  public owner: Dependencies;
   constructor(readonly id: string, public value: T, readonly overridable: boolean = false) { }
 
   /**
@@ -142,7 +142,7 @@ export interface IFactory {
 
 export class FactoryDependency extends Dependency<IFactory> implements IFactory {
   create(...rest: any[]): any {
-    return Injector.inject(this.value.create(...rest), this.dependencies);
+    return Injector.inject(this.value.create(...rest), this.owner);
   }
 }
 
@@ -157,7 +157,7 @@ export class ClassFactoryDependency extends Dependency<{ new(...rest): any}> imp
     assert(clazz, `Class must be defined for ${id}.`);
   }
   create(...rest: any[]) {
-    return Injector.create(this.clazz, rest, this.dependencies);
+    return Injector.create(this.clazz, rest, this.owner);
   }
 }
 
@@ -201,7 +201,7 @@ export class Dependencies implements ICloneable {
    */
 
   link(dependency: IDependency) {
-    dependency.dependencies = this;
+    dependency.owner = this;
     return dependency;
   }
 

@@ -29,7 +29,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("finds an item in the database")
-  [DSFindAction.DS_FIND](action: DSFindAction) {
+  [DSFindAction.DS_FIND](action: DSFindAction<any>) {
     return this._db.execute(action);
   }
 
@@ -38,7 +38,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("removes an item in the database")
-  [DSRemoveAction.DS_REMOVE](action: DSRemoveAction) {
+  [DSRemoveAction.DS_REMOVE](action: DSRemoveAction<any>) {
     return this._db.execute(action);
   }
 
@@ -47,7 +47,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("inserts an item in the database")
-  [DSInsertAction.DS_INSERT](action: DSInsertAction) {
+  [DSInsertAction.DS_INSERT](action: DSInsertAction<any>) {
     return this._db.execute(action);
   }
 
@@ -55,7 +55,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
    */
 
   @document("updates an item in the database")
-  [DSUpdateAction.DS_UPDATE](action: DSUpdateAction) {
+  [DSUpdateAction.DS_UPDATE](action: DSUpdateAction<any, any>) {
     return this._db.execute(action);
   }
 }

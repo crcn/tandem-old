@@ -132,22 +132,3 @@ declare module "titlebar" {
 
   export = titlebar;
 }
-
-declare module "mesh-remote-bus" {
-
-  import { IActor, Action } from "@tandem/common";
-
-  interface IRemoteBusAdapter2 {
-    send(data: any);
-    addListener(listener: (data: any) => any);
-  }
-
-  class RemoteBus implements IActor {
-    constructor(adapter: IRemoteBusAdapter2, localBus: IActor);
-    execute(action: Action): any;
-  }
-
-  namespace RemoteBus { }
-
-  export = RemoteBus;
-}

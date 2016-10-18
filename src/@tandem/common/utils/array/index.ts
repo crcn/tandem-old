@@ -7,13 +7,13 @@ export interface IArrayChangeAddition {
   value: any;
 }
 
-export interface IArrayChange {
-  update: Array<Array<any>>;
+export interface IArrayChange<T> {
+  update: Array<Array<T>>;
   add: Array<IArrayChangeAddition>;
-  remove: Array<any>;
+  remove: Array<T>;
 }
 
-export function diffArray<T>(a: Array<T>, b: Array<T>, compare: (a: T, b: T) => number|boolean): IArrayChange {
+export function diffArray<T>(a: Array<T>, b: Array<T>, compare: (a: T, b: T) => number|boolean): IArrayChange<T> {
   const update  = [];
 
   const aPool = a.concat();
@@ -55,7 +55,7 @@ export function diffArray<T>(a: Array<T>, b: Array<T>, compare: (a: T, b: T) => 
   };
 }
 
-export function patchArray<T>(to: Array<T>, changes: IArrayChange, patchValue: (a: T, b: T) => T, addValue?: (b: T) => T) {
+export function patchArray<T>(to: Array<T>, changes: IArrayChange<T>, patchValue: (a: T, b: T) => T, addValue?: (b: T) => T) {
   if (!addValue) {
     addValue = (b) => b;
   }

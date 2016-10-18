@@ -17,7 +17,7 @@ export class SyntheticHTMLStyle extends SyntheticDOMElement {
     if (!moduleFactory) {
       throw new Error(`Cannot find style module for type ${type}.`);
     }
-    const module = moduleFactory.create(this.module ? this.module.fileName : undefined, this.textContent, this.ownerDocument.sandbox);
+    const module = moduleFactory.create(this.module ? this.module.filePath : undefined, this.textContent, this.ownerDocument.sandbox);
     await module.load();
     const styleSheet = module.evaluate() as SyntheticCSSStyleSheet;
     this.ownerDocument.styleSheets.push(styleSheet);

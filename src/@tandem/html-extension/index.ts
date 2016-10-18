@@ -2,7 +2,7 @@ import { IApplication } from "@tandem/common/application";
 import { CSS_MIME_TYPE, HTML_MIME_TYPE, JS_MIME_TYPE } from "@tandem/common";
 
 // sandbox
-import { HTMLCSSModule, HTMLCSSDOMModule } from "./sandbox";
+import { HTMLCSSModule, HTMLCSSDOMModule, HTMLBundleLoader } from "./sandbox";
 
 import {
   HTML_XMLNS,
@@ -29,7 +29,7 @@ import {
   SyntheticHTMLElement,
 } from "@tandem/synthetic-browser";
 
-import { SandboxModuleFactoryDependency } from "@tandem/sandbox";
+import { SandboxModuleFactoryDependency, BundlerLoaderFactoryDependency } from "@tandem/sandbox";
 
 import {
   StageToolComponentFactoryDependency,
@@ -96,6 +96,9 @@ export const htmlExtensionDependencies = [
   // services
   pastHTMLServiceDependency,
 
+  // sandbox loaders
+  new BundlerLoaderFactoryDependency(HTML_MIME_TYPE, HTMLBundleLoader),
+
   // tools
   textToolDependency,
   editInnerHTMLDependency,
@@ -114,3 +117,4 @@ export * from "./constants";
 export * from "./key-bindings";
 export * from "./services";
 export * from "./synthetic";
+export * from "./sandbox";

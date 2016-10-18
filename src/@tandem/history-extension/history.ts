@@ -130,7 +130,7 @@ export class ModuleHistory implements IInjectable {
     this.browser.documentEntity.querySelectorAll("*").forEach((entity) => {
       const module = entity.module;
       if (module) {
-        data[module.fileName] = {
+        data[module.filePath] = {
           content: module.content,
           mtime: now
         };
@@ -146,8 +146,8 @@ export class ModuleHistory implements IInjectable {
     if (this._settingState) return this._shouldSetStateAgain = true;
     this._settingState = true;
 
-    for (const fileName in data) {
-      // await UpdateTemporaryFileContentAction.execute({ path: fileName, content: data[fileName].content, mtime: data[fileName].mtime }, this.bus);
+    for (const filePath in data) {
+      // await UpdateTemporaryFileContentAction.execute({ path: filePath, content: data[filePath].content, mtime: data[filePath].mtime }, this.bus);
     }
 
     this._settingState = false;

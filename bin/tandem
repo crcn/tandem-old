@@ -5,13 +5,13 @@ var spawn = require('child_process').spawn;
 var os    = require("os");
 var createServer = require("../lib/@tandem/back-end/server").create;
 
-var fileName = argv._[0];
+var filePath = argv._[0];
 
-// if (fileName && !/^\//.test(fileName)) {
-//   fileName = path.join(process.cwd(), fileName);
+// if (filePath && !/^\//.test(filePath)) {
+//   filePath = path.join(process.cwd(), filePath);
 // }
 
-// spawn('node_modules/.bin/electron', ['lib/@tandem/desktop', fileName], {
+// spawn('node_modules/.bin/electron', ['lib/@tandem/desktop', filePath], {
 //   cwd: __dirname + "/../",
 //   detached: true
 // });

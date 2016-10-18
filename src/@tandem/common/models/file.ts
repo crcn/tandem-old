@@ -3,7 +3,6 @@ import {
   Dependencies,
   MainBusDependency,
   MimeTypeDependency,
-  MAIN_BUS_NS,
   DEPENDENCIES_NS
 } from "@tandem/common/dependencies";
 import { IDisposable } from "@tandem/common/object";
@@ -33,7 +32,7 @@ export class File extends Observable {
   @inject(DEPENDENCIES_NS)
   protected _dependencies: Dependencies;
 
-  @inject(MAIN_BUS_NS)
+  @inject(MainBusDependency.NS)
   protected _bus: IActor;
 
   constructor() {

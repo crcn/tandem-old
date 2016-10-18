@@ -1,7 +1,14 @@
 import "reflect-metadata";
 import { Application } from "@tandem/common/application";
 import { ApplicationServiceDependency } from "@tandem/common";
-import { IFileSystem, RemoteFileSystem, FileSystemDependency } from "@tandem/sandbox";
+import { 
+  IFileSystem,
+  RemoteFileSystem,
+  RemoteFileResolver,
+  FileCacheDependency,
+  FileSystemDependency,
+  FileResolverDependency,
+} from "@tandem/sandbox";
 
 // components
 import { rootComponentDependency } from "./components/root";
@@ -107,7 +114,9 @@ export class FrontEndApplication extends Application {
       typescriptExtensionDependencies,
 
       // singletons
-      new FileSystemDependency(this.config.fileSystem || new RemoteFileSystem(this.bus))
+      new FileSystemDependency(this.config.fileSystem || new RemoteFileSystem(this.bus)),
+      new FileResolverDependency(this.config.fileResolver || new RemoteFileResolver(this.bus)),
+      new FileCacheDependency()
     );
   }
 }
