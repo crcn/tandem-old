@@ -29,7 +29,6 @@ export class Sandbox2 extends Observable {
   private _bundler: Bundler;
   private _global: any;
   private _exports: any;
-  private _revaluating: boolean;
 
   constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}) {
     super();
@@ -80,9 +79,6 @@ export class Sandbox2 extends Observable {
     const module = this._modules[filePath] = new Sandbox2Module(this, bundle);
     const now = Date.now();
 
-    console.log("evaluate start", filePath);
-
-
     // TODO - cache evaluator here
     const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryDependency.find(null, bundle.content.type, this._dependencies);
 
@@ -92,13 +88,11 @@ export class Sandbox2 extends Observable {
 
     evaluatorFactoryDepedency.create().evaluate(module);
 
-    console.log("evaluate done", filePath, Date.now() - now);
     return this.require(filePath);
   }
 
   protected onEntryAction(action: Action) {
     if (action.type === BundleAction.BUNDLE_READY) {
-      console.info("restarting evaluation ", this._entry.filePath);
       this.evaluate();
     }
   }

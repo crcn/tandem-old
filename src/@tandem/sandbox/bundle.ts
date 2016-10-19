@@ -108,6 +108,8 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   private _fileCacheItemObserver: IActor;
   private _updatedAt: number;
   private _dependencyObserver: IActor;
+  private _emittingReady: boolean;
+  private _readyLock: boolean;
 
   constructor(source: IBundleData, collectionName: string, private _dependencies: Dependencies) {
     super(source, collectionName, MainBusDependency.getInstance(_dependencies));
@@ -251,13 +253,18 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   }
 
   private onDependencyAction(action: Action) {
-    if (action.canPropagate && action.type === BundleAction.BUNDLE_READY) {
-      action.stopPropagation();
+    if (action.type === BundleAction.BUNDLE_READY) {
       this.notifyBundleReady();
     }
   }
 
   private notifyBundleReady() {
+
+    // fix case where a nested dependency BUNDLE_READY action is
+    // emitted by dependent bundles.
+    if (this._readyLock) return;
+    this._readyLock = true;
+    setTimeout(() => this._readyLock = false, 0);
     this.notify(new BundleAction(BundleAction.BUNDLE_READY));
   }
 

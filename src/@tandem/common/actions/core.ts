@@ -163,10 +163,10 @@ export class AttributeChangeAction extends Action {
   }
 }
 
-export const METADATA_CHANGE = "metadataChange";
 export class MetadataChangeAction extends Action {
+  static readonly METADATA_CHANGE = "metadataChange";
   constructor(readonly key: string, readonly value: string) {
-    super(METADATA_CHANGE);
+    super(MetadataChangeAction.METADATA_CHANGE);
   }
 }
 

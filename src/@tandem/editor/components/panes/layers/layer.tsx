@@ -14,7 +14,6 @@ import {
   CallbackBus,
   Dependencies,
   flattenTree,
-  METADATA_CHANGE,
   traverseTree,
   findTreeNode,
   MetadataChangeAction,

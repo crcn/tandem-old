@@ -55,8 +55,8 @@ const DEFAULT_FRAME_STYLE_SHEET = evaluateCSS(parseCSS(`
 export class TDArtboardEntity extends VisibleHTMLEntity {
 
   private _artboardBrowser: SyntheticBrowser;
-  private _artboardBrowserObserver: IActor;
   private _combinedStyleSheet: SyntheticCSSStyleSheet;
+  private _artboardBrowserObserver: IActor;
 
   evaluate() {
 
@@ -74,6 +74,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
       const documentRenderer = new SyntheticDOMRenderer();
       this._artboardBrowser = new SyntheticBrowser(ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer), this.browser);
       watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
+      watchProperty(this._artboardBrowser, "documentEntity", this.onBrowserDocumentEntityChange.bind(this));
     }
 
     if (this.source.hasAttribute("src")) {

@@ -1,7 +1,7 @@
 import { Action } from "@tandem/common";
-import { SyntheticRendererAction } from "../actions";
+import { SyntheticRendererAction, DOMEntityAction } from "../actions";
 import { WrapBus } from "mesh";
-import { Observable, IObservable } from "@tandem/common";
+import { Observable, IObservable, MetadataChangeAction } from "@tandem/common";
 import { BoundingRect, watchProperty, IActor } from "@tandem/common";
 import {
   DOMNodeType,
@@ -83,7 +83,9 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   }
 
   protected onEntityAction(action: Action) {
-    this.requestUpdate();
+    if (action.type !== MetadataChangeAction.METADATA_CHANGE) {
+      this.requestUpdate();
+    }
   }
 
   public requestUpdate() {
@@ -97,6 +99,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
 
     requestAnimationFrame(async () => {
       if (!this.entity) return;
+      this._shouldUpdateAgain = false;
       await this.update();
       this._updating = false;
       if (this._shouldUpdateAgain) {

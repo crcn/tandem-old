@@ -53,6 +53,7 @@ export class SyntheticBrowser extends Observable {
   private _documentEntityObserver: IActor;
   private _entry: Bundle;
   private _bundler: Bundler;
+  private _url: string;
 
   @bindable()
   readonly window: SyntheticWindow;
@@ -86,6 +87,10 @@ export class SyntheticBrowser extends Observable {
   }
 
   async open(url: string) {
+    if (this._url && this._url === url) {
+      return;
+    }
+    this._url = url;
     this._location = new SyntheticLocation(url);
     this._entry = await this._bundler.bundle(url);
     this._sandbox2.open(this._entry);
@@ -139,7 +144,6 @@ export class SyntheticBrowser extends Observable {
   }
 
   private onSandboxExportsChange(exports: any) {
-    console.info("sync entities", this._location.toString());
     const window = this._sandbox2.global as SyntheticWindow;
 
     let exportsElement: SyntheticDOMNode;
