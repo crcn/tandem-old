@@ -35,6 +35,36 @@ export interface IMarkupExpressionVisitor {
   visitDocumentFragment(attribute: MarkupFragmentExpression);
 }
 
+export function serializeMarkupExpression(expression: MarkupExpression): Object {
+  return expression.accept({
+    visitAttribute({ kind, name, value, position }) {
+      return { kind, name, value, position };
+    },
+    visitComment({ kind, nodeValue, position  }) {
+      return { kind, nodeValue, position  };
+    },
+    visitDocumentFragment({ kind, childNodes, position  }) {
+      return { kind, position, childNodes: childNodes.map(child => child.accept(this))}
+    },
+    visitText({ kind, nodeValue, position  }) {
+      return { kind, nodeValue, position  };
+    },
+    visitElement({ kind, attributes, childNodes, position  }) {
+      return { kind, position, attribute: attributes.map(attribute => attribute.accept(this)), childNodes: childNodes.map(child => child.accept(this)) };
+    }
+  })
+}
+
+export function deserializeMarkupExpression(data: any): MarkupExpression {
+  switch(data.kind) {
+    case MarkupExpressionKind.ATTRIBUTE: return new MarkupAttributeExpression(data.name, data.value, data.position);
+    case MarkupExpressionKind.COMMENT: return new MarkupCommentExpression(data.nodeValue, data.position);
+    case MarkupExpressionKind.TEXT: return new MarkupTextExpression(data.nodeValue, data.position);
+    case MarkupExpressionKind.FRAGMENT: return new MarkupFragmentExpression(data.childNodes.map(deserializeMarkupExpression), data.position);
+    case MarkupExpressionKind.ELEMENT: return new MarkupElementExpression(data.nodeName, data.attributes.map(deserializeMarkupExpression), data.childNodes.map(deserializeMarkupExpression), data.position);
+  }
+}
+
 export interface IMarkupValueNodeExpression extends IMarkupExpression {
   nodeValue: any;
 }

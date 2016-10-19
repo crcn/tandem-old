@@ -3,7 +3,7 @@ import { ICloneable } from "@tandem/common/object";
 import * as assert from "assert";
 
 export interface IInjectable {
-  didInject?(): void;
+  $didInject?(): void;
 }
 
 /**
@@ -52,8 +52,8 @@ export class Injector {
       target[property] = values[property];
     }
 
-    if (target.didInject) {
-      target.didInject();
+    if (target.$didInject) {
+      target.$didInject();
     }
 
     return target;

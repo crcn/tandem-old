@@ -6,18 +6,19 @@ import {
   Action,
   IActor,
   bindable,
+  Injector,
   BubbleBus,
   Observable,
   TypeWrapBus,
   ChangeAction,
   findTreeNode,
+  watchProperty,
   Dependencies,
-  waitForPropertyChange,
   HTML_MIME_TYPE,
   MainBusDependency,
-  Injector,
   MimeTypeDependency,
   PropertyChangeAction,
+  waitForPropertyChange,
 } from "@tandem/common";
 
 import {
@@ -26,9 +27,12 @@ import {
 } from "./entities";
 
 import {
-  Bundle,
+  Bundler,
   Sandbox,
+  Bundle,
+  Sandbox2,
   SandboxAction,
+  BundlerDependency,
   IModuleResolveOptions,
 } from "@tandem/sandbox";
 
@@ -44,17 +48,23 @@ export class SyntheticBrowser extends Observable {
 
   private _window: SyntheticWindow;
   private _sandbox: Sandbox;
+  private _sandbox2: Sandbox2;
   private _location: SyntheticLocation;
   private _renderer: ISyntheticDocumentRenderer;
   private _documentEntity: BaseDOMNodeEntity<any, any>;
   private _documentEntityObserver: IActor;
-  private _bundle: Bundle;
+  private _entry: Bundle;
+  private _bundler: Bundler;
 
   constructor(private _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, readonly parent?: SyntheticBrowser) {
     super();
     this._renderer = renderer || new SyntheticDOMRenderer();
+    this._bundler = BundlerDependency.getInstance(this._dependencies);
     this._renderer.observe(new BubbleBus(this));
     this._sandbox  = new Sandbox(_dependencies, this.createSandboxGlobals.bind(this), this.getResolveOptions.bind(this));
+    this._sandbox2 = new Sandbox2(_dependencies, this.createSandboxGlobals2.bind(this));
+    watchProperty(this._sandbox2, "exports", this.onSandboxExportsChange.bind(this));
+    // TODO - bind global to window prop
     this._documentEntityObserver = new BubbleBus(this);
     this._sandbox.observe(new WrapBus(this.onSandboxAction.bind(this)));
   }
@@ -81,10 +91,12 @@ export class SyntheticBrowser extends Observable {
   }
 
   async open(url: string) {
-    this._bundle = new Bundle(url, this._dependencies, {
-      extensions: MimeTypeDependency.findAll(this._dependencies).map((dep) => "." + dep.fileExtension),
-      directories: []
-    });
+    this._entry = await this._bundler.bundle(url);
+    this._sandbox2.open(this._entry);
+    // this._bundle = new Bundle(url, this._dependencies, {
+    //   extensions: MimeTypeDependency.findAll(this._dependencies).map((dep) => "." + dep.fileExtension),
+    //   directories: []
+    // });
 
     this._location = new SyntheticLocation(url);
     await new Promise(async (resolve) => {
@@ -119,6 +131,12 @@ export class SyntheticBrowser extends Observable {
     const window = this._window = new SyntheticWindow(this, this._renderer, this._location);
     this._registerElementClasses(window.document);
     this.notify(new PropertyChangeAction("window", window, oldWindow));
+    return window;
+  }
+
+  protected createSandboxGlobals2(): SyntheticWindow {
+    const window = new SyntheticWindow(this, this._renderer, this._location);
+    this._registerElementClasses(window.document);
     return window;
   }
 
@@ -201,5 +219,9 @@ export class SyntheticBrowser extends Observable {
     }
 
     this.notify(new SyntheticBrowserAction(SyntheticBrowserAction.LOADED));
+  }
+
+  private onSandboxExportsChange(exports: any) {
+    console.log("sandbox2 exports", exports);
   }
 }

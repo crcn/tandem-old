@@ -27,7 +27,7 @@ export class SyntheticHTMLScript extends SyntheticHTMLElement {
 
     if (src) {
 
-      // TODO - nono to this -- this should happen with the bundler
+      // TODO - nono to this -- this should happen with the bundle
       const filePath = await window.sandbox.fileResolver.resolve(src, path.dirname(this.module.filePath));
       const content = await importer.readFile(filePath);
       await importer.watchFile(filePath);

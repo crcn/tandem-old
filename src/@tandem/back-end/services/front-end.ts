@@ -41,7 +41,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   @inject(FileCacheDependency.NS)
   private _fileCache: FileCache;
 
-  didInject() {
+  $didInject() {
     this.app.bus.register(this._ioService = IOService.create<IApplication>(this.dependencies));
   }
 

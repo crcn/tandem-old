@@ -2,24 +2,25 @@ import {
   IActor,
   Metadata,
   inject,
-  bindable,
   Action,
+  bindable,
+  BubbleBus,
+  diffArray,
+  IBrokerBus,
+  patchArray,
+  Observable,
+  TypeWrapBus,
   DSFindAction,
   Dependencies,
-  diffArray,
-  patchArray,
-  DSInsertAction,
-  DSFindAllAction,
-  BubbleBus,
-  DSUpdateAction,
   PostDSAction,
+  DSInsertAction,
+  DSUpdateAction,
   DSRemoveAction,
   DEPENDENCIES_NS,
-  IBrokerBus,
-  TypeWrapBus,
-  Observable,
-  MainBusDependency,
+  DSFindAllAction,
   BaseActiveRecord,
+  MainBusDependency,
+  ActiveRecordCollection,
 } from "@tandem/common";
 
 import { FileCacheAction } from "./actions";
@@ -123,7 +124,7 @@ export class FileCacheSynchronizer {
 
   private update() {
     const a = Object.keys(this._watchers);
-    const b = this._cache.loadedItems.map((item) => item.filePath);
+    const b = this._cache.collection.map((item) => item.filePath);
     const changes = diffArray(a, b, (a, b) => a === b);
     for (const { index, value } of changes.add) {
       this._watchers[value] = this._fileSystem.watchFile(value, this.onLocalFindChange.bind(this, value));
@@ -146,17 +147,17 @@ export class FileCacheSynchronizer {
 export class FileCache extends Observable {
   private _bus: IBrokerBus;
   private _fileSystem: IFileSystem;
-  private _entities: any;
   private _synchronizer: FileCacheSynchronizer;
-  private _globalActionObserver: IActor;
+  readonly collection: ActiveRecordCollection<FileCacheItem, IFileCacheItemData>;
 
   constructor(@inject(DEPENDENCIES_NS) private _dependencies: Dependencies) {
     super();
     this._bus        = MainBusDependency.getInstance(_dependencies);
-    this._entities   = {};
+    this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IFileCacheItemData) => {
+      return new FileCacheItem(source, this.collectionName, this._fileSystem, this._bus);
+    });
+    this.collection.load();
     this._fileSystem = FileSystemDependency.getInstance(_dependencies);
-    this._globalActionObserver = new WrapBus(this.onGlobalAction.bind(this));
-    this._bus.register(this._globalActionObserver);
   }
 
   get collectionName() {
@@ -164,11 +165,11 @@ export class FileCache extends Observable {
   }
 
   async item(filePath: string): Promise<FileCacheItem> {
-    return await this.findCacheItem(filePath) || await this.insertFileCacheItem(filePath);
-  }
-
-  get loadedItems(): FileCacheItem[] {
-    return values<FileCacheItem>(this._entities);
+    return this.collection.findByUid(filePath) || await this.collection.create({
+      filePath: filePath,
+      url: "file://" + filePath,
+      mtime: Date.now()
+    }).save();
   }
 
   /**
@@ -178,40 +179,5 @@ export class FileCache extends Observable {
 
   syncWithLocalFiles() {
     return this._synchronizer || (this._synchronizer = new FileCacheSynchronizer(this, this._bus, this._fileSystem));
-  }
-
-  private async findCacheItem(filePath: string): Promise<FileCacheItem> {
-    if (this._entities[filePath]) return this._entities[filePath];
-    const { value } = await this._bus.execute(new DSFindAction<IFileCacheItemQuery>(this.collectionName, {
-      filePath: filePath
-    }, false)).read();
-    return value && this._updateEntity(value);
-  }
-
-  private onGlobalAction(action: PostDSAction) {
-    if ((action.type === PostDSAction.DS_DID_UPDATE || action.type === PostDSAction.DS_DID_INSERT) && action.collectionName === this.collectionName) {
-      this._updateEntity(action.data);
-    }
-  }
-
-  private async insertFileCacheItem(filePath: string): Promise<FileCacheItem> {
-    return this._updateEntity((await this._bus.execute(new DSInsertAction<IFileCacheItemData>(this.collectionName, {
-      filePath: filePath,
-      url: "file://" + filePath,
-      mtime: Date.now()
-    })).read()).value);
-  }
-
-  private _updateEntity(source: IFileCacheItemData) {
-
-    if (this._entities[source.filePath]) {
-      const entity = this._entities[source.filePath];
-      entity.deserialize(source);
-      return entity;
-    }
-    const entity = this._entities[source.filePath] = new FileCacheItem(source, this.collectionName, this._fileSystem, this._bus);
-    this.notify(new FileCacheAction(FileCacheAction.ADDED_ENTITY, entity));
-    entity.observe(new BubbleBus(this));
-    return entity;
   }
 }

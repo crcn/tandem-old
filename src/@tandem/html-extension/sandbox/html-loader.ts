@@ -1,15 +1,27 @@
-import { IBundleLoader, IBundleLoaderResult } from "@tandem/sandbox";
-import { parseMarkup, MarkupFragmentExpression } from "@tandem/synthetic-browser";
+import {
+  IBundleLoader,
+  IBundleContent,
+  IBundleLoaderResult
+} from "@tandem/sandbox";
 
-export class HTMLBundleResult implements IBundleLoaderResult {
+import { HTML_AST_MIME_TYPE } from "@tandem/html-extension/constants";
 
-  constructor(readonly ast: MarkupFragmentExpression) { }
+import {
+  parseMarkup,
+  MarkupTextExpression,
+  MarkupFragmentExpression,
+  serializeMarkupExpression,
+  deserializeMarkupExpression,
+} from "@tandem/synthetic-browser";
 
-  get dependencyPaths() {
+export class HTMLBundleLoader implements IBundleLoader {
+  async load({ type, value }): Promise<IBundleLoaderResult> {
 
     const dependencyPaths = [];
 
-    this.ast.accept({
+    const ast = parseMarkup(value);
+
+    ast.accept({
       visitAttribute({ name, value, parent }) {
 
         // ignore redirecting tag names
@@ -25,15 +37,20 @@ export class HTMLBundleResult implements IBundleLoaderResult {
       visitElement(element) {
         element.attributes.forEach((attribute) => attribute.accept(this));
         element.childNodes.forEach((child) => child.accept(this));
+
+        // todo - transform content here
+        if (/script|style/i.test(element.nodeName) && element.childNodes.length) {
+          const textNode = element.childNodes[0] as MarkupTextExpression;
+          // need to add source maps here
+          // textNode.nodeValue = transformBundleContent(bundle, textNode.nodeValue);
+        }
       }
     });
 
-    return dependencyPaths;
-  }
-}
-
-export class HTMLBundleLoader implements IBundleLoader {
-  async load(content: string): Promise<IBundleLoaderResult> {
-    return new HTMLBundleResult(parseMarkup(content));
+    return {
+      type:  HTML_AST_MIME_TYPE,
+      value: ast,
+      dependencyPaths: dependencyPaths
+    };
   }
 }

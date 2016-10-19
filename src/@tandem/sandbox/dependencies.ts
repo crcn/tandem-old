@@ -3,7 +3,15 @@ import { Sandbox } from "./sandbox";
 import { IFileSystem } from "./file-system";
 import { IFileResolver } from "./resolver";
 import { FileCache } from "./file-cache";
-import { IBundleLoader, bundleLoaderType, bundleTransformerType, IBundleTransformer } from "./bundle";
+import {
+  Bundler,
+  IBundleLoader,
+  bundleLoaderType,
+ } from "./bundle";
+ import {
+  sandboxBundleEvaluatorType,
+  ISandboxBundleEvaluator
+ } from "./sandbox2";
 import {
   Dependency,
   Dependencies,
@@ -15,8 +23,7 @@ import {
 
 export type moduleType = { new(filePath: string, content: string, sandbox: Sandbox): IModule };
 
-// ModuleTranspilerDependency
-
+// DEPRECATED
 export class SandboxModuleFactoryDependency extends ClassFactoryDependency {
   static readonly MODULE_FACTORIES_NS = "moduleFactories";
   constructor(readonly envMimeType: string, readonly mimeType: string, clazz: moduleType) {
@@ -82,39 +89,36 @@ export class BundlerLoaderFactoryDependency extends ClassFactoryDependency {
   create(dependencies: Dependencies): IBundleLoader {
     return super.create(dependencies);
   }
-  static create(mimeType: string, dependencies: Dependencies): IBundleLoader {
-    const dependency = dependencies.query<BundlerLoaderFactoryDependency>(this.getNamespace(mimeType));
-    if (!dependency) {
-      throw new Error(`Cannot create bundle loader from mime type ${mimeType}.`);
-    }
-    return dependency.create(dependencies);
-  }
-
-  static createFromFilePath(filePath: string, dependencies: Dependencies): IBundleLoader {
-    return this.create(MimeTypeDependency.lookup(filePath, dependencies), dependencies);
+  static find(mimeType: string, dependencies: Dependencies): BundlerLoaderFactoryDependency {
+    return dependencies.query<BundlerLoaderFactoryDependency>(this.getNamespace(mimeType));
   }
   clone() {
     return new BundlerLoaderFactoryDependency(this.mimeType, this.value);
   }
 }
 
-export class BundleTransformerFactoryDependency extends ClassFactoryDependency {
-  static readonly NS = "bundleTransformer";
-  constructor(readonly mimeType: string, value: bundleTransformerType) {
-    super(BundleTransformerFactoryDependency.getNamespace(mimeType), value);
+export class SandboxModuleEvaluatorFactoryDependency extends ClassFactoryDependency {
+  static readonly NS = "sandboxModuleEvaluator";
+  constructor(readonly envMimeType: string, readonly mimeType: string, clazz: sandboxBundleEvaluatorType) {
+    super(SandboxModuleEvaluatorFactoryDependency.getNamespace(envMimeType, mimeType), clazz);
   }
-  static getNamespace(mimeType: string) {
-    return [BundleTransformerFactoryDependency.NS, mimeType].join("/");
-  }
-  create(dependencies: Dependencies): IBundleTransformer {
-    return super.create(dependencies);
-  }
-  static find(mimeType: string, dependencies: Dependencies) {
-    return dependencies.query<BundleTransformerFactoryDependency>(this.getNamespace(mimeType));
-  }
+
   clone() {
-    return new BundleTransformerFactoryDependency(this.mimeType, this.value);
+    return new SandboxModuleEvaluatorFactoryDependency(this.envMimeType, this.mimeType, this.value);
+  }
+
+  static getNamespace(envMimeType: string, mimeType: string) {
+    return [this.NS, envMimeType, mimeType].join("/");
+  }
+
+  create(): ISandboxBundleEvaluator {
+    return super.create();
+  }
+
+  static find(envMimeType: string, mimeType: string, dependencies: Dependencies) {
+    return dependencies.query<SandboxModuleEvaluatorFactoryDependency>(this.getNamespace(envMimeType, mimeType));
   }
 }
 
 export const FileCacheDependency = createSingletonDependencyClass("fileCache", FileCache);
+export const BundlerDependency   = createSingletonDependencyClass("bundler", Bundler);

@@ -23,7 +23,7 @@ export abstract class InsertTool extends BaseEditorTool {
 
   readonly resizable: boolean = true;
 
-  didInject() {
+  $didInject() {
 
     // deselect all
     this.bus.execute(new SelectAction());

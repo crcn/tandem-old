@@ -1,12 +1,27 @@
 import * as path from "path";
+import { FileCache } from "./file-cache";
 import { IFileSystem } from "./file-system";
+import { BundleAction } from "./actions";
 import { IFileResolver, IFileResolverOptions } from "./resolver";
-import { Dependencies, Dependency, Observable, MimeTypeDependency, BaseActiveRecord } from "@tandem/common";
 import {
+  inject,
+  Injector,
+  Dependency,
+  Observable,
+  IObservable,
+  Dependencies,
+  DEPENDENCIES_NS,
+  BaseActiveRecord,
+  MainBusDependency,
+  MimeTypeDependency,
+  ActiveRecordCollection,
+} from "@tandem/common";
+import {
+  BundlerDependency,
   FileSystemDependency,
+  FileCacheDependency,
   FileResolverDependency,
   BundlerLoaderFactoryDependency,
-  BundleTransformerFactoryDependency,
 } from "./dependencies";
 
 interface IBundleFile {
@@ -14,183 +29,134 @@ interface IBundleFile {
   readonly content: string;
 }
 
-export interface IBundleLoaderResult {
-
-  /**
-   * Dependencies that also need to be loaded in
-   */
-
-  dependencyPaths?: string[];
-
-  /**
-   * TODO
-   */
-
-  // toCommonJSDependencyString(): string;
-}
-
-export interface IBundleTransformResult {
-  mimeType: string;
-  content: any;
-}
-
 export interface IBundleLoader {
-  load(content: string): Promise<IBundleLoaderResult>;
-}
-
-
-export interface IBundleTransformer {
-  transform(content: string): Promise<IBundleTransformResult>;
+  load(content: IBundleContent): Promise<IBundleLoaderResult>;
 }
 
 export type bundleLoaderType = { new(): IBundleLoader };
-export type bundleTransformerType = { new(): IBundleTransformer };
 
-// TODO - needs to store compiled data here
-class BundleDependency extends Dependency<IBundleFile> {
-  static NS = "bundle";
-  constructor(file: IBundleFile, readonly dependencies: IBundleFile[]) {
-    super(BundleDependency.NS, file);
-  }
-  static getNamespace(filePath: string) {
-    return [this.NS, filePath].join("/");
-  }
-  static findFile(filePath: string, dependencies: Dependencies): IBundleFile {
-    return this.find(filePath, dependencies).value;
-  }
-  static find(filePath: string, dependencies: Dependencies) {
-    return dependencies.query<BundleDependency>(this.getNamespace(filePath));
-  }
+export interface IBundleContent {
+  readonly type: string; // mime type
+  readonly value: any;
 }
 
-export interface IBundleItemContentData {
-  readonly type: string;
-  readonly value: string;
+
+export interface IBundleLoaderResult extends IBundleContent {
+  dependencyPaths?: string[];
 }
 
-export interface IBundleItemContent {
-  readonly type: string;
-  readonly data: any;
-  serialize(): IBundleItemContentData;
-  deserialize(source: IBundleItemContentData);
-}
-
-export interface IBundleItemData {
-  fileName: string;
-  content: IBundleItemContentData;
-  dependencyPaths: string[];
+export interface IBundleData {
+  filePath: string;
+  content?: IBundleContent;
+  dependencyPaths?: string[];
 }
 
 /**
  */
 
-export class BundleEntry extends BaseActiveRecord<IBundleItemData> {
+// TODO - fetch file cache item
+export class Bundle extends BaseActiveRecord<IBundleData> {
 
-  private _fileName: string;
+  readonly idProperty = "filePath";
+
+  private _filePath: string;
+  private _ready: boolean;
   private _dependencyPaths: string[];
-  private _content: IBundleItemContent;
+  private _content: IBundleContent;
+  private _fileCache: FileCache;
+  private _fileSystem: IFileSystem;
+  private _fileResolver: IFileResolver;
+  private _bundler: Bundler;
+  private _dependencyItems: Bundle[];
 
-  constructor(source: IBundleItemData, collectionName: string) {
-    super(source, collectionName, null);
+  constructor(source: IBundleData, collectionName: string, private _dependencies: Dependencies) {
+    super(source, collectionName, MainBusDependency.getInstance(_dependencies));
+    this._fileCache = FileCacheDependency.getInstance(_dependencies);
+    this._fileSystem = FileSystemDependency.getInstance(_dependencies);
+    this._fileResolver = FileResolverDependency.getInstance(_dependencies);
+    this._bundler = BundlerDependency.getInstance(_dependencies);
   }
 
-  get fileName() {
-    return this._fileName;
+  get ready() {
+    return this._ready;
+  }
+
+  get filePath() {
+    return this._filePath;
   }
 
   get dependencyPaths() {
     return this._dependencyPaths;
   }
 
-  get content(): IBundleItemContent {
+  get dependencies(): Bundle[] {
+    return this._dependencyItems;
+  }
+
+  get content(): IBundleContent {
     return this._content;
   }
 
   serialize() {
     return {
-      fileName: this.fileName,
+      filePath: this.filePath,
       dependencyPaths: this.dependencyPaths,
-      content: this.content.serialize()
+
+      // TODO SerializerDependency.serialize(this.content.type, )
+      content: null
     };
   }
 
-  deserialize(source: IBundleItemData) {
-    this._fileName = source.fileName;
+  deserialize(source: IBundleData) {
+    this._filePath = source.filePath;
     this._dependencyPaths = source.dependencyPaths;
-    // this._content = // BundleItemContentFactoryDependency.create(source.content)
   }
 
   async load() {
-
-  }
-
-  async bundle() {
-
-  }
-}
-
-/**
- * Recursively scans for entry dependencies and bundles them up into one encapsulated
- * package.
- */
-
-// TODO - chance to bundler
-export class Bundle extends Observable {
-
-  private _fileSystem: IFileSystem;
-  private _fileResolver: IFileResolver;
-  private _loading: boolean;
-
-  constructor(private _entryFilePath: string, private _dependencies: Dependencies, public resolveOptions?: IFileResolverOptions) {
-    super();
-    this._fileSystem   = FileSystemDependency.getInstance(this._dependencies);
-    this._fileResolver = FileResolverDependency.getInstance(this._dependencies);
-    this.load(this._entryFilePath).then(() => {
-      console.log("COMPLETE");
-    });
-  }
-
-  get entryFilePath() {
-    return this._entryFilePath;
-  }
-
-  private async load(filePath: string) {
-
-    const dep = BundleDependency.find(filePath, this._dependencies);
-
-    const transformResult: IBundleTransformResult = await this.loadTransformed(filePath);
-    const loader = BundlerLoaderFactoryDependency.create(transformResult.mimeType, this._dependencies);
-    const loadResult: IBundleLoaderResult = await loader.load(transformResult.content);
-    const resolvedDependencyPaths = await this.resolveDependencyPaths(loadResult.dependencyPaths || [], filePath);
-
-    for (const resolvedFilePath of resolvedDependencyPaths) {
-      this.load(resolvedFilePath);
+    console.log("load bundle %s", this.filePath);
+    const transformResult: IBundleLoaderResult = await this.loadTransformedContent();
+    this._content         = transformResult;
+    this._dependencyPaths = await this.resolveDependencyPaths(transformResult.dependencyPaths);
+    this._dependencyItems = [];
+    for (const dependencyPath of this._dependencyPaths) {
+      this._dependencyItems.push(await this._bundler.bundle(dependencyPath));
     }
+    this._ready = true;
+    this.notify(new BundleAction(BundleAction.BUNDLE_READY));
+    return await this.save();
   }
 
-  private async loadTransformed(filePath: string) {
+  private async loadTransformedContent() {
+    const dependencyPaths: string[] = [];
 
-    let current: IBundleTransformResult = {
-      mimeType: MimeTypeDependency.lookup(filePath, this._dependencies),
-      content: await this._fileSystem.readFile(filePath)
+    let current: IBundleLoaderResult = {
+      type: MimeTypeDependency.lookup(this.filePath, this._dependencies),
+      value: await this._fileSystem.readFile(this.filePath)
     };
 
-    let dependency: BundleTransformerFactoryDependency;
+    let dependency: BundlerLoaderFactoryDependency;
 
-    while(dependency = BundleTransformerFactoryDependency.find(current.mimeType, this._dependencies)) {
-      console.log(dependency.create(this._dependencies));
-      current = await dependency.create(this._dependencies).transform(current.content);
+    while(dependency = BundlerLoaderFactoryDependency.find(current.type, this._dependencies)) {
+      current = await dependency.create(this._dependencies).load(current);
+      if (current.dependencyPaths) {
+        dependencyPaths.push(...current.dependencyPaths);
+      }
     }
 
-    return current;
+    return {
+      type: current.type,
+      value: current.value,
+      dependencyPaths: dependencyPaths
+    };
   }
 
-  private async resolveDependencyPaths(dependencyPaths?: string[], dependentPath?: string) {
-    const cwd = path.dirname(dependentPath);
+  private async resolveDependencyPaths(dependencyPaths?: string[]) {
+    const cwd = path.dirname(this.filePath);
     const resolvedPaths = [];
     for (const dependencyPath of dependencyPaths) {
 
-      if (/^#/.test(dependencyPath)) {
+      // skip hash and URLs (for now)
+      if (/^(#|http)/.test(dependencyPath)) {
         continue;
       }
 
@@ -201,10 +167,42 @@ export class Bundle extends Observable {
         try {
           resolvedPaths.push(await this._fileResolver.resolve(dependencyPath, cwd));
         } catch(e) {
-          console.error(`Cannot find dependency file ${dependencyPath} for ${dependentPath}.`);
+          console.error(`Cannot find dependency file ${dependencyPath} for ${this.filePath}.`);
         }
       }
     }
     return resolvedPaths;
+  }
+}
+
+class FileCacheBundleSynchronizer {
+
+}
+
+/**
+ * Recursively scans for entry dependencies and bundles them up into one encapsulated
+ * package.
+ */
+
+// TODO - chance to bundler
+export class Bundler extends Observable {
+
+  readonly collection: ActiveRecordCollection<Bundle, IBundleData>;
+
+  constructor(@inject(DEPENDENCIES_NS) private _dependencies: Dependencies) {
+    super();
+    this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IBundleData) => {
+      return new Bundle(source, this.collectionName, _dependencies);
+    });
+  }
+
+  get collectionName() {
+    return "bundleItems";
+  }
+
+  async bundle(entryFilePath: string): Promise<Bundle> {
+    return this.collection.findByUid(entryFilePath) || await this.collection.create({
+      filePath: entryFilePath
+    }).load();
   }
 }

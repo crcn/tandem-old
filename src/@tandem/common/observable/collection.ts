@@ -49,6 +49,7 @@ export class ObservableCollection<T> extends Array<T> implements IObservable {
         (<IObservable><any>item).unobserve(this._itemObserver);
       }
     }
+
     const ret = super.splice(start, deleteCount, ...newItems);
 
     this._watchItems(newItems);

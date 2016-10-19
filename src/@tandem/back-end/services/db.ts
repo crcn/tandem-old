@@ -20,7 +20,7 @@ export default class DBService extends BaseApplicationService<IApplication> {
 
   private _db:IActor;
 
-  didInject() {
+  $didInject() {
     this._db = new PostDsNotifierBus(MemoryDsBus.create(), this.bus);
   }
 

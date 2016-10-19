@@ -38,7 +38,7 @@ describe(__filename + "#", () => {
     class Person implements IInjectable {
       @inject()
       readonly name: string;
-      didInject() {
+      $didInject() {
 
       }
     }

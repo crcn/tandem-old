@@ -33,16 +33,20 @@ export class Sandbox extends Observable {
   private _shouldResetAgain: boolean;
   private _mainExports: any;
   private _reloading: boolean;
-  // private _fileCache: FileCache;
+  private _fileCache: FileCache;
   private _resolver: IFileResolver;
   private _shouldReloadAgain: boolean;
 
   constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}, getResolveOptions?: () => IModuleResolveOptions) {
     super();
     this._resolver = FileResolverDependency.getInstance(_dependencies);
-    // this._fileCache = FileCacheDependency.getInstance(_dependencies);
+    this._fileCache = FileCacheDependency.getInstance(_dependencies);
     this._importer = new ModuleImporter(this, _dependencies, getResolveOptions);
     this._importer.observe(new WrapBus(this.onImporterAction.bind(this)));
+  }
+
+  get fileCache(): FileCache {
+    return this._fileCache;
   }
 
   get fileResolver(): IFileResolver {

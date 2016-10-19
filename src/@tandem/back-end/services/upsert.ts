@@ -9,7 +9,7 @@ export default class UpsertService extends BaseApplicationService<IApplication> 
 
   private _bus:IActor;
 
-  didInject() {
+  $didInject() {
     this._bus = UpsertBus.create(this.bus);
   }
 

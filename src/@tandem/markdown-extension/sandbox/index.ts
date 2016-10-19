@@ -1,2 +1,2 @@
 export * from "./dom-module";
-export * from "./transformer";
+export * from "./loader";

@@ -9,3 +9,4 @@ export * from "./file-system";
 export * from "./resolver";
 export * from "./bundle";
 export * from "./file-cache";
+export * from "./sandbox2";

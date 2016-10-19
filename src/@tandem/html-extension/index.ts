@@ -2,13 +2,15 @@ import { IApplication } from "@tandem/common/application";
 import { CSS_MIME_TYPE, HTML_MIME_TYPE, JS_MIME_TYPE } from "@tandem/common";
 
 // sandbox
-import { HTMLCSSModule, HTMLCSSDOMModule, HTMLBundleLoader } from "./sandbox";
+import { HTMLCSSModule, HTMLCSSDOMModule, HTMLBundleLoader, HTMLASTEvaluator } from "./sandbox";
 
 import {
   HTML_XMLNS,
   SyntheticDOMElementClassDependency,
   SyntheticDOMNodeEntityClassDependency,
 } from "@tandem/synthetic-browser";
+
+import { HTML_AST_MIME_TYPE } from "./constants";
 
 import { 
   HTMLImageEntity,
@@ -29,7 +31,7 @@ import {
   SyntheticHTMLElement,
 } from "@tandem/synthetic-browser";
 
-import { SandboxModuleFactoryDependency, BundlerLoaderFactoryDependency } from "@tandem/sandbox";
+import { SandboxModuleFactoryDependency, BundlerLoaderFactoryDependency, SandboxModuleEvaluatorFactoryDependency } from "@tandem/sandbox";
 
 import {
   StageToolComponentFactoryDependency,
@@ -96,8 +98,11 @@ export const htmlExtensionDependencies = [
   // services
   pastHTMLServiceDependency,
 
-  // sandbox loaders
+  // bundle loaders
   new BundlerLoaderFactoryDependency(HTML_MIME_TYPE, HTMLBundleLoader),
+
+  // sandbox evaluators
+  new SandboxModuleEvaluatorFactoryDependency(undefined,  HTML_AST_MIME_TYPE, HTMLASTEvaluator),
 
   // tools
   textToolDependency,

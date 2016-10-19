@@ -5,6 +5,7 @@ import { 
   IFileSystem,
   RemoteFileSystem,
   RemoteFileResolver,
+  BundlerDependency,
   FileCacheDependency,
   FileSystemDependency,
   FileResolverDependency,
@@ -116,7 +117,8 @@ export class FrontEndApplication extends Application {
       // singletons
       new FileSystemDependency(this.config.fileSystem || new RemoteFileSystem(this.bus)),
       new FileResolverDependency(this.config.fileResolver || new RemoteFileResolver(this.bus)),
-      new FileCacheDependency()
+      new FileCacheDependency(),
+      new BundlerDependency()
     );
   }
 }

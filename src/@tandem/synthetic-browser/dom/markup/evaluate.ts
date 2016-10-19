@@ -40,6 +40,7 @@ function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, n
       const elementClass = doc.$getElementClassNS(xmlns, expression.nodeName);
       const element = new elementClass(xmlns, expression.nodeName, doc);
 
+
       for (const attributeExpression of expression.attributes) {
         const attribute = attributeExpression.accept(this);
         element.setAttribute(attribute.name, attribute.value);

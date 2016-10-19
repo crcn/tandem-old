@@ -63,8 +63,8 @@ export class MainBusDependency extends Dependency<IBrokerBus> {
   constructor(value: IBrokerBus) {
     super(MainBusDependency.NS, value);
   }
-  static getInstance(Dependencies: Dependencies): IBrokerBus {
-    return Dependencies.query<MainBusDependency>(MainBusDependency.NS).value;
+  static getInstance(dependencies: Dependencies): IBrokerBus {
+    return dependencies.query<MainBusDependency>(MainBusDependency.NS).value;
   }
 }
 

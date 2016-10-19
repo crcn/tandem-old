@@ -102,7 +102,7 @@ export class ModuleHistory implements IInjectable {
     this._history.position = value;
   }
 
-  didInject() { }
+  $didInject() { }
 
   protected onAction(action: Action) {
 

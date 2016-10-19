@@ -7,6 +7,14 @@ export class SandboxAction extends Action {
   static readonly OPENING_MAIN_ENTRY = "openingMainEntry";
 }
 
+export class Sandbox2Action extends Action {
+  static readonly EVALUATED = "sandbox2Evaluated";
+}
+
+export class BundleAction extends Action {
+  static readonly BUNDLE_READY = "bundleReady";
+}
+
 export class ModuleImporterAction extends Action {
   static readonly MODULE_CONTENT_CHANGED = "moduleContentChanged";
 }
