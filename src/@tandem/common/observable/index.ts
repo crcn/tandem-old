@@ -14,8 +14,8 @@ export class Observable implements IObservable {
 
   observe(...actors: Array<IActor>) {
     for (const actor of actors) {
-      if (!actor) {
-        throw new Error(`Cannot add undefined observer`);
+      if (!actor && !actor.execute) {
+        throw new Error(`Attempting to add a non-observable object.`);
       }
 
       if (!this._observers) {
@@ -62,6 +62,7 @@ export class Observable implements IObservable {
     }
   }
 }
+
 
 export * from "./watch-property";
 export * from "./collection";

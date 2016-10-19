@@ -47,7 +47,7 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 
   private _uid: string;
   private _source: T;
-  private _change: T;
+  protected _change: T;
   private _targetElement: U;
   private _changeObserver: IActor;
   private _sourceObserver: IActor;
@@ -79,7 +79,17 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
     this.observe(new WrapBus(this.onAction.bind(this)));
   }
 
+  /**
+   * clone of source where changes can go
+   */
+
   get change(): T {
+
+    if (!this._change) {
+      this._change = this._source.cloneNode(false);
+      this._change.observe(this._changeObserver);
+    }
+
     return this._change;
   }
 
@@ -164,8 +174,12 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
   set source(value: T) {
     const oldSource = this._source;
 
-    if (this._source) {
+    if (this._change) {
       this._change.unobserve(this._changeObserver);
+      this._change = undefined;
+    }
+
+    if (this._source) {
       this._source.unobserve(this._sourceObserver);
       this._source.browser.unobserve(this._browserObserver);
     }
@@ -176,8 +190,6 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
     // Mutable. This node leaf is used to diff changes
     // that need to be persisted back to the source node.
     this._source.observe(this._sourceObserver);
-    this._change = value.cloneNode(false);
-    this._change.observe(this._changeObserver);
 
     this._source.browser.observe(this._browserObserver);
     this.notify(new PropertyChangeAction("source", this._source, oldSource));
@@ -217,10 +229,12 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 
     Object.assign(attribs, this.renderEntityAttributes());
 
+    const node = this._change || this.source;
+
     // fix attributes for React
-    if (this.change.nodeType === DOMNodeType.ELEMENT) {
-      const changeElement = (<SyntheticDOMElement><any>this.change);
-      Object.assign(attribs, changeElement.attributes.toObject());
+    if (node && node.nodeType === DOMNodeType.ELEMENT) {
+      const element = (<SyntheticDOMElement><any>node);
+      Object.assign(attribs, element.attributes.toObject());
     }
 
     const renderedAttribs = {};
@@ -313,7 +327,7 @@ export class BaseDOMContainerEntity<T extends SyntheticDOMNode, U extends HTMLEl
 
       const sourceChild = target.children[i];
 
-      if (child && child.source.compare(sourceChild)) {
+      if (child && child.source.nodeName === sourceChild.nodeName) {
         child.source = sourceChild;
         child.evaluate();
       } else {

@@ -26,7 +26,14 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
     if (this.stylesheet) {
       this.ownerDocument.styleSheets.push(this.stylesheet);
     } else if (this.import) {
-      this.attachShadow({ mode: "open" }).appendChild(this.import);
+      const shadow = this.attachShadow({ mode: "open" });
+      this.import.querySelectorAll("*").forEach((element) => {
+
+        // only include importable elements
+        if (/style|link|template/.test(element.tagName)) {
+          shadow.appendChild(element);
+        }
+      });
     }
   }
 }

@@ -7,7 +7,6 @@
 <artboard title="Readme" src="../README.md" style="width:1024px;left:-1100px;top:1800px;height:768px;" inherit-css=""></artboard>
 
 <!-- Core -->
-<!--artboard title="Stage" src="./stage.tdm" style="width:1024px;left:-1186px;top:0px;height:626px;" inherit-css=""></artboard-->
 <artboard title="Editor" src="./editor.tdm" style="width:1024px;left:-2210px;top:795px;height:768px;" inherit-css=""></artboard>
 <artboard title="Components" src="./components.tdm" style="width:1024px;left:-1100px;top:795px;height:768px;" inherit-css=""></artboard>
 

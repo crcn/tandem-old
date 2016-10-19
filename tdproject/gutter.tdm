@@ -4,7 +4,6 @@
 
   $gutter-background: #444;
 
-
   .td-gutter {
     height: 100%;
     min-width: 150px;

@@ -57,6 +57,12 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
   private _artboardBrowser: SyntheticBrowser;
   private _combinedStyleSheet: SyntheticCSSStyleSheet;
   private _artboardBrowserObserver: IActor;
+  private _documentStyleSheetObserver: IActor;
+
+  constructor(source: SyntheticHTMLElement) {
+    super(source);
+    this._documentStyleSheetObserver = new WrapBus(this.onDocumentStyleSheetsAction.bind(this));
+  }
 
   evaluate() {
 
@@ -68,7 +74,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
       ownerDocument.styleSheets.push(DEFAULT_FRAME_STYLE_SHEET);
     }
 
-    ownerDocument.styleSheets.observe(this.onDocumentStyleSheetsAction.bind(this));
+    ownerDocument.styleSheets.observe(this._documentStyleSheetObserver);
 
     if (!this._artboardBrowser) {
       const documentRenderer = new SyntheticDOMRenderer();

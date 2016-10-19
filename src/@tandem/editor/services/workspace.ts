@@ -92,7 +92,6 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     return !document.hidden;
   }
 
-
   [ZoomAction.ZOOM](action: ZoomAction) {
     if (this._tweener) this._tweener.dispose();
     const delta = action.delta * this.app.editor.zoom;
