@@ -178,6 +178,8 @@ export class SyntheticBrowser extends Observable {
       this.notify(new PropertyChangeAction("documentEntity", this._documentEntity, documentEntity));
     }
 
+    console.log("done evaluating ents for ", this._url);
+
     this.notify(new SyntheticBrowserAction(SyntheticBrowserAction.LOADED));
   }
 }
