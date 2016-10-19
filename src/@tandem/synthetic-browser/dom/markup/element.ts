@@ -182,9 +182,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     // TODO
   }
 
-  cloneNode(deep?: boolean) {
-    const constructor = this.constructor as syntheticElementClassType;
-    const clone = new constructor(this.namespaceURI, this.tagName, this.ownerDocument);
+  protected addPropertiesToClone(clone: SyntheticDOMElement, deep: boolean) {
     for (const attribute of this.attributes) {
       clone.setAttribute(attribute.name, attribute.value);
     }
@@ -194,7 +192,12 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
         clone.appendChild(child.cloneNode(deep));
       }
     }
+  }
 
+  cloneNode(deep?: boolean) {
+    const constructor = this.constructor as syntheticElementClassType;
+    const clone = new constructor(this.namespaceURI, this.tagName, this.ownerDocument);
+    this.addPropertiesToClone(clone, deep);
     clone.$module     = this.module;
     clone.$expression = this.expression;
     clone.$createdCallback();

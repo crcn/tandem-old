@@ -1,26 +1,32 @@
 import { omit } from "lodash";
+import { inject } from "@tandem/common";
 import * as path from "path";
 import * as React from "react";
+import { Bundler, BundlerDependency } from "@tandem/sandbox";
 import { BaseDOMNodeEntity, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
 export class HTMLImageEntity extends BaseDOMNodeEntity<SyntheticDOMElement, HTMLImageElement> {
+
+  @inject(BundlerDependency.NS)
+  private _bundler: Bundler;
 
   private _src: string;
 
   async load() {
     const src = this.source.getAttribute("src");
 
-    // if src is an http url, ignore it
+    // // if src is an http url, ignore it
     if (/^https?:/.test(src)) {
       return this._src = src;
     }
 
-    // set the src attribute to trigger a re-render
-    const importer = this.source.ownerDocument.defaultView.sandbox.importer;
-    const absolutePath = await importer.resolve(src, path.dirname(this.source.ownerDocument.location.toString()));
-    importer.watchFile(absolutePath);
+    const bundle = this._bundler.findByFilePath(src);
 
-    this._src = `${window.location.protocol}${window.location.host}/asset/${encodeURIComponent(absolutePath)}?${Date.now()}`;
+    if (bundle) {
+      this._src = bundle.sourceFileCache.url;
+    } else {
+      this._src = src;
+    }
   }
 
   render() {

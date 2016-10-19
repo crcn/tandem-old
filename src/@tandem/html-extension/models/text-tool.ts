@@ -14,8 +14,8 @@ import { IEditorTool, BaseEditorTool, IEditor } from "@tandem/editor/models";
 import {
   Dependency,
   Dependencies,
-  DEPENDENCIES_NS,
   MainBusDependency,
+  DependenciesDependency,
   ApplicationServiceDependency,
 } from "@tandem/common/dependencies";
 import {
@@ -34,7 +34,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
   @inject(MainBusDependency.NS)
   readonly bus: IActor;
 
-  @inject(DEPENDENCIES_NS)
+  @inject(DependenciesDependency.NS)
   readonly dependencies: Dependencies;
 
   private _disposed: boolean;
@@ -110,7 +110,7 @@ class InsertTextTool extends InsertTool {
   readonly cursor: string = "text";
   readonly resizable: boolean = false;
 
-  @inject(DEPENDENCIES_NS)
+  @inject(DependenciesDependency.NS)
   private _dependencies: Dependencies;
 
   get displayEntityToolFactory() {

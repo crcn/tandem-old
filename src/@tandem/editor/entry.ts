@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import "./styles";
 
+
 import config from "./config";
 import { isMaster, fork } from "@tandem/common/workers";
 import { FrontEndApplication } from "./application";

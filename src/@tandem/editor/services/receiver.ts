@@ -3,7 +3,7 @@ import {
   Action,
   IActor,
   Dependencies,
-  DEPENDENCIES_NS,
+  DependenciesDependency,
   CommandFactoryDependency,
   ApplicationServiceDependency,
 } from "@tandem/common";
@@ -13,7 +13,7 @@ import {SequenceBus } from "mesh";
 // Command pattern receiver
 export class ReceiverService implements IActor {
 
-  @inject(DEPENDENCIES_NS)
+  @inject(DependenciesDependency.NS)
   private _dependencies: Dependencies;
 
   constructor() {

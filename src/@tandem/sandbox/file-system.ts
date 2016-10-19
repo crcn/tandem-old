@@ -1,10 +1,13 @@
 import {
   IActor,
   IDisposable,
+} from "@tandem/common";
+
+import {
   OpenFileAction,
   ReadFileAction,
   WatchFileAction,
-} from "@tandem/common";
+} from "./actions";
 
 import * as fs from "fs";
 import * as gaze from "gaze";
@@ -38,8 +41,8 @@ export abstract class BaseFileSystem implements IFileSystem {
       _fileWatcher = this._fileWatchers[filePath] = {
         listeners: [],
         instance: this.watchFile2(filePath, () => {
-          for (const listener of _fileWatcher.listeners) {
-            listener();
+          for (let i = _fileWatcher.listeners.length; i--;) {
+            _fileWatcher.listeners[i]();
           }
         })
       }
@@ -96,13 +99,18 @@ export class LocalFileSystem extends BaseFileSystem {
 
   async writeFile(filePath: string, content: any) {
     return new Promise((resolve, reject) => {
-      // fs.writeFile()
       resolve();
     });
   }
 
   watchFile2(filePath: string, onChange: () => any) {
-    const watcher = fs.watch(filePath, onChange);
+    let currentMtime = fs.lstatSync(filePath).mtime.getTime();
+    const watcher = fs.watch(filePath, function() {
+      const newMtime = fs.lstatSync(filePath).mtime.getTime();
+      if (newMtime === currentMtime) return;
+      currentMtime = newMtime;
+      onChange();
+    });
     return {
       dispose: () => {
         watcher.close()

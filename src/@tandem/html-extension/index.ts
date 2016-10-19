@@ -38,7 +38,11 @@ import {
   SyntheticHTMLElement,
 } from "@tandem/synthetic-browser";
 
-import { SandboxModuleFactoryDependency, BundlerLoaderFactoryDependency, SandboxModuleEvaluatorFactoryDependency } from "@tandem/sandbox";
+import {
+  SandboxModuleFactoryDependency,
+  BundlerLoaderFactoryDependency,
+  SandboxModuleEvaluatorFactoryDependency,
+} from "@tandem/sandbox";
 
 import {
   StageToolComponentFactoryDependency,
@@ -63,9 +67,7 @@ import { textToolDependency, editInnerHTMLDependency } from "./models/text-tool"
 
 // key bindings
 import { keyBindingDependency } from "./key-bindings";
-
 import { MimeTypeDependency } from "@tandem/common/dependencies";
-
 
 const visibleEntityDependencies = HTML_TAG_NAMES.map((tagName) => new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, tagName, VisibleHTMLEntity));
 

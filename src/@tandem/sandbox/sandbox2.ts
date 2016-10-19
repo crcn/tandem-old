@@ -29,6 +29,7 @@ export class Sandbox2 extends Observable {
   private _bundler: Bundler;
   private _global: any;
   private _exports: any;
+  private _revaluating: boolean;
 
   constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}) {
     super();
@@ -52,7 +53,7 @@ export class Sandbox2 extends Observable {
     this._entry = bundle;
     this._entry.observe(this._entryObserver);
 
-    if (this.ready) {
+    if (this._entry.ready) {
       this.evaluate();
     }
   }
@@ -66,13 +67,21 @@ export class Sandbox2 extends Observable {
       return this._modules[filePath].exports;
     }
 
-    const bundle = this._bundler.collection.findByUid(filePath);
+    const bundle = this._bundler.collection.find((entity) => entity.filePath === filePath);
 
     if (!bundle) {
       throw new Error(`${filePath} does not exist in the ${this._entry.filePath} bundle.`);
     }
 
+    if (!bundle.ready) {
+      throw new Error(`Trying to require bundle ${filePath} that is not ready yet.`);
+    }
+
     const module = this._modules[filePath] = new Sandbox2Module(this, bundle);
+    const now = Date.now();
+
+    console.log("evaluate start", filePath);
+
 
     // TODO - cache evaluator here
     const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryDependency.find(null, bundle.content.type, this._dependencies);
@@ -82,21 +91,19 @@ export class Sandbox2 extends Observable {
     }
 
     evaluatorFactoryDepedency.create().evaluate(module);
+
+    console.log("evaluate done", filePath, Date.now() - now);
     return this.require(filePath);
   }
 
   protected onEntryAction(action: Action) {
     if (action.type === BundleAction.BUNDLE_READY) {
+      console.info("restarting evaluation ", this._entry.filePath);
       this.evaluate();
     }
   }
 
   public evaluate() {
-
-    if (!this.ready) {
-      throw new Error(`Cannot evaluate when the sandbox bundle is still loading.`);
-    }
-
     const exports = this._exports;
     const global  = this._global;
     this._global  = this.createGlobal();

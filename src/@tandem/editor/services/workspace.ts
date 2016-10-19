@@ -29,9 +29,9 @@ import {
   DSFindAction,
   watchProperty,
   Dependencies,
-  DEPENDENCIES_NS,
   InitializeAction,
   OpenProjectAction,
+  DependenciesDependency,
   BaseApplicationService,
   ApplicationServiceDependency,
   GetPrimaryProjectFilePathAction,
@@ -41,7 +41,7 @@ import {
 export class WorkspaceService extends BaseApplicationService<FrontEndApplication> {
   public logger: Logger;
 
-  @inject(DEPENDENCIES_NS)
+  @inject(DependenciesDependency.NS)
   private _dependencies: Dependencies;
   private _tweener: IDisposable;
   private _zoomTimeout: any;

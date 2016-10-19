@@ -7,12 +7,12 @@ import { LoadAction } from "@tandem/common/actions";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { BaseApplicationService } from "@tandem/common/services";
 import { ZoomAction, SetToolAction } from "@tandem/editor/actions";
-import { ApplicationServiceDependency, Dependencies, DEPENDENCIES_NS } from "@tandem/common/dependencies";
+import { ApplicationServiceDependency, Dependencies, DependenciesDependency } from "@tandem/common/dependencies";
 import { EditorToolFactoryDependency, EDITOR_TOOL_NS, GlobalKeyBindingDependency } from "@tandem/editor/dependencies";
 
 export class EditorService extends BaseApplicationService<FrontEndApplication> {
 
-  @inject(DEPENDENCIES_NS)
+  @inject(DependenciesDependency.NS)
   readonly dependencies: Dependencies;
 
   private _toolProxyBus: ProxyBus;

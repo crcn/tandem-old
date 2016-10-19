@@ -50,6 +50,7 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
   private _change: T;
   private _targetElement: U;
   private _changeObserver: IActor;
+  private _sourceObserver: IActor;
   private _browserObserver: IActor;
   private _cache: any;
   /**
@@ -66,6 +67,7 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
     // attributes of this entity which are indenpendent from the source. The values
     // here are primarily to diff and apply edits to the source module
     this._changeObserver = new WrapBus(this.onChangeAction.bind(this));
+    this._sourceObserver = new WrapBus(this.onSourceAction.bind(this));
     this._browserObserver = new WrapBus(this.onBrowserAction.bind(this));
     this.source = source;
 
@@ -164,6 +166,7 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 
     if (this._source) {
       this._change.unobserve(this._changeObserver);
+      this._source.unobserve(this._sourceObserver);
       this._source.browser.unobserve(this._browserObserver);
     }
 
@@ -172,6 +175,7 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 
     // Mutable. This node leaf is used to diff changes
     // that need to be persisted back to the source node.
+    this._source.observe(this._sourceObserver);
     this._change = value.cloneNode(false);
     this._change.observe(this._changeObserver);
 
@@ -263,7 +267,15 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
   }
 
   protected onChangeAction(action: Action) {
-    this.notify(new DOMEntityAction(DOMEntityAction.DOM_ENTITY_DIRTY, true));
+    this.notifyDirty();
+  }
+
+  protected onSourceAction(action: Action) {
+    this.notifyDirty();
+  }
+
+  protected notifyDirty(bubbles = false) {
+    this.notify(new DOMEntityAction(DOMEntityAction.DOM_ENTITY_DIRTY, bubbles));
   }
 
   protected onBrowserAction(action: Action) {
@@ -283,7 +295,7 @@ export class BaseDOMContainerEntity<T extends SyntheticDOMNode, U extends HTMLEl
     super.evaluate();
   }
 
-  async evaluateChildren() {
+  evaluateChildren() {
     const childCount       = this.children.length;
 
     let target: SyntheticDOMNode = this.source;
@@ -303,10 +315,10 @@ export class BaseDOMContainerEntity<T extends SyntheticDOMNode, U extends HTMLEl
 
       if (child && child.source.compare(sourceChild)) {
         child.source = sourceChild;
-        await child.evaluate();
+        child.evaluate();
       } else {
         const newChild = SyntheticDOMNodeEntityClassDependency.create(sourceChild, dependencies);
-        await newChild.evaluate();
+        newChild.evaluate();
 
         if (child) {
           this.replaceChild(newChild, child);

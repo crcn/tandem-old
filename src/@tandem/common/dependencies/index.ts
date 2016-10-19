@@ -71,10 +71,10 @@ export class MainBusDependency extends Dependency<IBrokerBus> {
 /**
  */
 
-export const DEPENDENCIES_NS = "dependencies";
 export class DependenciesDependency extends Dependency<Dependencies> {
+  static NS = "dependencies";
   constructor() {
-    super(DEPENDENCIES_NS, null);
+    super(DependenciesDependency.NS, null);
   }
 
   get owner(): Dependencies {

@@ -3,16 +3,13 @@ import {
   Dependencies,
   MainBusDependency,
   MimeTypeDependency,
-  DEPENDENCIES_NS
+  DependenciesDependency,
 } from "@tandem/common/dependencies";
 import { IDisposable } from "@tandem/common/object";
 
 import { bindable, inject } from "@tandem/common/decorators";
 import { Observable, watchProperty } from "@tandem/common/observable";
-import {
-  WatchFileAction,
-  ReadFileAction,
-} from "@tandem/common/actions";
+
 
 export class File extends Observable {
 
@@ -29,7 +26,7 @@ export class File extends Observable {
 
   private _watcher: IDisposable;
 
-  @inject(DEPENDENCIES_NS)
+  @inject(DependenciesDependency.NS)
   protected _dependencies: Dependencies;
 
   @inject(MainBusDependency.NS)

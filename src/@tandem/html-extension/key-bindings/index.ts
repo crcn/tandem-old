@@ -9,12 +9,12 @@ import { FrontEndApplication } from "@tandem/editor/application";
 import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { BaseCommand, BaseApplicationCommand } from "@tandem/common/commands";
 import { parseMarkup, evaluateMarkupSync, SyntheticDOMElement } from "@tandem/synthetic-browser";
-import { ClassFactoryDependency, DEPENDENCIES_NS, Dependencies } from "@tandem/common/dependencies";
+import { ClassFactoryDependency, DependenciesDependency, Dependencies } from "@tandem/common/dependencies";
 import { EditorToolFactoryDependency, GlobalKeyBindingDependency } from "@tandem/editor/dependencies";
 
 abstract class BaseInsertElementTool extends InsertTool {
 
-  @inject(DEPENDENCIES_NS)
+  @inject(DependenciesDependency.NS)
   private _dependencies: Dependencies;
 
   constructor(readonly options: any, editor: IEditor) {

@@ -12,11 +12,12 @@ import {
   Action,
   DSAction,
   DSFindAction,
-  DSUpdateAction,
   PostDSAction,
+  DisposeAction,
   DSRemoveAction,
   DSInsertAction,
-  DisposeAction,
+  DSUpdateAction,
+  ActiveRecordAction,
 } from "@tandem/common/actions";
 
 export interface IActiveRecord extends IObservable, ISerializable, IInjectable, IDisposable {
@@ -37,7 +38,7 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
   constructor(private _source: T, readonly collectionName: string, @inject(MainBusDependency.NS) readonly bus: IActor) {
     super();
     if (this._source) {
-      this.deserialize(_source);
+      this.setPropertiesFromSource(_source);
     }
   }
 
@@ -63,12 +64,9 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
 
   insert() {
     const data = this.serialize();
-    try {
+    if (data[this.idProperty] == null) {
       data[this.idProperty] = String(mongoid());
-    } catch (e) {
-      console.error(e.stack);
     }
-
     return this.fetch(new DSInsertAction(this.collectionName, data));
   }
 
@@ -87,8 +85,21 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
     };
   }
 
+  protected shouldUpdate() {
+    return true;
+  }
+
+  protected willUpdate() {
+
+  }
+
   update() {
-    return this.fetch(new DSUpdateAction(this.collectionName, this.serialize(), this.sourceQuery));
+    if (!this.shouldUpdate()) {
+      return Promise.resolve(this);
+    }
+    this.willUpdate();
+    const newData = this.serialize();
+    return this.fetch(new DSUpdateAction(this.collectionName, newData, this.sourceQuery));
   }
 
   abstract serialize(): T;
@@ -98,6 +109,19 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
   }
 
   deserialize(source: T) {
+    if (this.shouldDeserialize(source)) {
+      this._source = source;
+      this.setPropertiesFromSource(source);
+    }
+    this.notify(new ActiveRecordAction(ActiveRecordAction.ACTIVE_RECORD_DESERIALIZED));
+  }
+
+  protected shouldDeserialize(b: T) {
+    return true;
+  }
+
+  protected setPropertiesFromSource(source: T) {
+
     this._source = source;
 
     for (const key in source) {
@@ -108,7 +132,7 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
   async fetch(action: Action) {
     const chunk = await this.bus.execute(action).read();
     if (!chunk.done) {
-      this.deserialize(chunk.value);
+      this.setPropertiesFromSource(chunk.value);
     }
     return this;
   }

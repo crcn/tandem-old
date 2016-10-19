@@ -44,6 +44,9 @@ export class CSSStyleSheetExpression extends CSSExpression {
   accept(visitor: ICSSExpressionVisitor) {
     return visitor.visitRoot(this);
   }
+  toString() {
+    return this.rules.join("\n");
+  }
   clone() {
     return new CSSStyleSheetExpression(
       this._node,
@@ -65,6 +68,12 @@ export class CSSRuleExpression extends CSSExpression {
 
   accept(visitor: ICSSExpressionVisitor) {
     return visitor.visitRule(this);
+  }
+
+  toString() {
+    return `${this.selector} {
+      ${this.declarations.join("\n")}
+    }`;
   }
 
   clone() {
@@ -121,6 +130,13 @@ export class CSSATRuleExpression extends CSSExpression {
   accept(visitor: ICSSExpressionVisitor) {
     return visitor.visitAtRule(this);
   }
+
+  toString() {
+    return `@${this.name} ${this.params} {
+      ${this.rules.join("\n")}
+    }`;
+  }
+
   clone() {
     return new CSSATRuleExpression(
       this._node,
@@ -162,6 +178,10 @@ export class CSSCommentExpression extends CSSExpression {
   constructor(private _node: postcss.Comment, position: IRange) {
     super(position);
     this.value = _node.text;
+  }
+
+  toString() {
+    return `/* ${this.value} */`;
   }
 
   accept(visitor: ICSSExpressionVisitor) {

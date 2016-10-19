@@ -50,10 +50,6 @@ export class ActiveRecordCollection<T extends IActiveRecord, U> extends Observab
     }
   }
 
-  findByUid(uid: string) {
-    return this.find((record) => record[record.idProperty] === uid);
-  }
-
   create(source: U) {
     const record = this.createActiveRecord(source);
     this.push(record);

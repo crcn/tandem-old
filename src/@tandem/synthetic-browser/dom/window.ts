@@ -44,10 +44,6 @@ export class SyntheticWindow extends Observable {
     return this.browser.sandbox;
   }
 
-  get sandbox2() {
-    return this.browser.sandbox2;
-  }
-
   private createDocument() {
     const document = new SyntheticDocument(this, HTML_XMLNS);
     document.registerElementNS(HTML_XMLNS, "default", SyntheticHTMLElement);

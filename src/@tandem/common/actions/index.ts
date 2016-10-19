@@ -1,17 +1,12 @@
 import { Action } from "./base";
+import { definePublicAction } from "./core";
 import { IActor } from "@tandem/common/actors";
 import { File } from "../models";
 
 export * from "./base";
 export * from "./core";
 
-export class SaveAllFilesAction extends Action {
-  static readonly SAVE_ALL_FILES = "saveAllFiles";
-  constructor() {
-    super(SaveAllFilesAction.SAVE_ALL_FILES);
-  }
-}
-
+@definePublicAction()
 export class OpenProjectAction extends Action {
   static readonly OPEN_PROJECT_FILE = "openProjectFile";
   constructor(readonly path: string) {
@@ -22,6 +17,7 @@ export class OpenProjectAction extends Action {
   }
 }
 
+@definePublicAction()
 export class GetPrimaryProjectFilePathAction extends Action {
   static readonly GET_PRIMARY_PROJECT_FILE_PATH = "getPrimaryProjectFilePath";
   constructor() {
@@ -37,16 +33,6 @@ export class EntityAction extends Action {
   static readonly ENTITY_DIRTY = "entityDirty";
 }
 
-export class EntityLoaderAction extends Action {
-  static readonly ENTITY_CONTENT_FORMATTED = "entityContentFormatted";
-  constructor(type: string) {
-    super(type);
-  }
-}
-
-export class EntityRuntimeAction extends Action {
-  static readonly RUNTIME_OPENED_MAIN_ENTRY = "runtimeEvaluated";
-  constructor(type: string) {
-    super(type);
-  }
+export class ActiveRecordAction extends Action {
+  static readonly ACTIVE_RECORD_DESERIALIZED = "activeRecordDeserialized";
 }

@@ -1,8 +1,15 @@
 import {
+  loadBundle,
   IBundleLoader,
   IBundleContent,
-  IBundleLoaderResult
+  IBundleLoaderResult,
 } from "@tandem/sandbox";
+
+import {
+  inject,
+  Dependencies,
+  DependenciesDependency,
+} from "@tandem/common";
 
 import { HTML_AST_MIME_TYPE } from "@tandem/html-extension/constants";
 
@@ -15,35 +22,67 @@ import {
 } from "@tandem/synthetic-browser";
 
 export class HTMLBundleLoader implements IBundleLoader {
+
+  @inject(DependenciesDependency.NS)
+  private _dependencies: Dependencies;
+
   async load(bundle, { type, value }): Promise<IBundleLoaderResult> {
 
     const dependencyPaths = [];
+    const dependencies = this._dependencies;
 
     const ast = parseMarkup(value);
 
-    ast.accept({
+    await ast.accept({
       visitAttribute({ name, value, parent }) {
-
         // ignore redirecting tag names
-        if (/src|href/.test(name) && !/a/i.test(parent.nodeName)) {
+        if (/src|href/.test(name) && !/^a$/i.test(parent.nodeName)) {
           dependencyPaths.push(value);
         }
       },
       visitComment(comment) { },
       visitText() { },
       visitDocumentFragment(fragment) {
-        return fragment.childNodes.forEach((child) => child.accept(this));
+        return Promise.all(fragment.childNodes.map(async (childNodes) => {
+          return await childNodes.accept(this);
+        }));
       },
-      visitElement(element) {
-        element.attributes.forEach((attribute) => attribute.accept(this));
-        element.childNodes.forEach((child) => child.accept(this));
+      async visitElement(element) {
 
-        // todo - transform content here
+        // normalize scripts here so that we just have text/javascript and text/css
+        // TODO - add source maps here.
         if (/script|style/i.test(element.nodeName) && element.childNodes.length) {
           const textNode = element.childNodes[0] as MarkupTextExpression;
-          // need to add source maps here
-          // textNode.nodeValue = transformBundleContent(bundle, textNode.nodeValue);
+          const type     = element.getAttribute("type");
+
+          if (type) {
+            const result = await loadBundle(bundle, {
+              type: type,
+              value: textNode.nodeValue
+            }, dependencies);
+
+            const [name, subtype] = result.type.split("/");
+            let newType = result.type;
+            let newValue = result.value;
+
+            // Dirty. This assumes that
+            // a: subtype is correct for the parent element
+            // b: toString() works for result.value
+            // TODO - need to have an appropriate content transformer here
+            // ContentTransformerDependency.transform(type, MimeTypeDependency.lookup(element.nodeName))
+            if (typeof result.value !== "string") {
+              newType  = "text/" + subtype;
+              newValue = result.value.toString();
+            }
+
+            textNode.nodeValue = newValue;
+            element.setAttribute("type", newType);
+          }
         }
+
+        return Promise.all([...element.childNodes, ...element.attributes].map((child) => {
+          return child.accept(this);
+        }));
       }
     });
 

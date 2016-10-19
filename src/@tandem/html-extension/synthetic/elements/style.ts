@@ -12,15 +12,10 @@ import {
 
 export class SyntheticHTMLStyle extends SyntheticDOMElement {
   async $load() {
-    const type = this.getAttribute("type") || "text/css";
-    console.log("style type");
-    const moduleFactory = SandboxModuleFactoryDependency.find(CSS_MIME_TYPE, type, this.ownerDocument.browser.dependencies);
-    if (!moduleFactory) {
-      throw new Error(`Cannot find style module for type ${type}.`);
-    }
-    const module = moduleFactory.create(this.module ? this.module.filePath : undefined, this.textContent, this.ownerDocument.sandbox);
-    await module.load();
-    const styleSheet = module.evaluate() as SyntheticCSSStyleSheet;
-    this.ownerDocument.styleSheets.push(styleSheet);
+
+    // only allow text/css for now -- may allow for other types in the future, but this is
+    // the only one that native DOM supports. All custom types should be handled in their respective
+    // loaders.
+    this.ownerDocument.styleSheets.push(evaluateCSS(parseCSS(this.textContent)));
   }
 }

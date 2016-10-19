@@ -43,7 +43,6 @@ import { keyBindingsDependency } from "./key-bindings";
 import { htmlExtensionDependencies } from "@tandem/html-extension";
 import { sassExtensionDependencies  } from "@tandem/sass-extension";
 import { pegjsExtensionDependencies } from "@tandem/peg-extension";
-import { reactExtensionDependencies } from "@tandem/react-extension";
 import { historyExtensionDependencies } from "@tandem/history-extension";
 import { markdownExtensionDependencies } from "@tandem/markdown-extension";
 import { mustacheExtensionDependencies } from "@tandem/mustache-extension";
@@ -105,7 +104,6 @@ export class FrontEndApplication extends Application {
       // extensions
       sassExtensionDependencies,
       htmlExtensionDependencies,
-      reactExtensionDependencies,
       pegjsExtensionDependencies,
       historyExtensionDependencies,
       markdownExtensionDependencies,

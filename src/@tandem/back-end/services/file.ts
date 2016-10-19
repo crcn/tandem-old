@@ -13,21 +13,18 @@ import {
   PostDSAction,
   Dependencies,
   DSFindAction,
-  OpenFileAction,
   DSUpdateAction,
   DSInsertAction,
   DSRemoveAction,
-  ReadFileAction,
-  WatchFileAction,
-  DEPENDENCIES_NS,
-  SaveAllFilesAction,
+  DependenciesDependency,
   BaseApplicationService,
   ApplicationServiceDependency,
 } from "@tandem/common";
 
+
 const FILES_COLLECTION_NAME = "files";
 
-import { LocalFileSystem, FileSystemDependency, IFileSystem } from "@tandem/sandbox";
+import { LocalFileSystem, FileSystemDependency, IFileSystem, ReadFileAction, WatchFileAction } from "@tandem/sandbox";
 
 @loggable()
 export default class FileService extends BaseApplicationService<IApplication> {
@@ -41,7 +38,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
    */
 
   @document("reads a file content")
-  [ReadFileAction.READ_FILE](action: ReadFileAction|OpenFileAction|WatchFileAction) {
+  [ReadFileAction.READ_FILE](action: ReadFileAction|WatchFileAction) {
     this.logger.info("reading file %s", action.path);
     return this._fileSystem.readFile(action.path);
   }

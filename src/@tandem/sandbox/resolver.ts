@@ -48,7 +48,7 @@ export abstract class BaseFileResolver implements IFileResolver {
 
   async resolve(relativePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
     return this._cache[cwd + relativePath] || (this._cache[cwd + relativePath] = new SingletonThenable(() => {
-      return this.resolve2(relativePath, cwd, options);
+      return this.resolve2(relativePath, cwd, combineResoverOptions(this.options, options));
     }));
   }
 
@@ -60,17 +60,15 @@ export class RemoteFileResolver extends BaseFileResolver {
     super();
   }
   async resolve2(filePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
-    const combinedOptions = combineResoverOptions(this.options, options);
-    return (await this._bus.execute(new ResolveFileAction(filePath, cwd, combinedOptions)).read()).value;
+    return (await this._bus.execute(new ResolveFileAction(filePath, cwd, options)).read()).value;
   }
 }
 
 export class LocalFileResolver extends BaseFileResolver {
 
   async resolve2(relativePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
-    if (!options) options = createFileResolverOptions();
 
-    const { extensions, directories } = combineResoverOptions(this.options, options);
+    const { extensions, directories } = options;
 
     if (cwd) {
       const pkgPath = pkgpath.sync(cwd);

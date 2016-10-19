@@ -16,10 +16,10 @@ import {
   DSInsertAction,
   DSUpdateAction,
   DSRemoveAction,
-  DEPENDENCIES_NS,
   DSFindAllAction,
   BaseActiveRecord,
   MainBusDependency,
+  DependenciesDependency,
   ActiveRecordCollection,
 } from "@tandem/common";
 
@@ -28,10 +28,13 @@ import { IFileSystem, IFileWatcher } from "./file-system";
 import { FileSystemDependency } from "./dependencies";
 import { WrapBus } from "mesh";
 import { values } from "lodash";
+import * as fs from "fs";
 
 interface IFileCacheItemData {
+  _id?: string;
   filePath: string;
   url: string;
+  updatedAt?: number;
   metadata?: Object;
   mtime: number;
 }
@@ -47,7 +50,11 @@ interface IFileCacheItemQuery {
 }
 
 export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
-  readonly idProperty = "filePath";
+
+  private _id: string;
+
+  @bindable()
+  public updatedAt: number;
 
   @bindable()
   public url: string;
@@ -63,10 +70,16 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   constructor(source: IFileCacheItemData, collectionName: string, private _fileSystem: IFileSystem, bus: IActor) {
     super(source, collectionName, bus);
+
+  }
+
+  get id() {
+    return this._id;
   }
 
   serialize() {
     return {
+      _id      : this._id,
       filePath : this.filePath,
       url      : this.url,
       mtime    : this.mtime,
@@ -74,9 +87,12 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     };
   }
 
-  save() {
-    this.mtime = Date.now();
-    return super.save();
+  shouldUpdate() {
+    return this.url !== this.source.url || this.mtime !== this.source.mtime;
+  }
+
+  willUpdate() {
+    this.updatedAt = Date.now();
   }
 
   setDataUrl(content: any, mimeType: string = "text/plain") {
@@ -100,10 +116,16 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     }
   }
 
-  deserialize({ filePath, url, metadata, mtime }: IFileCacheItemData) {
+  shouldDeserialize(b: IFileCacheItemData) {
+    return this.source.updatedAt < b.updatedAt;
+  }
+
+  setPropertiesFromSource({ _id, filePath, updatedAt, url, metadata, mtime }: IFileCacheItemData) {
+    this._id      = _id;
     this.filePath = filePath;
     this.url      = url;
     this.mtime    = mtime;
+    this.updatedAt = updatedAt;
     this.metadata = new Metadata(metadata);
   }
 }
@@ -118,7 +140,7 @@ export class FileCacheSynchronizer {
 
   constructor(private _cache: FileCache, private _bus: IBrokerBus, private _fileSystem: IFileSystem) {
     this._watchers = {};
-    this._cache.observe(new WrapBus(this.update.bind(this)));
+    this._cache.collection.observe(new WrapBus(this.update.bind(this)));
     this.update();
   }
 
@@ -136,6 +158,7 @@ export class FileCacheSynchronizer {
 
   private async onLocalFindChange(filePath: string) {
     const entity = await this._cache.item(filePath);
+    entity.mtime = fs.lstatSync(filePath).mtime.getTime();
 
     // override any data urls that might be stored on the entity
     entity.setFileUrl(filePath).save();
@@ -150,13 +173,14 @@ export class FileCache extends Observable {
   private _synchronizer: FileCacheSynchronizer;
   readonly collection: ActiveRecordCollection<FileCacheItem, IFileCacheItemData>;
 
-  constructor(@inject(DEPENDENCIES_NS) private _dependencies: Dependencies) {
+  constructor(@inject(DependenciesDependency.NS) private _dependencies: Dependencies) {
     super();
     this._bus        = MainBusDependency.getInstance(_dependencies);
     this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IFileCacheItemData) => {
       return new FileCacheItem(source, this.collectionName, this._fileSystem, this._bus);
     });
     this.collection.load();
+    this.collection.sync();
     this._fileSystem = FileSystemDependency.getInstance(_dependencies);
   }
 
@@ -165,11 +189,11 @@ export class FileCache extends Observable {
   }
 
   async item(filePath: string): Promise<FileCacheItem> {
-    return this.collection.findByUid(filePath) || await this.collection.create({
+    return this.collection.find((entity) => entity.filePath === filePath) || await this.collection.create({
       filePath: filePath,
       url: "file://" + filePath,
       mtime: Date.now()
-    }).save();
+    }).insert();
   }
 
   /**

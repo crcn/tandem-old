@@ -18,9 +18,9 @@ import { loggable, inject } from "@tandem/common/decorators";
 import { BaseApplicationService } from "@tandem/common/services";
 import { SocketIOHandlerDependency  } from "@tandem/back-end/dependencies";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
-import { DEPENDENCIES_NS, Dependencies } from "@tandem/common/dependencies";
+import { DependenciesDependency, Dependencies } from "@tandem/common/dependencies";
 import { FileCacheDependency, FileCache } from "@tandem/sandbox";
-import { DSUpsertAction, LoadAction, InitializeAction, ReadFileAction } from "@tandem/common/actions";
+import { DSUpsertAction, LoadAction, InitializeAction } from "@tandem/common/actions";
 
 // TODO - split this out into separate files -- turning into a god object.
 
@@ -35,7 +35,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   public logger:Logger;
   private _bundles:Array<any>;
 
-  @inject(DEPENDENCIES_NS)
+  @inject(DependenciesDependency.NS)
   readonly dependencies: Dependencies;
 
   @inject(FileCacheDependency.NS)

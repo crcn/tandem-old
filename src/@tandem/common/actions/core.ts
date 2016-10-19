@@ -5,6 +5,16 @@ import { ITreeNode } from "@tandem/common/tree";
 import { IDisposable } from "@tandem/common/object";
 export { Action };
 
+export function definePublicAction() {
+  return function(target) {
+    Reflect.defineMetadata("remoteAction", true, target);
+  }
+}
+
+export function isPublicAction(action: Action) {
+  return Reflect.getMetadata("remoteAction", action.constructor) === true;
+}
+
 export class ChangeAction extends Action {
   static readonly CHANGE = "change";
   constructor() {
@@ -61,6 +71,7 @@ export class LogAction extends Action {
   }
 }
 
+@definePublicAction()
 export class DSAction extends Action {
   readonly timestamp: number = Date.now();
   constructor(actionType: string, readonly collectionName: string) {
@@ -125,6 +136,7 @@ export class DSUpsertAction<T> extends DSAction {
   }
 }
 
+@definePublicAction()
 export class PostDSAction extends DSAction {
 
   static readonly DS_DID_INSERT = "dsDidInsert";
@@ -164,48 +176,3 @@ export class UpdateAction extends Action {
     super(UPDATE);
   }
 }
-
-export class OpenFileAction extends Action {
-  static readonly OPEN_FILE = "openFile";
-  constructor(readonly path: string) {
-    super(OpenFileAction.OPEN_FILE);
-  }
-
-  static async execute(action: { path: string }, bus: IActor): Promise<string> {
-    return (await bus.execute(new OpenFileAction(action.path)).read()).value;
-  }
-}
-
-export class ReadFileAction extends Action {
-  static readonly READ_FILE = "readFile";
-  constructor(readonly path: string) {
-    super(ReadFileAction.READ_FILE);
-  }
-
-  static async execute(path: string, bus: IActor): Promise<string> {
-    return (await bus.execute(new ReadFileAction(path)).read()).value;
-  }
-}
-
-export class WatchFileAction extends Action {
-  static readonly WATCH_FILE = "watchFile";
-  constructor(readonly path: string) {
-    super(WatchFileAction.WATCH_FILE);
-  }
-
-  static execute(path: string, bus: IActor, onFileChange: () => any): IDisposable {
-    const stream = bus.execute(new WatchFileAction(path));
-
-    stream.pipeTo({
-      abort: () => {},
-      close: () => {},
-      write: onFileChange
-    });
-
-    return {
-      dispose: () => stream.cancel()
-    };
-  }
-}
-
-

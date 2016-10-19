@@ -22,7 +22,6 @@ import {
   patchTreeNode,
   watchProperty,
   IASTNodeLoader,
-  DEPENDENCIES_NS,
   PropertyChangeAction,
   DependenciesDependency,
 } from "@tandem/common";

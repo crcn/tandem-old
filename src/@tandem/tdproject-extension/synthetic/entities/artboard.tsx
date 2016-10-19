@@ -16,12 +16,14 @@ import {
   ISyntheticDocumentRenderer,
 } from "@tandem/synthetic-browser";
 
+import { IFileResolver, FileResolverDependency } from "@tandem/sandbox";
+
 import { pick } from "lodash";
 import * as path from "path";
 import * as React from "react";
 import { WrapBus } from "mesh";
 import { VisibleHTMLEntity } from "@tandem/html-extension";
-import { watchProperty, IActor, Action } from "@tandem/common";
+import { watchProperty, IActor, Action, inject } from "@tandem/common";
 
 // default CSS styles to inject into the synthetic document
 const DEFAULT_FRAME_STYLE_SHEET = evaluateCSS(parseCSS(`
@@ -54,8 +56,9 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
 
   private _artboardBrowser: SyntheticBrowser;
   private _artboardBrowserObserver: IActor;
+  private _combinedStyleSheet: SyntheticCSSStyleSheet;
 
-  async evaluate() {
+  evaluate() {
 
     const ownerDocument = this.source.ownerDocument;
 
@@ -65,18 +68,19 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
       ownerDocument.styleSheets.push(DEFAULT_FRAME_STYLE_SHEET);
     }
 
+    ownerDocument.styleSheets.observe(this.onDocumentStyleSheetsAction.bind(this));
+
     if (!this._artboardBrowser) {
       const documentRenderer = new SyntheticDOMRenderer();
       this._artboardBrowser = new SyntheticBrowser(ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer), this.browser);
       watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
-      watchProperty(this._artboardBrowser, "documentEntity", this.onBrowserDocumentEntityChange.bind(this));
     }
 
     if (this.source.hasAttribute("src")) {
       const src = this.source.getAttribute("src");
       const window = ownerDocument.defaultView;
-      const absolutePath = await window.sandbox.importer.resolve(src, path.dirname(window.location.toString()));
-      this._artboardBrowser.open(absolutePath);
+      const sourceBundle = this.source.module.bundle;
+      this._artboardBrowser.open(sourceBundle.getAbsoluteDependencyPath(src));
     }
   }
 
@@ -111,17 +115,29 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
   protected onBrowserDocumentEntityChange() {
     while (this.firstChild) this.removeChild(this.firstChild);
     this.appendChild(this._artboardBrowser.documentEntity);
-
-    if (this.inheritCSS) {
-      this._artboardBrowser.document.styleSheets.push(...this.browser.document.styleSheets);
-    }
   }
 
+  protected onDocumentStyleSheetsAction(action: Action) {
+    this.injectCSS();
+  }
 
-  protected renderEntityAttributes() {
+  protected injectCSS() {
+    const document = this._artboardBrowser.document;
+    if (!this.inheritCSS || !document) return;
+    if (this._combinedStyleSheet) {
+      const index = document.styleSheets.indexOf(this._combinedStyleSheet);
+      if (index !== -1) {
+        document.styleSheets.splice(index, 1);
+      }
+    }
 
-    // todo - add presets here
-    return super.renderEntityAttributes();
+    // combine the style sheets together to make it easier to replace when
+    // the parent document changes.
+    this._combinedStyleSheet = new SyntheticCSSStyleSheet([]);
+    this.browser.document.styleSheets.forEach((styleSheet) => {
+      this._combinedStyleSheet.rules.push(...styleSheet.rules);
+    });
+    document.styleSheets.push(this._combinedStyleSheet);
   }
 
   protected onBrowserWindowChange() {
@@ -148,13 +164,12 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
       if (this._artboardBrowser.window[key] != null) continue;
       this._artboardBrowser.window[key] = childWindowProps[key];
     }
+
+    this.injectCSS();
   }
 
   protected onArtboardBrowserRevaluated() {
-    if (this.inheritCSS) {
-      console.log(this.browser.document.styleSheets);
-      this._artboardBrowser.document.styleSheets.push(...this.browser.document.styleSheets);
-    }
+    this.injectCSS();
   }
 
   targetDidMount() {

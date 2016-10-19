@@ -1,4 +1,4 @@
-import { bindable } from "@tandem/common";
+import { bindable, ObservableCollection, BubbleBus } from "@tandem/common";
 
 import {
   DOMNodeType,
@@ -26,15 +26,15 @@ export class SyntheticDocument extends SyntheticDOMContainer {
 
   readonly nodeType: number = DOMNodeType.DOCUMENT;
 
-  @bindable()
-  public styleSheets: SyntheticCSSStyleSheet[];
+  readonly styleSheets: ObservableCollection<SyntheticCSSStyleSheet>;
 
   private _registeredElements: any;
 
   // namespaceURI here is non-standard, but that's
   constructor(private _window: SyntheticWindow, readonly defaultNamespaceURI: string) {
     super("#document", null);
-    this.styleSheets = [];
+    this.styleSheets = new ObservableCollection<SyntheticCSSStyleSheet>();
+    this.styleSheets.observe(new BubbleBus(this));
     this._registeredElements = {};
   }
 

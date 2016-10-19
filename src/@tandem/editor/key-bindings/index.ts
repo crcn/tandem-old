@@ -1,6 +1,5 @@
 import { Action } from "@tandem/common/actions";
 import { KeyBinding } from "./base";
-import { SaveAllFilesAction } from "@tandem/common/actions";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { GlobalKeyBindingDependency } from "@tandem/editor/dependencies";
 import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
@@ -32,11 +31,6 @@ export const keyBindingsDependency = [
   new GlobalKeyBindingDependency("meta+-", class ZoomOutCommand extends BaseApplicationCommand<FrontEndApplication> {
     execute(action: Action) {
       this.bus.execute(new ZoomAction(-ZOOM_INCREMENT, true));
-    }
-  }),
-  new GlobalKeyBindingDependency("meta+s", class SaveCommand extends BaseApplicationCommand<FrontEndApplication> {
-    async execute(action: Action) {
-      await this.bus.execute(new SaveAllFilesAction());
     }
   }),
   new GlobalKeyBindingDependency("backspace", class DeleteSelectionCommand extends BaseCommand {

@@ -1,21 +1,29 @@
 import * as path from "path";
-import { FileCache } from "./file-cache";
 import { IFileSystem } from "./file-system";
 import { BundleAction } from "./actions";
+import { FileCache, FileCacheItem } from "./file-cache";
 import { IFileResolver, IFileResolverOptions } from "./resolver";
+
 import {
   inject,
+  IActor,
+  Action,
   Injector,
   Dependency,
   Observable,
+  BubbleBus,
   IObservable,
   Dependencies,
-  DEPENDENCIES_NS,
   BaseActiveRecord,
   MainBusDependency,
   MimeTypeDependency,
+  ActiveRecordAction,
+  PropertyChangeAction,
+  DependenciesDependency,
   ActiveRecordCollection,
 } from "@tandem/common";
+import { WrapBus } from "mesh";
+
 import {
   BundlerDependency,
   FileSystemDependency,
@@ -46,8 +54,10 @@ export interface IBundleLoaderResult extends IBundleContent {
 }
 
 export interface IBundleData {
+  _id?: string;
   filePath: string;
   content?: IBundleContent;
+  updatedAt?: number;
   absoluteDependencyPaths?: string[];
   relativeDependencyPaths?: Object;
 }
@@ -55,12 +65,36 @@ export interface IBundleData {
 /**
  */
 
+export async function loadBundle(bundle: Bundle, content: IBundleContent, dependencies: Dependencies): Promise<IBundleLoaderResult> {
+  const dependencyPaths: string[] = [];
+
+  let current: IBundleLoaderResult = Object.assign({}, content);
+
+  let dependency: BundlerLoaderFactoryDependency;
+
+  while(dependency = BundlerLoaderFactoryDependency.find(current.type, dependencies)) {
+    current = await dependency.create(dependencies).load(bundle, content);
+    if (current.dependencyPaths) {
+      dependencyPaths.push(...current.dependencyPaths);
+    }
+  }
+
+  return {
+    type: current.type,
+    value: current.value,
+    dependencyPaths: dependencyPaths
+  };
+}
+
 // TODO - fetch file cache item
 // TODO - get bundle editor
 export class Bundle extends BaseActiveRecord<IBundleData> {
 
+  // TODO - this should be an integer instead of an id path. Maybe even a hash
+  // of the original content to prevent module duplicates.
   readonly idProperty = "filePath";
 
+  private _id: string;
   private _filePath: string;
   private _ready: boolean;
   private _absoluteDependencyPaths: string[];
@@ -70,6 +104,10 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   private _fileSystem: IFileSystem;
   private _fileResolver: IFileResolver;
   private _bundler: Bundler;
+  private _fileCacheItem: FileCacheItem;
+  private _fileCacheItemObserver: IActor;
+  private _updatedAt: number;
+  private _dependencyObserver: IActor;
 
   constructor(source: IBundleData, collectionName: string, private _dependencies: Dependencies) {
     super(source, collectionName, MainBusDependency.getInstance(_dependencies));
@@ -77,6 +115,22 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     this._fileSystem = FileSystemDependency.getInstance(_dependencies);
     this._fileResolver = FileResolverDependency.getInstance(_dependencies);
     this._bundler = BundlerDependency.getInstance(_dependencies);
+    this._fileCacheItemObserver = new WrapBus(this.onFileCacheItemAction.bind(this));
+    this._dependencyObserver = new WrapBus(this.onDependencyAction.bind(this));
+    this._absoluteDependencyPaths = [];
+    this._relativeDependencyPaths = {};
+  }
+
+  get sourceFileCache(): FileCacheItem {
+    return this._fileCacheItem;
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  get updatedAt() {
+    return this._updatedAt;
   }
 
   get ready() {
@@ -96,24 +150,45 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   }
 
   get dependencies(): Bundle[] {
-    return this._absoluteDependencyPaths.map((filePath) => this._bundler.collection.findByUid(filePath));
+    return this._absoluteDependencyPaths.map((filePath) => this._bundler.findByFilePath(filePath));
   }
 
   get content(): IBundleContent {
     return this._content;
   }
 
+  willUpdate() {
+    this._updatedAt = Date.now();
+  }
+
+  whenReady(): Promise<Bundle> {
+    if (this.ready) return Promise.resolve(this);
+    return new Promise((resolve, reject) => {
+      const observer = new WrapBus(() => {
+        this.unobserve(observer);
+        resolve(this);
+      });
+      this.observe(observer);
+    });
+  }
+
   getDependencyByRelativePath(relativePath: string) {
-    return this._bundler.collection.findByUid(this.getAbsoluteDependencyPath(relativePath));
+    return this._bundler.findByFilePath(this.getAbsoluteDependencyPath(relativePath));
   }
 
   getAbsoluteDependencyPath(relativePath: string) {
-    return this._relativeDependencyPaths[relativePath];
+    const absolutePath = this._relativeDependencyPaths[relativePath];
+    if (absolutePath == null) {
+      console.error(`Absolute path on bundle entry does not exist for ${relativePath}.`);
+    }
+    return absolutePath;
   }
 
   serialize() {
     return {
+      _id: this._id,
       filePath: this.filePath,
+      updatedAt: this._updatedAt,
       absoluteDependencyPaths: this.absoluteDependencyPaths,
       relativeDependencyPaths: this.relativeDependencyPaths,
 
@@ -122,26 +197,41 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     };
   }
 
-  deserialize(source: IBundleData) {
-    this._filePath = source.filePath;
+  setPropertiesFromSource({ _id, filePath, updatedAt }: IBundleData) {
+    this._id       = _id;
+    this._filePath = filePath;
+    this._updatedAt = updatedAt;
   }
 
   async load() {
     console.log("load bundle %s", this.filePath);
     const transformResult: IBundleLoaderResult = await this.loadTransformedContent();
     this._content         = transformResult;
+
+    if (!this._fileCacheItem) {
+      this._fileCacheItem   = await this._fileCache.item(this.filePath);
+      this._fileCacheItem.observe(this._fileCacheItemObserver);
+    }
+
+    for (const dependencyBundle of this.dependencies) {
+      dependencyBundle.unobserve(this._dependencyObserver);
+    }
+
     this._relativeDependencyPaths = {};
     this._absoluteDependencyPaths = [];
     const dependencyPaths = transformResult.dependencyPaths;
-    for (const dependencyPath of dependencyPaths) {
+
+    await Promise.all(dependencyPaths.map(async (dependencyPath) => {
       const resolvedPath = await this.resolveDependencyPath(dependencyPath);
       this._relativeDependencyPaths[dependencyPath] = resolvedPath;
-      if (!resolvedPath) continue;
+      if (!resolvedPath) return;
       this._absoluteDependencyPaths.push(resolvedPath);
-      await this._bundler.bundle(resolvedPath);
-    }
+      const dependencyBundle = await this._bundler.bundle(resolvedPath);
+      dependencyBundle.observe(this._dependencyObserver);
+    }));
+
     this._ready = true;
-    this.notify(new BundleAction(BundleAction.BUNDLE_READY));
+    this.notifyBundleReady();
     return await this.save();
   }
 
@@ -150,23 +240,25 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
 
     let current: IBundleLoaderResult = {
       type: MimeTypeDependency.lookup(this.filePath, this._dependencies),
-      value: await this._fileSystem.readFile(this.filePath)
+      value: await (await this._fileCache.item(this.filePath)).read()
     };
 
-    let dependency: BundlerLoaderFactoryDependency;
+    return loadBundle(this, current, this._dependencies);
+  }
 
-    while(dependency = BundlerLoaderFactoryDependency.find(current.type, this._dependencies)) {
-      current = await dependency.create(this._dependencies).load(this, current);
-      if (current.dependencyPaths) {
-        dependencyPaths.push(...current.dependencyPaths);
-      }
+  shouldDeserialize(b: IBundleData) {
+    return b.updatedAt > this.updatedAt;
+  }
+
+  private onDependencyAction(action: Action) {
+    if (action.canPropagate && action.type === BundleAction.BUNDLE_READY) {
+      action.stopPropagation();
+      this.notifyBundleReady();
     }
+  }
 
-    return {
-      type: current.type,
-      value: current.value,
-      dependencyPaths: dependencyPaths
-    };
+  private notifyBundleReady() {
+    this.notify(new BundleAction(BundleAction.BUNDLE_READY));
   }
 
   private async resolveDependencyPath(dependencyPath: string) {
@@ -189,6 +281,12 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
       }
     }
   }
+
+  private onFileCacheItemAction(action: Action) {
+    if (action.type === ActiveRecordAction.ACTIVE_RECORD_DESERIALIZED) {
+      this.load();
+    }
+  }
 }
 
 class FileCacheBundleSynchronizer {
@@ -205,19 +303,26 @@ export class Bundler extends Observable {
 
   readonly collection: ActiveRecordCollection<Bundle, IBundleData>;
 
-  constructor(@inject(DEPENDENCIES_NS) private _dependencies: Dependencies) {
+  constructor(@inject(DependenciesDependency.NS) private _dependencies: Dependencies) {
     super();
     this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IBundleData) => {
       return new Bundle(source, this.collectionName, _dependencies);
     });
+    this.collection.sync();
   }
 
   get collectionName() {
     return "bundleItems";
   }
 
+  findByFilePath(filePath) {
+    return this.collection.find((entity) => entity.filePath === filePath);
+  }
+
   async bundle(entryFilePath: string): Promise<Bundle> {
-    return this.collection.findByUid(entryFilePath) || await this.collection.create({
+    const bundle = this.findByFilePath(entryFilePath);
+    if (bundle) return bundle.whenReady();
+    return await this.collection.create({
       filePath: entryFilePath
     }).load();
   }

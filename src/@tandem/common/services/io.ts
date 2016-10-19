@@ -7,7 +7,7 @@ import { loggable, document } from "@tandem/common/decorators";
 import { ParallelBus, AcceptBus } from "mesh";
 import { BaseApplicationService } from "@tandem/common/services";
 import { Dependencies, Injector } from "@tandem/common/dependencies";
-import { LoadAction, InitializeAction, PropertyChangeAction, LogAction } from "@tandem/common/actions";
+import { LoadAction, InitializeAction, PropertyChangeAction, LogAction, isPublicAction } from "@tandem/common/actions";
 
 @loggable()
 export class IOService<T extends IApplication> extends BaseApplicationService<T> {
@@ -59,21 +59,8 @@ export class IOService<T extends IApplication> extends BaseApplicationService<T>
     this._remoteActors.push({
       execute(action) {
         let data;
-
-        // very crude, but works for resolving circular JSON issues
-        try {
-          for (const key in action) {
-            if (/object/.test(typeof action[key]) && !/Array|Object/.test(action[key].constructor.name)) {
-              return;
-            }
-          }
-
-          data = JSON.parse(JSON.stringify(action));
-        } catch (e) {
-          return;
-        }
-
-        return remoteBus.execute(data);
+        if (!isPublicAction(action)) return;
+        return remoteBus.execute(JSON.parse(JSON.stringify(action)));
       }
     });
 
