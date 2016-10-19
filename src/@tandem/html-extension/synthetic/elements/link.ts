@@ -22,8 +22,7 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
     const window = this.ownerDocument.defaultView;
     const rel     = this.getAttribute("rel") || "stylesheet";
     const href    = this.getAttribute("href");
-
-    this[rel] = await window.sandbox.importer.import(rel === "stylesheet" ? CSS_MIME_TYPE : HTML_MIME_TYPE, href, path.dirname(this.module.filePath));
+    this[rel]     = window.browser.sandbox2.require(this.module.bundle.getAbsoluteDependencyPath(href));
 
     if (this.stylesheet) {
       this.ownerDocument.styleSheets.push(this.stylesheet);

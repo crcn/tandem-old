@@ -4,7 +4,7 @@ import { evaluateMarkupAsync, parseMarkup } from "@tandem/synthetic-browser";
 import { IBundleLoader, IBundleLoaderResult } from "@tandem/sandbox";
 
 export class MarkdownBundleLoader implements IBundleLoader {
-  async load({ type, value }): Promise<IBundleLoaderResult> {
+  async load(bundle, { type, value }): Promise<IBundleLoaderResult> {
     return {
       type: HTML_MIME_TYPE,
       value: marked(value)

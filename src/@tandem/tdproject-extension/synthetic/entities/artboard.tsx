@@ -16,8 +16,6 @@ import {
   ISyntheticDocumentRenderer,
 } from "@tandem/synthetic-browser";
 
-import { SandboxAction } from "@tandem/sandbox";
-
 import { pick } from "lodash";
 import * as path from "path";
 import * as React from "react";
@@ -70,7 +68,6 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
     if (!this._artboardBrowser) {
       const documentRenderer = new SyntheticDOMRenderer();
       this._artboardBrowser = new SyntheticBrowser(ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer), this.browser);
-      this._artboardBrowser.observe(this._artboardBrowserObserver = new WrapBus(this.onArtboardBrowserAction.bind(this)));
       watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
       watchProperty(this._artboardBrowser, "documentEntity", this.onBrowserDocumentEntityChange.bind(this));
     }
@@ -114,16 +111,12 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
   protected onBrowserDocumentEntityChange() {
     while (this.firstChild) this.removeChild(this.firstChild);
     this.appendChild(this._artboardBrowser.documentEntity);
-  }
 
-  protected onArtboardBrowserAction(action: Action) {
-    if (action.type === SandboxAction.OPENED_MAIN_ENTRY) {
-      this.onArtboardBrowserRevaluated();
+    if (this.inheritCSS) {
+      this._artboardBrowser.document.styleSheets.push(...this.browser.document.styleSheets);
     }
-
-    // bubble actions up to the root
-    this.notify(action);
   }
+
 
   protected renderEntityAttributes() {
 
@@ -159,6 +152,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
 
   protected onArtboardBrowserRevaluated() {
     if (this.inheritCSS) {
+      console.log(this.browser.document.styleSheets);
       this._artboardBrowser.document.styleSheets.push(...this.browser.document.styleSheets);
     }
   }

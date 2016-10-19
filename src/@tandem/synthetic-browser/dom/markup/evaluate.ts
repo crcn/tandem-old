@@ -1,13 +1,13 @@
 import { DOMNodeType } from "./node-types";
+import { IMarkupModule } from "@tandem/synthetic-browser/sandbox";
 import { SyntheticDOMNode } from "./node";
 import { SyntheticDocument } from "../document";
 import { SyntheticDOMContainer } from "./container";
+import { BaseSandboxModule, Sandbox2Module } from "@tandem/sandbox";
 import { SyntheticDOMAttribute, SyntheticDOMElement } from "./element";
 import { IMarkupExpression, MarkupContainerExpression } from "./ast";
-import { IMarkupModule } from "@tandem/synthetic-browser/sandbox";
-import { BaseSandboxModule } from "@tandem/sandbox";
 
-function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: IMarkupModule, async?: boolean): any {
+function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: Sandbox2Module, async?: boolean): any {
 
   function appendChildNodesSync(container: SyntheticDOMContainer, expression: MarkupContainerExpression) {
     for (const childExpression of expression.childNodes) {
@@ -78,10 +78,10 @@ function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, n
   }
 }
 
-export function evaluateMarkupAsync(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: IMarkupModule): Promise<SyntheticDOMNode> {
+export function evaluateMarkupAsync(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: Sandbox2Module): Promise<SyntheticDOMNode> {
   return evaluateMarkup(expression, doc, namespaceURI, module, true);
 }
 
-export function evaluateMarkupSync(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: IMarkupModule): SyntheticDOMNode {
+export function evaluateMarkupSync(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: Sandbox2Module): SyntheticDOMNode {
   return evaluateMarkup(expression, doc, namespaceURI, module, false);
 }

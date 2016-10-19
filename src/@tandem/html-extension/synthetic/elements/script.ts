@@ -16,42 +16,42 @@ export class SyntheticHTMLScript extends SyntheticHTMLElement {
   }
   async $load() {
 
-    const src    = this.getAttribute("src");
-    const type   = this.getAttribute("type") || "application/javascript";
+    // const src    = this.getAttribute("src");
+    // const type   = this.getAttribute("type") || "application/javascript";
 
-    const window = this.ownerDocument.defaultView;
-    const importer = window.sandbox.importer;
-    const filePath = this.module.filePath;
+    // const window = this.ownerDocument.defaultView;
+    // const importer = window.sandbox.importer;
+    // const filePath = this.module.filePath;
 
-    let scriptContent = "";
+    // let scriptContent = "";
 
-    if (src) {
+    // if (src) {
 
-      // TODO - nono to this -- this should happen with the bundle
-      const filePath = await window.sandbox.fileResolver.resolve(src, path.dirname(this.module.filePath));
-      const content = await importer.readFile(filePath);
-      await importer.watchFile(filePath);
-    } else {
-      scriptContent = this.textContent;
-    }
+    //   // TODO - nono to this -- this should happen with the bundle
+    //   const filePath = await window.sandbox.fileResolver.resolve(src, path.dirname(this.module.filePath));
+    //   const content = await importer.readFile(filePath);
+    //   await importer.watchFile(filePath);
+    // } else {
+    //   scriptContent = this.textContent;
+    // }
 
-    const moduleDependency = SandboxModuleFactoryDependency.find(JS_MIME_TYPE, type, this.browser.dependencies);
+    // const moduleDependency = SandboxModuleFactoryDependency.find(JS_MIME_TYPE, type, this.browser.dependencies);
 
-    if (!moduleDependency) {
-      throw new Error(`Cannot execute script with content type "${type}".`);
-    }
+    // if (!moduleDependency) {
+    //   throw new Error(`Cannot execute script with content type "${type}".`);
+    // }
 
-    const global = window;
+    // const global = window;
 
-    // dirty fetch of variable declarations. Need to define these on the context
-    // so that the with statement works properly
-    for (const variableDeclaration of (scriptContent.match(/(var|const)\s*\w+/g) || [])) {
-      const variableName = variableDeclaration.match(/(var|const)\s*(\w+)/)[2];
-      if (global[variableName] == null) global[variableName] = null;
-    }
+    // // dirty fetch of variable declarations. Need to define these on the context
+    // // so that the with statement works properly
+    // for (const variableDeclaration of (scriptContent.match(/(var|const)\s*\w+/g) || [])) {
+    //   const variableName = variableDeclaration.match(/(var|const)\s*(\w+)/)[2];
+    //   if (global[variableName] == null) global[variableName] = null;
+    // }
 
-    const module = moduleDependency.create(this.module.filePath, scriptContent, this.module.sandbox);
-    await module.load();
-    module.evaluate();
+    // const module = moduleDependency.create(this.module.filePath, scriptContent, this.module.sandbox);
+    // await module.load();
+    // module.evaluate();
   }
 }

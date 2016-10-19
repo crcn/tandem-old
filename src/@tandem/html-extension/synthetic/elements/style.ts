@@ -13,6 +13,7 @@ import {
 export class SyntheticHTMLStyle extends SyntheticDOMElement {
   async $load() {
     const type = this.getAttribute("type") || "text/css";
+    console.log("style type");
     const moduleFactory = SandboxModuleFactoryDependency.find(CSS_MIME_TYPE, type, this.ownerDocument.browser.dependencies);
     if (!moduleFactory) {
       throw new Error(`Cannot find style module for type ${type}.`);

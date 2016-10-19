@@ -11,8 +11,13 @@ export interface ISandboxBundleEvaluator {
 
 export class Sandbox2Module {
   public exports: any;
+  readonly editor: any;
   constructor(readonly sandbox: Sandbox2, readonly bundle: Bundle) {
     this.exports = {};
+  }
+
+  get filePath() {
+    return this.bundle.filePath;
   }
 }
 
@@ -47,9 +52,13 @@ export class Sandbox2 extends Observable {
     this._entry = bundle;
     this._entry.observe(this._entryObserver);
 
-    if (this._entry.ready) {
+    if (this.ready) {
       this.evaluate();
     }
+  }
+
+  get ready() {
+    return this._entry.ready;
   }
 
   require(filePath: string): Object {
@@ -82,9 +91,16 @@ export class Sandbox2 extends Observable {
     }
   }
 
-  private evaluate() {
+  public evaluate() {
+
+    if (!this.ready) {
+      throw new Error(`Cannot evaluate when the sandbox bundle is still loading.`);
+    }
+
     const exports = this._exports;
+    const global  = this._global;
     this._global  = this.createGlobal();
+    this.notify(new PropertyChangeAction("global", this._global, global));
     this._modules = {};
     this._exports = this.require(this._entry.filePath);
     this.notify(new PropertyChangeAction("exports", this._exports, exports));

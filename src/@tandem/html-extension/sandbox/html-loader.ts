@@ -15,7 +15,7 @@ import {
 } from "@tandem/synthetic-browser";
 
 export class HTMLBundleLoader implements IBundleLoader {
-  async load({ type, value }): Promise<IBundleLoaderResult> {
+  async load(bundle, { type, value }): Promise<IBundleLoaderResult> {
 
     const dependencyPaths = [];
 

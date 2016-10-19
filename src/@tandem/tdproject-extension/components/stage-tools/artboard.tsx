@@ -33,7 +33,7 @@ export class TDArtboardComponent extends React.Component<{ frame: TDArtboardEnti
     this.setState({ editedTitle: undefined });
 
     // easiest way to revert changes -- just reload the sandbox entirely
-    this.props.frame.sandbox.reload();
+    this.props.frame.sandbox.evaluate();
   }
 
   save = () => {

@@ -1,7 +1,7 @@
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { MarkupNodeExpression } from "./ast";
-import { IModule, ISynthetic } from "@tandem/sandbox";
+import { IModule, ISynthetic, Sandbox2Module } from "@tandem/sandbox";
 import * as assert from "assert";
 import {
   TreeNode,
@@ -61,18 +61,18 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   /**
    */
 
-  private _module: IMarkupModule;
+  private _module: Sandbox2Module;
 
 
   constructor(readonly nodeName: string, public ownerDocument: SyntheticDocument) {
     super();
   }
 
-  get module(): IMarkupModule {
+  get module(): Sandbox2Module {
     return this._module;
   }
 
-  set $module(value: IMarkupModule) {
+  set $module(value: Sandbox2Module) {
     this._module = value;
   }
 
@@ -89,7 +89,9 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   }
 
   get editor() {
-    return this.module && this.module.editor;
+
+    // TODO - get editor from bundle
+    return this.module && this.module["editor"];
   }
 
   get childNodes() {

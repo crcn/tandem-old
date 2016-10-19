@@ -13,7 +13,7 @@ import {
 } from "@tandem/common";
 
 import {
-  SandboxAction,
+
   SandboxModuleAction,
   ModuleImporterAction,
 } from "./actions";
@@ -74,9 +74,9 @@ export class Sandbox extends Observable {
     }
 
     this._entry = { envMimeType: envMimeType, filePath: filePath };
-    this.notify(new SandboxAction(SandboxAction.OPENING_MAIN_ENTRY));
+    // this.notify(new SandboxAction(SandboxAction.OPENING_MAIN_ENTRY));
     this._mainExports = await this._importer.import(envMimeType, filePath, relativePath);
-    this.notify(new SandboxAction(SandboxAction.OPENED_MAIN_ENTRY));
+    // this.notify(new SandboxAction(SandboxAction.OPENED_MAIN_ENTRY));
   }
 
   protected onImporterAction(action: Action) {

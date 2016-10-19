@@ -30,7 +30,7 @@ interface IBundleFile {
 }
 
 export interface IBundleLoader {
-  load(content: IBundleContent): Promise<IBundleLoaderResult>;
+  load(bundle: Bundle, content: IBundleContent): Promise<IBundleLoaderResult>;
 }
 
 export type bundleLoaderType = { new(): IBundleLoader };
@@ -48,26 +48,28 @@ export interface IBundleLoaderResult extends IBundleContent {
 export interface IBundleData {
   filePath: string;
   content?: IBundleContent;
-  dependencyPaths?: string[];
+  absoluteDependencyPaths?: string[];
+  relativeDependencyPaths?: Object;
 }
 
 /**
  */
 
 // TODO - fetch file cache item
+// TODO - get bundle editor
 export class Bundle extends BaseActiveRecord<IBundleData> {
 
   readonly idProperty = "filePath";
 
   private _filePath: string;
   private _ready: boolean;
-  private _dependencyPaths: string[];
+  private _absoluteDependencyPaths: string[];
+  private _relativeDependencyPaths: Object;
   private _content: IBundleContent;
   private _fileCache: FileCache;
   private _fileSystem: IFileSystem;
   private _fileResolver: IFileResolver;
   private _bundler: Bundler;
-  private _dependencyItems: Bundle[];
 
   constructor(source: IBundleData, collectionName: string, private _dependencies: Dependencies) {
     super(source, collectionName, MainBusDependency.getInstance(_dependencies));
@@ -85,22 +87,35 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     return this._filePath;
   }
 
-  get dependencyPaths() {
-    return this._dependencyPaths;
+  get absoluteDependencyPaths() {
+    return this._absoluteDependencyPaths;
+  }
+
+  get relativeDependencyPaths() {
+    return this._relativeDependencyPaths;
   }
 
   get dependencies(): Bundle[] {
-    return this._dependencyItems;
+    return this._absoluteDependencyPaths.map((filePath) => this._bundler.collection.findByUid(filePath));
   }
 
   get content(): IBundleContent {
     return this._content;
   }
 
+  getDependencyByRelativePath(relativePath: string) {
+    return this._bundler.collection.findByUid(this.getAbsoluteDependencyPath(relativePath));
+  }
+
+  getAbsoluteDependencyPath(relativePath: string) {
+    return this._relativeDependencyPaths[relativePath];
+  }
+
   serialize() {
     return {
       filePath: this.filePath,
-      dependencyPaths: this.dependencyPaths,
+      absoluteDependencyPaths: this.absoluteDependencyPaths,
+      relativeDependencyPaths: this.relativeDependencyPaths,
 
       // TODO SerializerDependency.serialize(this.content.type, )
       content: null
@@ -109,17 +124,21 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
 
   deserialize(source: IBundleData) {
     this._filePath = source.filePath;
-    this._dependencyPaths = source.dependencyPaths;
   }
 
   async load() {
     console.log("load bundle %s", this.filePath);
     const transformResult: IBundleLoaderResult = await this.loadTransformedContent();
     this._content         = transformResult;
-    this._dependencyPaths = await this.resolveDependencyPaths(transformResult.dependencyPaths);
-    this._dependencyItems = [];
-    for (const dependencyPath of this._dependencyPaths) {
-      this._dependencyItems.push(await this._bundler.bundle(dependencyPath));
+    this._relativeDependencyPaths = {};
+    this._absoluteDependencyPaths = [];
+    const dependencyPaths = transformResult.dependencyPaths;
+    for (const dependencyPath of dependencyPaths) {
+      const resolvedPath = await this.resolveDependencyPath(dependencyPath);
+      this._relativeDependencyPaths[dependencyPath] = resolvedPath;
+      if (!resolvedPath) continue;
+      this._absoluteDependencyPaths.push(resolvedPath);
+      await this._bundler.bundle(resolvedPath);
     }
     this._ready = true;
     this.notify(new BundleAction(BundleAction.BUNDLE_READY));
@@ -137,7 +156,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     let dependency: BundlerLoaderFactoryDependency;
 
     while(dependency = BundlerLoaderFactoryDependency.find(current.type, this._dependencies)) {
-      current = await dependency.create(this._dependencies).load(current);
+      current = await dependency.create(this._dependencies).load(this, current);
       if (current.dependencyPaths) {
         dependencyPaths.push(...current.dependencyPaths);
       }
@@ -150,28 +169,25 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     };
   }
 
-  private async resolveDependencyPaths(dependencyPaths?: string[]) {
+  private async resolveDependencyPath(dependencyPath: string) {
     const cwd = path.dirname(this.filePath);
     const resolvedPaths = [];
-    for (const dependencyPath of dependencyPaths) {
 
-      // skip hash and URLs (for now)
-      if (/^(#|http)/.test(dependencyPath)) {
-        continue;
-      }
+    // skip hash and URLs (for now)
+    if (/^(#|http)/.test(dependencyPath)) {
+      return undefined;
+    }
 
-      // check for protocol -- // at the minium
-      if (/^(\w+:)?\/\//.test(dependencyPath)) {
-        resolvedPaths.push(dependencyPath);
-      } else {
-        try {
-          resolvedPaths.push(await this._fileResolver.resolve(dependencyPath, cwd));
-        } catch(e) {
-          console.error(`Cannot find dependency file ${dependencyPath} for ${this.filePath}.`);
-        }
+    // check for protocol -- // at the minium
+    if (/^(\w+:)?\/\//.test(dependencyPath)) {
+      return dependencyPath;
+    } else {
+      try {
+        return await this._fileResolver.resolve(dependencyPath, cwd);
+      } catch(e) {
+        console.error(`Cannot find dependency file ${dependencyPath} for ${this.filePath}.`);
       }
     }
-    return resolvedPaths;
   }
 }
 

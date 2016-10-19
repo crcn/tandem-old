@@ -1,6 +1,6 @@
-import { IModule } from "./module";
+import { Sandbox2Module } from "./sandbox2";
 
 export interface ISynthetic {
-  module: IModule;
+  module: Sandbox2Module;
   expression: any;
 }
