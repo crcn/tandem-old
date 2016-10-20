@@ -33,7 +33,6 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     remoteBrowserStream.pipeTo({
       write: this.onRemoteBrowserAction.bind(this),
       close: () => {
-        console.log("closed!");
       },
       abort: (error) => {
 
@@ -46,7 +45,6 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       const now = Date.now();
       const window = new SyntheticWindow(this, this.location, deserialize(action.data, this._dependencies));
       this.setWindow(window);
-      console.log("setWindow", this.location.toString(), Date.now() - now);
     }
   }
 }
