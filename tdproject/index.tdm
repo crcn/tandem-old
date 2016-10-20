@@ -4,7 +4,7 @@
 <link href="./preview.scss"></link>
 
 <!-- Docs -->
-<artboard title="Readme" src="../README.md" style="width:1024px;left:-1100px;top:1800px;height:768px;" inherit-css=""></artboard>
+<!--artboard title="Readme" src="../README.md" style="width:1024px;left:-1100px;top:1800px;height:768px;" inherit-css=""></artboard-->
 
 <!-- Core -->
 <artboard title="Editor" src="./editor.tdm" style="width:1024px;left:-2210px;top:795px;height:768px;" inherit-css=""></artboard>

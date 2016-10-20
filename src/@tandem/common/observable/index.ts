@@ -13,7 +13,8 @@ export class Observable implements IObservable {
   }
 
   observe(...actors: Array<IActor>) {
-    for (const actor of actors) {
+    for (let i = 0, n = actors.length; i < n; i++) {
+      const actor = actors[i];
       if (!actor && !actor.execute) {
         throw new Error(`Attempting to add a non-observable object.`);
       }
@@ -29,7 +30,8 @@ export class Observable implements IObservable {
   }
 
   unobserve(...actors: Array<IActor>) {
-    for (const actor of actors) {
+    for (let i = 0, n = actors.length; i < n; i++) {
+      const actor = actors[i];
       if (this._observers === actor) {
         this._observers = null;
       } else if (Array.isArray(this._observers)) {

@@ -136,8 +136,8 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
 
   public clone(): T {
     const clone = this.cloneLeaf();
-    for (const child of this.children) {
-      clone.appendChild(child.clone());
+    for (let i = 0, n = this.children.length; i < n; i++) {
+      clone.appendChild(this.children[i].clone());
     }
     return <T>clone;
   }

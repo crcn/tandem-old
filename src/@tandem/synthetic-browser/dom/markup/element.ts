@@ -48,7 +48,8 @@ export class SyntheticDOMAttributes extends ObservableCollection<SyntheticDOMAtt
       delete this[rmAttribute.name];
     }
 
-    for (const newAttribute of items) {
+    for (let i = 0, n = items.length; i < n; i++) {
+      const newAttribute = items[i];
       this[newAttribute.name] = newAttribute;
     }
 
@@ -57,7 +58,8 @@ export class SyntheticDOMAttributes extends ObservableCollection<SyntheticDOMAtt
 
   toObject(...only: string[]) {
     const ret = {};
-    for (const attribute of this) {
+    for (let i = 0, n = this.length; i < n; i++) {
+      const attribute = this[i];
       if (only.length !== 0 && only.indexOf(attribute.name) === -1) {
         continue;
         }

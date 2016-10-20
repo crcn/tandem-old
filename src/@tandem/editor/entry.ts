@@ -8,7 +8,7 @@ import { FrontEndApplication } from "./application";
 
 // none for now - need to figure out NULL exceptions with
 // workers.
-const NUM_WORKERS = 0;
+const NUM_WORKERS = 1;
 
 if (isMaster) {
 

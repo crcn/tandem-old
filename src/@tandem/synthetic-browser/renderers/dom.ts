@@ -4,6 +4,7 @@ import {
   BoundingRect,
   watchProperty,
   flattenTree,
+  traverseTree,
   calculateAbsoluteBounds
 } from "@tandem/common";
 import {
@@ -43,23 +44,22 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       ReactDOM.render(this.entity.render(), this.element, () => {
         const syntheticComponentsBySourceUID = {};
 
-        for (const component of flattenTree(this.entity)) {
-          syntheticComponentsBySourceUID[component.uid] = component;
-        }
+        traverseTree(this.entity, (entity) => syntheticComponentsBySourceUID[entity.uid] = entity);
 
         const rects = {};
 
-        for (const node of this.element.querySelectorAll("*")) {
-          const element = <HTMLElement>node;
+        const allElements = this.element.querySelectorAll("*");
+
+        for (let i = 0, n = allElements.length; i < n; i++) {
+          const element = <HTMLElement>allElements[i];
           if (!element.dataset) continue;
           const uid = element.dataset["uid"];
           const sourceComponent: BaseDOMNodeEntity<any, any> = syntheticComponentsBySourceUID[uid];
           rects[uid] = BoundingRect.fromClientRect(element.getBoundingClientRect());
           if (sourceComponent) {
-            sourceComponent.target = <HTMLElement>node;
+            sourceComponent.target = element;
           }
         }
-
         this.setRects(rects);
         resolve();
       });

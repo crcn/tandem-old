@@ -353,7 +353,9 @@ export class SyntheticCSSStyleDeclaration {
 
     static fromString(source: string) {
       const decl = new SyntheticCSSStyleDeclaration();
-      for (const expr of source.split(";")) {
+      const items = source.split(";");
+      for (let i = 0, n = items.length; i < n; i++) {
+        const expr = items[i];
         const [name, value] = expr.split(":");
         if (!name || !value) continue;
         decl[camelCase(name.trim())] = value.trim();

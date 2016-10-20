@@ -78,7 +78,8 @@ export function getSelectorTester(selectorSource: string): { test(node: Syntheti
         return false;
       },
       visitElementSelectors({ selectors }) {
-        for (const attributeSelector of selectors) {
+        for (let i = 0, n = selectors.length; i < n; i++) {
+          const attributeSelector = selectors[i];
           if (!test(attributeSelector, node)) return false;
         }
         return true;

@@ -16,9 +16,12 @@ export function evaluateCSS(expression: CSSExpression): SyntheticCSSStyleSheet {
 
   function getStyleDeclaration(rules: CSSDeclarationExpression[]) {
     const declaration = new SyntheticCSSStyleDeclaration();
-    for (const decl of rules) {
+    for (let i = 0, n = rules.length; i < n; i++) {
+      const decl = rules[i];
       declaration[camelCase(decl.name)] = decl.value;
-    }return declaration;
+    }
+
+    return declaration;
   }
 
   const visitor = {

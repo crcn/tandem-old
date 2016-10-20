@@ -19,8 +19,8 @@ export class TreeNodeFlattener {
 
   private _flattenChildren(target: TreeNode<any>, allChildren: TreeNode<any>[] = []): TreeNode<any>[] {
     allChildren.push(target);
-    for (const child of target.children) {
-      this._flattenChildren(child, allChildren);
+    for (let i = 0, n = target.children.length; i < n; i++) {
+      this._flattenChildren(target.children[i], allChildren);
     }
     return allChildren;
   }

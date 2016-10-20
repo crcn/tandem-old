@@ -31,12 +31,14 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
       const elementClass = doc.$getElementClassNS(xmlns, expression.nodeName);
       const element = new elementClass(xmlns, expression.nodeName, doc);
 
-      for (const attributeExpression of expression.attributes) {
+      for (let i = 0, n = expression.attributes.length; i < n; i++) {
+        const attributeExpression = expression.attributes[i];
         const attribute = attributeExpression.accept(this);
         element.setAttribute(attribute.name, attribute.value);
       }
 
-      for (const childExpression of expression.childNodes) {
+      for (let i = 0, n = expression.childNodes.length; i < n; i++) {
+        const childExpression = expression.childNodes[i];
         element.appendChild(xmlns === namespaceURI ? childExpression.accept(this) : evaluateMarkup(childExpression, doc, xmlns, module));
       }
 
@@ -46,8 +48,8 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
 
       const fragment = doc.createDocumentFragment();
 
-      for (const childExpression of expression.childNodes) {
-        fragment.appendChild(childExpression.accept(this));
+      for (let i = 0, n = expression.childNodes.length; i < n; i++) {
+        fragment.appendChild(expression.childNodes[i].accept(this));
       }
 
       return initialize(expression, fragment);

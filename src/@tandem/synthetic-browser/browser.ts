@@ -66,7 +66,6 @@ export class SyntheticBrowser extends Observable {
     this._sandbox2 = new Sandbox2(_dependencies, this.createSandboxGlobals.bind(this));
     watchProperty(this._sandbox2, "exports", this.onSandboxExportsChange.bind(this));
     bindProperty(this._sandbox2, "global", this, "window");
-    // TODO - bind global to window prop
     this._documentEntityObserver = new BubbleBus(this);
   }
 
