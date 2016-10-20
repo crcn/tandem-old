@@ -21,7 +21,7 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
     const href    = this.getAttribute("href");
     const dependency = this.module.bundle.getDependencyByRelativePath(href);
 
-    this[rel]     = window.browser.sandbox.require(dependency.filePath);
+    this[rel]     = this.module.sandbox.require(dependency.filePath);
 
     if (this.stylesheet) {
       this.ownerDocument.styleSheets.push(this.stylesheet);

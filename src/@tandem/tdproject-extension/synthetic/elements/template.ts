@@ -45,7 +45,8 @@ export class SyntheticTDTemplateElement extends SyntheticHTMLElement {
 
   private cast(tagName: string) {
     const elementClass = this.ownerDocument.$getElementClassNS(this.namespaceURI, tagName);
-    const element = new elementClass(this.namespaceURI, tagName, this.ownerDocument) as SyntheticHTMLElement;
+    const element = new elementClass(this.namespaceURI, tagName) as SyntheticHTMLElement;
+    element.$setOwnerDocument(this.ownerDocument);
     const shadow = this.attachShadow({ mode: "open" });
     shadow.appendChild(element);
     this.attach(element);

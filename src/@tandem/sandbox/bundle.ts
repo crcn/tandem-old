@@ -13,7 +13,9 @@ import {
   Dependency,
   Observable,
   BubbleBus,
+  ISerializer,
   IObservable,
+  serializable,
   Dependencies,
   BaseActiveRecord,
   MainBusDependency,
@@ -48,7 +50,6 @@ export interface IBundleContent {
   readonly type: string; // mime type
   readonly value: any;
 }
-
 
 export interface IBundleLoaderResult extends IBundleContent {
   dependencyPaths?: string[];
@@ -87,8 +88,26 @@ export async function loadBundle(bundle: Bundle, content: IBundleContent, depend
   };
 }
 
-// TODO - fetch file cache item
-// TODO - get bundle editor
+
+export interface ISerializeddBundle {
+  collectionName: string;
+  source: IBundleData;
+}
+
+class BundleSerializer implements ISerializer<Bundle, ISerializeddBundle> {
+  serialize(bundle: Bundle) {
+    return {
+      collectionName: bundle.collectionName,
+      source: bundle.serialize()
+    };
+  }
+  deserialize({ collectionName, source }, dependencies: Dependencies) {
+    const bundle = new Bundle(source, collectionName, dependencies);
+    return bundle;
+  }
+}
+
+@serializable(new BundleSerializer())
 export class Bundle extends BaseActiveRecord<IBundleData> {
 
   // TODO - this should be an integer instead of an id path. Maybe even a hash
@@ -120,8 +139,6 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     this._bundler = BundlerDependency.getInstance(_dependencies);
     this._fileCacheItemObserver = new WrapBus(this.onFileCacheItemAction.bind(this));
     this._dependencyObserver = new WrapBus(this.onDependencyAction.bind(this));
-    this._absoluteDependencyPaths = [];
-    this._relativeDependencyPaths = {};
   }
 
   get sourceFileCache(): FileCacheItem {
@@ -200,10 +217,13 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     };
   }
 
-  setPropertiesFromSource({ _id, filePath, updatedAt }: IBundleData) {
+  setPropertiesFromSource({ _id, filePath, updatedAt, content, absoluteDependencyPaths, relativeDependencyPaths }: IBundleData) {
     this._id       = _id;
     this._filePath = filePath;
     this._updatedAt = updatedAt;
+    this._content   = content;
+    this._absoluteDependencyPaths = absoluteDependencyPaths || [];
+    this._relativeDependencyPaths = relativeDependencyPaths || {};
   }
 
   async load() {

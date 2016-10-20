@@ -17,8 +17,8 @@ class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleS
       rules: value.rules.map(serialize)
     };
   }
-  deserialize(value: ISerializedCSSStyleSheet): SyntheticCSSStyleSheet {
-    return new SyntheticCSSStyleSheet(value.rules.map(deserialize));
+  deserialize(value: ISerializedCSSStyleSheet, dependencies): SyntheticCSSStyleSheet {
+    return new SyntheticCSSStyleSheet(value.rules.map(raw => deserialize(raw, dependencies)));
   }
 }
 

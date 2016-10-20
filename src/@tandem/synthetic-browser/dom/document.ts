@@ -42,18 +42,17 @@ export interface ISerializedSyntheticDocument {
 class SyntheticDocumentSerializer implements ISerializer<SyntheticDocument, ISerializedSyntheticDocument> {
   serialize(document: SyntheticDocument) {
     return {
-
       // need to cast style sheet to vanilla array before mapping
       styleSheets: [].concat(document.styleSheets).map(serialize),
       defaultNamespaceURI: document.defaultNamespaceURI,
       childNodes: document.childNodes.map(serialize)
     };
   }
-  deserialize(value: ISerializedSyntheticDocument) {
-    const document = new SyntheticDocument(null, value.defaultNamespaceURI);
-    document.styleSheets.push(...value.styleSheets.map(deserialize));
+  deserialize(value: ISerializedSyntheticDocument, dependencies) {
+    const document = new SyntheticDocument(value.defaultNamespaceURI);
+    document.styleSheets.push(...value.styleSheets.map(raw => deserialize(raw, dependencies)));
     for (let i = 0, n = value.childNodes.length; i < n; i++) {
-      document.appendChild(deserialize(value.childNodes[i]));
+      document.appendChild(deserialize(value.childNodes[i], dependencies));
     }
     return document;
   }
@@ -65,29 +64,22 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   readonly nodeType: number = DOMNodeType.DOCUMENT;
   readonly styleSheets: ObservableCollection<SyntheticCSSStyleSheet>;
   private _registeredElements: any;
+  public $window: SyntheticWindow;
 
   // namespaceURI here is non-standard, but that's
-  constructor(private _window: SyntheticWindow, readonly defaultNamespaceURI: string) {
+  constructor(readonly defaultNamespaceURI: string) {
     super("#document");
     this.styleSheets = new ObservableCollection<SyntheticCSSStyleSheet>();
     this.styleSheets.observe(new BubbleBus(this));
     this._registeredElements = {};
   }
 
-  set $window(value: SyntheticWindow) {
-    this._window = value;
-  }
-
   get browser() {
-    return this._window.browser;
-  }
-
-  get sandbox() {
-    return this.defaultView && this.defaultView.sandbox;
+    return this.$window.browser;
   }
 
   get defaultView(): SyntheticWindow {
-    return this._window;
+    return this.$window;
   }
 
   get documentElement(): SyntheticDOMElement {
@@ -103,11 +95,11 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   }
 
   get location(): SyntheticLocation {
-    return this._window.location;
+    return this.$window.location;
   }
 
   set location(value: SyntheticLocation) {
-    this._window.location = value;
+    this.$window.location = value;
   }
 
   accept(visitor: IMarkupNodeVisitor) {
@@ -117,7 +109,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   createElementNS(ns: string, tagName: string): SyntheticDOMElement {
     const nsElements = this._registeredElements[ns] || {};
     const elementClass = this.$getElementClassNS(ns, tagName);
-    const element = new elementClass(ns, tagName, this);
+    const element = this.own(new elementClass(ns, tagName));
     element.$createdCallback();
     return element;
   }
@@ -163,24 +155,25 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     return this.own(new SyntheticDocumentFragment());
   }
 
-  onChildAction(action: Action) {
-    if (action.type === TreeNodeAction.NODE_ADDED) {
-      this.own(<SyntheticDOMNode>action.target);
-    }
+  onChildAdded(child) {
+    super.onChildAdded(child);
+    this.own(child);
   }
 
+
   cloneNode(deep?: boolean) {
-    const document = new SyntheticDocument(this.defaultView, this.defaultNamespaceURI);
+    const document = new SyntheticDocument(this.defaultNamespaceURI);
+    document.$window = this.defaultView;
     if (deep === true) {
-      for (const child of this.childNodes) {
-        document.appendChild(child.cloneNode(true));
+      for (let i = 0, n = this.childNodes.length; i < n; i++) {
+        document.appendChild(this.childNodes[i].cloneNode(true));
       }
     }
     return document;
   }
 
   private own<T extends SyntheticDOMNode>(node: T) {
-    node.$ownerDocument = this;
+    node.$setOwnerDocument(this);
     return node;
   }
 }

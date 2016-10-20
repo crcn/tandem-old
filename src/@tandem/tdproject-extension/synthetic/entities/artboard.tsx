@@ -5,11 +5,13 @@ import {
   IMarkupEdit,
   SyntheticBrowser,
   SyntheticDocument,
+  ISyntheticBrowser,
   BaseDOMNodeEntity,
   SyntheticDOMElement,
   SyntheticDOMRenderer,
   SyntheticHTMLElement,
   BaseDecoratorRenderer,
+  RemoteSyntheticBrowser,
   SyntheticCSSStyleSheet,
   BaseVisibleDOMNodeEntity,
   DOMNodeEntityCapabilities,
@@ -54,7 +56,7 @@ const DEFAULT_FRAME_STYLE_SHEET = evaluateCSS(parseCSS(`
 // - [ ] fixtures
 export class TDArtboardEntity extends VisibleHTMLEntity {
 
-  private _artboardBrowser: SyntheticBrowser;
+  private _artboardBrowser: ISyntheticBrowser;
   private _combinedStyleSheet: SyntheticCSSStyleSheet;
   private _artboardBrowserObserver: IActor;
   private _documentStyleSheetObserver: IActor;
@@ -65,7 +67,6 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
   }
 
   evaluate() {
-
     const ownerDocument = this.source.ownerDocument;
 
     // TODO - possibly move this logic to the parent where it checks for the default style sheet & automatically
@@ -78,7 +79,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
 
     if (!this._artboardBrowser) {
       const documentRenderer = new SyntheticDOMRenderer();
-      this._artboardBrowser = new SyntheticBrowser(ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer), this.browser);
+      this._artboardBrowser = new RemoteSyntheticBrowser(ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer), this.browser);
       watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
       watchProperty(this._artboardBrowser, "documentEntity", this.onBrowserDocumentEntityChange.bind(this));
     }
@@ -86,8 +87,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
     if (this.source.hasAttribute("src")) {
       const src = this.source.getAttribute("src");
       const window = ownerDocument.defaultView;
-      const sourceBundle = this.source.module.bundle;
-      this._artboardBrowser.open(sourceBundle.getAbsoluteDependencyPath(src));
+      this._artboardBrowser.open(this.source.bundle.getAbsoluteDependencyPath(src));
     }
   }
 
@@ -95,13 +95,13 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
     return this.change.getAttribute("title");
   }
 
-  protected onVisibilityChange() {
-    if (this.visible) {
-      this._artboardBrowser.sandbox.resume();
-    } else {
-      this._artboardBrowser.sandbox.pause();
-    }
-  }
+  // protected onVisibilityChange() {
+  //   if (this.visible) {
+  //     this._artboardBrowser.sandbox.resume();
+  //   } else {
+  //     this._artboardBrowser.sandbox.pause();
+  //   }
+  // }
 
   set title(value: string) {
     this.change.setAttribute("title", value);

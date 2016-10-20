@@ -27,6 +27,7 @@ import {
 } from "@tandem/common";
 
 import {
+  ISyntheticBrowser,
   SyntheticBrowser,
   SyntheticDocument
 } from "@tandem/synthetic-browser";
@@ -43,7 +44,7 @@ export interface IEditor extends IActor {
   transform: Transform;
   readonly type: string;
   readonly cursor: string;
-  readonly browser: SyntheticBrowser;
+  readonly browser: ISyntheticBrowser;
   readonly document: SyntheticDocument;
 }
 

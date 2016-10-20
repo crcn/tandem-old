@@ -13,8 +13,8 @@ class SyntheticCSSStyleRuleSerializer implements ISerializer<SyntheticCSSStyleRu
       style: serialize(value.style)
     };
   }
-  deserialize(value: ISerializedSyntheticCSSStyleRule): SyntheticCSSStyleRule {
-    return new SyntheticCSSStyleRule(value.selector, deserialize(value.style));
+  deserialize(value: ISerializedSyntheticCSSStyleRule, dependencies): SyntheticCSSStyleRule {
+    return new SyntheticCSSStyleRule(value.selector, deserialize(value.style, dependencies));
   }
 }
 

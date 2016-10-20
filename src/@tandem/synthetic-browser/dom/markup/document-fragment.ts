@@ -15,10 +15,10 @@ class SyntheticDocumentFragmentSerializer implements ISerializer<SyntheticDocume
       childNodes: childNodes.map(serialize)
     };
   }
-  deserialize({ childNodes }) {
+  deserialize({ childNodes }, dependencies) {
     const fragment = new SyntheticDocumentFragment();
     for (let i = 0, n = childNodes.length; i < n; i++) {
-      fragment.appendChild(deserialize(childNodes[i]));
+      fragment.appendChild(deserialize(childNodes[i], dependencies));
     }
     return fragment;
   }
@@ -40,8 +40,7 @@ export class SyntheticDocumentFragment extends SyntheticDOMContainer {
         clone.appendChild(child.cloneNode(true));
       }
     }
-    clone.$expression = this.expression;
-    clone.$module     = this.module;
+    this.linkClone(clone);
     return clone;
   }
 }

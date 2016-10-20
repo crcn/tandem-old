@@ -26,7 +26,17 @@ export interface IActiveRecord extends IObservable, IInjectable, IDisposable {
   insert();
   remove();
   update();
+
+  /**
+   * @deprecated
+   */
+
   serialize();
+
+  /**
+   * @deprecated
+   */
+
   deserialize(value: any);
 }
 

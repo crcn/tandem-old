@@ -107,9 +107,7 @@ export class ModuleHistory implements IInjectable {
   protected onAction(action: Action) {
 
     // target may be comming from an embedded browser instance
-    if (action.type === SyntheticBrowserAction.OPENED && action.target === this.browser) {
-      this.reset();
-    }
+    // i
     // } else if (action.type === UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT) {
     //   const contentAction = (<UpdateTemporaryFileContentAction>action);
     //   if (contentAction.mtime > this._mtime) {
@@ -124,23 +122,23 @@ export class ModuleHistory implements IInjectable {
   }
 
   protected reset() {
-    const data = {};
-    const now = this._mtime = Date.now();
-    if (!this.browser.documentEntity) return;
+    // const data = {};
+    // const now = this._mtime = Date.now();
+    // if (!this.browser.documentEntity) return;
 
-    this.browser.documentEntity.querySelectorAll("*").forEach((entity) => {
-      const module = entity.module;
-      if (module) {
-        data[module.filePath] = {
-          content: module.content,
-          mtime: now
-        };
-      }
-    });
+    // this.browser.documentEntity.querySelectorAll("*").forEach((entity) => {
+    //   const module = entity.module;
+    //   if (module) {
+    //     data[module.filePath] = {
+    //       content: module.content,
+    //       mtime: now
+    //     };
+    //   }
+    // });
 
 
-    this._history.clear();
-    this._history.push(data);
+    // this._history.clear();
+    // this._history.push(data);
   }
 
   private async setHistoryState(data: any) {

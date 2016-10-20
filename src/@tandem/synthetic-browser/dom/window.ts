@@ -3,11 +3,10 @@ import { bindable } from "@tandem/common/decorators";
 import { Observable } from "@tandem/common/observable";
 import { IPatchable } from "@tandem/common/object";
 import { HTML_XMLNS } from "./constants";
-import { SyntheticBrowser } from "../browser";
+import { ISyntheticBrowser } from "../browser";
 import { SyntheticLocation } from "../location";
 import { SyntheticDocument } from "./document";
 import { SyntheticHTMLElement } from "./html";
-import { ISyntheticDocumentRenderer } from "../renderers";
 
 export class SyntheticWindow extends Observable {
 
@@ -18,10 +17,11 @@ export class SyntheticWindow extends Observable {
   readonly window: SyntheticWindow;
   public resolve: { extensions: string[], directories: string[] };
 
-  constructor(readonly browser: SyntheticBrowser, readonly renderer: ISyntheticDocumentRenderer, location: SyntheticLocation) {
+  constructor(readonly browser: ISyntheticBrowser, location: SyntheticLocation, document?: SyntheticDocument) {
     super();
     this.resolve = { extensions: [], directories: [] };
-    this.document = this.createDocument();
+    this.document = document || this.createDocument();
+    this.document.$window = this;
     this.location = location;
     this.window   = this;
   }
@@ -40,12 +40,8 @@ export class SyntheticWindow extends Observable {
     return this.browser.parent && this.browser.parent.window && this.browser.parent.window;
   }
 
-  get sandbox() {
-    return this.browser.sandbox;
-  }
-
   private createDocument() {
-    const document = new SyntheticDocument(this, HTML_XMLNS);
+    const document = new SyntheticDocument(HTML_XMLNS);
     document.registerElementNS(HTML_XMLNS, "default", SyntheticHTMLElement);
     const documentElement = document.createElement("div");
 

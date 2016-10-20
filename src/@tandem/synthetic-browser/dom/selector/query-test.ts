@@ -36,7 +36,7 @@ describe(__filename + "#", () => {
     ["a:not([href]):not([tabindex])", `<div data-test="abc">a</div><span data-test="bc">c</span>`, ``],
   ].forEach(([selector, a, b]) => {
     it(`selector ${selector} for ${a} equals ${b}`, () => {
-      const el = evaluateMarkup(parseMarkup(a), new SyntheticDocument(null, ""));
+      const el = evaluateMarkup(parseMarkup(a), new SyntheticDocument(""));
       const nodes = querySelectorAll(el, selector);
       expect(nodes.join("")).to.equal(b);
     });

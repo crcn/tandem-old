@@ -1,7 +1,8 @@
+import { IMarkupModule } from "@tandem/synthetic-browser/sandbox";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { MarkupNodeExpression } from "./ast";
-import { IModule, ISynthetic, Sandbox2Module } from "@tandem/sandbox";
+import { IModule, ISynthetic, Sandbox2Module, Bundle } from "@tandem/sandbox";
 import * as assert from "assert";
 import {
   TreeNode,
@@ -12,9 +13,6 @@ import {
   patchTreeNode,
 } from "@tandem/common";
 
-import {
-  IMarkupModule,
-} from "@tandem/synthetic-browser/sandbox";
 
 import {
   DOMNodeType
@@ -43,7 +41,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
    */
 
   private _loaded: boolean;
-  public $ownerDocument: SyntheticDocument;
+  private _ownerDocument: SyntheticDocument;
 
 
   /**
@@ -63,6 +61,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
    */
 
   public $module: Sandbox2Module;
+  public $bundle: Bundle;
 
 
   constructor(readonly nodeName: string) {
@@ -70,8 +69,16 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   }
 
   get ownerDocument(): SyntheticDocument {
-    return this.$ownerDocument;
+    return this._ownerDocument;
   }
+
+  get bundle(): Bundle {
+    return this.$bundle;
+  }
+
+  /**
+   * @deprecated
+   */
 
   get module(): Sandbox2Module {
     return this.$module;
@@ -107,6 +114,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return this.parent;
   }
 
+
   addEventListener() {
     // TODO
   }
@@ -135,6 +143,26 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   hasChildNodes() {
     return this.childNodes.length !== 0;
+  }
+
+  onChildAdded(child) {
+    super.onChildAdded(child);
+    if (this.ownerDocument) {
+      child.$setOwnerDocument(this.ownerDocument);
+    }
+  }
+
+  $setOwnerDocument(document: SyntheticDocument) {
+    this._ownerDocument = document;
+    for (let i = 0, n = this.childNodes.length; i < n; i++) {
+      this.childNodes[i].$setOwnerDocument(document);
+    }
+  }
+
+  protected linkClone(clone: SyntheticDOMNode) {
+    clone.$expression = this.$expression;
+    clone.$module     = this.$module;
+    clone.$setOwnerDocument(this.ownerDocument);
   }
 
   abstract accept(visitor: IMarkupNodeVisitor);

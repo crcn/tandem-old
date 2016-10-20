@@ -61,10 +61,9 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
     const editor = new Editor();
 
-    new RemoteSyntheticBrowser(this._dependencies).open(filePath);
-    const browser = editor.browser = new SyntheticBrowser(this._dependencies, new CanvasRenderer(editor, new SyntheticDOMRenderer()));
+    const browser = editor.browser = new RemoteSyntheticBrowser(this._dependencies, new CanvasRenderer(editor, new SyntheticDOMRenderer()));
     browser.observe({ execute: (action) => this.bus.execute(action) });
-    // await browser.open(filePath);
+    await browser.open(filePath);
 
     this.app.editor = editor;
     this.bus.register(this.app.editor);

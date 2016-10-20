@@ -13,7 +13,7 @@ import {
 } from "@tandem/common";
 
 import { ISynthetic } from "@tandem/sandbox";
-import { SyntheticBrowser, BaseDOMNodeEntity } from "@tandem/synthetic-browser";
+import { ISyntheticBrowser, SyntheticBrowser, BaseDOMNodeEntity } from "@tandem/synthetic-browser";
 
 export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;
@@ -27,7 +27,7 @@ export class Editor implements IEditor {
   private _currentTool: IEditorTool;
   public transform: Transform = new Transform();
   public selection: BaseDOMNodeEntity<any, any>[] = [];
-  public browser: SyntheticBrowser;
+  public browser: ISyntheticBrowser;
 
   // TODO - this may change dependening on the editor type
   readonly type = "display";

@@ -1,6 +1,6 @@
-import { NoopRenderer } from "./renderers";
-import { OpenRemoteBrowserAction } from "./actions";
-import { ISyntheticBrowser, SyntheticBrowser } from "./browser";
+import { NoopRenderer, ISyntheticDocumentRenderer } from "./renderers";
+import { OpenRemoteBrowserAction, SyntheticBrowserAction } from "./actions";
+import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser } from "./browser";
 import { Response } from "mesh";
 import {
   IActor,
@@ -12,21 +12,23 @@ import {
   BaseApplicationService
 } from "@tandem/common";
 import { FrontEndApplication } from "@tandem/editor";
+import { SyntheticWindow } from "@tandem/synthetic-browser";
 
 const SERIALIZED_DOCUMENT = "serializedDocument";
 
-export class RemoteSyntheticBrowser implements ISyntheticBrowser {
+export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   private _bus: IActor;
-  constructor(private _dependencies: Dependencies) {
-    this._bus = MainBusDependency.getInstance(_dependencies);
+  constructor(dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
+    super(dependencies, renderer, parent);
+    this._bus = MainBusDependency.getInstance(dependencies);
   }
-  async open(url: string) {
+  async open2(url: string) {
     const remoteBrowserStream = this._bus.execute(new OpenRemoteBrowserAction(url));
 
     remoteBrowserStream.pipeTo({
       write: this.onRemoteBrowserAction.bind(this),
       close: () => {
-
+        console.log("closed!");
       },
       abort: (error) => {
 
@@ -36,8 +38,7 @@ export class RemoteSyntheticBrowser implements ISyntheticBrowser {
 
   onRemoteBrowserAction(action: any) {
     if (action.type === SERIALIZED_DOCUMENT) {
-      const document = deserialize(action.data);
-      console.log(document);
+      this.setWindow(new SyntheticWindow(this, this.location, deserialize(action.data, this._dependencies)));
     }
   }
 }
@@ -46,10 +47,16 @@ export class RemoteBrowserService extends BaseApplicationService<FrontEndApplica
   [OpenRemoteBrowserAction.OPEN_REMOTE_BROWSER](action: OpenRemoteBrowserAction) {
 
     // TODO - move this to its own class
-    return new Response(async (writer) => {
+    return new Response((writer) => {
       const browser = new SyntheticBrowser(this.app.dependencies, new NoopRenderer());
-      await browser.open(action.url);
-      writer.write({ type: SERIALIZED_DOCUMENT, data: serialize(browser.document) });
+      browser.observe({
+        execute(action: Action) {
+          if (action.type === SyntheticBrowserAction.BROWSER_LOADED) {
+            writer.write({ type: SERIALIZED_DOCUMENT, data: serialize(browser.document) });
+          }
+        }
+      });
+      browser.open(action.url);
     });
   }
 }

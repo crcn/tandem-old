@@ -1,3 +1,4 @@
+import { Injector, Dependencies } from "@tandem/common/dependencies";
 
 export interface ISerializedContent<T> {
   type: string;
@@ -6,7 +7,7 @@ export interface ISerializedContent<T> {
 
 export interface ISerializer<T, U> {
   serialize(value: T): U;
-  deserialize(value: U): T;
+  deserialize(value: U, dependencies: Dependencies, ctor?: any): T;
 }
 
 export interface ISerializable<T> {
@@ -21,8 +22,8 @@ export function createSerializer(ctor: { new(...rest:any[]): any }): ISerializer
       serialize(value: ISerializable<any>) {
         return value.serialize();
       },
-      deserialize(value): ISerializable<any> {
-        const instance: ISerializable<any> = new ctor();
+      deserialize(value, dependencies, ctor): ISerializable<any> {
+        const instance: ISerializable<any> = Injector.create(ctor, [], dependencies);
         instance.deserialize(value);
         return instance;
       }
@@ -33,10 +34,20 @@ export function createSerializer(ctor: { new(...rest:any[]): any }): ISerializer
     serialize(value): any {
       return JSON.parse(JSON.stringify(value));
     },
-    deserialize(value) {
+    deserialize(value, dependencies, ctor) {
       const instance = new ctor();
       return Object.assign(instance, value);
     }
+  }
+}
+
+const defaultSerializer: ISerializer<any, any> = {
+  serialize(value): any {
+    return value.serialize ? value.serialize() : JSON.parse(JSON.stringify(value));
+  },
+  deserialize(value, dependencies, ctor) {
+    const instance = Injector.create(ctor, [], dependencies);
+    return instance.deserialize ? instance.deserialize(value) : Object.assign(instance, value);
   }
 }
 
@@ -46,13 +57,18 @@ class LiteralSerializer implements ISerializer<any, any> {
   serialize(value) {
     return value;
   }
-  deserialize(value) {
+  deserialize(value, ctor, dependencies) {
     return value;
   }
 }
 
+interface ISerializerInfo {
+  ctor: any;
+  serializer: ISerializer<any, any>;
+}
+
 const _serializers   = {
-  [LITERAL_TYPE]: new LiteralSerializer()
+  [LITERAL_TYPE]: { ctor: undefined, serializer: new LiteralSerializer() }
 };
 
 export function serializable(serializer?: ISerializer<any, any>, type?: string) {
@@ -62,7 +78,13 @@ export function serializable(serializer?: ISerializer<any, any>, type?: string) 
     if (_serializers[type]) throw new Error(`Cannot override existing serializer "${type}".`);
 
     // if serializer does not exist, then fetch from parent class serializer if it exists
-    _serializers[type] = serializer || _serializers[Reflect.getMetadata(`serialize:type`, ctor)] || createSerializer(ctor);
+    const parentSerializerInfo = _serializers[Reflect.getMetadata(`serialize:type`, ctor)];
+
+    _serializers[type] = {
+      ctor: ctor,
+      serializer: serializer || (parentSerializerInfo ? parentSerializerInfo.serializer : createSerializer(ctor))
+    };
+
     Reflect.defineMetadata(`serialize:type`, type, ctor);
   }
 }
@@ -75,17 +97,17 @@ export function serialize(value: any): ISerializedContent<any> {
   const type = canSerialize(value) ? Reflect.getMetadata("serialize:type", value.constructor) : LITERAL_TYPE;
   return {
     type: type,
-    value: (<ISerializer<any, any>>_serializers[type]).serialize(value)
+    value: (<ISerializer<any, any>>_serializers[type].serializer).serialize(value)
   };
 }
 
-export function deserialize(content: ISerializedContent<any>): any {
+export function deserialize(content: ISerializedContent<any>, dependencies: Dependencies): any {
 
-  const serializer: ISerializer<any, any> = _serializers[content.type];
+  const info: ISerializerInfo = _serializers[content.type];
 
-  if (!serializer) {
+  if (!info) {
     return content;
   }
 
-  return serializer.deserialize(content.value);
+  return info.serializer.deserialize(content.value, dependencies, info.ctor);
 }

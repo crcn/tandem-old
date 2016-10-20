@@ -5,8 +5,7 @@ export class SyntheticRendererAction extends Action {
 }
 
 export class SyntheticBrowserAction extends Action {
-  static readonly OPENED = "opened";
-  static readonly LOADED = "loaded";
+  static readonly BROWSER_LOADED = "browserLoaded";
 }
 
 export class DOMEntityAction extends Action {

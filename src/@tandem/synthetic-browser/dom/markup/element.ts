@@ -133,32 +133,29 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
       childNodes: [].concat(childNodes).map(serialize)
     };
   }
-  deserialize({ nodeName, bundle, shadowRoot, namespaceURI, attributes, childNodes }) {
-    const element = this.createElement(namespaceURI, nodeName);
+  deserialize({ nodeName, bundle, shadowRoot, namespaceURI, attributes, childNodes }, dependencies, ctor) {
+    const element = new ctor(namespaceURI, nodeName);
 
     for (let i = 0, n = attributes.length; i < n; i++) {
-      const { name, value } = <SyntheticDOMAttribute>deserialize(attributes[i]);
+      const { name, value } = <SyntheticDOMAttribute>deserialize(attributes[i], dependencies);
       element.setAttribute(name, value);
     }
 
     for (let i = 0, n = childNodes.length; i < n; i++) {
-      const child = <SyntheticDOMNode>deserialize(childNodes[i]);
+      const child = <SyntheticDOMNode>deserialize(childNodes[i], dependencies);
       element.appendChild(child);
     }
 
-    const shadowRootFragment = deserialize(shadowRoot);
+    const shadowRootFragment = deserialize(shadowRoot, dependencies);
     if (shadowRootFragment) {
       element.attachShadow({ mode: "open" }).appendChild(shadowRootFragment);
     }
 
-    element.$bundle = deserialize(bundle);
+    element.$bundle = deserialize(bundle, dependencies);
 
     // NOTE - $createdCallback is not called here for a reason -- serialized
     // must store the entire state of an object.
     return element;
-  }
-  protected createElement(namespaceURI, nodeName) {
-    return new SyntheticDOMElement(namespaceURI, nodeName);
   }
 }
 
@@ -191,7 +188,9 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   attachShadow({ mode }: { mode: "open"|"close" }) {
-    return this._shadowRoot = new SyntheticDocumentFragment();
+    this._shadowRoot = new SyntheticDocumentFragment();
+    this._shadowRoot.$setOwnerDocument(this.ownerDocument);
+    return this._shadowRoot;
   }
 
   get shadowRoot(): SyntheticDocumentFragment {
@@ -253,6 +252,12 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   }
 
+  $setOwnerDocument(document: SyntheticDocument) {
+    super.$setOwnerDocument(document);
+    if (this._shadowRoot) {
+      this._shadowRoot.$setOwnerDocument(document);
+    }
+  }
 
   protected attributeChangedCallback(name: string, oldValue: any, newValue: any) {
 
@@ -280,10 +285,9 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   cloneNode(deep?: boolean) {
     const constructor = this.constructor as syntheticElementClassType;
-    const clone = new constructor(this.namespaceURI, this.tagName, this.ownerDocument);
+    const clone = new constructor(this.namespaceURI, this.tagName);
+    this.linkClone(clone);
     this.addPropertiesToClone(clone, deep);
-    clone.$module     = this.module;
-    clone.$expression = this.expression;
     clone.$createdCallback();
 
     return clone;

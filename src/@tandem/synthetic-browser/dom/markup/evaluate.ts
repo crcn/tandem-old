@@ -10,7 +10,10 @@ import { IMarkupExpression, MarkupContainerExpression } from "./ast";
 export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: Sandbox2Module): any {
 
   function initialize(expression, synthetic: SyntheticDOMNode) {
+
+    // deprecated
     synthetic.$module     = module;
+    synthetic.$bundle     = module && module.bundle;
     synthetic.$expression = expression;
     if (synthetic.nodeType === DOMNodeType.ELEMENT) {
       (<SyntheticDOMElement><any>synthetic).$createdCallback();
@@ -29,8 +32,8 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
       const xmlns = expression.getAttribute("xmlns") || namespaceURI || doc.defaultNamespaceURI;
 
       const elementClass = doc.$getElementClassNS(xmlns, expression.nodeName);
-      const element = new elementClass(xmlns, expression.nodeName, doc);
-      element.$ownerDocument = doc;
+      const element = new elementClass(xmlns, expression.nodeName);
+      element.$setOwnerDocument(doc);
 
       for (let i = 0, n = expression.attributes.length; i < n; i++) {
         const attributeExpression = expression.attributes[i];
