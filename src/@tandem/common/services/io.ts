@@ -48,20 +48,19 @@ export class IOService<T extends IApplication> extends BaseApplicationService<T>
 
     // setup the bus which wil facilitate in all
     // transactions between the remote service
-    const remoteBus = SocketIOBus.create({
+    const remoteBus = new SocketIOBus({
       connection: connection
     }, {
       execute: (action) => {
-        return this.bus.execute(Object.assign(deserialize(action), { remote: true }));
+        return this.bus.execute(Object.assign(action, { remote: true }));
       }
-    });
+    }, { serialize: serialize, deserialize: deserialize });
 
     this._remoteActors.push({
       execute(action) {
         let data;
         if (!isPublicAction(action)) return;
-        console.log(action);
-        return remoteBus.execute(serialize(action));
+        return remoteBus.execute(action);
       }
     });
 

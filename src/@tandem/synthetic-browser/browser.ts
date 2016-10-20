@@ -15,6 +15,7 @@ import {
   Dependencies,
   bindProperty,
   watchProperty,
+  isMaster,
   HTML_MIME_TYPE,
   MainBusDependency,
   MimeTypeDependency,
@@ -149,6 +150,7 @@ export class SyntheticBrowser extends Observable implements ISyntheticBrowser {
   private onSandboxExportsChange(exports: any) {
     const window = this._sandbox2.global as SyntheticWindow;
 
+
     let exportsElement: SyntheticDOMNode;
 
     if (exports.nodeType) {
@@ -159,6 +161,11 @@ export class SyntheticBrowser extends Observable implements ISyntheticBrowser {
 
     if (exportsElement) {
       window.document.body.appendChild(exportsElement);
+    }
+
+    if (!isMaster) {
+      console.log("eval", window.document.querySelectorAll("*"));
+      return;
     }
 
     const documentEntity = this._documentEntity;

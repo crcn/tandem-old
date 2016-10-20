@@ -9,7 +9,6 @@ import { FrontEndApplication } from "./application";
 // workers.
 const NUM_WORKERS = 1;
 
-
 if (isMaster) {
 
   window.onload = () => {

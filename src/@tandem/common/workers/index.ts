@@ -38,7 +38,7 @@ function createWorkerFilterBus(bus: IActor) {
   return {
     execute(action: Action) {
       if (isWorkerAction(action) || isPublicAction(action)) {
-        return bus.execute(serialize(action) as any);
+        return bus.execute(action);
       }
     }
   }
@@ -55,7 +55,7 @@ function createWorkerBus(worker: any, localBus: IActor): IActor {
         listener(message.data);
       });
     }
-  }, localBus)
+  }, localBus, { serialize, deserialize })
 }
 
 /**
