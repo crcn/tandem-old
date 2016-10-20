@@ -46,7 +46,8 @@ function createConfig(options) {
     ],
     node: {
       __filename: true,
-      fs: "empty"
+      fs: "empty",
+      Buffer: true
     },
     module: {
       loaders: [

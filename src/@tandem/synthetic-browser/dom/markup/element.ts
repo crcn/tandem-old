@@ -1,25 +1,48 @@
 import { WrapBus } from "mesh";
 import { bindable } from "@tandem/common/decorators";
 import { IDOMNode } from "./node";
-import { BubbleBus } from "@tandem/common/busses";
-import { BoundingRect } from "@tandem/common/geom";
 import { DOMNodeType } from "./node-types";
+import { SyntheticDOMNode } from "./node";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { parse as parseMarkup } from "./parser.peg";
 import { SyntheticDOMContainer } from "./container";
-import { syntheticElementClassType } from "./types";
-import { SyntheticCSSStyleDeclaration } from "../css";
-import { Action, PropertyChangeAction } from "@tandem/common/actions";
-import {
-  Observable,
-  ArrayChangeAction,
-  ObservableCollection,
-} from "@tandem/common/observable";
-import { SyntheticDOMNode } from "./node";
 import { MarkupElementExpression } from "./ast";
+import { syntheticElementClassType } from "./types";
 import { SyntheticDocumentFragment } from "./document-fragment";
+import { SyntheticCSSStyleDeclaration } from "../css";
+import {
+  Action,
+  BubbleBus,
+  serialize,
+  Observable,
+  deserialize,
+  ISerializer,
+  BoundingRect,
+  serializable,
+  ArrayChangeAction,
+  ISerializedContent,
+  PropertyChangeAction,
+  ObservableCollection,
+} from "@tandem/common";
 
+import { Bundle } from "@tandem/sandbox";
+
+export interface ISerializedSyntheticDOMAttribute {
+  name: string;
+  value: string;
+}
+
+class SyntheticDOMAttributeSerializer implements ISerializer<SyntheticDOMAttribute, ISerializedSyntheticDOMAttribute> {
+  serialize({ name, value }: SyntheticDOMAttribute) {
+    return { name, value }
+  }
+  deserialize({ name, value }: ISerializedSyntheticDOMAttribute) {
+    return new SyntheticDOMAttribute(name, value);
+  }
+}
+
+@serializable(new SyntheticDOMAttributeSerializer())
 export class SyntheticDOMAttribute extends Observable {
 
   @bindable()
@@ -90,16 +113,67 @@ export interface IDOMElement extends IDOMNode {
   setAttribute(name: string, value: any);
 }
 
+export interface ISerializedSyntheticDOMElement {
+  nodeName: string;
+  namespaceURI: string;
+  bundle: ISerializedContent<any>;
+  shadowRoot: ISerializedContent<any>;
+  attributes: Array<ISerializedContent<ISerializedSyntheticDOMAttribute>>;
+  childNodes: Array<ISerializedContent<any>>;
+}
+
+export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMElement, ISerializedSyntheticDOMElement> {
+  serialize({ nodeName, namespaceURI, shadowRoot, bundle, attributes, childNodes }: any): any {
+    return {
+      nodeName,
+      namespaceURI,
+      bundle: serialize(bundle),
+      shadowRoot: serialize(shadowRoot),
+      attributes: [].concat(attributes).map(serialize),
+      childNodes: [].concat(childNodes).map(serialize)
+    };
+  }
+  deserialize({ nodeName, bundle, shadowRoot, namespaceURI, attributes, childNodes }) {
+    const element = this.createElement(namespaceURI, nodeName);
+
+    for (let i = 0, n = attributes.length; i < n; i++) {
+      const { name, value } = <SyntheticDOMAttribute>deserialize(attributes[i]);
+      element.setAttribute(name, value);
+    }
+
+    for (let i = 0, n = childNodes.length; i < n; i++) {
+      const child = <SyntheticDOMNode>deserialize(childNodes[i]);
+      element.appendChild(child);
+    }
+
+    const shadowRootFragment = deserialize(shadowRoot);
+    if (shadowRootFragment) {
+      element.attachShadow({ mode: "open" }).appendChild(shadowRootFragment);
+    }
+
+    element.$bundle = deserialize(bundle);
+
+    // NOTE - $createdCallback is not called here for a reason -- serialized
+    // must store the entire state of an object.
+    return element;
+  }
+  protected createElement(namespaceURI, nodeName) {
+    return new SyntheticDOMElement(namespaceURI, nodeName);
+  }
+}
+
+@serializable(new SyntheticDOMElementSerializer())
 export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   readonly nodeType: number = DOMNodeType.ELEMENT;
   readonly attributes: SyntheticDOMAttributes;
   readonly expression: MarkupElementExpression;
   private _shadowRoot: SyntheticDocumentFragment;
+  private _bundle: Bundle;
   private _createdCallbackCalled: boolean;
 
-  constructor(readonly namespaceURI: string, readonly tagName: string, ownerDocument: SyntheticDocument) {
-    super(tagName, ownerDocument);
+  constructor(readonly namespaceURI: string, readonly tagName: string) {
+    super(tagName);
     this.attributes = new SyntheticDOMAttributes();
     this.attributes.observe(new WrapBus(this.onAttributesAction.bind(this)));
   }
@@ -117,11 +191,19 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   attachShadow({ mode }: { mode: "open"|"close" }) {
-    return this._shadowRoot = this.ownerDocument.createDocumentFragment();
+    return this._shadowRoot = new SyntheticDocumentFragment();
   }
 
   get shadowRoot(): SyntheticDocumentFragment {
     return this._shadowRoot;
+  }
+
+  get bundle(): Bundle {
+    return this._bundle;
+  }
+
+  set $bundle(value: Bundle) {
+    this._bundle = value;
   }
 
   setAttribute(name: string, value: any) {

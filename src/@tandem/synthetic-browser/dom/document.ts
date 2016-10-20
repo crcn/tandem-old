@@ -1,4 +1,15 @@
-import { bindable, ObservableCollection, BubbleBus } from "@tandem/common";
+import {
+  Action,
+  bindable,
+  BubbleBus,
+  serialize,
+  deserialize,
+  ISerializer,
+  serializable,
+  TreeNodeAction,
+  ISerializedContent,
+  ObservableCollection,
+} from "@tandem/common";
 
 import {
   DOMNodeType,
@@ -22,20 +33,49 @@ interface IRegisterComponentOptions {
   extends: string;
 }
 
+export interface ISerializedSyntheticDocument {
+  styleSheets: any[];
+  defaultNamespaceURI: string;
+  childNodes: any[];
+}
+
+class SyntheticDocumentSerializer implements ISerializer<SyntheticDocument, ISerializedSyntheticDocument> {
+  serialize(document: SyntheticDocument) {
+    return {
+
+      // need to cast style sheet to vanilla array before mapping
+      styleSheets: [].concat(document.styleSheets).map(serialize),
+      defaultNamespaceURI: document.defaultNamespaceURI,
+      childNodes: document.childNodes.map(serialize)
+    };
+  }
+  deserialize(value: ISerializedSyntheticDocument) {
+    const document = new SyntheticDocument(null, value.defaultNamespaceURI);
+    document.styleSheets.push(...value.styleSheets.map(deserialize));
+    for (let i = 0, n = value.childNodes.length; i < n; i++) {
+      document.appendChild(deserialize(value.childNodes[i]));
+    }
+    return document;
+  }
+}
+
+@serializable(new SyntheticDocumentSerializer())
 export class SyntheticDocument extends SyntheticDOMContainer {
 
   readonly nodeType: number = DOMNodeType.DOCUMENT;
-
   readonly styleSheets: ObservableCollection<SyntheticCSSStyleSheet>;
-
   private _registeredElements: any;
 
   // namespaceURI here is non-standard, but that's
   constructor(private _window: SyntheticWindow, readonly defaultNamespaceURI: string) {
-    super("#document", null);
+    super("#document");
     this.styleSheets = new ObservableCollection<SyntheticCSSStyleSheet>();
     this.styleSheets.observe(new BubbleBus(this));
     this._registeredElements = {};
+  }
+
+  set $window(value: SyntheticWindow) {
+    this._window = value;
   }
 
   get browser() {
@@ -89,7 +129,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   }
 
   createElement(tagName: string) {
-    return this.createElementNS(this.defaultNamespaceURI, tagName);
+    return this.own(this.createElementNS(this.defaultNamespaceURI, tagName));
   }
 
   registerElement(tagName: string, elementClass: syntheticElementClassType);
@@ -112,15 +152,21 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   }
 
   createComment(nodeValue: string) {
-    return new SyntheticDOMComment(nodeValue, this);
+    return this.own(new SyntheticDOMComment(nodeValue));
   }
 
   createTextNode(nodeValue: string) {
-    return new SyntheticDOMText(nodeValue, this);
+    return this.own(new SyntheticDOMText(nodeValue));
   }
 
   createDocumentFragment() {
-    return new SyntheticDocumentFragment(this);
+    return this.own(new SyntheticDocumentFragment());
+  }
+
+  onChildAction(action: Action) {
+    if (action.type === TreeNodeAction.NODE_ADDED) {
+      this.own(<SyntheticDOMNode>action.target);
+    }
   }
 
   cloneNode(deep?: boolean) {
@@ -131,6 +177,11 @@ export class SyntheticDocument extends SyntheticDOMContainer {
       }
     }
     return document;
+  }
+
+  private own<T extends SyntheticDOMNode>(node: T) {
+    node.$ownerDocument = this;
+    return node;
   }
 }
 

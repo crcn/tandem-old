@@ -1,4 +1,4 @@
-import { BoundingRect } from "@tandem/common";
+import { BoundingRect, serializable } from "@tandem/common";
 import { SyntheticDocument } from "../document";
 import { SyntheticCSSStyleDeclaration, parseCSS, evaluateCSS } from "../css";
 import {
@@ -7,16 +7,18 @@ import {
   SyntheticDOMElement,
   SyntheticDOMAttribute,
   IDOMNodeEntityCapabilities,
+  SyntheticDOMElementSerializer,
 } from "../markup";
 
+@serializable()
 export class SyntheticHTMLElement extends SyntheticDOMElement {
 
   private _style: SyntheticCSSStyleDeclaration;
   private _styleProxy: SyntheticCSSStyleDeclaration;
   private _rect: BoundingRect;
 
-  constructor(ns: string, tagName: string, ownerDocument: SyntheticDocument) {
-    super(ns, tagName, ownerDocument);
+  constructor(ns: string, tagName: string) {
+    super(ns, tagName);
     this._style = new SyntheticCSSStyleDeclaration();
   }
 

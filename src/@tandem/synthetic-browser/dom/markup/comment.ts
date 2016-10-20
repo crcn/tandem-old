@@ -1,13 +1,17 @@
 import { DOMNodeType } from "./node-types";
 import { IMarkupNodeVisitor } from "./visitor";
 import { SyntheticDocument } from "../document";
-import { SyntheticDOMValueNode } from "./value-node";
+import { SyntheticDOMValueNode, createDOMValueNodeSerializer } from "./value-node";
+import { serializable } from "@tandem/common";
 
+const SyntheticDOMCommentSerializer = createDOMValueNodeSerializer(value => new SyntheticDOMComment(value));
+
+@serializable(new SyntheticDOMCommentSerializer())
 export class SyntheticDOMComment extends SyntheticDOMValueNode {
   readonly nodeType: number = DOMNodeType.COMMENT;
 
-  constructor(nodeValue: string, ownerDocument: SyntheticDocument) {
-    super("#comment", nodeValue, ownerDocument);
+  constructor(nodeValue: string) {
+    super("#comment", nodeValue);
   }
 
   toString() {
@@ -23,7 +27,7 @@ export class SyntheticDOMComment extends SyntheticDOMValueNode {
   }
 
   cloneNode() {
-    const clone = new SyntheticDOMComment(this.nodeValue, this.ownerDocument);
+    const clone = new SyntheticDOMComment(this.nodeValue);
     clone.$expression = this.expression;
     clone.$module = this.module;
     return clone;

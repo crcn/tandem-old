@@ -1,30 +1,29 @@
+import { bindable } from "@tandem/common";
 import { DOMNodeType } from "./node-types";
+import { ISerializer } from "@tandem/common";
 import { SyntheticDOMNode } from "./node";
 import { SyntheticDocument } from "../document";
-import { patchable, bindable, PropertyChangeAction } from "@tandem/common";
+
+export function createDOMValueNodeSerializer(createValueNode: (nodeValue) => SyntheticDOMValueNode) {
+  return class SyntheticDOMValueNodeSerializer implements ISerializer<SyntheticDOMValueNode, string> {
+    serialize(value: SyntheticDOMValueNode) {
+      return value.nodeValue;
+    }
+    deserialize(value: string) {
+      return createValueNode(value);
+    }
+  }
+}
 
 export abstract class SyntheticDOMValueNode extends SyntheticDOMNode {
 
-  private _nodeValue: string;
+  @bindable()
+  public nodeValue: string;
+
   public targetNode: SyntheticDOMValueNode;
 
-  constructor(nodeName: string, nodeValue: string, ownerDocument: SyntheticDocument) {
-    super(nodeName, ownerDocument);
+  constructor(nodeName: string, nodeValue: string) {
+    super(nodeName);
     this.nodeValue = nodeValue;
   }
-
-  @patchable()
-  get nodeValue(): string {
-    return this._nodeValue;
-  }
-
-  set nodeValue(value: string) {
-    const oldValue = this._nodeValue;
-    this._nodeValue = value;
-    if (this.targetNode) {
-      this.targetNode.nodeValue = value;
-    }
-    this.notify(new PropertyChangeAction("nodeValue", value, oldValue));
-  }
-
 }

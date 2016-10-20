@@ -30,6 +30,7 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
 
       const elementClass = doc.$getElementClassNS(xmlns, expression.nodeName);
       const element = new elementClass(xmlns, expression.nodeName, doc);
+      element.$ownerDocument = doc;
 
       for (let i = 0, n = expression.attributes.length; i < n; i++) {
         const attributeExpression = expression.attributes[i];

@@ -1,12 +1,16 @@
 import { DOMNodeType } from "./node-types";
-import { IMarkupNodeVisitor } from "./visitor";
 import { SyntheticDocument } from "../document";
-import { SyntheticDOMValueNode } from "./value-node";
+import { IMarkupNodeVisitor } from "./visitor";
+import { SyntheticDOMValueNode, createDOMValueNodeSerializer } from "./value-node";
+import { serializable, serialize, deserialize, ISerializable, ISerializer } from "@tandem/common";
 
+const SyntheticDOMTextSerializer = createDOMValueNodeSerializer(value => new SyntheticDOMText(value));
+
+@serializable(new SyntheticDOMTextSerializer())
 export class SyntheticDOMText extends SyntheticDOMValueNode {
   readonly nodeType: number = DOMNodeType.TEXT;
-  constructor(nodeValue: string, ownerDocument: SyntheticDocument) {
-    super("#text", nodeValue, ownerDocument);
+  constructor(nodeValue: string) {
+    super("#text", nodeValue);
   }
 
   get textContent(): string {
@@ -22,7 +26,7 @@ export class SyntheticDOMText extends SyntheticDOMValueNode {
   }
 
   cloneNode() {
-    const clone = new SyntheticDOMText(this.nodeValue, this.ownerDocument);
+    const clone = new SyntheticDOMText(this.nodeValue);
     clone.$expression = this.expression;
     clone.$module = this.module;
     return clone;

@@ -1,12 +1,13 @@
 import { SyntheticLocation } from "./location";
 import { SyntheticRendererAction, SyntheticBrowserAction } from "./actions";
 import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode } from "./dom";
-import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, TetherRenderer } from "./renderers";
+import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, TetherRenderer, NoopRenderer } from "./renderers";
 import {
   Action,
   IActor,
   bindable,
   Injector,
+  isMaster,
   BubbleBus,
   Observable,
   TypeWrapBus,
@@ -15,7 +16,6 @@ import {
   Dependencies,
   bindProperty,
   watchProperty,
-  isMaster,
   HTML_MIME_TYPE,
   MainBusDependency,
   MimeTypeDependency,
@@ -65,7 +65,8 @@ export class SyntheticBrowser extends Observable implements ISyntheticBrowser {
 
   constructor(private _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, readonly parent?: SyntheticBrowser) {
     super();
-    this._renderer = renderer || new SyntheticDOMRenderer();
+
+    this._renderer = isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer();
     this._bundler = BundlerDependency.getInstance(this._dependencies);
     this._renderer.observe(new BubbleBus(this));
     this._sandbox2 = new Sandbox2(_dependencies, this.createSandboxGlobals.bind(this));
@@ -149,7 +150,7 @@ export class SyntheticBrowser extends Observable implements ISyntheticBrowser {
 
   private onSandboxExportsChange(exports: any) {
     const window = this._sandbox2.global as SyntheticWindow;
-
+    console.log('evaluate', this._url);
 
     let exportsElement: SyntheticDOMNode;
 
@@ -163,8 +164,8 @@ export class SyntheticBrowser extends Observable implements ISyntheticBrowser {
       window.document.body.appendChild(exportsElement);
     }
 
+    // TEMPORARY
     if (!isMaster) {
-      console.log("eval", window.document.querySelectorAll("*"));
       return;
     }
 

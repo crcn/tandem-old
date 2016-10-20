@@ -43,6 +43,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
    */
 
   private _loaded: boolean;
+  public $ownerDocument: SyntheticDocument;
 
 
   /**
@@ -50,7 +51,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
    * depending on the environment
    */
 
-  private _expression: MarkupNodeExpression;
+  public $expression: MarkupNodeExpression;
 
   /**
    * The DOM node type
@@ -61,27 +62,23 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   /**
    */
 
-  private _module: Sandbox2Module;
+  public $module: Sandbox2Module;
 
 
-  constructor(readonly nodeName: string, public ownerDocument: SyntheticDocument) {
+  constructor(readonly nodeName: string) {
     super();
   }
 
-  get module(): Sandbox2Module {
-    return this._module;
+  get ownerDocument(): SyntheticDocument {
+    return this.$ownerDocument;
   }
 
-  set $module(value: Sandbox2Module) {
-    this._module = value;
+  get module(): Sandbox2Module {
+    return this.$module;
   }
 
   get expression(): MarkupNodeExpression {
-    return this._expression;
-  }
-
-  set $expression(value: MarkupNodeExpression) {
-    this._expression = value;
+    return this.$expression;
   }
 
   get browser() {

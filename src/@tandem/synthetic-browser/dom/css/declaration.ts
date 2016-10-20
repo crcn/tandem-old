@@ -1,6 +1,12 @@
 import { kebabCase, camelCase } from "lodash";
+import { ISerializable, serializable } from "@tandem/common";
 
-export class SyntheticCSSStyleDeclaration {
+export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration {
+
+}
+
+@serializable()
+export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSyntheticCSSStyleDeclaration> {
     public alignContent: string | null;
     public alignItems: string | null;
     public alignSelf: string | null;
@@ -343,6 +349,14 @@ export class SyntheticCSSStyleDeclaration {
       }
 
       return buffer.join("");
+    }
+
+    serialize(): ISerializedSyntheticCSSStyleDeclaration {
+      return Object.assign({}, this);
+    }
+
+    deserialize(value: ISerializedSyntheticCSSStyleDeclaration) {
+      Object.assign(this, value);
     }
 
     clearAll() {

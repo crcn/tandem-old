@@ -36,7 +36,12 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
 
   constructor() {
     super();
-    this.element = this.createElement();
+
+    // may be running in a worker. Do not create an element if that's the case.
+    if (typeof document !== "undefined") {
+      this.element = this.createElement();
+    }
+
     this._targetObserver = new WrapBus(this.onEntityAction.bind(this));
   }
 
@@ -101,7 +106,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     }
     this._updating = true;
 
-    requestAnimationFrame(async () => {
+    (async () => {
       if (!this.entity) return;
       this._shouldUpdateAgain = false;
       await this.update();
@@ -110,7 +115,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
         this._shouldUpdateAgain = false;
         this.requestUpdate();
       }
-    });
+    })();
   }
 }
 
@@ -156,7 +161,7 @@ export class BaseDecoratorRenderer implements ISyntheticDocumentRenderer {
 }
 
 export class NoopRenderer extends BaseRenderer {
-  createElement() { return null; }
   update() { }
   requestUpdate() { }
+  createElement() { return undefined; }
 }
