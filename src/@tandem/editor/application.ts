@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { Application } from "@tandem/common/application";
-import { ApplicationServiceDependency } from "@tandem/common";
+import { ApplicationServiceDependency, isMaster } from "@tandem/common";
 import { 
   IFileSystem,
   RemoteFileSystem,
@@ -71,35 +71,51 @@ export class FrontEndApplication extends Application {
     // this is primarily for testing
     if (this.config.registerFrontEndDependencies === false) return;
 
+    const masterDependencies = [];
+    const workerDependencies = [];
+
+    if (isMaster) {
+      masterDependencies.push(
+
+        // components
+        rootComponentDependency,
+        layersPaneComponentDepency,
+
+        // tools
+        pointerToolDependency,
+
+        // services
+        workspaceDependency,
+
+        // dependencies
+        keyBindingsDependency,
+
+        // component tools
+        gridToolComponentDependency,
+        insertToolComponentDependency,
+        dragSelectComponentDependency,
+        selectorToolComponentDependency,
+        selectableToolComponentDependency,
+
+        clipboardServiceDependency,
+        keyBindingsServiceDependency,
+        rootComponentRendererDependency,
+
+      );
+    } else {
+      // workerDependencies.push();
+    }
+
     this.dependencies.register(
 
-      // components
-      rootComponentDependency,
-      layersPaneComponentDepency,
+      ...masterDependencies,
+      ...workerDependencies,
 
-      // component tools
-      gridToolComponentDependency,
-      insertToolComponentDependency,
-      dragSelectComponentDependency,
-      selectorToolComponentDependency,
-      selectableToolComponentDependency,
-
-      // services
-      workspaceDependency,
       editorServiceDependency,
       backEndServiceDependency,
       selectorServiceDependency,
       settingsServiceDependency,
       receiverServiceDependency,
-      clipboardServiceDependency,
-      keyBindingsServiceDependency,
-      rootComponentRendererDependency,
-
-      // tools
-      pointerToolDependency,
-
-      // dependencies
-      keyBindingsDependency,
 
       // extensions
       sassExtensionDependencies,

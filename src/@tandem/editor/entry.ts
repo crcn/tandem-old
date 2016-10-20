@@ -2,7 +2,7 @@ import "reflect-metadata";
 import "./styles";
 
 import config from "./config";
-import { isMaster, fork } from "@tandem/common/workers";
+import { isMaster, fork, hook } from "@tandem/common/workers";
 import { FrontEndApplication } from "./application";
 
 // none for now - need to figure out NULL exceptions with
@@ -20,9 +20,12 @@ if (isMaster) {
     }
 
     const app = window["app"] = new FrontEndApplication(config);
-
+    for (let i = NUM_WORKERS; i--; ) fork(app.bus);
     app.initialize();
   };
 
-  for (let i = NUM_WORKERS; i--; ) fork();
+} else {
+  const app = new FrontEndApplication(config);
+  hook(app.bus);
+  app.initialize();
 }
