@@ -38,8 +38,8 @@ export class RemoveAction extends Action {
 
 export class PropertyChangeAction extends Action {
   static readonly PROPERTY_CHANGE = "propertyChange";
-  constructor(readonly property: string, readonly newValue: any, readonly oldValue: any) {
-    super(PropertyChangeAction.PROPERTY_CHANGE);
+  constructor(readonly property: string, readonly newValue: any, readonly oldValue: any, bubbles?: boolean) {
+    super(PropertyChangeAction.PROPERTY_CHANGE, bubbles);
   }
 }
 

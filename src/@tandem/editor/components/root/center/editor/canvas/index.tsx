@@ -37,6 +37,32 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
   translate(left, top) {
     this.props.editor.transform.left = left;
     this.props.editor.transform.top = top;
+
+
+    const body = (this.refs as any).isolate.body;
+
+    // don't do this -- will foo with other UI parts outside of the
+    // preview
+    // const width = body.offsetWidth;
+    // const height = body.offsetHeight;
+    // const zoom   = this.props.editor.zoom;
+
+    // let viewport = BoundingRect.zeros();
+    // viewport.left = -left
+    // viewport.top = -top
+    // viewport.width = width
+    // viewport.height = height
+    // viewport = viewport.zoom(1/zoom);
+
+
+    // let visibleCount = 0;
+
+    // this.props.editor.documentEntity.querySelectorAll("*").forEach((entity) => {
+    //   const rect: BoundingRect = entity.source.getBoundingClientRect && entity.source.getBoundingClientRect();
+    //   if (rect) {
+    //     entity.visible = viewport.intersects(rect);
+    //   }
+    // });
   }
 
   pane(leftDelta, topDelta) {

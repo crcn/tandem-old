@@ -95,6 +95,14 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
     return this.change.getAttribute("title");
   }
 
+  protected onVisibilityChange() {
+    if (this.visible) {
+      this._artboardBrowser.sandbox.resume();
+    } else {
+      this._artboardBrowser.sandbox.pause();
+    }
+  }
+
   set title(value: string) {
     this.change.setAttribute("title", value);
   }

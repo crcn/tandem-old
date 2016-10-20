@@ -24,8 +24,10 @@ export class Sandbox2Module {
 export class Sandbox2 extends Observable {
   private _modules: any;
   private _entry: Bundle;
+  private _paused: boolean;
   private _mainModule: any;
   private _entryObserver: IActor;
+  private _shouldEvaluate: boolean;
   private _bundler: Bundler;
   private _global: any;
   private _exports: any;
@@ -35,6 +37,17 @@ export class Sandbox2 extends Observable {
     this._entryObserver = new WrapBus(this.onEntryAction.bind(this));
     this._modules = {};
     this._bundler = BundlerDependency.getInstance(_dependencies);
+  }
+
+  public pause() {
+    this._paused = true;
+  }
+
+  public resume() {
+    this._paused = false;
+    if (this._shouldEvaluate) {
+      this.evaluate();
+    }
   }
 
   get exports(): any {
@@ -93,11 +106,16 @@ export class Sandbox2 extends Observable {
 
   protected onEntryAction(action: Action) {
     if (action.type === BundleAction.BUNDLE_READY) {
+      if (this._paused) {
+        this._shouldEvaluate = true;
+        return;
+      }
       this.evaluate();
     }
   }
 
   public evaluate() {
+    this._shouldEvaluate = false;
     const exports = this._exports;
     const global  = this._global;
     this._global  = this.createGlobal();

@@ -3,12 +3,14 @@ import {
  ISandboxBundleEvaluator,
 } from "@tandem/sandbox";
 
-import { evaluateMarkupSync, SyntheticWindow, MarkupMimeTypeXMLNSDependency } from "@tandem/synthetic-browser";
+import { evaluateMarkup, SyntheticWindow, MarkupMimeTypeXMLNSDependency } from "@tandem/synthetic-browser";
 
 export class HTMLASTEvaluator implements ISandboxBundleEvaluator {
   evaluate(module: Sandbox2Module) {
 
+    console.info("evaluate AST", module.bundle.filePath);
+
     const window = <SyntheticWindow>module.sandbox.global;
-    module.exports = evaluateMarkupSync(module.bundle.content.value, window.document, MarkupMimeTypeXMLNSDependency.lookup(module.bundle.filePath, window.browser.dependencies), module);
+    module.exports = evaluateMarkup(module.bundle.content.value, window.document, MarkupMimeTypeXMLNSDependency.lookup(module.bundle.filePath, window.browser.dependencies), module);
   }
 }

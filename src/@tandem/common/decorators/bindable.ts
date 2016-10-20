@@ -1,7 +1,7 @@
 import { IObservable } from "@tandem/common/observable";
 import { PropertyChangeAction } from "@tandem/common/actions";
 
-export function bindable() {
+export function bindable(bubbles?: boolean) {
   return (proto: IObservable, property: string = undefined, descriptor: PropertyDescriptor = undefined) => {
     Object.defineProperty(proto, property, {
       get() {
@@ -11,7 +11,7 @@ export function bindable() {
         const oldValue = this[`__${property}`];
         this[`__${property}`] = newValue;
         if (oldValue !== newValue) {
-          this.notify(new PropertyChangeAction(property, newValue, oldValue));
+          this.notify(new PropertyChangeAction(property, newValue, oldValue, bubbles));
         }
       }
     });

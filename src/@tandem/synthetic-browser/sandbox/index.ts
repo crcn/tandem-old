@@ -1,7 +1,7 @@
 import { Action } from "@tandem/common";
 import {
   parseMarkup,
-  evaluateMarkupAsync,
+  evaluateMarkup,
   SyntheticWindow,
   SyntheticDOMNode,
   MarkupExpression,

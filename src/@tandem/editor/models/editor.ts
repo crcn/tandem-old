@@ -39,6 +39,12 @@ export class Editor implements IEditor {
     return this.browser && this.browser.document;
   }
 
+  get visibleEntities() {
+
+    // TODO
+    return null;
+  }
+
   get documentEntity() {
     return this.browser && this.browser.documentEntity;
   }

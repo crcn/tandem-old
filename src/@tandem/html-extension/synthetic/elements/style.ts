@@ -11,7 +11,7 @@ import {
 } from "@tandem/synthetic-browser";
 
 export class SyntheticHTMLStyle extends SyntheticDOMElement {
-  async $load() {
+  createdCallback() {
 
     // only allow text/css for now -- may allow for other types in the future, but this is
     // the only one that native DOM supports. All custom types should be handled in their respective

@@ -140,12 +140,6 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return this.childNodes.length !== 0;
   }
 
-  public async $load() {
-    for (const child of this.childNodes) {
-      await child.$load();
-    }
-  }
-
   abstract accept(visitor: IMarkupNodeVisitor);
   abstract cloneNode(deep?: boolean);
 }

@@ -9,6 +9,7 @@ import {
   patchArray,
   BubbleBus,
   filterTree,
+  bindable,
   BoundingRect,
   findTreeNode,
   TreeNodeAction,

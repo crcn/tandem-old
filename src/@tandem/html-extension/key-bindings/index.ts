@@ -8,7 +8,7 @@ import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { BaseCommand, BaseApplicationCommand } from "@tandem/common/commands";
-import { parseMarkup, evaluateMarkupSync, SyntheticDOMElement } from "@tandem/synthetic-browser";
+import { parseMarkup, evaluateMarkup, SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { ClassFactoryDependency, DependenciesDependency, Dependencies } from "@tandem/common/dependencies";
 import { EditorToolFactoryDependency, GlobalKeyBindingDependency } from "@tandem/editor/dependencies";
 
@@ -29,7 +29,7 @@ abstract class BaseInsertElementTool extends InsertTool {
   createSyntheticDOMElement() {
 
     // width & height need to be 0'd since some elements have a size by default such as iframes
-    return evaluateMarkupSync(parseMarkup(`<${this.options.nodeName} ${this.options.attributes ? this.options.attributes + " " : ""}style="${this.options.style}position:absolute;width:0px;height:0px;" />`).childNodes[0], this.editor.document) as SyntheticDOMElement;
+    return evaluateMarkup(parseMarkup(`<${this.options.nodeName} ${this.options.attributes ? this.options.attributes + " " : ""}style="${this.options.style}position:absolute;width:0px;height:0px;" />`).childNodes[0], this.editor.document) as SyntheticDOMElement;
   }
 }
 

@@ -20,7 +20,7 @@ import {
 } from "@tandem/common/dependencies";
 import {
   parseMarkup,
-  evaluateMarkupSync,
+  evaluateMarkup,
   SyntheticDOMElement
 } from "@tandem/synthetic-browser";
 
@@ -118,7 +118,7 @@ class InsertTextTool extends InsertTool {
   }
 
   createSyntheticDOMElement() {
-    return evaluateMarkupSync(parseMarkup(`<span style="position:absolute;white-space: nowrap;font-family: Helvetica;">Type Something</span>`).childNodes[0], this.editor.document) as SyntheticDOMElement;
+    return evaluateMarkup(parseMarkup(`<span style="position:absolute;white-space: nowrap;font-family: Helvetica;">Type Something</span>`).childNodes[0], this.editor.document) as SyntheticDOMElement;
   }
 }
 
