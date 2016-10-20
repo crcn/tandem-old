@@ -193,7 +193,7 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
     this._source.observe(this._sourceObserver);
 
     this._source.browser.observe(this._browserObserver);
-    this.notify(new PropertyChangeAction("source", this._source, oldSource));
+    this.notify(new PropertyChangeAction("source", this._source, oldSource, false));
   }
 
   get browser() {
@@ -306,11 +306,6 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 export class BaseDOMContainerEntity<T extends SyntheticDOMNode, U extends HTMLElement> extends BaseDOMNodeEntity<T, U> {
 
   evaluate() {
-    this.evaluateChildren();
-    super.evaluate();
-  }
-
-  evaluateChildren() {
     const childCount       = this.children.length;
 
     let target: SyntheticDOMNode = this.source;
@@ -333,19 +328,22 @@ export class BaseDOMContainerEntity<T extends SyntheticDOMNode, U extends HTMLEl
         child.evaluate();
       } else {
         const newChild = SyntheticDOMNodeEntityClassDependency.create(sourceChild, dependencies);
-        newChild.evaluate();
 
         if (child) {
           this.replaceChild(newChild, child);
         } else {
           this.appendChild(newChild);
         }
+
+        newChild.evaluate();
       }
     }
 
     while (this.children.length > sourceChildCount) {
       this.removeChild(this.lastChild);
     }
+
+    super.evaluate();
   }
 }
 

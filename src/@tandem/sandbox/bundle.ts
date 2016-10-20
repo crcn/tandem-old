@@ -88,7 +88,6 @@ export async function loadBundle(bundle: Bundle, content: IBundleContent, depend
   };
 }
 
-
 export interface ISerializeddBundle {
   collectionName: string;
   source: IBundleData;
@@ -102,8 +101,14 @@ class BundleSerializer implements ISerializer<Bundle, ISerializeddBundle> {
     };
   }
   deserialize({ collectionName, source }, dependencies: Dependencies) {
-    const bundle = new Bundle(source, collectionName, dependencies);
-    return bundle;
+    const bundler = BundlerDependency.getInstance(dependencies);
+    const instance = bundler.findByFilePath(source.filePath);
+    if (instance) {
+      instance.deserialize(source);
+      return instance;
+    } else {
+      return bundler.collection.create(source);
+    }
   }
 }
 

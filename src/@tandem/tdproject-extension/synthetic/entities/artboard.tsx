@@ -67,10 +67,10 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
   }
 
   evaluate() {
-    const ownerDocument = this.source.ownerDocument;
+    const ownerDocument = this.source.ownerDocument as SyntheticDocument;
 
-    // TODO - possibly move this logic to the parent where it checks for the default style sheet & automatically
-    // injects it into the document
+    // TODO - this is a nono - mutating the source document. Need to find another way to inject
+    // styles into the DOM renderer.
     if (ownerDocument.styleSheets.indexOf(DEFAULT_FRAME_STYLE_SHEET) === -1) {
       ownerDocument.styleSheets.push(DEFAULT_FRAME_STYLE_SHEET);
     }
@@ -123,10 +123,6 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
     return this.change.hasAttribute("inherit-css");
   }
 
-  get inheritGlobals() {
-    return this.change.getAttribute("inherit-globals");
-  }
-
   protected onBrowserDocumentEntityChange() {
     while (this.firstChild) this.removeChild(this.firstChild);
     this.appendChild(this._artboardBrowser.documentEntity);
@@ -137,6 +133,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
   }
 
   protected injectCSS() {
+
     const document = this._artboardBrowser.document;
     if (!this.inheritCSS || !document) return;
     if (this._combinedStyleSheet) {
@@ -156,34 +153,6 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
   }
 
   protected onBrowserWindowChange() {
-
-    let childWindowProps = {};
-
-    // these frame props accessible in the child window
-    for (const attribute of this.change.attributes) {
-      childWindowProps[attribute.name] = attribute.value;
-    }
-
-    let inheritGlobalKey = this.inheritGlobals;
-    if (inheritGlobalKey === "" || inheritGlobalKey === true) {
-      inheritGlobalKey = "window";
-    }
-
-    if (inheritGlobalKey) {
-      childWindowProps = Object.assign({}, this.browser.window[inheritGlobalKey], childWindowProps);
-    }
-
-    for (const key in childWindowProps) {
-
-      // respect scope here -- do not override any properties that currently exist
-      if (this._artboardBrowser.window[key] != null) continue;
-      this._artboardBrowser.window[key] = childWindowProps[key];
-    }
-
-    this.injectCSS();
-  }
-
-  protected onArtboardBrowserRevaluated() {
     this.injectCSS();
   }
 

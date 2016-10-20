@@ -43,7 +43,7 @@ export class SyntheticDOMNodeEntityClassDependency extends Dependency<entityType
   }
 
   static reuse(source: SyntheticDOMNode, entity: BaseDOMNodeEntity<any, any>, dependencies: Dependencies) {
-    if (entity && entity.source.compare(source)) {
+    if (entity && entity.source.nodeName === source.nodeName) {
       entity.source = source;
       return entity;
     } else {

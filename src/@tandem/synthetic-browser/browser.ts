@@ -65,6 +65,7 @@ export class SyntheticBrowserEnvironment extends Observable {
   private _documentEntity: BaseDOMNodeEntity<any, any>;
   private _documentEntityObserver: IActor;
   private _documentObserver: IActor;
+  private _updating: boolean;
 
   constructor(private _dependencies: Dependencies,  renderer?: ISyntheticDocumentRenderer) {
     super();
@@ -98,7 +99,11 @@ export class SyntheticBrowserEnvironment extends Observable {
   }
 
   private syncDocument() {
-    if (!isMaster) return;
+    if (!isMaster || this._updating) return;
+
+    // cover case where entity may accidentally mutate a source node
+    // (when it really shouldn't)
+    this._updating = true;
 
     const { document } = this._window;
     const documentEntity = this._documentEntity;
@@ -120,6 +125,8 @@ export class SyntheticBrowserEnvironment extends Observable {
     if (this._documentEntity !== documentEntity) {
       this.notify(new PropertyChangeAction("documentEntity", this._documentEntity, documentEntity));
     }
+
+    this._updating = false;
   }
 }
 
