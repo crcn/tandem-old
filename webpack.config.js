@@ -2,6 +2,7 @@ var webpack               = require("webpack");
 var path                  = require("path");
 var WebpackNotifierPlugin = require('webpack-notifier');
 var createVariants = require('parallel-webpack').createVariants;
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 function createConfig(options) {
 
@@ -40,7 +41,8 @@ function createConfig(options) {
       }),
       new WebpackNotifierPlugin({
         alwaysNotify: true
-      })
+      }),
+      new ExtractTextPlugin("styles.css")
     ],
     node: {
       __filename: true,
@@ -74,18 +76,16 @@ function createConfig(options) {
         // },
         {
           test: /\.scss$/,
-          loader: [
-            getModuleDirectory("style-loader"),
+          loader: ExtractTextPlugin.extract(getModuleDirectory("style-loader"), [
             getModuleDirectory("css-loader"),
             getModuleDirectory("sass-loader")
-          ].join("!")
+          ].join("!"))
         },
         {
           test: /\.css$/,
-          loader: [
-            getModuleDirectory("style-loader"),
+          loader: ExtractTextPlugin.extract(getModuleDirectory("style-loader"), [
             getModuleDirectory("css-loader")
-          ].join("!")
+          ].join("!"))
         },
       ]
     }
