@@ -44,7 +44,11 @@ import {
 
 import { WrapBus } from "mesh";
 
-export class SyntheticBrowser extends Observable {
+export interface ISyntheticBrowser {
+  open(url: string);
+}
+
+export class SyntheticBrowser extends Observable implements ISyntheticBrowser {
 
   private _sandbox2: Sandbox2;
   private _location: SyntheticLocation;
@@ -104,7 +108,7 @@ export class SyntheticBrowser extends Observable {
   }
 
   get bodyEntity() {
-    return findTreeNode(this.documentEntity, (entity) => entity.source === this.document.body);
+    return this.documentEntity && findTreeNode(this.documentEntity, (entity) => entity.source === this.document.body);
   }
 
   protected createSandboxGlobals(): SyntheticWindow {
@@ -176,8 +180,6 @@ export class SyntheticBrowser extends Observable {
     if (this._documentEntity !== documentEntity) {
       this.notify(new PropertyChangeAction("documentEntity", this._documentEntity, documentEntity));
     }
-
-    console.log("done evaluating ents for ", this._url);
 
     this.notify(new SyntheticBrowserAction(SyntheticBrowserAction.LOADED));
   }

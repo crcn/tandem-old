@@ -11,7 +11,6 @@ import {
   IASTNode,
   IExpression,
   BaseExpression,
-  register as registerSerializer,
 } from "@tandem/common";
 
 export enum MarkupExpressionKind {

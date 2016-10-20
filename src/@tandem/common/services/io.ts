@@ -4,6 +4,7 @@ import { Service } from "@tandem/common/services";
 import { IApplication } from "@tandem/common/application";
 import * as SocketIOBus from "mesh-socket-io-bus";
 import { loggable, document } from "@tandem/common/decorators";
+import { serialize, deserialize } from "@tandem/common/serialize";
 import { ParallelBus, AcceptBus } from "mesh";
 import { BaseApplicationService } from "@tandem/common/services";
 import { Dependencies, Injector } from "@tandem/common/dependencies";
@@ -51,8 +52,7 @@ export class IOService<T extends IApplication> extends BaseApplicationService<T>
       connection: connection
     }, {
       execute: (action) => {
-        action.remote = true;
-        return this.bus.execute(action);
+        return this.bus.execute(Object.assign(deserialize(action), { remote: true }));
       }
     });
 
@@ -60,7 +60,8 @@ export class IOService<T extends IApplication> extends BaseApplicationService<T>
       execute(action) {
         let data;
         if (!isPublicAction(action)) return;
-        return remoteBus.execute(JSON.parse(JSON.stringify(action)));
+        console.log(action);
+        return remoteBus.execute(serialize(action));
       }
     });
 

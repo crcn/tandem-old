@@ -5,6 +5,7 @@ import { FileCache, FileCacheItem } from "./file-cache";
 import { IFileResolver, IFileResolverOptions } from "./resolver";
 
 import {
+  isMaster,
   inject,
   IActor,
   Action,
@@ -206,7 +207,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   }
 
   async load() {
-    console.log("load bundle %s", this.filePath);
+    if (!isMaster) console.log("worker load bundle %s", this.filePath);
     const transformResult: IBundleLoaderResult = await this.loadTransformedContent();
     this._content         = transformResult;
 

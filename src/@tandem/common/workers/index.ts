@@ -1,11 +1,12 @@
 import * as RemoteBus from "mesh-remote-bus";
 import { IActor } from "../actors";
+import { serialize, deserialize } from "../serialize";
+import { Action, isWorkerAction, isMasterAction, isPublicAction } from "../actions";
 
 let loadedScripts;
 let lastScriptSrc;
 
 export const isMaster = typeof window !== "undefined";
-
 
 if (isMaster) {
   loadedScripts = document.querySelectorAll("script");
@@ -33,11 +34,18 @@ function getNextWorker(): Worker {
   return workers.length ? workers[currentWorkerIndex = (currentWorkerIndex + 1) % workers.length] : undefined;
 }
 
-/**
- */
+function createWorkerFilterBus(bus: IActor) {
+  return {
+    execute(action: Action) {
+      if (isWorkerAction(action) || isPublicAction(action)) {
+        return bus.execute(serialize(action) as any);
+      }
+    }
+  }
+}
 
-export function fork(localBus: IActor) {
-  const worker = new Worker(lastScriptSrc);
+
+function createWorkerBus(worker: any, localBus: IActor): IActor {
   return new RemoteBus({
     send(message) {
       worker.postMessage(message);
@@ -45,25 +53,23 @@ export function fork(localBus: IActor) {
     addListener(listener) {
       worker.addEventListener("message", (message: MessageEvent) => {
         listener(message.data);
-      })
+      });
     }
-  }, localBus);
+  }, localBus)
+}
+
+/**
+ */
+
+export function fork(localBus: IActor) {
+  return createWorkerFilterBus(createWorkerBus(new Worker(lastScriptSrc), localBus));
 }
 
 /**
  */
 
 export function hook(localBus: IActor) {
-  return new RemoteBus({
-    send(message) {
-      self.postMessage(message, undefined);
-    },
-    addListener(listener) {
-      self.addEventListener("message", (message: MessageEvent) => {
-        listener(message.data);
-      })
-    }
-  }, localBus);
+  return createWorkerFilterBus(createWorkerBus(self, localBus));
 }
 
 /**

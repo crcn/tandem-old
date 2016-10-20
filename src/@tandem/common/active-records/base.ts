@@ -3,7 +3,6 @@ import { inject } from "@tandem/common/decorators";
 import { IActor } from "@tandem/common/actors";
 import * as mongoid from "mongoid-js";
 import { IDisposable } from "@tandem/common/object";
-import { ISerializable } from "@tandem/common/serialize";
 import { IBrokerBus, TypeWrapBus } from "@tandem/common/busses";
 import { Observable, IObservable } from "@tandem/common/observable";
 import { WrapBus, AcceptBus, ParallelBus } from "mesh";
@@ -20,13 +19,15 @@ import {
   ActiveRecordAction,
 } from "@tandem/common/actions";
 
-export interface IActiveRecord extends IObservable, ISerializable, IInjectable, IDisposable {
+export interface IActiveRecord extends IObservable, IInjectable, IDisposable {
   collectionName: string;
   idProperty: string;
   save();
   insert();
   remove();
   update();
+  serialize();
+  deserialize(value: any);
 }
 
 // TODO - need to queue actions

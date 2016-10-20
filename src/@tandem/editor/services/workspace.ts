@@ -8,6 +8,7 @@ import {
   SyntheticDOMElement,
   SyntheticDOMRenderer,
   BaseDecoratorRenderer,
+  RemoteSyntheticBrowser,
   SyntheticRendererAction,
 } from "@tandem/synthetic-browser";
 import { Editor } from "@tandem/editor/models";
@@ -59,9 +60,11 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     this.logger.info("loading project file %s", filePath);
 
     const editor = new Editor();
+
+    new RemoteSyntheticBrowser(this._dependencies).open(filePath);
     const browser = editor.browser = new SyntheticBrowser(this._dependencies, new CanvasRenderer(editor, new SyntheticDOMRenderer()));
     browser.observe({ execute: (action) => this.bus.execute(action) });
-    await browser.open(filePath);
+    // await browser.open(filePath);
 
     this.app.editor = editor;
     this.bus.register(this.app.editor);

@@ -1,6 +1,7 @@
 import "reflect-metadata";
-import { Application } from "@tandem/common/application";
-import { ApplicationServiceDependency, isMaster } from "@tandem/common";
+import { Application, ApplicationServiceDependency, isMaster } from "@tandem/common";
+import { RemoteBrowserService } from "@tandem/synthetic-browser";
+import * as MemoryDSBus from "mesh-memory-ds-bus";
 import { 
   IFileSystem,
   RemoteFileSystem,
@@ -103,7 +104,11 @@ export class FrontEndApplication extends Application {
 
       );
     } else {
-      // workerDependencies.push();
+
+      this.bus.register(new MemoryDSBus());
+      workerDependencies.push(
+        new ApplicationServiceDependency("remoteBrowser", RemoteBrowserService)
+      );
     }
 
     this.dependencies.register(

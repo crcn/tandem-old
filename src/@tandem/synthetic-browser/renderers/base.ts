@@ -36,7 +36,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
 
   constructor() {
     super();
-    this.element = document.createElement("div");
+    this.element = this.createElement();
     this._targetObserver = new WrapBus(this.onEntityAction.bind(this));
   }
 
@@ -76,6 +76,10 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   }
 
   protected abstract update();
+
+  protected createElement() {
+    return document.createElement("div");
+  }
 
   protected setRects(rects: any) {
     this._rects = rects;
@@ -149,4 +153,10 @@ export class BaseDecoratorRenderer implements ISyntheticDocumentRenderer {
   protected onTargetRendererAction(action: Action) {
 
   }
+}
+
+export class NoopRenderer extends BaseRenderer {
+  createElement() { return null; }
+  update() { }
+  requestUpdate() { }
 }

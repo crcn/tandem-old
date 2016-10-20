@@ -126,6 +126,7 @@ export class ModuleHistory implements IInjectable {
   protected reset() {
     const data = {};
     const now = this._mtime = Date.now();
+    if (!this.browser.documentEntity) return;
 
     this.browser.documentEntity.querySelectorAll("*").forEach((entity) => {
       const module = entity.module;

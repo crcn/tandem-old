@@ -3,16 +3,40 @@ import { Action } from "./base";
 import { IActor } from "@tandem/common/actors";
 import { ITreeNode } from "@tandem/common/tree";
 import { IDisposable } from "@tandem/common/object";
+import { serializable } from "@tandem/common/serialize";
 export { Action };
 
 export function definePublicAction() {
   return function(target) {
+    serializable()(target);
     Reflect.defineMetadata("remoteAction", true, target);
   }
 }
 
 export function isPublicAction(action: Action) {
   return Reflect.getMetadata("remoteAction", action.constructor) === true;
+}
+
+export function defineMasterAction() {
+  return function(target) {
+    serializable()(target);
+    Reflect.defineMetadata("masterAction", true, target);
+  }
+}
+
+export function isMasterAction(action: Action) {
+  return Reflect.getMetadata("masterAction", action.constructor) === true;
+}
+
+export function defineWorkerAction() {
+  return function(target) {
+    serializable()(target);
+    Reflect.defineMetadata("workerAction", true, target);
+  }
+}
+
+export function isWorkerAction(action: Action) {
+  return Reflect.getMetadata("workerAction", action.constructor) === true;
 }
 
 export class ChangeAction extends Action {

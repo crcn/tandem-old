@@ -1,74 +1,55 @@
-export interface ISerializable {
-  serialize(): Object;
-  deserialize(value: Object): void;
+export interface ISerializedContent {
+  type: string;
+  value: any;
 }
 
-export interface ISerializer {
-  serialize(value: any): any;
-  deserialize(value: any): any;
-}
+const _deserializers = {};
+const _serializers   = {};
 
-const serializers = {};
+export function serializable(type?: string, serializer?: (value: any) => ISerializedContent, deserializer?: (value: ISerializedContent) => any) {
+  return function(ctor: { new(...rest:any[]): any }) {
+    if (canSerialize(ctor)) return;
 
-function getSerializer(serializerName: string): ISerializer {
-  if (!serializers[serializerName]) {
-    throw new Error(`Serializer does not exist for ${serializerName}.`);
+    if (!type) type = ctor.name;
+    if (_deserializers[type]) throw new Error(`Cannot override existing serializable "${type}".`);
+    Reflect.defineMetadata(`serialize:type`, type, ctor);
+    _serializers[type] = serializer || function(value: any) {
+      return JSON.parse(JSON.stringify(value));
+    }
+    _deserializers[type] = deserializer || function(value: any) {
+      const instance = new ctor();
+      return Object.assign(instance, value);
+    }
   }
-  return serializers[serializerName];
 }
 
-export function serialize(value: Object) {
-  return { name: value.constructor.name, data: getSerializer(value.constructor.name).serialize(value) };
+export function canSerialize(value: Object) {
+  return Reflect.hasMetadata("serialize:type", value.constructor);
 }
 
-export function deserialize(value: any) {
-  return getSerializer(value.name).deserialize(value.data);
-}
+export function serialize(value: any): ISerializedContent {
 
-export function serializeArray(value: Array<any>) {
-  return value.map((item) => serialize(item));
-}
-
-export function deserializeArray(value: Array<any>) {
-  return value.map((item) => deserialize(item));
-}
-
-export function register(clazz: { new(...rest: Array<any>): any }, serializer?: ISerializer) {
-
-  if (serializers[clazz.name] != null) {
-    throw new Error(`Serializer for "${clazz.name}" already exists."`);
+  if (!canSerialize(value)) {
+    // if (value.constructor) console.error(`Attempting to serialize unserializable ${value.constructor.name}.`);
+    return value;
   }
 
-  serializers[clazz.name] = serializer || {
-    serialize(value: any) {
-      return value.serialize();
-    },
-    deserialize(value: any) {
-      const inst = new clazz();
-      inst.deserialize(value);
-      return value;
-    }
-  };
+  const type = Reflect.getMetadata("serialize:type", value.constructor);
+
+  return {
+    type: type,
+    value: _serializers[type](value)
+  }
 }
 
-register(Array, {
-  serialize: serializeArray,
-  deserialize: deserializeArray
-});
+export function deserialize(content: ISerializedContent): any {
 
-register(Object, {
-  serialize(value: Object) {
-    const ret  = {};
-    for (let key in value) {
-      ret[key] = serialize(key);
-    }
-    return ret;
-  },
-  deserialize(value: Object) {
-    const ret  = {};
-    for (let key in value) {
-      ret[key] = deserialize(key);
-    }
-    return ret;
+  const deserialize = _deserializers[content.type];
+
+  if (!deserialize) {
+    // console.error(`Deserializer ${content.type} does not exist.`);
+    return content;
   }
-});
+
+  return deserialize(content.value);
+}

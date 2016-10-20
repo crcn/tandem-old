@@ -2,7 +2,15 @@ import { WrapBus } from "mesh";
 import { BundleAction } from "./actions";
 import { Bundle, Bundler } from "./bundle";
 import { SandboxModuleEvaluatorFactoryDependency, BundlerDependency } from "./dependencies";
-import { IActor, Action, Dependencies, PropertyChangeAction, Observable } from "@tandem/common";
+import {
+  IActor,
+  Action,
+  Observable,
+  IObservable,
+  Dependencies,
+  MainBusDependency,
+  PropertyChangeAction,
+} from "@tandem/common";
 
 export type sandboxBundleEvaluatorType = { new(): ISandboxBundleEvaluator };
 export interface ISandboxBundleEvaluator {

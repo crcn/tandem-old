@@ -1,6 +1,6 @@
 import { ISynthetic } from "./synthetic";
 import { IFileResolverOptions } from "./resolver";
-import { Action, IASTNode2, IActor, definePublicAction, IDisposable } from "@tandem/common";
+import { Action, IASTNode2, IActor, definePublicAction, defineMasterAction, defineWorkerAction, IDisposable } from "@tandem/common";
 
 export class Sandbox2Action extends Action {
   static readonly EVALUATED = "sandbox2Evaluated";
@@ -31,18 +31,6 @@ export class FileCacheAction extends Action {
   static readonly ADDED_ENTITY = "addedEntity";
   constructor(type: string, readonly item?: any) {
     super(type);
-  }
-}
-
-
-export class OpenFileAction extends Action {
-  static readonly OPEN_FILE = "openFile";
-  constructor(readonly path: string) {
-    super(OpenFileAction.OPEN_FILE);
-  }
-
-  static async execute(action: { path: string }, bus: IActor): Promise<string> {
-    return (await bus.execute(new OpenFileAction(action.path)).read()).value;
   }
 }
 
@@ -79,5 +67,4 @@ export class WatchFileAction extends Action {
     };
   }
 }
-
 

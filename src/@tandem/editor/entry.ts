@@ -9,6 +9,7 @@ import { FrontEndApplication } from "./application";
 // workers.
 const NUM_WORKERS = 1;
 
+
 if (isMaster) {
 
   window.onload = () => {
@@ -20,12 +21,12 @@ if (isMaster) {
     }
 
     const app = window["app"] = new FrontEndApplication(config);
-    for (let i = NUM_WORKERS; i--; ) fork(app.bus);
+    for (let i = NUM_WORKERS; i--; ) app.bus.register(fork(app.bus));
     app.initialize();
   };
 
 } else {
   const app = new FrontEndApplication(config);
-  hook(app.bus);
+  app.bus.register(hook(app.bus));
   app.initialize();
 }

@@ -4,7 +4,6 @@ import {
 } from "@tandem/common";
 
 import {
-  OpenFileAction,
   ReadFileAction,
   WatchFileAction,
 } from "./actions";
