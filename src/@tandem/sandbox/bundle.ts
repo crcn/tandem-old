@@ -1,9 +1,9 @@
 import * as path from "path";
 import { IFileSystem } from "./file-system";
+import { RawSourceMap } from "source-map";
 import { BundleAction } from "./actions";
 import { FileCache, FileCacheItem } from "./file-cache";
 import { IFileResolver, IFileResolverOptions } from "./resolver";
-import { RawSourceMap } from "source-map";
 
 
 import {

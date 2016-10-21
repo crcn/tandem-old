@@ -10,10 +10,11 @@ export class HTMLCSSModule extends BaseSandboxModule {
     const content = this.content.replace(/url\(['"]?(.*?)['"]?\)/g, (match, filePath) => {
       return `url("http://${window.location.host}/asset/` + encodeURIComponent(path.join(path.dirname(this.filePath), filePath.split(/\?|#/).shift())) + '")';
     });
-    this.ast = parseCSS(content);
+    // this.ast = parseCSS(content);
   }
   evaluate() {
-    return evaluateCSS(this.ast) as any;
+    return null;
+    // return evaluateCSS(this.ast) as any;
   }
 }
 

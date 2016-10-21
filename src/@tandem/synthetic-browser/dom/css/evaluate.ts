@@ -3,6 +3,7 @@ import {
   CSSDeclarationExpression
 } from "./ast";
 
+import * as postcss from "postcss";
 import { without } from "lodash";
 import { camelCase } from "lodash";
 import { SandboxModule } from "@tandem/sandbox";
@@ -14,63 +15,74 @@ import { SyntheticCSSStyleSheet } from "./style-sheet";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 
-export function evaluateCSS(expression: CSSExpression, module?: SandboxModule): SyntheticCSSStyleSheet {
+export function evaluateCSS(expression: postcss.Root, module?: SandboxModule): SyntheticCSSStyleSheet {
 
   const bundle = module && module.bundle;
 
-  function getStyleDeclaration(rules: CSSDeclarationExpression[]) {
+  function getStyleDeclaration(rules: postcss.Declaration[]) {
     const declaration = new SyntheticCSSStyleDeclaration();
     for (let i = 0, n = rules.length; i < n; i++) {
       const decl = rules[i];
-      declaration[camelCase(decl.name)] = decl.value;
+      declaration[camelCase(decl.prop)] = decl.value;
     }
 
     return declaration;
   }
 
-  function link<T extends SyntheticCSSObject<any>>(expression: any, synthetic: T): T {
-      synthetic.$expression = expression;
-      synthetic.$bundle     = bundle;
-      return synthetic;
+  function link<T extends SyntheticCSSObject>(expression: postcss.Node, synthetic: T): T {
+    synthetic.$location = expression.source;
+    return synthetic;
   }
 
   const visitor = {
-    visitRoot(root) {
-      return link(root, new SyntheticCSSStyleSheet(acceptRules(root.rules)));
+    visitRoot(root: postcss.Root) {
+      const ret = link(root, new SyntheticCSSStyleSheet(accpeptAll(root.nodes)));
+      ret.$bundle = bundle;
+      return ret;
     },
-    visitAtRule(atRule): any {
+    visitAtRule(atRule: postcss.AtRule): any {
 
       if (atRule.name === "keyframes") {
         const rule = link(atRule, new SyntheticCSSKeyframesRule(atRule.params));
-        rule.cssRules.push(...acceptRules(atRule.rules));
+        rule.cssRules.push(...accpeptAll(atRule.nodes));
         return rule;
       } else if (atRule.name === "media") {
         const rule = link(atRule, new SyntheticCSSMediaRule([atRule.params]));
-        rule.cssRules.push(...acceptRules(atRule.rules));
+        rule.cssRules.push(...accpeptAll(atRule.nodes));
         return rule;
       } else if (atRule.name === "font-face") {
         const rule = link(atRule, new SyntheticCSSFontFace());
-        rule.declaration = getStyleDeclaration(atRule.rules);
+        rule.declaration = getStyleDeclaration(atRule.nodes as postcss.Declaration[]);
         return rule;
       }
 
       return null;
     },
-    visitComment(comment) {
+    visitComment(comment: postcss.Comment) {
       return null;
     },
-    visitDeclaration(declaration) {
+    visitDeclaration(declaration: postcss.Declaration) {
       return null;
     },
-    visitRule(rule) {
-      return link(rule, new SyntheticCSSStyleRule(rule.selector, getStyleDeclaration(rule.declarations)));
+    visitRule(rule: postcss.Rule) {
+      return link(rule, new SyntheticCSSStyleRule(rule.selector, getStyleDeclaration(rule.nodes as postcss.Declaration[])));
     }
   };
 
-  function acceptRules(rules: CSSExpression[]) {
-    return without(rules.map((child) => child.accept(visitor)), null);
+  function accpeptAll(nodes: postcss.Node[]) {
+    return without(nodes.map((child) => accept(child)), null);
   }
 
-  return expression.accept(visitor);
+  function accept(expression: postcss.Node) {
+    switch(expression.type) {
+      case "root": return visitor.visitRoot(<postcss.Root>expression);
+      case "rule": return visitor.visitRule(<postcss.Rule>expression);
+      case "atrule": return visitor.visitAtRule(<postcss.AtRule>expression);
+      case "comment": return visitor.visitComment(<postcss.Comment>expression);
+      case "decl": return visitor.visitDeclaration(<postcss.Declaration>expression);
+    }
+  }
+
+  return accept(expression);
 }
 

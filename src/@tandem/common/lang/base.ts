@@ -14,6 +14,16 @@ export interface IASTNodeLoader extends IObservable {
   load(source: IASTNodeSource): IASTNode;
 }
 
+export interface ISourcePosition {
+  line: number;
+  column: number;
+}
+
+export interface ISourceLocation {
+  start?: ISourcePosition;
+  end?: ISourcePosition;
+}
+
 /**
  * represents a a part of a source string
  */

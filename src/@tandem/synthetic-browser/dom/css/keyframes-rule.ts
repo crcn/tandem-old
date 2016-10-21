@@ -1,7 +1,7 @@
-import { SyntheticCSSObject } from "./base";
 import { CSSATRuleExpression } from "./ast";
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
+import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { ISerializer, deserialize, serializable, serialize, ISerializedContent } from "@tandem/common";
 
 export interface ISerializedSyntheticCSSKeyframesRule {
@@ -23,8 +23,8 @@ class SyntheticCSSKeyframesRuleSerializer implements ISerializer<SyntheticCSSKey
   }
 }
 
-@serializable(new SyntheticCSSKeyframesRuleSerializer())
-export class SyntheticCSSKeyframesRule extends SyntheticCSSObject<CSSATRuleExpression> {
+@serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSKeyframesRuleSerializer()))
+export class SyntheticCSSKeyframesRule extends SyntheticCSSObject {
   public cssRules: SyntheticCSSStyleRule[];
   constructor(public name: string) {
     super();

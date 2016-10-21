@@ -1,6 +1,6 @@
 import { Bundle } from "@tandem/sandbox";
-import { SyntheticCSSObject } from "./base";
 import { CSSRuleExpression } from "./ast";
+import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { serializable, serialize, deserialize, ISerializer, ISerializedContent } from "@tandem/common";
 import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "./declaration";
 
@@ -21,10 +21,8 @@ class SyntheticCSSStyleRuleSerializer implements ISerializer<SyntheticCSSStyleRu
   }
 }
 
-export const syntheticCSSStyleRuleSerializer = new SyntheticCSSStyleRuleSerializer();
-
-@serializable(syntheticCSSStyleRuleSerializer)
-export class SyntheticCSSStyleRule extends SyntheticCSSObject<CSSRuleExpression> {
+@serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSStyleRuleSerializer()))
+export class SyntheticCSSStyleRule extends SyntheticCSSObject {
 
   constructor(public selector: string, public style: SyntheticCSSStyleDeclaration) {
     super();

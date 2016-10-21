@@ -1,9 +1,10 @@
 import * as sift from "sift";
 import { IActor } from "@tandem/common/actors";
 import { inject } from "@tandem/common/decorators";
-import { IDisposable } from "@tandem/common/object";
 import { WrapBus } from "mesh";
+import { isMaster } from "@tandem/common/workers";
 import { IBrokerBus } from "@tandem/common/busses";
+import { IDisposable } from "@tandem/common/object";
 import { IActiveRecord } from "./base";
 import { ObservableCollection } from "@tandem/common/observable";
 import { PostDSAction, DSFindAction } from "@tandem/common/actions";

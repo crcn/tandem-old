@@ -1,9 +1,7 @@
 import { kebabCase, camelCase } from "lodash";
 import { ISerializable, serializable } from "@tandem/common";
 
-export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration {
-
-}
+export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration { }
 
 @serializable()
 export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSyntheticCSSStyleDeclaration> {

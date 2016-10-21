@@ -1,15 +1,32 @@
-import { CSSExpression } from "./ast";
 import { Bundle } from "@tandem/sandbox";
+import { CSSExpression } from "./ast";
+import { ISourceLocation } from "@tandem/common";
+import { ISerializer, serialize, deserialize } from "@tandem/common";
 
-export class SyntheticCSSObject<T extends CSSExpression> {
+export class SyntheticCSSObject {
 
-  public $expression: T;
-  public $bundle: Bundle;
+  public $location: ISourceLocation;
 
-  get expression() {
-    return this.$expression;
+  get location() {
+    return this.$location;
   }
-  get bundle() {
-    return this.$bundle;
+}
+
+export interface ISerializeCSSObject {
+  location: ISourceLocation;
+  bundleFilePath: string;
+}
+
+export class SyntheticCSSObjectSerializer implements ISerializer<SyntheticCSSObject, ISerializeCSSObject> {
+  constructor(readonly childSerializer: ISerializer<SyntheticCSSObject, any>) { }
+  serialize(value: SyntheticCSSObject) {
+    return Object.assign(this.childSerializer.serialize(value), {
+      location: value.$location
+    });
+  }
+  deserialize(value: ISerializeCSSObject, dependencies) {
+    return Object.assign(this.childSerializer.deserialize(value, dependencies), {
+      $location: value.location
+    });
   }
 }

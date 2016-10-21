@@ -1,7 +1,7 @@
-import { SyntheticCSSObject } from "./base";
 import { CSSATRuleExpression } from "./ast";
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
+import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { ISerializer, serialize, deserialize, serializable, ISerializedContent } from "@tandem/common";
 
 export interface ISerializedSyntheticCSSMediaRule {
@@ -23,8 +23,8 @@ class SyntheticCSSMediaRuleSerializer implements ISerializer<SyntheticCSSMediaRu
   }
 }
 
-@serializable(new SyntheticCSSMediaRuleSerializer())
-export class SyntheticCSSMediaRule extends SyntheticCSSObject<CSSATRuleExpression> {
+@serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSMediaRuleSerializer()))
+export class SyntheticCSSMediaRule extends SyntheticCSSObject {
   public cssRules: SyntheticCSSStyleRule[];
 
   constructor(public media: string[]) {

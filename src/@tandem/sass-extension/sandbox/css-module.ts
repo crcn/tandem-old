@@ -22,20 +22,20 @@ export class SCSSModule extends BaseSandboxModule {
 
         // 3 = empty string exception
         if (result.status !== 0 && result.status !== 3) return reject(result);
-        resolve(this.ast = parseCSS(String(result.text || "")));
+        // resolve(this.ast = parseCSS(String(result.text || "")));
       });
     });
   }
 
   evaluate() {
-    return evaluateCSS(this.ast) as any;
+    // return evaluateCSS(this.ast) as any;
   }
 }
 
 export class HTMLSCSSDOMModule extends SCSSModule {
   async load() {
     await super.load();
-    (<SyntheticWindow>this.sandbox.global).window.document.styleSheets.push(super.evaluate());
+    // (<SyntheticWindow>this.sandbox.global).window.document.styleSheets.push(super.evaluate());
   }
   evaluate2() {
     return {};
