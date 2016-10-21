@@ -26,10 +26,9 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   }
   async open2(url: string) {
 
-    console.log("open remote", url);
-
     const remoteBrowserStream = this._bus.execute(new OpenRemoteBrowserAction(url));
 
+    // TODO - new StreamBus(execute(action), onAction)
     remoteBrowserStream.pipeTo({
       write: this.onRemoteBrowserAction.bind(this),
       close: () => {
