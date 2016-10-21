@@ -25,14 +25,6 @@ export class DOMNodeEntityCapabilities {
 
 export abstract class BaseVisibleDOMNodeEntity<T extends SyntheticDOMNode, U extends HTMLElement> extends BaseDOMContainerEntity<T, U> {
 
-  /**
-   * flag set by view component to  identify entities that are not
-   * visible. Used for optimizations.
-   */
-
-  private _visible: boolean;
-
-
   abstract position: IPoint;
   abstract capabilities: DOMNodeEntityCapabilities;
   abstract absoluteBounds: BoundingRect;
@@ -47,23 +39,9 @@ export abstract class BaseVisibleDOMNodeEntity<T extends SyntheticDOMNode, U ext
     return this.browser.renderer.fetchComputedStyle(this.uid);
   }
 
-  get visible(): boolean {
-    return this._visible;
-  }
-
-  set visible(value: boolean) {
-    if (this._visible === value) return;
-    this._visible = value;
-    this.onVisibilityChange();
-  }
-
   protected onRendered() {
     if (this.source instanceof SyntheticHTMLElement) {
       this.source.setBoundingClientRect(this._renderedBounds = this.browser.renderer.getBoundingRect(this.uid));
     }
-  }
-
-  protected onVisibilityChange() {
-    // override me
   }
 }

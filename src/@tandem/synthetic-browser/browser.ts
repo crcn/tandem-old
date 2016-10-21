@@ -30,12 +30,10 @@ import {
 } from "./entities";
 
 import {
+  Bundle,
   Bundler,
   Sandbox,
-  Bundle,
-  Sandbox2,
   BundlerDependency,
-  IModuleResolveOptions,
 } from "@tandem/sandbox";
 
 import {
@@ -193,7 +191,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
 
 export class SyntheticBrowser extends BaseSyntheticBrowser {
 
-  private _sandbox2: Sandbox2;
+  private _sandbox: Sandbox;
   private _entry: Bundle;
   private _bundler: Bundler;
 
@@ -201,19 +199,19 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     super(dependencies, renderer);
     this._bundler = BundlerDependency.getInstance(this._dependencies);
 
-    this._sandbox2    = new Sandbox2(dependencies, this.createSandboxGlobals.bind(this));
+    this._sandbox    = new Sandbox(dependencies, this.createSandboxGlobals.bind(this));
 
-    watchProperty(this._sandbox2, "exports", this.onSandboxExportsChange.bind(this));
-    watchProperty(this._sandbox2, "global", this.setWindow.bind(this));
+    watchProperty(this._sandbox, "exports", this.onSandboxExportsChange.bind(this));
+    watchProperty(this._sandbox, "global", this.setWindow.bind(this));
   }
 
-  get sandbox(): Sandbox2 {
-    return this._sandbox2;
+  get sandbox(): Sandbox {
+    return this._sandbox;
   }
 
   async open2(url: string) {
     this._entry = await this._bundler.bundle(url);
-    this._sandbox2.open(this._entry);
+    this._sandbox.open(this._entry);
   }
 
   get document() {
@@ -233,7 +231,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   }
 
   private onSandboxExportsChange(exports: any) {
-    const window = this._sandbox2.global as SyntheticWindow;
+    const window = this._sandbox.global as SyntheticWindow;
 
     let exportsElement: SyntheticDOMNode;
 

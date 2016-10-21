@@ -1,12 +1,12 @@
 import {
- Sandbox2Module,
+ SandboxModule,
  ISandboxBundleEvaluator,
 } from "@tandem/sandbox";
 
 import { evaluateCSS } from "@tandem/synthetic-browser";
 
 export class CSSASTEvaluator implements ISandboxBundleEvaluator {
-  evaluate(module: Sandbox2Module) {
+  evaluate(module: SandboxModule) {
     module.exports = evaluateCSS(module.bundle.content.value);
   }
 }

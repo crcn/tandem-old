@@ -13,7 +13,7 @@ import { FrontEndApplication } from "@tandem/editor/application";
 import { intersection, flatten } from "lodash";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { IInjectable, APPLICATION_SINGLETON_NS, IActor, Action } from "@tandem/common";
-import { SyntheticDOMElement, BaseVisibleDOMNodeEntity } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement, BaseVisibleDOMNodeEntity, BaseDOMNodeEntity } from "@tandem/synthetic-browser";
 
 class SelectableComponent extends React.Component<{
   entity: BaseVisibleDOMNodeEntity<any, any>,
@@ -138,15 +138,15 @@ export class SelectablesComponent extends React.Component<{
     // TODO - check if user is scrolling
     if (selection && editor.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
-    const allEntities = documentEntity.querySelectorAll("*").filter((entity) => entity["absoluteBounds"]) as any as BaseVisibleDOMNodeEntity<any, any>[];
+    const allEntities = documentEntity.querySelectorAll("*").filter((entity: BaseDOMNodeEntity<any, any>) => entity["absoluteBounds"]/* && entity.metadata.get(MetadataKeys.ENTITY_VISIBLE)*/) as any as BaseVisibleDOMNodeEntity<any, any>[];
 
-    const selectables = allEntities.map((entity, i) => (
+    const selectables = allEntities.map((entity) => (
       <SelectableComponent
         {...this.props}
         zoom={editor.zoom}
         selection={selection}
         entity={entity}
-        key={i}
+        key={entity.uid}
       />
     ));
 

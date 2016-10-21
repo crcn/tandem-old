@@ -1,112 +1,135 @@
-import { IModule } from "./module";
-import { FileCache } from "./file-cache";
-import { IFileResolver } from "./resolver";
-import { ModuleImporter, IModuleResolveOptions } from "./importer";
-import { FileResolverDependency, FileCacheDependency } from "./dependencies";
+import { WrapBus } from "mesh";
+import { BundleAction } from "./actions";
+import { Bundle, Bundler } from "./bundle";
+import { SandboxModuleEvaluatorFactoryDependency, BundlerDependency } from "./dependencies";
 import {
+  IActor,
   Action,
   Observable,
-  TypeWrapBus,
+  IObservable,
   Dependencies,
-  ChangeAction,
+  MainBusDependency,
   PropertyChangeAction,
 } from "@tandem/common";
 
-import {
+export type sandboxBundleEvaluatorType = { new(): ISandboxBundleEvaluator };
+export interface ISandboxBundleEvaluator {
+  evaluate(module: SandboxModule): void;
+}
 
-  SandboxModuleAction,
-  ModuleImporterAction,
-} from "./actions";
+export class SandboxModule {
+  public exports: any;
+  readonly editor: any;
+  constructor(readonly sandbox: Sandbox, readonly bundle: Bundle) {
+    this.exports = {};
+  }
 
-
-import { WrapBus } from "mesh";
-interface ISandboxEntry {
-  envMimeType: string;
-  filePath: string;
+  get filePath() {
+    return this.bundle.filePath;
+  }
 }
 
 export class Sandbox extends Observable {
-
-  private _entry: ISandboxEntry;
+  private _modules: any;
+  private _entry: Bundle;
+  private _paused: boolean;
+  private _mainModule: any;
+  private _entryObserver: IActor;
+  private _shouldEvaluate: boolean;
+  private _bundler: Bundler;
   private _global: any;
-  private _importer: ModuleImporter;
-  private _shouldResetAgain: boolean;
-  private _mainExports: any;
-  private _reloading: boolean;
-  private _fileCache: FileCache;
-  private _resolver: IFileResolver;
-  private _shouldReloadAgain: boolean;
+  private _exports: any;
 
-  constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}, getResolveOptions?: () => IModuleResolveOptions) {
+  constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}) {
     super();
-    this._resolver = FileResolverDependency.getInstance(_dependencies);
-    this._fileCache = FileCacheDependency.getInstance(_dependencies);
-    this._importer = new ModuleImporter(this, _dependencies, getResolveOptions);
-    this._importer.observe(new WrapBus(this.onImporterAction.bind(this)));
+    this._entryObserver = new WrapBus(this.onEntryAction.bind(this));
+    this._modules = {};
+    this._bundler = BundlerDependency.getInstance(_dependencies);
   }
 
-  get fileCache(): FileCache {
-    return this._fileCache;
+  public pause() {
+    this._paused = true;
   }
 
-  get fileResolver(): IFileResolver {
-    return this._resolver;
+  public resume() {
+    this._paused = false;
+    if (this._shouldEvaluate) {
+      this.evaluate();
+    }
+  }
+
+  get exports(): any {
+    return this._exports;
   }
 
   get global(): any {
-    return this._global || (this._global = this.createGlobal());
+    return this._global;
   }
 
-  get importer(): ModuleImporter {
-    return this._importer;
+  async open(bundle: Bundle) {
+    if (this._entry) {
+      this._entry.unobserve(this._entryObserver);
+    }
+    this._entry = bundle;
+    this._entry.observe(this._entryObserver);
+
+    if (this._entry.ready) {
+      this.evaluate();
+    }
   }
 
-  get mainExports(): any {
-    return this._mainExports;
+  get ready() {
+    return this._entry.ready;
   }
 
-  async open(envMimeType: string, filePath: string, relativePath?: string) {
-    this._importer.reset();
-
-    if (this._global) {
-      // TODO - check if disposable
-      this._global = undefined;
+  require(filePath: string): Object {
+    if (this._modules[filePath]) {
+      return this._modules[filePath].exports;
     }
 
-    this._entry = { envMimeType: envMimeType, filePath: filePath };
-    // this.notify(new SandboxAction(SandboxAction.OPENING_MAIN_ENTRY));
-    this._mainExports = await this._importer.import(envMimeType, filePath, relativePath);
-    // this.notify(new SandboxAction(SandboxAction.OPENED_MAIN_ENTRY));
+    const bundle = this._bundler.collection.find((entity) => entity.filePath === filePath);
+
+    if (!bundle) {
+      throw new Error(`${filePath} does not exist in the ${this._entry.filePath} bundle.`);
+    }
+
+    if (!bundle.ready) {
+      throw new Error(`Trying to require bundle ${filePath} that is not ready yet.`);
+    }
+
+    const module = this._modules[filePath] = new SandboxModule(this, bundle);
+    const now = Date.now();
+
+    // TODO - cache evaluator here
+    const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryDependency.find(null, bundle.content.type, this._dependencies);
+
+    if (!evaluatorFactoryDepedency) {
+      throw new Error(`Cannot evaluate ${filePath} in sandbox.`);
+    }
+
+    evaluatorFactoryDepedency.create().evaluate(module);
+
+    return this.require(filePath);
   }
 
-  protected onImporterAction(action: Action) {
-    if (action.type === ModuleImporterAction.MODULE_CONTENT_CHANGED) {
-      this.reload();
-    }
-    this.notify(action);
-  }
-
-  public async reload() {
-    if (this._reloading) {
-      this._shouldReloadAgain = true;
-      return;
-    }
-    this._reloading = true;
-
-    // parsing errors may occur -- catch them to ensure
-    // that they don't prohibit reload() from running next time
-    try {
-      if (this._entry) {
-        await this.open(this._entry.envMimeType, this._entry.filePath);
+  protected onEntryAction(action: Action) {
+    if (action.type === BundleAction.BUNDLE_READY) {
+      if (this._paused) {
+        this._shouldEvaluate = true;
+        return;
       }
-    } catch (e) {
-      console.error(e);
+      this.evaluate();
     }
+  }
 
-    this._reloading = false;
-    if (this._shouldReloadAgain) {
-      this._shouldReloadAgain = false;
-      await this.reload();
-    }
+  public evaluate() {
+    this._shouldEvaluate = false;
+    const exports = this._exports;
+    const global  = this._global;
+    this._global  = this.createGlobal();
+    this.notify(new PropertyChangeAction("global", this._global, global));
+    this._modules = {};
+    this._exports = this.require(this._entry.filePath);
+    this.notify(new PropertyChangeAction("exports", this._exports, exports));
   }
 }

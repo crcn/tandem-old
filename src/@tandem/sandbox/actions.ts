@@ -2,8 +2,8 @@ import { ISynthetic } from "./synthetic";
 import { IFileResolverOptions } from "./resolver";
 import { Action, IASTNode2, IActor, definePublicAction, defineMasterAction, defineWorkerAction, IDisposable } from "@tandem/common";
 
-export class Sandbox2Action extends Action {
-  static readonly EVALUATED = "sandbox2Evaluated";
+export class SandboxAction extends Action {
+  static readonly EVALUATED = "sandboxEvaluated";
 }
 
 export class BundleAction extends Action {

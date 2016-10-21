@@ -1,5 +1,4 @@
 import { IModule } from "./module";
-import { Sandbox } from "./sandbox";
 import { IFileSystem } from "./file-system";
 import { IFileResolver } from "./resolver";
 import { FileCache } from "./file-cache";
@@ -9,9 +8,9 @@ import {
   bundleLoaderType,
  } from "./bundle";
  import {
+  ISandboxBundleEvaluator,
   sandboxBundleEvaluatorType,
-  ISandboxBundleEvaluator
- } from "./sandbox2";
+ } from "./sandbox";
 import {
   Dependency,
   Dependencies,
@@ -21,7 +20,7 @@ import {
   createSingletonDependencyClass,
 } from "@tandem/common";
 
-export type moduleType = { new(filePath: string, content: string, sandbox: Sandbox): IModule };
+export type moduleType = { new(filePath: string, content: string, sandbox: any): IModule };
 
 // DEPRECATED
 export class SandboxModuleFactoryDependency extends ClassFactoryDependency {
@@ -38,7 +37,7 @@ export class SandboxModuleFactoryDependency extends ClassFactoryDependency {
     return [this.MODULE_FACTORIES_NS, envMimeType, mimeType].join("/");
   }
 
-  create(filePath: string, content: string, sandbox: Sandbox): IModule {
+  create(filePath: string, content: string, sandbox: any): IModule {
     return super.create(filePath, content, sandbox);
   }
 

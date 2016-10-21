@@ -3,11 +3,11 @@ import { IMarkupModule } from "@tandem/synthetic-browser/sandbox";
 import { SyntheticDOMNode } from "./node";
 import { SyntheticDocument } from "../document";
 import { SyntheticDOMContainer } from "./container";
-import { BaseSandboxModule, Sandbox2Module } from "@tandem/sandbox";
+import { BaseSandboxModule, SandboxModule } from "@tandem/sandbox";
 import { SyntheticDOMAttribute, SyntheticDOMElement } from "./element";
 import { IMarkupExpression, MarkupContainerExpression } from "./ast";
 
-export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: Sandbox2Module): any {
+export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: SandboxModule): any {
 
   function initialize(expression, synthetic: SyntheticDOMNode) {
 

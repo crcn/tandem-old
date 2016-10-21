@@ -2,7 +2,7 @@ import { IMarkupModule } from "@tandem/synthetic-browser/sandbox";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { MarkupNodeExpression } from "./ast";
-import { IModule, ISynthetic, Sandbox2Module, Bundle } from "@tandem/sandbox";
+import { IModule, ISynthetic, SandboxModule, Bundle } from "@tandem/sandbox";
 import * as assert from "assert";
 import {
   TreeNode,
@@ -60,7 +60,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   /**
    */
 
-  public $module: Sandbox2Module;
+  public $module: SandboxModule;
   public $bundle: Bundle;
 
 
@@ -80,7 +80,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
    * @deprecated
    */
 
-  get module(): Sandbox2Module {
+  get module(): SandboxModule {
     return this.$module;
   }
 

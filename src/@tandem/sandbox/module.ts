@@ -1,8 +1,6 @@
 import * as path from "path";
-import { Sandbox } from "./sandbox";
 import { WrapBus } from "mesh";
 import { IModuleEditor } from "./editor";
-import { ModuleImporter } from "./importer";
 import { SandboxModuleAction } from "./actions";
 import { Action, bindable, JS_MIME_TYPE, Observable, IObservable } from "@tandem/common";
 
@@ -14,7 +12,7 @@ export interface IModule extends IObservable {
 
   filePath: string;
 
-  sandbox: Sandbox;
+  sandbox: any;
 
   /**
    * The source content
@@ -46,7 +44,7 @@ export abstract class BaseSandboxModule extends Observable implements IModule {
 
   // TODO - constructor(readonly filePath: string, compiledContent: any, readonly sandbox: Sandbox);
 
-  constructor(readonly filePath: string, content: string, readonly sandbox: Sandbox) {
+  constructor(readonly filePath: string, content: string, readonly sandbox: any) {
     super();
     this.content = content;
     this.initialize();

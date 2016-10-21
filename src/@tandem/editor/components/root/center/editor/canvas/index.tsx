@@ -1,11 +1,13 @@
 import "./index.scss";
 import * as React from "react";
 import { IPoint } from "@tandem/common/geom";
+import { Editor } from "@tandem/editor/models";
 import { BoundingRect } from "@tandem/common/geom";
 import ToolsLayerComponent from "./tools";
-import PreviewLayerComponent from "./preview";
+import { BaseDOMNodeEntity } from "@tandem/synthetic-browser";
 import { IsolateComponent }  from "@tandem/editor/components/common";
-import { Editor } from "@tandem/editor/models";
+import PreviewLayerComponent from "./preview";
+import { MetadataKeys } from "@tandem/editor/constants";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { UpdateAction, IActor } from "@tandem/common";
 import { Dependencies, MainBusDependency } from "@tandem/common/dependencies";
@@ -38,30 +40,27 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
     this.props.editor.transform.left = left;
     this.props.editor.transform.top = top;
 
-
     const body = (this.refs as any).isolate.body;
 
-    // don't do this -- will foo with other UI parts outside of the
-    // preview
-    // const width = body.offsetWidth;
-    // const height = body.offsetHeight;
-    // const zoom   = this.props.editor.zoom;
+    const width = body.offsetWidth;
+    const height = body.offsetHeight;
+    const zoom   = this.props.editor.zoom;
 
-    // let viewport = BoundingRect.zeros();
-    // viewport.left = -left
-    // viewport.top = -top
-    // viewport.width = width
-    // viewport.height = height
-    // viewport = viewport.zoom(1/zoom);
+    let viewport = BoundingRect.zeros();
+    viewport.left = -left
+    viewport.top = -top
+    viewport.width = width
+    viewport.height = height
+    viewport = viewport.zoom(1/zoom);
 
 
-    // let visibleCount = 0;
+    let visibleCount = 0;
 
-    // this.props.editor.documentEntity.querySelectorAll("*").forEach((entity) => {
+    // if (!this.props.editor.documentEntity || true) return;
+
+    // this.props.editor.documentEntity.querySelectorAll("*").forEach((entity: BaseDOMNodeEntity<any, any>) => {
     //   const rect: BoundingRect = entity.source.getBoundingClientRect && entity.source.getBoundingClientRect();
-    //   if (rect) {
-    //     entity.visible = viewport.intersects(rect);
-    //   }
+    //   entity.metadata.set(MetadataKeys.ENTITY_VISIBLE, !rect || viewport.intersects(rect));
     // });
   }
 
