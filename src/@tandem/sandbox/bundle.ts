@@ -27,6 +27,7 @@ import {
   PropertyChangeAction,
   DependenciesDependency,
   ActiveRecordCollection,
+  MimeTypeAliasDependency,
 } from "@tandem/common";
 import { WrapBus } from "mesh";
 
@@ -83,7 +84,7 @@ export async function loadBundleContent(bundle: Bundle, content: IBundleLoaderRe
   // This ensures that they don't get re-used.
   const used = {};
 
-  while((dependency = BundlerLoaderFactoryDependency.find(current.type, dependencies)) && !used[dependency.id]) {
+  while((dependency = BundlerLoaderFactoryDependency.find(MimeTypeAliasDependency.lookup(current.type, dependencies), dependencies)) && !used[dependency.id]) {
     used[dependency.id] = true;
     current = await dependency.create(dependencies).load(bundle, current);
     if (current.dependencyPaths) {
@@ -301,6 +302,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   }
 
   async load() {
+
     const transformResult: IBundleLoaderResult = await this.loadTransformedContent();
     this._content         = transformResult.content;
     this._ast             = transformResult.ast;

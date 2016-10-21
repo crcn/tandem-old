@@ -1,7 +1,8 @@
 import {
-  loadBundleContent,
+  Bundle,
   IBundleLoader,
   IBundleContent,
+  loadBundleContent,
   IBundleLoaderResult,
 } from "@tandem/sandbox";
 
@@ -26,7 +27,8 @@ export class HTMLBundleLoader implements IBundleLoader {
   @inject(DependenciesDependency.NS)
   private _dependencies: Dependencies;
 
-  async load(bundle, { type, content }): Promise<IBundleLoaderResult> {
+  async load(bundle: Bundle, { type, content }): Promise<IBundleLoaderResult> {
+    console.log("html load", bundle.filePath);
 
     const dependencyPaths = [];
     const dependencies = this._dependencies;
@@ -60,23 +62,8 @@ export class HTMLBundleLoader implements IBundleLoader {
               type: type,
               content: textNode.nodeValue
             }, dependencies);
-
-            const [name, subtype] = result.type.split("/");
-            let newType = result.type;
-            let newValue = result.content;
-
-            // Dirty. This assumes that
-            // a: subtype is correct for the parent element
-            // b: toString() works for result.value
-            // TODO - need to have an appropriate content transformer here
-            // ContentTransformerDependency.transform(type, MimeTypeDependency.lookup(element.nodeName))
-            if (typeof result.content !== "string") {
-              newType  = "text/" + subtype;
-              newValue = result.content.toString();
-            }
-
-            textNode.nodeValue = newValue;
-            element.setAttribute("type", newType);
+            textNode.nodeValue = result.content;
+            element.setAttribute("type", result.type);
           }
         }
 

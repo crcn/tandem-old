@@ -1,6 +1,6 @@
 import { TDArtboardStageToolComponent } from "./components";
 import { ReactComponentFactoryDependency } from "@tandem/editor";
-import { MimeTypeDependency, HTML_MIME_TYPE } from "@tandem/common";
+import { MimeTypeDependency, HTML_MIME_TYPE, MimeTypeAliasDependency } from "@tandem/common";
 import { TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS } from "./constants";
 
 import {
@@ -53,10 +53,8 @@ export const tdprojectExtensionDependencies = [
   // sandbox
   new SandboxModuleFactoryDependency(HTML_MIME_TYPE, TDPROJECT_MIME_TYPE, MarkupModule),
 
-  // sandbox loaders
-  new BundlerLoaderFactoryDependency(TDPROJECT_MIME_TYPE, HTMLBundleLoader),
-
   // mime types
+  new MimeTypeAliasDependency(TDPROJECT_MIME_TYPE, HTML_MIME_TYPE),
   new MimeTypeDependency("tdproject", TDPROJECT_MIME_TYPE),
   new MimeTypeDependency("tdm", TDPROJECT_MIME_TYPE),
 

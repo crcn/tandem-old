@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as sass from "sass.js";
-import { inject, Queue, CSS_MIME_TYPE } from "@tandem/common";
+import { inject, Queue, CSS_MIME_TYPE, isMaster } from "@tandem/common";
 
 import { evaluateCSS, SyntheticWindow, CSSExpression } from "@tandem/synthetic-browser";
 import {
@@ -29,7 +29,6 @@ export class SCSSLoader implements IBundleLoader {
     // need to shove sass loader in a queue since it's a singleton.
     return _queue.add(() => {
       sass.importer(async (request, done) => {
-        console.log(request.current, bundle.filePath);
         const filePath = request.path || await this._fileResolver.resolve(request.current, path.dirname(bundle.filePath), {
           extensions: [".scss", ".css"],
           directories: []

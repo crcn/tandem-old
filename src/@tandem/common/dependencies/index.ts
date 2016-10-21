@@ -136,6 +136,24 @@ export class MimeTypeDependency extends Dependency<string> {
   }
 }
 
+export class MimeTypeAliasDependency extends Dependency<string> {
+  static readonly NS = "mimeTypeAliases";
+  constructor(readonly mimeType: string, readonly aliasMimeType: string) {
+    super(MimeTypeAliasDependency.getNamespace(mimeType), aliasMimeType);
+  }
+  clone() {
+    return new MimeTypeAliasDependency(this.mimeType, this.aliasMimeType);
+  }
+  static getNamespace(mimeType: string) {
+    return [MimeTypeAliasDependency.NS, mimeType].join("/");
+  }
+  static lookup(filePathOrMimeType: string, dependencies: Dependencies): string {
+    const mimeType = MimeTypeDependency.lookup(filePathOrMimeType, dependencies);
+    const dep = (mimeType && dependencies.query<MimeTypeAliasDependency>(this.getNamespace(mimeType))) || dependencies.query<MimeTypeAliasDependency>(this.getNamespace(filePathOrMimeType));
+    return (dep && dep.value) || mimeType || filePathOrMimeType;
+  }
+}
+
 export function createSingletonDependencyClass<T>(id: string, clazz: { new(...rest): T }) {
   return class SingletonDependency implements IDependency {
     static readonly NS: string = id;
