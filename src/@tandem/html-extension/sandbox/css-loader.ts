@@ -1,6 +1,7 @@
 import {
+  Bundle,
   IBundleLoader,
-  IBundleLoaderResult
+  IBundleLoaderResult,
 } from "@tandem/sandbox";
 
 import {CSS_AST_MIME_TYPE } from "@tandem/html-extension/constants";
@@ -10,11 +11,11 @@ import {
 } from "@tandem/synthetic-browser";
 
 export class CSSBundleLoader implements IBundleLoader {
-  async load(bundle, { type, value, map }): Promise<IBundleLoaderResult> {
+  async load(bundle: Bundle, { type, value, map }): Promise<IBundleLoaderResult> {
     return {
       type: CSS_AST_MIME_TYPE,
       map: map,
-      value: parseCSS(value)
+      value: parseCSS(value, map)
     };
   }
 }

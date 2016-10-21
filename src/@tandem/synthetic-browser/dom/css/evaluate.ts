@@ -30,7 +30,10 @@ export function evaluateCSS(expression: postcss.Root, module?: SandboxModule): S
   }
 
   function link<T extends SyntheticCSSObject>(expression: postcss.Node, synthetic: T): T {
-    synthetic.$location = expression.source;
+    synthetic.$location = {
+      start : expression.source.start,
+      end   : expression.source.end
+    };
     return synthetic;
   }
 
