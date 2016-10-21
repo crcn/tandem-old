@@ -74,11 +74,12 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
   }
 
   insert() {
-    const data = this.serialize();
-    if (data[this.idProperty] == null) {
-      data[this.idProperty] = String(mongoid());
+    this.willSave();
+    const newData = this.serialize();
+    if (newData[this.idProperty] == null) {
+      newData[this.idProperty] = String(mongoid());
     }
-    return this.fetch(new DSInsertAction(this.collectionName, data));
+    return this.fetch(new DSInsertAction(this.collectionName, newData));
   }
 
   remove() {
@@ -100,7 +101,20 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
     return true;
   }
 
+  /**
+   * Called immediately before update()
+   * @protected
+   */
+
   protected willUpdate() {
+
+  }
+
+  /**
+   * Called immediately before insert() and update()
+   */
+
+  protected willSave() {
 
   }
 
@@ -109,6 +123,7 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
       return Promise.resolve(this);
     }
     this.willUpdate();
+    this.willSave();
     const newData = this.serialize();
     return this.fetch(new DSUpdateAction(this.collectionName, newData, this.sourceQuery));
   }

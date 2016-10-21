@@ -7,8 +7,8 @@ import { IBrokerBus } from "@tandem/common/busses";
 import { IDisposable } from "@tandem/common/object";
 import { IActiveRecord } from "./base";
 import { ObservableCollection } from "@tandem/common/observable";
-import { PostDSAction, DSFindAction } from "@tandem/common/actions";
 import { Dependencies, MainBusDependency, IInjectable } from "@tandem/common/dependencies";
+import { PostDSAction, DSFindAction, DSUpdateAction, DSInsertAction } from "@tandem/common/actions";
 
 export class ActiveRecordCollection<T extends IActiveRecord, U> extends ObservableCollection<T> implements IInjectable {
   private _sync: IDisposable;
@@ -35,7 +35,6 @@ export class ActiveRecordCollection<T extends IActiveRecord, U> extends Observab
     return this;
   }
 
-
   async load() {
     this.push(...(await this._bus.execute(new DSFindAction(this.collectionName, this.query, true)).readAll()).map(this.createActiveRecord.bind(this)));
   }
@@ -58,7 +57,7 @@ export class ActiveRecordCollection<T extends IActiveRecord, U> extends Observab
   }
 
   private onGlobalAction(action: PostDSAction) {
-    if ((action.type === PostDSAction.DS_DID_UPDATE || action.type === PostDSAction.DS_DID_INSERT) && action.collectionName === this.collectionName && sift(this.query)(action.data)) {
+    if ((action.type === DSUpdateAction.DS_UPDATE || action.type === DSInsertAction.DS_INSERT || action.type === PostDSAction.DS_DID_UPDATE || action.type === PostDSAction.DS_DID_INSERT) && action.collectionName === this.collectionName && sift(this.query)(action.data)) {
       this._updateActiveRecord(action.data);
     }
   }
@@ -72,8 +71,7 @@ export class ActiveRecordCollection<T extends IActiveRecord, U> extends Observab
       return record;
     }
 
-    this.push(record = this.createActiveRecord(source));
-    return record;
+    return this.create(source);
   }
 }
 

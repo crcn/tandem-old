@@ -2,7 +2,7 @@
 <style type="text/scss">
   @import "./variables";
 
-  $gutter-background: #444;
+  $gutter-background: #f90;
 
   .td-gutter {
     height: 100%;

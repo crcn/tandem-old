@@ -30,10 +30,6 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     this._bundler = BundlerDependency.getInstance(dependencies);
   }
   async open2(url: string) {
-
-    // TODO - quick fix to ensure that master has enough time to catch up with workers.
-    this._bundle = await this._bundler.bundle(url);
-
     const remoteBrowserStream = this._bus.execute(new OpenRemoteBrowserAction(url));
 
     // TODO - new StreamBus(execute(action), onAction)

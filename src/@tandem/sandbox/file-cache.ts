@@ -18,6 +18,7 @@ import {
   DSRemoveAction,
   DSFindAllAction,
   BaseActiveRecord,
+  SingletonThenable,
   MainBusDependency,
   DependenciesDependency,
   ActiveRecordCollection,
@@ -52,6 +53,7 @@ interface IFileCacheItemQuery {
 export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   private _id: string;
+  private _cache: any;
 
   @bindable()
   public updatedAt: number;
@@ -70,7 +72,6 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   constructor(source: IFileCacheItemData, collectionName: string, private _fileSystem: IFileSystem, bus: IActor) {
     super(source, collectionName, bus);
-
   }
 
   get id() {
@@ -79,11 +80,12 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   serialize() {
     return {
-      _id      : this._id,
-      filePath : this.filePath,
-      url      : this.url,
-      mtime    : this.mtime,
-      metadata : this.metadata.data
+      _id       : this._id,
+      updatedAt : this.updatedAt,
+      filePath  : this.filePath,
+      url       : this.url,
+      mtime     : this.mtime,
+      metadata  : this.metadata.data
     };
   }
 
@@ -108,6 +110,10 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   async read() {
+    return this._cache || (this._cache = new SingletonThenable(this.read2.bind(this)));
+  }
+
+  private async read2() {
     if (/^file:\/\//.test(this.url)) {
       return await this._fileSystem.readFile(this.url.substr("file://".length));
     } else {
@@ -121,6 +127,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   setPropertiesFromSource({ _id, filePath, updatedAt, url, metadata, mtime }: IFileCacheItemData) {
+    this._cache   = undefined;
     this._id      = _id;
     this.filePath = filePath;
     this.url      = url;

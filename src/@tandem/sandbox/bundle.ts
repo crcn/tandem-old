@@ -4,8 +4,7 @@ import { RawSourceMap } from "source-map";
 import { BundleAction } from "./actions";
 import { FileCache, FileCacheItem } from "./file-cache";
 import { IFileResolver, IFileResolverOptions } from "./resolver";
-
-
+// import * as sm from "source-map";
 import {
   isMaster,
   inject,
@@ -29,10 +28,11 @@ import {
 } from "@tandem/common";
 import { WrapBus } from "mesh";
 
+
 import {
   BundlerDependency,
-  FileSystemDependency,
   FileCacheDependency,
+  FileSystemDependency,
   FileResolverDependency,
   BundlerLoaderFactoryDependency,
 } from "./dependencies";
@@ -195,16 +195,18 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     return this._content;
   }
 
-  willUpdate() {
+  willSave() {
     this._updatedAt = Date.now();
   }
 
   whenReady(): Promise<Bundle> {
     if (this.ready) return Promise.resolve(this);
     return new Promise((resolve, reject) => {
-      const observer = new WrapBus(() => {
-        this.unobserve(observer);
-        resolve(this);
+      const observer = new WrapBus((action: Action) => {
+        if (action.type === BundleAction.BUNDLE_READY && this.ready) {
+          this.unobserve(observer);
+          resolve(this);
+        }
       });
       this.observe(observer);
     });
@@ -250,6 +252,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     this._content         = transformResult.content;
     this._ast             = transformResult.ast;
     this._type            = transformResult.type;
+
     if (!this._fileCacheItem) {
       this._fileCacheItem   = await this._fileCache.item(this.filePath);
       this._fileCacheItem.observe(this._fileCacheItemObserver);
@@ -272,9 +275,12 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
       dependencyBundle.observe(this._dependencyObserver);
     }));
 
+    await this.save();
+
     this._ready = true;
     this.notifyBundleReady();
-    return await this.save();
+
+    return this;
   }
 
   private async loadTransformedContent() {
@@ -286,6 +292,10 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     };
 
     return loadBundle(this, current, this._dependencies);
+  }
+
+  test() {
+
   }
 
   shouldDeserialize(b: IBundleData) {
@@ -302,7 +312,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
 
     // fix case where a nested dependency BUNDLE_READY action is
     // emitted by dependent bundles.
-    if (this._readyLock) return;
+    if (this._readyLock || !this._ready) return;
     this._readyLock = true;
     setTimeout(() => this._readyLock = false, 0);
     this.notify(new BundleAction(BundleAction.BUNDLE_READY));

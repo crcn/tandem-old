@@ -104,8 +104,6 @@ export class FrontEndApplication extends Application {
 
       );
     } else {
-
-      // this.bus.register(new MemoryDSBus());
       workerDependencies.push(
         new ApplicationServiceDependency("remoteBrowser", RemoteBrowserService)
       );
