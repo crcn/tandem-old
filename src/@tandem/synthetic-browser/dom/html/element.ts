@@ -1,6 +1,6 @@
 import { BoundingRect, serializable } from "@tandem/common";
 import { SyntheticDocument } from "../document";
-import { SyntheticCSSStyleDeclaration, parseCSS, evaluateCSS } from "../css";
+import { SyntheticCSSStyleDeclaration } from "../css";
 import {
   parseMarkup,
   evaluateMarkup,

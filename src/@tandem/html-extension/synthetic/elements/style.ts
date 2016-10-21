@@ -16,6 +16,6 @@ export class SyntheticHTMLStyle extends SyntheticDOMElement {
     // only allow text/css for now -- may allow for other types in the future, but this is
     // the only one that native DOM supports. All custom types should be handled in their respective
     // loaders.
-    this.ownerDocument.styleSheets.push(evaluateCSS(parseCSS(this.textContent)));
+    this.ownerDocument.styleSheets.push(evaluateCSS(parseCSS(this.textContent), this.module));
   }
 }

@@ -78,7 +78,7 @@ export async function loadBundle(bundle: Bundle, content: IBundleContent, depend
   let dependency: BundlerLoaderFactoryDependency;
 
   while(dependency = BundlerLoaderFactoryDependency.find(current.type, dependencies)) {
-    current = await dependency.create(dependencies).load(bundle, content);
+    current = await dependency.create(dependencies).load(bundle, current);
     if (current.dependencyPaths) {
       dependencyPaths.push(...current.dependencyPaths);
     }
@@ -133,6 +133,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   private _fileSystem: IFileSystem;
   private _fileResolver: IFileResolver;
   private _bundler: Bundler;
+  private _sourceContent: string;
   private _fileCacheItem: FileCacheItem;
   private _fileCacheItemObserver: IActor;
   private _updatedAt: number;
@@ -152,6 +153,10 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
 
   get sourceFileCache(): FileCacheItem {
     return this._fileCacheItem;
+  }
+
+  get sourceContent(): string {
+    return this._sourceContent;
   }
 
   get id() {
@@ -272,7 +277,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
 
     let current: IBundleLoaderResult = {
       type: MimeTypeDependency.lookup(this.filePath, this._dependencies),
-      value: await (await this._fileCache.item(this.filePath)).read()
+      value: this._sourceContent = await (await this._fileCache.item(this.filePath)).read()
     };
 
     return loadBundle(this, current, this._dependencies);

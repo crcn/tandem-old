@@ -10,11 +10,11 @@ import {
 
 import {
   MediaExpression,
-  CSSStyleSheetExpression,
   CSSRuleExpression,
   KeyframesExpression,
   CSSATRuleExpression,
   CSSCommentExpression,
+  CSSStyleSheetExpression,
   CSSDeclarationExpression,
 } from "./ast";
 
@@ -30,8 +30,7 @@ const _cache = {};
 
 export function parseCSS(source: string, map?: RawSourceMap): CSSStyleSheetExpression {
   if (_cache[source]) return _cache[source].clone();
-  console.log(map);
-  return _cache[source] = convertPostCSSAST(postcss.parse(source, {  map: map as any as postcss.SourceMapOptions }));
+  return _cache[source] = convertPostCSSAST(postcss.parse(source, {  map: map as any as postcss.SourceMapOptions || true }));
 }
 
 export function convertPostCSSAST(root: postcss.Root, expressionClasses: any = {}) {

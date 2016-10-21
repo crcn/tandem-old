@@ -1,6 +1,8 @@
 import {
   CSS_MIME_TYPE,
-  HTML_MIME_TYPE
+  HTML_MIME_TYPE,
+  serialize,
+  deserialize
 } from "@tandem/common";
 
 import {
@@ -8,6 +10,8 @@ import {
   SyntheticCSSStyleSheet
 } from "@tandem/synthetic-browser";
 import * as path from "path";
+
+const _cache = {};
 
 export class SyntheticHTMLLink extends SyntheticHTMLElement {
 
@@ -21,7 +25,11 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
     const href    = this.getAttribute("href");
     const dependency = this.module.bundle.getDependencyByRelativePath(href);
 
-    this[rel]     = this.module.sandbox.require(dependency.filePath);
+    let value: any;
+
+    // TODO - possible serialize content here if there are no side effects
+    this[rel] = this.module.sandbox.require(dependency.filePath);
+
 
     if (this.stylesheet) {
       this.ownerDocument.styleSheets.push(this.stylesheet);
@@ -29,7 +37,8 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
       const shadow = this.attachShadow({ mode: "open" });
       this.import.querySelectorAll("*").forEach((element) => {
 
-        // only include importable elements
+        // only include importable elements -- this reduces the number of traversable
+        // items, which thus speeds up the app
         if (/style|link|template/.test(element.tagName)) {
           shadow.appendChild(element);
         }

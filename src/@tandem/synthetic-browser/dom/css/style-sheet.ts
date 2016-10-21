@@ -1,3 +1,5 @@
+import { CSSRuleExpression } from "./ast";
+import { SyntheticCSSObject } from "./base";
 import { SyntheticCSSStyleRule, ISerializedSyntheticCSSStyleRule } from "./style-rule";
 import {
   serialize,
@@ -6,6 +8,8 @@ import {
   serializable,
   ISerializedContent
 } from "@tandem/common";
+
+import { Bundle } from "@tandem/sandbox";
 
 export interface ISerializedCSSStyleSheet {
   rules: Array<ISerializedContent<ISerializedSyntheticCSSStyleRule>>;
@@ -23,8 +27,11 @@ class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleS
 }
 
 @serializable(new SyntheticCSSStyleSheetSerializer())
-export class SyntheticCSSStyleSheet {
-  constructor(readonly rules: SyntheticCSSStyleRule[]) { }
+export class SyntheticCSSStyleSheet extends SyntheticCSSObject<any> {
+
+  constructor(readonly rules: SyntheticCSSStyleRule[]) {
+    super();
+  }
 
   get cssText() {
     return this.rules.map((rule) => rule.cssText).join("\n");
