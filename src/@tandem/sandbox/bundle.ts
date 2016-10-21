@@ -105,12 +105,19 @@ export interface ISerializeddBundle {
   filePath: string
 }
 
+/**
+ * Bundle serializer particular to other parts of the codebase that hold the singleton
+ * reference to the target bundle object, and ensures that when deserialized, will also reference to a singleton bundle object.
+ */
+
 class BundleSerializer implements ISerializer<Bundle, string> {
   serialize(bundle: Bundle) {
     return bundle.filePath;
   }
   deserialize(filePath, dependencies: Dependencies) {
     const bundler = BundlerDependency.getInstance(dependencies);
+
+    // find an existing bundle object here, or add a new singleton bundle
     return bundler.findByFilePath(filePath) || bundler.collection.create({ filePath });
   }
 }
@@ -405,11 +412,10 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
 }
 
 /**
- * Recursively scans for entry dependencies and bundles them up into one encapsulated
- * package.
+ * Singleton bundler for mapping and transforming application source code
+ * into one bundle file.
  */
 
-// TODO - chance to bundler
 export class Bundler extends Observable {
 
   readonly collection: ActiveRecordCollection<Bundle, IBundleData>;

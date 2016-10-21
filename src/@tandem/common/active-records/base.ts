@@ -3,6 +3,7 @@ import { inject } from "@tandem/common/decorators";
 import { IActor } from "@tandem/common/actors";
 import * as mongoid from "mongoid-js";
 import { IDisposable } from "@tandem/common/object";
+import { ISerializable } from "@tandem/common/serialize";
 import { IBrokerBus, TypeWrapBus } from "@tandem/common/busses";
 import { Observable, IObservable } from "@tandem/common/observable";
 import { WrapBus, AcceptBus, ParallelBus } from "mesh";
@@ -19,7 +20,7 @@ import {
   ActiveRecordAction,
 } from "@tandem/common/actions";
 
-export interface IActiveRecord extends IObservable, IInjectable, IDisposable {
+export interface IActiveRecord<T> extends IObservable, IInjectable, IDisposable, ISerializable<T> {
   collectionName: string;
   idProperty: string;
   save();
@@ -32,18 +33,13 @@ export interface IActiveRecord extends IObservable, IInjectable, IDisposable {
    */
 
   serialize();
-
-  /**
-   * @deprecated
-   */
-
   deserialize(value: any);
 }
 
 // TODO - need to queue actions
 // TODO - add schema here
 
-export abstract class BaseActiveRecord<T> extends Observable implements IActiveRecord {
+export abstract class BaseActiveRecord<T> extends Observable implements IActiveRecord<T> {
   readonly idProperty: string = "_id";
 
   constructor(private _source: T, readonly collectionName: string, @inject(MainBusDependency.NS) readonly bus: IActor) {

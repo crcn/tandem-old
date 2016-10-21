@@ -10,7 +10,7 @@ import { ObservableCollection } from "@tandem/common/observable";
 import { Dependencies, MainBusDependency, IInjectable } from "@tandem/common/dependencies";
 import { PostDSAction, DSFindAction, DSUpdateAction, DSInsertAction } from "@tandem/common/actions";
 
-export class ActiveRecordCollection<T extends IActiveRecord, U> extends ObservableCollection<T> implements IInjectable {
+export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends ObservableCollection<T> implements IInjectable {
   private _sync: IDisposable;
   public collectionName: string;
   public query: Object;
@@ -22,7 +22,7 @@ export class ActiveRecordCollection<T extends IActiveRecord, U> extends Observab
     super();
   }
 
-  static create<T extends IActiveRecord, U>(collectionName: string, dependencies: Dependencies, createActiveRecord: (source: U) => T, query: any = {}): ActiveRecordCollection<T, U> {
+  static create<T extends IActiveRecord<any>, U>(collectionName: string, dependencies: Dependencies, createActiveRecord: (source: U) => T, query: any = {}): ActiveRecordCollection<T, U> {
     return new (this as any)().setup(collectionName, dependencies, createActiveRecord, query);
   }
 
