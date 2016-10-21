@@ -1,10 +1,21 @@
-import { BaseASTNode, IRange } from "@tandem/common";
+import { IASTNode, IRange, ISourceLocation, BaseExpression } from "@tandem/common";
 
 import { SyntheticDOMElement } from "../markup";
 
 export enum SelectorKind {
-  // ALL = 1;
-  // TODO
+  CLASS_NAME = 1,
+  ID_SELECTOR = CLASS_NAME + 1,
+  TAG_NAME = ID_SELECTOR + 1,
+  LIST = TAG_NAME + 1,
+  ALL = LIST + 1,
+  DESCENDENT = ALL + 1,
+  CHILD = DESCENDENT + 1,
+  ADJACENT = CHILD + 1,
+  PROCEEDING = ADJACENT + 1,
+  ATTRIBUTE = PROCEEDING + 1,
+  PSEUDO = ATTRIBUTE + 1,
+  ELEMENT = PSEUDO + 1,
+  PSEUDO_ELEMENT = ELEMENT + 1
 }
 
 export interface ISelectorVisitor {
@@ -23,14 +34,16 @@ export interface ISelectorVisitor {
   visitProceedingSiblingSelector(expression: ProceedingSiblingSelectorExpression);
 }
 
-export abstract class SelectorExpression extends BaseASTNode<SelectorExpression> {
+export abstract class SelectorExpression extends BaseExpression {
+  abstract kind: SelectorKind;
   abstract accept(visitor: ISelectorVisitor);
 }
 
 // .item { }
 export class ClassNameSelectorExpression extends SelectorExpression {
-  constructor(readonly className: string, position: IRange) {
-    super(position);
+  readonly kind = SelectorKind.CLASS_NAME;
+  constructor(readonly className: string, location: ISourceLocation) {
+    super(location);
   }
   accept(visitor: ISelectorVisitor) {
     return visitor.visitClassNameSelector(this);
@@ -39,8 +52,9 @@ export class ClassNameSelectorExpression extends SelectorExpression {
 
 // #item { }
 export class IDSelectorExpression extends SelectorExpression {
-  constructor(readonly id: string, position: IRange) {
-    super(position);
+  readonly kind = SelectorKind.ID_SELECTOR;
+  constructor(readonly id: string, location: ISourceLocation) {
+    super(location);
   }
   accept(visitor: ISelectorVisitor) {
     return visitor.visitIDSelector(this);
@@ -49,8 +63,9 @@ export class IDSelectorExpression extends SelectorExpression {
 
 // div { }
 export class TagNameSelectorExpression extends SelectorExpression {
-  constructor(readonly tagName: string, position: IRange) {
-    super(position);
+  readonly kind = SelectorKind.TAG_NAME;
+  constructor(readonly tagName: string, location: ISourceLocation) {
+    super(location);
   }
   accept(visitor: ISelectorVisitor) {
     return visitor.visitTagNameSelector(this);
@@ -59,8 +74,9 @@ export class TagNameSelectorExpression extends SelectorExpression {
 
 // div, span { }
 export class ListSelectorExpression extends SelectorExpression {
-  constructor(readonly selectors: SelectorExpression[], position: IRange) {
-    super(position);
+  readonly kind = SelectorKind.LIST;
+  constructor(readonly selectors: SelectorExpression[], location: ISourceLocation) {
+    super(location);
   }
   accept(visitor: ISelectorVisitor) {
     return visitor.visitListSelector(this);
@@ -69,6 +85,7 @@ export class ListSelectorExpression extends SelectorExpression {
 
 // * { }
 export class AllSelectorExpression extends SelectorExpression {
+  readonly kind = SelectorKind.ALL;
   accept(visitor: ISelectorVisitor) {
     return visitor.visitAllSelector(this);
   }
@@ -76,8 +93,9 @@ export class AllSelectorExpression extends SelectorExpression {
 
 // div span { }
 export class DescendentSelectorExpression extends SelectorExpression {
-  constructor(readonly ancestorSelector: SelectorExpression, readonly targetSelector: SelectorExpression, position: IRange) {
-    super(position);
+  readonly kind = SelectorKind.DESCENDENT;
+  constructor(readonly ancestorSelector: SelectorExpression, readonly targetSelector: SelectorExpression, location: ISourceLocation) {
+    super(location);
   }
   accept(visitor: ISelectorVisitor) {
     return visitor.visitDescendentSelector(this);
@@ -86,8 +104,9 @@ export class DescendentSelectorExpression extends SelectorExpression {
 
 // div > span { }
 export class ChildSelectorExpression extends SelectorExpression {
-  constructor(readonly parentSelector: SelectorExpression, readonly targetSelector: SelectorExpression, position: IRange) {
-    super(position);
+  readonly kind = SelectorKind.CHILD;
+  constructor(readonly parentSelector: SelectorExpression, readonly targetSelector: SelectorExpression, location: ISourceLocation) {
+    super(location);
   }
   accept(visitor: ISelectorVisitor) {
     return visitor.visitChildSelector(this);
@@ -96,8 +115,9 @@ export class ChildSelectorExpression extends SelectorExpression {
 
 // div + span { }
 export class AdjacentSiblingSelectorExpression extends SelectorExpression {
-  constructor(readonly startSelector: SelectorExpression, readonly targetSelector: SelectorExpression, position: IRange) {
-    super(position);
+  readonly kind = SelectorKind.ADJACENT;
+  constructor(readonly startSelector: SelectorExpression, readonly targetSelector: SelectorExpression, location: ISourceLocation) {
+    super(location);
   }
   accept(visitor: ISelectorVisitor) {
     return visitor.visitAdjacentSiblingSelector(this);
@@ -106,8 +126,9 @@ export class AdjacentSiblingSelectorExpression extends SelectorExpression {
 
 // div ~ span { }
 export class ProceedingSiblingSelectorExpression extends SelectorExpression {
-  constructor(readonly startSelector: SelectorExpression, readonly targetSelector: SelectorExpression, position: IRange) {
-    super(position);
+  readonly kind = SelectorKind.PROCEEDING;
+  constructor(readonly startSelector: SelectorExpression, readonly targetSelector: SelectorExpression, location: ISourceLocation) {
+    super(location);
   }
   accept(visitor: ISelectorVisitor) {
     return visitor.visitProceedingSiblingSelector(this);
@@ -120,8 +141,9 @@ export class ProceedingSiblingSelectorExpression extends SelectorExpression {
 // [attribute$=value]
 // [attribute*=value]
 export class AttributeSelectorExpression extends SelectorExpression {
-  constructor(readonly name: string, readonly operator: string, readonly value: string, position: IRange) {
-    super(position);
+  readonly kind = SelectorKind.ATTRIBUTE;
+  constructor(readonly name: string, readonly operator: string, readonly value: string, location: ISourceLocation) {
+    super(location);
   }
   accept(visitor: ISelectorVisitor) {
     return visitor.visitAttributeSelector(this);
@@ -129,8 +151,9 @@ export class AttributeSelectorExpression extends SelectorExpression {
 }
 
 export class PseudoSelectorExpression extends SelectorExpression {
-  constructor(readonly name: string, readonly parameterSelector: SelectorExpression, position: IRange) {
-    super(position);
+  readonly kind = SelectorKind.PSEUDO;
+  constructor(readonly name: string, readonly parameterSelector: SelectorExpression, location: ISourceLocation) {
+    super(location);
   }
   accept(visitor: ISelectorVisitor) {
     return visitor.visitPseudoSelector(this);
@@ -138,8 +161,9 @@ export class PseudoSelectorExpression extends SelectorExpression {
 }
 
 export class ElementSelectorsExpression extends SelectorExpression {
-  constructor(readonly selectors: SelectorExpression[], position: IRange) {
-    super(position);
+  readonly kind = SelectorKind.ELEMENT;
+  constructor(readonly selectors: SelectorExpression[], location: ISourceLocation) {
+    super(location);
   }
   accept(visitor: ISelectorVisitor) {
     return visitor.visitElementSelectors(this);
@@ -147,8 +171,9 @@ export class ElementSelectorsExpression extends SelectorExpression {
 }
 
 export class PseudoElementExpression extends SelectorExpression {
-  constructor(readonly elementSelector: SelectorExpression, readonly name: string, position: IRange) {
-    super(position);
+  readonly kind = SelectorKind.PSEUDO_ELEMENT;
+  constructor(readonly elementSelector: SelectorExpression, readonly name: string, location: ISourceLocation) {
+    super(location);
   }
   accept(visitor: ISelectorVisitor) {
     return visitor.visitPseudoElement(this);

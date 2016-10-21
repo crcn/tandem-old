@@ -1,6 +1,6 @@
 import { Action } from "@tandem/common/actions";
 import { IActor } from "@tandem/common/actors";
-import { IASTNode, File } from "@tandem/common";
+import { File } from "@tandem/common";
 import { toArray } from "@tandem/common/utils/array";
 import { IRange, IPoint } from "@tandem/common/geom";
 import { uniq } from "lodash";
@@ -74,20 +74,6 @@ export class SelectEntitiesAtSourceOffsetAction extends Action {
   constructor(readonly filePath: string, ...data: Array<IRange>) {
     super(SelectEntitiesAtSourceOffsetAction.SELECT_ENTITIES_AT_SOURCE_OFFSET);
     this.data = data;
-  }
-}
-
-export class FilesSelectedAction extends Action {
-  static readonly FILES_SELECTED = "filesSelected";
-  readonly items: Array<{ path: string, position: IRange }>;
-  constructor(...expressions: Array<IASTNode>) {
-    super(FilesSelectedAction.FILES_SELECTED);
-    this.items = uniq(expressions).map((expression) => {
-      return {
-        path: (<File>expression.source).path,
-        position: expression.position
-      };
-    });
   }
 }
 

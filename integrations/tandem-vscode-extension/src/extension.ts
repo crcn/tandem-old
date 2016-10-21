@@ -37,10 +37,10 @@ export async function activate(context: vscode.ExtensionContext) {
         // async [UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT](action: UpdateTemporaryFileContentAction) {
         //     _setEditorContent(action);
         // }
-        async [FilesSelectedAction.FILES_SELECTED](action: FilesSelectedAction) {
-            const document = await vscode.workspace.openTextDocument(action.items[0].filePath);
-            const editor = await vscode.window.showTextDocument(document);
-        }
+        // async [FilesSelectedAction.FILES_SELECTED](action: FilesSelectedAction) {
+        //     const document = await vscode.workspace.openTextDocument(action.items[0].filePath);
+        //     const editor = await vscode.window.showTextDocument(document);
+        // }
     }
 
     server.dependencies.register(

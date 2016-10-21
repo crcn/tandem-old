@@ -1,6 +1,6 @@
 import { ISynthetic } from "./synthetic";
 import { IFileResolverOptions } from "./resolver";
-import { Action, IASTNode2, IActor, definePublicAction, defineMasterAction, defineWorkerAction, IDisposable } from "@tandem/common";
+import { Action, IASTNode, IActor, definePublicAction, defineMasterAction, defineWorkerAction, IDisposable } from "@tandem/common";
 
 export class SandboxAction extends Action {
   static readonly EVALUATED = "sandboxEvaluated";

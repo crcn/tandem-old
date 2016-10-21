@@ -7,12 +7,11 @@ import * as assert from "assert";
 import {
   TreeNode,
   BubbleBus,
-  IASTNode,
   IComparable,
   findTreeNode,
   patchTreeNode,
 } from "@tandem/common";
-import { ISerializer, serializable, deserialize, serialize } from "@tandem/common";
+import { ISerializer, serializable, deserialize, serialize, IExpressionInfo } from "@tandem/common";
 
 import {
   DOMNodeType
@@ -54,26 +53,19 @@ export class SyntheticDOMNodeSerializer implements ISerializer<SyntheticDOMNode,
 
 export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, ISynthetic, IDOMNode {
 
+  abstract textContent: string;
   readonly namespaceURI: string;
 
   /**
    * TRUE if the node has been loaded
    */
 
-  private _loaded: boolean;
   private _ownerDocument: SyntheticDocument;
 
-
   /**
-   * The source expression that generated this node. May be NULL at times
-   * depending on the environment
    */
 
-  /**
-   * @deprecated. Use location instead.
-   */
-
-  public $expression: MarkupNodeExpression;
+  public $source: IExpressionInfo;
 
   /**
    * The DOM node type
@@ -84,8 +76,14 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   /**
    */
 
-  public $module: SandboxModule;
   public $bundle: Bundle;
+
+  /**
+   * Only set if the synthetic DOM node is running in a sandbox -- not always
+   * the case especially with serialization.
+   */
+
+  public $module: SandboxModule;
 
 
   constructor(readonly nodeName: string) {
@@ -100,26 +98,16 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return this.$bundle;
   }
 
-  /**
-   * @deprecated
-   */
-
-  get module(): SandboxModule {
-    return this.$module;
-  }
-
-  get expression(): MarkupNodeExpression {
-    return this.$expression;
+  get source(): IExpressionInfo {
+    return this.$source;
   }
 
   get browser() {
     return this.ownerDocument.defaultView.browser;
   }
 
-  get editor() {
-
-    // TODO - get editor from bundle
-    return this.module && this.module["editor"];
+  get module() {
+    return this.$module;
   }
 
   get childNodes() {
@@ -129,6 +117,8 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   get parentElement(): HTMLElement {
     const parent = this.parentNode;
     if (!parent || parent.nodeType !== DOMNodeType.ELEMENT) {
+
+      // NULL is standard here, otherwise undefined would be a better option.
       return null;
     }
     return parent as any as HTMLElement;
@@ -138,7 +128,6 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return this.parent;
   }
 
-
   addEventListener() {
     // TODO
   }
@@ -146,8 +135,6 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   contains(node: IDOMNode) {
     return !!findTreeNode(this, child => (<IDOMNode><any>child) === node);
   }
-
-  abstract textContent: string;
 
   compare(source: IDOMNode) {
     return Number(source.constructor === this.constructor && this.nodeName === source.nodeName);
@@ -184,8 +171,8 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   }
 
   protected linkClone(clone: SyntheticDOMNode) {
-    clone.$expression = this.$expression;
-    clone.$module     = this.$module;
+    clone.$source = this.$source;
+    clone.$bundle = this.$bundle;
     clone.$setOwnerDocument(this.ownerDocument);
   }
 

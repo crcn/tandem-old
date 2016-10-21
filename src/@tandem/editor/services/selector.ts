@@ -4,7 +4,6 @@ import { FrontEndApplication } from "@tandem/editor/application";
 import {
   loggable,
   bindable,
-  BaseASTNode,
   flattenTree,
   BaseApplicationService,
   ApplicationServiceDependency,

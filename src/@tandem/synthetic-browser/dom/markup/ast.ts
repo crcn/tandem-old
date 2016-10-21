@@ -1,16 +1,16 @@
-// TODO - visitor pattern here
-
 import * as sift from "sift";
+
 import {
   INamed,
   IRange,
-  cloneRange,
   bindable,
   TreeNode,
   patchable,
-  IASTNode,
+  cloneRange,
   IExpression,
   BaseExpression,
+  ISourceLocation,
+  cloneSourceLocation,
 } from "@tandem/common";
 
 export enum MarkupExpressionKind {
@@ -36,31 +36,31 @@ export interface IMarkupExpressionVisitor {
 
 export function serializeMarkupExpression(expression: MarkupExpression): Object {
   return expression.accept({
-    visitAttribute({ kind, name, value, position }) {
-      return { kind, name, value, position };
+    visitAttribute({ kind, name, value, location }) {
+      return { kind, name, value, location };
     },
-    visitComment({ kind, nodeValue, position  }) {
-      return { kind, nodeValue, position  };
+    visitComment({ kind, nodeValue, location  }) {
+      return { kind, nodeValue, location  };
     },
-    visitDocumentFragment({ kind, childNodes, position  }) {
-      return { kind, position, childNodes: childNodes.map(child => child.accept(this))}
+    visitDocumentFragment({ kind, childNodes, location  }) {
+      return { kind, location, childNodes: childNodes.map(child => child.accept(this))}
     },
-    visitText({ kind, nodeValue, position  }) {
-      return { kind, nodeValue, position  };
+    visitText({ kind, nodeValue, location  }) {
+      return { kind, nodeValue, location  };
     },
-    visitElement({ kind, attributes, childNodes, position  }) {
-      return { kind, position, attribute: attributes.map(attribute => attribute.accept(this)), childNodes: childNodes.map(child => child.accept(this)) };
+    visitElement({ kind, attributes, childNodes, location  }) {
+      return { kind, location, attribute: attributes.map(attribute => attribute.accept(this)), childNodes: childNodes.map(child => child.accept(this)) };
     }
   })
 }
 
 export function deserializeMarkupExpression(data: any): MarkupExpression {
   switch(data.kind) {
-    case MarkupExpressionKind.ATTRIBUTE: return new MarkupAttributeExpression(data.name, data.value, data.position);
-    case MarkupExpressionKind.COMMENT: return new MarkupCommentExpression(data.nodeValue, data.position);
-    case MarkupExpressionKind.TEXT: return new MarkupTextExpression(data.nodeValue, data.position);
-    case MarkupExpressionKind.FRAGMENT: return new MarkupFragmentExpression(data.childNodes.map(deserializeMarkupExpression), data.position);
-    case MarkupExpressionKind.ELEMENT: return new MarkupElementExpression(data.nodeName, data.attributes.map(deserializeMarkupExpression), data.childNodes.map(deserializeMarkupExpression), data.position);
+    case MarkupExpressionKind.ATTRIBUTE: return new MarkupAttributeExpression(data.name, data.value, data.location);
+    case MarkupExpressionKind.COMMENT: return new MarkupCommentExpression(data.nodeValue, data.location);
+    case MarkupExpressionKind.TEXT: return new MarkupTextExpression(data.nodeValue, data.location);
+    case MarkupExpressionKind.FRAGMENT: return new MarkupFragmentExpression(data.childNodes.map(deserializeMarkupExpression), data.location);
+    case MarkupExpressionKind.ELEMENT: return new MarkupElementExpression(data.nodeName, data.attributes.map(deserializeMarkupExpression), data.childNodes.map(deserializeMarkupExpression), data.location);
   }
 }
 
@@ -70,8 +70,8 @@ export interface IMarkupValueNodeExpression extends IMarkupExpression {
 
 export abstract class MarkupExpression extends BaseExpression implements IMarkupExpression {
   abstract readonly kind: MarkupExpressionKind;
-  constructor(position: IRange) {
-    super(position);
+  constructor(location: ISourceLocation) {
+    super(location);
   }
   abstract accept(visitor: IMarkupExpressionVisitor);
   abstract clone();
@@ -79,15 +79,15 @@ export abstract class MarkupExpression extends BaseExpression implements IMarkup
 
 export abstract class MarkupNodeExpression extends MarkupExpression {
   public parent: MarkupContainerExpression;
-  constructor(public nodeName: string, position: IRange) {
-    super(position);
+  constructor(public nodeName: string, location: ISourceLocation) {
+    super(location);
   }
   abstract clone();
 }
 
 export abstract class MarkupContainerExpression extends MarkupNodeExpression {
-  constructor(name: string, readonly childNodes: Array<MarkupNodeExpression>, position: IRange) {
-    super(name, position);
+  constructor(name: string, readonly childNodes: Array<MarkupNodeExpression>, location: ISourceLocation) {
+    super(name, location);
     childNodes.forEach((child) => child.parent = this);
   }
   removeChild(child: MarkupNodeExpression) {
@@ -114,8 +114,8 @@ export abstract class MarkupContainerExpression extends MarkupNodeExpression {
 
 export class MarkupFragmentExpression extends MarkupContainerExpression implements IMarkupExpression {
   readonly kind = MarkupExpressionKind.FRAGMENT;
-  constructor(childNodes: Array<MarkupNodeExpression>, position: IRange) {
-    super("#document-fragment", childNodes, position);
+  constructor(childNodes: Array<MarkupNodeExpression>, location: ISourceLocation) {
+    super("#document-fragment", childNodes, location);
   }
 
   accept(visitor: IMarkupExpressionVisitor) {
@@ -124,7 +124,7 @@ export class MarkupFragmentExpression extends MarkupContainerExpression implemen
   clone() {
     return new MarkupFragmentExpression(
       this.childNodes.map((child) => child.clone()),
-      cloneRange(this.position)
+      cloneSourceLocation(this.location)
     );
   }
 }
@@ -138,8 +138,8 @@ export class MarkupElementExpression extends MarkupContainerExpression {
     name: string,
     readonly attributes: Array<MarkupAttributeExpression>,
     childNodes: Array<MarkupNodeExpression>,
-    position: IRange) {
-    super(name, childNodes, position);
+    location: ISourceLocation) {
+    super(name, childNodes, location);
     attributes.forEach((attribute) => attribute.parent = this);
   }
   getAttribute(name: string) {
@@ -173,7 +173,7 @@ export class MarkupElementExpression extends MarkupContainerExpression {
       this.nodeName,
       this.attributes.map((child) => child.clone()),
       this.childNodes.map((child) => child.clone()),
-      cloneRange(this.position)
+      cloneSourceLocation(this.location)
     );
   }
 }
@@ -181,40 +181,40 @@ export class MarkupElementExpression extends MarkupContainerExpression {
 export class MarkupAttributeExpression extends MarkupExpression {
   readonly kind = MarkupExpressionKind.ATTRIBUTE;
   public parent: MarkupElementExpression;
-  constructor(readonly name: string, public value: any, position: IRange) {
-    super(position);
+  constructor(readonly name: string, public value: any, location: ISourceLocation) {
+    super(location);
   }
   accept(visitor: IMarkupExpressionVisitor) {
     return visitor.visitAttribute(this);
   }
   clone() {
-    return new MarkupAttributeExpression(this.name, this.value, cloneRange(this.position));
+    return new MarkupAttributeExpression(this.name, this.value, cloneSourceLocation(this.location));
   }
 }
 
 export class MarkupTextExpression extends MarkupNodeExpression implements IMarkupValueNodeExpression {
   readonly kind = MarkupExpressionKind.TEXT;
-  constructor(public nodeValue: string, position: IRange) {
-    super("#text", position);
+  constructor(public nodeValue: string, location: ISourceLocation) {
+    super("#text", location);
   }
   accept(visitor: IMarkupExpressionVisitor) {
     return visitor.visitText(this);
   }
   clone() {
-    return new MarkupTextExpression(this.nodeValue, cloneRange(this.position));
+    return new MarkupTextExpression(this.nodeValue, cloneSourceLocation(this.location));
   }
 }
 
 export class MarkupCommentExpression extends MarkupNodeExpression implements IMarkupValueNodeExpression {
   readonly kind = MarkupExpressionKind.COMMENT;
-  constructor(public nodeValue: string, position: IRange) {
-    super("#comment", position);
+  constructor(public nodeValue: string, location: ISourceLocation) {
+    super("#comment", location);
   }
   accept(visitor: IMarkupExpressionVisitor) {
     return visitor.visitComment(this);
   }
   clone() {
-    return new MarkupCommentExpression(this.nodeValue, cloneRange(this.position));
+    return new MarkupCommentExpression(this.nodeValue, cloneSourceLocation(this.location));
   }
 }
 

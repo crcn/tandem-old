@@ -152,18 +152,18 @@ export class MarkupEditor extends BaseSandboxModuleEditor<MarkupEdit> implements
   }
 
   [InsertChildNodeBeforeAction.INSERT_CHILD_NODE_BEFORE](action: InsertChildNodeBeforeAction) {
-    (<MarkupElementExpression>action.referenceNode.expression.parent).insertBefore(parseMarkup(action.child.toString()), action.referenceNode.expression);
+    // (<MarkupElementExpression>action.referenceNode.expression.parent).insertBefore(parseMarkup(action.child.toString()), action.referenceNode.expression);
   }
 
   [ReplaceChildNodeAction.REPLACE_CHILD_NODE](action: ReplaceChildNodeAction) {
-    (<MarkupElementExpression>action.oldChild.expression.parent).replaceChild(parseMarkup(action.newChild.toString()), action.oldChild.expression);
+    // (<MarkupElementExpression>action.oldChild.expression.parent).replaceChild(parseMarkup(action.newChild.toString()), action.oldChild.expression);
   }
 
   [SetNodeValueAction.SET_NODE_VALUE](action: SetNodeValueAction) {
-    (<IMarkupValueNodeExpression><any>action.node.expression).nodeValue = action.nodeValue;
+    // (<IMarkupValueNodeExpression><any>action.node.expression).nodeValue = action.nodeValue;
   }
 
   removeSynthetic(action: RemoveSyntheticAction) {
-    (<MarkupNodeExpression>action.item.expression).parent.removeChild(action.item.expression);
+    // (<MarkupNodeExpression>action.item.expression).parent.removeChild(action.item.expression);
   }
 }

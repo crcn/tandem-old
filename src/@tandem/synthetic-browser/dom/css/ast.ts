@@ -4,9 +4,8 @@ import {
   IRange,
   bindable,
   patchable,
-  IASTNode2,
+  IASTNode,
   cloneRange,
-  BaseASTNode,
 } from "@tandem/common";
 
 export interface ICSSExpressionVisitor {
@@ -25,7 +24,7 @@ export enum CSSExpressionKind {
   COMMENT      = DECLARATION + 1,
 }
 
-export abstract class CSSExpression implements IASTNode2 {
+export abstract class CSSExpression implements IASTNode {
   public parent: CSSExpression;
   abstract readonly kind: CSSExpressionKind;
 

@@ -23,13 +23,12 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
     const window = this.ownerDocument.defaultView;
     const rel     = this.getAttribute("rel") || "stylesheet";
     const href    = this.getAttribute("href");
-    const dependency = this.module.bundle.getDependencyByRelativePath(href);
+    const dependency = this.bundle.getDependencyByRelativePath(href);
 
     let value: any;
 
     // TODO - possible serialize content here if there are no side effects
     this[rel] = this.module.sandbox.require(dependency.filePath);
-
 
     if (this.stylesheet) {
       this.ownerDocument.styleSheets.push(this.stylesheet);

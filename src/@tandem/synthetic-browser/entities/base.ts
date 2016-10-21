@@ -46,14 +46,14 @@ let _i: number = 0;
 
 export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HTMLElement>  extends TreeNode<BaseDOMNodeEntity<any, any>> {
 
-  private _uid: string;
   private _source: T;
+  private _cache: any;
   protected _change: T;
+  private _uid: string;
   private _targetElement: U;
   private _changeObserver: IActor;
   private _sourceObserver: IActor;
   private _browserObserver: IActor;
-  private _cache: any;
   /**
    * extra information specific to the environment that this node is running un
    */
@@ -124,7 +124,7 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 
   async remove(): Promise<any> {
     return this.edit((edit) => {
-      edit.remove(this.source);
+      // edit.remove(this.source);
     });
   }
 

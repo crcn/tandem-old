@@ -3,7 +3,6 @@ import { ITyped } from "@tandem/common/object";
 import { INamed } from "@tandem/common/object";
 import { IBrokerBus } from "../busses";
 import { IApplication } from "@tandem/common/application";
-import { IASTNode } from "@tandem/common/lang";
 import { Action } from "../actions";
 
 import { File } from "@tandem/common/models";

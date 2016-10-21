@@ -1,5 +1,5 @@
 import {
-  loadBundle,
+  loadBundleContent,
   IBundleLoader,
   IBundleContent,
   IBundleLoaderResult,
@@ -56,7 +56,7 @@ export class HTMLBundleLoader implements IBundleLoader {
           const type     = element.getAttribute("type");
 
           if (type) {
-            const result = await loadBundle(bundle, {
+            const result = await loadBundleContent(bundle, {
               type: type,
               content: textNode.nodeValue
             }, dependencies);

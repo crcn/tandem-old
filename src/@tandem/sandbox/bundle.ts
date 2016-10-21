@@ -1,10 +1,11 @@
 import * as path from "path";
+import { values } from "lodash";
 import { IFileSystem } from "./file-system";
 import { RawSourceMap } from "source-map";
 import { BundleAction } from "./actions";
 import { FileCache, FileCacheItem } from "./file-cache";
 import { IFileResolver, IFileResolverOptions } from "./resolver";
-// import * as sm from "source-map";
+import * as sm from "source-map";
 import {
   isMaster,
   inject,
@@ -18,6 +19,7 @@ import {
   IObservable,
   serializable,
   Dependencies,
+  ISourceLocation,
   BaseActiveRecord,
   MainBusDependency,
   MimeTypeDependency,
@@ -64,19 +66,21 @@ export interface IBundleData {
   content?: string;
   type?: string;
   updatedAt?: number;
-  absoluteDependencyPaths?: string[];
-  relativeDependencyPaths?: Object;
+  absoluteDependencyPaths?: Object;
 }
 
 /**
  */
 
-export async function loadBundle(bundle: Bundle, content: IBundleLoaderResult, dependencies: Dependencies): Promise<IBundleLoaderResult> {
+export async function loadBundleContent(bundle: Bundle, content: IBundleLoaderResult, dependencies: Dependencies): Promise<IBundleLoaderResult> {
   const dependencyPaths: string[] = [];
 
   let current: IBundleLoaderResult = Object.assign({}, content);
 
   let dependency: BundlerLoaderFactoryDependency;
+
+  // Some loaders may return the same mime type (such as html-loader, and css-loader which simply return an AST node).
+  // This ensures that they don't get re-used.
   const used = {};
 
   while((dependency = BundlerLoaderFactoryDependency.find(current.type, dependencies)) && !used[dependency.id]) {
@@ -113,15 +117,10 @@ class BundleSerializer implements ISerializer<Bundle, string> {
 @serializable(new BundleSerializer())
 export class Bundle extends BaseActiveRecord<IBundleData> {
 
-  // TODO - this should be an integer instead of an id path. Maybe even a hash
-  // of the original content to prevent module duplicates.
-  readonly idProperty = "filePath";
-
   private _id: string;
   private _filePath: string;
   private _ready: boolean;
-  private _absoluteDependencyPaths: string[];
-  private _relativeDependencyPaths: Object;
+  private _absoluteDependencyPaths: Object;
   private _type: string;
   private _content: string;
   private _ast: any;
@@ -129,7 +128,6 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   private _fileSystem: IFileSystem;
   private _fileResolver: IFileResolver;
   private _bundler: Bundler;
-  private _sourceContent: string;
   private _fileCacheItem: FileCacheItem;
   private _fileCacheItemObserver: IActor;
   private _updatedAt: number;
@@ -147,49 +145,107 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     this._dependencyObserver = new WrapBus(this.onDependencyAction.bind(this));
   }
 
+  /**
+   * The file cache reference that contains
+   *
+   * @readonly
+   * @type {FileCacheItem}
+   */
+
   get sourceFileCache(): FileCacheItem {
     return this._fileCacheItem;
   }
 
-  get sourceContent(): string {
-    return this._sourceContent;
-  }
+  /**
+   * The UID of the bundle
+   *
+   * @readonly
+   */
 
   get id() {
     return this._id;
   }
 
-  get updatedAt() {
+  /**
+   * Timestamp of when the bundle was last persisted to the data store.
+   *
+   * @readonly
+   * @type {number}
+   */
+
+  get updatedAt(): number {
     return this._updatedAt;
   }
 
-  get ready() {
+  /**
+   * TRUE when the bundle, and all of its dependencies are loaded.
+   *
+   * @readonly
+   * @type {boolean}
+   */
+
+  get ready(): boolean {
     return this._ready;
   }
+
+  /**
+   * Abstract Syntax Tree node of the loaded content. Used particularly
+   * in the Sandbox.
+   *
+   * @readonly
+   */
 
   get ast() {
     return this._ast;
   }
 
+  /**
+   * The source file path
+   *
+   * @readonly
+   */
+
   get filePath() {
     return this._filePath;
   }
+
+  /**
+   * The relative to absolute dependency paths defined in this bundle
+   *
+   * @readonly
+   */
 
   get absoluteDependencyPaths() {
     return this._absoluteDependencyPaths;
   }
 
-  get relativeDependencyPaths() {
-    return this._relativeDependencyPaths;
-  }
+  /**
+   * The loaded bundle type
+   *
+   * @readonly
+   */
 
   get type() {
     return this._type;
   }
 
-  get dependencies(): Bundle[] {
-    return this._absoluteDependencyPaths.map((filePath) => this._bundler.findByFilePath(filePath));
+  /**
+   * The dependency bundle references
+   *
+   * @readonly
+   * @type {Bundle[]}
+   */
+
+  get dependencyBundles(): Bundle[] {
+    return values(this._absoluteDependencyPaths).map((filePath) => this._bundler.findByFilePath(filePath));
   }
+
+  /**
+   * The loaded bundle content
+   *
+   * @readonly
+   * @type {string}
+   */
 
   get content(): string {
     return this._content;
@@ -217,7 +273,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   }
 
   getAbsoluteDependencyPath(relativePath: string) {
-    const absolutePath = this._relativeDependencyPaths[relativePath];
+    const absolutePath = this._absoluteDependencyPaths[relativePath];
     if (absolutePath == null) {
       console.error(`Absolute path on bundle entry does not exist for ${relativePath}.`);
     }
@@ -232,22 +288,19 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
       filePath: this.filePath,
       updatedAt: this._updatedAt,
       absoluteDependencyPaths: this.absoluteDependencyPaths,
-      relativeDependencyPaths: this.relativeDependencyPaths,
     };
   }
 
-  setPropertiesFromSource({ _id, filePath, type, updatedAt, content, absoluteDependencyPaths, relativeDependencyPaths }: IBundleData) {
+  setPropertiesFromSource({ _id, filePath, type, updatedAt, content, absoluteDependencyPaths }: IBundleData) {
     this._id        = _id;
     this._type      = type;
     this._filePath  = filePath;
     this._updatedAt = updatedAt;
     this._content   = content;
-    this._absoluteDependencyPaths = absoluteDependencyPaths || [];
-    this._relativeDependencyPaths = relativeDependencyPaths || {};
+    this._absoluteDependencyPaths = absoluteDependencyPaths || {};
   }
 
   async load() {
-    if (!isMaster) console.log("worker load bundle %s", this.filePath);
     const transformResult: IBundleLoaderResult = await this.loadTransformedContent();
     this._content         = transformResult.content;
     this._ast             = transformResult.ast;
@@ -258,19 +311,17 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
       this._fileCacheItem.observe(this._fileCacheItemObserver);
     }
 
-    for (const dependencyBundle of this.dependencies) {
+    for (const dependencyBundle of this.dependencyBundles) {
       dependencyBundle.unobserve(this._dependencyObserver);
     }
 
-    this._relativeDependencyPaths = {};
-    this._absoluteDependencyPaths = [];
+    this._absoluteDependencyPaths = {};
     const dependencyPaths = transformResult.dependencyPaths;
 
     await Promise.all(dependencyPaths.map(async (dependencyPath) => {
       const resolvedPath = await this.resolveDependencyPath(dependencyPath);
-      this._relativeDependencyPaths[dependencyPath] = resolvedPath;
       if (!resolvedPath) return;
-      this._absoluteDependencyPaths.push(resolvedPath);
+      this._absoluteDependencyPaths[dependencyPath] = resolvedPath;
       const dependencyBundle = await this._bundler.bundle(resolvedPath);
       dependencyBundle.observe(this._dependencyObserver);
     }));
@@ -288,14 +339,19 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
 
     let current: IBundleLoaderResult = {
       type: MimeTypeDependency.lookup(this.filePath, this._dependencies),
-      content: this._sourceContent = await (await this._fileCache.item(this.filePath)).read()
+      content: await (await this._fileCache.item(this.filePath)).read()
     };
 
-    return loadBundle(this, current, this._dependencies);
+    return loadBundleContent(this, current, this._dependencies);
   }
 
-  test() {
+  async getExpression(location: ISourceLocation) {
+    const result = await this.loadTransformedContent();
+    const map = result.map as sm.RawSourceMap;
+    const consumer = new sm.SourceMapConsumer(map);
 
+
+    console.log(consumer.originalPositionFor(location.start));
   }
 
   shouldDeserialize(b: IBundleData) {
@@ -344,10 +400,6 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
       this.load();
     }
   }
-}
-
-class FileCacheBundleSynchronizer {
-
 }
 
 /**

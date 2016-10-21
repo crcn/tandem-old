@@ -17,19 +17,12 @@
     AdjacentSiblingSelectorExpression,
     ProceedingSiblingSelectorExpression,
   } = require("./ast");
-
-  function position() {
-    return {
-      start:peg$savedPos,
-      end:peg$currPos
-    };
-  }
 }
 
 Start = ListSelector
 
 ListSelector = first: PseudoCombinator rest:ListSelectorRest* {
-  return rest.length ? new ListSelectorExpression([first].concat(rest), position) : first;
+  return rest.length ? new ListSelectorExpression([first].concat(rest), location()) : first;
 }
 
 ListSelectorRest = _ "," _ selector: PseudoCombinator { return selector }
@@ -46,7 +39,7 @@ CombinatorSelector =
   ElementSelectors
 
 ElementSelectors = first: (AllSelector/ElementSelector) rest: ElementSelector* {
-  return rest.length ? new ElementSelectorsExpression([first].concat(rest), position()) : first;
+  return rest.length ? new ElementSelectorsExpression([first].concat(rest), location()) : first;
 }
 
 ElementSelector =
@@ -57,39 +50,39 @@ ElementSelector =
   TagNameSelector
 
 ClassNameSelector = "." className: Word {
-  return new ClassNameSelectorExpression(className, position());
+  return new ClassNameSelectorExpression(className, location());
 }
 
 IDSelector = "#" id: Word {
-  return new IDSelectorExpression(id, position());
+  return new IDSelectorExpression(id, location());
 }
 
 TagNameSelector = tagName: Word {
-  return new TagNameSelectorExpression(tagName, position());
+  return new TagNameSelectorExpression(tagName, location());
 }
 
 AllSelector = "*" {
-  return new AllSelectorExpression(position());
+  return new AllSelectorExpression(location());
 }
 
 DescendentSelector = parent:ElementSelectors " "+ descendent:CombinatorSelector {
-  return new DescendentSelectorExpression(parent, descendent, position());
+  return new DescendentSelectorExpression(parent, descendent, location());
 }
 
 ChildSelector = parent:ElementSelectors _ ">" _ descendent:CombinatorSelector {
-  return new ChildSelectorExpression(parent, descendent, position());
+  return new ChildSelectorExpression(parent, descendent, location());
 }
 
 AdjacentSiblingSelector = parent:ElementSelectors _ "+" _ descendent:CombinatorSelector {
-  return new AdjacentSiblingSelectorExpression(parent, descendent, position());
+  return new AdjacentSiblingSelectorExpression(parent, descendent, location());
 }
 
 ProceedingSiblingSelector = parent:ElementSelectors _ "~" _ descendent:CombinatorSelector {
-  return new ProceedingSiblingSelectorExpression(parent, descendent, position());
+  return new ProceedingSiblingSelectorExpression(parent, descendent, location());
 }
 
 PseudoSelector = ":" name: Word parameterSelector: ParameterSelector? {
-  return new PseudoSelectorExpression(name, parameterSelector, position());
+  return new PseudoSelectorExpression(name, parameterSelector, location());
 }
 
 ParameterSelector = "(" selector: PseudoCombinator ")" {
@@ -97,7 +90,7 @@ ParameterSelector = "(" selector: PseudoCombinator ")" {
 }
 
 PseudoElement = elementSelector: CombinatorSelector? "::" name: Word {
-  return new PseudoElementExpression(elementSelector, name, position());
+  return new PseudoElementExpression(elementSelector, name, location());
 }
 
 AttributeSelector = "[" selector: (AttributeSelectorWithValue/AttributeSelectorWithoutValue) "]" {
@@ -105,11 +98,11 @@ AttributeSelector = "[" selector: (AttributeSelectorWithValue/AttributeSelectorW
 }
 
 AttributeSelectorWithoutValue = name: AttributeName {
-  return new AttributeSelectorExpression(name, undefined, undefined, position());
+  return new AttributeSelectorExpression(name, undefined, undefined, location());
 }
 
 AttributeSelectorWithValue = name: AttributeName operator: ("="/"~="/"|="/"^="/"$="/"*=") value:(Word/String) {
-  return new AttributeSelectorExpression(name, operator, value, position());
+  return new AttributeSelectorExpression(name, operator, value, location());
 }
 
 AttributeName = [a-zA-Z0-9_-]+ { return text(); }

@@ -5,15 +5,6 @@ import { ITreeNode, TreeNode } from "@tandem/common/tree";
 import { IObservable, Observable } from "@tandem/common/observable";
 import { IDisposable, IComparable, IPatchable } from "@tandem/common/object";
 
-export interface IASTNodeSource {
-  offset?: number;
-  content: any;
-}
-
-export interface IASTNodeLoader extends IObservable {
-  load(source: IASTNodeSource): IASTNode;
-}
-
 export interface ISourcePosition {
   line: number;
   column: number;
@@ -24,92 +15,56 @@ export interface ISourceLocation {
   end?: ISourcePosition;
 }
 
-/**
- * represents a a part of a source string
- */
-
-export interface IASTNode extends ITreeNode<IASTNode>, IComparable {
-  position: IRange;
-  source: IASTNodeSource;
-}
-
-export interface IASTNode2 {
-  parent: IASTNode2;
+export interface IASTNode {
+  parent: IASTNode;
   readonly kind: number;
-  position: IRange;
   accept(visitor);
 }
 
+export function cloneSourcePosition({ line, column }: ISourcePosition): ISourcePosition {
+  return { line, column };
+}
 
-export interface IExpression extends IASTNode2 {
-  position: IRange;
+export function cloneSourceLocation({ start, end }: ISourceLocation): ISourceLocation {
+  return {
+    start: cloneSourcePosition(start),
+    end: cloneSourcePosition(end)
+  };
+}
+
+export interface IExpression extends IASTNode {
+  location: ISourceLocation;
+}
+
+export interface IExpressionInfo {
+  kind: any;
+  location: ISourceLocation;
 }
 
 const noSource = {
   content: ""
 };
 
-// DEPRECATED
-export abstract class BaseASTNode<T extends BaseASTNode<any>> extends TreeNode<T> implements IASTNode {
-
-  @patchable()
-  private _source: IASTNodeSource;
-
-  @patchable()
-  public position: IRange;
-
-  constructor(position: IRange) {
-    super();
-    this.position = position || { start: -1, end: -1 };
-  }
-
-  inRange(selection: IRange) {
-    const offset = this.source.offset || 0;
-    const start = this.position.start + offset;
-    const end   = this.position.end + offset;
-
-    return (selection.start >= start && selection.start <= end) ||
-    (selection.end   >= start && selection.end <= end) ||
-    (selection.start <= start && selection.end >= end);
-  }
-
-  get source(): IASTNodeSource {
-    return this._source;
-  }
-
-  set source(value: IASTNodeSource) {
-    this._source = value;
-    for (const child of this.children) {
-      child.source = value;
-    }
-  }
-
-  compare(node: IASTNode): number {
-    return Number(this.constructor === node.constructor);
-  }
-}
-
-
 export abstract class BaseExpression implements IExpression {
 
   abstract readonly kind: number;
 
-  public parent: IASTNode2;
-  public position: IRange;
+  public parent: IASTNode;
+  public location: ISourceLocation;
   public offset: number = 0;
 
-  constructor(position: IRange) {
-    this.position = position;
+  constructor(location: ISourceLocation) {
+    this.location = location;
   }
 
   inRange(selection: IRange) {
-    const offset = this.offset;
-    const start = this.position.start + offset;
-    const end   = this.position.end + offset;
+    // const offset = this.offset;
+    // const start = this.position.start + offset;
+    // const end   = this.position.end + offset;
 
-    return (selection.start >= start && selection.start <= end) ||
-    (selection.end   >= start && selection.end <= end) ||
-    (selection.start <= start && selection.end >= end);
+    // return (selection.start >= start && selection.start <= end) ||
+    // (selection.end   >= start && selection.end <= end) ||
+    // (selection.start <= start && selection.end >= end);
   }
 
   abstract accept(visitor);

@@ -1,10 +1,7 @@
 import * as postcss from "postcss";
-import { RawSourceMap } from "source-map";
 
-import {
-  IASTNode,
-  IRange
-} from "@tandem/common";
+import { IRange } from "@tandem/common";
+import { RawSourceMap } from "source-map";
 
 const _cache = {};
 
