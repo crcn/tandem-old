@@ -35,9 +35,9 @@ export abstract class BaseContentEditor<T> implements IContentEditor {
     return this.getFormattedContent(rootASTNode);
   }
 
-  abstract findTargetASTNode(root: T, target: ISynthetic): T;
-  abstract parseContent(filePath: string, content: string): Promise<T>|T;
-  abstract getFormattedContent(root: T): string;
+  protected abstract findTargetASTNode(root: T, target: ISynthetic): T;
+  protected abstract parseContent(filePath: string, content: string): Promise<T>|T;
+  protected abstract getFormattedContent(root: T): string;
 }
 
 export class EditAction extends Action {
@@ -143,8 +143,7 @@ export class FileEditor extends Observable {
         const oldContent    = await fileCache.read();
         const newContent    = await contentEditor.getEditedContent(filePath, oldContent, actionsByFilePath[filePath]);
 
-        console.info("edited", filePath, newContent);
-
+        console.log("new content", newContent);
         fileCache.setDataUrl(newContent);
         promises.push(fileCache.save());
       }

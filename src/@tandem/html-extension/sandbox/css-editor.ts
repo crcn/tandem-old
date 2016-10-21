@@ -1,8 +1,11 @@
 import * as postcss from "postcss";
+import * as postcssSassSyntax from "postcss-scss";
 import { Action, inject, Dependencies, DependenciesDependency, sourcePositionEquals } from "@tandem/common";
 import { SyntheticCSSStyleRule, SetRuleSelectorEditAction, parseCSS, SetDeclarationEditAction } from "@tandem/synthetic-browser";
 import { IContentEditor, BaseContentEditor, IFileEdit, BaseFileEdit, Bundle, loadBundleContent, ISynthetic } from "@tandem/sandbox";
 
+// TODO - may need to split this out into separate CSS editors. Some of this is specific
+// to SASS
 export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
   @inject(DependenciesDependency.NS)
@@ -10,30 +13,108 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
   [SetRuleSelectorEditAction.SET_RULE_SELECTOR](node: postcss.Rule, { targetSythetic, selector }: SetRuleSelectorEditAction) {
     const source = targetSythetic.source;
-    node.selector = selector;
+
+    // prefix here is necessary
+    const prefix = this.getRuleSelectorPrefix(node);
+    node.selector = (node.selector.indexOf("&") === 0 ? "&" : "") + selector.replace(prefix, "");
   }
 
   [SetDeclarationEditAction.SET_DECLARATION](node: postcss.Rule, { targetSythetic, name, newValue, newName }: SetDeclarationEditAction) {
     const source = targetSythetic.source;
-    console.log("SET DECL");
+
+    const shouldAdd = node.walkDecls((decl, index) => {
+      if (decl.prop === name) {
+        if (newValue && newValue) {
+          decl.prop = newName || name;
+          decl.value = newValue;
+        } else {
+          node.nodes.splice(index, 1);
+        }
+        return false;
+      }
+    }) !== false;
+
+    if (shouldAdd) {
+      node.nodes.push(postcss.decl({ prop: name, value: newValue }))
+    }
   }
 
-  findTargetASTNode(root: postcss.Root, { source }: ISynthetic) {
+  protected findTargetASTNode(root: postcss.Root, synthetic: ISynthetic) {
     let found: postcss.Node;
     root.walk((node: postcss.Node, index: number) => {
-      if (node.type === source.kind && sourcePositionEquals(node.source.start, source.start)) {
-        found = node;
+
+      // find the starting point for the node
+      if (node.type === synthetic.source.kind && sourcePositionEquals(node.source.start, synthetic.source.start)) {
+
+        // next find the actual node that the synthetic matches with -- the source position may not be
+        // entirely accurate for cases such as nested selectors.
+        found = this.findNestedASTNode(<any>node, synthetic);
         return false;
       }
     });
     return found;
   }
 
+  private findNestedASTNode(node: postcss.Container, synthetic: ISynthetic): postcss.Node {
+    if (isRuleNode(node)) {
+      return this.findMatchingRuleNode(<postcss.Rule>node, <SyntheticCSSStyleRule>synthetic);
+    } else {
+      return node;
+    }
+  }
+
+  /**
+   *
+   *
+   * @private
+   * @param {postcss.Rule} node
+   * @param {SyntheticCSSStyleRule} synthetic
+   * @param {string} [prefix='']
+   * @returns {postcss.Rule}
+   */
+
+  private findMatchingRuleNode(node: postcss.Rule, synthetic: SyntheticCSSStyleRule, prefix = ''): postcss.Rule {
+    let found: postcss.Rule;
+    const selector = prefix + node.selector.replace(/^\&/, "");
+    if (selector === synthetic.selector) return node;
+    node.each((child) => {
+      if (isRuleNode(child) && (found = this.findMatchingRuleNode(<postcss.Rule>child, synthetic, selector))) {
+        return false;
+      }
+    });
+
+    return found;
+  }
+
+  /**
+   * for nested selectors
+   *
+   * @private
+   * @param {postcss.Rule} node
+   * @returns
+   */
+
+  private getRuleSelectorPrefix(node: postcss.Rule){
+    let prefix = "";
+    let current = node;
+    while(current = <postcss.Rule>current.parent) {
+      if (!isRuleNode(current)) break;
+      prefix = current.selector.replace(/^&/, "") + prefix;
+    }
+    return prefix;
+  }
+
   parseContent(filePath: string, content: string) {
-    return parseCSS(content);
+
+    // TODO - find syntax based on mime type here
+    return parseCSS(content, undefined, postcssSassSyntax);
   }
 
   getFormattedContent(root: postcss.Rule) {
     return root.toString();
   }
+}
+
+function isRuleNode(node: postcss.Node) {
+  return node.type === "rule";
 }

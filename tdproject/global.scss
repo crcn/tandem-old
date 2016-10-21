@@ -1,5 +1,7 @@
 @import "./variables";
 
+
+
 html, body {
   font-family: $font-family-0;
   font-weight: 200;
@@ -10,10 +12,11 @@ html, body {
 input {
   border: none;
 }
-
-
 .a {
   &-b {
+    color: red;
+  }
+  &-c {
     color: red;
   }
 }
