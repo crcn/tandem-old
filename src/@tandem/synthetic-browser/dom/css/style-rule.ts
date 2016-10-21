@@ -1,6 +1,6 @@
 import { Bundle } from "@tandem/sandbox";
 import { CSSRuleExpression } from "./ast";
-import { BaseFileEdit, EditAction } from "@tandem/sandbox";
+import { BaseContentEdit, EditAction } from "@tandem/sandbox";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "./declaration";
 import { Action, serializable, serialize, deserialize, ISerializer, ISerializedContent } from "@tandem/common";
@@ -23,7 +23,7 @@ class SyntheticCSSStyleRuleSerializer implements ISerializer<SyntheticCSSStyleRu
 }
 
 // TODO - move this to synthetic-browser
-export class SyntheticCSSStyleRuleEdit extends BaseFileEdit<SyntheticCSSStyleRule> {
+export class SyntheticCSSStyleRuleEdit extends BaseContentEdit<SyntheticCSSStyleRule> {
   setSelector(selector: string) {
     return this.addAction(new SetRuleSelectorEditAction(this.target, selector));
   }

@@ -3,4 +3,3 @@ export * from "./html-loader";
 export * from "./html-evaluator";
 export * from "./css-loader";
 export * from "./css-evaluator";
-export * from "./css-editor";

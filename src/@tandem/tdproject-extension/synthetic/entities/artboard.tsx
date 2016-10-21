@@ -19,7 +19,7 @@ import {
   ISyntheticDocumentRenderer,
 } from "@tandem/synthetic-browser";
 
-import { IFileResolver, FileResolverDependency } from "@tandem/sandbox";
+import { IFileResolver, FileResolverDependency, BundlerDependency } from "@tandem/sandbox";
 
 import { pick } from "lodash";
 import * as path from "path";
@@ -57,18 +57,12 @@ const DEFAULT_FRAME_STYLE_SHEET = evaluateCSS(parseCSS(`
 // - [ ] fixtures
 export class TDArtboardEntity extends VisibleHTMLEntity {
 
+
   private _artboardBrowser: ISyntheticBrowser;
   private _combinedStyleSheet: SyntheticCSSStyleSheet;
-  private _artboardBrowserObserver: IActor;
-  private _documentStyleSheetObserver: IActor;
-
-  constructor(source: SyntheticHTMLElement) {
-    super(source);
-    // this._documentStyleSheetObserver = new WrapBus(this.onDocumentStyleSheetsAction.bind(this));
-    // this._artboardBrowserObserver = new WrapBus(this.onArtboardBrowserAction.bind(this));
-  }
 
   evaluate() {
+
     const ownerDocument = this.source.ownerDocument as SyntheticDocument;
 
     // TODO - this is a nono - mutating the source document. Need to find another way to inject
@@ -77,7 +71,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
       ownerDocument.styleSheets.push(DEFAULT_FRAME_STYLE_SHEET);
     }
 
-    // ownerDocument.styleSheets.observe(this._documentStyleSheetObserver);
+    const bundler = BundlerDependency.getInstance(this.browser.dependencies);
 
     if (!this._artboardBrowser) {
       const documentRenderer = new SyntheticDOMRenderer();
@@ -90,7 +84,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
     if (this.source.hasAttribute("src")) {
       const src = this.source.getAttribute("src");
       const window = ownerDocument.defaultView;
-      this._artboardBrowser.open(this.source.bundle.getAbsoluteDependencyPath(src));
+      this._artboardBrowser.open(bundler.findByFilePath(this.source.source.filePath).getAbsoluteDependencyPath(src));
     }
 
     this.injectCSS();
@@ -99,14 +93,6 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
   get title(): string {
     return this.change.getAttribute("title");
   }
-
-  // protected onVisibilityChange() {
-  //   if (this.visible) {
-  //     this._artboardBrowser.sandbox.resume();
-  //   } else {
-  //     this._artboardBrowser.sandbox.pause();
-  //   }
-  // }
 
   set title(value: string) {
     this.change.setAttribute("title", value);

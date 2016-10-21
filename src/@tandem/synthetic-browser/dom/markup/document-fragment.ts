@@ -1,6 +1,6 @@
 import { DOMNodeType } from "./node-types";
-import { IMarkupNodeVisitor } from "./visitor";
 import { SyntheticDocument } from "../document";
+import { IMarkupNodeVisitor } from "./visitor";
 import { SyntheticDOMContainer } from "./container";
 
 import { serializable, ISerializer, serialize, deserialize, ISerializedContent } from "@tandem/common";

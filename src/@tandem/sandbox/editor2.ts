@@ -1,4 +1,3 @@
-import { values } from "lodash";
 import { flatten } from "lodash";
 import { WrapBus } from "mesh";
 import { FileCache } from "./file-cache";
@@ -46,23 +45,34 @@ export class EditAction extends Action {
   }
 }
 
-export interface IFileEdit {
+/**
+ * Removes the target synthetic object
+ */
+
+export class RemoveEditAction extends EditAction {
+  static readonly REMOVE_EDIT = "removeEdit";
+  constructor(target: ISynthetic) {
+    super(RemoveEditAction.REMOVE_EDIT, target);
+  }
+}
+
+export interface IContentEdit {
   readonly actions: EditAction[];
 }
 
-export abstract class BaseFileEdit<T extends ISynthetic> {
-  private _actions: any;
+export abstract class BaseContentEdit<T extends ISynthetic> {
+  private _actions: EditAction[];
 
   constructor(readonly target: T) {
-    this._actions = {};
+    this._actions = [];
   }
 
   get actions(): EditAction[] {
-    return values(this._actions) as EditAction[];
+    return this._actions;
   }
 
   protected addAction(action: EditAction) {
-    this._actions[action.type] = action;
+    this._actions.push(action);
     return this;
   }
 }
@@ -70,14 +80,14 @@ export abstract class BaseFileEdit<T extends ISynthetic> {
 export class FileEditor extends Observable {
 
   private _editing: boolean;
-  private _edits: IFileEdit[];
+  private _edits: IContentEdit[];
   private _shouldEditAgain: boolean;
 
   constructor(readonly fileCache: FileCache, private _dependencies: Dependencies) {
     super();
   }
 
-  applyEdit(edit: IFileEdit): Promise<any> {
+  applyEdit(edit: IContentEdit): Promise<any> {
 
     if (this._edits == null) {
       this._shouldEditAgain = true;

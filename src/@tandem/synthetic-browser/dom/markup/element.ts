@@ -5,12 +5,12 @@ import { DOMNodeType } from "./node-types";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { parse as parseMarkup } from "./parser.peg";
-import { SyntheticDOMContainer } from "./container";
 import { MarkupElementExpression } from "./ast";
 import { syntheticElementClassType } from "./types";
 import { SyntheticDocumentFragment } from "./document-fragment";
 import { SyntheticCSSStyleDeclaration } from "../css";
 import { SyntheticDOMNode, SyntheticDOMNodeSerializer } from "./node";
+import { SyntheticDOMContainer, SyntheticDOMContainerEdit } from "./container";
 import {
   Action,
   BubbleBus,
@@ -27,6 +27,7 @@ import {
 } from "@tandem/common";
 
 import { Bundle } from "@tandem/sandbox";
+import { BaseContentEdit, EditAction } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticDOMAttribute {
   name: string;
@@ -98,8 +99,6 @@ export class SyntheticDOMAttributes extends ObservableCollection<SyntheticDOMAtt
   }
 }
 
-let _i = 0;
-
 export interface IDOMNodeEntityCapabilities {
   movable: boolean;
   resizable: boolean;
@@ -155,6 +154,19 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
   }
 }
 
+export class SetElementAttributeEditAction extends EditAction {
+  static readonly SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
+  constructor(target: SyntheticDOMElement, attributeName: string, newAttributeValue: string, newAttributeName?: string) {
+    super(SetElementAttributeEditAction.SET_ELEMENT_ATTRIBUTE_EDIT, target);
+  }
+}
+
+export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<SyntheticDOMElement> {
+  setAttribute(name: string, value: string, newName?: string) {
+    this.addAction(new SetElementAttributeEditAction(this.target, name, value, newName));
+  }
+}
+
 @serializable(new SyntheticDOMNodeSerializer(new SyntheticDOMElementSerializer()))
 export class SyntheticDOMElement extends SyntheticDOMContainer {
 
@@ -168,6 +180,10 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     super(tagName);
     this.attributes = new SyntheticDOMAttributes();
     this.attributes.observe(new WrapBus(this.onAttributesAction.bind(this)));
+  }
+
+  createEdit() {
+    return new SyntheticDOMElementEdit(this);
   }
 
   getAttribute(name: string) {

@@ -125,7 +125,7 @@ export class SandboxModuleEvaluatorFactoryDependency extends ClassFactoryDepende
 }
 
 export class ContentEditorFactoryDependency extends ClassFactoryDependency {
-  static readonly NS = "bundleEditConsumers";
+  static readonly NS = "contentEditors";
   constructor(readonly mimeType: string, clazz: contentEditorType) {
     super(ContentEditorFactoryDependency.getNamespace(mimeType), clazz);
   }

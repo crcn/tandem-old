@@ -4,19 +4,20 @@ import { CSS_MIME_TYPE, HTML_MIME_TYPE, JS_MIME_TYPE } from "@tandem/common";
 // sandbox
 import {
   HTMLCSSModule,
+  CSSASTEvaluator,
+  CSSBundleLoader,
   HTMLCSSDOMModule,
   HTMLBundleLoader,
   HTMLASTEvaluator,
-  CSSASTEvaluator,
-  CSSBundleLoader,
-  CSSEditor,
 } from "./sandbox";
 
 import {
+  CSSEditor,
   HTML_XMLNS,
   SyntheticDOMElementClassDependency,
   SyntheticDOMNodeEntityClassDependency,
 } from "@tandem/synthetic-browser";
+
 
 import { 
   HTMLImageEntity,

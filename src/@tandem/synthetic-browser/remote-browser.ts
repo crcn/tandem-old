@@ -45,8 +45,10 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   onRemoteBrowserAction(action: any) {
     if (action.type === SERIALIZED_DOCUMENT) {
+      const now = Date.now();
       const window = new SyntheticWindow(this, this.location, deserialize(action.data, this._dependencies));
       this.setWindow(window);
+      console.info("done loading %s", this.location.toString(), Date.now() - now);
     }
   }
 }

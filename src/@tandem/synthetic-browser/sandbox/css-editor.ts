@@ -2,8 +2,9 @@ import * as postcss from "postcss";
 import * as postcssSassSyntax from "postcss-scss";
 import { Action, inject, Dependencies, DependenciesDependency, sourcePositionEquals } from "@tandem/common";
 import { SyntheticCSSStyleRule, SetRuleSelectorEditAction, parseCSS, SetDeclarationEditAction } from "@tandem/synthetic-browser";
-import { IContentEditor, BaseContentEditor, IFileEdit, BaseFileEdit, Bundle, loadBundleContent, ISynthetic } from "@tandem/sandbox";
+import { IContentEditor, BaseContentEditor, IContentEdit, BaseContentEdit, Bundle, loadBundleContent, ISynthetic } from "@tandem/sandbox";
 
+// TODO - move this to synthetic-browser
 // TODO - may need to split this out into separate CSS editors. Some of this is specific
 // to SASS
 export class CSSEditor extends BaseContentEditor<postcss.Node> {

@@ -9,6 +9,10 @@ export class SyntheticCSSObject implements ISynthetic {
   get source() {
     return this.$source;
   }
+
+  get editable() {
+    return !!this.source;
+  }
 }
 
 export interface ISerializeCSSObject {

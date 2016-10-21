@@ -11,5 +11,5 @@ export interface ISyntheticSourceInfo {
 
 export interface ISynthetic {
   source?: ISyntheticSourceInfo;
-  editable?: boolean; // TODO
+  editable: boolean; // TODO
 }

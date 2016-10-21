@@ -1,4 +1,7 @@
 import { Action } from "@tandem/common";
+export * from "./css-editor";
+export * from "./markup-editor";
+
 import {
   parseMarkup,
   evaluateMarkup,

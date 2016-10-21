@@ -23,7 +23,7 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
     const window = this.ownerDocument.defaultView;
     const rel     = this.getAttribute("rel") || "stylesheet";
     const href    = this.getAttribute("href");
-    const dependency = this.bundle.getDependencyByRelativePath(href);
+    const dependency = this.module.bundle.getDependencyByRelativePath(href);
 
     let value: any;
 

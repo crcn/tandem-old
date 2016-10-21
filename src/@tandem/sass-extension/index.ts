@@ -1,5 +1,5 @@
+import { CSSEditor } from "@tandem/synthetic-browser";
 import { SASS_MIME_TYPE } from "./constants";
-import { CSSEditor } from "@tandem/html-extension";
 import { SCSSModule, HTMLSCSSDOMModule, SCSSLoader } from "./sandbox";
 import { MimeTypeDependency, JS_MIME_TYPE, CSS_MIME_TYPE, HTML_MIME_TYPE } from "@tandem/common";
 import { SandboxModuleFactoryDependency, BundlerLoaderFactoryDependency, ContentEditorFactoryDependency } from "@tandem/sandbox";

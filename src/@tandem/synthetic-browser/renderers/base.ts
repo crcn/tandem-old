@@ -25,6 +25,9 @@ export interface ISyntheticDocumentRenderer extends IObservable {
   requestUpdate(): void;
 }
 
+// render timeout -- this should be a low number
+const REQUEST_UPDATE_TIMEOUT = 50;
+
 export abstract class BaseRenderer extends Observable implements ISyntheticDocumentRenderer {
 
   readonly element: HTMLElement;
@@ -106,7 +109,10 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     }
     this._updating = true;
 
-    (async () => {
+    // renderer here doesn't need to be particularly fast since the user
+    // doesn't get to interact with visual content. Provide a slowish
+    // timeout to ensure that we don't kill CPU from unecessary renders.
+    setTimeout(async () => {
       if (!this.entity) return;
       this._shouldUpdateAgain = false;
       await this.update();
@@ -115,7 +121,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
         this._shouldUpdateAgain = false;
         this.requestUpdate();
       }
-    })();
+    }, REQUEST_UPDATE_TIMEOUT);
   }
 }
 

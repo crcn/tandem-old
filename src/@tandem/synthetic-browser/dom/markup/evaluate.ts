@@ -10,10 +10,8 @@ import { IMarkupExpression, MarkupContainerExpression } from "./ast";
 export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: SandboxModule): any {
 
   function initialize(expression: IMarkupExpression, synthetic: SyntheticDOMNode) {
+    synthetic.$module = module;
 
-    // deprecated
-    synthetic.$module     = module;
-    synthetic.$bundle     = module && module.bundle;
     synthetic.$source     = {
       kind: expression.kind,
       filePath: module && module.bundle.filePath,

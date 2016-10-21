@@ -1,9 +1,18 @@
+import * as assert from "assert";
+import { DOMNodeType } from "./node-types";
 import { IMarkupModule } from "@tandem/synthetic-browser/sandbox";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { MarkupNodeExpression } from "./ast";
-import { IModule, ISynthetic, SandboxModule, Bundle, ISyntheticSourceInfo } from "@tandem/sandbox";
-import * as assert from "assert";
+
+import {
+  Bundle,
+  IModule,
+  ISynthetic,
+  SandboxModule,
+  ISyntheticSourceInfo,
+ } from "@tandem/sandbox";
+
 import {
   TreeNode,
   BubbleBus,
@@ -11,12 +20,13 @@ import {
   findTreeNode,
   patchTreeNode,
 } from "@tandem/common";
-import { ISerializer, serializable, deserialize, serialize } from "@tandem/common";
 
 import {
-  DOMNodeType
-} from "./node-types";
-
+  serialize,
+  deserialize,
+  ISerializer,
+  serializable,
+} from "@tandem/common";
 
 export interface IDOMNode extends TreeNode<any>, IComparable {
   firstChild: IDOMNode;
@@ -32,7 +42,7 @@ export interface IDOMNode extends TreeNode<any>, IComparable {
 }
 
 export interface ISerializedSyntheticDOMNode {
-  bundle: any;
+  source: ISyntheticSourceInfo;
 }
 
 export class SyntheticDOMNodeSerializer implements ISerializer<SyntheticDOMNode, ISerializedSyntheticDOMNode> {
@@ -41,12 +51,12 @@ export class SyntheticDOMNodeSerializer implements ISerializer<SyntheticDOMNode,
   }
   serialize(value: SyntheticDOMNode) {
     return Object.assign(this.childSerializer.serialize(value), {
-      bundle: serialize(value.bundle)
+      source: value.$source
     })
   }
   deserialize(value: ISerializedSyntheticDOMNode, dependencies, ctor) {
     return Object.assign(this.childSerializer.deserialize(value, dependencies, ctor), {
-      $bundle: deserialize(value.bundle, dependencies)
+      $source: value.source
     })
   }
 }
@@ -74,11 +84,6 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   abstract readonly nodeType: number;
 
   /**
-   */
-
-  public $bundle: Bundle;
-
-  /**
    * Only set if the synthetic DOM node is running in a sandbox -- not always
    * the case especially with serialization.
    */
@@ -92,10 +97,6 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   get ownerDocument(): SyntheticDocument {
     return this._ownerDocument;
-  }
-
-  get bundle(): Bundle {
-    return this.$bundle;
   }
 
   get source(): ISyntheticSourceInfo {
@@ -170,9 +171,13 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     }
   }
 
+  get editable() {
+    return !!this.$source;
+  }
+
   protected linkClone(clone: SyntheticDOMNode) {
     clone.$source = this.$source;
-    clone.$bundle = this.$bundle;
+    clone.$module = this.$module;
     clone.$setOwnerDocument(this.ownerDocument);
   }
 

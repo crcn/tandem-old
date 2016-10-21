@@ -1,26 +1,20 @@
-// import { Action } from "@tandem/common";
-// import { BaseFileEditor, IFileEdit } from "@tandem/sandbox";
+import { IContentEditor, BaseContentEditor } from "@tandem/sandbox";
+import {
+  parseMarkup,
+  MarkupExpression,
+  SyntheticDOMNode,
+  formatMarkupExpression,
+  MarkupFragmentExpression,
+} from "@tandem/synthetic-browser";
 
-// // export interface IMarkupEdit2 extends IFileEdit {
-
-// // }
-
-// export interface IMarkupEditor2 {
-//   edit(callback: (edit: IMarkupEdit2) => any): Promise<any>;
-// }
-
-// export class MarkupEdit2 implements IMarkupEdit2 {
-//   actions: Action[];
-// }
-
-// export class MarkupEditor2 extends BaseFileEditor {
-//   createEdit() {
-//     return new MarkupEdit2();
-//   }
-//   createEditableContent() {
-//     return null;
-//   }
-//   getFormattedContent() {
-//     return null;
-//   }
-// }
+export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
+  findTargetASTNode(root: MarkupFragmentExpression, synthetic: SyntheticDOMNode) {
+    return root;
+  }
+  parseContent(content: string) {
+    return parseMarkup(content);
+  }
+  getFormattedContent(root: MarkupFragmentExpression) {
+    return formatMarkupExpression(root);
+  }
+}
