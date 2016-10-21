@@ -21,7 +21,7 @@ import {
   deserializeMarkupExpression,
 } from "@tandem/synthetic-browser";
 
-export class HTMLBundleLoader implements IBundleLoader {
+export class TandemBundleLoader implements IBundleLoader {
 
   @inject(DependenciesDependency.NS)
   private _dependencies: Dependencies;

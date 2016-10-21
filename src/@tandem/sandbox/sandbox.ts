@@ -101,10 +101,10 @@ export class Sandbox extends Observable {
     const now = Date.now();
 
     // TODO - cache evaluator here
-    const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryDependency.find(null, bundle.content.type, this._dependencies);
+    const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryDependency.find(null, bundle.type, this._dependencies);
 
     if (!evaluatorFactoryDepedency) {
-      throw new Error(`Cannot evaluate ${filePath} in sandbox.`);
+      throw new Error(`Cannot evaluate ${filePath}:${bundle.type} in sandbox.`);
     }
 
     evaluatorFactoryDepedency.create().evaluate(module);

@@ -17,8 +17,6 @@ import {
   SyntheticDOMNodeEntityClassDependency,
 } from "@tandem/synthetic-browser";
 
-import { HTML_AST_MIME_TYPE, CSS_AST_MIME_TYPE } from "./constants";
-
 import { 
   HTMLImageEntity,
   VisibleHTMLEntity,
@@ -98,6 +96,7 @@ export const htmlExtensionDependencies = [
   new LayerLabelComponentFactoryDependency(SyntheticDOMText.name, TextLayerLabelComponent),
   new LayerLabelComponentFactoryDependency(SyntheticDOMComment.name, CommentLayerLabelCoponent),
 
+
   // entity panes
   new EntityPaneComponentFactoryDependency("htmlAttributes", EntityAttributesPaneComponent),
 
@@ -108,12 +107,12 @@ export const htmlExtensionDependencies = [
   pastHTMLServiceDependency,
 
   // bundle loaders
-  new BundlerLoaderFactoryDependency(HTML_MIME_TYPE, HTMLBundleLoader),
-  new BundlerLoaderFactoryDependency(CSS_MIME_TYPE, CSSBundleLoader),
+  // new BundlerLoaderFactoryDependency(HTML_MIME_TYPE, HTMLBundleLoader),
+  // new BundlerLoaderFactoryDependency(CSS_MIME_TYPE, CSSBundleLoader),
 
   // sandbox evaluators
-  new SandboxModuleEvaluatorFactoryDependency(undefined,  HTML_AST_MIME_TYPE, HTMLASTEvaluator),
-  new SandboxModuleEvaluatorFactoryDependency(undefined, CSS_AST_MIME_TYPE, CSSASTEvaluator),
+  new SandboxModuleEvaluatorFactoryDependency(undefined, HTML_MIME_TYPE, HTMLASTEvaluator),
+  new SandboxModuleEvaluatorFactoryDependency(undefined, CSS_MIME_TYPE, CSSASTEvaluator),
 
   // tools
   textToolDependency,

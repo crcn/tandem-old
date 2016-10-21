@@ -14,11 +14,11 @@ import {
 } from "@tandem/sandbox";
 
 
-// TODO - SCSSModuleLoader
 
 
 const _queue = new Queue();
 
+// TODO - SCSSTransformer
 export class SCSSLoader implements IBundleLoader {
 
   @inject(FileCacheDependency.NS)
@@ -48,6 +48,7 @@ export class SCSSLoader implements IBundleLoader {
           resolve({
             type: CSS_MIME_TYPE,
             map: result.map,
+            ast:  parseCSS(result.text || " ", result.map),
             value: result.text || " "
           } as IBundleLoaderResult);
         });

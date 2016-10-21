@@ -3,10 +3,13 @@ import {
  ISandboxBundleEvaluator,
 } from "@tandem/sandbox";
 
-import { evaluateCSS } from "@tandem/synthetic-browser";
+import { evaluateCSS, parseCSS } from "@tandem/synthetic-browser";
 
 export class CSSASTEvaluator implements ISandboxBundleEvaluator {
   evaluate(module: SandboxModule) {
-    module.exports = evaluateCSS(module.bundle.content.value, module);
+    if (!module.bundle.ast) {
+      console.log(module.bundle.filePath);
+    }
+    module.exports = evaluateCSS(module.bundle.ast, module);
   }
 }

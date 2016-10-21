@@ -9,6 +9,7 @@ import {
   SyntheticTDTemplateElement,
 } from "./synthetic";
 
+import { TandemBundleLoader } from "./sandbox";
 import { SandboxModuleFactoryDependency, BundlerLoaderFactoryDependency } from "@tandem/sandbox";
 
 import {
@@ -53,7 +54,7 @@ export const tdprojectExtensionDependencies = [
   new SandboxModuleFactoryDependency(HTML_MIME_TYPE, TDPROJECT_MIME_TYPE, MarkupModule),
 
   // sandbox loaders
-  new BundlerLoaderFactoryDependency(TDPROJECT_MIME_TYPE, HTMLBundleLoader),
+  new BundlerLoaderFactoryDependency(TDPROJECT_MIME_TYPE, TandemBundleLoader),
 
   // mime types
   new MimeTypeDependency("tdproject", TDPROJECT_MIME_TYPE),
