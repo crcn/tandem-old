@@ -40,6 +40,8 @@ export interface IActiveRecord<T> extends IObservable, IInjectable, IDisposable,
 // TODO - add schema here
 
 export abstract class BaseActiveRecord<T> extends Observable implements IActiveRecord<T> {
+
+  // TODO - move this to reflect metadata
   readonly idProperty: string = "_id";
 
   constructor(private _source: T, readonly collectionName: string, @inject(MainBusDependency.NS) readonly bus: IActor) {

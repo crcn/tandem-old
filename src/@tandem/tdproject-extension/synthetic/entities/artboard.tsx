@@ -64,7 +64,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
 
   constructor(source: SyntheticHTMLElement) {
     super(source);
-    this._documentStyleSheetObserver = new WrapBus(this.onDocumentStyleSheetsAction.bind(this));
+    // this._documentStyleSheetObserver = new WrapBus(this.onDocumentStyleSheetsAction.bind(this));
     // this._artboardBrowserObserver = new WrapBus(this.onArtboardBrowserAction.bind(this));
   }
 
@@ -77,7 +77,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
       ownerDocument.styleSheets.push(DEFAULT_FRAME_STYLE_SHEET);
     }
 
-    ownerDocument.styleSheets.observe(this._documentStyleSheetObserver);
+    // ownerDocument.styleSheets.observe(this._documentStyleSheetObserver);
 
     if (!this._artboardBrowser) {
       const documentRenderer = new SyntheticDOMRenderer();
@@ -92,6 +92,8 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
       const window = ownerDocument.defaultView;
       this._artboardBrowser.open(this.source.bundle.getAbsoluteDependencyPath(src));
     }
+
+    this.injectCSS();
   }
 
   get title(): string {
@@ -129,10 +131,6 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
   protected onBrowserDocumentEntityChange() {
     while (this.firstChild) this.removeChild(this.firstChild);
     this.appendChild(this._artboardBrowser.documentEntity);
-  }
-
-  protected onDocumentStyleSheetsAction(action: Action) {
-    this.injectCSS();
   }
 
   protected injectCSS() {

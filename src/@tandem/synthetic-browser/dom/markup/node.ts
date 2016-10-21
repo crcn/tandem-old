@@ -2,7 +2,7 @@ import { IMarkupModule } from "@tandem/synthetic-browser/sandbox";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { MarkupNodeExpression } from "./ast";
-import { IModule, ISynthetic, SandboxModule, Bundle } from "@tandem/sandbox";
+import { IModule, ISynthetic, SandboxModule, Bundle, ISyntheticSourceInfo } from "@tandem/sandbox";
 import * as assert from "assert";
 import {
   TreeNode,
@@ -11,7 +11,7 @@ import {
   findTreeNode,
   patchTreeNode,
 } from "@tandem/common";
-import { ISerializer, serializable, deserialize, serialize, IExpressionInfo } from "@tandem/common";
+import { ISerializer, serializable, deserialize, serialize } from "@tandem/common";
 
 import {
   DOMNodeType
@@ -65,7 +65,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   /**
    */
 
-  public $source: IExpressionInfo;
+  public $source: ISyntheticSourceInfo;
 
   /**
    * The DOM node type
@@ -98,7 +98,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return this.$bundle;
   }
 
-  get source(): IExpressionInfo {
+  get source(): ISyntheticSourceInfo {
     return this.$source;
   }
 

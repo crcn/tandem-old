@@ -16,7 +16,9 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
     synthetic.$bundle     = module && module.bundle;
     synthetic.$source     = {
       kind: expression.kind,
-      location: expression.location
+      filePath: module && module.bundle.filePath,
+      start: expression.location.start,
+      end: expression.location.end
     };
     if (synthetic.nodeType === DOMNodeType.ELEMENT) {
       (<SyntheticDOMElement><any>synthetic).$createdCallback();

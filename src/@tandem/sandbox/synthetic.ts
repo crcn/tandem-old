@@ -1,8 +1,15 @@
 import { Bundle } from "./bundle";
 import { SandboxModule } from "./sandbox";
-import { IExpressionInfo } from "@tandem/common";
+import { ISourcePosition } from "@tandem/common";
+
+export interface ISyntheticSourceInfo {
+  kind: any;
+  filePath: string;
+  start?: ISourcePosition;
+  end?: ISourcePosition;
+}
 
 export interface ISynthetic {
-  bundle: Bundle;
-  source: IExpressionInfo;
+  source?: ISyntheticSourceInfo;
+  editable?: boolean; // TODO
 }

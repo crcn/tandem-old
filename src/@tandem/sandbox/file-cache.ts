@@ -53,7 +53,8 @@ interface IFileCacheItemQuery {
 
 export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
-  private _id: string;
+  readonly idProperty = "filePath";
+
   private _cache: any;
 
   @bindable()
@@ -75,13 +76,8 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     super(source, collectionName, bus);
   }
 
-  get id() {
-    return this._id;
-  }
-
   serialize() {
     return {
-      _id       : this._id,
       updatedAt : this.updatedAt,
       filePath  : this.filePath,
       url       : this.url,
@@ -127,9 +123,8 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     return this.updatedAt < b.updatedAt;
   }
 
-  setPropertiesFromSource({ _id, filePath, updatedAt, url, metadata, mtime }: IFileCacheItemData) {
+  setPropertiesFromSource({ filePath, updatedAt, url, metadata, mtime }: IFileCacheItemData) {
     this._cache   = undefined;
-    this._id      = _id;
     this.filePath = filePath;
     this.url      = url;
     this.mtime    = mtime;

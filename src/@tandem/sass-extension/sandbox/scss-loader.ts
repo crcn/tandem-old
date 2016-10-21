@@ -38,7 +38,7 @@ export class SCSSLoader implements IBundleLoader {
       });
 
       return new Promise((resolve, reject) => {
-        sass.compile(content, {}, (result) => {
+        sass.compile(content, { inputPath: bundle.filePath, sourceMapRoot: "/" }, (result) => {
           // 3 = empty string exception
           if (result.status !== 0 && result.status !== 3) return reject(result);
           resolve({

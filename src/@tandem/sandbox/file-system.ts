@@ -29,7 +29,6 @@ export abstract class BaseFileSystem implements IFileSystem {
   }
 
   abstract readFile(filePath: string): Promise<any>;
-  // abstract readDirectory(directory: string): Promise<string[]>;
   abstract writeFile(filePath: string, content: any): Promise<any>;
 
   public watchFile(filePath: string, onChange: () => any) {

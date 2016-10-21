@@ -6,6 +6,10 @@ export class SandboxAction extends Action {
   static readonly EVALUATED = "sandboxEvaluated";
 }
 
+export class FileEditorAction extends Action {
+  static readonly BUNDLE_EDITED = "bundleEdited";
+}
+
 export class BundleAction extends Action {
   static readonly BUNDLE_READY = "bundleReady";
 }

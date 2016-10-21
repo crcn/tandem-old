@@ -1,12 +1,12 @@
 import "reflect-metadata";
 import { Application, ApplicationServiceDependency, isMaster } from "@tandem/common";
 import { RemoteBrowserService } from "@tandem/synthetic-browser";
-import * as MemoryDSBus from "mesh-memory-ds-bus";
 import { 
+  FileEditor,
   IFileSystem,
   RemoteFileSystem,
-  RemoteFileResolver,
   BundlerDependency,
+  RemoteFileResolver,
   FileCacheDependency,
   FileSystemDependency,
   FileResolverDependency,
@@ -56,14 +56,20 @@ import { Editor } from "./models";
 
 export class FrontEndApplication extends Application {
 
+  // TODO - change this to something else - maybe workspace
   public editor: Editor;
   public settings: Metadata;
   public metadata: Metadata;
+  public fileEditor: FileEditor;
 
   constructor(config?: any) {
     super(config);
     this.metadata = new Metadata();
     this.metadata.observe(this.bus);
+  }
+
+  protected willInitialize() {
+    this.fileEditor = new FileEditor(FileCacheDependency.getInstance(this.dependencies), this.dependencies);
   }
 
   protected registerDependencies() {

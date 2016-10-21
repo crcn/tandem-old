@@ -1,20 +1,23 @@
+import * as sm from "source-map";
 import * as path from "path";
+
 import { values } from "lodash";
 import { IFileSystem } from "./file-system";
 import { RawSourceMap } from "source-map";
 import { BundleAction } from "./actions";
+import { FileEditor } from "./editor2";
 import { FileCache, FileCacheItem } from "./file-cache";
 import { IFileResolver, IFileResolverOptions } from "./resolver";
-import * as sm from "source-map";
+
 import {
-  isMaster,
   inject,
   IActor,
   Action,
   Injector,
+  isMaster,
+  BubbleBus,
   Dependency,
   Observable,
-  BubbleBus,
   ISerializer,
   IObservable,
   serializable,
@@ -38,6 +41,7 @@ import {
   FileSystemDependency,
   FileResolverDependency,
   BundlerLoaderFactoryDependency,
+  ContentEditorFactoryDependency,
 } from "./dependencies";
 
 interface IBundleFile {
@@ -62,7 +66,6 @@ export interface IBundleLoaderResult extends IBundleContent {
 }
 
 export interface IBundleData {
-  _id?: string;
   filePath: string;
   content?: string;
   type?: string;
@@ -125,7 +128,8 @@ class BundleSerializer implements ISerializer<Bundle, string> {
 @serializable(new BundleSerializer())
 export class Bundle extends BaseActiveRecord<IBundleData> {
 
-  private _id: string;
+  readonly idProperty = "filePath";
+
   private _filePath: string;
   private _ready: boolean;
   private _absoluteDependencyPaths: Object;
@@ -133,9 +137,12 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   private _content: string;
   private _ast: any;
   private _fileCache: FileCache;
+  private _watchingFileCacheItem: boolean;
   private _fileSystem: IFileSystem;
   private _fileResolver: IFileResolver;
+  private _editor: FileEditor;
   private _bundler: Bundler;
+  private _map: RawSourceMap;
   private _fileCacheItem: FileCacheItem;
   private _fileCacheItemObserver: IActor;
   private _updatedAt: number;
@@ -160,18 +167,9 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
    * @type {FileCacheItem}
    */
 
-  get sourceFileCache(): FileCacheItem {
-    return this._fileCacheItem;
-  }
-
-  /**
-   * The UID of the bundle
-   *
-   * @readonly
-   */
-
-  get id() {
-    return this._id;
+  async getSourceFileCacheItem(): Promise<FileCacheItem> {
+    if (this._fileCacheItem) return this._fileCacheItem;
+    return this._fileCacheItem = await this._fileCache.item(this.filePath);
   }
 
   /**
@@ -205,6 +203,16 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
 
   get ast() {
     return this._ast;
+  }
+
+  /**
+   * The source map of the transformed content.
+   *
+   * @readonly
+   */
+
+  get map(): RawSourceMap {
+    return this._map;
   }
 
   /**
@@ -290,7 +298,6 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
 
   serialize() {
     return {
-      _id: this._id,
       type: this._type,
       content: this._content,
       filePath: this.filePath,
@@ -299,8 +306,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     };
   }
 
-  setPropertiesFromSource({ _id, filePath, type, updatedAt, content, absoluteDependencyPaths }: IBundleData) {
-    this._id        = _id;
+  setPropertiesFromSource({ filePath, type, updatedAt, content, absoluteDependencyPaths }: IBundleData) {
     this._type      = type;
     this._filePath  = filePath;
     this._updatedAt = updatedAt;
@@ -310,14 +316,17 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
 
   async load() {
 
-    const transformResult: IBundleLoaderResult = await this.loadTransformedContent();
-    this._content         = transformResult.content;
-    this._ast             = transformResult.ast;
-    this._type            = transformResult.type;
+    console.log(`(${isMaster ? 'master' : 'worker'}) load bundle`, this.filePath);
 
-    if (!this._fileCacheItem) {
-      this._fileCacheItem   = await this._fileCache.item(this.filePath);
-      this._fileCacheItem.observe(this._fileCacheItemObserver);
+    const transformResult: IBundleLoaderResult = await this.loadTransformedContent();
+    this._content = transformResult.content;
+    this._ast     = transformResult.ast;
+    this._map     = transformResult.map;
+    this._type    = transformResult.type;
+
+    if (!this._watchingFileCacheItem) {
+      this._watchingFileCacheItem = true;
+      (await this.getSourceFileCacheItem()).observe(this._fileCacheItemObserver);
     }
 
     for (const dependencyBundle of this.dependencyBundles) {
@@ -345,20 +354,21 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
 
   private async loadTransformedContent() {
     const dependencyPaths: string[] = [];
-
-    let current: IBundleLoaderResult = {
-      type: MimeTypeDependency.lookup(this.filePath, this._dependencies),
-      content: await (await this._fileCache.item(this.filePath)).read()
-    };
-
+    let current: IBundleLoaderResult = await this.getInitialSourceContent();
     return loadBundleContent(this, current, this._dependencies);
+  }
+
+  async getInitialSourceContent(): Promise<IBundleLoaderResult> {
+    return {
+      type: MimeTypeDependency.lookup(this.filePath, this._dependencies),
+      content: await (await this.getSourceFileCacheItem()).read()
+    }
   }
 
   async getExpression(location: ISourceLocation) {
     const result = await this.loadTransformedContent();
     const map = result.map as sm.RawSourceMap;
     const consumer = new sm.SourceMapConsumer(map);
-
 
     console.log(consumer.originalPositionFor(location.start));
   }
@@ -419,6 +429,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
 export class Bundler extends Observable {
 
   readonly collection: ActiveRecordCollection<Bundle, IBundleData>;
+  private _editor: FileEditor;
 
   constructor(@inject(DependenciesDependency.NS) private _dependencies: Dependencies) {
     super();

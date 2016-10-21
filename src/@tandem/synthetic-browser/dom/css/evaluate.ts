@@ -14,10 +14,15 @@ import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSStyleSheet } from "./style-sheet";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
+import { ISourceLocation } from "@tandem/common";
+import * as sm from "source-map";
 
-export function evaluateCSS(expression: postcss.Root, module?: SandboxModule): SyntheticCSSStyleSheet {
+export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, module?: SandboxModule): SyntheticCSSStyleSheet {
 
   const bundle = module && module.bundle;
+  // const map = expression.source.
+
+  const sourceMapConsumer = map && new sm.SourceMapConsumer(map);
 
   function getStyleDeclaration(rules: postcss.Declaration[]) {
     const declaration = new SyntheticCSSStyleDeclaration();
@@ -30,10 +35,32 @@ export function evaluateCSS(expression: postcss.Root, module?: SandboxModule): S
   }
 
   function link<T extends SyntheticCSSObject>(expression: postcss.Node, synthetic: T): T {
-    synthetic.$location = {
-      start : expression.source.start,
-      end   : expression.source.end
-    };
+
+    let filePath: string = bundle && bundle.filePath;
+    let start =  expression.source.start;
+    let end   = expression.source.end;
+
+    if (sourceMapConsumer) {
+      const originalPosition = sourceMapConsumer.originalPositionFor(start)
+      start = {
+        line: originalPosition.line,
+
+        // Bad. Fixes Discrepancy between postcss & source-map source information.
+        column: originalPosition.column + 1
+      };
+
+      filePath = originalPosition.source;
+      end = undefined;
+    }
+
+    synthetic.$source = {
+      kind: expression.type,
+
+      // todo - this may not be correct.
+      filePath: filePath,
+      start: start,
+      end: end
+    }
     return synthetic;
   }
 

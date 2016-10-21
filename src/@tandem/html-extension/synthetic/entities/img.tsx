@@ -23,7 +23,7 @@ export class HTMLImageEntity extends BaseDOMNodeEntity<SyntheticDOMElement, HTML
     const bundle = this._bundler.findByFilePath(src);
 
     if (bundle) {
-      this._src = bundle.sourceFileCache.url;
+      // this._src = bundle.sourceFileCache.url;
     } else {
       this._src = src;
     }

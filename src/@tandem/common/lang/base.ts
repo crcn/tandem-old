@@ -10,6 +10,10 @@ export interface ISourcePosition {
   column: number;
 }
 
+export function sourcePositionEquals(a: ISourcePosition, b: ISourcePosition) {
+  return a.line === b.line && a.column === b.column;
+}
+
 export interface ISourceLocation {
   start?: ISourcePosition;
   end?: ISourcePosition;
@@ -36,10 +40,6 @@ export interface IExpression extends IASTNode {
   location: ISourceLocation;
 }
 
-export interface IExpressionInfo {
-  kind: any;
-  location: ISourceLocation;
-}
 
 const noSource = {
   content: ""

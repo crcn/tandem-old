@@ -18,6 +18,7 @@ import { ISyntheticBrowser, SyntheticBrowser, BaseDOMNodeEntity } from "@tandem
 export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;
 
+// TODO - change to Workspace
 export class Editor implements IEditor {
 
   readonly metadata = new Metadata(this);

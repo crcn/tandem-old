@@ -1,8 +1,9 @@
 import { Bundle } from "@tandem/sandbox";
 import { CSSRuleExpression } from "./ast";
+import { BaseFileEdit, EditAction } from "@tandem/sandbox";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
-import { serializable, serialize, deserialize, ISerializer, ISerializedContent } from "@tandem/common";
 import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "./declaration";
+import { Action, serializable, serialize, deserialize, ISerializer, ISerializedContent } from "@tandem/common";
 
 export interface ISerializedSyntheticCSSStyleRule {
   selector: string;
@@ -21,11 +22,39 @@ class SyntheticCSSStyleRuleSerializer implements ISerializer<SyntheticCSSStyleRu
   }
 }
 
+// TODO - move this to synthetic-browser
+export class SyntheticCSSStyleRuleEdit extends BaseFileEdit<SyntheticCSSStyleRule> {
+  setSelector(selector: string) {
+    return this.addAction(new SetRuleSelectorEditAction(this.target, selector));
+  }
+  setDeclaration(name: string, value: string, newName?: string) {
+    return this.addAction(new SetDeclarationEditAction(this.target, name, value, newName));
+  }
+}
+
+export class SetRuleSelectorEditAction extends EditAction {
+  static readonly SET_RULE_SELECTOR = "setRuleSelector";
+  constructor(rule: SyntheticCSSStyleRule, readonly selector: string) {
+    super(SetRuleSelectorEditAction.SET_RULE_SELECTOR, rule);
+  }
+}
+
+export class SetDeclarationEditAction extends EditAction {
+  static readonly SET_DECLARATION = "setDeclaration";
+  constructor(rule: SyntheticCSSStyleRule, readonly name: string, readonly newValue: string, readonly newName?: string) {
+    super(SetDeclarationEditAction.SET_DECLARATION, rule);
+  }
+}
+
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSStyleRuleSerializer()))
 export class SyntheticCSSStyleRule extends SyntheticCSSObject {
 
   constructor(public selector: string, public style: SyntheticCSSStyleDeclaration) {
     super();
+  }
+
+  createEdit() {
+    return new SyntheticCSSStyleRuleEdit(this);
   }
 
   get cssText() {

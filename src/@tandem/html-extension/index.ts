@@ -9,6 +9,7 @@ import {
   HTMLASTEvaluator,
   CSSASTEvaluator,
   CSSBundleLoader,
+  CSSEditor,
 } from "./sandbox";
 
 import {
@@ -39,6 +40,7 @@ import {
 import {
   SandboxModuleFactoryDependency,
   BundlerLoaderFactoryDependency,
+  ContentEditorFactoryDependency,
   SandboxModuleEvaluatorFactoryDependency,
 } from "@tandem/sandbox";
 
@@ -113,6 +115,9 @@ export const htmlExtensionDependencies = [
   // sandbox evaluators
   new SandboxModuleEvaluatorFactoryDependency(undefined, HTML_MIME_TYPE, HTMLASTEvaluator),
   new SandboxModuleEvaluatorFactoryDependency(undefined, CSS_MIME_TYPE, CSSASTEvaluator),
+
+  // edit consumers
+  new ContentEditorFactoryDependency(CSS_MIME_TYPE, CSSEditor),
 
   // tools
   textToolDependency,

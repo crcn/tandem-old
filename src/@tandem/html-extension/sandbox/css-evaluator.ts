@@ -10,6 +10,6 @@ export class CSSASTEvaluator implements ISandboxBundleEvaluator {
     if (!module.bundle.ast) {
       console.log(module.bundle.filePath);
     }
-    module.exports = evaluateCSS(module.bundle.ast, module);
+    module.exports = evaluateCSS(module.bundle.ast, module.bundle.map, module);
   }
 }

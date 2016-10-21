@@ -14,7 +14,6 @@ export class HTMLCSSModule extends BaseSandboxModule {
   }
   evaluate() {
     return null;
-    // return evaluateCSS(this.ast) as any;
   }
 }
 

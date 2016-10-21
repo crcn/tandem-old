@@ -13,7 +13,6 @@ import {
 import { Bundle } from "@tandem/sandbox";
 
 export interface ISerializedCSSStyleSheet {
-  location: ISourceLocation;
   bundle: any;
   rules: Array<ISerializedContent<ISerializedSyntheticCSSStyleRule>>;
 }
@@ -21,7 +20,6 @@ export interface ISerializedCSSStyleSheet {
 class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleSheet, ISerializedCSSStyleSheet> {
   serialize(value: SyntheticCSSStyleSheet): ISerializedCSSStyleSheet {
     return {
-      location: value.$location,
       bundle: serialize(value.bundle),
       rules: value.rules.map(serialize)
     };

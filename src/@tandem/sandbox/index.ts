@@ -8,3 +8,4 @@ export * from "./resolver";
 export * from "./bundle";
 export * from "./file-cache";
 export * from "./sandbox";
+export * from "./editor2";

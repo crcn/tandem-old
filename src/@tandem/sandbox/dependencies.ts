@@ -1,16 +1,21 @@
 import { IModule } from "./module";
+import { FileCache } from "./file-cache";
 import { IFileSystem } from "./file-system";
 import { IFileResolver } from "./resolver";
-import { FileCache } from "./file-cache";
+import { contentEditorType, IContentEditor } from "./editor2";
+
 import {
+  Bundle,
   Bundler,
   IBundleLoader,
   bundleLoaderType,
  } from "./bundle";
+
  import {
   ISandboxBundleEvaluator,
   sandboxBundleEvaluatorType,
  } from "./sandbox";
+
 import {
   Dependency,
   Dependencies,
@@ -116,6 +121,25 @@ export class SandboxModuleEvaluatorFactoryDependency extends ClassFactoryDepende
 
   static find(envMimeType: string, mimeType: string, dependencies: Dependencies) {
     return dependencies.query<SandboxModuleEvaluatorFactoryDependency>(this.getNamespace(envMimeType, mimeType));
+  }
+}
+
+export class ContentEditorFactoryDependency extends ClassFactoryDependency {
+  static readonly NS = "bundleEditConsumers";
+  constructor(readonly mimeType: string, clazz: contentEditorType) {
+    super(ContentEditorFactoryDependency.getNamespace(mimeType), clazz);
+  }
+
+  static getNamespace(mimeType: string) {
+    return [ContentEditorFactoryDependency.NS, mimeType].join("/");
+  }
+
+  create(): IContentEditor {
+    return super.create();
+  }
+
+  static find(mimeType: string, dependencies: Dependencies) {
+    return dependencies.query<ContentEditorFactoryDependency>(this.getNamespace(mimeType));
   }
 }
 
