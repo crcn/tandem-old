@@ -124,7 +124,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   shouldDeserialize(b: IFileCacheItemData) {
-    return this.source.updatedAt < b.updatedAt;
+    return this.updatedAt < b.updatedAt;
   }
 
   setPropertiesFromSource({ _id, filePath, updatedAt, url, metadata, mtime }: IFileCacheItemData) {

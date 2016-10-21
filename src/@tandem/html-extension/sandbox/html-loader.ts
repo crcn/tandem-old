@@ -28,7 +28,6 @@ export class HTMLBundleLoader implements IBundleLoader {
   private _dependencies: Dependencies;
 
   async load(bundle: Bundle, { type, content }): Promise<IBundleLoaderResult> {
-    console.log("html load", bundle.filePath);
 
     const dependencyPaths = [];
     const dependencies = this._dependencies;

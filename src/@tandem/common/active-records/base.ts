@@ -138,8 +138,8 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
     if (this.shouldDeserialize(source)) {
       this._source = source;
       this.setPropertiesFromSource(source);
+      this.notify(new ActiveRecordAction(ActiveRecordAction.ACTIVE_RECORD_DESERIALIZED));
     }
-    this.notify(new ActiveRecordAction(ActiveRecordAction.ACTIVE_RECORD_DESERIALIZED));
   }
 
   protected shouldDeserialize(b: T) {
