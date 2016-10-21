@@ -4,6 +4,7 @@ import {
   inject,
   Action,
   bindable,
+  isMaster,
   BubbleBus,
   diffArray,
   IBrokerBus,
@@ -93,7 +94,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     return this.url !== this.source.url || this.mtime !== this.source.mtime;
   }
 
-  willUpdate() {
+  willSave() {
     this.updatedAt = Date.now();
   }
 
