@@ -41,7 +41,6 @@ interface IBundleFile {
   readonly filePath: string;
   readonly content: string;
 }
-
 export interface IBundleLoader {
   load(bundle: Bundle, content: IBundleContent): Promise<IBundleLoaderResult>;
 }
@@ -50,7 +49,7 @@ export type bundleLoaderType = { new(): IBundleLoader };
 
 export interface IBundleContent {
   readonly type: string; // mime type
-  readonly value: any;
+  readonly content: any;
   readonly ast?: any;
   map?: RawSourceMap;
 }
@@ -63,6 +62,7 @@ export interface IBundleData {
   _id?: string;
   filePath: string;
   content?: string;
+  type?: string;
   updatedAt?: number;
   absoluteDependencyPaths?: string[];
   relativeDependencyPaths?: Object;
@@ -77,8 +77,10 @@ export async function loadBundle(bundle: Bundle, content: IBundleLoaderResult, d
   let current: IBundleLoaderResult = Object.assign({}, content);
 
   let dependency: BundlerLoaderFactoryDependency;
+  const used = {};
 
-  while(dependency = BundlerLoaderFactoryDependency.find(current.type, dependencies)) {
+  while((dependency = BundlerLoaderFactoryDependency.find(current.type, dependencies)) && !used[dependency.id]) {
+    used[dependency.id] = true;
     current = await dependency.create(dependencies).load(bundle, current);
     if (current.dependencyPaths) {
       dependencyPaths.push(...current.dependencyPaths);
@@ -89,7 +91,7 @@ export async function loadBundle(bundle: Bundle, content: IBundleLoaderResult, d
     map: current.map,
     ast: current.ast,
     type: current.type,
-    value: current.value,
+    content: current.content,
     dependencyPaths: dependencyPaths
   };
 }
@@ -232,9 +234,10 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     };
   }
 
-  setPropertiesFromSource({ _id, filePath, updatedAt, content, absoluteDependencyPaths, relativeDependencyPaths }: IBundleData) {
-    this._id       = _id;
-    this._filePath = filePath;
+  setPropertiesFromSource({ _id, filePath, type, updatedAt, content, absoluteDependencyPaths, relativeDependencyPaths }: IBundleData) {
+    this._id        = _id;
+    this._type      = type;
+    this._filePath  = filePath;
     this._updatedAt = updatedAt;
     this._content   = content;
     this._absoluteDependencyPaths = absoluteDependencyPaths || [];
@@ -244,12 +247,9 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   async load() {
     if (!isMaster) console.log("worker load bundle %s", this.filePath);
     const transformResult: IBundleLoaderResult = await this.loadTransformedContent();
-    this._content         = transformResult.value;
+    this._content         = transformResult.content;
     this._ast             = transformResult.ast;
     this._type            = transformResult.type;
-
-    console.log(this.filePath, transformResult);
-
     if (!this._fileCacheItem) {
       this._fileCacheItem   = await this._fileCache.item(this.filePath);
       this._fileCacheItem.observe(this._fileCacheItemObserver);
@@ -282,7 +282,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
 
     let current: IBundleLoaderResult = {
       type: MimeTypeDependency.lookup(this.filePath, this._dependencies),
-      value: this._sourceContent = await (await this._fileCache.item(this.filePath)).read()
+      content: this._sourceContent = await (await this._fileCache.item(this.filePath)).read()
     };
 
     return loadBundle(this, current, this._dependencies);

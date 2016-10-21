@@ -13,18 +13,26 @@ import {
   MainBusDependency,
   BaseApplicationService
 } from "@tandem/common";
-import { FrontEndApplication } from "@tandem/editor";
 import { SyntheticWindow } from "@tandem/synthetic-browser";
+import { FrontEndApplication } from "@tandem/editor";
+import { Bundle, Bundler, BundlerDependency } from "@tandem/sandbox";
 
 const SERIALIZED_DOCUMENT = "serializedDocument";
 
 export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   private _bus: IActor;
+  private _bundler: Bundler;
+  private _bundle: Bundle;
+
   constructor(dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
     super(dependencies, renderer, parent);
     this._bus = MainBusDependency.getInstance(dependencies);
+    this._bundler = BundlerDependency.getInstance(dependencies);
   }
   async open2(url: string) {
+
+    // TODO - quick fix to ensure that master has enough time to catch up with workers.
+    this._bundle = await this._bundler.bundle(url);
 
     const remoteBrowserStream = this._bus.execute(new OpenRemoteBrowserAction(url));
 
@@ -41,7 +49,6 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   onRemoteBrowserAction(action: any) {
     if (action.type === SERIALIZED_DOCUMENT) {
-      const now = Date.now();
       const window = new SyntheticWindow(this, this.location, deserialize(action.data, this._dependencies));
       this.setWindow(window);
     }

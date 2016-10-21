@@ -2,7 +2,6 @@ import { WrapBus } from "mesh";
 import { bindable } from "@tandem/common/decorators";
 import { IDOMNode } from "./node";
 import { DOMNodeType } from "./node-types";
-import { SyntheticDOMNode } from "./node";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { parse as parseMarkup } from "./parser.peg";
@@ -11,6 +10,7 @@ import { MarkupElementExpression } from "./ast";
 import { syntheticElementClassType } from "./types";
 import { SyntheticDocumentFragment } from "./document-fragment";
 import { SyntheticCSSStyleDeclaration } from "../css";
+import { SyntheticDOMNode, SyntheticDOMNodeSerializer } from "./node";
 import {
   Action,
   BubbleBus,
@@ -116,24 +116,22 @@ export interface IDOMElement extends IDOMNode {
 export interface ISerializedSyntheticDOMElement {
   nodeName: string;
   namespaceURI: string;
-  bundle: ISerializedContent<any>;
   shadowRoot: ISerializedContent<any>;
   attributes: Array<ISerializedContent<ISerializedSyntheticDOMAttribute>>;
   childNodes: Array<ISerializedContent<any>>;
 }
 
 export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMElement, ISerializedSyntheticDOMElement> {
-  serialize({ nodeName, namespaceURI, shadowRoot, bundle, attributes, childNodes }: any): any {
+  serialize({ nodeName, namespaceURI, shadowRoot, attributes, childNodes }: any): any {
     return {
       nodeName,
       namespaceURI,
-      bundle: serialize(bundle),
       shadowRoot: serialize(shadowRoot),
       attributes: [].concat(attributes).map(serialize),
       childNodes: [].concat(childNodes).map(serialize)
     };
   }
-  deserialize({ nodeName, bundle, shadowRoot, namespaceURI, attributes, childNodes }, dependencies, ctor) {
+  deserialize({ nodeName, shadowRoot, namespaceURI, attributes, childNodes }, dependencies, ctor) {
     const element = new ctor(namespaceURI, nodeName);
 
     for (let i = 0, n = attributes.length; i < n; i++) {
@@ -151,22 +149,19 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
       element.attachShadow({ mode: "open" }).appendChild(shadowRootFragment);
     }
 
-    element.$bundle = deserialize(bundle, dependencies);
-
     // NOTE - $createdCallback is not called here for a reason -- serialized
     // must store the entire state of an object.
     return element;
   }
 }
 
-@serializable(new SyntheticDOMElementSerializer())
+@serializable(new SyntheticDOMNodeSerializer(new SyntheticDOMElementSerializer()))
 export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   readonly nodeType: number = DOMNodeType.ELEMENT;
   readonly attributes: SyntheticDOMAttributes;
   readonly expression: MarkupElementExpression;
   private _shadowRoot: SyntheticDocumentFragment;
-  private _bundle: Bundle;
   private _createdCallbackCalled: boolean;
 
   constructor(readonly namespaceURI: string, readonly tagName: string) {
@@ -195,14 +190,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   get shadowRoot(): SyntheticDocumentFragment {
     return this._shadowRoot;
-  }
-
-  get bundle(): Bundle {
-    return this._bundle;
-  }
-
-  set $bundle(value: Bundle) {
-    this._bundle = value;
   }
 
   setAttribute(name: string, value: any) {

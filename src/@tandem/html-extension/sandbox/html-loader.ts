@@ -26,12 +26,12 @@ export class HTMLBundleLoader implements IBundleLoader {
   @inject(DependenciesDependency.NS)
   private _dependencies: Dependencies;
 
-  async load(bundle, { type, value }): Promise<IBundleLoaderResult> {
+  async load(bundle, { type, content }): Promise<IBundleLoaderResult> {
 
     const dependencyPaths = [];
     const dependencies = this._dependencies;
 
-    const ast = parseMarkup(value);
+    const ast = parseMarkup(content);
 
     await ast.accept({
       visitAttribute({ name, value, parent }) {
@@ -58,21 +58,21 @@ export class HTMLBundleLoader implements IBundleLoader {
           if (type) {
             const result = await loadBundle(bundle, {
               type: type,
-              value: textNode.nodeValue
+              content: textNode.nodeValue
             }, dependencies);
 
             const [name, subtype] = result.type.split("/");
             let newType = result.type;
-            let newValue = result.value;
+            let newValue = result.content;
 
             // Dirty. This assumes that
             // a: subtype is correct for the parent element
             // b: toString() works for result.value
             // TODO - need to have an appropriate content transformer here
             // ContentTransformerDependency.transform(type, MimeTypeDependency.lookup(element.nodeName))
-            if (typeof result.value !== "string") {
+            if (typeof result.content !== "string") {
               newType  = "text/" + subtype;
-              newValue = result.value.toString();
+              newValue = result.content.toString();
             }
 
             textNode.nodeValue = newValue;
@@ -86,9 +86,9 @@ export class HTMLBundleLoader implements IBundleLoader {
       }
     });
     return {
-      type: HTML_MIME_TYPE,
       ast: ast,
-      value: formatMarkupExpression(ast),
+      type: HTML_MIME_TYPE,
+      content: formatMarkupExpression(ast),
       dependencyPaths: dependencyPaths
     };
   }

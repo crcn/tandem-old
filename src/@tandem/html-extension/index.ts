@@ -107,8 +107,8 @@ export const htmlExtensionDependencies = [
   pastHTMLServiceDependency,
 
   // bundle loaders
-  // new BundlerLoaderFactoryDependency(HTML_MIME_TYPE, HTMLBundleLoader),
-  // new BundlerLoaderFactoryDependency(CSS_MIME_TYPE, CSSBundleLoader),
+  new BundlerLoaderFactoryDependency(HTML_MIME_TYPE, HTMLBundleLoader),
+  new BundlerLoaderFactoryDependency(CSS_MIME_TYPE, CSSBundleLoader),
 
   // sandbox evaluators
   new SandboxModuleEvaluatorFactoryDependency(undefined, HTML_MIME_TYPE, HTMLASTEvaluator),

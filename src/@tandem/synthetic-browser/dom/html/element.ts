@@ -7,7 +7,6 @@ import {
   SyntheticDOMElement,
   SyntheticDOMAttribute,
   IDOMNodeEntityCapabilities,
-  SyntheticDOMElementSerializer,
 } from "../markup";
 
 @serializable()

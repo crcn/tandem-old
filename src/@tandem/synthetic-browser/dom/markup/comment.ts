@@ -1,12 +1,11 @@
 import { DOMNodeType } from "./node-types";
-import { IMarkupNodeVisitor } from "./visitor";
-import { SyntheticDocument } from "../document";
-import { SyntheticDOMValueNode, createDOMValueNodeSerializer } from "./value-node";
 import { serializable } from "@tandem/common";
+import { SyntheticDocument } from "../document";
+import { IMarkupNodeVisitor } from "./visitor";
+import { SyntheticDOMNodeSerializer } from "./node";
+import { SyntheticDOMValueNode, SyntheticDOMValueNodeSerializer } from "./value-node";
 
-const SyntheticDOMCommentSerializer = createDOMValueNodeSerializer(value => new SyntheticDOMComment(value));
-
-@serializable(new SyntheticDOMCommentSerializer())
+@serializable(new SyntheticDOMNodeSerializer(new SyntheticDOMValueNodeSerializer()))
 export class SyntheticDOMComment extends SyntheticDOMValueNode {
   readonly nodeType: number = DOMNodeType.COMMENT;
 

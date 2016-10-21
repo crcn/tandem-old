@@ -12,7 +12,7 @@ import {
   findTreeNode,
   patchTreeNode,
 } from "@tandem/common";
-
+import { ISerializer, serializable, deserialize, serialize } from "@tandem/common";
 
 import {
   DOMNodeType
@@ -32,6 +32,26 @@ export interface IDOMNode extends TreeNode<any>, IComparable {
   removeChild(child: IDOMNode);
 }
 
+export interface ISerializedSyntheticDOMNode {
+  bundle: any;
+}
+
+export class SyntheticDOMNodeSerializer implements ISerializer<SyntheticDOMNode, ISerializedSyntheticDOMNode> {
+  constructor(readonly childSerializer: ISerializer<any, any>) {
+
+  }
+  serialize(value: SyntheticDOMNode) {
+    return Object.assign(this.childSerializer.serialize(value), {
+      bundle: serialize(value.bundle)
+    })
+  }
+  deserialize(value: ISerializedSyntheticDOMNode, dependencies, ctor) {
+    return Object.assign(this.childSerializer.deserialize(value, dependencies, ctor), {
+      $bundle: deserialize(value.bundle, dependencies)
+    })
+  }
+}
+
 export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, ISynthetic, IDOMNode {
 
   readonly namespaceURI: string;
@@ -47,6 +67,10 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   /**
    * The source expression that generated this node. May be NULL at times
    * depending on the environment
+   */
+
+  /**
+   * @deprecated. Use location instead.
    */
 
   public $expression: MarkupNodeExpression;

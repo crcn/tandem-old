@@ -24,11 +24,11 @@ import {
 } from "@tandem/synthetic-browser";
 
 import {
+  HTMLBundleLoader,
   VisibleHTMLEntity,
   SyntheticHTMLLink,
-  SyntheticHTMLScript,
-  HTMLBundleLoader,
   SyntheticHTMLStyle,
+  SyntheticHTMLScript,
 } from "@tandem/html-extension";
 
 export const tdprojectExtensionDependencies = [
@@ -54,7 +54,7 @@ export const tdprojectExtensionDependencies = [
   new SandboxModuleFactoryDependency(HTML_MIME_TYPE, TDPROJECT_MIME_TYPE, MarkupModule),
 
   // sandbox loaders
-  new BundlerLoaderFactoryDependency(TDPROJECT_MIME_TYPE, TandemBundleLoader),
+  new BundlerLoaderFactoryDependency(TDPROJECT_MIME_TYPE, HTMLBundleLoader),
 
   // mime types
   new MimeTypeDependency("tdproject", TDPROJECT_MIME_TYPE),

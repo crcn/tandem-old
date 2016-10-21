@@ -22,6 +22,7 @@ import {
   SyntheticDOMValueNode,
   syntheticElementClassType,
   SyntheticDocumentFragment,
+  SyntheticDOMNodeSerializer,
 } from "./markup";
 
 import { SyntheticWindow } from "./window";
@@ -45,7 +46,7 @@ class SyntheticDocumentSerializer implements ISerializer<SyntheticDocument, ISer
       // need to cast style sheet to vanilla array before mapping
       styleSheets: [].concat(document.styleSheets).map(serialize),
       defaultNamespaceURI: document.defaultNamespaceURI,
-      childNodes: document.childNodes.map(serialize)
+      childNodes: document.childNodes.map(serialize),
     };
   }
   deserialize(value: ISerializedSyntheticDocument, dependencies) {
@@ -58,7 +59,7 @@ class SyntheticDocumentSerializer implements ISerializer<SyntheticDocument, ISer
   }
 }
 
-@serializable(new SyntheticDocumentSerializer())
+@serializable(new SyntheticDOMNodeSerializer(new SyntheticDocumentSerializer()))
 export class SyntheticDocument extends SyntheticDOMContainer {
 
   readonly nodeType: number = DOMNodeType.DOCUMENT;

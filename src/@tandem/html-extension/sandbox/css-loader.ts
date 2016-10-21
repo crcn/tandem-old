@@ -11,12 +11,12 @@ import {
 } from "@tandem/synthetic-browser";
 
 export class CSSBundleLoader implements IBundleLoader {
-  async load(bundle: Bundle, { type, value, map }): Promise<IBundleLoaderResult> {
+  async load(bundle: Bundle, { type, content, map }): Promise<IBundleLoaderResult> {
     return {
       type: CSS_MIME_TYPE,
-      ast: parseCSS(value, map),
+      ast: parseCSS(content, map),
       map: map,
-      value: value
+      content: content
     };
   }
 }
