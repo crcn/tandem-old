@@ -35,6 +35,7 @@ import { WrapBus } from "mesh";
 import { camelCase } from "lodash";
 import { IMarkupEdit } from "@tandem/synthetic-browser";
 import { SyntheticRendererAction } from "../actions";
+import { FileEditor, FileEditorDependency } from "@tandem/sandbox";
 import { SyntheticDOMNodeEntityClassDependency } from "../dependencies"
 import { SyntheticDOMAttributes, SyntheticDOMAttribute, SyntheticDocumentFragment } from "../dom";
 
@@ -54,6 +55,8 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
   private _changeObserver: IActor;
   private _sourceObserver: IActor;
   private _browserObserver: IActor;
+  private _fileEditor: FileEditor;
+
   /**
    * extra information specific to the environment that this node is running un
    */
@@ -78,6 +81,8 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
     // similar to dataset -- specific to the editor
     this._metadata.observe(new BubbleBus(this));
     this.observe(new WrapBus(this.onAction.bind(this)));
+
+    this._fileEditor      = FileEditorDependency.getInstance(this.browser.dependencies);
   }
 
   /**
@@ -95,19 +100,11 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
   }
 
   get editable() {
-    return !!(this.module && this.module.editor);
+    return this.source.editable;
   }
 
   get sourceWindow() {
     return this.source.ownerDocument.defaultView;
-  }
-
-  get sandbox() {
-    return this.module.sandbox;
-  }
-
-  get module() {
-    return this._source.module;
   }
 
   get metadata() {
@@ -119,7 +116,8 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
   }
 
   async save(): Promise<any> {
-    this.module.editor.edit(this.onEdit.bind(this));
+    // this._fileEditor
+    // this.module.editor.edit(this.onEdit.bind(this));
   }
 
   async remove(): Promise<any> {

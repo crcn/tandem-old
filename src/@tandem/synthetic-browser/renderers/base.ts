@@ -76,7 +76,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   }
 
   async fetchComputedStyle(uid: string) {
-
+    // OVERRIDE ME
   }
 
   getBoundingRect(uid: string) {

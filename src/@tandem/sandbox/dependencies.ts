@@ -1,5 +1,6 @@
 import { IModule } from "./module";
 import { FileCache } from "./file-cache";
+import { FileEditor } from "./editor2";
 import { IFileSystem } from "./file-system";
 import { IFileResolver } from "./resolver";
 import { contentEditorType, IContentEditor } from "./editor2";
@@ -144,4 +145,5 @@ export class ContentEditorFactoryDependency extends ClassFactoryDependency {
 }
 
 export const FileCacheDependency = createSingletonDependencyClass("fileCache", FileCache);
+export const FileEditorDependency = createSingletonDependencyClass("fileEdit", FileEditor);
 export const BundlerDependency   = createSingletonDependencyClass("bundler", Bundler);

@@ -9,6 +9,7 @@ import { 
   RemoteFileResolver,
   FileCacheDependency,
   FileSystemDependency,
+  FileEditorDependency,
   FileResolverDependency,
 } from "@tandem/sandbox";
 
@@ -60,16 +61,11 @@ export class FrontEndApplication extends Application {
   public editor: Editor;
   public settings: Metadata;
   public metadata: Metadata;
-  public fileEditor: FileEditor;
 
   constructor(config?: any) {
     super(config);
     this.metadata = new Metadata();
     this.metadata.observe(this.bus);
-  }
-
-  protected willInitialize() {
-    this.fileEditor = new FileEditor(FileCacheDependency.getInstance(this.dependencies), this.dependencies);
   }
 
   protected registerDependencies() {
@@ -141,7 +137,8 @@ export class FrontEndApplication extends Application {
       new FileSystemDependency(this.config.fileSystem || new RemoteFileSystem(this.bus)),
       new FileResolverDependency(this.config.fileResolver || new RemoteFileResolver(this.bus)),
       new FileCacheDependency(),
-      new BundlerDependency()
+      new BundlerDependency(),
+      new FileEditorDependency()
     );
   }
 }

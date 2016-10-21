@@ -7,9 +7,11 @@ import { FileCacheDependency, ContentEditorFactoryDependency } from "./dependen
 import {
   Action,
   Observable,
+  inject,
   Dependencies,
   SingletonThenable,
   MimeTypeDependency,
+  DependenciesDependency,
 } from "@tandem/common";
 
 export type contentEditorType = { new(): IContentEditor };
@@ -83,7 +85,10 @@ export class FileEditor extends Observable {
   private _edits: IContentEdit[];
   private _shouldEditAgain: boolean;
 
-  constructor(readonly fileCache: FileCache, private _dependencies: Dependencies) {
+  @inject(DependenciesDependency.NS)
+  private _dependencies: Dependencies;
+
+  constructor() {
     super();
   }
 
@@ -149,7 +154,7 @@ export class FileEditor extends Observable {
         }
 
         const contentEditor = contentEditorFactoryDependency.create();
-        const fileCache     = await this.fileCache.item(filePath);
+        const fileCache     = await  FileCacheDependency.getInstance(this._dependencies).item(filePath);
         const oldContent    = await fileCache.read();
         const newContent    = await contentEditor.getEditedContent(filePath, oldContent, actionsByFilePath[filePath]);
 
