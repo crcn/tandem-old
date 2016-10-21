@@ -131,6 +131,10 @@ export class SyntheticBrowserEnvironment extends Observable {
 }
 
 export abstract class BaseSyntheticBrowser extends Observable implements ISyntheticBrowser {
+
+  @bindable()
+  readonly documentEntity: BaseDOMNodeEntity<any, any>;
+
   private _environment: SyntheticBrowserEnvironment;
   private _url: string;
   private _window: SyntheticWindow;
@@ -140,6 +144,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     super();
     this._environment = new SyntheticBrowserEnvironment(_dependencies, renderer);
     this._environment.observe(new BubbleBus(this));
+    bindProperty(this._environment, "documentEntity", this);
   }
 
   get document() {
@@ -169,9 +174,6 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     return this._environment.renderer;
   }
 
-  get documentEntity() {
-    return this._environment.documentEntity;
-  }
 
   get bodyEntity() {
     return this._environment.bodyEntity;

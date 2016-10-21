@@ -12,6 +12,7 @@ import {
   SyntheticHTMLElement,
   BaseDecoratorRenderer,
   RemoteSyntheticBrowser,
+  SyntheticRendererAction,
   SyntheticCSSStyleSheet,
   BaseVisibleDOMNodeEntity,
   DOMNodeEntityCapabilities,
@@ -64,6 +65,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
   constructor(source: SyntheticHTMLElement) {
     super(source);
     this._documentStyleSheetObserver = new WrapBus(this.onDocumentStyleSheetsAction.bind(this));
+    // this._artboardBrowserObserver = new WrapBus(this.onArtboardBrowserAction.bind(this));
   }
 
   evaluate() {
@@ -80,6 +82,7 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
     if (!this._artboardBrowser) {
       const documentRenderer = new SyntheticDOMRenderer();
       this._artboardBrowser = new RemoteSyntheticBrowser(ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer), this.browser);
+      // this._artboardBrowser.observe(this._artboardBrowserObserver)
       watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
       watchProperty(this._artboardBrowser, "documentEntity", this.onBrowserDocumentEntityChange.bind(this));
     }
@@ -151,6 +154,12 @@ export class TDArtboardEntity extends VisibleHTMLEntity {
     });
     document.styleSheets.push(this._combinedStyleSheet);
   }
+
+  // protected onArtboardBrowserAction(action: Action) {
+  //   if (action.type === SyntheticRendererAction.UPDATE_RECTANGLES) {
+  //     this.notify(action);
+  //   }
+  // }
 
   protected onBrowserWindowChange() {
     this.injectCSS();
