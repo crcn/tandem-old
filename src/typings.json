@@ -36,6 +36,7 @@
     "serve-static": "registry:dt/serve-static#0.0.0+20160606155157",
     "socket.io": "registry:dt/socket.io#1.4.4+20160317120654",
     "socket.io-client": "registry:dt/socket.io-client#1.4.4+20160317120654",
+    "source-map": "registry:dt/source-map#0.0.0+20161003134342",
     "sprintf": "registry:dt/sprintf#0.0.0+20160316155526",
     "typescript": "registry:dt/typescript#0.4.0+20160317120654",
     "whatwg-fetch": "registry:dt/whatwg-fetch#0.0.0+20160829180742",

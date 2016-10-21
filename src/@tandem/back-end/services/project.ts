@@ -22,10 +22,10 @@ export default class ProjectService extends BaseApplicationService<IApplication>
   private _primaryProjectPath: string;
 
   async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
-    if (/\.tdm$/.test(action.path)) {
-      this._primaryProjectPath = action.path;
+    if (/\.tdm$/.test(action.filePath)) {
+      this._primaryProjectPath = action.filePath;
     } else if (!this._primaryProjectPath) {
-      fs.writeFileSync(tmpProjectFile, `<tdproject xmlns="tandem"><frame src="${action.path}" inherit-css /></tdproject>`);
+      fs.writeFileSync(tmpProjectFile, `<tdproject xmlns="tandem"><frame src="${action.filePath}" inherit-css /></tdproject>`);
       this._primaryProjectPath = tmpProjectFile;
     }
   }

@@ -37,24 +37,24 @@ export class FileCacheAction extends Action {
 @definePublicAction()
 export class ReadFileAction extends Action {
   static readonly READ_FILE = "readFile";
-  constructor(readonly path: string) {
+  constructor(readonly filePath: string) {
     super(ReadFileAction.READ_FILE);
   }
 
-  static async execute(path: string, bus: IActor): Promise<string> {
-    return (await bus.execute(new ReadFileAction(path)).read()).value;
+  static async execute(filePath: string, bus: IActor): Promise<string> {
+    return (await bus.execute(new ReadFileAction(filePath)).read()).value;
   }
 }
 
 @definePublicAction()
 export class WatchFileAction extends Action {
   static readonly WATCH_FILE = "watchFile";
-  constructor(readonly path: string) {
+  constructor(readonly filePath: string) {
     super(WatchFileAction.WATCH_FILE);
   }
 
-  static execute(path: string, bus: IActor, onFileChange: () => any): IDisposable {
-    const stream = bus.execute(new WatchFileAction(path));
+  static execute(filePath: string, bus: IActor, onFileChange: () => any): IDisposable {
+    const stream = bus.execute(new WatchFileAction(filePath));
 
     stream.pipeTo({
       abort: () => {},

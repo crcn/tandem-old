@@ -2,6 +2,7 @@ import * as path from "path";
 import * as sass from "sass.js";
 import { CSS_AST_MIME_TYPE } from "@tandem/html-extension";
 import { inject, Queue } from "@tandem/common";
+
 import { parseCSS, evaluateCSS, SyntheticWindow, CSSExpression } from "@tandem/synthetic-browser";
 import {
   Bundle,
@@ -43,11 +44,11 @@ export class SCSSLoader implements IBundleLoader {
 
       return new Promise((resolve, reject) => {
         sass.compile(value, {}, (result) => {
-
           // 3 = empty string exception
           if (result.status !== 0 && result.status !== 3) return reject(result);
           resolve({
             type: CSS_AST_MIME_TYPE,
+            map: result.map,
             value: parseCSS(result.text || "")
           } as IBundleLoaderResult);
         });

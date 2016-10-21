@@ -73,7 +73,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
   async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
 
-    const path = action.path;
+    const path = action.filePath;
 
     if (!/\.tdm$/.test(path)) {
       const body = this.app.editor.browser.document.body;

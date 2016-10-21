@@ -1,4 +1,6 @@
 import * as postcss from "postcss";
+import { RawSourceMap } from "source-map";
+
 
 import {
   IASTNode,
@@ -26,9 +28,10 @@ const defaultExpressionClasses = {
 
 const _cache = {};
 
-export function parseCSS(source: string, expressionClasses?: any): CSSStyleSheetExpression {
+export function parseCSS(source: string, map?: RawSourceMap): CSSStyleSheetExpression {
   if (_cache[source]) return _cache[source].clone();
-  return _cache[source] = convertPostCSSAST(postcss.parse(source));
+  console.log(map);
+  return _cache[source] = convertPostCSSAST(postcss.parse(source, {  map: map as any as postcss.SourceMapOptions }));
 }
 
 export function convertPostCSSAST(root: postcss.Root, expressionClasses: any = {}) {

@@ -51,7 +51,7 @@ export default class SockService extends BaseApplicationService<IApplication> {
 
   [ExecAction.EXEC]({ config }: ExecAction) {
     if (config.argv._.length) {
-      OpenProjectAction.execute({ path: path.resolve(config.cwd, config.argv._[0]) }, this.bus);
+      OpenProjectAction.execute({ filePath: path.resolve(config.cwd, config.argv._[0]) }, this.bus);
     }
   }
 

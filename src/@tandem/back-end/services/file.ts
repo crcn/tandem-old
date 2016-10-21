@@ -39,8 +39,8 @@ export default class FileService extends BaseApplicationService<IApplication> {
 
   @document("reads a file content")
   [ReadFileAction.READ_FILE](action: ReadFileAction|WatchFileAction) {
-    this.logger.info("reading file %s", action.path);
-    return this._fileSystem.readFile(action.path);
+    this.logger.info("reading file %s", action.filePath);
+    return this._fileSystem.readFile(action.filePath);
   }
 
   /**
@@ -48,10 +48,10 @@ export default class FileService extends BaseApplicationService<IApplication> {
 
   @document("watches a file for any changes")
   [WatchFileAction.WATCH_FILE](action: WatchFileAction) {
-    this.logger.info("watching file %s", action.path);
+    this.logger.info("watching file %s", action.filePath);
     return Response.create((writable) => {
 
-      const watcher = this._fileSystem.watchFile(action.path, () => {
+      const watcher = this._fileSystem.watchFile(action.filePath, () => {
         writable.write();
       });
 

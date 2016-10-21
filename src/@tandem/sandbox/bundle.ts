@@ -3,6 +3,8 @@ import { IFileSystem } from "./file-system";
 import { BundleAction } from "./actions";
 import { FileCache, FileCacheItem } from "./file-cache";
 import { IFileResolver, IFileResolverOptions } from "./resolver";
+import { RawSourceMap } from "source-map";
+
 
 import {
   isMaster,
@@ -49,6 +51,7 @@ export type bundleLoaderType = { new(): IBundleLoader };
 export interface IBundleContent {
   readonly type: string; // mime type
   readonly value: any;
+  map?: RawSourceMap;
 }
 
 export interface IBundleLoaderResult extends IBundleContent {
@@ -82,6 +85,7 @@ export async function loadBundle(bundle: Bundle, content: IBundleContent, depend
   }
 
   return {
+    map: current.map,
     type: current.type,
     value: current.value,
     dependencyPaths: dependencyPaths
