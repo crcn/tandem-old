@@ -5,7 +5,6 @@ import { SyntheticDOMNodeSerializer } from "./node";
 import { SyntheticDOMValueNode, SyntheticDOMValueNodeSerializer } from "./value-node";
 import { serializable, serialize, deserialize, ISerializable, ISerializer } from "@tandem/common";
 
-
 @serializable(new SyntheticDOMNodeSerializer(new SyntheticDOMValueNodeSerializer()))
 export class SyntheticDOMText extends SyntheticDOMValueNode {
   readonly nodeType: number = DOMNodeType.TEXT;

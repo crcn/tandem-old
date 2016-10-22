@@ -73,6 +73,7 @@ export class FrontEndApplication extends Application {
     const masterDependencies = [];
     const workerDependencies = [];
 
+    // TODO - check if nodejs
     if (isMaster) {
       masterDependencies.push(
 
