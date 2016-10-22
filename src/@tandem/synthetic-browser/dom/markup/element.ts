@@ -158,24 +158,40 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
 export class SetElementAttributeEditAction extends EditAction {
   static readonly SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
   constructor(target: SyntheticDOMElement, readonly attributeName: string, readonly newAttributeValue: string, readonly newAttributeName?: string) {
-    // TODO - may be insert or remove action here
     super(SetElementAttributeEditAction.SET_ELEMENT_ATTRIBUTE_EDIT, EditKind.UPDATE, target);
   }
 }
 
-export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<SyntheticDOMElement> {
-  setAttribute(name: string, value: string, newName?: string) {
-    return this.addAction(new SetElementAttributeEditAction(this.target, name, value, newName));
+export class SetElementTagNameEditAction extends EditAction {
+  static readonly SET_ELEMENT_TAG_NAME_EDIT = "setElementTagNameEdit";
+  constructor(target: SyntheticDOMElement, readonly newName: string) {
+    super(SetElementTagNameEditAction.SET_ELEMENT_TAG_NAME_EDIT, EditKind.UPDATE, target);
   }
 }
 
-export class SyntheticDOMElementPatcher {
-  diff(oldElement: SyntheticDOMElement, newElement: SyntheticDOMElement): SyntheticDOMElementEdit {
-    const edit = new SyntheticDOMElementEdit(oldElement);
-    const changes = diffArray(oldElement.attributes, newElement.attributes, (a, b) => a.name === b.name);
-    return edit;
+export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<SyntheticDOMElement> {
+
+  setAttribute(name: string, value: string, newName?: string) {
+    return this.addAction(new SetElementAttributeEditAction(this.target, name, value, newName));
+  }
+
+  setTagName(newName: string) {
+    return this.addAction(new SetElementTagNameEditAction(this.target, newName));
+  }
+
+  /**
+   * Adds diff actions from the new element
+   *
+   * @param {SyntheticDOMElement} newElement
+   */
+
+  addDiff(newElement: SyntheticDOMElement) {
+    if (this.target.nodeName !== newElement.nodeName) {
+      this.setTagName(newElement.nodeName);
+    }
   }
 }
+
 
 @serializable(new SyntheticDOMNodeSerializer(new SyntheticDOMElementSerializer()))
 export class SyntheticDOMElement extends SyntheticDOMContainer {

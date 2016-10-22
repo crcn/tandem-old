@@ -8,22 +8,24 @@ type ComparableTreeType = ITreeNode<any> & IComparable;
 export const patchTreeNode = (oldNode: ComparableTreeType, newNode: ComparableTreeType, patchLeaf?: (oldNode: ComparableTreeType, newNode: ComparableTreeType) => any) => {
   if (!patchLeaf) patchLeaf = defaultPatchLeaf;
 
-  const changes = diffArray(oldNode.children, newNode.children, compareTreeNodes);
+  diffArray(oldNode.children, newNode.children, compareTreeNodes).accept({
+    visitRemove({ index }) {
+      oldNode.removeChild(oldNode.children[index]);
+    },
+    visitInsert({ index, value }) {
+      oldNode.insertChildAt(value, index);
+    },
+    visitUpdate({ oldIndex, newValue, newIndex }) {
 
-  for (const rm of changes.remove) {
-    oldNode.removeChild(rm);
-  }
+      // apply shift
+      if (oldIndex !== newIndex) {
+        oldNode.insertChildAt(oldNode.children[oldIndex], newIndex);
+      }
 
-  for (const add of changes.add) {
-    oldNode.insertChildAt(add.value, add.index);
-  }
-
-  for (const [oldChild, newChild, newIndex] of changes.update) {
-    if (oldNode.children.indexOf(oldChild) !== newIndex) {
-      oldNode.insertChildAt(oldChild, newIndex);
+      // patch sub tree
+      patchTreeNode(oldNode.children[newIndex], newValue, patchLeaf);
     }
-    patchTreeNode(oldChild, newChild, patchLeaf);
-  }
+  });
 
   patchLeaf(oldNode, newNode);
 };

@@ -45,21 +45,21 @@ export class VisibleHTMLEntity extends BaseVisibleDOMNodeEntity<SyntheticHTMLEle
   }
 
   protected onEdit(edit: IMarkupEdit) {
-    const changes = diffArray(this.source.attributes, this.change.attributes, (a, b) => a.name === b.name);
+    // const changes = diffArray(this.source.attributes, this.change.attributes, (a, b) => a.name === b.name);
 
-    for (const add of changes.add) {
-      edit.setElementAttribute(this.source, add.value.name, add.value.value);
-    }
+    // for (const add of changes.add) {
+    //   edit.setElementAttribute(this.source, add.value.name, add.value.value);
+    // }
 
-    for (const [oldAttribute, newAttribute] of changes.update) {
-      if (oldAttribute.value !== newAttribute.value) {
-        edit.setElementAttribute(this.source, newAttribute.name, newAttribute.value);
-      }
-    }
+    // for (const [oldAttribute, newAttribute] of changes.update) {
+    //   if (oldAttribute.value !== newAttribute.value) {
+    //     edit.setElementAttribute(this.source, newAttribute.name, newAttribute.value);
+    //   }
+    // }
 
-    for (const rm of changes.remove) {
-      edit.removeElementAttribute(this.source, rm.name);
-    }
+    // for (const rm of changes.remove) {
+    //   edit.removeElementAttribute(this.source, rm.name);
+    // }
   }
 }
 
