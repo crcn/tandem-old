@@ -29,4 +29,9 @@ export class SyntheticCSSFontFace extends SyntheticCSSObject {
       ${this.declaration.cssText}
     }`;
   }
+  clone(deep?: boolean) {
+    const clone = new SyntheticCSSFontFace();
+    if (deep) clone.declaration = this.declaration.clone();
+    return this.linkClone(clone);
+  }
 }

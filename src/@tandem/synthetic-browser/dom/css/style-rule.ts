@@ -1,6 +1,6 @@
 import { Bundle } from "@tandem/sandbox";
 import { CSSRuleExpression } from "./ast";
-import { BaseContentEdit, EditAction } from "@tandem/sandbox";
+import { BaseContentEdit, EditAction, EditKind } from "@tandem/sandbox";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "./declaration";
 import { Action, serializable, serialize, deserialize, ISerializer, ISerializedContent } from "@tandem/common";
@@ -35,14 +35,14 @@ export class SyntheticCSSStyleRuleEdit extends BaseContentEdit<SyntheticCSSStyle
 export class SetRuleSelectorEditAction extends EditAction {
   static readonly SET_RULE_SELECTOR = "setRuleSelector";
   constructor(rule: SyntheticCSSStyleRule, readonly selector: string) {
-    super(SetRuleSelectorEditAction.SET_RULE_SELECTOR, rule);
+    super(SetRuleSelectorEditAction.SET_RULE_SELECTOR, EditKind.UPDATE, rule);
   }
 }
 
 export class SetDeclarationEditAction extends EditAction {
   static readonly SET_DECLARATION = "setDeclaration";
   constructor(rule: SyntheticCSSStyleRule, readonly name: string, readonly newValue: string, readonly newName?: string) {
-    super(SetDeclarationEditAction.SET_DECLARATION, rule);
+    super(SetDeclarationEditAction.SET_DECLARATION, EditKind.UPDATE, rule);
   }
 }
 
@@ -61,5 +61,11 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
     return `${this.selector} {
       ${this.style.cssText}
     }`;
+  }
+
+  clone(deep?: boolean) {
+    const clone = new SyntheticCSSStyleRule(this.selector, undefined);
+    if (deep) clone.style = this.style.clone(deep);
+    return this.linkClone(clone);
   }
 }

@@ -188,16 +188,24 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     }
   }
 
-  get editable() {
-    return !!this.$source;
-  }
-
   protected linkClone(clone: SyntheticDOMNode) {
     clone.$source = this.$source;
     clone.$module = this.$module;
     clone.$setOwnerDocument(this.ownerDocument);
+    return clone;
+  }
+
+  /**
+   * Clone alias for standard DOM API
+   *
+   * @param {boolean} [deep]
+   * @returns
+   */
+
+  cloneNode(deep?: boolean) {
+    return this.clone(deep);
   }
 
   abstract accept(visitor: IMarkupNodeVisitor);
-  abstract cloneNode(deep?: boolean);
+  abstract clone(deep?: boolean);
 }

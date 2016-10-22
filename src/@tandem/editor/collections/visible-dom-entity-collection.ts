@@ -70,7 +70,7 @@ export class VisibleDOMEntityCollection<T extends BaseVisibleDOMNodeEntity<any, 
   }
 
   get editable() {
-    return this.find((entity) => entity.editable === false) == null;
+    return this.find((entity) => entity.source == null) == null;
   }
 
   get absoluteBounds() {

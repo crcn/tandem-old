@@ -2,7 +2,7 @@ import { CSSExpression } from "./ast";
 import { Bundle, ISynthetic, ISyntheticSourceInfo } from "@tandem/sandbox";
 import { ISerializer, serialize, deserialize } from "@tandem/common";
 
-export class SyntheticCSSObject implements ISynthetic {
+export abstract class SyntheticCSSObject implements ISynthetic {
 
   public $source: ISyntheticSourceInfo;
 
@@ -10,8 +10,11 @@ export class SyntheticCSSObject implements ISynthetic {
     return this.$source;
   }
 
-  get editable() {
-    return !!this.source;
+  abstract clone(deep?: boolean);
+
+  protected linkClone(clone: SyntheticCSSObject) {
+    clone.$source = this.source;
+    return clone;
   }
 }
 

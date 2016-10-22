@@ -336,6 +336,12 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     public zIndex: string | null;
     public zoom: string | null;
 
+    clone(deep?: boolean) {
+      const clone = new SyntheticCSSStyleDeclaration();
+      clone.deserialize(this);
+      return clone;
+    }
+
     get cssText() {
       const buffer = [];
 

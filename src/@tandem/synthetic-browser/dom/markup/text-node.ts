@@ -25,9 +25,7 @@ export class SyntheticDOMText extends SyntheticDOMValueNode {
     return visitor.visitText(this);
   }
 
-  cloneNode() {
-    const clone = new SyntheticDOMText(this.nodeValue);
-    this.linkClone(clone);
-    return clone;
+  clone() {
+    return this.linkClone(new SyntheticDOMText(this.nodeValue));
   }
 }

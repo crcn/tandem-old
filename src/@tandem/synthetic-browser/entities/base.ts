@@ -98,10 +98,6 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
     return this._change;
   }
 
-  get editable() {
-    return this.source.editable;
-  }
-
   get sourceWindow() {
     return this.source.ownerDocument.defaultView;
   }
@@ -127,9 +123,9 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 
   public edit(onEdit: (edit: IMarkupEdit) => any) {
     // this may happen if whatever's mutating the entity doesn't check the "editable" property.
-    if (!this.editable) {
-      return Promise.reject(new Error("Cannot save entity source that is not editable."));
-    }
+    // if (!this.editable) {
+      // return Promise.reject(new Error("Cannot save entity source that is not editable."));
+    // }
     // this.module.editor.edit(onEdit.bind(this));
   }
 

@@ -15,6 +15,7 @@ import {
   Action,
   BubbleBus,
   serialize,
+  diffArray,
   Observable,
   deserialize,
   ISerializer,
@@ -27,7 +28,7 @@ import {
 } from "@tandem/common";
 
 import { Bundle } from "@tandem/sandbox";
-import { BaseContentEdit, EditAction } from "@tandem/sandbox";
+import { BaseContentEdit, EditAction, EditKind } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticDOMAttribute {
   name: string;
@@ -157,7 +158,8 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
 export class SetElementAttributeEditAction extends EditAction {
   static readonly SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
   constructor(target: SyntheticDOMElement, readonly attributeName: string, readonly newAttributeValue: string, readonly newAttributeName?: string) {
-    super(SetElementAttributeEditAction.SET_ELEMENT_ATTRIBUTE_EDIT, target);
+    // TODO - may be insert or remove action here
+    super(SetElementAttributeEditAction.SET_ELEMENT_ATTRIBUTE_EDIT, EditKind.UPDATE, target);
   }
 }
 
@@ -165,6 +167,16 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
   setAttribute(name: string, value: string, newName?: string) {
     return this.addAction(new SetElementAttributeEditAction(this.target, name, value, newName));
   }
+}
+
+export class SyntheticDOMElementPatcher {
+  diff(oldElement: SyntheticDOMElement, newElement: SyntheticDOMElement): SyntheticDOMElementEdit {
+    const edit = new SyntheticDOMElementEdit(oldElement);
+    const changes = diffArray(oldElement.attributes, newElement.attributes, (a, b) => a.name === b.name);
+
+    return edit;
+  }
+  // patch(oldElement
 }
 
 @serializable(new SyntheticDOMNodeSerializer(new SyntheticDOMElementSerializer()))
@@ -299,12 +311,12 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
     if (deep === true) {
       for (const child of this.childNodes) {
-        clone.appendChild(child.cloneNode(deep));
+        clone.appendChild(child.clone(deep));
       }
     }
   }
 
-  cloneNode(deep?: boolean) {
+  clone(deep?: boolean) {
     const constructor = this.constructor as syntheticElementClassType;
     const clone = new constructor(this.namespaceURI, this.tagName);
     this.linkClone(clone);

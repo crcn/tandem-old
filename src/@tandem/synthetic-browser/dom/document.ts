@@ -161,13 +161,12 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     this.own(child);
   }
 
-
-  cloneNode(deep?: boolean) {
+  clone(deep?: boolean) {
     const document = new SyntheticDocument(this.defaultNamespaceURI);
     document.$window = this.defaultView;
-    if (deep === true) {
+    if (deep) {
       for (let i = 0, n = this.childNodes.length; i < n; i++) {
-        document.appendChild(this.childNodes[i].cloneNode(true));
+        document.appendChild(this.childNodes[i].clone(deep));
       }
     }
     return document;

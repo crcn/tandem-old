@@ -134,10 +134,12 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     this.notify(new TreeNodeAction(TreeNodeAction.NODE_REMOVED));
   }
 
-  public clone(): T {
+  public clone(deep?: boolean): T {
     const clone = this.cloneLeaf();
-    for (let i = 0, n = this.children.length; i < n; i++) {
-      clone.appendChild(this.children[i].clone());
+    if (deep) {
+      for (let i = 0, n = this.children.length; i < n; i++) {
+        clone.appendChild(this.children[i].clone(deep));
+      }
     }
     return <T>clone;
   }

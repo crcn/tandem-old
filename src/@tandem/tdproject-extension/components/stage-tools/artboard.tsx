@@ -19,7 +19,7 @@ export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTD
   }
 
   editTitle = () => {
-    if (!this.props.artboard.editable) return;
+    if (!this.props.artboard.source) return;
     this.setState({ editedTitle: this.props.artboard.getAttribute("title") });
     requestAnimationFrame(() => {
       (this.refs as any).input.select();

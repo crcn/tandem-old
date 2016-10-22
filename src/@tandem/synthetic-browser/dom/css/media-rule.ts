@@ -37,4 +37,14 @@ export class SyntheticCSSMediaRule extends SyntheticCSSObject {
       ${this.cssRules.map((rule) => rule.cssText).join("\n")}
     }`;
   }
+
+  clone(deep?: boolean) {
+    const clone = new SyntheticCSSMediaRule(this.media.concat());
+    if (deep) {
+      for (let i = 0, n = this.cssRules.length; i < n; i++) {
+        clone.cssRules.push(this.cssRules[i].clone(deep));
+      }
+    }
+    return this.linkClone(clone);
+  }
 }

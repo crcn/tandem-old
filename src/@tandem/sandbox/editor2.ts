@@ -6,10 +6,15 @@ import { FileEditorAction } from "./actions";
 import { FileCacheDependency, ContentEditorFactoryDependency } from "./dependencies";
 import {
   Action,
-  Observable,
   inject,
+  serialize,
+  Observable,
+  deserialize,
   Dependencies,
+  serializable,
+  ISerializable,
   SingletonThenable,
+  ISerializedContent,
   MimeTypeDependency,
   DependenciesDependency,
 } from "@tandem/common";
@@ -26,7 +31,7 @@ export abstract class BaseContentEditor<T> implements IContentEditor {
     const rootASTNode = await this.parseContent(filePath, content);
     for (const action of actions) {
       const method = this[action.type];
-      const targetASTNode = this.findTargetASTNode(rootASTNode, action.targetSythetic);
+      const targetASTNode = this.findTargetASTNode(rootASTNode, action.target);
       if (method && targetASTNode) {
         method.call(this, targetASTNode, action);
       } else {
@@ -41,11 +46,21 @@ export abstract class BaseContentEditor<T> implements IContentEditor {
   protected abstract getFormattedContent(root: T): string;
 }
 
-export class EditAction extends Action {
-  constructor(type: string, readonly targetSythetic: ISynthetic) {
-    super(type);
+// TODO - may want to use
+export enum EditKind {
+  REMOVE = 1,
+  UPDATE = REMOVE + 1,
+  INSERT = UPDATE + 1
+}
+
+export abstract class EditAction extends Action {
+  readonly target: ISynthetic;
+  constructor(actionType: string, public editKind: EditKind, target: ISynthetic) {
+    super(actionType);
+    this.currentTarget = target;
   }
 }
+
 
 /**
  * Removes the target synthetic object
@@ -54,7 +69,7 @@ export class EditAction extends Action {
 export class RemoveEditAction extends EditAction {
   static readonly REMOVE_EDIT = "removeEdit";
   constructor(target: ISynthetic) {
-    super(RemoveEditAction.REMOVE_EDIT, target);
+    super(RemoveEditAction.REMOVE_EDIT, EditKind.REMOVE, target);
   }
 }
 
@@ -133,7 +148,7 @@ export class FileEditor extends Observable {
       // find all actions that are part of the same file and
       // batch them together
       for (const action of actions) {
-        const target = action.targetSythetic;
+        const target = action.target;
 
         // This may happen if edits are being applied to synthetic objects that
         // do not have the proper mappings

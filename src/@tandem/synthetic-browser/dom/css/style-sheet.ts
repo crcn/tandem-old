@@ -51,4 +51,14 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
   toString() {
     return this.cssText;
   }
+
+  clone(deep?: boolean) {
+    const clone = new SyntheticCSSStyleSheet([]);
+    if (deep) {
+      for (let i = 0, n = this.rules.length; i < n; i++) {
+        clone.rules.push(this.rules[i].clone(deep));
+      }
+    }
+    return this.linkClone(clone);
+  }
 }

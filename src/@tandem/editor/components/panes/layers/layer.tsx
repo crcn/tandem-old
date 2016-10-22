@@ -52,7 +52,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     const { node, app } = this.props;
     const { workspace } = app;
 
-    const selection = workspace.selection || [];
+    const selection = (workspace.selection || []) as SyntheticDOMNode[];
     let select  = [];
     let multiSelect = false;
 

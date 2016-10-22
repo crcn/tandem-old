@@ -15,11 +15,11 @@ import {
 
 export class MarkupEditor2 extends BaseContentEditor<MarkupExpression> {
 
-  [RemoveEditAction.REMOVE_EDIT](node: MarkupNodeExpression, { targetSythetic }: RemoveEditAction) {
+  [RemoveEditAction.REMOVE_EDIT](node: MarkupNodeExpression, { target }: RemoveEditAction) {
     node.parent.removeChild(node);
   }
 
-  [SetElementAttributeEditAction.SET_ELEMENT_ATTRIBUTE_EDIT](element: MarkupElementExpression, { targetSythetic, attributeName, newAttributeName, newAttributeValue }: SetElementAttributeEditAction) {
+  [SetElementAttributeEditAction.SET_ELEMENT_ATTRIBUTE_EDIT](element: MarkupElementExpression, { target, attributeName, newAttributeName, newAttributeValue }: SetElementAttributeEditAction) {
     element.setAttribute(newAttributeName || attributeName, newAttributeValue);
     if (newAttributeName) {
       element.removeAttribute(attributeName);

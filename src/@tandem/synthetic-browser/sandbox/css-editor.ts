@@ -2,7 +2,16 @@ import * as postcss from "postcss";
 import * as postcssSassSyntax from "postcss-scss";
 import { Action, inject, Dependencies, DependenciesDependency, sourcePositionEquals } from "@tandem/common";
 import { SyntheticCSSStyleRule, SetRuleSelectorEditAction, parseCSS, SetDeclarationEditAction } from "@tandem/synthetic-browser";
-import { IContentEditor, BaseContentEditor, IContentEdit, BaseContentEdit, Bundle, loadBundleContent, ISynthetic } from "@tandem/sandbox";
+import {
+  Bundle,
+  EditAction,
+  ISynthetic,
+  IContentEdit,
+  IContentEditor,
+  BaseContentEdit,
+  BaseContentEditor,
+  loadBundleContent,
+} from "@tandem/sandbox";
 
 // TODO - move this to synthetic-browser
 // TODO - may need to split this out into separate CSS editors. Some of this is specific
@@ -12,16 +21,16 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
   @inject(DependenciesDependency.NS)
   private _dependencies: Dependencies;
 
-  [SetRuleSelectorEditAction.SET_RULE_SELECTOR](node: postcss.Rule, { targetSythetic, selector }: SetRuleSelectorEditAction) {
-    const source = targetSythetic.source;
+  [SetRuleSelectorEditAction.SET_RULE_SELECTOR](node: postcss.Rule, { target, selector }: SetRuleSelectorEditAction) {
+    const source = target.source;
 
     // prefix here is necessary
     const prefix = this.getRuleSelectorPrefix(node);
     node.selector = (node.selector.indexOf("&") === 0 ? "&" : "") + selector.replace(prefix, "");
   }
 
-  [SetDeclarationEditAction.SET_DECLARATION](node: postcss.Rule, { targetSythetic, name, newValue, newName }: SetDeclarationEditAction) {
-    const source = targetSythetic.source;
+  [SetDeclarationEditAction.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, newName }: SetDeclarationEditAction) {
+    const source = target.source;
 
     const shouldAdd = node.walkDecls((decl, index) => {
       if (decl.prop === name) {
@@ -40,25 +49,25 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     }
   }
 
-  protected findTargetASTNode(root: postcss.Root, synthetic: ISynthetic) {
+  protected findTargetASTNode(root: postcss.Root, target: ISynthetic) {
     let found: postcss.Node;
     root.walk((node: postcss.Node, index: number) => {
 
       // find the starting point for the node
-      if (node.type === synthetic.source.kind && sourcePositionEquals(node.source.start, synthetic.source.start)) {
+      if (node.type === target.source.kind && sourcePositionEquals(node.source.start, target.source.start)) {
 
         // next find the actual node that the synthetic matches with -- the source position may not be
         // entirely accurate for cases such as nested selectors.
-        found = this.findNestedASTNode(<any>node, synthetic);
+        found = this.findNestedASTNode(<any>node, target);
         return false;
       }
     });
     return found;
   }
 
-  private findNestedASTNode(node: postcss.Container, synthetic: ISynthetic): postcss.Node {
+  private findNestedASTNode(node: postcss.Container, target: ISynthetic): postcss.Node {
     if (isRuleNode(node)) {
-      return this.findMatchingRuleNode(<postcss.Rule>node, <SyntheticCSSStyleRule>synthetic);
+      return this.findMatchingRuleNode(<postcss.Rule>node, <SyntheticCSSStyleRule>target);
     } else {
       return node;
     }
