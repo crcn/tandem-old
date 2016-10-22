@@ -30,6 +30,6 @@
 </template>
 
 <gutter>
-  <html-element-attributes-pane />!
+  <html-element-attributes-pane />
 </gutter>
 

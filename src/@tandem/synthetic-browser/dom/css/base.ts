@@ -33,18 +33,21 @@ export abstract class SyntheticCSSObject implements ISynthetic {
 
 export interface ISerializeCSSObject {
   source: ISyntheticSourceInfo;
+  uid: any;
 }
 
 export class SyntheticCSSObjectSerializer implements ISerializer<SyntheticCSSObject, ISerializeCSSObject> {
   constructor(readonly childSerializer: ISerializer<SyntheticCSSObject, any>) { }
   serialize(value: SyntheticCSSObject) {
     return Object.assign(this.childSerializer.serialize(value), {
-      source: value.$source
+      source: value.$source,
+      uid: value.uid
     });
   }
   deserialize(value: ISerializeCSSObject, dependencies) {
     return Object.assign(this.childSerializer.deserialize(value, dependencies), {
-      $source: value.source
+      $source: value.source,
+      uid: value.uid
     });
   }
 }

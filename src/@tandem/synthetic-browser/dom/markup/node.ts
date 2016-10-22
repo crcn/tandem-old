@@ -46,6 +46,7 @@ export interface IDOMNode extends TreeNode<any>, IComparable, ISynthetic {
 
 export interface ISerializedSyntheticDOMNode {
   source: ISyntheticSourceInfo;
+  uid: any;
 }
 
 export class SyntheticDOMNodeSerializer implements ISerializer<SyntheticDOMNode, ISerializedSyntheticDOMNode> {
@@ -54,12 +55,14 @@ export class SyntheticDOMNodeSerializer implements ISerializer<SyntheticDOMNode,
   }
   serialize(value: SyntheticDOMNode) {
     return Object.assign(this.childSerializer.serialize(value), {
-      source: value.$source
-    })
+      source: value.$source,
+      uid: value.uid
+    });
   }
   deserialize(value: ISerializedSyntheticDOMNode, dependencies, ctor) {
     return Object.assign(this.childSerializer.deserialize(value, dependencies, ctor), {
-      $source: value.source
+      $source: value.source,
+      uid: value.uid
     })
   }
 }
