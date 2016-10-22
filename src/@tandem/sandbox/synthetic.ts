@@ -3,7 +3,7 @@ import { SandboxModule } from "./sandbox";
 import { ISourcePosition } from "@tandem/common";
 
 /**
- * Information about where a synthetic object came from
+ * Information about where a synthetic object came from.
  *
  * @export
  * @interface ISyntheticSourceInfo
@@ -43,6 +43,13 @@ export interface ISyntheticSourceInfo {
   end?: ISourcePosition;
 }
 
+/**
+ * Synthetic objects are created at runtime typically by an interpreter, or an emulated environment.
+ *
+ * @export
+ * @interface ISynthetic
+ */
+
 export interface ISynthetic {
 
   /**
@@ -55,16 +62,15 @@ export interface ISynthetic {
    *
    * const element = document.createElement("div");
    * element.$source = { kind: 'functionCall' filePath: './script.js', start: { line: 2, column: 1 }};
-   *
    */
 
   source?: ISyntheticSourceInfo;
 
   /**
-   * Clones the synthetic object
+   * Creates an identical copy of the synthetic object.
    *
-   * @param {boolean} [deep] creates a shallow copy of the synthetic object when deep is omitted, or FALSE.
-   * When deep is TRUE, creates a copy of the synthetic object and all of its synthetic children.
+   * @param {boolean} [deep] when omitted or FALSE, creates a shallow copy of the synthetic object. When TRUE,
+   * creates a copy of the synthetic object and all of its synthetic children.
    * @returns {ISynthetic}
    */
 
