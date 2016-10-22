@@ -3,7 +3,7 @@ runtime environments.
 
 #### Example:
 
-```typecsript
+```typescript
 import { Dependencies } from "@tandem/common";
 import { htmlExtension } from "@tandem/html-extension";
 import { sassExtension } from "@tandem/sass-extension";
