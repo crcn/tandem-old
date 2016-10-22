@@ -62,6 +62,12 @@ export interface IContentEdit {
   readonly actions: EditAction[];
 }
 
+export class BatchContentEdit implements IContentEdit {
+  constructor(readonly actions: EditAction[]) {
+
+  }
+}
+
 export abstract class BaseContentEdit<T extends ISynthetic> {
   private _actions: EditAction[];
 

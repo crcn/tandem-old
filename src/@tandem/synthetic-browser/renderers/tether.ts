@@ -3,6 +3,7 @@ import { BaseRenderer } from "./base";
 import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { IActor, BoundingRect } from "@tandem/common";
 
+
 export class TetherRenderer extends BaseRenderer {
   private _connection: SocketIOClient.Socket;
   private _canvas: HTMLCanvasElement;
@@ -26,7 +27,7 @@ export class TetherRenderer extends BaseRenderer {
     this._connection.emit("tether:render", {
       width: rect.width,
       height: rect.height,
-      html: this.entity.render()
+      html: `TODO`
     });
   }
 

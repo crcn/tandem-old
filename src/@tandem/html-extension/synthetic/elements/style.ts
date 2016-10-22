@@ -1,7 +1,6 @@
 import { omit } from "lodash";
 import * as React from "react";
 import { CSS_MIME_TYPE } from "@tandem/common";
-import { SandboxModuleFactoryDependency } from "@tandem/sandbox";
 import {
   parseCSS,
   evaluateCSS,

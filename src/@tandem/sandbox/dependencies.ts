@@ -28,30 +28,6 @@ import {
 
 export type moduleType = { new(filePath: string, content: string, sandbox: any): IModule };
 
-// DEPRECATED
-export class SandboxModuleFactoryDependency extends ClassFactoryDependency {
-  static readonly MODULE_FACTORIES_NS = "moduleFactories";
-  constructor(readonly envMimeType: string, readonly mimeType: string, clazz: moduleType) {
-    super(SandboxModuleFactoryDependency.getNamespace(envMimeType, mimeType), clazz);
-  }
-
-  clone() {
-    return new SandboxModuleFactoryDependency(this.envMimeType, this.mimeType, this.value);
-  }
-
-  static getNamespace(envMimeType: string, mimeType: string) {
-    return [this.MODULE_FACTORIES_NS, envMimeType, mimeType].join("/");
-  }
-
-  create(filePath: string, content: string, sandbox: any): IModule {
-    return super.create(filePath, content, sandbox);
-  }
-
-  static find(envMimeType: string, mimeType: string, dependencies: Dependencies) {
-    return dependencies.query<SandboxModuleFactoryDependency>(this.getNamespace(envMimeType, mimeType));
-  }
-}
-
 export class FileSystemDependency extends Dependency<IFileSystem> {
   static readonly NS = "fileSystem";
   constructor(value: IFileSystem) {

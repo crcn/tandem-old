@@ -12,6 +12,10 @@ import {
 
 export class CSSBundleLoader implements IBundleLoader {
   async load(bundle: Bundle, { type, content, map }): Promise<IBundleLoaderResult> {
+    /*const content = this.content.replace(/url\(['"]?(.*?)['"]?\)/g, (match, filePath) => {
+      return `url("http://${window.location.host}/asset/` + encodeURIComponent(path.join(path.dirname(this.filePath), filePath.split(/\?|#/).shift())) + '")';
+    });*/
+
     return {
       type: CSS_MIME_TYPE,
       ast: parseCSS(content, map),

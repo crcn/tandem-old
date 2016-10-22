@@ -36,7 +36,6 @@ import { camelCase } from "lodash";
 import { IMarkupEdit } from "@tandem/synthetic-browser";
 import { SyntheticRendererAction } from "../actions";
 import { FileEditor, FileEditorDependency } from "@tandem/sandbox";
-import { SyntheticDOMNodeEntityClassDependency } from "../dependencies"
 import { SyntheticDOMAttributes, SyntheticDOMAttribute, SyntheticDocumentFragment } from "../dom";
 
 let _i: number = 0;
@@ -131,7 +130,7 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
     if (!this.editable) {
       return Promise.reject(new Error("Cannot save entity source that is not editable."));
     }
-    this.module.editor.edit(onEdit.bind(this));
+    // this.module.editor.edit(onEdit.bind(this));
   }
 
   evaluate() { }
@@ -304,44 +303,44 @@ export abstract class BaseDOMNodeEntity<T extends SyntheticDOMNode, U extends HT
 export class BaseDOMContainerEntity<T extends SyntheticDOMNode, U extends HTMLElement> extends BaseDOMNodeEntity<T, U> {
 
   evaluate() {
-    const childCount       = this.children.length;
+    // const childCount       = this.children.length;
 
-    let target: SyntheticDOMNode = this.source;
+    // let target: SyntheticDOMNode = this.source;
 
-    if (this.source.nodeType === DOMNodeType.ELEMENT) {
-      target = (<SyntheticDOMElement><any>this.source).shadowRoot || this.source;
-    }
+    // if (this.source.nodeType === DOMNodeType.ELEMENT) {
+    //   target = (<SyntheticDOMElement><any>this.source).shadowRoot || this.source;
+    // }
 
-    const sourceChildCount = target.children.length;
-    const dependencies     = this.browser.dependencies;
+    // const sourceChildCount = target.children.length;
+    // const dependencies     = this.browser.dependencies;
 
-    for (let i = 0; i < sourceChildCount; i++) {
+    // for (let i = 0; i < sourceChildCount; i++) {
 
-      let child: BaseDOMNodeEntity<any, any> = this.children[i];
+    //   let child: BaseDOMNodeEntity<any, any> = this.children[i];
 
-      const sourceChild = target.children[i];
+    //   const sourceChild = target.children[i];
 
-      if (child && child.source.nodeName === sourceChild.nodeName) {
-        child.source = sourceChild;
-        child.evaluate();
-      } else {
-        const newChild = SyntheticDOMNodeEntityClassDependency.create(sourceChild, dependencies);
+    //   if (child && child.source.nodeName === sourceChild.nodeName) {
+    //     child.source = sourceChild;
+    //     child.evaluate();
+    //   } else {
+    //     const newChild = SyntheticDOMNodeEntityClassDependency.create(sourceChild, dependencies);
 
-        if (child) {
-          this.replaceChild(newChild, child);
-        } else {
-          this.appendChild(newChild);
-        }
+    //     if (child) {
+    //       this.replaceChild(newChild, child);
+    //     } else {
+    //       this.appendChild(newChild);
+    //     }
 
-        newChild.evaluate();
-      }
-    }
+    //     newChild.evaluate();
+    //   }
+    // }
 
-    while (this.children.length > sourceChildCount) {
-      this.removeChild(this.lastChild);
-    }
+    // while (this.children.length > sourceChildCount) {
+    //   this.removeChild(this.lastChild);
+    // }
 
-    super.evaluate();
+    // super.evaluate();
   }
 }
 

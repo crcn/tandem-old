@@ -82,7 +82,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     if (!(tool instanceof InsertTool)) return null;
 
-    const selection = new VisibleDOMEntityCollection(...this.props.editor.selection);
+    const selection = []; //new VisibleDOMEntityCollection(...this.props.editor.selection);
     const zoom = this.props.editor.transform.scale;
     const scale = 1 / editor.transform.scale;
 

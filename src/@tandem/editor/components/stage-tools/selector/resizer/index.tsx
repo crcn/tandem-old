@@ -120,27 +120,27 @@ class ResizerComponent extends React.Component<{
       return a.source.ownerDocument.defaultView.depth > a.source.ownerDocument.defaultView.depth ? a : b;
     }).source.ownerDocument;
 
-    const bottomOwnerDocumentEntity = findTreeNode(this.props.app.editor.documentEntity, (entity) => entity.source === bottomOwnerDocument);
+    // // const bottomOwnerDocumentEntity = findTreeNode(this.props.app.editor.document, (entity) => entity.source === bottomOwnerDocument);
 
-    traverseTree(bottomOwnerDocumentEntity, (node) => {
-      if (node.source.ownerDocument !== bottomOwnerDocument) return;
+    // traverseTree(bottomOwnerDocumentEntity, (node) => {
+    //   // if (node.source.ownerDocument !== bottomOwnerDocument) return;
 
-      for (const entity of selection) {
+    //   for (const entity of selection) {
 
-        // do not use the node as a guide point if it's part of the selection,
-        // or the source is the same. The source will be the same in certain cases -
-        // registered components for example.
-        if (node === entity || node.source === entity.source) return;
-      }
+    //     // do not use the node as a guide point if it's part of the selection,
+    //     // or the source is the same. The source will be the same in certain cases -
+    //     // registered components for example.
+    //     if (node === entity || node.source === entity.source) return;
+    //   }
 
-      // if (node.metadata.get(MetadataKeys.CANVAS_ROOT) && node.flatten().indexOf()) return;
+    //   // if (node.metadata.get(MetadataKeys.CANVAS_ROOT) && node.flatten().indexOf()) return;
 
-      const displayNode = node as any as BaseVisibleDOMNodeEntity<any, any>;
-      const bounds = displayNode.absoluteBounds;
-      if (bounds && bounds.visible) {
-        guider.addPoint(...createBoundingRectPoints(bounds));
-      }
-    });
+    //   const displayNode = node as any as BaseVisibleDOMNodeEntity<any, any>;
+    //   const bounds = displayNode.absoluteBounds;
+    //   if (bounds && bounds.visible) {
+    //     guider.addPoint(...createBoundingRectPoints(bounds));
+    //   }
+    // });
 
     return guider;
   }

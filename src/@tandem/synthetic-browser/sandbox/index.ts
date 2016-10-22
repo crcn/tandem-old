@@ -28,7 +28,6 @@ import {
   RemoveSyntheticAction,
   BaseSandboxModuleEdit,
   BaseSandboxModuleEditor,
-  SandboxModuleFactoryDependency,
 } from "@tandem/sandbox";
 
 import { MarkupMimeTypeXMLNSDependency } from "../dependencies";

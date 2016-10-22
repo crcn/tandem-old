@@ -74,6 +74,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   private _ownerDocument: SyntheticDocument;
   private _uid: number;
+  private _native: Node;
 
   /**
    */
@@ -109,6 +110,10 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   get browser() {
     return this.ownerDocument.defaultView.browser;
+  }
+
+  get native() {
+    return this._native;
   }
 
   get module() {
@@ -170,6 +175,10 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     if (this.ownerDocument) {
       child.$setOwnerDocument(this.ownerDocument);
     }
+  }
+
+  attachNative(node: Node) {
+    this._native = node;
   }
 
   $setOwnerDocument(document: SyntheticDocument) {

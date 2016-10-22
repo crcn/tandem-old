@@ -21,20 +21,21 @@ class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttrib
 
 export class EntityAttributesPaneComponent extends React.Component<{ app: FrontEndApplication }, any> {
   render() {
+    return null;
 
-    const { editor } = this.props.app;
-    if (!editor || !editor.selection.length) return null;
-    const items = new DOMElementEntityCollection(...editor.selection);
-    if (!items.length) return null;
+    // const { editor } = this.props.app;
+    // if (!editor || !editor.selection.length) return null;
+    // const items = []; //new DOMElementEntityCollection(...editor.selection);
+    // if (!items.length) return null;
 
-    return <PaneComponent title="Attributes">
-      <div className="row">
-        {
-          items.attributes.map((attribute) => {
-            return <AttributeComponent key={attribute.name} attribute={attribute} setAttribute={items.setAttribute.bind(items)} />;
-          })
-        }
-      </div>
-    </PaneComponent>
+    // return <PaneComponent title="Attributes">
+    //   <div className="row">
+    //     {
+    //       items.attributes.map((attribute) => {
+    //         return <AttributeComponent key={attribute.name} attribute={attribute} setAttribute={items.setAttribute.bind(items)} />;
+    //       })
+    //     }
+    //   </div>
+    // </PaneComponent>
   }
 }

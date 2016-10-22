@@ -6,7 +6,6 @@ import {
 } from "@tandem/synthetic-browser";
 import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 
-import { SandboxModuleFactoryDependency } from "@tandem/sandbox";
 import { JS_MIME_TYPE } from "@tandem/common";
 
 export class SyntheticHTMLScript extends SyntheticHTMLElement {

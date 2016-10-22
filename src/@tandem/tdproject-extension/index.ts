@@ -1,16 +1,16 @@
 import { TDArtboardStageToolComponent } from "./components";
 import { ReactComponentFactoryDependency } from "@tandem/editor";
-import { MimeTypeDependency, HTML_MIME_TYPE, MimeTypeAliasDependency } from "@tandem/common";
 import { TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS } from "./constants";
+import { MimeTypeDependency, HTML_MIME_TYPE, MimeTypeAliasDependency } from "@tandem/common";
 
 import {
-  TDArtboardEntity,
+  SyntheticTDArtboardElement,
   SyntheticTDRepeatElement,
   SyntheticTDTemplateElement,
 } from "./synthetic";
 
 import { TandemBundleLoader } from "./sandbox";
-import { SandboxModuleFactoryDependency, BundlerLoaderFactoryDependency } from "@tandem/sandbox";
+import { BundlerLoaderFactoryDependency } from "@tandem/sandbox";
 
 import {
   HTML_XMLNS,
@@ -20,7 +20,6 @@ import {
   DefaultSyntheticDOMEntity,
   MarkupMimeTypeXMLNSDependency,
   SyntheticDOMElementClassDependency,
-  SyntheticDOMNodeEntityClassDependency,
 } from "@tandem/synthetic-browser";
 
 import {
@@ -39,19 +38,11 @@ export const tdprojectExtensionDependencies = [
   // elements
   new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "template", SyntheticTDTemplateElement),
   new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "dom-repeat", SyntheticTDRepeatElement),
+  new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "artboard", SyntheticTDArtboardElement),
   new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "link", SyntheticHTMLLink),
   new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "default", SyntheticHTMLElement),
   new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "script", SyntheticHTMLScript),
   new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "style", SyntheticHTMLStyle),
-
-  // components
-  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "artboard", TDArtboardEntity),
-  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "default", VisibleHTMLEntity),
-  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "script", NoopDOMENtity),
-  new SyntheticDOMNodeEntityClassDependency(TDPROJECT_XMLNS, "link", NoopDOMENtity),
-
-  // sandbox
-  new SandboxModuleFactoryDependency(HTML_MIME_TYPE, TDPROJECT_MIME_TYPE, MarkupModule),
 
   // mime types
   new MimeTypeAliasDependency(TDPROJECT_MIME_TYPE, HTML_MIME_TYPE),

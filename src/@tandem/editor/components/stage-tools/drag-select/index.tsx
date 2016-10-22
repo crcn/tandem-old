@@ -37,7 +37,8 @@ class DragSelectComponent extends React.Component<{ app: FrontEndApplication, zo
 
     const b = container.getBoundingClientRect();
 
-    const visibleEntities = new VisibleDOMEntityCollection(...this.props.app.editor.documentEntity.querySelectorAll("*"));
+    // const visibleEntities = new VisibleDOMEntityCollection(...this.props.app.editor.document.querySelectorAll("*"));
+    const visibleEntities = [];
 
     const left = (event.clientX - b.left) / this.props.zoom;
     const top  = (event.clientY - b.top) / this.props.zoom;

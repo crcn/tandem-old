@@ -1,1 +1,0 @@
-export const TS_MIME_TYPE = "application/typescript";

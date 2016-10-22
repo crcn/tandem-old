@@ -8,6 +8,7 @@ import {
   bindable,
   flattenTree,
   traverseTree,
+  isMaster,
   calculateAbsoluteBounds
 } from "@tandem/common";
 import {
@@ -29,10 +30,8 @@ import { BaseDOMNodeEntity } from "../entities";
 
 export class SyntheticDOMRenderer extends BaseRenderer {
 
-
   private _currentCSSText: string;
   private _computedStyles: any = {};
-
 
   getComputedStyle(uid: string) {
     if (this._computedStyles[uid]) return this._computedStyles[uid];
@@ -51,11 +50,12 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   }
 
   update() {
+    if (!isMaster) return;
     this._computedStyles = {};
 
     return new Promise((resolve) => {
 
-      const document = this.entity.source as SyntheticDocument;
+      const document = this.document as SyntheticDocument;
       const styleElement = this.element.firstChild as HTMLStyleElement;
       const currentCSSText = document.styleSheets.map((styleSheet) => styleSheet.cssText).join("\n");
       if (this._currentCSSText !== currentCSSText) {
@@ -63,10 +63,10 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       }
 
       // render immediately to the DOM element
-      ReactDOM.render(renderSyntheticNode(this.entity.source), this.element.lastChild as HTMLDivElement, () => {
-        const syntheticComponentsBySourceUID = {};
+      ReactDOM.render(renderSyntheticNode(document), this.element.lastChild as HTMLDivElement, () => {
+        const syntheticDOMNodesByUID = {};
 
-        traverseTree(this.entity, (entity) => syntheticComponentsBySourceUID[entity.uid] = entity);
+        traverseTree(document, (node) => syntheticDOMNodesByUID[node.uid] = node);
 
         const rects = {};
 
@@ -76,10 +76,10 @@ export class SyntheticDOMRenderer extends BaseRenderer {
           const element = <HTMLElement>allElements[i];
           if (!element.dataset) continue;
           const uid = element.dataset["uid"];
-          const sourceComponent: BaseDOMNodeEntity<any, any> = syntheticComponentsBySourceUID[uid];
+          const syntheticNode: SyntheticDOMNode = syntheticDOMNodesByUID[uid];
           rects[uid] = BoundingRect.fromClientRect(element.getBoundingClientRect());
-          if (sourceComponent) {
-            sourceComponent.target = element;
+          if (syntheticNode) {
+            syntheticNode.attachNative(element);
           }
         }
         this.setRects(rects);
@@ -95,7 +95,8 @@ function renderSyntheticNode(node: SyntheticDOMNode): any {
       return node.textContent;
     case DOMNodeType.ELEMENT:
       const element = <SyntheticDOMElement>node;
-      return React.createElement(<any>element.nodeName, renderSyntheticAttributes(element), renderChildren(element));
+      const target = element;
+      return React.createElement(<any>target.nodeName, renderSyntheticAttributes(target), renderChildren(target));
     case DOMNodeType.DOCUMENT:
     case DOMNodeType.DOCUMENT_FRAGMENT:
       const container = <SyntheticDOMContainer>node;
@@ -117,9 +118,9 @@ function renderChildren(node: SyntheticDOMContainer) {
 
 function renderSyntheticAttributes(node: SyntheticDOMElement) {
 
-
   const attribs = {
-    key: node.uid
+    key: node.uid,
+    "data-uid": node.uid
   };
 
   // fix attributes for React

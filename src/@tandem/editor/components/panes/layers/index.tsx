@@ -14,10 +14,10 @@ import { DocumentPaneComponentFactoryDependency } from "@tandem/editor/dependenc
 class LayersPaneComponent extends React.Component<{ app: FrontEndApplication }, any> {
   render() {
     const { editor } = this.props.app;
-    if (!editor || !editor.bodyEntity) return null;
+    if (!editor || !editor.document) return null;
     return <PaneComponent title={path.basename(editor.browser.location.toString())}>
       {
-        editor.bodyEntity.children.map((entity, i) => <LayerComponent depth={0} {...this.props} entity={entity} key={entity.uid} />)
+        editor.document.body.children.map((node, i) => <LayerComponent depth={0} {...this.props} node={node} key={node.uid} />)
       }
     </PaneComponent>;
   }

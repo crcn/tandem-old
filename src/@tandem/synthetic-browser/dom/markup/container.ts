@@ -51,7 +51,7 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
     return querySelector(this, selector);
   }
 
-  public querySelectorAll(selector: string) {
+  public querySelectorAll(selector: string, deep?: boolean) {
     return querySelectorAll(this, selector);
   }
 }

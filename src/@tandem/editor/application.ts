@@ -44,13 +44,9 @@ import { keyBindingsDependency } from "./key-bindings";
 // extensions
 import { htmlExtensionDependencies } from "@tandem/html-extension";
 import { sassExtensionDependencies  } from "@tandem/sass-extension";
-import { pegjsExtensionDependencies } from "@tandem/peg-extension";
 import { historyExtensionDependencies } from "@tandem/history-extension";
 import { markdownExtensionDependencies } from "@tandem/markdown-extension";
-import { mustacheExtensionDependencies } from "@tandem/mustache-extension";
 import { tdprojectExtensionDependencies } from "@tandem/tdproject-extension";
-import { typescriptExtensionDependencies } from "@tandem/typescript-extension";
-import { javascriptExtensionDependencies } from "@tandem/javascript-extension";
 
 import { Metadata } from "@tandem/common/metadata";
 import { Editor } from "./models";
@@ -125,13 +121,9 @@ export class FrontEndApplication extends Application {
       // extensions
       sassExtensionDependencies,
       htmlExtensionDependencies,
-      pegjsExtensionDependencies,
       historyExtensionDependencies,
       markdownExtensionDependencies,
-      mustacheExtensionDependencies,
       tdprojectExtensionDependencies,
-      javascriptExtensionDependencies,
-      typescriptExtensionDependencies,
 
       // singletons
       new FileSystemDependency(this.config.fileSystem || new RemoteFileSystem(this.bus)),

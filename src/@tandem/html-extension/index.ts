@@ -3,10 +3,8 @@ import { CSS_MIME_TYPE, HTML_MIME_TYPE, JS_MIME_TYPE } from "@tandem/common";
 
 // sandbox
 import {
-  HTMLCSSModule,
   CSSASTEvaluator,
   CSSBundleLoader,
-  HTMLCSSDOMModule,
   HTMLBundleLoader,
   HTMLASTEvaluator,
 } from "./sandbox";
@@ -15,9 +13,7 @@ import {
   CSSEditor,
   HTML_XMLNS,
   SyntheticDOMElementClassDependency,
-  SyntheticDOMNodeEntityClassDependency,
 } from "@tandem/synthetic-browser";
-
 
 import { 
   HTMLImageEntity,
@@ -39,7 +35,6 @@ import {
 } from "@tandem/synthetic-browser";
 
 import {
-  SandboxModuleFactoryDependency,
   BundlerLoaderFactoryDependency,
   ContentEditorFactoryDependency,
   SandboxModuleEvaluatorFactoryDependency,
@@ -70,20 +65,8 @@ import { textToolDependency, editInnerHTMLDependency } from "./models/text-tool"
 import { keyBindingDependency } from "./key-bindings";
 import { MimeTypeDependency } from "@tandem/common/dependencies";
 
-const visibleEntityDependencies = HTML_TAG_NAMES.map((tagName) => new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, tagName, VisibleHTMLEntity));
 
 export const htmlExtensionDependencies = [
-
-  // entities
-  ...visibleEntityDependencies,
-  new SandboxModuleFactoryDependency(CSS_MIME_TYPE, CSS_MIME_TYPE, HTMLCSSModule),
-  new SandboxModuleFactoryDependency(HTML_MIME_TYPE, CSS_MIME_TYPE, HTMLCSSModule),
-  new SandboxModuleFactoryDependency(JS_MIME_TYPE, CSS_MIME_TYPE, HTMLCSSDOMModule),
-  new SandboxModuleFactoryDependency(HTML_MIME_TYPE, HTML_MIME_TYPE, MarkupModule),
-  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "img", HTMLImageEntity),
-  new SyntheticDOMNodeEntityClassDependency(undefined, "#document", HTMLDocumentEntity),
-  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "script", NoopDOMENtity),
-  new SyntheticDOMNodeEntityClassDependency(HTML_XMLNS, "link", NoopDOMENtity),
 
   // elements
   new SyntheticDOMElementClassDependency(HTML_MIME_TYPE, "link", SyntheticHTMLLink),

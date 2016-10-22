@@ -27,7 +27,7 @@ export class Editor implements IEditor {
   public translate: IPoint = { left: 0, top: 0 };
   private _currentTool: IEditorTool;
   public transform: Transform = new Transform();
-  public selection: BaseDOMNodeEntity<any, any>[] = [];
+  public selection: ISynthetic[] = [];
   public browser: ISyntheticBrowser;
 
   // TODO - this may change dependening on the editor type
@@ -44,14 +44,6 @@ export class Editor implements IEditor {
 
     // TODO
     return null;
-  }
-
-  get documentEntity() {
-    return this.browser && this.browser.documentEntity;
-  }
-
-  get bodyEntity() {
-    return this.browser && this.browser.bodyEntity;
   }
 
   get zoom() { return this.transform.scale; }

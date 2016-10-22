@@ -23,48 +23,6 @@ export class SyntheticDOMElementClassDependency extends Dependency<syntheticElem
   }
 }
 
-export class SyntheticDOMNodeEntityClassDependency extends Dependency<entityType> {
-  static readonly SYNTHETIC_NODE_COMPONENT_NS_PREFIX = "syntheticNodeComponentClass";
-
-  constructor(readonly xmlns: string, readonly tagName: string, value: entityType) {
-    super(SyntheticDOMNodeEntityClassDependency.getNamespace(xmlns, tagName), value, true);
-  }
-
-  clone() {
-    return new SyntheticDOMNodeEntityClassDependency(this.xmlns, this.tagName, this.value);
-  }
-
-  create(source: SyntheticDOMNode) {
-    return new this.value(source);
-  }
-
-  static getNamespace(xmlns: string, tagName: string) {
-    return [this.SYNTHETIC_NODE_COMPONENT_NS_PREFIX, encodeURIComponent(xmlns), tagName].join("/");
-  }
-
-  static reuse(source: SyntheticDOMNode, entity: BaseDOMNodeEntity<any, any>, dependencies: Dependencies) {
-    if (entity && entity.source.nodeName === source.nodeName) {
-      entity.source = source;
-      return entity;
-    } else {
-      return this.create(source, dependencies);
-    }
-  }
-
-  static find(source: SyntheticDOMNode, dependencies: Dependencies) {
-    return this.findByNodeName(source.namespaceURI, source.nodeName, dependencies);
-  }
-
-  static findByNodeName(xmlns: string, nodeName: string, dependencies: Dependencies) {
-    return dependencies.query<SyntheticDOMNodeEntityClassDependency>(this.getNamespace(xmlns, nodeName));
-  }
-
-  static create(source: SyntheticDOMNode, dependencies: Dependencies) {
-    const factory = this.find(source, dependencies) || this.findByNodeName(source.namespaceURI, "default", dependencies) || this.findByNodeName(undefined, "default", dependencies);
-    return factory ? factory.create(source) : new DefaultSyntheticDOMEntity(source);
-  }
-}
-
 export class MarkupMimeTypeXMLNSDependency extends Dependency<string> {
   static readonly MARKUP_MIME_TYPE_XMLNS = "markupMimeTypeXMLNS";
   constructor(readonly mimeType: string, readonly xmlns: string) {

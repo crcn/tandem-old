@@ -1,1 +1,0 @@
-export const MUSTACHE_MIME_TYPE = "text/mustache";

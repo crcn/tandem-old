@@ -48,16 +48,16 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     if (action.type === SERIALIZED_DOCUMENT) {
       const now = Date.now();
 
-      const previousDocument = this.window && this.window.document.cloneNode();
-
-      const document = deserialize(action.data, this._dependencies);
+      const previousDocument = this.window && this.window.document;
+      const newDocument      = deserialize(action.data, this._dependencies);
 
       if (previousDocument) {
-        patchTreeNode(previousDocument.cloneNode(), document.cloneNode());
+        patchTreeNode(previousDocument, newDocument);
+      } else {
+        const window = new SyntheticWindow(this, this.location, newDocument);
+        this.setWindow(window);
       }
 
-      const window = new SyntheticWindow(this, this.location, document);
-      this.setWindow(window);
       console.info("done loading %s", this.location.toString(), Date.now() - now);
     }
   }

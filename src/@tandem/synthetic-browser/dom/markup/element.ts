@@ -173,6 +173,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   readonly nodeType: number = DOMNodeType.ELEMENT;
   readonly attributes: SyntheticDOMAttributes;
   readonly expression: MarkupElementExpression;
+  readonly dataset: any = {};
   private _shadowRoot: SyntheticDocumentFragment;
   private _createdCallbackCalled: boolean;
 
@@ -180,6 +181,9 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     super(tagName);
     this.attributes = new SyntheticDOMAttributes();
     this.attributes.observe(new WrapBus(this.onAttributesAction.bind(this)));
+
+    // todo - proxy this
+    this.dataset = {};
   }
 
   createEdit() {
@@ -206,6 +210,15 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   get shadowRoot(): SyntheticDocumentFragment {
     return this._shadowRoot;
+  }
+
+  renderAttributes() {
+    const attribs = {};
+    for (let i = 0, n = this.attributes.length; i < n; i++) {
+      const attribute = this.attributes[i];
+      attribs[attribute.name] = attribute.value;
+    }
+    return attribs;
   }
 
   setAttribute(name: string, value: any) {
@@ -251,14 +264,15 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     this.notify(action);
   }
 
-  protected createdCallback() {
-
-  }
-
   $setOwnerDocument(document: SyntheticDocument) {
     super.$setOwnerDocument(document);
     if (this._shadowRoot) {
       this._shadowRoot.$setOwnerDocument(document);
+    }
+    if (document) {
+      this.attachedCallback();
+    } else {
+      this.detachedCallback();
     }
   }
 
@@ -266,12 +280,16 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   }
 
+  protected createdCallback() {
+
+  }
+
   protected attachedCallback() {
-    // TODO
+    // override me
   }
 
   protected detachedCallback() {
-    // TODO
+    // override me
   }
 
   protected addPropertiesToClone(clone: SyntheticDOMElement, deep: boolean) {

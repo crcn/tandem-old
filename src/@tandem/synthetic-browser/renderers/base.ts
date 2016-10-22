@@ -12,13 +12,9 @@ import {
   SyntheticCSSStyleDeclaration,
 } from "../dom";
 
-import {
-  BaseDOMNodeEntity
-} from "../entities";
-
 export interface ISyntheticDocumentRenderer extends IObservable {
   readonly element: HTMLElement;
-  entity: BaseDOMNodeEntity<any, any>;
+  document: SyntheticDocument;
   getBoundingRect(uid: string): BoundingRect;
   getComputedStyle(uid: string): any;
   fetchComputedStyle(uid: string): Promise<any>;
@@ -31,7 +27,7 @@ const REQUEST_UPDATE_TIMEOUT = 50;
 export abstract class BaseRenderer extends Observable implements ISyntheticDocumentRenderer {
 
   readonly element: HTMLElement;
-  private _entity: BaseDOMNodeEntity<any, any>;
+  private _document: SyntheticDocument;
   private _updating: boolean;
   private _rects: any;
   private _shouldUpdateAgain: boolean;
@@ -45,25 +41,25 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
       this.element = this.createElement();
     }
 
-    this._targetObserver = new WrapBus(this.onEntityAction.bind(this));
+    this._targetObserver = new WrapBus(this.onDocumentAction.bind(this));
   }
 
-  get entity(): BaseDOMNodeEntity<any, any> {
-    return this._entity;
+  get document(): SyntheticDocument {
+    return this._document;
   }
 
-  set entity(value: BaseDOMNodeEntity<any, any>) {
-    if (this._entity === value) {
+  set document(value: SyntheticDocument) {
+    if (this._document === value) {
       this.requestUpdate();
       return;
     }
 
-    if (this._entity) {
-      this._entity.unobserve(this._targetObserver);
+    if (this._document) {
+      this._document.unobserve(this._targetObserver);
     }
-    this._entity = value;
-    if (!this._entity) return;
-    this._entity.observe(this._targetObserver);
+    this._document = value;
+    if (!this._document) return;
+    this._document.observe(this._targetObserver);
     this.requestUpdate();
   }
 
@@ -94,14 +90,12 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     this.notify(new SyntheticRendererAction(SyntheticRendererAction.UPDATE_RECTANGLES));
   }
 
-  protected onEntityAction(action: Action) {
-    if (action.type !== MetadataChangeAction.METADATA_CHANGE) {
-      this.requestUpdate();
-    }
+  protected onDocumentAction(action: Action) {
+    this.requestUpdate();
   }
 
   public requestUpdate() {
-    if (!this._entity) return;
+    if (!this._document) return;
 
     if (this._updating) {
       this._shouldUpdateAgain = true;
@@ -113,7 +107,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     // doesn't get to interact with visual content. Provide a slowish
     // timeout to ensure that we don't kill CPU from unecessary renders.
     setTimeout(async () => {
-      if (!this.entity) return;
+      if (!this._document) return;
       this._shouldUpdateAgain = false;
       await this.update();
       this._updating = false;
@@ -150,11 +144,11 @@ export class BaseDecoratorRenderer implements ISyntheticDocumentRenderer {
   get element() {
     return this._renderer.element;
   }
-  get entity() {
-    return this._renderer.entity;
+  get document() {
+    return this._renderer.document;
   }
-  set entity(value) {
-    this._renderer.entity = value;
+  set document(value) {
+    this._renderer.document = value;
   }
 
   requestUpdate() {

@@ -39,7 +39,6 @@ import {
 import {
   SyntheticDOMCasterDependency,
   SyntheticDOMElementClassDependency,
-  SyntheticDOMNodeEntityClassDependency,
 } from "./dependencies";
 
 import { WrapBus } from "mesh";
@@ -52,97 +51,20 @@ export interface ISyntheticBrowser extends IObservable {
   document: SyntheticDocument;
   dependencies: Dependencies;
   location: SyntheticLocation;
-  documentEntity: BaseDOMNodeEntity<any, any>;
-  bodyEntity: BaseDOMNodeEntity<any, any>;
-}
-
-export class SyntheticBrowserEnvironment extends Observable {
-
-  private _renderer: ISyntheticDocumentRenderer;
-  private _window: SyntheticWindow;
-  private _documentEntity: BaseDOMNodeEntity<any, any>;
-  private _documentEntityObserver: IActor;
-  private _documentObserver: IActor;
-  private _updating: boolean;
-
-  constructor(private _dependencies: Dependencies,  renderer?: ISyntheticDocumentRenderer) {
-    super();
-    this._renderer = isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer();
-    this._renderer.observe(new BubbleBus(this));
-    this._documentEntityObserver = new BubbleBus(this);
-    this._documentObserver       = new WrapBus(this.syncDocument.bind(this));
-  }
-
-  get renderer() {
-    return this._renderer;
-  }
-
-  get documentEntity() {
-    return this._documentEntity;
-  }
-
-  get bodyEntity() {
-    return this.documentEntity && findTreeNode(this.documentEntity, (entity) => entity.source === this.window.document.body);
-  }
-
-  get window() {
-    return this._window;
-  }
-
-  set window(value: SyntheticWindow) {
-    if (this._window)  this._window.document.unobserve(this._documentObserver);
-    this._window = value;
-    if (this._window) this._window.document.observe(this._documentObserver);
-    this.syncDocument();
-  }
-
-  private syncDocument() {
-    if (!isMaster || this._updating) return;
-
-    // cover case where entity may accidentally mutate a source node
-    // (when it really shouldn't)
-    this._updating = true;
-
-    const { document } = this._window;
-    const documentEntity = this._documentEntity;
-
-    if (documentEntity) {
-      documentEntity.unobserve(this._documentEntityObserver);
-    }
-
-    // remove entity for now to prevent re-renders
-    this._renderer.entity = undefined;
-
-    this._documentEntity = SyntheticDOMNodeEntityClassDependency.reuse(document, this._documentEntity, this._dependencies);
-    this._documentEntity.observe(this._documentEntityObserver);
-    this._documentEntity.evaluate();
-
-    // set entity now - should cause a re-render
-    this._renderer.entity = this._documentEntity;
-
-    if (this._documentEntity !== documentEntity) {
-      this.notify(new PropertyChangeAction("documentEntity", this._documentEntity, documentEntity));
-    }
-
-    this._updating = false;
-  }
 }
 
 export abstract class BaseSyntheticBrowser extends Observable implements ISyntheticBrowser {
 
-  @bindable()
-  readonly documentEntity: BaseDOMNodeEntity<any, any>;
-
-  private _environment: SyntheticBrowserEnvironment;
   private _url: string;
   private _window: SyntheticWindow;
   private _location: SyntheticLocation;
+  private _renderer: ISyntheticDocumentRenderer;
 
   constructor(protected _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, readonly parent?: ISyntheticBrowser) {
     super();
-    this._environment = new SyntheticBrowserEnvironment(_dependencies, renderer);
-    this._environment.observe(new BubbleBus(this));
-    bindProperty(this._environment, "documentEntity", this);
+
+    this._renderer = isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer();
+    this._renderer.observe(new BubbleBus(this));
   }
 
   get document() {
@@ -164,17 +86,12 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   protected setWindow(value: SyntheticWindow) {
     const oldWindow = this._window;
     this._window = value;
-    this._environment.window = value;
+    this._renderer.document = value.document;
     this.notify(new PropertyChangeAction("window", value, oldWindow));
   }
 
   get renderer(): ISyntheticDocumentRenderer {
-    return this._environment.renderer;
-  }
-
-
-  get bodyEntity() {
-    return this._environment.bodyEntity;
+    return this._renderer;
   }
 
   async open(url: string) {
