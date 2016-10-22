@@ -55,13 +55,13 @@ export interface ISynthetic {
 
   /**
    * Expression & file source of the synthetic object. Added at runtime by either a) an AST interpreter,
-   * or b) some transpiled script that injects this property whenever a synthetic object is created. For example:
+   * or b) a transpiled script that injects this property where a synthetic object is created. For example:
    *
    * const element = document.createElement("div");
    *
    * May be transpiled to:
    *
-   * const element = document.createElement("div");
+   * const element = document.createElement("div"); // SyntheticHTMLElement
    * element.$source = { kind: 'functionCall' filePath: './script.js', start: { line: 2, column: 1 }};
    */
 
