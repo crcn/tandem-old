@@ -13,7 +13,7 @@ export class HistorySliderComponent extends React.Component<{ app: FrontEndAppli
   }
 
   onSliderChange(value) {
-    var h = this.props.app.editor;
+    var h = this.props.app.workspace;
     // h.move(value);
 
     this.history.position = value;

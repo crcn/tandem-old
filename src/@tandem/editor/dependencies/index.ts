@@ -1,7 +1,7 @@
 import * as React from "react";
 import { IActor } from "@tandem/common/actors";
 import { IApplication } from "@tandem/common/application";
-import { IEditor, IEditorTool } from "@tandem/editor/models";
+import { IWorkspace, IWorkspaceTool } from "@tandem/editor/models";
 import { ReactComponentFactoryDependency } from "./base";
 import { IFactory, Dependency, Dependencies, ClassFactoryDependency } from "@tandem/common/dependencies";
 
@@ -41,25 +41,25 @@ export class EntityPreviewDependency extends ReactComponentFactoryDependency {
 }
 
 export const EDITOR_TOOL_NS = "editorTool";
-export class EditorToolFactoryDependency extends ClassFactoryDependency {
-  constructor(readonly name: string, readonly icon: string, readonly editorType: string, readonly keyCommand: string, readonly clazz: { new(editor: IEditor): IEditorTool }) {
+export class WorkspaceToolFactoryDependency extends ClassFactoryDependency {
+  constructor(readonly name: string, readonly icon: string, readonly editorType: string, readonly keyCommand: string, readonly clazz: { new(editor: IWorkspace): IWorkspaceTool }) {
     super([EDITOR_TOOL_NS, editorType, name].join("/"), clazz);
   }
 
   clone() {
-    return new EditorToolFactoryDependency(this.name, this.icon, this.editorType, this.keyCommand, this.clazz);
+    return new WorkspaceToolFactoryDependency(this.name, this.icon, this.editorType, this.keyCommand, this.clazz);
   }
 
-  create(editor: IEditor): IEditorTool {
+  create(editor: IWorkspace): IWorkspaceTool {
     return super.create(editor);
   }
 
   static findAll(editorType: string, dependencies: Dependencies) {
-    return dependencies.queryAll<EditorToolFactoryDependency>([EDITOR_TOOL_NS, editorType, "**"].join("/"));
+    return dependencies.queryAll<WorkspaceToolFactoryDependency>([EDITOR_TOOL_NS, editorType, "**"].join("/"));
   }
 
   static find(id: string, editorType: string, dependencies: Dependencies) {
-    return dependencies.query<EditorToolFactoryDependency>([EDITOR_TOOL_NS, editorType, id].join("/"));
+    return dependencies.query<WorkspaceToolFactoryDependency>([EDITOR_TOOL_NS, editorType, id].join("/"));
   }
 }
 

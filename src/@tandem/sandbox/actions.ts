@@ -1,4 +1,5 @@
 import { ISynthetic } from "./synthetic";
+import { IContentEdit } from "./editor2";
 import { IFileResolverOptions } from "./resolver";
 import { Action, IASTNode, IActor, definePublicAction, defineMasterAction, defineWorkerAction, IDisposable } from "@tandem/common";
 
@@ -7,6 +8,17 @@ export class SandboxAction extends Action {
 }
 
 export class FileEditorAction extends Action {
+  static readonly BUNDLE_EDITED = "bundleEdited";
+}
+
+export class ApplyEditAction extends Action {
+  static readonly APPLY_EDIT = "applyEdit";
+  constructor(readonly edit: IContentEdit) {
+    super(ApplyEditAction.APPLY_EDIT);
+  }
+}
+
+export class FileEditAction extends Action {
   static readonly BUNDLE_EDITED = "bundleEdited";
 }
 

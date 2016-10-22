@@ -1,6 +1,6 @@
 import { inject } from "@tandem/common/decorators";
 import { Action } from "@tandem/common/actions";
-import { IEditor } from "@tandem/editor/models/base";
+import { IWorkspace } from "@tandem/editor/models/base";
 import { InsertTool } from "@tandem/editor/models/insert-tool";
 import { SetToolAction } from "@tandem/editor/actions";
 import { textToolDependency } from "@tandem/html-extension/models/text-tool";
@@ -10,20 +10,20 @@ import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { BaseCommand, BaseApplicationCommand } from "@tandem/common/commands";
 import { parseMarkup, evaluateMarkup, SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { ClassFactoryDependency, DependenciesDependency, Dependencies } from "@tandem/common/dependencies";
-import { EditorToolFactoryDependency, GlobalKeyBindingDependency } from "@tandem/editor/dependencies";
+import { WorkspaceToolFactoryDependency, GlobalKeyBindingDependency } from "@tandem/editor/dependencies";
 
 abstract class BaseInsertElementTool extends InsertTool {
 
   @inject(DependenciesDependency.NS)
   private _dependencies: Dependencies;
 
-  constructor(readonly options: any, editor: IEditor) {
+  constructor(readonly options: any, editor: IWorkspace) {
     super(editor);
     this.entityIsRoot = options.root;
   }
 
   get displayEntityToolFactory() {
-    return this._dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.id);
+    return this._dependencies.query<WorkspaceToolFactoryDependency>(pointerToolDependency.id);
   }
 
   createSyntheticDOMElement() {
@@ -35,7 +35,7 @@ abstract class BaseInsertElementTool extends InsertTool {
 
 function createElementInsertToolClass(options) {
   return class InsertElementTool extends BaseInsertElementTool {
-    constructor(editor: IEditor) {
+    constructor(editor: IWorkspace) {
       super(options, editor);
     }
   };
@@ -44,7 +44,7 @@ function createElementInsertToolClass(options) {
 export const keyBindingDependency = [
   new GlobalKeyBindingDependency(TEXT_TOOL_KEY_CODE, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(textToolDependency.id)));
+      this.bus.execute(new SetToolAction(this.dependencies.query<WorkspaceToolFactoryDependency>(textToolDependency.id)));
     }
   })
 ];

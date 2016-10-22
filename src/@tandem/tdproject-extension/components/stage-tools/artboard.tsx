@@ -1,14 +1,15 @@
 import "./index.scss";
-
 import * as React from "react";
-import { BoundingRect } from "@tandem/common";
 import * as AutosizeInput from "react-input-autosize";
-import { SelectAction } from "@tandem/editor/actions";
-import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
-import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
-import { FrontEndApplication, Editor } from "@tandem/editor";
 
-export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTDArtboardElement, editor: Editor, app: FrontEndApplication }, { editedTitle: string }> {
+import { BoundingRect } from "@tandem/common";
+import { SelectAction } from "@tandem/editor/actions";
+import { ApplyEditAction } from "@tandem/sandbox";
+import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
+import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
+import { FrontEndApplication, Workspace } from "@tandem/editor";
+
+export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTDArtboardElement, workspace: Workspace, app: FrontEndApplication }, { editedTitle: string }> {
 
   constructor() {
     super();
@@ -18,8 +19,8 @@ export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTD
   }
 
   editTitle = () => {
-    if (!this.props.artboard.module.editor) return;
-    this.setState({ editedTitle: this.props.artboard.title || "" });
+    if (!this.props.artboard.editable) return;
+    this.setState({ editedTitle: this.props.artboard.getAttribute("title") });
     requestAnimationFrame(() => {
       (this.refs as any).input.select();
     });
@@ -36,24 +37,18 @@ export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTD
     // this.props.artboard.sandbox.evaluate();
   }
 
-  save = () => {
+  save = async () => {
     const artboard = this.props.artboard;
-    artboard.module.editor.edit((edit) => {
-
-      // trigger immediate change
-      this.props.artboard.title = this.state.editedTitle;
-
-      // this.props.artboard.save();
-
-      this.setState({ editedTitle: undefined });
-    });
+    const edit = artboard.createEdit().setAttribute("title", this.state.editedTitle);
+    await this.props.app.bus.execute(new ApplyEditAction(edit));
+    this.setState({ editedTitle: undefined });
   }
 
   selectEntity = (event: React.MouseEvent) => {
     this.props.app.bus.execute(new SelectAction([this.props.artboard], event.metaKey || event.shiftKey));
   }
 
-  onKeyDown = (event) => {
+  onKeyDown = (event: React.KeyboardEvent): any => {
     const keyCode = event.which;
     switch (event.which) {
       case 27: return this.cancelEdit();
@@ -62,11 +57,11 @@ export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTD
   }
 
   render() {
-    const { artboard, editor } = this.props;
+    const { artboard, workspace } = this.props;
 
     // TODO - get absolute bounds here
     const bounds = artboard.getBoundingClientRect();
-    const scale = 1 / editor.transform.scale;
+    const scale = 1 / workspace.transform.scale;
 
     const style = {
       left   : bounds.left,
@@ -80,7 +75,7 @@ export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTD
 
     const titleStyle = {
       position: "absolute",
-      display: editor.transform.scale > 0.2 ? "block" : "none",
+      display: workspace.transform.scale > 0.2 ? "block" : "none",
       top: 0,
       fontSize: 12,
       transform: `translateY(${-25 * scale}px) scale(${scale})`,
@@ -97,8 +92,8 @@ export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTD
 
 export class TDArtboardStageToolComponent extends React.Component<{ app: FrontEndApplication }, any> {
   render() {
-    const { editor } = this.props.app;
-    const { document, transform } = editor;
+    const { workspace } = this.props.app;
+    const { document, transform } = workspace;
 
     const artboards = document.querySelectorAll("artboard") as SyntheticTDArtboardElement[];
 
@@ -113,7 +108,7 @@ export class TDArtboardStageToolComponent extends React.Component<{ app: FrontEn
       <div style={backgroundStyle} className="m-tdartboard-stage-tool--background" />
       {
         artboards.map((artboard) => {
-          return <TDArtboardComponent key={artboard.uid} editor={editor} artboard={artboard} app={this.props.app} />;
+          return <TDArtboardComponent key={artboard.uid} workspace={workspace} artboard={artboard} app={this.props.app} />;
         })
       }
     </div>;

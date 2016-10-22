@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Editor } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/models";
 import { startDrag } from "@tandem/common/utils/component";
 import PathComponent from "./path";
 import { MetadataKeys } from "@tandem/editor/constants";
@@ -81,7 +81,7 @@ function resize(oldBounds: BoundingRect, delta: IPoint, anchor: IPoint, keepAspe
 }
 
 class ResizerComponent extends React.Component<{
-  editor: Editor,
+  workspace: Workspace,
   app: FrontEndApplication,
   selection: Array<any>,
   onResizing: Function,
@@ -120,7 +120,7 @@ class ResizerComponent extends React.Component<{
       return a.source.ownerDocument.defaultView.depth > a.source.ownerDocument.defaultView.depth ? a : b;
     }).source.ownerDocument;
 
-    // // const bottomOwnerDocumentEntity = findTreeNode(this.props.app.editor.document, (entity) => entity.source === bottomOwnerDocument);
+    // // const bottomOwnerDocumentEntity = findTreeNode(this.props.app.workspace.document, (entity) => entity.source === bottomOwnerDocument);
 
     // traverseTree(bottomOwnerDocumentEntity, (node) => {
     //   // if (node.source.ownerDocument !== bottomOwnerDocument) return;
@@ -201,17 +201,17 @@ class ResizerComponent extends React.Component<{
 
     const sx2 = bounds.left;
     const sy2 = bounds.top;
-    const translateLeft = this.props.editor.transform.left;
-    const translateTop  = this.props.editor.transform.top;
+    const translateLeft = this.props.workspace.transform.left;
+    const translateTop  = this.props.workspace.transform.top;
     const guider = this.createGuider();
 
     this.setState({ guideLines: undefined });
-    this.props.editor.metadata.set(MetadataKeys.MOVING, true);
+    this.props.workspace.metadata.set(MetadataKeys.MOVING, true);
 
     this._dragger = startDrag(event, (event2, { delta }) => {
 
-      const nx = (sx2 + (delta.x - (this.props.editor.transform.left - translateLeft)) / this.props.zoom);
-      const ny = (sy2 + (delta.y - (this.props.editor.transform.top - translateTop)) / this.props.zoom);
+      const nx = (sx2 + (delta.x - (this.props.workspace.transform.left - translateLeft)) / this.props.zoom);
+      const ny = (sy2 + (delta.y - (this.props.workspace.transform.top - translateTop)) / this.props.zoom);
 
       let position = { left: nx, top: ny };
       let changeDelta = guider.snap(position, createBoundingRectPoints(new BoundingRect(nx, ny, nx + bounds.width, ny + bounds.height)));
@@ -230,7 +230,7 @@ class ResizerComponent extends React.Component<{
     }, () => {
       this._visibleEntities.save();
       this._dragger = void 0;
-      this.props.editor.metadata.set(MetadataKeys.MOVING, false);
+      this.props.workspace.metadata.set(MetadataKeys.MOVING, false);
       this.setState({ guideLines: undefined });
       this.props.onStopMoving();
     });
@@ -238,12 +238,12 @@ class ResizerComponent extends React.Component<{
 
   onPointMouseDown = () => {
     this._currentGuider = this.createGuider();
-    this.props.editor.metadata.set(MetadataKeys.MOVING, true);
+    this.props.workspace.metadata.set(MetadataKeys.MOVING, true);
   }
 
   onPointMouseUp = () => {
     this._visibleEntities.save();
-    this.props.editor.metadata.set(MetadataKeys.MOVING, false);
+    this.props.workspace.metadata.set(MetadataKeys.MOVING, false);
     this.setState({ guideLines: undefined });
     this.props.onStopResizing();
   }
@@ -308,7 +308,7 @@ class ResizerComponent extends React.Component<{
         onDoubleClick={this.onDoubleClick}
       >
         <PathComponent
-          editor={this.props.editor}
+          workspace={this.props.workspace}
           showPoints={capabilities.resizable && entities.editable}
           onPointChange={this.updatePoint}
           onPointMouseDown={this.onPointMouseDown}
@@ -321,7 +321,7 @@ class ResizerComponent extends React.Component<{
       </div>
 
       { guideLines.map((guideLine: GuideLine, i) => {
-        return <IntersectingPointComponent editor={this.props.editor} guideLine={guideLine} key={i} />;
+        return <IntersectingPointComponent workspace={this.props.workspace} guideLine={guideLine} key={i} />;
       })}
     </div>);
   }

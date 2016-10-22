@@ -76,7 +76,7 @@ export class ModuleHistory implements IInjectable {
   }
 
   private get browser() {
-    return this._app.editor.browser;
+    return this._app.workspace.browser;
   }
 
   private get bus() {
@@ -84,7 +84,7 @@ export class ModuleHistory implements IInjectable {
   }
 
   public initialize() {
-    this._app.editor.browser.observe(new WrapBus(this.onAction.bind(this)));
+    this._app.workspace.browser.observe(new WrapBus(this.onAction.bind(this)));
     this._app.bus.register(new WrapBus(this.onAction.bind(this)));
     this.reset();
   }

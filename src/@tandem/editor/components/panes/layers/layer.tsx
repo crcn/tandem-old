@@ -50,9 +50,9 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
   onClick = (event) => {
 
     const { node, app } = this.props;
-    const { editor } = app;
+    const { workspace } = app;
 
-    const selection = editor.selection || [];
+    const selection = workspace.selection || [];
     let select  = [];
     let multiSelect = false;
 
@@ -61,7 +61,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
       const VisibleDOMEntityCollection = [];
 
-      traverseTree(editor.document, (child) => {
+      traverseTree(workspace.document, (child) => {
         VisibleDOMEntityCollection.push(child);
         return child['dataset'][MetadataKeys.LAYER_EXPANDED];
       });
@@ -146,7 +146,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
     const expanded   = false; //node.metadata.get(MetadataKeys.LAYER_EXPANDED);
 
-    const selection = app.editor.selection;
+    const selection = app.workspace.selection;
     const layerName = null;// node.metadata.get(MetadataKeys.LAYER_DEPENDENCY_NAME); // || node.source.constructor.name;
 
     const labelDependency = LayerLabelComponentFactoryDependency.find(layerName, dependencies) || LayerLabelComponentFactoryDependency.find(node.constructor.name, dependencies) || LayerLabelComponentFactoryDependency.find(node.source.constructor.name, dependencies);
@@ -223,7 +223,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
 
     const data = monitor.getItem() as any;
 
-    const item = null; // findTreeNode(app.editor.document, (node) => node )
+    const item = null; // findTreeNode(app.workspace.document, (node) => node )
 
 
     if (entity === item) return;

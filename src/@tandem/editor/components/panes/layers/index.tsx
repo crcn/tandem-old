@@ -13,11 +13,11 @@ import { DocumentPaneComponentFactoryDependency } from "@tandem/editor/dependenc
 
 class LayersPaneComponent extends React.Component<{ app: FrontEndApplication }, any> {
   render() {
-    const { editor } = this.props.app;
-    if (!editor || !editor.document) return null;
-    return <PaneComponent title={path.basename(editor.browser.location.toString())}>
+    const { workspace } = this.props.app;
+    if (!workspace || !workspace.document) return null;
+    return <PaneComponent title={path.basename(workspace.browser.location.toString())}>
       {
-        editor.document.body.children.map((node, i) => <LayerComponent depth={0} {...this.props} node={node} key={node.uid} />)
+        workspace.document.body.children.map((node, i) => <LayerComponent depth={0} {...this.props} node={node} key={node.uid} />)
       }
     </PaneComponent>;
   }

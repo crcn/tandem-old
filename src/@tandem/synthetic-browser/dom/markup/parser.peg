@@ -8,14 +8,6 @@ const {
   MarkupAttributeExpression,
   MarkupFragmentExpression,
 } = require("./ast");
-
-function position() {
-  return {
-    start:peg$savedPos,
-    end:peg$currPos
-  };
-}
-
 }
 
 Start
@@ -23,14 +15,14 @@ Start
 
 Fragment
   = nodes:(Node/TextNode)* {
-    return new MarkupFragmentExpression(nodes, position());
+    return new MarkupFragmentExpression(nodes, location());
   }
 
 Node
   = _ node:(Comment/VoidElement/Element/TextNode) _ { return node; }
 
 Comment
-  = '<!--' characters:CommentCharacter* '-->' { return new MarkupCommentExpression(characters.join(''), position()); }
+  = '<!--' characters:CommentCharacter* '-->' { return new MarkupCommentExpression(characters.join(''), location()); }
 
 CommentCharacter
   = !'-->' character:. { return character; }
@@ -42,7 +34,7 @@ VoidElement
       expected("</" + nodeName + ">");
     }
 
-    return new MarkupElementExpression(nodeName, attributes, [], position());
+    return new MarkupElementExpression(nodeName, attributes, [], location());
   }
 
 EndVoidTag
@@ -61,7 +53,7 @@ Element
 
 ElementWithoutChildNodes
   = startTag:ElementStart attributes:ElementAttributes _ '/>' {
-    return new MarkupElementExpression(startTag, attributes, [], position());
+    return new MarkupElementExpression(startTag, attributes, [], location());
   }
 
 ElementWithChildNodes
@@ -69,7 +61,7 @@ ElementWithChildNodes
     if (startTag != endTag) {
       expected('</' + startTag + '>');
     }
-    return new MarkupElementExpression(startTag, attributes, childNodes, position());
+    return new MarkupElementExpression(startTag, attributes, childNodes, location());
   }
 
 ElementStart
@@ -82,10 +74,10 @@ ElementAttributes
 
 ElementAttribute
   = _ key:Name '=' value:AttributeValue {
-    return new MarkupAttributeExpression(key, value, position());
+    return new MarkupAttributeExpression(key, value, location());
   }
   / _ key:Name _ {
-    return new MarkupAttributeExpression(key, "", position());
+    return new MarkupAttributeExpression(key, "", location());
   }
 
 AttributeValue
@@ -105,7 +97,7 @@ SingleStringCharacter
 
 TextNode
   = [^<]+ {
-    return new MarkupTextExpression(text(), position());
+    return new MarkupTextExpression(text(), location());
   }
 
 Name

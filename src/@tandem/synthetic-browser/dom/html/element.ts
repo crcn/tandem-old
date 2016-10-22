@@ -14,7 +14,7 @@ export class SyntheticHTMLElement extends SyntheticDOMElement {
 
   private _style: SyntheticCSSStyleDeclaration;
   private _styleProxy: SyntheticCSSStyleDeclaration;
-  private _rect: BoundingRect;
+  public $rect: BoundingRect;
 
   constructor(ns: string, tagName: string) {
     super(ns, tagName);
@@ -22,11 +22,7 @@ export class SyntheticHTMLElement extends SyntheticDOMElement {
   }
 
   getBoundingClientRect() {
-    return this._rect || BoundingRect.zeros();
-  }
-
-  setBoundingClientRect(rect: BoundingRect) {
-    this._rect = rect;
+    return this.$rect || BoundingRect.zeros();
   }
 
   get style(): SyntheticCSSStyleDeclaration {

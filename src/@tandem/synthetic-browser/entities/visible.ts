@@ -40,8 +40,6 @@ export abstract class BaseVisibleDOMNodeEntity<T extends SyntheticDOMNode, U ext
   }
 
   protected onRendered() {
-    if (this.source instanceof SyntheticHTMLElement) {
-      this.source.setBoundingClientRect(this._renderedBounds = this.browser.renderer.getBoundingRect(this.uid));
-    }
+
   }
 }

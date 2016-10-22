@@ -9,7 +9,7 @@ import { FrontEndApplication } from "@tandem/editor/application";
 export default class CenterComponent extends React.Component<{ app: FrontEndApplication }, any> {
   render() {
     return (<div className="m-editor-center">
-      <EditorCommponent {...this.props} editor={this.props.app.editor}  />
+      <EditorCommponent {...this.props} workspace={this.props.app.workspace}  />
     </div>);
   }
 }

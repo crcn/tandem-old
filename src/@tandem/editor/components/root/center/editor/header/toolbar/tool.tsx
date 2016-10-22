@@ -1,12 +1,12 @@
 import * as cx from "classnames";
 import * as React from "react";
-import { Editor } from "@tandem/editor/models/editor";
 import { IActor } from "@tandem/common/actors";
+import { Workspace } from "@tandem/editor/models";
 import { SetToolAction } from "@tandem/editor/actions";
 import { FrontEndApplication } from "@tandem/editor/application";
-import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
+import { WorkspaceToolFactoryDependency } from "@tandem/editor/dependencies";
 
-class ToolComponent extends React.Component<{ app: FrontEndApplication, editor: Editor, toolDependency: EditorToolFactoryDependency }, any> {
+class ToolComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, toolDependency: WorkspaceToolFactoryDependency }, any> {
 
   setTool = () => {
     this.props.app.bus.execute(new SetToolAction(this.props.toolDependency));
@@ -16,7 +16,7 @@ class ToolComponent extends React.Component<{ app: FrontEndApplication, editor: 
     const dep = this.props.toolDependency;
 
     const className = cx({
-      selected: this.props.editor.currentTool instanceof this.props.toolDependency.clazz,
+      selected: this.props.workspace.currentTool instanceof this.props.toolDependency.clazz,
       [`m-preview-tool s s-${this.props.toolDependency.icon}`]: true,
     });
 

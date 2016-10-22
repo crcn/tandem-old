@@ -1,21 +1,21 @@
 import "./index.scss";
 
 import * as React from "react";
-import { Editor } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/models";
+import { SetZoomAction } from "@tandem/editor/actions";
 import * as AutosizeInput from "react-input-autosize";
+import { FrontEndApplication } from "@tandem/editor/application";
 import { RegisteredComponent, FocusComponent } from "@tandem/editor/components/common";
 import { FooterComponentFactoryDependency } from "@tandem/editor/dependencies";
-import { SetZoomAction } from "@tandem/editor/actions";
-import { FrontEndApplication } from "@tandem/editor/application";
 
-class ZoomLabelComponent extends React.Component<{ editor: Editor, app: FrontEndApplication }, { editZoom: number }> {
+class ZoomLabelComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication }, { editZoom: number }> {
   constructor() {
     super();
     this.state = { editZoom: null };
   }
 
   editZoom = () => {
-    this.setState({ editZoom: this.props.editor.transform.scale * 100 });
+    this.setState({ editZoom: this.props.workspace.transform.scale * 100 });
   }
 
   onFocus = (event: React.FocusEvent) => {
@@ -39,7 +39,7 @@ class ZoomLabelComponent extends React.Component<{ editor: Editor, app: FrontEnd
   }
 
   render() {
-    const { scale } = this.props.editor.transform;
+    const { scale } = this.props.workspace.transform;
     return <span>{ this.state.editZoom != null ? this.renderEditZoom(scale) : <span onClick={this.editZoom}>{Math.round((scale || 0) * 100)}</span> }%</span>;
   }
 
@@ -56,9 +56,9 @@ class ZoomLabelComponent extends React.Component<{ editor: Editor, app: FrontEnd
   }
 }
 
-class FooterComponent extends React.Component<{ editor: Editor, app: FrontEndApplication }, any> {
+class FooterComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication }, any> {
   render() {
-    const { scale } = this.props.editor.transform;
+    const { scale } = this.props.workspace.transform;
     return (<div className="m-preview-footer">
       <ZoomLabelComponent {...this.props} />
       <RegisteredComponent {...this.props} ns={FooterComponentFactoryDependency.getNamespace("**")} />

@@ -5,7 +5,7 @@ import { FrontEndApplication } from "@tandem/editor/application";
 import { POINTER_TOOL_KEY_CODE } from "@tandem/editor/constants";
 import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { BaseApplicationService } from "@tandem/common/services";
-import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
+import { WorkspaceToolFactoryDependency } from "@tandem/editor/dependencies";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
 import { IInjectable, MainBusDependency } from "@tandem/common/dependencies";
 import { SelectAction, MouseAction, KeyboardAction, RemoveSelectionAction } from "@tandem/editor/actions";
@@ -63,4 +63,4 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
   }
 }
 
-export const pointerToolDependency = new EditorToolFactoryDependency("pointer", "cursor", "display", POINTER_TOOL_KEY_CODE, PointerTool);
+export const pointerToolDependency = new WorkspaceToolFactoryDependency("pointer", "cursor", "display", POINTER_TOOL_KEY_CODE, PointerTool);

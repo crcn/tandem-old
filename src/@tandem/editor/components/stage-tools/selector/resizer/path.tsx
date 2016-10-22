@@ -1,16 +1,16 @@
 
 import * as  React from "react";
 import { startDrag } from "@tandem/common/utils/component";
-import { Editor } from "@tandem/editor/models/editor";
+import { Workspace } from "@tandem/editor/models";
 
-class PathComponent extends React.Component<{ strokeWidth: number, showPoints: boolean, pointRadius: number, editor: Editor, onPointChange: Function, zoom: number, onPointMouseUp: Function, onPointMouseDown: Function, points: Array<any> }, any> {
+class PathComponent extends React.Component<{ strokeWidth: number, showPoints: boolean, pointRadius: number, workspace: Workspace, onPointChange: Function, zoom: number, onPointMouseUp: Function, onPointMouseDown: Function, points: Array<any> }, any> {
 
   onPointDown(point, index, event) {
 
     // slight UX tweak to ensure that the resizer cursor stays the same
     // as the user is dragging the selected entity.
-    const oldCursor = this.props.editor.cursor;
-    this.props.editor.cursor = window.getComputedStyle(event.target).cursor;
+    const oldCursor = this.props.workspace.cursor;
+    this.props.workspace.cursor = window.getComputedStyle(event.target).cursor;
 
     const sx = point.left;
     const sy = point.top;
@@ -33,7 +33,7 @@ class PathComponent extends React.Component<{ strokeWidth: number, showPoints: b
 
       this.props.onPointChange(point, event2);
     }, () => {
-      this.props.editor.cursor = oldCursor;
+      this.props.workspace.cursor = oldCursor;
       this.props.onPointMouseUp(...arguments);
     });
   }

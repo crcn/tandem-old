@@ -1,7 +1,7 @@
 import "./index.scss";
 
 import * as React from "react";
-import { Editor } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/models";
 import { MetadataKeys } from "@tandem/editor/constants";
 import { calculateCSSMeasurments } from "@tandem/common";
 import {
@@ -9,16 +9,16 @@ import {
   BaseVisibleDOMNodeEntity,
 } from "@tandem/synthetic-browser";
 
-class ElementInfoComponent extends React.Component<{ entity: BaseVisibleDOMNodeEntity<SyntheticHTMLElement, any>, editor: Editor }, any> {
+class ElementInfoComponent extends React.Component<{ entity: BaseVisibleDOMNodeEntity<SyntheticHTMLElement, any>, workspace: Workspace }, any> {
 
 
   render() {
-    const { entity, editor } = this.props;
+    const { entity, workspace } = this.props;
     const rect = entity.source.getBoundingClientRect();
     const computedStyle = entity.getComputedStyle();
     if (!computedStyle) return null;
 
-    const scale = editor.transform.scale;
+    const scale = workspace.transform.scale;
 
     const style = {
       left: rect.left,
@@ -65,13 +65,13 @@ class ElementInfoComponent extends React.Component<{ entity: BaseVisibleDOMNodeE
   }
 }
 
-export class ElementInfoStageToolComponent extends React.Component<{ editor: Editor }, any> {
+export class ElementInfoStageToolComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
-    const { editor } = this.props;
-    const entities = editor.document.querySelectorAll("*").filter((node) => node.native && (node.native as any).getBoundingClientRect && (node as SyntheticHTMLElement).dataset[MetadataKeys.HOVERING]);
+    const { workspace } = this.props;
+    const entities = workspace.document.querySelectorAll("*").filter((node) => node.native && (node.native as any).getBoundingClientRect && (node as SyntheticHTMLElement).dataset[MetadataKeys.HOVERING]);
 
     return <div className="td-html-element-info">
-      { entities.map((entity) => <ElementInfoComponent entity={entity as any} editor={editor} key={entity.uid} />)}
+      { entities.map((entity) => <ElementInfoComponent entity={entity as any} workspace={workspace} key={entity.uid} />)}
     </div>;
   }
 }

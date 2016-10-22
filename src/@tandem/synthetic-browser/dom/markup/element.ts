@@ -156,14 +156,14 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
 
 export class SetElementAttributeEditAction extends EditAction {
   static readonly SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
-  constructor(target: SyntheticDOMElement, attributeName: string, newAttributeValue: string, newAttributeName?: string) {
+  constructor(target: SyntheticDOMElement, readonly attributeName: string, readonly newAttributeValue: string, readonly newAttributeName?: string) {
     super(SetElementAttributeEditAction.SET_ELEMENT_ATTRIBUTE_EDIT, target);
   }
 }
 
 export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<SyntheticDOMElement> {
   setAttribute(name: string, value: string, newName?: string) {
-    this.addAction(new SetElementAttributeEditAction(this.target, name, value, newName));
+    return this.addAction(new SetElementAttributeEditAction(this.target, name, value, newName));
   }
 }
 

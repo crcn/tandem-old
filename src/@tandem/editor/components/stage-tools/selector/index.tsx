@@ -1,6 +1,6 @@
 import "./index.scss";
 import * as React from "react";
-import { Editor } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/models";
 import { flatten } from "lodash";
 import RulerComponent from "./ruler";
 import { PointerTool } from "@tandem/editor/models/pointer-tool";
@@ -11,7 +11,7 @@ import { BoundingRect, flattenTree } from "@tandem/common";
 import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 
-export default class SelectorComponent extends React.Component<{ editor: Editor, tool: PointerTool, app: FrontEndApplication, zoom: number  }, any> {
+export default class SelectorComponent extends React.Component<{ workspace: Workspace, tool: PointerTool, app: FrontEndApplication, zoom: number  }, any> {
 
   constructor(props) {
     super(props);
@@ -19,7 +19,7 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
   }
 
   onResizing = (event) => {
-    this.setState({ resizing: true, mouseLeft: (event.pageX - this.props.editor.transform.left) / this.props.zoom, mouseTop: (event.pageY - this.props.editor.transform.top) / this.props.zoom });
+    this.setState({ resizing: true, mouseLeft: (event.pageX - this.props.workspace.transform.left) / this.props.zoom, mouseTop: (event.pageY - this.props.workspace.transform.top) / this.props.zoom });
   }
 
   onStopResizing = () => {
@@ -36,11 +36,11 @@ export default class SelectorComponent extends React.Component<{ editor: Editor,
 
   render() {
 
-    const { editor, tool } = this.props;
+    const { workspace, tool } = this.props;
 
     if (!(tool instanceof PointerTool)) return null;
 
-    const selection = new VisibleDOMEntityCollection(...(editor.selection as any));
+    const selection = new VisibleDOMEntityCollection(...(workspace.selection as any));
 
     // simple check to see if the selection array
     // is an IEntityDisplay

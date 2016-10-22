@@ -12,6 +12,7 @@ import {
 import {
   CSSEditor,
   HTML_XMLNS,
+  MarkupEditor2,
   SyntheticDOMElementClassDependency,
 } from "@tandem/synthetic-browser";
 
@@ -102,6 +103,7 @@ export const htmlExtensionDependencies = [
 
   // edit consumers
   new ContentEditorFactoryDependency(CSS_MIME_TYPE, CSSEditor),
+  new ContentEditorFactoryDependency(HTML_MIME_TYPE, MarkupEditor2),
 
   // tools
   textToolDependency,

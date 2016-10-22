@@ -19,7 +19,6 @@ export interface ISandboxBundleEvaluator {
 
 export class SandboxModule {
   public exports: any;
-  readonly editor: any;
   constructor(readonly sandbox: Sandbox, readonly bundle: Bundle) {
     this.exports = {};
   }

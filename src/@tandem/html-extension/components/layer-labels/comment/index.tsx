@@ -7,7 +7,7 @@ import * as AutosizeInput from "react-input-autosize";
 import { LayerLabelComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { BaseDOMNodeEntity, SyntheticDOMComment  } from "@tandem/synthetic-browser";
 
-export class CommentLayerLabelCoponent extends React.Component<{ entity: BaseDOMNodeEntity<SyntheticDOMComment, any>, connectDragSource: Function }, any> {
+export class CommentLayerLabelCoponent extends React.Component<{ node: SyntheticDOMComment, connectDragSource: Function }, any> {
 
   constructor() {
     super();
@@ -31,7 +31,7 @@ export class CommentLayerLabelCoponent extends React.Component<{ entity: BaseDOM
       className="m-label m-comment-layer-label comment"
       onDoubleClick={this.editLabel.bind(this)}>
       {
-         this.props.entity.source.nodeValue.trim()
+         this.props.node.nodeValue.trim()
       }
     </span>);
   }

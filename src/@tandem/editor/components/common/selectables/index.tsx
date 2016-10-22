@@ -5,7 +5,7 @@ import "./index.scss";
 import * as cx from "classnames";
 import * as React from "react";
 import { inject } from "@tandem/common/decorators";
-import { Editor } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/models";
 import { BoundingRect } from "@tandem/common/geom";
 import { SelectAction } from "@tandem/editor/actions";
 import { MetadataKeys } from "@tandem/editor/constants";
@@ -91,7 +91,7 @@ class SelectableComponent extends React.Component<{
 // @injectable
 export class SelectablesComponent extends React.Component<{
   app: FrontEndApplication,
-  editor: Editor,
+  workspace: Workspace,
   onSyntheticMouseDown: (entity: BaseVisibleDOMNodeEntity<any, any>, event?: React.MouseEvent) => void,
   canvasRootSelectable?: boolean
 }, { showSelectables: boolean }> {
@@ -125,25 +125,25 @@ export class SelectablesComponent extends React.Component<{
   render() {
 
     if (!this.state.showSelectables) return null;
-    const { document } = this.props.app.editor;
+    const { document } = this.props.app.workspace;
 
     if (!document) return null;
 
-    const { editor, app } = this.props;
-    const { selection } = editor;
+    const { workspace, app } = this.props;
+    const { selection } = workspace;
     // do not render selectables that are off screen
     //
     // TODO - probably better to check if mouse is down on stage instead of checking whether the selected items are being moved.
 
     // TODO - check if user is scrolling
-    if (selection && editor.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
+    if (selection && workspace.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
     const allEntities = document.querySelectorAll("*", true).filter((node: SyntheticDOMElement) => node["absoluteBounds"]/* && entity.metadata.get(MetadataKeys.ENTITY_VISIBLE)*/) as any as BaseVisibleDOMNodeEntity<any, any>[];
 
     const selectables = allEntities.map((entity) => (
       <SelectableComponent
         {...this.props}
-        zoom={editor.zoom}
+        zoom={workspace.zoom}
         selection={selection}
         entity={entity}
         key={entity.uid}

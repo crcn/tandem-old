@@ -2,7 +2,7 @@ import { Action } from "@tandem/common/actions";
 import { KeyBinding } from "./base";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { GlobalKeyBindingDependency } from "@tandem/editor/dependencies";
-import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
+import { WorkspaceToolFactoryDependency } from "@tandem/editor/dependencies";
 import { ZoomAction, DeleteSelectionAction } from "@tandem/editor/actions";
 import { BaseCommand, BaseApplicationCommand } from "@tandem/common/commands";
 import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
@@ -24,7 +24,7 @@ export const keyBindingsDependency = [
       // slight delay to enable other tools to catch escape key if it' s hit - important
       // for text editing tool particularly
       setTimeout(() => {
-        this.bus.execute(new SetToolAction(this.dependencies.query<EditorToolFactoryDependency>(pointerToolDependency.id)));
+        this.bus.execute(new SetToolAction(this.dependencies.query<WorkspaceToolFactoryDependency>(pointerToolDependency.id)));
       }, 1);
     }
   }),

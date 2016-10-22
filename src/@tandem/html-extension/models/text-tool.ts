@@ -9,8 +9,8 @@ import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { BaseApplicationService } from "@tandem/common/services";
-import { EditorToolFactoryDependency } from "@tandem/editor/dependencies";
-import { IEditorTool, BaseEditorTool, IEditor } from "@tandem/editor/models";
+import { WorkspaceToolFactoryDependency } from "@tandem/editor/dependencies";
+import { IWorkspaceTool, BaseEditorTool, IWorkspace } from "@tandem/editor/models";
 import {
   Dependency,
   Dependencies,
@@ -42,7 +42,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
   name = "text";
   cursor = null;
 
-  constructor(editor: IEditor) {
+  constructor(editor: IWorkspace) {
     super(editor);
     this._startEditing();
   }
@@ -97,7 +97,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
     (<Element>this._targetEntity.section.targetNode).innerHTML = " ";
 
     // save the workspae file -- diffing time
-    this.bus.execute(new SetToolAction(<EditorToolFactoryDependency>this.dependencies.query(pointerToolDependency.id)));
+    this.bus.execute(new SetToolAction(<WorkspaceToolFactoryDependency>this.dependencies.query(pointerToolDependency.id)));
   }
 
   public canvasMouseDown(event: MouseAction) {
@@ -114,7 +114,7 @@ class InsertTextTool extends InsertTool {
   private _dependencies: Dependencies;
 
   get displayEntityToolFactory() {
-    return <EditorToolFactoryDependency>this._dependencies.query(editInnerHTMLDependency.id);
+    return <WorkspaceToolFactoryDependency>this._dependencies.query(editInnerHTMLDependency.id);
   }
 
   createSyntheticDOMElement() {
@@ -122,5 +122,5 @@ class InsertTextTool extends InsertTool {
   }
 }
 
-export const textToolDependency = new EditorToolFactoryDependency("text", "text", "display", "t", InsertTextTool);
-export const editInnerHTMLDependency = new EditorToolFactoryDependency("editInnerHTML", null, null, TEXT_TOOL_KEY_CODE, EditInnerHTMLTool);
+export const textToolDependency = new WorkspaceToolFactoryDependency("text", "text", "display", "t", InsertTextTool);
+export const editInnerHTMLDependency = new WorkspaceToolFactoryDependency("editInnerHTML", null, null, TEXT_TOOL_KEY_CODE, EditInnerHTMLTool);

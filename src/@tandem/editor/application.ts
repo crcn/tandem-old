@@ -48,13 +48,13 @@ import { historyExtensionDependencies } from "@tandem/history-extension";
 import { markdownExtensionDependencies } from "@tandem/markdown-extension";
 import { tdprojectExtensionDependencies } from "@tandem/tdproject-extension";
 
+import { Workspace } from "./models";
 import { Metadata } from "@tandem/common/metadata";
-import { Editor } from "./models";
 
 export class FrontEndApplication extends Application {
 
   // TODO - change this to something else - maybe workspace
-  public editor: Editor;
+  public workspace: Workspace;
   public settings: Metadata;
   public metadata: Metadata;
 

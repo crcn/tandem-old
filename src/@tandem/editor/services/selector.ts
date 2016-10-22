@@ -28,9 +28,9 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
   [SelectEntitiesAtSourceOffsetAction.SELECT_ENTITIES_AT_SOURCE_OFFSET](action: SelectEntitiesAtSourceOffsetAction) {
 
-    if (!this.app.editor) return;
+    if (!this.app.workspace) return;
 
-    const selectableSynthetics = flattenTree(this.app.editor.document).filter((element) => {
+    const selectableSynthetics = flattenTree(this.app.workspace.document).filter((element) => {
       return element;
     });
 
@@ -71,7 +71,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
   async [RemoveSelectionAction.REMOVE_SELECTION]() {
 
-    await FileEditorDependency.getInstance(this.app.dependencies).applyEdit(new BatchContentEdit(this.app.editor.selection.map((selection) => {
+    await FileEditorDependency.getInstance(this.app.dependencies).applyEdit(new BatchContentEdit(this.app.workspace.selection.map((selection) => {
       return new RemoveEditAction(selection);
     })))
 
@@ -85,9 +85,9 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
     const app = this.app;
 
     if (!items.length) {
-      return app.editor.selection = [];
+      return app.workspace.selection = [];
     }
-    const prevSelection = app.editor.selection;
+    const prevSelection = app.workspace.selection;
 
     const type = items[0].type;
 
@@ -119,14 +119,14 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
       }
     });
 
-    app.editor.selection = newSelection;
+    app.workspace.selection = newSelection;
 
   }
 
   [SelectAllAction.SELECT_ALL]() {
 
     // TODO - select call based on focused entity
-    this.bus.execute(new SelectAction(this.app.editor.document.body.children, false, false));
+    this.bus.execute(new SelectAction(this.app.workspace.document.body.children, false, false));
   }
 }
 

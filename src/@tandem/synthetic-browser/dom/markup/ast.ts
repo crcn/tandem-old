@@ -64,6 +64,38 @@ export function deserializeMarkupExpression(data: any): MarkupExpression {
   }
 }
 
+export function traverseMarkupExpression(target: MarkupExpression, each: (expression: MarkupExpression) => boolean | void) {
+  target.accept({
+    visitAttribute: each,
+    visitComment: each,
+    visitDocumentFragment(fragment) {
+      for (const child of fragment.childNodes) {
+        if (each(child) === false) return;
+      }
+    },
+    visitElement(element) {
+      for (const child of element.attributes) {
+        if (each(child) === false) break;
+      }
+      for (const child of element.childNodes) {
+        if (each(child) === false) break;
+      }
+    },
+    visitText: each
+  })
+}
+
+export function findMarkupExpression(target: MarkupExpression, filter: (expression: MarkupExpression) => boolean): MarkupExpression {
+  let found;
+  traverseMarkupExpression(target, (expression) => {
+    if (filter(expression)) {
+      found = expression;
+      return false;
+    }
+  });
+  return found;
+}
+
 export interface IMarkupValueNodeExpression extends IMarkupExpression {
   nodeValue: any;
 }

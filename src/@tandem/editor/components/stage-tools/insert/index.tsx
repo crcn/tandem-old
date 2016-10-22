@@ -7,7 +7,7 @@ import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { BaseVisibleDOMNodeEntity } from "@tandem/synthetic-browser";
 import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { SetToolAction, SelectAction } from "@tandem/editor/actions";
-import { Editor, InsertTool } from "@tandem/editor/models";
+import { Workspace, InsertTool } from "@tandem/editor/models";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { SelectionSizeComponent, SelectablesComponent } from "@tandem/editor/components/common";
 import {
@@ -16,13 +16,13 @@ import {
   BoundingRect,
 } from "@tandem/common";
 
-class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor, app: FrontEndApplication, tool: InsertTool }, any> {
+class InsertToolComponent extends React.Component<{ workspace: Workspace, bus: IActor, app: FrontEndApplication, tool: InsertTool }, any> {
 
   private _targetEntity: any;
 
 
   private onRootMouseDown = (event) => {
-    this._targetEntity = this.props.editor.document.body as any;
+    this._targetEntity = this.props.workspace.document.body as any;
     this._insertNewItem(event);
   }
 
@@ -30,7 +30,7 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
 
     const event = syntheticEvent.nativeEvent as MouseEvent;
 
-    const { editor, bus, tool } = this.props;
+    const { workspace, bus, tool } = this.props;
 
     const childElement = tool.createSyntheticDOMElement();
     // const elementEditor = this._targetEntity.editor;
@@ -78,20 +78,20 @@ class InsertToolComponent extends React.Component<{ editor: Editor, bus: IActor,
   }
 
   render() {
-    const { editor, tool } = this.props;
+    const { workspace, tool } = this.props;
 
     if (!(tool instanceof InsertTool)) return null;
 
-    const selection = []; //new VisibleDOMEntityCollection(...this.props.editor.selection);
-    const zoom = this.props.editor.transform.scale;
-    const scale = 1 / editor.transform.scale;
+    const selection = []; //new VisibleDOMEntityCollection(...this.props.workspace.selection);
+    const zoom = this.props.workspace.transform.scale;
+    const scale = 1 / workspace.transform.scale;
 
     const bgstyle = {
       position: "fixed",
       background: "transparent",
       top: 0,
       left: 0,
-      transform: `translate(${-editor.transform.left * scale}px, ${-editor.transform.top * scale}px) scale(${scale})`,
+      transform: `translate(${-workspace.transform.left * scale}px, ${-workspace.transform.top * scale}px) scale(${scale})`,
       transformOrigin: "top left",
       width: "100%",
       height: "100%"

@@ -8,7 +8,7 @@ import { FrontEndApplication } from "@tandem/editor/application";
 import { BaseApplicationService } from "@tandem/common/services";
 import { ZoomAction, SetToolAction } from "@tandem/editor/actions";
 import { ApplicationServiceDependency, Dependencies, DependenciesDependency } from "@tandem/common/dependencies";
-import { EditorToolFactoryDependency, EDITOR_TOOL_NS, GlobalKeyBindingDependency } from "@tandem/editor/dependencies";
+import { WorkspaceToolFactoryDependency, EDITOR_TOOL_NS, GlobalKeyBindingDependency } from "@tandem/editor/dependencies";
 
 export class EditorService extends BaseApplicationService<FrontEndApplication> {
 

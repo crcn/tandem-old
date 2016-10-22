@@ -3,16 +3,16 @@ import "./intersecting-point.scss";
 
 import * as React from "react";
 import { IPoint } from "@tandem/common/geom";
-import { Editor } from "@tandem/editor/models/editor";
+import { Workspace } from "@tandem/editor/models";
 import { BoundingRectPoint, GuideLine } from "../guider";
 
-export class IntersectingPointComponent extends React.Component<{ guideLine: GuideLine, editor: Editor }, any> {
+export class IntersectingPointComponent extends React.Component<{ guideLine: GuideLine, workspace: Workspace }, any> {
   render() {
 
-    const { guideLine, editor } = this.props;
+    const { guideLine, workspace } = this.props;
     const point: BoundingRectPoint =  guideLine.origin as BoundingRectPoint;
     const { rect, anchor } = point;
-    const scale = editor.transform.scale;
+    const scale = workspace.transform.scale;
     const reverseScale = 1 / scale;
     const borderWidth = reverseScale * 1;
     const halfBorderWidth = borderWidth / 2;

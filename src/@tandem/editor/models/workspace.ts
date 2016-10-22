@@ -1,6 +1,6 @@
 import { KeyBinding } from "@tandem/editor/key-bindings";
 import { ParallelBus } from "mesh";
-import { IEditor, IEditorTool } from "./base";
+import { IWorkspace, IWorkspaceTool } from "./base";
 
 import {
   IActor,
@@ -19,13 +19,13 @@ export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;
 
 // TODO - change to Workspace
-export class Editor implements IEditor {
+export class Workspace implements IWorkspace {
 
   readonly metadata = new Metadata(this);
 
   private _zoom: number = 1;
   public translate: IPoint = { left: 0, top: 0 };
-  private _currentTool: IEditorTool;
+  private _currentTool: IWorkspaceTool;
   public transform: Transform = new Transform();
   public selection: ISynthetic[] = [];
   public browser: ISyntheticBrowser;
@@ -54,11 +54,11 @@ export class Editor implements IEditor {
     );
   }
 
-  get currentTool(): IEditorTool {
+  get currentTool(): IWorkspaceTool {
     return this._currentTool;
   }
 
-  set currentTool(value: IEditorTool) {
+  set currentTool(value: IWorkspaceTool) {
     if (this._currentTool) {
       this._currentTool.dispose();
     }

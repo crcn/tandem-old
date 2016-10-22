@@ -77,9 +77,10 @@ export class SyntheticDOMRenderer extends BaseRenderer {
           if (!element.dataset) continue;
           const uid = element.dataset["uid"];
           const syntheticNode: SyntheticDOMNode = syntheticDOMNodesByUID[uid];
-          rects[uid] = BoundingRect.fromClientRect(element.getBoundingClientRect());
+          const rect = rects[uid] = BoundingRect.fromClientRect(element.getBoundingClientRect());
           if (syntheticNode) {
             syntheticNode.attachNative(element);
+            (<any>syntheticNode).$rect = rect;
           }
         }
         this.setRects(rects);

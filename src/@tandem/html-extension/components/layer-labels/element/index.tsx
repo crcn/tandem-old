@@ -22,7 +22,7 @@ import {
   SetToolAction
 } from "@tandem/editor/actions";
 
-export class ElementLayerLabelComponent extends React.Component<{ entity: BaseDOMNodeEntity<SyntheticDOMElement, any>, app: FrontEndApplication, connectDragSource: Function }, any> {
+export class ElementLayerLabelComponent extends React.Component<{ node: SyntheticDOMElement, app: FrontEndApplication, connectDragSource: Function }, any> {
 
   private _updateCount: number;
 
@@ -33,7 +33,7 @@ export class ElementLayerLabelComponent extends React.Component<{ entity: BaseDO
   }
 
   editHTML = () => {
-    this.props.entity.metadata.set(MetadataKeys.EDIT_LAYER, true);
+    // this.props.entity.metadata.set(MetadataKeys.EDIT_LAYER, true);
   }
 
   setState(state) {
@@ -41,7 +41,7 @@ export class ElementLayerLabelComponent extends React.Component<{ entity: BaseDO
   }
 
   addChild(event) {
-    this.props.entity.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
+    // this.props.entity.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
 
     // TODO - this needs to be generalized. Specific to
     // HTML right now
@@ -68,28 +68,28 @@ export class ElementLayerLabelComponent extends React.Component<{ entity: BaseDO
   }
 
   render() {
-    const entity     = this.props.entity;
+    const node     = this.props.node;
     const connectDragSource = this.props.connectDragSource;
 
     const buffer = [
       <span className="meta punctuation definition tag begin" key="lt">&lt;</span>
     ];
 
-    const editTagName = this.props.entity.metadata.get(MetadataKeys.EDIT_LAYER);
+    const editTagName = this.props.node.dataset[MetadataKeys.EDIT_LAYER];
 
     if (editTagName) {
       buffer.push(this.renderHTMLInput());
     } else {
       buffer.push(editTagName ?
         this.renderHTMLInput() :
-        <span className="entity name tag" key="tagName">{entity.change.tagName.toLowerCase()}</span>
+        <span className="entity name tag" key="tagName">{node.tagName.toLowerCase()}</span>
       );
 
       // filter them, and remove the items we do not want to display
       // (for now)
       // TODO - add attribute components here
 
-      entity.change.attributes.forEach(function (attr) {
+      node.attributes.forEach(function (attr) {
         const k = attr.name;
         buffer.push(
           <span className="entity other attribute-name" key={k + 1}>&nbsp;{k}</span>,
@@ -101,7 +101,7 @@ export class ElementLayerLabelComponent extends React.Component<{ entity: BaseDO
 
     buffer.push(
       <span className="meta punctuation definition tag end" key="et">
-        { entity.children.length === 0 ? " /" : void 0 }
+        { node.children.length === 0 ? " /" : void 0 }
         &gt;
       </span>
     );
@@ -129,15 +129,15 @@ export class ElementLayerLabelComponent extends React.Component<{ entity: BaseDO
 
   doneEditing = async (event?: KeyboardEvent) => {
 
-    const element = this.props.entity.source.ownerDocument.createElement("div") as SyntheticHTMLElement;
+    const element = this.props.node.ownerDocument.createElement("div") as SyntheticHTMLElement;
     element.innerHTML = `<${this.state.source} />`;
-    for (const child of this.props.entity.source.childNodes) {
+    for (const child of this.props.node.childNodes) {
       element.firstChild.appendChild(child.cloneNode(true));
     }
 
-    this.props.entity.edit((edit) => {
-      edit.replaceChildNode(element.firstChild, this.props.entity.source);
-    });
+    // this.props.entity.edit((edit) => {
+    //   edit.replaceChildNode(element.firstChild, this.props.node.source);
+    // });
 
     this.cancelEditing();
   }
@@ -161,10 +161,10 @@ export class ElementLayerLabelComponent extends React.Component<{ entity: BaseDO
 
   getHTMLValue() {
 
-    const entity = this.props.entity;
-    const buffer = [entity.source.tagName.toLowerCase()];
+    const node = this.props.node;
+    const buffer = [node.tagName.toLowerCase()];
 
-    for (const attribute of entity.change.attributes) {
+    for (const attribute of node.attributes) {
       const value = attribute.value;
       buffer.push(" ", attribute.name, "=", typeof value === "object" ? String(value) : `"${value}"`);
     }

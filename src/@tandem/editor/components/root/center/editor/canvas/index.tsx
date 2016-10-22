@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
 import { IPoint } from "@tandem/common/geom";
-import { Editor } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/models";
 import { BoundingRect } from "@tandem/common/geom";
 import ToolsLayerComponent from "./tools";
 import { BaseDOMNodeEntity } from "@tandem/synthetic-browser";
@@ -17,7 +17,7 @@ import {
   KeyboardAction,
 } from "@tandem/editor/actions";
 
-export default class EditorStageLayersComponent extends React.Component<{ app: FrontEndApplication, editor: Editor, dependencies: Dependencies, zoom: number }, any> {
+export default class EditorStageLayersComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, dependencies: Dependencies, zoom: number }, any> {
 
   private _mousePosition: IPoint;
   private _toolsHidden: any;
@@ -37,14 +37,14 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
   }
 
   translate(left, top) {
-    this.props.editor.transform.left = left;
-    this.props.editor.transform.top = top;
+    this.props.workspace.transform.left = left;
+    this.props.workspace.transform.top = top;
 
     const body = (this.refs as any).isolate.body;
 
     const width = body.offsetWidth;
     const height = body.offsetHeight;
-    const zoom   = this.props.editor.zoom;
+    const zoom   = this.props.workspace.zoom;
 
     let viewport = BoundingRect.zeros();
     viewport.left = -left
@@ -65,7 +65,7 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
   }
 
   pane(leftDelta, topDelta) {
-    this.translate(this.props.editor.transform.left - leftDelta, this.props.editor.transform.top - topDelta);
+    this.translate(this.props.workspace.transform.left - leftDelta, this.props.workspace.transform.top - topDelta);
   }
 
   onMouseEvent = (event: React.MouseEvent) => {
@@ -80,7 +80,7 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
   }
 
   componentWillUpdate(props) {
-    if (props.editor !== this.props.editor) {
+    if (props.workspace !== this.props.workspace) {
       requestAnimationFrame(this._recenter);
     } else if (props.zoom !== this.props.zoom) {
       this._center(this.props.zoom, props.zoom);
@@ -106,8 +106,8 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
     const v2oh = v1h * oldZoom;
 
     // old offset pane left
-    const v2ox = this.props.editor.transform.left;
-    const v2oy = this.props.editor.transform.top;
+    const v2ox = this.props.workspace.transform.left;
+    const v2oy = this.props.workspace.transform.top;
 
     // new width of view 2
     const v2nw = v1w * newZoom;
@@ -181,7 +181,7 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
 
   render() {
     const style = {
-      cursor: this.props.editor.cursor
+      cursor: this.props.workspace.cursor
     };
 
     const canvasWidth  = this.state.canvasWidth;
@@ -192,7 +192,7 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
     let transform;
 
     if (canvasWidth) {
-      const { left, top } = this.props.editor.transform;
+      const { left, top } = this.props.workspace.transform;
       transform = `translate(${left}px, ${top}px) scale(${this.props.zoom})`;
     }
 
@@ -222,8 +222,8 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
         className="m-editor-stage-canvas"
         style={style}>
           <div style={innerStyle} className="noselect" data-previewroot>
-            <PreviewLayerComponent {...this.props} renderer={this.props.app.editor.browser.renderer} />
-            {this._toolsHidden || !this.props.app.editor.document ? undefined : <ToolsLayerComponent {...this.props} />}
+            <PreviewLayerComponent {...this.props} renderer={this.props.app.workspace.browser.renderer} />
+            {this._toolsHidden || !this.props.app.workspace.document ? undefined : <ToolsLayerComponent {...this.props} />}
           </div>
       </div>
     </IsolateComponent>);

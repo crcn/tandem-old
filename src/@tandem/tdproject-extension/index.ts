@@ -10,12 +10,13 @@ import {
 } from "./synthetic";
 
 import { TandemBundleLoader } from "./sandbox";
-import { BundlerLoaderFactoryDependency } from "@tandem/sandbox";
+import { BundlerLoaderFactoryDependency, ContentEditorFactoryDependency } from "@tandem/sandbox";
 
 import {
   HTML_XMLNS,
   MarkupModule,
   NoopDOMENtity,
+  MarkupEditor2,
   SyntheticHTMLElement,
   DefaultSyntheticDOMEntity,
   MarkupMimeTypeXMLNSDependency,
@@ -50,5 +51,8 @@ export const tdprojectExtensionDependencies = [
   new MimeTypeDependency("tdm", TDPROJECT_MIME_TYPE),
 
   // xml namespaces
-  new MarkupMimeTypeXMLNSDependency(TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS)
+  new MarkupMimeTypeXMLNSDependency(TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS),
+
+  // editors
+  new ContentEditorFactoryDependency(TDPROJECT_MIME_TYPE, MarkupEditor2),
 ];

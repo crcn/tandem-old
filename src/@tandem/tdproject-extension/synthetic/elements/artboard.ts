@@ -96,7 +96,6 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
   attachNative(node: HTMLElement) {
     super.attachNative(node);
     this.initialize();
-    console.log(node);
     const iframe = this._iframe = node.querySelector("iframe") as HTMLIFrameElement;
 
     const onload = () => {
@@ -139,7 +138,6 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     this.injectCSS();
   }
 }
-
 
 export class SyntheticFrameRenderer extends BaseDecoratorRenderer {
   constructor(private _artboard: SyntheticTDArtboardElement, _renderer: ISyntheticDocumentRenderer) {
