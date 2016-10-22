@@ -61,6 +61,8 @@ export class SyntheticDOMNodeSerializer implements ISerializer<SyntheticDOMNode,
   }
 }
 
+let _uid: number = 0;
+
 export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, ISynthetic, IDOMNode {
 
   abstract textContent: string;
@@ -71,6 +73,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
    */
 
   private _ownerDocument: SyntheticDocument;
+  private _uid: number;
 
   /**
    */
@@ -93,6 +96,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   constructor(readonly nodeName: string) {
     super();
+    this._uid = ++_uid;
   }
 
   get ownerDocument(): SyntheticDocument {
@@ -109,6 +113,10 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   get module() {
     return this.$module;
+  }
+
+  get uid() {
+    return this._uid;
   }
 
   get childNodes() {

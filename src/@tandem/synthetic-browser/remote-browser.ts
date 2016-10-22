@@ -10,6 +10,7 @@ import {
   isMaster,
   deserialize,
   Dependencies,
+  patchTreeNode,
   MainBusDependency,
   BaseApplicationService
 } from "@tandem/common";
@@ -46,7 +47,16 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   onRemoteBrowserAction(action: any) {
     if (action.type === SERIALIZED_DOCUMENT) {
       const now = Date.now();
-      const window = new SyntheticWindow(this, this.location, deserialize(action.data, this._dependencies));
+
+      const previousDocument = this.window && this.window.document.cloneNode();
+
+      const document = deserialize(action.data, this._dependencies);
+
+      if (previousDocument) {
+        patchTreeNode(previousDocument.cloneNode(), document.cloneNode());
+      }
+
+      const window = new SyntheticWindow(this, this.location, document);
       this.setWindow(window);
       console.info("done loading %s", this.location.toString(), Date.now() - now);
     }
@@ -62,6 +72,8 @@ export class RemoteBrowserService extends BaseApplicationService<FrontEndApplica
       browser.observe({
         execute(action: Action) {
           if (action.type === SyntheticBrowserAction.BROWSER_LOADED) {
+
+            // TODO - only send diffs here.
             writer.write({ type: SERIALIZED_DOCUMENT, data: serialize(browser.document) });
           }
         }

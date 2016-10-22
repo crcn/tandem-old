@@ -1,5 +1,7 @@
 import { Action } from "@tandem/common";
 import { WrapBus } from "mesh";
+import { camelCase } from "lodash";
+import { HTML_VOID_ELEMENTS } from "@tandem/synthetic-browser/dom";
 import {
   BoundingRect,
   watchProperty,
@@ -15,9 +17,11 @@ import {
   SyntheticDOMText,
   SyntheticDocument,
   SyntheticDOMElement,
+  SyntheticDOMContainer,
   SyntheticCSSStyleDeclaration,
 } from "../dom";
 
+import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import { BaseRenderer } from "./base";
@@ -59,7 +63,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       }
 
       // render immediately to the DOM element
-      ReactDOM.render(this.entity.render(), this.element.lastChild as HTMLDivElement, () => {
+      ReactDOM.render(renderSyntheticNode(this.entity.source), this.element.lastChild as HTMLDivElement, () => {
         const syntheticComponentsBySourceUID = {};
 
         traverseTree(this.entity, (entity) => syntheticComponentsBySourceUID[entity.uid] = entity);
@@ -83,4 +87,63 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       });
     });
   }
+}
+
+function renderSyntheticNode(node: SyntheticDOMNode): any {
+  switch(node.nodeType) {
+    case DOMNodeType.TEXT:
+      return node.textContent;
+    case DOMNodeType.ELEMENT:
+      const element = <SyntheticDOMElement>node;
+      return React.createElement(<any>element.nodeName, renderSyntheticAttributes(element), renderChildren(element));
+    case DOMNodeType.DOCUMENT:
+    case DOMNodeType.DOCUMENT_FRAGMENT:
+      const container = <SyntheticDOMContainer>node;
+      return React.createElement("span", {}, container.childNodes.map((child) => renderSyntheticNode(child)));
+  }
+
+  return null;
+}
+
+function renderChildren(node: SyntheticDOMContainer) {
+  const childNodes = node.nodeType === DOMNodeType.ELEMENT && (<SyntheticDOMElement>node).shadowRoot ? (<SyntheticDOMElement>node).shadowRoot.childNodes : node.childNodes;
+
+  if (HTML_VOID_ELEMENTS.indexOf(node.nodeName.toLowerCase()) !== -1) {
+    return null;
+  }
+
+  return childNodes.map(renderSyntheticNode);
+}
+
+function renderSyntheticAttributes(node: SyntheticDOMElement) {
+
+
+  const attribs = {
+    key: node.uid
+  };
+
+  // fix attributes for React
+  if (node && node.nodeType === DOMNodeType.ELEMENT) {
+    const element = (<SyntheticDOMElement><any>node);
+    Object.assign(attribs, element.attributes.toObject());
+  }
+
+  const renderedAttribs = {};
+
+  for (let name in attribs) {
+    let value = attribs[name];
+    if (name === "class") {
+      name = "className";
+    } else if (name === "style") {
+      value = SyntheticCSSStyleDeclaration.fromString(value);
+    }
+
+    if (!/^data-/.test(name)) {
+      name = camelCase(name);
+    }
+
+    renderedAttribs[name] = value;
+  }
+
+  return renderedAttribs;
 }
