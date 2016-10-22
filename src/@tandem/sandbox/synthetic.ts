@@ -8,10 +8,11 @@ import { ISourcePosition } from "@tandem/common";
  * @export
  * @interface ISyntheticSourceInfo
  */
+
 export interface ISyntheticSourceInfo {
 
   /**
-   * The source kind - typically an expression
+   * The source AST expression kind.
    *
    * @type {*}
    */
@@ -19,7 +20,7 @@ export interface ISyntheticSourceInfo {
   kind: any;
 
   /**
-   * Source file of the synthetic object expression
+   * Source file of the synthetic object expression.
    *
    * @type {string}
    */
@@ -27,7 +28,7 @@ export interface ISyntheticSourceInfo {
   filePath: string;
 
   /**
-   * Start expression position (necessary for edits)
+   * Start AST expression position (necessary for edits).
    *
    * @type {ISourcePosition}
    */
@@ -35,7 +36,7 @@ export interface ISyntheticSourceInfo {
   start?: ISourcePosition;
 
   /**
-   * End position of the expression
+   * End position of the AST expression.
    *
    * @type {ISourcePosition}
    */
