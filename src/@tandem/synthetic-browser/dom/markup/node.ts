@@ -1,6 +1,6 @@
 import * as assert from "assert";
 import { DOMNodeType } from "./node-types";
-import { IMarkupModule } from "@tandem/synthetic-browser/sandbox";
+import {BaseContentEdit } from "@tandem/sandbox";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { MarkupNodeExpression } from "./ast";
@@ -29,7 +29,7 @@ import {
   serializable,
 } from "@tandem/common";
 
-export interface IDOMNode extends TreeNode<any>, IComparable {
+export interface IDOMNode extends TreeNode<any>, IComparable, ISynthetic {
   firstChild: IDOMNode;
   lastChild: IDOMNode;
   nextSibling: IDOMNode;
@@ -40,6 +40,8 @@ export interface IDOMNode extends TreeNode<any>, IComparable {
   nodeName: string;
   appendChild(child: IDOMNode);
   removeChild(child: IDOMNode);
+  clone(deep?: boolean): IDOMNode;
+  createEdit(): BaseContentEdit<IDOMNode>;
 }
 
 export interface ISerializedSyntheticDOMNode {
@@ -204,4 +206,5 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   abstract accept(visitor: IMarkupNodeVisitor);
   abstract clone(deep?: boolean);
+  abstract createEdit(): BaseContentEdit<any>;
 }

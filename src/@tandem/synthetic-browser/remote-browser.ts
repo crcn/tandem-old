@@ -14,11 +14,12 @@ import {
   MainBusDependency,
   BaseApplicationService
 } from "@tandem/common";
-import { SyntheticWindow } from "@tandem/synthetic-browser";
 import { FrontEndApplication } from "@tandem/editor";
+import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
 import { Bundle, Bundler, BundlerDependency } from "@tandem/sandbox";
 
 const SERIALIZED_DOCUMENT = "serializedDocument";
+const DIFFED_DOCUMENT     = "diffedDocument";
 
 export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   private _bus: IActor;
@@ -59,6 +60,12 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       }
 
       console.info("done loading %s", this.location.toString(), Date.now() - now);
+    } else if (action.type === DIFFED_DOCUMENT) {
+      const now = Date.now();
+      const edit: SyntheticDocumentEdit = deserialize(action.edit, this._dependencies);
+      console.log(Date.now() - now);
+      console.log("DIFF ", edit);
+
     }
   }
 }
@@ -69,12 +76,33 @@ export class RemoteBrowserService extends BaseApplicationService<FrontEndApplica
     // TODO - move this to its own class
     return new Response((writer) => {
       const browser = new SyntheticBrowser(this.app.dependencies, new NoopRenderer());
+      let currentDocument: SyntheticDocument;
+
       browser.observe({
         execute(action: Action) {
           if (action.type === SyntheticBrowserAction.BROWSER_LOADED) {
 
-            // TODO - only send diffs here.
-            writer.write({ type: SERIALIZED_DOCUMENT, data: serialize(browser.document) });
+            let edit;
+
+            if (currentDocument) {
+               edit = currentDocument.createEdit().addDiff(browser.document);
+            }
+
+            // not necessary to clone here since BROWSER_LOADED emits a pristine
+            // document each time.
+            currentDocument = browser.document;
+
+            if (edit) {
+
+              console.log(serialize(edit));
+
+              if (edit.actions.length) {
+                writer.write({ type: DIFFED_DOCUMENT, edit: serialize(edit) });
+              }
+            } else {
+              // TODO - only send diffs here.
+              writer.write({ type: SERIALIZED_DOCUMENT, data: serialize(browser.document) });
+            }
           }
         }
       });

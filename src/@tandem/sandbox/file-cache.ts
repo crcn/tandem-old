@@ -151,11 +151,11 @@ export class FileCacheSynchronizer {
     const a = Object.keys(this._watchers);
     const b = this._cache.collection.map((item) => item.filePath);
 
-    diffArray(a, b, (a, b) => a === b).accept({
-      visitInsert({ index, value }) {
+    diffArray(a, b, (a, b) => a === b ? 0 : -1).accept({
+      visitInsert: ({ index, value }) => {
         this._watchers[value] = this._fileSystem.watchFile(value, this.onLocalFindChange.bind(this, value));
       },
-      visitRemove({ index }) {
+      visitRemove: ({ index }) => {
         (<IFileWatcher>this._watchers[a[index]]).dispose();
       },
       visitUpdate() { }
@@ -163,6 +163,7 @@ export class FileCacheSynchronizer {
   }
 
   private async onLocalFindChange(filePath: string) {
+    console.log("file cache", filePath);
     const entity = await this._cache.item(filePath);
     entity.mtime = fs.lstatSync(filePath).mtime.getTime();
 

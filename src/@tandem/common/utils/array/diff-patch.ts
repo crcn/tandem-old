@@ -25,7 +25,7 @@ export class ArrayDiffRemove {
 
 export class ArrayDiffUpdate<T> {
   readonly kind = DiffKind.UPDATE;
-  constructor(readonly oldIndex: number, readonly newValue: T, readonly newIndex: number) { }
+  constructor(readonly originalOldIndex: number, readonly patchedOldIndex: number, readonly newValue: T, readonly newIndex: number) { }
 }
 
 export interface IArrayDiffVisitor<T> {
@@ -48,7 +48,7 @@ export class ArrayDiff<T> {
   }
 }
 
-export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, compare: (a: T, b: T) => number|boolean): ArrayDiff<T> {
+export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs: (a: T, b: T) => number): ArrayDiff<T> {
 
   // model used to figure out the proper mutation indices
   const model    = oldArray.concat();
@@ -68,22 +68,24 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, compare: (a
 
     const oldValue = oldPool[i];
     let bestNewValue;
-    let bestScore = 0;
+
+    let fewestDiffCount = Infinity;
 
     // there may be multiple matches, so look for the best one
     for (let j = 0, n2 = newPool.length; j < n2; j++) {
 
-      const newValue = newPool[j];
-      let currentScore = Number(compare(oldValue, newValue));
+      const newValue   = newPool[j];
 
-      if (currentScore > bestScore) {
-        bestNewValue = newValue;
-        bestScore    = currentScore;
+      // -1 = no match, 0 = no change, > 0 = num diffs
+      let diffCount = countDiffs(oldValue, newValue);
+
+      if (~diffCount && diffCount < fewestDiffCount) {
+        bestNewValue    = newValue;
+        fewestDiffCount = diffCount;
       }
 
-      // No better match if the current score is Infinity.
-      // Likely the oldValue and newValue share a UID.
-      if (currentScore === Infinity) break;
+      // 0 = exact match, so break here.
+      if (fewestDiffCount === 0) break;
     }
 
     // subtract matches from both old & new pools and store
@@ -91,7 +93,7 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, compare: (a
     if (bestNewValue) {
       oldPool.splice(i--, 1);
       n--;
-      newPool.splice(newPool.indexOf(bestNewValue));
+      newPool.splice(newPool.indexOf(bestNewValue), 1);
       matches.push([oldValue, bestNewValue]);
     }
   }
@@ -114,7 +116,7 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, compare: (a
   // that mutations are properly applied to whatever target array.
   for (let i = 0, n = matches.length; i < n; i++) {
     const [oldValue, newValue] = matches[i];
-    updates.push(new ArrayDiffUpdate(model.indexOf(oldValue), newValue, newArray.indexOf(newValue)));
+    updates.push(new ArrayDiffUpdate(oldArray.indexOf(oldValue), model.indexOf(oldValue), newValue, newArray.indexOf(newValue)));
   }
 
   return new ArrayDiff(
@@ -132,12 +134,12 @@ export function patchArray<T>(target: Array<T>, diff: ArrayDiff<T>, mapUpdate: (
     visitRemove({ index }) {
       target.splice(index, 1);
     },
-    visitUpdate({ oldIndex, newValue, newIndex }) {
-      const oldValue     = target[oldIndex];
+    visitUpdate({ patchedOldIndex, newValue, newIndex }) {
+      const oldValue     = target[patchedOldIndex];
       const patchedValue = mapUpdate(oldValue, newValue);
-      if (patchedValue !== oldValue || oldIndex !== newIndex) {
-        if (oldIndex !== newIndex) {
-          target.splice(oldIndex, 1);
+      if (patchedValue !== oldValue || patchedOldIndex !== newIndex) {
+        if (patchedOldIndex !== newIndex) {
+          target.splice(patchedOldIndex, 1);
         }
         target.splice(newIndex, 0, patchedValue);
       }

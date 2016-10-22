@@ -1,9 +1,9 @@
 import { Bundle } from "@tandem/sandbox";
 import { CSSRuleExpression } from "./ast";
-import { BaseContentEdit, EditAction, EditKind } from "@tandem/sandbox";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
+import { BaseContentEdit, EditAction, SetKeyValueEditAction, SetValueEditActon } from "@tandem/sandbox";
 import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "./declaration";
-import { Action, serializable, serialize, deserialize, ISerializer, ISerializedContent } from "@tandem/common";
+import { Action, serializable, serialize, deserialize, ISerializer, ISerializedContent, diffArray } from "@tandem/common";
 
 export interface ISerializedSyntheticCSSStyleRule {
   selector: string;
@@ -24,26 +24,32 @@ class SyntheticCSSStyleRuleSerializer implements ISerializer<SyntheticCSSStyleRu
 
 // TODO - move this to synthetic-browser
 export class SyntheticCSSStyleRuleEdit extends BaseContentEdit<SyntheticCSSStyleRule> {
-  setSelector(selector: string) {
-    return this.addAction(new SetRuleSelectorEditAction(this.target, selector));
-  }
-  setDeclaration(name: string, value: string, newName?: string) {
-    return this.addAction(new SetDeclarationEditAction(this.target, name, value, newName));
-  }
-}
 
-export class SetRuleSelectorEditAction extends EditAction {
-  static readonly SET_RULE_SELECTOR = "setRuleSelector";
-  constructor(rule: SyntheticCSSStyleRule, readonly selector: string) {
-    super(SetRuleSelectorEditAction.SET_RULE_SELECTOR, EditKind.UPDATE, rule);
-  }
-}
-
-export class SetDeclarationEditAction extends EditAction {
   static readonly SET_DECLARATION = "setDeclaration";
-  constructor(rule: SyntheticCSSStyleRule, readonly name: string, readonly newValue: string, readonly newName?: string) {
-    super(SetDeclarationEditAction.SET_DECLARATION, EditKind.UPDATE, rule);
+  static readonly SET_RULE_SELECTOR = "setRuleSelector";
+
+  setSelector(selector: string) {
+    return this.addAction(new SetValueEditActon(SyntheticCSSStyleRuleEdit.SET_DECLARATION, this.target, selector));
   }
+
+  setDeclaration(name: string, value: string, newName?: string) {
+    return this.addAction(new SetKeyValueEditAction(SyntheticCSSStyleRuleEdit.SET_DECLARATION, this.target, name, value, newName));
+  }
+
+  addDiff(newRule: SyntheticCSSStyleRule) {
+
+    if (this.target.selector !== newRule.selector) {
+      this.setSelector(newRule.selector);
+    }
+
+    return this;
+  }
+}
+
+export function diffSyntheticCSSStyleRules(oldRules: SyntheticCSSStyleRule[], newRules: SyntheticCSSStyleRule[]) {
+  return diffArray(oldRules, newRules, (oldRule, newRule) => {
+    return oldRule.selector === newRule.selector ? 0 : -1;
+  });
 }
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSStyleRuleSerializer()))
@@ -68,4 +74,6 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
     if (deep) clone.style = this.style.clone(deep);
     return this.linkClone(clone);
   }
+
+
 }

@@ -1,7 +1,7 @@
 import * as postcss from "postcss";
 import * as postcssSassSyntax from "postcss-scss";
 import { Action, inject, Dependencies, DependenciesDependency, sourcePositionEquals } from "@tandem/common";
-import { SyntheticCSSStyleRule, SetRuleSelectorEditAction, parseCSS, SetDeclarationEditAction } from "@tandem/synthetic-browser";
+import { SyntheticCSSStyleRule, SyntheticCSSStyleRuleEdit, parseCSS } from "@tandem/synthetic-browser";
 import {
   Bundle,
   EditAction,
@@ -11,6 +11,8 @@ import {
   BaseContentEdit,
   BaseContentEditor,
   loadBundleContent,
+  SetValueEditActon,
+  SetKeyValueEditAction,
 } from "@tandem/sandbox";
 
 // TODO - move this to synthetic-browser
@@ -21,15 +23,15 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
   @inject(DependenciesDependency.NS)
   private _dependencies: Dependencies;
 
-  [SetRuleSelectorEditAction.SET_RULE_SELECTOR](node: postcss.Rule, { target, selector }: SetRuleSelectorEditAction) {
+  [SyntheticCSSStyleRuleEdit.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueEditActon) {
     const source = target.source;
 
     // prefix here is necessary
     const prefix = this.getRuleSelectorPrefix(node);
-    node.selector = (node.selector.indexOf("&") === 0 ? "&" : "") + selector.replace(prefix, "");
+    node.selector = (node.selector.indexOf("&") === 0 ? "&" : "") + newValue.replace(prefix, "");
   }
 
-  [SetDeclarationEditAction.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, newName }: SetDeclarationEditAction) {
+  [SyntheticCSSStyleRuleEdit.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, newName }: SetKeyValueEditAction) {
     const source = target.source;
 
     const shouldAdd = node.walkDecls((decl, index) => {

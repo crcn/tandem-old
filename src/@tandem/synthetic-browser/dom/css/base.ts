@@ -1,6 +1,11 @@
 import { CSSExpression } from "./ast";
 import { ISerializer, serialize, deserialize } from "@tandem/common";
-import { Bundle, ISynthetic, ISyntheticSourceInfo, generateSyntheticUID } from "@tandem/sandbox";
+import {
+  ISynthetic,
+  BaseContentEdit,
+  ISyntheticSourceInfo,
+  generateSyntheticUID,
+} from "@tandem/sandbox";
 
 
 export abstract class SyntheticCSSObject implements ISynthetic {
@@ -22,6 +27,8 @@ export abstract class SyntheticCSSObject implements ISynthetic {
     clone.$source = this.source;
     return clone;
   }
+
+  abstract createEdit(): BaseContentEdit<SyntheticCSSObject>;
 }
 
 export interface ISerializeCSSObject {

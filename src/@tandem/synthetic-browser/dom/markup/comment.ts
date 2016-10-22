@@ -3,7 +3,7 @@ import { serializable } from "@tandem/common";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { SyntheticDOMNodeSerializer } from "./node";
-import { SyntheticDOMValueNode, SyntheticDOMValueNodeSerializer } from "./value-node";
+import { SyntheticDOMValueNode, SyntheticDOMValueNodeSerializer, SyntheticDOMValueNodeEdit } from "./value-node";
 
 @serializable(new SyntheticDOMNodeSerializer(new SyntheticDOMValueNodeSerializer()))
 export class SyntheticDOMComment extends SyntheticDOMValueNode {
@@ -27,5 +27,9 @@ export class SyntheticDOMComment extends SyntheticDOMValueNode {
 
   clone() {
     return this.linkClone(new SyntheticDOMComment(this.nodeValue));
+  }
+
+  createEdit(): SyntheticDOMValueNodeEdit<SyntheticDOMComment> {
+    return new SyntheticDOMValueNodeEdit(this);
   }
 }

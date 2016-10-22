@@ -13,6 +13,7 @@ import {
   Dependencies,
   serializable,
   ISerializable,
+  getSerializeType,
   SingletonThenable,
   ISerializedContent,
   MimeTypeDependency,
@@ -46,21 +47,131 @@ export abstract class BaseContentEditor<T> implements IContentEditor {
   protected abstract getFormattedContent(root: T): string;
 }
 
-// TODO - may want to use
-export enum EditKind {
-  REMOVE = 1,
-  UPDATE = REMOVE + 1,
-  INSERT = UPDATE + 1
-}
-
 export abstract class EditAction extends Action {
   readonly target: ISynthetic;
-  constructor(actionType: string, public editKind: EditKind, target: ISynthetic) {
+  constructor(actionType: string, target: ISynthetic) {
     super(actionType);
     this.currentTarget = target;
   }
 }
 
+@serializable({
+  serialize({ type, target, child, index }: InsertChildEditAction) {
+    return {
+      type: type,
+      target: serialize(target.clone()),
+      child: serialize(child.clone()),
+      index: index
+    };
+  },
+  deserialize({ type, target, child, index }, dependencies): InsertChildEditAction {
+    return new InsertChildEditAction(
+      type,
+      deserialize(target, dependencies),
+      deserialize(child, dependencies),
+      index
+    );
+  }
+})
+export class InsertChildEditAction extends EditAction {
+  constructor(actionType: string, target: ISynthetic, readonly child: ISynthetic, readonly index: number) {
+    super(actionType, target);
+  }
+}
+
+@serializable({
+  serialize({ type, target, child }: RemoveChildEditAction) {
+    return {
+      type: type,
+      target: serialize(target.clone()),
+      child: serialize(child.clone())
+    };
+  },
+  deserialize({ type, target, child, newIndex }, dependencies): RemoveChildEditAction {
+    return new RemoveChildEditAction(
+      type,
+      deserialize(target, dependencies),
+      deserialize(child, dependencies)
+    );
+  }
+})
+export class RemoveChildEditAction extends EditAction {
+  constructor(actionType: string, target: ISynthetic, readonly child: ISynthetic) {
+    super(actionType, target);
+  }
+}
+
+@serializable({
+  serialize({ type, target, child, newIndex }: MoveChildEditAction) {
+    return {
+      type: type,
+      target: serialize(target.clone()),
+      child: serialize(child.clone()),
+      newIndex: newIndex
+    };
+  },
+  deserialize({ type, target, child, newIndex }, dependencies): MoveChildEditAction {
+    return new MoveChildEditAction(
+      type,
+      deserialize(target, dependencies),
+      deserialize(child, dependencies),
+      newIndex
+    );
+  }
+})
+export class MoveChildEditAction extends EditAction {
+  constructor(actionType: string, target: ISynthetic, readonly child: ISynthetic, readonly newIndex: number) {
+    super(actionType, target);
+  }
+}
+
+@serializable({
+  serialize({ type, target, name, newValue, newName }: SetKeyValueEditAction) {
+    return {
+      type: type,
+      target: serialize(target.clone()),
+      name: name,
+      newValue: serialize(newValue),
+      newName: newName
+    };
+  },
+  deserialize({ type, target, name, newValue, newName }, dependencies): SetKeyValueEditAction {
+    return new SetKeyValueEditAction(
+      type,
+      deserialize(target, dependencies),
+      name,
+      deserialize(newValue, dependencies),
+      newName
+    );
+  }
+})
+export class SetKeyValueEditAction extends EditAction {
+  constructor(actionType: string, target: ISynthetic, readonly  name: string, readonly newValue: any, readonly newName?: string) {
+    super(actionType, target);
+  }
+}
+
+@serializable({
+  serialize({ type, target, newValue }: SetValueEditActon) {
+    return {
+      type: type,
+      target: serialize(target.clone()),
+      newValue: newValue
+    };
+  },
+  deserialize({ type, target, newValue }, dependencies): SetValueEditActon {
+    return new SetValueEditActon(
+      type,
+      deserialize(target, dependencies),
+      newValue
+    );
+  }
+})
+export class SetValueEditActon extends EditAction {
+  constructor(type: string, target: ISynthetic, readonly newValue: any) {
+    super(type, target);
+  }
+}
 
 /**
  * Removes the target synthetic object
@@ -69,7 +180,7 @@ export abstract class EditAction extends Action {
 export class RemoveEditAction extends EditAction {
   static readonly REMOVE_EDIT = "removeEdit";
   constructor(target: ISynthetic) {
-    super(RemoveEditAction.REMOVE_EDIT, EditKind.REMOVE, target);
+    super(RemoveEditAction.REMOVE_EDIT, target);
   }
 }
 
@@ -78,10 +189,9 @@ export interface IContentEdit {
 }
 
 export class BatchContentEdit implements IContentEdit {
-  constructor(readonly actions: EditAction[]) {
-
-  }
+  constructor(readonly actions: EditAction[]) { }
 }
+
 
 export abstract class BaseContentEdit<T extends ISynthetic> {
   private _actions: EditAction[];
@@ -94,12 +204,18 @@ export abstract class BaseContentEdit<T extends ISynthetic> {
     return this._actions;
   }
 
+  abstract addDiff(newSynthetic: T): BaseContentEdit<T>;
+
   protected addAction(action: EditAction) {
     this._actions.push(action);
     return this;
   }
-}
 
+  protected addChildEdit(edit: IContentEdit) {
+    this._actions.push(...edit.actions);
+    return this;
+  }
+}
 export class FileEditor extends Observable {
 
   private _editing: boolean;

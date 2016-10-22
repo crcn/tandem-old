@@ -3,6 +3,7 @@ import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { ISerializer, deserialize, serializable, serialize, ISerializedContent } from "@tandem/common";
+import { BaseContentEdit } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticCSSKeyframesRule {
   name: string;
@@ -20,6 +21,12 @@ class SyntheticCSSKeyframesRuleSerializer implements ISerializer<SyntheticCSSKey
     const rule = new SyntheticCSSKeyframesRule(name);
     cssRules.forEach((cs) => rule.cssRules.push(deserialize(cs, dependencies)));
     return rule;
+  }
+}
+
+export class AtRuleEdit extends BaseContentEdit<SyntheticCSSKeyframesRule> {
+  addDiff(newAtRule: SyntheticCSSKeyframesRule) {
+    return this;
   }
 }
 
@@ -45,5 +52,9 @@ export class SyntheticCSSKeyframesRule extends SyntheticCSSObject {
       }
     }
     return this.linkClone(clone);
+  }
+
+  createEdit() {
+    return new AtRuleEdit(this);
   }
 }

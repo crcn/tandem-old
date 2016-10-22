@@ -28,7 +28,7 @@ import {
 } from "@tandem/common";
 
 import { Bundle } from "@tandem/sandbox";
-import { BaseContentEdit, EditAction, EditKind } from "@tandem/sandbox";
+import { BaseContentEdit, EditAction } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticDOMAttribute {
   name: string;
@@ -158,14 +158,14 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
 export class SetElementAttributeEditAction extends EditAction {
   static readonly SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
   constructor(target: SyntheticDOMElement, readonly attributeName: string, readonly newAttributeValue: string, readonly newAttributeName?: string) {
-    super(SetElementAttributeEditAction.SET_ELEMENT_ATTRIBUTE_EDIT, EditKind.UPDATE, target);
+    super(SetElementAttributeEditAction.SET_ELEMENT_ATTRIBUTE_EDIT, target);
   }
 }
 
 export class SetElementTagNameEditAction extends EditAction {
   static readonly SET_ELEMENT_TAG_NAME_EDIT = "setElementTagNameEdit";
   constructor(target: SyntheticDOMElement, readonly newName: string) {
-    super(SetElementTagNameEditAction.SET_ELEMENT_TAG_NAME_EDIT, EditKind.UPDATE, target);
+    super(SetElementTagNameEditAction.SET_ELEMENT_TAG_NAME_EDIT, target);
   }
 }
 
@@ -173,6 +173,10 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
 
   setAttribute(name: string, value: string, newName?: string) {
     return this.addAction(new SetElementAttributeEditAction(this.target, name, value, newName));
+  }
+
+  removeAttribute(name: string) {
+    return this.addAction(new SetElementAttributeEditAction(this.target, name, undefined));
   }
 
   setTagName(newName: string) {
@@ -186,9 +190,26 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
    */
 
   addDiff(newElement: SyntheticDOMElement) {
+
     if (this.target.nodeName !== newElement.nodeName) {
       this.setTagName(newElement.nodeName);
     }
+
+    diffArray(this.target.attributes, newElement.attributes, (a, b) => a.name === b.name ? 1 : -1).accept({
+      visitInsert: ({ index, value }) => {
+        this.setAttribute(value.name, value.value);
+      },
+      visitRemove: ({ index }) => {
+        this.removeAttribute(this.target.attributes[index].name);
+      },
+      visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, newIndex }) => {
+        if(this.target.attributes[originalOldIndex].value !== newValue.value) {
+          this.setAttribute(newValue.name, newValue.value);
+        }
+      }
+    });
+
+    return super.addDiff(newElement);
   }
 }
 

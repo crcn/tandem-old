@@ -51,7 +51,7 @@ const defaultSerializer: ISerializer<any, any> = {
   }
 }
 
-const LITERAL_TYPE = "[[literal]]";
+const LITERAL_TYPE = "[[Literal]]";
 
 class LiteralSerializer implements ISerializer<any, any> {
   serialize(value) {
@@ -70,6 +70,10 @@ interface ISerializerInfo {
 const _serializers   = {
   [LITERAL_TYPE]: { ctor: undefined, serializer: new LiteralSerializer() }
 };
+
+export function getSerializeType(value: any) {
+  return canSerialize(value) ? Reflect.getMetadata("serialize:type", value.constructor) || Reflect.getMetadata("serialize:type", value) : undefined;
+}
 
 export function serializable(serializer?: ISerializer<any, any>, type?: string) {
   return function(ctor: { new(...rest:any[]): any }) {
@@ -94,7 +98,7 @@ export function canSerialize(value: Object) {
 }
 
 export function serialize(value: any): ISerializedContent<any> {
-  const type = canSerialize(value) ? Reflect.getMetadata("serialize:type", value.constructor) : LITERAL_TYPE;
+  const type = getSerializeType(value) || LITERAL_TYPE;
   return {
     type: type,
     value: (<ISerializer<any, any>>_serializers[type].serializer).serialize(value)

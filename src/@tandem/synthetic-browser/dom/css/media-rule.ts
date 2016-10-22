@@ -1,8 +1,15 @@
 import { CSSATRuleExpression } from "./ast";
-import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
+import { SyntheticCSSStyleRule, diffSyntheticCSSStyleRules } from "./style-rule";
 import { ISerializer, serialize, deserialize, serializable, ISerializedContent } from "@tandem/common";
+import {
+  BaseContentEdit,
+  SetValueEditActon,
+  MoveChildEditAction,
+  InsertChildEditAction,
+  RemoveChildEditAction,
+} from "@tandem/sandbox";
 
 export interface ISerializedSyntheticCSSMediaRule {
   media: string[];
@@ -20,6 +27,55 @@ class SyntheticCSSMediaRuleSerializer implements ISerializer<SyntheticCSSMediaRu
     const rule = new SyntheticCSSMediaRule(media);
     cssRules.forEach((cs) => rule.cssRules.push(deserialize(cs, dependencies)));
     return rule;
+  }
+}
+
+export class SyntheticCSSMediaRuleEdit extends BaseContentEdit<SyntheticCSSMediaRule> {
+
+  static readonly SET_MEDIA_EDIT       = "setMediaEdit";
+  static readonly INSERT_CSS_RULE_EDIT = "insertCSSRuleAtEdit";
+  static readonly MOVE_CSS_RULE_EDIT   = "moveCSSRuleEdit";
+  static readonly REMOVE_CSS_RULE_EDIT = "removeCSSRuleEdit";
+
+  insertRule(rule: SyntheticCSSStyleRule, index: number) {
+    return this.addAction(new InsertChildEditAction(SyntheticCSSMediaRuleEdit.INSERT_CSS_RULE_EDIT, this.target, rule, index));
+  }
+
+  moveRule(rule: SyntheticCSSStyleRule, index: number) {
+    return this.addAction(new MoveChildEditAction(SyntheticCSSMediaRuleEdit.MOVE_CSS_RULE_EDIT, this.target, rule, index));
+  }
+
+  removeRule(rule: SyntheticCSSStyleRule) {
+    return this.addAction(new RemoveChildEditAction(SyntheticCSSMediaRuleEdit.REMOVE_CSS_RULE_EDIT, this.target, rule));
+  }
+
+  setMedia(value: string[]) {
+    return this.addAction(new SetValueEditActon(SyntheticCSSMediaRuleEdit.SET_MEDIA_EDIT, this.target, value));
+  }
+
+  addDiff(newMediaRule: SyntheticCSSMediaRule) {
+
+    if (this.target.media.join("") !== newMediaRule.media.join("")) {
+      this.setMedia(newMediaRule.media);
+    }
+
+    diffSyntheticCSSStyleRules(this.target.cssRules, newMediaRule.cssRules).accept({
+      visitInsert: ({ index, value }) => {
+        this.insertRule(value, index);
+      },
+      visitRemove: ({ index }) => {
+        this.removeRule(this.target.cssRules[index]);
+      },
+      visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, newIndex }) => {
+        const oldRule = this.target.cssRules[originalOldIndex];
+        if (originalOldIndex !== patchedOldIndex) {
+          this.moveRule(oldRule, newIndex);
+        }
+        this.addChildEdit(oldRule.createEdit().addDiff(newValue));
+      }
+    })
+
+    return this;
   }
 }
 
@@ -46,5 +102,9 @@ export class SyntheticCSSMediaRule extends SyntheticCSSObject {
       }
     }
     return this.linkClone(clone);
+  }
+
+  createEdit() {
+    return new SyntheticCSSMediaRuleEdit(this);
   }
 }

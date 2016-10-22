@@ -15,11 +15,11 @@ export const patchTreeNode = (oldNode: ComparableTreeType, newNode: ComparableTr
     visitInsert({ index, value }) {
       oldNode.insertChildAt(value, index);
     },
-    visitUpdate({ oldIndex, newValue, newIndex }) {
+    visitUpdate({ originalOldIndex, patchedOldIndex, newValue, newIndex }) {
 
       // apply shift
-      if (oldIndex !== newIndex) {
-        oldNode.insertChildAt(oldNode.children[oldIndex], newIndex);
+      if (patchedOldIndex !== newIndex) {
+        oldNode.insertChildAt(oldNode.children[patchedOldIndex], newIndex);
       }
 
       // patch sub tree
@@ -31,9 +31,13 @@ export const patchTreeNode = (oldNode: ComparableTreeType, newNode: ComparableTr
 };
 
 export const compareTreeNodes = (a: ITreeNode<any>, b: ITreeNode<any>): number => {
-  if (a.constructor !== b.constructor) return 0;
+
+  // -1 = no match
+  if (a.constructor !== b.constructor) return -1;
+
+  // DEPRECATED -
   if ((<IComparable><any>a).compare) {
-    return Number((<IComparable><any>a).compare(<IComparable><any>b));
+    return ~Number((<IComparable><any>a).compare(<IComparable><any>b));
   }
   return 1;
 };

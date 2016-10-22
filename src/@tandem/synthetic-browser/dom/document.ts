@@ -2,6 +2,7 @@ import {
   Action,
   bindable,
   BubbleBus,
+  diffArray,
   serialize,
   deserialize,
   ISerializer,
@@ -20,11 +21,13 @@ import {
   SyntheticDOMComment,
   SyntheticDOMContainer,
   SyntheticDOMValueNode,
+  SyntheticDOMContainerEdit,
   syntheticElementClassType,
   SyntheticDocumentFragment,
   SyntheticDOMNodeSerializer,
 } from "./markup";
 
+import { EditAction } from "@tandem/sandbox";
 import { SyntheticWindow } from "./window";
 import { SyntheticLocation } from "../location";
 import { SyntheticCSSStyleSheet } from "./css";
@@ -59,19 +62,95 @@ class SyntheticDocumentSerializer implements ISerializer<SyntheticDocument, ISer
   }
 }
 
+export class AddDocumentStyleSheetEditAction extends EditAction {
+  static readonly ADD_DOCUMENT_STYLE_SHEET_EDIT = "addDocumentStyleSheetEdit";
+  constructor(target: SyntheticDocument, readonly styleSheet: SyntheticCSSStyleSheet) {
+    super(AddDocumentStyleSheetEditAction.ADD_DOCUMENT_STYLE_SHEET_EDIT, target);
+  }
+}
+
+export class RemoveDocumentStyleSheetAtEditAction extends EditAction {
+  static readonly REMOVE_DOCUMENT_STYLE_SHEET_AT_EDIT = "removeDocumentStyleSheetAtEdit";
+  constructor(target: SyntheticDocument, readonly index: number) {
+    super(RemoveDocumentStyleSheetAtEditAction.REMOVE_DOCUMENT_STYLE_SHEET_AT_EDIT, target);
+  }
+}
+
+export class MoveDocumentStyleSheetAtEditAction extends EditAction {
+  static readonly MOVE_DOCUMENT_STYLE_SHEET_AT_EDIT = "moveDocumentStyleSheetAtEdit";;
+  constructor(target: SyntheticDocument, readonly oldIndex: number, readonly newIndex: number) {
+    super(MoveDocumentStyleSheetAtEditAction.MOVE_DOCUMENT_STYLE_SHEET_AT_EDIT, target);
+  }
+}
+
+// TODO - this shouldn't be here
+@serializable({
+  serialize({ actions }: SyntheticDocumentEdit) {
+    return {
+      actions: actions.map(serialize)
+    };
+  },
+  deserialize({ actions }, dependencies, ctor: { new(): SyntheticDocumentEdit }) {
+    const edit = new ctor();
+    edit.actions.push(...actions.map(action => deserialize(action, dependencies)));
+    return edit;
+  }
+})
+export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDocument> {
+
+  addStyleSheet(stylesheet: SyntheticCSSStyleSheet) {
+    return this.addAction(new AddDocumentStyleSheetEditAction(this.target, stylesheet));
+  }
+
+  removeStyleSheetAt(index: number) {
+    return this.addAction(new RemoveDocumentStyleSheetAtEditAction(this.target, index));
+  }
+
+  moveStyleSheetAt(oldIndex: number, newIndex: number) {
+    if (oldIndex === newIndex) return this;
+    return this.addAction(new MoveDocumentStyleSheetAtEditAction(this.target, oldIndex, newIndex));
+  }
+
+  addDiff(newDocument: SyntheticDocument) {
+
+    diffArray(this.target.styleSheets, newDocument.styleSheets, (oldStyleSheet, newStyleSheet) => {
+
+      if (oldStyleSheet.source && newStyleSheet.source) {
+        return oldStyleSheet.source.filePath === newStyleSheet.source.filePath ? 0 : -1;
+      }
+
+      // may be very, very expensive...
+      return oldStyleSheet.createEdit().addDiff(newStyleSheet).actions.length;
+    }).accept({
+      visitInsert: ({ index, value }) => {
+        this.addStyleSheet(value);
+      },
+      visitRemove: ({ index }) => {
+        this.removeStyleSheetAt(index);
+      },
+      visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, newIndex }) => {
+        if (patchedOldIndex !== newIndex) {
+          this.moveStyleSheetAt(patchedOldIndex, newIndex);
+        }
+        this.addChildEdit(this.target.styleSheets[originalOldIndex].createEdit().addDiff(newValue));
+      }
+    });
+
+    return super.addDiff(newDocument);
+  }
+}
+
 @serializable(new SyntheticDOMNodeSerializer(new SyntheticDocumentSerializer()))
 export class SyntheticDocument extends SyntheticDOMContainer {
-
   readonly nodeType: number = DOMNodeType.DOCUMENT;
-  readonly styleSheets: ObservableCollection<SyntheticCSSStyleSheet>;
+  readonly styleSheets: SyntheticCSSStyleSheet[];
   private _registeredElements: any;
   public $window: SyntheticWindow;
 
   // namespaceURI here is non-standard, but that's
   constructor(readonly defaultNamespaceURI: string) {
     super("#document");
-    this.styleSheets = new ObservableCollection<SyntheticCSSStyleSheet>();
-    this.styleSheets.observe(new BubbleBus(this));
+    this.styleSheets = [];
     this._registeredElements = {};
   }
 
@@ -121,6 +200,10 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     return elementClass;
   }
 
+  createEdit(): SyntheticDocumentEdit {
+    return new SyntheticDocumentEdit(this);
+  }
+
   createElement(tagName: string) {
     return this.own(this.createElementNS(this.defaultNamespaceURI, tagName));
   }
@@ -162,14 +245,23 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   }
 
   clone(deep?: boolean) {
-    const document = new SyntheticDocument(this.defaultNamespaceURI);
-    document.$window = this.defaultView;
+    const clone = new SyntheticDocument(this.defaultNamespaceURI);
     if (deep) {
+      for (let i = 0, n = this.styleSheets.length; i < n; i++) {
+        clone.styleSheets.push(this.styleSheets[i].clone(deep));
+      }
+
       for (let i = 0, n = this.childNodes.length; i < n; i++) {
-        document.appendChild(this.childNodes[i].clone(deep));
+        clone.appendChild(this.childNodes[i].clone(deep));
       }
     }
-    return document;
+
+    return this.linkClone(clone);
+  }
+
+  protected linkClone(clone: SyntheticDocument) {
+    clone.$window = this.defaultView;
+    return super.linkClone(clone);
   }
 
   private own<T extends SyntheticDOMNode>(node: T) {
