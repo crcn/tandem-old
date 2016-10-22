@@ -11,6 +11,7 @@ import {
   ISynthetic,
   SandboxModule,
   ISyntheticSourceInfo,
+  generateSyntheticUID,
  } from "@tandem/sandbox";
 
 import {
@@ -61,19 +62,18 @@ export class SyntheticDOMNodeSerializer implements ISerializer<SyntheticDOMNode,
   }
 }
 
-let _uid: number = 0;
 
 export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, ISynthetic, IDOMNode {
 
   abstract textContent: string;
   readonly namespaceURI: string;
+  readonly uid: any;
 
   /**
    * TRUE if the node has been loaded
    */
 
   private _ownerDocument: SyntheticDocument;
-  private _uid: number;
   private _native: Node;
 
   /**
@@ -97,7 +97,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   constructor(readonly nodeName: string) {
     super();
-    this._uid = ++_uid;
+    this.uid = generateSyntheticUID();
   }
 
   get ownerDocument(): SyntheticDocument {
@@ -118,10 +118,6 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   get module() {
     return this.$module;
-  }
-
-  get uid() {
-    return this._uid;
   }
 
   get childNodes() {

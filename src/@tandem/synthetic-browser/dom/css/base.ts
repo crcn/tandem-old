@@ -1,10 +1,16 @@
 import { CSSExpression } from "./ast";
-import { Bundle, ISynthetic, ISyntheticSourceInfo } from "@tandem/sandbox";
 import { ISerializer, serialize, deserialize } from "@tandem/common";
+import { Bundle, ISynthetic, ISyntheticSourceInfo, generateSyntheticUID } from "@tandem/sandbox";
+
 
 export abstract class SyntheticCSSObject implements ISynthetic {
 
   public $source: ISyntheticSourceInfo;
+  readonly uid: any;
+
+  constructor() {
+    this.uid = generateSyntheticUID();
+  }
 
   get source() {
     return this.$source;

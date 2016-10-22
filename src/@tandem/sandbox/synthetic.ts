@@ -2,6 +2,14 @@ import { Bundle } from "./bundle";
 import { SandboxModule } from "./sandbox";
 import { ISourcePosition } from "@tandem/common";
 
+let _i = 0;
+
+export function generateSyntheticUID() {
+
+  // TODO - add seed & platform information here
+  return _i++;
+}
+
 /**
  * Information about where a synthetic object came from.
  *
@@ -52,6 +60,13 @@ export interface ISyntheticSourceInfo {
  */
 
 export interface ISynthetic {
+
+  /**
+   * The unique ID of the synthetic object
+   * @type {ISyntheticSourceInfo}
+   */
+
+  readonly uid: any;
 
   /**
    * Expression & file source of the synthetic object. Added at runtime by either a) an AST interpreter,

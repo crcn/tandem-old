@@ -173,10 +173,8 @@ export class SyntheticDOMElementPatcher {
   diff(oldElement: SyntheticDOMElement, newElement: SyntheticDOMElement): SyntheticDOMElementEdit {
     const edit = new SyntheticDOMElementEdit(oldElement);
     const changes = diffArray(oldElement.attributes, newElement.attributes, (a, b) => a.name === b.name);
-
     return edit;
   }
-  // patch(oldElement
 }
 
 @serializable(new SyntheticDOMNodeSerializer(new SyntheticDOMElementSerializer()))
