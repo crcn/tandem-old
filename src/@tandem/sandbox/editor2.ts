@@ -229,6 +229,11 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
 
   public lock() {
     this._locked = true;
+    return this;
+  }
+
+  get locked() {
+    return this._locked;
   }
 
   get actions(): EditAction[] {
@@ -246,9 +251,7 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
   public fromDiff(newSynthetic: T) {
     const ctor = this.constructor as { new(target:T): BaseContentEdit<T> };
     const clone = new ctor(this.target);
-    clone.addDiff(newSynthetic);
-    clone.lock();
-    return clone;
+    return clone.addDiff(newSynthetic).lock();
   }
 
   protected abstract addDiff(newSynthetic: T): BaseContentEdit<T>;
