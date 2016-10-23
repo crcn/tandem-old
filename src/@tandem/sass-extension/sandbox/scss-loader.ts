@@ -2,7 +2,7 @@ import * as path from "path";
 import * as sass from "sass.js";
 import { inject, Queue, CSS_MIME_TYPE, isMaster } from "@tandem/common";
 
-import { evaluateCSS, SyntheticWindow, CSSExpression } from "@tandem/synthetic-browser";
+import { evaluateCSS, SyntheticWindow } from "@tandem/synthetic-browser";
 import {
   Bundle,
   FileCache,
