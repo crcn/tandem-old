@@ -373,20 +373,23 @@ export class FileEditor extends Observable {
 
 
 export class SyntheticObjectEditor {
-  private _allChildSyntheticObjects: any;
-  constructor(readonly root: ISyntheticObject) {
-    this._allChildSyntheticObjects = {};
-    flattenTree(root).forEach((child) => {
-      this._allChildSyntheticObjects[child.uid] = child;
-    });
-  }
+
+  constructor(readonly root: ISyntheticObject) { }
   applyEditActions(...actions: EditAction[]) {
+
+    const allSyntheticObjects = {};
+
+    flattenTree(this.root).forEach((child) => {
+      allSyntheticObjects[child.uid] = child;
+    });
+
+
     for (let i = 0, n = actions.length; i < n; i++) {
       const action = actions[i];
 
       // Assuming that all edit actions being applied to synthetics are editable. Otherwise
       // they shouldn't be dispatched.
-      const target = this._allChildSyntheticObjects[action.target.uid] as IEditable;
+      const target = allSyntheticObjects[action.target.uid] as IEditable;
 
       if (!target) {
         throw new Error(`Edit action target ${action.target.uid} not found.`);
