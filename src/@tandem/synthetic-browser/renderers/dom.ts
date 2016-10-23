@@ -1,6 +1,7 @@
 import { Action } from "@tandem/common";
 import { WrapBus } from "mesh";
 import { camelCase } from "lodash";
+import { decode } from "ent";
 import { HTML_VOID_ELEMENTS } from "@tandem/synthetic-browser/dom";
 import {
   BoundingRect,
@@ -92,7 +93,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
 function renderSyntheticNode(node: SyntheticDOMNode): any {
   switch(node.nodeType) {
     case DOMNodeType.TEXT:
-      return node.textContent;
+      return decode(node.textContent);
     case DOMNodeType.ELEMENT:
       const element = <SyntheticDOMElement>node;
       const target = element;

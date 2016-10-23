@@ -1,8 +1,8 @@
 import { DOMNodeType } from "./node-types";
 import { SyntheticDOMNode } from "./node";
 import { SyntheticDOMText } from "./text-node";
-import { diffArray, ITreeWalker } from "@tandem/common";
 import { querySelector, querySelectorAll } from "../selector";
+import { diffArray, ITreeWalker, findTreeNode } from "@tandem/common";
 import {
   EditAction,
   IContentEdit,
@@ -78,6 +78,10 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
     return new SyntheticDOMContainerEdit(this);
   }
 
+  getNodeByUID(uid) {
+    return findTreeNode(this, child => child.uid === uid);
+  }
+
   // TODO - insertBefore here
   appendChild(child: SyntheticDOMNode) {
     if (child.nodeType === DOMNodeType.DOCUMENT_FRAGMENT) {
@@ -87,7 +91,7 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
   }
 
   get textContent() {
-    return this.childNodes.map((child) => child.textContent).join("");
+    return this.childNodes.map(child => child.textContent).join("");
   }
 
   set textContent(value) {
@@ -96,7 +100,7 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
   }
 
   toString() {
-    return this.childNodes.map((child) => child.toString()).join("");
+    return this.childNodes.map(child => child.toString()).join("");
   }
 
   public querySelector(selector: string) {
@@ -111,11 +115,11 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
     switch(action.type) {
       case SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT:
         const removeAction = <InsertChildEditAction>action;
-        this.removeChild(this.childNodes.find((child) => child.uid === removeAction.child.uid));
+        this.removeChild(this.getNodeByUID(removeAction.child.uid));
       break;
       case SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT:
         const moveAction = <InsertChildEditAction>action;
-        this.replaceChild(this.childNodes.find((child) => child.uid === moveAction.child.uid), this.childNodes[moveAction.index]);
+        this.replaceChild(this.getNodeByUID(moveAction.child.uid), this.childNodes[moveAction.index]);
       break;
       case SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT:
         const insertAction = <InsertChildEditAction>action;

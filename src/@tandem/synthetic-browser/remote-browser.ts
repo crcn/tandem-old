@@ -25,13 +25,11 @@ const DIFFED_DOCUMENT     = "diffedDocument";
 
 export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   private _bus: IActor;
-  private _bundler: Bundler;
   private _bundle: Bundle;
 
   constructor(dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
     super(dependencies, renderer, parent);
     this._bus = MainBusDependency.getInstance(dependencies);
-    this._bundler = BundlerDependency.getInstance(dependencies);
   }
   async open2(url: string) {
     const remoteBrowserStream = this._bus.execute(new OpenRemoteBrowserAction(url));

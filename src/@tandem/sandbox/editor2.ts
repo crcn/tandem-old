@@ -23,7 +23,7 @@ import {
 
 export type contentEditorType = { new(): IContentEditor };
 
-// TODO - change to IContentEditConsumr
+// TODO - needs to be applyEdits instead
 export interface IContentEditor {
   getEditedContent(filePath: string, content: string, actions: Action[]): Promise<string>|string;
 }
@@ -38,6 +38,8 @@ export interface IDiffable {
 }
 
 export abstract class BaseContentEditor<T> implements IContentEditor {
+
+  // add filePath and content in constructor here instead
   async getEditedContent(filePath: string, content: string, actions: EditAction[]): Promise<string> {
     const rootASTNode = await this.parseContent(filePath, content);
     for (const action of actions) {

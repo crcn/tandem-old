@@ -34,6 +34,15 @@ import {
   serializable,
 } from "@tandem/common";
 
+/**
+ * @deprecated
+ *
+ * @export
+ * @interface IDOMNode
+ * @extends {TreeNode<any>}
+ * @extends {IComparable}
+ * @extends {ISyntheticObject}
+ */
 export interface IDOMNode extends TreeNode<any>, IComparable, ISyntheticObject {
   firstChild: IDOMNode;
   lastChild: IDOMNode;
@@ -204,6 +213,5 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   abstract accept(visitor: IMarkupNodeVisitor);
   abstract clone(deep?: boolean);
   abstract createEdit(): BaseContentEdit<any>;
-  // abstract createDiff(newNode: SyntheticDOMNode): BaseContentEdit<any>;
   abstract applyEditAction(action: EditAction);
 }
