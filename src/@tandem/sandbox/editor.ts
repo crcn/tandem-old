@@ -250,7 +250,7 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
    * @param {(T & IEditable)} target the target to apply the edits to
    */
 
-  public applyEditActionsTo(target: T & IEditable) {
+  public applyActionsTo(target: T & IEditable) {
 
     // need to setup an editor here since some actions may be intented for
     // children of the target object

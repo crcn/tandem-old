@@ -33,6 +33,7 @@ export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTD
       titleEditAction: edit.setAttribute("title", this.props.artboard.getAttribute("title"))
     });
 
+    // rAF since the input may not be available immediately
     requestAnimationFrame(() => {
       (this.refs as any).input.select();
     });
@@ -52,7 +53,7 @@ export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTD
 
     // apply the change back to the element so that the user sees
     // the change immediately
-    this.state.edit.applyEditActionsTo(artboard);
+    this.state.edit.applyActionsTo(artboard);
 
     await this.props.app.bus.execute(new ApplyEditAction(this.state.edit));
     this.doneEditing();
