@@ -176,7 +176,7 @@ export class MoveChildEditAction extends EditAction {
   }
 })
 export class SetKeyValueEditAction extends EditAction {
-  constructor(actionType: string, target: ISyntheticObject, readonly  name: string, readonly newValue: any, readonly newName?: string) {
+  constructor(actionType: string, target: ISyntheticObject, public  name: string, public newValue: any, public newName?: string) {
     super(actionType, target);
   }
 }
@@ -198,7 +198,7 @@ export class SetKeyValueEditAction extends EditAction {
   }
 })
 export class SetValueEditActon extends EditAction {
-  constructor(type: string, target: ISyntheticObject, readonly newValue: any) {
+  constructor(type: string, target: ISyntheticObject, public newValue: any) {
     super(type, target);
   }
 }
@@ -245,6 +245,20 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
   }
 
   /**
+   * Applies all edit actions against the target synthetic object.
+   *
+   * @param {(T & IEditable)} target the target to apply the edits to
+   */
+
+  public applyEditActionsTo(target: T & IEditable) {
+
+    // need to setup an editor here since some actions may be intented for
+    // children of the target object
+    const editor = new SyntheticObjectEditor(target);
+    editor.applyEditActions(...this.actions);
+  }
+
+  /**
    * creates a new diff edit -- note that diff edits can only contain diff
    * actions since any other action may foo with the diffing.
    *
@@ -260,7 +274,7 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
 
   protected abstract addDiff(newSynthetic: T): BaseContentEdit<T>;
 
-  protected addAction(action: EditAction) {
+  protected addAction<T extends EditAction>(action: T) {
 
     // locked to prevent other actions busting this edit.
     if (this._locked) {
@@ -268,7 +282,9 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
     }
 
     this._actions.push(action);
-    return this;
+
+    // return the action so that it can be edited
+    return action;
   }
 
   protected addChildEdit(edit: IContentEdit) {

@@ -11,7 +11,6 @@ import {
   flattenTree,
   deserialize,
   Dependencies,
-  patchTreeNode,
   MainBusDependency,
   BaseApplicationService
 } from "@tandem/common";
@@ -20,12 +19,14 @@ import { FrontEndApplication } from "@tandem/editor";
 import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
 import { Bundle, Bundler, BundlerDependency, SyntheticObjectEditor } from "@tandem/sandbox";
 
-const SERIALIZED_DOCUMENT = "serializedDocument";
-const DIFFED_DOCUMENT     = "diffedDocument";
+const NEW_DOCUMENT   = "newDocument";
+const DOCUMENT_DIFF  = "documentDiff";
 
 export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
+
   private _bus: IActor;
   private _bundle: Bundle;
+  private _documentEditor: SyntheticObjectEditor;
 
   constructor(dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
     super(dependencies, renderer, parent);
@@ -46,26 +47,24 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   }
 
   onRemoteBrowserAction(action: any) {
-    if (action.type === SERIALIZED_DOCUMENT) {
-      const now = Date.now();
+
+    if (action.type === NEW_DOCUMENT) {
 
       const previousDocument = this.window && this.window.document;
       const newDocument      = deserialize(action.data, this._dependencies);
+      this._documentEditor   = new SyntheticObjectEditor(newDocument);
 
-      if (previousDocument) {
-        patchTreeNode(previousDocument, newDocument);
-      } else {
-        const window = new SyntheticWindow(this, this.location, newDocument);
-        this.setWindow(window);
-      }
-    } else if (action.type === DIFFED_DOCUMENT) {
+      const window = new SyntheticWindow(this, this.location, newDocument);
+      this.setWindow(window);
+
+    } else if (action.type === DOCUMENT_DIFF) {
       const edit: SyntheticDocumentEdit = deserialize(action.edit, this._dependencies);
-      new SyntheticObjectEditor(this.window.document).applyEditActions(...edit.actions);
-
-      // explicitly request an update since some synthetic objects may not emit
-      // an action when patched -- CSS styles for example
-      this.renderer.requestUpdate();
+      this._documentEditor.applyEditActions(...edit.actions);
     }
+
+    // explicitly request an update since some synthetic objects may not emit
+    // a render action in some cases
+    this.renderer.requestUpdate();
   }
 }
 
@@ -86,11 +85,11 @@ export class RemoteBrowserService extends BaseApplicationService<FrontEndApplica
               // need to patch existing document for now to maintain UID references
               new SyntheticObjectEditor(currentDocument).applyEditActions(...edit.actions);
               if (edit.actions.length) {
-                writer.write({ type: DIFFED_DOCUMENT, edit: serialize(edit) });
+                writer.write({ type: DOCUMENT_DIFF, edit: serialize(edit) });
               }
             } else {
               currentDocument = browser.document;
-              writer.write({ type: SERIALIZED_DOCUMENT, data: serialize(browser.document) });
+              writer.write({ type: NEW_DOCUMENT, data: serialize(browser.document) });
             }
           }
         }

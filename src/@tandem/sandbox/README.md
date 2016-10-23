@@ -71,4 +71,7 @@ const edit = document.createEdit().fromDiff(documentClone);
 
 // apply the edit to the original document
 new SyntheticObjectEditor(document).applyEditActions(...edit.actions);
+
+// this also works
+// edit.applyEditActionsTo(document);
 ```

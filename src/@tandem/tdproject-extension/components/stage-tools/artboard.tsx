@@ -4,44 +4,62 @@ import * as AutosizeInput from "react-input-autosize";
 
 import { BoundingRect } from "@tandem/common";
 import { SelectAction } from "@tandem/editor/actions";
-import { ApplyEditAction } from "@tandem/sandbox";
-import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
 import { FrontEndApplication, Workspace } from "@tandem/editor";
+import { ApplyEditAction, SetKeyValueEditAction } from "@tandem/sandbox";
+import { SyntheticHTMLElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
 
-export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTDArtboardElement, workspace: Workspace, app: FrontEndApplication }, { editedTitle: string }> {
+export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTDArtboardElement, workspace: Workspace, app: FrontEndApplication }, {
+  edit: SyntheticDOMElementEdit,
+  titleEditAction: SetKeyValueEditAction
+}> {
 
   constructor() {
     super();
     this.state = {
-      editedTitle: undefined
+      edit: undefined,
+      titleEditAction: undefined
     };
   }
 
   editTitle = () => {
     if (!this.props.artboard.source) return;
-    this.setState({ editedTitle: this.props.artboard.getAttribute("title") });
+
+    const { artboard } = this.props;
+    const edit = artboard.createEdit();
+
+    this.setState({
+      edit: edit,
+      titleEditAction: edit.setAttribute("title", this.props.artboard.getAttribute("title"))
+    });
+
     requestAnimationFrame(() => {
       (this.refs as any).input.select();
     });
   }
 
   onTitleChange = (event) => {
-    this.setState({ editedTitle: event.target.value });
+    this.state.titleEditAction.newValue = event.target.value;
+    this.forceUpdate();
   }
 
   cancelEdit = () => {
-    this.setState({ editedTitle: undefined });
-
-    // easiest way to revert changes -- just reload the sandbox entirely
-    // this.props.artboard.sandbox.evaluate();
+    this.doneEditing();
   }
 
   save = async () => {
-    const artboard = this.props.artboard;
-    const edit = artboard.createEdit().setAttribute("title", this.state.editedTitle);
-    await this.props.app.bus.execute(new ApplyEditAction(edit));
-    this.setState({ editedTitle: undefined });
+    const { artboard } = this.props;
+
+    // apply the change back to the element so that the user sees
+    // the change immediately
+    this.state.edit.applyEditActionsTo(artboard);
+
+    await this.props.app.bus.execute(new ApplyEditAction(this.state.edit));
+    this.doneEditing();
+  }
+
+  doneEditing = () => {
+    this.setState({ titleEditAction: undefined, edit: undefined });
   }
 
   selectEntity = (event: React.MouseEvent) => {
@@ -84,7 +102,7 @@ export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTD
 
     return <div className="m-tdartboard-stage-tool--item" style={style}>
       <div className="m-tdartboard-stage-tool--item--title" onClick={this.selectEntity} onDoubleClick={this.editTitle} style={titleStyle}>
-        { this.state.editedTitle != null ? <AutosizeInput ref="input" value={this.state.editedTitle} onChange={this.onTitleChange} onBlur={this.cancelEdit} onKeyDown={this.onKeyDown} /> : <span>{artboard.title || "Untitled"}</span> }
+        { this.state.titleEditAction ? <AutosizeInput ref="input" value={this.state.titleEditAction.newValue} onChange={this.onTitleChange} onBlur={this.cancelEdit} onKeyDown={this.onKeyDown} /> : <span>{artboard.title || "Untitled"}</span> }
       </div>
     </div>;
   }

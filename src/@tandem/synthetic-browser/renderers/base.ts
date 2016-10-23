@@ -115,7 +115,13 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
         this._shouldUpdateAgain = false;
         this.requestUpdate();
       }
-    }, REQUEST_UPDATE_TIMEOUT);
+    }, this.getRequestUpdateTimeout());
+  }
+
+  protected getRequestUpdateTimeout() {
+
+    // OVERRIDE ME - used for dynamic render throttling
+    return REQUEST_UPDATE_TIMEOUT;
   }
 }
 

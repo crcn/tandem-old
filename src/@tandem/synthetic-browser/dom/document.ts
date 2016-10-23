@@ -108,7 +108,6 @@ export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDo
   }
 
   moveStyleSheetAt(oldIndex: number, newIndex: number) {
-    if (oldIndex === newIndex) return this;
     return this.addAction(new MoveDocumentStyleSheetAtEditAction(this.target, oldIndex, newIndex));
   }
 

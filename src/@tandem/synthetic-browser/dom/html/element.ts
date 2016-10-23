@@ -6,16 +6,15 @@ import {
   evaluateMarkup,
   SyntheticDOMElement,
   SyntheticDOMAttribute,
-  IDOMNodeEntityCapabilities,
 } from "../markup";
 
 
+// TODO - proxy dataset
 @serializable()
 export class SyntheticHTMLElement extends SyntheticDOMElement {
 
   private _style: SyntheticCSSStyleDeclaration;
   private _styleProxy: SyntheticCSSStyleDeclaration;
-  public $rect: BoundingRect;
 
   constructor(ns: string, tagName: string) {
     super(ns, tagName);
@@ -23,7 +22,7 @@ export class SyntheticHTMLElement extends SyntheticDOMElement {
   }
 
   getBoundingClientRect() {
-    return this.$rect || BoundingRect.zeros();
+    return (this.browser && this.browser.renderer.getBoundingRect(this.uid)) || BoundingRect.zeros();
   }
 
   get style(): SyntheticCSSStyleDeclaration {

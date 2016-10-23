@@ -1,6 +1,5 @@
 import { WrapBus } from "mesh";
 import { bindable } from "@tandem/common/decorators";
-import { IDOMNode } from "./node";
 import { DOMNodeType } from "./node-types";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
@@ -100,19 +99,6 @@ export class SyntheticDOMAttributes extends ObservableCollection<SyntheticDOMAtt
   }
 }
 
-export interface IDOMNodeEntityCapabilities {
-  movable: boolean;
-  resizable: boolean;
-}
-
-export interface IDOMElement extends IDOMNode {
-  attributes: SyntheticDOMAttributes;
-  accept(visitor: IMarkupNodeVisitor);
-  getAttribute(name: string);
-  cloneNode(): IDOMElement;
-  setAttribute(name: string, value: any);
-}
-
 export interface ISerializedSyntheticDOMElement {
   nodeName: string;
   namespaceURI: string;
@@ -164,6 +150,7 @@ export class AttachShadowRootEditAction extends EditAction {
 }
 
 export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<SyntheticDOMElement> {
+
   static readonly SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
   static readonly ATTACH_SHADOW_ROOT_EDIT    = "attachShadowRootEdit";
 
@@ -245,7 +232,14 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   applyEditAction(action: EditAction) {
     super.applyEditAction(action);
     switch(action.type) {
-
+      case SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT:
+        const { name, newName, newValue } = <SetKeyValueEditAction>action;
+        this.setAttribute(newName || name, newValue);
+        if (newName) this.setAttribute
+      break;
+      case SyntheticDOMElementEdit.ATTACH_SHADOW_ROOT_EDIT:
+        this.attachShadow({ mode: "open" });
+      break;
     }
   }
 
@@ -301,6 +295,13 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
     // W3C standard
     this.attributeChangedCallback(name, oldValue, value);
+  }
+
+  removeAttribute(name: string) {
+    if (this.hasAttribute(name)) {
+      const attribute = this.attributes[name];
+      this.attributes.splice(this.attributes.indexOf(attribute), 1);
+    }
   }
 
   toString(): string {

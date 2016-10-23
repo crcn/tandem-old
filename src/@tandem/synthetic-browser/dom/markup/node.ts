@@ -33,31 +33,6 @@ import {
   serializable,
 } from "@tandem/common";
 
-/**
- * @deprecated
- *
- * @export
- * @interface IDOMNode
- * @extends {TreeNode<any>}
- * @extends {IComparable}
- * @extends {ISyntheticObject}
- */
-export interface IDOMNode extends TreeNode<any>, IComparable, ISyntheticObject {
-  firstChild: IDOMNode;
-  lastChild: IDOMNode;
-  nextSibling: IDOMNode;
-  previousSibling: IDOMNode;
-  insertBefore(newChild: IDOMNode, existingChild: IDOMNode);
-  replaceChild(child: IDOMNode, existingChild: IDOMNode);
-  nodeType: number;
-  nodeName: string;
-  appendChild(child: IDOMNode);
-  removeChild(child: IDOMNode);
-  clone(deep?: boolean): IDOMNode;
-  createEdit(): BaseContentEdit<IDOMNode>;
-  visitWalker(walker: ITreeWalker);
-}
-
 export interface ISerializedSyntheticDOMNode {
   source: ISyntheticSourceInfo;
   uid: any;
@@ -65,7 +40,8 @@ export interface ISerializedSyntheticDOMNode {
 
 export const SyntheticDOMNodeSerializer = SyntheticObjectSerializer;
 
-export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, ISyntheticObject, IDOMNode, IEditable {
+// TODO - possibly have metadata here since it's generic and can be used with any synthetic
+export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, ISyntheticObject, IEditable {
 
   abstract textContent: string;
   readonly namespaceURI: string;
@@ -148,11 +124,11 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     // TODO
   }
 
-  contains(node: IDOMNode) {
-    return !!findTreeNode(this, child => (<IDOMNode><any>child) === node);
+  contains(node: SyntheticDOMNode) {
+    return !!findTreeNode(this, child => child === node);
   }
 
-  compare(source: IDOMNode) {
+  compare(source: SyntheticDOMNode) {
     return Number(source.constructor === this.constructor && this.nodeName === source.nodeName);
   }
 
@@ -160,12 +136,12 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     // TODO
   }
 
-  isEqualNode(node: IDOMNode) {
+  isEqualNode(node: SyntheticDOMNode) {
     return !!this.compare(node);
   }
 
-  isSameNode(node: IDOMNode) {
-    return (<IDOMNode><any>this) === node;
+  isSameNode(node: SyntheticDOMNode) {
+    return this === node;
   }
 
   hasChildNodes() {

@@ -2,7 +2,6 @@ import { BoundingRect, IPoint } from "@tandem/common";
 import {
   DOMNodeType,
   SyntheticHTMLElement,
-  IDOMNodeEntityCapabilities,
 } from "@tandem/synthetic-browser";
 
 // class EntitySelectionDisplay implements IEntityDisplay {
@@ -117,7 +116,7 @@ export class VisibleSyntheticElementCollection<T extends SyntheticHTMLElement> e
     }
   }
 
-  get capabilities(): IDOMNodeEntityCapabilities {
+  get capabilities(): any {
     const capabilities = { movable: true, resizable: true };
     // for (const item of this) {
     //   const cap = item.capabilities;

@@ -1,8 +1,6 @@
 import { IApplication } from "@tandem/common/application";
 import { CSS_MIME_TYPE, HTML_MIME_TYPE, JS_MIME_TYPE } from "@tandem/common";
 
-
-
 import {
   CSSEditor,
   HTML_XMLNS,
