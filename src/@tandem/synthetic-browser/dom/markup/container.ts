@@ -46,13 +46,13 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
     return this.addAction(new RemoveEditAction(this.target));
   }
 
-  addDiff(newContainer: SyntheticDOMContainer) {
+  protected addDiff(newContainer: SyntheticDOMContainer) {
     diffArray(this.target.childNodes, newContainer.childNodes, (oldNode, newNode) => {
       if (oldNode.nodeName !== newNode.nodeName) return -1;
       return 0;
 
       // expensive
-      // return (newContainer.childNodes.indexOf(newNode) - this.target.childNodes.indexOf(oldNode)) + oldNode.createEdit().addDiff(newNode).actions.length;
+      // return (newContainer.childNodes.indexOf(newNode) - this.target.childNodes.indexOf(oldNode)) + oldNode.createEdit().fromDiff(newNode).actions.length;
     }).accept({
       visitInsert: ({ index, value }) => {
         this.insertChild(value, index);
@@ -65,7 +65,7 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
           this.moveChild(this.target.childNodes[originalOldIndex], newIndex);
         }
         const oldValue = this.target.childNodes[originalOldIndex];
-        this.addChildEdit(oldValue.createEdit().addDiff(newValue));
+        this.addChildEdit(oldValue.createEdit().fromDiff(newValue));
       }
     });
     return this;

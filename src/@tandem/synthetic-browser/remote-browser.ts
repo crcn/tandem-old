@@ -60,12 +60,13 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
         const window = new SyntheticWindow(this, this.location, newDocument);
         this.setWindow(window);
       }
-
-      console.info("done loading %s", this.location.toString(), Date.now() - now);
     } else if (action.type === DIFFED_DOCUMENT) {
       const edit: SyntheticDocumentEdit = deserialize(action.edit, this._dependencies);
       new SyntheticObjectEditor(this.window.document).applyEdits(...edit.actions);
-      console.log("remote edit", edit);
+
+      // explicitly request an update since some synthetic objects may not emit
+      // an action when patched -- CSS styles for example
+      this.renderer.requestUpdate();
     }
   }
 }
@@ -82,7 +83,7 @@ export class RemoteBrowserService extends BaseApplicationService<FrontEndApplica
         execute(action: Action) {
           if (action.type === SyntheticBrowserAction.BROWSER_LOADED) {
             if (currentDocument) {
-              const edit = currentDocument.createEdit().addDiff(browser.document);
+              const edit = currentDocument.createEdit().fromDiff(browser.document);
 
               // need to patch existing document for now to maintain UID references
               new SyntheticObjectEditor(currentDocument).applyEdits(...edit.actions);

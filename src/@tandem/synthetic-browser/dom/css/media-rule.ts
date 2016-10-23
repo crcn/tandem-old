@@ -71,7 +71,7 @@ export class SyntheticCSSMediaRuleEdit extends BaseSyntheticObjectEdit<Synthetic
         if (originalOldIndex !== patchedOldIndex) {
           this.moveRule(oldRule, newIndex);
         }
-        this.addChildEdit(oldRule.createEdit().addDiff(newValue));
+        this.addChildEdit(oldRule.createEdit().fromDiff(newValue));
       }
     })
 

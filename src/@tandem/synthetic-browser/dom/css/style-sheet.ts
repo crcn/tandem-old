@@ -63,7 +63,7 @@ export class SyntheticCSSStyleSheetEdit extends BaseSyntheticObjectEdit<Syntheti
     return this.addAction(new RemoveChildEditAction(SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT, this.target, rule));
   }
 
-  addDiff(newStyleSheet: SyntheticCSSStyleSheet) {
+  protected addDiff(newStyleSheet: SyntheticCSSStyleSheet) {
 
     diffArray(this.target.rules, newStyleSheet.rules, (oldRule, newRule) => {
       if (oldRule.constructor.name !== newRule.constructor.name) return -1;
@@ -72,7 +72,7 @@ export class SyntheticCSSStyleSheetEdit extends BaseSyntheticObjectEdit<Syntheti
         return 0;
       }
 
-      return (<SyntheticCSSObject>oldRule).createEdit().addDiff(<SyntheticCSSObject>newRule).actions.length;
+      return 0;
     }).accept({
       visitInsert: ({ index, value }) => {
         this.insertRule(value, index);
@@ -81,7 +81,8 @@ export class SyntheticCSSStyleSheetEdit extends BaseSyntheticObjectEdit<Syntheti
         this.removeRule(this.target.rules[index]);
       },
       visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, newIndex }) => {
-        // TODO
+        const oldRule = this.target.rules[originalOldIndex];
+        this.addChildEdit((<SyntheticCSSObject>oldRule).createEdit().fromDiff(<SyntheticCSSObject>newValue));
       }
     });
 

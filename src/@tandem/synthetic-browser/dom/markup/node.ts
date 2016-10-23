@@ -9,6 +9,7 @@ import {
   Bundle,
   IModule,
   IEditable,
+  IDiffable,
   EditAction,
   SandboxModule,
   ISyntheticObject,
@@ -203,5 +204,6 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   abstract accept(visitor: IMarkupNodeVisitor);
   abstract clone(deep?: boolean);
   abstract createEdit(): BaseSyntheticObjectEdit<any>;
+  // abstract createDiff(newNode: SyntheticDOMNode): BaseSyntheticObjectEdit<any>;
   abstract applyEdit(action: EditAction);
 }

@@ -42,6 +42,8 @@ export class SyntheticCSSStyleRuleEdit extends BaseSyntheticObjectEdit<Synthetic
       this.setSelector(newRule.selector);
     }
 
+    this.addChildEdit(this.target.style.createEdit().fromDiff(newRule.style));
+
     return this;
   }
 }
@@ -75,5 +77,7 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
     return this.linkClone(clone);
   }
 
-  visitWalker(walker: ITreeWalker) { }
+  visitWalker(walker: ITreeWalker) {
+    walker.accept(this.style);
+  }
 }

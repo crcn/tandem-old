@@ -112,7 +112,7 @@ export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDo
     return this.addAction(new MoveDocumentStyleSheetAtEditAction(this.target, oldIndex, newIndex));
   }
 
-  addDiff(newDocument: SyntheticDocument) {
+  protected addDiff(newDocument: SyntheticDocument) {
 
     diffArray(this.target.styleSheets, newDocument.styleSheets, (oldStyleSheet, newStyleSheet) => {
 
@@ -121,7 +121,7 @@ export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDo
       }
 
       // may be very, very expensive...
-      return oldStyleSheet.createEdit().addDiff(newStyleSheet).actions.length;
+      return oldStyleSheet.createEdit().fromDiff(newStyleSheet).actions.length;
     }).accept({
       visitInsert: ({ index, value }) => {
         this.addStyleSheet(value);
@@ -133,9 +133,11 @@ export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDo
         if (patchedOldIndex !== newIndex) {
           this.moveStyleSheetAt(patchedOldIndex, newIndex);
         }
-        this.addChildEdit(this.target.styleSheets[originalOldIndex].createEdit().addDiff(newValue));
+        this.addChildEdit(this.target.styleSheets[originalOldIndex].createEdit().fromDiff(newValue));
       }
     });
+
+
 
     return super.addDiff(newDocument);
   }

@@ -38,11 +38,13 @@ export class SyntheticCSSFontFace extends SyntheticCSSObject {
   }
   clone(deep?: boolean) {
     const clone = new SyntheticCSSFontFace();
-    if (deep) clone.declaration = this.declaration.clone();
+    if (deep) clone.declaration = this.declaration.clone(deep);
     return this.linkClone(clone);
   }
   createEdit() {
     return new FontFaceEdit(this);
   }
-  visitWalker(walker: ITreeWalker) { }
+  visitWalker(walker: ITreeWalker) {
+    walker.accept(this.declaration);
+  }
 }

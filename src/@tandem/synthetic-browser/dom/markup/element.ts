@@ -185,7 +185,7 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
    * @param {SyntheticDOMElement} newElement
    */
 
-  addDiff(newElement: SyntheticDOMElement) {
+  protected addDiff(newElement: SyntheticDOMElement) {
 
     if (this.target.nodeName !== newElement.nodeName) {
       throw new Error(`nodeName must match in order to diff`);
@@ -211,7 +211,7 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
         this.attachShadowRoot();
       }
 
-      this.addChildEdit(this.target.shadowRoot.createEdit().addDiff(newElement.shadowRoot));
+      this.addChildEdit(this.target.shadowRoot.createEdit().fromDiff(newElement.shadowRoot));
     }
 
     return super.addDiff(newElement);

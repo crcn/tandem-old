@@ -213,7 +213,9 @@ export interface IContentEdit {
 }
 
 export abstract class BaseSyntheticObjectEdit<T extends ISyntheticObject> {
+
   private _actions: EditAction[];
+  private _locked: boolean;
 
   constructor(readonly target: T) {
     this._actions = [];
@@ -223,10 +225,30 @@ export abstract class BaseSyntheticObjectEdit<T extends ISyntheticObject> {
     return this._actions;
   }
 
-  // TODO - this doesn't belong here
-  abstract addDiff(newSynthetic: T): BaseSyntheticObjectEdit<T>;
+  /**
+   * creates a new diff edit -- note that diff edits can only contain diff
+   * actions since any other action may foo with the diffing.
+   *
+   * @param {T} newSynthetic
+   * @returns
+   */
+
+  public fromDiff(newSynthetic: T) {
+    const ctor = this.constructor as { new(target:T): BaseSyntheticObjectEdit<T> };
+    const clone = new ctor(this.target);
+    clone.addDiff(newSynthetic);
+    clone._locked = true;
+    return clone;
+  }
+
+  protected abstract addDiff(newSynthetic: T): BaseSyntheticObjectEdit<T>;
 
   protected addAction(action: EditAction) {
+
+    if (this._locked) {
+      throw new Error(`Cannot modify a diff edit.`);
+    }
+
     this._actions.push(action);
     return this;
   }
@@ -235,6 +257,7 @@ export abstract class BaseSyntheticObjectEdit<T extends ISyntheticObject> {
     this._actions.push(...edit.actions);
     return this;
   }
+
 }
 export class FileEditor extends Observable {
 
