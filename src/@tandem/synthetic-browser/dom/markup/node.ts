@@ -1,6 +1,6 @@
 import * as assert from "assert";
 import { DOMNodeType } from "./node-types";
-import {BaseContentEdit } from "@tandem/sandbox";
+import {BaseSyntheticObjectEdit } from "@tandem/sandbox";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { MarkupNodeExpression } from "./ast";
@@ -8,6 +8,8 @@ import { MarkupNodeExpression } from "./ast";
 import {
   Bundle,
   IModule,
+  IEditable,
+  EditAction,
   SandboxModule,
   ISyntheticObject,
   ISyntheticSourceInfo,
@@ -18,6 +20,7 @@ import {
 import {
   TreeNode,
   BubbleBus,
+  ITreeWalker,
   IComparable,
   findTreeNode,
   patchTreeNode,
@@ -42,7 +45,8 @@ export interface IDOMNode extends TreeNode<any>, IComparable, ISyntheticObject {
   appendChild(child: IDOMNode);
   removeChild(child: IDOMNode);
   clone(deep?: boolean): IDOMNode;
-  createEdit(): BaseContentEdit<IDOMNode>;
+  createEdit(): BaseSyntheticObjectEdit<IDOMNode>;
+  visitWalker(walker: ITreeWalker);
 }
 
 export interface ISerializedSyntheticDOMNode {
@@ -52,11 +56,11 @@ export interface ISerializedSyntheticDOMNode {
 
 export const SyntheticDOMNodeSerializer = SyntheticObjectSerializer;
 
-export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, ISyntheticObject, IDOMNode {
+export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, ISyntheticObject, IDOMNode, IEditable {
 
   abstract textContent: string;
   readonly namespaceURI: string;
-  readonly uid: any;
+  public $uid: any;
 
   /**
    * TRUE if the node has been loaded
@@ -86,7 +90,11 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   constructor(readonly nodeName: string) {
     super();
-    this.uid = generateSyntheticUID();
+    this.$uid = generateSyntheticUID();
+  }
+
+  get uid(): any {
+    return this.$uid;
   }
 
   get ownerDocument(): SyntheticDocument {
@@ -176,6 +184,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   protected linkClone(clone: SyntheticDOMNode) {
     clone.$source = this.$source;
     clone.$module = this.$module;
+    clone.$uid    = this.uid;
     clone.$setOwnerDocument(this.ownerDocument);
     return clone;
   }
@@ -193,5 +202,6 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   abstract accept(visitor: IMarkupNodeVisitor);
   abstract clone(deep?: boolean);
-  abstract createEdit(): BaseContentEdit<any>;
+  abstract createEdit(): BaseSyntheticObjectEdit<any>;
+  abstract applyEdit(action: EditAction);
 }

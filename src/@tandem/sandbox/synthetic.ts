@@ -1,6 +1,6 @@
 import { Bundle } from "./bundle";
 import { SandboxModule } from "./sandbox";
-import { ISourcePosition, ISerializer } from "@tandem/common";
+import { ISourcePosition, ISerializer, IWalkable } from "@tandem/common";
 
 let _i = 0;
 
@@ -59,13 +59,19 @@ export interface ISyntheticSourceInfo {
  * @interface ISynthetic
  */
 
-export interface ISyntheticObject {
+export interface ISyntheticObject extends IWalkable {
 
   /**
    * Internal property. See below for docs
    */
 
   $source?: ISyntheticSourceInfo;
+
+  /**
+   * Internal
+   */
+
+  $uid: any;
 
   /**
    * The unique ID of the synthetic object
@@ -112,14 +118,14 @@ export class SyntheticObjectSerializer implements ISerializer<ISyntheticObject, 
   constructor(readonly childSerializer: ISerializer<ISyntheticObject, any>) { }
   serialize(value: ISyntheticObject) {
     return Object.assign(this.childSerializer.serialize(value), {
-      source: value.source,
-      uid: value.uid
+      source: value.$source,
+      uid: value.$uid
     });
   }
   deserialize(value: ISerializedSyntheticObject, dependencies, ctor) {
     return Object.assign(this.childSerializer.deserialize(value, dependencies, ctor), {
       $source: value.source,
-      uid: value.uid
+      $uid: value.uid
     });
   }
 }

@@ -11,9 +11,9 @@ export class FileEditorAction extends Action {
 }
 
 export class ApplyEditAction extends Action {
-  static readonly APPLY_EDIT = "applyEdit";
+  static readonly APPLY_EDITS = "applyEdits";
   constructor(readonly edit: IContentEdit) {
-    super(ApplyEditAction.APPLY_EDIT);
+    super(ApplyEditAction.APPLY_EDITS);
   }
 }
 

@@ -9,13 +9,13 @@ import {
   BaseVisibleDOMNodeEntity,
 } from "@tandem/synthetic-browser";
 
-class ElementInfoComponent extends React.Component<{ entity: BaseVisibleDOMNodeEntity<SyntheticHTMLElement, any>, workspace: Workspace }, any> {
+class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLElement, workspace: Workspace }, any> {
 
 
   render() {
-    const { entity, workspace } = this.props;
-    const rect = entity.source.getBoundingClientRect();
-    const computedStyle = entity.getComputedStyle();
+    const { element, workspace } = this.props;
+    const rect = element.getBoundingClientRect();
+    const computedStyle = workspace.browser.renderer.getComputedStyle(element.uid);
     if (!computedStyle) return null;
 
     const scale = workspace.transform.scale;
@@ -68,10 +68,10 @@ class ElementInfoComponent extends React.Component<{ entity: BaseVisibleDOMNodeE
 export class ElementInfoStageToolComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
     const { workspace } = this.props;
-    const entities = workspace.document.querySelectorAll("*").filter((node) => node.native && (node.native as any).getBoundingClientRect && (node as SyntheticHTMLElement).dataset[MetadataKeys.HOVERING]);
+    const elements = workspace.document.querySelectorAll("*", true).filter((node) => node.native && (node.native as any).getBoundingClientRect && (node as SyntheticHTMLElement).dataset[MetadataKeys.HOVERING]);
 
     return <div className="td-html-element-info">
-      { entities.map((entity) => <ElementInfoComponent entity={entity as any} workspace={workspace} key={entity.uid} />)}
+      { elements.map((element) => <ElementInfoComponent element={element as SyntheticHTMLElement} workspace={workspace} key={element.uid} />)}
     </div>;
   }
 }

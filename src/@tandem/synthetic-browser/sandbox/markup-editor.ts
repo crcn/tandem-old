@@ -1,10 +1,10 @@
-import { IContentEditor, BaseContentEditor, RemoveEditAction } from "@tandem/sandbox";
+import { IContentEditor, BaseSyntheticObjectEditor, RemoveEditAction, SetKeyValueEditAction } from "@tandem/sandbox";
 import { sourcePositionEquals } from "@tandem/common";
 import {
   parseMarkup,
   MarkupExpression,
   SyntheticDOMNode,
-  SetElementAttributeEditAction,
+  SyntheticDOMElementEdit,
   findMarkupExpression,
   SyntheticDOMElement,
   MarkupNodeExpression,
@@ -13,16 +13,16 @@ import {
   MarkupFragmentExpression,
 } from "@tandem/synthetic-browser";
 
-export class MarkupEditor2 extends BaseContentEditor<MarkupExpression> {
+export class MarkupEditor2 extends BaseSyntheticObjectEditor<MarkupExpression> {
 
   [RemoveEditAction.REMOVE_EDIT](node: MarkupNodeExpression, { target }: RemoveEditAction) {
     node.parent.removeChild(node);
   }
 
-  [SetElementAttributeEditAction.SET_ELEMENT_ATTRIBUTE_EDIT](element: MarkupElementExpression, { target, attributeName, newAttributeName, newAttributeValue }: SetElementAttributeEditAction) {
-    element.setAttribute(newAttributeName || attributeName, newAttributeValue);
-    if (newAttributeName) {
-      element.removeAttribute(attributeName);
+  [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT](element: MarkupElementExpression, { target, name, newValue, newName }: SetKeyValueEditAction) {
+    element.setAttribute(newName || name, newValue);
+    if (newName) {
+      element.removeAttribute(newName);
     }
   }
 

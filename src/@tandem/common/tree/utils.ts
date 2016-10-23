@@ -1,11 +1,11 @@
 import { ITreeNode } from "./core";
+import { IWalkable, TreeWalker } from "./walker";
 
-export function traverseTree<T extends ITreeNode<any>>(node: T, each: (node: T) => any) {
-  if (each(node) === false) return false;
-  node.children.forEach((child) => traverseTree(child, each));
+export function traverseTree<T extends IWalkable>(node: T, each: (node: T) => any) {
+  return new TreeWalker(each).accept(node);
 };
 
-export function filterTree<T extends ITreeNode<any>>(node: T, filter: (node: T) => boolean): T[] {
+export function filterTree<T extends IWalkable>(node: T, filter: (node: T) => boolean): T[] {
   const nodes = [];
   traverseTree(node, (child) => {
     if (filter(child)) nodes.push(child);
@@ -13,16 +13,23 @@ export function filterTree<T extends ITreeNode<any>>(node: T, filter: (node: T) 
   return nodes;
 };
 
-export function flattenTree<T extends ITreeNode<any>>(node: T): T[] {
+export function flattenTree<T extends IWalkable>(node: T): T[] {
   return filterTree(node, child => true);
 };
 
-export function findTreeNode<T extends ITreeNode<any>>(node: T, filter: (node: T) => boolean): T {
-  if(filter(node)) return node;
-  for (const child of node.children) {
-    const found = findTreeNode(child, filter);
-    if (found) return found;
-  }
+export function findTreeNode<T extends IWalkable>(node: T, filter: (node: T) => boolean): T {
+  let found;
+
+  const walker = new TreeWalker((node) => {
+    if (filter(node)) {
+      found = node;
+      return false;
+    }
+  });
+
+  walker.accept(node);
+
+  return found;
 };
 
 export function getTreeAncestors<T extends ITreeNode<any>>(node: T): T[] {

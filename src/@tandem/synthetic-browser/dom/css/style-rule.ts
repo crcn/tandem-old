@@ -1,9 +1,9 @@
 import { Bundle } from "@tandem/sandbox";
 import { CSSRuleExpression } from "./ast";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
-import { BaseContentEdit, EditAction, SetKeyValueEditAction, SetValueEditActon } from "@tandem/sandbox";
+import { BaseSyntheticObjectEdit, EditAction, SetKeyValueEditAction, SetValueEditActon } from "@tandem/sandbox";
 import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "./declaration";
-import { Action, serializable, serialize, deserialize, ISerializer, ISerializedContent, diffArray } from "@tandem/common";
+import { Action, serializable, serialize, deserialize, ISerializer, ISerializedContent, diffArray, ITreeWalker } from "@tandem/common";
 
 export interface ISerializedSyntheticCSSStyleRule {
   selector: string;
@@ -23,7 +23,7 @@ class SyntheticCSSStyleRuleSerializer implements ISerializer<SyntheticCSSStyleRu
 }
 
 // TODO - move this to synthetic-browser
-export class SyntheticCSSStyleRuleEdit extends BaseContentEdit<SyntheticCSSStyleRule> {
+export class SyntheticCSSStyleRuleEdit extends BaseSyntheticObjectEdit<SyntheticCSSStyleRule> {
 
   static readonly SET_DECLARATION = "setDeclaration";
   static readonly SET_RULE_SELECTOR = "setRuleSelector";
@@ -75,5 +75,5 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
     return this.linkClone(clone);
   }
 
-
+  visitWalker(walker: ITreeWalker) { }
 }

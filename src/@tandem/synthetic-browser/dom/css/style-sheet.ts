@@ -8,6 +8,7 @@ import {
   serialize,
   diffArray,
   deserialize,
+  ITreeWalker,
   ISerializer,
   serializable,
   ISourceLocation,
@@ -17,7 +18,7 @@ import {
 import {
   Bundle,
   EditAction,
-  BaseContentEdit,
+  BaseSyntheticObjectEdit,
   MoveChildEditAction,
   RemoveChildEditAction,
   InsertChildEditAction,
@@ -44,7 +45,7 @@ class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleS
   }
 }
 
-export class SyntheticCSSStyleSheetEdit extends BaseContentEdit<SyntheticCSSStyleSheet> {
+export class SyntheticCSSStyleSheetEdit extends BaseSyntheticObjectEdit<SyntheticCSSStyleSheet> {
 
   static readonly INSERT_STYLE_SHEET_RULE_EDIT = "insertStyleSheetRuleEdit";
   static readonly MOVE_STYLE_SHEET_RULE_EDIT   = "moveStyleSheetRuleEdit";
@@ -125,5 +126,9 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
 
   createEdit() {
     return new SyntheticCSSStyleSheetEdit(this);
+  }
+
+  visitWalker(walker: ITreeWalker) {
+    this.rules.forEach((rule) => walker.accept(rule));
   }
 }

@@ -6,17 +6,19 @@ import {
   fork,
   IActor,
   Action,
-  serialize,
   isMaster,
+  serialize,
+  flattenTree,
   deserialize,
   Dependencies,
   patchTreeNode,
   MainBusDependency,
   BaseApplicationService
 } from "@tandem/common";
+
 import { FrontEndApplication } from "@tandem/editor";
 import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
-import { Bundle, Bundler, BundlerDependency } from "@tandem/sandbox";
+import { Bundle, Bundler, BundlerDependency, SyntheticObjectEditor } from "@tandem/sandbox";
 
 const SERIALIZED_DOCUMENT = "serializedDocument";
 const DIFFED_DOCUMENT     = "diffedDocument";
@@ -61,11 +63,9 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
       console.info("done loading %s", this.location.toString(), Date.now() - now);
     } else if (action.type === DIFFED_DOCUMENT) {
-      const now = Date.now();
       const edit: SyntheticDocumentEdit = deserialize(action.edit, this._dependencies);
-      console.log(Date.now() - now);
-      console.log("DIFF ", edit);
-
+      new SyntheticObjectEditor(this.window.document).applyEdits(...edit.actions);
+      console.log("remote edit", edit);
     }
   }
 }
@@ -81,26 +81,16 @@ export class RemoteBrowserService extends BaseApplicationService<FrontEndApplica
       browser.observe({
         execute(action: Action) {
           if (action.type === SyntheticBrowserAction.BROWSER_LOADED) {
-
-            let edit;
-
             if (currentDocument) {
-               edit = currentDocument.createEdit().addDiff(browser.document);
-            }
+              const edit = currentDocument.createEdit().addDiff(browser.document);
 
-            // not necessary to clone here since BROWSER_LOADED emits a pristine
-            // document each time.
-            currentDocument = browser.document;
-
-            if (edit) {
-
-              console.log(serialize(edit));
-
+              // need to patch existing document for now to maintain UID references
+              new SyntheticObjectEditor(currentDocument).applyEdits(...edit.actions);
               if (edit.actions.length) {
                 writer.write({ type: DIFFED_DOCUMENT, edit: serialize(edit) });
               }
             } else {
-              // TODO - only send diffs here.
+              currentDocument = browser.document;
               writer.write({ type: SERIALIZED_DOCUMENT, data: serialize(browser.document) });
             }
           }

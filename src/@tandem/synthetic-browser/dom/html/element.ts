@@ -29,6 +29,12 @@ export class SyntheticHTMLElement extends SyntheticDOMElement {
     return this._styleProxy || this._resetStyleProxy();
   }
 
+  get absoluteBounds() {
+
+    // TODO - implement this
+    return this.getBoundingClientRect();
+  }
+
   get text(): string {
     return this.getAttribute("text");
   }

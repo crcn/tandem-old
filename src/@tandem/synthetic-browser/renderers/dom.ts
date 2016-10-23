@@ -50,7 +50,6 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   }
 
   update() {
-    if (!isMaster) return;
     this._computedStyles = {};
 
     return new Promise((resolve) => {

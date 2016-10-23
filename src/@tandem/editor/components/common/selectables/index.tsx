@@ -13,14 +13,14 @@ import { FrontEndApplication } from "@tandem/editor/application";
 import { intersection, flatten } from "lodash";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { IInjectable, APPLICATION_SINGLETON_NS, IActor, Action } from "@tandem/common";
-import { SyntheticDOMElement, BaseVisibleDOMNodeEntity, BaseDOMNodeEntity } from "@tandem/synthetic-browser";
+import { SyntheticHTMLElement, BaseVisibleDOMNodeEntity, BaseDOMNodeEntity, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
 class SelectableComponent extends React.Component<{
-  entity: BaseVisibleDOMNodeEntity<any, any>,
+  element: SyntheticHTMLElement,
   selection: any,
   app: FrontEndApplication,
   zoom: number,
-  onSyntheticMouseDown: (entity: BaseVisibleDOMNodeEntity<any, any>, event?: React.MouseEvent) => void
+  onSyntheticMouseDown: (element: SyntheticHTMLElement, event?: React.MouseEvent) => void
 }, any> {
 
   private _i: number = 0;
@@ -31,17 +31,17 @@ class SelectableComponent extends React.Component<{
   }
 
   onMouseDown = (event: React.MouseEvent): void => {
-    this.props.onSyntheticMouseDown(this.props.entity, event);
+    this.props.onSyntheticMouseDown(this.props.element, event);
     event.stopPropagation();
     this.onMouseOut(event);
  }
 
   onMouseOver = (event: React.MouseEvent) => {
-    this.props.entity.metadata.set(MetadataKeys.HOVERING, true);
+    this.props.element.dataset[MetadataKeys.HOVERING] = true;
   }
 
   onMouseOut = (event: React.MouseEvent) => {
-    this.props.entity.metadata.set(MetadataKeys.HOVERING, false);
+    this.props.element.dataset[MetadataKeys.HOVERING] = false;
   }
 
   shouldComponentUpdate(props) {
@@ -50,20 +50,20 @@ class SelectableComponent extends React.Component<{
   }
 
   render() {
-    const { entity, selection, app } = this.props;
+    const { element, selection, app } = this.props;
 
     // const entities = element.querySelectorAll("*");
 
     // if (intersection(entities, selection || []).length) return null;
 
-    const bounds = entity.absoluteBounds;
+    const bounds = element.absoluteBounds;
     if (!bounds) return null;
 
     const borderWidth = 2 / this.props.zoom;
 
     const classNames = cx({
       "m-selectable": true,
-      "hover": this.props.entity.metadata.get(MetadataKeys.HOVERING)
+      "hover": this.props.element.dataset[MetadataKeys.HOVERING]
     });
 
     const style = {
@@ -92,7 +92,7 @@ class SelectableComponent extends React.Component<{
 export class SelectablesComponent extends React.Component<{
   app: FrontEndApplication,
   workspace: Workspace,
-  onSyntheticMouseDown: (entity: BaseVisibleDOMNodeEntity<any, any>, event?: React.MouseEvent) => void,
+  onSyntheticMouseDown: (element: SyntheticHTMLElement, event?: React.MouseEvent) => void,
   canvasRootSelectable?: boolean
 }, { showSelectables: boolean }> {
 
@@ -138,15 +138,16 @@ export class SelectablesComponent extends React.Component<{
     // TODO - check if user is scrolling
     if (selection && workspace.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
-    const allEntities = document.querySelectorAll("*", true).filter((node: SyntheticDOMElement) => node["absoluteBounds"]/* && entity.metadata.get(MetadataKeys.ENTITY_VISIBLE)*/) as any as BaseVisibleDOMNodeEntity<any, any>[];
+    const allEntities = document.querySelectorAll("*", true).filter((node: SyntheticDOMElement) => node["absoluteBounds"]/* && entity.metadata.get(MetadataKeys.ENTITY_VISIBLE)*/) as any as SyntheticHTMLElement[];
 
-    const selectables = allEntities.map((entity) => (
+
+    const selectables = allEntities.map((element) => (
       <SelectableComponent
         {...this.props}
         zoom={workspace.zoom}
         selection={selection}
-        entity={entity}
-        key={entity.uid}
+        element={element}
+        key={element.uid}
       />
     ));
 

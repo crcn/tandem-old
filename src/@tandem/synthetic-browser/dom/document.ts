@@ -6,6 +6,7 @@ import {
   serialize,
   deserialize,
   ISerializer,
+  ITreeWalker,
   serializable,
   TreeNodeAction,
   ISerializedContent,
@@ -237,6 +238,11 @@ export class SyntheticDocument extends SyntheticDOMContainer {
 
   createDocumentFragment() {
     return this.own(new SyntheticDocumentFragment());
+  }
+
+  visitWalker(walker: ITreeWalker) {
+    this.styleSheets.forEach(styleSheet => walker.accept(styleSheet));
+    super.visitWalker(walker);
   }
 
   onChildAdded(child) {

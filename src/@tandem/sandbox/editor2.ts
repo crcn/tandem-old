@@ -10,6 +10,7 @@ import {
   serialize,
   Observable,
   deserialize,
+  flattenTree,
   Dependencies,
   serializable,
   ISerializable,
@@ -27,7 +28,16 @@ export interface IContentEditor {
   getEditedContent(filePath: string, content: string, actions: Action[]): Promise<string>|string;
 }
 
-export abstract class BaseContentEditor<T> implements IContentEditor {
+export interface IEditable {
+  createEdit(): IContentEdit;
+  applyEdit(action: EditAction): any;
+}
+
+export interface IDiffable {
+  createDiff(source: ISyntheticObject): IContentEdit;
+}
+
+export abstract class BaseSyntheticObjectEditor<T> implements IContentEditor {
   async getEditedContent(filePath: string, content: string, actions: EditAction[]): Promise<string> {
     const rootASTNode = await this.parseContent(filePath, content);
     for (const action of actions) {
@@ -47,7 +57,21 @@ export abstract class BaseContentEditor<T> implements IContentEditor {
   protected abstract getFormattedContent(root: T): string;
 }
 
-export abstract class EditAction extends Action {
+@serializable({
+  serialize({ type, target }: EditAction) {
+    return {
+      type: type,
+      target: serialize(target.clone())
+    };
+  },
+  deserialize({ type, target }, dependencies): EditAction {
+    return new EditAction(
+      type,
+      deserialize(target, dependencies)
+    );
+  }
+})
+export class EditAction extends Action {
   readonly target: ISyntheticObject;
   constructor(actionType: string, target: ISyntheticObject) {
     super(actionType);
@@ -60,7 +84,7 @@ export abstract class EditAction extends Action {
     return {
       type: type,
       target: serialize(target.clone()),
-      child: serialize(child.clone()),
+      child: serialize(child.clone(true)),
       index: index
     };
   },
@@ -188,12 +212,7 @@ export interface IContentEdit {
   readonly actions: EditAction[];
 }
 
-export class BatchContentEdit implements IContentEdit {
-  constructor(readonly actions: EditAction[]) { }
-}
-
-
-export abstract class BaseContentEdit<T extends ISyntheticObject> {
+export abstract class BaseSyntheticObjectEdit<T extends ISyntheticObject> {
   private _actions: EditAction[];
 
   constructor(readonly target: T) {
@@ -204,7 +223,8 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
     return this._actions;
   }
 
-  abstract addDiff(newSynthetic: T): BaseContentEdit<T>;
+  // TODO - this doesn't belong here
+  abstract addDiff(newSynthetic: T): BaseSyntheticObjectEdit<T>;
 
   protected addAction(action: EditAction) {
     this._actions.push(action);
@@ -219,7 +239,7 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
 export class FileEditor extends Observable {
 
   private _editing: boolean;
-  private _edits: IContentEdit[];
+  private _edits: EditAction[];
   private _shouldEditAgain: boolean;
 
   @inject(DependenciesDependency.NS)
@@ -229,14 +249,14 @@ export class FileEditor extends Observable {
     super();
   }
 
-  applyEdit(edit: IContentEdit): Promise<any> {
+  applyEdits(...actions: EditAction[]): Promise<any> {
 
     if (this._edits == null) {
       this._shouldEditAgain = true;
       this._edits = [];
     }
 
-    this._edits.push(edit);
+    this._edits.push(...actions);
     this.run();
 
     return new Promise((resolve) => {
@@ -256,7 +276,7 @@ export class FileEditor extends Observable {
     setTimeout(async () => {
       this._shouldEditAgain = false;
       // const fileCache = await this.bundle.getSourceFileCacheItem();
-      const actions = flatten(this._edits.map(edit => edit.actions));
+      const actions = this._edits;
       this._edits = undefined;
 
       const actionsByFilePath = {};
@@ -311,5 +331,31 @@ export class FileEditor extends Observable {
         this.run();
       }
     }, 0);
+  }
+}
+
+
+export class SyntheticObjectEditor {
+  private _allChildSyntheticObjects: any;
+  constructor(readonly root: ISyntheticObject) {
+    this._allChildSyntheticObjects = {};
+    flattenTree(root).forEach((child) => {
+      this._allChildSyntheticObjects[child.uid] = child;
+    });
+  }
+  applyEdits(...actions: EditAction[]) {
+    for (let i = 0, n = actions.length; i < n; i++) {
+      const action = actions[i];
+
+      // Assuming that all edit actions being applied to synthetics are editable. Otherwise
+      // they shouldn't be dispatched.
+      const target = this._allChildSyntheticObjects[action.target.uid] as IEditable;
+
+      if (!target) {
+        throw new Error(`Edit action target ${action.target.uid} not found.`);
+      }
+
+      target.applyEdit(action);
+    }
   }
 }

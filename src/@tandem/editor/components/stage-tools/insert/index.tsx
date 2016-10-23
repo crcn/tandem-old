@@ -4,11 +4,11 @@ import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { SyntheticDOMElement } from "@tandem/synthetic-browser";
-import { BaseVisibleDOMNodeEntity } from "@tandem/synthetic-browser";
 import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { SetToolAction, SelectAction } from "@tandem/editor/actions";
 import { Workspace, InsertTool } from "@tandem/editor/models";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
+import { BaseVisibleDOMNodeEntity, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { SelectionSizeComponent, SelectablesComponent } from "@tandem/editor/components/common";
 import {
   IActor,
@@ -18,11 +18,11 @@ import {
 
 class InsertToolComponent extends React.Component<{ workspace: Workspace, bus: IActor, app: FrontEndApplication, tool: InsertTool }, any> {
 
-  private _targetEntity: any;
+  private _targetElement: any;
 
 
   private onRootMouseDown = (event) => {
-    this._targetEntity = this.props.workspace.document.body as any;
+    this._targetElement = this.props.workspace.document.body as any;
     this._insertNewItem(event);
   }
 
@@ -34,7 +34,7 @@ class InsertToolComponent extends React.Component<{ workspace: Workspace, bus: I
 
     const childElement = tool.createSyntheticDOMElement();
     // const elementEditor = this._targetEntity.editor;
-    this._targetEntity.appendChild(childElement);
+    this._targetElement.appendChild(childElement);
     // await elementEditor.execute()
     // const child = await activeEntity.loadExpressionAndAppendChild(childExpression) as IVisibleEntity;
     await bus.execute(new SelectAction(childElement));
@@ -72,8 +72,8 @@ class InsertToolComponent extends React.Component<{ workspace: Workspace, bus: I
     // }
   }
 
-  onSyntheticMouseDown = (entity: BaseVisibleDOMNodeEntity<any, any>, event: React.MouseEvent) => {
-    this._targetEntity = entity;
+  onSyntheticMouseDown = (element: SyntheticHTMLElement, event: React.MouseEvent) => {
+    this._targetElement = element;
     this._insertNewItem(event);
   }
 

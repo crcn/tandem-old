@@ -1,7 +1,7 @@
 import { DOMNodeType } from "./node-types";
-import { serializable } from "@tandem/common";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
+import { serializable, ITreeWalker } from "@tandem/common";
 import { SyntheticDOMNodeSerializer } from "./node";
 import { SyntheticDOMValueNode, SyntheticDOMValueNodeSerializer, SyntheticDOMValueNodeEdit } from "./value-node";
 
@@ -29,7 +29,5 @@ export class SyntheticDOMComment extends SyntheticDOMValueNode {
     return this.linkClone(new SyntheticDOMComment(this.nodeValue));
   }
 
-  createEdit(): SyntheticDOMValueNodeEdit<SyntheticDOMComment> {
-    return new SyntheticDOMValueNodeEdit(this);
-  }
+  visitWalker(walker: ITreeWalker) { }
 }

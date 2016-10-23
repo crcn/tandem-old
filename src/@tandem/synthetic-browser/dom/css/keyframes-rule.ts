@@ -1,9 +1,9 @@
+import { BaseSyntheticObjectEdit } from "@tandem/sandbox";
 import { CSSATRuleExpression } from "./ast";
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
-import { ISerializer, deserialize, serializable, serialize, ISerializedContent } from "@tandem/common";
-import { BaseContentEdit } from "@tandem/sandbox";
+import { ISerializer, deserialize, serializable, serialize, ISerializedContent, ITreeWalker } from "@tandem/common";
 
 export interface ISerializedSyntheticCSSKeyframesRule {
   name: string;
@@ -24,7 +24,7 @@ class SyntheticCSSKeyframesRuleSerializer implements ISerializer<SyntheticCSSKey
   }
 }
 
-export class AtRuleEdit extends BaseContentEdit<SyntheticCSSKeyframesRule> {
+export class AtRuleEdit extends BaseSyntheticObjectEdit<SyntheticCSSKeyframesRule> {
   addDiff(newAtRule: SyntheticCSSKeyframesRule) {
     return this;
   }
@@ -56,5 +56,9 @@ export class SyntheticCSSKeyframesRule extends SyntheticCSSObject {
 
   createEdit() {
     return new AtRuleEdit(this);
+  }
+
+  visitWalker(walker: ITreeWalker) {
+    this.cssRules.forEach(rule => walker.accept(rule));
   }
 }

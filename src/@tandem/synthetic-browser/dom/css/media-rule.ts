@@ -2,9 +2,9 @@ import { CSSATRuleExpression } from "./ast";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { SyntheticCSSStyleRule, diffSyntheticCSSStyleRules } from "./style-rule";
-import { ISerializer, serialize, deserialize, serializable, ISerializedContent } from "@tandem/common";
+import { ISerializer, serialize, deserialize, serializable, ISerializedContent, ITreeWalker } from "@tandem/common";
 import {
-  BaseContentEdit,
+  BaseSyntheticObjectEdit,
   SetValueEditActon,
   MoveChildEditAction,
   InsertChildEditAction,
@@ -30,7 +30,7 @@ class SyntheticCSSMediaRuleSerializer implements ISerializer<SyntheticCSSMediaRu
   }
 }
 
-export class SyntheticCSSMediaRuleEdit extends BaseContentEdit<SyntheticCSSMediaRule> {
+export class SyntheticCSSMediaRuleEdit extends BaseSyntheticObjectEdit<SyntheticCSSMediaRule> {
 
   static readonly SET_MEDIA_EDIT       = "setMediaEdit";
   static readonly INSERT_CSS_RULE_EDIT = "insertCSSRuleAtEdit";
@@ -106,5 +106,9 @@ export class SyntheticCSSMediaRule extends SyntheticCSSObject {
 
   createEdit() {
     return new SyntheticCSSMediaRuleEdit(this);
+  }
+
+  visitWalker(walker: ITreeWalker) {
+    this.cssRules.forEach(rule => walker.accept(rule));
   }
 }

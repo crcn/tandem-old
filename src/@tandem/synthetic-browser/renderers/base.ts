@@ -160,8 +160,18 @@ export class BaseDecoratorRenderer implements ISyntheticDocumentRenderer {
   }
 }
 
-export class NoopRenderer extends BaseRenderer {
-  update() { }
+export class NoopRenderer extends Observable implements ISyntheticDocumentRenderer {
+  readonly element: HTMLElement;
+  public document: SyntheticDocument;
+  public getBoundingRect() {
+    return BoundingRect.zeros();
+  }
+  public getComputedStyle() {
+    return null;
+  }
+  public fetchComputedStyle(): Promise<any> {
+    return Promise.resolve();
+  }
   requestUpdate() { }
   createElement() { return undefined; }
 }

@@ -115,8 +115,8 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     this.app.workspace.zoom = action.value;
   }
 
-  [ApplyEditAction.APPLY_EDIT]({ edit }: ApplyEditAction) {
-    return FileEditorDependency.getInstance(this.app.dependencies).applyEdit(edit);
+  [ApplyEditAction.APPLY_EDITS]({ edit }: ApplyEditAction) {
+    return FileEditorDependency.getInstance(this.app.dependencies).applyEdits(...edit.actions);
   }
 
 

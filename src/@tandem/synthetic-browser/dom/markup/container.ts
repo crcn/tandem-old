@@ -1,16 +1,16 @@
-import { diffArray } from "@tandem/common";
 import { DOMNodeType } from "./node-types";
 import { SyntheticDOMNode } from "./node";
 import { SyntheticDOMText } from "./text-node";
+import { diffArray, ITreeWalker } from "@tandem/common";
 import { querySelector, querySelectorAll } from "../selector";
 import {
-  BaseContentEdit,
-  IContentEdit,
   EditAction,
+  IContentEdit,
+  BaseSyntheticObjectEdit,
   RemoveEditAction,
+  MoveChildEditAction,
   RemoveChildEditAction,
   InsertChildEditAction,
-  MoveChildEditAction,
 } from "@tandem/sandbox";
 
 export class AppendChildEditAction extends EditAction {
@@ -20,7 +20,7 @@ export class AppendChildEditAction extends EditAction {
   }
 }
 
-export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends BaseContentEdit<T> {
+export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends BaseSyntheticObjectEdit<T> {
 
   static readonly INSERT_CHILD_NODE_EDIT = "insertChildNodeEdit";
   static readonly REMOVE_CHILD_NODE_EDIT = "removeChildNodeEdit";
@@ -49,7 +49,10 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
   addDiff(newContainer: SyntheticDOMContainer) {
     diffArray(this.target.childNodes, newContainer.childNodes, (oldNode, newNode) => {
       if (oldNode.nodeName !== newNode.nodeName) return -1;
-      return (newContainer.childNodes.indexOf(newNode) - this.target.childNodes.indexOf(oldNode)) + oldNode.createEdit().addDiff(newNode).actions.length;
+      return 0;
+
+      // expensive
+      // return (newContainer.childNodes.indexOf(newNode) - this.target.childNodes.indexOf(oldNode)) + oldNode.createEdit().addDiff(newNode).actions.length;
     }).accept({
       visitInsert: ({ index, value }) => {
         this.insertChild(value, index);
@@ -102,5 +105,26 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
 
   public querySelectorAll(selector: string, deep?: boolean) {
     return querySelectorAll(this, selector);
+  }
+
+  applyEdit(action: EditAction) {
+    switch(action.type) {
+      case SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT:
+        const removeAction = <InsertChildEditAction>action;
+        this.removeChild(this.childNodes.find((child) => child.uid === removeAction.child.uid));
+      break;
+      case SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT:
+        const moveAction = <InsertChildEditAction>action;
+        this.replaceChild(this.childNodes.find((child) => child.uid === moveAction.child.uid), this.childNodes[moveAction.index]);
+      break;
+      case SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT:
+        const insertAction = <InsertChildEditAction>action;
+        this.insertChildAt(insertAction.child as SyntheticDOMNode, insertAction.index);
+      break;
+    }
+  }
+
+  visitWalker(walker: ITreeWalker) {
+    this.childNodes.forEach(child => walker.accept(child));
   }
 }

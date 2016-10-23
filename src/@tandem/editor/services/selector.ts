@@ -13,7 +13,7 @@ import {
   BaseDOMNodeEntity
 } from "@tandem/synthetic-browser";
 
-import { RemoveEditAction, FileEditorDependency, BatchContentEdit } from "@tandem/sandbox";
+import { RemoveEditAction, FileEditorDependency } from "@tandem/sandbox";
 
 import {
   SelectAction,
@@ -71,9 +71,9 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
   async [RemoveSelectionAction.REMOVE_SELECTION]() {
 
-    await FileEditorDependency.getInstance(this.app.dependencies).applyEdit(new BatchContentEdit(this.app.workspace.selection.map((selection) => {
+    await FileEditorDependency.getInstance(this.app.dependencies).applyEdits(...this.app.workspace.selection.map((selection) => {
       return new RemoveEditAction(selection);
-    })))
+    }));
 
     this.bus.execute(new SelectAction());
   }

@@ -4,12 +4,13 @@ import { WrapBus } from "mesh";
 import { ITreeNode } from "./base";
 import { patchTreeNode } from "./patch";
 import { TreeNodeAction } from "./actions";
+import { ITreeWalker, IWalkable } from "./walker";
 import { Observable, IObservable } from "@tandem/common/observable";
 
 
 export { ITreeNode, patchTreeNode };
 
-export class TreeNode<T extends TreeNode<any>> extends Observable implements ITreeNode<T> {
+export class TreeNode<T extends TreeNode<any>> extends Observable implements ITreeNode<T>, IWalkable {
 
   private _parent: T;
   private _children: Array<T>;
@@ -150,5 +151,9 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
 
   protected onChildAction(action: Action) {
     this.notify(action);
+  }
+
+  visitWalker(walker: ITreeWalker) {
+    this.children.forEach(child => walker.accept(child));
   }
 }

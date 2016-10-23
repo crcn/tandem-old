@@ -1,15 +1,15 @@
-import { BaseContentEdit } from "@tandem/sandbox";
+import { BaseSyntheticObjectEdit } from "@tandem/sandbox";
 import { CSSATRuleExpression } from "./ast";
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
-import { ISerializer, deserialize, serializable, serialize, ISerializedContent } from "@tandem/common";
+import { ISerializer, deserialize, serializable, serialize, ISerializedContent, ITreeWalker } from "@tandem/common";
 
 export interface ISerializedSyntheticCSSFontFace {
   declaration: ISerializedContent<any>;
 }
 
-export class FontFaceEdit extends BaseContentEdit<SyntheticCSSFontFace> {
+export class FontFaceEdit extends BaseSyntheticObjectEdit<SyntheticCSSFontFace> {
   addDiff(newAtRule: SyntheticCSSFontFace) {
     return this;
   }
@@ -44,4 +44,5 @@ export class SyntheticCSSFontFace extends SyntheticCSSObject {
   createEdit() {
     return new FontFaceEdit(this);
   }
+  visitWalker(walker: ITreeWalker) { }
 }

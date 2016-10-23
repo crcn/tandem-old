@@ -20,15 +20,15 @@ import {
   deserialize,
   ISerializer,
   BoundingRect,
+  ITreeWalker,
   serializable,
-  ArrayChangeAction,
   ISerializedContent,
   PropertyChangeAction,
   ObservableCollection,
 } from "@tandem/common";
 
 import { Bundle } from "@tandem/sandbox";
-import { BaseContentEdit, EditAction } from "@tandem/sandbox";
+import { BaseSyntheticObjectEdit, EditAction, SetValueEditActon, SetKeyValueEditAction } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticDOMAttribute {
   name: string;
@@ -155,32 +155,28 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
   }
 }
 
-export class SetElementAttributeEditAction extends EditAction {
-  static readonly SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
-  constructor(target: SyntheticDOMElement, readonly attributeName: string, readonly newAttributeValue: string, readonly newAttributeName?: string) {
-    super(SetElementAttributeEditAction.SET_ELEMENT_ATTRIBUTE_EDIT, target);
-  }
-}
 
-export class SetElementTagNameEditAction extends EditAction {
+export class AttachShadowRootEditAction extends EditAction {
   static readonly SET_ELEMENT_TAG_NAME_EDIT = "setElementTagNameEdit";
-  constructor(target: SyntheticDOMElement, readonly newName: string) {
-    super(SetElementTagNameEditAction.SET_ELEMENT_TAG_NAME_EDIT, target);
+  constructor(type: string, target: SyntheticDOMElement, readonly newName: string) {
+    super(type, target);
   }
 }
 
 export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<SyntheticDOMElement> {
+  static readonly SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
+  static readonly ATTACH_SHADOW_ROOT_EDIT    = "attachShadowRootEdit";
 
   setAttribute(name: string, value: string, newName?: string) {
-    return this.addAction(new SetElementAttributeEditAction(this.target, name, value, newName));
+    return this.addAction(new SetKeyValueEditAction(SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT, this.target, name, value, newName));
   }
 
   removeAttribute(name: string) {
-    return this.addAction(new SetElementAttributeEditAction(this.target, name, undefined));
+    return this.setAttribute(name, undefined);
   }
 
-  setTagName(newName: string) {
-    return this.addAction(new SetElementTagNameEditAction(this.target, newName));
+  attachShadowRoot() {
+    return this.addAction(new EditAction(SyntheticDOMElementEdit.ATTACH_SHADOW_ROOT_EDIT, this.target));
   }
 
   /**
@@ -192,7 +188,7 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
   addDiff(newElement: SyntheticDOMElement) {
 
     if (this.target.nodeName !== newElement.nodeName) {
-      this.setTagName(newElement.nodeName);
+      throw new Error(`nodeName must match in order to diff`);
     }
 
     diffArray(this.target.attributes, newElement.attributes, (a, b) => a.name === b.name ? 1 : -1).accept({
@@ -208,6 +204,15 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
         }
       }
     });
+
+    if (newElement.shadowRoot) {
+
+      if (!this.target.shadowRoot) {
+        this.attachShadowRoot();
+      }
+
+      this.addChildEdit(this.target.shadowRoot.createEdit().addDiff(newElement.shadowRoot));
+    }
 
     return super.addDiff(newElement);
   }
@@ -237,6 +242,18 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     return new SyntheticDOMElementEdit(this);
   }
 
+  applyEdit(action: EditAction) {
+    super.applyEdit(action);
+    switch(action.type) {
+
+    }
+  }
+
+  visitWalker(walker: ITreeWalker) {
+    if (this.shadowRoot) walker.accept(this.shadowRoot);
+    super.visitWalker(walker);
+  }
+
   getAttribute(name: string) {
     return this.hasAttribute(name) ? this.attributes[name].value : null;
   }
@@ -250,8 +267,10 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   attachShadow({ mode }: { mode: "open"|"close" }) {
+    if (this._shadowRoot) return this._shadowRoot;
     this._shadowRoot = new SyntheticDocumentFragment();
     this._shadowRoot.$setOwnerDocument(this.ownerDocument);
+    this._shadowRoot.observe(new BubbleBus(this));
     return this._shadowRoot;
   }
 
