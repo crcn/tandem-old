@@ -73,5 +73,5 @@ const edit = document.createEdit().fromDiff(documentClone);
 new SyntheticObjectEditor(document).applyEditActions(...edit.actions);
 
 // this also works
-// edit.applyEditActionsTo(document);
+// edit.applyActionsTo(document);
 ```
