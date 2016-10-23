@@ -1,5 +1,5 @@
 import { IModule } from "./module";
-import { ISynthetic } from "./synthetic";
+import {ISyntheticObject } from "./synthetic";
 import { Response, Writable } from "mesh";
 import { SandboxModuleAction } from "./actions";
 import {
@@ -22,7 +22,7 @@ export interface IModuleEdit {
    * Removes an expression that is representing a synthetic
    */
 
-  remove(item: ISynthetic);
+  remove(item: ISyntheticObject);
 }
 
 /**
@@ -47,7 +47,7 @@ export interface IModuleEditor extends IObservable {
 
 export class RemoveSyntheticAction extends Action {
   static readonly REMOVE_SYNTHETIC = "removeSynthetic";
-  constructor(readonly item: ISynthetic) {
+  constructor(readonly item: ISyntheticObject) {
     super(RemoveSyntheticAction.REMOVE_SYNTHETIC);
   }
 }
@@ -57,7 +57,7 @@ export class BaseSandboxModuleEdit implements IModuleEdit {
   constructor() {
     this.actions = [];
   }
-  remove(item: ISynthetic) {
+  remove(item: ISyntheticObject) {
     this.actions.push(new RemoveSyntheticAction(item));
   }
 }

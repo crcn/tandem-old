@@ -1,7 +1,7 @@
 import { flatten } from "lodash";
 import { WrapBus } from "mesh";
 import { FileCache } from "./file-cache";
-import { ISynthetic } from "./synthetic";
+import { ISyntheticObject } from "./synthetic";
 import { FileEditorAction } from "./actions";
 import { FileCacheDependency, ContentEditorFactoryDependency } from "./dependencies";
 import {
@@ -42,14 +42,14 @@ export abstract class BaseContentEditor<T> implements IContentEditor {
     return this.getFormattedContent(rootASTNode);
   }
 
-  protected abstract findTargetASTNode(root: T, target: ISynthetic): T;
+  protected abstract findTargetASTNode(root: T, target: ISyntheticObject): T;
   protected abstract parseContent(filePath: string, content: string): Promise<T>|T;
   protected abstract getFormattedContent(root: T): string;
 }
 
 export abstract class EditAction extends Action {
-  readonly target: ISynthetic;
-  constructor(actionType: string, target: ISynthetic) {
+  readonly target: ISyntheticObject;
+  constructor(actionType: string, target: ISyntheticObject) {
     super(actionType);
     this.currentTarget = target;
   }
@@ -74,7 +74,7 @@ export abstract class EditAction extends Action {
   }
 })
 export class InsertChildEditAction extends EditAction {
-  constructor(actionType: string, target: ISynthetic, readonly child: ISynthetic, readonly index: number) {
+  constructor(actionType: string, target: ISyntheticObject, readonly child: ISyntheticObject, readonly index: number) {
     super(actionType, target);
   }
 }
@@ -96,7 +96,7 @@ export class InsertChildEditAction extends EditAction {
   }
 })
 export class RemoveChildEditAction extends EditAction {
-  constructor(actionType: string, target: ISynthetic, readonly child: ISynthetic) {
+  constructor(actionType: string, target: ISyntheticObject, readonly child: ISyntheticObject) {
     super(actionType, target);
   }
 }
@@ -120,7 +120,7 @@ export class RemoveChildEditAction extends EditAction {
   }
 })
 export class MoveChildEditAction extends EditAction {
-  constructor(actionType: string, target: ISynthetic, readonly child: ISynthetic, readonly newIndex: number) {
+  constructor(actionType: string, target: ISyntheticObject, readonly child: ISyntheticObject, readonly newIndex: number) {
     super(actionType, target);
   }
 }
@@ -146,7 +146,7 @@ export class MoveChildEditAction extends EditAction {
   }
 })
 export class SetKeyValueEditAction extends EditAction {
-  constructor(actionType: string, target: ISynthetic, readonly  name: string, readonly newValue: any, readonly newName?: string) {
+  constructor(actionType: string, target: ISyntheticObject, readonly  name: string, readonly newValue: any, readonly newName?: string) {
     super(actionType, target);
   }
 }
@@ -168,7 +168,7 @@ export class SetKeyValueEditAction extends EditAction {
   }
 })
 export class SetValueEditActon extends EditAction {
-  constructor(type: string, target: ISynthetic, readonly newValue: any) {
+  constructor(type: string, target: ISyntheticObject, readonly newValue: any) {
     super(type, target);
   }
 }
@@ -179,7 +179,7 @@ export class SetValueEditActon extends EditAction {
 
 export class RemoveEditAction extends EditAction {
   static readonly REMOVE_EDIT = "removeEdit";
-  constructor(target: ISynthetic) {
+  constructor(target: ISyntheticObject) {
     super(RemoveEditAction.REMOVE_EDIT, target);
   }
 }
@@ -193,7 +193,7 @@ export class BatchContentEdit implements IContentEdit {
 }
 
 
-export abstract class BaseContentEdit<T extends ISynthetic> {
+export abstract class BaseContentEdit<T extends ISyntheticObject> {
   private _actions: EditAction[];
 
   constructor(readonly target: T) {

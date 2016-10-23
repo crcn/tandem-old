@@ -5,10 +5,10 @@ import { SyntheticCSSStyleRule, SyntheticCSSStyleRuleEdit, parseCSS } from "@tan
 import {
   Bundle,
   EditAction,
-  ISynthetic,
   IContentEdit,
   IContentEditor,
   BaseContentEdit,
+  ISyntheticObject,
   BaseContentEditor,
   loadBundleContent,
   SetValueEditActon,
@@ -51,7 +51,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     }
   }
 
-  protected findTargetASTNode(root: postcss.Root, target: ISynthetic) {
+  protected findTargetASTNode(root: postcss.Root, target: ISyntheticObject) {
     let found: postcss.Node;
     root.walk((node: postcss.Node, index: number) => {
 
@@ -67,7 +67,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     return found;
   }
 
-  private findNestedASTNode(node: postcss.Container, target: ISynthetic): postcss.Node {
+  private findNestedASTNode(node: postcss.Container, target: ISyntheticObject): postcss.Node {
     if (isRuleNode(node)) {
       return this.findMatchingRuleNode(<postcss.Rule>node, <SyntheticCSSStyleRule>target);
     } else {

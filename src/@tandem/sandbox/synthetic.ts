@@ -1,6 +1,6 @@
 import { Bundle } from "./bundle";
 import { SandboxModule } from "./sandbox";
-import { ISourcePosition } from "@tandem/common";
+import { ISourcePosition, ISerializer } from "@tandem/common";
 
 let _i = 0;
 
@@ -59,7 +59,13 @@ export interface ISyntheticSourceInfo {
  * @interface ISynthetic
  */
 
-export interface ISynthetic {
+export interface ISyntheticObject {
+
+  /**
+   * Internal property. See below for docs
+   */
+
+  $source?: ISyntheticSourceInfo;
 
   /**
    * The unique ID of the synthetic object
@@ -80,7 +86,7 @@ export interface ISynthetic {
    * element.$source = { kind: 'functionCall' filePath: './script.js', start: { line: 2, column: 1 }};
    */
 
-  source?: ISyntheticSourceInfo;
+  readonly source?: ISyntheticSourceInfo;
 
   /**
    * Creates an identical copy of the synthetic object.
@@ -90,5 +96,30 @@ export interface ISynthetic {
    * @returns {ISynthetic}
    */
 
-  clone(deep?: boolean): ISynthetic;
+  clone(deep?: boolean): ISyntheticObject;
+}
+
+export interface ISerializedSyntheticObject {
+  source: ISyntheticSourceInfo;
+  uid: any;
+}
+
+/**
+ * Converts the synthetic object into a format that can be transfered over a network.
+ */
+
+export class SyntheticObjectSerializer implements ISerializer<ISyntheticObject, ISerializedSyntheticObject> {
+  constructor(readonly childSerializer: ISerializer<ISyntheticObject, any>) { }
+  serialize(value: ISyntheticObject) {
+    return Object.assign(this.childSerializer.serialize(value), {
+      source: value.source,
+      uid: value.uid
+    });
+  }
+  deserialize(value: ISerializedSyntheticObject, dependencies, ctor) {
+    return Object.assign(this.childSerializer.deserialize(value, dependencies, ctor), {
+      $source: value.source,
+      uid: value.uid
+    });
+  }
 }

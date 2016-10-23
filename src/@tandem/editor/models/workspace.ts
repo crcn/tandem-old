@@ -12,7 +12,7 @@ import {
   Transform
 } from "@tandem/common";
 
-import { ISynthetic } from "@tandem/sandbox";
+import { ISyntheticObject } from "@tandem/sandbox";
 import { ISyntheticBrowser, SyntheticBrowser, BaseDOMNodeEntity } from "@tandem/synthetic-browser";
 
 export const MIN_ZOOM = 0.02;
@@ -27,7 +27,7 @@ export class Workspace implements IWorkspace {
   public translate: IPoint = { left: 0, top: 0 };
   private _currentTool: IWorkspaceTool;
   public transform: Transform = new Transform();
-  public selection: ISynthetic[] = [];
+  public selection: ISyntheticObject[] = [];
   public browser: ISyntheticBrowser;
 
   // TODO - this may change dependening on the editor type

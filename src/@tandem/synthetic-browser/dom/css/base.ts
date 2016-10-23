@@ -1,14 +1,15 @@
 import { CSSExpression } from "./ast";
 import { ISerializer, serialize, deserialize } from "@tandem/common";
 import {
-  ISynthetic,
   BaseContentEdit,
+  ISyntheticObject,
   ISyntheticSourceInfo,
   generateSyntheticUID,
+  SyntheticObjectSerializer,
 } from "@tandem/sandbox";
 
 
-export abstract class SyntheticCSSObject implements ISynthetic {
+export abstract class SyntheticCSSObject implements ISyntheticObject {
 
   public $source: ISyntheticSourceInfo;
   readonly uid: any;
@@ -31,23 +32,4 @@ export abstract class SyntheticCSSObject implements ISynthetic {
   abstract createEdit(): BaseContentEdit<SyntheticCSSObject>;
 }
 
-export interface ISerializeCSSObject {
-  source: ISyntheticSourceInfo;
-  uid: any;
-}
-
-export class SyntheticCSSObjectSerializer implements ISerializer<SyntheticCSSObject, ISerializeCSSObject> {
-  constructor(readonly childSerializer: ISerializer<SyntheticCSSObject, any>) { }
-  serialize(value: SyntheticCSSObject) {
-    return Object.assign(this.childSerializer.serialize(value), {
-      source: value.$source,
-      uid: value.uid
-    });
-  }
-  deserialize(value: ISerializeCSSObject, dependencies) {
-    return Object.assign(this.childSerializer.deserialize(value, dependencies), {
-      $source: value.source,
-      uid: value.uid
-    });
-  }
-}
+export const SyntheticCSSObjectSerializer = SyntheticObjectSerializer;

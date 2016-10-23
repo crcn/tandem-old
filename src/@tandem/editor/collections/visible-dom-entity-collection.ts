@@ -1,4 +1,3 @@
-import { ISynthetic } from "@tandem/sandbox";
 import { BoundingRect, IPoint } from "@tandem/common";
 import {
   DOMNodeType,

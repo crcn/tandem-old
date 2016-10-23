@@ -8,10 +8,11 @@ import { MarkupNodeExpression } from "./ast";
 import {
   Bundle,
   IModule,
-  ISynthetic,
   SandboxModule,
+  ISyntheticObject,
   ISyntheticSourceInfo,
   generateSyntheticUID,
+  SyntheticObjectSerializer,
  } from "@tandem/sandbox";
 
 import {
@@ -29,7 +30,7 @@ import {
   serializable,
 } from "@tandem/common";
 
-export interface IDOMNode extends TreeNode<any>, IComparable, ISynthetic {
+export interface IDOMNode extends TreeNode<any>, IComparable, ISyntheticObject {
   firstChild: IDOMNode;
   lastChild: IDOMNode;
   nextSibling: IDOMNode;
@@ -49,26 +50,9 @@ export interface ISerializedSyntheticDOMNode {
   uid: any;
 }
 
-export class SyntheticDOMNodeSerializer implements ISerializer<SyntheticDOMNode, ISerializedSyntheticDOMNode> {
-  constructor(readonly childSerializer: ISerializer<any, any>) {
+export const SyntheticDOMNodeSerializer = SyntheticObjectSerializer;
 
-  }
-  serialize(value: SyntheticDOMNode) {
-    return Object.assign(this.childSerializer.serialize(value), {
-      source: value.$source,
-      uid: value.uid
-    });
-  }
-  deserialize(value: ISerializedSyntheticDOMNode, dependencies, ctor) {
-    return Object.assign(this.childSerializer.deserialize(value, dependencies, ctor), {
-      $source: value.source,
-      uid: value.uid
-    })
-  }
-}
-
-
-export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, ISynthetic, IDOMNode {
+export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, ISyntheticObject, IDOMNode {
 
   abstract textContent: string;
   readonly namespaceURI: string;

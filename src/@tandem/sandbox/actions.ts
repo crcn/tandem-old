@@ -1,4 +1,3 @@
-import { ISynthetic } from "./synthetic";
 import { IContentEdit } from "./editor2";
 import { IFileResolverOptions } from "./resolver";
 import { Action, IASTNode, IActor, definePublicAction, defineMasterAction, defineWorkerAction, IDisposable } from "@tandem/common";
