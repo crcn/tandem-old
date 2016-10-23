@@ -7,9 +7,9 @@ import {
   EditAction,
   IContentEdit,
   IContentEditor,
-  BaseSyntheticObjectEdit,
+  BaseContentEdit,
   ISyntheticObject,
-  BaseSyntheticObjectEditor,
+  BaseContentEditor,
   loadBundleContent,
   SetValueEditActon,
   SetKeyValueEditAction,
@@ -18,7 +18,7 @@ import {
 // TODO - move this to synthetic-browser
 // TODO - may need to split this out into separate CSS editors. Some of this is specific
 // to SASS
-export class CSSEditor extends BaseSyntheticObjectEditor<postcss.Node> {
+export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
   @inject(DependenciesDependency.NS)
   private _dependencies: Dependencies;

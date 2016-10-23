@@ -37,7 +37,7 @@ export interface IDiffable {
   createDiff(source: ISyntheticObject): IContentEdit;
 }
 
-export abstract class BaseSyntheticObjectEditor<T> implements IContentEditor {
+export abstract class BaseContentEditor<T> implements IContentEditor {
   async getEditedContent(filePath: string, content: string, actions: EditAction[]): Promise<string> {
     const rootASTNode = await this.parseContent(filePath, content);
     for (const action of actions) {
@@ -212,7 +212,7 @@ export interface IContentEdit {
   readonly actions: EditAction[];
 }
 
-export abstract class BaseSyntheticObjectEdit<T extends ISyntheticObject> {
+export abstract class BaseContentEdit<T extends ISyntheticObject> {
 
   private _actions: EditAction[];
   private _locked: boolean;
@@ -242,14 +242,14 @@ export abstract class BaseSyntheticObjectEdit<T extends ISyntheticObject> {
    */
 
   public fromDiff(newSynthetic: T) {
-    const ctor = this.constructor as { new(target:T): BaseSyntheticObjectEdit<T> };
+    const ctor = this.constructor as { new(target:T): BaseContentEdit<T> };
     const clone = new ctor(this.target);
     clone.addDiff(newSynthetic);
     clone.lock();
     return clone;
   }
 
-  protected abstract addDiff(newSynthetic: T): BaseSyntheticObjectEdit<T>;
+  protected abstract addDiff(newSynthetic: T): BaseContentEdit<T>;
 
   protected addAction(action: EditAction) {
 

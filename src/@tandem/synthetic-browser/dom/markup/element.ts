@@ -28,7 +28,7 @@ import {
 } from "@tandem/common";
 
 import { Bundle } from "@tandem/sandbox";
-import { BaseSyntheticObjectEdit, EditAction, SetValueEditActon, SetKeyValueEditAction } from "@tandem/sandbox";
+import { BaseContentEdit, EditAction, SetValueEditActon, SetKeyValueEditAction } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticDOMAttribute {
   name: string;

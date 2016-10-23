@@ -1,4 +1,4 @@
-import { BaseSyntheticObjectEdit } from "@tandem/sandbox";
+import { BaseContentEdit } from "@tandem/sandbox";
 import { CSSATRuleExpression } from "./ast";
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
@@ -24,7 +24,7 @@ class SyntheticCSSKeyframesRuleSerializer implements ISerializer<SyntheticCSSKey
   }
 }
 
-export class AtRuleEdit extends BaseSyntheticObjectEdit<SyntheticCSSKeyframesRule> {
+export class AtRuleEdit extends BaseContentEdit<SyntheticCSSKeyframesRule> {
   addDiff(newAtRule: SyntheticCSSKeyframesRule) {
     return this;
   }

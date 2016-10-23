@@ -1,4 +1,4 @@
-import { BaseSyntheticObjectEdit } from "@tandem/sandbox";
+import { BaseContentEdit } from "@tandem/sandbox";
 import { CSSATRuleExpression } from "./ast";
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
@@ -9,7 +9,7 @@ export interface ISerializedSyntheticCSSFontFace {
   declaration: ISerializedContent<any>;
 }
 
-export class FontFaceEdit extends BaseSyntheticObjectEdit<SyntheticCSSFontFace> {
+export class FontFaceEdit extends BaseContentEdit<SyntheticCSSFontFace> {
   addDiff(newAtRule: SyntheticCSSFontFace) {
     return this;
   }

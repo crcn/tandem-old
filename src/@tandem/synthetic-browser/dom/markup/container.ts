@@ -6,7 +6,7 @@ import { querySelector, querySelectorAll } from "../selector";
 import {
   EditAction,
   IContentEdit,
-  BaseSyntheticObjectEdit,
+  BaseContentEdit,
   RemoveEditAction,
   MoveChildEditAction,
   RemoveChildEditAction,
@@ -20,7 +20,7 @@ export class AppendChildEditAction extends EditAction {
   }
 }
 
-export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends BaseSyntheticObjectEdit<T> {
+export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends BaseContentEdit<T> {
 
   static readonly INSERT_CHILD_NODE_EDIT = "insertChildNodeEdit";
   static readonly REMOVE_CHILD_NODE_EDIT = "removeChildNodeEdit";

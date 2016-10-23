@@ -1,6 +1,6 @@
 import * as assert from "assert";
 import { DOMNodeType } from "./node-types";
-import {BaseSyntheticObjectEdit } from "@tandem/sandbox";
+import {BaseContentEdit } from "@tandem/sandbox";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { MarkupNodeExpression } from "./ast";
@@ -46,7 +46,7 @@ export interface IDOMNode extends TreeNode<any>, IComparable, ISyntheticObject {
   appendChild(child: IDOMNode);
   removeChild(child: IDOMNode);
   clone(deep?: boolean): IDOMNode;
-  createEdit(): BaseSyntheticObjectEdit<IDOMNode>;
+  createEdit(): BaseContentEdit<IDOMNode>;
   visitWalker(walker: ITreeWalker);
 }
 
@@ -203,7 +203,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   abstract accept(visitor: IMarkupNodeVisitor);
   abstract clone(deep?: boolean);
-  abstract createEdit(): BaseSyntheticObjectEdit<any>;
-  // abstract createDiff(newNode: SyntheticDOMNode): BaseSyntheticObjectEdit<any>;
+  abstract createEdit(): BaseContentEdit<any>;
+  // abstract createDiff(newNode: SyntheticDOMNode): BaseContentEdit<any>;
   abstract applyEditAction(action: EditAction);
 }

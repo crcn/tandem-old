@@ -1,7 +1,7 @@
 import { CSSExpression } from "./ast";
 import { ISerializer, serialize, deserialize, ITreeWalker } from "@tandem/common";
 import {
-  BaseSyntheticObjectEdit,
+  BaseContentEdit,
   ISyntheticObject,
   ISyntheticSourceInfo,
   generateSyntheticUID,
@@ -34,7 +34,7 @@ export abstract class SyntheticCSSObject implements ISyntheticObject {
     return clone;
   }
 
-  abstract createEdit(): BaseSyntheticObjectEdit<SyntheticCSSObject>;
+  abstract createEdit(): BaseContentEdit<SyntheticCSSObject>;
   abstract visitWalker(walker: ITreeWalker);
 }
 

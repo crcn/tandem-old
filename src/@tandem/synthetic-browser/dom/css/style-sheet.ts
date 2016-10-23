@@ -18,7 +18,7 @@ import {
 import {
   Bundle,
   EditAction,
-  BaseSyntheticObjectEdit,
+  BaseContentEdit,
   MoveChildEditAction,
   RemoveChildEditAction,
   InsertChildEditAction,
@@ -45,7 +45,7 @@ class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleS
   }
 }
 
-export class SyntheticCSSStyleSheetEdit extends BaseSyntheticObjectEdit<SyntheticCSSStyleSheet> {
+export class SyntheticCSSStyleSheetEdit extends BaseContentEdit<SyntheticCSSStyleSheet> {
 
   static readonly INSERT_STYLE_SHEET_RULE_EDIT = "insertStyleSheetRuleEdit";
   static readonly MOVE_STYLE_SHEET_RULE_EDIT   = "moveStyleSheetRuleEdit";

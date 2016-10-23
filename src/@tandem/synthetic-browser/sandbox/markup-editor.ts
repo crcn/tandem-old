@@ -1,4 +1,4 @@
-import { IContentEditor, BaseSyntheticObjectEditor, RemoveEditAction, SetKeyValueEditAction } from "@tandem/sandbox";
+import { IContentEditor, BaseContentEditor, RemoveEditAction, SetKeyValueEditAction } from "@tandem/sandbox";
 import { sourcePositionEquals } from "@tandem/common";
 import {
   parseMarkup,
@@ -13,7 +13,7 @@ import {
   MarkupFragmentExpression,
 } from "@tandem/synthetic-browser";
 
-export class MarkupEditor2 extends BaseSyntheticObjectEditor<MarkupExpression> {
+export class MarkupEditor2 extends BaseContentEditor<MarkupExpression> {
 
   [RemoveEditAction.REMOVE_EDIT](node: MarkupNodeExpression, { target }: RemoveEditAction) {
     node.parent.removeChild(node);

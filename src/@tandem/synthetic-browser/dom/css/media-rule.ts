@@ -4,7 +4,7 @@ import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { SyntheticCSSStyleRule, diffSyntheticCSSStyleRules } from "./style-rule";
 import { ISerializer, serialize, deserialize, serializable, ISerializedContent, ITreeWalker } from "@tandem/common";
 import {
-  BaseSyntheticObjectEdit,
+  BaseContentEdit,
   SetValueEditActon,
   MoveChildEditAction,
   InsertChildEditAction,
@@ -30,7 +30,7 @@ class SyntheticCSSMediaRuleSerializer implements ISerializer<SyntheticCSSMediaRu
   }
 }
 
-export class SyntheticCSSMediaRuleEdit extends BaseSyntheticObjectEdit<SyntheticCSSMediaRule> {
+export class SyntheticCSSMediaRuleEdit extends BaseContentEdit<SyntheticCSSMediaRule> {
 
   static readonly SET_MEDIA_EDIT       = "setMediaEdit";
   static readonly INSERT_CSS_RULE_EDIT = "insertCSSRuleAtEdit";

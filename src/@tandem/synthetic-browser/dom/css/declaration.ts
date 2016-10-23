@@ -1,11 +1,11 @@
 import { pull } from "lodash";
 import { kebabCase, camelCase } from "lodash";
 import { ISerializable, Action, serializable, diffArray, ITreeWalker } from "@tandem/common";
-import { SetKeyValueEditAction, IContentEdit, ISyntheticObject, generateSyntheticUID, IEditable, BaseSyntheticObjectEdit } from "@tandem/sandbox";
+import { SetKeyValueEditAction, IContentEdit, ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration { }
 
-export class SyntheticCSSStyleDeclarationEdit extends BaseSyntheticObjectEdit<SyntheticCSSStyleDeclaration> {
+export class SyntheticCSSStyleDeclarationEdit extends BaseContentEdit<SyntheticCSSStyleDeclaration> {
 
   static readonly SET_CSS_STYLE_DECLARATION_EDIT = "setCSSStyleDeclarationEdit";
 

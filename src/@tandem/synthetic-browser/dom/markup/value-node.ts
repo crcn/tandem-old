@@ -3,13 +3,13 @@ import { ISerializer } from "@tandem/common";
 import { DOMNodeType } from "./node-types";
 import { SyntheticDOMNode } from "./node";
 import { SyntheticDocument } from "../document";
-import { BaseSyntheticObjectEdit, EditAction, SetValueEditActon } from "@tandem/sandbox";
+import { BaseContentEdit, EditAction, SetValueEditActon } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticDOMValueNode {
   nodeValue: string;
 }
 
-export class SyntheticDOMValueNodeEdit extends BaseSyntheticObjectEdit<SyntheticDOMValueNode> {
+export class SyntheticDOMValueNodeEdit extends BaseContentEdit<SyntheticDOMValueNode> {
   static readonly SET_VALUE_NODE_EDIT = "setValueNodeEdit";
 
   setValueNode(nodeValue: string) {
