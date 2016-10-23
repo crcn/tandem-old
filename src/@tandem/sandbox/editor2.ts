@@ -221,6 +221,14 @@ export abstract class BaseSyntheticObjectEdit<T extends ISyntheticObject> {
     this._actions = [];
   }
 
+  /**
+   * Lock the edit from any new modifications
+   */
+
+  public lock() {
+    this._locked = true;
+  }
+
   get actions(): EditAction[] {
     return this._actions;
   }
@@ -237,7 +245,7 @@ export abstract class BaseSyntheticObjectEdit<T extends ISyntheticObject> {
     const ctor = this.constructor as { new(target:T): BaseSyntheticObjectEdit<T> };
     const clone = new ctor(this.target);
     clone.addDiff(newSynthetic);
-    clone._locked = true;
+    clone.lock();
     return clone;
   }
 
@@ -245,8 +253,9 @@ export abstract class BaseSyntheticObjectEdit<T extends ISyntheticObject> {
 
   protected addAction(action: EditAction) {
 
+    // locked to prevent other actions busting this edit.
     if (this._locked) {
-      throw new Error(`Cannot modify a diff edit.`);
+      throw new Error(`Cannot modify a locked edit.`);
     }
 
     this._actions.push(action);
