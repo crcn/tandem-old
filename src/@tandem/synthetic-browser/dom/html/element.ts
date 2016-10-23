@@ -9,6 +9,7 @@ import {
   IDOMNodeEntityCapabilities,
 } from "../markup";
 
+
 @serializable()
 export class SyntheticHTMLElement extends SyntheticDOMElement {
 
@@ -84,7 +85,7 @@ export class SyntheticHTMLElement extends SyntheticDOMElement {
   private _resetStyleProxy() {
 
     // Proxy the style here so that any changes get synchronized back
-    // to the attribute -- along with the entity representing this synthetic
+    // to the attribute
     // element.
     return this._styleProxy = new Proxy(this._style, {
       get: (target, propertyName, receiver) => {

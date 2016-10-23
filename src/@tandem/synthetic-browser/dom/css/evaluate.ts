@@ -1,9 +1,6 @@
-import {
-  CSSExpression,
-  CSSDeclarationExpression
-} from "./ast";
-
+import * as sm from "source-map";
 import * as postcss from "postcss";
+
 import { without } from "lodash";
 import { camelCase } from "lodash";
 import { SandboxModule } from "@tandem/sandbox";
@@ -15,7 +12,6 @@ import { SyntheticCSSStyleSheet } from "./style-sheet";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { ISourceLocation } from "@tandem/common";
-import * as sm from "source-map";
 
 export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, module?: SandboxModule): SyntheticCSSStyleSheet {
 

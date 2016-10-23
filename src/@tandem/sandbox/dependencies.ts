@@ -1,9 +1,7 @@
-import { IModule } from "./module";
 import { FileCache } from "./file-cache";
-import { FileEditor } from "./editor2";
 import { IFileSystem } from "./file-system";
 import { IFileResolver } from "./resolver";
-import { contentEditorType, IContentEditor } from "./editor2";
+import { FileEditor, contentEditorType, IEditor } from "./editor";
 
 import {
   Bundle,
@@ -25,8 +23,6 @@ import {
   ClassFactoryDependency,
   createSingletonDependencyClass,
 } from "@tandem/common";
-
-export type moduleType = { new(filePath: string, content: string, sandbox: any): IModule };
 
 export class FileSystemDependency extends Dependency<IFileSystem> {
   static readonly NS = "fileSystem";
@@ -111,8 +107,8 @@ export class ContentEditorFactoryDependency extends ClassFactoryDependency {
     return [ContentEditorFactoryDependency.NS, mimeType].join("/");
   }
 
-  create(): IContentEditor {
-    return super.create();
+  create(filePath: string, content: string): IEditor {
+    return super.create(filePath, content);
   }
 
   static find(mimeType: string, dependencies: Dependencies) {

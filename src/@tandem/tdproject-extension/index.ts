@@ -1,31 +1,26 @@
+import { TandemBundleLoader } from "./sandbox";
 import { TDArtboardStageToolComponent } from "./components";
 import { ReactComponentFactoryDependency } from "@tandem/editor";
 import { TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS } from "./constants";
 import { MimeTypeDependency, HTML_MIME_TYPE, MimeTypeAliasDependency } from "@tandem/common";
-
-import {
-  SyntheticTDArtboardElement,
-  SyntheticTDRepeatElement,
-  SyntheticTDTemplateElement,
-} from "./synthetic";
-
-import { TandemBundleLoader } from "./sandbox";
 import { BundlerLoaderFactoryDependency, ContentEditorFactoryDependency } from "@tandem/sandbox";
 
 import {
+  SyntheticTDRepeatElement,
+  SyntheticTDArtboardElement,
+  SyntheticTDTemplateElement,
+} from "./synthetic";
+
+import {
   HTML_XMLNS,
-  MarkupModule,
-  NoopDOMENtity,
-  MarkupEditor2,
+  MarkupEditor,
   SyntheticHTMLElement,
-  DefaultSyntheticDOMEntity,
   MarkupMimeTypeXMLNSDependency,
   SyntheticDOMElementClassDependency,
 } from "@tandem/synthetic-browser";
 
 import {
   HTMLBundleLoader,
-  VisibleHTMLEntity,
   SyntheticHTMLLink,
   SyntheticHTMLStyle,
   SyntheticHTMLScript,
@@ -54,5 +49,5 @@ export const tdprojectExtensionDependencies = [
   new MarkupMimeTypeXMLNSDependency(TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS),
 
   // editors
-  new ContentEditorFactoryDependency(TDPROJECT_MIME_TYPE, MarkupEditor2),
+  new ContentEditorFactoryDependency(TDPROJECT_MIME_TYPE, MarkupEditor),
 ];

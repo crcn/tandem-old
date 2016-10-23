@@ -1,6 +1,8 @@
 
 import { MetadataKeys } from "@tandem/editor/constants";
+import { SyntheticDOMNode } from "@tandem/synthetic-browser";
 import { FrontEndApplication } from "@tandem/editor/application";
+import { RemoveEditAction, FileEditorDependency } from "@tandem/sandbox";
 import {
   loggable,
   bindable,
@@ -8,12 +10,6 @@ import {
   BaseApplicationService,
   ApplicationServiceDependency,
 } from "@tandem/common";
-
-import {
-  BaseDOMNodeEntity
-} from "@tandem/synthetic-browser";
-
-import { RemoveEditAction, FileEditorDependency } from "@tandem/sandbox";
 
 import {
   SelectAction,
@@ -112,9 +108,9 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
     // parents and children cannot be selected. For now - deselect
     // parent entities that appear in the selection
-    newSelection.concat().forEach((entity: BaseDOMNodeEntity<any, any>) => {
+    newSelection.concat().forEach((node: SyntheticDOMNode) => {
       let i;
-      if (entity.parent && (i = newSelection.indexOf(entity.parent)) !== -1) {
+      if (node.parentNode && (i = newSelection.indexOf(node.parentNode)) !== -1) {
         newSelection.splice(i, 1);
       }
     });

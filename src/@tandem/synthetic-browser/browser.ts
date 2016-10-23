@@ -25,11 +25,6 @@ import {
 } from "@tandem/common";
 
 import {
-  BaseDOMNodeEntity,
-  DefaultSyntheticDOMEntity,
-} from "./entities";
-
-import {
   Bundle,
   Bundler,
   Sandbox,

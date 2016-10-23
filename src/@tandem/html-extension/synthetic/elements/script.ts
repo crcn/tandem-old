@@ -1,12 +1,7 @@
 import * as path from "path";
-
-import {
-  SyntheticDOMElement,
-  BaseDOMNodeEntity,
-} from "@tandem/synthetic-browser";
-import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
-
 import { JS_MIME_TYPE } from "@tandem/common";
+import { SyntheticDOMElement } from "@tandem/synthetic-browser";
+import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 
 export class SyntheticHTMLScript extends SyntheticHTMLElement {
   private _fn: Function;

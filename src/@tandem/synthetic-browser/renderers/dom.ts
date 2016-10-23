@@ -1,8 +1,13 @@
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+
 import { Action } from "@tandem/common";
+import { decode } from "ent";
 import { WrapBus } from "mesh";
 import { camelCase } from "lodash";
-import { decode } from "ent";
+import { BaseRenderer } from "./base";
 import { HTML_VOID_ELEMENTS } from "@tandem/synthetic-browser/dom";
+
 import {
   BoundingRect,
   watchProperty,
@@ -12,6 +17,7 @@ import {
   isMaster,
   calculateAbsoluteBounds
 } from "@tandem/common";
+
 import {
   DOMNodeType,
   querySelectorAll,
@@ -22,12 +28,6 @@ import {
   SyntheticDOMContainer,
   SyntheticCSSStyleDeclaration,
 } from "../dom";
-
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-
-import { BaseRenderer } from "./base";
-import { BaseDOMNodeEntity } from "../entities";
 
 export class SyntheticDOMRenderer extends BaseRenderer {
 

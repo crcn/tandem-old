@@ -1,13 +1,13 @@
 import { Action } from "@tandem/common/actions";
 import { KeyBinding } from "./base";
 import { FrontEndApplication } from "@tandem/editor/application";
+import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { GlobalKeyBindingDependency } from "@tandem/editor/dependencies";
 import { WorkspaceToolFactoryDependency } from "@tandem/editor/dependencies";
+import { SelectAllAction, SetToolAction } from "@tandem/editor/actions";
 import { ZoomAction, DeleteSelectionAction } from "@tandem/editor/actions";
 import { BaseCommand, BaseApplicationCommand } from "@tandem/common/commands";
-import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
 import { SettingKeys, ZOOM_INCREMENT, POINTER_TOOL_KEY_CODE } from "@tandem/editor/constants";
-import { SelectAllAction, SetToolAction } from "@tandem/editor/actions";
 
 export * from "./base";
 export * from "./manager";

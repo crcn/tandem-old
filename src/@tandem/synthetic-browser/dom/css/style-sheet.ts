@@ -1,9 +1,9 @@
-import { CSSRuleExpression } from "./ast";
 import { SyntheticCSSFontFace } from "./font-face";
 import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { SyntheticCSSStyleRule, ISerializedSyntheticCSSStyleRule } from "./style-rule";
+
 import {
   serialize,
   diffArray,

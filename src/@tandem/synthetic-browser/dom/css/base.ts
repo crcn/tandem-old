@@ -1,4 +1,3 @@
-import { CSSExpression } from "./ast";
 import { ISerializer, serialize, deserialize, ITreeWalker } from "@tandem/common";
 import {
   BaseContentEdit,

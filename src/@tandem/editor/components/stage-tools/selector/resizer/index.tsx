@@ -4,9 +4,9 @@ import { startDrag } from "@tandem/common/utils/component";
 import PathComponent from "./path";
 import { MetadataKeys } from "@tandem/editor/constants";
 import { FrontEndApplication } from "@tandem/editor/application";
-import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
+import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
-import { SyntheticDOMElement, BaseVisibleDOMNodeEntity, BaseDOMNodeEntity } from "@tandem/synthetic-browser";
+import { SyntheticDOMElement, SyntheticDOMNode } from "@tandem/synthetic-browser";
 import { BoundingRect, IPoint, Point, traverseTree, findTreeNode } from "@tandem/common";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
 
@@ -97,7 +97,7 @@ class ResizerComponent extends React.Component<{
   private _movingTimer: any;
   private _dragTimer: any;
   private _currentGuider: Guider;
-  private _visibleEntities: VisibleDOMEntityCollection<BaseVisibleDOMNodeEntity<SyntheticDOMElement, any>>;
+  private _visibleEntities: VisibleSyntheticElementCollection<any>;
 
   constructor() {
     super();
@@ -116,9 +116,9 @@ class ResizerComponent extends React.Component<{
     const guider = new Guider(5 / this.props.zoom);
     const { selection } = this.props;
 
-    const bottomOwnerDocument = (selection as BaseDOMNodeEntity<any, any>[]).reduce((a: BaseDOMNodeEntity<any, any>, b: BaseDOMNodeEntity<any, any>) => {
-      return a.source.ownerDocument.defaultView.depth > a.source.ownerDocument.defaultView.depth ? a : b;
-    }).source.ownerDocument;
+    const bottomOwnerDocument = (selection as SyntheticDOMNode[]).reduce((a: SyntheticDOMNode, b: SyntheticDOMNode) => {
+      return a.ownerDocument.defaultView.depth > a.ownerDocument.defaultView.depth ? a : b;
+    }).ownerDocument;
 
     // // const bottomOwnerDocumentEntity = findTreeNode(this.props.app.workspace.document, (entity) => entity.source === bottomOwnerDocument);
 
@@ -256,7 +256,7 @@ class ResizerComponent extends React.Component<{
 
     const { selection } = this.props;
 
-    const entities = this._visibleEntities = new VisibleDOMEntityCollection(...selection);
+    const entities = this._visibleEntities = new VisibleSyntheticElementCollection(...selection);
 
     const pointRadius = (this.props.pointRadius || POINT_RADIUS);
     const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);

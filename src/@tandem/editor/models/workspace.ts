@@ -6,14 +6,14 @@ import {
   IActor,
   Action,
   inject,
-  Metadata ,
-  IInjectable,
   IPoint,
-  Transform
+  Metadata,
+  Transform,
+  IInjectable,
 } from "@tandem/common";
 
 import { ISyntheticObject } from "@tandem/sandbox";
-import { ISyntheticBrowser, SyntheticBrowser, BaseDOMNodeEntity } from "@tandem/synthetic-browser";
+import { ISyntheticBrowser, SyntheticBrowser } from "@tandem/synthetic-browser";
 
 export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;

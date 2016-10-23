@@ -4,6 +4,5 @@ export * from "./renderers";
 export * from "./dependencies";
 export * from "./sandbox";
 export * from "./location";
-export * from "./entities";
 export * from "./actions";
 export * from "./remote-browser";

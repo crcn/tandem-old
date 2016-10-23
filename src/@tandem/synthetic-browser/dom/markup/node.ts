@@ -7,7 +7,6 @@ import { MarkupNodeExpression } from "./ast";
 
 import {
   Bundle,
-  IModule,
   IEditable,
   IDiffable,
   EditAction,

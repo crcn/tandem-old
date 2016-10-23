@@ -1,4 +1,4 @@
-import { IContentEdit } from "./editor2";
+import { IContentEdit } from "./editor";
 import { IFileResolverOptions } from "./resolver";
 import { Action, IASTNode, IActor, definePublicAction, defineMasterAction, defineWorkerAction, IDisposable } from "@tandem/common";
 

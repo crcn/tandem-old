@@ -8,8 +8,8 @@ import ResizerComponent from "./resizer";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { SelectionSizeComponent } from "@tandem/editor/components/common";
 import { BoundingRect, flattenTree } from "@tandem/common";
-import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
+import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
 
 export default class SelectorComponent extends React.Component<{ workspace: Workspace, tool: PointerTool, app: FrontEndApplication, zoom: number  }, any> {
 
@@ -40,7 +40,7 @@ export default class SelectorComponent extends React.Component<{ workspace: Work
 
     if (!(tool instanceof PointerTool)) return null;
 
-    const selection = new VisibleDOMEntityCollection(...(workspace.selection as any));
+    const selection = new VisibleSyntheticElementCollection(...(workspace.selection as any));
 
     // simple check to see if the selection array
     // is an IEntityDisplay

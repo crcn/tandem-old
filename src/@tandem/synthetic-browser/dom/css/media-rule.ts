@@ -1,8 +1,8 @@
-import { CSSATRuleExpression } from "./ast";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { SyntheticCSSStyleRule, diffSyntheticCSSStyleRules } from "./style-rule";
 import { ISerializer, serialize, deserialize, serializable, ISerializedContent, ITreeWalker } from "@tandem/common";
+
 import {
   BaseContentEdit,
   SetValueEditActon,

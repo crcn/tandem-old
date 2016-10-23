@@ -4,7 +4,6 @@ import { CSS_MIME_TYPE } from "@tandem/common";
 import {
   parseCSS,
   evaluateCSS,
-  BaseDOMNodeEntity,
   SyntheticDOMElement,
   SyntheticCSSStyleSheet,
 } from "@tandem/synthetic-browser";

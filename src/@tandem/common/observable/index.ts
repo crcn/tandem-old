@@ -4,6 +4,7 @@ import { IObservable } from "./base";
 
 export { IObservable };
 
+// TODO - change "notify" to "dispatch"
 export class Observable implements IObservable {
   private _observers: any;
   constructor(private _target?: IObservable) {

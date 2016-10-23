@@ -4,11 +4,10 @@ import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { SyntheticDOMElement } from "@tandem/synthetic-browser";
-import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
-import { SetToolAction, SelectAction } from "@tandem/editor/actions";
+import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { Workspace, InsertTool } from "@tandem/editor/models";
+import { SetToolAction, SelectAction } from "@tandem/editor/actions";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
-import { BaseVisibleDOMNodeEntity, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { SelectionSizeComponent, SelectablesComponent } from "@tandem/editor/components/common";
 import {
   IActor,

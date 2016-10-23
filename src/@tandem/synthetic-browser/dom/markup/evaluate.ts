@@ -1,9 +1,8 @@
 import { DOMNodeType } from "./node-types";
-import { IMarkupModule } from "@tandem/synthetic-browser/sandbox";
+import { SandboxModule } from "@tandem/sandbox";
 import { SyntheticDOMNode } from "./node";
 import { SyntheticDocument } from "../document";
 import { SyntheticDOMContainer } from "./container";
-import { BaseSandboxModule, SandboxModule } from "@tandem/sandbox";
 import { SyntheticDOMAttribute, SyntheticDOMElement } from "./element";
 import { IMarkupExpression, MarkupContainerExpression } from "./ast";
 

@@ -1,5 +1,4 @@
 import { BaseContentEdit } from "@tandem/sandbox";
-import { CSSATRuleExpression } from "./ast";
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";

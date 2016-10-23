@@ -1,4 +1,4 @@
-import { IContentEditor, BaseContentEditor, RemoveEditAction, SetKeyValueEditAction } from "@tandem/sandbox";
+import { BaseContentEditor, RemoveEditAction, SetKeyValueEditAction } from "@tandem/sandbox";
 import { sourcePositionEquals } from "@tandem/common";
 import {
   parseMarkup,
@@ -13,7 +13,7 @@ import {
   MarkupFragmentExpression,
 } from "@tandem/synthetic-browser";
 
-export class MarkupEditor2 extends BaseContentEditor<MarkupExpression> {
+export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
 
   [RemoveEditAction.REMOVE_EDIT](node: MarkupNodeExpression, { target }: RemoveEditAction) {
     node.parent.removeChild(node);
@@ -32,7 +32,7 @@ export class MarkupEditor2 extends BaseContentEditor<MarkupExpression> {
     });
   }
 
-  parseContent(filePath: string, content: string) {
+  parseContent(content: string) {
     return parseMarkup(content);
   }
 

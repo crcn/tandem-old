@@ -5,9 +5,9 @@ import { PointerTool } from "@tandem/editor/models/pointer-tool";
 import { MetadataKeys } from "@tandem/editor/constants";
 import { BoundingRect } from "@tandem/common/geom";
 import { FrontEndApplication } from "@tandem/editor/application";
-import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { SelectAction, MouseAction } from "@tandem/editor/actions";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
+import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
 
 class DragSelectComponent extends React.Component<{ app: FrontEndApplication, zoom: number, tool: PointerTool }, any> {
 

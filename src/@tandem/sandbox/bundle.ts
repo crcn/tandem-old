@@ -2,10 +2,11 @@ import * as sm from "source-map";
 import * as path from "path";
 
 import { values } from "lodash";
+import { WrapBus } from "mesh";
+import { FileEditor } from "./editor";
 import { IFileSystem } from "./file-system";
 import { RawSourceMap } from "source-map";
 import { BundleAction } from "./actions";
-import { FileEditor } from "./editor2";
 import { FileCache, FileCacheItem } from "./file-cache";
 import { IFileResolver, IFileResolverOptions } from "./resolver";
 
@@ -32,8 +33,6 @@ import {
   ActiveRecordCollection,
   MimeTypeAliasDependency,
 } from "@tandem/common";
-import { WrapBus } from "mesh";
-
 
 import {
   BundlerDependency,

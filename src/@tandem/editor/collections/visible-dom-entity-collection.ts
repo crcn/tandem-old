@@ -1,8 +1,7 @@
 import { BoundingRect, IPoint } from "@tandem/common";
 import {
   DOMNodeType,
-  BaseDOMNodeEntity,
-  BaseVisibleDOMNodeEntity,
+  SyntheticHTMLElement,
   IDOMNodeEntityCapabilities,
 } from "@tandem/synthetic-browser";
 
@@ -62,10 +61,11 @@ import {
 //   }
 // }
 
-export class VisibleDOMEntityCollection<T extends BaseVisibleDOMNodeEntity<any, any>> extends Array<T> {
+export class VisibleSyntheticElementCollection<T extends SyntheticHTMLElement> extends Array<T> {
 
-  constructor(...components: BaseDOMNodeEntity<any, any>[]) {
-    super(...(<Array<T>><any>components).filter((entity: BaseVisibleDOMNodeEntity<any, any>) => entity instanceof BaseVisibleDOMNodeEntity));
+  constructor(...elements: any[]) {
+    super();
+    // super(...(<Array<T>><any>components).filter((entity: BaseVisibleDOMNodeEntity<any, any>) => entity instanceof BaseVisibleDOMNodeEntity));
   }
 
   get editable() {
@@ -85,10 +85,10 @@ export class VisibleDOMEntityCollection<T extends BaseVisibleDOMNodeEntity<any, 
     const epos = this.position;
     for (const item of this) {
       const itemBounds  = item.absoluteBounds;
-      item.position = {
-        left: position.left + (itemBounds.left - epos.left),
-        top : position.top  + (itemBounds.top  - epos.top)
-      };
+      // item.position = {
+      //   left: position.left + (itemBounds.left - epos.left),
+      //   top : position.top  + (itemBounds.top  - epos.top)
+      // };
     }
   }
 
@@ -108,29 +108,29 @@ export class VisibleDOMEntityCollection<T extends BaseVisibleDOMNodeEntity<any, 
       const right  = left + nbounds.width * percWidth;
       const bottom = top + nbounds.height * percHeight;
 
-      item.absoluteBounds = new BoundingRect(
-        left,
-        top,
-        right,
-        bottom
-      );
+      // item.absoluteBounds = new BoundingRect(
+      //   left,
+      //   top,
+      //   right,
+      //   bottom
+      // );
     }
   }
 
   get capabilities(): IDOMNodeEntityCapabilities {
     const capabilities = { movable: true, resizable: true };
-    for (const item of this) {
-      const cap = item.capabilities;
-      for (const key in cap) {
-        capabilities[key] = capabilities[key] && cap[key];
-      }
-    }
+    // for (const item of this) {
+    //   const cap = item.capabilities;
+    //   for (const key in cap) {
+    //     capabilities[key] = capabilities[key] && cap[key];
+    //   }
+    // }
     return capabilities;
   }
 
   async save() {
     for (const entity of this) {
-      await entity.save();
+      // await entity.save();
     }
   }
 }

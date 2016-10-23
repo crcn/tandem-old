@@ -3,10 +3,9 @@ import { inject } from "@tandem/common/decorators";
 import { BaseEditorTool } from "@tandem/editor/models";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { POINTER_TOOL_KEY_CODE } from "@tandem/editor/constants";
-import { VisibleDOMEntityCollection } from "@tandem/editor/collections";
 import { BaseApplicationService } from "@tandem/common/services";
-import { WorkspaceToolFactoryDependency } from "@tandem/editor/dependencies";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
+import { WorkspaceToolFactoryDependency } from "@tandem/editor/dependencies";
 import { IInjectable, MainBusDependency } from "@tandem/common/dependencies";
 import { SelectAction, MouseAction, KeyboardAction, RemoveSelectionAction } from "@tandem/editor/actions";
 

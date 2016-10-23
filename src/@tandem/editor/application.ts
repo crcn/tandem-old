@@ -45,7 +45,6 @@ import { keyBindingsDependency } from "./key-bindings";
 import { htmlExtensionDependencies } from "@tandem/html-extension";
 import { sassExtensionDependencies  } from "@tandem/sass-extension";
 import { historyExtensionDependencies } from "@tandem/history-extension";
-import { markdownExtensionDependencies } from "@tandem/markdown-extension";
 import { tdprojectExtensionDependencies } from "@tandem/tdproject-extension";
 
 import { Workspace } from "./models";
@@ -123,7 +122,6 @@ export class FrontEndApplication extends Application {
       sassExtensionDependencies,
       htmlExtensionDependencies,
       historyExtensionDependencies,
-      markdownExtensionDependencies,
       tdprojectExtensionDependencies,
 
       // singletons

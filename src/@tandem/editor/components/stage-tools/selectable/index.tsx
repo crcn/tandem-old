@@ -3,9 +3,9 @@ import * as React from "react";
 import { Workspace } from "@tandem/editor/models";
 import { SelectAction } from "@tandem/editor/actions";
 import { FrontEndApplication } from "@tandem/editor/application";
+import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { SelectablesComponent } from "@tandem/editor/components/common";
 import { StageToolComponentFactoryDependency } from "@tandem/editor/dependencies";
-import { BaseVisibleDOMNodeEntity, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 
 // @injectable
 export default class SelectableToolComponent extends React.Component<{selection: any,  bus: any, app: any, zoom: number, workspace: Workspace }, {}>  {

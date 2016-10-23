@@ -8,6 +8,7 @@ import { flatten, intersection } from "lodash";
 import { SelectAction, ToggleSelectAction } from "@tandem/editor/actions";
 import { LayerLabelComponentFactoryDependency } from "@tandem/editor/dependencies";
 import { DragSource, DropTarget, DndComponent } from "react-dnd";
+import { SyntheticDOMNode, SyntheticDOMContainer } from "@tandem/synthetic-browser";
 import {
   Action,
   IActor,
@@ -19,10 +20,6 @@ import {
   MetadataChangeAction,
 } from "@tandem/common";
 
-import {
-  SyntheticDOMNode,
-  BaseDOMNodeEntity
-} from "@tandem/synthetic-browser";
 
 interface ILayerLabelProps {
   paddingLeft?: number;
@@ -216,8 +213,8 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
   canDrop() {
     return true;
   },
-  drop(args: { entity: BaseDOMNodeEntity<any, any>, app: FrontEndApplication, offset: any }, monitor, component) {
-    const { entity, app, offset } = args;
+  drop(args: { node: SyntheticDOMNode, app: FrontEndApplication, offset: any }, monitor, component) {
+    const { node, app, offset } = args;
 
     app.bus.execute(new SelectAction([], false));
 
@@ -226,7 +223,7 @@ class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
     const item = null; // findTreeNode(app.workspace.document, (node) => node )
 
 
-    if (entity === item) return;
+    if (node === item) return;
 
     // (async () => {
     //   (item.parent as any as Base).source.removeChild(item.source);
@@ -291,12 +288,13 @@ function collect(connect, monitor) {
 
 let LayerDndLabelComponent = DragSource("element", layerSource, collect)(LayerLabelComponent);
 LayerDndLabelComponent = DropTarget("element", {
-  canDrop({ entity }, monitor) {
-    return entity.metadata.get("dragSourceId") !== (monitor.getItem() as any).id;
+  canDrop({ node }, monitor) {
+    return false;
+    // return node.metadata.get("dragSourceId") !== (monitor.getItem() as any).id;
   },
-  drop(props: { entity: BaseDOMNodeEntity<any, any>, app: FrontEndApplication, offset }, monitor, component) {
+  drop(props: { node: SyntheticDOMNode, app: FrontEndApplication, offset }, monitor, component) {
 
-    const { entity, app } = props;
+    const { node, app } = props;
     app.bus.execute(new SelectAction([], false));
     const data = monitor.getItem() as any;
     const item = null; // TODO - find
@@ -338,11 +336,11 @@ export default class LayerComponent extends React.Component<{ app: FrontEndAppli
     // when the select action is executed, take all items
     // and ensure that the parent is expanded. Not pretty, encapsulated, and works.
     if (action.type === SelectAction.SELECT) {
-      (action as SelectAction).items.forEach((item: BaseDOMNodeEntity<any, any>) => {
-        let p = item.parent as BaseDOMNodeEntity<any, any>;
+      (action as SelectAction).items.forEach((item: SyntheticDOMNode) => {
+        let p = item.parent as SyntheticDOMContainer;
         while (p) {
-          p.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
-          p = p.parent as BaseDOMNodeEntity<any, any>;
+          // p.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
+          p = p.parent as SyntheticDOMContainer;
         }
       });
     }

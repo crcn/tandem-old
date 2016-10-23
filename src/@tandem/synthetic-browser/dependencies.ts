@@ -1,7 +1,6 @@
 import { SyntheticBrowser } from "./browser";
 import { syntheticElementClassType, SyntheticDOMNode } from "./dom";
 import { Dependency, Dependencies, MimeTypeDependency } from "@tandem/common";
-import { entityType, BaseDOMNodeEntity, DefaultSyntheticDOMEntity } from "./entities";
 
 export class SyntheticDOMElementClassDependency extends Dependency<syntheticElementClassType> {
   static readonly SYNTHETIC_ELEMENT_CLASS_NS_PREFIX = "syntheticMarkupElementClass/";

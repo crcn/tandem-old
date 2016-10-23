@@ -6,7 +6,6 @@ import {
   Bundle,
   EditAction,
   IContentEdit,
-  IContentEditor,
   BaseContentEdit,
   ISyntheticObject,
   BaseContentEditor,
@@ -116,7 +115,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     return prefix;
   }
 
-  parseContent(filePath: string, content: string) {
+  parseContent(content: string) {
 
     // TODO - find syntax based on mime type here
     return parseCSS(content, undefined, postcssSassSyntax);
