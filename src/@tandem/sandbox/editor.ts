@@ -268,6 +268,9 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
 
   public fromDiff(newSynthetic: T) {
     const ctor = this.constructor as { new(target:T): BaseContentEdit<T> };
+
+    // TODO - shouldn't be instantiating the constructor property (it may require more params). Use clone method
+    // instead.
     const clone = new ctor(this.target);
     return clone.addDiff(newSynthetic).lock();
   }
