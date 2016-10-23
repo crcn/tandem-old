@@ -87,7 +87,7 @@ export abstract class BaseSandboxModuleEditor<T extends IModuleEdit> extends Obs
           const actions = this._currentEdit.actions;
           this._currentEdit    = undefined;
           this._currentSession = undefined;
-          this.applyEdits(actions);
+          this.applyEditActions(actions);
         });
       });
     }));
@@ -95,7 +95,7 @@ export abstract class BaseSandboxModuleEditor<T extends IModuleEdit> extends Obs
 
   protected abstract createEdit(): T;
   abstract getFormattedContent(): string;
-  protected applyEdits(actions: Action[]) {
+  protected applyEditActions(actions: Action[]) {
 
     // apply all actions against the source content content
     for (const action of actions) {

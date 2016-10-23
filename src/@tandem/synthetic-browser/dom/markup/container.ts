@@ -107,7 +107,7 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
     return querySelectorAll(this, selector);
   }
 
-  applyEdit(action: EditAction) {
+  applyEditAction(action: EditAction) {
     switch(action.type) {
       case SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT:
         const removeAction = <InsertChildEditAction>action;

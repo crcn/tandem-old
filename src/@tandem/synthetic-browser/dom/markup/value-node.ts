@@ -49,7 +49,7 @@ export abstract class SyntheticDOMValueNode extends SyntheticDOMNode {
     return new SyntheticDOMValueNodeEdit(this);
   }
 
-  applyEdit(action: EditAction) {
+  applyEditAction(action: EditAction) {
     switch(action.type) {
       case SyntheticDOMValueNodeEdit.SET_VALUE_NODE_EDIT:
         this.nodeValue = (<SetValueEditActon>action).newValue;

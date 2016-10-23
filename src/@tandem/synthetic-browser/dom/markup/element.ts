@@ -242,8 +242,8 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     return new SyntheticDOMElementEdit(this);
   }
 
-  applyEdit(action: EditAction) {
-    super.applyEdit(action);
+  applyEditAction(action: EditAction) {
+    super.applyEditAction(action);
     switch(action.type) {
 
     }

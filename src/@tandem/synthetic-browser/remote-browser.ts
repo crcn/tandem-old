@@ -62,7 +62,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       }
     } else if (action.type === DIFFED_DOCUMENT) {
       const edit: SyntheticDocumentEdit = deserialize(action.edit, this._dependencies);
-      new SyntheticObjectEditor(this.window.document).applyEdits(...edit.actions);
+      new SyntheticObjectEditor(this.window.document).applyEditActions(...edit.actions);
 
       // explicitly request an update since some synthetic objects may not emit
       // an action when patched -- CSS styles for example
@@ -86,7 +86,7 @@ export class RemoteBrowserService extends BaseApplicationService<FrontEndApplica
               const edit = currentDocument.createEdit().fromDiff(browser.document);
 
               // need to patch existing document for now to maintain UID references
-              new SyntheticObjectEditor(currentDocument).applyEdits(...edit.actions);
+              new SyntheticObjectEditor(currentDocument).applyEditActions(...edit.actions);
               if (edit.actions.length) {
                 writer.write({ type: DIFFED_DOCUMENT, edit: serialize(edit) });
               }

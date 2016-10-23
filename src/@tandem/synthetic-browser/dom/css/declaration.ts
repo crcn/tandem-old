@@ -395,7 +395,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     return new SyntheticCSSStyleDeclarationEdit(this);
   }
 
-  applyEdit(action: Action) {
+  applyEditAction(action: Action) {
     if (action.type === SyntheticCSSStyleDeclarationEdit.SET_CSS_STYLE_DECLARATION_EDIT) {
       const editAction = <SetKeyValueEditAction>action;
       this[editAction.name] = editAction.newValue;

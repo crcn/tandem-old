@@ -30,7 +30,7 @@ export interface IContentEditor {
 
 export interface IEditable {
   createEdit(): IContentEdit;
-  applyEdit(action: EditAction): any;
+  applyEditAction(action: EditAction): any;
 }
 
 export interface IDiffable {
@@ -272,7 +272,7 @@ export class FileEditor extends Observable {
     super();
   }
 
-  applyEdits(...actions: EditAction[]): Promise<any> {
+  applyEditActions(...actions: EditAction[]): Promise<any> {
 
     if (this._edits == null) {
       this._shouldEditAgain = true;
@@ -366,7 +366,7 @@ export class SyntheticObjectEditor {
       this._allChildSyntheticObjects[child.uid] = child;
     });
   }
-  applyEdits(...actions: EditAction[]) {
+  applyEditActions(...actions: EditAction[]) {
     for (let i = 0, n = actions.length; i < n; i++) {
       const action = actions[i];
 
@@ -378,7 +378,7 @@ export class SyntheticObjectEditor {
         throw new Error(`Edit action target ${action.target.uid} not found.`);
       }
 
-      target.applyEdit(action);
+      target.applyEditAction(action);
     }
   }
 }

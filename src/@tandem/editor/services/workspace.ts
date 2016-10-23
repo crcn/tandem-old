@@ -116,7 +116,7 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
   }
 
   [ApplyEditAction.APPLY_EDITS]({ edit }: ApplyEditAction) {
-    return FileEditorDependency.getInstance(this.app.dependencies).applyEdits(...edit.actions);
+    return FileEditorDependency.getInstance(this.app.dependencies).applyEditActions(...edit.actions);
   }
 
 

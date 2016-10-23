@@ -205,5 +205,5 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   abstract clone(deep?: boolean);
   abstract createEdit(): BaseSyntheticObjectEdit<any>;
   // abstract createDiff(newNode: SyntheticDOMNode): BaseSyntheticObjectEdit<any>;
-  abstract applyEdit(action: EditAction);
+  abstract applyEditAction(action: EditAction);
 }
