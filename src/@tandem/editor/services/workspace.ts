@@ -63,9 +63,14 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     const workspace = new Workspace();
 
     const browser = workspace.browser = new RemoteSyntheticBrowser(this._dependencies, new CanvasRenderer(workspace, new SyntheticDOMRenderer()));
-    browser.observe({ execute: (action) => {
-      this.bus.execute(action);
-    }});
+
+    // redundant since the document querier fetches all changes needed by the app
+    // browser.observe({ execute: (action) => {
+    //   this.bus.execute(action);
+    // }});
+
+    // yuck - fix quick bug to notify of changes to querier since it's async
+    workspace.documentQuerier.observe({ execute: (action) => this.bus.execute(action) });
     await browser.open(filePath);
 
     this.app.workspace = workspace;

@@ -68,9 +68,6 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
 
 export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
 
-  private _querySelectorAllCache: any = {};
-  private _querySelectorCache: any = {};
-
   createEdit(): SyntheticDOMContainerEdit<any> {
     return new SyntheticDOMContainerEdit(this);
   }
@@ -102,68 +99,10 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
 
   public querySelector(selector: string, deep?: boolean) {
     return querySelector(this, selector);
-    // return this.querySelectorCached(getSelectorTester(selector), deep);
   }
 
   public querySelectorAll(selector: string, deep?: boolean) {
     return querySelectorAll(this, selector);
-    // return this.querySelectorAllCached(getSelectorTester(selector), deep);
-  }
-
-  private querySelectorCached(selectorTester: ISelectorTester, deep?: boolean) {
-    return this._querySelectorCache[selectorTester.source + deep] || (this._querySelectorCache[selectorTester.source + deep] = (() => {
-      if (selectorTester.test(this)) return this;
-      let found;
-      this.visitWalker({
-        accept(child: SyntheticDOMNode) {
-          if (found) return;
-
-          if ((isShadowRootOrDocument(child) && deep) || child.nodeType === DOMNodeType.ELEMENT) {
-            found = (<SyntheticDOMContainer>child).querySelectorCached(selectorTester, deep);
-          } else if (selectorTester.test(child)) {
-            found = child;
-          }
-        }
-      });
-      return found;
-    })());
-  }
-
-  private querySelectorAllCached(selectorTester: ISelectorTester, deep?: boolean) {
-    return this._querySelectorAllCache[selectorTester.source + deep] || (this._querySelectorAllCache[selectorTester.source + deep] = (() => {
-      let found = [];
-
-      if (selectorTester.test(this)) {
-        found.push(this);
-      }
-
-      this.visitWalker({
-        accept(child: SyntheticDOMNode) {
-          if ((isShadowRootOrDocument(child) && deep) || child.nodeType === DOMNodeType.ELEMENT) {
-            found.push(...(<SyntheticDOMContainer>child).querySelectorAllCached(selectorTester, deep));
-          }
-        }
-      });
-
-      return found;
-    })());
-  }
-
-  notify(action: Action) {
-
-    if (isDOMMutationAction(action) || action.type === DOMNodeAction.DOM_CLEAR_CACHE) {
-      this.clearCache(false);
-    }
-
-    return super.notify(action);
-  }
-
-  protected clearCache(bubble: boolean = false) {
-    this._querySelectorAllCache = {};
-    this._querySelectorCache    = {};
-    if (bubble === true) {
-      this.notify(new DOMNodeAction(DOMNodeAction.DOM_CLEAR_CACHE, true));
-    }
   }
 
   applyEditAction(action: EditAction) {

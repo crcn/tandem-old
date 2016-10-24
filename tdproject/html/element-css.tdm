@@ -35,7 +35,6 @@
 <template id="html-element-css">
   <gutter>
     <div>
-
       <!--
       TODOS:
        - {} for toggling raw CSS
@@ -60,7 +59,7 @@
             background
           </div>
           <div class="col-xs-8">
-            <input type="text" value="rgba(0,0,0,0.5)" />
+            <input type="text" value="blue" />
           </div>
         </div>
       </div>

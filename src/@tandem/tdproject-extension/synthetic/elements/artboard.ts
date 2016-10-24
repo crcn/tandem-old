@@ -15,6 +15,7 @@ import {
 import {
   parseCSS,
   evaluateCSS,
+  DOMNodeAction,
   DOMMutationAction,
   ISyntheticBrowser,
   isDOMMutationAction,
@@ -160,12 +161,13 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     this._contentDocument = this._artboardBrowser.window.document;
     this._contentDocument.observe(this._contentDocumentObserver);
     this.injectCSS();
-    this.clearCache(true);
+
+    // bubble loaded notification here
+    this.notify(new DOMNodeAction(DOMNodeAction.DOM_NODE_LOADED));
   }
 
   protected onContentDocumentAction(action: Action) {
     this.notify(action);
-    this.clearCache(false);
   }
 }
 

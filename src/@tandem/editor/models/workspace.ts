@@ -1,5 +1,5 @@
 import { KeyBinding } from "@tandem/editor/key-bindings";
-import { ParallelBus } from "mesh";
+import { ParallelBus, WrapBus } from "mesh";
 import { IWorkspace, IWorkspaceTool } from "./base";
 
 import {
@@ -7,34 +7,72 @@ import {
   Action,
   inject,
   IPoint,
+  bindable,
+  watchProperty,
   Metadata,
+  Observable,
   Transform,
   IInjectable,
 } from "@tandem/common";
 
 import { ISyntheticObject } from "@tandem/sandbox";
-import { ISyntheticBrowser, SyntheticBrowser } from "@tandem/synthetic-browser";
+import { ISyntheticBrowser, SyntheticBrowser, SyntheticElementQuerier } from "@tandem/synthetic-browser";
 
 export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;
 
-// TODO - add hovering: SyntheticDOMNode[] property
-export class Workspace implements IWorkspace {
+
+export class Workspace extends Observable implements IWorkspace {
 
   readonly metadata = new Metadata(this);
 
   private _zoom: number = 1;
   public translate: IPoint = { left: 0, top: 0 };
   private _currentTool: IWorkspaceTool;
-  public transform: Transform = new Transform();
-  public selection: ISyntheticObject[] = [];
-  public browser: ISyntheticBrowser;
+  private _browserObserver: IActor;
 
-  // TODO - this may change dependening on the editor type
+  /**
+   * workspace canvas transform. TODO - may need to move this to WorkspaceCanvas object, or similar
+   *
+   * @type {Transform}
+   */
+
+  public transform: Transform = new Transform();
+
+  /**
+   * Selected objects by the user -- allows them to perform mutations
+   * on synthetic objects.
+   *
+   * @type {ISyntheticObject[]}
+   */
+
+  public selection: ISyntheticObject[] = [];
+
+  /**
+   * The currently active synthetic browser of this workspace
+   *
+   * @type {ISyntheticBrowser}
+   */
+
+  @bindable() public browser: ISyntheticBrowser;
+
+  /**
+   * singleton document querier for the editor so that view components
+   * aren't calling the expensive querySelector function individually
+   */
+
+  readonly documentQuerier: SyntheticElementQuerier<any>;
+
   readonly type = "display";
   public cursor = null;
 
-  constructor() {}
+  constructor() {
+    super();
+    this._browserObserver = new WrapBus(this.onBrowserAction.bind(this));
+    this.documentQuerier  = new SyntheticElementQuerier(undefined, "*");
+
+    watchProperty(this, "browser", this.onBrowserChange.bind(this));
+  }
 
   get document() {
     return this.browser && this.browser.document;
@@ -71,5 +109,19 @@ export class Workspace implements IWorkspace {
     if (this.currentTool) {
       this.currentTool.execute(action);
     }
+  }
+
+  private onBrowserChange(newBrowser: ISyntheticBrowser) {
+    if (this.browser) this.browser.unobserve(this._browserObserver);
+    newBrowser.observe(this._browserObserver);
+    this.updatePropertiesFromBrowser();
+  }
+
+  private onBrowserAction(action: Action) {
+    this.updatePropertiesFromBrowser();
+  }
+
+  private updatePropertiesFromBrowser() {
+    this.documentQuerier.target = this.browser && this.browser.document;
   }
 }

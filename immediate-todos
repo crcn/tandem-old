@@ -1,2 +1,9 @@
-- [ ] fix getBoundingClientRect for deep entities
-- [ ] display synthetic pane when an item is selected
+- [ ] finish HTML CSS pane
+- [ ] resizer
+- [ ] vscode ext update
+- [ ] html source maps
+- [ ] strongly typed props for templates
+  - generate d.ts files
+- [ ] combine front-end and back-end in one directory
+- [ ] transpile bundles (webpack loader)
+  - [ ] tap into tandem process

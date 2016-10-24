@@ -4,6 +4,15 @@ export interface IDisposable {
   dispose(): void;
 }
 
+export class DisposableCollection extends Array<IDisposable> implements IDisposable {
+  constructor(...items: IDisposable[]) {
+    super(...items);
+  }
+  dispose() {
+    for (const disposable of this) disposable.dispose();
+  }
+}
+
 export interface IRemovable {
   remove(): void;
 }

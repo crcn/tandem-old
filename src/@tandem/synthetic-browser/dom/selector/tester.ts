@@ -13,6 +13,16 @@ export interface ISelectorTester {
 export function getSelectorTester(selectorSource: string): ISelectorTester {
   if (_testers[selectorSource]) return _testers[selectorSource];
 
+  // check for all - short optimization to avoid AST traversing.
+  if (selectorSource === "*") {
+    return {
+      source: selectorSource,
+      test(node) {
+        return node && (node.nodeType === DOMNodeType.ELEMENT);
+      }
+    }
+  }
+
   // if selectorSource is undefined or false, then return a tester
   // that also always returns
   if (!selectorSource) {

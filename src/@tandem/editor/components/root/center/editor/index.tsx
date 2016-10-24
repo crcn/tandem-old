@@ -7,10 +7,11 @@ import PreviewComponent from "./canvas/preview";
 import { Workspace } from "@tandem/editor/models";
 import { Dependencies } from "@tandem/common/dependencies";
 import { KeyBindingManager } from "@tandem/editor/key-bindings";
+import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { FrontEndApplication } from "@tandem/editor/application";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
 
-export default class StageComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace }, any> {
+export default class StageComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, allElements: SyntheticDOMElement[] }, any> {
 
   private _keyBindings: KeyBindingManager;
 

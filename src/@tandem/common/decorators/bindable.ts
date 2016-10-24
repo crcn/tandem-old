@@ -1,5 +1,6 @@
-import { IObservable } from "@tandem/common/observable";
 import { PropertyChangeAction } from "@tandem/common/actions";
+import { IObservable, Observable } from "@tandem/common/observable";
+
 
 export function bindable(bubbles: boolean = false) {
   return (proto: IObservable, property: string = undefined, descriptor: PropertyDescriptor = undefined) => {

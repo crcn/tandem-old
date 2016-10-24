@@ -3,11 +3,10 @@ import "./index.scss";
 import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
 import { FrontEndApplication } from "@tandem/editor/application";
-import { SyntheticDOMElement } from "@tandem/synthetic-browser";
-import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { Workspace, InsertTool } from "@tandem/editor/models";
 import { SetToolAction, SelectAction } from "@tandem/editor/actions";
 import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
+import { SyntheticDOMElement, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { SelectionSizeComponent, SelectablesComponent } from "@tandem/editor/components/common";
 import {
   IActor,
@@ -15,7 +14,7 @@ import {
   BoundingRect,
 } from "@tandem/common";
 
-class InsertToolComponent extends React.Component<{ workspace: Workspace, bus: IActor, app: FrontEndApplication, tool: InsertTool }, any> {
+class InsertToolComponent extends React.Component<{ workspace: Workspace, allElements: SyntheticDOMElement[], bus: IActor, app: FrontEndApplication, tool: InsertTool }, any> {
 
   private _targetElement: any;
 

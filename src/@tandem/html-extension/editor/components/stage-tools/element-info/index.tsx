@@ -3,8 +3,8 @@ import "./index.scss";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/models";
 import { MetadataKeys } from "@tandem/editor/constants";
-import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { calculateCSSMeasurments } from "@tandem/common";
+import { SyntheticHTMLElement, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
 class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLElement, workspace: Workspace }, any> {
 
@@ -62,13 +62,24 @@ class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLEleme
   }
 }
 
-export class ElementInfoStageToolComponent extends React.Component<{ workspace: Workspace }, any> {
+interface IElementInfoStageToolComponentProps {
+  workspace: Workspace;
+  allElements: SyntheticDOMElement[];
+
+}
+
+export class ElementInfoStageToolComponent extends React.Component<IElementInfoStageToolComponentProps, any> {
+  shouldComponentUpdate({ allElements }: IElementInfoStageToolComponentProps) {
+    return this.props.allElements !== allElements;
+  }
   render() {
-    const { workspace } = this.props;
-    const elements = workspace.document.querySelectorAll("*", true).filter((node) => node.mountedToNative && (node as SyntheticHTMLElement).getBoundingClientRect && (node as SyntheticHTMLElement).metadata.get(MetadataKeys.HOVERING));
+    const { workspace, allElements } = this.props;
+    const htmlElements = allElements.filter(element => {
+      return element.metadata.get(MetadataKeys.HOVERING);
+    });
 
     return <div className="td-html-element-info">
-      { elements.map((element) => <ElementInfoComponent element={element as SyntheticHTMLElement} workspace={workspace} key={element.uid} />)}
+      { htmlElements.map((element) => <ElementInfoComponent element={element as SyntheticHTMLElement} workspace={workspace} key={element.uid} />)}
     </div>;
   }
 }

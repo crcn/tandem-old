@@ -2,7 +2,6 @@ import { Action, defineWorkerAction, TreeNodeAction } from "@tandem/common";
 
 export class DOMNodeAction extends Action {
   static readonly DOM_NODE_LOADED = "domNodeLoaded";
-  static readonly DOM_CLEAR_CACHE = "domClearCache";
 }
 
 // TODO - add these https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Mutation_events
