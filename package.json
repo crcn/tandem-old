@@ -14,8 +14,6 @@
   "scripts": {
     "test": "./scripts/write-all-tests.sh; TESTING=1 karma start",
     "test-watch": "WATCH=1 npm test",
-    "clean": "rm -rf lib",
-    "postinstall": "scripts/copy-src-assets.sh; tsc --declaration; linklocal",
     "start": "./scripts/exec-packages.sh npm start",
     "build": "./scripts/exec-packages.sh npm run build",
     "start-dev": "webpack-dev-server --inline --progress",
@@ -32,13 +30,6 @@
   },
   "homepage": "https://github.com/crcn/tandem#readme",
   "devDependencies": {
-    "@tandem/back-end": "file:./lib/@tandem/back-end",
-    "@tandem/common": "file:./lib/@tandem/common",
-    "@tandem/editor": "file:./lib/@tandem/editor",
-    "@tandem/sandbox": "file:./lib/@tandem/sandbox",
-    "@tandem/synthetic-browser": "file:./lib/@tandem/synthetic-browser",
-    "@tandem/tether": "file:./lib/@tandem/tether",
-    "@tandem/tether-back-end": "file:./lib/@tandem/tether-back-end",
     "chai": "^3.5.0",
     "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",
@@ -48,6 +39,7 @@
     "gulp-atom-electron": "^1.9.0",
     "gulp-sequence": "^0.4.6",
     "gulp-symdest": "^1.1.0",
+    "gulp-webpack": "^1.5.0",
     "json-loader": "^0.5.4",
     "karma": "^1.1.1",
     "karma-chai": "^0.1.0",
@@ -56,7 +48,6 @@
     "karma-safari-launcher": "^1.0.0",
     "karma-spec-reporter": "0.0.26",
     "karma-webpack": "^1.7.0",
-    "linklocal": "^2.6.0",
     "mocha": "^3.0.2",
     "parallel-webpack": "^1.5.0",
     "pegjs-loader": "^0.5.0",
@@ -69,6 +60,7 @@
     "tslint-loader": "^2.1.5",
     "typescript": "2.0.x",
     "url-loader": "^0.5.7",
+    "vinyl-fs": "^2.4.4",
     "webpack-notifier": "^1.4.0"
   },
   "dependencies": {

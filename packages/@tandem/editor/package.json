@@ -1,9 +1,9 @@
 {
   "name": "@tandem/editor",
   "version": "1.0.1",
-  "private":false,
   "description": "",
-  "bundle": "./bundle/editor.js",
+  "browser": "./bundle/editor.js",
+  "main": "./entry.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
