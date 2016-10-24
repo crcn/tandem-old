@@ -11,6 +11,7 @@ const symdest       = require('gulp-symdest');
 const electron      = require('gulp-atom-electron');
 const vfs           = require('vinyl-fs');
 const gulpSequence  = require('gulp-sequence');
+const _             = require('highland');
 
 const { merge, omit }            = require('lodash');
 const { join, dirname, basename } = require('path');
@@ -28,19 +29,23 @@ const {
  * Build tasks
  ******************************/
 
-gulp.task('build', gulpSequence([
+gulp.task('build', gulpSequence(
   'build-webpack',
   'build-electron'
-]));
+));
 
-gulp.task('build-webpack', function() {
-  const webpackPackages = PACKAGES.filter(sift({ browser: { $exists: true }}));
+gulp.task('build-webpack', function(done) {
+  const webPackages = PACKAGES.filter(sift({ browser: { $exists: true }}));
 
-  return gulp
-  .src(webpackPackages.map((pkg) => {
-    return join(SRC_DIR, pkg.name, pkg.main)
-  }))
-  .pipe(webpack(require('./webpack.config.js')))
+  return _(webPackages.map((pkg) => {
+    const srcFilePath = join(SRC_DIR, pkg.name, pkg.entry);
+    const outFilePath = join(OUT_DIR, pkg.name, pkg.browser);
+
+    return gulp
+    .src(srcFilePath)
+    .pipe(webpack(require('./webpack.config.js')))
+    .pipe(gulp.dest(outFilePath));
+  }));
 });
 
 // TODO

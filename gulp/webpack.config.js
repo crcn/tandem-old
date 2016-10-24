@@ -1,9 +1,14 @@
-const webpack               = require("webpack");
-const path                  = require("path");
+const webpack               = require('webpack');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
+const { join }              = require('path');
 
-const { BASE_DIR, SRC_DIR } = require('./config');
+const {
+  BASE_DIR,
+  SRC_DIR,
+  OUT_DIR,
+  NODE_MODULES_DIR
+} = require('./config');
 
 module.exports = {
     resolve: {
@@ -16,62 +21,58 @@ module.exports = {
       includePaths: [SRC_DIR]
     },
     resolve: {
-      extensions: ["", ".js", ".jsx", ".ts", ".tsx", ".peg"],
-      modulesDirectories: ["src", "node_modules"]
+      extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.peg'],
+      modulesDirectories: [SRC_DIR, NODE_MODULES_DIR]
     },
-    watch: process.env.WATCH === "1",
+    watch: process.env.WATCH === '1',
     plugins: [
       new webpack.DefinePlugin({
-        "process.env.TESTING": process.env.TESTING === "1",
+        'process.env.TESTING': process.env.TESTING === '1',
 
         // required for mongoid-js plugin particularly
-        "process.pid": process.pid
+        'process.pid': process.pid
       }),
       new WebpackNotifierPlugin({
         alwaysNotify: true
       }),
-      new ExtractTextPlugin("styles.css")
+      new ExtractTextPlugin('styles.css')
     ],
     node: {
       __filename: true,
-      fs: "empty",
+      fs: 'empty',
       Buffer: true
     },
     module: {
       loaders: [
         {
           test: /\.(png|jpg|gif|eot|ttf|woff|woff2|svg)$/,
-          loader: "url-loader?limit=1000"
+          loader: 'url-loader?limit=1000'
         },
         {
           test: /\.json$/,
-          loader: "json-loader"
+          loader: 'json-loader'
         },
         {
           test: /\.peg$/,
-          loader: "pegjs-loader"
+          loader: 'pegjs-loader'
         },
         {
           test: /\.tsx?$/,
-          loader: "ts-loader",
-          exclude: __dirname + "/out/node_modules"
+          loader: 'ts-loader',
+          exclude:  BASE_DIR + '/node_modules'
         },
-        // {
-        //   test: /\.tsx?$/,
-        //   loader: "tslint-loader"
-        // },
         {
           test: /\.scss$/,
-          loader: ExtractTextPlugin.extract("style-loader", [
-            "css-loader",
-            "sass-loader"
-          ].join("!"))
+          loader: ExtractTextPlugin.extract('style-loader', [
+            'css-loader',
+            'sass-loader'
+          ].join('!'))
         },
         {
           test: /\.css$/,
-          loader: ExtractTextPlugin.extract("style-loader", [
-            "css-loader"
-          ].join("!"))
+          loader: ExtractTextPlugin.extract('style-loader', [
+            'css-loader'
+          ].join('!'))
         },
       ]
     }

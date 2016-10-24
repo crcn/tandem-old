@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "",
   "browser": "./bundle/editor.js",
-  "main": "./entry.js",
+  "entry": "./entry.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

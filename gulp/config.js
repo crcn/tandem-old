@@ -2,6 +2,7 @@ const glob     = require('glob');
 const { join } = require('path');
 
 const BASE_DIR             = process.cwd();
+const NODE_MODULES_DIR     = join(BASE_DIR, 'node_modules');
 const SRC_DIR              = join(BASE_DIR, 'packages');
 const OUT_DIR              = join(BASE_DIR, 'out');
 const MEGA_PKG_FILE_PATH   = join(OUT_DIR, 'package.json');
@@ -15,9 +16,10 @@ module.exports = {
   BASE_DIR,
   SRC_DIR,
   OUT_DIR,
-  MEGA_PKG_FILE_PATH,
-  OUT_NODE_MODULES_DIR,
-  PACKAGE_FILE_PATHS,
   PACKAGES,
-  PACKAGE_NAMES
+  PACKAGE_NAMES,
+  NODE_MODULES_DIR,
+  MEGA_PKG_FILE_PATH,
+  PACKAGE_FILE_PATHS,
+  OUT_NODE_MODULES_DIR,
 };
