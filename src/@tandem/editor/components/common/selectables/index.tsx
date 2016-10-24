@@ -26,6 +26,7 @@ class SelectableComponent extends React.Component<{
 }, any> {
 
   private _i: number = 0;
+  private _mouseOver: boolean;
 
   constructor() {
     super();
@@ -43,16 +44,20 @@ class SelectableComponent extends React.Component<{
   }
 
   componentWillUnmount() {
-    this.props.element.metadata.set(MetadataKeys.HOVERING, false);
+    if (this._mouseOver) {
+      this.props.element.metadata.set(MetadataKeys.HOVERING, false);
+    }
   }
 
   onMouseOver = (event: React.MouseEvent) => {
+    this._mouseOver = true;
 
     // TODO - add hovering prop
     this.props.element.metadata.set(MetadataKeys.HOVERING, true);
   }
 
   onMouseOut = (event: React.MouseEvent) => {
+    this._mouseOver = false;
     this.props.element.metadata.set(MetadataKeys.HOVERING, false);
   }
 
