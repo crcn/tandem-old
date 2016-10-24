@@ -1,4 +1,10 @@
+/*
+1. copy script assets
+2. install dependencies
+*/
+
 const gulp     = require('gulp');
+const path     = require('path');
 const symdest  = require('gulp-symdest');
 const electron = require('gulp-atom-electron');
 const pkg      = require('./package.json');
@@ -6,29 +12,19 @@ const fsa      = require('fs-extra');
 const exec     = require('child_process').exec;
 const gulpSequence = require('gulp-sequence');
 
-gulp.task('clean', ['clean-desktop']);
-gulp.task('build', gulpSequence('copy-assets', 'build-desktop'));
+/**
+ * Gulp configuration
+ */
 
-gulp.task('clean-desktop', _rimraf("./app"));
+const BASE_DIRECTORY = __dirname;
+const SRC_DIRECTORY  = path.join(BASE_DIRECTORY, 'packages');
+const OUT_DIRECTORY  = path.join(BASE_DIRECTORY, 'out');
 
-gulp.task('build-desktop', function() {
-  const platform = process.platform;
+/**
+ * Gulp tasks
+ */
 
-  return gulp.src('package.json')
-    .pipe(electron({ version: pkg.electronVersion, platform: platform }))
-    .pipe(symdest('app'));
+gulp.task('copy-package-assets', function() {
+  return gulp.src(path.join(PACKAGE_DIRECTORY, '**'))
+  .pipe(gulp.dest(OUT_DIRECTORY));
 });
-
-gulp.task('copy-assets', _exec("scripts/copy-src-assets.sh"));
-
-function _rimraf(directory) {
-  return function() {
-    fsa.removeSync(directory);
-  }
-}
-
-function _exec(script) {
-  return function(complete) {
-    exec(script, complete);
-  }
-}

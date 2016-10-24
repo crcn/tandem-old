@@ -64,7 +64,8 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
 
     const browser = workspace.browser = new RemoteSyntheticBrowser(this._dependencies, new CanvasRenderer(workspace, new SyntheticDOMRenderer()));
 
-    // redundant since the document querier fetches all changes needed by the app
+    // redundant since the document querier fetches all changes needed by the app -- even
+    // changes to things such as style sheets
     // browser.observe({ execute: (action) => {
     //   this.bus.execute(action);
     // }});

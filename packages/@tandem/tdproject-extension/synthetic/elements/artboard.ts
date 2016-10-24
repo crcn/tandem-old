@@ -108,6 +108,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
   }
 
   attachNative(node: HTMLElement) {
+    if (this._native === node) return;
     super.attachNative(node);
     this.initialize();
     const iframe = this._iframe = node.querySelector("iframe") as HTMLIFrameElement;

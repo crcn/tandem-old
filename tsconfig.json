@@ -5,7 +5,7 @@
     "sourceMap": true,
     "module": "commonjs",
     "outDir": "lib/@tandem",
-    "baseUrl": "src",
+    "baseUrl": "packages",
     "experimentalDecorators": true,
     "jsx": "react"
   },
@@ -18,11 +18,11 @@
     "examples"
   ],
   "filesGlob": [
-      "./src/**/*.ts",
-      "./src/**/*.tsx"
+    "./packages/**/*.ts",
+    "./packages/**/*.tsx"
   ],
   "rootDirs": [
-    "src",
+    "packages",
     "node_modules"
   ]
 }
