@@ -65,7 +65,7 @@ class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLEleme
 export class ElementInfoStageToolComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
     const { workspace } = this.props;
-    const elements = workspace.document.querySelectorAll("*", true).filter((node) => node.mountedToNative && (node as SyntheticHTMLElement).getBoundingClientRect && (node as SyntheticHTMLElement).dataset[MetadataKeys.HOVERING]);
+    const elements = workspace.document.querySelectorAll("*", true).filter((node) => node.mountedToNative && (node as SyntheticHTMLElement).getBoundingClientRect && (node as SyntheticHTMLElement).metadata.get(MetadataKeys.HOVERING));
 
     return <div className="td-html-element-info">
       { elements.map((element) => <ElementInfoComponent element={element as SyntheticHTMLElement} workspace={workspace} key={element.uid} />)}

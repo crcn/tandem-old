@@ -42,6 +42,10 @@ class SelectableComponent extends React.Component<{
     return !this.props.absoluteBounds.equalTo(absoluteBounds) || this.props.hovering !== hovering;
   }
 
+  componentWillUnmount() {
+    this.props.element.metadata.set(MetadataKeys.HOVERING, false);
+  }
+
   onMouseOver = (event: React.MouseEvent) => {
 
     // TODO - add hovering prop
@@ -76,8 +80,8 @@ class SelectableComponent extends React.Component<{
       <div
         style={style}
         className={classNames}
-        onMouseOut={this.onMouseOut}
-        onMouseOver={this.onMouseOver}
+        onMouseLeave={this.onMouseOut}
+        onMouseEnter={this.onMouseOver}
         onMouseDown={this.onMouseDown}
       />
     );
