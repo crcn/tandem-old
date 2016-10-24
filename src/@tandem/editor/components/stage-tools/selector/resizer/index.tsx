@@ -97,7 +97,7 @@ class ResizerComponent extends React.Component<{
   private _movingTimer: any;
   private _dragTimer: any;
   private _currentGuider: Guider;
-  private _visibleEntities: VisibleSyntheticElementCollection<any>;
+  private _visibleElements: VisibleSyntheticElementCollection<any>;
 
   constructor() {
     super();
@@ -181,7 +181,7 @@ class ResizerComponent extends React.Component<{
     }
 
     this.setState({ guideLines: guider.getGuideLines(createBoundingRectPoints(bounds)) });
-    this._visibleEntities.absoluteBounds = bounds;
+    this._visibleElements.setAbsoluteBounds(bounds);
 
 
     this.props.onResizing(event);
@@ -190,14 +190,14 @@ class ResizerComponent extends React.Component<{
   startDragging = (event) => {
     event.stopPropagation();
 
-    if (!this._visibleEntities.capabilities.movable) return;
+    if (!this._visibleElements.getEagetCapabilities().movable) return;
 
     this.props.onMoving();
     const selection = this.props.selection;
 
     // when dragging, need to fetch style of the selection
     // so that the dragger is relative to the entity"s position
-    const bounds = this._visibleEntities.absoluteBounds;
+    const bounds = this._visibleElements.getEagerAbsoluteBounds();
 
     const sx2 = bounds.left;
     const sy2 = bounds.top;
@@ -228,7 +228,7 @@ class ResizerComponent extends React.Component<{
       this.setState({ guideLines: guideLines });
 
     }, () => {
-      this._visibleEntities.save();
+      this._visibleElements.save();
       this._dragger = void 0;
       this.props.workspace.metadata.set(MetadataKeys.MOVING, false);
       this.setState({ guideLines: undefined });
@@ -242,26 +242,26 @@ class ResizerComponent extends React.Component<{
   }
 
   onPointMouseUp = () => {
-    this._visibleEntities.save();
+    this._visibleElements.save();
     this.props.workspace.metadata.set(MetadataKeys.MOVING, false);
     this.setState({ guideLines: undefined });
     this.props.onStopResizing();
   }
 
   moveTarget(position: IPoint) {
-    this._visibleEntities.position = position;
+    this._visibleElements.setPosition(position);
   }
 
   render() {
 
     const { selection } = this.props;
 
-    const entities = this._visibleEntities = new VisibleSyntheticElementCollection(...selection);
+    const elements = this._visibleElements = new VisibleSyntheticElementCollection(...selection);
 
     const pointRadius = (this.props.pointRadius || POINT_RADIUS);
     const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);
 
-    const rect = BoundingRect.merge(...entities.map(entity => entity.absoluteBounds));
+    const rect = BoundingRect.merge(...elements.map(entity => entity.getAbsoluteBounds()));
 
     // offset stroke
     const resizerStyle = {
@@ -274,8 +274,8 @@ class ResizerComponent extends React.Component<{
       transformOrigin: "top left"
     };
 
-    const capabilities = entities.capabilities;
-    const movable = capabilities.movable && entities.editable;
+    const capabilities = elements.getEagetCapabilities();
+    const movable = capabilities.movable && elements.editable;
 
     const points = [
       ["nw", movable === true, 0, 0],
@@ -309,7 +309,7 @@ class ResizerComponent extends React.Component<{
       >
         <PathComponent
           workspace={this.props.workspace}
-          showPoints={capabilities.resizable && entities.editable}
+          showPoints={capabilities.resizable && elements.editable}
           onPointChange={this.updatePoint}
           onPointMouseDown={this.onPointMouseDown}
           onPointMouseUp={this.onPointMouseUp}

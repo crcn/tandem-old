@@ -26,6 +26,9 @@ export class Action {
     this._currentTarget = value;
   }
 
+  // TODO - target is not an appropriate name in some cases since
+  // the term refers to the current dispatcher dispatching *this* action. And in some cases,
+  // the target may not exist
   get target() {
     return this._target;
   }

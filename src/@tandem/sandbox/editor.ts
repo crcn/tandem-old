@@ -299,7 +299,7 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
 export class FileEditor extends Observable {
 
   private _editing: boolean;
-  private _edits: EditAction[];
+  private _editActions: EditAction[];
   private _shouldEditAgain: boolean;
 
   @inject(DependenciesDependency.NS)
@@ -311,12 +311,12 @@ export class FileEditor extends Observable {
 
   applyEditActions(...actions: EditAction[]): Promise<any> {
 
-    if (this._edits == null) {
+    if (this._editActions == null) {
       this._shouldEditAgain = true;
-      this._edits = [];
+      this._editActions = [];
     }
 
-    this._edits.push(...actions);
+    this._editActions.push(...actions);
     this.run();
 
     return new Promise((resolve) => {
@@ -335,9 +335,8 @@ export class FileEditor extends Observable {
     this._editing = true;
     setTimeout(async () => {
       this._shouldEditAgain = false;
-      // const fileCache = await this.bundle.getSourceFileCacheItem();
-      const actions = this._edits;
-      this._edits = undefined;
+      const actions = this._editActions;
+      this._editActions = undefined;
 
       const actionsByFilePath = {};
 

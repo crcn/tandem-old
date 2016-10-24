@@ -1,20 +1,23 @@
-import { BoundingRect, serializable } from "@tandem/common";
 import { SyntheticDocument } from "../document";
 import { SyntheticCSSStyleDeclaration } from "../css";
+import { BoundingRect, serializable, IPoint } from "@tandem/common";
+
 import {
   parseMarkup,
   evaluateMarkup,
   SyntheticDOMElement,
   SyntheticDOMAttribute,
+  VisibleSyntheticDOMElement,
+  VisibleDOMNodeCapabilities,
 } from "../markup";
-
 
 // TODO - proxy dataset
 @serializable()
-export class SyntheticHTMLElement extends SyntheticDOMElement {
+export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCSSStyleDeclaration> {
 
   private _style: SyntheticCSSStyleDeclaration;
   private _styleProxy: SyntheticCSSStyleDeclaration;
+  protected _native: HTMLElement;
 
   constructor(ns: string, tagName: string) {
     super(ns, tagName);
@@ -27,12 +30,6 @@ export class SyntheticHTMLElement extends SyntheticDOMElement {
 
   get style(): SyntheticCSSStyleDeclaration {
     return this._styleProxy || this._resetStyleProxy();
-  }
-
-  get absoluteBounds() {
-
-    // TODO - implement this
-    return this.getBoundingClientRect();
   }
 
   get text(): string {
@@ -106,5 +103,24 @@ export class SyntheticHTMLElement extends SyntheticDOMElement {
 
   protected onStyleChange() {
     this.setAttribute("style", this.style.cssText);
+  }
+
+  protected computeCapabilities(style: SyntheticCSSStyleDeclaration): VisibleDOMNodeCapabilities {
+    return new VisibleDOMNodeCapabilities(
+      true,
+      true
+    );
+  }
+
+  protected computeAbsoluteBounds(style: SyntheticCSSStyleDeclaration): BoundingRect {
+    return this.getBoundingClientRect();
+  }
+
+  public async setAbsolutePosition(newPosition: IPoint) {
+    const oldBounds = await this.getAbsoluteBounds();
+  }
+
+  public async setAbsoluteBounds(newBounds: BoundingRect) {
+    const oldBounds = await this.getAbsoluteBounds();
   }
 }

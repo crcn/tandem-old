@@ -1,16 +1,31 @@
 import "./artboard.scss";
 
+import { WrapBus } from "mesh";
 import { BundlerDependency } from "@tandem/sandbox";
-import { serializable, watchProperty, isMaster } from "@tandem/common";
+
+import {
+  IActor,
+  Action,
+  isMaster,
+  ITreeWalker,
+  serializable,
+  watchProperty,
+} from "@tandem/common";
+
 import {
   parseCSS,
   evaluateCSS,
+  DOMMutationAction,
   ISyntheticBrowser,
+  isDOMMutationAction,
   SyntheticHTMLElement,
   BaseDecoratorRenderer,
+  SyntheticDocument,
   SyntheticDOMRenderer,
+  SyntheticBrowserAction,
   SyntheticCSSStyleSheet,
   RemoteSyntheticBrowser,
+  SyntheticRendererAction,
   ISyntheticDocumentRenderer,
 } from "@tandem/synthetic-browser";
 
@@ -39,23 +54,21 @@ const DEFAULT_FRAME_STYLE_SHEET = evaluateCSS(parseCSS(`
 @serializable()
 export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
 
+  private _initialized: boolean;
   private _iframe: HTMLIFrameElement;
+  private _contentDocument: SyntheticDocument;
+  private _contentDocumentObserver: IActor;
   private _artboardBrowser: ISyntheticBrowser;
   private _combinedStyleSheet: SyntheticCSSStyleSheet;
-  private _initialized: boolean;
+  private _artboardBrowserObserver: IActor;
 
   createdCallback() {
     this.setAttribute("class", "artboard-entity");
     this.innerHTML = `<iframe /><div class="artboard-entity-overlay" />`;
   }
 
-  get capabilities() {
-    return null;
-    // return new DOMNodeEntityCapabilities(true, true);
-  }
-
   get contentDocument() {
-    return this._artboardBrowser.document;
+    return this._contentDocument;
   }
 
   get title(): string {
@@ -76,13 +89,13 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     if (this._initialized) return;
     this._initialized = true;
 
-
     const bundler = BundlerDependency.getInstance(this.browser.dependencies);
 
     if (!this._artboardBrowser) {
       const documentRenderer = new SyntheticDOMRenderer();
-      this._artboardBrowser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.dependencies, new SyntheticFrameRenderer(this, documentRenderer), this.browser);
-      // this._artboardBrowser.observe(this._artboardBrowserObserver)
+      this._artboardBrowser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.dependencies, new SyntheticArtboardRenderer(this, documentRenderer), this.browser);
+      this._contentDocumentObserver = new WrapBus(this.onContentDocumentAction.bind(this));
+      // this._artboardBrowser.observe(this._artboardBrowserObserver = new WrapBus(this.onArtboardBrowserAction.bind(this)));
       watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
     }
 
@@ -98,12 +111,9 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     this.initialize();
     const iframe = this._iframe = node.querySelector("iframe") as HTMLIFrameElement;
 
-    const onload = () => {
+    const onload = async () => {
       iframe.contentDocument.body.appendChild(this._artboardBrowser.renderer.element);
-
-      // re-render the renderer so that it can make proper bounding rect calculations
-      // on the native DOM.
-      this._artboardBrowser.renderer.requestUpdate();
+      this._artboardBrowser.renderer.start();
     };
 
     iframe.onload = onload;
@@ -134,12 +144,32 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     document.styleSheets.push(this._combinedStyleSheet);
   }
 
+  visitWalker(walker: ITreeWalker) {
+    super.visitWalker(walker);
+    if (this.contentDocument) {
+      walker.accept(this.contentDocument);
+    }
+  }
+
   protected onBrowserWindowChange() {
+
+    if (this._contentDocument) {
+      this._contentDocument.unobserve(this._contentDocumentObserver);
+    }
+
+    this._contentDocument = this._artboardBrowser.window.document;
+    this._contentDocument.observe(this._contentDocumentObserver);
     this.injectCSS();
+    this.clearCache(true);
+  }
+
+  protected onContentDocumentAction(action: Action) {
+    this.notify(action);
+    this.clearCache(false);
   }
 }
 
-export class SyntheticFrameRenderer extends BaseDecoratorRenderer {
+export class SyntheticArtboardRenderer extends BaseDecoratorRenderer {
   constructor(private _artboard: SyntheticTDArtboardElement, _renderer: ISyntheticDocumentRenderer) {
     super(_renderer);
   }

@@ -97,6 +97,8 @@ class DragSelectComponent extends React.Component<{ app: FrontEndApplication, zo
 
   render() {
 
+    if (1 + 1) return null;
+
     if (!(this.props.tool instanceof PointerTool)) return null;
 
     const style = {

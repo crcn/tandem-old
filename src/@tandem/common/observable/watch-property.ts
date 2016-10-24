@@ -2,7 +2,9 @@ import { IObservable } from "./base";
 import { PropertyChangeAction, Action } from "@tandem/common/actions";
 import { TypeWrapBus, LimitBus } from "@tandem/common/busses";
 
-export function watchProperty(target: any, property: string, callback: (newValue: any, oldValue: any) => void) {
+export type propertyChangeCallbackType = (newValue: any, oldValue: any) => void;
+
+export function watchProperty(target: any, property: string, callback: propertyChangeCallbackType) {
 
   const observer = {
     execute(action: Action) {
@@ -34,14 +36,32 @@ export function watchProperty(target: any, property: string, callback: (newValue
   return ret;
 }
 
+export function watchPropertyOnce(target: any, property: string, callback: propertyChangeCallbackType) {
+
+  const watcher = watchProperty(target, property, (newValue: any, oldValue: any) => {
+    watcher.dispose();
+    callback(newValue, oldValue);
+  });
+
+  return {
+    dispose: () => watcher.dispose(),
+    trigger: () => watcher.trigger()
+  }
+}
+
 export function bindProperty(source: IObservable, sourceProperty: string, target: any, destProperty: string = sourceProperty) {
   return watchProperty(source, sourceProperty, (newValue, oldValue) => {
     target[destProperty] = newValue;
   }).trigger();
 }
 
-export function waitForPropertyChange(target: IObservable, property: string) {
+export function waitForPropertyChange(target: IObservable, property: string, filter: (value) => boolean = () => true) {
   return new Promise((resolve, reject) => {
-    const propertyWatcher = watchProperty(target, property, resolve);
+    const watcher = watchProperty(target, property, (newValue) => {
+      if (filter(newValue)) {
+        resolve();
+        watcher.dispose();
+      }
+    });
   });
 }

@@ -5,13 +5,19 @@ import { SyntheticDOMNode, SyntheticDOMElement, DOMNodeType } from "../markup";
 
 const _testers = {};
 
-export function getSelectorTester(selectorSource: string): { test(node: SyntheticDOMElement): boolean } {
+export interface ISelectorTester {
+  source: string;
+  test(node: SyntheticDOMNode);
+}
+
+export function getSelectorTester(selectorSource: string): ISelectorTester {
   if (_testers[selectorSource]) return _testers[selectorSource];
 
   // if selectorSource is undefined or false, then return a tester
   // that also always returns
   if (!selectorSource) {
     return {
+      source: selectorSource,
       test: () => false
     };
   }
@@ -20,6 +26,7 @@ export function getSelectorTester(selectorSource: string): { test(node: Syntheti
 
   function test(ast: SelectorExpression, node: SyntheticDOMElement) {
     if (!node || node.nodeType !== DOMNodeType.ELEMENT) return false;
+
     return ast.accept({
       visitClassNameSelector({ className }) {
         return node.hasAttribute("class") && String(node.getAttribute("class")).split(" ").indexOf(className) !== -1;
@@ -88,6 +95,7 @@ export function getSelectorTester(selectorSource: string): { test(node: Syntheti
   }
 
   return _testers[selectorSource] = {
+    source: selectorSource,
     test: test.bind(this, ast)
   };
 }

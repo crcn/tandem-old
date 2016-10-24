@@ -20,6 +20,8 @@ class SelectableComponent extends React.Component<{
   selection: any,
   app: FrontEndApplication,
   zoom: number,
+  absoluteBounds: BoundingRect,
+  hovering: boolean,
   onSyntheticMouseDown: (element: SyntheticHTMLElement, event?: React.MouseEvent) => void
 }, any> {
 
@@ -34,46 +36,40 @@ class SelectableComponent extends React.Component<{
     this.props.onSyntheticMouseDown(this.props.element, event);
     event.stopPropagation();
     this.onMouseOut(event);
- }
+  }
+
+  shouldComponentUpdate({ absoluteBounds, hovering }) {
+    return !this.props.absoluteBounds.equalTo(absoluteBounds) || this.props.hovering !== hovering;
+  }
 
   onMouseOver = (event: React.MouseEvent) => {
-    this.props.element.dataset[MetadataKeys.HOVERING] = true;
+
+    // TODO - add hovering prop
+    this.props.element.metadata.set(MetadataKeys.HOVERING, true);
   }
 
   onMouseOut = (event: React.MouseEvent) => {
-    this.props.element.dataset[MetadataKeys.HOVERING] = false;
-  }
-
-  shouldComponentUpdate(props) {
-    // return props.hovering;
-    return true;
+    this.props.element.metadata.set(MetadataKeys.HOVERING, false);
   }
 
   render() {
-    const { element, selection, app } = this.props;
-
-    // const entities = element.querySelectorAll("*");
-
-    // if (intersection(entities, selection || []).length) return null;
-
-    const bounds = element.absoluteBounds;
-    if (!bounds) return null;
+    const { element, selection, app, absoluteBounds, hovering } = this.props;
 
     const borderWidth = 2 / this.props.zoom;
 
     const classNames = cx({
       "m-selectable": true,
-      "hover": this.props.element.dataset[MetadataKeys.HOVERING]
+      "hover": hovering
     });
 
     const style = {
       background : "transparent",
       position   : "absolute",
       boxShadow  : `inset 0 0 0 ${borderWidth}px #6f98e0`,
-      width      : bounds.width,
-      height     : bounds.height,
-      left       : bounds.left,
-      top        : bounds.top
+      width      : absoluteBounds.width,
+      height     : absoluteBounds.height,
+      left       : absoluteBounds.left,
+      top        : absoluteBounds.top
     };
 
     return (
@@ -138,18 +134,21 @@ export class SelectablesComponent extends React.Component<{
     // TODO - check if user is scrolling
     if (selection && workspace.metadata.get(MetadataKeys.MOVING) || app.metadata.get(MetadataKeys.ZOOMING)) return null;
 
-    const allEntities = document.querySelectorAll("*", true).filter((node: SyntheticDOMElement) => node["absoluteBounds"]/* && entity.metadata.get(MetadataKeys.ENTITY_VISIBLE)*/) as any as SyntheticHTMLElement[];
+    const allElements = document.querySelectorAll("*", true).filter((node: SyntheticDOMElement) => node["getAbsoluteBounds"]/* && entity.metadata.get(MetadataKeys.ENTITY_VISIBLE)*/) as any as SyntheticHTMLElement[];
 
-
-    const selectables = allEntities.map((element) => (
-      <SelectableComponent
+    const selectables = allElements.map((element) => {
+      const bounds = element.getAbsoluteBounds();
+      if (!bounds.visible) return null;
+      return <SelectableComponent
         {...this.props}
         zoom={workspace.zoom}
         selection={selection}
         element={element}
+        absoluteBounds={element.getAbsoluteBounds()}
+        hovering={element.metadata.get(MetadataKeys.HOVERING)}
         key={element.uid}
       />
-    ));
+    });
 
     return (<div className="m-selectables"> {selectables} </div>);
   }

@@ -1,8 +1,9 @@
 import { DOMNodeType } from "./node-types";
 import { SyntheticDOMNode } from "./node";
 import { SyntheticDOMText } from "./text-node";
-import { querySelector, querySelectorAll } from "../selector";
-import { diffArray, ITreeWalker, findTreeNode } from "@tandem/common";
+import { isDOMMutationAction, DOMNodeAction } from "@tandem/synthetic-browser/actions";
+import { diffArray, ITreeWalker, findTreeNode, Action } from "@tandem/common";
+import { getSelectorTester, ISelectorTester, querySelector, querySelectorAll } from "../selector";
 import {
   EditAction,
   IContentEdit,
@@ -12,13 +13,6 @@ import {
   RemoveChildEditAction,
   InsertChildEditAction,
 } from "@tandem/sandbox";
-
-export class AppendChildEditAction extends EditAction {
-  static readonly APPEND_CHILD_EDIT = "appendChildEdit";
-  constructor(target: SyntheticDOMContainer, readonly newChild: SyntheticDOMNode) {
-    super(AppendChildEditAction.APPEND_CHILD_EDIT, target);
-  }
-}
 
 export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends BaseContentEdit<T> {
 
@@ -39,7 +33,7 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
   }
 
   appendChild(newChild: SyntheticDOMNode) {
-    return this.addAction(new AppendChildEditAction(this.target, newChild));
+    return this.insertChild(newChild, Infinity);
   }
 
   remove() {
@@ -74,6 +68,9 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
 
 export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
 
+  private _querySelectorAllCache: any = {};
+  private _querySelectorCache: any = {};
+
   createEdit(): SyntheticDOMContainerEdit<any> {
     return new SyntheticDOMContainerEdit(this);
   }
@@ -103,12 +100,70 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
     return this.childNodes.map(child => child.toString()).join("");
   }
 
-  public querySelector(selector: string) {
+  public querySelector(selector: string, deep?: boolean) {
     return querySelector(this, selector);
+    // return this.querySelectorCached(getSelectorTester(selector), deep);
   }
 
   public querySelectorAll(selector: string, deep?: boolean) {
     return querySelectorAll(this, selector);
+    // return this.querySelectorAllCached(getSelectorTester(selector), deep);
+  }
+
+  private querySelectorCached(selectorTester: ISelectorTester, deep?: boolean) {
+    return this._querySelectorCache[selectorTester.source + deep] || (this._querySelectorCache[selectorTester.source + deep] = (() => {
+      if (selectorTester.test(this)) return this;
+      let found;
+      this.visitWalker({
+        accept(child: SyntheticDOMNode) {
+          if (found) return;
+
+          if ((isShadowRootOrDocument(child) && deep) || child.nodeType === DOMNodeType.ELEMENT) {
+            found = (<SyntheticDOMContainer>child).querySelectorCached(selectorTester, deep);
+          } else if (selectorTester.test(child)) {
+            found = child;
+          }
+        }
+      });
+      return found;
+    })());
+  }
+
+  private querySelectorAllCached(selectorTester: ISelectorTester, deep?: boolean) {
+    return this._querySelectorAllCache[selectorTester.source + deep] || (this._querySelectorAllCache[selectorTester.source + deep] = (() => {
+      let found = [];
+
+      if (selectorTester.test(this)) {
+        found.push(this);
+      }
+
+      this.visitWalker({
+        accept(child: SyntheticDOMNode) {
+          if ((isShadowRootOrDocument(child) && deep) || child.nodeType === DOMNodeType.ELEMENT) {
+            found.push(...(<SyntheticDOMContainer>child).querySelectorAllCached(selectorTester, deep));
+          }
+        }
+      });
+
+      return found;
+    })());
+  }
+
+  notify(action: Action) {
+
+    if (isDOMMutationAction(action) || action.type === DOMNodeAction.DOM_CLEAR_CACHE) {
+      this.clearCache(false);
+    }
+
+    return super.notify(action);
+  }
+
+  protected clearCache(bubble: boolean = false) {
+    this._querySelectorAllCache = {};
+    this._querySelectorCache    = {};
+    if (bubble === true) {
+      this.notify(new DOMNodeAction(DOMNodeAction.DOM_CLEAR_CACHE, true));
+    }
   }
 
   applyEditAction(action: EditAction) {
@@ -131,4 +186,8 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
   visitWalker(walker: ITreeWalker) {
     this.childNodes.forEach(child => walker.accept(child));
   }
+}
+
+function isShadowRootOrDocument(node: SyntheticDOMNode) {
+  return (node.nodeType === DOMNodeType.DOCUMENT_FRAGMENT || node.nodeType === DOMNodeType.DOCUMENT);
 }

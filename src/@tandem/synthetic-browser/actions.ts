@@ -1,15 +1,22 @@
-import { Action, defineWorkerAction } from "@tandem/common/actions";
+import { Action, defineWorkerAction, TreeNodeAction } from "@tandem/common";
+
+export class DOMNodeAction extends Action {
+  static readonly DOM_NODE_LOADED = "domNodeLoaded";
+  static readonly DOM_CLEAR_CACHE = "domClearCache";
+}
+
+// TODO - add these https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Mutation_events
+export class DOMMutationAction extends Action {
+  static readonly DOM_NODE_LOADED = "domNodeLoaded";
+}
 
 export class SyntheticRendererAction extends Action {
   static readonly UPDATE_RECTANGLES = "updateRectangles";
+  static readonly UPDATED_COMPUTED_STYLE = "updatedComputedStyle";
 }
 
 export class SyntheticBrowserAction extends Action {
   static readonly BROWSER_LOADED = "browserLoaded";
-}
-
-export class DOMEntityAction extends Action {
-  static readonly DOM_ENTITY_DIRTY = "domEntityDirty";
 }
 
 @defineWorkerAction()
@@ -18,4 +25,14 @@ export class OpenRemoteBrowserAction extends Action {
   constructor(readonly url: string) {
     super(OpenRemoteBrowserAction.OPEN_REMOTE_BROWSER);
   }
+}
+
+const DOM_NODE_MUTATION_ACTION_TYPES = {
+  [TreeNodeAction.NODE_ADDED]: true,
+  [TreeNodeAction.NODE_REMOVED]: true,
+  [DOMMutationAction.DOM_NODE_LOADED]: true
+};
+
+export function isDOMMutationAction(action: Action) {
+  return DOM_NODE_MUTATION_ACTION_TYPES[action.type];
 }

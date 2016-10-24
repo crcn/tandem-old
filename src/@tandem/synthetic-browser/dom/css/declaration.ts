@@ -402,6 +402,19 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     }
   }
 
+  equalTo(declaration: SyntheticCSSStyleDeclaration) {
+    function compare(a, b) {
+      for (const key in a) {
+        if (key.charAt(0) === "$") continue;
+        if (a[key] !== b[key]) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return compare(this, declaration) && compare(declaration, this);
+  }
+
   get cssText() {
     const buffer = [];
 
@@ -439,6 +452,10 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
       decl[camelCase(name.trim())] = value.trim();
     }
     return decl;
+  }
+
+  static fromObject(declaration: any): SyntheticCSSStyleDeclaration {
+    return Object.assign(new SyntheticCSSStyleDeclaration(), declaration);
   }
 
   visitWalker(walker: ITreeWalker) { }

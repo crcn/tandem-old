@@ -21,6 +21,10 @@ export class TetherRenderer extends BaseRenderer {
     this._canvas.height = window.outerHeight;
   }
 
+  async fetchComputedStyle(uid: string) {
+    // TODO
+  }
+
   update() {
     const rect = this.element.getBoundingClientRect();
 
@@ -35,13 +39,13 @@ export class TetherRenderer extends BaseRenderer {
     this.update();
   }
 
-  private setRemoteRects(rects: any) {
+  private setRemoteRects(rects: any, styles: any) {
     const conv = {};
     for (const uid in rects) {
       const [left, top, right, bottom] = rects[uid];
       conv[uid] = new BoundingRect(left, top, right, bottom);
     }
-    this.setRects(conv);
+    this.setRects(conv, styles);
   }
 
   private paint({ dataUrl, left, top, width, height }) {

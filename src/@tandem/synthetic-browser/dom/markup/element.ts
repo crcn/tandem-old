@@ -4,6 +4,7 @@ import { DOMNodeType } from "./node-types";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { parse as parseMarkup } from "./parser.peg";
+import { selectorMatchesElement } from "../selector";
 import { MarkupElementExpression } from "./ast";
 import { syntheticElementClassType } from "./types";
 import { SyntheticDocumentFragment } from "./document-fragment";
@@ -27,7 +28,12 @@ import {
 } from "@tandem/common";
 
 import { Bundle } from "@tandem/sandbox";
-import { BaseContentEdit, EditAction, SetValueEditActon, SetKeyValueEditAction } from "@tandem/sandbox";
+import {
+  EditAction,
+  BaseContentEdit,
+  SetValueEditActon,
+  SetKeyValueEditAction,
+} from "@tandem/sandbox";
 
 export interface ISerializedSyntheticDOMAttribute {
   name: string;
@@ -212,9 +218,10 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   readonly nodeType: number = DOMNodeType.ELEMENT;
   readonly attributes: SyntheticDOMAttributes;
   readonly expression: MarkupElementExpression;
-  readonly dataset: any = {};
+  readonly dataset: any;
   private _shadowRoot: SyntheticDocumentFragment;
   private _createdCallbackCalled: boolean;
+  private _matchesCache: any;
 
   constructor(readonly namespaceURI: string, readonly tagName: string) {
     super(tagName);
@@ -223,6 +230,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
     // todo - proxy this
     this.dataset = {};
+    this._matchesCache = {};
   }
 
   createEdit() {
@@ -279,6 +287,10 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
       attribs[attribute.name] = attribute.value;
     }
     return attribs;
+  }
+
+  matches(selector) {
+    return selectorMatchesElement(selector, this);
   }
 
   setAttribute(name: string, value: any) {

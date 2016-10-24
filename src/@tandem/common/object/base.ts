@@ -32,6 +32,10 @@ export interface IComparable {
   compare(node: IComparable): number;
 }
 
+export interface IEqualable {
+  equalTo(value: IEqualable): boolean;
+}
+
 export interface IPatchable {
   patch(node: IPatchable);
 }

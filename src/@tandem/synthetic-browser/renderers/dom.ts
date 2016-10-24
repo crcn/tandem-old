@@ -9,36 +9,30 @@ import { BaseRenderer } from "./base";
 import { HTML_VOID_ELEMENTS } from "@tandem/synthetic-browser/dom";
 
 import {
-  BoundingRect,
-  watchProperty,
   bindable,
-  flattenTree,
-  traverseTree,
   isMaster,
+  flattenTree,
+  BoundingRect,
+  traverseTree,
+  watchProperty,
   calculateAbsoluteBounds
 } from "@tandem/common";
 
 import {
   DOMNodeType,
-  querySelectorAll,
   SyntheticDOMNode,
   SyntheticDOMText,
   SyntheticDocument,
   SyntheticDOMElement,
   SyntheticDOMContainer,
+  AttachableSyntheticDOMNode,
   SyntheticCSSStyleDeclaration,
 } from "../dom";
 
 export class SyntheticDOMRenderer extends BaseRenderer {
 
   private _currentCSSText: string;
-  private _computedStyles: any = {};
-
-  getComputedStyle(uid: string) {
-    if (this._computedStyles[uid]) return this._computedStyles[uid];
-    const element = this.element.querySelector(`[data-uid="${uid}"]`);
-    return this._computedStyles[uid] = element ? getComputedStyle(element) : undefined;
-  }
+  private _firstRender: boolean;
 
   createElement() {
     const element = document.createElement("div");
@@ -46,46 +40,59 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     return element;
   }
 
-  async fetchComputedStyle(uid: string) {
-    return this.getComputedStyle(uid);
-  }
-
   update() {
-    this._computedStyles = {};
-
     return new Promise((resolve) => {
-
-      const document = this.document as SyntheticDocument;
-      const styleElement = this.element.firstChild as HTMLStyleElement;
-      const currentCSSText = document.styleSheets.map((styleSheet) => styleSheet.cssText).join("\n");
-      if (this._currentCSSText !== currentCSSText) {
-        styleElement.textContent = this._currentCSSText = currentCSSText;
-      }
-
-      // render immediately to the DOM element
-      ReactDOM.render(renderSyntheticNode(document), this.element.lastChild as HTMLDivElement, () => {
-        const syntheticDOMNodesByUID = {};
-
-        traverseTree(document, (node) => syntheticDOMNodesByUID[node.uid] = node);
-
-        const rects = {};
-
-        const allElements = this.element.querySelectorAll("*");
-
-        for (let i = 0, n = allElements.length; i < n; i++) {
-          const element = <HTMLElement>allElements[i];
-          if (!element.dataset) continue;
-          const uid = element.dataset["uid"];
-          const syntheticNode: SyntheticDOMNode = syntheticDOMNodesByUID[uid];
-          const rect = rects[uid] = BoundingRect.fromClientRect(element.getBoundingClientRect());
-          if (syntheticNode) {
-            syntheticNode.attachNative(element);
-          }
+      requestAnimationFrame(() => {
+        const document = this.document as SyntheticDocument;
+        const styleElement = this.element.firstChild as HTMLStyleElement;
+        const currentCSSText = document.styleSheets.map((styleSheet) => styleSheet.cssText).join("\n");
+        if (this._currentCSSText !== currentCSSText) {
+          styleElement.textContent = this._currentCSSText = currentCSSText;
         }
-        this.setRects(rects);
-        resolve();
+
+        // render immediately to the DOM element
+        ReactDOM.render(renderSyntheticNode(document), this.element.lastChild as HTMLDivElement, () => {
+
+          // computed properties may not come up immediately. Not a good solution to this fix,
+          // but works for now.
+          setTimeout(() => {
+            this._firstRender = false;
+            this.syncRects();
+            resolve();
+          }, this._firstRender ? 100 : 0);
+        });
       });
     });
+  }
+
+  private syncRects() {
+     const now = Date.now();
+    const syntheticDOMNodesByUID = {};
+
+    traverseTree(this.document, (node) => syntheticDOMNodesByUID[node.uid] = node);
+
+    const rects  = {};
+    const styles = {};
+
+    const allElements = this.element.querySelectorAll("*");
+    let hiddenCount = 0;
+
+    for (let i = 0, n = allElements.length; i < n; i++) {
+      const element = <HTMLElement>allElements[i];
+      if (!element.dataset) continue;
+
+      const uid = element.dataset["uid"];
+      const syntheticNode: SyntheticDOMNode = syntheticDOMNodesByUID[uid];
+      if (syntheticNode) {
+
+        const rect = rects[uid]  = BoundingRect.fromClientRect(element.getBoundingClientRect());
+        styles[uid] = SyntheticCSSStyleDeclaration.fromObject(window.getComputedStyle(element));
+
+        (<AttachableSyntheticDOMNode<any>>syntheticNode).attachNative(element);
+      }
+    }
+
+    this.setRects(rects, styles);
   }
 }
 

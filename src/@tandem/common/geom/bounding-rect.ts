@@ -41,6 +41,15 @@ export class BoundingRect {
     );
   }
 
+  equalTo(rect: BoundingRect) {
+    return (
+      this.left === rect.left &&
+      this.top === rect.top &&
+      this.right === rect.right &&
+      this.bottom === rect.bottom
+    );
+  }
+
   get visible() {
     return this.width > 0 && this.height > 0;
   }

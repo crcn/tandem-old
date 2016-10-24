@@ -63,7 +63,9 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     const workspace = new Workspace();
 
     const browser = workspace.browser = new RemoteSyntheticBrowser(this._dependencies, new CanvasRenderer(workspace, new SyntheticDOMRenderer()));
-    browser.observe({ execute: (action) => this.bus.execute(action) });
+    browser.observe({ execute: (action) => {
+      this.bus.execute(action);
+    }});
     await browser.open(filePath);
 
     this.app.workspace = workspace;
@@ -153,18 +155,16 @@ class CanvasRenderer extends BaseDecoratorRenderer {
     return this._rects[uid] || BoundingRect.zeros();
   }
 
-  protected onTargetRendererAction(action: Action) {
-    if (action.type === SyntheticRendererAction.UPDATE_RECTANGLES) {
-      const offsetRects = {};
-      const { transform } = this.workspace;
-      const rects = (<BaseRenderer>this._renderer).rects;
-      for (const uid in rects) {
-        offsetRects[uid] = (<BoundingRect>rects[uid]).move({
-          left: -transform.left,
-          top: -transform.top
-        }).zoom(1 / transform.scale);
-      }
-      this._rects = offsetRects;
+  protected onTargetRendererSetRectangles() {
+    const offsetRects = {};
+    const { transform } = this.workspace;
+    const rects = (<BaseRenderer>this._renderer).rects;
+    for (const uid in rects) {
+      offsetRects[uid] = (<BoundingRect>rects[uid]).move({
+        left: -transform.left,
+        top: -transform.top
+      }).zoom(1 / transform.scale);
     }
+    this._rects = offsetRects;
   }
 }

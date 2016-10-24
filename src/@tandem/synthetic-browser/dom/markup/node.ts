@@ -19,18 +19,16 @@ import {
 
 import {
   TreeNode,
+  Metadata,
   BubbleBus,
-  ITreeWalker,
-  IComparable,
-  findTreeNode,
-  patchTreeNode,
-} from "@tandem/common";
-
-import {
   serialize,
+  ITreeWalker,
   deserialize,
   ISerializer,
+  IComparable,
+  findTreeNode,
   serializable,
+  patchTreeNode,
 } from "@tandem/common";
 
 export interface ISerializedSyntheticDOMNode {
@@ -43,6 +41,8 @@ export const SyntheticDOMNodeSerializer = SyntheticObjectSerializer;
 // TODO - possibly have metadata here since it's generic and can be used with any synthetic
 export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, ISyntheticObject, IEditable {
 
+  readonly metadata: Metadata;
+
   abstract textContent: string;
   readonly namespaceURI: string;
   public $uid: any;
@@ -52,7 +52,12 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
    */
 
   private _ownerDocument: SyntheticDocument;
-  private _native: Node;
+
+  /**
+   * @type {Node}
+   */
+
+  protected _native: Node;
 
   /**
    */
@@ -76,6 +81,8 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   constructor(readonly nodeName: string) {
     super();
     this.$uid = generateSyntheticUID();
+    this.metadata = new Metadata(this.getInitialMetadata());
+    this.metadata.observe(new BubbleBus(this));
   }
 
   get uid(): any {
@@ -92,10 +99,6 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   get browser() {
     return this.ownerDocument.defaultView.browser;
-  }
-
-  get native() {
-    return this._native;
   }
 
   get module() {
@@ -128,6 +131,13 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return !!findTreeNode(this, child => child === node);
   }
 
+  /**
+   * TODO - change this method name to something such as computeDifference
+   *
+   * @param {SyntheticDOMNode<any>} source
+   * @returns
+   */
+
   compare(source: SyntheticDOMNode) {
     return Number(source.constructor === this.constructor && this.nodeName === source.nodeName);
   }
@@ -140,8 +150,29 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return !!this.compare(node);
   }
 
+  protected getInitialMetadata() {
+    return {};
+  }
+
   isSameNode(node: SyntheticDOMNode) {
     return this === node;
+  }
+
+  /**
+   * Attaches a native DOM node. TODO - possibly
+   * change this to addProduct since the renderer can attach anything
+   * that it wants -- even non-native elements that share an identical
+   * API.
+   *
+   * @param {Node} node
+   */
+
+  attachNative(node: Node) {
+    this._native = node;
+  }
+
+  get mountedToNative() {
+    return this._native;
   }
 
   hasChildNodes() {
@@ -153,10 +184,6 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     if (this.ownerDocument) {
       child.$setOwnerDocument(this.ownerDocument);
     }
-  }
-
-  attachNative(node: Node) {
-    this._native = node;
   }
 
   $setOwnerDocument(document: SyntheticDocument) {
@@ -189,4 +216,9 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   abstract clone(deep?: boolean);
   abstract createEdit(): BaseContentEdit<any>;
   abstract applyEditAction(action: EditAction);
+}
+
+export abstract class AttachableSyntheticDOMNode<T extends Node> extends SyntheticDOMNode {
+
+
 }

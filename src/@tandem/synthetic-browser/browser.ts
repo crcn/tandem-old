@@ -54,12 +54,14 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   private _window: SyntheticWindow;
   private _location: SyntheticLocation;
   private _renderer: ISyntheticDocumentRenderer;
+  private _documentObserver: IActor;
 
   constructor(protected _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, readonly parent?: ISyntheticBrowser) {
     super();
 
     this._renderer = isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer();
     this._renderer.observe(new BubbleBus(this));
+    this._documentObserver = new BubbleBus(this);
   }
 
   get document() {
@@ -79,9 +81,13 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   }
 
   protected setWindow(value: SyntheticWindow) {
+    if (this._window) {
+      this._window.document.unobserve(this._documentObserver);
+    }
     const oldWindow = this._window;
     this._window = value;
     this._renderer.document = value.document;
+    this._window.document.observe(this._documentObserver);
     this.notify(new PropertyChangeAction("window", value, oldWindow));
   }
 
@@ -99,6 +105,10 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   }
 
   protected abstract async open2(url: string);
+
+  protected notifyLoaded() {
+    this.notify(new SyntheticBrowserAction(SyntheticBrowserAction.BROWSER_LOADED));
+  }
 }
 
 export class SyntheticBrowser extends BaseSyntheticBrowser {
@@ -157,6 +167,6 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
       window.document.body.appendChild(exportsElement);
     }
 
-    this.notify(new SyntheticBrowserAction(SyntheticBrowserAction.BROWSER_LOADED));
+    this.notifyLoaded();
   }
 }

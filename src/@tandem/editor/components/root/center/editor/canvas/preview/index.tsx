@@ -24,6 +24,7 @@ export default class PreviewComponent extends React.Component<{ app: FrontEndApp
     const div = document.createElement("div") as any;
     div.createShadowRoot();
     div.shadowRoot.appendChild(this.props.renderer.element);
+    this.props.renderer.start();
     container.appendChild(div);
   }
 

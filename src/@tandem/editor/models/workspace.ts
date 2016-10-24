@@ -18,7 +18,7 @@ import { ISyntheticBrowser, SyntheticBrowser } from "@tandem/synthetic-browser"
 export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;
 
-// TODO - change to Workspace
+// TODO - add hovering: SyntheticDOMNode[] property
 export class Workspace implements IWorkspace {
 
   readonly metadata = new Metadata(this);

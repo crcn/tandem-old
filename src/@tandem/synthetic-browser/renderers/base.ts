@@ -1,28 +1,72 @@
 import { Action } from "@tandem/common";
-import { SyntheticRendererAction, DOMEntityAction } from "../actions";
+import { SyntheticRendererAction, isDOMMutationAction } from "../actions";
 import { WrapBus } from "mesh";
-import { Observable, IObservable, MetadataChangeAction } from "@tandem/common";
-import { BoundingRect, watchProperty, IActor } from "@tandem/common";
+
+import {
+  IActor,
+  bindable,
+  Observable,
+  IObservable,
+  BoundingRect,
+  watchProperty,
+  SingletonThenable,
+  MetadataChangeAction,
+  waitForPropertyChange,
+} from "@tandem/common";
+
 import {
   DOMNodeType,
-  SyntheticDocument,
   SyntheticDOMNode,
   SyntheticDOMText,
+  SyntheticDocument,
   SyntheticDOMElement,
   SyntheticCSSStyleDeclaration,
 } from "../dom";
 
+
 export interface ISyntheticDocumentRenderer extends IObservable {
   readonly element: HTMLElement;
   document: SyntheticDocument;
+
+  /**
+   * Called by whatever is mounting the document renderer
+   */
+
+  start();
+
+  /**
+   * Pauses the renderer
+   */
+
+  stop();
+
+  /**
+   * Returns the bounding rects exactly as they're computed by the target renderer.
+   */
+
   getBoundingRect(uid: string): BoundingRect;
+
+  /**
+   * Resolves when the renderer is running
+   */
+
+  whenRunning(): Promise<any>;
+
+  /**
+   * Fetches and returns a computed style by the target rendering engine.
+   */
+
   getComputedStyle(uid: string): any;
-  fetchComputedStyle(uid: string): Promise<any>;
+
+  /**
+   */
+
   requestUpdate(): void;
 }
 
 // render timeout -- this should be a low number
 const REQUEST_UPDATE_TIMEOUT = 50;
+
 
 export abstract class BaseRenderer extends Observable implements ISyntheticDocumentRenderer {
 
@@ -30,11 +74,21 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   private _document: SyntheticDocument;
   private _updating: boolean;
   private _rects: any;
+
+  @bindable()
+  protected _rendered: boolean;
+
+  @bindable()
+  protected _running: boolean;
+
   private _shouldUpdateAgain: boolean;
   private _targetObserver: IActor;
+  private _computedStyles: any;
 
   constructor() {
     super();
+    this._running = false;
+    this._computedStyles = {};
 
     // may be running in a worker. Do not create an element if that's the case.
     if (typeof document !== "undefined") {
@@ -67,12 +121,26 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     return this._rects;
   }
 
-  getComputedStyle(uid: string) {
-    return undefined;
+  async whenRunning() {
+    if (!this._running) await waitForPropertyChange(this, "_running", value => !!value);
   }
 
-  async fetchComputedStyle(uid: string) {
-    // OVERRIDE ME
+  async whenRendered() {
+    if (!this._rendered) await waitForPropertyChange(this, "_rendered", value => !!value);
+  }
+
+  public start() {
+    if (this._running) return;
+    this._running = true;
+    this.requestUpdate();
+  }
+
+  public stop() {
+    this._running = false;
+  }
+
+  getComputedStyle(uid: string) {
+    return this._computedStyles[uid];
   }
 
   getBoundingRect(uid: string) {
@@ -85,13 +153,17 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     return document.createElement("div");
   }
 
-  protected setRects(rects: any) {
-    this._rects = rects;
+  protected setRects(rects: any, styles: any) {
+    this._rects          = rects;
+    this._computedStyles = styles;
+    this._rendered = true;
     this.notify(new SyntheticRendererAction(SyntheticRendererAction.UPDATE_RECTANGLES));
   }
 
   protected onDocumentAction(action: Action) {
-    this.requestUpdate();
+    if (isDOMMutationAction(action)) {
+      this.requestUpdate();
+    }
   }
 
   public requestUpdate() {
@@ -108,6 +180,9 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     // timeout to ensure that we don't kill CPU from unecessary renders.
     setTimeout(async () => {
       if (!this._document) return;
+
+      await this.whenRunning();
+
       this._shouldUpdateAgain = false;
       await this.update();
       this._updating = false;
@@ -125,27 +200,26 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   }
 }
 
-export class BaseDecoratorRenderer implements ISyntheticDocumentRenderer {
+
+export class BaseDecoratorRenderer extends Observable implements ISyntheticDocumentRenderer {
   constructor(protected _renderer: ISyntheticDocumentRenderer) {
+    super();
     _renderer.observe(new WrapBus(this.onTargetRendererAction.bind(this)));
   }
   getComputedStyle(uid) {
     return this._renderer.getComputedStyle(uid);
   }
-  fetchComputedStyle(uid) {
-    return this._renderer.fetchComputedStyle(uid);
-  }
   getBoundingRect(uid) {
     return this._renderer.getBoundingRect(uid);
   }
-  observe(actor) {
-    return this._renderer.observe(actor);
+  whenRunning() {
+    return this._renderer.whenRunning();
   }
-  unobserve(actor) {
-    return this._renderer.unobserve(actor);
+  start() {
+    this._renderer.start();
   }
-  notify(action) {
-    return this._renderer.notify(action);
+  stop() {
+    this._renderer.stop();
   }
   get element() {
     return this._renderer.element;
@@ -162,6 +236,14 @@ export class BaseDecoratorRenderer implements ISyntheticDocumentRenderer {
   }
 
   protected onTargetRendererAction(action: Action) {
+    if (action.type === SyntheticRendererAction.UPDATE_RECTANGLES) {
+      this.onTargetRendererSetRectangles();
+    }
+    // bubble up
+    this.notify(action);
+  }
+
+  protected onTargetRendererSetRectangles() {
 
   }
 }
@@ -172,11 +254,19 @@ export class NoopRenderer extends Observable implements ISyntheticDocumentRender
   public getBoundingRect() {
     return BoundingRect.zeros();
   }
+  public getEagerComputedStyle() {
+    return null;
+  }
+  public whenRunning() {
+    return Promise.resolve();
+  }
+  public start() { }
+  public stop() { }
   public getComputedStyle() {
     return null;
   }
-  public fetchComputedStyle(): Promise<any> {
-    return Promise.resolve();
+  public hasLoadedComputedStyle() {
+    return false;
   }
   requestUpdate() { }
   createElement() { return undefined; }
