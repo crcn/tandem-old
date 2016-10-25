@@ -2,7 +2,6 @@
 - [ ] resizer
 - [ ] vscode ext update
 - [ ] html source maps
-- [ ] strongly typed props for templates
   - generate d.ts files
 - [ ] combine front-end and back-end in one directory
 - [ ] transpile bundles (webpack loader)

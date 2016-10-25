@@ -6,15 +6,44 @@ import { IDisposable } from "@tandem/common/object";
 import { serializable } from "@tandem/common/serialize";
 export { Action };
 
-export function definePublicAction() {
+export namespace ActionAccess {
+  export const PUBLIC    = "public";
+  export const PRIVATE   = "private";
+  export const PROTECTED = "protected";
+}
+
+export function getActionAccess(action: Action) {
+  return Reflect.getMetadata("action:access", action.constructor);
+}
+
+function defineActionAccess(value: string) {
   return function(target) {
     serializable()(target);
-    Reflect.defineMetadata("remoteAction", true, target);
+    Reflect.defineMetadata("action:access", value, target);
   }
 }
 
+export function definePublicAction() {
+  return defineActionAccess(ActionAccess.PUBLIC);
+}
+
+export function defineProtectedAction() {
+  return defineActionAccess(ActionAccess.PROTECTED);
+}
+
+export function definePrivateAction() {
+  return defineActionAccess(ActionAccess.PRIVATE);
+}
+
 export function isPublicAction(action: Action) {
-  return Reflect.getMetadata("remoteAction", action.constructor) === true;
+  return getActionAccess(action) === ActionAccess.PUBLIC;
+}
+
+export function isPrivateAction(action: Action) {
+  const access = getActionAccess(action);
+
+  // private by default
+  return !access || access === ActionAccess.PRIVATE;
 }
 
 export function defineMasterAction() {

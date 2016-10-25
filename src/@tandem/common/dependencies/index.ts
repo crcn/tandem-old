@@ -54,9 +54,9 @@ export class ApplicationSingletonDependency extends Dependency<IApplication> {
 }
 
 /**
+ * @deprecated - use public/protected/private busses
  */
 
-// TODO - GlobalActorDependency instead of broker bus here
 export class MainBusDependency extends Dependency<IBrokerBus> {
   static NS = "mainBus";
   constructor(value: IBrokerBus) {
@@ -66,6 +66,60 @@ export class MainBusDependency extends Dependency<IBrokerBus> {
     return dependencies.query<MainBusDependency>(MainBusDependency.NS).value;
   }
 }
+
+function createSingletonBusDependencyClass(name: string) {
+
+  const id = ["bus", name].join("/");
+
+  return class BusDependency extends Dependency<IActor> {
+    constructor(bus: IActor, readonly actors: Array<IActor>) {
+      super(id, bus);
+    }
+
+    public addActor(actor: IActor) {
+      if (this.actors.indexOf(actor) === -1) {
+        throw new Error(`Attempting to register a global bus actor that already exists on ${id}.`);
+      }
+
+      this.actors.push(actor);
+    }
+
+    public removeActor(actor: IActor) {
+      const index = this.actors.indexOf(actor);
+      if (index !== -1) {
+        this.actors.splice(index, 1);
+      }
+    }
+
+    static getInstance(dependencies: Dependencies): IActor {
+      return dependencies.query<BusDependency>(id).value;
+    }
+  };
+}
+
+/**
+ * Public bus that is accessible to outside resources
+ */
+
+export const PublicBusDependency    = createSingletonBusDependencyClass("public");
+
+/**
+ * Protected bus that can be shared with very specific outside resources
+ *
+ * Bubbes messages to the public bus.
+ */
+
+export const ProtectedBusDependency = createSingletonBusDependencyClass("protected");
+
+/**
+ * Private bus that can only be used within the application. This typically contains messages
+ * that are junk for other outside resources.
+ *
+ * Bubbles messages to the protected bus.
+ */
+
+export const PrivateBusDependency   = createSingletonBusDependencyClass("private");
+
 
 /**
  */

@@ -103,6 +103,8 @@ export default class FrontEndService extends BaseApplicationService<IApplication
     }
   }
 
+  // TODO - deprecate this
+
   getIndexHtmlContent(staticFileNames) {
     const host = `http://localhost:${this._port}`;
 

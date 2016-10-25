@@ -3,6 +3,15 @@ import { IActor } from "@tandem/common/actors";
 import { IBrokerBus } from "./base";
 import { ParallelBus } from "mesh";
 
+/**
+ * @deprecated apps should never directly register listeners to a main bus. Instead they should interface
+ * with a public collection
+ *
+ * @export
+ * @class BrokerBus
+ * @implements {IBrokerBus}
+ */
+
 export class BrokerBus implements IBrokerBus {
 
   readonly actors: Array<IActor>;

@@ -25,8 +25,8 @@ const {
   PACKAGES,
   BASE_DIR,
   PACKAGE_NAMES,
-  MONO_PKG_FILE_PATH,
   NODE_MODULES_DIR,
+  MONO_PKG_FILE_PATH,
   OUT_NODE_MODULES_DIR,
 } = require('./config');
 
@@ -92,6 +92,11 @@ gulp.task('prepare:mono-package', gulpSequence(
   'prepare:install-mono-package'
 ));
 
+/**
+ * Creates a monolithic package of all the dependencies
+ * required by all packages in the source directory.
+ */
+
 gulp.task('prepare:create-mono-package', () => {
 
   const { dependencies, devDependencies } = merge(...PACKAGES);
@@ -139,6 +144,18 @@ gulp.task('clean:symlinks', function() {
       fsa.removeSync(filePath);
     }
   });
+});
+
+/******************************
+ * Publish tasks
+ ******************************/
+
+gulp.task('publish:all', function() {
+
+});
+
+gulp.task('publish', function() {
+  // inquier here about what package to publish
 });
 
 /******************************
