@@ -17,17 +17,18 @@ import {
   SandboxModuleEvaluatorFactoryDependency,
 } from "@tandem/sandbox";
 
-export const htmlSandboxDependencies = [
+export function createHTMLSandboxDependencies() {
+  return [
+    // bundle loaders
+    new BundlerLoaderFactoryDependency(HTML_MIME_TYPE, HTMLBundleLoader),
+    new BundlerLoaderFactoryDependency(CSS_MIME_TYPE, CSSBundleLoader),
 
-  // bundle loaders
-  new BundlerLoaderFactoryDependency(HTML_MIME_TYPE, HTMLBundleLoader),
-  new BundlerLoaderFactoryDependency(CSS_MIME_TYPE, CSSBundleLoader),
+    // sandbox evaluators
+    new SandboxModuleEvaluatorFactoryDependency(undefined, HTML_MIME_TYPE, HTMLASTEvaluator),
+    new SandboxModuleEvaluatorFactoryDependency(undefined, CSS_MIME_TYPE, CSSASTEvaluator),
 
-  // sandbox evaluators
-  new SandboxModuleEvaluatorFactoryDependency(undefined, HTML_MIME_TYPE, HTMLASTEvaluator),
-  new SandboxModuleEvaluatorFactoryDependency(undefined, CSS_MIME_TYPE, CSSASTEvaluator),
-
-  // edit consumers
-  new ContentEditorFactoryDependency(CSS_MIME_TYPE, CSSEditor),
-  new ContentEditorFactoryDependency(HTML_MIME_TYPE, MarkupEditor),
-]
+    // edit consumers
+    new ContentEditorFactoryDependency(CSS_MIME_TYPE, CSSEditor),
+    new ContentEditorFactoryDependency(HTML_MIME_TYPE, MarkupEditor),
+  ];
+}

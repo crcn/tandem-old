@@ -1,19 +1,33 @@
 import { Action } from "@tandem/common/actions";
 import { KeyBinding } from "./base";
+import { BaseCommand, inject, Metadata } from "@tandem/common";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { pointerToolDependency } from "@tandem/editor/browser/models/pointer-tool";
 import { GlobalKeyBindingDependency } from "@tandem/editor/browser/dependencies";
-import { WorkspaceToolFactoryDependency } from "@tandem/editor/browser/dependencies";
-import { SelectAllAction, SetToolAction } from "@tandem/editor/browser/actions";
-import { ZoomAction, DeleteSelectionAction } from "@tandem/editor/browser/actions";
-import { BaseCommand, BaseApplicationCommand } from "@tandem/common/commands";
+import { WorkspaceToolFactoryDependency, SettingsDependency } from "@tandem/editor/browser/dependencies";
+import { SelectAllAction, SetToolAction, ZoomAction, DeleteSelectionAction } from "@tandem/editor/browser/actions";
 import { SettingKeys, ZOOM_INCREMENT, POINTER_TOOL_KEY_CODE } from "@tandem/editor/browser/constants";
 
-export * from "./base";
-export * from "./manager";
+class ToggleLeftSidebarCommand extends BaseCommand {
+
+  @inject(SettingsDependency.ID)
+  private _settings: Metadata;
+
+  execute(action: Action) {
+    this._settings.toggle(SettingKeys.HIDE_LEFT_SIDEBAR);
+  }
+}
+
+class ToggleRightSidebarCommand extends BaseCommand {
+  @inject(SettingsDependency.ID)
+  private _settings: Metadata;
+  execute(action: Action) {
+    this._settings.toggle(SettingKeys.HIDE_RIGHT_SIDEBAR);
+  }
+}
 
 export const keyBindingsDependency = [
-  new GlobalKeyBindingDependency("meta+=", class ZoomInCommand extends BaseApplicationCommand<FrontEndApplication> {
+  new GlobalKeyBindingDependency("meta+=", class ZoomInCommand extends BaseCommand {
     execute(action: Action) {
       this.bus.execute(new ZoomAction(ZOOM_INCREMENT, true));
     }
@@ -28,7 +42,7 @@ export const keyBindingsDependency = [
       }, 1);
     }
   }),
-  new GlobalKeyBindingDependency("meta+-", class ZoomOutCommand extends BaseApplicationCommand<FrontEndApplication> {
+  new GlobalKeyBindingDependency("meta+-", class ZoomOutCommand extends BaseCommand {
     execute(action: Action) {
       this.bus.execute(new ZoomAction(-ZOOM_INCREMENT, true));
     }
@@ -49,14 +63,8 @@ export const keyBindingsDependency = [
       this.bus.execute(new DeleteSelectionAction());
     }
   }),
-  new GlobalKeyBindingDependency("alt+\\", class ToggleLeftSidebarCommand extends BaseApplicationCommand<FrontEndApplication> {
-    execute(action: Action) {
-      this.app.settings.toggle(SettingKeys.HIDE_LEFT_SIDEBAR);
-    }
-  }),
-  new GlobalKeyBindingDependency("alt+/", class ToggleRightSidebarCommand extends BaseApplicationCommand<FrontEndApplication> {
-    execute(action: Action) {
-      this.app.settings.toggle(SettingKeys.HIDE_RIGHT_SIDEBAR);
-    }
-  }),
+  new GlobalKeyBindingDependency("alt+\\", ToggleLeftSidebarCommand),
+  new GlobalKeyBindingDependency("alt+/", ToggleRightSidebarCommand),
 ];
+
+export * from "./base";

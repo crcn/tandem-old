@@ -12,12 +12,22 @@ interface IRootEditorComponentProps {
   dependencies: Dependencies;
 }
 
-export class RootEditorComponent extends React.Component<IRootEditorComponentProps, any> {
+export class RootEditorComponent extends React.Component<IRootEditorComponentProps, {}> {
+
+  static childContextTypes = {
+    bus: React.PropTypes.object.isRequired,
+    dependencies: React.PropTypes.object.isRequired
+  };
+
+  getChildContext() {
+    return this.props;
+  }
+
   render() {
     return (<div className="m-editor editor">
-      <DocumentGutterComponent {...this.props} />
-      <CenterComponent {...this.props} />
-      <SelectionGutterComponent {...this.props} />
+      <DocumentGutterComponent />
+      <CenterComponent />
+      <SelectionGutterComponent />
     </div>);
   }
 }

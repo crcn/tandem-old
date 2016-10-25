@@ -11,7 +11,7 @@ import {
   flattenTree,
   deserialize,
   Dependencies,
-  MainBusDependency,
+  PrivateBusDependency,
   BaseApplicationService
 } from "@tandem/common";
 
@@ -30,7 +30,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   constructor(dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
     super(dependencies, renderer, parent);
-    this._bus = MainBusDependency.getInstance(dependencies);
+    this._bus = PrivateBusDependency.getInstance(dependencies);
   }
   async open2(url: string) {
     const remoteBrowserStream = this._bus.execute(new OpenRemoteBrowserAction(url));

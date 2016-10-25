@@ -9,7 +9,6 @@ export class ComponentService extends CoreApplicationService<IEditorBrowserConfi
 
   private _rendering: boolean;
 
-
   execute() {
     if (this._rendering) return;
     this._rendering = true;
@@ -18,7 +17,6 @@ export class ComponentService extends CoreApplicationService<IEditorBrowserConfi
 
   render = () => {
     this._rendering = false;
-
     ReactDOM.render(<RootEditorComponent bus={this.bus} dependencies={this.dependencies} />, this.config.element);
   }
 }

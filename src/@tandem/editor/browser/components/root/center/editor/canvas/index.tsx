@@ -9,7 +9,7 @@ import { IsolateComponent }  from "@tandem/editor/browser/components/common";
 import PreviewLayerComponent from "./preview";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { UpdateAction, IActor } from "@tandem/common";
-import { Dependencies, MainBusDependency } from "@tandem/common/dependencies";
+import { Dependencies, PrivateBusDependency } from "@tandem/common/dependencies";
 import {
   ZoomAction,
   MouseAction,
@@ -32,7 +32,7 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
   }
 
   get bus(): IActor {
-    return MainBusDependency.getInstance(this.props.dependencies);
+    return PrivateBusDependency.getInstance(this.props.dependencies);
   }
 
   translate(left, top) {

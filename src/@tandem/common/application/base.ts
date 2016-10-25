@@ -5,7 +5,6 @@ import { LoadAction, InitializeAction } from "../actions";
 import {
   Dependency,
   Dependencies,
-  MainBusDependency,
   PrivateBusDependency,
 } from '../dependencies';
 

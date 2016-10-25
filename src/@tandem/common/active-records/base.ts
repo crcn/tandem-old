@@ -7,7 +7,7 @@ import { ISerializable } from "@tandem/common/serialize";
 import { IBrokerBus, TypeWrapBus } from "@tandem/common/busses";
 import { Observable, IObservable } from "@tandem/common/observable";
 import { WrapBus, AcceptBus, ParallelBus } from "mesh";
-import { Dependencies, MainBusDependency, IInjectable, Injector } from "@tandem/common/dependencies";
+import { Dependencies, PrivateBusDependency, IInjectable, Injector } from "@tandem/common/dependencies";
 import {
   Action,
   DSAction,
@@ -44,7 +44,7 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
   // TODO - move this to reflect metadata
   readonly idProperty: string = "_id";
 
-  constructor(private _source: T, readonly collectionName: string, @inject(MainBusDependency.NS) readonly bus: IActor) {
+  constructor(private _source: T, readonly collectionName: string, @inject(PrivateBusDependency.ID) readonly bus: IActor) {
     super();
     if (this._source) {
       this.setPropertiesFromSource(_source);

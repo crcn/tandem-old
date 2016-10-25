@@ -42,13 +42,13 @@ export class FileSystemDependency extends Dependency<IFileSystem> {
 }
 
 export class FileResolverDependency extends Dependency<IFileResolver> {
-  static readonly NS = "fileResover";
+  static readonly ID = "fileResover";
   constructor(value: IFileResolver) {
-    super(FileResolverDependency.NS, value);
+    super(FileResolverDependency.ID, value);
   }
 
   static getInstance(dependencies: Dependencies): IFileResolver {
-    const dependency = dependencies.query<FileResolverDependency>(this.NS);
+    const dependency = dependencies.query<FileResolverDependency>(this.ID);
     return dependency && dependency.value;
   }
 

@@ -1,7 +1,7 @@
 import { IActor } from "@tandem/common/actors";
 import {
   Dependencies,
-  MainBusDependency,
+  PrivateBusDependency,
   MimeTypeDependency,
   DependenciesDependency,
 } from "@tandem/common/dependencies";
@@ -29,7 +29,7 @@ export class File extends Observable {
   @inject(DependenciesDependency.ID)
   protected _dependencies: Dependencies;
 
-  @inject(MainBusDependency.NS)
+  @inject(PrivateBusDependency.ID)
   protected _bus: IActor;
 
   constructor() {
@@ -50,7 +50,7 @@ export class File extends Observable {
   }
 
   // static async open(path: string, dependencies: Dependencies, mimeType?: string): Promise<File> {
-  //   const bus = MainBusDependency.getInstance(dependencies);
+  //   const bus = PrivateBusDependency.getInstance(dependencies);
   //   const data = await ReadFileAction.execute(path, bus);
   //   const fileFactory = FileFactoryDependency.find(mimeType || MimeTypeDependency.lookup(path, dependencies), dependencies) || FileFactoryDependency.find("file", dependencies);
   //   return fileFactory.create(data);

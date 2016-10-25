@@ -38,7 +38,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   @inject(DependenciesDependency.ID)
   readonly dependencies: Dependencies;
 
-  @inject(FileCacheDependency.NS)
+  @inject(FileCacheDependency.ID)
   private _fileCache: FileCache;
 
   $didInject() {

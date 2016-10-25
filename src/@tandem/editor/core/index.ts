@@ -49,7 +49,7 @@ function concatBusDependencies(dependencies: Dependencies) {
   );
 }
 
-export function concatCoreDependencies(dependencies: Dependencies, config: any, fileSystem?: IFileSystem, fileResolver?: IFileResolver) {
+export function concatCoreApplicationDependencies(dependencies: Dependencies, config: any, fileSystem?: IFileSystem, fileResolver?: IFileResolver) {
 
   dependencies = new Dependencies(
     dependencies,
@@ -63,7 +63,7 @@ export function concatCoreDependencies(dependencies: Dependencies, config: any, 
   return dependencies;
 }
 
-export class EditorApplication extends Application2 {
+export class ServiceApplication extends Application2 {
   willLoad() {
 
     // create the services before loading so that they can hook themselves into the application
@@ -75,6 +75,4 @@ export class EditorApplication extends Application2 {
 }
 
 export * from "./dependencies";
-export * from "./config";
 export * from "./services";
-export * from "./config";

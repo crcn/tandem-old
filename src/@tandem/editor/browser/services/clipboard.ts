@@ -1,6 +1,7 @@
 
 import { PasteAction } from "@tandem/editor/browser/actions";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
+import { CoreApplicationService } from "@tandem/editor/core";
 import {
   Logger,
   loggable,
@@ -14,8 +15,7 @@ function targetIsInput(event) {
   return /input|textarea/i.test(event.target.nodeName);
 }
 
-@loggable()
-export default class ClipboardService extends BaseApplicationService<FrontEndApplication> {
+export class ClipboardService extends CoreApplicationService<IEditorBrowserConfig> {
 
   public logger: Logger;
 
@@ -47,4 +47,3 @@ export default class ClipboardService extends BaseApplicationService<FrontEndApp
   }
 }
 
-export const clipboardServiceDependency = new ApplicationServiceDependency("clipboard", ClipboardService);

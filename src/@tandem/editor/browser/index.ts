@@ -1,15 +1,28 @@
 import { Dependencies } from "@tandem/common";
-import { ComponentService } from "./services";
+import { SettingsDependency } from "./dependencies";
 import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
-import { concatCoreDependencies, ApplicationServiceDependency } from "../core";
+import { concatCoreApplicationDependencies, ApplicationServiceDependency } from "../core";
+
+import {
+  SettingsService,
+  ClipboardService,
+  ComponentService,
+  GlobalKeyBindingService,
+} from "./services";
 
 export function concatEditorBrowserDependencies(dependencies: Dependencies, config: IEditorBrowserConfig, fileSystem?: IFileSystem, fileResolver?: IFileResolver) {
   return new Dependencies(
-    concatCoreDependencies(dependencies, config, fileSystem, fileResolver),
+    concatCoreApplicationDependencies(dependencies, config, fileSystem, fileResolver),
 
     // services
-    new ApplicationServiceDependency("rootComponentRenderer", ComponentService)
+    new ApplicationServiceDependency("settings", SettingsService),
+    new ApplicationServiceDependency("clipboard", ClipboardService),
+    new ApplicationServiceDependency("component", ComponentService),
+    new ApplicationServiceDependency("keyBindings", GlobalKeyBindingService),
+
+    // models
+    new SettingsDependency(),
   );
 }
 

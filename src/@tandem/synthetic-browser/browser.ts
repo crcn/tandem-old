@@ -18,7 +18,7 @@ import {
   bindProperty,
   watchProperty,
   HTML_MIME_TYPE,
-  MainBusDependency,
+  PrivateBusDependency,
   MimeTypeDependency,
   PropertyChangeAction,
   waitForPropertyChange,

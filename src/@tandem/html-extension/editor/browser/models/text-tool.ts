@@ -15,7 +15,7 @@ import { IWorkspaceTool, BaseEditorTool, IWorkspace } from "@tandem/editor/brows
 import {
   Dependency,
   Dependencies,
-  MainBusDependency,
+  PrivateBusDependency,
   DependenciesDependency,
   ApplicationServiceDependency,
 } from "@tandem/common/dependencies";
@@ -33,7 +33,7 @@ editor.open(new HTMLFile());
 
 export class EditInnerHTMLTool extends BaseEditorTool {
 
-  @inject(MainBusDependency.NS)
+  @inject(PrivateBusDependency.ID)
   readonly bus: IActor;
 
   @inject(DependenciesDependency.ID)

@@ -5,10 +5,11 @@ import { GutterComponent } from "../gutter";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { DOCUMENT_PANE_COMPONENT_NS } from "@tandem/editor/browser/dependencies";
 
-export class DocumentGutterComponent extends React.Component<{ app: FrontEndApplication }, any> {
+export class DocumentGutterComponent extends React.Component<{}, {}> {
+
   render() {
+    // console.log(this.context.dependencies, "DEP");
     return <GutterComponent
-      {...this.props}
       position="left"
       hideKey={SettingKeys.HIDE_LEFT_SIDEBAR}
       maxWidth={800}

@@ -3,17 +3,24 @@ import { IActor } from "@tandem/common/actors";
 import { IApplication } from "@tandem/common/application";
 import { IWorkspace, IWorkspaceTool } from "@tandem/editor/browser/models";
 import { ReactComponentFactoryDependency } from "./base";
-import { IFactory, Dependency, Dependencies, ClassFactoryDependency } from "@tandem/common/dependencies";
+import {
+  Metadata,
+  IFactory,
+  Dependency,
+  Dependencies,
+  ClassFactoryDependency,
+  createSingletonDependencyClass,
+} from "@tandem/common";
 
-export * from "./base";
-
-export const GLOBAL_KEY_BINDINGS_NS = "global-key-bindings";
+export const GLOBAL_KEY_BINDINGS_NS = "globalKeyBindings";
 export class GlobalKeyBindingDependency extends ClassFactoryDependency {
-  constructor(readonly key: string | Array<string>, readonly commandClass: { new(...rest: any[]): IActor }) {
-    super(`${GLOBAL_KEY_BINDINGS_NS}/${key}`, commandClass);
+  readonly keys: string[];
+  constructor(keys: string|string[], readonly commandClass: { new(...rest: any[]): IActor }) {
+    super(`${GLOBAL_KEY_BINDINGS_NS}/${keys}`, commandClass);
+    this.keys = Array.isArray(keys) ? keys : [keys];
   }
   clone() {
-    return new GlobalKeyBindingDependency(this.key, this.commandClass);
+    return new GlobalKeyBindingDependency(this.keys, this.commandClass);
   }
   static findAll(dependencies: Dependencies) {
     return dependencies.queryAll<GlobalKeyBindingDependency>(`${GLOBAL_KEY_BINDINGS_NS}/**`);
@@ -136,3 +143,7 @@ export class FooterComponentFactoryDependency extends ReactComponentFactoryDepen
     return new FooterComponentFactoryDependency(this.name, this.componentClass);
   }
 }
+
+export const SettingsDependency = createSingletonDependencyClass("settings", Metadata);
+
+export * from "./base";

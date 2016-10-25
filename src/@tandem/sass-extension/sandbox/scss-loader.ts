@@ -18,10 +18,10 @@ const _queue = new Queue();
 // TODO - SCSSTransformer
 export class SCSSLoader implements IBundleLoader {
 
-  @inject(FileCacheDependency.NS)
+  @inject(FileCacheDependency.ID)
   private _fileCache: FileCache;
 
-  @inject(FileResolverDependency.NS)
+  @inject(FileResolverDependency.ID)
   private _fileResolver: IFileResolver;
 
   async load(bundle: Bundle, { type, content }): Promise<any> {

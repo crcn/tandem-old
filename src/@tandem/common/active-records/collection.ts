@@ -7,7 +7,7 @@ import { IBrokerBus } from "@tandem/common/busses";
 import { IDisposable } from "@tandem/common/object";
 import { IActiveRecord } from "./base";
 import { ObservableCollection } from "@tandem/common/observable";
-import { Dependencies, MainBusDependency, IInjectable } from "@tandem/common/dependencies";
+import { Dependencies, PrivateBusDependency, IInjectable } from "@tandem/common/dependencies";
 import { PostDSAction, DSFindAction, DSUpdateAction, DSInsertAction } from "@tandem/common/actions";
 
 export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends ObservableCollection<T> implements IInjectable {
@@ -28,7 +28,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
 
   setup(collectionName: string, dependencies: Dependencies, createActiveRecord: (source: U) => T, query?: Object) {
     this.collectionName = collectionName;
-    this._bus = MainBusDependency.getInstance(dependencies);
+    this._bus = PrivateBusDependency.getInstance(dependencies);
     this.createActiveRecord = createActiveRecord;
     this._globalActionObserver = new WrapBus(this.onGlobalAction.bind(this));
     this.query = query || {};

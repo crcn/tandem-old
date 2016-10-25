@@ -53,20 +53,6 @@ export class ApplicationSingletonDependency extends Dependency<IApplication> {
   }
 }
 
-/**
- * @deprecated - use public/protected/private busses
- */
-
-export class MainBusDependency extends Dependency<IBrokerBus> {
-  static NS = "mainBus";
-  constructor(value: IBrokerBus) {
-    super(MainBusDependency.NS, value);
-  }
-  static getInstance(dependencies: Dependencies): IBrokerBus {
-    return dependencies.query<MainBusDependency>(MainBusDependency.NS).value;
-  }
-}
-
 function createSingletonBusDependencyClass(name: string) {
 
   const id = ["bus", name].join("/");
@@ -198,7 +184,7 @@ export class MimeTypeAliasDependency extends Dependency<string> {
 
 export function createSingletonDependencyClass<T>(id: string, clazz: { new(...rest): T }) {
   return class SingletonDependency implements IDependency {
-    static readonly NS: string = id;
+    static readonly ID: string = id;
     private _value: T;
     readonly overridable = false;
     readonly id = id;

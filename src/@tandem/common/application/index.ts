@@ -13,7 +13,7 @@ import { LoadAction, InitializeAction } from "@tandem/common/actions";
 import {  consoleLogServiceDependency } from "../services";
 
 import {
-  MainBusDependency,
+  PrivateBusDependency,
   DependenciesDependency,
   ApplicationServiceDependency,
   ApplicationSingletonDependency,
@@ -63,7 +63,7 @@ export class BaseApplication implements IApplication {
     // Make the application available globally through the dependencies
     // property so that this reference isn't passed around everywhere.
     this.dependencies.register(
-      new MainBusDependency(this.bus),
+      new PrivateBusDependency(this.bus),
       new DependenciesDependency(),
       new ApplicationSingletonDependency(this)
     );

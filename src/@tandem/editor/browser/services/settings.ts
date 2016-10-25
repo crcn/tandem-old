@@ -1,21 +1,29 @@
 import  * as store from "store";
 import { WrapBus } from "mesh";
-import { Metadata } from "@tandem/common/metadata";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
-import { BaseApplicationService } from "@tandem/common/services";
+import { Metadata, inject } from "@tandem/common";
+import { SettingsDependency } from "@tandem/editor/browser/dependencies";
+import { CoreApplicationService } from "@tandem/editor/core";
+import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
 import { SettingChangeAction, LoadAction } from "@tandem/common/actions";
 
-export class SettingsService extends BaseApplicationService<FrontEndApplication> {
+export class SettingsService extends CoreApplicationService<IEditorBrowserConfig> {
+
+  @inject(SettingsDependency.ID)
+  private _settings: Metadata;
+
   [LoadAction.LOAD](action: LoadAction) {
 
-    // TODO - this.app.config.settingsKey instead of hard-coded key here
-    this.app.settings = new Metadata(store.get("settings"));
-    this.app.settings.observe(this.bus, WrapBus.create(this._onSettingsChange));
+    console.log("loading settings");
+
+    this._settings.setProperties(store.get("settings"));
+
+    // TODO - don't want to do this
+    this._settings.observe(this.bus, WrapBus.create(this._onSettingsChange));
   }
 
   _onSettingsChange = (action: SettingChangeAction) => {
-      store.set("settings", this.app.settings.data);
+      store.set("settings", this._settings.data);
   }
 }
 

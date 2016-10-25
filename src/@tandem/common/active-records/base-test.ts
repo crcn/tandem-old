@@ -4,7 +4,7 @@
 // import { BrokerBus, PostDsNotifierBus } from "@tandem/common/busses";
 // import { ActiveRecord, ActiveRecordCollection, insert } from "./base";
 // import { DSFindAction, DSInsertAction, DSUpdateAction, DSRemoveAction } from "@tandem/common/actions";
-// import { Dependencies, MainBusDependency,  } from "@tandem/common/dependencies";
+// import { Dependencies, PrivateBusDependency,  } from "@tandem/common/dependencies";
 
 // describe(__filename + "#", () => {
 //   describe("ActiveRecord#", () => {
@@ -28,7 +28,7 @@
 //     beforeEach(() => {
 //       deps = new Dependencies(
 //         new ActiveRecordFactoryDependency("person", Person),
-//         new MainBusDependency(broker = new BrokerBus(ParallelBus))
+//         new PrivateBusDependency(broker = new BrokerBus(ParallelBus))
 //       );
 
 //       broker.register(new PostDsNotifierBus(MemoryDSBus.create(), broker));

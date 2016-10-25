@@ -3,10 +3,14 @@ import "./entry-shims";
 import { Dependencies } from "@tandem/common";
 
 import {
-  EditorApplication,
+  ServiceApplication,
   IEditorBrowserConfig,
   concatEditorBrowserDependencies,
 } from "./browser";
+
+// extensions - TODO
+import { createHTMLEditorBrowserDependencies } from "@tandem/html-extension/editor/browser";
+import { createTDProjectEditorBrowserDependencies } from "@tandem/tdproject-extension/editor/browser";
 
 // mountable element for the react app
 const element = document.createElement("div");
@@ -19,10 +23,12 @@ const config: IEditorBrowserConfig = {
   }
 };
 
+const deps = new Dependencies(
+  createHTMLEditorBrowserDependencies(),
+  createTDProjectEditorBrowserDependencies()
+);
 
-const deps = new Dependencies();
-
-const app = window["app"] = new EditorApplication(
+const app = window["app"] = new ServiceApplication(
   concatEditorBrowserDependencies(deps, config)
 );
 

@@ -6,15 +6,11 @@ import CanvasComponent from "./canvas";
 import PreviewComponent from "./canvas/preview";
 import { Workspace } from "@tandem/editor/browser/models";
 import { Dependencies } from "@tandem/common/dependencies";
-import { KeyBindingManager } from "@tandem/editor/browser/key-bindings";
 import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 
 export default class StageComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, allElements: SyntheticDOMElement[] }, any> {
-
-  private _keyBindings: KeyBindingManager;
-
   render() {
 
     if (!this.props.app.workspace) return null;

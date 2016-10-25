@@ -4,10 +4,9 @@ import { GutterComponent } from "../gutter";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { ENTITY_PANE_COMPONENT_NS } from "@tandem/editor/browser/dependencies";
 
-export class SelectionGutterComponent extends React.Component<{ app: FrontEndApplication }, any> {
+export class SelectionGutterComponent extends React.Component<{}, {}> {
   render() {
     return <GutterComponent
-      {...this.props}
       position="right"
       hideKey={SettingKeys.HIDE_RIGHT_SIDEBAR}
       sizeKey="selectionSidebarSize"

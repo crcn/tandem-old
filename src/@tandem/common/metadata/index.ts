@@ -18,6 +18,12 @@ export class Metadata extends Observable {
     return this._data[key];
   }
 
+  setProperties(properties: any) {
+    for (const key in properties) {
+      this.set(key, properties[key]);
+    }
+  }
+
   toggle(key: string) {
     const v = this.get(key);
     this.set(key, v == null ? true : !v);
