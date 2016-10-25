@@ -61,6 +61,7 @@
     "@types/sprintf": "0.0.28",
     "@types/whatwg-fetch": "0.0.32",
     "@types/whatwg-streams": "0.0.1",
+    "@types/yargs": "0.0.33",
     "chai": "^3.5.0",
     "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",

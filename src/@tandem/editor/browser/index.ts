@@ -1,7 +1,7 @@
 import { Dependencies } from "@tandem/common";
 import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
-import { concatCoreApplicationDependencies, ApplicationServiceDependency } from "../core";
+import { concatCoreApplicationDependencies, ApplicationServiceDependency } from "@tandem/core";
 import {
   SettingsDependency,
   ReactComponentFactoryDependency,
@@ -61,4 +61,3 @@ export * from "./key-bindings";
 export * from "./models";
 export * from "./services";
 export * from "./application";
-export * from "../core";

@@ -14,13 +14,12 @@ import { Logger } from "@tandem/common/logger";
 import { CoreApplicationService } from "@tandem/editor/core";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { Response } from "mesh";
-import { IOService } from "@tandem/common/services";
+import { IOService } from "@tandem/editor/common";
 import { IApplication } from "@tandem/common/application";
 import { loggable, inject } from "@tandem/common/decorators";
 import { BaseApplicationService } from "@tandem/common/services";
 import { SocketIOHandlerDependency  } from "@tandem/server/dependencies";
-import { ApplicationServiceDependency } from "@tandem/common/dependencies";
-import { DependenciesDependency, Dependencies } from "@tandem/common/dependencies";
+import { Dependencies, Injector } from "@tandem/common/dependencies";
 import { FileCacheDependency, FileCache } from "@tandem/sandbox";
 import { DSUpsertAction, LoadAction, InitializeAction } from "@tandem/common/actions";
 
@@ -35,15 +34,12 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
   public config:any;
   private _bundles:Array<any>;
 
-  @inject(DependenciesDependency.ID)
-  readonly dependencies: Dependencies;
-
   @inject(FileCacheDependency.ID)
   private _fileCache: FileCache;
 
   $didInject() {
     super.$didInject();
-    this.bus.register(this._ioService = IOService.create<IApplication>(this.dependencies));
+    this.bus.register(this._ioService = Injector.create(IOService, [], this.dependencies));
   }
 
   async [InitializeAction.INITIALIZE]() {
