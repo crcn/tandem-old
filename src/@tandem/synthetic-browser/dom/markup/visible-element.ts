@@ -1,4 +1,5 @@
 import { SyntheticDOMElement } from "./element";
+import { ISyntheticDocumentRenderer } from "@tandem/synthetic-browser/renderers";
 import { SingletonThenable, IEqualable } from "@tandem/common";
 import { bindable, BoundingRect, IPoint, waitForPropertyChange } from "@tandem/common";
 
@@ -40,7 +41,7 @@ export abstract class VisibleSyntheticDOMElement<T extends IEqualable> extends S
   private _currentBounds: BoundingRect;
   private _computedVisibility: boolean;
 
-  protected get renderer() {
+  protected get renderer(): ISyntheticDocumentRenderer {
     return this.browser.renderer;
   }
 

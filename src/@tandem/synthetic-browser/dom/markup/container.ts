@@ -4,6 +4,7 @@ import { SyntheticDOMText } from "./text-node";
 import { isDOMMutationAction, DOMNodeAction } from "@tandem/synthetic-browser/actions";
 import { diffArray, ITreeWalker, findTreeNode, Action } from "@tandem/common";
 import { getSelectorTester, ISelectorTester, querySelector, querySelectorAll } from "../selector";
+import { SyntheticDOMElement } from "./element";
 import {
   EditAction,
   IContentEdit,
@@ -97,11 +98,11 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
     return this.childNodes.map(child => child.toString()).join("");
   }
 
-  public querySelector(selector: string, deep?: boolean) {
+  public querySelector(selector: string, deep?: boolean): SyntheticDOMElement {
     return querySelector(this, selector);
   }
 
-  public querySelectorAll(selector: string, deep?: boolean) {
+  public querySelectorAll(selector: string, deep?: boolean): SyntheticDOMElement[] {
     return querySelectorAll(this, selector);
   }
 

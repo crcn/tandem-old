@@ -30,10 +30,11 @@ import {
 
 import { EditAction } from "@tandem/sandbox";
 import { SyntheticWindow } from "./window";
+import { ISyntheticBrowser } from "../browser";
 import { SyntheticLocation } from "../location";
 import { SyntheticCSSStyleSheet } from "./css";
 
-interface IRegisterComponentOptions {
+export interface IRegisterComponentOptions {
   prototype: any;
   extends: string;
 }
@@ -156,7 +157,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     this._registeredElements = {};
   }
 
-  get browser() {
+  get browser(): ISyntheticBrowser {
     return this.$window.browser;
   }
 

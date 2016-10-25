@@ -14,7 +14,7 @@ import {
   BoundingRect,
 } from "@tandem/common";
 
-class InsertToolComponent extends React.Component<{ workspace: Workspace, allElements: SyntheticDOMElement[], bus: IActor, app: FrontEndApplication, tool: InsertTool }, any> {
+export class InsertStageToolComponent extends React.Component<{ workspace: Workspace, allElements: SyntheticDOMElement[], bus: IActor, app: FrontEndApplication, tool: InsertTool }, any> {
 
   private _targetElement: any;
 
@@ -102,4 +102,3 @@ class InsertToolComponent extends React.Component<{ workspace: Workspace, allEle
   }
 }
 
-export const insertToolComponentDependency = new ReactComponentFactoryDependency("components/tools/insert/size", InsertToolComponent);

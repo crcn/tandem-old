@@ -6,8 +6,10 @@ const sift          = require('sift');
 const glob          = require('glob');
 const chalk         = require('chalk');
 const install       = require('gulp-install');
+const pegjs         = require('gulp-pegjs');
 const webpack       = require('gulp-webpack');
 const symdest       = require('gulp-symdest');
+const rename        = require('gulp-rename');
 const electron      = require('gulp-atom-electron');
 const vfs           = require('vinyl-fs');
 const gulpSequence  = require('gulp-sequence');
@@ -41,6 +43,7 @@ gulp.task('default', gulpSequence('prepare', 'build'));
  ******************************/
 
 gulp.task('build', [
+  'build:pegjs',
   'build:typescript',
   'build:webpack',
   'build:electron'
@@ -53,6 +56,16 @@ gulp.task('build:typescript', function(done) {
   proc.stdout.pipe(process.stdout);
   proc.stderr.pipe(process.stderr);
   proc.on('exit', done);
+});
+
+gulp.task('build:pegjs', function() {
+  return gulp
+  .src(join(SRC_DIR, "**", "*.peg"))
+  .pipe((pegjs()))
+  .pipe(rename((file) => {
+    file.extname = ".peg.js";
+  }))
+  .pipe(gulp.dest(OUT_DIR));
 });
 
 gulp.task('build:webpack', function(done) {
@@ -85,7 +98,7 @@ gulp.task('prepare', gulpSequence(
 ));
 
 gulp.task('prepare:copy-assets', () => {
-  return gulp.src(join(SRC_DIR, '**', '!(*.ts)'))
+  return gulp.src(join(SRC_DIR, '**', '!(*.ts|*.peg)'))
   .pipe(gulp.dest(OUT_DIR));
 });
 

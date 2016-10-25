@@ -2,7 +2,7 @@ import { Bundle } from "@tandem/sandbox";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { BaseContentEdit, EditAction, SetKeyValueEditAction, SetValueEditActon } from "@tandem/sandbox";
 import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "./declaration";
-import { Action, serializable, serialize, deserialize, ISerializer, ISerializedContent, diffArray, ITreeWalker } from "@tandem/common";
+import { Action, serializable, serialize, deserialize, ISerializer, ISerializedContent, diffArray, ITreeWalker, ArrayDiff } from "@tandem/common";
 
 export interface ISerializedSyntheticCSSStyleRule {
   selector: string;
@@ -48,7 +48,7 @@ export class SyntheticCSSStyleRuleEdit extends BaseContentEdit<SyntheticCSSStyle
 }
 
 export function diffSyntheticCSSStyleRules(oldRules: SyntheticCSSStyleRule[], newRules: SyntheticCSSStyleRule[]) {
-  return diffArray(oldRules, newRules, (oldRule, newRule) => {
+  return <ArrayDiff<SyntheticCSSStyleRule>>diffArray(oldRules, newRules, (oldRule, newRule) => {
     return oldRule.selector === newRule.selector ? 0 : -1;
   });
 }

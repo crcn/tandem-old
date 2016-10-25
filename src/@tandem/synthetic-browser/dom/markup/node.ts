@@ -17,6 +17,8 @@ import {
   SyntheticObjectSerializer,
  } from "@tandem/sandbox";
 
+import { ISyntheticBrowser } from "../../browser";
+
 import {
   TreeNode,
   Metadata,
@@ -97,7 +99,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return this.$source;
   }
 
-  get browser() {
+  get browser(): ISyntheticBrowser {
     return this.ownerDocument.defaultView.browser;
   }
 

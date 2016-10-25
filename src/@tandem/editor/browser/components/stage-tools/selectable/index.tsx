@@ -7,7 +7,7 @@ import { SelectablesComponent } from "@tandem/editor/browser/components/common";
 import { StageToolComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 import { SyntheticHTMLElement, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
-export default class SelectableToolComponent extends React.Component<{selection: any,  allElements: SyntheticDOMElement[], bus: any, app: any, zoom: number, workspace: Workspace }, {}>  {
+export class SelectableStageToolComponent extends React.Component<{selection: any,  allElements: SyntheticDOMElement[], bus: any, app: any, zoom: number, workspace: Workspace }, {}>  {
 
   onSyntheticMouseDown = (element: SyntheticHTMLElement, event: React.MouseEvent<any>) => {
     this.props.app.bus.execute(new SelectAction(element, event.shiftKey));
@@ -18,4 +18,3 @@ export default class SelectableToolComponent extends React.Component<{selection:
   }
 }
 
-export const selectableToolComponentDependency = new StageToolComponentFactoryDependency("selectable", "pointer", SelectableToolComponent);

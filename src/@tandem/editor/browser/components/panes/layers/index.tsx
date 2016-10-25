@@ -11,7 +11,7 @@ import { DragDropContext } from "react-dnd";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { DocumentPaneComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 
-class LayersPaneComponent extends React.Component<{ app: FrontEndApplication }, any> {
+class _LayersPaneComponent extends React.Component<{ app: FrontEndApplication }, any> {
   render() {
     const { workspace } = this.props.app;
     if (!workspace || !workspace.document) return null;
@@ -23,4 +23,5 @@ class LayersPaneComponent extends React.Component<{ app: FrontEndApplication }, 
   }
 }
 
-export const layersPaneComponentDepency = new DocumentPaneComponentFactoryDependency("layers", DragDropContext(HTML5Backend)(LayersPaneComponent));
+export const LayersPaneComponent = DragDropContext(HTML5Backend)(_LayersPaneComponent);
+

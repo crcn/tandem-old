@@ -11,7 +11,7 @@ import { BoundingRect, flattenTree } from "@tandem/common";
 import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 
-export default class SelectorComponent extends React.Component<{ workspace: Workspace, tool: PointerTool, app: FrontEndApplication, zoom: number  }, any> {
+export class SelectorStageToolComponent extends React.Component<{ workspace: Workspace, tool: PointerTool, app: FrontEndApplication, zoom: number  }, any> {
 
   constructor(props) {
     super(props);
@@ -76,4 +76,3 @@ export default class SelectorComponent extends React.Component<{ workspace: Work
   }
 }
 
-export const selectorToolComponentDependency = new ReactComponentFactoryDependency("components/tools/pointer/selector", SelectorComponent);

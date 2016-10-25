@@ -3,7 +3,7 @@ import "./index.scss";
 import * as React from "react";
 import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 
-export class GridToolComponent extends React.Component<{ zoom: number }, any> {
+export class GridStageToolComponent extends React.Component<{ zoom: number }, any> {
   render() {
 
     const { zoom } = this.props;
@@ -41,5 +41,4 @@ export class GridToolComponent extends React.Component<{ zoom: number }, any> {
   }
 }
 
-export const gridToolComponentDependency = new ReactComponentFactoryDependency("components/tools/pointer/grid", GridToolComponent);
 

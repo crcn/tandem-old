@@ -9,7 +9,7 @@ import { SelectAction, MouseAction } from "@tandem/editor/browser/actions";
 import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 
-class DragSelectComponent extends React.Component<{ app: FrontEndApplication, zoom: number, tool: PointerTool }, any> {
+export class DragSelectStageToolComponent extends React.Component<{ app: FrontEndApplication, zoom: number, tool: PointerTool }, any> {
 
   constructor() {
     super();
@@ -118,4 +118,3 @@ class DragSelectComponent extends React.Component<{ app: FrontEndApplication, zo
   }
 }
 
-export const dragSelectComponentDependency = new ReactComponentFactoryDependency("components/tools/pointer/drag-select", DragSelectComponent);

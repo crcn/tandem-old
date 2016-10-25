@@ -9,6 +9,7 @@ import {
   isMaster,
   ITreeWalker,
   serializable,
+  BoundingRect,
   watchProperty,
 } from "@tandem/common";
 
@@ -176,7 +177,7 @@ export class SyntheticArtboardRenderer extends BaseDecoratorRenderer {
   constructor(private _artboard: SyntheticTDArtboardElement, _renderer: ISyntheticDocumentRenderer) {
     super(_renderer);
   }
-  getBoundingRect(uid: string) {
+  getBoundingRect(uid: string): BoundingRect {
     const rect = this._renderer.getBoundingRect(uid);
     const offset = this._artboard.getBoundingClientRect();
     return rect.move({ left: offset.left, top: offset.top });
