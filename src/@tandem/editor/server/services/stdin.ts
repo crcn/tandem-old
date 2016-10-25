@@ -1,19 +1,14 @@
-import { Logger } from "@tandem/common/logger";
-import * as chalk from "chalk";
 import * as readline from "readline";
 import { IApplication } from "@tandem/common/application";
-import { loggable, document } from "@tandem/common/decorators";
-import { BaseApplicationService } from "@tandem/common/services";
-import { ApplicationServiceDependency } from "@tandem/common/dependencies";
+import { IEdtorServerConfig } from "@tandem/editor/server/config";
+import { CoreApplicationService } from "@tandem/editor/core";
 
 /**
  * console input command handler
  */
 
-@loggable()
-export default class StdinService extends BaseApplicationService<IApplication> {
+export class StdinService extends CoreApplicationService<IEdtorServerConfig> {
 
-  public logger:Logger;
   private _rl:readline.ReadLine;
 
   initialize() {
@@ -22,23 +17,6 @@ export default class StdinService extends BaseApplicationService<IApplication> {
       output: process.stdout
     });
     this._readInput();
-    this.logger.prefix = "";
-  }
-
-  /**
-   * returns the available command-line actions
-   */
-
-  @document("shows help menu")
-  help() {
-
-    this.app.bus.actors.forEach((actor) => {
-      var docs = (actor as any).__documentation || {};
-
-      for (let actionType in docs) {
-        this.logger.info("{ type: %s }: %s", chalk.bold(actionType), docs[actionType]);
-      }
-    });
   }
 
   _readInput = () => {
@@ -61,13 +39,11 @@ export default class StdinService extends BaseApplicationService<IApplication> {
       var done;
       while ({ value, done } = await response.read()) {
         if (done) break;
-        this.logger.info(value);
+        console.info(value);
       }
     } catch (e) {
-      this.logger.error(e.message);
+      console.error(e.message);
     }
     this._readInput();
   }
 }
-
-export const stdinServiceDependency = new ApplicationServiceDependency("stdin", StdinService);

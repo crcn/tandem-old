@@ -14,14 +14,16 @@ import {
   ApplicationServiceDependency,
   GetPrimaryProjectFilePathAction,
 } from "@tandem/common";
+import { IEdtorServerConfig } from "@tandem/editor/server/config";
+import { CoreApplicationService } from "@tandem/editor/core";
 
 const tmpProjectFile = "/tmp/project.tdm";
 
-@loggable()
-export default class ProjectService extends BaseApplicationService<IApplication> {
+export class ProjectService extends CoreApplicationService<IEdtorServerConfig> {
   private _primaryProjectPath: string;
 
   async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
+    console.log("opening project file", action.filePath);
     if (/\.tdm$/.test(action.filePath)) {
       this._primaryProjectPath = action.filePath;
     } else if (!this._primaryProjectPath) {
@@ -34,5 +36,3 @@ export default class ProjectService extends BaseApplicationService<IApplication>
     return this._primaryProjectPath;
   }
 };
-
-export const projectServiceDependency = new ApplicationServiceDependency("projectService", ProjectService);

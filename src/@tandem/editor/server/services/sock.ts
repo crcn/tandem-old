@@ -1,7 +1,7 @@
 import { IActor } from "@tandem/common/actors";
-import { IApplication } from "@tandem/common/application";
-import { BaseApplicationService } from "@tandem/common/services";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
+import { CoreApplicationService } from "@tandem/editor/core";
+import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { LoadAction, InitializeAction, OpenProjectAction, SockBus, Action } from "@tandem/common";
 import * as os from "os";
 import * as path from "path";
@@ -12,7 +12,7 @@ const SOCK_FILE = path.join(os.tmpdir(), `tandem-${process.env.USER}.sock`);
 
 class ExecAction extends Action {
   static readonly EXEC = "exec";
-  constructor(readonly config: any) {
+  constructor(readonly config: IEdtorServerConfig) {
     super(ExecAction.EXEC);
   }
   static execute(config: any, bus: IActor) {
@@ -21,7 +21,7 @@ class ExecAction extends Action {
 }
 
 
-export default class SockService extends BaseApplicationService<IApplication> {
+export class SockService extends CoreApplicationService<IEdtorServerConfig> {
 
   private _socketFile: string;
 
@@ -40,7 +40,7 @@ export default class SockService extends BaseApplicationService<IApplication> {
       const client = net.connect({ path: this._socketFile } as any);
 
       client.once("connect", async () => {
-        await ExecAction.execute(this.app.config, new SockBus(client, this.bus));
+        await ExecAction.execute(this.config, new SockBus(client, this.bus));
         client.end();
       })
 
@@ -56,8 +56,8 @@ export default class SockService extends BaseApplicationService<IApplication> {
   }
 
   [InitializeAction.INITIALIZE](action: LoadAction) {
-    if (this.app.config.argv) {
-      ExecAction.execute(this.app.config, this.bus);
+    if (this.config.argv) {
+      ExecAction.execute(this.config, this.bus);
     }
   }
 
@@ -74,5 +74,3 @@ export default class SockService extends BaseApplicationService<IApplication> {
     fsa.removeSync(SOCK_FILE);
   }
 }
-
-export const sockServiceDependency = new ApplicationServiceDependency("sock", SockService);

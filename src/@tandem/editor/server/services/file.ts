@@ -2,6 +2,8 @@ import * as fs from "fs";
 import * as gaze from "gaze";
 import * as sift from "sift";
 import { Response } from "mesh";
+import { IEdtorServerConfig } from "@tandem/editor/server/config";
+import { CoreApplicationService } from "@tandem/editor/core";
 import {
   File,
   inject,
@@ -26,10 +28,7 @@ const FILES_COLLECTION_NAME = "files";
 
 import { LocalFileSystem, FileSystemDependency, IFileSystem, ReadFileAction, WatchFileAction } from "@tandem/sandbox";
 
-@loggable()
-export default class FileService extends BaseApplicationService<IApplication> {
-
-  public logger:Logger;
+export class FileService extends CoreApplicationService<IEdtorServerConfig> {
 
   @inject(FileSystemDependency.NS)
   private _fileSystem: IFileSystem;
@@ -39,7 +38,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
 
   @document("reads a file content")
   [ReadFileAction.READ_FILE](action: ReadFileAction|WatchFileAction) {
-    this.logger.info("reading file %s", action.filePath);
+    console.log("reading file %s", action.filePath);
     return this._fileSystem.readFile(action.filePath);
   }
 
@@ -48,7 +47,7 @@ export default class FileService extends BaseApplicationService<IApplication> {
 
   @document("watches a file for any changes")
   [WatchFileAction.WATCH_FILE](action: WatchFileAction) {
-    this.logger.info("watching file %s", action.filePath);
+    console.log("watching file %s", action.filePath);
     return Response.create((writable) => {
 
       const watcher = this._fileSystem.watchFile(action.filePath, () => {
@@ -59,5 +58,3 @@ export default class FileService extends BaseApplicationService<IApplication> {
     });
   }
 }
-
-export const fileServicerDependency = new ApplicationServiceDependency("file", FileService);

@@ -1,23 +1,14 @@
 import { IActor } from "@tandem/common/actors";
-import { UpsertBus } from "@tandem/common/busses";
-import { IApplication } from "@tandem/common/application";
-import { BaseApplicationService } from "@tandem/common/services";
-import { ApplicationServiceDependency } from "@tandem/common/dependencies";
-import * as resolve from "resolve";
-import * as path from "path";
-import * as pkgpath from "package-path";
-import { EmptyResponse } from "mesh";
-import { LocalFileResolver, ResolveFileAction } from "@tandem/sandbox";
+import { inject } from "@tandem/common";
+import { IEdtorServerConfig } from "@tandem/editor/server/config";
+import { CoreApplicationService } from "@tandem/editor/core";
+import { IFileResolver, ResolveFileAction, FileResolverDependency } from "@tandem/sandbox";
 
 // TODO - move this to @tandem/sandbox
-export default class ResolverService extends BaseApplicationService<IApplication> {
+export class ResolverService extends CoreApplicationService<IEdtorServerConfig> {
 
-  private _resolver: LocalFileResolver;
-
-  constructor() {
-    super();
-    this._resolver = new LocalFileResolver();
-  }
+  @inject(FileResolverDependency.ID)
+  private _resolver: IFileResolver;
 
   /**
    */
@@ -27,4 +18,3 @@ export default class ResolverService extends BaseApplicationService<IApplication
   }
 }
 
-export const resolverServiceDependency = new ApplicationServiceDependency("resolver", ResolverService);

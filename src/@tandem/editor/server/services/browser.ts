@@ -11,6 +11,8 @@ import * as createSocketIOServer from "socket.io";
 
 import { exec } from "child_process";
 import { Logger } from "@tandem/common/logger";
+import { CoreApplicationService } from "@tandem/editor/core";
+import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { Response } from "mesh";
 import { IOService } from "@tandem/common/services";
 import { IApplication } from "@tandem/common/application";
@@ -24,15 +26,13 @@ import { DSUpsertAction, LoadAction, InitializeAction } from "@tandem/common/act
 
 // TODO - split this out into separate files -- turning into a god object.
 
-@loggable()
-export default class FrontEndService extends BaseApplicationService<IApplication> {
+export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
 
   private _server: express.Express;
   private _ioService:IOService<IApplication>;
   private _port:number;
   private _socket:any;
   public config:any;
-  public logger:Logger;
   private _bundles:Array<any>;
 
   @inject(DependenciesDependency.ID)
@@ -42,16 +42,17 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   private _fileCache: FileCache;
 
   $didInject() {
-    this.app.bus.register(this._ioService = IOService.create<IApplication>(this.dependencies));
+    super.$didInject();
+    this.bus.register(this._ioService = IOService.create<IApplication>(this.dependencies));
   }
 
   async [InitializeAction.INITIALIZE]() {
-    this._port = this.app.config.port || await getPort();
+    this._port = this.config.port || await getPort();
     await this._loadHttpServer();
     await this._loadStaticRoutes();
     await this._loadSocketServer();
 
-    if (this.app.config.argv.open) {
+    if (this.config.argv.open) {
       exec(`open http://localhost:${this._port}/editor`);
     }
 
@@ -59,7 +60,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   }
 
   async _loadHttpServer() {
-    this.logger.info(`listening on port ${this._port}`);
+    console.log(`listening on port ${this._port}`);
 
     this._server = express();
     this._socket = this._server.listen(this._port);
@@ -80,8 +81,8 @@ export default class FrontEndService extends BaseApplicationService<IApplication
       res.sendFile(uri);
     });
 
-    for (const entryName in this.app.config.entries) {
-      var entryPath = this.app.config.entries[entryName];
+    for (const entryName in this.config.entries) {
+      var entryPath = this.config.entries[entryName];
 
       var scriptName = path.basename(entryPath);
 
@@ -91,8 +92,8 @@ export default class FrontEndService extends BaseApplicationService<IApplication
       const entryDirectory = path.dirname(entryPath);
       this._server.use(prefix, express.static(entryDirectory));
 
-      if (this.app.config.publicDirectory) {
-        this._server.use(prefix, express.static(this.app.config.publicDirectory));
+      if (this.config.publicDirectory) {
+        this._server.use(prefix, express.static(this.config.publicDirectory));
       }
 
       const staticFileNames = fs.readdirSync(entryDirectory);
@@ -145,11 +146,9 @@ export default class FrontEndService extends BaseApplicationService<IApplication
 
   async _loadSocketServer() {
     const io = createSocketIOServer();
-    SocketIOHandlerDependency.plugin(io, this.app.dependencies);
+    SocketIOHandlerDependency.plugin(io, this.dependencies);
     io["set"]("origins", "*domain.com*:*");
     io.on("connection", this._ioService.addConnection);
     io.listen(this._socket);
   }
 }
-
-export const frontEndServiceDependency = new ApplicationServiceDependency("front-end", FrontEndService);
