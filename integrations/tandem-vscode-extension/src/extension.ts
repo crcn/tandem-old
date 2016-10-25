@@ -8,7 +8,7 @@ import * as vscode from "vscode";
 import * as getPort from "get-port";
 import * as createServer from "express";
 import { debounce, throttle } from "lodash";
-import ServerApplication from "@tandem/back-end/application";
+import ServerApplication from "@tandem/server/application";
 
 import {
     DSUpsertAction,

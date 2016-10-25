@@ -1,8 +1,0 @@
-{
-  "resolution": "main",
-  "tree": {
-    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/a1b6081ba37e8bb42d8ed51d07a281597b177b5f/react-dnd/react-dnd.d.ts",
-    "raw": "registry:dt/react-dnd#2.0.2+20160816153011",
-    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/a1b6081ba37e8bb42d8ed51d07a281597b177b5f/react-dnd/react-dnd.d.ts"
-  }
-}

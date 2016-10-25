@@ -3,7 +3,7 @@ var argv = require('yargs').argv;
 var path = require('path');
 var spawn = require('child_process').spawn;
 var os    = require("os");
-var createServer = require("../lib/@tandem/back-end/server").create;
+var createServer = require("../out/@tandem/server/server").create;
 
 var filePath = argv._[0];
 

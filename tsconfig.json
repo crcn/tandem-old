@@ -4,7 +4,7 @@
     "sourceMap": true,
     "module": "commonjs",
     "outDir": "out",
-    "baseUrl": "packages",
+    "baseUrl": "src",
     "experimentalDecorators": true,
     "jsx": "react"
   },
@@ -12,16 +12,16 @@
     "node_modules",
     "*-test",
     "old",
-    "lib",
+    "out",
     "integrations",
     "examples"
   ],
   "filesGlob": [
-    "./packages/**/*.ts",
-    "./packages/**/*.tsx"
+    "./src/**/*.ts",
+    "./src/**/*.tsx"
   ],
   "rootDirs": [
-    "packages",
+    "src",
     "node_modules"
   ]
 }

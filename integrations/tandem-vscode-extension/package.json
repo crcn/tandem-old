@@ -13,7 +13,7 @@
   "activationEvents": [
     "onCommand:extension.tandemOpenCurrentFile"
   ],
-  "main": "./extension.js",
+  "main": "./lib/src/extension.js",
   "contributes": {
     "commands": [
       {
@@ -25,25 +25,21 @@
   "scripts": {
     "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
     "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install"
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "build-watch": "echo 'cannot build watch'"
   },
   "devDependencies": {
-    "@types/express": "^4.0.33",
-    "@types/get-port": "0.0.4",
-    "@types/lodash": "^4.14.37",
     "typescript": "^2.0.0",
     "vscode": "^0.11.0"
   },
   "dependencies": {
-    "@tandem/back-end": "@tandem/back-end",
-    "@tandem/common": "@tandem/common",
-    "@tandem/editor": "@tandem/editor",
-    "@tandem/tether": "@tandem/tether",
     "express": "^4.14.0",
     "get-port": "^2.1.0",
     "lodash": "^4.15.0",
-    "mesh": "^6.0.34",
-    "vscode": "^0.11.18"
+    "mesh": "^6.0.26",
+    "@tandem/back-end": "@tandem/back-end",
+    "@tandem/common": "@tandem/back-end",
+    "@tandem/front-end": "@tandem/back-end"
   },
   "directories": {
     "test": "test"

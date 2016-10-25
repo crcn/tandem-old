@@ -1,7 +1,0 @@
-{
-  "globalDependencies": {
-    "diff": "registry:dt/diff#0.0.0+20160318080727",
-    "whatwg-fetch": "registry:dt/whatwg-fetch#0.0.0+20160829180742",
-    "whatwg-streams": "registry:dt/whatwg-streams#0.0.0+20160829180742"
-  }
-}

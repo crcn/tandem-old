@@ -10,9 +10,5 @@
     "exclude": [
         "node_modules",
         ".vscode-test"
-    ],
-    "rootDirs": [
-        "packages",
-        "node_modules"
     ]
 }

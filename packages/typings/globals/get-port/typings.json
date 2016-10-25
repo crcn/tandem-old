@@ -1,8 +1,0 @@
-{
-  "resolution": "main",
-  "tree": {
-    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/7aa3ecd72efc77a80aac3782a511a40b2aba5b47/get-port/get-port.d.ts",
-    "raw": "registry:dt/get-port#0.0.0+20160809113333",
-    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/7aa3ecd72efc77a80aac3782a511a40b2aba5b47/get-port/get-port.d.ts"
-  }
-}
