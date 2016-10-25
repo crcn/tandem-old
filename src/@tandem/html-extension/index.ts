@@ -1,10 +1,15 @@
 import { htmlEditorExtensionDependencies } from "./editor";
 import { htmlCoreExtensionDependencies } from "./core";
 
-export const htmlExtensionDependencies = [
-  ...htmlEditorExtensionDependencies,
+const htmlExtensionDependencies: any = [
   ...htmlCoreExtensionDependencies
 ];
+
+if (typeof window !== "undefined") {
+  htmlExtensionDependencies.push(...htmlEditorExtensionDependencies);
+}
+
+export { htmlExtensionDependencies };
 
 export * from "./core";
 export * from "./editor";

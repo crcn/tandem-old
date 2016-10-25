@@ -116,6 +116,16 @@ export class ContentEditorFactoryDependency extends ClassFactoryDependency {
   }
 }
 
-export const FileCacheDependency = createSingletonDependencyClass("fileCache", FileCache);
+export const FileCacheDependency  = createSingletonDependencyClass("fileCache", FileCache);
 export const FileEditorDependency = createSingletonDependencyClass("fileEdit", FileEditor);
-export const BundlerDependency   = createSingletonDependencyClass("bundler", Bundler);
+export const BundlerDependency    = createSingletonDependencyClass("bundler", Bundler);
+
+export function createSandboxDependencies(fileSystem: IFileSystem, fileResover: IFileResolver) {
+  return [
+    new FileSystemDependency(fileSystem),
+    new FileResolverDependency(fileResover),
+    new FileCacheDependency(),
+    new FileEditorDependency(),
+    new BundlerDependency()
+  ];
+}

@@ -1,6 +1,6 @@
 import "reflect-metadata";
+import { createSyntheticBrowserWorkerDependencies } from "@tandem/synthetic-browser";
 import { Application, ApplicationServiceDependency, isMaster } from "@tandem/common";
-import { RemoteBrowserService } from "@tandem/synthetic-browser";
 import { 
   FileEditor,
   IFileSystem,
@@ -11,6 +11,7 @@ import { 
   FileSystemDependency,
   FileEditorDependency,
   FileResolverDependency,
+  createSandboxDependencies,
 } from "@tandem/sandbox";
 
 // components
@@ -99,11 +100,10 @@ export class FrontEndApplication extends Application {
         clipboardServiceDependency,
         keyBindingsServiceDependency,
         rootComponentRendererDependency,
-
       );
     } else {
       workerDependencies.push(
-        new ApplicationServiceDependency("remoteBrowser", RemoteBrowserService)
+        createSyntheticBrowserWorkerDependencies()
       );
     }
 
@@ -125,11 +125,10 @@ export class FrontEndApplication extends Application {
       tdprojectExtensionDependencies,
 
       // singletons
-      new FileSystemDependency(this.config.fileSystem || new RemoteFileSystem(this.bus)),
-      new FileResolverDependency(this.config.fileResolver || new RemoteFileResolver(this.bus)),
-      new FileCacheDependency(),
-      new BundlerDependency(),
-      new FileEditorDependency()
+      ...createSandboxDependencies(
+        this.config.fileSystem || new RemoteFileSystem(this.bus),
+        this.config.fileResolver || new RemoteFileResolver(this.bus)
+      )
     );
   }
 }

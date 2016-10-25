@@ -1,6 +1,7 @@
 import { SyntheticBrowser } from "./browser";
+import { RemoteBrowserService } from "./remote-browser";
 import { syntheticElementClassType, SyntheticDOMNode } from "./dom";
-import { Dependency, Dependencies, MimeTypeDependency } from "@tandem/common";
+import { Dependency, Dependencies, MimeTypeDependency, ApplicationServiceDependency } from "@tandem/common";
 
 export class SyntheticDOMElementClassDependency extends Dependency<syntheticElementClassType> {
   static readonly SYNTHETIC_ELEMENT_CLASS_NS_PREFIX = "syntheticMarkupElementClass/";
@@ -63,4 +64,13 @@ export class SyntheticDOMCasterDependency extends Dependency<IMarkupDOMCaster> {
     }
     return undefined;
   }
+}
+
+/**
+ */
+
+export function createSyntheticBrowserWorkerDependencies() {
+  return [
+    new ApplicationServiceDependency("remote-browser-renderer", RemoteBrowserService)
+  ];
 }

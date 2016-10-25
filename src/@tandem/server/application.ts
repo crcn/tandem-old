@@ -13,7 +13,14 @@ import { projectServiceDependency } from "./services/project";
 import { frontEndServiceDependency } from "./services/front-end";
 import { resolverServiceDependency } from "./services/resolver";
 
-import { FileCacheDependency, LocalFileSystem, FileSystemDependency } from "@tandem/sandbox";
+import { htmlExtensionDependencies } from "@tandem/html-extension";
+import {
+  LocalFileSystem,
+  LocalFileResolver,
+  FileCacheDependency,
+  FileSystemDependency,
+  createSandboxDependencies
+} from "@tandem/sandbox";
 
 export default class ServerApplication extends Application {
   constructor(config) {
@@ -45,8 +52,8 @@ export default class ServerApplication extends Application {
       frontEndServiceDependency,
       resolverServiceDependency,
       sockServiceDependency,
-      new FileCacheDependency(),
-      new FileSystemDependency(new LocalFileSystem())
+      htmlExtensionDependencies,
+      createSandboxDependencies(new LocalFileSystem(), new LocalFileResolver()),
     );
   }
 }
