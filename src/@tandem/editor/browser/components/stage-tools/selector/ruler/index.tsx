@@ -3,7 +3,7 @@ import "./index.scss";
 import * as React from "react";
 import LineComponent from "../line";
 import calculateDistances from "./calculate-distances";
-import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
+import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 
 /**
  * shows distances between the entity and other objects

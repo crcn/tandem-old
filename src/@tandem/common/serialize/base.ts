@@ -94,7 +94,7 @@ export function serializable(serializer?: ISerializer<any, any>, type?: string) 
 }
 
 export function canSerialize(value: Object) {
-  return !!value && Reflect.hasMetadata("serialize:type", value.constructor);
+  return !!value && !!Reflect.getMetadata("serialize:type", value.constructor);
 }
 
 export function serialize(value: any): ISerializedContent<any> {

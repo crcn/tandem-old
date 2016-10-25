@@ -1,12 +1,12 @@
 import "./index.scss";
 
 import * as React from "react";
-import { Workspace } from "@tandem/editor/models";
-import { SetZoomAction } from "@tandem/editor/actions";
+import { Workspace } from "@tandem/editor/browser/models";
+import { SetZoomAction } from "@tandem/editor/browser/actions";
 import * as AutosizeInput from "react-input-autosize";
-import { FrontEndApplication } from "@tandem/editor/application";
-import { RegisteredComponent, FocusComponent } from "@tandem/editor/components/common";
-import { FooterComponentFactoryDependency } from "@tandem/editor/dependencies";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { RegisteredComponent, FocusComponent } from "@tandem/editor/browser/components/common";
+import { FooterComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 
 class ZoomLabelComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication }, { editZoom: number }> {
   constructor() {

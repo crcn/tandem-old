@@ -1,8 +1,8 @@
 import "./index.scss";
 
 import * as React from "react";
-import { Workspace } from "@tandem/editor/models";
-import { MetadataKeys } from "@tandem/editor/constants";
+import { Workspace } from "@tandem/editor/browser/models";
+import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { calculateCSSMeasurments } from "@tandem/common";
 import { SyntheticHTMLElement, SyntheticDOMElement } from "@tandem/synthetic-browser";
 

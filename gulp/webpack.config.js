@@ -1,6 +1,7 @@
 const webpack               = require('webpack');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin     = require('html-webpack-plugin');
 const { join }              = require('path');
 
 const {
@@ -38,7 +39,8 @@ module.exports = {
       new WebpackNotifierPlugin({
         alwaysNotify: true
       }),
-      new ExtractTextPlugin('styles.css')
+      new ExtractTextPlugin('styles.css'),
+      new HtmlWebpackPlugin()
     ],
     node: {
       __filename: true,

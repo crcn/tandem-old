@@ -24,7 +24,7 @@ import {
 
 export class HTMLBundleLoader implements IBundleLoader {
 
-  @inject(DependenciesDependency.NS)
+  @inject(DependenciesDependency.ID)
   private _dependencies: Dependencies;
 
   async load(bundle: Bundle, { type, content }): Promise<IBundleLoaderResult> {

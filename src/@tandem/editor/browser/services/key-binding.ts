@@ -3,12 +3,12 @@ import { Logger } from "@tandem/common/logger";
 import { loggable } from "@tandem/common/decorators";
 import { toArray } from "@tandem/common/utils/array";
 import * as Mousetrap from "mousetrap";
-import { KeyBinding } from "@tandem/editor/key-bindings/base";
+import { KeyBinding } from "@tandem/editor/browser/key-bindings/base";
 import { IApplication } from "@tandem/common/application";
 import { InitializeAction } from "@tandem/common/actions";
-import { KeyBindingManager } from "@tandem/editor/key-bindings";
+import { KeyBindingManager } from "@tandem/editor/browser/key-bindings";
 import { BaseApplicationService } from "@tandem/common/services";
-import { GlobalKeyBindingDependency } from "@tandem/editor/dependencies";
+import { GlobalKeyBindingDependency } from "@tandem/editor/browser/dependencies";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
 
 @loggable()

@@ -65,12 +65,3 @@ export class SyntheticDOMCasterDependency extends Dependency<IMarkupDOMCaster> {
     return undefined;
   }
 }
-
-/**
- */
-
-export function createSyntheticBrowserWorkerDependencies() {
-  return [
-    new ApplicationServiceDependency("remote-browser-renderer", RemoteBrowserService)
-  ];
-}

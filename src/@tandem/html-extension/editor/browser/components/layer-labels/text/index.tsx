@@ -3,10 +3,10 @@ import "./index.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
-import { SelectAction } from "@tandem/editor/actions";
-import { MetadataKeys } from "@tandem/editor/constants";
+import { SelectAction } from "@tandem/editor/browser/actions";
+import { MetadataKeys } from "@tandem/editor/browser/constants";
 import * as AutosizeInput from "react-input-autosize";
-import { FocusComponent } from "@tandem/editor/components/common";
+import { FocusComponent } from "@tandem/editor/browser/components/common";
 import { SyntheticDOMText } from "@tandem/synthetic-browser";
 
 export class TextLayerLabelComponent extends React.Component<{ node: SyntheticDOMText, connectDragSource: Function }, any> {

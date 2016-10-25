@@ -3,7 +3,7 @@ import "./intersecting-point.scss";
 
 import * as React from "react";
 import { IPoint } from "@tandem/common/geom";
-import { Workspace } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/browser/models";
 import { BoundingRectPoint, GuideLine } from "../guider";
 
 export class IntersectingPointComponent extends React.Component<{ guideLine: GuideLine, workspace: Workspace }, any> {

@@ -13,7 +13,7 @@ import {SequenceBus } from "mesh";
 // Command pattern receiver
 export class ReceiverService implements IActor {
 
-  @inject(DependenciesDependency.NS)
+  @inject(DependenciesDependency.ID)
   private _dependencies: Dependencies;
 
   constructor() {

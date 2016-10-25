@@ -2,11 +2,11 @@ import "./layer.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
-import { MetadataKeys } from "@tandem/editor/constants";
-import { FrontEndApplication } from "@tandem/editor/application";
+import { MetadataKeys } from "@tandem/editor/browser/constants";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { flatten, intersection } from "lodash";
-import { SelectAction, ToggleSelectAction } from "@tandem/editor/actions";
-import { LayerLabelComponentFactoryDependency } from "@tandem/editor/dependencies";
+import { SelectAction, ToggleSelectAction } from "@tandem/editor/browser/actions";
+import { LayerLabelComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 import { DragSource, DropTarget, DndComponent } from "react-dnd";
 import { SyntheticDOMNode, SyntheticDOMContainer } from "@tandem/synthetic-browser";
 import {

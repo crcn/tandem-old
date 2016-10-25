@@ -1,7 +1,7 @@
 import "./index.scss";
 
 import * as React from "react";
-import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
+import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 
 export class GridToolComponent extends React.Component<{ zoom: number }, any> {
   render() {

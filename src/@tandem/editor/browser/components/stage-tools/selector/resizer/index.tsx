@@ -1,10 +1,10 @@
 import * as React from "react";
-import { Workspace } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/browser/models";
 import { startDrag } from "@tandem/common/utils/component";
 import PathComponent from "./path";
-import { MetadataKeys } from "@tandem/editor/constants";
-import { FrontEndApplication } from "@tandem/editor/application";
-import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
+import { MetadataKeys } from "@tandem/editor/browser/constants";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
 import { SyntheticDOMElement, SyntheticDOMNode } from "@tandem/synthetic-browser";
 import { BoundingRect, IPoint, Point, traverseTree, findTreeNode } from "@tandem/common";

@@ -23,7 +23,7 @@ import {
 
 export class TandemBundleLoader implements IBundleLoader {
 
-  @inject(DependenciesDependency.NS)
+  @inject(DependenciesDependency.ID)
   private _dependencies: Dependencies;
 
   async load(bundle, { type, content }): Promise<IBundleLoaderResult> {

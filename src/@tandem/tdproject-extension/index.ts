@@ -1,6 +1,6 @@
 import { TandemBundleLoader } from "./sandbox";
 import { TDArtboardStageToolComponent } from "./components";
-import { ReactComponentFactoryDependency } from "@tandem/editor";
+import { ReactComponentFactoryDependency } from "@tandem/editor/browser";
 import { TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS } from "./constants";
 import { MimeTypeDependency, HTML_MIME_TYPE, MimeTypeAliasDependency } from "@tandem/common";
 import { BundlerLoaderFactoryDependency, ContentEditorFactoryDependency } from "@tandem/sandbox";

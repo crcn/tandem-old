@@ -9,7 +9,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "mesh": "^6.0.34",
-    "@tandem/sandbox": "*"
+    "mesh": "^6.0.34"
+  },
+  "peerDependencies": {
+    "@tandem/editor": "^1.0.0",
+    "@tandem/common": "^1.0.0",
+    "@tandem/sandbox": "^1.0.0",
+    "@tandem/synthetic-browser": "^1.0.0"
   }
 }

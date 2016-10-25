@@ -1,5 +1,4 @@
-import { ModuleHistory } from "../history";
-import { HistorySingletonDependency } from "@tandem/history-extension/dependencies";
+import { ModuleHistory } from "@tandem/history-extension/history";
 import {
   Action,
   IActor,

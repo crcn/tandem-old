@@ -72,6 +72,7 @@
     "gulp-symdest": "^1.1.0",
     "gulp-webpack": "^1.5.0",
     "highland": "^2.10.0",
+    "html-webpack-plugin": "^2.24.0",
     "inquirer": "^1.2.2",
     "json-loader": "^0.5.4",
     "mocha": "^3.0.2",

@@ -38,7 +38,7 @@ export class Injector {
         }
 
         if (!process.env.TESTING && (value == null || value.length === 0)) {
-          console.warn(`Cannot inject ${ns} into ${target.constructor.name}.${property} property.`);
+          console.warn(`Cannot inject ${ns} into ${target.name || target.constructor.name}.${property} property.`);
         }
       }
     }
@@ -161,6 +161,8 @@ export class ClassFactoryDependency extends Dependency<{ new(...rest): any}> imp
   }
 }
 
+export type registerableDependencyType = Array<IDependency|Dependencies|any[]>;
+
 /**
  * Contains a collection of Dependencies
  */
@@ -169,7 +171,7 @@ export class Dependencies implements ICloneable {
 
   private _dependenciesByNs: any = {};
 
-  constructor(...items: Array<IDependency|any[]>) {
+  constructor(...items: registerableDependencyType) {
     this.register(...items);
   }
 
@@ -215,11 +217,17 @@ export class Dependencies implements ICloneable {
   /**
    */
 
-  register(...dependencies: Array<IDependency|any[]>): Dependencies {
+  register(...dependencies: registerableDependencyType): Dependencies {
 
     const flattenedDependencies: Array<IDependency> = flattenDeep(dependencies);
 
     for (let dependency of flattenedDependencies) {
+
+      // Dependencies collection? Merge it into this one.
+      if (dependency instanceof Dependencies) {
+        this.register(...(<Dependencies>dependency).queryAll("/**"));
+        continue;
+      }
 
       // need to clone the dependency in casse it's part of any other
       // dependency collection, or even a singleton -- this is particularly required for features

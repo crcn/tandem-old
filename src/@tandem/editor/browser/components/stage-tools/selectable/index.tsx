@@ -1,10 +1,10 @@
 import * as cx from "classnames";
 import * as React from "react";
-import { Workspace } from "@tandem/editor/models";
-import { SelectAction } from "@tandem/editor/actions";
-import { FrontEndApplication } from "@tandem/editor/application";
-import { SelectablesComponent } from "@tandem/editor/components/common";
-import { StageToolComponentFactoryDependency } from "@tandem/editor/dependencies";
+import { Workspace } from "@tandem/editor/browser/models";
+import { SelectAction } from "@tandem/editor/browser/actions";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { SelectablesComponent } from "@tandem/editor/browser/components/common";
+import { StageToolComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 import { SyntheticHTMLElement, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
 export default class SelectableToolComponent extends React.Component<{selection: any,  allElements: SyntheticDOMElement[], bus: any, app: any, zoom: number, workspace: Workspace }, {}>  {

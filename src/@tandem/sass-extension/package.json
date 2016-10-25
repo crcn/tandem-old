@@ -10,5 +10,10 @@
   "license": "ISC",
   "dependencies": {
     "sass.js": "^0.9.13"
+  },
+  "peerDependencies": {
+    "@tandem/common": "^1.0.0",
+    "@tandem/sandbox": "^1.0.0",
+    "@tandem/synthetic-browser": "^1.0.0"
   }
 }

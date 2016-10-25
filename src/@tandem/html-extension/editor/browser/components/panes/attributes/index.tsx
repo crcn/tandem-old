@@ -1,6 +1,6 @@
 import * as React from "react";
-import { PaneComponent } from "@tandem/editor/components/common";
-import { FrontEndApplication } from "@tandem/editor";
+import { PaneComponent } from "@tandem/editor/browser/components/common";
+import { FrontEndApplication } from "@tandem/editor/browser";
 import { SyntheticDOMAttribute } from "@tandem/synthetic-browser";
 
 import { DOMElementCollection } from "@tandem/html-extension/collections";

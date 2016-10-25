@@ -1,6 +1,6 @@
 import { SyntheticDOMElement } from "@tandem/synthetic-browser";
-import { BaseEditorTool, IWorkspaceTool, IWorkspace } from "@tandem/editor/models";
-import { MouseAction, SetToolAction, SelectAction } from "@tandem/editor/actions";
+import { BaseEditorTool, IWorkspaceTool, IWorkspace } from "@tandem/editor/browser/models";
+import { MouseAction, SetToolAction, SelectAction } from "@tandem/editor/browser/actions";
 import {
   Action,
   IActor,

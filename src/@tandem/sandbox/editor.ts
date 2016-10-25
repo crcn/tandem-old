@@ -302,7 +302,7 @@ export class FileEditor extends Observable {
   private _editActions: EditAction[];
   private _shouldEditAgain: boolean;
 
-  @inject(DependenciesDependency.NS)
+  @inject(DependenciesDependency.ID)
   private _dependencies: Dependencies;
 
   constructor() {

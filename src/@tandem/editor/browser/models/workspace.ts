@@ -1,4 +1,4 @@
-import { KeyBinding } from "@tandem/editor/key-bindings";
+import { KeyBinding } from "@tandem/editor/browser/key-bindings";
 import { ParallelBus, WrapBus } from "mesh";
 import { IWorkspace, IWorkspaceTool } from "./base";
 

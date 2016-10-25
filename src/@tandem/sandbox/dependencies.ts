@@ -1,7 +1,9 @@
 import { FileCache } from "./file-cache";
-import { IFileSystem } from "./file-system";
-import { IFileResolver } from "./resolver";
+import { ENV_IS_NODE, Injector } from "@tandem/common";
 import { FileEditor, contentEditorType, IEditor } from "./editor";
+import { IFileSystem, LocalFileSystem, RemoteFileSystem } from "./file-system";
+import { IFileResolver, LocalFileResolver, RemoteFileResolver } from "./resolver";
+
 
 import {
   Bundle,
@@ -120,12 +122,13 @@ export const FileCacheDependency  = createSingletonDependencyClass("fileCache", 
 export const FileEditorDependency = createSingletonDependencyClass("fileEdit", FileEditor);
 export const BundlerDependency    = createSingletonDependencyClass("bundler", Bundler);
 
-export function createSandboxDependencies(fileSystem: IFileSystem, fileResover: IFileResolver) {
-  return [
-    new FileSystemDependency(fileSystem),
-    new FileResolverDependency(fileResover),
+export function concatSandboxDependencies(dependencies: Dependencies, fileSystem?: IFileSystem, fileResover?: IFileResolver) {
+  return new Dependencies(
+    dependencies,
+    new FileSystemDependency(fileSystem || Injector.create(ENV_IS_NODE ? RemoteFileSystem : LocalFileSystem, [], dependencies)),
+    new FileResolverDependency(fileSystem || Injector.create(ENV_IS_NODE ? LocalFileResolver : RemoteFileResolver, [], dependencies)),
     new FileCacheDependency(),
     new FileEditorDependency(),
     new BundlerDependency()
-  ];
+  );
 }

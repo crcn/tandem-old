@@ -1,6 +1,6 @@
 
-import { PasteAction } from "@tandem/editor/actions";
-import { FrontEndApplication } from "@tandem/editor/application";
+import { PasteAction } from "@tandem/editor/browser/actions";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
 import {
   Logger,
   loggable,

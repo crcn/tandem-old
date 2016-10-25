@@ -3,19 +3,19 @@ import "./index.scss";
 
 import * as React from "react";
 
-import { FocusComponent } from "@tandem/editor/components/common";
-import { MetadataKeys } from "@tandem/editor/constants";
-import { SelectAction } from "@tandem/editor/actions";
+import { FocusComponent } from "@tandem/editor/browser";
+import { MetadataKeys } from "@tandem/editor/browser";
+import { SelectAction } from "@tandem/editor/browser";
 import * as AutosizeInput from "react-input-autosize";
-import { FrontEndApplication } from "@tandem/editor/application";
-import { LayerLabelComponentFactoryDependency } from "@tandem/editor/dependencies";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { LayerLabelComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 import { SyntheticDOMElement, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 
 const VOID_ELEMENTS = [];
 
 import {
   SetToolAction
-} from "@tandem/editor/actions";
+} from "@tandem/editor/browser/actions";
 
 export class ElementLayerLabelComponent extends React.Component<{ node: SyntheticDOMElement, app: FrontEndApplication, connectDragSource: Function }, any> {
 

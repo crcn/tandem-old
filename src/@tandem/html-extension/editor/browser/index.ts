@@ -12,7 +12,7 @@ import {
   StageToolComponentFactoryDependency,
   LayerLabelComponentFactoryDependency,
   EntityPaneComponentFactoryDependency,
-} from "@tandem/editor/dependencies";
+} from "@tandem/editor/browser/dependencies";
 
 import {
   SyntheticHTMLLink,

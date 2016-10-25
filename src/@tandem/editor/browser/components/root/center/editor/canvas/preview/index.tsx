@@ -1,8 +1,8 @@
 import "./index.scss";
 
 import * as React from "react";
-import { RegisteredComponent } from "@tandem/editor/components/common";
-import { FrontEndApplication } from "@tandem/editor/application";
+import { RegisteredComponent } from "@tandem/editor/browser/components/common";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { ISyntheticDocumentRenderer } from "@tandem/synthetic-browser";
 
 export default class PreviewComponent extends React.Component<{ app: FrontEndApplication, renderer: ISyntheticDocumentRenderer }, any> {

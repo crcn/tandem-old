@@ -1,7 +1,7 @@
 
 import * as  React from "react";
 import { startDrag } from "@tandem/common/utils/component";
-import { Workspace } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/browser/models";
 
 class PathComponent extends React.Component<{ strokeWidth: number, showPoints: boolean, pointRadius: number, workspace: Workspace, onPointChange: Function, zoom: number, onPointMouseUp: Function, onPointMouseDown: Function, points: Array<any> }, any> {
 

@@ -14,5 +14,11 @@
   "dependencies": {
     "chai": "^3.5.0",
     "sift": "^3.2.6"
+  },
+  "peerDependencies": {
+    "@tandem/editor": "^1.0.0",
+    "@tandem/common": "^1.0.0",
+    "@tandem/sandbox": "^1.0.0",
+    "@tandem/synthetic-browser": "^1.0.0"
   }
 }

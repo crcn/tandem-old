@@ -56,12 +56,14 @@ gulp.task('build:typescript', function(done) {
 });
 
 gulp.task('build:webpack', function(done) {
-  const webPackages = PACKAGES.filter(sift({ browser: { $exists: true }}));
+  const webPackages = PACKAGES.filter(sift({ "entries.browser": { $exists: true }}));
 
   return _.pipeline(...webPackages.map((pkg) => {
-    const srcFilePath = join(SRC_DIR, pkg.name, pkg.entry);
+    const srcFilePath = join(SRC_DIR, pkg.name, pkg.entries.browser);
     const outDir      = join(OUT_DIR, pkg.name, dirname(pkg.browser));
 
+    // TODO: need to set the bundled browser entry JS name to the
+    // base name of the browser file specified in the package.json.
     return gulp
     .src(srcFilePath)
     .pipe(webpack(require('./webpack.config.js')))

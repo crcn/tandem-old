@@ -1,2 +1,2 @@
-export * from "./application";
+// export * from "./application";
 export * from "./dependencies";

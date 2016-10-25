@@ -1,8 +1,8 @@
 import "./index.scss";
 import * as React from "react";
-import { Workspace } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/browser/models";
 import ToolComponent from "./tool";
-import { WorkspaceToolFactoryDependency } from "@tandem/editor/dependencies";
+import { WorkspaceToolFactoryDependency } from "@tandem/editor/browser/dependencies";
 
 class ToolsComponent extends React.Component<{ workspace: Workspace, app: any }, any> {
   render() {

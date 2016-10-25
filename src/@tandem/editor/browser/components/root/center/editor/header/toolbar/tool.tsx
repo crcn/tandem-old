@@ -1,10 +1,10 @@
 import * as cx from "classnames";
 import * as React from "react";
 import { IActor } from "@tandem/common/actors";
-import { Workspace } from "@tandem/editor/models";
-import { SetToolAction } from "@tandem/editor/actions";
-import { FrontEndApplication } from "@tandem/editor/application";
-import { WorkspaceToolFactoryDependency } from "@tandem/editor/dependencies";
+import { Workspace } from "@tandem/editor/browser/models";
+import { SetToolAction } from "@tandem/editor/browser/actions";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { WorkspaceToolFactoryDependency } from "@tandem/editor/browser/dependencies";
 
 class ToolComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, toolDependency: WorkspaceToolFactoryDependency }, any> {
 

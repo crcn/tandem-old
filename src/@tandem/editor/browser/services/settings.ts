@@ -1,7 +1,7 @@
 import  * as store from "store";
 import { WrapBus } from "mesh";
 import { Metadata } from "@tandem/common/metadata";
-import { FrontEndApplication } from "@tandem/editor/application";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { BaseApplicationService } from "@tandem/common/services";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
 import { SettingChangeAction, LoadAction } from "@tandem/common/actions";

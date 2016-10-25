@@ -1,7 +1,7 @@
 
 import { WrapBus } from "mesh";
 import { debounce } from "lodash";
-import { DocumentFileAction } from "@tandem/editor/actions";
+import { DocumentFileAction } from "@tandem/editor/browser/actions";
 import {
   File,
   IPoint,

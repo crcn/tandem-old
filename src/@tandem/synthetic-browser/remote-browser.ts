@@ -15,7 +15,7 @@ import {
   BaseApplicationService
 } from "@tandem/common";
 
-import { FrontEndApplication } from "@tandem/editor";
+import { BaseApplicationService2 } from "@tandem/editor/core/services";
 import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
 import { Bundle, Bundler, BundlerDependency, SyntheticObjectEditor } from "@tandem/sandbox";
 
@@ -71,12 +71,12 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
 }
 
-export class RemoteBrowserService extends BaseApplicationService<FrontEndApplication> {
+export class RemoteBrowserService extends BaseApplicationService2 {
   [OpenRemoteBrowserAction.OPEN_REMOTE_BROWSER](action: OpenRemoteBrowserAction) {
 
     // TODO - move this to its own class
     return new Response((writer) => {
-      const browser = new SyntheticBrowser(this.app.dependencies, new NoopRenderer());
+      const browser = new SyntheticBrowser(this.dependencies, new NoopRenderer());
       let currentDocument: SyntheticDocument;
 
       browser.observe({

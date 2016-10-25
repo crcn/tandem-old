@@ -1,20 +1,20 @@
 import "./index.scss";
 import * as React from "react";
 import { IPoint } from "@tandem/common/geom";
-import { Workspace } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/browser/models";
 import { BoundingRect } from "@tandem/common/geom";
-import { MetadataKeys } from "@tandem/editor/constants";
+import { MetadataKeys } from "@tandem/editor/browser/constants";
 import ToolsLayerComponent from "./tools";
-import { IsolateComponent }  from "@tandem/editor/components/common";
+import { IsolateComponent }  from "@tandem/editor/browser/components/common";
 import PreviewLayerComponent from "./preview";
-import { FrontEndApplication } from "@tandem/editor/application";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { UpdateAction, IActor } from "@tandem/common";
 import { Dependencies, MainBusDependency } from "@tandem/common/dependencies";
 import {
   ZoomAction,
   MouseAction,
   KeyboardAction,
-} from "@tandem/editor/actions";
+} from "@tandem/editor/browser/actions";
 
 export default class EditorStageLayersComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, dependencies: Dependencies, zoom: number }, any> {
 

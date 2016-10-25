@@ -1,7 +1,7 @@
 import * as React from "react";
 import { IActor } from "@tandem/common/actors";
 import { IApplication } from "@tandem/common/application";
-import { IWorkspace, IWorkspaceTool } from "@tandem/editor/models";
+import { IWorkspace, IWorkspaceTool } from "@tandem/editor/browser/models";
 import { ReactComponentFactoryDependency } from "./base";
 import { IFactory, Dependency, Dependencies, ClassFactoryDependency } from "@tandem/common/dependencies";
 
@@ -20,23 +20,13 @@ export class GlobalKeyBindingDependency extends ClassFactoryDependency {
   }
 }
 
-export const ROOT_COMPONENT_NS = "components/root";
-export class RootReactComponentDependency extends ReactComponentFactoryDependency {
-  constructor(componentClass: React.ComponentClass<any>) {
-    super(ROOT_COMPONENT_NS, componentClass);
-  }
-  static find(dependencies: Dependencies) {
-    return dependencies.query<RootReactComponentDependency>(ROOT_COMPONENT_NS);
-  }
-}
-
 export const ENTITY_PREVIEW_COMPONENT_NS = "components/preview";
 export class EntityPreviewDependency extends ReactComponentFactoryDependency {
   constructor(componentClass: React.ComponentClass<any>) {
     super(ENTITY_PREVIEW_COMPONENT_NS, componentClass);
   }
   static find(dependencies: Dependencies) {
-    return dependencies.query<RootReactComponentDependency>(ENTITY_PREVIEW_COMPONENT_NS);
+    return dependencies.query<EntityPreviewDependency>(ENTITY_PREVIEW_COMPONENT_NS);
   }
 }
 

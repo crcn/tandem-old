@@ -1,13 +1,13 @@
 import { IActor } from "@tandem/common/actors";
 import { inject } from "@tandem/common/decorators";
-import { BaseEditorTool } from "@tandem/editor/models";
-import { FrontEndApplication } from "@tandem/editor/application";
-import { POINTER_TOOL_KEY_CODE } from "@tandem/editor/constants";
+import { BaseEditorTool } from "@tandem/editor/browser/models";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { POINTER_TOOL_KEY_CODE } from "@tandem/editor/browser/constants";
 import { BaseApplicationService } from "@tandem/common/services";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
-import { WorkspaceToolFactoryDependency } from "@tandem/editor/dependencies";
+import { WorkspaceToolFactoryDependency } from "@tandem/editor/browser/dependencies";
 import { IInjectable, MainBusDependency } from "@tandem/common/dependencies";
-import { SelectAction, MouseAction, KeyboardAction, RemoveSelectionAction } from "@tandem/editor/actions";
+import { SelectAction, MouseAction, KeyboardAction, RemoveSelectionAction } from "@tandem/editor/browser/actions";
 
 // TODO - everything here should just be a command
 

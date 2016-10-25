@@ -20,7 +20,7 @@ import {
   DSFindAllAction,
   BaseActiveRecord,
   SingletonThenable,
-  MainBusDependency,
+  ProtectedBusDependency,
   DependenciesDependency,
   ActiveRecordCollection,
 } from "@tandem/common";
@@ -180,9 +180,9 @@ export class FileCache extends Observable {
   private _synchronizer: FileCacheSynchronizer;
   readonly collection: ActiveRecordCollection<FileCacheItem, IFileCacheItemData>;
 
-  constructor(@inject(DependenciesDependency.NS) private _dependencies: Dependencies) {
+  constructor(@inject(DependenciesDependency.ID) private _dependencies: Dependencies) {
     super();
-    this._bus        = MainBusDependency.getInstance(_dependencies);
+    this._bus        = ProtectedBusDependency.getInstance(_dependencies);
     this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IFileCacheItemData) => {
       return new FileCacheItem(source, this.collectionName, this._fileSystem, this._bus);
     });

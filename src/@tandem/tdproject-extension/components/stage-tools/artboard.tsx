@@ -3,10 +3,9 @@ import * as React from "react";
 import * as AutosizeInput from "react-input-autosize";
 
 import { BoundingRect } from "@tandem/common";
-import { SelectAction } from "@tandem/editor/actions";
 import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
-import { FrontEndApplication, Workspace } from "@tandem/editor";
 import { ApplyEditAction, SetKeyValueEditAction } from "@tandem/sandbox";
+import { FrontEndApplication, Workspace, SelectAction } from "@tandem/editor/browser";
 import { SyntheticHTMLElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
 
 export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTDArtboardElement, workspace: Workspace, app: FrontEndApplication }, {

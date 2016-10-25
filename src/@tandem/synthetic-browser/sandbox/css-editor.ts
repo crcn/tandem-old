@@ -19,7 +19,7 @@ import {
 // to SASS
 export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
-  @inject(DependenciesDependency.NS)
+  @inject(DependenciesDependency.ID)
   private _dependencies: Dependencies;
 
   [SyntheticCSSStyleRuleEdit.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueEditActon) {

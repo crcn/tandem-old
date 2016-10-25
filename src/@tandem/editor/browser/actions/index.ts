@@ -4,8 +4,8 @@ import { File } from "@tandem/common";
 import { toArray } from "@tandem/common/utils/array";
 import { IRange, IPoint } from "@tandem/common/geom";
 import { uniq } from "lodash";
-import { Workspace, IWorkspaceTool, IHistoryItem } from "@tandem/editor/models";
-import { WorkspaceToolFactoryDependency } from "@tandem/editor/dependencies";
+import { Workspace, IWorkspaceTool, IHistoryItem } from "@tandem/editor/browser/models";
+import { WorkspaceToolFactoryDependency } from "@tandem/editor/browser/dependencies";
 
 export class MouseAction extends Action {
 

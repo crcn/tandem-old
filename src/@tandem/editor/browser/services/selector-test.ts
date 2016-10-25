@@ -1,10 +1,10 @@
 // // import expect from "expect.js";
 // import { expect } from "chai";
-// import { Workspace, Editor } from "@tandem/editor/models";
-// import { FrontEndApplication } from "@tandem/editor/application";
+// import { Workspace, Editor } from "@tandem/editor/browser/models";
+// import { FrontEndApplication } from "@tandem/editor/browser/application";
 // import { ClassFactoryDependency } from "@tandem/common/dependencies";
 // import { selectorServiceDependency } from "./selector";
-// import { SelectAction, ToggleSelectAction } from "@tandem/editor/actions";
+// import { SelectAction, ToggleSelectAction } from "@tandem/editor/browser/actions";
 
 // describe(__filename + "#", () => {
 

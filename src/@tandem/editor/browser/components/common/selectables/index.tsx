@@ -6,13 +6,13 @@ import * as cx from "classnames";
 import * as React from "react";
 import { inject } from "@tandem/common/decorators";
 import { WrapBus } from "mesh";
-import { Workspace } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/browser/models";
 import { BoundingRect } from "@tandem/common/geom";
-import { SelectAction } from "@tandem/editor/actions";
-import { MetadataKeys } from "@tandem/editor/constants";
-import { FrontEndApplication } from "@tandem/editor/application";
+import { SelectAction } from "@tandem/editor/browser/actions";
+import { MetadataKeys } from "@tandem/editor/browser/constants";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { intersection, flatten } from "lodash";
-import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
+import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 import { IInjectable, APPLICATION_SINGLETON_NS, IActor, Action } from "@tandem/common";
 import { SyntheticHTMLElement, SyntheticDOMElement, ChildElementQuerier } from "@tandem/synthetic-browser";
 

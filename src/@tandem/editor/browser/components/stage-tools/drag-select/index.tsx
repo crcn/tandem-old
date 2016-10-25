@@ -1,13 +1,13 @@
 import "./index.scss";
 import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
-import { PointerTool } from "@tandem/editor/models/pointer-tool";
-import { MetadataKeys } from "@tandem/editor/constants";
+import { PointerTool } from "@tandem/editor/browser/models/pointer-tool";
+import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { BoundingRect } from "@tandem/common/geom";
-import { FrontEndApplication } from "@tandem/editor/application";
-import { SelectAction, MouseAction } from "@tandem/editor/actions";
-import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
-import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { SelectAction, MouseAction } from "@tandem/editor/browser/actions";
+import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 
 class DragSelectComponent extends React.Component<{ app: FrontEndApplication, zoom: number, tool: PointerTool }, any> {
 

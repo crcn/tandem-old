@@ -2,11 +2,17 @@ import "./index.scss";
 
 import * as React from "react";
 import CenterComponent from "./center";
+import { IActor, Dependencies } from "@tandem/common";
 import { DocumentGutterComponent } from "./document-sidebar";
 import { SelectionGutterComponent } from "./selection-sidebar";
-import { RootReactComponentDependency } from "@tandem/editor/dependencies";
 
-export default class RootEditorComponent extends React.Component<any, any> {
+interface IRootEditorComponentProps {
+  app?: any;
+  bus: IActor;
+  dependencies: Dependencies;
+}
+
+export class RootEditorComponent extends React.Component<IRootEditorComponentProps, any> {
   render() {
     return (<div className="m-editor editor">
       <DocumentGutterComponent {...this.props} />
@@ -16,4 +22,3 @@ export default class RootEditorComponent extends React.Component<any, any> {
   }
 }
 
-export const rootComponentDependency = new RootReactComponentDependency(RootEditorComponent);

@@ -4,8 +4,8 @@ import { ResolveFileAction } from "./actions";
 import {
   IActor,
   inject,
-  MainBusDependency,
   SingletonThenable,
+  ProtectedBusDependency,
 } from "@tandem/common";
 import * as resolve from "resolve";
 import * as pkgpath from "package-path";
@@ -56,7 +56,7 @@ export abstract class BaseFileResolver implements IFileResolver {
 }
 
 export class RemoteFileResolver extends BaseFileResolver {
-  constructor(@inject(MainBusDependency.NS) private _bus: IActor) {
+  constructor(@inject(ProtectedBusDependency.ID) private _bus: IActor) {
     super();
   }
   async resolve2(filePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {

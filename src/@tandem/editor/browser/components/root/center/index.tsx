@@ -2,9 +2,9 @@ import "./index.scss";
 
 import * as React from "react";
 import EditorCommponent from "./editor";
-import { RegisteredComponent } from "@tandem/editor/components/common";
+import { RegisteredComponent } from "@tandem/editor/browser/components/common";
 
-import { FrontEndApplication } from "@tandem/editor/application";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
 
 export default class CenterComponent extends React.Component<{ app: FrontEndApplication }, any> {
   render() {

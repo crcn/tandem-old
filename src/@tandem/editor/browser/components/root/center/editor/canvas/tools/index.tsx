@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
-import { Workspace } from "@tandem/editor/models";
-import { RegisteredComponent } from "@tandem/editor/components/common";
+import { Workspace } from "@tandem/editor/browser/models";
+import { RegisteredComponent } from "@tandem/editor/browser/components/common";
 
 export default class ToolsComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {

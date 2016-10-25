@@ -1,9 +1,10 @@
-import ServerApplication from "./application";
+// import ServerApplication from "./application";
 import defaultConfig from "./config";
 
 export function create(config = {}) {
-  var app = new ServerApplication(Object.assign({}, defaultConfig, config));
-  return app;
+  // var app = new ServerApplication(Object.assign({}, defaultConfig, config));
+  // return app;
+  return {};
 }
 
 process.on("unhandledRejection", function(error) {

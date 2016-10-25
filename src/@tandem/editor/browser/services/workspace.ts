@@ -1,6 +1,6 @@
 
 import { WrapBus } from "mesh";
-import { MetadataKeys } from "@tandem/editor/constants";
+import { MetadataKeys } from "@tandem/editor/browser/constants";
 import {
   BaseRenderer,
   SyntheticDOMNode,
@@ -11,12 +11,12 @@ import {
   RemoteSyntheticBrowser,
   SyntheticRendererAction,
 } from "@tandem/synthetic-browser";
-import { Workspace } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/browser/models";
 import { ApplyEditAction, FileEditorDependency } from "@tandem/sandbox";
-import { FrontEndApplication } from "@tandem/editor/application";
-import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
-import { WorkspaceToolFactoryDependency } from "@tandem/editor/dependencies";
-import { SetToolAction, ZoomAction, SetZoomAction, DocumentFileAction } from "@tandem/editor/actions";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { pointerToolDependency } from "@tandem/editor/browser/models/pointer-tool";
+import { WorkspaceToolFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { SetToolAction, ZoomAction, SetZoomAction, DocumentFileAction } from "@tandem/editor/browser/actions";
 
 import {
   File,
@@ -43,7 +43,7 @@ import {
 export class WorkspaceService extends BaseApplicationService<FrontEndApplication> {
   public logger: Logger;
 
-  @inject(DependenciesDependency.NS)
+  @inject(DependenciesDependency.ID)
   private _dependencies: Dependencies;
   private _tweener: IDisposable;
   private _zoomTimeout: any;

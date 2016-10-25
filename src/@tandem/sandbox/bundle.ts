@@ -25,10 +25,10 @@ import {
   Dependencies,
   ISourceLocation,
   BaseActiveRecord,
-  MainBusDependency,
   MimeTypeDependency,
   ActiveRecordAction,
   PropertyChangeAction,
+  ProtectedBusDependency,
   DependenciesDependency,
   ActiveRecordCollection,
   MimeTypeAliasDependency,
@@ -150,7 +150,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   private _readyLock: boolean;
 
   constructor(source: IBundleData, collectionName: string, private _dependencies: Dependencies) {
-    super(source, collectionName, MainBusDependency.getInstance(_dependencies));
+    super(source, collectionName, ProtectedBusDependency.getInstance(_dependencies));
     this._fileCache = FileCacheDependency.getInstance(_dependencies);
     this._fileSystem = FileSystemDependency.getInstance(_dependencies);
     this._fileResolver = FileResolverDependency.getInstance(_dependencies);
@@ -430,7 +430,7 @@ export class Bundler extends Observable {
   readonly collection: ActiveRecordCollection<Bundle, IBundleData>;
   private _editor: FileEditor;
 
-  constructor(@inject(DependenciesDependency.NS) private _dependencies: Dependencies) {
+  constructor(@inject(DependenciesDependency.ID) private _dependencies: Dependencies) {
     super();
     this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IBundleData) => {
       return new Bundle(source, this.collectionName, _dependencies);

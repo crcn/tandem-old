@@ -35,7 +35,7 @@ export default class FrontEndService extends BaseApplicationService<IApplication
   public logger:Logger;
   private _bundles:Array<any>;
 
-  @inject(DependenciesDependency.NS)
+  @inject(DependenciesDependency.ID)
   readonly dependencies: Dependencies;
 
   @inject(FileCacheDependency.NS)

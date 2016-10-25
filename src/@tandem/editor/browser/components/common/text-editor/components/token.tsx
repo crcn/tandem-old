@@ -3,7 +3,7 @@ import Token from "../models/token";
 import Line from "../models/line";
 import TextEditor from "../models/text-editor";
 import { Dependencies } from "@tandem/common/dependencies";
-import { TokenComponentFactoryDependency } from "@tandem/editor/dependencies";
+import { TokenComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 
 class TokenComponent extends React.Component<{ token: Token, editor: TextEditor, line: Line, dependencies: Dependencies }, any> {
 

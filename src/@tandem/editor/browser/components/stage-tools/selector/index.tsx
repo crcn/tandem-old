@@ -1,15 +1,15 @@
 import "./index.scss";
 import * as React from "react";
-import { Workspace } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/browser/models";
 import { flatten } from "lodash";
 import RulerComponent from "./ruler";
-import { PointerTool } from "@tandem/editor/models/pointer-tool";
+import { PointerTool } from "@tandem/editor/browser/models/pointer-tool";
 import ResizerComponent from "./resizer";
-import { FrontEndApplication } from "@tandem/editor/application";
-import { SelectionSizeComponent } from "@tandem/editor/components/common";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { SelectionSizeComponent } from "@tandem/editor/browser/components/common";
 import { BoundingRect, flattenTree } from "@tandem/common";
-import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
-import { VisibleSyntheticElementCollection } from "@tandem/editor/collections";
+import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 
 export default class SelectorComponent extends React.Component<{ workspace: Workspace, tool: PointerTool, app: FrontEndApplication, zoom: number  }, any> {
 

@@ -2,12 +2,12 @@ import "./index.scss";
 
 import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
-import { FrontEndApplication } from "@tandem/editor/application";
-import { Workspace, InsertTool } from "@tandem/editor/models";
-import { SetToolAction, SelectAction } from "@tandem/editor/actions";
-import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { Workspace, InsertTool } from "@tandem/editor/browser/models";
+import { SetToolAction, SelectAction } from "@tandem/editor/browser/actions";
+import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 import { SyntheticDOMElement, SyntheticHTMLElement } from "@tandem/synthetic-browser";
-import { SelectionSizeComponent, SelectablesComponent } from "@tandem/editor/components/common";
+import { SelectionSizeComponent, SelectablesComponent } from "@tandem/editor/browser/components/common";
 import {
   IActor,
   Action,

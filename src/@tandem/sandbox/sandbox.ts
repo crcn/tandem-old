@@ -8,7 +8,6 @@ import {
   Observable,
   IObservable,
   Dependencies,
-  MainBusDependency,
   PropertyChangeAction,
 } from "@tandem/common";
 

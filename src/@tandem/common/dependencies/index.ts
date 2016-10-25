@@ -71,27 +71,15 @@ function createSingletonBusDependencyClass(name: string) {
 
   const id = ["bus", name].join("/");
 
-  return class BusDependency extends Dependency<IActor> {
-    constructor(bus: IActor, readonly actors: Array<IActor>) {
+  return class BusDependency extends Dependency<IBrokerBus> {
+
+    static readonly ID = id;
+
+    constructor(bus: IBrokerBus) {
       super(id, bus);
     }
 
-    public addActor(actor: IActor) {
-      if (this.actors.indexOf(actor) === -1) {
-        throw new Error(`Attempting to register a global bus actor that already exists on ${id}.`);
-      }
-
-      this.actors.push(actor);
-    }
-
-    public removeActor(actor: IActor) {
-      const index = this.actors.indexOf(actor);
-      if (index !== -1) {
-        this.actors.splice(index, 1);
-      }
-    }
-
-    static getInstance(dependencies: Dependencies): IActor {
+    static getInstance(dependencies: Dependencies): IBrokerBus {
       return dependencies.query<BusDependency>(id).value;
     }
   };
@@ -125,9 +113,9 @@ export const PrivateBusDependency   = createSingletonBusDependencyClass("private
  */
 
 export class DependenciesDependency extends Dependency<Dependencies> {
-  static NS = "dependencies";
+  static ID = "dependencies";
   constructor() {
-    super(DependenciesDependency.NS, null);
+    super(DependenciesDependency.ID, null);
   }
 
   get owner(): Dependencies {

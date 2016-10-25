@@ -1,8 +1,8 @@
 import "./index.scss";
 import * as React from "react";
-import { RegisteredComponent, SideDraggerComponent } from "@tandem/editor/components/common";
-import { FrontEndApplication } from "@tandem/editor/application";
-import { ENTITY_PANE_COMPONENT_NS } from "@tandem/editor/dependencies";
+import { RegisteredComponent, SideDraggerComponent } from "@tandem/editor/browser/components/common";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { ENTITY_PANE_COMPONENT_NS } from "@tandem/editor/browser/dependencies";
 import { MetadataValueReference, DefaultValueReference, MinMaxValueReference } from "@tandem/common/reference";
 
 export class GutterComponent extends React.Component<{ app: FrontEndApplication, position: string, maxWidth?: number, registeredComponentNs: string, hideKey: string, sizeKey: string }, any> {

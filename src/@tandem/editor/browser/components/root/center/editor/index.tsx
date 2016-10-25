@@ -4,12 +4,12 @@ import HeaderComponent from "./header";
 import FooterComponent from "./footer";
 import CanvasComponent from "./canvas";
 import PreviewComponent from "./canvas/preview";
-import { Workspace } from "@tandem/editor/models";
+import { Workspace } from "@tandem/editor/browser/models";
 import { Dependencies } from "@tandem/common/dependencies";
-import { KeyBindingManager } from "@tandem/editor/key-bindings";
+import { KeyBindingManager } from "@tandem/editor/browser/key-bindings";
 import { SyntheticDOMElement } from "@tandem/synthetic-browser";
-import { FrontEndApplication } from "@tandem/editor/application";
-import { ReactComponentFactoryDependency } from "@tandem/editor/dependencies";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 
 export default class StageComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, allElements: SyntheticDOMElement[] }, any> {
 

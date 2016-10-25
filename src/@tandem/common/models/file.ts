@@ -26,7 +26,7 @@ export class File extends Observable {
 
   private _watcher: IDisposable;
 
-  @inject(DependenciesDependency.NS)
+  @inject(DependenciesDependency.ID)
   protected _dependencies: Dependencies;
 
   @inject(MainBusDependency.NS)

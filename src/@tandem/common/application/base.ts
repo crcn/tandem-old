@@ -6,9 +6,7 @@ import {
   Dependency,
   Dependencies,
   MainBusDependency,
-  PublicBusDependency,
   PrivateBusDependency,
-  ProtectedBusDependency,
 } from '../dependencies';
 
 /**
@@ -28,108 +26,68 @@ export interface IApplication extends IInvoker {
 }
 
 /**
- * Main entry point into the entire application -- ties everything together. Minimal
- * in functionality.
  */
 
-export interface IApplication2<T> {
+export class Application2 {
 
-  /**
-   * The configuration of the application
-   */
+  protected bus: IActor;
+  private _initialized: boolean;
 
-  readonly config: T;
-
-  /**
-   * The dependencies of the application. This is the glue of the application
-   * that contains singletons, and dependencies, of other dependencies.
-   */
-
-  readonly dependencies: Dependencies;
-}
-
-/**
- * The application configuration dependency
- */
-
-export class ConfigurationDependency<T> extends Dependency<T> {
-  static ID: string = "config";
-  constructor(value: T) {
-    super(ConfigurationDependency.ID, value);
+  constructor(readonly dependencies: Dependencies) {
+    this.bus = PrivateBusDependency.getInstance(dependencies);
   }
-}
-
-/**
- */
-
-export abstract class BaseApplication<T> implements IApplication2<T> {
-
-  private _privateBus: IActor;
-
-  /**
-   * Constructor
-   *
-   * @param {any} [readonly=config] the application configuration used by dependencies
-   * @param {Dependencies} [readonly=dependencies] existing dependencies to inject into the application. Otherwise a an empty Dependencies instance is created
-   */
-
-  constructor(readonly config: T, readonly dependencies: Dependencies = new Dependencies()) { }
 
   /**
    * Bootstraps the application
    */
 
   async initialize() {
-    this.registerDependencies();
+    if (this._initialized) {
+      throw new Error(`Attempting to initialize the application after it's already been initialized.`);
+    }
+
+    this._initialized = true;
+    this.willLoad();
 
     // Prepare the application for initialization. Dependencies that
     // need to be loaded before being used by other dependencies should listen on this action
     // here.
-    await this._privateBus.execute(new LoadAction());
+    await this.bus.execute(new LoadAction());
+
+    this.didLoad();
+    this.willInitialize();
 
     // Notify the application that everything is ready
-    await this._privateBus.execute(new InitializeAction());
+    await this.bus.execute(new InitializeAction());
+
+    this.didInitialize();
   }
 
   /**
    */
 
-  protected registerDependencies() {
-    this.registerBusses();
+  protected willLoad() {
+    // OVERRIDE ME
   }
 
   /**
-   * Registers all message busses
    */
 
-  private registerBusses() {
+  protected didLoad() {
+    // OVERRIDE ME
+  }
 
-    // Notice the bubbling action here. Actions dispatched on the private bus will
-    // make its way to the public bus. However, actions also have access levels. If an action
-    // invoked against the public bus is not also public, then the action will never reach the outside world.
+  /**
+   */
 
-    // The levels here are mainly intented to expose layers of the application that are publicly accessible
-    // to outside resources. The public bus is intented for public APIs, and is accessible to anyone, The protected bus is
-    // available to trusted resources such as workers, databases, and other services. The private bus is reserved for internal
-    // communication only. This includes things such as application loading, initialization, rendering (browser), and other actions
-    // that are useless to both public, and protected actors.
+  protected willInitialize() {
+    // OVERRIDE ME
+  }
 
-    const publicActors = [];
-    const publicBus    = new SequenceBus(publicActors);
+  /**
+   */
 
-    const protectedActors = [publicBus];
-    const protectedBus    = new SequenceBus(protectedActors);
-
-    const privateActors = [protectedBus];
-    const privateBus    = this._privateBus = new SequenceBus(privateActors);
-
-    this.dependencies.register(
-      new PublicBusDependency(publicBus, publicActors),
-      new ProtectedBusDependency(protectedBus, protectedActors),
-      new PrivateBusDependency(privateBus, privateActors),
-
-      // make the application config available to the entire application
-      new ConfigurationDependency(this.config)
-    )
+  protected didInitialize() {
+    // OVERRIDE ME
   }
 }

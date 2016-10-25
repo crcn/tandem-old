@@ -1,16 +1,16 @@
 
 import { inject } from "@tandem/common/decorators";
 import { IActor } from "@tandem/common/actors";
-import { InsertTool } from "@tandem/editor/models/insert-tool";
-import { MouseAction } from "@tandem/editor/actions";
+import { InsertTool } from "@tandem/editor/browser/models/insert-tool";
+import { MouseAction } from "@tandem/editor/browser/actions";
 import { IApplication } from "@tandem/common/application";
-import { SetToolAction } from "@tandem/editor/actions";
+import { SetToolAction } from "@tandem/editor/browser/actions";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
-import { FrontEndApplication } from "@tandem/editor/application";
-import { pointerToolDependency } from "@tandem/editor/models/pointer-tool";
+import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { pointerToolDependency } from "@tandem/editor/browser/models/pointer-tool";
 import { BaseApplicationService } from "@tandem/common/services";
-import { WorkspaceToolFactoryDependency } from "@tandem/editor/dependencies";
-import { IWorkspaceTool, BaseEditorTool, IWorkspace } from "@tandem/editor/models";
+import { WorkspaceToolFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { IWorkspaceTool, BaseEditorTool, IWorkspace } from "@tandem/editor/browser/models";
 
 import {
   Dependency,
@@ -36,7 +36,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
   @inject(MainBusDependency.NS)
   readonly bus: IActor;
 
-  @inject(DependenciesDependency.NS)
+  @inject(DependenciesDependency.ID)
   readonly dependencies: Dependencies;
 
   private _disposed: boolean;
@@ -112,7 +112,7 @@ class InsertTextTool extends InsertTool {
   readonly cursor: string = "text";
   readonly resizable: boolean = false;
 
-  @inject(DependenciesDependency.NS)
+  @inject(DependenciesDependency.ID)
   private _dependencies: Dependencies;
 
   get displayEntityToolFactory() {
