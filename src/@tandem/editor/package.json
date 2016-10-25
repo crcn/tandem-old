@@ -9,5 +9,25 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^3.5.0",
+    "chalk": "^1.1.3",
+    "compress": "^0.99.0",
+    "cors": "^2.8.1",
+    "express": "^4.14.0",
+    "fs-extra": "^0.30.0",
+    "get-port": "^2.1.0",
+    "mesh": "^6.0.34",
+    "mesh-memory-ds-bus": "^5.0.1",
+    "mousetrap": "^1.6.0",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "reflect-metadata": "^0.1.8",
+    "sift": "^3.2.6",
+    "socket.io": "^1.5.1",
+    "socket.io-client": "^1.5.1",
+    "store": "^1.3.20",
+    "compression": "^1.6.2"
+  }
 }

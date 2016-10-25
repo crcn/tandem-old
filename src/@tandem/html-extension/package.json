@@ -12,5 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chai": "^3.5.0",
+    "sift": "^3.2.6"
   }
 }
