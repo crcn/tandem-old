@@ -45,7 +45,6 @@ import { keyBindingsDependency } from "./key-bindings";
 // extensions
 import { htmlExtensionDependencies } from "@tandem/html-extension";
 import { sassExtensionDependencies  } from "@tandem/sass-extension";
-import { historyExtensionDependencies } from "@tandem/history-extension";
 import { tdprojectExtensionDependencies } from "@tandem/tdproject-extension";
 
 import { Workspace } from "./models";
