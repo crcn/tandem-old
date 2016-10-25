@@ -1,1 +1,0 @@
-export const renderMessage = (message) => <span>{message}</span>;

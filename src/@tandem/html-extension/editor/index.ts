@@ -8,7 +8,6 @@ import {
   SyntheticHTMLElement,
 } from "@tandem/synthetic-browser";
 
-
 import {
   StageToolComponentFactoryDependency,
   LayerLabelComponentFactoryDependency,
@@ -34,7 +33,7 @@ export * from "./key-bindings";
 export * from "./services";
 export * from "./models";
 
-export const htmlEditorDependencies = [
+export const htmlEditorExtensionDependencies = [
 
   // layer components
   new LayerLabelComponentFactoryDependency(SyntheticHTMLElement.name, ElementLayerLabelComponent),

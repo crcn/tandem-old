@@ -3,7 +3,8 @@
   "version": "1.0.1",
   "description": "",
   "browser": "./bundle/main.js",
-  "main": "./entry.ts",
+  "main": "./index.ts",
+  "entry": "./entry.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
