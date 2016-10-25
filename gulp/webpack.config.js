@@ -4,9 +4,10 @@ const ExtractTextPlugin     = require('extract-text-webpack-plugin');
 const { join }              = require('path');
 
 const {
-  BASE_DIR,
+  WATCH,
   SRC_DIR,
   OUT_DIR,
+  BASE_DIR,
   NODE_MODULES_DIR
 } = require('./config');
 
@@ -17,6 +18,9 @@ module.exports = {
         'react-dom': 'node_modules/react-dom/dist/react-dom.js'
       }
     },
+    output: {
+      filename: '[name].js',
+    },
     sassLoader: {
       includePaths: [SRC_DIR]
     },
@@ -24,10 +28,9 @@ module.exports = {
       extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.peg'],
       modulesDirectories: [SRC_DIR, NODE_MODULES_DIR]
     },
-    watch: process.env.WATCH === '1',
+    watch: WATCH,
     plugins: [
       new webpack.DefinePlugin({
-        'process.env.TESTING': process.env.TESTING === '1',
 
         // required for mongoid-js plugin particularly
         'process.pid': process.pid

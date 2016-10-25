@@ -1,5 +1,6 @@
 const glob     = require('glob');
 const { join } = require('path');
+const argv     = require('yargs').argv;
 
 const BASE_DIR             = process.cwd();
 const NODE_MODULES_DIR     = join(BASE_DIR, 'node_modules');
@@ -12,7 +13,11 @@ const PACKAGE_FILE_PATHS = glob.sync(join(SRC_DIR, '**', 'package.json'));
 const PACKAGES           = PACKAGE_FILE_PATHS.map(require);
 const PACKAGE_NAMES      = PACKAGES.map(({name}) => name);
 
+// argv
+const WATCH = argv.watch;
+
 module.exports = {
+  WATCH,
   BASE_DIR,
   SRC_DIR,
   OUT_DIR,

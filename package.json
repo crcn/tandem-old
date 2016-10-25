@@ -39,6 +39,7 @@
     "gulp-atom-electron": "^1.9.0",
     "gulp-sequence": "^0.4.6",
     "gulp-symdest": "^1.1.0",
+    "gulp-typescript": "^3.0.2",
     "gulp-webpack": "^1.5.0",
     "highland": "^2.10.0",
     "json-loader": "^0.5.4",
@@ -62,6 +63,7 @@
     "typescript": "2.0.x",
     "url-loader": "^0.5.7",
     "vinyl-fs": "^2.4.4",
+    "vscode": "^1.0.1",
     "webpack-notifier": "^1.4.0"
   },
   "dependencies": {
@@ -85,6 +87,7 @@
     "html2canvas": "^0.5.0-beta4",
     "marked": "^0.3.6",
     "memoizee": "^0.4.1",
+    "mesh": "^6.0.34",
     "mesh-array-ds-bus": "^2.0.0",
     "mesh-memory-ds-bus": "^5.0.1",
     "mesh-remote-bus": "^2.0.9",

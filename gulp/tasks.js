@@ -8,62 +8,96 @@ const chalk         = require('chalk');
 const install       = require('gulp-install');
 const webpack       = require('gulp-webpack');
 const symdest       = require('gulp-symdest');
+const ts            = require('gulp-typescript');
 const electron      = require('gulp-atom-electron');
 const vfs           = require('vinyl-fs');
 const gulpSequence  = require('gulp-sequence');
+const watch         = require('gulp-watch');
 const _             = require('highland');
 
 const { merge, omit }            = require('lodash');
 const { join, dirname, basename } = require('path');
 const {
+  WATCH,
   SRC_DIR,
   OUT_DIR,
   PACKAGES,
+  BASE_DIR,
   PACKAGE_NAMES,
   MEGA_PKG_FILE_PATH,
   OUT_NODE_MODULES_DIR,
 } = require('./config');
 
+/******************************
+ * Default tasks
+ ******************************/
+
+gulp.task('default', gulpSequence('prepare', 'build'));
 
 /******************************
  * Build tasks
  ******************************/
 
-gulp.task('build', gulpSequence(
-  'build-webpack',
-  'build-electron'
-));
+gulp.task('build', [
+  'build:typescript',
+  'build:webpack',
+  'build:electron'
+]);
 
-gulp.task('build-webpack', function(done) {
+gulp.task('build:typescript', function buildTS(done) {
+
+  const TS_SRC_FILES = join(SRC_DIR, '**', '*.ts');
+
+  function build(done) {
+    const tsProject = ts.createProject('tsconfig.json');
+
+    const tsResult = gulp.src(TS_SRC_FILES)
+    .pipe(tsProject());
+
+    _.pipeline(
+      tsResult.dts.pipe(gulp.dest(OUT_DIR)),
+      tsResult.js.pipe(gulp.dest(OUT_DIR))
+    ).done(done);
+  }
+
+  if (WATCH) {
+    gulp.watch(TS_SRC_FILES, () => build(noop));
+    build(noop);
+  } else {
+    build(done);
+  }
+});
+
+gulp.task('build:webpack', function(done) {
   const webPackages = PACKAGES.filter(sift({ browser: { $exists: true }}));
 
-  return _(webPackages.map((pkg) => {
+  return _.pipeline(...webPackages.map((pkg) => {
     const srcFilePath = join(SRC_DIR, pkg.name, pkg.entry);
-    const outFilePath = join(OUT_DIR, pkg.name, pkg.browser);
+    const outDir      = join(OUT_DIR, pkg.name, dirname(pkg.browser));
 
     return gulp
     .src(srcFilePath)
     .pipe(webpack(require('./webpack.config.js')))
-    .pipe(gulp.dest(outFilePath));
+    .pipe(gulp.dest(outDir));
   }));
 });
 
 // TODO
-gulp.task('build-electron');
+gulp.task('build:electron');
 
 /******************************
  * Prepare tasks
  ******************************/
 
 gulp.task('prepare', gulpSequence(
-  'copy-src-assets',
-  'create-mega-package',
-  'install-mega-package',
-  'symlink-packages'
+  'prepare:copy-assets',
+  'prepare:create-mega-package',
+  'prepare:install-mega-package',
+  'prepare:symlinks'
 ));
 
-gulp.task('copy-src-assets', () => {
-  return gulp.src(join(SRC_DIR, '**'))
+gulp.task('prepare:copy-assets', () => {
+  return gulp.src(join(SRC_DIR, '**', '!(*.ts)'))
   .pipe(gulp.dest(OUT_DIR));
 });
 
@@ -71,7 +105,7 @@ gulp.task('copy-src-assets', () => {
  * Installs all dependencies in *one* convenient location.
  */
 
-gulp.task('create-mega-package', () => {
+gulp.task('prepare:create-mega-package', () => {
 
   const { dependencies, devDependencies } = merge(...PACKAGES);
 
@@ -81,24 +115,20 @@ gulp.task('create-mega-package', () => {
   };
 
   const megaPackageContent  = JSON.stringify(megaPackage, null, 2);
-  console.log('writing %s: ', MEGA_PKG_FILE_PATH, megaPackageContent);
 
   fs.writeFileSync(MEGA_PKG_FILE_PATH, megaPackageContent, 'utf8');
 });
 
-gulp.task('install-mega-package', () => {
+gulp.task('prepare:install-mega-package', () => {
   return gulp
   .src(MEGA_PKG_FILE_PATH)
   .pipe(gulp.dest(OUT_DIR))
   .pipe(install())
 });
 
-gulp.task('symlink-packages', () => {
-
-  // TODO - possibly filter sources with package.json file in it
+gulp.task('prepare:symlinks', () => {
   return gulp
   .src(join(OUT_DIR, '*'))
-  // .pipe(filter(['!node_modules']))
   .pipe(vfs.symlink(OUT_NODE_MODULES_DIR))
 });
 
@@ -107,10 +137,10 @@ gulp.task('symlink-packages', () => {
  ******************************/
 
 gulp.task('clean', gulpSequence(
-  'clean-out'
+  'clean:out'
 ));
 
-gulp.task('clean-out', function() {
+gulp.task('clean:out', function() {
   fsa.removeSync(OUT_DIR);
 });
 
@@ -129,3 +159,5 @@ function readPackagePaths() {
 function readPackages() {
 
 }
+
+function noop() { }

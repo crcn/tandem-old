@@ -2,6 +2,7 @@ import { IContentEdit } from "./editor";
 import { IFileResolverOptions } from "./resolver";
 import { Action, IASTNode, IActor, definePublicAction, defineMasterAction, defineWorkerAction, IDisposable } from "@tandem/common";
 
+
 export class SandboxAction extends Action {
   static readonly EVALUATED = "sandboxEvaluated";
 }
