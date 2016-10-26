@@ -115,8 +115,8 @@ export class RemoteBrowserService extends BaseApplicationService2 {
 
                 // need to patch existing document for now to maintain UID references
                 new SyntheticObjectEditor(currentDocument).applyEditActions(...edit.actions);
-                console.log(edit.actions.length);
                 if (edit.actions.length) {
+                  console.log('sending %d changes', edit.actions.length);
                   writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.DOCUMENT_DIFF, edit)) });
                 }
               } else {
