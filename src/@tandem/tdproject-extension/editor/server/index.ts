@@ -1,5 +1,9 @@
+import { createTDProjectCoreDependencies } from "../../core";
+
 export const createTDProjectEditorServerDependencies = () => {
-  return [];
+  return [
+    ...createTDProjectCoreDependencies()
+  ];
 }
 
 export * from "../../core";

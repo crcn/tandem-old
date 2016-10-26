@@ -3,17 +3,19 @@ import "./index.scss";
 import * as React from "react";
 import EditorCommponent from "./editor";
 import { RegisteredComponent } from "@tandem/editor/browser/components/common";
+import { inject, BaseApplicationComponent } from "@tandem/common";
 
-import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { Store } from "@tandem/editor/browser/models";
+import { StoreDependency } from "@tandem/editor/browser/dependencies";
 
-export default class CenterComponent extends React.Component<{}, {}> {
+export default class CenterComponent extends BaseApplicationComponent<{}, {}> {
+
+  @inject(StoreDependency.ID)
+  private _store: Store;
+
   render() {
-    // const { workspace } = this.props.app;
-    const workspace: any = null;
-    if (1 + 1) return null;
-    // <EditorCommponent {...this.props} workspace={this.props.app.workspace} allElements={workspace && workspace.documentQuerier.queriedElements || []}  />
-    return (<div className="m-editor-center">
-
-    </div>);
+    const { workspace } = this._store;
+    if (!workspace) return null;
+    return <EditorCommponent workspace={workspace} allElements={workspace.documentQuerier.queriedElements || []}  />
   }
 }

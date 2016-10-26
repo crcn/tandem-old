@@ -6,6 +6,7 @@ import { IEditorBrowserConfig, concatEditorBrowserDependencies } from "./browser
 
 // extensions
 import { createSASSEditorWorkerDependencies } from "@tandem/sass-extension/editor/worker";
+import { createSyntheticBrowserWorkerDependencies } from "@tandem/synthetic-browser";
 import { createTDProjectEditorBrowserDependencies } from "@tandem/tdproject-extension/editor/browser";
 import { createHTMLEditorBrowserDependencies, createHTMLEditorWorkerDependencies } from "@tandem/html-extension/editor/browser";
 
@@ -18,10 +19,14 @@ const config: IEditorBrowserConfig = {
 };
 
 const deps = new Dependencies(
-  createHTMLEditorWorkerDependencies(),
+
+  // worker deps
+  // createHTMLEditorWorkerDependencies(),
+  // createSASSEditorWorkerDependencies(),
+  // createSyntheticBrowserWorkerDependencies(),
+
   createHTMLEditorBrowserDependencies(),
-  createSASSEditorWorkerDependencies(),
-  createTDProjectEditorBrowserDependencies()
+  createTDProjectEditorBrowserDependencies(),
 );
 
 const app = window["app"] = new ServiceApplication(

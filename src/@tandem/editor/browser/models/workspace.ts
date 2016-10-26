@@ -8,10 +8,12 @@ import {
   inject,
   IPoint,
   bindable,
+  bubble,
   watchProperty,
   Metadata,
   Observable,
   Transform,
+  PropertyChangeAction,
   IInjectable,
 } from "@tandem/common";
 
@@ -53,7 +55,9 @@ export class Workspace extends Observable implements IWorkspace {
    * @type {ISyntheticBrowser}
    */
 
-  @bindable() public browser: ISyntheticBrowser;
+  @bindable()
+  @bubble()
+  public browser: ISyntheticBrowser;
 
   /**
    * singleton document querier for the editor so that view components
@@ -85,10 +89,14 @@ export class Workspace extends Observable implements IWorkspace {
 
   get zoom() { return this.transform.scale; }
   set zoom(value: number) {
+    const oldZoom = this.transform.scale;
+
     this.transform.scale = Math.max(
       MIN_ZOOM,
       Math.min(MAX_ZOOM, value)
     );
+
+    this.notify(new PropertyChangeAction("zoom", this.zoom, oldZoom));
   }
 
   get currentTool(): IWorkspaceTool {

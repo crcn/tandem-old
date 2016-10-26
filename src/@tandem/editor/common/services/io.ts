@@ -8,6 +8,7 @@ import {
   LogAction,
   LoadAction,
   isPublicAction,
+  isWorkerAction,
   InitializeAction,
   PropertyChangeAction,
 } from "@tandem/common";
@@ -24,11 +25,9 @@ export class IOService<T> extends CoreApplicationService<T> {
 
     // add the remote actors to the application so that they
     // receive actions from other parts of the application
-
-
     this.bus.register(
       new AcceptBus(
-        ((action: Action) => isPublicAction(action)),
+        ((action: Action) => isPublicAction(action) || isWorkerAction(action)),
         ParallelBus.create(this._remoteActors),
         null
       )
@@ -58,8 +57,6 @@ export class IOService<T> extends CoreApplicationService<T> {
 
     this._remoteActors.push({
       execute(action) {
-        let data;
-        if (!isPublicAction(action)) return;
         return remoteBus.execute(action);
       }
     });

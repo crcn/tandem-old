@@ -2,15 +2,17 @@ import "./index.scss";
 
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
+import { BaseApplicationComponent } from "@tandem/common";
 import { SetZoomAction } from "@tandem/editor/browser/actions";
 import * as AutosizeInput from "react-input-autosize";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { RegisteredComponent, FocusComponent } from "@tandem/editor/browser/components/common";
 import { FooterComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 
-class ZoomLabelComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication }, { editZoom: number }> {
-  constructor() {
-    super();
+class ZoomLabelComponent extends BaseApplicationComponent<{ workspace: Workspace }, { editZoom: number }> {
+
+  $didInject() {
+    super.$didInject();
     this.state = { editZoom: null };
   }
 
@@ -29,7 +31,7 @@ class ZoomLabelComponent extends React.Component<{ workspace: Workspace, app: Fr
   onInputChange = (event: React.KeyboardEvent<any>) => {
     const value = Number((event.target as any).value || 0);
     this.setState({ editZoom: value });
-    this.props.app.bus.execute(new SetZoomAction(value ? value / 100 : value));
+    this.bus.execute(new SetZoomAction(value ? value / 100 : value));
   }
 
   onKeyDown = (event: React.KeyboardEvent<any>) => {
@@ -56,12 +58,12 @@ class ZoomLabelComponent extends React.Component<{ workspace: Workspace, app: Fr
   }
 }
 
-class FooterComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication }, any> {
+class FooterComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
     const { scale } = this.props.workspace.transform;
     return (<div className="m-preview-footer">
-      <ZoomLabelComponent {...this.props} />
-      <RegisteredComponent {...this.props} ns={FooterComponentFactoryDependency.getNamespace("**")} />
+      <ZoomLabelComponent workspace={this.props.workspace} />
+      <RegisteredComponent ns={FooterComponentFactoryDependency.getNamespace("**")} />
     </div>);
   }
 }

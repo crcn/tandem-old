@@ -1,13 +1,11 @@
 import "./index.scss";
 import * as React from "react";
-import { IPoint } from "@tandem/common/geom";
 import { Workspace } from "@tandem/editor/browser/models";
-import { BoundingRect } from "@tandem/common/geom";
+import { BoundingRect, IPoint, BaseApplicationComponent } from "@tandem/common";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import ToolsLayerComponent from "./tools";
 import { IsolateComponent }  from "@tandem/editor/browser/components/common";
 import PreviewLayerComponent from "./preview";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { UpdateAction, IActor } from "@tandem/common";
 import { Dependencies, PrivateBusDependency } from "@tandem/common/dependencies";
 import {
@@ -16,23 +14,19 @@ import {
   KeyboardAction,
 } from "@tandem/editor/browser/actions";
 
-export default class EditorStageLayersComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, dependencies: Dependencies, zoom: number }, any> {
+export default class EditorStageLayersComponent extends BaseApplicationComponent<{ workspace: Workspace, zoom: number }, any> {
 
   private _mousePosition: IPoint;
   private _toolsHidden: any;
   private _previousZoom: number;
 
-  constructor(props) {
-    super(props);
+  $didInject() {
+    super.$didInject();
     this.state = {};
   }
 
   onMouseDown = (event) => {
     this.bus.execute(new MouseAction(MouseAction.CANVAS_MOUSE_DOWN, event.nativeEvent || event));
-  }
-
-  get bus(): IActor {
-    return PrivateBusDependency.getInstance(this.props.dependencies);
   }
 
   translate(left, top) {
@@ -221,8 +215,8 @@ export default class EditorStageLayersComponent extends React.Component<{ app: F
         className="m-editor-stage-canvas"
         style={style}>
           <div style={innerStyle} className="noselect" data-previewroot>
-            <PreviewLayerComponent {...this.props} renderer={this.props.app.workspace.browser.renderer} />
-            {this._toolsHidden || !this.props.app.workspace.document ? undefined : <ToolsLayerComponent {...this.props} />}
+            <PreviewLayerComponent renderer={this.props.workspace.browser.renderer} />
+            {this._toolsHidden || !this.props.workspace.document ? undefined : <ToolsLayerComponent {...this.props} />}
           </div>
       </div>
     </IsolateComponent>);

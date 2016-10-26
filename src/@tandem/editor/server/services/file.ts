@@ -38,7 +38,6 @@ export class FileService extends CoreApplicationService<IEdtorServerConfig> {
 
   @document("reads a file content")
   [ReadFileAction.READ_FILE](action: ReadFileAction|WatchFileAction) {
-    console.log("reading file %s", action.filePath);
     return this._fileSystem.readFile(action.filePath);
   }
 

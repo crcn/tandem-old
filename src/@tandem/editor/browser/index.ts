@@ -5,7 +5,7 @@ import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
 import { concatCoreApplicationDependencies, ApplicationServiceDependency } from "@tandem/core";
 import {
-  SettingsDependency,
+  StoreDependency,
   ReactComponentFactoryDependency,
   StageToolComponentFactoryDependency,
   LayerLabelComponentFactoryDependency,
@@ -20,6 +20,8 @@ import {
   DragSelectStageToolComponent,
   SelectableStageToolComponent,
 } from "./components";
+
+// import { pointerToolDependency } from "./models";
 
 import {
   ServerService,
@@ -52,8 +54,9 @@ export function concatEditorBrowserDependencies(dependencies: Dependencies, conf
     // pane components
     new DocumentPaneComponentFactoryDependency("layers", LayersPaneComponent),
 
-    // models
-    new SettingsDependency(),
+    new StoreDependency(),
+
+    // pointerToolDependency
   );
 }
 

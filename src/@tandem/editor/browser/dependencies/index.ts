@@ -1,5 +1,6 @@
 import * as React from "react";
 import { IActor } from "@tandem/common/actors";
+import { Store } from "@tandem/editor/browser/models";
 import { IApplication } from "@tandem/common/application";
 import { IWorkspace, IWorkspaceTool } from "@tandem/editor/browser/models";
 import { ReactComponentFactoryDependency } from "./base";
@@ -144,6 +145,6 @@ export class FooterComponentFactoryDependency extends ReactComponentFactoryDepen
   }
 }
 
-export const SettingsDependency = createSingletonDependencyClass("settings", Metadata);
+export const StoreDependency = createSingletonDependencyClass("store", Store);
 
 export * from "./base";

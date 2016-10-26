@@ -23,12 +23,14 @@ import {
   IObservable,
   serializable,
   Dependencies,
+  watchProperty,
   ISourceLocation,
   BaseActiveRecord,
   MimeTypeDependency,
   ActiveRecordAction,
+  DisposableCollection,
   PropertyChangeAction,
-  ProtectedBusDependency,
+  PrivateBusDependency,
   DependenciesDependency,
   ActiveRecordCollection,
   MimeTypeAliasDependency,
@@ -135,6 +137,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   private _type: string;
   private _content: string;
   private _ast: any;
+
   private _fileCache: FileCache;
   private _watchingFileCacheItem: boolean;
   private _fileSystem: IFileSystem;
@@ -143,19 +146,18 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   private _bundler: Bundler;
   private _map: RawSourceMap;
   private _fileCacheItem: FileCacheItem;
-  private _fileCacheItemObserver: IActor;
+  private _fileCacheItemWatchers: DisposableCollection;
   private _updatedAt: number;
   private _dependencyObserver: IActor;
   private _emittingReady: boolean;
   private _readyLock: boolean;
 
   constructor(source: IBundleData, collectionName: string, private _dependencies: Dependencies) {
-    super(source, collectionName, ProtectedBusDependency.getInstance(_dependencies));
+    super(source, collectionName, PrivateBusDependency.getInstance(_dependencies));
     this._fileCache = FileCacheDependency.getInstance(_dependencies);
     this._fileSystem = FileSystemDependency.getInstance(_dependencies);
     this._fileResolver = FileResolverDependency.getInstance(_dependencies);
     this._bundler = BundlerDependency.getInstance(_dependencies);
-    this._fileCacheItemObserver = new WrapBus(this.onFileCacheItemAction.bind(this));
     this._dependencyObserver = new WrapBus(this.onDependencyAction.bind(this));
   }
 
@@ -314,7 +316,6 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   }
 
   async load() {
-
     console.log(`(${isMaster ? 'master' : 'worker'}) load bundle`, this.filePath);
 
     const transformResult: IBundleLoaderResult = await this.loadTransformedContent();
@@ -325,7 +326,11 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
 
     if (!this._watchingFileCacheItem) {
       this._watchingFileCacheItem = true;
-      (await this.getSourceFileCacheItem()).observe(this._fileCacheItemObserver);
+      const fileCache = await this.getSourceFileCacheItem();
+      this._fileCacheItemWatchers = new DisposableCollection(
+        watchProperty(fileCache, "mtime", this.onFileCacheItemChange.bind(this)),
+        watchProperty(fileCache, "url", this.onFileCacheItemChange.bind(this))
+      );
     }
 
     for (const dependencyBundle of this.dependencyBundles) {
@@ -413,10 +418,8 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     }
   }
 
-  private onFileCacheItemAction(action: Action) {
-    if (action.type === ActiveRecordAction.ACTIVE_RECORD_DESERIALIZED) {
-      this.load();
-    }
+  private onFileCacheItemChange() {
+    this.load();
   }
 }
 
@@ -433,7 +436,7 @@ export class Bundler extends Observable {
   constructor(@inject(DependenciesDependency.ID) private _dependencies: Dependencies) {
     super();
     this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IBundleData) => {
-      return new Bundle(source, this.collectionName, _dependencies);
+      return Injector.create(Bundle, [source, this.collectionName, _dependencies], _dependencies);
     });
     this.collection.sync();
   }

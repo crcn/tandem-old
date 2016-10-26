@@ -1,28 +1,27 @@
 import { Action } from "@tandem/common/actions";
 import { KeyBinding } from "./base";
-import { BaseCommand, inject, Metadata } from "@tandem/common";
+import { Store } from "@tandem/editor/browser/models";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { pointerToolDependency } from "@tandem/editor/browser/models/pointer-tool";
 import { GlobalKeyBindingDependency } from "@tandem/editor/browser/dependencies";
-import { WorkspaceToolFactoryDependency, SettingsDependency } from "@tandem/editor/browser/dependencies";
-import { SelectAllAction, SetToolAction, ZoomAction, DeleteSelectionAction } from "@tandem/editor/browser/actions";
+import { BaseCommand, inject, Metadata } from "@tandem/common";
+import { WorkspaceToolFactoryDependency, StoreDependency } from "@tandem/editor/browser/dependencies";
 import { SettingKeys, ZOOM_INCREMENT, POINTER_TOOL_KEY_CODE } from "@tandem/editor/browser/constants";
+import { SelectAllAction, SetToolAction, ZoomAction, DeleteSelectionAction } from "@tandem/editor/browser/actions";
 
 class ToggleLeftSidebarCommand extends BaseCommand {
-
-  @inject(SettingsDependency.ID)
-  private _settings: Metadata;
-
+  @inject(StoreDependency.ID)
+  private _store: Store;
   execute(action: Action) {
-    this._settings.toggle(SettingKeys.HIDE_LEFT_SIDEBAR);
+    this._store.settings.toggle(SettingKeys.HIDE_LEFT_SIDEBAR);
   }
 }
 
 class ToggleRightSidebarCommand extends BaseCommand {
-  @inject(SettingsDependency.ID)
-  private _settings: Metadata;
+  @inject(StoreDependency.ID)
+  private _store: Store;
   execute(action: Action) {
-    this._settings.toggle(SettingKeys.HIDE_RIGHT_SIDEBAR);
+    this._store.settings.toggle(SettingKeys.HIDE_RIGHT_SIDEBAR);
   }
 }
 

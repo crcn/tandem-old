@@ -1,6 +1,8 @@
 import {
   IActor,
+  inject,
   IDisposable,
+  PrivateBusDependency,
 } from "@tandem/common";
 
 import {
@@ -67,7 +69,7 @@ export abstract class BaseFileSystem implements IFileSystem {
 
 export class RemoteFileSystem extends BaseFileSystem {
 
-  constructor(readonly bus: IActor) {
+  constructor(@inject(PrivateBusDependency.ID) readonly bus: IActor) {
     super();
   }
 
@@ -87,6 +89,7 @@ export class RemoteFileSystem extends BaseFileSystem {
 export class LocalFileSystem extends BaseFileSystem {
 
   async readFile(filePath: string) {
+    console.log("read file", filePath);
     return new Promise((resolve, reject) => {
       fs.readFile(filePath, "utf8", (err, data) => {
         if (err) return reject(err);
@@ -102,6 +105,7 @@ export class LocalFileSystem extends BaseFileSystem {
   }
 
   watchFile2(filePath: string, onChange: () => any) {
+    console.log("watch file", filePath);
     let currentMtime = fs.lstatSync(filePath).mtime.getTime();
     const watcher = fs.watch(filePath, function() {
       const newMtime = fs.lstatSync(filePath).mtime.getTime();

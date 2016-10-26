@@ -6,7 +6,7 @@ const sift          = require('sift');
 const glob          = require('glob');
 const chalk         = require('chalk');
 const install       = require('gulp-install');
-const pegjs         = require('gulp-pegjs');
+const peg           = require('gulp-peg');
 const webpack       = require('gulp-webpack');
 const symdest       = require('gulp-symdest');
 const rename        = require('gulp-rename');
@@ -43,7 +43,7 @@ gulp.task('default', gulpSequence('prepare', 'build'));
  ******************************/
 
 gulp.task('build', [
-  'build:pegjs',
+  'build:peg',
   'build:typescript',
   'build:webpack',
   'build:electron'
@@ -58,10 +58,10 @@ gulp.task('build:typescript', function(done) {
   proc.on('exit', done);
 });
 
-gulp.task('build:pegjs', function() {
+gulp.task('build:peg', function() {
   return gulp
   .src(join(SRC_DIR, "**", "*.peg"))
-  .pipe((pegjs()))
+  .pipe((peg()))
   .pipe(rename((file) => {
     file.extname = ".peg.js";
   }))

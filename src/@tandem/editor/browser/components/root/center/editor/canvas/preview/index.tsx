@@ -5,7 +5,7 @@ import { RegisteredComponent } from "@tandem/editor/browser/components/common";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { ISyntheticDocumentRenderer } from "@tandem/synthetic-browser";
 
-export default class PreviewComponent extends React.Component<{ app: FrontEndApplication, renderer: ISyntheticDocumentRenderer }, any> {
+export default class PreviewComponent extends React.Component<{ renderer: ISyntheticDocumentRenderer }, any> {
 
   shouldComponentUpdate(props) {
     return this.props.renderer !== props.renderer;

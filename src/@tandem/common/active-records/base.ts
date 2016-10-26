@@ -155,8 +155,8 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
 
   async fetch(action: Action) {
     const chunk = await this.bus.execute(action).read();
-    if (!chunk.done) {
-      this.setPropertiesFromSource(chunk.value);
+    if (chunk.value) {
+      this.deserialize(chunk.value);
     }
     return this;
   }

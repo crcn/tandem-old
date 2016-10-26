@@ -1,8 +1,7 @@
-<link href="../src/@tandem/editor/vendor/bootstrap/css/bootstrap.css"></link>
-<link href="../src/@tandem/editor/vendor/ionicons/css/ionicons.css"></link>
+<link href="../src/@tandem/editor/browser/vendor/bootstrap/css/bootstrap.css"></link>
+<link href="../src/@tandem/editor/browser/vendor/ionicons/css/ionicons.css"></link>
 <link href="./preview.scss"></link>
 <link href="./global.scss" type="text/scss"></link>
-
 
 <!-- Docs -->
 <!--artboard title="Readme" src="../README.md" style="width:1024px;left:-1100px;top:1800px;height:768px;" inherit-css=""></artboard-->

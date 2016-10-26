@@ -2,6 +2,8 @@ import { IContentEdit } from "./editor";
 import { IFileResolverOptions } from "./resolver";
 import { Action, IASTNode, IActor, definePublicAction, defineMasterAction, defineWorkerAction, IDisposable } from "@tandem/common";
 
+// TODO - ability to trace where actions go in the application - possibly
+// with a @trace(), or @log() feature
 
 export class SandboxAction extends Action {
   static readonly EVALUATED = "sandboxEvaluated";

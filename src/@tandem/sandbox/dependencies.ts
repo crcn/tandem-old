@@ -125,7 +125,7 @@ export const BundlerDependency    = createSingletonDependencyClass("bundler", Bu
 export function concatSandboxDependencies(dependencies: Dependencies, fileSystem?: IFileSystem, fileResover?: IFileResolver) {
   return new Dependencies(
     dependencies,
-    new FileSystemDependency(fileSystem || Injector.create(ENV_IS_NODE ? RemoteFileSystem : LocalFileSystem, [], dependencies)),
+    new FileSystemDependency(fileSystem || Injector.create(ENV_IS_NODE ?  LocalFileSystem : RemoteFileSystem, [], dependencies)),
     new FileResolverDependency(fileSystem || Injector.create(ENV_IS_NODE ? LocalFileResolver : RemoteFileResolver, [], dependencies)),
     new FileCacheDependency(),
     new FileEditorDependency(),

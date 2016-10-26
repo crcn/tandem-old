@@ -3,7 +3,7 @@ import { Action } from "./base";
 import { IActor } from "@tandem/common/actors";
 import { ITreeNode } from "@tandem/common/tree";
 import { IDisposable } from "@tandem/common/object";
-import { serializable } from "@tandem/common/serialize";
+import { serializable, ISerializer } from "@tandem/common/serialize";
 export { Action };
 
 export namespace ActionAccess {
@@ -16,15 +16,15 @@ export function getActionAccess(action: Action) {
   return Reflect.getMetadata("action:access", action.constructor);
 }
 
-function defineActionAccess(value: string) {
+function defineActionAccess(value: string, serializer?: ISerializer<any, any>) {
   return function(target) {
-    serializable()(target);
+    serializable(serializer)(target);
     Reflect.defineMetadata("action:access", value, target);
   }
 }
 
-export function definePublicAction() {
-  return defineActionAccess(ActionAccess.PUBLIC);
+export function definePublicAction(serializer?: ISerializer<any, any>) {
+  return defineActionAccess(ActionAccess.PUBLIC, serializer);
 }
 
 export function defineProtectedAction() {

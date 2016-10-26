@@ -1,9 +1,11 @@
 import { TDArtboardStageToolComponent } from "./components";
 import { ReactComponentFactoryDependency } from "@tandem/editor/browser";
 
+import { createTDProjectCoreDependencies } from "../../core";
+
 export function createTDProjectEditorBrowserDependencies() {
   return [
-    // stage tool components
+    ...createTDProjectCoreDependencies(),
     new ReactComponentFactoryDependency("components/tools/pointer/tdprojectFrame", TDArtboardStageToolComponent),
   ]
 }

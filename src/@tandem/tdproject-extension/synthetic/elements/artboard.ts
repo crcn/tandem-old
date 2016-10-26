@@ -1,4 +1,3 @@
-import "./artboard.scss";
 
 import { WrapBus } from "mesh";
 import { BundlerDependency } from "@tandem/sandbox";

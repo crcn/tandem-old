@@ -20,7 +20,7 @@ import {
   DSFindAllAction,
   BaseActiveRecord,
   SingletonThenable,
-  ProtectedBusDependency,
+  PrivateBusDependency,
   DependenciesDependency,
   ActiveRecordCollection,
 } from "@tandem/common";
@@ -102,6 +102,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   setFileUrl(url: string) {
+    this._cache = undefined;
     this.url = `file://${url}`;
     return this;
   }
@@ -124,12 +125,12 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   setPropertiesFromSource({ filePath, updatedAt, url, metadata, mtime }: IFileCacheItemData) {
-    this._cache   = undefined;
-    this.filePath = filePath;
-    this.url      = url;
-    this.mtime    = mtime;
+    this._cache    = undefined;
+    this.filePath  = filePath;
+    this.url       = url;
+    this.mtime     = mtime;
     this.updatedAt = updatedAt;
-    this.metadata = new Metadata(metadata);
+    this.metadata  = new Metadata(metadata);
   }
 }
 
@@ -163,7 +164,6 @@ export class FileCacheSynchronizer {
   }
 
   private async onLocalFindChange(filePath: string) {
-    console.log("file cache", filePath);
     const entity = await this._cache.item(filePath);
     entity.mtime = fs.lstatSync(filePath).mtime.getTime();
 
@@ -182,7 +182,7 @@ export class FileCache extends Observable {
 
   constructor(@inject(DependenciesDependency.ID) private _dependencies: Dependencies) {
     super();
-    this._bus        = ProtectedBusDependency.getInstance(_dependencies);
+    this._bus        = PrivateBusDependency.getInstance(_dependencies);
     this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IFileCacheItemData) => {
       return new FileCacheItem(source, this.collectionName, this._fileSystem, this._bus);
     });
