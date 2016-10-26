@@ -2,12 +2,12 @@ import  * as store from "store";
 import { Store } from "@tandem/editor/browser/models";
 import { WrapBus } from "mesh";
 import { StoreDependency } from "@tandem/editor/browser/dependencies";
-import { Metadata, inject } from "@tandem/common";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
-import { SettingChangeAction, LoadAction } from "@tandem/common/actions";
+import { SettingChangeAction, LoadAction, Metadata, inject, loggable, Logger } from "@tandem/common";
 
+@loggable()
 export class SettingsService extends CoreApplicationService<IEditorBrowserConfig> {
 
   @inject(StoreDependency.ID)
@@ -15,7 +15,7 @@ export class SettingsService extends CoreApplicationService<IEditorBrowserConfig
 
   [LoadAction.LOAD](action: LoadAction) {
 
-    console.log("loading settings");
+    this.logger.verbose("loading settings");
 
     this._store.settings.setProperties(store.get("settings"));
 

@@ -5,7 +5,8 @@ import { serialize, deserialize } from "@tandem/common/serialize";
 import { ParallelBus, AcceptBus } from "mesh";
 import {
   Action,
-  LogAction,
+  Logger,
+  loggable,
   LoadAction,
   isPublicAction,
   isWorkerAction,
@@ -14,7 +15,10 @@ import {
 } from "@tandem/common";
 import { CoreApplicationService } from "@tandem/core";
 
+@loggable()
 export class IOService<T> extends CoreApplicationService<T> {
+
+  readonly logger: Logger;
 
   public _remoteActors: Array<any>;
 
@@ -45,7 +49,7 @@ export class IOService<T> extends CoreApplicationService<T> {
    */
 
   addConnection = async (connection) => {
-    console.info("client connected");
+    this.logger.verbose("client connected");
 
     // setup the bus which wil facilitate in all
     // transactions between the remote service
@@ -63,7 +67,7 @@ export class IOService<T> extends CoreApplicationService<T> {
 
 
     connection.once("disconnect", () => {
-      console.info("client disconnected");
+      this.logger.verbose("client disconnected");
 
       this._remoteActors.splice(
         this._remoteActors.indexOf(remoteBus),

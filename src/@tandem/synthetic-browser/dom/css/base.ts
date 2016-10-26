@@ -1,5 +1,7 @@
 import { ISerializer, serialize, deserialize, ITreeWalker } from "@tandem/common";
 import {
+  IEditable,
+  EditAction,
   BaseContentEdit,
   ISyntheticObject,
   ISyntheticSourceInfo,
@@ -8,7 +10,7 @@ import {
 } from "@tandem/sandbox";
 
 
-export abstract class SyntheticCSSObject implements ISyntheticObject {
+export abstract class SyntheticCSSObject implements ISyntheticObject, IEditable {
 
   public $source: ISyntheticSourceInfo;
   public $uid: any;
@@ -25,15 +27,20 @@ export abstract class SyntheticCSSObject implements ISyntheticObject {
     return this.$source;
   }
 
-  abstract clone(deep?: boolean);
+  clone(deep?: boolean) {
+    if (deep) return deserialize(serialize(this), null);
+    return this.$linkClone(this.cloneShallow());
+  }
 
-  protected linkClone(clone: SyntheticCSSObject) {
+  public $linkClone(clone: SyntheticCSSObject) {
     clone.$source = this.$source;
     clone.$uid    = this.$uid;
     return clone;
   }
 
+  protected abstract cloneShallow();
   abstract createEdit(): BaseContentEdit<SyntheticCSSObject>;
+  abstract applyEditAction(action: EditAction);
   abstract visitWalker(walker: ITreeWalker);
 }
 

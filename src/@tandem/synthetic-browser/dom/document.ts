@@ -5,6 +5,7 @@ import {
   diffArray,
   serialize,
   deserialize,
+  Dependencies,
   ISerializer,
   ITreeWalker,
   serializable,
@@ -28,7 +29,7 @@ import {
   SyntheticDOMNodeSerializer,
 } from "./markup";
 
-import { EditAction } from "@tandem/sandbox";
+import { EditAction, RemoveEditAction, RemoveChildEditAction, InsertChildEditAction, MoveChildEditAction } from "@tandem/sandbox";
 import { SyntheticWindow } from "./window";
 import { ISyntheticBrowser } from "../browser";
 import { SyntheticLocation } from "../location";
@@ -64,27 +65,6 @@ class SyntheticDocumentSerializer implements ISerializer<SyntheticDocument, ISer
   }
 }
 
-export class AddDocumentStyleSheetEditAction extends EditAction {
-  static readonly ADD_DOCUMENT_STYLE_SHEET_EDIT = "addDocumentStyleSheetEdit";
-  constructor(target: SyntheticDocument, readonly styleSheet: SyntheticCSSStyleSheet) {
-    super(AddDocumentStyleSheetEditAction.ADD_DOCUMENT_STYLE_SHEET_EDIT, target);
-  }
-}
-
-export class RemoveDocumentStyleSheetAtEditAction extends EditAction {
-  static readonly REMOVE_DOCUMENT_STYLE_SHEET_AT_EDIT = "removeDocumentStyleSheetAtEdit";
-  constructor(target: SyntheticDocument, readonly index: number) {
-    super(RemoveDocumentStyleSheetAtEditAction.REMOVE_DOCUMENT_STYLE_SHEET_AT_EDIT, target);
-  }
-}
-
-export class MoveDocumentStyleSheetAtEditAction extends EditAction {
-  static readonly MOVE_DOCUMENT_STYLE_SHEET_AT_EDIT = "moveDocumentStyleSheetAtEdit";;
-  constructor(target: SyntheticDocument, readonly oldIndex: number, readonly newIndex: number) {
-    super(MoveDocumentStyleSheetAtEditAction.MOVE_DOCUMENT_STYLE_SHEET_AT_EDIT, target);
-  }
-}
-
 // TODO - this shouldn't be here
 @serializable({
   serialize({ actions }: SyntheticDocumentEdit) {
@@ -100,16 +80,20 @@ export class MoveDocumentStyleSheetAtEditAction extends EditAction {
 })
 export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDocument> {
 
+  static readonly ADD_DOCUMENT_STYLE_SHEET_EDIT    = "addDocumentStyleSheetEdit";
+  static readonly REMOVE_DOCUMENT_STYLE_SHEET_EDIT = "removeDocumentStyleSheetEdit";
+  static readonly MOVE_DOCUMENT_STYLE_SHEET_EDIT   = "moveDocumentStyleSheetEdit";;
+
   addStyleSheet(stylesheet: SyntheticCSSStyleSheet) {
-    return this.addAction(new AddDocumentStyleSheetEditAction(this.target, stylesheet));
+    return this.addAction(new InsertChildEditAction(SyntheticDocumentEdit.ADD_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet));
   }
 
-  removeStyleSheetAt(index: number) {
-    return this.addAction(new RemoveDocumentStyleSheetAtEditAction(this.target, index));
+  removeStyleSheet(stylesheet: SyntheticCSSStyleSheet) {
+    return this.addAction(new RemoveChildEditAction(SyntheticDocumentEdit.REMOVE_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet));
   }
 
-  moveStyleSheetAt(oldIndex: number, newIndex: number) {
-    return this.addAction(new MoveDocumentStyleSheetAtEditAction(this.target, oldIndex, newIndex));
+  moveStyleSheet(stylesheet: SyntheticCSSStyleSheet, newIndex: number) {
+    return this.addAction(new MoveChildEditAction(SyntheticDocumentEdit.MOVE_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet, newIndex));
   }
 
   protected addDiff(newDocument: SyntheticDocument) {
@@ -127,17 +111,15 @@ export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDo
         this.addStyleSheet(value);
       },
       visitRemove: ({ index }) => {
-        this.removeStyleSheetAt(index);
+        this.removeStyleSheet(this.target.styleSheets[index]);
       },
       visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, newIndex }) => {
         if (patchedOldIndex !== newIndex) {
-          this.moveStyleSheetAt(patchedOldIndex, newIndex);
+          this.moveStyleSheet(this.target.styleSheets[originalOldIndex], newIndex);
         }
         this.addChildEdit(this.target.styleSheets[originalOldIndex].createEdit().fromDiff(newValue));
       }
     });
-
-
 
     return super.addDiff(newDocument);
   }
@@ -218,6 +200,20 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     return this.registerElementNS(this.defaultNamespaceURI, tagName, options);
   }
 
+  applyEditAction(action: EditAction) {
+    super.applyEditAction(action);
+    switch(action.type) {
+      case SyntheticDocumentEdit.REMOVE_DOCUMENT_STYLE_SHEET_EDIT:
+        const { child } = <RemoveChildEditAction>action;
+        const styleSheet = <SyntheticCSSStyleSheet>this.getChildSyntheticByUID(child.uid);
+        if (!styleSheet) {
+          throw new Error(`Edit action style sheet does not exist.`);
+        }
+        this.styleSheets.splice(this.styleSheets.indexOf(styleSheet), 1);
+        break;
+    }
+  }
+
   // non-standard APIs to enable custom elements according to the doc type -- necessary for
   // cases where we're mixing different template engines such as angular, vuejs, etc.
   registerElementNS(ns: string, tagName: string, elementClass: syntheticElementClassType);
@@ -252,24 +248,13 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     this.own(child);
   }
 
-  clone(deep?: boolean) {
-    const clone = new SyntheticDocument(this.defaultNamespaceURI);
-    if (deep) {
-      for (let i = 0, n = this.styleSheets.length; i < n; i++) {
-        clone.styleSheets.push(this.styleSheets[i].clone(deep));
-      }
-
-      for (let i = 0, n = this.childNodes.length; i < n; i++) {
-        clone.appendChild(this.childNodes[i].clone(deep));
-      }
-    }
-
-    return this.linkClone(clone);
+  cloneShallow() {
+    return new SyntheticDocument(this.defaultNamespaceURI);
   }
 
-  protected linkClone(clone: SyntheticDocument) {
+  public $linkClone(clone: SyntheticDocument) {
     clone.$window = this.defaultView;
-    return super.linkClone(clone);
+    return super.$linkClone(clone);
   }
 
   private own<T extends SyntheticDOMNode>(node: T) {

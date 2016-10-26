@@ -1,7 +1,8 @@
 import * as readline from "readline";
-import { IApplication } from "@tandem/common/application";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
+import { InitializeAction, Action } from "@tandem/common";
+import { StdinHandlerDependency } from "@tandem/editor/server/dependencies";
 
 /**
  * console input command handler
@@ -9,22 +10,36 @@ import { CoreApplicationService } from "@tandem/core";
 
 export class StdinService extends CoreApplicationService<IEdtorServerConfig> {
 
-  private _rl:readline.ReadLine;
+  private _rl: readline.ReadLine;
 
-  initialize() {
+  [InitializeAction.INITIALIZE]() {
     this._rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout
     });
-    this._readInput();
+    this.readInput();
   }
 
-  _readInput = () => {
-    this._rl.question("> ", this._onInput);
+  private readInput = () => {
+    this._rl.question("> ", this.onInput);
   }
 
-  _onInput = async (text) => {
+  private onInput = async (text) => {
+    const inputHandler = StdinHandlerDependency.findByInput(text, this.dependencies);
 
+    try {
+      if (inputHandler) {
+        await inputHandler.handle(text);
+      } else {
+      }
+    } catch(e) {
+      console.error(e.message);
+    }
+
+    this.readInput();
+  }
+
+  private async handleDefault(text) {
     var action;
 
     try {
@@ -33,17 +48,12 @@ export class StdinService extends CoreApplicationService<IEdtorServerConfig> {
       action = { type: text };
     }
 
-    try {
-      var response = this.bus.execute(action);
-      var value;
-      var done;
-      while ({ value, done } = await response.read()) {
-        if (done) break;
-        console.info(value);
-      }
-    } catch (e) {
-      console.error(e.message);
+    var response = this.bus.execute(action);
+    var value;
+    var done;
+    while ({ value, done } = await response.read()) {
+      if (done) break;
+      console.info(value);
     }
-    this._readInput();
   }
 }

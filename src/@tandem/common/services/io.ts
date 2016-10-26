@@ -1,3 +1,5 @@
+// DEPRECATEd
+
 import * as sift from "sift";
 import { Logger } from "@tandem/common/logger";
 import { Service } from "@tandem/common/services";
@@ -8,7 +10,7 @@ import { serialize, deserialize } from "@tandem/common/serialize";
 import { ParallelBus, AcceptBus } from "mesh";
 import { BaseApplicationService } from "@tandem/common/services";
 import { Dependencies, Injector } from "@tandem/common/dependencies";
-import { LoadAction, InitializeAction, PropertyChangeAction, LogAction, isPublicAction } from "@tandem/common/actions";
+import { LoadAction, InitializeAction, PropertyChangeAction, isPublicAction } from "@tandem/common/actions";
 
 @loggable()
 export class IOService<T extends IApplication> extends BaseApplicationService<T> {
@@ -21,15 +23,15 @@ export class IOService<T extends IApplication> extends BaseApplicationService<T>
     // remote actors which take actions from the server
     this._remoteActors = [];
 
-    // add the remote actors to the application so that they
-    // receive actions from other parts of the application
-    this.app.bus.register(
-      new AcceptBus(
-        sift({ remote: { $ne: true }, type: {$nin: [LoadAction.LOAD, InitializeAction.INITIALIZE, LogAction.LOG, PropertyChangeAction.PROPERTY_CHANGE] }}),
-        ParallelBus.create(this._remoteActors),
-        null
-      )
-    );
+    // // add the remote actors to the application so that they
+    // // receive actions from other parts of the application
+    // this.app.bus.register(
+    //   new AcceptBus(
+    //     sift({ remote: { $ne: true }, type: {$nin: [LoadAction.LOAD, InitializeAction.INITIALIZE, LogAction.LOG, PropertyChangeAction.PROPERTY_CHANGE] }}),
+    //     ParallelBus.create(this._remoteActors),
+    //     null
+    //   )
+    // );
   }
 
   /**

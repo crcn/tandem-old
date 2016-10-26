@@ -1,6 +1,8 @@
-export const VERBOSE = 1       << 1;
-export const INFO    = VERBOSE << 1;
-export const WARN    = INFO    << 1;
-export const ERROR   = WARN    << 1;
-
-export const ALL     = VERBOSE | INFO | WARN | ERROR;
+export enum LogLevel {
+   VERBOSE = 1       << 1,
+   INFO    = VERBOSE << 1,
+   WARN    = INFO    << 1,
+   ERROR   = WARN    << 1,
+   LOG     = ERROR   << 1,
+   ALL     = VERBOSE | INFO | WARN | ERROR | LOG,
+}

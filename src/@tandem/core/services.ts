@@ -2,6 +2,8 @@ import {
   inject,
   IActor,
   Action,
+  loggable,
+  Logger,
   IBrokerBus,
   IInjectable,
   Dependencies,
@@ -18,6 +20,8 @@ import { ApplicationConfigurationDependency } from "./dependencies";
 
 export abstract class BaseApplicationService2 implements IActor, IInjectable {
 
+  protected readonly logger: Logger;
+
   @inject(PrivateBusDependency.ID)
   protected bus: IBrokerBus;
 
@@ -26,7 +30,12 @@ export abstract class BaseApplicationService2 implements IActor, IInjectable {
 
   execute(action: Action) {
     const method = this[action.type];
-    if (method) return method.call(this, action);
+    if (method) {
+      if (this.logger) {
+        this.logger.verbose("%s()", action.type);
+      }
+      return method.call(this, action);
+    }
   }
 
   $didInject() {

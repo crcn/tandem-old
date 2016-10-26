@@ -26,8 +26,8 @@ export class SyntheticDOMText extends SyntheticDOMValueNode {
     return visitor.visitText(this);
   }
 
-  clone() {
-    return this.linkClone(new SyntheticDOMText(this.nodeValue));
+  cloneShallow() {
+    return new SyntheticDOMText(this.nodeValue);
   }
 
   visitWalker(walker: ITreeWalker) { }

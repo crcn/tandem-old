@@ -1,6 +1,8 @@
 import {
   IActor,
   inject,
+  loggable,
+  Logger,
   IDisposable,
   PrivateBusDependency,
 } from "@tandem/common";
@@ -23,7 +25,11 @@ export interface IFileSystem {
   watchFile(filePath: string, onChange: () => any): IFileWatcher;
 }
 
+@loggable()
 export abstract class BaseFileSystem implements IFileSystem {
+
+  protected readonly logger: Logger;
+
   private _fileWatchers: any;
 
   constructor() {
@@ -89,7 +95,7 @@ export class RemoteFileSystem extends BaseFileSystem {
 export class LocalFileSystem extends BaseFileSystem {
 
   async readFile(filePath: string) {
-    console.log("read file", filePath);
+    this.logger.verbose("read %s", filePath);
     return new Promise((resolve, reject) => {
       fs.readFile(filePath, "utf8", (err, data) => {
         if (err) return reject(err);
@@ -105,7 +111,7 @@ export class LocalFileSystem extends BaseFileSystem {
   }
 
   watchFile2(filePath: string, onChange: () => any) {
-    console.log("watch file", filePath);
+    this.logger.verbose("watch %s", filePath);
     let currentMtime = fs.lstatSync(filePath).mtime.getTime();
     const watcher = fs.watch(filePath, function() {
       const newMtime = fs.lstatSync(filePath).mtime.getTime();

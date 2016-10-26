@@ -55,7 +55,7 @@ export class Workspace extends Observable implements IWorkspace {
    * @type {ISyntheticBrowser}
    */
 
-  @bindable()
+  @bindable(true)
   @bubble()
   public browser: ISyntheticBrowser;
 
@@ -96,7 +96,7 @@ export class Workspace extends Observable implements IWorkspace {
       Math.min(MAX_ZOOM, value)
     );
 
-    this.notify(new PropertyChangeAction("zoom", this.zoom, oldZoom));
+    this.notify(new PropertyChangeAction("zoom", this.zoom, oldZoom, true));
   }
 
   get currentTool(): IWorkspaceTool {

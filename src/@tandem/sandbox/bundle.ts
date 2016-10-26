@@ -14,17 +14,21 @@ import {
   inject,
   IActor,
   Action,
+  Logger,
   Injector,
+  loggable,
   isMaster,
   BubbleBus,
   Dependency,
   Observable,
+  IInjectable,
   ISerializer,
   IObservable,
   serializable,
   Dependencies,
   watchProperty,
   ISourceLocation,
+  SingletonThenable,
   BaseActiveRecord,
   MimeTypeDependency,
   ActiveRecordAction,
@@ -127,7 +131,10 @@ class BundleSerializer implements ISerializer<Bundle, string> {
 }
 
 @serializable(new BundleSerializer())
-export class Bundle extends BaseActiveRecord<IBundleData> {
+@loggable()
+export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable {
+
+  protected readonly logger: Logger;
 
   readonly idProperty = "filePath";
 
@@ -159,6 +166,10 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     this._fileResolver = FileResolverDependency.getInstance(_dependencies);
     this._bundler = BundlerDependency.getInstance(_dependencies);
     this._dependencyObserver = new WrapBus(this.onDependencyAction.bind(this));
+  }
+
+  $didInject() {
+    this.logger.generatePrefix = () => `${this.filePath} `;
   }
 
   /**
@@ -298,7 +309,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   getAbsoluteDependencyPath(relativePath: string) {
     const absolutePath = this._absoluteDependencyPaths[relativePath];
     if (absolutePath == null) {
-      console.error(`Absolute path on bundle entry does not exist for ${relativePath}.`);
+      this.logger.error(`Absolute path on bundle entry does not exist for ${relativePath}.`);
     }
     return absolutePath;
   }
@@ -322,7 +333,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   }
 
   async load() {
-    console.log(`(${isMaster ? 'master' : 'worker'}) load bundle`, this.filePath);
+    this.logger.verbose("loading");
 
     const transformResult: IBundleLoaderResult = await this.loadTransformedContent();
     this._content = transformResult.content;
@@ -346,17 +357,22 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     this._absoluteDependencyPaths = {};
     const dependencyPaths = transformResult.dependencyPaths;
 
-    await Promise.all(dependencyPaths.map(async (dependencyPath) => {
+    await Promise.all(dependencyPaths.map(async (dependencyPath, i) => {
       const resolvedPath = await this.resolveDependencyPath(dependencyPath);
       if (!resolvedPath) return;
       this._absoluteDependencyPaths[dependencyPath] = resolvedPath;
+      this.logger.verbose("loading dependency %s", resolvedPath);
       const dependencyBundle = await this._bundler.bundle(resolvedPath);
+      this.logger.verbose("loaded dependency %s", resolvedPath);
       dependencyBundle.observe(this._dependencyObserver);
     }));
+
+    this.logger.verbose("saving");
 
     await this.save();
 
     this._ready = true;
+    this.logger.info(`done`);
     this.notifyBundleReady();
 
     return this;
@@ -394,10 +410,15 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
   private notifyBundleReady() {
 
     // fix case where a nested dependency BUNDLE_READY action is
-    // emitted by dependent bundles.
-    if (this._readyLock || !this._ready) return;
+    // emitted by dependent bundles (this happens a lot)
+    if (this._readyLock || !this._ready) {
+      return;
+    }
     this._readyLock = true;
     setTimeout(() => this._readyLock = false, 0);
+
+    // ensure that we get passed the ready lock
+    this.logger.verbose("dispatch BUNDLE_READY");
     this.notify(new BundleAction(BundleAction.BUNDLE_READY));
   }
 
@@ -417,7 +438,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
       try {
         return await this._fileResolver.resolve(dependencyPath, cwd);
       } catch(e) {
-        console.error(`Cannot find dependency file ${dependencyPath} for ${this.filePath}.`);
+        this.logger.error(`Cannot find dependency file ${dependencyPath}.`);
       }
     }
   }
@@ -432,13 +453,18 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
  * into one bundle file.
  */
 
+@loggable()
 export class Bundler extends Observable {
+
+  protected readonly logger: Logger;
 
   readonly collection: ActiveRecordCollection<Bundle, IBundleData>;
   private _editor: FileEditor;
+  private _bundleRequests: any;
 
   constructor(@inject(DependenciesDependency.ID) private _dependencies: Dependencies) {
     super();
+    this._bundleRequests = {};
     this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IBundleData) => {
       return Injector.create(Bundle, [source, this.collectionName, _dependencies], _dependencies);
     });
@@ -474,11 +500,16 @@ export class Bundler extends Observable {
    */
 
   async bundle(filePath: string): Promise<Bundle> {
-    const bundle = await this.findByFilePath(filePath);
-    if (bundle) return bundle.whenReady();
+    return this._bundleRequests[filePath] || (this._bundleRequests[filePath] = new SingletonThenable(async () => {
+      const bundle = await this.findByFilePath(filePath);
 
-    // at this point, the bundle does not exist in memory, or even
-    // in a remote DS, so create & load it.
-    return (await this.collection.create({ filePath }).insert()).load();
+      if (bundle) return bundle.whenReady();
+
+      this.logger.verbose("bundling %s", filePath);
+
+      // at this point, the bundle does not exist in memory, or even
+      // in a remote DS, so create & load it.
+      return (await this.collection.create({ filePath }).insert()).load();
+    }));
   }
 }

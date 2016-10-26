@@ -8,7 +8,6 @@ import { SyntheticHTMLElement, SyntheticDOMElement } from "@tandem/synthetic-bro
 
 class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLElement, workspace: Workspace }, any> {
 
-
   render() {
     const { element, workspace } = this.props;
     const rect = element.getBoundingClientRect();

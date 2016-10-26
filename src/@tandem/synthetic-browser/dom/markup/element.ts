@@ -12,6 +12,7 @@ import { SyntheticCSSStyleDeclaration } from "../css";
 import { SyntheticDOMNode, SyntheticDOMNodeSerializer } from "./node";
 import { SyntheticDOMContainer, SyntheticDOMContainerEdit } from "./container";
 import {
+  IActor,
   Action,
   BubbleBus,
   serialize,
@@ -32,6 +33,7 @@ import {
   EditAction,
   BaseContentEdit,
   SetValueEditActon,
+  InsertChildEditAction,
   SetKeyValueEditAction,
 } from "@tandem/sandbox";
 
@@ -168,8 +170,8 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
     return this.setAttribute(name, undefined);
   }
 
-  attachShadowRoot() {
-    return this.addAction(new EditAction(SyntheticDOMElementEdit.ATTACH_SHADOW_ROOT_EDIT, this.target));
+  attachShadowRoot(shadowRoot: SyntheticDOMContainer) {
+    this.addAction(new InsertChildEditAction(SyntheticDOMElementEdit.ATTACH_SHADOW_ROOT_EDIT, this.target, shadowRoot, Infinity));
   }
 
   /**
@@ -199,12 +201,11 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
     });
 
     if (newElement.shadowRoot) {
-
       if (!this.target.shadowRoot) {
-        this.attachShadowRoot();
+        this.attachShadowRoot(newElement.shadowRoot);
+      } else {
+        this.addChildEdit(this.target.shadowRoot.createEdit().fromDiff(newElement.shadowRoot));
       }
-
-      this.addChildEdit(this.target.shadowRoot.createEdit().fromDiff(newElement.shadowRoot));
     }
 
     return super.addDiff(newElement);
@@ -222,9 +223,11 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   private _shadowRoot: SyntheticDocumentFragment;
   private _createdCallbackCalled: boolean;
   private _matchesCache: any;
+  private _shadowRootObserver: IActor;
 
   constructor(readonly namespaceURI: string, readonly tagName: string) {
     super(tagName);
+    this._shadowRootObserver = new BubbleBus(this);
     this.attributes = new SyntheticDOMAttributes();
     this.attributes.observe(new WrapBus(this.onAttributesAction.bind(this)));
 
@@ -243,10 +246,15 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
       case SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT:
         const { name, newName, newValue } = <SetKeyValueEditAction>action;
         this.setAttribute(newName || name, newValue);
-        if (newName) this.setAttribute
+        if (newName) this.removeAttribute(name);
       break;
       case SyntheticDOMElementEdit.ATTACH_SHADOW_ROOT_EDIT:
-        this.attachShadow({ mode: "open" });
+        const { child } = <InsertChildEditAction>action;
+        const shadowRoot = <SyntheticDOMContainer>child;
+
+        // need to clone in case the child is an instance in this process -- hasn't
+        // been sent over a network.
+        this.$setShadowRoot(shadowRoot.cloneNode(true));
       break;
     }
   }
@@ -270,7 +278,15 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   attachShadow({ mode }: { mode: "open"|"close" }) {
     if (this._shadowRoot) return this._shadowRoot;
-    this._shadowRoot = new SyntheticDocumentFragment();
+    return this.$setShadowRoot(new SyntheticDocumentFragment());
+  }
+
+  $setShadowRoot(shadowRoot: SyntheticDocumentFragment) {
+    if (this._shadowRoot) {
+      this._shadowRoot.unobserve(this._shadowRootObserver);
+    }
+
+    this._shadowRoot = shadowRoot;
     this._shadowRoot.$setOwnerDocument(this.ownerDocument);
     this._shadowRoot.observe(new BubbleBus(this));
     return this._shadowRoot;
@@ -278,15 +294,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   get shadowRoot(): SyntheticDocumentFragment {
     return this._shadowRoot;
-  }
-
-  renderAttributes() {
-    const attribs = {};
-    for (let i = 0, n = this.attributes.length; i < n; i++) {
-      const attribute = this.attributes[i];
-      attribs[attribute.name] = attribute.value;
-    }
-    return attribs;
   }
 
   matches(selector) {
@@ -371,25 +378,12 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     // override me
   }
 
-  protected addPropertiesToClone(clone: SyntheticDOMElement, deep: boolean) {
+  cloneShallow() {
+    const constructor = this.constructor as syntheticElementClassType;
+    const clone = new constructor(this.namespaceURI, this.tagName);
     for (const attribute of this.attributes) {
       clone.setAttribute(attribute.name, attribute.value);
     }
-
-    if (deep === true) {
-      for (const child of this.childNodes) {
-        clone.appendChild(child.clone(deep));
-      }
-    }
-  }
-
-  clone(deep?: boolean) {
-    const constructor = this.constructor as syntheticElementClassType;
-    const clone = new constructor(this.namespaceURI, this.tagName);
-    this.linkClone(clone);
-    this.addPropertiesToClone(clone, deep);
-    clone.$createdCallback();
-
     return clone;
   }
 }

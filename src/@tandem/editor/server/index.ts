@@ -12,8 +12,13 @@ import {
   ResolverService,
 } from "./services";
 
+
+import { createCommonEditorDependencies } from "../common";
+
+
 export function concatEditorServerDependencies(dependencies: Dependencies, config: IEdtorServerConfig) {
   return new Dependencies(
+    createCommonEditorDependencies(),
     concatCoreApplicationDependencies(dependencies, config),
 
     // services

@@ -12,7 +12,6 @@ import { createTDProjectEditorServerDependencies } from "@tandem/tdproject-exten
 // import { createTDProjectEditorBrowserDependencies } from "@tandem/tdproject-extension/editor/browser";
 import { createHTMLEditorServerDependencies, createHTMLEditorWorkerDependencies } from "@tandem/html-extension/editor/server";
 
-
 const config: IEdtorServerConfig = {
   argv: argv,
   cwd: process.cwd(),

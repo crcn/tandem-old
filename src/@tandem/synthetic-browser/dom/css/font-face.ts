@@ -1,8 +1,15 @@
-import { BaseContentEdit } from "@tandem/sandbox";
 import { SyntheticCSSStyleRule } from "./style-rule";
+import { BaseContentEdit, EditAction } from "@tandem/sandbox";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
-import { ISerializer, deserialize, serializable, serialize, ISerializedContent, ITreeWalker } from "@tandem/common";
+import {
+  serialize,
+  ITreeWalker,
+  ISerializer,
+  deserialize,
+  serializable,
+  ISerializedContent,
+} from "@tandem/common";
 
 export interface ISerializedSyntheticCSSFontFace {
   declaration: ISerializedContent<any>;
@@ -35,11 +42,14 @@ export class SyntheticCSSFontFace extends SyntheticCSSObject {
       ${this.declaration.cssText}
     }`;
   }
-  clone(deep?: boolean) {
-    const clone = new SyntheticCSSFontFace();
-    if (deep) clone.declaration = this.declaration.clone(deep);
-    return this.linkClone(clone);
+  cloneShallow() {
+    return new SyntheticCSSFontFace();
   }
+
+  applyEditAction(action: EditAction) {
+    console.warn(`Cannot currently edit ${this.constructor.name}`);
+  }
+
   createEdit() {
     return new FontFaceEdit(this);
   }

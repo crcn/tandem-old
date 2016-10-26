@@ -1,9 +1,11 @@
-import { pull } from "lodash";
+import * as sift from "sift";
 import { kebabCase, camelCase } from "lodash";
 import { ISerializable, Action, serializable, diffArray, ITreeWalker } from "@tandem/common";
 import { SetKeyValueEditAction, IContentEdit, ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration { }
+
+const internalKeyFilter = sift({ $ne: /^\$/ });
 
 export class SyntheticCSSStyleDeclarationEdit extends BaseContentEdit<SyntheticCSSStyleDeclaration> {
 
@@ -15,9 +17,8 @@ export class SyntheticCSSStyleDeclarationEdit extends BaseContentEdit<SyntheticC
 
   addDiff(newStyleDeclaration: SyntheticCSSStyleDeclaration) {
 
-    const omitKeys = ["$uid", "$source"];
-    const oldKeys = pull(Object.keys(this.target), ...omitKeys);
-    const newKeys = pull(Object.keys(newStyleDeclaration), ...omitKeys);
+    const oldKeys = Object.keys(this.target).filter(internalKeyFilter as any);
+    const newKeys = Object.keys(newStyleDeclaration).filter(internalKeyFilter as any);
 
     diffArray(oldKeys, newKeys, (a, b) => {
       return a === b ? 0 : -1;
@@ -380,7 +381,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     this.$uid = generateSyntheticUID();
   }
 
-  clone(deep?: boolean) {
+  clone() {
     const clone = new SyntheticCSSStyleDeclaration();
     clone.deserialize(this);
     clone.$uid = this.$uid;

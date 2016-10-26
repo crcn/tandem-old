@@ -24,7 +24,9 @@ import {
   File,
   tween,
   Action,
+  Logger,
   inject,
+  Injector,
   loggable,
   IDisposable,
   easeOutCubic,
@@ -40,7 +42,10 @@ import {
   GetPrimaryProjectFilePathAction,
 } from "@tandem/common";
 
+@loggable()
 export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfig> {
+
+  readonly logger: Logger;
 
   @inject(StoreDependency.ID)
   private _store: Store;
@@ -58,7 +63,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
 
     if (this._store.workspace && this._store.workspace.browser.location.toString() === filePath) return;
 
-    console.info("loading project file %s", filePath);
+    this.logger.info("loading project file %s", filePath);
 
     const workspace = new Workspace();
 

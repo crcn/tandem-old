@@ -62,7 +62,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
    */
 
   async loadItem(query: any): Promise<T|undefined> {
-    const { value, done } = await this._bus.execute(new DSFindAction(this.collectionName, this.query, false)).read();
+    const { value, done } = await this._bus.execute(new DSFindAction(this.collectionName, query, false)).read();
 
     // item exists, so add and return it. Otherwise return undefined indicating
     // that the item does not exist.
@@ -71,7 +71,6 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
       this.push(item);
       return item;
     }
-
   }
 
   /**

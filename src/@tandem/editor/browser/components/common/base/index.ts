@@ -10,6 +10,5 @@ export class BaseEditorComponent<T, U> extends React.Component<T, U> {
   static contextTypes = editorComponentContextTypes;
   constructor(args: any[]) {
     super(...args);
-    console.log(args);
   }
 }

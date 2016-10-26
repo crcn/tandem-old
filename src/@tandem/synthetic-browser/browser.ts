@@ -5,22 +5,27 @@ import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, TetherRenderer, NoopR
 import {
   Action,
   IActor,
+  inject,
   bindable,
   Injector,
+  loggable,
+  Logger,
   isMaster,
   BubbleBus,
   Observable,
   TypeWrapBus,
   ChangeAction,
+  IInjectable,
   findTreeNode,
   IObservable,
   Dependencies,
   bindProperty,
   watchProperty,
   HTML_MIME_TYPE,
-  PrivateBusDependency,
   MimeTypeDependency,
   PropertyChangeAction,
+  PrivateBusDependency,
+  DependenciesDependency,
   waitForPropertyChange,
 } from "@tandem/common";
 
@@ -48,21 +53,27 @@ export interface ISyntheticBrowser extends IObservable {
   location: SyntheticLocation;
 }
 
-export abstract class BaseSyntheticBrowser extends Observable implements ISyntheticBrowser {
+@loggable()
+export abstract class BaseSyntheticBrowser extends Observable implements ISyntheticBrowser, IInjectable {
+
+  protected readonly logger: Logger;
 
   private _url: string;
   private _window: SyntheticWindow;
+  private _documentObserver: IActor;
   private _location: SyntheticLocation;
   private _renderer: ISyntheticDocumentRenderer;
-  private _documentObserver: IActor;
 
   constructor(protected _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, readonly parent?: ISyntheticBrowser) {
     super();
+    Injector.inject(this, _dependencies);
 
     this._renderer = isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer();
     this._renderer.observe(new BubbleBus(this));
     this._documentObserver = new BubbleBus(this);
   }
+
+  $didInject() { }
 
   get document() {
     return this.window && this.window.document;
@@ -99,6 +110,9 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     if (this._url && this._url === url) {
       return;
     }
+
+    this.logger.verbose("opening %s", url);
+
     this._url = url;
     this._location = new SyntheticLocation(url);
     await this.open2(url);
@@ -115,14 +129,14 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
 
   private _sandbox: Sandbox;
   private _entry: Bundle;
+
+  @inject(BundlerDependency.ID)
   private _bundler: Bundler;
 
-  constructor(dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, readonly parent?: ISyntheticBrowser) {
-    super(dependencies, renderer);
+  $didInject() {
+    super.$didInject();
     this._bundler = BundlerDependency.getInstance(this._dependencies);
-
-    this._sandbox    = new Sandbox(dependencies, this.createSandboxGlobals.bind(this));
-
+    this._sandbox    = new Sandbox(this._dependencies, this.createSandboxGlobals.bind(this));
     watchProperty(this._sandbox, "exports", this.onSandboxExportsChange.bind(this));
     watchProperty(this._sandbox, "global", this.setWindow.bind(this));
   }
@@ -133,6 +147,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
 
   async open2(url: string) {
     this._entry = await this._bundler.bundle(url);
+    this.logger.info("opening %s in sandbox", url);
     this._sandbox.open(this._entry);
   }
 

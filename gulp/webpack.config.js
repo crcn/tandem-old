@@ -29,7 +29,7 @@ module.exports = {
       extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.peg'],
       modulesDirectories: [SRC_DIR, NODE_MODULES_DIR]
     },
-    watch: WATCH,
+    watch: !!WATCH,
     plugins: [
       new webpack.DefinePlugin({
 

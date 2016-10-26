@@ -18,8 +18,15 @@ export class Injector {
 
   static getPropertyValues(target: any, dependencies: Dependencies) {
     const __inject = Reflect.getMetadata("injectProperties", target);
-    const properties = {};
 
+    if (target.$$injected) {
+      // console.error(`Ignoring additional dependency injection on ${target.constructor.name}.`);
+      return;
+    }
+
+    target.$$injected = true;
+
+    const properties = {};
 
     if (__inject) {
       for (let property in __inject) {
@@ -62,7 +69,7 @@ export class Injector {
   /**
    */
 
-  static create(clazz: { new(...rest): any }, parameters: any[], dependencies: Dependencies) {
+  static create<T>(clazz: { new(...rest): T }, parameters: any[], dependencies: Dependencies) {
     const values = this.getPropertyValues(clazz, dependencies);
     for (const property in values) {
       if (parameters[property] == null) {

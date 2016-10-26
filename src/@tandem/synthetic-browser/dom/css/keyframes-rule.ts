@@ -1,8 +1,15 @@
-import { BaseContentEdit } from "@tandem/sandbox";
 import { SyntheticCSSStyleRule } from "./style-rule";
+import { BaseContentEdit, EditAction } from "@tandem/sandbox";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
-import { ISerializer, deserialize, serializable, serialize, ISerializedContent, ITreeWalker } from "@tandem/common";
+import {
+  ISerializer,
+  deserialize,
+  serializable,
+  serialize,
+  ISerializedContent,
+  ITreeWalker
+} from "@tandem/common";
 
 export interface ISerializedSyntheticCSSKeyframesRule {
   name: string;
@@ -43,18 +50,16 @@ export class SyntheticCSSKeyframesRule extends SyntheticCSSObject {
     }`;
   }
 
-  clone(deep?: boolean) {
-    const clone = new SyntheticCSSKeyframesRule(this.name);
-    if (deep) {
-      for (let i = 0, n = this.cssRules.length; i < n; i++) {
-        clone.cssRules.push(this.cssRules[i].clone(deep));
-      }
-    }
-    return this.linkClone(clone);
+  cloneShallow(deep?: boolean) {
+    return new SyntheticCSSKeyframesRule(this.name);
   }
 
   createEdit() {
     return new AtRuleEdit(this);
+  }
+
+  applyEditAction(action: EditAction) {
+    console.warn(`Cannot currently edit ${this.constructor.name}`);
   }
 
   visitWalker(walker: ITreeWalker) {

@@ -27,21 +27,17 @@ import {
 export type syntheticCSSRuleType = SyntheticCSSFontFace|SyntheticCSSKeyframesRule|SyntheticCSSMediaRule|SyntheticCSSStyleRule;
 
 export interface ISerializedCSSStyleSheet {
-  bundle: any;
   rules: Array<ISerializedContent<ISerializedSyntheticCSSStyleRule>>;
 }
 
 class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleSheet, ISerializedCSSStyleSheet> {
   serialize(value: SyntheticCSSStyleSheet): ISerializedCSSStyleSheet {
     return {
-      bundle: serialize(value.bundle),
       rules: value.rules.map(serialize)
     };
   }
   deserialize(value: ISerializedCSSStyleSheet, dependencies): SyntheticCSSStyleSheet {
-    const styleSheet = new SyntheticCSSStyleSheet(value.rules.map(raw => deserialize(raw, dependencies)));
-    styleSheet.$bundle = deserialize(value.bundle, dependencies);
-    return styleSheet;
+    return new SyntheticCSSStyleSheet(value.rules.map(raw => deserialize(raw, dependencies)));
   }
 }
 
@@ -93,18 +89,8 @@ export class SyntheticCSSStyleSheetEdit extends BaseContentEdit<SyntheticCSSStyl
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSStyleSheetSerializer()))
 export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
 
-  public $bundle: Bundle;
-
   constructor(readonly rules: Array<syntheticCSSRuleType>) {
     super();
-  }
-
-  /**
-   * @deprecated
-   */
-
-  get bundle() {
-    return this.$bundle;
   }
 
   get cssText() {
@@ -115,14 +101,12 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
     return this.cssText;
   }
 
-  clone(deep?: boolean) {
-    const clone = new SyntheticCSSStyleSheet([]);
-    if (deep) {
-      for (let i = 0, n = this.rules.length; i < n; i++) {
-        clone.rules.push(this.rules[i].clone(deep));
-      }
-    }
-    return this.linkClone(clone);
+  cloneShallow() {
+    return new SyntheticCSSStyleSheet([]);
+  }
+
+  applyEditAction(action: EditAction) {
+    console.warn(`Cannot currently edit ${this.constructor.name}`);
   }
 
   createEdit() {

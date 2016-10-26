@@ -10,6 +10,7 @@ const peg           = require('gulp-peg');
 const webpack       = require('gulp-webpack');
 const symdest       = require('gulp-symdest');
 const rename        = require('gulp-rename');
+const named         = require('vinyl-named');
 const electron      = require('gulp-atom-electron');
 const vfs           = require('vinyl-fs');
 const gulpSequence  = require('gulp-sequence');
@@ -68,20 +69,25 @@ gulp.task('build:peg', function() {
   .pipe(gulp.dest(OUT_DIR));
 });
 
-gulp.task('build:webpack', function(done) {
+gulp.task('build:webpack', function() {
+
   const webPackages = PACKAGES.filter(sift({ "entries.browser": { $exists: true }}));
 
-  return _.pipeline(...webPackages.map((pkg) => {
-    const srcFilePath = join(SRC_DIR, pkg.name, pkg.entries.browser);
-    const outDir      = join(OUT_DIR, pkg.name, dirname(pkg.browser));
+  // quick fix for webpack watcher -- it won't save new bundles after
+  // files have changed. This needs to be refactored once there are more browser apps.
 
-    // TODO: need to set the bundled browser entry JS name to the
-    // base name of the browser file specified in the package.json.
-    return gulp
-    .src(srcFilePath)
-    .pipe(webpack(require('./webpack.config.js')))
-    .pipe(gulp.dest(outDir));
-  }));
+  pkg = webPackages[0];
+
+  const srcFilePath = join(SRC_DIR, pkg.name, pkg.entries.browser);
+  const outDir      = join(OUT_DIR, pkg.name, dirname(pkg.browser));
+
+  // TODO: need to set the bundled browser entry JS name to the
+  // base name of the browser file specified in the package.json.
+  return gulp
+  .src(srcFilePath)
+  .pipe(named())
+  .pipe(webpack(require('./webpack.config.js')))
+  .pipe(gulp.dest(outDir));
 });
 
 // TODO

@@ -25,8 +25,8 @@ export class SyntheticDOMComment extends SyntheticDOMValueNode {
     return visitor.visitComment(this);
   }
 
-  clone() {
-    return this.linkClone(new SyntheticDOMComment(this.nodeValue));
+  cloneShallow() {
+    return new SyntheticDOMComment(this.nodeValue);
   }
 
   visitWalker(walker: ITreeWalker) { }

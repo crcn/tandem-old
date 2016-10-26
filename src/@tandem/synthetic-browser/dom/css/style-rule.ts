@@ -70,10 +70,12 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
     }`;
   }
 
-  clone(deep?: boolean) {
-    const clone = new SyntheticCSSStyleRule(this.selector, undefined);
-    if (deep) clone.style = this.style.clone(deep);
-    return this.linkClone(clone);
+  applyEditAction(action: EditAction) {
+    console.warn(`Cannot currently edit ${this.constructor.name}`);
+  }
+
+  cloneShallow(deep?: boolean) {
+    return new SyntheticCSSStyleRule(this.selector, undefined);
   }
 
   visitWalker(walker: ITreeWalker) {

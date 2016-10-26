@@ -4,6 +4,7 @@ import { SyntheticCSSStyleRule, diffSyntheticCSSStyleRules } from "./style-rule"
 import { ISerializer, serialize, deserialize, serializable, ISerializedContent, ITreeWalker } from "@tandem/common";
 
 import {
+  EditAction,
   BaseContentEdit,
   SetValueEditActon,
   MoveChildEditAction,
@@ -94,14 +95,12 @@ export class SyntheticCSSMediaRule extends SyntheticCSSObject {
     }`;
   }
 
-  clone(deep?: boolean) {
-    const clone = new SyntheticCSSMediaRule(this.media.concat());
-    if (deep) {
-      for (let i = 0, n = this.cssRules.length; i < n; i++) {
-        clone.cssRules.push(this.cssRules[i].clone(deep));
-      }
-    }
-    return this.linkClone(clone);
+  cloneShallow() {
+    return new SyntheticCSSMediaRule(this.media.concat());
+  }
+
+  applyEditAction(action: EditAction) {
+    console.warn(`Cannot currently edit ${this.constructor.name}`);
   }
 
   createEdit() {

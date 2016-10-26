@@ -104,7 +104,7 @@ export class EditAction extends Action {
   }
 })
 export class InsertChildEditAction extends EditAction {
-  constructor(actionType: string, target: ISyntheticObject, readonly child: ISyntheticObject, readonly index: number) {
+  constructor(actionType: string, target: ISyntheticObject, readonly child: ISyntheticObject, readonly index: number = Infinity) {
     super(actionType, target);
   }
 }
@@ -412,7 +412,7 @@ export class SyntheticObjectEditor {
       const target = allSyntheticObjects[action.target.uid] as IEditable;
 
       if (!target) {
-        throw new Error(`Edit action target ${action.target.uid} not found.`);
+        throw new Error(`Edit action ${action.type} target ${action.target.uid} not found.`);
       }
 
       target.applyEditAction(action);

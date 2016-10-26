@@ -195,7 +195,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     }
   }
 
-  protected linkClone(clone: SyntheticDOMNode) {
+  public $linkClone(clone: SyntheticDOMNode) {
     clone.$source = this.$source;
     clone.$module = this.$module;
     clone.$uid    = this.uid;
@@ -204,7 +204,10 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   }
 
   /**
-   * Clone alias for standard DOM API
+   * Clone alias for standard DOM API. Note that there's a slight difference
+   * with how these work -- cloneNode for the DOM calls createdCallback on elements. Whereas
+   * cloneNode in this context doesn't. Instead cloneNode here serializes & deserializes the node -- reloading
+   * the exact state of the object
    *
    * @param {boolean} [deep]
    * @returns
@@ -215,7 +218,12 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   }
 
   abstract accept(visitor: IMarkupNodeVisitor);
-  abstract clone(deep?: boolean);
+  clone(deep?: boolean) {
+    if (deep) return deserialize(serialize(this), undefined);
+    return this.$linkClone(this.cloneShallow());
+  }
+
+  protected abstract cloneShallow();
   abstract createEdit(): BaseContentEdit<any>;
   abstract applyEditAction(action: EditAction);
 }

@@ -117,13 +117,6 @@ export class InitializeAction extends Action {
   }
 }
 
-export class LogAction extends Action {
-  static readonly LOG        = "log";
-  constructor(readonly level: number, readonly text: string) {
-    super(LogAction.LOG);
-  }
-}
-
 @definePublicAction()
 export class DSAction extends Action {
   readonly timestamp: number = Date.now();

@@ -52,10 +52,10 @@ const DEFAULT_FRAME_STYLE_SHEET = evaluateCSS(parseCSS(`
   }
 `));
 
+// TODO - watch src for any changes
 @serializable()
 export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
 
-  private _initialized: boolean;
   private _iframe: HTMLIFrameElement;
   private _contentDocument: SyntheticDocument;
   private _contentDocumentObserver: IActor;
@@ -86,18 +86,15 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     }
   }
 
-  async initialize() {
-    if (this._initialized) return;
-    this._initialized = true;
+  async loadBrowser() {
+    if (this._artboardBrowser) return;
 
     const bundler = BundlerDependency.getInstance(this.browser.dependencies);
 
-    if (!this._artboardBrowser) {
-      const documentRenderer = new SyntheticDOMRenderer();
-      this._artboardBrowser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.dependencies, new SyntheticArtboardRenderer(this, documentRenderer), this.browser);
-      this._contentDocumentObserver = new WrapBus(this.onContentDocumentAction.bind(this));
-      watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
-    }
+    const documentRenderer = new SyntheticDOMRenderer();
+    this._artboardBrowser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.dependencies, new SyntheticArtboardRenderer(this, documentRenderer), this.browser);
+    this._contentDocumentObserver = new WrapBus(this.onContentDocumentAction.bind(this));
+    watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
 
     if (this.hasAttribute("src")) {
       const src = this.getAttribute("src");
@@ -109,7 +106,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
   attachNative(node: HTMLElement) {
     if (this._native === node) return;
     super.attachNative(node);
-    this.initialize();
+    this.loadBrowser();
     const iframe = this._iframe = node.querySelector("iframe") as HTMLIFrameElement;
 
     const onload = async () => {

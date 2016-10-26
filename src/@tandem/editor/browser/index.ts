@@ -21,7 +21,7 @@ import {
   SelectableStageToolComponent,
 } from "./components";
 
-// import { pointerToolDependency } from "./models";
+import { createCommonEditorDependencies } from "../common";
 
 import {
   ServerService,
@@ -34,6 +34,7 @@ import {
 
 export function concatEditorBrowserDependencies(dependencies: Dependencies, config: IEditorBrowserConfig, fileSystem?: IFileSystem, fileResolver?: IFileResolver) {
   return new Dependencies(
+    createCommonEditorDependencies(),
     concatCoreApplicationDependencies(dependencies, config, fileSystem, fileResolver),
 
     // services

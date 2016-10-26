@@ -48,15 +48,6 @@ declare module "react-slider" {
   export = ReactSlider;
 }
 
-declare module "pretty" {
-  function pretty(source: string): string;
-
-  namespace pretty {
-
-  }
-
-  export = pretty;
-}
 
 declare module "ent" {
   function encode(source: string): string;

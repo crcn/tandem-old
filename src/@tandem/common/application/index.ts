@@ -1,3 +1,4 @@
+// DEPRECATED
 export * from "./base";
 
 // import { fileModelDependency } from "../models";
@@ -10,7 +11,7 @@ import { IApplication } from "@tandem/common/application";
 import { Dependencies } from "@tandem/common/dependencies";
 import { loggable, bindable } from "@tandem/common/decorators";
 import { LoadAction, InitializeAction } from "@tandem/common/actions";
-import {  consoleLogServiceDependency } from "../services";
+// import {  consoleLogServiceDependency } from "../services";
 
 import {
   PrivateBusDependency,
@@ -57,7 +58,7 @@ export class BaseApplication implements IApplication {
 
   protected registerDependencies() {
     if (!process.env.TESTING) {
-      this.dependencies.register(consoleLogServiceDependency);
+      // this.dependencies.register(consoleLogServiceDependency);
     }
 
     // Make the application available globally through the dependencies

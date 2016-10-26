@@ -1,14 +1,15 @@
 import * as Mousetrap from "mousetrap";
-import { toArray } from "@tandem/common/utils/array";
 import { KeyBinding } from "@tandem/editor/browser/key-bindings";
 import { KeyCommandAction } from "../actions";
-import { InitializeAction } from "@tandem/common/actions";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
-import { Action, IActor, IFactory } from "@tandem/common";
 import { GlobalKeyBindingDependency } from "@tandem/editor/browser/dependencies";
+import { Action, IActor, IFactory, toArray, InitializeAction, loggable, Logger } from "@tandem/common";
 
+@loggable()
 export class GlobalKeyBindingService extends CoreApplicationService<IEditorBrowserConfig> {
+
+  readonly logger: Logger;
 
   private _manager: KeyBindingManager;
 
@@ -20,7 +21,7 @@ export class GlobalKeyBindingService extends CoreApplicationService<IEditorBrows
   }
 
   _addKeyBinding(dependency: GlobalKeyBindingDependency) {
-    console.log("add key binding:  %s", dependency.keys.join(", "));
+    this.logger.verbose("add key binding:  %s", dependency.keys.join(", "));
     for (const key of dependency.keys) {
       this._manager.register(key, dependency.create());
     }

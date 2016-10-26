@@ -5,6 +5,10 @@ import { SandboxModuleEvaluatorFactoryDependency, BundlerDependency } from "./de
 import {
   IActor,
   Action,
+  inject,
+  loggable,
+  Logger,
+  Injector,
   Observable,
   IObservable,
   Dependencies,
@@ -27,22 +31,29 @@ export class SandboxModule {
   }
 }
 
+@loggable()
 export class Sandbox extends Observable {
+
+  protected readonly logger: Logger;
+
   private _modules: any;
   private _entry: Bundle;
   private _paused: boolean;
   private _mainModule: any;
   private _entryObserver: IActor;
   private _shouldEvaluate: boolean;
+
+  @inject(BundlerDependency.ID)
   private _bundler: Bundler;
+
   private _global: any;
   private _exports: any;
 
   constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}) {
     super();
+    Injector.inject(this, _dependencies);
     this._entryObserver = new WrapBus(this.onEntryAction.bind(this));
     this._modules = {};
-    this._bundler = BundlerDependency.getInstance(_dependencies);
   }
 
   public pause() {
@@ -65,15 +76,17 @@ export class Sandbox extends Observable {
   }
 
   async open(bundle: Bundle) {
+
     if (this._entry) {
       this._entry.unobserve(this._entryObserver);
     }
     this._entry = bundle;
     this._entry.observe(this._entryObserver);
 
-    if (this._entry.ready) {
-      this.evaluate();
-    }
+    this.logger.verbose("wait for %s", bundle.filePath);
+    await this._entry.whenReady();
+    this.evaluate();
+
   }
 
   get ready() {
@@ -121,6 +134,7 @@ export class Sandbox extends Observable {
   }
 
   public evaluate() {
+    this.logger.verbose("evaluate");
     this._shouldEvaluate = false;
     const exports = this._exports;
     const global  = this._global;

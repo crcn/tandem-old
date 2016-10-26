@@ -31,6 +31,7 @@ export class ComponentService extends CoreApplicationService<IEditorBrowserConfi
       this._shouldRenderAgain = false;
       return;
     }
+    this._rendering = true;
     this._shouldRenderAgain = false;
     requestAnimationFrame(this.render);
   }

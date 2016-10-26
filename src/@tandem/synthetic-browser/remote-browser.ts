@@ -8,10 +8,13 @@ import {
   Action,
   isMaster,
   serialize,
-  serializable,
+  Logger,
+  loggable,
+  IInjectable,
   flattenTree,
   deserialize,
   Dependencies,
+  serializable,
   definePublicAction,
   PrivateBusDependency,
   BaseApplicationService
@@ -40,7 +43,10 @@ class RemoteBrowserDocumentAction extends Action {
   }
 }
 
+@loggable()
 export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
+
+  readonly logger: Logger;
 
   private _bus: IActor;
   private _bundle: Bundle;
@@ -50,6 +56,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     super(dependencies, renderer, parent);
     this._bus = PrivateBusDependency.getInstance(dependencies);
   }
+
   async open2(url: string) {
     const remoteBrowserStream = this._bus.execute(new OpenRemoteBrowserAction(url));
 
@@ -67,11 +74,9 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   onRemoteBrowserAction({ payload }) {
 
     const action = deserialize(payload, this.dependencies) as RemoteBrowserDocumentAction;
-    // console.log("receiving browser action", action);
 
     if (action.type === RemoteBrowserDocumentAction.NEW_DOCUMENT) {
-
-      console.log("received new synthetic document");
+      this.logger.verbose("received new document");
 
       const previousDocument = this.window && this.window.document;
       const newDocument      = action.data;
@@ -81,8 +86,8 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       this.setWindow(window);
 
     } else if (action.type === RemoteBrowserDocumentAction.DOCUMENT_DIFF) {
-      console.log("received document diff");
       const edit: SyntheticDocumentEdit = action.data;
+      this.logger.verbose("received document diffs: %s", edit.actions.map(action => action.type).join(" "));
       this._documentEditor.applyEditActions(...edit.actions);
     }
 
@@ -94,42 +99,56 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   }
 }
 
+@loggable()
 export class RemoteBrowserService extends BaseApplicationService2 {
-  [OpenRemoteBrowserAction.OPEN_REMOTE_BROWSER](action: OpenRemoteBrowserAction) {
 
-    console.log("opening up remote synthetic browser");
+  private _openBrowsers: any = {};
+
+  $didInject() {
+    super.$didInject();
+    this._openBrowsers = {};
+  }
+
+  [OpenRemoteBrowserAction.OPEN_REMOTE_BROWSER](action: OpenRemoteBrowserAction) {
 
     // TODO - move this to its own class
     return new Response((writer) => {
-      const browser = new SyntheticBrowser(this.dependencies, new NoopRenderer());
+      const browser: SyntheticBrowser = this._openBrowsers[action.url] || (this._openBrowsers[action.url] = new SyntheticBrowser(this.dependencies, new NoopRenderer()));
       let currentDocument: SyntheticDocument;
 
-      browser.observe({
-        execute(action: Action) {
-          if (action.type === SyntheticBrowserAction.BROWSER_LOADED) {
-            console.log('synthetic browser loaded');
-            try {
-              if (currentDocument) {
-                const edit = currentDocument.createEdit().fromDiff(browser.document);
+      const logger = this.logger.createChild(`${action.url} `);
 
-                // need to patch existing document for now to maintain UID references
-                new SyntheticObjectEditor(currentDocument).applyEditActions(...edit.actions);
-                if (edit.actions.length) {
-                  console.log('sending %d changes', edit.actions.length);
-                  writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.DOCUMENT_DIFF, edit)) });
+      browser.open(action.url).then(() => {
+
+        // clone the document since there may be other connected clients -- don't
+        // want to mutate the original doc.
+        let currentDocument = browser.document.cloneNode(true);
+
+        writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.NEW_DOCUMENT, browser.document)) });
+
+        const observer = {
+          execute: async (action: Action) => {
+            if (action.type === SyntheticBrowserAction.BROWSER_LOADED) {
+
+              const edit = currentDocument.createEdit().fromDiff(browser.document);
+
+              // need to patch existing document for now to maintain UID references
+              new SyntheticObjectEditor(currentDocument).applyEditActions(...edit.actions);
+              if (edit.actions.length) {
+                logger.verbose("sending changes: %s", edit.actions.map(action => action.type).join(" "));
+                try {
+                  await writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.DOCUMENT_DIFF, edit)) });
+                } catch(e) {
+                  logger.verbose("unable to send diffs to client");
+                  browser.unobserve(observer);
                 }
-              } else {
-
-                currentDocument = browser.document;
-                writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.NEW_DOCUMENT, browser.document)) });
               }
-            } catch(e) {
-              console.error(e);
             }
           }
-        }
+        };
+
+        browser.observe(observer);
       });
-      browser.open(action.url);
     });
   }
 }

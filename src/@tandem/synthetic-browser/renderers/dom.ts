@@ -103,6 +103,7 @@ function renderSyntheticNode(node: SyntheticDOMNode): any {
     case DOMNodeType.ELEMENT:
       const element = <SyntheticDOMElement>node;
       const target = element;
+      if (/^(style|link)$/.test(target.nodeName)) return null;
       return React.createElement(<any>target.nodeName, renderSyntheticAttributes(target), renderChildren(target));
     case DOMNodeType.DOCUMENT:
     case DOMNodeType.DOCUMENT_FRAGMENT:

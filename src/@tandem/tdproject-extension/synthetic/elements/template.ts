@@ -30,15 +30,8 @@ export class SyntheticTDTemplateElement extends SyntheticHTMLElement {
   private registerTemplateElement(tagName: string) {
     const template = this;
     this.ownerDocument.registerElementNS(this.namespaceURI, tagName, class SyntheticModuleElement extends SyntheticHTMLElement {
-      private _cloned;
-      addPropertiesToClone(clone: SyntheticModuleElement, deep: boolean) {
-        super.addPropertiesToClone(clone, deep);
-        clone._cloned = true;
-      }
       createdCallback() {
-        if (this._cloned !== true) {
-          template.attach(this);
-        }
+        template.attach(this);
       }
     });
   }
