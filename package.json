@@ -44,6 +44,7 @@
     "@types/mocha": "^2.2.32",
     "@types/mousetrap": "^1.5.32",
     "@types/node": "^6.0.45",
+    "@types/node-sass": "^3.10.30",
     "@types/pegjs": "0.0.28",
     "@types/react": "^0.14.41",
     "@types/react-dnd": "^2.0.31",

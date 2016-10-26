@@ -17,7 +17,7 @@
       </div>
       <div class="row">
         <div class="col-xs-4">
-          class!!
+          class
         </div>
         <div class="col-xs-8">
           <input type="text" value="container" />

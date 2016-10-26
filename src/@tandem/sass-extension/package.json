@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "sass.js": "^0.9.13"
+    "node-sass": "^3.10.1"
   },
   "peerDependencies": {
     "@tandem/common": "^1.0.0",

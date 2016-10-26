@@ -1,6 +1,6 @@
 import * as path from "path";
-import * as sass from "sass.js";
-import { inject, Queue, CSS_MIME_TYPE, isMaster } from "@tandem/common";
+import * as sass from "node-sass";
+import { inject, CSS_MIME_TYPE, isMaster, Queue } from "@tandem/common";
 
 import { evaluateCSS, SyntheticWindow } from "@tandem/synthetic-browser";
 import {
@@ -13,9 +13,7 @@ import {
   FileResolverDependency,
 } from "@tandem/sandbox";
 
-const _queue = new Queue();
 
-// TODO - SCSSTransformer
 export class SCSSLoader implements IBundleLoader {
 
   @inject(FileCacheDependency.ID)
@@ -26,28 +24,37 @@ export class SCSSLoader implements IBundleLoader {
 
   async load(bundle: Bundle, { type, content }): Promise<any> {
 
-    // need to shove sass loader in a queue since it's a singleton.
-    return _queue.add(() => {
-      sass.importer(async (request, done) => {
-        const filePath = request.path || await this._fileResolver.resolve(request.current, path.dirname(bundle.filePath), {
+    const importer = (url, prev, done) => {
+      new Promise(async (resolve) => {
+        const filePath = await this._fileResolver.resolve(url, path.dirname(prev), {
+
+          // TODO: this should be left up to the resolver.
           extensions: [".scss", ".css"],
           directories: []
         });
-        const content = await (await this._fileCache.item(filePath)).read();
-        done({ path: filePath, content: content || " " });
-      });
 
-      return new Promise((resolve, reject) => {
-        sass.compile(content, { inputPath: bundle.filePath, sourceMapRoot: "/" }, (result) => {
-          // 3 = empty string exception
-          if (result.status !== 0 && result.status !== 3) return reject(result);
-          resolve({
-            type: CSS_MIME_TYPE,
-            map: result.map,
-            content: result.text || " "
-          } as IBundleLoaderResult);
-        });
+        const content = await (await this._fileCache.item(filePath)).read();
+
+        resolve(content);
+      }).then(done);
+
+    }
+
+    return new Promise((resolve, reject) => {
+      sass.render({
+        file: bundle.filePath,
+        data: content,
+        importer: importer
+      }, (error, result) => {
+        if (error) return reject(error);
+
+        resolve({
+          type: CSS_MIME_TYPE,
+          map: JSON.stringify(result.map) as any,
+          content: result.css.toString()
+        } as IBundleLoaderResult);
       });
     });
+
   }
 }
