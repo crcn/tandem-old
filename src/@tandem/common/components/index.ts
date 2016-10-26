@@ -4,6 +4,7 @@ import { inject } from "@tandem/common/decorators";
 import {
   Injector,
   Dependencies,
+  IInjectable,
   PrivateBusDependency,
   DependenciesDependency,
 } from "@tandem/common/dependencies";
@@ -18,7 +19,7 @@ export const editorComponentContextTypes = {
   dependencies: React.PropTypes.object.isRequired
 };
 
-export class BaseApplicationComponent<T, U> extends React.Component<T, U> {
+export class BaseApplicationComponent<T, U> extends React.Component<T, U> implements IInjectable {
 
   static contextTypes = editorComponentContextTypes;
 
@@ -31,5 +32,9 @@ export class BaseApplicationComponent<T, U> extends React.Component<T, U> {
   constructor(props: T, context: IApplicationComponentContext, callbacks: any) {
     super(props, context, callbacks);
     Injector.inject(this, context.dependencies);
+  }
+
+  $didInject() {
+
   }
 }

@@ -4,7 +4,7 @@ import { syntheticElementClassType, SyntheticDOMNode } from "./dom";
 import { Dependency, Dependencies, MimeTypeDependency, ApplicationServiceDependency } from "@tandem/common";
 
 export class SyntheticDOMElementClassDependency extends Dependency<syntheticElementClassType> {
-  static readonly SYNTHETIC_ELEMENT_CLASS_NS_PREFIX = "syntheticMarkupElementClass/";
+  static readonly SYNTHETIC_ELEMENT_CLASS_NS_PREFIX = "syntheticMarkupElementClass";
 
   constructor(readonly xmlns: string, readonly tagName: string, value: syntheticElementClassType) {
     super(SyntheticDOMElementClassDependency.getNamespace(xmlns, tagName), value);

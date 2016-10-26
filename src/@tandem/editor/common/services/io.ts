@@ -11,7 +11,7 @@ import {
   InitializeAction,
   PropertyChangeAction,
 } from "@tandem/common";
-import { CoreApplicationService } from "@tandem/editor/core";
+import { CoreApplicationService } from "@tandem/core";
 
 export class IOService<T> extends CoreApplicationService<T> {
 

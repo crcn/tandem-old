@@ -75,3 +75,4 @@ export class ServiceApplication extends Application2 {
 }
 
 export * from "./dependencies";
+export * from "./services";

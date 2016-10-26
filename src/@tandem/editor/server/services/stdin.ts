@@ -1,7 +1,7 @@
 import * as readline from "readline";
 import { IApplication } from "@tandem/common/application";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
-import { CoreApplicationService } from "@tandem/editor/core";
+import { CoreApplicationService } from "@tandem/core";
 
 /**
  * console input command handler

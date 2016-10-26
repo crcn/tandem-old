@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 
 import { RootEditorComponent } from "@tandem/editor/browser/components";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
-import { CoreApplicationService } from "@tandem/editor/core";
+import { CoreApplicationService } from "@tandem/core";
 
 export class ComponentService extends CoreApplicationService<IEditorBrowserConfig> {
 

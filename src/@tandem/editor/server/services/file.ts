@@ -3,7 +3,7 @@ import * as gaze from "gaze";
 import * as sift from "sift";
 import { Response } from "mesh";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
-import { CoreApplicationService } from "@tandem/editor/core";
+import { CoreApplicationService } from "@tandem/core";
 import {
   File,
   inject,

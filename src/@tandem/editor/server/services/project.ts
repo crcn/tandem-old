@@ -15,7 +15,7 @@ import {
   GetPrimaryProjectFilePathAction,
 } from "@tandem/common";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
-import { CoreApplicationService } from "@tandem/editor/core";
+import { CoreApplicationService } from "@tandem/core";
 
 const tmpProjectFile = "/tmp/project.tdm";
 

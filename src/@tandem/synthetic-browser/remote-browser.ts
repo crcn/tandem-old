@@ -15,7 +15,7 @@ import {
   BaseApplicationService
 } from "@tandem/common";
 
-import { BaseApplicationService2 } from "@tandem/editor/core/services";
+import { BaseApplicationService2 } from "@tandem/core/services";
 import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
 import { Bundle, Bundler, BundlerDependency, SyntheticObjectEditor } from "@tandem/sandbox";
 

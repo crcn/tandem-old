@@ -1,6 +1,6 @@
 import { IActor } from "@tandem/common/actors";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
-import { CoreApplicationService } from "@tandem/editor/core";
+import { CoreApplicationService } from "@tandem/core";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { LoadAction, InitializeAction, OpenProjectAction, SockBus, Action } from "@tandem/common";
 import * as os from "os";

@@ -15,6 +15,8 @@ import { Workspace } from "@tandem/editor/browser/models";
 import { ApplyEditAction, FileEditorDependency } from "@tandem/sandbox";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { pointerToolDependency } from "@tandem/editor/browser/models/pointer-tool";
+import { CoreApplicationService } from "@tandem/core";
+import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { WorkspaceToolFactoryDependency } from "@tandem/editor/browser/dependencies";
 import { SetToolAction, ZoomAction, SetZoomAction, DocumentFileAction } from "@tandem/editor/browser/actions";
 
@@ -39,11 +41,13 @@ import {
   GetPrimaryProjectFilePathAction,
 } from "@tandem/common";
 
-@loggable()
-export class WorkspaceService extends BaseApplicationService<FrontEndApplication> {
+export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfig> {
   public logger: Logger;
 
+  private _workspace: Workspace;
+
   @inject(DependenciesDependency.ID)
+  public app: any;
   private _dependencies: Dependencies;
   private _tweener: IDisposable;
   private _zoomTimeout: any;
@@ -55,8 +59,10 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
   async _loadWorkspaces() {
 
     const filePath = await GetPrimaryProjectFilePathAction.execute(this.bus);
+    console.log(filePath);
 
-    if (this.app.workspace && this.app.workspace.browser.location.toString() === filePath) return;
+    if (1 + 1) return;
+    // if (this.app.workspace && this.app.workspace.browser.location.toString() === filePath) return;
 
     this.logger.info("loading project file %s", filePath);
 
@@ -142,8 +148,6 @@ export class WorkspaceService extends BaseApplicationService<FrontEndApplication
     this.app.workspace.currentTool = action.toolFactory.create(this.app.workspace);
   }
 }
-
-export const workspaceDependency = new ApplicationServiceDependency("workspace", WorkspaceService);
 
 /**
  * Offset the transform skewing that happens with the editor

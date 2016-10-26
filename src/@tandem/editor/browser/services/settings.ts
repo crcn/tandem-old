@@ -2,7 +2,7 @@ import  * as store from "store";
 import { WrapBus } from "mesh";
 import { Metadata, inject } from "@tandem/common";
 import { SettingsDependency } from "@tandem/editor/browser/dependencies";
-import { CoreApplicationService } from "@tandem/editor/core";
+import { CoreApplicationService } from "@tandem/core";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
 import { SettingChangeAction, LoadAction } from "@tandem/common/actions";

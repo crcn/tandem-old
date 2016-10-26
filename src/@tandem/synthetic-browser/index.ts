@@ -1,6 +1,6 @@
 import { Dependencies } from "@tandem/common";
 import { RemoteBrowserService } from "./remote-browser";
-import { ApplicationServiceDependency } from "@tandem/editor/core";
+import { ApplicationServiceDependency } from "@tandem/core";
 
 export function createSyntheticBrowserDependencies(dependencies: Dependencies) {
   return new Dependencies(

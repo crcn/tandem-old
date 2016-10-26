@@ -10,15 +10,13 @@ import * as compression from "compression";
 import * as createSocketIOServer from "socket.io";
 
 import { exec } from "child_process";
-import { Logger } from "@tandem/common/logger";
-import { CoreApplicationService } from "@tandem/editor/core";
+import { CoreApplicationService } from "@tandem/core";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { Response } from "mesh";
 import { IOService } from "@tandem/editor/common";
 import { IApplication } from "@tandem/common/application";
 import { loggable, inject } from "@tandem/common/decorators";
 import { BaseApplicationService } from "@tandem/common/services";
-import { SocketIOHandlerDependency  } from "@tandem/server/dependencies";
 import { Dependencies, Injector } from "@tandem/common/dependencies";
 import { FileCacheDependency, FileCache } from "@tandem/sandbox";
 import { DSUpsertAction, LoadAction, InitializeAction } from "@tandem/common/actions";
@@ -102,7 +100,7 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
           </style>
           <script type="text/javascript">
             var config = {
-              backend: {
+              server: {
                 hostname: window.location.hostname,
                 port: ${this._port}
               }
@@ -127,7 +125,6 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
 
   async _loadSocketServer() {
     const io = createSocketIOServer();
-    SocketIOHandlerDependency.plugin(io, this.dependencies);
     io["set"]("origins", "*domain.com*:*");
     io.on("connection", this._ioService.addConnection);
     io.listen(this._socket);

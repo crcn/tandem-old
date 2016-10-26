@@ -1,7 +1,7 @@
 
 import { PasteAction } from "@tandem/editor/browser/actions";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
-import { CoreApplicationService } from "@tandem/editor/core";
+import { CoreApplicationService } from "@tandem/core";
 import {
   Logger,
   loggable,

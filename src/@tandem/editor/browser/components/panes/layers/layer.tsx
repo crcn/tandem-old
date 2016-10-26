@@ -18,6 +18,7 @@ import {
   traverseTree,
   findTreeNode,
   MetadataChangeAction,
+  BaseApplicationComponent,
 } from "@tandem/common";
 
 
@@ -37,10 +38,10 @@ function getLayerChildren(entity: any) {
   return entity[entity.metadata.get(MetadataKeys.CHILD_LAYER_PROPERTY) || "children"];
 }
 
-class LayerLabelComponent extends React.Component<ILayerLabelProps, any> {
+class LayerLabelComponent extends BaseApplicationComponent<ILayerLabelProps, any> {
 
-  constructor() {
-    super();
+  $didInject() {
+    super.$didInject();
     this.state = {};
   }
 
@@ -286,7 +287,7 @@ function collect(connect, monitor) {
   };
 }
 
-let LayerDndLabelComponent = DragSource("element", layerSource, collect)(LayerLabelComponent);
+let LayerDndLabelComponent = DragSource("element", layerSource, collect)(LayerLabelComponent as any);
 LayerDndLabelComponent = DropTarget("element", {
   canDrop({ node }, monitor) {
     return false;
@@ -318,36 +319,36 @@ LayerDndLabelComponent = DropTarget("element", {
   };
 })(LayerDndLabelComponent);
 
-export default class LayerComponent extends React.Component<{ app: FrontEndApplication, node: SyntheticDOMNode, depth: number }, any> {
+export default class LayerComponent extends BaseApplicationComponent<{ node: SyntheticDOMNode, depth: number }, any> {
 
   private _entityObserver: IActor;
 
-  constructor(props) {
-    super(props);
+  $didInject() {
+    super.$didInject();
     this.state = {};
   }
 
   componentDidMount() {
-    this.props.app.bus.register(this);
+    // this.bus.register(this);
     // this.props.entity.observe(this._entityObserver);
   }
 
   execute(action: Action) {
-    // when the select action is executed, take all items
-    // and ensure that the parent is expanded. Not pretty, encapsulated, and works.
-    if (action.type === SelectAction.SELECT) {
-      (action as SelectAction).items.forEach((item: SyntheticDOMNode) => {
-        let p = item.parent as SyntheticDOMContainer;
-        while (p) {
-          // p.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
-          p = p.parent as SyntheticDOMContainer;
-        }
-      });
-    }
+    // // when the select action is executed, take all items
+    // // and ensure that the parent is expanded. Not pretty, encapsulated, and works.
+    // if (action.type === SelectAction.SELECT) {
+    //   (action as SelectAction).items.forEach((item: SyntheticDOMNode) => {
+    //     let p = item.parent as SyntheticDOMContainer;
+    //     while (p) {
+    //       // p.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
+    //       p = p.parent as SyntheticDOMContainer;
+    //     }
+    //   });
+    // }
   }
 
   componentWillUnmount() {
-    this.props.app.bus.unregister(this);
+    // this.props.app.bus.unregister(this);
     this.props.node.unobserve(this);
   }
 

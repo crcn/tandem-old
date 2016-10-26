@@ -1,4 +1,4 @@
-export * from "./back-end";
+export * from "./server";
 export * from "./clipboard";
 export * from "./key-binding";
 export * from "./receiver";

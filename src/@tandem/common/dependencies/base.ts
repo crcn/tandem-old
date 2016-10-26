@@ -109,7 +109,7 @@ export interface IDependency extends ICloneable {
 
 export class Dependency<T> implements IDependency {
   public owner: Dependencies;
-  constructor(readonly id: string, public value: T, readonly overridable: boolean = false) { }
+  constructor(readonly id: string, public value: T, readonly overridable: boolean = true) { }
 
   /**
    * Clones the dependency - works with base classes.

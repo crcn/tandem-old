@@ -4,7 +4,7 @@ import * as MemoryDsBus from "mesh-memory-ds-bus";
 import { UpsertBus } from "@tandem/common/busses";
 import { PostDsNotifierBus } from "@tandem/common/busses";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
-import { CoreApplicationService } from "@tandem/editor/core";
+import { CoreApplicationService } from "@tandem/core";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
 import {
   DSAction,

@@ -114,7 +114,7 @@
     "html-void-elements": "^1.0.1",
     "marked": "^0.3.6",
     "memoizee": "^0.4.1",
-    "mesh": "^6.0.34",
+    "mesh": "6.0.x",
     "mesh-array-ds-bus": "^2.0.0",
     "mesh-memory-ds-bus": "^5.0.1",
     "mesh-remote-bus": "^2.0.9",

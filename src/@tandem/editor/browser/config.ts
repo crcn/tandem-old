@@ -22,6 +22,8 @@ export interface IEditorBrowserConfig {
    */
 
   server: {
-
+    port?: number;
+    hostname: string;
+    protocol: string;
   }
 }

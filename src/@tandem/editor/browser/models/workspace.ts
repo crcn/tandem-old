@@ -21,7 +21,6 @@ import { ISyntheticBrowser, SyntheticBrowser, SyntheticElementQuerier } from "@
 export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;
 
-
 export class Workspace extends Observable implements IWorkspace {
 
   readonly metadata = new Metadata(this);

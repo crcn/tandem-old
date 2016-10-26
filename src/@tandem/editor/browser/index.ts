@@ -1,3 +1,5 @@
+import "./styles";
+
 import { Dependencies } from "@tandem/common";
 import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
@@ -20,9 +22,11 @@ import {
 } from "./components";
 
 import {
+  ServerService,
   SettingsService,
   ClipboardService,
   ComponentService,
+  WorkspaceService,
   GlobalKeyBindingService,
 } from "./services";
 
@@ -31,9 +35,11 @@ export function concatEditorBrowserDependencies(dependencies: Dependencies, conf
     concatCoreApplicationDependencies(dependencies, config, fileSystem, fileResolver),
 
     // services
+    new ApplicationServiceDependency("server", ServerService),
     new ApplicationServiceDependency("settings", SettingsService),
     new ApplicationServiceDependency("clipboard", ClipboardService),
     new ApplicationServiceDependency("component", ComponentService),
+    new ApplicationServiceDependency("workspace", WorkspaceService),
     new ApplicationServiceDependency("keyBindings", GlobalKeyBindingService),
 
     // stage tool components

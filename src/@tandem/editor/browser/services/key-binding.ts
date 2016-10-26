@@ -4,7 +4,7 @@ import { KeyBinding } from "@tandem/editor/browser/key-bindings";
 import { KeyCommandAction } from "../actions";
 import { InitializeAction } from "@tandem/common/actions";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
-import { CoreApplicationService } from "@tandem/editor/core";
+import { CoreApplicationService } from "@tandem/core";
 import { Action, IActor, IFactory } from "@tandem/common";
 import { GlobalKeyBindingDependency } from "@tandem/editor/browser/dependencies";
 

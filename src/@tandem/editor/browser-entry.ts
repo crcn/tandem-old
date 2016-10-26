@@ -14,9 +14,7 @@ document.body.appendChild(element);
 
 const config: IEditorBrowserConfig = {
   element: element,
-  server: {
-    // TODO
-  }
+  server: window["config"].server
 };
 
 const deps = new Dependencies(
