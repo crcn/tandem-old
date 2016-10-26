@@ -12,11 +12,11 @@ import {
   SyntheticRendererAction,
 } from "@tandem/synthetic-browser";
 import { Store, Workspace } from "@tandem/editor/browser/models";
-import { ApplyEditAction, FileEditorDependency } from "@tandem/sandbox";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { pointerToolDependency } from "@tandem/editor/browser/models/pointer-tool";
 import { CoreApplicationService } from "@tandem/core";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
+import { ApplyEditAction, FileEditorDependency } from "@tandem/sandbox";
 import { WorkspaceToolFactoryDependency, StoreDependency } from "@tandem/editor/browser/dependencies";
 import { SetToolAction, ZoomAction, SetZoomAction, DocumentFileAction } from "@tandem/editor/browser/actions";
 
@@ -64,19 +64,9 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
 
     const browser = workspace.browser = new RemoteSyntheticBrowser(this.dependencies, new CanvasRenderer(workspace, new SyntheticDOMRenderer()));
 
-
-    // redundant since the document querier fetches all changes needed by the app -- even
-    // changes to things such as style sheets
-    // browser.observe({ execute: (action) => {
-    //   this.bus.execute(action);
-    // }});
-
-    // yuck - fix quick bug to notify of changes to querier since it's async
-    // workspace.documentQuerier.observe({ execute: (action) => this.bus.execute(action) });
     await browser.open(filePath);
 
     this._store.workspace = workspace;
-    // this.bus.register(this.app.workspace);
 
     // await this.bus.execute(new SetToolAction(this.dependencies.query<WorkspaceToolFactoryDependency>(pointerToolDependency.id)));
   }

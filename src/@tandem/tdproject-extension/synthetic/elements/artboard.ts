@@ -86,7 +86,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     }
   }
 
-  initialize() {
+  async initialize() {
     if (this._initialized) return;
     this._initialized = true;
 
@@ -96,14 +96,13 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
       const documentRenderer = new SyntheticDOMRenderer();
       this._artboardBrowser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.dependencies, new SyntheticArtboardRenderer(this, documentRenderer), this.browser);
       this._contentDocumentObserver = new WrapBus(this.onContentDocumentAction.bind(this));
-      // this._artboardBrowser.observe(this._artboardBrowserObserver = new WrapBus(this.onArtboardBrowserAction.bind(this)));
       watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
     }
 
     if (this.hasAttribute("src")) {
       const src = this.getAttribute("src");
       const window = this.ownerDocument.defaultView;
-      this._artboardBrowser.open(bundler.findByFilePath(this.source.filePath).getAbsoluteDependencyPath(src));
+      this._artboardBrowser.open((await bundler.findByFilePath(this.source.filePath)).getAbsoluteDependencyPath(src));
     }
   }
 

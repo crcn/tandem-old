@@ -10,6 +10,8 @@ import { ObservableCollection } from "@tandem/common/observable";
 import { Dependencies, PrivateBusDependency, IInjectable } from "@tandem/common/dependencies";
 import { PostDSAction, DSFindAction, DSUpdateAction, DSInsertAction } from "@tandem/common/actions";
 
+// TODO - remove global listener
+// TODO - listen to DS mediator for updates on record collection
 export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends ObservableCollection<T> implements IInjectable {
   private _sync: IDisposable;
   public collectionName: string;
@@ -41,7 +43,12 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
 
   sync() {
     if (this._sync) return this._sync;
+
+    // TODO - this is very smelly. Collections should not be registering themselves
+    // to the global message bus. Instead they should be registering themselves to a DS manager
+    // which handles all incomming and outgoing DS actions from the message bus.
     this._bus.register(this._globalActionObserver);
+
     return this._sync = {
       dispose: () => {
         this._sync = undefined;
@@ -49,6 +56,40 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
       }
     }
   }
+
+  /**
+   * loads an item with the given query from the DS
+   */
+
+  async loadItem(query: any): Promise<T|undefined> {
+    const { value, done } = await this._bus.execute(new DSFindAction(this.collectionName, this.query, false)).read();
+
+    // item exists, so add and return it. Otherwise return undefined indicating
+    // that the item does not exist.
+    if (value) {
+      const item = this.createActiveRecord(value);
+      this.push(item);
+      return item;
+    }
+
+  }
+
+  /**
+   * Loads an item into this collection if it exists, otherwise creates an item
+   */
+
+  async loadOrCreateItem(query: any, source: U = query) {
+    const loadedItem = await this.loadItem(query);
+    return loadedItem || this.create(source);
+  }
+
+  /**
+   * Synchronously creates a new active record (without persisting) with the given data
+   * source.
+   *
+   * @param {U} source The source data represented by the new active record.
+   * @returns
+   */
 
   create(source: U) {
     const record = this.createActiveRecord(source);

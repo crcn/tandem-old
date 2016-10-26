@@ -24,7 +24,7 @@ export class GutterComponent extends BaseApplicationComponent<{ position: string
       width: sidebarSizeReference.value
     };
 
-    return this._store.settings.get(this.props.hideKey) === true ? null : <div className={["m-sidebar gutter", this.props.position].join(" ")} style={style}>
+    return this._store.settings.get(this.props.hideKey) === true || true ? null : <div className={["m-sidebar gutter", this.props.position].join(" ")} style={style}>
       <RegisteredComponent {...this.props} ns={this.props.registeredComponentNs} />
       <SideDraggerComponent position={this.props.position === "right" ? "left" : "right"} reference={sidebarSizeReference} />
     </div>;

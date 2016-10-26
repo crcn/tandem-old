@@ -122,7 +122,7 @@ class BundleSerializer implements ISerializer<Bundle, string> {
     const bundler = BundlerDependency.getInstance(dependencies);
 
     // find an existing bundle object here, or add a new singleton bundle
-    return bundler.findByFilePath(filePath) || bundler.collection.create({ filePath });
+    return bundler.eagerFindByFilePath(filePath) || bundler.collection.create({ filePath });
   }
 }
 
@@ -254,7 +254,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
    */
 
   get dependencyBundles(): Bundle[] {
-    return values(this._absoluteDependencyPaths).map((filePath) => this._bundler.findByFilePath(filePath));
+    return values(this._absoluteDependencyPaths).map((filePath) => this._bundler.eagerFindByFilePath(filePath));
   }
 
   /**
@@ -285,8 +285,14 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     });
   }
 
-  getDependencyByRelativePath(relativePath: string) {
-    return this._bundler.findByFilePath(this.getAbsoluteDependencyPath(relativePath));
+  /**
+   * Synchronously fetches a dependency of this item, even though the active record
+   * may not currently exist in memory. This is okay in certain cases - particularly where
+   * this method is called within a sandbox where everything must be loaded in.
+   */
+
+  eagerGetDependencyByRelativePath(relativePath: string) {
+    return this._bundler.eagerFindByFilePath(this.getAbsoluteDependencyPath(relativePath));
   }
 
   getAbsoluteDependencyPath(relativePath: string) {
@@ -373,8 +379,6 @@ export class Bundle extends BaseActiveRecord<IBundleData> {
     const result = await this.loadTransformedContent();
     const map = result.map as sm.RawSourceMap;
     const consumer = new sm.SourceMapConsumer(map);
-
-    console.log(consumer.originalPositionFor(location.start));
   }
 
   shouldDeserialize(b: IBundleData) {
@@ -445,15 +449,36 @@ export class Bundler extends Observable {
     return "bundleItems";
   }
 
-  findByFilePath(filePath) {
+  /**
+   * Looks for a loaded item. Though, it may not exist in memory, but it *may* exist in some other
+   * process.
+   */
+
+  eagerFindByFilePath(filePath): Bundle {
     return this.collection.find((entity) => entity.filePath === filePath);
   }
 
-  async bundle(entryFilePath: string): Promise<Bundle> {
-    const bundle = this.findByFilePath(entryFilePath);
+  /**
+   * Loads an item from memory if it exists, or from the remote data store.
+   */
+
+  async findByFilePath(filePath): Promise<Bundle> {
+    return this.eagerFindByFilePath(filePath) || await this.collection.loadItem({ filePath });
+  }
+
+  /**
+   * Creates a new bundle with the given file path.
+   *
+   * @param {string} entryFilePath
+   * @returns {Promise<Bundle>}
+   */
+
+  async bundle(filePath: string): Promise<Bundle> {
+    const bundle = await this.findByFilePath(filePath);
     if (bundle) return bundle.whenReady();
-    return (await this.collection.create({
-      filePath: entryFilePath
-    }).insert()).load();
+
+    // at this point, the bundle does not exist in memory, or even
+    // in a remote DS, so create & load it.
+    return (await this.collection.create({ filePath }).insert()).load();
   }
 }

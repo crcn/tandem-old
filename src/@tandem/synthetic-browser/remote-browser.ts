@@ -57,7 +57,6 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     remoteBrowserStream.pipeTo({
       write: this.onRemoteBrowserAction.bind(this),
       close: () => {
-        console.log("CLOSED");
       },
       abort: (error) => {
 
@@ -68,7 +67,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   onRemoteBrowserAction({ payload }) {
 
     const action = deserialize(payload, this.dependencies) as RemoteBrowserDocumentAction;
-    console.log("receiving browser action", action);
+    // console.log("receiving browser action", action);
 
     if (action.type === RemoteBrowserDocumentAction.NEW_DOCUMENT) {
 

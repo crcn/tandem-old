@@ -23,7 +23,14 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
     const window = this.ownerDocument.defaultView;
     const rel     = this.getAttribute("rel") || "stylesheet";
     const href    = this.getAttribute("href");
-    const dependency = this.module.bundle.getDependencyByRelativePath(href);
+
+    // Odd chunk of code.
+    // Elements that are evaluated are created in a sandbox, which require pre-loaded
+    // bundles for them to execute. Therefore it's okay to fetch a bundle here synchronously
+    // because it *must* exist for the createCallback to be called. for deserialized instances,
+    // this method is never called anyways because deserialization implies that we're restoring the
+    // element to its original state -- another method is called instead.
+    const dependency = this.module.bundle.eagerGetDependencyByRelativePath(href);
 
     let value: any;
 

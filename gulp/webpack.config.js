@@ -63,7 +63,7 @@ module.exports = {
         {
           test: /\.tsx?$/,
           loader: 'ts-loader',
-          exclude:  BASE_DIR + '/node_modules'
+          exclude:  /node_modules/
         },
         {
           test: /\.scss$/,
