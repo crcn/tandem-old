@@ -39,8 +39,7 @@ module.exports = {
       new WebpackNotifierPlugin({
         alwaysNotify: true
       }),
-      new ExtractTextPlugin('styles.css'),
-      new HtmlWebpackPlugin()
+      new ExtractTextPlugin('styles.css')
     ],
     node: {
       __filename: true,

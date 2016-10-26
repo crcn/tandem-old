@@ -31,7 +31,6 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
   private _ioService:IOService<IApplication>;
   private _port:number;
   private _socket:any;
-  public config:any;
   private _bundles:Array<any>;
 
   @inject(FileCacheDependency.ID)
@@ -67,16 +66,6 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
     this._server.use(cors());
     this._server.use(compression());
 
-    this._server.get("/asset/:uri", async (req, res, next) => {
-
-      const uri = decodeURIComponent(req.params.uri);
-      // const { content } = await ReadFileAction.execute(uri, this.bus);
-
-
-      // need to sandbox this in project directory
-      res.sendFile(uri);
-    });
-
     for (const entryName in this.config.entries) {
       var entryPath = this.config.entries[entryName];
 
@@ -87,10 +76,6 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
       // this should be part of the config
       const entryDirectory = path.dirname(entryPath);
       this._server.use(prefix, express.static(entryDirectory));
-
-      if (this.config.publicDirectory) {
-        this._server.use(prefix, express.static(this.config.publicDirectory));
-      }
 
       const staticFileNames = fs.readdirSync(entryDirectory);
 

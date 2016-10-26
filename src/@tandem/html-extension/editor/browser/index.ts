@@ -67,3 +67,4 @@ export * from "./key-bindings";
 export * from "./services";
 export * from "./models";
 export * from "../../core";
+export * from "../worker";

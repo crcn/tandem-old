@@ -9,7 +9,11 @@
 export interface IEdtorServerConfig {
   port?: number;
   cwd: string;
+
   argv: {
-    _: any[]
-  }
+    _: any[],
+    open?: boolean
+  },
+
+  entries: any
 }
