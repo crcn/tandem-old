@@ -37,9 +37,9 @@ export interface IFileCacheItemData {
   _id?: string;
   filePath: string;
   url: string;
+  localFileModifiedAt?: number;
   updatedAt?: number;
   metadata?: Object;
-  mtime: number;
 }
 
 export interface IFileCacheItemQuery {
@@ -62,10 +62,10 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   public updatedAt: number;
 
   @bindable(true)
-  public url: string;
+  public localFileModifiedAt: number;
 
   @bindable(true)
-  public mtime: number;
+  public url: string;
 
   @bindable(true)
   public filePath: string;
@@ -81,14 +81,14 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     return {
       updatedAt : this.updatedAt,
       filePath  : this.filePath,
+      localFileModifiedAt: this.localFileModifiedAt,
       url       : this.url,
-      mtime     : this.mtime,
       metadata  : this.metadata.data
     };
   }
 
   shouldUpdate() {
-    return this.url !== this.source.url || this.mtime !== this.source.mtime;
+    return this.url !== this.source.url || this.localFileModifiedAt !== this.source.localFileModifiedAt;
   }
 
   willSave() {
@@ -134,12 +134,12 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     return this.updatedAt < b.updatedAt;
   }
 
-  setPropertiesFromSource({ filePath, updatedAt, url, metadata, mtime }: IFileCacheItemData) {
+  setPropertiesFromSource({ filePath, updatedAt, url, metadata, localFileModifiedAt }: IFileCacheItemData) {
     this._cache    = undefined;
     this.filePath  = filePath;
     this.url       = url;
-    this.mtime     = mtime;
     this.updatedAt = updatedAt;
+    this.localFileModifiedAt = localFileModifiedAt;
     this.metadata  = new Metadata(metadata);
   }
 }
@@ -175,7 +175,7 @@ export class FileCacheSynchronizer {
 
   private async onLocalFindChange(filePath: string) {
     const entity = await this._cache.item(filePath);
-    entity.mtime = fs.lstatSync(filePath).mtime.getTime();
+    entity.localFileModifiedAt = fs.lstatSync(filePath).mtime.getTime();
 
     // override any data urls that might be stored on the entity
     entity.setFileUrl(filePath).save();
@@ -201,6 +201,10 @@ export class FileCache extends Observable {
     this._fileSystem = FileSystemDependency.getInstance(_dependencies);
   }
 
+  eagerFindByFilePath(filePath) {
+    return this.collection.find(item => item.filePath === filePath);
+  }
+
   get collectionName() {
     return "fileCache";
   }
@@ -208,8 +212,7 @@ export class FileCache extends Observable {
   async item(filePath: string): Promise<FileCacheItem> {
     return this.collection.find((entity) => entity.filePath === filePath) || await this.collection.create({
       filePath: filePath,
-      url: "file://" + filePath,
-      mtime: Date.now()
+      url: "file://" + filePath
     }).insert();
   }
 

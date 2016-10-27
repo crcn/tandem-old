@@ -1,6 +1,3 @@
-- [ ] vscode ext update
-- [ ] html source maps
-  - generate d.ts files
-- [ ] combine front-end and back-end in one directory
+- [x] vscode ext update
 - [ ] wire up style pane
 - [ ] code editor next to preview (hovering)

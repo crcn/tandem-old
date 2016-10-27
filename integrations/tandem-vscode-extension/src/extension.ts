@@ -5,7 +5,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import "reflect-metadata";
 
-import { exec, spawn } from "child_process";
+import { exec, spawn, ChildProcess } from "child_process";
 import { WrapBus } from "mesh";
 import * as vscode from "vscode";
 import * as net from "net";
@@ -17,71 +17,167 @@ import { NoopBus } from "mesh";
 
 import { GetServerPortAction, OpenProjectAction } from "@tandem/editor";
 import { createCoreApplicationDependencies, ServiceApplication } from "@tandem/core";
-import { SockBus, Dependencies, PrivateBusDependency, Action, PostDSAction, PropertyChangeAction } from "@tandem/common";
-import { LocalFileSystem, LocalFileResolver, BundlerDependency, FileCacheDependency, FileCacheItem } from "@tandem/sandbox";
+import {
+    LocalFileSystem,
+    LocalFileResolver,
+    BundlerDependency,
+    Bundler,
+    FileCacheDependency,
+    FileCacheItem,
+    FileCache,
+} from "@tandem/sandbox";
+
+import { 
+    SockBus,
+    Dependencies,
+    PrivateBusDependency,
+    Action,
+    PostDSAction,
+    PropertyChangeAction,
+    Observable,
+    IBrokerBus,
+} from "@tandem/common";
 
 const UPDATE_FILE_CACHE_TIMEOUT = 25;
+
+class FileCacheChangeAction extends Action{
+    static readonly FILE_CACHE_CHANGE = "fileCachChange";
+    constructor(readonly item: FileCacheItem) {
+        super(FileCacheChangeAction.FILE_CACHE_CHANGE);
+    }
+}
+
+class TandemClient extends Observable {
+
+    readonly fileCache: FileCache;
+    readonly bundler: Bundler;
+    readonly bus: IBrokerBus
+    public port: number;
+
+    private _clientApp: ServiceApplication;
+    private _process: ChildProcess;
+    private _sockConnection: net.Socket;
+    private _disconnected: boolean;
+    private _sockFilePath: string;
+
+    constructor() {
+        super();
+
+        const deps = new Dependencies(
+            createCoreApplicationDependencies({})
+        );
+
+        this._clientApp = new ServiceApplication(deps);
+
+        this.bundler   = BundlerDependency.getInstance(deps);
+        this.fileCache = FileCacheDependency.getInstance(deps);
+        this.bus       = PrivateBusDependency.getInstance(deps);
+
+        this.watchFileCache();
+    }
+
+    async disconnect() {
+        this._disconnected = true;
+        console.log("disconnecting");
+        if (this._process) {
+            this._process.kill();
+        }
+        if (this._sockConnection) {
+            this._sockConnection.end();
+        }
+    }
+
+    async connect() {
+
+        const sockFilePath = await this.getSocketFilePath();
+
+        console.log("Connecting to the server");
+        const client = this._sockConnection = net.connect({ path: sockFilePath } as any);
+        const sockBus = new SockBus(client, this.bus);
+
+        this.bus.register(sockBus);
+        let _reconnecting = false;
+        const reconnect = () => {
+            if (_reconnecting) return;
+            _reconnecting = true;
+            this.bus.unregister(sockBus);
+
+            // reconnect on close -- only after a short TTL
+            if (!this._disconnected)  {
+                setTimeout(this.connect.bind(this), 1000);
+            }
+        }
+
+        client.once("close", reconnect).once("error", reconnect);
+        this.port = await GetServerPortAction.execute(this.bus);
+    }
+
+    private async getSocketFilePath() {
+        if (this._sockFilePath) return this._sockFilePath;
+
+        if (this._process) {
+            this._process.kill();
+        }
+
+        // isolate the td process so that it doesn't compete with resources
+        // with VSCode.
+        const tdproc = this._process = spawn(`node`, ["server-entry.js", "--expose-sock-file"], {
+            cwd: process.cwd() + "/node_modules/@tandem/editor"
+        });
+
+        tdproc.stdout.pipe(process.stdout);
+        tdproc.stderr.pipe(process.stderr);
+
+        tdproc.once("exit", (code) => {
+            console.log("Tandem process exited.", code);
+        });
+
+        return this._sockFilePath = await new Promise<string>((resolve) => {
+
+            const sockBuffer = [];
+            tdproc.stdout.pipe(through(function(chunk, enc:any, callback) {
+                const value = String(chunk);
+                console.log(value);
+
+                // TODO - need util function for this
+                const match = value.match(/\-+sock file start\-+\n(.*?)\n\-+sock file end\-+/);
+
+                if (match) {
+                    resolve(match[1]);
+                }
+            }))
+        });
+    }
+
+    private watchFileCache() {
+        this.fileCache.collection.observe(new WrapBus((action: Action) => {
+            if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
+                const changeAction = <PropertyChangeAction>action;
+                if (changeAction.property === "url") {
+                    this.notify(new FileCacheChangeAction(changeAction.target));
+                }
+            }
+        }));
+    }
+
+}
+
+let _client: TandemClient;
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
 
-    // isolate the td process so that it doesn't compete with resources
-    // with VSCode.
-    const tdproc = spawn(`node`, ["server-entry.js", "--expose-sock-file"], {
-        cwd: process.cwd() + "/node_modules/@tandem/editor"
-    });
+    const client = _client = new TandemClient();
 
-    tdproc.stdout.pipe(process.stdout);
-    tdproc.stderr.pipe(process.stderr);
+    await client.connect();
 
-    tdproc.once("exit", (code) => {
-        console.log("Tandem process exited.", code);
-    });
-
-    const sockFilePath = await new Promise((resolve) => {
-
-        const sockBuffer = [];
-        tdproc.stdout.pipe(through(function(chunk, enc:any, callback) {
-            const value = String(chunk);
-
-            // TODO - need util function for this
-            const match = value.match(/\-+sock file start\-+\n(.*?)\n\-+sock file end\-+/);
-
-            if (match) {
-                resolve(match[1])
-            }
-
-            callback();
-        }))
-    });
-
-    const deps = new Dependencies(
-        createCoreApplicationDependencies({})
-    );
-
-    const clientApp = new ServiceApplication(deps);
-
-    await clientApp.initialize();
-    const bus = PrivateBusDependency.getInstance(deps);
-
-    const client = net.connect({ path: sockFilePath } as any);
-
-    // connect with the main process
-    bus.register(new SockBus(client, bus));
-
-    const port      = await GetServerPortAction.execute(bus);
-    const bundler   = BundlerDependency.getInstance(deps);
-    const fileCache = FileCacheDependency.getInstance(deps);
-
-    fileCache.collection.observe(new WrapBus((action: Action) => {
-        if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
-            const changeAction = <PropertyChangeAction>action;
-            if (changeAction.property === "url") {
-                setEditorContentFromCache(changeAction.target);
-            }
+    client.observe(new WrapBus((action) => {
+        if (action.type === FileCacheChangeAction.FILE_CACHE_CHANGE) {
+            setEditorContentFromCache((<FileCacheChangeAction>action).item);
         }
     }));
+
 
     var _inserted = false;
     var _content;
@@ -92,7 +188,7 @@ export async function activate(context: vscode.ExtensionContext) {
     async function setEditorContent({ content, filePath, mtime }) {
 
         const editor = vscode.window.activeTextEditor;
-        // if (mtime < _mtime) return;
+        if (mtime < _mtime) return;
 
         if (editor.document.fileName !== filePath || editor.document.getText() === content) return;
 
@@ -125,7 +221,9 @@ export async function activate(context: vscode.ExtensionContext) {
         const editorContent = document.getText();
         const filePath = document.fileName;
 
-        const fileCacheItem = await fileCache.item(filePath);
+        const fileCacheItem = client.fileCache.eagerFindByFilePath(filePath);
+        if (!fileCacheItem) return;
+
         await fileCacheItem.setDataUrl(editorContent).save();
     }, UPDATE_FILE_CACHE_TIMEOUT);
 
@@ -139,10 +237,10 @@ export async function activate(context: vscode.ExtensionContext) {
         // TODO - prompt to save file if it doesn't currently exist
         const hasOpenWindow = await OpenProjectAction.execute({
             filePath: fileName
-        }, bus);
+        }, client.bus);
 
         if (!hasOpenWindow) {
-            exec(`open http://localhost:${port}/editor`);
+            exec(`open http://localhost:${client.port}/editor`);
         }
     });
 
@@ -158,7 +256,7 @@ export async function activate(context: vscode.ExtensionContext) {
         await setEditorContent({
             filePath: item.filePath,
             content: await item.read(),
-            mtime: item.mtime
+            mtime: item.updatedAt
         });
     }
 
@@ -167,7 +265,10 @@ export async function activate(context: vscode.ExtensionContext) {
         const doc      = e.document;
         const filePath = doc.fileName;
 
-        const fileCacheItem = await fileCache.item(filePath);
+        // must be loaded in
+        const fileCacheItem = client.fileCache.eagerFindByFilePath(filePath);
+        if (!fileCacheItem) return;
+
         const fileCacheItemContent = await fileCacheItem.read();
 
         // visual editor may have modified file content. Ensure that the editor
@@ -193,4 +294,5 @@ export async function activate(context: vscode.ExtensionContext) {
 
 // this method is called when your extension is deactivated
 export function deactivate() {
+    _client.disconnect();
 }

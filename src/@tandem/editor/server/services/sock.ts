@@ -35,10 +35,6 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
 
   [LoadAction.LOAD](action: LoadAction) {
 
-    if (this.config.argv.exposeSockFile) {
-      console.log("---sock file start---\n%s\n---sock file end---", SOCK_FILE);
-    }
-
     return new Promise((resolve, reject) => {
       let bus: IActor;
 
@@ -47,6 +43,7 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
       client.once("connect", async () => {
         await ExecAction.execute(this.config, new SockBus(client, this.bus));
         client.end();
+        this._printSockFile();
       })
 
       client.once("error", this._startSocketServer.bind(this));
@@ -63,6 +60,13 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
   [InitializeAction.INITIALIZE](action: LoadAction) {
     if (this.config.argv) {
       ExecAction.execute(this.config, this.bus);
+    }
+    this._printSockFile();
+  }
+
+  private _printSockFile() {
+    if (this.config.argv.exposeSockFile) {
+      console.log("---sock file start---\n%s\n---sock file end---", SOCK_FILE);
     }
   }
 

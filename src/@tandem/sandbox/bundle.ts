@@ -345,7 +345,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
       this._watchingFileCacheItem = true;
       const fileCache = await this.getSourceFileCacheItem();
       this._fileCacheItemWatchers = new DisposableCollection(
-        watchProperty(fileCache, "mtime", this.onFileCacheItemChange.bind(this)),
+        watchProperty(fileCache, "localFileModifiedAt", this.onFileCacheItemChange.bind(this)),
         watchProperty(fileCache, "url", this.onFileCacheItemChange.bind(this))
       );
     }
