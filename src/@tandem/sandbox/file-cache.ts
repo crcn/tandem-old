@@ -58,19 +58,19 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   private _cache: any;
 
-  @bindable()
+  @bindable(true)
   public updatedAt: number;
 
-  @bindable()
+  @bindable(true)
   public url: string;
 
-  @bindable()
+  @bindable(true)
   public mtime: number;
 
-  @bindable()
+  @bindable(true)
   public filePath: string;
 
-  @bindable()
+  @bindable(true)
   public metadata: Metadata;
 
   constructor(source: IFileCacheItemData, collectionName: string, private _fileSystem: IFileSystem, bus: IActor) {

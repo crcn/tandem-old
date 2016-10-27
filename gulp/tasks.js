@@ -28,6 +28,7 @@ const {
   PACKAGES,
   BASE_DIR,
   PACKAGE_NAMES,
+  INTEGRATIONS_DIR,
   NODE_MODULES_DIR,
   MONO_PKG_FILE_PATH,
   OUT_NODE_MODULES_DIR,
@@ -100,7 +101,8 @@ gulp.task('build:electron');
 gulp.task('prepare', gulpSequence(
   'prepare:copy-assets',
   'prepare:mono-package',
-  'prepare:symlinks'
+  'prepare:symlinks',
+  'prepare:integrations'
 ));
 
 gulp.task('prepare:copy-assets', () => {
@@ -143,6 +145,20 @@ gulp.task('prepare:symlinks', ['clean:symlinks'], () => {
   return gulp
   .src(join(OUT_DIR, '*'))
   .pipe(vfs.symlink(NODE_MODULES_DIR));
+});
+
+gulp.task('prepare:integrations', [
+  'prepare:vscode-extension'
+]);
+
+gulp.task('prepare:vscode-extension', [
+  'prepare:vscode-extension-symlinks'
+]);
+
+gulp.task('prepare:vscode-extension-symlinks', () => {
+  return gulp
+  .src(join(OUT_DIR, '*'))
+  .pipe(vfs.symlink(join(INTEGRATIONS_DIR, 'tandem-vscode-extension', 'node_modules')));
 });
 
 /******************************

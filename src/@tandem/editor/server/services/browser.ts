@@ -9,14 +9,15 @@ import * as express from "express";
 import * as compression from "compression";
 import * as createSocketIOServer from "socket.io";
 
+import { GetServerPortAction } from "@tandem/editor/common";
 import { exec } from "child_process";
-import { CoreApplicationService } from "@tandem/core";
-import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { Response } from "mesh";
 import { IOService } from "@tandem/editor/common";
 import { IApplication } from "@tandem/common/application";
 import { loggable, inject } from "@tandem/common/decorators";
+import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { BaseApplicationService } from "@tandem/common/services";
+import { CoreApplicationService } from "@tandem/core";
 import { Dependencies, Injector } from "@tandem/common/dependencies";
 import { FileCacheDependency, FileCache } from "@tandem/sandbox";
 import { DSUpsertAction, LoadAction, InitializeAction } from "@tandem/common/actions";
@@ -50,6 +51,10 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
     }
 
     this._fileCache.syncWithLocalFiles();
+  }
+
+  [GetServerPortAction.GET_SERVER_PORT]() {
+    return this._port;
   }
 
   async _loadHttpServer() {

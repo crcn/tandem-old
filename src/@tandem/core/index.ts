@@ -25,7 +25,7 @@ import {
 
 // TODO - possibly move these to @tandem/core since this configuration is
 // required by *all* packages that use the application bus
-function concatBusDependencies(dependencies: Dependencies) {
+function createBusDependencies() {
 
   // Notice the bubbling action here. Actions dispatched on the private bus will
   // make its way to the public bus. However, actions also have access levels. If an action
@@ -42,25 +42,21 @@ function concatBusDependencies(dependencies: Dependencies) {
   const privateBus   = new BrokerBus(SequenceBus, protectedBus);
 
   return new Dependencies(
-    dependencies,
     new PublicBusDependency(publicBus),
     new ProtectedBusDependency(protectedBus),
     new PrivateBusDependency(privateBus),
   );
 }
 
-export function concatCoreApplicationDependencies(dependencies: Dependencies, config: any, fileSystem?: IFileSystem, fileResolver?: IFileResolver) {
+export function createCoreApplicationDependencies(config: any, fileSystem?: IFileSystem, fileResolver?: IFileResolver) {
 
-  dependencies = new Dependencies(
-    dependencies,
+  const dependencies = new Dependencies(
+    createBusDependencies(),
     new DependenciesDependency(),
     new ApplicationConfigurationDependency(config),
   );
 
-  dependencies = concatBusDependencies(dependencies);
-  dependencies = concatSandboxDependencies(dependencies, fileSystem, fileResolver);
-
-  return dependencies;
+  return concatSandboxDependencies(dependencies, fileSystem, fileResolver);
 }
 
 export class ServiceApplication extends Application2 {

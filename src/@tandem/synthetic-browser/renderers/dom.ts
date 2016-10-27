@@ -29,6 +29,9 @@ import {
   SyntheticCSSStyleDeclaration,
 } from "../dom";
 
+// TODO - Ditch React and use the diffs served from
+// the worker in order to patch changes here. Should be a
+// huge performance boost.
 export class SyntheticDOMRenderer extends BaseRenderer {
 
   private _currentCSSText: string;

@@ -35,12 +35,14 @@ import {
   watchProperty,
   Dependencies,
   InitializeAction,
-  OpenProjectAction,
   DependenciesDependency,
   BaseApplicationService,
   ApplicationServiceDependency,
   GetPrimaryProjectFilePathAction,
 } from "@tandem/common";
+
+
+import { OpenProjectAction } from "@tandem/editor/common";
 
 @loggable()
 export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfig> {

@@ -6,6 +6,8 @@ import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { calculateCSSMeasurments } from "@tandem/common";
 import { SyntheticHTMLElement, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
+// TODO - add attribute information here so that the user
+// knows what they're hovering on. OR, highlight the line in code.
 class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLElement, workspace: Workspace }, any> {
 
   render() {

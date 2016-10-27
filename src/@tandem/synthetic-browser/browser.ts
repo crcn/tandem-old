@@ -107,7 +107,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   }
 
   async open(url: string) {
-    if (this._url && this._url === url) {
+    if (this._url && this._url === url && this._window) {
       return;
     }
 

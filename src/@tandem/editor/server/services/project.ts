@@ -8,12 +8,12 @@ import {
   filterAction,
   Dependencies,
   IApplication,
-  OpenProjectAction,
   DependenciesDependency,
   BaseApplicationService,
   ApplicationServiceDependency,
   GetPrimaryProjectFilePathAction,
 } from "@tandem/common";
+import { OpenProjectAction } from "@tandem/editor/common";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 

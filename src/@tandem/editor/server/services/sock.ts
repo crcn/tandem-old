@@ -1,8 +1,9 @@
 import { IActor } from "@tandem/common/actors";
+import { OpenProjectAction } from "@tandem/editor/common";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
-import { LoadAction, InitializeAction, OpenProjectAction, SockBus, Action } from "@tandem/common";
+import { LoadAction, InitializeAction, SockBus, Action, isPublicAction } from "@tandem/common";
 import * as os from "os";
 import * as path from "path";
 import * as net from "net";
@@ -68,7 +69,19 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
   private _startSocketServer() {
     this._deleteSocketFile();
     const server = net.createServer((connection) => {
-      new SockBus(connection, this.bus);
+      const bus = new SockBus(connection, this.bus);
+      const gateBus = {
+        execute(action: Action) {
+          if (isPublicAction(action)) {
+            return bus.execute(action);
+          }
+        }
+      };
+      connection.on("close", () => {
+        this.bus.unregister(gateBus);
+      })
+
+      this.bus.register(gateBus);
     });
 
     server.listen(SOCK_FILE);

@@ -122,6 +122,10 @@ export class RemoteBrowserService extends BaseApplicationService2 {
 
         // clone the document since there may be other connected clients -- don't
         // want to mutate the original doc.
+        if (!browser.document) {
+          console.log(browser);
+        }
+
         let currentDocument = browser.document.cloneNode(true);
 
         writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.NEW_DOCUMENT, browser.document)) });

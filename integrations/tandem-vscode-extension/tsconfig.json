@@ -1,14 +1,25 @@
 {
+    "compileOnSave": true,
     "compilerOptions": {
         "module": "commonjs",
         "target": "es6",
-        "outDir": "lib",
+        "outDir": "out",
         "noLib": true,
         "sourceMap": true,
+        "baseUrl": "src",
         "rootDir": "."
     },
+
     "exclude": [
         "node_modules",
-        ".vscode-test"
+        "*-test",
+        "old",
+        "out",
+        "integrations",
+        "examples"
+    ],
+    "filesGlob": [
+        "./src/**/*.ts",
+        "./src/**/*.tsx"
     ]
 }

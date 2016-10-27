@@ -8,3 +8,4 @@ export const createCommonEditorDependencies = () => {
 }
 
 export * from "./services";
+export * from "./actions";

@@ -3,3 +3,4 @@
   - generate d.ts files
 - [ ] combine front-end and back-end in one directory
 - [ ] wire up style pane
+- [ ] code editor next to preview (hovering)

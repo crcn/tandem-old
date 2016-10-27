@@ -3,7 +3,7 @@ import "./styles";
 import { Dependencies } from "@tandem/common";
 import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
-import { concatCoreApplicationDependencies, ApplicationServiceDependency } from "@tandem/core";
+import { createCoreApplicationDependencies, ApplicationServiceDependency } from "@tandem/core";
 import {
   StoreDependency,
   ReactComponentFactoryDependency,
@@ -34,8 +34,9 @@ import {
 
 export function concatEditorBrowserDependencies(dependencies: Dependencies, config: IEditorBrowserConfig, fileSystem?: IFileSystem, fileResolver?: IFileResolver) {
   return new Dependencies(
+    dependencies,
     createCommonEditorDependencies(),
-    concatCoreApplicationDependencies(dependencies, config, fileSystem, fileResolver),
+    createCoreApplicationDependencies(config, fileSystem, fileResolver),
 
     // services
     new ApplicationServiceDependency("server", ServerService),
