@@ -1,5 +1,5 @@
-<link href="../src/@tandem/editor/browser/vendor/bootstrap/css/bootstrap.css"></link>
-<link href="../src/@tandem/editor/browser/vendor/ionicons/css/ionicons.css"></link>
+<link href="../@tandem/editor/browser/vendor/bootstrap/css/bootstrap.css"></link>
+<link href="../@tandem/editor/browser/vendor/ionicons/css/ionicons.css"></link>
 <link href="./preview.scss"></link>
 <link href="./global.scss" type="text/scss"></link>
 

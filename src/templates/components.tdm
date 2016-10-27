@@ -4,8 +4,8 @@
 
   $input-radius: 3px;
   $input-padding: 2px 8px;
-  $input-border: none;
-  $input-background: #333;
+  $input-border: 1px solid rgba(0,0,0,0.15);
+  $input-background: rgba(0,0,0,0.1);
 
   .td-dropdown {
 

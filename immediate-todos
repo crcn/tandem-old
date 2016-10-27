@@ -1,7 +1,5 @@
-- [ ] finish HTML CSS pane
 - [ ] vscode ext update
 - [ ] html source maps
   - generate d.ts files
 - [ ] combine front-end and back-end in one directory
-- [ ] transpile bundles (webpack loader)
-  - [ ] tap into tandem process
+- [ ] wire up style pane

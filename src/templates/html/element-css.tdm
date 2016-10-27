@@ -1,6 +1,5 @@
 <link rel="import" href="../gutter.tdm">
 <link rel="import" href="../components.tdm">
-<link rel="import "href="./element-style.tdm">
 
 <style type="text/scss">
   .td-css-pane {
@@ -41,7 +40,24 @@
        - nail polish icon for prettier styler
       -->
       <div class="td-section-header">.container</div>
-      <html-element-style-group />
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-4">
+            color
+          </div>
+          <div class="col-xs-8">
+            <input type="text" value="red" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">
+            background
+          </div>
+          <div class="col-xs-8">
+            <input type="text" value="blue" />
+          </div>
+        </div>
+      </div>
     </div>
     <div>
       <div class="td-section-header">.selectables > [data-type="test"]</div>
