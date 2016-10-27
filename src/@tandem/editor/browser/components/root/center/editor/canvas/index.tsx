@@ -1,13 +1,14 @@
 import "./index.scss";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
-import { BoundingRect, IPoint, BaseApplicationComponent } from "@tandem/common";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import ToolsLayerComponent from "./tools";
 import { IsolateComponent }  from "@tandem/editor/browser/components/common";
+import { SyntheticDOMElement }  from "@tandem/synthetic-browser";
 import PreviewLayerComponent from "./preview";
 import { UpdateAction, IActor } from "@tandem/common";
 import { Dependencies, PrivateBusDependency } from "@tandem/common/dependencies";
+import { BoundingRect, IPoint, BaseApplicationComponent } from "@tandem/common";
 import {
   ZoomAction,
   MouseAction,
@@ -120,6 +121,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   }
 
   onWheel = (event: React.WheelEvent<any>) => {
+    this._zooming();
     this.onMouseEvent(event);
     if (event.metaKey) {
       event.preventDefault();
@@ -129,6 +131,14 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
       event.preventDefault();
       this.forceUpdate();
     }
+  }
+
+  private _zoomTimer = null;
+
+  _zooming() {
+    this.setState({ zooming: true });
+    clearTimeout(this._zoomTimer);
+    this._zoomTimer = setTimeout(() => this.setState({ zooming: false }), 100);
   }
 
   onScroll = () => {
@@ -173,6 +183,8 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   }
 
   render() {
+
+    const { workspace } = this.props;
     const style = {
       cursor: this.props.workspace.cursor
     };
@@ -216,7 +228,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
         style={style}>
           <div style={innerStyle} className="noselect" data-previewroot>
             <PreviewLayerComponent renderer={this.props.workspace.browser.renderer} />
-            {this._toolsHidden || !this.props.workspace.document ? undefined : <ToolsLayerComponent {...this.props} />}
+            { workspace.document ? <ToolsLayerComponent workspace={workspace} zoom={workspace.zoom} zooming={this.state.zooming} allElements={workspace.documentQuerier.queriedElements} /> : undefined }
           </div>
       </div>
     </IsolateComponent>);

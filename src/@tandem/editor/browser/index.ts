@@ -47,7 +47,7 @@ export function concatEditorBrowserDependencies(dependencies: Dependencies, conf
 
     // stage tool components
     new StageToolComponentFactoryDependency("selector", "pointer", SelectorStageToolComponent),
-    new ReactComponentFactoryDependency("components/tools/pointer/drag-select", DragSelectStageToolComponent),
+    new ReactComponentFactoryDependency("components/tools/pointer/drag-select", DragSelectStageToolComponent as any),
     new ReactComponentFactoryDependency("components/tools/pointer/grid", GridStageToolComponent),
     new ReactComponentFactoryDependency("components/tools/insert/size", InsertStageToolComponent),
     new StageToolComponentFactoryDependency("selectable", "pointer", SelectableStageToolComponent),

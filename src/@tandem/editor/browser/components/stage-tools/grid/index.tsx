@@ -2,13 +2,14 @@ import "./index.scss";
 
 import * as React from "react";
 import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { Workspace } from "@tandem/editor/browser/models";
 
-export class GridStageToolComponent extends React.Component<{ zoom: number }, any> {
+export class GridStageToolComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
 
-    const { zoom } = this.props;
+    const { workspace } = this.props;
 
-    if (zoom <= 12) return null;
+    if (workspace.zoom <= 12) return null;
 
     const size = 20000;
     const gridSize = 1;
@@ -29,7 +30,7 @@ export class GridStageToolComponent extends React.Component<{ zoom: number }, an
             <g stroke="#d8d8d8">
               {
                 paths.map(([[sx, sy], [ex, ey]], i) => {
-                  return <path strokeWidth={1 / this.props.zoom} key={i} d={`M${sx},${sy} L${ex},${ey}`}></path>;
+                  return <path strokeWidth={1 / workspace.zoom} key={i} d={`M${sx},${sy} L${ex},${ey}`}></path>;
                 })
               }
             </g>

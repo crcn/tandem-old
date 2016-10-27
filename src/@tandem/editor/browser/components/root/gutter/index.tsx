@@ -6,7 +6,6 @@ import { Store } from "@tandem/editor/browser/models";
 import { ENTITY_PANE_COMPONENT_NS, StoreDependency } from "@tandem/editor/browser/dependencies";
 import { MetadataValueReference, DefaultValueReference, MinMaxValueReference } from "@tandem/common/reference";
 
-
 export class GutterComponent extends BaseApplicationComponent<{ position: string, maxWidth?: number, registeredComponentNs: string, hideKey: string, sizeKey: string }, any> {
 
   @inject(StoreDependency.ID)

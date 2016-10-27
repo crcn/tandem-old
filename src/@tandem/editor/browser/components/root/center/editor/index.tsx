@@ -10,7 +10,7 @@ import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 
-export default class StageComponent extends React.Component<{ workspace: Workspace, allElements: SyntheticDOMElement[] }, any> {
+export default class StageComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
     return (<div ref="container" className="m-editor-stage">
       <CanvasComponent workspace={this.props.workspace} zoom={this.props.workspace.transform.scale} />

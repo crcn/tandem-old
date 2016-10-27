@@ -12,9 +12,10 @@ import {
   IActor,
   Action,
   BoundingRect,
+  BaseApplicationComponent,
 } from "@tandem/common";
 
-export class InsertStageToolComponent extends React.Component<{ workspace: Workspace, allElements: SyntheticDOMElement[], bus: IActor, app: FrontEndApplication, tool: InsertTool }, any> {
+export class InsertStageToolComponent extends BaseApplicationComponent<{ workspace: Workspace, allElements: SyntheticDOMElement[], zoom: number, tool: InsertTool }, any> {
 
   private _targetElement: any;
 
@@ -28,14 +29,14 @@ export class InsertStageToolComponent extends React.Component<{ workspace: Works
 
     const event = syntheticEvent.nativeEvent as MouseEvent;
 
-    const { workspace, bus, tool } = this.props;
+    const { workspace, tool } = this.props;
 
     const childElement = tool.createSyntheticDOMElement();
     // const elementEditor = this._targetEntity.editor;
     this._targetElement.appendChild(childElement);
     // await elementEditor.execute()
     // const child = await activeEntity.loadExpressionAndAppendChild(childExpression) as IVisibleEntity;
-    await bus.execute(new SelectAction(childElement));
+    await this.bus.execute(new SelectAction(childElement));
 
     // const capabilities = child.display.capabilities;
 
@@ -97,7 +98,7 @@ export class InsertStageToolComponent extends React.Component<{ workspace: Works
 
     return <div className="m-insert-tool">
       <div onMouseDown={this.onRootMouseDown} style={bgstyle} />
-      { !tool.entityIsRoot ? <SelectablesComponent {...this.props} canvasRootSelectable={true} onSyntheticMouseDown={this.onSyntheticMouseDown} /> : null }
+      { !tool.entityIsRoot ? <SelectablesComponent {...this.props} zooming={false} canvasRootSelectable={true} onSyntheticMouseDown={this.onSyntheticMouseDown} zoom={this.props.zoom} /> : null }
     </div>;
   }
 }

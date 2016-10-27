@@ -24,7 +24,9 @@ export class Injector {
       return;
     }
 
-    target.$$injected = true;
+    // may bust of the object is sealed
+
+    if (!Object.isSealed(target)) target.$$injected = true;
 
     const properties = {};
 

@@ -5,10 +5,10 @@ import { FactoryDependency } from "@tandem/common/dependencies";
  */
 
 export class ReactComponentFactoryDependency extends FactoryDependency {
-  constructor(ns: string, componentClass: React.ComponentClass<any>) {
+  constructor(ns: string, readonly ComponentClass: any) {
     super(ns, {
       create(props, children) {
-        return React.createElement(componentClass, props, children);
+        return React.createElement(ComponentClass, props, children);
       }
     });
   }

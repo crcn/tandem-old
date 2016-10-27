@@ -3,31 +3,31 @@ import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
 import { PointerTool } from "@tandem/editor/browser/models/pointer-tool";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
-import { BoundingRect } from "@tandem/common/geom";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { SelectAction, MouseAction } from "@tandem/editor/browser/actions";
 import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
+import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 
-export class DragSelectStageToolComponent extends React.Component<{ app: FrontEndApplication, zoom: number, tool: PointerTool }, any> {
+export class DragSelectStageToolComponent extends BaseApplicationComponent<{ app: FrontEndApplication, zoom: number, tool: PointerTool }, any> {
 
-  constructor() {
-    super();
-    this.state = {};
-  }
+  // constructor() {
+  //   super();
+  //   this.state = {};
+  // }
 
   componentDidMount() {
-    this.props.app.bus.register(this);
+    // this.bus.register(this);
   }
 
-  execute(action: MouseAction) {
-    if (action.type === MouseAction.CANVAS_MOUSE_DOWN) {
-      this.startDrag(action.originalEvent);
-    }
-  }
+  // execute(action: MouseAction) {
+  //   if (action.type === MouseAction.CANVAS_MOUSE_DOWN) {
+  //     this.startDrag(action.originalEvent);
+  //   }
+  // }
 
   componentWillUnmount() {
-    this.props.app.bus.unregister(this);
+    // this.props.app.bus.unregister(this);
   }
 
   startDrag(event) {

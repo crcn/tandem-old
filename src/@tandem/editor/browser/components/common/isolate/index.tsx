@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { bubbleHTMLIframeEvents } from "@tandem/common";
+import { bubbleHTMLIframeEvents, BaseApplicationComponent, RootApplicationComponent } from "@tandem/common";
 
-export class IsolateComponent extends React.Component<any, any> {
+export class IsolateComponent extends BaseApplicationComponent<any, any> {
 
   private _mountElement: any;
 
-  constructor(props) {
-    super(props);
+  $didInject() {
+    super.$didInject();
     this.state = {};
   }
 
@@ -57,7 +57,7 @@ export class IsolateComponent extends React.Component<any, any> {
   }
 
   _render() {
-    ReactDOM.render(<span>{this.props.children}</span>, this._mountElement);
+    ReactDOM.render(<RootApplicationComponent bus={this.bus} dependencies={this.dependencies}>{this.props.children}</RootApplicationComponent>, this._mountElement);
   }
 
   _addListeners() {

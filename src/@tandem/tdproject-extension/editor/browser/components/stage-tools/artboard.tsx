@@ -2,19 +2,19 @@ import "./index.scss";
 import * as React from "react";
 import * as AutosizeInput from "react-input-autosize";
 
-import { BoundingRect } from "@tandem/common";
 import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
+import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 import { ApplyEditAction, SetKeyValueEditAction } from "@tandem/sandbox";
 import { FrontEndApplication, Workspace, SelectAction } from "@tandem/editor/browser";
 import { SyntheticHTMLElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
 
-export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTDArtboardElement, workspace: Workspace, app: FrontEndApplication }, {
+export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: SyntheticTDArtboardElement, workspace: Workspace }, {
   edit: SyntheticDOMElementEdit,
   titleEditAction: SetKeyValueEditAction
 }> {
 
-  constructor() {
-    super();
+  $didInject() {
+    super.$didInject();
     this.state = {
       edit: undefined,
       titleEditAction: undefined
@@ -54,7 +54,7 @@ export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTD
     // the change immediately
     this.state.edit.applyActionsTo(artboard);
 
-    await this.props.app.bus.execute(new ApplyEditAction(this.state.edit));
+    await this.bus.execute(new ApplyEditAction(this.state.edit));
     this.doneEditing();
   }
 
@@ -63,7 +63,7 @@ export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTD
   }
 
   selectEntity = (event: React.MouseEvent<any>) => {
-    this.props.app.bus.execute(new SelectAction([this.props.artboard], event.metaKey || event.shiftKey));
+    this.bus.execute(new SelectAction([this.props.artboard], event.metaKey || event.shiftKey));
   }
 
   onKeyDown = (event: React.KeyboardEvent<any>): any => {
@@ -108,9 +108,9 @@ export class TDArtboardComponent extends React.Component<{ artboard: SyntheticTD
   }
 }
 
-export class TDArtboardStageToolComponent extends React.Component<{ app: FrontEndApplication }, any> {
+export class TDArtboardStageToolComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
-    const { workspace } = this.props.app;
+    const { workspace } = this.props;
     const { document, transform } = workspace;
 
     const artboards = document.querySelectorAll("artboard") as SyntheticTDArtboardElement[];
@@ -126,7 +126,7 @@ export class TDArtboardStageToolComponent extends React.Component<{ app: FrontEn
       <div style={backgroundStyle} className="m-tdartboard-stage-tool--background" />
       {
         artboards.map((artboard) => {
-          return <TDArtboardComponent key={artboard.uid} workspace={workspace} artboard={artboard} app={this.props.app} />;
+          return <TDArtboardComponent key={artboard.uid} workspace={workspace} artboard={artboard} />;
         })
       }
     </div>;

@@ -99,6 +99,7 @@ export class Workspace extends Observable implements IWorkspace {
     this.notify(new PropertyChangeAction("zoom", this.zoom, oldZoom, true));
   }
 
+  // TODO - remove this
   get currentTool(): IWorkspaceTool {
     return this._currentTool;
   }

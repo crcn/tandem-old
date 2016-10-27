@@ -16,6 +16,6 @@ export default class CenterComponent extends BaseApplicationComponent<{}, {}> {
   render() {
     const { workspace } = this._store;
     if (!workspace) return null;
-    return <EditorCommponent workspace={workspace} allElements={workspace.documentQuerier.queriedElements || []}  />
+    return <EditorCommponent workspace={workspace} />
   }
 }

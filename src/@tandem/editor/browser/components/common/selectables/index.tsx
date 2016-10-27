@@ -19,7 +19,6 @@ import { SyntheticHTMLElement, SyntheticDOMElement, ChildElementQuerier } from "
 class SelectableComponent extends React.Component<{
   element: SyntheticHTMLElement,
   selection: any,
-  app: FrontEndApplication,
   zoom: number,
   absoluteBounds: BoundingRect,
   hovering: boolean,
@@ -41,8 +40,8 @@ class SelectableComponent extends React.Component<{
     this.onMouseOut(event);
   }
 
-  shouldComponentUpdate({ absoluteBounds, hovering }) {
-    return !this.props.absoluteBounds.equalTo(absoluteBounds) || this.props.hovering !== hovering;
+  shouldComponentUpdate({ absoluteBounds, hovering, zoom }) {
+    return !this.props.absoluteBounds.equalTo(absoluteBounds) || this.props.hovering !== hovering || this.props.zoom !== zoom;
   }
 
   componentWillUnmount() {
@@ -70,7 +69,7 @@ class SelectableComponent extends React.Component<{
   }
 
   render() {
-    const { element, selection, app, absoluteBounds, hovering } = this.props;
+    const { element, selection, absoluteBounds, hovering } = this.props;
 
     const borderWidth = 2 / this.props.zoom;
 
@@ -102,7 +101,8 @@ class SelectableComponent extends React.Component<{
 }
 
 interface ISelectableComponentProps {
-  app: FrontEndApplication,
+  zoom: number,
+  zooming: boolean,
   workspace: Workspace,
   onSyntheticMouseDown: (element: SyntheticHTMLElement, event?: React.MouseEvent<any>) => void,
   canvasRootSelectable?: boolean,
@@ -119,13 +119,15 @@ export class SelectablesComponent extends React.Component<ISelectableComponentPr
    * @returns
    */
 
-  shouldComponentUpdate({ allElements }: ISelectableComponentProps) {
-    return allElements !== this.props.allElements;
+  shouldComponentUpdate({ allElements, zoom, zooming }: ISelectableComponentProps) {
+    return allElements !== this.props.allElements || this.props.zoom !== zoom || this.props.zooming !== zooming;
   }
 
   render() {
 
-    const { workspace, app, allElements } = this.props;
+    if (this.props.zooming) return null;
+
+    const { workspace, zoom, allElements } = this.props;
 
     const visibleElements = allElements.filter(element => {
       return (element as SyntheticHTMLElement).getAbsoluteBounds && (element as SyntheticHTMLElement).getAbsoluteBounds().visible
@@ -133,8 +135,8 @@ export class SelectablesComponent extends React.Component<ISelectableComponentPr
 
     const selectables = visibleElements.map((element) => {
       return <SelectableComponent
-        {...this.props}
-        zoom={workspace.zoom}
+        onSyntheticMouseDown={this.props.onSyntheticMouseDown}
+        zoom={this.props.zoom}
         selection={[]}
         element={element}
         absoluteBounds={element.getAbsoluteBounds()}
