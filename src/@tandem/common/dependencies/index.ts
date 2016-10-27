@@ -53,7 +53,7 @@ export class ApplicationSingletonDependency extends Dependency<IApplication> {
   }
 }
 
-function createSingletonBusDependencyClass(name: string) {
+export function createSingletonBusDependencyClass(name: string): { getInstance(dependencies:Dependencies): IBrokerBus, ID: string, new(bus: IBrokerBus): Dependency<IBrokerBus> } {
 
   const id = ["bus", name].join("/");
 
@@ -66,7 +66,7 @@ function createSingletonBusDependencyClass(name: string) {
     }
 
     static getInstance(dependencies: Dependencies): IBrokerBus {
-      return dependencies.query<BusDependency>(id).value;
+      return dependencies.query<any>(id).value;
     }
   };
 }
@@ -182,7 +182,7 @@ export class MimeTypeAliasDependency extends Dependency<string> {
   }
 }
 
-export function createSingletonDependencyClass<T>(id: string, clazz: { new(...rest): T }) {
+export function createSingletonDependencyClass<T>(id: string, clazz: { new(...rest): T }): { getInstance(dependencies: Dependencies): T, ID: string, new(): IDependency } {
   return class SingletonDependency implements IDependency {
     static readonly ID: string = id;
     private _value: T;

@@ -30,25 +30,15 @@ import {
 } from "@tandem/synthetic-browser";
 
 export interface IWorkspaceTool extends IActor, IDisposable {
-  readonly editor: IWorkspace;
+  readonly editor: any;
   readonly name: string;
   readonly cursor: string;
-}
-
-export interface IWorkspace extends IActor {
-  currentTool: IWorkspaceTool;
-  selection: Array<any>;
-  transform: Transform;
-  readonly type: string;
-  readonly cursor: string;
-  readonly browser: ISyntheticBrowser;
-  readonly document: SyntheticDocument;
 }
 
 export abstract class BaseEditorTool implements IWorkspaceTool, IInjectable {
   abstract name: string;
   readonly cursor: string = undefined;
-  constructor(readonly editor: IWorkspace) { }
+  constructor(readonly editor: any) { }
 
   dispose() { }
 

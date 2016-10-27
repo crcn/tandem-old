@@ -5,7 +5,7 @@ import { SetKeyValueEditAction, IContentEdit, ISyntheticObject, generateSyntheti
 
 export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration { }
 
-const internalKeyFilter = sift({ $ne: /^\$/ });
+const internalKeyFilter = sift({ $and: [ { $ne: /^\$/ }, {$ne: "uid" }] });
 
 export class SyntheticCSSStyleDeclarationEdit extends BaseContentEdit<SyntheticCSSStyleDeclaration> {
 
@@ -420,6 +420,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     const buffer = [];
 
     for (const key in this) {
+      if (!internalKeyFilter(key)) continue;
       const value = this[key];
       if (value) {
         buffer.push(kebabCase(key), ":", value, ";");

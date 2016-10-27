@@ -10,7 +10,7 @@ import { SyntheticHTMLElement, SyntheticDOMElement } from "@tandem/synthetic-bro
 export class SelectableStageToolComponent extends React.Component<{selection: any, zooming: boolean, allElements: SyntheticDOMElement[], bus: any, app: any, zoom: number, workspace: Workspace }, {}>  {
 
   onSyntheticMouseDown = (element: SyntheticHTMLElement, event: React.MouseEvent<any>) => {
-    this.props.app.bus.execute(new SelectAction(element, event.shiftKey));
+    this.props.workspace.select(element, event.shiftKey);
   }
 
   render() {

@@ -1,6 +1,6 @@
 import { KeyBinding } from "@tandem/editor/browser/key-bindings";
 import { ParallelBus, WrapBus } from "mesh";
-import { IWorkspace, IWorkspaceTool } from "./base";
+import { flatten } from "lodash";
 
 import {
   IActor,
@@ -9,27 +9,32 @@ import {
   IPoint,
   bindable,
   bubble,
-  watchProperty,
   Metadata,
-  Observable,
   Transform,
-  PropertyChangeAction,
+  Observable,
+  flattenTree,
   IInjectable,
+  watchProperty,
+  PropertyChangeAction,
 } from "@tandem/common";
 
 import { ISyntheticObject } from "@tandem/sandbox";
-import { ISyntheticBrowser, SyntheticBrowser, SyntheticElementQuerier } from "@tandem/synthetic-browser";
+import { 
+  ISyntheticBrowser,
+  SyntheticBrowser,
+  SyntheticDocument,
+  SyntheticElementQuerier,
+} from "@tandem/synthetic-browser";
 
 export const MIN_ZOOM = 0.02;
 export const MAX_ZOOM = 6400 / 100;
 
-export class Workspace extends Observable implements IWorkspace {
+export class Workspace extends Observable {
 
   readonly metadata = new Metadata(this);
 
   private _zoom: number = 1;
   public translate: IPoint = { left: 0, top: 0 };
-  private _currentTool: IWorkspaceTool;
   private _browserObserver: IActor;
 
   /**
@@ -47,6 +52,8 @@ export class Workspace extends Observable implements IWorkspace {
    * @type {ISyntheticObject[]}
    */
 
+  @bindable(true)
+  @bubble()
   public selection: ISyntheticObject[] = [];
 
   /**
@@ -77,15 +84,46 @@ export class Workspace extends Observable implements IWorkspace {
     watchProperty(this, "browser", this.onBrowserChange.bind(this));
   }
 
-  get document() {
+  get document(): SyntheticDocument {
     return this.browser && this.browser.document;
   }
 
-  get visibleEntities() {
+  /**
+   * selects items for editing
+   *
+   * @param {(ISyntheticObject|ISyntheticObject[])} items to select
+   * @param {boolean} [keepPreviousSelection=false] TRUE to keep the previous selection (shift click)
+   * @param {boolean} [toggle=false] TRUE to toggle off the items if they're already selected
+   */
 
-    // TODO
-    return null;
+  select(item: ISyntheticObject|ISyntheticObject[], keepPreviousSelection: boolean = false, toggle: boolean = false) {
+    const items = Array.isArray(item) ? item : [item];
+
+    const prevSelection = this.selection;
+    const newSelection = [];
+
+    if (keepPreviousSelection) {
+      newSelection.push(...prevSelection);
+    } else {
+      newSelection.push(...prevSelection.filter((item) => !!~items.indexOf(item)));
+    }
+
+    for (const item of items) {
+      const i = newSelection.indexOf(item);
+      if (~i) {
+        if (toggle) {
+          newSelection.splice(i, 1);
+        }
+      } else {
+        newSelection.push(item);
+      }
+    }
+
+    // TODO - prevent
+
+    this.selection = newSelection;
   }
+
 
   get zoom() { return this.transform.scale; }
   set zoom(value: number) {
@@ -97,26 +135,6 @@ export class Workspace extends Observable implements IWorkspace {
     );
 
     this.notify(new PropertyChangeAction("zoom", this.zoom, oldZoom, true));
-  }
-
-  // TODO - remove this
-  get currentTool(): IWorkspaceTool {
-    return this._currentTool;
-  }
-
-  set currentTool(value: IWorkspaceTool) {
-    if (this._currentTool) {
-      this._currentTool.dispose();
-    }
-    this._currentTool = value;
-    if (!value) return;
-    this.cursor = value.cursor;
-  }
-
-  execute(action: Action) {
-    if (this.currentTool) {
-      this.currentTool.execute(action);
-    }
   }
 
   private onBrowserChange(newBrowser: ISyntheticBrowser) {

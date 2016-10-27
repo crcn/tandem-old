@@ -40,7 +40,7 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
   }
 
   async [InitializeAction.INITIALIZE]() {
-    this._port = this.config.port || await getPort();
+    this._port = Number(this.config.argv.port || await getPort());
     await this._loadHttpServer();
     await this._loadStaticRoutes();
     await this._loadSocketServer();

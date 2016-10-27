@@ -61,18 +61,18 @@ export interface ISyntheticDocumentRenderer extends IObservable {
   /**
    */
 
-  requestUpdate(): void;
+  requestRender(): void;
 }
 
 // render timeout -- this should be a low number
-const REQUEST_UPDATE_TIMEOUT = 50;
+const REQUEST_UPDATE_TIMEOUT = 5;
 
 
 export abstract class BaseRenderer extends Observable implements ISyntheticDocumentRenderer {
 
   readonly element: HTMLElement;
   private _document: SyntheticDocument;
-  private _updating: boolean;
+  private _rendering: boolean;
   private _rects: any;
 
   @bindable()
@@ -81,7 +81,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   @bindable()
   protected _running: boolean;
 
-  private _shouldUpdateAgain: boolean;
+  private _shouldRenderAgain: boolean;
   private _targetObserver: IActor;
   private _computedStyles: any;
 
@@ -104,7 +104,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
 
   set document(value: SyntheticDocument) {
     if (this._document === value) {
-      this.requestUpdate();
+      this.requestRender();
       return;
     }
 
@@ -114,7 +114,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     this._document = value;
     if (!this._document) return;
     this._document.observe(this._targetObserver);
-    this.requestUpdate();
+    this.requestRender();
   }
 
   get rects() {
@@ -132,7 +132,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   public start() {
     if (this._running) return;
     this._running = true;
-    this.requestUpdate();
+    this.requestRender();
   }
 
   public stop() {
@@ -147,7 +147,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     return (this._rects && this._rects[uid]) || new BoundingRect(0, 0, 0, 0);
   }
 
-  protected abstract update();
+  protected abstract render();
 
   protected createElement() {
     return document.createElement("div");
@@ -162,18 +162,18 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
 
   protected onDocumentAction(action: Action) {
     if (isDOMMutationAction(action)) {
-      this.requestUpdate();
+      this.requestRender();
     }
   }
 
-  public requestUpdate() {
+  public requestRender() {
     if (!this._document) return;
 
-    if (this._updating) {
-      this._shouldUpdateAgain = true;
+    if (this._rendering) {
+      this._shouldRenderAgain = true;
       return;
     }
-    this._updating = true;
+    this._rendering = true;
 
     // renderer here doesn't need to be particularly fast since the user
     // doesn't get to interact with visual content. Provide a slowish
@@ -183,12 +183,12 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
 
       await this.whenRunning();
 
-      this._shouldUpdateAgain = false;
-      await this.update();
-      this._updating = false;
-      if (this._shouldUpdateAgain) {
-        this._shouldUpdateAgain = false;
-        this.requestUpdate();
+      this._shouldRenderAgain = false;
+      await this.render();
+      this._rendering = false;
+      if (this._shouldRenderAgain) {
+        this._shouldRenderAgain = false;
+        this.requestRender();
       }
     }, this.getRequestUpdateTimeout());
   }
@@ -231,8 +231,8 @@ export class BaseDecoratorRenderer extends Observable implements ISyntheticDocum
     this._renderer.document = value;
   }
 
-  requestUpdate() {
-    return this._renderer.requestUpdate();
+  requestRender() {
+    return this._renderer.requestRender();
   }
 
   protected onTargetRendererAction(action: Action) {
@@ -268,6 +268,6 @@ export class NoopRenderer extends Observable implements ISyntheticDocumentRender
   public hasLoadedComputedStyle() {
     return false;
   }
-  requestUpdate() { }
+  requestRender() { }
   createElement() { return undefined; }
 }

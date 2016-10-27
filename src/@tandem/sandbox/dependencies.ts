@@ -1,9 +1,8 @@
 import { FileCache } from "./file-cache";
-import { ENV_IS_NODE, Injector } from "@tandem/common";
+import { ENV_IS_NODE, Injector, IDependency } from "@tandem/common";
 import { FileEditor, contentEditorType, IEditor } from "./editor";
 import { IFileSystem, LocalFileSystem, RemoteFileSystem } from "./file-system";
 import { IFileResolver, LocalFileResolver, RemoteFileResolver } from "./resolver";
-
 
 import {
   Bundle,

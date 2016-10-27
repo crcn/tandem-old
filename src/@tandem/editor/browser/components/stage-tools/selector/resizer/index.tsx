@@ -5,6 +5,7 @@ import PathComponent from "./path";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
+import { VisibleSyntheticDOMElement } from "@tandem/synthetic-browser";
 import { IntersectingPointComponent } from "./intersecting-point";
 import { SyntheticDOMElement, SyntheticDOMNode } from "@tandem/synthetic-browser";
 import { BoundingRect, IPoint, Point, traverseTree, findTreeNode } from "@tandem/common";
@@ -104,43 +105,31 @@ class ResizerComponent extends React.Component<{
     this.state = {};
   }
 
-  onDoubleClick = () => {
-
-    // this.props.bus.execute({
-    //   type      : ENTITY_PREVIEW_DOUBLE_CLICK,
-    //   selection : this.props.selection,
-    // });
-  }
-
   createGuider(): Guider {
-    const guider = new Guider(5 / this.props.zoom);
+    const guider = new Guider(10 / this.props.zoom);
     const { selection } = this.props;
 
     const bottomOwnerDocument = (selection as SyntheticDOMNode[]).reduce((a: SyntheticDOMNode, b: SyntheticDOMNode) => {
       return a.ownerDocument.defaultView.depth > a.ownerDocument.defaultView.depth ? a : b;
     }).ownerDocument;
 
-    // // const bottomOwnerDocumentEntity = findTreeNode(this.props.app.workspace.document, (entity) => entity.source === bottomOwnerDocument);
+    traverseTree(bottomOwnerDocument, (node) => {
+      if (node.ownerDocument !== bottomOwnerDocument) return;
 
-    // traverseTree(bottomOwnerDocumentEntity, (node) => {
-    //   // if (node.source.ownerDocument !== bottomOwnerDocument) return;
+      for (const item of selection) {
 
-    //   for (const entity of selection) {
+        // do not use the node as a guide point if it's part of the selection,
+        // or the source is the same. The source will be the same in certain cases -
+        // registered components for example.
+        if (node === item || node.source === item.source) return;
+      }
 
-    //     // do not use the node as a guide point if it's part of the selection,
-    //     // or the source is the same. The source will be the same in certain cases -
-    //     // registered components for example.
-    //     if (node === entity || node.source === entity.source) return;
-    //   }
-
-    //   // if (node.metadata.get(MetadataKeys.CANVAS_ROOT) && node.flatten().indexOf()) return;
-
-    //   const displayNode = node as any as BaseVisibleDOMNodeEntity<any, any>;
-    //   const bounds = displayNode.absoluteBounds;
-    //   if (bounds && bounds.visible) {
-    //     guider.addPoint(...createBoundingRectPoints(bounds));
-    //   }
-    // });
+      const displayNode = node as any as VisibleSyntheticDOMElement<any>;
+      const bounds = displayNode.getAbsoluteBounds && displayNode.getAbsoluteBounds();
+      if (bounds && bounds.visible) {
+        guider.addPoint(...createBoundingRectPoints(bounds));
+      }
+    });
 
     return guider;
   }
@@ -190,14 +179,14 @@ class ResizerComponent extends React.Component<{
   startDragging = (event) => {
     event.stopPropagation();
 
-    if (!this._visibleElements.getEagetCapabilities().movable) return;
+    if (!this._visibleElements.getCapabilities().movable) return;
 
     this.props.onMoving();
     const selection = this.props.selection;
 
     // when dragging, need to fetch style of the selection
     // so that the dragger is relative to the entity"s position
-    const bounds = this._visibleElements.getEagerAbsoluteBounds();
+    const bounds = this._visibleElements.getAbsoluteBounds();
 
     const sx2 = bounds.left;
     const sy2 = bounds.top;
@@ -274,7 +263,7 @@ class ResizerComponent extends React.Component<{
       transformOrigin: "top left"
     };
 
-    const capabilities = elements.getEagetCapabilities();
+    const capabilities = elements.getCapabilities();
     const movable = capabilities.movable && elements.editable;
 
     const points = [
@@ -305,7 +294,6 @@ class ResizerComponent extends React.Component<{
         className="m-selector-component--selection"
         style={resizerStyle}
         onMouseDown={this.startDragging}
-        onDoubleClick={this.onDoubleClick}
       >
         <PathComponent
           workspace={this.props.workspace}

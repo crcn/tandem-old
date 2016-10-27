@@ -61,10 +61,9 @@ class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLEleme
   }
 }
 
-interface IElementInfoStageToolComponentProps {
+export interface IElementInfoStageToolComponentProps {
   workspace: Workspace;
   allElements: SyntheticDOMElement[];
-
 }
 
 export class ElementInfoStageToolComponent extends React.Component<IElementInfoStageToolComponentProps, any> {

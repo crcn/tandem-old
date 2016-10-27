@@ -10,7 +10,7 @@ import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { pointerToolDependency } from "@tandem/editor/browser/models/pointer-tool";
 import { BaseApplicationService } from "@tandem/common/services";
 import { WorkspaceToolFactoryDependency } from "@tandem/editor/browser/dependencies";
-import { IWorkspaceTool, BaseEditorTool, IWorkspace } from "@tandem/editor/browser/models";
+import { IWorkspaceTool, BaseEditorTool } from "@tandem/editor/browser/models";
 
 import {
   Dependency,
@@ -44,7 +44,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
   name = "text";
   cursor = null;
 
-  constructor(editor: IWorkspace) {
+  constructor(editor: any) {
     super(editor);
     this._startEditing();
   }
@@ -99,7 +99,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
     (<Element>this._targetEntity.section.targetNode).innerHTML = " ";
 
     // save the workspae file -- diffing time
-    this.bus.execute(new SetToolAction(<WorkspaceToolFactoryDependency>this.dependencies.query(pointerToolDependency.id)));
+    // this.bus.execute(new SetToolAction(<WorkspaceToolFactoryDependency>this.dependencies.query(pointerToolDependency.id)));
   }
 
   public canvasMouseDown(event: MouseAction) {

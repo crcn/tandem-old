@@ -1,7 +1,7 @@
 import { IActor } from "@tandem/common/actors";
-import { ApplicationServiceDependency } from "@tandem/common/dependencies";
-import { CoreApplicationService } from "@tandem/core";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
+import { CoreApplicationService } from "@tandem/core";
+import { ApplicationServiceDependency } from "@tandem/common/dependencies";
 import { LoadAction, InitializeAction, OpenProjectAction, SockBus, Action } from "@tandem/common";
 import * as os from "os";
 import * as path from "path";
@@ -20,7 +20,6 @@ class ExecAction extends Action {
   }
 }
 
-
 export class SockService extends CoreApplicationService<IEdtorServerConfig> {
 
   private _socketFile: string;
@@ -34,6 +33,11 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
    */
 
   [LoadAction.LOAD](action: LoadAction) {
+
+    if (this.config.argv.exposeSockFile) {
+      console.log("---sock file start---\n%s\n---sock file end---", SOCK_FILE);
+    }
+
     return new Promise((resolve, reject) => {
       let bus: IActor;
 

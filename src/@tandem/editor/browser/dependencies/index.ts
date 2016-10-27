@@ -2,11 +2,12 @@ import * as React from "react";
 import { IActor } from "@tandem/common/actors";
 import { Store } from "@tandem/editor/browser/models";
 import { IApplication } from "@tandem/common/application";
-import { IWorkspace, IWorkspaceTool } from "@tandem/editor/browser/models";
+import { IWorkspaceTool } from "@tandem/editor/browser/models";
 import { ReactComponentFactoryDependency } from "./base";
 import {
   Metadata,
   IFactory,
+  IDependency,
   Dependency,
   Dependencies,
   ClassFactoryDependency,
@@ -40,7 +41,7 @@ export class EntityPreviewDependency extends ReactComponentFactoryDependency {
 
 export const EDITOR_TOOL_NS = "editorTool";
 export class WorkspaceToolFactoryDependency extends ClassFactoryDependency {
-  constructor(readonly name: string, readonly icon: string, readonly editorType: string, readonly keyCommand: string, readonly clazz: { new(editor: IWorkspace): IWorkspaceTool }) {
+  constructor(readonly name: string, readonly icon: string, readonly editorType: string, readonly keyCommand: string, readonly clazz: { new(editor: any): IWorkspaceTool }) {
     super([EDITOR_TOOL_NS, editorType, name].join("/"), clazz);
   }
 
@@ -48,7 +49,7 @@ export class WorkspaceToolFactoryDependency extends ClassFactoryDependency {
     return new WorkspaceToolFactoryDependency(this.name, this.icon, this.editorType, this.keyCommand, this.clazz);
   }
 
-  create(editor: IWorkspace): IWorkspaceTool {
+  create(editor: any): IWorkspaceTool {
     return super.create(editor);
   }
 

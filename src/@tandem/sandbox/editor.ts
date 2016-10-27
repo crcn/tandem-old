@@ -8,6 +8,8 @@ import {
   Action,
   inject,
   serialize,
+  loggable,
+  Logger,
   Observable,
   deserialize,
   flattenTree,
@@ -296,7 +298,11 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
   }
 
 }
+
+@loggable()
 export class FileEditor extends Observable {
+
+  protected readonly logger: Logger;
 
   private _editing: boolean;
   private _editActions: EditAction[];
@@ -372,9 +378,11 @@ export class FileEditor extends Observable {
         const fileCache     = await  FileCacheDependency.getInstance(this._dependencies).item(filePath);
         const oldContent    = await fileCache.read();
         const contentEditor = contentEditorFactoryDependency.create(filePath, oldContent);
-        const newContent    = contentEditor.applyEditActions(...actionsByFilePath[filePath]);
 
-        console.log("new content", newContent);
+        const actions = actionsByFilePath[filePath];
+        this.logger.info("applying file edit actions %s: %s", filePath, actions.map(action => action.type).join(" "));
+
+        const newContent    = contentEditor.applyEditActions(...actions);
         fileCache.setDataUrl(newContent);
         promises.push(fileCache.save());
       }

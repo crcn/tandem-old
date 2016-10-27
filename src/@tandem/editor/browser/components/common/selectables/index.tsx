@@ -100,7 +100,7 @@ class SelectableComponent extends React.Component<{
   }
 }
 
-interface ISelectableComponentProps {
+export interface ISelectableComponentProps {
   zoom: number,
   zooming: boolean,
   workspace: Workspace,

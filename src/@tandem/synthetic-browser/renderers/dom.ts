@@ -40,7 +40,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     return element;
   }
 
-  update() {
+  render() {
     return new Promise((resolve) => {
       requestAnimationFrame(() => {
         const document = this.document as SyntheticDocument;

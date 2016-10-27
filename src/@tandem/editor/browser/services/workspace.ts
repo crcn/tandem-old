@@ -64,13 +64,9 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     if (this._store.workspace && this._store.workspace.browser.location.toString() === filePath) return;
 
     this.logger.info("loading project file %s", filePath);
-
     const workspace = new Workspace();
-
     const browser = workspace.browser = new RemoteSyntheticBrowser(this.dependencies, new CanvasRenderer(workspace, new SyntheticDOMRenderer()));
-
     await browser.open(filePath);
-
     this._store.workspace = workspace;
 
     // await this.bus.execute(new SetToolAction(this.dependencies.query<WorkspaceToolFactoryDependency>(pointerToolDependency.id)));
@@ -123,7 +119,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
 
 
   [SetToolAction.SET_TOOL](action: SetToolAction) {
-    this._store.workspace.currentTool = action.toolFactory.create(this._store.workspace);
+    // this._store.workspace.currentTool = action.toolFactory.create(this._store.workspace);
   }
 }
 

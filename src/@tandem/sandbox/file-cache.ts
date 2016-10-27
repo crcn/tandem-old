@@ -13,6 +13,7 @@ import {
   TypeWrapBus,
   DSFindAction,
   Dependencies,
+  ENV_IS_NODE,
   PostDSAction,
   DSInsertAction,
   DSUpdateAction,
@@ -32,7 +33,7 @@ import { WrapBus } from "mesh";
 import { values } from "lodash";
 import * as fs from "fs";
 
-interface IFileCacheItemData {
+export interface IFileCacheItemData {
   _id?: string;
   filePath: string;
   url: string;
@@ -41,7 +42,7 @@ interface IFileCacheItemData {
   mtime: number;
 }
 
-interface IFileCacheItemQuery {
+export interface IFileCacheItemQuery {
 
   // absolute FS path to the file
   filePath?: string;
@@ -115,6 +116,15 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     if (/^file:\/\//.test(this.url)) {
       return await this._fileSystem.readFile(this.url.substr("file://".length));
     } else {
+
+      // pollyfills don't work for data uris in Node.JS. Need to PR node-fetch for that. Quick
+      // fix or bust for now.
+      if (ENV_IS_NODE) {
+        const data = parseDataURI(this.url);
+        if (!data) throw new Error(`Cannot load ${this.url}.`);
+        return decodeURIComponent(data.content);
+      }
+
       const response = await fetch(this.url);
       return await response.text();
     }
@@ -211,4 +221,9 @@ export class FileCache extends Observable {
   syncWithLocalFiles() {
     return this._synchronizer || (this._synchronizer = new FileCacheSynchronizer(this, this._bus, this._fileSystem));
   }
+}
+
+function parseDataURI(uri: string): { type: string, content: string } {
+  const parts = uri.match(/data:(.*?),(.*)/);
+  return parts && { type: parts[1], content: parts[2] };
 }

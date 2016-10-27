@@ -4,6 +4,9 @@
   "description": "",
   "browser": "./bundle/browser-entry.js",
   "main": "./index.ts",
+  "bin": {
+    "tandem": "./bin/tandem"
+  },
   "entries": {
     "browser": "./browser-entry.ts"
   },

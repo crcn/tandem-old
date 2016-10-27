@@ -5,6 +5,7 @@ import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { parse as parseMarkup } from "./parser.peg";
 import { selectorMatchesElement } from "../selector";
+import { AttributeChangeAction } from "@tandem/synthetic-browser/actions";
 import { MarkupElementExpression } from "./ast";
 import { syntheticElementClassType } from "./types";
 import { SyntheticDocumentFragment } from "./document-fragment";
@@ -23,6 +24,7 @@ import {
   BoundingRect,
   ITreeWalker,
   serializable,
+  ArrayChangeAction,
   ISerializedContent,
   PropertyChangeAction,
   ObservableCollection,
@@ -54,7 +56,7 @@ class SyntheticDOMAttributeSerializer implements ISerializer<SyntheticDOMAttribu
 @serializable(new SyntheticDOMAttributeSerializer())
 export class SyntheticDOMAttribute extends Observable {
 
-  @bindable()
+  @bindable(true)
   public value: any;
 
   constructor(readonly name: string, value: any) {
@@ -311,9 +313,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     } else {
       this.attributes.push(new SyntheticDOMAttribute(name, value));
     }
-
-    // W3C standard
-    this.attributeChangedCallback(name, oldValue, value);
   }
 
   removeAttribute(name: string) {
@@ -347,7 +346,19 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   protected onAttributesAction(action: Action) {
-    this.notify(action);
+    if (action.type === ArrayChangeAction.ARRAY_CHANGE) {
+      const { addedItems, removedItems } = <ArrayChangeAction>action;
+      for (const attribute of <SyntheticDOMAttribute[]>addedItems) {
+        this.attributeChangedCallback(attribute.name, undefined, attribute.value);
+      }
+      for (const attribute of <SyntheticDOMAttribute[]>removedItems) {
+      this.attributeChangedCallback(attribute.name, attribute.value, undefined);;
+      }
+    } else if (action.type === PropertyChangeAction.PROPERTY_CHANGE && action.target instanceof SyntheticDOMAttribute) {
+      const changeAction = <PropertyChangeAction>action;
+      const attribute = <SyntheticDOMAttribute>action.target;
+      this.attributeChangedCallback(attribute.name, changeAction.oldValue, changeAction.newValue);
+    }
   }
 
   $setOwnerDocument(document: SyntheticDocument) {
@@ -363,7 +374,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   protected attributeChangedCallback(name: string, oldValue: any, newValue: any) {
-
+    this.notify(new AttributeChangeAction(name, newValue));
   }
 
   protected createdCallback() {

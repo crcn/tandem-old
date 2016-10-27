@@ -29,17 +29,19 @@
     "build-watch": "echo 'cannot build watch'"
   },
   "devDependencies": {
+    "@types/through2": "^2.0.31",
     "typescript": "^2.0.0",
     "vscode": "^0.11.0"
   },
   "dependencies": {
+    "@tandem/common": "@tandem/common",
+    "@tandem/editor": "@tandem/editor",
+    "@tandem/sandbox": "@tandem/sandbox",
     "express": "^4.14.0",
     "get-port": "^2.1.0",
     "lodash": "^4.15.0",
     "mesh": "^6.0.26",
-    "@tandem/server": "@tandem/server",
-    "@tandem/common": "@tandem/common",
-    "@tandem/editor": "@tandem/editor"
+    "through2": "^2.0.1"
   },
   "directories": {
     "test": "test"

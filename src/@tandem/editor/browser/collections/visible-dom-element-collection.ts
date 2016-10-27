@@ -69,7 +69,7 @@ export class VisibleSyntheticElementCollection<T extends VisibleSyntheticDOMElem
 
       // dirty check - might be better to use reflection here instead to check
       // for visible interface.
-      ...elements.filter(element => element["capabilities"])
+      ...elements.filter(element => element["getCapabilities"])
     );
   }
 
@@ -77,31 +77,27 @@ export class VisibleSyntheticElementCollection<T extends VisibleSyntheticDOMElem
     return this.find((entity) => entity.source == null) == null;
   }
 
-  getEagerAbsoluteBounds(): BoundingRect {
+  getAbsoluteBounds(): BoundingRect {
     return BoundingRect.merge(...this.map(element => element.getAbsoluteBounds()));
   }
 
-  async getAbsoluteBounds(): Promise<BoundingRect> {
-    return BoundingRect.merge(...(await Promise.all(this.map(async (element) => element.getAbsoluteBounds()))));
-  }
-
-  async setPosition(position: IPoint): Promise<any> {
-    const epos = await this.getAbsoluteBounds();
-    return Promise.all(this.map(async (element) => {
-      const elementBounds  = await element.getAbsoluteBounds();
-      await element.setAbsolutePosition({
+  setPosition(position: IPoint) {
+    const epos = this.getAbsoluteBounds();
+    for (const element of this) {
+      const elementBounds  = element.getAbsoluteBounds();
+      element.setAbsolutePosition({
         left: position.left + (elementBounds.left - epos.left),
         top : position.top  + (elementBounds.top  - epos.top)
       });
-    }));
+    }
   }
 
-  async setAbsoluteBounds(nbounds: BoundingRect): Promise<any> {
+  setAbsoluteBounds(nbounds: BoundingRect) {
 
-    const cbounds = await this.getAbsoluteBounds();
+    const cbounds = this.getAbsoluteBounds();
 
     for (const item of this) {
-      const ibounds     = await item.getAbsoluteBounds();
+      const ibounds     = item.getAbsoluteBounds();
 
       const percLeft   = (ibounds.left - cbounds.left) / cbounds.width;
       const percTop    = (ibounds.top  - cbounds.top)  / cbounds.height;
@@ -113,27 +109,13 @@ export class VisibleSyntheticElementCollection<T extends VisibleSyntheticDOMElem
       const right  = left + nbounds.width * percWidth;
       const bottom = top + nbounds.height * percHeight;
 
-      // item.absoluteBounds = new BoundingRect(
-      //   left,
-      //   top,
-      //   right,
-      //   bottom
-      // );
+      item.setAbsoluteBounds(new BoundingRect(left, top, right, bottom));
     }
   }
 
-  getEagetCapabilities(): VisibleDOMNodeCapabilities {
+  getCapabilities(): VisibleDOMNodeCapabilities {
     const allCapabilities = [new VisibleDOMNodeCapabilities(true, true)];
     return VisibleDOMNodeCapabilities.merge(...this.map((element) => element.getCapabilities()));
-  }
-
-  async getCapabilities(): Promise<VisibleDOMNodeCapabilities> {
-    const allCapabilities = [new VisibleDOMNodeCapabilities(true, true)];
-    for (const element of this) {
-      allCapabilities.push(await element.getCapabilities());
-    }
-
-    return VisibleDOMNodeCapabilities.merge(...allCapabilities);
   }
 
   async save() {

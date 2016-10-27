@@ -3,7 +3,6 @@ import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
 import { flatten } from "lodash";
 import RulerComponent from "./ruler";
-import { PointerTool } from "@tandem/editor/browser/models/pointer-tool";
 import ResizerComponent from "./resizer";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { SelectionSizeComponent } from "@tandem/editor/browser/components/common";
@@ -11,7 +10,7 @@ import { BoundingRect, flattenTree } from "@tandem/common";
 import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 
-export class SelectorStageToolComponent extends React.Component<{ workspace: Workspace, tool: PointerTool, app: FrontEndApplication, zoom: number  }, any> {
+export class SelectorStageToolComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication, zoom: number  }, any> {
 
   constructor(props) {
     super(props);
@@ -36,17 +35,16 @@ export class SelectorStageToolComponent extends React.Component<{ workspace: Wor
 
   render() {
 
-    const { workspace, tool } = this.props;
-
-    if (!(tool instanceof PointerTool)) return null;
+    const { workspace } = this.props;
 
     const selection = new VisibleSyntheticElementCollection(...(workspace.selection as any));
+
 
     // simple check to see if the selection array
     // is an IEntityDisplay
     if (!selection.length) return null;
 
-    const entireBounds = selection.getEagerAbsoluteBounds();
+    const entireBounds = selection.getAbsoluteBounds();
 
     const borderWidth = 1 / this.props.zoom;
 

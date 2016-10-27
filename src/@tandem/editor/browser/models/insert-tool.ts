@@ -1,5 +1,5 @@
 import { SyntheticDOMElement } from "@tandem/synthetic-browser";
-import { BaseEditorTool, IWorkspaceTool, IWorkspace } from "@tandem/editor/browser/models";
+import { BaseEditorTool, IWorkspaceTool } from "@tandem/editor/browser/models";
 import { MouseAction, SetToolAction, SelectAction } from "@tandem/editor/browser/actions";
 import {
   Action,
@@ -30,5 +30,5 @@ export abstract class InsertTool extends BaseEditorTool {
   }
 
   abstract createSyntheticDOMElement(): SyntheticDOMElement;
-  abstract get displayEntityToolFactory(): { create(editor: IWorkspace): IWorkspaceTool }
+  abstract get displayEntityToolFactory(): { create(editor: any): IWorkspaceTool }
 }

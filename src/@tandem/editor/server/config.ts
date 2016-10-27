@@ -7,12 +7,13 @@
  */
 
 export interface IEdtorServerConfig {
-  port?: number;
   cwd: string;
 
   argv: {
     _: any[],
-    open?: boolean
+    open?: boolean,
+    port?: string,
+    exposeSockFile: boolean
   },
 
   entries: any

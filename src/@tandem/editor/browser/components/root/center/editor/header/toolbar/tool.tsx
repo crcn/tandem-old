@@ -16,7 +16,7 @@ class ToolComponent extends React.Component<{ app: FrontEndApplication, workspac
     const dep = this.props.toolDependency;
 
     const className = cx({
-      selected: this.props.workspace.currentTool instanceof this.props.toolDependency.clazz,
+      selected: false,
       [`m-preview-tool s s-${this.props.toolDependency.icon}`]: true,
     });
 

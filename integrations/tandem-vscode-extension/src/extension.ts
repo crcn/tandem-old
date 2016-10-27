@@ -2,52 +2,52 @@
 // The module "vscode" contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 
-import { exec } from "child_process";
+import { exec, spawn } from "child_process";
 import { WrapBus } from "mesh";
 import * as vscode from "vscode";
+import * as net from "net";
+import * as through from "through2";
 import * as getPort from "get-port";
 import * as createServer from "express";
 import { debounce, throttle } from "lodash";
-import ServerApplication from "@tandem/server/application";
+import { NoopBus } from "mesh";
 
-import {
-    DSUpsertAction,
-    OpenProjectAction,
-    BaseApplicationService,
-    ApplicationServiceDependency,
-    PostDSAction,
-} from "@tandem/common";
-
-import {
-    FilesSelectedAction,
-    SelectEntitiesAtSourceOffsetAction,
-} from "@tandem/editor/actions";
+import { SockBus, Dependencies } from "@tandem/common";
+import { concatCoreApplicationDependencies } from "@tandem/core";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
 
-    const port = await getPort();
-
-    var server = new ServerApplication({
-        port: port
+    // isolate the td process so that it doesn't compete with resources
+    // with VSCode.
+    const tdproc = spawn(`tandem`, ["--expose-sock-file"], {
+        cwd: "node_modules/@tandem/editor/bin"
     });
 
-    class VSCodeService extends BaseApplicationService<ServerApplication> {
-        // async [UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT](action: UpdateTemporaryFileContentAction) {
-        //     _setEditorContent(action);
-        // }
-        // async [FilesSelectedAction.FILES_SELECTED](action: FilesSelectedAction) {
-        //     const document = await vscode.workspace.openTextDocument(action.items[0].filePath);
-        //     const editor = await vscode.window.showTextDocument(document);
-        // }
-    }
+    tdproc.stdout.pipe(process.stdout);
+    tdproc.stderr.pipe(process.stderr);
 
-    server.dependencies.register(
-        new ApplicationServiceDependency("vsCodeService", VSCodeService)
-    );
+    const sockFilePath = await new Promise((resolve) => {
 
-    server.initialize();
+        const sockBuffer = [];
+        tdproc.stdout.pipe(through(function(chunk, enc:any, callback) {
+            const value = String(chunk);
+
+            // TODO - need util function for this
+            const match = value.match(/\-+sock file start\-+\n(.*?)\n\-+sock file end\-+/);
+
+            if (match) {
+                resolve(match[1])
+            }
+
+            callback();
+        }))
+    });
+
+    const client = net.connect({ path: sockFilePath } as any);
+
+    const bus = new SockBus(client, new NoopBus());
 
     var _inserted = false;
     var _content;
@@ -99,11 +99,11 @@ export async function activate(context: vscode.ExtensionContext) {
 
         if (_content === editorContent) return;
 
-        await UpdateTemporaryFileContentAction.execute({
-            path: path,
-            content: _content = editorContent,
-            ignoreIfNotCached: true
-        }, server.bus);
+        // await UpdateTemporaryFileContentAction.execute({
+        //     path: path,
+        //     content: _content = editorContent,
+        //     ignoreIfNotCached: true
+        // }, server.bus);
     }, 25);
 
     let startServerCommand = vscode.commands.registerCommand("extension.tandemOpenCurrentFile", async () => {
@@ -113,19 +113,19 @@ export async function activate(context: vscode.ExtensionContext) {
 
         _update(vscode.window.activeTextEditor.document);
 
-        await UpdateTemporaryFileContentAction.execute({
-            path: fileName,
-            content: _content = doc.getText(),
-            ignoreIfNotCached: false
-        }, server.bus);
+        // await UpdateTemporaryFileContentAction.execute({
+        //     path: fileName,
+        //     content: _content = doc.getText(),
+        //     ignoreIfNotCached: false
+        // }, server.bus);
 
-        const hasOpenWindow = (await OpenProjectAction.execute({
-            path: fileName
-        }, server.bus));
+        // const hasOpenWindow = (await OpenProjectAction.execute({
+        //     path: fileName
+        // }, server.bus));
 
-        if (!hasOpenWindow) {
-            exec(`open http://localhost:${port}/editor`);
-        }
+        // if (!hasOpenWindow) {
+        //     exec(`open http://localhost:${port}/editor`);
+        // }
     });
 
     context.subscriptions.push(startServerCommand);
@@ -142,20 +142,20 @@ export async function activate(context: vscode.ExtensionContext) {
 
         const editorContent = doc.getText();
 
-        const cachedFile = await ReadTemporaryFileContentAction.execute({
-            path: path
-        }, server.bus);
+        // const cachedFile = await ReadTemporaryFileContentAction.execute({
+        //     path: path
+        // }, server.bus);
 
         // cached content does not match, meaning that it likely changed in the browser
-        if (cachedFile.content !== editorContent) {
-            try {
-                await _setEditorContent({ path: doc.fileName, content: cachedFile.content, mtime: cachedFile.mtime });
-            } catch(e) {
-                // console.log
-            }
-        } else {
-            _update(doc);
-        }
+        // if (cachedFile.content !== editorContent) {
+        //     try {
+        //         await _setEditorContent({ path: doc.fileName, content: cachedFile.content, mtime: cachedFile.mtime });
+        //     } catch(e) {
+        //         // console.log
+        //     }
+        // } else {
+        //     _update(doc);
+        // }
     }
 
     vscode.window.onDidChangeTextEditorSelection(function(e:vscode.TextEditorSelectionChangeEvent) {
@@ -164,7 +164,9 @@ export async function activate(context: vscode.ExtensionContext) {
             start: e.textEditor.document.offsetAt(selection.start),
             end: e.textEditor.document.offsetAt(selection.end)
         }));
-        server.bus.execute(new SelectEntitiesAtSourceOffsetAction(fixFileName(e.textEditor.document.fileName), ...ranges));
+
+
+        // server.bus.execute(new SelectEntitiesAtSourceOffsetAction(fixFileName(e.textEditor.document.fileName), ...ranges));
     });
 
     // this needs to be a config setting

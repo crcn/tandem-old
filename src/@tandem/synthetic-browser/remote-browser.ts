@@ -92,8 +92,8 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     }
 
     // explicitly request an update since some synthetic objects may not emit
-    // a render action in some cases
-    this.renderer.requestUpdate();
+    // a render action in some cases.
+    this.renderer.requestRender();
 
     this.notifyLoaded();
   }

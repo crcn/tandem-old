@@ -1,6 +1,5 @@
 import { inject } from "@tandem/common/decorators";
 import { Action } from "@tandem/common/actions";
-import { IWorkspace } from "@tandem/editor/browser/models/base";
 import { InsertTool } from "@tandem/editor/browser/models/insert-tool";
 import { BaseCommand } from "@tandem/common/commands";
 import { SetToolAction } from "@tandem/editor/browser/actions";
@@ -17,7 +16,7 @@ abstract class BaseInsertElementTool extends InsertTool {
   @inject(DependenciesDependency.ID)
   private _dependencies: Dependencies;
 
-  constructor(readonly options: any, editor: IWorkspace) {
+  constructor(readonly options: any, editor: any) {
     super(editor);
     this.entityIsRoot = options.root;
   }
@@ -35,7 +34,7 @@ abstract class BaseInsertElementTool extends InsertTool {
 
 function createElementInsertToolClass(options) {
   return class InsertElementTool extends BaseInsertElementTool {
-    constructor(editor: IWorkspace) {
+    constructor(editor: any) {
       super(options, editor);
     }
   };
@@ -44,7 +43,7 @@ function createElementInsertToolClass(options) {
 export const keyBindingDependency = [
   new GlobalKeyBindingDependency(TEXT_TOOL_KEY_CODE, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.execute(new SetToolAction(this.dependencies.query<WorkspaceToolFactoryDependency>(textToolDependency.id)));
+      // this.bus.execute(new SetToolAction(this.dependencies.query<WorkspaceToolFactoryDependency>(textToolDependency.id)));
     }
   })
 ];

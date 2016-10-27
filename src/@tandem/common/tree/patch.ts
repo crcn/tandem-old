@@ -3,7 +3,7 @@ import { diffArray } from "@tandem/common/utils/array";
 import { getPatchableProperties } from "@tandem/common/decorators";
 import { IComparable, IPatchable } from "@tandem/common/object";
 
-type ComparableTreeType = ITreeNode<any> & IComparable;
+export type ComparableTreeType = ITreeNode<any> & IComparable;
 
 export const patchTreeNode = (oldNode: ComparableTreeType, newNode: ComparableTreeType, patchLeaf?: (oldNode: ComparableTreeType, newNode: ComparableTreeType) => any) => {
   if (!patchLeaf) patchLeaf = defaultPatchLeaf;

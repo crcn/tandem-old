@@ -4,6 +4,13 @@ export class DOMNodeAction extends Action {
   static readonly DOM_NODE_LOADED = "domNodeLoaded";
 }
 
+export class AttributeChangeAction extends Action {
+  static readonly ATTRIBUTE_CHANGE = "attributeChange";
+  constructor(readonly name: string, readonly value: string) {
+    super(AttributeChangeAction.ATTRIBUTE_CHANGE);
+  }
+}
+
 // TODO - add these https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Mutation_events
 export class DOMMutationAction extends Action {
   static readonly DOM_NODE_LOADED = "domNodeLoaded";
@@ -29,7 +36,8 @@ export class OpenRemoteBrowserAction extends Action {
 const DOM_NODE_MUTATION_ACTION_TYPES = {
   [TreeNodeAction.NODE_ADDED]: true,
   [TreeNodeAction.NODE_REMOVED]: true,
-  [DOMMutationAction.DOM_NODE_LOADED]: true
+  [DOMMutationAction.DOM_NODE_LOADED]: true,
+  [AttributeChangeAction.ATTRIBUTE_CHANGE]: true
 };
 
 export function isDOMMutationAction(action: Action) {

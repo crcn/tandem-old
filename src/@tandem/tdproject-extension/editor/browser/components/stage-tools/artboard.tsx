@@ -63,7 +63,8 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
   }
 
   selectEntity = (event: React.MouseEvent<any>) => {
-    this.bus.execute(new SelectAction([this.props.artboard], event.metaKey || event.shiftKey));
+    this.props.workspace.select(this.props.artboard, event.metaKey || event.shiftKey);
+    // this.bus.execute(new SelectAction([this.props.artboard], ));
   }
 
   onKeyDown = (event: React.KeyboardEvent<any>): any => {

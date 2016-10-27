@@ -54,7 +54,8 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
     this.onStyleChange();
   }
 
-  protected attributeChangedCallback(name: string, value: string) {
+  protected attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    super.attributeChangedCallback(name, oldValue, newValue);
     if (name === "style") {
       this._resetStyleFromAttribute();
     }
@@ -116,11 +117,17 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
     return this.getBoundingClientRect();
   }
 
-  public async setAbsolutePosition(newPosition: IPoint) {
-    const oldBounds = await this.getAbsoluteBounds();
+  public setAbsolutePosition({ left, top }: IPoint) {
+    const oldBounds = this.getAbsoluteBounds();
+
+    Object.assign(this.style, {
+      left: left,
+      top: top
+    });
   }
 
-  public async setAbsoluteBounds(newBounds: BoundingRect) {
-    const oldBounds = await this.getAbsoluteBounds();
+  public setAbsoluteBounds(newBounds: BoundingRect) {
+    const oldBounds = this.getAbsoluteBounds();
+    console.log(newBounds)
   }
 }

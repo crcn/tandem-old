@@ -25,7 +25,7 @@ export class TetherRenderer extends BaseRenderer {
     // TODO
   }
 
-  update() {
+  render() {
     const rect = this.element.getBoundingClientRect();
 
     this._connection.emit("tether:render", {
@@ -36,7 +36,7 @@ export class TetherRenderer extends BaseRenderer {
   }
 
   private onTetherConnected() {
-    this.update();
+    this.render();
   }
 
   private setRemoteRects(rects: any, styles: any) {
