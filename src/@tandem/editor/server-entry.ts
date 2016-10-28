@@ -6,11 +6,14 @@ import { ServiceApplication } from "@tandem/core";
 import { IEdtorServerConfig, concatEditorServerDependencies } from "./server";
 
 // extensions
+import { createVueWorkerDependencies } from "@tandem/vue-extension/editor/server";
 import { createSASSEditorWorkerDependencies } from "@tandem/sass-extension/editor/worker";
 import { createSyntheticBrowserWorkerDependencies } from "@tandem/synthetic-browser";
 import { createTDProjectEditorServerDependencies } from "@tandem/tdproject-extension/editor/server";
-// import { createTDProjectEditorBrowserDependencies } from "@tandem/tdproject-extension/editor/browser";
-import { createHTMLEditorServerDependencies, createHTMLEditorWorkerDependencies } from "@tandem/html-extension/editor/server";
+import {
+  createHTMLEditorServerDependencies,
+  createHTMLEditorWorkerDependencies,
+} from "@tandem/html-extension/editor/server";
 
 const config: IEdtorServerConfig = {
   argv: argv,
@@ -24,6 +27,7 @@ const deps = new Dependencies(
   createHTMLEditorServerDependencies(),
 
   // worker deps
+  createVueWorkerDependencies(),
   createHTMLEditorWorkerDependencies(),
   createSASSEditorWorkerDependencies(),
   createSyntheticBrowserWorkerDependencies(),
@@ -37,5 +41,9 @@ const app = new ServiceApplication(
 app.initialize();
 
 process.on("unhandledRejection", function(error) {
+  console.log("unhandled rejection", error);
+});
+
+process.on("uncaughtException", function(error) {
   console.log("unhandled rejection", error);
 });

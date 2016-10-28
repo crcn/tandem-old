@@ -4,8 +4,11 @@ import { ResolveFileAction } from "./actions";
 import {
   IActor,
   inject,
+  Dependencies,
   SingletonThenable,
+  MimeTypeDependency,
   PrivateBusDependency,
+  DependenciesDependency,
 } from "@tandem/common";
 import * as resolve from "resolve";
 import * as pkgpath from "package-path";
@@ -66,13 +69,21 @@ export class RemoteFileResolver extends BaseFileResolver {
 
 export class LocalFileResolver extends BaseFileResolver {
 
+  @inject(DependenciesDependency.ID)
+  private _dependencies: Dependencies;
+
   async resolve2(relativePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
 
-    const { extensions, directories } = options;
+    const { extensions, directories } = combineResoverOptions(options, {
+      extensions: [], // temp
+      directories: []
+    });
 
     if (cwd) {
       const pkgPath = pkgpath.sync(cwd);
-      const pkg = require(pkgPath + "/package.json");
+
+
+      const pkg = pkgPath && require(pkgPath + "/package.json");
 
       // check browser flag in package.json
 
@@ -90,6 +101,7 @@ export class LocalFileResolver extends BaseFileResolver {
     } else {
       cwd = process.cwd();
     }
+
 
     return resolve.sync(relativePath, {
       basedir: cwd,

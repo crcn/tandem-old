@@ -125,7 +125,7 @@ export function concatSandboxDependencies(dependencies: Dependencies, fileSystem
   return new Dependencies(
     dependencies,
     new FileSystemDependency(fileSystem || Injector.create(ENV_IS_NODE ?  LocalFileSystem : RemoteFileSystem, [], dependencies)),
-    new FileResolverDependency(fileSystem || Injector.create(ENV_IS_NODE ? LocalFileResolver : RemoteFileResolver, [], dependencies)),
+    new FileResolverDependency(fileSystem || Injector.create<any>(ENV_IS_NODE ? LocalFileResolver : RemoteFileResolver, [], dependencies)),
     new FileCacheDependency(),
     new FileEditorDependency(),
     new BundlerDependency()

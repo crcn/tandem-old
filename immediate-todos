@@ -1,3 +1,14 @@
+- [ ] use existing webpack config
+- [ ] webpack-loader adapter
 - [x] vscode ext update
 - [ ] wire up style pane
 - [ ] code editor next to preview (hovering)
+- [ ] use existing webpack config for bundling dependencies
+- [ ] artboards need to specify how to find components to auto-mount
+- [ ] drag and drop files to import into workspace
+
+
+1. TDM provides high level markup APIs for interacting with project Actual project code is by other third-party libs such as react and angular
+2. artboards open an entry point within a synthetic browser. Bundle strategies (webpack, systemjs) should be used in order to properly bundle the entry point
+3. strategies used to create APIs and wrap around existing bundle loaders (webpack, systemjs).
+

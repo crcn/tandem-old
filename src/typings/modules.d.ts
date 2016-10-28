@@ -125,3 +125,12 @@ declare module "titlebar" {
 
   export = titlebar;
 }
+
+
+declare module "vue-loader" {
+  function loader();
+  namespace loader {
+
+  }
+  export = loader;
+}

@@ -59,6 +59,7 @@
     "@types/source-map": "^0.1.28",
     "@types/sprintf": "0.0.28",
     "@types/through2": "^2.0.31",
+    "@types/vue": "^1.0.31",
     "@types/whatwg-fetch": "0.0.32",
     "@types/whatwg-streams": "0.0.1",
     "@types/yargs": "0.0.33",

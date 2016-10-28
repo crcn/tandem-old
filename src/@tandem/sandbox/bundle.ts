@@ -438,7 +438,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
       try {
         return await this._fileResolver.resolve(dependencyPath, cwd);
       } catch(e) {
-        this.logger.error(`Cannot find dependency file ${dependencyPath}.`);
+        this.logger.error(`Cannot find dependency file ${dependencyPath}. Reason:\n${e.stack}`);
       }
     }
   }

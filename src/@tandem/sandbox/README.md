@@ -75,3 +75,8 @@ new SyntheticObjectEditor(document).applyEditActions(...edit.actions);
 // this also works
 // edit.applyActionsTo(document);
 ```
+
+
+#### TODOS
+
+- bundle

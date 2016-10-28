@@ -173,6 +173,10 @@ gulp.task('clean:out', function() {
   fsa.removeSync(OUT_DIR);
 });
 
+gulp.task('clean:mono-package', function() {
+  fsa.removeSync(OUT_NODE_MODULES_DIR);
+});
+
 gulp.task('clean:symlinks', function() {
   if (!fs.existsSync(NODE_MODULES_DIR)) return;
   fs.readdirSync(NODE_MODULES_DIR).forEach((dir) => {
