@@ -9,6 +9,7 @@ const OUT_DIR              = join(BASE_DIR, 'out');
 const MONO_PKG_FILE_PATH   = join(OUT_DIR, 'package.json');
 const OUT_NODE_MODULES_DIR = join(OUT_DIR, 'node_modules');
 const INTEGRATIONS_DIR     = join(BASE_DIR, 'integrations');
+const GREP                 = argv.grep;
 
 const PACKAGE_FILE_PATHS = glob.sync(join(SRC_DIR, '**', 'package.json'));
 const PACKAGES           = PACKAGE_FILE_PATHS.map(require);
@@ -18,7 +19,9 @@ const PACKAGE_NAMES      = PACKAGES.map(({name}) => name);
 const WATCH = argv.watch;
 
 module.exports = {
+  argv,
   WATCH,
+  GREP,
   BASE_DIR,
   SRC_DIR,
   OUT_DIR,

@@ -23,10 +23,6 @@ describe(__filename + "#", () => {
       expect(deps.query("a/b")).not.to.equal(undefined);
     });
 
-    it("throws an error if a ns already exists", () => {
-      expect(() => new Dependencies(new Dependency<string>("a/b", undefined), new Dependency<string>("a/b", undefined))).to.throw("Dependency with namespace \"a/b\" already exists.");
-    });
-
     it("registers deps when calling register()", () => {
       const deps = new Dependencies();
       const ab = new Dependency<string>("a/b", "a");

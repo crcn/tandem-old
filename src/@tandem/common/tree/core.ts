@@ -2,13 +2,11 @@ import { IActor } from "@tandem/common/actors";
 import { Action } from "@tandem/common/actions";
 import { WrapBus } from "mesh";
 import { ITreeNode } from "./base";
-import { patchTreeNode } from "./patch";
 import { TreeNodeAction } from "./actions";
 import { ITreeWalker, IWalkable } from "./walker";
 import { Observable, IObservable } from "@tandem/common/observable";
 
-
-export { ITreeNode, patchTreeNode };
+export { ITreeNode };
 
 export class TreeNode<T extends TreeNode<any>> extends Observable implements ITreeNode<T>, IWalkable {
 

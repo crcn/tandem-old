@@ -17,7 +17,6 @@ import {
   IInjectable,
   EntityAction,
   Dependencies,
-  patchTreeNode,
   watchProperty,
   PropertyChangeAction,
   DependenciesDependency,

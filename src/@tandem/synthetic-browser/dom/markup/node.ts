@@ -30,7 +30,6 @@ import {
   IComparable,
   findTreeNode,
   serializable,
-  patchTreeNode,
 } from "@tandem/common";
 
 export interface ISerializedSyntheticDOMNode {

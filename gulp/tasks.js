@@ -1,9 +1,12 @@
+require("reflect-metadata");
+
 const fs            = require('fs');
 const fsa           = require('fs-extra');
 const exec          = require('child_process').exec;
 const gulp          = require('gulp');
 const sift          = require('sift');
 const glob          = require('glob');
+const mocha         = require('gulp-mocha');
 const chalk         = require('chalk');
 const install       = require('gulp-install');
 const peg           = require('gulp-peg');
@@ -22,6 +25,8 @@ const { merge, omit }             = require('lodash');
 const { join, dirname, basename } = require('path');
 
 const {
+  GREP,
+  argv,
   WATCH,
   SRC_DIR,
   OUT_DIR,
@@ -62,17 +67,17 @@ gulp.task('build:typescript', function(done) {
 
 gulp.task('build:peg', function() {
   return gulp
-  .src(join(SRC_DIR, "**", "*.peg"))
+  .src(join(SRC_DIR, '**', '*.peg'))
   .pipe((peg()))
   .pipe(rename((file) => {
-    file.extname = ".peg.js";
+    file.extname = '.peg.js';
   }))
   .pipe(gulp.dest(OUT_DIR));
 });
 
 gulp.task('build:webpack', function() {
 
-  const webPackages = PACKAGES.filter(sift({ "entries.browser": { $exists: true }}));
+  const webPackages = PACKAGES.filter(sift({ 'entries.browser': { $exists: true }}));
 
   // quick fix for webpack watcher -- it won't save new bundles after
   // files have changed. This needs to be refactored once there are more browser apps.
@@ -191,13 +196,45 @@ gulp.task('clean:symlinks', function() {
  * Publish tasks
  ******************************/
 
-gulp.task('publish:all', function() {
+gulp.task('publish:all', ['test'], function() {
 
 });
 
 gulp.task('publish', function() {
   // inquier here about what package to publish
 });
+
+
+/******************************
+ * Test tasks
+ ******************************/
+
+gulp.task('test', ['test:all']);
+
+gulp.task('test:all', function(done) {
+
+  const packageDirs = PACKAGE_NAMES.map(name => join(OUT_DIR, name));
+  const testFiles = packageDirs.map(dir => join(dir, "**", "*-test.js"));
+
+  function run() {
+    return gulp
+    .src(testFiles)
+    .pipe(mocha({
+      reporter: argv.reporter || "dot",
+      grep: GREP,
+      bail: argv.bail
+    }))
+    .on("error", error => console.error(error.message));
+  }
+
+  if (WATCH) {
+    watch(packageDirs.map(dir => join(dir, "**")), run);
+    run();
+  } else {
+    return run();
+  }
+});
+
 
 /******************************
  * Other tasks

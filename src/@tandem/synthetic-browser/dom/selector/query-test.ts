@@ -2,7 +2,8 @@ import { expect } from "chai";
 import {
   parseMarkup,
   evaluateMarkup,
-  SyntheticDocument
+  SyntheticDocument,
+  SyntheticHTMLElement,
 } from "@tandem/synthetic-browser";
 
 describe(__filename + "#", () => {
@@ -33,11 +34,11 @@ describe(__filename + "#", () => {
     ["svg:not(:root)", `<div data-test="abc">a</div><span data-test="bc">c</span>`, ``],
     ["a:not([href]):not([tabindex])", `<div data-test="abc">a</div><span data-test="bc">c</span>`, ``],
   ].forEach(([selector, a, b]) => {
-    xit(`selector ${selector} for ${a} equals ${b}`, () => {
-      const el = evaluateMarkup(parseMarkup(a), new SyntheticDocument(""));
-
-      // const nodes = querySelectorAll(el, selector);
-      // expect(nodes.join("")).to.equal(b);
+    it(`selector ${selector} for ${a} equals ${b}`, () => {
+      const document = new SyntheticDocument("");
+      document.appendChild(evaluateMarkup(parseMarkup(a), document));
+      const nodes = document.querySelectorAll(selector);
+      expect(nodes.join("")).to.equal(b);
     });
   });
 });

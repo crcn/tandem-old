@@ -42,14 +42,15 @@ export function createSyntheticDOMWalker(each: (node: SyntheticDOMNode, walker?:
     accept(node: IWalkable & SyntheticDOMNode) {
       if (!this._stopped && (node.nodeType === DOMNodeType.ELEMENT || (deep && isDocumentOrShadow(node)))) {
         each(node, this);
-        if (!this._stopped) node.visitWalker(this);
+        if (!this._stopped) {
+          node.visitWalker(this);
+        }
       }
     }
   };
 
   return walker;
 }
-
 
 export function querySelector(node: SyntheticDOMNode, selectorSource: string): SyntheticDOMElement {
   let found: SyntheticDOMElement;

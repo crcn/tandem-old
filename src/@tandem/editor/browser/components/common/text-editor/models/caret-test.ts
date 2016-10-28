@@ -5,8 +5,8 @@ import { WrapBus, NoopBus } from "mesh";
 import { BrokerBus } from "@tandem/common/busses";
 import { expect } from "chai";
 
-
 describe(__filename + "#", function() {
+  if (typeof window === "undefined") return;
 
   let editor: TextEditor;
 

@@ -4,6 +4,10 @@ import encode from "./encode";
 
 describe(__filename + "#", function() {
 
+  if (typeof window === "undefined") {
+    return;
+  }
+
   it("can be created", function() {
     new TextRuler({});
   });

@@ -1,4 +1,3 @@
-export * from "./patch";
 export * from "./core";
 export * from "./actions";
 export * from "./utils";

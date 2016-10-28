@@ -4,6 +4,8 @@ import { BrokerBus } from "@tandem/common/busses";
 
 describe(__filename + "#", function() {
 
+  if (typeof window === "undefined") return;
+
   let te;
 
   beforeEach(function() {
