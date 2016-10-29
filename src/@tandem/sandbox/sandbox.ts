@@ -31,6 +31,10 @@ export class SandboxModule {
   }
 }
 
+/**
+ * TODO - consider removing require() statement and using evaluate(bundle) instead
+ */
+
 @loggable()
 export class Sandbox extends Observable {
 
@@ -60,7 +64,7 @@ export class Sandbox extends Observable {
   public resume() {
     this._paused = false;
     if (this._shouldEvaluate) {
-      this.evaluate();
+      this.reset();
     }
   }
 
@@ -82,7 +86,7 @@ export class Sandbox extends Observable {
 
     this.logger.verbose("wait for %s", bundle.filePath);
     await this._entry.whenReady();
-    this.evaluate();
+    this.reset();
 
   }
 
@@ -90,35 +94,35 @@ export class Sandbox extends Observable {
     return this._entry.ready;
   }
 
-  require(filePath: string): Object {
-    if (this._modules[filePath]) {
-      return this._modules[filePath].exports;
+  require(hash: string, interpretableName?: string): Object {
+    if (this._modules[hash]) {
+      return this._modules[hash].exports;
     }
 
-    const bundle = this._entry.bundler.collection.find((entity) => entity.filePath === filePath);
+    const bundle = this._entry.bundler.eagerFindByHash(hash);
 
     if (!bundle) {
-      throw new Error(`${filePath} does not exist in the ${this._entry.filePath} bundle.`);
+      throw new Error(`${hash} does not exist in the ${this._entry.filePath} bundle.`);
     }
 
     if (!bundle.ready) {
-      throw new Error(`Trying to require bundle ${filePath} that is not ready yet.`);
+      throw new Error(`Trying to require bundle ${hash} that is not ready yet.`);
     }
 
-    const module = this._modules[filePath] = new SandboxModule(this, bundle);
+    const module = this._modules[hash] = new SandboxModule(this, bundle);
     const now = Date.now();
 
     // TODO - cache evaluator here
     const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryDependency.find(bundle.type, this._dependencies);
 
     if (!evaluatorFactoryDepedency) {
-      throw new Error(`Cannot evaluate ${filePath}:${bundle.type} in sandbox.`);
+      throw new Error(`Cannot evaluate ${bundle.filePath}:${bundle.type} in sandbox.`);
     }
 
-    this.logger.verbose("evaluating %s", filePath);
+    this.logger.verbose("evaluating %s", bundle.filePath);
     evaluatorFactoryDepedency.create().evaluate(module);
 
-    return this.require(filePath);
+    return this.require(hash, interpretableName);
   }
 
   protected onEntryAction(action: Action) {
@@ -127,11 +131,11 @@ export class Sandbox extends Observable {
         this._shouldEvaluate = true;
         return;
       }
-      this.evaluate();
+      this.reset();
     }
   }
 
-  public evaluate() {
+  private reset() {
     this.logger.verbose("evaluate");
     this._shouldEvaluate = false;
     const exports = this._exports;
@@ -139,7 +143,7 @@ export class Sandbox extends Observable {
     this._global  = this.createGlobal();
     this.notify(new PropertyChangeAction("global", this._global, global));
     this._modules = {};
-    this._exports = this.require(this._entry.filePath);
+    this._exports = this.require(this._entry.hash, this._entry.filePath);
     this.notify(new PropertyChangeAction("exports", this._exports, exports));
   }
 }

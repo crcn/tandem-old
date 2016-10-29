@@ -139,3 +139,11 @@ declare module "vue-loader" {
   }
   export = loader;
 }
+
+declare module "md5" {
+  function md5(source: string);
+  namespace md5 {
+
+  }
+  export = md5;
+}

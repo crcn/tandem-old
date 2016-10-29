@@ -30,12 +30,12 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
     // because it *must* exist for the createCallback to be called. for deserialized instances,
     // this method is never called anyways because deserialization implies that we're restoring the
     // element to its original state -- another method is called instead.
-    const dependency = this.module.bundle.eagerGetDependencyByRelativePath(href);
+    const dependencyHash = this.module.bundle.getDependencyHash(href);
 
     let value: any;
 
     // TODO - possible serialize content here if there are no side effects
-    this[rel] = this.module.sandbox.require(dependency.filePath);
+    this[rel] = this.module.sandbox.require(dependencyHash);
 
     if (this.stylesheet) {
       this.ownerDocument.styleSheets.push(this.stylesheet);

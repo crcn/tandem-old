@@ -13,17 +13,19 @@ export class SyntheticNavigator {
   readonly userAgent = "none";
 }
 
-export class SyntheticConsole {
-  log() {}
-  warn() {}
-  error() {}
-  notice() { }
-}
+// export class SyntheticConsole {
+//   log() {}
+//   warn() {}
+//   error() {}
+//   notice() { }
+// }
 
 export class SyntheticWindow extends Observable {
 
   readonly navigator = new SyntheticNavigator();
-  // readonly console = new SyntheticConsole();
+
+  // TODO - emit events from logs here
+  readonly console = console;
 
   @bindable()
   public location: SyntheticLocation;

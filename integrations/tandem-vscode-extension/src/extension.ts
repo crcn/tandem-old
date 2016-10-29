@@ -137,7 +137,6 @@ class TandemClient extends Observable {
             const sockBuffer = [];
             tdproc.stdout.pipe(through(function(chunk, enc:any, callback) {
                 const value = String(chunk);
-                console.log(value);
 
                 // TODO - need util function for this
                 const match = value.match(/\-+sock file start\-+\n(.*?)\n\-+sock file end\-+/);

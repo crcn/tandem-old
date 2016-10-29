@@ -144,7 +144,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
 
   async open2(url: string, strategyOptions?: IBundleStrategyOptions) {
     const bundler = BundlerDependency.getInstance(strategyOptions, this._dependencies);
-    this._entry = await bundler.bundle(url);
+    this._entry = await bundler.bundle({ filePath: url });
     this.logger.info("opening %s in sandbox", url);
     this._sandbox.open(this._entry);
   }

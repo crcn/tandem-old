@@ -1,3 +1,6 @@
+// A bit of a cluster fuck this is. Needs cleaning after many of mysteries
+// around webpack are resolved.
+
 import {
   inject,
   Logger,
@@ -44,13 +47,15 @@ export interface IWebpackLoaderConfig {
   loaders?: IWebpackLoaderConfig[];
 }
 
+export interface INormalizedWebpackLoaderConfig {
+  modulePath: string;
+  query: string;
+}
+
 export interface IWebpackLoaderOptions {
   disablePreloaders?: boolean;
-  disableLoaders?: boolean;
-  loaders: [{
-    name: string,
-    query: Map<string, any>
-  }]
+  disableAllLoaders?: boolean;
+  loaders: INormalizedWebpackLoaderConfig[]
 }
 
 export interface IWebpackResolveAliasConfig {
@@ -97,24 +102,25 @@ class WebpackLoaderContext {
   private _async: boolean;
   private _resolve: Function;
   private _reject: Function;
-  private _dependencies: string[];
   private _module: WebpackLoaderContextModule;
   readonly loaderIndex: number;
   readonly options: any;
+  private _compiler: MockWebpackCompiler;
+  readonly query: string;
 
   constructor(
-    readonly loaders: IWebpackLoaderConfig[],
-    readonly loader: IWebpackLoaderConfig,
-    readonly loaderModuleName: string,
+    readonly loaders: INormalizedWebpackLoaderConfig[],
+    readonly loader: INormalizedWebpackLoaderConfig,
+    readonly strategy: WebpackBundleStrategy,
     readonly resourcePath: string,
-    options: IWebpackConfig,
-    readonly _compiler: MockWebpackCompiler,
-    readonly query: any
+    private _dependencies: string[]
   ) {
 
-    this.options = Object.assign({ context: "" }, options);
+    this._compiler = strategy.compiler;
+
+    this.query = loader.query;
+    this.options = Object.assign({ context: "" }, strategy.config);
     this.loaderIndex = this.loaders.indexOf(loader);
-    this._dependencies = [];
     this._module = new WebpackLoaderContextModule();
   }
 
@@ -122,26 +128,40 @@ class WebpackLoaderContext {
     return this._dependencies;
   }
 
+  private get module() {
+    return require(this.loader.modulePath);
+  }
+
   async load(content): Promise<{ content: string, map: any }> {
     return new Promise<any>((resolve, reject) => {
       this._resolve = resolve;
       this._reject = reject;
-      const module = require(this.loaderModuleName);
-      console.log(require.resolve(this.loaderModuleName));
-      const result = module.call(this, content);
+      const result = this.module.call(this, content);
       if (!this._async) {
-        return resolve({ content: result });
+        return resolve(result && { content: result });
       }
     })
+  }
+
+  pitch() {
+    const module = this.module;
+    if (!module.pitch) return;
+
+    const remainingRequests = this.loaders.slice(this.loaderIndex + 1).map((loader) => {
+      return loader.modulePath + (loader.query || "")
+    });
+
+    remainingRequests.push(this.resourcePath);
+    const result = module.pitch(remainingRequests.join("!"));
+    if (result == null) return;
+
+    return { content: result, map: undefined }
   }
 
   emitFile(fileName: string, content: string) {
     throw new Error(`emit file is not supported yet`);
   }
 
-  pitch() {
-
-  }
 
   async() {
     this._async = true;
@@ -162,6 +182,16 @@ class WebpackLoaderContext {
   addDependency(filePath) {
     this._dependencies.push(filePath);
   }
+
+  dependency(filePath) {
+    return this.addDependency(filePath);
+  }
+
+  resolve(cwd: string, relativePath: string, callback: (err, result?) => any) {
+    this.strategy.resolve(relativePath, cwd).then((info) => {
+      callback(null, info.filePath);
+    }).catch(callback);
+  }
 }
 
 @loggable()
@@ -170,58 +200,100 @@ class WebpackBundleLoader implements IBundleLoader {
   constructor(readonly strategy: WebpackBundleStrategy, readonly options: IWebpackLoaderOptions) { }
   async load(filePath: string, { type, content, map }: IBundleContent): Promise<IBundleLoaderResult> {
     this.logger.verbose("loading %s", filePath);
+
     const { config } = this.strategy;
 
     // find the matching loaders
-    const loaders = [
-      ...(config.module.preLoaders || []),
-      ...config.module.loaders,
-      ...(config.module.postLoaders || [])
-    ].filter(testLoader.bind(this, filePath));
+    const usableConfigLoaders = [];
+
+    if (!this.options.disableAllLoaders) {
+      if (!this.options.disablePreloaders) usableConfigLoaders.push(...(config.module.preLoaders || []));
+      usableConfigLoaders.push(...config.module.loaders, ...(config.module.postLoaders || []));
+    }
+
+    const moduleLoaders = [
+      ...normalizeConfigLoaders(...usableConfigLoaders.filter(testLoader.bind(this, filePath))),
+      ...(this.options.loaders || [])
+    ]
 
     const dependencyPaths = [];
 
+    const contexts = moduleLoaders.map((loader) => {
+      return new WebpackLoaderContext(
+        moduleLoaders,
+        loader,
+        this.strategy,
+        filePath,
+        dependencyPaths
+      );
+    });
 
-    let currentContent = content;
-    let currentMap     = map;
-
-    for (const loader of loaders) {
-
-      const loaderContexts: WebpackLoaderContext[]  = loader.loader.split("!").map((childLoader) => {
-        const [moduleName, queryString] = childLoader.split("?");
-        return new WebpackLoaderContext(
-          loaders,
-          loader,
-          moduleName,
-          filePath,
-          this.strategy.config,
-          this.strategy.compiler,
-          queryString  && "?" + queryString
-        );
-      });
-
-      // TODO - pitch here
-
-      // load
-      for (const context of loaderContexts.reverse()) {
-
-        this.logger.verbose("running webpack loader: %s", context.loaderModuleName);
-
-        const result: any = (await context.load(currentContent)) || {};
-        currentMap     = result.map;
-        currentContent = result.content;
-        dependencyPaths.push(...context.dependencyPaths);
-      }
+    const loadNext = async (content: string, map: any, index: number = 0): Promise<{ map: any, content: string }> => {
+      if (index >= contexts.length) return { content, map };
+      const context = contexts[index];
+      const result = (await context.pitch() || await loadNext(content, map, index + 1));
+      return await context.load(result.content) || result;
     }
+
+    const result = await loadNext(content, map, 0);
 
     this.logger.verbose("loaded %s", filePath);
 
     return {
       type: JS_MIME_TYPE,
-      content: currentContent,
-      dependencyPaths: findCommonJSDependencyPaths(currentContent)
+      content: result.content,
+      map: result.map,
+      dependencyPaths: findCommonJSDependencyPaths(result.content).concat(dependencyPaths)
     };
   }
+}
+
+/**
+ */
+
+function normalizeConfigLoaders(...loaders: IWebpackLoaderConfig[]) {
+  const normalizedLoaders = [];
+  for (const loader of loaders) {
+    normalizedLoaders.push(...parserLoaderOptions(loader.loader).loaders);
+  }
+  return normalizedLoaders;
+}
+
+/**
+ */
+
+function parserLoaderOptions(moduleInfo: string, hasFile: boolean = false): IWebpackLoaderOptions {
+
+  const loaderParts = moduleInfo.replace(/^(-|!)?!/,"").split("!");
+  if (hasFile) loaderParts.pop();
+
+  const options: IWebpackLoaderOptions = {
+    disablePreloaders: /^-?!/.test(moduleInfo),
+    disableAllLoaders: /^(-|!)!/.test(moduleInfo), // !!raw!filePath
+    loaders: loaderParts.map((loaderName) => {
+      const [moduleName, query] = loaderName.split("?");
+      return {
+        modulePath: require.resolve(moduleName),
+        query: query && "?" + query
+      }
+    })
+  };
+
+  return options;
+}
+
+function combineLoaders(...options: IWebpackLoaderOptions[]) {
+  let combinedOptions: IWebpackLoaderOptions = {
+    disablePreloaders: false,
+    disableAllLoaders: false,
+    loaders: []
+  };
+  for (const ops of options) {
+    combinedOptions.disableAllLoaders = combinedOptions.disableAllLoaders || ops.disableAllLoaders;
+    combinedOptions.disablePreloaders = combinedOptions.disablePreloaders || ops.disablePreloaders;
+    combinedOptions.loaders.push(...ops.loaders);
+  }
+  return combinedOptions;
 }
 
 function findCommonJSDependencyPaths(source) {
@@ -278,11 +350,14 @@ export class WebpackBundleStrategy implements IBundleStragegy {
     return Injector.inject(new WebpackBundleLoader(this, options), this._dependencies);
   }
 
-  async resolve(relativeFilePath: string, cwd: string): Promise<IBundleResolveResult> {
+  async resolve(moduleInfo: string, cwd: string): Promise<IBundleResolveResult> {
+
+    let loaderOptions = parserLoaderOptions(moduleInfo, true);
+    let relativeFilePath = moduleInfo.split("!").pop();
 
     const { config } = this;
 
-    this.logger.verbose("resolving %s:%s", cwd, relativeFilePath);
+    this.logger.verbose("resolving %s:%s", cwd, moduleInfo);
 
     relativeFilePath = config.resolve.alias && config.resolve.alias[relativeFilePath] || relativeFilePath;
 
@@ -293,7 +368,7 @@ export class WebpackBundleStrategy implements IBundleStragegy {
 
     return {
       filePath: resolvedFilePath,
-      loaderOptions: []
+      loaderOptions: loaderOptions
     }
   }
 }

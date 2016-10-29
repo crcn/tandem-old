@@ -1,3 +1,5 @@
+@import "@tandem/editor/browser/scss/variables";
+
 .test {
-  color: red;
+  color: $color-blue-3;
 }

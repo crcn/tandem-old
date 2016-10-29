@@ -1,5 +1,6 @@
 import * as sm from "source-map";
 import * as path from "path";
+import * as md5 from "md5";
 
 import { values } from "lodash";
 import { WrapBus } from "mesh";
@@ -112,6 +113,7 @@ export abstract class BaseBundleLoader implements IBundleLoader {
 }
 
 export interface IBundleData {
+  hash: string;
   filePath: string;
   loaderOptions: any;
   content?: string;
@@ -125,7 +127,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
 
   protected readonly logger: Logger;
 
-  readonly idProperty = "filePath";
+  readonly idProperty = "hash";
 
   private _filePath: string;
   private _ready: boolean;
@@ -134,6 +136,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   private _content: string;
   private _ast: any;
   private _loaderOptions: any;
+  private _hash: string;
 
   @inject(FileCacheDependency.ID)
   private _fileCache: FileCache;
@@ -186,6 +189,13 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
 
   get updatedAt(): number {
     return this._updatedAt;
+  }
+
+  /**
+   */
+
+  get hash(): string {
+    return this._hash;
   }
 
   /**
@@ -272,7 +282,9 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
    */
 
   get dependencyBundles(): Bundle[] {
-    return values(this.absoluteDependencyPaths).map((filePath) => this._bundler.eagerFindByFilePath(filePath));
+    return values(this._resolvedDependencyInfo).map((inf) => {
+      return this._bundler.eagerFindByHash(getBundleItemHash(inf));
+    });
   }
 
   /**
@@ -310,8 +322,21 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
    */
 
   eagerGetDependencyByRelativePath(relativePath: string) {
-    return this._bundler.eagerFindByFilePath(this.getAbsoluteDependencyPath(relativePath));
+    return this._bundler.eagerFindByHash(this.getAbsoluteDependencyPath(relativePath));
   }
+
+  getDependencyHash(relativePath: string) {
+    const info: IBundleResolveResult = this._resolvedDependencyInfo[relativePath];
+    if (info == null) {
+      this.logger.error(`Absolute path on bundle entry does not exist for ${relativePath}.`);
+      return;
+    }
+    return getBundleItemHash(info);
+  }
+
+  /**
+   * Deprecated. Use hash instead.
+   */
 
   getAbsoluteDependencyPath(relativePath: string) {
     const info: IBundleResolveResult = this._resolvedDependencyInfo[relativePath];
@@ -324,6 +349,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
 
   serialize() {
     return {
+      hash: this._hash,
       type: this._type,
       content: this._content,
       filePath: this.filePath,
@@ -333,11 +359,12 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
     };
   }
 
-  setPropertiesFromSource({ filePath, loaderOptions, type, updatedAt, content, resolvedDependencyInfo }: IBundleData) {
+  setPropertiesFromSource({ filePath, loaderOptions, type, updatedAt, content, resolvedDependencyInfo, hash }: IBundleData) {
     this._type      = type;
     this._filePath  = filePath;
     this._loaderOptions = loaderOptions;
     this._updatedAt = updatedAt;
+    this._hash = hash;
     this._content   = content;
     this._resolvedDependencyInfo = resolvedDependencyInfo || {};
   }
@@ -345,7 +372,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   async load() {
     this.logger.verbose("loading");
 
-    const loader = this._bundler.$strategy.getLoader({});
+    const loader = this._bundler.$strategy.getLoader(this._loaderOptions || {});
 
     const transformResult: IBundleLoaderResult = await loader.load(this.filePath, await this.getInitialSourceContent());
     this._content = transformResult.content;
@@ -367,6 +394,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
     }
 
     this._resolvedDependencyInfo = {};
+    // TODO - need to differentiate imported from included dependency.
     const dependencyPaths = transformResult.dependencyPaths || [];
     await Promise.all(dependencyPaths.map(async (relativePath, i) => {
       const dependencyInfo = await this.resolveDependencyInfo(relativePath);
@@ -375,7 +403,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
       }
       this._resolvedDependencyInfo[relativePath] = dependencyInfo;
       this.logger.verbose("loading dependency %s -> %s", relativePath, dependencyInfo.filePath);
-      const dependencyBundle = await this._bundler.bundle(dependencyInfo.filePath);
+      const dependencyBundle = await this._bundler.bundle(dependencyInfo);
       this.logger.verbose("loaded dependency %s", relativePath);
       dependencyBundle.observe(this._dependencyObserver);
     }));
@@ -476,12 +504,21 @@ export class Bundler extends Observable {
   }
 
   /**
-   * Looks for a loaded item. Though, it may not exist in memory, but it *may* exist in some other
-   * process.
+   * @deprecated
+   * file path may be associated with multiple bundles
    */
 
   eagerFindByFilePath(filePath): Bundle {
     return this.collection.find((entity) => entity.filePath === filePath);
+  }
+
+  /**
+   * Looks for a loaded item. Though, it may not exist in memory, but it *may* exist in some other
+   * process.
+   */
+
+  eagerFindByHash(hash): Bundle {
+    return this.collection.find((entity) => entity.hash === hash);
   }
 
   /**
@@ -499,20 +536,24 @@ export class Bundler extends Observable {
    * @returns {Promise<Bundle>}
    */
 
-  async bundle(filePath: string, loaderOptions?: any): Promise<Bundle> {
-    const key = [filePath, JSON.stringify(loaderOptions)].join(":");
-    return this._bundleRequests[key] || (this._bundleRequests[key] = new SingletonThenable(async () => {
-      const bundle = await this.eagerFindByFilePath(filePath);
+  async bundle(ops: IBundleResolveResult): Promise<Bundle> {
+    const hash = getBundleItemHash(ops);
+    return this._bundleRequests[hash] || (this._bundleRequests[hash] = new SingletonThenable(async () => {
+      const bundle = await this.eagerFindByHash(hash);
 
       if (bundle) return bundle.whenReady();
 
-      this.logger.verbose("bundling %s", filePath);
+      this.logger.verbose("bundling %s:%s", hash, ops.filePath);
 
       // at this point, the bundle does not exist in memory, or even
       // in a remote DS, so create & load it.
-      return (await this.collection.create({ filePath, loaderOptions }).insert()).load();
+      return (await this.collection.create({ filePath: ops.filePath, loaderOptions: ops.loaderOptions, hash }).insert()).load();
     }));
   }
+}
+
+function getBundleItemHash({ filePath, loaderOptions }: IBundleResolveResult) {
+  return md5(filePath + ":" + JSON.stringify(loaderOptions || {}));
 }
 
 export * from "./strategies";

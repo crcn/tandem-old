@@ -3,6 +3,7 @@ import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { SyntheticCSSStyleRule, ISerializedSyntheticCSSStyleRule } from "./style-rule";
+import { evaluateCSS, parseCSS } from "@tandem/synthetic-browser/dom/css";
 
 import {
   serialize,
@@ -23,6 +24,7 @@ import {
   RemoveChildEditAction,
   InsertChildEditAction,
 } from "@tandem/sandbox";
+
 
 export type syntheticCSSRuleType = SyntheticCSSFontFace|SyntheticCSSKeyframesRule|SyntheticCSSMediaRule|SyntheticCSSStyleRule;
 
@@ -93,6 +95,13 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
     super();
   }
 
+  set cssText(value: string) {
+    this
+    .createEdit()
+    .fromDiff(evaluateCSS(parseCSS(value)))
+    .applyActionsTo(this);
+  }
+
   get cssText() {
     return this.rules.map((rule) => rule.cssText).join("\n");
   }
@@ -106,7 +115,15 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
   }
 
   applyEditAction(action: EditAction) {
-    console.warn(`Cannot currently edit ${this.constructor.name}`);
+
+    if (action.type === SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT) {
+      const {child, index} = <InsertChildEditAction>action;
+      this.rules.splice(index, 0, child as syntheticCSSRuleType);
+    } else if (action.type === SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT) {
+      const {child} = <RemoveChildEditAction>action;
+      const found = this.rules.find(rule => rule.uid === child.uid);
+      this.rules.splice(this.rules.indexOf(found), 1);
+    }
   }
 
   createEdit() {
