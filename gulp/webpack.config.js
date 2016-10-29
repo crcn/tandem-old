@@ -12,6 +12,9 @@ const {
   NODE_MODULES_DIR
 } = require('./config');
 
+// SANDBOXED=1 tandem component.tsx
+const SANDBOXED = !!process.env.SANDBOXED;
+
 module.exports = {
     output: {
       filename: '[name].js',
@@ -68,16 +71,18 @@ module.exports = {
         },
         {
           test: /\.scss$/,
-          loader: ExtractTextPlugin.extract('style-loader', [
-            'css-loader',
-            'sass-loader'
-          ].join('!'))
+          loader: [
+            'style-loader',
+            'css-loader?sourceMap',
+            'sass-loader?sourceMap'
+          ].join('!')
         },
         {
           test: /\.css$/,
-          loader: ExtractTextPlugin.extract('style-loader', [
-            'css-loader'
-          ].join('!'))
+          loader: [
+            'style-loader',
+            'css-loader?sourceMap'
+          ].join('!')
         },
       ]
     }

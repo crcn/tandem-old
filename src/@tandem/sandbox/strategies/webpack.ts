@@ -8,6 +8,8 @@ import {
   DependenciesDependency,
 } from "@tandem/common";
 
+// TODO - handle __webpack_public_path__
+
 import {
   IBundleContent,
   IBundleLoaderResult,
@@ -98,16 +100,20 @@ class WebpackLoaderContext {
   private _dependencies: string[];
   private _module: WebpackLoaderContextModule;
   readonly loaderIndex: number;
+  readonly options: any;
 
   constructor(
     readonly loaders: IWebpackLoaderConfig[],
     readonly loader: IWebpackLoaderConfig,
+    readonly loaderModuleName: string,
     readonly resourcePath: string,
-    readonly options: IWebpackConfig,
+    options: IWebpackConfig,
     readonly _compiler: MockWebpackCompiler,
-    readonly query: any = {}
+    readonly query: any
   ) {
-    this.loaderIndex = this.loaders.indexOf(this.loader);
+
+    this.options = Object.assign({ context: "" }, options);
+    this.loaderIndex = this.loaders.indexOf(loader);
     this._dependencies = [];
     this._module = new WebpackLoaderContextModule();
   }
@@ -120,10 +126,21 @@ class WebpackLoaderContext {
     return new Promise<any>((resolve, reject) => {
       this._resolve = resolve;
       this._reject = reject;
-      const module = require(this.loader.loader);
+      const module = require(this.loaderModuleName);
+      console.log(require.resolve(this.loaderModuleName));
       const result = module.call(this, content);
-      if (!this._async) return resolve(result);
+      if (!this._async) {
+        return resolve({ content: result });
+      }
     })
+  }
+
+  emitFile(fileName: string, content: string) {
+    throw new Error(`emit file is not supported yet`);
+  }
+
+  pitch() {
+
   }
 
   async() {
@@ -151,7 +168,7 @@ class WebpackLoaderContext {
 class WebpackBundleLoader implements IBundleLoader {
   protected readonly logger: Logger;
   constructor(readonly strategy: WebpackBundleStrategy, readonly options: IWebpackLoaderOptions) { }
-  async load(filePath: string, { type, content }: IBundleContent): Promise<IBundleLoaderResult> {
+  async load(filePath: string, { type, content, map }: IBundleContent): Promise<IBundleLoaderResult> {
     this.logger.verbose("loading %s", filePath);
     const { config } = this.strategy;
 
@@ -164,28 +181,55 @@ class WebpackBundleLoader implements IBundleLoader {
 
     const dependencyPaths = [];
 
-    let map;
+
+    let currentContent = content;
+    let currentMap     = map;
 
     for (const loader of loaders) {
-      const context = new WebpackLoaderContext(loaders, loader, filePath, this.strategy.config, this.strategy.compiler);
-      const result = await context.load(content);
-      map = result.map;
-      content = result.content;
-      dependencyPaths.push(...context.dependencyPaths);
+
+      const loaderContexts: WebpackLoaderContext[]  = loader.loader.split("!").map((childLoader) => {
+        const [moduleName, queryString] = childLoader.split("?");
+        return new WebpackLoaderContext(
+          loaders,
+          loader,
+          moduleName,
+          filePath,
+          this.strategy.config,
+          this.strategy.compiler,
+          queryString  && "?" + queryString
+        );
+      });
+
+      // TODO - pitch here
+
+      // load
+      for (const context of loaderContexts.reverse()) {
+
+        this.logger.verbose("running webpack loader: %s", context.loaderModuleName);
+
+        const result: any = (await context.load(currentContent)) || {};
+        currentMap     = result.map;
+        currentContent = result.content;
+        dependencyPaths.push(...context.dependencyPaths);
+      }
     }
 
     this.logger.verbose("loaded %s", filePath);
 
     return {
       type: JS_MIME_TYPE,
-      content: content,
-      dependencyPaths: findCommonJSDependencyPaths(content)
+      content: currentContent,
+      dependencyPaths: findCommonJSDependencyPaths(currentContent)
     };
   }
 }
 
 function findCommonJSDependencyPaths(source) {
-  return (source.replace(/\/\*[\s\S]+\*\//g, "").replace(/\/\/.*?/g, "").match(/require\(["'].*?["']\)/g) || []).map((expression) => {
+  return (
+    source.replace(/\/\*[\s\S]+\*\//g, "")
+    .replace(/\/\/.*?/g, "")
+    .match(/require\(["'].*?["']\)/g) || []
+  ).map((expression) => {
     return expression.match(/require\(['"](.*?)["']\)/)[1];
   });
 }

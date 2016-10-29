@@ -126,6 +126,11 @@ declare module "titlebar" {
   export = titlebar;
 }
 
+declare module "loader-utils" {
+  export function parseQuery(query: any): any;
+  export function getLoaderConfig(module, name: string): any;
+}
+
 
 declare module "vue-loader" {
   function loader();

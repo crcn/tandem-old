@@ -29,6 +29,7 @@ export class CommonJSSandboxEvaluator implements ISandboxBundleEvaluator {
       }
     }, {
       filename: bundle.filePath,
+      displayErrors: true
     });
   }
 }
