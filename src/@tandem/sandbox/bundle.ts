@@ -100,6 +100,7 @@ export interface IBundleContent {
 }
 
 export interface IBundleLoaderResult extends IBundleContent {
+  hasEmbeddedDependencies?: boolean;
   dependencyPaths?: string[];
 }
 
@@ -152,6 +153,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   private _dependencyObserver: IActor;
   private _emittingReady: boolean;
   private _readyLock: boolean;
+  private _loading: boolean;
 
 
   constructor(source: IBundleData, collectionName: string, private _bundler: Bundler, private _dependencies: Dependencies) {
@@ -370,11 +372,22 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   }
 
   async load() {
+    if (this._loading) return this;
+    this._loading = true;
+
     this.logger.verbose("loading");
 
     const loader = this._bundler.$strategy.getLoader(this._loaderOptions || {});
 
     const transformResult: IBundleLoaderResult = await loader.load(this.filePath, await this.getInitialSourceContent());
+
+    if (this._content === transformResult.content) {
+      this.logger.info("Bundle content has not changed.");
+      this.notifyBundleReady();
+      this._loading = false;
+      return this;
+    }
+
     this._content = transformResult.content;
     this._ast     = transformResult.ast;
     this._map     = transformResult.map;
@@ -414,17 +427,11 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
     await this.save();
 
     this._ready = true;
+    this._loading = false;
     this.logger.info("done");
     this.notifyBundleReady();
 
     return this;
-  }
-
-  private async loadTransformedContent() {
-    const dependencyPaths: string[] = [];
-    let current: IBundleLoaderResult = await this.getInitialSourceContent();
-    return this._bundler
-    // return loadBundleContent(this, current, this._dependencies);
   }
 
   async getInitialSourceContent(): Promise<IBundleLoaderResult> {
@@ -440,8 +447,12 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   }
 
   private onDependencyAction(action: Action) {
+
+    // for now, reload the entire bundle if a dependency changes. This is to ensure
+    // that any changes that are embedded in this bundle get updates when they change -- this
+    // is particular to css files.
     if (action.type === BundleAction.BUNDLE_READY) {
-      this.notifyBundleReady();
+      this.load();
     }
   }
 

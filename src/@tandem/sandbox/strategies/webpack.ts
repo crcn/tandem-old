@@ -143,7 +143,7 @@ class WebpackLoaderContext {
     })
   }
 
-  pitch() {
+  capture() {
     const module = this.module;
     if (!module.pitch) return;
 
@@ -231,7 +231,7 @@ class WebpackBundleLoader implements IBundleLoader {
     const loadNext = async (content: string, map: any, index: number = 0): Promise<{ map: any, content: string }> => {
       if (index >= contexts.length) return { content, map };
       const context = contexts[index];
-      const result = (await context.pitch() || await loadNext(content, map, index + 1));
+      const result = (await context.capture() || await loadNext(content, map, index + 1));
       return await context.load(result.content) || result;
     }
 
@@ -239,11 +239,13 @@ class WebpackBundleLoader implements IBundleLoader {
 
     this.logger.verbose("loaded %s", filePath);
 
+    const foundDependencyPaths = findCommonJSDependencyPaths(result.content);
+
     return {
       type: JS_MIME_TYPE,
       content: result.content,
       map: result.map,
-      dependencyPaths: findCommonJSDependencyPaths(result.content).concat(dependencyPaths)
+      dependencyPaths: foundDependencyPaths.concat(dependencyPaths)
     };
   }
 }
@@ -280,20 +282,6 @@ function parserLoaderOptions(moduleInfo: string, hasFile: boolean = false): IWeb
   };
 
   return options;
-}
-
-function combineLoaders(...options: IWebpackLoaderOptions[]) {
-  let combinedOptions: IWebpackLoaderOptions = {
-    disablePreloaders: false,
-    disableAllLoaders: false,
-    loaders: []
-  };
-  for (const ops of options) {
-    combinedOptions.disableAllLoaders = combinedOptions.disableAllLoaders || ops.disableAllLoaders;
-    combinedOptions.disablePreloaders = combinedOptions.disablePreloaders || ops.disablePreloaders;
-    combinedOptions.loaders.push(...ops.loaders);
-  }
-  return combinedOptions;
 }
 
 function findCommonJSDependencyPaths(source) {
