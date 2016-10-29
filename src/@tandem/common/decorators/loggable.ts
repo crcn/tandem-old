@@ -21,10 +21,6 @@ export function loggable () {
 
         const bus = this[loggerBusProperty];
 
-        if (!bus) {
-          console.warn(`Logger bus was not injected for ${this.constructor.name}, switching to no-op`);
-        }
-
         // create a child logger so that the prefix here does
         // not get overwritten
         return this.$$logger = (new Logger(

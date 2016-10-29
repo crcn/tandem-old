@@ -1,6 +1,7 @@
 
 import { WrapBus } from "mesh";
 import { BundlerDependency } from "@tandem/sandbox";
+import * as path from "path";
 
 import {
   IActor,
@@ -89,7 +90,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
   async loadBrowser() {
     if (this._artboardBrowser) return;
 
-    const bundler = BundlerDependency.getInstance(this.browser.dependencies);
+    const bundler = BundlerDependency.getInstance(null, this.browser.dependencies);
 
     const documentRenderer = new SyntheticDOMRenderer();
     this._artboardBrowser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.dependencies, new SyntheticArtboardRenderer(this, documentRenderer), this.browser);
@@ -99,7 +100,15 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     if (this.hasAttribute("src")) {
       const src = this.getAttribute("src");
       const window = this.ownerDocument.defaultView;
-      this._artboardBrowser.open((await bundler.findByFilePath(this.source.filePath)).getAbsoluteDependencyPath(src));
+
+      const bundleStrategyOptions = {
+        name: this.getAttribute("strategy"),
+        config: this.getAttribute("strategy-config") && path.resolve(this.source.filePath, this.getAttribute("strategy-config"))
+      };
+
+      console.log(bundleStrategyOptions);
+
+      this._artboardBrowser.open((await bundler.findByFilePath(this.source.filePath)).getAbsoluteDependencyPath(src), bundleStrategyOptions);
     }
   }
 

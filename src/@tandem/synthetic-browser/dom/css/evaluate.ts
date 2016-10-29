@@ -63,7 +63,6 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
   const visitor = {
     visitRoot(root: postcss.Root) {
       const ret = link(root, new SyntheticCSSStyleSheet(accpeptAll(root.nodes)));
-      ret.$bundle = bundle;
       return ret;
     },
     visitAtRule(atRule: postcss.AtRule): any {

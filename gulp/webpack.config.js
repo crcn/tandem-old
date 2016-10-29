@@ -29,6 +29,9 @@ module.exports = {
       extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.peg'],
       modulesDirectories: [SRC_DIR, NODE_MODULES_DIR]
     },
+    ts: {
+      transpileOnly: true
+    },
     watch: !!WATCH,
     plugins: [
       new webpack.DefinePlugin({

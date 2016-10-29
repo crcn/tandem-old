@@ -1,3 +1,5 @@
+// TODO - this is deprecated. Move to strategies/default
+
 import { IFileSystem } from "./file-system";
 import { IFileResolver } from "./resolver";
 import { ResolveFileAction } from "./actions";

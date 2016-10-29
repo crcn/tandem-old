@@ -182,20 +182,22 @@ export class MimeTypeAliasDependency extends Dependency<string> {
   }
 }
 
-export function createSingletonDependencyClass<T>(id: string, clazz: { new(...rest): T }): { getInstance(dependencies: Dependencies): T, ID: string, new(): IDependency } {
+export function createSingletonDependencyClass<T>(id: string): { getInstance(dependencies: Dependencies): T, ID: string, new(clazz: { new(...rest): T }): IDependency } {
   return class SingletonDependency implements IDependency {
     static readonly ID: string = id;
     private _value: T;
+    private _clazz: { new(...rest): T };
     readonly overridable = false;
     readonly id = id;
     public owner: Dependencies;
 
-    constructor(){ }
+    constructor(clazz: { new(...rest): T }) { this._clazz = clazz; }
+
     get value(): T {
-      return this._value || (this._value = Injector.create(clazz, [], this.owner));
+      return this._value || (this._value = Injector.create(this._clazz, [], this.owner));
     }
     clone() {
-      return new SingletonDependency();
+      return new SingletonDependency(this._clazz);
     }
     static getInstance(dependencies: Dependencies): T {
       const dep = dependencies.query<SingletonDependency>(id);

@@ -146,6 +146,6 @@ export class FooterComponentFactoryDependency extends ReactComponentFactoryDepen
   }
 }
 
-export const StoreDependency = createSingletonDependencyClass("store", Store);
+export const StoreDependency = createSingletonDependencyClass<Store>("store");
 
 export * from "./base";

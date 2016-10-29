@@ -22,7 +22,7 @@ import {
 
 import { BaseApplicationService2 } from "@tandem/core/services";
 import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
-import { Bundle, Bundler, BundlerDependency, SyntheticObjectEditor } from "@tandem/sandbox";
+import { Bundle, Bundler, BundlerDependency, SyntheticObjectEditor, IBundleStrategyOptions } from "@tandem/sandbox";
 
 @definePublicAction({
   serialize({ type, data }: RemoteBrowserDocumentAction) {
@@ -57,8 +57,8 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     this._bus = PrivateBusDependency.getInstance(dependencies);
   }
 
-  async open2(url: string) {
-    const remoteBrowserStream = this._bus.execute(new OpenRemoteBrowserAction(url));
+  async open2(url: string, options: IBundleStrategyOptions) {
+    const remoteBrowserStream = this._bus.execute(new OpenRemoteBrowserAction(url, options));
 
     // TODO - new StreamBus(execute(action), onAction)
     remoteBrowserStream.pipeTo({
@@ -118,13 +118,7 @@ export class RemoteBrowserService extends BaseApplicationService2 {
 
       const logger = this.logger.createChild(`${action.url} `);
 
-      browser.open(action.url).then(() => {
-
-        // clone the document since there may be other connected clients -- don't
-        // want to mutate the original doc.
-        if (!browser.document) {
-          console.log(browser);
-        }
+      browser.open(action.url, action.options).then(() => {
 
         let currentDocument = browser.document.cloneNode(true);
 

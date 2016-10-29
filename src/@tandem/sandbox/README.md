@@ -77,6 +77,24 @@ new SyntheticObjectEditor(document).applyEditActions(...edit.actions);
 ```
 
 
-#### TODOS
+UPDATE:
 
-- bundle
+```typescript
+import {
+  WebpackBundleStrategy,
+  BundlerStrategyDependency,
+  BundlerDependency
+} from "@tandem/sandbox";
+
+const dependencies = new Dependencies(
+  new BundlerStrategyDependency("webpack", new WebpackBundleStrategy(webpackConfig)),
+  new BundlerStrategyDependency("webpack2", new WebpackBundleStrategy(webpackConfig)),
+  new BundlerStrategyDependency("rollup", new RollupBundleStrategy(webpackConfig)),
+  new BundlerDependency()
+);
+
+const bundler = BundlerDependency.getInstance("webpack"); // webpack strategy
+
+const sandbox = new Sandbox();
+sandbox.open(bundler.bundle("./file.js"));
+```

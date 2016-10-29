@@ -34,6 +34,7 @@ import {
   Bundler,
   Sandbox,
   BundlerDependency,
+  IBundleStrategyOptions,
 } from "@tandem/sandbox";
 
 import {
@@ -44,7 +45,7 @@ import {
 import { WrapBus } from "mesh";
 
 export interface ISyntheticBrowser extends IObservable {
-  open(url: string): Promise<any>;
+  open(url: string, strategyOptions: IBundleStrategyOptions): Promise<any>;
   window: SyntheticWindow;
   parent?: ISyntheticBrowser;
   renderer: ISyntheticDocumentRenderer;
@@ -106,7 +107,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     return this._renderer;
   }
 
-  async open(url: string) {
+  async open(url: string, options?: IBundleStrategyOptions) {
     if (this._url && this._url === url && this._window) {
       return;
     }
@@ -115,10 +116,10 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
 
     this._url = url;
     this._location = new SyntheticLocation(url);
-    await this.open2(url);
+    await this.open2(url, options);
   }
 
-  protected abstract async open2(url: string);
+  protected abstract async open2(url: string, options: IBundleStrategyOptions);
 
   protected notifyLoaded() {
     this.notify(new SyntheticBrowserAction(SyntheticBrowserAction.BROWSER_LOADED));
@@ -130,12 +131,8 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   private _sandbox: Sandbox;
   private _entry: Bundle;
 
-  @inject(BundlerDependency.ID)
-  private _bundler: Bundler;
-
   $didInject() {
     super.$didInject();
-    this._bundler = BundlerDependency.getInstance(this._dependencies);
     this._sandbox    = new Sandbox(this._dependencies, this.createSandboxGlobals.bind(this));
     watchProperty(this._sandbox, "exports", this.onSandboxExportsChange.bind(this));
     watchProperty(this._sandbox, "global", this.setWindow.bind(this));
@@ -145,8 +142,9 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     return this._sandbox;
   }
 
-  async open2(url: string) {
-    this._entry = await this._bundler.bundle(url);
+  async open2(url: string, strategyOptions?: IBundleStrategyOptions) {
+    const bundler = BundlerDependency.getInstance(strategyOptions, this._dependencies);
+    this._entry = await bundler.bundle(url);
     this.logger.info("opening %s in sandbox", url);
     this._sandbox.open(this._entry);
   }

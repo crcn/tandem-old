@@ -57,7 +57,7 @@ gulp.task('build', [
 ]);
 
 gulp.task('build:typescript', function(done) {
-  const proc = spawn('node_modules/.bin/tsc', ['--declaration'].concat(WATCH ? '--watch' : []), {
+  const proc = spawn('node_modules/.bin/tsc', ['--declaration', '--pretty'].concat(WATCH ? '--watch' : []), {
     cwd: BASE_DIR
   });
   proc.stdout.pipe(process.stdout);

@@ -9,6 +9,7 @@ import { RawSourceMap } from "source-map";
 import { BundleAction } from "./actions";
 import { FileCache, FileCacheItem } from "./file-cache";
 import { IFileResolver, IFileResolverOptions } from "./resolver";
+import { DefaultBundleStragegy } from "./strategies";
 
 import {
   inject,
@@ -49,15 +50,46 @@ import {
   ContentEditorFactoryDependency,
 } from "./dependencies";
 
-interface IBundleFile {
-  readonly filePath: string;
-  readonly content: string;
-}
-export interface IBundleLoader {
-  load(bundle: Bundle, content: IBundleContent): Promise<IBundleLoaderResult>;
+export interface IBundleResolveResult {
+
+  /**
+   * Resolved file path
+   */
+
+  filePath: string;
+
+  /**
+   * The loader for the file path
+   */
+
+  loaderOptions?: any;
 }
 
-export type bundleLoaderType = { new(): IBundleLoader };
+export interface IBundleStrategyOptions {
+  name: string;
+  config: any;
+}
+
+export interface IBundleStragegy {
+
+  /**
+   * Returns a loader with the given options. Example
+   *
+   * strategy.getLoader(['text']); // new TextBundleLoader()
+   */
+
+  getLoader(loaderOptions: any): IBundleLoader;
+
+  /**
+   * Returns where the target file path is and how it should be loaded. Examples
+   *
+   * strategy.resolve('text!./filePath.txt', 'src/content') // { filePath: src/content/filePath.txt, loaderOptions: ['text'] }
+   */
+
+  resolve(filePath: string, cwd: string): Promise<IBundleResolveResult>;
+}
+
+export type bundleLoaderType = { new(strategy: IBundleStragegy): IBundleLoader };
 
 export interface IBundleContent {
   readonly type: string; // mime type
@@ -70,67 +102,24 @@ export interface IBundleLoaderResult extends IBundleContent {
   dependencyPaths?: string[];
 }
 
+export interface IBundleLoader {
+  load(filePath: string, content: IBundleContent): Promise<IBundleLoaderResult>;
+}
+
+export abstract class BaseBundleLoader implements IBundleLoader {
+  constructor(readonly strategy: IBundleStragegy) { }
+  abstract load(filePath: string, content: IBundleContent): Promise<IBundleLoaderResult>;
+}
+
 export interface IBundleData {
   filePath: string;
+  loaderOptions: any;
   content?: string;
   type?: string;
   updatedAt?: number;
-  absoluteDependencyPaths?: Object;
+  resolvedDependencyInfo?: any;
 }
 
-/**
- */
-
-export async function loadBundleContent(bundle: Bundle, content: IBundleLoaderResult, dependencies: Dependencies): Promise<IBundleLoaderResult> {
-  const dependencyPaths: string[] = [];
-
-  let current: IBundleLoaderResult = Object.assign({}, content);
-
-  let dependency: BundlerLoaderFactoryDependency;
-
-  // Some loaders may return the same mime type (such as html-loader, and css-loader which simply return an AST node).
-  // This ensures that they don't get re-used.
-  const used = {};
-
-  while((dependency = BundlerLoaderFactoryDependency.find(MimeTypeAliasDependency.lookup(current.type, dependencies), dependencies)) && !used[dependency.id]) {
-    used[dependency.id] = true;
-    current = await dependency.create(dependencies).load(bundle, current);
-    if (current.dependencyPaths) {
-      dependencyPaths.push(...current.dependencyPaths);
-    }
-  }
-
-  return {
-    map: current.map,
-    ast: current.ast,
-    type: current.type,
-    content: current.content,
-    dependencyPaths: dependencyPaths
-  };
-}
-
-export interface ISerializeddBundle {
-  filePath: string
-}
-
-/**
- * Bundle serializer particular to other parts of the codebase that hold the singleton
- * reference to the target bundle object, and ensures that when deserialized, will also reference to a singleton bundle object.
- */
-
-class BundleSerializer implements ISerializer<Bundle, string> {
-  serialize(bundle: Bundle) {
-    return bundle.filePath;
-  }
-  deserialize(filePath, dependencies: Dependencies) {
-    const bundler = BundlerDependency.getInstance(dependencies);
-
-    // find an existing bundle object here, or add a new singleton bundle
-    return bundler.eagerFindByFilePath(filePath) || bundler.collection.create({ filePath });
-  }
-}
-
-@serializable(new BundleSerializer())
 @loggable()
 export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable {
 
@@ -140,17 +129,19 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
 
   private _filePath: string;
   private _ready: boolean;
-  private _absoluteDependencyPaths: Object;
+  private _resolvedDependencyInfo: { [Identifier: string]: IBundleResolveResult };
   private _type: string;
   private _content: string;
   private _ast: any;
+  private _loaderOptions: any;
 
+  @inject(FileCacheDependency.ID)
   private _fileCache: FileCache;
   private _watchingFileCacheItem: boolean;
+
+  @inject(FileSystemDependency.ID)
   private _fileSystem: IFileSystem;
-  private _fileResolver: IFileResolver;
-  private _editor: FileEditor;
-  private _bundler: Bundler;
+
   private _map: RawSourceMap;
   private _fileCacheItem: FileCacheItem;
   private _fileCacheItemWatchers: DisposableCollection;
@@ -159,12 +150,10 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   private _emittingReady: boolean;
   private _readyLock: boolean;
 
-  constructor(source: IBundleData, collectionName: string, private _dependencies: Dependencies) {
+
+  constructor(source: IBundleData, collectionName: string, private _bundler: Bundler, private _dependencies: Dependencies) {
     super(source, collectionName, PrivateBusDependency.getInstance(_dependencies));
-    this._fileCache = FileCacheDependency.getInstance(_dependencies);
-    this._fileSystem = FileSystemDependency.getInstance(_dependencies);
-    this._fileResolver = FileResolverDependency.getInstance(_dependencies);
-    this._bundler = BundlerDependency.getInstance(_dependencies);
+
     this._dependencyObserver = new WrapBus(this.onDependencyAction.bind(this));
   }
 
@@ -182,6 +171,10 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   async getSourceFileCacheItem(): Promise<FileCacheItem> {
     if (this._fileCacheItem) return this._fileCacheItem;
     return this._fileCacheItem = await this._fileCache.item(this.filePath);
+  }
+
+  get bundler(): Bundler {
+    return this._bundler;
   }
 
   /**
@@ -238,13 +231,27 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   }
 
   /**
+   */
+
+  get resolvedDependencyInfo() {
+    return this._resolvedDependencyInfo;
+  }
+
+  /**
+   */
+
+  get loaderOptions() {
+    return this._loaderOptions;
+  }
+
+  /**
    * The relative to absolute dependency paths defined in this bundle
    *
    * @readonly
    */
 
   get absoluteDependencyPaths() {
-    return this._absoluteDependencyPaths;
+    return values(this._resolvedDependencyInfo).map((inf: IBundleResolveResult) => inf.filePath);
   }
 
   /**
@@ -265,7 +272,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
    */
 
   get dependencyBundles(): Bundle[] {
-    return values(this._absoluteDependencyPaths).map((filePath) => this._bundler.eagerFindByFilePath(filePath));
+    return values(this.absoluteDependencyPaths).map((filePath) => this._bundler.eagerFindByFilePath(filePath));
   }
 
   /**
@@ -307,11 +314,12 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   }
 
   getAbsoluteDependencyPath(relativePath: string) {
-    const absolutePath = this._absoluteDependencyPaths[relativePath];
-    if (absolutePath == null) {
+    const info: IBundleResolveResult = this._resolvedDependencyInfo[relativePath];
+    if (info == null) {
       this.logger.error(`Absolute path on bundle entry does not exist for ${relativePath}.`);
+      return;
     }
-    return absolutePath;
+    return info.filePath;
   }
 
   serialize() {
@@ -320,22 +328,26 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
       content: this._content,
       filePath: this.filePath,
       updatedAt: this._updatedAt,
-      absoluteDependencyPaths: this.absoluteDependencyPaths,
+      loaderOptions: this._loaderOptions,
+      resolvedDependencyInfo: this._resolvedDependencyInfo,
     };
   }
 
-  setPropertiesFromSource({ filePath, type, updatedAt, content, absoluteDependencyPaths }: IBundleData) {
+  setPropertiesFromSource({ filePath, loaderOptions, type, updatedAt, content, resolvedDependencyInfo }: IBundleData) {
     this._type      = type;
     this._filePath  = filePath;
+    this._loaderOptions = loaderOptions;
     this._updatedAt = updatedAt;
     this._content   = content;
-    this._absoluteDependencyPaths = absoluteDependencyPaths || {};
+    this._resolvedDependencyInfo = resolvedDependencyInfo || {};
   }
 
   async load() {
     this.logger.verbose("loading");
 
-    const transformResult: IBundleLoaderResult = await this.loadTransformedContent();
+    const loader = this._bundler.$strategy.getLoader({});
+
+    const transformResult: IBundleLoaderResult = await loader.load(this.filePath, await this.getInitialSourceContent());
     this._content = transformResult.content;
     this._ast     = transformResult.ast;
     this._map     = transformResult.map;
@@ -354,25 +366,27 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
       dependencyBundle.unobserve(this._dependencyObserver);
     }
 
-    this._absoluteDependencyPaths = {};
-    const dependencyPaths = transformResult.dependencyPaths;
-
-    await Promise.all(dependencyPaths.map(async (dependencyPath, i) => {
-      const resolvedPath = await this.resolveDependencyPath(dependencyPath);
-      if (!resolvedPath) return;
-      this._absoluteDependencyPaths[dependencyPath] = resolvedPath;
-      this.logger.verbose("loading dependency %s", resolvedPath);
-      const dependencyBundle = await this._bundler.bundle(resolvedPath);
-      this.logger.verbose("loaded dependency %s", resolvedPath);
+    this._resolvedDependencyInfo = {};
+    const dependencyPaths = transformResult.dependencyPaths || [];
+    await Promise.all(dependencyPaths.map(async (relativePath, i) => {
+      const dependencyInfo = await this.resolveDependencyInfo(relativePath);
+      if (!dependencyInfo) {
+        return this.logger.warn("could not resolve ", relativePath);
+      }
+      this._resolvedDependencyInfo[relativePath] = dependencyInfo;
+      this.logger.verbose("loading dependency %s -> %s", relativePath, dependencyInfo.filePath);
+      const dependencyBundle = await this._bundler.bundle(dependencyInfo.filePath);
+      this.logger.verbose("loaded dependency %s", relativePath);
       dependencyBundle.observe(this._dependencyObserver);
     }));
+
 
     this.logger.verbose("saving");
 
     await this.save();
 
     this._ready = true;
-    this.logger.info(`done`);
+    this.logger.info("done");
     this.notifyBundleReady();
 
     return this;
@@ -381,20 +395,16 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   private async loadTransformedContent() {
     const dependencyPaths: string[] = [];
     let current: IBundleLoaderResult = await this.getInitialSourceContent();
-    return loadBundleContent(this, current, this._dependencies);
+    return this._bundler
+    // return loadBundleContent(this, current, this._dependencies);
   }
 
   async getInitialSourceContent(): Promise<IBundleLoaderResult> {
     return {
+      filePath: this.filePath,
       type: MimeTypeDependency.lookup(this.filePath, this._dependencies),
       content: await (await this.getSourceFileCacheItem()).read()
     }
-  }
-
-  async getExpression(location: ISourceLocation) {
-    const result = await this.loadTransformedContent();
-    const map = result.map as sm.RawSourceMap;
-    const consumer = new sm.SourceMapConsumer(map);
   }
 
   shouldDeserialize(b: IBundleData) {
@@ -422,25 +432,8 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
     this.notify(new BundleAction(BundleAction.BUNDLE_READY));
   }
 
-  private async resolveDependencyPath(dependencyPath: string) {
-    const cwd = path.dirname(this.filePath);
-    const resolvedPaths = [];
-
-    // skip hash and URLs (for now)
-    if (/^(#|http)/.test(dependencyPath)) {
-      return undefined;
-    }
-
-    // check for protocol -- // at the minium
-    if (/^(\w+:)?\/\//.test(dependencyPath)) {
-      return dependencyPath;
-    } else {
-      try {
-        return await this._fileResolver.resolve(dependencyPath, cwd);
-      } catch(e) {
-        this.logger.error(`Cannot find dependency file ${dependencyPath}. Reason:\n${e.stack}`);
-      }
-    }
+  private async resolveDependencyInfo(dependencyPath: string) {
+    return this._bundler.$strategy.resolve(dependencyPath, path.dirname(this.filePath));
   }
 
   private onFileCacheItemChange() {
@@ -459,16 +452,23 @@ export class Bundler extends Observable {
   protected readonly logger: Logger;
 
   readonly collection: ActiveRecordCollection<Bundle, IBundleData>;
-  private _editor: FileEditor;
   private _bundleRequests: any;
+  public $strategy: IBundleStragegy;
 
-  constructor(@inject(DependenciesDependency.ID) private _dependencies: Dependencies) {
+  constructor(strategy: IBundleStragegy, @inject(DependenciesDependency.ID) private _dependencies: Dependencies) {
     super();
     this._bundleRequests = {};
+
+    // temporary - this should be passed into the constructor
+    this.$strategy = strategy || Injector.inject(new DefaultBundleStragegy(), this._dependencies);
     this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IBundleData) => {
-      return Injector.create(Bundle, [source, this.collectionName, _dependencies], _dependencies);
+      return Injector.inject(new Bundle(source, this.collectionName, this, _dependencies), this._dependencies);
     });
     this.collection.sync();
+  }
+
+  getLoader(loaderOptions: any) {
+    return this.$strategy.getLoader(loaderOptions);
   }
 
   get collectionName() {
@@ -499,9 +499,10 @@ export class Bundler extends Observable {
    * @returns {Promise<Bundle>}
    */
 
-  async bundle(filePath: string): Promise<Bundle> {
-    return this._bundleRequests[filePath] || (this._bundleRequests[filePath] = new SingletonThenable(async () => {
-      const bundle = await this.findByFilePath(filePath);
+  async bundle(filePath: string, loaderOptions?: any): Promise<Bundle> {
+    const key = [filePath, JSON.stringify(loaderOptions)].join(":");
+    return this._bundleRequests[key] || (this._bundleRequests[key] = new SingletonThenable(async () => {
+      const bundle = await this.eagerFindByFilePath(filePath);
 
       if (bundle) return bundle.whenReady();
 
@@ -509,7 +510,9 @@ export class Bundler extends Observable {
 
       // at this point, the bundle does not exist in memory, or even
       // in a remote DS, so create & load it.
-      return (await this.collection.create({ filePath }).insert()).load();
+      return (await this.collection.create({ filePath, loaderOptions }).insert()).load();
     }));
   }
 }
+
+export * from "./strategies";

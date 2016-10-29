@@ -30,7 +30,7 @@ import { LocalFileSystem, FileSystemDependency, IFileSystem, ReadFileAction, Wat
 
 export class FileService extends CoreApplicationService<IEdtorServerConfig> {
 
-  @inject(FileSystemDependency.NS)
+  @inject(FileSystemDependency.ID)
   private _fileSystem: IFileSystem;
 
   /**

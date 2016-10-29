@@ -1,6 +1,7 @@
 import {
   Bundle,
   IBundleLoader,
+  BaseBundleLoader,
   IBundleLoaderResult,
 } from "@tandem/sandbox";
 
@@ -10,8 +11,8 @@ import {
   parseCSS,
 } from "@tandem/synthetic-browser";
 
-export class CSSBundleLoader implements IBundleLoader {
-  async load(bundle: Bundle, { type, content, map }): Promise<IBundleLoaderResult> {
+export class CSSBundleLoader extends BaseBundleLoader {
+  async load(filePath, { type, content, map }): Promise<IBundleLoaderResult> {
     /*const content = this.content.replace(/url\(['"]?(.*?)['"]?\)/g, (match, filePath) => {
       return `url("http://${window.location.host}/asset/` + encodeURIComponent(path.join(path.dirname(this.filePath), filePath.split(/\?|#/).shift())) + '")';
     });*/

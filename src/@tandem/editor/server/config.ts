@@ -12,6 +12,7 @@ export interface IEdtorServerConfig {
   argv: {
     _: any[],
     open?: boolean,
+    hlog: string,
     port?: string,
     exposeSockFile: boolean
   },

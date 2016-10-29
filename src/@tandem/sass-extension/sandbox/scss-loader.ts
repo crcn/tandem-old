@@ -22,7 +22,7 @@ export class SCSSLoader implements IBundleLoader {
   @inject(FileResolverDependency.ID)
   private _fileResolver: IFileResolver;
 
-  async load(bundle: Bundle, { type, content }): Promise<any> {
+  async load(filePath, { type, content }): Promise<any> {
 
     const importer = (url, prev, done) => {
       new Promise(async (resolve) => {
@@ -37,12 +37,11 @@ export class SCSSLoader implements IBundleLoader {
 
         resolve(content);
       }).then(done);
-
     }
 
     return new Promise((resolve, reject) => {
       sass.render({
-        file: bundle.filePath,
+        file: filePath,
         data: content,
         importer: importer
       }, (error, result) => {

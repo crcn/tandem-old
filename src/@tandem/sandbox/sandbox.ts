@@ -43,9 +43,6 @@ export class Sandbox extends Observable {
   private _entryObserver: IActor;
   private _shouldEvaluate: boolean;
 
-  @inject(BundlerDependency.ID)
-  private _bundler: Bundler;
-
   private _global: any;
   private _exports: any;
 
@@ -98,7 +95,7 @@ export class Sandbox extends Observable {
       return this._modules[filePath].exports;
     }
 
-    const bundle = this._bundler.collection.find((entity) => entity.filePath === filePath);
+    const bundle = this._entry.bundler.collection.find((entity) => entity.filePath === filePath);
 
     if (!bundle) {
       throw new Error(`${filePath} does not exist in the ${this._entry.filePath} bundle.`);

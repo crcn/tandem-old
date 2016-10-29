@@ -21,6 +21,8 @@ import {
   SelectableStageToolComponent,
 } from "./components";
 
+import { Store } from "./models";
+
 import { createCommonEditorDependencies } from "../common";
 
 import {
@@ -32,11 +34,11 @@ import {
   GlobalKeyBindingService,
 } from "./services";
 
-export function concatEditorBrowserDependencies(dependencies: Dependencies, config: IEditorBrowserConfig, fileSystem?: IFileSystem, fileResolver?: IFileResolver) {
+export function concatEditorBrowserDependencies(dependencies: Dependencies, config: IEditorBrowserConfig, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
   return new Dependencies(
     dependencies,
     createCommonEditorDependencies(),
-    createCoreApplicationDependencies(config, fileSystem, fileResolver),
+    createCoreApplicationDependencies(config, fileSystemClass, fileResolverClass),
 
     // services
     new ApplicationServiceDependency("server", ServerService),
@@ -56,7 +58,7 @@ export function concatEditorBrowserDependencies(dependencies: Dependencies, conf
     // pane components
     new DocumentPaneComponentFactoryDependency("layers", LayersPaneComponent),
 
-    new StoreDependency(),
+    new StoreDependency(Store),
 
     // pointerToolDependency
   );

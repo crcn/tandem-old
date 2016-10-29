@@ -8,7 +8,9 @@ import {
   Bundle,
   Bundler,
   IBundleLoader,
+  IBundleStragegy,
   bundleLoaderType,
+  IBundleStrategyOptions,
  } from "./bundle";
 
  import {
@@ -25,37 +27,6 @@ import {
   createSingletonDependencyClass,
 } from "@tandem/common";
 
-export class FileSystemDependency extends Dependency<IFileSystem> {
-  static readonly NS = "fileSystem";
-  constructor(value: IFileSystem) {
-    super(FileSystemDependency.NS, value);
-  }
-
-  static getInstance(dependencies: Dependencies): IFileSystem {
-    const dependency = dependencies.query<FileSystemDependency>(this.NS);
-    return dependency && dependency.value;
-  }
-  clone() {
-    return new FileSystemDependency(this.value);
-  }
-}
-
-export class FileResolverDependency extends Dependency<IFileResolver> {
-  static readonly ID = "fileResover";
-  constructor(value: IFileResolver) {
-    super(FileResolverDependency.ID, value);
-  }
-
-  static getInstance(dependencies: Dependencies): IFileResolver {
-    const dependency = dependencies.query<FileResolverDependency>(this.ID);
-    return dependency && dependency.value;
-  }
-
-  clone() {
-    return new FileResolverDependency(this.value);
-  }
-}
-
 export class BundlerLoaderFactoryDependency extends ClassFactoryDependency {
   static readonly NS = "bundleLoader";
   constructor(readonly mimeType: string, value: bundleLoaderType) {
@@ -64,8 +35,8 @@ export class BundlerLoaderFactoryDependency extends ClassFactoryDependency {
   static getNamespace(mimeType: string) {
     return [BundlerLoaderFactoryDependency.NS, mimeType].join("/");
   }
-  create(dependencies: Dependencies): IBundleLoader {
-    return super.create(dependencies);
+  create(strategy: IBundleStragegy): IBundleLoader {
+    return super.create(strategy);
   }
   static find(mimeType: string, dependencies: Dependencies): BundlerLoaderFactoryDependency {
     return dependencies.query<BundlerLoaderFactoryDependency>(this.getNamespace(mimeType));
@@ -117,17 +88,45 @@ export class ContentEditorFactoryDependency extends ClassFactoryDependency {
   }
 }
 
-export const FileCacheDependency  = createSingletonDependencyClass("fileCache", FileCache);
-export const FileEditorDependency = createSingletonDependencyClass("fileEdit", FileEditor);
-export const BundlerDependency    = createSingletonDependencyClass("bundler", Bundler);
+export class BundleStrategyDependency extends ClassFactoryDependency {
+  static ID = "bundleStrategy";
+  constructor(readonly name: string, clazz: { new(config:any): IBundleStragegy }) {
+    super(BundleStrategyDependency.getNamespace(name), clazz);
+  }
+  static getNamespace(name: string) {
+    return [BundleStrategyDependency.ID, this.name].join("/");
+  }
 
-export function concatSandboxDependencies(dependencies: Dependencies, fileSystem?: IFileSystem, fileResover?: IFileResolver) {
-  return new Dependencies(
-    dependencies,
-    new FileSystemDependency(fileSystem || Injector.create(ENV_IS_NODE ?  LocalFileSystem : RemoteFileSystem, [], dependencies)),
-    new FileResolverDependency(fileSystem || Injector.create<any>(ENV_IS_NODE ? LocalFileResolver : RemoteFileResolver, [], dependencies)),
-    new FileCacheDependency(),
-    new FileEditorDependency(),
-    new BundlerDependency()
-  );
+  static create(strategyName: string, config: any, dependencies: Dependencies): IBundleStragegy {
+    const dependency = dependencies.query<BundleStrategyDependency>(this.getNamespace(strategyName));
+    return dependency && dependency.create(config);
+  }
 }
+
+export class BundlerDependency extends Dependency<any> {
+  static ID = "bundlers";
+  private _instances: { [Identifier:string]: Bundler };
+  constructor(readonly clazz: { new(strategy: IBundleStragegy, dependencies: Dependencies): Bundler }) {
+    super(BundlerDependency.ID, clazz);
+    this._instances = {};
+  }
+  clone() {
+    return new BundlerDependency(this.clazz);
+  }
+  getInstance(options: IBundleStrategyOptions): Bundler {
+    const strategyName = options && options.name || "default";
+    if (this._instances[strategyName]) return this._instances[strategyName];
+    return this._instances[strategyName] = Injector.inject(new this.clazz(options && BundleStrategyDependency.create(options.name, options.config, this.owner), this.owner), this.owner);
+  }
+  static getInstance(options: IBundleStrategyOptions, dependencies: Dependencies): Bundler {
+    return dependencies.query<BundlerDependency>(this.ID).getInstance(options);
+  }
+}
+
+export const FileSystemDependency  = createSingletonDependencyClass<IFileSystem>("fileSystem");
+export const FileResolverDependency  = createSingletonDependencyClass<IFileResolver>("fileResolver");
+export const FileCacheDependency  = createSingletonDependencyClass<FileCache>("fileCache");
+export const FileEditorDependency = createSingletonDependencyClass<FileEditor>("fileEdit");
+
+// TODO - this needs to be a singleton based on a given strategy (webpack, systemjs, rollup)
+// export const BundlerDependency    = createSingletonDependencyClass<Bundler>("bundler");

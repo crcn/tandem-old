@@ -20,7 +20,7 @@ import {
   RemoteFileSystem,
   LocalFileResolver,
   RemoteFileResolver,
-  concatSandboxDependencies,
+  createSandboxDependencies,
 } from "@tandem/sandbox";
 
 // TODO - possibly move these to @tandem/core since this configuration is
@@ -48,15 +48,13 @@ function createBusDependencies() {
   );
 }
 
-export function createCoreApplicationDependencies(config: any, fileSystem?: IFileSystem, fileResolver?: IFileResolver) {
-
-  const dependencies = new Dependencies(
+export function createCoreApplicationDependencies(config: any, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
+  return new Dependencies(
     createBusDependencies(),
     new DependenciesDependency(),
     new ApplicationConfigurationDependency(config),
+    createSandboxDependencies(fileSystemClass, fileResolverClass),
   );
-
-  return concatSandboxDependencies(dependencies, fileSystem, fileResolver);
 }
 
 export class ServiceApplication extends Application2 {

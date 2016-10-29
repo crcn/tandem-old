@@ -9,7 +9,6 @@ import {
   BaseContentEdit,
   ISyntheticObject,
   BaseContentEditor,
-  loadBundleContent,
   SetValueEditActon,
   SetKeyValueEditAction,
 } from "@tandem/sandbox";

@@ -1,5 +1,6 @@
 import * as chalk from "chalk";
-import { BaseApplicationService2 } from "@tandem/core";
+import { CoreApplicationService } from "@tandem/core";
+import { titleize } from "inflection";
 import {
   Logger,
   LogLevel,
@@ -18,13 +19,13 @@ export class ConsoleLogServiceAction extends Action {
   }
 }
 
-export class ConsoleLogService extends BaseApplicationService2 {
-
-  [ConsoleLogServiceAction.HIGHLIGHT_LOG](action: ConsoleLogServiceAction) {
-
-  }
+export class ConsoleLogService extends CoreApplicationService<any> {
 
   [LogAction.LOG]({ level, text }: LogAction) {
+
+    const hlog = String(this.config && this.config.argv && this.config.argv.hlog);
+
+    // TODO - hlog from argv
 
     const log = {
       [LogLevel.VERBOSE]: console.log.bind(console),
@@ -42,10 +43,24 @@ export class ConsoleLogService extends BaseApplicationService2 {
       [LogLevel.ERROR]: "red",
     }[level];
 
+
     if (typeof window !== "undefined") {
       log("%c: %s", `color: ${color}`, text);
     } else {
-      log(chalk[color](": %s"), text);
+
+      let ccolor: any = chalk;
+
+      if (hlog) {
+        if (text.toLowerCase().indexOf(hlog.toLowerCase()) !== -1) {
+          ccolor = chalk.bgMagenta;
+        } else {
+          ccolor = ccolor[color];
+        }
+      } else {
+        ccolor = chalk[color];
+      }
+
+      log(ccolor(": %s"), text);
     }
   }
 }

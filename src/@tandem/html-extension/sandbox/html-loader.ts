@@ -1,8 +1,9 @@
 import {
   Bundle,
   IBundleLoader,
+  BaseBundleLoader,
   IBundleContent,
-  loadBundleContent,
+  DefaultBundleLoader,
   IBundleLoaderResult,
 } from "@tandem/sandbox";
 
@@ -22,15 +23,16 @@ import {
   deserializeMarkupExpression,
 } from "@tandem/synthetic-browser";
 
-export class HTMLBundleLoader implements IBundleLoader {
+export class HTMLBundleLoader extends BaseBundleLoader {
 
   @inject(DependenciesDependency.ID)
   private _dependencies: Dependencies;
 
-  async load(bundle: Bundle, { type, content }): Promise<IBundleLoaderResult> {
+  async load(filePath, { type, content }): Promise<IBundleLoaderResult> {
 
     const dependencyPaths = [];
     const dependencies = this._dependencies;
+    const self = this;
 
     const ast = parseMarkup(content);
 
@@ -57,10 +59,12 @@ export class HTMLBundleLoader implements IBundleLoader {
           const type     = element.getAttribute("type");
 
           if (type) {
-            const result = await loadBundleContent(bundle, {
+
+            const result = await self.strategy.getLoader(null).load(filePath, {
               type: type,
               content: textNode.nodeValue
-            }, dependencies);
+            });
+
             textNode.nodeValue = result.content;
             element.setAttribute("type", result.type);
           }
