@@ -48,24 +48,24 @@ export class BundlerLoaderFactoryDependency extends ClassFactoryDependency {
 
 export class SandboxModuleEvaluatorFactoryDependency extends ClassFactoryDependency {
   static readonly NS = "sandboxModuleEvaluator";
-  constructor(readonly envMimeType: string, readonly mimeType: string, clazz: sandboxBundleEvaluatorType) {
-    super(SandboxModuleEvaluatorFactoryDependency.getNamespace(envMimeType, mimeType), clazz);
+  constructor(readonly mimeType: string, clazz: sandboxBundleEvaluatorType) {
+    super(SandboxModuleEvaluatorFactoryDependency.getNamespace(mimeType), clazz);
   }
 
   clone() {
-    return new SandboxModuleEvaluatorFactoryDependency(this.envMimeType, this.mimeType, this.value);
+    return new SandboxModuleEvaluatorFactoryDependency(this.mimeType, this.value);
   }
 
-  static getNamespace(envMimeType: string, mimeType: string) {
-    return [this.NS, envMimeType, mimeType].join("/");
+  static getNamespace(mimeType: string) {
+    return [this.NS, mimeType].join("/");
   }
 
   create(): ISandboxBundleEvaluator {
     return super.create();
   }
 
-  static find(envMimeType: string, mimeType: string, dependencies: Dependencies) {
-    return dependencies.query<SandboxModuleEvaluatorFactoryDependency>(this.getNamespace(envMimeType, mimeType));
+  static find(mimeType: string, dependencies: Dependencies) {
+    return dependencies.query<SandboxModuleEvaluatorFactoryDependency>(this.getNamespace(mimeType));
   }
 }
 

@@ -6,8 +6,9 @@ import { ServiceApplication } from "@tandem/core";
 import { IEdtorServerConfig, concatEditorServerDependencies } from "./server";
 
 // extensions
-import { createVueWorkerDependencies } from "@tandem/vue-extension/editor/server";
-import { createSASSEditorWorkerDependencies } from "@tandem/sass-extension/editor/worker";
+// import { createVueWorkerDependencies } from "@tandem/vue-extension/editor/server";
+import { createSASSEditorWorkerDependencies } from "@tandem/sass-extension/editor/server";
+import { createJavaScriptWorkerDependencies } from "@tandem/javascript-extension/editor/server";
 import { createSyntheticBrowserWorkerDependencies } from "@tandem/synthetic-browser";
 import { createTDProjectEditorServerDependencies } from "@tandem/tdproject-extension/editor/server";
 import {
@@ -27,7 +28,8 @@ const deps = new Dependencies(
   createHTMLEditorServerDependencies(),
 
   // worker deps
-  createVueWorkerDependencies(),
+  // createVueWorkerDependencies(),
+  createJavaScriptWorkerDependencies(),
   createHTMLEditorWorkerDependencies(),
   createSASSEditorWorkerDependencies(),
   createSyntheticBrowserWorkerDependencies(),

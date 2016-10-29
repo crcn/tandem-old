@@ -24,8 +24,8 @@ export function createHTMLSandboxDependencies() {
     new BundlerLoaderFactoryDependency(CSS_MIME_TYPE, CSSBundleLoader),
 
     // sandbox evaluators
-    new SandboxModuleEvaluatorFactoryDependency(undefined, HTML_MIME_TYPE, HTMLASTEvaluator),
-    new SandboxModuleEvaluatorFactoryDependency(undefined, CSS_MIME_TYPE, CSSASTEvaluator),
+    new SandboxModuleEvaluatorFactoryDependency(HTML_MIME_TYPE, HTMLASTEvaluator),
+    new SandboxModuleEvaluatorFactoryDependency(CSS_MIME_TYPE, CSSASTEvaluator),
 
     // edit consumers
     new ContentEditorFactoryDependency(CSS_MIME_TYPE, CSSEditor),

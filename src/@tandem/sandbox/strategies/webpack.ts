@@ -4,6 +4,7 @@ import {
   loggable,
   Injector,
   Dependencies,
+  JS_MIME_TYPE,
   DependenciesDependency,
 } from "@tandem/common";
 
@@ -176,7 +177,7 @@ class WebpackBundleLoader implements IBundleLoader {
     this.logger.verbose("loaded %s", filePath);
 
     return {
-      type: "text/javascript",
+      type: JS_MIME_TYPE,
       content: content,
       dependencyPaths: findCommonJSDependencyPaths(content)
     };
@@ -184,7 +185,7 @@ class WebpackBundleLoader implements IBundleLoader {
 }
 
 function findCommonJSDependencyPaths(source) {
-  return (source.match(/require\(["'].*?["']\)/g) || []).map((expression) => {
+  return (source.replace(/\/\*[\s\S]+\*\//g, "").replace(/\/\/.*?/g, "").match(/require\(["'].*?["']\)/g) || []).map((expression) => {
     return expression.match(/require\(['"](.*?)["']\)/)[1];
   });
 }
@@ -235,41 +236,16 @@ export class WebpackBundleStrategy implements IBundleStragegy {
 
   async resolve(relativeFilePath: string, cwd: string): Promise<IBundleResolveResult> {
 
-    /*
-
-    // directory to begin resolving from (defaults to __dirname)
-    basedir?: string;
-    // package.json data applicable to the module being loaded
-    package?: any;
-    // array of file extensions to search in order (defaults to ['.js'])
-    extensions?: string | string[];
-    // transform the parsed package.json contents before looking at the "main" field
-    packageFilter?: (pkg: any, pkgfile: string) => any;
-    // transform a path within a package
-    pathFilter?: (pkg: any, path: string, relativePath: string) => string;
-    // require.paths array to use if nothing is found on the normal node_modules recursive walk (probably don't use this)
-    paths?: string | string[];
-    // directory (or directories) in which to recursively look for modules. (default to 'node_modules')
-    moduleDirectory?: string | string[]
-    */
-
     const { config } = this;
 
     this.logger.verbose("resolving %s:%s", cwd, relativeFilePath);
+
+    relativeFilePath = config.resolve.alias && config.resolve.alias[relativeFilePath] || relativeFilePath;
 
     const resolvedFilePath = await this._resolver.resolve(relativeFilePath, cwd, {
       extensions: this.config.resolve.extensions,
       directories: [...this.config.resolve.modulesDirectories, config.resolve.root, this.basedir]
     });
-
-    // const resolvedFilePath = resolve.sync(relativeFilePath, {
-    //   basedir: this.basedir,
-    //   extensions: this.config.resolve.extensions,
-    //   moduleDirectory: this.config.resolve.modulesDirectories,
-    //   paths: [config.resolve.root]
-    // });
-
-    // this.logger.verbose("resolved %s", resolvedFilePath);
 
     return {
       filePath: resolvedFilePath,

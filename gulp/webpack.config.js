@@ -13,12 +13,6 @@ const {
 } = require('./config');
 
 module.exports = {
-    resolve: {
-      alias: {
-        'react': 'node_modules/react/dist/react.js',
-        'react-dom': 'node_modules/react-dom/dist/react-dom.js'
-      }
-    },
     output: {
       filename: '[name].js',
     },
@@ -27,7 +21,11 @@ module.exports = {
     },
     resolve: {
       extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.peg'],
-      modulesDirectories: [SRC_DIR, NODE_MODULES_DIR]
+      modulesDirectories: [SRC_DIR, NODE_MODULES_DIR],
+      alias: {
+        'react': 'node_modules/react/dist/react.js',
+        'react-dom': 'node_modules/react-dom/dist/react-dom.js'
+      }
     },
     ts: {
       transpileOnly: true

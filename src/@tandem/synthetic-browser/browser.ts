@@ -173,7 +173,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     if (exports.nodeType) {
       exportsElement = exports;
     } else {
-      console.warn(`Exported Sandbox object is not a synthetic DOM node.`);
+      this.logger.warn(`Exported Sandbox object is not a synthetic DOM node.`);
     }
 
     if (exportsElement) {

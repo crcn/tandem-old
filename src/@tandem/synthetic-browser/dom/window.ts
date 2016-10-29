@@ -7,7 +7,23 @@ import { SyntheticLocation } from "../location";
 import { SyntheticDocument } from "./document";
 import { SyntheticHTMLElement } from "./html";
 
+export class SyntheticNavigator {
+  readonly appCodeName = "Tandem";
+  readonly platform =  "synthetic";
+  readonly userAgent = "none";
+}
+
+export class SyntheticConsole {
+  log() {}
+  warn() {}
+  error() {}
+  notice() { }
+}
+
 export class SyntheticWindow extends Observable {
+
+  readonly navigator = new SyntheticNavigator();
+  // readonly console = new SyntheticConsole();
 
   @bindable()
   public location: SyntheticLocation;
