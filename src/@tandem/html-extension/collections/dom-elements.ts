@@ -5,11 +5,7 @@ import {
   SyntheticDOMAttributes,
 } from "@tandem/synthetic-browser";
 
-
-export class DOMElementCollection extends Array<SyntheticDOMElement> {
-  constructor(...items: Array<SyntheticDOMElement>) {
-    super(...items.filter((element) => element && element.nodeType === DOMNodeType.ELEMENT) as any);
-  }
+export class DOMElements extends Array<SyntheticDOMElement> {
 
   setAttribute(name: string, value: string) {
     for (const element of this) {
@@ -33,5 +29,9 @@ export class DOMElementCollection extends Array<SyntheticDOMElement> {
 
   async save() {
     // await Promise.all(this.map((entity) => entity.save()));
+  }
+
+  static fromArray(...items: Array<SyntheticDOMElement>) {
+    return new DOMElements(...items.filter((element) => element && element.nodeType === DOMNodeType.ELEMENT) as any);
   }
 }

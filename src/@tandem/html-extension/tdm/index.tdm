@@ -1,3 +1,4 @@
 <tandem>
-  <artboard title="test" src="./css-pane-preview.tsx" strategy="webpack" style="width: 800px; height: 768px; position: absolute;" />
+  <artboard title="test" src="./css-pane-preview.tsx" bundle-strategy="webpack" style="width: 800px; height: 768px; position: absolute;"></artboard>
+  <artboard src="/Users/crcn/Developer/public/tandem/src/@tandem/html-extension/tdm/test.tsx" bundle-strategy="webpack" title="something"></artboard>
 </tandem>

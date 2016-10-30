@@ -22,6 +22,21 @@ module.exports = {
     sassLoader: {
       includePaths: [SRC_DIR]
     },
+    stats: {
+      hash: false,
+      version: false,
+      timings: false,
+      assets: false,
+      chunks: false,
+      modules: false,
+      reasons: false,
+      children: true,
+      source: false,
+      errors: true,
+      errorDetails: true,
+      warnings: false,
+      publicPath: false
+    },
     resolve: {
       extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.peg'],
       modulesDirectories: [SRC_DIR, NODE_MODULES_DIR],
@@ -41,6 +56,7 @@ module.exports = {
         'process.pid': process.pid
       }),
       new WebpackNotifierPlugin({
+        excludeWarnings: true,
         alwaysNotify: true
       }),
       new ExtractTextPlugin('styles.css')

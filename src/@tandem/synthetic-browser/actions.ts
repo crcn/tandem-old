@@ -1,5 +1,5 @@
 import { Action, defineWorkerAction, TreeNodeAction } from "@tandem/common";
-import { IBundleStrategyOptions } from "@tandem/sandbox";
+import {ISyntheticBrowserOpenOptions } from "@tandem/synthetic-browser";
 
 export class DOMNodeAction extends Action {
   static readonly DOM_NODE_LOADED = "domNodeLoaded";
@@ -29,7 +29,7 @@ export class SyntheticBrowserAction extends Action {
 @defineWorkerAction()
 export class OpenRemoteBrowserAction extends Action {
   static readonly OPEN_REMOTE_BROWSER = "openRemoteBrowser";
-  constructor(readonly url: string, readonly options: IBundleStrategyOptions) {
+  constructor(readonly options: ISyntheticBrowserOpenOptions) {
     super(OpenRemoteBrowserAction.OPEN_REMOTE_BROWSER);
   }
 }

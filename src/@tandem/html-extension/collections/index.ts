@@ -1,1 +1,2 @@
-export * from "./dom-element";
+export * from "./dom-elements";
+export * from "./visible-dom-elements";

@@ -10,6 +10,30 @@ export class LogAction extends Action {
   }
 }
 
+export class LogTimer {
+  private _startTime: number;
+  private _interval: any;
+
+  constructor(readonly logger: Logger, readonly intervalMessage?: string, readonly timeout?: number) {
+    this._startTime = Date.now();
+
+    if (intervalMessage && timeout) {
+      this._interval = setInterval(() => {
+        this.logTime(intervalMessage);
+      }, timeout);
+    }
+  }
+
+  stop(message?: string) {
+    clearInterval(this._interval);
+    this.logTime(message || "completed");
+  }
+
+  private logTime(message: string) {
+    this.logger.verbose(`${message} %ss`, ((Date.now() - this._startTime) / 1000).toFixed(0));
+  }
+}
+
 export class Logger {
 
   public generatePrefix: () => string;
@@ -50,6 +74,10 @@ export class Logger {
 
   error(text: string, ...rest) {
     this._log(LogLevel.ERROR, text, text, ...rest);
+  }
+
+  startTimer(timeoutMessage?: string, interval: number = 5000) {
+    return new LogTimer(this, timeoutMessage, interval);
   }
 
   private getPrefix() {

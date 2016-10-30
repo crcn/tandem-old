@@ -2,6 +2,7 @@
 import { WrapBus } from "mesh";
 import { BundlerDependency } from "@tandem/sandbox";
 import * as path from "path";
+import { debounce } from "lodash";
 
 import {
   IActor,
@@ -87,33 +88,46 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     }
   }
 
-  async loadBrowser() {
+  attributeChangedCallback(key: string, oldValue: string, newValue: string) {
+    super.attributeChangedCallback(key, oldValue, newValue);
+    if (/src|strategy/.test(key)) {
+      this.loadBrowser();
+    }
+  }
+
+  async createBrowser() {
     if (this._artboardBrowser) return;
 
-    const bundler = BundlerDependency.getInstance(null, this.browser.dependencies);
 
     const documentRenderer = new SyntheticDOMRenderer();
     this._artboardBrowser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.dependencies, new SyntheticArtboardRenderer(this, documentRenderer), this.browser);
     this._contentDocumentObserver = new WrapBus(this.onContentDocumentAction.bind(this));
     watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
+    await this.loadBrowser();
+  }
+
+  protected loadBrowser = debounce(async () => {
+    if (!this._artboardBrowser) return;
 
     if (this.hasAttribute("src")) {
       const src = this.getAttribute("src");
       const window = this.ownerDocument.defaultView;
 
-      const bundleStrategyOptions = {
-        name: this.getAttribute("strategy"),
-        config: this.getAttribute("strategy-config") && path.resolve(this.source.filePath, this.getAttribute("strategy-config"))
-      };
-
-      this._artboardBrowser.open((await bundler.findByFilePath(this.source.filePath)).getAbsoluteDependencyPath(src), bundleStrategyOptions);
+      const bundler = BundlerDependency.getInstance(null, this.browser.dependencies);
+      this._artboardBrowser.open({
+        url: (await bundler.findByFilePath(this.source.filePath)).getAbsoluteDependencyPath(src),
+        bundleStrategyOptions: {
+          name: this.getAttribute("bundle-strategy"),
+          config: this.getAttribute("bundle-config") && path.resolve(this.source.filePath, this.getAttribute("strategy-config"))
+        }
+      });
     }
-  }
+  }, 0)
 
   attachNative(node: HTMLElement) {
     if (this._native === node) return;
     super.attachNative(node);
-    this.loadBrowser();
+    this.createBrowser();
     const iframe = this._iframe = node.querySelector("iframe") as HTMLIFrameElement;
 
     const onload = async () => {

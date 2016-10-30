@@ -308,7 +308,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     const attribute = this.attributes[name];
 
     if (attribute) {
-      oldValue = attribute.value;
       attribute.value = value;
     } else {
       this.attributes.push(new SyntheticDOMAttribute(name, value));

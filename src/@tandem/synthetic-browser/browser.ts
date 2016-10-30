@@ -44,8 +44,13 @@ import {
 
 import { WrapBus } from "mesh";
 
+export interface ISyntheticBrowserOpenOptions {
+  url: string;
+  bundleStrategyOptions?: IBundleStrategyOptions;
+}
+
 export interface ISyntheticBrowser extends IObservable {
-  open(url: string, strategyOptions: IBundleStrategyOptions): Promise<any>;
+  open(options: ISyntheticBrowserOpenOptions): Promise<any>;
   window: SyntheticWindow;
   parent?: ISyntheticBrowser;
   renderer: ISyntheticDocumentRenderer;
@@ -63,6 +68,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   private _window: SyntheticWindow;
   private _documentObserver: IActor;
   private _location: SyntheticLocation;
+  private _openOptions: ISyntheticBrowserOpenOptions;
   private _renderer: ISyntheticDocumentRenderer;
 
   constructor(protected _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, readonly parent?: ISyntheticBrowser) {
@@ -107,19 +113,23 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     return this._renderer;
   }
 
-  async open(url: string, options?: IBundleStrategyOptions) {
-    if (this._url && this._url === url && this._window) {
+  protected get openOptions(): ISyntheticBrowserOpenOptions {
+    return this._openOptions;
+  }
+
+  async open(options: ISyntheticBrowserOpenOptions) {
+    if (JSON.stringify(this._openOptions) === JSON.stringify(options) && this._window) {
       return;
     }
 
-    this.logger.verbose("opening %s", url);
+    this.logger.verbose("opening %s", options);
 
-    this._url = url;
-    this._location = new SyntheticLocation(url);
-    await this.open2(url, options);
+    this._openOptions = options;
+    this._location = new SyntheticLocation(options.url);
+    await this.open2(options);
   }
 
-  protected abstract async open2(url: string, options: IBundleStrategyOptions);
+  protected abstract async open2(options: ISyntheticBrowserOpenOptions);
 
   protected notifyLoaded() {
     this.notify(new SyntheticBrowserAction(SyntheticBrowserAction.BROWSER_LOADED));
@@ -142,10 +152,10 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     return this._sandbox;
   }
 
-  async open2(url: string, strategyOptions?: IBundleStrategyOptions) {
-    const bundler = BundlerDependency.getInstance(strategyOptions, this._dependencies);
-    this._entry = await bundler.bundle({ filePath: url });
-    this.logger.info("opening %s in sandbox", url);
+  async open2(options: ISyntheticBrowserOpenOptions) {
+    const bundler = BundlerDependency.getInstance(options.bundleStrategyOptions, this._dependencies);
+    this._entry = await bundler.bundle({ filePath: options.url });
+    this.logger.info("opening %s in sandbox", options.url);
     this._sandbox.open(this._entry);
   }
 
@@ -165,15 +175,35 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     }
   }
 
-  private onSandboxExportsChange(exports: any) {
+  private async onSandboxExportsChange(exports: any) {
     const window = this._sandbox.global as SyntheticWindow;
 
     let exportsElement: SyntheticDOMNode;
 
+    this.logger.info("Evaluating entry %s", this.location.toString());
+
+    // look for module exports - typically by evaluator, or loader
     if (exports.nodeType) {
       exportsElement = exports;
+
+    // check for explicit renderPreview function - less ideal
+    } else if (exports.renderPreview) {
+      exportsElement = exports.renderPreview();
     } else {
-      this.logger.warn(`Exported Sandbox object is not a synthetic DOM node.`);
+
+      // scan for reflect metadata
+      for (const key in exports) {
+        const value = exports[key];
+        const renderPreview = Reflect.getMetadata("tandem:renderPreview", value);
+        if (renderPreview) {
+          console.log("FOUND");
+          exportsElement = renderPreview();
+        }
+      }
+
+      if (!exportsElement) {
+        this.logger.warn(`Exported Sandbox object is not a synthetic DOM node.`);
+      }
     }
 
     if (exportsElement) {

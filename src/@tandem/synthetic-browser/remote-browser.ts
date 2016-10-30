@@ -1,6 +1,6 @@
 import { NoopRenderer, ISyntheticDocumentRenderer } from "./renderers";
 import { OpenRemoteBrowserAction, SyntheticBrowserAction } from "./actions";
-import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser } from "./browser";
+import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser, ISyntheticBrowserOpenOptions } from "./browser";
 import { Response } from "mesh";
 import {
   fork,
@@ -51,14 +51,17 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   private _bus: IActor;
   private _bundle: Bundle;
   private _documentEditor: SyntheticObjectEditor;
+  private _remoteStream: any;
 
   constructor(dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
     super(dependencies, renderer, parent);
     this._bus = PrivateBusDependency.getInstance(dependencies);
   }
 
-  async open2(url: string, options: IBundleStrategyOptions) {
-    const remoteBrowserStream = this._bus.execute(new OpenRemoteBrowserAction(url, options));
+  async open2(options: ISyntheticBrowserOpenOptions) {
+    if (this._remoteStream) this._remoteStream.cancel();
+
+    const remoteBrowserStream = this._remoteStream = this._bus.execute(new OpenRemoteBrowserAction(options));
 
     // TODO - new StreamBus(execute(action), onAction)
     remoteBrowserStream.pipeTo({
@@ -113,12 +116,14 @@ export class RemoteBrowserService extends BaseApplicationService2 {
 
     // TODO - move this to its own class
     return new Response((writer) => {
-      const browser: SyntheticBrowser = this._openBrowsers[action.url] || (this._openBrowsers[action.url] = new SyntheticBrowser(this.dependencies, new NoopRenderer()));
+      const id = JSON.stringify(action.options);
+
+      const browser: SyntheticBrowser = this._openBrowsers[id] || (this._openBrowsers[id] = new SyntheticBrowser(this.dependencies, new NoopRenderer()));
       let currentDocument: SyntheticDocument;
 
-      const logger = this.logger.createChild(`${action.url} `);
+      const logger = this.logger.createChild(`${action.options.url} `);
 
-      browser.open(action.url, action.options).then(() => {
+      browser.open(action.options).then(() => {
 
         let currentDocument = browser.document.cloneNode(true);
 
@@ -137,7 +142,7 @@ export class RemoteBrowserService extends BaseApplicationService2 {
                 try {
                   await writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.DOCUMENT_DIFF, edit)) });
                 } catch(e) {
-                  logger.verbose("unable to send diffs to client");
+                  logger.warn("Unable to send diffs to client, closing synthetic browser connection.");
                   browser.unobserve(observer);
                 }
               }

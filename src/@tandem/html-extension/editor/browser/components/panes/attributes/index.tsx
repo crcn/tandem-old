@@ -3,7 +3,7 @@ import { PaneComponent } from "@tandem/editor/browser/components/common";
 import { FrontEndApplication } from "@tandem/editor/browser";
 import { SyntheticDOMAttribute } from "@tandem/synthetic-browser";
 
-import { DOMElementCollection } from "@tandem/html-extension/collections";
+import { DOMElements } from "@tandem/html-extension/collections";
 
 class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttribute, setAttribute: (key: string, value: string) => any}, any> {
   render() {

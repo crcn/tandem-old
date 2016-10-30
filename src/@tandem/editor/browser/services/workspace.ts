@@ -70,7 +70,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     this.logger.info("loading project file %s", filePath);
     const workspace = new Workspace();
     const browser = workspace.browser = new RemoteSyntheticBrowser(this.dependencies, new CanvasRenderer(workspace, new SyntheticDOMRenderer()));
-    await browser.open(filePath);
+    await browser.open({ url: filePath });
     this._store.workspace = workspace;
 
     // await this.bus.execute(new SetToolAction(this.dependencies.query<WorkspaceToolFactoryDependency>(pointerToolDependency.id)));

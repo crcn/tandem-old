@@ -376,6 +376,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
     this._loading = true;
 
     this.logger.verbose("loading");
+    const logTimer = this.logger.startTimer("waiting for completion");
 
     const loader = this._bundler.$strategy.getLoader(this._loaderOptions || {});
 
@@ -422,7 +423,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
     }));
 
 
-    this.logger.verbose("saving");
+    logTimer.stop();
 
     await this.save();
 
