@@ -1,5 +1,5 @@
 // import "reflect-metadata";
-// import { createSyntheticBrowserWorkerDependencies } from "@tandem/synthetic-browser";
+// import { createSyntheticBrowserWorkerProviders } from "@tandem/synthetic-browser";
 // import { Application, ApplicationServiceProvider, isMaster } from "@tandem/common";
 // import { 
 //   FileEditor,
@@ -11,7 +11,7 @@
 //   FileSystemProvider,
 //   FileEditorProvider,
 //   FileResolverProvider,
-//   createSandboxDependencies,
+//   createSandboxProviders,
 // } from "@tandem/sandbox";
 
 // // components
@@ -43,9 +43,9 @@
 // import { keyBindingsProvider } from "./key-bindings";
 
 // // extensions
-// import { htmlExtensionDependencies } from "@tandem/html-extension";
-// import { sassExtensionDependencies  } from "@tandem/sass-extension";
-// import { tdprojectExtensionDependencies } from "@tandem/tdproject-extension";
+// import { htmlExtensionProviders } from "@tandem/html-extension";
+// import { sassExtensionProviders  } from "@tandem/sass-extension";
+// import { tdprojectExtensionProviders } from "@tandem/tdproject-extension";
 
 // import { Workspace } from "./models";
 // import { Metadata } from "@tandem/common/metadata";
@@ -63,18 +63,18 @@
 //     this.metadata.observe(this.bus);
 //   }
 
-//   protected registerDependencies() {
-//     super.registerDependencies();
+//   protected registerProviders() {
+//     super.registerProviders();
 
 //     // this is primarily for testing
-//     if (this.config.registerFrontEndDependencies === false) return;
+//     if (this.config.registerFrontEndProviders === false) return;
 
-//     const masterDependencies = [];
-//     const workerDependencies = [];
+//     const masterProviders = [];
+//     const workerProviders = [];
 
 //     // TODO - check if nodejs
 //     if (isMaster) {
-//       masterDependencies.push(
+//       masterProviders.push(
 
 //         // components
 //         rootComponentProvider,
@@ -86,7 +86,7 @@
 //         // services
 //         workspaceProvider,
 
-//         // dependencies
+//         // injector
 //         keyBindingsProvider,
 
 //         // component tools
@@ -101,15 +101,15 @@
 //         rootComponentRendererProvider,
 //       );
 //     } else {
-//       workerDependencies.push(
-//         createSyntheticBrowserWorkerDependencies()
+//       workerProviders.push(
+//         createSyntheticBrowserWorkerProviders()
 //       );
 //     }
 
-//     this.dependencies.register(
+//     this.injector.register(
 
-//       ...masterDependencies,
-//       ...workerDependencies,
+//       ...masterProviders,
+//       ...workerProviders,
 
 //       editorServiceProvider,
 //       backEndServiceProvider,
@@ -118,13 +118,13 @@
 //       receiverServiceProvider,
 
 //       // extensions
-//       sassExtensionDependencies,
-//       htmlExtensionDependencies,
-//       historyExtensionDependencies,
-//       tdprojectExtensionDependencies,
+//       sassExtensionProviders,
+//       htmlExtensionProviders,
+//       historyExtensionProviders,
+//       tdprojectExtensionProviders,
 
 //       // singletons
-//       ...createSandboxDependencies(
+//       ...createSandboxProviders(
 //         this.config.fileSystem || new RemoteFileSystem(this.bus),
 //         this.config.fileResolver || new RemoteFileResolver(this.bus)
 //       )

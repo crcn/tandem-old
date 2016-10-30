@@ -11,7 +11,7 @@ import { 
 // key bindings
 import { MimeTypeProvider } from "@tandem/common";
 
-export function createHTMLCoreDependencies() {
+export function createHTMLCoreProviders() {
   return [
 
     // TODO - move these to either sandbox/ or synthetic/ directories
@@ -19,7 +19,7 @@ export function createHTMLCoreDependencies() {
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "script", SyntheticHTMLScript),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "style", SyntheticHTMLStyle),
 
-    // TODO - move these to htmlCoreDependencies
+    // TODO - move these to htmlCoreProviders
     // mime types
     new MimeTypeProvider("css", CSS_MIME_TYPE),
     new MimeTypeProvider("htm", HTML_MIME_TYPE),

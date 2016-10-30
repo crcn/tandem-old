@@ -127,20 +127,20 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
       childNodes: [].concat(childNodes).map(serialize)
     };
   }
-  deserialize({ nodeName, shadowRoot, namespaceURI, attributes, childNodes }, dependencies, ctor) {
+  deserialize({ nodeName, shadowRoot, namespaceURI, attributes, childNodes }, injector, ctor) {
     const element = new ctor(namespaceURI, nodeName);
 
     for (let i = 0, n = attributes.length; i < n; i++) {
-      const { name, value } = <SyntheticDOMAttribute>deserialize(attributes[i], dependencies);
+      const { name, value } = <SyntheticDOMAttribute>deserialize(attributes[i], injector);
       element.setAttribute(name, value);
     }
 
     for (let i = 0, n = childNodes.length; i < n; i++) {
-      const child = <SyntheticDOMNode>deserialize(childNodes[i], dependencies);
+      const child = <SyntheticDOMNode>deserialize(childNodes[i], injector);
       element.appendChild(child);
     }
 
-    const shadowRootFragment = deserialize(shadowRoot, dependencies);
+    const shadowRootFragment = deserialize(shadowRoot, injector);
     if (shadowRootFragment) {
       element.attachShadow({ mode: "open" }).appendChild(shadowRootFragment);
     }

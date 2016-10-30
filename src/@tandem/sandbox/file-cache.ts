@@ -190,15 +190,15 @@ export class FileCache extends Observable {
   private _synchronizer: FileCacheSynchronizer;
   readonly collection: ActiveRecordCollection<FileCacheItem, IFileCacheItemData>;
 
-  constructor(@inject(InjectorProvider.ID) private _dependencies: Injector) {
+  constructor(@inject(InjectorProvider.ID) private _injector: Injector) {
     super();
-    this._bus        = PrivateBusProvider.getInstance(_dependencies);
-    this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IFileCacheItemData) => {
+    this._bus        = PrivateBusProvider.getInstance(_injector);
+    this.collection = ActiveRecordCollection.create(this.collectionName, _injector, (source: IFileCacheItemData) => {
       return new FileCacheItem(source, this.collectionName, this._fileSystem, this._bus);
     });
     this.collection.load();
     this.collection.sync();
-    this._fileSystem = FileSystemProvider.getInstance(_dependencies);
+    this._fileSystem = FileSystemProvider.getInstance(_injector);
   }
 
   eagerFindByFilePath(filePath) {

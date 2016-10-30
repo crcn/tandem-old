@@ -100,7 +100,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
 
 
     const documentRenderer = new SyntheticDOMRenderer();
-    this._artboardBrowser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.dependencies, new SyntheticArtboardRenderer(this, documentRenderer), this.browser);
+    this._artboardBrowser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.injector, new SyntheticArtboardRenderer(this, documentRenderer), this.browser);
     this._contentDocumentObserver = new WrapBus(this.onContentDocumentAction.bind(this));
     watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
     await this.loadBrowser();
@@ -113,7 +113,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
       const src = this.getAttribute("src");
       const window = this.ownerDocument.defaultView;
 
-      const bundler = BundlerProvider.getInstance(null, this.browser.dependencies);
+      const bundler = BundlerProvider.getInstance(null, this.browser.injector);
       this._artboardBrowser.open({
         url: (await bundler.findByFilePath(this.source.filePath)).getAbsoluteProviderPath(src),
         bundleStrategyOptions: {

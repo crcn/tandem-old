@@ -18,8 +18,8 @@ export class SyntheticDOMElementClassProvider extends Provider<syntheticElementC
     return [this.SYNTHETIC_ELEMENT_CLASS_NS_PREFIX, encodeURIComponent(xmlns), tagName].join("/");
   }
 
-  static findAll(dependencies: Injector) {
-    return dependencies.queryAll<SyntheticDOMElementClassProvider>([this.SYNTHETIC_ELEMENT_CLASS_NS_PREFIX, "**"].join("/"));
+  static findAll(injector: Injector) {
+    return injector.queryAll<SyntheticDOMElementClassProvider>([this.SYNTHETIC_ELEMENT_CLASS_NS_PREFIX, "**"].join("/"));
   }
 }
 
@@ -31,9 +31,9 @@ export class MarkupMimeTypeXMLNSProvider extends Provider<string> {
   static getNamespace(mimeType: string) {
     return [this.MARKUP_MIME_TYPE_XMLNS, mimeType].join("/");
   }
-  static lookup(path: string, dependencies: Injector): string {
-    const mimeType = MimeTypeProvider.lookup(path, dependencies);
-    const dependency = dependencies.query<MarkupMimeTypeXMLNSProvider>(this.getNamespace(mimeType));
+  static lookup(path: string, injector: Injector): string {
+    const mimeType = MimeTypeProvider.lookup(path, injector);
+    const dependency = injector.query<MarkupMimeTypeXMLNSProvider>(this.getNamespace(mimeType));
     return dependency && dependency.value;
   }
 }
@@ -57,8 +57,8 @@ export class SyntheticDOMCasterProvider extends Provider<IMarkupDOMCaster> {
     return [this.MARKUP_DOM_CASTER_NS, id].join("/");
   }
 
-  static async castAsDOMNode(object: any, browser: SyntheticBrowser, dependencies: Injector): Promise<SyntheticDOMNode> {
-    for (const dep of dependencies.queryAll<SyntheticDOMCasterProvider>(this.getNamespace("**"))) {
+  static async castAsDOMNode(object: any, browser: SyntheticBrowser, injector: Injector): Promise<SyntheticDOMNode> {
+    for (const dep of injector.queryAll<SyntheticDOMCasterProvider>(this.getNamespace("**"))) {
       const ret = await dep.value.cast(object, browser);
       if (ret instanceof SyntheticDOMNode) return ret;
     }

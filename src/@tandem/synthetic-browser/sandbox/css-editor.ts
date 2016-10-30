@@ -19,7 +19,7 @@ import {
 export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
   @inject(InjectorProvider.ID)
-  private _dependencies: Injector;
+  private _injector: Injector;
 
   [SyntheticCSSStyleRuleEdit.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueEditActon) {
     const source = target.source;

@@ -99,7 +99,7 @@ export interface IBundleContent {
 }
 
 export interface IBundleLoaderResult extends IBundleContent {
-  hasEmbeddedDependencies?: boolean;
+  hasEmbeddedProviders?: boolean;
   dependencyPaths?: string[];
 }
 
@@ -155,8 +155,8 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   private _loading: boolean;
 
 
-  constructor(source: IBundleData, collectionName: string, private _bundler: Bundler, private _dependencies: Injector) {
-    super(source, collectionName, PrivateBusProvider.getInstance(_dependencies));
+  constructor(source: IBundleData, collectionName: string, private _bundler: Bundler, private _injector: Injector) {
+    super(source, collectionName, PrivateBusProvider.getInstance(_injector));
 
     this._dependencyObserver = new WrapBus(this.onProviderAction.bind(this));
   }
@@ -200,7 +200,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   }
 
   /**
-   * TRUE when the bundle, and all of its dependencies are loaded.
+   * TRUE when the bundle, and all of its injector are loaded.
    *
    * @readonly
    * @type {boolean}
@@ -437,7 +437,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   async getInitialSourceContent(): Promise<IBundleLoaderResult> {
     return {
       filePath: this.filePath,
-      type: MimeTypeProvider.lookup(this.filePath, this._dependencies),
+      type: MimeTypeProvider.lookup(this.filePath, this._injector),
       content: await (await this.getSourceFileCacheItem()).read()
     }
   }
@@ -494,14 +494,14 @@ export class Bundler extends Observable {
   private _bundleRequests: any;
   public $strategy: IBundleStragegy;
 
-  constructor(strategy: IBundleStragegy, @inject(InjectorProvider.ID) private _dependencies: Injector) {
+  constructor(strategy: IBundleStragegy, @inject(InjectorProvider.ID) private _injector: Injector) {
     super();
     this._bundleRequests = {};
 
     // temporary - this should be passed into the constructor
-    this.$strategy = strategy || this._dependencies.inject(new DefaultBundleStragegy());
-    this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IBundleData) => {
-      return this._dependencies.inject(new Bundle(source, this.collectionName, this, _dependencies));
+    this.$strategy = strategy || this._injector.inject(new DefaultBundleStragegy());
+    this.collection = ActiveRecordCollection.create(this.collectionName, _injector, (source: IBundleData) => {
+      return this._injector.inject(new Bundle(source, this.collectionName, this, _injector));
     });
     this.collection.sync();
   }

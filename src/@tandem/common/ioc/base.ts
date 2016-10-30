@@ -101,7 +101,7 @@ export type registerableProviderType = Array<IProvider|Injector|any[]>;
 
 export class Injector implements ICloneable {
 
-  private _dependenciesByNs: any = {};
+  private _providersByNs: any = {};
 
   constructor(...items: registerableProviderType) {
     this.register(...items);
@@ -128,7 +128,7 @@ export class Injector implements ICloneable {
    */
 
   queryAll<T extends IProvider>(ns: string) {
-    return <T[]>(this._dependenciesByNs[ns] || []);
+    return <T[]>(this._providersByNs[ns] || []);
   }
 
   /**
@@ -180,11 +180,11 @@ export class Injector implements ICloneable {
   /**
    */
 
-  register(...dependencies: registerableProviderType): Injector {
+  register(...providers: registerableProviderType): Injector {
 
-    const flattenedDependencies: Array<IProvider> = flattenDeep(dependencies);
+    const flattenedProviders: Array<IProvider> = flattenDeep(providers);
 
-    for (let dependency of flattenedDependencies) {
+    for (let dependency of flattenedProviders) {
 
       // Injector collection? Merge it into this one.
       if (dependency instanceof Injector) {
@@ -200,7 +200,7 @@ export class Injector implements ICloneable {
       let existing: Array<IProvider>;
 
       // check if the Provider already exists to ensure that there are no collisions
-      if (existing = this._dependenciesByNs[dependency.id]) {
+      if (existing = this._providersByNs[dependency.id]) {
         if (!existing[0].overridable) {
           throw new Error(`Provider with namespace "${dependency.id}" already exists.`);
         }
@@ -212,7 +212,7 @@ export class Injector implements ICloneable {
 
       // the last part of the namespace is the unique id. Example namespaces:
       // entities/text, entitiesControllers/div, components/item
-      this._dependenciesByNs[dependency.id] = [dependency];
+      this._providersByNs[dependency.id] = [dependency];
 
       // store the Provider in a spot where it can be queried with globs (**).
       // This is much faster than parsing this stuff on the fly when calling query()
@@ -220,11 +220,11 @@ export class Injector implements ICloneable {
       for (let i = 0, n = nsParts.length; i < n; i++) {
         const ns = nsParts.slice(0, i).join("/") + "/**";
 
-        if (!this._dependenciesByNs[ns]) {
-          this._dependenciesByNs[ns] = [];
+        if (!this._providersByNs[ns]) {
+          this._providersByNs[ns] = [];
         }
 
-        this._dependenciesByNs[ns].push(dependency);
+        this._providersByNs[ns].push(dependency);
       }
     }
 

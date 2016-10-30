@@ -38,8 +38,8 @@ export class BundlerLoaderFactoryProvider extends ClassFactoryProvider {
   create(strategy: IBundleStragegy): IBundleLoader {
     return super.create(strategy);
   }
-  static find(mimeType: string, dependencies: Injector): BundlerLoaderFactoryProvider {
-    return dependencies.query<BundlerLoaderFactoryProvider>(this.getNamespace(mimeType));
+  static find(mimeType: string, injector: Injector): BundlerLoaderFactoryProvider {
+    return injector.query<BundlerLoaderFactoryProvider>(this.getNamespace(mimeType));
   }
   clone() {
     return new BundlerLoaderFactoryProvider(this.mimeType, this.value);
@@ -64,8 +64,8 @@ export class SandboxModuleEvaluatorFactoryProvider extends ClassFactoryProvider 
     return super.create();
   }
 
-  static find(mimeType: string, dependencies: Injector) {
-    return dependencies.query<SandboxModuleEvaluatorFactoryProvider>(this.getNamespace(mimeType));
+  static find(mimeType: string, injector: Injector) {
+    return injector.query<SandboxModuleEvaluatorFactoryProvider>(this.getNamespace(mimeType));
   }
 }
 
@@ -83,8 +83,8 @@ export class ContentEditorFactoryProvider extends ClassFactoryProvider {
     return super.create(filePath, content);
   }
 
-  static find(mimeType: string, dependencies: Injector) {
-    return dependencies.query<ContentEditorFactoryProvider>(this.getNamespace(mimeType));
+  static find(mimeType: string, injector: Injector) {
+    return injector.query<ContentEditorFactoryProvider>(this.getNamespace(mimeType));
   }
 }
 
@@ -97,8 +97,8 @@ export class BundleStrategyProvider extends ClassFactoryProvider {
     return [BundleStrategyProvider.ID, this.name].join("/");
   }
 
-  static create(strategyName: string, config: any, dependencies: Injector): IBundleStragegy {
-    const dependency = dependencies.query<BundleStrategyProvider>(this.getNamespace(strategyName));
+  static create(strategyName: string, config: any, injector: Injector): IBundleStragegy {
+    const dependency = injector.query<BundleStrategyProvider>(this.getNamespace(strategyName));
     return dependency && dependency.create(config);
   }
 }
@@ -106,7 +106,7 @@ export class BundleStrategyProvider extends ClassFactoryProvider {
 export class BundlerProvider extends Provider<any> {
   static ID = "bundlers";
   private _instances: { [Identifier:string]: Bundler };
-  constructor(readonly clazz: { new(strategy: IBundleStragegy, dependencies: Injector): Bundler }) {
+  constructor(readonly clazz: { new(strategy: IBundleStragegy, injector: Injector): Bundler }) {
     super(BundlerProvider.ID, clazz);
     this._instances = {};
   }
@@ -118,8 +118,8 @@ export class BundlerProvider extends Provider<any> {
     if (this._instances[strategyName]) return this._instances[strategyName];
     return this._instances[strategyName] = this.owner.inject(new this.clazz(options && BundleStrategyProvider.create(options.name, options.config, this.owner), this.owner));
   }
-  static getInstance(options: IBundleStrategyOptions, dependencies: Injector): Bundler {
-    return dependencies.query<BundlerProvider>(this.ID).getInstance(options);
+  static getInstance(options: IBundleStrategyOptions, injector: Injector): Bundler {
+    return injector.query<BundlerProvider>(this.ID).getInstance(options);
   }
 }
 

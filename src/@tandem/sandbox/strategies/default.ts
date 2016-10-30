@@ -18,7 +18,7 @@ import {
 
 export class DefaultBundleLoader implements IBundleLoader {
   @inject(InjectorProvider.ID)
-  private _dependencies: Injector;
+  private _injector: Injector;
 
   constructor(readonly stragegy: DefaultBundleStragegy, readonly options: any) { }
 
@@ -33,7 +33,7 @@ export class DefaultBundleLoader implements IBundleLoader {
     // This ensures that they don't get re-used.
     const used = {};
 
-    while(current.type && (dependency = BundlerLoaderFactoryProvider.find(MimeTypeAliasProvider.lookup(current.type, this._dependencies), this._dependencies)) && !used[dependency.id]) {
+    while(current.type && (dependency = BundlerLoaderFactoryProvider.find(MimeTypeAliasProvider.lookup(current.type, this._injector), this._injector)) && !used[dependency.id]) {
       used[dependency.id] = true;
       current = await dependency.create(this.stragegy).load(filePath, current);
       if (current.dependencyPaths) {
@@ -57,10 +57,10 @@ export class DefaultBundleStragegy implements IBundleStragegy {
   private _resolver: IFileResolver;
 
   @inject(InjectorProvider.ID)
-  private _dependencies: Injector;
+  private _injector: Injector;
 
   getLoader(loaderOptions: any): IBundleLoader {
-    return this._dependencies.inject(new DefaultBundleLoader(this, loaderOptions));
+    return this._injector.inject(new DefaultBundleLoader(this, loaderOptions));
   }
 
   async resolve(relativeFilePath, cwd: string): Promise<IBundleResolveResult> {

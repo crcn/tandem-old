@@ -2,13 +2,13 @@ import "./entry-shims";
 
 import { Injector } from "@tandem/common";
 import { ServiceApplication } from "@tandem/core";
-import { IEditorBrowserConfig, concatEditorBrowserDependencies } from "./browser";
+import { IEditorBrowserConfig, concatEditorBrowserProviders } from "./browser";
 
 // extensions
-import { createSASSEditorWorkerDependencies } from "@tandem/sass-extension/editor/worker";
-import { createSyntheticBrowserWorkerDependencies } from "@tandem/synthetic-browser";
-import { createTDProjectEditorBrowserDependencies } from "@tandem/tdproject-extension/editor/browser";
-import { createHTMLEditorBrowserDependencies, createHTMLEditorWorkerDependencies } from "@tandem/html-extension/editor/browser";
+import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/worker";
+import { createSyntheticBrowserWorkerProviders } from "@tandem/synthetic-browser";
+import { createTDProjectEditorBrowserProviders } from "@tandem/tdproject-extension/editor/browser";
+import { createHTMLEditorBrowserProviders, createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/browser";
 
 const element = document.createElement("div");
 document.body.appendChild(element);
@@ -21,16 +21,16 @@ const config: IEditorBrowserConfig = {
 const deps = new Injector(
 
   // worker deps
-  // createHTMLEditorWorkerDependencies(),
-  // createSASSEditorWorkerDependencies(),
-  // createSyntheticBrowserWorkerDependencies(),
+  // createHTMLEditorWorkerProviders(),
+  // createSASSEditorWorkerProviders(),
+  // createSyntheticBrowserWorkerProviders(),
 
-  createHTMLEditorBrowserDependencies(),
-  createTDProjectEditorBrowserDependencies(),
+  createHTMLEditorBrowserProviders(),
+  createTDProjectEditorBrowserProviders(),
 );
 
 const app = window["app"] = new ServiceApplication(
-  concatEditorBrowserDependencies(deps, config)
+  concatEditorBrowserProviders(deps, config)
 );
 
 window.onload = app.initialize.bind(app);

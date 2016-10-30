@@ -29,7 +29,7 @@ export class SyntheticHTMLScript extends SyntheticHTMLElement {
     //   scriptContent = this.textContent;
     // }
 
-    // const moduleProvider = SandboxModuleFactoryProvider.find(JS_MIME_TYPE, type, this.browser.dependencies);
+    // const moduleProvider = SandboxModuleFactoryProvider.find(JS_MIME_TYPE, type, this.browser.injector);
 
     // if (!moduleProvider) {
     //   throw new Error(`Cannot execute script with content type "${type}".`);

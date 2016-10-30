@@ -13,7 +13,7 @@ import { WorkspaceToolFactoryProvider, EDITOR_TOOL_NS, GlobalKeyBindingProvider 
 export class EditorService extends BaseApplicationService<FrontEndApplication> {
 
   @inject(InjectorProvider.ID)
-  readonly dependencies: Injector;
+  readonly injector: Injector;
 
   private _toolProxyBus: ProxyBus;
 

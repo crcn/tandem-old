@@ -14,7 +14,7 @@ import {
   FileResolverProvider,
 } from "./providers";
 
-export function createSandboxDependencies(fileSystemClass?: { new(): IFileSystem }, fileResoverClass?: { new(): IFileResolver }) {
+export function createSandboxProviders(fileSystemClass?: { new(): IFileSystem }, fileResoverClass?: { new(): IFileResolver }) {
   return new Injector(
     new FileSystemProvider(fileSystemClass || ENV_IS_NODE ?  LocalFileSystem : RemoteFileSystem),
     new FileResolverProvider(fileResoverClass || ENV_IS_NODE ? LocalFileResolver : RemoteFileResolver),

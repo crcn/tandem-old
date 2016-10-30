@@ -22,7 +22,7 @@ import {
   SyntheticHTMLScript,
 } from "@tandem/html-extension";
 
-export function createTDProjectCoreDependencies() {
+export function createTDProjectCoreProviders() {
   return [
 
     // elements

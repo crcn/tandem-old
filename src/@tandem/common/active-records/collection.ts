@@ -24,13 +24,13 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
     super();
   }
 
-  static create<T extends IActiveRecord<any>, U>(collectionName: string, dependencies: Injector, createActiveRecord: (source: U) => T, query: any = {}): ActiveRecordCollection<T, U> {
-    return new (this as any)().setup(collectionName, dependencies, createActiveRecord, query);
+  static create<T extends IActiveRecord<any>, U>(collectionName: string, injector: Injector, createActiveRecord: (source: U) => T, query: any = {}): ActiveRecordCollection<T, U> {
+    return new (this as any)().setup(collectionName, injector, createActiveRecord, query);
   }
 
-  setup(collectionName: string, dependencies: Injector, createActiveRecord: (source: U) => T, query?: Object) {
+  setup(collectionName: string, injector: Injector, createActiveRecord: (source: U) => T, query?: Object) {
     this.collectionName = collectionName;
-    this._bus = PrivateBusProvider.getInstance(dependencies);
+    this._bus = PrivateBusProvider.getInstance(injector);
     this.createActiveRecord = createActiveRecord;
     this._globalActionObserver = new WrapBus(this.onGlobalAction.bind(this));
     this.query = query || {};

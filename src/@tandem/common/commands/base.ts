@@ -18,7 +18,7 @@ export abstract class BaseCommand implements ICommand, IInjectable {
   protected bus: IActor;
 
   @inject(InjectorProvider.ID)
-  protected dependencies: Injector;
+  protected injector: Injector;
 
   abstract execute(action: Action);
 }

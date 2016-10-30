@@ -27,7 +27,7 @@ export class File extends Observable {
   private _watcher: IDisposable;
 
   @inject(InjectorProvider.ID)
-  protected _dependencies: Injector;
+  protected _injector: Injector;
 
   @inject(PrivateBusProvider.ID)
   protected _bus: IActor;
@@ -49,10 +49,10 @@ export class File extends Observable {
     // await UpdateTemporaryFileContentAction.execute(this, this._bus);
   }
 
-  // static async open(path: string, dependencies: Injector, mimeType?: string): Promise<File> {
-  //   const bus = PrivateBusProvider.getInstance(dependencies);
+  // static async open(path: string, injector: Injector, mimeType?: string): Promise<File> {
+  //   const bus = PrivateBusProvider.getInstance(injector);
   //   const data = await ReadFileAction.execute(path, bus);
-  //   const fileFactory = FileFactoryProvider.find(mimeType || MimeTypeProvider.lookup(path, dependencies), dependencies) || FileFactoryProvider.find("file", dependencies);
+  //   const fileFactory = FileFactoryProvider.find(mimeType || MimeTypeProvider.lookup(path, injector), injector) || FileFactoryProvider.find("file", injector);
   //   return fileFactory.create(data);
   // }
 

@@ -54,7 +54,7 @@ export interface ISyntheticBrowser extends IObservable {
   parent?: ISyntheticBrowser;
   renderer: ISyntheticDocumentRenderer;
   document: SyntheticDocument;
-  dependencies: Injector;
+  injector: Injector;
   location: SyntheticLocation;
 }
 
@@ -70,9 +70,9 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   private _openOptions: ISyntheticBrowserOpenOptions;
   private _renderer: ISyntheticDocumentRenderer;
 
-  constructor(protected _dependencies: Injector, renderer?: ISyntheticDocumentRenderer, readonly parent?: ISyntheticBrowser) {
+  constructor(protected _injector: Injector, renderer?: ISyntheticDocumentRenderer, readonly parent?: ISyntheticBrowser) {
     super();
-    _dependencies.inject(this);
+    _injector.inject(this);
 
     this._renderer = isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer();
     this._renderer.observe(new BubbleBus(this));
@@ -85,8 +85,8 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     return this.window && this.window.document;
   }
 
-  get dependencies() {
-    return this._dependencies;
+  get injector() {
+    return this._injector;
   }
 
   get location() {
@@ -142,7 +142,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
 
   $didInject() {
     super.$didInject();
-    this._sandbox    = new Sandbox(this._dependencies, this.createSandboxGlobals.bind(this));
+    this._sandbox    = new Sandbox(this._injector, this.createSandboxGlobals.bind(this));
     watchProperty(this._sandbox, "exports", this.onSandboxExportsChange.bind(this));
     watchProperty(this._sandbox, "global", this.setWindow.bind(this));
   }
@@ -152,7 +152,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   }
 
   async open2(options: ISyntheticBrowserOpenOptions) {
-    const bundler = BundlerProvider.getInstance(options.bundleStrategyOptions, this._dependencies);
+    const bundler = BundlerProvider.getInstance(options.bundleStrategyOptions, this._injector);
     this._entry = await bundler.bundle({ filePath: options.url });
     this.logger.info("opening %s in sandbox", options.url);
     this._sandbox.open(this._entry);
@@ -169,7 +169,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   }
 
   private _registerElementClasses(document: SyntheticDocument) {
-    for (const dependency of SyntheticDOMElementClassProvider.findAll(this._dependencies)) {
+    for (const dependency of SyntheticDOMElementClassProvider.findAll(this._injector)) {
       document.registerElementNS(dependency.xmlns, dependency.tagName, dependency.value);
     }
   }

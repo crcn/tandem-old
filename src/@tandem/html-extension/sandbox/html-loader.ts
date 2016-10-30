@@ -26,12 +26,12 @@ import {
 export class HTMLBundleLoader extends BaseBundleLoader {
 
   @inject(InjectorProvider.ID)
-  private _dependencies: Injector;
+  private _injector: Injector;
 
   async load(filePath, { type, content }): Promise<IBundleLoaderResult> {
 
     const dependencyPaths = [];
-    const dependencies = this._dependencies;
+    const injector = this._injector;
     const self = this;
 
     const ast = parseMarkup(content);

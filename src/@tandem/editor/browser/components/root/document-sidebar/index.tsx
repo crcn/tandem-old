@@ -8,7 +8,7 @@ import { DOCUMENT_PANE_COMPONENT_NS } from "@tandem/editor/browser/providers";
 export class DocumentGutterComponent extends React.Component<{}, {}> {
 
   render() {
-    // console.log(this.context.dependencies, "DEP");
+    // console.log(this.context.injector, "DEP");
     return <GutterComponent
       position="left"
       hideKey={SettingKeys.HIDE_LEFT_SIDEBAR}

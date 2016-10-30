@@ -122,8 +122,8 @@ export class SyntheticObjectSerializer implements ISerializer<ISyntheticObject, 
       uid: value.$uid
     });
   }
-  deserialize(value: ISerializedSyntheticObject, dependencies, ctor) {
-    return Object.assign(this.childSerializer.deserialize(value, dependencies, ctor), {
+  deserialize(value: ISerializedSyntheticObject, injector, ctor) {
+    return Object.assign(this.childSerializer.deserialize(value, injector, ctor), {
       $source: value.source,
       $uid: value.uid
     });

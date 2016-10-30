@@ -1,6 +1,6 @@
-import { createSASSSandboxDependencies } from "../../index";
+import { createSASSSandboxProviders } from "../../index";
 
-export const createSASSEditorServerDependencies = () => {
+export const createSASSEditorServerProviders = () => {
   return [];
 };
 

@@ -37,7 +37,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
   readonly bus: IActor;
 
   @inject(InjectorProvider.ID)
-  readonly dependencies: Injector;
+  readonly injector: Injector;
 
   private _disposed: boolean;
 
@@ -99,7 +99,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
     (<Element>this._targetEntity.section.targetNode).innerHTML = " ";
 
     // save the workspae file -- diffing time
-    // this.bus.execute(new SetToolAction(<WorkspaceToolFactoryProvider>this.dependencies.query(pointerToolProvider.id)));
+    // this.bus.execute(new SetToolAction(<WorkspaceToolFactoryProvider>this.injector.query(pointerToolProvider.id)));
   }
 
   public canvasMouseDown(event: MouseAction) {
@@ -113,10 +113,10 @@ class InsertTextTool extends InsertTool {
   readonly resizable: boolean = false;
 
   @inject(InjectorProvider.ID)
-  private _dependencies: Injector;
+  private _injector: Injector;
 
   get displayEntityToolFactory() {
-    return <WorkspaceToolFactoryProvider>this._dependencies.query(editInnerHTMLProvider.id);
+    return <WorkspaceToolFactoryProvider>this._injector.query(editInnerHTMLProvider.id);
   }
 
   createSyntheticDOMElement() {

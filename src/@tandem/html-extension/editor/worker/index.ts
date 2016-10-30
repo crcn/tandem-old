@@ -1,7 +1,7 @@
 // note unused imports - fixes --declaration issue with typescript
 
 import { MimeTypeProvider } from "@tandem/common";
-import { createHTMLCoreDependencies, createHTMLSandboxDependencies } from "../../index";
+import { createHTMLCoreProviders, createHTMLSandboxProviders } from "../../index";
 import {
   BundlerLoaderFactoryProvider,
   ContentEditorFactoryProvider,
@@ -10,10 +10,10 @@ import {
 
 import { SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
 
-export const createHTMLEditorWorkerDependencies = () => {
+export const createHTMLEditorWorkerProviders = () => {
   return [
-    ...createHTMLCoreDependencies(),
-    ...createHTMLSandboxDependencies()
+    ...createHTMLCoreProviders(),
+    ...createHTMLSandboxProviders()
   ];
 }
 

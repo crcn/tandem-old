@@ -28,7 +28,7 @@ export class SyntheticDOMValueNodeSerializer implements ISerializer<SyntheticDOM
   serialize({ nodeValue }: SyntheticDOMValueNode) {
     return { nodeValue };
   }
-  deserialize({ nodeValue }, dependencies, ctor) {
+  deserialize({ nodeValue }, injector, ctor) {
     return new ctor(nodeValue);
   }
 }

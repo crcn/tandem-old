@@ -72,7 +72,7 @@ export class RemoteFileResolver extends BaseFileResolver {
 export class LocalFileResolver extends BaseFileResolver {
 
   @inject(InjectorProvider.ID)
-  private _dependencies: Injector;
+  private _injector: Injector;
 
   async resolve2(relativePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
 

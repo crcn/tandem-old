@@ -77,7 +77,7 @@ export class IOService<T extends IApplication> extends BaseApplicationService<T>
     });
   }
 
-  static create<T extends IApplication>(dependencies: Injector): IOService<T> {
-    return dependencies.inject(new IOService<T>());
+  static create<T extends IApplication>(injector: Injector): IOService<T> {
+    return injector.inject(new IOService<T>());
   }
 }

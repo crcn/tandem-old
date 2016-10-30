@@ -5,7 +5,7 @@
 export class FrontEndApplication {
   bus: any;
   workspace: any;
-  dependencies: any;
+  injector: any;
   settings: any;
   config: any;
   metadata: any;

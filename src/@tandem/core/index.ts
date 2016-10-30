@@ -20,12 +20,12 @@ import {
   RemoteFileSystem,
   LocalFileResolver,
   RemoteFileResolver,
-  createSandboxDependencies,
+  createSandboxProviders,
 } from "@tandem/sandbox";
 
 // TODO - possibly move these to @tandem/core since this configuration is
 // required by *all* packages that use the application bus
-function createBusDependencies() {
+function createBusProviders() {
 
   // Notice the bubbling action here. Actions dispatched on the private bus will
   // make its way to the public bus. However, actions also have access levels. If an action
@@ -48,12 +48,12 @@ function createBusDependencies() {
   );
 }
 
-export function createCoreApplicationDependencies(config: any, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
+export function createCoreApplicationProviders(config: any, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
   return new Injector(
-    createBusDependencies(),
+    createBusProviders(),
     new InjectorProvider(),
     new ApplicationConfigurationProvider(config),
-    createSandboxDependencies(fileSystemClass, fileResolverClass),
+    createSandboxProviders(fileSystemClass, fileResolverClass),
   );
 }
 
@@ -62,7 +62,7 @@ export class ServiceApplication extends Application2 {
 
     // create the services before loading so that they can hook themselves into the application
     // context.
-    for (const serviceProvider of ApplicationServiceProvider.findAll(this.dependencies)) {
+    for (const serviceProvider of ApplicationServiceProvider.findAll(this.injector)) {
       serviceProvider.create();
     }
   }

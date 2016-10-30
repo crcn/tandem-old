@@ -25,7 +25,7 @@ export class StdinService extends CoreApplicationService<IEdtorServerConfig> {
   }
 
   private onInput = async (text) => {
-    const inputHandler = StdinHandlerProvider.findByInput(text, this.dependencies);
+    const inputHandler = StdinHandlerProvider.findByInput(text, this.injector);
 
     try {
       if (inputHandler) {

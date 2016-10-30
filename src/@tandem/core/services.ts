@@ -26,7 +26,7 @@ export abstract class BaseApplicationService2 implements IActor, IInjectable {
   protected bus: IBrokerBus;
 
   @inject(InjectorProvider.ID)
-  protected dependencies: Injector;
+  protected injector: Injector;
 
   execute(action: Action) {
     const method = this[action.type];

@@ -14,7 +14,7 @@ import { WorkspaceToolFactoryProvider, GlobalKeyBindingProvider } from "@tandem/
 abstract class BaseInsertElementTool extends InsertTool {
 
   @inject(InjectorProvider.ID)
-  private _dependencies: Injector;
+  private _injector: Injector;
 
   constructor(readonly options: any, editor: any) {
     super(editor);
@@ -22,7 +22,7 @@ abstract class BaseInsertElementTool extends InsertTool {
   }
 
   get displayEntityToolFactory() {
-    return this._dependencies.query<WorkspaceToolFactoryProvider>(pointerToolProvider.id);
+    return this._injector.query<WorkspaceToolFactoryProvider>(pointerToolProvider.id);
   }
 
   createSyntheticDOMElement() {
@@ -43,7 +43,7 @@ function createElementInsertToolClass(options) {
 export const keyBindingProvider = [
   new GlobalKeyBindingProvider(TEXT_TOOL_KEY_CODE, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
-      // this.bus.execute(new SetToolAction(this.dependencies.query<WorkspaceToolFactoryProvider>(textToolProvider.id)));
+      // this.bus.execute(new SetToolAction(this.injector.query<WorkspaceToolFactoryProvider>(textToolProvider.id)));
     }
   })
 ];
@@ -60,7 +60,7 @@ for (const key in insertElementKeyBindings) {
 function addElementKeyBinding(key: string, options: { nodeName: string, attributes: string }) {
   keyBindingProvider.push(new GlobalKeyBindingProvider(key, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.execute(new SetToolAction(<ClassFactoryProvider>this.dependencies.link(new ClassFactoryProvider(null, createElementInsertToolClass(options)))));
+      this.bus.execute(new SetToolAction(<ClassFactoryProvider>this.injector.link(new ClassFactoryProvider(null, createElementInsertToolClass(options)))));
     }
   }));
 }

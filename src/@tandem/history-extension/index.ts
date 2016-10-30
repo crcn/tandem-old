@@ -6,7 +6,7 @@
 // import { CommandFactoryProvider, InitializeAction, isMaster } from "@tandem/common";
 // import { FooterComponentFactoryProvider, GlobalKeyBindingProvider } from "@tandem/editor/providers";
 
-// export const historyExtensionDependencies = isMaster ? [
+// export const historyExtensionProviders = isMaster ? [
 //   new FooterComponentFactoryProvider("history", HistorySliderComponent),
 //   new HistorySingletonProvider(),
 //   new CommandFactoryProvider(InitializeAction.INITIALIZE, InitializeHistoryCommand),
@@ -14,4 +14,4 @@
 //   new GlobalKeyBindingProvider("meta+y", RedoCommand)
 // ] : [];
 
-export const historyExtensionDependencies = [];
+export const historyExtensionProviders = [];

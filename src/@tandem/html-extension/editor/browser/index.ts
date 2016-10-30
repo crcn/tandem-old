@@ -1,7 +1,7 @@
 import { Injector } from "@tandem/common";
 import { keyBindingProvider } from "./key-bindings";
 import { pastHTMLServiceProvider } from "./services";
-import { createHTMLCoreDependencies } from "../../core";
+import { createHTMLCoreProviders } from "../../core";
 import { textToolProvider, editInnerHTMLProvider } from "./models";
 
 import {
@@ -30,11 +30,11 @@ import {
   EntityAttributesPaneComponent,
 } from "./components";
 
-export function createHTMLEditorBrowserDependencies() {
+export function createHTMLEditorBrowserProviders() {
 
   return new Injector(
 
-    createHTMLCoreDependencies(),
+    createHTMLCoreProviders(),
 
     // layer components
     new LayerLabelComponentFactoryProvider(SyntheticHTMLElement.name, ElementLayerLabelComponent),

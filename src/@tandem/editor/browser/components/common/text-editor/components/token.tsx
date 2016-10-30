@@ -5,15 +5,15 @@ import TextEditor from "../models/text-editor";
 import { Injector } from "@tandem/common";
 import { TokenComponentFactoryProvider } from "@tandem/editor/browser/providers";
 
-class TokenComponent extends React.Component<{ token: Token, editor: TextEditor, line: Line, dependencies: Injector }, any> {
+class TokenComponent extends React.Component<{ token: Token, editor: TextEditor, line: Line, injector: Injector }, any> {
 
 
   render() {
-    const { token, dependencies } = this.props;
+    const { token, injector } = this.props;
 
     const props: any = {};
 
-    const tokenFactory = TokenComponentFactoryProvider.find(token.type, dependencies);
+    const tokenFactory = TokenComponentFactoryProvider.find(token.type, injector);
 
     if (tokenFactory) {
       props.children = tokenFactory.create(this.props);

@@ -27,7 +27,7 @@ describe(__filename + "#", () => {
     const app = new Application({});
   });
 
-  it("registers application service dependencies upon initialization", async () => {
+  it("registers application service injector upon initialization", async () => {
     const app = new Application({});
     let i = 0;
     let j = 0;
@@ -37,7 +37,7 @@ describe(__filename + "#", () => {
       initialize() { j++; }
     }
 
-    app.dependencies.register(new ApplicationServiceProvider("testService", TestService));
+    app.injector.register(new ApplicationServiceProvider("testService", TestService));
 
     await app.initialize();
     expect(i).to.equal(1);

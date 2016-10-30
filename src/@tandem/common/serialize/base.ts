@@ -7,7 +7,7 @@ export interface ISerializedContent<T> {
 
 export interface ISerializer<T, U> {
   serialize(value: T): U;
-  deserialize(value: U, dependencies: Injector, ctor?: any): T;
+  deserialize(value: U, injector: Injector, ctor?: any): T;
 }
 
 export interface ISerializable<T> {
@@ -22,8 +22,8 @@ export function createSerializer(ctor: { new(...rest:any[]): any }): ISerializer
       serialize(value: ISerializable<any>) {
         return value.serialize();
       },
-      deserialize(value, dependencies, ctor): ISerializable<any> {
-        const instance: ISerializable<any> = dependencies && dependencies.create(ctor, []) || new ctor();
+      deserialize(value, injector, ctor): ISerializable<any> {
+        const instance: ISerializable<any> = injector && injector.create(ctor, []) || new ctor();
         instance.deserialize(value);
         return instance;
       }
@@ -34,7 +34,7 @@ export function createSerializer(ctor: { new(...rest:any[]): any }): ISerializer
     serialize(value): any {
       return JSON.parse(JSON.stringify(value));
     },
-    deserialize(value, dependencies, ctor) {
+    deserialize(value, injector, ctor) {
       const instance = new ctor();
       return Object.assign(instance, value);
     }
@@ -45,8 +45,8 @@ const defaultSerializer: ISerializer<any, any> = {
   serialize(value): any {
     return value.serialize ? value.serialize() : JSON.parse(JSON.stringify(value));
   },
-  deserialize(value, dependencies, ctor) {
-    const instance = dependencies && dependencies.create(ctor, []) || new ctor();
+  deserialize(value, injector, ctor) {
+    const instance = injector && injector.create(ctor, []) || new ctor();
     return instance.deserialize ? instance.deserialize(value) : Object.assign(instance, value);
   }
 }
@@ -57,7 +57,7 @@ class LiteralSerializer implements ISerializer<any, any> {
   serialize(value) {
     return value;
   }
-  deserialize(value, ctor, dependencies) {
+  deserialize(value, ctor, injector) {
     return value;
   }
 }
@@ -105,7 +105,7 @@ export function serialize(value: any): ISerializedContent<any> {
   };
 }
 
-export function deserialize(content: ISerializedContent<any>, dependencies: Injector): any {
+export function deserialize(content: ISerializedContent<any>, injector: Injector): any {
 
   const info: ISerializerInfo = _serializers[content.type];
 
@@ -113,5 +113,5 @@ export function deserialize(content: ISerializedContent<any>, dependencies: Inje
     return content;
   }
 
-  return info.serializer.deserialize(content.value, dependencies, info.ctor);
+  return info.serializer.deserialize(content.value, injector, info.ctor);
 }

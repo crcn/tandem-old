@@ -37,7 +37,7 @@ export const keyBindingsProvider = [
       // slight delay to enable other tools to catch escape key if it' s hit - important
       // for text editing tool particularly
       setTimeout(() => {
-        this.bus.execute(new SetToolAction(this.dependencies.query<WorkspaceToolFactoryProvider>(pointerToolProvider.id)));
+        this.bus.execute(new SetToolAction(this.injector.query<WorkspaceToolFactoryProvider>(pointerToolProvider.id)));
       }, 1);
     }
   }),

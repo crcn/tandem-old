@@ -10,12 +10,12 @@ import {
 
 export interface IApplicationComponentContext {
   bus: IActor;
-  dependencies: Injector;
+  injector: Injector;
 }
 
 export const appComponentContextTypes = {
   bus: React.PropTypes.object,
-  dependencies: React.PropTypes.object
+  injector: React.PropTypes.object
 };
 
 export class BaseApplicationComponent<T, U> extends React.Component<T, U> implements IInjectable {
@@ -26,13 +26,13 @@ export class BaseApplicationComponent<T, U> extends React.Component<T, U> implem
   protected readonly bus: IActor;
 
   @inject(InjectorProvider.ID)
-  protected readonly dependencies: Injector
+  protected readonly injector: Injector
 
   constructor(props: T, context: IApplicationComponentContext, callbacks: any) {
     super(props, context, callbacks);
 
-    if (context.dependencies) {
-      context.dependencies.inject(this);
+    if (context.injector) {
+      context.injector.inject(this);
     } else {
       console.error(`Failed to inject properties into `, this.constructor.name);
     }
@@ -50,7 +50,7 @@ export class RootApplicationComponent extends React.Component<IApplicationCompon
   getChildContext() {
     return {
       bus: this.props.bus,
-      dependencies: this.props.dependencies
+      injector: this.props.injector
     };
   }
 

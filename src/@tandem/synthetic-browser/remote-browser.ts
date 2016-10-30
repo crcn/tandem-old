@@ -31,8 +31,8 @@ import { Bundle, Bundler, BundlerProvider, SyntheticObjectEditor, IBundleStrateg
       data: serialize(data)
     }
   },
-  deserialize({ type, data }: RemoteBrowserDocumentAction, dependencies: Injector) {
-    return new RemoteBrowserDocumentAction(type, deserialize(data, dependencies));
+  deserialize({ type, data }: RemoteBrowserDocumentAction, injector: Injector) {
+    return new RemoteBrowserDocumentAction(type, deserialize(data, injector));
   }
 })
 class RemoteBrowserDocumentAction extends Action {
@@ -53,9 +53,9 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   private _documentEditor: SyntheticObjectEditor;
   private _remoteStream: any;
 
-  constructor(dependencies: Injector, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
-    super(dependencies, renderer, parent);
-    this._bus = PrivateBusProvider.getInstance(dependencies);
+  constructor(injector: Injector, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
+    super(injector, renderer, parent);
+    this._bus = PrivateBusProvider.getInstance(injector);
   }
 
   async open2(options: ISyntheticBrowserOpenOptions) {
@@ -76,7 +76,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   onRemoteBrowserAction({ payload }) {
 
-    const action = deserialize(payload, this.dependencies) as RemoteBrowserDocumentAction;
+    const action = deserialize(payload, this.injector) as RemoteBrowserDocumentAction;
 
     if (action.type === RemoteBrowserDocumentAction.NEW_DOCUMENT) {
       this.logger.verbose("received new document");
@@ -118,7 +118,7 @@ export class RemoteBrowserService extends BaseApplicationService2 {
     return new Response((writer) => {
       const id = JSON.stringify(action.options);
 
-      const browser: SyntheticBrowser = this._openBrowsers[id] || (this._openBrowsers[id] = new SyntheticBrowser(this.dependencies, new NoopRenderer()));
+      const browser: SyntheticBrowser = this._openBrowsers[id] || (this._openBrowsers[id] = new SyntheticBrowser(this.injector, new NoopRenderer()));
       let currentDocument: SyntheticDocument;
 
       const logger = this.logger.createChild(`${action.options.url} `);

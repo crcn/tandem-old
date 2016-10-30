@@ -30,14 +30,14 @@ function createLogColorizer(tester: RegExp, replaceValue: any) {
 
 const highlighters = [
 
-  // *de emphasis*
-  createLogColorizer(/\*(.*?)\*/g, (match, word) => chalk.grey(word)),
+  // ~de emphasis~
+  createLogColorizer(/~(.*?)~/g, (match, word) => chalk.grey(word)),
 
   // _emphasis_
-  createLogColorizer(/_(.*?)_/g, (match, word) => chalk.un(word)),
+  createLogColorizer(/_(.*?)_/g, (match, word) => chalk.bold(word)),
 
   // __big emphasis__
-  createLogColorizer(/__(.*?)__/g, (match, word) => chalk.bold(word)),
+  createLogColorizer(/__(.*?)__/g, (match, word) => chalk.underline(word)),
 
   // !success
   createLogColorizer(/!([^\s]+)/g, (match, word) => chalk.green(word)),
@@ -48,11 +48,11 @@ const highlighters = [
   // <<output - green (from audio again)
   createLogColorizer(/<<(.*)/g, (match, word) => chalk.green(word)),
 
+  // tokens
+  createLogColorizer(/([\:\{\}",]|->|null|undefined|Infinity)/g, (match) => chalk.grey(match)),
+
   // strings
   createLogColorizer(/"(.*?)"/g, (match, inner) => `"${chalk.blue(inner)}"`),
-
-  // tokens
-  createLogColorizer(/(\b[\:\{\}]\b|->|null|undefined|Infinity)/g, (match) => chalk.grey(match)),
 
   // URL
   createLogColorizer(/((\w{3,}\:\/\/)|([^\/\s"']+)?\/)([^\/\s"']+\/?)+/g, (match, word) => chalk.yellow(match)),
@@ -66,7 +66,6 @@ const highlighters = [
   createLogColorizer(/INFO/, (match) => chalk.bgCyan(match)),
   createLogColorizer(/ERR(OR)?/i, (match) => chalk.bgRed(match)),
   createLogColorizer(/WARN(ING)?/i, (match) => chalk.bgYellow(match))
-
 ];
 
 function colorize(input: string) {
@@ -103,7 +102,7 @@ export class ConsoleLogService extends CoreApplicationService<any> {
 
     if (hlog) {
       if (text.toLowerCase().indexOf(hlog.toLowerCase()) !== -1) {
-        text = chalk.bgMagenta(text);
+        text = text.replace(new RegExp(hlog, "ig"), match => chalk.bold.bgMagenta(match));
       }
     }
 

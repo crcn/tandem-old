@@ -27,9 +27,9 @@ class SyntheticCSSFontFaceSerializer implements ISerializer<SyntheticCSSFontFace
       declaration: serialize(declaration)
     };
   }
-  deserialize({ declaration }: ISerializedSyntheticCSSFontFace, dependencies) {
+  deserialize({ declaration }: ISerializedSyntheticCSSFontFace, injector) {
     const rule = new SyntheticCSSFontFace();
-    rule.declaration = deserialize(declaration, dependencies);
+    rule.declaration = deserialize(declaration, injector);
     return rule;
   }
 }

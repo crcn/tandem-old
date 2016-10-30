@@ -40,7 +40,7 @@ export class ElementLayerLabelComponent extends React.Component<{ node: Syntheti
 
     // TODO - this needs to be generalized. Specific to
     // HTML right now
-    // const child = this.props.app.dependencies.queryOne("entities/element").factory.create({
+    // const child = this.props.app.injector.queryOne("entities/element").factory.create({
     //   tagName: "div",
     //   editLayerSource: true
     // });

@@ -68,11 +68,11 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
 
     this.logger.info("loading project file %s", filePath);
     const workspace = new Workspace();
-    const browser = workspace.browser = new RemoteSyntheticBrowser(this.dependencies, new CanvasRenderer(workspace, new SyntheticDOMRenderer()));
+    const browser = workspace.browser = new RemoteSyntheticBrowser(this.injector, new CanvasRenderer(workspace, new SyntheticDOMRenderer()));
     await browser.open({ url: filePath });
     this._store.workspace = workspace;
 
-    // await this.bus.execute(new SetToolAction(this.dependencies.query<WorkspaceToolFactoryProvider>(pointerToolProvider.id)));
+    // await this.bus.execute(new SetToolAction(this.injector.query<WorkspaceToolFactoryProvider>(pointerToolProvider.id)));
   }
 
   async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
@@ -132,7 +132,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
   }
 
   [ApplyEditAction.APPLY_EDITS]({ edit }: ApplyEditAction) {
-    return FileEditorProvider.getInstance(this.dependencies).applyEditActions(...edit.actions);
+    return FileEditorProvider.getInstance(this.injector).applyEditActions(...edit.actions);
   }
 
 

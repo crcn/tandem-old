@@ -1,9 +1,9 @@
 import { Injector } from "@tandem/common";
 import { SyntheticBrowser } from "@tandem/synthetic-browser";
-import { createSandboxDependencies, IFileResolver, IFileSystem } from "@tandem/sandbox";
-import { createCoreApplicationDependencies } from "@tandem/core";
+import { createSandboxProviders, IFileResolver, IFileSystem } from "@tandem/sandbox";
+import { createCoreApplicationProviders } from "@tandem/core";
 
 export function createMockBrowser() {
-  const deps = createSandboxDependencies();
+  const deps = createSandboxProviders();
   return new SyntheticBrowser(deps);
 }

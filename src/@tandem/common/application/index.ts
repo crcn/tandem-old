@@ -28,11 +28,11 @@ export class BaseApplication implements IApplication {
 
   readonly logger: Logger;
   readonly bus: BrokerBus = new BrokerBus(SequenceBus);
-  readonly dependencies: Injector = new Injector();
+  readonly injector: Injector = new Injector();
   private _initializeCalled: boolean = false;
 
   constructor(readonly config: any = {}) {
-    this.registerDependencies();
+    this.registerProviders();
   }
 
   public async initialize() {
@@ -56,14 +56,10 @@ export class BaseApplication implements IApplication {
   /**
    */
 
-  protected registerDependencies() {
-    if (!process.env.TESTING) {
-      // this.dependencies.register(consoleLogServiceProvider);
-    }
-
-    // Make the application available globally through the dependencies
+  protected registerProviders() {
+    // Make the application available globally through the injector
     // property so that this reference isn't passed around everywhere.
-    this.dependencies.register(
+    this.injector.register(
       new PrivateBusProvider(this.bus),
       new InjectorProvider(),
       new ApplicationSingletonProvider(this)
@@ -76,7 +72,7 @@ export class BaseApplication implements IApplication {
   private _initializeServices() {
 
     // Initialize the services (action handlers) of this application.
-    this.bus.register(...ApplicationServiceProvider.findAll(this.dependencies).map(fragment => fragment.create()));
+    this.bus.register(...ApplicationServiceProvider.findAll(this.injector).map(fragment => fragment.create()));
   }
 
   /**
@@ -97,7 +93,7 @@ export class BaseApplication implements IApplication {
 
 
 export class Application extends BaseApplication {
-  protected registerDependencies() {
-    super.registerDependencies();
+  protected registerProviders() {
+    super.registerProviders();
   }
 }

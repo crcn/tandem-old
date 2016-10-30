@@ -11,7 +11,7 @@ class ToolsComponent extends React.Component<{ workspace: Workspace, app: any },
     return (<div className="m-editor-toolbar">
       <ul className="m-toolbar-tools">
         {
-          WorkspaceToolFactoryProvider.findAll(this.props.workspace.type, this.props.app.dependencies).map((dep) => (
+          WorkspaceToolFactoryProvider.findAll(this.props.workspace.type, this.props.app.injector).map((dep) => (
             <ToolComponent {...this.props} toolProvider={dep} key={dep.id} />
           ))
         }

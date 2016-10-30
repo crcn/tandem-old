@@ -112,7 +112,7 @@ class WebpackLoaderContext {
     readonly loader: INormalizedWebpackLoaderConfig,
     readonly strategy: WebpackBundleStrategy,
     readonly resourcePath: string,
-    private _dependencies: string[]
+    private _injector: string[]
   ) {
 
     this._compiler = strategy.compiler;
@@ -124,7 +124,7 @@ class WebpackLoaderContext {
   }
 
   get dependencyPaths(): string[] {
-    return this._dependencies;
+    return this._injector;
   }
 
   private get module() {
@@ -174,12 +174,12 @@ class WebpackLoaderContext {
 
   }
 
-  clearDependencies() {
-    this._dependencies = [];
+  clearProviders() {
+    this._injector = [];
   }
 
   addProvider(filePath) {
-    this._dependencies.push(filePath);
+    this._injector.push(filePath);
   }
 
   dependency(filePath) {
@@ -303,7 +303,7 @@ export class WebpackBundleStrategy implements IBundleStragegy {
   protected readonly logger: Logger;
 
   @inject(InjectorProvider.ID)
-  private _dependencies: Injector;
+  private _injector: Injector;
 
   @inject(FileResolverProvider.ID)
   private _resolver: IFileResolver;
@@ -335,7 +335,7 @@ export class WebpackBundleStrategy implements IBundleStragegy {
    */
 
   getLoader(options: IWebpackLoaderOptions): IBundleLoader {
-    return this._dependencies.inject(new WebpackBundleLoader(this, options));
+    return this._injector.inject(new WebpackBundleLoader(this, options));
   }
 
   async resolve(moduleInfo: string, cwd: string): Promise<IBundleResolveResult> {

@@ -52,7 +52,7 @@ export class ApplicationSingletonProvider extends Provider<IApplication> {
   }
 }
 
-export function createSingletonBusProviderClass(name: string): { getInstance(dependencies:Injector): IBrokerBus, ID: string, new(bus: IBrokerBus): Provider<IBrokerBus> } {
+export function createSingletonBusProviderClass(name: string): { getInstance(providers:Injector): IBrokerBus, ID: string, new(bus: IBrokerBus): Provider<IBrokerBus> } {
 
   const id = ["bus", name].join("/");
 
@@ -64,8 +64,8 @@ export function createSingletonBusProviderClass(name: string): { getInstance(dep
       super(id, bus);
     }
 
-    static getInstance(dependencies: Injector): IBrokerBus {
-      return dependencies.query<any>(id).value;
+    static getInstance(providers: Injector): IBrokerBus {
+      return providers.query<any>(id).value;
     }
   };
 }
@@ -98,7 +98,7 @@ export const PrivateBusProvider   = createSingletonBusProviderClass("private");
  */
 
 export class InjectorProvider extends Provider<Injector> {
-  static ID = "dependencies";
+  static ID = "providers";
   constructor() {
     super(InjectorProvider.ID, null);
   }
@@ -129,12 +129,12 @@ export class CommandFactoryProvider extends ClassFactoryProvider {
   create(): IActor {
     return super.create();
   }
-  static findAll(dependencies: Injector) {
-    return dependencies.queryAll<CommandFactoryProvider>([CommandFactoryProvider.NS_PREFIX, "**"].join("/"));
+  static findAll(providers: Injector) {
+    return providers.queryAll<CommandFactoryProvider>([CommandFactoryProvider.NS_PREFIX, "**"].join("/"));
   }
 
-  static findAllByAction(action: Action, dependencies: Injector) {
-    return this.findAll(dependencies).filter((dep) => dep.actionFilter(action));
+  static findAllByAction(action: Action, providers: Injector) {
+    return this.findAll(providers).filter((dep) => dep.actionFilter(action));
   }
 
   clone() {
@@ -153,12 +153,12 @@ export class MimeTypeProvider extends Provider<string> {
   clone() {
     return new MimeTypeProvider(this.fileExtension, this.mimeType);
   }
-  static findAll(dependencies: Injector) {
-    return dependencies.queryAll<MimeTypeProvider>([MimeTypeProvider.NS_PREFIX, "**"].join("/"));
+  static findAll(providers: Injector) {
+    return providers.queryAll<MimeTypeProvider>([MimeTypeProvider.NS_PREFIX, "**"].join("/"));
   }
-  static lookup(filePath: string, dependencies: Injector): string {
+  static lookup(filePath: string, providers: Injector): string {
     const extension = filePath.split(".").pop();
-    const dep = dependencies.query<MimeTypeProvider>([MimeTypeProvider.NS_PREFIX, extension].join("/"));
+    const dep = providers.query<MimeTypeProvider>([MimeTypeProvider.NS_PREFIX, extension].join("/"));
     return dep ? dep.value : undefined;
   }
 }
@@ -174,14 +174,14 @@ export class MimeTypeAliasProvider extends Provider<string> {
   static getNamespace(mimeType: string) {
     return [MimeTypeAliasProvider.NS, mimeType].join("/");
   }
-  static lookup(filePathOrMimeType: string, dependencies: Injector): string {
-    const mimeType = MimeTypeProvider.lookup(filePathOrMimeType, dependencies);
-    const dep = (mimeType && dependencies.query<MimeTypeAliasProvider>(this.getNamespace(mimeType))) || dependencies.query<MimeTypeAliasProvider>(this.getNamespace(filePathOrMimeType));
+  static lookup(filePathOrMimeType: string, providers: Injector): string {
+    const mimeType = MimeTypeProvider.lookup(filePathOrMimeType, providers);
+    const dep = (mimeType && providers.query<MimeTypeAliasProvider>(this.getNamespace(mimeType))) || providers.query<MimeTypeAliasProvider>(this.getNamespace(filePathOrMimeType));
     return (dep && dep.value) || mimeType || filePathOrMimeType;
   }
 }
 
-export function createSingletonProviderClass<T>(id: string): { getInstance(dependencies: Injector): T, ID: string, new(clazz: { new(...rest): T }): IProvider } {
+export function createSingletonProviderClass<T>(id: string): { getInstance(providers: Injector): T, ID: string, new(clazz: { new(...rest): T }): IProvider } {
   return class SingletonProvider implements IProvider {
     static readonly ID: string = id;
     private _value: T;
@@ -198,8 +198,8 @@ export function createSingletonProviderClass<T>(id: string): { getInstance(depen
     clone() {
       return new SingletonProvider(this._clazz);
     }
-    static getInstance(dependencies: Injector): T {
-      const dep = dependencies.query<SingletonProvider>(id);
+    static getInstance(providers: Injector): T {
+      const dep = providers.query<SingletonProvider>(id);
       return dep ? dep.value : undefined;
     }
   }

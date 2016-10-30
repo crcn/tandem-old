@@ -14,7 +14,7 @@ import {SequenceBus } from "mesh";
 export class ReceiverService implements IActor {
 
   @inject(InjectorProvider.ID)
-  private _dependencies: Injector;
+  private _injector: Injector;
 
   constructor() {
 
@@ -22,7 +22,7 @@ export class ReceiverService implements IActor {
 
   execute(action: Action) {
 
-    const commands = CommandFactoryProvider.findAllByAction(action, this._dependencies).map((dep) => {
+    const commands = CommandFactoryProvider.findAllByAction(action, this._injector).map((dep) => {
       return dep.create()
     });
 

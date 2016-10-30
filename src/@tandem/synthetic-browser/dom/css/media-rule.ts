@@ -24,9 +24,9 @@ class SyntheticCSSMediaRuleSerializer implements ISerializer<SyntheticCSSMediaRu
       cssRules: cssRules.map(serialize)
     };
   }
-  deserialize({ media, cssRules }: ISerializedSyntheticCSSMediaRule, dependencies) {
+  deserialize({ media, cssRules }: ISerializedSyntheticCSSMediaRule, injector) {
     const rule = new SyntheticCSSMediaRule(media);
-    cssRules.forEach((cs) => rule.cssRules.push(deserialize(cs, dependencies)));
+    cssRules.forEach((cs) => rule.cssRules.push(deserialize(cs, injector)));
     return rule;
   }
 }

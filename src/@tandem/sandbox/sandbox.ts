@@ -49,9 +49,9 @@ export class Sandbox extends Observable {
   private _global: any;
   private _exports: any;
 
-  constructor(private _dependencies: Injector, private createGlobal: () => any = () => {}) {
+  constructor(private _injector: Injector, private createGlobal: () => any = () => {}) {
     super();
-    this._dependencies.inject(this);
+    this._injector.inject(this);
     this._entryObserver = new WrapBus(this.onEntryAction.bind(this));
     this._modules = {};
   }
@@ -112,7 +112,7 @@ export class Sandbox extends Observable {
     const now = Date.now();
 
     // TODO - cache evaluator here
-    const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryProvider.find(bundle.type, this._dependencies);
+    const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryProvider.find(bundle.type, this._injector);
 
     if (!evaluatorFactoryDepedency) {
       throw new Error(`Cannot evaluate ${bundle.filePath}:${bundle.type} in sandbox.`);

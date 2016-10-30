@@ -37,7 +37,7 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
 
   $didInject() {
     super.$didInject();
-    this.bus.register(this._ioService = this.dependencies.create(IOService, []));
+    this.bus.register(this._ioService = this.injector.create(IOService, []));
   }
 
   async [InitializeAction.INITIALIZE]() {

@@ -2,7 +2,7 @@ import { Injector } from "@tandem/common";
 import { RemoteBrowserService } from "./remote-browser";
 import { ApplicationServiceProvider } from "@tandem/core";
 
-export function createSyntheticBrowserWorkerDependencies() {
+export function createSyntheticBrowserWorkerProviders() {
   return [
     new ApplicationServiceProvider("remoteBrowserRenderer", RemoteBrowserService)
   ];

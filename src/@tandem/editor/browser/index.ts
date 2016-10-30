@@ -3,7 +3,7 @@ import "./styles";
 import { Injector } from "@tandem/common";
 import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
-import { createCoreApplicationDependencies, ApplicationServiceProvider } from "@tandem/core";
+import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
 import {
   StoreProvider,
   ReactComponentFactoryProvider,
@@ -23,7 +23,7 @@ import {
 
 import { Store } from "./models";
 
-import { createCommonEditorDependencies } from "../common";
+import { createCommonEditorProviders } from "../common";
 
 import {
   DNDService,
@@ -35,11 +35,11 @@ import {
   GlobalKeyBindingService,
 } from "./services";
 
-export function concatEditorBrowserDependencies(dependencies: Injector, config: IEditorBrowserConfig, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
+export function concatEditorBrowserProviders(injector: Injector, config: IEditorBrowserConfig, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
   return new Injector(
-    dependencies,
-    createCommonEditorDependencies(),
-    createCoreApplicationDependencies(config, fileSystemClass, fileResolverClass),
+    injector,
+    createCommonEditorProviders(),
+    createCoreApplicationProviders(config, fileSystemClass, fileResolverClass),
 
     // services
     new ApplicationServiceProvider("dnd", DNDService),

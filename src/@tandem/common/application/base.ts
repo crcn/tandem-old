@@ -21,7 +21,7 @@ export interface IApplication extends IInvoker {
   readonly bus: IBrokerBus;
 
   // parts of the application
-  readonly dependencies: Injector;
+  readonly injector: Injector;
 }
 
 /**
@@ -32,8 +32,8 @@ export class Application2 {
   protected bus: IActor;
   private _initialized: boolean;
 
-  constructor(readonly dependencies: Injector) {
-    this.bus = PrivateBusProvider.getInstance(dependencies);
+  constructor(readonly injector: Injector) {
+    this.bus = PrivateBusProvider.getInstance(injector);
   }
 
   /**
@@ -49,7 +49,7 @@ export class Application2 {
     this.willLoad();
 
     // Prepare the application for initialization. Injector that
-    // need to be loaded before being used by other dependencies should listen on this action
+    // need to be loaded before being used by other injector should listen on this action
     // here.
     await this.bus.execute(new LoadAction());
 

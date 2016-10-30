@@ -21,8 +21,8 @@ export class ApplicationServiceProvider<T extends IActor> extends ClassFactoryPr
     return super.create();
   }
 
-  static findAll(dependencies: Injector) {
-    return dependencies.queryAll<ApplicationServiceProvider<any>>(this.getId("**"));
+  static findAll(injector: Injector) {
+    return injector.queryAll<ApplicationServiceProvider<any>>(this.getId("**"));
   }
 }
 

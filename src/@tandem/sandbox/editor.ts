@@ -72,10 +72,10 @@ export abstract class BaseContentEditor<T> implements IEditor {
       target: serialize(target.clone())
     };
   },
-  deserialize({ type, target }, dependencies): EditAction {
+  deserialize({ type, target }, injector): EditAction {
     return new EditAction(
       type,
-      deserialize(target, dependencies)
+      deserialize(target, injector)
     );
   }
 })
@@ -96,11 +96,11 @@ export class EditAction extends Action {
       index: index
     };
   },
-  deserialize({ type, target, child, index }, dependencies): InsertChildEditAction {
+  deserialize({ type, target, child, index }, injector): InsertChildEditAction {
     return new InsertChildEditAction(
       type,
-      deserialize(target, dependencies),
-      deserialize(child, dependencies),
+      deserialize(target, injector),
+      deserialize(child, injector),
       index
     );
   }
@@ -119,11 +119,11 @@ export class InsertChildEditAction extends EditAction {
       child: serialize(child.clone())
     };
   },
-  deserialize({ type, target, child, newIndex }, dependencies): RemoveChildEditAction {
+  deserialize({ type, target, child, newIndex }, injector): RemoveChildEditAction {
     return new RemoveChildEditAction(
       type,
-      deserialize(target, dependencies),
-      deserialize(child, dependencies)
+      deserialize(target, injector),
+      deserialize(child, injector)
     );
   }
 })
@@ -142,11 +142,11 @@ export class RemoveChildEditAction extends EditAction {
       newIndex: newIndex
     };
   },
-  deserialize({ type, target, child, newIndex }, dependencies): MoveChildEditAction {
+  deserialize({ type, target, child, newIndex }, injector): MoveChildEditAction {
     return new MoveChildEditAction(
       type,
-      deserialize(target, dependencies),
-      deserialize(child, dependencies),
+      deserialize(target, injector),
+      deserialize(child, injector),
       newIndex
     );
   }
@@ -167,12 +167,12 @@ export class MoveChildEditAction extends EditAction {
       newName: newName
     };
   },
-  deserialize({ type, target, name, newValue, newName }, dependencies): SetKeyValueEditAction {
+  deserialize({ type, target, name, newValue, newName }, injector): SetKeyValueEditAction {
     return new SetKeyValueEditAction(
       type,
-      deserialize(target, dependencies),
+      deserialize(target, injector),
       name,
-      deserialize(newValue, dependencies),
+      deserialize(newValue, injector),
       newName
     );
   }
@@ -191,10 +191,10 @@ export class SetKeyValueEditAction extends EditAction {
       newValue: newValue
     };
   },
-  deserialize({ type, target, newValue }, dependencies): SetValueEditActon {
+  deserialize({ type, target, newValue }, injector): SetValueEditActon {
     return new SetValueEditActon(
       type,
-      deserialize(target, dependencies),
+      deserialize(target, injector),
       newValue
     );
   }
@@ -309,7 +309,7 @@ export class FileEditor extends Observable {
   private _shouldEditAgain: boolean;
 
   @inject(InjectorProvider.ID)
-  private _dependencies: Injector;
+  private _injector: Injector;
 
   constructor() {
     super();
@@ -368,14 +368,14 @@ export class FileEditor extends Observable {
       const promises = [];
 
       for (const filePath in actionsByFilePath) {
-        const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(MimeTypeProvider.lookup(filePath, this._dependencies), this._dependencies);
+        const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(MimeTypeProvider.lookup(filePath, this._injector), this._injector);
 
         if (!contentEditorFactoryProvider) {
           console.error(`No synthetic edit consumer exists for ${filePath}.`);
           continue;
         }
 
-        const fileCache     = await  FileCacheProvider.getInstance(this._dependencies).item(filePath);
+        const fileCache     = await  FileCacheProvider.getInstance(this._injector).item(filePath);
         const oldContent    = await fileCache.read();
         const contentEditor = contentEditorFactoryProvider.create(filePath, oldContent);
 

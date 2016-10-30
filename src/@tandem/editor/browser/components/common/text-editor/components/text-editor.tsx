@@ -15,7 +15,7 @@ import {
 } from "@tandem/common";
 import HighlightComponent from "./highlight";
 
-export class TextEditorComponent extends React.Component<{ onKeyDown?: Function, onFocus?: Function, onChange?: Function, onBlur?: Function, style?: Object, className?: string, source: string, dependencies: Injector, tokenizer: ITokenizer }, any> implements IActor {
+export class TextEditorComponent extends React.Component<{ onKeyDown?: Function, onFocus?: Function, onChange?: Function, onBlur?: Function, style?: Object, className?: string, source: string, injector: Injector, tokenizer: ITokenizer }, any> implements IActor {
 
   readonly bus: BrokerBus;
   private _timer: any;
@@ -310,7 +310,7 @@ export class TextEditorComponent extends React.Component<{ onKeyDown?: Function,
 
         {
           editor.lines.map((line, i) => {
-            return <LineComponent editor={editor} line={line} key={i} dependencies={this.props.dependencies} />;
+            return <LineComponent editor={editor} line={line} key={i} injector={this.props.injector} />;
           })
         }
 

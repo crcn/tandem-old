@@ -24,7 +24,7 @@ import {
 
 interface ILayerLabelProps {
   paddingLeft?: number;
-  dependencies: Injector;
+  injector: Injector;
   app: FrontEndApplication;
   node: SyntheticDOMNode;
   connectDragSource: Function;
@@ -140,14 +140,14 @@ class LayerLabelComponent extends BaseApplicationComponent<ILayerLabelProps, any
   }
 
   render() {
-    const { connectDragSource, isDragging, connectDropTarget, isOver, canDrop, node, dependencies, app } = this.props;
+    const { connectDragSource, isDragging, connectDropTarget, isOver, canDrop, node, injector, app } = this.props;
 
     const expanded   = false; //node.metadata.get(MetadataKeys.LAYER_EXPANDED);
 
     const selection = app.workspace.selection;
     const layerName = null;// node.metadata.get(MetadataKeys.LAYER_DEPENDENCY_NAME); // || node.source.constructor.name;
 
-    const labelProvider = LayerLabelComponentFactoryProvider.find(layerName, dependencies) || LayerLabelComponentFactoryProvider.find(node.constructor.name, dependencies) || LayerLabelComponentFactoryProvider.find(node.source.constructor.name, dependencies);
+    const labelProvider = LayerLabelComponentFactoryProvider.find(layerName, injector) || LayerLabelComponentFactoryProvider.find(node.constructor.name, injector) || LayerLabelComponentFactoryProvider.find(node.source.constructor.name, injector);
 
     let labelSection;
 

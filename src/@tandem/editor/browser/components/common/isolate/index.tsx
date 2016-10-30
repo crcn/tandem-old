@@ -57,7 +57,7 @@ export class IsolateComponent extends BaseApplicationComponent<any, any> {
   }
 
   _render() {
-    ReactDOM.render(<RootApplicationComponent bus={this.bus} dependencies={this.dependencies}>{this.props.children}</RootApplicationComponent>, this._mountElement);
+    ReactDOM.render(<RootApplicationComponent bus={this.bus} injector={this.injector}>{this.props.children}</RootApplicationComponent>, this._mountElement);
   }
 
   _addListeners() {

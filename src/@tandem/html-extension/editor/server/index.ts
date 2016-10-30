@@ -1,4 +1,4 @@
-export const createHTMLEditorServerDependencies = () => {
+export const createHTMLEditorServerProviders = () => {
   return [];
 }
 

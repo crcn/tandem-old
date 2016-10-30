@@ -1,12 +1,12 @@
 import { MimeTypeProvider } from "@tandem/common";
 import { BundlerLoaderFactoryProvider } from "@tandem/sandbox";
-import { createVueSandboxDependencies } from "@tandem/vue-extension/sandbox";
-import { createCoreVueDependencies } from "@tandem/vue-extension/core";
+import { createVueSandboxProviders } from "@tandem/vue-extension/sandbox";
+import { createCoreVueProviders } from "@tandem/vue-extension/core";
 
-export const createVueWorkerDependencies = () => {
+export const createVueWorkerProviders = () => {
   return [
-    ...createVueSandboxDependencies(),
-    ...createCoreVueDependencies()
+    ...createVueSandboxProviders(),
+    ...createCoreVueProviders()
   ];
 }
 

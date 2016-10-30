@@ -55,7 +55,7 @@ export class IOService<T> extends CoreApplicationService<T> {
     // transactions between the remote service
     const remoteBus = new SocketIOBus({ connection }, {
       execute: (action: Action) => {
-        this.logger.verbose(">>receiving %s", action.type);
+        this.logger.verbose("Receive >>%s", action.type);
 
         // attach a flag so that the action does not get dispatched again
         return this.bus.execute(Object.assign(action, { $$remote: true }));
@@ -64,14 +64,14 @@ export class IOService<T> extends CoreApplicationService<T> {
 
     this._remoteActors.push({
       execute: (action: Action) => {
-        this.logger.verbose("<<broadcast %s", action.type);
+        this.logger.verbose("Broadcast <<%s", action.type);
         return remoteBus.execute(action);
       }
     });
 
 
     connection.once("disconnect", () => {
-      this.logger.verbose("client disconnected");
+      this.logger.verbose("Client disconnected");
 
       this._remoteActors.splice(
         this._remoteActors.indexOf(remoteBus),

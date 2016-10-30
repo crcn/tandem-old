@@ -55,11 +55,11 @@ class SyntheticDocumentSerializer implements ISerializer<SyntheticDocument, ISer
       childNodes: document.childNodes.map(serialize),
     };
   }
-  deserialize(value: ISerializedSyntheticDocument, dependencies) {
+  deserialize(value: ISerializedSyntheticDocument, injector) {
     const document = new SyntheticDocument(value.defaultNamespaceURI);
-    document.styleSheets.push(...value.styleSheets.map(raw => deserialize(raw, dependencies)));
+    document.styleSheets.push(...value.styleSheets.map(raw => deserialize(raw, injector)));
     for (let i = 0, n = value.childNodes.length; i < n; i++) {
-      document.appendChild(deserialize(value.childNodes[i], dependencies));
+      document.appendChild(deserialize(value.childNodes[i], injector));
     }
     return document;
   }
@@ -72,9 +72,9 @@ class SyntheticDocumentSerializer implements ISerializer<SyntheticDocument, ISer
       actions: actions.map(serialize)
     };
   },
-  deserialize({ actions }, dependencies, ctor: { new(): SyntheticDocumentEdit }) {
+  deserialize({ actions }, injector, ctor: { new(): SyntheticDocumentEdit }) {
     const edit = new ctor();
-    edit.actions.push(...actions.map(action => deserialize(action, dependencies)));
+    edit.actions.push(...actions.map(action => deserialize(action, injector)));
     return edit;
   }
 })

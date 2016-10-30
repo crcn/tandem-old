@@ -17,7 +17,7 @@ import {
   SandboxModuleEvaluatorFactoryProvider,
 } from "@tandem/sandbox";
 
-export function createHTMLSandboxDependencies() {
+export function createHTMLSandboxProviders() {
   return [
     // bundle loaders
     new BundlerLoaderFactoryProvider(HTML_MIME_TYPE, HTMLBundleLoader),

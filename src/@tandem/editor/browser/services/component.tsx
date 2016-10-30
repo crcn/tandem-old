@@ -38,7 +38,7 @@ export class ComponentService extends CoreApplicationService<IEditorBrowserConfi
 
   render = () => {
     this._rendering = false;
-    ReactDOM.render(<RootEditorComponent bus={this.bus} dependencies={this.dependencies} />, this.config.element);
+    ReactDOM.render(<RootEditorComponent bus={this.bus} injector={this.injector} />, this.config.element);
     if (this._shouldRenderAgain) this.requestRender();
   }
 }

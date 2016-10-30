@@ -67,7 +67,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
   async [RemoveSelectionAction.REMOVE_SELECTION]() {
 
-    await FileEditorProvider.getInstance(this.app.dependencies).applyEditActions(...this.app.workspace.selection.map((selection) => {
+    await FileEditorProvider.getInstance(this.app.injector).applyEditActions(...this.app.workspace.selection.map((selection) => {
       return new RemoveEditAction(selection);
     }));
 

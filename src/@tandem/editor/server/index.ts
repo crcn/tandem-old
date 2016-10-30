@@ -1,6 +1,6 @@
 import { Injector } from "@tandem/common";
 import { IEdtorServerConfig } from "./config";
-import { createCoreApplicationDependencies, ApplicationServiceProvider } from "@tandem/core";
+import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
 
 import {
   DSService,
@@ -12,13 +12,13 @@ import {
   ResolverService,
 } from "./services";
 
-import { createCommonEditorDependencies } from "../common";
+import { createCommonEditorProviders } from "../common";
 
-export function concatEditorServerDependencies(dependencies: Injector, config: IEdtorServerConfig) {
+export function concatEditorServerProviders(injector: Injector, config: IEdtorServerConfig) {
   return new Injector(
-    dependencies,
-    createCommonEditorDependencies(),
-    createCoreApplicationDependencies(config),
+    injector,
+    createCommonEditorProviders(),
+    createCoreApplicationProviders(config),
 
     // services
     new ApplicationServiceProvider("ds", DSService),

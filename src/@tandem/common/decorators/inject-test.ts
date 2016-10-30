@@ -9,12 +9,12 @@ describe(__filename + "#", () => {
       public name: string;
     }
 
-    const dependencies = new Injector(
+    const injector = new Injector(
       new Provider<string>("name", "bob"),
       new ClassFactoryProvider("person", Person)
     );
 
-    const personDep = dependencies.query<ClassFactoryProvider>("person");
+    const personDep = injector.query<ClassFactoryProvider>("person");
     expect(personDep.create().name).to.equal("bob");
   });
 
@@ -25,12 +25,12 @@ describe(__filename + "#", () => {
       public name: string;
     }
 
-    const dependencies = new Injector(
+    const injector = new Injector(
       new Provider<string>("name", "bob"),
       new ClassFactoryProvider("person", Person)
     );
 
-    const personDep = dependencies.query<ClassFactoryProvider>("person");
+    const personDep = injector.query<ClassFactoryProvider>("person");
     expect(personDep.create().name).to.equal("BOB");
   });
 
@@ -42,12 +42,12 @@ describe(__filename + "#", () => {
 
       }
     }
-    const dependencies = new Injector(
+    const injector = new Injector(
       new Provider<string>("name", "joe"),
       new ClassFactoryProvider("person", Person)
     );
 
-    const personDep = dependencies.query<ClassFactoryProvider>("person");
+    const personDep = injector.query<ClassFactoryProvider>("person");
     expect(personDep.create().name).to.equal("joe");
   });
 });

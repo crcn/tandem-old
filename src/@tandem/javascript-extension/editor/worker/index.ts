@@ -1,3 +1,3 @@
 import { SandboxModuleEvaluatorFactoryProvider  } from "@tandem/sandbox";
-import { createJavaScriptSandboxDependencies  } from "../../index";
-export const createJavaScriptWorkerDependencies = createJavaScriptSandboxDependencies;
+import { createJavaScriptSandboxProviders  } from "../../index";
+export const createJavaScriptWorkerProviders = createJavaScriptSandboxProviders;
