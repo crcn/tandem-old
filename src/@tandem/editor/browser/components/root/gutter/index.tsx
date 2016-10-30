@@ -3,12 +3,12 @@ import * as React from "react";
 import { RegisteredComponent, SideDraggerComponent } from "@tandem/editor/browser/components/common";
 import { BaseApplicationComponent, inject, Metadata } from "@tandem/common";
 import { Store } from "@tandem/editor/browser/models";
-import { ENTITY_PANE_COMPONENT_NS, StoreDependency } from "@tandem/editor/browser/dependencies";
+import { ENTITY_PANE_COMPONENT_NS, StoreProvider } from "@tandem/editor/browser/providers";
 import { MetadataValueReference, DefaultValueReference, MinMaxValueReference } from "@tandem/common/reference";
 
 export class GutterComponent extends BaseApplicationComponent<{ position: string, maxWidth?: number, registeredComponentNs: string, hideKey: string, sizeKey: string }, any> {
 
-  @inject(StoreDependency.ID)
+  @inject(StoreProvider.ID)
   private _store: Store;
 
   render() {

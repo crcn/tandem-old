@@ -5,19 +5,19 @@ import { IApplication } from "@tandem/common/application";
 import {
   IInjectable,
   Dependencies,
-  PrivateBusDependency,
+  PrivateBusProvider,
   APPLICATION_SINGLETON_NS,
-  DependenciesDependency,
-} from "@tandem/common/dependencies";
+  DependenciesProvider,
+} from "@tandem/common/ioc";
 
 export interface ICommand extends IActor { }
 
 export abstract class BaseCommand implements ICommand, IInjectable {
 
-  @inject(PrivateBusDependency.ID)
+  @inject(PrivateBusProvider.ID)
   protected bus: IActor;
 
-  @inject(DependenciesDependency.ID)
+  @inject(DependenciesProvider.ID)
   protected dependencies: Dependencies;
 
   abstract execute(action: Action);

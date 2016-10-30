@@ -1,24 +1,24 @@
 // DEPRECATED
 export * from "./base";
 
-// import { fileModelDependency } from "../models";
+// import { fileModelProvider } from "../models";
 
 import { IActor } from "@tandem/common/actors";
 import { Logger } from "@tandem/common/logger";
 import { BrokerBus } from "@tandem/common/busses";
 import { SequenceBus } from "mesh";
 import { IApplication } from "@tandem/common/application";
-import { Dependencies } from "@tandem/common/dependencies";
+import { Dependencies } from "@tandem/common/ioc";
 import { loggable, bindable } from "@tandem/common/decorators";
 import { LoadAction, InitializeAction } from "@tandem/common/actions";
-// import {  consoleLogServiceDependency } from "../services";
+// import {  consoleLogServiceProvider } from "../services";
 
 import {
-  PrivateBusDependency,
-  DependenciesDependency,
-  ApplicationServiceDependency,
-  ApplicationSingletonDependency,
-} from "@tandem/common/dependencies";
+  PrivateBusProvider,
+  DependenciesProvider,
+  ApplicationServiceProvider,
+  ApplicationSingletonProvider,
+} from "@tandem/common/ioc";
 
 export * from "./base";
 
@@ -58,15 +58,15 @@ export class BaseApplication implements IApplication {
 
   protected registerDependencies() {
     if (!process.env.TESTING) {
-      // this.dependencies.register(consoleLogServiceDependency);
+      // this.dependencies.register(consoleLogServiceProvider);
     }
 
     // Make the application available globally through the dependencies
     // property so that this reference isn't passed around everywhere.
     this.dependencies.register(
-      new PrivateBusDependency(this.bus),
-      new DependenciesDependency(),
-      new ApplicationSingletonDependency(this)
+      new PrivateBusProvider(this.bus),
+      new DependenciesProvider(),
+      new ApplicationSingletonProvider(this)
     );
   }
 
@@ -76,7 +76,7 @@ export class BaseApplication implements IApplication {
   private _initializeServices() {
 
     // Initialize the services (action handlers) of this application.
-    this.bus.register(...ApplicationServiceDependency.findAll(this.dependencies).map(fragment => fragment.create()));
+    this.bus.register(...ApplicationServiceProvider.findAll(this.dependencies).map(fragment => fragment.create()));
   }
 
   /**

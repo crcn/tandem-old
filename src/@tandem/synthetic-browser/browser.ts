@@ -7,7 +7,6 @@ import {
   IActor,
   inject,
   bindable,
-  Injector,
   loggable,
   Logger,
   isMaster,
@@ -22,10 +21,10 @@ import {
   bindProperty,
   watchProperty,
   HTML_MIME_TYPE,
-  MimeTypeDependency,
+  MimeTypeProvider,
   PropertyChangeAction,
-  PrivateBusDependency,
-  DependenciesDependency,
+  PrivateBusProvider,
+  DependenciesProvider,
   waitForPropertyChange,
 } from "@tandem/common";
 
@@ -33,14 +32,14 @@ import {
   Bundle,
   Bundler,
   Sandbox,
-  BundlerDependency,
+  BundlerProvider,
   IBundleStrategyOptions,
 } from "@tandem/sandbox";
 
 import {
-  SyntheticDOMCasterDependency,
-  SyntheticDOMElementClassDependency,
-} from "./dependencies";
+  SyntheticDOMCasterProvider,
+  SyntheticDOMElementClassProvider,
+} from "./providers";
 
 import { WrapBus } from "mesh";
 
@@ -73,7 +72,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
 
   constructor(protected _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, readonly parent?: ISyntheticBrowser) {
     super();
-    Injector.inject(this, _dependencies);
+    _dependencies.inject(this);
 
     this._renderer = isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer();
     this._renderer.observe(new BubbleBus(this));
@@ -153,7 +152,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   }
 
   async open2(options: ISyntheticBrowserOpenOptions) {
-    const bundler = BundlerDependency.getInstance(options.bundleStrategyOptions, this._dependencies);
+    const bundler = BundlerProvider.getInstance(options.bundleStrategyOptions, this._dependencies);
     this._entry = await bundler.bundle({ filePath: options.url });
     this.logger.info("opening %s in sandbox", options.url);
     this._sandbox.open(this._entry);
@@ -170,7 +169,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   }
 
   private _registerElementClasses(document: SyntheticDocument) {
-    for (const dependency of SyntheticDOMElementClassDependency.findAll(this._dependencies)) {
+    for (const dependency of SyntheticDOMElementClassProvider.findAll(this._dependencies)) {
       document.registerElementNS(dependency.xmlns, dependency.tagName, dependency.value);
     }
   }

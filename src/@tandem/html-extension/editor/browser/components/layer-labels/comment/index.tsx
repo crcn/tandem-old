@@ -6,7 +6,7 @@ import * as AutosizeInput from "react-input-autosize";
 
 import { SelectAction } from "@tandem/editor/browser";
 import { SyntheticDOMComment } from "@tandem/synthetic-browser";
-import { LayerLabelComponentFactoryDependency } from "@tandem/editor/browser";
+import { LayerLabelComponentFactoryProvider } from "@tandem/editor/browser";
 
 export class CommentLayerLabelCoponent extends React.Component<{ node: SyntheticDOMComment, connectDragSource: Function }, any> {
 

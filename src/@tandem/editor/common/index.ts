@@ -1,9 +1,9 @@
-import { ApplicationServiceDependency } from "@tandem/core";
+import { ApplicationServiceProvider } from "@tandem/core";
 import { ConsoleLogService } from "./services";
 
 export const createCommonEditorDependencies = () => {
   return [
-    new ApplicationServiceDependency("console", ConsoleLogService)
+    new ApplicationServiceProvider("console", ConsoleLogService)
   ];
 }
 

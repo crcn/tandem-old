@@ -6,7 +6,7 @@ import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { flatten, intersection } from "lodash";
 import { SelectAction, ToggleSelectAction } from "@tandem/editor/browser/actions";
-import { LayerLabelComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { LayerLabelComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { DragSource, DropTarget, DndComponent } from "react-dnd";
 import { SyntheticDOMNode, SyntheticDOMContainer } from "@tandem/synthetic-browser";
 import {
@@ -147,12 +147,12 @@ class LayerLabelComponent extends BaseApplicationComponent<ILayerLabelProps, any
     const selection = app.workspace.selection;
     const layerName = null;// node.metadata.get(MetadataKeys.LAYER_DEPENDENCY_NAME); // || node.source.constructor.name;
 
-    const labelDependency = LayerLabelComponentFactoryDependency.find(layerName, dependencies) || LayerLabelComponentFactoryDependency.find(node.constructor.name, dependencies) || LayerLabelComponentFactoryDependency.find(node.source.constructor.name, dependencies);
+    const labelProvider = LayerLabelComponentFactoryProvider.find(layerName, dependencies) || LayerLabelComponentFactoryProvider.find(node.constructor.name, dependencies) || LayerLabelComponentFactoryProvider.find(node.source.constructor.name, dependencies);
 
     let labelSection;
 
-    if (labelDependency)  {
-      labelSection = labelDependency.create(Object.assign({}, this.props, {
+    if (labelProvider)  {
+      labelSection = labelProvider.create(Object.assign({}, this.props, {
         node: node,
         connectDragSource
       }));

@@ -17,11 +17,10 @@ import {
   IActor,
   Action,
   Logger,
-  Injector,
   loggable,
   isMaster,
   BubbleBus,
-  Dependency,
+  Provider,
   Observable,
   IInjectable,
   ISerializer,
@@ -32,24 +31,24 @@ import {
   ISourceLocation,
   SingletonThenable,
   BaseActiveRecord,
-  MimeTypeDependency,
+  MimeTypeProvider,
   ActiveRecordAction,
   DisposableCollection,
   PropertyChangeAction,
-  PrivateBusDependency,
-  DependenciesDependency,
+  PrivateBusProvider,
+  DependenciesProvider,
   ActiveRecordCollection,
-  MimeTypeAliasDependency,
+  MimeTypeAliasProvider,
 } from "@tandem/common";
 
 import {
-  BundlerDependency,
-  FileCacheDependency,
-  FileSystemDependency,
-  FileResolverDependency,
-  BundlerLoaderFactoryDependency,
-  ContentEditorFactoryDependency,
-} from "./dependencies";
+  BundlerProvider,
+  FileCacheProvider,
+  FileSystemProvider,
+  FileResolverProvider,
+  BundlerLoaderFactoryProvider,
+  ContentEditorFactoryProvider,
+} from "./providers";
 
 export interface IBundleResolveResult {
 
@@ -120,7 +119,7 @@ export interface IBundleData {
   content?: string;
   type?: string;
   updatedAt?: number;
-  resolvedDependencyInfo?: any;
+  resolvedProviderInfo?: any;
 }
 
 @loggable()
@@ -132,18 +131,18 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
 
   private _filePath: string;
   private _ready: boolean;
-  private _resolvedDependencyInfo: { [Identifier: string]: IBundleResolveResult };
+  private _resolvedProviderInfo: { [Identifier: string]: IBundleResolveResult };
   private _type: string;
   private _content: string;
   private _ast: any;
   private _loaderOptions: any;
   private _hash: string;
 
-  @inject(FileCacheDependency.ID)
+  @inject(FileCacheProvider.ID)
   private _fileCache: FileCache;
   private _watchingFileCacheItem: boolean;
 
-  @inject(FileSystemDependency.ID)
+  @inject(FileSystemProvider.ID)
   private _fileSystem: IFileSystem;
 
   private _map: RawSourceMap;
@@ -157,9 +156,9 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
 
 
   constructor(source: IBundleData, collectionName: string, private _bundler: Bundler, private _dependencies: Dependencies) {
-    super(source, collectionName, PrivateBusDependency.getInstance(_dependencies));
+    super(source, collectionName, PrivateBusProvider.getInstance(_dependencies));
 
-    this._dependencyObserver = new WrapBus(this.onDependencyAction.bind(this));
+    this._dependencyObserver = new WrapBus(this.onProviderAction.bind(this));
   }
 
   $didInject() {
@@ -245,8 +244,8 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   /**
    */
 
-  get resolvedDependencyInfo() {
-    return this._resolvedDependencyInfo;
+  get resolvedProviderInfo() {
+    return this._resolvedProviderInfo;
   }
 
   /**
@@ -262,8 +261,8 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
    * @readonly
    */
 
-  get absoluteDependencyPaths() {
-    return values(this._resolvedDependencyInfo).map((inf: IBundleResolveResult) => inf.filePath);
+  get absoluteProviderPaths() {
+    return values(this._resolvedProviderInfo).map((inf: IBundleResolveResult) => inf.filePath);
   }
 
   /**
@@ -284,7 +283,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
    */
 
   get dependencyBundles(): Bundle[] {
-    return values(this._resolvedDependencyInfo).map((inf) => {
+    return values(this._resolvedProviderInfo).map((inf) => {
       return this._bundler.eagerFindByHash(getBundleItemHash(inf));
     });
   }
@@ -323,12 +322,12 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
    * this method is called within a sandbox where everything must be loaded in.
    */
 
-  eagerGetDependencyByRelativePath(relativePath: string) {
-    return this._bundler.eagerFindByHash(this.getAbsoluteDependencyPath(relativePath));
+  eagerGetProviderByRelativePath(relativePath: string) {
+    return this._bundler.eagerFindByHash(this.getAbsoluteProviderPath(relativePath));
   }
 
-  getDependencyHash(relativePath: string) {
-    const info: IBundleResolveResult = this._resolvedDependencyInfo[relativePath];
+  getProviderHash(relativePath: string) {
+    const info: IBundleResolveResult = this._resolvedProviderInfo[relativePath];
     if (info == null) {
       this.logger.error(`Absolute path on bundle entry does not exist for ${relativePath}.`);
       return;
@@ -340,8 +339,8 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
    * Deprecated. Use hash instead.
    */
 
-  getAbsoluteDependencyPath(relativePath: string) {
-    const info: IBundleResolveResult = this._resolvedDependencyInfo[relativePath];
+  getAbsoluteProviderPath(relativePath: string) {
+    const info: IBundleResolveResult = this._resolvedProviderInfo[relativePath];
     if (info == null) {
       this.logger.error(`Absolute path on bundle entry does not exist for ${relativePath}.`);
       return;
@@ -357,18 +356,18 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
       filePath: this.filePath,
       updatedAt: this._updatedAt,
       loaderOptions: this._loaderOptions,
-      resolvedDependencyInfo: this._resolvedDependencyInfo,
+      resolvedProviderInfo: this._resolvedProviderInfo,
     };
   }
 
-  setPropertiesFromSource({ filePath, loaderOptions, type, updatedAt, content, resolvedDependencyInfo, hash }: IBundleData) {
+  setPropertiesFromSource({ filePath, loaderOptions, type, updatedAt, content, resolvedProviderInfo, hash }: IBundleData) {
     this._type      = type;
     this._filePath  = filePath;
     this._loaderOptions = loaderOptions;
     this._updatedAt = updatedAt;
     this._hash = hash;
     this._content   = content;
-    this._resolvedDependencyInfo = resolvedDependencyInfo || {};
+    this._resolvedProviderInfo = resolvedProviderInfo || {};
   }
 
   async load() {
@@ -407,15 +406,15 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
       dependencyBundle.unobserve(this._dependencyObserver);
     }
 
-    this._resolvedDependencyInfo = {};
+    this._resolvedProviderInfo = {};
     // TODO - need to differentiate imported from included dependency.
     const dependencyPaths = transformResult.dependencyPaths || [];
     await Promise.all(dependencyPaths.map(async (relativePath, i) => {
-      const dependencyInfo = await this.resolveDependencyInfo(relativePath);
+      const dependencyInfo = await this.resolveProviderInfo(relativePath);
       if (!dependencyInfo) {
         return this.logger.warn("could not resolve ", relativePath);
       }
-      this._resolvedDependencyInfo[relativePath] = dependencyInfo;
+      this._resolvedProviderInfo[relativePath] = dependencyInfo;
       this.logger.verbose("loading dependency %s -> %s", relativePath, dependencyInfo.filePath);
       const dependencyBundle = await this._bundler.bundle(dependencyInfo);
       this.logger.verbose("loaded dependency %s", relativePath);
@@ -438,7 +437,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   async getInitialSourceContent(): Promise<IBundleLoaderResult> {
     return {
       filePath: this.filePath,
-      type: MimeTypeDependency.lookup(this.filePath, this._dependencies),
+      type: MimeTypeProvider.lookup(this.filePath, this._dependencies),
       content: await (await this.getSourceFileCacheItem()).read()
     }
   }
@@ -447,7 +446,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
     return b.updatedAt > this.updatedAt;
   }
 
-  private onDependencyAction(action: Action) {
+  private onProviderAction(action: Action) {
 
     // for now, reload the entire bundle if a dependency changes. This is to ensure
     // that any changes that are embedded in this bundle get updates when they change -- this
@@ -472,7 +471,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
     this.notify(new BundleAction(BundleAction.BUNDLE_READY));
   }
 
-  private async resolveDependencyInfo(dependencyPath: string) {
+  private async resolveProviderInfo(dependencyPath: string) {
     return this._bundler.$strategy.resolve(dependencyPath, path.dirname(this.filePath));
   }
 
@@ -495,14 +494,14 @@ export class Bundler extends Observable {
   private _bundleRequests: any;
   public $strategy: IBundleStragegy;
 
-  constructor(strategy: IBundleStragegy, @inject(DependenciesDependency.ID) private _dependencies: Dependencies) {
+  constructor(strategy: IBundleStragegy, @inject(DependenciesProvider.ID) private _dependencies: Dependencies) {
     super();
     this._bundleRequests = {};
 
     // temporary - this should be passed into the constructor
-    this.$strategy = strategy || Injector.inject(new DefaultBundleStragegy(), this._dependencies);
+    this.$strategy = strategy || this._dependencies.inject(new DefaultBundleStragegy());
     this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IBundleData) => {
-      return Injector.inject(new Bundle(source, this.collectionName, this, _dependencies), this._dependencies);
+      return this._dependencies.inject(new Bundle(source, this.collectionName, this, _dependencies));
     });
     this.collection.sync();
   }

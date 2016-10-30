@@ -19,7 +19,7 @@ import {
   Dependencies,
   watchProperty,
   PropertyChangeAction,
-  DependenciesDependency,
+  DependenciesProvider,
 } from "@tandem/common";
 
 import {

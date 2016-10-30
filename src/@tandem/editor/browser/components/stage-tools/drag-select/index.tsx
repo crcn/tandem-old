@@ -5,7 +5,7 @@ import { PointerTool } from "@tandem/editor/browser/models/pointer-tool";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { SelectAction, MouseAction } from "@tandem/editor/browser/actions";
-import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 

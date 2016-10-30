@@ -20,9 +20,9 @@ import { createCoreApplicationDependencies, ServiceApplication } from "@tandem/c
 import {
     LocalFileSystem,
     LocalFileResolver,
-    BundlerDependency,
+    BundlerProvider,
     Bundler,
-    FileCacheDependency,
+    FileCacheProvider,
     FileCacheItem,
     FileCache,
 } from "@tandem/sandbox";
@@ -30,7 +30,7 @@ import {
 import { 
     SockBus,
     Dependencies,
-    PrivateBusDependency,
+    PrivateBusProvider,
     Action,
     PostDSAction,
     serialize,
@@ -70,8 +70,8 @@ class TandemClient extends Observable {
 
         this._clientApp = new ServiceApplication(deps);
 
-        this.fileCache = FileCacheDependency.getInstance(deps);
-        this.bus       = PrivateBusDependency.getInstance(deps);
+        this.fileCache = FileCacheProvider.getInstance(deps);
+        this.bus       = PrivateBusProvider.getInstance(deps);
 
         this.watchFileCache();
     }

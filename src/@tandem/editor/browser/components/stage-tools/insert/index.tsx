@@ -5,7 +5,7 @@ import { startDrag } from "@tandem/common/utils/component";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { Workspace, InsertTool } from "@tandem/editor/browser/models";
 import { SetToolAction, SelectAction } from "@tandem/editor/browser/actions";
-import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { SyntheticDOMElement, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { SelectionSizeComponent, SelectablesComponent } from "@tandem/editor/browser/components/common";
 import {

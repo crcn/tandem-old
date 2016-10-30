@@ -3,7 +3,7 @@ import { WrapBus } from "mesh";
 import { FileCache } from "./file-cache";
 import { ISyntheticObject } from "./synthetic";
 import { FileEditorAction } from "./actions";
-import { FileCacheDependency, ContentEditorFactoryDependency } from "./dependencies";
+import { FileCacheProvider, ContentEditorFactoryProvider } from "./providers";
 import {
   Action,
   inject,
@@ -19,8 +19,8 @@ import {
   getSerializeType,
   SingletonThenable,
   ISerializedContent,
-  MimeTypeDependency,
-  DependenciesDependency,
+  MimeTypeProvider,
+  DependenciesProvider,
 } from "@tandem/common";
 
 export type contentEditorType = { new(filePath: string, content: string): IEditor };
@@ -308,7 +308,7 @@ export class FileEditor extends Observable {
   private _editActions: EditAction[];
   private _shouldEditAgain: boolean;
 
-  @inject(DependenciesDependency.ID)
+  @inject(DependenciesProvider.ID)
   private _dependencies: Dependencies;
 
   constructor() {
@@ -368,16 +368,16 @@ export class FileEditor extends Observable {
       const promises = [];
 
       for (const filePath in actionsByFilePath) {
-        const contentEditorFactoryDependency = ContentEditorFactoryDependency.find(MimeTypeDependency.lookup(filePath, this._dependencies), this._dependencies);
+        const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(MimeTypeProvider.lookup(filePath, this._dependencies), this._dependencies);
 
-        if (!contentEditorFactoryDependency) {
+        if (!contentEditorFactoryProvider) {
           console.error(`No synthetic edit consumer exists for ${filePath}.`);
           continue;
         }
 
-        const fileCache     = await  FileCacheDependency.getInstance(this._dependencies).item(filePath);
+        const fileCache     = await  FileCacheProvider.getInstance(this._dependencies).item(filePath);
         const oldContent    = await fileCache.read();
-        const contentEditor = contentEditorFactoryDependency.create(filePath, oldContent);
+        const contentEditor = contentEditorFactoryProvider.create(filePath, oldContent);
 
         const actions = actionsByFilePath[filePath];
         this.logger.info("applying file edit actions %s: %s", filePath, actions.map(action => action.type).join(" "));

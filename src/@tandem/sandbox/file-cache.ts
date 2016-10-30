@@ -21,14 +21,14 @@ import {
   DSFindAllAction,
   BaseActiveRecord,
   SingletonThenable,
-  PrivateBusDependency,
-  DependenciesDependency,
+  PrivateBusProvider,
+  DependenciesProvider,
   ActiveRecordCollection,
 } from "@tandem/common";
 
 import { FileCacheAction } from "./actions";
 import { IFileSystem, IFileWatcher } from "./file-system";
-import { FileSystemDependency } from "./dependencies";
+import { FileSystemProvider } from "./providers";
 import { WrapBus } from "mesh";
 import { values } from "lodash";
 import * as fs from "fs";
@@ -190,15 +190,15 @@ export class FileCache extends Observable {
   private _synchronizer: FileCacheSynchronizer;
   readonly collection: ActiveRecordCollection<FileCacheItem, IFileCacheItemData>;
 
-  constructor(@inject(DependenciesDependency.ID) private _dependencies: Dependencies) {
+  constructor(@inject(DependenciesProvider.ID) private _dependencies: Dependencies) {
     super();
-    this._bus        = PrivateBusDependency.getInstance(_dependencies);
+    this._bus        = PrivateBusProvider.getInstance(_dependencies);
     this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IFileCacheItemData) => {
       return new FileCacheItem(source, this.collectionName, this._fileSystem, this._bus);
     });
     this.collection.load();
     this.collection.sync();
-    this._fileSystem = FileSystemDependency.getInstance(_dependencies);
+    this._fileSystem = FileSystemProvider.getInstance(_dependencies);
   }
 
   eagerFindByFilePath(filePath) {

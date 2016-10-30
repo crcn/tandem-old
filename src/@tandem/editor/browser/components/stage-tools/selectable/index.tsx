@@ -4,7 +4,7 @@ import { Workspace } from "@tandem/editor/browser/models";
 import { SelectAction } from "@tandem/editor/browser/actions";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { SelectablesComponent } from "@tandem/editor/browser/components/common";
-import { StageToolComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { StageToolComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { SyntheticHTMLElement, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
 export class SelectableStageToolComponent extends React.Component<{selection: any, zooming: boolean, allElements: SyntheticDOMElement[], bus: any, app: any, zoom: number, workspace: Workspace }, {}>  {

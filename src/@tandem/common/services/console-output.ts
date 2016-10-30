@@ -5,7 +5,7 @@ import * as sift from "sift";
 import * as chalk from "chalk";
 import { Service } from "@tandem/common/services";
 // import { LogAction } from "@tandem/common/actions";
-import { ClassFactoryDependency } from "@tandem/common/dependencies";
+import { ClassFactoryProvider } from "@tandem/common/ioc";
 
 // import {
 //   INFO as INFO_LEVEL,
@@ -50,4 +50,4 @@ import { ClassFactoryDependency } from "@tandem/common/dependencies";
 //   }
 // }
 
-// export const consoleLogServiceDependency = new ClassFactoryDependency("application/services/console", ConsoleService);
+// export const consoleLogServiceProvider = new ClassFactoryProvider("application/services/console", ConsoleService);

@@ -12,23 +12,23 @@ export * from "./css-loader";
 export * from "./css-evaluator";
 
 import {
-  BundlerLoaderFactoryDependency,
-  ContentEditorFactoryDependency,
-  SandboxModuleEvaluatorFactoryDependency,
+  BundlerLoaderFactoryProvider,
+  ContentEditorFactoryProvider,
+  SandboxModuleEvaluatorFactoryProvider,
 } from "@tandem/sandbox";
 
 export function createHTMLSandboxDependencies() {
   return [
     // bundle loaders
-    new BundlerLoaderFactoryDependency(HTML_MIME_TYPE, HTMLBundleLoader),
-    new BundlerLoaderFactoryDependency(CSS_MIME_TYPE, CSSBundleLoader),
+    new BundlerLoaderFactoryProvider(HTML_MIME_TYPE, HTMLBundleLoader),
+    new BundlerLoaderFactoryProvider(CSS_MIME_TYPE, CSSBundleLoader),
 
     // sandbox evaluators
-    new SandboxModuleEvaluatorFactoryDependency(HTML_MIME_TYPE, HTMLASTEvaluator),
-    new SandboxModuleEvaluatorFactoryDependency(CSS_MIME_TYPE, CSSASTEvaluator),
+    new SandboxModuleEvaluatorFactoryProvider(HTML_MIME_TYPE, HTMLASTEvaluator),
+    new SandboxModuleEvaluatorFactoryProvider(CSS_MIME_TYPE, CSSASTEvaluator),
 
     // edit consumers
-    new ContentEditorFactoryDependency(CSS_MIME_TYPE, CSSEditor),
-    new ContentEditorFactoryDependency(HTML_MIME_TYPE, MarkupEditor),
+    new ContentEditorFactoryProvider(CSS_MIME_TYPE, CSSEditor),
+    new ContentEditorFactoryProvider(HTML_MIME_TYPE, MarkupEditor),
   ];
 }

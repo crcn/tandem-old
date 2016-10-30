@@ -4,9 +4,9 @@ import { BaseEditorTool } from "@tandem/editor/browser/models";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { POINTER_TOOL_KEY_CODE } from "@tandem/editor/browser/constants";
 import { BaseApplicationService } from "@tandem/common/services";
-import { ApplicationServiceDependency } from "@tandem/common/dependencies";
-import { WorkspaceToolFactoryDependency } from "@tandem/editor/browser/dependencies";
-import { IInjectable, PrivateBusDependency } from "@tandem/common/dependencies";
+import { ApplicationServiceProvider } from "@tandem/common";
+import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
+import { IInjectable, PrivateBusProvider } from "@tandem/common";
 import { SelectAction, MouseAction, KeyboardAction, RemoveSelectionAction } from "@tandem/editor/browser/actions";
 
 // TODO - everything here should just be a command
@@ -15,7 +15,7 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
 
   name = "pointer";
 
-  @inject(PrivateBusDependency.ID)
+  @inject(PrivateBusProvider.ID)
   readonly bus: IActor;
 
   canvasMouseDown(action: MouseAction) {
@@ -62,4 +62,4 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
   }
 }
 
-export const pointerToolDependency = new WorkspaceToolFactoryDependency("pointer", "cursor", "display", POINTER_TOOL_KEY_CODE, PointerTool);
+export const pointerToolProvider = new WorkspaceToolFactoryProvider("pointer", "cursor", "display", POINTER_TOOL_KEY_CODE, PointerTool);

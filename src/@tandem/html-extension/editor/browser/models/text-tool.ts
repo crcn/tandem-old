@@ -7,18 +7,18 @@ import { IApplication } from "@tandem/common/application";
 import { SetToolAction } from "@tandem/editor/browser/actions";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
-import { pointerToolDependency } from "@tandem/editor/browser/models/pointer-tool";
+import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
 import { BaseApplicationService } from "@tandem/common/services";
-import { WorkspaceToolFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
 import { IWorkspaceTool, BaseEditorTool } from "@tandem/editor/browser/models";
 
 import {
-  Dependency,
+  Provider,
   Dependencies,
-  PrivateBusDependency,
-  DependenciesDependency,
-  ApplicationServiceDependency,
-} from "@tandem/common/dependencies";
+  PrivateBusProvider,
+  DependenciesProvider,
+  ApplicationServiceProvider,
+} from "@tandem/common";
 
 import {
   parseMarkup,
@@ -33,10 +33,10 @@ editor.open(new HTMLFile());
 
 export class EditInnerHTMLTool extends BaseEditorTool {
 
-  @inject(PrivateBusDependency.ID)
+  @inject(PrivateBusProvider.ID)
   readonly bus: IActor;
 
-  @inject(DependenciesDependency.ID)
+  @inject(DependenciesProvider.ID)
   readonly dependencies: Dependencies;
 
   private _disposed: boolean;
@@ -99,7 +99,7 @@ export class EditInnerHTMLTool extends BaseEditorTool {
     (<Element>this._targetEntity.section.targetNode).innerHTML = " ";
 
     // save the workspae file -- diffing time
-    // this.bus.execute(new SetToolAction(<WorkspaceToolFactoryDependency>this.dependencies.query(pointerToolDependency.id)));
+    // this.bus.execute(new SetToolAction(<WorkspaceToolFactoryProvider>this.dependencies.query(pointerToolProvider.id)));
   }
 
   public canvasMouseDown(event: MouseAction) {
@@ -112,11 +112,11 @@ class InsertTextTool extends InsertTool {
   readonly cursor: string = "text";
   readonly resizable: boolean = false;
 
-  @inject(DependenciesDependency.ID)
+  @inject(DependenciesProvider.ID)
   private _dependencies: Dependencies;
 
   get displayEntityToolFactory() {
-    return <WorkspaceToolFactoryDependency>this._dependencies.query(editInnerHTMLDependency.id);
+    return <WorkspaceToolFactoryProvider>this._dependencies.query(editInnerHTMLProvider.id);
   }
 
   createSyntheticDOMElement() {
@@ -124,5 +124,5 @@ class InsertTextTool extends InsertTool {
   }
 }
 
-export const textToolDependency = new WorkspaceToolFactoryDependency("text", "text", "display", "t", InsertTextTool);
-export const editInnerHTMLDependency = new WorkspaceToolFactoryDependency("editInnerHTML", null, null, TEXT_TOOL_KEY_CODE, EditInnerHTMLTool);
+export const textToolProvider = new WorkspaceToolFactoryProvider("text", "text", "display", "t", InsertTextTool);
+export const editInnerHTMLProvider = new WorkspaceToolFactoryProvider("editInnerHTML", null, null, TEXT_TOOL_KEY_CODE, EditInnerHTMLTool);

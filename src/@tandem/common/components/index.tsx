@@ -2,12 +2,11 @@ import * as React from "react";
 import { IActor } from "@tandem/common/actors";
 import { inject } from "@tandem/common/decorators";
 import {
-  Injector,
   Dependencies,
   IInjectable,
-  PrivateBusDependency,
-  DependenciesDependency,
-} from "@tandem/common/dependencies";
+  PrivateBusProvider,
+  DependenciesProvider,
+} from "@tandem/common/ioc";
 
 export interface IApplicationComponentContext {
   bus: IActor;
@@ -23,17 +22,17 @@ export class BaseApplicationComponent<T, U> extends React.Component<T, U> implem
 
   static contextTypes = appComponentContextTypes;
 
-  @inject(PrivateBusDependency.ID)
+  @inject(PrivateBusProvider.ID)
   protected readonly bus: IActor;
 
-  @inject(DependenciesDependency.ID)
+  @inject(DependenciesProvider.ID)
   protected readonly dependencies: Dependencies
 
   constructor(props: T, context: IApplicationComponentContext, callbacks: any) {
     super(props, context, callbacks);
 
     if (context.dependencies) {
-      Injector.inject(this, context.dependencies);
+      context.dependencies.inject(this);
     } else {
       console.error(`Failed to inject properties into `, this.constructor.name);
     }

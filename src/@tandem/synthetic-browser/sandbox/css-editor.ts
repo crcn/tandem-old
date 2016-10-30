@@ -1,6 +1,6 @@
 import * as postcss from "postcss";
 import * as postcssSassSyntax from "postcss-scss";
-import { Action, inject, Dependencies, DependenciesDependency, sourcePositionEquals } from "@tandem/common";
+import { Action, inject, Dependencies, DependenciesProvider, sourcePositionEquals } from "@tandem/common";
 import { SyntheticCSSStyleRule, SyntheticCSSStyleRuleEdit, parseCSS } from "@tandem/synthetic-browser";
 import {
   Bundle,
@@ -18,7 +18,7 @@ import {
 // to SASS
 export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
-  @inject(DependenciesDependency.ID)
+  @inject(DependenciesProvider.ID)
   private _dependencies: Dependencies;
 
   [SyntheticCSSStyleRuleEdit.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueEditActon) {

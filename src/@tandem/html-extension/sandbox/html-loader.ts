@@ -11,7 +11,7 @@ import {
   inject,
   Dependencies,
   HTML_MIME_TYPE,
-  DependenciesDependency,
+  DependenciesProvider,
 } from "@tandem/common";
 
 import {
@@ -25,7 +25,7 @@ import {
 
 export class HTMLBundleLoader extends BaseBundleLoader {
 
-  @inject(DependenciesDependency.ID)
+  @inject(DependenciesProvider.ID)
   private _dependencies: Dependencies;
 
   async load(filePath, { type, content }): Promise<IBundleLoaderResult> {

@@ -6,11 +6,11 @@ import { RegisteredComponent } from "@tandem/editor/browser/components/common";
 import { inject, BaseApplicationComponent } from "@tandem/common";
 
 import { Store } from "@tandem/editor/browser/models";
-import { StoreDependency } from "@tandem/editor/browser/dependencies";
+import { StoreProvider } from "@tandem/editor/browser/providers";
 
 export default class CenterComponent extends BaseApplicationComponent<{}, {}> {
 
-  @inject(StoreDependency.ID)
+  @inject(StoreProvider.ID)
   private _store: Store;
 
   render() {

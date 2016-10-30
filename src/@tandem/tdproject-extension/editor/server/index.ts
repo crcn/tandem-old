@@ -1,7 +1,7 @@
-import { ContentEditorFactoryDependency } from "@tandem/sandbox";
+import { ContentEditorFactoryProvider } from "@tandem/sandbox";
 import { createTDProjectCoreDependencies } from "../../core";
-import { MimeTypeDependency, MimeTypeAliasDependency } from "@tandem/common";
-import { MarkupMimeTypeXMLNSDependency, SyntheticDOMElementClassDependency } from "@tandem/synthetic-browser";
+import { MimeTypeProvider, MimeTypeAliasProvider } from "@tandem/common";
+import { MarkupMimeTypeXMLNSProvider, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
 
 export const createTDProjectEditorServerDependencies = () => {
   return [

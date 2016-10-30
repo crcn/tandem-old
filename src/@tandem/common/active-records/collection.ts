@@ -7,7 +7,7 @@ import { IBrokerBus } from "@tandem/common/busses";
 import { IDisposable } from "@tandem/common/object";
 import { IActiveRecord } from "./base";
 import { ObservableCollection } from "@tandem/common/observable";
-import { Dependencies, PrivateBusDependency, IInjectable } from "@tandem/common/dependencies";
+import { Dependencies, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import { PostDSAction, DSFindAction, DSUpdateAction, DSInsertAction } from "@tandem/common/actions";
 
 // TODO - remove global listener
@@ -30,7 +30,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
 
   setup(collectionName: string, dependencies: Dependencies, createActiveRecord: (source: U) => T, query?: Object) {
     this.collectionName = collectionName;
-    this._bus = PrivateBusDependency.getInstance(dependencies);
+    this._bus = PrivateBusProvider.getInstance(dependencies);
     this.createActiveRecord = createActiveRecord;
     this._globalActionObserver = new WrapBus(this.onGlobalAction.bind(this));
     this.query = query || {};

@@ -8,7 +8,7 @@ import {
   serialize,
   InitializeAction,
   BaseApplicationService,
-  ApplicationServiceDependency,
+  ApplicationServiceProvider,
 } from "@tandem/common";
 
 function targetIsInput(event) {

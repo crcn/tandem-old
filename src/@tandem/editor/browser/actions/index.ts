@@ -5,7 +5,7 @@ import { toArray } from "@tandem/common/utils/array";
 import { IRange, IPoint } from "@tandem/common/geom";
 import { uniq } from "lodash";
 import { Workspace, IWorkspaceTool, IHistoryItem } from "@tandem/editor/browser/models";
-import { WorkspaceToolFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
 
 export class MouseAction extends Action {
 

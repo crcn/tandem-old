@@ -1,4 +1,4 @@
-import { Injector, Dependencies } from "@tandem/common/dependencies";
+import { Dependencies } from "@tandem/common/ioc";
 
 export interface ISerializedContent<T> {
   type: string;
@@ -23,7 +23,7 @@ export function createSerializer(ctor: { new(...rest:any[]): any }): ISerializer
         return value.serialize();
       },
       deserialize(value, dependencies, ctor): ISerializable<any> {
-        const instance: ISerializable<any> = Injector.create(ctor, [], dependencies);
+        const instance: ISerializable<any> = dependencies && dependencies.create(ctor, []) || new ctor();
         instance.deserialize(value);
         return instance;
       }
@@ -46,7 +46,7 @@ const defaultSerializer: ISerializer<any, any> = {
     return value.serialize ? value.serialize() : JSON.parse(JSON.stringify(value));
   },
   deserialize(value, dependencies, ctor) {
-    const instance = Injector.create(ctor, [], dependencies);
+    const instance = dependencies && dependencies.create(ctor, []) || new ctor();
     return instance.deserialize ? instance.deserialize(value) : Object.assign(instance, value);
   }
 }

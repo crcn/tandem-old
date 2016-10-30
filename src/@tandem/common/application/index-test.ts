@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { Application } from "./index";
 import { LoadAction, InitializeAction } from "@tandem/common/actions";
 import { BaseApplicationService } from "@tandem/common/services";
-import { ApplicationSingletonDependency, ApplicationServiceDependency } from "@tandem/common/dependencies";
+import { ApplicationSingletonProvider, ApplicationServiceProvider } from "@tandem/common/ioc";
 
 describe(__filename + "#", () => {
   it("can be created", () => {
@@ -37,7 +37,7 @@ describe(__filename + "#", () => {
       initialize() { j++; }
     }
 
-    app.dependencies.register(new ApplicationServiceDependency("testService", TestService));
+    app.dependencies.register(new ApplicationServiceProvider("testService", TestService));
 
     await app.initialize();
     expect(i).to.equal(1);

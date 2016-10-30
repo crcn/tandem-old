@@ -4,7 +4,7 @@ import {
   loggable,
   Logger,
   IDisposable,
-  PrivateBusDependency,
+  PrivateBusProvider,
 } from "@tandem/common";
 
 import {
@@ -75,7 +75,7 @@ export abstract class BaseFileSystem implements IFileSystem {
 
 export class RemoteFileSystem extends BaseFileSystem {
 
-  constructor(@inject(PrivateBusDependency.ID) readonly bus: IActor) {
+  constructor(@inject(PrivateBusProvider.ID) readonly bus: IActor) {
     super();
   }
 

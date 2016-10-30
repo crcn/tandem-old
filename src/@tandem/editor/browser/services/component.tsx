@@ -4,14 +4,14 @@ import * as ReactDOM from "react-dom";
 import { WrapBus } from "mesh";
 import { Store } from "@tandem/editor/browser/models";
 import { inject, Action } from "@tandem/common";
-import { StoreDependency } from "@tandem/editor/browser/dependencies";
+import { StoreProvider } from "@tandem/editor/browser/providers";
 import { RootEditorComponent } from "@tandem/editor/browser/components";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
 
 export class ComponentService extends CoreApplicationService<IEditorBrowserConfig> {
 
-  @inject(StoreDependency.ID)
+  @inject(StoreProvider.ID)
   private _store: Store;
 
   private _rendering: boolean;

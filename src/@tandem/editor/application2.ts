@@ -1,46 +1,46 @@
 // import "reflect-metadata";
 // import { createSyntheticBrowserWorkerDependencies } from "@tandem/synthetic-browser";
-// import { Application, ApplicationServiceDependency, isMaster } from "@tandem/common";
+// import { Application, ApplicationServiceProvider, isMaster } from "@tandem/common";
 // import { 
 //   FileEditor,
 //   IFileSystem,
 //   RemoteFileSystem,
-//   BundlerDependency,
+//   BundlerProvider,
 //   RemoteFileResolver,
-//   FileCacheDependency,
-//   FileSystemDependency,
-//   FileEditorDependency,
-//   FileResolverDependency,
+//   FileCacheProvider,
+//   FileSystemProvider,
+//   FileEditorProvider,
+//   FileResolverProvider,
 //   createSandboxDependencies,
 // } from "@tandem/sandbox";
 
 // // components
-// import { rootComponentDependency } from "./components/root";
+// import { rootComponentProvider } from "./components/root";
 // import { layersPaneComponentDepency } from "./components/panes/layers";
 
 // // commponent tools
-// import { gridToolComponentDependency } from "./components/stage-tools/grid";
-// import { insertToolComponentDependency } from "./components/stage-tools/insert";
-// import { dragSelectComponentDependency } from "./components/stage-tools/drag-select";
-// import { selectorToolComponentDependency } from "./components/stage-tools/selector";
-// import { selectableToolComponentDependency } from "./components/stage-tools/selectable";
+// import { gridToolComponentProvider } from "./components/stage-tools/grid";
+// import { insertToolComponentProvider } from "./components/stage-tools/insert";
+// import { dragSelectComponentProvider } from "./components/stage-tools/drag-select";
+// import { selectorToolComponentProvider } from "./components/stage-tools/selector";
+// import { selectableToolComponentProvider } from "./components/stage-tools/selectable";
 
 // // services
-// import { workspaceDependency } from "./services/workspace";
-// import { editorServiceDependency } from "./services/editor";
-// import { backEndServiceDependency } from "./services/back-end";
-// import { selectorServiceDependency } from "./services/selector";
-// import { receiverServiceDependency } from "./services/receiver";
-// import { settingsServiceDependency } from "./services/settings";
-// import { clipboardServiceDependency } from "./services/clipboard";
-// import { keyBindingsServiceDependency } from "./services/key-binding";
-// import { rootComponentRendererDependency } from "./services/root-component-renderer";
+// import { workspaceProvider } from "./services/workspace";
+// import { editorServiceProvider } from "./services/editor";
+// import { backEndServiceProvider } from "./services/back-end";
+// import { selectorServiceProvider } from "./services/selector";
+// import { receiverServiceProvider } from "./services/receiver";
+// import { settingsServiceProvider } from "./services/settings";
+// import { clipboardServiceProvider } from "./services/clipboard";
+// import { keyBindingsServiceProvider } from "./services/key-binding";
+// import { rootComponentRendererProvider } from "./services/root-component-renderer";
 
 // // tools
-// import { pointerToolDependency } from "./models/pointer-tool";
+// import { pointerToolProvider } from "./models/pointer-tool";
 
 // // key bindings
-// import { keyBindingsDependency } from "./key-bindings";
+// import { keyBindingsProvider } from "./key-bindings";
 
 // // extensions
 // import { htmlExtensionDependencies } from "@tandem/html-extension";
@@ -77,28 +77,28 @@
 //       masterDependencies.push(
 
 //         // components
-//         rootComponentDependency,
+//         rootComponentProvider,
 //         layersPaneComponentDepency,
 
 //         // tools
-//         pointerToolDependency,
+//         pointerToolProvider,
 
 //         // services
-//         workspaceDependency,
+//         workspaceProvider,
 
 //         // dependencies
-//         keyBindingsDependency,
+//         keyBindingsProvider,
 
 //         // component tools
-//         gridToolComponentDependency,
-//         insertToolComponentDependency,
-//         dragSelectComponentDependency,
-//         selectorToolComponentDependency,
-//         selectableToolComponentDependency,
+//         gridToolComponentProvider,
+//         insertToolComponentProvider,
+//         dragSelectComponentProvider,
+//         selectorToolComponentProvider,
+//         selectableToolComponentProvider,
 
-//         clipboardServiceDependency,
-//         keyBindingsServiceDependency,
-//         rootComponentRendererDependency,
+//         clipboardServiceProvider,
+//         keyBindingsServiceProvider,
+//         rootComponentRendererProvider,
 //       );
 //     } else {
 //       workerDependencies.push(
@@ -111,11 +111,11 @@
 //       ...masterDependencies,
 //       ...workerDependencies,
 
-//       editorServiceDependency,
-//       backEndServiceDependency,
-//       selectorServiceDependency,
-//       settingsServiceDependency,
-//       receiverServiceDependency,
+//       editorServiceProvider,
+//       backEndServiceProvider,
+//       selectorServiceProvider,
+//       settingsServiceProvider,
+//       receiverServiceProvider,
 
 //       // extensions
 //       sassExtensionDependencies,

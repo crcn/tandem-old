@@ -4,7 +4,7 @@
 // import { BrokerBus, PostDsNotifierBus } from "@tandem/common/busses";
 // import { ActiveRecord, ActiveRecordCollection, insert } from "./base";
 // import { DSFindAction, DSInsertAction, DSUpdateAction, DSRemoveAction } from "@tandem/common/actions";
-// import { Dependencies, PrivateBusDependency,  } from "@tandem/common/dependencies";
+// import { Dependencies, PrivateBusProvider,  } from "@tandem/common/ioc";
 
 // describe(__filename + "#", () => {
 //   describe("ActiveRecord#", () => {
@@ -27,20 +27,20 @@
 
 //     beforeEach(() => {
 //       deps = new Dependencies(
-//         new ActiveRecordFactoryDependency("person", Person),
-//         new PrivateBusDependency(broker = new BrokerBus(ParallelBus))
+//         new ActiveRecordFactoryProvider("person", Person),
+//         new PrivateBusProvider(broker = new BrokerBus(ParallelBus))
 //       );
 
 //       broker.register(new PostDsNotifierBus(MemoryDSBus.create(), broker));
 //     });
 //     it("can be created", () => {
-//       const ar: ActiveRecord = ActiveRecordFactoryDependency.find("person", deps).create("people");
+//       const ar: ActiveRecord = ActiveRecordFactoryProvider.find("person", deps).create("people");
 //       expect(ar).to.be.an.instanceof(ActiveRecord);
 //       expect(ar.collectionName).to.equal("people");
 //       expect(ar.bus).to.equal(broker);
 //     });
 //     it("can insert a new record", async () => {
-//       const ar: ActiveRecord = ActiveRecordFactoryDependency.find("person", deps).create("people", {
+//       const ar: ActiveRecord = ActiveRecordFactoryProvider.find("person", deps).create("people", {
 //         name: "a"
 //       });
 //       await ar.insert();
@@ -49,7 +49,7 @@
 //     });
 //     it("can update an active record", async () => {
 //       await broker.execute(new DSInsertAction("people", { _id: "person1", name: "a", zip: 90210 }));
-//       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
+//       const ar: Person = <Person>ActiveRecordFactoryProvider.find("person", deps).create("people", {
 //         _id: "person1",
 //         zip: 11111
 //       });
@@ -60,7 +60,7 @@
 
 //     it("can remove an active record", async () => {
 //       await broker.execute(new DSInsertAction("people", { _id: "person1", name: "a", zip: 90210 }));
-//       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
+//       const ar: Person = <Person>ActiveRecordFactoryProvider.find("person", deps).create("people", {
 //         _id: "person1"
 //       });
 //       await ar.remove();
@@ -71,18 +71,18 @@
 
 //     it("throws an error if remove() and id does not exist", async () => {
 //       expect(() => {
-//         <Person>ActiveRecordFactoryDependency.find("person", deps).create("people").remove();
+//         <Person>ActiveRecordFactoryProvider.find("person", deps).create("people").remove();
 //       }).to.throw("Cannot query active record if it does not have an identifier.");
 //     });
 
 //     it("throws an error if update() and id does not exist", async () => {
 //       expect(() => {
-//         <Person>ActiveRecordFactoryDependency.find("person", deps).create("people").update();
+//         <Person>ActiveRecordFactoryProvider.find("person", deps).create("people").update();
 //       }).to.throw("Cannot query active record if it does not have an identifier.");
 //     });
 
 //     it("inserts a new active record if an ID is not present and save() is called", async () => {
-//       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
+//       const ar: Person = <Person>ActiveRecordFactoryProvider.find("person", deps).create("people", {
 //         name: "a"
 //       });
 //       await ar.save();
@@ -93,7 +93,7 @@
 //     });
 
 //     xit("can sync() for any future changes to the db", async () => {
-//       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
+//       const ar: Person = <Person>ActiveRecordFactoryProvider.find("person", deps).create("people", {
 //         name: "a"
 //       });
 //       await ar.save();
@@ -106,7 +106,7 @@
 //     });
 
 //     it("emits a dispose action when the active record is removed", async () => {
-//       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
+//       const ar: Person = <Person>ActiveRecordFactoryProvider.find("person", deps).create("people", {
 //         name: "a"
 //       });
 //       await ar.save();
@@ -119,7 +119,7 @@
 //     });
 
 //     xit("does not receive anymore sync actions after being disposed", async () => {
-//       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
+//       const ar: Person = <Person>ActiveRecordFactoryProvider.find("person", deps).create("people", {
 //         name: "a"
 //       });
 //       await ar.save();
@@ -132,11 +132,11 @@
 //     });
 
 //     xit("does not receive sync updates for other models", async () => {
-//       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
+//       const ar: Person = <Person>ActiveRecordFactoryProvider.find("person", deps).create("people", {
 //         name: "a"
 //       });
 
-//       const ar2: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
+//       const ar2: Person = <Person>ActiveRecordFactoryProvider.find("person", deps).create("people", {
 //         name: "a2"
 //       });
 //       await ar.save();
@@ -154,7 +154,7 @@
 //     });
 
 //     it("ignores DS_DID_UPDATE if the post ds action timestamp is equal to or older than then model update timestamp", async () => {
-//       const ar: Person = <Person>ActiveRecordFactoryDependency.find("person", deps).create("people", {
+//       const ar: Person = <Person>ActiveRecordFactoryProvider.find("person", deps).create("people", {
 //         name: "a"
 //       });
 //       const oldDeserialize = ar.deserialize.bind(ar);

@@ -2,7 +2,7 @@ import * as React from "react";
 import { SettingKeys } from "@tandem/editor/browser/constants";
 import { GutterComponent } from "../gutter";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
-import { ENTITY_PANE_COMPONENT_NS } from "@tandem/editor/browser/dependencies";
+import { ENTITY_PANE_COMPONENT_NS } from "@tandem/editor/browser/providers";
 
 export class SelectionGutterComponent extends React.Component<{}, {}> {
   render() {

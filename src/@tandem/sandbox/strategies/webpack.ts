@@ -5,10 +5,9 @@ import {
   inject,
   Logger,
   loggable,
-  Injector,
   Dependencies,
   JS_MIME_TYPE,
-  DependenciesDependency,
+  DependenciesProvider,
 } from "@tandem/common";
 
 // TODO - handle __webpack_public_path__
@@ -22,7 +21,7 @@ import {
 } from "../bundle";
 
 import { IFileResolver } from "../resolver";
-import { FileResolverDependency } from "../dependencies";
+import { FileResolverProvider } from "../providers";
 
 import * as path from "path";
 import * as sift from "sift";
@@ -179,12 +178,12 @@ class WebpackLoaderContext {
     this._dependencies = [];
   }
 
-  addDependency(filePath) {
+  addProvider(filePath) {
     this._dependencies.push(filePath);
   }
 
   dependency(filePath) {
-    return this.addDependency(filePath);
+    return this.addProvider(filePath);
   }
 
   resolve(cwd: string, relativePath: string, callback: (err, result?) => any) {
@@ -239,13 +238,13 @@ class WebpackBundleLoader implements IBundleLoader {
 
     this.logger.verbose("loaded %s", filePath);
 
-    const foundDependencyPaths = findCommonJSDependencyPaths(result.content);
+    const foundProviderPaths = findCommonJSProviderPaths(result.content);
 
     return {
       type: JS_MIME_TYPE,
       content: result.content,
       map: result.map,
-      dependencyPaths: foundDependencyPaths.concat(dependencyPaths)
+      dependencyPaths: foundProviderPaths.concat(dependencyPaths)
     };
   }
 }
@@ -284,7 +283,7 @@ function parserLoaderOptions(moduleInfo: string, hasFile: boolean = false): IWeb
   return options;
 }
 
-function findCommonJSDependencyPaths(source) {
+function findCommonJSProviderPaths(source) {
   return (
     source.replace(/\/\*[\s\S]+\*\//g, "")
     .replace(/\/\/.*?/g, "")
@@ -303,10 +302,10 @@ export class WebpackBundleStrategy implements IBundleStragegy {
 
   protected readonly logger: Logger;
 
-  @inject(DependenciesDependency.ID)
+  @inject(DependenciesProvider.ID)
   private _dependencies: Dependencies;
 
-  @inject(FileResolverDependency.ID)
+  @inject(FileResolverProvider.ID)
   private _resolver: IFileResolver;
 
   readonly config: IWebpackConfig;
@@ -336,7 +335,7 @@ export class WebpackBundleStrategy implements IBundleStragegy {
    */
 
   getLoader(options: IWebpackLoaderOptions): IBundleLoader {
-    return Injector.inject(new WebpackBundleLoader(this, options), this._dependencies);
+    return this._dependencies.inject(new WebpackBundleLoader(this, options));
   }
 
   async resolve(moduleInfo: string, cwd: string): Promise<IBundleResolveResult> {

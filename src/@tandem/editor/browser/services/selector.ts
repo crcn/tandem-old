@@ -2,13 +2,13 @@
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
-import { RemoveEditAction, FileEditorDependency } from "@tandem/sandbox";
+import { RemoveEditAction, FileEditorProvider } from "@tandem/sandbox";
 import {
   loggable,
   bindable,
   flattenTree,
   BaseApplicationService,
-  ApplicationServiceDependency,
+  ApplicationServiceProvider,
 } from "@tandem/common";
 
 import {
@@ -67,7 +67,7 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
 
   async [RemoveSelectionAction.REMOVE_SELECTION]() {
 
-    await FileEditorDependency.getInstance(this.app.dependencies).applyEditActions(...this.app.workspace.selection.map((selection) => {
+    await FileEditorProvider.getInstance(this.app.dependencies).applyEditActions(...this.app.workspace.selection.map((selection) => {
       return new RemoveEditAction(selection);
     }));
 
@@ -126,4 +126,4 @@ export default class SelectorService extends BaseApplicationService<FrontEndAppl
   }
 }
 
-export const selectorServiceDependency = new ApplicationServiceDependency("selector", SelectorService);
+export const selectorServiceProvider = new ApplicationServiceProvider("selector", SelectorService);

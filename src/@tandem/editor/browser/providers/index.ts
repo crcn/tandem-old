@@ -3,50 +3,50 @@ import { IActor } from "@tandem/common/actors";
 import { Store } from "@tandem/editor/browser/models";
 import { IApplication } from "@tandem/common/application";
 import { IWorkspaceTool } from "@tandem/editor/browser/models";
-import { ReactComponentFactoryDependency } from "./base";
+import { ReactComponentFactoryProvider } from "./base";
 import {
   Metadata,
   IFactory,
-  IDependency,
-  Dependency,
+  IProvider,
+  Provider,
   Dependencies,
-  ClassFactoryDependency,
-  createSingletonDependencyClass,
+  ClassFactoryProvider,
+  createSingletonProviderClass,
 } from "@tandem/common";
 
 export const GLOBAL_KEY_BINDINGS_NS = "globalKeyBindings";
-export class GlobalKeyBindingDependency extends ClassFactoryDependency {
+export class GlobalKeyBindingProvider extends ClassFactoryProvider {
   readonly keys: string[];
   constructor(keys: string|string[], readonly commandClass: { new(...rest: any[]): IActor }) {
     super(`${GLOBAL_KEY_BINDINGS_NS}/${keys}`, commandClass);
     this.keys = Array.isArray(keys) ? keys : [keys];
   }
   clone() {
-    return new GlobalKeyBindingDependency(this.keys, this.commandClass);
+    return new GlobalKeyBindingProvider(this.keys, this.commandClass);
   }
   static findAll(dependencies: Dependencies) {
-    return dependencies.queryAll<GlobalKeyBindingDependency>(`${GLOBAL_KEY_BINDINGS_NS}/**`);
+    return dependencies.queryAll<GlobalKeyBindingProvider>(`${GLOBAL_KEY_BINDINGS_NS}/**`);
   }
 }
 
 export const ENTITY_PREVIEW_COMPONENT_NS = "components/preview";
-export class EntityPreviewDependency extends ReactComponentFactoryDependency {
+export class EntityPreviewProvider extends ReactComponentFactoryProvider {
   constructor(componentClass: React.ComponentClass<any>) {
     super(ENTITY_PREVIEW_COMPONENT_NS, componentClass);
   }
   static find(dependencies: Dependencies) {
-    return dependencies.query<EntityPreviewDependency>(ENTITY_PREVIEW_COMPONENT_NS);
+    return dependencies.query<EntityPreviewProvider>(ENTITY_PREVIEW_COMPONENT_NS);
   }
 }
 
 export const EDITOR_TOOL_NS = "editorTool";
-export class WorkspaceToolFactoryDependency extends ClassFactoryDependency {
+export class WorkspaceToolFactoryProvider extends ClassFactoryProvider {
   constructor(readonly name: string, readonly icon: string, readonly editorType: string, readonly keyCommand: string, readonly clazz: { new(editor: any): IWorkspaceTool }) {
     super([EDITOR_TOOL_NS, editorType, name].join("/"), clazz);
   }
 
   clone() {
-    return new WorkspaceToolFactoryDependency(this.name, this.icon, this.editorType, this.keyCommand, this.clazz);
+    return new WorkspaceToolFactoryProvider(this.name, this.icon, this.editorType, this.keyCommand, this.clazz);
   }
 
   create(editor: any): IWorkspaceTool {
@@ -54,38 +54,38 @@ export class WorkspaceToolFactoryDependency extends ClassFactoryDependency {
   }
 
   static findAll(editorType: string, dependencies: Dependencies) {
-    return dependencies.queryAll<WorkspaceToolFactoryDependency>([EDITOR_TOOL_NS, editorType, "**"].join("/"));
+    return dependencies.queryAll<WorkspaceToolFactoryProvider>([EDITOR_TOOL_NS, editorType, "**"].join("/"));
   }
 
   static find(id: string, editorType: string, dependencies: Dependencies) {
-    return dependencies.query<WorkspaceToolFactoryDependency>([EDITOR_TOOL_NS, editorType, id].join("/"));
+    return dependencies.query<WorkspaceToolFactoryProvider>([EDITOR_TOOL_NS, editorType, id].join("/"));
   }
 }
 
 export const ENTITY_PANE_COMPONENT_NS = "components/panes/entity";
-export class EntityPaneComponentFactoryDependency extends ReactComponentFactoryDependency {
+export class EntityPaneComponentFactoryProvider extends ReactComponentFactoryProvider {
   constructor(readonly name: string, readonly componentClass: React.ComponentClass<any>) {
     super([ENTITY_PANE_COMPONENT_NS, name].join("/"), componentClass);
   }
   clone() {
-    return new EntityPaneComponentFactoryDependency(this.name, this.componentClass);
+    return new EntityPaneComponentFactoryProvider(this.name, this.componentClass);
   }
 }
 
 export const DOCUMENT_PANE_COMPONENT_NS = "components/panes/document";
-export class DocumentPaneComponentFactoryDependency extends ReactComponentFactoryDependency {
+export class DocumentPaneComponentFactoryProvider extends ReactComponentFactoryProvider {
   constructor(readonly name: string, readonly componentClass: React.ComponentClass<any>) {
     super([DOCUMENT_PANE_COMPONENT_NS, name].join("/"), componentClass);
   }
   clone() {
-    return new DocumentPaneComponentFactoryDependency(this.name, this.componentClass);
+    return new DocumentPaneComponentFactoryProvider(this.name, this.componentClass);
   }
 }
 
-export class StageToolComponentFactoryDependency extends ReactComponentFactoryDependency {
+export class StageToolComponentFactoryProvider extends ReactComponentFactoryProvider {
   static readonly NS_PREFIX = "components/tools";
   constructor(readonly name: string, readonly toolType: string, readonly componentClass: React.ComponentClass<any>) {
-    super(StageToolComponentFactoryDependency.getNamespace(name, toolType), componentClass);
+    super(StageToolComponentFactoryProvider.getNamespace(name, toolType), componentClass);
   }
 
   static getNamespace(name: string, toolType: string) {
@@ -93,59 +93,59 @@ export class StageToolComponentFactoryDependency extends ReactComponentFactoryDe
   }
 
   clone() {
-    return new StageToolComponentFactoryDependency(this.name, this.toolType, this.componentClass);
+    return new StageToolComponentFactoryProvider(this.name, this.toolType, this.componentClass);
   }
 }
 export const LAYER_LABEL_COMPONENT = "layerLabelComponent";
-export class LayerLabelComponentFactoryDependency extends ReactComponentFactoryDependency {
+export class LayerLabelComponentFactoryProvider extends ReactComponentFactoryProvider {
   constructor(readonly displayType: string, readonly componentClass: React.ComponentClass<any>, readonly childrenProperty: string = "children") {
     super([LAYER_LABEL_COMPONENT, displayType].join("/"), componentClass);
   }
   static find(displayType: string, dependencies: Dependencies) {
-    return dependencies.query<LayerLabelComponentFactoryDependency>([LAYER_LABEL_COMPONENT, displayType].join("/"));
+    return dependencies.query<LayerLabelComponentFactoryProvider>([LAYER_LABEL_COMPONENT, displayType].join("/"));
   }
   clone() {
-    return new LayerLabelComponentFactoryDependency(this.displayType, this.componentClass);
+    return new LayerLabelComponentFactoryProvider(this.displayType, this.componentClass);
   }
 }
 
 /**
  */
 
-export class TokenComponentFactoryDependency extends ReactComponentFactoryDependency {
+export class TokenComponentFactoryProvider extends ReactComponentFactoryProvider {
   static readonly TOKEN_COMPONENT_FACTORIES_NS = "tokenComponentFactories";
   constructor(readonly tokenType: string, readonly componentClass: React.ComponentClass<any>) {
-    super(TokenComponentFactoryDependency.getNamespace(tokenType), componentClass);
+    super(TokenComponentFactoryProvider.getNamespace(tokenType), componentClass);
   }
 
   static getNamespace(tokenType: string) {
-    return [TokenComponentFactoryDependency.TOKEN_COMPONENT_FACTORIES_NS, tokenType].join("/");
+    return [TokenComponentFactoryProvider.TOKEN_COMPONENT_FACTORIES_NS, tokenType].join("/");
   }
 
   static find(tokenType: string, dependencies: Dependencies) {
-    return dependencies.query<TokenComponentFactoryDependency>(this.getNamespace(tokenType));
+    return dependencies.query<TokenComponentFactoryProvider>(this.getNamespace(tokenType));
   }
   clone() {
-    return new TokenComponentFactoryDependency(this.tokenType, this.componentClass);
+    return new TokenComponentFactoryProvider(this.tokenType, this.componentClass);
   }
 }
 
-export class FooterComponentFactoryDependency extends ReactComponentFactoryDependency {
+export class FooterComponentFactoryProvider extends ReactComponentFactoryProvider {
   static readonly NS_PREFIX = "footerComponentFactories";
   constructor(readonly name: string, readonly componentClass: React.ComponentClass<any>) {
-    super(FooterComponentFactoryDependency.getNamespace(name), componentClass);
+    super(FooterComponentFactoryProvider.getNamespace(name), componentClass);
   }
   static getNamespace(name: string) {
-    return [FooterComponentFactoryDependency.NS_PREFIX, name].join("/");
+    return [FooterComponentFactoryProvider.NS_PREFIX, name].join("/");
   }
   static find(name: string, dependencies: Dependencies) {
-    return dependencies.query<FooterComponentFactoryDependency>(this.getNamespace(name));
+    return dependencies.query<FooterComponentFactoryProvider>(this.getNamespace(name));
   }
   clone() {
-    return new FooterComponentFactoryDependency(this.name, this.componentClass);
+    return new FooterComponentFactoryProvider(this.name, this.componentClass);
   }
 }
 
-export const StoreDependency = createSingletonDependencyClass<Store>("store");
+export const StoreProvider = createSingletonProviderClass<Store>("store");
 
 export * from "./base";

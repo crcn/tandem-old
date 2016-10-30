@@ -6,84 +6,7 @@ export interface IInjectable {
   $didInject?(): void;
 }
 
-/**
- * injects properties
- */
-
-export class Injector {
-
-  /**
-   * Injects dependencies into the target injectable
-   */
-
-  static getPropertyValues(target: any, dependencies: Dependencies) {
-    const __inject = Reflect.getMetadata("injectProperties", target);
-
-    if (target.$$injected) {
-      // console.error(`Ignoring additional dependency injection on ${target.constructor.name}.`);
-      return;
-    }
-
-    // may bust of the object is sealed
-
-    if (!Object.isSealed(target)) target.$$injected = true;
-
-    const properties = {};
-
-    if (__inject) {
-      for (let property in __inject) {
-        const [ns, map] = __inject[property];
-        let value;
-
-        if (/\*\*$/.test(ns)) {
-          value = dependencies.queryAll<Dependency<any>>(ns).map(map);
-        } else {
-          value = dependencies.query<Dependency<any>>(ns);
-          value = value ? map(value) : undefined;
-        }
-
-        if (value != null) {
-          properties[property] = value;
-        }
-
-        if (!process.env.TESTING && (value == null || value.length === 0)) {
-          console.warn(`Cannot inject ${ns} into ${target.name || target.constructor.name}.${property} property.`);
-        }
-      }
-    }
-
-    return properties;
-  }
-
-  static inject(target: any, dependencies: Dependencies) {
-    const values = this.getPropertyValues(target, dependencies);
-    for (const property in values) {
-      target[property] = values[property];
-    }
-
-    if (target.$didInject) {
-      target.$didInject();
-    }
-
-    return target;
-  }
-
-  /**
-   */
-
-  static create<T>(clazz: { new(...rest): T }, parameters: any[], dependencies: Dependencies) {
-    const values = this.getPropertyValues(clazz, dependencies);
-    for (const property in values) {
-      if (parameters[property] == null) {
-        parameters[property] = values[property];
-      }
-    }
-
-    return this.inject(new clazz(...parameters), dependencies);
-  }
-}
-
-export interface IDependency extends ICloneable {
+export interface IProvider extends ICloneable {
 
   /**
    */
@@ -113,10 +36,10 @@ export interface IDependency extends ICloneable {
    * is added to any other collection
    */
 
-  clone(): IDependency;
+  clone(): IProvider;
 }
 
-export class Dependency<T> implements IDependency {
+export class Provider<T> implements IProvider {
   public owner: Dependencies;
   constructor(readonly id: string, public value: T, readonly overridable: boolean = true) { }
 
@@ -124,7 +47,7 @@ export class Dependency<T> implements IDependency {
    * Clones the dependency - works with base classes.
    */
 
-  clone(): Dependency<T> {
+  clone(): Provider<T> {
     const constructor = this.constructor;
     const clone = new (<any>constructor)(this.id, this.value);
 
@@ -146,31 +69,31 @@ export interface IFactory {
 }
 
 /**
- * Factory Dependency for creating new instances of things
+ * Factory Provider for creating new instances of things
  */
 
-export class FactoryDependency extends Dependency<IFactory> implements IFactory {
+export class FactoryProvider extends Provider<IFactory> implements IFactory {
   create(...rest: any[]): any {
-    return Injector.inject(this.value.create(...rest), this.owner);
+    return this.owner.inject(this.value.create(...rest));
   }
 }
 
 /**
- * factory Dependency for classes
+ * factory Provider for classes
  */
 
 
-export class ClassFactoryDependency extends Dependency<{ new(...rest): any}> implements IFactory {
+export class ClassFactoryProvider extends Provider<{ new(...rest): any}> implements IFactory {
   constructor(id: string, readonly clazz: { new(...rest): any }) {
     super(id, clazz);
     assert(clazz, `Class must be defined for ${id}.`);
   }
   create(...rest: any[]) {
-    return Injector.create(this.clazz, rest, this.owner);
+    return this.owner.create(this.clazz, rest);
   }
 }
 
-export type registerableDependencyType = Array<IDependency|Dependencies|any[]>;
+export type registerableProviderType = Array<IProvider|Dependencies|any[]>;
 
 /**
  * Contains a collection of Dependencies
@@ -180,7 +103,7 @@ export class Dependencies implements ICloneable {
 
   private _dependenciesByNs: any = {};
 
-  constructor(...items: registerableDependencyType) {
+  constructor(...items: registerableProviderType) {
     this.register(...items);
   }
 
@@ -192,11 +115,11 @@ export class Dependencies implements ICloneable {
   }
 
   /**
-   * Queries for one Dependency with the given namespace
+   * Queries for one Provider with the given namespace
    * @param {string} ns namespace to query.
    */
 
-  query<T extends IDependency>(ns: string) {
+  query<T extends IProvider>(ns: string) {
     return this.queryAll<T>(ns)[0];
   }
 
@@ -204,14 +127,14 @@ export class Dependencies implements ICloneable {
    * queries for all Dependencies with the given namespace
    */
 
-  queryAll<T extends IDependency>(ns: string) {
+  queryAll<T extends IProvider>(ns: string) {
     return <T[]>(this._dependenciesByNs[ns] || []);
   }
 
   /**
    */
 
-  link(dependency: IDependency) {
+  link(dependency: IProvider) {
     dependency.owner = this;
     return dependency;
   }
@@ -226,9 +149,40 @@ export class Dependencies implements ICloneable {
   /**
    */
 
-  register(...dependencies: registerableDependencyType): Dependencies {
+  inject<T>(instance: T & IInjectable) {
+    const values = this.getPropertyValues(instance);
+    for (const property in values) {
+      instance[property] = values[property];
+    }
 
-    const flattenedDependencies: Array<IDependency> = flattenDeep(dependencies);
+    if (instance.$didInject) {
+      instance.$didInject();
+    }
+
+    return instance;
+  }
+
+  /**
+   */
+
+  create(clazz: { new(...rest: any[]): any }, parameters: any[]) {
+
+    const values = this.getPropertyValues(clazz);
+    for (const property in values) {
+      if (parameters[property] == null) {
+        parameters[property] = values[property];
+      }
+    }
+
+    return this.inject(new clazz(...parameters));
+  }
+
+  /**
+   */
+
+  register(...dependencies: registerableProviderType): Dependencies {
+
+    const flattenedDependencies: Array<IProvider> = flattenDeep(dependencies);
 
     for (let dependency of flattenedDependencies) {
 
@@ -243,12 +197,12 @@ export class Dependencies implements ICloneable {
       // such as dependency injection.
       dependency = dependency.clone();
 
-      let existing: Array<IDependency>;
+      let existing: Array<IProvider>;
 
-      // check if the Dependency already exists to ensure that there are no collisions
+      // check if the Provider already exists to ensure that there are no collisions
       if (existing = this._dependenciesByNs[dependency.id]) {
         if (!existing[0].overridable) {
-          throw new Error(`Dependency with namespace "${dependency.id}" already exists.`);
+          throw new Error(`Provider with namespace "${dependency.id}" already exists.`);
         }
       }
 
@@ -260,7 +214,7 @@ export class Dependencies implements ICloneable {
       // entities/text, entitiesControllers/div, components/item
       this._dependenciesByNs[dependency.id] = [dependency];
 
-      // store the Dependency in a spot where it can be queried with globs (**).
+      // store the Provider in a spot where it can be queried with globs (**).
       // This is much faster than parsing this stuff on the fly when calling query()
       const nsParts = dependency.id.split("/");
       for (let i = 0, n = nsParts.length; i < n; i++) {
@@ -275,5 +229,44 @@ export class Dependencies implements ICloneable {
     }
 
     return this;
+  }
+
+  private getPropertyValues(target: any) {
+    const __inject = Reflect.getMetadata("injectProperties", target);
+
+    if (target.$$injected) {
+      // console.error(`Ignoring additional dependency injection on ${target.constructor.name}.`);
+      return;
+    }
+
+    // may bust of the object is sealed
+
+    if (!Object.isSealed(target)) target.$$injected = true;
+
+    const properties = {};
+
+    if (__inject) {
+      for (let property in __inject) {
+        const [ns, map] = __inject[property];
+        let value;
+
+        if (/\*\*$/.test(ns)) {
+          value = this.queryAll<Provider<any>>(ns).map(map);
+        } else {
+          value = this.query<Provider<any>>(ns);
+          value = value ? map(value) : undefined;
+        }
+
+        if (value != null) {
+          properties[property] = value;
+        }
+
+        if (!process.env.TESTING && (value == null || value.length === 0)) {
+          console.warn(`Cannot inject ${ns} into ${target.name || target.constructor.name}.${property} property.`);
+        }
+      }
+    }
+
+    return properties;
   }
 }

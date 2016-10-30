@@ -2,7 +2,7 @@ import * as readline from "readline";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 import { InitializeAction, Action } from "@tandem/common";
-import { StdinHandlerDependency } from "@tandem/editor/server/dependencies";
+import { StdinHandlerProvider } from "@tandem/editor/server/providers";
 
 /**
  * console input command handler
@@ -25,7 +25,7 @@ export class StdinService extends CoreApplicationService<IEdtorServerConfig> {
   }
 
   private onInput = async (text) => {
-    const inputHandler = StdinHandlerDependency.findByInput(text, this.dependencies);
+    const inputHandler = StdinHandlerProvider.findByInput(text, this.dependencies);
 
     try {
       if (inputHandler) {

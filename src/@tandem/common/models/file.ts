@@ -1,10 +1,10 @@
 import { IActor } from "@tandem/common/actors";
 import {
   Dependencies,
-  PrivateBusDependency,
-  MimeTypeDependency,
-  DependenciesDependency,
-} from "@tandem/common/dependencies";
+  PrivateBusProvider,
+  MimeTypeProvider,
+  DependenciesProvider,
+} from "@tandem/common/ioc";
 import { IDisposable } from "@tandem/common/object";
 
 import { bindable, inject } from "@tandem/common/decorators";
@@ -26,10 +26,10 @@ export class File extends Observable {
 
   private _watcher: IDisposable;
 
-  @inject(DependenciesDependency.ID)
+  @inject(DependenciesProvider.ID)
   protected _dependencies: Dependencies;
 
-  @inject(PrivateBusDependency.ID)
+  @inject(PrivateBusProvider.ID)
   protected _bus: IActor;
 
   constructor() {
@@ -50,9 +50,9 @@ export class File extends Observable {
   }
 
   // static async open(path: string, dependencies: Dependencies, mimeType?: string): Promise<File> {
-  //   const bus = PrivateBusDependency.getInstance(dependencies);
+  //   const bus = PrivateBusProvider.getInstance(dependencies);
   //   const data = await ReadFileAction.execute(path, bus);
-  //   const fileFactory = FileFactoryDependency.find(mimeType || MimeTypeDependency.lookup(path, dependencies), dependencies) || FileFactoryDependency.find("file", dependencies);
+  //   const fileFactory = FileFactoryProvider.find(mimeType || MimeTypeProvider.lookup(path, dependencies), dependencies) || FileFactoryProvider.find("file", dependencies);
   //   return fileFactory.create(data);
   // }
 
@@ -69,4 +69,4 @@ export class File extends Observable {
   // }
 }
 
-// export const fileModelDependency = new FileFactoryDependency("file", File);
+// export const fileModelProvider = new FileFactoryProvider("file", File);

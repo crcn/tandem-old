@@ -7,11 +7,11 @@ import {
   IBrokerBus,
   IInjectable,
   Dependencies,
-  PrivateBusDependency,
-  DependenciesDependency,
+  PrivateBusProvider,
+  DependenciesProvider,
 } from "@tandem/common";
 
-import { ApplicationConfigurationDependency } from "./dependencies";
+import { ApplicationConfigurationProvider } from "./providers";
 
 /**
  * Application services create the combined functionality of the
@@ -22,10 +22,10 @@ export abstract class BaseApplicationService2 implements IActor, IInjectable {
 
   protected readonly logger: Logger;
 
-  @inject(PrivateBusDependency.ID)
+  @inject(PrivateBusProvider.ID)
   protected bus: IBrokerBus;
 
-  @inject(DependenciesDependency.ID)
+  @inject(DependenciesProvider.ID)
   protected dependencies: Dependencies;
 
   execute(action: Action) {
@@ -48,6 +48,6 @@ export abstract class BaseApplicationService2 implements IActor, IInjectable {
  */
 
 export abstract class CoreApplicationService<T> extends BaseApplicationService2 {
-  @inject(ApplicationConfigurationDependency.ID)
+  @inject(ApplicationConfigurationProvider.ID)
   protected config: T;
 }

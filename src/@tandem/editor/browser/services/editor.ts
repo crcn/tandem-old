@@ -7,16 +7,16 @@ import { LoadAction } from "@tandem/common/actions";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { BaseApplicationService } from "@tandem/common/services";
 import { ZoomAction, SetToolAction } from "@tandem/editor/browser/actions";
-import { ApplicationServiceDependency, Dependencies, DependenciesDependency } from "@tandem/common/dependencies";
-import { WorkspaceToolFactoryDependency, EDITOR_TOOL_NS, GlobalKeyBindingDependency } from "@tandem/editor/browser/dependencies";
+import { ApplicationServiceProvider, Dependencies, DependenciesProvider } from "@tandem/common";
+import { WorkspaceToolFactoryProvider, EDITOR_TOOL_NS, GlobalKeyBindingProvider } from "@tandem/editor/browser/providers";
 
 export class EditorService extends BaseApplicationService<FrontEndApplication> {
 
-  @inject(DependenciesDependency.ID)
+  @inject(DependenciesProvider.ID)
   readonly dependencies: Dependencies;
 
   private _toolProxyBus: ProxyBus;
 
 }
 
-export const editorServiceDependency = new ApplicationServiceDependency("editor", EditorService);
+export const editorServiceProvider = new ApplicationServiceProvider("editor", EditorService);

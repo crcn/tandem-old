@@ -2,8 +2,8 @@ import * as React from "react";
 import Token from "../models/token";
 import Line from "../models/line";
 import TextEditor from "../models/text-editor";
-import { Dependencies } from "@tandem/common/dependencies";
-import { TokenComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { Dependencies } from "@tandem/common";
+import { TokenComponentFactoryProvider } from "@tandem/editor/browser/providers";
 
 class TokenComponent extends React.Component<{ token: Token, editor: TextEditor, line: Line, dependencies: Dependencies }, any> {
 
@@ -13,7 +13,7 @@ class TokenComponent extends React.Component<{ token: Token, editor: TextEditor,
 
     const props: any = {};
 
-    const tokenFactory = TokenComponentFactoryDependency.find(token.type, dependencies);
+    const tokenFactory = TokenComponentFactoryProvider.find(token.type, dependencies);
 
     if (tokenFactory) {
       props.children = tokenFactory.create(this.props);

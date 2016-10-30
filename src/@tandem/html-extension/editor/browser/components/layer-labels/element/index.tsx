@@ -8,7 +8,7 @@ import { MetadataKeys } from "@tandem/editor/browser";
 import { SelectAction } from "@tandem/editor/browser";
 import * as AutosizeInput from "react-input-autosize";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
-import { LayerLabelComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { LayerLabelComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { SyntheticDOMElement, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 
 const VOID_ELEMENTS = [];
@@ -170,4 +170,4 @@ export class ElementLayerLabelComponent extends React.Component<{ node: Syntheti
 
 export default ElementLayerLabelComponent;
 
-export const elementLayerLabelComponentDependency = new LayerLabelComponentFactoryDependency("element", ElementLayerLabelComponent, "childNodes");
+export const elementLayerLabelComponentProvider = new LayerLabelComponentFactoryProvider("element", ElementLayerLabelComponent, "childNodes");

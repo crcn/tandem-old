@@ -1,14 +1,13 @@
 import { WrapBus } from "mesh";
 import { BundleAction } from "./actions";
 import { Bundle, Bundler } from "./bundle";
-import { SandboxModuleEvaluatorFactoryDependency, BundlerDependency } from "./dependencies";
+import { SandboxModuleEvaluatorFactoryProvider, BundlerProvider } from "./providers";
 import {
   IActor,
   Action,
   inject,
   loggable,
   Logger,
-  Injector,
   Observable,
   IObservable,
   Dependencies,
@@ -52,7 +51,7 @@ export class Sandbox extends Observable {
 
   constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}) {
     super();
-    Injector.inject(this, _dependencies);
+    this._dependencies.inject(this);
     this._entryObserver = new WrapBus(this.onEntryAction.bind(this));
     this._modules = {};
   }
@@ -113,7 +112,7 @@ export class Sandbox extends Observable {
     const now = Date.now();
 
     // TODO - cache evaluator here
-    const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryDependency.find(bundle.type, this._dependencies);
+    const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryProvider.find(bundle.type, this._dependencies);
 
     if (!evaluatorFactoryDepedency) {
       throw new Error(`Cannot evaluate ${bundle.filePath}:${bundle.type} in sandbox.`);

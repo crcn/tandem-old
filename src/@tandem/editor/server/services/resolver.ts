@@ -2,12 +2,12 @@ import { IActor } from "@tandem/common/actors";
 import { inject } from "@tandem/common";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
-import { IFileResolver, ResolveFileAction, FileResolverDependency } from "@tandem/sandbox";
+import { IFileResolver, ResolveFileAction, FileResolverProvider } from "@tandem/sandbox";
 
 // TODO - move this to @tandem/sandbox
 export class ResolverService extends CoreApplicationService<IEdtorServerConfig> {
 
-  @inject(FileResolverDependency.ID)
+  @inject(FileResolverProvider.ID)
   private _resolver: IFileResolver;
 
   /**

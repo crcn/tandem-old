@@ -5,10 +5,10 @@ import FooterComponent from "./footer";
 import CanvasComponent from "./canvas";
 import PreviewComponent from "./canvas/preview";
 import { Workspace } from "@tandem/editor/browser/models";
-import { Dependencies } from "@tandem/common/dependencies";
+import { Dependencies } from "@tandem/common";
 import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
-import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 
 export default class StageComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {

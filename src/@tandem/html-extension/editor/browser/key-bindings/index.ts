@@ -3,17 +3,17 @@ import { Action } from "@tandem/common/actions";
 import { InsertTool } from "@tandem/editor/browser/models/insert-tool";
 import { BaseCommand } from "@tandem/common/commands";
 import { SetToolAction } from "@tandem/editor/browser/actions";
-import { textToolDependency } from "../models";
+import { textToolProvider } from "../models";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
-import { pointerToolDependency } from "@tandem/editor/browser/models/pointer-tool";
+import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
 import { parseMarkup, evaluateMarkup, SyntheticDOMElement } from "@tandem/synthetic-browser";
-import { ClassFactoryDependency, DependenciesDependency, Dependencies } from "@tandem/common/dependencies";
-import { WorkspaceToolFactoryDependency, GlobalKeyBindingDependency } from "@tandem/editor/browser/dependencies";
+import { ClassFactoryProvider, DependenciesProvider, Dependencies } from "@tandem/common";
+import { WorkspaceToolFactoryProvider, GlobalKeyBindingProvider } from "@tandem/editor/browser/providers";
 
 abstract class BaseInsertElementTool extends InsertTool {
 
-  @inject(DependenciesDependency.ID)
+  @inject(DependenciesProvider.ID)
   private _dependencies: Dependencies;
 
   constructor(readonly options: any, editor: any) {
@@ -22,7 +22,7 @@ abstract class BaseInsertElementTool extends InsertTool {
   }
 
   get displayEntityToolFactory() {
-    return this._dependencies.query<WorkspaceToolFactoryDependency>(pointerToolDependency.id);
+    return this._dependencies.query<WorkspaceToolFactoryProvider>(pointerToolProvider.id);
   }
 
   createSyntheticDOMElement() {
@@ -40,10 +40,10 @@ function createElementInsertToolClass(options) {
   };
 }
 
-export const keyBindingDependency = [
-  new GlobalKeyBindingDependency(TEXT_TOOL_KEY_CODE, class SetPointerToolCommand extends BaseCommand {
+export const keyBindingProvider = [
+  new GlobalKeyBindingProvider(TEXT_TOOL_KEY_CODE, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
-      // this.bus.execute(new SetToolAction(this.dependencies.query<WorkspaceToolFactoryDependency>(textToolDependency.id)));
+      // this.bus.execute(new SetToolAction(this.dependencies.query<WorkspaceToolFactoryProvider>(textToolProvider.id)));
     }
   })
 ];
@@ -58,9 +58,9 @@ for (const key in insertElementKeyBindings) {
 }
 
 function addElementKeyBinding(key: string, options: { nodeName: string, attributes: string }) {
-  keyBindingDependency.push(new GlobalKeyBindingDependency(key, class SetPointerToolCommand extends BaseCommand {
+  keyBindingProvider.push(new GlobalKeyBindingProvider(key, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.execute(new SetToolAction(<ClassFactoryDependency>this.dependencies.link(new ClassFactoryDependency(null, createElementInsertToolClass(options)))));
+      this.bus.execute(new SetToolAction(<ClassFactoryProvider>this.dependencies.link(new ClassFactoryProvider(null, createElementInsertToolClass(options)))));
     }
   }));
 }

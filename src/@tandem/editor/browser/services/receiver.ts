@@ -3,9 +3,9 @@ import {
   Action,
   IActor,
   Dependencies,
-  DependenciesDependency,
-  CommandFactoryDependency,
-  ApplicationServiceDependency,
+  DependenciesProvider,
+  CommandFactoryProvider,
+  ApplicationServiceProvider,
 } from "@tandem/common";
 
 import {SequenceBus } from "mesh";
@@ -13,7 +13,7 @@ import {SequenceBus } from "mesh";
 // Command pattern receiver
 export class ReceiverService implements IActor {
 
-  @inject(DependenciesDependency.ID)
+  @inject(DependenciesProvider.ID)
   private _dependencies: Dependencies;
 
   constructor() {
@@ -22,7 +22,7 @@ export class ReceiverService implements IActor {
 
   execute(action: Action) {
 
-    const commands = CommandFactoryDependency.findAllByAction(action, this._dependencies).map((dep) => {
+    const commands = CommandFactoryProvider.findAllByAction(action, this._dependencies).map((dep) => {
       return dep.create()
     });
 
@@ -30,4 +30,4 @@ export class ReceiverService implements IActor {
   }
 }
 
-export const receiverServiceDependency = new ApplicationServiceDependency("receiver", ReceiverService);
+export const receiverServiceProvider = new ApplicationServiceProvider("receiver", ReceiverService);

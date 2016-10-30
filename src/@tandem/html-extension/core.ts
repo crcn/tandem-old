@@ -1,6 +1,6 @@
 import { IApplication } from "@tandem/common/application";
 import { CSS_MIME_TYPE, HTML_MIME_TYPE } from "@tandem/common";
-import { SyntheticDOMElementClassDependency, HTML_XMLNS, MarkupMimeTypeXMLNSDependency } from "@tandem/synthetic-browser";
+import { SyntheticDOMElementClassProvider, HTML_XMLNS, MarkupMimeTypeXMLNSProvider } from "@tandem/synthetic-browser";
 
 import { 
   SyntheticHTMLLink,
@@ -9,21 +9,21 @@ import { 
 } from "./synthetic";
 
 // key bindings
-import { MimeTypeDependency } from "@tandem/common/dependencies";
+import { MimeTypeProvider } from "@tandem/common";
 
 export function createHTMLCoreDependencies() {
   return [
 
     // TODO - move these to either sandbox/ or synthetic/ directories
-    new SyntheticDOMElementClassDependency(HTML_XMLNS, "link", SyntheticHTMLLink),
-    new SyntheticDOMElementClassDependency(HTML_XMLNS, "script", SyntheticHTMLScript),
-    new SyntheticDOMElementClassDependency(HTML_XMLNS, "style", SyntheticHTMLStyle),
+    new SyntheticDOMElementClassProvider(HTML_XMLNS, "link", SyntheticHTMLLink),
+    new SyntheticDOMElementClassProvider(HTML_XMLNS, "script", SyntheticHTMLScript),
+    new SyntheticDOMElementClassProvider(HTML_XMLNS, "style", SyntheticHTMLStyle),
 
     // TODO - move these to htmlCoreDependencies
     // mime types
-    new MimeTypeDependency("css", CSS_MIME_TYPE),
-    new MimeTypeDependency("htm", HTML_MIME_TYPE),
-    new MimeTypeDependency("html", HTML_MIME_TYPE)
+    new MimeTypeProvider("css", CSS_MIME_TYPE),
+    new MimeTypeProvider("htm", HTML_MIME_TYPE),
+    new MimeTypeProvider("html", HTML_MIME_TYPE)
   ];
 }
 

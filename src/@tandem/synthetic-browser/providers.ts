@@ -1,17 +1,17 @@
 import { SyntheticBrowser } from "./browser";
 import { RemoteBrowserService } from "./remote-browser";
 import { syntheticElementClassType, SyntheticDOMNode } from "./dom";
-import { Dependency, Dependencies, MimeTypeDependency, ApplicationServiceDependency } from "@tandem/common";
+import { Provider, Dependencies, MimeTypeProvider, ApplicationServiceProvider } from "@tandem/common";
 
-export class SyntheticDOMElementClassDependency extends Dependency<syntheticElementClassType> {
+export class SyntheticDOMElementClassProvider extends Provider<syntheticElementClassType> {
   static readonly SYNTHETIC_ELEMENT_CLASS_NS_PREFIX = "syntheticMarkupElementClass";
 
   constructor(readonly xmlns: string, readonly tagName: string, value: syntheticElementClassType) {
-    super(SyntheticDOMElementClassDependency.getNamespace(xmlns, tagName), value);
+    super(SyntheticDOMElementClassProvider.getNamespace(xmlns, tagName), value);
   }
 
   clone() {
-    return new SyntheticDOMElementClassDependency(this.xmlns, this.tagName, this.value);
+    return new SyntheticDOMElementClassProvider(this.xmlns, this.tagName, this.value);
   }
 
   static getNamespace(xmlns: string, tagName: string) {
@@ -19,21 +19,21 @@ export class SyntheticDOMElementClassDependency extends Dependency<syntheticElem
   }
 
   static findAll(dependencies: Dependencies) {
-    return dependencies.queryAll<SyntheticDOMElementClassDependency>([this.SYNTHETIC_ELEMENT_CLASS_NS_PREFIX, "**"].join("/"));
+    return dependencies.queryAll<SyntheticDOMElementClassProvider>([this.SYNTHETIC_ELEMENT_CLASS_NS_PREFIX, "**"].join("/"));
   }
 }
 
-export class MarkupMimeTypeXMLNSDependency extends Dependency<string> {
+export class MarkupMimeTypeXMLNSProvider extends Provider<string> {
   static readonly MARKUP_MIME_TYPE_XMLNS = "markupMimeTypeXMLNS";
   constructor(readonly mimeType: string, readonly xmlns: string) {
-    super(MarkupMimeTypeXMLNSDependency.getNamespace(mimeType), xmlns);
+    super(MarkupMimeTypeXMLNSProvider.getNamespace(mimeType), xmlns);
   }
   static getNamespace(mimeType: string) {
     return [this.MARKUP_MIME_TYPE_XMLNS, mimeType].join("/");
   }
   static lookup(path: string, dependencies: Dependencies): string {
-    const mimeType = MimeTypeDependency.lookup(path, dependencies);
-    const dependency = dependencies.query<MarkupMimeTypeXMLNSDependency>(this.getNamespace(mimeType));
+    const mimeType = MimeTypeProvider.lookup(path, dependencies);
+    const dependency = dependencies.query<MarkupMimeTypeXMLNSProvider>(this.getNamespace(mimeType));
     return dependency && dependency.value;
   }
 }
@@ -47,10 +47,10 @@ export interface IMarkupDOMCaster {
   cast(object: any, browser: SyntheticBrowser): Promise<SyntheticDOMNode>|SyntheticDOMNode;
 }
 
-export class SyntheticDOMCasterDependency extends Dependency<IMarkupDOMCaster> {
+export class SyntheticDOMCasterProvider extends Provider<IMarkupDOMCaster> {
   static readonly MARKUP_DOM_CASTER_NS = "markupDOMCaster";
   constructor(id: string, value: IMarkupDOMCaster) {
-    super(SyntheticDOMCasterDependency.getNamespace(id), value);
+    super(SyntheticDOMCasterProvider.getNamespace(id), value);
   }
 
   static getNamespace(id: string) {
@@ -58,7 +58,7 @@ export class SyntheticDOMCasterDependency extends Dependency<IMarkupDOMCaster> {
   }
 
   static async castAsDOMNode(object: any, browser: SyntheticBrowser, dependencies: Dependencies): Promise<SyntheticDOMNode> {
-    for (const dep of dependencies.queryAll<SyntheticDOMCasterDependency>(this.getNamespace("**"))) {
+    for (const dep of dependencies.queryAll<SyntheticDOMCasterProvider>(this.getNamespace("**"))) {
       const ret = await dep.value.cast(object, browser);
       if (ret instanceof SyntheticDOMNode) return ret;
     }

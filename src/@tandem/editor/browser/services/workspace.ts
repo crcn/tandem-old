@@ -13,11 +13,11 @@ import {
 } from "@tandem/synthetic-browser";
 import { Store, Workspace } from "@tandem/editor/browser/models";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
-import { pointerToolDependency } from "@tandem/editor/browser/models/pointer-tool";
+import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
 import { CoreApplicationService } from "@tandem/core";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
-import { ApplyEditAction, FileEditorDependency } from "@tandem/sandbox";
-import { WorkspaceToolFactoryDependency, StoreDependency } from "@tandem/editor/browser/dependencies";
+import { ApplyEditAction, FileEditorProvider } from "@tandem/sandbox";
+import { WorkspaceToolFactoryProvider, StoreProvider } from "@tandem/editor/browser/providers";
 import { SetToolAction, ZoomAction, SetZoomAction, DocumentFileAction } from "@tandem/editor/browser/actions";
 
 import {
@@ -26,7 +26,6 @@ import {
   Action,
   Logger,
   inject,
-  Injector,
   loggable,
   IDisposable,
   easeOutCubic,
@@ -35,9 +34,9 @@ import {
   watchProperty,
   Dependencies,
   InitializeAction,
-  DependenciesDependency,
+  DependenciesProvider,
   BaseApplicationService,
-  ApplicationServiceDependency,
+  ApplicationServiceProvider,
   GetPrimaryProjectFilePathAction,
 } from "@tandem/common";
 
@@ -51,7 +50,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
 
   readonly logger: Logger;
 
-  @inject(StoreDependency.ID)
+  @inject(StoreProvider.ID)
   private _store: Store;
 
   private _tweener: IDisposable;
@@ -73,7 +72,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     await browser.open({ url: filePath });
     this._store.workspace = workspace;
 
-    // await this.bus.execute(new SetToolAction(this.dependencies.query<WorkspaceToolFactoryDependency>(pointerToolDependency.id)));
+    // await this.bus.execute(new SetToolAction(this.dependencies.query<WorkspaceToolFactoryProvider>(pointerToolProvider.id)));
   }
 
   async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
@@ -133,7 +132,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
   }
 
   [ApplyEditAction.APPLY_EDITS]({ edit }: ApplyEditAction) {
-    return FileEditorDependency.getInstance(this.dependencies).applyEditActions(...edit.actions);
+    return FileEditorProvider.getInstance(this.dependencies).applyEditActions(...edit.actions);
   }
 
 

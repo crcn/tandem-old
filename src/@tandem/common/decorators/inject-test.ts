@@ -1,6 +1,6 @@
 import { inject } from "./inject";
 import { expect } from "chai";
-import { Dependencies, ClassFactoryDependency, Dependency, IInjectable } from "../dependencies";
+import { Dependencies, ClassFactoryProvider, Provider, IInjectable } from "../ioc";
 
 describe(__filename + "#", () => {
   it("can inject a simple string into a name prop", () => {
@@ -10,11 +10,11 @@ describe(__filename + "#", () => {
     }
 
     const dependencies = new Dependencies(
-      new Dependency<string>("name", "bob"),
-      new ClassFactoryDependency("person", Person)
+      new Provider<string>("name", "bob"),
+      new ClassFactoryProvider("person", Person)
     );
 
-    const personDep = dependencies.query<ClassFactoryDependency>("person");
+    const personDep = dependencies.query<ClassFactoryProvider>("person");
     expect(personDep.create().name).to.equal("bob");
   });
 
@@ -26,11 +26,11 @@ describe(__filename + "#", () => {
     }
 
     const dependencies = new Dependencies(
-      new Dependency<string>("name", "bob"),
-      new ClassFactoryDependency("person", Person)
+      new Provider<string>("name", "bob"),
+      new ClassFactoryProvider("person", Person)
     );
 
-    const personDep = dependencies.query<ClassFactoryDependency>("person");
+    const personDep = dependencies.query<ClassFactoryProvider>("person");
     expect(personDep.create().name).to.equal("BOB");
   });
 
@@ -43,11 +43,11 @@ describe(__filename + "#", () => {
       }
     }
     const dependencies = new Dependencies(
-      new Dependency<string>("name", "joe"),
-      new ClassFactoryDependency("person", Person)
+      new Provider<string>("name", "joe"),
+      new ClassFactoryProvider("person", Person)
     );
 
-    const personDep = dependencies.query<ClassFactoryDependency>("person");
+    const personDep = dependencies.query<ClassFactoryProvider>("person");
     expect(personDep.create().name).to.equal("joe");
   });
 });

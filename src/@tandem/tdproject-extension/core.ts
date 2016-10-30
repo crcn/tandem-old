@@ -1,6 +1,6 @@
-import { ContentEditorFactoryDependency } from "@tandem/sandbox";
+import { ContentEditorFactoryProvider } from "@tandem/sandbox";
 import { TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS } from "./constants";
-import { MimeTypeDependency, HTML_MIME_TYPE, MimeTypeAliasDependency } from "@tandem/common";
+import { MimeTypeProvider, HTML_MIME_TYPE, MimeTypeAliasProvider } from "@tandem/common";
 
 import {
   SyntheticTDRepeatElement,
@@ -12,8 +12,8 @@ import {
   HTML_XMLNS,
   MarkupEditor,
   SyntheticHTMLElement,
-  MarkupMimeTypeXMLNSDependency,
-  SyntheticDOMElementClassDependency,
+  MarkupMimeTypeXMLNSProvider,
+  SyntheticDOMElementClassProvider,
 } from "@tandem/synthetic-browser";
 
 import {
@@ -26,23 +26,23 @@ export function createTDProjectCoreDependencies() {
   return [
 
     // elements
-    new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "template", SyntheticTDTemplateElement),
-    new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "dom-repeat", SyntheticTDRepeatElement),
-    new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "artboard", SyntheticTDArtboardElement),
-    new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "link", SyntheticHTMLLink),
-    new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "default", SyntheticHTMLElement),
-    new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "script", SyntheticHTMLScript),
-    new SyntheticDOMElementClassDependency(TDPROJECT_XMLNS, "style", SyntheticHTMLStyle),
+    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "template", SyntheticTDTemplateElement),
+    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "dom-repeat", SyntheticTDRepeatElement),
+    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "artboard", SyntheticTDArtboardElement),
+    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "link", SyntheticHTMLLink),
+    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "default", SyntheticHTMLElement),
+    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "script", SyntheticHTMLScript),
+    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "style", SyntheticHTMLStyle),
 
     // mime types
-    new MimeTypeAliasDependency(TDPROJECT_MIME_TYPE, HTML_MIME_TYPE),
-    new MimeTypeDependency("tdproject", TDPROJECT_MIME_TYPE),
-    new MimeTypeDependency("tdm", TDPROJECT_MIME_TYPE),
+    new MimeTypeAliasProvider(TDPROJECT_MIME_TYPE, HTML_MIME_TYPE),
+    new MimeTypeProvider("tdproject", TDPROJECT_MIME_TYPE),
+    new MimeTypeProvider("tdm", TDPROJECT_MIME_TYPE),
 
     // xml namespaces
-    new MarkupMimeTypeXMLNSDependency(TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS),
+    new MarkupMimeTypeXMLNSProvider(TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS),
 
     // editors
-    new ContentEditorFactoryDependency(TDPROJECT_MIME_TYPE, MarkupEditor),
+    new ContentEditorFactoryProvider(TDPROJECT_MIME_TYPE, MarkupEditor),
   ];
 }

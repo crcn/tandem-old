@@ -2,7 +2,7 @@ import { IActor } from "@tandem/common/actors";
 import { OpenProjectAction } from "@tandem/editor/common";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
-import { ApplicationServiceDependency } from "@tandem/common/dependencies";
+import { ApplicationServiceProvider } from "@tandem/common";
 import { LoadAction, InitializeAction, SockBus, Action, isPublicAction, serialize, deserialize } from "@tandem/common";
 import * as os from "os";
 import * as path from "path";

@@ -16,13 +16,13 @@ import {
   Dependencies,
   serializable,
   definePublicAction,
-  PrivateBusDependency,
+  PrivateBusProvider,
   BaseApplicationService
 } from "@tandem/common";
 
 import { BaseApplicationService2 } from "@tandem/core/services";
 import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
-import { Bundle, Bundler, BundlerDependency, SyntheticObjectEditor, IBundleStrategyOptions } from "@tandem/sandbox";
+import { Bundle, Bundler, BundlerProvider, SyntheticObjectEditor, IBundleStrategyOptions } from "@tandem/sandbox";
 
 @definePublicAction({
   serialize({ type, data }: RemoteBrowserDocumentAction) {
@@ -55,7 +55,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   constructor(dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
     super(dependencies, renderer, parent);
-    this._bus = PrivateBusDependency.getInstance(dependencies);
+    this._bus = PrivateBusProvider.getInstance(dependencies);
   }
 
   async open2(options: ISyntheticBrowserOpenOptions) {

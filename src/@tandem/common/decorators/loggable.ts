@@ -2,7 +2,7 @@ import { inject } from "@tandem/common/decorators";
 import { Logger } from "../logger";
 import { NoopBus } from "mesh";
 import { IInvoker } from "@tandem/common/actors";
-import { PrivateBusDependency } from "@tandem/common/dependencies";
+import { PrivateBusProvider } from "@tandem/common/ioc";
 
 const noopBus = new NoopBus();
 
@@ -13,7 +13,7 @@ export function loggable () {
     const loggerBusProperty = "$$loggerBus";
 
     // this assumes the object is being injected -- it may not be.
-    inject(PrivateBusDependency.ID)(clazz.prototype, loggerBusProperty);
+    inject(PrivateBusProvider.ID)(clazz.prototype, loggerBusProperty);
 
     Object.defineProperty(clazz.prototype, "logger", {
       get() {

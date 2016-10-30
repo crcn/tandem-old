@@ -23,7 +23,7 @@ export class ConsoleLogService extends CoreApplicationService<any> {
 
   [LogAction.LOG]({ level, text }: LogAction) {
 
-    const hlog = String(this.config && this.config.argv && this.config.argv.hlog);
+    const hlog = String(this.config && this.config.argv && this.config.argv.hlog || "");
 
     // TODO - hlog from argv
 

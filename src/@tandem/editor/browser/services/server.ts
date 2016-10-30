@@ -7,7 +7,7 @@ import {
   loggable,
   LoadAction,
   IApplication,
-  ApplicationServiceDependency,
+  ApplicationServiceProvider,
 } from "@tandem/common";
 
 @loggable()

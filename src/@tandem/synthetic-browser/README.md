@@ -12,29 +12,29 @@ import {
   LocalFileSystem,
   RemoteFileSystem,
   LocalFileResolver,
-  BundlerDependency,
+  BundlerProvider,
   RemoveFileResolver,
-  ResolverDependency,
-  FileCacheDependency,
-  FileSystemDependency,
+  ResolverProvider,
+  FileCacheProvider,
+  FileSystemProvider,
 } from "@tandem/sandbox";
 
 
 const dependencies = new Dependencies(
 
-  new FileCacheDependency(),
+  new FileCacheProvider(),
 
   // scans
-  new BundlerDependency(),
+  new BundlerProvider(),
 
   // resolves module dependencies (NodeJS, Bower, etc.)
-  new FileResolverDependency(new LocalFileResolver()),
+  new FileResolverProvider(new LocalFileResolver()),
 
   // if running in the browser
-  // new FileResolverDependency(new RemoteFileResolver())
+  // new FileResolverProvider(new RemoteFileResolver())
 
   // read, write, and watch files
-  new FileSystemDependency(new LocalFileSystem()),
+  new FileSystemProvider(new LocalFileSystem()),
 
   // extensions that contain the appropriate script loaders, and
   // evaluators

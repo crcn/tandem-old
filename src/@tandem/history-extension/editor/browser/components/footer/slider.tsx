@@ -3,14 +3,14 @@ import "./slider.scss";
 import * as React from "react";
 import * as SliderComponent from "react-slider";
 import { FrontEndApplication } from "@tandem/editor/browser";
-// import { HistorySingletonDependency } from "@tandem/history-extension/dependencies";
+// import { HistorySingletonProvider } from "@tandem/history-extension/providers";
 
 
 export class HistorySliderComponent extends React.Component<{ app: FrontEndApplication }, any> {
 
   get history(): any {
     return {};
-    // return HistorySingletonDependency.getInstance(this.props.app.dependencies);
+    // return HistorySingletonProvider.getInstance(this.props.app.dependencies);
   }
 
   onSliderChange(value) {

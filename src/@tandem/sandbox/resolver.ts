@@ -8,9 +8,9 @@ import {
   inject,
   Dependencies,
   SingletonThenable,
-  MimeTypeDependency,
-  PrivateBusDependency,
-  DependenciesDependency,
+  MimeTypeProvider,
+  PrivateBusProvider,
+  DependenciesProvider,
 } from "@tandem/common";
 import * as resolve from "resolve";
 import * as pkgpath from "package-path";
@@ -61,7 +61,7 @@ export abstract class BaseFileResolver implements IFileResolver {
 }
 
 export class RemoteFileResolver extends BaseFileResolver {
-  constructor(@inject(PrivateBusDependency.ID) private _bus: IActor) {
+  constructor(@inject(PrivateBusProvider.ID) private _bus: IActor) {
     super();
   }
   async resolve2(filePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
@@ -71,7 +71,7 @@ export class RemoteFileResolver extends BaseFileResolver {
 
 export class LocalFileResolver extends BaseFileResolver {
 
-  @inject(DependenciesDependency.ID)
+  @inject(DependenciesProvider.ID)
   private _dependencies: Dependencies;
 
   async resolve2(relativePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {

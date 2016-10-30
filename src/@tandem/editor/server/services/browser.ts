@@ -18,8 +18,8 @@ import { loggable, inject } from "@tandem/common/decorators";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { BaseApplicationService } from "@tandem/common/services";
 import { CoreApplicationService } from "@tandem/core";
-import { Dependencies, Injector } from "@tandem/common/dependencies";
-import { FileCacheDependency, FileCache } from "@tandem/sandbox";
+import { Dependencies } from "@tandem/common";
+import { FileCacheProvider, FileCache } from "@tandem/sandbox";
 import { DSUpsertAction, LoadAction, InitializeAction } from "@tandem/common/actions";
 
 // TODO - split this out into separate files -- turning into a god object.
@@ -32,12 +32,12 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
   private _socket:any;
   private _bundles:Array<any>;
 
-  @inject(FileCacheDependency.ID)
+  @inject(FileCacheProvider.ID)
   private _fileCache: FileCache;
 
   $didInject() {
     super.$didInject();
-    this.bus.register(this._ioService = Injector.create(IOService, [], this.dependencies));
+    this.bus.register(this._ioService = this.dependencies.create(IOService, []));
   }
 
   async [InitializeAction.INITIALIZE]() {

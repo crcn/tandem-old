@@ -1,10 +1,10 @@
-import { Dependency, IDependency, Dependencies, IInjectable } from "../dependencies";
+import { Provider, IProvider, Dependencies, IInjectable } from "../ioc";
 
 /**
  * inject decorator for properties of classes that live in a Dependencies object
  */
 
-export function inject(id?: string, map: (dependency: IDependency) => any = undefined) {
+export function inject(id?: string, map: (dependency: IProvider) => any = undefined) {
   return function(target: any, property: any, index: any = undefined) {
     const key = typeof target === "function" ? index : property;
     const inject = Object.assign({}, Reflect.getMetadata("injectProperties", target) || {});
@@ -13,4 +13,4 @@ export function inject(id?: string, map: (dependency: IDependency) => any = unde
   }
 }
 
-type injectableType = { new(...rest: any[]): Dependency<any> }
+type injectableType = { new(...rest: any[]): Provider<any> }

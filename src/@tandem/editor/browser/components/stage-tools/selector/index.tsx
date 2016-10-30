@@ -7,7 +7,7 @@ import ResizerComponent from "./resizer";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { SelectionSizeComponent } from "@tandem/editor/browser/components/common";
 import { BoundingRect, flattenTree } from "@tandem/common";
-import { ReactComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 
 export class SelectorStageToolComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication, zoom: number  }, any> {

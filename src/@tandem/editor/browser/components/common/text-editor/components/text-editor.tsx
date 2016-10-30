@@ -2,16 +2,18 @@ import "./text-editor.scss";
 
 import * as React from "react";
 import TextEditor from "../models/text-editor";
-import { IActor } from "@tandem/common/actors";
-import { startDrag } from "@tandem/common/utils/component";
 import LineComponent from "./line";
-import { BrokerBus } from "@tandem/common/busses";
-import { ITokenizer } from "@tandem/common/tokenizers";
 import CaretComponent from "./caret";
-import { Dependencies } from "@tandem/common/dependencies";
-import { stringTokenizer } from "@tandem/common/tokenizers";
+import {
+  IActor,
+  BrokerBus,
+  startDrag,
+  ITokenizer,
+  Dependencies,
+  stringTokenizer,
+  translateAbsoluteToRelativePoint
+} from "@tandem/common";
 import HighlightComponent from "./highlight";
-import { translateAbsoluteToRelativePoint } from "@tandem/common/utils/html";
 
 export class TextEditorComponent extends React.Component<{ onKeyDown?: Function, onFocus?: Function, onChange?: Function, onBlur?: Function, style?: Object, className?: string, source: string, dependencies: Dependencies, tokenizer: ITokenizer }, any> implements IActor {
 

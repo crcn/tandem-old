@@ -1,6 +1,6 @@
 import { Dependencies } from "@tandem/common";
 import { IEdtorServerConfig } from "./config";
-import { createCoreApplicationDependencies, ApplicationServiceDependency } from "@tandem/core";
+import { createCoreApplicationDependencies, ApplicationServiceProvider } from "@tandem/core";
 
 import {
   DSService,
@@ -21,13 +21,13 @@ export function concatEditorServerDependencies(dependencies: Dependencies, confi
     createCoreApplicationDependencies(config),
 
     // services
-    new ApplicationServiceDependency("ds", DSService),
-    new ApplicationServiceDependency("file", FileService),
-    new ApplicationServiceDependency("sock", SockService),
-    new ApplicationServiceDependency("stdin", StdinService),
-    new ApplicationServiceDependency("project", ProjectService),
-    new ApplicationServiceDependency("browser", BrowserService),
-    new ApplicationServiceDependency("resolver", ResolverService),
+    new ApplicationServiceProvider("ds", DSService),
+    new ApplicationServiceProvider("file", FileService),
+    new ApplicationServiceProvider("sock", SockService),
+    new ApplicationServiceProvider("stdin", StdinService),
+    new ApplicationServiceProvider("project", ProjectService),
+    new ApplicationServiceProvider("browser", BrowserService),
+    new ApplicationServiceProvider("resolver", ResolverService),
   );
 }
 

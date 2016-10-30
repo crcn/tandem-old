@@ -9,9 +9,9 @@ import { PasteAction, SelectAction } from "@tandem/editor/browser/actions";
 import {
   IInjectable,
   APPLICATION_SINGLETON_NS,
-  CommandFactoryDependency,
-  ApplicationServiceDependency,
-} from "@tandem/common/dependencies";
+  CommandFactoryProvider,
+  ApplicationServiceProvider,
+} from "@tandem/common";
 import {
   parseMarkup
 } from "@tandem/synthetic-browser";
@@ -44,5 +44,5 @@ export class PasteHTMLService extends BaseApplicationService<FrontEndApplication
   }
 }
 
-export const pastHTMLServiceDependency = new ApplicationServiceDependency("paste-html-entity", PasteHTMLService);
+export const pastHTMLServiceProvider = new ApplicationServiceProvider("paste-html-entity", PasteHTMLService);
 

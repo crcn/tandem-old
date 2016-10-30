@@ -7,7 +7,7 @@ import { SetZoomAction } from "@tandem/editor/browser/actions";
 import * as AutosizeInput from "react-input-autosize";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { RegisteredComponent, FocusComponent } from "@tandem/editor/browser/components/common";
-import { FooterComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { FooterComponentFactoryProvider } from "@tandem/editor/browser/providers";
 
 class ZoomLabelComponent extends BaseApplicationComponent<{ workspace: Workspace }, { editZoom: number }> {
 
@@ -63,7 +63,7 @@ class FooterComponent extends React.Component<{ workspace: Workspace }, any> {
     const { scale } = this.props.workspace.transform;
     return (<div className="m-preview-footer">
       <ZoomLabelComponent workspace={this.props.workspace} />
-      <RegisteredComponent ns={FooterComponentFactoryDependency.getNamespace("**")} />
+      <RegisteredComponent ns={FooterComponentFactoryProvider.getNamespace("**")} />
     </div>);
   }
 }

@@ -3,14 +3,14 @@ import "./styles";
 import { Dependencies } from "@tandem/common";
 import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
-import { createCoreApplicationDependencies, ApplicationServiceDependency } from "@tandem/core";
+import { createCoreApplicationDependencies, ApplicationServiceProvider } from "@tandem/core";
 import {
-  StoreDependency,
-  ReactComponentFactoryDependency,
-  StageToolComponentFactoryDependency,
-  LayerLabelComponentFactoryDependency,
-  DocumentPaneComponentFactoryDependency,
-} from "./dependencies";
+  StoreProvider,
+  ReactComponentFactoryProvider,
+  StageToolComponentFactoryProvider,
+  LayerLabelComponentFactoryProvider,
+  DocumentPaneComponentFactoryProvider,
+} from "./providers";
 
 import {
   LayersPaneComponent,
@@ -42,27 +42,27 @@ export function concatEditorBrowserDependencies(dependencies: Dependencies, conf
     createCoreApplicationDependencies(config, fileSystemClass, fileResolverClass),
 
     // services
-    new ApplicationServiceDependency("dnd", DNDService),
-    new ApplicationServiceDependency("server", ServerService),
-    new ApplicationServiceDependency("settings", SettingsService),
-    new ApplicationServiceDependency("clipboard", ClipboardService),
-    new ApplicationServiceDependency("component", ComponentService),
-    new ApplicationServiceDependency("workspace", WorkspaceService),
-    new ApplicationServiceDependency("keyBindings", GlobalKeyBindingService),
+    new ApplicationServiceProvider("dnd", DNDService),
+    new ApplicationServiceProvider("server", ServerService),
+    new ApplicationServiceProvider("settings", SettingsService),
+    new ApplicationServiceProvider("clipboard", ClipboardService),
+    new ApplicationServiceProvider("component", ComponentService),
+    new ApplicationServiceProvider("workspace", WorkspaceService),
+    new ApplicationServiceProvider("keyBindings", GlobalKeyBindingService),
 
     // stage tool components
-    new StageToolComponentFactoryDependency("selector", "pointer", SelectorStageToolComponent),
-    new ReactComponentFactoryDependency("components/tools/pointer/drag-select", DragSelectStageToolComponent as any),
-    new ReactComponentFactoryDependency("components/tools/pointer/grid", GridStageToolComponent),
-    new ReactComponentFactoryDependency("components/tools/insert/size", InsertStageToolComponent),
-    new StageToolComponentFactoryDependency("selectable", "pointer", SelectableStageToolComponent),
+    new StageToolComponentFactoryProvider("selector", "pointer", SelectorStageToolComponent),
+    new ReactComponentFactoryProvider("components/tools/pointer/drag-select", DragSelectStageToolComponent as any),
+    new ReactComponentFactoryProvider("components/tools/pointer/grid", GridStageToolComponent),
+    new ReactComponentFactoryProvider("components/tools/insert/size", InsertStageToolComponent),
+    new StageToolComponentFactoryProvider("selectable", "pointer", SelectableStageToolComponent),
 
     // pane components
-    new DocumentPaneComponentFactoryDependency("layers", LayersPaneComponent),
+    new DocumentPaneComponentFactoryProvider("layers", LayersPaneComponent),
 
-    new StoreDependency(Store),
+    new StoreProvider(Store),
 
-    // pointerToolDependency
+    // pointerToolProvider
   );
 }
 
@@ -71,7 +71,7 @@ export * from "./config";
 export * from "./collections";
 export * from "./components";
 export * from "./constants";
-export * from "./dependencies";
+export * from "./providers";
 export * from "./key-bindings";
 export * from "./models";
 export * from "./services";

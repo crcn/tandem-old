@@ -1,16 +1,16 @@
 import {
   IActor,
-  Dependency,
+  Provider,
   Dependencies,
-  ClassFactoryDependency,
+  ClassFactoryProvider,
 } from "@tandem/common";
 
-export class ApplicationServiceDependency<T extends IActor> extends ClassFactoryDependency {
+export class ApplicationServiceProvider<T extends IActor> extends ClassFactoryProvider {
 
   static readonly NS = "services";
 
   constructor(name: string, value: { new(): T }) {
-    super(ApplicationServiceDependency.getId(name), value);
+    super(ApplicationServiceProvider.getId(name), value);
   }
 
   static getId(name: string) {
@@ -22,7 +22,7 @@ export class ApplicationServiceDependency<T extends IActor> extends ClassFactory
   }
 
   static findAll(dependencies: Dependencies) {
-    return dependencies.queryAll<ApplicationServiceDependency<any>>(this.getId("**"));
+    return dependencies.queryAll<ApplicationServiceProvider<any>>(this.getId("**"));
   }
 }
 
@@ -30,9 +30,9 @@ export class ApplicationServiceDependency<T extends IActor> extends ClassFactory
  * The application configuration dependency
  */
 
-export class ApplicationConfigurationDependency<T> extends Dependency<T> {
+export class ApplicationConfigurationProvider<T> extends Provider<T> {
   static ID: string = "config";
   constructor(value: T) {
-    super(ApplicationConfigurationDependency.ID, value);
+    super(ApplicationConfigurationProvider.ID, value);
   }
 }

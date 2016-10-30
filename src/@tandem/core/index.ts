@@ -1,14 +1,14 @@
 import { Application2 } from "@tandem/common";
-import { ApplicationServiceDependency, ApplicationConfigurationDependency } from "./dependencies";
+import { ApplicationServiceProvider, ApplicationConfigurationProvider } from "./providers";
 
 import {
   BrokerBus,
   Dependencies,
-  PublicBusDependency,
-  PrivateBusDependency,
-  ProtectedBusDependency,
-  DependenciesDependency,
-  registerableDependencyType,
+  PublicBusProvider,
+  PrivateBusProvider,
+  ProtectedBusProvider,
+  DependenciesProvider,
+  registerableProviderType,
 } from "@tandem/common";
 
 import { SequenceBus } from "mesh";
@@ -42,17 +42,17 @@ function createBusDependencies() {
   const privateBus   = new BrokerBus(SequenceBus, protectedBus);
 
   return new Dependencies(
-    new PublicBusDependency(publicBus),
-    new ProtectedBusDependency(protectedBus),
-    new PrivateBusDependency(privateBus),
+    new PublicBusProvider(publicBus),
+    new ProtectedBusProvider(protectedBus),
+    new PrivateBusProvider(privateBus),
   );
 }
 
 export function createCoreApplicationDependencies(config: any, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
   return new Dependencies(
     createBusDependencies(),
-    new DependenciesDependency(),
-    new ApplicationConfigurationDependency(config),
+    new DependenciesProvider(),
+    new ApplicationConfigurationProvider(config),
     createSandboxDependencies(fileSystemClass, fileResolverClass),
   );
 }
@@ -62,11 +62,11 @@ export class ServiceApplication extends Application2 {
 
     // create the services before loading so that they can hook themselves into the application
     // context.
-    for (const serviceDependency of ApplicationServiceDependency.findAll(this.dependencies)) {
-      serviceDependency.create();
+    for (const serviceProvider of ApplicationServiceProvider.findAll(this.dependencies)) {
+      serviceProvider.create();
     }
   }
 }
 
-export * from "./dependencies";
+export * from "./providers";
 export * from "./services";

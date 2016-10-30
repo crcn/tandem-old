@@ -1,6 +1,6 @@
 
 import { WrapBus } from "mesh";
-import { BundlerDependency } from "@tandem/sandbox";
+import { BundlerProvider } from "@tandem/sandbox";
 import * as path from "path";
 import { debounce } from "lodash";
 
@@ -113,9 +113,9 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
       const src = this.getAttribute("src");
       const window = this.ownerDocument.defaultView;
 
-      const bundler = BundlerDependency.getInstance(null, this.browser.dependencies);
+      const bundler = BundlerProvider.getInstance(null, this.browser.dependencies);
       this._artboardBrowser.open({
-        url: (await bundler.findByFilePath(this.source.filePath)).getAbsoluteDependencyPath(src),
+        url: (await bundler.findByFilePath(this.source.filePath)).getAbsoluteProviderPath(src),
         bundleStrategyOptions: {
           name: this.getAttribute("bundle-strategy"),
           config: this.getAttribute("bundle-config") && path.resolve(this.source.filePath, this.getAttribute("strategy-config"))

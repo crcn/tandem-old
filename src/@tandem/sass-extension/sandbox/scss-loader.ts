@@ -9,17 +9,17 @@ import {
   IFileResolver,
   IBundleLoader,
   IBundleLoaderResult,
-  FileCacheDependency,
-  FileResolverDependency,
+  FileCacheProvider,
+  FileResolverProvider,
 } from "@tandem/sandbox";
 
 
 export class SCSSLoader implements IBundleLoader {
 
-  @inject(FileCacheDependency.ID)
+  @inject(FileCacheProvider.ID)
   private _fileCache: FileCache;
 
-  @inject(FileResolverDependency.ID)
+  @inject(FileResolverProvider.ID)
   private _fileResolver: IFileResolver;
 
   async load(filePath, { type, content }): Promise<any> {

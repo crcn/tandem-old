@@ -8,7 +8,7 @@ import * as path from "path";
 
 import HTML5Backend from "react-dnd-html5-backend";
 import { DragDropContext } from "react-dnd";
-import { DocumentPaneComponentFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { DocumentPaneComponentFactoryProvider } from "@tandem/editor/browser/providers";
 
 class _LayersPaneComponent extends BaseApplicationComponent<{}, any> {
   render() {

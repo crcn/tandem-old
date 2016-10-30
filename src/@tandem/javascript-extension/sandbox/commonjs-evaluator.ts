@@ -25,7 +25,7 @@ export class CommonJSSandboxEvaluator implements ISandboxBundleEvaluator {
       __filename: bundle.filePath,
       __dirname: path.dirname(bundle.filePath),
       require: (relativePath) => {
-        return sandbox.require(bundle.getDependencyHash(relativePath));
+        return sandbox.require(bundle.getProviderHash(relativePath));
       }
     }, {
       filename: bundle.filePath,

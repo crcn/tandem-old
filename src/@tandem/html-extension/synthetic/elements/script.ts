@@ -29,9 +29,9 @@ export class SyntheticHTMLScript extends SyntheticHTMLElement {
     //   scriptContent = this.textContent;
     // }
 
-    // const moduleDependency = SandboxModuleFactoryDependency.find(JS_MIME_TYPE, type, this.browser.dependencies);
+    // const moduleProvider = SandboxModuleFactoryProvider.find(JS_MIME_TYPE, type, this.browser.dependencies);
 
-    // if (!moduleDependency) {
+    // if (!moduleProvider) {
     //   throw new Error(`Cannot execute script with content type "${type}".`);
     // }
 
@@ -44,7 +44,7 @@ export class SyntheticHTMLScript extends SyntheticHTMLElement {
     //   if (global[variableName] == null) global[variableName] = null;
     // }
 
-    // const module = moduleDependency.create(this.module.filePath, scriptContent, this.module.sandbox);
+    // const module = moduleProvider.create(this.module.filePath, scriptContent, this.module.sandbox);
     // await module.load();
     // module.evaluate();
   }

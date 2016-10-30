@@ -3,10 +3,10 @@ import { IActor, IInvoker } from '../actors';
 import { IBrokerBus, BrokerBus } from "@tandem/common/busses";
 import { LoadAction, InitializeAction } from "../actions";
 import {
-  Dependency,
+  Provider,
   Dependencies,
-  PrivateBusDependency,
-} from '../dependencies';
+  PrivateBusProvider,
+} from '../ioc';
 
 /**
  * @deprecated
@@ -33,7 +33,7 @@ export class Application2 {
   private _initialized: boolean;
 
   constructor(readonly dependencies: Dependencies) {
-    this.bus = PrivateBusDependency.getInstance(dependencies);
+    this.bus = PrivateBusProvider.getInstance(dependencies);
   }
 
   /**

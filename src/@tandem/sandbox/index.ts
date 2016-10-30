@@ -1,4 +1,4 @@
-export * from "./dependencies";
+export * from "./providers";
 export * from "./actions";
 export * from "./synthetic";
 export * from "./file-system";

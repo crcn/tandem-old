@@ -8,9 +8,9 @@ import {
   filterAction,
   Dependencies,
   IApplication,
-  DependenciesDependency,
+  DependenciesProvider,
   BaseApplicationService,
-  ApplicationServiceDependency,
+  ApplicationServiceProvider,
   GetPrimaryProjectFilePathAction,
 } from "@tandem/common";
 import { OpenProjectAction } from "@tandem/editor/common";

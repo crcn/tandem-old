@@ -18,19 +18,19 @@ import {
   DSUpdateAction,
   DSInsertAction,
   DSRemoveAction,
-  DependenciesDependency,
+  DependenciesProvider,
   BaseApplicationService,
-  ApplicationServiceDependency,
+  ApplicationServiceProvider,
 } from "@tandem/common";
 
 
 const FILES_COLLECTION_NAME = "files";
 
-import { LocalFileSystem, FileSystemDependency, IFileSystem, ReadFileAction, WatchFileAction } from "@tandem/sandbox";
+import { LocalFileSystem, FileSystemProvider, IFileSystem, ReadFileAction, WatchFileAction } from "@tandem/sandbox";
 
 export class FileService extends CoreApplicationService<IEdtorServerConfig> {
 
-  @inject(FileSystemDependency.ID)
+  @inject(FileSystemProvider.ID)
   private _fileSystem: IFileSystem;
 
   /**

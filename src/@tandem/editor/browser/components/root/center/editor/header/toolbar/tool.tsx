@@ -4,20 +4,20 @@ import { IActor } from "@tandem/common/actors";
 import { Workspace } from "@tandem/editor/browser/models";
 import { SetToolAction } from "@tandem/editor/browser/actions";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
-import { WorkspaceToolFactoryDependency } from "@tandem/editor/browser/dependencies";
+import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
 
-class ToolComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, toolDependency: WorkspaceToolFactoryDependency }, any> {
+class ToolComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, toolProvider: WorkspaceToolFactoryProvider }, any> {
 
   setTool = () => {
-    this.props.app.bus.execute(new SetToolAction(this.props.toolDependency));
+    this.props.app.bus.execute(new SetToolAction(this.props.toolProvider));
   }
 
   render() {
-    const dep = this.props.toolDependency;
+    const dep = this.props.toolProvider;
 
     const className = cx({
       selected: false,
-      [`m-preview-tool s s-${this.props.toolDependency.icon}`]: true,
+      [`m-preview-tool s s-${this.props.toolProvider.icon}`]: true,
     });
 
     return (

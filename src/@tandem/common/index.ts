@@ -7,7 +7,7 @@ export * from "./busses";
 export * from "./commands";
 export * from "./commands";
 export * from "./decorators";
-export * from "./dependencies";
+export * from "./ioc";
 export * from "./geom";
 export * from "./tokenizers";
 export * from "./metadata";

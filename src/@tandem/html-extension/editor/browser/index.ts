@@ -1,8 +1,8 @@
 import { Dependencies } from "@tandem/common";
-import { keyBindingDependency } from "./key-bindings";
-import { pastHTMLServiceDependency } from "./services";
+import { keyBindingProvider } from "./key-bindings";
+import { pastHTMLServiceProvider } from "./services";
 import { createHTMLCoreDependencies } from "../../core";
-import { textToolDependency, editInnerHTMLDependency } from "./models";
+import { textToolProvider, editInnerHTMLProvider } from "./models";
 
 import {
   SyntheticDOMText,
@@ -11,9 +11,9 @@ import {
 } from "@tandem/synthetic-browser";
 
 import {
-  StageToolComponentFactoryDependency,
-  LayerLabelComponentFactoryDependency,
-  EntityPaneComponentFactoryDependency,
+  StageToolComponentFactoryProvider,
+  LayerLabelComponentFactoryProvider,
+  EntityPaneComponentFactoryProvider,
 } from "@tandem/editor/browser";
 
 import {
@@ -37,28 +37,28 @@ export function createHTMLEditorBrowserDependencies() {
     createHTMLCoreDependencies(),
 
     // layer components
-    new LayerLabelComponentFactoryDependency(SyntheticHTMLElement.name, ElementLayerLabelComponent),
-    new LayerLabelComponentFactoryDependency(SyntheticHTMLStyle.name, ElementLayerLabelComponent),
-    new LayerLabelComponentFactoryDependency(SyntheticHTMLScript.name, ElementLayerLabelComponent),
-    new LayerLabelComponentFactoryDependency(SyntheticHTMLLink.name, ElementLayerLabelComponent),
-    new LayerLabelComponentFactoryDependency(SyntheticDOMText.name, TextLayerLabelComponent),
-    new LayerLabelComponentFactoryDependency(SyntheticDOMComment.name, CommentLayerLabelCoponent),
+    new LayerLabelComponentFactoryProvider(SyntheticHTMLElement.name, ElementLayerLabelComponent),
+    new LayerLabelComponentFactoryProvider(SyntheticHTMLStyle.name, ElementLayerLabelComponent),
+    new LayerLabelComponentFactoryProvider(SyntheticHTMLScript.name, ElementLayerLabelComponent),
+    new LayerLabelComponentFactoryProvider(SyntheticHTMLLink.name, ElementLayerLabelComponent),
+    new LayerLabelComponentFactoryProvider(SyntheticDOMText.name, TextLayerLabelComponent),
+    new LayerLabelComponentFactoryProvider(SyntheticDOMComment.name, CommentLayerLabelCoponent),
 
     // entity panes
-    new EntityPaneComponentFactoryDependency("htmlAttributes", EntityAttributesPaneComponent),
+    new EntityPaneComponentFactoryProvider("htmlAttributes", EntityAttributesPaneComponent),
 
     // stage tool components
-    new StageToolComponentFactoryDependency("elementInfo", "pointer", ElementInfoStageToolComponent),
+    new StageToolComponentFactoryProvider("elementInfo", "pointer", ElementInfoStageToolComponent),
 
     // services
-    pastHTMLServiceDependency,
+    pastHTMLServiceProvider,
 
     // tools
-    textToolDependency,
-    editInnerHTMLDependency,
+    textToolProvider,
+    editInnerHTMLProvider,
 
     // key bindings
-    keyBindingDependency
+    keyBindingProvider
   );
 }
 

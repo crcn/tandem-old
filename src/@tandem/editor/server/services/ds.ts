@@ -5,7 +5,7 @@ import { UpsertBus } from "@tandem/common/busses";
 import { PostDsNotifierBus } from "@tandem/common/busses";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
-import { ApplicationServiceDependency } from "@tandem/common/dependencies";
+import { ApplicationServiceProvider } from "@tandem/common";
 import {
   DSAction,
   DSFindAction,

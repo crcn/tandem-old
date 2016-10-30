@@ -12,27 +12,27 @@ import {
   FileCacheItem,
   LocalFileSystem,
   LocalFileResolver,
-  BundlerDependency,
+  BundlerProvider,
   ISyntheticObject,
-  FileEditorDependency,
-  FileSystemDependency,
-  FileResolverDependency,
-  BundlerLoaderFactoryDependency,
-  ContentEditorFactoryDependency,
+  FileEditorProvider,
+  FileSystemProvider,
+  FileResolverProvider,
+  BundlerLoaderFactoryProvider,
+  ContentEditorFactoryProvider,
 } from "@tandem/sandbox";
 
 
 const deps = new Dependencies(
-  new BundlerDependency(),
-  new FileEditorDependency(),
-  new FileSystemDependency(new LocalFileSystem()),
-  new FileResolverDependency(new LocalFileResolver()),
-  new BundlerLoaderFactoryDependency("text/css", CSSBundleLoader),
-  new ContentEditorFactoryDependency("text/css", CSSContentEditor),
+  new BundlerProvider(),
+  new FileEditorProvider(),
+  new FileSystemProvider(new LocalFileSystem()),
+  new FileResolverProvider(new LocalFileResolver()),
+  new BundlerLoaderFactoryProvider("text/css", CSSBundleLoader),
+  new ContentEditorFactoryProvider("text/css", CSSContentEditor),
 );
 
 // fetch the bundler singleton
-const bundler: Bundler = BundlerDependency.getInstance(deps);
+const bundler: Bundler = BundlerProvider.getInstance(deps);
 
 const sandbox = new Sandbox(deps, function createGlobal() {
 
@@ -51,7 +51,7 @@ const edit = fakeDocument.body.createEdit().appendChild(fakeDocument.createTextN
 
 // the synthetic object edit maintains a reference back to the source file -- where it patches changes --
 // file:///path/to/local/file.html in this case.
-FileEditorDependency.getInstance(deps).applyEditActions(...edit.actions);
+FileEditorProvider.getInstance(deps).applyEditActions(...edit.actions);
 ```
 
 Diffing & patching synthetic objects example:
@@ -82,18 +82,18 @@ UPDATE:
 ```typescript
 import {
   WebpackBundleStrategy,
-  BundlerStrategyDependency,
-  BundlerDependency
+  BundlerStrategyProvider,
+  BundlerProvider
 } from "@tandem/sandbox";
 
 const dependencies = new Dependencies(
-  new BundlerStrategyDependency("webpack", new WebpackBundleStrategy(webpackConfig)),
-  new BundlerStrategyDependency("webpack2", new WebpackBundleStrategy(webpackConfig)),
-  new BundlerStrategyDependency("rollup", new RollupBundleStrategy(webpackConfig)),
-  new BundlerDependency()
+  new BundlerStrategyProvider("webpack", new WebpackBundleStrategy(webpackConfig)),
+  new BundlerStrategyProvider("webpack2", new WebpackBundleStrategy(webpackConfig)),
+  new BundlerStrategyProvider("rollup", new RollupBundleStrategy(webpackConfig)),
+  new BundlerProvider()
 );
 
-const bundler = BundlerDependency.getInstance("webpack"); // webpack strategy
+const bundler = BundlerProvider.getInstance("webpack"); // webpack strategy
 
 const sandbox = new Sandbox();
 sandbox.open(bundler.bundle("./file.js"));
