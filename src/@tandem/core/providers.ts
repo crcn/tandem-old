@@ -1,7 +1,7 @@
 import {
   IActor,
   Provider,
-  Dependencies,
+  Injector,
   ClassFactoryProvider,
 } from "@tandem/common";
 
@@ -21,7 +21,7 @@ export class ApplicationServiceProvider<T extends IActor> extends ClassFactoryPr
     return super.create();
   }
 
-  static findAll(dependencies: Dependencies) {
+  static findAll(dependencies: Injector) {
     return dependencies.queryAll<ApplicationServiceProvider<any>>(this.getId("**"));
   }
 }

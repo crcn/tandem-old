@@ -13,14 +13,14 @@ import {
   Observable,
   deserialize,
   flattenTree,
-  Dependencies,
+  Injector,
   serializable,
   ISerializable,
   getSerializeType,
   SingletonThenable,
   ISerializedContent,
   MimeTypeProvider,
-  DependenciesProvider,
+  InjectorProvider,
 } from "@tandem/common";
 
 export type contentEditorType = { new(filePath: string, content: string): IEditor };
@@ -308,8 +308,8 @@ export class FileEditor extends Observable {
   private _editActions: EditAction[];
   private _shouldEditAgain: boolean;
 
-  @inject(DependenciesProvider.ID)
-  private _dependencies: Dependencies;
+  @inject(InjectorProvider.ID)
+  private _dependencies: Injector;
 
   constructor() {
     super();

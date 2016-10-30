@@ -10,15 +10,15 @@ import {
 } from "../bundle";
 import {
   inject,
-  Dependencies,
-  DependenciesProvider,
+  Injector,
+  InjectorProvider,
   MimeTypeAliasProvider,
 } from "@tandem/common";
 
 
 export class DefaultBundleLoader implements IBundleLoader {
-  @inject(DependenciesProvider.ID)
-  private _dependencies: Dependencies;
+  @inject(InjectorProvider.ID)
+  private _dependencies: Injector;
 
   constructor(readonly stragegy: DefaultBundleStragegy, readonly options: any) { }
 
@@ -56,8 +56,8 @@ export class DefaultBundleStragegy implements IBundleStragegy {
   @inject(FileResolverProvider.ID)
   private _resolver: IFileResolver;
 
-  @inject(DependenciesProvider.ID)
-  private _dependencies: Dependencies;
+  @inject(InjectorProvider.ID)
+  private _dependencies: Injector;
 
   getLoader(loaderOptions: any): IBundleLoader {
     return this._dependencies.inject(new DefaultBundleLoader(this, loaderOptions));

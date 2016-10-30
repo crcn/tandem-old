@@ -8,14 +8,14 @@ import { Logger } from "@tandem/common/logger";
 import { BrokerBus } from "@tandem/common/busses";
 import { SequenceBus } from "mesh";
 import { IApplication } from "@tandem/common/application";
-import { Dependencies } from "@tandem/common/ioc";
+import { Injector } from "@tandem/common/ioc";
 import { loggable, bindable } from "@tandem/common/decorators";
 import { LoadAction, InitializeAction } from "@tandem/common/actions";
 // import {  consoleLogServiceProvider } from "../services";
 
 import {
   PrivateBusProvider,
-  DependenciesProvider,
+  InjectorProvider,
   ApplicationServiceProvider,
   ApplicationSingletonProvider,
 } from "@tandem/common/ioc";
@@ -28,7 +28,7 @@ export class BaseApplication implements IApplication {
 
   readonly logger: Logger;
   readonly bus: BrokerBus = new BrokerBus(SequenceBus);
-  readonly dependencies: Dependencies = new Dependencies();
+  readonly dependencies: Injector = new Injector();
   private _initializeCalled: boolean = false;
 
   constructor(readonly config: any = {}) {
@@ -65,7 +65,7 @@ export class BaseApplication implements IApplication {
     // property so that this reference isn't passed around everywhere.
     this.dependencies.register(
       new PrivateBusProvider(this.bus),
-      new DependenciesProvider(),
+      new InjectorProvider(),
       new ApplicationSingletonProvider(this)
     );
   }

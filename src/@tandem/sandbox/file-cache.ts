@@ -12,7 +12,7 @@ import {
   Observable,
   TypeWrapBus,
   DSFindAction,
-  Dependencies,
+  Injector,
   ENV_IS_NODE,
   PostDSAction,
   DSInsertAction,
@@ -22,7 +22,7 @@ import {
   BaseActiveRecord,
   SingletonThenable,
   PrivateBusProvider,
-  DependenciesProvider,
+  InjectorProvider,
   ActiveRecordCollection,
 } from "@tandem/common";
 
@@ -190,7 +190,7 @@ export class FileCache extends Observable {
   private _synchronizer: FileCacheSynchronizer;
   readonly collection: ActiveRecordCollection<FileCacheItem, IFileCacheItemData>;
 
-  constructor(@inject(DependenciesProvider.ID) private _dependencies: Dependencies) {
+  constructor(@inject(InjectorProvider.ID) private _dependencies: Injector) {
     super();
     this._bus        = PrivateBusProvider.getInstance(_dependencies);
     this.collection = ActiveRecordCollection.create(this.collectionName, _dependencies, (source: IFileCacheItemData) => {

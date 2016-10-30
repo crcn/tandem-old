@@ -17,14 +17,14 @@ import {
   IInjectable,
   findTreeNode,
   IObservable,
-  Dependencies,
+  Injector,
   bindProperty,
   watchProperty,
   HTML_MIME_TYPE,
   MimeTypeProvider,
   PropertyChangeAction,
   PrivateBusProvider,
-  DependenciesProvider,
+  InjectorProvider,
   waitForPropertyChange,
 } from "@tandem/common";
 
@@ -54,7 +54,7 @@ export interface ISyntheticBrowser extends IObservable {
   parent?: ISyntheticBrowser;
   renderer: ISyntheticDocumentRenderer;
   document: SyntheticDocument;
-  dependencies: Dependencies;
+  dependencies: Injector;
   location: SyntheticLocation;
 }
 
@@ -70,7 +70,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   private _openOptions: ISyntheticBrowserOpenOptions;
   private _renderer: ISyntheticDocumentRenderer;
 
-  constructor(protected _dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, readonly parent?: ISyntheticBrowser) {
+  constructor(protected _dependencies: Injector, renderer?: ISyntheticDocumentRenderer, readonly parent?: ISyntheticBrowser) {
     super();
     _dependencies.inject(this);
 

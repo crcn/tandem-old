@@ -1,9 +1,9 @@
 import { IActor } from "@tandem/common/actors";
 import {
-  Dependencies,
+  Injector,
   PrivateBusProvider,
   MimeTypeProvider,
-  DependenciesProvider,
+  InjectorProvider,
 } from "@tandem/common/ioc";
 import { IDisposable } from "@tandem/common/object";
 
@@ -26,8 +26,8 @@ export class File extends Observable {
 
   private _watcher: IDisposable;
 
-  @inject(DependenciesProvider.ID)
-  protected _dependencies: Dependencies;
+  @inject(InjectorProvider.ID)
+  protected _dependencies: Injector;
 
   @inject(PrivateBusProvider.ID)
   protected _bus: IActor;
@@ -49,7 +49,7 @@ export class File extends Observable {
     // await UpdateTemporaryFileContentAction.execute(this, this._bus);
   }
 
-  // static async open(path: string, dependencies: Dependencies, mimeType?: string): Promise<File> {
+  // static async open(path: string, dependencies: Injector, mimeType?: string): Promise<File> {
   //   const bus = PrivateBusProvider.getInstance(dependencies);
   //   const data = await ReadFileAction.execute(path, bus);
   //   const fileFactory = FileFactoryProvider.find(mimeType || MimeTypeProvider.lookup(path, dependencies), dependencies) || FileFactoryProvider.find("file", dependencies);

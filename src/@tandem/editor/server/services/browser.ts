@@ -18,7 +18,7 @@ import { loggable, inject } from "@tandem/common/decorators";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { BaseApplicationService } from "@tandem/common/services";
 import { CoreApplicationService } from "@tandem/core";
-import { Dependencies } from "@tandem/common";
+import { Injector } from "@tandem/common";
 import { FileCacheProvider, FileCache } from "@tandem/sandbox";
 import { DSUpsertAction, LoadAction, InitializeAction } from "@tandem/common/actions";
 

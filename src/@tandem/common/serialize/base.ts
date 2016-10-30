@@ -1,4 +1,4 @@
-import { Dependencies } from "@tandem/common/ioc";
+import { Injector } from "@tandem/common/ioc";
 
 export interface ISerializedContent<T> {
   type: string;
@@ -7,7 +7,7 @@ export interface ISerializedContent<T> {
 
 export interface ISerializer<T, U> {
   serialize(value: T): U;
-  deserialize(value: U, dependencies: Dependencies, ctor?: any): T;
+  deserialize(value: U, dependencies: Injector, ctor?: any): T;
 }
 
 export interface ISerializable<T> {
@@ -105,7 +105,7 @@ export function serialize(value: any): ISerializedContent<any> {
   };
 }
 
-export function deserialize(content: ISerializedContent<any>, dependencies: Dependencies): any {
+export function deserialize(content: ISerializedContent<any>, dependencies: Injector): any {
 
   const info: ISerializerInfo = _serializers[content.type];
 

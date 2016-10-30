@@ -5,7 +5,7 @@ import {
   diffArray,
   serialize,
   deserialize,
-  Dependencies,
+  Injector,
   ISerializer,
   ITreeWalker,
   serializable,

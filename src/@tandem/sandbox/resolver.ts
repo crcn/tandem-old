@@ -6,11 +6,11 @@ import { ResolveFileAction } from "./actions";
 import {
   IActor,
   inject,
-  Dependencies,
+  Injector,
   SingletonThenable,
   MimeTypeProvider,
   PrivateBusProvider,
-  DependenciesProvider,
+  InjectorProvider,
 } from "@tandem/common";
 import * as resolve from "resolve";
 import * as pkgpath from "package-path";
@@ -71,8 +71,8 @@ export class RemoteFileResolver extends BaseFileResolver {
 
 export class LocalFileResolver extends BaseFileResolver {
 
-  @inject(DependenciesProvider.ID)
-  private _dependencies: Dependencies;
+  @inject(InjectorProvider.ID)
+  private _dependencies: Injector;
 
   async resolve2(relativePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
 

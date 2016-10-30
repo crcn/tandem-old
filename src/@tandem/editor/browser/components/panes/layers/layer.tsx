@@ -13,7 +13,7 @@ import {
   Action,
   IActor,
   CallbackBus,
-  Dependencies,
+  Injector,
   flattenTree,
   traverseTree,
   findTreeNode,
@@ -24,7 +24,7 @@ import {
 
 interface ILayerLabelProps {
   paddingLeft?: number;
-  dependencies: Dependencies;
+  dependencies: Injector;
   app: FrontEndApplication;
   node: SyntheticDOMNode;
   connectDragSource: Function;

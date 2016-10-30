@@ -7,7 +7,7 @@ import { IsolateComponent }  from "@tandem/editor/browser/components/common";
 import { SyntheticDOMElement }  from "@tandem/synthetic-browser";
 import PreviewLayerComponent from "./preview";
 import { UpdateAction, IActor } from "@tandem/common";
-import { Dependencies, PrivateBusProvider } from "@tandem/common";
+import { Injector, PrivateBusProvider } from "@tandem/common";
 import { BoundingRect, IPoint, BaseApplicationComponent } from "@tandem/common";
 import {
   ZoomAction,

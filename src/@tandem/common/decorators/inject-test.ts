@@ -1,6 +1,6 @@
 import { inject } from "./inject";
 import { expect } from "chai";
-import { Dependencies, ClassFactoryProvider, Provider, IInjectable } from "../ioc";
+import { Injector, ClassFactoryProvider, Provider, IInjectable } from "../ioc";
 
 describe(__filename + "#", () => {
   it("can inject a simple string into a name prop", () => {
@@ -9,7 +9,7 @@ describe(__filename + "#", () => {
       public name: string;
     }
 
-    const dependencies = new Dependencies(
+    const dependencies = new Injector(
       new Provider<string>("name", "bob"),
       new ClassFactoryProvider("person", Person)
     );
@@ -25,7 +25,7 @@ describe(__filename + "#", () => {
       public name: string;
     }
 
-    const dependencies = new Dependencies(
+    const dependencies = new Injector(
       new Provider<string>("name", "bob"),
       new ClassFactoryProvider("person", Person)
     );
@@ -42,7 +42,7 @@ describe(__filename + "#", () => {
 
       }
     }
-    const dependencies = new Dependencies(
+    const dependencies = new Injector(
       new Provider<string>("name", "joe"),
       new ClassFactoryProvider("person", Person)
     );

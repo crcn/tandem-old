@@ -14,9 +14,9 @@ import { IWorkspaceTool, BaseEditorTool } from "@tandem/editor/browser/models";
 
 import {
   Provider,
-  Dependencies,
+  Injector,
   PrivateBusProvider,
-  DependenciesProvider,
+  InjectorProvider,
   ApplicationServiceProvider,
 } from "@tandem/common";
 
@@ -36,8 +36,8 @@ export class EditInnerHTMLTool extends BaseEditorTool {
   @inject(PrivateBusProvider.ID)
   readonly bus: IActor;
 
-  @inject(DependenciesProvider.ID)
-  readonly dependencies: Dependencies;
+  @inject(InjectorProvider.ID)
+  readonly dependencies: Injector;
 
   private _disposed: boolean;
 
@@ -112,8 +112,8 @@ class InsertTextTool extends InsertTool {
   readonly cursor: string = "text";
   readonly resizable: boolean = false;
 
-  @inject(DependenciesProvider.ID)
-  private _dependencies: Dependencies;
+  @inject(InjectorProvider.ID)
+  private _dependencies: Injector;
 
   get displayEntityToolFactory() {
     return <WorkspaceToolFactoryProvider>this._dependencies.query(editInnerHTMLProvider.id);

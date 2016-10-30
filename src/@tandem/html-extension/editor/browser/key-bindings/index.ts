@@ -8,13 +8,13 @@ import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
 import { parseMarkup, evaluateMarkup, SyntheticDOMElement } from "@tandem/synthetic-browser";
-import { ClassFactoryProvider, DependenciesProvider, Dependencies } from "@tandem/common";
+import { ClassFactoryProvider, InjectorProvider, Injector } from "@tandem/common";
 import { WorkspaceToolFactoryProvider, GlobalKeyBindingProvider } from "@tandem/editor/browser/providers";
 
 abstract class BaseInsertElementTool extends InsertTool {
 
-  @inject(DependenciesProvider.ID)
-  private _dependencies: Dependencies;
+  @inject(InjectorProvider.ID)
+  private _dependencies: Injector;
 
   constructor(readonly options: any, editor: any) {
     super(editor);

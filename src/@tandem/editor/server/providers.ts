@@ -1,4 +1,4 @@
-import { Provider, Dependencies } from "@tandem/common";
+import { Provider, Injector } from "@tandem/common";
 
 export class StdinHandlerProvider extends Provider<any> {
   static readonly NS = "stdinHandler";
@@ -14,7 +14,7 @@ export class StdinHandlerProvider extends Provider<any> {
     return [this.NS, name].join("/");
   }
 
-  static findByInput(input: string, dependencies: Dependencies): StdinHandlerProvider {
+  static findByInput(input: string, dependencies: Injector): StdinHandlerProvider {
     for (const handlerProvider of dependencies.queryAll<StdinHandlerProvider>(this.getId("**"))) {
       if (handlerProvider.test(input)) {
         return handlerProvider;

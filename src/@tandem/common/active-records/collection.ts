@@ -7,7 +7,7 @@ import { IBrokerBus } from "@tandem/common/busses";
 import { IDisposable } from "@tandem/common/object";
 import { IActiveRecord } from "./base";
 import { ObservableCollection } from "@tandem/common/observable";
-import { Dependencies, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
+import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import { PostDSAction, DSFindAction, DSUpdateAction, DSInsertAction } from "@tandem/common/actions";
 
 // TODO - remove global listener
@@ -24,11 +24,11 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
     super();
   }
 
-  static create<T extends IActiveRecord<any>, U>(collectionName: string, dependencies: Dependencies, createActiveRecord: (source: U) => T, query: any = {}): ActiveRecordCollection<T, U> {
+  static create<T extends IActiveRecord<any>, U>(collectionName: string, dependencies: Injector, createActiveRecord: (source: U) => T, query: any = {}): ActiveRecordCollection<T, U> {
     return new (this as any)().setup(collectionName, dependencies, createActiveRecord, query);
   }
 
-  setup(collectionName: string, dependencies: Dependencies, createActiveRecord: (source: U) => T, query?: Object) {
+  setup(collectionName: string, dependencies: Injector, createActiveRecord: (source: U) => T, query?: Object) {
     this.collectionName = collectionName;
     this._bus = PrivateBusProvider.getInstance(dependencies);
     this.createActiveRecord = createActiveRecord;

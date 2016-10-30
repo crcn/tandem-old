@@ -4,7 +4,7 @@ import { IBrokerBus, BrokerBus } from "@tandem/common/busses";
 import { LoadAction, InitializeAction } from "../actions";
 import {
   Provider,
-  Dependencies,
+  Injector,
   PrivateBusProvider,
 } from '../ioc';
 
@@ -21,7 +21,7 @@ export interface IApplication extends IInvoker {
   readonly bus: IBrokerBus;
 
   // parts of the application
-  readonly dependencies: Dependencies;
+  readonly dependencies: Injector;
 }
 
 /**
@@ -32,7 +32,7 @@ export class Application2 {
   protected bus: IActor;
   private _initialized: boolean;
 
-  constructor(readonly dependencies: Dependencies) {
+  constructor(readonly dependencies: Injector) {
     this.bus = PrivateBusProvider.getInstance(dependencies);
   }
 
@@ -48,7 +48,7 @@ export class Application2 {
     this._initialized = true;
     this.willLoad();
 
-    // Prepare the application for initialization. Dependencies that
+    // Prepare the application for initialization. Injector that
     // need to be loaded before being used by other dependencies should listen on this action
     // here.
     await this.bus.execute(new LoadAction());

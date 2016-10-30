@@ -16,10 +16,10 @@ import {
   bindProperty,
   IInjectable,
   EntityAction,
-  Dependencies,
+  Injector,
   watchProperty,
   PropertyChangeAction,
-  DependenciesProvider,
+  InjectorProvider,
 } from "@tandem/common";
 
 import {

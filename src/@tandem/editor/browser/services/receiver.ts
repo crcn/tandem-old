@@ -2,8 +2,8 @@ import {
   inject,
   Action,
   IActor,
-  Dependencies,
-  DependenciesProvider,
+  Injector,
+  InjectorProvider,
   CommandFactoryProvider,
   ApplicationServiceProvider,
 } from "@tandem/common";
@@ -13,8 +13,8 @@ import {SequenceBus } from "mesh";
 // Command pattern receiver
 export class ReceiverService implements IActor {
 
-  @inject(DependenciesProvider.ID)
-  private _dependencies: Dependencies;
+  @inject(InjectorProvider.ID)
+  private _dependencies: Injector;
 
   constructor() {
 

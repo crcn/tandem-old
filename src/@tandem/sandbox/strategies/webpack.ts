@@ -5,9 +5,9 @@ import {
   inject,
   Logger,
   loggable,
-  Dependencies,
+  Injector,
   JS_MIME_TYPE,
-  DependenciesProvider,
+  InjectorProvider,
 } from "@tandem/common";
 
 // TODO - handle __webpack_public_path__
@@ -302,8 +302,8 @@ export class WebpackBundleStrategy implements IBundleStragegy {
 
   protected readonly logger: Logger;
 
-  @inject(DependenciesProvider.ID)
-  private _dependencies: Dependencies;
+  @inject(InjectorProvider.ID)
+  private _dependencies: Injector;
 
   @inject(FileResolverProvider.ID)
   private _resolver: IFileResolver;

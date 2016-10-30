@@ -6,9 +6,9 @@ import {
   Logger,
   IBrokerBus,
   IInjectable,
-  Dependencies,
+  Injector,
   PrivateBusProvider,
-  DependenciesProvider,
+  InjectorProvider,
 } from "@tandem/common";
 
 import { ApplicationConfigurationProvider } from "./providers";
@@ -25,8 +25,8 @@ export abstract class BaseApplicationService2 implements IActor, IInjectable {
   @inject(PrivateBusProvider.ID)
   protected bus: IBrokerBus;
 
-  @inject(DependenciesProvider.ID)
-  protected dependencies: Dependencies;
+  @inject(InjectorProvider.ID)
+  protected dependencies: Injector;
 
   execute(action: Action) {
     const method = this[action.type];

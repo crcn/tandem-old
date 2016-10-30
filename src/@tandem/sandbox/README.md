@@ -3,7 +3,7 @@ Sandboxed environment for running code.
 Kitchen sink example:
 
 ```typescript
-import { Dependencies } from "@tandem/common";
+import { Injector } from "@tandem/common";
 import { SyntheticWindow, SyntheticDocument } from "@tandem/synthetic-browser";
 import {
   Bundle,
@@ -22,7 +22,7 @@ import {
 } from "@tandem/sandbox";
 
 
-const deps = new Dependencies(
+const deps = new Injector(
   new BundlerProvider(),
   new FileEditorProvider(),
   new FileSystemProvider(new LocalFileSystem()),
@@ -86,7 +86,7 @@ import {
   BundlerProvider
 } from "@tandem/sandbox";
 
-const dependencies = new Dependencies(
+const dependencies = new Injector(
   new BundlerStrategyProvider("webpack", new WebpackBundleStrategy(webpackConfig)),
   new BundlerStrategyProvider("webpack2", new WebpackBundleStrategy(webpackConfig)),
   new BundlerStrategyProvider("rollup", new RollupBundleStrategy(webpackConfig)),

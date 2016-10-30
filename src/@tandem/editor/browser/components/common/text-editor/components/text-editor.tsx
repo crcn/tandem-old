@@ -9,13 +9,13 @@ import {
   BrokerBus,
   startDrag,
   ITokenizer,
-  Dependencies,
+  Injector,
   stringTokenizer,
   translateAbsoluteToRelativePoint
 } from "@tandem/common";
 import HighlightComponent from "./highlight";
 
-export class TextEditorComponent extends React.Component<{ onKeyDown?: Function, onFocus?: Function, onChange?: Function, onBlur?: Function, style?: Object, className?: string, source: string, dependencies: Dependencies, tokenizer: ITokenizer }, any> implements IActor {
+export class TextEditorComponent extends React.Component<{ onKeyDown?: Function, onFocus?: Function, onChange?: Function, onBlur?: Function, style?: Object, className?: string, source: string, dependencies: Injector, tokenizer: ITokenizer }, any> implements IActor {
 
   readonly bus: BrokerBus;
   private _timer: any;

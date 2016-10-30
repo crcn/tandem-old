@@ -53,6 +53,7 @@ export class Logger {
   }
 
   /**
+   * @deprecated. Use verbose.
    * General logging information to help with debugging
    */
 

@@ -10,7 +10,7 @@ import {
   Logger,
   Observable,
   IObservable,
-  Dependencies,
+  Injector,
   PropertyChangeAction,
 } from "@tandem/common";
 
@@ -49,7 +49,7 @@ export class Sandbox extends Observable {
   private _global: any;
   private _exports: any;
 
-  constructor(private _dependencies: Dependencies, private createGlobal: () => any = () => {}) {
+  constructor(private _dependencies: Injector, private createGlobal: () => any = () => {}) {
     super();
     this._dependencies.inject(this);
     this._entryObserver = new WrapBus(this.onEntryAction.bind(this));

@@ -26,7 +26,7 @@ import {
   ISerializer,
   IObservable,
   serializable,
-  Dependencies,
+  Injector,
   watchProperty,
   ISourceLocation,
   SingletonThenable,
@@ -36,7 +36,7 @@ import {
   DisposableCollection,
   PropertyChangeAction,
   PrivateBusProvider,
-  DependenciesProvider,
+  InjectorProvider,
   ActiveRecordCollection,
   MimeTypeAliasProvider,
 } from "@tandem/common";
@@ -155,7 +155,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
   private _loading: boolean;
 
 
-  constructor(source: IBundleData, collectionName: string, private _bundler: Bundler, private _dependencies: Dependencies) {
+  constructor(source: IBundleData, collectionName: string, private _bundler: Bundler, private _dependencies: Injector) {
     super(source, collectionName, PrivateBusProvider.getInstance(_dependencies));
 
     this._dependencyObserver = new WrapBus(this.onProviderAction.bind(this));
@@ -494,7 +494,7 @@ export class Bundler extends Observable {
   private _bundleRequests: any;
   public $strategy: IBundleStragegy;
 
-  constructor(strategy: IBundleStragegy, @inject(DependenciesProvider.ID) private _dependencies: Dependencies) {
+  constructor(strategy: IBundleStragegy, @inject(InjectorProvider.ID) private _dependencies: Injector) {
     super();
     this._bundleRequests = {};
 

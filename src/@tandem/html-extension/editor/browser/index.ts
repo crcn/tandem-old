@@ -1,4 +1,4 @@
-import { Dependencies } from "@tandem/common";
+import { Injector } from "@tandem/common";
 import { keyBindingProvider } from "./key-bindings";
 import { pastHTMLServiceProvider } from "./services";
 import { createHTMLCoreDependencies } from "../../core";
@@ -32,7 +32,7 @@ import {
 
 export function createHTMLEditorBrowserDependencies() {
 
-  return new Dependencies(
+  return new Injector(
 
     createHTMLCoreDependencies(),
 

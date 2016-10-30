@@ -4,7 +4,7 @@ runtime environments.
 #### Example:
 
 ```typescript
-import { Dependencies } from "@tandem/common";
+import { Injector } from "@tandem/common";
 import { htmlExtension } from "@tandem/html-extension";
 import { sassExtension } from "@tandem/sass-extension";
 import { RemoteSyntheticBrowser, DOMRenderer } from "@tandem/synthetic-browser";
@@ -20,7 +20,7 @@ import {
 } from "@tandem/sandbox";
 
 
-const dependencies = new Dependencies(
+const dependencies = new Injector(
 
   new FileCacheProvider(),
 

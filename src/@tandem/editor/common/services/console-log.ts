@@ -1,6 +1,7 @@
 import * as chalk from "chalk";
 import { CoreApplicationService } from "@tandem/core";
 import { titleize } from "inflection";
+import * as moment from "moment";
 import {
   Logger,
   LogLevel,
@@ -19,6 +20,68 @@ export class ConsoleLogServiceAction extends Action {
   }
 }
 
+
+function createLogColorizer(tester: RegExp, replaceValue: any) {
+  return function(input: string) {
+    if (!tester.test(input)) return input;
+    return input.replace(tester, replaceValue);
+  }
+}
+
+const highlighters = [
+
+  // *de emphasis*
+  createLogColorizer(/\*(.*?)\*/g, (match, word) => chalk.grey(word)),
+
+  // _emphasis_
+  createLogColorizer(/_(.*?)_/g, (match, word) => chalk.un(word)),
+
+  // __big emphasis__
+  createLogColorizer(/__(.*?)__/g, (match, word) => chalk.bold(word)),
+
+  // !success
+  createLogColorizer(/!([^\s]+)/g, (match, word) => chalk.green(word)),
+
+  // >>input - magenta (from audio)
+  createLogColorizer(/>>(.*)/g, (match, word) => chalk.magenta(word)),
+
+  // <<output - green (from audio again)
+  createLogColorizer(/<<(.*)/g, (match, word) => chalk.green(word)),
+
+  // strings
+  createLogColorizer(/"(.*?)"/g, (match, inner) => `"${chalk.blue(inner)}"`),
+
+  // tokens
+  createLogColorizer(/(\b[\:\{\}]\b|->|null|undefined|Infinity)/g, (match) => chalk.grey(match)),
+
+  // URL
+  createLogColorizer(/((\w{3,}\:\/\/)|([^\/\s"']+)?\/)([^\/\s"']+\/?)+/g, (match, word) => chalk.yellow(match)),
+
+  // duration
+  createLogColorizer(/\s\d+(\.\d+)?(s|ms|m|h|d)/g, (match) => chalk.magenta(match)),
+
+  // timestamp
+  createLogColorizer(/\[\d+\.\d+\.\d+\]/, (match, inner) => `[${chalk.grey(inner)}]`),
+
+  createLogColorizer(/INFO/, (match) => chalk.bgCyan(match)),
+  createLogColorizer(/ERR(OR)?/i, (match) => chalk.bgRed(match)),
+  createLogColorizer(/WARN(ING)?/i, (match) => chalk.bgYellow(match))
+
+];
+
+function colorize(input: string) {
+  let output = input; //.replace(/'/g, "‘");
+  for (let i = highlighters.length; i--;) output = highlighters[i](output);
+  return output;
+}
+
+const PREFIXES = {
+  [LogLevel.VERBOSE]: "",
+  [LogLevel.INFO]: "INFO: ",
+  [LogLevel.WARN]: "WARN: ",
+  [LogLevel.ERROR]: "ERROR: ",
+}
+
 export class ConsoleLogService extends CoreApplicationService<any> {
 
   [LogAction.LOG]({ level, text }: LogAction) {
@@ -35,32 +98,15 @@ export class ConsoleLogService extends CoreApplicationService<any> {
       [LogLevel.ERROR]: console.error.bind(console)
     }[level];
 
-    const color = {
-      [LogLevel.VERBOSE]: "grey",
-      [LogLevel.LOG]: ENV_IS_NODE ? "white" : "black",
-      [LogLevel.INFO]: ENV_IS_NODE ? "cyan": "blue",
-      [LogLevel.WARN]: "yellow",
-      [LogLevel.ERROR]: "red",
-    }[level];
 
+    text = colorize(PREFIXES[level] + text);
 
-    if (typeof window !== "undefined") {
-      log("%c: %s", `color: ${color}`, text);
-    } else {
-
-      let ccolor: any = chalk;
-
-      if (hlog) {
-        if (text.toLowerCase().indexOf(hlog.toLowerCase()) !== -1) {
-          ccolor = chalk.bgMagenta;
-        } else {
-          ccolor = ccolor[color];
-        }
-      } else {
-        ccolor = chalk[color];
+    if (hlog) {
+      if (text.toLowerCase().indexOf(hlog.toLowerCase()) !== -1) {
+        text = chalk.bgMagenta(text);
       }
-
-      log(ccolor(": %s"), text);
     }
+
+    log(text);
   }
 }

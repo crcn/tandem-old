@@ -1,4 +1,4 @@
-import { Dependencies } from "@tandem/common/ioc";
+import { Injector } from "@tandem/common/ioc";
 
 export class System {
   constructor() {

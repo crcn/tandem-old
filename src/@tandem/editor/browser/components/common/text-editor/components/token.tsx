@@ -2,10 +2,10 @@ import * as React from "react";
 import Token from "../models/token";
 import Line from "../models/line";
 import TextEditor from "../models/text-editor";
-import { Dependencies } from "@tandem/common";
+import { Injector } from "@tandem/common";
 import { TokenComponentFactoryProvider } from "@tandem/editor/browser/providers";
 
-class TokenComponent extends React.Component<{ token: Token, editor: TextEditor, line: Line, dependencies: Dependencies }, any> {
+class TokenComponent extends React.Component<{ token: Token, editor: TextEditor, line: Line, dependencies: Injector }, any> {
 
 
   render() {

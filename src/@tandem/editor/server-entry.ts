@@ -1,7 +1,7 @@
 import "./entry-shims";
 
 import { argv } from "yargs";
-import { Dependencies } from "@tandem/common";
+import { Injector } from "@tandem/common";
 import { ServiceApplication } from "@tandem/core";
 import { IEdtorServerConfig, concatEditorServerDependencies } from "./server";
 
@@ -24,7 +24,7 @@ const config: IEdtorServerConfig = {
   }
 };
 
-const deps = new Dependencies(
+const deps = new Injector(
   createHTMLEditorServerDependencies(),
 
   // worker deps

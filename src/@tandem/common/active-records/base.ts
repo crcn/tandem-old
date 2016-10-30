@@ -7,7 +7,7 @@ import { ISerializable } from "@tandem/common/serialize";
 import { IBrokerBus, TypeWrapBus } from "@tandem/common/busses";
 import { Observable, IObservable } from "@tandem/common/observable";
 import { WrapBus, AcceptBus, ParallelBus } from "mesh";
-import { Dependencies, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
+import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import {
   Action,
   DSAction,

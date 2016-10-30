@@ -1,7 +1,7 @@
-import { Provider, IProvider, Dependencies, IInjectable } from "../ioc";
+import { Provider, IProvider, Injector, IInjectable } from "../ioc";
 
 /**
- * inject decorator for properties of classes that live in a Dependencies object
+ * inject decorator for properties of classes that live in a Injector object
  */
 
 export function inject(id?: string, map: (dependency: IProvider) => any = undefined) {

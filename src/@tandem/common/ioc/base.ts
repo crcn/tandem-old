@@ -29,7 +29,7 @@ export interface IProvider extends ICloneable {
    * The collection that this dependency belongs to
    */
 
-  owner: Dependencies;
+  owner: Injector;
 
   /**
    * Clones the dependency. Required in case the dependency
@@ -40,7 +40,7 @@ export interface IProvider extends ICloneable {
 }
 
 export class Provider<T> implements IProvider {
-  public owner: Dependencies;
+  public owner: Injector;
   constructor(readonly id: string, public value: T, readonly overridable: boolean = true) { }
 
   /**
@@ -93,13 +93,13 @@ export class ClassFactoryProvider extends Provider<{ new(...rest): any}> impleme
   }
 }
 
-export type registerableProviderType = Array<IProvider|Dependencies|any[]>;
+export type registerableProviderType = Array<IProvider|Injector|any[]>;
 
 /**
- * Contains a collection of Dependencies
+ * Contains a collection of Injector
  */
 
-export class Dependencies implements ICloneable {
+export class Injector implements ICloneable {
 
   private _dependenciesByNs: any = {};
 
@@ -124,7 +124,7 @@ export class Dependencies implements ICloneable {
   }
 
   /**
-   * queries for all Dependencies with the given namespace
+   * queries for all Injector with the given namespace
    */
 
   queryAll<T extends IProvider>(ns: string) {
@@ -143,7 +143,7 @@ export class Dependencies implements ICloneable {
    */
 
   clone() {
-    return new Dependencies(...this.queryAll<any>("/**"));
+    return new Injector(...this.queryAll<any>("/**"));
   }
 
   /**
@@ -180,15 +180,15 @@ export class Dependencies implements ICloneable {
   /**
    */
 
-  register(...dependencies: registerableProviderType): Dependencies {
+  register(...dependencies: registerableProviderType): Injector {
 
     const flattenedDependencies: Array<IProvider> = flattenDeep(dependencies);
 
     for (let dependency of flattenedDependencies) {
 
-      // Dependencies collection? Merge it into this one.
-      if (dependency instanceof Dependencies) {
-        this.register(...(<Dependencies>dependency).queryAll("/**"));
+      // Injector collection? Merge it into this one.
+      if (dependency instanceof Injector) {
+        this.register(...(<Injector>dependency).queryAll("/**"));
         continue;
       }
 

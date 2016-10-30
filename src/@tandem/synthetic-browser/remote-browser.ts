@@ -13,7 +13,7 @@ import {
   IInjectable,
   flattenTree,
   deserialize,
-  Dependencies,
+  Injector,
   serializable,
   definePublicAction,
   PrivateBusProvider,
@@ -31,7 +31,7 @@ import { Bundle, Bundler, BundlerProvider, SyntheticObjectEditor, IBundleStrateg
       data: serialize(data)
     }
   },
-  deserialize({ type, data }: RemoteBrowserDocumentAction, dependencies: Dependencies) {
+  deserialize({ type, data }: RemoteBrowserDocumentAction, dependencies: Injector) {
     return new RemoteBrowserDocumentAction(type, deserialize(data, dependencies));
   }
 })
@@ -53,7 +53,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   private _documentEditor: SyntheticObjectEditor;
   private _remoteStream: any;
 
-  constructor(dependencies: Dependencies, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
+  constructor(dependencies: Injector, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
     super(dependencies, renderer, parent);
     this._bus = PrivateBusProvider.getInstance(dependencies);
   }

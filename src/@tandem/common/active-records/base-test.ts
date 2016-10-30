@@ -4,11 +4,11 @@
 // import { BrokerBus, PostDsNotifierBus } from "@tandem/common/busses";
 // import { ActiveRecord, ActiveRecordCollection, insert } from "./base";
 // import { DSFindAction, DSInsertAction, DSUpdateAction, DSRemoveAction } from "@tandem/common/actions";
-// import { Dependencies, PrivateBusProvider,  } from "@tandem/common/ioc";
+// import { Injector, PrivateBusProvider,  } from "@tandem/common/ioc";
 
 // describe(__filename + "#", () => {
 //   describe("ActiveRecord#", () => {
-//     let deps: Dependencies;
+//     let deps: Injector;
 //     let broker: BrokerBus;
 
 //     class Person extends ActiveRecord {
@@ -26,7 +26,7 @@
 //     }
 
 //     beforeEach(() => {
-//       deps = new Dependencies(
+//       deps = new Injector(
 //         new ActiveRecordFactoryProvider("person", Person),
 //         new PrivateBusProvider(broker = new BrokerBus(ParallelBus))
 //       );

@@ -2,15 +2,15 @@ import * as React from "react";
 import { IActor } from "@tandem/common/actors";
 import { inject } from "@tandem/common/decorators";
 import {
-  Dependencies,
+  Injector,
   IInjectable,
   PrivateBusProvider,
-  DependenciesProvider,
+  InjectorProvider,
 } from "@tandem/common/ioc";
 
 export interface IApplicationComponentContext {
   bus: IActor;
-  dependencies: Dependencies;
+  dependencies: Injector;
 }
 
 export const appComponentContextTypes = {
@@ -25,8 +25,8 @@ export class BaseApplicationComponent<T, U> extends React.Component<T, U> implem
   @inject(PrivateBusProvider.ID)
   protected readonly bus: IActor;
 
-  @inject(DependenciesProvider.ID)
-  protected readonly dependencies: Dependencies
+  @inject(InjectorProvider.ID)
+  protected readonly dependencies: Injector
 
   constructor(props: T, context: IApplicationComponentContext, callbacks: any) {
     super(props, context, callbacks);

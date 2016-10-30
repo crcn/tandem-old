@@ -9,7 +9,7 @@ import {
   IFactory,
   IProvider,
   Provider,
-  Dependencies,
+  Injector,
   ClassFactoryProvider,
   createSingletonProviderClass,
 } from "@tandem/common";
@@ -24,7 +24,7 @@ export class GlobalKeyBindingProvider extends ClassFactoryProvider {
   clone() {
     return new GlobalKeyBindingProvider(this.keys, this.commandClass);
   }
-  static findAll(dependencies: Dependencies) {
+  static findAll(dependencies: Injector) {
     return dependencies.queryAll<GlobalKeyBindingProvider>(`${GLOBAL_KEY_BINDINGS_NS}/**`);
   }
 }
@@ -34,7 +34,7 @@ export class EntityPreviewProvider extends ReactComponentFactoryProvider {
   constructor(componentClass: React.ComponentClass<any>) {
     super(ENTITY_PREVIEW_COMPONENT_NS, componentClass);
   }
-  static find(dependencies: Dependencies) {
+  static find(dependencies: Injector) {
     return dependencies.query<EntityPreviewProvider>(ENTITY_PREVIEW_COMPONENT_NS);
   }
 }
@@ -53,11 +53,11 @@ export class WorkspaceToolFactoryProvider extends ClassFactoryProvider {
     return super.create(editor);
   }
 
-  static findAll(editorType: string, dependencies: Dependencies) {
+  static findAll(editorType: string, dependencies: Injector) {
     return dependencies.queryAll<WorkspaceToolFactoryProvider>([EDITOR_TOOL_NS, editorType, "**"].join("/"));
   }
 
-  static find(id: string, editorType: string, dependencies: Dependencies) {
+  static find(id: string, editorType: string, dependencies: Injector) {
     return dependencies.query<WorkspaceToolFactoryProvider>([EDITOR_TOOL_NS, editorType, id].join("/"));
   }
 }
@@ -101,7 +101,7 @@ export class LayerLabelComponentFactoryProvider extends ReactComponentFactoryPro
   constructor(readonly displayType: string, readonly componentClass: React.ComponentClass<any>, readonly childrenProperty: string = "children") {
     super([LAYER_LABEL_COMPONENT, displayType].join("/"), componentClass);
   }
-  static find(displayType: string, dependencies: Dependencies) {
+  static find(displayType: string, dependencies: Injector) {
     return dependencies.query<LayerLabelComponentFactoryProvider>([LAYER_LABEL_COMPONENT, displayType].join("/"));
   }
   clone() {
@@ -122,7 +122,7 @@ export class TokenComponentFactoryProvider extends ReactComponentFactoryProvider
     return [TokenComponentFactoryProvider.TOKEN_COMPONENT_FACTORIES_NS, tokenType].join("/");
   }
 
-  static find(tokenType: string, dependencies: Dependencies) {
+  static find(tokenType: string, dependencies: Injector) {
     return dependencies.query<TokenComponentFactoryProvider>(this.getNamespace(tokenType));
   }
   clone() {
@@ -138,7 +138,7 @@ export class FooterComponentFactoryProvider extends ReactComponentFactoryProvide
   static getNamespace(name: string) {
     return [FooterComponentFactoryProvider.NS_PREFIX, name].join("/");
   }
-  static find(name: string, dependencies: Dependencies) {
+  static find(name: string, dependencies: Injector) {
     return dependencies.query<FooterComponentFactoryProvider>(this.getNamespace(name));
   }
   clone() {

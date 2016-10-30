@@ -171,7 +171,8 @@ gulp.task('prepare:vscode-extension-symlinks', () => {
  ******************************/
 
 gulp.task('clean', gulpSequence(
-  'clean:out'
+  'clean:out',
+  'clean:symlinks'
 ));
 
 gulp.task('clean:out', function() {

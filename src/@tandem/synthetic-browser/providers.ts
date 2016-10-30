@@ -1,7 +1,7 @@
 import { SyntheticBrowser } from "./browser";
 import { RemoteBrowserService } from "./remote-browser";
 import { syntheticElementClassType, SyntheticDOMNode } from "./dom";
-import { Provider, Dependencies, MimeTypeProvider, ApplicationServiceProvider } from "@tandem/common";
+import { Provider, Injector, MimeTypeProvider, ApplicationServiceProvider } from "@tandem/common";
 
 export class SyntheticDOMElementClassProvider extends Provider<syntheticElementClassType> {
   static readonly SYNTHETIC_ELEMENT_CLASS_NS_PREFIX = "syntheticMarkupElementClass";
@@ -18,7 +18,7 @@ export class SyntheticDOMElementClassProvider extends Provider<syntheticElementC
     return [this.SYNTHETIC_ELEMENT_CLASS_NS_PREFIX, encodeURIComponent(xmlns), tagName].join("/");
   }
 
-  static findAll(dependencies: Dependencies) {
+  static findAll(dependencies: Injector) {
     return dependencies.queryAll<SyntheticDOMElementClassProvider>([this.SYNTHETIC_ELEMENT_CLASS_NS_PREFIX, "**"].join("/"));
   }
 }
@@ -31,7 +31,7 @@ export class MarkupMimeTypeXMLNSProvider extends Provider<string> {
   static getNamespace(mimeType: string) {
     return [this.MARKUP_MIME_TYPE_XMLNS, mimeType].join("/");
   }
-  static lookup(path: string, dependencies: Dependencies): string {
+  static lookup(path: string, dependencies: Injector): string {
     const mimeType = MimeTypeProvider.lookup(path, dependencies);
     const dependency = dependencies.query<MarkupMimeTypeXMLNSProvider>(this.getNamespace(mimeType));
     return dependency && dependency.value;
@@ -57,7 +57,7 @@ export class SyntheticDOMCasterProvider extends Provider<IMarkupDOMCaster> {
     return [this.MARKUP_DOM_CASTER_NS, id].join("/");
   }
 
-  static async castAsDOMNode(object: any, browser: SyntheticBrowser, dependencies: Dependencies): Promise<SyntheticDOMNode> {
+  static async castAsDOMNode(object: any, browser: SyntheticBrowser, dependencies: Injector): Promise<SyntheticDOMNode> {
     for (const dep of dependencies.queryAll<SyntheticDOMCasterProvider>(this.getNamespace("**"))) {
       const ret = await dep.value.cast(object, browser);
       if (ret instanceof SyntheticDOMNode) return ret;

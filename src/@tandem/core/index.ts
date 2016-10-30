@@ -3,11 +3,11 @@ import { ApplicationServiceProvider, ApplicationConfigurationProvider } from "./
 
 import {
   BrokerBus,
-  Dependencies,
+  Injector,
   PublicBusProvider,
   PrivateBusProvider,
   ProtectedBusProvider,
-  DependenciesProvider,
+  InjectorProvider,
   registerableProviderType,
 } from "@tandem/common";
 
@@ -41,7 +41,7 @@ function createBusDependencies() {
   const protectedBus = new BrokerBus(SequenceBus, publicBus);
   const privateBus   = new BrokerBus(SequenceBus, protectedBus);
 
-  return new Dependencies(
+  return new Injector(
     new PublicBusProvider(publicBus),
     new ProtectedBusProvider(protectedBus),
     new PrivateBusProvider(privateBus),
@@ -49,9 +49,9 @@ function createBusDependencies() {
 }
 
 export function createCoreApplicationDependencies(config: any, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
-  return new Dependencies(
+  return new Injector(
     createBusDependencies(),
-    new DependenciesProvider(),
+    new InjectorProvider(),
     new ApplicationConfigurationProvider(config),
     createSandboxDependencies(fileSystemClass, fileResolverClass),
   );

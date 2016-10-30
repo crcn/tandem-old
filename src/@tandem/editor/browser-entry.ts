@@ -1,6 +1,6 @@
 import "./entry-shims";
 
-import { Dependencies } from "@tandem/common";
+import { Injector } from "@tandem/common";
 import { ServiceApplication } from "@tandem/core";
 import { IEditorBrowserConfig, concatEditorBrowserDependencies } from "./browser";
 
@@ -18,7 +18,7 @@ const config: IEditorBrowserConfig = {
   server: window["config"].server
 };
 
-const deps = new Dependencies(
+const deps = new Injector(
 
   // worker deps
   // createHTMLEditorWorkerDependencies(),

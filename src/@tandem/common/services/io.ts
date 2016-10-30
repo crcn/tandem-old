@@ -4,7 +4,7 @@ import * as sift from "sift";
 import { Logger } from "@tandem/common/logger";
 import { Service } from "@tandem/common/services";
 import { IApplication } from "@tandem/common/application";
-import { Dependencies } from "@tandem/common/ioc";
+import { Injector } from "@tandem/common/ioc";
 import * as SocketIOBus from "mesh-socket-io-bus";
 import { loggable, document } from "@tandem/common/decorators";
 import { serialize, deserialize } from "@tandem/common/serialize";
@@ -77,7 +77,7 @@ export class IOService<T extends IApplication> extends BaseApplicationService<T>
     });
   }
 
-  static create<T extends IApplication>(dependencies: Dependencies): IOService<T> {
+  static create<T extends IApplication>(dependencies: Injector): IOService<T> {
     return dependencies.inject(new IOService<T>());
   }
 }

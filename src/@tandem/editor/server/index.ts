@@ -1,4 +1,4 @@
-import { Dependencies } from "@tandem/common";
+import { Injector } from "@tandem/common";
 import { IEdtorServerConfig } from "./config";
 import { createCoreApplicationDependencies, ApplicationServiceProvider } from "@tandem/core";
 
@@ -14,8 +14,8 @@ import {
 
 import { createCommonEditorDependencies } from "../common";
 
-export function concatEditorServerDependencies(dependencies: Dependencies, config: IEdtorServerConfig) {
-  return new Dependencies(
+export function concatEditorServerDependencies(dependencies: Injector, config: IEdtorServerConfig) {
+  return new Injector(
     dependencies,
     createCommonEditorDependencies(),
     createCoreApplicationDependencies(config),
