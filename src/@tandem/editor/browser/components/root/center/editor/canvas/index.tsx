@@ -58,6 +58,25 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     // });
   }
 
+  onDragEnter = (event: React.DragEvent<any>) =>  {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "copy";
+  }
+
+
+  onDrop = (event: React.DragEvent<any>) =>  {
+    event.preventDefault();
+
+    // TODO - accept file from folder. Original idea was to do this from the code IDE,
+    // but that's not possible :(
+    // const dt = event.dataTransfer;
+
+  }
+
+  onDragExit = (event: React.DragEvent<any>) => {
+    console.log("drag exit", event);
+  }
+
   pane(leftDelta, topDelta) {
     this.translate(this.props.workspace.transform.left - leftDelta, this.props.workspace.transform.top - topDelta);
   }
@@ -222,8 +241,11 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
       <div
         ref="canvas"
         onMouseMove={this.onMouseEvent}
+        onDragOver={this.onDragEnter}
+        onDrop={this.onDrop}
         onMouseDown={this.onMouseDown}
         tabIndex={-1}
+        onDragExit={this.onDragExit}
         className="m-editor-stage-canvas"
         style={style}>
           <div style={innerStyle} className="noselect" data-previewroot>

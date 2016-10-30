@@ -67,6 +67,6 @@ export class IsolateComponent extends BaseApplicationComponent<any, any> {
   }
 
   render() {
-    return <iframe ref="container" scrolling={this.props.scrolling} onWheel={this.props.onWheel} onScroll={this.props.onScroll} onLoad={this.props.onLoad} className={this.props.className} style={this.props.style} />;
+    return <iframe ref="container" scrolling={this.props.scrolling} onDragOver={this.props.onDragOver} onDrop={this.props.onDrop} onWheel={this.props.onWheel} onScroll={this.props.onScroll} onLoad={this.props.onLoad} className={this.props.className} style={this.props.style} />;
   }
 }

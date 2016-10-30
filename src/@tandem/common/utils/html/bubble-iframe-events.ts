@@ -37,6 +37,9 @@ export function bubbleHTMLIframeEvents(iframe: HTMLIFrameElement, options: any =
   const eventTypes = [
     "keypress",
     "copy",
+    "dragenter",
+    "dragexit",
+    "drop",
     "paste",
     "mousemove",
     "mousedown",

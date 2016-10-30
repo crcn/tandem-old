@@ -382,7 +382,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
     const transformResult: IBundleLoaderResult = await loader.load(this.filePath, await this.getInitialSourceContent());
 
     if (this._content === transformResult.content) {
-      this.logger.info("Bundle content has not changed.");
+      this.logger.info("content has not changed.");
       this.notifyBundleReady();
       this._loading = false;
       return this;

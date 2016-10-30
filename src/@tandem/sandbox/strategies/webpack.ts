@@ -297,6 +297,7 @@ function findCommonJSDependencyPaths(source) {
 /**
  */
 
+
 @loggable()
 export class WebpackBundleStrategy implements IBundleStragegy {
 
@@ -314,12 +315,12 @@ export class WebpackBundleStrategy implements IBundleStragegy {
 
   constructor(config: string|IWebpackConfig) {
 
-    if (typeof config === "string") {
-      this.basedir = path.dirname(config);
-      this.config = require(config);
-    } else {
+    if (config && typeof config === "object") {
       this.basedir = process.cwd();
       this.config = config;
+    } else {
+      this.basedir = config && path.dirname(<string>config) || process.cwd();
+      this.config = require(<string>config || path.join(this.basedir, "webpack.config.js"));
     }
 
     this.compiler = new MockWebpackCompiler();

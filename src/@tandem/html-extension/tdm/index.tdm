@@ -1,0 +1,3 @@
+<tandem>
+  <artboard title="test" src="./css-pane-preview.tsx" strategy="webpack" style="width: 800px; height: 768px; position: absolute;" />
+</tandem>

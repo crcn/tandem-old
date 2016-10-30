@@ -3,7 +3,7 @@ import { OpenProjectAction } from "@tandem/editor/common";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 import { ApplicationServiceDependency } from "@tandem/common/dependencies";
-import { LoadAction, InitializeAction, SockBus, Action, isPublicAction } from "@tandem/common";
+import { LoadAction, InitializeAction, SockBus, Action, isPublicAction, serialize, deserialize } from "@tandem/common";
 import * as os from "os";
 import * as path from "path";
 import * as net from "net";
@@ -41,7 +41,7 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
       const client = net.connect({ path: this._socketFile } as any);
 
       client.once("connect", async () => {
-        await ExecAction.execute(this.config, new SockBus(client, this.bus));
+        await ExecAction.execute(this.config, new SockBus(client, this.bus, { serialize, deserialize }));
         client.end();
         this._printSockFile();
       })
@@ -73,7 +73,7 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
   private _startSocketServer() {
     this._deleteSocketFile();
     const server = net.createServer((connection) => {
-      const bus = new SockBus(connection, this.bus);
+      const bus = new SockBus(connection, this.bus, { serialize, deserialize });
       const gateBus = {
         execute(action: Action) {
           if (isPublicAction(action)) {

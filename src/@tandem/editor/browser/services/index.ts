@@ -6,3 +6,4 @@ export * from "./component";
 export * from "./selector";
 export * from "./settings";
 export * from "./workspace";
+export * from "./dnd";

@@ -9,7 +9,6 @@ export class TestComponent extends React.Component<{ message: string }, {}> {
   }
 }
 
-
 const element = document.createElement("div");
 ReactDOM.render(<TestComponent message="World" />, element);
 

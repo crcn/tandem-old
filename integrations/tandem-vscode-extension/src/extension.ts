@@ -33,6 +33,8 @@ import { 
     PrivateBusDependency,
     Action,
     PostDSAction,
+    serialize,
+    deserialize,
     PropertyChangeAction,
     Observable,
     IBrokerBus,
@@ -50,7 +52,6 @@ class FileCacheChangeAction extends Action{
 class TandemClient extends Observable {
 
     readonly fileCache: FileCache;
-    readonly bundler: Bundler;
     readonly bus: IBrokerBus
     public port: number;
 
@@ -69,7 +70,6 @@ class TandemClient extends Observable {
 
         this._clientApp = new ServiceApplication(deps);
 
-        this.bundler   = BundlerDependency.getInstance(deps);
         this.fileCache = FileCacheDependency.getInstance(deps);
         this.bus       = PrivateBusDependency.getInstance(deps);
 
@@ -93,7 +93,9 @@ class TandemClient extends Observable {
 
         console.log("Connecting to the server");
         const client = this._sockConnection = net.connect({ path: sockFilePath } as any);
-        const sockBus = new SockBus(client, this.bus);
+        const sockBus = new SockBus(client, this.bus, {
+            serialize, deserialize
+        });
 
         this.bus.register(sockBus);
         let _reconnecting = false;
@@ -122,7 +124,7 @@ class TandemClient extends Observable {
         // isolate the td process so that it doesn't compete with resources
         // with VSCode.
         const tdproc = this._process = spawn(`node`, ["server-entry.js", "--expose-sock-file"], {
-            cwd: process.cwd() + "/node_modules/@tandem/editor"
+            cwd: __dirname + "/../../../../node_modules/@tandem/editor"
         });
 
         tdproc.stdout.pipe(process.stdout);
@@ -176,7 +178,6 @@ export async function activate(context: vscode.ExtensionContext) {
             setEditorContentFromCache((<FileCacheChangeAction>action).item);
         }
     }));
-
 
     var _inserted = false;
     var _content;

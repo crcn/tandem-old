@@ -1,4 +1,4 @@
-import { BaseContentEditor, RemoveEditAction, SetKeyValueEditAction } from "@tandem/sandbox";
+import { BaseContentEditor, InsertChildEditAction, RemoveEditAction, SetKeyValueEditAction } from "@tandem/sandbox";
 import { sourcePositionEquals } from "@tandem/common";
 import {
   parseMarkup,
@@ -6,6 +6,7 @@ import {
   SyntheticDOMNode,
   SyntheticDOMElementEdit,
   findMarkupExpression,
+  SyntheticDOMContainerEdit,
   SyntheticDOMElement,
   MarkupNodeExpression,
   MarkupElementExpression,
@@ -24,6 +25,11 @@ export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
     if (newName) {
       element.removeAttribute(newName);
     }
+  }
+
+  [SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT](element: MarkupElementExpression, { target, child, index }: InsertChildEditAction) {
+    const childExpression = parseMarkup((<SyntheticDOMNode>child).toString());
+    element.childNodes.splice(index, 0, childExpression);
   }
 
   findTargetASTNode(root: MarkupFragmentExpression, synthetic: SyntheticDOMNode) {

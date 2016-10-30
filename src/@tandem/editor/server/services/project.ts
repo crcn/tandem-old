@@ -19,11 +19,11 @@ import { CoreApplicationService } from "@tandem/core";
 
 const tmpProjectFile = "/tmp/project.tdm";
 
+@loggable()
 export class ProjectService extends CoreApplicationService<IEdtorServerConfig> {
   private _primaryProjectPath: string;
 
   async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
-    console.log("opening project file", action.filePath);
     if (/\.tdm$/.test(action.filePath)) {
       this._primaryProjectPath = action.filePath;
     } else if (!this._primaryProjectPath) {

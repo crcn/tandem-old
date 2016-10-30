@@ -44,6 +44,8 @@ import {
 
 import { OpenProjectAction } from "@tandem/editor/common";
 
+// TODO - defer various actions to project file controller.
+
 @loggable()
 export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfig> {
 
@@ -76,7 +78,22 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
 
   async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
 
+    // TODO - check if extension is project file
+
     const path = action.filePath;
+
+    const syntheticDocument = this._store.workspace.document;
+
+    const root = <SyntheticDOMElement>syntheticDocument.body.firstChild;
+    const artboard = syntheticDocument.createElement("artboard");
+    artboard.setAttribute("src", path);
+
+    const edit = root.createEdit();
+
+    edit.appendChild(artboard);
+
+    this.bus.execute(new ApplyEditAction(edit));
+
 
     // if (!/\.tdm$/.test(path)) {
     //   const body = this.app.workspace.browser.document.body;

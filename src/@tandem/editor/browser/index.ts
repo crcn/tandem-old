@@ -26,6 +26,7 @@ import { Store } from "./models";
 import { createCommonEditorDependencies } from "../common";
 
 import {
+  DNDService,
   ServerService,
   SettingsService,
   ClipboardService,
@@ -41,6 +42,7 @@ export function concatEditorBrowserDependencies(dependencies: Dependencies, conf
     createCoreApplicationDependencies(config, fileSystemClass, fileResolverClass),
 
     // services
+    new ApplicationServiceDependency("dnd", DNDService),
     new ApplicationServiceDependency("server", ServerService),
     new ApplicationServiceDependency("settings", SettingsService),
     new ApplicationServiceDependency("clipboard", ClipboardService),

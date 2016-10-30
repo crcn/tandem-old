@@ -106,8 +106,6 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
         config: this.getAttribute("strategy-config") && path.resolve(this.source.filePath, this.getAttribute("strategy-config"))
       };
 
-      console.log(bundleStrategyOptions);
-
       this._artboardBrowser.open((await bundler.findByFilePath(this.source.filePath)).getAbsoluteDependencyPath(src), bundleStrategyOptions);
     }
   }
