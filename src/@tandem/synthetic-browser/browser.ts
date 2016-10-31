@@ -29,7 +29,7 @@ import {
 } from "@tandem/common";
 
 import {
-  Bundle,
+  BundleDependency,
   Bundler,
   Sandbox,
   BundlerProvider,
@@ -37,7 +37,6 @@ import {
 } from "@tandem/sandbox";
 
 import {
-  SyntheticDOMCasterProvider,
   SyntheticDOMElementClassProvider,
 } from "./providers";
 
@@ -138,7 +137,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
 export class SyntheticBrowser extends BaseSyntheticBrowser {
 
   private _sandbox: Sandbox;
-  private _entry: Bundle;
+  private _entry: BundleDependency;
 
   $didInject() {
     super.$didInject();

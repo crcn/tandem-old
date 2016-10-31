@@ -5,7 +5,7 @@ import { IFileSystem, LocalFileSystem, RemoteFileSystem } from "./file-system";
 import { IFileResolver, LocalFileResolver, RemoteFileResolver } from "./resolver";
 
 import {
-  Bundle,
+  BundleDependency,
   Bundler,
   IBundleLoader,
   IBundleStragegy,

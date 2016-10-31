@@ -6,7 +6,7 @@ Kitchen sink example:
 import { Injector } from "@tandem/common";
 import { SyntheticWindow, SyntheticDocument } from "@tandem/synthetic-browser";
 import {
-  Bundle,
+  BundleDependency,
   Sandbox,
   Bundler,
   FileCacheItem,
@@ -42,7 +42,7 @@ const sandbox = new Sandbox(deps, function createGlobal() {
 
 // create an bundle entry -- all dependencies, and nested dependencies
 // be bundled up into this object.
-const fileBundle: Bundle = bundler.bundle("file:///path/to/local/file.html");
+const fileBundle: BundleDependency = bundler.bundle("file:///path/to/local/file.html");
 
 // execute the file bundle. Re-execute if the bundle changes
 const fakeDocument: SyntheticDocument = await sandbox.open(fileBundle);

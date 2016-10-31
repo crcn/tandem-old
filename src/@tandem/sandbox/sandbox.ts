@@ -1,6 +1,6 @@
 import { WrapBus } from "mesh";
 import { BundleAction } from "./actions";
-import { Bundle, Bundler } from "./bundle";
+import { BundleDependency, Bundler } from "./bundle";
 import { SandboxModuleEvaluatorFactoryProvider, BundlerProvider } from "./providers";
 import {
   IActor,
@@ -21,7 +21,7 @@ export interface ISandboxBundleEvaluator {
 
 export class SandboxModule {
   public exports: any;
-  constructor(readonly sandbox: Sandbox, readonly bundle: Bundle) {
+  constructor(readonly sandbox: Sandbox, readonly bundle: BundleDependency) {
     this.exports = {};
   }
 
@@ -40,7 +40,7 @@ export class Sandbox extends Observable {
   protected readonly logger: Logger;
 
   private _modules: any;
-  private _entry: Bundle;
+  private _entry: BundleDependency;
   private _paused: boolean;
   private _mainModule: any;
   private _entryObserver: IActor;
@@ -75,7 +75,7 @@ export class Sandbox extends Observable {
     return this._global;
   }
 
-  async open(bundle: Bundle) {
+  async open(bundle: BundleDependency) {
 
     if (this._entry) {
       this._entry.unobserve(this._entryObserver);
@@ -118,7 +118,7 @@ export class Sandbox extends Observable {
       throw new Error(`Cannot evaluate ${bundle.filePath}:${bundle.type} in sandbox.`);
     }
 
-    this.logger.verbose("evaluating %s", bundle.filePath);
+    this.logger.verbose("Evaluating %s", bundle.filePath);
     evaluatorFactoryDepedency.create().evaluate(module);
 
     return this.require(hash, interpretableName);

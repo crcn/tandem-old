@@ -1,4 +1,4 @@
-import { Bundle } from "@tandem/sandbox";
+import { BundleDependency } from "@tandem/sandbox";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { BaseContentEdit, EditAction, SetKeyValueEditAction, SetValueEditActon } from "@tandem/sandbox";
 import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "./declaration";

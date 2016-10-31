@@ -123,7 +123,7 @@ export interface IBundleData {
 }
 
 @loggable()
-export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable {
+export class BundleDependency extends BaseActiveRecord<IBundleData> implements IInjectable {
 
   protected readonly logger: Logger;
 
@@ -279,10 +279,10 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
    * The dependency bundle references
    *
    * @readonly
-   * @type {Bundle[]}
+   * @type {BundleDependency[]}
    */
 
-  get dependencyBundles(): Bundle[] {
+  get dependencyBundles(): BundleDependency[] {
     return values(this._resolvedProviderInfo).map((inf) => {
       return this._bundler.eagerFindByHash(getBundleItemHash(inf));
     });
@@ -303,7 +303,7 @@ export class Bundle extends BaseActiveRecord<IBundleData> implements IInjectable
     this._updatedAt = Date.now();
   }
 
-  whenReady(): Promise<Bundle> {
+  whenReady(): Promise<BundleDependency> {
     if (this.ready) return Promise.resolve(this);
     return new Promise((resolve, reject) => {
       const observer = new WrapBus((action: Action) => {
@@ -490,7 +490,7 @@ export class Bundler extends Observable {
 
   protected readonly logger: Logger;
 
-  readonly collection: ActiveRecordCollection<Bundle, IBundleData>;
+  readonly collection: ActiveRecordCollection<BundleDependency, IBundleData>;
   private _bundleRequests: any;
   public $strategy: IBundleStragegy;
 
@@ -501,7 +501,7 @@ export class Bundler extends Observable {
     // temporary - this should be passed into the constructor
     this.$strategy = strategy || this._injector.inject(new DefaultBundleStragegy());
     this.collection = ActiveRecordCollection.create(this.collectionName, _injector, (source: IBundleData) => {
-      return this._injector.inject(new Bundle(source, this.collectionName, this, _injector));
+      return this._injector.inject(new BundleDependency(source, this.collectionName, this, _injector));
     });
     this.collection.sync();
   }
@@ -519,7 +519,7 @@ export class Bundler extends Observable {
    * file path may be associated with multiple bundles
    */
 
-  eagerFindByFilePath(filePath): Bundle {
+  eagerFindByFilePath(filePath): BundleDependency {
     return this.collection.find((entity) => entity.filePath === filePath);
   }
 
@@ -528,7 +528,7 @@ export class Bundler extends Observable {
    * process.
    */
 
-  eagerFindByHash(hash): Bundle {
+  eagerFindByHash(hash): BundleDependency {
     return this.collection.find((entity) => entity.hash === hash);
   }
 
@@ -536,7 +536,7 @@ export class Bundler extends Observable {
    * Loads an item from memory if it exists, or from the remote data store.
    */
 
-  async findByFilePath(filePath): Promise<Bundle> {
+  async findByFilePath(filePath): Promise<BundleDependency> {
     return this.eagerFindByFilePath(filePath) || await this.collection.loadItem({ filePath });
   }
 
@@ -544,10 +544,10 @@ export class Bundler extends Observable {
    * Creates a new bundle with the given file path.
    *
    * @param {string} entryFilePath
-   * @returns {Promise<Bundle>}
+   * @returns {Promise<BundleDependency>}
    */
 
-  async bundle(ops: IBundleResolveResult): Promise<Bundle> {
+  async bundle(ops: IBundleResolveResult): Promise<BundleDependency> {
     const hash = getBundleItemHash(ops);
     return this._bundleRequests[hash] || (this._bundleRequests[hash] = new SingletonThenable(async () => {
       const bundle = await this.eagerFindByHash(hash);

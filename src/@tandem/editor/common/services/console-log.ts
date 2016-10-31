@@ -63,9 +63,10 @@ const highlighters = [
   // timestamp
   createLogColorizer(/\[\d+\.\d+\.\d+\]/, (match, inner) => `[${chalk.grey(inner)}]`),
 
-  createLogColorizer(/INFO/, (match) => chalk.bgCyan(match)),
-  createLogColorizer(/ERR(OR)?/i, (match) => chalk.bgRed(match)),
-  createLogColorizer(/WARN(ING)?/i, (match) => chalk.bgYellow(match))
+  createLogColorizer(/\s?INFO\s*/, (match) => chalk.bgCyan(match)),
+  createLogColorizer(/\s?ERR(OR)?\s?/i, (match) => chalk.bgRed(match)),
+  createLogColorizer(/\s?DEBUG\s?/i, (match) => chalk.grey.bgBlack(match)),
+  createLogColorizer(/\s?WARN(ING)?\s?/i, (match) => chalk.bgYellow(match))
 ];
 
 function colorize(input: string) {
@@ -75,9 +76,9 @@ function colorize(input: string) {
 }
 
 const PREFIXES = {
-  [LogLevel.VERBOSE]: "",
-  [LogLevel.INFO]: "INFO: ",
-  [LogLevel.WARN]: "WARN: ",
+  [LogLevel.VERBOSE]: "DEBUG: ",
+  [LogLevel.INFO]: "INFO : ",
+  [LogLevel.WARN]: "WARN : ",
   [LogLevel.ERROR]: "ERROR: ",
 }
 

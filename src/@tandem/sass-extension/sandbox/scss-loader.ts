@@ -4,7 +4,7 @@ import { inject, CSS_MIME_TYPE, isMaster, Queue } from "@tandem/common";
 
 import { evaluateCSS, SyntheticWindow } from "@tandem/synthetic-browser";
 import {
-  Bundle,
+  BundleDependency,
   FileCache,
   IFileResolver,
   IBundleLoader,

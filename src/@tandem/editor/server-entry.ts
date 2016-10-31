@@ -1,7 +1,7 @@
 import "./entry-shims";
 
 import { argv } from "yargs";
-import { Injector } from "@tandem/common";
+import { Injector, Logger, PrivateBusProvider } from "@tandem/common";
 import { ServiceApplication } from "@tandem/core";
 import { IEdtorServerConfig, concatEditorServerProviders } from "./server";
 
@@ -24,7 +24,7 @@ const config: IEdtorServerConfig = {
   }
 };
 
-const deps = new Injector(
+let deps = new Injector(
   createHTMLEditorServerProviders(),
 
   // worker deps
@@ -36,16 +36,18 @@ const deps = new Injector(
   createTDProjectEditorServerProviders()
 );
 
-const app = new ServiceApplication(
-  concatEditorServerProviders(deps, config)
-);
+deps = concatEditorServerProviders(deps, config);
+
+const app = new ServiceApplication(deps);
 
 app.initialize();
 
+const logger = new Logger(PrivateBusProvider.getInstance(deps));
+
 process.on("unhandledRejection", function(error) {
-  console.log("unhandled rejection", error);
+  logger.error(`Unhandled Rejection ${error.stack}`);
 });
 
 process.on("uncaughtException", function(error) {
-  console.log("unhandled rejection", error);
+  logger.error(`Uncaught Exception ${error.stack}`);
 });

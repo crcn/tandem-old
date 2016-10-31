@@ -22,7 +22,7 @@ import {
 
 import { BaseApplicationService2 } from "@tandem/core/services";
 import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
-import { Bundle, Bundler, BundlerProvider, SyntheticObjectEditor, IBundleStrategyOptions } from "@tandem/sandbox";
+import { BundleDependency, Bundler, BundlerProvider, SyntheticObjectEditor, IBundleStrategyOptions } from "@tandem/sandbox";
 
 @definePublicAction({
   serialize({ type, data }: RemoteBrowserDocumentAction) {
@@ -49,7 +49,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   readonly logger: Logger;
 
   private _bus: IActor;
-  private _bundle: Bundle;
+  private _bundle: BundleDependency;
   private _documentEditor: SyntheticObjectEditor;
   private _remoteStream: any;
 

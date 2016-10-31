@@ -33,35 +33,7 @@ export class MarkupMimeTypeXMLNSProvider extends Provider<string> {
   }
   static lookup(path: string, injector: Injector): string {
     const mimeType = MimeTypeProvider.lookup(path, injector);
-    const dependency = injector.query<MarkupMimeTypeXMLNSProvider>(this.getNamespace(mimeType));
-    return dependency && dependency.value;
-  }
-}
-
-/**
- * Casts vanilla objects as synthetic DOM nodes. Used to mount library components such as
- * React, Vue, Ember, Angular, and others.
- */
-
-export interface IMarkupDOMCaster {
-  cast(object: any, browser: SyntheticBrowser): Promise<SyntheticDOMNode>|SyntheticDOMNode;
-}
-
-export class SyntheticDOMCasterProvider extends Provider<IMarkupDOMCaster> {
-  static readonly MARKUP_DOM_CASTER_NS = "markupDOMCaster";
-  constructor(id: string, value: IMarkupDOMCaster) {
-    super(SyntheticDOMCasterProvider.getNamespace(id), value);
-  }
-
-  static getNamespace(id: string) {
-    return [this.MARKUP_DOM_CASTER_NS, id].join("/");
-  }
-
-  static async castAsDOMNode(object: any, browser: SyntheticBrowser, injector: Injector): Promise<SyntheticDOMNode> {
-    for (const dep of injector.queryAll<SyntheticDOMCasterProvider>(this.getNamespace("**"))) {
-      const ret = await dep.value.cast(object, browser);
-      if (ret instanceof SyntheticDOMNode) return ret;
-    }
-    return undefined;
+    const provider = injector.query<MarkupMimeTypeXMLNSProvider>(this.getNamespace(mimeType));
+    return provider && provider.value;
   }
 }

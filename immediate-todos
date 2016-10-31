@@ -1,3 +1,5 @@
 - [ ] drag & drop react components as artboards
   - [ ] dnd components to add artboards
   - [ ] dnd css files to include
+- [ ] react preview
+- [ ] fix cyclical dependencies

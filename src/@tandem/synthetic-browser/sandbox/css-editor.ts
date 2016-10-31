@@ -3,7 +3,7 @@ import * as postcssSassSyntax from "postcss-scss";
 import { Action, inject, Injector, InjectorProvider, sourcePositionEquals } from "@tandem/common";
 import { SyntheticCSSStyleRule, SyntheticCSSStyleRuleEdit, parseCSS } from "@tandem/synthetic-browser";
 import {
-  Bundle,
+  BundleDependency,
   EditAction,
   IContentEdit,
   BaseContentEdit,

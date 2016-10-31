@@ -1,5 +1,5 @@
 import {
-  Bundle,
+  BundleDependency,
   IBundleLoader,
   BaseBundleLoader,
   IBundleContent,

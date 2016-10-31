@@ -6,7 +6,7 @@ import { IMarkupNodeVisitor } from "./visitor";
 import { MarkupNodeExpression } from "./ast";
 
 import {
-  Bundle,
+  BundleDependency,
   IEditable,
   IDiffable,
   EditAction,
