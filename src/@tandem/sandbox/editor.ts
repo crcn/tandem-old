@@ -17,7 +17,6 @@ import {
   serializable,
   ISerializable,
   getSerializeType,
-  SingletonThenable,
   ISerializedContent,
   MimeTypeProvider,
   InjectorProvider,

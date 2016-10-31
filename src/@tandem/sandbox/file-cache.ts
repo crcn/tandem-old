@@ -21,7 +21,6 @@ import {
   DSRemoveAction,
   DSFindAllAction,
   BaseActiveRecord,
-  SingletonThenable,
   PrivateBusProvider,
   InjectorProvider,
   ActiveRecordCollection,
@@ -33,6 +32,7 @@ import { FileSystemProvider } from "./providers";
 import { WrapBus } from "mesh";
 import { values } from "lodash";
 import * as fs from "fs";
+import * as memoize from "memoizee";
 
 export interface IFileCacheItemData {
   _id?: string;
@@ -56,8 +56,6 @@ export interface IFileCacheItemQuery {
 export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   readonly idProperty = "filePath";
-
-  private _cache: any;
 
   @bindable(true)
   public updatedAt: number;
@@ -104,16 +102,12 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   setFileUrl(url: string) {
-    this._cache = undefined;
+    this.clearCache();
     this.url = `file://${url}`;
     return this;
   }
 
-  async read() {
-    return this._cache || (this._cache = new SingletonThenable(this.read2.bind(this)));
-  }
-
-  private async read2() {
+  read = memoize(async () => {
     if (/^file:\/\//.test(this.url)) {
       return await this._fileSystem.readFile(this.url.substr("file://".length));
     } else {
@@ -129,19 +123,27 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
       const response = await fetch(this.url);
       return await response.text();
     }
-  }
+  }, { promise: true, length: 0 })
 
   shouldDeserialize(b: IFileCacheItemData) {
     return this.updatedAt < b.updatedAt;
   }
 
   setPropertiesFromSource({ filePath, updatedAt, url, metadata, localFileModifiedAt }: IFileCacheItemData) {
-    this._cache    = undefined;
+    this.clearCache();
     this.filePath  = filePath;
     this.url       = url;
     this.updatedAt = updatedAt;
     this.localFileModifiedAt = localFileModifiedAt;
     this.metadata  = new Metadata(metadata);
+  }
+
+  private clearCache() {
+
+    // may not exist immediately, but it will
+    if (this.read) {
+      this.read["clear"]();
+    }
   }
 }
 
@@ -223,12 +225,12 @@ export class FileCache extends Observable {
     return "fileCache";
   }
 
-  async item(filePath: string): Promise<FileCacheItem> {
+  item = memoize(async (filePath: string): Promise<FileCacheItem> => {
     return this.collection.find((entity) => entity.filePath === filePath) || await this.collection.create({
       filePath: filePath,
       url: "file://" + filePath
     }).insert();
-  }
+  }, { promise: true }) as (filePath) => Promise<FileCacheItem>;
 
   /**
    * watches local files for any changes. This is usually called

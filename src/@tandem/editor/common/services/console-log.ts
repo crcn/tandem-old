@@ -37,9 +37,6 @@ const highlighters = [
   // __big emphasis__
   createLogColorizer(/__(.*?)__/g, (match, word) => chalk.underline(word)),
 
-  // !success
-  createLogColorizer(/!([^\s]+)/g, (match, word) => chalk.green(word)),
-
   // >>input - magenta (from audio)
   createLogColorizer(/>>(.*)/g, (match, word) => chalk.magenta(word)),
 
@@ -55,11 +52,12 @@ const highlighters = [
   // numbers
   createLogColorizer(/\b\d+(\.\d+)?\b/g, (match, inner) => `${chalk.cyan(match)}`),
 
+  // duration
+  createLogColorizer(/\s\d+(\.\d+)?(s|ms|m|h|d)(\s|$)/g, (match) => chalk.bold.cyan(match)),
+
   // URL
   createLogColorizer(/((\w{3,}\:\/\/)|([^\/\s\("':]+)?\/)([^\/\)\s"':]+\/?)+/g, (match, word) => chalk.yellow(match)),
 
-  // duration
-  createLogColorizer(/\s\d+(\.\d+)?(s|ms|m|h|d)\b/g, (match) => chalk.bold.cyan(match)),
 
   // timestamp
   createLogColorizer(/\[\d+\.\d+\.\d+\]/, (match, inner) => `[${chalk.grey(inner)}]`),

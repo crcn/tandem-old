@@ -155,3 +155,19 @@ declare module "figlet" {
     verticalLayout?: string
   });
 }
+
+declare module "node-libs-browser" {
+  const libs: any;
+  namespace libs {
+
+  }
+  export = libs;
+}
+
+declare module "detective" {
+  function detective(path: string);
+  namespace detective {
+
+  }
+  export detective;
+}

@@ -1,9 +1,16 @@
-import * as React from "react";
-import { PaneComponent } from "@tandem/editor/browser/components/common";
-import { FrontEndApplication } from "@tandem/editor/browser";
-import { SyntheticDOMAttribute } from "@tandem/synthetic-browser";
+import "reflect-metadata";
 
+import * as React from "react";
+import { Workspace } from "@tandem/editor/browser";
 import { DOMElements } from "@tandem/html-extension/collections";
+import { reactPreview } from "@tandem/common";
+import { PaneComponent } from "@tandem/editor/browser/components/common";
+import {
+  SyntheticWindow,
+  SyntheticLocation,
+  SyntheticHTMLElement,
+  SyntheticDOMAttribute,
+} from "@tandem/synthetic-browser";
 
 class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttribute, setAttribute: (key: string, value: string) => any}, any> {
   render() {
@@ -19,23 +26,30 @@ class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttrib
   }
 }
 
-export class EntityAttributesPaneComponent extends React.Component<{ app: FrontEndApplication }, any> {
+export class EntityAttributesPaneComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
-    return null;
+    const { selection } = this.props.workspace;
+    const items = DOMElements.fromArray(selection);
+    if (!items.length) return null;
 
-    // const { editor } = this.props.app;
-    // if (!editor || !editor.selection.length) return null;
-    // const items = []; //new DOMElementCollection(...editor.selection);
-    // if (!items.length) return null;
-
-    // return <PaneComponent title="Attributes">
-    //   <div className="row">
-    //     {
-    //       items.attributes.map((attribute) => {
-    //         return <AttributeComponent key={attribute.name} attribute={attribute} setAttribute={items.setAttribute.bind(items)} />;
-    //       })
-    //     }
-    //   </div>
-    // </PaneComponent>
+    return <PaneComponent title="Attributes">
+      <div className="row">
+        {
+          items.attributes.map((attribute) => {
+            return <AttributeComponent key={attribute.name} attribute={attribute} setAttribute={items.setAttribute.bind(items)} />;
+          })
+        }
+      </div>
+    </PaneComponent>
   }
 }
+
+reactPreview(() => {
+  const workspace = new Workspace();
+  const window = new SyntheticWindow(null, new SyntheticLocation("test"));
+  (window.document.body as SyntheticHTMLElement).innerHTML = `
+    <div class="test" id="some id" />
+  `;
+  workspace.select(window.document.body.querySelector("div"));
+  return <EntityAttributesPaneComponent workspace={workspace} />
+})(EntityAttributesPaneComponent);

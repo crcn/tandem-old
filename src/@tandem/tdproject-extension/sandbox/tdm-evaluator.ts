@@ -5,6 +5,6 @@ import {
 
 export class TDMEvaluator implements ISandboxBundleEvaluator {
   evaluate(module: SandboxModule) {
-    console.log("EVAL");
+
   }
 }

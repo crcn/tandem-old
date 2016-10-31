@@ -189,7 +189,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
       exportsElement = exports.renderPreview();
     } else {
 
-      this.logger.verbose("checking exports for render metadata: %s", Object.keys(exports).join(", "));
+      this.logger.verbose("Checking exports for render metadata: %s", Object.keys(exports).join(", "));
 
       // scan for reflect metadata
       for (const key in exports) {

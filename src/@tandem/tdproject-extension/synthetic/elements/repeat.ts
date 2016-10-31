@@ -2,6 +2,5 @@ import { SyntheticHTMLElement, SyntheticDOMAttribute } from "@tandem/synthetic-b
 
 export class SyntheticTDRepeatElement extends SyntheticHTMLElement {
   createdCallback() {
-    console.log(this.innerHTML);
   }
 }

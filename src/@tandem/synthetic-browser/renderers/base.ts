@@ -9,7 +9,6 @@ import {
   IObservable,
   BoundingRect,
   watchProperty,
-  SingletonThenable,
   MetadataChangeAction,
   waitForPropertyChange,
 } from "@tandem/common";

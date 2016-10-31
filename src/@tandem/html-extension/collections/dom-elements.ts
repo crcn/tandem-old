@@ -31,7 +31,7 @@ export class DOMElements extends Array<SyntheticDOMElement> {
     // await Promise.all(this.map((entity) => entity.save()));
   }
 
-  static fromArray(...items: Array<SyntheticDOMElement>) {
+  static fromArray(items: Array<any>) {
     return new DOMElements(...items.filter((element) => element && element.nodeType === DOMNodeType.ELEMENT) as any);
   }
 }

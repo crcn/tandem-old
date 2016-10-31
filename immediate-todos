@@ -1,6 +1,7 @@
 - [ ] drag & drop react components as artboards
   - [ ] dnd components to add artboards
   - [ ] dnd css files to include
-- [ ] react preview
-- [ ] fix cyclical dependencies
 - [ ] sandbox test
+- [ ] do not parse included scss files
+  - [ ] possibly imported / included module distinctions.
+- [ ] get emitFile to work

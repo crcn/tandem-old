@@ -14,7 +14,7 @@ export class LogTimer {
   private _startTime: number;
   private _interval: any;
 
-  constructor(readonly logger: Logger, readonly intervalMessage?: string, readonly timeout?: number) {
+  constructor(readonly logger: Logger, readonly intervalMessage?: string, readonly timeout?: number, public level: LogLevel = LogLevel.INFO) {
     this._startTime = Date.now();
 
     if (intervalMessage && timeout) {
@@ -30,7 +30,7 @@ export class LogTimer {
   }
 
   private logTime(message: string) {
-    this.logger.verbose(`${message} %ss`, ((Date.now() - this._startTime) / 1000).toFixed(0));
+    this.logger.log(this.level, `${message} %ss`, ((Date.now() - this._startTime) / 1000).toFixed(0));
   }
 }
 
@@ -57,8 +57,8 @@ export class Logger {
    * General logging information to help with debugging
    */
 
-  log(text: string, ...rest) {
-    this._log(LogLevel.LOG, text, ...rest);
+  log(level: LogLevel, text: string, ...rest) {
+    this._log(level, text, ...rest);
   }
 
   /**
@@ -77,8 +77,8 @@ export class Logger {
     this._log(LogLevel.ERROR, text, text, ...rest);
   }
 
-  startTimer(timeoutMessage?: string, interval: number = 5000) {
-    return new LogTimer(this, timeoutMessage, interval);
+  startTimer(timeoutMessage?: string, interval: number = 5000, logLevel?: LogLevel) {
+    return new LogTimer(this, timeoutMessage, interval, logLevel);
   }
 
   private getPrefix() {

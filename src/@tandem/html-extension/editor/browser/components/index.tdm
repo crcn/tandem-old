@@ -1,0 +1,3 @@
+<tandem>
+  <artboard src="./panes/attributes/index.tsx" bundle-strategy="webpack" />
+</tandem>

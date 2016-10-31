@@ -1,6 +1,7 @@
 // TODO - this is deprecated. Move to strategies/default
 
 import * as fs from "fs";
+import * as memoize from "memoizee";
 
 import { IFileSystem } from "./file-system";
 import { IFileResolver } from "./resolver";
@@ -11,7 +12,6 @@ import {
   Logger,
   Injector,
   loggable,
-  SingletonThenable,
   MimeTypeProvider,
   PrivateBusProvider,
   InjectorProvider,
@@ -57,11 +57,10 @@ export abstract class BaseFileResolver implements IFileResolver {
     this.options = createFileResolverOptions();
   }
 
-  async resolve(relativePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
-    return this._cache[cwd + relativePath] || (this._cache[cwd + relativePath] = new SingletonThenable(() => {
-      return this.resolve2(relativePath, cwd, combineResoverOptions(this.options, options));
-    }));
-  }
+  // TODO - there will be cases where we want to bust the cache on this.
+  resolve = memoize(async (relativePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> => {
+    return this.resolve2(relativePath, cwd, combineResoverOptions(this.options, options));
+  }, { promise: true, normalizer: ([relativePath, cwd, options]) => relativePath + cwd + JSON.stringify(options) })
 
   protected abstract async resolve2(filePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string>;
 }
@@ -116,7 +115,6 @@ export class LocalFileResolver extends BaseFileResolver {
     // relativePath = relativePath.replace(/\/$/, "");
 
     this.logger.verbose(`resolving %s:%s extensions: %s, directories: %s`, cwd, relativePath, extensions.join(", "), directories.join(", "));
-
 
     const resolvedPath = resolve.sync(relativePath, {
       basedir: cwd,

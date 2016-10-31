@@ -13,7 +13,7 @@
   },
   "scripts": {
     "test": "gulp test:all",
-    "start": "SANDBOXED=1 node out/@tandem/editor/server-entry.js --open=true --expose-sock-file=true"
+    "start": "SANDBOXED=1 node out/@tandem/editor/server-entry.js --open=true --log-level=all"
   },
   "repository": {
     "type": "git",
@@ -68,6 +68,7 @@
     "@types/yargs": "0.0.33",
     "chai": "^3.5.0",
     "css-loader": "^0.23.1",
+    "detective": "^4.3.2",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
     "fs-extra": "^0.30.0",

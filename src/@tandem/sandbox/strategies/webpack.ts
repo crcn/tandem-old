@@ -1,6 +1,5 @@
 // A bit of a cluster fuck this is. Needs cleaning after many of mysteries
 // around webpack are resolved.
-
 import {
   inject,
   Logger,
@@ -9,6 +8,9 @@ import {
   JS_MIME_TYPE,
   InjectorProvider,
 } from "@tandem/common";
+
+import * as nodeLibs from "node-libs-browser";
+import * as detective from "detective";
 
 // TODO - handle __webpack_public_path__
 
@@ -68,9 +70,15 @@ export interface IWebpackResolveConfig {
   modulesDirectories: string[];
 }
 
+export interface IWebpackNodeConfig {
+  __filename: boolean;
+  fs: string;
+}
+
 export interface IWebpackConfig {
   entry?: any;
   output?: any;
+  node: IWebpackNodeConfig,
   resolve: IWebpackResolveConfig;
   module: {
     preLoaders?: IWebpackLoaderConfig[];
@@ -158,7 +166,7 @@ class WebpackLoaderContext {
   }
 
   emitFile(fileName: string, content: string) {
-    throw new Error(`emit file is not supported yet`);
+    // throw new Error(`emit file is not supported yet`);
   }
 
 
@@ -238,7 +246,7 @@ class WebpackBundleLoader implements IBundleLoader {
 
     this.logger.verbose("loaded %s", filePath);
 
-    const foundProviderPaths = findCommonJSProviderPaths(result.content);
+    const foundProviderPaths = detective(result.content);
 
     return {
       type: JS_MIME_TYPE,
@@ -283,16 +291,6 @@ function parserLoaderOptions(moduleInfo: string, hasFile: boolean = false): IWeb
   return options;
 }
 
-function findCommonJSProviderPaths(source) {
-  return (
-    source.replace(/\/\*[\s\S]+?\*\//g, "")
-    .replace(/\/\/[^\n\r]+/g, "")
-    .match(/require\(["'].*?["']\)/g) || []
-  ).map((expression) => {
-    return expression.match(/require\(['"](.*?)["']\)/)[1];
-  });
-}
-
 /**
  */
 
@@ -313,7 +311,6 @@ export class WebpackBundleStrategy implements IBundleStragegy {
   readonly basedir: string;
 
   constructor(config: string|IWebpackConfig) {
-
 
     if (config && typeof config === "object") {
       this.basedir = process.cwd();
@@ -350,10 +347,26 @@ export class WebpackBundleStrategy implements IBundleStragegy {
 
     relativeFilePath = config.resolve.alias && config.resolve.alias[relativeFilePath] || relativeFilePath;
 
-    const resolvedFilePath = await this._resolver.resolve(relativeFilePath, cwd, {
+
+    let resolvedFilePath;
+
+    resolvedFilePath = await this._resolver.resolve(relativeFilePath, cwd, {
       extensions: this.config.resolve.extensions,
       directories: [...this.config.resolve.modulesDirectories, config.resolve.root, this.basedir]
     });
+
+    const isCore = resolve.isCore(resolvedFilePath);
+
+    if (isCore) {
+      let type = moduleInfo;
+      if (this.config.node) {
+        const value = this.config.node[moduleInfo];
+        if (this.config.node[moduleInfo] === "empty") {
+          type = "empty";
+        }
+      }
+      resolvedFilePath = nodeLibs[type] || require.resolve(`node-libs-browser/mock/${type}`);
+    }
 
     return {
       filePath: resolvedFilePath,

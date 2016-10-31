@@ -9,9 +9,9 @@ import { FileEditor } from "./editor";
 import { IFileSystem } from "./file-system";
 import { RawSourceMap } from "source-map";
 import { BundleAction } from "./actions";
+import { DefaultBundleStragegy } from "./strategies";
 import { FileCache, FileCacheItem } from "./file-cache";
 import { IFileResolver, IFileResolverOptions } from "./resolver";
-import { DefaultBundleStragegy } from "./strategies";
 
 import {
   inject,
@@ -24,6 +24,7 @@ import {
   Provider,
   Observable,
   IInjectable,
+  LogLevel,
   ISerializer,
   IObservable,
   serializable,
@@ -31,7 +32,6 @@ import {
   Injector,
   watchProperty,
   ISourceLocation,
-  SingletonThenable,
   BaseActiveRecord,
   MimeTypeProvider,
   ActiveRecordAction,
@@ -159,12 +159,11 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
   constructor(source: IBundleData, collectionName: string, private _bundler: Bundler, public $injector: Injector) {
     super(source, collectionName, PrivateBusProvider.getInstance($injector));
 
-    this._dependencyObserver = new WrapBus(this.onProviderAction.bind(this));
+    this._dependencyObserver = new WrapBus(this.onDependencyAction.bind(this));
   }
 
   $didInject() {
     this.logger.generatePrefix = () => `${this.hash}:${this.filePath} `;
-    this.logger.info("Created");
   }
 
   /**
@@ -369,7 +368,7 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
   setPropertiesFromSource({ filePath, loaderOptions, type, updatedAt, content, resolvedProviderInfo, hash }: IBundleData) {
     this._type          = type;
     this._filePath      = filePath;
-    this._loaderOptions = loaderOptions;
+    this._loaderOptions = loaderOptions || {};
     this._updatedAt     = updatedAt;
     this._hash          = hash;
     this._content       = content;
@@ -382,11 +381,12 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
     this.logger.verbose("Loading...");
     const logTimer = this.logger.startTimer();
 
-    const loader = this._bundler.$strategy.getLoader(this._loaderOptions || {});
+    const loader = this._bundler.$strategy.getLoader(this._loaderOptions);
     const transformResult: IBundleLoaderResult = await loader.load(this.filePath, await this.getInitialSourceContent());
 
-    if (this._content === transformResult.content) {
-      this.logger.info("Content has not changed.");
+    if (!transformResult.content || this._content === transformResult.content) {
+      this.logger.info("Content has not changed");
+      this._loading = false;
       this.notifyBundleReady();
       return this;
     }
@@ -420,7 +420,7 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
       this._resolvedProviderInfo[relativePath] = dependencyInfo;
       this.logger.verbose("loading dependency %s -> %s", relativePath, dependencyInfo.filePath);
 
-      const waitLogger = this.logger.startTimer(`Waiting for dependency ${getBundleItemHash(dependencyInfo)}:${dependencyInfo.filePath} to load...`);
+      const waitLogger = this.logger.startTimer(`Waiting for dependency ${getBundleItemHash(dependencyInfo)}:${dependencyInfo.filePath} to load...`, 1000 * 10, LogLevel.VERBOSE);
       const dependency = await this._bundler.getDependency(dependencyInfo);
 
       // ensure that the dependency is not loading to prevent promise lock
@@ -430,18 +430,26 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
       }
 
       waitLogger.stop(`Loaded dependency ${dependency.hash}:${dependency.filePath}`);
-      dependency.observe(this._dependencyObserver);
     }));
 
     await this.save();
 
+    this.notifyBundleReady();
+
+    for (const dependency of this.dependencies) {
+      dependency.observe(this._dependencyObserver);
+    }
+
     this._ready = true;
     this._loading = false;
     logTimer.stop("loaded");
-    this.notifyBundleReady();
 
     return this;
   }, { length: 0, promise: true }) as () => Promise<BundleDependency>;
+
+  /**
+   * TODO: may be better to make this part of the loader
+   */
 
   async getInitialSourceContent(): Promise<IBundleLoaderResult> {
     return {
@@ -455,13 +463,17 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
     return b.updatedAt > this.updatedAt;
   }
 
-  private onProviderAction(action: Action) {
+  private onDependencyAction(action: Action) {
 
     // for now, reload the entire bundle if a dependency changes. This is to ensure
     // that any changes that are embedded in this bundle get updates when they change -- this
     // is particular to css files.
     if (action.type === BundleAction.BUNDLE_READY) {
-      this.load();
+      if (this.loading) {
+        this.logger.warn("Unable to reload bundle while it's still loading.")
+      } else {
+        this.reload2();
+      }
     }
   }
 
@@ -484,8 +496,13 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
     return this._bundler.$strategy.resolve(dependencyPath, path.dirname(this.filePath));
   }
 
-  private onFileCacheItemChange() {
+  private reload2() {
+    this.load["clear"]();
     this.load();
+  }
+
+  private onFileCacheItemChange() {
+    this.reload2();
   }
 }
 

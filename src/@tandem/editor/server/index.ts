@@ -24,7 +24,6 @@ export function concatEditorServerProviders(injector: Injector, config: IEdtorSe
     new ApplicationServiceProvider("ds", DSService),
     new ApplicationServiceProvider("file", FileService),
     new ApplicationServiceProvider("sock", SockService),
-    new ApplicationServiceProvider("stdin", StdinService),
     new ApplicationServiceProvider("project", ProjectService),
     new ApplicationServiceProvider("browser", BrowserService),
     new ApplicationServiceProvider("resolver", ResolverService),
