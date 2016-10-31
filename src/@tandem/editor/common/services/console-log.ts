@@ -51,7 +51,6 @@ const highlighters = [
   // tokens
   createLogColorizer(/([\:\{\}",\(\)]|->|null|undefined|Infinity)/g, (match) => chalk.grey(match)),
 
-
   // strings
   createLogColorizer(/"(.*?)"/g, (match, inner) => `"${chalk.blue(inner)}"`),
 
@@ -90,9 +89,8 @@ export class ConsoleLogService extends CoreApplicationService<any> {
 
   [LogAction.LOG]({ level, text }: LogAction) {
 
+    // highlight log function from argv -- --hlog="something to highlight"
     const hlog = String(this.config && this.config.argv && this.config.argv.hlog || "");
-
-    // TODO - hlog from argv
 
     const log = {
       [LogLevel.VERBOSE]: console.log.bind(console),
@@ -101,7 +99,6 @@ export class ConsoleLogService extends CoreApplicationService<any> {
       [LogLevel.WARN]: console.warn.bind(console),
       [LogLevel.ERROR]: console.error.bind(console)
     }[level];
-
 
     text = colorize(PREFIXES[level] + text);
 
