@@ -12,3 +12,9 @@ TODOS:
 - [ ] `IDispatcher` should define `dispatch(message)` method
 - [ ] `Observable` class
 - [ ] add duplex streams
+
+
+#### Features
+
+- [WhatWG stream spec implementation](https://streams.spec.whatwg.org/#byob-reader-class)
+

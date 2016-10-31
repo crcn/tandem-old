@@ -5,11 +5,9 @@ import {
   inject,
   loggable,
   document,
-  filterAction,
   Injector,
-  IApplication,
+  filterAction,
   InjectorProvider,
-  BaseApplicationService,
   ApplicationServiceProvider,
   GetPrimaryProjectFilePathAction,
 } from "@tandem/common";

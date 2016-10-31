@@ -1,6 +1,5 @@
 import { Injector } from "@tandem/common";
 import { keyBindingProvider } from "./key-bindings";
-import { pastHTMLServiceProvider } from "./services";
 import { createHTMLCoreProviders } from "../../core";
 import { textToolProvider, editInnerHTMLProvider } from "./models";
 
@@ -49,9 +48,6 @@ export function createHTMLEditorBrowserProviders() {
 
     // stage tool components
     new StageToolComponentFactoryProvider("elementInfo", "pointer", ElementInfoStageToolComponent),
-
-    // services
-    pastHTMLServiceProvider,
 
     // tools
     textToolProvider,

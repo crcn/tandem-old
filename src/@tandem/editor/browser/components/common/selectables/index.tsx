@@ -12,8 +12,8 @@ import { SelectAction } from "@tandem/editor/browser/actions";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { intersection, flatten } from "lodash";
+import { IInjectable, IActor, Action } from "@tandem/common";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
-import { IInjectable, APPLICATION_SINGLETON_NS, IActor, Action } from "@tandem/common";
 import { SyntheticHTMLElement, SyntheticDOMElement, ChildElementQuerier } from "@tandem/synthetic-browser";
 
 class SelectableComponent extends React.Component<{

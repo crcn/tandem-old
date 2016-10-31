@@ -1,4 +1,4 @@
-import { Application2 } from "@tandem/common";
+import { Application } from "@tandem/common";
 import { ApplicationServiceProvider, ApplicationConfigurationProvider } from "./providers";
 
 import {
@@ -57,7 +57,7 @@ export function createCoreApplicationProviders(config: any, fileSystemClass?: { 
   );
 }
 
-export class ServiceApplication extends Application2 {
+export class ServiceApplication extends Application {
   willLoad() {
     super.willLoad();
 

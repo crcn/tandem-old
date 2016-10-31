@@ -35,7 +35,6 @@ import {
   Injector,
   InitializeAction,
   InjectorProvider,
-  BaseApplicationService,
   ApplicationServiceProvider,
   GetPrimaryProjectFilePathAction,
 } from "@tandem/common";

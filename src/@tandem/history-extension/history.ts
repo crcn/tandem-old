@@ -7,7 +7,6 @@ import {
   Action,
   IInjectable,
   PropertyChangeAction,
-  APPLICATION_SINGLETON_NS,
 } from "@tandem/common";
 
 class History {
@@ -70,7 +69,7 @@ export class ModuleHistory implements IInjectable {
   private _mtime: number = Date.now();
 
   constructor(
-    @inject(APPLICATION_SINGLETON_NS) private _app: FrontEndApplication
+    private _app: any
   ) {
     this._history = new History(this.setHistoryState.bind(this));
   }

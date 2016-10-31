@@ -1,4 +1,3 @@
-import { IApplication } from "@tandem/common/application";
 import { CSS_MIME_TYPE, HTML_MIME_TYPE } from "@tandem/common";
 import { SyntheticDOMElementClassProvider, HTML_XMLNS, MarkupMimeTypeXMLNSProvider } from "@tandem/synthetic-browser";
 

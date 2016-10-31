@@ -10,8 +10,8 @@ import { IEdtorServerConfig, concatEditorServerProviders } from "./server";
 // import { createVueWorkerProviders } from "@tandem/vue-extension/editor/server";
 import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/server";
 import { createJavaScriptWorkerProviders } from "@tandem/javascript-extension/editor/server";
-import { createSyntheticBrowserWorkerProviders } from "@tandem/synthetic-browser";
 import { createTDProjectEditorServerProviders } from "@tandem/tdproject-extension/editor/server";
+import { createSyntheticBrowserWorkerProviders } from "@tandem/synthetic-browser";
 import {
   createHTMLEditorServerProviders,
   createHTMLEditorWorkerProviders,

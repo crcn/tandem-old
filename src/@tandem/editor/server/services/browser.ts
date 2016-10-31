@@ -13,10 +13,8 @@ import { GetServerPortAction } from "@tandem/editor/common";
 import { exec } from "child_process";
 import { Response } from "mesh";
 import { IOService } from "@tandem/editor/common";
-import { IApplication } from "@tandem/common/application";
 import { loggable, inject } from "@tandem/common/decorators";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
-import { BaseApplicationService } from "@tandem/common/services";
 import { CoreApplicationService } from "@tandem/core";
 import { Injector } from "@tandem/common";
 import { FileCacheProvider, FileCache } from "@tandem/sandbox";
@@ -28,7 +26,7 @@ import { DSUpsertAction, LoadAction, InitializeAction } from "@tandem/common/act
 export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
 
   private _server: express.Express;
-  private _ioService:IOService<IApplication>;
+  private _ioService:IOService<IEdtorServerConfig>;
   private _port:number;
   private _socket:any;
   private _bundles:Array<any>;

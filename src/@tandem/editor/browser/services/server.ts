@@ -6,7 +6,6 @@ import {
   Logger,
   loggable,
   LoadAction,
-  IApplication,
   ApplicationServiceProvider,
 } from "@tandem/common";
 

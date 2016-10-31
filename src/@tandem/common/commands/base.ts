@@ -1,12 +1,10 @@
 import { inject } from "@tandem/common/decorators";
 import { Action } from "@tandem/common/actions";
 import { IActor } from "@tandem/common/actors";
-import { IApplication } from "@tandem/common/application";
 import {
   IInjectable,
   Injector,
   PrivateBusProvider,
-  APPLICATION_SINGLETON_NS,
   InjectorProvider,
 } from "@tandem/common/ioc";
 

@@ -1,5 +1,4 @@
 import * as sift from "sift";
-import { Service } from "@tandem/common/services";
 import * as SocketIOBus from "mesh-socket-io-bus";
 import { serialize, deserialize } from "@tandem/common/serialize";
 import { ParallelBus, AcceptBus } from "mesh";

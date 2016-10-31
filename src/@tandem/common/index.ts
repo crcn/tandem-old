@@ -18,7 +18,6 @@ export * from "./observable";
 export * from "./reference";
 export * from "./reference";
 export * from "./serialize";
-export * from "./services";
 export * from "./string";
 export * from "./tree";
 export * from "./active-records";

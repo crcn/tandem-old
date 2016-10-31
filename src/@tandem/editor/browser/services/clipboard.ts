@@ -7,7 +7,6 @@ import {
   loggable,
   serialize,
   InitializeAction,
-  BaseApplicationService,
   ApplicationServiceProvider,
 } from "@tandem/common";
 

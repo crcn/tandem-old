@@ -5,7 +5,6 @@ import {
   Action,
   IActor,
   inject,
-  Service,
   startDrag,
   PrivateBusProvider,
   BoundingRect,

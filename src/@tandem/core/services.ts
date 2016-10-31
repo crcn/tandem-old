@@ -18,7 +18,7 @@ import { ApplicationConfigurationProvider } from "./providers";
  * entiry application.
  */
 
-export abstract class BaseApplicationService2 implements IActor, IInjectable {
+export abstract class BaseApplicationService implements IActor, IInjectable {
 
   protected readonly logger: Logger;
 
@@ -47,7 +47,7 @@ export abstract class BaseApplicationService2 implements IActor, IInjectable {
  * Core service required for the app to run
  */
 
-export abstract class CoreApplicationService<T> extends BaseApplicationService2 {
+export abstract class CoreApplicationService<T> extends BaseApplicationService {
   @inject(ApplicationConfigurationProvider.ID)
   protected config: T;
 }

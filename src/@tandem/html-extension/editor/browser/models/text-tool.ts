@@ -3,12 +3,10 @@ import { inject } from "@tandem/common/decorators";
 import { IActor } from "@tandem/common/actors";
 import { InsertTool } from "@tandem/editor/browser/models/insert-tool";
 import { MouseAction } from "@tandem/editor/browser/actions";
-import { IApplication } from "@tandem/common/application";
 import { SetToolAction } from "@tandem/editor/browser/actions";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
-import { BaseApplicationService } from "@tandem/common/services";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
 import { IWorkspaceTool, BaseEditorTool } from "@tandem/editor/browser/models";
 

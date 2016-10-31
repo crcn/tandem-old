@@ -17,10 +17,9 @@ import {
   serializable,
   definePublicAction,
   PrivateBusProvider,
-  BaseApplicationService
 } from "@tandem/common";
 
-import { BaseApplicationService2 } from "@tandem/core/services";
+import { BaseApplicationService } from "@tandem/core/services";
 import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
 import { BundleDependency, Bundler, BundlerProvider, SyntheticObjectEditor, IBundleStrategyOptions } from "@tandem/sandbox";
 
@@ -103,7 +102,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 }
 
 @loggable()
-export class RemoteBrowserService extends BaseApplicationService2 {
+export class RemoteBrowserService extends BaseApplicationService {
 
   private _openBrowsers: any = {};
 

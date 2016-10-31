@@ -9,29 +9,12 @@ import {
 } from '../ioc';
 
 /**
- * @deprecated
  */
 
-export interface IApplication extends IInvoker {
-
-  // the application configuration on startup
-  readonly config: any;
-
-  // actors of the application bus
-  readonly bus: IBrokerBus;
-
-  // parts of the application
-  readonly injector: Injector;
-}
-
-/**
- */
-
-export class Application2 {
+export class Application {
 
   protected bus: IActor;
   private _initialized: boolean;
-  private _logTimer: LogTimer;
 
   constructor(readonly injector: Injector) {
     this.bus = PrivateBusProvider.getInstance(injector);

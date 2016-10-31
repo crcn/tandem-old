@@ -3,7 +3,6 @@ import { ITyped } from "@tandem/common/object";
 import { INamed } from "@tandem/common/object";
 import { Action } from "../actions";
 import { IBrokerBus } from "../busses";
-import { IApplication } from "@tandem/common/application";
 
 import { File } from "@tandem/common/models";
 import {
@@ -39,18 +38,6 @@ export class ApplicationServiceProvider extends ClassFactoryProvider implements 
 
 /**
  */
-
-export const APPLICATION_SINGLETON_NS = "singletons/application";
-export class ApplicationSingletonProvider extends Provider<IApplication> {
-
-  constructor(value: IApplication) {
-    super(APPLICATION_SINGLETON_NS, value);
-  }
-
-  static find(Injector: Injector): ApplicationSingletonProvider {
-    return Injector.query<ApplicationSingletonProvider>(APPLICATION_SINGLETON_NS);
-  }
-}
 
 export function createSingletonBusProviderClass(name: string): { getInstance(providers:Injector): IBrokerBus, ID: string, new(bus: IBrokerBus): Provider<IBrokerBus> } {
 

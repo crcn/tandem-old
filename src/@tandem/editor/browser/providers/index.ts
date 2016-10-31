@@ -1,7 +1,6 @@
 import * as React from "react";
 import { IActor } from "@tandem/common/actors";
 import { Store } from "@tandem/editor/browser/models";
-import { IApplication } from "@tandem/common/application";
 import { IWorkspaceTool } from "@tandem/editor/browser/models";
 import { ReactComponentFactoryProvider } from "./base";
 import {

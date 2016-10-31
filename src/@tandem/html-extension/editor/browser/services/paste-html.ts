@@ -4,11 +4,10 @@ import { HTML_MIME_TYPE } from "@tandem/common";
 import { filterAction } from "@tandem/common/decorators";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { PasteHTMLEntityAction } from "@tandem/html-extension/actions";
-import { BaseApplicationService } from "@tandem/common/services";
+import { CoreApplicationService } from "@tandem/core";
 import { PasteAction, SelectAction } from "@tandem/editor/browser/actions";
 import {
   IInjectable,
-  APPLICATION_SINGLETON_NS,
   CommandFactoryProvider,
   ApplicationServiceProvider,
 } from "@tandem/common";
@@ -16,7 +15,7 @@ import {
   parseMarkup
 } from "@tandem/synthetic-browser";
 
-export class PasteHTMLService extends BaseApplicationService<FrontEndApplication> {
+export class PasteHTMLService extends CoreApplicationService<any> {
 
   @filterAction(sift({ "item.type": HTML_MIME_TYPE }))
   [PasteAction.PASTE](action: PasteAction) {
@@ -44,5 +43,5 @@ export class PasteHTMLService extends BaseApplicationService<FrontEndApplication
   }
 }
 
-export const pastHTMLServiceProvider = new ApplicationServiceProvider("paste-html-entity", PasteHTMLService);
+// export const pastHTMLServiceProvider = new ApplicationServiceProvider("paste-html-entity", PasteHTMLService);
 

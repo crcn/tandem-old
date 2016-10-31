@@ -1,5 +1,7 @@
-- [ ] slideshow builder
-- [ ] blogger
-- [ ] document editor
-- [ ] canvas editor
-- [ ] QA test builder - reflect SPA DOM in application via DOM change events. Attach conditions and assertions for text & other things. 
+#### Education
+
+#### CMS
+
+#### QA testing
+
+#### cross-browser testing
