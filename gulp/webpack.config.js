@@ -82,6 +82,8 @@ module.exports = {
         },
         {
           test: /\.tsx?$/,
+
+          // TODO - add jsx dataSource loader here
           loader: 'ts-loader',
           exclude:  /node_modules/
         },

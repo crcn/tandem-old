@@ -118,7 +118,7 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
   }
 
   public setAbsolutePosition({ left, top }: IPoint) {
-    const oldBounds = this.getAbsoluteBounds();
+    // const oldBounds = this.getAbsoluteBounds();
 
     Object.assign(this.style, {
       left: left,
@@ -127,7 +127,13 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
   }
 
   public setAbsoluteBounds(newBounds: BoundingRect) {
-    const oldBounds = this.getAbsoluteBounds();
-    console.log(newBounds)
+    // const oldBounds = this.getAbsoluteBounds();
+
+    Object.assign(this.style, {
+      left: newBounds.left,
+      top: newBounds.top,
+      width: newBounds.width,
+      height: newBounds.height
+    });
   }
 }
