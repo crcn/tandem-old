@@ -24,6 +24,7 @@ import { DSUpsertAction, LoadAction, InitializeAction } from "@tandem/common/act
 
 // TODO - split this out into separate files -- turning into a god object.
 
+@loggable()
 export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
 
   private _server: express.Express;
@@ -58,7 +59,7 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
   }
 
   async _loadHttpServer() {
-    console.log(`listening on port ${this._port}`);
+    this.logger.info(`Listening on port ${this._port}`);
 
     this._server = express();
     this._socket = this._server.listen(this._port);

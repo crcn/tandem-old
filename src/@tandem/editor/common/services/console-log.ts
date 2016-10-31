@@ -33,8 +33,8 @@ const highlighters = [
   // ~de emphasis~
   createLogColorizer(/~(.*?)~/g, (match, word) => chalk.grey(word)),
 
-  // _emphasis_
-  createLogColorizer(/_(.*?)_/g, (match, word) => chalk.bold(word)),
+  // *emphasis*
+  createLogColorizer(/\*(.*?)\*/g, (match, word) => chalk.bold(word)),
 
   // __big emphasis__
   createLogColorizer(/__(.*?)__/g, (match, word) => chalk.underline(word)),
@@ -49,13 +49,17 @@ const highlighters = [
   createLogColorizer(/<<(.*)/g, (match, word) => chalk.green(word)),
 
   // tokens
-  createLogColorizer(/([\:\{\}",]|->|null|undefined|Infinity)/g, (match) => chalk.grey(match)),
+  createLogColorizer(/([\:\{\}",\(\)]|->|null|undefined|Infinity)/g, (match) => chalk.grey(match)),
+
 
   // strings
   createLogColorizer(/"(.*?)"/g, (match, inner) => `"${chalk.blue(inner)}"`),
 
+  // numbers
+  createLogColorizer(/\b\d+(\.\d+)?\b/g, (match, inner) => `${chalk.cyan(match)}`),
+
   // URL
-  createLogColorizer(/((\w{3,}\:\/\/)|([^\/\s"']+)?\/)([^\/\s"']+\/?)+/g, (match, word) => chalk.yellow(match)),
+  createLogColorizer(/((\w{3,}\:\/\/)|([^\/\s\("']+)?\/)([^\/\)\s"']+\/?)+/g, (match, word) => chalk.yellow(match)),
 
   // duration
   createLogColorizer(/\s\d+(\.\d+)?(s|ms|m|h|d)/g, (match) => chalk.magenta(match)),
