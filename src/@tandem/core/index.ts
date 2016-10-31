@@ -59,6 +59,7 @@ export function createCoreApplicationProviders(config: any, fileSystemClass?: { 
 
 export class ServiceApplication extends Application2 {
   willLoad() {
+    super.willLoad();
 
     // create the services before loading so that they can hook themselves into the application
     // context.

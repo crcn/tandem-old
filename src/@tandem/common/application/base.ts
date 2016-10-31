@@ -31,6 +31,7 @@ export class Application2 {
 
   protected bus: IActor;
   private _initialized: boolean;
+  private _logTimer: LogTimer;
 
   constructor(readonly injector: Injector) {
     this.bus = PrivateBusProvider.getInstance(injector);
@@ -44,6 +45,7 @@ export class Application2 {
     if (this._initialized) {
       throw new Error(`Attempting to initialize the application after it's already been initialized.`);
     }
+
 
     this._initialized = true;
     this.willLoad();
@@ -66,7 +68,7 @@ export class Application2 {
    */
 
   protected willLoad() {
-    // OVERRIDE ME
+    // OVRRIDE ME
   }
 
   /**

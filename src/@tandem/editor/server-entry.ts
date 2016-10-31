@@ -1,4 +1,5 @@
 import "./entry-shims";
+import * as figlet from "figlet";
 
 import { argv } from "yargs";
 import { Injector, Logger, PrivateBusProvider } from "@tandem/common";
@@ -39,6 +40,8 @@ let deps = new Injector(
 deps = concatEditorServerProviders(deps, config);
 
 const app = new ServiceApplication(deps);
+
+console.log(figlet.textSync("Tandem", { font: "Slant" }), "\n");
 
 app.initialize();
 

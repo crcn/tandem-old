@@ -4,6 +4,5 @@ import { Action, InitializeAction } from "@tandem/common";
 
 export class DNDService extends CoreApplicationService<IEditorBrowserConfig> {
   [InitializeAction.INITIALIZE](action: Action) {
-    console.log("INIT");
   }
 }

@@ -108,7 +108,7 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
             var config = {
               server: {
                 hostname: window.location.hostname,
-                port: ${this._port}
+                port: Number(window.location.port || 80)
               }
             };
           </script>

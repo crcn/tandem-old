@@ -22,6 +22,7 @@
     "compression": "^1.6.2",
     "cors": "^2.8.1",
     "express": "^4.14.0",
+    "figlet": "^1.2.0",
     "fs-extra": "^0.30.0",
     "get-port": "^2.1.0",
     "mesh": "6.0.x",

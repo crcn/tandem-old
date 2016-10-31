@@ -147,3 +147,11 @@ declare module "md5" {
   }
   export = md5;
 }
+
+declare module "figlet" {
+  export function textSync(value: string, options: {
+    font: string,
+    horizontalLayout?: string,
+    verticalLayout?: string
+  });
+}
