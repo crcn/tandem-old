@@ -132,7 +132,7 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
 
   private _filePath: string;
   private _ready: boolean;
-  private _resolvedProviderInfo: { [Identifier: string]: IBundleResolveResult };
+  private _resolvedDependencyInfo: { [Identifier: string]: IBundleResolveResult };
   private _type: string;
   private _content: string;
   private _ast: any;
@@ -250,7 +250,7 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
    */
 
   get resolvedProviderInfo() {
-    return this._resolvedProviderInfo;
+    return this._resolvedDependencyInfo;
   }
 
   /**
@@ -267,7 +267,7 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
    */
 
   get absoluteProviderPaths() {
-    return values(this._resolvedProviderInfo).map((inf: IBundleResolveResult) => inf.filePath);
+    return values(this._resolvedDependencyInfo).map((inf: IBundleResolveResult) => inf.filePath);
   }
 
   /**
@@ -288,7 +288,7 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
    */
 
   get dependencies(): BundleDependency[] {
-    return values(this._resolvedProviderInfo).map((inf) => {
+    return values(this._resolvedDependencyInfo).map((inf) => {
       return this._bundler.eagerFindByHash(getBundleItemHash(inf));
     });
   }
@@ -332,7 +332,7 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
   }
 
   getDependencyHash(relativePath: string) {
-    const info: IBundleResolveResult = this._resolvedProviderInfo[relativePath];
+    const info: IBundleResolveResult = this._resolvedDependencyInfo[relativePath];
     if (info == null) {
       this.logger.error(`Absolute path on bundle entry does not exist for ${relativePath}.`);
       return;
@@ -345,7 +345,7 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
    */
 
   getAbsoluteDependencyPath(relativePath: string) {
-    const info: IBundleResolveResult = this._resolvedProviderInfo[relativePath];
+    const info: IBundleResolveResult = this._resolvedDependencyInfo[relativePath];
     if (info == null) {
       this.logger.error(`Absolute path on bundle entry does not exist for ${relativePath}.`);
       return;
@@ -361,7 +361,7 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
       filePath: this.filePath,
       updatedAt: this._updatedAt,
       loaderOptions: this._loaderOptions,
-      resolvedProviderInfo: this._resolvedProviderInfo,
+      resolvedProviderInfo: this._resolvedDependencyInfo,
     };
   }
 
@@ -372,7 +372,7 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
     this._updatedAt     = updatedAt;
     this._hash          = hash;
     this._content       = content;
-    this._resolvedProviderInfo = resolvedProviderInfo || {};
+    this._resolvedDependencyInfo = resolvedProviderInfo || {};
   }
 
   load = memoize(async (): Promise<BundleDependency> => {
@@ -409,7 +409,7 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
       dependency.unobserve(this._dependencyObserver);
     }
 
-    this._resolvedProviderInfo = {};
+    this._resolvedDependencyInfo = {};
     // TODO - need to differentiate imported from included dependency.
     const dependencyPaths = transformResult.dependencyPaths || [];
     await Promise.all(dependencyPaths.map(async (relativePath, i) => {
@@ -417,7 +417,8 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
       if (!dependencyInfo) {
         return this.logger.warn("could not resolve ", relativePath);
       }
-      this._resolvedProviderInfo[relativePath] = dependencyInfo;
+      this._resolvedDependencyInfo[relativePath] = dependencyInfo;
+      this._resolvedDependencyInfo[dependencyInfo.filePath] = dependencyInfo;
       this.logger.verbose("loading dependency %s -> %s", relativePath, dependencyInfo.filePath);
 
       const waitLogger = this.logger.startTimer(`Waiting for dependency ${getBundleItemHash(dependencyInfo)}:${dependencyInfo.filePath} to load...`, 1000 * 10, LogLevel.VERBOSE);

@@ -50,6 +50,8 @@ describe(__filename + "#", () => {
   });
 
   xit("reloads the dependency when the source file has changed");
+  xit("can return the dependency info of a dependency based on the relative path");
+  xit("can return the dependency info of a dependency based on the absolute path");
   // xit("")
 
   it("can use a custom loader & evaluator registered in the global injector", async () => {
