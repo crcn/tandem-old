@@ -49,7 +49,7 @@ export class IOService<T> extends CoreApplicationService<T> {
    */
 
   addConnection = async (connection) => {
-    this.logger.verbose("client connected");
+    this.logger.info("Client connected");
 
     // setup the bus which wil facilitate in all
     // transactions between the remote service
@@ -71,7 +71,7 @@ export class IOService<T> extends CoreApplicationService<T> {
 
 
     connection.once("disconnect", () => {
-      this.logger.verbose("Client disconnected");
+      this.logger.info("Client disconnected");
 
       this._remoteActors.splice(
         this._remoteActors.indexOf(remoteBus),

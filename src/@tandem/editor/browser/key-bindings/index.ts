@@ -25,7 +25,7 @@ class ToggleRightSidebarCommand extends BaseCommand {
   }
 }
 
-export const keyBindingsProvider = [
+export const keyBindingsProviders = [
   new GlobalKeyBindingProvider("meta+=", class ZoomInCommand extends BaseCommand {
     execute(action: Action) {
       this.bus.execute(new ZoomAction(ZOOM_INCREMENT, true));

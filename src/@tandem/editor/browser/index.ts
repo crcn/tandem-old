@@ -12,6 +12,8 @@ import {
   DocumentPaneComponentFactoryProvider,
 } from "./providers";
 
+import { keyBindingsProviders } from "./key-bindings";
+
 import {
   LayersPaneComponent,
   GridStageToolComponent,
@@ -38,6 +40,7 @@ import {
 export function concatEditorBrowserProviders(injector: Injector, config: IEditorBrowserConfig, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
   return new Injector(
     injector,
+    ...keyBindingsProviders,
     createCommonEditorProviders(),
     createCoreApplicationProviders(config, fileSystemClass, fileResolverClass),
 

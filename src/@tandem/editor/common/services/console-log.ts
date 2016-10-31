@@ -4,12 +4,11 @@ import { titleize } from "inflection";
 import * as moment from "moment";
 import {
   Logger,
-  LogLevel,
-  serializable,
-  serialize,
-  ENV_IS_NODE,
   Action,
+  LogLevel,
+  serialize,
   LogAction,
+  serializable,
   definePrivateAction
 } from "@tandem/common";
 
@@ -19,7 +18,6 @@ export class ConsoleLogServiceAction extends Action {
     super(type);
   }
 }
-
 
 function createLogColorizer(tester: RegExp, replaceValue: any) {
   return function(input: string) {
