@@ -8,6 +8,6 @@ export const reactPreview = (render?: () => any) => {
       ReactDOM.render(render ? render() : <ComponentClass />, element);
       return element;
     }
-    Reflect.defineMetadata("tandem:renderPreview", ComponentClass, renderPreview);
+    ComponentClass.$$renderPreview = renderPreview;
   }
 }

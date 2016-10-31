@@ -32,6 +32,12 @@ export class SyntheticWindow extends Observable {
 
   readonly document: SyntheticDocument;
   readonly window: SyntheticWindow;
+
+  // TODO - need to wrap around these
+  readonly setInterval = setInterval;
+  readonly setTimeout = setTimeout;
+  readonly process = process;
+
   public resolve: { extensions: string[], directories: string[] };
 
   constructor(readonly browser: ISyntheticBrowser, location: SyntheticLocation, document?: SyntheticDocument) {

@@ -90,6 +90,10 @@ export class InjectorProvider extends Provider<Injector> {
     super(InjectorProvider.ID, null);
   }
 
+  clone() {
+    return new InjectorProvider();
+  }
+
   get owner(): Injector {
     return this.value;
   }

@@ -1,3 +1,5 @@
+import * as path from "path";
+
 import {
   BundleDependency,
   IBundleLoader,
@@ -16,9 +18,10 @@ import {
 
 import {
   parseMarkup,
+  SyntheticDOMElement,
   MarkupTextExpression,
-  MarkupFragmentExpression,
   formatMarkupExpression,
+  MarkupFragmentExpression,
   serializeMarkupExpression,
   deserializeMarkupExpression,
 } from "@tandem/synthetic-browser";
@@ -37,9 +40,11 @@ export class HTMLBundleLoader extends BaseBundleLoader {
     const ast = parseMarkup(content);
 
     await ast.accept({
-      visitAttribute({ name, value, parent }) {
+      visitAttribute: async ({ name, value, parent })  => {
         // ignore redirecting tag names
         if (/src|href/.test(name) && !/^a$/i.test(parent.nodeName)) {
+          const absoluteFilePathOptions = await this.strategy.resolve(value, path.dirname(filePath));
+          (<SyntheticDOMElement>parent).setAttribute(name, absoluteFilePathOptions.filePath);
           dependencyPaths.push(value);
         }
       },

@@ -42,5 +42,8 @@
     "@tandem/sandbox": "^1.0.0",
     "@tandem/synthetic-browser": "^1.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "memoizee": "^0.4.1",
+    "sinon": "^1.17.6"
+  }
 }

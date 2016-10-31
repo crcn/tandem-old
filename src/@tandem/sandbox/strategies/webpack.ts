@@ -285,8 +285,8 @@ function parserLoaderOptions(moduleInfo: string, hasFile: boolean = false): IWeb
 
 function findCommonJSProviderPaths(source) {
   return (
-    source.replace(/\/\*[\s\S]+\*\//g, "")
-    .replace(/\/\/.*?/g, "")
+    source.replace(/\/\*[\s\S]+?\*\//g, "")
+    .replace(/\/\/[^\n\r]+/g, "")
     .match(/require\(["'].*?["']\)/g) || []
   ).map((expression) => {
     return expression.match(/require\(['"](.*?)["']\)/)[1];
@@ -313,6 +313,7 @@ export class WebpackBundleStrategy implements IBundleStragegy {
   readonly basedir: string;
 
   constructor(config: string|IWebpackConfig) {
+
 
     if (config && typeof config === "object") {
       this.basedir = process.cwd();
@@ -345,7 +346,7 @@ export class WebpackBundleStrategy implements IBundleStragegy {
 
     const { config } = this;
 
-    this.logger.verbose("resolving %s:%s", cwd, moduleInfo);
+    this.logger.verbose("resolving %s:%s (%s)", cwd, relativeFilePath, moduleInfo);
 
     relativeFilePath = config.resolve.alias && config.resolve.alias[relativeFilePath] || relativeFilePath;
 

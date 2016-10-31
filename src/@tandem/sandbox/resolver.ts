@@ -1,12 +1,16 @@
 // TODO - this is deprecated. Move to strategies/default
 
+import * as fs from "fs";
+
 import { IFileSystem } from "./file-system";
 import { IFileResolver } from "./resolver";
 import { ResolveFileAction } from "./actions";
 import {
   IActor,
   inject,
+  Logger,
   Injector,
+  loggable,
   SingletonThenable,
   MimeTypeProvider,
   PrivateBusProvider,
@@ -42,9 +46,11 @@ const combineResoverOptions = (...options: IFileResolverOptions[]): IFileResolve
   });
 }
 
+@loggable()
 export abstract class BaseFileResolver implements IFileResolver {
   private _cache: any;
   public options: IFileResolverOptions;
+  protected logger: Logger;
 
   constructor() {
     this._cache = {};
@@ -81,9 +87,11 @@ export class LocalFileResolver extends BaseFileResolver {
       directories: []
     });
 
-    if (cwd) {
-      const pkgPath = pkgpath.sync(cwd);
 
+    if (cwd) {
+      const pkgPath = fs.existsSync(cwd + "/package.json") ? cwd : pkgpath.sync(cwd);
+
+      this.logger.verbose(pkgPath + " - " + cwd);
 
       const pkg = pkgPath && require(pkgPath + "/package.json");
 
@@ -104,22 +112,31 @@ export class LocalFileResolver extends BaseFileResolver {
       cwd = process.cwd();
     }
 
+    // remove end slash
+    // relativePath = relativePath.replace(/\/$/, "");
 
-    return resolve.sync(relativePath, {
+    this.logger.verbose(`resolving %s:%s extensions: %s, directories: %s`, cwd, relativePath, extensions.join(", "), directories.join(", "));
+
+
+    const resolvedPath = resolve.sync(relativePath, {
       basedir: cwd,
       extensions: extensions,
-      paths: directories,
+      paths: directories.filter(dir => !!dir),
 
       // moduleDirectory is required, but it foos with
       // dependency resolution. Solution: give a directory that doesn't have anything
-      moduleDirectory: "/i/should/not/exist",
+      // moduleDirectory: "/i/should/not/exist",
 
       packageFilter: (pkg, filePath) => {
-        const main = pkg.browser ? pkg.browser[pkg.main] || pkg.browser : pkg.main;
+        const main = (pkg.browser && typeof pkg.browser === "object" ? pkg.browser[pkg.main] : pkg.browser) || pkg.main;
         return {
           main: main
         }
       }
     });
+
+    this.logger.verbose("resolved %s", resolvedPath);
+
+    return resolvedPath;
   }
 }

@@ -1,3 +1,4 @@
+import { LogLevel } from "@tandem/common";
 
 /**
  * Manages visual editor and possibly workers
@@ -8,7 +9,7 @@
 
 export interface IEdtorServerConfig {
   cwd: string;
-
+  logLevel?: LogLevel,
   argv: {
     _: any[],
     open?: boolean,

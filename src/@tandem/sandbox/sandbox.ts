@@ -75,15 +75,15 @@ export class Sandbox extends Observable {
     return this._global;
   }
 
-  async open(bundle: BundleDependency) {
+  async open(dependency: BundleDependency) {
 
     if (this._entry) {
       this._entry.unobserve(this._entryObserver);
     }
-    this._entry = bundle;
+    this._entry = dependency;
     this._entry.observe(this._entryObserver);
 
-    this.logger.verbose("wait for %s", bundle.filePath);
+    this.logger.verbose("wait for %s", dependency.filePath);
     await this._entry.whenReady();
     this.reset();
 
@@ -98,27 +98,27 @@ export class Sandbox extends Observable {
       return this._modules[hash].exports;
     }
 
-    const bundle = this._entry.bundler.eagerFindByHash(hash);
+    const dependency = this._entry.bundler.eagerFindByHash(hash);
 
-    if (!bundle) {
+    if (!dependency) {
       throw new Error(`${hash} does not exist in the ${this._entry.filePath} bundle.`);
     }
 
-    if (!bundle.ready) {
+    if (!dependency.ready) {
       throw new Error(`Trying to require bundle ${hash} that is not ready yet.`);
     }
 
-    const module = this._modules[hash] = new SandboxModule(this, bundle);
+    const module = this._modules[hash] = new SandboxModule(this, dependency);
     const now = Date.now();
 
     // TODO - cache evaluator here
-    const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryProvider.find(bundle.type, this._injector);
+    const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryProvider.find(dependency.type, this._injector);
 
     if (!evaluatorFactoryDepedency) {
-      throw new Error(`Cannot evaluate ${bundle.filePath}:${bundle.type} in sandbox.`);
+      throw new Error(`Cannot evaluate ${dependency.filePath}:${dependency.type} in sandbox.`);
     }
 
-    this.logger.verbose("Evaluating %s", bundle.filePath);
+    this.logger.verbose("Evaluating %s", dependency.filePath);
     evaluatorFactoryDepedency.create().evaluate(module);
 
     return this.require(hash, interpretableName);

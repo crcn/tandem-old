@@ -56,18 +56,18 @@ const highlighters = [
   createLogColorizer(/\b\d+(\.\d+)?\b/g, (match, inner) => `${chalk.cyan(match)}`),
 
   // URL
-  createLogColorizer(/((\w{3,}\:\/\/)|([^\/\s\("']+)?\/)([^\/\)\s"']+\/?)+/g, (match, word) => chalk.yellow(match)),
+  createLogColorizer(/((\w{3,}\:\/\/)|([^\/\s\("':]+)?\/)([^\/\)\s"':]+\/?)+/g, (match, word) => chalk.yellow(match)),
 
   // duration
-  createLogColorizer(/\s\d+(\.\d+)?(s|ms|m|h|d)/g, (match) => chalk.bold.cyan(match)),
+  createLogColorizer(/\s\d+(\.\d+)?(s|ms|m|h|d)\b/g, (match) => chalk.bold.cyan(match)),
 
   // timestamp
   createLogColorizer(/\[\d+\.\d+\.\d+\]/, (match, inner) => `[${chalk.grey(inner)}]`),
 
-  createLogColorizer(/\s?INFO\s*/, (match) => chalk.bgCyan(match)),
-  createLogColorizer(/\s?ERR(OR)?\s?/i, (match) => chalk.bgRed(match)),
-  createLogColorizer(/\s?DEBUG\s?/i, (match) => chalk.grey.bgBlack(match)),
-  createLogColorizer(/\s?WARN(ING)?\s?/i, (match) => chalk.bgYellow(match))
+  createLogColorizer(/^INFO\s*/, (match) => chalk.bgCyan(match)),
+  createLogColorizer(/^ERR(OR)?\b/, (match) => chalk.bgRed(match)),
+  createLogColorizer(/^DEBUG\s?/, (match) => chalk.grey.bgBlack(match)),
+  createLogColorizer(/^WARN(ING)?\s?/, (match) => chalk.bgYellow(match))
 ];
 
 function colorize(input: string) {
@@ -86,6 +86,10 @@ const PREFIXES = {
 export class ConsoleLogService extends CoreApplicationService<any> {
 
   [LogAction.LOG]({ level, text }: LogAction) {
+
+    const logLevel = this.config.logLevel || LogLevel.ALL;
+
+    if (!(level & logLevel)) return;
 
     // highlight log function from argv -- --hlog="something to highlight"
     const hlog = String(this.config && this.config.argv && this.config.argv.hlog || "");

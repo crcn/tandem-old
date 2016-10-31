@@ -5,5 +5,5 @@ import { createCoreApplicationProviders } from "@tandem/core";
 
 export function createMockBrowser() {
   const deps = createSandboxProviders();
-  return new SyntheticBrowser(deps);
+  return new SyntheticBrowser(new Injector(deps));
 }

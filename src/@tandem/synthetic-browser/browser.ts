@@ -152,7 +152,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
 
   async open2(options: ISyntheticBrowserOpenOptions) {
     const bundler = BundlerProvider.getInstance(options.bundleStrategyOptions, this._injector);
-    this._entry = await bundler.bundle({ filePath: options.url });
+    this._entry = await bundler.loadDependency({ filePath: options.url });
     this.logger.info("opening %s in sandbox", options.url);
     this._sandbox.open(this._entry);
   }
@@ -189,12 +189,14 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
       exportsElement = exports.renderPreview();
     } else {
 
+      this.logger.verbose("checking exports for render metadata: %s", Object.keys(exports).join(", "));
+
       // scan for reflect metadata
       for (const key in exports) {
         const value = exports[key];
-        const renderPreview = Reflect.getMetadata("tandem:renderPreview", value);
+        const renderPreview = value.$$renderPreview;
         if (renderPreview) {
-          console.log("FOUND");
+          this.logger.verbose("Found render preview metadata");
           exportsElement = renderPreview();
         }
       }

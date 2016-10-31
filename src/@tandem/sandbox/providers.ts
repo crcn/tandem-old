@@ -94,7 +94,7 @@ export class BundleStrategyProvider extends ClassFactoryProvider {
     super(BundleStrategyProvider.getNamespace(name), clazz);
   }
   static getNamespace(name: string) {
-    return [BundleStrategyProvider.ID, this.name].join("/");
+    return [BundleStrategyProvider.ID, name].join("/");
   }
 
   static create(strategyName: string, config: any, injector: Injector): IBundleStragegy {

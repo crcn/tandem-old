@@ -13,6 +13,7 @@ import {
   TypeWrapBus,
   DSFindAction,
   Injector,
+  IInjectable,
   ENV_IS_NODE,
   PostDSAction,
   DSInsertAction,
@@ -185,24 +186,37 @@ export class FileCacheSynchronizer {
 // TODO - move a lot of this logic to ActiveRecordCollection
 // TODO - remove files here after TTL
 export class FileCache extends Observable {
-  private _bus: IBrokerBus;
-  private _fileSystem: IFileSystem;
-  private _synchronizer: FileCacheSynchronizer;
-  readonly collection: ActiveRecordCollection<FileCacheItem, IFileCacheItemData>;
 
-  constructor(@inject(InjectorProvider.ID) private _injector: Injector) {
+  @inject(InjectorProvider.ID)
+  private _injector: Injector;
+
+  @inject(PrivateBusProvider.ID)
+  private _bus: IBrokerBus;
+
+  @inject(FileSystemProvider.ID)
+  private _fileSystem: IFileSystem;
+
+  private _synchronizer: FileCacheSynchronizer;
+  private _collection: ActiveRecordCollection<FileCacheItem, IFileCacheItemData>;
+
+  constructor() {
     super();
-    this._bus        = PrivateBusProvider.getInstance(_injector);
-    this.collection = ActiveRecordCollection.create(this.collectionName, _injector, (source: IFileCacheItemData) => {
+  }
+
+  public $didInject() {
+    this._collection = ActiveRecordCollection.create(this.collectionName, this._injector, (source: IFileCacheItemData) => {
       return new FileCacheItem(source, this.collectionName, this._fileSystem, this._bus);
     });
-    this.collection.load();
-    this.collection.sync();
-    this._fileSystem = FileSystemProvider.getInstance(_injector);
+    this._collection.load();
+    this._collection.sync();
   }
 
   eagerFindByFilePath(filePath) {
     return this.collection.find(item => item.filePath === filePath);
+  }
+
+  get collection() {
+    return this._collection;
   }
 
   get collectionName() {

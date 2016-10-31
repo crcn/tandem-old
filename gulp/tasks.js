@@ -175,6 +175,13 @@ gulp.task('clean', gulpSequence(
   'clean:symlinks'
 ));
 
+gulp.task('clean:javascript', function() {
+  glob.sync(join(OUT_DIR, `{${PACKAGE_NAMES.join(",")}}`, "**", "*.js"))
+  .forEach((filePath) => {
+    fsa.removeSync(filePath);
+  });
+});
+
 gulp.task('clean:out', function() {
   fsa.removeSync(OUT_DIR);
 });
@@ -222,6 +229,7 @@ gulp.task('test:all', function(done) {
     .src(testFiles)
     .pipe(mocha({
       reporter: argv.reporter || "dot",
+      timeout: argv.timeout || 1000 * 10,
       grep: GREP,
       bail: argv.bail
     }))

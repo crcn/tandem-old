@@ -2,8 +2,8 @@ import "./entry-shims";
 import * as figlet from "figlet";
 
 import { argv } from "yargs";
-import { Injector, Logger, PrivateBusProvider } from "@tandem/common";
 import { ServiceApplication } from "@tandem/core";
+import { Injector, Logger, PrivateBusProvider, LogLevel } from "@tandem/common";
 import { IEdtorServerConfig, concatEditorServerProviders } from "./server";
 
 // extensions
@@ -17,8 +17,10 @@ import {
   createHTMLEditorWorkerProviders,
 } from "@tandem/html-extension/editor/server";
 
+
 const config: IEdtorServerConfig = {
   argv: argv,
+  logLevel: LogLevel[String(argv.logLevel || "").toUpperCase()] || LogLevel.DEFAULT,
   cwd: process.cwd(),
   entries: {
     editor: require.resolve(require('./package.json').browser)
