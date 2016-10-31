@@ -374,8 +374,8 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
     if (this._loading) return this;
     this._loading = true;
 
-    this.logger.verbose("loading");
-    const logTimer = this.logger.startTimer("waiting for completion");
+    this.logger.verbose("loading...");
+    const logTimer = this.logger.startTimer("waiting for load...");
 
     const loader = this._bundler.$strategy.getLoader(this._loaderOptions || {});
 

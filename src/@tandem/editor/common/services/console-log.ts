@@ -59,7 +59,7 @@ const highlighters = [
   createLogColorizer(/((\w{3,}\:\/\/)|([^\/\s\("']+)?\/)([^\/\)\s"']+\/?)+/g, (match, word) => chalk.yellow(match)),
 
   // duration
-  createLogColorizer(/\s\d+(\.\d+)?(s|ms|m|h|d)/g, (match) => chalk.magenta(match)),
+  createLogColorizer(/\s\d+(\.\d+)?(s|ms|m|h|d)/g, (match) => chalk.bold.cyan(match)),
 
   // timestamp
   createLogColorizer(/\[\d+\.\d+\.\d+\]/, (match, inner) => `[${chalk.grey(inner)}]`),

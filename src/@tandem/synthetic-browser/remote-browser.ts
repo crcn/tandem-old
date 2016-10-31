@@ -90,7 +90,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
     } else if (action.type === RemoteBrowserDocumentAction.DOCUMENT_DIFF) {
       const edit: SyntheticDocumentEdit = action.data;
-      this.logger.verbose("received document diffs: %s", edit.actions.map(action => action.type).join(" "));
+      this.logger.verbose("Received document diffs: >>%s", edit.actions.map(action => action.type).join(", "));
       this._documentEditor.applyEditActions(...edit.actions);
     }
 
@@ -138,7 +138,7 @@ export class RemoteBrowserService extends BaseApplicationService2 {
               // need to patch existing document for now to maintain UID references
               new SyntheticObjectEditor(currentDocument).applyEditActions(...edit.actions);
               if (edit.actions.length) {
-                logger.verbose("sending changes: %s", edit.actions.map(action => action.type).join(" "));
+                logger.verbose("Sending diffs: <<%s", edit.actions.map(action => action.type).join(", "));
                 try {
                   await writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.DOCUMENT_DIFF, edit)) });
                 } catch(e) {
