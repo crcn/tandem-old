@@ -31,7 +31,7 @@ export class DefaultDependencyLoader implements IDependencyLoader {
   constructor(readonly stragegy: DefaultDependencyGraphStrategy, readonly options: any) { }
 
   async load(filePath: string, content: IDependencyContent): Promise<IDependencyLoaderResult> {
-    const dependencyPaths: string[] = [];
+    const importedDependencyPaths: string[] = [];
 
     let current: IDependencyLoaderResult = Object.assign({}, content);
 
@@ -44,8 +44,8 @@ export class DefaultDependencyLoader implements IDependencyLoader {
     while(current.type && (dependency = DependencyLoaderFactoryProvider.find(MimeTypeAliasProvider.lookup(current.type, this._injector), this._injector)) && !used[dependency.id]) {
       used[dependency.id] = true;
       current = await dependency.create(this.stragegy).load(filePath, current);
-      if (current.dependencyPaths) {
-        dependencyPaths.push(...current.dependencyPaths);
+      if (current.importedDependencyPaths) {
+        importedDependencyPaths.push(...current.importedDependencyPaths);
       }
     }
 
@@ -54,7 +54,7 @@ export class DefaultDependencyLoader implements IDependencyLoader {
       ast: current.ast,
       type: current.type,
       content: current.content,
-      dependencyPaths: dependencyPaths
+      importedDependencyPaths: importedDependencyPaths
     };
   }
 }

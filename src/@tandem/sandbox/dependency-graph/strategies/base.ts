@@ -16,7 +16,18 @@ export interface IResolvedDependencyInfo {
 }
 
 export interface IDependencyLoaderResult extends IDependencyContent {
-  dependencyPaths?: string[];
+
+  /**
+   *  Dependencies that imported in at runtime.
+   */
+
+  importedDependencyPaths?: string[];
+
+  /**
+   * Dependencies that are included and part of the loaded content
+   */
+
+  includedDependencyPaths?: string[];
 }
 
 export interface IDependencyLoader {

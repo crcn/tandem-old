@@ -120,7 +120,7 @@ class WebpackLoaderContext {
     readonly loader: INormalizedWebpackLoaderConfig,
     readonly strategy: WebpackDependencyGraphStrategy,
     readonly resourcePath: string,
-    private _injector: string[]
+    private _dependencies: string[]
   ) {
 
     this._compiler = strategy.compiler;
@@ -131,8 +131,8 @@ class WebpackLoaderContext {
     this._module = new WebpackLoaderContextModule();
   }
 
-  get dependencyPaths(): string[] {
-    return this._injector;
+  get includedDependencyPaths(): string[] {
+    return this._dependencies;
   }
 
   private get module() {
@@ -183,15 +183,15 @@ class WebpackLoaderContext {
   }
 
   clearProviders() {
-    this._injector = [];
+    this._dependencies = [];
   }
 
-  addProvider(filePath) {
-    this._injector.push(filePath);
+  addDependency(filePath) {
+    this._dependencies.push(filePath);
   }
 
   dependency(filePath) {
-    return this.addProvider(filePath);
+    return this.addDependency(filePath);
   }
 
   resolve(cwd: string, relativePath: string, callback: (err, result?) => any) {
@@ -223,7 +223,7 @@ class WebpackDependencyLoader implements IDependencyLoader {
       ...(this.options.loaders || [])
     ]
 
-    const dependencyPaths = [];
+    const includedDependencyPaths = [];
 
     const contexts = moduleLoaders.map((loader) => {
       return new WebpackLoaderContext(
@@ -231,7 +231,7 @@ class WebpackDependencyLoader implements IDependencyLoader {
         loader,
         this.strategy,
         filePath,
-        dependencyPaths
+        includedDependencyPaths
       );
     });
 
@@ -252,7 +252,8 @@ class WebpackDependencyLoader implements IDependencyLoader {
       type: JS_MIME_TYPE,
       content: result.content,
       map: result.map,
-      dependencyPaths: foundProviderPaths.concat(dependencyPaths)
+      importedDependencyPaths: foundProviderPaths,
+      includedDependencyPaths: includedDependencyPaths
     };
   }
 }

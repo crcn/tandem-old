@@ -97,7 +97,7 @@ describe(__filename + "#", () => {
           return {
             type: "text/plain",
             content: content,
-            dependencyPaths: (content.match(/import\((.*?)\)/g) || []).map((expression) => {
+            importedDependencyPaths: (content.match(/import\((.*?)\)/g) || []).map((expression) => {
               return expression.match(/\((.*?)\)/)[1];
             })
           }

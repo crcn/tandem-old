@@ -33,7 +33,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
 
   async load(filePath, { type, content }): Promise<IDependencyLoaderResult> {
 
-    const dependencyPaths = [];
+    const importedDependencyPaths = [];
     const injector = this._injector;
     const self = this;
 
@@ -45,7 +45,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
         if (/src|href/.test(name) && !/^a$/i.test(parent.nodeName)) {
           const absoluteFilePathOptions = await this.strategy.resolve(value, path.dirname(filePath));
           (<SyntheticDOMElement>parent).setAttribute(name, absoluteFilePathOptions.filePath);
-          dependencyPaths.push(value);
+          importedDependencyPaths.push(value);
         }
       },
       visitComment(comment) { },
@@ -84,7 +84,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
       ast: ast,
       type: HTML_MIME_TYPE,
       content: formatMarkupExpression(ast),
-      dependencyPaths: dependencyPaths
+      importedDependencyPaths: importedDependencyPaths
     };
   }
 }

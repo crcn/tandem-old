@@ -319,8 +319,8 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this._resolvedDependencyInfo = {};
 
     // TODO - need to differentiate imported from included dependency.
-    const dependencyPaths = transformResult.dependencyPaths || [];
-    await Promise.all(dependencyPaths.map(async (relativePath, i) => {
+    const importedDependencyPaths = transformResult.importedDependencyPaths || [];
+    await Promise.all(importedDependencyPaths.map(async (relativePath, i) => {
       const dependencyInfo = await this.resolveProviderInfo(relativePath);
       if (!dependencyInfo) {
         return this.logger.warn("could not resolve ", relativePath);
