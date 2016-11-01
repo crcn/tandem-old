@@ -29,7 +29,7 @@ export interface IDependencyGraphStrategy {
   /**
    * Returns a loader with the given options. Example
    *
-   * strategy.getLoader(['text']); // new TextBundleLoader()
+   * strategy.getLoader(['text']); // new TextDependencyLoader()
    */
 
   getLoader(loaderOptions: any): IDependencyLoader;

@@ -27,7 +27,7 @@ const deps = new Injector(
   new FileEditorProvider(),
   new FileSystemProvider(new LocalFileSystem()),
   new FileResolverProvider(new LocalFileResolver()),
-  new DependencyLoaderFactoryProvider("text/css", CSSBundleLoader),
+  new DependencyLoaderFactoryProvider("text/css", CSSDependencyLoader),
   new ContentEditorFactoryProvider("text/css", CSSContentEditor),
 );
 
@@ -42,10 +42,10 @@ const sandbox = new Sandbox(deps, function createGlobal() {
 
 // create an dependency entry -- all dependencies, and nested dependencies
 // be dependency up into this object.
-const fileBundle: Dependency = dependencyGraph.getDependency("file:///path/to/local/file.html");
+const fileDependency: Dependency = dependencyGraph.getDependency("file:///path/to/local/file.html");
 
 // execute the file dependency. Re-execute if the dependency changes
-const fakeDocument: SyntheticDocument = await sandbox.open(fileBundle);
+const fakeDocument: SyntheticDocument = await sandbox.open(fileDependency);
 
 const edit = fakeDocument.body.createEdit().appendChild(fakeDocument.createTextNode("hello world")));
 
@@ -81,14 +81,14 @@ UPDATE:
 
 ```typescript
 import {
-  WebpackBundleStrategy,
+  WebpackDependencyGraphStrategy,
   DependencyGraphStrategyProvider,
   DependencyGraphProvider
 } from "@tandem/sandbox";
 
 const dependencies = new Injector(
-  new DependencyGraphStrategyProvider("webpack", new WebpackBundleStrategy(webpackConfig)),
-  new DependencyGraphStrategyProvider("webpack2", new WebpackBundleStrategy(webpackConfig)),
+  new DependencyGraphStrategyProvider("webpack", new WebpackDependencyGraphStrategy(webpackConfig)),
+  new DependencyGraphStrategyProvider("webpack2", new WebpackDependencyGraphStrategy(webpackConfig)),
   new DependencyGraphStrategyProvider("rollup", new RollupBundleStrategy(webpackConfig)),
   new DependencyGraphProvider()
 );

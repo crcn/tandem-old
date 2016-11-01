@@ -1,4 +1,4 @@
-import { ISandboxBundleEvaluator, SandboxModule } from "@tandem/sandbox";
+import { ISandboxDependencyEvaluator, SandboxModule } from "@tandem/sandbox";
 import * as path from "path";
 import * as vm from "vm";
 
@@ -11,7 +11,7 @@ function compile(content: string): vm.Script {
   `));
 }
 
-export class CommonJSSandboxEvaluator implements ISandboxBundleEvaluator {
+export class CommonJSSandboxEvaluator implements ISandboxDependencyEvaluator {
   evaluate(module: SandboxModule) {
     const { source, sandbox } = module;
     const { content } = source;

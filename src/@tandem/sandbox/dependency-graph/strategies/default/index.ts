@@ -1,6 +1,7 @@
 import { IFileResolver } from "@tandem/sandbox/resolver";
 import { IDependencyContent } from "../../base";
-import { FileResolverProvider, DependencyLoaderFactoryProvider } from "@tandem/sandbox/providers";
+import { FileResolverProvider } from "@tandem/sandbox/providers";
+import { DependencyLoaderFactoryProvider } from "@tandem/sandbox/dependency-graph/providers";
 
 import {
   IDependencyLoader,
@@ -23,7 +24,7 @@ export abstract class BaseDependencyLoader implements IDependencyLoader {
   abstract load(filePath: string, content: IDependencyContent): Promise<IDependencyLoaderResult>;
 }
 
-export class DefaultBundleLoader implements IDependencyLoader {
+export class DefaultDependencyLoader implements IDependencyLoader {
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
@@ -67,7 +68,7 @@ export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy 
   private _injector: Injector;
 
   getLoader(loaderOptions: any): IDependencyLoader {
-    return this._injector.inject(new DefaultBundleLoader(this, loaderOptions));
+    return this._injector.inject(new DefaultDependencyLoader(this, loaderOptions));
   }
 
   async resolve(relativeFilePath, cwd: string): Promise<IResolvedDependencyInfo> {

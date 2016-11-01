@@ -62,7 +62,12 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
     return this._source;
   }
 
-  reload() {
+  /**
+   * Refreshes the active record from the DS if the source data
+   * is stale.
+   */
+
+  refresh() {
     return this.fetch(new DSFindAction(this.collectionName, this.sourceQuery));
   }
 

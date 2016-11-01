@@ -1,5 +1,5 @@
 import * as memoize from "memoizee";
-import { getBundleItemHash } from "./utils";
+import { getDependencyHash } from "./utils";
 
 import { 
   IDependencyLoader,
@@ -105,14 +105,14 @@ export class DependencyGraph extends Observable {
    */
 
   getDependency = memoize(async (ops: IResolvedDependencyInfo): Promise<Dependency> => {
-    const hash = getBundleItemHash(ops);
+    const hash = getDependencyHash(ops);
     this.logger.verbose("Loading dependency %s", hash);
     return this.eagerFindByHash(hash) || await this.collection.loadOrCreateItem({ hash }, {
       filePath: ops.filePath,
       loaderOptions: ops.loaderOptions,
       hash
     });
-  }, { promise: true, normalizer: args => getBundleItemHash(args[0]) }) as (ops: IResolvedDependencyInfo) => Promise<Dependency>;
+  }, { promise: true, normalizer: args => getDependencyHash(args[0]) }) as (ops: IResolvedDependencyInfo) => Promise<Dependency>;
 
   /**
    */
@@ -120,5 +120,5 @@ export class DependencyGraph extends Observable {
   loadDependency = memoize(async (ops: IResolvedDependencyInfo): Promise<Dependency> => {
     const entry  = await this.getDependency(ops);
     return await entry.load();
-  }, { promise: true, normalizer: args => getBundleItemHash(args[0]) }) as (ops: IResolvedDependencyInfo) => Promise<Dependency>;
+  }, { promise: true, normalizer: args => getDependencyHash(args[0]) }) as (ops: IResolvedDependencyInfo) => Promise<Dependency>;
 }

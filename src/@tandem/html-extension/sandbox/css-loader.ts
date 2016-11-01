@@ -11,7 +11,7 @@ import {
   parseCSS,
 } from "@tandem/synthetic-browser";
 
-export class CSSBundleLoader extends BaseDependencyLoader {
+export class CSSDependencyLoader extends BaseDependencyLoader {
   async load(filePath, { type, content, map }): Promise<IDependencyLoaderResult> {
     /*const content = this.content.replace(/url\(['"]?(.*?)['"]?\)/g, (match, filePath) => {
       return `url("http://${window.location.host}/asset/` + encodeURIComponent(path.join(path.dirname(this.filePath), filePath.split(/\?|#/).shift())) + '")';

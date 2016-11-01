@@ -1,9 +1,9 @@
 import { CSSEditor, MarkupEditor } from "@tandem/synthetic-browser";
 import { CSS_MIME_TYPE, HTML_MIME_TYPE, JS_MIME_TYPE } from "@tandem/common";
 
-import { HTMLBundleLoader } from "./html-loader";
+import { HTMLDependencyLoader } from "./html-loader";
 import { HTMLASTEvaluator } from "./html-evaluator";
-import { CSSBundleLoader } from "./css-loader";
+import { CSSDependencyLoader } from "./css-loader";
 import { CSSASTEvaluator } from "./css-evaluator";
 
 export * from "./html-loader";
@@ -20,8 +20,8 @@ import {
 export function createHTMLSandboxProviders() {
   return [
     // dependency graph loaders
-    new DependencyLoaderFactoryProvider(HTML_MIME_TYPE, HTMLBundleLoader),
-    new DependencyLoaderFactoryProvider(CSS_MIME_TYPE, CSSBundleLoader),
+    new DependencyLoaderFactoryProvider(HTML_MIME_TYPE, HTMLDependencyLoader),
+    new DependencyLoaderFactoryProvider(CSS_MIME_TYPE, CSSDependencyLoader),
 
     // sandbox evaluators
     new SandboxModuleEvaluatorFactoryProvider(HTML_MIME_TYPE, HTMLASTEvaluator),

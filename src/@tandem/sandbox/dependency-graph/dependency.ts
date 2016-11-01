@@ -34,11 +34,12 @@ import {
   MimeTypeProvider,
   BaseActiveRecord,
   InjectorProvider,
+  PropertyChangeAction,
   PLAIN_TEXT_MIME_TYPE,
   DisposableCollection,
 } from "@tandem/common";
 
-import { getBundleItemHash } from "./utils";
+import { getDependencyHash } from "./utils";
 
 export interface IDependencyData {
   hash: string;
@@ -59,6 +60,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private _filePath: string;
   private _ready: boolean;
+  private _shouldLoadAgain: boolean;
   private _resolvedDependencyInfo: { [Identifier: string]: IResolvedDependencyInfo };
   private _type: string;
   private _content: string;
@@ -73,14 +75,14 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   @inject(FileSystemProvider.ID)
   private _fileSystem: IFileSystem;
 
-
   private _map: RawSourceMap;
   private _fileCacheItem: FileCacheItem;
-  private _fileCacheItemWatchers: DisposableCollection;
+  private _fileCacheItemObserver: IActor;
   private _updatedAt: number;
   private _dependencyObserver: IActor;
   private _readyLock: boolean;
   private _loading: boolean;
+  private _loaded: boolean;
 
   @inject(InjectorProvider.ID)
   private _injector: Injector;
@@ -89,6 +91,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     super(source, collectionName);
 
     this._dependencyObserver = new WrapBus(this.onDependencyAction.bind(this));
+    this._fileCacheItemObserver = new WrapBus(this.onFileCacheAction.bind(this));
   }
 
   $didInject() {
@@ -131,17 +134,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   get hash(): string {
     return this._hash;
-  }
-
-  /**
-   * TRUE when the bundle, and all of its injector are loaded.
-   *
-   * @readonly
-   * @type {boolean}
-   */
-
-  get ready(): boolean {
-    return this._ready;
   }
 
   /**
@@ -199,6 +191,10 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     return values(this._resolvedDependencyInfo).map((inf: IResolvedDependencyInfo) => inf.filePath);
   }
 
+  get loaded() {
+    return this._loaded;
+  }
+
   /**
    * The loaded bundle type
    *
@@ -218,7 +214,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   get dependencies(): Dependency[] {
     return values(this._resolvedDependencyInfo).map((inf) => {
-      return this._graph.eagerFindByHash(getBundleItemHash(inf));
+      return this._graph.eagerFindByHash(getDependencyHash(inf));
     });
   }
 
@@ -237,26 +233,13 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this._updatedAt = Date.now();
   }
 
-  whenReady(): Promise<Dependency> {
-    if (this.ready) return Promise.resolve(this);
-    return new Promise((resolve, reject) => {
-      const observer = new WrapBus((action: Action) => {
-        if (action.type === DependencyAction.DEPENDENCY_READY && this.ready) {
-          this.unobserve(observer);
-          resolve(this);
-        }
-      });
-      this.observe(observer);
-    });
-  }
-
   getDependencyHash(relativePath: string) {
     const info: IResolvedDependencyInfo = this._resolvedDependencyInfo[relativePath];
     if (info == null) {
       this.logger.error(`Absolute path on bundle entry does not exist for ${relativePath}.`);
       return;
     }
-    return getBundleItemHash(info);
+    return getDependencyHash(info);
   }
 
   eagerGetDependency(relativePath: string) {
@@ -300,17 +283,21 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   load = memoize(async (): Promise<Dependency> => {
 
+    this._loaded = false;
     this._loading = true;
     this.logger.verbose("Loading...");
     const logTimer = this.logger.startTimer();
+    const fileCache = await this.getSourceFileCacheItem();
+    const fileCacheUpdatedAt = fileCache.updatedAt;
 
     const loader = this._graph.$strategy.getLoader(this._loaderOptions);
+
     const transformResult: IDependencyLoaderResult = await loader.load(this.filePath, await this.getInitialSourceContent());
 
     if (!transformResult.content || this._content === transformResult.content) {
       this.logger.info("Content has not changed");
       this._loading = false;
-      this.notifyBundleReady();
+      this.notifyLoaded();
       return this;
     }
 
@@ -322,10 +309,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     if (!this._watchingFileCacheItem) {
       this._watchingFileCacheItem = true;
       const fileCache = await this.getSourceFileCacheItem();
-      this._fileCacheItemWatchers = new DisposableCollection(
-        watchProperty(fileCache, "localFileModifiedAt", this.onFileCacheItemChange.bind(this)),
-        watchProperty(fileCache, "url", this.onFileCacheItemChange.bind(this))
-      );
+      fileCache.observe(this._fileCacheItemObserver);
     }
 
     for (const dependency of this.dependencies) {
@@ -333,6 +317,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     }
 
     this._resolvedDependencyInfo = {};
+
     // TODO - need to differentiate imported from included dependency.
     const dependencyPaths = transformResult.dependencyPaths || [];
     await Promise.all(dependencyPaths.map(async (relativePath, i) => {
@@ -344,7 +329,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       this._resolvedDependencyInfo[dependencyInfo.filePath] = dependencyInfo;
       this.logger.verbose("loading dependency %s -> %s", relativePath, dependencyInfo.filePath);
 
-      const waitLogger = this.logger.startTimer(`Waiting for dependency ${getBundleItemHash(dependencyInfo)}:${dependencyInfo.filePath} to load...`, 1000 * 10, LogLevel.VERBOSE);
+      const waitLogger = this.logger.startTimer(`Waiting for dependency ${getDependencyHash(dependencyInfo)}:${dependencyInfo.filePath} to load...`, 1000 * 10, LogLevel.VERBOSE);
       const dependency = await this._graph.getDependency(dependencyInfo);
 
       // ensure that the dependency is not loading to prevent promise lock
@@ -358,15 +343,21 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
     await this.save();
 
-    this.notifyBundleReady();
+    this.notifyLoaded();
 
     for (const dependency of this.dependencies) {
       dependency.observe(this._dependencyObserver);
     }
 
-    this._ready = true;
     this._loading = false;
     logTimer.stop("loaded");
+
+    if (fileCacheUpdatedAt !== fileCache.updatedAt) {
+      this.logger.verbose("File cache changed during load, reloading.")
+      return this.reload();
+    }
+
+    this._loaded  = true;
 
     return this;
   }, { length: 0, promise: true }) as () => Promise<Dependency>;
@@ -392,18 +383,18 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     // for now, reload the entire bundle if a dependency changes. This is to ensure
     // that any changes that are embedded in this bundle get updates when they change -- this
     // is particular to css files.
-    if (action.type === DependencyAction.DEPENDENCY_READY) {
+    if (action.type === DependencyAction.DEPENDENCY_LOADED) {
       if (this.loading) {
         this.logger.warn("Unable to reload bundle while it's still loading.")
       } else {
-        this.reload2();
+        this.reload();
       }
     }
   }
 
-  private notifyBundleReady() {
+  private notifyLoaded() {
 
-    // fix case where a nested dependency DEPENDENCY_READY action is
+    // fix case where a nested dependency DEPENDENCY_LOADED action is
     // emitted by dependent bundles (this happens a lot)
     if (this._readyLock || !this._ready) {
       return;
@@ -412,20 +403,24 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     setTimeout(() => this._readyLock = false, 0);
 
     // ensure that we get passed the ready lock
-    this.logger.verbose("dispatch DEPENDENCY_READY");
-    this.notify(new DependencyAction(DependencyAction.DEPENDENCY_READY));
+    this.logger.verbose("dispatch DEPENDENCY_LOADED");
+    this.notify(new DependencyAction(DependencyAction.DEPENDENCY_LOADED));
   }
 
   private async resolveProviderInfo(dependencyPath: string) {
     return this._graph.$strategy.resolve(dependencyPath, path.dirname(this.filePath));
   }
 
-  private reload2() {
+  private async reload() {
     this.load["clear"]();
-    this.load();
+    return await this.load();
   }
 
-  private onFileCacheItemChange() {
-    this.reload2();
+  private onFileCacheAction(action: Action) {
+
+    // reload the dependency if file cache item changes -- could be the data url, source file, etc.
+    if (action.type === PropertyChangeAction.PROPERTY_CHANGE && !this.loading) {
+      this.reload();
+    }
   }
 }

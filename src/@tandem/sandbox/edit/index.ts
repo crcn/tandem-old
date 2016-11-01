@@ -382,7 +382,7 @@ export class FileEditor extends Observable {
         this.logger.info("applying file edit actions %s: %s", filePath, actions.map(action => action.type).join(" "));
 
         const newContent    = contentEditor.applyEditActions(...actions);
-        fileCache.setDataUrl(newContent);
+        fileCache.setDataUrlContent(newContent);
         promises.push(fileCache.save());
       }
 

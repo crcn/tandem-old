@@ -1,10 +1,12 @@
 import { WrapBus } from "mesh";
+import { SandboxModuleEvaluatorFactoryProvider } from "./providers";
+
 import {
   Dependency,
   DependencyGraph,
   DependencyAction
 } from "@tandem/sandbox/dependency-graph";
-import { SandboxModuleEvaluatorFactoryProvider, DependencyGraphProvider } from "../providers";
+
 import {
   IActor,
   Action,
@@ -17,8 +19,8 @@ import {
   PropertyChangeAction,
 } from "@tandem/common";
 
-export type sandboxBundleEvaluatorType = { new(): ISandboxBundleEvaluator };
-export interface ISandboxBundleEvaluator {
+export type sandboxDependencyEvaluatorType = { new(): ISandboxDependencyEvaluator };
+export interface ISandboxDependencyEvaluator {
   evaluate(module: SandboxModule): void;
 }
 
@@ -89,7 +91,7 @@ export class Sandbox extends Observable {
     this._entry.observe(this._entryObserver);
 
     this.logger.verbose("wait for %s", entry.filePath);
-    await this._entry.whenReady();
+    await this._entry.load();
     this.reset();
   }
 
@@ -101,8 +103,8 @@ export class Sandbox extends Observable {
       return this._modules[dependency.hash].exports;
     }
 
-    if (!dependency.ready) {
-      throw new Error(`Trying to require dependency ${hash} that is not ready yet.`);
+    if (!dependency.loaded) {
+      throw new Error(`Attempting to evaluate dependency ${hash} that is not loaded yet.`);
     }
 
     const module = this._modules[hash] = new SandboxModule(this, dependency);
@@ -121,7 +123,7 @@ export class Sandbox extends Observable {
   }
 
   protected onEntryAction(action: Action) {
-    if (action.type === DependencyAction.DEPENDENCY_READY) {
+    if (action.type === DependencyAction.DEPENDENCY_LOADED) {
       if (this._paused) {
         this._shouldEvaluate = true;
         return;
@@ -142,3 +144,5 @@ export class Sandbox extends Observable {
     this.notify(new PropertyChangeAction("exports", this._exports, exports));
   }
 }
+
+export * from "./providers";

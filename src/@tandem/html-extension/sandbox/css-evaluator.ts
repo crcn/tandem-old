@@ -1,11 +1,11 @@
 import {
  SandboxModule,
- ISandboxBundleEvaluator,
+ ISandboxDependencyEvaluator,
 } from "@tandem/sandbox";
 
 import { evaluateCSS, parseCSS } from "@tandem/synthetic-browser";
 
-export class CSSASTEvaluator implements ISandboxBundleEvaluator {
+export class CSSASTEvaluator implements ISandboxDependencyEvaluator {
   evaluate(module: SandboxModule) {
     if (!module.source.ast) {
       console.log(module.source.filePath);

@@ -118,7 +118,7 @@ class WebpackLoaderContext {
   constructor(
     readonly loaders: INormalizedWebpackLoaderConfig[],
     readonly loader: INormalizedWebpackLoaderConfig,
-    readonly strategy: WebpackBundleStrategy,
+    readonly strategy: WebpackDependencyGraphStrategy,
     readonly resourcePath: string,
     private _injector: string[]
   ) {
@@ -202,9 +202,9 @@ class WebpackLoaderContext {
 }
 
 @loggable()
-class WebpackBundleLoader implements IDependencyLoader {
+class WebpackDependencyLoader implements IDependencyLoader {
   protected readonly logger: Logger;
-  constructor(readonly strategy: WebpackBundleStrategy, readonly options: IWebpackLoaderOptions) { }
+  constructor(readonly strategy: WebpackDependencyGraphStrategy, readonly options: IWebpackLoaderOptions) { }
   async load(filePath: string, { type, content, map }: IDependencyContent): Promise<IDependencyLoaderResult> {
     this.logger.verbose("loading %s", filePath);
 
@@ -296,7 +296,7 @@ function parserLoaderOptions(moduleInfo: string, hasFile: boolean = false): IWeb
 
 
 @loggable()
-export class WebpackBundleStrategy implements IDependencyGraphStrategy {
+export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy {
 
   protected readonly logger: Logger;
 
@@ -333,7 +333,7 @@ export class WebpackBundleStrategy implements IDependencyGraphStrategy {
    */
 
   getLoader(options: IWebpackLoaderOptions): IDependencyLoader {
-    return this._injector.inject(new WebpackBundleLoader(this, options));
+    return this._injector.inject(new WebpackDependencyLoader(this, options));
   }
 
   async resolve(moduleInfo: string, cwd: string): Promise<IResolvedDependencyInfo> {

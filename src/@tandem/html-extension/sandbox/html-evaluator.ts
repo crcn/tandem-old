@@ -1,6 +1,6 @@
 import {
  SandboxModule,
- ISandboxBundleEvaluator,
+ ISandboxDependencyEvaluator,
 } from "@tandem/sandbox";
 
 import {
@@ -10,7 +10,7 @@ import {
   MarkupMimeTypeXMLNSProvider
 } from "@tandem/synthetic-browser";
 
-export class HTMLASTEvaluator implements ISandboxBundleEvaluator {
+export class HTMLASTEvaluator implements ISandboxDependencyEvaluator {
   evaluate(module: SandboxModule) {
 
     const window = <SyntheticWindow>module.sandbox.global;

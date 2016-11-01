@@ -5,7 +5,7 @@ import {
   IDependencyLoader,
   BaseDependencyLoader,
   IDependencyContent,
-  DefaultBundleLoader,
+  DefaultDependencyLoader,
   IDependencyLoaderResult,
 } from "@tandem/sandbox";
 
@@ -26,7 +26,7 @@ import {
   deserializeMarkupExpression,
 } from "@tandem/synthetic-browser";
 
-export class HTMLBundleLoader extends BaseDependencyLoader {
+export class HTMLDependencyLoader extends BaseDependencyLoader {
 
   @inject(InjectorProvider.ID)
   private _injector: Injector;

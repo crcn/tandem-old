@@ -7,6 +7,7 @@ import {
   PrivateBusProvider,
 } from "@tandem/common";
 
+
 import {
   ReadFileAction,
   WatchFileAction,
@@ -86,6 +87,7 @@ export class RemoteFileSystem extends BaseFileSystem {
   async writeFile(filePath: string, content: any) {
     return Promise.reject(new Error("not implemented yet"))
   }
+
 
   watchFile2(filePath: string, onChange: () => any) {
     return WatchFileAction.execute(filePath, this.bus, onChange);

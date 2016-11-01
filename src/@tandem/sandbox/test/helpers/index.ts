@@ -16,16 +16,18 @@ import { createJavaScriptSandboxProviders } from "@tandem/javascript-extension/s
 
 import {
   Sandbox,
-  DependencyGraph,
+  FileCache,
+  Dependency,
   IFileSystem,
   IFileResolver,
   BaseFileSystem,
-  DependencyGraphProvider,
-  Dependency,
+  DependencyGraph,
+  FileCacheProvider,
   FileSystemProvider,
   IFileResolverOptions,
-  IDependencyGraphStrategyOptions,
   createSandboxProviders,
+  DependencyGraphProvider,
+  IDependencyGraphStrategyOptions,
 } from "@tandem/sandbox";
 
 export interface IMockFiles {
@@ -40,8 +42,9 @@ export class MockFilesProvider extends Provider<IMockFiles> {
 }
 
 export interface ISandboxTestProviderOptions {
-  mockFiles: IMockFiles;
+  mockFiles?: IMockFiles;
   providers?: IProvider[];
+  fileCacheSync?: boolean;
 }
 
 export class MockFileSystem extends BaseFileSystem {
@@ -58,11 +61,21 @@ export class MockFileSystem extends BaseFileSystem {
 
   readFile(filePath: string): Promise<any> {
     const content = this._mockFiles[filePath];
-    return content && Promise.resolve(content) || Promise.reject(new Error(`File ${filePath} not found.`));
+    return new Promise((resolve, reject) => {
+
+      // simulated latency
+      setTimeout(() => {
+        if (content) {
+          resolve(content);
+        } else {
+          reject(new Error(`File ${filePath} not found.`));
+        }
+      }, 5);
+    });
   }
   writeFile(filePath: string, content: string): Promise<void> {
 
-    this._mockFiles[filePath] = filePath;
+    this._mockFiles[filePath] = content;
 
     if (this._watchers[filePath]) {
       this._watchers[filePath]();
@@ -86,7 +99,7 @@ export class MockFileResolver implements IFileResolver {
   }
 }
 
-export const createSandboxTestInjector = (options: ISandboxTestProviderOptions) => {
+export const createSandboxTestInjector = (options: ISandboxTestProviderOptions = {}) => {
   const injector = new Injector();
   const bus = new BrokerBus();
   bus.register(UpsertBus.create(new MemoryDSBus()));
@@ -99,6 +112,10 @@ export const createSandboxTestInjector = (options: ISandboxTestProviderOptions) 
     createJavaScriptSandboxProviders(),
     createSandboxProviders(MockFileSystem, MockFileResolver)
   );
+
+  if (options.fileCacheSync !== false) {
+    FileCacheProvider.getInstance(injector).syncWithLocalFiles();
+  }
 
   return injector;
 }
