@@ -1,4 +1,4 @@
 <tandem>
-  <artboard title="test" src="./css-pane-preview.tsx" bundle-strategy="webpack" style="width: 800px; height: 768px; position: absolute;"></artboard>
-  <artboard src="/Users/crcn/Developer/public/tandem/src/@tandem/html-extension/tdm/test.tsx" bundle-strategy="webpack" title="something"></artboard>
+  <artboard title="test" src="./css-pane-preview.tsx" dependency-graph-strategy="webpack" style="width: 800px; height: 768px; position: absolute;"></artboard>
+  <artboard src="/Users/crcn/Developer/public/tandem/src/@tandem/html-extension/tdm/test.tsx" dependency-graph-strategy="webpack" title="something"></artboard>
 </tandem>

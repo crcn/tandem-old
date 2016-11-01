@@ -29,11 +29,11 @@ import {
 } from "@tandem/common";
 
 import {
-  BundleDependency,
-  Bundler,
+  Dependency,
+  DependencyGraph,
   Sandbox,
-  BundlerProvider,
-  IBundleStrategyOptions,
+  DependencyGraphProvider,
+  IDependencyGraphStrategyOptions,
 } from "@tandem/sandbox";
 
 import {
@@ -44,7 +44,7 @@ import { WrapBus } from "mesh";
 
 export interface ISyntheticBrowserOpenOptions {
   url: string;
-  bundleStrategyOptions?: IBundleStrategyOptions;
+  dependencyGraphStrategyOptions?: IDependencyGraphStrategyOptions;
 }
 
 export interface ISyntheticBrowser extends IObservable {
@@ -137,7 +137,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
 export class SyntheticBrowser extends BaseSyntheticBrowser {
 
   private _sandbox: Sandbox;
-  private _entry: BundleDependency;
+  private _entry: Dependency;
 
   $didInject() {
     super.$didInject();
@@ -151,8 +151,8 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   }
 
   async open2(options: ISyntheticBrowserOpenOptions) {
-    const bundler = BundlerProvider.getInstance(options.bundleStrategyOptions, this._injector);
-    this._entry = await bundler.loadDependency({ filePath: options.url });
+    const graph = DependencyGraphProvider.getInstance(options.dependencyGraphStrategyOptions, this._injector);
+    this._entry = await graph.loadDependency({ filePath: options.url });
     this.logger.info("opening %s in sandbox", options.url);
     this._sandbox.open(this._entry);
   }

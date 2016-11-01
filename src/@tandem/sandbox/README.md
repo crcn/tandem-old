@@ -6,33 +6,33 @@ Kitchen sink example:
 import { Injector } from "@tandem/common";
 import { SyntheticWindow, SyntheticDocument } from "@tandem/synthetic-browser";
 import {
-  BundleDependency,
+  Dependency,
   Sandbox,
-  Bundler,
+  DependencyGraph,
   FileCacheItem,
   LocalFileSystem,
   LocalFileResolver,
-  BundlerProvider,
+  DependencyGraphProvider,
   ISyntheticObject,
   FileEditorProvider,
   FileSystemProvider,
   FileResolverProvider,
-  BundlerLoaderFactoryProvider,
+  DependencyLoaderFactoryProvider,
   ContentEditorFactoryProvider,
 } from "@tandem/sandbox";
 
 
 const deps = new Injector(
-  new BundlerProvider(),
+  new DependencyGraphProvider(),
   new FileEditorProvider(),
   new FileSystemProvider(new LocalFileSystem()),
   new FileResolverProvider(new LocalFileResolver()),
-  new BundlerLoaderFactoryProvider("text/css", CSSBundleLoader),
+  new DependencyLoaderFactoryProvider("text/css", CSSBundleLoader),
   new ContentEditorFactoryProvider("text/css", CSSContentEditor),
 );
 
-// fetch the bundler singleton
-const bundler: Bundler = BundlerProvider.getInstance(deps);
+// fetch the dependency graph singleton
+const dependencyGraph: DependencyGraph = DependencyGraphProvider.getInstance("webpack", deps);
 
 const sandbox = new Sandbox(deps, function createGlobal() {
 
@@ -40,11 +40,11 @@ const sandbox = new Sandbox(deps, function createGlobal() {
   return new SyntheticWindow();
 });
 
-// create an bundle entry -- all dependencies, and nested dependencies
-// be bundled up into this object.
-const fileBundle: BundleDependency = bundler.bundle("file:///path/to/local/file.html");
+// create an dependency entry -- all dependencies, and nested dependencies
+// be dependency up into this object.
+const fileBundle: Dependency = dependencyGraph.getDependency("file:///path/to/local/file.html");
 
-// execute the file bundle. Re-execute if the bundle changes
+// execute the file dependency. Re-execute if the dependency changes
 const fakeDocument: SyntheticDocument = await sandbox.open(fileBundle);
 
 const edit = fakeDocument.body.createEdit().appendChild(fakeDocument.createTextNode("hello world")));
@@ -82,19 +82,19 @@ UPDATE:
 ```typescript
 import {
   WebpackBundleStrategy,
-  BundlerStrategyProvider,
-  BundlerProvider
+  DependencyGraphStrategyProvider,
+  DependencyGraphProvider
 } from "@tandem/sandbox";
 
 const dependencies = new Injector(
-  new BundlerStrategyProvider("webpack", new WebpackBundleStrategy(webpackConfig)),
-  new BundlerStrategyProvider("webpack2", new WebpackBundleStrategy(webpackConfig)),
-  new BundlerStrategyProvider("rollup", new RollupBundleStrategy(webpackConfig)),
-  new BundlerProvider()
+  new DependencyGraphStrategyProvider("webpack", new WebpackBundleStrategy(webpackConfig)),
+  new DependencyGraphStrategyProvider("webpack2", new WebpackBundleStrategy(webpackConfig)),
+  new DependencyGraphStrategyProvider("rollup", new RollupBundleStrategy(webpackConfig)),
+  new DependencyGraphProvider()
 );
 
-const bundler = BundlerProvider.getInstance("webpack"); // webpack strategy
+const dependencyGraph = DependencyGraphProvider.getInstance("webpack"); // webpack strategy
 
 const sandbox = new Sandbox();
-sandbox.open(bundler.bundle("./file.js"));
+sandbox.open(await dependencyGraph.loadDependency("./file.js"));
 ```

@@ -5,13 +5,13 @@ import { IFileSystem, LocalFileSystem, RemoteFileSystem } from "./file-system";
 import { IFileResolver, LocalFileResolver, RemoteFileResolver } from "./resolver";
 
 import {
-  BundleDependency,
-  Bundler,
-  IBundleLoader,
-  IBundleStragegy,
-  bundleLoaderType,
-  IBundleStrategyOptions,
- } from "./bundle";
+  Dependency,
+  DependencyGraph,
+  IDependencyLoader,
+  IDependencyGraphStrategy,
+  dependencyLoaderType,
+  IDependencyGraphStrategyOptions,
+ } from "./dependency-graph";
 
  import {
   ISandboxBundleEvaluator,
@@ -27,22 +27,22 @@ import {
   createSingletonProviderClass,
 } from "@tandem/common";
 
-export class BundlerLoaderFactoryProvider extends ClassFactoryProvider {
+export class DependencyLoaderFactoryProvider extends ClassFactoryProvider {
   static readonly NS = "bundleLoader";
-  constructor(readonly mimeType: string, value: bundleLoaderType) {
-    super(BundlerLoaderFactoryProvider.getNamespace(mimeType), value);
+  constructor(readonly mimeType: string, value: dependencyLoaderType) {
+    super(DependencyLoaderFactoryProvider.getNamespace(mimeType), value);
   }
   static getNamespace(mimeType: string) {
-    return [BundlerLoaderFactoryProvider.NS, mimeType].join("/");
+    return [DependencyLoaderFactoryProvider.NS, mimeType].join("/");
   }
-  create(strategy: IBundleStragegy): IBundleLoader {
+  create(strategy: IDependencyGraphStrategy): IDependencyLoader {
     return super.create(strategy);
   }
-  static find(mimeType: string, injector: Injector): BundlerLoaderFactoryProvider {
-    return injector.query<BundlerLoaderFactoryProvider>(this.getNamespace(mimeType));
+  static find(mimeType: string, injector: Injector): DependencyLoaderFactoryProvider {
+    return injector.query<DependencyLoaderFactoryProvider>(this.getNamespace(mimeType));
   }
   clone() {
-    return new BundlerLoaderFactoryProvider(this.mimeType, this.value);
+    return new DependencyLoaderFactoryProvider(this.mimeType, this.value);
   }
 }
 
@@ -88,38 +88,38 @@ export class ContentEditorFactoryProvider extends ClassFactoryProvider {
   }
 }
 
-export class BundleStrategyProvider extends ClassFactoryProvider {
-  static ID = "bundleStrategy";
-  constructor(readonly name: string, clazz: { new(config:any): IBundleStragegy }) {
-    super(BundleStrategyProvider.getNamespace(name), clazz);
+export class DependencyGraphStratrgyProvider extends ClassFactoryProvider {
+  static ID = "dependencyGraphStrategies";
+  constructor(readonly name: string, clazz: { new(config:any): IDependencyGraphStrategy }) {
+    super(DependencyGraphStratrgyProvider.getNamespace(name), clazz);
   }
   static getNamespace(name: string) {
-    return [BundleStrategyProvider.ID, name].join("/");
+    return [DependencyGraphStratrgyProvider.ID, name].join("/");
   }
 
-  static create(strategyName: string, config: any, injector: Injector): IBundleStragegy {
-    const dependency = injector.query<BundleStrategyProvider>(this.getNamespace(strategyName));
+  static create(strategyName: string, config: any, injector: Injector): IDependencyGraphStrategy {
+    const dependency = injector.query<DependencyGraphStratrgyProvider>(this.getNamespace(strategyName));
     return dependency && dependency.create(config);
   }
 }
 
-export class BundlerProvider extends Provider<any> {
-  static ID = "bundlers";
-  private _instances: { [Identifier:string]: Bundler };
-  constructor(readonly clazz: { new(strategy: IBundleStragegy, injector: Injector): Bundler }) {
-    super(BundlerProvider.ID, clazz);
+export class DependencyGraphProvider extends Provider<any> {
+  static ID = "dependencyGraphs";
+  private _instances: { [Identifier:string]: DependencyGraph };
+  constructor(readonly clazz: { new(strategy: IDependencyGraphStrategy, injector: Injector): DependencyGraph }) {
+    super(DependencyGraphProvider.ID, clazz);
     this._instances = {};
   }
   clone() {
-    return new BundlerProvider(this.clazz);
+    return new DependencyGraphProvider(this.clazz);
   }
-  getInstance(options: IBundleStrategyOptions): Bundler {
+  getInstance(options: IDependencyGraphStrategyOptions): DependencyGraph {
     const strategyName = options && options.name || "default";
     if (this._instances[strategyName]) return this._instances[strategyName];
-    return this._instances[strategyName] = this.owner.inject(new this.clazz(options && BundleStrategyProvider.create(options.name, options.config, this.owner), this.owner));
+    return this._instances[strategyName] = this.owner.inject(new this.clazz(options && DependencyGraphStratrgyProvider.create(options.name, options.config, this.owner), this.owner));
   }
-  static getInstance(options: IBundleStrategyOptions, injector: Injector): Bundler {
-    return injector.query<BundlerProvider>(this.ID).getInstance(options);
+  static getInstance(options: IDependencyGraphStrategyOptions, injector: Injector): DependencyGraph {
+    return injector.query<DependencyGraphProvider>(this.ID).getInstance(options);
   }
 }
 
@@ -129,4 +129,4 @@ export const FileCacheProvider  = createSingletonProviderClass<FileCache>("fileC
 export const FileEditorProvider = createSingletonProviderClass<FileEditor>("fileEdit");
 
 // TODO - this needs to be a singleton based on a given strategy (webpack, systemjs, rollup)
-// export const BundlerProvider    = createSingletonProviderClass<Bundler>("bundler");
+// export const DependencyGraphProvider    = createSingletonProviderClass<DependencyGraph>("bundler");

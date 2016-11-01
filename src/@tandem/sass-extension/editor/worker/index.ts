@@ -1,6 +1,6 @@
 import { MimeTypeProvider } from "@tandem/common";
 import { createSASSSandboxProviders } from "../../index";
-import { BundlerLoaderFactoryProvider, ContentEditorFactoryProvider } from "@tandem/sandbox";
+import { DependencyLoaderFactoryProvider, ContentEditorFactoryProvider } from "@tandem/sandbox";
 
 export const createSASSEditorWorkerProviders = () => {
   return [

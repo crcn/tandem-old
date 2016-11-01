@@ -7,9 +7,9 @@ import { evaluateCSS, parseCSS } from "@tandem/synthetic-browser";
 
 export class CSSASTEvaluator implements ISandboxBundleEvaluator {
   evaluate(module: SandboxModule) {
-    if (!module.bundle.ast) {
-      console.log(module.bundle.filePath);
+    if (!module.source.ast) {
+      console.log(module.source.filePath);
     }
-    module.exports = evaluateCSS(module.bundle.ast, module.bundle.map, module);
+    module.exports = evaluateCSS(module.source.ast, module.source.map, module);
   }
 }

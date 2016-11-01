@@ -1,7 +1,7 @@
 import { WrapBus } from "mesh";
-import { BundleAction } from "./actions";
-import { BundleDependency, Bundler } from "./bundle";
-import { SandboxModuleEvaluatorFactoryProvider, BundlerProvider } from "./providers";
+import { DependencyAction } from "./actions";
+import { Dependency, DependencyGraph } from "./dependency-graph";
+import { SandboxModuleEvaluatorFactoryProvider, DependencyGraphProvider } from "./providers";
 import {
   IActor,
   Action,
@@ -21,12 +21,12 @@ export interface ISandboxBundleEvaluator {
 
 export class SandboxModule {
   public exports: any;
-  constructor(readonly sandbox: Sandbox, readonly bundle: BundleDependency) {
+  constructor(readonly sandbox: Sandbox, readonly source: Dependency) {
     this.exports = {};
   }
 
   get filePath() {
-    return this.bundle.filePath;
+    return this.source.filePath;
   }
 }
 
@@ -40,7 +40,7 @@ export class Sandbox extends Observable {
   protected readonly logger: Logger;
 
   private _modules: any;
-  private _entry: BundleDependency;
+  private _entry: Dependency;
   private _paused: boolean;
   private _mainModule: any;
   private _entryObserver: IActor;
@@ -77,7 +77,7 @@ export class Sandbox extends Observable {
     return this._global;
   }
 
-  async open(entry: BundleDependency) {
+  async open(entry: Dependency) {
 
     if (this._entry) {
       this._entry.unobserve(this._entryObserver);
@@ -90,7 +90,7 @@ export class Sandbox extends Observable {
     this.reset();
   }
 
-  public evaluate(dependency: BundleDependency): Object {
+  public evaluate(dependency: Dependency): Object {
 
     const hash = dependency.hash;
 
@@ -99,7 +99,7 @@ export class Sandbox extends Observable {
     }
 
     if (!dependency.ready) {
-      throw new Error(`Trying to require bundle ${hash} that is not ready yet.`);
+      throw new Error(`Trying to require dependency ${hash} that is not ready yet.`);
     }
 
     const module = this._modules[hash] = new SandboxModule(this, dependency);
@@ -118,7 +118,7 @@ export class Sandbox extends Observable {
   }
 
   protected onEntryAction(action: Action) {
-    if (action.type === BundleAction.BUNDLE_READY) {
+    if (action.type === DependencyAction.DEPENDENCY_READY) {
       if (this._paused) {
         this._shouldEvaluate = true;
         return;

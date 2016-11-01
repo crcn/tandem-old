@@ -12,7 +12,7 @@ import {
   LocalFileSystem,
   RemoteFileSystem,
   LocalFileResolver,
-  BundlerProvider,
+  DependencyGraphProvider,
   RemoveFileResolver,
   ResolverProvider,
   FileCacheProvider,
@@ -25,7 +25,7 @@ const dependencies = new Injector(
   new FileCacheProvider(),
 
   // scans
-  new BundlerProvider(),
+  new DependencyGraphProvider(),
 
   // resolves module dependencies (NodeJS, Bower, etc.)
   new FileResolverProvider(new LocalFileResolver()),

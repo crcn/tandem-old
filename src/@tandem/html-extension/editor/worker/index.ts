@@ -3,7 +3,7 @@
 import { MimeTypeProvider } from "@tandem/common";
 import { createHTMLCoreProviders, createHTMLSandboxProviders } from "../../index";
 import {
-  BundlerLoaderFactoryProvider,
+  DependencyLoaderFactoryProvider,
   ContentEditorFactoryProvider,
   SandboxModuleEvaluatorFactoryProvider,
 } from "@tandem/sandbox";

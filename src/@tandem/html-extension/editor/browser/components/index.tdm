@@ -1,3 +1,3 @@
 <tandem>
-  <artboard src="./panes/attributes/index.tsx" bundle-strategy="webpack" />
+  <artboard src="./panes/attributes/index.tsx" dependency-graph-strategy="webpack" />
 </tandem>

@@ -14,6 +14,6 @@ export class HTMLASTEvaluator implements ISandboxBundleEvaluator {
   evaluate(module: SandboxModule) {
 
     const window = <SyntheticWindow>module.sandbox.global;
-    module.exports = evaluateMarkup(module.bundle.ast, window.document, MarkupMimeTypeXMLNSProvider.lookup(module.bundle.filePath, window.browser.injector), module);
+    module.exports = evaluateMarkup(module.source.ast, window.document, MarkupMimeTypeXMLNSProvider.lookup(module.source.filePath, window.browser.injector), module);
   }
 }

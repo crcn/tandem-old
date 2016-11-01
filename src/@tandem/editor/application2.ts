@@ -5,7 +5,7 @@
 //   FileEditor,
 //   IFileSystem,
 //   RemoteFileSystem,
-//   BundlerProvider,
+//   DependencyGraphProvider,
 //   RemoteFileResolver,
 //   FileCacheProvider,
 //   FileSystemProvider,

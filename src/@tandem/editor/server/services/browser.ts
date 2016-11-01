@@ -29,7 +29,6 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
   private _ioService:IOService<IEdtorServerConfig>;
   private _port:number;
   private _socket:any;
-  private _bundles:Array<any>;
 
   @inject(FileCacheProvider.ID)
   private _fileCache: FileCache;

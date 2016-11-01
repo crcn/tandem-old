@@ -15,7 +15,7 @@ import { ISourceLocation } from "@tandem/common";
 
 export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, module?: SandboxModule): SyntheticCSSStyleSheet {
 
-  const bundle = module && module.bundle;
+  const dependency = module && module.source;
   // const map = expression.source.
 
   const sourceMapConsumer = map && new sm.SourceMapConsumer(map);
@@ -32,7 +32,7 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
 
   function link<T extends SyntheticCSSObject>(expression: postcss.Node, synthetic: T): T {
 
-    let filePath: string = bundle && bundle.filePath;
+    let filePath: string = dependency && dependency.filePath;
     let start =  expression.source.start;
     let end   = expression.source.end;
 

@@ -10,7 +10,7 @@ export class SandboxAction extends Action {
 }
 
 export class FileEditorAction extends Action {
-  static readonly BUNDLE_EDITED = "bundleEdited";
+  static readonly DEPENDENCY_EDITED = "dependencyEdited";
 }
 
 export class ApplyEditAction extends Action {
@@ -20,12 +20,8 @@ export class ApplyEditAction extends Action {
   }
 }
 
-export class FileEditAction extends Action {
-  static readonly BUNDLE_EDITED = "bundleEdited";
-}
-
-export class BundleAction extends Action {
-  static readonly BUNDLE_READY = "bundleReady";
+export class DependencyAction extends Action {
+  static readonly DEPENDENCY_READY = "dependencyReady";
 }
 
 export class ModuleImporterAction extends Action {

@@ -12,16 +12,16 @@ export * from "./css-loader";
 export * from "./css-evaluator";
 
 import {
-  BundlerLoaderFactoryProvider,
+  DependencyLoaderFactoryProvider,
   ContentEditorFactoryProvider,
   SandboxModuleEvaluatorFactoryProvider,
 } from "@tandem/sandbox";
 
 export function createHTMLSandboxProviders() {
   return [
-    // bundle loaders
-    new BundlerLoaderFactoryProvider(HTML_MIME_TYPE, HTMLBundleLoader),
-    new BundlerLoaderFactoryProvider(CSS_MIME_TYPE, CSSBundleLoader),
+    // dependency graph loaders
+    new DependencyLoaderFactoryProvider(HTML_MIME_TYPE, HTMLBundleLoader),
+    new DependencyLoaderFactoryProvider(CSS_MIME_TYPE, CSSBundleLoader),
 
     // sandbox evaluators
     new SandboxModuleEvaluatorFactoryProvider(HTML_MIME_TYPE, HTMLASTEvaluator),

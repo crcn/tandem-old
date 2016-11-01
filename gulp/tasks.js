@@ -220,21 +220,26 @@ gulp.task('publish', function() {
 
 gulp.task('test', ['test:all']);
 
+let coverageVariable;
 
 gulp.task('hook:istanbul', function() {
   if (!argv.coverage) return;
+  coverageVariable = '$$cov_' + new Date().getTime() + '$$';
   return gulp
   .src(getPackageOutDirs().map(dir => join(dir, '**', '*.js')))
   .pipe(istanbul())
   .pipe(istanbul.hookRequire());
 });
 
-
 gulp.task('test:all', ['hook:istanbul'], function(done) {
   const packageDirs = getPackageOutDirs();
   const testFiles = packageDirs.map(dir => join(dir, '**', '*-test.js'));
 
+  let running = false;
+
   function run() {
+    if (running) return;
+    running = true;
     let stream = gulp
     .src(testFiles)
     .pipe(mocha({
@@ -245,17 +250,19 @@ gulp.task('test:all', ['hook:istanbul'], function(done) {
     }))
     .on('error', error => console.error(error.message));
 
-
     if (argv.coverage) {
       stream = stream
       .pipe(istanbul.writeReports())
       .pipe(istanbul.enforceThresholds({
+        coverageVariable: coverageVariable,
         reporters: ['lcov', 'text-summary', 'html'],
         thresholds: {
           global: Number(argv.coverage) || 0
         }
       }))
     }
+
+    stream.once("end", () => running = false);
 
     return stream;
   }

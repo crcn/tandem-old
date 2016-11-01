@@ -17,7 +17,7 @@ import {
 } from "@tandem/common";
 
 import {
-  BundleDependency,
+  Dependency,
   EditAction,
   BaseContentEdit,
   MoveChildEditAction,

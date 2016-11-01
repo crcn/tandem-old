@@ -5,6 +5,6 @@ import { JS_MIME_TYPE } from "@tandem/common";
 
 export const createVueSandboxProviders = () => {
   return [
-    // new BundlerLoaderFactoryProvider(VUE_MIME_TYPE, createWebpackBundleLoaderClass(vueLoader, JS_MIME_TYPE))
+    // new DependencyLoaderFactoryProvider(VUE_MIME_TYPE, createWebpackBundleLoaderClass(vueLoader, JS_MIME_TYPE))
   ];
 }

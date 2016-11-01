@@ -4,17 +4,17 @@ import { inject, CSS_MIME_TYPE, isMaster, Queue } from "@tandem/common";
 
 import { evaluateCSS, SyntheticWindow } from "@tandem/synthetic-browser";
 import {
-  BundleDependency,
+  Dependency,
   FileCache,
   IFileResolver,
-  IBundleLoader,
-  IBundleLoaderResult,
+  IDependencyLoader,
+  IDependencyLoaderResult,
   FileCacheProvider,
   FileResolverProvider,
 } from "@tandem/sandbox";
 
 
-export class SCSSLoader implements IBundleLoader {
+export class SCSSLoader implements IDependencyLoader {
 
   @inject(FileCacheProvider.ID)
   private _fileCache: FileCache;
@@ -51,7 +51,7 @@ export class SCSSLoader implements IBundleLoader {
           type: CSS_MIME_TYPE,
           map: JSON.stringify(result.map) as any,
           content: result.css.toString()
-        } as IBundleLoaderResult);
+        } as IDependencyLoaderResult);
       });
     });
 

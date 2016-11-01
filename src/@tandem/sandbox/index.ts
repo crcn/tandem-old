@@ -3,7 +3,7 @@ export * from "./actions";
 export * from "./synthetic";
 export * from "./file-system";
 export * from "./resolver";
-export * from "./bundle";
+export * from "./dependency-graph";
 export * from "./file-cache";
 export * from "./sandbox";
 export * from "./editor";

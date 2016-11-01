@@ -1,4 +1,4 @@
-import { BundleDependency } from "./bundle";
+import { Dependency } from "./dependency-graph";
 import { SandboxModule } from "./sandbox";
 import { ISourcePosition, ISerializer, IWalkable } from "@tandem/common";
 

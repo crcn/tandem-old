@@ -111,9 +111,9 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
       const window = this.ownerDocument.defaultView;
       this._artboardBrowser.open({
         url: this.getAttribute("src"),
-        bundleStrategyOptions: {
-          name: this.getAttribute("bundle-strategy"),
-          config: this.getAttribute("bundle-config") && path.resolve(this.source.filePath, this.getAttribute("strategy-config"))
+        dependencyGraphStrategyOptions: {
+          name: this.getAttribute("dependency-graph-strategy"),
+          config: this.getAttribute("dependency-graph-config") && path.resolve(this.source.filePath, this.getAttribute("strategy-config"))
         }
       });
     }

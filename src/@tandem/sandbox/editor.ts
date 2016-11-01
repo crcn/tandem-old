@@ -326,7 +326,7 @@ export class FileEditor extends Observable {
 
     return new Promise((resolve) => {
       const observer = new WrapBus((action: Action) => {
-        if (action.type === FileEditorAction.BUNDLE_EDITED) {
+        if (action.type === FileEditorAction.DEPENDENCY_EDITED) {
           resolve();
           this.unobserve(observer);
         }
@@ -390,7 +390,7 @@ export class FileEditor extends Observable {
 
       // TODO - need to have rejection handling for various edits
       this._editing = false;
-      this.notify(new FileEditorAction(FileEditorAction.BUNDLE_EDITED));
+      this.notify(new FileEditorAction(FileEditorAction.DEPENDENCY_EDITED));
 
       // edits happened during getEditedContent call
       if (this._shouldEditAgain) {

@@ -16,15 +16,15 @@ import { createJavaScriptSandboxProviders } from "@tandem/javascript-extension/s
 
 import {
   Sandbox,
-  Bundler,
+  DependencyGraph,
   IFileSystem,
   IFileResolver,
   BaseFileSystem,
-  BundlerProvider,
-  BundleDependency,
+  DependencyGraphProvider,
+  Dependency,
   FileSystemProvider,
   IFileResolverOptions,
-  IBundleStrategyOptions,
+  IDependencyGraphStrategyOptions,
   createSandboxProviders,
 } from "@tandem/sandbox";
 
@@ -103,13 +103,13 @@ export const createSandboxTestInjector = (options: ISandboxTestProviderOptions) 
   return injector;
 }
 
-export const createTestBundler = (bundlerOptions: IBundleStrategyOptions, injectorOptions: ISandboxTestProviderOptions) => {
+export const createTestDependencyGraph = (graphOptions: IDependencyGraphStrategyOptions, injectorOptions: ISandboxTestProviderOptions) => {
   const injector = createSandboxTestInjector(injectorOptions);
-  return BundlerProvider.getInstance(bundlerOptions, injector);
+  return DependencyGraphProvider.getInstance(graphOptions, injector);
 }
 
-export const evaluateDependency = async (bundle: BundleDependency) => {
-  const sandbox = new Sandbox(bundle["_injector"]);
-  await sandbox.open(bundle);
+export const evaluateDependency = async (dependency: Dependency) => {
+  const sandbox = new Sandbox(dependency["_injector"]);
+  await sandbox.open(dependency);
   return sandbox.exports;
 }

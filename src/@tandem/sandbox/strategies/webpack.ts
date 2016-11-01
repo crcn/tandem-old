@@ -15,12 +15,12 @@ import * as detective from "detective";
 // TODO - handle __webpack_public_path__
 
 import {
-  IBundleContent,
-  IBundleLoaderResult,
-  IBundleResolveResult,
-  IBundleStragegy,
-  IBundleLoader
-} from "../bundle";
+  IDependencyContent,
+  IDependencyLoaderResult,
+  IResolvedDependencyInfo,
+  IDependencyGraphStrategy,
+  IDependencyLoader
+} from "../dependency-graph";
 
 import { IFileResolver } from "../resolver";
 import { FileResolverProvider } from "../providers";
@@ -43,7 +43,7 @@ export interface IWebpackLoaderConfig {
   // blacklist
   exclude: string[];
 
-  // bundle loader
+  // dependency loader
   loader?: string;
   loaders?: IWebpackLoaderConfig[];
 }
@@ -202,10 +202,10 @@ class WebpackLoaderContext {
 }
 
 @loggable()
-class WebpackBundleLoader implements IBundleLoader {
+class WebpackBundleLoader implements IDependencyLoader {
   protected readonly logger: Logger;
   constructor(readonly strategy: WebpackBundleStrategy, readonly options: IWebpackLoaderOptions) { }
-  async load(filePath: string, { type, content, map }: IBundleContent): Promise<IBundleLoaderResult> {
+  async load(filePath: string, { type, content, map }: IDependencyContent): Promise<IDependencyLoaderResult> {
     this.logger.verbose("loading %s", filePath);
 
     const { config } = this.strategy;
@@ -296,7 +296,7 @@ function parserLoaderOptions(moduleInfo: string, hasFile: boolean = false): IWeb
 
 
 @loggable()
-export class WebpackBundleStrategy implements IBundleStragegy {
+export class WebpackBundleStrategy implements IDependencyGraphStrategy {
 
   protected readonly logger: Logger;
 
@@ -328,15 +328,15 @@ export class WebpackBundleStrategy implements IBundleStragegy {
    * information about how it should be treared.
    *
    * Examples:
-   * const bundleInfo = resolver.resolve('text!./module.mu');
-   * const bundleInfo = resolver.resolve('template!./module.mu');
+   * const dependencyInfo = resolver.resolve('text!./module.mu');
+   * const dependencyInfo = resolver.resolve('template!./module.mu');
    */
 
-  getLoader(options: IWebpackLoaderOptions): IBundleLoader {
+  getLoader(options: IWebpackLoaderOptions): IDependencyLoader {
     return this._injector.inject(new WebpackBundleLoader(this, options));
   }
 
-  async resolve(moduleInfo: string, cwd: string): Promise<IBundleResolveResult> {
+  async resolve(moduleInfo: string, cwd: string): Promise<IResolvedDependencyInfo> {
 
     let loaderOptions = parserLoaderOptions(moduleInfo, true);
     let relativeFilePath = moduleInfo.split("!").pop();

@@ -1,5 +1,5 @@
 import { MimeTypeProvider } from "@tandem/common";
-import { BundlerLoaderFactoryProvider } from "@tandem/sandbox";
+import { DependencyLoaderFactoryProvider } from "@tandem/sandbox";
 import { createVueSandboxProviders } from "@tandem/vue-extension/sandbox";
 import { createCoreVueProviders } from "@tandem/vue-extension/core";
 

@@ -30,7 +30,7 @@ import {
   ObservableCollection,
 } from "@tandem/common";
 
-import { BundleDependency } from "@tandem/sandbox";
+import { Dependency } from "@tandem/sandbox";
 import {
   EditAction,
   BaseContentEdit,

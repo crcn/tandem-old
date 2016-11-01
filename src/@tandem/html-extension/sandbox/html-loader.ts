@@ -1,12 +1,12 @@
 import * as path from "path";
 
 import {
-  BundleDependency,
-  IBundleLoader,
+  Dependency,
+  IDependencyLoader,
   BaseBundleLoader,
-  IBundleContent,
+  IDependencyContent,
   DefaultBundleLoader,
-  IBundleLoaderResult,
+  IDependencyLoaderResult,
 } from "@tandem/sandbox";
 
 import {
@@ -31,7 +31,7 @@ export class HTMLBundleLoader extends BaseBundleLoader {
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  async load(filePath, { type, content }): Promise<IBundleLoaderResult> {
+  async load(filePath, { type, content }): Promise<IDependencyLoaderResult> {
 
     const dependencyPaths = [];
     const injector = this._injector;

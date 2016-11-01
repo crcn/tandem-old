@@ -13,8 +13,8 @@ function compile(content: string): vm.Script {
 
 export class CommonJSSandboxEvaluator implements ISandboxBundleEvaluator {
   evaluate(module: SandboxModule) {
-    const { bundle, sandbox } = module;
-    const { content } = bundle;
+    const { source, sandbox } = module;
+    const { content } = source;
 
     const script = compile(content);
 
@@ -22,13 +22,13 @@ export class CommonJSSandboxEvaluator implements ISandboxBundleEvaluator {
       module: module,
       window: sandbox.global,
       exports: module.exports,
-      __filename: bundle.filePath,
-      __dirname: path.dirname(bundle.filePath),
+      __filename: source.filePath,
+      __dirname: path.dirname(source.filePath),
       require: (relativePath) => {
-        return sandbox.evaluate(bundle.eagerGetDependency(relativePath));
+        return sandbox.evaluate(source.eagerGetDependency(relativePath));
       }
     }, {
-      filename: bundle.filePath,
+      filename: source.filePath,
       displayErrors: true
     });
   }
