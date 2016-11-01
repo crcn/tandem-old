@@ -109,7 +109,7 @@ export const createTestBundler = (bundlerOptions: IBundleStrategyOptions, inject
 }
 
 export const evaluateDependency = async (bundle: BundleDependency) => {
-  const sandbox = new Sandbox(bundle.$injector);
+  const sandbox = new Sandbox(bundle["_injector"]);
   await sandbox.open(bundle);
   return sandbox.exports;
 }

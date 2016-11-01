@@ -76,7 +76,7 @@ describe(__filename + "#", () => {
       new SandboxModuleEvaluatorFactoryProvider('text/plain', class implements ISandboxBundleEvaluator {
         evaluate(module: SandboxModule) {
           module.exports = module.bundle.content.replace(/import\((.*?)\);?/g, (match: any, dependencyPath: any) => {
-            return module.sandbox.require(module.bundle.getDependencyHash(dependencyPath)) as string;
+            return module.sandbox.evaluate(module.bundle.eagerGetDependency(dependencyPath)) as string;
           }).toUpperCase();
         }
       })

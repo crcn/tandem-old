@@ -41,10 +41,13 @@ export interface IActiveRecord<T> extends IObservable, IInjectable, IDisposable,
 
 export abstract class BaseActiveRecord<T> extends Observable implements IActiveRecord<T> {
 
+  @inject(PrivateBusProvider.ID)
+  protected bus: IActor;
+
   // TODO - move this to reflect metadata
   readonly idProperty: string = "_id";
 
-  constructor(private _source: T, readonly collectionName: string, @inject(PrivateBusProvider.ID) readonly bus: IActor) {
+  constructor(private _source: T, readonly collectionName: string) {
     super();
     if (this._source) {
       this.setPropertiesFromSource(_source);

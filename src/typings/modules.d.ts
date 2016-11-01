@@ -169,5 +169,5 @@ declare module "detective" {
   namespace detective {
 
   }
-  export detective;
+  export = detective;
 }

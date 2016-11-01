@@ -72,8 +72,8 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   @bindable(true)
   public metadata: Metadata;
 
-  constructor(source: IFileCacheItemData, collectionName: string, private _fileSystem: IFileSystem, bus: IActor) {
-    super(source, collectionName, bus);
+  constructor(source: IFileCacheItemData, collectionName: string, private _fileSystem: IFileSystem) {
+    super(source, collectionName);
   }
 
   serialize() {
@@ -207,7 +207,7 @@ export class FileCache extends Observable {
 
   public $didInject() {
     this._collection = ActiveRecordCollection.create(this.collectionName, this._injector, (source: IFileCacheItemData) => {
-      return new FileCacheItem(source, this.collectionName, this._fileSystem, this._bus);
+      return this._injector.inject(new FileCacheItem(source, this.collectionName, this._fileSystem));
     });
     this._collection.load();
     this._collection.sync();

@@ -51,6 +51,8 @@ export class Sandbox extends Observable {
 
   constructor(private _injector: Injector, private createGlobal: () => any = () => {}) {
     super();
+
+    // for logging
     this._injector.inject(this);
     this._entryObserver = new WrapBus(this.onEntryAction.bind(this));
     this._modules = {};
@@ -75,33 +77,25 @@ export class Sandbox extends Observable {
     return this._global;
   }
 
-  async open(dependency: BundleDependency) {
+  async open(entry: BundleDependency) {
 
     if (this._entry) {
       this._entry.unobserve(this._entryObserver);
     }
-    this._entry = dependency;
+    this._entry = entry;
     this._entry.observe(this._entryObserver);
 
-    this.logger.verbose("wait for %s", dependency.filePath);
+    this.logger.verbose("wait for %s", entry.filePath);
     await this._entry.whenReady();
     this.reset();
-
   }
 
-  get ready() {
-    return this._entry.ready;
-  }
+  public evaluate(dependency: BundleDependency): Object {
 
-  require(hash: string, interpretableName?: string): Object {
-    if (this._modules[hash]) {
-      return this._modules[hash].exports;
-    }
+    const hash = dependency.hash;
 
-    const dependency = this._entry.bundler.eagerFindByHash(hash);
-
-    if (!dependency) {
-      throw new Error(`${hash} does not exist in the ${this._entry.filePath} bundle.`);
+    if (this._modules[dependency.hash]) {
+      return this._modules[dependency.hash].exports;
     }
 
     if (!dependency.ready) {
@@ -109,7 +103,6 @@ export class Sandbox extends Observable {
     }
 
     const module = this._modules[hash] = new SandboxModule(this, dependency);
-    const now = Date.now();
 
     // TODO - cache evaluator here
     const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryProvider.find(dependency.type, this._injector);
@@ -121,7 +114,7 @@ export class Sandbox extends Observable {
     this.logger.verbose("Evaluating %s", dependency.filePath);
     evaluatorFactoryDepedency.create().evaluate(module);
 
-    return this.require(hash, interpretableName);
+    return this.evaluate(dependency);
   }
 
   protected onEntryAction(action: Action) {
@@ -142,7 +135,7 @@ export class Sandbox extends Observable {
     this._global  = this.createGlobal();
     this.notify(new PropertyChangeAction("global", this._global, global));
     this._modules = {};
-    this._exports = this.require(this._entry.hash, this._entry.filePath);
+    this._exports = this.evaluate(this._entry);
     this.notify(new PropertyChangeAction("exports", this._exports, exports));
   }
 }

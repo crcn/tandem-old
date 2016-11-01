@@ -28,19 +28,19 @@ import {
   ISerializer,
   IObservable,
   serializable,
-  PLAIN_TEXT_MIME_TYPE,
   Injector,
   watchProperty,
   ISourceLocation,
   BaseActiveRecord,
   MimeTypeProvider,
+  InjectorProvider,
   ActiveRecordAction,
+  PrivateBusProvider,
   DisposableCollection,
   PropertyChangeAction,
-  PrivateBusProvider,
-  InjectorProvider,
-  ActiveRecordCollection,
+  PLAIN_TEXT_MIME_TYPE,
   MimeTypeAliasProvider,
+  ActiveRecordCollection,
 } from "@tandem/common";
 
 import {
@@ -155,9 +155,12 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
   private _readyLock: boolean;
   private _loading: boolean;
 
+  @inject(InjectorProvider.ID)
+  private _injector: Injector;
 
-  constructor(source: IBundleData, collectionName: string, private _bundler: Bundler, public $injector: Injector) {
-    super(source, collectionName, PrivateBusProvider.getInstance($injector));
+
+  constructor(source: IBundleData, collectionName: string, private _bundler: Bundler) {
+    super(source, collectionName);
 
     this._dependencyObserver = new WrapBus(this.onDependencyAction.bind(this));
   }
@@ -321,16 +324,6 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
     });
   }
 
-  /**
-   * Synchronously fetches a dependency of this item, even though the active record
-   * may not currently exist in memory. This is okay in certain cases - particularly where
-   * this method is called within a sandbox where everything must be loaded in.
-   */
-
-  eagerGetProviderByRelativePath(relativePath: string) {
-    return this._bundler.eagerFindByHash(this.getAbsoluteDependencyPath(relativePath));
-  }
-
   getDependencyHash(relativePath: string) {
     const info: IBundleResolveResult = this._resolvedDependencyInfo[relativePath];
     if (info == null) {
@@ -338,6 +331,10 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
       return;
     }
     return getBundleItemHash(info);
+  }
+
+  eagerGetDependency(relativePath: string) {
+    return this._bundler.eagerFindByHash(this.getDependencyHash(relativePath));
   }
 
   /**
@@ -455,7 +452,7 @@ export class BundleDependency extends BaseActiveRecord<IBundleData> implements I
   async getInitialSourceContent(): Promise<IBundleLoaderResult> {
     return {
       filePath: this.filePath,
-      type: MimeTypeProvider.lookup(this.filePath, this.$injector) || PLAIN_TEXT_MIME_TYPE,
+      type: MimeTypeProvider.lookup(this.filePath, this._injector) || PLAIN_TEXT_MIME_TYPE,
       content: await (await this.getSourceFileCacheItem()).read()
     };
   }
@@ -532,7 +529,7 @@ export class Bundler extends Observable {
     // temporary - this should be passed into the constructor
     this.$strategy = this._strategy || this.$injector.inject(new DefaultBundleStragegy());
     this._collection = ActiveRecordCollection.create(this.collectionName, this.$injector, (source: IBundleData) => {
-      return this.$injector.inject(new BundleDependency(source, this.collectionName, this, this.$injector));
+      return this.$injector.inject(new BundleDependency(source, this.collectionName, this));
     });
 
     this.logger.generatePrefix = () => `(~${this.$strategy.constructor.name}~) `;
