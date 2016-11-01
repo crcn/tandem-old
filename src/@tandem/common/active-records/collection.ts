@@ -77,9 +77,9 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
    * Loads an item into this collection if it exists, otherwise creates an item
    */
 
-  async loadOrCreateItem(query: any, source: U = query) {
+  async loadOrInsertItem(query: any, source: U = query) {
     const loadedItem = await this.loadItem(query);
-    return loadedItem || this.create(source);
+    return loadedItem || this.create(source).insert();
   }
 
   /**

@@ -1,22 +1,27 @@
 import { IActor } from "@tandem/common/actors";
 import { titleize } from "inflection";
+import { DSProvider } from "@tandem/editor/server/providers";
 import * as MemoryDsBus from "mesh-memory-ds-bus";
-import { UpsertBus } from "@tandem/common/busses";
-import { PostDsNotifierBus } from "@tandem/common/busses";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
-import { ApplicationServiceProvider } from "@tandem/common";
 import {
+  inject,
   DSAction,
+  UpsertBus,
   DSFindAction,
+  PostDSAction,
   DSInsertAction,
   DSRemoveAction,
   DSUpdateAction,
   DSUpsertAction,
-  PostDSAction
-} from "@tandem/common/actions";
+  PostDsNotifierBus,
+  ApplicationServiceProvider,
+} from "@tandem/common";
 
 export class DSService extends  CoreApplicationService<IEdtorServerConfig> {
+
+  @inject(DSProvider.ID)
+  private _mainDs: IActor;
 
   private _ds: IActor;
   private _upsertBus: IActor;
@@ -25,7 +30,7 @@ export class DSService extends  CoreApplicationService<IEdtorServerConfig> {
     super.$didInject();
 
     // TODO - detch data store dependency here
-    this._ds = new PostDsNotifierBus(MemoryDsBus.create(), this.bus);
+    this._ds = new PostDsNotifierBus(this._mainDs, this.bus);
     this._upsertBus = UpsertBus.create(this.bus);
   }
 

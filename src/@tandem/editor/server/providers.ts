@@ -1,4 +1,10 @@
-import { Provider, Injector } from "@tandem/common";
+import {
+  IActor,
+  Provider,
+  Injector,
+  createSingletonProviderClass
+} from "@tandem/common";
+
 
 export class StdinHandlerProvider extends Provider<any> {
   static readonly NS = "stdinHandler";
@@ -20,5 +26,12 @@ export class StdinHandlerProvider extends Provider<any> {
         return handlerProvider;
       }
     }
+  }
+}
+
+export class DSProvider extends Provider<IActor> {
+  static readonly ID: string = "ds";
+  constructor(value: IActor) {
+    super(DSProvider.ID, value);
   }
 }

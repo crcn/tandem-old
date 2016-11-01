@@ -1,13 +1,12 @@
 import * as path from "path";
 import * as memoize from "memoizee";
 
-import { values } from "lodash";
+import { pull } from "lodash";
 import { IFileSystem } from "../file-system";
 import { RawSourceMap } from "source-map";
 import { DependencyGraph } from "./graph";
 import { DependencyAction } from "./actions";
 import { FileCache, FileCacheItem } from "../file-cache";
-
 
 import {
   IDependencyLoaderResult,
@@ -46,10 +45,15 @@ export interface IDependencyData {
   filePath: string;
   loaderOptions: any;
   content?: string;
+  map?: RawSourceMap;
   type?: string;
   updatedAt?: number;
-  resolvedProviderInfo?: any;
+  sourceUpdatedAt?: number;
+  importedDependencyInfo?: IResolvedDependencyInfo[];
+  includedDependencyInfo?: IResolvedDependencyInfo[];
 }
+
+// TODO - cover case where depenedency doesn't exist
 
 @loggable()
 export class Dependency extends BaseActiveRecord<IDependencyData> implements IInjectable {
@@ -61,16 +65,16 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   private _filePath: string;
   private _ready: boolean;
   private _shouldLoadAgain: boolean;
-  private _resolvedDependencyInfo: { [Identifier: string]: IResolvedDependencyInfo };
+  private _importedDependencyInfo: IResolvedDependencyInfo[];
+  private _includedDependencyInfo: IResolvedDependencyInfo[];
   private _type: string;
   private _content: string;
-  private _ast: any;
   private _loaderOptions: any;
   private _hash: string;
+  private _changeWatchers: DisposableCollection;
 
   @inject(FileCacheProvider.ID)
   private _fileCache: FileCache;
-  private _watchingFileCacheItem: boolean;
 
   @inject(FileSystemProvider.ID)
   private _fileSystem: IFileSystem;
@@ -79,10 +83,12 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   private _fileCacheItem: FileCacheItem;
   private _fileCacheItemObserver: IActor;
   private _updatedAt: number;
-  private _dependencyObserver: IActor;
-  private _readyLock: boolean;
+  private _importedDependencyObserver: IActor;
+  private _notifyLoadedLock: boolean;
   private _loading: boolean;
   private _loaded: boolean;
+  private _loadedDependencies: boolean;
+  private _sourceUpdatedAt: number;
 
   @inject(InjectorProvider.ID)
   private _injector: Injector;
@@ -90,7 +96,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   constructor(source: IDependencyData, collectionName: string, private _graph: DependencyGraph) {
     super(source, collectionName);
 
-    this._dependencyObserver = new WrapBus(this.onDependencyAction.bind(this));
+    this._importedDependencyObserver = new WrapBus(this.onImportedDependencyAction.bind(this));
     this._fileCacheItemObserver = new WrapBus(this.onFileCacheAction.bind(this));
   }
 
@@ -137,17 +143,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   }
 
   /**
-   * Abstract Syntax Tree node of the loaded content. Used particularly
-   * in the Sandbox.
-   *
-   * @readonly
-   */
-
-  get ast() {
-    return this._ast;
-  }
-
-  /**
    * The source map of the transformed content.
    *
    * @readonly
@@ -170,8 +165,15 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   /**
    */
 
-  get resolvedProviderInfo() {
-    return this._resolvedDependencyInfo;
+  get importedDependencyInfo() {
+    return this._importedDependencyInfo;
+  }
+
+  /**
+   */
+
+  get includedDependencyInfo() {
+    return this._includedDependencyInfo;
   }
 
   /**
@@ -188,7 +190,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
    */
 
   get absoluteProviderPaths() {
-    return values(this._resolvedDependencyInfo).map((inf: IResolvedDependencyInfo) => inf.filePath);
+    return this._importedDependencyInfo.map(info => info.filePath);
   }
 
   get loaded() {
@@ -212,8 +214,8 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
    * @type {Dependency[]}
    */
 
-  get dependencies(): Dependency[] {
-    return values(this._resolvedDependencyInfo).map((inf) => {
+  get importedDependencies(): Dependency[] {
+    return this._importedDependencyInfo.map((inf) => {
       return this._graph.eagerFindByHash(getDependencyHash(inf));
     });
   }
@@ -233,52 +235,45 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this._updatedAt = Date.now();
   }
 
-  getDependencyHash(relativePath: string) {
-    const info: IResolvedDependencyInfo = this._resolvedDependencyInfo[relativePath];
+  getDependencyHash(relativeOrAbsolutePath: string) {
+    const info: IResolvedDependencyInfo = this._importedDependencyInfo.find(info => info.relativePath === relativeOrAbsolutePath || info.filePath === relativeOrAbsolutePath);
     if (info == null) {
-      this.logger.error(`Absolute path on bundle entry does not exist for ${relativePath}.`);
+      this.logger.error(`Absolute path on bundle entry does not exist for ${relativeOrAbsolutePath}.`);
       return;
     }
     return getDependencyHash(info);
   }
 
-  eagerGetDependency(relativePath: string) {
-    return this._graph.eagerFindByHash(this.getDependencyHash(relativePath));
-  }
-
-  /**
-   * Deprecated. Use hash instead.
-   */
-
-  getAbsoluteDependencyPath(relativePath: string) {
-    const info: IResolvedDependencyInfo = this._resolvedDependencyInfo[relativePath];
-    if (info == null) {
-      this.logger.error(`Absolute path on bundle entry does not exist for ${relativePath}.`);
-      return;
-    }
-    return info.filePath;
+  eagerGetDependency(relativeOrAbsolutePath: string) {
+    return this._graph.eagerFindByHash(this.getDependencyHash(relativeOrAbsolutePath));
   }
 
   serialize() {
     return {
+      map: this._map,
       hash: this._hash,
       type: this._type,
       content: this._content,
       filePath: this.filePath,
       updatedAt: this._updatedAt,
       loaderOptions: this._loaderOptions,
-      resolvedProviderInfo: this._resolvedDependencyInfo,
+      sourceUpdatedAt: this._sourceUpdatedAt,
+      includedDependencyInfo: this._includedDependencyInfo,
+      importedDependencyInfo: this._importedDependencyInfo,
     };
   }
 
-  setPropertiesFromSource({ filePath, loaderOptions, type, updatedAt, content, resolvedProviderInfo, hash }: IDependencyData) {
+  setPropertiesFromSource({ filePath, loaderOptions, type, updatedAt, map, content, importedDependencyInfo, includedDependencyInfo, hash, sourceUpdatedAt }: IDependencyData) {
     this._type          = type;
     this._filePath      = filePath;
     this._loaderOptions = loaderOptions || {};
     this._updatedAt     = updatedAt;
+    this._sourceUpdatedAt = sourceUpdatedAt;
     this._hash          = hash;
+    this._map           = map;
     this._content       = content;
-    this._resolvedDependencyInfo = resolvedProviderInfo || {};
+    this._importedDependencyInfo = importedDependencyInfo || [];
+    this._includedDependencyInfo = includedDependencyInfo || [];
   }
 
   load = memoize(async (): Promise<Dependency> => {
@@ -286,68 +281,18 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this._loaded = false;
     this._loading = true;
     this.logger.verbose("Loading...");
-    const logTimer = this.logger.startTimer();
+    const logTimer = this.logger.startTimer(null, null, LogLevel.VERBOSE);
     const fileCache = await this.getSourceFileCacheItem();
     const fileCacheUpdatedAt = fileCache.updatedAt;
 
-    const loader = this._graph.$strategy.getLoader(this._loaderOptions);
-
-    const transformResult: IDependencyLoaderResult = await loader.load(this.filePath, await this.getInitialSourceContent());
-
-    if (!transformResult.content || this._content === transformResult.content) {
-      this.logger.info("Content has not changed");
-      this._loading = false;
-      this.notifyLoaded();
-      return this;
+    if (fileCacheUpdatedAt !== this._sourceUpdatedAt) {
+      await this.loadHard();
+      await this.save();
+    } else {
+      this.logger.verbose("No change. Reusing cached content.");
     }
 
-    this._content = transformResult.content;
-    this._ast     = transformResult.ast;
-    this._map     = transformResult.map;
-    this._type    = transformResult.type;
-
-    if (!this._watchingFileCacheItem) {
-      this._watchingFileCacheItem = true;
-      const fileCache = await this.getSourceFileCacheItem();
-      fileCache.observe(this._fileCacheItemObserver);
-    }
-
-    for (const dependency of this.dependencies) {
-      dependency.unobserve(this._dependencyObserver);
-    }
-
-    this._resolvedDependencyInfo = {};
-
-    // TODO - need to differentiate imported from included dependency.
-    const importedDependencyPaths = transformResult.importedDependencyPaths || [];
-    await Promise.all(importedDependencyPaths.map(async (relativePath, i) => {
-      const dependencyInfo = await this.resolveProviderInfo(relativePath);
-      if (!dependencyInfo) {
-        return this.logger.warn("could not resolve ", relativePath);
-      }
-      this._resolvedDependencyInfo[relativePath] = dependencyInfo;
-      this._resolvedDependencyInfo[dependencyInfo.filePath] = dependencyInfo;
-      this.logger.verbose("loading dependency %s -> %s", relativePath, dependencyInfo.filePath);
-
-      const waitLogger = this.logger.startTimer(`Waiting for dependency ${getDependencyHash(dependencyInfo)}:${dependencyInfo.filePath} to load...`, 1000 * 10, LogLevel.VERBOSE);
-      const dependency = await this._graph.getDependency(dependencyInfo);
-
-      // ensure that the dependency is not loading to prevent promise lock
-      // on cyclical dependencies.
-      if (!dependency.loading) {
-        await dependency.load();
-      }
-
-      waitLogger.stop(`Loaded dependency ${dependency.hash}:${dependency.filePath}`);
-    }));
-
-    await this.save();
-
-    this.notifyLoaded();
-
-    for (const dependency of this.dependencies) {
-      dependency.observe(this._dependencyObserver);
-    }
+    await this.loadDependencies();
 
     this._loading = false;
     logTimer.stop("loaded");
@@ -358,9 +303,59 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     }
 
     this._loaded  = true;
+    this.notifyLoaded();
+
+    // watch for changes now prevent cyclical dependencies from cyclically
+    // listening and emitting the same "done" actions
+    await this.watchForChanges();
 
     return this;
   }, { length: 0, promise: true }) as () => Promise<Dependency>;
+
+  /**
+   */
+
+  private async loadHard() {
+
+    this.logger.verbose("Transforming source content");
+
+    // sync update times. TODO - need to include included files as well. This is at the beginning
+    // in case the file cache item changes while the dependency is loading (shouldn't happen so often).
+    this._sourceUpdatedAt = (await this.getSourceFileCacheItem()).updatedAt;
+
+    const loader = this._graph.$strategy.getLoader(this._loaderOptions);
+    const transformResult: IDependencyLoaderResult = await loader.load(this.filePath, await this.getInitialSourceContent());
+
+    this._content = transformResult.content;
+    this._map     = transformResult.map;
+    this._type    = transformResult.type;
+
+    this._importedDependencyInfo = [];
+    this._includedDependencyInfo = [];
+
+    const importedDependencyPaths = transformResult.importedDependencyPaths || [];
+
+    // cases where there's overlapping between imported & included dependencies (probably)
+    // a bug with the module loader, or discrepancy between how the strategy and target bundler should behave.
+    const includedDependencyPaths = pull(transformResult.includedDependencyPaths || [], ...importedDependencyPaths);
+
+    await Promise.all([
+      this.resolveDependencies(includedDependencyPaths, this._includedDependencyInfo),
+      this.resolveDependencies(importedDependencyPaths, this._importedDependencyInfo)
+    ]);
+  }
+
+  /**
+   */
+
+  private async loadDependencies() {
+    await Promise.all(this.importedDependencyInfo.map(async (info: IResolvedDependencyInfo) => {
+      const dependency = await this._graph.getDependency(info);
+
+      // if the dependency is loading, then they're likely a cyclical dependency
+      if (!dependency.loading) await dependency.load();
+    }));
+  }
 
   /**
    * TODO: may be better to make this part of the loader
@@ -378,40 +373,86 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     return b.updatedAt > this.updatedAt;
   }
 
-  private onDependencyAction(action: Action) {
+  private async watchForChanges() {
 
-    // for now, reload the entire bundle if a dependency changes. This is to ensure
-    // that any changes that are embedded in this bundle get updates when they change -- this
-    // is particular to css files.
+    if (this._changeWatchers) {
+      this._changeWatchers.dispose();
+    }
+
+    const changeWatchers = this._changeWatchers = new DisposableCollection();
+    const fileCache = await this.getSourceFileCacheItem();
+    fileCache.observe(this._fileCacheItemObserver);
+
+    changeWatchers.push({
+      dispose: () => fileCache.unobserve(this._fileCacheItemObserver)
+    });
+
+    // watch imported dependencies for any change -- imported dependencies
+    // of which that may have nested dependencies. This chunk here helps notify any listeners
+    // of dependency graph changes
+    for (const dependency of this.importedDependencies) {
+      dependency.observe(this._importedDependencyObserver);
+      changeWatchers.push({
+        dispose: () => dependency.unobserve(this._importedDependencyObserver)
+      });
+    }
+
+    // included dependencies aren't self contained, so they don't get a Dependency object. For
+    // that we'll need to watch their file cache active record and watch it for any changes. Since
+    // they're typically included in the
+    for (const info of this._includedDependencyInfo) {
+      const fileCache = await this._fileCache.item(info.filePath);
+      changeWatchers.push({
+        dispose: () => fileCache.observe(this._fileCacheItemObserver)
+      });
+    }
+  }
+
+  private onImportedDependencyAction(action: Action) {
     if (action.type === DependencyAction.DEPENDENCY_LOADED) {
-      if (this.loading) {
-        this.logger.warn("Unable to reload bundle while it's still loading.")
-      } else {
-        this.reload();
-      }
+      this.notifyLoaded();
     }
   }
 
   private notifyLoaded() {
 
-    // fix case where a nested dependency DEPENDENCY_LOADED action is
-    // emitted by dependent bundles (this happens a lot)
-    if (this._readyLock || !this._ready) {
+    // cyclical dependencies, and dependencies that are shared may get
+    // bubbled more than once, so lock the notifyLoaded method temporarily to ensure
+    // that the same action doesn't get emitted again.
+    if (this._notifyLoadedLock || !this._loaded) {
       return;
     }
-    this._readyLock = true;
-    setTimeout(() => this._readyLock = false, 0);
+    this._notifyLoadedLock = true;
+    setTimeout(() => this._notifyLoadedLock = false, 0);
 
     // ensure that we get passed the ready lock
-    this.logger.verbose("dispatch DEPENDENCY_LOADED");
+    this.logger.verbose("Dispatching DEPENDENCY_LOADED");
     this.notify(new DependencyAction(DependencyAction.DEPENDENCY_LOADED));
   }
 
-  private async resolveProviderInfo(dependencyPath: string) {
-    return this._graph.$strategy.resolve(dependencyPath, path.dirname(this.filePath));
+  private resolveDependencies(dependencyPaths: string[], info: IResolvedDependencyInfo[], load: Function = () => {}) {
+    return Promise.all(dependencyPaths.map(async (relativePath) => {
+      const dependencyInfo = await this._graph.$strategy.resolve(relativePath, path.dirname(this.filePath));
+
+      // this may happen if package:browser is false
+      if (!dependencyInfo.filePath) {
+        this.logger.warn("Unable resolve dependency %s", relativePath);
+        return;
+      }
+
+      this.logger.verbose("loading dependency %s -> %s", this.filePath, dependencyInfo.filePath);
+      const hash = getDependencyHash(dependencyInfo);
+
+      const waitLogger = this.logger.startTimer(`Waiting for dependency ${hash}:${dependencyInfo.filePath} to load...`, 1000 * 10, LogLevel.VERBOSE);
+      dependencyInfo.relativePath = relativePath;
+      info.push(dependencyInfo);
+      await load(dependencyInfo);
+      waitLogger.stop(`Loaded dependency ${hash}:${dependencyInfo.filePath}`);
+    }));
   }
 
   private async reload() {
+    this.logger.verbose("Reloading");
     this.load["clear"]();
     return await this.load();
   }

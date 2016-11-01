@@ -1,4 +1,6 @@
-import { Injector } from "@tandem/common";
+import { DSProvider } from "./providers";
+import { IActor, Injector } from "@tandem/common";
+import { ConsoleLogService } from "@tandem/editor/common";
 import { IEdtorServerConfig } from "./config";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
 
@@ -14,11 +16,11 @@ import {
 
 import { createCommonEditorProviders } from "../common";
 
-export function concatEditorServerProviders(injector: Injector, config: IEdtorServerConfig) {
-  return new Injector(
-    injector,
+export function createEditorServiceProviders(config: IEdtorServerConfig, dataStore?: IActor) {
+  return [
     createCommonEditorProviders(),
     createCoreApplicationProviders(config),
+    new DSProvider(dataStore),
 
     // services
     new ApplicationServiceProvider("ds", DSService),
@@ -27,8 +29,9 @@ export function concatEditorServerProviders(injector: Injector, config: IEdtorSe
     new ApplicationServiceProvider("project", ProjectService),
     new ApplicationServiceProvider("browser", BrowserService),
     new ApplicationServiceProvider("resolver", ResolverService),
-  );
+  ];
 }
 
+export * from "./data-stores";
 export * from "./config";
 export * from "./services";

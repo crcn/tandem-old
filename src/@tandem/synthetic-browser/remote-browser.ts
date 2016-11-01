@@ -136,7 +136,7 @@ export class RemoteBrowserService extends BaseApplicationService {
               // need to patch existing document for now to maintain UID references
               new SyntheticObjectEditor(currentDocument).applyEditActions(...edit.actions);
               if (edit.actions.length) {
-                logger.verbose("Sending diffs: <<%s", edit.actions.map(action => action.type).join(", "));
+                logger.info("Sending diffs: <<%s", edit.actions.map(action => action.type).join(", "));
                 try {
                   await writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.DOCUMENT_DIFF, edit)) });
                 } catch(e) {

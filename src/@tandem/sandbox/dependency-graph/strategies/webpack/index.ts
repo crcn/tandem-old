@@ -249,9 +249,9 @@ class WebpackDependencyLoader implements IDependencyLoader {
     const foundProviderPaths = detective(result.content);
 
     return {
+      map: result.map,
       type: JS_MIME_TYPE,
       content: result.content,
-      map: result.map,
       importedDependencyPaths: foundProviderPaths,
       includedDependencyPaths: includedDependencyPaths
     };
@@ -294,7 +294,6 @@ function parserLoaderOptions(moduleInfo: string, hasFile: boolean = false): IWeb
 
 /**
  */
-
 
 @loggable()
 export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy {

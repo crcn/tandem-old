@@ -90,7 +90,6 @@ export class Sandbox extends Observable {
     this._entry = entry;
     this._entry.observe(this._entryObserver);
 
-    this.logger.verbose("wait for %s", entry.filePath);
     await this._entry.load();
     this.reset();
   }
@@ -133,7 +132,7 @@ export class Sandbox extends Observable {
   }
 
   private reset() {
-    this.logger.verbose("evaluate");
+    const logTimer = this.logger.startTimer();
     this._shouldEvaluate = false;
     const exports = this._exports;
     const global  = this._global;
@@ -141,6 +140,7 @@ export class Sandbox extends Observable {
     this.notify(new PropertyChangeAction("global", this._global, global));
     this._modules = {};
     this._exports = this.evaluate(this._entry);
+    logTimer.stop(`Evaluated ${this._entry.filePath}`);
     this.notify(new PropertyChangeAction("exports", this._exports, exports));
   }
 }

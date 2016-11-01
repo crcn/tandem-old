@@ -27,6 +27,7 @@
     "get-port": "^2.1.0",
     "mesh": "6.0.x",
     "mesh-memory-ds-bus": "^5.0.1",
+    "mongodb": "^2.2.11",
     "mousetrap": "^1.6.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
@@ -43,6 +44,7 @@
     "@tandem/synthetic-browser": "^1.0.0"
   },
   "devDependencies": {
+    "chokidar": "^1.6.1",
     "memoizee": "^0.4.1",
     "sinon": "^1.17.6"
   }

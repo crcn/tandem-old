@@ -4,7 +4,8 @@ import * as figlet from "figlet";
 import { argv } from "yargs";
 import { ServiceApplication } from "@tandem/core";
 import { Injector, Logger, PrivateBusProvider, LogLevel } from "@tandem/common";
-import { IEdtorServerConfig, concatEditorServerProviders } from "./server";
+import { IEdtorServerConfig, createEditorServiceProviders, MongoDS } from "./server";
+import * as MemoryDS from "mesh-memory-ds-bus";
 
 // extensions
 // import { createVueWorkerProviders } from "@tandem/vue-extension/editor/server";
@@ -36,10 +37,10 @@ let deps = new Injector(
   createHTMLEditorWorkerProviders(),
   createSASSEditorWorkerProviders(),
   createSyntheticBrowserWorkerProviders(),
-  createTDProjectEditorServerProviders()
+  createTDProjectEditorServerProviders(),
+  createEditorServiceProviders(config, new MongoDS("mongodb://localhost:27017/tandem")),
+  // createEditorServiceProviders(config, new MemoryDS())
 );
-
-deps = concatEditorServerProviders(deps, config);
 
 const app = new ServiceApplication(deps);
 

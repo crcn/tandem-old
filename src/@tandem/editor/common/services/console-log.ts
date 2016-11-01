@@ -1,4 +1,5 @@
 import * as chalk from "chalk";
+import * as path from "path";
 import { CoreApplicationService } from "@tandem/core";
 import { titleize } from "inflection";
 import * as moment from "moment";
@@ -25,6 +26,8 @@ function createLogColorizer(tester: RegExp, replaceValue: any) {
     return input.replace(tester, replaceValue);
   }
 }
+
+const cwd = process.cwd();
 
 const highlighters = [
 
@@ -56,7 +59,9 @@ const highlighters = [
   createLogColorizer(/\s\d+(\.\d+)?(s|ms|m|h|d)(\s|$)/g, (match) => chalk.bold.cyan(match)),
 
   // URL
-  createLogColorizer(/((\w{3,}\:\/\/)|([^\/\s\("':]+)?\/)([^\/\)\s"':]+\/?)+/g, (match, word) => chalk.yellow(match)),
+  createLogColorizer(/((\w{3,}\:\/\/)|([^\/\s\("':]+)?\/)([^\/\)\s"':]+\/?)+/g, (match) => {
+    return chalk.yellow(/\w+:\/\//.test(match) ? match : match.replace(cwd + "/", ""))
+  }),
 
 
   // timestamp
@@ -100,7 +105,9 @@ export class ConsoleLogService extends CoreApplicationService<any> {
       [LogLevel.ERROR]: console.error.bind(console)
     }[level];
 
-    text = colorize(PREFIXES[level] + text);
+    if (this.config.argv.color !== false) {
+      text = colorize(PREFIXES[level] + text);
+    }
 
     if (hlog) {
       if (text.toLowerCase().indexOf(hlog.toLowerCase()) !== -1) {

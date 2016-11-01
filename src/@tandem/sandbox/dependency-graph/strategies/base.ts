@@ -3,6 +3,11 @@ import { IDependencyContent } from "../base";
 export interface IResolvedDependencyInfo {
 
   /**
+   */
+
+  relativePath?: string;
+
+  /**
    * Resolved file path
    */
 
