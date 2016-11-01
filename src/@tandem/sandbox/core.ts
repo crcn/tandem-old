@@ -1,8 +1,8 @@
 import { DependencyGraph } from "./dependency-graph";
 import { FileCache } from "./file-cache";
-import { FileEditor } from "./editor";
+import { FileEditor } from "./edit";
+import { WebpackBundleStrategy } from "./dependency-graph";
 import { ENV_IS_NODE, IProvider } from "@tandem/common";
-import { WebpackBundleStrategy } from "./strategies";
 import { IFileSystem, LocalFileSystem, RemoteFileSystem } from "./file-system";
 import { IFileResolver, LocalFileResolver, RemoteFileResolver } from "./resolver";
 import {

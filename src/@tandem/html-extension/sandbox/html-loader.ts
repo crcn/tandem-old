@@ -3,7 +3,7 @@ import * as path from "path";
 import {
   Dependency,
   IDependencyLoader,
-  BaseBundleLoader,
+  BaseDependencyLoader,
   IDependencyContent,
   DefaultBundleLoader,
   IDependencyLoaderResult,
@@ -26,7 +26,7 @@ import {
   deserializeMarkupExpression,
 } from "@tandem/synthetic-browser";
 
-export class HTMLBundleLoader extends BaseBundleLoader {
+export class HTMLBundleLoader extends BaseDependencyLoader {
 
   @inject(InjectorProvider.ID)
   private _injector: Injector;

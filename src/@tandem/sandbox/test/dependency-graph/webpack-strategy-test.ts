@@ -9,8 +9,8 @@ import {
 
 import {
   IMockFiles,
-  createTestDependencyGraph,
   evaluateDependency,
+  createTestDependencyGraph,
   createSandboxTestInjector,
   ISandboxTestProviderOptions,
 } from "@tandem/sandbox/test";

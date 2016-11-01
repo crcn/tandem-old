@@ -3,9 +3,9 @@
 import * as fs from "fs";
 import * as memoize from "memoizee";
 
-import { IFileSystem } from "./file-system";
-import { IFileResolver } from "./resolver";
-import { ResolveFileAction } from "./actions";
+import { IFileSystem } from "../file-system";
+import { IFileResolver } from "../resolver";
+import { ResolveFileAction } from "../actions";
 import {
   IActor,
   inject,

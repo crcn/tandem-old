@@ -26,9 +26,9 @@ import {
   ActiveRecordCollection,
 } from "@tandem/common";
 
-import { FileCacheAction } from "./actions";
-import { IFileSystem, IFileWatcher } from "./file-system";
-import { FileSystemProvider } from "./providers";
+import { FileCacheAction } from "../actions";
+import { IFileSystem, IFileWatcher } from "../file-system";
+import { FileSystemProvider } from "../providers";
 import { WrapBus } from "mesh";
 import { values } from "lodash";
 import * as fs from "fs";

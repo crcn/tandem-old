@@ -1,5 +1,5 @@
-import { IContentEdit } from "./editor";
-import { IFileResolverOptions } from "./resolver";
+import { IContentEdit } from "../edit";
+import { IFileResolverOptions } from "../resolver";
 import { Action, IASTNode, IActor, definePublicAction, defineMasterAction, defineWorkerAction, IDisposable } from "@tandem/common";
 
 // TODO - ability to trace where actions go in the application - possibly
@@ -18,10 +18,6 @@ export class ApplyEditAction extends Action {
   constructor(readonly edit: IContentEdit) {
     super(ApplyEditAction.APPLY_EDITS);
   }
-}
-
-export class DependencyAction extends Action {
-  static readonly DEPENDENCY_READY = "dependencyReady";
 }
 
 export class ModuleImporterAction extends Action {

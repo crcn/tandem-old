@@ -10,7 +10,7 @@ import {
 import {
   ReadFileAction,
   WatchFileAction,
-} from "./actions";
+} from "../actions";
 
 import * as fs from "fs";
 import * as gaze from "gaze";

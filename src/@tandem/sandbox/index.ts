@@ -6,5 +6,5 @@ export * from "./resolver";
 export * from "./dependency-graph";
 export * from "./file-cache";
 export * from "./sandbox";
-export * from "./editor";
+export * from "./edit";
 export * from "./core";

@@ -1,14 +1,13 @@
 import { IFileResolver } from "@tandem/sandbox/resolver";
+import { IDependencyContent } from "../../base";
 import { FileResolverProvider, DependencyLoaderFactoryProvider } from "@tandem/sandbox/providers";
 
 import {
-  DependencyGraph,
   IDependencyLoader,
-  IDependencyContent,
-  IDependencyGraphStrategy,
   IDependencyLoaderResult,
   IResolvedDependencyInfo,
-} from "../dependency-graph";
+  IDependencyGraphStrategy,
+} from "../base";
 
 import {
   inject,
@@ -17,12 +16,18 @@ import {
   MimeTypeAliasProvider,
 } from "@tandem/common";
 
+export type dependencyLoaderType = { new(strategy: IDependencyGraphStrategy): IDependencyLoader };
+
+export abstract class BaseDependencyLoader implements IDependencyLoader {
+  constructor(readonly strategy: IDependencyGraphStrategy) { }
+  abstract load(filePath: string, content: IDependencyContent): Promise<IDependencyLoaderResult>;
+}
 
 export class DefaultBundleLoader implements IDependencyLoader {
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  constructor(readonly stragegy: DefaultBundleStragegy, readonly options: any) { }
+  constructor(readonly stragegy: DefaultDependencyGraphStrategy, readonly options: any) { }
 
   async load(filePath: string, content: IDependencyContent): Promise<IDependencyLoaderResult> {
     const dependencyPaths: string[] = [];
@@ -53,7 +58,7 @@ export class DefaultBundleLoader implements IDependencyLoader {
   }
 }
 
-export class DefaultBundleStragegy implements IDependencyGraphStrategy {
+export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy {
 
   @inject(FileResolverProvider.ID)
   private _resolver: IFileResolver;

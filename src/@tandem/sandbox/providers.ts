@@ -1,6 +1,6 @@
 import { FileCache } from "./file-cache";
 import { ENV_IS_NODE, IProvider } from "@tandem/common";
-import { FileEditor, contentEditorType, IEditor } from "./editor";
+import { FileEditor, contentEditorType, IEditor } from "./edit";
 import { IFileSystem, LocalFileSystem, RemoteFileSystem } from "./file-system";
 import { IFileResolver, LocalFileResolver, RemoteFileResolver } from "./resolver";
 

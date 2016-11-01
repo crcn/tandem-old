@@ -1,124 +1,44 @@
-
-/**
- * Not exactly the math equivalent. Though DependencyGraph is the
- * best descriptor I can think of for this functionality since it's not
- * exactly classified as a bundling system.
- */
-
-import * as sm from "source-map";
-import * as md5 from "md5";
 import * as path from "path";
 import * as memoize from "memoizee";
 
 import { values } from "lodash";
-import { WrapBus } from "mesh";
-import { FileEditor } from "./editor";
-import { IFileSystem } from "./file-system";
-import { RawSourceMap } from "source-map";
+import { IFileSystem } from "../file-system";
+import { RawSourceMap } from "source-map";
+import { DependencyGraph } from "./graph";
 import { DependencyAction } from "./actions";
-import { DefaultBundleStragegy } from "./strategies";
-import { FileCache, FileCacheItem } from "./file-cache";
-import { IFileResolver, IFileResolverOptions } from "./resolver";
+import { FileCache, FileCacheItem } from "../file-cache";
+
 
 import {
-  inject,
-  IActor,
-  Action,
-  Logger,
-  loggable,
-  isMaster,
-  LogLevel,
-  Provider,
-  Injector,
-  BubbleBus,
-  Observable,
-  ISerializer,
-  IInjectable,
-  IObservable,
-  serializable,
-  watchProperty,
-  ISourceLocation,
-  BaseActiveRecord,
-  MimeTypeProvider,
-  InjectorProvider,
-  ActiveRecordAction,
-  PrivateBusProvider,
-  DisposableCollection,
-  PropertyChangeAction,
-  PLAIN_TEXT_MIME_TYPE,
-  MimeTypeAliasProvider,
-  ActiveRecordCollection,
-} from "@tandem/common";
+  IDependencyLoaderResult,
+  IResolvedDependencyInfo,
+} from "./strategies"
 
 import {
   FileCacheProvider,
   FileSystemProvider,
-  FileResolverProvider,
-  DependencyGraphProvider,
-  ContentEditorFactoryProvider,
-  DependencyLoaderFactoryProvider,
-} from "./providers";
+} from "../providers";
 
-export interface IResolvedDependencyInfo {
+import { WrapBus } from "mesh";
 
-  /**
-   * Resolved file path
-   */
+import {
+  Action,
+  inject,
+  Logger,
+  IActor,
+  loggable,
+  Injector,
+  LogLevel,
+  IInjectable,
+  watchProperty,
+  MimeTypeProvider,
+  BaseActiveRecord,
+  InjectorProvider,
+  PLAIN_TEXT_MIME_TYPE,
+  DisposableCollection,
+} from "@tandem/common";
 
-  filePath: string;
-
-  /**
-   * The loader for the file path
-   */
-
-  loaderOptions?: any;
-}
-
-export interface IDependencyGraphStrategyOptions {
-  name?: string;
-  config?: any;
-}
-
-export interface IDependencyGraphStrategy {
-
-  /**
-   * Returns a loader with the given options. Example
-   *
-   * strategy.getLoader(['text']); // new TextBundleLoader()
-   */
-
-  getLoader(loaderOptions: any): IDependencyLoader;
-
-  /**
-   * Returns where the target file path is and how it should be loaded. Examples
-   *
-   * strategy.resolve('text!./filePath.txt', 'src/content') // { filePath: src/content/filePath.txt, loaderOptions: ['text'] }
-   */
-
-  resolve(filePath: string, cwd: string): Promise<IResolvedDependencyInfo>;
-}
-
-export type dependencyLoaderType = { new(strategy: IDependencyGraphStrategy): IDependencyLoader };
-
-export interface IDependencyContent {
-  readonly type: string; // mime type
-  readonly content: any;
-  readonly ast?: any;
-  map?: RawSourceMap;
-}
-
-export interface IDependencyLoaderResult extends IDependencyContent {
-  dependencyPaths?: string[];
-}
-
-export interface IDependencyLoader {
-  load(filePath: string, content: IDependencyContent): Promise<IDependencyLoaderResult>;
-}
-
-export abstract class BaseBundleLoader implements IDependencyLoader {
-  constructor(readonly strategy: IDependencyGraphStrategy) { }
-  abstract load(filePath: string, content: IDependencyContent): Promise<IDependencyLoaderResult>;
-}
+import { getBundleItemHash } from "./utils";
 
 export interface IDependencyData {
   hash: string;
@@ -153,18 +73,17 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   @inject(FileSystemProvider.ID)
   private _fileSystem: IFileSystem;
 
+
   private _map: RawSourceMap;
   private _fileCacheItem: FileCacheItem;
   private _fileCacheItemWatchers: DisposableCollection;
   private _updatedAt: number;
   private _dependencyObserver: IActor;
-  private _emittingReady: boolean;
   private _readyLock: boolean;
   private _loading: boolean;
 
   @inject(InjectorProvider.ID)
   private _injector: Injector;
-
 
   constructor(source: IDependencyData, collectionName: string, private _graph: DependencyGraph) {
     super(source, collectionName);
@@ -510,104 +429,3 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this.reload2();
   }
 }
-
-/**
- * Singleton graph dependency for mapping and transforming application source code
- * into one bundle file.
- */
-
-@loggable()
-export class DependencyGraph extends Observable {
-
-  protected readonly logger: Logger;
-
-  private _collection: ActiveRecordCollection<Dependency, IDependencyData>;
-  public $strategy: IDependencyGraphStrategy;
-
-  @inject(InjectorProvider.ID)
-  public $injector: Injector;
-
-  constructor(private _strategy: IDependencyGraphStrategy) {
-    super();
-  }
-
-  $didInject() {
-
-    // temporary - this should be passed into the constructor
-    this.$strategy = this._strategy || this.$injector.inject(new DefaultBundleStragegy());
-    this._collection = ActiveRecordCollection.create(this.collectionName, this.$injector, (source: IDependencyData) => {
-      return this.$injector.inject(new Dependency(source, this.collectionName, this));
-    });
-
-    this.logger.generatePrefix = () => `(~${this.$strategy.constructor.name}~) `;
-    this.logger.verbose("Created");
-
-    this.collection.sync();
-  }
-
-  get collection() {
-    return this._collection;
-  }
-
-  getLoader(loaderOptions: any) {
-    return this.$strategy.getLoader(loaderOptions);
-  }
-
-  get collectionName() {
-    return "bundleItems";
-  }
-
-  /**
-   * @deprecated
-   * file path may be associated with multiple bundles
-   */
-
-  eagerFindByFilePath(filePath): Dependency {
-    return this.collection.find((entity) => entity.filePath === filePath);
-  }
-
-  /**
-   * Looks for a loaded item. Though, it may not exist in memory, but it *may* exist in some other
-   * process.
-   */
-
-  eagerFindByHash(hash): Dependency {
-    return this.collection.find((entity) => entity.hash === hash);
-  }
-
-  /**
-   * @deprecated - use findByHash
-   * Loads an item from memory if it exists, or from the remote data store.
-   */
-
-  async findByFilePath(filePath): Promise<Dependency> {
-    return this.eagerFindByFilePath(filePath) || await this.collection.loadItem({ filePath });
-  }
-
-  /**
-   */
-
-  getDependency = memoize(async (ops: IResolvedDependencyInfo): Promise<Dependency> => {
-    const hash = getBundleItemHash(ops);
-    this.logger.verbose("Loading dependency %s", hash);
-    return this.eagerFindByHash(hash) || await this.collection.loadOrCreateItem({ hash }, {
-      filePath: ops.filePath,
-      loaderOptions: ops.loaderOptions,
-      hash
-    });
-  }, { promise: true, normalizer: args => getBundleItemHash(args[0]) }) as (ops: IResolvedDependencyInfo) => Promise<Dependency>;
-
-  /**
-   */
-
-  loadDependency = memoize(async (ops: IResolvedDependencyInfo): Promise<Dependency> => {
-    const entry  = await this.getDependency(ops);
-    return await entry.load();
-  }, { promise: true, normalizer: args => getBundleItemHash(args[0]) }) as (ops: IResolvedDependencyInfo) => Promise<Dependency>;
-}
-
-function getBundleItemHash({ filePath, loaderOptions }: IResolvedDependencyInfo): string {
-  return md5(filePath + ":" + JSON.stringify(loaderOptions || {}));
-}
-
-export * from "./strategies";

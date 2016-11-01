@@ -1,9 +1,9 @@
 import { flatten } from "lodash";
 import { WrapBus } from "mesh";
-import { FileCache } from "./file-cache";
-import { ISyntheticObject } from "./synthetic";
-import { FileEditorAction } from "./actions";
-import { FileCacheProvider, ContentEditorFactoryProvider } from "./providers";
+import { FileCache } from "../file-cache";
+import { ISyntheticObject } from "../synthetic";
+import { FileEditorAction } from "../actions";
+import { FileCacheProvider, ContentEditorFactoryProvider } from "../providers";
 import {
   Action,
   inject,

@@ -13,17 +13,17 @@ import * as nodeLibs from "node-libs-browser";
 import * as detective from "detective";
 
 // TODO - handle __webpack_public_path__
+import { IDependencyContent } from "../../base";
 
 import {
-  IDependencyContent,
+  IDependencyLoader,
   IDependencyLoaderResult,
   IResolvedDependencyInfo,
   IDependencyGraphStrategy,
-  IDependencyLoader
-} from "../dependency-graph";
+} from "../base";
 
-import { IFileResolver } from "../resolver";
-import { FileResolverProvider } from "../providers";
+import { IFileResolver } from "@tandem/sandbox/resolver";
+import { FileResolverProvider } from "@tandem/sandbox/providers";
 
 import * as path from "path";
 import * as sift from "sift";

@@ -1,7 +1,10 @@
 import { WrapBus } from "mesh";
-import { DependencyAction } from "./actions";
-import { Dependency, DependencyGraph } from "./dependency-graph";
-import { SandboxModuleEvaluatorFactoryProvider, DependencyGraphProvider } from "./providers";
+import {
+  Dependency,
+  DependencyGraph,
+  DependencyAction
+} from "@tandem/sandbox/dependency-graph";
+import { SandboxModuleEvaluatorFactoryProvider, DependencyGraphProvider } from "../providers";
 import {
   IActor,
   Action,
