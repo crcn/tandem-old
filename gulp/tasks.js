@@ -1,4 +1,4 @@
-require("reflect-metadata");
+require('reflect-metadata');
 
 const fs            = require('fs');
 const fsa           = require('fs-extra');
@@ -9,6 +9,7 @@ const glob          = require('glob');
 const mocha         = require('gulp-mocha');
 const chalk         = require('chalk');
 const install       = require('gulp-install');
+const istanbul      = require('gulp-istanbul');
 const peg           = require('gulp-peg');
 const webpack       = require('gulp-webpack');
 const symdest       = require('gulp-symdest');
@@ -176,7 +177,7 @@ gulp.task('clean', gulpSequence(
 ));
 
 gulp.task('clean:javascript', function() {
-  glob.sync(join(OUT_DIR, `{${PACKAGE_NAMES.join(",")}}`, "**", "*.js"))
+  glob.sync(join(OUT_DIR, `{${PACKAGE_NAMES.join(',')}}`, '**', '*.js'))
   .forEach((filePath) => {
     fsa.removeSync(filePath);
   });
@@ -219,25 +220,48 @@ gulp.task('publish', function() {
 
 gulp.task('test', ['test:all']);
 
-gulp.task('test:all', function(done) {
 
-  const packageDirs = PACKAGE_NAMES.map(name => join(OUT_DIR, name));
-  const testFiles = packageDirs.map(dir => join(dir, "**", "*-test.js"));
+gulp.task('hook:istanbul', function() {
+  if (!argv.coverage) return;
+  return gulp
+  .src(getPackageOutDirs().map(dir => join(dir, '**', '*.js')))
+  .pipe(istanbul())
+  .pipe(istanbul.hookRequire());
+});
+
+
+gulp.task('test:all', ['hook:istanbul'], function(done) {
+  const packageDirs = getPackageOutDirs();
+  const testFiles = packageDirs.map(dir => join(dir, '**', '*-test.js'));
 
   function run() {
-    return gulp
+    let stream = gulp
     .src(testFiles)
     .pipe(mocha({
-      reporter: argv.reporter || "dot",
+      reporter: argv.reporter || 'dot',
       timeout: argv.timeout || 1000 * 10,
       grep: GREP,
       bail: argv.bail
     }))
-    .on("error", error => console.error(error.message));
+    .on('error', error => console.error(error.message));
+
+
+    if (argv.coverage) {
+      stream = stream
+      .pipe(istanbul.writeReports())
+      .pipe(istanbul.enforceThresholds({
+        reporters: ['lcov', 'text-summary', 'html'],
+        thresholds: {
+          global: Number(argv.coverage) || 0
+        }
+      }))
+    }
+
+    return stream;
   }
 
   if (WATCH) {
-    watch(packageDirs.map(dir => join(dir, "**")), run);
+    watch(packageDirs.map(dir => join(dir, '**')), run);
     run();
   } else {
     return run();
@@ -246,15 +270,11 @@ gulp.task('test:all', function(done) {
 
 
 /******************************
- * Other tasks
+ * Utilities
  ******************************/
 
-function readPackagePaths() {
-  return ;
-}
-
-function readPackages() {
-
+function getPackageOutDirs() {
+  return PACKAGE_NAMES.map(name => join(OUT_DIR, name));
 }
 
 function noop() { }

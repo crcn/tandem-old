@@ -5,3 +5,4 @@
 - [ ] do not parse included scss files
   - [ ] possibly imported / included module distinctions.
 - [ ] get emitFile to work
+- [ ] code coverage
