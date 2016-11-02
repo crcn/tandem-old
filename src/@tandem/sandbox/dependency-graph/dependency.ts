@@ -320,7 +320,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this._sourceUpdatedAt = (await this.getSourceFileCacheItem()).updatedAt;
 
     const loader = this._graph.$strategy.getLoader(this._loaderOptions);
-    const transformResult: IDependencyLoaderResult = await loader.load(this.filePath, await this.getInitialSourceContent());
+    const transformResult: IDependencyLoaderResult = await loader.load(this, await this.getInitialSourceContent());
 
     this._content = transformResult.content;
     this._map     = transformResult.map;

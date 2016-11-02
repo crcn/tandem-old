@@ -1,3 +1,4 @@
+import { IModule } from "@tandem/sandbox/sandbox";
 import { IDependencyContent } from "../base";
 
 export interface IResolvedDependencyInfo {
@@ -41,7 +42,7 @@ export interface IDependencyLoaderResult extends IDependencyContent {
 }
 
 export interface IDependencyLoader {
-  load(filePath: string, content: IDependencyContent): Promise<IDependencyLoaderResult>;
+  load(info: IResolvedDependencyInfo, content: IDependencyContent): Promise<IDependencyLoaderResult>;
 }
 
 
@@ -68,5 +69,11 @@ export interface IDependencyGraphStrategy {
    * accessed by dependencies when evaluated in the Sandbox (such as Webpack and __webpack_public_path__)
    */
 
-  createGlobalSandboxContext(): any;
+  createGlobalContext(): any;
+
+  /**
+   * Returns a context where the dependency can be evaluated in
+   */
+
+  createModuleContext(module: IModule): any;
 }

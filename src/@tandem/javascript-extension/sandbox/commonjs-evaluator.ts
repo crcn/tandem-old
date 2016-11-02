@@ -1,6 +1,6 @@
-import { ISandboxDependencyEvaluator, SandboxModule } from "@tandem/sandbox";
-import * as path from "path";
 import * as vm from "vm";
+import * as path from "path";
+import { ISandboxDependencyEvaluator, SandboxModule } from "@tandem/sandbox";
 
 const _cache = {};
 function compile(filePath: string, hash: string, content: string): vm.Script {
@@ -48,14 +48,10 @@ export class CommonJSSandboxEvaluator implements ISandboxDependencyEvaluator {
     (require as any).resolve = resolve;
 
     if (!global.$$contexts) global.$$contexts = {};
-    global.$$contexts[hash] = {
-      global: global,
-      module: module,
-      exports: module.exports,
-      __filename: source.filePath,
-      __dirname: path.dirname(source.filePath),
-      require: require
-    }
+
+    const context = global.$$contexts[hash] = source.graph.createModuleContext(module);
+
+    Object.assign(context, { global, require });
 
     script.runInContext(vmContext);
   }

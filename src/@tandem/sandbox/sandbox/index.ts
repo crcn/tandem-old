@@ -25,7 +25,12 @@ export interface ISandboxDependencyEvaluator {
   evaluate(module: SandboxModule): void;
 }
 
-export class SandboxModule {
+export interface IModule {
+  exports: any;
+  source: Dependency;
+}
+
+export class SandboxModule implements IModule {
   public exports: any;
   constructor(readonly sandbox: Sandbox, readonly source: Dependency) {
     this.exports = {};

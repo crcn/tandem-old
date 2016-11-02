@@ -1,4 +1,6 @@
 import * as md5 from "md5";
+import * as path from "path";
+import { IModule } from "@tandem/sandbox/sandbox";
 import { IFileResolver } from "@tandem/sandbox/resolver";
 import { IDependencyContent } from "../../base";
 import { FileResolverProvider } from "@tandem/sandbox/providers";
@@ -22,7 +24,7 @@ export type dependencyLoaderType = { new(strategy: IDependencyGraphStrategy): ID
 
 export abstract class BaseDependencyLoader implements IDependencyLoader {
   constructor(readonly strategy: IDependencyGraphStrategy) { }
-  abstract load(filePath: string, content: IDependencyContent): Promise<IDependencyLoaderResult>;
+  abstract load(info: IResolvedDependencyInfo, content: IDependencyContent): Promise<IDependencyLoaderResult>;
 }
 
 export class DefaultDependencyLoader implements IDependencyLoader {
@@ -31,7 +33,7 @@ export class DefaultDependencyLoader implements IDependencyLoader {
 
   constructor(readonly stragegy: DefaultDependencyGraphStrategy, readonly options: any) { }
 
-  async load(filePath: string, content: IDependencyContent): Promise<IDependencyLoaderResult> {
+  async load(info: IResolvedDependencyInfo, content: IDependencyContent): Promise<IDependencyLoaderResult> {
     const importedDependencyPaths: string[] = [];
 
     let current: IDependencyLoaderResult = Object.assign({}, content);
@@ -44,7 +46,7 @@ export class DefaultDependencyLoader implements IDependencyLoader {
 
     while(current.type && (dependency = DependencyLoaderFactoryProvider.find(MimeTypeAliasProvider.lookup(current.type, this._injector), this._injector)) && !used[dependency.id]) {
       used[dependency.id] = true;
-      current = await dependency.create(this.stragegy).load(filePath, current);
+      current = await dependency.create(this.stragegy).load(info, current);
       if (current.importedDependencyPaths) {
         importedDependencyPaths.push(...current.importedDependencyPaths);
       }
@@ -71,8 +73,17 @@ export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy 
     return this._injector.inject(new DefaultDependencyLoader(this, loaderOptions));
   }
 
-  createGlobalSandboxContext() {
+  createGlobalContext() {
     return {};
+  }
+
+  createModuleContext(module: IModule) {
+    return {
+      module: module,
+      exports: module.exports,
+      __filename: module.source.filePath,
+      __dirname: path.dirname(module.source.filePath)
+    }
   }
 
   async resolve(relativeFilePath, cwd: string): Promise<IResolvedDependencyInfo> {

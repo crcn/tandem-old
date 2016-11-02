@@ -31,7 +31,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  async load(filePath, { type, content }): Promise<IDependencyLoaderResult> {
+  async load({ filePath, hash }, { type, content }): Promise<IDependencyLoaderResult> {
 
     const importedDependencyPaths = [];
     const injector = this._injector;
@@ -65,7 +65,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
 
           if (type) {
 
-            const result = await self.strategy.getLoader(null).load(filePath, {
+            const result = await self.strategy.getLoader(null).load({ filePath, hash }, {
               type: type,
               content: textNode.nodeValue
             });

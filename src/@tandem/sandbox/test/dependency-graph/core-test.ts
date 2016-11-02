@@ -93,7 +93,7 @@ describe(__filename + "#", () => {
     }, [
       new MimeTypeProvider('mu', 'text/mu'),
       new DependencyLoaderFactoryProvider('text/mu', class implements IDependencyLoader {
-        async load(filePath: string, { type, content }) {
+        async load({ filePath }, { type, content }) {
           return {
             type: "text/plain",
             content: content,

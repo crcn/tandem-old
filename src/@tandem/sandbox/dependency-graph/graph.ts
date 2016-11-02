@@ -1,4 +1,5 @@
 import * as memoize from "memoizee";
+import { IModule } from "@tandem/sandbox/sandbox";
 import { getDependencyHash } from "./utils";
 
 import { 
@@ -66,8 +67,12 @@ export class DependencyGraph extends Observable {
     return this._collection;
   }
 
-  createGlobalSandboxContext() {
-    return this.$strategy.createGlobalSandboxContext();
+  createGlobalContext() {
+    return this.$strategy.createGlobalContext();
+  }
+
+  createModuleContext(module: IModule) {
+    return this.$strategy.createModuleContext(module);
   }
 
   getLoader(loaderOptions: any) {

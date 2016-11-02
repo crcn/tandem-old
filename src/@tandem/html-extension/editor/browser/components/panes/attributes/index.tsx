@@ -1,9 +1,11 @@
+import "./index.scss";
+
 import "reflect-metadata";
 
 import * as React from "react";
-import { Workspace } from "@tandem/editor/browser";
+import { Workspace, GutterComponent } from "@tandem/editor/browser";
 import { DOMElements } from "@tandem/html-extension/collections";
-import { reactPreview } from "@tandem/common";
+import { reactPreview, Metadata } from "@tandem/common";
 import { PaneComponent } from "@tandem/editor/browser/components/common";
 import {
   SyntheticWindow,
@@ -27,14 +29,26 @@ class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttrib
 }
 
 
-@reactPreview()
+@reactPreview(() => {
+  const workspace = new Workspace();
+  const window = new SyntheticWindow(null, new SyntheticLocation("test"));
+  (window.document.body as SyntheticHTMLElement).innerHTML = `
+    <div class="test" id="some id" />
+  `;
+  workspace.select(window.document.body.querySelector("div"));
+  return <GutterComponent position="right" hideKey="something" workspace={workspace} settings={new Metadata()}>
+    <EntityAttributesPaneComponent workspace={workspace} />
+  </GutterComponent>
+})
 export class EntityAttributesPaneComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
     const { selection } = this.props.workspace;
     const items = DOMElements.fromArray(selection);
+    console.log(selection.length);
+
     if (!items.length) return null;
 
-    return <PaneComponent title="Attributes">
+    return <PaneComponent title="Attributes!">
       <div className="row">
         {
           items.attributes.map((attribute) => {
@@ -45,13 +59,3 @@ export class EntityAttributesPaneComponent extends React.Component<{ workspace: 
     </PaneComponent>
   }
 }
-
-reactPreview(() => {
-  const workspace = new Workspace();
-  const window = new SyntheticWindow(null, new SyntheticLocation("test"));
-  (window.document.body as SyntheticHTMLElement).innerHTML = `
-    <div class="test" id="some id" />
-  `;
-  workspace.select(window.document.body.querySelector("div"));
-  return <EntityAttributesPaneComponent workspace={workspace} />
-})(EntityAttributesPaneComponent);

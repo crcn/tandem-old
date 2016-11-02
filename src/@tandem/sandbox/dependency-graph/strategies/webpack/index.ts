@@ -23,6 +23,8 @@ import {
   IDependencyGraphStrategy,
 } from "../base";
 
+import { IModule } from "@tandem/sandbox/sandbox";
+import { Dependency } from "@tandem/sandbox/dependency-graph/dependency";
 import { IFileResolver } from "@tandem/sandbox/resolver";
 import { FileResolverProvider } from "@tandem/sandbox/providers";
 
@@ -119,6 +121,7 @@ class WebpackLoaderContext {
     readonly loader: INormalizedWebpackLoaderConfig,
     readonly strategy: WebpackDependencyGraphStrategy,
     readonly resourcePath: string,
+    readonly id: string,
     private _dependencies: string[]
   ) {
 
@@ -204,7 +207,7 @@ class WebpackLoaderContext {
 class WebpackDependencyLoader implements IDependencyLoader {
   protected readonly logger: Logger;
   constructor(readonly strategy: WebpackDependencyGraphStrategy, readonly options: IWebpackLoaderOptions) { }
-  async load(filePath: string, { type, content, map }: IDependencyContent): Promise<IDependencyLoaderResult> {
+  async load({ filePath, hash }: IResolvedDependencyInfo, { type, content, map }: IDependencyContent): Promise<IDependencyLoaderResult> {
     this.logger.verbose("Loading %s", filePath);
 
     const { config } = this.strategy;
@@ -230,6 +233,7 @@ class WebpackDependencyLoader implements IDependencyLoader {
         loader,
         this.strategy,
         filePath,
+        hash,
         includedDependencyPaths
       );
     });
@@ -291,6 +295,30 @@ function parserLoaderOptions(moduleInfo: string, hasFile: boolean = false): IWeb
   return options;
 }
 
+export class WebpackSandboxContext {
+  readonly module: WebpackSandboxContext;
+  readonly id: string;
+  readonly __filename: string;
+  readonly __dirname: string;
+
+  constructor(private _target: IModule) {
+    this.module = this;
+    this.id = _target.source.hash;
+
+    // TODO - need to check webpack config for this.
+    this.__filename = _target.source.filePath;
+    this.__dirname = path.dirname(_target.source.filePath);
+  }
+
+  get exports() {
+    return this._target.exports;
+  }
+
+  set exports(value: any) {
+    this._target.exports = value;
+  }
+}
+
 /**
  */
 
@@ -322,7 +350,7 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
     this.compiler = new MockWebpackCompiler();
   }
 
-  createGlobalSandboxContext() {
+  createGlobalContext() {
     return {
       __webpack_public_path__: "",
 
@@ -334,6 +362,10 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
         cwd: () => process.cwd()
       }
     };
+  }
+
+  createModuleContext(module: IModule) {
+    return new WebpackSandboxContext(module);
   }
 
   /**

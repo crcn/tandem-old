@@ -47,6 +47,7 @@ export class RootApplicationComponent extends React.Component<IApplicationCompon
 
   static childContextTypes = appComponentContextTypes;
 
+
   getChildContext() {
     return {
       bus: this.props.bus,
