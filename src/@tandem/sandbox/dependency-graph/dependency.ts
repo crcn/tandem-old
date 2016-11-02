@@ -279,9 +279,14 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this.logger.verbose("Loading...");
     const logTimer = this.logger.startTimer(null, null, LogLevel.VERBOSE);
     const fileCache = await this.getSourceFileCacheItem();
-    const fileCacheUpdatedAt = fileCache.updatedAt;
+    const sourceFileUpdatedAt = await this.getLatestSourceFileUpdateTimestamp();
 
-    if (fileCacheUpdatedAt !== this._sourceUpdatedAt) {
+    if (this._sourceUpdatedAt !== sourceFileUpdatedAt) {
+
+      // sync update times. TODO - need to include included files as well. This is at the beginning
+      // in case the file cache item changes while the dependency is loading (shouldn't happen so often).
+      this._sourceUpdatedAt = sourceFileUpdatedAt;
+
       await this.loadHard();
       await this.save();
     } else {
@@ -293,7 +298,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this._loading = false;
     logTimer.stop("loaded");
 
-    if (fileCacheUpdatedAt !== fileCache.updatedAt) {
+    if (sourceFileUpdatedAt !== await this.getLatestSourceFileUpdateTimestamp()) {
       this.logger.verbose("File cache changed during load, reloading.")
       return this.reload();
     }
@@ -308,6 +313,21 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     return this;
   }, { length: 0, promise: true }) as () => Promise<Dependency>;
 
+
+  private async getLatestSourceFileUpdateTimestamp() {
+    for (const sourceFile of await this.getSourceFiles()) {
+      if (sourceFile.updatedAt > this._sourceUpdatedAt) return sourceFile.updatedAt;
+    }
+    return this._sourceUpdatedAt;
+  }
+
+  private async getSourceFiles() {
+    return [
+      await this.getSourceFileCacheItem(),
+      ...(await Promise.all(this._includedDependencyInfo.map(info => this._fileCache.item(info.filePath))))
+    ];
+  }
+
   /**
    */
 
@@ -315,9 +335,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
     this.logger.verbose("Transforming source content using graph strategy");
 
-    // sync update times. TODO - need to include included files as well. This is at the beginning
-    // in case the file cache item changes while the dependency is loading (shouldn't happen so often).
-    this._sourceUpdatedAt = (await this.getSourceFileCacheItem()).updatedAt;
 
     const loader = this._graph.$strategy.getLoader(this._loaderOptions);
     const transformResult: IDependencyLoaderResult = await loader.load(this, await this.getInitialSourceContent());
@@ -380,12 +397,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     }
 
     const changeWatchers = this._changeWatchers = new DisposableCollection();
-    const fileCache = await this.getSourceFileCacheItem();
-    fileCache.observe(this._fileCacheItemObserver);
-
-    changeWatchers.push({
-      dispose: () => fileCache.unobserve(this._fileCacheItemObserver)
-    });
 
     // watch imported dependencies for any change -- imported dependencies
     // of which that may have nested dependencies. This chunk here helps notify any listeners
@@ -400,10 +411,10 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     // included dependencies aren't self contained, so they don't get a Dependency object. For
     // that we'll need to watch their file cache active record and watch it for any changes. Since
     // they're typically included in the
-    for (const info of this._includedDependencyInfo) {
-      const fileCache = await this._fileCache.item(info.filePath);
+    for (const sourceFile of await this.getSourceFiles()) {
+      sourceFile.observe(this._fileCacheItemObserver);
       changeWatchers.push({
-        dispose: () => fileCache.observe(this._fileCacheItemObserver)
+        dispose: () => sourceFile.unobserve(this._fileCacheItemObserver)
       });
     }
   }

@@ -34,7 +34,7 @@ export class BaseApplicationComponent<T, U> extends React.Component<T, U> implem
     if (context.injector) {
       context.injector.inject(this);
     } else {
-      console.error(`Failed to inject properties into `, this.constructor.name);
+      console.warn(`Failed to inject properties into `, this.constructor.name);
     }
   }
 

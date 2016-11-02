@@ -27,7 +27,8 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   }
 
   onMouseDown = (event) => {
-    this.bus.execute(new MouseAction(MouseAction.CANVAS_MOUSE_DOWN, event.nativeEvent || event));
+    // this.bus.execute(new MouseAction(MouseAction.CANVAS_MOUSE_DOWN, event.nativeEvent || event));
+    this.props.workspace.select([]);
   }
 
   translate(left, top) {

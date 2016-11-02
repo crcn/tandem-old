@@ -25,11 +25,15 @@ export class LocalFileSystem extends BaseFileSystem {
   watchFile2(filePath: string, onChange: () => any) {
     this.logger.verbose("watch %s", filePath);
     const watcher = chokidar.watch(filePath, {
-      interval: 1000,
-      usePolling: false,
+      usePolling: false
     });
 
+    let currentStat = fs.lstatSync(filePath);
+
     watcher.on("change", () => {
+      let newStat = fs.lstatSync(filePath);
+      if (newStat.mtime.getTime() === currentStat.mtime.getTime()) return;
+      currentStat = newStat;
       onChange();
     });
 

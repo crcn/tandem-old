@@ -31,67 +31,74 @@ const cwd = process.cwd();
 
 const highlighters = [
 
-  // ~de emphasis~
-  createLogColorizer(/~(.*?)~/g, (match, word) => chalk.grey(word)),
+  createLogColorizer(/^INF/, (match) => chalk.bgCyan(match)),
+  createLogColorizer(/^ERR/, (match) => chalk.bgRed(match)),
+  createLogColorizer(/^DBG/, (match) => chalk.grey.bgBlack(match)),
+  createLogColorizer(/^WRN/, (match) => chalk.bgYellow(match)),
 
-  // *emphasis*
-  createLogColorizer(/\*(.*?)\*/g, (match, word) => chalk.bold(word)),
-
-  // ___big emphasis___
-  createLogColorizer(/___(.*?)___/g, (match, word) => chalk.underline(word)),
-
-  // >>input - magenta (from audio)
-  createLogColorizer(/>>(.*)/g, (match, word) => chalk.magenta(word)),
-
-  // <<output - green (from audio again)
-  createLogColorizer(/<<(.*)/g, (match, word) => chalk.green(word)),
-
-  // tokens
-  createLogColorizer(/([\:\{\}",\(\)]|->|null|undefined|Infinity)/g, (match) => chalk.grey(match)),
-
-  // strings
-  createLogColorizer(/"(.*?)"/g, (match, inner) => `"${chalk.blue(inner)}"`),
-
-  // numbers
-  createLogColorizer(/\b\d+(\.\d+)?\b/g, (match, inner) => `${chalk.cyan(match)}`),
-
-  // duration
-  createLogColorizer(/\s\d+(\.\d+)?(s|ms|m|h|d)(\s|$)/g, (match) => chalk.bold.cyan(match)),
+  // timestamp
+  createLogColorizer(/\[\d+\.\d+\.\d+\]/, (match, inner) => `[${chalk.grey(inner)}]`),
 
   // URL
   createLogColorizer(/((\w{3,}\:\/\/)|([^\/\s\("':]+)?\/)([^\/\)\s"':]+\/?)+/g, (match) => {
     return chalk.yellow(/\w+:\/\//.test(match) ? match : match.replace(cwd + "/", ""))
   }),
 
-  // timestamp
-  createLogColorizer(/\[\d+\.\d+\.\d+\]/, (match, inner) => `[${chalk.grey(inner)}]`),
+  // duration
+  createLogColorizer(/\s\d+(\.\d+)?(s|ms|m|h|d)(\s|$)/g, (match) => chalk.bold.cyan(match)),
 
-  createLogColorizer(/^INFO\s*/, (match) => chalk.bgCyan(match)),
-  createLogColorizer(/^ERR(OR)?\b/, (match) => chalk.bgRed(match)),
-  createLogColorizer(/^DEBUG\s?/, (match) => chalk.grey.bgBlack(match)),
-  createLogColorizer(/^WARN(ING)?\s?/, (match) => chalk.bgYellow(match))
+  // numbers
+  createLogColorizer(/\b\d+(\.\d+)?\b/g, (match, inner) => `${chalk.cyan(match)}`),
+
+  // strings
+  createLogColorizer(/"(.*?)"/g, (match, inner) => `"${chalk.blue(inner)}"`),
+
+  // tokens
+  createLogColorizer(/([\:\{\}",\(\)]|->|null|undefined|Infinity)/g, (match) => chalk.grey(match)),
+
+ // <<output - green (from audio again)
+  createLogColorizer(/<<(.*)/g, (match, word) => chalk.green(word)),
+
+ // >>input - magenta (from audio)
+  createLogColorizer(/>>(.*)/g, (match, word) => chalk.magenta(word)),
+
+  // **BIG EMPHASIS**
+  createLogColorizer(/\*\*(.*?)\*\*/, (match, word) => chalk.bgBlue(word)),
+
+  // *emphasis*
+  createLogColorizer(/\*(.*?)\*/g, (match, word) => chalk.bold(word)),
+
+  // ___underline___
+  createLogColorizer(/___(.*?)___/g, (match, word) => chalk.underline(word)),
+
+  // ~de emphasis~
+  createLogColorizer(/~(.*?)~/g, (match, word) => chalk.grey(word)),
 ];
 
 function colorize(input: string) {
-  let output = input; //.replace(/'/g, "‘");
-  for (let i = highlighters.length; i--;) output = highlighters[i](output);
+  let output = input;
+  for (let i = 0, n = highlighters.length; i < n; i++) output = highlighters[i](output);
   return output;
 }
 
+
+// I'm against abbreviations, but it's happening here
+// since all of these are the same length -- saves space in stdout, and makes
+// logs easier to read.
 const PREFIXES = {
-  [LogLevel.VERBOSE]: "DEBUG: ",
-  [LogLevel.INFO]: "INFO : ",
-  [LogLevel.WARN]: "WARN : ",
-  [LogLevel.ERROR]: "ERROR: ",
+  [LogLevel.VERBOSE]: "DBG ",
+  [LogLevel.INFO]: "INF ",
+  [LogLevel.WARN]: "WRN ",
+  [LogLevel.ERROR]: "ERR ",
 }
 
 export class ConsoleLogService extends CoreApplicationService<any> {
 
-  [LogAction.LOG]({ level, text }: LogAction) {
+  [LogAction.LOG]({ level, text, filterable }: LogAction) {
 
     const logLevel = this.config.logLevel || LogLevel.ALL;
 
-    if (!(level & logLevel)) return;
+    if (!(level & logLevel) && filterable !== false) return;
 
     // highlight log function from argv -- --hlog="something to highlight"
     const hlog = String(this.config && this.config.argv && this.config.argv.hlog || "");

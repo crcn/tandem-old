@@ -83,7 +83,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       const newDocument      = action.data;
       this._documentEditor   = new SyntheticObjectEditor(newDocument);
 
-      const window = new SyntheticWindow(this, this.location, newDocument);
+      const window = new SyntheticWindow(this.location, this, newDocument);
       this.setWindow(window);
 
     } else if (action.type === RemoteBrowserDocumentAction.DOCUMENT_DIFF) {

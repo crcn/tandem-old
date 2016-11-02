@@ -12,12 +12,7 @@ export class DocumentGutterComponent extends React.Component<{ settings: Metadat
   render() {
     // console.log(this.context.injector, "DEP");
     return <GutterComponent
-      workspace={this.props.workspace}
-      settings={this.props.settings}
-      position="left"
-      hideKey={SettingKeys.HIDE_LEFT_SIDEBAR}
-      maxWidth={800}
-      sizeKey="documentSidebarSize"
+      style={{width: 250 }}
       registeredComponentNs={[DOCUMENT_PANE_COMPONENT_NS, "**"].join("/")} />;
   }
 }

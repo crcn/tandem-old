@@ -1,10 +1,13 @@
 import { WrapBus } from "mesh";
 import { FileCache } from "./file-cache";
-import { IBrokerBus, diffArray } from "@tandem/common";
 import { IFileSystem, IFileWatcher } from "@tandem/sandbox/file-system";
+import { IBrokerBus, diffArray, inject, loggable, Logger } from "@tandem/common";
 
 // TODO - need to check if file cache is up to date with local
+@loggable()
 export class FileCacheSynchronizer {
+
+  protected logger: Logger;
   private _watchers: any;
 
   constructor(private _cache: FileCache, private _bus: IBrokerBus, private _fileSystem: IFileSystem) {
@@ -30,6 +33,8 @@ export class FileCacheSynchronizer {
 
   private async onLocalFindChange(filePath: string) {
     const entity = await this._cache.item(filePath);
+
+    this.logger.verbose(`${filePath} changed, updating cache.`);
 
     // just set the timestamp instead of checking lstat -- primarily
     // to ensure that this class works in other environments.

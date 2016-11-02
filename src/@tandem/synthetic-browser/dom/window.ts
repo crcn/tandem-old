@@ -1,11 +1,11 @@
 import { bindable } from "@tandem/common/decorators";
-import { Observable } from "@tandem/common/observable";
-import { IPatchable } from "@tandem/common/object";
 import { HTML_XMLNS } from "./constants";
 import { ISyntheticBrowser } from "../browser";
 import { SyntheticLocation } from "../location";
 import { SyntheticDocument } from "./document";
+import { Logger, Observable, PrivateBusProvider } from "@tandem/common";
 import { SyntheticHTMLElement } from "./html";
+import { NoopBus } from "mesh";
 
 export class SyntheticNavigator {
   readonly appCodeName = "Tandem";
@@ -13,19 +13,33 @@ export class SyntheticNavigator {
   readonly userAgent = "none";
 }
 
-// export class SyntheticConsole {
-//   log() {}
-//   warn() {}
-//   error() {}
-//   notice() { }
-// }
+export class SyntheticConsole {
+  constructor(private _logger: Logger) {
+
+    // Ensure that when the logs get dispatched that they are displayed.
+    this._logger.filterable = false;
+  }
+
+  log(text, ...rest: any[]) {
+    this._logger.verbose(text, ...rest);
+  }
+  info(text, ...rest: any[]) {
+    this._logger.info(text, ...rest);
+  }
+  warn(text, ...rest: any[]) {
+    this._logger.warn(text, ...rest);
+  }
+  error(text, ...rest: any[]) {
+    this._logger.error(text, ...rest);
+  }
+}
 
 export class SyntheticWindow extends Observable {
 
   readonly navigator = new SyntheticNavigator();
 
   // TODO - emit events from logs here
-  readonly console = console;
+  readonly console: SyntheticConsole;
 
   @bindable()
   public location: SyntheticLocation;
@@ -39,13 +53,16 @@ export class SyntheticWindow extends Observable {
 
   public resolve: { extensions: string[], directories: string[] };
 
-  constructor(readonly browser: ISyntheticBrowser, location: SyntheticLocation, document?: SyntheticDocument) {
+  constructor(location: SyntheticLocation, readonly browser?: ISyntheticBrowser, document?: SyntheticDocument) {
     super();
     this.resolve = { extensions: [], directories: [] };
     this.document = document || this.createDocument();
     this.document.$window = this;
     this.location = location;
     this.window   = this;
+    this.console  = new SyntheticConsole(
+      new Logger(browser && PrivateBusProvider.getInstance(browser.injector) || new NoopBus(), "**VM** ")
+    );
   }
 
   get depth(): number {

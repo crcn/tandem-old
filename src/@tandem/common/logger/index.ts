@@ -5,7 +5,7 @@ import { Action } from "../actions";
 
 export class LogAction extends Action {
   static readonly LOG        = "log";
-  constructor(readonly level: number, readonly text: string) {
+  constructor(readonly level: number, readonly text: string, readonly filterable?: boolean) {
     super(LogAction.LOG);
   }
 }
@@ -37,6 +37,7 @@ export class LogTimer {
 export class Logger {
 
   public generatePrefix: () => string;
+  public filterable: boolean;
 
   constructor(public bus: IActor, public prefix: string = "", private _parent?: Logger) { }
 
@@ -104,8 +105,9 @@ export class Logger {
       ...params.map(stringify)
     );
 
-    this.bus.execute(new LogAction(level, message));
+    this.bus.execute(new LogAction(level, message, this.filterable));
   }
+
 }
 
 

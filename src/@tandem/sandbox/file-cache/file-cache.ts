@@ -73,6 +73,6 @@ export class FileCache extends Observable {
    */
 
   syncWithLocalFiles() {
-    return this._synchronizer || (this._synchronizer = new FileCacheSynchronizer(this, this._bus, this._fileSystem));
+    return this._synchronizer || (this._synchronizer = this._injector.inject(new FileCacheSynchronizer(this, this._bus, this._fileSystem)));
   }
 }
