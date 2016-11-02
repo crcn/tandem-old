@@ -66,6 +66,10 @@ export class DependencyGraph extends Observable {
     return this._collection;
   }
 
+  createGlobalSandboxContext() {
+    return this.$strategy.createGlobalSandboxContext();
+  }
+
   getLoader(loaderOptions: any) {
     return this.$strategy.getLoader(loaderOptions);
   }
@@ -94,7 +98,6 @@ export class DependencyGraph extends Observable {
    */
 
   getDependency = memoize(async (ops: IResolvedDependencyInfo): Promise<Dependency> => {
-    this.logger.verbose(`Loading dependency ${ops.hash}`);
     return this.eagerFindByHash(ops.hash) || await this.collection.loadOrInsertItem({ hash: ops.hash }, ops);
   }, { promise: true, normalizer: args => args[0].hash }) as (ops: IResolvedDependencyInfo) => Promise<Dependency>;
 

@@ -71,7 +71,7 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
   }
 
   applyEditAction(action: EditAction) {
-    console.warn(`Cannot currently edit ${this.constructor.name}`);
+    // console.warn(`Cannot currently edit ${this.constructor.name}`);
   }
 
   cloneShallow(deep?: boolean) {

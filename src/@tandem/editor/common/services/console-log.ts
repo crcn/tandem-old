@@ -37,8 +37,8 @@ const highlighters = [
   // *emphasis*
   createLogColorizer(/\*(.*?)\*/g, (match, word) => chalk.bold(word)),
 
-  // __big emphasis__
-  createLogColorizer(/__(.*?)__/g, (match, word) => chalk.underline(word)),
+  // ___big emphasis___
+  createLogColorizer(/___(.*?)___/g, (match, word) => chalk.underline(word)),
 
   // >>input - magenta (from audio)
   createLogColorizer(/>>(.*)/g, (match, word) => chalk.magenta(word)),
@@ -104,7 +104,7 @@ export class ConsoleLogService extends CoreApplicationService<any> {
       [LogLevel.ERROR]: console.error.bind(console)
     }[level];
 
-    if (this.config.argv.color !== false) {
+    if (this.config.argv && this.config.argv.color !== false) {
       text = colorize(PREFIXES[level] + text);
     }
 

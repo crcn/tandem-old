@@ -108,6 +108,13 @@ export class LocalFileResolver extends BaseFileResolver {
       cwd = process.cwd();
     }
 
+    // override resolve js functionality here -- directories here are
+    // typically scanned in the beginning. We want to resolve from node_modules
+    // after the target directories.
+    directories.push(...cwd.split("/").map((dir, index, parts) => {
+      return parts.slice(0, index + 1).join("/") + "/node_modules";
+    }));
+
     const resolvedPath = resolve.sync(relativePath, {
       basedir: cwd,
       extensions: extensions,
@@ -115,7 +122,7 @@ export class LocalFileResolver extends BaseFileResolver {
 
       // moduleDirectory is required, but it foos with
       // dependency resolution. Solution: give a directory that doesn't have anything
-      // moduleDirectory: "/i/should/not/exist",
+      moduleDirectory: "/i/should/not/exist",
 
       packageFilter: (pkg, filePath) => {
         const main = (pkg.browser && typeof pkg.browser === "object" ? pkg.browser[pkg.main] : pkg.browser) || pkg.main;

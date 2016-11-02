@@ -62,4 +62,11 @@ export interface IDependencyGraphStrategy {
    */
 
   resolve(filePath: string, cwd: string): Promise<IResolvedDependencyInfo>;
+
+  /**
+   * Strategies may contain global variables that need to be
+   * accessed by dependencies when evaluated in the Sandbox (such as Webpack and __webpack_public_path__)
+   */
+
+  createGlobalSandboxContext(): any;
 }

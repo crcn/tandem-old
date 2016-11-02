@@ -1,5 +1,8 @@
 import { Injector } from "@tandem/common/ioc";
 
+// console.log(window.Reflect, Reflect, this);
+
+
 export interface ISerializedContent<T> {
   type: string;
   value: T;

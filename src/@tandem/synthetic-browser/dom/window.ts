@@ -36,7 +36,6 @@ export class SyntheticWindow extends Observable {
   // TODO - need to wrap around these
   readonly setInterval = setInterval;
   readonly setTimeout = setTimeout;
-  readonly process = process;
 
   public resolve: { extensions: string[], directories: string[] };
 

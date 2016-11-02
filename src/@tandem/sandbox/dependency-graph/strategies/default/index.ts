@@ -71,6 +71,10 @@ export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy 
     return this._injector.inject(new DefaultDependencyLoader(this, loaderOptions));
   }
 
+  createGlobalSandboxContext() {
+    return {};
+  }
+
   async resolve(relativeFilePath, cwd: string): Promise<IResolvedDependencyInfo> {
     const filePath = await this._resolver.resolve(relativeFilePath, cwd);
     return {

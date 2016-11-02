@@ -1,3 +1,4 @@
+import * as vm from "vm";
 import { WrapBus } from "mesh";
 import { SandboxModuleEvaluatorFactoryProvider } from "./providers";
 
@@ -52,6 +53,7 @@ export class Sandbox extends Observable {
   private _shouldEvaluate: boolean;
 
   private _global: any;
+  private _context: vm.Context;
   private _exports: any;
 
   constructor(private _injector: Injector, private createGlobal: () => any = () => {}) {
@@ -72,6 +74,10 @@ export class Sandbox extends Observable {
     if (this._shouldEvaluate) {
       this.reset();
     }
+  }
+
+  get vmContext(): vm.Context {
+    return this._context;
   }
 
   get exports(): any {
@@ -95,6 +101,11 @@ export class Sandbox extends Observable {
   }
 
   public evaluate(dependency: Dependency): Object {
+
+    // if (!dependency) {
+    //   this.logger.warn("")
+    //   return null;
+    // }
 
     const hash = dependency.hash;
 
@@ -136,7 +147,8 @@ export class Sandbox extends Observable {
     this._shouldEvaluate = false;
     const exports = this._exports;
     const global  = this._global;
-    this._global  = this.createGlobal();
+    this._global  = this.createGlobal() || {};
+    this._context = vm.createContext(this._global);
     this.notify(new PropertyChangeAction("global", this._global, global));
     this._modules = {};
     this._exports = this.evaluate(this._entry);

@@ -138,6 +138,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
 
   private _sandbox: Sandbox;
   private _entry: Dependency;
+  private _graph: DependencyGraph;
 
   $didInject() {
     super.$didInject();
@@ -151,7 +152,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   }
 
   async open2(options: ISyntheticBrowserOpenOptions) {
-    const graph = DependencyGraphProvider.getInstance(options.dependencyGraphStrategyOptions, this._injector);
+    const graph = this._graph = DependencyGraphProvider.getInstance(options.dependencyGraphStrategyOptions, this._injector);
     this._entry = await graph.loadDependency(await graph.resolve(options.url, "/"));
     this._sandbox.open(this._entry);
   }
@@ -163,6 +164,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   protected createSandboxGlobals(): SyntheticWindow {
     const window = new SyntheticWindow(this, this.location);
     this._registerElementClasses(window.document);
+    Object.assign(window, this._graph.createGlobalSandboxContext());
     return window;
   }
 

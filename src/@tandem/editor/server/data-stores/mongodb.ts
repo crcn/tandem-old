@@ -72,6 +72,7 @@ export class MongoDS implements IActor {
     });
   }
 
+  // TODO - bundle query actions together
   [DSFindAction.DS_FIND](action: DSFindAction<any>) {
     return new Response((writable) => {
       this.pump(this._db.collection(action.collectionName).find(action.query), writable);

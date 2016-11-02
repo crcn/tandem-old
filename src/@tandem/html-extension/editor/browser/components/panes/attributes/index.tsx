@@ -26,6 +26,8 @@ class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttrib
   }
 }
 
+
+@reactPreview()
 export class EntityAttributesPaneComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
     const { selection } = this.props.workspace;

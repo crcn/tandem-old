@@ -95,9 +95,7 @@ function testLoader(filePath: string, loader: IWebpackLoaderConfig) {
 }
 
 export class MockWebpackCompiler {
-  plugin(key: string, callback) {
-
-  }
+  plugin(key: string, callback) { }
 }
 
 class WebpackLoaderContextModule {
@@ -324,6 +322,20 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
     this.compiler = new MockWebpackCompiler();
   }
 
+  createGlobalSandboxContext() {
+    return {
+      __webpack_public_path__: "",
+
+      // TODO _ this should be shared by other strategies later on
+      process: {
+        argv: [],
+        nextTick: next => setTimeout(next, 0),
+        env: process.env,
+        cwd: () => process.cwd()
+      }
+    };
+  }
+
   /**
    * Results the relative file path from the cwd, and provides
    * information about how it should be treared.
@@ -339,24 +351,29 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
 
   async resolve(moduleInfo: string, cwd: string): Promise<IResolvedDependencyInfo> {
 
-    let loaderOptions = parserLoaderOptions(moduleInfo, true);
-    let relativeFilePath = moduleInfo.split("!").pop();
-
     const { config } = this;
 
-    this.logger.verbose("resolving %s:%s (%s)", cwd, relativeFilePath, moduleInfo);
+    moduleInfo = config.resolve.alias && config.resolve.alias[moduleInfo] || moduleInfo;
 
-    relativeFilePath = config.resolve.alias && config.resolve.alias[relativeFilePath] || relativeFilePath;
 
+    let loaderOptions = parserLoaderOptions(moduleInfo, true);
 
     let resolvedFilePath;
+    const relativeFilePath = moduleInfo.split("!").pop();
 
-    resolvedFilePath = await this._resolver.resolve(relativeFilePath, cwd, {
-      extensions: this.config.resolve.extensions,
-      directories: [...this.config.resolve.modulesDirectories, config.resolve.root, this.basedir]
-    });
+    try {
 
-    const isCore = resolve.isCore(resolvedFilePath);
+      this.logger.verbose("resolving %s:%s (%s)", cwd, relativeFilePath, moduleInfo);
+
+      resolvedFilePath = await this._resolver.resolve(relativeFilePath, cwd, {
+        extensions: this.config.resolve.extensions,
+        directories: [...this.config.resolve.modulesDirectories, config.resolve.root, this.basedir]
+      });
+    } catch(e) {
+      this.logger.warn(`Unable to resolve ${relativeFilePath}`);
+    }
+
+    const isCore = resolvedFilePath && resolve.isCore(resolvedFilePath);
 
     if (isCore) {
       let type = moduleInfo;

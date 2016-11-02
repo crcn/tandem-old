@@ -42,7 +42,8 @@ module.exports = {
       modulesDirectories: [SRC_DIR, NODE_MODULES_DIR],
       alias: {
         'react': 'node_modules/react/dist/react.js',
-        'react-dom': 'node_modules/react-dom/dist/react-dom.js'
+        'react-dom': 'node_modules/react-dom/dist/react-dom.js',
+        'chokidar': 'null-loader?chokidar'
       }
     },
     ts: {

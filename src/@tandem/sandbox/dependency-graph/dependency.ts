@@ -217,7 +217,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   get importedDependencies(): Dependency[] {
     return this._importedDependencyInfo.map((inf) => {
       return this._graph.eagerFindByHash(inf.hash);
-    });
+    }).filter(dep => !!dep);
   }
 
   /**
@@ -235,13 +235,9 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this._updatedAt = Date.now();
   }
 
-  getDependencyHash(relativeOrAbsolutePath: string) {
-    const info: IResolvedDependencyInfo = this._importedDependencyInfo.find(info => info.relativePath === relativeOrAbsolutePath || info.filePath === relativeOrAbsolutePath);
-    if (info == null) {
-      this.logger.error(`Absolute path on bundle entry does not exist for ${relativeOrAbsolutePath}.`);
-      return;
-    }
-    return info.hash;
+  getDependencyHash(relativeOrAbsolutePath: string): string {
+    const info = this._importedDependencyInfo.find(info => info.relativePath === relativeOrAbsolutePath || info.filePath === relativeOrAbsolutePath);
+    return info && info.hash;
   }
 
   eagerGetDependency(relativeOrAbsolutePath: string) {
@@ -350,10 +346,15 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private async loadDependencies() {
     await Promise.all(this.importedDependencyInfo.map(async (info: IResolvedDependencyInfo) => {
+      if (!info.filePath) return Promise.resolve();
+
       const dependency = await this._graph.getDependency(info);
+      const waitLogger = this.logger.startTimer(`Waiting for dependency ${info.hash}:${info.filePath} to load...`, 1000 * 10, LogLevel.VERBOSE);
 
       // if the dependency is loading, then they're likely a cyclical dependency
       if (!dependency.loading) await dependency.load();
+
+      waitLogger.stop(`Loaded dependency ${info.hash}:${info.filePath}`);
     }));
   }
 
@@ -363,9 +364,8 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   async getInitialSourceContent(): Promise<IDependencyLoaderResult> {
     return {
-      filePath: this.filePath,
-      type: MimeTypeProvider.lookup(this.filePath, this._injector) || PLAIN_TEXT_MIME_TYPE,
-      content: await (await this.getSourceFileCacheItem()).read()
+      type: this.filePath && MimeTypeProvider.lookup(this.filePath, this._injector) || PLAIN_TEXT_MIME_TYPE,
+      content: this.filePath && await (await this.getSourceFileCacheItem()).read()
     };
   }
 
@@ -429,23 +429,12 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this.notify(new DependencyAction(DependencyAction.DEPENDENCY_LOADED));
   }
 
-  private resolveDependencies(dependencyPaths: string[], info: IResolvedDependencyInfo[], load: Function = () => {}) {
+  private resolveDependencies(dependencyPaths: string[], info: IResolvedDependencyInfo[]) {
     return Promise.all(dependencyPaths.map(async (relativePath) => {
+      this.logger.verbose("resolving dependency %s", relativePath);
       const dependencyInfo = await this._graph.$strategy.resolve(relativePath, path.dirname(this.filePath));
-
-      // this may happen if package:browser is false
-      if (!dependencyInfo.filePath) {
-        this.logger.warn("Unable resolve dependency %s", relativePath);
-        return;
-      }
-
-      this.logger.verbose("loading dependency %s", dependencyInfo.filePath);
-
-      const waitLogger = this.logger.startTimer(`Waiting for dependency ${dependencyInfo.hash}:${dependencyInfo.filePath} to load...`, 1000 * 10, LogLevel.VERBOSE);
       dependencyInfo.relativePath = relativePath;
       info.push(dependencyInfo);
-      await load(dependencyInfo);
-      waitLogger.stop(`Loaded dependency ${dependencyInfo.hash}:${dependencyInfo.filePath}`);
     }));
   }
 

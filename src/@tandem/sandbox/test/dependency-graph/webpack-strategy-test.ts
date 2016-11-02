@@ -26,9 +26,7 @@ describe(__filename + "#", () => {
       "entry.js": `module.exports = "hello"`
     });
 
-    const entry = await graph.loadDependency({
-      filePath: "entry.js"
-    });
+    const entry = await graph.loadDependency(await graph.resolve("entry.js", ""));
 
     expect(await evaluateDependency(entry)).to.equal("hello");
   });
@@ -39,9 +37,7 @@ describe(__filename + "#", () => {
       "b.js": `module.exports = 2;`
     });
 
-    const entry = await graph.loadDependency({
-      filePath: "entry.js"
-    });
+    const entry = await graph.loadDependency(await graph.resolve("entry.js", ""));
 
     expect(await evaluateDependency(entry)).to.equal(2);
   });
@@ -55,9 +51,7 @@ describe(__filename + "#", () => {
       "c.js": `module.exports = [require("a.js"), "c"];`
     });
 
-    const entry = await graph.loadDependency({
-      filePath: "entry.js"
-    });
+    const entry = await graph.loadDependency(await graph.resolve("entry.js", ""));
 
     expect(await evaluateDependency(entry)).to.eql([ [ [ {}, 'c' ], 'b' ], 'a' ]);
   });
