@@ -9,6 +9,7 @@ import {
   InjectorProvider,
 } from "@tandem/common";
 
+import * as md5 from "md5";
 import * as nodeLibs from "node-libs-browser";
 import * as detective from "detective";
 
@@ -206,7 +207,7 @@ class WebpackDependencyLoader implements IDependencyLoader {
   protected readonly logger: Logger;
   constructor(readonly strategy: WebpackDependencyGraphStrategy, readonly options: IWebpackLoaderOptions) { }
   async load(filePath: string, { type, content, map }: IDependencyContent): Promise<IDependencyLoaderResult> {
-    this.logger.verbose("loading %s", filePath);
+    this.logger.verbose("Loading %s", filePath);
 
     const { config } = this.strategy;
 
@@ -370,8 +371,9 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
 
     return {
       filePath: resolvedFilePath,
-      loaderOptions: loaderOptions
-    }
+      loaderOptions: loaderOptions,
+      hash: md5(`webpack:${resolvedFilePath}:${JSON.stringify(loaderOptions)}`)
+    };
   }
 }
 

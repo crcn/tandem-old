@@ -1,3 +1,4 @@
+import * as md5 from "md5";
 import { IFileResolver } from "@tandem/sandbox/resolver";
 import { IDependencyContent } from "../../base";
 import { FileResolverProvider } from "@tandem/sandbox/providers";
@@ -51,7 +52,6 @@ export class DefaultDependencyLoader implements IDependencyLoader {
 
     return {
       map: current.map,
-      ast: current.ast,
       type: current.type,
       content: current.content,
       importedDependencyPaths: importedDependencyPaths
@@ -72,8 +72,10 @@ export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy 
   }
 
   async resolve(relativeFilePath, cwd: string): Promise<IResolvedDependencyInfo> {
+    const filePath = await this._resolver.resolve(relativeFilePath, cwd);
     return {
-      filePath: await this._resolver.resolve(relativeFilePath, cwd)
+      filePath: filePath,
+      hash: md5(filePath)
     };
   }
 }

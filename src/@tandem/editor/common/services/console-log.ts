@@ -63,7 +63,6 @@ const highlighters = [
     return chalk.yellow(/\w+:\/\//.test(match) ? match : match.replace(cwd + "/", ""))
   }),
 
-
   // timestamp
   createLogColorizer(/\[\d+\.\d+\.\d+\]/, (match, inner) => `[${chalk.grey(inner)}]`),
 

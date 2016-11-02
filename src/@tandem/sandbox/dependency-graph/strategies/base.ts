@@ -8,6 +8,11 @@ export interface IResolvedDependencyInfo {
   relativePath?: string;
 
   /**
+   */
+
+  hash: string;
+
+  /**
    * Resolved file path
    */
 

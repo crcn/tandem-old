@@ -31,7 +31,7 @@ describe(__filename + "#", () => {
     const graph = createDefaultDependencyGraph({
       'entry.js': 'hello world'
     });
-    const entry = await graph.getDependency({ filePath: 'entry.js' })
+    const entry = await graph.getDependency(await graph.resolve('entry.js', ''))
     await entry.load();
     expect(entry.type).to.equal("text/plain");
     expect(entry.content).to.equal("hello world");
@@ -42,7 +42,7 @@ describe(__filename + "#", () => {
       'entry.js': 'hello world'
     });
 
-    const entry = await graph.getDependency({ filePath: 'entry.js' });
+    const entry = await graph.getDependency(await graph.resolve('entry.js', ''));
     const loadInitialSourceContentSpy = sinon.spy(entry, "getInitialSourceContent");
     entry.load();
     await entry.load();
@@ -54,7 +54,7 @@ describe(__filename + "#", () => {
       'entry.js': 'a'
     });
 
-    const dependency = await graph.loadDependency({ filePath: 'entry.js' });
+    const dependency = await graph.loadDependency(await graph.resolve('entry.js', ''));
 
     const fileCacheItem = await dependency.getSourceFileCacheItem();
     await fileCacheItem.setDataUrlContent("b").save();
@@ -67,7 +67,7 @@ describe(__filename + "#", () => {
       'entry.js': 'a'
     });
 
-    const dependency = await graph.loadDependency({ filePath: 'entry.js' });
+    const dependency = await graph.loadDependency(await graph.resolve('entry.js', ''));
 
     const fileCacheItem = await dependency.getSourceFileCacheItem();
     await fileCacheItem.setDataUrlContent("b").save();
@@ -112,7 +112,7 @@ describe(__filename + "#", () => {
       })
     ]);
 
-    const entry = await graph.getDependency({ filePath: 'entry.mu' });
+    const entry = await graph.getDependency(await graph.resolve('entry.mu', ''));
     await entry.load();
     expect(await evaluateDependency(entry)).to.eql("WORLD HELLO");
   });

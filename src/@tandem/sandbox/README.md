@@ -96,5 +96,5 @@ const dependencies = new Injector(
 const dependencyGraph = DependencyGraphProvider.getInstance("webpack"); // webpack strategy
 
 const sandbox = new Sandbox();
-sandbox.open(await dependencyGraph.loadDependency("./file.js"));
+sandbox.open(await dependencyGraph.loadDependency(await dependencyGraph.resolve("./file.js", process.cwd()));
 ```

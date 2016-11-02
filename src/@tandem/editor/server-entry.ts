@@ -38,7 +38,7 @@ let deps = new Injector(
   createSASSEditorWorkerProviders(),
   createSyntheticBrowserWorkerProviders(),
   createTDProjectEditorServerProviders(),
-  createEditorServiceProviders(config, new MongoDS("mongodb://localhost:27017/tandem")),
+  createEditorServiceProviders(config, new MongoDS("mongodb://localhost:27017/tandem"))
   // createEditorServiceProviders(config, new MemoryDS())
 );
 

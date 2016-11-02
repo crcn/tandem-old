@@ -86,11 +86,8 @@ export class LocalFileResolver extends BaseFileResolver {
       directories: []
     });
 
-
     if (cwd) {
       const pkgPath = fs.existsSync(cwd + "/package.json") ? cwd : pkgpath.sync(cwd);
-
-      this.logger.verbose(pkgPath + " - " + cwd);
 
       const pkg = pkgPath && require(pkgPath + "/package.json");
 
@@ -111,11 +108,6 @@ export class LocalFileResolver extends BaseFileResolver {
       cwd = process.cwd();
     }
 
-    // remove end slash
-    // relativePath = relativePath.replace(/\/$/, "");
-
-    this.logger.verbose(`resolving %s:%s extensions: %s, directories: %s`, cwd, relativePath, extensions.join(", "), directories.join(", "));
-
     const resolvedPath = resolve.sync(relativePath, {
       basedir: cwd,
       extensions: extensions,
@@ -133,7 +125,7 @@ export class LocalFileResolver extends BaseFileResolver {
       }
     });
 
-    this.logger.verbose("resolved %s", resolvedPath);
+    this.logger.verbose("Resolved %s:%s", relativePath, resolvedPath);
 
     return resolvedPath;
   }

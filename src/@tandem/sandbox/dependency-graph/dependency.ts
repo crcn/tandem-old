@@ -43,7 +43,7 @@ import { getDependencyHash } from "./utils";
 export interface IDependencyData {
   hash: string;
   filePath: string;
-  loaderOptions: any;
+  loaderOptions?: any;
   content?: string;
   map?: RawSourceMap;
   type?: string;
@@ -216,7 +216,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   get importedDependencies(): Dependency[] {
     return this._importedDependencyInfo.map((inf) => {
-      return this._graph.eagerFindByHash(getDependencyHash(inf));
+      return this._graph.eagerFindByHash(inf.hash);
     });
   }
 
@@ -241,7 +241,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       this.logger.error(`Absolute path on bundle entry does not exist for ${relativeOrAbsolutePath}.`);
       return;
     }
-    return getDependencyHash(info);
+    return info.hash;
   }
 
   eagerGetDependency(relativeOrAbsolutePath: string) {
@@ -317,7 +317,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private async loadHard() {
 
-    this.logger.verbose("Transforming source content");
+    this.logger.verbose("Transforming source content using graph strategy");
 
     // sync update times. TODO - need to include included files as well. This is at the beginning
     // in case the file cache item changes while the dependency is loading (shouldn't happen so often).
@@ -426,7 +426,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     setTimeout(() => this._notifyLoadedLock = false, 0);
 
     // ensure that we get passed the ready lock
-    this.logger.verbose("Dispatching DEPENDENCY_LOADED");
     this.notify(new DependencyAction(DependencyAction.DEPENDENCY_LOADED));
   }
 
@@ -440,14 +439,13 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
         return;
       }
 
-      this.logger.verbose("loading dependency %s -> %s", this.filePath, dependencyInfo.filePath);
-      const hash = getDependencyHash(dependencyInfo);
+      this.logger.verbose("loading dependency %s", dependencyInfo.filePath);
 
-      const waitLogger = this.logger.startTimer(`Waiting for dependency ${hash}:${dependencyInfo.filePath} to load...`, 1000 * 10, LogLevel.VERBOSE);
+      const waitLogger = this.logger.startTimer(`Waiting for dependency ${dependencyInfo.hash}:${dependencyInfo.filePath} to load...`, 1000 * 10, LogLevel.VERBOSE);
       dependencyInfo.relativePath = relativePath;
       info.push(dependencyInfo);
       await load(dependencyInfo);
-      waitLogger.stop(`Loaded dependency ${hash}:${dependencyInfo.filePath}`);
+      waitLogger.stop(`Loaded dependency ${dependencyInfo.hash}:${dependencyInfo.filePath}`);
     }));
   }
 
@@ -461,6 +459,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
     // reload the dependency if file cache item changes -- could be the data url, source file, etc.
     if (action.type === PropertyChangeAction.PROPERTY_CHANGE && !this.loading) {
+      this.logger.info("Source file changed");
       this.reload();
     }
   }

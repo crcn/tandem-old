@@ -75,15 +75,6 @@ export class DependencyGraph extends Observable {
   }
 
   /**
-   * @deprecated
-   * file path may be associated with multiple bundles
-   */
-
-  eagerFindByFilePath(filePath): Dependency {
-    return this.collection.find((entity) => entity.filePath === filePath);
-  }
-
-  /**
    * Looks for a loaded item. Though, it may not exist in memory, but it *may* exist in some other
    * process.
    */
@@ -93,26 +84,19 @@ export class DependencyGraph extends Observable {
   }
 
   /**
-   * @deprecated - use findByHash
-   * Loads an item from memory if it exists, or from the remote data store.
    */
 
-  async findByFilePath(filePath): Promise<Dependency> {
-    return this.eagerFindByFilePath(filePath) || await this.collection.loadItem({ filePath });
+  resolve(filePath: string, cwd: string): Promise<IResolvedDependencyInfo> {
+    return this.$strategy.resolve(filePath, cwd);
   }
 
   /**
    */
 
   getDependency = memoize(async (ops: IResolvedDependencyInfo): Promise<Dependency> => {
-    const hash = getDependencyHash(ops);
-    this.logger.verbose(`Loading dependency ${hash}`);
-    return this.eagerFindByHash(hash) || await this.collection.loadOrInsertItem({ hash }, {
-      filePath: ops.filePath,
-      loaderOptions: ops.loaderOptions,
-      hash
-    });
-  }, { promise: true, normalizer: args => getDependencyHash(args[0]) }) as (ops: IResolvedDependencyInfo) => Promise<Dependency>;
+    this.logger.verbose(`Loading dependency ${ops.hash}`);
+    return this.eagerFindByHash(ops.hash) || await this.collection.loadOrInsertItem({ hash: ops.hash }, ops);
+  }, { promise: true, normalizer: args => args[0].hash }) as (ops: IResolvedDependencyInfo) => Promise<Dependency>;
 
   /**
    */
@@ -123,5 +107,5 @@ export class DependencyGraph extends Observable {
     await entry.load();
     logTimer.stop(`Loaded ${ops.filePath}`);
     return entry;
-  }, { promise: true, normalizer: args => getDependencyHash(args[0]) }) as (ops: IResolvedDependencyInfo) => Promise<Dependency>;
+  }, { promise: true, normalizer: args => args[0].hash }) as (ops: IResolvedDependencyInfo) => Promise<Dependency>;
 }

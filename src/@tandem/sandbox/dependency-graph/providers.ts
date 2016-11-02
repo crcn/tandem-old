@@ -52,7 +52,7 @@ export class DependencyGraphStrategyProvider extends ClassFactoryProvider {
 export class DependencyGraphProvider extends Provider<any> {
   static ID = "dependencyGraphs";
   private _instances: { [Identifier:string]: DependencyGraph };
-  constructor(readonly clazz: { new(strategy: IDependencyGraphStrategy, injector: Injector): DependencyGraph }) {
+  constructor(readonly clazz: { new(strategy: IDependencyGraphStrategy): DependencyGraph }) {
     super(DependencyGraphProvider.ID, clazz);
     this._instances = {};
   }
@@ -62,7 +62,7 @@ export class DependencyGraphProvider extends Provider<any> {
   getInstance(options: IDependencyGraphStrategyOptions): DependencyGraph {
     const strategyName = options && options.name || "default";
     if (this._instances[strategyName]) return this._instances[strategyName];
-    return this._instances[strategyName] = this.owner.inject(new this.clazz(options && DependencyGraphStrategyProvider.create(options.name, options.config, this.owner), this.owner));
+    return this._instances[strategyName] = this.owner.inject(new this.clazz(options && DependencyGraphStrategyProvider.create(options.name, options.config, this.owner)));
   }
   static getInstance(options: IDependencyGraphStrategyOptions, injector: Injector): DependencyGraph {
     return injector.query<DependencyGraphProvider>(this.ID).getInstance(options);

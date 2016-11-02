@@ -3,6 +3,7 @@ import { FileCache } from "./file-cache";
 import { IBrokerBus, diffArray } from "@tandem/common";
 import { IFileSystem, IFileWatcher } from "@tandem/sandbox/file-system";
 
+// TODO - need to check if file cache is up to date with local
 export class FileCacheSynchronizer {
   private _watchers: any;
 
