@@ -17,7 +17,6 @@ import {
 
 describe(__filename + "#", () => {
   [
-
     // All single edits
     [`a`, `b`, [SyntheticDOMValueNodeEdit.SET_VALUE_NODE_EDIT]],
     [`<!--a-->`, `<!--b-->`, [SyntheticDOMValueNodeEdit.SET_VALUE_NODE_EDIT]],

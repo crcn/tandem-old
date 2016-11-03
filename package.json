@@ -13,7 +13,7 @@
   },
   "scripts": {
     "test": "gulp test:all --coverage=50",
-    "start": "SANDBOXED=1 node out/@tandem/editor/server-entry.js --open=true --log-level=all"
+    "start": "SANDBOXED=1 node out/@tandem/editor/server-entry.js --open=true"
   },
   "repository": {
     "type": "git",

@@ -411,6 +411,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     // that we'll need to watch their file cache active record and watch it for any changes. Since
     // they're typically included in the
     for (const sourceFile of await this.getSourceFiles()) {
+      this.logger.verbose(`Watching file cache ${sourceFile.filePath} for changes`);
       sourceFile.observe(this._fileCacheItemObserver);
       changeWatchers.push({
         dispose: () => sourceFile.unobserve(this._fileCacheItemObserver)
@@ -441,7 +442,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private resolveDependencies(dependencyPaths: string[], info: IResolvedDependencyInfo[]) {
     return Promise.all(dependencyPaths.map(async (relativePath) => {
-      this.logger.verbose("resolving dependency %s", relativePath);
+      this.logger.verbose("Resolving dependency %s", relativePath);
       const dependencyInfo = await this._graph.$strategy.resolve(relativePath, path.dirname(this.filePath));
       dependencyInfo.relativePath = relativePath;
       info.push(dependencyInfo);
@@ -455,7 +456,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   }
 
   private onFileCacheAction(action: Action) {
-
     // reload the dependency if file cache item changes -- could be the data url, source file, etc.
     if (action.type === PropertyChangeAction.PROPERTY_CHANGE && !this.loading) {
       this.logger.info("Source file changed");

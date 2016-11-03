@@ -100,7 +100,7 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
 
         // normalize the value if it's a pixel unit. Numbers are invalid for CSS declarations.
         if (typeof value === "number") {
-          value = value + "px";
+          value = Math.round(value) + "px";
         }
 
         target[propertyName] = value;

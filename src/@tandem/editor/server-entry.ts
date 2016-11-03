@@ -18,7 +18,6 @@ import {
   createHTMLEditorWorkerProviders,
 } from "@tandem/html-extension/editor/server";
 
-
 const config: IEdtorServerConfig = {
   argv: argv,
   logLevel: LogLevel[String(argv.logLevel || "").toUpperCase()] || LogLevel.DEFAULT,

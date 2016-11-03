@@ -99,7 +99,7 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs:
 
     // subtract matches from both old & new pools and store
     // them for later use
-    if (bestNewValue) {
+    if (bestNewValue != null) {
       oldPool.splice(i--, 1);
       n--;
       newPool.splice(newPool.indexOf(bestNewValue), 1);

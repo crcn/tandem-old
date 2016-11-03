@@ -395,7 +395,7 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
 
     try {
 
-      this.logger.verbose("resolving %s:%s (%s)", cwd, relativeFilePath, moduleInfo);
+      this.logger.verbose("Resolving %s:%s (%s)", cwd, relativeFilePath, moduleInfo);
 
       resolvedFilePath = await this._resolver.resolve(relativeFilePath, cwd, {
         extensions: this.config.resolve.extensions,

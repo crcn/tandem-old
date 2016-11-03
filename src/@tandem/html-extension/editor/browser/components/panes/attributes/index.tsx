@@ -1,12 +1,11 @@
-import "@tandem/editor/browser/styles.ts";
-import "./index.scss";
+import { reactEditorPreview } from "@tandem/editor/browser/preview";
 
-import "reflect-metadata";
+import "./index.scss";
 
 import * as React from "react";
 import { DOMElements } from "@tandem/html-extension/collections";
-import { reactPreview, Metadata } from "@tandem/common";
 import { FocusComponent } from "@tandem/editor/browser/components/common";
+import { reactPreview, Metadata } from "@tandem/common";
 import { Workspace, GutterComponent } from "@tandem/editor/browser";
 import {
   SyntheticWindow,
@@ -77,7 +76,7 @@ class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttrib
   }
 }
 
-@reactPreview(() => {
+@reactEditorPreview(() => {
   const workspace = new Workspace();
   const window = new SyntheticWindow(new SyntheticLocation("test"));
   (window.document.body as SyntheticHTMLElement).innerHTML = `

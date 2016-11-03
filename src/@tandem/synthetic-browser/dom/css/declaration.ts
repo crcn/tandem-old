@@ -5,7 +5,7 @@ import { SetKeyValueEditAction, IContentEdit, ApplicableEditAction, ISyntheticOb
 
 export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration { }
 
-const internalKeyFilter = sift({ $and: [ { $ne: /^\$/ }, {$ne: "uid" }] });
+const invalidKeyFilter = sift({ $and: [ { $ne: /^\$/ }, {$ne: "uid" }] });
 
 export class SyntheticCSSStyleDeclarationEdit extends BaseContentEdit<SyntheticCSSStyleDeclaration> {
 
@@ -17,13 +17,13 @@ export class SyntheticCSSStyleDeclarationEdit extends BaseContentEdit<SyntheticC
 
   addDiff(newStyleDeclaration: SyntheticCSSStyleDeclaration) {
 
-    const oldKeys = Object.keys(this.target).filter(internalKeyFilter as any);
-    const newKeys = Object.keys(newStyleDeclaration).filter(internalKeyFilter as any);
+    const oldKeys = Object.keys(this.target).filter(invalidKeyFilter as any);
+    const newKeys = Object.keys(newStyleDeclaration).filter(invalidKeyFilter as any);
 
     diffArray(oldKeys, newKeys, (a, b) => {
       return a === b ? 0 : -1;
     }).accept({
-      visitInsert: ({ index, value }) => {
+      visitInsert: ({ value }) => {
         this.setDeclaration(value, newStyleDeclaration[value]);
       },
       visitRemove: ({ index }) => {
@@ -400,14 +400,14 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     return new SyntheticCSSStyleDeclarationEdit(this);
   }
 
-  applyEditAction(action: ApplicableEditAction) {
+  applyEditAction(action: SetKeyValueEditAction) {
     action.applyTo(this);
   }
 
   equalTo(declaration: SyntheticCSSStyleDeclaration) {
     function compare(a, b) {
       for (const key in a) {
-        if (key.charAt(0) === "$") continue;
+        if (invalidKeyFilter(key)) continue;
         if (a[key] !== b[key]) {
           return false;
         }
@@ -421,7 +421,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     const buffer = [];
 
     for (const key in this) {
-      if (!internalKeyFilter(key)) continue;
+      if (!invalidKeyFilter(key)) continue;
       const value = this[key];
       if (value) {
         buffer.push(kebabCase(key), ":", value, ";");
