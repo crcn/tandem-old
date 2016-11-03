@@ -22,6 +22,7 @@ import {
   BaseContentEdit,
   MoveChildEditAction,
   RemoveChildEditAction,
+  ApplicableEditAction,
   InsertChildEditAction,
 } from "@tandem/sandbox";
 
@@ -43,6 +44,13 @@ class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleS
   }
 }
 
+function diffStyleSheetRules(oldRules: syntheticCSSRuleType[], newRules: syntheticCSSRuleType[]) {
+  return diffArray(oldRules, newRules, (oldRule, newRule) => {
+    if (oldRule.constructor.name !== newRule.constructor.name) return -1;
+    return (<SyntheticCSSObject>oldRule).countShallowDiffs(<SyntheticCSSObject>newRule);
+  });
+}
+
 export class SyntheticCSSStyleSheetEdit extends BaseContentEdit<SyntheticCSSStyleSheet> {
 
   static readonly INSERT_STYLE_SHEET_RULE_EDIT = "insertStyleSheetRuleEdit";
@@ -62,16 +70,7 @@ export class SyntheticCSSStyleSheetEdit extends BaseContentEdit<SyntheticCSSStyl
   }
 
   protected addDiff(newStyleSheet: SyntheticCSSStyleSheet) {
-
-    diffArray(this.target.rules, newStyleSheet.rules, (oldRule, newRule) => {
-      if (oldRule.constructor.name !== newRule.constructor.name) return -1;
-
-      if (oldRule instanceof SyntheticCSSStyleRule && (<SyntheticCSSStyleRule>oldRule).selector === (<SyntheticCSSStyleRule>newRule).selector) {
-        return 0;
-      }
-
-      return 0;
-    }).accept({
+    diffStyleSheetRules(this.target.rules, newStyleSheet.rules).accept({
       visitInsert: ({ index, value }) => {
         this.insertRule(value, index);
       },
@@ -79,6 +78,11 @@ export class SyntheticCSSStyleSheetEdit extends BaseContentEdit<SyntheticCSSStyl
         this.removeRule(this.target.rules[index]);
       },
       visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, newIndex }) => {
+
+        if (patchedOldIndex !== newIndex) {
+          this.moveRule(this.target.rules[originalOldIndex], newIndex);
+        }
+
         const oldRule = this.target.rules[originalOldIndex];
         this.addChildEdit((<SyntheticCSSObject>oldRule).createEdit().fromDiff(<SyntheticCSSObject>newValue));
       }
@@ -110,20 +114,27 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
     return this.cssText;
   }
 
+  countShallowDiffs(target: SyntheticCSSStyleSheet) {
+
+    // This condition won't work as well for cases where the stylesheet is defined
+    // by some other code such as <style /> blocks. It *will* probably break if the source
+    // that instantiated this SyntheticCSSStyleSheet instance maintains a reference to it. Though, that's
+    // a totally different problem that needs to be resolved.
+    if (target.source.filePath === this.source.filePath) return 0;
+
+    return diffStyleSheetRules(this.rules, target.rules).count;
+  }
+
   cloneShallow() {
     return new SyntheticCSSStyleSheet([]);
   }
 
-  applyEditAction(action: EditAction) {
-
-    if (action.type === SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT) {
-      const {child, index} = <InsertChildEditAction>action;
-      this.rules.splice(index, 0, child as syntheticCSSRuleType);
-    } else if (action.type === SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT) {
-      const {child} = <RemoveChildEditAction>action;
-      const found = this.rules.find(rule => rule.uid === child.uid);
-      this.rules.splice(this.rules.indexOf(found), 1);
-    }
+  applyEditAction(action: ApplicableEditAction) {
+    action.applyTo({
+      [SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT]: this.rules,
+      [SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT]: this.rules,
+      [SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT]: this.rules
+    }[action.type]);
   }
 
   createEdit() {

@@ -42,6 +42,16 @@ export abstract class SyntheticCSSObject implements ISyntheticObject, IEditable 
   abstract createEdit(): BaseContentEdit<SyntheticCSSObject>;
   abstract applyEditAction(action: EditAction);
   abstract visitWalker(walker: ITreeWalker);
+
+  /**
+   * Counts attribute differences of the target node, omitting children diffs.
+   *
+   * @abstract
+   * @param {*} target
+   * @param {boolean} [deep]
+   */
+
+  abstract countShallowDiffs(target: SyntheticCSSObject): number;
 }
 
 export const SyntheticCSSObjectSerializer = SyntheticObjectSerializer;

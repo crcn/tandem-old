@@ -1,7 +1,7 @@
 import * as sift from "sift";
 import { kebabCase, camelCase } from "lodash";
 import { ISerializable, Action, serializable, diffArray, ITreeWalker } from "@tandem/common";
-import { SetKeyValueEditAction, IContentEdit, ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
+import { SetKeyValueEditAction, IContentEdit, ApplicableEditAction, ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration { }
 
@@ -27,10 +27,14 @@ export class SyntheticCSSStyleDeclarationEdit extends BaseContentEdit<SyntheticC
         this.setDeclaration(value, newStyleDeclaration[value]);
       },
       visitRemove: ({ index }) => {
-        this.setDeclaration(oldKeys[index], undefined);
+
+        // don't apply a move edit if the value doesn't exist.
+        if (this.target[oldKeys[index]]) {
+          this.setDeclaration(oldKeys[index], undefined);
+        }
       },
       visitUpdate: ({ originalOldIndex, newValue }) => {
-        if (this.target[oldKeys[originalOldIndex]] !== newStyleDeclaration[newValue]) {
+        if (this.target[newValue] !== newStyleDeclaration[newValue]) {
           this.setDeclaration(newValue, newStyleDeclaration[newValue]);
         }
       }
@@ -396,11 +400,8 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     return new SyntheticCSSStyleDeclarationEdit(this);
   }
 
-  applyEditAction(action: Action) {
-    if (action.type === SyntheticCSSStyleDeclarationEdit.SET_CSS_STYLE_DECLARATION_EDIT) {
-      const editAction = <SetKeyValueEditAction>action;
-      this[editAction.name] = editAction.newValue;
-    }
+  applyEditAction(action: ApplicableEditAction) {
+    action.applyTo(this);
   }
 
   equalTo(declaration: SyntheticCSSStyleDeclaration) {
@@ -428,6 +429,10 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     }
 
     return buffer.join("");
+  }
+
+  toString() {
+    return this.cssText;
   }
 
   serialize(): ISerializedSyntheticCSSStyleDeclaration {

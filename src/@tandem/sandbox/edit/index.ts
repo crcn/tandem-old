@@ -84,6 +84,42 @@ export class EditAction extends Action {
     super(actionType);
     this.currentTarget = target;
   }
+  toString() {
+    return `${this.constructor.name}(${this.paramsToString()})`;
+  }
+  protected paramsToString() {
+
+    // Target is omitted here since you can inspect the *actual* target by providing an "each" function
+    // for the synthetic object editor, and logging the target object there.
+    return `${this.type}`;
+  }
+}
+
+export interface ISyntheticObjectChild {
+  uid: string;
+  clone(deep?: boolean);
+}
+
+export abstract class ApplicableEditAction extends EditAction {
+  abstract applyTo(target: any);
+}
+
+export abstract class ChildEditAction extends ApplicableEditAction {
+  constructor(type: string, target: ISyntheticObject, readonly child: ISyntheticObjectChild) {
+    super(type, target);
+  }
+  findChildIndex(collection: ISyntheticObjectChild[]) {
+    const index = collection.findIndex(child => child.uid === this.child.uid);
+    if (index === -1) throw new Error(`Cannot apply ${this.type} edit - child ${this.child.uid} not found.`);
+    return index;
+  }
+  findChild(collection: ISyntheticObjectChild[]) {
+    return collection[this.findChildIndex(collection)];
+  }
+  abstract applyTo(collection: ISyntheticObjectChild[]);
+  paramsToString() {
+    return `${super.paramsToString()}, ${this.child.toString().replace(/[\n\r\s\t]+/g, " ")}`;
+  }
 }
 
 @serializable({
@@ -104,9 +140,15 @@ export class EditAction extends Action {
     );
   }
 })
-export class InsertChildEditAction extends EditAction {
-  constructor(actionType: string, target: ISyntheticObject, readonly child: ISyntheticObject, readonly index: number = Infinity) {
-    super(actionType, target);
+export class InsertChildEditAction extends ChildEditAction {
+  constructor(actionType: string, target: ISyntheticObject, child: ISyntheticObjectChild, readonly index: number = Infinity) {
+    super(actionType, target, child);
+  }
+  applyTo(collection: ISyntheticObjectChild[]) {
+    collection.splice(this.index, 0, this.child);
+  }
+  paramsToString() {
+    return `${super.paramsToString()}, ${this.index}`;
   }
 }
 
@@ -126,9 +168,14 @@ export class InsertChildEditAction extends EditAction {
     );
   }
 })
-export class RemoveChildEditAction extends EditAction {
-  constructor(actionType: string, target: ISyntheticObject, readonly child: ISyntheticObject) {
-    super(actionType, target);
+export class RemoveChildEditAction extends ChildEditAction {
+  constructor(actionType: string, target: ISyntheticObject, child: ISyntheticObjectChild) {
+    super(actionType, target, child);
+  }
+  applyTo(collection: ISyntheticObjectChild[]) {
+    const foundIndex = this.findChildIndex(collection);
+    if (foundIndex === -1) throw new Error(`Cannot apply move edit - child ${this.child.uid} not found`);
+    collection.splice(foundIndex, 1);
   }
 }
 
@@ -150,9 +197,18 @@ export class RemoveChildEditAction extends EditAction {
     );
   }
 })
-export class MoveChildEditAction extends EditAction {
-  constructor(actionType: string, target: ISyntheticObject, readonly child: any, readonly newIndex: number) {
-    super(actionType, target);
+export class MoveChildEditAction extends ChildEditAction {
+  constructor(actionType: string, target: ISyntheticObject, child: ISyntheticObjectChild, readonly newIndex: number) {
+    super(actionType, target, child);
+  }
+
+  applyTo(collection: ISyntheticObjectChild[]) {
+    const found = this.findChild(collection);
+    collection.splice(collection.indexOf(found), 1);
+    collection.splice(this.newIndex, 0, found);
+  }
+  paramsToString() {
+    return `${super.paramsToString()}, ${this.newIndex}`;
   }
 }
 
@@ -176,9 +232,15 @@ export class MoveChildEditAction extends EditAction {
     );
   }
 })
-export class SetKeyValueEditAction extends EditAction {
+export class SetKeyValueEditAction extends ApplicableEditAction {
   constructor(actionType: string, target: ISyntheticObject, public  name: string, public newValue: any, public newName?: string) {
     super(actionType, target);
+  }
+  applyTo(target: ISyntheticObject) {
+    target[this.name] = this.newValue;
+  }
+  paramsToString() {
+    return `${super.paramsToString()}, ${this.name}, ${this.newValue}`;
   }
 }
 
@@ -201,6 +263,9 @@ export class SetKeyValueEditAction extends EditAction {
 export class SetValueEditActon extends EditAction {
   constructor(type: string, target: ISyntheticObject, public newValue: any) {
     super(type, target);
+  }
+  paramsToString() {
+    return `${super.paramsToString()}, ${this.newValue}`;
   }
 }
 
@@ -251,11 +316,11 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
    * @param {(T & IEditable)} target the target to apply the edits to
    */
 
-  public applyActionsTo(target: T & IEditable) {
+  public applyActionsTo(target: T & IEditable, each?: (T, action: EditAction) => void) {
 
     // need to setup an editor here since some actions may be intented for
     // children of the target object
-    const editor = new SyntheticObjectEditor(target);
+    const editor = new SyntheticObjectEditor(target, each);
     editor.applyEditActions(...this.actions);
   }
 
@@ -402,7 +467,7 @@ export class FileEditor extends Observable {
 
 export class SyntheticObjectEditor {
 
-  constructor(readonly root: ISyntheticObject) { }
+  constructor(readonly root: ISyntheticObject, private _each?: (target: IEditable, action: EditAction) => void) { }
   applyEditActions(...actions: EditAction[]) {
 
     const allSyntheticObjects = {};
@@ -422,7 +487,14 @@ export class SyntheticObjectEditor {
         throw new Error(`Edit action ${action.type} target ${action.target.uid} not found.`);
       }
 
-      target.applyEditAction(action);
+      try {
+        target.applyEditAction(action);
+
+        // each is useful particularly for debugging diff algorithms. See tests.
+        if (this._each) this._each(target, action);
+      } catch(e) {
+        throw new Error(`Error trying to apply edit ${action.type} to ${action.target.toString()}: ${e.stack}`);
+      }
     }
   }
 }

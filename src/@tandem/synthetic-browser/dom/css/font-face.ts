@@ -46,6 +46,10 @@ export class SyntheticCSSFontFace extends SyntheticCSSObject {
     return new SyntheticCSSFontFace();
   }
 
+  countShallowDiffs(target: SyntheticCSSFontFace) {
+    return this.cssText === target.cssText ? 0 : -1;
+  }
+
   applyEditAction(action: EditAction) {
     console.warn(`Cannot currently edit ${this.constructor.name}`);
   }

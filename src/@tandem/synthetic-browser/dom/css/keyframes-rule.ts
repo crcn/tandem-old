@@ -1,5 +1,5 @@
-import { SyntheticCSSStyleRule } from "./style-rule";
-import { BaseContentEdit, EditAction } from "@tandem/sandbox";
+import { SyntheticCSSStyleRule, diffSyntheticCSSStyleRules } from "./style-rule";
+import { BaseContentEdit, EditAction, SetKeyValueEditAction } from "@tandem/sandbox";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import {
@@ -7,9 +7,11 @@ import {
   deserialize,
   serializable,
   serialize,
+  diffArray,
   ISerializedContent,
   ITreeWalker
 } from "@tandem/common";
+import { SyntheticCSSAtRule, SyntheticCSSAtRuleEdit } from "./atrule";
 
 export interface ISerializedSyntheticCSSKeyframesRule {
   name: string;
@@ -30,32 +32,35 @@ class SyntheticCSSKeyframesRuleSerializer implements ISerializer<SyntheticCSSKey
   }
 }
 
-export class AtRuleEdit extends BaseContentEdit<SyntheticCSSKeyframesRule> {
+export class SyntheticCSSKeyframesRuleEdit extends SyntheticCSSAtRuleEdit<SyntheticCSSKeyframesRule> {
+  static readonly SET_KEYFRAME_NAME_EDIT = "setKeyFrameNameEdit";
+  setName(value: string) {
+    this.addAction(new SetKeyValueEditAction(SyntheticCSSKeyframesRuleEdit.SET_NAME_EDIT, this.target, "name", value));
+  }
   addDiff(newAtRule: SyntheticCSSKeyframesRule) {
-    return this;
+    if (this.target.name !== newAtRule.name) {
+      this.setName(newAtRule.name);
+    }
+    return super.addDiff(newAtRule);
   }
 }
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSKeyframesRuleSerializer()))
-export class SyntheticCSSKeyframesRule extends SyntheticCSSObject {
-  public cssRules: SyntheticCSSStyleRule[];
+export class SyntheticCSSKeyframesRule extends SyntheticCSSAtRule {
   constructor(public name: string) {
     super();
-    this.cssRules = [];
-  }
-
-  get cssText() {
-    return `@keyframes ${this.name} {
-      ${this.cssRules.map((rule) => rule.cssText).join("\n")}
-    }`;
   }
 
   cloneShallow(deep?: boolean) {
     return new SyntheticCSSKeyframesRule(this.name);
   }
 
+  countShallowDiffs(target: SyntheticCSSKeyframesRule) {
+    return this.name === target.name ? 0 : -1;
+  }
+
   createEdit() {
-    return new AtRuleEdit(this);
+    return new SyntheticCSSKeyframesRuleEdit(this);
   }
 
   applyEditAction(action: EditAction) {

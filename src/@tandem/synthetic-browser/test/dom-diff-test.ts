@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { generateRandomSyntheticHTMLElement } from "@tandem/synthetic-browser/test/helpers";
+import * as chalk from "chalk";
 import {
   parseMarkup,
   evaluateMarkup,
@@ -26,8 +27,6 @@ describe(__filename + "#", () => {
     [`<span /><div />`, `<div></div><span></span>`, [SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT]],
     [`<div id="b" />`, `<div id="c"></div>`, [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT]],
     [`<div id="b" />`, `<div></div>`, [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT]],
-    [`<div a="b" c="d" e="f"  />`, `<div c="d" e="f" a="b"></div>`, [SyntheticDOMElementEdit.MOVE_ELEMENT_ATTRIBUTE_EDIT]],
-    [`<b g="e" c="bc" a="ba"></b>`, `<b c="bc" a="ba" g="e"></b>`, [SyntheticDOMElementEdit.MOVE_ELEMENT_ATTRIBUTE_EDIT]]
 
   ].forEach(([oldSource, newSource, actionNames]) => {
 
@@ -44,17 +43,20 @@ describe(__filename + "#", () => {
     });
   });
 
-
   // fuzzy testing
   it("diff & patch a set or random HTML elements", () => {
-    for (let i = 20; i--;) {
+    for (let i = 50; i--;) {
       const { document } = new SyntheticWindow(null);
       const a = document.createElement("div") as SyntheticHTMLElement;
       const b = document.createElement("div") as SyntheticHTMLElement;
-      a.appendChild(generateRandomSyntheticHTMLElement(document, 5, 4, 5));
-      b.appendChild(generateRandomSyntheticHTMLElement(document, 5, 4, 5));
+      a.appendChild(generateRandomSyntheticHTMLElement(document, 8, 4, 5));
+      b.appendChild(generateRandomSyntheticHTMLElement(document, 8, 4, 5));
       a.createEdit().fromDiff(b).applyActionsTo(a);
-      expect(a.innerHTML).to.equal(b.innerHTML);
+      const actions = a.createEdit().fromDiff(b).actions;
+      expect(actions.length).to.equal(0, `
+
+        Trying to apply edit actions from node that should be identical: ${actions.map(action => action.type)}
+      `);
     }
   });
 });

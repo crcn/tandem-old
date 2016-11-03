@@ -23,7 +23,7 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
   static readonly MOVE_CHILD_NODE_EDIT   = "moveChildNodeEdit";
 
   insertChild(newChild: SyntheticDOMNode, index: number) {
-    return this.addAction(new InsertChildEditAction(SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT, this.target, newChild, index));
+    return this.addAction(new InsertChildEditAction(SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT, this.target, newChild.cloneNode(true), index));
   }
 
   removeChild(child: SyntheticDOMNode) {
@@ -108,16 +108,15 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
     switch(action.type) {
       case SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT:
         const removeAction = <InsertChildEditAction>action;
-        this.removeChild(<SyntheticDOMNode>this.getChildSyntheticByUID(removeAction.child.uid));
+        this.removeChild(removeAction.findChild(this.childNodes) as SyntheticDOMNode);
       break;
       case SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT:
         const moveAction = <MoveChildEditAction>action;
-        const child = <SyntheticDOMNode>this.getChildSyntheticByUID(moveAction.child.uid);
-        this.insertChildAt(child, moveAction.newIndex);
+        this.insertChildAt(moveAction.findChild(this.childNodes) as SyntheticDOMNode, moveAction.newIndex);
       break;
       case SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT:
         const insertAction = <InsertChildEditAction>action;
-        this.insertChildAt((insertAction.child as SyntheticDOMNode).cloneNode(true), insertAction.index);
+        this.insertChildAt(insertAction.child as SyntheticDOMNode, insertAction.index);
       break;
     }
   }

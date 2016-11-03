@@ -6,11 +6,14 @@ import { ISerializer, serialize, deserialize, serializable, ISerializedContent, 
 import {
   EditAction,
   BaseContentEdit,
-  SetValueEditActon,
+  ChildEditAction,
   MoveChildEditAction,
+  ApplicableEditAction,
+  SetKeyValueEditAction,
   InsertChildEditAction,
   RemoveChildEditAction,
 } from "@tandem/sandbox";
+import { SyntheticCSSAtRule, SyntheticCSSAtRuleEdit } from "./atrule";
 
 export interface ISerializedSyntheticCSSMediaRule {
   media: string[];
@@ -31,27 +34,12 @@ class SyntheticCSSMediaRuleSerializer implements ISerializer<SyntheticCSSMediaRu
   }
 }
 
-export class SyntheticCSSMediaRuleEdit extends BaseContentEdit<SyntheticCSSMediaRule> {
+export class SyntheticCSSMediaRuleEdit extends SyntheticCSSAtRuleEdit<SyntheticCSSMediaRule> {
 
   static readonly SET_MEDIA_EDIT       = "setMediaEdit";
-  static readonly INSERT_CSS_RULE_EDIT = "insertCSSRuleAtEdit";
-  static readonly MOVE_CSS_RULE_EDIT   = "moveCSSRuleEdit";
-  static readonly REMOVE_CSS_RULE_EDIT = "removeCSSRuleEdit";
-
-  insertRule(rule: SyntheticCSSStyleRule, index: number) {
-    return this.addAction(new InsertChildEditAction(SyntheticCSSMediaRuleEdit.INSERT_CSS_RULE_EDIT, this.target, rule, index));
-  }
-
-  moveRule(rule: SyntheticCSSStyleRule, index: number) {
-    return this.addAction(new MoveChildEditAction(SyntheticCSSMediaRuleEdit.MOVE_CSS_RULE_EDIT, this.target, rule, index));
-  }
-
-  removeRule(rule: SyntheticCSSStyleRule) {
-    return this.addAction(new RemoveChildEditAction(SyntheticCSSMediaRuleEdit.REMOVE_CSS_RULE_EDIT, this.target, rule));
-  }
 
   setMedia(value: string[]) {
-    return this.addAction(new SetValueEditActon(SyntheticCSSMediaRuleEdit.SET_MEDIA_EDIT, this.target, value));
+    return this.addAction(new SetKeyValueEditAction(SyntheticCSSMediaRuleEdit.SET_MEDIA_EDIT, this.target, "media", value));
   }
 
   addDiff(newMediaRule: SyntheticCSSMediaRule) {
@@ -60,47 +48,33 @@ export class SyntheticCSSMediaRuleEdit extends BaseContentEdit<SyntheticCSSMedia
       this.setMedia(newMediaRule.media);
     }
 
-    diffSyntheticCSSStyleRules(this.target.cssRules, newMediaRule.cssRules).accept({
-      visitInsert: ({ index, value }) => {
-        this.insertRule(value, index);
-      },
-      visitRemove: ({ index }) => {
-        this.removeRule(this.target.cssRules[index]);
-      },
-      visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, newIndex }) => {
-        const oldRule = this.target.cssRules[originalOldIndex];
-        if (originalOldIndex !== patchedOldIndex) {
-          this.moveRule(oldRule, newIndex);
-        }
-        this.addChildEdit(oldRule.createEdit().fromDiff(newValue));
-      }
-    })
-
-    return this;
+    return super.addDiff(newMediaRule);
   }
 }
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSMediaRuleSerializer()))
-export class SyntheticCSSMediaRule extends SyntheticCSSObject {
-  public cssRules: SyntheticCSSStyleRule[];
+export class SyntheticCSSMediaRule extends SyntheticCSSAtRule {
 
   constructor(public media: string[]) {
     super();
-    this.cssRules = [];
   }
 
-  get cssText() {
-    return `@media ${this.media.join(" ")} {
-      ${this.cssRules.map((rule) => rule.cssText).join("\n")}
-    }`;
+  get name() {
+    return this.media.join(" ");
   }
 
   cloneShallow() {
     return new SyntheticCSSMediaRule(this.media.concat());
   }
 
-  applyEditAction(action: EditAction) {
-    console.warn(`Cannot currently edit ${this.constructor.name}`);
+  countShallowDiffs(target: SyntheticCSSMediaRule) {
+    return this.media.join("") === target.media.join("") ? 0 : -1;
+  }
+
+  getEditActionTargets() {
+    return Object.assign({
+      [SyntheticCSSMediaRuleEdit.SET_MEDIA_EDIT]: this as SyntheticCSSAtRule,
+    }, super.getEditActionTargets());
   }
 
   createEdit() {

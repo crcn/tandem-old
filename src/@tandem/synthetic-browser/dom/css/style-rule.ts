@@ -64,6 +64,10 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
     return new SyntheticCSSStyleRuleEdit(this);
   }
 
+  toString() {
+    return this.cssText;
+  }
+
   get cssText() {
     return `${this.selector} {
       ${this.style.cssText}
@@ -76,6 +80,10 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
 
   cloneShallow(deep?: boolean) {
     return new SyntheticCSSStyleRule(this.selector, undefined);
+  }
+
+  countShallowDiffs(target: SyntheticCSSStyleRule): number {
+    return this.selector === target.selector ? 0 : -1;
   }
 
   visitWalker(walker: ITreeWalker) {

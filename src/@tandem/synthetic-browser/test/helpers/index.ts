@@ -1,5 +1,15 @@
 import { Injector } from "@tandem/common";
-import { SyntheticBrowser, SyntheticDocument, SyntheticDOMContainer, SyntheticDOMElement, SyntheticDOMText, SyntheticDOMComment } from "@tandem/synthetic-browser";
+import {
+  SyntheticBrowser,
+  SyntheticDocument,
+  SyntheticDOMContainer,
+  SyntheticDOMElement,
+  SyntheticDOMText,
+  parseCSS,
+  evaluateCSS,
+  SyntheticDOMComment,
+  SyntheticCSSStyleSheet,
+} from "@tandem/synthetic-browser";
 import { createSandboxProviders, IFileResolver, IFileSystem } from "@tandem/sandbox";
 import { createCoreApplicationProviders } from "@tandem/core";
 import { sample, sampleSize, random } from "lodash";
@@ -10,6 +20,15 @@ export function createMockBrowser() {
 }
 
 const CHARS = "abcdefg".split("");
+
+
+function generateRandomText(maxLength: number = 5) {
+  return sampleSize(CHARS, random(1, maxLength)).join("");
+}
+
+function generateRandomChar() {
+  return sample(CHARS);
+}
 
 export function generateRandomSyntheticHTMLElement(document: SyntheticDocument, maxChildCount: number = 10, maxDepth: number = 10, maxAttributes: number = 10, generateShadow: boolean = false) {
 
@@ -25,13 +44,6 @@ export function generateRandomSyntheticHTMLElement(document: SyntheticDocument, 
     return fragment;
   }
 
-  function generateRandomText(maxLength: number = 5) {
-    return sampleSize(CHARS, random(1, maxLength)).join("");
-  }
-
-  function generateRandomChar() {
-    return sample(CHARS);
-  }
 
   function createRandomElement() {
     const element = document.createElement(generateRandomChar());
@@ -61,6 +73,39 @@ export function generateRandomSyntheticHTMLElement(document: SyntheticDocument, 
   return maxDepth ? createRandomElement() : sample([createRandomElement, createRandomTextNode, createRandomComment])();
 }
 
-export function generateRandomStyleSheet(maxRules: number = 100, maxDeclarations: 20) {
+export function generateRandomStyleSheet(maxRules: number = 100, maxDeclarations: number = 20): SyntheticCSSStyleSheet {
 
+  function createKeyFrameRule() {
+    `@keyframes ${generateRandomChar()} {
+      ${
+        Array.from({ length: random(0, maxRules) }).map((v) => {
+          return createStyleRule();
+        }).join("\n")
+      }
+    }`
+  }
+  function createStyleRule() {
+    return `.${generateRandomChar()} {
+      ${
+        Array.from({ length: random(0, maxDeclarations) }).map((v) => {
+          return `${generateRandomChar()}: ${generateRandomText(2)};`;
+        }).join("\n")
+      }
+    }`
+  }
+  function createMediaRule() {
+    return `@media ${generateRandomChar()} {
+      ${
+        Array.from({ length: random(0, maxRules) }).map((v) => {
+          return sample([createStyleRule, createKeyFrameRule])();
+        }).join("\n")
+      }
+    }`;
+  }
+
+  const randomStyleSheet = Array
+  .from({ length: random(0, maxRules) })
+  .map(v => sample([createStyleRule])()).join("\n");
+
+  return evaluateCSS(parseCSS(randomStyleSheet));
 }

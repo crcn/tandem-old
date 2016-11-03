@@ -11,21 +11,31 @@ export enum DiffKind {
 
 export interface IArrayDiffChange {
   readonly kind: DiffKind;
+  accept(visitor: IArrayDiffVisitor<any>);
 }
 
 export class ArrayDiffInsert<T>  implements IArrayDiffChange {
   readonly kind = DiffKind.INSERT;
   constructor(readonly index: number, readonly value: T) { }
+  accept(visitor: IArrayDiffVisitor<T>) {
+    visitor.visitInsert(this);
+  }
 }
 
 export class ArrayDiffRemove {
   readonly kind = DiffKind.REMOVE;
   constructor(readonly index: number) { }
+  accept(visitor: IArrayDiffVisitor<any>) {
+    visitor.visitRemove(this);
+  }
 }
 
 export class ArrayDiffUpdate<T> {
   readonly kind = DiffKind.UPDATE;
   constructor(readonly originalOldIndex: number, readonly patchedOldIndex: number, readonly newValue: T, readonly newIndex: number) { }
+  accept(visitor: IArrayDiffVisitor<T>) {
+    visitor.visitUpdate(this);
+  }
 }
 
 export interface IArrayDiffVisitor<T> {
@@ -35,34 +45,33 @@ export interface IArrayDiffVisitor<T> {
 }
 
 export class ArrayDiff<T> {
+
+  readonly count: number;
+
   constructor(
-    readonly deletes: ArrayDiffRemove[],
-    readonly inserts: ArrayDiffInsert<T>[],
-    readonly updates: ArrayDiffUpdate<T>[]
-  ) { }
+    readonly changes: IArrayDiffChange[],
+  ) {
+    this.count = changes.length;
+  }
 
   accept(visitor: IArrayDiffVisitor<T>) {
-    this.deletes.forEach(remove => visitor.visitRemove(remove));
-    this.inserts.forEach(insert => visitor.visitInsert(insert));
-    this.updates.forEach(update => visitor.visitUpdate(update));
+    this.changes.forEach(change => change.accept(visitor));
   }
 }
 
 export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs: (a: T, b: T) => number): ArrayDiff<T> {
 
   // model used to figure out the proper mutation indices
-  const model    = oldArray.concat();
+  const model    = [].concat(oldArray);
 
   // remaining old values to be matched with new values. Remainders get deleted.
-  const oldPool  = oldArray.concat();
+  const oldPool  = [].concat(oldArray);
 
   // remaining new values. Remainders get inserted.
-  const newPool  = newArray.concat();
+  const newPool  = [].concat(newArray);
 
-  const removes: ArrayDiffRemove[]    = [];
-  const inserts: ArrayDiffInsert<T>[] = [];
-  const updates: ArrayDiffUpdate<T>[] = [];
-  const matches: Array<[T, T]>        = [];
+  const changes: IArrayDiffChange[] = [];
+  let   matches: Array<[T, T]>        = [];
 
   for (let i = 0, n = oldPool.length; i < n; i++) {
 
@@ -94,42 +103,55 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs:
       oldPool.splice(i--, 1);
       n--;
       newPool.splice(newPool.indexOf(bestNewValue), 1);
-      matches.push([oldValue, bestNewValue]);
+
+      // need to manually set array indice here to ensure that the order
+      // of operations is correct when mutating the target array.
+      matches[newArray.indexOf(bestNewValue)] = [oldValue, bestNewValue];
     }
   }
 
   for (let i = 0, n = oldPool.length; i < n; i++) {
     const oldValue  = oldPool[i];
     const index     = oldArray.indexOf(oldValue);
-    removes.push(new ArrayDiffRemove(index));
+    changes.push(new ArrayDiffRemove(index));
     model.splice(index, 1);
   }
 
+  // sneak the inserts into the matches so that they're
+  // ordered propertly along with the updates - particularly moves.
   for (let i = 0, n = newPool.length; i < n; i++) {
     const newValue = newPool[i];
     const index    = newArray.indexOf(newValue);
-    inserts.push(new ArrayDiffInsert(index, newValue));
-    model.splice(index, 0, newValue);
+    matches[index] = [undefined, newValue];
   }
 
   // apply updates last using indicies from the old array model. This ensures
   // that mutations are properly applied to whatever target array.
   for (let i = 0, n = matches.length; i < n; i++) {
+    const match = matches[i];
+
+    // there will be empty values since we're manually setting indices on the array above
+    if (match == null) continue;
+
     const [oldValue, newValue] = matches[i];
-    const oldIndex = model.indexOf(oldValue);
-    const newIndex = newArray.indexOf(newValue);
-    updates.push(new ArrayDiffUpdate(oldArray.indexOf(oldValue), oldIndex, newValue, newIndex));
-    if (oldIndex !== newIndex) {
-      model.splice(oldIndex, 1);
-      model.splice(newIndex, 0, oldValue);
+    const newIndex = i;
+
+    // insert
+    if (oldValue == null) {
+      changes.push(new ArrayDiffInsert(newIndex, newValue));
+      model.splice(newIndex, 0, newValue);
+    // updated
+    } else {
+      const oldIndex = model.indexOf(oldValue);
+      changes.push(new ArrayDiffUpdate(oldArray.indexOf(oldValue), oldIndex, newValue, newIndex));
+      if (oldIndex !== newIndex) {
+        model.splice(oldIndex, 1);
+        model.splice(newIndex, 0, oldValue);
+      }
     }
   }
 
-  return new ArrayDiff(
-    removes,
-    inserts,
-    updates
-  );
+  return new ArrayDiff(changes);
 }
 
 export function patchArray<T>(target: Array<T>, diff: ArrayDiff<T>, mapUpdate: (a: T, b: T) => T, mapInsert?: (b: T) => T) {
