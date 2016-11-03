@@ -14,7 +14,7 @@ export class SyntheticDOMComment extends SyntheticDOMValueNode {
   }
 
   toString() {
-    return "";
+    return `<!--${this.nodeValue}-->`;
   }
 
   get textContent() {

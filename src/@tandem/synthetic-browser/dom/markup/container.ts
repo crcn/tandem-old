@@ -46,9 +46,6 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
     diffArray(this.target.childNodes, newContainer.childNodes, (oldNode, newNode) => {
       if (oldNode.nodeName !== newNode.nodeName) return -1;
       return 0;
-
-      // expensive
-      // return (newContainer.childNodes.indexOf(newNode) - this.target.childNodes.indexOf(oldNode)) + oldNode.createEdit().fromDiff(newNode).actions.length;
     }).accept({
       visitInsert: ({ index, value }) => {
         this.insertChild(value, index);
@@ -114,8 +111,9 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
         this.removeChild(<SyntheticDOMNode>this.getChildSyntheticByUID(removeAction.child.uid));
       break;
       case SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT:
-        const moveAction = <InsertChildEditAction>action;
-        this.replaceChild(<SyntheticDOMNode>this.getChildSyntheticByUID(moveAction.child.uid), this.childNodes[moveAction.index]);
+        const moveAction = <MoveChildEditAction>action;
+        const child = <SyntheticDOMNode>this.getChildSyntheticByUID(moveAction.child.uid);
+        this.insertChildAt(child, moveAction.newIndex);
       break;
       case SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT:
         const insertAction = <InsertChildEditAction>action;

@@ -35,6 +35,7 @@ import {
   EditAction,
   BaseContentEdit,
   SetValueEditActon,
+  MoveChildEditAction,
   InsertChildEditAction,
   SetKeyValueEditAction,
 } from "@tandem/sandbox";
@@ -73,11 +74,11 @@ export class SyntheticDOMAttribute extends Observable {
   }
 }
 
+
 export class SyntheticDOMAttributes extends ObservableCollection<SyntheticDOMAttribute> {
   splice(start: number, deleteCount: number = 0, ...items: SyntheticDOMAttribute[]) {
-    for (let i = start, n = start + deleteCount; i < n; i++) {
+    for (let i = start, n = Math.min(start + deleteCount, this.length - 1); i < n; i++) {
       const rmAttribute = this[i];
-
       // delete the attribute to ensure that hasOwnProperty returns false
       delete this[rmAttribute.name];
     }
@@ -130,9 +131,9 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
   deserialize({ nodeName, shadowRoot, namespaceURI, attributes, childNodes }, injector, ctor) {
     const element = new ctor(namespaceURI, nodeName);
 
+
     for (let i = 0, n = attributes.length; i < n; i++) {
-      const { name, value } = <SyntheticDOMAttribute>deserialize(attributes[i], injector);
-      element.setAttribute(name, value);
+      element.attributes.push(<SyntheticDOMAttribute>deserialize(attributes[i], injector));
     }
 
     for (let i = 0, n = childNodes.length; i < n; i++) {
@@ -162,10 +163,15 @@ export class AttachShadowRootEditAction extends EditAction {
 export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<SyntheticDOMElement> {
 
   static readonly SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
+  static readonly MOVE_ELEMENT_ATTRIBUTE_EDIT = "moveElementAttributeEdit";
   static readonly ATTACH_SHADOW_ROOT_EDIT    = "attachShadowRootEdit";
 
   setAttribute(name: string, value: string, newName?: string) {
     return this.addAction(new SetKeyValueEditAction(SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT, this.target, name, value, newName));
+  }
+
+  moveAttribute(name: string, newIndex: number) {
+    return this.addAction(new MoveChildEditAction(SyntheticDOMElementEdit.MOVE_ELEMENT_ATTRIBUTE_EDIT, this.target, name, newIndex));
   }
 
   removeAttribute(name: string) {
@@ -196,6 +202,10 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
         this.removeAttribute(this.target.attributes[index].name);
       },
       visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, newIndex }) => {
+        if (patchedOldIndex !== newIndex) {
+          this.moveAttribute(newValue.name, newIndex);
+        }
+
         if(this.target.attributes[originalOldIndex].value !== newValue.value) {
           this.setAttribute(newValue.name, newValue.value);
         }
@@ -244,20 +254,26 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   applyEditAction(action: EditAction) {
     super.applyEditAction(action);
-    switch(action.type) {
-      case SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT:
-        const { name, newName, newValue } = <SetKeyValueEditAction>action;
+    if (action.type === SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT) {
+      const { name, newName, newValue } = <SetKeyValueEditAction>action;
+      if (newValue == null) {
+        this.removeAttribute(name);
+      } else {
         this.setAttribute(newName || name, newValue);
-        if (newName) this.removeAttribute(name);
-      break;
-      case SyntheticDOMElementEdit.ATTACH_SHADOW_ROOT_EDIT:
-        const { child } = <InsertChildEditAction>action;
-        const shadowRoot = <SyntheticDOMContainer>child;
+      }
+      if (newName) this.removeAttribute(name);
+    } else if (action.type === SyntheticDOMElementEdit.MOVE_ELEMENT_ATTRIBUTE_EDIT) {
+      const { child, newIndex } = <MoveChildEditAction>action;
+      const attribute = this.attributes[child];
+      this.attributes.splice(this.attributes.indexOf(attribute), 1);
+      this.attributes.splice(newIndex, 0, attribute);
+    } else if (action.type === SyntheticDOMElementEdit.ATTACH_SHADOW_ROOT_EDIT) {
+      const { child } = <InsertChildEditAction>action;
+      const shadowRoot = <SyntheticDOMContainer>child;
 
-        // need to clone in case the child is an instance in this process -- hasn't
-        // been sent over a network.
-        this.$setShadowRoot(shadowRoot.cloneNode(true));
-      break;
+      // need to clone in case the child is an instance in this process -- hasn't
+      // been sent over a network.
+      this.$setShadowRoot(shadowRoot.cloneNode(true));
     }
   }
 

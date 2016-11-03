@@ -151,7 +151,7 @@ export class RemoveChildEditAction extends EditAction {
   }
 })
 export class MoveChildEditAction extends EditAction {
-  constructor(actionType: string, target: ISyntheticObject, readonly child: ISyntheticObject, readonly newIndex: number) {
+  constructor(actionType: string, target: ISyntheticObject, readonly child: any, readonly newIndex: number) {
     super(actionType, target);
   }
 }

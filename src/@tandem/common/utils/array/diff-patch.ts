@@ -116,7 +116,13 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs:
   // that mutations are properly applied to whatever target array.
   for (let i = 0, n = matches.length; i < n; i++) {
     const [oldValue, newValue] = matches[i];
-    updates.push(new ArrayDiffUpdate(oldArray.indexOf(oldValue), model.indexOf(oldValue), newValue, newArray.indexOf(newValue)));
+    const oldIndex = model.indexOf(oldValue);
+    const newIndex = newArray.indexOf(newValue);
+    updates.push(new ArrayDiffUpdate(oldArray.indexOf(oldValue), oldIndex, newValue, newIndex));
+    if (oldIndex !== newIndex) {
+      model.splice(oldIndex, 1);
+      model.splice(newIndex, 0, oldValue);
+    }
   }
 
   return new ArrayDiff(
