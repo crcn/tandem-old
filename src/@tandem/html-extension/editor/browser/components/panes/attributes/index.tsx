@@ -43,6 +43,8 @@ class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttrib
 
   setName = (event: any) => {
     const value = this.props.attribute.value;
+    if (this.props.attribute.name && this.props.attribute.name === event.currentTarget.value) return;
+
     if (this.props.attribute.name != null) {
       this.props.setAttribute(this.props.attribute.name, undefined);
     }
@@ -109,7 +111,7 @@ export class EntityAttributesPaneComponent extends React.Component<{ workspace: 
       <div className="td-section-header">
         Attributes
         <div className="pull-right">
-          <span onClick={this.addAttribute}>+</span>
+          <span style={{cursor:"pointer"}} onClick={this.addAttribute}>+</span>
         </div>
       </div>
       <div className="container">
