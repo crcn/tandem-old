@@ -154,7 +154,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   async open2(options: ISyntheticBrowserOpenOptions) {
     const graph = this._graph = DependencyGraphProvider.getInstance(options.dependencyGraphStrategyOptions, this._injector);
     this._entry = await graph.loadDependency(await graph.resolve(options.url, "/"));
-    this._sandbox.open(this._entry);
+    await this._sandbox.open(this._entry);
   }
 
   get document() {

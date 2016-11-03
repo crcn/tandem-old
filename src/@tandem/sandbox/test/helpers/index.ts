@@ -107,6 +107,8 @@ export class MockFileResolver implements IFileResolver {
   }
 }
 
+export const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
 export const createSandboxTestInjector = (options: ISandboxTestProviderOptions = {}) => {
   const injector = new Injector();
   const bus = new BrokerBus();

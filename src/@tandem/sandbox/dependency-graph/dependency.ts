@@ -283,6 +283,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       this.load2().then(() => {
         this._loading = false;
         this._loaded = true;
+        this.notifyLoaded();
         resolve(this);
       }, (err) => {
         this._loading = false;
@@ -325,8 +326,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       this.logger.verbose("File cache changed during load, reloading.")
       return this.reload();
     }
-
-    this.notifyLoaded();
 
     // watch for changes now prevent cyclical dependencies from cyclically
     // listening and emitting the same "done" actions
@@ -399,7 +398,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
    * TODO: may be better to make this part of the loader
    */
 
-  async getInitialSourceContent(): Promise<IDependencyLoaderResult> {
+  protected async getInitialSourceContent(): Promise<IDependencyLoaderResult> {
     return {
       type: this.filePath && MimeTypeProvider.lookup(this.filePath, this._injector) || PLAIN_TEXT_MIME_TYPE,
       content: this.filePath && await (await this.getSourceFileCacheItem()).read()
@@ -454,11 +453,13 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     if (this._notifyLoadedLock || !this._loaded) {
       return;
     }
-    this._notifyLoadedLock = true;
-    setTimeout(() => this._notifyLoadedLock = false, 0);
+
+    this.logger.verbose("Notifying loaded to dependents");
 
     // ensure that we get passed the ready lock
+    this._notifyLoadedLock = true;
     this.notify(new DependencyAction(DependencyAction.DEPENDENCY_LOADED));
+    this._notifyLoadedLock = false;
   }
 
   private resolveDependencies(dependencyPaths: string[], info: IResolvedDependencyInfo[]) {
@@ -479,7 +480,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private onFileCacheAction(action: Action) {
     // reload the dependency if file cache item changes -- could be the data url, source file, etc.
-    if (action.type === PropertyChangeAction.PROPERTY_CHANGE || !this.loading) {
+    if (action.type === PropertyChangeAction.PROPERTY_CHANGE && !this.loading) {
       this.logger.info("Source file changed");
       this.reload();
     }
