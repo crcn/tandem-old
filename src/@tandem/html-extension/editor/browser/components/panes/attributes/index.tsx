@@ -16,7 +16,7 @@ import {
 } from "@tandem/synthetic-browser";
 
 
-class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttribute, setAttribute: (key: string, value: string) => any, edit? : boolean }, { editName: boolean }> {
+class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttribute, setAttribute: (key: string, value: string) => any, edit? : boolean, onValueEnter: (attribute: SyntheticDOMAttribute) => any }, { editName: boolean }> {
 
   constructor() {
     super();
@@ -43,11 +43,17 @@ class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttrib
 
   setName = (event: any) => {
     const value = this.props.attribute.value;
-    if (this.props.attribute.name) {
+    if (this.props.attribute.name != null) {
       this.props.setAttribute(this.props.attribute.name, undefined);
     }
     if (event.currentTarget.value) {
       this.props.setAttribute(event.currentTarget.value, value);
+    }
+  }
+
+  onValueKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === 13) {
+      this.props.onValueEnter(this.props.attribute);
     }
   }
 
@@ -63,7 +69,7 @@ class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttrib
         { !this.props.attribute.name || this.state.editName ? <FocusComponent select={true}><input type="text" defaultValue={attribute.name} onBlur={this.onNameInputBlur} onKeyDown={this.onNameInputKeyDown}></input></FocusComponent> : <label>{attribute.name}</label> }
       </div>
       <div className="col-xs-9">
-        <input type="text" value={attribute.value} onChange={this.onChange}></input>
+        <input type="text" value={attribute.value} onChange={this.onChange} onKeyDown={this.onValueKeyDown}></input>
       </div>
     </div>;
   }
@@ -80,20 +86,14 @@ class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttrib
     <EntityAttributesPaneComponent workspace={workspace} />
   </GutterComponent>
 })
-export class EntityAttributesPaneComponent extends React.Component<{ workspace: Workspace }, { newAttribute: SyntheticDOMAttribute }> {
+export class EntityAttributesPaneComponent extends React.Component<{ workspace: Workspace }, any> {
 
   constructor() {
     super();
-    this.state = { newAttribute: null };
   }
 
   addAttribute = () => {
-    this.setState({ newAttribute: new SyntheticDOMAttribute("", "") });
-  }
-
-  setNewAttribute = (name: string, value) => {
-    this.items.setAttribute(name, value);
-    this.setState({ newAttribute: null });
+    this.items.setAttribute("", "");
   }
 
   get items(): DOMElements {
@@ -109,18 +109,18 @@ export class EntityAttributesPaneComponent extends React.Component<{ workspace: 
       <div className="td-section-header">
         Attributes
         <div className="pull-right">
-          <span onClick={this.addAttribute}>&plus;</span>
+          <span onClick={this.addAttribute}>+</span>
         </div>
       </div>
       <div className="container">
         {
-          [...items.attributes].map((attribute, index) => {
+          [...items.attributes].map((attribute, index, attributes) => {
             if (!attribute) return null;
-            return <AttributeComponent key={index} attribute={attribute} setAttribute={items.setAttribute.bind(items)} />;
+            return <AttributeComponent key={index} attribute={attribute} setAttribute={items.setAttribute.bind(items)} onValueEnter={() => {
+              if (index === attributes.length -1) this.addAttribute();
+            }} />;
           })
         }
-
-        { this.state.newAttribute ? <AttributeComponent key={items.attributes.length} attribute={this.state.newAttribute} setAttribute={this.setNewAttribute} /> : null }
       </div>
     </div>;
   }
