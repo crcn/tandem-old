@@ -84,7 +84,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   private _fileCacheItemObserver: IActor;
   private _updatedAt: number;
   private _importedDependencyObserver: IActor;
-  private _notifyLoadedLock: boolean;
   private _loading: boolean;
   private _loaded: boolean;
   private _loadedDependencies: boolean;
@@ -275,7 +274,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
     // safe method that protects _loading from being locked
     // from errors.
-    if (this._loading) return this.load2();
+    if (this._loading || this._loaded) return this.load2();
 
     return new Promise<Dependency>((resolve, reject) => {
       this._loading = true;
@@ -283,7 +282,8 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       this.load2().then(() => {
         this._loading = false;
         this._loaded = true;
-        this.notifyLoaded();
+        this.logger.verbose("Notifying loaded");
+        this.notify(new DependencyAction(DependencyAction.DEPENDENCY_LOADED));
         resolve(this);
       }, (err) => {
         this._loading = false;
@@ -327,9 +327,11 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       return this.reload();
     }
 
+
     // watch for changes now prevent cyclical dependencies from cyclically
     // listening and emitting the same "done" actions
     await this.watchForChanges();
+
 
     return this;
   }, { length: 0, promise: "then" }) as () => Promise<Dependency>;
@@ -441,25 +443,17 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private onImportedDependencyAction(action: Action) {
     if (action.type === DependencyAction.DEPENDENCY_LOADED) {
-      this.notifyLoaded();
+
+      // cyclical dependencies, and dependencies that are shared may get
+      // bubbled more than once, so lock the notifyLoaded method temporarily to ensure
+      // that the same action doesn't get emitted again.
+      const key = `$notifiedBy$${this.hash}`;
+      if (action[key]) return;
+      action[key] = true;
+
+      this.logger.verbose(`Bubbling dependency ready notification from ${action.target.hash}`);
+      this.notify(action);
     }
-  }
-
-  private notifyLoaded() {
-
-    // cyclical dependencies, and dependencies that are shared may get
-    // bubbled more than once, so lock the notifyLoaded method temporarily to ensure
-    // that the same action doesn't get emitted again.
-    if (this._notifyLoadedLock || !this._loaded) {
-      return;
-    }
-
-    this.logger.verbose("Notifying loaded to dependents");
-
-    // ensure that we get passed the ready lock
-    this._notifyLoadedLock = true;
-    this.notify(new DependencyAction(DependencyAction.DEPENDENCY_LOADED));
-    this._notifyLoadedLock = false;
   }
 
   private resolveDependencies(dependencyPaths: string[], info: IResolvedDependencyInfo[]) {
@@ -474,6 +468,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private async reload() {
     this.load2["clear"]();
+    this._loaded = false;
     this.logger.verbose("Reloading");
     return this.load();
   }

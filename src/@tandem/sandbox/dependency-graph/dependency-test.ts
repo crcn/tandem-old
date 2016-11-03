@@ -8,6 +8,7 @@ import {
   IDependencyData,
   IFileResolver,
   FileCacheItem,
+  DependencyAction,
   IDependencyLoader,
   FileResolverProvider,
   IDependencyLoaderResult,
@@ -145,6 +146,20 @@ describe(__filename + "#", () => {
     await dep.load();
     expect(dep.eagerGetDependency("c").loaded).to.equal(true);
     expect(dep.content).to.equal("aa");
+  });
+
+  it("emits a DEPENDENCY_LOADED action even when load() is called multiple times", async () => {
+    let i = 0;
+    const dep = createMockDependency({
+      filePath: "a"
+    }, { a: { content: "aa" }});
+    dep.observe({
+      execute: (action) => action.type === DependencyAction.DEPENDENCY_LOADED ? i++ : 0
+    });
+    await dep.load();
+    await dep.load();
+    await dep.load();
+    expect(i).to.equal(1);
   });
 });
 
