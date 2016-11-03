@@ -1,11 +1,19 @@
 
 $input-radius: 3px;
-$input-padding: 2px 8px;
+$input-top-bottom: 2px;
+$input-left-right: 8px;
+$input-padding: $input-top-bottom $input-left-right;
 $input-border: 1px solid rgba(0,0,0,0.15);
 $input-background: rgba(0,0,0,0.1);
 
 *:focus {
   outline: none;
+}
+
+label {
+  font-weight: inherit;
+  padding: $input-top-bottom 0px;
+  margin: 0px;
 }
 
 input[type="text"] {

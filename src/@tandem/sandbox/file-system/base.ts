@@ -16,6 +16,7 @@ export interface IFileWatcher extends IDisposable { }
 
 export interface IFileSystem {
   readFile(filePath: string): Promise<any>;
+  fileExists(filePath: string): Promise<boolean>;
   writeFile(filePath: string, content: any): Promise<any>;
   watchFile(filePath: string, onChange: () => any): IFileWatcher;
 }
@@ -32,6 +33,7 @@ export abstract class BaseFileSystem implements IFileSystem {
   }
 
   abstract readFile(filePath: string): Promise<any>;
+  abstract fileExists(filePath: string): Promise<boolean>;
   abstract writeFile(filePath: string, content: any): Promise<any>;
 
   public watchFile(filePath: string, onChange: () => any) {

@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-export class FocusComponent extends React.Component<any, any> {
+export class FocusComponent extends React.Component<{ select?: boolean, focus?: boolean, children?: any }, any> {
   private _timeout: any;
   static defaultProps = {
     focus: true
@@ -21,7 +21,11 @@ export class FocusComponent extends React.Component<any, any> {
     // need to wait a bit before focusing on element, otherwise
     // this does not work
     this._timeout = setTimeout(() => {
-      this.getRef().focus();
+      const ref = this.getRef() as HTMLInputElement;
+      ref.focus();
+      if (this.props.select) {
+        ref.select();
+      }
     }, 1);
   }
   blur() {
@@ -30,7 +34,7 @@ export class FocusComponent extends React.Component<any, any> {
     }, 1);
   }
   getRef(): any {
-    const node = ReactDOM.findDOMNode(this);
+    const node = ReactDOM.findDOMNode(this as any);
     return (node.nodeName === "INPUT" ? node : node.querySelector("input")) || node;
   }
   componentWillUnmount() {

@@ -15,6 +15,11 @@ export class LocalFileSystem extends BaseFileSystem {
     });
   }
 
+  fileExists(filePath: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      fs.exists(filePath, resolve);
+    });
+  }
 
   async writeFile(filePath: string, content: any) {
     return new Promise((resolve, reject) => {

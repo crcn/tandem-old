@@ -9,7 +9,11 @@ export class DOMElements extends Array<SyntheticDOMElement> {
 
   setAttribute(name: string, value: string) {
     for (const element of this) {
-      element.setAttribute(name, value);
+      if (value == null) {
+        element.removeAttribute(name);
+      } else {
+        element.setAttribute(name, value);
+      }
     }
   }
 

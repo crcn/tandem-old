@@ -59,6 +59,10 @@ export class MockFileSystem extends BaseFileSystem {
     this._watchers = {};
   }
 
+  fileExists(filePath: string): Promise<boolean> {
+    return Promise.resolve(!!this._mockFiles[filePath]);
+  }
+
   readFile(filePath: string): Promise<any> {
     const content = this._mockFiles[filePath];
     return new Promise((resolve, reject) => {

@@ -12,6 +12,10 @@ export class RemoteFileSystem extends BaseFileSystem {
     return await ReadFileAction.execute(filePath, this.bus);
   }
 
+  async fileExists(filePath: string): Promise<boolean> {
+    throw new Error(`Not implemented yet`);
+  }
+
   async writeFile(filePath: string, content: any) {
     return Promise.reject(new Error("not implemented yet"))
   }

@@ -298,7 +298,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this._loading = false;
     logTimer.stop("loaded");
 
-    if (sourceFileUpdatedAt !== await this.getLatestSourceFileUpdateTimestamp()) {
+    if (this._sourceUpdatedAt !== await this.getLatestSourceFileUpdateTimestamp()) {
       this.logger.verbose("File cache changed during load, reloading.")
       return this.reload();
     }
@@ -315,10 +315,9 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
 
   private async getLatestSourceFileUpdateTimestamp() {
-    for (const sourceFile of await this.getSourceFiles()) {
-      if (sourceFile.updatedAt > this._sourceUpdatedAt) return sourceFile.updatedAt;
-    }
-    return this._sourceUpdatedAt;
+    return Math.max(this._sourceUpdatedAt || 0, ...(
+      (await this.getSourceFiles()).map(sourceFile => sourceFile.updatedAt || 0)
+    ));
   }
 
   private async getSourceFiles() {

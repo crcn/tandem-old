@@ -1,7 +1,6 @@
 const webpack               = require('webpack');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
-const HtmlWebpackPlugin     = require('html-webpack-plugin');
 const { join }              = require('path');
 
 const {
@@ -43,7 +42,8 @@ module.exports = {
       alias: {
         'react': 'node_modules/react/dist/react.js',
         'react-dom': 'node_modules/react-dom/dist/react-dom.js',
-        'chokidar': 'null-loader?chokidar'
+        'chokidar': 'null-loader?chokidar',
+        'detective': 'null-loader?detective'
       }
     },
     ts: {

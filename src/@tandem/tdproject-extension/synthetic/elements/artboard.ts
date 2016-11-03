@@ -104,7 +104,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     await this.loadBrowser();
   }
 
-  protected loadBrowser = debounce(async () => {
+  private loadBrowser = debounce(async () => {
     if (!this._artboardBrowser) return;
     if (this.hasAttribute("src")) {
       const src = this.getAttribute("src");

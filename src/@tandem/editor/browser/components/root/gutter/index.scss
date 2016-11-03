@@ -8,6 +8,7 @@ $gutter-background: #444;
   position: relative;
   color: $font-color-white;
   background-color: $gutter-background;
+  box-shadow: 0 0 0 2px $color-black-offset-2;
 
   .td-section-header {
     background: rgba(0,0,0,0.2);

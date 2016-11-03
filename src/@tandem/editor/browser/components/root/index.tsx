@@ -5,7 +5,6 @@ import { Store } from "@tandem/editor/browser/models";
 import CenterComponent from "./center";
 import { StoreProvider } from "@tandem/editor/browser/providers";
 import { GutterComponent } from "./gutter";
-import { SelectionGutterComponent } from "./selection-sidebar";
 import { IActor, Injector, RootApplicationComponent, BaseApplicationComponent, inject } from "@tandem/common";
 import { RegisteredComponent } from "@tandem/editor/browser/components/common";
 import { DOCUMENT_PANE_COMPONENT_NS, ENTITY_PANE_COMPONENT_NS } from "@tandem/editor/browser/providers";

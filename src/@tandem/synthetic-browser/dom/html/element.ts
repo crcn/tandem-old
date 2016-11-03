@@ -36,6 +36,14 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
     return this.getAttribute("text");
   }
 
+  focus() {
+    // TODO - possibly set activeElement on synthetic document
+  }
+
+  blur() {
+    // TODO
+  }
+
   get class(): string {
     return this.getAttribute("class");
   }
