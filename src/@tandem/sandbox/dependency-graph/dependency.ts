@@ -4,7 +4,7 @@ import * as memoize from "memoizee";
 import { pull } from "lodash";
 import { IFileSystem } from "../file-system";
 import { RawSourceMap } from "source-map";
-import { DependencyGraph } from "./graph";
+import { IDependencyGraph } from "./graph";
 import { DependencyAction } from "./actions";
 import { FileCache, FileCacheItem } from "../file-cache";
 
@@ -93,7 +93,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  constructor(source: IDependencyData, collectionName: string, private _graph: DependencyGraph) {
+  constructor(source: IDependencyData, collectionName: string, private _graph: IDependencyGraph) {
     super(source, collectionName);
 
     this._importedDependencyObserver = new WrapBus(this.onImportedDependencyAction.bind(this));
@@ -116,7 +116,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     return this._fileCacheItem = await this._fileCache.item(this.filePath);
   }
 
-  get graph(): DependencyGraph {
+  get graph(): IDependencyGraph {
     return this._graph;
   }
 
@@ -272,7 +272,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this._includedDependencyInfo = includedDependencyInfo || [];
   }
 
-  load = memoize(async (): Promise<Dependency> => {
+  public load = memoize(async (): Promise<Dependency> => {
 
     this._loaded = false;
     this._loading = true;
@@ -287,7 +287,16 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       // in case the file cache item changes while the dependency is loading (shouldn't happen so often).
       this._sourceUpdatedAt = sourceFileUpdatedAt;
 
-      await this.loadHard();
+      try {
+        await this.loadHard();
+      } catch(e) {
+
+        // reset everything if there's a failure
+        this._loading = false;
+        this._loaded = false;
+        this._sourceUpdatedAt = 0;
+        throw e;
+      }
       await this.save();
     } else {
       this.logger.verbose("No change. Reusing cached content.");
@@ -295,7 +304,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
     await this.loadDependencies();
 
-    this._loading = false;
     logTimer.stop("loaded");
 
     if (this._sourceUpdatedAt !== await this.getLatestSourceFileUpdateTimestamp()) {
@@ -303,6 +311,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       return this.reload();
     }
 
+    this._loading = false;
     this._loaded  = true;
     this.notifyLoaded();
 
@@ -311,7 +320,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     await this.watchForChanges();
 
     return this;
-  }, { length: 0, promise: true }) as () => Promise<Dependency>;
+  }, { length: 0, promise: "then" }) as () => Promise<Dependency>;
 
 
   private async getLatestSourceFileUpdateTimestamp() {
@@ -335,7 +344,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this.logger.verbose("Transforming source content using graph strategy");
 
 
-    const loader = this._graph.$strategy.getLoader(this._loaderOptions);
+    const loader = this._graph.getLoader(this._loaderOptions);
     const transformResult: IDependencyLoaderResult = await loader.load(this, await this.getInitialSourceContent());
 
     this._content = transformResult.content;
@@ -443,7 +452,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   private resolveDependencies(dependencyPaths: string[], info: IResolvedDependencyInfo[]) {
     return Promise.all(dependencyPaths.map(async (relativePath) => {
       this.logger.verbose("Resolving dependency %s", relativePath);
-      const dependencyInfo = await this._graph.$strategy.resolve(relativePath, path.dirname(this.filePath));
+      const dependencyInfo = await this._graph.resolve(relativePath, path.dirname(this.filePath));
       dependencyInfo.relativePath = relativePath;
       info.push(dependencyInfo);
     }));
@@ -452,6 +461,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   private async reload() {
     this.logger.verbose("Reloading");
     this.load["clear"]();
+    this._loaded = false;
     return await this.load();
   }
 

@@ -29,13 +29,23 @@ export interface IDependencyGraphStrategyOptions {
   config?: any;
 }
 
+export interface IDependencyGraph {
+  createGlobalContext();
+  createModuleContext(module: IModule);
+  getLoader(loaderOptions: any): IDependencyLoader;
+  eagerFindByHash(hash): Dependency;
+  resolve(filePath: string, cwd: string): Promise<IResolvedDependencyInfo>;
+  getDependency(info: IResolvedDependencyInfo): Promise<Dependency>;
+  loadDependency(info: IResolvedDependencyInfo): Promise<Dependency>;
+}
+
 /**
  * Singleton graph dependency for mapping and transforming application source code
  * into one bundle file.
  */
 
 @loggable()
-export class DependencyGraph extends Observable {
+export class DependencyGraph extends Observable implements IDependencyGraph {
 
   protected readonly logger: Logger;
 
