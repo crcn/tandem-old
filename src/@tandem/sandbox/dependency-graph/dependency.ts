@@ -95,7 +95,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   constructor(source: IDependencyData, collectionName: string, private _graph: IDependencyGraph) {
     super(source, collectionName);
-
     this._importedDependencyObserver = new WrapBus(this.onImportedDependencyAction.bind(this));
     this._fileCacheItemObserver = new WrapBus(this.onFileCacheAction.bind(this));
   }
@@ -118,10 +117,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   get graph(): IDependencyGraph {
     return this._graph;
-  }
-
-  get loading(): boolean {
-    return this._loading;
   }
 
   /**
@@ -191,6 +186,10 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   get absoluteProviderPaths() {
     return this._importedDependencyInfo.map(info => info.filePath);
+  }
+
+  get loading() {
+    return this._loading;
   }
 
   get loaded() {
@@ -272,10 +271,28 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this._includedDependencyInfo = includedDependencyInfo || [];
   }
 
-  public load = memoize(async (): Promise<Dependency> => {
+  public async load(): Promise<Dependency> {
 
-    this._loaded = false;
-    this._loading = true;
+    // safe method that protects _loading from being locked
+    // from errors.
+    if (this._loading) return this.load2();
+
+    return new Promise<Dependency>((resolve, reject) => {
+      this._loading = true;
+      this._loaded  = false;
+      this.load2().then(() => {
+        this._loading = false;
+        this._loaded = true;
+        resolve(this);
+      }, (err) => {
+        this._loading = false;
+        reject(err);
+      })
+    });
+  }
+
+  protected load2 = memoize(async (): Promise<Dependency> => {
+
     this.logger.verbose("Loading...");
     const logTimer = this.logger.startTimer(null, null, LogLevel.VERBOSE);
     const fileCache = await this.getSourceFileCacheItem();
@@ -287,16 +304,14 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       // in case the file cache item changes while the dependency is loading (shouldn't happen so often).
       this._sourceUpdatedAt = sourceFileUpdatedAt;
 
+      // catch errors during load -- this *will* happen if the content has syntax errors that the
+      // loader doesn't know how to handle.
       try {
         await this.loadHard();
       } catch(e) {
-
-        // reset everything if there's a failure
-        this._loading = false;
-        this._loaded = false;
-        this._sourceUpdatedAt = 0;
         throw e;
       }
+
       await this.save();
     } else {
       this.logger.verbose("No change. Reusing cached content.");
@@ -311,8 +326,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       return this.reload();
     }
 
-    this._loading = false;
-    this._loaded  = true;
     this.notifyLoaded();
 
     // watch for changes now prevent cyclical dependencies from cyclically
@@ -342,7 +355,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   private async loadHard() {
 
     this.logger.verbose("Transforming source content using graph strategy");
-
 
     const loader = this._graph.getLoader(this._loaderOptions);
     const transformResult: IDependencyLoaderResult = await loader.load(this, await this.getInitialSourceContent());
@@ -458,18 +470,19 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     }));
   }
 
+
   private async reload() {
+    this.load2["clear"]();
     this.logger.verbose("Reloading");
-    this.load["clear"]();
-    this._loaded = false;
-    return await this.load();
+    return this.load();
   }
 
   private onFileCacheAction(action: Action) {
     // reload the dependency if file cache item changes -- could be the data url, source file, etc.
-    if (action.type === PropertyChangeAction.PROPERTY_CHANGE && !this.loading) {
+    if (action.type === PropertyChangeAction.PROPERTY_CHANGE || !this.loading) {
       this.logger.info("Source file changed");
       this.reload();
     }
   }
+
 }
