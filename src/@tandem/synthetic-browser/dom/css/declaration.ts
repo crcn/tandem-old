@@ -8,7 +8,7 @@ import { SetKeyValueEditAction, IContentEdit, ApplicableEditAction, ISyntheticOb
 
 export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration { }
 
-export const isValidCSSDeclarationProperty = sift({ $and: [ { $ne: /^\$/ }, {$ne: "uid" }, { $ne: "" }, { $ne: /^\d+$/ }] });
+export const isValidCSSDeclarationProperty = sift({ $and: [ { $ne: /^\$/ }, {$ne: "uid" }, { $ne: /^\d+$/ }] });
 
 export class SyntheticCSSStyleDeclarationEdit extends BaseContentEdit<SyntheticCSSStyleDeclaration> {
 
@@ -434,7 +434,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
 
     // fix in case they're kebab case
     name    = camelCase(name);
-    oldName = camelCase(oldName);
+    oldName = oldName != null ? camelCase(oldName) : oldName;
 
     let index = oldName ? this.getPropertyIndex(oldName) : this.getPropertyIndex(name);
 
@@ -443,9 +443,11 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
       this[~index ? index : this.length] = name;
     }
 
-    this[name] = newValue;
+    if (name != null) {
+      this[name] = newValue;
+    }
 
-    if (oldName) {
+    if (oldName != null) {
       this[oldName] = undefined;
     }
 

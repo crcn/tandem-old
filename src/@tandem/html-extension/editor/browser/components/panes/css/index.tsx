@@ -26,10 +26,8 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ rule: Synt
     const { rule } = this.props;
     const items = [];
 
-
     for (const key of rule.style) {
       const value = rule.style[key];
-      if (value == null) continue;
       items.push({ name: kebabCase(key), value: rule.style[key] });
     }
 
@@ -37,7 +35,7 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ rule: Synt
       <div className="td-section-header color-green-10">
         { rule.selector }
         <div className="controls">
-          +
+          <span onClick={() => this.setDeclaration("", "")}>+</span>
         </div>
       </div>
       <HashInputComponent items={items} setKeyValue={this.setDeclaration} />

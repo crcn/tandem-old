@@ -28,12 +28,12 @@ import {
 export class EntityAttributesPaneComponent extends React.Component<{ workspace: Workspace }, any> {
 
   addAttribute = () => {
-
+    this.items.setAttribute("", "");
   }
 
   setAttribute = (name: string, value: any, oldName?: string) => {
-    this.items.setAttribute(name, value);
-    if (oldName) {
+    if(name != null) this.items.setAttribute(name, value);
+    if (oldName != null) {
       this.items.removeAttribute(oldName);
     }
   }

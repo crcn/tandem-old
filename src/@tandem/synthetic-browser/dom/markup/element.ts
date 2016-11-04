@@ -81,10 +81,10 @@ export class SyntheticDOMAttribute extends Observable implements ISyntheticObjec
 
 export class SyntheticDOMAttributes extends ObservableCollection<SyntheticDOMAttribute> {
   splice(start: number, deleteCount: number = 0, ...items: SyntheticDOMAttribute[]) {
-    for (let i = start, n = Math.min(start + deleteCount, this.length - 1); i < n; i++) {
+    for (let i = start, n = Math.min(start + deleteCount, this.length); i < n; i++) {
       const rmAttribute = this[i];
       // delete the attribute to ensure that hasOwnProperty returns false
-      delete this[rmAttribute.name];
+      this[rmAttribute.name] = undefined
     }
 
     for (let i = 0, n = items.length; i < n; i++) {
@@ -278,7 +278,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   hasAttribute(name: string) {
-    return this.attributes.hasOwnProperty(name);
+    return this.attributes[name] != null;
   }
 
   accept(visitor: IMarkupNodeVisitor) {

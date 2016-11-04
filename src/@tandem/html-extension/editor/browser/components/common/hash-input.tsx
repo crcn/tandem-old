@@ -2,7 +2,7 @@ import * as React from "react";
 import { FocusComponent } from "@tandem/editor/browser/components/common";
 
 // TODO - add some color for the CSS rules
-export class KeyValueInputComponent extends React.Component<{ name: string, value: string, setKeyValue: (name: string, value: any, oldName?: string) => any }, { editName: boolean, currentValue: string }> {
+export class KeyValueInputComponent extends React.Component<{ item: { name: string, value: any}, setKeyValue: (name: string, value: any, oldName?: string) => any, onValueEnter: (item) =>  any}, { editName: boolean, currentValue: string }> {
 
   private _currentValue: any;
 
@@ -23,12 +23,21 @@ export class KeyValueInputComponent extends React.Component<{ name: string, valu
     this.saveName(event);
   }
 
+  get item() {
+    return this.props.item;
+  }
+
   saveName = (event: React.KeyboardEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement>) => {
-    const oldName = this.props.name;
+    const oldName = this.item.name;
     const newName = event.currentTarget.value;
 
+    // unset
+    if (newName === "") {
+      return this.props.setKeyValue(undefined, undefined, oldName);
+    }
+
     if (oldName !== newName) {
-      this.props.setKeyValue(newName, this.props.value, oldName);
+      this.props.setKeyValue(newName, this.item.value, oldName);
     }
   }
 
@@ -38,8 +47,8 @@ export class KeyValueInputComponent extends React.Component<{ name: string, valu
   };
 
   onValueChange = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    const oldName = this.props.name;
-    this.props.setKeyValue(this.props.name, this.state.currentValue = event.currentTarget.value);
+    const oldName = this.item.name;
+    this.props.setKeyValue(this.item.name, this.state.currentValue = event.currentTarget.value);
   }
 
   onValueFocus = (event: React.FocusEvent<HTMLInputElement>) => {
@@ -51,14 +60,18 @@ export class KeyValueInputComponent extends React.Component<{ name: string, valu
     this.setState({ currentValue: undefined, editName: this.state.editName });
   }
 
+  onValueKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === 13) this.props.onValueEnter(this.props.item);
+  }
+
   render() {
-    const { name, value } = this.props;
+    const { name, value } = this.item;
     return <div className="row">
       <div className="col-xs-5 no-wrap td-cell-key" title={name} onDoubleClick={this.editName}>
         { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name }
       </div>
       <div className="col-xs-7">
-        <input type="text" {...(this.state.currentValue != null ? {} : { value: value })} onChange={this.onValueChange} onFocus={this.onValueFocus} onBlur={this.onValueBlur}></input>
+        <input type="text" {...(this.state.currentValue != null ? {} : { value: value })} onKeyDown={this.onValueKeyDown} onChange={this.onValueChange} onFocus={this.onValueFocus} onBlur={this.onValueBlur}></input>
       </div>
     </div>
   }
@@ -71,13 +84,22 @@ export interface IKeyInputComponentProps {
 
 // TODO - add some color for the CSS rules
 export class HashInputComponent extends React.Component<IKeyInputComponentProps, any> {
+
+  onValueEnter = (item) => {
+
+    // TODO - possibly insert new prop here - this.setKeyValue("", "", index)
+    if (this.props.items.indexOf(item) === this.props.items.length - 1) {
+      this.props.setKeyValue("", "");
+    }
+  }
+
   render() {
     const { items } = this.props;
     return <div className="container td-cells">
       {
         // index important here since the name can change
         items.map((item, index) => {
-          return <KeyValueInputComponent name={item.name} key={index} value={item.value} setKeyValue={this.props.setKeyValue} />;
+          return <KeyValueInputComponent item={item} key={index} setKeyValue={this.props.setKeyValue} onValueEnter={this.onValueEnter} />;
         })
       }
     </div>
