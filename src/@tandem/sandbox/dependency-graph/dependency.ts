@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as memoize from "memoizee";
 
-import { pull } from "lodash";
+import { pull, values } from "lodash";
 import { IFileSystem } from "../file-system";
 import { RawSourceMap } from "source-map";
 import { IDependencyGraph } from "./graph";
@@ -28,7 +28,10 @@ import {
   loggable,
   Injector,
   LogLevel,
+  IWalkable,
+  TreeWalker,
   IInjectable,
+  ITreeWalker,
   watchProperty,
   MimeTypeProvider,
   BaseActiveRecord,
@@ -53,10 +56,25 @@ export interface IDependencyData {
   includedDependencyInfo?: IResolvedDependencyInfo[];
 }
 
+export class DependencyWalker extends TreeWalker {
+  private _walked: any;
+
+  constructor(each: (dependency: Dependency) => any) {
+    super(each);
+    this._walked = {};
+  }
+
+  accept(dependency: Dependency) {
+    if (this._walked[dependency.hash]) return;
+    this._walked[dependency.hash] = true;
+    super.accept(dependency);
+  }
+}
+
 // TODO - cover case where depenedency doesn't exist
 
 @loggable()
-export class Dependency extends BaseActiveRecord<IDependencyData> implements IInjectable {
+export class Dependency extends BaseActiveRecord<IDependencyData> implements IInjectable, IWalkable {
 
   protected readonly logger: Logger;
 
@@ -439,6 +457,34 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
         dispose: () => sourceFile.unobserve(this._fileCacheItemObserver)
       });
     }
+  }
+
+  /**
+   * Recursively scans dependencies
+   */
+
+  public async whenAllLoaded() {
+    while (true) {
+      const deps: Dependency[] = [];
+
+      new DependencyWalker((dependency: Dependency) => {
+        deps.push(dependency);
+      }).accept(this);
+
+
+      const hasLoading = (await Promise.all(values(deps).map(async (dep: Dependency) => {
+        return dep.loading ? await dep.load() && true : false;
+      }))).find(loading => loading === true);
+
+      // Break if everything is loaded in the dependency graph starting from this instance.
+      // if there were loading deps, then there may be more imported deps that are being loaded in,
+      // so we'll need to re-traverse the entire DEP graph to ensure that they're checked.
+      if (hasLoading !== true) break;
+    }
+  }
+
+  public visitWalker(walker: ITreeWalker) {
+    this.importedDependencies.forEach(dependency => walker.accept(dependency));
   }
 
   private onImportedDependencyAction(action: Action) {

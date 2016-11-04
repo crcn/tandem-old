@@ -56,6 +56,7 @@ export class Sandbox extends Observable {
   private _mainModule: any;
   private _entryObserver: IActor;
   private _shouldEvaluate: boolean;
+  private _waitingForAllLoaded: boolean;
 
   private _global: any;
   private _context: vm.Context;
@@ -101,7 +102,8 @@ export class Sandbox extends Observable {
     this._entry = entry;
     this._entry.observe(this._entryObserver);
 
-    await this._entry.load();
+    this._entry.load();
+    await this._entry.whenAllLoaded();
     this.reset();
   }
 
@@ -136,13 +138,27 @@ export class Sandbox extends Observable {
 
     return this.evaluate(dependency);
   }
+  protected async onEntryAction(action: Action) {
 
-  protected onEntryAction(action: Action) {
     if (action.type === DependencyAction.DEPENDENCY_LOADED) {
+
+      // Multiple deps may have changed, so wait to ensure that everything's loaded
+      // before re-evaluating the sandbox
+      if (this._waitingForAllLoaded) return;
+
+      this._waitingForAllLoaded = true;
+      this.logger.verbose("Received dependency update, waiting for others to finish loading")
+      await this._entry.whenAllLoaded();
+      this._waitingForAllLoaded = false;
+
       if (this._paused) {
         this._shouldEvaluate = true;
         return;
       }
+
+      this.logger.verbose("Re-evaluating entry ${this._entry.filePath}");
+
+      // TODO - wait for all children to be ready
       this.reset();
     }
   }
