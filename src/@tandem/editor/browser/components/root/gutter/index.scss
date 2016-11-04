@@ -29,10 +29,6 @@ $gutter-background: #444;
     width: 100%;
   }
 
-  .row {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  }
-
   & .left {
     border-left: 2px solid rgba(255, 255, 255, 0.2);
   }
@@ -63,10 +59,15 @@ $gutter-background: #444;
 
 
 .td-cells {
+
+  .row {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
   .td-cell-key {
     background: rgba(255, 255, 255, 0.05);
     line-height: inherit;
-    border-right: 1px solid rgba(255, 255, 255, 0.15);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   *[class*="col-"] {
