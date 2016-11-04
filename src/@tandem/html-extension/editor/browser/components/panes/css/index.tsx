@@ -6,24 +6,27 @@ import { Workspace } from "@tandem/editor/browser/models";
 import { DOMElements } from "@tandem/html-extension/collections";
 import { GutterComponent } from "@tandem/editor/browser/components";
 import { HashInputComponent } from "@tandem/html-extension/editor/browser/components/common";
+import { BaseApplicationComponent } from "@tandem/common";
 import {
   parseCSS,
   evaluateCSS,
   SyntheticWindow,
-  invalidCSSDeclarationKeyFilter,
   SyntheticHTMLElement,
   SyntheticCSSStyleRule,
+  invalidCSSDeclarationKeyFilter,
 } from "@tandem/synthetic-browser";
 
 
-
 // TODO - add some color for the CSS rules
-class MatchedCSSStyleRuleComponent extends React.Component<{ rule: SyntheticCSSStyleRule }, any> {
-  setDeclaration = (name: string, value: string, newName?: string) => {
-    this.props.rule.style[camelCase(name)] = value;
-    if (newName) {
-      this.props.rule.style[camelCase(newName)] = undefined;
-    }
+class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ rule: SyntheticCSSStyleRule }, any> {
+  setDeclaration = (name: string, value: string, oldName?: string) => {
+    const props = {
+      [name]: value
+    };
+
+    if (oldName) props[oldName] = undefined;
+
+    this.props.rule.style.update(props);
   }
   render() {
     const { rule } = this.props;

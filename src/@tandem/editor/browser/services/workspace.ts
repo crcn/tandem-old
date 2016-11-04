@@ -7,6 +7,7 @@ import {
   SyntheticBrowser,
   SyntheticDOMElement,
   SyntheticDOMRenderer,
+
   BaseDecoratorRenderer,
   RemoteSyntheticBrowser,
   SyntheticRendererAction,
@@ -72,10 +73,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     this._store.workspace = workspace;
   }
 
-
   async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
-
-    // TODO - check if extension is project file
 
     const path = action.filePath;
 
@@ -91,23 +89,6 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
 
     this.bus.execute(new ApplyEditAction(edit));
 
-
-    // if (!/\.tdm$/.test(path)) {
-    //   const body = this.app.workspace.browser.document.body;
-    //   const { editor } = body.firstChild.module;
-
-    //   editor.edit((edit) => {
-    //     const frame = this.app.workspace.browser.document.createElement("artboard");
-    //     frame.setAttribute("src", path);
-    //     edit.appendChildNode(frame);
-    //   });
-    // } else {
-    //   await this._loadWorkspaces();
-    // }
-
-    // if the document is hidden, then notify the back-end
-    // that there is no visible tandem window, so it should open another
-    // browser tab
     return !document.hidden;
   }
 

@@ -1,4 +1,5 @@
 import * as sift from "sift";
+import { SyntheticCSSObject } from "./base";
 import { kebabCase, camelCase } from "lodash";
 import { ISerializable, Action, serializable, diffArray, ITreeWalker } from "@tandem/common";
 import { SetKeyValueEditAction, IContentEdit, ApplicableEditAction, ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
@@ -49,6 +50,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
 
   public $uid: any;
   public $source: any = null;
+  public $parentRule: SyntheticCSSObject;
 
   public alignContent: string | null;
   public alignItems: string | null;
@@ -404,6 +406,13 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     action.applyTo(this);
   }
 
+  update(properties) {
+    for (const key in properties) {
+      this[camelCase(key)] = properties[key];
+    }
+    console.log(this.parentRule.ownerNode);
+  }
+
   equalTo(declaration: SyntheticCSSStyleDeclaration) {
     function compare(a, b) {
       for (const key in a) {
@@ -415,6 +424,10 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
       return true;
     }
     return compare(this, declaration) && compare(declaration, this);
+  }
+
+  get parentRule() {
+    return this.$parentRule;
   }
 
   get cssText() {
@@ -436,7 +449,13 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
   }
 
   serialize(): ISerializedSyntheticCSSStyleDeclaration {
-    return Object.assign({}, this);
+    const obj = {} as ISerializedSyntheticCSSStyleDeclaration;
+    for (const key in this) {
+      const value = this[key];
+      if (typeof value === "object") continue;
+      obj[key] = value;
+    }
+    return obj;
   }
 
   deserialize(value: ISerializedSyntheticCSSStyleDeclaration) {

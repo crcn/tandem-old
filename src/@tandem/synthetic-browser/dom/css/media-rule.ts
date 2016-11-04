@@ -28,9 +28,7 @@ class SyntheticCSSMediaRuleSerializer implements ISerializer<SyntheticCSSMediaRu
     };
   }
   deserialize({ media, cssRules }: ISerializedSyntheticCSSMediaRule, injector) {
-    const rule = new SyntheticCSSMediaRule(media);
-    cssRules.forEach((cs) => rule.cssRules.push(deserialize(cs, injector)));
-    return rule;
+    return new SyntheticCSSMediaRule(media, cssRules.map((cs) => deserialize(cs, injector)));
   }
 }
 
@@ -55,8 +53,8 @@ export class SyntheticCSSMediaRuleEdit extends SyntheticCSSAtRuleEdit<SyntheticC
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSMediaRuleSerializer()))
 export class SyntheticCSSMediaRule extends SyntheticCSSAtRule {
 
-  constructor(public media: string[]) {
-    super();
+  constructor(public media: string[], rules: SyntheticCSSStyleRule[]) {
+    super(rules);
   }
 
   get name() {
@@ -64,7 +62,7 @@ export class SyntheticCSSMediaRule extends SyntheticCSSAtRule {
   }
 
   cloneShallow() {
-    return new SyntheticCSSMediaRule(this.media.concat());
+    return new SyntheticCSSMediaRule(this.media.concat(), []);
   }
 
   countShallowDiffs(target: SyntheticCSSMediaRule) {

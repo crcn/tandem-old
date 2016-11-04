@@ -28,22 +28,25 @@ class SyntheticCSSFontFaceSerializer implements ISerializer<SyntheticCSSFontFace
     };
   }
   deserialize({ declaration }: ISerializedSyntheticCSSFontFace, injector) {
-    const rule = new SyntheticCSSFontFace();
-    rule.declaration = deserialize(declaration, injector);
-    return rule;
+    return new SyntheticCSSFontFace(deserialize(declaration, injector));
   }
 }
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSFontFaceSerializer()))
 export class SyntheticCSSFontFace extends SyntheticCSSObject {
-  public declaration: SyntheticCSSStyleDeclaration;
+
+  constructor(public declaration: SyntheticCSSStyleDeclaration) {
+    super();
+    declaration.$parentRule = this;
+  }
+
   get cssText() {
     return `@font-face {
       ${this.declaration.cssText}
     }`;
   }
   cloneShallow() {
-    return new SyntheticCSSFontFace();
+    return new SyntheticCSSFontFace(new SyntheticCSSStyleDeclaration());
   }
 
   countShallowDiffs(target: SyntheticCSSFontFace) {

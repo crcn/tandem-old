@@ -11,6 +11,7 @@ import {
   serializable,
   TreeNodeAction,
   ISerializedContent,
+  ArrayChangeAction,
   ObservableCollection,
 } from "@tandem/common";
 
@@ -38,6 +39,7 @@ import {
   InsertChildEditAction,
 } from "@tandem/sandbox";
 
+import { WrapBus } from "mesh";
 import { SyntheticWindow } from "./window";
 import { ISyntheticBrowser } from "../browser";
 import { SyntheticLocation } from "../location";
@@ -136,14 +138,15 @@ export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDo
 @serializable(new SyntheticDOMNodeSerializer(new SyntheticDocumentSerializer()))
 export class SyntheticDocument extends SyntheticDOMContainer {
   readonly nodeType: number = DOMNodeType.DOCUMENT;
-  readonly styleSheets: SyntheticCSSStyleSheet[];
+  readonly styleSheets: ObservableCollection<SyntheticCSSStyleSheet>;
   private _registeredElements: any;
   public $window: SyntheticWindow;
 
   // namespaceURI here is non-standard, but that's
   constructor(readonly defaultNamespaceURI: string) {
     super("#document");
-    this.styleSheets = [];
+    this.styleSheets = new ObservableCollection<SyntheticCSSStyleSheet>();
+    this.styleSheets.observe(new WrapBus(this.onStyleSheetsAction.bind(this)));
     this._registeredElements = {};
   }
 
@@ -268,6 +271,20 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   private own<T extends SyntheticDOMNode>(node: T) {
     node.$setOwnerDocument(this);
     return node;
+  }
+
+  private onStyleSheetsAction(action: Action) {
+    if (action.type === ArrayChangeAction.ARRAY_CHANGE) {
+      (<ArrayChangeAction<SyntheticCSSStyleSheet>>action).diff.accept({
+        visitUpdate: () => {},
+        visitInsert: ({ value, index }) => {
+          value.$ownerNode = this;
+        },
+        visitRemove: ({ value, index }) => {
+          value.$ownerNode = undefined;
+        }
+      })
+    }
   }
 }
 

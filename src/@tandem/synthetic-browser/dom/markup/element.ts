@@ -354,13 +354,15 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   protected onAttributesAction(action: Action) {
     if (action.type === ArrayChangeAction.ARRAY_CHANGE) {
-      const { addedItems, removedItems } = <ArrayChangeAction>action;
-      for (const attribute of <SyntheticDOMAttribute[]>addedItems) {
-        this.attributeChangedCallback(attribute.name, undefined, attribute.value);
-      }
-      for (const attribute of <SyntheticDOMAttribute[]>removedItems) {
-      this.attributeChangedCallback(attribute.name, attribute.value, undefined);;
-      }
+      (<ArrayChangeAction<SyntheticDOMAttribute>>action).diff.accept({
+        visitUpdate: () => {},
+        visitInsert: ({ value, index }) => {
+        this.attributeChangedCallback(value.name, undefined, value.value);
+        },
+        visitRemove: ({ value, index }) => {
+          this.attributeChangedCallback(value.name, value.value, undefined);;
+        }
+      });
     } else if (action.type === PropertyChangeAction.PROPERTY_CHANGE && action.target instanceof SyntheticDOMAttribute) {
       const changeAction = <PropertyChangeAction>action;
       const attribute = <SyntheticDOMAttribute>action.target;

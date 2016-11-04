@@ -59,6 +59,7 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
 
   constructor(public selector: string, public style: SyntheticCSSStyleDeclaration) {
     super();
+    style.$parentRule = this;
   }
 
   createEdit() {

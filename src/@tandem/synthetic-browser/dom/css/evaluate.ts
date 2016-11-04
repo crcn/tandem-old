@@ -62,23 +62,17 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
 
   const visitor = {
     visitRoot(root: postcss.Root) {
-      const ret = link(root, new SyntheticCSSStyleSheet(accpeptAll(root.nodes)));
+      const ret = link(root, new SyntheticCSSStyleSheet(acceptAll(root.nodes)));
       return ret;
     },
     visitAtRule(atRule: postcss.AtRule): any {
 
       if (atRule.name === "keyframes") {
-        const rule = link(atRule, new SyntheticCSSKeyframesRule(atRule.params));
-        rule.cssRules.push(...accpeptAll(atRule.nodes));
-        return rule;
+        return link(atRule, new SyntheticCSSKeyframesRule(atRule.params, acceptAll(atRule.nodes)));
       } else if (atRule.name === "media") {
-        const rule = link(atRule, new SyntheticCSSMediaRule([atRule.params]));
-        rule.cssRules.push(...accpeptAll(atRule.nodes));
-        return rule;
+        return link(atRule, new SyntheticCSSMediaRule([atRule.params], acceptAll(atRule.nodes)));
       } else if (atRule.name === "font-face") {
-        const rule = link(atRule, new SyntheticCSSFontFace());
-        rule.declaration = getStyleDeclaration(atRule.nodes as postcss.Declaration[]);
-        return rule;
+        return link(atRule, new SyntheticCSSFontFace(getStyleDeclaration(atRule.nodes as postcss.Declaration[])));
       }
 
       return null;
@@ -94,7 +88,7 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
     }
   };
 
-  function accpeptAll(nodes: postcss.Node[]) {
+  function acceptAll(nodes: postcss.Node[]) {
     return without(nodes.map((child) => accept(child)), null);
   }
 

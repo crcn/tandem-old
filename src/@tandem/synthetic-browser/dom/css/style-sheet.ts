@@ -97,6 +97,7 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
 
   constructor(readonly rules: Array<syntheticCSSRuleType>) {
     super();
+    rules.forEach(rule => rule.$parentStyleSheet = this);
   }
 
   set cssText(value: string) {

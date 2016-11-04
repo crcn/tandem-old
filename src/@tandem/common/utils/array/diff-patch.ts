@@ -24,7 +24,7 @@ export class ArrayDiffInsert<T>  implements IArrayDiffChange {
 
 export class ArrayDiffRemove {
   readonly kind = DiffKind.REMOVE;
-  constructor(readonly index: number) { }
+  constructor(readonly value: any, readonly index: number) { }
   accept(visitor: IArrayDiffVisitor<any>) {
     visitor.visitRemove(this);
   }
@@ -113,7 +113,7 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs:
   for (let i = 0, n = oldPool.length; i < n; i++) {
     const oldValue  = oldPool[i];
     const index     = oldArray.indexOf(oldValue);
-    changes.push(new ArrayDiffRemove(index));
+    changes.push(new ArrayDiffRemove(oldValue, index));
     model.splice(index, 1);
   }
 

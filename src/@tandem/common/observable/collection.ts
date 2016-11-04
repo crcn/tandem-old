@@ -5,6 +5,7 @@ import { IObservable } from "../observable";
 import { ArrayChangeAction } from "./actions";
 import { Action, ChangeAction } from "@tandem/common/actions";
 import { TypeWrapBus, BubbleBus } from "@tandem/common/busses";
+import { ArrayDiff, ArrayDiffInsert, ArrayDiffRemove, ArrayDiffUpdate } from "@tandem/common/utils";
 
 export class ObservableCollection<T> extends Array<T> implements IObservable {
   private _observable: Observable;
@@ -43,17 +44,25 @@ export class ObservableCollection<T> extends Array<T> implements IObservable {
   }
 
   splice(start: number, deleteCount?: number, ...newItems: T[]) {
-    const removedItems = this.slice(start, start + deleteCount);
-    for (const item of removedItems) {
+
+    const deletes: ArrayDiffRemove[] = this.slice(start, start + deleteCount).map((item, index) => {
+
       if (item && item["unobserve"]) {
         (<IObservable><any>item).unobserve(this._itemObserver);
       }
-    }
+
+      return new ArrayDiffRemove(item, start + index);
+    });
+
+    const inserts: ArrayDiffInsert<T>[] = newItems.map((item, index) => {
+      return new ArrayDiffInsert(start + index, item);
+    });
 
     const ret = super.splice(start, deleteCount, ...newItems);
 
+
     this._watchItems(newItems);
-    this.notify(new ArrayChangeAction(removedItems, newItems));
+    this.notify(new ArrayChangeAction(new ArrayDiff([...deletes, ...inserts])));
     return ret;
   }
 

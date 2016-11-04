@@ -1,4 +1,6 @@
 import { ISerializer, serialize, deserialize, ITreeWalker } from "@tandem/common";
+import { SyntheticCSSStyleSheet } from "./style-sheet";
+import { SyntheticDOMNode } from "@tandem/synthetic-browser/dom";
 import {
   IEditable,
   EditAction,
@@ -14,9 +16,24 @@ export abstract class SyntheticCSSObject implements ISyntheticObject, IEditable 
 
   public $source: ISyntheticSourceInfo;
   public $uid: any;
+  public $parentStyleSheet: SyntheticCSSStyleSheet;
+  public $parentRule: SyntheticCSSObject;
+  public $ownerNode: SyntheticDOMNode;
 
   constructor() {
     this.$uid = generateSyntheticUID();
+  }
+
+  get parentStyleSheet() {
+    return this.$parentStyleSheet || this.$parentRule && this.$parentRule.parentStyleSheet;
+  }
+
+  get ownerNode() {
+    return this.$ownerNode || this.$parentRule && this.$parentRule.ownerNode || this.$parentStyleSheet && this.$parentStyleSheet.ownerNode;
+  }
+
+  get parentRule() {
+    return this.$parentRule;
   }
 
   get uid() {

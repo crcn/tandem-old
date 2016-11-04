@@ -44,7 +44,6 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     event.dataTransfer.dropEffect = "copy";
   }
 
-
   onDrop = (event: React.DragEvent<any>) =>  {
     event.preventDefault();
 

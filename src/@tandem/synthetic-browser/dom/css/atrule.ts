@@ -61,12 +61,11 @@ export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends BaseCo
 }
 
 export abstract class SyntheticCSSAtRule extends SyntheticCSSObject {
-  public cssRules: SyntheticCSSStyleRule[];
   abstract name: string;
 
-  constructor() {
+  constructor(public cssRules: SyntheticCSSStyleRule[] = []) {
     super();
-    this.cssRules = [];
+    cssRules.forEach(rule => rule.$parentRule = this);
   }
 
   get cssText() {

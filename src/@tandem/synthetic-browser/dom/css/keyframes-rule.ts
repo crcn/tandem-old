@@ -1,7 +1,7 @@
-import { SyntheticCSSStyleRule, diffSyntheticCSSStyleRules } from "./style-rule";
-import { BaseContentEdit, EditAction, SetKeyValueEditAction } from "@tandem/sandbox";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
+import { SyntheticCSSStyleRule, diffSyntheticCSSStyleRules } from "./style-rule";
+import { BaseContentEdit, EditAction, SetKeyValueEditAction } from "@tandem/sandbox";
 import {
   ISerializer,
   deserialize,
@@ -26,9 +26,7 @@ class SyntheticCSSKeyframesRuleSerializer implements ISerializer<SyntheticCSSKey
     };
   }
   deserialize({ name, cssRules }: ISerializedSyntheticCSSKeyframesRule, injector) {
-    const rule = new SyntheticCSSKeyframesRule(name);
-    cssRules.forEach((cs) => rule.cssRules.push(deserialize(cs, injector)));
-    return rule;
+    return new SyntheticCSSKeyframesRule(name, cssRules.map((cs) => deserialize(cs, injector)));
   }
 }
 
@@ -47,12 +45,12 @@ export class SyntheticCSSKeyframesRuleEdit extends SyntheticCSSAtRuleEdit<Synthe
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSKeyframesRuleSerializer()))
 export class SyntheticCSSKeyframesRule extends SyntheticCSSAtRule {
-  constructor(public name: string) {
-    super();
+  constructor(public name: string, rules: SyntheticCSSStyleRule[]) {
+    super(rules);
   }
 
   cloneShallow(deep?: boolean) {
-    return new SyntheticCSSKeyframesRule(this.name);
+    return new SyntheticCSSKeyframesRule(this.name, []);
   }
 
   countShallowDiffs(target: SyntheticCSSKeyframesRule) {
