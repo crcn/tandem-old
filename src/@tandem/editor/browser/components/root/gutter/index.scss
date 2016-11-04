@@ -3,6 +3,7 @@
 $gutter-background: #444;
 
 .td-gutter {
+  overflow: scroll;
   font-size: $font-size-sm;
   letter-spacing: 0.15em;
   height: 100%;
@@ -14,6 +15,7 @@ $gutter-background: #444;
 
   .td-section-header {
     background: rgba(0,0,0,0.2);
+
 
     text-transform: uppercase;
     font-size: 0.9em;
