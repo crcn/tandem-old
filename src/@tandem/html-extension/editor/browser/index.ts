@@ -23,6 +23,7 @@ import {
 
 import {
   TextLayerLabelComponent,
+  ElementCSSPaneComponent,
   CommentLayerLabelCoponent,
   ElementLayerLabelComponent,
   ElementInfoStageToolComponent,
@@ -45,6 +46,7 @@ export function createHTMLEditorBrowserProviders() {
 
     // entity panes
     new EntityPaneComponentFactoryProvider("htmlAttributes", EntityAttributesPaneComponent),
+    new EntityPaneComponentFactoryProvider("htmlCSSRules", ElementCSSPaneComponent),
 
     // stage tool components
     new StageToolComponentFactoryProvider("elementInfo", "pointer", ElementInfoStageToolComponent),

@@ -1,4 +1,5 @@
 import { Dependency } from "@tandem/sandbox";
+import { SyntheticDOMElement, getSelectorTester } from "@tandem/synthetic-browser";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { BaseContentEdit, EditAction, SetKeyValueEditAction, SetValueEditActon } from "@tandem/sandbox";
 import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "./declaration";
@@ -80,6 +81,10 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
 
   cloneShallow(deep?: boolean) {
     return new SyntheticCSSStyleRule(this.selector, undefined);
+  }
+
+  matchesElement(element: SyntheticDOMElement) {
+    return getSelectorTester(this.selector).test(element);
   }
 
   countShallowDiffs(target: SyntheticCSSStyleRule): number {

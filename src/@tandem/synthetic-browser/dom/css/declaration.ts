@@ -5,7 +5,7 @@ import { SetKeyValueEditAction, IContentEdit, ApplicableEditAction, ISyntheticOb
 
 export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration { }
 
-const invalidKeyFilter = sift({ $and: [ { $ne: /^\$/ }, {$ne: "uid" }] });
+export const invalidCSSDeclarationKeyFilter = sift({ $and: [ { $ne: /^\$/ }, {$ne: "uid" }, { $ne: "" }] });
 
 export class SyntheticCSSStyleDeclarationEdit extends BaseContentEdit<SyntheticCSSStyleDeclaration> {
 
@@ -17,8 +17,8 @@ export class SyntheticCSSStyleDeclarationEdit extends BaseContentEdit<SyntheticC
 
   addDiff(newStyleDeclaration: SyntheticCSSStyleDeclaration) {
 
-    const oldKeys = Object.keys(this.target).filter(invalidKeyFilter as any);
-    const newKeys = Object.keys(newStyleDeclaration).filter(invalidKeyFilter as any);
+    const oldKeys = Object.keys(this.target).filter(invalidCSSDeclarationKeyFilter as any);
+    const newKeys = Object.keys(newStyleDeclaration).filter(invalidCSSDeclarationKeyFilter as any);
 
     diffArray(oldKeys, newKeys, (a, b) => {
       return a === b ? 0 : -1;
@@ -407,7 +407,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
   equalTo(declaration: SyntheticCSSStyleDeclaration) {
     function compare(a, b) {
       for (const key in a) {
-        if (invalidKeyFilter(key)) continue;
+        if (invalidCSSDeclarationKeyFilter(key)) continue;
         if (a[key] !== b[key]) {
           return false;
         }
@@ -421,7 +421,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     const buffer = [];
 
     for (const key in this) {
-      if (!invalidKeyFilter(key)) continue;
+      if (!invalidCSSDeclarationKeyFilter(key)) continue;
       const value = this[key];
       if (value) {
         buffer.push(kebabCase(key), ":", value, ";");

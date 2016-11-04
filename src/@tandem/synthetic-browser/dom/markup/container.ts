@@ -99,11 +99,11 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
     return this.childNodes.map(child => child.toString()).join("");
   }
 
-  public querySelector(selector: string, deep?: boolean): SyntheticDOMElement {
+  public querySelector(selector: string): SyntheticDOMElement {
     return querySelector(this, selector);
   }
 
-  public querySelectorAll(selector: string, deep?: boolean): SyntheticDOMElement[] {
+  public querySelectorAll(selector: string): SyntheticDOMElement[] {
     return querySelectorAll(this, selector);
   }
 

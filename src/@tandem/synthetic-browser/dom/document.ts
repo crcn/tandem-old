@@ -1,12 +1,12 @@
 import {
   Action,
   bindable,
+  Injector,
   BubbleBus,
   diffArray,
   serialize,
-  deserialize,
-  Injector,
   ISerializer,
+  deserialize,
   ITreeWalker,
   serializable,
   TreeNodeAction,
@@ -29,7 +29,15 @@ import {
   SyntheticDOMNodeSerializer,
 } from "./markup";
 
-import { EditAction, RemoveEditAction, RemoveChildEditAction, InsertChildEditAction, MoveChildEditAction } from "@tandem/sandbox";
+import {
+  EditAction,
+  RemoveEditAction,
+  MoveChildEditAction,
+  ApplicableEditAction,
+  RemoveChildEditAction,
+  InsertChildEditAction,
+} from "@tandem/sandbox";
+
 import { SyntheticWindow } from "./window";
 import { ISyntheticBrowser } from "../browser";
 import { SyntheticLocation } from "../location";
@@ -202,15 +210,15 @@ export class SyntheticDocument extends SyntheticDOMContainer {
 
   applyEditAction(action: EditAction) {
     super.applyEditAction(action);
-    switch(action.type) {
-      case SyntheticDocumentEdit.REMOVE_DOCUMENT_STYLE_SHEET_EDIT:
-        const { child } = <RemoveChildEditAction>action;
-        const styleSheet = <SyntheticCSSStyleSheet>this.getChildSyntheticByUID(child.uid);
-        if (!styleSheet) {
-          throw new Error(`Edit action style sheet does not exist.`);
-        }
-        this.styleSheets.splice(this.styleSheets.indexOf(styleSheet), 1);
-        break;
+
+    const target: any = {
+      [SyntheticDocumentEdit.REMOVE_DOCUMENT_STYLE_SHEET_EDIT]: this.styleSheets,
+      [SyntheticDocumentEdit.ADD_DOCUMENT_STYLE_SHEET_EDIT]: this.styleSheets,
+      [SyntheticDocumentEdit.MOVE_DOCUMENT_STYLE_SHEET_EDIT]: this.styleSheets
+    }[action.type];
+
+    if (target) {
+      (<ApplicableEditAction>action).applyTo(target);
     }
   }
 

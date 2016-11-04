@@ -1,7 +1,5 @@
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
 
-import "./index.scss";
-
 import * as React from "react";
 import { DOMElements } from "@tandem/html-extension/collections";
 import { FocusComponent } from "@tandem/editor/browser/components/common";
