@@ -24,8 +24,6 @@ class MatchedCSSStyleRuleComponent extends React.Component<{ rule: SyntheticCSSS
     if (newName) {
       this.props.rule.style[camelCase(newName)] = undefined;
     }
-
-    console.log(this.props.rule);
   }
   render() {
     const { rule } = this.props;

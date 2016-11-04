@@ -1,6 +1,7 @@
+import { values } from "lodash";
 import { Action } from "@tandem/common";
-import { SyntheticRendererAction, isDOMMutationAction } from "../actions";
 import { WrapBus } from "mesh";
+import { SyntheticRendererAction, isDOMMutationAction } from "../actions";
 
 import {
   IActor,
@@ -45,6 +46,13 @@ export interface ISyntheticDocumentRenderer extends IObservable {
 
   getBoundingRect(uid: string): BoundingRect;
 
+
+  /**
+   * Returns the bounding rects exactly as they're computed by the target renderer.
+   */
+
+  getAllBoundingRects(): BoundingRect[];
+
   /**
    * Resolves when the renderer is running
    */
@@ -72,7 +80,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   readonly element: HTMLElement;
   private _document: SyntheticDocument;
   private _rendering: boolean;
-  private _rects: any;
+  public  $rects: any;
 
   @bindable()
   protected _rendered: boolean;
@@ -116,8 +124,8 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     this.requestRender();
   }
 
-  get rects() {
-    return this._rects;
+  getAllBoundingRects() {
+    return values(this.$rects) as BoundingRect[];
   }
 
   async whenRunning() {
@@ -143,7 +151,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   }
 
   getBoundingRect(uid: string) {
-    return (this._rects && this._rects[uid]) || new BoundingRect(0, 0, 0, 0);
+    return (this.$rects && this.$rects[uid]) || new BoundingRect(0, 0, 0, 0);
   }
 
   protected abstract render();
@@ -153,7 +161,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   }
 
   protected setRects(rects: any, styles: any) {
-    this._rects          = rects;
+    this.$rects          = rects;
     this._computedStyles = styles;
     this._rendered = true;
     this.notify(new SyntheticRendererAction(SyntheticRendererAction.UPDATE_RECTANGLES));
@@ -211,6 +219,9 @@ export class BaseDecoratorRenderer extends Observable implements ISyntheticDocum
   getBoundingRect(uid) {
     return this._renderer.getBoundingRect(uid);
   }
+  getAllBoundingRects() {
+    return this._renderer.getAllBoundingRects();
+  }
   whenRunning() {
     return this._renderer.whenRunning();
   }
@@ -255,6 +266,9 @@ export class NoopRenderer extends Observable implements ISyntheticDocumentRender
   }
   public getEagerComputedStyle() {
     return null;
+  }
+  getAllBoundingRects() {
+    return [];
   }
   public whenRunning() {
     return Promise.resolve();

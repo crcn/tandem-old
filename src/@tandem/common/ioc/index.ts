@@ -8,8 +8,8 @@ import { File } from "@tandem/common/models";
 import {
   IFactory,
   Provider,
-  IProvider,
   Injector,
+  IProvider,
   ClassFactoryProvider,
  } from "./base";
 
@@ -20,11 +20,11 @@ export * from "./base";
 /**
  */
 
-export const APPLICATION_SERVICES_NS = "application/services";
 export class ApplicationServiceProvider extends ClassFactoryProvider implements IFactory {
+  static readonly NS = "application/services";
 
   constructor(id: string, clazz: { new(): IActor }) {
-    super(`${APPLICATION_SERVICES_NS}/${id}`, clazz);
+    super(`${ApplicationServiceProvider.NS}/${id}`, clazz);
   }
 
   create(): IActor {
@@ -32,7 +32,7 @@ export class ApplicationServiceProvider extends ClassFactoryProvider implements 
   }
 
   static findAll(Injector: Injector): Array<ApplicationServiceProvider> {
-    return Injector.queryAll<ApplicationServiceProvider>(`${APPLICATION_SERVICES_NS}/**`);
+    return Injector.queryAll<ApplicationServiceProvider>(`${ApplicationServiceProvider.NS}/**`);
   }
 }
 
@@ -107,10 +107,10 @@ export class InjectorProvider extends Provider<Injector> {
  */
 
 export class CommandFactoryProvider extends ClassFactoryProvider {
-  static readonly NS_PREFIX = "commands";
+  static readonly NS = "commands";
   readonly actionFilter: Function;
   constructor(actionFilter: string|Function, readonly clazz: { new(...rest: any[]): IActor }) {
-    super([CommandFactoryProvider.NS_PREFIX, clazz.name].join("/"), clazz);
+    super([CommandFactoryProvider.NS, clazz.name].join("/"), clazz);
     if (typeof actionFilter === "string") {
       this.actionFilter = (action: Action) => action.type === actionFilter;
     } else {
@@ -121,7 +121,7 @@ export class CommandFactoryProvider extends ClassFactoryProvider {
     return super.create();
   }
   static findAll(providers: Injector) {
-    return providers.queryAll<CommandFactoryProvider>([CommandFactoryProvider.NS_PREFIX, "**"].join("/"));
+    return providers.queryAll<CommandFactoryProvider>([CommandFactoryProvider.NS, "**"].join("/"));
   }
 
   static findAllByAction(action: Action, providers: Injector) {
@@ -137,19 +137,19 @@ export class CommandFactoryProvider extends ClassFactoryProvider {
  */
 
 export class MimeTypeProvider extends Provider<string> {
-  static readonly NS_PREFIX = "mimeType";
+  static readonly NS = "mimeType";
   constructor(readonly fileExtension: string, readonly mimeType: string) {
-    super([MimeTypeProvider.NS_PREFIX, fileExtension].join("/"), mimeType);
+    super([MimeTypeProvider.NS, fileExtension].join("/"), mimeType);
   }
   clone() {
     return new MimeTypeProvider(this.fileExtension, this.mimeType);
   }
   static findAll(providers: Injector) {
-    return providers.queryAll<MimeTypeProvider>([MimeTypeProvider.NS_PREFIX, "**"].join("/"));
+    return providers.queryAll<MimeTypeProvider>([MimeTypeProvider.NS, "**"].join("/"));
   }
   static lookup(filePath: string, providers: Injector): string {
     const extension = filePath.split(".").pop();
-    const dep = providers.query<MimeTypeProvider>([MimeTypeProvider.NS_PREFIX, extension].join("/"));
+    const dep = providers.query<MimeTypeProvider>([MimeTypeProvider.NS, extension].join("/"));
     return dep ? dep.value : undefined;
   }
 }

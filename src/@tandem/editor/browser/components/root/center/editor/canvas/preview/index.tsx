@@ -32,6 +32,7 @@ export default class PreviewComponent extends React.Component<{ renderer: ISynth
     this._update();
   }
 
+
   render() {
     return (<div ref="container" className="m-editor-stage-preview">
     </div>);

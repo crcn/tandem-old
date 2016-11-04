@@ -7,23 +7,25 @@ import { StoreProvider } from "@tandem/editor/browser/providers";
 import { GutterComponent } from "./gutter";
 import { IActor, Injector, RootApplicationComponent, BaseApplicationComponent, inject } from "@tandem/common";
 import { RegisteredComponent } from "@tandem/editor/browser/components/common";
-import { DOCUMENT_PANE_COMPONENT_NS, ENTITY_PANE_COMPONENT_NS } from "@tandem/editor/browser/providers";
+import { DocumentPaneComponentFactoryProvider, EntityPaneComponentFactoryProvider } from "@tandem/editor/browser/providers";
 
 
 export class EditorComponent extends BaseApplicationComponent<{}, {}> {
+
   @inject(StoreProvider.ID)
   private _store: Store;
 
   render() {
     const { workspace, settings } = this._store;
 
+      // <GutterComponent style={{width:300}}>
+      //   <RegisteredComponent workspace={workspace} ns={DocumentPaneComponentFactoryProvider.getId("**")} />
+      // </GutterComponent>
+
     return <div className="m-editor editor">
-      <GutterComponent style={{width:300}}>
-        <RegisteredComponent workspace={workspace} ns={[DOCUMENT_PANE_COMPONENT_NS, "**"].join("/")} />
-      </GutterComponent>
       <CenterComponent />
       <GutterComponent style={{width:350}}>
-        <RegisteredComponent workspace={workspace} ns={[ENTITY_PANE_COMPONENT_NS, "**"].join("/")} />
+        <RegisteredComponent workspace={workspace} ns={EntityPaneComponentFactoryProvider.getId("**")} />
       </GutterComponent>
     </div>;
   }

@@ -4,3 +4,4 @@
   - only store diffs
 - apply diffs to file cache content urls
 - images should work
+- bubble actions from css style rules

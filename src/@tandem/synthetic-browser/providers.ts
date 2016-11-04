@@ -4,7 +4,7 @@ import { syntheticElementClassType, SyntheticDOMNode } from "./dom";
 import { Provider, Injector, MimeTypeProvider, ApplicationServiceProvider } from "@tandem/common";
 
 export class SyntheticDOMElementClassProvider extends Provider<syntheticElementClassType> {
-  static readonly SYNTHETIC_ELEMENT_CLASS_NS_PREFIX = "syntheticMarkupElementClass";
+  static readonly SYNTHETIC_ELEMENT_CLASS_NS = "syntheticMarkupElementClass";
 
   constructor(readonly xmlns: string, readonly tagName: string, value: syntheticElementClassType) {
     super(SyntheticDOMElementClassProvider.getNamespace(xmlns, tagName), value);
@@ -15,11 +15,11 @@ export class SyntheticDOMElementClassProvider extends Provider<syntheticElementC
   }
 
   static getNamespace(xmlns: string, tagName: string) {
-    return [this.SYNTHETIC_ELEMENT_CLASS_NS_PREFIX, encodeURIComponent(xmlns), tagName].join("/");
+    return [this.SYNTHETIC_ELEMENT_CLASS_NS, encodeURIComponent(xmlns), tagName].join("/");
   }
 
   static findAll(injector: Injector) {
-    return injector.queryAll<SyntheticDOMElementClassProvider>([this.SYNTHETIC_ELEMENT_CLASS_NS_PREFIX, "**"].join("/"));
+    return injector.queryAll<SyntheticDOMElementClassProvider>([this.SYNTHETIC_ELEMENT_CLASS_NS, "**"].join("/"));
   }
 }
 

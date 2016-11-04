@@ -27,12 +27,12 @@ import {
   Logger,
   inject,
   loggable,
+  Injector,
   IDisposable,
   easeOutCubic,
   BoundingRect,
   DSFindAction,
   watchProperty,
-  Injector,
   InitializeAction,
   InjectorProvider,
   ApplicationServiceProvider,
@@ -70,9 +70,8 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     const browser = workspace.browser = new RemoteSyntheticBrowser(this.injector, new CanvasRenderer(workspace, new SyntheticDOMRenderer()));
     await browser.open({ url: filePath });
     this._store.workspace = workspace;
-
-    // await this.bus.execute(new SetToolAction(this.injector.query<WorkspaceToolFactoryProvider>(pointerToolProvider.id)));
   }
+
 
   async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
 
@@ -159,7 +158,7 @@ class CanvasRenderer extends BaseDecoratorRenderer {
   protected onTargetRendererSetRectangles() {
     const offsetRects = {};
     const { transform } = this.workspace;
-    const rects = (<BaseRenderer>this._renderer).rects;
+    const rects = (<BaseRenderer>this._renderer).$rects;
     for (const uid in rects) {
       offsetRects[uid] = (<BoundingRect>rects[uid]).move({
         left: -transform.left,

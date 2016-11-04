@@ -3,7 +3,7 @@
 .m-editor-stage-isolate {
 
   // prevents the canvas content from moving around
-  position: fixed;
+  position: absolute;
   overflow: hidden;
   top: 0px;
   left: 0px;

@@ -41,7 +41,7 @@ export class KeyValueInputComponent extends React.Component<{ name: string, valu
         { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onChange={this.onNameChange} /></FocusComponent> : name }
       </div>
       <div className="col-xs-7">
-        <input type="text" defaultValue={value} onChange={this.onValueChange}></input>
+        <input type="text" value={value} onChange={this.onValueChange}></input>
       </div>
     </div>
   }

@@ -4,17 +4,20 @@ import { Workspace } from "@tandem/editor/browser/models";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import ToolsLayerComponent from "./tools";
 import { IsolateComponent }  from "@tandem/editor/browser/components/common";
-import { SyntheticDOMElement }  from "@tandem/synthetic-browser";
+import { SyntheticDOMElement, SyntheticRendererAction }  from "@tandem/synthetic-browser";
 import PreviewLayerComponent from "./preview";
 import { UpdateAction, IActor } from "@tandem/common";
 import { Injector, PrivateBusProvider } from "@tandem/common";
 import { BoundingRect, IPoint, BaseApplicationComponent } from "@tandem/common";
 import {
   ZoomAction,
+  SetZoomAction,
   MouseAction,
   KeyboardAction,
 } from "@tandem/editor/browser/actions";
 
+// TODO - most of this logic should be stored within the a child of the workspace
+// model.
 export default class EditorStageLayersComponent extends BaseApplicationComponent<{ workspace: Workspace, zoom: number }, any> {
 
   private _mousePosition: IPoint;
@@ -34,29 +37,6 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   translate(left, top) {
     this.props.workspace.transform.left = left;
     this.props.workspace.transform.top = top;
-
-    const body = (this.refs as any).isolate.body;
-
-    const width = body.offsetWidth;
-    const height = body.offsetHeight;
-    const zoom   = this.props.workspace.zoom;
-
-    let viewport = BoundingRect.zeros();
-    viewport.left = -left
-    viewport.top = -top
-    viewport.width = width
-    viewport.height = height
-    viewport = viewport.zoom(1/zoom);
-
-
-    let visibleCount = 0;
-
-    // if (!this.props.editor.documentEntity || true) return;
-
-    // this.props.editor.documentEntity.querySelectorAll("*").forEach((entity: BaseDOMNodeEntity<any, any>) => {
-    //   const rect: BoundingRect = entity.source.getBoundingClientRect && entity.source.getBoundingClientRect();
-    //   entity.metadata.set(MetadataKeys.ENTITY_VISIBLE, !rect || viewport.intersects(rect));
-    // });
   }
 
   onDragEnter = (event: React.DragEvent<any>) =>  {
@@ -196,7 +176,31 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
       centerLeft   : 0.5,
       centerTop    : 0.5
     });
+
+    const workspace =  this.props.workspace;
+    const browser = this.props.workspace.browser;
+
+    // TODO: Move this to a data model instead of here -- this is janky.
+    const fitToCanvas = () => {
+      const entireBounds = BoundingRect.merge(...browser.renderer.getAllBoundingRects());
+      const padding = 200;
+      const zoom = Math.min((width - padding) / entireBounds.width, (height - padding) / entireBounds.height);
+      this.translate(width / 2 - entireBounds.width / 2 - entireBounds.left, height / 2 - entireBounds.height / 2 - entireBounds.top);
+      this.bus.execute(new SetZoomAction(zoom, false));
+    }
+
+    const renderObserver = {
+      execute: (action) => {
+        if (action.type === SyntheticRendererAction.UPDATE_RECTANGLES) {
+          browser.unobserve(renderObserver);
+          fitToCanvas();
+        }
+      }
+    };
+
+    browser.observe(renderObserver);
   }
+
 
   onKey = (event) => {
     this.bus.execute(new KeyboardAction(KeyboardAction.CANVAS_KEY_DOWN, event));

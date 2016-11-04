@@ -72,7 +72,6 @@ $gutter-background: #444;
   }
 }
 
-
 .td-cells {
 
   .row {
@@ -80,14 +79,14 @@ $gutter-background: #444;
   }
 
   .td-cell-key {
-    background: rgba(255, 255, 255, 0.05);
+    /*background: rgba(255, 255, 255, 0.05);*/
     line-height: inherit;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+    /*border-right: 1px solid rgba(255, 255, 255, 0.1);*/
   }
 
   *[class*="col-"] {
     padding: 8px;
-    /*margin:0;*/
   }
 
   & label {

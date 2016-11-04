@@ -39,8 +39,8 @@ export class DOMElements extends Array<SyntheticDOMElement>  implements IWalkabl
     this.forEach(element => {
       element.ownerDocument.styleSheets.forEach(styleSheet => {
         styleSheet.rules.forEach(rule => {
-          if (!(rule instanceof SyntheticCSSStyleRule) || visited[rule.cssText]) return;
-          visited[rule.cssText] = rule;
+          if (!(rule instanceof SyntheticCSSStyleRule) || visited[rule.uid]) return;
+          visited[rule.uid] = rule;
 
           const mismatch = this.find(element => !rule.matchesElement(element));
           if (!mismatch) {
