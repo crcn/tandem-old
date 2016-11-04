@@ -2,17 +2,20 @@ import * as React from "react";
 import { FocusComponent } from "@tandem/editor/browser/components/common";
 
 // TODO - add some color for the CSS rules
-export class KeyValueInputComponent extends React.Component<{ name: string, value: string, setKeyValue: (name: string, value: any, oldName?: string) => any }, { editName: boolean }> {
+export class KeyValueInputComponent extends React.Component<{ name: string, value: string, setKeyValue: (name: string, value: any, oldName?: string) => any }, { editName: boolean, currentValue: string }> {
+
+  private _currentValue: any;
 
   constructor() {
     super();
     this.state = {
-      editName: false
+      editName: false,
+      currentValue: undefined
     };
   }
 
   editName = () => {
-    this.setState({ editName: true })
+    this.setState({ editName: true, currentValue: undefined })
   }
 
   onNameChange = (event: React.KeyboardEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement>) => {
@@ -26,12 +29,21 @@ export class KeyValueInputComponent extends React.Component<{ name: string, valu
 
   onNameBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     this.onNameChange(event);
-    this.setState({ editName: false });
+    this.setState({ editName: false, currentValue: undefined });
   };
 
   onValueChange = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const oldName = this.props.name;
-    this.props.setKeyValue(this.props.name, event.currentTarget.value);
+    this.props.setKeyValue(this.props.name, this.state.currentValue = event.currentTarget.value);
+  }
+
+  onValueFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+    this.setState({ currentValue: "", editName: this.state.editName });
+    event.currentTarget.select();
+  }
+
+  onValueBlur = () => {
+    this.setState({ currentValue: undefined, editName: this.state.editName });
   }
 
   render() {
@@ -41,7 +53,7 @@ export class KeyValueInputComponent extends React.Component<{ name: string, valu
         { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onChange={this.onNameChange} /></FocusComponent> : name }
       </div>
       <div className="col-xs-7">
-        <input type="text" value={value} onChange={this.onValueChange}></input>
+        <input type="text" {...(this.state.currentValue != null ? {} : { value: value })} onChange={this.onValueChange} onFocus={this.onValueFocus} onBlur={this.onValueBlur}></input>
       </div>
     </div>
   }
