@@ -21,6 +21,12 @@ export class DOMElements extends Array<SyntheticDOMElement>  implements IWalkabl
     }
   }
 
+  removeAttribute(name: string) {
+    for (const element of this) {
+      element.removeAttribute(name);
+    }
+  }
+
   visitWalker(walker: ITreeWalker) {
     this.forEach(element => element.visitWalker(walker));
   }

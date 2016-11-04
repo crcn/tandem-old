@@ -1,7 +1,11 @@
+
+import * as React from "react";
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
+import { kebabCase, camelCase } from "lodash";
 import { Workspace } from "@tandem/editor/browser/models";
 import { DOMElements } from "@tandem/html-extension/collections";
-import { GutterComponent } from "@tandem/editor/browser/components"
+import { GutterComponent } from "@tandem/editor/browser/components";
+import { HashInputComponent } from "@tandem/html-extension/editor/browser/components/common";
 import {
   parseCSS,
   evaluateCSS,
@@ -11,42 +15,35 @@ import {
   SyntheticCSSStyleRule,
 } from "@tandem/synthetic-browser";
 
-import * as React from "react";
-
-// TODO - add some color for the CSS rules
-class MatchedCSSStyleDeclarationComponent extends React.Component<{ prop: string, value: string }, any> {
-  render() {
-    const { prop, value } = this.props;
-    return <div className="row">
-      <div className="col-xs-3 no-wrap td-cell-key" title={prop}>
-        {prop}
-      </div>
-      <div className="col-xs-9">
-        <input type="text" value={value} onChange={() => {}}></input>
-      </div>
-    </div>
-  }
-}
 
 
 // TODO - add some color for the CSS rules
 class MatchedCSSStyleRuleComponent extends React.Component<{ rule: SyntheticCSSStyleRule }, any> {
+  setDeclaration = (name: string, value: string, newName?: string) => {
+    this.props.rule.style[camelCase(name)] = value;
+    if (newName) {
+      this.props.rule.style[camelCase(newName)] = undefined;
+    }
+
+    console.log(this.props.rule);
+  }
   render() {
     const { rule } = this.props;
-    const declarationComponents = [];
+    const items = [];
 
     for (const key in rule.style) {
       if (!invalidCSSDeclarationKeyFilter(key)) continue;
-      declarationComponents.push(<MatchedCSSStyleDeclarationComponent prop={key} key={key} value={rule.style[key]} />);
+      items.push({ name: kebabCase(key), value: rule.style[key] });
     }
 
     return <div>
-      <div className="td-section-header" style={{color:"cyan"}}>
+      <div className="td-section-header color-green-10">
         { rule.selector }
+        <div className="controls">
+          +
+        </div>
       </div>
-      <div className="container td-cells">
-        {declarationComponents}
-      </div>
+      <HashInputComponent items={items} setKeyValue={this.setDeclaration} />
     </div>
   }
 }
@@ -58,6 +55,8 @@ class MatchedCSSStyleRuleComponent extends React.Component<{ rule: SyntheticCSSS
     .container {
       color: red;
       background: rgba(255, 255, 255, 0);
+      box-sizing: border-box;
+      padding-right: border-box;
     }
 
     div {

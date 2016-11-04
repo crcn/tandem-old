@@ -5,6 +5,7 @@ import { DOMElements } from "@tandem/html-extension/collections";
 import { FocusComponent } from "@tandem/editor/browser/components/common";
 import { reactPreview, Metadata } from "@tandem/common";
 import { Workspace, GutterComponent } from "@tandem/editor/browser";
+import { HashInputComponent } from "@tandem/html-extension/editor/browser/components/common";
 import {
   SyntheticWindow,
   SyntheticLocation,
@@ -12,67 +13,6 @@ import {
   SyntheticDOMAttribute,
 } from "@tandem/synthetic-browser";
 
-
-class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttribute, setAttribute: (key: string, value: string) => any, edit? : boolean, onValueEnter: (attribute: SyntheticDOMAttribute) => any }, { editName: boolean }> {
-
-  constructor() {
-    super();
-    this.state = { editName: false };
-  }
-
-  onChange = (event: React.KeyboardEvent<any>) => {
-    this.props.setAttribute(this.props.attribute.name, (event.target as any).value);
-  }
-
-  editName = () => {
-    this.setState({ editName: true });
-  }
-
-  onNameInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!/13|27/.test(String(event.keyCode))) return;
-
-    if (event.keyCode === 13) {
-      this.setName(event);
-    }
-
-    this.setState({ editName: false });
-  }
-
-  setName = (event: any) => {
-    const value = this.props.attribute.value;
-    if (this.props.attribute.name && this.props.attribute.name === event.currentTarget.value) return;
-
-    if (this.props.attribute.name != null) {
-      this.props.setAttribute(this.props.attribute.name, undefined);
-    }
-    if (event.currentTarget.value) {
-      this.props.setAttribute(event.currentTarget.value, value);
-    }
-  }
-
-  onValueKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.keyCode === 13) {
-      this.props.onValueEnter(this.props.attribute);
-    }
-  }
-
-  onNameInputBlur = (event: React.FocusEvent<any>) => {
-    this.setName(event);
-    this.setState({ editName: false });
-  }
-
-  render() {
-    const { attribute } = this.props;
-    return <div className="row">
-      <div className="col-xs-3 no-wrap td-cell-key" title={attribute.name} onDoubleClick={this.editName}>
-        { !this.props.attribute.name || this.state.editName ? <FocusComponent select={true}><input type="text" defaultValue={attribute.name} onBlur={this.onNameInputBlur} onKeyDown={this.onNameInputKeyDown}></input></FocusComponent> : <label>{attribute.name}</label> }
-      </div>
-      <div className="col-xs-9">
-        <input type="text" value={attribute.value} onChange={this.onChange} onKeyDown={this.onValueKeyDown}></input>
-      </div>
-    </div>;
-  }
-}
 
 @reactEditorPreview(() => {
   const workspace = new Workspace();
@@ -87,12 +27,15 @@ class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttrib
 })
 export class EntityAttributesPaneComponent extends React.Component<{ workspace: Workspace }, any> {
 
-  constructor() {
-    super();
+  addAttribute = () => {
+
   }
 
-  addAttribute = () => {
-    this.items.setAttribute("", "");
+  setAttribute = (name: string, value: any, oldName?: string) => {
+    this.items.setAttribute(name, value);
+    if (oldName) {
+      this.items.removeAttribute(oldName);
+    }
   }
 
   get items(): DOMElements {
@@ -107,20 +50,11 @@ export class EntityAttributesPaneComponent extends React.Component<{ workspace: 
     return <div className="td-pane">
       <div className="td-section-header">
         Attributes
-        <div className="pull-right">
-          <span style={{cursor:"pointer"}} onClick={this.addAttribute}>+</span>
+        <div className="controls">
+          <span onClick={this.addAttribute}>+</span>
         </div>
       </div>
-      <div className="container td-cells">
-        {
-          [...items.attributes].map((attribute, index, attributes) => {
-            if (!attribute) return null;
-            return <AttributeComponent key={index} attribute={attribute} setAttribute={items.setAttribute.bind(items)} onValueEnter={() => {
-              if (index === attributes.length -1) this.addAttribute();
-            }} />;
-          })
-        }
-      </div>
+      <HashInputComponent items={items.attributes} setKeyValue={this.setAttribute} />
     </div>;
   }
 }

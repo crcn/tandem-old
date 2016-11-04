@@ -3,6 +3,8 @@
 $gutter-background: #444;
 
 .td-gutter {
+  font-size: $font-size-sm;
+  letter-spacing: 0.15em;
   height: 100%;
   width: 100%;
   position: relative;
@@ -14,11 +16,21 @@ $gutter-background: #444;
     background: rgba(0,0,0,0.2);
 
     text-transform: uppercase;
-    font-size: 0.7em;
+    font-size: 0.9em;
     font-weight: 400;
     opacity: 0.7;
     letter-spacing: 0.15em;
     padding: 10px;
+
+    &:hover .controls {
+      display: block;
+    }
+
+    & .controls {
+      display: none;
+      float: right;
+      cursor: pointer;
+    }
   }
 
   .td-section {
@@ -26,7 +38,10 @@ $gutter-background: #444;
   }
 
   & .container {
-    width: 100%;
+    width: 100% !important;
+    max-width: none !important;
+    /*padding-left: 0;*/
+    /*padding-right: 0;*/
   }
 
   & .left {
@@ -72,6 +87,7 @@ $gutter-background: #444;
 
   *[class*="col-"] {
     padding: 8px;
+    /*margin:0;*/
   }
 
   & label {
