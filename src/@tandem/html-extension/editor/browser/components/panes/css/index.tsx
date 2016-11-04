@@ -22,7 +22,7 @@ class MatchedCSSStyleDeclarationComponent extends React.Component<{ prop: string
         {prop}
       </div>
       <div className="col-xs-9">
-        <input type="text" value={value}></input>
+        <input type="text" value={value} onChange={() => {}}></input>
       </div>
     </div>
   }
@@ -41,7 +41,7 @@ class MatchedCSSStyleRuleComponent extends React.Component<{ rule: SyntheticCSSS
     }
 
     return <div>
-      <div className="td-section-header">
+      <div className="td-section-header" style={{color:"cyan"}}>
         { rule.selector }
       </div>
       <div className="container td-cells">

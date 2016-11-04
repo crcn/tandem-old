@@ -22,7 +22,13 @@ export class FileCacheSynchronizer {
 
     diffArray(a, b, (a, b) => a === b ? 0 : -1).accept({
       visitInsert: ({ index, value }) => {
-        this._watchers[value] = this._fileSystem.watchFile(value, this.onLocalFindChange.bind(this, value));
+
+        // TODO - fix this -- shouldn't be watching files that do not exist
+        try {
+          this._watchers[value] = this._fileSystem.watchFile(value, this.onLocalFindChange.bind(this, value));
+        } catch(e) {
+          this.logger.error(e.stack);
+        }
       },
       visitRemove: ({ index }) => {
         (<IFileWatcher>this._watchers[a[index]]).dispose();

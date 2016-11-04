@@ -1,2 +1,6 @@
 - wire up css rules
 - change style rule to snake case
+- re-wire history tool
+  - only store diffs
+- apply diffs to file cache content urls
+- images should work
