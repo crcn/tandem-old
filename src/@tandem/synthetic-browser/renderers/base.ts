@@ -5,6 +5,8 @@ import { SyntheticRendererAction, isDOMMutationAction } from "../actions";
 
 import {
   IActor,
+  Logger,
+  loggable,
   bindable,
   Observable,
   IObservable,
@@ -74,7 +76,7 @@ export interface ISyntheticDocumentRenderer extends IObservable {
 // render timeout -- this should be a low number
 const REQUEST_UPDATE_TIMEOUT = 5;
 
-
+@loggable()
 export abstract class BaseRenderer extends Observable implements ISyntheticDocumentRenderer {
 
   readonly element: HTMLElement;
@@ -91,6 +93,8 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   private _shouldRenderAgain: boolean;
   private _targetObserver: IActor;
   private _computedStyles: any;
+
+  protected readonly logger: Logger;
 
   constructor() {
     super();
@@ -191,6 +195,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
       await this.whenRunning();
 
       this._shouldRenderAgain = false;
+      this.logger.verbose("Rendering synthetic document");
       await this.render();
       this._rendering = false;
       if (this._shouldRenderAgain) {

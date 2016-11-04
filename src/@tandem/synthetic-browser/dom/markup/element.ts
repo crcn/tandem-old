@@ -9,7 +9,6 @@ import { AttributeChangeAction } from "@tandem/synthetic-browser/actions";
 import { MarkupElementExpression } from "./ast";
 import { syntheticElementClassType } from "./types";
 import { SyntheticDocumentFragment } from "./document-fragment";
-import { SyntheticCSSStyleDeclaration } from "../css";
 import { SyntheticDOMNode, SyntheticDOMNodeSerializer } from "./node";
 import { SyntheticDOMContainer, SyntheticDOMContainerEdit } from "./container";
 import {

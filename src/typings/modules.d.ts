@@ -171,3 +171,7 @@ declare module "detective" {
   }
   export = detective;
 }
+
+declare module "ansi_up" {
+  export function ansi_to_html(source: string): string;
+}

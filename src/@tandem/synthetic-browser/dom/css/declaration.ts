@@ -1,6 +1,8 @@
 import * as sift from "sift";
 import { SyntheticCSSObject } from "./base";
 import { kebabCase, camelCase } from "lodash";
+import { SyntheticDOMNode } from "@tandem/synthetic-browser/dom";
+import { CSSDeclarationValueChangeAction } from "@tandem/synthetic-browser/actions";
 import { ISerializable, Action, serializable, diffArray, ITreeWalker } from "@tandem/common";
 import { SetKeyValueEditAction, IContentEdit, ApplicableEditAction, ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
 
@@ -407,10 +409,24 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
   }
 
   update(properties) {
+    const changedProps = {};
+
     for (const key in properties) {
-      this[camelCase(key)] = properties[key];
+      const correctKey = camelCase(key);
+      changedProps[correctKey] = this[correctKey] = properties[key];
     }
-    console.log(this.parentRule.ownerNode);
+
+    // I'm not a fan of sending notifications from another object like this -- I'd typically make this
+    // object an observable, and notify changes from here. However, since this particular class is used so often, sending
+    // notifications from here would be put a notable bottleneck on the app. So, instead we're notifying the owner of this node (typically the
+    // root document). Less ideal, but achieves the same result of notifying the system of any changes to the synthetic document.
+    const ownerNode = this.$parentRule && this.$parentRule.ownerNode;
+
+    if (ownerNode) {
+      ownerNode.notify(new CSSDeclarationValueChangeAction(this, changedProps));
+    } else {
+      console.error("Declarations must have an owner node.");
+    }
   }
 
   equalTo(declaration: SyntheticCSSStyleDeclaration) {

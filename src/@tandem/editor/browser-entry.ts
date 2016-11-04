@@ -1,4 +1,5 @@
 import "./entry-shims";
+import { } from "@tandem/synthetic-browser";
 
 import { Injector } from "@tandem/common";
 import { ServiceApplication } from "@tandem/core";
@@ -15,7 +16,8 @@ document.body.appendChild(element);
 
 const config: IEditorBrowserConfig = {
   element: element,
-  server: window["config"].server
+  server: window["config"].server,
+  logLevel: window["config"].logLevel
 };
 
 const deps = new Injector(

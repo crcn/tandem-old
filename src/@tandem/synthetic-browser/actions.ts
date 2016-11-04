@@ -1,5 +1,6 @@
 import { Action, defineWorkerAction, TreeNodeAction } from "@tandem/common";
 import {ISyntheticBrowserOpenOptions } from "@tandem/synthetic-browser";
+import { SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser/dom/css";
 
 export class DOMNodeAction extends Action {
   static readonly DOM_NODE_LOADED = "domNodeLoaded";
@@ -9,6 +10,13 @@ export class AttributeChangeAction extends Action {
   static readonly ATTRIBUTE_CHANGE = "attributeChange";
   constructor(readonly name: string, readonly value: string) {
     super(AttributeChangeAction.ATTRIBUTE_CHANGE);
+  }
+}
+
+export class CSSDeclarationValueChangeAction extends Action {
+  static readonly CSS_DECLARATION_VALUE_CHANGE = "cssDeclarationValueChange";
+  constructor(readonly item: SyntheticCSSStyleDeclaration, readonly properties: any) {
+    super(CSSDeclarationValueChangeAction.CSS_DECLARATION_VALUE_CHANGE);
   }
 }
 
@@ -38,7 +46,8 @@ const DOM_NODE_MUTATION_ACTION_TYPES = {
   [TreeNodeAction.NODE_ADDED]: true,
   [TreeNodeAction.NODE_REMOVED]: true,
   [DOMMutationAction.DOM_NODE_LOADED]: true,
-  [AttributeChangeAction.ATTRIBUTE_CHANGE]: true
+  [AttributeChangeAction.ATTRIBUTE_CHANGE]: true,
+  [CSSDeclarationValueChangeAction.CSS_DECLARATION_VALUE_CHANGE]: true
 };
 
 export function isDOMMutationAction(action: Action) {

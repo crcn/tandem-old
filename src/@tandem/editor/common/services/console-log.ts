@@ -3,6 +3,11 @@ import * as path from "path";
 import { CoreApplicationService } from "@tandem/core";
 import { titleize } from "inflection";
 import * as moment from "moment";
+import { ansi_to_html } from "ansi_up";
+
+// beat TS type checking
+chalk["" + "enabled"] = true;
+
 import {
   Logger,
   Action,
@@ -31,9 +36,9 @@ const cwd = process.cwd();
 
 const highlighters = [
 
-  createLogColorizer(/^INF/, (match) => chalk.bgCyan(match)),
-  createLogColorizer(/^ERR/, (match) => chalk.bgRed(match)),
-  createLogColorizer(/^DBG/, (match) => chalk.grey.bgBlack(match)),
+  createLogColorizer(/^INF/, (match) => chalk.white.bgCyan(match)),
+  createLogColorizer(/^ERR/, (match) => chalk.white.bgRed(match)),
+  createLogColorizer(/^DBG/, (match) => (typeof window === "undefined" ? chalk.grey : chalk.white).bgBlack(match)),
   createLogColorizer(/^WRN/, (match) => chalk.bgYellow(match)),
 
   // timestamp
@@ -111,8 +116,14 @@ export class ConsoleLogService extends CoreApplicationService<any> {
       [LogLevel.ERROR]: console.error.bind(console)
     }[level];
 
-    if (this.config.argv && this.config.argv.color !== false) {
-      text = colorize(PREFIXES[level] + text);
+    text = PREFIXES[level] + text;
+
+    if (!this.config.argv || this.config.argv.color !== false) {
+      text = colorize(text);
+    }
+
+    if (typeof window !== "undefined") {
+      return styledConsoleLog(ansi_to_html(text));
     }
 
     if (hlog) {
@@ -123,4 +134,28 @@ export class ConsoleLogService extends CoreApplicationService<any> {
 
     log(text);
   }
+}
+
+
+function styledConsoleLog(...args: any[]) {
+    var argArray = [];
+
+    if (args.length) {
+        var startTagRe = /<span\s+style=(['"])([^'"]*)\1\s*>/gi;
+        var endTagRe = /<\/span>/gi;
+
+        var reResultArray;
+        argArray.push(arguments[0].replace(startTagRe, '%c').replace(endTagRe, '%c'));
+        while (reResultArray = startTagRe.exec(arguments[0])) {
+            argArray.push(reResultArray[2]);
+            argArray.push('');
+        }
+
+        // pass through subsequent args since chrome dev tools does not (yet) support console.log styling of the following form: console.log('%cBlue!', 'color: blue;', '%cRed!', 'color: red;');
+        for (var j = 1; j < arguments.length; j++) {
+            argArray.push(arguments[j]);
+        }
+    }
+
+    console.log.apply(console, argArray);
 }

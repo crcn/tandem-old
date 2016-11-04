@@ -73,7 +73,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     super();
     _injector.inject(this);
 
-    this._renderer = isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer();
+    this._renderer = _injector.inject(isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer());
     this._renderer.observe(new BubbleBus(this));
     this._documentObserver = new BubbleBus(this);
   }

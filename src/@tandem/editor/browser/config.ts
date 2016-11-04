@@ -1,3 +1,5 @@
+import { LogLevel } from "@tandem/common";
+
 /**
  * visual editor
  *
@@ -25,5 +27,7 @@ export interface IEditorBrowserConfig {
     port?: number;
     hostname: string;
     protocol: string;
-  }
+  },
+
+  logLevel: LogLevel
 }
