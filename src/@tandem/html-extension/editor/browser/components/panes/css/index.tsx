@@ -1,20 +1,11 @@
-
 import * as React from "react";
-import { reactEditorPreview } from "@tandem/editor/browser/preview";
 import { kebabCase, camelCase } from "lodash";
 import { Workspace } from "@tandem/editor/browser/models";
 import { DOMElements } from "@tandem/html-extension/collections";
 import { GutterComponent } from "@tandem/editor/browser/components";
 import { HashInputComponent } from "@tandem/html-extension/editor/browser/components/common";
 import { BaseApplicationComponent } from "@tandem/common";
-import {
-  parseCSS,
-  evaluateCSS,
-  SyntheticWindow,
-  SyntheticHTMLElement,
-  SyntheticCSSStyleRule,
-  isValidCSSDeclarationProperty,
-} from "@tandem/synthetic-browser";
+import { SyntheticCSSStyleRule } from "@tandem/synthetic-browser";
 
 
 // TODO - add some color for the CSS rules
@@ -43,37 +34,6 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ rule: Synt
   }
 }
 
-@reactEditorPreview(() => {
-  const { document } = new SyntheticWindow(null);
-
-  document.styleSheets.push(evaluateCSS(parseCSS(`
-    .container {
-      color: red;
-      background: rgba(255, 255, 255, 0);
-      box-sizing: border-box;
-      padding-right: border-box;
-    }
-
-    div {
-      color: red;
-    }
-
-    #something {
-
-    }
-  `)));
-
-  (document.body as SyntheticHTMLElement).innerHTML = `
-    <div id="something" class="container">hello</div>;
-  `;
-
-  const workspace = new Workspace();
-  workspace.select(document.querySelector(".container"));
-
-  return <GutterComponent>
-    <ElementCSSPaneComponent workspace={workspace} />
-  </GutterComponent>
-})
 export class ElementCSSPaneComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
     const { selection } = this.props.workspace;

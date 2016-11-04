@@ -195,7 +195,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
       // scan for reflect metadata
       for (const key in exports) {
         const value = exports[key];
-        const renderPreview = value.$$renderPreview;
+        const renderPreview = exports.renderPreview || value.$$renderPreview;
         if (renderPreview) {
           this.logger.verbose("Found render preview metadata");
           exportsElement = renderPreview();
