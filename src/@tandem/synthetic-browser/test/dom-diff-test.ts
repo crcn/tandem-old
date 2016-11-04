@@ -42,6 +42,19 @@ describe(__filename + "#", () => {
     });
   });
 
+  it("can apply an insert diff to multiple child nodes", () => {
+    const { document } = new SyntheticWindow(null);
+    const a = document.createElement("div") as SyntheticHTMLElement;
+    a.innerHTML = "<div>hello</div>";
+    const b = document.createElement("div") as SyntheticHTMLElement;
+    const c = b.clone(true) as SyntheticHTMLElement;
+    const edit = b.createEdit().fromDiff(a);
+    edit.applyActionsTo(b);
+    edit.applyActionsTo(c);
+    expect(b.innerHTML).to.equal("<div>hello</div>");
+    expect(c.innerHTML).to.equal("<div>hello</div>");
+  });
+
   // fuzzy testing
   it("diff & patch a set or random HTML elements", () => {
     for (let i = 50; i--;) {

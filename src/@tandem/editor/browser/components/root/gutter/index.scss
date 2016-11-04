@@ -29,15 +29,8 @@ $gutter-background: #444;
     width: 100%;
   }
 
-  [class*="col-"], .container {
-    padding: 4px;
-    margin: 0px;
-  }
-
   .row {
-    padding: 0px 4px;
-    margin: 0px;
-    border-bottom: 1px solid blue;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   }
 
   & .left {
@@ -68,3 +61,29 @@ $gutter-background: #444;
   }
 }
 
+
+.td-cells {
+  .td-cell-key {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0px !important;
+    line-height: inherit;
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  *[class*="col-"] {
+    padding: 8px;
+  }
+
+  & label {
+    padding: 0;
+    display: block;
+  }
+
+  & input[type="text"] {
+    background: transparent;
+    border: none;
+    border-radius: none;
+    padding: 0px;
+    line-height: inherit;
+  }
+}

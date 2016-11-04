@@ -23,6 +23,9 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
   static readonly MOVE_CHILD_NODE_EDIT   = "moveChildNodeEdit";
 
   insertChild(newChild: SyntheticDOMNode, index: number) {
+
+    // Clone child here to freeze it from any changes. It WILL be cloned again, but that's also important to ensure
+    // that this edit can be applied to multiple targets.
     return this.addAction(new InsertChildEditAction(SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT, this.target, newChild.cloneNode(true), index));
   }
 
@@ -105,6 +108,8 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
   }
 
   applyEditAction(action: EditAction) {
+
+    // TODO: Should probably use action.applyTo(this.children) instead of this stuff below
     switch(action.type) {
       case SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT:
         const removeAction = <InsertChildEditAction>action;
@@ -112,11 +117,14 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
       break;
       case SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT:
         const moveAction = <MoveChildEditAction>action;
+
         this.insertChildAt(moveAction.findChild(this.childNodes) as SyntheticDOMNode, moveAction.newIndex);
       break;
       case SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT:
         const insertAction = <InsertChildEditAction>action;
-        this.insertChildAt(insertAction.child as SyntheticDOMNode, insertAction.index);
+
+        // Clone again to ensure that the child can be re-added to multiple targets.
+        this.insertChildAt(insertAction.child.clone(true) as SyntheticDOMNode, insertAction.index);
       break;
     }
   }

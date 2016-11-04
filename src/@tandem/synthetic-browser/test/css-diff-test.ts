@@ -27,6 +27,7 @@ describe(__filename + "#", () => {
     [".a {} .b {}", ".b {} .a {}", [SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT]],
     [".a {} .b {}", ".a {} .c {} .b {}", [SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT]],
     [".a {} .b {}", ".b {} .c {} .a {}", [SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT]],
+    [`*[class*="col-"] { padding: 10px; }`, `*[class*="col-"] { padding: 8px; }`, [SyntheticCSSStyleDeclarationEdit.SET_CSS_STYLE_DECLARATION_EDIT]],
 
     // media query edits
     ["@media a { .a { color: red } }", "@media b { .a { color: red } }", [SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT]],

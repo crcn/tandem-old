@@ -66,7 +66,7 @@ class AttributeComponent extends React.Component<{ attribute: SyntheticDOMAttrib
   render() {
     const { attribute } = this.props;
     return <div className="row">
-      <div className="col-xs-3 no-wrap" title={attribute.name} onDoubleClick={this.editName}>
+      <div className="col-xs-3 no-wrap td-cell-key" title={attribute.name} onDoubleClick={this.editName}>
         { !this.props.attribute.name || this.state.editName ? <FocusComponent select={true}><input type="text" defaultValue={attribute.name} onBlur={this.onNameInputBlur} onKeyDown={this.onNameInputKeyDown}></input></FocusComponent> : <label>{attribute.name}</label> }
       </div>
       <div className="col-xs-9">
@@ -113,7 +113,7 @@ export class EntityAttributesPaneComponent extends React.Component<{ workspace: 
           <span style={{cursor:"pointer"}} onClick={this.addAttribute}>+</span>
         </div>
       </div>
-      <div className="container">
+      <div className="container td-cells">
         {
           [...items.attributes].map((attribute, index, attributes) => {
             if (!attribute) return null;

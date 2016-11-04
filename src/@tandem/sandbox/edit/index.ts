@@ -145,7 +145,9 @@ export class InsertChildEditAction extends ChildEditAction {
     super(actionType, target, child);
   }
   applyTo(collection: ISyntheticObjectChild[]) {
-    collection.splice(this.index, 0, this.child);
+
+    // need to clone child in case the edit is applied to multiple targets
+    collection.splice(this.index, 0, this.child.clone(true));
   }
   paramsToString() {
     return `${super.paramsToString()}, ${this.index}`;
