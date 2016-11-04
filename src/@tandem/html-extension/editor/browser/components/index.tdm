@@ -1,4 +1,0 @@
-<tandem>
-  <artboard title="Element Attributes" src="./panes/attributes/index.tsx" dependency-graph-strategy="webpack" style="left:0px;top:0px;width:310px;height:768px;position:absolute;" />
-  <artboard title="Element CSS" src="./panes/css/index.tsx" dependency-graph-strategy="webpack" style="left:375px;top:0px;width:310px;height:768px;position:absolute;" />
-</tandem>
