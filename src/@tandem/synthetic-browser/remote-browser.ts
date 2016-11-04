@@ -77,7 +77,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     const action = deserialize(payload, this.injector) as RemoteBrowserDocumentAction;
 
     if (action.type === RemoteBrowserDocumentAction.NEW_DOCUMENT) {
-      this.logger.verbose("received new document");
+      this.logger.verbose("Received new document");
 
       const previousDocument = this.window && this.window.document;
       const newDocument      = action.data;

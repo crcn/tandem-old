@@ -18,7 +18,12 @@ export class KeyValueInputComponent extends React.Component<{ name: string, valu
     this.setState({ editName: true, currentValue: undefined })
   }
 
-  onNameChange = (event: React.KeyboardEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement>) => {
+  onNameKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!/13/.test(String(event.keyCode))) return;
+    this.saveName(event);
+  }
+
+  saveName = (event: React.KeyboardEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement>) => {
     const oldName = this.props.name;
     const newName = event.currentTarget.value;
 
@@ -28,7 +33,7 @@ export class KeyValueInputComponent extends React.Component<{ name: string, valu
   }
 
   onNameBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-    this.onNameChange(event);
+    this.saveName(event);
     this.setState({ editName: false, currentValue: undefined });
   };
 
@@ -50,7 +55,7 @@ export class KeyValueInputComponent extends React.Component<{ name: string, valu
     const { name, value } = this.props;
     return <div className="row">
       <div className="col-xs-5 no-wrap td-cell-key" title={name} onDoubleClick={this.editName}>
-        { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onChange={this.onNameChange} /></FocusComponent> : name }
+        { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name }
       </div>
       <div className="col-xs-7">
         <input type="text" {...(this.state.currentValue != null ? {} : { value: value })} onChange={this.onValueChange} onFocus={this.onValueFocus} onBlur={this.onValueBlur}></input>

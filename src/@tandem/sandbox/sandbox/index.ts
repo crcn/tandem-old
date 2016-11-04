@@ -156,7 +156,7 @@ export class Sandbox extends Observable {
         return;
       }
 
-      this.logger.verbose("Re-evaluating entry ${this._entry.filePath}");
+      this.logger.verbose(`Re-evaluating entry ${this._entry.filePath}`);
 
       // TODO - wait for all children to be ready
       this.reset();

@@ -15,7 +15,7 @@ export class AttributeChangeAction extends Action {
 
 export class CSSDeclarationValueChangeAction extends Action {
   static readonly CSS_DECLARATION_VALUE_CHANGE = "cssDeclarationValueChange";
-  constructor(readonly item: SyntheticCSSStyleDeclaration, readonly properties: any) {
+  constructor(readonly item: SyntheticCSSStyleDeclaration, readonly name: string, readonly newValue: string, readonly oldName?: string) {
     super(CSSDeclarationValueChangeAction.CSS_DECLARATION_VALUE_CHANGE);
   }
 }

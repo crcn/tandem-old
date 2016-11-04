@@ -251,13 +251,13 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   applyEditAction(action: EditAction) {
     super.applyEditAction(action);
     if (action.type === SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT) {
-      const { name, newName, newValue } = <SetKeyValueEditAction>action;
+      const { name, oldName, newValue } = <SetKeyValueEditAction>action;
       if (newValue == null) {
         this.removeAttribute(name);
       } else {
-        this.setAttribute(newName || name, newValue);
+        this.setAttribute(name, newValue);
       }
-      if (newName) this.removeAttribute(name);
+      if (oldName) this.removeAttribute(oldName);
     } else if (action.type === SyntheticDOMElementEdit.ATTACH_SHADOW_ROOT_EDIT) {
       const { child } = <InsertChildEditAction>action;
       const shadowRoot = <SyntheticDOMContainer>child;

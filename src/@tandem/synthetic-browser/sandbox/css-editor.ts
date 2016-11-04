@@ -29,13 +29,13 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     node.selector = (node.selector.indexOf("&") === 0 ? "&" : "") + newValue.replace(prefix, "");
   }
 
-  [SyntheticCSSStyleRuleEdit.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, newName }: SetKeyValueEditAction) {
+  [SyntheticCSSStyleRuleEdit.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName }: SetKeyValueEditAction) {
     const source = target.source;
 
     const shouldAdd = node.walkDecls((decl, index) => {
-      if (decl.prop === name) {
+      if (decl.prop === oldName || name) {
         if (newValue && newValue) {
-          decl.prop = newName || name;
+          decl.prop  = name;
           decl.value = newValue;
         } else {
           node.nodes.splice(index, 1);

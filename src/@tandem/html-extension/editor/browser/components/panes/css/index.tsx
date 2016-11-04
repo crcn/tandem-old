@@ -13,27 +13,23 @@ import {
   SyntheticWindow,
   SyntheticHTMLElement,
   SyntheticCSSStyleRule,
-  invalidCSSDeclarationKeyFilter,
+  isValidCSSDeclarationProperty,
 } from "@tandem/synthetic-browser";
 
 
 // TODO - add some color for the CSS rules
 class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ rule: SyntheticCSSStyleRule }, any> {
   setDeclaration = (name: string, value: string, oldName?: string) => {
-    const props = {
-      [name]: value
-    };
-
-    if (oldName) props[oldName] = undefined;
-
-    this.props.rule.style.update(props);
+    this.props.rule.style.setProperty(name, value, undefined, oldName);
   }
   render() {
     const { rule } = this.props;
     const items = [];
 
-    for (const key in rule.style) {
-      if (!invalidCSSDeclarationKeyFilter(key)) continue;
+
+    for (const key of rule.style) {
+      const value = rule.style[key];
+      if (value == null) continue;
       items.push({ name: kebabCase(key), value: rule.style[key] });
     }
 

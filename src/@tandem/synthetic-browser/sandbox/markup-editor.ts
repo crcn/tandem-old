@@ -20,10 +20,10 @@ export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
     node.parent.removeChild(node);
   }
 
-  [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT](element: MarkupElementExpression, { target, name, newValue, newName }: SetKeyValueEditAction) {
-    element.setAttribute(newName || name, newValue);
-    if (newName) {
-      element.removeAttribute(newName);
+  [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT](element: MarkupElementExpression, { target, name, newValue, oldName }: SetKeyValueEditAction) {
+    element.setAttribute(name, newValue);
+    if (oldName) {
+      element.removeAttribute(oldName);
     }
   }
 

@@ -16,18 +16,19 @@ import { ISourceLocation } from "@tandem/common";
 export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, module?: SandboxModule): SyntheticCSSStyleSheet {
 
   const dependency = module && module.source;
-  // const map = expression.source.
 
   const sourceMapConsumer = map && new sm.SourceMapConsumer(map);
 
   function getStyleDeclaration(rules: postcss.Declaration[]) {
-    const declaration = new SyntheticCSSStyleDeclaration();
+
+    const obj = {};
+
     for (let i = 0, n = rules.length; i < n; i++) {
       const decl = rules[i];
-      declaration[camelCase(decl.prop)] = decl.value;
+      obj[camelCase(decl.prop)] = decl.value;
     }
 
-    return declaration;
+    return SyntheticCSSStyleDeclaration.fromObject(obj);
   }
 
   function link<T extends SyntheticCSSObject>(expression: postcss.Node, synthetic: T): T {

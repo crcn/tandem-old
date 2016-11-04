@@ -8,7 +8,7 @@ import { SetKeyValueEditAction, IContentEdit, ApplicableEditAction, ISyntheticOb
 
 export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration { }
 
-export const invalidCSSDeclarationKeyFilter = sift({ $and: [ { $ne: /^\$/ }, {$ne: "uid" }, { $ne: "" }] });
+export const isValidCSSDeclarationProperty = sift({ $and: [ { $ne: /^\$/ }, {$ne: "uid" }, { $ne: "" }, { $ne: /^\d+$/ }] });
 
 export class SyntheticCSSStyleDeclarationEdit extends BaseContentEdit<SyntheticCSSStyleDeclaration> {
 
@@ -20,8 +20,8 @@ export class SyntheticCSSStyleDeclarationEdit extends BaseContentEdit<SyntheticC
 
   addDiff(newStyleDeclaration: SyntheticCSSStyleDeclaration) {
 
-    const oldKeys = Object.keys(this.target).filter(invalidCSSDeclarationKeyFilter as any);
-    const newKeys = Object.keys(newStyleDeclaration).filter(invalidCSSDeclarationKeyFilter as any);
+    const oldKeys = Object.keys(this.target).filter(isValidCSSDeclarationProperty as any);
+    const newKeys = Object.keys(newStyleDeclaration).filter(isValidCSSDeclarationProperty as any);
 
     diffArray(oldKeys, newKeys, (a, b) => {
       return a === b ? 0 : -1;
@@ -53,6 +53,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
   public $uid: any;
   public $source: any = null;
   public $parentRule: SyntheticCSSObject;
+  public $length;
 
   public alignContent: string | null;
   public alignItems: string | null;
@@ -175,7 +176,6 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
   public justifyContent: string | null;
   public kerning: string | null;
   public left: string | null;
-  readonly length: number;
   public letterSpacing: string | null;
   public lightingColor: string | null;
   public lineHeight: string | null;
@@ -396,6 +396,20 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     return clone;
   }
 
+  get length() {
+    return this.$length;
+  }
+
+  item(index) {
+    return this[index];
+  }
+
+  [Symbol.iterator] = function*() {
+    for (let i = 0, n = this.length || 0; i < n; i++) {
+      yield this[i];
+    }
+  }
+
   get uid(): any {
     return this.$uid;
   }
@@ -404,17 +418,40 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     return new SyntheticCSSStyleDeclarationEdit(this);
   }
 
-  applyEditAction(action: SetKeyValueEditAction) {
-    action.applyTo(this);
+  applyEditAction({ name, newValue, oldName }: SetKeyValueEditAction) {
+    this.setProperty(name, newValue, undefined, oldName, false);
   }
 
-  update(properties) {
-    const changedProps = {};
+  getPropertyIndex(name: string) {
+    return [...this].indexOf(name);
+  }
 
-    for (const key in properties) {
-      const correctKey = camelCase(key);
-      changedProps[correctKey] = this[correctKey] = properties[key];
+  removeProperty(name: string, notifyOwnerNode?: boolean) {
+    this.setProperty(name, undefined, undefined, undefined, notifyOwnerNode);
+  }
+
+  setProperty(name: string, newValue: string, priority?: string, oldName?: string, notifyOwnerNode: boolean = true) {
+
+    // fix in case they're kebab case
+    name    = camelCase(name);
+    oldName = camelCase(oldName);
+
+    let index = oldName ? this.getPropertyIndex(oldName) : this.getPropertyIndex(name);
+
+    // ensure that internal keys are not set
+    if (!/^\$/.test(name)) {
+      this[~index ? index : this.length] = name;
     }
+
+    this[name] = newValue;
+
+    if (oldName) {
+      this[oldName] = undefined;
+    }
+
+    this.updatePropertyIndices();
+
+    if (notifyOwnerNode !== true) return;
 
     // I'm not a fan of sending notifications from another object like this -- I'd typically make this
     // object an observable, and notify changes from here. However, since this particular class is used so often, sending
@@ -423,16 +460,46 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     const ownerNode = this.$parentRule && this.$parentRule.ownerNode;
 
     if (ownerNode) {
-      ownerNode.notify(new CSSDeclarationValueChangeAction(this, changedProps));
+      ownerNode.notify(new CSSDeclarationValueChangeAction(this, name, newValue, oldName));
     } else {
       console.error("Declarations must have an owner node.");
     }
   }
 
+  private updatePropertyIndices() {
+
+    const model = {};
+
+    for (let i = 0; i < this.length; i++) {
+      const key = this[i];
+      const value = this[key];
+
+      if (value != null) {
+        model[key] = value;
+      }
+
+      // reset for now
+      this[i] = undefined;
+    }
+
+    for (const key in this) {
+      if (!isValidCSSDeclarationProperty(key)) continue;
+      if (this[key] == null) continue;
+      model[key] = this[key];
+    }
+
+    let i = 0;
+    for (const key in model) {
+      this[i++] = key;
+    }
+
+    this.$length = Object.keys(model).length;
+  }
+
   equalTo(declaration: SyntheticCSSStyleDeclaration) {
     function compare(a, b) {
       for (const key in a) {
-        if (invalidCSSDeclarationKeyFilter(key)) continue;
+        if (!isValidCSSDeclarationProperty(key)) continue;
         if (a[key] !== b[key]) {
           return false;
         }
@@ -450,7 +517,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     const buffer = [];
 
     for (const key in this) {
-      if (!invalidCSSDeclarationKeyFilter(key)) continue;
+      if (!isValidCSSDeclarationProperty(key)) continue;
       const value = this[key];
       if (value) {
         buffer.push(kebabCase(key), ":", value, ";");
@@ -476,12 +543,14 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
 
   deserialize(value: ISerializedSyntheticCSSStyleDeclaration) {
     Object.assign(this, value);
+    this.updatePropertyIndices();
   }
 
   clearAll() {
-    for (const key in this) {
-      this[key] = "";
+    for (const key of this) {
+      this[key] = undefined;
     }
+    this.updatePropertyIndices();
   }
 
   static fromString(source: string) {
@@ -493,11 +562,14 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
       if (!name || !value) continue;
       decl[camelCase(name.trim())] = value.trim();
     }
+    decl.updatePropertyIndices();
     return decl;
   }
 
   static fromObject(declaration: any): SyntheticCSSStyleDeclaration {
-    return Object.assign(new SyntheticCSSStyleDeclaration(), declaration);
+    const obj = new SyntheticCSSStyleDeclaration();
+    obj.deserialize(declaration);
+    return obj;
   }
 
   visitWalker(walker: ITreeWalker) { }
