@@ -33,6 +33,36 @@ export class ContentEditorFactoryProvider extends ClassFactoryProvider {
   }
 }
 
+export interface IProtocolResolver {
+  resolve(url: string): Promise<any>;
+}
+
+// Necessary for certain libraries that think it's really
+// cute to add custom protocols.
+export class ProtocolURLResolverProvider extends ClassFactoryProvider {
+  static readonly NS = "protocolReader";
+  constructor(readonly name: string, readonly clazz: { new(): IProtocolResolver }) {
+    super(ProtocolURLResolverProvider.getId(name), clazz);
+  }
+  clone() {
+    return new ProtocolURLResolverProvider(this.name, this.clazz);
+  }
+  create(): IProtocolResolver {
+    return super.create();
+  }
+  static getId(name) {
+    return [this.NS, name].join("/");
+  }
+  static find(url: string, injector: Injector): ProtocolURLResolverProvider {
+    const provider = injector.query<ProtocolURLResolverProvider>(this.getId(url.split(":").shift()));
+    return provider;
+  }
+  static resolve(url: string, injector: Injector) {
+    const provider = this.find(url, injector);
+    return (provider && provider.create().resolve(url)) || url;
+  }
+}
+
 export const FileSystemProvider  = createSingletonProviderClass<IFileSystem>("fileSystem");
 export const FileResolverProvider  = createSingletonProviderClass<IFileResolver>("fileResolver");
 export const FileCacheProvider  = createSingletonProviderClass<FileCache>("fileCache");

@@ -187,7 +187,6 @@ class WebpackLoaderContext {
         });
       }
 
-      console.log(map);
       this._resolve({ content, map });
     }
   }
@@ -328,6 +327,15 @@ export class WebpackSandboxContext {
 
   set exports(value: any) {
     this._target.exports = value;
+  }
+}
+
+export class WebpackProtocolResolver {
+  async resolve(url): Promise<string> {
+
+    // cheap for now. Will need to scan all loaded webpack strategy singletons later
+    // on.
+    return path.join(process.cwd(), url.replace("webpack://", ""));
   }
 }
 

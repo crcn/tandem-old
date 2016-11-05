@@ -3,7 +3,7 @@ import { WrapBus } from "mesh";
 import { debounce } from "lodash";
 import { FileCache } from "../file-cache";
 import { FileEditorAction } from "../actions";
-import { FileCacheProvider, ContentEditorFactoryProvider } from "../providers";
+import { FileCacheProvider, ContentEditorFactoryProvider, ProtocolURLResolverProvider } from "../providers";
 import { ISyntheticObject, ISyntheticSourceInfo, syntheticSourceInfoEquals } from "../synthetic";
 import {
   Action,
@@ -415,7 +415,8 @@ export class FileEditor extends Observable {
       const actionsByFilePath = {};
 
       // find all actions that are part of the same file and
-      // batch them together
+      // batch them together. Important to ensure that we do not trigger multiple
+      // unecessary updates to any file listeners.
       for (const action of actions) {
         const target = action.target;
 
@@ -428,8 +429,11 @@ export class FileEditor extends Observable {
 
         const targetSource = target.source;
 
-        const filePathActions: EditAction[] = actionsByFilePath[targetSource.filePath] || (actionsByFilePath[targetSource.filePath] = []);
+        const targetFilePath = await ProtocolURLResolverProvider.resolve(targetSource.filePath, this._injector);
 
+        console.log(targetFilePath);
+
+        const filePathActions: EditAction[] = actionsByFilePath[targetFilePath] || (actionsByFilePath[targetFilePath] = []);
         filePathActions.push(action);
       }
 
@@ -448,11 +452,18 @@ export class FileEditor extends Observable {
         const contentEditor = contentEditorFactoryProvider.create(filePath, oldContent);
 
         const actions = actionsByFilePath[filePath];
-        this.logger.info("Applying file edit actions %s: %s", filePath, actions.map(action => action.type).join(" "));
+        this.logger.info("Applying file edit actions %s: >>%s", filePath, actions.map(action => action.type).join(" "));
 
         const newContent    = contentEditor.applyEditActions(...actions);
-        fileCache.setDataUrlContent(newContent);
-        promises.push(fileCache.save());
+
+        // This may trigger if the editor does special formatting to the content with no
+        // actual edits. May need to have a result come from the content editors themselves to check if anything's changed.
+        // Note that checking WS changes won't cut it since formatters may swap certain characters. E.g: HTML may change single quotes
+        // to double quotes for attributes.
+        if (oldContent !== newContent) {
+          fileCache.setDataUrlContent(newContent);
+          promises.push(fileCache.save());
+        }
       }
 
       await Promise.all(promises);

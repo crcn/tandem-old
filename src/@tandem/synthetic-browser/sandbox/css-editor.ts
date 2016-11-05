@@ -33,18 +33,17 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     const source = target.source;
 
     const shouldAdd = node.walkDecls((decl, index) => {
-      if (decl.prop === oldName || name) {
+      if (decl.prop === name || decl.prop === oldName) {
         if (newValue && newValue) {
           decl.prop  = name;
           decl.value = newValue;
         } else {
           node.nodes.splice(index, 1);
         }
-        return false;
       }
     }) !== false;
 
-    if (shouldAdd) {
+    if (shouldAdd && newValue) {
       node.nodes.push(postcss.decl({ prop: name, value: newValue }))
     }
   }
