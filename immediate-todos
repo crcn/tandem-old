@@ -4,4 +4,6 @@
   - only store diffs
 - apply diffs to file cache content urls
 - images should work
-- bubble actions from css style rules
+- arrow keys for changing style inputs
+- pretty view for CSS styles
+- persist changes from css back to file cache

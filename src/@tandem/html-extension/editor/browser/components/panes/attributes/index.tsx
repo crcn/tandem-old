@@ -1,10 +1,12 @@
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser";
 import { DOMElements } from "@tandem/html-extension/collections";
+import { ApplyFileEditAction } from "@tandem/sandbox";
 import { HashInputComponent } from "@tandem/html-extension/editor/browser/components/common";
+import { BaseApplicationComponent } from "@tandem/common";
 import { SyntheticHTMLElement, SyntheticDOMAttribute } from "@tandem/synthetic-browser";
 
-export class EntityAttributesPaneComponent extends React.Component<{ workspace: Workspace }, any> {
+export class EntityAttributesPaneComponent extends BaseApplicationComponent<{ workspace: Workspace }, any> {
 
   addAttribute = () => {
     this.items.setAttribute("", "");
@@ -14,6 +16,12 @@ export class EntityAttributesPaneComponent extends React.Component<{ workspace: 
     if(name != null) this.items.setAttribute(name, value);
     if (oldName != null) {
       this.items.removeAttribute(oldName);
+    }
+
+    for (const item of this.items) {
+      const edit = item.createEdit();
+      edit.setAttribute(name, value);
+      this.bus.execute(new ApplyFileEditAction(edit.actions));
     }
   }
 

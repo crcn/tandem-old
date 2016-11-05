@@ -24,9 +24,20 @@ import {
 
 const FILES_COLLECTION_NAME = "files";
 
-import { LocalFileSystem, FileSystemProvider, IFileSystem, ReadFileAction, WatchFileAction } from "@tandem/sandbox";
+import {
+  LocalFileSystem,
+  FileSystemProvider,
+  FileEditorProvider,
+  ApplyFileEditAction,
+  IFileSystem,
+  ReadFileAction,
+  WatchFileAction,
+} from "@tandem/sandbox";
 
+@loggable()
 export class FileService extends CoreApplicationService<IEdtorServerConfig> {
+
+  protected readonly logger: Logger;
 
   @inject(FileSystemProvider.ID)
   private _fileSystem: IFileSystem;
@@ -53,5 +64,13 @@ export class FileService extends CoreApplicationService<IEdtorServerConfig> {
 
       writable.then(watcher.dispose.bind(this));
     });
+  }
+
+  /**
+   */
+
+
+  [ApplyFileEditAction.APPLY_EDITS]({ actions }: ApplyFileEditAction) {
+    return FileEditorProvider.getInstance(this.injector).applyEditActions(...actions);
   }
 }

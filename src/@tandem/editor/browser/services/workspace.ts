@@ -2,22 +2,25 @@
 import { WrapBus } from "mesh";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import {
+  DOMNodeType,
   BaseRenderer,
   SyntheticDOMNode,
   SyntheticBrowser,
+  SyntheticDocument,
   SyntheticDOMElement,
   SyntheticDOMRenderer,
-
+  isDOMMutationAction,
   BaseDecoratorRenderer,
   RemoteSyntheticBrowser,
   SyntheticRendererAction,
+  RemoteBrowserDocumentAction,
 } from "@tandem/synthetic-browser";
 import { Store, Workspace } from "@tandem/editor/browser/models";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
 import { CoreApplicationService } from "@tandem/core";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
-import { ApplyEditAction, FileEditorProvider } from "@tandem/sandbox";
+import { ApplyFileEditAction, FileEditorProvider } from "@tandem/sandbox";
 import { WorkspaceToolFactoryProvider, StoreProvider } from "@tandem/editor/browser/providers";
 import { SetToolAction, ZoomAction, SetZoomAction, DocumentFileAction } from "@tandem/editor/browser/actions";
 
@@ -75,19 +78,19 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
 
   async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
 
-    const path = action.filePath;
+    // const path = action.filePath;
 
-    const syntheticDocument = this._store.workspace.document;
+    // const syntheticDocument = this._store.workspace.document;
 
-    const root = <SyntheticDOMElement>syntheticDocument.body.firstChild;
-    const artboard = syntheticDocument.createElement("artboard");
-    artboard.setAttribute("src", path);
+    // const root = <SyntheticDOMElement>syntheticDocument.body.firstChild;
+    // const artboard = syntheticDocument.createElement("artboard");
+    // artboard.setAttribute("src", path);
 
-    const edit = root.createEdit();
+    // const edit = root.createEdit();
 
-    edit.appendChild(artboard);
+    // edit.appendChild(artboard);
 
-    this.bus.execute(new ApplyEditAction(edit));
+    // this.bus.execute(new ApplyFileEditAction(edit));
 
     return !document.hidden;
   }
@@ -109,11 +112,6 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
   [SetZoomAction.SET_ZOOM](action: SetZoomAction) {
     this._store.workspace.zoom = action.value;
   }
-
-  [ApplyEditAction.APPLY_EDITS]({ edit }: ApplyEditAction) {
-    return FileEditorProvider.getInstance(this.injector).applyEditActions(...edit.actions);
-  }
-
 
   [SetToolAction.SET_TOOL](action: SetToolAction) {
     // this._store.workspace.currentTool = action.toolFactory.create(this._store.workspace);

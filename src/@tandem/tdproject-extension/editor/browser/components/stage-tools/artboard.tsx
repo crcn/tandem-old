@@ -4,7 +4,7 @@ import * as AutosizeInput from "react-input-autosize";
 
 import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
 import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
-import { ApplyEditAction, SetKeyValueEditAction } from "@tandem/sandbox";
+import { ApplyFileEditAction, SetKeyValueEditAction } from "@tandem/sandbox";
 import { FrontEndApplication, Workspace, SelectAction } from "@tandem/editor/browser";
 import { SyntheticHTMLElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
 
@@ -54,7 +54,7 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
     // the change immediately
     this.state.edit.applyActionsTo(artboard);
 
-    await this.bus.execute(new ApplyEditAction(this.state.edit));
+    await this.bus.execute(new ApplyFileEditAction(this.state.edit.actions));
     this.doneEditing();
   }
 

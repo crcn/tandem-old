@@ -8,6 +8,7 @@ import {
   Action,
   inject,
   serialize,
+  IActor,
   loggable,
   Logger,
   Observable,
@@ -446,7 +447,7 @@ export class FileEditor extends Observable {
         const contentEditor = contentEditorFactoryProvider.create(filePath, oldContent);
 
         const actions = actionsByFilePath[filePath];
-        this.logger.info("applying file edit actions %s: %s", filePath, actions.map(action => action.type).join(" "));
+        this.logger.info("Applying file edit actions %s: %s", filePath, actions.map(action => action.type).join(" "));
 
         const newContent    = contentEditor.applyEditActions(...actions);
         fileCache.setDataUrlContent(newContent);
@@ -500,3 +501,4 @@ export class SyntheticObjectEditor {
     }
   }
 }
+

@@ -1,7 +1,7 @@
 import { NoopRenderer, ISyntheticDocumentRenderer } from "./renderers";
-import { OpenRemoteBrowserAction, SyntheticBrowserAction } from "./actions";
+import { OpenRemoteBrowserAction, SyntheticBrowserAction, isDOMMutationAction } from "./actions";
 import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser, ISyntheticBrowserOpenOptions } from "./browser";
-import { Response } from "mesh";
+import { Response, WrapBus } from "mesh";
 import {
   fork,
   IActor,
@@ -21,7 +21,7 @@ import {
 
 import { BaseApplicationService } from "@tandem/core/services";
 import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
-import { Dependency, DependencyGraph, DependencyGraphProvider, SyntheticObjectEditor, IDependencyGraphStrategyOptions } from "@tandem/sandbox";
+import { Dependency, DependencyGraph, BaseContentEdit, DependencyGraphProvider, SyntheticObjectEditor, IDependencyGraphStrategyOptions } from "@tandem/sandbox";
 
 @definePublicAction({
   serialize({ type, data }: RemoteBrowserDocumentAction) {
@@ -34,7 +34,7 @@ import { Dependency, DependencyGraph, DependencyGraphProvider, SyntheticObjectEd
     return new RemoteBrowserDocumentAction(type, deserialize(data, injector));
   }
 })
-class RemoteBrowserDocumentAction extends Action {
+export class RemoteBrowserDocumentAction extends Action {
   static readonly NEW_DOCUMENT   = "newDocument";
   static readonly DOCUMENT_DIFF  = "documentDiff";
   constructor(type: string, readonly data: any) {
@@ -92,6 +92,9 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       this._documentEditor.applyEditActions(...edit.actions);
     }
 
+    console.log(action);
+    this.notify(action);
+
     // explicitly request an update since some synthetic objects may not emit
     // a render action in some cases.
     this.renderer.requestRender();
@@ -99,6 +102,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     this.notifyLoaded();
   }
 }
+
 
 @loggable()
 export class RemoteBrowserService extends BaseApplicationService {

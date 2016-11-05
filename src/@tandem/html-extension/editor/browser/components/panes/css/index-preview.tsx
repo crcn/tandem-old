@@ -1,6 +1,7 @@
+import { reactEditorPreview } from "@tandem/editor/browser/preview";
+
 
 import * as React from "react";
-import { reactEditorPreview } from "@tandem/editor/browser/preview";
 import { Workspace } from "@tandem/editor/browser/models";
 import { GutterComponent } from "@tandem/editor/browser/components";
 import { ElementCSSPaneComponent } from "./index";

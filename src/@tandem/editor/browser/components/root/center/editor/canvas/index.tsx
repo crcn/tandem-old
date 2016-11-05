@@ -188,6 +188,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
       this.bus.execute(new SetZoomAction(zoom, false));
     }
 
+
     const renderObserver = {
       execute: (action) => {
         if (action.type === SyntheticRendererAction.UPDATE_RECTANGLES) {

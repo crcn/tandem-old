@@ -4,6 +4,7 @@ import { Workspace } from "@tandem/editor/browser/models";
 import { DOMElements } from "@tandem/html-extension/collections";
 import { GutterComponent } from "@tandem/editor/browser/components";
 import { HashInputComponent } from "@tandem/html-extension/editor/browser/components/common";
+import { ApplyFileEditAction } from "@tandem/sandbox";
 import { BaseApplicationComponent } from "@tandem/common";
 import { SyntheticCSSStyleRule } from "@tandem/synthetic-browser";
 
@@ -12,6 +13,9 @@ import { SyntheticCSSStyleRule } from "@tandem/synthetic-browser";
 class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ rule: SyntheticCSSStyleRule }, any> {
   setDeclaration = (name: string, value: string, oldName?: string) => {
     this.props.rule.style.setProperty(name, value, undefined, oldName);
+    const edit = this.props.rule.createEdit();
+    edit.setDeclaration(name, value, oldName);
+    this.bus.execute(new ApplyFileEditAction(edit.actions));
   }
   render() {
     const { rule } = this.props;

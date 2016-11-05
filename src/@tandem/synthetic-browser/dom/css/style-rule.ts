@@ -32,8 +32,8 @@ export class SyntheticCSSStyleRuleEdit extends BaseContentEdit<SyntheticCSSStyle
     return this.addAction(new SetValueEditActon(SyntheticCSSStyleRuleEdit.SET_DECLARATION, this.target, selector));
   }
 
-  setDeclaration(name: string, value: string, newName?: string) {
-    return this.addAction(new SetKeyValueEditAction(SyntheticCSSStyleRuleEdit.SET_DECLARATION, this.target, name, value, newName));
+  setDeclaration(name: string, value: string, oldName?: string) {
+    return this.addAction(new SetKeyValueEditAction(SyntheticCSSStyleRuleEdit.SET_DECLARATION, this.target, name, value, oldName));
   }
 
   addDiff(newRule: SyntheticCSSStyleRule) {
@@ -59,7 +59,7 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
 
   constructor(public selector: string, public style: SyntheticCSSStyleDeclaration) {
     super();
-    style.$parentRule = this;
+    if (style) style.$parentRule = this;
   }
 
   createEdit() {

@@ -1,6 +1,18 @@
 import { IContentEdit } from "../edit";
 import { IFileResolverOptions } from "../resolver";
-import { Action, IASTNode, IActor, definePublicAction, defineMasterAction, defineWorkerAction, IDisposable } from "@tandem/common";
+import {
+  Action,
+  IASTNode,
+  IActor,
+  serialize,
+  deserialize,
+  definePublicAction,
+  defineMasterAction,
+  defineWorkerAction,
+  IDisposable
+} from "@tandem/common";
+
+import { EditAction } from "../edit";
 
 // TODO - ability to trace where actions go in the application - possibly
 // with a @trace(), or @log() feature
@@ -13,10 +25,20 @@ export class FileEditorAction extends Action {
   static readonly DEPENDENCY_EDITED = "dependencyEdited";
 }
 
-export class ApplyEditAction extends Action {
+@definePublicAction({
+  serialize({ actions }: ApplyFileEditAction) {
+    return {
+      actions: actions.map(serialize)
+    }
+  },
+  deserialize({ actions }, injector) {
+    return new ApplyFileEditAction(actions.map(action => deserialize(action, injector)));
+  }
+})
+export class ApplyFileEditAction extends Action {
   static readonly APPLY_EDITS = "applyEditActions";
-  constructor(readonly edit: IContentEdit) {
-    super(ApplyEditAction.APPLY_EDITS);
+  constructor(readonly actions: EditAction[]) {
+    super(ApplyFileEditAction.APPLY_EDITS);
   }
 }
 
@@ -77,4 +99,3 @@ export class WatchFileAction extends Action {
     };
   }
 }
-
