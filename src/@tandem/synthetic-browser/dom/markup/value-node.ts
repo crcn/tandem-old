@@ -1,15 +1,15 @@
 import { bindable } from "@tandem/common";
 import { ISerializer } from "@tandem/common";
 import { DOMNodeType } from "./node-types";
-import { SyntheticDOMNode } from "./node";
+import { SyntheticDOMNode, SyntheticDOMNodeEdit } from "./node";
 import { SyntheticDocument } from "../document";
-import { BaseContentEdit, EditAction, SetValueEditActon } from "@tandem/sandbox";
+import { BaseContentEdit, EditAction, SetValueEditActon, SetKeyValueEditAction } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticDOMValueNode {
   nodeValue: string;
 }
 
-export class SyntheticDOMValueNodeEdit extends BaseContentEdit<SyntheticDOMValueNode> {
+export class SyntheticDOMValueNodeEdit extends SyntheticDOMNodeEdit<SyntheticDOMValueNode> {
   static readonly SET_VALUE_NODE_EDIT = "setValueNodeEdit";
 
   setValueNode(nodeValue: string) {
@@ -20,7 +20,7 @@ export class SyntheticDOMValueNodeEdit extends BaseContentEdit<SyntheticDOMValue
     if (this.target.nodeValue !== newValueNode.nodeValue) {
       this.setValueNode(newValueNode.nodeValue);
     }
-    return this;
+    return super.addDiff(newValueNode);
   }
 }
 
@@ -53,6 +53,9 @@ export abstract class SyntheticDOMValueNode extends SyntheticDOMNode {
     switch(action.type) {
       case SyntheticDOMValueNodeEdit.SET_VALUE_NODE_EDIT:
         this.nodeValue = (<SetValueEditActon>action).newValue;
+      break;
+      case SyntheticDOMNodeEdit.SET_SYNTHETIC_SOURCE_EDIT:
+        (<SetKeyValueEditAction>action).applyTo(this);
       break;
     }
   }

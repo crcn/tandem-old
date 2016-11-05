@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { flattenTree } from "@tandem/common";
 import { generateRandomSyntheticHTMLElement } from "@tandem/synthetic-browser/test/helpers";
 import * as chalk from "chalk";
 import {
@@ -7,6 +8,7 @@ import {
   SyntheticDOMNode,
   SyntheticWindow,
   SyntheticDOMElement,
+  SyntheticCSSObjectEdit,
   SyntheticHTMLElement,
   SyntheticDOMValueNodeEdit,
   SyntheticDOMContainerEdit,
@@ -21,11 +23,11 @@ describe(__filename + "#", () => {
     [`a`, `b`, [SyntheticDOMValueNodeEdit.SET_VALUE_NODE_EDIT]],
     [`<!--a-->`, `<!--b-->`, [SyntheticDOMValueNodeEdit.SET_VALUE_NODE_EDIT]],
     [`<div />`, `<span></span>`, [SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT, SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT]],
-    [`<div /><span></span>`, `<span></span>`, [SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT]],
-    [`<div />`, `<div></div><span></span>`, [SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT]],
-    [`<span /><div />`, `<div></div><span></span>`, [SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT]],
-    [`<div id="b" />`, `<div id="c"></div>`, [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT]],
-    [`<div id="b" />`, `<div></div>`, [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT]],
+    [`<div /><span></span>`, `<span></span>`, [SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    [`<div />`, `<div></div><span></span>`, [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT]],
+    [`<span /><div />`, `<div></div><span></span>`, [SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    [`<div id="b" />`, `<div id="c"></div>`, [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    [`<div id="b" />`, `<div></div>`, [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
 
   ].forEach(([oldSource, newSource, actionNames]) => {
 
@@ -71,6 +73,24 @@ describe(__filename + "#", () => {
 
         Trying to apply edit actions from node that should be identical: ${actions.map(action => action.type)}
       `);
+    }
+  });
+
+
+
+  it("patches the source of each synthetic object", () => {
+    for (let i = 10; i--;) {
+      const { document } = new SyntheticWindow(null);
+      const a = document.createElement("div") as SyntheticHTMLElement;
+      const b = document.createElement("div") as SyntheticHTMLElement;
+      a.appendChild(generateRandomSyntheticHTMLElement(document, 8, 4, 5));
+      b.appendChild(generateRandomSyntheticHTMLElement(document, 8, 4, 5));
+      a.createEdit().fromDiff(b).applyActionsTo(a);
+
+      const asources = flattenTree(a).map(node => node.source);
+      const bsources = flattenTree(b).map(node => node.source);
+
+      expect(JSON.stringify(asources)).to.eql(JSON.stringify(bsources));
     }
   });
 });

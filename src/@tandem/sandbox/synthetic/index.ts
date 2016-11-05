@@ -1,6 +1,6 @@
 import { Dependency } from "../dependency-graph";
 import { SandboxModule } from "../sandbox";
-import { ISourcePosition, ISerializer, IWalkable } from "@tandem/common";
+import { ISourcePosition, ISerializer, IWalkable, sourcePositionEquals } from "@tandem/common";
 
 let _i = 0;
 
@@ -50,6 +50,10 @@ export interface ISyntheticSourceInfo {
    */
 
   end?: ISourcePosition;
+}
+
+export function syntheticSourceInfoEquals(a: ISyntheticSourceInfo, b: ISyntheticSourceInfo) {
+  return (a == null && b == null) || (a && b && a.kind === b.kind && a.filePath === b.filePath && sourcePositionEquals(a.start, b.start) && sourcePositionEquals(a.end, b.end));
 }
 
 /**

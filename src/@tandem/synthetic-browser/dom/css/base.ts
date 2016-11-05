@@ -1,15 +1,21 @@
-import { ISerializer, serialize, deserialize, ITreeWalker } from "@tandem/common";
+import { ISerializer, serialize, deserialize, ITreeWalker, sourcePositionEquals } from "@tandem/common";
 import { SyntheticCSSStyleSheet } from "./style-sheet";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser/dom";
 import {
   IEditable,
   EditAction,
   BaseContentEdit,
+  SyntheticObjectEdit,
   ISyntheticObject,
   ISyntheticSourceInfo,
+  SetKeyValueEditAction,
   generateSyntheticUID,
+  syntheticSourceInfoEquals,
   SyntheticObjectSerializer,
 } from "@tandem/sandbox";
+
+export abstract class SyntheticCSSObjectEdit<T extends SyntheticCSSObject> extends SyntheticObjectEdit<T> {
+}
 
 
 export abstract class SyntheticCSSObject implements ISyntheticObject, IEditable {

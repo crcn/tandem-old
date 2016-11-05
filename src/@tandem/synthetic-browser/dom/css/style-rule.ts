@@ -1,6 +1,6 @@
 import { Dependency } from "@tandem/sandbox";
 import { SyntheticDOMElement, getSelectorTester } from "@tandem/synthetic-browser";
-import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
+import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
 import { BaseContentEdit, EditAction, SetKeyValueEditAction, SetValueEditActon } from "@tandem/sandbox";
 import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "./declaration";
 import { Action, serializable, serialize, deserialize, ISerializer, ISerializedContent, diffArray, ITreeWalker, ArrayDiff } from "@tandem/common";
@@ -23,7 +23,7 @@ class SyntheticCSSStyleRuleSerializer implements ISerializer<SyntheticCSSStyleRu
 }
 
 // TODO - move this to synthetic-browser
-export class SyntheticCSSStyleRuleEdit extends BaseContentEdit<SyntheticCSSStyleRule> {
+export class SyntheticCSSStyleRuleEdit extends SyntheticCSSObjectEdit<SyntheticCSSStyleRule> {
 
   static readonly SET_DECLARATION = "setDeclaration";
   static readonly SET_RULE_SELECTOR = "setRuleSelector";
@@ -37,6 +37,7 @@ export class SyntheticCSSStyleRuleEdit extends BaseContentEdit<SyntheticCSSStyle
   }
 
   addDiff(newRule: SyntheticCSSStyleRule) {
+    super.addDiff(newRule);
 
     if (this.target.selector !== newRule.selector) {
       this.setSelector(newRule.selector);
@@ -77,7 +78,11 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
   }
 
   applyEditAction(action: EditAction) {
-    // console.warn(`Cannot currently edit ${this.constructor.name}`);
+    if (action.type === SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
+      (<SetKeyValueEditAction>action).applyTo(this);
+    } else {
+      console.error(`Cannot apply ${action.type}`);
+    }
   }
 
   cloneShallow(deep?: boolean) {

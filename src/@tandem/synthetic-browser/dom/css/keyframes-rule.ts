@@ -49,6 +49,12 @@ export class SyntheticCSSKeyframesRule extends SyntheticCSSAtRule {
     super(rules);
   }
 
+  get cssText() {
+    return `@keyframe ${this.name} {
+      ${this.innerText}
+    }`
+  }
+
   cloneShallow(deep?: boolean) {
     return new SyntheticCSSKeyframesRule(this.name, []);
   }
@@ -59,10 +65,6 @@ export class SyntheticCSSKeyframesRule extends SyntheticCSSAtRule {
 
   createEdit() {
     return new SyntheticCSSKeyframesRuleEdit(this);
-  }
-
-  applyEditAction(action: EditAction) {
-    console.warn(`Cannot currently edit ${this.constructor.name}`);
   }
 
   visitWalker(walker: ITreeWalker) {

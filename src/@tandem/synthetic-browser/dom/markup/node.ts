@@ -11,6 +11,7 @@ import {
   IDiffable,
   EditAction,
   SandboxModule,
+  SyntheticObjectEdit,
   ISyntheticObject,
   ISyntheticSourceInfo,
   generateSyntheticUID,
@@ -38,6 +39,9 @@ export interface ISerializedSyntheticDOMNode {
 }
 
 export const SyntheticDOMNodeSerializer = SyntheticObjectSerializer;
+
+
+export abstract class SyntheticDOMNodeEdit<T extends SyntheticDOMNode> extends SyntheticObjectEdit<T> { }
 
 // TODO - possibly have metadata here since it's generic and can be used with any synthetic
 export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, ISyntheticObject, IEditable {

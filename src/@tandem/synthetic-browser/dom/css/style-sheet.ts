@@ -3,7 +3,7 @@ import { RawSourceMap } from "source-map";
 import { SyntheticCSSFontFace } from "./font-face";
 import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
-import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
+import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
 import { SyntheticCSSStyleRule, ISerializedSyntheticCSSStyleRule } from "./style-rule";
 import { evaluateCSS, parseCSS } from "@tandem/synthetic-browser/dom/css";
 
@@ -53,7 +53,7 @@ function diffStyleSheetRules(oldRules: syntheticCSSRuleType[], newRules: synthet
   });
 }
 
-export class SyntheticCSSStyleSheetEdit extends BaseContentEdit<SyntheticCSSStyleSheet> {
+export class SyntheticCSSStyleSheetEdit extends SyntheticCSSObjectEdit<SyntheticCSSStyleSheet> {
 
   static readonly INSERT_STYLE_SHEET_RULE_EDIT = "insertStyleSheetRuleEdit";
   static readonly MOVE_STYLE_SHEET_RULE_EDIT   = "moveStyleSheetRuleEdit";
@@ -72,6 +72,8 @@ export class SyntheticCSSStyleSheetEdit extends BaseContentEdit<SyntheticCSSStyl
   }
 
   protected addDiff(newStyleSheet: SyntheticCSSStyleSheet) {
+    super.addDiff(newStyleSheet);
+
     diffStyleSheetRules(this.target.rules, newStyleSheet.rules).accept({
       visitInsert: ({ index, value }) => {
         this.insertRule(value, index);
@@ -144,6 +146,7 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
 
   applyEditAction(action: ApplicableEditAction) {
     action.applyTo({
+      [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]: this,
       [SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT]: this.rules,
       [SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT]: this.rules,
       [SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT]: this.rules

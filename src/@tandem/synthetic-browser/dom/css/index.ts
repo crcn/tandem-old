@@ -5,3 +5,5 @@ export * from "./style-rule";
 export * from "./media-rule";
 export * from "./keyframes-rule";
 export * from "./style-sheet";
+export * from "./atrule";
+export * from "./base";

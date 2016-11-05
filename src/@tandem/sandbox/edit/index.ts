@@ -2,9 +2,9 @@ import { flatten } from "lodash";
 import { WrapBus } from "mesh";
 import { debounce } from "lodash";
 import { FileCache } from "../file-cache";
-import { ISyntheticObject } from "../synthetic";
 import { FileEditorAction } from "../actions";
 import { FileCacheProvider, ContentEditorFactoryProvider } from "../providers";
+import { ISyntheticObject, ISyntheticSourceInfo, syntheticSourceInfoEquals } from "../synthetic";
 import {
   Action,
   inject,
@@ -563,5 +563,20 @@ export class SyntheticObjectChangeWatcher<T extends ISyntheticObject & IEditable
       this.onChange(edit.actions);
       edit.applyActionsTo(this._clone);
     }
+  }
+}
+
+export abstract class SyntheticObjectEdit<T extends ISyntheticObject> extends BaseContentEdit<T> {
+  static readonly SET_SYNTHETIC_SOURCE_EDIT = "setSyntheticSourceEdit";
+
+  setSource(source: ISyntheticSourceInfo) {
+    this.addAction(new SetKeyValueEditAction(SyntheticObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, this.target, "$source", source));
+  }
+
+  protected addDiff(from: T) {
+    if (!syntheticSourceInfoEquals(this.target.$source, from.$source)) {
+      this.setSource(from.$source);
+    }
+    return this;
   }
 }

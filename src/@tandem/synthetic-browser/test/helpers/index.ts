@@ -7,6 +7,8 @@ import {
   SyntheticDOMText,
   parseCSS,
   evaluateCSS,
+  parseMarkup,
+  evaluateMarkup,
   SyntheticDOMComment,
   SyntheticCSSStyleSheet,
 } from "@tandem/synthetic-browser";
@@ -30,47 +32,48 @@ function generateRandomChar() {
   return sample(CHARS);
 }
 
-export function generateRandomSyntheticHTMLElement(document: SyntheticDocument, maxChildCount: number = 10, maxDepth: number = 10, maxAttributes: number = 10, generateShadow: boolean = false) {
+
+function generateRandomSyntheticHTMLElementSource(maxChildCount: number = 10, maxDepth: number = 10, maxAttributes: number = 10) {
 
   function createRandomSyntheticFragment() {
 
-    const fragment = document.createDocumentFragment();
-    if (!maxDepth) return fragment;
+    const fragment = [];
 
+    if (maxDepth)
     for (let i = random(0, maxChildCount); i--;) {
-      fragment.appendChild(generateRandomSyntheticHTMLElement(document, maxChildCount, random(0, maxDepth - 1), maxAttributes, generateShadow));
+      fragment.push(generateRandomSyntheticHTMLElementSource(maxChildCount, random(0, maxDepth - 1), maxAttributes));
     }
 
-    return fragment;
+    return fragment.join("");
   }
 
 
   function createRandomElement() {
-    const element = document.createElement(generateRandomChar());
+    const tagName = generateRandomChar();
+    let element = ["<", tagName];
+
     for (let i = random(0, maxAttributes); i--;) {
-      element.setAttribute(
-        generateRandomChar(),
-        generateRandomText()
-      );
-    }
-    element.appendChild(createRandomSyntheticFragment());
-
-    if (generateShadow && Math.random() > 0.5) {
-      element.$setShadowRoot(createRandomSyntheticFragment());
+      element.push(" ", generateRandomChar(), '="', generateRandomText(), '"');
     }
 
-    return element;
+    element.push(">", createRandomSyntheticFragment(), "</" + tagName + ">");
+
+    return element.join("");
   }
 
   function createRandomTextNode() {
-    return document.createTextNode(generateRandomText());
+    return generateRandomText();
   }
 
   function createRandomComment() {
-      return document.createComment(generateRandomText());
+      return `<!--${generateRandomText()}-->`;
   }
 
   return maxDepth ? createRandomElement() : sample([createRandomElement, createRandomTextNode, createRandomComment])();
+}
+
+export function generateRandomSyntheticHTMLElement(document: SyntheticDocument, maxChildCount: number = 10, maxDepth: number = 10, maxAttributes: number = 10, generateShadow: boolean = false) {
+  return evaluateMarkup(parseMarkup(generateRandomSyntheticHTMLElementSource(maxChildCount, maxDepth, maxAttributes)), document);
 }
 
 export function generateRandomStyleSheet(maxRules: number = 100, maxDeclarations: number = 20): SyntheticCSSStyleSheet {

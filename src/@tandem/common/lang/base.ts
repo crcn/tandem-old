@@ -11,7 +11,7 @@ export interface ISourcePosition {
 }
 
 export function sourcePositionEquals(a: ISourcePosition, b: ISourcePosition) {
-  return a.line === b.line && a.column === b.column;
+  return (a == null && b == null) || (a && b && (a.line === b.line && a.column === b.column));
 }
 
 export interface ISourceLocation {

@@ -1,5 +1,5 @@
 import { SyntheticCSSStyleDeclaration } from "./declaration";
-import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
+import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
 import { SyntheticCSSStyleRule, diffSyntheticCSSStyleRules } from "./style-rule";
 import { ISerializer, serialize, deserialize, serializable, ISerializedContent, ITreeWalker } from "@tandem/common";
 
@@ -14,12 +14,7 @@ import {
   RemoveChildEditAction,
 } from "@tandem/sandbox";
 
-export interface ISerializedSyntheticCSSMediaRule {
-  media: string[];
-  cssRules: Array<ISerializedContent<any>>;
-}
-
-export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends BaseContentEdit<T> {
+export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends SyntheticCSSObjectEdit<T> {
 
   static readonly SET_NAME_EDIT        = "setNameEdit";
   static readonly INSERT_CSS_RULE_EDIT = "insertCSSRuleAtEdit";
@@ -38,9 +33,10 @@ export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends BaseCo
     return this.addAction(new RemoveChildEditAction(SyntheticCSSAtRuleEdit.REMOVE_CSS_RULE_EDIT, this.target, rule));
   }
 
-  addDiff(newMediaRule: T) {
+  addDiff(atRule: T) {
+    super.addDiff(atRule);
 
-    diffSyntheticCSSStyleRules(this.target.cssRules, newMediaRule.cssRules).accept({
+    diffSyntheticCSSStyleRules(this.target.cssRules, atRule.cssRules).accept({
       visitInsert: ({ index, value }) => {
         this.insertRule(value, index);
       },
@@ -62,16 +58,11 @@ export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends BaseCo
 
 export abstract class SyntheticCSSAtRule extends SyntheticCSSObject {
   abstract name: string;
+  abstract cssText: string;
 
   constructor(public cssRules: SyntheticCSSStyleRule[] = []) {
     super();
     cssRules.forEach(rule => rule.$parentRule = this);
-  }
-
-  get cssText() {
-    return `@media ${this.name} {
-      ${this.innerText}
-    }`;
   }
 
   toString() {
@@ -92,6 +83,7 @@ export abstract class SyntheticCSSAtRule extends SyntheticCSSObject {
 
   protected getEditActionTargets() {
     return {
+      [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]: this as SyntheticCSSAtRule,
       [SyntheticCSSAtRuleEdit.REMOVE_CSS_RULE_EDIT]: this.cssRules,
       [SyntheticCSSAtRuleEdit.INSERT_CSS_RULE_EDIT]: this.cssRules,
       [SyntheticCSSAtRuleEdit.MOVE_CSS_RULE_EDIT]: this.cssRules

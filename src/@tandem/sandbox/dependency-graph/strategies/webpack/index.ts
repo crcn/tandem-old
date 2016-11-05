@@ -14,6 +14,7 @@ import * as nodeLibs from "node-libs-browser";
 import * as detective from "detective";
 
 // TODO - handle __webpack_public_path__
+import { RawSourceMap } from "source-map";
 import { IDependencyContent } from "../../base";
 
 import {
@@ -80,6 +81,7 @@ export interface IWebpackNodeConfig {
 
 export interface IWebpackConfig {
   entry?: any;
+  context: string;
   output?: any;
   node: IWebpackNodeConfig,
   resolve: IWebpackResolveConfig;
@@ -164,6 +166,7 @@ class WebpackLoaderContext {
     const result = module.pitch(remainingRequests.join("!"));
     if (result == null) return;
 
+
     return { content: result, map: undefined }
   }
 
@@ -174,8 +177,17 @@ class WebpackLoaderContext {
 
   async() {
     this._async = true;
-    return (err, content, map) => {
+    return (err, content, map: RawSourceMap) => {
       if (err) return this._reject(err);
+
+      // change sources to absolute path
+      if (map) {
+        map.sources = map.sources.map(relativePath => {
+          return relativePath.charAt(0) !== "/" ? path.join(this.strategy.config.context || process.cwd(), relativePath) : relativePath;
+        });
+      }
+
+      console.log(map);
       this._resolve({ content, map });
     }
   }

@@ -1,5 +1,5 @@
 import { DOMNodeType } from "./node-types";
-import { SyntheticDOMNode } from "./node";
+import { SyntheticDOMNode, SyntheticDOMNodeEdit } from "./node";
 import { SyntheticDOMText } from "./text-node";
 import { isDOMMutationAction, DOMNodeAction } from "@tandem/synthetic-browser/actions";
 import { diffArray, ITreeWalker, findTreeNode, Action } from "@tandem/common";
@@ -13,10 +13,11 @@ import {
   RemoveEditAction,
   MoveChildEditAction,
   RemoveChildEditAction,
+  SetKeyValueEditAction,
   InsertChildEditAction,
 } from "@tandem/sandbox";
 
-export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends BaseContentEdit<T> {
+export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends SyntheticDOMNodeEdit<T> {
 
   static readonly INSERT_CHILD_NODE_EDIT = "insertChildNodeEdit";
   static readonly REMOVE_CHILD_NODE_EDIT = "removeChildNodeEdit";
@@ -64,7 +65,7 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
         this.addChildEdit(oldValue.createEdit().fromDiff(newValue));
       }
     });
-    return this;
+    return super.addDiff(newContainer as T);
   }
 }
 
@@ -114,6 +115,9 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
       case SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT:
         const removeAction = <InsertChildEditAction>action;
         this.removeChild(removeAction.findChild(this.childNodes) as SyntheticDOMNode);
+      break;
+      case SyntheticDOMNodeEdit.SET_SYNTHETIC_SOURCE_EDIT:
+        (<SetKeyValueEditAction>action).applyTo(this);
       break;
       case SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT:
         const moveAction = <MoveChildEditAction>action;

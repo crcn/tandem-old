@@ -1,6 +1,6 @@
 import { SyntheticCSSStyleDeclaration } from "./declaration";
-import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { SyntheticCSSStyleRule, diffSyntheticCSSStyleRules } from "./style-rule";
+import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
 import { ISerializer, serialize, deserialize, serializable, ISerializedContent, ITreeWalker } from "@tandem/common";
 
 import {
@@ -55,6 +55,12 @@ export class SyntheticCSSMediaRule extends SyntheticCSSAtRule {
 
   constructor(public media: string[], rules: SyntheticCSSStyleRule[]) {
     super(rules);
+  }
+
+  get cssText() {
+    return `@media ${this.media.join(" ")} {
+      ${this.innerText}
+    }`
   }
 
   get name() {
