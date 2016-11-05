@@ -1,5 +1,6 @@
 import { flatten } from "lodash";
 import { WrapBus } from "mesh";
+import { debounce } from "lodash";
 import { FileCache } from "../file-cache";
 import { ISyntheticObject } from "../synthetic";
 import { FileEditorAction } from "../actions";
@@ -502,3 +503,65 @@ export class SyntheticObjectEditor {
   }
 }
 
+/**
+ * Watches synthetic objects, and emits changes over time.
+ */
+
+export class SyntheticObjectChangeWatcher<T extends ISyntheticObject & IEditable & Observable> {
+
+  private _clone: T;
+  private _target: T
+  private _targetObserver: IActor;
+
+  constructor(private onChange: (actions: EditAction[]) => any, private onClone: (clone: T) => any, private filterAction?: (action: Action) => boolean) {
+    this._targetObserver = new WrapBus(this.onTargetAction.bind(this));
+  }
+
+  get target() {
+    return this._target;
+  }
+
+  set target(value: T) {
+    if (this._target) {
+      this._target.unobserve(this._targetObserver);
+    }
+    this._target = value;
+    if (!this._clone) {
+      this._clone  = value.clone(true) as T;
+      this.onClone(this._clone);
+    } else {
+      this.diff();
+    }
+
+    if (this._target) {
+      this._target.observe(this._targetObserver);
+    }
+  }
+
+  dispose() {
+    if (this._target) {
+      this._target.unobserve(this._targetObserver);
+    }
+  }
+
+  private onTargetAction(action: Action) {
+
+    if (!this.filterAction || this.filterAction(action)) {
+
+      // debounce to batch multiple operations together
+      this.requestDiff();
+    }
+  }
+
+  private requestDiff = debounce(() => {
+    this.diff();
+  }, 10);
+
+  private diff() {
+    const edit = (<BaseContentEdit<any>>this._clone.createEdit()).fromDiff(this._target);
+    if (edit.actions.length) {
+      this.onChange(edit.actions);
+      edit.applyActionsTo(this._clone);
+    }
+  }
+}

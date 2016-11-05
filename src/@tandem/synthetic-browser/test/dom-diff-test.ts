@@ -67,6 +67,8 @@ describe(__filename + "#", () => {
       const actions = a.createEdit().fromDiff(b).actions;
       expect(actions.length).to.equal(0, `
 
+        ${chalk.magenta(a.innerHTML)} -> ${chalk.green(b.innerHTML)}
+
         Trying to apply edit actions from node that should be identical: ${actions.map(action => action.type)}
       `);
     }

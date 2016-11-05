@@ -5,7 +5,11 @@ import { SyntheticLocation } from "../location";
 import { SyntheticDocument } from "./document";
 import { Logger, Observable, PrivateBusProvider } from "@tandem/common";
 import { SyntheticHTMLElement } from "./html";
+import { SyntheticWindowTimers } from "./timers";
 import { NoopBus } from "mesh";
+import { Blob, FakeBlob } from "./blob";
+import { URL, FakeURL } from "./url";
+import * as btoa from "btoa";
 
 export class SyntheticNavigator {
   readonly appCodeName = "Tandem";
@@ -48,8 +52,18 @@ export class SyntheticWindow extends Observable {
   readonly window: SyntheticWindow;
 
   // TODO - need to wrap around these
-  readonly setInterval = setInterval;
-  readonly setTimeout = setTimeout;
+  readonly setTimeout: Function;
+  readonly setInterval: Function;
+  readonly setImmediate: Function;
+  readonly clearTimeout: Function;
+  readonly clearInterval: Function;
+  readonly clearImmediate: Function;
+
+  private _windowTimers: SyntheticWindowTimers;
+
+  readonly Blob = Blob;
+  readonly URL  = URL;
+  readonly btoa = btoa;
 
   public resolve: { extensions: string[], directories: string[] };
 
@@ -63,6 +77,14 @@ export class SyntheticWindow extends Observable {
     this.console  = new SyntheticConsole(
       new Logger(browser && PrivateBusProvider.getInstance(browser.injector) || new NoopBus(), "**VM** ")
     );
+
+    const windowTimers = this._windowTimers = new SyntheticWindowTimers();
+    this.setTimeout = windowTimers.setInterval.bind(windowTimers);
+    this.setInterval = windowTimers.setInterval.bind(windowTimers);
+    this.setImmediate = windowTimers.setInterval.bind(windowTimers);
+    this.clearTimeout = windowTimers.clearTimeout.bind(windowTimers);
+    this.clearInterval = windowTimers.clearInterval.bind(windowTimers);
+    this.clearImmediate = windowTimers.clearImmediate.bind(windowTimers);
   }
 
   get depth(): number {
@@ -73,6 +95,10 @@ export class SyntheticWindow extends Observable {
       c = <any>c.parent;
     }
     return i;
+  }
+
+  dispose() {
+    this._windowTimers.dispose();
   }
 
   get parent(): SyntheticWindow {

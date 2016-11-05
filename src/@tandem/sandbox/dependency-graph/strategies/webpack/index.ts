@@ -141,11 +141,11 @@ class WebpackLoaderContext {
     return require(this.loader.modulePath);
   }
 
-  async load(content): Promise<{ content: string, map: any }> {
+  async load(content, map): Promise<{ content: string, map: any }> {
     return new Promise<any>((resolve, reject) => {
       this._resolve = resolve;
       this._reject = reject;
-      const result = this.module.call(this, content);
+      const result = this.module.call(this, content, map);
       if (!this._async) {
         return resolve(result && { content: result });
       }
@@ -242,7 +242,7 @@ class WebpackDependencyLoader implements IDependencyLoader {
       if (index >= contexts.length) return { content, map };
       const context = contexts[index];
       const result = (await context.capture() || await loadNext(content, map, index + 1));
-      return await context.load(result.content) || result;
+      return await context.load(result.content, result.map) || result;
     }
 
     const result = await loadNext(content, map, 0);

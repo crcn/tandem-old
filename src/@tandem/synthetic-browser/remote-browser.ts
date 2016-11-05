@@ -1,3 +1,4 @@
+import { debounce } from "lodash";
 import { NoopRenderer, ISyntheticDocumentRenderer } from "./renderers";
 import { OpenRemoteBrowserAction, SyntheticBrowserAction, isDOMMutationAction } from "./actions";
 import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser, ISyntheticBrowserOpenOptions } from "./browser";
@@ -21,7 +22,16 @@ import {
 
 import { BaseApplicationService } from "@tandem/core/services";
 import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
-import { Dependency, DependencyGraph, BaseContentEdit, DependencyGraphProvider, SyntheticObjectEditor, IDependencyGraphStrategyOptions } from "@tandem/sandbox";
+import {
+  Dependency,
+  EditAction,
+  BaseContentEdit,
+  DependencyGraph,
+  SyntheticObjectEditor,
+  DependencyGraphProvider,
+  SyntheticObjectChangeWatcher,
+  IDependencyGraphStrategyOptions
+} from "@tandem/sandbox";
 
 @definePublicAction({
   serialize({ type, data }: RemoteBrowserDocumentAction) {
@@ -87,12 +97,11 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       this.setWindow(window);
 
     } else if (action.type === RemoteBrowserDocumentAction.DOCUMENT_DIFF) {
-      const edit: SyntheticDocumentEdit = action.data;
-      this.logger.verbose("Received document diffs: >>%s", edit.actions.map(action => action.type).join(", "));
-      this._documentEditor.applyEditActions(...edit.actions);
+      const actions: EditAction[] = action.data;
+      this.logger.verbose("Received document diffs: >>%s", actions.map(action => action.type).join(", "));
+      this._documentEditor.applyEditActions(...actions);
     }
 
-    console.log(action);
     this.notify(action);
 
     // explicitly request an update since some synthetic objects may not emit
@@ -125,35 +134,24 @@ export class RemoteBrowserService extends BaseApplicationService {
 
       const logger = this.logger.createChild(`${action.options.url} `);
 
-      browser.open(action.options).then(() => {
+      const changeWatcher = new SyntheticObjectChangeWatcher<SyntheticDocument>(async (actions: EditAction[]) => {
+        logger.info("Sending diffs: <<%s", actions.map(action => action.type).join(", "));
+        await writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.DOCUMENT_DIFF, actions)) });
+      }, (clone: SyntheticDocument) => {
+        logger.info("Sending <<new document");
+        writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.NEW_DOCUMENT, clone)) });
+      }, isDOMMutationAction);
 
-        let currentDocument = browser.document.cloneNode(true);
-
-        writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.NEW_DOCUMENT, browser.document)) });
-
-        const observer = {
-          execute: async (action: Action) => {
-            if (action.type === SyntheticBrowserAction.BROWSER_LOADED) {
-
-              const edit = currentDocument.createEdit().fromDiff(browser.document);
-
-              // need to patch existing document for now to maintain UID references
-              new SyntheticObjectEditor(currentDocument).applyEditActions(...edit.actions);
-              if (edit.actions.length) {
-                logger.info("Sending diffs: <<%s", edit.actions.map(action => action.type).join(", "));
-                try {
-                  await writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.DOCUMENT_DIFF, edit)) });
-                } catch(e) {
-                  logger.warn("Unable to send diffs to client, closing synthetic browser connection.");
-                  browser.unobserve(observer);
-                }
-              }
-            }
+      const observer = {
+        execute: async (action: Action) => {
+          if (action.type === SyntheticBrowserAction.BROWSER_LOADED && action.target === browser) {
+            changeWatcher.target = browser.document;
           }
-        };
+        }
+      };
 
-        browser.observe(observer);
-      });
+      browser.observe(observer);
+      browser.open(action.options);
     });
   }
 }

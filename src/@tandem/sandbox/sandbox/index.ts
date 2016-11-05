@@ -108,12 +108,6 @@ export class Sandbox extends Observable {
   }
 
   public evaluate(dependency: Dependency): Object {
-
-    // if (!dependency) {
-    //   this.logger.warn("")
-    //   return null;
-    // }
-
     const hash = dependency.hash;
 
     if (this._modules[dependency.hash]) {
@@ -138,6 +132,7 @@ export class Sandbox extends Observable {
 
     return this.evaluate(dependency);
   }
+
   protected async onEntryAction(action: Action) {
 
     if (action.type === DependencyAction.DEPENDENCY_LOADED) {
@@ -168,6 +163,11 @@ export class Sandbox extends Observable {
     this._shouldEvaluate = false;
     const exports = this._exports;
     const global  = this._global;
+
+    // global may have some clean up to do (timers, open connections),
+    // so call dispose if the method is available.
+    if (global && global.dispose) global.dispose();
+
     this._global  = this.createGlobal() || {};
     this._context = vm.createContext(this._global);
     this.notify(new PropertyChangeAction("global", this._global, global));

@@ -68,11 +68,56 @@ interface ISerializerInfo {
 }
 
 const _serializers   = {
-  [LITERAL_TYPE]: { ctor: undefined, serializer: new LiteralSerializer() }
+  [LITERAL_TYPE]: { ctor: undefined, serializer: new LiteralSerializer() },
+  Array: {
+    ctor: undefined,
+    serializer: {
+      serialize(value: any[]) {
+
+        // cast value as an array if it's not (might be a sub class)
+        return ([].concat(value)).map(serialize)
+      },
+      deserialize(value: any[], injector) {
+        return value.map(item => deserialize(item, injector));
+      }
+    }
+  },
+  Date: {
+    ctor: undefined,
+    serializer: {
+      serialize(value: Date) {
+        return Date.now();
+      },
+      deserialize(value: number) {
+        return new Date(value);
+      }
+    }
+  },
+  RegExp: {
+    ctor: undefined,
+    serializer: {
+      serialize(value: RegExp) {
+        return { source: value.source, flags: value.flags };
+      },
+      deserialize({ source, flags }: any) {
+        return new RegExp(source, flags);
+      }
+    }
+  },
 };
 
 export function getSerializeType(value: any) {
-  return canSerialize(value) ? Reflect.getMetadata("serialize:type", value.constructor) || Reflect.getMetadata("serialize:type", value) : undefined;
+   return canSerialize(value) ? Reflect.getMetadata("serialize:type", value.constructor) || Reflect.getMetadata("serialize:type", value) : getNativeSerializeType(value);
+}
+
+function getNativeSerializeType(value: any) {
+
+  // need to use instanceof since the value may be a sub class
+  if (value instanceof Array) return "Array";
+  if (value instanceof Date) return "Date";
+  if (value instanceof RegExp) return "RegExp";
+
+  return undefined;
 }
 
 export function serializable(serializer?: ISerializer<any, any>, type?: string) {

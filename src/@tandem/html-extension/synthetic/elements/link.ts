@@ -18,12 +18,21 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
   public stylesheet: SyntheticCSSStyleSheet;
   public import: SyntheticHTMLElement;
 
+  get href() {
+    return this.getAttribute("href");
+  }
+
+  set href(value: string) {
+    this.setAttribute("href", value);
+  }
+
   createdCallback() {
     this.attachShadow({ mode: "open" });
     const window = this.ownerDocument.defaultView;
     const rel     = this.getAttribute("rel") || "stylesheet";
     const href    = this.getAttribute("href");
 
+    return;
     // Odd chunk of code.
     // Elements that are evaluated are created in a sandbox, which require pre-loaded
     // bundles for them to execute. Therefore it's okay to fetch a bundle here synchronously

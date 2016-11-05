@@ -175,3 +175,11 @@ declare module "detective" {
 declare module "ansi_up" {
   export function ansi_to_html(source: string): string;
 }
+
+declare module "btoa" {
+  function btoa(value: any);
+  namespace btoa {
+
+  }
+  export = btoa;
+}
