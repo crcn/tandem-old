@@ -124,7 +124,7 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
         const insertAction = <InsertChildEditAction>action;
 
         // Clone again to ensure that the child can be re-added to multiple targets.
-        this.insertChildAt(insertAction.child.cloneNode(true) as SyntheticDOMNode, insertAction.index);
+        this.insertChildAt(insertAction.child.clone(true) as SyntheticDOMNode, insertAction.index);
       break;
     }
   }

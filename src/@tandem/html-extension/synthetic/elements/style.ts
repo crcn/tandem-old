@@ -12,13 +12,29 @@ export class SyntheticHTMLStyle extends SyntheticDOMElement {
 
   private _styleSheet: SyntheticCSSStyleSheet;
 
-
   createdCallback() {
+    this._styleSheet = new SyntheticCSSStyleSheet([]);
+    this._styleSheet.cssText = this.textContent;
+  }
 
-    // only allow text/css for now -- may allow for other types in the future, but this is
-    // the only one that native DOM supports. All custom types should be handled in their respective
-    // loaders.
-    this.ownerDocument.styleSheets.push(this._styleSheet = evaluateCSS(parseCSS(this.textContent), undefined, this.module));
+  attachedCallback() {
+    super.attachedCallback();
+    const edit = this.ownerDocument.createEdit();
+    edit.addStyleSheet(this._styleSheet);
+    edit.applyActionsTo(this.ownerDocument);
+  }
+
+  detachedCallback() {
+    const edit = this.ownerDocument.createEdit();
+    edit.removeStyleSheet(this._styleSheet);
+    edit.applyActionsTo(this.ownerDocument);
+  }
+
+  onChildAdded(child) {
+    super.onChildAdded(child);
+    if (this._styleSheet) {
+      this._styleSheet.cssText = this.textContent;
+    }
   }
 
   get styleSheet() {

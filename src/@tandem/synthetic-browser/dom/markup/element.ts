@@ -374,11 +374,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     if (this._shadowRoot) {
       this._shadowRoot.$setOwnerDocument(document);
     }
-    if (document) {
-      this.attachedCallback();
-    } else {
-      this.detachedCallback();
-    }
   }
 
   protected attributeChangedCallback(name: string, oldValue: any, newValue: any) {
@@ -387,14 +382,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   protected createdCallback() {
 
-  }
-
-  protected attachedCallback() {
-    // override me
-  }
-
-  protected detachedCallback() {
-    // override me
   }
 
   cloneShallow() {

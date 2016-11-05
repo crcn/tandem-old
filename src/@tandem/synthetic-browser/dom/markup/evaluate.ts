@@ -6,6 +6,7 @@ import { SyntheticDOMContainer } from "./container";
 import { SyntheticDOMAttribute, SyntheticDOMElement } from "./element";
 import { IMarkupExpression, MarkupContainerExpression } from "./ast";
 
+// TODO - this needs to be async
 export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: SandboxModule): any {
 
   function initialize(expression: IMarkupExpression, synthetic: SyntheticDOMNode) {

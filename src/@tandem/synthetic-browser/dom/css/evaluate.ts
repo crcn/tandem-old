@@ -50,6 +50,8 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
       end = undefined;
     }
 
+    console.log(filePath);
+
     synthetic.$source = {
       kind: expression.type,
 

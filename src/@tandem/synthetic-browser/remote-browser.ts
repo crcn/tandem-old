@@ -150,6 +150,10 @@ export class RemoteBrowserService extends BaseApplicationService {
         }
       };
 
+      if (browser.document) {
+        changeWatcher.target = browser.document;
+      }
+
       browser.observe(observer);
       browser.open(action.options);
     });

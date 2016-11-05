@@ -47,6 +47,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   abstract textContent: string;
   readonly namespaceURI: string;
   public $uid: any;
+  protected _attached: boolean;
 
   /**
    * TRUE if the node has been loaded
@@ -180,10 +181,22 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return this.childNodes.length !== 0;
   }
 
-  onChildAdded(child) {
+  onChildAdded(child: SyntheticDOMNode) {
     super.onChildAdded(child);
     if (this.ownerDocument) {
       child.$setOwnerDocument(this.ownerDocument);
+      if (this._attached) {
+        child.$attach(this.ownerDocument);
+      } else if (child._attached) {
+        child.$detach();
+      }
+    }
+  }
+
+  onChildRemoved(child: SyntheticDOMNode) {
+    super.onChildRemoved(child);
+    if (this._attached) {
+      child.$detach();
     }
   }
 
@@ -194,12 +207,47 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     }
   }
 
+
+  $attach(document: SyntheticDocument) {
+
+    if (this._attached && this._ownerDocument === document) {
+      return console.warn("Trying to attach an already attached node");
+    }
+
+    this._attached = true;
+    this._ownerDocument = document;
+
+    this.attachedCallback();
+
+    for (let i = 0, n = this.childNodes.length; i < n; i++) {
+      this.childNodes[i].$attach(document);
+    }
+  }
+
+  $detach() {
+    if (!this._attached) return;
+    this._attached = false;
+    this.detachedCallback();
+    for (let i = 0, n = this.childNodes.length; i < n; i++) {
+      this.childNodes[i].$detach();
+    }
+  }
+
+
   public $linkClone(clone: SyntheticDOMNode) {
     clone.$source = this.$source;
     clone.$module = this.$module;
     clone.$uid    = this.uid;
     clone.$setOwnerDocument(this.ownerDocument);
     return clone;
+  }
+
+  protected attachedCallback() {
+
+  }
+
+  protected detachedCallback() {
+
   }
 
   /**

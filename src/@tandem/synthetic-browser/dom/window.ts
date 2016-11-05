@@ -79,9 +79,9 @@ export class SyntheticWindow extends Observable {
     );
 
     const windowTimers = this._windowTimers = new SyntheticWindowTimers();
-    this.setTimeout = windowTimers.setInterval.bind(windowTimers);
+    this.setTimeout = windowTimers.setTimeout.bind(windowTimers);
     this.setInterval = windowTimers.setInterval.bind(windowTimers);
-    this.setImmediate = windowTimers.setInterval.bind(windowTimers);
+    this.setImmediate = windowTimers.setImmediate.bind(windowTimers);
     this.clearTimeout = windowTimers.clearTimeout.bind(windowTimers);
     this.clearInterval = windowTimers.clearInterval.bind(windowTimers);
     this.clearImmediate = windowTimers.clearImmediate.bind(windowTimers);

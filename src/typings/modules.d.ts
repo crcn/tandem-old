@@ -183,3 +183,11 @@ declare module "btoa" {
   }
   export = btoa;
 }
+
+declare module "atob" {
+  function atob(value: any);
+  namespace atob {
+
+  }
+  export = atob;
+}

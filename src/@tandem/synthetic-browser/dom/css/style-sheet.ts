@@ -1,3 +1,5 @@
+import * as atob from "atob";
+import { RawSourceMap } from "source-map";
 import { SyntheticCSSFontFace } from "./font-face";
 import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
@@ -101,9 +103,19 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
   }
 
   set cssText(value: string) {
+
+    let map: RawSourceMap;
+
+    if (value.indexOf("sourceMappingURL") !== -1) {
+      const sourceMappingURL = value.match(/sourceMappingURL=([^\s]+)/)[1];
+
+      // assuming that it's inlined here... shouldn't.
+      map = JSON.parse(atob(sourceMappingURL.split(",").pop()));
+    }
+
     this
     .createEdit()
-    .fromDiff(evaluateCSS(parseCSS(value)))
+    .fromDiff(evaluateCSS(parseCSS(value, map), map))
     .applyActionsTo(this);
   }
 

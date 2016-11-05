@@ -7,6 +7,7 @@ const _cache = {};
 
 export function parseCSS(source: string, map?: RawSourceMap, syntax?: any): postcss.Root {
   if (_cache[source]) return _cache[source].clone();
+
   return _cache[source] = postcss().process(source, {
     syntax: syntax,
     map: map && {

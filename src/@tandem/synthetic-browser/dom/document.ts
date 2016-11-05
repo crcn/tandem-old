@@ -254,9 +254,9 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     super.visitWalker(walker);
   }
 
-  onChildAdded(child) {
+  onChildAdded(child: SyntheticDOMNode) {
     super.onChildAdded(child);
-    this.own(child);
+    child.$attach(this);
   }
 
   cloneShallow() {

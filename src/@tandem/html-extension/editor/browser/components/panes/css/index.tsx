@@ -40,6 +40,7 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ rule: Synt
 
 export class ElementCSSPaneComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
+    if (!this.props.workspace) return null;
     const { selection } = this.props.workspace;
     const elements = DOMElements.fromArray(selection);
     return <div className="td-pane">
