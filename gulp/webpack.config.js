@@ -85,7 +85,10 @@ module.exports = {
           test: /\.tsx?$/,
 
           // TODO - add jsx dataSource loader here
-          loader: 'ts-loader',
+          loader: [
+            join(__dirname, "/../out/tandem-loader"),
+            'ts-loader?sourceMap',
+          ].join("!"),
           exclude:  /node_modules/
         },
         {

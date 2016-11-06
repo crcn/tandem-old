@@ -117,6 +117,7 @@ class WebpackLoaderContext {
   readonly options: any;
   private _compiler: MockWebpackCompiler;
   readonly query: string;
+  public remainingRequest: string;
 
   constructor(
     readonly loaders: INormalizedWebpackLoaderConfig[],
@@ -133,6 +134,8 @@ class WebpackLoaderContext {
     this.options = Object.assign({ context: "" }, strategy.config);
     this.loaderIndex = this.loaders.indexOf(loader);
     this._module = new WebpackLoaderContextModule();
+
+    this.remainingRequest = this.loaderIndex === this.loaders.length - 1 ? this.resourcePath : undefined;
   }
 
   get includedDependencyPaths(): string[] {

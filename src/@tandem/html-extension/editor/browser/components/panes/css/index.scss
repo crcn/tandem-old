@@ -1,15 +1,20 @@
 .test {
-  color: white;
-  background: black;
+  background: orange;
+
   padding: 10px;
   font-weight: 100;
 }
 
-.child {
+.something {
   color: red;
 }
 
+.child {
+  font-weight: 200;
+}
+
 body {
+  color: white;
   font-family: Helvetica;
   letter-spacing: 0.05em;
   margin: 0;

@@ -1,9 +1,7 @@
-- wire up css rules
-- change style rule to snake case
 - re-wire history tool
   - only store diffs
-- apply diffs to file cache content urls
 - images should work
 - arrow keys for changing style inputs
-- pretty view for CSS styles
-- persist changes from css back to file cache
+- html edits should work for react
+- test css file editor
+- test html file editor

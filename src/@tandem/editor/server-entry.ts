@@ -11,6 +11,7 @@ import * as MemoryDS from "mesh-memory-ds-bus";
 // import { createVueWorkerProviders } from "@tandem/vue-extension/editor/server";
 import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/server";
 import { createJavaScriptWorkerProviders } from "@tandem/javascript-extension/editor/server";
+import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/server";
 import { createTDProjectEditorServerProviders } from "@tandem/tdproject-extension/editor/server";
 import { createSyntheticBrowserWorkerProviders } from "@tandem/synthetic-browser";
 import {
@@ -20,6 +21,7 @@ import {
 
 const config: IEdtorServerConfig = {
   argv: argv,
+  experimental: !!argv.experimental,
   logLevel: LogLevel[String(argv.logLevel || "").toUpperCase()] || LogLevel.DEFAULT,
   cwd: process.cwd(),
   entries: {
@@ -35,10 +37,10 @@ let deps = new Injector(
   createJavaScriptWorkerProviders(),
   createHTMLEditorWorkerProviders(),
   createSASSEditorWorkerProviders(),
+  createTypescriptEditorWorkerProviders(),
   createSyntheticBrowserWorkerProviders(),
   createTDProjectEditorServerProviders(),
-  createEditorServiceProviders(config, new MongoDS("mongodb://localhost:27017/tandem"))
-  // createEditorServiceProviders(config, new MemoryDS())
+  createEditorServiceProviders(config, config.experimental ? new MongoDS("mongodb://localhost:27017/tandem") : new MemoryDS())
 );
 
 const app = new ServiceApplication(deps);

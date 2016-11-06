@@ -36,9 +36,9 @@ const cwd = process.cwd();
 
 const highlighters = [
 
-  createLogColorizer(/^INF/, (match) => chalk.white.bgCyan(match)),
-  createLogColorizer(/^ERR/, (match) => chalk.white.bgRed(match)),
-  createLogColorizer(/^DBG/, (match) => chalk.white.bgBlack(match)),
+  createLogColorizer(/^INF/, (match) => chalk.bgCyan(match)),
+  createLogColorizer(/^ERR/, (match) => chalk.bgRed(match)),
+  createLogColorizer(/^DBG/, (match) => chalk.bgBlack(match)),
   createLogColorizer(/^WRN/, (match) => chalk.bgYellow(match)),
 
   // timestamp
@@ -85,7 +85,6 @@ function colorize(input: string) {
   for (let i = 0, n = highlighters.length; i < n; i++) output = highlighters[i](output);
   return output;
 }
-
 
 // I'm against abbreviations, but it's happening here
 // since all of these are the same length -- saves space in stdout, and makes

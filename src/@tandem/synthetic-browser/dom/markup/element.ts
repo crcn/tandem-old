@@ -247,7 +247,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     return new SyntheticDOMElementEdit(this);
   }
 
-
   applyEditAction(action: EditAction) {
     super.applyEditAction(action);
     if (action.type === SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT) {
@@ -310,6 +309,13 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   setAttribute(name: string, value: any) {
+
+    // Reserved attribute to help map where this element came from. Defined
+    // by source transformers that scan for HTML elements.
+    if (name === "data-source") {
+      this.$source = JSON.parse(value);
+      return;
+    }
 
     let oldValue;
     const attribute = this.attributes[name];

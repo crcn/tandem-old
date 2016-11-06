@@ -431,8 +431,6 @@ export class FileEditor extends Observable {
 
         const targetFilePath = await ProtocolURLResolverProvider.resolve(targetSource.filePath, this._injector);
 
-        console.log(targetFilePath);
-
         const filePathActions: EditAction[] = actionsByFilePath[targetFilePath] || (actionsByFilePath[targetFilePath] = []);
         filePathActions.push(action);
       }

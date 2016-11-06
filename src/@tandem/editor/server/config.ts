@@ -10,6 +10,7 @@ import { LogLevel } from "@tandem/common";
 export interface IEdtorServerConfig {
   cwd: string;
   logLevel?: LogLevel,
+  experimental: boolean,
   argv: {
     _: any[],
     open?: boolean,
