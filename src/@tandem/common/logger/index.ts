@@ -100,10 +100,14 @@ export class Logger {
       return value;
     }
 
-    const message = sprintf(
+    const paramCount = (text.match(/%\w/g) || []).length;
+    const sprintfParams = params.slice(0, paramCount);
+    const restParams    = params.slice(paramCount);
+
+    const message = [sprintf(
       `${this.getPrefix()}${stringify(text)}`,
-      ...params.map(stringify)
-    );
+      ...sprintfParams.map(stringify)
+    ), ...restParams].join(" ");
 
     this.bus.execute(new LogAction(level, message, this.filterable));
   }

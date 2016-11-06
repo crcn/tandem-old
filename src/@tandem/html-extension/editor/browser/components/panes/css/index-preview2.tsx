@@ -8,6 +8,8 @@ const el2 = <div className="test">
   </div>
 </div>;
 
+console.log("I", "am", "a", "log");
+
 const element = document.createElement("div");
 ReactDOM.render(el2, element);
 module.exports = element;
