@@ -305,6 +305,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
         resolve(this);
       }, (err) => {
         this._loading = false;
+        this.logger.verbose("Error while loading");
         reject(err);
       })
     });
@@ -345,11 +346,9 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       return this.reload();
     }
 
-
     // watch for changes now prevent cyclical dependencies from cyclically
     // listening and emitting the same "done" actions
     await this.watchForChanges();
-
 
     return this;
   }, { length: 0, promise: "then" }) as () => Promise<Dependency>;

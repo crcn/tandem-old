@@ -32,6 +32,8 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
   [SyntheticCSSStyleRuleEdit.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName }: SetKeyValueEditAction) {
     const source = target.source;
 
+    let found: boolean;
+
     const shouldAdd = node.walkDecls((decl, index) => {
       if (decl.prop === name || decl.prop === oldName) {
         if (newValue && newValue) {
@@ -40,10 +42,11 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
         } else {
           node.nodes.splice(index, 1);
         }
+        found = true;
       }
-    }) !== false;
+    });
 
-    if (shouldAdd && newValue) {
+    if (!found && newValue) {
       node.nodes.push(postcss.decl({ prop: name, value: newValue }))
     }
   }
@@ -120,6 +123,10 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
   }
 
   getFormattedContent(root: postcss.Rule) {
+
+    // try parsing again. This should throw an error if any edits are invalid.
+    parseCSS(root.toString());
+
     return root.toString();
   }
 }

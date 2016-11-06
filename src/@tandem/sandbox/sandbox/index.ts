@@ -143,7 +143,12 @@ export class Sandbox extends Observable {
 
       this._waitingForAllLoaded = true;
       this.logger.verbose("Received dependency update, waiting for others to finish loading")
-      await this._entry.whenAllLoaded();
+      try {
+        await this._entry.whenAllLoaded();
+      } catch(e) {
+        this._waitingForAllLoaded = false;
+        throw e;
+      }
       this._waitingForAllLoaded = false;
 
       if (this._paused) {

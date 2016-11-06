@@ -38,7 +38,7 @@ const highlighters = [
 
   createLogColorizer(/^INF/, (match) => chalk.bgCyan(match)),
   createLogColorizer(/^ERR/, (match) => chalk.bgRed(match)),
-  createLogColorizer(/^DBG/, (match) => chalk.bgBlack(match)),
+  createLogColorizer(/^DBG/, (match) => chalk.grey.bgBlack(match)),
   createLogColorizer(/^WRN/, (match) => chalk.bgYellow(match)),
 
   // timestamp
