@@ -183,7 +183,7 @@ class WebpackLoaderContext {
     return (err, content, map: RawSourceMap) => {
       if (err) return this._reject(err);
 
-      // change sources to absolute path
+      // change sources to absolute path for edits
       if (map) {
         map.sources = map.sources.map(relativePath => {
           return relativePath.charAt(0) !== "/" ? path.join(this.strategy.config.context || process.cwd(), relativePath) : relativePath;

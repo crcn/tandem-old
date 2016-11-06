@@ -72,7 +72,13 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
 
   getFormattedContent(root: ts.SourceFile) {
     let text = this.content;
-    for (const { start, end, value } of this._replacements) {
+
+    // end edits first
+    const replacements = this._replacements.sort((a, b) => {
+      return a.start > b.start ? -1 : 1;
+    });
+
+    for (const { start, end, value } of replacements) {
       text = text.substr(0, start) + value + text.substr(end);
     }
     return text;

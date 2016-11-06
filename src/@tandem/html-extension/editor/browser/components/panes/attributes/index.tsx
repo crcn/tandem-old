@@ -35,6 +35,7 @@ export class EntityAttributesPaneComponent extends BaseApplicationComponent<{ wo
     const items = this.items;
     if (!items.length) return null;
 
+
     return <div className="td-pane">
       <div className="td-section-header">
         Attributes
@@ -42,7 +43,15 @@ export class EntityAttributesPaneComponent extends BaseApplicationComponent<{ wo
           <span onClick={this.addAttribute}>+</span>
         </div>
       </div>
-      <HashInputComponent items={items.attributes} setKeyValue={this.setAttribute} />
+      { items.attributes.length ? <HashInputComponent items={items.attributes} setKeyValue={this.setAttribute} /> : this.renderAddButton() }
+    </div>;
+  }
+
+  renderAddButton() {
+
+    // TODO: temporary - make this prettier.
+    return <div className="container">
+      <div onClick={this.addAttribute} style={{ cursor: "pointer" }}>Add one</div>
     </div>;
   }
 }

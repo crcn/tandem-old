@@ -2,6 +2,5 @@
   - only store diffs
 - images should work
 - arrow keys for changing style inputs
-- html edits should work for react
 - test css file editor
 - test html file editor

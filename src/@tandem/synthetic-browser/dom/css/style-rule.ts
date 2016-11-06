@@ -72,9 +72,7 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
   }
 
   get cssText() {
-    return `${this.selector} {
-      ${this.style.cssText}
-    }`;
+    return `${this.selector} {\n${this.style.cssText}}`;
   }
 
   applyEditAction(action: EditAction) {

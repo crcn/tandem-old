@@ -13,7 +13,6 @@ const {
 
 // SANDBOXED=1 tandem component.tsx
 const SANDBOXED = !!process.env.SANDBOXED;
-
 module.exports = {
     output: {
       filename: '[name].js',
@@ -85,10 +84,10 @@ module.exports = {
           test: /\.tsx?$/,
 
           // TODO - add jsx dataSource loader here
-          loader: [
-            join(__dirname, "/../out/tandem-loader"),
+          loader: SANDBOXED ? [
+            join(__dirname, '/../out/tandem-loader'),
             'ts-loader?sourceMap',
-          ].join("!"),
+          ].join('!') : 'ts-loader',
           exclude:  /node_modules/
         },
         {

@@ -3,18 +3,17 @@
   padding: 10px;
   font-weight: 100;
 }
+body {
+  letter-spacing: 0.05em;
+  margin: 0;
+}
 
-.something {
-  color: red;
+span {
+  font-family: Helvetica;
+  color: white;
 }
 
 .child {
   font-weight: 200;
 }
 
-body {
-  color: white;
-  font-family: Helvetica;
-  letter-spacing: 0.05em;
-  margin: 0;
-}

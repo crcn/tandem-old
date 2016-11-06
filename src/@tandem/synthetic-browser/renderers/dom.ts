@@ -39,7 +39,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
 
   createElement() {
     const element = document.createElement("div");
-    element.innerHTML = `<style></style><div></div>`;
+    element.innerHTML = `<style type="text/css"></style><div></div>`;
     return element;
   }
 

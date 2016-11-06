@@ -3,8 +3,8 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 const el2 = <div className="test">
-  <div className="something">
-    Hello!!!
+  <div className="something" style={{ color: "black", fontWeight: 100 }}>
+    <span>Hello!!!</span>
   </div>
 </div>;
 

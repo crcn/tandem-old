@@ -58,9 +58,7 @@ export class SyntheticCSSMediaRule extends SyntheticCSSAtRule {
   }
 
   get cssText() {
-    return `@media ${this.media.join(" ")} {
-      ${this.innerText}
-    }`
+    return `@media ${this.media.join(" ")} {\n${this.innerText}}`
   }
 
   get name() {

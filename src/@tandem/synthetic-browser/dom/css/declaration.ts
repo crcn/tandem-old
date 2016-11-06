@@ -430,6 +430,16 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     this.setProperty(name, undefined, undefined, undefined, notifyOwnerNode);
   }
 
+  getPropertyValue(name: string) {
+    const value = this[name];
+    return value && value.split(/\s*\!important/)[0];
+  }
+
+  getPropertyPriority(name: string) {
+    const value = this[name];
+    return value && value.indexOf("!important") !== -1 ? "important" : "";
+  }
+
   setProperty(name: string, newValue: string, priority?: string, oldName?: string, notifyOwnerNode: boolean = true) {
 
     // fix in case they're kebab case
@@ -522,7 +532,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
       if (!isValidCSSDeclarationProperty(key)) continue;
       const value = this[key];
       if (value) {
-        buffer.push(kebabCase(key), ":", value, ";");
+        buffer.push("\t", kebabCase(key), ": ", value, ";\n");
       }
     }
 
