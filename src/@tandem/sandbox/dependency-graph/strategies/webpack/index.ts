@@ -360,7 +360,7 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
   readonly compiler: MockWebpackCompiler;
   readonly basedir: string;
 
-  constructor(config: string|IWebpackConfig) {
+  constructor(config?: string|IWebpackConfig) {
 
     if (config && typeof config === "object") {
       this.basedir = process.cwd();
@@ -409,7 +409,6 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
     const { config } = this;
 
     moduleInfo = config.resolve.alias && config.resolve.alias[moduleInfo] || moduleInfo;
-
 
     let loaderOptions = parserLoaderOptions(moduleInfo, true);
 

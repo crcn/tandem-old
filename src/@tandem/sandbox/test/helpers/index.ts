@@ -103,11 +103,18 @@ export class MockFileSystem extends BaseFileSystem {
 
 export class MockFileResolver implements IFileResolver {
   resolve(relativePath: string, cwd: string, options?: IFileResolverOptions) {
-    return Promise.resolve(path.join(cwd || "", relativePath));
+    return Promise.resolve(path.resolve(cwd || "", relativePath));
   }
 }
 
 export const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
+export const createTestSandboxProviders = (options: ISandboxTestProviderOptions = {}) => {
+  return [
+    new MockFilesProvider(options.mockFiles || {}),
+    createSandboxProviders(MockFileSystem, MockFileResolver)
+  ];
+}
 
 export const createSandboxTestInjector = (options: ISandboxTestProviderOptions = {}) => {
   const injector = new Injector();
@@ -118,9 +125,8 @@ export const createSandboxTestInjector = (options: ISandboxTestProviderOptions =
     options.providers || [],
     new InjectorProvider(),
     new PrivateBusProvider(bus),
-    new MockFilesProvider(options.mockFiles || {}),
     createJavaScriptSandboxProviders(),
-    createSandboxProviders(MockFileSystem, MockFileResolver)
+    createTestSandboxProviders(options),
   );
 
   if (options.fileCacheSync !== false) {

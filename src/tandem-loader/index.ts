@@ -4,14 +4,17 @@ import { Visitor, NodePath } from "babel-traverse";
 import * as sm from "source-map";
 import { ISyntheticSourceInfo } from "@tandem/sandbox";
 import {
+  NullLiteral,
   CallExpression,
   SourceLocation,
   ObjectProperty,
   ObjectExpression,
   objectProperty,
+  objectExpression,
   stringLiteral
 } from "babel-types";
 
+// TODO - consider other prefixes here instead of react
 module.exports = (content, contentMap) => {
   if (!contentMap) return content;
 
@@ -51,21 +54,17 @@ module.exports = (content, contentMap) => {
           stringLiteral(JSON.stringify(source))
         )
       );
+
+    // React.createElement("div", null, ["child"]);
+    } else if ((attrArg as any).type === "NullLiteral") {
+      elementCall.arguments[1] = objectExpression([]);
+      transformJSXElementCall(elementCall);
     }
   }
 
 
   const tandemPlugin = {
     visitor: <Visitor>{
-      Identifier(path) {
-        // console.log("BLAH");
-      },
-      StringLiteral(path) {
-        // console.log(string.node.value);
-      },
-      TemplateLiteral(path) {
-        // console.log(template.node);
-      },
       CallExpression(path) {
         if (isJSXCall(path.node)) {
           transformJSXElementCall(path.node);
@@ -79,7 +78,6 @@ module.exports = (content, contentMap) => {
     inputSourceMap: contentMap,
     plugins: [tandemPlugin]
   });
-
 
   return code;
 }

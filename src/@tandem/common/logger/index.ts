@@ -17,7 +17,7 @@ export class LogTimer {
   constructor(readonly logger: Logger, readonly intervalMessage?: string, readonly timeout?: number, public level: LogLevel = LogLevel.INFO) {
     this._startTime = Date.now();
 
-    if (intervalMessage && timeout) {
+    if (intervalMessage && timeout && !process.env.TESTING) {
       this._interval = setInterval(() => {
         this.logTime(intervalMessage);
       }, timeout);

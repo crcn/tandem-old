@@ -1,5 +1,4 @@
 require('reflect-metadata');
-
 const fs            = require('fs');
 const fsa           = require('fs-extra');
 const exec          = require('child_process').exec;
@@ -12,13 +11,13 @@ const install       = require('gulp-install');
 const istanbul      = require('gulp-istanbul');
 const peg           = require('gulp-peg');
 const webpack       = require('gulp-webpack');
+const chokidar      = require('chokidar');
 const symdest       = require('gulp-symdest');
 const rename        = require('gulp-rename');
 const named         = require('vinyl-named');
 const electron      = require('gulp-atom-electron');
 const vfs           = require('vinyl-fs');
 const gulpSequence  = require('gulp-sequence');
-const watch         = require('gulp-watch');
 const _             = require('highland');
 
 const { spawn }                   = require('child_process');
@@ -218,7 +217,12 @@ gulp.task('publish', function() {
  * Test tasks
  ******************************/
 
-gulp.task('test', ['test:all']);
+gulp.task('test', ['test:flag', 'test:all']);
+
+gulp.task('test:flag', () => {
+  process.env.TESTING   = true;
+  process.env.SANDBOXED = true;
+});
 
 let coverageVariable;
 
@@ -248,6 +252,7 @@ gulp.task('test:all', ['hook:istanbul'], function(done) {
       grep: GREP,
       bail: argv.bail
     }))
+
     .on('error', error => console.error(error.message));
 
     if (argv.coverage) {
@@ -268,7 +273,10 @@ gulp.task('test:all', ['hook:istanbul'], function(done) {
   }
 
   if (WATCH) {
-    watch(packageDirs.map(dir => join(dir, '**')), run);
+    const watcher = chokidar.watch(packageDirs.map(dir => join(dir, '**')), {
+      usePolling: false
+    });
+    watcher.on("add", run).on("change", run);
     run();
   } else {
     return run();
@@ -283,5 +291,6 @@ gulp.task('test:all', ['hook:istanbul'], function(done) {
 function getPackageOutDirs() {
   return PACKAGE_NAMES.map(name => join(OUT_DIR, name));
 }
+
 
 function noop() { }

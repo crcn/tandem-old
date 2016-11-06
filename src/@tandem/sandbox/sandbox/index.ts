@@ -94,6 +94,10 @@ export class Sandbox extends Observable {
     return this._global;
   }
 
+  get entry(): Dependency {
+    return this._entry;
+  }
+
   async open(entry: Dependency) {
 
     if (this._entry) {
