@@ -19,7 +19,8 @@ module.exports = {
       filename: '[name].js',
     },
     sassLoader: {
-      includePaths: [SRC_DIR]
+      includePaths: [SRC_DIR],
+      outputStyle: "compressed"
     },
     stats: {
       hash: false,
@@ -98,14 +99,14 @@ module.exports = {
           loader: [
             'style-loader',
             'css-loader?sourceMap',
-            'sass-loader?sourceMap'
+            'sass-loader?sourceMap=true'
           ].join('!')
         },
         {
           test: /\.css$/,
           loader: [
             'style-loader',
-            'css-loader?sourceMap'
+            'css-loader?sourceMap=true'
           ].join('!')
         }
       ]

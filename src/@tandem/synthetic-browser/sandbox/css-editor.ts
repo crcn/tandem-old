@@ -119,7 +119,6 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     let found: postcss.Node;
 
     const walk = (node: postcss.Node, index: number) => {
-      // console.log(node.type, node.source.start, target.source.start);
       if (node.type === target.source.kind && sourcePositionEquals(node.source.start, target.source.start)) {
 
         // next find the actual node that the synthetic matches with -- the source position may not be
