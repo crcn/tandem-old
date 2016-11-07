@@ -7,6 +7,8 @@ import {
   BrokerBus,
   InjectorProvider,
   waitForPropertyChange,
+  LogAction,
+  LogLevel,
   PrivateBusProvider,
 } from "@tandem/common";
 import {
@@ -31,7 +33,18 @@ import {
 import { SyntheticBrowser, SyntheticHTMLElement, parseMarkup, evaluateMarkup } from "@tandem/synthetic-browser";
 
 // TODO - move most of this in util functions - possibly in @tandem/editor/test/utils
+// TODO - re-use VM instead of creating a new one each time - should be much faster
 describe(__filename + "#", () => {
+
+  const bus = new BrokerBus();
+
+  // bus.register({
+  //   execute(action: LogAction) {
+  //     if (action.type === LogAction.LOG && (action.level & (LogLevel.WARN|LogLevel.ERROR))) {
+  //       console.error(action.text);
+  //     }
+  //   }
+  // });
 
   const createTestInjector = (sandboxOptions: ISandboxTestProviderOptions) => {
     const injector = new Injector(
@@ -40,7 +53,7 @@ describe(__filename + "#", () => {
       createTypescriptEditorWorkerProviders(),
       createTestSandboxProviders(sandboxOptions),
       new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
-      new PrivateBusProvider(new BrokerBus())
+      new PrivateBusProvider(bus)
     );
     FileCacheProvider.getInstance(injector).syncWithLocalFiles();
     return injector;
@@ -60,7 +73,8 @@ describe(__filename + "#", () => {
   const loadJSX = async (jsx: string) => {
 
     // need to use process.cwd() to ensure that tsconfig.json gets loaded.
-    const fileName = process.cwd() + "/entry.tsx";
+    // Also using timestamp to break any memoization.
+    const fileName = process.cwd() + "/"+Date.now()+".tsx";
 
     const mockFiles = Object.assign({
       [fileName]: `
@@ -101,8 +115,8 @@ describe(__filename + "#", () => {
 
   // testing to ensure the setup code above works
   it("can render an element", async () => {
-    const { element } = await loadJSX(`<div>Hello</div>`);
-    expect(element.textContent).to.equal("Hello");
+    const { element } = await loadJSX(`<div>a</div>`);
+    expect(element.textContent).to.equal("a");
     expect(element.$source).not.to.be.undefined;
     expect(element.$source.start.line).to.equal(5);
     expect(element.$source.start.column).to.equal(24);
@@ -114,14 +128,18 @@ describe(__filename + "#", () => {
     [`<div>Hello</div>`, `<div id="b">Hello</div>`],
     [`<div>Hello</div>`, `<div id="b">Hello</div>`],
     [`<div id="a">Hello</div>`, `<div>Hello</div>`],
-    [`<div id="a" class="b">Hello</div>`, `<div title="c">Hello</div>`],
-    [`<div id="a" class="b" />`, `<div title="c" />`],
+    [`<div id="a" className="b">Hello</div>`, `<div title="c">Hello</div>`],
+    [`<div id="a" className="b" />`, `<div title="c" />`],
 
     // container edits
     [`<div></div>`, `<div>a</div>`],
     [`<div><span>a</span></div>`, `<div>a</div>`],
     [`<div><span>a</span><div>b</div></div>`, `<div><div>b</div><span>a</span></div>`],
-    [`<div />`, `<div>a</div>`]
+    [`<div />`, `<div>a</div>`],
+
+    [`(
+      <div />
+    )`, `<div>aa</div>`],
 
     // add fuzzy here
   ].forEach(([oldSource, newSource]) => {
@@ -129,6 +147,8 @@ describe(__filename + "#", () => {
       const { element, editor, fileCache, entryFilePath, reloadElement } = await loadJSX(oldSource);
       const newElementResult = await loadJSX(newSource);
       const edit = element.createEdit().fromDiff(newElementResult.element);
+      console.log(newElementResult.element.outerHTML);
+      expect(edit.actions.length).not.to.equal(0);
       editor.applyEditActions(...edit.actions);
       expect((await reloadElement()).outerHTML).to.equal(newElementResult.element.outerHTML);
     });

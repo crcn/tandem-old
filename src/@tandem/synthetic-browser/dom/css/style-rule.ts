@@ -96,7 +96,8 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
     if (action.type === SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
       (<SetKeyValueEditAction>action).applyTo(this);
     } else if (action.type === SyntheticCSSStyleRuleEdit.SET_DECLARATION) {
-      (<SetKeyValueEditAction>action).applyTo(this.style);
+      const { name, newValue, oldName } = <SetKeyValueEditAction>action;
+      this.style.setProperty(name, newValue, undefined, oldName);
     } else {
       console.error(`Cannot apply ${action.type}`);
     }

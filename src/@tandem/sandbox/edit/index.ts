@@ -232,7 +232,7 @@ export class MoveChildEditAction extends ChildEditAction {
       target: serialize(target.clone()),
       name: name,
       newValue: serialize(newValue),
-      newName: oldName
+      oldName: oldName
     };
   },
   deserialize({ type, target, name, newValue, oldName }, injector): SetKeyValueEditAction {

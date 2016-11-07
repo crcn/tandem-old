@@ -2,7 +2,8 @@ const webpack               = require('webpack');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
 const cssnext               = require('cssnext');
-const { join }              = require('path');
+const { join, dirname }     = require('path');
+const { FileCacheProvider } = require('../out/@tandem/sandbox');
 
 const {
   WATCH,
@@ -20,7 +21,7 @@ module.exports = {
     },
     sassLoader: {
       includePaths: [SRC_DIR],
-      outputStyle: "compressed"
+      outputStyle: "expanded"
     },
     stats: {
       hash: false,
@@ -45,6 +46,21 @@ module.exports = {
         'react-dom': require.resolve('node_modules/react-dom/dist/react-dom.js'),
         'chokidar': 'null-loader?chokidar',
         'detective': 'null-loader?detective'
+      }
+    },
+    tandem: {
+      setup(strategy) {
+
+        strategy.config.sassLoader.importer = (url, prev, done) => {
+          strategy.resolve(url, dirname(prev)).then(({ filePath }) => {
+            const fileCache = FileCacheProvider.getInstance(strategy.injector);
+            fileCache.item(filePath).then((item) => {
+              item.read().then((content) => {
+                done({ file: filePath, contents: content });
+              });
+            });
+          });
+        }
       }
     },
     ts: {

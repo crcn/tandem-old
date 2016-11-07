@@ -37,7 +37,14 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
     return this;
   }
 
+  async reload() {
+    this.splice(0, this.length);
+    this.load();
+  }
+
   async load() {
+
+    // TODO - need to check for duplicates
     this.push(...(await this._bus.execute(new DSFindAction(this.collectionName, this.query, true)).readAll()).map(this.createActiveRecord.bind(this)));
   }
 

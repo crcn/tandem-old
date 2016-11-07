@@ -10,6 +10,7 @@ import {
 } from "@tandem/common";
 
 import * as md5 from "md5";
+import * as fs from "fs";
 import * as nodeLibs from "node-libs-browser";
 import * as detective from "detective";
 
@@ -79,7 +80,12 @@ export interface IWebpackNodeConfig {
   fs: string;
 }
 
+export interface IWebpackTandemConfig {
+  setup: (strategy: WebpackDependencyGraphStrategy) => any;
+}
+
 export interface IWebpackConfig {
+  tandem?: IWebpackTandemConfig;
   entry?: any;
   context: string;
   output?: any;
@@ -340,7 +346,9 @@ export class WebpackProtocolResolver {
 
     // cheap for now. Will need to scan all loaded webpack strategy singletons later
     // on.
-    return path.join(process.cwd(), url.replace("webpack://", ""));
+    const relativePath = url.replace("webpack://", "");
+
+    return relativePath.charAt(0) === "/" && fs.existsSync(relativePath) ? relativePath : path.join(process.cwd(), relativePath);
   }
 }
 
@@ -373,6 +381,15 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
     }
 
     this.compiler = new MockWebpackCompiler();
+
+    // custom config for TD environment.
+    if (this.config.tandem && this.config.tandem.setup) {
+      this.config.tandem.setup(this);
+    }
+  }
+
+  get injector() {
+    return this._injector;
   }
 
   createGlobalContext() {

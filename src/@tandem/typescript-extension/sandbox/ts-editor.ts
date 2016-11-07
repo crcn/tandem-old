@@ -140,15 +140,26 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
   findTargetASTNode(root: ts.Node, target: SyntheticDOMNode) {
     let found: ts.Node;
 
+    const content = root.getSourceFile().getText();
+
     const find = (node: ts.Node)  => {
+
       const pos = ts.getLineAndCharacterOfPosition(root.getSourceFile(), node.getFullStart());
-      if (pos.line === target.$source.start.line - 1 && pos.character === target.$source.start.column) {
-        if (target.nodeType === DOMNodeType.ELEMENT) {
-          if (node.kind === ts.SyntaxKind.JsxElement || node.kind === ts.SyntaxKind.JsxSelfClosingElement) {
-            found = node;
+      const tstart = target.$source.start;
+
+      // console.log(node.kind, ts.SyntaxKind.JsxExpression, ts.SyntaxKind.JsxElement, ts.SyntaxKind.JsxOpeningElement, ts.SyntaxKind.JsxSelfClosingElement, pos, target.source.start);
+
+      if (target.nodeType === DOMNodeType.ELEMENT) {
+
+        // look for the tag name Identifier
+        if (node.kind === ts.SyntaxKind.Identifier && pos.line + 1 === tstart.line && pos.character - 1 === tstart.column) {
+          found = node.parent;
+          if (found.kind === ts.SyntaxKind.JsxOpeningElement) {
+            found = found.parent;
           }
         }
       }
+
       if (!found) ts.forEachChild(node, find);
     };
 

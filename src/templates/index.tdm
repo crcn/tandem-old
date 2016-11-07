@@ -1,16 +1,1 @@
-<!-- TODO - artboards should point to react components here instead -->
-
-<link href="../@tandem/editor/browser/vendor/bootstrap/css/bootstrap.css"></link>
-<link href="../@tandem/editor/browser/vendor/ionicons/css/ionicons.css"></link>
-<link href="./preview.scss"></link>
-<link href="./global.scss" type="text/scss"></link>
-<!-- Docs -->
-<!--artboard title="Readme" src="../README.md" style="width:1024px;left:-1100px;top:1800px;height:768px;" inherit-css=""></artboard-->
-<!-- Core -->
-<artboard title="Editor" src="./editor.tdm" style="width:1024px;left:-2210px;top:795px;height:768px;" inherit-css=""></artboard>
-<artboard title="Components" src="./components.tdm" style="width:1024px;left:-1100px;top:795px;height:768px;" inherit-css=""></artboard>
-
-<!-- HTML -->
-<artboard title="HTML Attributes" src="./html/element-attributes.tdm" style="width:264px;left:0px;top:0px;height:626px;" inherit-css=""></artboard>
-<artboard title="HTML Styles" src="./html/element-style.tdm" style="width:264px;left:375px;top:0px;height:626px;" inherit-css=""></artboard>
-<artboard title="HTML CSS" src="./html/element-css.tdm" style="width:264px;left:764px;top:0px;height:626px;" inherit-css=""></artboard>
+<artboard src="./test.tsx" dependency-graph-strategy="webpack" />

@@ -97,14 +97,14 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
     let found: boolean;
 
-
     const shouldAdd = node.walkDecls((decl, index) => {
+      console.log(decl.prop)
       if (decl.prop === name || decl.prop === oldName) {
-        if (newValue && newValue) {
+        if (name && newValue) {
           decl.prop  = name;
           decl.value = newValue;
         } else {
-          node.nodes.splice(index, 1);
+          node.removeChild(decl);
         }
         found = true;
       }

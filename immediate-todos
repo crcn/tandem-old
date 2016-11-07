@@ -4,6 +4,5 @@
 - arrow keys for changing style inputs
 - fix absolute bounds
 - back propagation
-
-- more editing around TSX
-  - find where expressions are
+- get sync stop to work with vscode extension
+- select synthetic objects from source

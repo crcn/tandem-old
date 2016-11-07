@@ -16,31 +16,32 @@ import { debounce, throttle } from "lodash";
 import { NoopBus } from "mesh";
 
 import { GetServerPortAction, OpenProjectAction } from "@tandem/editor";
-import { createCoreApplicationDependencies, ServiceApplication } from "@tandem/core";
+import { createCoreApplicationProviders, ServiceApplication } from "@tandem/core";
+
 import {
+    Dependency,
+    FileCache,
+    FileCacheItem,
     LocalFileSystem,
     LocalFileResolver,
-    BundlerProvider,
-    Bundler,
     FileCacheProvider,
-    FileCacheItem,
-    FileCache,
+    DependencyGraphProvider,
 } from "@tandem/sandbox";
 
 import { 
-    SockBus,
-    Dependencies,
-    PrivateBusProvider,
     Action,
-    PostDSAction,
+    SockBus,
+    Injector,
     serialize,
-    deserialize,
-    PropertyChangeAction,
-    Observable,
     IBrokerBus,
+    Observable,
+    deserialize,
+    PostDSAction,
+    PrivateBusProvider,
+    PropertyChangeAction,
 } from "@tandem/common";
 
-const UPDATE_FILE_CACHE_TIMEOUT = 25;
+const UPDATE_FILE_CACHE_TIMEOUT = 100;
 
 class FileCacheChangeAction extends Action{
     static readonly FILE_CACHE_CHANGE = "fileCachChange";
@@ -63,9 +64,9 @@ class TandemClient extends Observable {
 
     constructor() {
         super();
-
-        const deps = new Dependencies(
-            createCoreApplicationDependencies({})
+        this._disconnected = true;
+        const deps = new Injector(
+            createCoreApplicationProviders({})
         );
 
         this._clientApp = new ServiceApplication(deps);
@@ -78,7 +79,7 @@ class TandemClient extends Observable {
 
     async disconnect() {
         this._disconnected = true;
-        console.log("disconnecting");
+        console.log("Disconnecting");
         if (this._process) {
             this._process.kill();
         }
@@ -88,6 +89,7 @@ class TandemClient extends Observable {
     }
 
     async connect() {
+        if (this._disconnected !== true) return;
 
         const sockFilePath = await this.getSocketFilePath();
 
@@ -98,6 +100,7 @@ class TandemClient extends Observable {
         });
 
         this.bus.register(sockBus);
+        this.fileCache.collection.reload();
         let _reconnecting = false;
         const reconnect = () => {
             if (_reconnecting) return;
@@ -121,18 +124,16 @@ class TandemClient extends Observable {
             this._process.kill();
         }
 
+        console.log("Retrieving socket file");
+
         // isolate the td process so that it doesn't compete with resources
         // with VSCode.
-        const tdproc = this._process = spawn(`node`, ["server-entry.js", "--expose-sock-file"], {
+        const tdproc = this._process = spawn(`node`, ["server-entry.js", "--expose-sock-file", "--no-banner"], {
             cwd: __dirname + "/../../../../node_modules/@tandem/editor"
         });
 
         tdproc.stdout.pipe(process.stdout);
         tdproc.stderr.pipe(process.stderr);
-
-        tdproc.once("exit", (code) => {
-            console.log("Tandem process exited.", code);
-        });
 
         return this._sockFilePath = await new Promise<string>((resolve) => {
 
@@ -182,13 +183,13 @@ export async function activate(context: vscode.ExtensionContext) {
     var _inserted = false;
     var _content;
     var _documentUri:vscode.Uri;
-    var _mtime: number = Date.now();
+    var mtimes = {};
     var _ignoreSelect: boolean;
 
     async function setEditorContent({ content, filePath, mtime }) {
 
         const editor = vscode.window.activeTextEditor;
-        if (mtime < _mtime) return;
+        if (mtime < mtimes[filePath]) return;
 
         if (editor.document.fileName !== filePath || editor.document.getText() === content) return;
 
@@ -215,19 +216,19 @@ export async function activate(context: vscode.ExtensionContext) {
 
         // don't update file cache for now on edit -- clobbers the server. Need
         // to resolve issues before unlocking this feature.
-        if (1 + 1) return;
+        // if (1 + 1) return;
 
         _documentUri = document.uri;
         const editorContent = document.getText();
         const filePath = document.fileName;
 
-        const fileCacheItem = client.fileCache.eagerFindByFilePath(filePath);
+        const fileCacheItem = await client.fileCache.eagerFindByFilePath(filePath);
         if (!fileCacheItem) return;
 
-        await fileCacheItem.setDataUrl(editorContent).save();
+        await fileCacheItem.setDataUrlContent(editorContent).save();
     }, UPDATE_FILE_CACHE_TIMEOUT);
 
-    let startServerCommand = vscode.commands.registerCommand("extension.tandemOpenCurrentFile", async () => {
+    let openProjectCommand = vscode.commands.registerCommand("extension.tandemOpenCurrentFile", async () => {
 
         const doc = vscode.window.activeTextEditor.document;
         const fileName = doc.fileName;
@@ -244,20 +245,39 @@ export async function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    context.subscriptions.push(startServerCommand);
+    let syncCommand = vscode.commands.registerCommand("extension.tandemSyncLive", async () => {
+        client.connect();
+        vscode.window.showInformationMessage("Now synchronizing realtime text changes with Tandem");
+    });
+
+    let stopCommand = vscode.commands.registerCommand("extension.tandemStop", async () => {
+        client.disconnect();
+        vscode.window.showInformationMessage("Text changes will no longer be synchronized with Tandem");
+    });
+
+    context.subscriptions.push(openProjectCommand, syncCommand);
 
     async function onTextChange(e:vscode.TextDocumentChangeEvent) {
         const doc  = e.document;
-        _mtime    = Date.now();
+        mtimes[doc.fileName] = Date.now();
         updateFileCacheItem(doc);
     }
 
     const setEditorContentFromCache = async (item: FileCacheItem) => {
+        console.log("Setting file cache from %s", item.filePath);
         await setEditorContent({
             filePath: item.filePath,
             content: await item.read(),
             mtime: item.updatedAt
         });
+
+        openFileCacheItemTab(item);
+    }
+
+    const openFileCacheItemTab = async (item: FileCacheItem)  => {
+        if (vscode.window.activeTextEditor.document.fileName === item.filePath) return;
+        console.log("Opening up %s tab", item.filePath);
+        vscode.window.showTextDocument(await vscode.workspace.openTextDocument(item.filePath));
     }
 
     async function onActiveTextEditorChange(e:vscode.TextEditor) {

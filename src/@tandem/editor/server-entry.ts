@@ -45,7 +45,9 @@ let deps = new Injector(
 
 const app = new ServiceApplication(deps);
 
-console.log(figlet.textSync("Tandem", { font: "Slant" }), "\n");
+if (argv.banner !== false) {
+  console.log(figlet.textSync("Tandem", { font: "Slant" }), "\n");
+}
 
 app.initialize();
 
