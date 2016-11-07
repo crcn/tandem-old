@@ -1,5 +1,6 @@
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { BaseContentEdit, EditAction } from "@tandem/sandbox";
+import { SyntheticCSSAtRule } from "./atrule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import {
@@ -33,11 +34,17 @@ class SyntheticCSSFontFaceSerializer implements ISerializer<SyntheticCSSFontFace
 }
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSFontFaceSerializer()))
-export class SyntheticCSSFontFace extends SyntheticCSSObject {
+export class SyntheticCSSFontFace extends SyntheticCSSAtRule {
+
+  readonly atRuleName = "font-face";
 
   constructor(public declaration: SyntheticCSSStyleDeclaration) {
     super();
     declaration.$parentRule = this;
+  }
+
+  get params() {
+    return "";
   }
 
   get cssText() {

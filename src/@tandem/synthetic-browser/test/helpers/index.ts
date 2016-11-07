@@ -79,9 +79,9 @@ export function generateRandomSyntheticHTMLElement(document: SyntheticDocument, 
 export function generateRandomStyleSheet(maxRules: number = 100, maxDeclarations: number = 20): SyntheticCSSStyleSheet {
 
   function createKeyFrameRule() {
-    `@keyframes ${generateRandomChar()} {
+    return `@keyframes ${generateRandomChar()} {
       ${
-        Array.from({ length: random(0, maxRules) }).map((v) => {
+        Array.from({ length: random(1, maxRules) }).map((v) => {
           return createStyleRule();
         }).join("\n")
       }
@@ -90,7 +90,7 @@ export function generateRandomStyleSheet(maxRules: number = 100, maxDeclarations
   function createStyleRule() {
     return `.${generateRandomChar()} {
       ${
-        Array.from({ length: random(0, maxDeclarations) }).map((v) => {
+        Array.from({ length: random(1, maxDeclarations) }).map((v) => {
           return `${generateRandomChar()}: ${generateRandomText(2)};`;
         }).join("\n")
       }
@@ -99,7 +99,7 @@ export function generateRandomStyleSheet(maxRules: number = 100, maxDeclarations
   function createMediaRule() {
     return `@media ${generateRandomChar()} {
       ${
-        Array.from({ length: random(0, maxRules) }).map((v) => {
+        Array.from({ length: random(1, maxRules) }).map((v) => {
           return sample([createStyleRule, createKeyFrameRule])();
         }).join("\n")
       }
@@ -107,8 +107,9 @@ export function generateRandomStyleSheet(maxRules: number = 100, maxDeclarations
   }
 
   const randomStyleSheet = Array
-  .from({ length: random(0, maxRules) })
-  .map(v => sample([createStyleRule])()).join("\n");
+  .from({ length: random(1, maxRules) })
+  .map(v => sample([createStyleRule, createMediaRule, createKeyFrameRule])()).join("\n");
+
 
   return evaluateCSS(parseCSS(randomStyleSheet));
 }

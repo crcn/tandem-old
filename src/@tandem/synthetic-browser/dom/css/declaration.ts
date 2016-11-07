@@ -10,45 +10,9 @@ export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSSty
 
 export const isValidCSSDeclarationProperty = sift({ $and: [ { $ne: /^\$/ }, {$ne: "uid" }, { $ne: /^\d+$/ }] });
 
-export class SyntheticCSSStyleDeclarationEdit extends BaseContentEdit<SyntheticCSSStyleDeclaration> {
-
-  static readonly SET_CSS_STYLE_DECLARATION_EDIT = "setCSSStyleDeclarationEdit";
-
-  setDeclaration(name: string, value: string) {
-    this.addAction(new SetKeyValueEditAction(SyntheticCSSStyleDeclarationEdit.SET_CSS_STYLE_DECLARATION_EDIT, this.target, name, value));
-  }
-
-  addDiff(newStyleDeclaration: SyntheticCSSStyleDeclaration) {
-
-    const oldKeys = Object.keys(this.target).filter(isValidCSSDeclarationProperty as any);
-    const newKeys = Object.keys(newStyleDeclaration).filter(isValidCSSDeclarationProperty as any);
-
-    diffArray(oldKeys, newKeys, (a, b) => {
-      return a === b ? 0 : -1;
-    }).accept({
-      visitInsert: ({ value }) => {
-        this.setDeclaration(value, newStyleDeclaration[value]);
-      },
-      visitRemove: ({ index }) => {
-
-        // don't apply a move edit if the value doesn't exist.
-        if (this.target[oldKeys[index]]) {
-          this.setDeclaration(oldKeys[index], undefined);
-        }
-      },
-      visitUpdate: ({ originalOldIndex, newValue }) => {
-        if (this.target[newValue] !== newStyleDeclaration[newValue]) {
-          this.setDeclaration(newValue, newStyleDeclaration[newValue]);
-        }
-      }
-    });
-
-    return this;
-  }
-}
 
 @serializable()
-export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSyntheticCSSStyleDeclaration>, ISyntheticObject, IEditable {
+export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSyntheticCSSStyleDeclaration>, ISyntheticObject {
 
   public $uid: any;
   public $source: any = null;
@@ -414,14 +378,6 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     return this.$uid;
   }
 
-  createEdit() {
-    return new SyntheticCSSStyleDeclarationEdit(this);
-  }
-
-  applyEditAction({ name, newValue, oldName }: SetKeyValueEditAction) {
-    this.setProperty(name, newValue, undefined, oldName, false);
-  }
-
   getPropertyIndex(name: string) {
     return [...this].indexOf(name);
   }
@@ -494,8 +450,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
       this[i] = undefined;
     }
 
-    for (const key in this) {
-      if (!isValidCSSDeclarationProperty(key)) continue;
+    for (const key in this.toObject()) {
       if (this[key] == null) continue;
       model[key] = this[key];
     }
@@ -510,8 +465,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
 
   equalTo(declaration: SyntheticCSSStyleDeclaration) {
     function compare(a, b) {
-      for (const key in a) {
-        if (!isValidCSSDeclarationProperty(key)) continue;
+      for (const key in a.toObject()) {
         if (a[key] !== b[key]) {
           return false;
         }
@@ -528,8 +482,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
   get cssText() {
     const buffer = [];
 
-    for (const key in this) {
-      if (!isValidCSSDeclarationProperty(key)) continue;
+    for (const key in this.toObject()) {
       const value = this[key];
       if (value) {
         buffer.push("\t", kebabCase(key), ": ", value, ";\n");
@@ -581,6 +534,16 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
   static fromObject(declaration: any): SyntheticCSSStyleDeclaration {
     const obj = new SyntheticCSSStyleDeclaration();
     obj.deserialize(declaration);
+    return obj;
+  }
+
+  toObject() {
+    const obj = {};
+    for (const key in this) {
+      if (!isValidCSSDeclarationProperty(key)) continue;
+      if (this[key] == null) continue;
+      obj[key] = this[key];
+    }
     return obj;
   }
 

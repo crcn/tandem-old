@@ -18,6 +18,8 @@ import {
   ISerializedContent
 } from "@tandem/common";
 
+import { syntheticCSSRuleType, diffStyleSheetRules } from "./utils";
+
 import {
   Dependency,
   EditAction,
@@ -28,8 +30,6 @@ import {
   InsertChildEditAction,
 } from "@tandem/sandbox";
 
-
-export type syntheticCSSRuleType = SyntheticCSSFontFace|SyntheticCSSKeyframesRule|SyntheticCSSMediaRule|SyntheticCSSStyleRule;
 
 export interface ISerializedCSSStyleSheet {
   rules: Array<ISerializedContent<ISerializedSyntheticCSSStyleRule>>;
@@ -46,21 +46,14 @@ class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleS
   }
 }
 
-function diffStyleSheetRules(oldRules: syntheticCSSRuleType[], newRules: syntheticCSSRuleType[]) {
-  return diffArray(oldRules, newRules, (oldRule, newRule) => {
-    if (oldRule.constructor.name !== newRule.constructor.name) return -1;
-    return (<SyntheticCSSObject>oldRule).countShallowDiffs(<SyntheticCSSObject>newRule);
-  });
-}
-
 export class SyntheticCSSStyleSheetEdit extends SyntheticCSSObjectEdit<SyntheticCSSStyleSheet> {
 
   static readonly INSERT_STYLE_SHEET_RULE_EDIT = "insertStyleSheetRuleEdit";
   static readonly MOVE_STYLE_SHEET_RULE_EDIT   = "moveStyleSheetRuleEdit";
   static readonly REMOVE_STYLE_SHEET_RULE_EDIT = "removeStyleSheetRuleEdit";
 
-  insertRule(newRule: syntheticCSSRuleType, index: number) {
-    return this.addAction(new InsertChildEditAction(SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT, this.target, newRule, index));
+  insertRule(rule: syntheticCSSRuleType, index: number) {
+    return this.addAction(new InsertChildEditAction(SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
   }
 
   moveRule(rule: syntheticCSSRuleType, index: number) {

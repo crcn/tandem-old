@@ -102,8 +102,14 @@ export class MockFileSystem extends BaseFileSystem {
 }
 
 export class MockFileResolver implements IFileResolver {
+  @inject(MockFilesProvider.ID)
+  private _mockFiles: IMockFiles;
+
   resolve(relativePath: string, cwd: string, options?: IFileResolverOptions) {
-    return Promise.resolve(path.resolve(cwd || "", relativePath));
+    return Promise.resolve([
+      path.resolve(cwd || "", relativePath),
+      path.join("", relativePath)
+    ].find(filePath => !!this._mockFiles[filePath]));
   }
 }
 

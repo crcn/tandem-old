@@ -2,7 +2,7 @@ import { Dependency } from "@tandem/sandbox";
 import { SyntheticDOMElement, getSelectorTester } from "@tandem/synthetic-browser";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
 import { BaseContentEdit, EditAction, SetKeyValueEditAction, SetValueEditActon } from "@tandem/sandbox";
-import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "./declaration";
+import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration, isValidCSSDeclarationProperty } from "./declaration";
 import { Action, serializable, serialize, deserialize, ISerializer, ISerializedContent, diffArray, ITreeWalker, ArrayDiff } from "@tandem/common";
 
 export interface ISerializedSyntheticCSSStyleRule {
@@ -43,16 +43,31 @@ export class SyntheticCSSStyleRuleEdit extends SyntheticCSSObjectEdit<SyntheticC
       this.setSelector(newRule.selector);
     }
 
-    this.addChildEdit(this.target.style.createEdit().fromDiff(newRule.style));
+    const oldKeys = Object.keys(this.target.style).filter(isValidCSSDeclarationProperty as any);
+    const newKeys = Object.keys(newRule.style).filter(isValidCSSDeclarationProperty as any);
+
+    diffArray(oldKeys, newKeys, (a, b) => {
+      return a === b ? 0 : -1;
+    }).accept({
+      visitInsert: ({ value }) => {
+        this.setDeclaration(value, newRule.style[value]);
+      },
+      visitRemove: ({ index }) => {
+
+        // don't apply a move edit if the value doesn't exist.
+        if (this.target.style[oldKeys[index]]) {
+          this.setDeclaration(oldKeys[index], undefined);
+        }
+      },
+      visitUpdate: ({ originalOldIndex, newValue }) => {
+        if (this.target.style[newValue] !== newRule.style[newValue]) {
+          this.setDeclaration(newValue, newRule.style[newValue]);
+        }
+      }
+    });
 
     return this;
   }
-}
-
-export function diffSyntheticCSSStyleRules(oldRules: SyntheticCSSStyleRule[], newRules: SyntheticCSSStyleRule[]) {
-  return <ArrayDiff<SyntheticCSSStyleRule>>diffArray(oldRules, newRules, (oldRule, newRule) => {
-    return oldRule.selector === newRule.selector ? 0 : -1;
-  });
 }
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSStyleRuleSerializer()))
@@ -60,7 +75,9 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
 
   constructor(public selector: string, public style: SyntheticCSSStyleDeclaration) {
     super();
-    if (style) style.$parentRule = this;
+    if (style) {
+      style.$parentRule = this;
+    }
   }
 
   createEdit() {
@@ -72,12 +89,14 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
   }
 
   get cssText() {
-    return `${this.selector} {\n${this.style.cssText}}`;
+    return `${this.selector} {\n${this.style.cssText}}\n`;
   }
 
   applyEditAction(action: EditAction) {
     if (action.type === SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
       (<SetKeyValueEditAction>action).applyTo(this);
+    } else if (action.type === SyntheticCSSStyleRuleEdit.SET_DECLARATION) {
+      (<SetKeyValueEditAction>action).applyTo(this.style);
     } else {
       console.error(`Cannot apply ${action.type}`);
     }

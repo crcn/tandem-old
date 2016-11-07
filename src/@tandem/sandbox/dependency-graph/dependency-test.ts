@@ -44,6 +44,7 @@ class MockDependencyGraph implements IDependencyGraph {
   getLoader(options): IDependencyLoader {
     return {
       load: (info: IResolvedDependencyInfo, options: IDependencyLoaderResult): Promise<IDependencyLoaderResult> => {
+
         if (options.content.throwError) return Promise.reject(new Error(`Mock error`));
         return Promise.resolve({
           type: "plain/text",
@@ -71,7 +72,7 @@ describe(__filename + "#", () => {
     expect(dep.content).to.equal("blarg");
   });
 
-  it("Can can reload a dependency if an error is thrown during load", async () => {
+  it("Can reload a dependency if an error is thrown during load", async () => {
     let depa = { throwError: false, content: "something" };
     const dep = createMockDependency({
       filePath: "a"
@@ -105,7 +106,7 @@ describe(__filename + "#", () => {
     expect(dep.content).to.equal("something");
   });
 
-  it("Can can reload a dependency if a nested dependency errors", async () => {
+  it("Can reload a dependency if a nested dependency errors", async () => {
 
     let depc;
 

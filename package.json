@@ -12,7 +12,7 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "gulp test:all --coverage=50",
+    "test": "gulp test --coverage=50 --timeout=20000 --bail",
     "start": "SANDBOXED=1 node out/@tandem/editor/server-entry.js --open=true"
   },
   "repository": {
@@ -75,6 +75,7 @@
     "babylon": "^6.13.1",
     "chai": "^3.5.0",
     "css-loader": "^0.23.1",
+    "cssnext": "^1.8.4",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
     "fs-extra": "^0.30.0",
@@ -98,6 +99,8 @@
     "mocha": "^3.1.2",
     "null-loader": "^0.1.1",
     "pegjs-loader": "^0.5.0",
+    "postcss-cssnext": "^2.8.0",
+    "postcss-loader": "^1.1.0",
     "react": "^15.3.1",
     "react-dom": "^15.2.1",
     "sass-loader": "^4.0.1",

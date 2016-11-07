@@ -1,6 +1,7 @@
+import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
-import { SyntheticCSSStyleRule, diffSyntheticCSSStyleRules } from "./style-rule";
+import { SyntheticCSSStyleSheetEdit } from "./style-sheet";
 import { ISerializer, serialize, deserialize, serializable, ISerializedContent, ITreeWalker } from "@tandem/common";
 
 import {
@@ -14,12 +15,14 @@ import {
   RemoveChildEditAction,
 } from "@tandem/sandbox";
 
+import {diffStyleSheetRules } from "./utils";
+
 export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends SyntheticCSSObjectEdit<T> {
 
   static readonly SET_NAME_EDIT        = "setNameEdit";
-  static readonly INSERT_CSS_RULE_EDIT = "insertCSSRuleAtEdit";
-  static readonly MOVE_CSS_RULE_EDIT   = "moveCSSRuleEdit";
-  static readonly REMOVE_CSS_RULE_EDIT = "removeCSSRuleEdit";
+  static readonly INSERT_CSS_RULE_EDIT = SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT;
+  static readonly MOVE_CSS_RULE_EDIT   = SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT;
+  static readonly REMOVE_CSS_RULE_EDIT = SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT;
 
   insertRule(rule: SyntheticCSSStyleRule, index: number) {
     return this.addAction(new InsertChildEditAction(SyntheticCSSAtRuleEdit.INSERT_CSS_RULE_EDIT, this.target, rule, index));
@@ -36,9 +39,9 @@ export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends Synthe
   addDiff(atRule: T) {
     super.addDiff(atRule);
 
-    diffSyntheticCSSStyleRules(this.target.cssRules, atRule.cssRules).accept({
+    diffStyleSheetRules(this.target.cssRules, atRule.cssRules).accept({
       visitInsert: ({ index, value }) => {
-        this.insertRule(value, index);
+        this.insertRule(<SyntheticCSSStyleRule>value, index);
       },
       visitRemove: ({ index }) => {
         this.removeRule(this.target.cssRules[index]);
@@ -48,7 +51,7 @@ export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends Synthe
         if (originalOldIndex !== patchedOldIndex) {
           this.moveRule(oldRule, newIndex);
         }
-        this.addChildEdit(oldRule.createEdit().fromDiff(newValue));
+        this.addChildEdit(oldRule.createEdit().fromDiff(<SyntheticCSSStyleRule>newValue));
       }
     })
 
@@ -57,7 +60,9 @@ export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends Synthe
 }
 
 export abstract class SyntheticCSSAtRule extends SyntheticCSSObject {
-  abstract name: string;
+
+  abstract atRuleName: string;
+  abstract params: string;
   abstract cssText: string;
 
   constructor(public cssRules: SyntheticCSSStyleRule[] = []) {
@@ -75,7 +80,9 @@ export abstract class SyntheticCSSAtRule extends SyntheticCSSObject {
 
   abstract cloneShallow();
 
-  abstract countShallowDiffs(target: SyntheticCSSAtRule);
+  countShallowDiffs(target: SyntheticCSSAtRule) {
+    return this.params === target.params ? 0 : -1;
+  }
 
   applyEditAction(action: ApplicableEditAction) {
     action.applyTo(this.getEditActionTargets()[action.type]);

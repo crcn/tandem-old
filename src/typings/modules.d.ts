@@ -191,3 +191,8 @@ declare module "atob" {
   }
   export = atob;
 }
+
+declare module "postcss-cssnext" {
+  import * as postcss from "postcss";
+  export = postcss;
+}

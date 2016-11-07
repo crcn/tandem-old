@@ -100,12 +100,14 @@ export class Logger {
       return value;
     }
 
+    text = stringify(text);
+
     const paramCount = (text.match(/%\w/g) || []).length;
     const sprintfParams = params.slice(0, paramCount);
     const restParams    = params.slice(paramCount);
 
     const message = [sprintf(
-      `${this.getPrefix()}${stringify(text)}`,
+      `${this.getPrefix()}${text}`,
       ...sprintfParams.map(stringify)
     ), ...restParams].join(" ");
 

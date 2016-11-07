@@ -48,7 +48,6 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
     let { type, content } = parseDataURI(href);
     content = decodeURIComponent(content);
 
-
     if (rel === "stylesheet") {
       this.stylesheet = this.stylesheet || new SyntheticCSSStyleSheet([]);
       this.stylesheet.cssText = content;

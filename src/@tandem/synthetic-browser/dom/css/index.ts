@@ -7,3 +7,4 @@ export * from "./keyframes-rule";
 export * from "./style-sheet";
 export * from "./atrule";
 export * from "./base";
+export * from "./utils";

@@ -1,13 +1,28 @@
 import * as postcss from "postcss";
-import * as postcssSassSyntax from "postcss-scss";
-import { Action, inject, Injector, InjectorProvider, sourcePositionEquals } from "@tandem/common";
-import { SyntheticCSSStyleRule, SyntheticCSSStyleRuleEdit, parseCSS } from "@tandem/synthetic-browser";
+import { Action, inject, Injector, InjectorProvider, sourcePositionEquals, MimeTypeProvider } from "@tandem/common";
+import {
+  parseCSS,
+  CSSSyntaxProvider,
+  SyntheticCSSStyleRule,
+  syntheticCSSRuleType,
+  SyntheticCSSStyleSheetEdit,
+  SyntheticCSSMediaRuleEdit,
+  SyntheticCSSAtRuleEdit,
+  SyntheticCSSAtRule,
+  SyntheticCSSKeyframesRuleEdit,
+  SyntheticCSSStyleRuleEdit,
+} from "@tandem/synthetic-browser";
 import {
   Dependency,
   EditAction,
   IContentEdit,
   BaseContentEdit,
+  InsertChildEditAction,
+  RemoveChildEditAction,
+  MoveChildEditAction,
   ISyntheticObject,
+  ISyntheticObjectChild,
+  ISyntheticSourceInfo,
   BaseContentEditor,
   SetValueEditActon,
   SetKeyValueEditAction,
@@ -29,10 +44,59 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     node.selector = (node.selector.indexOf("&") === 0 ? "&" : "") + newValue.replace(prefix, "");
   }
 
+  [SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child }: RemoveChildEditAction) {
+    const nodeChild = this.findTargetASTNode(node, <syntheticCSSRuleType>child);
+
+    nodeChild.parent.removeChild(nodeChild);
+  }
+
+  [SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, newIndex }: MoveChildEditAction) {
+    const childNode = this.findTargetASTNode(node, <syntheticCSSRuleType>child);
+    const parent = childNode.parent;
+    parent.removeChild(childNode);
+    parent.insertBefore(node.nodes[newIndex], childNode);
+  }
+
+  [SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, index }: InsertChildEditAction) {
+
+    let newChild = <syntheticCSSRuleType>child;
+
+    node.append({
+      rule(rule: SyntheticCSSStyleRule) {
+        const ruleNode = postcss.rule({
+          selector: rule.selector,
+        });
+
+        for (const key in rule.style.toObject()) {
+          ruleNode.append(postcss.decl({
+            prop: key,
+            value: rule.style[key]
+          }));
+        }
+
+        return ruleNode;
+      },
+      atrule(atrule: SyntheticCSSAtRule) {
+        const ruleNode = postcss.atRule({
+          name: atrule.atRuleName,
+          params: atrule.params
+        });
+
+        for (const rule of atrule.cssRules) {
+          ruleNode.append(this[rule.source.kind](rule));
+        }
+
+        return ruleNode;
+      }
+    }[newChild.source.kind](newChild));
+  }
+
+
   [SyntheticCSSStyleRuleEdit.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName }: SetKeyValueEditAction) {
     const source = target.source;
 
     let found: boolean;
+
 
     const shouldAdd = node.walkDecls((decl, index) => {
       if (decl.prop === name || decl.prop === oldName) {
@@ -51,11 +115,11 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     }
   }
 
-  protected findTargetASTNode(root: postcss.Root, target: ISyntheticObject) {
+  protected findTargetASTNode(root: postcss.Container, target: ISyntheticObject) {
     let found: postcss.Node;
-    root.walk((node: postcss.Node, index: number) => {
 
-      // find the starting point for the node
+    const walk = (node: postcss.Node, index: number) => {
+      // console.log(node.type, node.source.start, target.source.start);
       if (node.type === target.source.kind && sourcePositionEquals(node.source.start, target.source.start)) {
 
         // next find the actual node that the synthetic matches with -- the source position may not be
@@ -63,7 +127,13 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
         found = this.findNestedASTNode(<any>node, target);
         return false;
       }
-    });
+    };
+
+
+    if (walk(root, -1) !== false) {
+      root.walk(walk);
+    }
+
     return found;
   }
 
@@ -117,9 +187,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
   }
 
   parseContent(content: string) {
-
-    // TODO - find syntax based on mime type here
-    return parseCSS(content, undefined, postcssSassSyntax);
+    return parseCSS(content, undefined, CSSSyntaxProvider.find(MimeTypeProvider.lookup(this.fileName, this._injector), this._injector), false);
   }
 
   getFormattedContent(root: postcss.Rule) {

@@ -39,23 +39,32 @@ export interface IDiffable {
   createDiff(source: ISyntheticObject): IContentEdit;
 }
 
+@loggable()
 export abstract class BaseContentEditor<T> implements IEditor {
+
+  readonly logger: Logger;
 
   private _rootASTNode: T;
 
-  constructor(readonly fileName: string, readonly content: string) {
-    this._rootASTNode = this.parseContent(content);
+  constructor(readonly fileName: string, readonly content: string) { }
+
+  $didInject() {
+    this._rootASTNode = this.parseContent(this.content);
   }
 
   // add filePath and content in constructor here instead
   applyEditActions(...actions: EditAction[]): any {
     for (const action of actions) {
       const method = this[action.type];
-      const targetASTNode = this.findTargetASTNode(this._rootASTNode, action.target);
-      if (method && targetASTNode) {
-        method.call(this, targetASTNode, action);
+      if (method) {
+        const targetASTNode = this.findTargetASTNode(this._rootASTNode, action.target);
+        if (targetASTNode) {
+          method.call(this, targetASTNode, action);
+        } else {
+          this.logger.error(`Cannot apply edit ${action.type} on ${this.fileName}: AST node for synthetic object not found.`);
+        }
       } else {
-        console.error(`Cannot apply edit ${action.type} on ${this.fileName}.`);
+        this.logger.warn(`Cannot apply edit ${action.type} on ${this.fileName}.`);
       }
     }
     return this.getFormattedContent(this._rootASTNode);
@@ -423,7 +432,7 @@ export class FileEditor extends Observable {
         // This may happen if edits are being applied to synthetic objects that
         // do not have the proper mappings
         if (!target.source || !target.source.filePath) {
-          console.error(`Cannot edit synthetic objects that do not have a defined source.`);
+          console.error(`Cannot edit file,  source property is mising from ${target.clone(false).toString()}.`);
           continue;
         }
 
@@ -466,7 +475,7 @@ export class FileEditor extends Observable {
             promises.push(fileCache.save());
           }
         } catch(e) {
-          this.logger.error(`Error trying to edit file ${filePath}: ${e.stack}`);
+          this.logger.error(`Error trying to apply ${actions.map(action => action.type).join(", ")} file edit to ${filePath}: ${e.stack}`);
         }
 
       }

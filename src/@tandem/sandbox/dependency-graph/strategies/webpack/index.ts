@@ -14,7 +14,7 @@ import * as nodeLibs from "node-libs-browser";
 import * as detective from "detective";
 
 // TODO - handle __webpack_public_path__
-import { RawSourceMap } from "source-map";
+import * as sm from "source-map";
 import { IDependencyContent } from "../../base";
 
 import {
@@ -138,6 +138,10 @@ class WebpackLoaderContext {
     this.remainingRequest = this.loaderIndex === this.loaders.length - 1 ? this.resourcePath : undefined;
   }
 
+  emitWarning() {
+
+  }
+
   get includedDependencyPaths(): string[] {
     return this._dependencies;
   }
@@ -169,7 +173,6 @@ class WebpackLoaderContext {
     const result = module.pitch(remainingRequests.join("!"));
     if (result == null) return;
 
-
     return { content: result, map: undefined }
   }
 
@@ -177,10 +180,9 @@ class WebpackLoaderContext {
     // throw new Error(`emit file is not supported yet`);
   }
 
-
   async() {
     this._async = true;
-    return (err, content, map: RawSourceMap) => {
+    return (err, content, map: sm.RawSourceMap) => {
       if (err) return this._reject(err);
 
       // change sources to absolute path for edits

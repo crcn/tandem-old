@@ -1,6 +1,6 @@
+import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
-import { SyntheticCSSStyleRule, diffSyntheticCSSStyleRules } from "./style-rule";
 import { BaseContentEdit, EditAction, SetKeyValueEditAction } from "@tandem/sandbox";
 import {
   ISerializer,
@@ -45,22 +45,24 @@ export class SyntheticCSSKeyframesRuleEdit extends SyntheticCSSAtRuleEdit<Synthe
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSKeyframesRuleSerializer()))
 export class SyntheticCSSKeyframesRule extends SyntheticCSSAtRule {
+  readonly atRuleName: string = "keyframes";
+
   constructor(public name: string, rules: SyntheticCSSStyleRule[]) {
     super(rules);
   }
 
+  get params() {
+    return this.name;
+  }
+
   get cssText() {
-    return `@keyframe ${this.name} {
+    return `@keyframes ${this.name} {
       ${this.innerText}
     }`
   }
 
   cloneShallow(deep?: boolean) {
     return new SyntheticCSSKeyframesRule(this.name, []);
-  }
-
-  countShallowDiffs(target: SyntheticCSSKeyframesRule) {
-    return this.name === target.name ? 0 : -1;
   }
 
   createEdit() {

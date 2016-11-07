@@ -1,6 +1,7 @@
 const webpack               = require('webpack');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
+const cssnext               = require('cssnext');
 const { join }              = require('path');
 
 const {
@@ -67,6 +68,7 @@ module.exports = {
       fs: 'empty',
       Buffer: true
     },
+    postcss: () => [cssnext()],
     module: {
       loaders: [
         {
@@ -105,7 +107,7 @@ module.exports = {
             'style-loader',
             'css-loader?sourceMap'
           ].join('!')
-        },
+        }
       ]
     }
   }

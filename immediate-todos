@@ -3,4 +3,6 @@
 - images should work
 - arrow keys for changing style inputs
 - test css file editor
-- test html file editor
+- fix absolute bounds
+- back propagation
+

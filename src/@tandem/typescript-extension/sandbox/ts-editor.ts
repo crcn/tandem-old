@@ -168,9 +168,6 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
       text = text.substr(0, start) + value + text.substr(end);
     }
 
-
-    console.log(text);
-
     return text;
   }
 }

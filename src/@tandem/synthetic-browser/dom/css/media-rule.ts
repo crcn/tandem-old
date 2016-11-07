@@ -1,5 +1,5 @@
+import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
-import { SyntheticCSSStyleRule, diffSyntheticCSSStyleRules } from "./style-rule";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
 import { ISerializer, serialize, deserialize, serializable, ISerializedContent, ITreeWalker } from "@tandem/common";
 
@@ -52,25 +52,22 @@ export class SyntheticCSSMediaRuleEdit extends SyntheticCSSAtRuleEdit<SyntheticC
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSMediaRuleSerializer()))
 export class SyntheticCSSMediaRule extends SyntheticCSSAtRule {
+  readonly atRuleName = "media";
 
   constructor(public media: string[], rules: SyntheticCSSStyleRule[]) {
     super(rules);
   }
 
   get cssText() {
-    return `@media ${this.media.join(" ")} {\n${this.innerText}}`
+    return `@media ${this.media.join(" ")} {\n${this.innerText}}\n`
   }
 
-  get name() {
+  get params() {
     return this.media.join(" ");
   }
 
   cloneShallow() {
     return new SyntheticCSSMediaRule(this.media.concat(), []);
-  }
-
-  countShallowDiffs(target: SyntheticCSSMediaRule) {
-    return this.media.join("") === target.media.join("") ? 0 : -1;
   }
 
   getEditActionTargets() {
