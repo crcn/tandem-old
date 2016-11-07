@@ -121,7 +121,7 @@ describe(__filename + "#", () => {
     [`<div></div>`, `<div>a</div>`],
     [`<div><span>a</span></div>`, `<div>a</div>`],
     [`<div><span>a</span><div>b</div></div>`, `<div><div>b</div><span>a</span></div>`],
-    [`<div />`, `<div>a</div>`],
+    [`<div />`, `<div>a</div>`]
 
     // add fuzzy here
   ].forEach(([oldSource, newSource]) => {

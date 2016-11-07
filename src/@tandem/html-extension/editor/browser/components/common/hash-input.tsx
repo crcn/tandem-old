@@ -1,8 +1,14 @@
 import * as React from "react";
 import { FocusComponent } from "@tandem/editor/browser/components/common";
 
+export interface IKeyValueItem {
+  name: string;
+  readonly?: boolean;
+  value: any;
+}
+
 // TODO - add some color for the CSS rules
-export class KeyValueInputComponent extends React.Component<{ item: { name: string, value: any}, setKeyValue: (name: string, value: any, oldName?: string) => any, onValueEnter: (item) =>  any}, { editName: boolean, currentValue: string }> {
+export class KeyValueInputComponent extends React.Component<{ item: IKeyValueItem, setKeyValue: (name: string, value: any, oldName?: string) => any, onValueEnter: (item) =>  any}, { editName: boolean, currentValue: string }> {
 
   private _currentValue: any;
 
@@ -65,20 +71,20 @@ export class KeyValueInputComponent extends React.Component<{ item: { name: stri
   }
 
   render() {
-    const { name, value } = this.item;
+    const { name, value, readonly } = this.item;
     return <div className="row">
-      <div className="col-xs-5 no-wrap td-cell-key" title={name} onDoubleClick={this.editName}>
+      <div className="col-xs-5 no-wrap td-cell-key" title={name} onDoubleClick={!readonly && this.editName}>
         { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name }
       </div>
       <div className="col-xs-7">
-        <input type="text" {...(this.state.currentValue != null ? {} : { value: value })} onKeyDown={this.onValueKeyDown} onChange={this.onValueChange} onFocus={this.onValueFocus} onBlur={this.onValueBlur}></input>
+        <input type="text" {...(this.state.currentValue != null ? {} : { value: value })}  disabled={readonly} onKeyDown={this.onValueKeyDown} onChange={this.onValueChange} onFocus={this.onValueFocus} onBlur={this.onValueBlur}></input>
       </div>
     </div>
   }
 }
 
 export interface IKeyInputComponentProps {
-  items: { name: string, value: string }[];
+  items: IKeyValueItem[];
   setKeyValue: (key: string, value: string, oldKey?: string) => any;
 }
 

@@ -9,6 +9,7 @@ import {
   SourceLocation,
   ObjectProperty,
   ObjectExpression,
+  Identifier,
   objectProperty,
   objectExpression,
   stringLiteral
@@ -48,9 +49,29 @@ module.exports = (content, contentMap) => {
         },
       };
 
+      // attributes which cannot be edited by Tandem
+      const disableAttributes = [];
+
+      for (const property of objExpression.properties) {
+        const { key, value } = <ObjectProperty>property;
+
+        if (value.type !== "StringLiteral") {
+          disableAttributes.push((<Identifier>key).name);
+        }
+      }
+
+      if (disableAttributes.length) {
+        objExpression.properties.push(
+          objectProperty(
+            stringLiteral("data-td-readonly"),
+            stringLiteral(JSON.stringify(disableAttributes))
+          )
+        );
+      }
+
       objExpression.properties.push(
         objectProperty(
-          stringLiteral("data-source"),
+          stringLiteral("data-td-source"),
           stringLiteral(JSON.stringify(source))
         )
       );

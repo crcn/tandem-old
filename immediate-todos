@@ -2,7 +2,8 @@
   - only store diffs
 - images should work
 - arrow keys for changing style inputs
-- test css file editor
 - fix absolute bounds
 - back propagation
 
+- more editing around TSX
+  - find where expressions are

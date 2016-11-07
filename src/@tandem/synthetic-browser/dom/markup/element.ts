@@ -6,8 +6,8 @@ import { IMarkupNodeVisitor } from "./visitor";
 import { parse as parseMarkup } from "./parser.peg";
 import { selectorMatchesElement } from "../selector";
 import { AttributeChangeAction } from "@tandem/synthetic-browser/actions";
-import { MarkupElementExpression } from "./ast";
 import { syntheticElementClassType } from "./types";
+import { difference } from "lodash";
 import { SyntheticDocumentFragment } from "./document-fragment";
 import { SyntheticDOMNode, SyntheticDOMNodeSerializer } from "./node";
 import { SyntheticDOMContainer, SyntheticDOMContainerEdit } from "./container";
@@ -19,9 +19,9 @@ import {
   diffArray,
   Observable,
   deserialize,
+  ITreeWalker,
   ISerializer,
   BoundingRect,
-  ITreeWalker,
   serializable,
   ArrayChangeAction,
   ISerializedContent,
@@ -43,14 +43,15 @@ import {
 export interface ISerializedSyntheticDOMAttribute {
   name: string;
   value: string;
+  readonly: boolean;
 }
 
 class SyntheticDOMAttributeSerializer implements ISerializer<SyntheticDOMAttribute, ISerializedSyntheticDOMAttribute> {
-  serialize({ name, value }: SyntheticDOMAttribute) {
-    return { name, value }
+  serialize({ name, value, readonly }: SyntheticDOMAttribute) {
+    return { name, value, readonly };
   }
-  deserialize({ name, value }: ISerializedSyntheticDOMAttribute) {
-    return new SyntheticDOMAttribute(name, value);
+  deserialize({ name, value, readonly }: ISerializedSyntheticDOMAttribute) {
+    return new SyntheticDOMAttribute(name, value, readonly);
   }
 }
 
@@ -60,7 +61,7 @@ export class SyntheticDOMAttribute extends Observable implements ISyntheticObjec
   @bindable(true)
   public value: any;
 
-  constructor(readonly name: string, value: any) {
+  constructor(readonly name: string, value: any, public readonly?: boolean) {
     super();
     this.value = value;
   }
@@ -74,7 +75,7 @@ export class SyntheticDOMAttribute extends Observable implements ISyntheticObjec
   }
 
   clone() {
-    return new SyntheticDOMAttribute(this.name, this.value);
+    return new SyntheticDOMAttribute(this.name, this.value, this.readonly);
   }
 }
 
@@ -117,13 +118,14 @@ export class SyntheticDOMAttributes extends ObservableCollection<SyntheticDOMAtt
 export interface ISerializedSyntheticDOMElement {
   nodeName: string;
   namespaceURI: string;
+  readonlyAttributeNames: string[];
   shadowRoot: ISerializedContent<any>;
   attributes: Array<ISerializedContent<ISerializedSyntheticDOMAttribute>>;
   childNodes: Array<ISerializedContent<any>>;
 }
 
 export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMElement, ISerializedSyntheticDOMElement> {
-  serialize({ nodeName, namespaceURI, shadowRoot, attributes, childNodes }: any): any {
+  serialize({ nodeName, namespaceURI, shadowRoot, attributes, childNodes }: SyntheticDOMElement): any {
     return {
       nodeName,
       namespaceURI,
@@ -133,8 +135,7 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
     };
   }
   deserialize({ nodeName, shadowRoot, namespaceURI, attributes, childNodes }, injector, ctor) {
-    const element = new ctor(namespaceURI, nodeName);
-
+    const element = new ctor(namespaceURI, nodeName) as SyntheticDOMElement;
 
     for (let i = 0, n = attributes.length; i < n; i++) {
       element.attributes.push(<SyntheticDOMAttribute>deserialize(attributes[i], injector));
@@ -193,6 +194,10 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
       throw new Error(`nodeName must match in order to diff`);
     }
 
+    if (difference(this.target.readonlyAttributesNames, newElement.readonlyAttributesNames).length) {
+      this.setAttribute("data-td-readonly", JSON.stringify(newElement.readonlyAttributesNames));
+    }
+
     diffArray(this.target.attributes, newElement.attributes, (a, b) => a.name === b.name ? 1 : -1).accept({
       visitInsert: ({ index, value }) => {
         this.setAttribute(value.name, value.value);
@@ -225,22 +230,35 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   readonly nodeType: number = DOMNodeType.ELEMENT;
   readonly attributes: SyntheticDOMAttributes;
-  readonly expression: MarkupElementExpression;
   readonly dataset: any;
   private _shadowRoot: SyntheticDocumentFragment;
+
+  /**
+   * Bool check to ensure that createdCallback doesn't get called twice accidentally
+   */
+
   private _createdCallbackCalled: boolean;
-  private _matchesCache: any;
   private _shadowRootObserver: IActor;
+
+  /**
+   * Attributes that are not modifiable by the editor. These are typically
+   * attributes that are dynamically created. For example:
+   *
+   * <div style={{color: computeColor(hash) }} />
+   *
+   */
+
+  private _readonlyAttributeNames: string[];
 
   constructor(readonly namespaceURI: string, readonly tagName: string) {
     super(tagName);
+    this._readonlyAttributeNames = [];
     this._shadowRootObserver = new BubbleBus(this);
     this.attributes = new SyntheticDOMAttributes();
     this.attributes.observe(new WrapBus(this.onAttributesAction.bind(this)));
 
     // todo - proxy this
     this.dataset = {};
-    this._matchesCache = {};
   }
 
   createEdit() {
@@ -284,6 +302,10 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     return visitor.visitElement(this);
   }
 
+  get readonlyAttributesNames() {
+    return this._readonlyAttributeNames;
+  }
+
   attachShadow({ mode }: { mode: "open"|"close" }) {
     if (this._shadowRoot) return this._shadowRoot;
     return this.$setShadowRoot(new SyntheticDocumentFragment());
@@ -310,9 +332,15 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   setAttribute(name: string, value: any) {
 
+    // attributes that are not editable by the editor
+    if (name === "data-td-readonly") {
+      this._readonlyAttributeNames = JSON.parse(value) as string[];
+      return this._resetReadonlyAttributes();
+    }
+
     // Reserved attribute to help map where this element came from. Defined
     // by source transformers that scan for HTML elements.
-    if (name === "data-source") {
+    if (name === "data-td-source") {
       this.$source = JSON.parse(value);
       return;
     }
@@ -323,7 +351,18 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     if (attribute) {
       attribute.value = value;
     } else {
-      this.attributes.push(new SyntheticDOMAttribute(name, value));
+      this.attributes.push(new SyntheticDOMAttribute(name, value, this._readonlyAttributeNames.indexOf(name) !== -1));
+    }
+  }
+
+  private _resetReadonlyAttributes() {
+    for (const attribute of this.attributes) {
+      attribute.readonly = false;
+    }
+
+    for (const attributeName of this._readonlyAttributeNames) {
+      const attribute = this.attributes[attributeName] as SyntheticDOMAttribute;
+      if (attribute) attribute.readonly = true;
     }
   }
 

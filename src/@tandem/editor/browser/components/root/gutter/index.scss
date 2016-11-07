@@ -101,5 +101,8 @@ $gutter-background: #444;
     border-radius: none;
     padding: 0px;
     line-height: inherit;
+    &:disabled {
+      color: rgba(255, 255, 255, 0.5);
+    }
   }
 }
