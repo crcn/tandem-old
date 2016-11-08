@@ -34,6 +34,7 @@ import {
   Injector,
   IDisposable,
   easeOutCubic,
+  flattenTree,
   BoundingRect,
   DSFindAction,
   watchProperty,
@@ -44,7 +45,7 @@ import {
 } from "@tandem/common";
 
 
-import { OpenProjectAction } from "@tandem/editor/common";
+import { OpenProjectAction, SelectSourceAction } from "@tandem/editor/common";
 
 // TODO - defer various actions to project file controller.
 
@@ -116,7 +117,31 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
   [SetToolAction.SET_TOOL](action: SetToolAction) {
     // this._store.workspace.currentTool = action.toolFactory.create(this._store.workspace);
   }
+
+  [SelectSourceAction.SELECT_SOURCE]({ ranges, filePath }: SelectSourceAction) {
+    const selection = [];
+
+    flattenTree(this._store.workspace.document).forEach((item) => {
+      const { source } = item;
+      if (!source || source.filePath !== filePath || !source.start) return;
+
+      for (const range of ranges) {
+        if (
+          (range.start.line < source.start.line || (range.start.line <= source.start.line &&
+          range.start.column <= source.start.column)) &&
+
+          (range.end.line > source.start.line || (range.end.line == source.start.line &&
+          range.end.column >= source.start.column))) {
+            selection.push(item);
+            break;
+          }
+      }
+    });
+
+    this._store.workspace.select(selection);
+  }
 }
+
 
 /**
  * Offset the transform skewing that happens with the editor

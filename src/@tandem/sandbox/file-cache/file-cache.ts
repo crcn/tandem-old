@@ -61,6 +61,7 @@ export class FileCache extends Observable {
    */
 
   item = memoize(async (filePath: string): Promise<FileCacheItem> => {
+    if (filePath == null) throw new Error(`File path must not be null or undefined`);
     return this.collection.find((entity) => entity.filePath === filePath) || await this.collection.create({
       filePath: filePath,
       url: "file://" + filePath

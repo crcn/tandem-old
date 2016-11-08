@@ -97,8 +97,9 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
     let found: boolean;
 
+    console.log("SET DECL", name, newValue, oldName);
+
     const shouldAdd = node.walkDecls((decl, index) => {
-      console.log(decl.prop)
       if (decl.prop === name || decl.prop === oldName) {
         if (name && newValue) {
           decl.prop  = name;
@@ -119,6 +120,9 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     let found: postcss.Node;
 
     const walk = (node: postcss.Node, index: number) => {
+      if (node.type === target.source.kind) {
+        console.log(node.source.start, target.source.start);
+      }
       if (node.type === target.source.kind && sourcePositionEquals(node.source.start, target.source.start)) {
 
         // next find the actual node that the synthetic matches with -- the source position may not be
@@ -127,7 +131,6 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
         return false;
       }
     };
-
 
     if (walk(root, -1) !== false) {
       root.walk(walk);
@@ -156,7 +159,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
   private findMatchingRuleNode(node: postcss.Rule, synthetic: SyntheticCSSStyleRule, prefix = ''): postcss.Rule {
     let found: postcss.Rule;
-    const selector = prefix + node.selector.replace(/^\&/, "");
+    const selector = prefix + (!prefix.length || node.selector.search(/^\&/) !== -1 ? node.selector.replace(/^\&/, "") : " " + node.selector);
     if (selector === synthetic.selector) return node;
     node.each((child) => {
       if (isRuleNode(child) && (found = this.findMatchingRuleNode(<postcss.Rule>child, synthetic, selector))) {

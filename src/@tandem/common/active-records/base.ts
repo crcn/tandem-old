@@ -84,6 +84,7 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
     const newData = this.serialize();
     if (newData[this.idProperty] == null) {
       newData[this.idProperty] = String(mongoid());
+      // console.error(newData, this);
     }
     return this.fetch(new DSInsertAction(this.collectionName, newData));
   }

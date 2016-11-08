@@ -73,10 +73,16 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
   private _startSocketServer() {
     this._deleteSocketFile();
     const server = net.createServer((connection) => {
-      const bus = new SockBus(connection, this.bus, { serialize, deserialize });
+      const bus = new SockBus(connection, {
+        execute: (action) => {
+          action["$$sock"] = true;
+          return this.bus.execute(action);
+        }
+      }, { serialize, deserialize });
       const gateBus = {
         execute(action: Action) {
-          if (isPublicAction(action)) {
+          if (isPublicAction(action) && !action["$$sock"]) {
+            action["$$sock"] = true;
             return bus.execute(action);
           }
         }

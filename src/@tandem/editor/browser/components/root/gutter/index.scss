@@ -14,63 +14,78 @@ $gutter-background: #444;
   box-shadow: 0 0 0 2px $color-black-offset-2;
 
   .td-section-header {
-    background: rgba(0,0,0,0.2);
-
-
     text-transform: uppercase;
     font-size: 0.9em;
     font-weight: 400;
     letter-spacing: 0.15em;
     padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+  }
 
-    &:hover .controls {
-      display: block;
-    }
+  .td-section-header:hover .controls{
 
-    & .controls {
-      display: none;
-      float: right;
-      cursor: pointer;
-    }
+    display: block
+  }
+
+  .td-section-header .controls{
+
+    display: none;
+
+    float: right;
+
+    cursor: pointer
   }
 
   .td-section {
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   }
+}
 
-  & .container {
-    width: 100% !important;
-    max-width: none !important;
-    /*padding-left: 0;*/
-    /*padding-right: 0;*/
-  }
+.td-gutter .container{
 
-  & .left {
-    border-left: 2px solid rgba(255, 255, 255, 0.2);
-  }
+  width: 100% !important;
 
-  & .right {
-    border-right: 2px solid rgba(255, 255, 255, 0.2);
-  }
+  max-width: none !important
+  /*padding-left: 0;*/
+  /*padding-right: 0;*/
+}
 
-  & .td-pane {
-    padding-bottom: 12;
+.td-gutter .left{
 
-    &-header {
-      text-transform: uppercase;
-      font-size: 0.7em;
-      font-weight: 400;
-      opacity: 0.7;
-      letter-spacing: 0.15em;
-      padding: 10px;
+  border-left: 2px solid rgba(255, 255, 255, 0.2)
+}
 
-      // buttons
-      & a {
-        float: right;
-        color: inherit;
-      }
-    }
-  }
+.td-gutter .right{
+
+  border-right: 2px solid rgba(255, 255, 255, 0.2)
+}
+
+.td-gutter .td-pane{
+
+  padding-bottom: 12
+}
+
+.td-gutter .td-pane-header{
+
+  text-transform: uppercase;
+
+  font-size: 0.7em;
+
+  font-weight: 400;
+
+  opacity: 0.7;
+
+  letter-spacing: 0.15em;
+
+  padding: 10px
+  /* buttons*/
+}
+
+.td-gutter .td-pane-header a{
+
+  float: right;
+
+  color: inherit
 }
 
 .td-cells {
@@ -89,20 +104,29 @@ $gutter-background: #444;
   *[class*="col-"] {
     padding: 8px;
   }
+}
 
-  & label {
-    padding: 0;
-    display: block;
-  }
+.td-cells label{
 
-  & input[type="text"] {
-    background: transparent;
-    border: none;
-    border-radius: none;
-    padding: 0px;
-    line-height: inherit;
-    &:disabled {
-      color: rgba(255, 255, 255, 0.5);
-    }
-  }
+  padding: 0;
+
+  display: block
+}
+
+.td-cells input[type="text"]{
+
+  background: transparent;
+
+  border: none;
+
+  border-radius: none;
+
+  padding: 0px;
+
+  line-height: inherit
+}
+
+.td-cells input[type="text"]:disabled{
+
+  color: rgba(255, 255, 255, 0.5)
 }

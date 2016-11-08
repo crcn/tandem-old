@@ -39,7 +39,7 @@ module.exports = {
       publicPath: false
     },
     resolve: {
-      extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.peg'],
+      extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.peg', '.scss'],
       modulesDirectories: [SRC_DIR, NODE_MODULES_DIR],
       alias: {
         'react': require.resolve('node_modules/react/dist/react.js'),

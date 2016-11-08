@@ -20,7 +20,6 @@ export class EntityAttributesPaneComponent extends BaseApplicationComponent<{ wo
 
     for (const item of this.items) {
       const edit = item.createEdit();
-      edit.setAttribute(name, value);
       this.bus.execute(new ApplyFileEditAction(edit.actions));
     }
   }
@@ -34,7 +33,6 @@ export class EntityAttributesPaneComponent extends BaseApplicationComponent<{ wo
   render() {
     const items = this.items;
     if (!items.length) return null;
-
 
     return <div className="td-pane">
       <div className="td-section-header">

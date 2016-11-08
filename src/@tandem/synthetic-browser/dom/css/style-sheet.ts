@@ -89,6 +89,16 @@ export class SyntheticCSSStyleSheetEdit extends SyntheticCSSObjectEdit<Synthetic
   }
 }
 
+const _smcache = {};
+function parseSourceMaps(value) {
+  if (value.indexOf("sourceMappingURL") == -1) return undefined;
+  if (_smcache[value]) return _smcache[value];
+  const sourceMappingURL = value.match(/sourceMappingURL=(data\:[^\s]+)/)[1];
+
+  // assuming that it's inlined here... shouldn't.
+  return _smcache[value] = JSON.parse(atob(sourceMappingURL.split(",").pop()));
+}
+
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSStyleSheetSerializer()))
 export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
 
@@ -98,16 +108,7 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
   }
 
   set cssText(value: string) {
-
-    let map: RawSourceMap;
-
-    if (value.indexOf("sourceMappingURL") !== -1) {
-      const sourceMappingURL = value.match(/sourceMappingURL=([^\s]+)/)[1];
-
-      // assuming that it's inlined here... shouldn't.
-      map = JSON.parse(atob(sourceMappingURL.split(",").pop()));
-    }
-
+    let map: RawSourceMap = parseSourceMaps(value);
     this
     .createEdit()
     .fromDiff(evaluateCSS(parseCSS(value, map), map))

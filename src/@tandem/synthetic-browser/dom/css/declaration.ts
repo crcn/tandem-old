@@ -430,7 +430,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     if (ownerNode) {
       ownerNode.notify(new CSSDeclarationValueChangeAction(this, name, newValue, oldName));
     } else {
-      console.error("Declarations must have an owner node.");
+      // console.error("Declarations must have an owner node.");
     }
   }
 

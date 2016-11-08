@@ -15,8 +15,8 @@ import * as createServer from "express";
 import { debounce, throttle } from "lodash";
 import { NoopBus } from "mesh";
 
-import { GetServerPortAction, OpenProjectAction } from "@tandem/editor";
 import { createCoreApplicationProviders, ServiceApplication } from "@tandem/core";
+import { GetServerPortAction, OpenProjectAction, SelectSourceAction } from "@tandem/editor";
 
 import {
     Dependency,
@@ -225,7 +225,8 @@ export async function activate(context: vscode.ExtensionContext) {
         const fileCacheItem = await client.fileCache.eagerFindByFilePath(filePath);
         if (!fileCacheItem) return;
 
-        await fileCacheItem.setDataUrlContent(editorContent).save();
+        fileCacheItem.setDataUrlContent(editorContent).save();
+        setCurrentMtime();
     }, UPDATE_FILE_CACHE_TIMEOUT);
 
     let openProjectCommand = vscode.commands.registerCommand("extension.tandemOpenCurrentFile", async () => {
@@ -259,7 +260,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
     async function onTextChange(e:vscode.TextDocumentChangeEvent) {
         const doc  = e.document;
-        mtimes[doc.fileName] = Date.now();
         updateFileCacheItem(doc);
     }
 
@@ -274,6 +274,11 @@ export async function activate(context: vscode.ExtensionContext) {
         openFileCacheItemTab(item);
     }
 
+    const setCurrentMtime = () => {
+        mtimes[vscode.window.activeTextEditor.document.fileName] = Date.now();
+    }
+
+
     const openFileCacheItemTab = async (item: FileCacheItem)  => {
         if (vscode.window.activeTextEditor.document.fileName === item.filePath) return;
         console.log("Opening up %s tab", item.filePath);
@@ -284,6 +289,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
         const doc      = e.document;
         const filePath = doc.fileName;
+        setCurrentMtime();
 
         // must be loaded in
         const fileCacheItem = client.fileCache.eagerFindByFilePath(filePath);
@@ -298,13 +304,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
     vscode.window.onDidChangeTextEditorSelection(function(e:vscode.TextEditorSelectionChangeEvent) {
         if (_ignoreSelect) return;
-        const ranges = e.selections.map(selection => ({
-            start: e.textEditor.document.offsetAt(selection.start),
-            end: e.textEditor.document.offsetAt(selection.end)
-        }));
 
-        // TODO -
-        // server.bus.execute(new SelectEntitiesAtSourceOffsetAction(fixFileName(e.textEditor.document.fileName), ...ranges));
+        client.bus.execute(new SelectSourceAction(e.textEditor.document.fileName, e.selections.map(({ start, end }) => {
+            return {
+                start: { line: start.line + 1, column: start.character },
+                end  : { line: end.line + 1, column: end.character }
+            };
+        })));
     });
 
     // this needs to be a config setting

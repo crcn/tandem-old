@@ -1,4 +1,4 @@
-import { IActor, Action, defineProtectedAction, definePublicAction } from "@tandem/common";
+import { IActor, Action, defineProtectedAction, definePublicAction, ISourceLocation } from "@tandem/common";
 
 definePublicAction()
 export class GetServerPortAction extends Action {
@@ -19,5 +19,23 @@ export class OpenProjectAction extends Action {
   }
   static async execute({ filePath }: { filePath: string }, bus: IActor): Promise<boolean> {
     return (await bus.execute(new OpenProjectAction(filePath)).read()).value;
+  }
+}
+
+@definePublicAction({
+  serialize({ filePath, ranges }: SelectSourceAction) {
+    return {
+      filePath: filePath,
+      ranges: ranges
+    }
+  },
+  deserialize({ filePath, ranges }): SelectSourceAction {
+    return new SelectSourceAction(filePath, ranges);
+  }
+})
+export class SelectSourceAction extends Action {
+  static readonly SELECT_SOURCE = "selectSource";
+  constructor(readonly filePath: string, readonly ranges: ISourceLocation[]) {
+    super(SelectSourceAction.SELECT_SOURCE);
   }
 }
