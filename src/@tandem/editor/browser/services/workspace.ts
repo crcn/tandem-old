@@ -142,7 +142,6 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
   }
 }
 
-
 /**
  * Offset the transform skewing that happens with the editor
  */

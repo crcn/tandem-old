@@ -9,7 +9,7 @@ import {
   SyntheticDOMAttributes,
 } from "@tandem/synthetic-browser";
 
-export class DOMElements extends Array<SyntheticDOMElement>  implements IWalkable {
+export class DOMElements<T extends SyntheticDOMElement> extends Array<T>  implements IWalkable {
 
   setAttribute(name: string, value: string) {
     for (const element of this) {

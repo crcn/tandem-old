@@ -22,6 +22,7 @@ import {
 } from "@tandem/html-extension/synthetic";
 
 import {
+  HTMLStylePaneComponent,
   TextLayerLabelComponent,
   ElementCSSPaneComponent,
   CommentLayerLabelCoponent,
@@ -46,6 +47,7 @@ export function createHTMLEditorBrowserProviders() {
 
     // entity panes
     new EntityPaneComponentFactoryProvider("htmlAttributes", EntityAttributesPaneComponent),
+    new EntityPaneComponentFactoryProvider("htmlStyle", HTMLStylePaneComponent),
     new EntityPaneComponentFactoryProvider("htmlCSSRules", ElementCSSPaneComponent),
 
     // stage tool components

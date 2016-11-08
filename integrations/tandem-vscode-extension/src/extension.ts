@@ -303,7 +303,11 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     vscode.window.onDidChangeTextEditorSelection(function(e:vscode.TextEditorSelectionChangeEvent) {
-        if (_ignoreSelect) return;
+
+        // ignore for now since this is fooing with selections when
+        // using the visual editor. Need to figure out how to ignore selections when
+        // not currently focused on visual studio.
+        if (_ignoreSelect || 1 + 1) return;
 
         client.bus.execute(new SelectSourceAction(e.textEditor.document.fileName, e.selections.map(({ start, end }) => {
             return {

@@ -24,7 +24,7 @@ export class EntityAttributesPaneComponent extends BaseApplicationComponent<{ wo
     }
   }
 
-  get items(): DOMElements {
+  get items(): DOMElements<any> {
     if (!this.props.workspace) return new DOMElements();
     const { selection } = this.props.workspace;
     return DOMElements.fromArray(selection);

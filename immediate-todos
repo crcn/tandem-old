@@ -3,6 +3,6 @@
 - images should work
 - arrow keys for changing style inputs
 - fix absolute bounds
-- back propagation
 - get sync stop to work with vscode extension
-- select synthetic objects from source
+- open file in tandem
+- move edits should work

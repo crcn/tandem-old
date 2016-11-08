@@ -6,7 +6,29 @@ import { GutterComponent } from "@tandem/editor/browser/components";
 import { HashInputComponent } from "@tandem/html-extension/editor/browser/components/common";
 import { ApplyFileEditAction } from "@tandem/sandbox";
 import { BaseApplicationComponent } from "@tandem/common";
-import { SyntheticCSSStyleRule } from "@tandem/synthetic-browser";
+import { SyntheticCSSStyleRule, SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser";
+
+export class CSSStylePaneComponent extends BaseApplicationComponent<{ title: string, titleClassName?: string, style: SyntheticCSSStyleDeclaration, setDeclaration: (key, value, oldKey?) => any}, any> {
+  render() {
+    const { setDeclaration, title, style, titleClassName } = this.props;
+    const items = [];
+
+    for (const key of style) {
+      const value = style[key];
+      items.push({ name: kebabCase(key), value: style[key] });
+    }
+
+    return <div>
+      <div className={["td-section-header", titleClassName].join(" ")}>
+        { title }
+        <div className="controls">
+          <span onClick={() => setDeclaration("", "")}>+</span>
+        </div>
+      </div>
+      <HashInputComponent items={items} setKeyValue={setDeclaration} />
+    </div>
+  }
+}
 
 
 // TODO - add some color for the CSS rules
@@ -19,22 +41,8 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ rule: Synt
   }
   render() {
     const { rule } = this.props;
-    const items = [];
 
-    for (const key of rule.style) {
-      const value = rule.style[key];
-      items.push({ name: kebabCase(key), value: rule.style[key] });
-    }
-
-    return <div>
-      <div className="td-section-header color-green-10">
-        { rule.selector }
-        <div className="controls">
-          <span onClick={() => this.setDeclaration("", "")}>+</span>
-        </div>
-      </div>
-      <HashInputComponent items={items} setKeyValue={this.setDeclaration} />
-    </div>
+    return <CSSStylePaneComponent style={rule.style} title={rule.selector} titleClassName="color-green-10" setDeclaration={this.setDeclaration} />
   }
 }
 
