@@ -6,3 +6,23 @@
 - get sync stop to work with vscode extension
 - open file in tandem
 - move edits should work
+- images should work
+
+
+TOOLING
+
+- arrow keys should move object
+- display source of style rules
+- cross-
+- media queries
+  - display matched queries after selectors
+  - dim queries that are not currently active
+
+- artboards
+  - preset sizes (mobile, tablet, desktop)
+
+- tools
+  - prettier CSS pane
+  - drag & drop components into other components
+  - pen tool
+  - layers

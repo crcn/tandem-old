@@ -2,5 +2,5 @@
   <!-- HTML Extension -->
   <artboard title="Element Attributes" src="./src/@tandem/html-extension/editor/browser/components/panes/attributes/index-preview.tsx" dependency-graph-strategy="webpack" style="top:0px;left:12px;width:310px;height:768px;position:absolute;" />
   <artboard title="Element CSS" src="./src/@tandem/html-extension/editor/browser/components/panes/css/index-preview.tsx" dependency-graph-strategy="webpack" style="left:375px;top:0px;width:310px;height:768px;position:absolute;" />
-  <artboard title="Element Style" src="./src/@tandem/html-extension/editor/browser/components/panes/style/index-preview.tsx" dependency-graph-strategy="webpack" style="left:800px;top:0px;width:310px;height:768px;position:absolute;" />
+  <artboard title="Element Style" src="./src/@tandem/html-extension/editor/browser/components/panes/style/index-preview.tsx" dependency-graph-strategy="webpack" style="left:732px;top:0px;width:310px;height:768px;position:absolute;" />
 </tandem>

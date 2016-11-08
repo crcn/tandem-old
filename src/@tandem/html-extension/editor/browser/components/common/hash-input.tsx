@@ -5,6 +5,7 @@ export interface IKeyValueItem {
   name: string;
   readonly?: boolean;
   value: any;
+  overriden?: boolean;
 }
 
 // TODO - add some color for the CSS rules
@@ -71,13 +72,13 @@ export class KeyValueInputComponent extends React.Component<{ item: IKeyValueIte
   }
 
   render() {
-    const { name, value, readonly } = this.item;
+    const { name, value, readonly, overriden } = this.item;
     return <div className="row">
       <div className="col-xs-5 no-wrap td-cell-key" title={name} onDoubleClick={!readonly && this.editName}>
         { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name }
       </div>
       <div className="col-xs-7">
-        <input type="text" {...(this.state.currentValue != null ? {} : { value: value })}  disabled={readonly} onKeyDown={this.onValueKeyDown} onChange={this.onValueChange} onFocus={this.onValueFocus} onBlur={this.onValueBlur}></input>
+        <input type="text" {...(this.state.currentValue != null ? {} : { value: value })}  disabled={readonly} onKeyDown={this.onValueKeyDown} onChange={this.onValueChange} onFocus={this.onValueFocus} onBlur={this.onValueBlur} style={{textDecoration: overriden ? "line-through" : undefined}} ></input>
       </div>
     </div>
   }

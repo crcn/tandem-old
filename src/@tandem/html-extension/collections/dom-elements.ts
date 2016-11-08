@@ -9,6 +9,13 @@ import {
   SyntheticDOMAttributes,
 } from "@tandem/synthetic-browser";
 
+export class MatchedStyleRule {
+  public overridedDeclarations: any;
+  constructor(readonly value: SyntheticCSSStyleRule) {
+    this.overridedDeclarations = {};
+  }
+}
+
 export class DOMElements<T extends SyntheticDOMElement> extends Array<T>  implements IWalkable {
 
   setAttribute(name: string, value: string) {
@@ -31,10 +38,10 @@ export class DOMElements<T extends SyntheticDOMElement> extends Array<T>  implem
     this.forEach(element => element.visitWalker(walker));
   }
 
-  get matchedCSSStyleRules(): SyntheticCSSStyleRule[] {
+  get matchedCSSStyleRules(): MatchedStyleRule[] {
 
     const visited = {};
-    const matched = [];
+    const matched: MatchedStyleRule[] = [];
 
     this.forEach(element => {
       element.ownerDocument.styleSheets.forEach(styleSheet => {
@@ -46,11 +53,25 @@ export class DOMElements<T extends SyntheticDOMElement> extends Array<T>  implem
 
           const mismatch = this.find(element => !rule.matchesElement(element));
           if (!mismatch) {
-            matched.push(rule);
+
+            // add rule to the beginning
+            matched.unshift(new MatchedStyleRule(rule));
           }
         });
       });
     });
+
+    const usedDeclarations: any = {};
+
+    for (const matchedStyleRule of matched) {
+      for (const name of matchedStyleRule.value.style) {
+        if (usedDeclarations[name]) {
+          matchedStyleRule.overridedDeclarations[name] = true
+        }
+
+        usedDeclarations[name] = true;
+      }
+    }
 
     return matched;
   }

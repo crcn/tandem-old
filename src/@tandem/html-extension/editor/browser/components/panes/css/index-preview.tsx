@@ -4,13 +4,14 @@ import { reactEditorPreview } from "@tandem/editor/browser/preview";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
 import { GutterComponent } from "@tandem/editor/browser/components";
-import { ElementCSSPaneComponent } from "./index";
+import { ElementCSSPaneComponent, CSSStylePaneComponent } from "./index";
 import {
   parseCSS,
   evaluateCSS,
   SyntheticWindow,
   SyntheticHTMLElement,
   SyntheticCSSStyleRule,
+  SyntheticCSSStyleDeclaration,
 } from "@tandem/synthetic-browser";
 
 
@@ -26,11 +27,7 @@ export const renderPreview = reactEditorPreview(() => {
     }
 
     div {
-      color: red;
-    }
-
-    #something {
-
+      color: blue;
     }
   `)));
 
@@ -41,7 +38,13 @@ export const renderPreview = reactEditorPreview(() => {
   const workspace = new Workspace();
   workspace.select(document.querySelector(".container"));
 
+  const style = SyntheticCSSStyleDeclaration.fromObject({
+    backgroundColor: "red",
+    color: "blue"
+  });
+
   return <GutterComponent>
     <ElementCSSPaneComponent workspace={workspace} />
+    <CSSStylePaneComponent style={style} title="pretty pane" titleClassName="color-green-10" pretty={true} setDeclaration={() => {}} />
   </GutterComponent>
 });

@@ -96,9 +96,6 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     const source = target.source;
 
     let found: boolean;
-
-    console.log("SET DECL", name, newValue, oldName);
-
     const shouldAdd = node.walkDecls((decl, index) => {
       if (decl.prop === name || decl.prop === oldName) {
         if (name && newValue) {
@@ -120,9 +117,6 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     let found: postcss.Node;
 
     const walk = (node: postcss.Node, index: number) => {
-      if (node.type === target.source.kind) {
-        console.log(node.source.start, target.source.start);
-      }
       if (node.type === target.source.kind && sourcePositionEquals(node.source.start, target.source.start)) {
 
         // next find the actual node that the synthetic matches with -- the source position may not be
