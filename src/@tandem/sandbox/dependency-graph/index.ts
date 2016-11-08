@@ -5,3 +5,4 @@ export * from "./dependency";
 export * from "./utils";
 export * from "./graph";
 export * from "./providers";
+export * from "./watcher";

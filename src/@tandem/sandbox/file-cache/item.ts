@@ -20,6 +20,8 @@ export interface IFileCacheItemData {
   metadata?: Object;
 }
 
+let _i = 0;
+
 export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   readonly idProperty = "filePath";
@@ -39,9 +41,12 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   @bindable(true)
   public metadata: Metadata;
 
+  private _i: number;
+
   constructor(source: IFileCacheItemData, collectionName: string, private _fileSystem: IFileSystem) {
     super(source, collectionName);
     this.observe(new WrapBus(this.onAction.bind(this)));
+    this._i = _i++;
   }
 
   serialize() {

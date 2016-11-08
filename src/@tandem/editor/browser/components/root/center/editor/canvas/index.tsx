@@ -46,7 +46,6 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
 
   onDrop = (event: React.DragEvent<any>) =>  {
     event.preventDefault();
-    console.log(event.dataTransfer.files);
 
     // TODO - accept file from folder. Original idea was to do this from the code IDE,
     // but that's not possible :(
@@ -55,7 +54,6 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   }
 
   onDragExit = (event: React.DragEvent<any>) => {
-    console.log("drag exit", event);
   }
 
   pane(leftDelta, topDelta) {

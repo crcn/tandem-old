@@ -136,7 +136,6 @@ class LayerLabelComponent extends BaseApplicationComponent<ILayerLabelProps, any
 
   addNewChild = (event: React.MouseEvent<any>) => {
     event.stopPropagation();
-    console.log("add new child button. Make this a drop menu with options");
   }
 
   render() {

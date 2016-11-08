@@ -29,6 +29,7 @@ import {
   Injector,
   LogLevel,
   IWalkable,
+  Observable,
   TreeWalker,
   IInjectable,
   ITreeWalker,
@@ -41,8 +42,6 @@ import {
   DisposableCollection,
 } from "@tandem/common";
 
-import { getDependencyHash } from "./utils";
-
 export interface IDependencyData {
   hash: string;
   filePath: string;
@@ -54,21 +53,6 @@ export interface IDependencyData {
   sourceUpdatedAt?: number;
   importedDependencyInfo?: IResolvedDependencyInfo[];
   includedDependencyInfo?: IResolvedDependencyInfo[];
-}
-
-export class DependencyWalker extends TreeWalker {
-  private _walked: any;
-
-  constructor(each: (dependency: Dependency) => any) {
-    super(each);
-    this._walked = {};
-  }
-
-  accept(dependency: Dependency) {
-    if (this._walked[dependency.hash]) return;
-    this._walked[dependency.hash] = true;
-    super.accept(dependency);
-  }
 }
 
 // TODO - cover case where depenedency doesn't exist
@@ -101,7 +85,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   private _fileCacheItem: FileCacheItem;
   private _fileCacheItemObserver: IActor;
   private _updatedAt: number;
-  private _importedDependencyObserver: IActor;
   private _loading: boolean;
   private _loaded: boolean;
   private _loadedDependencies: boolean;
@@ -112,7 +95,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   constructor(source: IDependencyData, collectionName: string, private _graph: IDependencyGraph) {
     super(source, collectionName);
-    this._importedDependencyObserver = new WrapBus(this.onImportedDependencyAction.bind(this));
     this._fileCacheItemObserver = new WrapBus(this.onFileCacheAction.bind(this));
   }
 
@@ -292,7 +274,9 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
     // safe method that protects _loading from being locked
     // from errors.
-    if (this._loading || this._loaded) return this.load2();
+    if (this._loading || this._loaded) {
+      return this.load2();
+    }
 
     return new Promise<Dependency>((resolve, reject) => {
       this._loading = true;
@@ -351,7 +335,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     await this.watchForChanges();
 
     return this;
-  }, { length: 0, promise: "then" }) as () => Promise<Dependency>;
+  }, { length: 0, promise: true }) as () => Promise<Dependency>;
 
 
   private async getLatestSourceFileUpdateTimestamp() {
@@ -407,7 +391,9 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       const waitLogger = this.logger.startTimer(`Waiting for dependency ${info.hash}:${info.filePath} to load...`, 1000 * 10, LogLevel.VERBOSE);
 
       // if the dependency is loading, then they're likely a cyclical dependency
-      if (!dependency.loading) await dependency.load();
+      if (!dependency.loading) {
+        await dependency.load();
+      }
 
       waitLogger.stop(`Loaded dependency ${info.hash}:${info.filePath}`);
     }));
@@ -436,16 +422,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
     const changeWatchers = this._changeWatchers = new DisposableCollection();
 
-    // watch imported dependencies for any change -- imported dependencies
-    // of which that may have nested dependencies. This chunk here helps notify any listeners
-    // of dependency graph changes
-    for (const dependency of this.importedDependencies) {
-      dependency.observe(this._importedDependencyObserver);
-      changeWatchers.push({
-        dispose: () => dependency.unobserve(this._importedDependencyObserver)
-      });
-    }
-
     // included dependencies aren't self contained, so they don't get a Dependency object. For
     // that we'll need to watch their file cache active record and watch it for any changes. Since
     // they're typically included in the
@@ -458,47 +434,8 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     }
   }
 
-  /**
-   * Recursively scans dependencies
-   */
-
-  public async whenAllLoaded() {
-    while (true) {
-      const deps: Dependency[] = [];
-
-      new DependencyWalker((dependency: Dependency) => {
-        deps.push(dependency);
-      }).accept(this);
-
-
-      const hasLoading = (await Promise.all(values(deps).map(async (dep: Dependency) => {
-        return dep.loading ? await dep.load() && true : false;
-      }))).find(loading => loading === true);
-
-      // Break if everything is loaded in the dependency graph starting from this instance.
-      // if there were loading deps, then there may be more imported deps that are being loaded in,
-      // so we'll need to re-traverse the entire DEP graph to ensure that they're checked.
-      if (hasLoading !== true) break;
-    }
-  }
-
   public visitWalker(walker: ITreeWalker) {
     this.importedDependencies.forEach(dependency => walker.accept(dependency));
-  }
-
-  private onImportedDependencyAction(action: Action) {
-    if (action.type === DependencyAction.DEPENDENCY_LOADED) {
-
-      // cyclical dependencies, and dependencies that are shared may get
-      // bubbled more than once, so lock the notifyLoaded method temporarily to ensure
-      // that the same action doesn't get emitted again.
-      const key = `$notifiedBy$${this.hash}`;
-      if (action[key]) return;
-      action[key] = true;
-
-      this.logger.verbose(`Bubbling dependency ready notification from ${action.target.hash}`);
-      this.notify(action);
-    }
   }
 
   private resolveDependencies(dependencyPaths: string[], info: IResolvedDependencyInfo[]) {
@@ -509,7 +446,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       info.push(dependencyInfo);
     }));
   }
-
 
   private async reload() {
     this.load2["clear"]();
@@ -525,5 +461,4 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       this.reload();
     }
   }
-
 }

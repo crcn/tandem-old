@@ -87,6 +87,7 @@ export class KeyValueInputComponent extends React.Component<{ item: IKeyValueIte
 export interface IKeyInputComponentProps {
   items: IKeyValueItem[];
   setKeyValue: (key: string, value: string, oldKey?: string) => any;
+  renderItemComponent?: (item: IKeyValueItem) => any;
 }
 
 // TODO - add some color for the CSS rules
@@ -101,12 +102,14 @@ export class HashInputComponent extends React.Component<IKeyInputComponentProps,
   }
 
   render() {
-    const { items } = this.props;
+    const { items, renderItemComponent } = this.props;
     return <div className="container td-cells">
       {
         // index important here since the name can change
         items.map((item, index) => {
-          return <KeyValueInputComponent item={item} key={index} setKeyValue={this.props.setKeyValue} onValueEnter={this.onValueEnter} />;
+          return <span key={index}>
+            { renderItemComponent ? renderItemComponent(item) : <KeyValueInputComponent item={item} setKeyValue={this.props.setKeyValue} onValueEnter={this.onValueEnter} /> }
+          </span>;
         })
       }
     </div>

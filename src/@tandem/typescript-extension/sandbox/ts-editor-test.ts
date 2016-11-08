@@ -36,17 +36,17 @@ import { SyntheticBrowser, SyntheticHTMLElement, parseMarkup, evaluateMarkup } f
 // TODO - re-use VM instead of creating a new one each time - should be much faster
 describe(__filename + "#", () => {
 
-  const bus = new BrokerBus();
-
-  // bus.register({
-  //   execute(action: LogAction) {
-  //     if (action.type === LogAction.LOG && (action.level & (LogLevel.WARN|LogLevel.ERROR))) {
-  //       console.error(action.text);
-  //     }
-  //   }
-  // });
-
   const createTestInjector = (sandboxOptions: ISandboxTestProviderOptions) => {
+    const bus = new BrokerBus();
+
+    // bus.register({
+    //   execute(action: LogAction) {
+    //     if (action.type === LogAction.LOG) {
+    //       // console.error(action.text);
+    //     }
+    //   }
+    // });
+
     const injector = new Injector(
       new InjectorProvider(),
       createJavaScriptSandboxProviders(),
@@ -61,7 +61,6 @@ describe(__filename + "#", () => {
 
   const aliasMockFiles = {};
 
-
   for (const name in config.resolve.alias) {
     const filePath = config.resolve.alias[name];
     if (fs.existsSync(filePath)) {
@@ -69,12 +68,9 @@ describe(__filename + "#", () => {
     }
   }
 
-
   const loadJSX = async (jsx: string) => {
 
-    // need to use process.cwd() to ensure that tsconfig.json gets loaded.
-    // Also using timestamp to break any memoization.
-    const fileName = process.cwd() + "/"+Date.now()+".tsx";
+    const fileName = process.cwd() + "/entry.tsx";
 
     const mockFiles = Object.assign({
       [fileName]: `
@@ -98,7 +94,7 @@ describe(__filename + "#", () => {
     });
 
     const getElement = () => {
-      return browser.document.body.firstChild.firstChild as SyntheticHTMLElement;
+      return  browser.document.body.firstChild.firstChild as SyntheticHTMLElement;
     }
 
     return {
@@ -123,7 +119,7 @@ describe(__filename + "#", () => {
   });
 
   [
-    // attribute edits
+    // attribute editsw
     [`<div id="a">Hello</div>`, `<div id="b">Hello</div>`],
     [`<div>Hello</div>`, `<div id="b">Hello</div>`],
     [`<div>Hello</div>`, `<div id="b">Hello</div>`],
@@ -142,7 +138,7 @@ describe(__filename + "#", () => {
     )`, `<div>aa</div>`],
 
     // add fuzzy here
-  ].forEach(([oldSource, newSource]) => {
+  ].reverse().forEach(([oldSource, newSource]) => {
     it(`can apply typescript file edits from ${oldSource} to ${newSource}`, async () => {
       const { element, editor, fileCache, entryFilePath, reloadElement } = await loadJSX(oldSource);
       const newElementResult = await loadJSX(newSource);

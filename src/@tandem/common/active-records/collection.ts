@@ -56,6 +56,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
     // which handles all incomming and outgoing DS actions from the message bus.
     this._bus.register(this._globalActionObserver);
 
+
     return this._sync = {
       dispose: () => {
         this._sync = undefined;

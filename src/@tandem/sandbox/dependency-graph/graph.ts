@@ -1,6 +1,5 @@
 import * as memoize from "memoizee";
 import { IModule } from "@tandem/sandbox/sandbox";
-import { getDependencyHash } from "./utils";
 
 import { 
   IDependencyLoader,

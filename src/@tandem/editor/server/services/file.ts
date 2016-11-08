@@ -55,7 +55,6 @@ export class FileService extends CoreApplicationService<IEdtorServerConfig> {
 
   @document("watches a file for any changes")
   [WatchFileAction.WATCH_FILE](action: WatchFileAction) {
-    console.log("watching file %s", action.filePath);
     return Response.create((writable) => {
 
       const watcher = this._fileSystem.watchFile(action.filePath, () => {

@@ -5,7 +5,8 @@ import { SandboxModuleEvaluatorFactoryProvider } from "./providers";
 import {
   Dependency,
   DependencyGraph,
-  DependencyAction
+  DependencyAction,
+  DependencyGraphWatcher,
 } from "@tandem/sandbox/dependency-graph";
 
 import {
@@ -54,8 +55,8 @@ export class Sandbox extends Observable {
   private _entry: Dependency;
   private _paused: boolean;
   private _mainModule: any;
-  private _entryObserver: IActor;
   private _shouldEvaluate: boolean;
+  private _graphWatcher: DependencyGraphWatcher;
   private _waitingForAllLoaded: boolean;
 
   private _global: any;
@@ -67,7 +68,6 @@ export class Sandbox extends Observable {
 
     // for logging
     this._injector.inject(this);
-    this._entryObserver = new WrapBus(this.onEntryAction.bind(this));
     this._modules = {};
   }
 
@@ -100,15 +100,14 @@ export class Sandbox extends Observable {
 
   async open(entry: Dependency) {
 
-    if (this._entry) {
-      this._entry.unobserve(this._entryObserver);
-    }
     this._entry = entry;
-    this._entry.observe(this._entryObserver);
-
+    if (this._graphWatcher) {
+      this._graphWatcher.dispose();
+    }
+    this._graphWatcher = this._injector.inject(new DependencyGraphWatcher(entry, this.reset.bind(this)));
     this._entry.load();
-    await this._entry.whenAllLoaded();
-    this.reset();
+    await this._graphWatcher.waitForAllDependencies();
+
   }
 
   public evaluate(dependency: Dependency): Object {
@@ -135,36 +134,6 @@ export class Sandbox extends Observable {
     evaluatorFactoryDepedency.create().evaluate(module);
 
     return this.evaluate(dependency);
-  }
-
-  protected async onEntryAction(action: Action) {
-
-    if (action.type === DependencyAction.DEPENDENCY_LOADED) {
-
-      // Multiple deps may have changed, so wait to ensure that everything's loaded
-      // before re-evaluating the sandbox
-      if (this._waitingForAllLoaded) return;
-
-      this._waitingForAllLoaded = true;
-      this.logger.verbose("Received dependency update, waiting for others to finish loading")
-      try {
-        await this._entry.whenAllLoaded();
-      } catch(e) {
-        this._waitingForAllLoaded = false;
-        throw e;
-      }
-      this._waitingForAllLoaded = false;
-
-      if (this._paused) {
-        this._shouldEvaluate = true;
-        return;
-      }
-
-      this.logger.verbose(`Re-evaluating entry ${this._entry.filePath}`);
-
-      // TODO - wait for all children to be ready
-      this.reset();
-    }
   }
 
   private reset() {
