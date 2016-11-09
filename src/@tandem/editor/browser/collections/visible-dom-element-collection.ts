@@ -5,6 +5,7 @@ import {
   VisibleSyntheticDOMElement,
   VisibleDOMNodeCapabilities,
 } from "@tandem/synthetic-browser";
+import { EditAction } from "@tandem/sandbox";
 
 // class EntitySelectionDisplay implements IEntityDisplay {
 
@@ -118,9 +119,13 @@ export class VisibleSyntheticElementCollection<T extends VisibleSyntheticDOMElem
     return VisibleDOMNodeCapabilities.merge(...this.map((element) => element.getCapabilities()));
   }
 
-  async save() {
-    for (const entity of this) {
-      // await entity.save();
+  createStyleEditActions(): EditAction[] {
+    const actions: EditAction[] = [];
+    for (const element of this) {
+      const edit = element.createEdit();
+      edit.setAttribute("style", element.getAttribute("style"));
+      actions.push(...edit.actions);
     }
+    return actions;
   }
 }

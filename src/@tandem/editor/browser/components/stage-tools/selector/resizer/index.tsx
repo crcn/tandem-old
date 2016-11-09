@@ -3,13 +3,13 @@ import { Workspace } from "@tandem/editor/browser/models";
 import { startDrag } from "@tandem/common/utils/component";
 import PathComponent from "./path";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
+import { ApplyFileEditAction  } from "@tandem/sandbox";
 import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
-import { VisibleSyntheticDOMElement } from "@tandem/synthetic-browser";
 import { IntersectingPointComponent } from "./intersecting-point";
-import { SyntheticDOMElement, SyntheticDOMNode } from "@tandem/synthetic-browser";
-import { BoundingRect, IPoint, Point, traverseTree, findTreeNode } from "@tandem/common";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
+import { BoundingRect, IPoint, Point, traverseTree, findTreeNode, BaseApplicationComponent } from "@tandem/common";
+import { SyntheticDOMElement, SyntheticDOMNode, VisibleSyntheticDOMElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
@@ -81,7 +81,7 @@ function resize(oldBounds: BoundingRect, delta: IPoint, anchor: IPoint, keepAspe
   );
 }
 
-class ResizerComponent extends React.Component<{
+class ResizerComponent extends BaseApplicationComponent<{
   workspace: Workspace,
   app: FrontEndApplication,
   selection: Array<any>,
@@ -98,10 +98,10 @@ class ResizerComponent extends React.Component<{
   private _movingTimer: any;
   private _dragTimer: any;
   private _currentGuider: Guider;
-  private _visibleElements: VisibleSyntheticElementCollection<any>;
+  private _visibleElements: VisibleSyntheticElementCollection<VisibleSyntheticDOMElement<any>>;
 
-  constructor() {
-    super();
+  $didInject() {
+    super.$didInject();
     this.state = {};
   }
 
@@ -217,7 +217,9 @@ class ResizerComponent extends React.Component<{
       this.setState({ guideLines: guideLines });
 
     }, () => {
-      this._visibleElements.save();
+
+      this.bus.execute(new ApplyFileEditAction(this._visibleElements.createStyleEditActions()));
+
       this._dragger = void 0;
       this.props.workspace.metadata.set(MetadataKeys.MOVING, false);
       this.setState({ guideLines: undefined });
@@ -231,11 +233,12 @@ class ResizerComponent extends React.Component<{
   }
 
   onPointMouseUp = () => {
-    this._visibleElements.save();
+    this.bus.execute(new ApplyFileEditAction(this._visibleElements.createStyleEditActions()));
     this.props.workspace.metadata.set(MetadataKeys.MOVING, false);
     this.setState({ guideLines: undefined });
     this.props.onStopResizing();
   }
+
 
   moveTarget(position: IPoint) {
     this._visibleElements.setPosition(position);

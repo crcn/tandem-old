@@ -5,7 +5,7 @@ import * as ReactDOM from "react-dom";
 
 export class TestComponent extends React.Component<{ message: string }, {}> {
   render() {
-    return <div className="test">hello {this.props.message}</div>;
+    return <div className="test2">hello {this.props.message}</div>;
   }
 }
 

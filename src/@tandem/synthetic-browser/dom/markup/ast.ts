@@ -71,6 +71,7 @@ export function traverseMarkupExpression(target: MarkupExpression, each: (expres
     visitDocumentFragment(fragment) {
       for (const child of fragment.childNodes) {
         if (each(child) === false) return;
+        child.accept(this);
       }
     },
     visitElement(element) {
@@ -79,6 +80,7 @@ export function traverseMarkupExpression(target: MarkupExpression, each: (expres
       }
       for (const child of element.childNodes) {
         if (each(child) === false) break;
+        child.accept(this);
       }
     },
     visitText: each

@@ -170,8 +170,8 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
   static readonly SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
   static readonly ATTACH_SHADOW_ROOT_EDIT    = "attachShadowRootEdit";
 
-  setAttribute(name: string, value: string, newName?: string) {
-    return this.addAction(new SetKeyValueEditAction(SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT, this.target, name, value, newName));
+  setAttribute(name: string, value: string, oldName?: string) {
+    return this.addAction(new SetKeyValueEditAction(SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT, this.target, name, value, oldName));
   }
 
   removeAttribute(name: string) {

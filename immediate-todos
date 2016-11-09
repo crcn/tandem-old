@@ -1,3 +1,8 @@
+UX
+- progress loader for artboards 
+  - include dependencies that are loading
+  - 
+
 - re-wire history tool
   - only store diffs
 - images should work
@@ -8,16 +13,19 @@
 - move edits should work
 - images should work
 
-- fix hovering over synthetics
 
 TOOLING
 
+- animation
+- loader when app is re-evaluating
 - arrow keys should move object
 - display source of style rules
 - cross-
 - media queries
   - display matched queries after selectors
   - dim queries that are not currently active
+
+- animations
 
 - artboards
   - preset sizes (mobile, tablet, desktop)

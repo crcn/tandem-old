@@ -26,6 +26,7 @@ import {
 
 export type contentEditorType = { new(filePath: string, content: string): IEditor };
 
+
 export interface IEditor {
   applyEditActions(...actions: EditAction[]): any;
 }
