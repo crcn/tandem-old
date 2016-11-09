@@ -1,19 +1,18 @@
+import { WrapBus } from "mesh";
+import { SyntheticWindow } from "./window";
+import { ISyntheticBrowser } from "../browser";
+import { SyntheticLocation } from "../location";
+import { SyntheticHTMLElement } from "./html";
+import { SyntheticCSSStyleSheet } from "./css";
+
 import {
-  Action,
-  bindable,
-  Injector,
-  BubbleBus,
-  diffArray,
-  serialize,
-  ISerializer,
-  deserialize,
-  ITreeWalker,
-  serializable,
-  TreeNodeAction,
-  ISerializedContent,
-  ArrayChangeAction,
-  ObservableCollection,
-} from "@tandem/common";
+  EditAction,
+  RemoveEditAction,
+  MoveChildEditAction,
+  ApplicableEditAction,
+  RemoveChildEditAction,
+  InsertChildEditAction,
+} from "@tandem/sandbox";
 
 import {
   DOMNodeType,
@@ -31,19 +30,22 @@ import {
 } from "./markup";
 
 import {
-  EditAction,
-  RemoveEditAction,
-  MoveChildEditAction,
-  ApplicableEditAction,
-  RemoveChildEditAction,
-  InsertChildEditAction,
-} from "@tandem/sandbox";
+  Action,
+  bindable,
+  Injector,
+  BubbleBus,
+  diffArray,
+  serialize,
+  ISerializer,
+  deserialize,
+  ITreeWalker,
+  serializable,
+  TreeNodeAction,
+  ISerializedContent,
+  ArrayChangeAction,
+  ObservableCollection,
+} from "@tandem/common";
 
-import { WrapBus } from "mesh";
-import { SyntheticWindow } from "./window";
-import { ISyntheticBrowser } from "../browser";
-import { SyntheticLocation } from "../location";
-import { SyntheticCSSStyleSheet } from "./css";
 
 export interface IRegisterComponentOptions {
   prototype: any;
@@ -158,16 +160,16 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     return this.$window;
   }
 
-  get documentElement(): SyntheticDOMElement {
-    return this.childNodes[0] as SyntheticDOMElement;
+  get documentElement(): SyntheticHTMLElement {
+    return this.childNodes[0] as SyntheticHTMLElement;
   }
 
-  get head(): SyntheticDOMElement {
-    return this.documentElement.childNodes[0] as SyntheticDOMElement;
+  get head(): SyntheticHTMLElement {
+    return this.documentElement.childNodes[0] as SyntheticHTMLElement;
   }
 
-  get body(): SyntheticDOMElement {
-    return this.documentElement.childNodes[1] as SyntheticDOMElement;
+  get body(): SyntheticHTMLElement {
+    return this.documentElement.childNodes[1] as SyntheticHTMLElement;
   }
 
   get location(): SyntheticLocation {
@@ -199,6 +201,254 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   createEdit(): SyntheticDocumentEdit {
     return new SyntheticDocumentEdit(this);
   }
+  /*
+
+  From http://www.w3schools.com/tags/
+
+  execute the following script in console debugger if any elements change:
+
+  console.log(Array.prototype.filter.call(document.querySelectorAll('a'), (element) => {
+    return /^tag_/.test(element.getAttribute('href'));
+  })
+  .map((element) => {
+    return element.innerText.replace(/>|</g, '');
+  })
+  .filter((tagName) => { return /^\w+$/.test(tagName); })
+  .map((tagName) => {
+    return `createElement(tagName: "${tagName}"): SyntheticHTMLElement;`;
+  }).join("\n"));
+  */
+
+  createElement(tagName: "a"): SyntheticHTMLElement;
+  createElement(tagName: "abbr"): SyntheticHTMLElement;
+  createElement(tagName: "acronym"): SyntheticHTMLElement;
+  createElement(tagName: "address"): SyntheticHTMLElement;
+  createElement(tagName: "applet"): SyntheticHTMLElement;
+  createElement(tagName: "area"): SyntheticHTMLElement;
+  createElement(tagName: "article"): SyntheticHTMLElement;
+  createElement(tagName: "aside"): SyntheticHTMLElement;
+  createElement(tagName: "audio"): SyntheticHTMLElement;
+  createElement(tagName: "b"): SyntheticHTMLElement;
+  createElement(tagName: "base"): SyntheticHTMLElement;
+  createElement(tagName: "basefont"): SyntheticHTMLElement;
+  createElement(tagName: "bdi"): SyntheticHTMLElement;
+  createElement(tagName: "bdo"): SyntheticHTMLElement;
+  createElement(tagName: "big"): SyntheticHTMLElement;
+  createElement(tagName: "blockquote"): SyntheticHTMLElement;
+  createElement(tagName: "body"): SyntheticHTMLElement;
+  createElement(tagName: "br"): SyntheticHTMLElement;
+  createElement(tagName: "button"): SyntheticHTMLElement;
+  createElement(tagName: "canvas"): SyntheticHTMLElement;
+  createElement(tagName: "caption"): SyntheticHTMLElement;
+  createElement(tagName: "center"): SyntheticHTMLElement;
+  createElement(tagName: "cite"): SyntheticHTMLElement;
+  createElement(tagName: "code"): SyntheticHTMLElement;
+  createElement(tagName: "col"): SyntheticHTMLElement;
+  createElement(tagName: "colgroup"): SyntheticHTMLElement;
+  createElement(tagName: "datalist"): SyntheticHTMLElement;
+  createElement(tagName: "dd"): SyntheticHTMLElement;
+  createElement(tagName: "del"): SyntheticHTMLElement;
+  createElement(tagName: "details"): SyntheticHTMLElement;
+  createElement(tagName: "dfn"): SyntheticHTMLElement;
+  createElement(tagName: "dialog"): SyntheticHTMLElement;
+  createElement(tagName: "dir"): SyntheticHTMLElement;
+  createElement(tagName: "div"): SyntheticHTMLElement;
+  createElement(tagName: "dl"): SyntheticHTMLElement;
+  createElement(tagName: "dt"): SyntheticHTMLElement;
+  createElement(tagName: "em"): SyntheticHTMLElement;
+  createElement(tagName: "embed"): SyntheticHTMLElement;
+  createElement(tagName: "fieldset"): SyntheticHTMLElement;
+  createElement(tagName: "figcaption"): SyntheticHTMLElement;
+  createElement(tagName: "figure"): SyntheticHTMLElement;
+  createElement(tagName: "font"): SyntheticHTMLElement;
+  createElement(tagName: "footer"): SyntheticHTMLElement;
+  createElement(tagName: "form"): SyntheticHTMLElement;
+  createElement(tagName: "frame"): SyntheticHTMLElement;
+  createElement(tagName: "frameset"): SyntheticHTMLElement;
+  createElement(tagName: "head"): SyntheticHTMLElement;
+  createElement(tagName: "header"): SyntheticHTMLElement;
+  createElement(tagName: "hr"): SyntheticHTMLElement;
+  createElement(tagName: "html"): SyntheticHTMLElement;
+  createElement(tagName: "i"): SyntheticHTMLElement;
+  createElement(tagName: "iframe"): SyntheticHTMLElement;
+  createElement(tagName: "img"): SyntheticHTMLElement;
+  createElement(tagName: "input"): SyntheticHTMLElement;
+  createElement(tagName: "ins"): SyntheticHTMLElement;
+  createElement(tagName: "kbd"): SyntheticHTMLElement;
+  createElement(tagName: "keygen"): SyntheticHTMLElement;
+  createElement(tagName: "label"): SyntheticHTMLElement;
+  createElement(tagName: "legend"): SyntheticHTMLElement;
+  createElement(tagName: "li"): SyntheticHTMLElement;
+  createElement(tagName: "link"): SyntheticHTMLElement;
+  createElement(tagName: "main"): SyntheticHTMLElement;
+  createElement(tagName: "map"): SyntheticHTMLElement;
+  createElement(tagName: "mark"): SyntheticHTMLElement;
+  createElement(tagName: "menu"): SyntheticHTMLElement;
+  createElement(tagName: "menuitem"): SyntheticHTMLElement;
+  createElement(tagName: "meta"): SyntheticHTMLElement;
+  createElement(tagName: "meter"): SyntheticHTMLElement;
+  createElement(tagName: "nav"): SyntheticHTMLElement;
+  createElement(tagName: "noframes"): SyntheticHTMLElement;
+  createElement(tagName: "noscript"): SyntheticHTMLElement;
+  createElement(tagName: "object"): SyntheticHTMLElement;
+  createElement(tagName: "ol"): SyntheticHTMLElement;
+  createElement(tagName: "optgroup"): SyntheticHTMLElement;
+  createElement(tagName: "option"): SyntheticHTMLElement;
+  createElement(tagName: "output"): SyntheticHTMLElement;
+  createElement(tagName: "p"): SyntheticHTMLElement;
+  createElement(tagName: "param"): SyntheticHTMLElement;
+  createElement(tagName: "pre"): SyntheticHTMLElement;
+  createElement(tagName: "progress"): SyntheticHTMLElement;
+  createElement(tagName: "q"): SyntheticHTMLElement;
+  createElement(tagName: "rp"): SyntheticHTMLElement;
+  createElement(tagName: "rt"): SyntheticHTMLElement;
+  createElement(tagName: "ruby"): SyntheticHTMLElement;
+  createElement(tagName: "s"): SyntheticHTMLElement;
+  createElement(tagName: "samp"): SyntheticHTMLElement;
+  createElement(tagName: "script"): SyntheticHTMLElement;
+  createElement(tagName: "section"): SyntheticHTMLElement;
+  createElement(tagName: "select"): SyntheticHTMLElement;
+  createElement(tagName: "small"): SyntheticHTMLElement;
+  createElement(tagName: "source"): SyntheticHTMLElement;
+  createElement(tagName: "span"): SyntheticHTMLElement;
+  createElement(tagName: "strike"): SyntheticHTMLElement;
+  createElement(tagName: "strong"): SyntheticHTMLElement;
+  createElement(tagName: "style"): SyntheticHTMLElement;
+  createElement(tagName: "sub"): SyntheticHTMLElement;
+  createElement(tagName: "summary"): SyntheticHTMLElement;
+  createElement(tagName: "sup"): SyntheticHTMLElement;
+  createElement(tagName: "table"): SyntheticHTMLElement;
+  createElement(tagName: "tbody"): SyntheticHTMLElement;
+  createElement(tagName: "td"): SyntheticHTMLElement;
+  createElement(tagName: "textarea"): SyntheticHTMLElement;
+  createElement(tagName: "tfoot"): SyntheticHTMLElement;
+  createElement(tagName: "th"): SyntheticHTMLElement;
+  createElement(tagName: "thead"): SyntheticHTMLElement;
+  createElement(tagName: "time"): SyntheticHTMLElement;
+  createElement(tagName: "title"): SyntheticHTMLElement;
+  createElement(tagName: "tr"): SyntheticHTMLElement;
+  createElement(tagName: "track"): SyntheticHTMLElement;
+  createElement(tagName: "tt"): SyntheticHTMLElement;
+  createElement(tagName: "u"): SyntheticHTMLElement;
+  createElement(tagName: "ul"): SyntheticHTMLElement;
+  createElement(tagName: "var"): SyntheticHTMLElement;
+  createElement(tagName: "video"): SyntheticHTMLElement;
+  createElement(tagName: "wbr"): SyntheticHTMLElement;
+  createElement(tagName: "a"): SyntheticHTMLElement;
+  createElement(tagName: "abbr"): SyntheticHTMLElement;
+  createElement(tagName: "acronym"): SyntheticHTMLElement;
+  createElement(tagName: "address"): SyntheticHTMLElement;
+  createElement(tagName: "applet"): SyntheticHTMLElement;
+  createElement(tagName: "area"): SyntheticHTMLElement;
+  createElement(tagName: "article"): SyntheticHTMLElement;
+  createElement(tagName: "aside"): SyntheticHTMLElement;
+  createElement(tagName: "audio"): SyntheticHTMLElement;
+  createElement(tagName: "b"): SyntheticHTMLElement;
+  createElement(tagName: "base"): SyntheticHTMLElement;
+  createElement(tagName: "basefont"): SyntheticHTMLElement;
+  createElement(tagName: "bdi"): SyntheticHTMLElement;
+  createElement(tagName: "bdo"): SyntheticHTMLElement;
+  createElement(tagName: "big"): SyntheticHTMLElement;
+  createElement(tagName: "blockquote"): SyntheticHTMLElement;
+  createElement(tagName: "body"): SyntheticHTMLElement;
+  createElement(tagName: "br"): SyntheticHTMLElement;
+  createElement(tagName: "button"): SyntheticHTMLElement;
+  createElement(tagName: "canvas"): SyntheticHTMLElement;
+  createElement(tagName: "caption"): SyntheticHTMLElement;
+  createElement(tagName: "center"): SyntheticHTMLElement;
+  createElement(tagName: "cite"): SyntheticHTMLElement;
+  createElement(tagName: "code"): SyntheticHTMLElement;
+  createElement(tagName: "col"): SyntheticHTMLElement;
+  createElement(tagName: "colgroup"): SyntheticHTMLElement;
+  createElement(tagName: "datalist"): SyntheticHTMLElement;
+  createElement(tagName: "dd"): SyntheticHTMLElement;
+  createElement(tagName: "del"): SyntheticHTMLElement;
+  createElement(tagName: "details"): SyntheticHTMLElement;
+  createElement(tagName: "dfn"): SyntheticHTMLElement;
+  createElement(tagName: "dialog"): SyntheticHTMLElement;
+  createElement(tagName: "dir"): SyntheticHTMLElement;
+  createElement(tagName: "div"): SyntheticHTMLElement;
+  createElement(tagName: "dl"): SyntheticHTMLElement;
+  createElement(tagName: "dt"): SyntheticHTMLElement;
+  createElement(tagName: "em"): SyntheticHTMLElement;
+  createElement(tagName: "embed"): SyntheticHTMLElement;
+  createElement(tagName: "fieldset"): SyntheticHTMLElement;
+  createElement(tagName: "figcaption"): SyntheticHTMLElement;
+  createElement(tagName: "figure"): SyntheticHTMLElement;
+  createElement(tagName: "font"): SyntheticHTMLElement;
+  createElement(tagName: "footer"): SyntheticHTMLElement;
+  createElement(tagName: "form"): SyntheticHTMLElement;
+  createElement(tagName: "frame"): SyntheticHTMLElement;
+  createElement(tagName: "frameset"): SyntheticHTMLElement;
+  createElement(tagName: "head"): SyntheticHTMLElement;
+  createElement(tagName: "header"): SyntheticHTMLElement;
+  createElement(tagName: "hr"): SyntheticHTMLElement;
+  createElement(tagName: "html"): SyntheticHTMLElement;
+  createElement(tagName: "i"): SyntheticHTMLElement;
+  createElement(tagName: "iframe"): SyntheticHTMLElement;
+  createElement(tagName: "img"): SyntheticHTMLElement;
+  createElement(tagName: "input"): SyntheticHTMLElement;
+  createElement(tagName: "ins"): SyntheticHTMLElement;
+  createElement(tagName: "kbd"): SyntheticHTMLElement;
+  createElement(tagName: "keygen"): SyntheticHTMLElement;
+  createElement(tagName: "label"): SyntheticHTMLElement;
+  createElement(tagName: "legend"): SyntheticHTMLElement;
+  createElement(tagName: "li"): SyntheticHTMLElement;
+  createElement(tagName: "link"): SyntheticHTMLElement;
+  createElement(tagName: "main"): SyntheticHTMLElement;
+  createElement(tagName: "map"): SyntheticHTMLElement;
+  createElement(tagName: "mark"): SyntheticHTMLElement;
+  createElement(tagName: "menu"): SyntheticHTMLElement;
+  createElement(tagName: "menuitem"): SyntheticHTMLElement;
+  createElement(tagName: "meta"): SyntheticHTMLElement;
+  createElement(tagName: "meter"): SyntheticHTMLElement;
+  createElement(tagName: "nav"): SyntheticHTMLElement;
+  createElement(tagName: "noframes"): SyntheticHTMLElement;
+  createElement(tagName: "noscript"): SyntheticHTMLElement;
+  createElement(tagName: "object"): SyntheticHTMLElement;
+  createElement(tagName: "ol"): SyntheticHTMLElement;
+  createElement(tagName: "optgroup"): SyntheticHTMLElement;
+  createElement(tagName: "option"): SyntheticHTMLElement;
+  createElement(tagName: "output"): SyntheticHTMLElement;
+  createElement(tagName: "p"): SyntheticHTMLElement;
+  createElement(tagName: "param"): SyntheticHTMLElement;
+  createElement(tagName: "pre"): SyntheticHTMLElement;
+  createElement(tagName: "progress"): SyntheticHTMLElement;
+  createElement(tagName: "q"): SyntheticHTMLElement;
+  createElement(tagName: "rp"): SyntheticHTMLElement;
+  createElement(tagName: "rt"): SyntheticHTMLElement;
+  createElement(tagName: "ruby"): SyntheticHTMLElement;
+  createElement(tagName: "s"): SyntheticHTMLElement;
+  createElement(tagName: "samp"): SyntheticHTMLElement;
+  createElement(tagName: "script"): SyntheticHTMLElement;
+  createElement(tagName: "section"): SyntheticHTMLElement;
+  createElement(tagName: "select"): SyntheticHTMLElement;
+  createElement(tagName: "small"): SyntheticHTMLElement;
+  createElement(tagName: "source"): SyntheticHTMLElement;
+  createElement(tagName: "span"): SyntheticHTMLElement;
+  createElement(tagName: "strike"): SyntheticHTMLElement;
+  createElement(tagName: "strong"): SyntheticHTMLElement;
+  createElement(tagName: "style"): SyntheticHTMLElement;
+  createElement(tagName: "sub"): SyntheticHTMLElement;
+  createElement(tagName: "summary"): SyntheticHTMLElement;
+  createElement(tagName: "sup"): SyntheticHTMLElement;
+  createElement(tagName: "table"): SyntheticHTMLElement;
+  createElement(tagName: "tbody"): SyntheticHTMLElement;
+  createElement(tagName: "td"): SyntheticHTMLElement;
+  createElement(tagName: "textarea"): SyntheticHTMLElement;
+  createElement(tagName: "tfoot"): SyntheticHTMLElement;
+  createElement(tagName: "th"): SyntheticHTMLElement;
+  createElement(tagName: "thead"): SyntheticHTMLElement;
+  createElement(tagName: "time"): SyntheticHTMLElement;
+  createElement(tagName: "title"): SyntheticHTMLElement;
+  createElement(tagName: "tr"): SyntheticHTMLElement;
+  createElement(tagName: "track"): SyntheticHTMLElement;
+  createElement(tagName: "tt"): SyntheticHTMLElement;
+  createElement(tagName: "u"): SyntheticHTMLElement;
+  createElement(tagName: "ul"): SyntheticHTMLElement;
+  createElement(tagName: "var"): SyntheticHTMLElement;
+  createElement(tagName: "video"): SyntheticHTMLElement;
+  createElement(tagName: "wbr"): SyntheticHTMLElement;
 
   createElement(tagName: string) {
     return this.own(this.createElementNS(this.defaultNamespaceURI, tagName));

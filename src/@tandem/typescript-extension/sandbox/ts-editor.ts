@@ -147,8 +147,6 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
       const pos = ts.getLineAndCharacterOfPosition(root.getSourceFile(), node.getFullStart());
       const tstart = target.$source.start;
 
-      // console.log(node.kind, ts.SyntaxKind.JsxExpression, ts.SyntaxKind.JsxElement, ts.SyntaxKind.JsxOpeningElement, ts.SyntaxKind.JsxSelfClosingElement, pos, target.source.start);
-
       if (target.nodeType === DOMNodeType.ELEMENT) {
 
         // look for the tag name Identifier

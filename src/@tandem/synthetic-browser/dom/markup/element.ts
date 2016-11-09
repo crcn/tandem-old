@@ -170,8 +170,8 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
   static readonly SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
   static readonly ATTACH_SHADOW_ROOT_EDIT    = "attachShadowRootEdit";
 
-  setAttribute(name: string, value: string, oldName?: string) {
-    return this.addAction(new SetKeyValueEditAction(SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT, this.target, name, value, oldName));
+  setAttribute(name: string, value: string, oldName?: string, newIndex?: number) {
+    return this.addAction(new SetKeyValueEditAction(SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT, this.target, name, value, oldName, newIndex));
   }
 
   removeAttribute(name: string) {
@@ -200,14 +200,14 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
 
     diffArray(this.target.attributes, newElement.attributes, (a, b) => a.name === b.name ? 1 : -1).accept({
       visitInsert: ({ index, value }) => {
-        this.setAttribute(value.name, value.value);
+        this.setAttribute(value.name, value.value, undefined, index);
       },
       visitRemove: ({ index }) => {
         this.removeAttribute(this.target.attributes[index].name);
       },
       visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, newIndex }) => {
         if(this.target.attributes[originalOldIndex].value !== newValue.value) {
-          this.setAttribute(newValue.name, newValue.value);
+          this.setAttribute(newValue.name, newValue.value, undefined, newIndex);
         }
       }
     });

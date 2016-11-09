@@ -4,15 +4,16 @@
 // such as typescript, and sass.
 
 import * as path from "path";
+import { MarkupEditor } from "@tandem/synthetic-browser";
 import { createSASSSandboxProviders } from "@tandem/sass-extension";
-import { createCoreApplicationProviders } from "@tandem/core";
+import { createCommonEditorProviders } from "@tandem/editor/common";
 import { createJavaScriptSandboxProviders } from "@tandem/javascript-extension";
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/worker";
 import { createHTMLCoreProviders, createHTMLSandboxProviders } from "@tandem/html-extension";
 import { createTestSandboxProviders, ISandboxTestProviderOptions } from "@tandem/sandbox/test/helpers";
-import { Injector, InjectorProvider, PrivateBusProvider, BrokerBus, Application } from "@tandem/common";
-import { WebpackDependencyGraphStrategy, DependencyGraphStrategyProvider, FileCacheProvider } from "@tandem/sandbox";
-
+import { ServiceApplication, ApplicationConfigurationProvider } from "@tandem/core";
+import { Injector, InjectorProvider, PrivateBusProvider, BrokerBus, Application, HTML_MIME_TYPE, LogLevel, LogAction } from "@tandem/common";
+import { WebpackDependencyGraphStrategy, DependencyGraphStrategyProvider, FileCacheProvider, ContentEditorFactoryProvider } from "@tandem/sandbox";
 
 /**
  * creates a test master application that includes everything from the front-end
@@ -20,6 +21,7 @@ import { WebpackDependencyGraphStrategy, DependencyGraphStrategyProvider, FileCa
  */
 
 export interface IMasterTestAppicationOptions {
+  logLevel?: LogLevel;
   sandboxOptions?: ISandboxTestProviderOptions;
   createTestProviders?: () => any;
 }
@@ -27,15 +29,19 @@ export interface IMasterTestAppicationOptions {
 export const createTestMasterApplication = (options: IMasterTestAppicationOptions = {}) => {
   const bus = new BrokerBus();
 
+
   const injector = new Injector(
     new InjectorProvider(),
     createHTMLCoreProviders(),
     new PrivateBusProvider(bus),
+    createCommonEditorProviders(),
     createSASSSandboxProviders(),
     createHTMLSandboxProviders(),
     createJavaScriptSandboxProviders(),
     createTypescriptEditorWorkerProviders(),
+    new ApplicationConfigurationProvider(options),
     createTestSandboxProviders(options.sandboxOptions),
+    new ContentEditorFactoryProvider(HTML_MIME_TYPE, MarkupEditor),
     new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
   );
 
@@ -45,12 +51,14 @@ export const createTestMasterApplication = (options: IMasterTestAppicationOption
 
   FileCacheProvider.getInstance(injector).syncWithLocalFiles();
 
-  const app = new Application(injector);
-
-  return app;
+  return new ServiceApplication(injector);
 }
 
 
 export const createRandomFileName = (extension: string) => {
-  return path.join(process.cwd(), String(Date.now()), "." + extension);
+  return path.join(process.cwd(), String(Date.now()) + "." + extension);
+}
+
+export const removeWhitespace = (value: string) => {
+  return value.replace(/[\s\r\n\t]+/g, "");
 }

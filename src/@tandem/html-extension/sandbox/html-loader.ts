@@ -3,8 +3,8 @@ import * as path from "path";
 import {
   Dependency,
   IDependencyLoader,
-  BaseDependencyLoader,
   IDependencyContent,
+  BaseDependencyLoader,
   DefaultDependencyLoader,
   IDependencyLoaderResult,
 } from "@tandem/sandbox";
@@ -18,9 +18,9 @@ import {
 
 import {
   parseMarkup,
-  SyntheticDOMElement,
   MarkupTextExpression,
   formatMarkupExpression,
+  MarkupElementExpression,
   MarkupFragmentExpression,
   serializeMarkupExpression,
   deserializeMarkupExpression,
@@ -44,7 +44,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
         // ignore redirecting tag names
         if (/src|href/.test(name) && !/^a$/i.test(parent.nodeName)) {
           const absoluteFilePathOptions = await this.strategy.resolve(value, path.dirname(filePath));
-          (<SyntheticDOMElement>parent).setAttribute(name, absoluteFilePathOptions.filePath);
+          (<MarkupElementExpression>parent).setAttribute(name, absoluteFilePathOptions.filePath);
           importedDependencyPaths.push(value);
         }
       },
@@ -81,9 +81,10 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
       }
     });
     return {
-      ast: ast,
       type: HTML_MIME_TYPE,
-      content: formatMarkupExpression(ast),
+      content: content,
+      // this breaks editing for now. Don't do it.
+      // content: formatMarkupExpression(ast),
       importedDependencyPaths: importedDependencyPaths
     };
   }

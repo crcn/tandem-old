@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { expect } from "chai";
 import { generateRandomStyleSheet } from "@tandem/synthetic-browser/test/helpers";
-import { waitForPropertyChange, Application } from "@tandem/common";
+import { waitForPropertyChange, Application, LogLevel } from "@tandem/common";
 import { FileEditorProvider, FileSystemProvider } from "@tandem/sandbox";
 import { SyntheticCSSStyleSheet, SyntheticBrowser } from "@tandem/synthetic-browser";
 import { createTestMasterApplication, createRandomFileName } from "@tandem/editor/test";
@@ -15,15 +15,17 @@ describe(__filename + "#", () => {
 
   let app: Application;
 
-  before(() => {
+  before(async () => {
     app = createTestMasterApplication({
+      logLevel: LogLevel.NONE,
       sandboxOptions: {
         mockFiles: {
           [cssBasePath]: fs.readFileSync(cssBasePath, "utf8"),
           [addStylePath]: fs.readFileSync(addStylePath, "utf8")
         }
       }
-    })
+    });
+    await app.initialize();
   });
 
   const loadCSS = async (content: string) => {

@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { expect } from "chai";
 const config = require(process.cwd() + "/webpack.config.js");
-import { waitForPropertyChange, Application } from "@tandem/common";
+import { waitForPropertyChange, Application, LogLevel } from "@tandem/common";
 import { createTestMasterApplication, createRandomFileName } from "@tandem/editor/test";
 import { createTestSandboxProviders, ISandboxTestProviderOptions } from "@tandem/sandbox/test";
 import { Sandbox, FileCacheProvider, FileSystemProvider, FileEditorProvider } from "@tandem/sandbox";
@@ -24,12 +24,14 @@ describe(__filename + "#", () => {
 
   let app: Application;
 
-  before(() => {
+  before(async () => {
     app = createTestMasterApplication({
+      logLevel: LogLevel.NONE,
       sandboxOptions: {
         mockFiles:aliasMockFiles
       }
-    })
+    });
+    await app.initialize();
   });
 
   const loadJSX = async (jsx: string) => {

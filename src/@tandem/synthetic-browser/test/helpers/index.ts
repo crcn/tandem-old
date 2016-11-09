@@ -21,8 +21,7 @@ export function createMockBrowser() {
   return new SyntheticBrowser(new Injector(deps));
 }
 
-const CHARS = "abcdefg".split("");
-
+const CHARS = "abcdefghijkl".split("");
 
 function generateRandomText(maxLength: number = 5) {
   return sampleSize(CHARS, random(1, maxLength)).join("");
@@ -33,7 +32,7 @@ function generateRandomChar() {
 }
 
 
-function generateRandomSyntheticHTMLElementSource(maxChildCount: number = 10, maxDepth: number = 10, maxAttributes: number = 10) {
+export function generateRandomSyntheticHTMLElementSource(maxChildCount: number = 10, maxDepth: number = 10, maxAttributes: number = 10) {
 
   function createRandomSyntheticFragment() {
 
@@ -51,9 +50,13 @@ function generateRandomSyntheticHTMLElementSource(maxChildCount: number = 10, ma
   function createRandomElement() {
     const tagName = generateRandomChar();
     let element = ["<", tagName];
+    const attribs = {};
 
-    for (let i = random(0, maxAttributes); i--;) {
-      element.push(" ", generateRandomChar(), '="', generateRandomText(), '"');
+    for (let i = random(0, Math.min(maxAttributes, CHARS.length - 1)); i--;) {
+      let key;
+      while(attribs[key = generateRandomChar()]);
+      attribs[key] = 1;
+      element.push(" ", key, '="', generateRandomText(), '"');
     }
 
     element.push(">", createRandomSyntheticFragment(), "</" + tagName + ">");

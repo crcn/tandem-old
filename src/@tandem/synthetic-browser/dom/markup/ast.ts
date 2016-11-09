@@ -181,21 +181,34 @@ export class MarkupElementExpression extends MarkupContainerExpression {
       if (attribute.name === name) return attribute.value;
     }
   }
-  setAttribute(name: string, value: string) {
-    for (const attribute of this.attributes) {
+  setAttribute(name: string, newValue: string, newIndex?: number) {
+    let attribute: MarkupAttributeExpression;
+    let i = 0;
+
+    for (;i < this.attributes.length; i++) {
+      attribute = this.attributes[i];
       if (attribute.name === name) {
-        attribute.value = value;
-        return;
+        attribute.value = newValue;
+        break;
       }
     }
-    this.attributes.push(new MarkupAttributeExpression(name, value, null));
+
+    if (i === this.attributes.length) {
+      this.attributes.push(attribute = new MarkupAttributeExpression(name, newValue, null));
+    }
+
+    if (newIndex != null && newIndex !== i) {
+      this.attributes.splice(i, 1);
+      this.attributes.splice(newIndex, 0, attribute);
+    }
   }
   removeAttribute(name: string) {
-    for (let i = 0, n = this.attributes.length; i < n; i++) {
+    for (let i = this.attributes.length; i--;) {
       const attribute = this.attributes[i];
+
+      // there may be multiple instances in the expression, so remove all occurences.
       if (attribute.name === name) {
         this.attributes.splice(i, 1);
-        return;
       }
     }
   }

@@ -227,27 +227,29 @@ export class MoveChildEditAction extends ChildEditAction {
 }
 
 @serializable({
-  serialize({ type, target, name, newValue, oldName }: SetKeyValueEditAction) {
+  serialize({ type, target, name, newValue, oldName, newIndex }: SetKeyValueEditAction) {
     return {
       type: type,
       target: serialize(target.clone()),
       name: name,
       newValue: serialize(newValue),
-      oldName: oldName
+      oldName: oldName,
+      newIndex: newIndex
     };
   },
-  deserialize({ type, target, name, newValue, oldName }, injector): SetKeyValueEditAction {
+  deserialize({ type, target, name, newValue, oldName, newIndex }, injector): SetKeyValueEditAction {
     return new SetKeyValueEditAction(
       type,
       deserialize(target, injector),
       name,
       deserialize(newValue, injector),
-      oldName
+      oldName,
+      newIndex
     );
   }
 })
 export class SetKeyValueEditAction extends ApplicableEditAction {
-  constructor(actionType: string, target: ISyntheticObject, public  name: string, public newValue: any, public oldName?: string) {
+  constructor(actionType: string, target: ISyntheticObject, public  name: string, public newValue: any, public oldName?: string, public newIndex?: number) {
     super(actionType, target);
   }
   applyTo(target: ISyntheticObject) {

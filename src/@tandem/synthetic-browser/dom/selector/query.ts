@@ -1,4 +1,4 @@
-import { throttle } from "lodash";
+import { throttle, Cancelable } from "lodash";
 import { getSelectorTester, ISelectorTester } from "./tester";
 import { SyntheticDOMNode, SyntheticDOMElement, SyntheticDOMContainer, DOMNodeType } from "../markup";
 
