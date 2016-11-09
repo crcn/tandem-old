@@ -52,12 +52,13 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
         // Bad. Fixes Discrepancy between postcss & source-map source information.
         // There's also an issue with sass and at rules when inlining styles (which isn't covered here). For example
         // @media { body { color: red; }} will produce incorrect source maps
-        column: originalPosition.column || 1
+        column: originalPosition.column + 1
       };
 
       filePath = originalPosition.source;
       end = undefined;
     }
+
 
     synthetic.$source = {
       kind: expression.type,

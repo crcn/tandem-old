@@ -2,9 +2,9 @@ import * as fs from "fs";
 import * as path from "path";
 import { expect } from "chai";
 import { generateRandomStyleSheet } from "@tandem/synthetic-browser/test/helpers";
-import { waitForPropertyChange, Application, LogLevel } from "@tandem/common";
 import { FileEditorProvider, FileSystemProvider } from "@tandem/sandbox";
 import { SyntheticCSSStyleSheet, SyntheticBrowser } from "@tandem/synthetic-browser";
+import { waitForPropertyChange, Application, LogLevel } from "@tandem/common";
 import { createTestMasterApplication, createRandomFileName } from "@tandem/editor/test";
 
 describe(__filename + "#", () => {
@@ -17,6 +17,7 @@ describe(__filename + "#", () => {
 
   before(async () => {
     app = createTestMasterApplication({
+      // logLevel: LogLevel.ERROR | LogLevel.WARN,
       logLevel: LogLevel.NONE,
       sandboxOptions: {
         mockFiles: {
@@ -33,7 +34,7 @@ describe(__filename + "#", () => {
     const { injector } = app;
     const fs = FileSystemProvider.getInstance(injector);
 
-    const entryCSSFilePath = createRandomFileName("scss");
+    const entryCSSFilePath = createRandomFileName("css");
     const entryJSFilePath  = createRandomFileName("js");
 
     await fs.writeFile(entryCSSFilePath, content);
@@ -59,12 +60,13 @@ describe(__filename + "#", () => {
     }
   }
 
-  const fuzzyTests = Array.from({ length: 0 }).map((v) => [
-    generateRandomStyleSheet(5, 2).cssText.replace(/[\s\r\n\t]+/g, " "),
-    generateRandomStyleSheet(5, 2).cssText.replace(/[\s\r\n\t]+/g, " ")
+  const fuzzyTests = Array.from({ length: 30 }).map((v) => [
+    generateRandomStyleSheet(4, 2).cssText.replace(/[\s\r\n\t]+/g, " "),
+    generateRandomStyleSheet(4, 2).cssText.replace(/[\s\r\n\t]+/g, " ")
   ]);
 
   [
+    [`a { color: red; }`, `a{ color: blue; }`],
     [`.a { color: red; }`, `.a{ color: blue; }`],
     [`.a { color: red; }`, `.a{ }`],
     [`.a { color: red;  }`, `.a{ color: red; background: orange; }`],
@@ -75,19 +77,44 @@ describe(__filename + "#", () => {
     [`.a{color:red}.b{color:blue}`, `.b { color: blue; } .a{ color: red; }`],
     [`@media screen {\n.b{color:red}}`, `@media screen { .c { color: red; }}`],
 
-    // busted fuzzy tests
-    // [
-    //   `@charset "utf-8"; @media f { .e { b: d; } .d { f: f; a: g; }} @media d { .d { b: ad; } @keyframes e { .e { e: af; } .c { b: ad; } }}`,
-    //   `.g { b: bf; }`
-    // ],
+    [
+      `@keyframes g { 0% { color: green; }}`,
+      `@keyframes a { 0% { color: orange; } }`
+    ],
 
+    [
+      `@keyframes e { 0% { color: blue } }`,
+      `@keyframes e { 1% { color: blue } } `
+    ],
+
+    [
+      `@keyframes a { 0% { color: red; } }`,
+      `@keyframes b { 0% { color: red; } } @keyframes a { 0% { color: blue } }`,
+    ],
+
+    [
+      `.a { color: red; } @media screen { .c { color: white }}`,
+      `.b { color: blue; } .a { color: green; }`
+    ],
+
+    [
+      `@media e { } .h { } @media j { }`,
+      `.l { color: blue; } @media j { color: blue }`
+    ],
+
+    [
+      `.c { color: red; text-decoration: none; }`,
+      `.c { text-decoration: none; color: blue; }`
+    ],
+
+    // css and other similar languages
     ...fuzzyTests,
   ].forEach(([oldSource, newSource]) => {
     it(`can apply a file edit from ${oldSource} to ${newSource}`, async () => {
       const a = await loadCSS(oldSource);
       const b = await loadCSS(newSource);
       const edit = a.styleSheet.createEdit().fromDiff(b.styleSheet);
-      if (!edit.actions.length) throw new Error(`There are no edit actions`);
+      expect(edit.actions.length).not.to.equal(0);
       a.fileEditor.applyEditActions(...edit.actions);
       expect((await a.reloadStylesheet()).cssText).to.equal(b.styleSheet.cssText);
     });

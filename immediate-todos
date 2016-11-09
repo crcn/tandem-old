@@ -26,7 +26,7 @@ BUGS
 
 TESTING
    - [ ] coverage up to 90%
-   - [ ] test markup editor
+   - [ ] more test cases for css editor
 
 ARCHITECTURE
   - [ ] Remove cases where parts of the app are listening to the global DS

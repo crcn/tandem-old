@@ -37,18 +37,3 @@ export class MarkupMimeTypeXMLNSProvider extends Provider<string> {
     return provider && provider.value;
   }
 }
-
-
-export class CSSSyntaxProvider extends Provider<Function> {
-  static readonly NS = "cssSyntax";
-  constructor(readonly mimeType: string, readonly syntax: Function) {
-    super(CSSSyntaxProvider.getId(mimeType), syntax);
-  }
-  static getId(mimeType: string) {
-    return [this.NS, mimeType].join("/");
-  }
-  static find(mimeType: string, injector: Injector): Function {
-    const provider = injector.query<CSSSyntaxProvider>(this.getId(mimeType))
-    return provider && provider.value ;
-  }
-}

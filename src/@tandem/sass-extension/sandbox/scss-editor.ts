@@ -1,7 +1,7 @@
 import * as postcss from "postcss";
+import * as syntax from "postcss-scss";
 import { Action, inject, Injector, InjectorProvider, sourcePositionEquals, MimeTypeProvider } from "@tandem/common";
 import {
-  parseCSS,
   SyntheticCSSStyleRule,
   syntheticCSSRuleType,
   SyntheticCSSStyleSheetEdit,
@@ -27,26 +27,26 @@ import {
   SetKeyValueEditAction,
 } from "@tandem/sandbox";
 
-function nodeMatchesSyntheticSource(node: postcss.Node, source: ISyntheticSourceInfo) {
-  return node.type === source.kind && sourcePositionEquals(node.source.start, source.start);
-}
-
 // TODO - move this to synthetic-browser
 // TODO - may need to split this out into separate CSS editors. Some of this is specific
 // to SASS
-export class CSSEditor extends BaseContentEditor<postcss.Node> {
+export class SCSSEditor extends BaseContentEditor<postcss.Node> {
 
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
   [SyntheticCSSStyleRuleEdit.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueEditActon) {
     const source = target.source;
-    node.selector = newValue;
+
+    // prefix here is necessary
+    const prefix = this.getRuleSelectorPrefix(node);
+    node.selector = (node.selector.indexOf("&") === 0 ? "&" : "") + newValue.replace(prefix, "");
   }
 
   [SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child }: RemoveChildEditAction) {
-    const childNode = this.findTargetASTNode(node, <syntheticCSSRuleType>child);
-    childNode.parent.removeChild(childNode);
+    const nodeChild = this.findTargetASTNode(node, <syntheticCSSRuleType>child);
+
+    nodeChild.parent.removeChild(nodeChild);
   }
 
   [SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, newIndex }: MoveChildEditAction) {
@@ -59,7 +59,8 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
   [SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, index }: InsertChildEditAction) {
 
     let newChild = <syntheticCSSRuleType>child;
-    const newChildNode = {
+
+    node.append({
       rule(rule: SyntheticCSSStyleRule) {
         const ruleNode = postcss.rule({
           selector: rule.selector,
@@ -86,31 +87,19 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
         return ruleNode;
       }
-    }[newChild.source.kind](newChild);
-
-    if (index >= node.nodes.length) {
-      node.append(newChildNode);
-    } else {
-      node.each((child, i) => {
-        if (child.parent === node && i === index) {
-          node.insertBefore(child, newChildNode);
-          return false;
-        }
-      });
-    }
+    }[newChild.source.kind](newChild));
   }
 
-  [SyntheticCSSStyleRuleEdit.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName, newIndex }: SetKeyValueEditAction) {
+
+  [SyntheticCSSStyleRuleEdit.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName }: SetKeyValueEditAction) {
     const source = target.source;
 
     let found: boolean;
-    let foundIndex: number = -1;
     const shouldAdd = node.walkDecls((decl, index) => {
       if (decl.prop === name || decl.prop === oldName) {
         if (name && newValue) {
           decl.prop  = name;
           decl.value = newValue;
-          foundIndex = index;
         } else {
           node.removeChild(decl);
         }
@@ -118,18 +107,8 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
       }
     });
 
-    if (newIndex != null, foundIndex > -1 && foundIndex !== newIndex) {
-      const decl = node.nodes[foundIndex];
-      node.removeChild(decl);
-      if (newIndex === node.nodes.length) {
-        node.append(decl);
-      } else {
-        node.insertBefore(node.nodes[newIndex], decl);
-      }
-    }
-
     if (!found && newValue) {
-      node.append(postcss.decl({ prop: name, value: newValue }));
+      node.nodes.push(postcss.decl({ prop: name, value: newValue }))
     }
   }
 
@@ -137,11 +116,18 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     let found: postcss.Node;
 
     const walk = (node: postcss.Node, index: number) => {
-      if (found) return false;
+      console.log(node.type, node.source.start, target.source.start);
 
+      const possibleLocations = [
+        { line: target.source.start.line, column: target.source.start.column || 1 },
+        target.source.start
+      ];
 
-      if (node.type === target.source.kind && node.source && sourcePositionEquals(node.source.start, target.source.start)) {
-        found = node;
+      if (node.type === target.source.kind && !!possibleLocations.find(loc => sourcePositionEquals(node.source.start, loc))) {
+
+        // next find the actual node that the synthetic matches with -- the source position may not be
+        // entirely accurate for cases such as nested selectors.
+        found = this.findNestedASTNode(<any>node, target);
         return false;
       }
     };
@@ -153,17 +139,72 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     return found;
   }
 
+  private findNestedASTNode(node: postcss.Container, target: ISyntheticObject): postcss.Node {
+    if (isRuleNode(node)) {
+      return this.findMatchingRuleNode(<postcss.Rule>node, <SyntheticCSSStyleRule>target);
+    } else {
+      return node;
+    }
+  }
+
+  /**
+   *
+   *
+   * @private
+   * @param {postcss.Rule} node
+   * @param {SyntheticCSSStyleRule} synthetic
+   * @param {string} [prefix='']
+   * @returns {postcss.Rule}
+   */
+
+  private findMatchingRuleNode(node: postcss.Rule, synthetic: SyntheticCSSStyleRule, prefix = ''): postcss.Rule {
+    let found: postcss.Rule;
+    const selector = prefix + (!prefix.length || node.selector.search(/^\&/) !== -1 ? node.selector.replace(/^\&/, "") : " " + node.selector);
+    if (selector === synthetic.selector) return node;
+    node.each((child) => {
+      if (isRuleNode(child) && (found = this.findMatchingRuleNode(<postcss.Rule>child, synthetic, selector))) {
+        return false;
+      }
+    });
+
+    return found;
+  }
+
+  /**
+   * for nested selectors
+   *
+   * @private
+   * @param {postcss.Rule} node
+   * @returns
+   */
+
+  private getRuleSelectorPrefix(node: postcss.Rule){
+    let prefix = "";
+    let current = node;
+    while(current = <postcss.Rule>current.parent) {
+      if (!isRuleNode(current)) break;
+      prefix = current.selector.replace(/^&/, "") + prefix;
+    }
+    return prefix;
+  }
+
   parseContent(content: string) {
-    return parseCSS(content, undefined, null, false);
+    return parseSCSS(content);
   }
 
   getFormattedContent(root: postcss.Rule) {
 
     // try parsing again. This should throw an error if any edits are invalid.
-    parseCSS(root.toString());
+    parseSCSS(root.toString());
 
     return root.toString();
   }
+}
+
+function parseSCSS(content: string) {
+  return postcss().process(content, {
+    syntax: syntax
+  }).root;
 }
 
 function isRuleNode(node: postcss.Node) {

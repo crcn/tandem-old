@@ -32,8 +32,8 @@ export class SyntheticCSSStyleRuleEdit extends SyntheticCSSObjectEdit<SyntheticC
     return this.addAction(new SetValueEditActon(SyntheticCSSStyleRuleEdit.SET_DECLARATION, this.target, selector));
   }
 
-  setDeclaration(name: string, value: string, oldName?: string) {
-    return this.addAction(new SetKeyValueEditAction(SyntheticCSSStyleRuleEdit.SET_DECLARATION, this.target, name, value, oldName));
+  setDeclaration(name: string, value: string, oldName?: string, index?: number) {
+    return this.addAction(new SetKeyValueEditAction(SyntheticCSSStyleRuleEdit.SET_DECLARATION, this.target, name, value, oldName, index));
   }
 
   addDiff(newRule: SyntheticCSSStyleRule) {
@@ -49,8 +49,8 @@ export class SyntheticCSSStyleRuleEdit extends SyntheticCSSObjectEdit<SyntheticC
     diffArray(oldKeys, newKeys, (a, b) => {
       return a === b ? 0 : -1;
     }).accept({
-      visitInsert: ({ value }) => {
-        this.setDeclaration(value, newRule.style[value]);
+      visitInsert: ({ value, index }) => {
+        this.setDeclaration(value, newRule.style[value], undefined, index);
       },
       visitRemove: ({ index }) => {
 
@@ -59,9 +59,9 @@ export class SyntheticCSSStyleRuleEdit extends SyntheticCSSObjectEdit<SyntheticC
           this.setDeclaration(oldKeys[index], undefined);
         }
       },
-      visitUpdate: ({ originalOldIndex, newValue }) => {
+      visitUpdate: ({ originalOldIndex, newValue, newIndex }) => {
         if (this.target.style[newValue] !== newRule.style[newValue]) {
-          this.setDeclaration(newValue, newRule.style[newValue]);
+          this.setDeclaration(newValue, newRule.style[newValue], undefined, newIndex);
         }
       }
     });

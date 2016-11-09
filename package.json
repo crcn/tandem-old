@@ -100,7 +100,6 @@
     "mocha": "^3.1.2",
     "null-loader": "^0.1.1",
     "pegjs-loader": "^0.5.0",
-    "postcss-cssnext": "^2.8.0",
     "postcss-loader": "^1.1.0",
     "react": "^15.3.1",
     "react-dom": "^15.2.1",

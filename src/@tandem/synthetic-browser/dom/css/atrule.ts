@@ -48,7 +48,7 @@ export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends Synthe
       },
       visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, newIndex }) => {
         const oldRule = this.target.cssRules[originalOldIndex];
-        if (originalOldIndex !== patchedOldIndex) {
+        if (patchedOldIndex !== newIndex) {
           this.moveRule(oldRule, newIndex);
         }
         this.addChildEdit(oldRule.createEdit().fromDiff(<SyntheticCSSStyleRule>newValue));

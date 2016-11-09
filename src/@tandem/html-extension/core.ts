@@ -14,8 +14,6 @@ import { MimeTypeProvider } from "@tandem/common";
 export function createHTMLCoreProviders() {
   return [
 
-    new ContentEditorFactoryProvider(CSS_MIME_TYPE, CSSEditor),
-
     // TODO - move these to either sandbox/ or synthetic/ directories
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "link", SyntheticHTMLLink),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "script", SyntheticHTMLScript),
