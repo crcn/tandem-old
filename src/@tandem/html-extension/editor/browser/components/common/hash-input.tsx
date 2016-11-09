@@ -63,7 +63,13 @@ export class KeyValueInputComponent extends React.Component<{ item: IKeyValueIte
     event.currentTarget.select();
   }
 
-  onValueBlur = () => {
+  onValueBlur = (event: React.FocusEvent<any>) => {
+
+    // unset
+    if (event.currentTarget.value === "") {
+      this.props.setKeyValue(this.item.name, undefined);
+    }
+
     this.setState({ currentValue: undefined, editName: this.state.editName });
   }
 

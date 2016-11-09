@@ -37,7 +37,9 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ rule: Matc
   setDeclaration = (name: string, value: string, oldName?: string) => {
     this.props.rule.value.style.setProperty(name, value, undefined, oldName);
     const edit = this.props.rule.value.createEdit();
-    edit.setDeclaration(name, value, oldName);
+    if (value !== "") {
+      edit.setDeclaration(name, value, oldName);
+    }
     this.bus.execute(new ApplyFileEditAction(edit.actions));
   }
   render() {
