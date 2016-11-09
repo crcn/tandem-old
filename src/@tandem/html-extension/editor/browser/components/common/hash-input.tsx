@@ -73,13 +73,11 @@ export class KeyValueInputComponent extends React.Component<{ item: IKeyValueIte
 
   render() {
     const { name, value, readonly, overriden } = this.item;
-    return <div className="row">
-      <div className="col-xs-5 no-wrap td-cell-key" title={name} onDoubleClick={!readonly && this.editName}>
+    return <div className="row font-regular">
+      <div className="col-5 no-wrap dim" title={name} onDoubleClick={!readonly && this.editName}>
         { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name }
       </div>
-      <div className="col-xs-7">
-        <input type="text" {...(this.state.currentValue != null ? {} : { value: value })}  disabled={readonly} onKeyDown={this.onValueKeyDown} onChange={this.onValueChange} onFocus={this.onValueFocus} onBlur={this.onValueBlur} style={{textDecoration: overriden ? "line-through" : undefined}} ></input>
-      </div>
+      <input type="text" className="col-5" {...(this.state.currentValue != null ? {} : { value: value })}  disabled={readonly} onKeyDown={this.onValueKeyDown} onChange={this.onValueChange} onFocus={this.onValueFocus} onBlur={this.onValueBlur} style={{textDecoration: overriden ? "line-through" : undefined}} ></input>
     </div>
   }
 }
@@ -103,7 +101,7 @@ export class HashInputComponent extends React.Component<IKeyInputComponentProps,
 
   render() {
     const { items, renderItemComponent } = this.props;
-    return <div className="container td-cells">
+    return <div className="td-cells">
       {
         // index important here since the name can change
         items.map((item, index) => {

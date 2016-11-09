@@ -26,6 +26,8 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
     for (let i = 0, n = rules.length; i < n; i++) {
       const decl = rules[i];
 
+      if (!decl.value) continue;
+
       // Priority level is not part of the value in regular CSSStyleDeclaration instances. We're
       // Adding it here because it's faster for the app, and easier to work with (for now).
       obj[camelCase(decl.prop)] = decl.value + (decl.important ? " !important" : "");

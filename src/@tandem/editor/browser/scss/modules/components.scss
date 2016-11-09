@@ -1,0 +1,209 @@
+$input-radius: 3px;
+$input-top-bottom: 4px;
+$input-left-right: 8px;
+$input-padding: $input-top-bottom $input-left-right;
+$input-border: 1px solid rgba(0,0,0,0.15);
+$input-background: rgba(0,0,0,0.1);
+
+
+$gutter-background: #444;
+
+.td-gutter {
+  overflow: scroll;
+  font-size: $font-size-sm;
+  letter-spacing: 0.15em;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  color: $font-color-white;
+  background-color: $gutter-background;
+  box-shadow: 0 0 0 2px $color-black-offset-2;
+
+  .td-section-header {
+    text-transform: uppercase;
+    font-size: 0.9em;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.2);
+    &:hover {
+      .controls {
+        display: block;
+      }
+    }
+    .controls{
+      display: none;
+      float: right;
+      cursor: pointer
+    }
+  }
+
+  .td-section-subheader {
+    @extend .font-regular;
+    text-transform: uppercase;
+    padding: 8px 16px;
+  }
+
+  .td-section {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  }
+
+  .left{
+    border-left: 2px solid rgba(255, 255, 255, 0.2)
+  }
+
+  .right{
+    border-right: 2px solid rgba(255, 255, 255, 0.2)
+  }
+}
+
+.td-cells {
+  .row {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .td-cell-key {
+    line-height: inherit;
+    width: 40%;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  input[type="text"]{
+    background: transparent;
+    border: none;
+    border-radius: none;
+    padding: 0px;
+    line-height: inherit;
+    &:disabled{
+      color: rgba(255, 255, 255, 0.5)
+    }
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  color: inherit;
+  border: none;
+  background: none;
+}
+
+.input {
+  color: $font-color-white;
+  letter-spacing: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  padding: $input-padding;
+  line-height: inherit;
+  height: auto;
+  background: $input-background;
+  border: $input-border;
+  margin: 0;
+  border-radius: $input-radius;
+  width: 100% !important;
+}
+
+.dim {
+  opacity: 0.6;
+}
+
+.select {
+  @extend .input;
+  @extend .no-wrap;
+  & .button {
+    float: right;
+  }
+}
+
+*:focus {
+  outline: none;
+}
+
+.pull-right {
+  float: right;
+}
+
+.slider {
+  position: relative;
+
+  & > *, &:before {
+    top: 50%;
+    position: absolute;
+    transform: translateY(-50%);
+  }
+
+
+  &:before {
+    content: " ";
+    background: rgba(255, 255, 255, 0.1);
+    width: 100%;
+    display: block;
+    height: 2px;
+  }
+
+  width: 100%;
+
+  & a {
+    width: 10px;
+    height: 10px;
+    display: block;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 100px;
+  }
+}
+
+label {
+  font-weight: inherit;
+  padding: $input-top-bottom 0px;
+  margin: 0px;
+}
+
+input[type="text"] {
+  @extend .input;
+}
+
+.font-regular {
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+
+.td-container {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+hr {
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 0;
+}
+
+.row {
+
+  padding: 8px 16px;
+
+  display: flex;
+  flex-direction: row;
+
+  & > * {
+    margin-left: 16px !important;
+    &:first-child {
+      margin-left: 0px !important;
+    }
+  }
+
+  .no-shrink {
+    flex-shrink: 0;
+  }
+
+  @for $i from 1 through 10 {
+    .col-#{$i} {
+      width: percentage($i/10);
+    }
+  }
+}
+

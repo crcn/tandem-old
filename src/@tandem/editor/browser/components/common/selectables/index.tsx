@@ -48,18 +48,10 @@ class SelectableComponent extends React.Component<{
     if (this._mouseOver) {
       this.props.element.metadata.set(MetadataKeys.HOVERING, false);
     }
-    // this.props.element.unobserve(this._elementObserver);
-  }
-
-  componentDidMount() {
-    // this._elementObserver = new WrapBus(this.forceUpdate.bind(this));
-    // this.props.element.observe(this._elementObserver);
   }
 
   onMouseOver = (event: React.MouseEvent<any>) => {
     this._mouseOver = true;
-
-    // TODO - add hovering prop
     this.props.element.metadata.set(MetadataKeys.HOVERING, true);
   }
 
@@ -93,7 +85,7 @@ class SelectableComponent extends React.Component<{
         style={style}
         className={classNames}
         onMouseLeave={this.onMouseOut}
-        onMouseEnter={this.onMouseOver}
+        onMouseMove={this.onMouseOver}
         onMouseDown={this.onMouseDown}
       />
     );

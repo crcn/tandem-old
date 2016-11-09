@@ -1,4 +1,4 @@
-import { debounce } from "lodash";
+import { throttle } from "lodash";
 import { getSelectorTester, ISelectorTester } from "./tester";
 import { SyntheticDOMNode, SyntheticDOMElement, SyntheticDOMContainer, DOMNodeType } from "../markup";
 
@@ -150,7 +150,7 @@ export class ElementQuerierWatcher extends PropertyWatcher<IElementQuerier<any>>
 }
 
 export type elementQueryFilterType = (element: SyntheticDOMElement) => boolean;
-const ELEMENT_QUERY_TIMEOUT = 50;
+const ELEMENT_QUERY_TIMEOUT = 10;
 
 /**
  * Speedier version of querySelector with a few additional features
@@ -202,7 +202,7 @@ export abstract class BaseElementQuerier<T extends SyntheticDOMElement> extends 
     return this._queriedElements;
   }
 
-  protected debounceReset = debounce(() => {
+  protected debounceReset = throttle(() => {
     if (this._disposed) return;
     this.reset();
   }, ELEMENT_QUERY_TIMEOUT)
@@ -237,10 +237,13 @@ export class SyntheticElementQuerier<T extends SyntheticDOMElement> extends Base
     const found = [];
     const filter = this.filter || (() => true);
     const tester = getSelectorTester(this.selector);
+    let i = 0;
 
     createSyntheticDOMWalker(node => {
+      i++;
       if (tester.test(node) && filter(<SyntheticDOMElement>node)) found.push(node);
     }).accept(this.target);
+
 
     this.setQueriedElements(found);
   }

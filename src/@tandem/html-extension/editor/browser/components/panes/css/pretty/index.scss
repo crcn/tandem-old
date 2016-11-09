@@ -1,0 +1,34 @@
+@import "@tandem/editor/browser/scss/modules/all";
+
+.td-pretty-pane {
+  & label {
+    @extend .dim;
+    @extend .font-regular;
+    min-width: 20px;
+    line-height: 12px;
+    margin-right: -16px;
+  }
+
+  & *[class*="col-"] {
+    & label {
+      text-align: center;
+      margin-top: 4px;
+      padding: 0px;
+      display: block;
+      margin-right: 0;
+    }
+  }
+
+  .css-background-preview {
+    width: 12px;
+    height: 12px;
+    top: 4px;
+    border-radius: 2px;
+    position: relative;
+    margin-right: -8px;
+    display: block;
+    &:before {
+      content: " ";
+    }
+  }
+}

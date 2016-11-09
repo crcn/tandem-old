@@ -206,3 +206,9 @@ declare module "postcss-cssnext" {
   import * as postcss from "postcss";
   export = postcss;
 }
+
+declare module "acorn-globals" {
+  function detect(source: string): { name: string, nodes: any[] }[]
+  namespace detect { }
+  export = detect;
+}
