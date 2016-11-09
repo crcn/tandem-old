@@ -1,63 +1,17 @@
-import { expect } from "chai";
 import * as fs from "fs";
 import * as path from "path";
+import { expect } from "chai";
 const config = require(process.cwd() + "/webpack.config.js");
-import {
-  Injector,
-  BrokerBus,
-  InjectorProvider,
-  waitForPropertyChange,
-  LogAction,
-  LogLevel,
-  PrivateBusProvider,
-} from "@tandem/common";
-import {
-  createTestSandboxProviders,
-  ISandboxTestProviderOptions,
-} from "@tandem/sandbox/test";
-
-import {
-  createJavaScriptSandboxProviders,
-} from "@tandem/javascript-extension";
-
-import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/worker";
-
-import {
-  Sandbox,
-  FileCacheProvider,
-  FileEditorProvider,
-  DependencyGraphStrategyProvider,
-  WebpackDependencyGraphStrategy
-} from "@tandem/sandbox";
+import { waitForPropertyChange, Application } from "@tandem/common";
+import { createTestMasterApplication, createRandomFileName } from "@tandem/editor/test";
+import { createTestSandboxProviders, ISandboxTestProviderOptions } from "@tandem/sandbox/test";
+import { Sandbox, FileCacheProvider, FileSystemProvider, FileEditorProvider } from "@tandem/sandbox";
 
 import { SyntheticBrowser, SyntheticHTMLElement, parseMarkup, evaluateMarkup } from "@tandem/synthetic-browser";
 
 // TODO - move most of this in util functions - possibly in @tandem/editor/test/utils
 // TODO - re-use VM instead of creating a new one each time - should be much faster
 describe(__filename + "#", () => {
-
-  const createTestInjector = (sandboxOptions: ISandboxTestProviderOptions) => {
-    const bus = new BrokerBus();
-
-    // bus.register({
-    //   execute(action: LogAction) {
-    //     if (action.type === LogAction.LOG) {
-    //       // console.error(action.text);
-    //     }
-    //   }
-    // });
-
-    const injector = new Injector(
-      new InjectorProvider(),
-      createJavaScriptSandboxProviders(),
-      createTypescriptEditorWorkerProviders(),
-      createTestSandboxProviders(sandboxOptions),
-      new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
-      new PrivateBusProvider(bus)
-    );
-    FileCacheProvider.getInstance(injector).syncWithLocalFiles();
-    return injector;
-  }
 
   const aliasMockFiles = {};
 
@@ -68,26 +22,32 @@ describe(__filename + "#", () => {
     }
   }
 
+  let app: Application;
+
+  before(() => {
+    app = createTestMasterApplication({
+      sandboxOptions: {
+        mockFiles:aliasMockFiles
+      }
+    })
+  });
+
   const loadJSX = async (jsx: string) => {
+    const { injector } = app;
 
-    const fileName = process.cwd() + "/entry.tsx";
+    const entryFilePath = createRandomFileName("tsx");
 
-    const mockFiles = Object.assign({
-      [fileName]: `
-        import * as React from "react";
-        import * as ReactDOM from "react-dom";
-        const element = document.createElement("div");
-        ReactDOM.render(${jsx}, element);
-        module.exports = element;
-      `
-    }, aliasMockFiles);
-
-
-    const injector = createTestInjector({ mockFiles });
+    await FileSystemProvider.getInstance(injector).writeFile(entryFilePath, `
+      import * as React from "react";
+      import * as ReactDOM from "react-dom";
+      const element = document.createElement("div");
+      ReactDOM.render(${jsx}, element);
+      module.exports = element;
+    `);
 
     const browser = new SyntheticBrowser(injector);
     await browser.open({
-      url: fileName,
+      url: entryFilePath,
       dependencyGraphStrategyOptions: {
         name: "webpack"
       }
@@ -98,7 +58,7 @@ describe(__filename + "#", () => {
     }
 
     return {
-      entryFilePath: fileName,
+      entryFilePath: entryFilePath,
       element: getElement(),
       editor: FileEditorProvider.getInstance(injector),
       fileCache: FileCacheProvider.getInstance(injector),
@@ -114,8 +74,7 @@ describe(__filename + "#", () => {
     const { element } = await loadJSX(`<div>a</div>`);
     expect(element.textContent).to.equal("a");
     expect(element.$source).not.to.be.undefined;
-    expect(element.$source.start.line).to.equal(5);
-    expect(element.$source.start.column).to.equal(24);
+    expect(element.$source.start).not.to.be.undefined;
   });
 
   [

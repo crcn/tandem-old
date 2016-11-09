@@ -1,57 +1,47 @@
 import * as fs from "fs";
 import * as path from "path";
 import { expect } from "chai";
-import { createTestSandboxProviders } from "@tandem/sandbox/test";
 import { generateRandomStyleSheet } from "@tandem/synthetic-browser/test/helpers";
-import { createHTMLCoreProviders } from "@tandem/html-extension";
-import { createJavaScriptSandboxProviders } from "@tandem/javascript-extension";
+import { waitForPropertyChange, Application } from "@tandem/common";
+import { FileEditorProvider, FileSystemProvider } from "@tandem/sandbox";
 import { SyntheticCSSStyleSheet, SyntheticBrowser } from "@tandem/synthetic-browser";
-import { createSASSSandboxProviders } from "@tandem/sass-extension";
-import { BrokerBus, Injector, InjectorProvider, PrivateBusProvider, waitForPropertyChange, LogAction, LogLevel } from "@tandem/common";
-import { FileEditorProvider, WebpackDependencyGraphStrategy, DependencyGraphStrategyProvider, FileCacheProvider } from "@tandem/sandbox";
+import { createTestMasterApplication, createRandomFileName } from "@tandem/editor/test";
 
 describe(__filename + "#", () => {
 
+  const cssLoaderPath = path.join(process.cwd(), "node_modules", "css-loader");
+  const addStylePath  = path.join(process.cwd(), "node_modules", "style-loader", "addStyles.js");
+  const cssBasePath   = path.join(cssLoaderPath, "lib", "css-base.js");
+
+  let app: Application;
+
+  before(() => {
+    app = createTestMasterApplication({
+      sandboxOptions: {
+        mockFiles: {
+          [cssBasePath]: fs.readFileSync(cssBasePath, "utf8"),
+          [addStylePath]: fs.readFileSync(addStylePath, "utf8")
+        }
+      }
+    })
+  });
 
   const loadCSS = async (content: string) => {
 
-    const cssLoaderPath = path.join(process.cwd(), "node_modules", "css-loader");
-    const addStylePath  = path.join(process.cwd(), "node_modules", "style-loader", "addStyles.js");
-    const cssBasePath   = path.join(cssLoaderPath, "lib", "css-base.js");
-    const bus = new BrokerBus();
+    const { injector } = app;
+    const fs = FileSystemProvider.getInstance(injector);
 
-    // bus.register({
-    //   execute(action: LogAction) {
-    //     if (action.type === LogAction.LOG && (action.level & (LogLevel.WARN | LogLevel.ERROR))) {
-    //       console.log(action.text);
-    //     }
-    //   }
-    // })
+    const entryCSSFilePath = createRandomFileName("scss");
+    const entryJSFilePath  = createRandomFileName("js");
 
-    const injector = new Injector(
-      new InjectorProvider(),
-      new PrivateBusProvider(bus),
-      createHTMLCoreProviders(),
-      createSASSSandboxProviders(),
-      new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
-      createJavaScriptSandboxProviders(),
-      createTestSandboxProviders({
-        mockFiles: {
-          [cssBasePath]: fs.readFileSync(cssBasePath, "utf8"),
-          [addStylePath]: fs.readFileSync(addStylePath, "utf8"),
-          [process.cwd() + "/entry.scss"]: content,
-          [process.cwd() + "/entry.js"]: `
-            require("./entry.scss")
-
-          `
-        }
-      })
-    );
-    FileCacheProvider.getInstance(injector).syncWithLocalFiles();
+    await fs.writeFile(entryCSSFilePath, content);
+    await fs.writeFile(entryJSFilePath, `
+      require("${entryCSSFilePath}");
+    `);
 
     const browser = new SyntheticBrowser(injector);
     await browser.open({
-      url: process.cwd() + "/entry.js",
+      url: entryJSFilePath,
       dependencyGraphStrategyOptions: {
         name: "webpack"
       }

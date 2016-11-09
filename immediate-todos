@@ -1,37 +1,71 @@
+Notes about this doc:
+
+- Checklist items are ordered by importance.
+- Remove a checklist item when it's completed.
+
+----------------------------------
+STABILITY
+----------------------------------
+
 UX
-- progress loader for artboards 
-  - include dependencies that are loading
-  - 
+  - [ ] spinner when artboard is compiling
 
-- re-wire history tool
-  - only store diffs
-- images should work
-- arrow keys for changing style inputs
-- fix absolute bounds
-- get sync stop to work with vscode extension
-- open file in tandem
-- move edits should work
-- images should work
+BUGS
+  - [ ] Images and assets should work
+  - [ ] fix absolute bounds for elements
+  - [ ] get sync stop to work with vscode extension
+  - [ ] DS actions should not be broadcasted
+  - [ ] stop remote browser when a user disconnects
 
+TESTING
+   - [ ] coverage up to 90%
+   - [ ] test markup editor
 
-TOOLING
+ARCHITECTURE
+  - [ ] Remove cases where parts of the app are listening to the global DS
+    - as alternatives, there needs to be services that mediate handlers of globally dispatched messages. An example
+    of this would be a data store oplog tail.
+  - [ ] better code around emitting changes to one central listener
 
-- animation
-- loader when app is re-evaluating
-- arrow keys should move object
-- display source of style rules
-- cross-
-- media queries
-  - display matched queries after selectors
-  - dim queries that are not currently active
+CLEANUP
+  - [ ] upgrade mesh library for native streams
+  - [ ] change Action for Message
+  - [ ] do not use absolute paths for dependency graphs
 
-- animations
+----------------------------------
+FEATURES
+----------------------------------
 
-- artboards
-  - preset sizes (mobile, tablet, desktop)
+CORE
+  - [ ] component templates when dragging & dropping
+  - [ ] config for scanning application for components
+  - [ ] folder navigator pane
+    - [ ] dnd components and files onto page
+  - [ ] SVG support
+  - [ ] History scrubber
 
-- tools
-  - prettier CSS pane
-  - drag & drop components into other components
-  - pen tool
-  - layers
+CSS PANE
+  - [ ] display inherited styles
+  - [ ] display source of styles
+  - [ ] syntax highlighting for declaration values
+  - [ ] visual editor for declaration values
+  - [ ] drag slider for unit values
+  - [ ] unit value converter
+  - [ ] arrow keys when changing values
+
+OPTIMIZATIONS
+  - [ ] have data store records owned
+  - [ ] tail oplog for DS operations
+  - [ ] store workspaces in data store
+  - [ ] Have separate node workers for synthetic browsers
+
+ANIMATION PANE
+
+MEDIA QUERIES
+
+ARTBOARD PANE
+  - [ ] preset
+
+BROWSERTAP INTEGRATION
+  - [ ] rendering engine adapter for synthetic browsers to support IE, chrome, and other browsers
+
