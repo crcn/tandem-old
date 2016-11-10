@@ -113,7 +113,10 @@ class WebpackLoaderContextModule {
   readonly errors: any[] = [];
 }
 
+@loggable()
 class WebpackLoaderContext {
+
+  protected readonly logger: Logger;
 
   private _async: boolean;
   private _resolve: Function;
@@ -184,6 +187,7 @@ class WebpackLoaderContext {
 
   emitFile(fileName: string, content: string) {
     // throw new Error(`emit file is not supported yet`);
+    this.logger.info(`Emitted asset ${fileName}`);
   }
 
   async() {
@@ -250,14 +254,14 @@ class WebpackDependencyLoader implements IDependencyLoader {
     const includedDependencyPaths = [];
 
     const contexts = moduleLoaders.map((loader) => {
-      return new WebpackLoaderContext(
+      return this.strategy.injector.inject(new WebpackLoaderContext(
         moduleLoaders,
         loader,
         this.strategy,
         filePath,
         hash,
         includedDependencyPaths
-      );
+      ));
     });
 
     const loadNext = async (content: string, map: any, index: number = 0): Promise<{ map: any, content: string }> => {

@@ -15,7 +15,6 @@ UX
     - [ ] define what extensions to use
 
 BUGS
-  - [ ] source maps for html loader
   - [ ] Images and assets should work
   - [ ] cannot edit sass files fudging up nested selectors
   - [ ] fix absolute bounds for elements

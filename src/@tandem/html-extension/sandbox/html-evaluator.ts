@@ -7,7 +7,7 @@ import {
   parseMarkup,
   evaluateMarkup,
   SyntheticWindow,
-  MarkupMimeTypeXMLNSProvider
+  MarkupMimeTypeXMLNSProvider,
 } from "@tandem/synthetic-browser";
 
 export class HTMLASTEvaluator implements ISandboxDependencyEvaluator {

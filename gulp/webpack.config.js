@@ -57,9 +57,9 @@ module.exports = {
             fileCache.item(filePath).then((item) => {
               item.read().then((content) => {
                 done({ file: filePath, contents: content });
-              });
-            });
-          });
+              }, done);
+            }, done);
+          }, done);
         }
       }
     },

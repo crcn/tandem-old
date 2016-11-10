@@ -313,6 +313,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       try {
         await this.loadHard();
       } catch(e) {
+        await this.watchForChanges();
         throw e;
       }
 
@@ -392,7 +393,12 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
       // if the dependency is loading, then they're likely a cyclical dependency
       if (!dependency.loading) {
-        await dependency.load();
+        try {
+          await dependency.load();
+        } catch(e) {
+          waitLogger.stop("Error while loading dependency");
+          throw e;
+        }
       }
 
       waitLogger.stop(`Loaded dependency ${info.hash}:${info.filePath}`);

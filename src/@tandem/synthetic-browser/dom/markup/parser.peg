@@ -57,7 +57,7 @@ ElementWithoutChildNodes
   }
 
 ElementWithChildNodes
-  = startTag:ElementStart attributes:ElementAttributes '>' _ childNodes:Node* _ '</' endTag:Name '>' {
+  = startTag:ElementStart attributes:ElementAttributes _ '>' _ childNodes:Node* _ '</' endTag:Name '>' {
     if (startTag != endTag) {
       expected('</' + startTag + '>');
     }

@@ -65,7 +65,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
     const lines = content.split("\n");
 
     function getPosition({ line, column }: ISourcePosition) {
-      return lines.slice(0, line - 1).join("\n").length + lines[line - 1].substr(0, column).length;
+      return lines.slice(0, line - 1).join("").length + line + lines[line - 1].substr(0, column - 1).length;
     }
 
     await ast.accept({
@@ -73,7 +73,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
         // ignore redirecting tag names
         if (/src|href/.test(attribute.name) && !/^a$/i.test(attribute.parent.nodeName)) {
           const absoluteFilePathOptions = await this.strategy.resolve(attribute.value, path.dirname(filePath));
-          addReplacement(attribute, getPosition(attribute.location.start) + attribute.name.length + 3, getPosition(attribute.location.end) - 1, absoluteFilePathOptions.filePath);
+          addReplacement(attribute, getPosition(attribute.location.start) + attribute.name.length + 2, getPosition(attribute.location.end) - 2, absoluteFilePathOptions.filePath);
           importedDependencyPaths.push(attribute.value);
         }
       },
