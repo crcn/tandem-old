@@ -27,10 +27,6 @@ import {
   SetKeyValueEditAction,
 } from "@tandem/sandbox";
 
-function nodeMatchesSyntheticSource(node: postcss.Node, source: ISyntheticSourceInfo) {
-  return node.type === source.kind && sourcePositionEquals(node.source.start, source.start);
-}
-
 // TODO - move this to synthetic-browser
 // TODO - may need to split this out into separate CSS editors. Some of this is specific
 // to SASS
@@ -139,8 +135,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     const walk = (node: postcss.Node, index: number) => {
       if (found) return false;
 
-
-      if (node.type === target.source.kind && node.source && sourcePositionEquals(node.source.start, target.source.start)) {
+      if (this.nodeMatchesSyntheticSource(node, target.source)) {
         found = node;
         return false;
       }
@@ -151,6 +146,10 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     }
 
     return found;
+  }
+
+  protected nodeMatchesSyntheticSource(node: postcss.Node, source: ISyntheticSourceInfo) {
+    return node.type === source.kind && node.source && sourcePositionEquals(node.source.start, source.start);
   }
 
   parseContent(content: string) {

@@ -3,10 +3,52 @@ import * as path from "path";
 import { expect } from "chai";
 import { generateRandomStyleSheet } from "@tandem/synthetic-browser/test/helpers";
 import { FileEditorProvider, FileSystemProvider } from "@tandem/sandbox";
-import { SyntheticCSSStyleSheet, SyntheticBrowser } from "@tandem/synthetic-browser";
 import { waitForPropertyChange, Application, LogLevel } from "@tandem/common";
 import { createTestMasterApplication, createRandomFileName } from "@tandem/editor/test";
+import { SyntheticCSSStyleSheet, SyntheticBrowser, parseCSS, evaluateCSS } from "@tandem/synthetic-browser";
 
+export const cssEditorTestCases = [
+  [`a { color: red; }`, `a{ color: blue; }`],
+  [`.a { color: red; }`, `.a{ color: blue; }`],
+  [`.a { color: red; }`, `.a{ }`],
+  [`.a { color: red;  }`, `.a{ color: red; background: orange; }`],
+  [`.a { color: red; background: orange; }`, `.a{ }`],
+  [`.a { color: red; }`, `.a{ color: red; } .b { color: blue; }`],
+  [`.a { color: red; }`, `.a{ color: red; } @media screen { .b { color: blue; }}`],
+  [`.a { color: black; }`, `.a{ color: black; } @keyframes a { 0% { color: blue; }}`],
+  [`.a{color:red}.b{color:blue}`, `.b { color: blue; } .a{ color: red; }`],
+  [`@media screen {\n.b{color:red}}`, `@media screen { .c { color: red; }}`],
+
+  [
+    `@keyframes g { 0% { color: green; }}`,
+    `@keyframes a { 0% { color: orange; } }`
+  ],
+
+  [
+    `@keyframes e { 0% { color: blue } }`,
+    `@keyframes e { 1% { color: blue } } `
+  ],
+
+  [
+    `@keyframes a { 0% { color: red; } }`,
+    `@keyframes b { 0% { color: red; } } @keyframes a { 0% { color: blue } }`,
+  ],
+
+  [
+    `.a { color: red; } @media screen { .c { color: white }}`,
+    `.b { color: blue; } .a { color: green; }`
+  ],
+
+  [
+    `@media screen and (min-width: 480px) { .a { color: red; }} .h { } @media screen and (min-width: 500px) { .a { color: red; }}`,
+    `.l { color: blue; }  @media screen and (min-width: 500px) { .a { color: blue; } }`
+  ],
+
+  [
+    `.c { color: red; text-decoration: none; }`,
+    `.c { text-decoration: none; color: blue; }`
+  ],
+];
 describe(__filename + "#", () => {
 
   const cssLoaderPath = path.join(process.cwd(), "node_modules", "css-loader");
@@ -66,47 +108,7 @@ describe(__filename + "#", () => {
   ]);
 
   [
-    [`a { color: red; }`, `a{ color: blue; }`],
-    [`.a { color: red; }`, `.a{ color: blue; }`],
-    [`.a { color: red; }`, `.a{ }`],
-    [`.a { color: red;  }`, `.a{ color: red; background: orange; }`],
-    [`.a { color: red; background: orange; }`, `.a{ }`],
-    [`.a { color: red; }`, `.a{ color: red; } .b { color: blue; }`],
-    [`.a { color: red; }`, `.a{ color: red; } @media a { .b { color: blue; }}`],
-    [`.a { color: black; }`, `.a{ color: black; } @keyframes a { 0% { color: blue; }}`],
-    [`.a{color:red}.b{color:blue}`, `.b { color: blue; } .a{ color: red; }`],
-    [`@media screen {\n.b{color:red}}`, `@media screen { .c { color: red; }}`],
-
-    [
-      `@keyframes g { 0% { color: green; }}`,
-      `@keyframes a { 0% { color: orange; } }`
-    ],
-
-    [
-      `@keyframes e { 0% { color: blue } }`,
-      `@keyframes e { 1% { color: blue } } `
-    ],
-
-    [
-      `@keyframes a { 0% { color: red; } }`,
-      `@keyframes b { 0% { color: red; } } @keyframes a { 0% { color: blue } }`,
-    ],
-
-    [
-      `.a { color: red; } @media screen { .c { color: white }}`,
-      `.b { color: blue; } .a { color: green; }`
-    ],
-
-    [
-      `@media e { } .h { } @media j { }`,
-      `.l { color: blue; } @media j { color: blue }`
-    ],
-
-    [
-      `.c { color: red; text-decoration: none; }`,
-      `.c { text-decoration: none; color: blue; }`
-    ],
-
+    ...cssEditorTestCases,
     // css and other similar languages
     ...fuzzyTests,
   ].forEach(([oldSource, newSource]) => {

@@ -8,6 +8,7 @@ import {
   SyntheticCSSMediaRuleEdit,
   SyntheticCSSAtRuleEdit,
   SyntheticCSSAtRule,
+  CSSEditor,
   SyntheticCSSKeyframesRuleEdit,
   SyntheticCSSStyleRuleEdit,
 } from "@tandem/synthetic-browser";
@@ -30,10 +31,7 @@ import {
 // TODO - move this to synthetic-browser
 // TODO - may need to split this out into separate CSS editors. Some of this is specific
 // to SASS
-export class SCSSEditor extends BaseContentEditor<postcss.Node> {
-
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+export class SCSSEditor extends CSSEditor {
 
   [SyntheticCSSStyleRuleEdit.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueEditActon) {
     const source = target.source;
@@ -43,87 +41,28 @@ export class SCSSEditor extends BaseContentEditor<postcss.Node> {
     node.selector = (node.selector.indexOf("&") === 0 ? "&" : "") + newValue.replace(prefix, "");
   }
 
-  [SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child }: RemoveChildEditAction) {
-    const nodeChild = this.findTargetASTNode(node, <syntheticCSSRuleType>child);
-
-    nodeChild.parent.removeChild(nodeChild);
-  }
-
-  [SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, newIndex }: MoveChildEditAction) {
-    const childNode = this.findTargetASTNode(node, <syntheticCSSRuleType>child);
-    const parent = childNode.parent;
-    parent.removeChild(childNode);
-    parent.insertBefore(node.nodes[newIndex], childNode);
-  }
-
-  [SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, index }: InsertChildEditAction) {
-
-    let newChild = <syntheticCSSRuleType>child;
-
-    node.append({
-      rule(rule: SyntheticCSSStyleRule) {
-        const ruleNode = postcss.rule({
-          selector: rule.selector,
-        });
-
-        for (const key in rule.style.toObject()) {
-          ruleNode.append(postcss.decl({
-            prop: key,
-            value: rule.style[key]
-          }));
-        }
-
-        return ruleNode;
-      },
-      atrule(atrule: SyntheticCSSAtRule) {
-        const ruleNode = postcss.atRule({
-          name: atrule.atRuleName,
-          params: atrule.params
-        });
-
-        for (const rule of atrule.cssRules) {
-          ruleNode.append(this[rule.source.kind](rule));
-        }
-
-        return ruleNode;
-      }
-    }[newChild.source.kind](newChild));
-  }
-
-
-  [SyntheticCSSStyleRuleEdit.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName }: SetKeyValueEditAction) {
-    const source = target.source;
-
-    let found: boolean;
-    const shouldAdd = node.walkDecls((decl, index) => {
-      if (decl.prop === name || decl.prop === oldName) {
-        if (name && newValue) {
-          decl.prop  = name;
-          decl.value = newValue;
-        } else {
-          node.removeChild(decl);
-        }
-        found = true;
-      }
-    });
-
-    if (!found && newValue) {
-      node.nodes.push(postcss.decl({ prop: name, value: newValue }))
-    }
-  }
-
   protected findTargetASTNode(root: postcss.Container, target: ISyntheticObject) {
     let found: postcss.Node;
 
     const walk = (node: postcss.Node, index: number) => {
-      console.log(node.type, node.source.start, target.source.start);
 
-      const possibleLocations = [
-        { line: target.source.start.line, column: target.source.start.column || 1 },
-        target.source.start
-      ];
+      let offsetStart = {
+        line: target.source.start.line,
+        column: target.source.start.column
+      };
 
-      if (node.type === target.source.kind && !!possibleLocations.find(loc => sourcePositionEquals(node.source.start, loc))) {
+      if (!node.source) return;
+
+      const nodeStart = node.source.start;
+
+      // Bug fix (I need to report this): Source map column numbers shift +1 for each CSS rule. This fixes that.
+      const ruleCount = this.countRulesOnLineBefore(node);
+
+      if (ruleCount) {
+        offsetStart.column -= ruleCount;
+      }
+
+      if (node.type === target.source.kind && target.source && sourcePositionEquals(nodeStart, offsetStart)) {
 
         // next find the actual node that the synthetic matches with -- the source position may not be
         // entirely accurate for cases such as nested selectors.
@@ -137,6 +76,25 @@ export class SCSSEditor extends BaseContentEditor<postcss.Node> {
     }
 
     return found;
+  }
+
+  private countRulesOnLineBefore(node: postcss.Node) {
+    let count = 0;
+    let stopped = false;
+
+    if (this._rootASTNode === node) return 0;
+
+    (<postcss.Root>this._rootASTNode).walk((child: postcss.Node) => {
+      if (child === node) {
+        stopped = true;
+      }
+      if (stopped) return;
+      if (child.type === "rule" && child.source && child.source.start.line === node.source.start.line) {
+        count++;
+      }
+    });
+
+    return count;
   }
 
   private findNestedASTNode(node: postcss.Container, target: ISyntheticObject): postcss.Node {

@@ -45,7 +45,7 @@ export abstract class BaseContentEditor<T> implements IEditor {
 
   readonly logger: Logger;
 
-  private _rootASTNode: T;
+  protected _rootASTNode: T;
 
   constructor(readonly fileName: string, readonly content: string) { }
 
@@ -435,7 +435,8 @@ export class FileEditor extends Observable {
         // This may happen if edits are being applied to synthetic objects that
         // do not have the proper mappings
         if (!target.source || !target.source.filePath) {
-          console.error(`Cannot edit file,  source property is mising from ${target.clone(false).toString()}.`);
+          console.log(target.source);
+          console.error(`Cannot edit file, source property is mising from ${target.clone(false).toString()}.`);
           continue;
         }
 

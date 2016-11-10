@@ -248,7 +248,7 @@ gulp.task('test:all', ['hook:istanbul'], function(done) {
     .src(testFiles)
     .pipe(mocha({
       reporter: argv.reporter || 'dot',
-      timeout: argv.timeout || 1000 * 10,
+      timeout: argv.timeout || 1000 * 5,
       grep: GREP,
       bail: argv.bail
     }))

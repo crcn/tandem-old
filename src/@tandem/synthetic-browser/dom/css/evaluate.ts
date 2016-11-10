@@ -36,7 +36,6 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
     return SyntheticCSSStyleDeclaration.fromObject(obj);
   }
 
-
   function link<T extends SyntheticCSSObject>(expression: postcss.Node, synthetic: T): T {
 
     let filePath: string = dependency && dependency.filePath;
@@ -44,7 +43,10 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
     let end   = expression.source.end;
 
     if (sourceMapConsumer) {
-      const originalPosition = sourceMapConsumer.originalPositionFor(start);
+      const originalPosition = sourceMapConsumer.originalPositionFor({
+        line: start.line,
+        column: start.column
+      });
 
       start = {
         line: originalPosition.line,
