@@ -143,9 +143,6 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs:
     // updated
     } else {
       const oldIndex = model.indexOf(oldValue);
-      if (oldIndex === -1) {
-        console.log("SHOULD NOT HAPPEN", model);
-      }
       changes.push(new ArrayDiffUpdate(oldArray.indexOf(oldValue), oldIndex, newValue, newIndex));
       if (oldIndex !== newIndex) {
         model.splice(oldIndex, 1);

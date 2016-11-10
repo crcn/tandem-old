@@ -435,7 +435,6 @@ export class FileEditor extends Observable {
         // This may happen if edits are being applied to synthetic objects that
         // do not have the proper mappings
         if (!target.source || !target.source.filePath) {
-          console.log(target.source);
           console.error(`Cannot edit file, source property is mising from ${target.clone(false).toString()}.`);
           continue;
         }

@@ -38,6 +38,7 @@ CLEANUP
   - [ ] change Action for Message
   - [ ] do not use absolute paths for dependency graphs
   - [ ] SyntheticDocument body & head should both be HTML elements
+  - [ ] custom protocol handling
 
 ----------------------------------
 FEATURES

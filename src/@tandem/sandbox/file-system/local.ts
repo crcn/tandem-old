@@ -8,7 +8,7 @@ export class LocalFileSystem extends BaseFileSystem {
   async readFile(filePath: string) {
     this.logger.verbose("read %s", filePath);
     return new Promise((resolve, reject) => {
-      fs.readFile(filePath, "utf8", (err, data) => {
+      fs.readFile(filePath, (err, data) => {
         if (err) return reject(err);
         resolve(data);
       });

@@ -26,7 +26,11 @@ import {
   IResolvedDependencyInfo,
   IDependencyLoaderResult,
   IDependencyLoader,
+  WebpackDependencyGraphStrategy,
+  ProtocolURLResolverProvider,
+  WebpackProtocolResolver,
   FileCacheProvider,
+  DependencyGraphStrategyProvider,
   FileSystemProvider,
   IFileResolverOptions,
   createSandboxProviders,
@@ -133,6 +137,8 @@ export const createSandboxTestInjector = (options: ISandboxTestProviderOptions =
     new PrivateBusProvider(bus),
     createJavaScriptSandboxProviders(),
     createTestSandboxProviders(options),
+    new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
+    new ProtocolURLResolverProvider("webpack", WebpackProtocolResolver),
   );
 
   if (options.fileCacheSync !== false) {

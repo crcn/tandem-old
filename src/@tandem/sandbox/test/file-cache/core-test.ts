@@ -58,7 +58,7 @@ describe(__filename + "#", () => {
         item.observe({
           execute(action: PropertyChangeAction) {
             if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
-              expect(item.url).to.equal("data:text/plain,hello");
+              expect(item.url).to.equal("data:text/plain,aGVsbG8=");
               resolve();
             }
           }

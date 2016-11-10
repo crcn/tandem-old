@@ -284,12 +284,10 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       this.load2().then(() => {
         this._loading = false;
         this._loaded = true;
-        this.logger.verbose("Notifying loaded");
         this.notify(new DependencyAction(DependencyAction.DEPENDENCY_LOADED));
         resolve(this);
       }, (err) => {
         this._loading = false;
-        this.logger.verbose("Error while loading");
         reject(err);
       })
     });

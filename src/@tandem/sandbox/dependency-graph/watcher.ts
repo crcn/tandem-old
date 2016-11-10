@@ -88,7 +88,6 @@ export class DependencyGraphWatcher {
         await Promise.all(loadingDependencies.map(dep => dep.load()));
       }
     } catch(e) {
-      this.logger.verbose("Caught error");
       this._loading = false;
 
       // Set interval for reloading the watcher if there's an error to cover

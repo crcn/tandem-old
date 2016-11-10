@@ -5,6 +5,7 @@ import { without } from "lodash";
 import { camelCase } from "lodash";
 import { SandboxModule } from "@tandem/sandbox";
 import { SyntheticCSSObject } from "./base";
+import { SyntheticCSSCharset } from "./charset";
 import { SyntheticCSSFontFace } from "./font-face";
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSMediaRule } from "./media-rule";
@@ -86,6 +87,8 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
         return link(atRule, new SyntheticCSSMediaRule([atRule.params], acceptAll(atRule.nodes)));
       } else if (atRule.name === "font-face") {
         return link(atRule, new SyntheticCSSFontFace(getStyleDeclaration(atRule.nodes as postcss.Declaration[])));
+      } else if (atRule.name === "charset") {
+        return link(atRule, new SyntheticCSSCharset(atRule.params));
       }
 
       return null;

@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as fsa from "fs-extra";
 import * as path from "path";
 import * as gaze from "gaze";
+import * as mime from "mime";
 import * as sift from "sift";
 import * as cors from "cors";
 import * as getPort from "get-port";
@@ -39,9 +40,10 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
   }
 
   async [InitializeAction.INITIALIZE]() {
-    this._port = Number(this.config.argv.port || await getPort());
+    this._port = this.config.port;
     await this._loadHttpServer();
     await this._loadStaticRoutes();
+    await this._loadFileCacheRoutes();
     await this._loadSocketServer();
 
     if (this.config.argv.open) {
@@ -86,6 +88,16 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
     }
   }
 
+  async _loadFileCacheRoutes() {
+    this._server.use("/file-cache/", async (req, res) => {
+      const filePath = decodeURIComponent(req.path.substr(1));
+      const item = this._fileCache.eagerFindByFilePath(filePath);
+      const content = await item.read();
+      res.type(mime.lookup(filePath));
+      res.end(content);
+    });
+  }
+
   // TODO - deprecate this
 
   getIndexHtmlContent(staticFileNames) {
@@ -95,6 +107,7 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
       <!DOCTYPE html>
       <html>
         <head>
+          <meta charset='utf-8' />
           <style>
             html, body {
               width: 100%;

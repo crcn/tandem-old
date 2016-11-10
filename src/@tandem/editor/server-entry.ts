@@ -6,6 +6,7 @@ import { ServiceApplication } from "@tandem/core";
 import { Injector, Logger, PrivateBusProvider, LogLevel } from "@tandem/common";
 import { IEdtorServerConfig, createEditorServiceProviders, MongoDS } from "./server";
 import * as MemoryDS from "mesh-memory-ds-bus";
+import * as getPort from "get-port";
 
 // extensions
 // import { createVueWorkerProviders } from "@tandem/vue-extension/editor/server";
@@ -19,44 +20,52 @@ import {
   createHTMLEditorWorkerProviders,
 } from "@tandem/html-extension/editor/server";
 
-const config: IEdtorServerConfig = {
-  argv: argv,
-  experimental: !!argv.experimental,
-  logLevel: LogLevel[String(argv.logLevel || "").toUpperCase()] || LogLevel.DEFAULT,
-  cwd: process.cwd(),
-  entries: {
-    editor: require.resolve(require('./package.json').browser)
+const start = async () => {
+
+  const config: IEdtorServerConfig = {
+    argv: argv,
+    port: argv.port || await getPort(),
+    hostname: "localhost",
+    experimental: !!argv.experimental,
+    logLevel: LogLevel[String(argv.logLevel || "").toUpperCase()] || LogLevel.DEFAULT,
+    cwd: process.cwd(),
+    entries: {
+      editor: require.resolve(require('./package.json').browser)
+    }
+  };
+
+  let deps = new Injector(
+    createHTMLEditorServerProviders(),
+
+    // worker deps
+    // createVueWorkerProviders(),
+    createJavaScriptWorkerProviders(),
+    createHTMLEditorWorkerProviders(),
+    createSASSEditorWorkerProviders(),
+    createTypescriptEditorWorkerProviders(),
+    createSyntheticBrowserWorkerProviders(),
+    createTDProjectEditorServerProviders(),
+    createEditorServiceProviders(config, config.experimental ? new MongoDS("mongodb://localhost:27017/tandem") : new MemoryDS())
+  );
+
+  const app = new ServiceApplication(deps);
+
+  if (argv.banner !== false) {
+    console.log(figlet.textSync("Tandem", { font: "Slant" }), "\n");
   }
-};
 
-let deps = new Injector(
-  createHTMLEditorServerProviders(),
+  app.initialize();
 
-  // worker deps
-  // createVueWorkerProviders(),
-  createJavaScriptWorkerProviders(),
-  createHTMLEditorWorkerProviders(),
-  createSASSEditorWorkerProviders(),
-  createTypescriptEditorWorkerProviders(),
-  createSyntheticBrowserWorkerProviders(),
-  createTDProjectEditorServerProviders(),
-  createEditorServiceProviders(config, config.experimental ? new MongoDS("mongodb://localhost:27017/tandem") : new MemoryDS())
-);
+  const logger = new Logger(PrivateBusProvider.getInstance(deps));
 
-const app = new ServiceApplication(deps);
+  process.on("unhandledRejection", function(error) {
+    logger.error(`Unhandled Rejection ${error.stack}`);
+  });
 
-if (argv.banner !== false) {
-  console.log(figlet.textSync("Tandem", { font: "Slant" }), "\n");
+  process.on("uncaughtException", function(error) {
+    logger.error(`Uncaught Exception ${error.stack}`);
+  });
 }
 
-app.initialize();
+start();
 
-const logger = new Logger(PrivateBusProvider.getInstance(deps));
-
-process.on("unhandledRejection", function(error) {
-  logger.error(`Unhandled Rejection ${error.stack}`);
-});
-
-process.on("uncaughtException", function(error) {
-  logger.error(`Uncaught Exception ${error.stack}`);
-});

@@ -1,6 +1,8 @@
 import * as memoize from "memoizee";
 import { WrapBus } from "mesh";
 import { IFileSystem } from "@tandem/sandbox/file-system";
+import * as btoa from "btoa";
+import * as atob from "atob";
 
 import {
   Action,
@@ -22,6 +24,7 @@ export interface IFileCacheItemData {
 
 let _i = 0;
 
+// TODO - filePath should be sourceUrl to enable different protocols such as urls
 export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   readonly idProperty = "filePath";
@@ -68,7 +71,12 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   setDataUrlContent(content: any, mimeType: string = "text/plain") {
-    this.url = `data:${mimeType},${encodeURIComponent(content)}`;
+
+    if (!(content instanceof Buffer)) {
+      content = new Buffer(content, "utf8");
+    }
+
+    this.url = `data:${mimeType},${content.toString("base64")}`;
     return this;
   }
 
@@ -87,7 +95,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
       if (ENV_IS_NODE) {
         const data = parseDataURI(this.url);
         if (!data) throw new Error(`Cannot load ${this.url}.`);
-        return decodeURIComponent(data.content);
+        return new Buffer(data.content, "base64");
       }
 
       const response = await fetch(this.url);

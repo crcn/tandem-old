@@ -4,6 +4,7 @@ import { IFileSystem, IFileWatcher } from "@tandem/sandbox/file-system";
 import { IBrokerBus, diffArray, inject, loggable, Logger } from "@tandem/common";
 
 // TODO - need to check if file cache is up to date with local
+// TODO - needs to support other protocols such as http, and in-app
 @loggable()
 export class FileCacheSynchronizer {
 
@@ -25,6 +26,7 @@ export class FileCacheSynchronizer {
 
         // TODO - fix this -- shouldn't be watching files that do not exist
         try {
+          if (!/^\w+:\/\//.test(value))
           this._watchers[value] = this._fileSystem.watchFile(value, this.onLocalFindChange.bind(this, value));
         } catch(e) {
           this.logger.error(e.stack);

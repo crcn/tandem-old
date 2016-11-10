@@ -14,7 +14,7 @@ import {
   SyntheticObjectSerializer,
 } from "@tandem/sandbox";
 
-export abstract class SyntheticCSSObjectEdit<T extends SyntheticCSSObject> extends SyntheticObjectEdit<T> {
+export class SyntheticCSSObjectEdit<T extends SyntheticCSSObject> extends SyntheticObjectEdit<T> {
 }
 
 
@@ -63,7 +63,11 @@ export abstract class SyntheticCSSObject implements ISyntheticObject, IEditable 
 
   protected abstract cloneShallow();
   abstract createEdit(): BaseContentEdit<SyntheticCSSObject>;
-  abstract applyEditAction(action: EditAction);
+  applyEditAction(action: EditAction) {
+    if (action.type === SyntheticObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
+      (<SetKeyValueEditAction>action).applyTo(this);
+    }
+  }
   abstract visitWalker(walker: ITreeWalker);
 
   /**

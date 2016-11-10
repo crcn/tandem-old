@@ -13,7 +13,7 @@ import { createHTMLCoreProviders, createHTMLSandboxProviders } from "@tandem/htm
 import { createTestSandboxProviders, ISandboxTestProviderOptions } from "@tandem/sandbox/test/helpers";
 import { ServiceApplication, ApplicationConfigurationProvider } from "@tandem/core";
 import { Injector, InjectorProvider, PrivateBusProvider, BrokerBus, Application, HTML_MIME_TYPE, LogLevel, LogAction } from "@tandem/common";
-import { WebpackDependencyGraphStrategy, DependencyGraphStrategyProvider, FileCacheProvider, ContentEditorFactoryProvider } from "@tandem/sandbox";
+import { WebpackDependencyGraphStrategy, DependencyGraphStrategyProvider, ProtocolURLResolverProvider, WebpackProtocolResolver, FileCacheProvider, ContentEditorFactoryProvider } from "@tandem/sandbox";
 
 /**
  * creates a test master application that includes everything from the front-end
@@ -43,6 +43,7 @@ export const createTestMasterApplication = (options: IMasterTestAppicationOption
     createTestSandboxProviders(options.sandboxOptions),
     new ContentEditorFactoryProvider(HTML_MIME_TYPE, MarkupEditor),
     new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
+    new ProtocolURLResolverProvider("webpack", WebpackProtocolResolver),
   );
 
   if (options.createTestProviders) {

@@ -59,7 +59,7 @@ describe(__filename + "#", () => {
     const fileCacheItem = await dependency.getSourceFileCacheItem();
     await fileCacheItem.setDataUrlContent("b").save();
     await dependency.load();
-    expect(dependency.content).to.equal("b");
+    expect(dependency.content.toString()).to.equal("b");
   });
 
   it("reloads a dependency if the source file cache changes during a load", async () => {
@@ -78,7 +78,7 @@ describe(__filename + "#", () => {
     // wait on the current load request
     await dependency.load();
 
-    expect(dependency.content).to.equal("c");
+    expect(dependency.content.toString()).to.equal("c");
   });
 
   xit("can return the dependency info of a dependency based on the relative path");

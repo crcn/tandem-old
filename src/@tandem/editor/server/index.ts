@@ -3,6 +3,7 @@ import { IActor, Injector } from "@tandem/common";
 import { ConsoleLogService } from "@tandem/editor/common";
 import { IEdtorServerConfig } from "./config";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
+import { DependencyGraphStrategyProvider, WebpackDependencyGraphStrategy, ProtocolURLResolverProvider, WebpackProtocolResolver } from "@tandem/sandbox";
 
 import {
   DSService,
@@ -21,6 +22,9 @@ export function createEditorServiceProviders(config: IEdtorServerConfig, dataSto
     createCommonEditorProviders(),
     createCoreApplicationProviders(config),
     new DSProvider(dataStore),
+
+    new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
+    new ProtocolURLResolverProvider("webpack", WebpackProtocolResolver),
 
     // services
     new ApplicationServiceProvider("ds", DSService),

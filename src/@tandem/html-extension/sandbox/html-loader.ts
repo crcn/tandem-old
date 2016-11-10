@@ -48,10 +48,10 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
 
   async load({ filePath, hash }, { type, content }): Promise<IDependencyLoaderResult> {
 
+    content = String(content);
     const importedDependencyPaths = [];
     const injector = this._injector;
     const self = this;
-
 
     const ast = parseMarkup(content);
     const smg = new sm.SourceMapGenerator();

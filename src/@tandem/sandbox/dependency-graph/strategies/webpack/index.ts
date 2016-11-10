@@ -28,7 +28,8 @@ import {
 import { IModule } from "@tandem/sandbox/sandbox";
 import { Dependency } from "@tandem/sandbox/dependency-graph/dependency";
 import { IFileResolver } from "@tandem/sandbox/resolver";
-import { FileResolverProvider } from "@tandem/sandbox/providers";
+import { ApplicationConfigurationProvider } from "@tandem/core/providers";
+import { FileResolverProvider, FileCacheProvider } from "@tandem/sandbox/providers";
 
 import * as path from "path";
 import * as sift from "sift";
@@ -163,7 +164,7 @@ class WebpackLoaderContext {
     return new Promise<any>((resolve, reject) => {
       this._resolve = resolve;
       this._reject = reject;
-      const result = this.module.call(this, content, map);
+      const result = this.module.call(this, this.module.raw ? content : String(content), map);
       if (!this._async) {
         return resolve(result && { content: result });
       }
@@ -185,9 +186,14 @@ class WebpackLoaderContext {
     return { content: result, map: undefined }
   }
 
-  emitFile(fileName: string, content: string) {
-    // throw new Error(`emit file is not supported yet`);
-    this.logger.info(`Emitted asset ${fileName}`);
+  async emitFile(fileName: string, content: string) {
+    const uri = "webpack://" + fileName;
+    // this.addDependency(uri);
+    this.logger.info(`Emitting asset ${fileName}`);
+    const fileCache = FileCacheProvider.getInstance(this.strategy.injector);
+    const item = await fileCache.item(uri);
+    item.setDataUrlContent(content);
+    await item.save();
   }
 
   async() {
@@ -356,6 +362,10 @@ export class WebpackProtocolResolver {
   }
 }
 
+export class WebpackProtocolHandler {
+
+}
+
 /**
  */
 
@@ -369,6 +379,9 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
 
   @inject(FileResolverProvider.ID)
   private _resolver: IFileResolver;
+
+  @inject(ApplicationConfigurationProvider.ID)
+  private _config: any;
 
   readonly config: IWebpackConfig;
   readonly compiler: MockWebpackCompiler;
@@ -397,8 +410,10 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
   }
 
   createGlobalContext() {
+
+    // TODO - this needs to point to the proper registered protocol
     return {
-      __webpack_public_path__: "",
+      __webpack_public_path__: "http://" + this._config.hostname + ":" + this._config.port + "/file-cache/" + encodeURIComponent("webpack://"),
 
       // TODO _ this should be shared by other strategies later on
       process: {
@@ -443,7 +458,7 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
       this.logger.verbose("Resolving %s:%s (%s)", cwd, relativeFilePath, moduleInfo);
 
       resolvedFilePath = await this._resolver.resolve(relativeFilePath, cwd, {
-        extensions: this.config.resolve.extensions,
+        extensions: ["", ...this.config.resolve.extensions],
         directories: [...this.config.resolve.modulesDirectories, config.resolve.root, this.basedir]
       });
     } catch(e) {
