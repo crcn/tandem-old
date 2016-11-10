@@ -29,10 +29,25 @@ export const renderPreview = reactEditorPreview(() => {
     div {
       color: blue;
     }
+
+    span {
+      letter-spacing: 0.01em;
+      color: red;
+      display: block;
+    }
   `)));
 
+  document.styleSheets[0].rules[0].$source = {
+    kind: null,
+    filePath: "some/file/super/long/file/path/that/should/not/wrap/path.css",
+    start: {
+      line: 0,
+      column: 0
+    }
+  };
+
   (document.body as SyntheticHTMLElement).innerHTML = `
-    <div id="something" class="container">hello</div>;
+    <span><div id="something" class="container">hello</div></span>;
   `;
 
   const workspace = new Workspace();

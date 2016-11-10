@@ -10,6 +10,54 @@ export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSSty
 
 export const isValidCSSDeclarationProperty = sift({ $and: [ { $ne: /^\$/ }, {$ne: "uid" }, { $ne: /^\d+$/ }] });
 
+// https://www.w3.org/TR/CSS21/propidx.html
+export const INHERITED_CSS_STYLE_PROPERTIES = [
+  "azimuth",
+  "borderCollapse",
+  "borderSpacing",
+  "captionSide",
+  "color",
+  "cursor",
+  "direction",
+  "elevation",
+  "emptyCells",
+  "fontFamily",
+  "fontSize",
+  "fontStyle",
+  "fontVariant",
+  "fontWeight",
+  "font",
+  "letterSpacing",
+  "lineHeight",
+  "listStyleImage",
+  "listStylePosition",
+  "listStyleType",
+  "listStyle",
+  "orphans",
+  "pitchRange",
+  "pitch",
+  "quotes",
+  "richness",
+  "speakHeader",
+  "speakNumeral",
+  "speakPunctuation",
+  "speak",
+  "speechRate",
+  "stress",
+  "textAlign",
+  "textIndent",
+  "textTransform",
+  "visibility",
+  "voiceFamily",
+  "volume",
+  "whiteSpace",
+  "widows",
+  "wordSpacing"
+]
+
+export function isInheritedCSSStyleProperty(name: string) {
+  return INHERITED_CSS_STYLE_PROPERTIES.indexOf(name) !== -1;
+}
 
 @serializable()
 export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSyntheticCSSStyleDeclaration>, ISyntheticObject {
@@ -398,7 +446,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
 
   setProperty(name: string, newValue: string, priority?: string, oldName?: string, notifyOwnerNode: boolean = true) {
 
-    // fix in case they're kebab case
+    // fix in case they"re kebab case
     name    = camelCase(name);
     oldName = oldName != null ? camelCase(oldName) : oldName;
 
@@ -421,9 +469,9 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
 
     if (notifyOwnerNode !== true) return;
 
-    // I'm not a fan of sending notifications from another object like this -- I'd typically make this
+    // I"m not a fan of sending notifications from another object like this -- I"d typically make this
     // object an observable, and notify changes from here. However, since this particular class is used so often, sending
-    // notifications from here would be put a notable bottleneck on the app. So, instead we're notifying the owner of this node (typically the
+    // notifications from here would be put a notable bottleneck on the app. So, instead we"re notifying the owner of this node (typically the
     // root document). Less ideal, but achieves the same result of notifying the system of any changes to the synthetic document.
     const ownerNode = this.$parentRule && this.$parentRule.ownerNode;
 

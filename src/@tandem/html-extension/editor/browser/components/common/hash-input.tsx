@@ -8,8 +8,16 @@ export interface IKeyValueItem {
   overriden?: boolean;
 }
 
+export interface IKeyValueInputComponentProps {
+  item: IKeyValueItem;
+  setKeyValue: (name: string, value: any, oldName?: string) => any;
+  onValueEnter: (item) =>  any;
+  className?: string;
+  style?: any;
+}
+
 // TODO - add some color for the CSS rules
-export class KeyValueInputComponent extends React.Component<{ item: IKeyValueItem, setKeyValue: (name: string, value: any, oldName?: string) => any, onValueEnter: (item) =>  any}, { editName: boolean, currentValue: string }> {
+export class KeyValueInputComponent extends React.Component<IKeyValueInputComponentProps, { editName: boolean, currentValue: string }> {
 
   private _currentValue: any;
 
@@ -78,8 +86,9 @@ export class KeyValueInputComponent extends React.Component<{ item: IKeyValueIte
   }
 
   render() {
+    const { className, style } = this.props;
     const { name, value, readonly, overriden } = this.item;
-    return <div className="row font-regular">
+    return <div style={style} className={["row font-regular", className].join(" ")}>
       <div className="col-5 no-wrap dim" title={name} onDoubleClick={!readonly && this.editName}>
         { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name }
       </div>
@@ -91,7 +100,7 @@ export class KeyValueInputComponent extends React.Component<{ item: IKeyValueIte
 export interface IKeyInputComponentProps {
   items: IKeyValueItem[];
   setKeyValue: (key: string, value: string, oldKey?: string) => any;
-  renderItemComponent?: (item: IKeyValueItem) => any;
+  renderItemComponent?: (props: IKeyValueInputComponentProps) => any;
 }
 
 // TODO - add some color for the CSS rules
@@ -111,8 +120,13 @@ export class HashInputComponent extends React.Component<IKeyInputComponentProps,
       {
         // index important here since the name can change
         items.map((item, index) => {
+          const props = {
+            item: item,
+            setKeyValue: this.props.setKeyValue,
+            onValueEnter: this.onValueEnter
+          }
           return <span key={index}>
-            { renderItemComponent ? renderItemComponent(item) : <KeyValueInputComponent item={item} setKeyValue={this.props.setKeyValue} onValueEnter={this.onValueEnter} /> }
+            { renderItemComponent ? renderItemComponent(props) : <KeyValueInputComponent {...props} /> }
           </span>;
         })
       }

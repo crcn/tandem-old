@@ -108,13 +108,13 @@ export class SyntheticWindow extends Observable {
   private createDocument() {
     const document = new SyntheticDocument(HTML_XMLNS);
     document.registerElementNS(HTML_XMLNS, "default", SyntheticHTMLElement);
-    const documentElement = document.createElement("div");
+    const documentElement = document.createElement("html");
 
     // head
-    documentElement.appendChild(document.createElement("div"));
+    documentElement.appendChild(document.createElement("head"));
 
     // body
-    documentElement.appendChild(document.createElement("div"));
+    documentElement.appendChild(document.createElement("body"));
 
     document.appendChild(documentElement);
     return document;

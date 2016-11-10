@@ -252,7 +252,6 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   createElement(tagName: "dfn"): SyntheticHTMLElement;
   createElement(tagName: "dialog"): SyntheticHTMLElement;
   createElement(tagName: "dir"): SyntheticHTMLElement;
-  createElement(tagName: "div"): SyntheticHTMLElement;
   createElement(tagName: "dl"): SyntheticHTMLElement;
   createElement(tagName: "dt"): SyntheticHTMLElement;
   createElement(tagName: "em"): SyntheticHTMLElement;
