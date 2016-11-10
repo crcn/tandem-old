@@ -4,13 +4,14 @@
 
   const {
     IDSelectorExpression,
+    SelectorLiteralExpression,
     AllSelectorExpression,
     ListSelectorExpression,
     ChildSelectorExpression,
     PseudoElementExpression,
-    PseudoSelectorExpression,
+    PseudoClassSelectorExpression,
     TagNameSelectorExpression,
-    ElementSelectorsExpression,
+    NestedSelectorExpression,
     AttributeSelectorExpression,
     ClassNameSelectorExpression,
     DescendentSelectorExpression,
@@ -21,29 +22,26 @@
 
 Start = ListSelector
 
-ListSelector = first: PseudoCombinator rest:ListSelectorRest* {
+ListSelector = first: CombinatorSelector rest:ListSelectorRest* {
   return rest.length ? new ListSelectorExpression([first].concat(rest), location()) : first;
 }
 
-ListSelectorRest = _ "," _ selector: PseudoCombinator { return selector }
-
-PseudoCombinator =
-  PseudoElement /
-  CombinatorSelector
+ListSelectorRest = _ "," _ selector: CombinatorSelector { return selector }
 
 CombinatorSelector =
   DescendentSelector /
   ChildSelector /
   AdjacentSiblingSelector /
   ProceedingSiblingSelector /
-  ElementSelectors
+  NestedSelector
 
-ElementSelectors = first: (AllSelector/ElementSelector) rest: ElementSelector* {
-  return rest.length ? new ElementSelectorsExpression([first].concat(rest), location()) : first;
+NestedSelector = parent: (AllSelector/ElementSelector) child: NestedSelector? {
+  return child ? new NestedSelectorExpression(parent, child) : parent;
 }
 
 ElementSelector =
-  PseudoSelector /
+  PseudoElementSelector /
+  PseudoClassSelector /
   AttributeSelector /
   ClassNameSelector /
   IDSelector /
@@ -65,33 +63,38 @@ AllSelector = "*" {
   return new AllSelectorExpression(location());
 }
 
-DescendentSelector = parent:ElementSelectors " "+ descendent:CombinatorSelector {
+DescendentSelector = parent:NestedSelector " "+ descendent:CombinatorSelector {
   return new DescendentSelectorExpression(parent, descendent, location());
 }
 
-ChildSelector = parent:ElementSelectors _ ">" _ descendent:CombinatorSelector {
+ChildSelector = parent:NestedSelector _ ">" _ descendent:CombinatorSelector {
   return new ChildSelectorExpression(parent, descendent, location());
 }
 
-AdjacentSiblingSelector = parent:ElementSelectors _ "+" _ descendent:CombinatorSelector {
+AdjacentSiblingSelector = parent:NestedSelector _ "+" _ descendent:CombinatorSelector {
   return new AdjacentSiblingSelectorExpression(parent, descendent, location());
 }
 
-ProceedingSiblingSelector = parent:ElementSelectors _ "~" _ descendent:CombinatorSelector {
+ProceedingSiblingSelector = parent:NestedSelector _ "~" _ descendent:CombinatorSelector {
   return new ProceedingSiblingSelectorExpression(parent, descendent, location());
 }
 
-PseudoSelector = ":" name: Word parameterSelector: ParameterSelector? {
-  return new PseudoSelectorExpression(name, parameterSelector, location());
+PseudoClassSelector = ":" name: Word parameter: SelectorParameter? {
+  return new PseudoClassSelectorExpression(name, parameter, location());
 }
 
-ParameterSelector = "(" selector: PseudoCombinator ")" {
-  return selector;
+PseudoElementSelector = name: PseudoElementName {
+  return new PseudoElementExpression(name, null, location());
 }
 
-PseudoElement = elementSelector: CombinatorSelector? "::" name: Word {
-  return new PseudoElementExpression(elementSelector, name, location());
+SelectorParameter = "(" parameter: (LiteralExpression/CombinatorSelector) ")" {
+  return parameter;
 }
+
+
+PseudoElementName
+  = "::" name: Word { return name; }
+  / ":" name: ("before"/"after"/"first-line"/"first-letter"/"selection") { return name; }
 
 AttributeSelector = "[" selector: (AttributeSelectorWithValue/AttributeSelectorWithoutValue) "]" {
   return selector;
@@ -108,9 +111,17 @@ AttributeSelectorWithValue = name: AttributeName operator: ("="/"~="/"|="/"^="/"
 AttributeName = [a-zA-Z0-9_-]+ { return text(); }
 Word = [a-zA-Z0-9_$-]+ { return text(); }
 
+LiteralExpression
+  = value: (Number/String) {
+    return new SelectorLiteralExpression(value, location());
+  }
+
 String
   = '"' characters:DoubleStringCharacter* '"' { return characters.join(""); }
   / "'" characters:SingleStringCharacter* "'" { return characters.join(""); }
+
+Number
+  = [0-9]+ { return text(); }
 
 DoubleStringCharacter
   = !('"' / "\\") . { return text(); }

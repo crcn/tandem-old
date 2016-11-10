@@ -15,7 +15,6 @@ UX
     - [ ] define what extensions to use
 
 BUGS
-  - [ ] ion-* selector not getting picked up in CSS pane
   - [ ] rendering is oddly slow
   - [ ] fix absolute bounds for elements
   - [ ] cannot rapidly change .tsx? documents

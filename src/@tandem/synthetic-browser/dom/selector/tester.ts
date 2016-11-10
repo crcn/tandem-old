@@ -59,6 +59,14 @@ export function getSelectorTester(selectorSource: string): ISelectorTester {
       visitChildSelector({ targetSelector, parentSelector }) {
         return test(targetSelector, node) && node.parent && test(parentSelector, <SyntheticDOMElement>node.parent);
       },
+      visitLiteral({ value }) {
+        return {
+          "number": Number,
+          "string": String,
+          "boolean": Boolean,
+          "object": Object
+        }[typeof value](value);
+      },
       visitAdjacentSiblingSelector({ startSelector, targetSelector }) {
         return test(targetSelector, node) && test(startSelector, <SyntheticDOMElement>node.previousSibling);
       },
@@ -80,26 +88,27 @@ export function getSelectorTester(selectorSource: string): ISelectorTester {
           default: return true;
         }
       },
-      visitPseudoSelector({ name, parameterSelector }) {
+      visitPseudoClassSelector({ name, parameter }) {
 
-        switch (name) {
-          case "not": return !test(parameterSelector, node);
-
-          // TODO
-          // case "nth-child": return !test(parameterSelector, node);
+        if (name === "not") {
+          return !test(parameter, node);
+        } else if (name === "nth-child") {
+          if (node.parentNode.childNodes.indexOf(node) === parameter.accept(this) - 1) {
+            return true;
+          }
+        } else if (name === "nth-last-child") {
+          if (node.parentNode.childNodes.indexOf(node) === node.parentNode.childNodes.length - parameter.accept(this)) {
+            return true;
+          }
         }
 
         return false;
       },
-      visitPseudoElement({ elementSelector, name }) {
-        return false;
-      },
-      visitElementSelectors({ selectors }) {
-        for (let i = 0, n = selectors.length; i < n; i++) {
-          const attributeSelector = selectors[i];
-          if (!test(attributeSelector, node)) return false;
-        }
+      visitPseudoElement({ name }) {
         return true;
+      },
+      visitNestedSelector({ parent, child }) {
+        return test(parent, node) && test(child, node);
       }
     });
   }

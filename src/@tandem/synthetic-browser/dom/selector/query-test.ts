@@ -29,10 +29,15 @@ describe(__filename + "#", () => {
     ["*[data-test]", `<div data-test="abc">a</div><span data-test="bc">c</span>`, `<div data-test="abc">a</div><span data-test="bc">c</span>`],
     ["div:active", `<div data-test="abc">a</div><span data-test="bc">c</span>`, ``],
     ["audio:not([controls])", `<audio></audio><audio controls></audio>`, `<audio></audio>`],
-    ["div::before", `<div data-test="abc">a</div><span data-test="bc">c</span>`, ``],
-    ["[data-test]::before", `<div data-test="abc">a</div><span data-test="bc">c</span>`, ``],
+    ["div::before", `<div data-test="abc">a</div><span data-test="bc">c</span>`, `<div data-test="abc">a</div>`],
+    ["div:before", `<div data-test="abc">a</div><span data-test="bc">c</span>`, `<div data-test="abc">a</div>`],
+    ["[data-test]::before", `<div data-test="abc">a</div><span data-test="bc">c</span>`, `<div data-test="abc">a</div><span data-test="bc">c</span>`],
     ["svg:not(:root)", `<div data-test="abc">a</div><span data-test="bc">c</span>`, ``],
     ["a:not([href]):not([tabindex])", `<div data-test="abc">a</div><span data-test="bc">c</span>`, ``],
+    ["li:nth-child(2)", `<ul><li>a</li><li>b</li></ul>`, `<li>b</li>`],
+    ["li:nth-last-child(2)", `<ul><li>a</li><li>b</li><li>c</li><li>d</li></ul>`, `<li>c</li>`],
+    // ["h1:nth-of-type(2)", `<ul><h1>a</h1><h2>b</h2><h1>c</h1><h2>d</h2><h1>e</h1><h2>f</h2></ul>`, `<h1>c</h1>`],
+    // ["h1:nth-last-of-type(2)", `<ul><h1>a</h1><h2>b</h2><h1>c</h1><h2>d</h2><h1>e</h1><h2>f</h2><h1>g</h1><h2>h</h2></ul>`, `<h1>equals</h1>`],
   ].forEach(([selector, a, b]) => {
     it(`selector ${selector} for ${a} equals ${b}`, () => {
       const document = new SyntheticDocument("");

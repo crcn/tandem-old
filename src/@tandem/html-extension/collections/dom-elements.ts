@@ -47,13 +47,13 @@ export class DOMElements<T extends SyntheticDOMElement> extends Array<T>  implem
       element.ownerDocument.styleSheets.forEach(styleSheet => {
         styleSheet.rules.forEach(rule => {
           if (!(rule instanceof SyntheticCSSStyleRule) || visited[rule.uid]) {
+
             return;
           }
           visited[rule.uid] = rule;
 
           const mismatch = this.find(element => !rule.matchesElement(element));
           if (!mismatch) {
-
             // add rule to the beginning
             matched.unshift(new MatchedStyleRule(rule));
           }

@@ -13,9 +13,10 @@ export enum SelectorKind {
   ADJACENT = CHILD + 1,
   PROCEEDING = ADJACENT + 1,
   ATTRIBUTE = PROCEEDING + 1,
-  PSEUDO = ATTRIBUTE + 1,
-  ELEMENT = PSEUDO + 1,
-  PSEUDO_ELEMENT = ELEMENT + 1
+  PSEUDO_CLASS = ATTRIBUTE + 1,
+  NESTED = PSEUDO_CLASS + 1,
+  PSEUDO_ELEMENT = NESTED + 1,
+  LITERAL = PSEUDO_ELEMENT + 1,
 }
 
 export interface ISelectorVisitor {
@@ -28,8 +29,9 @@ export interface ISelectorVisitor {
   visitChildSelector(expression: ChildSelectorExpression);
   visitAttributeSelector(expression: AttributeSelectorExpression);
   visitAdjacentSiblingSelector(expression: AdjacentSiblingSelectorExpression);
-  visitPseudoSelector(expression: PseudoSelectorExpression);
-  visitElementSelectors(expression: ElementSelectorsExpression);
+  visitPseudoClassSelector(expression: PseudoClassSelectorExpression);
+  visitNestedSelector(expression: NestedSelectorExpression);
+  visitLiteral(expression: SelectorLiteralExpression);
   visitPseudoElement(expression: PseudoElementExpression);
   visitProceedingSiblingSelector(expression: ProceedingSiblingSelectorExpression);
 }
@@ -37,6 +39,17 @@ export interface ISelectorVisitor {
 export abstract class SelectorExpression extends BaseExpression {
   abstract kind: SelectorKind;
   abstract accept(visitor: ISelectorVisitor);
+}
+
+
+export class SelectorLiteralExpression extends SelectorExpression {
+  readonly kind = SelectorKind.LITERAL;
+  constructor(readonly value, location: ISourceLocation) {
+    super(location);
+  }
+  accept(visitor: ISelectorVisitor) {
+    return visitor.visitLiteral(this);
+  }
 }
 
 // .item { }
@@ -150,32 +163,33 @@ export class AttributeSelectorExpression extends SelectorExpression {
   }
 }
 
-export class PseudoSelectorExpression extends SelectorExpression {
-  readonly kind = SelectorKind.PSEUDO;
-  constructor(readonly name: string, readonly parameterSelector: SelectorExpression, location: ISourceLocation) {
+export abstract class PseudoSelectorExpression extends SelectorExpression {
+  constructor(readonly name: string, readonly parameter: SelectorExpression, location: ISourceLocation) {
     super(location);
-  }
-  accept(visitor: ISelectorVisitor) {
-    return visitor.visitPseudoSelector(this);
   }
 }
 
-export class ElementSelectorsExpression extends SelectorExpression {
-  readonly kind = SelectorKind.ELEMENT;
-  constructor(readonly selectors: SelectorExpression[], location: ISourceLocation) {
-    super(location);
-  }
+export class PseudoClassSelectorExpression extends PseudoSelectorExpression {
+  readonly kind = SelectorKind.PSEUDO_CLASS;
   accept(visitor: ISelectorVisitor) {
-    return visitor.visitElementSelectors(this);
+    return visitor.visitPseudoClassSelector(this);
   }
 }
 
-export class PseudoElementExpression extends SelectorExpression {
+export class PseudoElementExpression extends PseudoSelectorExpression {
   readonly kind = SelectorKind.PSEUDO_ELEMENT;
-  constructor(readonly elementSelector: SelectorExpression, readonly name: string, location: ISourceLocation) {
-    super(location);
-  }
   accept(visitor: ISelectorVisitor) {
     return visitor.visitPseudoElement(this);
   }
 }
+
+export class NestedSelectorExpression extends SelectorExpression {
+  readonly kind = SelectorKind.NESTED;
+  constructor(readonly parent: SelectorExpression, readonly child: SelectorExpression, location: ISourceLocation) {
+    super(location);
+  }
+  accept(visitor: ISelectorVisitor) {
+    return visitor.visitNestedSelector(this);
+  }
+}
+
