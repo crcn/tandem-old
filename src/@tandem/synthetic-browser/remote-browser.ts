@@ -13,6 +13,7 @@ import {
   loggable,
   IInjectable,
   flattenTree,
+  bindable,
   deserialize,
   Injector,
   serializable,
@@ -28,8 +29,10 @@ import {
   BaseContentEdit,
   DependencyGraph,
   SyntheticObjectEditor,
+  DependencyGraphWatcher,
   DependencyGraphProvider,
   SyntheticObjectChangeWatcher,
+  DependencyGraphWatcherAction,
   IDependencyGraphStrategyOptions
 } from "@tandem/sandbox";
 
@@ -61,6 +64,9 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   private _documentEditor: SyntheticObjectEditor;
   private _remoteStream: any;
 
+  @bindable(true)
+  public loading: boolean = true;
+
   constructor(injector: Injector, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
     super(injector, renderer, parent);
     this._bus = PrivateBusProvider.getInstance(injector);
@@ -84,22 +90,31 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   onRemoteBrowserAction({ payload }) {
 
-    const action = deserialize(payload, this.injector) as RemoteBrowserDocumentAction;
+    const action = deserialize(payload, this.injector) as Action;
+
+    this.logger.verbose(`Received action: ${action.type}`);
+
+    if (action.type === DependencyGraphWatcherAction.DEPENDENCY_GRAPH_LOADING) {
+      this.loading = true;
+    }
 
     if (action.type === RemoteBrowserDocumentAction.NEW_DOCUMENT) {
+      const { data } = <RemoteBrowserDocumentAction>action;
       this.logger.verbose("Received new document");
 
       const previousDocument = this.window && this.window.document;
-      const newDocument      = action.data;
+      const newDocument      = data;
       this._documentEditor   = new SyntheticObjectEditor(newDocument);
 
       const window = new SyntheticWindow(this.location, this, newDocument);
+      this.loading = false;
       this.setWindow(window);
-
     } else if (action.type === RemoteBrowserDocumentAction.DOCUMENT_DIFF) {
-      const actions: EditAction[] = action.data;
+      const { data } = <RemoteBrowserDocumentAction>action;
+      const actions: EditAction[] = data;
       this.logger.verbose("Received document diffs: >>%s", actions.map(action => action.type).join(", "));
       this._documentEditor.applyEditActions(...actions);
+      this.loading = false;
     }
 
     this.notify(action);
@@ -146,6 +161,8 @@ export class RemoteBrowserService extends BaseApplicationService {
         execute: async (action: Action) => {
           if (action.type === SyntheticBrowserAction.BROWSER_LOADED && action.target === browser) {
             changeWatcher.target = browser.document;
+          } else if (action.type === DependencyGraphWatcherAction.DEPENDENCY_GRAPH_LOADING || action.type === DependencyGraphWatcherAction.DEPENDENCY_GRAPH_LOADED) {
+            writer.write({ payload: serialize(action) });
           }
         }
       };

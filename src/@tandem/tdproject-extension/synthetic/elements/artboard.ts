@@ -7,9 +7,11 @@ import {
   IActor,
   Action,
   isMaster,
+  bindable,
   ITreeWalker,
   serializable,
   BoundingRect,
+  bindProperty,
   watchProperty,
 } from "@tandem/common";
 
@@ -64,6 +66,9 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
   private _combinedStyleSheet: SyntheticCSSStyleSheet;
   private _artboardBrowserObserver: IActor;
 
+  @bindable(true)
+  readonly loading: boolean;
+
   createdCallback() {
     this.setAttribute("class", "artboard-entity");
     this.innerHTML = `<iframe /><div class="artboard-entity-overlay" />`;
@@ -99,6 +104,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
 
     const documentRenderer = new SyntheticDOMRenderer();
     this._artboardBrowser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.injector, new SyntheticArtboardRenderer(this, documentRenderer), this.browser);
+    bindProperty(this._artboardBrowser, "loading", this, "loading").trigger();
     this._contentDocumentObserver = new WrapBus(this.onContentDocumentAction.bind(this));
     watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
     await this.loadBrowser();

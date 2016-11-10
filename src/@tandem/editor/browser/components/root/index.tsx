@@ -18,9 +18,6 @@ export class EditorComponent extends BaseApplicationComponent<{}, {}> {
   render() {
     const { workspace, settings } = this._store;
 
-      // <GutterComponent style={{width:300}}>
-      //   <RegisteredComponent workspace={workspace} ns={DocumentPaneComponentFactoryProvider.getId("**")} />
-      // </GutterComponent>
 
     return <div className="m-editor editor">
       <CenterComponent />

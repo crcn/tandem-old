@@ -8,6 +8,7 @@ STABILITY
 ----------------------------------
 
 UX
+  - [ ] display compiler errors
   - [ ] spinner when artboard is compiling
   - [ ] tandem config
     - [ ] define how to handle extensions

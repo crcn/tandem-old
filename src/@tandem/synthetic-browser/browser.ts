@@ -139,10 +139,12 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   private _sandbox: Sandbox;
   private _entry: Dependency;
   private _graph: DependencyGraph;
+  private _dependencyGraphWatcherObserver: IActor;
 
   $didInject() {
     super.$didInject();
     this._sandbox    = new Sandbox(this._injector, this.createSandboxGlobals.bind(this));
+    this._dependencyGraphWatcherObserver = new BubbleBus(this);
     watchProperty(this._sandbox, "exports", this.onSandboxExportsChange.bind(this));
     watchProperty(this._sandbox, "global", this.setWindow.bind(this));
   }
@@ -151,9 +153,14 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     return this._sandbox;
   }
 
+  get entry() {
+    return this._entry;
+  }
+
   async open2(options: ISyntheticBrowserOpenOptions) {
     const graph = this._graph = DependencyGraphProvider.getInstance(options.dependencyGraphStrategyOptions, this._injector);
     this._entry = await graph.getDependency(await graph.resolve(options.url, "/"));
+    this._entry.watcher.observe(this._dependencyGraphWatcherObserver);
     await this._sandbox.open(this._entry);
   }
 

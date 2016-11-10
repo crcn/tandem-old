@@ -32,6 +32,9 @@ import {
   Observable,
   TreeWalker,
   IInjectable,
+  serialize,
+  deserialize,
+  serializable,
   ITreeWalker,
   watchProperty,
   MimeTypeProvider,
@@ -45,10 +48,26 @@ import {
 import { Dependency } from "./dependency";
 import { DependencyWalker, flattenDependencies } from "./utils";
 
+@serializable({
+  serialize({ type, data }: DependencyGraphWatcherAction) {
+    return { type, data: serialize(data) };
+  },
+  deserialize({ type, data }, injector) {
+    return new DependencyGraphWatcherAction(type, deserialize(data, injector));
+  }
+})
+export class DependencyGraphWatcherAction extends Action {
+  static readonly DEPENDENCY_GRAPH_LOADED: string = "dependencyGraphWatcherLoaded";
+  static readonly DEPENDENCY_GRAPH_LOADING: string = "dependencyGraphWatcherLoading";
+  constructor(type: string, readonly data?: any) {
+    super(type);
+  }
+}
+
 const RELOAD_TIMEOUT = 1000 * 3;
 
 @loggable()
-export class DependencyGraphWatcher {
+export class DependencyGraphWatcher extends Observable {
   protected readonly logger: Logger;
 
   private _dependencyObserver: IActor;
@@ -56,7 +75,8 @@ export class DependencyGraphWatcher {
   private _resolve: any;
   private _loading: boolean;
 
-  constructor(readonly entry: Dependency, private onAllLoaded?: () => any) {
+  constructor(readonly entry: Dependency) {
+    super();
     this._dependencyObserver = new WrapBus(this.onDependencyAction.bind(this));
   }
 
@@ -69,6 +89,13 @@ export class DependencyGraphWatcher {
     this._loading = true;
 
     let deps: Dependency[];
+
+    this.notify(new DependencyGraphWatcherAction(DependencyGraphWatcherAction.DEPENDENCY_GRAPH_LOADING));
+
+    // timeout so that the notification above has enough time to be
+    // sent to the browser - otherwise the notification may get locked up by the content
+    // loaders.
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     try {
       while (true) {
@@ -94,6 +121,7 @@ export class DependencyGraphWatcher {
       // the case when a nested dependency dispatches a fix, and there's nothing listening
       // to it.
       setTimeout(this.waitForAllDependencies, RELOAD_TIMEOUT);
+      this.notify(new DependencyGraphWatcherAction(DependencyGraphWatcherAction.DEPENDENCY_GRAPH_LOADED, e));
       throw e;
     }
 
@@ -111,9 +139,7 @@ export class DependencyGraphWatcher {
     }
     this._loading = false;
 
-    if (this.onAllLoaded) {
-      this.onAllLoaded();
-    }
+    this.notify(new DependencyGraphWatcherAction(DependencyGraphWatcherAction.DEPENDENCY_GRAPH_LOADED));
 
   }, { promise: true })
 

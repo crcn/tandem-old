@@ -104,6 +104,7 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
     return <div className="m-tdartboard-stage-tool--item" style={style}>
       <div className="m-tdartboard-stage-tool--item--title" onClick={this.selectEntity} onDoubleClick={this.editTitle} style={titleStyle}>
         { this.state.titleEditAction ? <AutosizeInput ref="input" value={this.state.titleEditAction.newValue} onChange={this.onTitleChange} onBlur={this.cancelEdit} onKeyDown={this.onKeyDown} /> : <span>{artboard.title || "Untitled"}</span> }
+        <span className="spinner" style={{ display: artboard.loading ? "block" : "none" }} />
       </div>
     </div>;
   }

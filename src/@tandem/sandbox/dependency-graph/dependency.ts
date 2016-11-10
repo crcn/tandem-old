@@ -12,6 +12,7 @@ import {
   IDependencyLoaderResult,
   IResolvedDependencyInfo,
 } from "./strategies"
+import { DependencyGraphWatcher } from "./watcher";
 
 import {
   FileCacheProvider,
@@ -65,6 +66,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   readonly idProperty = "hash";
 
   private _filePath: string;
+  private _watcher: DependencyGraphWatcher;
   private _ready: boolean;
   private _shouldLoadAgain: boolean;
   private _importedDependencyInfo: IResolvedDependencyInfo[];
@@ -268,6 +270,10 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this._content       = content;
     this._importedDependencyInfo = importedDependencyInfo || [];
     this._includedDependencyInfo = includedDependencyInfo || [];
+  }
+
+  get watcher() {
+    return this._watcher || (this._watcher = new DependencyGraphWatcher(this));
   }
 
   public async load(): Promise<Dependency> {

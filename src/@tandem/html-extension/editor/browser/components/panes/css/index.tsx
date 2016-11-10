@@ -19,7 +19,7 @@ import {
   SyntheticCSSStyleDeclaration,
 } from "@tandem/synthetic-browser";
 
-interface ICSSStylePaneComponentProps {
+export interface ICSSStylePaneComponentProps {
   title?: string;
   titleClassName?: string;
   style: SyntheticCSSStyleDeclaration;

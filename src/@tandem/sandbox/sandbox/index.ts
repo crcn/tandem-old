@@ -7,6 +7,7 @@ import {
   DependencyGraph,
   DependencyAction,
   DependencyGraphWatcher,
+  DependencyGraphWatcherAction,
 } from "@tandem/sandbox/dependency-graph";
 
 import {
@@ -56,7 +57,7 @@ export class Sandbox extends Observable {
   private _paused: boolean;
   private _mainModule: any;
   private _shouldEvaluate: boolean;
-  private _graphWatcher: DependencyGraphWatcher;
+  private _graphWatcherObserver: IActor;
   private _waitingForAllLoaded: boolean;
 
   private _global: any;
@@ -69,6 +70,7 @@ export class Sandbox extends Observable {
     // for logging
     this._injector.inject(this);
     this._modules = {};
+    this._graphWatcherObserver = new WrapBus(this.onDependencyGraphAction.bind(this));
   }
 
   public pause() {
@@ -100,14 +102,22 @@ export class Sandbox extends Observable {
 
   async open(entry: Dependency) {
 
-    this._entry = entry;
-    if (this._graphWatcher) {
-      this._graphWatcher.dispose();
+    if (this._entry) {
+      this._entry.watcher.unobserve(this._graphWatcherObserver);
     }
-    this._graphWatcher = this._injector.inject(new DependencyGraphWatcher(entry, this.reset.bind(this)));
-    this._entry.load();
-    await this._graphWatcher.waitForAllDependencies();
 
+    this._entry = entry;
+
+    this._entry.watcher.observe(this._graphWatcherObserver);
+    this._entry.load();
+    await this._entry.watcher.waitForAllDependencies();
+
+  }
+
+  protected onDependencyGraphAction(action: Action) {
+    if (action.type === DependencyGraphWatcherAction.DEPENDENCY_GRAPH_LOADED) {
+      this.reset();
+    }
   }
 
   public evaluate(dependency: Dependency): Object {
