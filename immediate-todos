@@ -15,8 +15,8 @@ UX
     - [ ] define what extensions to use
 
 BUGS
-  - [ ] Images and assets should work
-  - [ ] cannot edit sass files fudging up nested selectors
+  - [ ] ion-* selector not getting picked up in CSS pane
+  - [ ] rendering is oddly slow
   - [ ] fix absolute bounds for elements
   - [ ] cannot rapidly change .tsx? documents
   - [ ] get sync stop to work with vscode extension
@@ -55,6 +55,8 @@ CORE
 CSS PANE
   - [ ] display inherited styles
   - [ ] display source of styles
+  - [ ] toggle styles on and off
+  - [ ] force states
   - [ ] syntax highlighting for declaration values
   - [ ] visual editor for declaration values
   - [ ] drag slider for unit values
@@ -66,6 +68,9 @@ OPTIMIZATIONS
   - [ ] tail oplog for DS operations
   - [ ] store workspaces in data store
   - [ ] Have separate node workers for synthetic browsers
+
+LAYERS PANE
+  - [ ] preview of code that generated particular node
 
 ANIMATION PANE
 

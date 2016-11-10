@@ -2,6 +2,7 @@ import "./index.scss";
 import * as React from "react";
 import { SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser";
 
+
 // TODO - background image editor - needs to have alignment tools. Also support drag & drop images, blend mode
 export class CSSPrettyPaneComponent extends React.Component<{ style: SyntheticCSSStyleDeclaration }, any> {
   render() {

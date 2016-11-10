@@ -55,8 +55,8 @@ module.exports = {
           strategy.resolve(url, dirname(prev)).then(({ filePath }) => {
             const fileCache = FileCacheProvider.getInstance(strategy.injector);
             fileCache.item(filePath).then((item) => {
-              item.read().then((content) => {
-                done({ file: filePath, contents: content });
+              item.read().then((buffer) => {
+                done({ file: filePath, contents: String(buffer) });
               }, done);
             }, done);
           }, done);

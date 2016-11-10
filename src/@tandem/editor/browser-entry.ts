@@ -1,3 +1,9 @@
+const { server, logLevel } = window["config"];
+
+declare let __webpack_public_path__: any;
+
+__webpack_public_path__ = `${location.protocol}//${server.hostname}:${server.port}${location.pathname}`;
+
 import "./entry-shims";
 import { } from "@tandem/synthetic-browser";
 
@@ -16,8 +22,8 @@ document.body.appendChild(element);
 
 const config: IEditorBrowserConfig = {
   element: element,
-  server: window["config"].server,
-  logLevel: window["config"].logLevel
+  server: server,
+  logLevel: logLevel
 };
 
 const deps = new Injector(
