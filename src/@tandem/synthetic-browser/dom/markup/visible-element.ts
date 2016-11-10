@@ -28,7 +28,7 @@ export class VisibleDOMNodeCapabilities {
   }
 }
 
-export abstract class VisibleSyntheticDOMElement<T extends IEqualable> extends SyntheticDOMElement {
+export abstract class VisibleSyntheticDOMElement<T extends { uid: string }> extends SyntheticDOMElement {
 
   @bindable()
   private _absoluteBounds: BoundingRect;
@@ -68,6 +68,7 @@ export abstract class VisibleSyntheticDOMElement<T extends IEqualable> extends S
 
   private computeVisibility() {
 
+
     const newStyle = this.getComputedStyle();
     const newBounds = this.getBoundingClientRect();
 
@@ -78,7 +79,7 @@ export abstract class VisibleSyntheticDOMElement<T extends IEqualable> extends S
     }
 
     if (this._computedVisibility) {
-      if (this._currentBounds.equalTo(newBounds) && this._computedStyle.equalTo(newStyle)) {
+      if (this._currentBounds.equalTo(newBounds) && this._computedStyle.uid === newStyle.uid) {
         return true;
       }
     }

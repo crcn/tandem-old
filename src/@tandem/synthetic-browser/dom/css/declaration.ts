@@ -498,7 +498,8 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
       this[i] = undefined;
     }
 
-    for (const key in this.toObject()) {
+    for (const key in this) {
+      if (!isValidCSSDeclarationProperty(key)) continue;
       if (this[key] == null) continue;
       model[key] = this[key];
     }
@@ -513,7 +514,8 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
 
   equalTo(declaration: SyntheticCSSStyleDeclaration) {
     function compare(a, b) {
-      for (const key in a.toObject()) {
+      for (const key in a) {
+        if (!isValidCSSDeclarationProperty(key)) continue;
         if (a[key] !== b[key]) {
           return false;
         }
@@ -530,7 +532,8 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
   get cssText() {
     const buffer = [];
 
-    for (const key in this.toObject()) {
+    for (const key in this) {
+      if (!isValidCSSDeclarationProperty(key)) continue;
       const value = this[key];
       if (value) {
         buffer.push("\t", kebabCase(key), ": ", value, ";\n");
