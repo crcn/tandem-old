@@ -1,17 +1,30 @@
+import "./index.scss";
+
 import * as React from "react";
 import { kebabCase, camelCase } from "lodash";
 import { Workspace } from "@tandem/editor/browser/models";
 import { DOMElements, MatchedStyleRule } from "@tandem/html-extension/collections";
 import { GutterComponent } from "@tandem/editor/browser/components";
 import { HashInputComponent } from "@tandem/html-extension/editor/browser/components/common";
+import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { ApplyFileEditAction } from "@tandem/sandbox";
 import { CSSPrettyPaneComponent } from "./pretty";
 import { BaseApplicationComponent } from "@tandem/common";
-import { SyntheticCSSStyleRule, SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser";
+import { SyntheticCSSStyleRule, SyntheticCSSStyleDeclaration, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
-export class CSSStylePaneComponent extends BaseApplicationComponent<{ title: string, titleClassName?: string, style: SyntheticCSSStyleDeclaration, setDeclaration: (key, value, oldKey?) => any, pretty?: boolean, overriden?: any}, any> {
+interface ICSSStylePaneComponentProps {
+  title?: string;
+  titleClassName?: string;
+  style: SyntheticCSSStyleDeclaration;
+  setDeclaration: (key, value, oldKey?) => any;
+  pretty?: boolean;
+  overriden?: any;
+  renderTitle?(props?: ICSSStylePaneComponentProps): any;
+}
+
+export class CSSStylePaneComponent extends BaseApplicationComponent<ICSSStylePaneComponentProps, any> {
   render() {
-    const { setDeclaration, title, style, titleClassName, pretty, overriden } = this.props;
+    const { setDeclaration, renderTitle, title, style, titleClassName, pretty, overriden } = this.props;
     const items = [];
 
     for (const key of style) {
@@ -21,7 +34,7 @@ export class CSSStylePaneComponent extends BaseApplicationComponent<{ title: str
 
     return <div>
       <div className={["td-section-header", titleClassName].join(" ")}>
-        { title }
+        { renderTitle ? renderTitle(this.props) : title }
         <div className="controls">
           <span onClick={() => setDeclaration("", "")}>+</span>
         </div>
@@ -33,7 +46,10 @@ export class CSSStylePaneComponent extends BaseApplicationComponent<{ title: str
 
 
 // TODO - add some color for the CSS rules
-class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ rule: MatchedStyleRule }, any> {
+class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ rule: MatchedStyleRule, workspace: Workspace }, any> {
+
+  private _highlightedElements: SyntheticDOMElement[];
+
   setDeclaration = (name: string, value: string, oldName?: string) => {
     this.props.rule.value.style.setProperty(name, value, undefined, oldName);
     const edit = this.props.rule.value.createEdit();
@@ -45,7 +61,36 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ rule: Matc
   render() {
     const { rule } = this.props;
 
-    return <CSSStylePaneComponent style={rule.value.style} title={rule.value.selector} titleClassName="color-green-10" setDeclaration={this.setDeclaration} overriden={rule.overridedDeclarations} />
+    return <CSSStylePaneComponent
+    style={rule.value.style}
+    titleClassName="color-green-10"
+    setDeclaration={this.setDeclaration}
+    renderTitle={this.renderTitle}
+    overriden={rule.overridedDeclarations}
+    />
+  }
+
+  onTitleMouseEnter = () => {
+    this._highlightedElements = this.props.workspace.document.querySelectorAll(this.props.rule.value.selector);
+    for (const element of this._highlightedElements) {
+      element.metadata.set(MetadataKeys.HOVERING, true);
+    }
+  }
+
+  onTitleMouseLeave = () => {
+    for (const element of this._highlightedElements) {
+      element.metadata.set(MetadataKeys.HOVERING, false);
+    }
+  }
+
+  onTitleClick = () => {
+    this.props.workspace.select(this._highlightedElements);
+  }
+
+  renderTitle = () => {
+    return <div className="css-pane-title" onMouseEnter={this.onTitleMouseEnter} onMouseLeave={this.onTitleMouseLeave} onClick={this.onTitleClick}>
+      { this.props.rule.value.selector }
+    </div>
   }
 }
 
@@ -56,7 +101,7 @@ export class ElementCSSPaneComponent extends React.Component<{ workspace: Worksp
     const elements = DOMElements.fromArray(selection);
     return <div className="td-pane">
       { elements.matchedCSSStyleRules.map((matchedRule, index) => {
-        return <MatchedCSSStyleRuleComponent rule={matchedRule} key={index} />
+        return <MatchedCSSStyleRuleComponent rule={matchedRule} key={index} workspace={this.props.workspace} />
       }) }
     </div>
   }

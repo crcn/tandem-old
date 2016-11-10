@@ -43,6 +43,7 @@ CLEANUP
 FEATURES
 ----------------------------------
 
+
 CORE
   - [ ] component templates when dragging & dropping
   - [ ] config for scanning application for components
