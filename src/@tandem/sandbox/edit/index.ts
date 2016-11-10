@@ -458,7 +458,7 @@ export class FileEditor extends Observable {
         }
 
         const fileCache     = await  FileCacheProvider.getInstance(this._injector).item(filePath);
-        const oldContent    = await fileCache.read();
+        const oldContent    = String(await fileCache.read());
 
         // error may be thrown if the content is invalid
         try {

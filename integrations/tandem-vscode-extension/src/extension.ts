@@ -267,7 +267,7 @@ export async function activate(context: vscode.ExtensionContext) {
         console.log("Setting file cache from %s", item.filePath);
         await setEditorContent({
             filePath: item.filePath,
-            content: await item.read(),
+            content: String(await item.read()),
             mtime: item.updatedAt
         });
 
@@ -295,7 +295,7 @@ export async function activate(context: vscode.ExtensionContext) {
         const fileCacheItem = client.fileCache.eagerFindByFilePath(filePath);
         if (!fileCacheItem) return;
 
-        const fileCacheItemContent = await fileCacheItem.read();
+        const fileCacheItemContent = String(await fileCacheItem.read());
 
         // visual editor may have modified file content. Ensure that the editor
         // content is in sync with the latest stuff. TODO - need to match mtime here

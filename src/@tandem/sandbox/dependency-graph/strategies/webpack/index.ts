@@ -189,7 +189,7 @@ class WebpackLoaderContext {
   async emitFile(fileName: string, content: string) {
     const uri = "webpack://" + fileName;
     // this.addDependency(uri);
-    this.logger.info(`Emitting asset ${fileName}`);
+    this.logger.verbose(`Emitting asset ${fileName}`);
     const fileCache = FileCacheProvider.getInstance(this.strategy.injector);
     const item = await fileCache.item(uri);
     item.setDataUrlContent(content);
