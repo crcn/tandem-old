@@ -12,7 +12,6 @@ import { DocumentPaneComponentFactoryProvider } from "@tandem/editor/browser/pro
 
 class _LayersPaneComponent extends BaseApplicationComponent<{}, any> {
   render() {
-    // const { workspace } = this.props.app;
     const workspace = null;
     if (!workspace || !workspace.document) return null;
     return <PaneComponent title={path.basename(workspace.browser.location.toString())}>

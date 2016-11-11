@@ -61,6 +61,15 @@ export class SelectAction extends Action {
 }
 
 
+export class SelectionChangeAction extends Action {
+
+  static readonly SELECTION_CHANGE = "selectionChange";
+  constructor(readonly items: any[] = []) {
+    super(SelectionChangeAction.SELECTION_CHANGE);
+  }
+}
+
+
 export class SelectAllAction extends Action {
   static readonly SELECT_ALL = "selectAll";
   constructor() {

@@ -143,6 +143,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   readonly styleSheets: ObservableCollection<SyntheticCSSStyleSheet>;
   private _registeredElements: any;
   public $window: SyntheticWindow;
+  public $ownerNode: SyntheticDOMNode;
 
   // namespaceURI here is non-standard, but that's
   constructor(readonly defaultNamespaceURI: string) {
@@ -154,6 +155,10 @@ export class SyntheticDocument extends SyntheticDOMContainer {
 
   get browser(): ISyntheticBrowser {
     return this.$window.browser;
+  }
+
+  get ownerNode(): SyntheticDOMNode {
+    return this.$ownerNode;
   }
 
   get defaultView(): SyntheticWindow {

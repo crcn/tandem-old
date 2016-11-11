@@ -8,17 +8,15 @@ import {
   ApplicationServiceProvider,
 } from "@tandem/common";
 
+import { BaseApplicationService } from "@tandem/core";
+
 import {SequenceBus } from "mesh";
 
 // Command pattern receiver
-export class ReceiverService implements IActor {
+export class ReceiverService extends BaseApplicationService {
 
   @inject(InjectorProvider.ID)
   private _injector: Injector;
-
-  constructor() {
-
-  }
 
   execute(action: Action) {
 
@@ -29,5 +27,3 @@ export class ReceiverService implements IActor {
     return new SequenceBus(commands).execute(action);
   }
 }
-
-export const receiverServiceProvider = new ApplicationServiceProvider("receiver", ReceiverService);

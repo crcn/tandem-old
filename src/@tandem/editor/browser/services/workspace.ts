@@ -71,7 +71,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     if (this._store.workspace && this._store.workspace.browser.location.toString() === filePath) return;
 
     this.logger.info("loading project file %s", filePath);
-    const workspace = new Workspace();
+    const workspace = this.injector.inject(new Workspace());
     const browser = workspace.browser = new RemoteSyntheticBrowser(this.injector, new CanvasRenderer(workspace, this.injector.inject(new SyntheticDOMRenderer())));
     await browser.open({ url: filePath });
     this._store.workspace = workspace;

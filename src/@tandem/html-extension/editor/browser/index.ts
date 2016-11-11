@@ -1,4 +1,4 @@
-import { Injector } from "@tandem/common";
+import { Injector, CommandFactoryProvider } from "@tandem/common";
 import { keyBindingProvider } from "./key-bindings";
 import { createHTMLCoreProviders } from "../../core";
 import { textToolProvider, editInnerHTMLProvider } from "./models";
@@ -10,11 +10,17 @@ import {
 } from "@tandem/synthetic-browser";
 
 import {
+  SelectionChangeAction,
   FooterComponentFactoryProvider,
   StageToolComponentFactoryProvider,
   LayerLabelComponentFactoryProvider,
   EntityPaneComponentFactoryProvider,
+  DocumentPaneComponentFactoryProvider,
 } from "@tandem/editor/browser";
+
+import {
+  ExpandSelectedCommand
+} from "./commands";
 
 import {
   SyntheticHTMLLink,
@@ -23,6 +29,7 @@ import {
 } from "@tandem/html-extension/synthetic";
 
 import {
+  LayersPaneComponent,
   HTMLStylePaneComponent,
   TextLayerLabelComponent,
   ElementCSSPaneComponent,
@@ -38,6 +45,8 @@ export function createHTMLEditorBrowserProviders() {
 
     createHTMLCoreProviders(),
 
+    new CommandFactoryProvider(SelectionChangeAction.SELECTION_CHANGE, ExpandSelectedCommand),
+
     // layer components
     new LayerLabelComponentFactoryProvider(SyntheticHTMLElement.name, ElementLayerLabelComponent),
     new LayerLabelComponentFactoryProvider(SyntheticHTMLStyle.name, ElementLayerLabelComponent),
@@ -50,6 +59,7 @@ export function createHTMLEditorBrowserProviders() {
     new EntityPaneComponentFactoryProvider("htmlAttributes", EntityAttributesPaneComponent),
     new EntityPaneComponentFactoryProvider("htmlStyle", HTMLStylePaneComponent),
     new EntityPaneComponentFactoryProvider("htmlCSSRules", ElementCSSPaneComponent),
+    new DocumentPaneComponentFactoryProvider("htmlLayers", LayersPaneComponent),
 
     // stage tool components
     new StageToolComponentFactoryProvider("elementInfo", "pointer", ElementInfoStageToolComponent),

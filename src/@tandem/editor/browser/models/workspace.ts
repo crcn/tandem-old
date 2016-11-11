@@ -1,6 +1,7 @@
-import { KeyBinding } from "@tandem/editor/browser/key-bindings";
-import { ParallelBus, WrapBus } from "mesh";
 import { flatten } from "lodash";
+import { KeyBinding } from "@tandem/editor/browser/key-bindings";
+import { SelectionChangeAction } from "@tandem/editor/browser/actions";
+import { ParallelBus, WrapBus } from "mesh";
 
 import {
   IActor,
@@ -10,7 +11,9 @@ import {
   bindable,
   bubble,
   Metadata,
+  TreeNode,
   Transform,
+  PrivateBusProvider,
   Observable,
   flattenTree,
   IInjectable,
@@ -36,6 +39,9 @@ export class Workspace extends Observable {
   private _zoom: number = 1;
   public translate: IPoint = { left: 0, top: 0 };
   private _browserObserver: IActor;
+
+  @inject(PrivateBusProvider.ID)
+  private _bus: IActor;
 
   /**
    * workspace canvas transform. TODO - may need to move this to WorkspaceCanvas object, or similar
@@ -119,9 +125,9 @@ export class Workspace extends Observable {
       }
     }
 
-    // TODO - prevent
-
     this.selection = newSelection;
+
+    this._bus.execute(new SelectionChangeAction(this.selection));
   }
 
 

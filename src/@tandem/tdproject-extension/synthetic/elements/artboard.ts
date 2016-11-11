@@ -184,6 +184,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     }
 
     this._contentDocument = this._artboardBrowser.window.document;
+    this._contentDocument.$ownerNode = this;
     this._contentDocument.observe(this._contentDocumentObserver);
     this.injectCSS();
 

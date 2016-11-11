@@ -17,7 +17,6 @@ $gutter-background: #444;
   position: relative;
   color: $font-color-white;
   background-color: $gutter-background;
-  box-shadow: 0 0 0 2px $color-black-offset-2;
 
   .td-section-header {
     font-size: 0.9em;
@@ -47,12 +46,13 @@ $gutter-background: #444;
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   }
 
-  .left{
-    border-left: 2px solid rgba(255, 255, 255, 0.2)
+  &.right {
+    border-left: 2px solid rgba(0, 0, 0, 0.2)
   }
 
-  .right{
-    border-right: 2px solid rgba(255, 255, 255, 0.2)
+
+  &.left {
+    border-right: 2px solid rgba(0,0, 0, 0.2)
   }
 }
 
