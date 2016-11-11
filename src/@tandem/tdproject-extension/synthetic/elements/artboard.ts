@@ -30,6 +30,7 @@ import {
   SyntheticCSSStyleSheet,
   RemoteSyntheticBrowser,
   SyntheticRendererAction,
+  VisibleDOMNodeCapabilities,
   ISyntheticDocumentRenderer,
 } from "@tandem/synthetic-browser";
 
@@ -108,6 +109,10 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     this._contentDocumentObserver = new WrapBus(this.onContentDocumentAction.bind(this));
     watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
     await this.loadBrowser();
+  }
+
+  protected computeCapabilities() {
+    return new VisibleDOMNodeCapabilities(true, true);
   }
 
   private loadBrowser = debounce(async () => {

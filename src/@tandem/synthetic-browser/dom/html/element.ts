@@ -116,8 +116,8 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
 
   protected computeCapabilities(style: SyntheticCSSStyleDeclaration): VisibleDOMNodeCapabilities {
     return new VisibleDOMNodeCapabilities(
-      true,
-      true
+      false,
+      false
     );
   }
 
