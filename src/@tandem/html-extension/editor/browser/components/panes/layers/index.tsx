@@ -17,6 +17,14 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
     node.metadata.toggle(MetadataKeys.LAYER_EXPANDED);
   }
 
+  onMouseEnter = (node: SyntheticDOMNode) => {
+    node.metadata.set(MetadataKeys.HOVERING, true);
+  }
+
+  onMouseLeave = (node: SyntheticDOMNode) => {
+    node.metadata.set(MetadataKeys.HOVERING, false);
+  }
+
   render() {
     if (!this.props.workspace) return null;
     const { document, selection } = this.props.workspace;
@@ -35,7 +43,7 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
     const hovering = node.metadata.get(MetadataKeys.HOVERING);
 
     return <div key={node.uid} className="layer">
-      <div className={cx({ label: true, hovering: hovering, selected: this.props.workspace.selection.indexOf(node) !== -1, "no-wrap": true })} style={{paddingLeft: 8 + depth * 8 }}>
+      <div className={cx({ label: true, hovering: hovering, selected: this.props.workspace.selection.indexOf(node) !== -1, "no-wrap": true })} style={{paddingLeft: 8 + depth * 8 }} onMouseEnter={this.onMouseEnter.bind(this, node)} onMouseLeave={this.onMouseLeave.bind(this, node)}>
         <i key="arrow" onClick={this.expandLayer.bind(this, node)} className={[expanded ? "ion-arrow-down-b" : "ion-arrow-right-b"].join(" ")} style={{ opacity: node.childNodes.length ? 0.5 : 0 }} />
         <span onClick={this.selectNode.bind(this, node)}>{this.renderLabel(node, depth)}</span>
       </div>
