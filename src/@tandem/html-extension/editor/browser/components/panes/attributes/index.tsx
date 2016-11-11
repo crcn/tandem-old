@@ -33,6 +33,7 @@ export class EntityAttributesPaneComponent extends BaseApplicationComponent<{ wo
   }
 
   render() {
+    if (!this.props.workspace) return null;
     const items = this.items;
     if (!items.length) return null;
 

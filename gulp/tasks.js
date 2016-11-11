@@ -12,6 +12,7 @@ const istanbul      = require('gulp-istanbul');
 const peg           = require('gulp-peg');
 const webpack       = require('gulp-webpack');
 const chokidar      = require('chokidar');
+const notify        = require('gulp-notify');
 const symdest       = require('gulp-symdest');
 const rename        = require('gulp-rename');
 const named         = require('vinyl-named');
@@ -253,7 +254,8 @@ gulp.task('test:all', ['hook:istanbul'], function(done) {
       bail: argv.bail
     }))
 
-    .on('error', error => console.error(error.message));
+    .on('error', error => console.error(error.message))
+    .on('error', notify.onError({ message: `Error: <%= error.message %>`, title: `Error running tests` }));
 
     if (argv.coverage) {
       stream = stream

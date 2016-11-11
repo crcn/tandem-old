@@ -1,6 +1,6 @@
 import * as sinon from "sinon";
 import { expect } from "chai";
-import { Injector } from "@tandem/common";
+import { Injector, Status } from "@tandem/common";
 import { MockFileSystem, MockFileResolver, createSandboxTestInjector } from "@tandem/sandbox/test/helpers";
 import {
   Dependency,
@@ -94,15 +94,13 @@ describe(__filename + "#", () => {
     // need to give memoizee a sec for its cache to bust.
     await new Promise(resolve => setTimeout(resolve, 1));
 
-    expect(dep.loaded).to.equal(false);
-    expect(dep.loading).to.equal(false);
+    expect(dep.status.type).to.equal(Status.ERROR);
 
     // dep assumes that if there's an error on the initial load, then there will be another
     // error again unless the source file has changed. For that, we'll need to touch the source file.
     (await dep.getSourceFileCacheItem()).updatedAt = Date.now();
     await dep.load();
-    expect(dep.loaded).to.equal(true);
-    expect(dep.loading).to.equal(false);
+    expect(dep.status.type).to.equal(Status.COMPLETED);
     expect(dep.content).to.equal("something");
   });
 
@@ -141,11 +139,10 @@ describe(__filename + "#", () => {
     // need to give memoizee a sec for its cache to bust.
     await new Promise(resolve => setTimeout(resolve, 1));
 
-    expect(dep.loaded).to.equal(false);
-    expect(dep.loading).to.equal(false);
-    expect(dep.eagerGetDependency("c").loaded).to.equal(false);
+    expect(dep.status.type).to.equal(Status.ERROR);
+    expect(dep.eagerGetDependency("c").status.type).to.equal(Status.ERROR);
     await dep.load();
-    expect(dep.eagerGetDependency("c").loaded).to.equal(true);
+    expect(dep.eagerGetDependency("c").status.type).to.equal(Status.COMPLETED);
     expect(dep.content).to.equal("aa");
   });
 

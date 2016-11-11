@@ -2,10 +2,11 @@ import "./index.scss";
 import * as React from "react";
 import * as AutosizeInput from "react-input-autosize";
 
+import { Status } from "@tandem/common/status";
 import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
 import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 import { ApplyFileEditAction, SetKeyValueEditAction } from "@tandem/sandbox";
-import { FrontEndApplication, Workspace, SelectAction } from "@tandem/editor/browser";
+import { FrontEndApplication, Workspace, SelectAction, StatusComponent } from "@tandem/editor/browser";
 import { SyntheticHTMLElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
 
 export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: SyntheticTDArtboardElement, workspace: Workspace }, {
@@ -104,7 +105,7 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
     return <div className="m-tdartboard-stage-tool--item" style={style}>
       <div className="m-tdartboard-stage-tool--item--title" onClick={this.selectEntity} onDoubleClick={this.editTitle} style={titleStyle}>
         { this.state.titleEditAction ? <AutosizeInput ref="input" value={this.state.titleEditAction.newValue} onChange={this.onTitleChange} onBlur={this.cancelEdit} onKeyDown={this.onKeyDown} /> : <span>{artboard.title || "Untitled"}</span> }
-        <span className="spinner" style={{ display: artboard.loading ? "block" : "none" }} />
+        <StatusComponent status={artboard.status} />
       </div>
     </div>;
   }

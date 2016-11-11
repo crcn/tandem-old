@@ -1,6 +1,6 @@
 import * as sinon from "sinon";
 import { expect } from "chai";
-import { Injector, IProvider, MimeTypeProvider } from "@tandem/common";
+import { Injector, IProvider, MimeTypeProvider, Status } from "@tandem/common";
 import {
   Sandbox,
   DependencyGraph,
@@ -72,8 +72,8 @@ describe(__filename + "#", () => {
     const fileCacheItem = await dependency.getSourceFileCacheItem();
     await fileCacheItem.setDataUrlContent("b").save();
     dependency.load();
-    fileCacheItem.setDataUrlContent("c").save();
-    expect(dependency.loading).to.equal(true);
+    fileCacheItem.setDataUrlContent("c").save()
+    expect(dependency.status.type).to.equal(Status.LOADING);
 
     // wait on the current load request
     await dependency.load();

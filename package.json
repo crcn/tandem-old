@@ -85,6 +85,7 @@
     "gulp-install": "^0.6.0",
     "gulp-istanbul": "^1.1.1",
     "gulp-mocha": "^3.0.1",
+    "gulp-notify": "^2.2.0",
     "gulp-peg": "^0.2.0",
     "gulp-rename": "^1.2.2",
     "gulp-sequence": "^0.4.6",

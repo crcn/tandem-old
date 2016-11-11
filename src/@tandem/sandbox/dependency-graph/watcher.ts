@@ -32,9 +32,11 @@ import {
   Observable,
   TreeWalker,
   IInjectable,
+  Status,
   serialize,
   deserialize,
   serializable,
+  bindable,
   ITreeWalker,
   watchProperty,
   MimeTypeProvider,
@@ -48,22 +50,6 @@ import {
 import { Dependency } from "./dependency";
 import { DependencyWalker, flattenDependencies } from "./utils";
 
-@serializable({
-  serialize({ type, data }: DependencyGraphWatcherAction) {
-    return { type, data: serialize(data) };
-  },
-  deserialize({ type, data }, injector) {
-    return new DependencyGraphWatcherAction(type, deserialize(data, injector));
-  }
-})
-export class DependencyGraphWatcherAction extends Action {
-  static readonly DEPENDENCY_GRAPH_LOADED: string = "dependencyGraphWatcherLoaded";
-  static readonly DEPENDENCY_GRAPH_LOADING: string = "dependencyGraphWatcherLoading";
-  constructor(type: string, readonly data?: any) {
-    super(type);
-  }
-}
-
 const RELOAD_TIMEOUT = 1000 * 3;
 
 @loggable()
@@ -73,7 +59,9 @@ export class DependencyGraphWatcher extends Observable {
   private _dependencyObserver: IActor;
   private _dependencyObservers: DisposableCollection;
   private _resolve: any;
-  private _loading: boolean;
+
+  @bindable(true)
+  public status: Status;
 
   constructor(readonly entry: Dependency) {
     super();
@@ -86,16 +74,9 @@ export class DependencyGraphWatcher extends Observable {
   }
 
   public waitForAllDependencies = memoize(async () => {
-    this._loading = true;
+    this.status = new Status(Status.LOADING);
 
     let deps: Dependency[];
-
-    this.notify(new DependencyGraphWatcherAction(DependencyGraphWatcherAction.DEPENDENCY_GRAPH_LOADING));
-
-    // timeout so that the notification above has enough time to be
-    // sent to the browser - otherwise the notification may get locked up by the content
-    // loaders.
-    await new Promise((resolve) => setTimeout(resolve, 100));
 
     try {
       while (true) {
@@ -103,7 +84,7 @@ export class DependencyGraphWatcher extends Observable {
 
         deps = flattenDependencies(this.entry);
 
-        const loadingDependencies = deps.filter(dep => dep.loading);
+        const loadingDependencies = deps.filter(dep => dep.status.type === Status.LOADING);
 
         // Break if everything is loaded in the dependency graph starting from this instance.
         // if there were loading deps, then there may be more imported deps that are being loaded in,
@@ -115,37 +96,37 @@ export class DependencyGraphWatcher extends Observable {
         await Promise.all(loadingDependencies.map(dep => dep.load()));
       }
     } catch(e) {
-      this._loading = false;
+      this.status = new Status(Status.ERROR, e);
 
-      // Set interval for reloading the watcher if there's an error to cover
-      // the case when a nested dependency dispatches a fix, and there's nothing listening
-      // to it.
-      setTimeout(this.waitForAllDependencies, RELOAD_TIMEOUT);
-      this.notify(new DependencyGraphWatcherAction(DependencyGraphWatcherAction.DEPENDENCY_GRAPH_LOADED, e));
+      // watch whatever is currently loaded in
+      this.watchDependencies();
       throw e;
     }
 
+    this.watchDependencies();
+
+    this.status = new Status(Status.COMPLETED);
+
+  }, { promise: true })
+
+  private watchDependencies() {
     if (this._dependencyObservers) {
       this._dependencyObservers.dispose();
     }
 
     this._dependencyObservers = new DisposableCollection();
 
-    for (const dep of deps) {
+    for (const dep of flattenDependencies(this.entry)) {
       dep.observe(this._dependencyObserver);
       this._dependencyObservers.push({
         dispose: () => dep.unobserve(this._dependencyObserver)
       })
     }
-    this._loading = false;
-
-    this.notify(new DependencyGraphWatcherAction(DependencyGraphWatcherAction.DEPENDENCY_GRAPH_LOADED));
-
-  }, { promise: true })
+  }
 
 
   private onDependencyAction(action: Action) {
-    if (this._loading) return;
+    if (this.status && this.status.type === Status.LOADING) return;
     this.waitForAllDependencies["clear"]();
     this.waitForAllDependencies();
   }

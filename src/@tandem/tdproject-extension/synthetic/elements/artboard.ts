@@ -6,6 +6,7 @@ import { debounce } from "lodash";
 import {
   IActor,
   Action,
+  Status,
   isMaster,
   bindable,
   ITreeWalker,
@@ -68,7 +69,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
   private _artboardBrowserObserver: IActor;
 
   @bindable(true)
-  readonly loading: boolean;
+  readonly status: Status = new Status(null);
 
   createdCallback() {
     this.setAttribute("class", "artboard-entity");
@@ -105,7 +106,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
 
     const documentRenderer = new SyntheticDOMRenderer();
     this._artboardBrowser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.injector, new SyntheticArtboardRenderer(this, documentRenderer), this.browser);
-    bindProperty(this._artboardBrowser, "loading", this, "loading").trigger();
+    bindProperty(this._artboardBrowser, "status", this, "status").trigger();
     this._contentDocumentObserver = new WrapBus(this.onContentDocumentAction.bind(this));
     watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
     await this.loadBrowser();

@@ -26,8 +26,10 @@ import {
   inject,
   Logger,
   IActor,
+  Status,
   loggable,
   Injector,
+  bindable,
   LogLevel,
   IWalkable,
   Observable,
@@ -87,8 +89,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   private _fileCacheItem: FileCacheItem;
   private _fileCacheItemObserver: IActor;
   private _updatedAt: number;
-  private _loading: boolean;
-  private _loaded: boolean;
   private _loadedDependencies: boolean;
   private _sourceUpdatedAt: number;
 
@@ -189,13 +189,8 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     return this._importedDependencyInfo.map(info => info.filePath);
   }
 
-  get loading() {
-    return this._loading;
-  }
-
-  get loaded() {
-    return this._loaded;
-  }
+  @bindable()
+  public status: Status = new Status(Status.IDLE);
 
   /**
    * The loaded bundle type
@@ -280,20 +275,18 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
     // safe method that protects _loading from being locked
     // from errors.
-    if (this._loading || this._loaded) {
+    if (this.status.type === Status.LOADING || this.status.type === Status.COMPLETED) {
       return this.load2();
     }
 
     return new Promise<Dependency>((resolve, reject) => {
-      this._loading = true;
-      this._loaded  = false;
+      this.status = new Status(Status.LOADING);
       this.load2().then(() => {
-        this._loading = false;
-        this._loaded = true;
+        this.status = new Status(Status.COMPLETED);
         this.notify(new DependencyAction(DependencyAction.DEPENDENCY_LOADED));
         resolve(this);
       }, (err) => {
-        this._loading = false;
+        this.status = new Status(Status.ERROR);
         reject(err);
       })
     });
@@ -317,6 +310,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       try {
         await this.loadHard();
       } catch(e) {
+        this._sourceUpdatedAt = undefined;
         await this.watchForChanges();
         throw e;
       }
@@ -396,7 +390,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       const waitLogger = this.logger.startTimer(`Waiting for dependency ${info.hash}:${info.filePath} to load...`, 1000 * 10, LogLevel.VERBOSE);
 
       // if the dependency is loading, then they're likely a cyclical dependency
-      if (!dependency.loading) {
+      if (dependency.status.type !== Status.LOADING) {
         try {
           await dependency.load();
         } catch(e) {
@@ -459,14 +453,14 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private async reload() {
     this.load2["clear"]();
-    this._loaded = false;
+    this.status = new Status(Status.IDLE);
     this.logger.verbose("Reloading");
     return this.load();
   }
 
   private onFileCacheAction(action: Action) {
     // reload the dependency if file cache item changes -- could be the data url, source file, etc.
-    if (action.type === PropertyChangeAction.PROPERTY_CHANGE && !this.loading) {
+    if (action.type === PropertyChangeAction.PROPERTY_CHANGE && this.status.type !== Status.LOADING) {
       this.logger.info("Source file changed");
       this.reload();
     }

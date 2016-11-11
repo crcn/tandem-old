@@ -7,18 +7,21 @@ import {
   DependencyGraph,
   DependencyAction,
   DependencyGraphWatcher,
-  DependencyGraphWatcherAction,
 } from "@tandem/sandbox/dependency-graph";
 
 import {
   IActor,
   Action,
   inject,
-  loggable,
   Logger,
+  Status,
+  loggable,
+  bindable,
+  Injector,
   Observable,
   IObservable,
-  Injector,
+  IDisposable,
+  watchProperty,
   PropertyChangeAction,
 } from "@tandem/common";
 
@@ -57,12 +60,15 @@ export class Sandbox extends Observable {
   private _paused: boolean;
   private _mainModule: any;
   private _shouldEvaluate: boolean;
-  private _graphWatcherObserver: IActor;
+  private _graphWatcherWatcher: IDisposable;
   private _waitingForAllLoaded: boolean;
 
   private _global: any;
   private _context: vm.Context;
   private _exports: any;
+
+  @bindable(true)
+  public status: Status;
 
   constructor(private _injector: Injector, private createGlobal: () => any = () => {}) {
     super();
@@ -70,7 +76,6 @@ export class Sandbox extends Observable {
     // for logging
     this._injector.inject(this);
     this._modules = {};
-    this._graphWatcherObserver = new WrapBus(this.onDependencyGraphAction.bind(this));
   }
 
   public pause() {
@@ -102,20 +107,23 @@ export class Sandbox extends Observable {
 
   async open(entry: Dependency) {
 
-    if (this._entry) {
-      this._entry.watcher.unobserve(this._graphWatcherObserver);
+    if (this._graphWatcherWatcher) {
+      this._graphWatcherWatcher.dispose();
     }
 
     this._entry = entry;
 
-    this._entry.watcher.observe(this._graphWatcherObserver);
+    this._graphWatcherWatcher = watchProperty(entry.watcher, "status", this.onDependencyGraphStatusChange.bind(this)).trigger();
     this._entry.load();
     await this._entry.watcher.waitForAllDependencies();
 
   }
 
-  protected onDependencyGraphAction(action: Action) {
-    if (action.type === DependencyGraphWatcherAction.DEPENDENCY_GRAPH_LOADED) {
+  protected onDependencyGraphStatusChange(newValue: Status, oldValue: Status) {
+    this.logger.verbose(`graph watcher status change: ${newValue.type}`);
+    if (newValue.type === Status.ERROR || newValue.type === Status.LOADING) {
+      this.status = newValue;
+    } else if (newValue.type === Status.COMPLETED) {
       this.reset();
     }
   }
@@ -127,7 +135,7 @@ export class Sandbox extends Observable {
       return this._modules[dependency.hash].exports;
     }
 
-    if (!dependency.loaded) {
+    if (dependency.status.type !== Status.COMPLETED) {
       throw new Error(`Attempting to evaluate dependency ${hash} that is not loaded yet.`);
     }
 
@@ -141,7 +149,12 @@ export class Sandbox extends Observable {
     }
 
     this.logger.verbose("Evaluating %s", dependency.filePath);
-    evaluatorFactoryDepedency.create().evaluate(module);
+    try {
+      evaluatorFactoryDepedency.create().evaluate(module);
+    } catch(e) {
+      this.status = new Status(Status.ERROR, e);
+      throw e;
+    }
 
     return this.evaluate(dependency);
   }
@@ -163,6 +176,7 @@ export class Sandbox extends Observable {
     this._exports = this.evaluate(this._entry);
     logTimer.stop(`Evaluated ${this._entry.filePath}`);
     this.notify(new PropertyChangeAction("exports", this._exports, exports));
+    this.status = new Status(Status.COMPLETED);
   }
 }
 

@@ -1,22 +1,25 @@
 import { debounce } from "lodash";
+import { Response, WrapBus } from "mesh";
 import { NoopRenderer, ISyntheticDocumentRenderer } from "./renderers";
 import { OpenRemoteBrowserAction, SyntheticBrowserAction, isDOMMutationAction } from "./actions";
 import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser, ISyntheticBrowserOpenOptions } from "./browser";
-import { Response, WrapBus } from "mesh";
 import {
   fork,
   IActor,
-  Action,
-  isMaster,
-  serialize,
   Logger,
+  Action,
+  Status,
+  isMaster,
   loggable,
-  IInjectable,
-  flattenTree,
   bindable,
-  deserialize,
   Injector,
+  serialize,
+  flattenTree,
+  deserialize,
+  IInjectable,
+  IDisposable,
   serializable,
+  watchProperty,
   definePublicAction,
   PrivateBusProvider,
 } from "@tandem/common";
@@ -32,7 +35,6 @@ import {
   DependencyGraphWatcher,
   DependencyGraphProvider,
   SyntheticObjectChangeWatcher,
-  DependencyGraphWatcherAction,
   IDependencyGraphStrategyOptions
 } from "@tandem/sandbox";
 
@@ -48,8 +50,9 @@ import {
   }
 })
 export class RemoteBrowserDocumentAction extends Action {
-  static readonly NEW_DOCUMENT   = "newDocument";
-  static readonly DOCUMENT_DIFF  = "documentDiff";
+  static readonly NEW_DOCUMENT  = "newDocument";
+  static readonly DOCUMENT_DIFF = "documentDiff";
+  static readonly STATUS_CHANGE = "statusChange";
   constructor(type: string, readonly data: any) {
     super(type);
   }
@@ -65,7 +68,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   private _remoteStream: any;
 
   @bindable(true)
-  public loading: boolean = true;
+  public status: Status = new Status(Status.IDLE);
 
   constructor(injector: Injector, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
     super(injector, renderer, parent);
@@ -73,6 +76,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   }
 
   async open2(options: ISyntheticBrowserOpenOptions) {
+    this.status = new Status(Status.LOADING);
     if (this._remoteStream) this._remoteStream.cancel();
 
     const remoteBrowserStream = this._remoteStream = this._bus.execute(new OpenRemoteBrowserAction(options));
@@ -94,8 +98,8 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
     this.logger.verbose(`Received action: ${action.type}`);
 
-    if (action.type === DependencyGraphWatcherAction.DEPENDENCY_GRAPH_LOADING) {
-      this.loading = true;
+    if (action.type === RemoteBrowserDocumentAction.STATUS_CHANGE) {
+      this.status = (<RemoteBrowserDocumentAction>action).data;
     }
 
     if (action.type === RemoteBrowserDocumentAction.NEW_DOCUMENT) {
@@ -107,14 +111,14 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       this._documentEditor   = new SyntheticObjectEditor(newDocument);
 
       const window = new SyntheticWindow(this.location, this, newDocument);
-      this.loading = false;
       this.setWindow(window);
+      this.status = new Status(Status.COMPLETED);
     } else if (action.type === RemoteBrowserDocumentAction.DOCUMENT_DIFF) {
       const { data } = <RemoteBrowserDocumentAction>action;
       const actions: EditAction[] = data;
       this.logger.verbose("Received document diffs: >>%s", actions.map(action => action.type).join(", "));
       this._documentEditor.applyEditActions(...actions);
-      this.loading = false;
+      this.status = new Status(Status.COMPLETED);
     }
 
     this.notify(action);
@@ -161,8 +165,6 @@ export class RemoteBrowserService extends BaseApplicationService {
         execute: async (action: Action) => {
           if (action.type === SyntheticBrowserAction.BROWSER_LOADED && action.target === browser) {
             changeWatcher.target = browser.document;
-          } else if (action.type === DependencyGraphWatcherAction.DEPENDENCY_GRAPH_LOADING || action.type === DependencyGraphWatcherAction.DEPENDENCY_GRAPH_LOADED) {
-            writer.write({ payload: serialize(action) });
           }
         }
       };
@@ -172,6 +174,14 @@ export class RemoteBrowserService extends BaseApplicationService {
       }
 
       browser.observe(observer);
+
+      const onStatusChange = (status: Status) => {
+        writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.STATUS_CHANGE, status)) });
+      };
+
+      watchProperty(browser.sandbox, "status", onStatusChange);
+      onStatusChange(browser.sandbox.status);
+
       browser.open(action.options);
     });
   }

@@ -56,7 +56,6 @@ export class CSSStylePaneComponent extends BaseApplicationComponent<ICSSStylePan
 
   state = { showPrettyInput: false };
 
-
   render() {
     const { setDeclaration, renderTitle, title, style, titleClassName, pretty, overriden, inherited } = this.props;
     const items = [];

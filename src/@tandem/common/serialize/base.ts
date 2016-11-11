@@ -104,6 +104,17 @@ const _serializers   = {
       }
     }
   },
+  Error: {
+    ctor: undefined,
+    serializer: {
+      serialize(value: Error) {
+        return { name: value.name, message: value.message, stack: value.stack };
+      },
+      deserialize({ name, message, stack }: any) {
+        return { name, message, stack };
+      }
+    }
+  },
 };
 
 export function getSerializeType(value: any) {
@@ -116,6 +127,7 @@ function getNativeSerializeType(value: any) {
   if (value instanceof Array) return "Array";
   if (value instanceof Date) return "Date";
   if (value instanceof RegExp) return "RegExp";
+  if (value instanceof Error) return "Error";
 
   return undefined;
 }

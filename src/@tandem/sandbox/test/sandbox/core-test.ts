@@ -10,7 +10,7 @@ describe(__filename + "#", () => {
         "a.js": "module.exports = require('./b.js')",
         "b.js": "module.exports = 'bb';"
       }
-    })
+    });
 
     const sandbox = new Sandbox(injector);
     const graph = DependencyGraphProvider.getInstance({ name: "webpack" }, injector);
