@@ -2,13 +2,13 @@ import "./index.scss";
 
 import * as React from "react";
 import { Store } from "@tandem/editor/browser/models";
+import { SettingKeys } from "@tandem/editor/browser/constants";
 import CenterComponent from "./center";
 import { StoreProvider } from "@tandem/editor/browser/providers";
 import { GutterComponent } from "./gutter";
-import { IActor, Injector, RootApplicationComponent, BaseApplicationComponent, inject } from "@tandem/common";
 import { RegisteredComponent } from "@tandem/editor/browser/components/common";
 import { DocumentPaneComponentFactoryProvider, EntityPaneComponentFactoryProvider } from "@tandem/editor/browser/providers";
-
+import { IActor, Injector, RootApplicationComponent, BaseApplicationComponent, inject } from "@tandem/common";
 
 export class EditorComponent extends BaseApplicationComponent<{}, {}> {
 
@@ -18,10 +18,12 @@ export class EditorComponent extends BaseApplicationComponent<{}, {}> {
   render() {
     const { workspace, settings } = this._store;
 
-
     return <div className="m-editor editor">
+      <GutterComponent style={{width:350, display: this._store.settings.get(SettingKeys.HIDE_LEFT_SIDEBAR)  ? "block" : "none" }}>
+        <RegisteredComponent workspace={workspace} ns={DocumentPaneComponentFactoryProvider.getId("**")} />
+      </GutterComponent>
       <CenterComponent />
-      <GutterComponent style={{width:350}}>
+      <GutterComponent style={{width:350, display: this._store.settings.get(SettingKeys.HIDE_RIGHT_SIDEBAR)  ? "block" : "none" }}>
         <RegisteredComponent workspace={workspace} ns={EntityPaneComponentFactoryProvider.getId("**")} />
       </GutterComponent>
     </div>;
