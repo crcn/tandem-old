@@ -1,0 +1,99 @@
+@import "@tandem/editor/browser/scss/variables";
+
+$needle-color: rgba(255, 255, 255, 0.5);
+$rail-height: 18px;
+
+.css-animation-pane {
+  color: white;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+
+  & .td-section-header {
+    flex-shrink: 0;
+    flex-grow: 0;
+  }
+
+  & .controls {
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+    position: relative;
+  }
+
+  & .scrub-rail {
+    width: 100%;
+    height: $rail-height;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+
+
+  }
+   & .needle {
+
+    left: 30%;
+    top: 0px;
+    position: absolute;
+    height: 100%;
+
+    &::before {
+      content: " ";
+      background: $needle-color;
+      width: 10px;
+      height: $rail-height;
+      display: block;
+    }
+
+    &::after {
+      content: " ";
+      width: 1px;
+      height: 100%;
+      left: 50%;
+      position: relative;
+      transform: translateX(-50%);
+      background: $needle-color;
+      display: block;
+    }
+  }
+
+  .acontainer {
+    padding: 4px;
+  }
+
+  & .arow {
+    width: 100%;
+    display: flex;
+    position: relative;
+    flex-direction: row;
+  }
+
+  .boundary {
+    display: block;
+    position: relative;
+  }
+
+  .range {
+    background: rgba(0,0,0,0.5);
+    height: 100%;
+    border-radius: 4px;
+    display: inline-block;
+    position: absolute;
+    flex-grow: 1;
+  }
+
+  .keyframe {
+    border-radius: 100px;
+    background: orange;
+    height: 100%;
+    position: absolute;
+    width: 10px;
+  }
+
+  label {
+    padding: 0;
+    display: block;
+    padding: 4px 8px;
+    width: 100px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+}

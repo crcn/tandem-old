@@ -4,6 +4,22 @@ Notes about this doc:
 - Remove a checklist item when it's completed.
 
 ----------------------------------
+IMMEDIATE
+----------------------------------
+
+FEATURES
+
+- [ ] layers pane
+- [ ] error notification for broken builds
+- [ ] ability to hide gutters
+- [ ] better UX for importing components
+- [ ] automatically scan for components
+
+BUGS
+
+- [ ] cannot add neew CSS style props
+
+----------------------------------
 STABILITY
 ----------------------------------
 
@@ -42,15 +58,20 @@ CLEANUP
 FEATURES
 ----------------------------------
 
-
 CORE
   - *[ ] right click edit text
   - *[ ] component templates when dragging & dropping
+  - *[ ] ability to hide sidebars
   - [ ] config for scanning application for components
   - [ ] folder navigator pane
     - [ ] dnd components and files onto page
   - [ ] SVG support
   - [ ] History scrubber
+
+SOCIAL
+  - *[ ] put tandem on backend
+  - *[ ] enable people to comment on components (necessary for feedback)
+
 
 CSS PANE
   - [ ] toggle styles on and off

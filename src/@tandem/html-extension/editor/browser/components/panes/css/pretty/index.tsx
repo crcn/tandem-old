@@ -29,11 +29,11 @@ export class CSSPrettyPaneComponent extends React.Component<{ style: SyntheticCS
         <div className="td-section-subheader dim">Typography</div>
         <div className="row">
             <label>&nbsp;</label>
-            <div className="col-3 select">
+            <div className="col-10 select">
               Roboto <a href="#" className="button"><i className="ion-arrow-down-b"></i></a>
             </div>
             <label>&nbsp;</label>
-            <div className="col-3 select">
+            <div className="col-10 select">
               Medium <a href="#" className="button"><i className="ion-arrow-down-b"></i></a>
             </div>
         </div>
@@ -62,15 +62,15 @@ export class CSSPrettyPaneComponent extends React.Component<{ style: SyntheticCS
         </div>
         <div className="row">
           <button href="#" className="css-background-preview" style={{background: "#F00"}} />
-          <input className="col-3" type="text" value="Normal"></input>
+          <input className="col-10" type="text" value="Normal"></input>
         </div>
         <div className="row">
           <button href="#" className="css-background-preview" style={{background: "#0F0"}} />
-          <input className="col-3" type="text" value="Multiply"></input>
+          <input className="col-10" type="text" value="Multiply"></input>
         </div>
         <div className="row">
           <button href="#" className="css-background-preview" style={{background: "#00F"}} />
-          <input className="col-3" type="text" value="Darken"></input>
+          <input className="col-10" type="text" value="Darken"></input>
         </div>
       </div>
 
@@ -85,7 +85,7 @@ export class CSSPrettyPaneComponent extends React.Component<{ style: SyntheticCS
         </div>
         <div className="row">
           <button href="#" className="css-background-preview" style={{background: "#F00"}} />
-          <input className="col-3" type="text" value="Normal"></input>
+          <input className="col-10" type="text" value="Normal"></input>
         </div>
       </div>
 

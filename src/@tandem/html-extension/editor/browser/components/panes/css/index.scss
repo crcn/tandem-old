@@ -17,7 +17,8 @@
   display: block;
   &:hover {
     & .edit-button {
-      display: block;
+      // for now...
+      display: none;
     }
   }
   & .edit-button {
