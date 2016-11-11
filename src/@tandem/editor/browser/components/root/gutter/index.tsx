@@ -6,6 +6,7 @@ import { RegisteredComponent, SideDraggerComponent } from "@tandem/editor/browse
 import { BaseApplicationComponent, inject, Metadata } from "@tandem/common";
 import { MetadataValueReference, DefaultValueReference, MinMaxValueReference } from "@tandem/common/reference";
 
+
 export class GutterComponent extends BaseApplicationComponent<{ className?: string,  style?: any }, any> {
   render() {
     return <div className={["td-gutter", this.props.className].join(" ")} style={this.props.style}>

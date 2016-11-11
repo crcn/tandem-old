@@ -9,14 +9,12 @@ STABILITY
 
 UX
   - [ ] display compiler errors
-  - [ ] spinner when artboard is compiling
   - [ ] tandem config
     - [ ] define how to handle extensions
     - [ ] define how to handle components when dnding
     - [ ] define what extensions to use
 
 BUGS
-  - [ ] rendering is oddly slow
   - [ ] fix absolute bounds for elements
   - [ ] cannot rapidly change .tsx? documents
   - [ ] get sync stop to work with vscode extension
@@ -46,7 +44,8 @@ FEATURES
 
 
 CORE
-  - [ ] component templates when dragging & dropping
+  - *[ ] right click edit text
+  - *[ ] component templates when dragging & dropping
   - [ ] config for scanning application for components
   - [ ] folder navigator pane
     - [ ] dnd components and files onto page
@@ -54,7 +53,6 @@ CORE
   - [ ] History scrubber
 
 CSS PANE
-  - [ ] display source of styles
   - [ ] toggle styles on and off
   - [ ] force states
   - [ ] syntax highlighting for declaration values
@@ -70,7 +68,7 @@ OPTIMIZATIONS
   - [ ] Have separate node workers for synthetic browsers
 
 LAYERS PANE
-  - [ ] preview of code that generated particular node
+  - *[ ] preview of code that generated particular node
 
 ANIMATION PANE
 

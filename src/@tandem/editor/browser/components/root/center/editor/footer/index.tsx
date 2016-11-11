@@ -63,7 +63,7 @@ class FooterComponent extends React.Component<{ workspace: Workspace }, any> {
     const { scale } = this.props.workspace.transform;
     return (<div className="m-preview-footer">
       <ZoomLabelComponent workspace={this.props.workspace} />
-      <RegisteredComponent ns={FooterComponentFactoryProvider.getNamespace("**")} />
+      <RegisteredComponent ns={FooterComponentFactoryProvider.getNamespace("**")} workspace={this.props.workspace} />
     </div>);
   }
 }

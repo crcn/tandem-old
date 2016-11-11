@@ -221,7 +221,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
 
     if (canvasWidth) {
       const { left, top } = this.props.workspace.transform;
-      transform = `translate(${left}px, ${top}px) scale(${this.props.zoom})`;
+      transform = `translate(${left}px, ${top}px) scale(${this.props.zoom}) translateZ(0)`;
     }
 
     const innerStyle = {
@@ -252,7 +252,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
         onDragExit={this.onDragExit}
         className="m-editor-stage-canvas"
         style={style}>
-          <div style={innerStyle} className="noselect" data-previewroot>
+          <div style={innerStyle} className="noselect preview-root" data-previewroot>
             <PreviewLayerComponent renderer={this.props.workspace.browser.renderer} />
             { workspace.document ? <ToolsLayerComponent workspace={workspace} zoom={workspace.zoom} zooming={this.state.zooming} allElements={workspace.documentQuerier.queriedElements} /> : undefined }
           </div>

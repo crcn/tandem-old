@@ -38,15 +38,15 @@ export class CSSPrettyPaneComponent extends React.Component<{ style: SyntheticCS
             </div>
         </div>
         <div className="row">
-          <label>H</label>
+          <label><i className="glyphicon glyphicon-text-size" /></label>
           <input type="text" className="col-10" value="0.05em" />
           <label>V</label>
           <input type="text" className="col-10" value="12px" />
         </div>
         <div className="row">
-          <label>H</label>
+          <label><i className="glyphicon glyphicon-text-width" /></label>
           <input type="text" className="col-10" value="0.9em" />
-          <label>V</label>
+          <label><i className="glyphicon glyphicon-text-height" /></label>
           <input type="text" className="col-10" />
         </div>
       </div>

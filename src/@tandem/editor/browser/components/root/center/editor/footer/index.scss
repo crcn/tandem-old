@@ -12,6 +12,8 @@
   & .footer-zoom-input {
     & input {
       border: none;
+      color: inherit;
+      width: auto;
       &:focus {
         outline: none !important;
         border: none !important;

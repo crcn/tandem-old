@@ -10,6 +10,7 @@ import {
 } from "@tandem/synthetic-browser";
 
 import {
+  FooterComponentFactoryProvider,
   StageToolComponentFactoryProvider,
   LayerLabelComponentFactoryProvider,
   EntityPaneComponentFactoryProvider,

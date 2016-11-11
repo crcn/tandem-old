@@ -12,6 +12,10 @@
   border: none;
 }
 
+.preview-root {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
 
 .m-editor-stage-canvas {
   background: transparent;
