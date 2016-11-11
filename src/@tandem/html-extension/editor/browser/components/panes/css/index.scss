@@ -11,3 +11,33 @@
   text-transform: none;
   width: 50%;
 }
+
+.css-property-input {
+  position: relative;
+  display: block;
+  &:hover {
+    & .edit-button {
+      display: block;
+    }
+  }
+  & .edit-button {
+    display: none;
+    float: right;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 8px;
+  }
+
+  &-line {
+    position: relative;
+    display: block;
+  }
+}
+
+.css-property-pretty-input {
+  width: 100%;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.2);
+}

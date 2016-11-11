@@ -31,7 +31,32 @@ export interface ICSSStylePaneComponentProps {
   renderTitle?(props?: ICSSStylePaneComponentProps): any;
 }
 
+export class CSSStylePropertyComponent extends BaseApplicationComponent<IKeyValueInputComponentProps, { showPrettyInput: boolean }> {
+  state = { showPrettyInput: false };
+  togglePrettyInput = () => {
+    this.setState({ showPrettyInput: !this.state.showPrettyInput });
+  }
+  render() {
+    const props = this.props;
+    return <div className="css-property-input">
+      <div className="css-property-input-line">
+        <KeyValueInputComponent {...props} style={props.item["dim"] ? { color: 0.4 } : {}} />
+        <i className={[this.state.showPrettyInput ? "ion-close" : "ion-edit", "edit-button", "dim"].join(" ")} onClick={this.togglePrettyInput} />
+      </div>
+      {this.state.showPrettyInput ? this.renderPrettyInput(props) : null}
+    </div>
+  }
+  renderPrettyInput(props: IKeyValueInputComponentProps) {
+    return <div className="css-property-pretty-input">
+    </div>
+  }
+}
+
 export class CSSStylePaneComponent extends BaseApplicationComponent<ICSSStylePaneComponentProps, any> {
+
+  state = { showPrettyInput: false };
+
+
   render() {
     const { setDeclaration, renderTitle, title, style, titleClassName, pretty, overriden, inherited } = this.props;
     const items = [];
@@ -52,11 +77,10 @@ export class CSSStylePaneComponent extends BaseApplicationComponent<ICSSStylePan
     </div>
   }
 
-  renderItem(props: IKeyValueInputComponentProps) {
-    return <KeyValueInputComponent {...props} style={props.item["dim"] ? { color: 0.4 } : undefined} />;
+  renderItem = (props: IKeyValueInputComponentProps) => {
+    return <CSSStylePropertyComponent {...props} />;
   }
 }
-
 
 // TODO - add some color for the CSS rules
 class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ result: MatchedCSSStyleRule, workspace: Workspace }, any> {
