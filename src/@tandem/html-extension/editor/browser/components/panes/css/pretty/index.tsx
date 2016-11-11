@@ -10,15 +10,15 @@ export class CSSPrettyPaneComponent extends React.Component<{ style: SyntheticCS
 
       <div className="td-container">
         <div className="row">
-            <label>X</label>
+            <label className="col">X</label>
             <input type="text" className="col-10" />
-            <label>Y</label>
+            <label className="col">Y</label>
             <input type="text" className="col-10" />
         </div>
         <div className="row">
-            <label>W</label>
+            <label className="col">W</label>
             <input type="text" className="col-10" />
-            <label>H</label>
+            <label className="col">H</label>
             <input type="text" className="col-10" />
         </div>
       </div>
@@ -28,25 +28,25 @@ export class CSSPrettyPaneComponent extends React.Component<{ style: SyntheticCS
       <div className="td-container">
         <div className="td-section-subheader dim">Typography</div>
         <div className="row">
-            <label>&nbsp;</label>
+            <label className="col">&nbsp;</label>
             <div className="col-10 select">
               Roboto <a href="#" className="button"><i className="ion-arrow-down-b"></i></a>
             </div>
-            <label>&nbsp;</label>
+            <label className="col">&nbsp;</label>
             <div className="col-10 select">
               Medium <a href="#" className="button"><i className="ion-arrow-down-b"></i></a>
             </div>
         </div>
         <div className="row">
-          <label><i className="glyphicon glyphicon-text-size" /></label>
+          <label className="col"><i className="glyphicon glyphicon-text-size" /></label>
           <input type="text" className="col-10" value="0.05em" />
-          <label>V</label>
+          <label className="col">V</label>
           <input type="text" className="col-10" value="12px" />
         </div>
         <div className="row">
-          <label><i className="glyphicon glyphicon-text-width" /></label>
+          <label className="col"><i className="glyphicon glyphicon-text-width" /></label>
           <input type="text" className="col-10" value="0.9em" />
-          <label><i className="glyphicon glyphicon-text-height" /></label>
+          <label className="col"><i className="glyphicon glyphicon-text-height" /></label>
           <input type="text" className="col-10" />
         </div>
       </div>
@@ -61,15 +61,15 @@ export class CSSPrettyPaneComponent extends React.Component<{ style: SyntheticCS
           </div>
         </div>
         <div className="row">
-          <button href="#" className="css-background-preview" style={{background: "#F00"}} />
+          <button href="#" className="col css-background-preview" style={{background: "#F00"}} />
           <input className="col-10" type="text" value="Normal"></input>
         </div>
         <div className="row">
-          <button href="#" className="css-background-preview" style={{background: "#0F0"}} />
+          <button href="#" className="col css-background-preview" style={{background: "#0F0"}} />
           <input className="col-10" type="text" value="Multiply"></input>
         </div>
         <div className="row">
-          <button href="#" className="css-background-preview" style={{background: "#00F"}} />
+          <button href="#" className="col css-background-preview" style={{background: "#00F"}} />
           <input className="col-10" type="text" value="Darken"></input>
         </div>
       </div>

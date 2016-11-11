@@ -11,18 +11,30 @@ Start working on UX around getting started with Tandem and projects.
 
 FEATURES
 
-- [ ] layers pane
-- [ ] components pane
-- [ ] error notification for broken builds
-- [ ] ability to hide gutters
 - [ ] better UX for importing components
 - [ ] automatically scan for components
+
+- [ ] layers pane
+- [ ] components pane
+- [ ] ability to hide gutters
 - [ ] history slider
-- [ ] breadcrumb
+- [ ] breadcrumb for elements
+
+IMPORTING MODULES
+
+- [ ] navigator component
+- [ ] resolve where to save files when dragging & dropping
+- [ ] show preview of component (if possible)
 
 BUGS
 
-- [ ] cannot add neew CSS style props
+- [ ] cannot add new CSS style props
+- [ ] need to include error status in renderPreview method
+
+
+TECH DEBT
+
+- [ ] make artboards core
 
 ----------------------------------
 STABILITY
@@ -93,8 +105,13 @@ OPTIMIZATIONS
   - [ ] store workspaces in data store
   - [ ] Have separate node workers for synthetic browsers
 
-LAYERS PANE
-  - *[ ] preview of code that generated particular node
+DOCUMENTS GUTTER
+  - [ ] layers
+    - *[ ] preview of code that generated particular node
+  - [ ] css files
+    - [ ] ability to add new declaration
+
+
 
 ANIMATION PANE
 

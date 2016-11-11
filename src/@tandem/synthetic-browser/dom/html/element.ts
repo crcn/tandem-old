@@ -111,7 +111,7 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
   }
 
   protected onStyleChange() {
-    this.setAttribute("style", this.style.cssText);
+    this.setAttribute("style", this.style.cssText.replace(/\n+/g, " "));
   }
 
   protected computeCapabilities(style: SyntheticCSSStyleDeclaration): VisibleDOMNodeCapabilities {

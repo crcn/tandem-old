@@ -302,6 +302,7 @@ export async function activate(context: vscode.ExtensionContext) {
         setEditorContentFromCache(fileCacheItem);
     }
 
+
     vscode.window.onDidChangeTextEditorSelection(function(e:vscode.TextEditorSelectionChangeEvent) {
 
         // ignore for now since this is fooing with selections when

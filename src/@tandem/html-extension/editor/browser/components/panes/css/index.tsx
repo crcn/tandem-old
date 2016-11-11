@@ -40,7 +40,7 @@ export class CSSStylePropertyComponent extends BaseApplicationComponent<IKeyValu
     const props = this.props;
     return <div className="css-property-input">
       <div className="css-property-input-line">
-        <KeyValueInputComponent {...props} style={props.item["dim"] ? { color: 0.4 } : {}} />
+        <KeyValueInputComponent {...props} style={props.item["dim"] ? { opacity: 0.4 } : {}} />
         <i className={[this.state.showPrettyInput ? "ion-close" : "ion-edit", "edit-button", "dim"].join(" ")} onClick={this.togglePrettyInput} />
       </div>
       {this.state.showPrettyInput ? this.renderPrettyInput(props) : null}
@@ -96,6 +96,7 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ result: Ma
   }
   render() {
     const { result } = this.props;
+
 
     return <CSSStylePaneComponent
     style={result.rule.style}

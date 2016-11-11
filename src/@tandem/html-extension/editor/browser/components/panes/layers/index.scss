@@ -1,0 +1,40 @@
+@import "@tandem/editor/browser/scss/variables";
+
+.html-layers-pane {
+
+  & .layer .label {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 4px;
+    padding-bottom: 4px;
+    & > * {
+      display: inline-block;
+    }
+  }
+
+  & .comment {
+    &::before {
+      content: "// ";
+    }
+  }
+
+  & i {
+    margin-right: 4px;
+
+  }
+
+  & .comment, & .text {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  & .element {
+    & .open-tag {
+      & .tag-name {
+        color: $color-tan-10;
+      }
+
+      & .attribute {
+        opacity: 0.5;
+      }
+    }
+  }
+}

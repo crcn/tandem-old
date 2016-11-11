@@ -20,7 +20,6 @@ $gutter-background: #444;
   box-shadow: 0 0 0 2px $color-black-offset-2;
 
   .td-section-header {
-    text-transform: uppercase;
     font-size: 0.9em;
     font-weight: 400;
     letter-spacing: 0.15em;
@@ -189,19 +188,20 @@ hr {
   display: flex;
   flex-direction: row;
 
-  & > * {
+  .no-shrink {
+    flex-shrink: 0;
+  }
+
+  .col {
     margin-left: 16px !important;
     &:first-child {
       margin-left: 0px !important;
     }
   }
 
-  .no-shrink {
-    flex-shrink: 0;
-  }
-
   @for $i from 1 through 10 {
     .col-#{$i} {
+      @extend .col;
       width: percentage($i/10);
     }
   }

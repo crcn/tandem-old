@@ -17,13 +17,14 @@ export class EditorComponent extends BaseApplicationComponent<{}, {}> {
 
   render() {
     const { workspace, settings } = this._store;
+    const selection = workspace && workspace.selection || [];
 
     return <div className="m-editor editor">
       <GutterComponent style={{width:350, display: this._store.settings.get(SettingKeys.HIDE_LEFT_SIDEBAR)  ? "block" : "none" }}>
         <RegisteredComponent workspace={workspace} ns={DocumentPaneComponentFactoryProvider.getId("**")} />
       </GutterComponent>
       <CenterComponent />
-      <GutterComponent style={{width:350, display: this._store.settings.get(SettingKeys.HIDE_RIGHT_SIDEBAR)  ? "block" : "none" }}>
+      <GutterComponent style={{width:350, display: selection.length  ? "block" : "none" }}>
         <RegisteredComponent workspace={workspace} ns={EntityPaneComponentFactoryProvider.getId("**")} />
       </GutterComponent>
     </div>;
