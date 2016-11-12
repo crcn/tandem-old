@@ -17,7 +17,7 @@ import { debounce, throttle } from "lodash";
 import { NoopBus } from "mesh";
 
 import { createCoreApplicationProviders, ServiceApplication } from "@tandem/core";
-import { GetServerPortAction, OpenProjectAction, SelectSourceAction, OpenSourceFileAction } from "@tandem/editor";
+import { GetServerPortAction, OpenProjectAction, SelectSourceAction, OpenFileAction } from "@tandem/editor";
 
 import {
     Dependency,
@@ -304,18 +304,23 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     client.bus.register({
-        execute({ filePath, position, type }: OpenSourceFileAction) {
+        execute({ filePath, selection, type }: OpenFileAction) {
 
-            if (type === OpenSourceFileAction.OPEN_SOURCE_FILE) {
+            if (type === OpenFileAction.OPEN_FILE) {
 
                 // quick fix for resolving relative files - this will break in the future.
                 filePath = filePath.replace(/^\w+:\/\//, "");
                 filePath = fs.existsSync(filePath) ? filePath : process.cwd() + filePath;
                 vscode.workspace.openTextDocument(filePath).then(async (doc) => {
+                    let { start, end } = selection || { start: undefined, end: undefined };
+                    if (!end) end = start;
+
                     await vscode.window.showTextDocument(doc);
+
+                    if (start)
                     vscode.window.activeTextEditor.selection = new vscode.Selection(
-                        new vscode.Position(position.line - 1, position.column),
-                        new vscode.Position(position.line - 1, position.column)
+                        new vscode.Position(start.line - 1, start.line),
+                        new vscode.Position(end.line - 1, end.line)
                     );
                 });
             }

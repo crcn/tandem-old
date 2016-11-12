@@ -10,7 +10,7 @@ import { Workspace } from "@tandem/editor/browser/models";
 import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 import { SelectAction } from "@tandem/editor/browser/actions";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
-import { OpenSourceFileAction } from "@tandem/editor/browser/actions";
+import { OpenFileAction } from "@tandem/editor/browser/actions";
 import { intersection, flatten } from "lodash";
 import { IInjectable, IActor, Action } from "@tandem/common";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
@@ -31,7 +31,7 @@ class SelectableComponent extends BaseApplicationComponent<{
 
   onMouseDown = (event: React.MouseEvent<any>): void => {
     if (event.metaKey && this.props.element.source) {
-      return OpenSourceFileAction.execute(this.props.element.source, this.bus);
+      return OpenFileAction.execute(this.props.element.source.filePath, this.props.element.source, this.bus);
     }
     this.props.onSyntheticMouseDown(this.props.element, event);
     event.stopPropagation();

@@ -2,7 +2,7 @@ import "./index.scss";
 import * as React from "react";
 import * as cx from "classnames";
 import { ISyntheticObject } from "@tandem/sandbox";
-import { OpenSourceFileAction } from "@tandem/editor/browser/actions";
+import { OpenFileAction } from "@tandem/editor/browser/actions";
 import { BaseApplicationComponent } from "@tandem/common";
 
 // TODO: add preview of source file here
@@ -45,7 +45,7 @@ export class SyntheticSourceLink extends BaseApplicationComponent<{ target: ISyn
     if (event.metaKey && this.hasSource()) {
       event.stopPropagation();
       this.logger.info(`Opening source file ${this.props.target.source.filePath}:${this.props.target.source.start.line}:${this.props.target.source.start.column}`);
-      OpenSourceFileAction.execute(this.props.target.source, this.bus);
+      OpenFileAction.execute(this.props.target.source.filePath, this.props.target.source, this.bus);
     }
   }
 
