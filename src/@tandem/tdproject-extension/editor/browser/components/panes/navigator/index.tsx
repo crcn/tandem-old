@@ -6,7 +6,7 @@ export class NavigatorPaneComponent extends BaseApplicationComponent<any, any> {
   render() {
     return <div className="modules-pane">
       <div className="td-section-header">
-        Modules
+        Files
         <div className="pull-right">
           <input type="text" />
         </div>

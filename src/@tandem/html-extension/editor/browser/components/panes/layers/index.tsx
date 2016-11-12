@@ -5,7 +5,7 @@ import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { BaseApplicationComponent } from "@tandem/common";
-import { SyntheticDOMNode, SyntheticDOMElement, SyntheticDOMText, SyntheticDOMComment, DOMNodeType } from "@tandem/synthetic-browser";
+import { SyntheticDOMNode, SyntheticDOMElement, SyntheticDOMContainer, SyntheticDOMText, SyntheticDOMComment, DOMNodeType } from "@tandem/synthetic-browser";
 
 export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: Workspace }, any> {
 
@@ -13,8 +13,13 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
     this.props.workspace.select(node);
   }
 
-  expandLayer = (node: SyntheticDOMNode) => {
-    node.metadata.toggle(MetadataKeys.LAYER_EXPANDED);
+  expandLayer = (node: SyntheticDOMContainer) => {
+    const expand = !node.metadata.get(MetadataKeys.LAYER_EXPANDED);
+    node.metadata.set(MetadataKeys.LAYER_EXPANDED, expand);
+
+    if (!expand) {
+      node.querySelectorAll("*").forEach(child => child.metadata.set(MetadataKeys.LAYER_EXPANDED, false));
+    }
   }
 
   onMouseEnter = (node: SyntheticDOMNode) => {

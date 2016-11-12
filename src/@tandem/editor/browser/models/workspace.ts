@@ -127,7 +127,9 @@ export class Workspace extends Observable {
 
     this.selection = newSelection;
 
-    this._bus.execute(new SelectionChangeAction(this.selection));
+    if (this._bus) {
+      this._bus.execute(new SelectionChangeAction(this.selection));
+    }
   }
 
 
