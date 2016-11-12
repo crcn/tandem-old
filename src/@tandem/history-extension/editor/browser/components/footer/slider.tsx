@@ -2,11 +2,10 @@ import "./slider.scss";
 
 import * as React from "react";
 import * as SliderComponent from "react-slider";
-import { FrontEndApplication } from "@tandem/editor/browser";
 // import { HistorySingletonProvider } from "@tandem/history-extension/providers";
 
 
-export class HistorySliderComponent extends React.Component<{ app: FrontEndApplication }, any> {
+export class HistorySliderComponent extends React.Component<{ app: any }, any> {
 
   get history(): any {
     return {};

@@ -2,7 +2,6 @@ import "./index.scss";
 
 import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { Workspace, InsertTool } from "@tandem/editor/browser/models";
 import { SetToolAction, SelectAction } from "@tandem/editor/browser/actions";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";

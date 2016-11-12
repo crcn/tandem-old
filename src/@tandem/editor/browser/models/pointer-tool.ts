@@ -1,7 +1,6 @@
 import { IActor } from "@tandem/common/actors";
 import { inject } from "@tandem/common/decorators";
 import { BaseEditorTool } from "@tandem/editor/browser/models";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { POINTER_TOOL_KEY_CODE } from "@tandem/editor/browser/constants";
 import { ApplicationServiceProvider } from "@tandem/common";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";

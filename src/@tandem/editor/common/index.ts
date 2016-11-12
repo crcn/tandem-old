@@ -1,5 +1,5 @@
-import { ApplicationServiceProvider } from "@tandem/core";
 import { ConsoleLogService } from "./services";
+import { ApplicationServiceProvider } from "@tandem/core";
 
 export const createCommonEditorProviders = () => {
   return [
@@ -9,3 +9,4 @@ export const createCommonEditorProviders = () => {
 
 export * from "./services";
 export * from "./actions";
+export * from "./models";

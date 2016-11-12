@@ -5,7 +5,6 @@ import { BaseCommand } from "@tandem/common/commands";
 import { SetToolAction } from "@tandem/editor/browser/actions";
 import { textToolProvider } from "../models";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
 import { parseMarkup, evaluateMarkup, SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { ClassFactoryProvider, InjectorProvider, Injector } from "@tandem/common";

@@ -3,10 +3,9 @@ import * as React from "react";
 import { IActor } from "@tandem/common/actors";
 import { Workspace } from "@tandem/editor/browser/models";
 import { SetToolAction } from "@tandem/editor/browser/actions";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
 
-class ToolComponent extends React.Component<{ app: FrontEndApplication, workspace: Workspace, toolProvider: WorkspaceToolFactoryProvider }, any> {
+class ToolComponent extends React.Component<{ app: any, workspace: Workspace, toolProvider: WorkspaceToolFactoryProvider }, any> {
 
   setTool = () => {
     this.props.app.bus.execute(new SetToolAction(this.props.toolProvider));

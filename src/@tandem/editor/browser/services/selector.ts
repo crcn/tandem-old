@@ -1,7 +1,6 @@
 
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { RemoveEditAction, FileEditorProvider } from "@tandem/sandbox";
 import {
   loggable,
@@ -18,7 +17,7 @@ import {
 } from "@tandem/editor/browser/actions";
 
 // @loggable()
-// export default class SelectorService extends BaseApplicationService<FrontEndApplication> {
+// export default class SelectorService extends BaseApplicationService<any> {
 
 
 //   [SelectEntitiesAtSourceOffsetAction.SELECT_ENTITIES_AT_SOURCE_OFFSET](action: SelectEntitiesAtSourceOffsetAction) {

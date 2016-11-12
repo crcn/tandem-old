@@ -67,6 +67,10 @@ export class MockFileSystem extends BaseFileSystem {
     this._watchers = {};
   }
 
+  readDirectory(directoryPath: string): Promise<string[]> {
+    return Promise.resolve([]);
+  }
+
   fileExists(filePath: string): Promise<boolean> {
     return Promise.resolve(!!this._mockFiles[filePath]);
   }

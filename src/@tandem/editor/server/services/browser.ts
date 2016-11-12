@@ -118,7 +118,8 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
             var config = {
               server: {
                 hostname: window.location.hostname,
-                port: Number(window.location.port || 80)
+                port: Number(window.location.port || 80),
+                cwd: "${process.cwd()}"
               },
               logLevel: ${this.config.logLevel}
             };

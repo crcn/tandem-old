@@ -16,7 +16,6 @@ import {
   RemoteBrowserDocumentAction,
 } from "@tandem/synthetic-browser";
 import { Store, Workspace } from "@tandem/editor/browser/models";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
 import { CoreApplicationService } from "@tandem/core";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";

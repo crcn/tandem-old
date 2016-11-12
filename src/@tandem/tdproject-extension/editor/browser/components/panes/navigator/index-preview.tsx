@@ -1,40 +1,27 @@
 import * as React from "react";
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
+import { Directory, File } from "@tandem/editor/common/models";
 import { GutterComponent } from "@tandem/editor/browser/components";
 import { TreeNode } from "@tandem/common";
 import { NavigatorPaneComponent } from "./index";
 
-class File extends TreeNode<File> {
-  constructor(readonly name) {
-    super();
-  }
-}
 
-class Directory extends TreeNode<Directory|File> {
-  constructor(readonly name, children: TreeNode<any>[] = []) {
-    super();
-    for (const child of children) {
-      this.appendChild(child as any);
-    }
-  }
-}
 
 export const renderPreview = reactEditorPreview(() => {
-  const directory = new Directory(
-    "src",
-    [
-      new Directory("components", [
-        new File("component.tsx"),
-        new File("button.tsx")
-      ]),
-      new Directory("models", [
-        new File("workspace.ts")
-      ])
-    ]
-  );
+  const directory = new Directory("src");
+
+  const components = new Directory("components");
+  components.appendChild(new File("test.tsx"));
+
+  const models = new Directory("models");
+  models.appendChild(new File("workspace.ts"));
+  models.appendChild(new File("address.ts"));
+
+  directory.appendChild(components);
+  directory.appendChild(models);
 
   return <GutterComponent>
-    <NavigatorPaneComponent file={directory} />
+    <NavigatorPaneComponent store={{ cwd: directory  } as any} />
   </GutterComponent>
 });
 

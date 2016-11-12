@@ -1,6 +1,6 @@
 import "./styles";
 
-import { Injector } from "@tandem/common";
+import { Injector, CommandFactoryProvider, InitializeAction } from "@tandem/common";
 import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
@@ -26,6 +26,7 @@ import {
 import { Store } from "./models";
 
 import { createCommonEditorProviders } from "../common";
+import { OpenCWDCommand } from "./commands";
 
 import {
   DNDService,
@@ -44,6 +45,9 @@ export function concatEditorBrowserProviders(injector: Injector, config: IEditor
     ...keyBindingsProviders,
     createCommonEditorProviders(),
     createCoreApplicationProviders(config, fileSystemClass, fileResolverClass),
+
+    // commands
+    new CommandFactoryProvider(InitializeAction.INITIALIZE, OpenCWDCommand),
 
     // services
     new ApplicationServiceProvider("dnd", DNDService),
@@ -80,4 +84,4 @@ export * from "./providers";
 export * from "./key-bindings";
 export * from "./models";
 export * from "./services";
-export * from "./application";
+export * from "../common";

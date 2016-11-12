@@ -141,6 +141,7 @@ export class ElementCSSPaneComponent extends React.Component<{ workspace: Worksp
     if (selection.length !== 1) return null;
 
     const elements = DOMElements.fromArray(selection);
+    if (!elements.length) return null;
     return <div className="td-pane">
       { findMatchingStyleRules(elements[0]).map((matchResult, index) => {
         return <MatchedCSSStyleRuleComponent result={matchResult} key={matchResult.rule.uid} workspace={this.props.workspace} />

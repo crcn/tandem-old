@@ -1,5 +1,6 @@
 import { IContentEdit } from "../edit";
 import { IFileResolverOptions } from "../resolver";
+import { IReadFileResultItem } from "@tandem/sandbox/file-system";
 import {
   Action,
   IASTNode,
@@ -75,6 +76,18 @@ export class ReadFileAction extends Action {
 
   static async execute(filePath: string, bus: IActor): Promise<string> {
     return (await bus.execute(new ReadFileAction(filePath)).read()).value;
+  }
+}
+
+@definePublicAction()
+export class ReadDirectoryAction extends Action {
+  static readonly READ_DIRECTORY = "readDirectory";
+  constructor(readonly directoryPath: string) {
+    super(ReadDirectoryAction.READ_DIRECTORY);
+  }
+
+  static async execute(directoryPath: string, bus: IActor): Promise<IReadFileResultItem[]> {
+    return (await bus.execute(new ReadDirectoryAction(directoryPath)).read()).value;
   }
 }
 

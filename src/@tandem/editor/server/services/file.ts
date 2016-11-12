@@ -31,6 +31,7 @@ import {
   ApplyFileEditAction,
   IFileSystem,
   ReadFileAction,
+  ReadDirectoryAction,
   WatchFileAction,
 } from "@tandem/sandbox";
 
@@ -41,13 +42,18 @@ export class FileService extends CoreApplicationService<IEdtorServerConfig> {
 
   @inject(FileSystemProvider.ID)
   private _fileSystem: IFileSystem;
+  /**
+   */
+
+  [ReadFileAction.READ_FILE](action: ReadFileAction|WatchFileAction) {
+    return this._fileSystem.readFile(action.filePath);
+  }
 
   /**
    */
 
-  @document("reads a file content")
-  [ReadFileAction.READ_FILE](action: ReadFileAction|WatchFileAction) {
-    return this._fileSystem.readFile(action.filePath);
+  async [ReadDirectoryAction.READ_DIRECTORY](action: ReadDirectoryAction) {
+    return await this._fileSystem.readDirectory(action.directoryPath);
   }
 
   /**

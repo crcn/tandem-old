@@ -52,15 +52,13 @@ export class Workspace extends Observable {
   public transform: Transform = new Transform();
 
   /**
-   * Selected objects by the user -- allows them to perform mutations
-   * on synthetic objects.
    *
    * @type {ISyntheticObject[]}
    */
 
   @bindable(true)
   @bubble()
-  public selection: ISyntheticObject[] = [];
+  public selection: any[] = [];
 
   /**
    * The currently active synthetic browser of this workspace
@@ -102,7 +100,7 @@ export class Workspace extends Observable {
    * @param {boolean} [toggle=false] TRUE to toggle off the items if they're already selected
    */
 
-  select(item: ISyntheticObject|ISyntheticObject[], keepPreviousSelection: boolean = false, toggle: boolean = false) {
+  select(item: any|any[], keepPreviousSelection: boolean = false, toggle: boolean = false) {
     const items = Array.isArray(item) ? item : [item];
 
     const prevSelection = this.selection;

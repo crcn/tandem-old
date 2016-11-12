@@ -14,7 +14,13 @@ import {
 
 export interface IFileWatcher extends IDisposable { }
 
+export interface IReadFileResultItem {
+  name: string;
+  isDirectory: boolean;
+}
+
 export interface IFileSystem {
+  readDirectory(directoryPath: string): Promise<IReadFileResultItem[]>
   readFile(filePath: string): Promise<any>;
   fileExists(filePath: string): Promise<boolean>;
   writeFile(filePath: string, content: any): Promise<any>;
@@ -33,6 +39,7 @@ export abstract class BaseFileSystem implements IFileSystem {
   }
 
   abstract readFile(filePath: string): Promise<any>;
+  abstract readDirectory(directoryPath: string): Promise<IReadFileResultItem[]>;
   abstract fileExists(filePath: string): Promise<boolean>;
   abstract writeFile(filePath: string, content: any): Promise<any>;
 

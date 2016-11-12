@@ -1,11 +1,15 @@
-import { BaseFileSystem } from "./base";
-import { ReadFileAction, WatchFileAction } from "@tandem/sandbox/actions";
+import { BaseFileSystem, IReadFileResultItem } from "./base";
+import { ReadFileAction, ReadDirectoryAction, WatchFileAction } from "@tandem/sandbox/actions";
 import { IActor, inject, IDisposable, PrivateBusProvider } from "@tandem/common";
 
 export class RemoteFileSystem extends BaseFileSystem {
 
   constructor(@inject(PrivateBusProvider.ID) readonly bus: IActor) {
     super();
+  }
+
+  async readDirectory(directoryPath: string): Promise<IReadFileResultItem[]> {
+    return await ReadDirectoryAction.execute(directoryPath, this.bus);
   }
 
   async readFile(filePath: string) {

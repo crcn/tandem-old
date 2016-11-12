@@ -1,11 +1,10 @@
-const { server, logLevel } = window["config"];
+const { server, logLevel, cwd } = window["config"];
 
 declare let __webpack_public_path__: any;
 
 __webpack_public_path__ = `${location.protocol}//${server.hostname}:${server.port}${location.pathname}`;
 
 import "./entry-shims";
-import { } from "@tandem/synthetic-browser";
 
 import { Injector } from "@tandem/common";
 import { ServiceApplication } from "@tandem/core";

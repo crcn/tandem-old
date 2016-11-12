@@ -3,7 +3,6 @@ import "./layer.scss";
 import * as cx from "classnames";
 import * as React from "react";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { flatten, intersection } from "lodash";
 import { SelectAction, ToggleSelectAction } from "@tandem/editor/browser/actions";
 import { LayerLabelComponentFactoryProvider } from "@tandem/editor/browser/providers";
@@ -25,7 +24,7 @@ import {
 interface ILayerLabelProps {
   paddingLeft?: number;
   injector: Injector;
-  app: FrontEndApplication;
+  app: any;
   node: SyntheticDOMNode;
   connectDragSource: Function;
   isDragging: boolean;
@@ -213,7 +212,7 @@ class LayerLabelComponent extends BaseApplicationComponent<ILayerLabelProps, any
   canDrop() {
     return true;
   },
-  drop(args: { node: SyntheticDOMNode, app: FrontEndApplication, offset: any }, monitor, component) {
+  drop(args: { node: SyntheticDOMNode, app: any, offset: any }, monitor, component) {
     const { node, app, offset } = args;
 
     app.bus.execute(new SelectAction([], false));
@@ -292,7 +291,7 @@ LayerDndLabelComponent = DropTarget("element", {
     return false;
     // return node.metadata.get("dragSourceId") !== (monitor.getItem() as any).id;
   },
-  drop(props: { node: SyntheticDOMNode, app: FrontEndApplication, offset }, monitor, component) {
+  drop(props: { node: SyntheticDOMNode, app: any, offset }, monitor, component) {
 
     const { node, app } = props;
     app.bus.execute(new SelectAction([], false));

@@ -4,13 +4,12 @@ import { Workspace } from "@tandem/editor/browser/models";
 import { flatten } from "lodash";
 import RulerComponent from "./ruler";
 import ResizerComponent from "./resizer";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { SelectionSizeComponent } from "@tandem/editor/browser/components/common";
 import { BoundingRect, flattenTree } from "@tandem/common";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 
-export class SelectorStageToolComponent extends React.Component<{ workspace: Workspace, app: FrontEndApplication, zoom: number  }, any> {
+export class SelectorStageToolComponent extends React.Component<{ workspace: Workspace, app: any, zoom: number  }, any> {
 
   constructor(props) {
     super(props);

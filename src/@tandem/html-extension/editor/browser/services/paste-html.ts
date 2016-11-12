@@ -2,7 +2,6 @@ import * as sift from "sift";
 import { flatten } from "lodash";
 import { HTML_MIME_TYPE } from "@tandem/common";
 import { filterAction } from "@tandem/common/decorators";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { PasteHTMLEntityAction } from "@tandem/html-extension/actions";
 import { CoreApplicationService } from "@tandem/core";
 import { PasteAction, SelectAction } from "@tandem/editor/browser/actions";

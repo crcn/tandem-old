@@ -1,9 +1,24 @@
 import * as fs from "fs";
 import * as chokidar from "chokidar";
 import { IDisposable } from "@tandem/common";
-import { BaseFileSystem } from "./base";
+import { BaseFileSystem, IReadFileResultItem } from "./base";
 
 export class LocalFileSystem extends BaseFileSystem {
+
+  async readDirectory(directoryPath: string): Promise<IReadFileResultItem[]> {
+    return new Promise<IReadFileResultItem[]>((resolve, reject) => {
+      fs.readdir(directoryPath, (err, result) => {
+        if (err) return reject(err);
+        resolve(result.map(name => ({
+          name: name,
+          isDirectory: fs.lstatSync(directoryPath + "/" + name).isDirectory()
+        })).sort((a, b) => {
+          // sort by directory & file name
+          return a.isDirectory && !b.isDirectory ? -1 : a.isDirectory === b.isDirectory ? a > b ? 1 : -1 : 1;
+        }));
+      });
+    });
+  }
 
   async readFile(filePath: string) {
     this.logger.verbose("read %s", filePath);

@@ -4,7 +4,6 @@ import { startDrag } from "@tandem/common/utils/component";
 import PathComponent from "./path";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { ApplyFileEditAction  } from "@tandem/sandbox";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
@@ -83,7 +82,6 @@ function resize(oldBounds: BoundingRect, delta: IPoint, anchor: IPoint, keepAspe
 
 class ResizerComponent extends BaseApplicationComponent<{
   workspace: Workspace,
-  app: FrontEndApplication,
   selection: Array<any>,
   onResizing: Function,
   onMoving: Function,

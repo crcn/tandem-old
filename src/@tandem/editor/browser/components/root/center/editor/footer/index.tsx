@@ -5,7 +5,6 @@ import { Workspace } from "@tandem/editor/browser/models";
 import { BaseApplicationComponent } from "@tandem/common";
 import { SetZoomAction } from "@tandem/editor/browser/actions";
 import * as AutosizeInput from "react-input-autosize";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { RegisteredComponent, FocusComponent } from "@tandem/editor/browser/components/common";
 import { FooterComponentFactoryProvider } from "@tandem/editor/browser/providers";
 

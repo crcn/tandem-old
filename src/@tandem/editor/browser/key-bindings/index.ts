@@ -1,7 +1,6 @@
 import { Action } from "@tandem/common/actions";
 import { KeyBinding } from "./base";
 import { Store } from "@tandem/editor/browser/models";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
 import { GlobalKeyBindingProvider } from "@tandem/editor/browser/providers";
 import { BaseCommand, inject, Metadata } from "@tandem/common";
