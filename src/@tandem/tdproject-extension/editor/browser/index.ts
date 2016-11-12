@@ -9,7 +9,7 @@ import { MarkupMimeTypeXMLNSProvider, SyntheticDOMElementClassProvider } from "@
 export function createTDProjectEditorBrowserProviders() {
   return [
     ...createTDProjectCoreProviders(),
-    // new DocumentPaneComponentFactoryProvider("navigator", NavigatorPaneComponent),«
+    new DocumentPaneComponentFactoryProvider("navigator", NavigatorPaneComponent),
     new ReactComponentFactoryProvider("components/tools/pointer/tdprojectFrame", TDArtboardStageToolComponent),
     new FooterComponentFactoryProvider("artboardLoader", ArtboardLoaderComponent),
   ];

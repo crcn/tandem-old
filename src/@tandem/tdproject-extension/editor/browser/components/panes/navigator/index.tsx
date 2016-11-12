@@ -8,12 +8,9 @@ export class NavigatorPaneComponent extends BaseApplicationComponent<{ file: Tre
     return <div className="modules-pane">
       <div className="td-section-header">
         Files
-        <div className="pull-right">
-          <input type="text" />
-        </div>
       </div>
       <TreeComponent
-        nodes={[this.props.file]}
+        nodes={this.props.file ? [this.props.file] : []}
         select={node => false}
         isNodeHovering={node => false}
         isNodeSelected={node => false}
