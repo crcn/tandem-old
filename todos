@@ -34,7 +34,13 @@ BUGS
 
 TECH DEBT
 
-- [ ] make artboards core
+- [ ] generalize tree component
+- [ ] deprecate tdm files - artboards should be core
+- [ ] tandem <directory> for opening projects
+
+NAVIGATOR
+
+- [ ] on click file, display in visual editor
 
 ----------------------------------
 STABILITY
