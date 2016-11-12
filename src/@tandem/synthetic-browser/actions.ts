@@ -30,10 +30,6 @@ export class SyntheticRendererAction extends Action {
   static readonly UPDATED_COMPUTED_STYLE = "updatedComputedStyle";
 }
 
-export class SyntheticBrowserAction extends Action {
-  static readonly BROWSER_LOADED = "browserLoaded";
-}
-
 @defineWorkerAction()
 export class OpenRemoteBrowserAction extends Action {
   static readonly OPEN_REMOTE_BROWSER = "openRemoteBrowser";

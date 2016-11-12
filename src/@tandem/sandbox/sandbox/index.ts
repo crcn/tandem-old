@@ -160,22 +160,29 @@ export class Sandbox extends Observable {
   }
 
   private reset() {
-    const logTimer = this.logger.startTimer();
-    this._shouldEvaluate = false;
-    const exports = this._exports;
-    const global  = this._global;
 
-    // global may have some clean up to do (timers, open connections),
-    // so call dispose if the method is available.
-    if (global && global.dispose) global.dispose();
+    try {
+      const logTimer = this.logger.startTimer();
+      this._shouldEvaluate = false;
+      const exports = this._exports;
+      const global  = this._global;
 
-    this._global  = this.createGlobal() || {};
-    this._context = vm.createContext(this._global);
-    this.notify(new PropertyChangeAction("global", this._global, global));
-    this._modules = {};
-    this._exports = this.evaluate(this._entry);
-    logTimer.stop(`Evaluated ${this._entry.filePath}`);
-    this.notify(new PropertyChangeAction("exports", this._exports, exports));
+      // global may have some clean up to do (timers, open connections),
+      // so call dispose if the method is available.
+      if (global && global.dispose) global.dispose();
+
+      this._global  = this.createGlobal() || {};
+      this._context = vm.createContext(this._global);
+      this.notify(new PropertyChangeAction("global", this._global, global));
+      this._modules = {};
+      this._exports = this.evaluate(this._entry);
+      logTimer.stop(`Evaluated ${this._entry.filePath}`);
+      this.notify(new PropertyChangeAction("exports", this._exports, exports));
+    } catch(e) {
+      this.status = new Status(Status.ERROR, e);
+      throw e;
+    }
+
     this.status = new Status(Status.COMPLETED);
   }
 }

@@ -126,8 +126,6 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     // explicitly request an update since some synthetic objects may not emit
     // a render action in some cases.
     this.renderer.requestRender();
-
-    this.notifyLoaded();
   }
 }
 
@@ -161,21 +159,14 @@ export class RemoteBrowserService extends BaseApplicationService {
         writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.NEW_DOCUMENT, clone)) });
       }, isDOMMutationAction);
 
-      const observer = {
-        execute: async (action: Action) => {
-          if (action.type === SyntheticBrowserAction.BROWSER_LOADED && action.target === browser) {
-            changeWatcher.target = browser.document;
-          }
-        }
-      };
-
       if (browser.document) {
         changeWatcher.target = browser.document;
       }
 
-      browser.observe(observer);
-
       const onStatusChange = (status: Status) => {
+        if (status && status.type === Status.COMPLETED) {
+          changeWatcher.target = browser.document;
+        }
         writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.STATUS_CHANGE, status)) });
       };
 

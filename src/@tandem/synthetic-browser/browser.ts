@@ -129,9 +129,6 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
 
   protected abstract async open2(options: ISyntheticBrowserOpenOptions);
 
-  protected notifyLoaded() {
-    this.notify(new SyntheticBrowserAction(SyntheticBrowserAction.BROWSER_LOADED));
-  }
 }
 
 export class SyntheticBrowser extends BaseSyntheticBrowser {
@@ -210,7 +207,5 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     if (exportsElement) {
       window.document.body.appendChild(exportsElement);
     }
-
-    this.notifyLoaded();
   }
 }
