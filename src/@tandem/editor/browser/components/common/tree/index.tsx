@@ -7,6 +7,7 @@ export interface ITreeComponentProps {
   nodes: TreeNode<any>[];
   renderRoot?: boolean;
   renderLabel: (node: TreeNode<any>) => any;
+  select: (node: TreeNode<any>) => any;
   renderLayer?: (component: any) => any;
   getLayerClassName?: (node: TreeNode<any>) => string;
   getChildNodes?: (node: TreeNode<any>) => TreeNode<any>[];
@@ -36,7 +37,7 @@ export class TreeComponent extends React.Component<ITreeComponentProps, any> {
 
       <div className={cx({ label: true, hovering: this.props.isNodeHovering(node), selected: this.props.isNodeSelected(node), "no-wrap": true })} style={{paddingLeft: 8 + depth * 8 }}>
         <i key="arrow" onClick={this.props.toggleExpand.bind(this, node)} className={[expanded ? "ion-arrow-down-b" : "ion-arrow-right-b"].join(" ")} style={{ opacity: node.children.length ? 0.5 : 0 }} />
-        <span>{this.props.renderLabel(node)}</span>
+        <span onClick={this.props.select.bind(this, node)}>{this.props.renderLabel(node)}</span>
       </div>
 
       {expanded ? this.renderChildNodes(this.getChildNodes(node), depth + 1) : null}

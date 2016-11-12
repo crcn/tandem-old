@@ -43,6 +43,7 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
       </div>
       <TreeComponent
         nodes={document.body.children}
+        select={node => this.props.workspace.select(node as SyntheticDOMNode)}
         isNodeHovering={node => (node as SyntheticDOMNode).metadata.get(MetadataKeys.HOVERING)}
         isNodeSelected={node => this.props.workspace.selection.indexOf(node as SyntheticDOMNode) !== -1}
         isNodeExpanded={node => (node as SyntheticDOMNode).metadata.get(MetadataKeys.LAYER_EXPANDED)}

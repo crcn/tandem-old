@@ -14,6 +14,7 @@ export class NavigatorPaneComponent extends BaseApplicationComponent<{ file: Tre
       </div>
       <TreeComponent
         nodes={[this.props.file]}
+        select={node => false}
         isNodeHovering={node => false}
         isNodeSelected={node => false}
         renderLabel={node => node["name"]}
