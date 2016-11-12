@@ -21,7 +21,7 @@ export const renderPreview = reactEditorPreview(() => {
   directory.appendChild(models);
 
   return <GutterComponent>
-    <NavigatorPaneComponent workspace={{} as any} store={{ cwd: directory  } as any} />
+    <NavigatorPaneComponent workspace={{ selection: [] } as any} store={{ cwd: directory  } as any} />
   </GutterComponent>
 });
 

@@ -13,8 +13,7 @@ export class LocalFileSystem extends BaseFileSystem {
           name: name,
           isDirectory: fs.lstatSync(directoryPath + "/" + name).isDirectory()
         })).sort((a, b) => {
-          // sort by directory & file name
-          return a.isDirectory && !b.isDirectory ? -1 : a.isDirectory === b.isDirectory ? a > b ? 1 : -1 : 1;
+          return a.isDirectory && !b.isDirectory ? -1 : a.isDirectory === b.isDirectory ? a.name > b.name ? 1 : -1 : 1;
         }));
       });
     });

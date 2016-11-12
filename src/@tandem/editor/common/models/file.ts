@@ -30,7 +30,7 @@ export class BaseFSModel extends TreeNode<BaseFSModel> {
 
   onChildAdded(child: BaseFSModel) {
     super.onChildAdded(child);
-    this._injector.inject(child);
+    if (this._injector) this._injector.inject(child);
     child.observe(new BubbleBus(this));
   }
 }
@@ -45,6 +45,7 @@ export class Directory extends BaseFSModel {
 
     this.removeAllChildren();
     for (const { name, isDirectory } of await this._fileSystem.readDirectory(this.path)) {
+      if (name.charAt(0) === ".") continue;
       const filePath = path.join(this.path, name);
       this.appendChild(isDirectory ? new Directory(filePath) : new File(filePath));
     }
