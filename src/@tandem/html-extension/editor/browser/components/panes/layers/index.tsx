@@ -3,6 +3,7 @@ import "./index.scss";
 import * as cx from "classnames";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
+import { TreeComponent } from "@tandem/editor/browser/components/common";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { BaseApplicationComponent } from "@tandem/common";
 import { SyntheticDOMNode, SyntheticDOMElement, SyntheticDOMContainer, SyntheticDOMText, SyntheticDOMComment, DOMNodeType } from "@tandem/synthetic-browser";
@@ -13,7 +14,8 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
     this.props.workspace.select(node);
   }
 
-  expandLayer = (node: SyntheticDOMContainer) => {
+  toggleExpand = (node: SyntheticDOMContainer) => {
+    console.log(node);
     const expand = !node.metadata.get(MetadataKeys.LAYER_EXPANDED);
     node.metadata.set(MetadataKeys.LAYER_EXPANDED, expand);
 
@@ -39,29 +41,16 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
       <div className="td-section-header">
         Layers
       </div>
-      {this.renderChildNodes(document.body.childNodes, 1)}
-    </div>
-  }
-
-  renderLayer(node: SyntheticDOMNode, depth: number): any {
-    const expanded = node.metadata.get(MetadataKeys.LAYER_EXPANDED);
-    const hovering = node.metadata.get(MetadataKeys.HOVERING);
-
-    return <div key={node.uid} className="layer">
-      <div className={cx({ label: true, hovering: hovering, selected: this.props.workspace.selection.indexOf(node) !== -1, "no-wrap": true })} style={{paddingLeft: 8 + depth * 8 }} onMouseEnter={this.onMouseEnter.bind(this, node)} onMouseLeave={this.onMouseLeave.bind(this, node)}>
-        <i key="arrow" onClick={this.expandLayer.bind(this, node)} className={[expanded ? "ion-arrow-down-b" : "ion-arrow-right-b"].join(" ")} style={{ opacity: node.childNodes.length ? 0.5 : 0 }} />
-        <span onClick={this.selectNode.bind(this, node)}>{this.renderLabel(node, depth)}</span>
-      </div>
-      {expanded ? this.renderChildNodes(node["contentDocument"] ? node["contentDocument"].body.childNodes : node.childNodes, depth + 1) : null}
+      <TreeComponent
+        nodes={document.body.children}
+        isNodeHovering={node => (node as SyntheticDOMNode).metadata.get(MetadataKeys.HOVERING)}
+        isNodeSelected={node => this.props.workspace.selection.indexOf(node as SyntheticDOMNode) !== -1}
+        isNodeExpanded={node => (node as SyntheticDOMNode).metadata.get(MetadataKeys.LAYER_EXPANDED)}
+        getChildNodes={node => node["contentDocument"] ? node["contentDocument"].body.childNodes : node.children}
+        toggleExpand={this.toggleExpand.bind(this)}
+        renderLabel={this.renderLabel.bind(this)}
+      />
     </div>;
-  }
-
-  renderChildNodes(childNodes: SyntheticDOMNode[], depth: number) {
-    return <div>
-      { childNodes.map((node) => {
-        return this.renderLayer(node, depth);
-      })}
-    </div>
   }
 
   renderLabel(node: SyntheticDOMNode, depth: number): any {

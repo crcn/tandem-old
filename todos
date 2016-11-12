@@ -28,9 +28,7 @@ IMPORTING MODULES
 BUGS
 
 - [ ] cannot add new CSS style props
-- [ ] need to include error status in renderPreview method
 - [ ] memory leak going on - app slowing down
-
 
 TECH DEBT
 

@@ -9,3 +9,4 @@ export * from "./side-dragger";
 export * from "./text-editor";
 export * from "./wysiwyg";
 export * from "./status";
+export * from "./tree";

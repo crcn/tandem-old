@@ -1,8 +1,9 @@
 import "./index.scss";
 import * as React from "react";
-import { BaseApplicationComponent } from "@tandem/common";
+import { TreeComponent } from "@tandem/editor/browser/components/common";
+import { BaseApplicationComponent, TreeNode } from "@tandem/common";
 
-export class NavigatorPaneComponent extends BaseApplicationComponent<any, any> {
+export class NavigatorPaneComponent extends BaseApplicationComponent<{ file: TreeNode<any> }, any> {
   render() {
     return <div className="modules-pane">
       <div className="td-section-header">
@@ -11,12 +12,14 @@ export class NavigatorPaneComponent extends BaseApplicationComponent<any, any> {
           <input type="text" />
         </div>
       </div>
-      <div className="container">
-        <div className="row">
-          <i className="ion-document" />
-          index.tsx
-        </div>
-      </div>
+      <TreeComponent
+        nodes={[this.props.file]}
+        isNodeHovering={node => false}
+        isNodeSelected={node => false}
+        renderLabel={node => node["name"]}
+        isNodeExpanded={node => true}
+        toggleExpand={node => false}
+         />
     </div>
   }
 }
