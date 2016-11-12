@@ -8,9 +8,27 @@ import { BaseApplicationComponent } from "@tandem/common";
 // TODO: add preview of source file here
 export class SyntheticSourceLink extends BaseApplicationComponent<{ target: ISyntheticObject }, { showSourceInfo: boolean }> {
   state = { showSourceInfo: false };
-  onMouseEnter = (event: React.MouseEvent<any>) => {
 
-    if (!this.props.target.source) return;
+  onKeyDown = (event: KeyboardEvent) => {
+    if (event.keyCode === 91 || event.keyCode === 17) {
+      this.setState({ showSourceInfo: true });
+    }
+  }
+  onKeyUp = (event: KeyboardEvent) => {
+    if (event.keyCode === 91 || event.keyCode === 17) {
+      this.setState({ showSourceInfo: false });
+    }
+  }
+
+  hasSource() {
+    return this.props.target.source && this.props.target.source.filePath;
+  }
+
+  onMouseEnter = (event: React.MouseEvent<any>) => {
+    document.addEventListener("keydown", this.onKeyDown);
+    document.addEventListener("keyup", this.onKeyUp);
+
+    if (!this.hasSource()) return;
 
     if (event.metaKey || event.ctrlKey) {
       this.setState({ showSourceInfo: true });
@@ -18,13 +36,15 @@ export class SyntheticSourceLink extends BaseApplicationComponent<{ target: ISyn
   }
 
   onMouseLeave = (event: React.MouseEvent<any>) => {
+    document.removeEventListener("keydown", this.onKeyDown);
+    document.removeEventListener("keyup", this.onKeyUp);
     this.setState({ showSourceInfo: false });
   }
 
   openSourceFile = (event: React.MouseEvent<any>) => {
-    if (event.metaKey && this.props.target.source) {
+    if (event.metaKey && this.hasSource()) {
       event.stopPropagation();
-      this.logger.info(`Opening source file ${this.props.target.source.filePath}`);
+      this.logger.info(`Opening source file ${this.props.target.source.filePath}:${this.props.target.source.start.line}:${this.props.target.source.start.column}`);
       OpenSourceFileAction.execute(this.props.target.source, this.bus);
     }
   }
