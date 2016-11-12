@@ -10,3 +10,4 @@ export * from "./text-editor";
 export * from "./wysiwyg";
 export * from "./status";
 export * from "./tree";
+export * from "./synthetic-source-link";

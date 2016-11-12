@@ -1,4 +1,5 @@
-import { IActor, Action, defineProtectedAction, definePublicAction, ISourceLocation } from "@tandem/common";
+import { IActor, Action, defineProtectedAction, serialize, deserialize, definePublicAction, ISourceLocation, ISourcePosition } from "@tandem/common";
+import { ISyntheticSourceInfo } from "@tandem/sandbox";
 
 definePublicAction()
 export class GetServerPortAction extends Action {
@@ -8,6 +9,25 @@ export class GetServerPortAction extends Action {
   }
   static async execute(bus: IActor) {
     return (await bus.execute(new GetServerPortAction()).read()).value;
+  }
+}
+
+@definePublicAction({
+  serialize({ filePath, position }: OpenSourceFileAction) {
+    return { filePath, position };
+  },
+  deserialize({ filePath, position }, injector) {
+    return new OpenSourceFileAction(filePath, position);
+  }
+})
+export class OpenSourceFileAction extends Action {
+  static readonly OPEN_SOURCE_FILE = "openSourceFile";
+  constructor(readonly filePath: string, readonly position: ISourcePosition) {
+    super(OpenSourceFileAction.OPEN_SOURCE_FILE);
+  }
+  static execute({ filePath, start }: ISyntheticSourceInfo, bus: IActor) {
+    // TODO - RESOLVE HERE
+    return bus.execute(new OpenSourceFileAction(filePath, start));
   }
 }
 

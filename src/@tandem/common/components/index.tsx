@@ -1,12 +1,15 @@
 import * as React from "react";
 import { IActor } from "@tandem/common/actors";
-import { inject } from "@tandem/common/decorators";
+import { inject, loggable } from "@tandem/common/decorators";
 import {
   Injector,
   IInjectable,
   PrivateBusProvider,
   InjectorProvider,
 } from "@tandem/common/ioc";
+import {
+  Logger
+} from "@tandem/common/logger";
 
 export interface IApplicationComponentContext {
   bus: IActor;
@@ -18,7 +21,10 @@ export const appComponentContextTypes = {
   injector: React.PropTypes.object
 };
 
+@loggable()
 export class BaseApplicationComponent<T, U> extends React.Component<T, U> implements IInjectable {
+
+  protected readonly logger: Logger;
 
   static contextTypes = appComponentContextTypes;
 

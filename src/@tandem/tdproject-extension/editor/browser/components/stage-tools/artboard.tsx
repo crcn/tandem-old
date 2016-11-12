@@ -85,7 +85,6 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
 
     const style = {
       left   : bounds.left,
-      boxShadow: `0 0 0 ${scale}px rgba(0,0,0,0.1)`,
       top    : bounds.top,
       width  : bounds.width,
       height : bounds.height

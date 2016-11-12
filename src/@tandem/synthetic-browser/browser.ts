@@ -1,5 +1,5 @@
 import { SyntheticLocation } from "./location";
-import { SyntheticRendererAction, SyntheticBrowserAction } from "./actions";
+import { SyntheticRendererAction } from "./actions";
 import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode } from "./dom";
 import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, TetherRenderer, NoopRenderer } from "./renderers";
 import {

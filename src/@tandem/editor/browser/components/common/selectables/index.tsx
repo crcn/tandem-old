@@ -7,16 +7,16 @@ import * as React from "react";
 import { inject } from "@tandem/common/decorators";
 import { WrapBus } from "mesh";
 import { Workspace } from "@tandem/editor/browser/models";
-import { BoundingRect } from "@tandem/common/geom";
+import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 import { SelectAction } from "@tandem/editor/browser/actions";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
-import { FrontEndApplication } from "@tandem/editor/browser/application";
+import { OpenSourceFileAction } from "@tandem/editor/browser/actions";
 import { intersection, flatten } from "lodash";
 import { IInjectable, IActor, Action } from "@tandem/common";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { SyntheticHTMLElement, SyntheticDOMElement, ChildElementQuerier } from "@tandem/synthetic-browser";
 
-class SelectableComponent extends React.Component<{
+class SelectableComponent extends BaseApplicationComponent<{
   element: SyntheticHTMLElement,
   selection: any,
   zoom: number,
@@ -29,12 +29,10 @@ class SelectableComponent extends React.Component<{
   private _mouseOver: boolean;
   private _elementObserver: IActor;
 
-  constructor() {
-    super();
-    this.state = {};
-  }
-
   onMouseDown = (event: React.MouseEvent<any>): void => {
+    if (event.metaKey && this.props.element.source) {
+      return OpenSourceFileAction.execute(this.props.element.source, this.bus);
+    }
     this.props.onSyntheticMouseDown(this.props.element, event);
     event.stopPropagation();
     this.onMouseOut(event);

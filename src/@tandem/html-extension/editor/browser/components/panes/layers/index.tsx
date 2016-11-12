@@ -3,15 +3,15 @@ import "./index.scss";
 import * as cx from "classnames";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
-import { TreeComponent } from "@tandem/editor/browser/components/common";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { BaseApplicationComponent } from "@tandem/common";
+import { TreeComponent, SyntheticSourceLink } from "@tandem/editor/browser/components/common";
 import { SyntheticDOMNode, SyntheticDOMElement, SyntheticDOMContainer, SyntheticDOMText, SyntheticDOMComment, DOMNodeType } from "@tandem/synthetic-browser";
 
 export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: Workspace }, any> {
 
-  selectNode = (node) => {
-    this.props.workspace.select(node);
+  selectNode = (node, event: React.MouseEvent<any>) => {
+    this.props.workspace.select(node, event.shiftKey, true);
   }
 
   toggleExpand = (node: SyntheticDOMContainer) => {
@@ -24,13 +24,13 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
     }
   }
 
-  onMouseEnter = (node: SyntheticDOMNode) => {
-    node.metadata.set(MetadataKeys.HOVERING, true);
+  onLabelMouseEnter = (node: SyntheticDOMNode, event: React.MouseEvent<any>) => {
+    console.log(event.altKey, event.metaKey);
   }
 
   onMouseLeave = (node: SyntheticDOMNode) => {
-    node.metadata.set(MetadataKeys.HOVERING, false);
   }
+
 
   render() {
     if (!this.props.workspace) return null;
@@ -43,15 +43,21 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
       </div>
       <TreeComponent
         nodes={document.body.children}
-        select={node => this.props.workspace.select(node as SyntheticDOMNode)}
+        select={this.selectNode.bind(this)}
         isNodeHovering={node => (node as SyntheticDOMNode).metadata.get(MetadataKeys.HOVERING)}
         isNodeSelected={node => this.props.workspace.selection.indexOf(node as SyntheticDOMNode) !== -1}
         isNodeExpanded={node => (node as SyntheticDOMNode).metadata.get(MetadataKeys.LAYER_EXPANDED)}
         getChildNodes={node => node["contentDocument"] ? node["contentDocument"].body.childNodes : node.children}
         toggleExpand={this.toggleExpand.bind(this)}
-        renderLabel={this.renderLabel.bind(this)}
+        renderLabel={this.renderLabelOuter.bind(this)}
       />
     </div>;
+  }
+
+  renderLabelOuter(node: SyntheticDOMNode, depth: number) {
+    return <SyntheticSourceLink target={node}>
+      {this.renderLabel(node, depth)}
+    </SyntheticSourceLink>;
   }
 
   renderLabel(node: SyntheticDOMNode, depth: number): any {

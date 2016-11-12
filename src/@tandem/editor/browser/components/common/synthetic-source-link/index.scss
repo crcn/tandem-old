@@ -1,0 +1,13 @@
+@import "@tandem/editor/browser/scss/variables";
+
+.synthetic-source-link {
+ &.active {
+  cursor: pointer;
+  text-decoration: underline !important;
+  color: $color-sky-blue-4 !important;
+   * {
+     text-decoration: underline !important;
+     color: $color-sky-blue-4 !important;
+   }
+ }
+}

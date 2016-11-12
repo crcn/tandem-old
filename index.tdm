@@ -1,10 +1,10 @@
 <tandem>
   <!-- HTML Extension -->
-  <artboard title="HTML Attributes" src="./src/@tandem/html-extension/editor/browser/components/panes/attributes/index-preview.tsx" dependency-graph-strategy="webpack" style="top:0px;left:12px;width:310px;height:213px;position:absolute;"></artboard>
-  <artboard title="HTML CSS" src="./src/@tandem/html-extension/editor/browser/components/panes/css/index-preview.tsx" dependency-graph-strategy="webpack" style="left:375px;top:0px;width:270px;height:1264px;position:absolute;"></artboard>
-  <artboard title="HTML Animations" src="./src/@tandem/html-extension/editor/browser/components/panes/animation/index-preview.tsx" dependency-graph-strategy="webpack" style="left:-342px;top:532px;width:664px;height:285px;position:absolute;"></artboard>
-  <artboard title="HTML Style" src="./src/@tandem/html-extension/editor/browser/components/panes/style/index-preview.tsx" dependency-graph-strategy="webpack" style="left:12px;top:267px;width:310px;height:213px;position:absolute;"></artboard>
-  <artboard title="HTML Layers" src="./src/@tandem/html-extension/editor/browser/components/panes/layers/index-preview.tsx" dependency-graph-strategy="webpack" style="	top: 0px; 	left: -342px; 	width: 310px; 	height: 394px; 	position: absolute; "></artboard>
+  <artboard title="HTML Attributes" src="./src/@tandem/html-extension/editor/browser/components/panes/attributes/index-preview.tsx" dependency-graph-strategy="webpack" style=" top: -232px; left: 482px; width: 310px; height: 106px; position: absolute; "></artboard>
+  <artboard title="HTML CSS" src="./src/@tandem/html-extension/editor/browser/components/panes/css/index-preview.tsx" dependency-graph-strategy="webpack" style=" left: 482px; top: 87px; width: 310px; height: 480px; position: absolute; "></artboard>
+  <artboard title="HTML Style" src="./src/@tandem/html-extension/editor/browser/components/panes/style/index-preview.tsx" dependency-graph-strategy="webpack" style=" left: 482px; top: -126px; width: 310px; height: 213px; position: absolute; "></artboard>
+  <artboard title="HTML Layers" src="./src/@tandem/html-extension/editor/browser/components/panes/layers/index-preview.tsx" dependency-graph-strategy="webpack" style=" top: -48px; left: -467px; width: 285px; height: 386px; position: absolute; "></artboard>
   <!-- core panes -->
-  <artboard title="Module navigator" src="./src/@tandem/tdproject-extension/editor/browser/components/panes/navigator/index-preview.tsx" dependency-graph-strategy="webpack" style="top:0px;left:797px;width:310px;height:213px;position:absolute;"></artboard>
+
+  <artboard title="Module navigator" src="./src/@tandem/tdproject-extension/editor/browser/components/panes/navigator/index-preview.tsx" dependency-graph-strategy="webpack" style=" top: 338px; left: -467px; width: 285px; height: 229px; position: absolute; "></artboard>
 </tandem>

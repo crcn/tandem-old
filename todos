@@ -11,11 +11,12 @@ Start working on UX around getting started with Tandem and projects.
 
 FEATURES
 
+- [ ] ctrl click to open file in vscode
+- [ ] show unsaved unsaved files in tandem
 - [ ] better UX for importing components
 - [ ] automatically scan for components
 
 - [ ] components pane
-- [ ] ability to hide gutters
 - [ ] history slider
 - [ ] breadcrumb for elements
 
@@ -27,7 +28,6 @@ IMPORTING MODULES
 
 BUGS
 
-- [ ] cannot add new CSS style props
 - [ ] memory leak going on - app slowing down
 
 TECH DEBT

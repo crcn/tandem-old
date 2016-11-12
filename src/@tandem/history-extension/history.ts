@@ -1,7 +1,7 @@
 import { WrapBus } from "mesh";
 import { FrontEndApplication } from "@tandem/editor/browser";
 import { SandboxModuleAction } from "@tandem/sandbox";
-import { SyntheticBrowser, SyntheticBrowserAction } from "@tandem/synthetic-browser";
+import { SyntheticBrowser } from "@tandem/synthetic-browser";
 import {
   inject,
   Action,

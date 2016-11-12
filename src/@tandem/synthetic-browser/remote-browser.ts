@@ -1,7 +1,7 @@
 import { debounce } from "lodash";
 import { Response, WrapBus } from "mesh";
 import { NoopRenderer, ISyntheticDocumentRenderer } from "./renderers";
-import { OpenRemoteBrowserAction, SyntheticBrowserAction, isDOMMutationAction } from "./actions";
+import { OpenRemoteBrowserAction, isDOMMutationAction } from "./actions";
 import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser, ISyntheticBrowserOpenOptions } from "./browser";
 import {
   fork,

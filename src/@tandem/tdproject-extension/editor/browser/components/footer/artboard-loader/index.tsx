@@ -10,7 +10,7 @@ export class ArtboardLoaderComponent extends React.Component<{ workspace: Worksp
     if (!workspace) return null;
     workspace.documentQuerier.queriedElements
     const found = (workspace.documentQuerier.queriedElements.filter((element) => element.tagName === "artboard") as SyntheticTDArtboardElement[]).find((artboard) => {
-      return artboard.status.type === Status.LOADING || artboard.status.type === Status.ERROR;
+      return artboard.status && (artboard.status.type === Status.LOADING || artboard.status.type === Status.ERROR);
     });
 
     return <StatusComponent status={found && found.status} />

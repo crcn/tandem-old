@@ -1,9 +1,10 @@
-import { Action } from "@tandem/common/actions";
+import { uniq } from "lodash";
 import { IActor } from "@tandem/common/actors";
-import { File } from "@tandem/common";
 import { toArray } from "@tandem/common/utils/array";
 import { IRange, IPoint } from "@tandem/common/geom";
-import { uniq } from "lodash";
+import { ISyntheticObject } from "@tandem/sandbox";
+import { Action, definePublicAction } from "@tandem/common/actions";
+import { File, serialize, deserialize } from "@tandem/common";
 import { Workspace, IWorkspaceTool, IHistoryItem } from "@tandem/editor/browser/models";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
 
@@ -148,3 +149,5 @@ export class DocumentFileAction extends Action {
     super(type);
   }
 }
+
+export * from "../../common/actions";

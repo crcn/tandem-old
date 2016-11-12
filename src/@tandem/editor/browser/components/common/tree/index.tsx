@@ -7,7 +7,7 @@ export interface ITreeComponentProps {
   nodes: TreeNode<any>[];
   renderRoot?: boolean;
   renderLabel: (node: TreeNode<any>) => any;
-  select: (node: TreeNode<any>) => any;
+  select: (node: TreeNode<any>, event?: React.MouseEvent<any>) => any;
   renderLayer?: (component: any) => any;
   getLayerClassName?: (node: TreeNode<any>) => string;
   getChildNodes?: (node: TreeNode<any>) => TreeNode<any>[];

@@ -11,12 +11,13 @@ import * as vscode from "vscode";
 import * as net from "net";
 import * as through from "through2";
 import * as getPort from "get-port";
+import * as fs from "fs";
 import * as createServer from "express";
 import { debounce, throttle } from "lodash";
 import { NoopBus } from "mesh";
 
 import { createCoreApplicationProviders, ServiceApplication } from "@tandem/core";
-import { GetServerPortAction, OpenProjectAction, SelectSourceAction } from "@tandem/editor";
+import { GetServerPortAction, OpenProjectAction, SelectSourceAction, OpenSourceFileAction } from "@tandem/editor";
 
 import {
     Dependency,
@@ -189,6 +190,7 @@ export async function activate(context: vscode.ExtensionContext) {
     async function setEditorContent({ content, filePath, mtime }) {
 
         const editor = vscode.window.activeTextEditor;
+        console.log(vscode.window.visibleTextEditors);
         if (mtime < mtimes[filePath]) return;
 
         if (editor.document.fileName !== filePath || editor.document.getText() === content) return;
@@ -265,13 +267,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
     const setEditorContentFromCache = async (item: FileCacheItem) => {
         console.log("Setting file cache from %s", item.filePath);
+        await openFileCacheTextDocument(item);
         await setEditorContent({
             filePath: item.filePath,
             content: String(await item.read()),
             mtime: item.updatedAt
         });
-
-        openFileCacheItemTab(item);
     }
 
     const setCurrentMtime = () => {
@@ -279,10 +280,10 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
 
-    const openFileCacheItemTab = async (item: FileCacheItem)  => {
+    const openFileCacheTextDocument = async (item: FileCacheItem)  => {
         if (vscode.window.activeTextEditor.document.fileName === item.filePath) return;
         console.log("Opening up %s tab", item.filePath);
-        vscode.window.showTextDocument(await vscode.workspace.openTextDocument(item.filePath));
+        await vscode.workspace.openTextDocument(item.filePath);
     }
 
     async function onActiveTextEditorChange(e:vscode.TextEditor) {
@@ -302,6 +303,24 @@ export async function activate(context: vscode.ExtensionContext) {
         setEditorContentFromCache(fileCacheItem);
     }
 
+    client.bus.register({
+        execute({ filePath, position, type }: OpenSourceFileAction) {
+
+            if (type === OpenSourceFileAction.OPEN_SOURCE_FILE) {
+
+                // quick fix for resolving relative files - this will break in the future.
+                filePath = filePath.replace(/^\w+:\/\//, "");
+                filePath = fs.existsSync(filePath) ? filePath : process.cwd() + filePath;
+                vscode.workspace.openTextDocument(filePath).then(async (doc) => {
+                    await vscode.window.showTextDocument(doc);
+                    vscode.window.activeTextEditor.selection = new vscode.Selection(
+                        new vscode.Position(position.line - 1, position.column),
+                        new vscode.Position(position.line - 1, position.column)
+                    );
+                });
+            }
+        }
+    })
 
     vscode.window.onDidChangeTextEditorSelection(function(e:vscode.TextEditorSelectionChangeEvent) {
 

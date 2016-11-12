@@ -5,12 +5,12 @@ import * as React from "react";
 import { kebabCase, camelCase } from "lodash";
 import { Workspace } from "@tandem/editor/browser/models";
 import { DOMElements, MatchedStyleRule } from "@tandem/html-extension/collections";
-import { GutterComponent } from "@tandem/editor/browser/components";
-import { HashInputComponent, KeyValueInputComponent, IKeyValueInputComponentProps } from "@tandem/html-extension/editor/browser/components/common";
+import { GutterComponent, SyntheticSourceLink } from "@tandem/editor/browser/components";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { ApplyFileEditAction } from "@tandem/sandbox";
 import { CSSPrettyPaneComponent } from "./pretty";
 import { BaseApplicationComponent } from "@tandem/common";
+import { HashInputComponent, KeyValueInputComponent, IKeyValueInputComponentProps } from "@tandem/html-extension/editor/browser/components/common";
 import {
   MatchedCSSStyleRule,
   SyntheticDOMElement,
@@ -127,7 +127,7 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ result: Ma
 
   renderTitle = () => {
     return <div className="css-pane-title" title={this.props.result.rule.source && this.props.result.rule.source.filePath} onMouseEnter={this.onTitleMouseEnter} onMouseLeave={this.onTitleMouseLeave} onClick={this.onTitleClick}>
-      { this.props.result.rule.selector }
+      <SyntheticSourceLink target={this.props.result.rule}>{ this.props.result.rule.selector }</SyntheticSourceLink>
     </div>
   }
 }

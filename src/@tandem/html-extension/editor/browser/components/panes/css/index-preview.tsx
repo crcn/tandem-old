@@ -57,9 +57,9 @@ export const renderPreview = reactEditorPreview(() => {
     backgroundColor: "red",
     color: "blue"
   });
+    // <CSSStylePaneComponent style={style} title="pretty pane" titleClassName="color-green-10" pretty={true} setDeclaration={() => {}} />
 
   return <GutterComponent>
     <ElementCSSPaneComponent workspace={workspace} />
-    <CSSStylePaneComponent style={style} title="pretty pane" titleClassName="color-green-10" pretty={true} setDeclaration={() => {}} />
   </GutterComponent>
 });
