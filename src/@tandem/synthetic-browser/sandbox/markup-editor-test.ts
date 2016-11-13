@@ -9,8 +9,9 @@ describe(__filename + "#", () => {
   let app: Application;
   before(async () => {
     app = createTestMasterApplication({
-      // logLevel: LogLevel.WARN | LogLevel.ERROR,
-      logLevel: LogLevel.NONE,
+      log: {
+        level: LogLevel.NONE,
+      },
       sandboxOptions: {
         mockFiles: {}
       }

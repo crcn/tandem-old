@@ -1,4 +1,4 @@
-import { LogLevel } from "@tandem/common";
+import { IEditorCommonConfig } from "../common";
 
 /**
  * Manages visual editor and possibly workers
@@ -7,9 +7,8 @@ import { LogLevel } from "@tandem/common";
  * @interface IEdtorServerConfig
  */
 
-export interface IEdtorServerConfig {
+export interface IEdtorServerConfig extends IEditorCommonConfig {
   cwd: string;
-  logLevel?: LogLevel,
   experimental: boolean,
   port: number,
   hostname: string,

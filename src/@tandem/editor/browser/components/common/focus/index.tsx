@@ -9,6 +9,7 @@ export class FocusComponent extends React.Component<{ select?: boolean, focus?: 
   componentDidMount() {
     if (this.props.focus !== false) this.focus();
   }
+
   componentWillReceiveProps(nextProps) {
     clearTimeout(this._timeout);
     if (nextProps.focus === true) {

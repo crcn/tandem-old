@@ -129,7 +129,7 @@ class TandemClient extends Observable {
 
         // isolate the td process so that it doesn't compete with resources
         // with VSCode.
-        const tdproc = this._process = spawn(`node`, ["server-entry.js", "--expose-sock-file", "--no-banner"], {
+        const tdproc = this._process = spawn(`node`, ["server-entry.js", "--expose-sock-file", "--no-banner", "--terminate"], {
             cwd: __dirname + "/../../../../node_modules/@tandem/editor"
         });
 

@@ -11,3 +11,4 @@ export const createCommonEditorProviders = () => {
 export * from "./services";
 export * from "./actions";
 export * from "./models";
+export * from "./config";

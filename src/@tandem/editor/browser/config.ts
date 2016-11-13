@@ -1,4 +1,5 @@
 import { LogLevel } from "@tandem/common";
+import { IEditorCommonConfig } from "../common";
 
 /**
  * visual editor
@@ -11,7 +12,7 @@ import { LogLevel } from "@tandem/common";
 // TODO - possibly extend IWorkerConfig since the browser is technically
 // a worker of the server 
 
-export interface IEditorBrowserConfig {
+export interface IEditorBrowserConfig extends IEditorCommonConfig {
 
   /**
    * The mounting point into the application
@@ -29,6 +30,4 @@ export interface IEditorBrowserConfig {
     hostname: string;
     protocol: string;
   },
-
-  logLevel: LogLevel
 }

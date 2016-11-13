@@ -1,10 +1,12 @@
 import { ContentEditorFactoryProvider } from "@tandem/sandbox";
 import { createTDProjectCoreProviders } from "../../core";
-import { createTDProjectEditorWorkerProviders } from "../worker";
 import { MimeTypeProvider, MimeTypeAliasProvider } from "@tandem/common";
 import { MarkupMimeTypeXMLNSProvider, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
 
-export const createTDProjectEditorServerProviders = createTDProjectEditorWorkerProviders;
+export const createTDProjectEditorWorkerProviders = () => {
+  return [
+    ...createTDProjectCoreProviders()
+  ];
+}
 
 export * from "../../core";
-export * from "../worker";

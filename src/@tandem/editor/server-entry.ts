@@ -27,7 +27,9 @@ const start = async () => {
     port: argv.port || await getPort(),
     hostname: "localhost",
     experimental: !!argv.experimental,
-    logLevel: LogLevel[String(argv.logLevel || "").toUpperCase()] || LogLevel.DEFAULT,
+    log: {
+      level: LogLevel[String(argv.logLevel || "").toUpperCase()] || LogLevel.DEFAULT,
+    },
     cwd: process.cwd(),
     entries: {
       editor: require.resolve(require('./package.json').browser)

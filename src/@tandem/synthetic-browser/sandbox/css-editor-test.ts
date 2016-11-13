@@ -59,8 +59,9 @@ describe(__filename + "#", () => {
 
   before(async () => {
     app = createTestMasterApplication({
-      // logLevel: LogLevel.ERROR | LogLevel.WARN,
-      logLevel: LogLevel.NONE,
+      log: {
+        level: LogLevel.NONE
+      },
       sandboxOptions: {
         mockFiles: {
           [cssBasePath]: fs.readFileSync(cssBasePath, "utf8"),

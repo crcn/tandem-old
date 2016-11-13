@@ -21,7 +21,9 @@ import { WebpackDependencyGraphStrategy, DependencyGraphStrategyProvider, Protoc
  */
 
 export interface IMasterTestAppicationOptions {
-  logLevel?: LogLevel;
+  log?: {
+    level: LogLevel
+  };
   sandboxOptions?: ISandboxTestProviderOptions;
   createTestProviders?: () => any;
 }

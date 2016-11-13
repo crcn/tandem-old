@@ -24,10 +24,16 @@ class ExecAction extends Action {
 export class SockService extends CoreApplicationService<IEdtorServerConfig> {
 
   private _socketFile: string;
+  private _argv: any;
 
   constructor() {
     super();
     this._socketFile = SOCK_FILE;
+  }
+
+  $didInject() {
+    super.$didInject();
+    this._argv = this.config.argv || {};
   }
 
   /**
@@ -41,10 +47,18 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
       const client = net.connect({ path: this._socketFile } as any);
 
       client.once("connect", async () => {
-        await ExecAction.execute(this.config, new SockBus(client, this.bus, { serialize, deserialize }));
-        client.end();
-        this._printSockFile();
-      })
+
+        const remoteBus = new SockBus(client, this.bus, { serialize, deserialize });
+
+        if (this._argv) {
+          await ExecAction.execute(this.config, remoteBus);
+        }
+
+        if (this._argv.terminate) {
+          client.end();
+          this._printSockFile();
+        }
+      });
 
       client.once("error", this._startSocketServer.bind(this));
       client.once("error", resolve);
@@ -52,7 +66,7 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
   }
 
   [ExecAction.EXEC]({ config }: ExecAction) {
-    if (config.argv._.length) {
+    if (config.argv && config.argv._.length) {
       OpenProjectAction.execute({ filePath: path.resolve(config.cwd, config.argv._[0]) }, this.bus);
     }
   }
@@ -65,7 +79,7 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
   }
 
   private _printSockFile() {
-    if (this.config.argv.exposeSockFile) {
+    if (this._argv.exposeSockFile) {
       console.log("---sock file start---\n%s\n---sock file end---", SOCK_FILE);
     }
   }

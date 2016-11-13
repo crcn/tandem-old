@@ -89,15 +89,6 @@ gulp.task('build:webpack', function(done) {
     const srcFilePath = join(SRC_DIR, pkg.name, pkg.entries.browser);
     const outDir      = join(OUT_DIR, pkg.name, dirname(pkg.browser));
 
-
-    console.log({
-        entry: srcFilePath,
-        output: {
-          path: outDir,
-          filename: basename(pkg.browser)
-        }
-    });
-
     webpack(Object.assign(config, {
         entry: srcFilePath,
         output: {
@@ -106,8 +97,8 @@ gulp.task('build:webpack', function(done) {
         }
     }), (err, stats) => {
       if(err) throw new gutil.PluginError("webpack", err);
-      gutil.log("[webpack]", stats.toString({
-      }));
+      // gutil.log("[webpack]", stats.toString({
+      // }));
 
       if (!WATCH && ++i === webPackages.length) {
         done();

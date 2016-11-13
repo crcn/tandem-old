@@ -1,36 +1,19 @@
 import "reflect-metadata";
-import { initialize } from "./server";
-import * as getPort from "get-port";
-const electron = require("electron");
-const argv = require('yargs').argv;
+import { app } from "electron";
+import { isMaster } from "cluster";
+import { initializeMaster } from "./server";
+import { initializeWorker } from "./worker";
 
-
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow
-
-let mainWindow
-
-function createWindow (port) {
-  mainWindow = new BrowserWindow({width: 1024, height: 768 });
-  mainWindow.loadURL(`file://${__dirname}/browser/index.html?backendPort=${port}`)
-  mainWindow.webContents.openDevTools()
+if (isMaster) {
+  app.once("ready", initializeMaster);
+} else {
+  initializeWorker();
 }
 
-app.on('ready', async () => {
-  const port = await getPort();
-  await initialize(port);
-  createWindow(port);
+process.on("unhandledRejection", function(error) {
+  console.error(`(${isMaster ? "master" : "worker"}) Unhandled Rejection ${error.stack}`);
 });
 
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
-app.on('activate', function () {
-  if (mainWindow === null) {
-    // createWindow(
-  }
-})
+process.on("uncaughtException", function(error) {
+  console.error(`(${isMaster ? "master" : "worker"}) Uncaught Exception ${error.stack}`);
+});

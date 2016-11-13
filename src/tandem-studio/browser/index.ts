@@ -8,7 +8,9 @@ import { createTDProjectEditorBrowserProviders } from "@tandem/tdproject-extensi
 import { createCommonEditorProviders, createEditorBrowserProviders, IEditorBrowserConfig } from "@tandem/editor/browser";
 
 const config: IEditorBrowserConfig = {
-  logLevel: LogLevel.ALL,
+  log: {
+    level: LogLevel.NONE
+  },
   element: document.querySelector("#app"),
   server: {
     protocol: "http:",

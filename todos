@@ -11,12 +11,12 @@ Start working on UX around getting started with Tandem and projects.
 
 FEATURES
 
-- [ ] ctrl click to open file in vscode
-- [ ] show unsaved unsaved files in tandem
+- [ ] one worker for each artboard
+- [ ] node workers
+- [ ] open unsaved files in vscode
 - [ ] better UX for importing components
 - [ ] automatically scan for components
 
-- [ ] components pane
 - [ ] history slider
 - [ ] breadcrumb for elements
 
@@ -45,8 +45,10 @@ NAVIGATOR
 STABILITY
 ----------------------------------
 
+Integrations
+- [ ] open project in tandem
+
 UX
-  - [ ] display compiler errors
   - [ ] tandem config
     - [ ] define how to handle extensions
     - [ ] define how to handle components when dnding
@@ -58,10 +60,6 @@ BUGS
   - [ ] get sync stop to work with vscode extension
   - [ ] DS actions should not be broadcasted
   - [ ] stop remote browser when a user disconnects
-
-TESTING
-   - [ ] coverage up to 90%
-   - [ ] more test cases for css editor
 
 ARCHITECTURE
   - [ ] Remove cases where parts of the app are listening to the global DS

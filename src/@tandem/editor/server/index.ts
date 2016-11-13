@@ -4,8 +4,8 @@ import { AddFilesCommand } from "./commands";
 import { IEdtorServerConfig } from "./config";
 import { ConsoleLogService, ReceiverService } from "@tandem/editor/common";
 import { IActor, Injector, CommandFactoryProvider } from "@tandem/common";
+import { ProtocolURLResolverProvider, WebpackProtocolResolver } from "@tandem/sandbox";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
-import { DependencyGraphStrategyProvider, WebpackDependencyGraphStrategy, ProtocolURLResolverProvider, WebpackProtocolResolver } from "@tandem/sandbox";
 
 import * as MemoryDS from "mesh-memory-ds-bus";
 
@@ -29,9 +29,6 @@ export function createEditorServerProviders(config: IEdtorServerConfig, dataStor
 
     // commands
     new CommandFactoryProvider(AddFilesAction.ADD_FILES, AddFilesCommand),
-
-    new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
-    new ProtocolURLResolverProvider("webpack", WebpackProtocolResolver),
 
     // services
     new ApplicationServiceProvider("ds", DSService),

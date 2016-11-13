@@ -26,7 +26,9 @@ describe(__filename + "#", () => {
 
   before(async () => {
     app = createTestMasterApplication({
-      logLevel: LogLevel.NONE,
+      log: {
+        level: LogLevel.NONE
+      },
       sandboxOptions: {
         mockFiles:aliasMockFiles
       }

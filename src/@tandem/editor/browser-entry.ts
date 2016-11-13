@@ -1,4 +1,4 @@
-const { server, logLevel, cwd } = window["config"];
+const { server, log, cwd } = window["config"];
 
 declare let __webpack_public_path__: any;
 
@@ -22,16 +22,10 @@ document.body.appendChild(element);
 const config: IEditorBrowserConfig = {
   element: element,
   server: server,
-  logLevel: logLevel
+  log: log
 };
 
 const injector = new Injector(
-
-  // worker deps
-  // createHTMLEditorWorkerProviders(),
-  // createSASSEditorWorkerProviders(),
-  // createSyntheticBrowserWorkerProviders(),
-
   createHTMLEditorBrowserProviders(),
   createTDProjectEditorBrowserProviders(),
   createEditorBrowserProviders(config),
