@@ -13,6 +13,7 @@ import {
   ZoomAction,
   SetZoomAction,
   MouseAction,
+  AddFilesAction,
   KeyboardAction,
 } from "@tandem/editor/browser/actions";
 
@@ -40,17 +41,25 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   }
 
   onDragEnter = (event: React.DragEvent<any>) =>  {
+
+    // TODO - figure out how to check for text/uri-list
     event.preventDefault();
     event.dataTransfer.dropEffect = "copy";
+
+    // TODO - display drop position
+    // return event.dataTransfer.types.contains("text/uri-list");
   }
 
   onDrop = (event: React.DragEvent<any>) =>  {
+    this.onMouseEvent(event);
     event.preventDefault();
-
-    // TODO - accept file from folder. Original idea was to do this from the code IDE,
-    // but that's not possible :(
-    // const dt = event.dataTransfer;
-
+    console.log(event.dataTransfer.getData("text/uri-list"), event.dataTransfer.getData("URI"), event.dataTransfer.getData("text/plain"));
+    for (let i = event.dataTransfer.items.length; i--;) {
+      const item = event.dataTransfer.items[i];
+      item.getAsString((uriList) => {
+        this.bus.execute(new AddFilesAction(uriList.split("\n"), this._mousePosition));
+      })
+    }
   }
 
   onDragExit = (event: React.DragEvent<any>) => {

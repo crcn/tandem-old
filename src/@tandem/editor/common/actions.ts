@@ -51,6 +51,22 @@ export class OpenProjectAction extends Action {
   }
 }
 
+
+@definePublicAction({
+  serialize({ filePaths, options }: AddFilesAction) {
+    return { filePaths, options }
+  },
+  deserialize({ filePaths, options}) {
+    return new AddFilesAction(filePaths, options);
+  }
+})
+export class AddFilesAction extends Action {
+  static readonly ADD_FILES = "addFiles";
+  constructor(readonly filePaths: string[], readonly options?: { left: number, top: number }) {
+    super(AddFilesAction.ADD_FILES);
+  }
+}
+
 @definePublicAction({
   serialize({ filePath, ranges }: SelectSourceAction) {
     return {

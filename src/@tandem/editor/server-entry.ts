@@ -4,7 +4,7 @@ import * as figlet from "figlet";
 import { argv } from "yargs";
 import { ServiceApplication } from "@tandem/core";
 import { Injector, Logger, PrivateBusProvider, LogLevel } from "@tandem/common";
-import { IEdtorServerConfig, createEditorServiceProviders, MongoDS } from "./server";
+import { IEdtorServerConfig, createEditorServerProviders, MongoDS } from "./server";
 import * as MemoryDS from "mesh-memory-ds-bus";
 import * as getPort from "get-port";
 
@@ -36,16 +36,13 @@ const start = async () => {
 
   let deps = new Injector(
     createHTMLEditorServerProviders(),
-
-    // worker deps
-    // createVueWorkerProviders(),
     createJavaScriptWorkerProviders(),
     createHTMLEditorWorkerProviders(),
     createSASSEditorWorkerProviders(),
     createTypescriptEditorWorkerProviders(),
     createSyntheticBrowserWorkerProviders(),
     createTDProjectEditorServerProviders(),
-    createEditorServiceProviders(config, config.experimental ? new MongoDS("mongodb://localhost:27017/tandem") : new MemoryDS())
+    createEditorServerProviders(config, config.experimental ? new MongoDS("mongodb://localhost:27017/tandem") : new MemoryDS())
   );
 
   const app = new ServiceApplication(deps);

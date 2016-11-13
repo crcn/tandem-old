@@ -32,7 +32,8 @@ BUGS
 
 TECH DEBT
 
-- [ ] generalize tree component
+- [ ] resolve color pallete, components, clean up sass
+  - [ ] find inspiration by other apps
 - [ ] deprecate tdm files - artboards should be core
 - [ ] tandem <directory> for opening projects
 

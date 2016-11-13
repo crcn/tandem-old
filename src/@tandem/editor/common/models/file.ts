@@ -35,11 +35,11 @@ export class BaseFSModel extends TreeNode<BaseFSModel> {
   }
 }
 
-export class File extends BaseFSModel {
+export class FileModel extends BaseFSModel {
 
 }
 
-export class Directory extends BaseFSModel {
+export class DirectoryModel extends BaseFSModel {
 
   async load() {
 
@@ -47,7 +47,7 @@ export class Directory extends BaseFSModel {
     for (const { name, isDirectory } of await this._fileSystem.readDirectory(this.path)) {
       if (name.charAt(0) === ".") continue;
       const filePath = path.join(this.path, name);
-      this.appendChild(isDirectory ? new Directory(filePath) : new File(filePath));
+      this.appendChild(isDirectory ? new DirectoryModel(filePath) : new FileModel(filePath));
     }
   }
 }

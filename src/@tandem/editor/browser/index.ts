@@ -1,6 +1,6 @@
 import "./styles";
 
-import { Injector, CommandFactoryProvider, InitializeAction } from "@tandem/common";
+import { Injector, CommandFactoryProvider, InitializeAction, IProvider } from "@tandem/common";
 import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
@@ -25,23 +25,21 @@ import {
 
 import { Store } from "./models";
 
-import { createCommonEditorProviders } from "../common";
+import { createCommonEditorProviders, ConsoleLogService, ReceiverService } from "../common";
 import { OpenCWDCommand } from "./commands";
 
 import {
   DNDService,
   ServerService,
   SettingsService,
-  ReceiverService,
   ClipboardService,
   ComponentService,
   WorkspaceService,
   GlobalKeyBindingService,
 } from "./services";
 
-export function concatEditorBrowserProviders(injector: Injector, config: IEditorBrowserConfig, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
-  return new Injector(
-    injector,
+export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
+  return [
     ...keyBindingsProviders,
     createCommonEditorProviders(),
     createCoreApplicationProviders(config, fileSystemClass, fileResolverClass),
@@ -53,7 +51,6 @@ export function concatEditorBrowserProviders(injector: Injector, config: IEditor
     new ApplicationServiceProvider("dnd", DNDService),
     new ApplicationServiceProvider("server", ServerService),
     new ApplicationServiceProvider("settings", SettingsService),
-    new ApplicationServiceProvider("receiver", ReceiverService),
     new ApplicationServiceProvider("clipboard", ClipboardService),
     new ApplicationServiceProvider("component", ComponentService),
     new ApplicationServiceProvider("workspace", WorkspaceService),
@@ -72,7 +69,7 @@ export function concatEditorBrowserProviders(injector: Injector, config: IEditor
     new StoreProvider(Store),
 
     // pointerToolProvider
-  );
+  ];
 }
 
 export * from "./actions";

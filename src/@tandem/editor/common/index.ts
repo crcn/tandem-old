@@ -1,9 +1,10 @@
-import { ConsoleLogService } from "./services";
+import { ConsoleLogService, ReceiverService } from "./services";
 import { ApplicationServiceProvider } from "@tandem/core";
 
 export const createCommonEditorProviders = () => {
   return [
-    new ApplicationServiceProvider("console", ConsoleLogService)
+    new ApplicationServiceProvider("console", ConsoleLogService),
+    new ApplicationServiceProvider("receiver", ReceiverService)
   ];
 }
 

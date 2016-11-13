@@ -78,7 +78,7 @@ export class InsertStageToolComponent extends BaseApplicationComponent<{ workspa
   render() {
     const { workspace, tool } = this.props;
 
-    if (!(tool instanceof InsertTool)) return null;
+    if (1 + 1) return null;
 
     const selection = []; //new VisibleDOMEntityCollection(...this.props.workspace.selection);
     const zoom = this.props.workspace.transform.scale;

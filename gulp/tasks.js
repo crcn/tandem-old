@@ -10,8 +10,9 @@ const chalk         = require('chalk');
 const install       = require('gulp-install');
 const istanbul      = require('gulp-istanbul');
 const peg           = require('gulp-peg');
-const webpack       = require('gulp-webpack');
+const webpack       = require('webpack');
 const chokidar      = require('chokidar');
+const gutil         = require('gulp-util');
 const notify        = require('gulp-notify');
 const symdest       = require('gulp-symdest');
 const rename        = require('gulp-rename');
@@ -76,25 +77,45 @@ gulp.task('build:peg', function() {
   .pipe(gulp.dest(OUT_DIR));
 });
 
-gulp.task('build:webpack', function() {
+gulp.task('build:webpack', function(done) {
+
 
   const webPackages = PACKAGES.filter(sift({ 'entries.browser': { $exists: true }}));
 
-  // quick fix for webpack watcher -- it won't save new bundles after
-  // files have changed. This needs to be refactored once there are more browser apps.
+  let i = webPackages.length;
+  const config = require('./webpack.config.js');
 
-  pkg = webPackages[0];
+  const run = (pkg, i) => {
+    const srcFilePath = join(SRC_DIR, pkg.name, pkg.entries.browser);
+    const outDir      = join(OUT_DIR, pkg.name, dirname(pkg.browser));
 
-  const srcFilePath = join(SRC_DIR, pkg.name, pkg.entries.browser);
-  const outDir      = join(OUT_DIR, pkg.name, dirname(pkg.browser));
 
-  // TODO: need to set the bundled browser entry JS name to the
-  // base name of the browser file specified in the package.json.
-  return gulp
-  .src(srcFilePath)
-  .pipe(named())
-  .pipe(webpack(require('./webpack.config.js')))
-  .pipe(gulp.dest(outDir));
+    console.log({
+        entry: srcFilePath,
+        output: {
+          path: outDir,
+          filename: basename(pkg.browser)
+        }
+    });
+
+    webpack(Object.assign(config, {
+        entry: srcFilePath,
+        output: {
+          path: outDir,
+          filename: basename(pkg.browser)
+        }
+    }), (err, stats) => {
+      if(err) throw new gutil.PluginError("webpack", err);
+      gutil.log("[webpack]", stats.toString({
+      }));
+
+      if (!WATCH && ++i === webPackages.length) {
+        done();
+      }
+    })
+  }
+
+  webPackages.forEach(run);
 });
 
 // TODO

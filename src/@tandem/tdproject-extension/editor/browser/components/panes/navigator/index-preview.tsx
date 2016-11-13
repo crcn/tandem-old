@@ -1,6 +1,6 @@
 import * as React from "react";
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
-import { Directory, File } from "@tandem/editor/common/models";
+import { DirectoryModel, FileModel } from "@tandem/editor/common/models";
 import { GutterComponent } from "@tandem/editor/browser/components";
 import { TreeNode } from "@tandem/common";
 import { NavigatorPaneComponent } from "./index";
@@ -8,14 +8,14 @@ import { NavigatorPaneComponent } from "./index";
 
 
 export const renderPreview = reactEditorPreview(() => {
-  const directory = new Directory("src");
+  const directory = new DirectoryModel("src");
 
-  const components = new Directory("components");
-  components.appendChild(new File("test.tsx"));
+  const components = new FileModel("components");
+  components.appendChild(new FileModel("test.tsx"));
 
-  const models = new Directory("models");
-  models.appendChild(new File("workspace.ts"));
-  models.appendChild(new File("address.ts"));
+  const models = new DirectoryModel("models");
+  models.appendChild(new FileModel("workspace.ts"));
+  models.appendChild(new FileModel("address.ts"));
 
   directory.appendChild(components);
   directory.appendChild(models);

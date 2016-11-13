@@ -8,7 +8,7 @@ import "./entry-shims";
 
 import { Injector } from "@tandem/common";
 import { ServiceApplication } from "@tandem/core";
-import { IEditorBrowserConfig, concatEditorBrowserProviders } from "./browser";
+import { IEditorBrowserConfig, createEditorBrowserProviders } from "./browser";
 
 // extensions
 import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/worker";
@@ -25,7 +25,7 @@ const config: IEditorBrowserConfig = {
   logLevel: logLevel
 };
 
-const deps = new Injector(
+const injector = new Injector(
 
   // worker deps
   // createHTMLEditorWorkerProviders(),
@@ -34,10 +34,9 @@ const deps = new Injector(
 
   createHTMLEditorBrowserProviders(),
   createTDProjectEditorBrowserProviders(),
+  createEditorBrowserProviders(config),
 );
 
-const app = window["app"] = new ServiceApplication(
-  concatEditorBrowserProviders(deps, config)
-);
+const app = window["app"] = new ServiceApplication(injector);
 
 window.onload = app.initialize.bind(app);

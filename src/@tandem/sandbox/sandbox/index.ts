@@ -120,7 +120,6 @@ export class Sandbox extends Observable {
   }
 
   protected onDependencyGraphStatusChange(newValue: Status, oldValue: Status) {
-    this.logger.verbose(`graph watcher status change: ${newValue.type}`);
     if (newValue.type === Status.ERROR || newValue.type === Status.LOADING) {
       this.status = newValue;
     } else if (newValue.type === Status.COMPLETED) {
