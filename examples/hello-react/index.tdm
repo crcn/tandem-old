@@ -1,0 +1,3 @@
+<tandem>
+  <artboard title="Hello World" src="./index-preview.tsx" dependency-graph-strategy="webpack" />
+</tandem>

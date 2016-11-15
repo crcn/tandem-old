@@ -1,7 +1,7 @@
 import { debounce } from "lodash";
 import { NoopRenderer, ISyntheticDocumentRenderer } from "./renderers";
 import { OpenRemoteBrowserAction, isDOMMutationAction } from "./actions";
-import { CallbackDispatcher, IDispatcher, IStreamableDispatcher, WritableStream, DuplexStream } from "@tandem/mesh";
+import { CallbackDispatcher, IDispatcher, IStreamableDispatcher, WritableStream, DuplexStream, ReadableStream, ReadableStreamDefaultReader } from "@tandem/mesh";
 import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser, ISyntheticBrowserOpenOptions } from "./browser";
 import {
   fork,
@@ -64,7 +64,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   private _bus: IStreamableDispatcher<any>;
   private _documentEditor: SyntheticObjectEditor;
-  private _remoteStream: any;
+  private _remoteStreamReader: ReadableStreamDefaultReader<any>;
 
   @bindable(true)
   public status: Status = new Status(Status.IDLE);
@@ -76,9 +76,9 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   async open2(options: ISyntheticBrowserOpenOptions) {
     this.status = new Status(Status.LOADING);
-    if (this._remoteStream) this._remoteStream.cancel();
+    // if (this._remoteStreamReader) this._remoteStreamReader.cancel();
 
-    const remoteBrowserStream = this._remoteStream = this._bus.dispatch(new OpenRemoteBrowserAction(options));
+    const remoteBrowserStream = this._bus.dispatch(new OpenRemoteBrowserAction(options));
 
     // TODO - new StreamBus(execute(action), onAction)
     remoteBrowserStream.readable.pipeTo(new WritableStream({

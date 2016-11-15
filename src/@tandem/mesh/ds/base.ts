@@ -18,7 +18,8 @@ export abstract class BaseDataStore implements IStreamableDispatcher<DSMessage> 
       }
     });
 
-    this.initialize();
+    this._proxy.pause();
+    setImmediate(this.initialize.bind(this));
   }
 
   dispatch(message: DSMessage) {
@@ -26,7 +27,6 @@ export abstract class BaseDataStore implements IStreamableDispatcher<DSMessage> 
   }
 
   private async initialize() {
-    this._proxy.pause();
     await this.connect();
     this._proxy.resume();
   }

@@ -15,7 +15,8 @@ export class MemoryDataStore extends BaseDataStore {
   }
 
   dsFind({ type, collectionName, query }: DSFind<any>) {
-    return DuplexStream.fromArray(this.getCollection(collectionName).find(sift(query) as any));
+    const found = this.getCollection(collectionName).find(sift(query) as any);
+    return DuplexStream.fromArray(found ? [found] : []);
   }
 
   dsInsert({ type, collectionName, data }: DSInsert<any>) {

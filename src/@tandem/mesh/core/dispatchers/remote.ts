@@ -30,7 +30,7 @@ class RemoteRequest {
   private _resolve: (value: any) => any;
   private _reject: (value: any) => any;
 
-  constructor(readonly uid: string, readonly dest: string, readonly adapter: IRemoteBusAdapter, private _serializer: any, readonly input: ReadableStream<any>, readonly output: WritableStream<any>) {
+  constructor(readonly uid: string, readonly dest: string, readonly adapter: IRemoteBusAdapter, private _serializer: any, readonly input: ReadableStream<any>, readonly output: WritableStream<any>, private _onClose: Function) {
     this.writer = this.output.getWriter();
   }
 
@@ -47,6 +47,8 @@ class RemoteRequest {
       },
     })).catch((e) => {
       this.send(new RemoteBusMessage(RemoteBusMessage.ABORT, this.uid, this.dest, this._serializer.serialize(e)));
+    }).then(() => {
+      this._onClose();
     });
   }
 
@@ -136,7 +138,10 @@ export class RemoteBus<T> implements IBus<T> {
 
   private onInputDispatch({ payload, source, dest }: RemoteBusMessage) {
     const { writable, readable } = wrapDuplexStream(this._localDispatcher.dispatch(this._serializer.deserialize(payload, null)));
-    const req = new RemoteRequest(dest, source, this._adapter, this._serializer, readable, writable);
+    const req = new RemoteRequest(dest, source, this._adapter, this._serializer, readable, writable, () => {
+      this._pendingRequests.delete(req.uid);
+
+    });
     this._pendingRequests.set(req.uid, req);
     req.start();
   }
@@ -150,14 +155,15 @@ export class RemoteBus<T> implements IBus<T> {
     return new DuplexStream((input, output) => {
       const uid = createUID();
 
-
       if (message[PASSED_THROUGH_KEY][this._uid]) {
         return output.getWriter().close();
       }
 
       message[PASSED_THROUGH_KEY][this._uid] = true;
 
-      const req = new RemoteRequest(`req:${uid}`, `res:${uid}`, this._adapter, this._serializer, input, output);
+      const req = new RemoteRequest(`req:${uid}`, `res:${uid}`, this._adapter, this._serializer, input, output, () => {
+        this._pendingRequests.delete(req.uid);
+      });
       this._pendingRequests.set(req.uid, req);
       this._adapter.send(new RemoteBusMessage(RemoteBusMessage.DISPATCH, req.uid, req.dest, this._serializer.serialize(message)));
       req.start();
