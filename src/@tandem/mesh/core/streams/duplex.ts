@@ -132,6 +132,12 @@ export class DuplexStream<T, U> implements TransformStream<T, U> {
     this.$response = handler(input.readable, output.writable) || {};
   }
 
+  static empty() {
+    return new DuplexStream((input, output) => {
+      output.getWriter().close();
+    });
+  }
+
   then(resolve, reject) {
     return readAllChunks(this).then(resolve, reject);
   }

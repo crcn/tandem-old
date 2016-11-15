@@ -1,46 +1,26 @@
 import { MongoClient, Db, Cursor } from "mongodb";
-import { DuplexStream, IStreamableDispatcher, WritableStreamDefaultWriter } from "@tandem/mesh";
+import { DuplexStream, IStreamableDispatcher, WritableStreamDefaultWriter } from "@tandem/mesh/core";
+import { BaseDataStore } from "./base";
+import { DSInsert, DSFind, DSFindAll, DSRemove, DSMessage, DSUpdate } from "./messages";
 
-import {
-  Action,
-  ProxyBus,
-  DSFindAction,
-  DSUpdateAction,
-  DSInsertAction,
-  DSRemoveAction,
-  DSFindAllAction,
-} from "@tandem/common";
-
-export class MongoDS implements IStreamableDispatcher<any> {
-
-  private _proxy: ProxyBus;
+export class MongoDataStore extends  BaseDataStore {
   private _db: Db;
 
-  constructor(url: string) {
+  constructor(private _url: string) {
+    super();
+  }
 
-    this._proxy = new ProxyBus({
-      dispatch: (action: Action) => {
-        if (this[action.type]) {
-          return this[action.type](action);
-        }
-      }
-    });
-
-    this._proxy.pause();
-
-    MongoClient.connect(url, (err, db) => {
-      if (err) throw err;
-      this._db = db;
-      this._proxy.resume();
+  protected connect() {
+    return new Promise((resolve, reject) => {
+      MongoClient.connect(this._url, (err, db) => {
+        if (err) return reject(err);
+        this._db = db;
+        resolve();
+      });
     });
   }
 
-
-  dispatch(action: Action) {
-    return this._proxy.dispatch(action);
-  }
-
-  [DSInsertAction.DS_INSERT](action: DSInsertAction<any>) {
+  dsInsert(action: DSInsert<any>) {
     return new DuplexStream((input, output) => {
       const writer = output.getWriter();
       this._db.collection(action.collectionName).insert(action.data).then((result) => {
@@ -52,7 +32,7 @@ export class MongoDS implements IStreamableDispatcher<any> {
     });
   }
 
-  [DSRemoveAction.DS_REMOVE](action: DSRemoveAction<any>) {
+  dsRemove(action: DSRemove<any>) {
     return new DuplexStream((input, output) => {
       const writer = output.getWriter();
       this._db.collection(action.collectionName).remove(action.query).then((items) => {
@@ -64,7 +44,7 @@ export class MongoDS implements IStreamableDispatcher<any> {
     });
   }
 
-  [DSUpdateAction.DS_UPDATE](action: DSUpdateAction<any, any>) {
+  dsUpdate(action: DSUpdate<any, any>) {
     return new DuplexStream((input, output) => {
       const writer = output.getWriter();
       this._db.collection(action.collectionName).update(action.query, { $set: action.data }, function(err, result) {
@@ -75,11 +55,12 @@ export class MongoDS implements IStreamableDispatcher<any> {
   }
 
   // TODO - bundle query actions together
-  [DSFindAction.DS_FIND](action: DSFindAction<any>) {
+  dsFind(action: DSFind<any>) {
     return new DuplexStream((input, output) => {
       this.pump(this._db.collection(action.collectionName).find(action.query), output.getWriter());
     });
   }
+
 
   private async pump(cursor: Cursor, writer: WritableStreamDefaultWriter<any>) {
     if (!(await cursor.hasNext())) {

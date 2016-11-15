@@ -46,7 +46,8 @@ module.exports = {
         'react-dom': require.resolve('node_modules/react-dom/dist/react-dom.js'),
         'chokidar': 'null-loader?chokidar',
         'detective': 'null-loader?detective',
-        'node-sass': 'null-loader?node-sass'
+        'node-sass': 'null-loader?node-sass',
+        'mongodb': 'null-loader?mongodb'
       }
     },
     tandem: {

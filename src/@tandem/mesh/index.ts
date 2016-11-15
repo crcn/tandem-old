@@ -1,3 +1,3 @@
-export * from "./message";
-export * from "./streams";
-export * from "./dispatchers";
+export * from "./core";
+export * from "./remote";
+export * from "./ds";

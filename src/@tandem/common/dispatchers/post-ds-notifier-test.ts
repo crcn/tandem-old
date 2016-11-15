@@ -1,7 +1,6 @@
 import { IDispatcher } from "@tandem/mesh";
 import { expect } from "chai";
-import { CallbackDispatcher } from "@tandem/mesh";
-import * as MemoryDsBus from "mesh-memory-ds-bus";
+import { CallbackDispatcher, MemoryDataStore } from "@tandem/mesh";
 import { PostDsNotifierBus } from "./post-ds-notifier";
 import {
   Action,
@@ -19,7 +18,7 @@ describe(__filename + "#", () => {
 
   beforeEach(() => {
     dispatchdActions = [];
-    bus = new PostDsNotifierBus(new MemoryDsBus(), new CallbackDispatcher((action: any) => dispatchdActions.push(action)));
+    bus = new PostDsNotifierBus(new MemoryDataStore(), new CallbackDispatcher((action: any) => dispatchdActions.push(action)));
   });
 
   it("fires a DS_DID_INSERT action after inserting an item", async () => {

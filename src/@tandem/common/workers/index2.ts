@@ -1,4 +1,3 @@
-import * as RemoteBus from "mesh-remote-bus";
 
 let loadedScripts;
 let lastScriptSrc;

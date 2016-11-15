@@ -1,7 +1,6 @@
 import { titleize } from "inflection";
 import { IDispatcher } from "@tandem/mesh";
 import { DSProvider } from "@tandem/editor/server/providers";
-import * as MemoryDsBus from "mesh-memory-ds-bus";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 import {

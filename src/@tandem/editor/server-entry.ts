@@ -3,9 +3,9 @@ import * as figlet from "figlet";
 
 import { argv } from "yargs";
 import { ServiceApplication } from "@tandem/core";
+import { MemoryDataStore, MongoDataStore } from "@tandem/mesh";
 import { Injector, Logger, PrivateBusProvider, LogLevel } from "@tandem/common";
-import { IEdtorServerConfig, createEditorServerProviders, MongoDS } from "./server";
-import * as MemoryDS from "mesh-memory-ds-bus";
+import { IEdtorServerConfig, createEditorServerProviders } from "./server";
 import * as getPort from "get-port";
 
 // extensions
@@ -44,7 +44,7 @@ const start = async () => {
     createTypescriptEditorWorkerProviders(),
     createSyntheticBrowserWorkerProviders(),
     createTDProjectEditorServerProviders(),
-    createEditorServerProviders(config, config.experimental ? new MongoDS("mongodb://localhost:27017/tandem") : new MemoryDS())
+    createEditorServerProviders(config, config.experimental ? new MongoDataStore("mongodb://localhost:27017/tandem") : new MemoryDataStore())
   );
 
   const app = new ServiceApplication(deps);

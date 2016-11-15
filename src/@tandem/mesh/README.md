@@ -8,10 +8,23 @@ TODOS:
 
 - [ ] use [Streams](https://streams.spec.whatwg.org/) spec.
 - [ ] replace Action terminology for Message terminolgy
-- [ ] `IDispatcher` should define `dispatch(message)` method
 - [ ] `Observable` class
 - [ ] add duplex streams
 
+
+## Terminology
+
+#### Bus
+
+Respnsible for organizing and dispatching a message to *one* or *many* endpoints.
+
+#### Dispatcher
+
+Responsible for transmitting data to *one* endpoint .
+
+#### Message
+
+The object that is sent to the dispatcher handlers
 
 #### Features
 

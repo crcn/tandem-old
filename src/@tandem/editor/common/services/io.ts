@@ -1,7 +1,6 @@
 import * as sift from "sift";
-import * as SocketIOBus from "mesh-socket-io-bus";
 import { serialize, deserialize } from "@tandem/common/serialize";
-import { ParallelBus, CallbackDispatcher } from "@tandem/mesh";
+import { ParallelBus, CallbackDispatcher, FilterBus, SocketIOBus } from "@tandem/mesh";
 import {
   Action,
   Logger,
@@ -29,10 +28,9 @@ export class IOService<T> extends CoreApplicationService<T> {
     // add the remote actors to the application so that they
     // receive actions from other parts of the application
     this.bus.register(
-      new AcceptBus(
+      new FilterBus(
         ((action: Action) => (isPublicAction(action) || isWorkerAction(action)) && !action["$$remote"]),
-        new ParallelBus(this._remoteActors),
-        null
+        new ParallelBus(this._remoteActors)
       )
     );
   }

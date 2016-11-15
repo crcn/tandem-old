@@ -67,7 +67,7 @@
     "@types/serve-static": "^1.7.31",
     "@types/sinon": "^1.16.31",
     "@types/socket.io": "^1.4.27",
-    "@types/socket.io-client": "^1.4.27",
+    "@types/socket.io-client": "^1.4.28",
     "@types/source-map": "^0.1.28",
     "@types/sprintf": "0.0.28",
     "@types/through2": "^2.0.31",

@@ -10,9 +10,8 @@ import { 
   InjectorProvider,
   PrivateBusProvider,
 } from "@tandem/common";
-import * as MemoryDSBus from "mesh-memory-ds-bus";
+import { MemoryDataStore } from "@tandem/mesh";
 import { createJavaScriptSandboxProviders } from "@tandem/javascript-extension/sandbox";
-
 
 import {
   Sandbox,
@@ -23,18 +22,18 @@ import {
   BaseFileSystem,
   IDependencyGraph,
   DependencyGraph,
-  IResolvedDependencyInfo,
-  IDependencyLoaderResult,
   IDependencyLoader,
-  WebpackDependencyGraphStrategy,
-  ProtocolURLResolverProvider,
-  WebpackProtocolResolver,
   FileCacheProvider,
-  DependencyGraphStrategyProvider,
   FileSystemProvider,
   IFileResolverOptions,
   createSandboxProviders,
+  IResolvedDependencyInfo,
+  IDependencyLoaderResult,
+  WebpackProtocolResolver,
   DependencyGraphProvider,
+  ProtocolURLResolverProvider,
+  WebpackDependencyGraphStrategy,
+  DependencyGraphStrategyProvider,
   IDependencyGraphStrategyOptions,
 } from "@tandem/sandbox";
 
@@ -133,7 +132,7 @@ export const createTestSandboxProviders = (options: ISandboxTestProviderOptions 
 export const createSandboxTestInjector = (options: ISandboxTestProviderOptions = {}) => {
   const injector = new Injector();
   const bus = new BrokerBus();
-  bus.register(new UpsertBus(new MemoryDSBus()));
+  bus.register(new UpsertBus(new MemoryDataStore()));
 
   injector.register(
     options.providers || [],
