@@ -1,4 +1,4 @@
-import { ProxyBus } from "@tandem/common";
+import { ProxyBus } from "@tandem/mesh/core";
 import { DSMessage, DSInsert, DSFind, DSFindAll, DSRemove, DSUpdate } from "./messages";
 import { IStreamableDispatcher, DuplexStream, wrapDuplexStream, TransformStream } from "@tandem/mesh/core";
 

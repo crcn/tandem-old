@@ -1,6 +1,6 @@
 import * as sift from "sift";
 import { BaseDataStore } from "./base";
-import { ReadableStream } from "@tandem/mesh/core";
+import { ReadableStream, DuplexStream } from "@tandem/mesh/core";
 import { DSFind, DSFindAll, DSInsert, DSRemove, DSUpdate, DSMessage } from "./messages";
 
 export class MemoryDataStore extends BaseDataStore {
@@ -14,37 +14,47 @@ export class MemoryDataStore extends BaseDataStore {
     this._data = {};
   }
 
-  dsFind({ type, query }: DSFind<any>) {
-    return this.getCollection(type).find(sift(query) as any);
+  dsFind({ type, collectionName, query }: DSFind<any>) {
+    return DuplexStream.fromArray(this.getCollection(collectionName).find(sift(query) as any));
   }
 
-  dsInsert({ type, data }: DSInsert<any>) {
-    this.getCollection(type).push(JSON.parse(JSON.stringify(data)));
+  dsInsert({ type, collectionName, data }: DSInsert<any>) {
+    let ret = JSON.parse(JSON.stringify(data));
+    ret = Array.isArray(ret) ? ret : [ret];
+    this.getCollection(collectionName).push(...ret);
+    return DuplexStream.fromArray(ret);
   }
 
-  dsRemove({ type, query }: DSRemove<any>) {
-    const collection = this.getCollection(type);
+  dsRemove({ type, collectionName, query }: DSRemove<any>) {
+    const collection = this.getCollection(collectionName);
     const filter = sift(query) as any;
+    const ret = [];
     for (let i = collection.length; i--;) {
       const item = collection[i];
       if (filter(item)) {
+        ret.push(item);
         collection.splice(i, 1);
       }
     }
+    return DuplexStream.fromArray(ret);
   }
 
-  dsUpdate({ type, query, data }: DSUpdate<any, any>) {
-    const collection = this.getCollection(type);
+  dsUpdate({ type, collectionName, query, data }: DSUpdate<any, any>) {
+    const collection = this.getCollection(collectionName);
     const filter = sift(query) as any;
+    const ret = [];
     for (let i = collection.length; i--;) {
       const item = collection[i];
       if (filter(item)) {
-        collection.splice(i, 1, JSON.parse(JSON.stringify(data)));
+        Object.assign(item, JSON.parse(JSON.stringify(data)));
+        ret.push(item);
       }
     }
+
+    return DuplexStream.fromArray(ret);
   }
 
-  private getCollection(type: string) {
-    return this._data[type] || (this._data[type] = []);
+  private getCollection(collectionName: string) {
+    return this._data[collectionName] || (this._data[collectionName] = []);
   }
 }

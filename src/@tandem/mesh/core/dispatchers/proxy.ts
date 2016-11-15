@@ -1,12 +1,12 @@
 import {
-  IBus,
-  IDispatcher,
   DuplexStream,
   ReadableStream,
   WritableStream,
   TransformStream,
   wrapDuplexStream,
-} from "@tandem/mesh";
+} from "../streams";
+
+import { IBus, IDispatcher } from "./base";
 
 /**
  * proxies a target bus, and queues actions

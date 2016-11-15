@@ -10,7 +10,7 @@ import { 
   InjectorProvider,
   PrivateBusProvider,
 } from "@tandem/common";
-import { MemoryDataStore } from "@tandem/mesh";
+import { MemoryDataStore, ReadableStream } from "@tandem/mesh";
 import { createJavaScriptSandboxProviders } from "@tandem/javascript-extension/sandbox";
 
 import {
@@ -66,8 +66,12 @@ export class MockFileSystem extends BaseFileSystem {
     this._watchers = {};
   }
 
-  readDirectory(directoryPath: string): Promise<string[]> {
-    return Promise.resolve([]);
+  readDirectory(directoryPath: string): ReadableStream<any> {
+    return new ReadableStream({
+      start(controller) {
+        controller.close();
+      }
+    })
   }
 
   fileExists(filePath: string): Promise<boolean> {

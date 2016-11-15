@@ -1,4 +1,3 @@
-import { ISerializer } from "@tandem/common/serialize";
 import { IBus, IDispatcher } from "./base";
 import { DuplexStream, ChunkQueue, ReadableStream, WritableStream, Sink, wrapDuplexStream, WritableStreamDefaultWriter, ReadableStreamDefaultReader } from "../streams";
 
@@ -31,7 +30,7 @@ class RemoteRequest {
   private _resolve: (value: any) => any;
   private _reject: (value: any) => any;
 
-  constructor(readonly uid: string, readonly dest: string, readonly adapter: IRemoteBusAdapter, private _serializer: ISerializer<any, any>, readonly input: ReadableStream<any>, readonly output: WritableStream<any>) {
+  constructor(readonly uid: string, readonly dest: string, readonly adapter: IRemoteBusAdapter, private _serializer: any, readonly input: ReadableStream<any>, readonly output: WritableStream<any>) {
     this.writer = this.output.getWriter();
   }
 
@@ -73,7 +72,7 @@ export class RemoteBus<T> implements IBus<T> {
   private _pendingRequests: Map<string, RemoteRequest>;
   private _uid: string;
 
-  constructor(private _adapter: IRemoteBusAdapter, private _localDispatcher: IDispatcher<T, any>, private _serializer?: ISerializer<any, any>) {
+  constructor(private _adapter: IRemoteBusAdapter, private _localDispatcher: IDispatcher<T, any>, private _serializer?: any) {
     this._pendingRequests  = new Map();
     this._uid = createUID();
 
