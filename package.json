@@ -125,7 +125,8 @@
     "vinyl-fs": "^2.4.4",
     "vinyl-named": "^1.1.0",
     "webpack": "^1.13.3",
-    "webpack-notifier": "^1.4.0"
+    "webpack-notifier": "^1.4.0",
+    "whatwg-streams-b": "git+ssh://github.com:crcn/whatwg-streams-b.git"
   },
   "dependencies": {
     "babel": "^6.5.2",

@@ -287,10 +287,11 @@ gulp.task('test:all', ['hook:istanbul'], function(done) {
   }
 
   if (WATCH) {
-    const watcher = chokidar.watch(packageDirs.map(dir => join(dir, '**')), {
-      usePolling: false
+    const watcher = chokidar.watch(packageDirs.map(dir => join(dir, '**', '*.js')), {
+      usePolling: false,
+      alwaysStat: true
     });
-    watcher.on("add", run).on("change", run);
+    watcher.on("change", run);
     run();
   } else {
     return run();

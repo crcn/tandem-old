@@ -18,3 +18,18 @@ TODOS:
 
 - [WhatWG stream spec implementation](https://streams.spec.whatwg.org/#byob-reader-class)
 
+
+Basic example:
+
+```typescript
+
+import { ParallelBus, Message, DuplexStream, CallbackDispatcher } from "@tandem/mesh";
+
+const dispatcher = new CallbackDispatcher<Message, DuplexStream<any, any>>((message) => {
+  return new DuplexStream((input, output) => {
+  });
+});
+
+
+const { input, output } = dispatcher.dispatch({ text: "hello world" });
+```
