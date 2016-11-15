@@ -3,7 +3,7 @@ export * from "./actors";
 export * from "./animate";
 export * from "./application";
 export * from "./lang";
-export * from "./busses";
+export * from "./dispatchers";
 export * from "./commands";
 export * from "./commands";
 export * from "./decorators";

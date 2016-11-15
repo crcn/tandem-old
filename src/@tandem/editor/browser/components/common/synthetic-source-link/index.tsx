@@ -45,7 +45,7 @@ export class SyntheticSourceLink extends BaseApplicationComponent<{ target: ISyn
     if (event.metaKey && this.hasSource()) {
       event.stopPropagation();
       this.logger.info(`Opening source file ${this.props.target.source.filePath}:${this.props.target.source.start.line}:${this.props.target.source.start.column}`);
-      OpenFileAction.execute(this.props.target.source.filePath, this.props.target.source, this.bus);
+      OpenFileAction.dispatch(this.props.target.source.filePath, this.props.target.source, this.bus);
     }
   }
 

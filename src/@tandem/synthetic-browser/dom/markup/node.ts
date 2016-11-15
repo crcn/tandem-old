@@ -23,7 +23,7 @@ import { ISyntheticBrowser } from "../../browser";
 import {
   TreeNode,
   Metadata,
-  BubbleBus,
+  BubbleDispatcher,
   serialize,
   ITreeWalker,
   deserialize,
@@ -88,7 +88,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     super();
     this.$uid = generateSyntheticUID();
     this.metadata = new Metadata(this.getInitialMetadata());
-    this.metadata.observe(new BubbleBus(this));
+    this.metadata.observe(new BubbleDispatcher(this));
   }
 
   get uid(): any {

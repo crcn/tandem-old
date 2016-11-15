@@ -1,9 +1,9 @@
 import {
-  IActor,
   Provider,
   Injector,
   createSingletonProviderClass
 } from "@tandem/common";
+import { IDispatcher } from "@tandem/mesh";
 
 
 export class StdinHandlerProvider extends Provider<any> {
@@ -29,9 +29,9 @@ export class StdinHandlerProvider extends Provider<any> {
   }
 }
 
-export class DSProvider extends Provider<IActor> {
+export class DSProvider extends Provider<IDispatcher<any, any>> {
   static readonly ID: string = "ds";
-  constructor(value: IActor) {
+  constructor(value: IDispatcher<any, any>) {
     super(DSProvider.ID, value);
   }
 }

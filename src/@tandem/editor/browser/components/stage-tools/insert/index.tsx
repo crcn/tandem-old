@@ -8,7 +8,6 @@ import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers"
 import { SyntheticDOMElement, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { SelectionSizeComponent, SelectablesComponent } from "@tandem/editor/browser/components/common";
 import {
-  IActor,
   Action,
   BoundingRect,
   BaseApplicationComponent,
@@ -33,9 +32,8 @@ export class InsertStageToolComponent extends BaseApplicationComponent<{ workspa
     const childElement = tool.createSyntheticDOMElement();
     // const elementEditor = this._targetEntity.editor;
     this._targetElement.appendChild(childElement);
-    // await elementEditor.execute()
     // const child = await activeEntity.loadExpressionAndAppendChild(childExpression) as IVisibleEntity;
-    await this.bus.execute(new SelectAction(childElement));
+    await this.bus.dispatch(new SelectAction(childElement));
 
     // const capabilities = child.display.capabilities;
 
@@ -52,7 +50,7 @@ export class InsertStageToolComponent extends BaseApplicationComponent<{ workspa
 
     // const complete = async () => {
     //   child.parent.source.appendChild(childExpression);
-    //   bus.execute(new SetToolAction(tool.displayEntityToolFactory));
+    //   bus.dispatch(new SetToolAction(tool.displayEntityToolFactory));
     // };
 
     // if (capabilities.resizable && tool.resizable) {

@@ -1,9 +1,9 @@
 import * as sift from "sift";
-import { IActor } from "@tandem/common/actors";
+import { IDispatcher } from "@tandem/mesh";
 import { inject } from "@tandem/common/decorators";
-import { WrapBus } from "mesh";
+import { CallbackDispatcher, readAllChunks, readOneChunk } from "@tandem/mesh";
 import { isMaster } from "@tandem/common/workers";
-import { IBrokerBus } from "@tandem/common/busses";
+import { IBrokerBus } from "@tandem/common/dispatchers";
 import { IDisposable } from "@tandem/common/object";
 import { IActiveRecord } from "./base";
 import { ObservableCollection } from "@tandem/common/observable";
@@ -18,7 +18,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
   public query: Object;
   public createActiveRecord: (source: U) => T;
   private _bus: IBrokerBus;
-  private _globalActionObserver: IActor;
+  private _globalActionObserver: IDispatcher<any, any>;
 
   private constructor(...items: T[]) {
     super();
@@ -32,7 +32,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
     this.collectionName = collectionName;
     this._bus = PrivateBusProvider.getInstance(injector);
     this.createActiveRecord = createActiveRecord;
-    this._globalActionObserver = new WrapBus(this.onGlobalAction.bind(this));
+    this._globalActionObserver = new CallbackDispatcher(this.onGlobalAction.bind(this));
     this.query = query || {};
     return this;
   }
@@ -45,7 +45,9 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
   async load() {
 
     // TODO - need to check for duplicates
-    this.push(...(await this._bus.execute(new DSFindAction(this.collectionName, this.query, true)).readAll()).map(this.createActiveRecord.bind(this)));
+    this.push(...(await readAllChunks(this._bus.dispatch(new DSFindAction(this.collectionName, this.query, true)))).map(value => {
+      return this.createActiveRecord(value);
+    }));
   }
 
   sync() {
@@ -70,7 +72,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
    */
 
   async loadItem(query: any): Promise<T|undefined> {
-    const { value, done } = await this._bus.execute(new DSFindAction(this.collectionName, query, false)).read();
+    const { value, done } = await readOneChunk(this._bus.dispatch(new DSFindAction(this.collectionName, query, false)));
 
     // item exists, so add and return it. Otherwise return undefined indicating
     // that the item does not exist.

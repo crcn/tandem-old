@@ -1,4 +1,3 @@
-import { IActor } from "@tandem/common/actors";
 import { inject } from "@tandem/common";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";

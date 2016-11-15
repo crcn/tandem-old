@@ -152,7 +152,7 @@ describe(__filename + "#", () => {
       filePath: "a"
     }, { a: { content: "aa" }});
     dep.observe({
-      execute: (action) => action.type === DependencyAction.DEPENDENCY_LOADED ? i++ : 0
+      dispatch: (action) => action.type === DependencyAction.DEPENDENCY_LOADED ? i++ : 0
     });
     await dep.load();
     await dep.load();

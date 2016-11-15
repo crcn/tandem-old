@@ -1,4 +1,4 @@
-import { WrapBus } from "mesh";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { SandboxModuleAction } from "@tandem/sandbox";
 import { SyntheticBrowser } from "@tandem/synthetic-browser";
 import {
@@ -82,8 +82,8 @@ export class ModuleHistory implements IInjectable {
   }
 
   public initialize() {
-    this._app.workspace.browser.observe(new WrapBus(this.onAction.bind(this)));
-    this._app.bus.register(new WrapBus(this.onAction.bind(this)));
+    this._app.workspace.browser.observe(new CallbackDispatcher(this.onAction.bind(this)));
+    this._app.bus.register(new CallbackDispatcher(this.onAction.bind(this)));
     this.reset();
   }
 
@@ -144,7 +144,6 @@ export class ModuleHistory implements IInjectable {
     this._settingState = true;
 
     for (const filePath in data) {
-      // await UpdateTemporaryFileContentAction.execute({ path: filePath, content: data[filePath].content, mtime: data[filePath].mtime }, this.bus);
     }
 
     this._settingState = false;

@@ -4,15 +4,20 @@ import { IReadFileResultItem } from "@tandem/sandbox/file-system";
 import {
   Action,
   IASTNode,
-  IActor,
   serialize,
   deserialize,
+  IDisposable,
   definePublicAction,
   defineMasterAction,
   defineWorkerAction,
-  IDisposable
 } from "@tandem/common";
-
+import { 
+  IDispatcher,
+  IStreamableDispatcher,
+  readAllChunks,
+  readOneChunk,
+  WritableStream,
+} from "@tandem/mesh";
 import { EditAction } from "../edit";
 
 // TODO - ability to trace where actions go in the application - possibly
@@ -74,8 +79,8 @@ export class ReadFileAction extends Action {
     super(ReadFileAction.READ_FILE);
   }
 
-  static async execute(filePath: string, bus: IActor): Promise<string> {
-    return (await bus.execute(new ReadFileAction(filePath)).read()).value;
+  static async dispatch(filePath: string, bus: IStreamableDispatcher<any>): Promise<string> {
+    return (await readOneChunk(bus.dispatch(new ReadFileAction(filePath)))).value;
   }
 }
 
@@ -86,8 +91,8 @@ export class ReadDirectoryAction extends Action {
     super(ReadDirectoryAction.READ_DIRECTORY);
   }
 
-  static async execute(directoryPath: string, bus: IActor): Promise<IReadFileResultItem[]> {
-    return (await bus.execute(new ReadDirectoryAction(directoryPath)).read()).value;
+  static async dispatch(directoryPath: string, bus: IStreamableDispatcher<any>): Promise<IReadFileResultItem[]> {
+    return (await readOneChunk(bus.dispatch(new ReadDirectoryAction(directoryPath)))).value;
   }
 }
 
@@ -98,17 +103,14 @@ export class WatchFileAction extends Action {
     super(WatchFileAction.WATCH_FILE);
   }
 
-  static execute(filePath: string, bus: IActor, onFileChange: () => any): IDisposable {
-    const stream = bus.execute(new WatchFileAction(filePath));
-
-    stream.pipeTo({
-      abort: () => {},
-      close: () => {},
+  static dispatch(filePath: string, bus: IStreamableDispatcher<any>, onFileChange: () => any): IDisposable {
+    const { readable } = bus.dispatch(new WatchFileAction(filePath));
+    readable.pipeTo(new WritableStream({
       write: onFileChange
-    });
+    }));
 
     return {
-      dispose: () => stream.cancel()
+      dispose: () => readable.cancel(undefined)
     };
   }
 }

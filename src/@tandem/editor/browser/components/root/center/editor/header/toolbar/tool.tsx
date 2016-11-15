@@ -1,15 +1,11 @@
 import * as cx from "classnames";
 import * as React from "react";
-import { IActor } from "@tandem/common/actors";
 import { Workspace } from "@tandem/editor/browser/models";
 import { SetToolAction } from "@tandem/editor/browser/actions";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
 
 class ToolComponent extends React.Component<{ app: any, workspace: Workspace, toolProvider: WorkspaceToolFactoryProvider }, any> {
 
-  setTool = () => {
-    this.props.app.bus.execute(new SetToolAction(this.props.toolProvider));
-  }
 
   render() {
     const dep = this.props.toolProvider;
@@ -23,7 +19,6 @@ class ToolComponent extends React.Component<{ app: any, workspace: Workspace, to
       <li
         className={className}
         tabIndex={-1}
-        onClick={this.setTool}
         title={`${dep.id} (${dep.keyCommand})`}
       >
 

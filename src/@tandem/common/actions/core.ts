@@ -1,6 +1,6 @@
 import * as sift from "sift";
 import { Action } from "./base";
-import { IActor } from "@tandem/common/actors";
+import { IDispatcher, IStreamableDispatcher, readAllChunks, readOneChunk } from "@tandem/mesh";
 import { ITreeNode } from "@tandem/common/tree";
 import { IDisposable } from "@tandem/common/object";
 import { serializable, ISerializer } from "@tandem/common/serialize";
@@ -130,8 +130,8 @@ export class DSInsertAction<T> extends DSAction {
   constructor(collectionName: string, readonly data: T) {
     super(DSInsertAction.DS_INSERT, collectionName);
   }
-  static async execute(collectionName: string, data: any, bus: IActor) {
-    return await bus.execute(new DSInsertAction(collectionName, data)).readAll();
+  static async dispatch(collectionName: string, data: any, dispatcher: IStreamableDispatcher<any>) {
+    return await readAllChunks(dispatcher.dispatch(new DSInsertAction(collectionName, data)));
   }
 }
 
@@ -141,8 +141,8 @@ export class DSUpdateAction<T, U> extends DSAction {
     super(DSUpdateAction.DS_UPDATE, collectionName);
   }
 
-  static async execute(collectionName: string, data: any, query: any, bus: IActor): Promise<Array<any>> {
-    return await bus.execute(new DSUpdateAction(collectionName, data, query)).readAll();
+  static async dispatch(collectionName: string, data: any, query: any, dispatcher: IStreamableDispatcher<any>): Promise<Array<any>> {
+    return await readAllChunks(dispatcher.dispatch(new DSUpdateAction(collectionName, data, query)));
   }
 }
 
@@ -154,11 +154,11 @@ export class DSFindAction<T> extends DSAction {
   static createFilter(collectionName: string) {
     return sift({ collectionName: collectionName });
   }
-  static async findOne(collectionName: string, query: Object, bus: IActor): Promise<any> {
-    return (await bus.execute(new DSFindAction(collectionName, query, true)).read()).value;
+  static async findOne(collectionName: string, query: Object, dispatcher: IStreamableDispatcher<any>): Promise<any> {
+    return (await readOneChunk(dispatcher.dispatch(new DSFindAction(collectionName, query, true)))).value;
   }
-  static async findMulti(collectionName: string, query: Object, bus: IActor): Promise<any[]> {
-    return await bus.execute(new DSFindAction(collectionName, query, true)).readAll();
+  static async findMulti(collectionName: string, query: Object, dispatcher: IStreamableDispatcher<any>): Promise<any[]> {
+    return await readAllChunks(dispatcher.dispatch(new DSFindAction(collectionName, query, true)));
   }
 }
 

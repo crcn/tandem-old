@@ -57,7 +57,7 @@ import {
 //     //   }
 //     // }
 
-//     // this.bus.execute(new SelectAction(selection, false, false));
+//     // this.bus.dispatch(new SelectAction(selection, false, false));
 //   }
 
 //   /**
@@ -69,7 +69,7 @@ import {
 //     //   return new RemoveEditAction(selection);
 //     // }));
 
-//     // this.bus.execute(new SelectAction());
+//     // this.bus.dispatch(new SelectAction());
 //   }
 
 //   /**
@@ -120,7 +120,7 @@ import {
 //   [SelectAllAction.SELECT_ALL]() {
 
 //     // TODO - select call based on focused entity
-//     // this.bus.execute(new SelectAction(this.app.workspace.document.body.children, false, false));
+//     // this.bus.dispatch(new SelectAction(this.app.workspace.document.body.children, false, false));
 //   }
 // }
 

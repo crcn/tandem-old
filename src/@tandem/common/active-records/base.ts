@@ -1,12 +1,12 @@
 import * as sift from "sift";
 import { inject } from "@tandem/common/decorators";
-import { IActor } from "@tandem/common/actors";
+import { IStreamableDispatcher, IBus, DuplexStream } from "@tandem/mesh";
 import * as mongoid from "mongoid-js";
 import { IDisposable } from "@tandem/common/object";
 import { ISerializable } from "@tandem/common/serialize";
-import { IBrokerBus, TypeWrapBus } from "@tandem/common/busses";
+import { IBrokerBus } from "@tandem/common/dispatchers";
 import { Observable, IObservable } from "@tandem/common/observable";
-import { WrapBus, AcceptBus, ParallelBus } from "mesh";
+import { CallbackDispatcher, ParallelBus, readOneChunk } from "@tandem/mesh";
 import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import {
   Action,
@@ -42,7 +42,7 @@ export interface IActiveRecord<T> extends IObservable, IInjectable, IDisposable,
 export abstract class BaseActiveRecord<T> extends Observable implements IActiveRecord<T> {
 
   @inject(PrivateBusProvider.ID)
-  protected bus: IActor;
+  protected dispatcher: IStreamableDispatcher<any>;
 
   // TODO - move this to reflect metadata
   readonly idProperty: string = "_id";
@@ -163,9 +163,9 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
   }
 
   async fetch(action: Action) {
-    const chunk = await this.bus.execute(action).read();
-    if (chunk.value) {
-      this.deserialize(chunk.value);
+    const { value, done } = await readOneChunk(this.dispatcher.dispatch(action));
+    if (value) {
+      this.deserialize(value);
     }
     return this;
   }

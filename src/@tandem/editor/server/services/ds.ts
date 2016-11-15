@@ -1,5 +1,5 @@
-import { IActor } from "@tandem/common/actors";
 import { titleize } from "inflection";
+import { IDispatcher } from "@tandem/mesh";
 import { DSProvider } from "@tandem/editor/server/providers";
 import * as MemoryDsBus from "mesh-memory-ds-bus";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
@@ -21,17 +21,17 @@ import {
 export class DSService extends  CoreApplicationService<IEdtorServerConfig> {
 
   @inject(DSProvider.ID)
-  private _mainDs: IActor;
+  private _mainDs: IDispatcher<any, any>;
 
-  private _ds: IActor;
-  private _upsertBus: IActor;
+  private _ds: IDispatcher<any, any>;
+  private _upsertBus: IDispatcher<any, any>;
 
   $didInject() {
     super.$didInject();
 
     // TODO - detch data store dependency here
     this._ds = new PostDsNotifierBus(this._mainDs, this.bus);
-    this._upsertBus = UpsertBus.create(this.bus);
+    this._upsertBus = new UpsertBus(this.bus);
   }
 
   /**
@@ -39,7 +39,7 @@ export class DSService extends  CoreApplicationService<IEdtorServerConfig> {
    */
 
   [DSFindAction.DS_FIND](action: DSFindAction<any>) {
-    return this._ds.execute(action);
+    return this._ds.dispatch(action);
   }
 
   /**
@@ -47,7 +47,7 @@ export class DSService extends  CoreApplicationService<IEdtorServerConfig> {
    */
 
   [DSRemoveAction.DS_REMOVE](action: DSRemoveAction<any>) {
-    return this._ds.execute(action);
+    return this._ds.dispatch(action);
   }
 
   /**
@@ -55,14 +55,14 @@ export class DSService extends  CoreApplicationService<IEdtorServerConfig> {
    */
 
   [DSInsertAction.DS_INSERT](action: DSInsertAction<any>) {
-    return this._ds.execute(action);
+    return this._ds.dispatch(action);
   }
 
   /**
    */
 
   [DSUpdateAction.DS_UPDATE](action: DSUpdateAction<any, any>) {
-    return this._ds.execute(action);
+    return this._ds.dispatch(action);
   }
 
 
@@ -70,6 +70,6 @@ export class DSService extends  CoreApplicationService<IEdtorServerConfig> {
    */
 
   [DSUpsertAction.DS_UPSERT](action: DSUpsertAction<any>) {
-    return this._upsertBus.execute(action);
+    return this._upsertBus.dispatch(action);
   }
 }

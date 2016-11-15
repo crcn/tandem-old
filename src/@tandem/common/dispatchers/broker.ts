@@ -1,7 +1,6 @@
 import { Action } from "@tandem/common/actions";
-import { IActor } from "@tandem/common/actors";
 import { IBrokerBus } from "./base";
-import { ParallelBus } from "mesh";
+import { ParallelBus, IDispatcher, IBus } from "@tandem/mesh";
 
 /**
  * @deprecated apps should never directly register listeners to a main bus. Instead they should interface
@@ -14,19 +13,19 @@ import { ParallelBus } from "mesh";
 
 export class BrokerBus implements IBrokerBus {
 
-  readonly actors: Array<IActor>;
-  private _bus: IActor;
+  readonly actors: Array<IDispatcher<any, any>>;
+  private _bus: IBus;
 
-  constructor(busClass: { new(actors: Array<IActor>): IActor } = ParallelBus, ...actors: Array<IActor>) {
+  constructor(busClass: { new(actors: Array<IDispatcher<any, any>>): IBus } = ParallelBus, ...actors: Array<IDispatcher<any, any>>) {
     this._bus = new busClass(this.actors = []);
     this.register(...actors);
   }
 
-  register(...actors: Array<IActor>) {
+  register(...actors: Array<IDispatcher<any, any>>) {
     this.actors.push(...actors);
   }
 
-  unregister(...actors: Array<IActor>) {
+  unregister(...actors: Array<IDispatcher<any, any>>) {
     for (const actor of actors) {
       const i = this.actors.indexOf(actor);
       if (i !== -1) {
@@ -35,7 +34,7 @@ export class BrokerBus implements IBrokerBus {
     }
   }
 
-  execute(action: Action) {
-    return this._bus.execute(action);
+  dispatch(action: Action) {
+    return this._bus.dispatch(action);
   }
 }

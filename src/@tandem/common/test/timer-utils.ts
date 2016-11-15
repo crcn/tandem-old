@@ -1,4 +1,3 @@
-import { TypeWrapBus } from "@tandem/common/busses";
 import { IObservable, watchProperty, waitForPropertyChange } from "@tandem/common/observable";
 
 export function timeout(ms) {

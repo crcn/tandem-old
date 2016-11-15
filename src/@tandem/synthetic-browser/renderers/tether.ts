@@ -1,7 +1,7 @@
 import * as io from "socket.io-client";
+import { BoundingRect } from "@tandem/common";
 import { BaseRenderer } from "./base";
 import { SyntheticDOMElement } from "@tandem/synthetic-browser";
-import { IActor, BoundingRect } from "@tandem/common";
 
 
 export class TetherRenderer extends BaseRenderer {

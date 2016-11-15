@@ -1,4 +1,4 @@
-import { IActor } from "@tandem/common/actors";
+import { IDispatcher } from "@tandem/mesh";
 import { Action } from "@tandem/common/actions";
 import { Observable } from "@tandem/common/observable";
 import TextEditor from "./text-editor";
@@ -66,8 +66,6 @@ class Marker extends Observable {
     this.position += text.length;
     this.length = 0;
   }
-
-  execute(message) { }
 }
 
 export default Marker;

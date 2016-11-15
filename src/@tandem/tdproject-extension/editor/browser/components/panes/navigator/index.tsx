@@ -28,7 +28,7 @@ export class NavigatorPaneComponent extends BaseApplicationComponent<{ store?: S
           }
 
           if (node instanceof FileModel) {
-            this.bus.execute(new OpenFileAction(node.path));
+            this.bus.dispatch(new OpenFileAction(node.path));
           }
         }}
         isNodeDraggable={node => {

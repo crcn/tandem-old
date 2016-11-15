@@ -16,7 +16,6 @@ class RemoteBusMessage {
   static readonly REJECT   = "reject";
   static readonly CLOSE    = "close";
   static readonly ABORT    = "abort";
-  static readonly CANCEL   = "cancel";
   constructor(readonly type: string, readonly source: string, readonly dest: string, readonly payload?: any) {
 
   }
@@ -93,8 +92,6 @@ export class RemoteBus<T> implements IBus<T> {
       this.onInputDispatch(message);
     } else if (message.type === RemoteBusMessage.CHUNK) {
       this.onChunk(message);
-    } else if (message.type === RemoteBusMessage.CANCEL) {
-      this.onCancel(message);
     } else if (message.type === RemoteBusMessage.CLOSE) {
       this.onClose(message);
     }  else if (message.type === RemoteBusMessage.ABORT) {
@@ -123,7 +120,6 @@ export class RemoteBus<T> implements IBus<T> {
   }
 
   private reject(source: string, dest: string, uid: string, error: any) {
-    console.log("REJECT", error);
     this._adapter.send(new RemoteBusMessage(RemoteBusMessage.REJECT, source, dest, error));
   }
 
@@ -133,10 +129,6 @@ export class RemoteBus<T> implements IBus<T> {
 
   private respond(promise: Promise<any>, source: string, dest: string) {
     promise.then(this.resolve.bind(this, dest, source)).catch(this.reject.bind(this, dest, source));
-  }
-
-  private onCancel(message) {
-    console.log("CANCEL");
   }
 
   private onAbort({ source, dest, payload }: RemoteBusMessage) {

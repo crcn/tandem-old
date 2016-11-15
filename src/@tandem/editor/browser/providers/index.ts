@@ -1,12 +1,13 @@
 import * as React from "react";
-import { IActor } from "@tandem/common/actors";
 import { Store } from "@tandem/editor/browser/models";
+import { IDispatcher } from "@tandem/mesh";
 import { IWorkspaceTool } from "@tandem/editor/browser/models";
 import { ReactComponentFactoryProvider } from "./base";
 import {
   Metadata,
   IFactory,
   IProvider,
+  ICommand,
   Provider,
   Injector,
   ClassFactoryProvider,
@@ -16,9 +17,12 @@ import {
 export class GlobalKeyBindingProvider extends ClassFactoryProvider {
   static readonly NS = "globalKeyBindings";
   readonly keys: string[];
-  constructor(keys: string|string[], readonly commandClass: { new(...rest: any[]): IActor }) {
+  constructor(keys: string|string[], readonly commandClass: { new(...rest: any[]): ICommand }) {
     super(`${GlobalKeyBindingProvider.NS}/${keys}`, commandClass);
     this.keys = Array.isArray(keys) ? keys : [keys];
+  }
+  create(): ICommand {
+    return super.create();
   }
   clone() {
     return new GlobalKeyBindingProvider(this.keys, this.commandClass);

@@ -6,7 +6,7 @@ import ToolsLayerComponent from "./tools";
 import { IsolateComponent }  from "@tandem/editor/browser/components/common";
 import { SyntheticDOMElement, SyntheticRendererAction }  from "@tandem/synthetic-browser";
 import PreviewLayerComponent from "./preview";
-import { UpdateAction, IActor } from "@tandem/common";
+import { UpdateAction } from "@tandem/common";
 import { Injector, PrivateBusProvider } from "@tandem/common";
 import { BoundingRect, IPoint, BaseApplicationComponent } from "@tandem/common";
 import {
@@ -31,7 +31,6 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   }
 
   onMouseDown = (event) => {
-    // this.bus.execute(new MouseAction(MouseAction.CANVAS_MOUSE_DOWN, event.nativeEvent || event));
     this.props.workspace.select([]);
   }
 
@@ -57,7 +56,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     for (let i = event.dataTransfer.items.length; i--;) {
       const item = event.dataTransfer.items[i];
       item.getAsString((uriList) => {
-        this.bus.execute(new AddFilesAction(uriList.split("\n"), this._mousePosition));
+        this.bus.dispatch(new AddFilesAction(uriList.split("\n"), this._mousePosition));
       })
     }
   }
@@ -132,7 +131,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     this.onMouseEvent(event);
     if (event.metaKey) {
       event.preventDefault();
-      this.bus.execute(new ZoomAction((event.deltaY / 250)));
+      this.bus.dispatch(new ZoomAction((event.deltaY / 250)));
     } else {
       this.pane(event.deltaX, event.deltaY);
       event.preventDefault();
@@ -193,12 +192,12 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
       const padding = 200;
       const zoom = Math.min((width - padding) / entireBounds.width, (height - padding) / entireBounds.height);
       this.translate(width / 2 - entireBounds.width / 2 - entireBounds.left, height / 2 - entireBounds.height / 2 - entireBounds.top);
-      this.bus.execute(new SetZoomAction(zoom, false));
+      this.bus.dispatch(new SetZoomAction(zoom, false));
     }
 
 
     const renderObserver = {
-      execute: (action) => {
+      dispatch: (action) => {
         if (action.type === SyntheticRendererAction.UPDATE_RECTANGLES) {
           browser.unobserve(renderObserver);
           fitToCanvas();
@@ -211,7 +210,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
 
 
   onKey = (event) => {
-    this.bus.execute(new KeyboardAction(KeyboardAction.CANVAS_KEY_DOWN, event));
+    this.bus.dispatch(new KeyboardAction(KeyboardAction.CANVAS_KEY_DOWN, event));
   }
 
   render() {

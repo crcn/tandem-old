@@ -27,7 +27,7 @@ class ToggleRightSidebarCommand extends BaseCommand {
 export const keyBindingsProviders = [
   new GlobalKeyBindingProvider("meta+=", class ZoomInCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.execute(new ZoomAction(ZOOM_INCREMENT, true));
+      this.bus.dispatch(new ZoomAction(ZOOM_INCREMENT, true));
     }
   }),
   new GlobalKeyBindingProvider([POINTER_TOOL_KEY_CODE, "escape"], class SetPointerToolCommand extends BaseCommand {
@@ -36,29 +36,29 @@ export const keyBindingsProviders = [
       // slight delay to enable other tools to catch escape key if it' s hit - important
       // for text editing tool particularly
       setTimeout(() => {
-        this.bus.execute(new SetToolAction(this.injector.query<WorkspaceToolFactoryProvider>(pointerToolProvider.id)));
+        this.bus.dispatch(new SetToolAction(this.injector.query<WorkspaceToolFactoryProvider>(pointerToolProvider.id)));
       }, 1);
     }
   }),
   new GlobalKeyBindingProvider("meta+-", class ZoomOutCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.execute(new ZoomAction(-ZOOM_INCREMENT, true));
+      this.bus.dispatch(new ZoomAction(-ZOOM_INCREMENT, true));
     }
   }),
   new GlobalKeyBindingProvider("backspace", class DeleteSelectionCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.execute(new DeleteSelectionAction());
+      this.bus.dispatch(new DeleteSelectionAction());
     }
   }),
   new GlobalKeyBindingProvider("meta+a", class DeleteSelectionCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.execute(new SelectAllAction());
+      this.bus.dispatch(new SelectAllAction());
     }
   }),
   new GlobalKeyBindingProvider("meta+x", class CutCommand extends BaseCommand {
     execute(action: Action) {
       document.execCommand("copy");
-      this.bus.execute(new DeleteSelectionAction());
+      this.bus.dispatch(new DeleteSelectionAction());
     }
   }),
   new GlobalKeyBindingProvider("alt+\\", ToggleLeftSidebarCommand),

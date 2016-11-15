@@ -1,9 +1,8 @@
 import { throttle, Cancelable } from "lodash";
 import { getSelectorTester, ISelectorTester } from "./tester";
 import { SyntheticDOMNode, SyntheticDOMElement, SyntheticDOMContainer, DOMNodeType } from "../markup";
-
+import { IDispatcher } from "@tandem/mesh";
 import {
-  IActor,
   Action,
   bindable,
   IWalkable,
@@ -24,7 +23,7 @@ import {
 
 import { isDOMMutationAction } from "@tandem/synthetic-browser/actions";
 
-import { WrapBus } from "mesh";
+import { CallbackDispatcher } from "@tandem/mesh";
 
 export interface IDOMTreeWalker extends ITreeWalker {
   stop();
@@ -222,11 +221,11 @@ export abstract class BaseElementQuerier<T extends SyntheticDOMElement> extends 
 
 export class SyntheticElementQuerier<T extends SyntheticDOMElement> extends BaseElementQuerier<T> {
 
-  private _rootObserver: IActor;
+  private _rootObserver: IDispatcher<any, any>;
 
   constructor(target?: SyntheticDOMContainer, selector: string = "*", filter?: elementQueryFilterType) {
     super(target, selector, filter);
-    this._rootObserver = new WrapBus(this.onRootAction.bind(this));
+    this._rootObserver = new CallbackDispatcher(this.onRootAction.bind(this));
   }
 
   protected reset() {

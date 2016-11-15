@@ -6,7 +6,7 @@ import { SyntheticDocument } from "./document";
 import { Logger, Observable, PrivateBusProvider } from "@tandem/common";
 import { SyntheticHTMLElement } from "./html";
 import { SyntheticWindowTimers } from "./timers";
-import { NoopBus } from "mesh";
+import { NoopBus } from "@tandem/mesh";
 import { Blob, FakeBlob } from "./blob";
 import { URL, FakeURL } from "./url";
 import * as btoa from "btoa";

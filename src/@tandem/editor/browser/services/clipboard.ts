@@ -39,7 +39,7 @@ export class ClipboardService extends CoreApplicationService<IEditorBrowserConfi
   _paste = async (item: DataTransferItem) => {
 
     try {
-      await this.bus.execute(new PasteAction(item));
+      await this.bus.dispatch(new PasteAction(item));
     } catch (e) {
       this.logger.warn("cannot paste x-entity data: ", item.type);
     }

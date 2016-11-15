@@ -2,29 +2,28 @@ import { SyntheticLocation } from "./location";
 import { SyntheticRendererAction } from "./actions";
 import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode } from "./dom";
 import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, TetherRenderer, NoopRenderer } from "./renderers";
+import { IDispatcher } from "@tandem/mesh";
 import {
   Action,
-  IActor,
   inject,
+  Logger,
   bindable,
   loggable,
-  Logger,
   isMaster,
-  BubbleBus,
-  Observable,
-  TypeWrapBus,
-  ChangeAction,
-  IInjectable,
-  findTreeNode,
-  IObservable,
   Injector,
+  Observable,
+  IInjectable,
+  IObservable,
   bindProperty,
+  findTreeNode,
+  ChangeAction,
   watchProperty,
   HTML_MIME_TYPE,
   MimeTypeProvider,
-  PropertyChangeAction,
-  PrivateBusProvider,
+  BubbleDispatcher,
   InjectorProvider,
+  PrivateBusProvider,
+  PropertyChangeAction,
   waitForPropertyChange,
 } from "@tandem/common";
 
@@ -40,7 +39,7 @@ import {
   SyntheticDOMElementClassProvider,
 } from "./providers";
 
-import { WrapBus } from "mesh";
+import { CallbackDispatcher } from "@tandem/mesh";
 
 export interface ISyntheticBrowserOpenOptions {
   url: string;
@@ -64,7 +63,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
 
   private _url: string;
   private _window: SyntheticWindow;
-  private _documentObserver: IActor;
+  private _documentObserver: IDispatcher<any, any>;
   private _location: SyntheticLocation;
   private _openOptions: ISyntheticBrowserOpenOptions;
   private _renderer: ISyntheticDocumentRenderer;
@@ -74,8 +73,8 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     _injector.inject(this);
 
     this._renderer = _injector.inject(isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer());
-    this._renderer.observe(new BubbleBus(this));
-    this._documentObserver = new BubbleBus(this);
+    this._renderer.observe(new BubbleDispatcher(this));
+    this._documentObserver = new BubbleDispatcher(this);
   }
 
   $didInject() { }

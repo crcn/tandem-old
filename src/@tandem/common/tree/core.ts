@@ -1,6 +1,5 @@
-import { IActor } from "@tandem/common/actors";
 import { Action } from "@tandem/common/actions";
-import { WrapBus } from "mesh";
+import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { ITreeNode } from "./base";
 import { TreeNodeAction } from "./actions";
 import { ITreeWalker, IWalkable } from "./walker";
@@ -12,12 +11,12 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
 
   private _parent: T;
   private _children: Array<T>;
-  private _childObserver: IActor;
+  private _childObserver: IDispatcher<any, any>;
 
   constructor() {
     super();
     this._children = this.createChildren();
-    this._childObserver = new WrapBus(this.onChildAction.bind(this));
+    this._childObserver = new CallbackDispatcher(this.onChildAction.bind(this));
   }
 
   get children(): Array<T> {

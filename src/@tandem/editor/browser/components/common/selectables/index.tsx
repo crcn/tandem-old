@@ -5,14 +5,14 @@ import "./index.scss";
 import * as cx from "classnames";
 import * as React from "react";
 import { inject } from "@tandem/common/decorators";
-import { WrapBus } from "mesh";
+import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { Workspace } from "@tandem/editor/browser/models";
 import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 import { SelectAction } from "@tandem/editor/browser/actions";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { OpenFileAction } from "@tandem/editor/browser/actions";
 import { intersection, flatten } from "lodash";
-import { IInjectable, IActor, Action } from "@tandem/common";
+import { IInjectable,  Action } from "@tandem/common";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { SyntheticHTMLElement, SyntheticDOMElement, ChildElementQuerier } from "@tandem/synthetic-browser";
 
@@ -27,11 +27,11 @@ class SelectableComponent extends BaseApplicationComponent<{
 
   private _i: number = 0;
   private _mouseOver: boolean;
-  private _elementObserver: IActor;
+  private _elementObserver: IDispatcher<any, any>;
 
-  onMouseDown = (event: React.MouseEvent<any>): void => {
+  onMouseDown = (event: React.MouseEvent<any>): any => {
     if (event.metaKey && this.props.element.source) {
-      return OpenFileAction.execute(this.props.element.source.filePath, this.props.element.source, this.bus);
+      return OpenFileAction.dispatch(this.props.element.source.filePath, this.props.element.source, this.bus);
     }
     this.props.onSyntheticMouseDown(this.props.element, event);
     event.stopPropagation();

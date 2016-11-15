@@ -1,6 +1,5 @@
 import TextEditor from "./text-editor";
 import Marker from "./marker";
-import { IActor } from "@tandem/common/actors";
 import Line from "./line";
 
 class Caret {

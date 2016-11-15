@@ -1,11 +1,10 @@
 import { debounce } from "lodash";
-import { Response, WrapBus } from "mesh";
 import { NoopRenderer, ISyntheticDocumentRenderer } from "./renderers";
 import { OpenRemoteBrowserAction, isDOMMutationAction } from "./actions";
+import { CallbackDispatcher, IDispatcher, IStreamableDispatcher, WritableStream, DuplexStream } from "@tandem/mesh";
 import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser, ISyntheticBrowserOpenOptions } from "./browser";
 import {
   fork,
-  IActor,
   Logger,
   Action,
   Status,
@@ -63,7 +62,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   readonly logger: Logger;
 
-  private _bus: IActor;
+  private _bus: IStreamableDispatcher<any>;
   private _documentEditor: SyntheticObjectEditor;
   private _remoteStream: any;
 
@@ -79,17 +78,17 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     this.status = new Status(Status.LOADING);
     if (this._remoteStream) this._remoteStream.cancel();
 
-    const remoteBrowserStream = this._remoteStream = this._bus.execute(new OpenRemoteBrowserAction(options));
+    const remoteBrowserStream = this._remoteStream = this._bus.dispatch(new OpenRemoteBrowserAction(options));
 
     // TODO - new StreamBus(execute(action), onAction)
-    remoteBrowserStream.pipeTo({
+    remoteBrowserStream.readable.pipeTo(new WritableStream({
       write: this.onRemoteBrowserAction.bind(this),
       close: () => {
       },
       abort: (error) => {
 
       }
-    })
+    }))
   }
 
   onRemoteBrowserAction({ payload }) {
@@ -143,7 +142,8 @@ export class RemoteBrowserService extends BaseApplicationService {
   [OpenRemoteBrowserAction.OPEN_REMOTE_BROWSER](action: OpenRemoteBrowserAction) {
 
     // TODO - move this to its own class
-    return new Response((writer) => {
+    return new DuplexStream((input, output) => {
+      const writer = output.getWriter();
       const id = JSON.stringify(action.options);
 
       const browser: SyntheticBrowser = this._openBrowsers[id] || (this._openBrowsers[id] = new SyntheticBrowser(this.injector, new NoopRenderer()));
@@ -174,6 +174,12 @@ export class RemoteBrowserService extends BaseApplicationService {
       onStatusChange(browser.sandbox.status);
 
       browser.open(action.options);
+
+      return {
+        cancel() {
+          // TODO
+        }
+      }
     });
   }
 }

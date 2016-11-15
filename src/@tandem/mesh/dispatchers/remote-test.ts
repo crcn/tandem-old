@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { EventEmitter } from "events";
-import { RemoteBus, NoopDispatcher, CallbackDispatcher, readAll, DuplexStream, TransformStream } from "@tandem/mesh";
+import { RemoteBus, NoopDispatcher, CallbackDispatcher, readAllChunks, DuplexStream, TransformStream } from "@tandem/mesh";
 
 describe(__filename + "#", () => {
   it("can be created", () => {
@@ -21,7 +21,7 @@ describe(__filename + "#", () => {
       return text.toUpperCase();
     }));
 
-    expect(await readAll(bus.dispatch({ text: "hello" }))).to.eql(["HELLO"]);
+    expect(await readAllChunks(bus.dispatch({ text: "hello" }))).to.eql(["HELLO"]);
   });
 
   it("can send and receive a remote stream", async () => {
@@ -35,7 +35,7 @@ describe(__filename + "#", () => {
       })
     }));
 
-    expect(await readAll(bus.dispatch({ text: "hello" }))).to.eql(["h", "e", "l", "l", "o"]);
+    expect(await readAllChunks(bus.dispatch({ text: "hello" }))).to.eql(["h", "e", "l", "l", "o"]);
   });
 
   it("can write chunks to a remote stream", async () => {
@@ -55,7 +55,7 @@ describe(__filename + "#", () => {
     await writer.write("d");
     writer.close();
 
-    expect(await readAll(readable)).to.eql(["A", "B", "C", "D"]);
+    expect(await readAllChunks(readable)).to.eql(["A", "B", "C", "D"]);
   });
 
   it("can abort a remote stream", async () => {

@@ -1,5 +1,4 @@
 import { uniq } from "lodash";
-import { IActor } from "@tandem/common/actors";
 import { toArray } from "@tandem/common/utils/array";
 import { IRange, IPoint } from "@tandem/common/geom";
 import { ISyntheticObject } from "@tandem/sandbox";

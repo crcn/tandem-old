@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import TextEditor from "./text-editor";
-import { BrokerBus } from "@tandem/common/busses";
+import { BrokerBus } from "@tandem/common/dispatchers";
 
 
 describe(__filename + "#", function() {

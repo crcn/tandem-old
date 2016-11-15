@@ -55,7 +55,7 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
     // the change immediately
     this.state.edit.applyActionsTo(artboard);
 
-    await this.bus.execute(new ApplyFileEditAction(this.state.edit.actions));
+    await this.bus.dispatch(new ApplyFileEditAction(this.state.edit.actions));
     this.doneEditing();
   }
 
@@ -65,7 +65,6 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
 
   selectEntity = (event: React.MouseEvent<any>) => {
     this.props.workspace.select(this.props.artboard, event.metaKey || event.shiftKey);
-    // this.bus.execute(new SelectAction([this.props.artboard], ));
   }
 
   onKeyDown = (event: React.KeyboardEvent<any>): any => {

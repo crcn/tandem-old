@@ -1,10 +1,9 @@
 import { values } from "lodash";
 import { Action } from "@tandem/common";
-import { WrapBus } from "mesh";
+import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { SyntheticRendererAction, isDOMMutationAction } from "../actions";
 
 import {
-  IActor,
   Logger,
   loggable,
   bindable,
@@ -91,7 +90,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   protected _running: boolean;
 
   private _shouldRenderAgain: boolean;
-  private _targetObserver: IActor;
+  private _targetObserver: IDispatcher<any, any>;
   private _computedStyles: any;
 
   protected readonly logger: Logger;
@@ -106,7 +105,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
       this.element = this.createElement();
     }
 
-    this._targetObserver = new WrapBus(this.onDocumentAction.bind(this));
+    this._targetObserver = new CallbackDispatcher(this.onDocumentAction.bind(this));
   }
 
   get document(): SyntheticDocument {
@@ -216,7 +215,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
 export class BaseDecoratorRenderer extends Observable implements ISyntheticDocumentRenderer {
   constructor(protected _renderer: ISyntheticDocumentRenderer) {
     super();
-    _renderer.observe(new WrapBus(this.onTargetRendererAction.bind(this)));
+    _renderer.observe(new CallbackDispatcher(this.onTargetRendererAction.bind(this)));
   }
   getComputedStyle(uid) {
     return this._renderer.getComputedStyle(uid);

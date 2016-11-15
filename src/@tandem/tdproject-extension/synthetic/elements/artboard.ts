@@ -1,10 +1,9 @@
 import * as path from "path";
 
-import { WrapBus } from "mesh";
+import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { debounce } from "lodash";
 
 import {
-  IActor,
   Action,
   Status,
   isMaster,
@@ -62,10 +61,10 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
 
   private _iframe: HTMLIFrameElement;
   private _contentDocument: SyntheticDocument;
-  private _contentDocumentObserver: IActor;
+  private _contentDocumentObserver: IDispatcher<any, any>;
   private _artboardBrowser: ISyntheticBrowser;
   private _combinedStyleSheet: SyntheticCSSStyleSheet;
-  private _artboardBrowserObserver: IActor;
+  private _artboardBrowserObserver: IDispatcher<any, any>;
 
   @bindable(true)
   readonly status: Status = new Status(null);
@@ -106,7 +105,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     const documentRenderer = new SyntheticDOMRenderer();
     this._artboardBrowser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.injector, new SyntheticArtboardRenderer(this, documentRenderer), this.browser);
     bindProperty(this._artboardBrowser, "status", this, "status").trigger();
-    this._contentDocumentObserver = new WrapBus(this.onContentDocumentAction.bind(this));
+    this._contentDocumentObserver = new CallbackDispatcher(this.onContentDocumentAction.bind(this));
     watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
     await this.loadBrowser();
   }

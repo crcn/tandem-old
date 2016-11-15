@@ -4,22 +4,29 @@ import { DuplexStream, TransformStream } from "@tandem/mesh/streams";
  * Dispatches a message to a listener
  */
 
-export interface IDispatcher<T> {
+export interface IDispatcher<T, U> {
 
   /**
    */
 
-  dispatch(message: T): any;
+  dispatch(message: T): U;
 }
 
+
 /**
- * Contro
+ * Dispatches a message to a listener
  */
 
-export interface IBus<T> extends IDispatcher<T> {
+export interface IStreamableDispatcher<T> extends IDispatcher<T, TransformStream<any, any>> {
 
   /**
    */
 
   dispatch(message: T): TransformStream<any, any>;
 }
+
+/**
+ * alias for streamable dispatcher
+ */
+
+export interface IBus<T> extends IStreamableDispatcher<T> { }

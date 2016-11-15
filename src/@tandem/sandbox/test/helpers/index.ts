@@ -133,7 +133,7 @@ export const createTestSandboxProviders = (options: ISandboxTestProviderOptions 
 export const createSandboxTestInjector = (options: ISandboxTestProviderOptions = {}) => {
   const injector = new Injector();
   const bus = new BrokerBus();
-  bus.register(UpsertBus.create(new MemoryDSBus()));
+  bus.register(new UpsertBus(new MemoryDSBus()));
 
   injector.register(
     options.providers || [],

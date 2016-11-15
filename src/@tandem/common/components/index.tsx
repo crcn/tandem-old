@@ -1,5 +1,5 @@
 import * as React from "react";
-import { IActor } from "@tandem/common/actors";
+import { IDispatcher, IBus } from "@tandem/mesh";
 import { inject, loggable } from "@tandem/common/decorators";
 import {
   Injector,
@@ -12,7 +12,7 @@ import {
 } from "@tandem/common/logger";
 
 export interface IApplicationComponentContext {
-  bus: IActor;
+  bus: IBus<any>;
   injector: Injector;
 }
 
@@ -29,7 +29,7 @@ export class BaseApplicationComponent<T, U> extends React.Component<T, U> implem
   static contextTypes = appComponentContextTypes;
 
   @inject(PrivateBusProvider.ID)
-  protected readonly bus: IActor;
+  protected readonly bus: IBus<any>;
 
   @inject(InjectorProvider.ID)
   protected readonly injector: Injector

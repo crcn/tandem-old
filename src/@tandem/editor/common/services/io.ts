@@ -1,7 +1,7 @@
 import * as sift from "sift";
 import * as SocketIOBus from "mesh-socket-io-bus";
 import { serialize, deserialize } from "@tandem/common/serialize";
-import { ParallelBus, AcceptBus } from "mesh";
+import { ParallelBus, CallbackDispatcher } from "@tandem/mesh";
 import {
   Action,
   Logger,
@@ -31,7 +31,7 @@ export class IOService<T> extends CoreApplicationService<T> {
     this.bus.register(
       new AcceptBus(
         ((action: Action) => (isPublicAction(action) || isWorkerAction(action)) && !action["$$remote"]),
-        ParallelBus.create(this._remoteActors),
+        new ParallelBus(this._remoteActors),
         null
       )
     );
@@ -53,18 +53,18 @@ export class IOService<T> extends CoreApplicationService<T> {
     // setup the bus which wil facilitate in all
     // transactions between the remote service
     const remoteBus = new SocketIOBus({ connection }, {
-      execute: (action: Action) => {
+      dispatch: (action: Action) => {
         this.logger.verbose("Receive >>%s", action.type);
 
         // attach a flag so that the action does not get dispatched again
-        return this.bus.execute(Object.assign(action, { $$remote: true }));
+        return this.bus.dispatch(Object.assign(action, { $$remote: true }));
       }
     }, { serialize, deserialize });
 
     this._remoteActors.push({
-      execute: (action: Action) => {
+      dispatch: (action: Action) => {
         this.logger.verbose("Broadcast <<%s", action.type);
-        return remoteBus.execute(action);
+        return remoteBus.dispatch(action);
       }
     });
 

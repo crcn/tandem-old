@@ -1,14 +1,14 @@
 import {
-  IActor,
   Action,
-  defineProtectedAction,
   serialize,
   deserialize,
-  definePublicAction,
   ISourceLocation,
-  ISourcePosition
+  ISourcePosition,
+  definePublicAction,
+  defineProtectedAction,
 } from "@tandem/common";
 import { ISyntheticSourceInfo } from "@tandem/sandbox";
+import { IDispatcher, IStreamableDispatcher, readOneChunk} from "@tandem/mesh";
 
 definePublicAction()
 export class GetServerPortAction extends Action {
@@ -16,8 +16,8 @@ export class GetServerPortAction extends Action {
   constructor() {
     super(GetServerPortAction.GET_SERVER_PORT);
   }
-  static async execute(bus: IActor) {
-    return (await bus.execute(new GetServerPortAction()).read()).value;
+  static async dispatch(bus: IStreamableDispatcher<any>) {
+    return (await readOneChunk(bus.dispatch(new GetServerPortAction()))).value;
   }
 }
 
@@ -34,9 +34,9 @@ export class OpenFileAction extends Action {
   constructor(readonly filePath: string, readonly selection?: ISourceLocation) {
     super(OpenFileAction.OPEN_FILE);
   }
-  static execute(filePath: string, selection: ISyntheticSourceInfo, bus: IActor) {
+  static dispatch(filePath: string, selection: ISyntheticSourceInfo, bus: IStreamableDispatcher<any>) {
     // TODO - RESOLVE HERE
-    return bus.execute(new OpenFileAction(filePath, selection));
+    return bus.dispatch(new OpenFileAction(filePath, selection));
   }
 }
 
@@ -46,8 +46,8 @@ export class OpenProjectAction extends Action {
   constructor(readonly filePath: string) {
     super(OpenProjectAction.OPEN_PROJECT_FILE);
   }
-  static async execute({ filePath }: { filePath: string }, bus: IActor): Promise<boolean> {
-    return (await bus.execute(new OpenProjectAction(filePath)).read()).value;
+  static async dispatch({ filePath }: { filePath: string }, bus: IStreamableDispatcher<any>): Promise<boolean> {
+    return (await readOneChunk(bus.dispatch(new OpenProjectAction(filePath)))).value;
   }
 }
 

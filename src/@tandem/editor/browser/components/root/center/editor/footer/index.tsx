@@ -30,7 +30,7 @@ class ZoomLabelComponent extends BaseApplicationComponent<{ workspace: Workspace
   onInputChange = (event: React.KeyboardEvent<any>) => {
     const value = Number((event.target as any).value || 0);
     this.setState({ editZoom: value });
-    this.bus.execute(new SetZoomAction(value ? value / 100 : value));
+    this.bus.dispatch(new SetZoomAction(value ? value / 100 : value));
   }
 
   onKeyDown = (event: React.KeyboardEvent<any>) => {

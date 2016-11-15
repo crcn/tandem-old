@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { WrapBus } from "mesh";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { Store } from "@tandem/editor/browser/models";
 import { inject, Action } from "@tandem/common";
 import { StoreProvider } from "@tandem/editor/browser/providers";
@@ -19,7 +19,7 @@ export class ComponentService extends CoreApplicationService<IEditorBrowserConfi
 
   $didInject() {
     super.$didInject();
-    this._store.observe(new WrapBus(this.onRootModelAction.bind(this)));
+    this._store.observe(new CallbackDispatcher(this.onRootModelAction.bind(this)));
   }
 
   onRootModelAction(action: Action) {

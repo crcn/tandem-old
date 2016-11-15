@@ -1,5 +1,4 @@
-import * as RemoteBus from "mesh-remote-bus";
-import { IActor } from "../actors";
+import { IDispatcher, RemoteBus } from "@tandem/mesh";
 import { serialize, deserialize } from "../serialize";
 import { Action, isWorkerAction, isMasterAction, isPublicAction } from "../actions";
 
@@ -34,18 +33,18 @@ function getNextWorker(): Worker {
   return workers.length ? workers[currentWorkerIndex = (currentWorkerIndex + 1) % workers.length] : undefined;
 }
 
-function createWorkerFilterBus(bus: IActor) {
+function createWorkerFilterBus(dispatcher: IDispatcher<any, any>) {
   return {
-    execute(action: Action) {
+    dispatch(action: Action) {
       if (isWorkerAction(action) || isPublicAction(action)) {
-        return bus.execute(action);
+        return dispatcher.dispatch(action);
       }
     }
   }
 }
 
 
-function createWorkerBus(worker: any, localBus: IActor): IActor {
+function createWorkerBus(worker: any, localBus: IDispatcher<any, any>): IDispatcher<any, any> {
   return new RemoteBus({
     send(message) {
       worker.postMessage(message);
@@ -61,14 +60,14 @@ function createWorkerBus(worker: any, localBus: IActor): IActor {
 /**
  */
 
-export function fork(localBus: IActor) {
+export function fork(localBus: IDispatcher<any, any>) {
   return createWorkerFilterBus(createWorkerBus(new Worker(lastScriptSrc), localBus));
 }
 
 /**
  */
 
-export function hook(localBus: IActor) {
+export function hook(localBus: IDispatcher<any, any>) {
   return createWorkerFilterBus(createWorkerBus(self, localBus));
 }
 

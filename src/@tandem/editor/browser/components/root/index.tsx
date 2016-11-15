@@ -8,7 +8,7 @@ import { StoreProvider } from "@tandem/editor/browser/providers";
 import { GutterComponent } from "./gutter";
 import { RegisteredComponent } from "@tandem/editor/browser/components/common";
 import { DocumentPaneComponentFactoryProvider, EntityPaneComponentFactoryProvider } from "@tandem/editor/browser/providers";
-import { IActor, Injector, RootApplicationComponent, BaseApplicationComponent, inject } from "@tandem/common";
+import { Injector, RootApplicationComponent, BaseApplicationComponent, inject } from "@tandem/common";
 
 export class EditorComponent extends BaseApplicationComponent<{}, {}> {
 

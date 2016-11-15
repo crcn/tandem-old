@@ -5,7 +5,6 @@ import TextEditor from "../models/text-editor";
 import LineComponent from "./line";
 import CaretComponent from "./caret";
 import {
-  IActor,
   BrokerBus,
   startDrag,
   ITokenizer,
@@ -13,9 +12,10 @@ import {
   stringTokenizer,
   translateAbsoluteToRelativePoint
 } from "@tandem/common";
+import { IDispatcher } from "@tandem/mesh";
 import HighlightComponent from "./highlight";
 
-export class TextEditorComponent extends React.Component<{ onKeyDown?: Function, onFocus?: Function, onChange?: Function, onBlur?: Function, style?: Object, className?: string, source: string, injector: Injector, tokenizer: ITokenizer }, any> implements IActor {
+export class TextEditorComponent extends React.Component<{ onKeyDown?: Function, onFocus?: Function, onChange?: Function, onBlur?: Function, style?: Object, className?: string, source: string, injector: Injector, tokenizer: ITokenizer }, any> implements IDispatcher<any, any> {
 
   readonly bus: BrokerBus;
   private _timer: any;
@@ -36,7 +36,7 @@ export class TextEditorComponent extends React.Component<{ onKeyDown?: Function,
   }
 
 
-  execute(message) {
+  dispatch(message) {
 
     clearTimeout(this._timer);
     this._timer = setTimeout(() => {

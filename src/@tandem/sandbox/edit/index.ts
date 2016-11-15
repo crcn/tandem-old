@@ -1,27 +1,27 @@
 import { flatten } from "lodash";
-import { WrapBus } from "mesh";
 import { debounce } from "lodash";
 import { FileCache } from "../file-cache";
+import { IDispatcher } from "@tandem/mesh";
 import { FileEditorAction } from "../actions";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { FileCacheProvider, ContentEditorFactoryProvider, ProtocolURLResolverProvider } from "../providers";
 import { ISyntheticObject, ISyntheticSourceInfo, syntheticSourceInfoEquals } from "../synthetic";
 import {
   Action,
   inject,
-  serialize,
-  IActor,
-  loggable,
   Logger,
+  Injector,
+  loggable,
+  serialize,
   Observable,
   deserialize,
   flattenTree,
-  Injector,
   serializable,
   ISerializable,
   getSerializeType,
-  ISerializedContent,
   MimeTypeProvider,
   InjectorProvider,
+  ISerializedContent,
 } from "@tandem/common";
 
 export type contentEditorType = { new(filePath: string, content: string): IEditor };
@@ -406,7 +406,7 @@ export class FileEditor extends Observable {
     this.run();
 
     return new Promise((resolve) => {
-      const observer = new WrapBus((action: Action) => {
+      const observer = new CallbackDispatcher((action: Action) => {
         if (action.type === FileEditorAction.DEPENDENCY_EDITED) {
           resolve();
           this.unobserve(observer);
@@ -541,10 +541,10 @@ export class SyntheticObjectChangeWatcher<T extends ISyntheticObject & IEditable
 
   private _clone: T;
   private _target: T
-  private _targetObserver: IActor;
+  private _targetObserver: IDispatcher<any, any>;
 
   constructor(private onChange: (actions: EditAction[]) => any, private onClone: (clone: T) => any, private filterAction?: (action: Action) => boolean) {
-    this._targetObserver = new WrapBus(this.onTargetAction.bind(this));
+    this._targetObserver = new CallbackDispatcher(this.onTargetAction.bind(this));
   }
 
   get target() {

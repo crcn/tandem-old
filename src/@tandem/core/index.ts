@@ -11,7 +11,7 @@ import {
   registerableProviderType,
 } from "@tandem/common";
 
-import { SequenceBus } from "mesh";
+import { SequenceBus } from "@tandem/mesh";
 
 import {
   IFileSystem,

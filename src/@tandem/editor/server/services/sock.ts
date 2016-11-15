@@ -1,4 +1,4 @@
-import { IActor } from "@tandem/common/actors";
+import { IDispatcher, readAllChunks, IStreamableDispatcher } from "@tandem/mesh";
 import { OpenProjectAction } from "@tandem/editor/common";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
@@ -16,8 +16,8 @@ class ExecAction extends Action {
   constructor(readonly config: IEdtorServerConfig) {
     super(ExecAction.EXEC);
   }
-  static execute(config: any, bus: IActor) {
-    return bus.execute(new ExecAction(config)).readAll();
+  static dispatch(config: any, bus: IStreamableDispatcher<any>) {
+    return readAllChunks(bus.dispatch(new ExecAction(config)));
   }
 }
 
@@ -42,7 +42,7 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
   [LoadAction.LOAD](action: LoadAction) {
 
     return new Promise((resolve, reject) => {
-      let bus: IActor;
+      let bus: IDispatcher<any, any>;
 
       const client = net.connect({ path: this._socketFile } as any);
 
@@ -51,7 +51,7 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
         const remoteBus = new SockBus(client, this.bus, { serialize, deserialize });
 
         if (this._argv) {
-          await ExecAction.execute(this.config, remoteBus);
+          await ExecAction.dispatch(this.config, remoteBus);
         }
 
         if (this._argv.terminate) {
@@ -67,13 +67,13 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
 
   [ExecAction.EXEC]({ config }: ExecAction) {
     if (config.argv && config.argv._.length) {
-      OpenProjectAction.execute({ filePath: path.resolve(config.cwd, config.argv._[0]) }, this.bus);
+      OpenProjectAction.dispatch({ filePath: path.resolve(config.cwd, config.argv._[0]) }, this.bus);
     }
   }
 
   [InitializeAction.INITIALIZE](action: LoadAction) {
     if (this.config.argv) {
-      ExecAction.execute(this.config, this.bus);
+      ExecAction.dispatch(this.config, this.bus);
     }
     this._printSockFile();
   }
@@ -88,16 +88,16 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
     this._deleteSocketFile();
     const server = net.createServer((connection) => {
       const bus = new SockBus(connection, {
-        execute: (action) => {
+        dispatch: (action) => {
           action["$$sock"] = true;
-          return this.bus.execute(action);
+          return this.bus.dispatch(action);
         }
       }, { serialize, deserialize });
       const gateBus = {
-        execute(action: Action) {
+        dispatch(action: Action) {
           if (isPublicAction(action) && !action["$$sock"]) {
             action["$$sock"] = true;
-            return bus.execute(action);
+            return bus.dispatch(action);
           }
         }
       };

@@ -1,8 +1,7 @@
 import {
-  IActor,
   inject,
-  loggable,
   Logger,
+  loggable,
   IDisposable,
   PrivateBusProvider,
 } from "@tandem/common";

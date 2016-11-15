@@ -8,7 +8,6 @@ TODOS:
 
 - [ ] use [Streams](https://streams.spec.whatwg.org/) spec.
 - [ ] replace Action terminology for Message terminolgy
-- [ ] replace `execute(action)` for `dispatch(message)`
 - [ ] `IDispatcher` should define `dispatch(message)` method
 - [ ] `Observable` class
 - [ ] add duplex streams

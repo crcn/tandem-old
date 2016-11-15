@@ -1,10 +1,9 @@
 import { flatten } from "lodash";
 import { KeyBinding } from "@tandem/editor/browser/key-bindings";
 import { SelectionChangeAction } from "@tandem/editor/browser/actions";
-import { ParallelBus, WrapBus } from "mesh";
+import { ParallelBus, CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 
 import {
-  IActor,
   Action,
   inject,
   IPoint,
@@ -13,19 +12,19 @@ import {
   Metadata,
   TreeNode,
   Transform,
-  PrivateBusProvider,
   Observable,
   flattenTree,
   IInjectable,
   watchProperty,
+  PrivateBusProvider,
   PropertyChangeAction,
 } from "@tandem/common";
 
 import { ISyntheticObject } from "@tandem/sandbox";
 import { 
-  ISyntheticBrowser,
   SyntheticBrowser,
   SyntheticDocument,
+  ISyntheticBrowser,
   SyntheticElementQuerier,
 } from "@tandem/synthetic-browser";
 
@@ -38,10 +37,10 @@ export class Workspace extends Observable {
 
   private _zoom: number = 1;
   public translate: IPoint = { left: 0, top: 0 };
-  private _browserObserver: IActor;
+  private _browserObserver: IDispatcher<any, any>;
 
   @inject(PrivateBusProvider.ID)
-  private _bus: IActor;
+  private _bus: IDispatcher<any, any>;
 
   /**
    * workspace canvas transform. TODO - may need to move this to WorkspaceCanvas object, or similar
@@ -82,7 +81,7 @@ export class Workspace extends Observable {
 
   constructor() {
     super();
-    this._browserObserver = new WrapBus(this.onBrowserAction.bind(this));
+    this._browserObserver = new CallbackDispatcher(this.onBrowserAction.bind(this));
     this.documentQuerier  = new SyntheticElementQuerier(undefined, "*");
 
     watchProperty(this, "browser", this.onBrowserChange.bind(this));
@@ -126,7 +125,7 @@ export class Workspace extends Observable {
     this.selection = newSelection;
 
     if (this._bus) {
-      this._bus.execute(new SelectionChangeAction(this.selection));
+      this._bus.dispatch(new SelectionChangeAction(this.selection));
     }
   }
 

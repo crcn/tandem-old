@@ -1,6 +1,6 @@
-import { IActor } from "@tandem/common/actors";
 import { Action } from "@tandem/common/actions";
 import { IObservable } from "./base";
+import { IDispatcher } from "@tandem/mesh";
 
 export { IObservable };
 
@@ -13,10 +13,10 @@ export class Observable implements IObservable {
     }
   }
 
-  observe(...actors: Array<IActor>) {
-    for (let i = 0, n = actors.length; i < n; i++) {
-      const actor = actors[i];
-      if (!actor && !actor.execute) {
+  observe(...dispatchers: IDispatcher<any, any>[]) {
+    for (let i = 0, n = dispatchers.length; i < n; i++) {
+      const actor = dispatchers[i];
+      if (!actor && !actor.dispatch) {
         throw new Error(`Attempting to add a non-observable object.`);
       }
 
@@ -30,9 +30,9 @@ export class Observable implements IObservable {
     }
   }
 
-  unobserve(...actors: Array<IActor>) {
-    for (let i = 0, n = actors.length; i < n; i++) {
-      const actor = actors[i];
+  unobserve(...dispatchers: IDispatcher<any, any>[]) {
+    for (let i = 0, n = dispatchers.length; i < n; i++) {
+      const actor = dispatchers[i];
       if (this._observers === actor) {
         this._observers = null;
       } else if (Array.isArray(this._observers)) {
@@ -55,13 +55,13 @@ export class Observable implements IObservable {
     if (action.target && action.bubbles === false) return;
     action.currentTarget = this._target;
     if (!this._observers) return;
-    if (!Array.isArray(this._observers)) return this._observers.execute(action);
+    if (!Array.isArray(this._observers)) return this._observers.dispatch(action);
 
     // fix case where observable unlistens and re-listens to events during a notifiction
     const observers = this._observers.concat();
     for (let i = observers.length; i--; ) {
       if (action.canPropagateImmediately === false) break;
-      observers[i].execute(action);
+      observers[i].dispatch(action);
     }
   }
 }

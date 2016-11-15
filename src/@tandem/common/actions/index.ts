@@ -1,6 +1,6 @@
 import { Action } from "./base";
 import { definePublicAction } from "./core";
-import { IActor } from "@tandem/common/actors";
+import { IDispatcher, IStreamableDispatcher, DuplexStream, readOneChunk } from "@tandem/mesh";
 import { File } from "../models";
 
 export * from "./base";
@@ -12,8 +12,8 @@ export class GetPrimaryProjectFilePathAction extends Action {
   constructor() {
     super(GetPrimaryProjectFilePathAction.GET_PRIMARY_PROJECT_FILE_PATH);
   }
-  static async execute(bus: IActor): Promise<string> {
-    return (await bus.execute(new GetPrimaryProjectFilePathAction()).read()).value;
+  static async dispatch(dispatcher: IStreamableDispatcher<any>): Promise<string> {
+    return (await readOneChunk(dispatcher.dispatch(new GetPrimaryProjectFilePathAction()))).value;
   }
 }
 

@@ -1,28 +1,27 @@
-import { IActor } from "@tandem/common/actors";
-import { WrapBus } from "mesh";
 import { Observable } from "./index";
 import { IObservable } from "../observable";
 import { ArrayChangeAction } from "./actions";
 import { Action, ChangeAction } from "@tandem/common/actions";
-import { TypeWrapBus, BubbleBus } from "@tandem/common/busses";
+import { BubbleDispatcher } from "@tandem/common/dispatchers";
+import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { ArrayDiff, ArrayDiffInsert, ArrayDiffRemove, ArrayDiffUpdate } from "@tandem/common/utils";
 
 export class ObservableCollection<T> extends Array<T> implements IObservable {
   private _observable: Observable;
-  private _itemObserver: IActor;
+  private _itemObserver: IDispatcher<any, any>;
 
   constructor(...items: T[]) {
     super(...items);
     this._observable = new Observable(this);
-    this._itemObserver = new BubbleBus(this);
+    this._itemObserver = new BubbleDispatcher(this);
     this._watchItems(this);
   }
 
-  observe(actor: IActor) {
+  observe(actor: IDispatcher<any, any>) {
     this._observable.observe(actor);
   }
 
-  unobserve(actor: IActor) {
+  unobserve(actor: IDispatcher<any, any>) {
     this._observable.unobserve(actor);
   }
 

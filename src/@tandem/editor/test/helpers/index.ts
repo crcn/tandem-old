@@ -31,7 +31,6 @@ export interface IMasterTestAppicationOptions {
 export const createTestMasterApplication = (options: IMasterTestAppicationOptions = {}) => {
   const bus = new BrokerBus();
 
-
   const injector = new Injector(
     new InjectorProvider(),
     createHTMLCoreProviders(),

@@ -1,19 +1,21 @@
 import { inject } from "@tandem/common/decorators";
 import { Action } from "@tandem/common/actions";
-import { IActor } from "@tandem/common/actors";
+import { IBus } from "@tandem/mesh";
 import {
-  IInjectable,
   Injector,
-  PrivateBusProvider,
+  IInjectable,
   InjectorProvider,
+  PrivateBusProvider,
 } from "@tandem/common/ioc";
 
-export interface ICommand extends IActor { }
+export interface ICommand {
+  execute(action: Action): any;
+}
 
 export abstract class BaseCommand implements ICommand, IInjectable {
 
   @inject(PrivateBusProvider.ID)
-  protected bus: IActor;
+  protected bus: IBus<any>;
 
   @inject(InjectorProvider.ID)
   protected injector: Injector;

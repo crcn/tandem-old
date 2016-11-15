@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { DuplexStream, WritableStream, ParallelBus, readAll } from "@tandem/mesh";
+import { DuplexStream, WritableStream, ParallelBus, readAllChunks } from "@tandem/mesh";
 import { CallbackDispatcher } from "./callback";
 
 describe(__filename + "#", () => {
@@ -26,7 +26,7 @@ describe(__filename + "#", () => {
       new CallbackDispatcher(m => i++)
     ]);
 
-    expect(await readAll(bus.dispatch({}).readable)).to.eql([0, 1, 2]);
+    expect(await readAllChunks(bus.dispatch({}).readable)).to.eql([0, 1, 2]);
   });
 
   it("Can handle a dispatcher that returns a rejection", async () => {
@@ -38,7 +38,7 @@ describe(__filename + "#", () => {
 
     let error;
     try {
-      await readAll(bus.dispatch({}).readable);
+      await readAllChunks(bus.dispatch({}).readable);
     } catch(e) {
       error = e;
     }
@@ -76,7 +76,7 @@ describe(__filename + "#", () => {
       new CallbackDispatcher(m => i++)
     ]);
 
-    expect(await readAll(bus.dispatch({}).readable)).to.eql([3, 0, 1, 2]);
+    expect(await readAllChunks(bus.dispatch({}).readable)).to.eql([3, 0, 1, 2]);
   });
 
   it("can write & read transformed data to a request", async () => {
@@ -103,6 +103,6 @@ describe(__filename + "#", () => {
     await writer.write(2);
     await writer.close();
 
-    expect(await readAll(readable)).to.eql([1, 0, 2, 1, 0]);
+    expect(await readAllChunks(readable)).to.eql([1, 0, 2, 1, 0]);
   });
 });

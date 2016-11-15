@@ -1,7 +1,7 @@
 import { Action } from "../actions";
 import { Observable } from "./index";
 import { expect } from "chai";
-import { CallbackBus } from "@tandem/common/busses";
+import { CallbackDispatcher } from "@tandem/mesh";
 
 describe(__filename + "#", () => {
   it("can be created", () => {
@@ -12,7 +12,7 @@ describe(__filename + "#", () => {
     const obs = new Observable();
     let i = 0;
     obs.observe({
-      execute: action => i++
+      dispatch: action => i++
     });
 
     obs.notify(new Action("change"));
@@ -23,10 +23,10 @@ describe(__filename + "#", () => {
     const obs = new Observable();
     let i = 0;
     obs.observe({
-      execute: action => i++
+      dispatch: action => i++
     });
     obs.observe({
-      execute: action => i++
+      dispatch: action => i++
     });
     obs.notify(new Action("change"));
     expect(i).to.equal(2);
@@ -36,10 +36,10 @@ describe(__filename + "#", () => {
     const obs = new Observable();
     let i = 0;
     obs.observe({
-      execute: (action) => { i++; action.stopImmediatePropagation(); }
+      dispatch: (action) => { i++; action.stopImmediatePropagation(); }
     });
     obs.observe({
-      execute: action => i++
+      dispatch: action => i++
     });
     obs.notify(new Action("change"));
     expect(i).to.equal(1);
@@ -49,7 +49,7 @@ describe(__filename + "#", () => {
     const obs = new Observable();
     let i = 0;
     obs.observe({
-      execute: (action) => {
+      dispatch: (action) => {
         if (i > 0) action.stopPropagation();
       }
     });
@@ -57,10 +57,10 @@ describe(__filename + "#", () => {
     const obs2 = new Observable();
 
     obs2.observe({
-      execute: action => i++
+      dispatch: action => i++
     });
 
-    obs.observe({ execute: obs2.notify.bind(obs2) });
+    obs.observe({ dispatch: obs2.notify.bind(obs2) });
     obs.notify(new Action("change"));
     expect(i).to.equal(1);
     obs.notify(new Action("change"));
@@ -70,7 +70,7 @@ describe(__filename + "#", () => {
   it("can unobserve an observable", () => {
     const obs = new Observable();
     let i = 0;
-    const observer = new CallbackBus(() => i++);
+    const observer = new CallbackDispatcher(() => i++);
     obs.observe(observer);
     obs.notify(new Action("a"));
     expect(i).to.equal(1);

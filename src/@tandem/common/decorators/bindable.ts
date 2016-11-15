@@ -1,5 +1,4 @@
-import { IActor } from "@tandem/common/actors";
-import { WrapBus } from "mesh";
+import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { IObservable, Observable } from "@tandem/common/observable";
 import { Action, PropertyChangeAction } from "@tandem/common/actions";
 
@@ -12,11 +11,11 @@ export function bindable(bubbles: boolean = false) {
   class BindableValue {
     private _value: any;
     private _shouldBubbleActions: boolean;
-    private _valueObserver: IActor;
+    private _valueObserver: IDispatcher<any, any>;
 
     constructor(readonly target: IObservable, readonly property: string) {
       if (shouldBubbleActions(target, property)) {
-        this._valueObserver = new WrapBus(this.onValueAction.bind(this));
+        this._valueObserver = new CallbackDispatcher(this.onValueAction.bind(this));
       }
     }
 

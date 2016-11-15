@@ -130,7 +130,7 @@ describe(__filename + "#", () => {
     let _ignoreAction = false;
 
     p1.observe({
-      execute(action: Action) {
+      dispatch(action: Action) {
         if (_ignoreAction) return;
         _ignoreAction = true;
         if (action.type === TreeNodeAction.NODE_REMOVED) {

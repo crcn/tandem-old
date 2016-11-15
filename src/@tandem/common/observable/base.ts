@@ -1,8 +1,8 @@
-import { IActor } from "@tandem/common/actors";
+import { IDispatcher } from "@tandem/mesh";
 import { Action } from "@tandem/common/actions";
 
 export interface IObservable {
-  observe(actor: IActor);
-  unobserve(actor: IActor);
+  observe(actor: IDispatcher<any, any>);
+  unobserve(actor: IDispatcher<any, any>);
   notify(action: Action);
 }

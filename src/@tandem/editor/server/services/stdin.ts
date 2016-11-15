@@ -48,7 +48,7 @@ export class StdinService extends CoreApplicationService<IEdtorServerConfig> {
       action = { type: text };
     }
 
-    var response = this.bus.execute(action);
+    var response = this.bus.dispatch(action);
     var value;
     var done;
     while ({ value, done } = await response.read()) {

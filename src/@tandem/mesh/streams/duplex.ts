@@ -6,6 +6,8 @@ import {
   WritableStreamDefaultController,
 } from "./std";
 
+import { readAllChunks } from "./utils";
+
 export type DuplexStreamResponse = { cancel(): any };
 export type DuplexStreamHandler<T, U> = (input: ReadableStream<T>, output: WritableStream<U>) => any | DuplexStreamResponse;
 
@@ -128,6 +130,10 @@ export class DuplexStream<T, U> implements TransformStream<T, U> {
     const input  = this._input  = new ReadableWritableStream(this);
     const output = this._output = new ReadableWritableStream(this);
     this.$response = handler(input.readable, output.writable) || {};
+  }
+
+  then(resolve, reject) {
+    return readAllChunks(this).then(resolve, reject);
   }
 
   get writable(): WritableStream<T> {

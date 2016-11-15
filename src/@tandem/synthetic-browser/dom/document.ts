@@ -1,4 +1,4 @@
-import { WrapBus } from "mesh";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { SyntheticWindow } from "./window";
 import { ISyntheticBrowser } from "../browser";
 import { SyntheticLocation } from "../location";
@@ -33,7 +33,7 @@ import {
   Action,
   bindable,
   Injector,
-  BubbleBus,
+  BubbleDispatcher,
   diffArray,
   serialize,
   ISerializer,
@@ -149,7 +149,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   constructor(readonly defaultNamespaceURI: string) {
     super("#document");
     this.styleSheets = new ObservableCollection<SyntheticCSSStyleSheet>();
-    this.styleSheets.observe(new WrapBus(this.onStyleSheetsAction.bind(this)));
+    this.styleSheets.observe(new CallbackDispatcher(this.onStyleSheetsAction.bind(this)));
     this._registeredElements = {};
   }
 

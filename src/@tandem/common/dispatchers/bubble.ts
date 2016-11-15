@@ -1,10 +1,10 @@
 import { Action } from "../actions";
-import { IActor } from "../actors";
+import { IDispatcher } from "@tandem/mesh";
 import { IObservable } from "../observable";
 
-export class BubbleBus implements IActor {
+export class BubbleDispatcher implements IDispatcher<any, any> {
   constructor(readonly target: IObservable) { }
-  execute(action: Action) {
+  dispatch(action: Action) {
     this.target.notify(action);
   }
 }

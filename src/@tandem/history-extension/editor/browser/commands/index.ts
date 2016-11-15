@@ -1,13 +1,13 @@
 import { ModuleHistory } from "@tandem/history-extension/history";
 import {
   Action,
-  IActor,
+  ICommand,
   inject,
   IInjectable,
 } from "@tandem/common";
 
 
-export class InitializeHistoryCommand implements IActor {
+export class InitializeHistoryCommand implements ICommand {
 
   constructor(
     @inject(ModuleHistory.DEPENDENCY_ID) private _history: ModuleHistory
@@ -20,7 +20,7 @@ export class InitializeHistoryCommand implements IActor {
   }
 }
 
-export class UndoComand implements IActor {
+export class UndoComand implements ICommand {
   constructor(
     @inject(ModuleHistory.DEPENDENCY_ID) private _history: ModuleHistory
   ) {
@@ -32,7 +32,7 @@ export class UndoComand implements IActor {
   }
 }
 
-export class RedoCommand implements IActor {
+export class RedoCommand implements ICommand {
   constructor(
     @inject(ModuleHistory.DEPENDENCY_ID) private _history: ModuleHistory
   ) {

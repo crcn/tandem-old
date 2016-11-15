@@ -1,6 +1,6 @@
 import  * as store from "store";
 import { Store } from "@tandem/editor/browser/models";
-import { WrapBus } from "mesh";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { StoreProvider } from "@tandem/editor/browser/providers";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
@@ -20,7 +20,7 @@ export class SettingsService extends CoreApplicationService<IEditorBrowserConfig
     this._store.settings.setProperties(store.get("settings"));
 
     // TODO - don't want to do this
-    this._store.settings.observe(this.bus, WrapBus.create(this._onSettingsChange));
+    this._store.settings.observe(this.bus, CallbackDispatcher.create(this._onSettingsChange));
   }
 
   _onSettingsChange = (action: SettingChangeAction) => {

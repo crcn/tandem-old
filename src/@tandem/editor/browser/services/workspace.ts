@@ -1,5 +1,5 @@
 
-import { WrapBus } from "mesh";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import {
   DOMNodeType,
@@ -65,7 +65,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
 
   async _loadWorkspaces() {
 
-    const filePath = await GetPrimaryProjectFilePathAction.execute(this.bus);
+    const filePath = await GetPrimaryProjectFilePathAction.dispatch(this.bus);
 
     if (this._store.workspace && this._store.workspace.browser.location.toString() === filePath) return;
 

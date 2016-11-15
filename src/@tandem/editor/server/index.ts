@@ -1,9 +1,10 @@
 import { DSProvider } from "./providers";
+import { IStreamableDispatcher } from "@tandem/mesh";
 import { AddFilesAction } from "@tandem/editor/common/actions";
 import { AddFilesCommand } from "./commands";
 import { IEdtorServerConfig } from "./config";
+import { Injector, CommandFactoryProvider } from "@tandem/common";
 import { ConsoleLogService, ReceiverService } from "@tandem/editor/common";
-import { IActor, Injector, CommandFactoryProvider } from "@tandem/common";
 import { ProtocolURLResolverProvider, WebpackProtocolResolver } from "@tandem/sandbox";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
 
@@ -21,7 +22,7 @@ import {
 
 import { createCommonEditorProviders } from "../common";
 
-export function createEditorServerProviders(config: IEdtorServerConfig, dataStore?: IActor) {
+export function createEditorServerProviders(config: IEdtorServerConfig, dataStore?: IStreamableDispatcher<any>) {
   return [
     createCommonEditorProviders(),
     createCoreApplicationProviders(config),

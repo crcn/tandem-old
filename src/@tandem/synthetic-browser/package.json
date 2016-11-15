@@ -12,7 +12,7 @@
     "btoa": "^1.1.2",
     "ent": "^2.2.0",
     "lodash": "^4.16.4",
-    "mesh": "6.0.x",
+    "@tandem/mesh": "6.0.x",
     "postcss": "^5.2.5",
     "postcss-scss": "^0.3.1",
     "react": "^15.3.2",

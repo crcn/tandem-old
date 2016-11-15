@@ -1,10 +1,10 @@
 import { inject } from "@tandem/common/decorators";
 import { Logger } from "../logger";
-import { NoopBus } from "mesh";
+import { NoopDispatcher } from "@tandem/mesh";
 import { IInvoker } from "@tandem/common/actors";
 import { PrivateBusProvider } from "@tandem/common/ioc";
 
-const noopBus = new NoopBus();
+const noopDispatcher = new NoopDispatcher();
 
 // TODO - use a singleton here? It might be okay
 export function loggable () {
@@ -24,7 +24,7 @@ export function loggable () {
         // create a child logger so that the prefix here does
         // not get overwritten
         return this.$$logger = (new Logger(
-          bus || noopBus,
+          bus || noopDispatcher,
           `${this.constructor.name}: `
         ).createChild());
       }

@@ -1,13 +1,14 @@
+import { IDispatcher } from "@tandem/mesh";
 import { AddFilesAction } from "@tandem/editor/common/actions";
 import { ConsoleLogService, ReceiverService } from "@tandem/editor/common";
-import { IActor, Injector, CommandFactoryProvider } from "@tandem/common";
+import { Injector, CommandFactoryProvider } from "@tandem/common";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
 import { DependencyGraphStrategyProvider, WebpackDependencyGraphStrategy, ProtocolURLResolverProvider, WebpackProtocolResolver } from "@tandem/sandbox";
 
 import { IEditorWorkerConfig } from "./config";
 import { createCommonEditorProviders } from "../common";
 
-export function createEditorWorkerProviders(config:  IEditorWorkerConfig, dataStore?: IActor) {
+export function createEditorWorkerProviders(config:  IEditorWorkerConfig, dataStore?: IDispatcher<any, any>) {
   return [
     createCommonEditorProviders(),
     createCoreApplicationProviders(config),

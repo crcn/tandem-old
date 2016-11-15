@@ -1,5 +1,5 @@
 import * as memoize from "memoizee";
-import { WrapBus } from "mesh";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { IFileSystem } from "@tandem/sandbox/file-system";
 import * as btoa from "btoa";
 import * as atob from "atob";
@@ -48,7 +48,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   constructor(source: IFileCacheItemData, collectionName: string, private _fileSystem: IFileSystem) {
     super(source, collectionName);
-    this.observe(new WrapBus(this.onAction.bind(this)));
+    this.observe(new CallbackDispatcher(this.onAction.bind(this)));
     this._i = _i++;
   }
 

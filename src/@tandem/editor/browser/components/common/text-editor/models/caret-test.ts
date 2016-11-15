@@ -1,8 +1,8 @@
 import Caret from "./caret";
 import Marker from "./marker";
 import TextEditor from "./text-editor";
-import { WrapBus, NoopBus } from "mesh";
-import { BrokerBus } from "@tandem/common/busses";
+import { CallbackDispatcher } from "@tandem/mesh";
+import { BrokerBus } from "@tandem/common/dispatchers";
 import { expect } from "chai";
 
 describe(__filename + "#", function() {
@@ -41,7 +41,7 @@ describe(__filename + "#", function() {
     editor.style = { whitespace: "nowrap" };
     editor.source = "abc";
 
-    editor.bus.execute(<any>{ type: "input", text: "\n", preventDefault: function() { } });
+    editor.bus.dispatch(<any>{ type: "input", text: "\n", preventDefault: function() { } });
     expect(editor.marker.position).to.equal(0);
   });
 });

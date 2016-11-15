@@ -1,5 +1,5 @@
 
-import { WrapBus } from "mesh";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { debounce } from "lodash";
 import { DocumentFileAction } from "@tandem/editor/browser/actions";
 import {
@@ -7,9 +7,8 @@ import {
   IPoint,
   inject,
   Action,
-  IActor,
   bindable,
-  BubbleBus,
+  BubbleDispatcher,
   Transform,
   IDisposable,
   IObservable,
@@ -22,13 +21,15 @@ import {
   InjectorProvider,
 } from "@tandem/common";
 
+import { IDispatcher } from "@tandem/mesh";
+
 import {
   ISyntheticBrowser,
   SyntheticBrowser,
   SyntheticDocument
 } from "@tandem/synthetic-browser";
 
-export interface IWorkspaceTool extends IActor, IDisposable {
+export interface IWorkspaceTool extends IDispatcher<any, any>, IDisposable {
   readonly editor: any;
   readonly name: string;
   readonly cursor: string;
@@ -41,7 +42,7 @@ export abstract class BaseEditorTool implements IWorkspaceTool, IInjectable {
 
   dispose() { }
 
-  execute(action: Action) {
+  dispatch(action: Action) {
     if (this[action.type]) {
       return this[action.type](action);
     }

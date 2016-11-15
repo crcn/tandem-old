@@ -9,7 +9,7 @@ import {
   bubble,
   ObservableCollection,
   TreeNode,
-  BubbleBus
+  BubbleDispatcher
 } from "@tandem/common";
 
 export class BaseFSModel extends TreeNode<BaseFSModel> {
@@ -31,7 +31,7 @@ export class BaseFSModel extends TreeNode<BaseFSModel> {
   onChildAdded(child: BaseFSModel) {
     super.onChildAdded(child);
     if (this._injector) this._injector.inject(child);
-    child.observe(new BubbleBus(this));
+    child.observe(new BubbleDispatcher(this));
   }
 }
 

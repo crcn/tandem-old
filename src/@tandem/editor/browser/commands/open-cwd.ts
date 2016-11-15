@@ -1,4 +1,4 @@
-import { IActor, Action, inject, Injector, InjectorProvider } from "@tandem/common";
+import { ICommand, Action, inject, Injector, InjectorProvider } from "@tandem/common";
 
 import { Store } from "@tandem/editor/browser/models";
 import { DirectoryModel } from "@tandem/editor/common";
@@ -6,7 +6,7 @@ import { StoreProvider } from "@tandem/editor/browser/providers";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { ApplicationConfigurationProvider } from "@tandem/core";
 
-export class OpenCWDCommand implements IActor {
+export class OpenCWDCommand implements ICommand {
 
   @inject(StoreProvider.ID)
   private _store: Store;

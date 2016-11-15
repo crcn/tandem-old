@@ -1,8 +1,8 @@
 
 import { inject } from "@tandem/common/decorators";
-import { IActor } from "@tandem/common/actors";
 import { InsertTool } from "@tandem/editor/browser/models/insert-tool";
 import { MouseAction } from "@tandem/editor/browser/actions";
+import { IDispatcher } from "@tandem/mesh";
 import { SetToolAction } from "@tandem/editor/browser/actions";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
@@ -31,7 +31,7 @@ editor.open(new HTMLFile());
 export class EditInnerHTMLTool extends BaseEditorTool {
 
   @inject(PrivateBusProvider.ID)
-  readonly bus: IActor;
+  readonly bus: IDispatcher<any, any>;
 
   @inject(InjectorProvider.ID)
   readonly injector: Injector;
@@ -96,7 +96,6 @@ export class EditInnerHTMLTool extends BaseEditorTool {
     (<Element>this._targetEntity.section.targetNode).innerHTML = " ";
 
     // save the workspae file -- diffing time
-    // this.bus.execute(new SetToolAction(<WorkspaceToolFactoryProvider>this.injector.query(pointerToolProvider.id)));
   }
 
   public canvasMouseDown(event: MouseAction) {

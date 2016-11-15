@@ -1,7 +1,6 @@
 import {
   inject,
   Action,
-  IActor,
   Injector,
   InjectorProvider,
   CommandFactoryProvider,
@@ -10,7 +9,7 @@ import {
 
 import { BaseApplicationService } from "@tandem/core";
 
-import {SequenceBus } from "mesh";
+import {SequenceBus } from "@tandem/mesh";
 
 // Command pattern receiver
 export class ReceiverService extends BaseApplicationService {
@@ -18,12 +17,12 @@ export class ReceiverService extends BaseApplicationService {
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  execute(action: Action) {
+  dispatch(action: Action) {
 
     const commands = CommandFactoryProvider.findAllByAction(action, this._injector).map((dep) => {
       return dep.create()
     });
 
-    return new SequenceBus(commands).execute(action);
+    return new SequenceBus(commands).dispatch(action);
   }
 }

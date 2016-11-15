@@ -42,7 +42,7 @@ function createElementInsertToolClass(options) {
 export const keyBindingProvider = [
   new GlobalKeyBindingProvider(TEXT_TOOL_KEY_CODE, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
-      // this.bus.execute(new SetToolAction(this.injector.query<WorkspaceToolFactoryProvider>(textToolProvider.id)));
+      // this.bus.dispatch(new SetToolAction(this.injector.query<WorkspaceToolFactoryProvider>(textToolProvider.id)));
     }
   })
 ];
@@ -59,7 +59,7 @@ for (const key in insertElementKeyBindings) {
 function addElementKeyBinding(key: string, options: { nodeName: string, attributes: string }) {
   keyBindingProvider.push(new GlobalKeyBindingProvider(key, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.execute(new SetToolAction(<ClassFactoryProvider>this.injector.link(new ClassFactoryProvider(null, createElementInsertToolClass(options)))));
+      this.bus.dispatch(new SetToolAction(<ClassFactoryProvider>this.injector.link(new ClassFactoryProvider(null, createElementInsertToolClass(options)))));
     }
   }));
 }

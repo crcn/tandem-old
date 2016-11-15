@@ -10,25 +10,6 @@ import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 
 export class DragSelectStageToolComponent extends BaseApplicationComponent<{ app: any, zoom: number, tool: PointerTool }, any> {
 
-  // constructor() {
-  //   super();
-  //   this.state = {};
-  // }
-
-  componentDidMount() {
-    // this.bus.register(this);
-  }
-
-  // execute(action: MouseAction) {
-  //   if (action.type === MouseAction.CANVAS_MOUSE_DOWN) {
-  //     this.startDrag(action.originalEvent);
-  //   }
-  // }
-
-  componentWillUnmount() {
-    // this.props.app.bus.unregister(this);
-  }
-
   startDrag(event) {
 
     const container = (this.refs as any).container;
@@ -81,7 +62,7 @@ export class DragSelectStageToolComponent extends BaseApplicationComponent<{ app
         }
       });
 
-      this.props.app.bus.execute(new SelectAction(selection));
+      this.props.app.bus.dispatch(new SelectAction(selection));
 
     }, () => {
       this.setState({

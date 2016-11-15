@@ -19,13 +19,12 @@ import {
   FileSystemProvider,
 } from "../providers";
 
-import { WrapBus } from "mesh";
+import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 
 import {
   Action,
   inject,
   Logger,
-  IActor,
   Status,
   loggable,
   Injector,
@@ -87,7 +86,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private _map: RawSourceMap;
   private _fileCacheItem: FileCacheItem;
-  private _fileCacheItemObserver: IActor;
+  private _fileCacheItemObserver: IDispatcher<any, any>;
   private _updatedAt: number;
   private _loadedDependencies: boolean;
   private _sourceUpdatedAt: number;
@@ -97,7 +96,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   constructor(source: IDependencyData, collectionName: string, private _graph: IDependencyGraph) {
     super(source, collectionName);
-    this._fileCacheItemObserver = new WrapBus(this.onFileCacheAction.bind(this));
+    this._fileCacheItemObserver = new CallbackDispatcher(this.onFileCacheAction.bind(this));
   }
 
   $didInject() {

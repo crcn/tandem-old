@@ -1,4 +1,4 @@
-import { WrapBus } from "mesh";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { FileCache } from "./file-cache";
 import { IFileSystem, IFileWatcher } from "@tandem/sandbox/file-system";
 import { IBrokerBus, diffArray, inject, loggable, Logger } from "@tandem/common";
@@ -13,7 +13,7 @@ export class FileCacheSynchronizer {
 
   constructor(private _cache: FileCache, private _bus: IBrokerBus, private _fileSystem: IFileSystem) {
     this._watchers = {};
-    this._cache.collection.observe(new WrapBus(this.update.bind(this)));
+    this._cache.collection.observe(new CallbackDispatcher(this.update.bind(this)));
     this.update();
   }
 

@@ -56,7 +56,7 @@ describe(__filename + "#", () => {
 
       return new Promise((resolve) => {
         item.observe({
-          execute(action: PropertyChangeAction) {
+          dispatch(action: PropertyChangeAction) {
             if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
               expect(item.url).to.equal("data:text/plain,aGVsbG8=");
               resolve();
@@ -78,7 +78,7 @@ describe(__filename + "#", () => {
 
       return new Promise((resolve) => {
         item.observe({
-          execute(action: PropertyChangeAction) {
+          dispatch(action: PropertyChangeAction) {
             if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
               expect(item.url).to.equal("file://entry.js");
               expect(item.sourceFileModifiedAt).to.not.equal(mtime);

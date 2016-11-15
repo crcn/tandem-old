@@ -101,7 +101,7 @@ export class ConsoleLogService extends CoreApplicationService<any> {
   [LogAction.LOG]({ level, text, filterable }: LogAction) {
 
     const logOptions = this.config.log || {};
-    const logLevel   = logOptions.level || LogLevel.ALL;
+    const logLevel   = logOptions.level == null ? LogLevel.ALL : logOptions.level;
     const logPrefix  = logOptions.prefix || "";
 
     if (!(level & logLevel) && filterable !== false) return;

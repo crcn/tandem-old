@@ -1,11 +1,11 @@
 import {
-  IActor,
   Provider,
   Injector,
   ClassFactoryProvider,
 } from "@tandem/common";
+import { IDispatcher } from "@tandem/mesh";
 
-export class ApplicationServiceProvider<T extends IActor> extends ClassFactoryProvider {
+export class ApplicationServiceProvider<T extends  IDispatcher<any, any>> extends ClassFactoryProvider {
 
   static readonly NS = "services";
 

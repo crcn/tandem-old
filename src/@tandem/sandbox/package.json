@@ -14,7 +14,7 @@
     "loader-utils": "^0.2.16",
     "lodash": "^4.16.4",
     "md5": "^2.2.1",
-    "mesh": "6.0.x",
+    "@tandem/mesh": "6.0.x",
     "node-fetch": "^1.6.3",
     "node-libs-browser": "^1.0.0",
     "package-path": "^1.0.0",

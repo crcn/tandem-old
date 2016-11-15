@@ -4,10 +4,10 @@ import * as fs from "fs";
 import * as memoize from "memoizee";
 
 import { IFileSystem } from "../file-system";
+import { IDispatcher } from "@tandem/mesh";
 import { IFileResolver } from "../resolver";
 import { ResolveFileAction } from "../actions";
 import {
-  IActor,
   inject,
   Logger,
   Injector,
@@ -66,11 +66,11 @@ export abstract class BaseFileResolver implements IFileResolver {
 }
 
 export class RemoteFileResolver extends BaseFileResolver {
-  constructor(@inject(PrivateBusProvider.ID) private _bus: IActor) {
+  constructor(@inject(PrivateBusProvider.ID) private _bus: IDispatcher<any, any>) {
     super();
   }
   async resolve2(filePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
-    return (await this._bus.execute(new ResolveFileAction(filePath, cwd, options)).read()).value;
+    return (await this._bus.dispatch(new ResolveFileAction(filePath, cwd, options)).read()).value;
   }
 }
 

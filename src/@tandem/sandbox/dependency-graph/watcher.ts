@@ -18,13 +18,13 @@ import {
   FileSystemProvider,
 } from "../providers";
 
-import { WrapBus } from "mesh";
+import { CallbackDispatcher } from "@tandem/mesh";
+import { IDispatcher } from "@tandem/mesh";
 
 import {
   Action,
   inject,
   Logger,
-  IActor,
   loggable,
   Injector,
   LogLevel,
@@ -56,7 +56,7 @@ const RELOAD_TIMEOUT = 1000 * 3;
 export class DependencyGraphWatcher extends Observable {
   protected readonly logger: Logger;
 
-  private _dependencyObserver: IActor;
+  private _dependencyObserver: IDispatcher<any, any>;
   private _dependencyObservers: DisposableCollection;
   private _resolve: any;
 
@@ -65,7 +65,7 @@ export class DependencyGraphWatcher extends Observable {
 
   constructor(readonly entry: Dependency) {
     super();
-    this._dependencyObserver = new WrapBus(this.onDependencyAction.bind(this));
+    this._dependencyObserver = new CallbackDispatcher(this.onDependencyAction.bind(this));
   }
 
   public dispose() {

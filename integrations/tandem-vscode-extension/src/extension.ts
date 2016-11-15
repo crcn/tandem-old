@@ -6,7 +6,7 @@
 import "reflect-metadata";
 
 import { exec, spawn, ChildProcess } from "child_process";
-import { WrapBus } from "mesh";
+import { CallbackDispatcher, NoopDispatcher } from "@tandem/mesh";
 import * as vscode from "vscode";
 import * as net from "net";
 import * as through from "through2";
@@ -14,7 +14,6 @@ import * as getPort from "get-port";
 import * as fs from "fs";
 import * as createServer from "express";
 import { debounce, throttle } from "lodash";
-import { NoopBus } from "mesh";
 
 import { createCoreApplicationProviders, ServiceApplication } from "@tandem/core";
 import { GetServerPortAction, OpenProjectAction, SelectSourceAction, OpenFileAction } from "@tandem/editor";
@@ -153,7 +152,7 @@ class TandemClient extends Observable {
     }
 
     private watchFileCache() {
-        this.fileCache.collection.observe(new WrapBus((action: Action) => {
+        this.fileCache.collection.observe(new CallbackDispatcher((action: Action) => {
             if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
                 const changeAction = <PropertyChangeAction>action;
                 if (changeAction.property === "url") {
@@ -175,7 +174,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     await client.connect();
 
-    client.observe(new WrapBus((action) => {
+    client.observe(new CallbackDispatcher((action) => {
         if (action.type === FileCacheChangeAction.FILE_CACHE_CHANGE) {
             setEditorContentFromCache((<FileCacheChangeAction>action).item);
         }

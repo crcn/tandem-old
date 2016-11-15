@@ -216,7 +216,7 @@ class ResizerComponent extends BaseApplicationComponent<{
 
     }, () => {
 
-      this.bus.execute(new ApplyFileEditAction(this._visibleElements.createStyleEditActions()));
+      this.bus.dispatch(new ApplyFileEditAction(this._visibleElements.createStyleEditActions()));
 
       this._dragger = void 0;
       this.props.workspace.metadata.set(MetadataKeys.MOVING, false);
@@ -231,7 +231,7 @@ class ResizerComponent extends BaseApplicationComponent<{
   }
 
   onPointMouseUp = () => {
-    this.bus.execute(new ApplyFileEditAction(this._visibleElements.createStyleEditActions()));
+    this.bus.dispatch(new ApplyFileEditAction(this._visibleElements.createStyleEditActions()));
     this.props.workspace.metadata.set(MetadataKeys.MOVING, false);
     this.setState({ guideLines: undefined });
     this.props.onStopResizing();

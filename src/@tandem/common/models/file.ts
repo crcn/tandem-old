@@ -1,4 +1,4 @@
-import { IActor } from "@tandem/common/actors";
+import { IDispatcher } from "@tandem/mesh";
 import {
   Injector,
   PrivateBusProvider,
@@ -30,7 +30,7 @@ export class File extends Observable {
   protected _injector: Injector;
 
   @inject(PrivateBusProvider.ID)
-  protected _bus: IActor;
+  protected _bus: IDispatcher<any, any>;
 
   constructor() {
     super();
@@ -46,27 +46,6 @@ export class File extends Observable {
 
   async save() {
     this.mtime = Date.now();
-    // await UpdateTemporaryFileContentAction.execute(this, this._bus);
   }
 
-  // static async open(path: string, injector: Injector, mimeType?: string): Promise<File> {
-  //   const bus = PrivateBusProvider.getInstance(injector);
-  //   const data = await ReadFileAction.execute(path, bus);
-  //   const fileFactory = FileFactoryProvider.find(mimeType || MimeTypeProvider.lookup(path, injector), injector) || FileFactoryProvider.find("file", injector);
-  //   return fileFactory.create(data);
-  // }
-
-  // protected updateFromSourceData(data: IFileModelActionResponseData) {
-  //   Object.assign(this, data);
-  // }
-
-  // protected onFileDataChange(data: IFileModelActionResponseData) {
-  //   this.updateFromSourceData(data);
-  // }
-
-  // sync() {
-  //   this._watcher = WatchFileAction.execute(this.path, this._bus, this.onFileDataChange.bind(this));
-  // }
 }
-
-// export const fileModelProvider = new FileFactoryProvider("file", File);

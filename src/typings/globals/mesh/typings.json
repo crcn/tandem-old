@@ -6,6 +6,6 @@
     "main": "./typings/index.d.ts",
     "version": "6.0.32",
     "global": false,
-    "name": "mesh"
+    "name": "@tandem/mesh"
   }
 }

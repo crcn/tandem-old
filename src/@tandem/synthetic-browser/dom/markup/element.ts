@@ -1,5 +1,5 @@
-import { WrapBus } from "mesh";
 import { bindable } from "@tandem/common/decorators";
+import { difference } from "lodash";
 import { DOMNodeType } from "./node-types";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
@@ -7,14 +7,13 @@ import { parse as parseMarkup } from "./parser.peg";
 import { selectorMatchesElement } from "../selector";
 import { AttributeChangeAction } from "@tandem/synthetic-browser/actions";
 import { syntheticElementClassType } from "./types";
-import { difference } from "lodash";
 import { SyntheticDocumentFragment } from "./document-fragment";
+import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { SyntheticDOMNode, SyntheticDOMNodeSerializer } from "./node";
 import { SyntheticDOMContainer, SyntheticDOMContainerEdit } from "./container";
 import {
-  IActor,
   Action,
-  BubbleBus,
+  BubbleDispatcher,
   serialize,
   diffArray,
   Observable,
@@ -238,7 +237,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
    */
 
   private _createdCallbackCalled: boolean;
-  private _shadowRootObserver: IActor;
+  private _shadowRootObserver: IDispatcher<any, any>;
 
   /**
    * Attributes that are not modifiable by the editor. These are typically
@@ -253,9 +252,9 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   constructor(readonly namespaceURI: string, readonly tagName: string) {
     super(tagName);
     this._readonlyAttributeNames = [];
-    this._shadowRootObserver = new BubbleBus(this);
+    this._shadowRootObserver = new BubbleDispatcher(this);
     this.attributes = new SyntheticDOMAttributes();
-    this.attributes.observe(new WrapBus(this.onAttributesAction.bind(this)));
+    this.attributes.observe(new CallbackDispatcher(this.onAttributesAction.bind(this)));
 
     // todo - proxy this
     this.dataset = {};
@@ -318,7 +317,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
     this._shadowRoot = shadowRoot;
     this._shadowRoot.$setOwnerDocument(this.ownerDocument);
-    this._shadowRoot.observe(new BubbleBus(this));
+    this._shadowRoot.observe(new BubbleDispatcher(this));
     return this._shadowRoot;
   }
 

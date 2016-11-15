@@ -1,4 +1,4 @@
-import { IActor } from "@tandem/common/actors";
+import { IDispatcher } from "@tandem/mesh";
 import { sprintf } from "sprintf";
 import { LogLevel } from "./levels";
 import { Action } from "../actions";
@@ -39,7 +39,7 @@ export class Logger {
   public generatePrefix: () => string;
   public filterable: boolean;
 
-  constructor(public bus: IActor, public prefix: string = "", private _parent?: Logger) { }
+  constructor(public bus: IDispatcher<any, any>, public prefix: string = "", private _parent?: Logger) { }
 
   createChild(prefix: string = "") {
     return new Logger(this.bus, prefix, this);
@@ -111,7 +111,7 @@ export class Logger {
       ...sprintfParams.map(stringify)
     ), ...restParams].join(" ");
 
-    this.bus.execute(new LogAction(level, message, this.filterable));
+    this.bus.dispatch(new LogAction(level, message, this.filterable));
   }
 
 }

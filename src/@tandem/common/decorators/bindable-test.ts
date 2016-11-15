@@ -13,7 +13,7 @@ describe(__filename + "#", () => {
     const item = new Item();
     let lastAction: Action;
     item.observe({
-      execute: action => lastAction = action
+      dispatch: action => lastAction = action
     });
 
     item.name = "john";

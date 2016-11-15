@@ -1,5 +1,5 @@
-import { IActor } from "@tandem/common/actors";
 import { inject } from "@tandem/common/decorators";
+import { IDispatcher } from "@tandem/mesh";
 import { BaseEditorTool } from "@tandem/editor/browser/models";
 import { POINTER_TOOL_KEY_CODE } from "@tandem/editor/browser/constants";
 import { ApplicationServiceProvider } from "@tandem/common";
@@ -14,10 +14,10 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
   name = "pointer";
 
   @inject(PrivateBusProvider.ID)
-  readonly bus: IActor;
+  readonly bus: IDispatcher<any, any>;
 
   canvasMouseDown(action: MouseAction) {
-    this.bus.execute(new SelectAction());
+    this.bus.dispatch(new SelectAction());
   }
 
   canvasKeyDown(action: KeyboardAction) {
@@ -44,7 +44,7 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
 
     //   // deselect all when escape key is hit
     //   if (action.keyCode === 27) {
-    //     this.bus.execute(new SelectAction());
+    //     this.bus.dispatch(new SelectAction());
     //   }
 
     //   return;
@@ -56,7 +56,7 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
   }
 
   deleteSelection() {
-    this.bus.execute(new RemoveSelectionAction());
+    this.bus.dispatch(new RemoveSelectionAction());
   }
 }
 

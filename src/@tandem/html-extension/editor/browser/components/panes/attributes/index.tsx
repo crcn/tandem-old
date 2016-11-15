@@ -22,7 +22,7 @@ export class EntityAttributesPaneComponent extends BaseApplicationComponent<{ wo
       const edit = item.createEdit() as SyntheticDOMElementEdit;
       edit.setAttribute(name, value, oldName);
 
-      this.bus.execute(new ApplyFileEditAction(edit.actions));
+      this.bus.dispatch(new ApplyFileEditAction(edit.actions));
     }
   }
 

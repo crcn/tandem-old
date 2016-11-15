@@ -1,8 +1,8 @@
-import { IActor } from "../actors";
-import { ITyped } from "@tandem/common/object";
-import { INamed } from "@tandem/common/object";
+import { IDispatcher } from "@tandem/mesh";
+import { ITyped, INamed } from "@tandem/common/object";
+import { ICommand } from "@tandem/common/commands";
 import { Action } from "../actions";
-import { IBrokerBus } from "../busses";
+import { IBrokerBus } from "../dispatchers";
 
 import { File } from "@tandem/common/models";
 import {
@@ -23,11 +23,11 @@ export * from "./base";
 export class ApplicationServiceProvider extends ClassFactoryProvider implements IFactory {
   static readonly NS = "application/services";
 
-  constructor(id: string, clazz: { new(): IActor }) {
+  constructor(id: string, clazz: { new(): IDispatcher<any, any> }) {
     super(`${ApplicationServiceProvider.NS}/${id}`, clazz);
   }
 
-  create(): IActor {
+  create(): IDispatcher<any, any> {
     return super.create();
   }
 
@@ -109,7 +109,7 @@ export class InjectorProvider extends Provider<Injector> {
 export class CommandFactoryProvider extends ClassFactoryProvider {
   static readonly NS = "commands";
   readonly actionFilter: Function;
-  constructor(actionFilter: string|Function, readonly clazz: { new(...rest: any[]): IActor }) {
+  constructor(actionFilter: string|Function, readonly clazz: { new(...rest: any[]): ICommand }) {
     super([CommandFactoryProvider.NS, clazz.name].join("/"), clazz);
     if (typeof actionFilter === "string") {
       this.actionFilter = (action: Action) => action.type === actionFilter;
@@ -117,7 +117,7 @@ export class CommandFactoryProvider extends ClassFactoryProvider {
       this.actionFilter = actionFilter;
     }
   }
-  create(): IActor {
+  create(): IDispatcher<any, any> {
     return super.create();
   }
   static findAll(providers: Injector) {

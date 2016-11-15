@@ -3,13 +3,12 @@ import Token from "./token";
 import Caret from "./caret";
 import Marker from "./marker";
 import TextRuler from "./text-ruler";
-import { IActor } from "@tandem/common/actors";
 import { bindable } from "@tandem/common/decorators";
 import { SourceChangeAction } from "../actions";
-import { BrokerBus, BubbleBus } from "@tandem/common/busses";
 import { PropertyChangeAction } from "@tandem/common/actions";
 import { Observable, watchProperty } from "@tandem/common/observable";
 import { StringTokenizer, TokenTypes } from "@tandem/common/tokenizers";
+import { BrokerBus, BubbleDispatcher } from "@tandem/common/dispatchers";
 
 class TextEditor extends Observable {
 
@@ -100,7 +99,7 @@ class TextEditor extends Observable {
   splice(start, count, repl = "") {
     const source = this.source.substr(0, start) + repl + this.source.substr(start + count);
     this.source = source;
-    this.bus.execute(new SourceChangeAction(this.source));
+    this.bus.dispatch(new SourceChangeAction(this.source));
   }
 
   calculateWidth() {

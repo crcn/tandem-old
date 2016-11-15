@@ -1,6 +1,6 @@
 import TextEditor from "./text-editor";
 import  { expect } from "chai";
-import { BrokerBus } from "@tandem/common/busses";
+import { BrokerBus } from "@tandem/common/dispatchers";
 
 describe(__filename + "#", function() {
 
@@ -38,7 +38,7 @@ describe(__filename + "#", function() {
     te.source = "123\n456";
 
     te.caret.setPosition(4);
-    te.bus.execute(<any>{ type: "keyCommand", keyCode: "E".charCodeAt(0), ctrlKey: true });
+    te.bus.dispatch(<any>{ type: "keyCommand", keyCode: "E".charCodeAt(0), ctrlKey: true });
     expect(te.marker.position).to.equal(7);
   });
 

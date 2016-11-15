@@ -1,6 +1,5 @@
 import {
   inject,
-  IActor,
   Action,
   loggable,
   Logger,
@@ -11,6 +10,7 @@ import {
   InjectorProvider,
 } from "@tandem/common";
 
+import {  IDispatcher } from "@tandem/mesh";
 import { ApplicationConfigurationProvider } from "./providers";
 
 /**
@@ -18,7 +18,7 @@ import { ApplicationConfigurationProvider } from "./providers";
  * entiry application.
  */
 
-export abstract class BaseApplicationService implements IActor, IInjectable {
+export abstract class BaseApplicationService implements  IDispatcher<any, any>, IInjectable {
 
   protected readonly logger: Logger;
 
@@ -28,7 +28,7 @@ export abstract class BaseApplicationService implements IActor, IInjectable {
   @inject(InjectorProvider.ID)
   protected injector: Injector;
 
-  execute(action: Action) {
+  dispatch(action: Action) {
     const method = this[action.type];
     if (method) {
       if (this.logger) {

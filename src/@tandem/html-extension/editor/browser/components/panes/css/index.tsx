@@ -92,7 +92,7 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ result: Ma
     if (value !== "") {
       edit.setDeclaration(name, value, oldName);
     }
-    this.bus.execute(new ApplyFileEditAction(edit.actions));
+    this.bus.dispatch(new ApplyFileEditAction(edit.actions));
   }
   render() {
     const { result } = this.props;

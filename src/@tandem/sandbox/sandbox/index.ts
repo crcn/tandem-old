@@ -1,5 +1,5 @@
 import * as vm from "vm";
-import { WrapBus } from "mesh";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { SandboxModuleEvaluatorFactoryProvider } from "./providers";
 
 import {
@@ -10,7 +10,6 @@ import {
 } from "@tandem/sandbox/dependency-graph";
 
 import {
-  IActor,
   Action,
   inject,
   Logger,

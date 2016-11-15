@@ -15,7 +15,7 @@ declare module "package-path" {
 }
 
 declare module "mesh-array-ds-bus" {
-  import { Bus } from "mesh";
+  import { Bus } from "@tandem/mesh";
   class MeshArrayDsBus extends Bus {
     constructor(target:Array<any>, mutators?:any);
     static create(target:Array<any>, mutators?:any):MeshArrayDsBus;

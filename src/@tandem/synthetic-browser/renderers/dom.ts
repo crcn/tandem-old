@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 
 import { Action } from "@tandem/common";
 import { decode } from "ent";
-import { WrapBus } from "mesh";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { camelCase } from "lodash";
 import { BaseRenderer } from "./base";
 import { HTML_VOID_ELEMENTS } from "@tandem/synthetic-browser/dom";

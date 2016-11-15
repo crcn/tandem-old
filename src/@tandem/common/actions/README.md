@@ -1,1 +1,1 @@
-Actions which can be executed on the application mediator
+Actions which can be dispatched on the application mediator
