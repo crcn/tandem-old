@@ -107,14 +107,36 @@ class ReadableWritableStream<T> {
   }
 }
 
-export function wrapDuplexStream<T, U>(value) {
+export function wrapDuplexStream<T, U>(value): TransformStream<T, U> {
   if (value && value.readable && value.writable) {
-    return value;
+    if (value.writable) {
+      return value;
+    }
+  }
+
+  if (value instanceof ReadableStream) {
+    const readable: ReadableStream<T> = value;
+    return new TransformStream({
+      start(controller) {
+        readable.pipeTo(new WritableStream({
+          write(chunk) {
+            controller.enqueue(chunk);
+          },
+          abort(error) {
+            controller.error(error);
+          },
+          close() {
+            controller.close();
+          }
+        }))
+      }
+    })
   }
 
   return new TransformStream({
     async start(controller) {
-      controller.enqueue(await value);
+      const v = await value;
+      if (v != null) controller.enqueue(v);
       controller.close();
     }
   });
@@ -138,7 +160,15 @@ export class DuplexStream<T, U> implements TransformStream<T, U> {
     });
   }
 
-  then(resolve, reject) {
+  static fromArray(items: any[]) {
+    return new DuplexStream((input, output) => {
+      const writer = output.getWriter();
+      items.forEach(item => writer.write(item));
+      writer.close();
+    });
+  }
+
+  then(resolve?, reject?) {
     return readAllChunks(this).then(resolve, reject);
   }
 

@@ -12,7 +12,6 @@ import * as createSocketIOServer from "socket.io";
 
 import { GetServerPortAction } from "@tandem/editor/common";
 import { exec } from "child_process";
-import { Response } from "@tandem/mesh";
 import { IOService } from "@tandem/editor/common";
 import { loggable, inject } from "@tandem/common/decorators";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";

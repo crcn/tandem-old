@@ -14,18 +14,6 @@ declare module "package-path" {
   export = getPakagePath;
 }
 
-declare module "mesh-array-ds-bus" {
-  import { Bus } from "@tandem/mesh";
-  class MeshArrayDsBus extends Bus {
-    constructor(target:Array<any>, mutators?:any);
-    static create(target:Array<any>, mutators?:any):MeshArrayDsBus;
-  }
-  namespace MeshArrayDsBus {
-
-  }
-  export = MeshArrayDsBus;
-}
-
 declare module "mongoid-js" {
 
   function mongoid(): string;

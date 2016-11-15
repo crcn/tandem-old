@@ -1,6 +1,6 @@
 import { ProxyBus } from "@tandem/common";
 import { DSMessage, DSInsert, DSFind, DSFindAll, DSRemove, DSUpdate } from "./messages";
-import { IStreamableDispatcher, DuplexStream, wrapDuplexStream } from "@tandem/mesh/core";
+import { IStreamableDispatcher, DuplexStream, wrapDuplexStream, TransformStream } from "@tandem/mesh/core";
 
 export abstract class BaseDataStore implements IStreamableDispatcher<DSMessage> {
   private _proxy: ProxyBus;
@@ -11,7 +11,7 @@ export abstract class BaseDataStore implements IStreamableDispatcher<DSMessage> 
         const method = this[message.type];
         if (method) {
           return new DuplexStream((input, output) => {
-            wrapDuplexStream(method.call(this)).pipeTo(output);
+            wrapDuplexStream(method.call(this, message)).readable.pipeTo(output);
           });
         }
         return DuplexStream.empty();

@@ -1,21 +1,26 @@
 import * as fs from "fs";
 import * as chokidar from "chokidar";
 import { IDisposable } from "@tandem/common";
+import { ReadableStream } from "@tandem/mesh";
 import { BaseFileSystem, IReadFileResultItem } from "./base";
 
 export class LocalFileSystem extends BaseFileSystem {
 
-  async readDirectory(directoryPath: string): Promise<IReadFileResultItem[]> {
-    return new Promise<IReadFileResultItem[]>((resolve, reject) => {
-      fs.readdir(directoryPath, (err, result) => {
-        if (err) return reject(err);
-        resolve(result.map(name => ({
-          name: name,
-          isDirectory: fs.lstatSync(directoryPath + "/" + name).isDirectory()
-        })).sort((a, b) => {
-          return a.isDirectory && !b.isDirectory ? -1 : a.isDirectory === b.isDirectory ? a.name > b.name ? 1 : -1 : 1;
-        }));
-      });
+  readDirectory(directoryPath: string): ReadableStream<IReadFileResultItem[]> {
+    return new ReadableStream({
+      start(controller) {
+        fs.readdir(directoryPath, (err, result) => {
+          if (err) return controller.error(err);
+          result.map(name => ({
+            name: name,
+            isDirectory: fs.lstatSync(directoryPath + "/" + name).isDirectory()
+          })).sort((a, b) => {
+            return a.isDirectory && !b.isDirectory ? -1 : a.isDirectory === b.isDirectory ? a.name > b.name ? 1 : -1 : 1;
+          }).forEach((file) => {
+            controller.enqueue(file);
+          });
+        });
+      }
     });
   }
 

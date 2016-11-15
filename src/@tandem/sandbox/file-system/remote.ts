@@ -1,4 +1,4 @@
-import { IDispatcher } from "@tandem/mesh";
+import { IDispatcher, ReadableStream } from "@tandem/mesh";
 import { BaseFileSystem, IReadFileResultItem } from "./base";
 import { inject, IDisposable, PrivateBusProvider } from "@tandem/common";
 import { ReadFileAction, ReadDirectoryAction, WatchFileAction } from "@tandem/sandbox/actions";
@@ -9,8 +9,8 @@ export class RemoteFileSystem extends BaseFileSystem {
     super();
   }
 
-  async readDirectory(directoryPath: string): Promise<IReadFileResultItem[]> {
-    return await ReadDirectoryAction.dispatch(directoryPath, this.bus);
+  readDirectory(directoryPath: string): ReadableStream<IReadFileResultItem[]> {
+    return ReadDirectoryAction.dispatch(directoryPath, this.bus);
   }
 
   async readFile(filePath: string) {

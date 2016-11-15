@@ -2,7 +2,7 @@
 // import { ParallelBus } from "@tandem/mesh";
 // import { BrokerBus, PostDsNotifierBus } from "@tandem/common/dispatchers";
 // import { ActiveRecord, ActiveRecordCollection, insert } from "./base";
-// import { DSFindAction, DSInsertAction, DSUpdateAction, DSRemoveAction } from "@tandem/common/actions";
+// import { DSFind, DSInsert, DSUpdate, DSRemove } from "@tandem/common/actions";
 // import { Injector, PrivateBusProvider,  } from "@tandem/common/ioc";
 
 // describe(__filename + "#", () => {
@@ -43,27 +43,27 @@
 //         name: "a"
 //       });
 //       await ar.insert();
-//       const chunk = await broker.dispatch(new DSFindAction(ar.collectionName, ar.serialize() )).read();
+//       const chunk = await broker.dispatch(new DSFind(ar.collectionName, ar.serialize() )).read();
 //       expect(chunk.value.name).to.equal("a");
 //     });
 //     it("can update an active record", async () => {
-//       await broker.dispatch(new DSInsertAction("people", { _id: "person1", name: "a", zip: 90210 }));
+//       await broker.dispatch(new DSInsert("people", { _id: "person1", name: "a", zip: 90210 }));
 //       const ar: Person = <Person>ActiveRecordFactoryProvider.find("person", deps).create("people", {
 //         _id: "person1",
 //         zip: 11111
 //       });
 //       await ar.update();
-//       const chunk = await broker.dispatch(new DSFindAction(ar.collectionName, { _id: "person1" } )).read();
+//       const chunk = await broker.dispatch(new DSFind(ar.collectionName, { _id: "person1" } )).read();
 //       expect(chunk.value.zip).to.equal(11111);
 //     });
 
 //     it("can remove an active record", async () => {
-//       await broker.dispatch(new DSInsertAction("people", { _id: "person1", name: "a", zip: 90210 }));
+//       await broker.dispatch(new DSInsert("people", { _id: "person1", name: "a", zip: 90210 }));
 //       const ar: Person = <Person>ActiveRecordFactoryProvider.find("person", deps).create("people", {
 //         _id: "person1"
 //       });
 //       await ar.remove();
-//       const chunk = await broker.dispatch(new DSFindAction(ar.collectionName, { _id: "person1" } )).read();
+//       const chunk = await broker.dispatch(new DSFind(ar.collectionName, { _id: "person1" } )).read();
 //       expect(chunk.done).to.equal(true);
 //     });
 
@@ -86,7 +86,7 @@
 //       });
 //       await ar.save();
 //       expect(ar._id).not.to.equal(undefined);
-//       const { value } = await broker.dispatch(new DSFindAction(ar.collectionName, { _id: ar._id })).read();
+//       const { value } = await broker.dispatch(new DSFind(ar.collectionName, { _id: ar._id })).read();
 //       expect(value.name).to.equal("a");
 //       expect(value._id).to.equal(ar._id);
 //     });
@@ -97,9 +97,9 @@
 //       });
 //       await ar.save();
 //       ar.sync();
-//       await broker.dispatch(new DSUpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id }));
+//       await broker.dispatch(new DSUpdate(ar.collectionName, { name: "b" }, { _id: ar._id }));
 //       expect(ar.name).to.equal("b");
-//       await broker.dispatch(new DSUpdateAction(ar.collectionName, { name: "c" }, { _id: ar._id }));
+//       await broker.dispatch(new DSUpdate(ar.collectionName, { name: "c" }, { _id: ar._id }));
 //       expect(ar.name).to.equal("c");
 
 //     });
@@ -112,7 +112,7 @@
 //       ar.sync();
 //       const dispatchdActions = [];
 //       ar.observe({ dispatch: (action) => dispatchdActions.push(action) });
-//       await broker.dispatch(new DSRemoveAction(ar.collectionName, { _id: ar._id }));
+//       await broker.dispatch(new DSRemove(ar.collectionName, { _id: ar._id }));
 //       expect(dispatchdActions.length).to.equal(1);
 //       expect(dispatchdActions[0].type).to.equal("dispose");
 //     });
@@ -123,10 +123,10 @@
 //       });
 //       await ar.save();
 //       ar.sync();
-//       await broker.dispatch(new DSUpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id })).readAll();
+//       await broker.dispatch(new DSUpdate(ar.collectionName, { name: "b" }, { _id: ar._id })).readAll();
 //       expect(ar.name).to.equal("b");
 //       ar.dispose();
-//       await broker.dispatch(new DSUpdateAction(ar.collectionName, { name: "c" }, { _id: ar._id }));
+//       await broker.dispatch(new DSUpdate(ar.collectionName, { name: "c" }, { _id: ar._id }));
 //       expect(ar.name).to.equal("b");
 //     });
 
@@ -143,11 +143,11 @@
 //       ar.sync();
 //       ar2.sync();
 
-//       await broker.dispatch(new DSUpdateAction(ar.collectionName, { name: "b" }, { _id: ar._id })).readAll();
+//       await broker.dispatch(new DSUpdate(ar.collectionName, { name: "b" }, { _id: ar._id })).readAll();
 //       expect(ar.name).to.equal("b");
 //       expect(ar2.name).to.equal("a2");
 
-//       await broker.dispatch(new DSUpdateAction(ar.collectionName, { name: "b2" }, { _id: ar2._id }));
+//       await broker.dispatch(new DSUpdate(ar.collectionName, { name: "b2" }, { _id: ar2._id }));
 //       expect(ar.name).to.equal("b");
 //       expect(ar2.name).to.equal("b2");
 //     });

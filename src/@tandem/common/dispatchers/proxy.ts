@@ -4,6 +4,7 @@ import {
   DuplexStream,
   ReadableStream,
   WritableStream,
+  TransformStream,
   wrapDuplexStream,
 } from "@tandem/mesh";
 
@@ -60,7 +61,7 @@ export class ProxyBus implements IBus<any> {
     if (this.paused) return;
     while (this._queue.length) {
       const { input, output, action } = this._queue.shift();
-      wrapDuplexStream(this.target.dispatch(action)).pipeTo(output.getWriter());
+      wrapDuplexStream(this.target.dispatch(action)).readable.pipeTo(output);
     }
   }
 }

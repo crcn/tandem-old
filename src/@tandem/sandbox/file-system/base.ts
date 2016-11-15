@@ -11,6 +11,8 @@ import {
   WatchFileAction,
 } from "../actions";
 
+import { ReadableStream } from "@tandem/mesh";
+
 export interface IFileWatcher extends IDisposable { }
 
 export interface IReadFileResultItem {
@@ -19,7 +21,7 @@ export interface IReadFileResultItem {
 }
 
 export interface IFileSystem {
-  readDirectory(directoryPath: string): Promise<IReadFileResultItem[]>
+  readDirectory(directoryPath: string): ReadableStream<IReadFileResultItem[]>
   readFile(filePath: string): Promise<any>;
   fileExists(filePath: string): Promise<boolean>;
   writeFile(filePath: string, content: any): Promise<any>;
@@ -38,7 +40,7 @@ export abstract class BaseFileSystem implements IFileSystem {
   }
 
   abstract readFile(filePath: string): Promise<any>;
-  abstract readDirectory(directoryPath: string): Promise<IReadFileResultItem[]>;
+  abstract readDirectory(directoryPath: string): ReadableStream<IReadFileResultItem[]>;
   abstract fileExists(filePath: string): Promise<boolean>;
   abstract writeFile(filePath: string, content: any): Promise<any>;
 

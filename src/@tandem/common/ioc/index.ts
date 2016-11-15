@@ -117,14 +117,14 @@ export class CommandFactoryProvider extends ClassFactoryProvider {
       this.actionFilter = actionFilter;
     }
   }
-  create(): IDispatcher<any, any> {
+  create(): ICommand {
     return super.create();
   }
   static findAll(providers: Injector) {
     return providers.queryAll<CommandFactoryProvider>([CommandFactoryProvider.NS, "**"].join("/"));
   }
 
-  static findAllByAction(action: Action, providers: Injector) {
+  static findAllByAction(action: Action, providers: Injector): CommandFactoryProvider[] {
     return this.findAll(providers).filter((dep) => dep.actionFilter(action));
   }
 

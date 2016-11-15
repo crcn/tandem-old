@@ -1,4 +1,4 @@
-import { DuplexStream, TransformStream } from "@tandem/mesh/streams";
+import { DuplexStream, TransformStream } from "../streams";
 
 /**
  * Dispatches a message to a listener

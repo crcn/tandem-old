@@ -1,14 +1,14 @@
 import * as sift from "sift";
 import { IDispatcher } from "@tandem/mesh";
 import { inject } from "@tandem/common/decorators";
-import { CallbackDispatcher, readAllChunks, readOneChunk } from "@tandem/mesh";
+import { CallbackDispatcher, readAllChunks, readOneChunk, DSFind, DSUpdate, DSInsert } from "@tandem/mesh";
 import { isMaster } from "@tandem/common/workers";
 import { IBrokerBus } from "@tandem/common/dispatchers";
 import { IDisposable } from "@tandem/common/object";
 import { IActiveRecord } from "./base";
 import { ObservableCollection } from "@tandem/common/observable";
 import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
-import { PostDSAction, DSFindAction, DSUpdateAction, DSInsertAction } from "@tandem/common/actions";
+import { PostDSAction } from "@tandem/common/actions";
 
 // TODO - remove global listener
 // TODO - listen to DS mediator for updates on record collection
@@ -45,7 +45,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
   async load() {
 
     // TODO - need to check for duplicates
-    this.push(...(await readAllChunks(this._bus.dispatch(new DSFindAction(this.collectionName, this.query, true)))).map(value => {
+    this.push(...(await readAllChunks<any>(this._bus.dispatch(new DSFind(this.collectionName, this.query, true)))).map(value => {
       return this.createActiveRecord(value);
     }));
   }
@@ -72,7 +72,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
    */
 
   async loadItem(query: any): Promise<T|undefined> {
-    const { value, done } = await readOneChunk(this._bus.dispatch(new DSFindAction(this.collectionName, query, false)));
+    const { value, done } = await readOneChunk<any>(this._bus.dispatch(new DSFind(this.collectionName, query, false)));
 
     // item exists, so add and return it. Otherwise return undefined indicating
     // that the item does not exist.
@@ -107,7 +107,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
   }
 
   private onGlobalAction(action: PostDSAction) {
-    if ((action.type === DSUpdateAction.DS_UPDATE || action.type === DSInsertAction.DS_INSERT || action.type === PostDSAction.DS_DID_UPDATE || action.type === PostDSAction.DS_DID_INSERT) && action.collectionName === this.collectionName && sift(this.query)(action.data)) {
+    if ((action.type === DSUpdate.DS_UPDATE || action.type === DSInsert.DS_INSERT || action.type === PostDSAction.DS_DID_UPDATE || action.type === PostDSAction.DS_DID_INSERT) && action.collectionName === this.collectionName && sift(this.query)(action.data)) {
       this._updateActiveRecord(action.data);
     }
   }

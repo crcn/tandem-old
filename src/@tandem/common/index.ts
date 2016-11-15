@@ -1,5 +1,4 @@
 export * from "./actions";
-export * from "./actors";
 export * from "./animate";
 export * from "./application";
 export * from "./lang";

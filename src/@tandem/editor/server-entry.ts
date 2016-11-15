@@ -2,11 +2,12 @@ import "./entry-shims";
 import * as figlet from "figlet";
 
 import { argv } from "yargs";
+import * as getPort from "get-port";
 import { ServiceApplication } from "@tandem/core";
 import { MemoryDataStore, MongoDataStore } from "@tandem/mesh";
 import { Injector, Logger, PrivateBusProvider, LogLevel } from "@tandem/common";
 import { IEdtorServerConfig, createEditorServerProviders } from "./server";
-import * as getPort from "get-port";
+import { WebpackDependencyGraphStrategy, DependencyGraphStrategyProvider, ProtocolURLResolverProvider, WebpackProtocolResolver } from "@tandem/sandbox";
 
 // extensions
 // import { createVueWorkerProviders } from "@tandem/vue-extension/editor/server";
@@ -44,6 +45,8 @@ const start = async () => {
     createTypescriptEditorWorkerProviders(),
     createSyntheticBrowserWorkerProviders(),
     createTDProjectEditorServerProviders(),
+    new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
+    new ProtocolURLResolverProvider("webpack", WebpackProtocolResolver),
     createEditorServerProviders(config, config.experimental ? new MongoDataStore("mongodb://localhost:27017/tandem") : new MemoryDataStore())
   );
 

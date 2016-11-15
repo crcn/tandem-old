@@ -1,5 +1,5 @@
-import { IBus, RemoteBus } from "@tandem/mesh/core";
 import { ISerializer } from "@tandem/common";
+import { IBus, RemoteBus, DuplexStream } from "@tandem/mesh/core";
 
 export interface ISocketIOBusOptions {
   channel?: string;
@@ -16,7 +16,7 @@ export class SocketIOBus<T> implements IBus<T> {
         connection.emit(channel, message);
       },
       addListener(listener) {
-        connection.addListener(channel, listener);
+        connection.on(channel, listener);
       }
     }, localBus, serializer);
   }

@@ -8,7 +8,7 @@ import {
   defineProtectedAction,
 } from "@tandem/common";
 import { ISyntheticSourceInfo } from "@tandem/sandbox";
-import { IDispatcher, IStreamableDispatcher, readOneChunk} from "@tandem/mesh";
+import { IDispatcher, IStreamableDispatcher, readOneChunk, TransformStream } from "@tandem/mesh";
 
 definePublicAction()
 export class GetServerPortAction extends Action {

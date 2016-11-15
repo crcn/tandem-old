@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as gaze from "gaze";
 import * as sift from "sift";
-import { Response } from "@tandem/mesh";
+import { DuplexStream } from "@tandem/mesh";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 import {
@@ -13,10 +13,6 @@ import {
   Injector,
   filterAction,
   PostDSAction,
-  DSFindAction,
-  DSUpdateAction,
-  DSInsertAction,
-  DSRemoveAction,
   InjectorProvider,
   ApplicationServiceProvider,
 } from "@tandem/common";
@@ -25,14 +21,14 @@ import {
 const FILES_COLLECTION_NAME = "files";
 
 import {
-  LocalFileSystem,
-  FileSystemProvider,
-  FileEditorProvider,
-  ApplyFileEditAction,
   IFileSystem,
   ReadFileAction,
-  ReadDirectoryAction,
+  LocalFileSystem,
   WatchFileAction,
+  FileSystemProvider,
+  FileEditorProvider,
+  ReadDirectoryAction,
+  ApplyFileEditAction,
 } from "@tandem/sandbox";
 
 @loggable()
@@ -52,8 +48,8 @@ export class FileService extends CoreApplicationService<IEdtorServerConfig> {
   /**
    */
 
-  async [ReadDirectoryAction.READ_DIRECTORY](action: ReadDirectoryAction) {
-    return await this._fileSystem.readDirectory(action.directoryPath);
+  [ReadDirectoryAction.READ_DIRECTORY](action: ReadDirectoryAction) {
+    return this._fileSystem.readDirectory(action.directoryPath);
   }
 
   /**
@@ -61,13 +57,18 @@ export class FileService extends CoreApplicationService<IEdtorServerConfig> {
 
   @document("watches a file for any changes")
   [WatchFileAction.WATCH_FILE](action: WatchFileAction) {
-    return Response.create((writable) => {
+    return new DuplexStream((input, output) => {
+      const writer = output.getWriter();
 
       const watcher = this._fileSystem.watchFile(action.filePath, () => {
-        writable.write();
+        writer.write({});
       });
 
-      writable.then(watcher.dispose.bind(this));
+      return {
+        cancel() {
+          watcher.dispose();
+        }
+      }
     });
   }
 

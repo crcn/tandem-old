@@ -1,5 +1,5 @@
 import { titleize } from "inflection";
-import { IDispatcher } from "@tandem/mesh";
+import { IDispatcher, DSFind, DSInsert, DSRemove, DSUpdate } from "@tandem/mesh";
 import { DSProvider } from "@tandem/editor/server/providers";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
@@ -7,11 +7,7 @@ import {
   inject,
   DSAction,
   UpsertBus,
-  DSFindAction,
   PostDSAction,
-  DSInsertAction,
-  DSRemoveAction,
-  DSUpdateAction,
   DSUpsertAction,
   PostDsNotifierBus,
   ApplicationServiceProvider,
@@ -37,7 +33,7 @@ export class DSService extends  CoreApplicationService<IEdtorServerConfig> {
    * finds one or more items against the database
    */
 
-  [DSFindAction.DS_FIND](action: DSFindAction<any>) {
+  [DSFind.DS_FIND](action: DSFind<any>) {
     return this._ds.dispatch(action);
   }
 
@@ -45,7 +41,7 @@ export class DSService extends  CoreApplicationService<IEdtorServerConfig> {
    * removes one or more items against the db
    */
 
-  [DSRemoveAction.DS_REMOVE](action: DSRemoveAction<any>) {
+  [DSRemove.DS_REMOVE](action: DSRemove<any>) {
     return this._ds.dispatch(action);
   }
 
@@ -53,14 +49,14 @@ export class DSService extends  CoreApplicationService<IEdtorServerConfig> {
    * inserts one or more items against the db
    */
 
-  [DSInsertAction.DS_INSERT](action: DSInsertAction<any>) {
+  [DSInsert.DS_INSERT](action: DSInsert<any>) {
     return this._ds.dispatch(action);
   }
 
   /**
    */
 
-  [DSUpdateAction.DS_UPDATE](action: DSUpdateAction<any, any>) {
+  [DSUpdate.DS_UPDATE](action: DSUpdate<any, any>) {
     return this._ds.dispatch(action);
   }
 

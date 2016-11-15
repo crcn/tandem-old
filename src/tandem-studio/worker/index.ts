@@ -1,6 +1,5 @@
 import { argv } from "yargs";
 import * as getPort from "get-port";
-import * as RemoteBus from "mesh-remote-bus";
 import { SockService } from "@tandem/editor/server";
 import { isMaster, fork, addListener, emit } from "cluster";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
@@ -11,8 +10,6 @@ import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/w
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/worker";
 import { createSyntheticBrowserWorkerProviders } from "@tandem/synthetic-browser";
 import { createEditorWorkerProviders, IEditorWorkerConfig } from "@tandem/editor/worker";
-
-import { } from "./commands/"
 
 export const initializeWorker = async () => {
 

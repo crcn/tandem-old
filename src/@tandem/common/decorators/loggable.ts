@@ -1,7 +1,6 @@
 import { inject } from "@tandem/common/decorators";
 import { Logger } from "../logger";
 import { NoopDispatcher } from "@tandem/mesh";
-import { IInvoker } from "@tandem/common/actors";
 import { PrivateBusProvider } from "@tandem/common/ioc";
 
 const noopDispatcher = new NoopDispatcher();

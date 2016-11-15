@@ -6,7 +6,7 @@ import { SyntheticDocument } from "./document";
 import { Logger, Observable, PrivateBusProvider } from "@tandem/common";
 import { SyntheticHTMLElement } from "./html";
 import { SyntheticWindowTimers } from "./timers";
-import { NoopBus } from "@tandem/mesh";
+import { noopDispatcherInstance } from "@tandem/mesh";
 import { Blob, FakeBlob } from "./blob";
 import { URL, FakeURL } from "./url";
 import * as btoa from "btoa";
@@ -75,7 +75,7 @@ export class SyntheticWindow extends Observable {
     this.location = location;
     this.window   = this;
     this.console  = new SyntheticConsole(
-      new Logger(browser && PrivateBusProvider.getInstance(browser.injector) || new NoopBus(), "**VM** ")
+      new Logger(browser && PrivateBusProvider.getInstance(browser.injector) || noopDispatcherInstance, "**VM** ")
     );
 
     const windowTimers = this._windowTimers = new SyntheticWindowTimers();

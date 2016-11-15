@@ -16,6 +16,7 @@ import { 
   IStreamableDispatcher,
   readAllChunks,
   readOneChunk,
+  ReadableStream,
   WritableStream,
 } from "@tandem/mesh";
 import { EditAction } from "../edit";
@@ -91,8 +92,8 @@ export class ReadDirectoryAction extends Action {
     super(ReadDirectoryAction.READ_DIRECTORY);
   }
 
-  static async dispatch(directoryPath: string, bus: IStreamableDispatcher<any>): Promise<IReadFileResultItem[]> {
-    return (await readOneChunk(bus.dispatch(new ReadDirectoryAction(directoryPath)))).value;
+  static dispatch(directoryPath: string, bus: IStreamableDispatcher<any>): ReadableStream<IReadFileResultItem[]> {
+    return bus.dispatch(new ReadDirectoryAction(directoryPath)).readable;
   }
 }
 

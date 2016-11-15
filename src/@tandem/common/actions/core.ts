@@ -1,6 +1,6 @@
 import * as sift from "sift";
 import { Action } from "./base";
-import { IDispatcher, IStreamableDispatcher, readAllChunks, readOneChunk } from "@tandem/mesh";
+import { IDispatcher, IStreamableDispatcher, readAllChunks, readOneChunk, DSFind, DSInsert, DSRemove, DSUpdate } from "@tandem/mesh";
 import { ITreeNode } from "@tandem/common/tree";
 import { IDisposable } from "@tandem/common/object";
 import { serializable, ISerializer } from "@tandem/common/serialize";
@@ -125,55 +125,55 @@ export class DSAction extends Action {
   }
 }
 
-export class DSInsertAction<T> extends DSAction {
-  static readonly DS_INSERT = "dsInsert";
-  constructor(collectionName: string, readonly data: T) {
-    super(DSInsertAction.DS_INSERT, collectionName);
-  }
-  static async dispatch(collectionName: string, data: any, dispatcher: IStreamableDispatcher<any>) {
-    return await readAllChunks(dispatcher.dispatch(new DSInsertAction(collectionName, data)));
-  }
-}
+// export class DSInsert<T> extends DSAction {
+//   static readonly DS_INSERT = "dsInsert";
+//   constructor(collectionName: string, readonly data: T) {
+//     super(DSInsert.DS_INSERT, collectionName);
+//   }
+//   static async dispatch(collectionName: string, data: any, dispatcher: IStreamableDispatcher<any>) {
+//     return await readAllChunks(dispatcher.dispatch(new DSInsert(collectionName, data)));
+//   }
+// }
 
-export class DSUpdateAction<T, U> extends DSAction {
-  static readonly DS_UPDATE = "dsUpdate";
-  constructor(collectionName: string, readonly data: T, readonly query: U) {
-    super(DSUpdateAction.DS_UPDATE, collectionName);
-  }
+// export class DSUpdate<T, U> extends DSAction {
+//   static readonly DS_UPDATE = "dsUpdate";
+//   constructor(collectionName: string, readonly data: T, readonly query: U) {
+//     super(DSUpdate.DS_UPDATE, collectionName);
+//   }
 
-  static async dispatch(collectionName: string, data: any, query: any, dispatcher: IStreamableDispatcher<any>): Promise<Array<any>> {
-    return await readAllChunks(dispatcher.dispatch(new DSUpdateAction(collectionName, data, query)));
-  }
-}
+//   static async dispatch(collectionName: string, data: any, query: any, dispatcher: IStreamableDispatcher<any>): Promise<Array<any>> {
+//     return await readAllChunks(dispatcher.dispatch(new DSUpdate(collectionName, data, query)));
+//   }
+// }
 
-export class DSFindAction<T> extends DSAction {
-  static readonly DS_FIND   = "dsFind";
-  constructor(collectionName: string, readonly query: T, readonly multi: boolean = false) {
-    super(DSFindAction.DS_FIND, collectionName);
-  }
-  static createFilter(collectionName: string) {
-    return sift({ collectionName: collectionName });
-  }
-  static async findOne(collectionName: string, query: Object, dispatcher: IStreamableDispatcher<any>): Promise<any> {
-    return (await readOneChunk(dispatcher.dispatch(new DSFindAction(collectionName, query, true)))).value;
-  }
-  static async findMulti(collectionName: string, query: Object, dispatcher: IStreamableDispatcher<any>): Promise<any[]> {
-    return await readAllChunks(dispatcher.dispatch(new DSFindAction(collectionName, query, true)));
-  }
-}
+// export class DSFind<T> extends DSAction {
+//   static readonly DS_FIND   = "dsFind";
+//   constructor(collectionName: string, readonly query: T, readonly multi: boolean = false) {
+//     super(DSFind.DS_FIND, collectionName);
+//   }
+//   static createFilter(collectionName: string) {
+//     return sift({ collectionName: collectionName });
+//   }
+//   static async findOne(collectionName: string, query: Object, dispatcher: IStreamableDispatcher<any>): Promise<any> {
+//     return (await readOneChunk(dispatcher.dispatch(new DSFind(collectionName, query, true)))).value;
+//   }
+//   static async findMulti(collectionName: string, query: Object, dispatcher: IStreamableDispatcher<any>): Promise<any[]> {
+//     return await readAllChunks(dispatcher.dispatch(new DSFind(collectionName, query, true)));
+//   }
+// }
 
-export class DSFindAllAction extends DSFindAction<any> {
-  constructor(collectionName: string) {
-    super(collectionName, {}, true);
-  }
-}
+// export class DSFindAllAction extends DSFind<any> {
+//   constructor(collectionName: string) {
+//     super(collectionName, {}, true);
+//   }
+// }
 
-export class DSRemoveAction<T> extends DSAction {
-  static readonly DS_REMOVE   = "dsRemove";
-  constructor(collectionName: string, readonly query: T) {
-    super(DSRemoveAction.DS_REMOVE, collectionName);
-  }
-}
+// export class DSRemove<T> extends DSAction {
+//   static readonly DS_REMOVE   = "dsRemove";
+//   constructor(collectionName: string, readonly query: T) {
+//     super(DSRemove.DS_REMOVE, collectionName);
+//   }
+// }
 
 export class DSUpsertAction<T> extends DSAction {
   static readonly DS_UPSERT = "dsUpsert";
@@ -193,11 +193,11 @@ export class PostDSAction extends DSAction {
     super(type, collectionName);
   }
 
-  static createFromDSAction(action: DSInsertAction<any>|DSUpdateAction<any, any>|DSRemoveAction<any>, data: any) {
+  static createFromDSAction(action: DSInsert<any>|DSUpdate<any, any>|DSRemove<any>, data: any) {
     return new PostDSAction({
-      [DSInsertAction.DS_INSERT]: PostDSAction.DS_DID_INSERT,
-      [DSUpdateAction.DS_UPDATE]: PostDSAction.DS_DID_UPDATE,
-      [DSRemoveAction.DS_REMOVE]: PostDSAction.DS_DID_REMOVE
+      [DSInsert.DS_INSERT]: PostDSAction.DS_DID_INSERT,
+      [DSUpdate.DS_UPDATE]: PostDSAction.DS_DID_UPDATE,
+      [DSRemove.DS_REMOVE]: PostDSAction.DS_DID_REMOVE
     }[action.type], action.collectionName, data, action.timestamp);
   }
 }

@@ -2,15 +2,16 @@ import * as path from "path";
 import { FileSystemProvider, IFileSystem } from "@tandem/sandbox";
 import {
   inject,
-  bindable,
-  IInjectable,
-  Injector,
-  InjectorProvider,
   bubble,
-  ObservableCollection,
+  bindable,
+  Injector,
   TreeNode,
-  BubbleDispatcher
+  IInjectable,
+  BubbleDispatcher,
+  InjectorProvider,
+  ObservableCollection,
 } from "@tandem/common";
+import { WritableStream } from "@tandem/mesh";
 
 export class BaseFSModel extends TreeNode<BaseFSModel> {
 
@@ -42,12 +43,13 @@ export class FileModel extends BaseFSModel {
 export class DirectoryModel extends BaseFSModel {
 
   async load() {
-
     this.removeAllChildren();
-    for (const { name, isDirectory } of await this._fileSystem.readDirectory(this.path)) {
-      if (name.charAt(0) === ".") continue;
+    this._fileSystem.readDirectory(this.path).pipeTo(new WritableStream({
+      write: ({ name, isDirectory }) => {
+      if (name.charAt(0) === ".") return;
       const filePath = path.join(this.path, name);
       this.appendChild(isDirectory ? new DirectoryModel(filePath) : new FileModel(filePath));
-    }
+      }
+    }));
   }
 }

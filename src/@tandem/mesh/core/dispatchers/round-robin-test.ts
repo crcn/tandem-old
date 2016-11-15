@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { DuplexStream, WritableStream, RoundRobinBus, readAll } from "@tandem/mesh";
+import { DuplexStream, WritableStream, RoundRobinBus, readOneChunk } from "@tandem/mesh";
 import { CallbackDispatcher } from "./callback";
 
 describe(__filename + "#", () => {
@@ -14,8 +14,8 @@ describe(__filename + "#", () => {
       new CallbackDispatcher(m => "c")
     ]);
 
-    expect((await bus.dispatch({}).readable.getReader().read()).value).to.equal("a");
-    expect((await bus.dispatch({}).readable.getReader().read()).value).to.equal("b");
-    expect((await bus.dispatch({}).readable.getReader().read()).value).to.equal("c");
+    expect((await readOneChunk(bus.dispatch({}))).value).to.equal("a");
+    expect((await readOneChunk(bus.dispatch({}))).value).to.equal("b");
+    expect((await readOneChunk(bus.dispatch({}))).value).to.equal("c");
   });
 });

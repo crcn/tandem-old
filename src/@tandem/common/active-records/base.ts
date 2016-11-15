@@ -6,19 +6,16 @@ import { IDisposable } from "@tandem/common/object";
 import { ISerializable } from "@tandem/common/serialize";
 import { IBrokerBus } from "@tandem/common/dispatchers";
 import { Observable, IObservable } from "@tandem/common/observable";
-import { CallbackDispatcher, ParallelBus, readOneChunk } from "@tandem/mesh";
+import { CallbackDispatcher, ParallelBus, readOneChunk, DSFind, DSInsert, DSUpdate, DSRemove, IMessage } from "@tandem/mesh";
 import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import {
   Action,
   DSAction,
-  DSFindAction,
   PostDSAction,
   DisposeAction,
-  DSRemoveAction,
-  DSInsertAction,
-  DSUpdateAction,
   ActiveRecordAction,
 } from "@tandem/common/actions";
+
 
 export interface IActiveRecord<T> extends IObservable, IInjectable, IDisposable, ISerializable<T> {
   collectionName: string;
@@ -68,7 +65,7 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
    */
 
   refresh() {
-    return this.fetch(new DSFindAction(this.collectionName, this.sourceQuery));
+    return this.fetch(new DSFind(this.collectionName, this.sourceQuery));
   }
 
   save() {
@@ -86,11 +83,11 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
       newData[this.idProperty] = String(mongoid());
       // console.error(newData, this);
     }
-    return this.fetch(new DSInsertAction(this.collectionName, newData));
+    return this.fetch(new DSInsert(this.collectionName, newData));
   }
 
   remove() {
-    return this.fetch(new DSRemoveAction(this.collectionName, this.sourceQuery));
+    return this.fetch(new DSRemove(this.collectionName, this.sourceQuery));
   }
 
   protected get sourceQuery() {
@@ -132,7 +129,7 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
     this.willUpdate();
     this.willSave();
     const newData = this.serialize();
-    return this.fetch(new DSUpdateAction(this.collectionName, newData, this.sourceQuery));
+    return this.fetch(new DSUpdate(this.collectionName, newData, this.sourceQuery));
   }
 
   abstract serialize(): T;
@@ -162,8 +159,8 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
     }
   }
 
-  async fetch(action: Action) {
-    const { value, done } = await readOneChunk(this.dispatcher.dispatch(action));
+  async fetch(action: IMessage) {
+    const { value, done } = await readOneChunk<any>(this.dispatcher.dispatch(action));
     if (value) {
       this.deserialize(value);
     }

@@ -60,7 +60,7 @@ class RemoteRequest {
   }
 
   resolve(value) {
-    this._resolve(value);
+    this._resolve(value || 1);
   }
 
   reject(value) {
@@ -73,7 +73,7 @@ export class RemoteBus<T> implements IBus<T> {
   private _pendingRequests: Map<string, RemoteRequest>;
   private _uid: string;
 
-  constructor(private _adapter: IRemoteBusAdapter, private _localDispatcher: IDispatcher<T>, private _serializer?: ISerializer<any, any>) {
+  constructor(private _adapter: IRemoteBusAdapter, private _localDispatcher: IDispatcher<T, any>, private _serializer?: ISerializer<any, any>) {
     this._pendingRequests  = new Map();
     this._uid = createUID();
 

@@ -12,9 +12,11 @@ describe(__filename + "#", () => {
     const bus = new ParallelBus([
       new CallbackDispatcher(m => i++)
     ]);
-    await bus.dispatch({});
-    await bus.dispatch({});
-    await bus.dispatch({});
+
+
+    bus.dispatch({});
+    bus.dispatch({});
+    bus.dispatch({});
     expect(i).to.equal(3);
   });
 
