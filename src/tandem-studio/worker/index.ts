@@ -9,9 +9,20 @@ import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extensio
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/worker";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
 import { createEditorWorkerProviders, IEditorWorkerConfig } from "@tandem/editor/worker";
-import { Injector, LogLevel, serialize, deserialize, PrivateBusProvider, hook } from "@tandem/common";
+import { Injector, LogLevel, serialize, deserialize, PrivateBusProvider, hook, MimeTypeProvider, MimeTypeAliasProvider } from "@tandem/common";
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
-import { DependencyGraphStrategyProvider, WebpackDependencyGraphStrategy, ProtocolURLResolverProvider, WebpackProtocolResolver, createSandboxProviders } from "@tandem/sandbox";
+import { MarkupMimeTypeXMLNSProvider } from "@tandem/synthetic-browser";
+
+import {
+  createSandboxProviders,
+  WebpackProtocolResolver,
+  ProtocolURLResolverProvider,
+  ContentEditorFactoryProvider,
+  WebpackDependencyGraphStrategy,
+  DependencyGraphStrategyProvider,
+  DependencyLoaderFactoryProvider,
+  SandboxModuleEvaluatorFactoryProvider,
+} from "@tandem/sandbox";
 
 export const createCoreStudioWorkerProviders = () => {
   return [

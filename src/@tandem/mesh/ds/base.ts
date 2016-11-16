@@ -33,6 +33,9 @@ export abstract class BaseDataStore implements IStreamableDispatcher<DSMessage> 
 
   protected async connect() { }
 
+  // TODO
+  // public tail(message: DS)
+
   abstract dsFind(message: DSFind<any>): any;
   abstract dsInsert(message: DSInsert<any>): any;
   abstract dsRemove(message: DSRemove<any>): any;

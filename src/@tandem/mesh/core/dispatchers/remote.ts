@@ -7,6 +7,10 @@ export interface IRemoteBusAdapter {
   addListener(message: any): any;
 }
 
+export interface IRemoteBusOptions {
+  adapter: IRemoteBusAdapter;
+}
+
 const PASSED_THROUGH_KEY = "$$passedThrough";
 
 let _messageCount = 0;
@@ -145,9 +149,11 @@ export class RemoteBus<T> implements IBus<T> {
 
   private _pendingConnections: Map<string, RemoteConnection>;
   private _uid: string;
+  readonly adapter: IRemoteBusAdapter;
 
-  constructor(readonly adapter: IRemoteBusAdapter, private _localDispatcher: IDispatcher<T, any> = noopDispatcherInstance, private _serializer?: any) {
+  constructor({ adapter }: IRemoteBusOptions, private _localDispatcher: IDispatcher<T, any> = noopDispatcherInstance, private _serializer?: any) {
     this._pendingConnections  = new Map();
+    this.adapter = adapter;
     this._uid = createUID();
 
     if (!_serializer) {

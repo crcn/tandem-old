@@ -34,11 +34,13 @@ export const fork = (localBus: IDispatcher<any, any>) => {
 
 const createProcessBus = (proc: Worker | NodeJS.Process, target: IDispatcher<any, any>) => {
   return new RemoteBus({
-    send(message) {
-      proc.send(message);
-    },
-    addListener(message) {
-      proc.on("message", message);
+    adapter: {
+      send(message) {
+        proc.send(message);
+      },
+      addListener(message) {
+        proc.on("message", message);
+      }
     }
   }, target, { serialize, deserialize });
 }

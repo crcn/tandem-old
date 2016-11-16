@@ -46,13 +46,15 @@ function createWorkerFilterBus(dispatcher: IDispatcher<any, any>) {
 
 function createWorkerBus(worker: any, localBus: IDispatcher<any, any>): IDispatcher<any, any> {
   return new RemoteBus({
-    send(message) {
-      worker.postMessage(message);
-    },
-    addListener(listener) {
-      worker.addEventListener("message", (message: MessageEvent) => {
-        listener(message.data);
-      });
+    adapter: {
+      send(message) {
+        worker.postMessage(message);
+      },
+      addListener(listener) {
+        worker.addEventListener("message", (message: MessageEvent) => {
+          listener(message.data);
+        });
+      }
     }
   }, localBus, { serialize, deserialize })
 }

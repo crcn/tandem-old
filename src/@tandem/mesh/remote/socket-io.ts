@@ -12,11 +12,13 @@ export class SocketIOBus<T> implements IBus<T> {
     if (!channel) channel = "o";
 
     this._target = new RemoteBus({
-      send(message) {
-        connection.emit(channel, message);
-      },
-      addListener(listener) {
-        connection.on(channel, listener);
+      adapter: {
+        send(message) {
+          connection.emit(channel, message);
+        },
+        addListener(listener) {
+          connection.on(channel, listener);
+        }
       }
     }, localBus, serializer);
   }
