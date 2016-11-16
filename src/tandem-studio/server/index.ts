@@ -1,20 +1,13 @@
 import { argv } from "yargs";
 import * as electron from "electron";
 import * as getPort from "get-port";
-import { isMaster, fork } from "cluster";
+import { FileCacheProvider } from "@tandem/sandbox";
 import { ServiceApplication } from "@tandem/core";
+import { createCoreStudioWorkerProviders } from "../worker";
 import { MongoDataStore, MemoryDataStore } from "@tandem/mesh";
 import { InitializeWindowCommand, SpawnWorkerCommand } from "./commands";
-import { createJavaScriptWorkerProviders } from "@tandem/javascript-extension/editor/server";
-import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/server";
-import { createTDProjectEditorServerProviders } from "@tandem/tdproject-extension/editor/server";
-import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/server";
-import { createSyntheticBrowserWorkerProviders } from "@tandem/synthetic-browser";
 import { createEditorServerProviders, IEdtorServerConfig } from "@tandem/editor/server";
-import { createHTMLEditorWorkerProviders, createHTMLEditorServerProviders } from "@tandem/html-extension/editor/server";
-
 import {
-   Action,
    Injector,
    LogLevel,
    serialize,
@@ -22,9 +15,11 @@ import {
    IBrokerBus,
    deserialize,
    InitializeAction,
-   PrivateBusProvider,
    CommandFactoryProvider,
 } from "@tandem/common";
+
+
+process.env.LOG_LEVEL = process.env.LOG_LEVEL || LogLevel[String(argv.logLevel).toUpperCase()] || LogLevel.DEFAULT;
 
 export const initializeMaster = async () => {
 
@@ -35,17 +30,16 @@ export const initializeMaster = async () => {
     argv: argv,
     hostname: "localhost",
     log: {
-      level: LogLevel.ALL,
+      level: Number(process.env.LOG_LEVEL),
       prefix: "master "
     }
   };
 
   const injector = new Injector(
-    createHTMLEditorServerProviders(),
+    createCoreStudioWorkerProviders(),
     createEditorServerProviders(config, config.experimental ? new MongoDataStore("mongodb://localhost:27017/tandem") : new MemoryDataStore()),
-    createTDProjectEditorServerProviders(),
     new CommandFactoryProvider(LoadAction.LOAD, SpawnWorkerCommand),
-    new CommandFactoryProvider(InitializeAction.INITIALIZE, InitializeWindowCommand)
+    new CommandFactoryProvider(InitializeAction.INITIALIZE, InitializeWindowCommand),
   );
 
   const app = new ServiceApplication(injector);

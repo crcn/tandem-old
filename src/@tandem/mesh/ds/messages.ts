@@ -1,7 +1,8 @@
 import { IMessage, IStreamableDispatcher, readAllChunks, readOneChunk } from "@tandem/mesh/core";
 import * as sift from "sift";
 
-// @defineProtectedAction()
+
+// @definePublicAction()
 export class DSMessage implements IMessage {
   readonly timestamp: number = Date.now();
   constructor(readonly type: string, readonly collectionName: string) {

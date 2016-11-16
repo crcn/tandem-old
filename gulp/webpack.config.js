@@ -47,7 +47,8 @@ module.exports = {
         'chokidar': 'null-loader?chokidar',
         'detective': 'null-loader?detective',
         'node-sass': 'null-loader?node-sass',
-        'mongodb': 'null-loader?mongodb'
+        'mongodb': 'null-loader?mongodb',
+        'cluster': 'null-loader?cluster'
       }
     },
     tandem: {

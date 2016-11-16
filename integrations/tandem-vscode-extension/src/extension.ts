@@ -7,11 +7,13 @@ import "reflect-metadata";
 
 import { exec, spawn, ChildProcess } from "child_process";
 import { CallbackDispatcher, NoopDispatcher } from "@tandem/mesh";
-import * as vscode from "vscode";
 import * as net from "net";
+import * as os from "os";
+import * as fs from "fs";
+import * as path from "path";
+import * as vscode from "vscode";
 import * as through from "through2";
 import * as getPort from "get-port";
-import * as fs from "fs";
 import * as createServer from "express";
 import { debounce, throttle } from "lodash";
 
@@ -49,6 +51,8 @@ class FileCacheChangeAction extends Action{
         super(FileCacheChangeAction.FILE_CACHE_CHANGE);
     }
 }
+
+const TD_SOCK_FILE = path.join(os.tmpdir(), `tandem-${process.env.USER}.sock`);
 
 class TandemClient extends Observable {
 
@@ -91,7 +95,7 @@ class TandemClient extends Observable {
     async connect() {
         if (this._disconnected !== true) return;
 
-        const sockFilePath = await this.getSocketFilePath();
+        const sockFilePath = TD_SOCK_FILE;
 
         console.log("Connecting to the server");
         const client = this._sockConnection = net.connect({ path: sockFilePath } as any);
@@ -115,40 +119,6 @@ class TandemClient extends Observable {
 
         client.once("close", reconnect).once("error", reconnect);
         this.port = await GetServerPortAction.dispatch(this.bus);
-    }
-
-    private async getSocketFilePath() {
-        if (this._sockFilePath) return this._sockFilePath;
-
-        if (this._process) {
-            this._process.kill();
-        }
-
-        console.log("Retrieving socket file");
-
-        // isolate the td process so that it doesn't compete with resources
-        // with VSCode.
-        const tdproc = this._process = spawn(`node`, ["server-entry.js", "--expose-sock-file", "--no-banner", "--terminate"], {
-            cwd: __dirname + "/../../../../node_modules/@tandem/editor"
-        });
-
-        tdproc.stdout.pipe(process.stdout);
-        tdproc.stderr.pipe(process.stderr);
-
-        return this._sockFilePath = await new Promise<string>((resolve) => {
-
-            const sockBuffer = [];
-            tdproc.stdout.pipe(through(function(chunk, enc:any, callback) {
-                const value = String(chunk);
-
-                // TODO - need util function for this
-                const match = value.match(/\-+sock file start\-+\n(.*?)\n\-+sock file end\-+/);
-
-                if (match) {
-                    resolve(match[1]);
-                }
-            }))
-        });
     }
 
     private watchFileCache() {
@@ -189,7 +159,6 @@ export async function activate(context: vscode.ExtensionContext) {
     async function setEditorContent({ content, filePath, mtime }) {
 
         const editor = vscode.window.activeTextEditor;
-        console.log(vscode.window.visibleTextEditors);
         if (mtime < mtimes[filePath]) return;
 
         if (editor.document.fileName !== filePath || editor.document.getText() === content) return;
