@@ -1,16 +1,16 @@
 import {
   inject,
   Action,
-  loggable,
   Logger,
+  Injector,
+  loggable,
   IBrokerBus,
   IInjectable,
-  Injector,
-  PrivateBusProvider,
   InjectorProvider,
+  PrivateBusProvider,
 } from "@tandem/common";
 
-import {  IDispatcher } from "@tandem/mesh";
+import {  IDispatcher, IMessageTester } from "@tandem/mesh";
 import { ApplicationConfigurationProvider } from "./providers";
 
 /**
@@ -18,7 +18,7 @@ import { ApplicationConfigurationProvider } from "./providers";
  * entiry application.
  */
 
-export abstract class BaseApplicationService implements  IDispatcher<any, any>, IInjectable {
+export abstract class BaseApplicationService implements  IDispatcher<any, any>, IInjectable, IMessageTester<any> {
 
   protected readonly logger: Logger;
 
@@ -28,18 +28,35 @@ export abstract class BaseApplicationService implements  IDispatcher<any, any>,
   @inject(InjectorProvider.ID)
   protected injector: Injector;
 
-  dispatch(action: Action) {
-    const method = this[action.type];
+  private _acceptedMessageTypes: string[];
+
+  dispatch(message: Action) {
+    const method = this[message.type];
     if (method) {
       if (this.logger) {
-        this.logger.verbose("%s()", action.type);
+        this.logger.verbose("%s()", message.type);
       }
-      return method.call(this, action);
+      return method.call(this, message);
     }
   }
 
   $didInject() {
     this.bus.register(this);
+
+    const acceptedMessageTypes = [];
+
+    for (const property of Object.getOwnPropertyNames(this.constructor.prototype)) {
+      const value = this[property];
+      if (typeof value === "function" && !/^([$_]|constructor)/.test(property.charAt(0))) {
+        acceptedMessageTypes.push(property);
+      }
+    }
+
+    this._acceptedMessageTypes = acceptedMessageTypes;
+  }
+
+  public testMessage(message: any) {
+    return this._acceptedMessageTypes.length === 0 || this._acceptedMessageTypes.indexOf(message.type) !== -1;
   }
 }
 

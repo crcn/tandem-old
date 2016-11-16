@@ -1,14 +1,21 @@
 import * as sift from "sift";
 import { IDispatcher } from "@tandem/mesh";
 import { inject } from "@tandem/common/decorators";
-import { CallbackDispatcher, readAllChunks, readOneChunk, DSFind, DSUpdate, DSInsert } from "@tandem/mesh";
 import { isMaster } from "@tandem/common/workers";
 import { IBrokerBus } from "@tandem/common/dispatchers";
 import { IDisposable } from "@tandem/common/object";
 import { IActiveRecord } from "./base";
 import { ObservableCollection } from "@tandem/common/observable";
-import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import { PostDSAction } from "@tandem/common/actions";
+import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
+import {
+  FilterBus,
+  readAllChunks,
+  readOneChunk,
+  CallbackDispatcher,
+  DSFind,
+  DSUpdate,
+  DSInsert } from "@tandem/mesh";
 
 // TODO - remove global listener
 // TODO - listen to DS mediator for updates on record collection
@@ -32,7 +39,9 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
     this.collectionName = collectionName;
     this._bus = PrivateBusProvider.getInstance(injector);
     this.createActiveRecord = createActiveRecord;
-    this._globalActionObserver = new CallbackDispatcher(this.onGlobalAction.bind(this));
+    this._globalActionObserver = new FilterBus((action: PostDSAction) => {
+      return (action.type === DSUpdate.DS_UPDATE || action.type === DSInsert.DS_INSERT || action.type === PostDSAction.DS_DID_UPDATE || action.type === PostDSAction.DS_DID_INSERT) && action.collectionName === this.collectionName && sift(this.query)(action.data);
+    }, new CallbackDispatcher(this.onPostDSAction.bind(this)));
     this.query = query || {};
     return this;
   }
@@ -106,10 +115,8 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
     return record;
   }
 
-  private onGlobalAction(action: PostDSAction) {
-    if ((action.type === DSUpdate.DS_UPDATE || action.type === DSInsert.DS_INSERT || action.type === PostDSAction.DS_DID_UPDATE || action.type === PostDSAction.DS_DID_INSERT) && action.collectionName === this.collectionName && sift(this.query)(action.data)) {
-      this._updateActiveRecord(action.data);
-    }
+  private onPostDSAction(action: PostDSAction) {
+    this._updateActiveRecord(action.data);
   }
 
   private _updateActiveRecord(source: U) {

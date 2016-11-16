@@ -58,20 +58,6 @@ export function createSingletonBusProviderClass(name: string): { getInstance(pro
 }
 
 /**
- * Public bus that is accessible to outside resources
- */
-
-export const PublicBusProvider    = createSingletonBusProviderClass("public");
-
-/**
- * Protected bus that can be shared with very specific outside resources
- *
- * Bubbes messages to the public bus.
- */
-
-export const ProtectedBusProvider = createSingletonBusProviderClass("protected");
-
-/**
  * Private bus that can only be used within the application. This typically contains messages
  * that are junk for other outside resources.
  *

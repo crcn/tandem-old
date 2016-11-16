@@ -30,3 +30,7 @@ export interface IStreamableDispatcher<T> extends IDispatcher<T, TransformStream
  */
 
 export interface IBus<T> extends IStreamableDispatcher<T> { }
+
+export interface IMessageTester<T> {
+  testMessage(message: T): boolean;
+}

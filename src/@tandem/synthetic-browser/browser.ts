@@ -119,8 +119,6 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
       return;
     }
 
-    this.logger.info(`Opening ${options.url} ...`);
-
     this._openOptions = options;
     this._location = new SyntheticLocation(options.url);
     await this.open2(options);
@@ -148,9 +146,15 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   }
 
   async open2(options: ISyntheticBrowserOpenOptions) {
+
+    this.logger.info(`Opening ${options.url} ...`);
+    const timerLogger = this.logger.startTimer();
+
     const graph = this._graph = DependencyGraphProvider.getInstance(options.dependencyGraphStrategyOptions, this._injector);
     this._entry = await graph.getDependency(await graph.resolve(options.url, "/"));
     await this._sandbox.open(this._entry);
+
+    timerLogger.stop(`Loaded ${options.url}`);
   }
 
   get document() {

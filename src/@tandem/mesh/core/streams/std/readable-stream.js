@@ -1,8 +1,7 @@
-// from https://github.com/whatwg/streams
 'use strict';
 const assert = require('assert');
 const { ArrayBufferCopy, CreateIterResultObject, IsFiniteNonNegativeNumber, InvokeOrNoop, PromiseInvokeOrNoop,
-        SameRealmTransfer, ValidateAndNormalizeQueuingStrategy, ValidateAndNormalizeHighWaterMark, StoredPromise } =
+        SameRealmTransfer, ValidateAndNormalizeQueuingStrategy, ValidateAndNormalizeHighWaterMark } =
       require('./helpers.js');
 const { createArrayFromList, createDataProperty, typeIsObject } = require('./helpers.js');
 const { rethrowAssertionErrorRejection } = require('./utils.js');
@@ -538,6 +537,7 @@ function ReadableStreamError(stream, e) {
   }
 
   defaultReaderClosedPromiseReject(reader, e);
+  reader._closedPromise.catch(() => {});
 }
 
 function ReadableStreamFulfillReadIntoRequest(stream, chunk, done) {
@@ -769,6 +769,7 @@ function ReadableStreamReaderGenericInitialize(reader, stream) {
     assert(stream._state === 'errored', 'state must be errored');
 
     defaultReaderClosedPromiseInitializeAsRejected(reader, stream._storedError);
+    reader._closedPromise.catch(() => {});
   }
 }
 
@@ -794,6 +795,7 @@ function ReadableStreamReaderGenericRelease(reader) {
         reader,
         new TypeError('Reader was released and can no longer be used to monitor the stream\'s closedness'));
   }
+  reader._closedPromise.catch(() => {});
 
   reader._ownerReadableStream._reader = undefined;
   reader._ownerReadableStream = undefined;
@@ -1825,14 +1827,14 @@ function defaultReaderBrandCheckException(name) {
 }
 
 function defaultReaderClosedPromiseInitialize(reader) {
-  reader._closedPromise = new StoredPromise((resolve, reject) => {
+  reader._closedPromise = new Promise((resolve, reject) => {
     reader._closedPromise_resolve = resolve;
     reader._closedPromise_reject = reject;
   });
 }
 
 function defaultReaderClosedPromiseInitializeAsRejected(reader, reason) {
-  reader._closedPromise = StoredPromise.reject(reason);
+  reader._closedPromise = Promise.reject(reason);
   reader._closedPromise_resolve = undefined;
   reader._closedPromise_reject = undefined;
 }
@@ -1856,7 +1858,7 @@ function defaultReaderClosedPromiseResetToRejected(reader, reason) {
   assert(reader._closedPromise_resolve === undefined);
   assert(reader._closedPromise_reject === undefined);
 
-  reader._closedPromise = StoredPromise.reject(reason);
+  reader._closedPromise = Promise.reject(reason);
 }
 
 function defaultReaderClosedPromiseResolve(reader) {

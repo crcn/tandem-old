@@ -8,9 +8,13 @@ import {
   createRoundRobinIterator,
 } from "../utils";
 
-export class FanoutBus<T> implements IBus<T> {
-  constructor(private _dispatchers: IDispatcher<T, any>[], private _iterator: IteratorType<IDispatcher<T, any>>) {
+export type FanoutBusDispatchersParamType<T> = IDispatcher<T, any>[] | (<T>(message: T) => IDispatcher<T, any>[]);
 
+export class FanoutBus<T> implements IBus<T> {
+  private getDispatchers: <T>(message: T) => IDispatcher<T, any>[];
+
+  constructor(private _dispatchers: FanoutBusDispatchersParamType<T>, private _iterator: IteratorType<IDispatcher<T, any>>) {
+    this.getDispatchers = typeof _dispatchers === "function" ? _dispatchers : () => _dispatchers;
   }
   dispatch(message: T) {
     return new DuplexStream((input, output) => {
@@ -18,10 +22,19 @@ export class FanoutBus<T> implements IBus<T> {
 
       let spare: ReadableStream<any> = input, child: ReadableStream<any>;
 
-      this._iterator(this._dispatchers, async (dispatcher: IDispatcher<T, any>) => {
+      this._iterator(this.getDispatchers(message), (dispatcher: IDispatcher<T, any>) => {
+
+        let response = dispatcher.dispatch(message);
+
+        if (response == null) {
+          return Promise.resolve();
+        }
+
         [spare, child] = spare.tee();
+        response = wrapDuplexStream(response);
+
         return child
-        .pipeThrough(wrapDuplexStream(dispatcher.dispatch(message)))
+        .pipeThrough(response)
         .pipeTo(new WritableStream({
           write(chunk) {
             return writer.write(chunk);
@@ -44,25 +57,25 @@ export class FanoutBus<T> implements IBus<T> {
 }
 
 export class SequenceBus<T> extends FanoutBus<T> {
-  constructor(dispatchers: IDispatcher<T, any>[]) {
+  constructor(dispatchers: FanoutBusDispatchersParamType<T>) {
     super(dispatchers, sequenceIterator);
   }
 }
 
 export class ParallelBus<T> extends FanoutBus<T> {
-  constructor(dispatchers: IDispatcher<T, any>[]) {
+  constructor(dispatchers: FanoutBusDispatchersParamType<T>) {
     super(dispatchers, parallelIterator);
   }
 }
 
 export class RoundRobinBus<T> extends FanoutBus<T> {
-  constructor(dispatchers: IDispatcher<T, any>[]) {
+  constructor(dispatchers: FanoutBusDispatchersParamType<T>) {
     super(dispatchers, createRoundRobinIterator());
   }
 }
 
 export class RandomBus<T> extends FanoutBus<T> {
-  constructor(dispatchers: IDispatcher<T, any>[], weights?: number[]) {
+  constructor(dispatchers: FanoutBusDispatchersParamType<T>, weights?: number[]) {
     super(dispatchers, createRandomIterator(weights));
   }
 }

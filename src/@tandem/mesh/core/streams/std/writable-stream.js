@@ -1,9 +1,7 @@
-// from https://github.com/whatwg/streams
-
 'use strict';
 const assert = require('assert');
 const { InvokeOrNoop, PromiseInvokeOrNoop, PromiseInvokeOrFallbackOrNoop, ValidateAndNormalizeQueuingStrategy,
-        typeIsObject, StoredPromise } = require('./helpers.js');
+        typeIsObject } = require('./helpers.js');
 const { rethrowAssertionErrorRejection } = require('./utils.js');
 const { DequeueValue, EnqueueValueWithSize, GetTotalQueueSize, PeekQueueValue } = require('./queue-with-sizes.js');
 
@@ -148,6 +146,7 @@ function WritableStreamError(stream, e) {
   const writer = stream._writer;
   if (writer !== undefined) {
     defaultWriterClosedPromiseReject(writer, e);
+    writer._closedPromise.catch(() => {});
 
     if (state === 'writable' &&
         WritableStreamDefaultControllerGetBackpressure(stream._writableStreamController) === true) {
@@ -155,6 +154,7 @@ function WritableStreamError(stream, e) {
     } else {
       defaultWriterReadyPromiseResetToRejected(writer, e);
     }
+    writer._readyPromise.catch(() => {});
   }
 
   stream._state = 'errored';
@@ -218,6 +218,7 @@ class WritableStreamDefaultWriter {
       assert(state === 'errored', 'state must be errored');
 
       defaultWriterClosedPromiseInitializeAsRejected(this, stream._storedError);
+      this._closedPromise.catch(() => {});
     }
 
     if (state === 'writable' &&
@@ -420,6 +421,7 @@ function WritableStreamDefaultWriterRelease(writer) {
   } else {
     defaultWriterClosedPromiseResetToRejected(writer, releasedError);
   }
+  writer._closedPromise.catch(() => {});
 
   if (state === 'writable' &&
       WritableStreamDefaultControllerGetBackpressure(stream._writableStreamController) === true) {
@@ -427,6 +429,7 @@ function WritableStreamDefaultWriterRelease(writer) {
   } else {
     defaultWriterReadyPromiseResetToRejected(writer, releasedError);
   }
+  writer._readyPromise.catch(() => {});
 
   stream._writer = undefined;
   writer._ownerWritableStream = undefined;
@@ -543,7 +546,7 @@ function WritableStreamDefaultControllerWrite(controller, chunk) {
     } catch (chunkSizeE) {
       // TODO: Should we notify the sink of this error?
       WritableStreamDefaultControllerErrorIfNeeded(controller, chunkSizeE);
-      return Promise.reject(chunkSizeE);
+      return;
     }
   }
 
@@ -555,7 +558,7 @@ function WritableStreamDefaultControllerWrite(controller, chunk) {
     EnqueueValueWithSize(controller._queue, writeRecord, chunkSize);
   } catch (enqueueE) {
     WritableStreamDefaultControllerErrorIfNeeded(controller, enqueueE);
-    return Promise.reject(enqueueE);
+    return;
   }
 
   if (stream._state === 'writable') {
@@ -709,14 +712,14 @@ function defaultWriterLockException(name) {
 }
 
 function defaultWriterClosedPromiseInitialize(writer) {
-  writer._closedPromise = new StoredPromise((resolve, reject) => {
+  writer._closedPromise = new Promise((resolve, reject) => {
     writer._closedPromise_resolve = resolve;
     writer._closedPromise_reject = reject;
   });
 }
 
 function defaultWriterClosedPromiseInitializeAsRejected(writer, reason) {
-  writer._closedPromise = StoredPromise.reject(reason);
+  writer._closedPromise = Promise.reject(reason);
   writer._closedPromise_resolve = undefined;
   writer._closedPromise_reject = undefined;
 }
@@ -740,7 +743,7 @@ function defaultWriterClosedPromiseResetToRejected(writer, reason) {
   assert(writer._closedPromise_resolve === undefined);
   assert(writer._closedPromise_reject === undefined);
 
-  writer._closedPromise = StoredPromise.reject(reason);
+  writer._closedPromise = Promise.reject(reason);
 }
 
 function defaultWriterClosedPromiseResolve(writer) {
@@ -753,7 +756,7 @@ function defaultWriterClosedPromiseResolve(writer) {
 }
 
 function defaultWriterReadyPromiseInitialize(writer) {
-  writer._readyPromise = new StoredPromise((resolve, reject) => {
+  writer._readyPromise = new Promise((resolve, reject) => {
     writer._readyPromise_resolve = resolve;
     writer._readyPromise_reject = reject;
   });
@@ -774,11 +777,11 @@ function defaultWriterReadyPromiseReject(writer, reason) {
   writer._readyPromise_reject = undefined;
 }
 
-function defaultWriterReadyPromiseReset(writer) {;
+function defaultWriterReadyPromiseReset(writer) {
   assert(writer._readyPromise_resolve === undefined);
   assert(writer._readyPromise_reject === undefined);
 
-  writer._readyPromise = new StoredPromise((resolve, reject) => {
+  writer._readyPromise = new Promise((resolve, reject) => {
     writer._readyPromise_resolve = resolve;
     writer._readyPromise_reject = reject;
   });
@@ -788,7 +791,7 @@ function defaultWriterReadyPromiseResetToRejected(writer, reason) {
   assert(writer._readyPromise_resolve === undefined);
   assert(writer._readyPromise_reject === undefined);
 
-  writer._readyPromise = StoredPromise.reject(reason);
+  writer._readyPromise = Promise.reject(reason);
 }
 
 function defaultWriterReadyPromiseResolve(writer) {

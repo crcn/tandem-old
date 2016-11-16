@@ -93,6 +93,7 @@ export class Logger {
 
   _log(level: number, text: string, ...params: Array<any>) {
 
+
     function stringify(value) {
       if (typeof value === "object") {
         value = JSON.stringify(value, null, 2);

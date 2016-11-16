@@ -24,4 +24,8 @@ export class ReceiverService extends BaseApplicationService {
 
     return new SequenceBus(commands).dispatch(action);
   }
+
+  testMessage(message) {
+    return true;
+  }
 }
