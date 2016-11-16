@@ -20,6 +20,10 @@ FEATURES
 - [ ] history slider
 - [ ] breadcrumb for elements
 
+ARCHITECTURE
+- [ ] more metadata on messages
+- [ ] change bus to dispatcher
+
 IMPORTING MODULES
 
 - [ ] navigator component

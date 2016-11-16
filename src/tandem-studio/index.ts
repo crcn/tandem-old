@@ -4,12 +4,6 @@ import { isMaster } from "cluster";
 import { initializeMaster } from "./server";
 import { initializeWorker } from "./worker";
 
-if (isMaster) {
-  app.once("ready", initializeMaster);
-} else {
-  initializeWorker();
-}
-
 process.on("unhandledRejection", function(error) {
   console.error(`(${isMaster ? "master" : "worker"}) Unhandled Rejection ${error.stack}`);
 });
@@ -17,3 +11,9 @@ process.on("unhandledRejection", function(error) {
 process.on("uncaughtException", function(error) {
   console.error(`(${isMaster ? "master" : "worker"}) Uncaught Exception ${error.stack}`);
 });
+
+if (isMaster) {
+  app.once("ready", initializeMaster);
+} else {
+  initializeWorker();
+}

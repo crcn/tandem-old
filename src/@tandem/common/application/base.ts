@@ -13,7 +13,7 @@ import {
 
 export class Application {
 
-  protected bus: IBus<any>;
+  readonly bus: IBrokerBus;
   private _initialized: boolean;
 
   constructor(readonly injector: Injector) {

@@ -1,9 +1,11 @@
+import { IDispatcher, RemoteBus } from "@tandem/mesh";
+import { serialize, deserialize } from "../serialize";
+import { Action, isWorkerAction, isMasterAction, isPublicAction } from "../actions";
 
 let loadedScripts;
 let lastScriptSrc;
 
 export const isMaster = typeof window !== "undefined";
-
 
 if (isMaster) {
   loadedScripts = document.querySelectorAll("script");
@@ -31,24 +33,42 @@ function getNextWorker(): Worker {
   return workers.length ? workers[currentWorkerIndex = (currentWorkerIndex + 1) % workers.length] : undefined;
 }
 
+function createWorkerFilterBus(dispatcher: IDispatcher<any, any>) {
+  return {
+    dispatch(action: Action) {
+      if (isWorkerAction(action) || isPublicAction(action)) {
+        return dispatcher.dispatch(action);
+      }
+    }
+  }
+}
+
+
+function createWorkerBus(worker: any, localBus: IDispatcher<any, any>): IDispatcher<any, any> {
+  return new RemoteBus({
+    send(message) {
+      worker.postMessage(message);
+    },
+    addListener(listener) {
+      worker.addEventListener("message", (message: MessageEvent) => {
+        listener(message.data);
+      });
+    }
+  }, localBus, { serialize, deserialize })
+}
+
 /**
  */
 
-export function fork() {
-  const worker = new Worker(lastScriptSrc);
-  workers.push(worker);
+export function fork(localBus: IDispatcher<any, any>) {
+  return createWorkerFilterBus(createWorkerBus(new Worker(lastScriptSrc), localBus));
+}
 
-  worker.addEventListener("message", function(message: MessageEvent) {
-    const { cid, data, error } = message.data;
-    const promise: any = jobPromises[cid];
-    if (error) {
-      promise.reject(data);
-    } else {
-      promise.resolve(data);
-    }
+/**
+ */
 
-    jobPromises[cid] = undefined;
-  });
+export function hook(localBus: IDispatcher<any, any>) {
+  return createWorkerFilterBus(createWorkerBus(self, localBus));
 }
 
 /**
@@ -94,40 +114,4 @@ if (isMaster) {
       resolve(fn(...args));
     } catch (e) { reject({ message: e.message }); }
   });
-}
-
-/**
- */
-
-export function registerSerializer(...serializers: Array<Serializer<any>>) {
-  // TODO
-}
-
-/**
- */
-
-
-export function thread<T>(fn: Function, serialize: Function = undefined, deserialize: Function = undefined) {
-
-  let ret;
-  const index = threadedFunctions.length;
-
-  if (isMaster) {
-    ret = function(...args: Array<any>): Promise<any> {
-      const worker = getNextWorker();
-
-      // no workers yet? run it now
-      if (!worker) return fn(...args);
-      return new Promise(async function(resolve, reject) {
-        jobPromises[++cid] = { resolve, reject, timestamp: Date.now() };
-        worker.postMessage({ cid, index, args });
-      });
-    };
-  } else {
-    ret = fn;
-  }
-
-  threadedFunctions.push(ret);
-
-  return ret;
 }

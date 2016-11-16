@@ -34,3 +34,7 @@ export interface IBus<T> extends IStreamableDispatcher<T> { }
 export interface IMessageTester<T> {
   testMessage(message: T): boolean;
 }
+
+export const testDispatcherMessage = (target: any, message: any) => {
+  return !!(target && (<IMessageTester<any>><any>target).testMessage && (<IMessageTester<any>><any>target).testMessage(message));
+}

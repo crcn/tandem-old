@@ -1,4 +1,5 @@
 import { IBus, IDispatcher } from "./base";
+import { noopDispatcherInstance } from "./noop";
 import { DuplexStream, ChunkQueue, ReadableStream, WritableStream, Sink, wrapDuplexStream, WritableStreamDefaultWriter, ReadableStreamDefaultReader } from "../streams";
 
 export interface IRemoteBusAdapter {
@@ -8,15 +9,29 @@ export interface IRemoteBusAdapter {
 
 const PASSED_THROUGH_KEY = "$$passedThrough";
 
-class RemoteBusMessage {
-  static readonly DISPATCH = "dispatch";
-  static readonly CHUNK    = "chunk";
-  static readonly RESOLVE  = "resolve";
-  static readonly REJECT   = "reject";
-  static readonly CLOSE    = "close";
-  static readonly ABORT    = "abort";
-  constructor(readonly type: string, readonly source: string, readonly dest: string, readonly payload?: any) {
+let _messageCount = 0;
+export class RemoteBusMessage {
 
+  static readonly DISPATCH = 0;
+  static readonly RESPONSE = RemoteBusMessage.DISPATCH + 1;
+  static readonly CHUNK    = RemoteBusMessage.RESPONSE + 1;
+  static readonly RESOLVE  = RemoteBusMessage.CHUNK    + 1;
+  static readonly REJECT   = RemoteBusMessage.RESOLVE  + 1;
+  static readonly CLOSE    = RemoteBusMessage.REJECT   + 1;
+  static readonly ABORT    = RemoteBusMessage.CLOSE    + 1;
+
+  public messageId: string;
+
+  constructor(readonly type: number, readonly source: string, readonly dest: string, readonly payload?: any) {
+    this.messageId = String(_messageCount++);
+  }
+  serialize() {
+    return [this.type, this.messageId, this.source, this.dest, this.payload];
+  }
+  static deserialize([type, messageId, source, dests, payload]: any[]) {
+    const message = new RemoteBusMessage(type, source, dests, payload);
+    message.messageId = messageId;
+    return message;
   }
 }
 
@@ -39,57 +54,100 @@ function fill0(num, min = 2) {
   return buffer;
 }
 
-class RemoteRequest {
-  readonly writer: WritableStreamDefaultWriter<any>;
-  private _resolve: (value: any) => any;
-  private _reject: (value: any) => any;
+class RemoteConnection {
+  private writer: WritableStreamDefaultWriter<any>;
+  private _dests: string[];
+  private _closed: boolean;
+  private _spare: ReadableStream<any>;
 
-  constructor(readonly uid: string, readonly dest: string, readonly adapter: IRemoteBusAdapter, private _serializer: any, readonly input: ReadableStream<any>, readonly output: WritableStream<any>, private _onClose: Function) {
-    this.writer = this.output.getWriter();
+  private _pendingPromises: Map<string, [Function, Function]>;
+
+  constructor(readonly uid: string, readonly adapter: IRemoteBusAdapter, private _serializer: any, private _onClose: Function) {
+    this._dests = [];
+    this._pendingPromises = new Map();
   }
 
-  start() {
-    this.input.pipeTo(new WritableStream({
+  addDest(dest: string) {
+    if (this._dests.indexOf(dest) !== -1) return;
+    this._dests.push(dest);
+
+    const [spare, child] = this._spare.tee();
+    this._spare = spare;
+
+    child.pipeTo(new WritableStream({
       write: (chunk) => {
-        return this.send(new RemoteBusMessage(RemoteBusMessage.CHUNK, this.uid, this.dest, this._serializer.serialize(chunk)));
+        return this.send(new RemoteBusMessage(RemoteBusMessage.CHUNK, this.uid, dest, this._serializer.serialize(chunk)));
       },
       close: () => {
-        return this.send(new RemoteBusMessage(RemoteBusMessage.CLOSE, this.uid, this.dest));
+        this._closed = true;
+        return this.send(new RemoteBusMessage(RemoteBusMessage.CLOSE, this.uid, dest));
       },
       abort: (reason: any) => {
-        return this.send(new RemoteBusMessage(RemoteBusMessage.ABORT, this.uid, this.dest, this._serializer.serialize(reason)));
+        return this.send(new RemoteBusMessage(RemoteBusMessage.ABORT, this.uid, dest, this._serializer.serialize(reason)));
       },
     })).catch((e) => {
-      this.send(new RemoteBusMessage(RemoteBusMessage.ABORT, this.uid, this.dest, this._serializer.serialize(e)));
+      this.send(new RemoteBusMessage(RemoteBusMessage.ABORT, this.uid, dest, this._serializer.serialize(e)));
     }).then(() => {
       this._onClose();
     });
   }
 
+  start(readable: ReadableStream<any>, writable: WritableStream<any>) {
+    this._spare = readable;
+    this.writer = writable.getWriter();
+  }
+
+  close(dest: string) {
+    const i = this._dests.indexOf(dest);
+    if (~i) {
+      this._dests.splice(i, 1);
+    } else {
+      return;
+    }
+
+    if (this._dests.length) return Promise.resolve();
+    return this.writer.close();
+  }
+
+  write(chunk) {
+    return this.writer.write(chunk);
+  }
+
+  abort(error) {
+    return this.writer.abort(error);
+  }
+
   private send(message: RemoteBusMessage) {
-    this.adapter.send(message);
     return new Promise((resolve, reject) => {
-      this._resolve = resolve;
-      this._reject  = reject;
+      this._pendingPromises.set(message.messageId + message.dest, [resolve, reject]);
+      this.adapter.send(message.serialize());
     });
   }
 
-  resolve(value) {
-    this._resolve(value || 1);
+  resolve([pendingPromiseId, value]) {
+    const pendingPromise = this._pendingPromises.get(pendingPromiseId);
+    if (pendingPromise) {
+      this._pendingPromises.delete(pendingPromiseId);
+      pendingPromise[0](value);
+    }
   }
 
-  reject(value) {
-    this._reject(value);
+  reject([pendingPromiseId, value]) {
+    const pendingPromise = this._pendingPromises.get(pendingPromiseId);
+    if (pendingPromise) {
+      this._pendingPromises.delete(pendingPromiseId);
+      pendingPromise[1](value);
+    }
   }
 }
 
 export class RemoteBus<T> implements IBus<T> {
 
-  private _pendingRequests: Map<string, RemoteRequest>;
+  private _pendingConnections: Map<string, RemoteConnection>;
   private _uid: string;
 
-  constructor(private _adapter: IRemoteBusAdapter, private _localDispatcher: IDispatcher<T, any>, private _serializer?: any) {
-    this._pendingRequests  = new Map();
+  constructor(readonly adapter: IRemoteBusAdapter, private _localDispatcher: IDispatcher<T, any> = noopDispatcherInstance, private _serializer?: any) {
+    this._pendingConnections  = new Map();
     this._uid = createUID();
 
     if (!_serializer) {
@@ -99,18 +157,21 @@ export class RemoteBus<T> implements IBus<T> {
       };
     }
 
-    this._adapter.addListener(this.onMessage.bind(this));
+    this.adapter.addListener(this.onMessage.bind(this));
   }
 
   dispose() {
-    for (const pending of this._pendingRequests.values()) {
-      pending.writer.abort(new Error("disposed"));
+    for (const pending of this._pendingConnections.values()) {
+      pending.abort(new Error("disposed"));
     }
   }
 
-  private onMessage(message: RemoteBusMessage) {
+  private onMessage(data: any[]) {
+    const message = RemoteBusMessage.deserialize(data);
     if (message.type === RemoteBusMessage.DISPATCH) {
-      this.onInputDispatch(message);
+      this.onDispatch(message);
+    } else if (message.type === RemoteBusMessage.RESPONSE) {
+      this.onResponse(message);
     } else if (message.type === RemoteBusMessage.CHUNK) {
       this.onChunk(message);
     } else if (message.type === RemoteBusMessage.CLOSE) {
@@ -125,68 +186,86 @@ export class RemoteBus<T> implements IBus<T> {
   }
 
   private onResolve({ source, dest, payload }: RemoteBusMessage) {
-    this._pendingRequests.get(dest).resolve(payload);
+    const result = payload;
+    this._getConnection(dest, (con, uid) => con.resolve(result));
   }
 
   private onReject({ source, dest, payload }: RemoteBusMessage) {
-    this._pendingRequests.get(dest).reject(payload);
+    const reason = payload;
+    this._getConnection(dest, (con, uid) => con.reject(reason));
   }
 
-  private onChunk({ source, dest, payload }: RemoteBusMessage) {
-    this.respond(this._pendingRequests.get(dest).writer.write(this._serializer.deserialize(payload, null)), source, dest);
+  private resolve(messageId: string, source: string, dest: string, result: any) {
+    this.adapter.send(new RemoteBusMessage(RemoteBusMessage.RESOLVE, source, dest, [messageId + source, result]).serialize());
   }
 
-  private resolve(source: string, dest: string, result: any) {
-    this._adapter.send(new RemoteBusMessage(RemoteBusMessage.RESOLVE, source, dest, result));
+  private reject(messageId: string, source: string, dest: string, reason: any) {
+    this.adapter.send(new RemoteBusMessage(RemoteBusMessage.REJECT, source, dest, [messageId + source, reason]).serialize());
   }
 
-  private reject(source: string, dest: string, uid: string, error: any) {
-    this._adapter.send(new RemoteBusMessage(RemoteBusMessage.REJECT, source, dest, error));
+  private onChunk({ messageId, source, dest, payload }: RemoteBusMessage) {
+    const chunk = this._serializer.deserialize(payload, null);
+    this._getConnection(dest, (con, uid) => this.respond(con.write(chunk), messageId, uid, source));
   }
 
-  private onClose({ source, dest, payload }: RemoteBusMessage) {
-    this.respond(this._pendingRequests.get(dest).writer.close(), source, dest);
+  private onClose({ messageId, source, dest, payload }: RemoteBusMessage) {
+    this._getConnection(dest, (con, uid) => this.respond(con.close(source), messageId, uid, source));
   }
 
-  private respond(promise: Promise<any>, source: string, dest: string) {
-    promise.then(this.resolve.bind(this, dest, source)).catch(this.reject.bind(this, dest, source));
+  private respond(promise: Promise<any>, messageId: string, source: string, dest: string) {
+    promise.then(this.resolve.bind(this, messageId, source, dest)).catch(this.reject.bind(this, messageId, source, dest));
   }
 
-  private onAbort({ source, dest, payload }: RemoteBusMessage) {
-    this._pendingRequests.get(dest).writer.abort(payload).catch(e => {});
+  private onAbort({ messageId, source, dest, payload }: RemoteBusMessage) {
+    this._getConnection(dest, (con, uid) => this.respond(con.abort(payload), messageId, uid, source));
   }
 
-  private onInputDispatch({ payload, source, dest }: RemoteBusMessage) {
-    const { writable, readable } = wrapDuplexStream(this._localDispatcher.dispatch(this._serializer.deserialize(payload, null)));
-    const req = new RemoteRequest(dest, source, this._adapter, this._serializer, readable, writable, () => {
-      this._pendingRequests.delete(req.uid);
+  private onDispatch({ payload, source, dest }: RemoteBusMessage) {
+    const message = this._serializer.deserialize(payload, null);
 
+    const targetDispatcher = this._shouldHandleMessage(message) ? this._localDispatcher : noopDispatcherInstance;
+    const con = new RemoteConnection(createUID(), this.adapter, this._serializer, () => {
+      this._pendingConnections.delete(con.uid);
     });
-    this._pendingRequests.set(req.uid, req);
-    req.start();
+    this._pendingConnections.set(con.uid, con);
+    const { readable, writable } = wrapDuplexStream(targetDispatcher.dispatch(message));
+    con.start(readable, writable);
+    this.adapter.send(new RemoteBusMessage(RemoteBusMessage.RESPONSE, con.uid, source).serialize());
+    con.addDest(source);
   }
 
-  dispatch(message: T) {
+  onResponse({ source, dest }: RemoteBusMessage) {
+    this._getConnection(dest, (con, uid) => con.addDest(source));
+  }
 
+  private _getConnection(uid, each: Function) {
+    const con = this._pendingConnections.get(uid);
+    if (con) each(con, uid);
+  }
+
+  private _shouldHandleMessage(message: T) {
     if (!message[PASSED_THROUGH_KEY]) {
       message[PASSED_THROUGH_KEY] = {};
     }
 
-    return new DuplexStream((input, output) => {
-      const uid = createUID();
+    if (message[PASSED_THROUGH_KEY][this._uid]) return false;
+    return message[PASSED_THROUGH_KEY][this._uid] = true;
+  }
 
-      if (message[PASSED_THROUGH_KEY][this._uid]) {
+  dispatch(message: T) {
+
+    return new DuplexStream((input, output) => {
+
+      if (!this._shouldHandleMessage(message)) {
         return output.getWriter().close();
       }
 
-      message[PASSED_THROUGH_KEY][this._uid] = true;
-
-      const req = new RemoteRequest(`req:${uid}`, `res:${uid}`, this._adapter, this._serializer, input, output, () => {
-        this._pendingRequests.delete(req.uid);
+      const con = new RemoteConnection(createUID(), this.adapter, this._serializer, () => {
+        this._pendingConnections.delete(con.uid);
       });
-      this._pendingRequests.set(req.uid, req);
-      this._adapter.send(new RemoteBusMessage(RemoteBusMessage.DISPATCH, req.uid, req.dest, this._serializer.serialize(message)));
-      req.start();
+      this._pendingConnections.set(con.uid, con);
+      con.start(input, output);
+      this.adapter.send(new RemoteBusMessage(RemoteBusMessage.DISPATCH, con.uid, null, this._serializer.serialize(message)).serialize());
     });
   }
 

@@ -79,7 +79,6 @@ gulp.task('build:peg', function() {
 
 gulp.task('build:webpack', function(done) {
 
-
   const webPackages = PACKAGES.filter(sift({ 'entries.browser': { $exists: true }}));
 
   let i = webPackages.length;
@@ -97,8 +96,7 @@ gulp.task('build:webpack', function(done) {
         }
     }), (err, stats) => {
       if(err) throw new gutil.PluginError("webpack", err);
-      // gutil.log("[webpack]", stats.toString({
-      // }));
+      gutil.log("[webpack]", stats.toString(config.stats));
 
       if (!WATCH && ++i === webPackages.length) {
         done();

@@ -1,9 +1,10 @@
-import { IDispatcher, readAllChunks, IStreamableDispatcher } from "@tandem/mesh";
+import { IDispatcher, readAllChunks, IStreamableDispatcher, FilterBus } from "@tandem/mesh";
 import { OpenProjectAction } from "@tandem/editor/common";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 import { ApplicationServiceProvider } from "@tandem/common";
-import { LoadAction, InitializeAction, SockBus, Action, isPublicAction, serialize, deserialize } from "@tandem/common";
+import { isMaster } from "cluster";
+import { LoadAction, InitializeAction, SockBus, Action, isPublicAction, defineWorkerAction, isWorkerAction, serialize, deserialize } from "@tandem/common";
 import * as os from "os";
 import * as path from "path";
 import * as net from "net";
@@ -11,6 +12,7 @@ import * as fsa from "fs-extra";
 
 const SOCK_FILE = path.join(os.tmpdir(), `tandem-${process.env.USER}.sock`);
 
+@defineWorkerAction()
 class ExecAction extends Action {
   static readonly EXEC = "exec";
   constructor(readonly config: IEdtorServerConfig) {
@@ -47,9 +49,7 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
       const client = net.connect({ path: this._socketFile } as any);
 
       client.once("connect", async () => {
-
-        const remoteBus = new SockBus(client, this.bus, { serialize, deserialize });
-
+        const remoteBus = this._registerSocketBus(client);
         if (this._argv) {
           await ExecAction.dispatch(this.config, remoteBus);
         }
@@ -84,29 +84,22 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
     }
   }
 
+  private _registerSocketBus(connection: net.Socket) {
+    const bus = new FilterBus(action => isPublicAction(action) || isWorkerAction(action), new SockBus(connection, {
+      dispatch: (message) => {
+        return this.bus.dispatch(message);
+      }
+    }, { serialize, deserialize }));
+    this.bus.register(bus);
+    connection.on("close", () => {
+      this.bus.unregister(bus);
+    });
+    return bus;
+  }
+
   private _startSocketServer() {
     this._deleteSocketFile();
-    const server = net.createServer((connection) => {
-      const bus = new SockBus(connection, {
-        dispatch: (action) => {
-          action["$$sock"] = true;
-          return this.bus.dispatch(action);
-        }
-      }, { serialize, deserialize });
-      const gateBus = {
-        dispatch(action: Action) {
-          if (isPublicAction(action) && !action["$$sock"]) {
-            action["$$sock"] = true;
-            return bus.dispatch(action);
-          }
-        }
-      };
-      connection.on("close", () => {
-        this.bus.unregister(gateBus);
-      })
-
-      this.bus.register(gateBus);
-    });
+    const server = net.createServer(this._registerSocketBus.bind(this));
 
     server.listen(SOCK_FILE);
   }

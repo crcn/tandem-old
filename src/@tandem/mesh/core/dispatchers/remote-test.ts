@@ -17,16 +17,18 @@ describe(__filename + "#", () => {
 
   it("can send and receive a remote message", async () => {
 
-    const bus = new RemoteBus(createAdapter(), new CallbackDispatcher(({ text }) => {
+    const abus = new RemoteBus(createAdapter(), new CallbackDispatcher(({ text }) => {
       return text.toUpperCase();
     }));
 
-    expect(await readAllChunks(bus.dispatch({ text: "hello" }))).to.eql(["HELLO"]);
+    const bbus = new RemoteBus(abus.adapter);
+
+    expect(await readAllChunks(bbus.dispatch({ text: "hello" }))).to.eql(["HELLO"]);
   });
 
   it("can send and receive a remote stream", async () => {
 
-    const bus = new RemoteBus(createAdapter(), new CallbackDispatcher(({ text }) => {
+    const abus = new RemoteBus(createAdapter(), new CallbackDispatcher(({ text }) => {
       return new TransformStream({
         start(controller) {
           text.split("").forEach(chunk => controller.enqueue(chunk));
@@ -35,11 +37,14 @@ describe(__filename + "#", () => {
       })
     }));
 
-    expect(await readAllChunks(bus.dispatch({ text: "hello" }))).to.eql(["h", "e", "l", "l", "o"]);
+
+    const bbus = new RemoteBus(abus.adapter);
+
+    expect(await readAllChunks(bbus.dispatch({ text: "hello" }))).to.eql(["h", "e", "l", "l", "o"]);
   });
 
   it("can write chunks to a remote stream", async () => {
-    const bus = new RemoteBus(createAdapter(), new CallbackDispatcher((message: any) => {
+    const abus = new RemoteBus(createAdapter(), new CallbackDispatcher((message: any) => {
       return new TransformStream({
         transform(chunk: string, controller) {
           controller.enqueue(chunk.toUpperCase());
@@ -47,7 +52,9 @@ describe(__filename + "#", () => {
       })
     }));
 
-    const { writable, readable } = bus.dispatch({});
+    const bbus = new RemoteBus(abus.adapter);
+
+    const { writable, readable } = bbus.dispatch({});
     const writer = writable.getWriter();
     writer.write("a");
     writer.write("b");
@@ -59,15 +66,16 @@ describe(__filename + "#", () => {
   });
 
   it("can abort a remote stream", async () => {
-    const bus = new RemoteBus(createAdapter(), new CallbackDispatcher((message: any) => {
+    const abus = new RemoteBus(createAdapter(), new CallbackDispatcher((message: any) => {
       return new TransformStream({
         transform(chunk: string, controller) {
           controller.enqueue(chunk.toUpperCase());
         }
       })
     }));
+    const bbus = new RemoteBus(abus.adapter);
 
-    const { writable, readable } = bus.dispatch({});
+    const { writable, readable } = bbus.dispatch({});
     const writer = writable.getWriter();
     const reader = readable.getReader();
     writer.write("a").catch(e => {});
@@ -88,15 +96,16 @@ describe(__filename + "#", () => {
 
   it("can cancel a read stream", async () => {
 
-    const bus = new RemoteBus(createAdapter(), new CallbackDispatcher(({ text }) => {
+    const abus = new RemoteBus(createAdapter(), new CallbackDispatcher(({ text }) => {
       return new TransformStream({
         start(controller) {
           text.split("").forEach(chunk => controller.enqueue(chunk.toUpperCase()));
         }
       })
     }));
+    const bbus = new RemoteBus(abus.adapter);
 
-    const { writable, readable } = bus.dispatch({ text: "abcde" });
+    const { writable, readable } = bbus.dispatch({ text: "abcde" });
     const reader = readable.getReader();
     expect((await reader.read()).value).to.equal("A");
     expect((await reader.read()).value).to.equal("B");
@@ -108,31 +117,33 @@ describe(__filename + "#", () => {
 
   it("doesn't get re-dispatched against the same remote bus", async () => {
     let i = 0;
-    const bus = new RemoteBus(createAdapter(), new CallbackDispatcher((message: string) => {
+    const abus = new RemoteBus(createAdapter(), new CallbackDispatcher((message: string) => {
       i++;
-      return bus.dispatch(message);
+      return abus.dispatch(message);
     }));
+    const bbus = new RemoteBus(abus.adapter);
 
-    const { writable, readable } = bus.dispatch({});
+    const { writable, readable } = bbus.dispatch({});
     expect(i).to.equal(1);
-
   });
 
   it("gets re-dispatched against other remote busses", async () => {
     let i = 0;
     const abus = new RemoteBus(createAdapter(), new CallbackDispatcher((message: string) => {
       i++;
-      return bbus.dispatch(message);
+      return dbus.dispatch(message);
     }));
 
+    const bbus = new RemoteBus(abus.adapter);
 
-    const bbus = new RemoteBus(createAdapter(), new CallbackDispatcher((message: string) => {
+    const cbus = new RemoteBus(createAdapter(), new CallbackDispatcher((message: string) => {
       i++;
       return abus.dispatch(message);
     }));
 
-    const { writable, readable } = abus.dispatch({});
-    expect(i).to.equal(2);
+    const dbus = new RemoteBus(cbus.adapter);
 
+    const { writable, readable } = bbus.dispatch({});
+    expect(i).to.equal(2);
   });
 });
