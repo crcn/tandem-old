@@ -8,7 +8,7 @@ import {
 
 import { readAllChunks } from "./utils";
 
-export type DuplexStreamResponse = { cancel(): any };
+export type DuplexStreamResponse = { close(reason?): any };
 export type DuplexStreamHandler<T, U> = (input: ReadableStream<T>, output: WritableStream<U>) => any | DuplexStreamResponse;
 
 export class ChunkQueue<T> {
@@ -64,6 +64,13 @@ class ReadableWritableStream<T> {
     let abortReason: any;
     const queue = new ChunkQueue<T>();
 
+    const close = (reason) => {
+      queue.cancel(reason);
+      if (stream.$response.close) {
+        stream.$response.close(reason);
+      }
+    }
+
     const output = this.readable = new ReadableStream<T>({
       start(controller) {
         readerController = controller;
@@ -75,10 +82,7 @@ class ReadableWritableStream<T> {
       },
       cancel(reason) {
         cancelReason = reason;
-        queue.cancel(reason);
-        if (stream.$response.cancel) {
-          stream.$response.cancel();
-        }
+        close(reason);
       }
     });
 
@@ -102,6 +106,7 @@ class ReadableWritableStream<T> {
         if (cancelReason) return;
         abortReason = reason;
         readerController.error(reason);
+        close(reason);
       }
     });
   }

@@ -20,9 +20,23 @@ class RemoteBusMessage {
   }
 }
 
+const seed = fill0(Math.round(Math.random() * 100), 3);
+
 let _i = 0;
 const createUID = () => {
-  return String(_i++);
+  const now = new Date();
+  return `${seed}${fill0(now.getSeconds())}${_i++}`;
+}
+
+
+function fill0(num, min = 2) {
+  let buffer = "" + num;
+
+  while(buffer.length < min) {
+    buffer = "0" + buffer;
+  }
+
+  return buffer;
 }
 
 class RemoteRequest {
@@ -86,6 +100,12 @@ export class RemoteBus<T> implements IBus<T> {
     }
 
     this._adapter.addListener(this.onMessage.bind(this));
+  }
+
+  dispose() {
+    for (const pending of this._pendingRequests.values()) {
+      pending.writer.abort(new Error("disposed"));
+    }
   }
 
   private onMessage(message: RemoteBusMessage) {

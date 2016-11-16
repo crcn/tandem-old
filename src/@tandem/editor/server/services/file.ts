@@ -65,7 +65,7 @@ export class FileService extends CoreApplicationService<IEdtorServerConfig> {
       });
 
       return {
-        cancel() {
+        close() {
           watcher.dispose();
         }
       }

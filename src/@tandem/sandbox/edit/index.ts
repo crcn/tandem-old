@@ -552,9 +552,7 @@ export class SyntheticObjectChangeWatcher<T extends ISyntheticObject & IEditable
   }
 
   set target(value: T) {
-    if (this._target) {
-      this._target.unobserve(this._targetObserver);
-    }
+    this.dispose();
     this._target = value;
     if (!this._clone) {
       this._clone  = value.clone(true) as T;
@@ -573,6 +571,7 @@ export class SyntheticObjectChangeWatcher<T extends ISyntheticObject & IEditable
       this._target.unobserve(this._targetObserver);
     }
   }
+
 
   private onTargetAction(action: Action) {
 

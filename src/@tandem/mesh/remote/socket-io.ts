@@ -24,4 +24,8 @@ export class SocketIOBus<T> implements IBus<T> {
   dispatch(message: T) {
     return this._target.dispatch(message);
   }
+
+  dispose() {
+    this._target.dispose();
+  }
 }

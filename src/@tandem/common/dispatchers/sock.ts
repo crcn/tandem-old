@@ -31,6 +31,10 @@ export class SockBus implements IBus<any> {
     }, localBus, serializer);
   }
 
+  dispose() {
+    this._remoteBus.dispose();
+  }
+
   dispatch(message: any) {
     return this._remoteBus.dispatch(message);
   }

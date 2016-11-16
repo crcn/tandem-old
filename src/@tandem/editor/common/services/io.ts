@@ -66,7 +66,6 @@ export class IOService<T> extends CoreApplicationService<T> {
       }
     });
 
-
     connection.once("disconnect", () => {
       this.logger.info("Client disconnected");
 
@@ -74,6 +73,8 @@ export class IOService<T> extends CoreApplicationService<T> {
         this._remoteActors.indexOf(remoteBus),
         1
       );
+
+      remoteBus.dispose();
     });
   }
 }

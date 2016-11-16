@@ -114,7 +114,7 @@ class TandemClient extends Observable {
         }
 
         client.once("close", reconnect).once("error", reconnect);
-        this.port = await GetServerPortAction.execute(this.bus);
+        this.port = await GetServerPortAction.dispatch(this.bus);
     }
 
     private async getSocketFilePath() {
@@ -174,7 +174,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     await client.connect();
 
-    client.observe(new CallbackDispatcher((action) => {
+    client.observe(new CallbackDispatcher((action: Action) => {
         if (action.type === FileCacheChangeAction.FILE_CACHE_CHANGE) {
             setEditorContentFromCache((<FileCacheChangeAction>action).item);
         }
@@ -238,7 +238,7 @@ export async function activate(context: vscode.ExtensionContext) {
         updateFileCacheItem(vscode.window.activeTextEditor.document);
 
         // TODO - prompt to save file if it doesn't currently exist
-        const hasOpenWindow = await OpenProjectAction.execute({
+        const hasOpenWindow = await OpenProjectAction.dispatch({
             filePath: fileName
         }, client.bus);
 
@@ -303,7 +303,7 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     client.bus.register({
-        execute({ filePath, selection, type }: OpenFileAction) {
+        dispatch({ filePath, selection, type }: OpenFileAction) {
 
             if (type === OpenFileAction.OPEN_FILE) {
 
@@ -333,7 +333,7 @@ export async function activate(context: vscode.ExtensionContext) {
         // not currently focused on visual studio.
         if (_ignoreSelect || 1 + 1) return;
 
-        client.bus.execute(new SelectSourceAction(e.textEditor.document.fileName, e.selections.map(({ start, end }) => {
+        client.bus.dispatch(new SelectSourceAction(e.textEditor.document.fileName, e.selections.map(({ start, end }) => {
             return {
                 start: { line: start.line + 1, column: start.character },
                 end  : { line: end.line + 1, column: end.character }

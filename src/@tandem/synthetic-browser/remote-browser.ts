@@ -1,7 +1,7 @@
 import { debounce } from "lodash";
 import { NoopRenderer, ISyntheticDocumentRenderer } from "./renderers";
 import { OpenRemoteBrowserAction, isDOMMutationAction } from "./actions";
-import { CallbackDispatcher, IDispatcher, IStreamableDispatcher, WritableStream, DuplexStream, ReadableStream, ReadableStreamDefaultReader } from "@tandem/mesh";
+import { CallbackDispatcher, IDispatcher, IStreamableDispatcher, WritableStream, DuplexStream, ReadableStream, ReadableStreamDefaultReader, pump } from "@tandem/mesh";
 import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser, ISyntheticBrowserOpenOptions } from "./browser";
 import {
   fork,
@@ -76,19 +76,14 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   async open2(options: ISyntheticBrowserOpenOptions) {
     this.status = new Status(Status.LOADING);
-    // if (this._remoteStreamReader) this._remoteStreamReader.cancel();
+    if (this._remoteStreamReader) this._remoteStreamReader.cancel("Re-opened");
 
     const remoteBrowserStream = this._bus.dispatch(new OpenRemoteBrowserAction(options));
+    const reader = this._remoteStreamReader = remoteBrowserStream.readable.getReader();
 
-    // TODO - new StreamBus(execute(action), onAction)
-    remoteBrowserStream.readable.pipeTo(new WritableStream({
-      write: this.onRemoteBrowserAction.bind(this),
-      close: () => {
-      },
-      abort: (error) => {
+    let value, done;
 
-      }
-    }))
+    pump(reader, action => this.onRemoteBrowserAction(action));
   }
 
   onRemoteBrowserAction({ payload }) {
@@ -170,14 +165,15 @@ export class RemoteBrowserService extends BaseApplicationService {
         writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.STATUS_CHANGE, status)) });
       };
 
-      watchProperty(browser.sandbox, "status", onStatusChange);
+      const watcher = watchProperty(browser.sandbox, "status", onStatusChange);
       onStatusChange(browser.sandbox.status);
 
       browser.open(action.options);
 
       return {
-        cancel() {
-          // TODO
+        close() {
+          watcher.dispose();
+          changeWatcher.dispose();
         }
       }
     });

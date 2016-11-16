@@ -4,6 +4,6 @@ import { HelloComponent } from "./index";
 
 export const renderPreview = () => {
   const element = document.createElement("div");
-  ReactDOM.render(<HelloComponent text="Hello World!" />, element);
+  ReactDOM.render(<HelloComponent text="Hello World" />, element);
   return element;
 }

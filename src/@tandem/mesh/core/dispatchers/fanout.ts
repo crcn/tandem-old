@@ -1,5 +1,12 @@
 import { IBus, IDispatcher } from "./base";
-import { DuplexStream, ReadableStream, WritableStream, wrapDuplexStream } from "../streams";
+import { 
+  pump,
+  DuplexStream,
+  ReadableStream,
+  WritableStream,
+  wrapDuplexStream,
+  ReadableStreamDefaultReader
+} from "../streams";
 import {
   IteratorType,
   sequenceIterator,
@@ -22,6 +29,8 @@ export class FanoutBus<T> implements IBus<T> {
 
       let spare: ReadableStream<any> = input, child: ReadableStream<any>;
 
+      let pending = 0;
+
       this._iterator(this.getDispatchers(message), (dispatcher: IDispatcher<T, any>) => {
 
         let response = dispatcher.dispatch(message);
@@ -32,26 +41,21 @@ export class FanoutBus<T> implements IBus<T> {
 
         [spare, child] = spare.tee();
         response = wrapDuplexStream(response);
+        pending++;
 
         return child
         .pipeThrough(response)
         .pipeTo(new WritableStream({
           write(chunk) {
             return writer.write(chunk);
-          }
-        }));
+          },
+          close: () => pending--,
+          abort: () => pending--
+        }))
       })
       .then(writer.close.bind(writer))
       .catch(writer.abort.bind(writer))
-      .catch((e) => {
-
-      });
-
-      return {
-        cancel() {
-          // TODO
-        }
-      }
+      .catch((e) => { });
     });
   }
 }
