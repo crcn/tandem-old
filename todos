@@ -12,7 +12,6 @@ Start working on UX around getting started with Tandem and projects.
 FEATURES
 
 - [ ] one worker for each artboard
-- [ ] node workers
 - [ ] open unsaved files in vscode
 - [ ] better UX for importing components
 - [ ] automatically scan for components
@@ -26,7 +25,6 @@ ARCHITECTURE
 
 IMPORTING MODULES
 
-- [ ] navigator component
 - [ ] resolve where to save files when dragging & dropping
 - [ ] show preview of component (if possible)
 
@@ -36,13 +34,10 @@ BUGS
 
 TECH DEBT
 
-- [ ] resolve color pallete, components, clean up sass
+- [ ] UIKit
   - [ ] find inspiration by other apps
 - [ ] deprecate tdm files - artboards should be core
 - [ ] tandem <directory> for opening projects
-
-NAVIGATOR
-- [ ] drag and drop files to canvas
 
 
 ----------------------------------

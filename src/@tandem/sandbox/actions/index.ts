@@ -20,6 +20,7 @@ import { 
   WritableStream,
 } from "@tandem/mesh";
 import { EditAction } from "../edit";
+import * as atob from "atob";
 
 // TODO - ability to trace where actions go in the application - possibly
 // with a @trace(), or @log() feature
@@ -80,8 +81,8 @@ export class ReadFileAction extends Action {
     super(ReadFileAction.READ_FILE);
   }
 
-  static async dispatch(filePath: string, bus: IStreamableDispatcher<any>): Promise<string> {
-    return (await readOneChunk(bus.dispatch(new ReadFileAction(filePath)))).value;
+  static async dispatch(filePath: string, bus: IStreamableDispatcher<any>): Promise<Buffer> {
+    return atob((await readOneChunk(bus.dispatch(new ReadFileAction(filePath)))).value);
   }
 }
 

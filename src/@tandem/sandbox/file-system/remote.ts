@@ -5,9 +5,8 @@ import { ReadFileAction, ReadDirectoryAction, WatchFileAction } from "@tandem/s
 
 export class RemoteFileSystem extends BaseFileSystem {
 
-  constructor(@inject(PrivateBusProvider.ID) readonly bus: IDispatcher<any, any>) {
-    super();
-  }
+  @inject(PrivateBusProvider.ID)
+  readonly bus: IDispatcher<any, any>;
 
   readDirectory(directoryPath: string): ReadableStream<IReadFileResultItem[]> {
     return ReadDirectoryAction.dispatch(directoryPath, this.bus);

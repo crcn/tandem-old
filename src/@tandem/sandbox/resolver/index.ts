@@ -4,7 +4,7 @@ import * as fs from "fs";
 import * as memoize from "memoizee";
 
 import { IFileSystem } from "../file-system";
-import { IDispatcher } from "@tandem/mesh";
+import { IDispatcher, readOneChunk } from "@tandem/mesh";
 import { IFileResolver } from "../resolver";
 import { ResolveFileAction } from "../actions";
 import {
@@ -66,11 +66,11 @@ export abstract class BaseFileResolver implements IFileResolver {
 }
 
 export class RemoteFileResolver extends BaseFileResolver {
-  constructor(@inject(PrivateBusProvider.ID) private _bus: IDispatcher<any, any>) {
-    super();
-  }
+  @inject(PrivateBusProvider.ID)
+  private _bus: IDispatcher<any, any>;
+
   async resolve2(filePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
-    return (await this._bus.dispatch(new ResolveFileAction(filePath, cwd, options)).read()).value;
+    return (await readOneChunk<string>(this._bus.dispatch(new ResolveFileAction(filePath, cwd, options)))).value;
   }
 }
 
