@@ -11,25 +11,11 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.tandemOpenCurrentFile",
-    "onCommand:extension.tandemSyncLive",
-    "onCommand:extension.tandemStop"
+    "*"
   ],
   "main": "./out/integrations/tandem-vscode-extension/src/extension.js",
   "contributes": {
     "commands": [
-      {
-        "command": "extension.tandemOpenCurrentFile",
-        "title": "Open Current File in Tandem"
-      },
-      {
-        "command": "extension.tandemSyncLive",
-        "title": "Synchronize live changes with Tandem"
-      },
-      {
-        "command": "extension.tandemStop",
-        "title": "Stop synchronizing with Tandem"
-      }
     ]
   },
   "scripts": {

@@ -216,18 +216,6 @@ export async function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    let syncCommand = vscode.commands.registerCommand("extension.tandemSyncLive", async () => {
-        client.connect();
-        vscode.window.showInformationMessage("Now synchronizing realtime text changes with Tandem");
-    });
-
-    let stopCommand = vscode.commands.registerCommand("extension.tandemStop", async () => {
-        client.disconnect();
-        vscode.window.showInformationMessage("Text changes will no longer be synchronized with Tandem");
-    });
-
-    context.subscriptions.push(openProjectCommand, syncCommand);
-
     async function onTextChange(e:vscode.TextDocumentChangeEvent) {
         const doc  = e.document;
         updateFileCacheItem(doc);
@@ -246,7 +234,6 @@ export async function activate(context: vscode.ExtensionContext) {
     const setCurrentMtime = () => {
         mtimes[vscode.window.activeTextEditor.document.fileName] = Date.now();
     }
-
 
     const openFileCacheTextDocument = async (item: FileCacheItem)  => {
         if (vscode.window.activeTextEditor.document.fileName === item.filePath) return;
