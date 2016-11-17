@@ -5,7 +5,7 @@ import * as React from "react";
 
 import { FocusComponent } from "@tandem/editor/browser";
 import { MetadataKeys } from "@tandem/editor/browser";
-import { SelectAction } from "@tandem/editor/browser";
+import { SelectRequest } from "@tandem/editor/browser";
 import * as AutosizeInput from "react-input-autosize";
 import { LayerLabelComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { SyntheticDOMElement, SyntheticHTMLElement } from "@tandem/synthetic-browser";
@@ -13,7 +13,7 @@ import { SyntheticDOMElement, SyntheticHTMLElement } from "@tandem/synthetic-bro
 const VOID_ELEMENTS = [];
 
 import {
-  SetToolAction
+  SetToolRequest
 } from "@tandem/editor/browser/actions";
 
 export class ElementLayerLabelComponent extends React.Component<{ node: SyntheticDOMElement, app: any, connectDragSource: Function }, any> {
@@ -49,7 +49,7 @@ export class ElementLayerLabelComponent extends React.Component<{ node: Syntheti
     // );
 
     // this.props.app.notifier.notify(
-    //   new SelectAction([child])
+    //   new SelectRequest([child])
     // );
 
     // event.stopPropagation();

@@ -5,7 +5,7 @@ import { POINTER_TOOL_KEY_CODE } from "@tandem/editor/browser/constants";
 import { ApplicationServiceProvider } from "@tandem/common";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
 import { IInjectable, PrivateBusProvider } from "@tandem/common";
-import { SelectAction, MouseAction, KeyboardAction, RemoveSelectionAction } from "@tandem/editor/browser/actions";
+import { SelectRequest, MouseAction, KeyboardAction, RemoveSelectionAction } from "@tandem/editor/browser/actions";
 
 // TODO - everything here should just be a command
 
@@ -17,7 +17,7 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
   readonly bus: IDispatcher<any, any>;
 
   canvasMouseDown(action: MouseAction) {
-    this.bus.dispatch(new SelectAction());
+    this.bus.dispatch(new SelectRequest());
   }
 
   canvasKeyDown(action: KeyboardAction) {
@@ -44,7 +44,7 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
 
     //   // deselect all when escape key is hit
     //   if (action.keyCode === 27) {
-    //     this.bus.dispatch(new SelectAction());
+    //     this.bus.dispatch(new SelectRequest());
     //   }
 
     //   return;

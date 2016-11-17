@@ -10,13 +10,14 @@ import { Injector, PrivateBusProvider } from "@tandem/common";
 import { SyntheticDOMElement, SyntheticRendererAction }  from "@tandem/synthetic-browser";
 import { BoundingRect, IPoint, BaseApplicationComponent } from "@tandem/common";
 import {
-  ZoomAction,
+  ZoomRequest,
   MouseAction,
-  SetZoomAction,
+  AlertMessage,
+  SetZoomRequest,
   KeyboardAction,
 } from "@tandem/editor/browser/actions";
 import {
-  AddFilesRequest
+  ImportFileRequest
 } from "@tandem/editor/common";
 
 // TODO - most of this logic should be stored within the a child of the workspace
@@ -54,7 +55,13 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     for (let i = event.dataTransfer.items.length; i--;) {
       const item = event.dataTransfer.items[i];
       item.getAsString((uriList) => {
-        this.bus.dispatch(new AddFilesRequest(uriList.split("\n"), this._mousePosition));
+        uriList.split("\n").forEach(async (uri) => {
+          try {
+            await this.bus.dispatch(new ImportFileRequest(uri, this._mousePosition));
+          } catch(e) {
+            this.bus.dispatch(AlertMessage.createErrorMessage(`Cannot import ${uri}`));
+          }
+        });
       })
     }
   }
@@ -129,7 +136,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     this.onMouseEvent(event);
     if (event.metaKey) {
       event.preventDefault();
-      this.bus.dispatch(new ZoomAction((event.deltaY / 250)));
+      this.bus.dispatch(new ZoomRequest((event.deltaY / 250)));
     } else {
       this.pane(event.deltaX, event.deltaY);
       event.preventDefault();
@@ -190,7 +197,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
       const padding = 200;
       const zoom = Math.min((width - padding) / entireBounds.width, (height - padding) / entireBounds.height);
       this.translate(width / 2 - entireBounds.width / 2 - entireBounds.left, height / 2 - entireBounds.height / 2 - entireBounds.top);
-      this.bus.dispatch(new SetZoomAction(zoom, false));
+      this.bus.dispatch(new SetZoomRequest(zoom, false));
     }
 
 

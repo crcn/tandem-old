@@ -9,7 +9,7 @@ import {
 } from "@tandem/common/ioc";
 
 export interface ICommand {
-  execute(action: Action): any;
+  execute(action?: Action): any;
 }
 
 export abstract class BaseCommand implements ICommand, IInjectable {

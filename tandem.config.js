@@ -1,20 +1,30 @@
 module.exports = {
-  dependencyGraph: {
+  fileHandlers: [
+    {
+      test: /tsx$/,
+      preview: {
+        template: template`
+          import * as React from "react";
+          import * as ReactDOM from "react-dom";
+          import * as Component from "${"relativePath"}";
 
-  },
-  artboard: {
-    templates: {
-      test: /tsx/,
-
-      // optional. If this is omitted, the component
-      // is used as an entry point
-      use: template`
-        import * as React;
-        import * from "${filePath}";
-        export cont renderPreview = (() => {
-          // render component here
-        })
-      `
+          export const renderPreview = () => {
+            const element = document.createElement("div");
+            ReactDOM.render(<Component />, element);
+          }
+        `
+      }
     }
+  ]
+}
+
+function template(strings, ...keys) {
+  return function(context) {
+    const result = [strings[0]];
+    keys.forEach((key, i) => {
+      result.push(context[keys[i]]);
+      result.push(strings[i + 1]);
+    });
+    return result.join('');
   }
-};
+}

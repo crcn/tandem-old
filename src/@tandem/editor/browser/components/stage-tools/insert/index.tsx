@@ -3,7 +3,7 @@ import "./index.scss";
 import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
 import { Workspace, InsertTool } from "@tandem/editor/browser/models";
-import { SetToolAction, SelectAction } from "@tandem/editor/browser/actions";
+import { SetToolRequest, SelectRequest } from "@tandem/editor/browser/actions";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { SyntheticDOMElement, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { SelectionSizeComponent, SelectablesComponent } from "@tandem/editor/browser/components/common";
@@ -33,7 +33,7 @@ export class InsertStageToolComponent extends BaseApplicationComponent<{ workspa
     // const elementEditor = this._targetEntity.editor;
     this._targetElement.appendChild(childElement);
     // const child = await activeEntity.loadExpressionAndAppendChild(childExpression) as IVisibleEntity;
-    await this.bus.dispatch(new SelectAction(childElement));
+    await this.bus.dispatch(new SelectRequest(childElement));
 
     // const capabilities = child.display.capabilities;
 
@@ -50,7 +50,7 @@ export class InsertStageToolComponent extends BaseApplicationComponent<{ workspa
 
     // const complete = async () => {
     //   child.parent.source.appendChild(childExpression);
-    //   bus.dispatch(new SetToolAction(tool.displayEntityToolFactory));
+    //   bus.dispatch(new SetToolRequest(tool.displayEntityToolFactory));
     // };
 
     // if (capabilities.resizable && tool.resizable) {

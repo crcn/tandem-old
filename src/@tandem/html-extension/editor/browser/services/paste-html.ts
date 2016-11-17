@@ -4,7 +4,7 @@ import { HTML_MIME_TYPE } from "@tandem/common";
 import { filterAction } from "@tandem/common/decorators";
 import { PasteHTMLEntityAction } from "@tandem/html-extension/actions";
 import { CoreApplicationService } from "@tandem/core";
-import { PasteAction, SelectAction } from "@tandem/editor/browser/actions";
+import { PasteRequest, SelectRequest } from "@tandem/editor/browser/actions";
 import {
   IInjectable,
   CommandFactoryProvider,
@@ -17,7 +17,7 @@ import {
 export class PasteHTMLService extends CoreApplicationService<any> {
 
   @filterAction(sift({ "item.type": HTML_MIME_TYPE }))
-  [PasteAction.PASTE](action: PasteAction) {
+  [PasteRequest.PASTE](action: PasteRequest) {
     this.bus.dispatch(new PasteHTMLEntityAction(action.item));
   }
 

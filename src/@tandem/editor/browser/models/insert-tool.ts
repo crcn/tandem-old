@@ -1,7 +1,7 @@
 import { IDispatcher } from "@tandem/mesh";
 import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { BaseEditorTool, IWorkspaceTool } from "@tandem/editor/browser/models";
-import { MouseAction, SetToolAction, SelectAction } from "@tandem/editor/browser/actions";
+import { MouseAction, SetToolRequest, SelectRequest } from "@tandem/editor/browser/actions";
 import {
   Action,
   inject,
@@ -25,7 +25,7 @@ export abstract class InsertTool extends BaseEditorTool {
   $didInject() {
 
     // deselect all
-    this.bus.dispatch(new SelectAction());
+    this.bus.dispatch(new SelectRequest());
   }
 
   abstract createSyntheticDOMElement(): SyntheticDOMElement;

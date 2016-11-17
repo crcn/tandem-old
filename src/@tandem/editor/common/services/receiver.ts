@@ -20,7 +20,9 @@ export class ReceiverService extends BaseApplicationService {
   dispatch(action: Action) {
 
     const commands = CommandFactoryProvider.findAllByAction(action, this._injector).map((dep) => {
-      return new CallbackDispatcher((message: Action) => dep.create().execute(message));
+      return new CallbackDispatcher((message: Action) => {
+        return dep.create().execute(message)
+      });
     });
 
     return new SequenceBus(commands).dispatch(action);

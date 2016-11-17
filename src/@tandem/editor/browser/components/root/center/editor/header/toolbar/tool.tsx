@@ -1,7 +1,7 @@
 import * as cx from "classnames";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
-import { SetToolAction } from "@tandem/editor/browser/actions";
+import { SetToolRequest } from "@tandem/editor/browser/actions";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
 
 class ToolComponent extends React.Component<{ app: any, workspace: Workspace, toolProvider: WorkspaceToolFactoryProvider }, any> {

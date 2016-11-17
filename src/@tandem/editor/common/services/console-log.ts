@@ -91,7 +91,7 @@ function colorize(input: string) {
 const PREFIXES = {
   [LogLevel.DEBUG]: "DBG ",
   [LogLevel.INFO]: "INF ",
-  [LogLevel.WARN]: "WRN ",
+  [LogLevel.WARNING]: "WRN ",
   [LogLevel.ERROR]: "ERR ",
 }
 
@@ -112,7 +112,7 @@ export class ConsoleLogService extends CoreApplicationService<any> {
       [LogLevel.DEBUG]: console.log.bind(console),
       [LogLevel.LOG]: console.log.bind(console),
       [LogLevel.INFO]: console.info.bind(console),
-      [LogLevel.WARN]: console.warn.bind(console),
+      [LogLevel.WARNING]: console.warn.bind(console),
       [LogLevel.ERROR]: console.error.bind(console)
     }[level];
 

@@ -10,8 +10,8 @@ import {
 } from "@tandem/common";
 
 import {
-  SelectAction,
-  SelectAllAction,
+  SelectRequest,
+  SelectAllRequest,
   RemoveSelectionAction,
 } from "@tandem/editor/browser/actions";
 
@@ -56,7 +56,7 @@ import {
 //     //   }
 //     // }
 
-//     // this.bus.dispatch(new SelectAction(selection, false, false));
+//     // this.bus.dispatch(new SelectRequest(selection, false, false));
 //   }
 
 //   /**
@@ -68,13 +68,13 @@ import {
 //     //   return new RemoveEditAction(selection);
 //     // }));
 
-//     // this.bus.dispatch(new SelectAction());
+//     // this.bus.dispatch(new SelectRequest());
 //   }
 
 //   /**
 //    */
 
-//   [SelectAction.SELECT]({ items, toggle, keepPreviousSelection }) {
+//   [SelectRequest.SELECT]({ items, toggle, keepPreviousSelection }) {
 //     // // const app = this.app;
 
 //     // if (!items.length) {
@@ -116,10 +116,10 @@ import {
 
 //   }
 
-//   [SelectAllAction.SELECT_ALL]() {
+//   [SelectAllRequest.SELECT_ALL]() {
 
 //     // TODO - select call based on focused entity
-//     // this.bus.dispatch(new SelectAction(this.app.workspace.document.body.children, false, false));
+//     // this.bus.dispatch(new SelectRequest(this.app.workspace.document.body.children, false, false));
 //   }
 // }
 

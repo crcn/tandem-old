@@ -1,9 +1,10 @@
 import "./styles";
 
-import { Injector, CommandFactoryProvider, InitializeAction, IProvider } from "@tandem/common";
 import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
+import { Injector, CommandFactoryProvider, InitializeAction, IProvider } from "@tandem/common";
+import { AlertMessage } from "./actions";
 import {
   StoreProvider,
   ReactComponentFactoryProvider,
@@ -26,7 +27,7 @@ import {
 import { Store } from "./models";
 
 import { createCommonEditorProviders, ConsoleLogService, ReceiverService } from "../common";
-import { OpenCWDCommand } from "./commands";
+import { OpenCWDCommand, AlertCommand } from "./commands";
 
 import {
   DNDService,
@@ -46,6 +47,7 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileS
 
     // commands
     new CommandFactoryProvider(InitializeAction.INITIALIZE, OpenCWDCommand),
+    new CommandFactoryProvider(AlertMessage.ALERT, AlertCommand),
 
     // services
     new ApplicationServiceProvider("dnd", DNDService),

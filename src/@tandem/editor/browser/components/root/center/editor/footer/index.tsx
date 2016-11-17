@@ -3,7 +3,7 @@ import "./index.scss";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
 import { BaseApplicationComponent } from "@tandem/common";
-import { SetZoomAction } from "@tandem/editor/browser/actions";
+import { SetZoomRequest } from "@tandem/editor/browser/actions";
 import * as AutosizeInput from "react-input-autosize";
 import { RegisteredComponent, FocusComponent } from "@tandem/editor/browser/components/common";
 import { FooterComponentFactoryProvider } from "@tandem/editor/browser/providers";
@@ -30,7 +30,7 @@ class ZoomLabelComponent extends BaseApplicationComponent<{ workspace: Workspace
   onInputChange = (event: React.KeyboardEvent<any>) => {
     const value = Number((event.target as any).value || 0);
     this.setState({ editZoom: value });
-    this.bus.dispatch(new SetZoomAction(value ? value / 100 : value));
+    this.bus.dispatch(new SetZoomRequest(value ? value / 100 : value));
   }
 
   onKeyDown = (event: React.KeyboardEvent<any>) => {

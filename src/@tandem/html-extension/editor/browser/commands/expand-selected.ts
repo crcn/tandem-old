@@ -1,10 +1,10 @@
 import { Action, ICommand } from "@tandem/common";
 import { SyntheticDOMNode, DOMNodeType, SyntheticDocument } from "@tandem/synthetic-browser";
-import { SelectionChangeAction } from "@tandem/editor/browser/actions";
+import { SelectionChangeEvent } from "@tandem/editor/browser/actions";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 
 export class ExpandSelectedCommand implements ICommand {
-  execute({ items }: SelectionChangeAction) {
+  execute({ items }: SelectionChangeEvent) {
 
     const expand = (node: SyntheticDOMNode) => {
       for (const ancestor of [node, ...node.ancestors]) {

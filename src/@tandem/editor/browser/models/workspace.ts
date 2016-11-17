@@ -1,6 +1,6 @@
 import { flatten } from "lodash";
 import { KeyBinding } from "@tandem/editor/browser/key-bindings";
-import { SelectionChangeAction } from "@tandem/editor/browser/actions";
+import { SelectionChangeEvent } from "@tandem/editor/browser/actions";
 import { ParallelBus, CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 
 import {
@@ -125,7 +125,7 @@ export class Workspace extends Observable {
     this.selection = newSelection;
 
     if (this._bus) {
-      this._bus.dispatch(new SelectionChangeAction(this.selection));
+      this._bus.dispatch(new SelectionChangeEvent(this.selection));
     }
   }
 

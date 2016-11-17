@@ -1,14 +1,16 @@
 import { Provider, IProvider, Injector, IInjectable } from "../ioc";
 
+// TODO - more injector helpers here.
+
 /**
  * inject decorator for properties of classes that live in a Injector object
  */
 
-export function inject(id?: string, map: (dependency: IProvider) => any = undefined) {
+export function inject(id?: string, map: (provider: IProvider) => any = undefined) {
   return function(target: any, property: any, index: any = undefined) {
     const key = typeof target === "function" ? index : property;
     const inject = Object.assign({}, Reflect.getMetadata("injectProperties", target) || {});
-    inject[key] = [id || property, map || (dependency => dependency.value)];
+    inject[key] = [id || property, map || (provider => provider.value)];
     Reflect.defineMetadata("injectProperties", inject, target)
   }
 }

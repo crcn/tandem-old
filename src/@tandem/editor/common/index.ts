@@ -13,3 +13,4 @@ export * from "./services";
 export * from "./models";
 export * from "./config";
 export * from "./messages";
+export * from "./providers";

@@ -22,7 +22,7 @@ import { CoreApplicationService } from "@tandem/core";
 import { GetPrimaryProjectFilePathRequest } from "@tandem/editor/common/messages";
 import { ApplyFileEditRequest, FileEditorProvider } from "@tandem/sandbox";
 import { WorkspaceToolFactoryProvider, StoreProvider } from "@tandem/editor/browser/providers";
-import { SetToolAction, ZoomAction, SetZoomAction, DocumentFileAction } from "@tandem/editor/browser/actions";
+import { SetToolRequest, ZoomRequest, SetZoomRequest, DocumentFileAction } from "@tandem/editor/browser/actions";
 
 import {
   File,
@@ -93,7 +93,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     return !document.hidden;
   }
 
-  [ZoomAction.ZOOM](action: ZoomAction) {
+  [ZoomRequest.ZOOM](action: ZoomRequest) {
     if (this._tweener) this._tweener.dispose();
     const delta = action.delta * this._store.workspace.zoom;
 
@@ -107,11 +107,11 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     }, easeOutCubic);
   }
 
-  [SetZoomAction.SET_ZOOM](action: SetZoomAction) {
+  [SetZoomRequest.SET_ZOOM](action: SetZoomRequest) {
     this._store.workspace.zoom = action.value;
   }
 
-  [SetToolAction.SET_TOOL](action: SetToolAction) {
+  [SetToolRequest.SET_TOOL](action: SetToolRequest) {
     // this._store.workspace.currentTool = action.toolFactory.create(this._store.workspace);
   }
 

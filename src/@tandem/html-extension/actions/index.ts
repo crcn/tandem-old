@@ -1,5 +1,5 @@
 import { Action } from "@tandem/common/actions";
-import { PasteAction } from "@tandem/editor/browser";
+import { PasteRequest } from "@tandem/editor/browser";
 
 export class PasteHTMLEntityAction extends Action {
   static readonly PASTE_HTML_ENTITY = "pasteHTMLEntity";

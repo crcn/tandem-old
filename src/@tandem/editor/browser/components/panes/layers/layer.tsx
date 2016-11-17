@@ -5,7 +5,7 @@ import * as React from "react";
 import { IDispatcher } from "@tandem/mesh";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { flatten, intersection } from "lodash";
-import { SelectAction, ToggleSelectAction } from "@tandem/editor/browser/actions";
+import { SelectRequest, ToggleSelectRequest } from "@tandem/editor/browser/actions";
 import { LayerLabelComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { DragSource, DropTarget, DndComponent } from "react-dnd";
 import { SyntheticDOMNode, SyntheticDOMContainer } from "@tandem/synthetic-browser";
@@ -96,7 +96,7 @@ class LayerLabelComponent extends BaseApplicationComponent<ILayerLabelProps, any
       }
     }
 
-    this.props.app.bus.dispatch(new SelectAction(select, multiSelect, false));
+    this.props.app.bus.dispatch(new SelectRequest(select, multiSelect, false));
   }
 
   onHeaderKeyDown = (event: React.KeyboardEvent<any>) => {
@@ -215,7 +215,7 @@ class LayerLabelComponent extends BaseApplicationComponent<ILayerLabelProps, any
   drop(args: { node: SyntheticDOMNode, app: any, offset: any }, monitor, component) {
     const { node, app, offset } = args;
 
-    app.bus.dispatch(new SelectAction([], false));
+    app.bus.dispatch(new SelectRequest([], false));
 
     const data = monitor.getItem() as any;
 
@@ -227,7 +227,7 @@ class LayerLabelComponent extends BaseApplicationComponent<ILayerLabelProps, any
     // (async () => {
     //   (item.parent as any as Base).source.removeChild(item.source);
     //   const newChildren = await insertSourceChildren(entity.parent as IEntity, (entity.parent as IEntity).source.children.indexOf(entity.source) + offset, item.source);
-    //   app.bus.dispatch(new SelectAction(newChildren, false));
+    //   app.bus.dispatch(new SelectRequest(newChildren, false));
     // })();
   },
   hover(props, monitor, component) {
@@ -294,7 +294,7 @@ LayerDndLabelComponent = DropTarget("element", {
   drop(props: { node: SyntheticDOMNode, app: any, offset }, monitor, component) {
 
     const { node, app } = props;
-    app.bus.dispatch(new SelectAction([], false));
+    app.bus.dispatch(new SelectRequest([], false));
     const data = monitor.getItem() as any;
     const item = null; // TODO - find
 
@@ -302,7 +302,7 @@ LayerDndLabelComponent = DropTarget("element", {
     // (async () => {
     //   entity.metadata.set(MetadataKeys.LAYER_EXPANDED, true);
     //   (item.parent as any as BaseDOMNodeEntity<any, any>).source.removeChild(item.source);
-    //   app.bus.dispatch(new SelectAction(await appendSourceChildren(entity as IEntity, item.source), false));
+    //   app.bus.dispatch(new SelectRequest(await appendSourceChildren(entity as IEntity, item.source), false));
     // })();
   },
   hover(props, monitor, component) {
@@ -334,8 +334,8 @@ export default class LayerComponent extends BaseApplicationComponent<{ node: Syn
   dispatch(action: Action) {
     // // when the select action is dispatchd, take all items
     // // and ensure that the parent is expanded. Not pretty, encapsulated, and works.
-    // if (action.type === SelectAction.SELECT) {
-    //   (action as SelectAction).items.forEach((item: SyntheticDOMNode) => {
+    // if (action.type === SelectRequest.SELECT) {
+    //   (action as SelectRequest).items.forEach((item: SyntheticDOMNode) => {
     //     let p = item.parent as SyntheticDOMContainer;
     //     while (p) {
     //       // p.metadata.set(MetadataKeys.LAYER_EXPANDED, true);

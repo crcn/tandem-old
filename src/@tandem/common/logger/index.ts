@@ -71,7 +71,7 @@ export class Logger {
   }
 
   warn(text: string, ...rest) {
-    this._log(LogLevel.WARN, text, ...rest);
+    this._log(LogLevel.WARNING, text, ...rest);
   }
 
   error(text: string, ...rest) {

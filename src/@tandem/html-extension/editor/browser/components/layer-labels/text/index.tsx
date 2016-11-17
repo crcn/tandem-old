@@ -3,7 +3,7 @@ import "./index.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
-import { SelectAction } from "@tandem/editor/browser/actions";
+import { SelectRequest } from "@tandem/editor/browser/actions";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import * as AutosizeInput from "react-input-autosize";
 import { FocusComponent } from "@tandem/editor/browser/components/common";

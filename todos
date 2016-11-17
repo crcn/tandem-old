@@ -13,6 +13,7 @@ FEATURES
 
 - [ ] scan package.json and auto-install extensions
 - [ ] open unsaved files in vscode
+- [ ] enable <script /> tags.
 
 - [ ] history slider
 - [ ] breadcrumb for elements
@@ -28,7 +29,7 @@ IMPORTING MODULES
 - [ ] automatically scan for components
 
 BUGS
-- [ ] memory leak going on - app slowing down
+- [ ] css changes don't immediately get reflected in text editor
 
 TECH DEBT
 
@@ -38,6 +39,13 @@ TECH DEBT
 - [ ] tandem <directory> for opening projects
 
 ----------------------------------
+LAUNCHING
+----------------------------------
+
+TESTING
+  - [ ] TodoMVC examples
+
+----------------------------------
 STABILITY
 ----------------------------------
 
@@ -45,11 +53,13 @@ Integrations
 - [ ] open project in tandem
 
 UX
+  - [ ] tandem init CLI tool
   - [ ] tandem config
     - [ ] define how to handle extensions
     - [ ] define how to handle components when dnding
     - [ ] define what extensions to use
   - [ ] gutters need to be resizable
+  - [ ] workspaces should change depending on the text editor workspaces
 
 BUGS
   - [ ] fix absolute bounds for elements

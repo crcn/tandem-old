@@ -3,7 +3,7 @@ import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
 import { PointerTool } from "@tandem/editor/browser/models/pointer-tool";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
-import { SelectAction, MouseAction } from "@tandem/editor/browser/actions";
+import { SelectRequest, MouseAction } from "@tandem/editor/browser/actions";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
@@ -62,7 +62,7 @@ export class DragSelectStageToolComponent extends BaseApplicationComponent<{ app
         }
       });
 
-      this.props.app.bus.dispatch(new SelectAction(selection));
+      this.props.app.bus.dispatch(new SelectRequest(selection));
 
     }, () => {
       this.setState({

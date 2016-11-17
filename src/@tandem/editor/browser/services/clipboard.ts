@@ -1,5 +1,5 @@
 
-import { PasteAction } from "@tandem/editor/browser/actions";
+import { PasteRequest } from "@tandem/editor/browser/actions";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
 import {
@@ -39,7 +39,7 @@ export class ClipboardService extends CoreApplicationService<IEditorBrowserConfi
   _paste = async (item: DataTransferItem) => {
 
     try {
-      await this.bus.dispatch(new PasteAction(item));
+      await this.bus.dispatch(new PasteRequest(item));
     } catch (e) {
       this.logger.warn("cannot paste x-entity data: ", item.type);
     }

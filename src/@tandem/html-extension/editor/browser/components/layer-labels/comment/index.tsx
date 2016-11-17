@@ -4,7 +4,7 @@ import * as cx from "classnames";
 import * as React from "react";
 import * as AutosizeInput from "react-input-autosize";
 
-import { SelectAction } from "@tandem/editor/browser";
+import { SelectRequest } from "@tandem/editor/browser";
 import { SyntheticDOMComment } from "@tandem/synthetic-browser";
 import { LayerLabelComponentFactoryProvider } from "@tandem/editor/browser";
 

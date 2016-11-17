@@ -1,7 +1,7 @@
 import * as cx from "classnames";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
-import { SelectAction } from "@tandem/editor/browser/actions";
+import { SelectRequest } from "@tandem/editor/browser/actions";
 import { SelectablesComponent } from "@tandem/editor/browser/components/common";
 import { StageToolComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { SyntheticHTMLElement, SyntheticDOMElement } from "@tandem/synthetic-browser";

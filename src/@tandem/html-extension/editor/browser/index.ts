@@ -10,7 +10,7 @@ import {
 } from "@tandem/synthetic-browser";
 
 import {
-  SelectionChangeAction,
+  SelectionChangeEvent,
   FooterComponentFactoryProvider,
   StageToolComponentFactoryProvider,
   LayerLabelComponentFactoryProvider,
@@ -45,7 +45,7 @@ export function createHTMLEditorBrowserProviders() {
 
     createHTMLCoreProviders(),
 
-    new CommandFactoryProvider(SelectionChangeAction.SELECTION_CHANGE, ExpandSelectedCommand),
+    new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, ExpandSelectedCommand),
 
     // layer components
     new LayerLabelComponentFactoryProvider(SyntheticHTMLElement.name, ElementLayerLabelComponent),

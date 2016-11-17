@@ -6,7 +6,7 @@ import { Status } from "@tandem/common/status";
 import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
 import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 import { ApplyFileEditRequest, SetKeyValueEditAction } from "@tandem/sandbox";
-import { Workspace, SelectAction, StatusComponent } from "@tandem/editor/browser";
+import { Workspace, SelectRequest, StatusComponent } from "@tandem/editor/browser";
 import { SyntheticHTMLElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
 
 export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: SyntheticTDArtboardElement, workspace: Workspace }, {

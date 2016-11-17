@@ -2,7 +2,7 @@ import { inject } from "@tandem/common/decorators";
 import { Action } from "@tandem/common/actions";
 import { InsertTool } from "@tandem/editor/browser/models/insert-tool";
 import { BaseCommand } from "@tandem/common/commands";
-import { SetToolAction } from "@tandem/editor/browser/actions";
+import { SetToolRequest } from "@tandem/editor/browser/actions";
 import { textToolProvider } from "../models";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
@@ -42,7 +42,7 @@ function createElementInsertToolClass(options) {
 export const keyBindingProvider = [
   new GlobalKeyBindingProvider(TEXT_TOOL_KEY_CODE, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
-      // this.bus.dispatch(new SetToolAction(this.injector.query<WorkspaceToolFactoryProvider>(textToolProvider.id)));
+      // this.bus.dispatch(new SetToolRequest(this.injector.query<WorkspaceToolFactoryProvider>(textToolProvider.id)));
     }
   })
 ];
@@ -59,7 +59,7 @@ for (const key in insertElementKeyBindings) {
 function addElementKeyBinding(key: string, options: { nodeName: string, attributes: string }) {
   keyBindingProvider.push(new GlobalKeyBindingProvider(key, class SetPointerToolCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.dispatch(new SetToolAction(<ClassFactoryProvider>this.injector.link(new ClassFactoryProvider(null, createElementInsertToolClass(options)))));
+      this.bus.dispatch(new SetToolRequest(<ClassFactoryProvider>this.injector.link(new ClassFactoryProvider(null, createElementInsertToolClass(options)))));
     }
   }));
 }
