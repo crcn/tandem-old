@@ -1,7 +1,7 @@
 import { IDispatcher, ReadableStream } from "@tandem/mesh";
 import { BaseFileSystem, IReadFileResultItem } from "./base";
 import { inject, IDisposable, PrivateBusProvider } from "@tandem/common";
-import { ReadFileAction, ReadDirectoryAction, WatchFileAction } from "@tandem/sandbox/actions";
+import { ReadFileRequest, ReadDirectoryRequest, WatchFileRequest } from "@tandem/sandbox/actions";
 
 export class RemoteFileSystem extends BaseFileSystem {
 
@@ -9,11 +9,11 @@ export class RemoteFileSystem extends BaseFileSystem {
   readonly bus: IDispatcher<any, any>;
 
   readDirectory(directoryPath: string): ReadableStream<IReadFileResultItem[]> {
-    return ReadDirectoryAction.dispatch(directoryPath, this.bus);
+    return ReadDirectoryRequest.dispatch(directoryPath, this.bus);
   }
 
   async readFile(filePath: string) {
-    return await ReadFileAction.dispatch(filePath, this.bus);
+    return await ReadFileRequest.dispatch(filePath, this.bus);
   }
 
   async fileExists(filePath: string): Promise<boolean> {
@@ -25,6 +25,6 @@ export class RemoteFileSystem extends BaseFileSystem {
   }
 
   watchFile2(filePath: string, onChange: () => any) {
-    return WatchFileAction.dispatch(filePath, this.bus, onChange);
+    return WatchFileRequest.dispatch(filePath, this.bus, onChange);
   }
 }

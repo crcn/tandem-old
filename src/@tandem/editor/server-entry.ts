@@ -24,6 +24,7 @@ import {
 const start = async () => {
 
   const config: IEdtorServerConfig = {
+    family: "server",
     argv: argv,
     port: argv.port || await getPort(),
     hostname: "localhost",

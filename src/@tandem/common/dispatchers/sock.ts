@@ -1,22 +1,30 @@
 import * as net from "net";
 import { ISerializer } from "@tandem/common";
-import { IDispatcher, IBus, RemoteBus, DuplexStream } from "@tandem/mesh";
+import { IDispatcher, IMessageTester, IBus, RemoteBus, RemoteBusMessageTester, DuplexStream } from "@tandem/mesh";
 
 const PAYLOAD_BOUNDARY = "___payload end___";
 
-export class SockBus implements IBus<any> {
+export interface ISockBusOptions {
+  family: string;
+  connection: net.Socket;
+  testMessage: RemoteBusMessageTester<any>;
+}
+
+export class SockBus implements IBus<any>, IMessageTester<any> {
   private _remoteBus: RemoteBus<any>;
-  constructor(private _socket: net.Socket, localBus: IDispatcher<any, any>, serializer?: ISerializer<any, any>) {
+  constructor({ family, connection, testMessage }: ISockBusOptions, localBus: IDispatcher<any, any>, serializer?: ISerializer<any, any>) {
 
     this._remoteBus = new RemoteBus({
+      family: family,
+      testMessage: testMessage,
       adapter: {
         send: (data) => {
-          _socket.write(`${JSON.stringify(data)}${PAYLOAD_BOUNDARY}`);
+          connection.write(`${JSON.stringify(data)}${PAYLOAD_BOUNDARY}`);
         },
         addListener: (listener: (data) => any) => {
           let currentBuffer = '';
 
-          _socket.on("data", (chunk) => {
+          connection.on("data", (chunk) => {
             let value = String(chunk);
 
             currentBuffer += value;
@@ -31,6 +39,10 @@ export class SockBus implements IBus<any> {
         }
       }
     }, localBus, serializer);
+  }
+
+  testMessage(message) {
+    return this._remoteBus.testMessage(message);
   }
 
   dispose() {

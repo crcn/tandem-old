@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser";
 import { DOMElements } from "@tandem/html-extension/collections";
-import { ApplyFileEditAction } from "@tandem/sandbox";
+import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { HashInputComponent } from "@tandem/html-extension/editor/browser/components/common";
 import { BaseApplicationComponent } from "@tandem/common";
 import { SyntheticHTMLElement, SyntheticDOMAttribute, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
@@ -22,7 +22,7 @@ export class EntityAttributesPaneComponent extends BaseApplicationComponent<{ wo
       const edit = item.createEdit() as SyntheticDOMElementEdit;
       edit.setAttribute(name, value, oldName);
 
-      this.bus.dispatch(new ApplyFileEditAction(edit.actions));
+      this.bus.dispatch(new ApplyFileEditRequest(edit.actions));
     }
   }
 

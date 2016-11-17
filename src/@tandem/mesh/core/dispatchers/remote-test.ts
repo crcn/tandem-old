@@ -4,12 +4,15 @@ import { RemoteBus, NoopDispatcher, CallbackDispatcher, readAllChunks, DuplexStr
 
 describe(__filename + "#", () => {
 
-  const createOptions = () => {
-    const em = new EventEmitter();
+  const createOptions = (family?: string, input?: EventEmitter, output?: EventEmitter) => {
+    if (!input || !output) {
+      input = output = new EventEmitter();
+    }
     return {
+      family: family,
       adapter: {
-        addListener : em.on.bind(em, 'message'),
-        send        : em.emit.bind(em, 'message')
+        addListener : input.on.bind(input, "message"),
+        send        : output.emit.bind(output, "message")
       }
     }
   }
@@ -114,7 +117,7 @@ describe(__filename + "#", () => {
   });
 
 
-  it("doesn't get re-dispatched against the same remote bus", async () => {
+  it("doesn\'t get re-dispatched against the same remote bus", async () => {
     let i = 0;
     const abus = new RemoteBus(createOptions(), new CallbackDispatcher((message: string) => {
       i++;
@@ -145,4 +148,25 @@ describe(__filename + "#", () => {
     const { writable, readable } = bbus.dispatch({});
     expect(i).to.equal(2);
   });
+
+  it("defines the remote family type wen connected", async() => {
+
+    const a = new EventEmitter();
+    const b = new EventEmitter();
+
+    let i = 0;
+
+    const abus = new RemoteBus(createOptions("a", a, b), new CallbackDispatcher((message: string) => {
+      i++;
+      return bbus.dispatch(message);
+    }));
+
+
+    const bbus = new RemoteBus(createOptions("b", b, a), new CallbackDispatcher((message: string) => {
+      i++;
+      return bbus.dispatch(message);
+    }));
+
+    expect(bbus["_destFamily"]).to.equal("a");
+  })
 });

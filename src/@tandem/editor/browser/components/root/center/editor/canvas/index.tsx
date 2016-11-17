@@ -2,20 +2,22 @@ import "./index.scss";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
+import { UpdateAction } from "@tandem/common";
 import ToolsLayerComponent from "./tools";
 import { IsolateComponent }  from "@tandem/editor/browser/components/common";
-import { SyntheticDOMElement, SyntheticRendererAction }  from "@tandem/synthetic-browser";
 import PreviewLayerComponent from "./preview";
-import { UpdateAction } from "@tandem/common";
 import { Injector, PrivateBusProvider } from "@tandem/common";
+import { SyntheticDOMElement, SyntheticRendererAction }  from "@tandem/synthetic-browser";
 import { BoundingRect, IPoint, BaseApplicationComponent } from "@tandem/common";
 import {
   ZoomAction,
-  SetZoomAction,
   MouseAction,
-  AddFilesAction,
+  SetZoomAction,
   KeyboardAction,
 } from "@tandem/editor/browser/actions";
+import {
+  AddFilesAction
+} from "@tandem/editor/common";
 
 // TODO - most of this logic should be stored within the a child of the workspace
 // model.

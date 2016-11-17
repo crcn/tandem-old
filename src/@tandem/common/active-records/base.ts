@@ -1,17 +1,16 @@
 import * as sift from "sift";
 import { inject } from "@tandem/common/decorators";
-import { IStreamableDispatcher, IBus, DuplexStream } from "@tandem/mesh";
+import { IStreamableDispatcher, IBus, DuplexStream, DSMessage } from "@tandem/mesh";
 import * as mongoid from "mongoid-js";
 import { IDisposable } from "@tandem/common/object";
 import { ISerializable } from "@tandem/common/serialize";
 import { IBrokerBus } from "@tandem/common/dispatchers";
 import { Observable, IObservable } from "@tandem/common/observable";
-import { CallbackDispatcher, ParallelBus, readOneChunk, DSFind, DSInsert, DSUpdate, DSRemove, IMessage } from "@tandem/mesh";
+import { CallbackDispatcher, ParallelBus, readOneChunk, DSFindRequest, DSInsertRequest, DSUpdateRequest, DSRemoveRequest, IMessage } from "@tandem/mesh";
 import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import {
   Action,
-  DSAction,
-  PostDSAction,
+  PostDSMessage,
   DisposeAction,
   ActiveRecordAction,
 } from "@tandem/common/actions";
@@ -65,7 +64,7 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
    */
 
   refresh() {
-    return this.fetch(new DSFind(this.collectionName, this.sourceQuery));
+    return this.fetch(new DSFindRequest(this.collectionName, this.sourceQuery));
   }
 
   save() {
@@ -83,11 +82,11 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
       newData[this.idProperty] = String(mongoid());
       // console.error(newData, this);
     }
-    return this.fetch(new DSInsert(this.collectionName, newData));
+    return this.fetch(new DSInsertRequest(this.collectionName, newData));
   }
 
   remove() {
-    return this.fetch(new DSRemove(this.collectionName, this.sourceQuery));
+    return this.fetch(new DSRemoveRequest(this.collectionName, this.sourceQuery));
   }
 
   protected get sourceQuery() {
@@ -129,7 +128,7 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
     this.willUpdate();
     this.willSave();
     const newData = this.serialize();
-    return this.fetch(new DSUpdate(this.collectionName, newData, this.sourceQuery));
+    return this.fetch(new DSUpdateRequest(this.collectionName, newData, this.sourceQuery));
   }
 
   abstract serialize(): T;

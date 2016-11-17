@@ -6,5 +6,6 @@ export interface ILogConfig {
 }
 
 export interface IEditorCommonConfig {
+  family: string;
   log?: ILogConfig;
 }

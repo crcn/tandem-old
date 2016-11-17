@@ -17,9 +17,10 @@ import {
 } from "@tandem/synthetic-browser";
 import { Store, Workspace } from "@tandem/editor/browser/models";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
-import { CoreApplicationService } from "@tandem/core";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
-import { ApplyFileEditAction, FileEditorProvider } from "@tandem/sandbox";
+import { CoreApplicationService } from "@tandem/core";
+import { GetPrimaryProjectFilePathAction } from "@tandem/editor/common/messages";
+import { ApplyFileEditRequest, FileEditorProvider } from "@tandem/sandbox";
 import { WorkspaceToolFactoryProvider, StoreProvider } from "@tandem/editor/browser/providers";
 import { SetToolAction, ZoomAction, SetZoomAction, DocumentFileAction } from "@tandem/editor/browser/actions";
 
@@ -39,11 +40,10 @@ import {
   InitializeAction,
   InjectorProvider,
   ApplicationServiceProvider,
-  GetPrimaryProjectFilePathAction,
 } from "@tandem/common";
 
 
-import { OpenProjectAction, SelectSourceAction } from "@tandem/editor/common";
+import { OpenProjectRequest, SelectSourceRequest } from "@tandem/editor/common";
 
 // TODO - defer various actions to project file controller.
 
@@ -75,7 +75,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     this._store.workspace = workspace;
   }
 
-  async [OpenProjectAction.OPEN_PROJECT_FILE](action: OpenProjectAction) {
+  async [OpenProjectRequest.OPEN_PROJECT_FILE](action: OpenProjectRequest) {
 
     // const path = action.filePath;
 
@@ -89,7 +89,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
 
     // edit.appendChild(artboard);
 
-    // this.bus.execute(new ApplyFileEditAction(edit));
+    // this.bus.execute(new ApplyFileEditRequest(edit));
 
     return !document.hidden;
   }
@@ -116,7 +116,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     // this._store.workspace.currentTool = action.toolFactory.create(this._store.workspace);
   }
 
-  [SelectSourceAction.SELECT_SOURCE]({ ranges, filePath }: SelectSourceAction) {
+  [SelectSourceRequest.SELECT_SOURCE]({ ranges, filePath }: SelectSourceRequest) {
     const selection = [];
 
     flattenTree(this._store.workspace.document).forEach((item) => {

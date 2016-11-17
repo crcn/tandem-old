@@ -6,7 +6,7 @@ import * as memoize from "memoizee";
 import { IFileSystem } from "../file-system";
 import { IDispatcher, readOneChunk } from "@tandem/mesh";
 import { IFileResolver } from "../resolver";
-import { ResolveFileAction } from "../actions";
+import { ResolveFileRequest } from "../actions";
 import {
   inject,
   Logger,
@@ -70,7 +70,7 @@ export class RemoteFileResolver extends BaseFileResolver {
   private _bus: IDispatcher<any, any>;
 
   async resolve2(filePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
-    return (await readOneChunk<string>(this._bus.dispatch(new ResolveFileAction(filePath, cwd, options)))).value;
+    return (await readOneChunk<string>(this._bus.dispatch(new ResolveFileRequest(filePath, cwd, options)))).value;
   }
 }
 

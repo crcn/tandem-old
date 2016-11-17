@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
 import { TreeComponent } from "@tandem/editor/browser/components/common";
-import { OpenFileAction } from "@tandem/editor/common/actions";
+import { OpenFileRequest } from "@tandem/editor/common/messages";
 import {  StoreProvider } from "@tandem/editor/browser/providers";
 import { Store, Workspace } from "@tandem/editor/browser/models";
 import { DirectoryModel, FileModel, BaseFSModel } from "@tandem/editor/common/models";
@@ -28,7 +28,7 @@ export class NavigatorPaneComponent extends BaseApplicationComponent<{ store?: S
           }
 
           if (node instanceof FileModel) {
-            this.bus.dispatch(new OpenFileAction(node.path));
+            this.bus.dispatch(new OpenFileRequest(node.path));
           }
         }}
         isNodeDraggable={node => {

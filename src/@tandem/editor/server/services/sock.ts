@@ -1,5 +1,5 @@
-import { IDispatcher, readAllChunks, IStreamableDispatcher, FilterBus } from "@tandem/mesh";
-import { OpenProjectAction } from "@tandem/editor/common";
+import { IDispatcher, readAllChunks, IStreamableDispatcher, FilterBus, filterFamilyMessage } from "@tandem/mesh";
+import { OpenProjectRequest } from "@tandem/editor/common";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 import { ApplicationServiceProvider } from "@tandem/common";
@@ -67,7 +67,7 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
 
   [ExecAction.EXEC]({ config }: ExecAction) {
     if (config.argv && config.argv._.length) {
-      OpenProjectAction.dispatch({ filePath: path.resolve(config.cwd, config.argv._[0]) }, this.bus);
+      OpenProjectRequest.dispatch({ filePath: path.resolve(config.cwd, config.argv._[0]) }, this.bus);
     }
   }
 
@@ -85,11 +85,13 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
   }
 
   private _registerSocketBus(connection: net.Socket) {
-    const bus = new FilterBus(action => isPublicAction(action) || isWorkerAction(action), new SockBus(connection, {
+
+    const bus = new SockBus({ family: this.config.family, connection, testMessage: filterFamilyMessage }, {
       dispatch: (message) => {
         return this.bus.dispatch(message);
       }
-    }, { serialize, deserialize }));
+    }, { serialize, deserialize });
+
     this.bus.register(bus);
     connection.on("close", () => {
       this.bus.unregister(bus);

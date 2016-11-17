@@ -1,6 +1,7 @@
 import { argv } from "yargs";
 import * as electron from "electron";
 import * as getPort from "get-port";
+import { EditorFamilyType } from "@tandem/editor/common";
 import { FileCacheProvider } from "@tandem/sandbox";
 import { ServiceApplication } from "@tandem/core";
 import { createCoreStudioWorkerProviders } from "../worker";
@@ -24,6 +25,7 @@ process.env.LOG_LEVEL = process.env.LOG_LEVEL || LogLevel[String(argv.logLevel).
 export const initializeMaster = async () => {
 
   const config: IEdtorServerConfig = {
+    family: EditorFamilyType.MASTER,
     cwd: process.cwd(),
     experimental: !!argv.experimental,
     port: await getPort(),

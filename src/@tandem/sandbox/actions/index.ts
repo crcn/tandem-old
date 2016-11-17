@@ -1,16 +1,16 @@
 import { IContentEdit } from "../edit";
 import { IFileResolverOptions } from "../resolver";
 import { IReadFileResultItem } from "@tandem/sandbox/file-system";
+
 import {
   Action,
   IASTNode,
   serialize,
   deserialize,
   IDisposable,
-  definePublicAction,
-  defineMasterAction,
-  defineWorkerAction,
+  serializable
 } from "@tandem/common";
+
 import { 
   IDispatcher,
   IStreamableDispatcher,
@@ -33,20 +33,20 @@ export class FileEditorAction extends Action {
   static readonly DEPENDENCY_EDITED = "dependencyEdited";
 }
 
-@definePublicAction({
-  serialize({ actions }: ApplyFileEditAction) {
+@serializable({
+  serialize({ actions }: ApplyFileEditRequest) {
     return {
       actions: actions.map(serialize)
     }
   },
   deserialize({ actions }, injector) {
-    return new ApplyFileEditAction(actions.map(action => deserialize(action, injector)));
+    return new ApplyFileEditRequest(actions.map(action => deserialize(action, injector)));
   }
 })
-export class ApplyFileEditAction extends Action {
+export class ApplyFileEditRequest extends Action {
   static readonly APPLY_EDITS = "applyEditActions";
   constructor(readonly actions: EditAction[]) {
-    super(ApplyFileEditAction.APPLY_EDITS);
+    super(ApplyFileEditRequest.APPLY_EDITS);
   }
 }
 
@@ -59,11 +59,11 @@ export class SandboxModuleAction extends Action {
   static readonly EDITED = "edited";
 }
 
-@definePublicAction()
-export class ResolveFileAction extends Action {
+@serializable()
+export class ResolveFileRequest extends Action {
   static readonly RESOLVE_FILE = "resolveFile";
   constructor(readonly relativePath: string, readonly cwd?: string, readonly options?: IFileResolverOptions) {
-    super(ResolveFileAction.RESOLVE_FILE);
+    super(ResolveFileRequest.RESOLVE_FILE);
   }
 }
 
@@ -74,39 +74,39 @@ export class FileCacheAction extends Action {
   }
 }
 
-@definePublicAction()
-export class ReadFileAction extends Action {
+@serializable()
+export class ReadFileRequest extends Action {
   static readonly READ_FILE = "readFile";
   constructor(readonly filePath: string) {
-    super(ReadFileAction.READ_FILE);
+    super(ReadFileRequest.READ_FILE);
   }
 
   static async dispatch(filePath: string, bus: IStreamableDispatcher<any>): Promise<Buffer> {
-    return atob((await readOneChunk(bus.dispatch(new ReadFileAction(filePath)))).value);
+    return atob((await readOneChunk(bus.dispatch(new ReadFileRequest(filePath)))).value);
   }
 }
 
-@definePublicAction()
-export class ReadDirectoryAction extends Action {
+@serializable()
+export class ReadDirectoryRequest extends Action {
   static readonly READ_DIRECTORY = "readDirectory";
   constructor(readonly directoryPath: string) {
-    super(ReadDirectoryAction.READ_DIRECTORY);
+    super(ReadDirectoryRequest.READ_DIRECTORY);
   }
 
   static dispatch(directoryPath: string, bus: IStreamableDispatcher<any>): ReadableStream<IReadFileResultItem[]> {
-    return bus.dispatch(new ReadDirectoryAction(directoryPath)).readable;
+    return bus.dispatch(new ReadDirectoryRequest(directoryPath)).readable;
   }
 }
 
-@definePublicAction()
-export class WatchFileAction extends Action {
+@serializable()
+export class WatchFileRequest extends Action {
   static readonly WATCH_FILE = "watchFile";
   constructor(readonly filePath: string) {
-    super(WatchFileAction.WATCH_FILE);
+    super(WatchFileRequest.WATCH_FILE);
   }
 
   static dispatch(filePath: string, bus: IStreamableDispatcher<any>, onFileChange: () => any): IDisposable {
-    const { readable } = bus.dispatch(new WatchFileAction(filePath));
+    const { readable } = bus.dispatch(new WatchFileRequest(filePath));
     readable.pipeTo(new WritableStream({
       write: onFileChange
     }));

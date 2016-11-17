@@ -1,17 +1,21 @@
 import { ISerializer } from "@tandem/common";
-import { IBus, RemoteBus, DuplexStream } from "@tandem/mesh/core";
+import { IBus, RemoteBus, RemoteBusMessageTester, DuplexStream, IMessageTester } from "@tandem/mesh/core";
 
 export interface ISocketIOBusOptions {
+  family: string;
+  testMessage?: RemoteBusMessageTester<any>;
   channel?: string;
   connection: SocketIO.Socket;
 }
 
-export class SocketIOBus<T> implements IBus<T> {
+export class SocketIOBus<T> implements IBus<T>, IMessageTester<T> {
   private _target: RemoteBus<T>;
-  constructor({ channel, connection }: ISocketIOBusOptions, localBus: IBus<any>, serializer?: ISerializer<any, any>) {
+  constructor({ family, channel, connection, testMessage }: ISocketIOBusOptions, localBus: IBus<any>, serializer?: ISerializer<any, any>) {
     if (!channel) channel = "o";
 
     this._target = new RemoteBus({
+      family: family,
+      testMessage: testMessage,
       adapter: {
         send(message) {
           connection.emit(channel, message);
@@ -21,6 +25,10 @@ export class SocketIOBus<T> implements IBus<T> {
         }
       }
     }, localBus, serializer);
+  }
+
+  testMessage(message: any) {
+    return this._target.testMessage(message);
   }
 
   dispatch(message: T) {

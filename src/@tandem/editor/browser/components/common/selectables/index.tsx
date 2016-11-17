@@ -7,12 +7,12 @@ import * as React from "react";
 import { inject } from "@tandem/common/decorators";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { Workspace } from "@tandem/editor/browser/models";
-import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 import { SelectAction } from "@tandem/editor/browser/actions";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
-import { OpenFileAction } from "@tandem/editor/browser/actions";
+import { OpenFileRequest } from "@tandem/editor/common/messages";
 import { intersection, flatten } from "lodash";
 import { IInjectable,  Action } from "@tandem/common";
+import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { SyntheticHTMLElement, SyntheticDOMElement, ChildElementQuerier } from "@tandem/synthetic-browser";
 
@@ -31,7 +31,7 @@ class SelectableComponent extends BaseApplicationComponent<{
 
   onMouseDown = (event: React.MouseEvent<any>): any => {
     if (event.metaKey && this.props.element.source) {
-      return OpenFileAction.dispatch(this.props.element.source.filePath, this.props.element.source, this.bus);
+      return OpenFileRequest.dispatch(this.props.element.source.filePath, this.props.element.source, this.bus);
     }
     this.props.onSyntheticMouseDown(this.props.element, event);
     event.stopPropagation();

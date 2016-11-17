@@ -3,7 +3,7 @@ import { Workspace } from "@tandem/editor/browser/models";
 import { HTMLDOMElements } from "@tandem/html-extension/collections";
 import { BaseApplicationComponent } from "@tandem/common";
 import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
-import { ApplyFileEditAction } from "@tandem/sandbox";
+import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { HashInputComponent } from "@tandem/html-extension/editor/browser/components/common";
 import { CSSStylePaneComponent } from "../css";
 
@@ -18,7 +18,7 @@ export class HTMLStylePaneComponent extends BaseApplicationComponent<{ workspace
       }
       const edit = element.createEdit();
       edit.setAttribute("style", element.getAttribute("style"));
-      this.bus.dispatch(new ApplyFileEditAction(edit.actions));
+      this.bus.dispatch(new ApplyFileEditRequest(edit.actions));
     }
   }
 

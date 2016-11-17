@@ -1,6 +1,6 @@
 import * as sift from "sift";
 import { Action } from "./base";
-import {  DSFind, DSInsert, DSRemove, DSUpdate } from "@tandem/mesh/ds";
+import {  DSFindRequest, DSInsertRequest, DSRemoveRequest, DSUpdateRequest, DSMessage } from "@tandem/mesh/ds";
 import { ITreeNode } from "@tandem/common/tree";
 import { IDisposable } from "@tandem/common/object";
 import { serializable, ISerializer } from "@tandem/common/serialize";
@@ -117,23 +117,14 @@ export class InitializeAction extends Action {
   }
 }
 
-@definePublicAction()
-export class DSAction extends Action {
-  readonly timestamp: number = Date.now();
-  constructor(actionType: string, readonly collectionName: string) {
-    super(actionType);
-  }
-}
-
-export class DSUpsertAction<T> extends DSAction {
+export class DSUpsertRequest<T> extends DSMessage {
   static readonly DS_UPSERT = "dsUpsert";
   constructor(collectionName: string, readonly data: any, readonly query: T) {
-    super(DSUpsertAction.DS_UPSERT, collectionName);
+    super(DSUpsertRequest.DS_UPSERT, collectionName);
   }
 }
 
-@definePublicAction()
-export class PostDSAction extends DSAction {
+export class PostDSMessage extends DSMessage {
 
   static readonly DS_DID_INSERT = "dsDidInsert";
   static readonly DS_DID_REMOVE = "dsDidRemove";
@@ -143,11 +134,11 @@ export class PostDSAction extends DSAction {
     super(type, collectionName);
   }
 
-  static createFromDSAction(action: DSInsert<any>|DSUpdate<any, any>|DSRemove<any>, data: any) {
-    return new PostDSAction({
-      [DSInsert.DS_INSERT]: PostDSAction.DS_DID_INSERT,
-      [DSUpdate.DS_UPDATE]: PostDSAction.DS_DID_UPDATE,
-      [DSRemove.DS_REMOVE]: PostDSAction.DS_DID_REMOVE
+  static createFromDSAction(action: DSInsertRequest<any>|DSUpdateRequest<any, any>|DSRemoveRequest<any>, data: any) {
+    return new PostDSMessage({
+      [DSInsertRequest.DS_INSERT]: PostDSMessage.DS_DID_INSERT,
+      [DSUpdateRequest.DS_UPDATE]: PostDSMessage.DS_DID_UPDATE,
+      [DSRemoveRequest.DS_REMOVE]: PostDSMessage.DS_DID_REMOVE
     }[action.type], action.collectionName, data, action.timestamp);
   }
 }

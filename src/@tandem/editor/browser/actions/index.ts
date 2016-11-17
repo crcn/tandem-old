@@ -2,7 +2,7 @@ import { uniq } from "lodash";
 import { toArray } from "@tandem/common/utils/array";
 import { IRange, IPoint } from "@tandem/common/geom";
 import { ISyntheticObject } from "@tandem/sandbox";
-import { Action, definePublicAction } from "@tandem/common/actions";
+import { Action } from "@tandem/common/actions";
 import { File, serialize, deserialize } from "@tandem/common";
 import { Workspace, IWorkspaceTool, IHistoryItem } from "@tandem/editor/browser/models";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
@@ -60,7 +60,6 @@ export class SelectAction extends Action {
   }
 }
 
-
 export class SelectionChangeAction extends Action {
 
   static readonly SELECTION_CHANGE = "selectionChange";
@@ -69,20 +68,10 @@ export class SelectionChangeAction extends Action {
   }
 }
 
-
 export class SelectAllAction extends Action {
   static readonly SELECT_ALL = "selectAll";
   constructor() {
     super(SelectAllAction.SELECT_ALL);
-  }
-}
-
-export class SelectEntitiesAtSourceOffsetAction extends Action {
-  static readonly SELECT_ENTITIES_AT_SOURCE_OFFSET = "selectEntitiesAtSourceOffset";
-  readonly data: Array<IRange>;
-  constructor(readonly filePath: string, ...data: Array<IRange>) {
-    super(SelectEntitiesAtSourceOffsetAction.SELECT_ENTITIES_AT_SOURCE_OFFSET);
-    this.data = data;
   }
 }
 
@@ -149,4 +138,4 @@ export class DocumentFileAction extends Action {
   }
 }
 
-export * from "../../common/actions";
+export * from "../../common/messages";

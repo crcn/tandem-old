@@ -2,5 +2,5 @@ export interface IMessage {
   readonly type: string;
 }
 
-// IRequest
-// IEvent
+export * from "./decorators";
+export * from "./filters";

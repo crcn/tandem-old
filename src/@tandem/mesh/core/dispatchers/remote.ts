@@ -1,14 +1,41 @@
-import { IBus, IDispatcher } from "./base";
 import { noopDispatcherInstance } from "./noop";
-import { DuplexStream, ChunkQueue, ReadableStream, WritableStream, Sink, wrapDuplexStream, WritableStreamDefaultWriter, ReadableStreamDefaultReader } from "../streams";
+import { IBus, IDispatcher, IMessageTester } from "./base";
+import {
+  Sink,
+  ChunkQueue,
+  DuplexStream,
+  ReadableStream,
+  WritableStream,
+  wrapDuplexStream,
+  WritableStreamDefaultWriter,
+  ReadableStreamDefaultReader
+} from "../streams";
 
 export interface IRemoteBusAdapter {
   send(message: any): any;
   addListener(message: any): any;
 }
 
+export type RemoteBusMessageTester<T> = (message: T, thisFamily: string, destFamily: string) => boolean;
+
 export interface IRemoteBusOptions {
+
+  /**
+   * Family describing the type of application being established
+   */
+
+  family?: string;
+
+  /**
+   * adapter for sending and receiving messages
+   */
+
   adapter: IRemoteBusAdapter;
+
+  /**
+   */
+
+  testMessage?: RemoteBusMessageTester<any>;
 }
 
 const PASSED_THROUGH_KEY = "$$passedThrough";
@@ -16,7 +43,8 @@ const PASSED_THROUGH_KEY = "$$passedThrough";
 let _messageCount = 0;
 export class RemoteBusMessage {
 
-  static readonly DISPATCH = 0;
+  static readonly HELLO    = 0;
+  static readonly DISPATCH = RemoteBusMessage.HELLO    + 1;
   static readonly RESPONSE = RemoteBusMessage.DISPATCH + 1;
   static readonly CHUNK    = RemoteBusMessage.RESPONSE + 1;
   static readonly RESOLVE  = RemoteBusMessage.CHUNK    + 1;
@@ -145,15 +173,20 @@ class RemoteConnection {
   }
 }
 
-export class RemoteBus<T> implements IBus<T> {
 
-  private _pendingConnections: Map<string, RemoteConnection>;
+export class RemoteBus<T> implements IBus<T>, IMessageTester<T> {
+
   private _uid: string;
+  private _family: string;
+  private _destFamily: string;
   readonly adapter: IRemoteBusAdapter;
+  private _testMessage: RemoteBusMessageTester<T>;
+  private _pendingConnections: Map<string, RemoteConnection>;
 
-  constructor({ adapter }: IRemoteBusOptions, private _localDispatcher: IDispatcher<T, any> = noopDispatcherInstance, private _serializer?: any) {
+  constructor({ adapter, family, testMessage }: IRemoteBusOptions, private _localDispatcher: IDispatcher<T, any> = noopDispatcherInstance, private _serializer?: any) {
     this._pendingConnections  = new Map();
     this.adapter = adapter;
+    this._family = family;
     this._uid = createUID();
 
     if (!_serializer) {
@@ -163,13 +196,23 @@ export class RemoteBus<T> implements IBus<T> {
       };
     }
 
+    this._testMessage = testMessage || (message => true);
     this.adapter.addListener(this.onMessage.bind(this));
+    this.greet(true);
+  }
+
+  testMessage(message: T) {
+    return this._testMessage(message, this._family, this._destFamily);
   }
 
   dispose() {
     for (const pending of this._pendingConnections.values()) {
       pending.abort(new Error("disposed"));
     }
+  }
+
+  private greet(shouldSayHiBack?: boolean) {
+    this.adapter.send(new RemoteBusMessage(RemoteBusMessage.HELLO, null, null, [this._family, shouldSayHiBack]).serialize());
   }
 
   private onMessage(data: any[]) {
@@ -188,12 +231,19 @@ export class RemoteBus<T> implements IBus<T> {
       this.onResolve(message);
     } else if (message.type === RemoteBusMessage.REJECT) {
       this.onReject(message);
+    } else if (message.type === RemoteBusMessage.HELLO) {
+      this.onHello(message);
     }
   }
 
   private onResolve({ source, dest, payload }: RemoteBusMessage) {
     const result = payload;
     this._getConnection(dest, (con, uid) => con.resolve(result));
+  }
+
+  private onHello({ payload: [family, shouldSayHiBack] }: RemoteBusMessage) {
+    this._destFamily = family;
+    if (shouldSayHiBack) this.greet();
   }
 
   private onReject({ source, dest, payload }: RemoteBusMessage) {

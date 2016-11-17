@@ -33,19 +33,9 @@ function getNextWorker(): Worker {
   return workers.length ? workers[currentWorkerIndex = (currentWorkerIndex + 1) % workers.length] : undefined;
 }
 
-function createWorkerFilterBus(dispatcher: IDispatcher<any, any>) {
-  return {
-    dispatch(action: Action) {
-      if (isWorkerAction(action) || isPublicAction(action)) {
-        return dispatcher.dispatch(action);
-      }
-    }
-  }
-}
-
-
-function createWorkerBus(worker: any, localBus: IDispatcher<any, any>): IDispatcher<any, any> {
+function createWorkerBus(family: string, worker: any, localBus: IDispatcher<any, any>): IDispatcher<any, any> {
   return new RemoteBus({
+    family: family,
     adapter: {
       send(message) {
         worker.postMessage(message);
@@ -62,15 +52,15 @@ function createWorkerBus(worker: any, localBus: IDispatcher<any, any>): IDispatc
 /**
  */
 
-export function fork(localBus: IDispatcher<any, any>) {
-  return createWorkerFilterBus(createWorkerBus(new Worker(lastScriptSrc), localBus));
+export function fork(family: string, localBus: IDispatcher<any, any>) {
+  return createWorkerBus(family, new Worker(lastScriptSrc), localBus);
 }
 
 /**
  */
 
-export function hook(localBus: IDispatcher<any, any>) {
-  return createWorkerFilterBus(createWorkerBus(self, localBus));
+export function hook(family, localBus: IDispatcher<any, any>) {
+  return createWorkerBus(family, self, localBus);
 }
 
 /**

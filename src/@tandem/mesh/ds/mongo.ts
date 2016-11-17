@@ -1,7 +1,7 @@
 import { MongoClient, Db, Cursor } from "mongodb";
 import { DuplexStream, IStreamableDispatcher, WritableStreamDefaultWriter } from "@tandem/mesh/core";
 import { BaseDataStore } from "./base";
-import { DSInsert, DSFind, DSFindAll, DSRemove, DSMessage, DSUpdate } from "./messages";
+import { DSInsertRequest, DSFindRequest, DSFindAllRequest, DSRemoveRequest, DSMessage, DSUpdateRequest } from "./messages";
 
 export class MongoDataStore extends  BaseDataStore {
   private _db: Db;
@@ -20,7 +20,7 @@ export class MongoDataStore extends  BaseDataStore {
     });
   }
 
-  dsInsert(action: DSInsert<any>) {
+  dsInsert(action: DSInsertRequest<any>) {
     return new DuplexStream((input, output) => {
       const writer = output.getWriter();
       this._db.collection(action.collectionName).insert(action.data).then((result) => {
@@ -32,7 +32,7 @@ export class MongoDataStore extends  BaseDataStore {
     });
   }
 
-  dsRemove(action: DSRemove<any>) {
+  dsRemove(action: DSRemoveRequest<any>) {
     return new DuplexStream((input, output) => {
       const writer = output.getWriter();
       this._db.collection(action.collectionName).remove(action.query).then((items) => {
@@ -44,7 +44,7 @@ export class MongoDataStore extends  BaseDataStore {
     });
   }
 
-  dsUpdate(action: DSUpdate<any, any>) {
+  dsUpdate(action: DSUpdateRequest<any, any>) {
     return new DuplexStream((input, output) => {
       const writer = output.getWriter();
       this._db.collection(action.collectionName).update(action.query, { $set: action.data }, function(err, result) {
@@ -55,7 +55,7 @@ export class MongoDataStore extends  BaseDataStore {
   }
 
   // TODO - bundle query actions together
-  dsFind(action: DSFind<any>) {
+  dsFind(action: DSFindRequest<any>) {
     return new DuplexStream((input, output) => {
       this.pump(this._db.collection(action.collectionName).find(action.query), output.getWriter());
     });

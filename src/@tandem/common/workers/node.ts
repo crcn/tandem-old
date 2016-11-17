@@ -4,20 +4,13 @@ import { isPublicAction, isWorkerAction, serialize, deserialize } from "@tandem
 
 export { isMaster };
 
-const createWorkerFilterBus = (target: IDispatcher<any, any>) => {
-  return new FilterBus(
-    message => isPublicAction(message) || isWorkerAction(message),
-    target
-  );
-}
-
-export const fork = (localBus: IDispatcher<any, any>) => {
+export const fork = (family: string, localBus: IDispatcher<any, any>) => {
 
   const remoteBus = new ProxyBus();
 
   const spawn = () => {
     const worker = clusterFork(process.env);
-    remoteBus.target = createProcessBus(worker, localBus);
+    remoteBus.target = createProcessBus(family, worker, localBus);
 
     worker.on("disconnect", () => {
       remoteBus.target = undefined;
@@ -29,10 +22,10 @@ export const fork = (localBus: IDispatcher<any, any>) => {
 
   spawn();
 
-  return createWorkerFilterBus(remoteBus);
+  return remoteBus;
 }
 
-const createProcessBus = (proc: Worker | NodeJS.Process, target: IDispatcher<any, any>) => {
+const createProcessBus = (family: string, proc: Worker | NodeJS.Process, target: IDispatcher<any, any>) => {
   return new RemoteBus({
     adapter: {
       send(message) {
@@ -45,21 +38,6 @@ const createProcessBus = (proc: Worker | NodeJS.Process, target: IDispatcher<any
   }, target, { serialize, deserialize });
 }
 
-let masterBus: IDispatcher<any, any>;
-let workerBus: ProxyBus;
-
-if (!isMaster) {
-  workerBus = new ProxyBus();
-  masterBus = createWorkerFilterBus(createProcessBus(process, workerBus));
-}
-
-let _hooked: boolean;
-export const hook = (localBus: IDispatcher<any, any>) => {
-  if (_hooked) throw new Error(`Worker already hooked into master process.`);
-  _hooked = true;
-
-  // add a slight timeout so that the master bus can be hooked into the global dispatcher
-  // before draining messages
-  setImmediate(() => workerBus.target = localBus);
-  return masterBus;
+export const hook = (family: string, localBus: IDispatcher<any, any>) => {
+  return createProcessBus(family, process, localBus);
 }

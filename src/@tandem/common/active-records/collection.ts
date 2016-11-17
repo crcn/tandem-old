@@ -6,16 +6,16 @@ import { IBrokerBus } from "@tandem/common/dispatchers";
 import { IDisposable } from "@tandem/common/object";
 import { IActiveRecord } from "./base";
 import { ObservableCollection } from "@tandem/common/observable";
-import { PostDSAction } from "@tandem/common/actions";
+import { PostDSMessage } from "@tandem/common/actions";
 import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import {
   FilterBus,
   readAllChunks,
   readOneChunk,
   CallbackDispatcher,
-  DSFind,
-  DSUpdate,
-  DSInsert } from "@tandem/mesh";
+  DSFindRequest,
+  DSUpdateRequest,
+  DSInsertRequest } from "@tandem/mesh";
 
 // TODO - remove global listener
 // TODO - listen to DS mediator for updates on record collection
@@ -39,9 +39,9 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
     this.collectionName = collectionName;
     this._bus = PrivateBusProvider.getInstance(injector);
     this.createActiveRecord = createActiveRecord;
-    this._globalActionObserver = new FilterBus((action: PostDSAction) => {
-      return (action.type === DSUpdate.DS_UPDATE || action.type === DSInsert.DS_INSERT || action.type === PostDSAction.DS_DID_UPDATE || action.type === PostDSAction.DS_DID_INSERT) && action.collectionName === this.collectionName && sift(this.query)(action.data);
-    }, new CallbackDispatcher(this.onPostDSAction.bind(this)));
+    this._globalActionObserver = new FilterBus((action: PostDSMessage) => {
+      return (action.type === DSUpdateRequest.DS_UPDATE || action.type === DSInsertRequest.DS_INSERT || action.type === PostDSMessage.DS_DID_UPDATE || action.type === PostDSMessage.DS_DID_INSERT) && action.collectionName === this.collectionName && sift(this.query)(action.data);
+    }, new CallbackDispatcher(this.onPostDSMessage.bind(this)));
     this.query = query || {};
     return this;
   }
@@ -54,7 +54,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
   async load() {
 
     // TODO - need to check for duplicates
-    this.push(...(await readAllChunks<any>(this._bus.dispatch(new DSFind(this.collectionName, this.query, true)))).map(value => {
+    this.push(...(await readAllChunks<any>(this._bus.dispatch(new DSFindRequest(this.collectionName, this.query, true)))).map(value => {
       return this.createActiveRecord(value);
     }));
   }
@@ -81,7 +81,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
    */
 
   async loadItem(query: any): Promise<T|undefined> {
-    const { value, done } = await readOneChunk<any>(this._bus.dispatch(new DSFind(this.collectionName, query, false)));
+    const { value, done } = await readOneChunk<any>(this._bus.dispatch(new DSFindRequest(this.collectionName, query, false)));
 
     // item exists, so add and return it. Otherwise return undefined indicating
     // that the item does not exist.
@@ -115,7 +115,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
     return record;
   }
 
-  private onPostDSAction(action: PostDSAction) {
+  private onPostDSMessage(action: PostDSMessage) {
     this._updateActiveRecord(action.data);
   }
 

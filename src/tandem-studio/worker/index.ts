@@ -1,6 +1,7 @@
 import { argv } from "yargs";
 import * as getPort from "get-port";
 import { SockService } from "@tandem/editor/server";
+import { EditorFamilyType } from "@tandem/editor/common";
 import { createJavaScriptWorkerProviders } from "@tandem/javascript-extension/editor/worker";
 import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/worker";
 import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/worker";
@@ -39,6 +40,7 @@ export const createCoreStudioWorkerProviders = () => {
 export const initializeWorker = async () => {
 
   const config: IEditorWorkerConfig = {
+    family: EditorFamilyType.WORKER,
     log: {
       level: Number(process.env.LOG_LEVEL),
       prefix: "worker "
@@ -54,7 +56,7 @@ export const initializeWorker = async () => {
   const app = new ServiceApplication(injector);
 
   // hook with the master process
-  app.bus.register(hook(app.bus));
+  app.bus.register(hook(config.family, app.bus));
 
   await app.initialize();
 }

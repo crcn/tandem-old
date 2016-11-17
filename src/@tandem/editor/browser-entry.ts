@@ -20,6 +20,7 @@ const element = document.createElement("div");
 document.body.appendChild(element);
 
 const config: IEditorBrowserConfig = {
+  family: "browser",
   element: element,
   server: server,
   log: log

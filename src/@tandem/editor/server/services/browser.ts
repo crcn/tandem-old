@@ -10,7 +10,7 @@ import * as express from "express";
 import * as compression from "compression";
 import * as createSocketIOServer from "socket.io";
 
-import { GetServerPortAction } from "@tandem/editor/common";
+import { GetServerPortRequest } from "@tandem/editor/common";
 import { exec } from "child_process";
 import { IOService } from "@tandem/editor/common";
 import { loggable, inject } from "@tandem/common/decorators";
@@ -18,7 +18,7 @@ import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 import { Injector } from "@tandem/common";
 import { FileCacheProvider, FileCache } from "@tandem/sandbox";
-import { DSUpsertAction, LoadAction, InitializeAction } from "@tandem/common/actions";
+import { DSUpsertRequest, LoadAction, InitializeAction } from "@tandem/common/actions";
 
 // TODO - split this out into separate files -- turning into a god object.
 
@@ -52,7 +52,7 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
     this._fileCache.syncWithLocalFiles();
   }
 
-  [GetServerPortAction.GET_SERVER_PORT]() {
+  [GetServerPortRequest.GET_SERVER_PORT]() {
     return this._port;
   }
 

@@ -6,7 +6,6 @@
 import "reflect-metadata";
 
 import { exec, spawn, ChildProcess } from "child_process";
-import { CallbackDispatcher, NoopDispatcher } from "@tandem/mesh";
 import * as net from "net";
 import * as os from "os";
 import * as fs from "fs";
@@ -16,13 +15,14 @@ import * as through from "through2";
 import * as getPort from "get-port";
 import * as createServer from "express";
 import { debounce, throttle } from "lodash";
+import { CallbackDispatcher, NoopDispatcher, filterFamilyMessage } from "@tandem/mesh";
 
 import { createCoreApplicationProviders, ServiceApplication } from "@tandem/core";
-import { GetServerPortAction, OpenProjectAction, SelectSourceAction, OpenFileAction } from "@tandem/editor";
+import { GetServerPortRequest, OpenProjectRequest, SelectSourceRequest, OpenFileRequest } from "@tandem/editor";
 
 import {
-    Dependency,
     FileCache,
+    Dependency,
     FileCacheItem,
     LocalFileSystem,
     LocalFileResolver,
@@ -38,7 +38,7 @@ import { 
     IBrokerBus,
     Observable,
     deserialize,
-    PostDSAction,
+    PostDSMessage,
     PrivateBusProvider,
     PropertyChangeAction,
 } from "@tandem/common";
@@ -99,7 +99,7 @@ class TandemClient extends Observable {
 
         console.log("Connecting to the server");
         const client = this._sockConnection = net.connect({ path: sockFilePath } as any);
-        const sockBus = new SockBus(client, this.bus, {
+        const sockBus = new SockBus({ family: null, connection: client, testMessage: filterFamilyMessage }, this.bus, {
             serialize, deserialize
         });
 
@@ -118,7 +118,7 @@ class TandemClient extends Observable {
         }
 
         client.once("close", reconnect).once("error", reconnect);
-        this.port = await GetServerPortAction.dispatch(this.bus);
+        this.port = await GetServerPortRequest.dispatch(this.bus);
     }
 
     private watchFileCache() {
@@ -207,7 +207,7 @@ export async function activate(context: vscode.ExtensionContext) {
         updateFileCacheItem(vscode.window.activeTextEditor.document);
 
         // TODO - prompt to save file if it doesn't currently exist
-        const hasOpenWindow = await OpenProjectAction.dispatch({
+        const hasOpenWindow = await OpenProjectRequest.dispatch({
             filePath: fileName
         }, client.bus);
 
@@ -272,9 +272,9 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     client.bus.register({
-        dispatch({ filePath, selection, type }: OpenFileAction) {
+        dispatch({ filePath, selection, type }: OpenFileRequest) {
 
-            if (type === OpenFileAction.OPEN_FILE) {
+            if (type === OpenFileRequest.OPEN_FILE) {
 
                 // quick fix for resolving relative files - this will break in the future.
                 filePath = filePath.replace(/^\w+:\/\//, "");
@@ -302,7 +302,7 @@ export async function activate(context: vscode.ExtensionContext) {
         // not currently focused on visual studio.
         if (_ignoreSelect || 1 + 1) return;
 
-        client.bus.dispatch(new SelectSourceAction(e.textEditor.document.fileName, e.selections.map(({ start, end }) => {
+        client.bus.dispatch(new SelectSourceRequest(e.textEditor.document.fileName, e.selections.map(({ start, end }) => {
             return {
                 start: { line: start.line + 1, column: start.character },
                 end  : { line: end.line + 1, column: end.character }

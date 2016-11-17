@@ -13,7 +13,6 @@ import {
   SelectAction,
   SelectAllAction,
   RemoveSelectionAction,
-  SelectEntitiesAtSourceOffsetAction,
 } from "@tandem/editor/browser/actions";
 
 // @loggable()

@@ -7,8 +7,8 @@ import {
 } from "@tandem/common";
 
 import {
-  ReadFileAction,
-  WatchFileAction,
+  ReadFileRequest,
+  WatchFileRequest,
 } from "../actions";
 
 import { ReadableStream } from "@tandem/mesh";

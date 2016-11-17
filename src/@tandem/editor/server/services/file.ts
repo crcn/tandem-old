@@ -13,7 +13,7 @@ import {
   document,
   Injector,
   filterAction,
-  PostDSAction,
+  PostDSMessage,
   InjectorProvider,
   ApplicationServiceProvider,
 } from "@tandem/common";
@@ -23,13 +23,13 @@ const FILES_COLLECTION_NAME = "files";
 
 import {
   IFileSystem,
-  ReadFileAction,
+  ReadFileRequest,
   LocalFileSystem,
-  WatchFileAction,
+  WatchFileRequest,
   FileSystemProvider,
   FileEditorProvider,
-  ReadDirectoryAction,
-  ApplyFileEditAction,
+  ReadDirectoryRequest,
+  ApplyFileEditRequest,
 } from "@tandem/sandbox";
 
 @loggable()
@@ -42,14 +42,14 @@ export class FileService extends CoreApplicationService<IEdtorServerConfig> {
   /**
    */
 
-  async [ReadFileAction.READ_FILE](action: ReadFileAction|WatchFileAction) {
+  async [ReadFileRequest.READ_FILE](action: ReadFileRequest|WatchFileRequest) {
     return btoa(await this._fileSystem.readFile(action.filePath));
   }
 
   /**
    */
 
-  [ReadDirectoryAction.READ_DIRECTORY](action: ReadDirectoryAction) {
+  [ReadDirectoryRequest.READ_DIRECTORY](action: ReadDirectoryRequest) {
     return this._fileSystem.readDirectory(action.directoryPath);
   }
 
@@ -57,7 +57,7 @@ export class FileService extends CoreApplicationService<IEdtorServerConfig> {
    */
 
   @document("watches a file for any changes")
-  [WatchFileAction.WATCH_FILE](action: WatchFileAction) {
+  [WatchFileRequest.WATCH_FILE](action: WatchFileRequest) {
     return new DuplexStream((input, output) => {
       const writer = output.getWriter();
 
@@ -77,7 +77,7 @@ export class FileService extends CoreApplicationService<IEdtorServerConfig> {
    */
 
 
-  [ApplyFileEditAction.APPLY_EDITS]({ actions }: ApplyFileEditAction) {
+  [ApplyFileEditRequest.APPLY_EDITS]({ actions }: ApplyFileEditRequest) {
     return FileEditorProvider.getInstance(this.injector).applyEditActions(...actions);
   }
 }

@@ -1,5 +1,5 @@
 import { ProxyBus } from "@tandem/mesh/core";
-import { DSMessage, DSInsert, DSFind, DSFindAll, DSRemove, DSUpdate } from "./messages";
+import { DSMessage, DSInsertRequest, DSFindRequest, DSFindAllRequest, DSRemoveRequest, DSUpdateRequest } from "./messages";
 import { IStreamableDispatcher, DuplexStream, wrapDuplexStream, TransformStream } from "@tandem/mesh/core";
 
 export abstract class BaseDataStore implements IStreamableDispatcher<DSMessage> {
@@ -36,8 +36,8 @@ export abstract class BaseDataStore implements IStreamableDispatcher<DSMessage> 
   // TODO
   // public tail(message: DS)
 
-  abstract dsFind(message: DSFind<any>): any;
-  abstract dsInsert(message: DSInsert<any>): any;
-  abstract dsRemove(message: DSRemove<any>): any;
-  abstract dsUpdate(message: DSUpdate<any, any>): any;
+  abstract dsFind(message: DSFindRequest<any>): any;
+  abstract dsInsert(message: DSInsertRequest<any>): any;
+  abstract dsRemove(message: DSRemoveRequest<any>): any;
+  abstract dsUpdate(message: DSUpdateRequest<any, any>): any;
 }

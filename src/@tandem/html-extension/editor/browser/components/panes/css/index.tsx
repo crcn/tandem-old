@@ -7,7 +7,7 @@ import { Workspace } from "@tandem/editor/browser/models";
 import { DOMElements, MatchedStyleRule } from "@tandem/html-extension/collections";
 import { GutterComponent, SyntheticSourceLink } from "@tandem/editor/browser/components";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
-import { ApplyFileEditAction } from "@tandem/sandbox";
+import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { CSSPrettyPaneComponent } from "./pretty";
 import { BaseApplicationComponent } from "@tandem/common";
 import { HashInputComponent, KeyValueInputComponent, IKeyValueInputComponentProps } from "@tandem/html-extension/editor/browser/components/common";
@@ -92,7 +92,7 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ result: Ma
     if (value !== "") {
       edit.setDeclaration(name, value, oldName);
     }
-    this.bus.dispatch(new ApplyFileEditAction(edit.actions));
+    this.bus.dispatch(new ApplyFileEditRequest(edit.actions));
   }
   render() {
     const { result } = this.props;
