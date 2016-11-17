@@ -22,7 +22,7 @@ export class GlobalKeyBindingService extends CoreApplicationService<IEditorBrows
   }
 
   _addKeyBinding(dependency: GlobalKeyBindingProvider) {
-    this.logger.verbose("add key binding:  %s", dependency.keys.join(", "));
+    this.logger.debug("add key binding:  %s", dependency.keys.join(", "));
     for (const key of dependency.keys) {
       this._manager.register(key, dependency.create());
     }

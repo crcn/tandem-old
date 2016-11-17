@@ -189,7 +189,7 @@ class WebpackLoaderContext {
   async emitFile(fileName: string, content: string) {
     const uri = "webpack://" + fileName;
     // this.addDependency(uri);
-    this.logger.verbose(`Emitting asset ${fileName}`);
+    this.logger.debug(`Emitting asset ${fileName}`);
     const fileCache = FileCacheProvider.getInstance(this.strategy.injector);
     const item = await fileCache.item(uri);
     item.setDataUrlContent(content);
@@ -239,7 +239,7 @@ class WebpackDependencyLoader implements IDependencyLoader {
   protected readonly logger: Logger;
   constructor(readonly strategy: WebpackDependencyGraphStrategy, readonly options: IWebpackLoaderOptions) { }
   async load({ filePath, hash }: IResolvedDependencyInfo, { type, content, map }: IDependencyContent): Promise<IDependencyLoaderResult> {
-    this.logger.verbose("Loading %s", filePath);
+    this.logger.debug("Loading %s", filePath);
 
     const { config } = this.strategy;
 
@@ -278,7 +278,7 @@ class WebpackDependencyLoader implements IDependencyLoader {
 
     const result = await loadNext(content, map, 0);
 
-    this.logger.verbose("loaded %s", filePath);
+    this.logger.debug("loaded %s", filePath);
 
     const foundProviderPaths = detective(result.content);
 
@@ -454,7 +454,7 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
 
     try {
 
-      this.logger.verbose("Resolving %s:%s (%s)", cwd, relativeFilePath, moduleInfo);
+      this.logger.debug("Resolving %s:%s (%s)", cwd, relativeFilePath, moduleInfo);
 
       resolvedFilePath = await this._resolver.resolve(relativeFilePath, cwd, {
         extensions: ["", ...this.config.resolve.extensions],

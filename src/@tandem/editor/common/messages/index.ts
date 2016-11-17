@@ -133,7 +133,7 @@ export class OpenProjectRequest extends Action {
 @setMessageTarget(EditorFamilyType.MASTER)
 @serializable({
   serialize({ filePaths, options }: AddFilesRequest) {
-    return { filePaths, options }
+    return { filePaths, options };
   },
   deserialize({ filePaths, options}) {
     return new AddFilesRequest(filePaths, options);

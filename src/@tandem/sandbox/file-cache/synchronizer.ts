@@ -42,7 +42,7 @@ export class FileCacheSynchronizer {
   private async onLocalFindChange(filePath: string) {
     const entity = await this._cache.item(filePath);
 
-    this.logger.verbose(`${filePath} changed, updating cache.`);
+    this.logger.debug(`${filePath} changed, updating cache.`);
 
     // just set the timestamp instead of checking lstat -- primarily
     // to ensure that this class works in other environments.

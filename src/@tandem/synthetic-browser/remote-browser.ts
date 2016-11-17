@@ -89,7 +89,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
     const action = deserialize(payload, this.injector) as Action;
 
-    this.logger.verbose(`Received action: ${action.type}`);
+    this.logger.debug(`Received action: ${action.type}`);
 
     if (action.type === RemoteBrowserDocumentMessage.STATUS_CHANGE) {
       this.status = (<RemoteBrowserDocumentMessage>action).data;
@@ -97,7 +97,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
     if (action.type === RemoteBrowserDocumentMessage.NEW_DOCUMENT) {
       const { data } = <RemoteBrowserDocumentMessage>action;
-      this.logger.verbose("Received new document");
+      this.logger.debug("Received new document");
 
       const previousDocument = this.window && this.window.document;
       const newDocument      = data;
@@ -109,7 +109,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     } else if (action.type === RemoteBrowserDocumentMessage.DOCUMENT_DIFF) {
       const { data } = <RemoteBrowserDocumentMessage>action;
       const actions: EditAction[] = data;
-      this.logger.verbose("Received document diffs: >>%s", actions.map(action => action.type).join(", "));
+      this.logger.debug("Received document diffs: >>%s", actions.map(action => action.type).join(", "));
       this._documentEditor.applyEditActions(...actions);
       this.status = new Status(Status.COMPLETED);
     }

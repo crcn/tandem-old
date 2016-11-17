@@ -46,15 +46,11 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     // TODO - figure out how to check for text/uri-list
     event.preventDefault();
     event.dataTransfer.dropEffect = "copy";
-
-    // TODO - display drop position
-    // return event.dataTransfer.types.contains("text/uri-list");
   }
 
   onDrop = (event: React.DragEvent<any>) =>  {
     this.onMouseEvent(event);
     event.preventDefault();
-    console.log(event.dataTransfer.getData("text/uri-list"), event.dataTransfer.getData("URI"), event.dataTransfer.getData("text/plain"));
     for (let i = event.dataTransfer.items.length; i--;) {
       const item = event.dataTransfer.items[i];
       item.getAsString((uriList) => {

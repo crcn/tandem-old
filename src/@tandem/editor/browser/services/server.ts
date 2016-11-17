@@ -27,7 +27,7 @@ export class ServerService extends IOService<IEditorBrowserConfig> {
 
     const { server } = this.config;
 
-    this.logger.verbose("starting socket.io client on  %s:%d", server.hostname, server.port);
+    this.logger.debug("starting socket.io client on  %s:%d", server.hostname, server.port);
     this._client = SocketIOClient(`${server.protocol || "http:"}//${server.hostname}:${server.port}`);
     await this.addConnection(this._client);
   }

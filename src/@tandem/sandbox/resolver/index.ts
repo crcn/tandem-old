@@ -132,7 +132,7 @@ export class LocalFileResolver extends BaseFileResolver {
       }
     });
 
-    this.logger.verbose("Resolved %s:%s", relativePath, resolvedPath);
+    this.logger.debug("Resolved %s:%s", relativePath, resolvedPath);
 
     return resolvedPath;
   }

@@ -25,7 +25,7 @@ export class SyntheticConsole {
   }
 
   log(text, ...rest: any[]) {
-    this._logger.verbose(text, ...rest);
+    this._logger.debug(text, ...rest);
   }
   info(text, ...rest: any[]) {
     this._logger.info(text, ...rest);

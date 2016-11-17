@@ -67,7 +67,7 @@ export class DependencyGraph extends Observable implements IDependencyGraph {
     });
 
     this.logger.generatePrefix = () => `(~${this.$strategy.constructor.name}~) `;
-    this.logger.verbose("Created");
+    this.logger.debug("Created");
 
     this.collection.sync();
   }

@@ -194,7 +194,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
       await this.whenRunning();
 
       this._shouldRenderAgain = false;
-      this.logger.verbose("Rendering synthetic document");
+      this.logger.debug("Rendering synthetic document");
       await this.render();
       this._rendering = false;
       if (this._shouldRenderAgain) {

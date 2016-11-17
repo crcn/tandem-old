@@ -293,8 +293,8 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   protected load2 = memoize(async (): Promise<Dependency> => {
 
-    this.logger.verbose("Loading...");
-    const logTimer = this.logger.startTimer(null, null, LogLevel.VERBOSE);
+    this.logger.debug("Loading...");
+    const logTimer = this.logger.startTimer(null, null, LogLevel.DEBUG);
     const fileCache = await this.getSourceFileCacheItem();
     const sourceFileUpdatedAt = await this.getLatestSourceFileUpdateTimestamp();
 
@@ -317,7 +317,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
       await this.save();
     } else {
-      this.logger.verbose("No change. Reusing cached content.");
+      this.logger.debug("No change. Reusing cached content.");
     }
 
     await this.loadDependencies();
@@ -325,7 +325,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     logTimer.stop("loaded");
 
     if (this._sourceUpdatedAt !== await this.getLatestSourceFileUpdateTimestamp()) {
-      this.logger.verbose("File cache changed during load, reloading.")
+      this.logger.debug("File cache changed during load, reloading.")
       return this.reload();
     }
 
@@ -355,7 +355,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private async loadHard() {
 
-    this.logger.verbose("Transforming source content using graph strategy");
+    this.logger.debug("Transforming source content using graph strategy");
 
     const loader = this._graph.getLoader(this._loaderOptions);
     const transformResult: IDependencyLoaderResult = await loader.load(this, await this.getInitialSourceContent());
@@ -387,7 +387,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       if (!info.filePath) return Promise.resolve();
 
       const dependency = await this._graph.getDependency(info);
-      const waitLogger = this.logger.startTimer(`Waiting for dependency ${info.hash}:${info.filePath} to load...`, 1000 * 10, LogLevel.VERBOSE);
+      const waitLogger = this.logger.startTimer(`Waiting for dependency ${info.hash}:${info.filePath} to load...`, 1000 * 10, LogLevel.DEBUG);
 
       // if the dependency is loading, then they're likely a cyclical dependency
       if (dependency.status.type !== Status.LOADING) {
@@ -430,7 +430,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     // that we'll need to watch their file cache active record and watch it for any changes. Since
     // they're typically included in the
     for (const sourceFile of await this.getSourceFiles()) {
-      this.logger.verbose(`Watching file cache ${sourceFile.filePath} for changes`);
+      this.logger.debug(`Watching file cache ${sourceFile.filePath} for changes`);
       sourceFile.observe(this._fileCacheItemObserver);
       changeWatchers.push({
         dispose: () => sourceFile.unobserve(this._fileCacheItemObserver)
@@ -444,7 +444,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private resolveDependencies(dependencyPaths: string[], info: IResolvedDependencyInfo[]) {
     return Promise.all(dependencyPaths.map(async (relativePath) => {
-      this.logger.verbose("Resolving dependency %s", relativePath);
+      this.logger.debug("Resolving dependency %s", relativePath);
       const dependencyInfo = await this._graph.resolve(relativePath, path.dirname(this.filePath));
       dependencyInfo.relativePath = relativePath;
       info.push(dependencyInfo);
@@ -454,7 +454,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   private async reload() {
     this.load2["clear"]();
     this.status = new Status(Status.IDLE);
-    this.logger.verbose("Reloading");
+    this.logger.debug("Reloading");
     return this.load();
   }
 

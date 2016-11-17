@@ -179,7 +179,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
 
     let exportsElement: SyntheticDOMNode;
 
-    this.logger.verbose("Evaluated entry %s", this.location.toString());
+    this.logger.debug("Evaluated entry %s", this.location.toString());
 
     // look for module exports - typically by evaluator, or loader
     if (exports.nodeType) {
@@ -190,14 +190,14 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
       exportsElement = exports.renderPreview();
     } else {
 
-      this.logger.verbose("Checking exports for render metadata: %s", Object.keys(exports).join(", "));
+      this.logger.debug("Checking exports for render metadata: %s", Object.keys(exports).join(", "));
 
       // scan for reflect metadata
       for (const key in exports) {
         const value = exports[key];
         const renderPreview = exports.renderPreview || value.$$renderPreview;
         if (renderPreview) {
-          this.logger.verbose("Found render preview metadata");
+          this.logger.debug("Found render preview metadata");
           exportsElement = renderPreview();
         }
       }

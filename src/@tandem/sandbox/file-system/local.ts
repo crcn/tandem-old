@@ -26,7 +26,7 @@ export class LocalFileSystem extends BaseFileSystem {
   }
 
   async readFile(filePath: string) {
-    this.logger.verbose("read %s", filePath);
+    this.logger.debug("read %s", filePath);
     return new Promise((resolve, reject) => {
       fs.readFile(filePath, (err, data) => {
         if (err) return reject(err);
@@ -48,7 +48,7 @@ export class LocalFileSystem extends BaseFileSystem {
   }
 
   watchFile2(filePath: string, onChange: () => any) {
-    this.logger.verbose("watch %s", filePath);
+    this.logger.debug("watch %s", filePath);
     const watcher = chokidar.watch(filePath, {
       usePolling: false
     });

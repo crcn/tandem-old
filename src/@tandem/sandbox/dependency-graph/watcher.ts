@@ -91,7 +91,7 @@ export class DependencyGraphWatcher extends Observable {
         // so we'll need to re-traverse the entire DEP graph to ensure that they're checked.
         if (!loadingDependencies.length) break;
 
-        this.logger.verbose(`Waiting for ${loadingDependencies.length} dependencies to load`);
+        this.logger.debug(`Waiting for ${loadingDependencies.length} dependencies to load`);
 
         await Promise.all(loadingDependencies.map(dep => dep.load()));
       }

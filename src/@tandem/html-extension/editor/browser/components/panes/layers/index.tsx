@@ -15,7 +15,6 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
   }
 
   toggleExpand = (node: SyntheticDOMContainer) => {
-    console.log(node);
     const expand = !node.metadata.get(MetadataKeys.LAYER_EXPANDED);
     node.metadata.set(MetadataKeys.LAYER_EXPANDED, expand);
 
@@ -25,7 +24,6 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
   }
 
   onLabelMouseEnter = (node: SyntheticDOMNode, event: React.MouseEvent<any>) => {
-    console.log(event.altKey, event.metaKey);
   }
 
   onMouseLeave = (node: SyntheticDOMNode) => {

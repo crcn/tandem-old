@@ -477,7 +477,7 @@ export class FileEditor extends Observable {
             fileCache.setDataUrlContent(newContent);
             promises.push(fileCache.save());
           } else {
-            this.logger.verbose(`No changes to ${filePath}`);
+            this.logger.debug(`No changes to ${filePath}`);
           }
         } catch(e) {
           this.logger.error(`Error trying to apply ${actions.map(action => action.type).join(", ")} file edit to ${filePath}: ${e.stack}`);

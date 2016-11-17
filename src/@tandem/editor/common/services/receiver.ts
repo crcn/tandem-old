@@ -2,6 +2,7 @@ import {
   inject,
   Action,
   Injector,
+  LogAction,
   InjectorProvider,
   CommandFactoryProvider,
   ApplicationServiceProvider,
@@ -26,6 +27,9 @@ export class ReceiverService extends BaseApplicationService {
   }
 
   testMessage(message) {
-    return true;
+
+    // TODO - probably shouldn't do this -- slight optimization since
+    // there are currently no commands that handle logs
+    return message.type !== LogAction.LOG;
   }
 }

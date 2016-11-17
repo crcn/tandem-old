@@ -49,8 +49,8 @@ export class Logger {
    * Extra noisy logs which aren't very necessary
    */
 
-  verbose(text: string, ...rest) {
-    this._log(LogLevel.VERBOSE, text, ...rest);
+  debug(text: string, ...rest) {
+    this._log(LogLevel.DEBUG, text, ...rest);
   }
 
   /**

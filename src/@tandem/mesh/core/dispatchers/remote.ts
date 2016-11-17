@@ -294,6 +294,7 @@ export class RemoteBus<T> implements IBus<T>, IMessageTester<T> {
       this._pendingConnections.delete(con.uid);
     });
     this._pendingConnections.set(con.uid, con);
+
     const { readable, writable } = wrapDuplexStream(targetDispatcher.dispatch(message));
     con.start(readable, writable);
     this.adapter.send(new RemoteBusMessage(RemoteBusMessage.RESPONSE, con.uid, source).serialize());
@@ -329,7 +330,6 @@ export class RemoteBus<T> implements IBus<T>, IMessageTester<T> {
       if (!this._shouldHandleMessage(message) || !this.testMessage(message)) {
         return output.getWriter().close();
       }
-
 
       const con = new RemoteConnection(createUID(), this.adapter, this._serializer, () => {
         this._pendingConnections.delete(con.uid);

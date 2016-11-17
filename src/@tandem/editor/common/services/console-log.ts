@@ -89,7 +89,7 @@ function colorize(input: string) {
 // since all of these are the same length -- saves space in stdout, and makes
 // logs easier to read.
 const PREFIXES = {
-  [LogLevel.VERBOSE]: "DBG ",
+  [LogLevel.DEBUG]: "DBG ",
   [LogLevel.INFO]: "INF ",
   [LogLevel.WARN]: "WRN ",
   [LogLevel.ERROR]: "ERR ",
@@ -109,7 +109,7 @@ export class ConsoleLogService extends CoreApplicationService<any> {
     const hlog = String(this.config && this.config.argv && this.config.argv.hlog || "");
 
     const log = {
-      [LogLevel.VERBOSE]: console.log.bind(console),
+      [LogLevel.DEBUG]: console.log.bind(console),
       [LogLevel.LOG]: console.log.bind(console),
       [LogLevel.INFO]: console.info.bind(console),
       [LogLevel.WARN]: console.warn.bind(console),
