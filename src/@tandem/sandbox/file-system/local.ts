@@ -19,6 +19,7 @@ export class LocalFileSystem extends BaseFileSystem {
           }).forEach((file) => {
             controller.enqueue(file);
           });
+          controller.close();
         });
       }
     });

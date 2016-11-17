@@ -1,6 +1,6 @@
 import { debounce } from "lodash";
 import { NoopRenderer, ISyntheticDocumentRenderer } from "./renderers";
-import { OpenRemoteBrowserAction, isDOMMutationAction } from "./actions";
+import { OpenRemoteBrowserRequest, isDOMMutationAction } from "./actions";
 import { CallbackDispatcher, IDispatcher, IStreamableDispatcher, WritableStream, DuplexStream, ReadableStream, ReadableStreamDefaultReader, pump } from "@tandem/mesh";
 import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser, ISyntheticBrowserOpenOptions } from "./browser";
 import {
@@ -19,7 +19,6 @@ import {
   IDisposable,
   serializable,
   watchProperty,
-  definePublicAction,
   PrivateBusProvider,
 } from "@tandem/common";
 
@@ -37,18 +36,18 @@ import {
   IDependencyGraphStrategyOptions
 } from "@tandem/sandbox";
 
-@definePublicAction({
-  serialize({ type, data }: RemoteBrowserDocumentAction) {
+@serializable({
+  serialize({ type, data }: RemoteBrowserDocumentMessage) {
     return {
       type: type,
       data: serialize(data)
     }
   },
-  deserialize({ type, data }: RemoteBrowserDocumentAction, injector: Injector) {
-    return new RemoteBrowserDocumentAction(type, deserialize(data, injector));
+  deserialize({ type, data }: RemoteBrowserDocumentMessage, injector: Injector) {
+    return new RemoteBrowserDocumentMessage(type, deserialize(data, injector));
   }
 })
-export class RemoteBrowserDocumentAction extends Action {
+export class RemoteBrowserDocumentMessage extends Action {
   static readonly NEW_DOCUMENT  = "newDocument";
   static readonly DOCUMENT_DIFF = "documentDiff";
   static readonly STATUS_CHANGE = "statusChange";
@@ -78,7 +77,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     this.status = new Status(Status.LOADING);
     if (this._remoteStreamReader) this._remoteStreamReader.cancel("Re-opened");
 
-    const remoteBrowserStream = this._bus.dispatch(new OpenRemoteBrowserAction(options));
+    const remoteBrowserStream = this._bus.dispatch(new OpenRemoteBrowserRequest(options));
     const reader = this._remoteStreamReader = remoteBrowserStream.readable.getReader();
 
     let value, done;
@@ -92,12 +91,12 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
     this.logger.verbose(`Received action: ${action.type}`);
 
-    if (action.type === RemoteBrowserDocumentAction.STATUS_CHANGE) {
-      this.status = (<RemoteBrowserDocumentAction>action).data;
+    if (action.type === RemoteBrowserDocumentMessage.STATUS_CHANGE) {
+      this.status = (<RemoteBrowserDocumentMessage>action).data;
     }
 
-    if (action.type === RemoteBrowserDocumentAction.NEW_DOCUMENT) {
-      const { data } = <RemoteBrowserDocumentAction>action;
+    if (action.type === RemoteBrowserDocumentMessage.NEW_DOCUMENT) {
+      const { data } = <RemoteBrowserDocumentMessage>action;
       this.logger.verbose("Received new document");
 
       const previousDocument = this.window && this.window.document;
@@ -106,9 +105,10 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
       const window = new SyntheticWindow(this.location, this, newDocument);
       this.setWindow(window);
+      console.log(window);
       this.status = new Status(Status.COMPLETED);
-    } else if (action.type === RemoteBrowserDocumentAction.DOCUMENT_DIFF) {
-      const { data } = <RemoteBrowserDocumentAction>action;
+    } else if (action.type === RemoteBrowserDocumentMessage.DOCUMENT_DIFF) {
+      const { data } = <RemoteBrowserDocumentMessage>action;
       const actions: EditAction[] = data;
       this.logger.verbose("Received document diffs: >>%s", actions.map(action => action.type).join(", "));
       this._documentEditor.applyEditActions(...actions);
@@ -134,7 +134,7 @@ export class RemoteBrowserService extends BaseApplicationService {
     this._openBrowsers = {};
   }
 
-  [OpenRemoteBrowserAction.OPEN_REMOTE_BROWSER](action: OpenRemoteBrowserAction) {
+  [OpenRemoteBrowserRequest.OPEN_REMOTE_BROWSER](action: OpenRemoteBrowserRequest) {
 
     // TODO - move this to its own class
     return new DuplexStream((input, output) => {
@@ -148,10 +148,10 @@ export class RemoteBrowserService extends BaseApplicationService {
 
       const changeWatcher = new SyntheticObjectChangeWatcher<SyntheticDocument>(async (actions: EditAction[]) => {
         logger.info("Sending diffs: <<%s", actions.map(action => action.type).join(", "));
-        await writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.DOCUMENT_DIFF, actions)) });
+        await writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.DOCUMENT_DIFF, actions)) });
       }, (clone: SyntheticDocument) => {
         logger.info("Sending <<new document");
-        writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.NEW_DOCUMENT, clone)) });
+        writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.NEW_DOCUMENT, clone)) });
       }, isDOMMutationAction);
 
       if (browser.document) {
@@ -162,7 +162,7 @@ export class RemoteBrowserService extends BaseApplicationService {
         if (status && status.type === Status.COMPLETED) {
           changeWatcher.target = browser.document;
         }
-        writer.write({ payload: serialize(new RemoteBrowserDocumentAction(RemoteBrowserDocumentAction.STATUS_CHANGE, status)) });
+        writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.STATUS_CHANGE, status)) });
       };
 
       const watcher = watchProperty(browser.sandbox, "status", onStatusChange);

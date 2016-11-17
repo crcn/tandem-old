@@ -5,12 +5,12 @@ import {
   ICommand
 } from "@tandem/common";
 
-import { AddFilesAction } from "@tandem/editor/common/actions";
+import { AddFilesRequest } from "@tandem/editor/common";
 
 @loggable()
 export class AddFilesCommand implements ICommand {
   protected logger: Logger;
-  execute({ filePaths, options }: AddFilesAction) {
+  execute({ filePaths, options }: AddFilesRequest) {
     this.logger.info(`Adding new file ${filePaths.join(" ")}`);
   }
 }

@@ -1,6 +1,6 @@
 import { isMaster, Worker, fork as clusterFork } from "cluster";
-import { IDispatcher, RemoteBus, FilterBus, ProxyBus } from "@tandem/mesh";
-import { isPublicAction, isWorkerAction, serialize, deserialize } from "@tandem/common";
+import { IDispatcher, RemoteBus, FilterBus, ProxyBus, filterFamilyMessage } from "@tandem/mesh";
+import { serialize, deserialize } from "@tandem/common";
 
 export { isMaster };
 
@@ -18,7 +18,7 @@ export const fork = (family: string, localBus: IDispatcher<any, any>) => {
       // add timeout in case the worker is crashing repeatedly
       setTimeout(spawn, 1000);
     });
-  }
+  };
 
   spawn();
 
@@ -27,6 +27,8 @@ export const fork = (family: string, localBus: IDispatcher<any, any>) => {
 
 const createProcessBus = (family: string, proc: Worker | NodeJS.Process, target: IDispatcher<any, any>) => {
   return new RemoteBus({
+    family,
+    testMessage: filterFamilyMessage,
     adapter: {
       send(message) {
         proc.send(message);

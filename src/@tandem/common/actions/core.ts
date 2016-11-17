@@ -6,68 +6,6 @@ import { IDisposable } from "@tandem/common/object";
 import { serializable, ISerializer } from "@tandem/common/serialize";
 export { Action };
 
-export namespace ActionAccess {
-  export const PUBLIC    = "public";
-  export const PRIVATE   = "private";
-  export const PROTECTED = "protected";
-}
-
-export function getActionAccess(action: Action) {
-  return Reflect.getMetadata("action:access", action.constructor);
-}
-
-function defineActionAccess(value: string, serializer?: ISerializer<any, any>) {
-  return function(target) {
-    serializable(serializer)(target);
-    Reflect.defineMetadata("action:access", value, target);
-  }
-}
-
-export function definePublicAction(serializer?: ISerializer<any, any>) {
-  return defineActionAccess(ActionAccess.PUBLIC, serializer);
-}
-
-export function defineProtectedAction() {
-  return defineActionAccess(ActionAccess.PROTECTED);
-}
-
-export function definePrivateAction() {
-  return defineActionAccess(ActionAccess.PRIVATE);
-}
-
-export function isPublicAction(action: Action) {
-  return getActionAccess(action) === ActionAccess.PUBLIC;
-}
-
-export function isPrivateAction(action: Action) {
-  const access = getActionAccess(action);
-
-  // private by default
-  return !access || access === ActionAccess.PRIVATE;
-}
-
-export function defineMasterAction() {
-  return function(target) {
-    serializable()(target);
-    Reflect.defineMetadata("masterAction", true, target);
-  }
-}
-
-export function isMasterAction(action: Action) {
-  return Reflect.getMetadata("masterAction", action.constructor) === true;
-}
-
-export function defineWorkerAction() {
-  return function(target) {
-    serializable()(target);
-    Reflect.defineMetadata("workerAction", true, target);
-  }
-}
-
-export function isWorkerAction(action: Action) {
-  return Reflect.getMetadata("workerAction", action.constructor) === true;
-}
-
 export class ChangeAction extends Action {
   static readonly CHANGE = "change";
   constructor() {

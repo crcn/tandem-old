@@ -1,5 +1,5 @@
 import { DSProvider } from "./providers";
-import { AddFilesAction } from "@tandem/editor/common/actions";
+import { AddFilesRequest } from "@tandem/editor/common";
 import { AddFilesCommand } from "./commands";
 import { IEdtorServerConfig } from "./config";
 import { Injector, CommandFactoryProvider } from "@tandem/common";
@@ -27,7 +27,7 @@ export function createEditorServerProviders(config: IEdtorServerConfig, dataStor
     new DSProvider(dataStore || new MemoryDataStore()),
 
     // commands
-    new CommandFactoryProvider(AddFilesAction.ADD_FILES, AddFilesCommand),
+    new CommandFactoryProvider(AddFilesRequest.ADD_FILES, AddFilesCommand),
 
     // services
     new ApplicationServiceProvider("ds", DSService),

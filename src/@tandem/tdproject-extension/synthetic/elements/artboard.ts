@@ -55,6 +55,8 @@ const DEFAULT_FRAME_STYLE_SHEET = evaluateCSS(parseCSS(`
   }
 `));
 
+console.log("INCLUDED IN THIS");
+
 // TODO - watch src for any changes
 @serializable()
 export class SyntheticTDArtboardElement extends SyntheticHTMLElement {

@@ -16,7 +16,7 @@ import {
   KeyboardAction,
 } from "@tandem/editor/browser/actions";
 import {
-  AddFilesAction
+  AddFilesRequest
 } from "@tandem/editor/common";
 
 // TODO - most of this logic should be stored within the a child of the workspace
@@ -58,7 +58,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     for (let i = event.dataTransfer.items.length; i--;) {
       const item = event.dataTransfer.items[i];
       item.getAsString((uriList) => {
-        this.bus.dispatch(new AddFilesAction(uriList.split("\n"), this._mousePosition));
+        this.bus.dispatch(new AddFilesRequest(uriList.split("\n"), this._mousePosition));
       })
     }
   }

@@ -15,7 +15,7 @@ import { IBus, IDispatcher, IMessageTester, testDispatcherMessage } from "./base
 
 export class ProxyBus implements IBus<any>, IMessageTester<any> {
 
-  private _queue: Array<{ input: ReadableStream<any>, output: WritableStream<any>, action: any }> = [];
+  private _queue: Array<{ input: ReadableStream<any>, output: WritableStream<any>, message: any }> = [];
   private _paused: boolean;
 
   constructor(private _target?: IDispatcher<any, any>) {
@@ -25,16 +25,16 @@ export class ProxyBus implements IBus<any>, IMessageTester<any> {
     return testDispatcherMessage(this._target, message);
   }
 
-  dispatch(action) {
+  dispatch(message) {
 
     // no target? put the action in a queue until there is
     if (this.paused) {
       return new DuplexStream((input, output) => {
-        this._queue.push({ action, input, output });
+        this._queue.push({ message, input, output });
       });
     }
 
-    return wrapDuplexStream(this.target.dispatch(action));
+    return wrapDuplexStream(this.target.dispatch(message));
   }
 
   get paused() {
@@ -63,9 +63,11 @@ export class ProxyBus implements IBus<any>, IMessageTester<any> {
 
   _drain() {
     if (this.paused) return;
-    while (this._queue.length) {
-      const { input, output, action } = this._queue.shift();
-      wrapDuplexStream(this.target.dispatch(action)).readable.pipeTo(output);
+    const queue = this._queue.concat();
+    this._queue = [];
+    while (queue.length) {
+      const { input, output, message } = queue.shift();
+      wrapDuplexStream(this.target.dispatch(message)).readable.pipeTo(output);
     }
   }
 }

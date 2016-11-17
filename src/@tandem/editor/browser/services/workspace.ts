@@ -13,13 +13,13 @@ import {
   BaseDecoratorRenderer,
   RemoteSyntheticBrowser,
   SyntheticRendererAction,
-  RemoteBrowserDocumentAction,
+  RemoteBrowserDocumentMessage,
 } from "@tandem/synthetic-browser";
 import { Store, Workspace } from "@tandem/editor/browser/models";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
-import { GetPrimaryProjectFilePathAction } from "@tandem/editor/common/messages";
+import { GetPrimaryProjectFilePathRequest } from "@tandem/editor/common/messages";
 import { ApplyFileEditRequest, FileEditorProvider } from "@tandem/sandbox";
 import { WorkspaceToolFactoryProvider, StoreProvider } from "@tandem/editor/browser/providers";
 import { SetToolAction, ZoomAction, SetZoomAction, DocumentFileAction } from "@tandem/editor/browser/actions";
@@ -63,8 +63,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
   }
 
   async _loadWorkspaces() {
-
-    const filePath = await GetPrimaryProjectFilePathAction.dispatch(this.bus);
+    const filePath = await GetPrimaryProjectFilePathRequest.dispatch(this.bus);
 
     if (this._store.workspace && this._store.workspace.browser.location.toString() === filePath) return;
 

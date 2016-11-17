@@ -21,8 +21,6 @@ export class ServerService extends IOService<IEditorBrowserConfig> {
    */
 
   async [LoadAction.LOAD]() {
-    await super[LoadAction.LOAD]();
-
     if (!this.config.server || !this.config.server.port) {
       return;
     }

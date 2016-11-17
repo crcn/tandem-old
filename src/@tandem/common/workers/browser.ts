@@ -1,6 +1,6 @@
-import { IDispatcher, RemoteBus } from "@tandem/mesh";
+import { IDispatcher, RemoteBus, filterFamilyMessage } from "@tandem/mesh";
 import { serialize, deserialize } from "../serialize";
-import { Action, isWorkerAction, isMasterAction, isPublicAction } from "../actions";
+import { Action } from "../actions";
 
 let loadedScripts;
 let lastScriptSrc;
@@ -36,6 +36,7 @@ function getNextWorker(): Worker {
 function createWorkerBus(family: string, worker: any, localBus: IDispatcher<any, any>): IDispatcher<any, any> {
   return new RemoteBus({
     family: family,
+    testMessage: filterFamilyMessage,
     adapter: {
       send(message) {
         worker.postMessage(message);

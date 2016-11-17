@@ -10,7 +10,7 @@ import {
   InjectorProvider,
   ApplicationServiceProvider,
 } from "@tandem/common";
-import { OpenProjectRequest, GetPrimaryProjectFilePathAction } from "@tandem/editor/common";
+import { OpenProjectRequest, GetPrimaryProjectFilePathRequest } from "@tandem/editor/common";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 
@@ -29,7 +29,7 @@ export class ProjectService extends CoreApplicationService<IEdtorServerConfig> {
     }
   }
 
-  async [GetPrimaryProjectFilePathAction.GET_PRIMARY_PROJECT_FILE_PATH](action: GetPrimaryProjectFilePathAction) {
+  [GetPrimaryProjectFilePathRequest.GET_PRIMARY_PROJECT_FILE_PATH](action: GetPrimaryProjectFilePathRequest) {
     return this._primaryProjectPath;
   }
 };

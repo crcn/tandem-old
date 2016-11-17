@@ -10,6 +10,7 @@ describe(__filename + "#", () => {
     }
     return {
       family: family,
+      testMessage: () => true,
       adapter: {
         addListener : input.on.bind(input, "message"),
         send        : output.emit.bind(output, "message")

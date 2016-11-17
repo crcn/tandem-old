@@ -1,13 +1,22 @@
+import { serializable, isSerializable } from "@tandem/common/serialize";
+
 const getMetadataKey = (name) => `message:${name}`;
 
 export const defineMessageMetadata = (name: string, value: any) => {
   return function(message) {
     Reflect.defineMetadata(getMetadataKey(name), value, message);
+
+    if (!isSerializable(message)) {
+      serializable()(message);
+    }
+
+    return message;
   }
 }
 
-export const getMessageMetadata = (message, name: string) => {
-  return Reflect.getMetadata(getMetadataKey(name), message);
+export const getMessageMetadata = (name: string, message) => {
+  const key = getMetadataKey(name);
+  return Reflect.getMetadata(key, message) || Reflect.getMetadata(key, message.constructor);
 }
 
 export const setMessageTarget = (family: string) => {
@@ -15,15 +24,15 @@ export const setMessageTarget = (family: string) => {
 }
 
 export const getMessageTarget = (message: any) => {
-  return getMessageMetadata(message, "target");
+  return getMessageMetadata("target", message);
 }
 
 export const getMessageVisitors = (message: any) => {
-  return getMessageMetadata(message, "visitors") || [];
+  return getMessageMetadata( "visitors", message) || [];
 }
 
 export const addMessageVisitor = (family: string) => {
   return function(message) {
-    Reflect.defineMetadata(getMetadataKey("visitors"), (getMessageMetadata(message, "visitors") || []).concat(family), message);
+    Reflect.defineMetadata(getMetadataKey("visitors"), (getMessageMetadata("visitors", message) || []).concat(family), message);
   }
 }

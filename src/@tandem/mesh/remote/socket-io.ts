@@ -1,5 +1,5 @@
 import { ISerializer } from "@tandem/common";
-import { IBus, RemoteBus, RemoteBusMessageTester, DuplexStream, IMessageTester } from "@tandem/mesh/core";
+import { IBus, RemoteBus, RemoteBusMessageTester, DuplexStream, IMessageTester, TransformStream } from "@tandem/mesh/core";
 
 export interface ISocketIOBusOptions {
   family: string;

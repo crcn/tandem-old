@@ -1,3 +1,5 @@
+import { ProxyBus } from "./proxy";
+import { CallbackDispatcher } from "./callback";
 import { noopDispatcherInstance } from "./noop";
 import { IBus, IDispatcher, IMessageTester } from "./base";
 import {
@@ -35,7 +37,7 @@ export interface IRemoteBusOptions {
   /**
    */
 
-  testMessage?: RemoteBusMessageTester<any>;
+  testMessage: RemoteBusMessageTester<any>;
 }
 
 const PASSED_THROUGH_KEY = "$$passedThrough";
@@ -177,6 +179,7 @@ class RemoteConnection {
 export class RemoteBus<T> implements IBus<T>, IMessageTester<T> {
 
   private _uid: string;
+  private _proxy: ProxyBus;
   private _family: string;
   private _destFamily: string;
   readonly adapter: IRemoteBusAdapter;
@@ -196,13 +199,18 @@ export class RemoteBus<T> implements IBus<T>, IMessageTester<T> {
       };
     }
 
+    this._proxy = new ProxyBus(new CallbackDispatcher(this._dispatchRemoteMessage.bind(this)));
+    this._proxy.pause();
+
     this._testMessage = testMessage || (message => true);
     this.adapter.addListener(this.onMessage.bind(this));
     this.greet(true);
   }
 
   testMessage(message: T) {
-    return this._testMessage(message, this._family, this._destFamily);
+
+    // return TRUE if dest family doesn't exist. Means that the handshake isn't finished yet.
+    return !this._destFamily || this._testMessage(message, this._family, this._destFamily);
   }
 
   dispose() {
@@ -244,6 +252,7 @@ export class RemoteBus<T> implements IBus<T>, IMessageTester<T> {
   private onHello({ payload: [family, shouldSayHiBack] }: RemoteBusMessage) {
     this._destFamily = family;
     if (shouldSayHiBack) this.greet();
+    this._proxy.resume();
   }
 
   private onReject({ source, dest, payload }: RemoteBusMessage) {
@@ -309,12 +318,17 @@ export class RemoteBus<T> implements IBus<T>, IMessageTester<T> {
   }
 
   dispatch(message: T) {
+    return this._proxy.dispatch(message);
+  }
+
+  _dispatchRemoteMessage(message: T) {
 
     return new DuplexStream((input, output) => {
 
-      if (!this._shouldHandleMessage(message)) {
+      if (!this._shouldHandleMessage(message) || !this.testMessage(message)) {
         return output.getWriter().close();
       }
+
 
       const con = new RemoteConnection(createUID(), this.adapter, this._serializer, () => {
         this._pendingConnections.delete(con.uid);

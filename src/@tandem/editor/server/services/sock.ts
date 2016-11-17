@@ -1,10 +1,11 @@
-import { IDispatcher, readAllChunks, IStreamableDispatcher, FilterBus, filterFamilyMessage } from "@tandem/mesh";
+import { IDispatcher, readAllChunks, IStreamableDispatcher, FilterBus, filterFamilyMessage, setMessageTarget } from "@tandem/mesh";
 import { OpenProjectRequest } from "@tandem/editor/common";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 import { ApplicationServiceProvider } from "@tandem/common";
 import { isMaster } from "cluster";
-import { LoadAction, InitializeAction, SockBus, Action, isPublicAction, defineWorkerAction, isWorkerAction, serialize, deserialize } from "@tandem/common";
+import { LoadAction, InitializeAction, SockBus, Action, serialize, deserialize } from "@tandem/common";
+import { EditorFamilyType } from "@tandem/editor/common";
 import * as os from "os";
 import * as path from "path";
 import * as net from "net";
@@ -12,7 +13,7 @@ import * as fsa from "fs-extra";
 
 const SOCK_FILE = path.join(os.tmpdir(), `tandem-${process.env.USER}.sock`);
 
-@defineWorkerAction()
+@setMessageTarget(EditorFamilyType.MASTER)
 class ExecAction extends Action {
   static readonly EXEC = "exec";
   constructor(readonly config: IEdtorServerConfig) {

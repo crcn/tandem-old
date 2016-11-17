@@ -118,7 +118,7 @@ const _serializers   = {
 };
 
 export function getSerializeType(value: any) {
-   return canSerialize(value) ? Reflect.getMetadata("serialize:type", value.constructor) || Reflect.getMetadata("serialize:type", value) : getNativeSerializeType(value);
+   return isSerializable(value) ? Reflect.getMetadata("serialize:type", value.constructor) || Reflect.getMetadata("serialize:type", value) : getNativeSerializeType(value);
 }
 
 function getNativeSerializeType(value: any) {
@@ -134,7 +134,6 @@ function getNativeSerializeType(value: any) {
 
 export function serializable(serializer?: ISerializer<any, any>, type?: string) {
   return function(ctor: { new(...rest:any[]): any }) {
-    if (canSerialize(ctor)) return;
     if (!type) type = ctor.name;
     if (_serializers[type]) throw new Error(`Cannot override existing serializer "${type}".`);
 
@@ -150,8 +149,8 @@ export function serializable(serializer?: ISerializer<any, any>, type?: string) 
   }
 }
 
-export function canSerialize(value: Object) {
-  return !!value && !!Reflect.getMetadata("serialize:type", value.constructor);
+export function isSerializable(value: Object) {
+  return !!value && (typeof value === "function" ? !!Reflect.getMetadata("serialize:type", value) : !!Reflect.getMetadata("serialize:type", value.constructor));
 }
 
 export function serialize(value: any): ISerializedContent<any> {

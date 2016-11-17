@@ -1,6 +1,6 @@
 import * as net from "net";
 import { ISerializer } from "@tandem/common";
-import { IDispatcher, IMessageTester, IBus, RemoteBus, RemoteBusMessageTester, DuplexStream } from "@tandem/mesh";
+import { IDispatcher, IMessageTester, IBus, RemoteBus, RemoteBusMessageTester, DuplexStream, TransformStream } from "@tandem/mesh";
 
 const PAYLOAD_BOUNDARY = "___payload end___";
 

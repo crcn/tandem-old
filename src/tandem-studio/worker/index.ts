@@ -2,6 +2,7 @@ import { argv } from "yargs";
 import * as getPort from "get-port";
 import { SockService } from "@tandem/editor/server";
 import { EditorFamilyType } from "@tandem/editor/common";
+import { MarkupMimeTypeXMLNSProvider } from "@tandem/synthetic-browser";
 import { createJavaScriptWorkerProviders } from "@tandem/javascript-extension/editor/worker";
 import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/worker";
 import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/worker";
@@ -12,7 +13,6 @@ import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
 import { createEditorWorkerProviders, IEditorWorkerConfig } from "@tandem/editor/worker";
 import { Injector, LogLevel, serialize, deserialize, PrivateBusProvider, hook, MimeTypeProvider, MimeTypeAliasProvider } from "@tandem/common";
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
-import { MarkupMimeTypeXMLNSProvider } from "@tandem/synthetic-browser";
 
 import {
   createSandboxProviders,

@@ -1,4 +1,5 @@
 import { ISyntheticSourceInfo } from "@tandem/sandbox";
+import { RemoteBrowserDocumentMessage, OpenRemoteBrowserRequest } from "@tandem/synthetic-browser";
 import { Action, serializable, ISourceLocation, DSUpsertRequest, PostDSMessage } from "@tandem/common";
 
 import {
@@ -33,12 +34,13 @@ import { 
 } from "@tandem/mesh";
 
 export namespace EditorFamilyType {
-  export const BROWSER = "editor";
+  export const BROWSER = "browser";
   export const WORKER  = "worker";
   export const MASTER  = "master";
 }
 
 setMessageTarget(EditorFamilyType.MASTER)(WatchFileRequest);
+addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(OpenRemoteBrowserRequest));
 setMessageTarget(EditorFamilyType.MASTER)(ReadFileRequest);
 setMessageTarget(EditorFamilyType.MASTER)(ReadDirectoryRequest);
 setMessageTarget(EditorFamilyType.MASTER)(ResolveFileRequest);
@@ -53,13 +55,13 @@ setMessageTarget(EditorFamilyType.MASTER)(DSFindAllRequest);
 setMessageTarget(EditorFamilyType.MASTER)(PostDSMessage);
 
 @setMessageTarget(EditorFamilyType.MASTER)
-export class GetPrimaryProjectFilePathAction extends Action {
+export class GetPrimaryProjectFilePathRequest extends Action {
   static readonly GET_PRIMARY_PROJECT_FILE_PATH = "getPrimaryProjectFilePath";
   constructor() {
-    super(GetPrimaryProjectFilePathAction.GET_PRIMARY_PROJECT_FILE_PATH);
+    super(GetPrimaryProjectFilePathRequest.GET_PRIMARY_PROJECT_FILE_PATH);
   }
   static async dispatch(dispatcher: IStreamableDispatcher<any>): Promise<string> {
-    return (await readOneChunk(dispatcher.dispatch(new GetPrimaryProjectFilePathAction()))).value;
+    return (await readOneChunk(dispatcher.dispatch(new GetPrimaryProjectFilePathRequest()))).value;
   }
 }
 
@@ -106,22 +108,24 @@ export class OpenProjectRequest extends Action {
 }
 
 
+@setMessageTarget(EditorFamilyType.MASTER)
 @serializable({
-  serialize({ filePaths, options }: AddFilesAction) {
+  serialize({ filePaths, options }: AddFilesRequest) {
     return { filePaths, options }
   },
   deserialize({ filePaths, options}) {
-    return new AddFilesAction(filePaths, options);
+    return new AddFilesRequest(filePaths, options);
   }
 })
-@setMessageTarget(EditorFamilyType.MASTER)
-export class AddFilesAction extends Action {
+export class AddFilesRequest extends Action {
   static readonly ADD_FILES = "addFiles";
   constructor(readonly filePaths: string[], readonly options?: { left: number, top: number }) {
-    super(AddFilesAction.ADD_FILES);
+    super(AddFilesRequest.ADD_FILES);
   }
 }
 
+@addMessageVisitor(EditorFamilyType.MASTER)
+@setMessageTarget(EditorFamilyType.BROWSER)
 @serializable({
   serialize({ filePath, ranges }: SelectSourceRequest) {
     return {
@@ -133,8 +137,6 @@ export class AddFilesAction extends Action {
     return new SelectSourceRequest(filePath, ranges);
   }
 })
-@addMessageVisitor(EditorFamilyType.MASTER)
-@setMessageTarget(EditorFamilyType.BROWSER)
 export class SelectSourceRequest extends Action {
   static readonly SELECT_SOURCE = "selectSource";
   constructor(readonly filePath: string, readonly ranges: ISourceLocation[]) {

@@ -1,4 +1,4 @@
-import { Action, defineWorkerAction, TreeNodeAction } from "@tandem/common";
+import { Action, TreeNodeAction } from "@tandem/common";
 import {ISyntheticBrowserOpenOptions } from "@tandem/synthetic-browser";
 import { SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser/dom/css";
 
@@ -30,11 +30,10 @@ export class SyntheticRendererAction extends Action {
   static readonly UPDATED_COMPUTED_STYLE = "updatedComputedStyle";
 }
 
-@defineWorkerAction()
-export class OpenRemoteBrowserAction extends Action {
+export class OpenRemoteBrowserRequest extends Action {
   static readonly OPEN_REMOTE_BROWSER = "openRemoteBrowser";
   constructor(readonly options: ISyntheticBrowserOpenOptions) {
-    super(OpenRemoteBrowserAction.OPEN_REMOTE_BROWSER);
+    super(OpenRemoteBrowserRequest.OPEN_REMOTE_BROWSER);
   }
 }
 

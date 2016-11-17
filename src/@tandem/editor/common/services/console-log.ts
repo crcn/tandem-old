@@ -15,7 +15,6 @@ import {
   serialize,
   LogAction,
   serializable,
-  definePrivateAction
 } from "@tandem/common";
 
 export class ConsoleLogServiceAction extends Action {
