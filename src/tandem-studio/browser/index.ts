@@ -1,5 +1,12 @@
 import "reflect-metadata";
 
+import * as path from "path";
+
+declare let __webpack_public_path__: any;
+
+__webpack_public_path__ = `${location.protocol}//${path.dirname(location.pathname)}/`;
+
+
 import * as Url from "url";
 import { Injector, LogLevel } from "@tandem/common";
 import { ServiceApplication } from "@tandem/core";
@@ -21,6 +28,7 @@ const config: IEditorBrowserConfig = {
     port: Number(Url.parse(window.location.toString(), true).query.backendPort)
   }
 };
+
 
 const injector = new Injector(
   createEditorBrowserProviders(config),

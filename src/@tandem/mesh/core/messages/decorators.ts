@@ -31,8 +31,8 @@ export const getMessageVisitors = (message: any) => {
   return getMessageMetadata( "visitors", message) || [];
 }
 
-export const addMessageVisitor = (family: string) => {
+export const addMessageVisitor = (...families: string[]) => {
   return function(message) {
-    Reflect.defineMetadata(getMetadataKey("visitors"), (getMessageMetadata("visitors", message) || []).concat(family), message);
+    Reflect.defineMetadata(getMetadataKey("visitors"), (getMessageMetadata("visitors", message) || []).concat(families), message);
   }
 }

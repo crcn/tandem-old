@@ -18,7 +18,7 @@ import { debounce, throttle } from "lodash";
 import { CallbackDispatcher, NoopDispatcher, filterFamilyMessage } from "@tandem/mesh";
 
 import { createCoreApplicationProviders, ServiceApplication } from "@tandem/core";
-import { GetServerPortRequest, OpenProjectRequest, SelectSourceRequest, OpenFileRequest } from "@tandem/editor";
+import { GetServerPortRequest, OpenProjectRequest, SelectSourceRequest, OpenFileRequest, EditorFamilyType } from "@tandem/editor/common";
 
 import {
     FileCache,
@@ -99,7 +99,7 @@ class TandemClient extends Observable {
 
         console.log("Connecting to the server");
         const client = this._sockConnection = net.connect({ path: sockFilePath } as any);
-        const sockBus = new SockBus({ family: null, connection: client, testMessage: filterFamilyMessage }, this.bus, {
+        const sockBus = new SockBus({ family: EditorFamilyType.TEXT_EDITOR, connection: client, testMessage: filterFamilyMessage }, this.bus, {
             serialize, deserialize
         });
 
@@ -192,7 +192,7 @@ export async function activate(context: vscode.ExtensionContext) {
         const editorContent = document.getText();
         const filePath = document.fileName;
 
-        const fileCacheItem = await client.fileCache.eagerFindByFilePath(filePath);
+        const fileCacheItem = await client.fileCache.item(filePath);
         if (!fileCacheItem) return;
 
         fileCacheItem.setDataUrlContent(editorContent).save();

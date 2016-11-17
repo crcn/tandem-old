@@ -21,12 +21,12 @@ import {
 } from "@tandem/sandbox";
 
 import { 
+  readOneChunk,
   DSFindRequest,
   DSInsertRequest,
   DSRemoveRequest,
   DSUpdateRequest,
   DSFindAllRequest,
-  readOneChunk,
   TransformStream,
   setMessageTarget,
   addMessageVisitor,
@@ -34,8 +34,29 @@ import { 
 } from "@tandem/mesh";
 
 export namespace EditorFamilyType {
+
+  /**
+   * Peer (client) application such as an extension
+   */
+
+  export const TEXT_EDITOR    = "textEditor";
+
+  /**
+   * editor app
+   */
+
   export const BROWSER = "browser";
+
+  /**
+   * Heavy lifter - may be a web worker, node worker, or live in a remote location
+   */
+
   export const WORKER  = "worker";
+
+  /**
+   * Main app all others talk to
+   */
+
   export const MASTER  = "master";
 }
 
@@ -52,7 +73,7 @@ setMessageTarget(EditorFamilyType.MASTER)(DSInsertRequest);
 setMessageTarget(EditorFamilyType.MASTER)(DSRemoveRequest);
 setMessageTarget(EditorFamilyType.MASTER)(DSUpdateRequest);
 setMessageTarget(EditorFamilyType.MASTER)(DSFindAllRequest);
-setMessageTarget(EditorFamilyType.MASTER)(PostDSMessage);
+addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamilyType.TEXT_EDITOR)(PostDSMessage);
 
 @setMessageTarget(EditorFamilyType.MASTER)
 export class GetPrimaryProjectFilePathRequest extends Action {
@@ -76,7 +97,8 @@ export class GetServerPortRequest extends Action {
   }
 }
 
-@setMessageTarget(EditorFamilyType.MASTER)
+@addMessageVisitor(EditorFamilyType.MASTER)
+@setMessageTarget(EditorFamilyType.TEXT_EDITOR)
 @serializable({
   serialize({ filePath, selection }: OpenFileRequest) {
     return { filePath, selection };
