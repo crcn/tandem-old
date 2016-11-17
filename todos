@@ -11,10 +11,7 @@ Start working on UX around getting started with Tandem and projects.
 
 FEATURES
 
-- [ ] one worker for each artboard
 - [ ] open unsaved files in vscode
-- [ ] better UX for importing components
-- [ ] automatically scan for components
 
 - [ ] history slider
 - [ ] breadcrumb for elements
@@ -27,6 +24,7 @@ IMPORTING MODULES
 
 - [ ] resolve where to save files when dragging & dropping
 - [ ] show preview of component (if possible)
+- [ ] automatically scan for components
 
 BUGS
 
@@ -57,7 +55,6 @@ BUGS
   - [ ] fix absolute bounds for elements
   - [ ] cannot rapidly change .tsx? documents
   - [ ] get sync stop to work with vscode extension
-  - [ ] DS actions should not be broadcasted
   - [ ] stop remote browser when a user disconnects
 
 ARCHITECTURE

@@ -309,6 +309,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       try {
         await this.loadHard();
       } catch(e) {
+        this.logger.error(`Error: ${e.stack}`);
         this._sourceUpdatedAt = undefined;
         await this.watchForChanges();
         throw e;
@@ -393,7 +394,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
         try {
           await dependency.load();
         } catch(e) {
-          waitLogger.stop("Error while loading dependency");
+          waitLogger.stop(`Error while loading dependency: ${info.filePath}`);
           throw e;
         }
       }

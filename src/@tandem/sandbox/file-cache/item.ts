@@ -1,8 +1,7 @@
 import * as memoize from "memoizee";
 import { CallbackDispatcher } from "@tandem/mesh";
 import { IFileSystem } from "@tandem/sandbox/file-system";
-import * as btoa from "btoa";
-import * as atob from "atob";
+import { btoa, atob } from "abab"
 
 import {
   Action,

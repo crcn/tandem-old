@@ -8,6 +8,7 @@ import {
   DuplexStream,
   ReadableStream,
   WritableStream,
+  TransformStream,
   wrapDuplexStream,
   WritableStreamDefaultWriter,
   ReadableStreamDefaultReader

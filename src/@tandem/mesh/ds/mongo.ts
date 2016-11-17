@@ -24,32 +24,32 @@ export class MongoDataStore extends  BaseDataStore {
     return new DuplexStream((input, output) => {
       const writer = output.getWriter();
       this._db.collection(action.collectionName).insert(action.data).then((result) => {
-        result.ops.forEach((op) => {
+        (result.ops || []).forEach((op) => {
           writer.write(op);
         });
         writer.close();
-      });
+      }).catch(writer.abort.bind(writer));
     });
   }
 
   dsRemove(action: DSRemoveRequest<any>) {
     return new DuplexStream((input, output) => {
       const writer = output.getWriter();
-      this._db.collection(action.collectionName).remove(action.query).then((items) => {
-        items.ops.forEach((op) => {
+      this._db.collection(action.collectionName).remove(action.query).then((result) => {
+        (result.ops || []).forEach((op) => {
           writer.write(op);
         });
         writer.close();
-      });
+      }).catch(writer.abort.bind(writer));
     });
   }
 
   dsUpdate(action: DSUpdateRequest<any, any>) {
     return new DuplexStream((input, output) => {
-      const writer = output.getWriter();
-      this._db.collection(action.collectionName).update(action.query, { $set: action.data }, function(err, result) {
-        if (err) return writer.abort(err);
-        writer.close();
+      this._db.collection(action.collectionName).update(action.query, { $set: action.data }).then((result) => {
+        return this.dsFind(new DSFindRequest(action.collectionName, action.query, true)).readable.pipeTo(output);
+      }).catch((e) => {
+        output.getWriter().abort(e);
       });
     });
   }
@@ -60,7 +60,6 @@ export class MongoDataStore extends  BaseDataStore {
       this.pump(this._db.collection(action.collectionName).find(action.query), output.getWriter());
     });
   }
-
 
   private async pump(cursor: Cursor, writer: WritableStreamDefaultWriter<any>) {
     if (!(await cursor.hasNext())) {

@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as gaze from "gaze";
 import * as sift from "sift";
-import * as btoa from "btoa"
+import { btoa, atob } from "abab"
 import { DuplexStream } from "@tandem/mesh";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
@@ -43,7 +43,7 @@ export class FileService extends CoreApplicationService<IEdtorServerConfig> {
    */
 
   async [ReadFileRequest.READ_FILE](action: ReadFileRequest|WatchFileRequest) {
-    return btoa(await this._fileSystem.readFile(action.filePath));
+    return new Buffer(await this._fileSystem.readFile(action.filePath)).toString("base64");
   }
 
   /**

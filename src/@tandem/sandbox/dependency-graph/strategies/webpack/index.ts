@@ -207,7 +207,6 @@ class WebpackLoaderContext {
           return relativePath.charAt(0) !== "/" ? path.join(this.strategy.config.context || process.cwd(), relativePath) : relativePath;
         });
       }
-
       this._resolve({ content, map });
     }
   }

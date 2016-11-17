@@ -9,7 +9,7 @@ import { SyntheticWindowTimers } from "./timers";
 import { noopDispatcherInstance } from "@tandem/mesh";
 import { Blob, FakeBlob } from "./blob";
 import { URL, FakeURL } from "./url";
-import * as btoa from "btoa";
+import { btoa, atob } from "abab"
 
 export class SyntheticNavigator {
   readonly appCodeName = "Tandem";

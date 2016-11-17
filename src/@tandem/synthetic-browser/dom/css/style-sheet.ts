@@ -1,4 +1,4 @@
-import * as atob from "atob";
+import { atob } from "abab";
 import { RawSourceMap } from "source-map";
 import { SyntheticCSSFontFace } from "./font-face";
 import { SyntheticCSSMediaRule } from "./media-rule";

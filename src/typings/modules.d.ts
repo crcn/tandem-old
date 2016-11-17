@@ -174,20 +174,9 @@ declare module "ansi_up" {
   export function ansi_to_html(source: string): string;
 }
 
-declare module "btoa" {
-  function btoa(value: any);
-  namespace btoa {
-
-  }
-  export = btoa;
-}
-
-declare module "atob" {
-  function atob(value: any);
-  namespace atob {
-
-  }
-  export = atob;
+declare module "abab" {
+  export function btoa(value: any): any;
+  export function atob(value: any): any;
 }
 
 declare module "postcss-cssnext" {
