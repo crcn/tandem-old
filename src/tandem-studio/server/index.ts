@@ -28,9 +28,9 @@ export const initializeMaster = async () => {
     family: EditorFamilyType.MASTER,
     cwd: process.cwd(),
     experimental: !!argv.experimental,
-    port: await getPort(),
+    port: process.env.PORT || (process.env.PORT = await getPort()),
     argv: argv,
-    hostname: "localhost",
+    hostname: process.env.HOSTNAME || (process.env.HOSTNAME = "localhost"),
     log: {
       level: Number(process.env.LOG_LEVEL),
       prefix: "master "

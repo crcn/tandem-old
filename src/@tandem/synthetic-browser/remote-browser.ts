@@ -105,7 +105,6 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
       const window = new SyntheticWindow(this.location, this, newDocument);
       this.setWindow(window);
-      console.log(window);
       this.status = new Status(Status.COMPLETED);
     } else if (action.type === RemoteBrowserDocumentMessage.DOCUMENT_DIFF) {
       const { data } = <RemoteBrowserDocumentMessage>action;

@@ -44,7 +44,9 @@ export const initializeWorker = async () => {
     log: {
       level: Number(process.env.LOG_LEVEL),
       prefix: "worker "
-    }
+    },
+    hostname: process.env.HOSTNAME,
+    port: process.env.PORT
   };
 
   const injector = new Injector(
