@@ -18,11 +18,11 @@ import {
 import {
   parseCSS,
   evaluateCSS,
-  DOMNodeAction,
-  DOMMutationAction,
+  DOMNodeEvent,
+  DOMMutationEvent,
   ISyntheticBrowser,
   SyntheticDocument,
-  isDOMMutationAction,
+  isDOMMutationEvent,
   SyntheticHTMLElement,
   BaseDecoratorRenderer,
   SyntheticDOMRenderer,
@@ -187,7 +187,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     this.injectCSS();
 
     // bubble loaded notification here
-    this.notify(new DOMNodeAction(DOMNodeAction.DOM_NODE_LOADED));
+    this.notify(new DOMNodeEvent(DOMNodeEvent.DOM_NODE_LOADED));
   }
 
   protected onContentDocumentAction(action: Action) {

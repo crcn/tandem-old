@@ -5,7 +5,7 @@ import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { parse as parseMarkup } from "./parser.peg";
 import { selectorMatchesElement } from "../selector";
-import { AttributeChangeAction } from "@tandem/synthetic-browser/actions";
+import { AttributeChangeEvent } from "@tandem/synthetic-browser/messages";
 import { syntheticElementClassType } from "./types";
 import { SyntheticDocumentFragment } from "./document-fragment";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
@@ -24,7 +24,7 @@ import {
   serializable,
   ArrayChangeAction,
   ISerializedContent,
-  PropertyChangeAction,
+  PropertyChangeEvent,
   ObservableCollection,
 } from "@tandem/common";
 
@@ -406,8 +406,8 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
           this.attributeChangedCallback(value.name, value.value, undefined);;
         }
       });
-    } else if (action.type === PropertyChangeAction.PROPERTY_CHANGE && action.target instanceof SyntheticDOMAttribute) {
-      const changeAction = <PropertyChangeAction>action;
+    } else if (action.type === PropertyChangeEvent.PROPERTY_CHANGE && action.target instanceof SyntheticDOMAttribute) {
+      const changeAction = <PropertyChangeEvent>action;
       const attribute = <SyntheticDOMAttribute>action.target;
       this.attributeChangedCallback(attribute.name, changeAction.oldValue, changeAction.newValue);
     }
@@ -421,7 +421,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   protected attributeChangedCallback(name: string, oldValue: any, newValue: any) {
-    this.notify(new AttributeChangeAction(name, newValue));
+    this.notify(new AttributeChangeEvent(name, newValue));
   }
 
   protected createdCallback() {

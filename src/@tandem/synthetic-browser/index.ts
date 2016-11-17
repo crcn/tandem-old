@@ -14,6 +14,6 @@ export * from "./renderers";
 export * from "./providers";
 export * from "./sandbox";
 export * from "./location";
-export * from "./actions";
+export * from "./messages";
 export * from "./remote-browser";
 

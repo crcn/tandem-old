@@ -2,14 +2,14 @@ import "./index.scss";
 
 
 import * as React from "react";
-import { kebabCase, camelCase } from "lodash";
 import { Workspace } from "@tandem/editor/browser/models";
-import { DOMElements, MatchedStyleRule } from "@tandem/html-extension/collections";
-import { GutterComponent, SyntheticSourceLink } from "@tandem/editor/browser/components";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { ApplyFileEditRequest } from "@tandem/sandbox";
+import { kebabCase, camelCase } from "lodash";
 import { CSSPrettyPaneComponent } from "./pretty";
 import { BaseApplicationComponent } from "@tandem/common";
+import { DOMElements, MatchedStyleRule } from "@tandem/html-extension/collections";
+import { GutterComponent, SyntheticSourceLink } from "@tandem/editor/browser/components";
 import { HashInputComponent, KeyValueInputComponent, IKeyValueInputComponentProps } from "@tandem/html-extension/editor/browser/components/common";
 import {
   MatchedCSSStyleRule,

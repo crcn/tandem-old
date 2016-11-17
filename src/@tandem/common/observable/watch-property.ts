@@ -1,6 +1,6 @@
 import { IObservable } from "./base";
 import { IDisposable } from "../object";
-import { PropertyChangeAction, Action } from "@tandem/common/actions";
+import { PropertyChangeEvent, Action } from "@tandem/common/actions";
 
 export type propertyChangeCallbackType = (newValue: any, oldValue: any) => void;
 
@@ -8,8 +8,8 @@ export function watchProperty(target: any, property: string, callback: propertyC
 
   const observer = {
     dispatch(action: Action) {
-      if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
-        const propertyAction = <PropertyChangeAction>action;
+      if (action.type === PropertyChangeEvent.PROPERTY_CHANGE) {
+        const propertyAction = <PropertyChangeEvent>action;
         if (propertyAction.property === property && propertyAction.target === target) {
           callback(propertyAction.newValue, propertyAction.oldValue);
         }

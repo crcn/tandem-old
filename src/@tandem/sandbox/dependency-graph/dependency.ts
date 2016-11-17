@@ -39,7 +39,7 @@ import {
   MimeTypeProvider,
   BaseActiveRecord,
   InjectorProvider,
-  PropertyChangeAction,
+  PropertyChangeEvent,
   PLAIN_TEXT_MIME_TYPE,
   DisposableCollection,
 } from "@tandem/common";
@@ -460,7 +460,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private onFileCacheAction(action: Action) {
     // reload the dependency if file cache item changes -- could be the data url, source file, etc.
-    if (action.type === PropertyChangeAction.PROPERTY_CHANGE && this.status.type !== Status.LOADING) {
+    if (action.type === PropertyChangeEvent.PROPERTY_CHANGE && this.status.type !== Status.LOADING) {
       this.logger.info("Source file changed");
       this.reload();
     }

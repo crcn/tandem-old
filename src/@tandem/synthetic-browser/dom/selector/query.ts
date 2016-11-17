@@ -1,7 +1,7 @@
+import { IDispatcher } from "@tandem/mesh";
 import { throttle, Cancelable } from "lodash";
 import { getSelectorTester, ISelectorTester } from "./tester";
 import { SyntheticDOMNode, SyntheticDOMElement, SyntheticDOMContainer, DOMNodeType } from "../markup";
-import { IDispatcher } from "@tandem/mesh";
 import {
   Action,
   bindable,
@@ -17,11 +17,11 @@ import {
   findTreeNode,
   PropertyWatcher,
   DisposableCollection,
-  PropertyChangeAction,
+  PropertyChangeEvent,
   propertyChangeCallbackType,
 } from "@tandem/common";
 
-import { isDOMMutationAction } from "@tandem/synthetic-browser/actions";
+import { isDOMMutationEvent } from "@tandem/synthetic-browser/messages";
 
 import { CallbackDispatcher } from "@tandem/mesh";
 
@@ -208,7 +208,7 @@ export abstract class BaseElementQuerier<T extends SyntheticDOMElement> extends 
 
   protected setQueriedElements(newQueriedElements: T[]) {
     const oldQueriedElements = this._queriedElements;
-    this.notify(new PropertyChangeAction("queriedElements", this._queriedElements = newQueriedElements, oldQueriedElements));
+    this.notify(new PropertyChangeEvent("queriedElements", this._queriedElements = newQueriedElements, oldQueriedElements));
   }
 
   dispose() {

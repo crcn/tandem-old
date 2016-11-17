@@ -17,7 +17,7 @@ import {
   EntityAction,
   Injector,
   watchProperty,
-  PropertyChangeAction,
+  PropertyChangeEvent,
   InjectorProvider,
 } from "@tandem/common";
 

@@ -42,7 +42,7 @@ import {
   MimeTypeProvider,
   BaseActiveRecord,
   InjectorProvider,
-  PropertyChangeAction,
+  PropertyChangeEvent,
   PLAIN_TEXT_MIME_TYPE,
   DisposableCollection,
 } from "@tandem/common";

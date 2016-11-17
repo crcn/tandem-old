@@ -7,7 +7,7 @@ import {
   FileSystemProvider,
 } from "@tandem/sandbox";
 
-import { PropertyChangeAction } from "@tandem/common";
+import { PropertyChangeEvent } from "@tandem/common";
 
 describe(__filename + "#", () => {
 
@@ -56,8 +56,8 @@ describe(__filename + "#", () => {
 
       return new Promise((resolve) => {
         item.observe({
-          dispatch(action: PropertyChangeAction) {
-            if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
+          dispatch(action: PropertyChangeEvent) {
+            if (action.type === PropertyChangeEvent.PROPERTY_CHANGE) {
               expect(item.url).to.equal("data:text/plain,aGVsbG8=");
               resolve();
             }
@@ -78,8 +78,8 @@ describe(__filename + "#", () => {
 
       return new Promise((resolve) => {
         item.observe({
-          dispatch(action: PropertyChangeAction) {
-            if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
+          dispatch(action: PropertyChangeEvent) {
+            if (action.type === PropertyChangeEvent.PROPERTY_CHANGE) {
               expect(item.url).to.equal("file://entry.js");
               expect(item.sourceFileModifiedAt).to.not.equal(mtime);
               resolve();

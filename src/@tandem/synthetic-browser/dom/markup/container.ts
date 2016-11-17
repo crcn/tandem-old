@@ -1,7 +1,7 @@
 import { DOMNodeType } from "./node-types";
 import { SyntheticDOMNode, SyntheticDOMNodeEdit } from "./node";
 import { SyntheticDOMText } from "./text-node";
-import { isDOMMutationAction, DOMNodeAction } from "@tandem/synthetic-browser/actions";
+import { isDOMMutationEvent, DOMNodeEvent } from "@tandem/synthetic-browser/messages";
 import { diffArray, ITreeWalker, findTreeNode, Action } from "@tandem/common";
 import { getSelectorTester, ISelectorTester, querySelector, querySelectorAll } from "../selector";
 import { SyntheticDOMElement } from "./element";

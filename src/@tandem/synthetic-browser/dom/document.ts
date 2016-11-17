@@ -40,7 +40,7 @@ import {
   deserialize,
   ITreeWalker,
   serializable,
-  TreeNodeAction,
+  TreeNodeEvent,
   ISerializedContent,
   ArrayChangeAction,
   ObservableCollection,

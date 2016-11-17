@@ -11,6 +11,7 @@ Start working on UX around getting started with Tandem and projects.
 
 FEATURES
 
+- [ ] scan package.json and auto-install extensions
 - [ ] open unsaved files in vscode
 
 - [ ] history slider
@@ -36,7 +37,6 @@ TECH DEBT
 - [ ] deprecate tdm files - artboards should be core
 - [ ] tandem <directory> for opening projects
 
-
 ----------------------------------
 STABILITY
 ----------------------------------
@@ -58,16 +58,10 @@ BUGS
   - [ ] stop remote browser when a user disconnects
 
 ARCHITECTURE
-  - [ ] Remove cases where parts of the app are listening to the global DS
-    - as alternatives, there needs to be services that mediate handlers of globally dispatched messages. An example
-    of this would be a data store oplog tail.
-  - [ ] better code around emitting changes to one central listener
+  - [ ] db oplog tailing
 
 CLEANUP
-  - [ ] upgrade mesh library for native streams
-  - [ ] change Action for Message
   - [ ] do not use absolute paths for dependency graphs
-  - [ ] SyntheticDocument body & head should both be HTML elements
   - [ ] custom protocol handling
 
 ----------------------------------

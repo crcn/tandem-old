@@ -2,7 +2,7 @@ import * as sift from "sift";
 import { SyntheticCSSObject } from "./base";
 import { kebabCase, camelCase } from "lodash";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser/dom";
-import { CSSDeclarationValueChangeAction } from "@tandem/synthetic-browser/actions";
+import { CSSDeclarationValueChangeEvent } from "@tandem/synthetic-browser/messages";
 import { ISerializable, Action, serializable, diffArray, ITreeWalker } from "@tandem/common";
 import { SetKeyValueEditAction, IContentEdit, ApplicableEditAction, ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
 
@@ -476,7 +476,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     const ownerNode = this.$parentRule && this.$parentRule.ownerNode;
 
     if (ownerNode) {
-      ownerNode.notify(new CSSDeclarationValueChangeAction(this, name, newValue, oldName));
+      ownerNode.notify(new CSSDeclarationValueChangeEvent(this, name, newValue, oldName));
     } else {
       // console.error("Declarations must have an owner node.");
     }

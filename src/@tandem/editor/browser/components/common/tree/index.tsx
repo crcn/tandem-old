@@ -1,6 +1,6 @@
 import "./index.scss";
-import * as React from "react";
 import * as cx from "classnames";
+import * as React from "react";
 import { TreeNode } from "@tandem/common"
 
 export interface ITreeComponentProps {

@@ -9,7 +9,7 @@ import {
   bindable,
   ENV_IS_NODE,
   BaseActiveRecord,
-  PropertyChangeAction,
+  PropertyChangeEvent,
 } from "@tandem/common";
 
 export interface IFileCacheItemData {
@@ -115,7 +115,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   private onAction(action: Action) {
-    if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
+    if (action.type === PropertyChangeEvent.PROPERTY_CHANGE) {
       this.clearCache();
     }
   }

@@ -1,7 +1,7 @@
 import { Action } from "@tandem/common/actions";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { ITreeNode } from "./base";
-import { TreeNodeAction } from "./actions";
+import { TreeNodeEvent } from "./actions";
 import { ITreeWalker, IWalkable } from "./walker";
 import { Observable, IObservable } from "@tandem/common/observable";
 
@@ -125,11 +125,11 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
   }
 
   protected onAdded() {
-    this.notify(new TreeNodeAction(TreeNodeAction.NODE_ADDED));
+    this.notify(new TreeNodeEvent(TreeNodeEvent.NODE_ADDED));
   }
 
   protected onRemoved() {
-    this.notify(new TreeNodeAction(TreeNodeAction.NODE_REMOVED));
+    this.notify(new TreeNodeEvent(TreeNodeEvent.NODE_REMOVED));
   }
 
   public clone(deep?: boolean): T {

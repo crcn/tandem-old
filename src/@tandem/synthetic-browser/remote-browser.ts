@@ -1,6 +1,6 @@
 import { debounce } from "lodash";
 import { NoopRenderer, ISyntheticDocumentRenderer } from "./renderers";
-import { OpenRemoteBrowserRequest, isDOMMutationAction } from "./actions";
+import { OpenRemoteBrowserRequest, isDOMMutationEvent } from "./messages";
 import { CallbackDispatcher, IDispatcher, IStreamableDispatcher, WritableStream, DuplexStream, ReadableStream, ReadableStreamDefaultReader, pump } from "@tandem/mesh";
 import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser, ISyntheticBrowserOpenOptions } from "./browser";
 import {
@@ -151,7 +151,7 @@ export class RemoteBrowserService extends BaseApplicationService {
       }, (clone: SyntheticDocument) => {
         logger.info("Sending <<new document");
         writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.NEW_DOCUMENT, clone)) });
-      }, isDOMMutationAction);
+      }, isDOMMutationEvent);
 
       if (browser.document) {
         changeWatcher.target = browser.document;
@@ -171,6 +171,8 @@ export class RemoteBrowserService extends BaseApplicationService {
 
       return {
         close() {
+
+          // TODO - possibly shutdown here -- need to have increment counter.
           watcher.dispose();
           changeWatcher.dispose();
         }

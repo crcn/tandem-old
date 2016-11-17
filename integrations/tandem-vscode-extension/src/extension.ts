@@ -40,7 +40,7 @@ import { 
     deserialize,
     PostDSMessage,
     PrivateBusProvider,
-    PropertyChangeAction,
+    PropertyChangeEvent,
 } from "@tandem/common";
 
 const UPDATE_FILE_CACHE_TIMEOUT = 100;
@@ -58,17 +58,16 @@ class TandemClient extends Observable {
 
     readonly fileCache: FileCache;
     readonly bus: IBrokerBus
-    public port: number;
 
     private _clientApp: ServiceApplication;
     private _process: ChildProcess;
     private _sockConnection: net.Socket;
-    private _disconnected: boolean;
+    private _connected: boolean;
     private _sockFilePath: string;
 
     constructor() {
         super();
-        this._disconnected = true;
+        this._connected = false;
         const deps = new Injector(
             createCoreApplicationProviders({})
         );
@@ -82,7 +81,7 @@ class TandemClient extends Observable {
     }
 
     async disconnect() {
-        this._disconnected = true;
+        this._connected = false;
         console.log("Disconnecting");
         if (this._process) {
             this._process.kill();
@@ -92,39 +91,37 @@ class TandemClient extends Observable {
         }
     }
 
-    async connect() {
-        if (this._disconnected !== true) return;
+    connect() {
+        if (this._connected) return;
+        this._connected = true;
 
         const sockFilePath = TD_SOCK_FILE;
 
         console.log("Connecting to the server");
         const client = this._sockConnection = net.connect({ path: sockFilePath } as any);
-        const sockBus = new SockBus({ family: EditorFamilyType.TEXT_EDITOR, connection: client, testMessage: filterFamilyMessage }, this.bus, {
+
+        const reconnect = () => {
+            console.log("Socket closed");
+            if (!this._connected) return;
+            this._connected = false;
+            this.bus.unregister(sockBus);
+            setTimeout(this.connect.bind(this), 1000);
+        }
+
+        client.once("close", reconnect).once("error", reconnect);
+
+         const sockBus = new SockBus({ family: EditorFamilyType.TEXT_EDITOR, connection: client, testMessage: filterFamilyMessage }, this.bus, {
             serialize, deserialize
         });
 
         this.bus.register(sockBus);
         this.fileCache.collection.reload();
-        let _reconnecting = false;
-        const reconnect = () => {
-            if (_reconnecting) return;
-            _reconnecting = true;
-            this.bus.unregister(sockBus);
-
-            // reconnect on close -- only after a short TTL
-            if (!this._disconnected)  {
-                setTimeout(this.connect.bind(this), 1000);
-            }
-        }
-
-        client.once("close", reconnect).once("error", reconnect);
-        this.port = await GetServerPortRequest.dispatch(this.bus);
     }
 
     private watchFileCache() {
         this.fileCache.collection.observe(new CallbackDispatcher((action: Action) => {
-            if (action.type === PropertyChangeAction.PROPERTY_CHANGE) {
-                const changeAction = <PropertyChangeAction>action;
+            if (action.type === PropertyChangeEvent.PROPERTY_CHANGE) {
+                const changeAction = <PropertyChangeEvent>action;
                 if (changeAction.property === "url") {
                     this.notify(new FileCacheChangeAction(changeAction.target));
                 }
@@ -198,23 +195,6 @@ export async function activate(context: vscode.ExtensionContext) {
         fileCacheItem.setDataUrlContent(editorContent).save();
         setCurrentMtime();
     }, UPDATE_FILE_CACHE_TIMEOUT);
-
-    let openProjectCommand = vscode.commands.registerCommand("extension.tandemOpenCurrentFile", async () => {
-
-        const doc = vscode.window.activeTextEditor.document;
-        const fileName = doc.fileName;
-
-        updateFileCacheItem(vscode.window.activeTextEditor.document);
-
-        // TODO - prompt to save file if it doesn't currently exist
-        const hasOpenWindow = await OpenProjectRequest.dispatch({
-            filePath: fileName
-        }, client.bus);
-
-        if (!hasOpenWindow) {
-            exec(`open http://localhost:${client.port}/editor`);
-        }
-    });
 
     async function onTextChange(e:vscode.TextDocumentChangeEvent) {
         const doc  = e.document;

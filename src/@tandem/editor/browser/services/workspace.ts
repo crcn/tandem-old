@@ -9,7 +9,7 @@ import {
   SyntheticDocument,
   SyntheticDOMElement,
   SyntheticDOMRenderer,
-  isDOMMutationAction,
+  isDOMMutationEvent,
   BaseDecoratorRenderer,
   RemoteSyntheticBrowser,
   SyntheticRendererAction,

@@ -1,27 +1,27 @@
-import { Action, TreeNodeAction } from "@tandem/common";
+import { Action, TreeNodeEvent } from "@tandem/common";
 import {ISyntheticBrowserOpenOptions } from "@tandem/synthetic-browser";
 import { SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser/dom/css";
 
-export class DOMNodeAction extends Action {
+export class DOMNodeEvent extends Action {
   static readonly DOM_NODE_LOADED = "domNodeLoaded";
 }
 
-export class AttributeChangeAction extends Action {
+export class AttributeChangeEvent extends Action {
   static readonly ATTRIBUTE_CHANGE = "attributeChange";
   constructor(readonly name: string, readonly value: string) {
-    super(AttributeChangeAction.ATTRIBUTE_CHANGE);
+    super(AttributeChangeEvent.ATTRIBUTE_CHANGE);
   }
 }
 
-export class CSSDeclarationValueChangeAction extends Action {
+export class CSSDeclarationValueChangeEvent extends Action {
   static readonly CSS_DECLARATION_VALUE_CHANGE = "cssDeclarationValueChange";
   constructor(readonly item: SyntheticCSSStyleDeclaration, readonly name: string, readonly newValue: string, readonly oldName?: string) {
-    super(CSSDeclarationValueChangeAction.CSS_DECLARATION_VALUE_CHANGE);
+    super(CSSDeclarationValueChangeEvent.CSS_DECLARATION_VALUE_CHANGE);
   }
 }
 
 // TODO - add these https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Mutation_events
-export class DOMMutationAction extends Action {
+export class DOMMutationEvent extends Action {
   static readonly DOM_NODE_LOADED = "domNodeLoaded";
 }
 
@@ -37,14 +37,14 @@ export class OpenRemoteBrowserRequest extends Action {
   }
 }
 
-const DOM_NODE_MUTATION_ACTION_TYPES = {
-  [TreeNodeAction.NODE_ADDED]: true,
-  [TreeNodeAction.NODE_REMOVED]: true,
-  [DOMMutationAction.DOM_NODE_LOADED]: true,
-  [AttributeChangeAction.ATTRIBUTE_CHANGE]: true,
-  [CSSDeclarationValueChangeAction.CSS_DECLARATION_VALUE_CHANGE]: true
+const DOM_NODE_MUTATION_EVENT_TYPES = {
+  [TreeNodeEvent.NODE_ADDED]: true,
+  [TreeNodeEvent.NODE_REMOVED]: true,
+  [DOMMutationEvent.DOM_NODE_LOADED]: true,
+  [AttributeChangeEvent.ATTRIBUTE_CHANGE]: true,
+  [CSSDeclarationValueChangeEvent.CSS_DECLARATION_VALUE_CHANGE]: true
 };
 
-export function isDOMMutationAction(action: Action) {
-  return DOM_NODE_MUTATION_ACTION_TYPES[action.type];
+export function isDOMMutationEvent(action: Action) {
+  return DOM_NODE_MUTATION_EVENT_TYPES[action.type];
 }
