@@ -1,12 +1,11 @@
 import * as React from "react";
-import Token from "../models/token";
-import Line from "../models/line";
+import { TextEditorToken } from "../models/token";
+import TextEditorLine from "../models/line";
 import TextEditor from "../models/text-editor";
 import { Injector } from "@tandem/common";
 import { TokenComponentFactoryProvider } from "@tandem/editor/browser/providers";
 
-class TokenComponent extends React.Component<{ token: Token, editor: TextEditor, line: Line, injector: Injector }, any> {
-
+class TokenComponent extends React.Component<{ token: TextEditorToken, editor: TextEditor, line: TextEditorLine, injector: Injector }, any> {
 
   render() {
     const { token, injector } = this.props;

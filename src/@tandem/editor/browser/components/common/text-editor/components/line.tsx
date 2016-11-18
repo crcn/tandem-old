@@ -1,10 +1,10 @@
-import Line from "../models/line";
+import TextEditorLine from "../models/line";
 import * as React from "react";
 import TextEditor from "../models/text-editor";
-import TokenComponent from "./token";
 import { Injector } from "@tandem/common";
+import TokenComponent from "./token";
 
-class LineComponent extends React.Component<{ injector: Injector, line: Line, editor: TextEditor }, any> {
+class LineComponent extends React.Component<{ injector: Injector, line: TextEditorLine, editor: TextEditor }, any> {
 
   render() {
 
@@ -21,7 +21,7 @@ class LineComponent extends React.Component<{ injector: Injector, line: Line, ed
             injector={this.props.injector}
             token={token}
             line={line}
-            key={token.toString() + "," + i} />;
+            key={token.type + i} />;
         }) : <span>&nbsp;</span>
       }
     </div>;

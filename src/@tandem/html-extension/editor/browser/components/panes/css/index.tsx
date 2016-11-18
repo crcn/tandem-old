@@ -41,7 +41,7 @@ export class CSSStylePropertyComponent extends BaseApplicationComponent<IKeyValu
     const props = this.props;
     return <div className="css-property-input">
       <div className="css-property-input-line">
-        <KeyValueInputComponent valueTokenizer={cssTokenizer} {...props} style={props.item["dim"] ? { opacity: 0.4 } : {}} />
+        <KeyValueInputComponent {...props} style={props.item["dim"] ? { opacity: 0.4 } : {}} />
         <i className={[this.state.showPrettyInput ? "ion-close" : "ion-edit", "edit-button", "dim"].join(" ")} onClick={this.togglePrettyInput} />
       </div>
       {this.state.showPrettyInput ? this.renderPrettyInput(props) : null}
@@ -73,7 +73,7 @@ export class CSSStylePaneComponent extends BaseApplicationComponent<ICSSStylePan
           <span onClick={() => setDeclaration("", "")}>+</span>
         </div>
       </div>
-      { pretty ? <CSSPrettyPaneComponent style={style} /> : <HashInputComponent items={items} setKeyValue={setDeclaration} renderItemComponent={this.renderItem} /> }
+      { pretty ? <CSSPrettyPaneComponent style={style} /> : <HashInputComponent items={items} setKeyValue={setDeclaration} valueTokenizer={cssTokenizer} renderItemComponent={this.renderItem} /> }
     </div>
   }
 

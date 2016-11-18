@@ -1,6 +1,6 @@
 import * as React from "react";
-import { ITokenizer } from "@tandem/common";
 import { FocusComponent, TextEditorComponent } from "@tandem/editor/browser/components/common";
+import { ITokenizer, inject, InjectorProvider, Injector, BaseApplicationComponent } from "@tandem/common";
 
 export interface IKeyValueItem {
   name: string;
@@ -19,17 +19,14 @@ export interface IKeyValueInputComponentProps {
 }
 
 // TODO - add some color for the CSS rules
-export class KeyValueInputComponent extends React.Component<IKeyValueInputComponentProps, { editName: boolean, currentValue: string }> {
+export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueInputComponentProps, { editName: boolean, currentValue: string }> {
 
   private _currentValue: any;
 
-  constructor() {
-    super();
-    this.state = {
-      editName: false,
-      currentValue: undefined
-    };
-  }
+  state = {
+    editName: false,
+    currentValue: undefined
+  };
 
   editName = () => {
     this.setState({ editName: true, currentValue: undefined })
@@ -65,6 +62,7 @@ export class KeyValueInputComponent extends React.Component<IKeyValueInputCompon
 
   onValueChange = (value: string) => {
     const oldName = this.item.name;
+    console.log(value);
     this.props.setKeyValue(this.item.name, this.state.currentValue = value);
   }
 
@@ -99,7 +97,7 @@ export class KeyValueInputComponent extends React.Component<IKeyValueInputCompon
       <TextEditorComponent
         className="col-5"
         value={this.state.currentValue || value}
-        injector={null}
+        injector={this.injector}
         style={{textDecoration: overriden ? "line-through" : undefined}}
         onKeyDown={this.onValueKeyDown}
         tokenizer={valueTokenizer}

@@ -1,17 +1,18 @@
 import calcPosition from "./calc-position";
 import encode from "./encode";
-import Line from "./line";
+import TextEditorLine from "./line";
 
-export default class Token {
+export class TextEditorToken {
+
+  private _updated: boolean;
 
   constructor(
     public type: string,
     private _value: string,
     public length: number = _value.length,
-    public line: Line,
+    public line: TextEditorLine,
     public editor: any
   ) {
-
   }
 
   get encodedValue() {
@@ -26,9 +27,12 @@ export default class Token {
     return this._value;
   }
 
-  set value(value) {
-    this._value = value;
+  updateValue(value) {
+    if (this._value == value) return Promise.reject("no change");
+    if (this._updated) return Promise.reject("already updated");
+    this._updated = true;
     this.editor.splice(this.position, this.length, value);
+    return Promise.resolve();
   }
 
   toString() {

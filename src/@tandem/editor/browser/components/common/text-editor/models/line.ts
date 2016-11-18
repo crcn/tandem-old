@@ -1,10 +1,10 @@
-import Token from "./token";
+import { TextEditorToken } from "./token";
 import TextEditor from "./text-editor";
 import calcPosition from "./calc-position";
 
-export default class Line {
+export default class TextEditorLine {
 
-  public tokens: Array<Token> = [];
+  public tokens: Array<TextEditorToken> = [];
   public length: number  = 0;
 
   constructor(readonly editor: TextEditor) {
@@ -12,7 +12,7 @@ export default class Line {
 
   addRawToken(token) {
     this.length += token.length;
-    this.tokens.push(new Token(token.type, token.value, token.length, this, this.editor));
+    this.tokens.push(new TextEditorToken(token.type, token.value, token.length, this, this.editor));
   }
 
   calculateWidth() {

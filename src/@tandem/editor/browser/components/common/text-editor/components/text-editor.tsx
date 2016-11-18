@@ -64,6 +64,7 @@ export class TextEditorComponent extends React.Component<ITextEditorComponentPro
       if (this.props.onChange) {
         this.props.onChange(message.source);
       }
+      this.forceUpdate();
     }
   }
 
@@ -72,8 +73,8 @@ export class TextEditorComponent extends React.Component<ITextEditorComponentPro
   }
 
   private _resetEditor(props) {
-    this._editor.source    = props.value;
     this._editor.tokenizer = props.tokenizer || stringTokenizer;
+    this._editor.source    = props.value;
     this._editor.style     = Object.assign({}, this._editor.style || {}, props.style);
   }
 

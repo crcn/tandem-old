@@ -1,5 +1,5 @@
-import Line from "./line";
-import Token from "./token";
+import TextEditorLine from "./line";
+import { TextEditorToken } from "./token";
 import Caret from "./caret";
 import Marker from "./marker";
 import TextRuler from "./text-ruler";
@@ -12,7 +12,7 @@ import { BrokerBus, BubbleDispatcher } from "@tandem/common/dispatchers";
 
 class TextEditor extends Observable {
 
-  public lines: Array<Line>;
+  public lines: Array<TextEditorLine>;
   public textRuler: TextRuler;
   public marker: Marker;
   public caret: Caret;
@@ -118,7 +118,7 @@ class TextEditor extends Observable {
     return maxWidth;
   }
 
-  getTokenFromPosition(position: number): Token {
+  getTokenFromPosition(position: number): TextEditorToken {
 
     const cell = this.getCellFromPosition(position);
     const line = this.lines[cell.row];
@@ -147,7 +147,7 @@ class TextEditor extends Observable {
     const addLine = () => {
       // do not add another line if there is no token stuff
       if (cline && !cline.length) return cline;
-      cline = new Line(this);
+      cline = new TextEditorLine(this);
       lines.push(cline);
       return cline;
     };
@@ -213,8 +213,9 @@ class TextEditor extends Observable {
     this.lines = lines;
   }
 
-  private onStyleChange(newStyle: any) {
+  private onStyleChange(newStyle: any, oldStyle: any) {
     this.textRuler.style = newStyle;
+    if (oldStyle.wordWrap === newStyle.wordWrap) return;
     this._reset();
   }
 

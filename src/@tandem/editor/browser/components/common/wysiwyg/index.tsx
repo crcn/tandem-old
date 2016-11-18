@@ -131,7 +131,7 @@ class WYSIWYGEditor extends React.Component<any, any> {
     return <TextEditorComponent
       ref="editor"
       {...this.props}
-      source={value}
+      value={value}
       tokenizer={htmlTokenizer}
       onChange={this.onChange.bind(this)}
       onKeyDown={this.onKeyDown.bind(this)} />;

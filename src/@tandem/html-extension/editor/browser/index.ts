@@ -1,6 +1,6 @@
-import { Injector, CommandFactoryProvider } from "@tandem/common";
 import { keyBindingProvider } from "./key-bindings";
 import { createHTMLCoreProviders } from "../../core";
+import { Injector, CommandFactoryProvider } from "@tandem/common";
 import { textToolProvider, editInnerHTMLProvider } from "./models";
 
 import {
@@ -9,8 +9,11 @@ import {
   SyntheticHTMLElement,
 } from "@tandem/synthetic-browser";
 
+import { CSSTokenTypes } from "@tandem/html-extension/tokenizers";
+
 import {
   SelectionChangeEvent,
+  TokenComponentFactoryProvider,
   FooterComponentFactoryProvider,
   StageToolComponentFactoryProvider,
   LayerLabelComponentFactoryProvider,
@@ -29,6 +32,10 @@ import {
 } from "@tandem/html-extension/synthetic";
 
 import {
+  NumberTokenInput,
+  ColorTokenInput,
+  UnitTokenInput,
+  ReferenceTokenInput,
   LayersPaneComponent,
   HTMLStylePaneComponent,
   TextLayerLabelComponent,
@@ -44,7 +51,6 @@ export function createHTMLEditorBrowserProviders() {
   return new Injector(
 
     createHTMLCoreProviders(),
-
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, ExpandSelectedCommand),
 
     // layer components
@@ -63,6 +69,13 @@ export function createHTMLEditorBrowserProviders() {
 
     // stage tool components
     new StageToolComponentFactoryProvider("elementInfo", "pointer", ElementInfoStageToolComponent),
+
+    // mini text editor token inputs
+    new TokenComponentFactoryProvider(CSSTokenTypes.COLOR, ColorTokenInput),
+    new TokenComponentFactoryProvider(CSSTokenTypes.UNIT, UnitTokenInput),
+    new TokenComponentFactoryProvider(CSSTokenTypes.DEGREE, ColorTokenInput),
+    new TokenComponentFactoryProvider(CSSTokenTypes.NUMBER, NumberTokenInput),
+    new TokenComponentFactoryProvider(CSSTokenTypes.REFERENCE, ReferenceTokenInput),
 
     // tools
     textToolProvider,

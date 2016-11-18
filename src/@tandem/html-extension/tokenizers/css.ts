@@ -8,6 +8,9 @@ import { TokenTypes } from "@tandem/common";
 export namespace CSSTokenTypes {
   export const COLOR = "color";
   export const REFERENCE = "reference";
+  export const UNIT = "unit";
+  export const NUMBER = "number";
+  export const DEGREE = "number";
 }
 
 const tokenMap = {
@@ -18,7 +21,6 @@ const tokenMap = {
   ",": TokenTypes.COMMA,
   "white": CSSTokenTypes.COLOR
 };
-
 
 export class CSSTokenizer {
   tokenize(source) {
@@ -39,17 +41,13 @@ export class CSSTokenizer {
 
     while (!scanner.hasTerminated()) {
 
-      const num = scanner.scan(/^((\.\d+)|(\d)+(\.\d+)?)/);
+      const num = scanner.scan(/^-?((\.\d+)|(\d)+(\.\d+)?)/);
 
       if (num) {
-        if (scanner.scan(/^deg/)) {
-          tokens.push(new Token(num, "degree"));
-        } else {
-          tokens.push(new Token(num, "number"));
-          // http://www.w3schools.com/cssref/css_units.asp
-          addToken(/^(em|ex|%|px|cm|mm|in|pt|pc|ch|rem|vh|vw|vmin|vmax)/, "unit");
-        }
-        continue;
+        tokens.push(new Token(num, CSSTokenTypes.NUMBER));
+        // http://www.w3schools.com/cssref/css_units.asp
+        addToken(/^deg/, CSSTokenTypes.DEGREE);
+        addToken(/^(em|ex|%|px|cm|mm|in|pt|pc|ch|rem|vh|vw|vmin|vmax)/, CSSTokenTypes.UNIT);
       }
 
       if (addToken(/^\#\w{1,6}/, CSSTokenTypes.COLOR)) continue;

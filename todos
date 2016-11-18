@@ -9,6 +9,7 @@ IMMEDIATE
 
 Start working on UX around getting started with Tandem and projects.
 
+- [ ] need to debounce edits
 - [ ] UIKit
 - [ ] create tdm file in ~/.tandem if it doesn't exist
 - [ ] "Open current file in tandem" if not already started

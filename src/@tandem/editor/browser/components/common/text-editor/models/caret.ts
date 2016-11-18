@@ -1,6 +1,6 @@
 import TextEditor from "./text-editor";
 import Marker from "./marker";
-import Line from "./line";
+import TextEditorLine from "./line";
 
 class Caret {
 
@@ -74,7 +74,7 @@ class Caret {
     this.setPosition(nline === cline ? Infinity * delta : nline.position + (this.position - cline.position));
   }
 
-  _getLine(shift: number = 0): Line {
+  _getLine(shift: number = 0): TextEditorLine {
     return this.editor.lines[
       Math.max(0, Math.min(this.editor.lines.length - 1, this.getCell().row + shift))
     ];
