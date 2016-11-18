@@ -13,7 +13,7 @@ class TokenComponent extends React.Component<{ token: Token, editor: TextEditor,
 
     const props: any = {};
 
-    const tokenFactory = TokenComponentFactoryProvider.find(token.type, injector);
+    const tokenFactory = injector && TokenComponentFactoryProvider.find(token.type, injector);
 
     if (tokenFactory) {
       props.children = tokenFactory.create(this.props);

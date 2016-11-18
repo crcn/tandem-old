@@ -103,7 +103,7 @@ export class Logger {
 
     text = stringify(text);
 
-    const paramCount = (String(text).match(/\b%\w\b/g) || []).length;
+    const paramCount = (String(text).match(/%(d|s)/g) || []).length;
     const sprintfParams = params.slice(0, paramCount);
     const restParams    = params.slice(paramCount);
 

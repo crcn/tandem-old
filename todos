@@ -9,7 +9,9 @@ IMMEDIATE
 
 Start working on UX around getting started with Tandem and projects.
 
-- UIKit
+- [ ] UIKit
+- [ ] create tdm file in ~/.tandem if it doesn't exist
+- [ ] "Open current file in tandem" if not already started
 
 FEATURES
 
@@ -40,6 +42,9 @@ LAUNCHING
 TESTING
   - [ ] TodoMVC examples
   - [ ] actually build apps
+
+PROMO
+  - [ ] try online
 
 ----------------------------------
 STABILITY
@@ -96,6 +101,7 @@ SOCIAL
   - *[ ] possibly attach messages to commits
   - *[ ] enable people to comment on components (necessary for feedback)
 
+
 CSS PANE
   - [ ] toggle styles on and off
   - [ ] force states
@@ -127,4 +133,3 @@ ARTBOARD PANE
 
 BROWSERTAP INTEGRATION
   - [ ] rendering engine adapter for synthetic browsers to support IE, chrome, and other browsers
-

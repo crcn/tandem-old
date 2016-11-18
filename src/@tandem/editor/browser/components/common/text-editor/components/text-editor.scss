@@ -15,6 +15,8 @@
   position: relative;
   // background-color: rgba(0,0,0,0.05);
   display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
 
   cursor: text;
   -webkit-user-select: none;

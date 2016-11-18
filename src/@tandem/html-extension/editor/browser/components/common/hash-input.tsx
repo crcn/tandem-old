@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FocusComponent } from "@tandem/editor/browser/components/common";
+import { FocusComponent, TextEditorComponent } from "@tandem/editor/browser/components/common";
 
 export interface IKeyValueItem {
   name: string;
@@ -88,11 +88,13 @@ export class KeyValueInputComponent extends React.Component<IKeyValueInputCompon
   render() {
     const { className, style } = this.props;
     const { name, value, readonly, overriden } = this.item;
+
+    // <input type="text" className="col-5" {...(this.state.currentValue != null ? {} : { value: value })}  disabled={readonly} onKeyDown={this.onValueKeyDown} onChange={this.onValueChange} onFocus={this.onValueFocus} onBlur={this.onValueBlur} style={{textDecoration: overriden ? "line-through" : undefined}} ></input>
     return <div style={style} className={["row font-regular", className].join(" ")}>
       <div className="col-5 no-wrap dim" title={name} onDoubleClick={!readonly && this.editName}>
         { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name }
       </div>
-      <input type="text" className="col-5" {...(this.state.currentValue != null ? {} : { value: value })}  disabled={readonly} onKeyDown={this.onValueKeyDown} onChange={this.onValueChange} onFocus={this.onValueFocus} onBlur={this.onValueBlur} style={{textDecoration: overriden ? "line-through" : undefined}} ></input>
+      <TextEditorComponent className="col-5" value={this.state.currentValue || value} injector={null} style={{textDecoration: overriden ? "line-through" : undefined}} />
     </div>
   }
 }

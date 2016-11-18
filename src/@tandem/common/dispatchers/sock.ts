@@ -2,7 +2,9 @@ import * as net from "net";
 import { ISerializer } from "@tandem/common";
 import { IDispatcher, IMessageTester, IBus, RemoteBus, RemoteBusMessageTester, DuplexStream, TransformStream } from "@tandem/mesh";
 
-const PAYLOAD_BOUNDARY = "___payload end___";
+// Important that the boundary is computed is to prevent the case where the boundary is part of the payload. This
+// has happened with Tandem since the app is used to build itself.
+const PAYLOAD_BOUNDARY = `___${"payload end"}___`;
 
 export interface ISockBusOptions {
   family: string;

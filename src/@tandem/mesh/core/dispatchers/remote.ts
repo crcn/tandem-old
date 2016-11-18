@@ -226,6 +226,7 @@ export class RemoteBus<T> implements IBus<T>, IMessageTester<T> {
 
   private onMessage(data: any[]) {
     const message = RemoteBusMessage.deserialize(data, this._serializer);
+    // TODO - check if origin is coming from self. Need to update tests for this
     if (message.type === RemoteBusMessage.DISPATCH) {
       this.onDispatch(message);
     } else if (message.type === RemoteBusMessage.RESPONSE) {

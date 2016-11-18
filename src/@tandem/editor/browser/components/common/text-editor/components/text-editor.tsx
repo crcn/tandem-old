@@ -7,15 +7,27 @@ import CaretComponent from "./caret";
 import {
   BrokerBus,
   startDrag,
-  ITokenizer,
   Injector,
+  ITokenizer,
   stringTokenizer,
   translateAbsoluteToRelativePoint
 } from "@tandem/common";
 import { IDispatcher } from "@tandem/mesh";
 import HighlightComponent from "./highlight";
 
-export class TextEditorComponent extends React.Component<{ onKeyDown?: Function, onFocus?: Function, onChange?: Function, onBlur?: Function, style?: Object, className?: string, source: string, injector: Injector, tokenizer: ITokenizer }, any> implements IDispatcher<any, any> {
+export interface ITextEditorComponentProps {
+  value: string;
+  injector: Injector;
+  onFocus?: Function;
+  onKeyDown?: Function;
+  onChange?: Function;
+  onBlur?: Function;
+  style?: Object;
+  className?: string;
+  tokenizer?: ITokenizer
+}
+
+export class TextEditorComponent extends React.Component<ITextEditorComponentProps, any> implements IDispatcher<any, any> {
 
   readonly bus: BrokerBus;
   private _timer: any;
@@ -60,13 +72,14 @@ export class TextEditorComponent extends React.Component<{ onKeyDown?: Function,
   }
 
   private _resetEditor(props) {
-    this._editor.source    = props.source;
+    this._editor.source    = props.value;
     this._editor.tokenizer = props.tokenizer || stringTokenizer;
     this._editor.style     = Object.assign({}, this._editor.style || {}, props.style);
   }
 
   componentDidMount() {
-    const style = window.getComputedStyle((this.refs as any).editor);
+    const style = process.env.SANDBOXED ? {} as any : window.getComputedStyle((this.refs as any).editor);
+
     this._editor.style = Object.assign({}, this._editor.style, {
       fontSize      : style.fontSize,
       fontFamily    : style.fontFamily,
@@ -93,7 +106,7 @@ export class TextEditorComponent extends React.Component<{ onKeyDown?: Function,
   }
 
   shouldComponentUpdate(props, state) {
-    return this.props.source !== props.source || this.state.idle !== state.idle || this.state.focus !== state.focus;
+    return this.props.value !== props.value || this.state.idle !== state.idle || this.state.focus !== state.focus;
   }
 
   onKeyCommand(event) {

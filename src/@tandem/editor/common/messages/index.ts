@@ -97,7 +97,8 @@ export class GetServerPortRequest extends Action {
   }
 }
 
-@addMessageVisitor(EditorFamilyType.MASTER)
+
+@addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamilyType.BROWSER)
 @setMessageTarget(EditorFamilyType.TEXT_EDITOR)
 @serializable({
   serialize({ filePath, selection }: OpenFileRequest) {

@@ -240,7 +240,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     client.bus.register({
         dispatch({ filePath, selection, type }: OpenFileRequest) {
-
+            console.log(type);
             if (type === OpenFileRequest.OPEN_FILE) {
 
                 // quick fix for resolving relative files - this will break in the future.
