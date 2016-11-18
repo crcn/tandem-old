@@ -138,10 +138,10 @@ export class KeyCommandAction extends Action {
   }
 }
 
-export class RemoveSelectionAction extends Action {
+export class RemoveSelectionRequest extends Action {
   static readonly REMOVE_SELECTION = "removeSelection";
   constructor() {
-    super(RemoveSelectionAction.REMOVE_SELECTION);
+    super(RemoveSelectionRequest.REMOVE_SELECTION);
   }
 }
 

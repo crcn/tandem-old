@@ -13,18 +13,18 @@ import {
 } from "@tandem/synthetic-browser";
 import {
   Dependency,
-  EditAction,
+  EditChange,
   IContentEdit,
   BaseContentEdit,
-  InsertChildEditAction,
-  RemoveChildEditAction,
-  MoveChildEditAction,
+  InsertChildEditChange,
+  RemoveChildEditChange,
+  MoveChildEditChange,
   ISyntheticObject,
   ISyntheticObjectChild,
   ISyntheticSourceInfo,
   BaseContentEditor,
   SetValueEditActon,
-  SetKeyValueEditAction,
+  SetKeyValueEditChange,
 } from "@tandem/sandbox";
 
 // TODO - move this to synthetic-browser
@@ -40,19 +40,19 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     node.selector = newValue;
   }
 
-  [SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child }: RemoveChildEditAction) {
+  [SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child }: RemoveChildEditChange) {
     const childNode = this.findTargetASTNode(node, <syntheticCSSRuleType>child);
     childNode.parent.removeChild(childNode);
   }
 
-  [SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, newIndex }: MoveChildEditAction) {
+  [SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, newIndex }: MoveChildEditChange) {
     const childNode = this.findTargetASTNode(node, <syntheticCSSRuleType>child);
     const parent = childNode.parent;
     parent.removeChild(childNode);
     parent.insertBefore(node.nodes[newIndex], childNode);
   }
 
-  [SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, index }: InsertChildEditAction) {
+  [SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, index }: InsertChildEditChange) {
 
     let newChild = <syntheticCSSRuleType>child;
     const newChildNode = {
@@ -96,7 +96,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     }
   }
 
-  [SyntheticCSSStyleRuleEdit.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName, newIndex }: SetKeyValueEditAction) {
+  [SyntheticCSSStyleRuleEdit.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName, newIndex }: SetKeyValueEditChange) {
     const source = target.source;
 
     let found: boolean;

@@ -38,7 +38,7 @@ describe(__filename + "#", () => {
       const bnode = document.createElement("div") as SyntheticHTMLElement;
       bnode.innerHTML = newSource as string;
       const edit  = anode.createEdit().fromDiff(bnode);
-      expect(edit.actions.map(action => action.type)).to.eql(actionNames);
+      expect(edit.changes.map(action => action.type)).to.eql(actionNames);
       edit.applyActionsTo(anode);
       expect(anode.innerHTML).to.equal(newSource);
     });
@@ -66,12 +66,12 @@ describe(__filename + "#", () => {
       a.appendChild(generateRandomSyntheticHTMLElement(document, 8, 4, 5));
       b.appendChild(generateRandomSyntheticHTMLElement(document, 8, 4, 5));
       a.createEdit().fromDiff(b).applyActionsTo(a);
-      const actions = a.createEdit().fromDiff(b).actions;
-      expect(actions.length).to.equal(0, `
+      const changes = a.createEdit().fromDiff(b).changes;
+      expect(changes.length).to.equal(0, `
 
         ${chalk.magenta(a.innerHTML)} -> ${chalk.green(b.innerHTML)}
 
-        Trying to apply edit actions from node that should be identical: ${actions.map(action => action.type)}
+        Trying to apply edit.changes from node that should be identical: ${changes.map(action => action.type)}
       `);
     }
   });

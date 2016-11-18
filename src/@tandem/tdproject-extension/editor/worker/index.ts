@@ -8,7 +8,7 @@ import { MarkupMimeTypeXMLNSProvider, SyntheticDOMElementClassProvider, Syntheti
 export const createTDProjectEditorWorkerProviders = () => {
   return [
     ...createTDProjectCoreProviders(),
-    new FileImporterProvider("tdproject", (target) => target && (<SyntheticDOMElement>target).nodeName === "tandem", TDRootFileImporter)
+    new FileImporterProvider("tdproject", (request) => request.targetObject && (<SyntheticDOMElement>request.targetObject).nodeName === "tandem", TDRootFileImporter)
   ];
 }
 

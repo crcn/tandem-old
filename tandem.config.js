@@ -3,8 +3,7 @@ const fs   = require('fs');
 const stripIndent = require('strip-indent');
 
 module.exports = {
-  projectFile: './index.tdm',
-
+  workspaceFiles: "./index.tdm",
   fileHandlers: [
     {
       test: /tsx$/,

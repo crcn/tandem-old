@@ -6,15 +6,15 @@ import { diffArray, ITreeWalker, findTreeNode, Action } from "@tandem/common";
 import { getSelectorTester, ISelectorTester, querySelector, querySelectorAll } from "../selector";
 import { SyntheticDOMElement } from "./element";
 import {
-  EditAction,
+  EditChange,
   IContentEdit,
   ISyntheticObject,
   BaseContentEdit,
-  RemoveEditAction,
-  MoveChildEditAction,
-  RemoveChildEditAction,
-  SetKeyValueEditAction,
-  InsertChildEditAction,
+  RemoveEditChange,
+  MoveChildEditChange,
+  RemoveChildEditChange,
+  SetKeyValueEditChange,
+  InsertChildEditChange,
 } from "@tandem/sandbox";
 
 export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends SyntheticDOMNodeEdit<T> {
@@ -27,15 +27,15 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
 
     // Clone child here to freeze it from any changes. It WILL be cloned again, but that's also important to ensure
     // that this edit can be applied to multiple targets.
-    return this.addAction(new InsertChildEditAction(SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT, this.target, newChild.cloneNode(true), index));
+    return this.addChange(new InsertChildEditChange(SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT, this.target, newChild.cloneNode(true), index));
   }
 
   removeChild(child: SyntheticDOMNode) {
-    return this.addAction(new RemoveChildEditAction(SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT, this.target, child));
+    return this.addChange(new RemoveChildEditChange(SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT, this.target, child));
   }
 
   moveChild(child: SyntheticDOMNode, newIndex: number) {
-    return this.addAction(new MoveChildEditAction(SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT, this.target, child, newIndex));
+    return this.addChange(new MoveChildEditChange(SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT, this.target, child, newIndex));
   }
 
   appendChild(newChild: SyntheticDOMNode) {
@@ -43,7 +43,7 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
   }
 
   remove() {
-    return this.addAction(new RemoveEditAction(this.target));
+    return this.addChange(new RemoveEditChange(this.target));
   }
 
   protected addDiff(newContainer: SyntheticDOMContainer) {
@@ -108,24 +108,24 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
     return querySelectorAll(this, selector);
   }
 
-  applyEditAction(action: EditAction) {
+  applyEditChange(action: EditChange) {
 
     // TODO: Should probably use action.applyTo(this.children) instead of this stuff below
     switch(action.type) {
       case SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT:
-        const removeAction = <InsertChildEditAction>action;
+        const removeAction = <InsertChildEditChange>action;
         this.removeChild(removeAction.findChild(this.childNodes) as SyntheticDOMNode);
       break;
       case SyntheticDOMNodeEdit.SET_SYNTHETIC_SOURCE_EDIT:
-        (<SetKeyValueEditAction>action).applyTo(this);
+        (<SetKeyValueEditChange>action).applyTo(this);
       break;
       case SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT:
-        const moveAction = <MoveChildEditAction>action;
+        const moveAction = <MoveChildEditChange>action;
 
         this.insertChildAt(moveAction.findChild(this.childNodes) as SyntheticDOMNode, moveAction.newIndex);
       break;
       case SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT:
-        const insertAction = <InsertChildEditAction>action;
+        const insertAction = <InsertChildEditChange>action;
 
         // Clone again to ensure that the child can be re-added to multiple targets.
         this.insertChildAt(insertAction.child.clone(true) as SyntheticDOMNode, insertAction.index);

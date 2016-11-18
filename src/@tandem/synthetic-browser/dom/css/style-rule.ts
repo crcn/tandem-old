@@ -1,7 +1,7 @@
 import { Dependency } from "@tandem/sandbox";
 import { SyntheticDOMElement, getSelectorTester } from "@tandem/synthetic-browser";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
-import { BaseContentEdit, EditAction, SetKeyValueEditAction, SetValueEditActon } from "@tandem/sandbox";
+import { BaseContentEdit, EditChange, SetKeyValueEditChange, SetValueEditActon } from "@tandem/sandbox";
 import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration, isValidCSSDeclarationProperty } from "./declaration";
 import { Action, serializable, serialize, deserialize, ISerializer, ISerializedContent, diffArray, ITreeWalker, ArrayDiff } from "@tandem/common";
 
@@ -29,11 +29,11 @@ export class SyntheticCSSStyleRuleEdit extends SyntheticCSSObjectEdit<SyntheticC
   static readonly SET_RULE_SELECTOR = "setRuleSelector";
 
   setSelector(selector: string) {
-    return this.addAction(new SetValueEditActon(SyntheticCSSStyleRuleEdit.SET_DECLARATION, this.target, selector));
+    return this.addChange(new SetValueEditActon(SyntheticCSSStyleRuleEdit.SET_DECLARATION, this.target, selector));
   }
 
   setDeclaration(name: string, value: string, oldName?: string, index?: number) {
-    return this.addAction(new SetKeyValueEditAction(SyntheticCSSStyleRuleEdit.SET_DECLARATION, this.target, name, value, oldName, index));
+    return this.addChange(new SetKeyValueEditChange(SyntheticCSSStyleRuleEdit.SET_DECLARATION, this.target, name, value, oldName, index));
   }
 
   addDiff(newRule: SyntheticCSSStyleRule) {
@@ -92,11 +92,11 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
     return `${this.selector} {\n${this.style.cssText}}\n`;
   }
 
-  applyEditAction(action: EditAction) {
+  applyEditChange(action: EditChange) {
     if (action.type === SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
-      (<SetKeyValueEditAction>action).applyTo(this);
+      (<SetKeyValueEditChange>action).applyTo(this);
     } else if (action.type === SyntheticCSSStyleRuleEdit.SET_DECLARATION) {
-      const { name, newValue, oldName } = <SetKeyValueEditAction>action;
+      const { name, newValue, oldName } = <SetKeyValueEditChange>action;
       this.style.setProperty(name, newValue, undefined, oldName);
     } else {
       console.error(`Cannot apply ${action.type}`);

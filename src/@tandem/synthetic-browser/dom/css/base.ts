@@ -3,12 +3,12 @@ import { SyntheticCSSStyleSheet } from "./style-sheet";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser/dom";
 import {
   IEditable,
-  EditAction,
+  EditChange,
   BaseContentEdit,
   SyntheticObjectEdit,
   ISyntheticObject,
   ISyntheticSourceInfo,
-  SetKeyValueEditAction,
+  SetKeyValueEditChange,
   generateSyntheticUID,
   syntheticSourceInfoEquals,
   SyntheticObjectSerializer,
@@ -63,9 +63,9 @@ export abstract class SyntheticCSSObject implements ISyntheticObject, IEditable 
 
   protected abstract cloneShallow();
   abstract createEdit(): BaseContentEdit<SyntheticCSSObject>;
-  applyEditAction(action: EditAction) {
+  applyEditChange(action: EditChange) {
     if (action.type === SyntheticObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
-      (<SetKeyValueEditAction>action).applyTo(this);
+      (<SetKeyValueEditChange>action).applyTo(this);
     }
   }
   abstract visitWalker(walker: ITreeWalker);

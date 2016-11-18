@@ -24,7 +24,7 @@ export class ImportFileCommand implements ICommand {
 
     this.logger.info(`Importing ${request.filePath}`);
 
-    const importerProvider = FileImporterProvider.findByDropTarget(request.targetObject, this._injector);
+    const importerProvider = FileImporterProvider.findByDropTarget(request, this._injector);
 
     if (!importerProvider) {
       throw new Error(`File type supported.`);

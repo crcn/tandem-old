@@ -1,5 +1,5 @@
 import { SyntheticCSSStyleRule } from "./style-rule";
-import { BaseContentEdit, EditAction } from "@tandem/sandbox";
+import { BaseContentEdit, EditChange } from "@tandem/sandbox";
 import { SyntheticCSSAtRule } from "./atrule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
@@ -60,7 +60,7 @@ export class SyntheticCSSFontFace extends SyntheticCSSAtRule {
     return this.cssText === target.cssText ? 0 : -1;
   }
 
-  applyEditAction(action: EditAction) {
+  applyEditChange(action: EditChange) {
     console.warn(`Cannot currently edit ${this.constructor.name}`);
   }
 

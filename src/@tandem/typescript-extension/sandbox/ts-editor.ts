@@ -2,10 +2,10 @@ import * as ts from "typescript";
 import {
   BaseContentEditor,
   ISyntheticObject,
-  MoveChildEditAction,
-  RemoveChildEditAction,
-  InsertChildEditAction,
-  SetKeyValueEditAction,
+  MoveChildEditChange,
+  RemoveChildEditChange,
+  InsertChildEditChange,
+  SetKeyValueEditChange,
 } from "@tandem/sandbox";
 
 import {
@@ -26,7 +26,7 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
 
   private _replacements: ITSReplacement[] = [];
 
-  [SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT](target: ts.JsxElement, action: MoveChildEditAction) {
+  [SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT](target: ts.JsxElement, action: MoveChildEditChange) {
     const child = this.findTargetASTNode(target, action.child as SyntheticDOMNode);
     this._replacements.push({
       start: child.getStart(),
@@ -41,7 +41,7 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
     });
   }
 
-  [SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT](target: ts.JsxElement, action: RemoveChildEditAction) {
+  [SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT](target: ts.JsxElement, action: RemoveChildEditChange) {
     const child = this.findTargetASTNode(target, action.child as SyntheticDOMNode);
     this._replacements.push({
       start: child.getStart(),
@@ -50,7 +50,7 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
     });
   }
 
-  [SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT](target: ts.JsxElement | ts.JsxSelfClosingElement, action: InsertChildEditAction) {
+  [SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT](target: ts.JsxElement | ts.JsxSelfClosingElement, action: InsertChildEditChange) {
 
     if (target.kind === ts.SyntaxKind.JsxSelfClosingElement) {
       const jsxElement = <ts.JsxSelfClosingElement>target;
@@ -79,7 +79,7 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
     }
   }
 
-  [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT](target: ts.JsxElement | ts.JsxSelfClosingElement, action: SetKeyValueEditAction) {
+  [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT](target: ts.JsxElement | ts.JsxSelfClosingElement, action: SetKeyValueEditChange) {
 
     function alternativeName(name) {
       return {

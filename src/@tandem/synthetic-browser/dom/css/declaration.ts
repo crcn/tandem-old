@@ -4,7 +4,7 @@ import { kebabCase, camelCase } from "lodash";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser/dom";
 import { CSSDeclarationValueChangeEvent } from "@tandem/synthetic-browser/messages";
 import { ISerializable, Action, serializable, diffArray, ITreeWalker } from "@tandem/common";
-import { SetKeyValueEditAction, IContentEdit, ApplicableEditAction, ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
+import { SetKeyValueEditChange, IContentEdit, ApplicableEditChange, ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration { }
 

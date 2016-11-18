@@ -51,7 +51,7 @@ const edit = fakeDocument.body.createEdit().appendChild(fakeDocument.createTextN
 
 // the synthetic object edit maintains a reference back to the source file -- where it patches changes --
 // file:///path/to/local/file.html in this case.
-FileEditorProvider.getInstance(deps).applyEditActions(...edit.actions);
+FileEditorProvider.getInstance(deps).applyEditChanges(...edit.changes);
 ```
 
 Diffing & patching synthetic objects example:
@@ -70,7 +70,7 @@ documentClone.body.innerHTML = `Hello Again!`;
 const edit = document.createEdit().fromDiff(documentClone);
 
 // apply the edit to the original document
-new SyntheticObjectEditor(document).applyEditActions(...edit.actions);
+new SyntheticObjectEditor(document).applyEditChanges(...edit.changes);
 
 // this also works
 // edit.applyActionsTo(document);

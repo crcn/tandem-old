@@ -26,7 +26,7 @@ import { BaseApplicationService } from "@tandem/core/services";
 import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
 import {
   Dependency,
-  EditAction,
+  EditChange,
   BaseContentEdit,
   DependencyGraph,
   SyntheticObjectEditor,
@@ -108,9 +108,9 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       this.status = new Status(Status.COMPLETED);
     } else if (action.type === RemoteBrowserDocumentMessage.DOCUMENT_DIFF) {
       const { data } = <RemoteBrowserDocumentMessage>action;
-      const actions: EditAction[] = data;
-      this.logger.debug("Received document diffs: >>", actions.map(action => action.type).join(", "));
-      this._documentEditor.applyEditActions(...actions);
+      const changes: EditChange[] = data;
+      this.logger.debug("Received document diffs: >>", changes.map(action => action.type).join(", "));
+      this._documentEditor.applyEditChanges(...changes);
       this.status = new Status(Status.COMPLETED);
     }
 
@@ -145,9 +145,9 @@ export class RemoteBrowserService extends BaseApplicationService {
 
       const logger = this.logger.createChild(`${action.options.url} `);
 
-      const changeWatcher = new SyntheticObjectChangeWatcher<SyntheticDocument>(async (actions: EditAction[]) => {
-        logger.info("Sending diffs: <<", actions.map(action => action.type).join(", "));
-        await writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.DOCUMENT_DIFF, actions)) });
+      const changeWatcher = new SyntheticObjectChangeWatcher<SyntheticDocument>(async (changes: EditChange[]) => {
+        logger.info("Sending diffs: <<", changes.map(action => action.type).join(", "));
+        await writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.DOCUMENT_DIFF, changes)) });
       }, (clone: SyntheticDocument) => {
         logger.info("Sending <<new document");
         writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.NEW_DOCUMENT, clone)) });

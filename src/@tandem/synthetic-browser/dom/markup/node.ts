@@ -9,7 +9,7 @@ import {
   Dependency,
   IEditable,
   IDiffable,
-  EditAction,
+  EditChange,
   SandboxModule,
   SyntheticObjectEdit,
   ISyntheticObject,
@@ -276,7 +276,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   protected abstract cloneShallow();
   abstract createEdit(): BaseContentEdit<any>;
-  abstract applyEditAction(action: EditAction);
+  abstract applyEditChange(action: EditChange);
 }
 
 export abstract class AttachableSyntheticDOMNode<T extends Node> extends SyntheticDOMNode {

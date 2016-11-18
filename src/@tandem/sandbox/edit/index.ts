@@ -28,12 +28,12 @@ export type contentEditorType = { new(filePath: string, content: string): IEdito
 
 
 export interface IEditor {
-  applyEditActions(...actions: EditAction[]): any;
+  applyEditChanges(...changes: EditChange[]): any;
 }
 
 export interface IEditable {
   createEdit(): IContentEdit;
-  applyEditAction(action: EditAction): any;
+  applyEditChange(change: EditChange): any;
 }
 
 export interface IDiffable {
@@ -54,8 +54,8 @@ export abstract class BaseContentEditor<T> implements IEditor {
   }
 
   // add filePath and content in constructor here instead
-  applyEditActions(...actions: EditAction[]): any {
-    for (const action of actions) {
+  applyEditChanges(...changes: EditChange[]): any {
+    for (const action of changes) {
       const method = this[action.type];
       if (method) {
         const targetASTNode = this.findTargetASTNode(this._rootASTNode, action.target);
@@ -77,23 +77,23 @@ export abstract class BaseContentEditor<T> implements IEditor {
 }
 
 @serializable({
-  serialize({ type, target }: EditAction) {
+  serialize({ type, target }: EditChange) {
     return {
       type: type,
       target: serialize(target.clone())
     };
   },
-  deserialize({ type, target }, injector): EditAction {
-    return new EditAction(
+  deserialize({ type, target }, injector): EditChange {
+    return new EditChange(
       type,
       deserialize(target, injector)
     );
   }
 })
-export class EditAction extends Action {
+export class EditChange extends Action {
   readonly target: ISyntheticObject;
-  constructor(actionType: string, target: ISyntheticObject) {
-    super(actionType);
+  constructor(type: string, target: ISyntheticObject) {
+    super(type);
     this.currentTarget = target;
   }
   toString() {
@@ -112,11 +112,11 @@ export interface ISyntheticObjectChild {
   clone(deep?: boolean);
 }
 
-export abstract class ApplicableEditAction extends EditAction {
+export abstract class ApplicableEditChange extends EditChange {
   abstract applyTo(target: any);
 }
 
-export abstract class ChildEditAction extends ApplicableEditAction {
+export abstract class ChildEditChange extends ApplicableEditChange {
   constructor(type: string, target: ISyntheticObject, readonly child: ISyntheticObjectChild) {
     super(type, target);
   }
@@ -135,7 +135,7 @@ export abstract class ChildEditAction extends ApplicableEditAction {
 }
 
 @serializable({
-  serialize({ type, target, child, index }: InsertChildEditAction) {
+  serialize({ type, target, child, index }: InsertChildEditChange) {
     return {
       type: type,
       target: serialize(target.clone()),
@@ -143,8 +143,8 @@ export abstract class ChildEditAction extends ApplicableEditAction {
       index: index
     };
   },
-  deserialize({ type, target, child, index }, injector): InsertChildEditAction {
-    return new InsertChildEditAction(
+  deserialize({ type, target, child, index }, injector): InsertChildEditChange {
+    return new InsertChildEditChange(
       type,
       deserialize(target, injector),
       deserialize(child, injector),
@@ -152,9 +152,9 @@ export abstract class ChildEditAction extends ApplicableEditAction {
     );
   }
 })
-export class InsertChildEditAction extends ChildEditAction {
-  constructor(actionType: string, target: ISyntheticObject, child: ISyntheticObjectChild, readonly index: number = Infinity) {
-    super(actionType, target, child);
+export class InsertChildEditChange extends ChildEditChange {
+  constructor(type: string, target: ISyntheticObject, child: ISyntheticObjectChild, readonly index: number = Infinity) {
+    super(type, target, child);
   }
   applyTo(collection: ISyntheticObjectChild[]) {
 
@@ -167,24 +167,24 @@ export class InsertChildEditAction extends ChildEditAction {
 }
 
 @serializable({
-  serialize({ type, target, child }: RemoveChildEditAction) {
+  serialize({ type, target, child }: RemoveChildEditChange) {
     return {
       type: type,
       target: serialize(target.clone()),
       child: serialize(child.clone())
     };
   },
-  deserialize({ type, target, child, newIndex }, injector): RemoveChildEditAction {
-    return new RemoveChildEditAction(
+  deserialize({ type, target, child, newIndex }, injector): RemoveChildEditChange {
+    return new RemoveChildEditChange(
       type,
       deserialize(target, injector),
       deserialize(child, injector)
     );
   }
 })
-export class RemoveChildEditAction extends ChildEditAction {
-  constructor(actionType: string, target: ISyntheticObject, child: ISyntheticObjectChild) {
-    super(actionType, target, child);
+export class RemoveChildEditChange extends ChildEditChange {
+  constructor(type: string, target: ISyntheticObject, child: ISyntheticObjectChild) {
+    super(type, target, child);
   }
   applyTo(collection: ISyntheticObjectChild[]) {
     const foundIndex = this.findChildIndex(collection);
@@ -194,7 +194,7 @@ export class RemoveChildEditAction extends ChildEditAction {
 }
 
 @serializable({
-  serialize({ type, target, child, newIndex }: MoveChildEditAction) {
+  serialize({ type, target, child, newIndex }: MoveChildEditChange) {
     return {
       type: type,
       target: serialize(target.clone()),
@@ -202,8 +202,8 @@ export class RemoveChildEditAction extends ChildEditAction {
       newIndex: newIndex
     };
   },
-  deserialize({ type, target, child, newIndex }, injector): MoveChildEditAction {
-    return new MoveChildEditAction(
+  deserialize({ type, target, child, newIndex }, injector): MoveChildEditChange {
+    return new MoveChildEditChange(
       type,
       deserialize(target, injector),
       deserialize(child, injector),
@@ -211,9 +211,9 @@ export class RemoveChildEditAction extends ChildEditAction {
     );
   }
 })
-export class MoveChildEditAction extends ChildEditAction {
-  constructor(actionType: string, target: ISyntheticObject, child: ISyntheticObjectChild, readonly newIndex: number) {
-    super(actionType, target, child);
+export class MoveChildEditChange extends ChildEditChange {
+  constructor(type: string, target: ISyntheticObject, child: ISyntheticObjectChild, readonly newIndex: number) {
+    super(type, target, child);
   }
 
   applyTo(collection: ISyntheticObjectChild[]) {
@@ -227,7 +227,7 @@ export class MoveChildEditAction extends ChildEditAction {
 }
 
 @serializable({
-  serialize({ type, target, name, newValue, oldName, newIndex }: SetKeyValueEditAction) {
+  serialize({ type, target, name, newValue, oldName, newIndex }: SetKeyValueEditChange) {
     return {
       type: type,
       target: serialize(target.clone()),
@@ -237,8 +237,8 @@ export class MoveChildEditAction extends ChildEditAction {
       newIndex: newIndex
     };
   },
-  deserialize({ type, target, name, newValue, oldName, newIndex }, injector): SetKeyValueEditAction {
-    return new SetKeyValueEditAction(
+  deserialize({ type, target, name, newValue, oldName, newIndex }, injector): SetKeyValueEditChange {
+    return new SetKeyValueEditChange(
       type,
       deserialize(target, injector),
       name,
@@ -248,9 +248,9 @@ export class MoveChildEditAction extends ChildEditAction {
     );
   }
 })
-export class SetKeyValueEditAction extends ApplicableEditAction {
-  constructor(actionType: string, target: ISyntheticObject, public  name: string, public newValue: any, public oldName?: string, public newIndex?: number) {
-    super(actionType, target);
+export class SetKeyValueEditChange extends ApplicableEditChange {
+  constructor(type: string, target: ISyntheticObject, public  name: string, public newValue: any, public oldName?: string, public newIndex?: number) {
+    super(type, target);
   }
   applyTo(target: ISyntheticObject) {
     target[this.name] = this.newValue;
@@ -276,7 +276,7 @@ export class SetKeyValueEditAction extends ApplicableEditAction {
     );
   }
 })
-export class SetValueEditActon extends EditAction {
+export class SetValueEditActon extends EditChange {
   constructor(type: string, target: ISyntheticObject, public newValue: any) {
     super(type, target);
   }
@@ -289,24 +289,24 @@ export class SetValueEditActon extends EditAction {
  * Removes the target synthetic object
  */
 
-export class RemoveEditAction extends EditAction {
+export class RemoveEditChange extends EditChange {
   static readonly REMOVE_EDIT = "removeEdit";
   constructor(target: ISyntheticObject) {
-    super(RemoveEditAction.REMOVE_EDIT, target);
+    super(RemoveEditChange.REMOVE_EDIT, target);
   }
 }
 
 export interface IContentEdit {
-  readonly actions: EditAction[];
+  readonly changes: EditChange[];
 }
 
 export abstract class BaseContentEdit<T extends ISyntheticObject> {
 
-  private _actions: EditAction[];
+  private _changes: EditChange[];
   private _locked: boolean;
 
   constructor(readonly target: T) {
-    this._actions = [];
+    this._changes = [];
   }
 
   /**
@@ -322,22 +322,22 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
     return this._locked;
   }
 
-  get actions(): EditAction[] {
-    return this._actions;
+  get changes(): EditChange[] {
+    return this._changes;
   }
 
   /**
-   * Applies all edit actions against the target synthetic object.
+   * Applies all edit.changes against the target synthetic object.
    *
    * @param {(T & IEditable)} target the target to apply the edits to
    */
 
-  public applyActionsTo(target: T & IEditable, each?: (T, action: EditAction) => void) {
+  public applyActionsTo(target: T & IEditable, each?: (T, action: EditChange) => void) {
 
     // need to setup an editor here since some actions may be intented for
     // children of the target object
     const editor = new SyntheticObjectEditor(target, each);
-    editor.applyEditActions(...this.actions);
+    editor.applyEditChanges(...this.changes);
   }
 
   /**
@@ -359,21 +359,21 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
 
   protected abstract addDiff(newSynthetic: T): BaseContentEdit<T>;
 
-  protected addAction<T extends EditAction>(action: T) {
+  protected addChange<T extends EditChange>(action: T) {
 
     // locked to prevent other actions busting this edit.
     if (this._locked) {
       throw new Error(`Cannot modify a locked edit.`);
     }
 
-    this._actions.push(action);
+    this._changes.push(action);
 
     // return the action so that it can be edited
     return action;
   }
 
   protected addChildEdit(edit: IContentEdit) {
-    this._actions.push(...edit.actions);
+    this._changes.push(...edit.changes);
     return this;
   }
 
@@ -385,7 +385,7 @@ export class FileEditor {
   protected readonly logger: Logger;
 
   private _editing: boolean;
-  private _editActions: EditAction[];
+  private _changes: EditChange[];
   private _shouldEditAgain: boolean;
 
   private _promise: Promise<any>;
@@ -396,14 +396,14 @@ export class FileEditor {
   @inject(FileSystemProvider.ID)
   private _fileSystem: IFileSystem;
 
-  applyEditActions(...actions: EditAction[]): Promise<any> {
+  applyEditChanges(...changes: EditChange[]): Promise<any> {
 
-    if (this._editActions == null) {
+    if (this._changes == null) {
       this._shouldEditAgain = true;
-      this._editActions = [];
+      this._changes = [];
     }
 
-    this._editActions.push(...actions);
+    this._changes.push(...changes);
 
     return this._promise || (this._promise = new Promise((resolve, reject) => {
       setImmediate(() => {
@@ -415,15 +415,15 @@ export class FileEditor {
 
   private async run(): Promise<any> {
     this._shouldEditAgain = false;
-    const actions = this._editActions;
-    this._editActions = undefined;
+    const changes = this._changes;
+    this._changes = undefined;
 
-    const actionsByFilePath = {};
+    const changesByFilePath = {};
 
     // find all actions that are part of the same file and
     // batch them together. Important to ensure that we do not trigger multiple
     // unecessary updates to any file listeners.
-    for (const action of actions) {
+    for (const action of changes) {
       const target = action.target;
 
       // This may happen if edits are being applied to synthetic objects that
@@ -437,13 +437,13 @@ export class FileEditor {
 
       const targetFilePath = await ProtocolURLResolverProvider.resolve(targetSource.filePath, this._injector);
 
-      const filePathActions: EditAction[] = actionsByFilePath[targetFilePath] || (actionsByFilePath[targetFilePath] = []);
+      const filePathActions: EditChange[] = changesByFilePath[targetFilePath] || (changesByFilePath[targetFilePath] = []);
       filePathActions.push(action);
     }
 
     const promises = [];
 
-    for (const filePath in actionsByFilePath) {
+    for (const filePath in changesByFilePath) {
       const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(MimeTypeProvider.lookup(filePath, this._injector), this._injector);
 
       if (!contentEditorFactoryProvider) {
@@ -459,10 +459,10 @@ export class FileEditor {
       try {
         const contentEditor = contentEditorFactoryProvider.create(filePath, oldContent);
 
-        const actions = actionsByFilePath[filePath];
-        this.logger.info(`Applying file edit actions ${filePath}: >>`, actions.map(action => action.type).join(" "));
+        const changes = changesByFilePath[filePath];
+        this.logger.info(`Applying file edit.changes ${filePath}: >>`, changes.map(action => action.type).join(" "));
 
-        const newContent    = contentEditor.applyEditActions(...actions);
+        const newContent    = contentEditor.applyEditChanges(...changes);
 
         // This may trigger if the editor does special formatting to the content with no
         // actual edits. May need to have a result come from the content editors themselves to check if anything's changed.
@@ -478,7 +478,7 @@ export class FileEditor {
           this.logger.debug(`No changes to ${filePath}`);
         }
       } catch(e) {
-        this.logger.error(`Error trying to apply ${actions.map(action => action.type).join(", ")} file edit to ${filePath}: ${e.stack}`);
+        this.logger.error(`Error trying to apply ${changes.map(action => action.type).join(", ")} file edit to ${filePath}: ${e.stack}`);
       }
     }
 
@@ -493,8 +493,8 @@ export class FileEditor {
 
 export class SyntheticObjectEditor {
 
-  constructor(readonly root: ISyntheticObject, private _each?: (target: IEditable, action: EditAction) => void) { }
-  applyEditActions(...actions: EditAction[]) {
+  constructor(readonly root: ISyntheticObject, private _each?: (target: IEditable, change: EditChange) => void) { }
+  applyEditChanges(...changes: EditChange[]) {
 
     const allSyntheticObjects = {};
 
@@ -502,24 +502,24 @@ export class SyntheticObjectEditor {
       allSyntheticObjects[child.uid] = child;
     });
 
-    for (let i = 0, n = actions.length; i < n; i++) {
-      const action = actions[i];
+    for (let i = 0, n = changes.length; i < n; i++) {
+      const change = changes[i];
 
-      // Assuming that all edit actions being applied to synthetics are editable. Otherwise
+      // Assuming that all edit.changes being applied to synthetics are editable. Otherwise
       // they shouldn't be dispatched.
-      const target = allSyntheticObjects[action.target.uid] as IEditable;
+      const target = allSyntheticObjects[change.target.uid] as IEditable;
 
       if (!target) {
-        throw new Error(`Edit action ${action.type} target ${action.target.uid} not found.`);
+        throw new Error(`Edit change ${change.type} target ${change.target.uid} not found.`);
       }
 
       try {
-        target.applyEditAction(action);
+        target.applyEditChange(change);
 
         // each is useful particularly for debugging diff algorithms. See tests.
-        if (this._each) this._each(target, action);
+        if (this._each) this._each(target, change);
       } catch(e) {
-        throw new Error(`Error trying to apply edit ${action.type} to ${action.target.toString()}: ${e.stack}`);
+        throw new Error(`Error trying to apply edit ${change.type} to ${change.target.toString()}: ${e.stack}`);
       }
     }
   }
@@ -535,7 +535,7 @@ export class SyntheticObjectChangeWatcher<T extends ISyntheticObject & IEditable
   private _target: T
   private _targetObserver: IDispatcher<any, any>;
 
-  constructor(private onChange: (actions: EditAction[]) => any, private onClone: (clone: T) => any, private filterAction?: (action: Action) => boolean) {
+  constructor(private onChange: (changes: EditChange[]) => any, private onClone: (clone: T) => any, private filterAction?: (action: Action) => boolean) {
     this._targetObserver = new CallbackDispatcher(this.onTargetAction.bind(this));
   }
 
@@ -580,8 +580,8 @@ export class SyntheticObjectChangeWatcher<T extends ISyntheticObject & IEditable
 
   private diff() {
     const edit = (<BaseContentEdit<any>>this._clone.createEdit()).fromDiff(this._target);
-    if (edit.actions.length) {
-      this.onChange(edit.actions);
+    if (edit.changes.length) {
+      this.onChange(edit.changes);
       edit.applyActionsTo(this._clone);
     }
   }
@@ -591,7 +591,7 @@ export abstract class SyntheticObjectEdit<T extends ISyntheticObject> extends Ba
   static readonly SET_SYNTHETIC_SOURCE_EDIT = "setSyntheticSourceEdit";
 
   setSource(source: ISyntheticSourceInfo) {
-    this.addAction(new SetKeyValueEditAction(SyntheticObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, this.target, "$source", source));
+    this.addChange(new SetKeyValueEditChange(SyntheticObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, this.target, "$source", source));
   }
 
   protected addDiff(from: T) {

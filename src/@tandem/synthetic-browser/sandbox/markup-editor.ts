@@ -1,12 +1,12 @@
 import { sourcePositionEquals } from "@tandem/common";
 
 import {
-  RemoveEditAction,
+  RemoveEditChange,
   SetValueEditActon,
   BaseContentEditor,
-  MoveChildEditAction,
-  SetKeyValueEditAction,
-  InsertChildEditAction,
+  MoveChildEditChange,
+  SetKeyValueEditChange,
+  InsertChildEditChange,
 } from "@tandem/sandbox";
 
 import {
@@ -28,7 +28,7 @@ import {
 
 export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
 
-  [RemoveEditAction.REMOVE_EDIT](node: MarkupNodeExpression, { target }: RemoveEditAction) {
+  [RemoveEditChange.REMOVE_EDIT](node: MarkupNodeExpression, { target }: RemoveEditChange) {
     node.parent.removeChild(node);
   }
 
@@ -36,7 +36,7 @@ export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
     node.nodeValue = newValue;
   }
 
-  [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT](node: MarkupElementExpression, { target, name, newValue, oldName, newIndex }: SetKeyValueEditAction) {
+  [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT](node: MarkupElementExpression, { target, name, newValue, oldName, newIndex }: SetKeyValueEditChange) {
 
     const syntheticElement = <SyntheticHTMLElement>target;
     if (newValue == null) {
@@ -50,17 +50,17 @@ export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
     }
   }
 
-  [SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: InsertChildEditAction) {
+  [SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: InsertChildEditChange) {
     const childExpression = parseMarkup((<SyntheticDOMNode>child).toString());
     node.childNodes.splice(index, 0, childExpression);
   }
 
-  [SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: InsertChildEditAction) {
+  [SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: InsertChildEditChange) {
     const childNode = this.findTargetASTNode(node, child as SyntheticDOMNode) as MarkupNodeExpression;
     node.childNodes.splice(node.childNodes.indexOf(childNode), 1);
   }
 
-  [SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, newIndex }: MoveChildEditAction) {
+  [SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, newIndex }: MoveChildEditChange) {
     const childNode = this.findTargetASTNode(node, child as SyntheticDOMNode) as MarkupNodeExpression;
     node.childNodes.splice(node.childNodes.indexOf(childNode), 1);
     node.childNodes.splice(newIndex, 0, childNode);

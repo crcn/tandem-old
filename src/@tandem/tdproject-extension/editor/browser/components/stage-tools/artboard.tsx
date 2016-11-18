@@ -5,20 +5,20 @@ import * as AutosizeInput from "react-input-autosize";
 import { Status } from "@tandem/common/status";
 import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
 import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
-import { ApplyFileEditRequest, SetKeyValueEditAction } from "@tandem/sandbox";
+import { ApplyFileEditRequest, SetKeyValueEditChange } from "@tandem/sandbox";
 import { Workspace, SelectRequest, StatusComponent } from "@tandem/editor/browser";
 import { SyntheticHTMLElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
 
 export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: SyntheticTDArtboardElement, workspace: Workspace }, {
   edit: SyntheticDOMElementEdit,
-  titleEditAction: SetKeyValueEditAction
+  titleEditChange: SetKeyValueEditChange
 }> {
 
   $didInject() {
     super.$didInject();
     this.state = {
       edit: undefined,
-      titleEditAction: undefined
+      titleEditChange: undefined
     };
   }
 
@@ -30,7 +30,7 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
 
     this.setState({
       edit: edit,
-      titleEditAction: edit.setAttribute("title", this.props.artboard.getAttribute("title"))
+      titleEditChange: edit.setAttribute("title", this.props.artboard.getAttribute("title"))
     });
 
     // rAF since the input may not be available immediately
@@ -40,7 +40,7 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
   }
 
   onTitleChange = (event) => {
-    this.state.titleEditAction.newValue = event.target.value;
+    this.state.titleEditChange.newValue = event.target.value;
     this.forceUpdate();
   }
 
@@ -55,12 +55,12 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
     // the change immediately
     this.state.edit.applyActionsTo(artboard);
 
-    await this.bus.dispatch(new ApplyFileEditRequest(this.state.edit.actions));
+    await this.bus.dispatch(new ApplyFileEditRequest(this.state.edit.changes));
     this.doneEditing();
   }
 
   doneEditing = () => {
-    this.setState({ titleEditAction: undefined, edit: undefined });
+    this.setState({ titleEditChange: undefined, edit: undefined });
   }
 
   selectEntity = (event: React.MouseEvent<any>) => {
@@ -102,7 +102,7 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
 
     return <div className="m-tdartboard-stage-tool--item" style={style}>
       <div className="m-tdartboard-stage-tool--item--title" onClick={this.selectEntity} onDoubleClick={this.editTitle} style={titleStyle}>
-        { this.state.titleEditAction ? <AutosizeInput ref="input" value={this.state.titleEditAction.newValue} onChange={this.onTitleChange} onBlur={this.cancelEdit} onKeyDown={this.onKeyDown} /> : <span>{artboard.title || "Untitled"}</span> }
+        { this.state.titleEditChange ? <AutosizeInput ref="input" value={this.state.titleEditChange.newValue} onChange={this.onTitleChange} onBlur={this.cancelEdit} onKeyDown={this.onKeyDown} /> : <span>{artboard.title || "Untitled"}</span> }
         <StatusComponent status={artboard.status} />
       </div>
     </div>;

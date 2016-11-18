@@ -62,7 +62,7 @@ describe(__filename + "#", () => {
       });
       expect(removeWhitespace(a.cssText)).to.equal(removeWhitespace(b.cssText));
       if (changeActions) {
-        expect(edit.actions.map(action => action.type)).to.eql(changeActions);
+        expect(edit.changes.map(action => action.type)).to.eql(changeActions);
       }
     });
   });
@@ -86,14 +86,14 @@ describe(__filename + "#", () => {
       const pp = prev.clone(true);
       prev.createEdit().fromDiff(curr).applyActionsTo(prev);
 
-      const editActions = prev.createEdit().fromDiff(curr).actions;
-      expect(editActions.length).to.equal(0, `
+      const changes = prev.createEdit().fromDiff(curr).changes;
+      expect(changes.length).to.equal(0, `
 
         Couldn't properly patch ${chalk.grey(removeWhitespace(pp.cssText))} -> ${chalk.green(removeWhitespace(prev.cssText))} ->
         ${chalk.magenta(removeWhitespace(curr.cssText))}
 
 
-        Trying to apply edit actions from a stylesheet that should be identical: ${editActions.map(action => action.type)}
+        Trying to apply edit.changes from a stylesheet that should be identical: ${changes.map(action => action.type)}
       `);
     }
   });

@@ -13,7 +13,7 @@ export interface IPreviewConfig {
   }
 }
 
-// TODO - accept DND for preview files
+// TODO - open new workspace if dnd file is .tdm mime type
 export class TDRootFileImporter implements IFileImporter {
 
   @inject(InjectorProvider.ID)
@@ -69,7 +69,7 @@ export class TDRootFileImporter implements IFileImporter {
     const edit = element.createEdit();
     edit.appendChild(artboard);
 
-    this._bus.dispatch(new ApplyFileEditRequest(edit.actions, true));
+    this._bus.dispatch(new ApplyFileEditRequest(edit.changes, true));
   }
 
 }

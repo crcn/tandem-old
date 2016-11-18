@@ -9,7 +9,7 @@ export interface IFileImporter {
 
 export class FileImporterProvider extends ClassFactoryProvider {
   static readonly NS = "fileImporters";
-  constructor(readonly name: string, readonly test: (dropTarget: ISyntheticObject) => boolean, readonly importerClass: { new(): IFileImporter }) {
+  constructor(readonly name: string, readonly test: (request: ImportFileRequest) => boolean, readonly importerClass: { new(): IFileImporter }) {
     super(FileImporterProvider.getId(name), importerClass);
   }
   static getId(name: string) {
@@ -22,9 +22,9 @@ export class FileImporterProvider extends ClassFactoryProvider {
     return new FileImporterProvider(this.name, this.test, this.importerClass);
   }
 
-  static findByDropTarget(dropTarget: ISyntheticObject, injector: Injector) {
+  static findByDropTarget(request: ImportFileRequest, injector: Injector) {
     const importers = injector.queryAll<FileImporterProvider>(this.getId("**"));
-    const importer = importers.find(importer => importer.test(dropTarget));
+    const importer = importers.find(importer => importer.test(request));
     return importer;
   }
 }

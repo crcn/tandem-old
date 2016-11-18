@@ -22,7 +22,7 @@ export class SyntheticCSSCharset extends  SyntheticCSSObject {
   countShallowDiffs(charset: SyntheticCSSCharset) {
     return charset.value === this.value ? 0 : -1;
   }
-  applyEditAction(action) {
+  applyEditChange(action) {
     // do nothing
   }
   createEdit() {

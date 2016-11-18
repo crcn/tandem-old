@@ -30,13 +30,13 @@ import {
 
 import { Dependency } from "@tandem/sandbox";
 import {
-  EditAction,
+  EditChange,
   BaseContentEdit,
   SetValueEditActon,
   ISyntheticObjectChild,
-  MoveChildEditAction,
-  InsertChildEditAction,
-  SetKeyValueEditAction,
+  MoveChildEditChange,
+  InsertChildEditChange,
+  SetKeyValueEditChange,
 } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticDOMAttribute {
@@ -157,7 +157,7 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
 }
 
 
-export class AttachShadowRootEditAction extends EditAction {
+export class AttachShadowRootEditChange extends EditChange {
   static readonly SET_ELEMENT_TAG_NAME_EDIT = "setElementTagNameEdit";
   constructor(type: string, target: SyntheticDOMElement, readonly newName: string) {
     super(type, target);
@@ -170,7 +170,7 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
   static readonly ATTACH_SHADOW_ROOT_EDIT    = "attachShadowRootEdit";
 
   setAttribute(name: string, value: string, oldName?: string, newIndex?: number) {
-    return this.addAction(new SetKeyValueEditAction(SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT, this.target, name, value, oldName, newIndex));
+    return this.addChange(new SetKeyValueEditChange(SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT, this.target, name, value, oldName, newIndex));
   }
 
   removeAttribute(name: string) {
@@ -178,7 +178,7 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
   }
 
   attachShadowRoot(shadowRoot: SyntheticDOMContainer) {
-    this.addAction(new InsertChildEditAction(SyntheticDOMElementEdit.ATTACH_SHADOW_ROOT_EDIT, this.target, shadowRoot, Infinity));
+    this.addChange(new InsertChildEditChange(SyntheticDOMElementEdit.ATTACH_SHADOW_ROOT_EDIT, this.target, shadowRoot, Infinity));
   }
 
   /**
@@ -264,10 +264,10 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     return new SyntheticDOMElementEdit(this);
   }
 
-  applyEditAction(action: EditAction) {
-    super.applyEditAction(action);
+  applyEditChange(action: EditChange) {
+    super.applyEditChange(action);
     if (action.type === SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT) {
-      const { name, oldName, newValue } = <SetKeyValueEditAction>action;
+      const { name, oldName, newValue } = <SetKeyValueEditChange>action;
       if (newValue == null) {
         this.removeAttribute(name);
       } else {
@@ -275,7 +275,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
       }
       if (oldName) this.removeAttribute(oldName);
     } else if (action.type === SyntheticDOMElementEdit.ATTACH_SHADOW_ROOT_EDIT) {
-      const { child } = <InsertChildEditAction>action;
+      const { child } = <InsertChildEditChange>action;
       const shadowRoot = <SyntheticDOMContainer>child;
 
       // need to clone in case the child is an instance in this process -- hasn't

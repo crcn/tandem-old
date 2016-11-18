@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as assert from "assert";
 import { PROJECT_CONFIG_FILE_NAME } from "../constants";
-import { Store, ProjectConfig, ProjectFileHandler } from "../models";
+import { ProjectConfig, ProjectFileHandler } from "../models";
 import { inject, ICommand, loggable, Logger, InjectorProvider, Injector } from "@tandem/common";
 import { PreviewLoaderProvider, IFileImporter, ImportFileRequest, IFilePreviewLoader, IPreviewLoaderResult } from "@tandem/editor/worker";
 import { FileSystemProvider, FileResolverProvider, IFileSystem, IFileResolver, IDependencyLoader, DependencyGraphStrategyOptionsProvider } from "@tandem/sandbox";

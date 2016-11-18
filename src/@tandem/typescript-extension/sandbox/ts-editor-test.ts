@@ -106,8 +106,8 @@ describe(__filename + "#", () => {
       const { element, editor, fileCache, entryFilePath, reloadElement } = await loadJSX(oldSource);
       const newElementResult = await loadJSX(newSource);
       const edit = element.createEdit().fromDiff(newElementResult.element);
-      expect(edit.actions.length).not.to.equal(0);
-      editor.applyEditActions(...edit.actions);
+      expect(edit.changes.length).not.to.equal(0);
+      editor.applyEditChanges(...edit.changes);
       expect((await reloadElement()).outerHTML).to.equal(newElementResult.element.outerHTML);
     });
   });

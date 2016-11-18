@@ -14,18 +14,18 @@ import {
 } from "@tandem/synthetic-browser";
 import {
   Dependency,
-  EditAction,
+  EditChange,
   IContentEdit,
   BaseContentEdit,
-  InsertChildEditAction,
-  RemoveChildEditAction,
-  MoveChildEditAction,
+  InsertChildEditChange,
+  RemoveChildEditChange,
+  MoveChildEditChange,
   ISyntheticObject,
   ISyntheticObjectChild,
   ISyntheticSourceInfo,
   BaseContentEditor,
   SetValueEditActon,
-  SetKeyValueEditAction,
+  SetKeyValueEditChange,
 } from "@tandem/sandbox";
 
 // TODO - move this to synthetic-browser

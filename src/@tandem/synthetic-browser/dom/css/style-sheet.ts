@@ -22,12 +22,12 @@ import { syntheticCSSRuleType, diffStyleSheetRules } from "./utils";
 
 import {
   Dependency,
-  EditAction,
+  EditChange,
   BaseContentEdit,
-  MoveChildEditAction,
-  RemoveChildEditAction,
-  ApplicableEditAction,
-  InsertChildEditAction,
+  MoveChildEditChange,
+  RemoveChildEditChange,
+  ApplicableEditChange,
+  InsertChildEditChange,
 } from "@tandem/sandbox";
 
 
@@ -53,15 +53,15 @@ export class SyntheticCSSStyleSheetEdit extends SyntheticCSSObjectEdit<Synthetic
   static readonly REMOVE_STYLE_SHEET_RULE_EDIT = "removeStyleSheetRuleEdit";
 
   insertRule(rule: syntheticCSSRuleType, index: number) {
-    return this.addAction(new InsertChildEditAction(SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
+    return this.addChange(new InsertChildEditChange(SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
   }
 
   moveRule(rule: syntheticCSSRuleType, index: number) {
-    return this.addAction(new MoveChildEditAction(SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
+    return this.addChange(new MoveChildEditChange(SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
   }
 
   removeRule(rule: syntheticCSSRuleType) {
-    return this.addAction(new RemoveChildEditAction(SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT, this.target, rule));
+    return this.addChange(new RemoveChildEditChange(SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT, this.target, rule));
   }
 
   protected addDiff(newStyleSheet: SyntheticCSSStyleSheet) {
@@ -138,7 +138,7 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
     return new SyntheticCSSStyleSheet([]);
   }
 
-  applyEditAction(action: ApplicableEditAction) {
+  applyEditChange(action: ApplicableEditChange) {
     action.applyTo({
       [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]: this,
       [SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT]: this.rules,

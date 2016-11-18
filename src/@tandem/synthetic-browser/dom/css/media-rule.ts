@@ -4,14 +4,14 @@ import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdi
 import { ISerializer, serialize, deserialize, serializable, ISerializedContent, ITreeWalker } from "@tandem/common";
 
 import {
-  EditAction,
+  EditChange,
   BaseContentEdit,
-  ChildEditAction,
-  MoveChildEditAction,
-  ApplicableEditAction,
-  SetKeyValueEditAction,
-  InsertChildEditAction,
-  RemoveChildEditAction,
+  ChildEditChange,
+  MoveChildEditChange,
+  ApplicableEditChange,
+  SetKeyValueEditChange,
+  InsertChildEditChange,
+  RemoveChildEditChange,
 } from "@tandem/sandbox";
 import { SyntheticCSSAtRule, SyntheticCSSAtRuleEdit } from "./atrule";
 
@@ -37,7 +37,7 @@ export class SyntheticCSSMediaRuleEdit extends SyntheticCSSAtRuleEdit<SyntheticC
   static readonly SET_MEDIA_EDIT       = "setMediaEdit";
 
   setMedia(value: string[]) {
-    return this.addAction(new SetKeyValueEditAction(SyntheticCSSMediaRuleEdit.SET_MEDIA_EDIT, this.target, "media", value));
+    return this.addChange(new SetKeyValueEditChange(SyntheticCSSMediaRuleEdit.SET_MEDIA_EDIT, this.target, "media", value));
   }
 
   addDiff(newMediaRule: SyntheticCSSMediaRule) {
@@ -70,10 +70,10 @@ export class SyntheticCSSMediaRule extends SyntheticCSSAtRule {
     return new SyntheticCSSMediaRule(this.media.concat(), []);
   }
 
-  getEditActionTargets() {
+  getEditChangeTargets() {
     return Object.assign({
       [SyntheticCSSMediaRuleEdit.SET_MEDIA_EDIT]: this as SyntheticCSSAtRule,
-    }, super.getEditActionTargets());
+    }, super.getEditChangeTargets());
   }
 
   createEdit() {

@@ -5,14 +5,14 @@ import { SyntheticCSSStyleSheetEdit } from "./style-sheet";
 import { ISerializer, serialize, deserialize, serializable, ISerializedContent, ITreeWalker } from "@tandem/common";
 
 import {
-  EditAction,
+  EditChange,
   BaseContentEdit,
-  ChildEditAction,
-  MoveChildEditAction,
-  ApplicableEditAction,
-  SetKeyValueEditAction,
-  InsertChildEditAction,
-  RemoveChildEditAction,
+  ChildEditChange,
+  MoveChildEditChange,
+  ApplicableEditChange,
+  SetKeyValueEditChange,
+  InsertChildEditChange,
+  RemoveChildEditChange,
 } from "@tandem/sandbox";
 
 import {diffStyleSheetRules } from "./utils";
@@ -25,15 +25,15 @@ export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends Synthe
   static readonly REMOVE_CSS_RULE_EDIT = SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT;
 
   insertRule(rule: SyntheticCSSStyleRule, index: number) {
-    return this.addAction(new InsertChildEditAction(SyntheticCSSAtRuleEdit.INSERT_CSS_RULE_EDIT, this.target, rule, index));
+    return this.addChange(new InsertChildEditChange(SyntheticCSSAtRuleEdit.INSERT_CSS_RULE_EDIT, this.target, rule, index));
   }
 
   moveRule(rule: SyntheticCSSStyleRule, index: number) {
-    return this.addAction(new MoveChildEditAction(SyntheticCSSAtRuleEdit.MOVE_CSS_RULE_EDIT, this.target, rule, index));
+    return this.addChange(new MoveChildEditChange(SyntheticCSSAtRuleEdit.MOVE_CSS_RULE_EDIT, this.target, rule, index));
   }
 
   removeRule(rule: SyntheticCSSStyleRule) {
-    return this.addAction(new RemoveChildEditAction(SyntheticCSSAtRuleEdit.REMOVE_CSS_RULE_EDIT, this.target, rule));
+    return this.addChange(new RemoveChildEditChange(SyntheticCSSAtRuleEdit.REMOVE_CSS_RULE_EDIT, this.target, rule));
   }
 
   addDiff(atRule: T) {
@@ -84,11 +84,11 @@ export abstract class SyntheticCSSAtRule extends SyntheticCSSObject {
     return this.params === target.params ? 0 : -1;
   }
 
-  applyEditAction(action: ApplicableEditAction) {
-    action.applyTo(this.getEditActionTargets()[action.type]);
+  applyEditChange(action: ApplicableEditChange) {
+    action.applyTo(this.getEditChangeTargets()[action.type]);
   }
 
-  protected getEditActionTargets() {
+  protected getEditChangeTargets() {
     return {
       [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]: this as SyntheticCSSAtRule,
       [SyntheticCSSAtRuleEdit.REMOVE_CSS_RULE_EDIT]: this.cssRules,

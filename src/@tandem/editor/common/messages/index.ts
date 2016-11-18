@@ -3,21 +3,21 @@ import { RemoteBrowserDocumentMessage, OpenRemoteBrowserRequest } from "@tandem/
 import { Action, serializable, ISourceLocation, DSUpsertRequest, PostDSMessage, serialize, deserialize, BoundingRect } from "@tandem/common";
 
 import {
-  EditAction,
+  EditChange,
   SandboxAction,
   FileCacheAction,
   ReadFileRequest,
-  ChildEditAction,
+  ChildEditChange,
   WatchFileRequest,
   DependencyAction,
   ISyntheticObject,
-  RemoveEditAction,
+  RemoveEditChange,
   ResolveFileRequest,
   ApplyFileEditRequest,
-  MoveChildEditAction,
+  MoveChildEditChange,
   ReadDirectoryRequest,
   SandboxModuleAction,
-  ApplicableEditAction
+  ApplicableEditChange
 } from "@tandem/sandbox";
 
 import { 
