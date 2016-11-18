@@ -1,7 +1,6 @@
 
-import { CallbackDispatcher } from "@tandem/mesh";
 import { debounce } from "lodash";
-import { DocumentFileAction } from "@tandem/editor/browser/messages";
+import { CallbackDispatcher } from "@tandem/mesh";
 import {
   File,
   IPoint,

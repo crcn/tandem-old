@@ -76,7 +76,6 @@ export class SelectRequest extends Action {
 }
 
 export class SelectionChangeEvent extends Action {
-
   static readonly SELECTION_CHANGE = "selectionChange";
   constructor(readonly items: any[] = []) {
     super(SelectionChangeEvent.SELECTION_CHANGE);
@@ -124,10 +123,10 @@ export class SetToolRequest extends Action {
   }
 }
 
-export class KeyCommandAction extends Action {
+export class KeyCommandEvent extends Action {
   static readonly KEY_COMMAND = "keyCommand";
   constructor(readonly combo: string) {
-    super(KeyCommandAction.KEY_COMMAND);
+    super(KeyCommandEvent.KEY_COMMAND);
   }
 }
 
@@ -135,14 +134,6 @@ export class RemoveSelectionRequest extends Action {
   static readonly REMOVE_SELECTION = "removeSelection";
   constructor() {
     super(RemoveSelectionRequest.REMOVE_SELECTION);
-  }
-}
-
-
-export class DocumentFileAction extends Action {
-  static readonly LOADED = "loaded";
-  constructor(readonly type: string) {
-    super(type);
   }
 }
 

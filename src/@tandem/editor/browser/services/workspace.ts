@@ -22,7 +22,7 @@ import { CoreApplicationService } from "@tandem/core";
 import { GetPrimaryProjectFilePathRequest } from "@tandem/editor/common/messages";
 import { ApplyFileEditRequest, FileEditorProvider } from "@tandem/sandbox";
 import { WorkspaceToolFactoryProvider, StoreProvider } from "@tandem/editor/browser/providers";
-import { SetToolRequest, ZoomRequest, SetZoomRequest, DocumentFileAction } from "@tandem/editor/browser/messages";
+import { SetToolRequest, ZoomRequest, SetZoomRequest } from "@tandem/editor/browser/messages";
 
 import {
   File,

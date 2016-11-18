@@ -16,7 +16,6 @@ Start working on UX around getting started with Tandem and projects.
 FEATURES
 
 - [ ] auto scan for tdm files
-- [ ]
 - [ ] scan package.json and auto-install extensions
 - [ ] open unsaved files in vscode
 - [ ] enable <script /> tags.
