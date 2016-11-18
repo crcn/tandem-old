@@ -302,6 +302,7 @@ export class TextEditorComponent extends React.Component<ITextEditorComponentPro
     while ((i + 1) * lh < top) i++;
 
     const line = this._editor.lines[i];
+    if (!line) return;
     const column = tr.convertPointToCharacterPosition(line.toString(), left);
 
     return line.position + column;

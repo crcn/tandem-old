@@ -24,7 +24,7 @@ export class EditorComponent extends BaseApplicationComponent<{}, {}> {
         <RegisteredComponent workspace={workspace} ns={DocumentPaneComponentFactoryProvider.getId("**")} />
       </GutterComponent>
       <CenterComponent />
-      <GutterComponent className="right" style={{width:350, display: selection.length  ? "block" : "none" }}>
+      <GutterComponent className="right" style={{width:350, display: this._store.settings.get(SettingKeys.HIDE_RIGHT_SIDEBAR)  ? "block" : "none" }}>
         <RegisteredComponent workspace={workspace} ns={EntityPaneComponentFactoryProvider.getId("**")} />
       </GutterComponent>
     </div>;

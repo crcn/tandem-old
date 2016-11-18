@@ -6,9 +6,16 @@ import { TextEditorToken, AltInputComponent,  } from "@tandem/editor/browser";
 
 export class ColorTokenInput extends React.Component<{ token: TextEditorToken }, any> {
 
-  onChange = (value) => {
-    console.log(value.toString(), value)
-    this.props.token.updateValue(value.hex.toUpperCase()).catch((e) => {})
+  onChange = ({ rgb, hex }) => {
+    let newValue;
+
+    if (rgb.a !== 1) {
+      newValue = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${rgb.a})`;
+    } else {
+      newValue = hex.toUpperCase();
+    }
+
+    this.props.token.updateValue(newValue).catch((e) => {})
   }
 
   render() {
@@ -18,7 +25,7 @@ export class ColorTokenInput extends React.Component<{ token: TextEditorToken },
     const style = {
       color: tinyColor(value).isLight() ? "black" : "white",
       background: value,
-      borderRadius: 2,
+      borderRadius: 2
     };
 
     const getAlt = () => ({
@@ -46,10 +53,15 @@ export class PopdownComponent extends React.Component<{ renderPopdown(): any }, 
   showPopdown = () => {
     this.setState({ showPopdown: true });
   }
+
+  onMouseDown = (event: React.MouseEvent<any>) => {
+    event.nativeEvent.stopImmediatePropagation();
+  }
+
   render() {
     return <span onClick={this.showPopdown}>
       { this.props.children }
-      { this.state.showPopdown ? <span className="popdown" onMouseDown={(event) => event.preventDefault()}><span className="popdown-inner">{this.props.renderPopdown()}</span></span> : null }
+      { this.state.showPopdown ? <span className="popdown" onClick={this.onMouseDown}><span className="popdown-inner">{this.props.renderPopdown()}</span></span> : null }
     </span>
   }
 }
