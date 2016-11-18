@@ -22,6 +22,8 @@ export class ImportFileCommand implements ICommand {
 
   async execute(request: ImportFileRequest) {
 
+    this.logger.info(`Importing ${request.filePath}`);
+
     const importerProvider = FileImporterProvider.findByDropTarget(request.targetObject, this._injector);
 
     if (!importerProvider) {

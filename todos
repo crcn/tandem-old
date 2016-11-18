@@ -11,6 +11,7 @@ Start working on UX around getting started with Tandem and projects.
 
 - [ ] center dnd file
 
+- UIKit
 
 FEATURES
 
@@ -32,6 +33,7 @@ IMPORTING MODULES
 - [ ] automatically scan for components
 
 BUGS
+- [ ] Cannot delete elements
 - [ ] css changes don't immediately get reflected in text editor
 - [ ] rebundle when file name changes. App locks up when file not found
 - [ ] kill remotely dispatched messages if there are no responses.
@@ -110,6 +112,7 @@ SOCIAL
 CSS PANE
   - [ ] toggle styles on and off
   - [ ] force states
+  - [ ]
   - [ ] syntax highlighting for declaration values
   - [ ] visual editor for declaration values
   - [ ] drag slider for unit values

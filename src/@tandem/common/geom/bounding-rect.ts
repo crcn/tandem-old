@@ -1,5 +1,14 @@
 import { IPoint } from "@tandem/common/geom";
+import { serializable } from "../serialize";
 
+@serializable({
+  serialize({ left, top, right, bottom }: BoundingRect) {
+    return { left, top, right, bottom };
+  },
+  deserialize({ left, top, right, bottom }) {
+    return new BoundingRect(left, top, right, bottom);
+  }
+})
 export class BoundingRect {
 
   constructor(

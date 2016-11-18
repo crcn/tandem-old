@@ -1,6 +1,6 @@
 import { ISyntheticSourceInfo } from "@tandem/sandbox";
 import { RemoteBrowserDocumentMessage, OpenRemoteBrowserRequest } from "@tandem/synthetic-browser";
-import { Action, serializable, ISourceLocation, DSUpsertRequest, PostDSMessage, serialize, deserialize } from "@tandem/common";
+import { Action, serializable, ISourceLocation, DSUpsertRequest, PostDSMessage, serialize, deserialize, BoundingRect } from "@tandem/common";
 
 import {
   EditAction,
@@ -10,7 +10,6 @@ import {
   ChildEditAction,
   WatchFileRequest,
   DependencyAction,
-  FileEditorAction,
   ISyntheticObject,
   RemoveEditAction,
   ResolveFileRequest,
@@ -132,16 +131,16 @@ export class OpenProjectRequest extends Action {
 
 @setMessageTarget(EditorFamilyType.MASTER)
 @serializable({
-  serialize({ filePath, options, targetObject }: ImportFileRequest) {
-    return { filePath, options, targetObject: serialize(targetObject && targetObject.clone(false)) };
+  serialize({ filePath, bounds, targetObject }: ImportFileRequest) {
+    return { filePath, bounds, targetObject: serialize(targetObject && targetObject.clone(false)) };
   },
-  deserialize({ filePath, options, targetObject }, injector) {
-    return new ImportFileRequest(filePath, options, deserialize(targetObject, injector));
+  deserialize({ filePath, bounds, targetObject }, injector) {
+    return new ImportFileRequest(filePath, bounds, deserialize(targetObject, injector));
   }
 })
 export class ImportFileRequest extends Action {
   static readonly IMPORT_FILE = "importFile";
-  constructor(readonly filePath: string, readonly options?: { left: number, top: number }, readonly targetObject?: ISyntheticObject) {
+  constructor(readonly filePath: string, readonly bounds?: BoundingRect, readonly targetObject?: ISyntheticObject) {
     super(ImportFileRequest.IMPORT_FILE);
   }
 }

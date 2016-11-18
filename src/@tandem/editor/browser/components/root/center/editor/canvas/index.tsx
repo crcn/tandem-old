@@ -53,9 +53,22 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     this.onMouseEvent(event);
     event.preventDefault();
 
+    const transform = this.props.workspace.transform;
+
+
+    const width  = 1024;
+    const height = 768;
+    const left   = (this._mousePosition.left - transform.left) / transform.scale;
+    const top    = (this._mousePosition.top - transform.top) / transform.scale;
+
+    const bounds = new BoundingRect(left, top, left + width, top + height);
+
+    console.log(bounds);
+
+
     const importURI = async (uri: string) => {
       try {
-        await this.bus.dispatch(new ImportFileRequest(uri, this._mousePosition, this.props.workspace.document.body.firstChild));
+        await this.bus.dispatch(new ImportFileRequest(uri, bounds, this.props.workspace.document.body.firstChild));
       } catch(e) {
         this.bus.dispatch(AlertMessage.createErrorMessage(`Cannot import ${uri}: ${e.message}`));
       }

@@ -2,8 +2,8 @@ import * as assert from "assert";
 import * as path from "path";
 import { SyntheticDOMElement, SyntheticWindow } from "@tandem/synthetic-browser";
 import { IFileSystem, FileSystemProvider, ApplyFileEditRequest } from "@tandem/sandbox";
-import { Injector, InjectorProvider, PrivateBusProvider, IBrokerBus, inject } from "@tandem/common";
 import { IFileImporter, ImportFileRequest, PreviewLoaderProvider, OpenFileRequest } from "@tandem/editor/worker";
+import { Injector, InjectorProvider, PrivateBusProvider, IBrokerBus, inject, BoundingRect } from "@tandem/common";
 
 export interface IPreviewConfig {
   renderFunction: string;
@@ -25,7 +25,7 @@ export class TDRootFileImporter implements IFileImporter {
   @inject(PrivateBusProvider.ID)
   private _bus: IBrokerBus;
 
-  async importFile({ filePath, targetObject, options: { left, top } }: ImportFileRequest) {
+  async importFile({ filePath, targetObject, bounds }: ImportFileRequest) {
 
     // TODO: temporary fix for DNDd files
     filePath = filePath.replace(/^file:\/\//g, "");
@@ -35,7 +35,7 @@ export class TDRootFileImporter implements IFileImporter {
     const element = <SyntheticDOMElement>targetObject;
 
     if (content.indexOf("renderPreview") !== -1) {
-      return this.importPreview(filePath, element, left, top);
+      return this.importPreview(filePath, element, bounds);
     }
 
     const previewLoader = PreviewLoaderProvider.find(filePath, this._injector);
@@ -51,16 +51,20 @@ export class TDRootFileImporter implements IFileImporter {
       await this._bus.dispatch(new OpenFileRequest(preview.filePath));
     }
 
-    return this.importPreview(preview.filePath, element, left, top);
+    return this.importPreview(preview.filePath, element, bounds);
   }
 
-  private async importPreview(filePath: string, element: SyntheticDOMElement, left: number, top: number) {
+  private async importPreview(filePath: string, element: SyntheticDOMElement, bounds: BoundingRect) {
+
+    console.log(filePath, bounds);
+
+    if (!bounds) bounds = new BoundingRect(0, 0, 1024, 768);
 
     const { document } = new SyntheticWindow();
     const artboard = document.createElement("artboard");
     artboard.setAttribute("title", path.relative(process.cwd(), filePath));;
     artboard.setAttribute("src", filePath);
-    artboard.setAttribute("style", `left:${left || 0}px;top:${top || 0}px;`);
+    artboard.setAttribute("style", `left:${bounds.left}px;top:${bounds.top}px;width:${bounds.width}px;height:${bounds.height}px;`);
 
     const edit = element.createEdit();
     edit.appendChild(artboard);
