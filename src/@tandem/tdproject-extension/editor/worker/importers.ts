@@ -65,7 +65,7 @@ export class TDRootFileImporter implements IFileImporter {
     const edit = element.createEdit();
     edit.appendChild(artboard);
 
-    this._bus.dispatch(new ApplyFileEditRequest(edit.actions));
+    this._bus.dispatch(new ApplyFileEditRequest(edit.actions, true));
   }
 
 }

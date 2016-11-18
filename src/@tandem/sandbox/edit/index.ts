@@ -2,9 +2,9 @@ import { flatten } from "lodash";
 import { debounce } from "lodash";
 import { FileCache } from "../file-cache";
 import { IDispatcher } from "@tandem/mesh";
-import { FileEditorAction } from "../actions";
 import { CallbackDispatcher } from "@tandem/mesh";
-import { FileCacheProvider, ContentEditorFactoryProvider, ProtocolURLResolverProvider } from "../providers";
+import { IFileSystem } from "../file-system";
+import { FileCacheProvider, ContentEditorFactoryProvider, ProtocolURLResolverProvider, FileSystemProvider } from "../providers";
 import { ISyntheticObject, ISyntheticSourceInfo, syntheticSourceInfoEquals } from "../synthetic";
 import {
   Action,
@@ -380,7 +380,7 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
 }
 
 @loggable()
-export class FileEditor extends Observable {
+export class FileEditor {
 
   protected readonly logger: Logger;
 
@@ -388,12 +388,13 @@ export class FileEditor extends Observable {
   private _editActions: EditAction[];
   private _shouldEditAgain: boolean;
 
+  private _promise: Promise<any>;
+
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  constructor() {
-    super();
-  }
+  @inject(FileSystemProvider.ID)
+  private _fileSystem: IFileSystem;
 
   applyEditActions(...actions: EditAction[]): Promise<any> {
 
@@ -403,99 +404,90 @@ export class FileEditor extends Observable {
     }
 
     this._editActions.push(...actions);
-    this.run();
 
-    return new Promise((resolve) => {
-      const observer = new CallbackDispatcher((action: Action) => {
-        if (action.type === FileEditorAction.DEPENDENCY_EDITED) {
-          resolve();
-          this.unobserve(observer);
-        }
+    return this._promise || (this._promise = new Promise((resolve, reject) => {
+      setImmediate(() => {
+        let done = () => this._promise = undefined;
+        this.run().then(resolve, reject).then(done, done);
       });
-      this.observe(observer);
-    });
+    }));
   }
 
-  private run() {
-    if (this._editing) return;
-    this._editing = true;
-    setTimeout(async () => {
-      this._shouldEditAgain = false;
-      const actions = this._editActions;
-      this._editActions = undefined;
+  private async run(): Promise<any> {
+    this._shouldEditAgain = false;
+    const actions = this._editActions;
+    this._editActions = undefined;
 
-      const actionsByFilePath = {};
+    const actionsByFilePath = {};
 
-      // find all actions that are part of the same file and
-      // batch them together. Important to ensure that we do not trigger multiple
-      // unecessary updates to any file listeners.
-      for (const action of actions) {
-        const target = action.target;
+    // find all actions that are part of the same file and
+    // batch them together. Important to ensure that we do not trigger multiple
+    // unecessary updates to any file listeners.
+    for (const action of actions) {
+      const target = action.target;
 
-        // This may happen if edits are being applied to synthetic objects that
-        // do not have the proper mappings
-        if (!target.source || !target.source.filePath) {
-          console.error(`Cannot edit file, source property is mising from ${target.clone(false).toString()}.`);
-          continue;
-        }
-
-        const targetSource = target.source;
-
-        const targetFilePath = await ProtocolURLResolverProvider.resolve(targetSource.filePath, this._injector);
-
-        const filePathActions: EditAction[] = actionsByFilePath[targetFilePath] || (actionsByFilePath[targetFilePath] = []);
-        filePathActions.push(action);
+      // This may happen if edits are being applied to synthetic objects that
+      // do not have the proper mappings
+      if (!target.source || !target.source.filePath) {
+        console.error(`Cannot edit file, source property is mising from ${target.clone(false).toString()}.`);
+        continue;
       }
 
-      const promises = [];
+      const targetSource = target.source;
 
-      for (const filePath in actionsByFilePath) {
-        const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(MimeTypeProvider.lookup(filePath, this._injector), this._injector);
+      const targetFilePath = await ProtocolURLResolverProvider.resolve(targetSource.filePath, this._injector);
 
-        if (!contentEditorFactoryProvider) {
-          console.error(`No synthetic edit consumer exists for ${filePath}.`);
-          continue;
-        }
+      const filePathActions: EditAction[] = actionsByFilePath[targetFilePath] || (actionsByFilePath[targetFilePath] = []);
+      filePathActions.push(action);
+    }
 
-        const fileCache     = await  FileCacheProvider.getInstance(this._injector).item(filePath);
-        const oldContent    = String(await fileCache.read());
+    const promises = [];
 
-        // error may be thrown if the content is invalid
-        try {
-          const contentEditor = contentEditorFactoryProvider.create(filePath, oldContent);
+    for (const filePath in actionsByFilePath) {
+      const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(MimeTypeProvider.lookup(filePath, this._injector), this._injector);
 
-          const actions = actionsByFilePath[filePath];
-          this.logger.info(`Applying file edit actions ${filePath}: >>`, actions.map(action => action.type).join(" "));
+      if (!contentEditorFactoryProvider) {
+        console.error(`No synthetic edit consumer exists for ${filePath}.`);
+        continue;
+      }
 
-          const newContent    = contentEditor.applyEditActions(...actions);
+      const autoSave   = contentEditorFactoryProvider.autoSave    ;
+      const fileCache  = await  FileCacheProvider.getInstance(this._injector).item(filePath);
+      const oldContent = String(await fileCache.read());
 
-          // This may trigger if the editor does special formatting to the content with no
-          // actual edits. May need to have a result come from the content editors themselves to check if anything's changed.
-          // Note that checking WS changes won't cut it since formatters may swap certain characters. E.g: HTML may change single quotes
-          // to double quotes for attributes.
-          if (oldContent !== newContent) {
-            fileCache.setDataUrlContent(newContent);
-            promises.push(fileCache.save());
-          } else {
-            this.logger.debug(`No changes to ${filePath}`);
+      // error may be thrown if the content is invalid
+      try {
+        const contentEditor = contentEditorFactoryProvider.create(filePath, oldContent);
+
+        const actions = actionsByFilePath[filePath];
+        this.logger.info(`Applying file edit actions ${filePath}: >>`, actions.map(action => action.type).join(" "));
+
+        const newContent    = contentEditor.applyEditActions(...actions);
+
+        // This may trigger if the editor does special formatting to the content with no
+        // actual edits. May need to have a result come from the content editors themselves to check if anything's changed.
+        // Note that checking WS changes won't cut it since formatters may swap certain characters. E.g: HTML may change single quotes
+        // to double quotes for attributes.
+        if (oldContent !== newContent) {
+          fileCache.setDataUrlContent(newContent);
+          promises.push(fileCache.save());
+          if (autoSave) {
+            promises.push(this._fileSystem.writeFile(fileCache.filePath, newContent));
           }
-        } catch(e) {
-          this.logger.error(`Error trying to apply ${actions.map(action => action.type).join(", ")} file edit to ${filePath}: ${e.stack}`);
+        } else {
+          this.logger.debug(`No changes to ${filePath}`);
         }
-
+      } catch(e) {
+        this.logger.error(`Error trying to apply ${actions.map(action => action.type).join(", ")} file edit to ${filePath}: ${e.stack}`);
       }
+    }
 
-      await Promise.all(promises);
+    await Promise.all(promises);
 
-      // TODO - need to have rejection handling for various edits
-      this._editing = false;
-      this.notify(new FileEditorAction(FileEditorAction.DEPENDENCY_EDITED));
-
-      // edits happened during getEditedContent call
-      if (this._shouldEditAgain) {
-        this.run();
-      }
-    }, 0);
+    // edits happened during getEditedContent call
+    if (this._shouldEditAgain) {
+      this.run();
+    }
   }
 }
 

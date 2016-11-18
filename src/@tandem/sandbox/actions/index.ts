@@ -28,10 +28,6 @@ export class SandboxAction extends Action {
   static readonly EVALUATED = "sandboxEvaluated";
 }
 
-export class FileEditorAction extends Action {
-  static readonly DEPENDENCY_EDITED = "dependencyEdited";
-}
-
 @serializable({
   serialize({ actions }: ApplyFileEditRequest) {
     return {
@@ -44,7 +40,7 @@ export class FileEditorAction extends Action {
 })
 export class ApplyFileEditRequest extends Action {
   static readonly APPLY_EDITS = "applyEditActions";
-  constructor(readonly actions: EditAction[]) {
+  constructor(readonly actions: EditAction[], readonly saveFile: boolean = false) {
     super(ApplyFileEditRequest.APPLY_EDITS);
   }
 }

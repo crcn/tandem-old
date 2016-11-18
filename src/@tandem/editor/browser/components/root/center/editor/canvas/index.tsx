@@ -52,17 +52,21 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   onDrop = (event: React.DragEvent<any>) =>  {
     this.onMouseEvent(event);
     event.preventDefault();
-    for (let i = event.dataTransfer.items.length; i--;) {
-      const item = event.dataTransfer.items[i];
-      item.getAsString((uriList) => {
-        uriList.split("\n").forEach(async (uri) => {
-          try {
-            await this.bus.dispatch(new ImportFileRequest(uri, this._mousePosition, this.props.workspace.document.body.firstChild));
-          } catch(e) {
-            this.bus.dispatch(AlertMessage.createErrorMessage(`Cannot import ${uri}: ${e.message}`));
-          }
-        });
-      })
+
+    const importURI = async (uri: string) => {
+      try {
+        await this.bus.dispatch(new ImportFileRequest(uri, this._mousePosition, this.props.workspace.document.body.firstChild));
+      } catch(e) {
+        this.bus.dispatch(AlertMessage.createErrorMessage(`Cannot import ${uri}: ${e.message}`));
+      }
+    }
+
+    const url = event.dataTransfer.getData("URL");
+    if (url) return url.split("\n").forEach(importURI);
+
+    for (let i = event.dataTransfer.files.length; i--;) {
+      const file = event.dataTransfer.files[i];
+      importURI(file.path);
     }
   }
 

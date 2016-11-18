@@ -43,6 +43,6 @@ export function createTDProjectCoreProviders() {
     new MarkupMimeTypeXMLNSProvider(TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS),
 
     // editors
-    new ContentEditorFactoryProvider(TDPROJECT_MIME_TYPE, MarkupEditor),
+    new ContentEditorFactoryProvider(TDPROJECT_MIME_TYPE, MarkupEditor, true),
   ];
 }

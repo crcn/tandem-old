@@ -9,6 +9,9 @@ IMMEDIATE
 
 Start working on UX around getting started with Tandem and projects.
 
+- [ ] center dnd file
+
+
 FEATURES
 
 - [ ] scan package.json and auto-install extensions

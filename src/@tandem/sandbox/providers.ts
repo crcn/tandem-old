@@ -16,8 +16,12 @@ import {
 
 export class ContentEditorFactoryProvider extends ClassFactoryProvider {
   static readonly NS = "contentEditors";
-  constructor(readonly mimeType: string, clazz: contentEditorType) {
+  constructor(readonly mimeType: string, readonly clazz: contentEditorType, readonly autoSave: boolean = false) {
     super(ContentEditorFactoryProvider.getNamespace(mimeType), clazz);
+  }
+
+  clone() {
+    return new ContentEditorFactoryProvider(this.mimeType, this.clazz, this.autoSave);
   }
 
   static getNamespace(mimeType: string) {
