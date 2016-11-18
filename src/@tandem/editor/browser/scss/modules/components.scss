@@ -5,7 +5,6 @@ $input-padding: $input-top-bottom $input-left-right;
 $input-border: 1px solid rgba(0,0,0,0.15);
 $input-background: rgba(0,0,0,0.1);
 
-
 $gutter-background: #444;
 
 .td-gutter {
@@ -20,7 +19,6 @@ $gutter-background: #444;
 
   .td-section-header {
     font-size: 0.9em;
-    font-weight: 400;
     letter-spacing: 0.15em;
     padding: 8px 16px;
     background: rgba(0, 0, 0, 0.2);
@@ -29,6 +27,7 @@ $gutter-background: #444;
         display: block;
       }
     }
+    font-weight: 400;
     .controls{
       display: none;
       float: right;

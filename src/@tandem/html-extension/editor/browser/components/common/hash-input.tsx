@@ -1,4 +1,5 @@
 import * as React from "react";
+import { ITokenizer } from "@tandem/common";
 import { FocusComponent, TextEditorComponent } from "@tandem/editor/browser/components/common";
 
 export interface IKeyValueItem {
@@ -13,6 +14,7 @@ export interface IKeyValueInputComponentProps {
   setKeyValue: (name: string, value: any, oldName?: string) => any;
   onValueEnter: (item) =>  any;
   className?: string;
+  valueTokenizer?: ITokenizer;
   style?: any;
 }
 
@@ -61,20 +63,20 @@ export class KeyValueInputComponent extends React.Component<IKeyValueInputCompon
     this.setState({ editName: false, currentValue: undefined });
   };
 
-  onValueChange = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  onValueChange = (value: string) => {
     const oldName = this.item.name;
-    this.props.setKeyValue(this.item.name, this.state.currentValue = event.currentTarget.value);
+    this.props.setKeyValue(this.item.name, this.state.currentValue = value);
   }
 
   onValueFocus = (event: React.FocusEvent<HTMLInputElement>) => {
-    this.setState({ currentValue: "", editName: this.state.editName });
-    event.currentTarget.select();
+    this.setState({ currentValue: this.item.value, editName: this.state.editName });
+    // event.currentTarget.select();
   }
 
   onValueBlur = (event: React.FocusEvent<any>) => {
 
     // unset
-    if (event.currentTarget.value === "") {
+    if (this.state.currentValue === "") {
       this.props.setKeyValue(this.item.name, undefined);
     }
 
@@ -86,7 +88,7 @@ export class KeyValueInputComponent extends React.Component<IKeyValueInputCompon
   }
 
   render() {
-    const { className, style } = this.props;
+    const { className, style, valueTokenizer } = this.props;
     const { name, value, readonly, overriden } = this.item;
 
     // <input type="text" className="col-5" {...(this.state.currentValue != null ? {} : { value: value })}  disabled={readonly} onKeyDown={this.onValueKeyDown} onChange={this.onValueChange} onFocus={this.onValueFocus} onBlur={this.onValueBlur} style={{textDecoration: overriden ? "line-through" : undefined}} ></input>
@@ -94,13 +96,24 @@ export class KeyValueInputComponent extends React.Component<IKeyValueInputCompon
       <div className="col-5 no-wrap dim" title={name} onDoubleClick={!readonly && this.editName}>
         { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name }
       </div>
-      <TextEditorComponent className="col-5" value={this.state.currentValue || value} injector={null} style={{textDecoration: overriden ? "line-through" : undefined}} />
+      <TextEditorComponent
+        className="col-5"
+        value={this.state.currentValue || value}
+        injector={null}
+        style={{textDecoration: overriden ? "line-through" : undefined}}
+        onKeyDown={this.onValueKeyDown}
+        tokenizer={valueTokenizer}
+        onChange={this.onValueChange}
+        onFocus={this.onValueFocus}
+        onBlur={this.onValueBlur}
+        />
     </div>
   }
 }
 
 export interface IKeyInputComponentProps {
   items: IKeyValueItem[];
+  valueTokenizer?: ITokenizer;
   setKeyValue: (key: string, value: string, oldKey?: string) => any;
   renderItemComponent?: (props: IKeyValueInputComponentProps) => any;
 }
@@ -117,13 +130,14 @@ export class HashInputComponent extends React.Component<IKeyInputComponentProps,
   }
 
   render() {
-    const { items, renderItemComponent } = this.props;
+    const { items, renderItemComponent, valueTokenizer } = this.props;
     return <div className="td-cells">
       {
         // index important here since the name can change
         items.map((item, index) => {
           const props = {
             item: item,
+            valueTokenizer: valueTokenizer,
             setKeyValue: this.props.setKeyValue,
             onValueEnter: this.onValueEnter
           }

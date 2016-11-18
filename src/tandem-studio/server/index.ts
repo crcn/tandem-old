@@ -1,19 +1,19 @@
 import { argv } from "yargs";
 import * as electron from "electron";
 import * as getPort from "get-port";
-import { EditorFamilyType } from "@tandem/editor/common";
+import { createCommonEditorProviders, IEditorCommonConfig } from "@tandem/editor/common";
 import { FileCacheProvider } from "@tandem/sandbox";
 import { ServiceApplication } from "@tandem/core";
 import { createCoreStudioWorkerProviders } from "../worker";
-import { MongoDataStore, MemoryDataStore } from "@tandem/mesh";
-import { InitializeWindowCommand, SpawnWorkerCommand } from "./commands";
+import { SpawnWorkerCommand, InitializeWindowCommand } from "./commands";
 import { createEditorServerProviders, IEdtorServerConfig } from "@tandem/editor/server";
+import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
 import {
    Injector,
    LogLevel,
    serialize,
-   LoadRequest,
    IBrokerBus,
+   LoadRequest,
    deserialize,
    InitializeRequest,
    CommandFactoryProvider,
@@ -25,21 +25,18 @@ process.env.LOG_LEVEL = process.env.LOG_LEVEL || LogLevel[String(argv.logLevel).
 export const initializeMaster = async () => {
 
   const config: IEdtorServerConfig = {
-    family: EditorFamilyType.MASTER,
+    family: "none",
     cwd: process.cwd(),
-    experimental: !!argv.experimental,
-    port: process.env.PORT || (process.env.PORT = await getPort()),
     argv: argv,
-    hostname: process.env.HOSTNAME || (process.env.HOSTNAME = "localhost"),
     log: {
-      level: Number(process.env.LOG_LEVEL),
-      prefix: "master "
-    }
+      level: Number(process.env.LOG_LEVEL)
+    },
+    port: process.env.PORT || (process.env.PORT = await getPort()),
+    hostname: process.env.HOSTNAME || (process.env.HOSTNAME = "localhost")
   };
 
   const injector = new Injector(
-    createCoreStudioWorkerProviders(),
-    createEditorServerProviders(config, config.experimental ? new MongoDataStore("mongodb://localhost:27017/tandem") : new MemoryDataStore()),
+    createCommonEditorProviders(config),
     new CommandFactoryProvider(LoadRequest.LOAD, SpawnWorkerCommand),
     new CommandFactoryProvider(InitializeRequest.INITIALIZE, InitializeWindowCommand),
   );

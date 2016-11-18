@@ -1,9 +1,10 @@
-
+import { IFileSystem, IFileResolver } from "@tandem/sandbox";
 import { ConsoleLogService, ReceiverService } from "./services";
-import { ApplicationServiceProvider } from "@tandem/core";
+import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
 
-export const createCommonEditorProviders = () => {
+export const createCommonEditorProviders = (config?: any, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) => {
   return [
+    createCoreApplicationProviders(config),
     new ApplicationServiceProvider("console", ConsoleLogService),
     new ApplicationServiceProvider("receiver", ReceiverService)
   ];

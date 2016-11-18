@@ -4,14 +4,15 @@ import { SockService } from "@tandem/editor/server";
 import { EditorFamilyType } from "@tandem/editor/common";
 import { LoadProjectConfigCommand } from "./commands";
 import { MarkupMimeTypeXMLNSProvider } from "@tandem/synthetic-browser";
-import { createJavaScriptWorkerProviders } from "@tandem/javascript-extension/editor/worker";
-import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/worker";
-import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/worker";
+import { MongoDataStore, MemoryDataStore } from "@tandem/mesh";
+import { createJavaScriptWorkerProviders } from "@tandem/javascript-extension/editor/server";
+import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/server";
+import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/server";
 import { isMaster, fork, addListener, emit } from "cluster";
-import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extension/editor/worker";
-import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/worker";
+import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extension/editor/server";
+import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/server";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
-import { createEditorWorkerProviders, IEditorWorkerConfig, FileImporterProvider } from "@tandem/editor/worker";
+import { IEdtorServerConfig, FileImporterProvider, createEditorServerProviders } from "@tandem/editor/server";
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
 import {
   hook,
@@ -21,6 +22,7 @@ import {
   LoadRequest,
   deserialize,
   MimeTypeProvider,
+  InitializeRequest,
   PrivateBusProvider,
   MimeTypeAliasProvider,
   CommandFactoryProvider
@@ -52,19 +54,22 @@ export const createCoreStudioWorkerProviders = () => {
 
 export const initializeWorker = async () => {
 
-  const config: IEditorWorkerConfig = {
-    family: EditorFamilyType.WORKER,
+  const config: IEdtorServerConfig = {
+    family: EditorFamilyType.MASTER,
+    cwd: process.cwd(),
+    experimental: !!process.env.EXPERIMENTAL,
+    port: process.env.PORT,
+    argv: argv,
+    hostname: process.env.HOSTNAME,
     log: {
       level: Number(process.env.LOG_LEVEL),
       prefix: "worker "
-    },
-    hostname: process.env.HOSTNAME,
-    port: process.env.PORT
+    }
   };
 
   const injector = new Injector(
     createCoreStudioWorkerProviders(),
-    createEditorWorkerProviders(config),
+    createEditorServerProviders(config, config.experimental ? new MongoDataStore("mongodb://localhost:27017/tandem") : new MemoryDataStore()),
     createSyntheticBrowserWorkerProviders(),
   );
 

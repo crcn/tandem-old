@@ -9,7 +9,7 @@ import { IEditorCommonConfig } from "../common";
 
 export interface IEdtorServerConfig extends IEditorCommonConfig {
   cwd: string;
-  experimental: boolean,
+  experimental?: boolean,
   port: number,
   hostname: string,
   argv: {

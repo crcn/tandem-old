@@ -20,7 +20,7 @@ export interface ITextEditorComponentProps {
   injector: Injector;
   onFocus?: Function;
   onKeyDown?: Function;
-  onChange?: Function;
+  onChange?: (value: string) => any;
   onBlur?: Function;
   style?: Object;
   className?: string;

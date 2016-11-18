@@ -42,8 +42,7 @@ import {
 export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
   return [
     ...keyBindingsProviders,
-    createCommonEditorProviders(),
-    createCoreApplicationProviders(config, fileSystemClass, fileResolverClass),
+    createCommonEditorProviders(config, fileSystemClass, fileResolverClass),
 
     // commands
     new CommandFactoryProvider(AlertMessage.ALERT, AlertCommand),
